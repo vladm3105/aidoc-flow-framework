@@ -1,41 +1,523 @@
+# CHG MVP Schema - Validation Schema for Change Management Documents
+# Version: 2.0.0
+# Framework: 15-Layer SDD Architecture
+#
+# This schema defines validation rules for CHG (Change Management) documents
+# to ensure consistency and completeness across the framework.
+
+schema_version: "2.0.0"
 artifact_type: CHG
 layer: null  # CHG is NOT a layer - it's a change management procedure
 category: "change_management"
 purpose: "archival_and_immutability"
-description: "Change Management procedure for archiving superseded documents and ensuring immutability. When requirements change, old documents are archived here and NEW documents are created from scratch to prevent LLM probabilistic errors from partial edits. After archival, the entire layer chain must be regenerated."
+description: "Change Management procedure for archiving superseded documents and ensuring immutability. Supports 3 change levels (L1/L2/L3) and 5 change sources (Upstream/Midstream/Downstream/External/Feedback)."
 
-filename_pattern: "^CHG-[0-9]{2}_[a-z0-9_]+\\.md$"
+# =============================================================================
+# FILENAME PATTERNS
+# =============================================================================
+filename_pattern: "^CHG-\\d{2,4}[_-][a-z0-9_-]+\\.md$"
+folder_pattern: "^CHG-\\d{2,4}[_-][a-z0-9_-]+/$"
 
+# =============================================================================
+# FRONTMATTER VALIDATION
+# =============================================================================
 frontmatter:
   required:
-    - id
     - title
-    - status
-    - date
-    - author
-    - supersedes
+    - tags
+    - custom_fields
+
+  tags_requirements:
+    min_items: 3
+    must_include:
+      - "change-management"
+    allowed_values:
+      - change-management
+      - change-source
+      - upstream
+      - midstream
+      - downstream
+      - external
+      - feedback
+      - defect-management
+      - security
+      - dependencies
+      - production
+      - user-feedback
+      - shared-architecture
+      - layer-change
+      - architecture-pivot
+      - deprecation
+
+  custom_fields_required:
+    - document_type    # "change-request" or "change-record"
+    - artifact_type    # "CHG"
+    - change_level     # "L1", "L2", or "L3"
+    - change_source    # "upstream", "midstream", "downstream", "external", "feedback"
+    - development_status  # "draft", "in-progress", "completed", "cancelled", "superseded"
+
   optional:
     - related_chg
+    - supersedes
+    - superseded_by
 
+# =============================================================================
+# DOCUMENT STRUCTURE
+# =============================================================================
 structure:
   required_sections:
-    - "1. Overview"
-    - "2. Impacted Artifacts"
-    - "3. Migration Steps"
-    - "4. Rollback Plan"
-  
-  section_rules:
-    "1. Overview":
-      - "Must contain 'Reason for Change'"
-      - "Must contain '1.1 Reason for Change'"
-    "2. Impacted Artifacts":
-      - "Must list 'Archived' artifacts"
-      - "Must list 'New / Updated' artifacts"
-    "3. Migration Steps":
-      - "Must reference 'implementation_plan.md' for audit log"
-    "4. Rollback Plan":
-      - "Must define triggers for rollback"
+    - "1. Change Identification"
+    - "2. Impact Assessment"
+    - "3. Implementation Plan"
+    - "4. Verification Criteria"
+    - "5. Closure Checklist"
 
+  optional_sections:
+    - "Security Details"        # Required for external/security changes
+    - "Post-Mortem"            # Required for P1/P2 incidents
+    - "Deprecation Timeline"   # Required for L3 deprecations
+    - "Migration Plan"         # Required for major version updates
+    - "Rollback Plan"          # Required for L3 changes
+
+  section_rules:
+    "1. Change Identification":
+      required_fields:
+        - "CHG ID"
+        - "Status"
+        - "Change Level"
+        - "Change Source"
+        - "Entry Point"
+      optional_fields:
+        - "Related CHG"
+        - "Supersedes"
+
+    "2. Impact Assessment":
+      required_content:
+        - "Layer impact matrix or list"
+        - "Affected artifacts identification"
+      L3_additional:
+        - "Archived artifacts list"
+        - "New artifacts list"
+
+    "3. Implementation Plan":
+      required_content:
+        - "Implementation steps"
+      L3_additional:
+        - "Reference to implementation_plan.md"
+
+    "4. Verification Criteria":
+      required_content:
+        - "Verification checklist"
+        - "Test requirements"
+
+    "5. Closure Checklist":
+      required_content:
+        - "Completion criteria"
+        - "Sign-off requirements"
+
+# =============================================================================
+# CHANGE CLASSIFICATION RULES
+# =============================================================================
+change_levels:
+  L1:
+    name: "Patch"
+    description: "Bug fix, typo, no behavior change"
+    chg_document_required: false
+    characteristics:
+      - "Single layer affected"
+      - "No new artifacts created"
+      - "No downstream regeneration"
+      - "No traceability changes"
+    allowed_changes:
+      - "Code bug fix (L12)"
+      - "Test implementation fix (L13)"
+      - "TSPEC typo correction (L10)"
+      - "Documentation typo (any layer)"
+      - "Config correction"
+    prohibited_changes:
+      - "New requirements"
+      - "New contracts"
+      - "Architecture changes"
+      - "API modifications"
+    required_verification:
+      - "Affected tests pass"
+      - "No regression in related tests"
+
+  L2:
+    name: "Minor"
+    description: "Feature add, non-breaking modification"
+    chg_document_required: true
+    template: "CHG-MVP-TEMPLATE.md"
+    characteristics:
+      - "Multiple layers affected"
+      - "New artifacts may be created"
+      - "Downstream regeneration required"
+      - "Traceability extended"
+    allowed_changes:
+      - "New feature (additive)"
+      - "SPEC optimization"
+      - "TSPEC expansion"
+      - "New REQ (atomic)"
+      - "Contract extension (non-breaking)"
+      - "Algorithm improvement"
+    prohibited_changes:
+      - "Breaking API changes"
+      - "Architecture pivot"
+      - "Requirement removal"
+      - "Contract deprecation"
+    required_verification:
+      - "All affected layer tests pass"
+      - "Integration tests pass"
+      - "No breaking changes to existing interfaces"
+
+  L3:
+    name: "Major"
+    description: "Breaking change, architecture pivot, deprecation"
+    chg_document_required: true
+    template: "CHG-TEMPLATE.md"
+    characteristics:
+      - "Breaking changes"
+      - "Full cascade required"
+      - "Artifacts archived/superseded"
+      - "Migration may be needed"
+    allowed_changes:
+      - "Architecture pivot"
+      - "Breaking API change"
+      - "Requirement removal"
+      - "Feature deprecation"
+      - "Technology migration"
+      - "Major version upgrade"
+    required_verification:
+      - "Full test suite passes"
+      - "Migration validated"
+      - "Stakeholder approval"
+      - "Rollback plan documented"
+
+# =============================================================================
+# CHANGE SOURCE RULES
+# =============================================================================
+change_sources:
+  upstream:
+    origin_layers: [1, 2, 3, 4]
+    layer_names: ["BRD", "PRD", "EARS", "BDD"]
+    direction: "top-down cascade"
+    typical_levels: ["L2", "L3"]
+    guide: "sources/UPSTREAM_CHANGE_GUIDE.md"
+    cascade_scope:
+      from_L1: "L2-L14"
+      from_L2: "L3-L14"
+      from_L3: "L4-L14"
+      from_L4: "L7, L10, L13, L14"
+
+  midstream:
+    origin_layers: [5, 6, 7, 8, 9, 10, 11]
+    layer_names: ["ADR", "SYS", "REQ", "CTR", "SPEC", "TSPEC", "TASKS"]
+    direction: "bi-directional"
+    typical_levels: ["L1", "L2", "L3"]
+    guide: "sources/MIDSTREAM_CHANGE_GUIDE.md"
+    may_bubble_up_to: [1, 2, 3, 4]
+    cascades_down_to: [12, 13, 14]
+
+  downstream:
+    origin_layers: [12, 13, 14]
+    layer_names: ["Code", "Tests", "Validation"]
+    direction: "bottom-up bubble"
+    typical_levels: ["L1", "L2"]
+    guide: "sources/DOWNSTREAM_CHANGE_GUIDE.md"
+    root_cause_analysis_required: true
+
+  external:
+    origin_layers: null  # Outside the 15-layer system
+    layer_names: ["Security", "Dependencies", "Third-Party", "Infrastructure", "Compliance"]
+    direction: "inject at appropriate layer"
+    typical_levels: ["L1", "L2", "L3"]
+    guide: "sources/EXTERNAL_CHANGE_GUIDE.md"
+    trigger_types:
+      - "security_vulnerability"
+      - "dependency_update"
+      - "api_change"
+      - "compliance"
+
+  feedback:
+    origin_layers: null  # Post-Layer 14 (production)
+    layer_names: ["Monitoring", "User Feedback", "Analytics", "Incidents"]
+    direction: "loop back to source layer"
+    typical_levels: ["L1", "L2", "L3"]
+    guide: "sources/FEEDBACK_CHANGE_GUIDE.md"
+    incident_priorities: ["P1", "P2", "P3", "P4"]
+
+# =============================================================================
+# 15-LAYER IMPACT MATRIX
+# =============================================================================
+layer_impact_matrix:
+  - layer: 0
+    name: "Strategy"
+    type: "STRATEGY"
+    folder: "00_STRATEGY"
+
+  - layer: 1
+    name: "Business Requirements"
+    type: "BRD"
+    folder: "01_BRD"
+
+  - layer: 2
+    name: "Product Requirements"
+    type: "PRD"
+    folder: "02_PRD"
+
+  - layer: 3
+    name: "EARS Requirements"
+    type: "EARS"
+    folder: "03_EARS"
+
+  - layer: 4
+    name: "BDD Scenarios"
+    type: "BDD"
+    folder: "04_BDD"
+
+  - layer: 5
+    name: "Architecture Decisions"
+    type: "ADR"
+    folder: "05_ADR"
+
+  - layer: 6
+    name: "System Requirements"
+    type: "SYS"
+    folder: "06_SYS"
+
+  - layer: 7
+    name: "Atomic Requirements"
+    type: "REQ"
+    folder: "07_REQ"
+
+  - layer: 8
+    name: "API Contracts"
+    type: "CTR"
+    folder: "08_CTR"
+
+  - layer: 9
+    name: "Technical Specifications"
+    type: "SPEC"
+    folder: "09_SPEC"
+
+  - layer: 10
+    name: "Test Specifications"
+    type: "TSPEC"
+    folder: "10_TSPEC"
+    test_types:
+      - { id: "UTEST-40", name: "Unit Tests" }
+      - { id: "ITEST-41", name: "Integration Tests" }
+      - { id: "STEST-42", name: "Smoke Tests" }
+      - { id: "FTEST-43", name: "Functional Tests" }
+
+  - layer: 11
+    name: "Task Breakdown"
+    type: "TASKS"
+    folder: "11_TASKS"
+
+  - layer: 12
+    name: "Code"
+    type: "CODE"
+    folder: "12_Code"
+
+  - layer: 13
+    name: "Tests"
+    type: "TESTS"
+    folder: "13_Tests"
+
+  - layer: 14
+    name: "Validation"
+    type: "VAL"
+    folder: "14_Validation"
+
+impact_symbols:
+  affected: "●"
+  not_affected: "○"
+  archived: "◐"
+  new: "◆"
+
+# =============================================================================
+# TRACEABILITY REQUIREMENTS
+# =============================================================================
+traceability:
+  tag_formats:
+    chg: "@chg: CHG-XXX"
+    brd: "@brd: BRD-XXX"
+    prd: "@prd: PRD-XXX.YY"
+    ears: "@ears: EARS.XXX.YY.ZZ"
+    bdd: "@bdd: SCEN-XXX"
+    adr: "@adr: ADR-XXX"
+    sys: "@sys: SYS-XXX-XXX"
+    req: "@req: REQ-XXX-XXX"
+    ctr: "@ctr: CTR-XXX-XXX"
+    spec: "@spec: SPEC-XXX.YY"
+    tspec: "@tspec: TSPEC-XXX"
+
+  bidirectional_requirements:
+    - "All archived artifacts must reference CHG"
+    - "All new artifacts must reference CHG and source artifact"
+    - "CHG must list all affected artifacts"
+
+# =============================================================================
+# VALIDATION RULES
+# =============================================================================
 validation_rules:
-  - "metadata.status in ['Proposed', 'Implemented', 'Rejected']"
-  - "metadata.supersedes is list"
+  status_values: ["Draft", "In Review", "Approved", "In Progress", "Completed", "Cancelled", "Superseded"]
+
+  level_validations:
+    L1:
+      - "No CHG document required"
+      - "Commit message references issue/ticket"
+    L2:
+      - "CHG document required"
+      - "At least one source artifact reference"
+      - "Change level justification"
+    L3:
+      - "CHG document required"
+      - "All affected artifact references"
+      - "Archive list required"
+      - "New artifact list required"
+      - "Migration plan (if applicable)"
+      - "Rollback plan required"
+
+# =============================================================================
+# ANTI-PATTERNS
+# =============================================================================
+anti_patterns:
+  - pattern: "Edit approved artifact directly for major change"
+    correct_action: "Archive and create new artifact"
+    applies_to: ["L3"]
+
+  - pattern: "Skip TSPEC update for code change"
+    correct_action: "Update TSPEC before code (TDD)"
+    applies_to: ["L2", "L3"]
+
+  - pattern: "Use L1 for breaking change"
+    correct_action: "Escalate to L3"
+    applies_to: ["L1"]
+
+  - pattern: "Skip root cause analysis for test failure"
+    correct_action: "Trace to source layer before fixing"
+    applies_to: ["L1", "L2"]
+
+  - pattern: "Create CHG for typo fix"
+    correct_action: "L1 commit without CHG"
+    applies_to: ["L1"]
+
+  - pattern: "Skip upstream check for midstream change"
+    correct_action: "Verify upstream alignment before cascade"
+    applies_to: ["L2", "L3"]
+
+# =============================================================================
+# 4-GATE SYSTEM
+# =============================================================================
+gate_system:
+  description: "4-Gate Change Management System for validating changes at layer boundaries"
+  enabled: true
+
+  gates:
+    GATE-01:
+      name: "Business/Product Gate"
+      position: "Before L1-L4"
+      layers: [1, 2, 3, 4]
+      layer_names: ["BRD", "PRD", "EARS", "BDD"]
+      purpose: "Validate business/product changes before cascading to architecture"
+      change_sources: ["upstream", "external_business"]
+      document: "gates/GATE-01_BUSINESS_PRODUCT.md"
+      validation_script: "scripts/validate_gate01.sh"
+
+    GATE-05:
+      name: "Architecture/Contract Gate"
+      position: "Before L5-L8"
+      layers: [5, 6, 7, 8]
+      layer_names: ["ADR", "SYS", "REQ", "CTR"]
+      purpose: "Validate architecture and contract changes before cascading to design"
+      change_sources: ["midstream", "external_technical"]
+      document: "gates/GATE-05_ARCHITECTURE_CONTRACT.md"
+      validation_script: "scripts/validate_gate05.sh"
+
+    GATE-09:
+      name: "Design/Test Gate"
+      position: "Before L9-L11"
+      layers: [9, 10, 11]
+      layer_names: ["SPEC", "TSPEC", "TASKS"]
+      purpose: "Validate design and test specification changes before implementation"
+      change_sources: ["design-optimization", "midstream_cascade"]
+      document: "gates/GATE-09_DESIGN_TEST.md"
+      validation_script: "scripts/validate_gate09.sh"
+
+    GATE-12:
+      name: "Implementation Gate"
+      position: "Before L12-L14"
+      layers: [12, 13, 14]
+      layer_names: ["Code", "Tests", "Validation"]
+      purpose: "Validate implementation changes and ensure proper root cause analysis"
+      change_sources: ["downstream", "feedback"]
+      document: "gates/GATE-12_IMPLEMENTATION.md"
+      validation_script: "scripts/validate_gate12.sh"
+
+  emergency_bypass:
+    name: "Emergency Bypass"
+    criteria:
+      - "P1 Production Incident"
+      - "Critical Security (CVSS >= 9.0)"
+      - "Data Breach"
+    authorization_required: true
+    authorizer: "Incident Commander"
+    post_incident_requirements:
+      - "Complete CHG documentation (24h)"
+      - "Post-mortem document (72h)"
+      - "Retroactive gate validation"
+      - "Follow-up CHGs for preventive measures"
+    document: "workflows/EMERGENCY_WORKFLOW.md"
+    template: "templates/CHG-EMERGENCY-TEMPLATE.md"
+    postmortem_template: "templates/POST_MORTEM-TEMPLATE.md"
+
+  routing_rules:
+    upstream: "GATE-01 → GATE-05 → GATE-09 → GATE-12"
+    midstream: "GATE-05 → GATE-09 → GATE-12 (may bubble up to GATE-01)"
+    design_optimization: "GATE-09 → GATE-12"
+    downstream: "GATE-12 (may bubble up based on root cause)"
+    external: "GATE-05 → GATE-09 → GATE-12 (or EMERGENCY if critical)"
+    feedback: "GATE-12 (or EMERGENCY if P1)"
+
+  approval_matrix:
+    L1:
+      GATE-01: "Self"
+      GATE-05: "Self"
+      GATE-09: "Self"
+      GATE-12: "Self + Peer Review"
+    L2:
+      GATE-01: "PO + TL"
+      GATE-05: "TL + Domain Expert"
+      GATE-09: "TL"
+      GATE-12: "TL + QA"
+    L3:
+      GATE-01: "PO + Architect + Stakeholder"
+      GATE-05: "Architect + Security (if external)"
+      GATE-09: "TL + Domain Expert"
+      GATE-12: "TL + Architect"
+
+  error_catalog: "gates/GATE_ERROR_CATALOG.md"
+  interaction_diagram: "gates/GATE_INTERACTION_DIAGRAM.md"
+  orchestrator_script: "scripts/validate_all_gates.sh"
+
+# =============================================================================
+# RELATED DOCUMENTATION
+# =============================================================================
+related_documents:
+  templates:
+    - { path: "CHG-TEMPLATE.md", use_for: "L3 Major changes" }
+    - { path: "CHG-MVP-TEMPLATE.md", use_for: "L2 Minor changes" }
+
+  guides:
+    - { path: "CHANGE_MANAGEMENT_GUIDE.md", description: "Main change management guide" }
+    - { path: "CHANGE_CLASSIFICATION_GUIDE.md", description: "How to classify changes" }
+    - { path: "CHG_MVP_CREATION_RULES.md", description: "CHG creation rules and workflows" }
+
+  source_guides:
+    - "sources/UPSTREAM_CHANGE_GUIDE.md"
+    - "sources/MIDSTREAM_CHANGE_GUIDE.md"
+    - "sources/DOWNSTREAM_CHANGE_GUIDE.md"
+    - "sources/EXTERNAL_CHANGE_GUIDE.md"
+    - "sources/FEEDBACK_CHANGE_GUIDE.md"
