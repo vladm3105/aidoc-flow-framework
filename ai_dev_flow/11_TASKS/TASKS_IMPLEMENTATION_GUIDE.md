@@ -19,7 +19,7 @@ This guide describes the standard workflow for implementing a feature defined in
 
 ## 1. Initial Assessment
 Before starting code:
-1.  **Check Status**: Review `DEVELOPMENT_PLAN.md` (created from `10_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to confirm the task is next in the queue and prerequisites are met.
+1.  **Check Status**: Review `DEVELOPMENT_PLAN.md` (created from `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to confirm the task is next in the queue and prerequisites are met.
 2.  **Review TASKS Artifact**: Read the `TASKS-XX.md` file to understand the scope, requirements, and design constraints.
 
 ## 2. Implementation Planning (in TASKS Section 4)

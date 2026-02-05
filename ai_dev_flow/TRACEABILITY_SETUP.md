@@ -118,10 +118,11 @@ python scripts/validate_tags_against_docs.py \
 - Layer 7 (REQ): 6 tags (@brd through @sys)
 - Layer 8 (CTR): 7 tags (@brd through @req) [optional]
 - Layer 9 (SPEC): 7-8 tags (@brd through @req + optional ctr)
-- Layer 10 (TASKS): 8-9 tags (@brd through @spec)
-- Layer 11 (Code): 9-10 tags (@brd through @tasks)
-- Layer 12 (Tests): 10-11 tags (@brd through @code)
-- Layer 13 (Validation): 11-12 tags (all upstream)
+- Layer 10 (TSPEC): 8-9 tags (@brd through @spec)
+- Layer 11 (TASKS): 9-10 tags (@brd through @tspec)
+- Layer 12 (Code): 10-11 tags (@brd through @tasks)
+- Layer 13 (Tests): 11-12 tags (@brd through @code)
+- Layer 14 (Validation): 12-13 tags (all upstream)
 
 **Benefits:**
 - Regulatory compliance (regulatory, FDA, ISO audit trails)

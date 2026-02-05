@@ -583,7 +583,7 @@ Implemented the core Auth Service.
 ### Automated Validation
 
 ```bash
-./10_TASKS/scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
+./11_TASKS/scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
 ```
 
 ### Manual Checklist (v2.0)
@@ -691,7 +691,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/10_TASKS/TASKS-NN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/11_TASKS/TASKS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all TASKS documents complete
 python scripts/validate_cross_document.py --layer TASKS --auto-fix

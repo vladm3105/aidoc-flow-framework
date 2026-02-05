@@ -16,7 +16,7 @@ custom_fields:
 
 ## Summary
 
-Design an end-to-end automation workflow for the 14-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
+Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
 
 **Plan Date**: 2026-01-17  
 **Status**: FINAL REVIEW  
@@ -432,7 +432,7 @@ layers:
     reviewer: "gemini"
     min_readiness_score: 90
 
-  - id: L10_TASKS
+  - id: L11_TASKS
     name: "Task Breakdown"
     checkpoint: auto
     input: "L9_SPEC"
@@ -444,7 +444,7 @@ layers:
   - id: L11_CODE
     name: "Source Code"
     checkpoint: human
-    input: ["L10_TASKS", "L9_SPEC", "L8_CTR"]
+    input: ["L11_TASKS", "L9_SPEC", "L8_CTR"]
     output: "src/"
     generator: "claude"
     reviewer: "codex"
@@ -637,7 +637,7 @@ PROMPTS=".aidev/plugins/sdd-workflow-orchestrator/prompts"
  echo "═══════════════════════════════════════════════════════════"
 
 # Get input artifacts
-TASKS_FILE=$(yq '.layers.L10_TASKS.file' "$STATE")
+TASKS_FILE=$(yq '.layers.L11_TASKS.file' "$STATE")
 SPEC_FILE=$(yq '.layers.L9_SPEC.file' "$STATE")
 CTR_FILE=$(yq '.layers.L8_CTR.file' "$STATE")
 BDD_FILE=$(yq '.layers.L4_BDD.file' "$STATE")
@@ -925,7 +925,7 @@ main() {
   # ═══════════════════════════════════════════════════════════
 
   echo ""
-  echo "═══ Layer 13: Validation & Deployment ═══"
+  echo "═══ Layer 14: Validation & Deployment ═══"
   ./handlers/deploy.sh
   ./handlers/checkpoint.sh L13_VALIDATION "dist/"
 

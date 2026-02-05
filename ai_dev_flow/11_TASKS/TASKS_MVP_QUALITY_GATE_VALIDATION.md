@@ -54,7 +54,7 @@ FAIL → Fix issues, re-run Quality Gate validation
 
 TASKS documents use Markdown format with structured task entries:
 ```
-docs/10_TASKS/
+docs/11_TASKS/
 ├── TASKS-NN_{name}.md     # Task breakdown document
 └── TASKS-000_index.md     # Registry/index file
 ```
@@ -444,10 +444,10 @@ name: TASKS Quality Gate Validation
 on:
   push:
     paths:
-      - 'docs/10_TASKS/**/*.md'
+      - 'docs/11_TASKS/**/*.md'
   pull_request:
     paths:
-      - 'docs/10_TASKS/**/*.md'
+      - 'docs/11_TASKS/**/*.md'
 
 jobs:
   validate-tasks-corpus:
@@ -477,7 +477,7 @@ jobs:
 # .git/hooks/pre-commit (add to existing hook)
 
 # TASKS Quality Gate validation on staged TASKS files
-if git diff --cached --name-only | grep -q "^docs/10_TASKS/"; then
+if git diff --cached --name-only | grep -q "^docs/11_TASKS/"; then
   echo "Running TASKS Quality Gate validation..."
   ./scripts/validate_tasks_corpus.sh docs/TASKS --errors-only
   if [ $? -ne 0 ]; then

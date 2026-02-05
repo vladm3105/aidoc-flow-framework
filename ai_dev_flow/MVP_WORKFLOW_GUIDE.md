@@ -122,7 +122,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
     - `find ai_dev_flow/07_REQ -name 'REQ-*.md' -exec bash ai_dev_flow/07_REQ/scripts/validate_req_template.sh {} \;`
 5.  **Quality Gate Validation**: `python3 ai_dev_flow/07_REQ/scripts/validate_requirement_ids.py --directory ai_dev_flow/07_REQ` (unique IDs)
 
-### Step 7: Spec & Code (SPEC -> TASKS) — **Day 2 (Afternoon)**
+### Step 7: Spec & Code (SPEC -> TSPEC -> TASKS) — **Day 2 (Afternoon)**
 **Artifacts**: Standard `SPEC` (YAML), `TASKS`.
 1.  **Plan**: Map REQs to Specs.
 2.  **Pre-Check**: Ensure required REQ files exist; verify any 09_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
@@ -189,7 +189,7 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
 ```
 *Generate architecture decisions and technical specifications, skip early layers*
 
-#### Scenario 4: Partial Execution (Start from SPEC → TASKS)
+#### Scenario 4: Partial Execution (Start from SPEC → TSPEC → TASKS)
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --root ai_dev_flow \
@@ -304,7 +304,7 @@ ai_dev_flow/
 ├── 06_SYS/SYS-01_trading_bot.md               (System architecture)
 ├── 07_REQ/REQ-01...15_trading_bot.md          (15 atomic requirements)
 ├── 09_SPEC/SPEC-01_trading_bot.yaml           (Technical spec)
-└── 10_TASKS/TASKS-01_trading_bot.md           (Implementation plan)
+└── 11_TASKS/TASKS-01_trading_bot.md           (Implementation plan)
 ```
 
 ### Key Takeaways

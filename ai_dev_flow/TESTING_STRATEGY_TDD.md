@@ -43,7 +43,7 @@ This strategy defines a comprehensive testing approach that:
 
 **TDD Cycle in SDD Framework**:
 ```
-REQ (L7) → Generate Unit Tests (Fail) → SPEC/TASKS → CODE (Pass)
+REQ (L7) → Generate Unit Tests (Fail) → SPEC/TSPEC/TASKS → CODE (Pass)
             ↑                                          ↑
         Define behavior                           Implement behavior
 ```
@@ -235,16 +235,16 @@ Unit tests for REQ-001
 """
 ```
 
-#### Step 3: Code Generation - Layer 11
+#### Step 3: Code Generation - Layer 12
 
-**When**: After SPEC (Layer 9) and TASKS (Layer 10) are complete
+**When**: After SPEC (Layer 9), TSPEC (Layer 10), and TASKS (Layer 11) are complete
 
 **Action**:
 ```bash
 # Generate code from SPEC using TASKS as implementation guide
 python AUTOPILOT/scripts/code_generator.py \
   --spec 09_SPEC/SPEC-01_*.yaml \
-  --tasks 10_TASKS/TASKS-01_*.md \
+  --tasks 11_TASKS/TASKS-01_*.md \
   --output src/
 ```
 
@@ -319,7 +319,7 @@ class Test_UserAPI_Integration:
         validate(response.json(), schema)
 ```
 
-#### Step 5: Deployment - Layer 13
+#### Step 5: Deployment - Layer 14
 
 **When**: After all integration tests pass
 
@@ -808,7 +808,7 @@ jobs:
         run: |
           python AUTOPILOT/scripts/code_generator.py \
             --spec 09_SPEC/ \
-            --tasks 10_TASKS/ \
+            --tasks 11_TASKS/ \
             --output src/
       - name: Run Unit Tests (Should pass now)
         run: |
@@ -1139,7 +1139,7 @@ workflow:
     # Stage 4: Code Generation (L11)
     - name: generate_code
       layer: CODE
-      source: [09_SPEC/, 10_TASKS/]
+      source: [09_SPEC/, 11_TASKS/]
       test_validation: tests/unit/
 
     # Stage 5: Validate Unit Tests

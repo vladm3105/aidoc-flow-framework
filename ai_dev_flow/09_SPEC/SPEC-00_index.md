@@ -37,7 +37,7 @@ flowchart LR
     style SPEC fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Layer**: 9 (Implementation Specification Layer)
 **Upstream**: BRD→REQ, CTR (optional)

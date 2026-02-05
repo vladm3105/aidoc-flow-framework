@@ -67,8 +67,8 @@ Enter selections (comma-separated, e.g., "1,2" or single "7"):
 
 | Selection | Interpretation | Include CTR? | Workflow |
 |-----------|----------------|--------------|----------|
-| 1, 2, 3, 4, 5, 6 | External interfaces exist | **YES** | REQ → CTR → SPEC → TASKS |
-| 7 | Internal logic only | **NO** | REQ → SPEC → TASKS |
+| 1, 2, 3, 4, 5, 6 | External interfaces exist | **YES** | REQ → CTR → SPEC → TSPEC → TASKS |
+| 7 | Internal logic only | **NO** | REQ → SPEC → TSPEC → TASKS |
 | 8 | Unsure | **Ask follow-up questions** | See Follow-Up section |
 
 ---
@@ -247,10 +247,10 @@ Question 4: Interface Stability
 # Pseudocode for decision logic
 if any_external_consumers or multiple_teams or contract_first_needed or needs_versioning:
     include_ctr = True
-    workflow = "REQ → CTR → SPEC → TASKS"
+    workflow = "REQ → CTR → SPEC → TSPEC → TASKS"
 else:
     include_ctr = False
-    workflow = "REQ → SPEC → TASKS"
+    workflow = "REQ → SPEC → TSPEC → TASKS"
 ```
 
 ---
@@ -267,7 +267,7 @@ else:
 3. Data contracts? **YES** - Order and position data models
 
 **Decision**: **Include CTR layer**
-**Workflow**: `REQ → CTR → SPEC → TASKS → Code`
+**Workflow**: `REQ → CTR → SPEC → TSPEC → TASKS → Code`
 
 **Contracts to Create**:
 - CTR-01: request submission API (OpenAPI 3.0)
@@ -286,7 +286,7 @@ else:
 3. Data contracts? **NO** - Private data structures
 
 **Decision**: **Skip CTR layer**
-**Workflow**: `REQ → SPEC → TASKS → Code`
+**Workflow**: `REQ → SPEC → TSPEC → TASKS → Code`
 
 **Rationale**: Internal logic with no external consumers doesn't require formal contracts. SPEC alone is sufficient for code generation.
 
@@ -302,7 +302,7 @@ else:
 3. Contract-first needed? **YES** - Parallel development
 
 **Decision**: **Include CTR layer**
-**Workflow**: `REQ → CTR → SPEC → TASKS → Code`
+**Workflow**: `REQ → CTR → SPEC → TSPEC → TASKS → Code`
 
 **Contracts to Create**:
 - CTR-NN: User Service API (OpenAPI 3.0)
@@ -325,7 +325,7 @@ def process_contract_decision(user_selections):
     # Decision logic
     if "7" in selections:  # None - internal only
         include_ctr = False
-        message = "✓ No contracts needed. Workflow: REQ → SPEC → TASKS"
+        message = "✓ No contracts needed. Workflow: REQ → SPEC → TSPEC → TASKS"
 
     elif "8" in selections:  # Unsure
         run_follow_up_questions()
@@ -335,7 +335,7 @@ def process_contract_decision(user_selections):
         include_ctr = True
         contract_types = map_selections_to_contract_types(selections)
         message = f"✓ Contracts needed. Contract types: {contract_types}"
-        message += "\n✓ Workflow: REQ → CTR → SPEC → TASKS"
+        message += "\n✓ Workflow: REQ → CTR → SPEC → TSPEC → TASKS"
 
     # Apply decision
     set_workflow_mode(include_ctr)
@@ -369,7 +369,7 @@ def map_selections_to_contract_types(selections):
 ### With Contracts (CTR Layer Included)
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
                                                 ↑
                                       Contract-first design
                                       Enables parallel development
@@ -385,7 +385,7 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS 
 ### Without Contracts (Skip CTR Layer)
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → Code
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TSPEC → TASKS → Code
                                             ↑
                                    Direct to implementation SPEC
                                    Simpler workflow for internal logic
@@ -447,9 +447,9 @@ Contract Types:
 - Event Schemas (AsyncAPI 2.x)
 
 Workflow:
-REQ → CTR → SPEC → TASKS → Code
+REQ → CTR → SPEC → TSPEC → TASKS → Code
          or
-REQ → SPEC → TASKS → Code
+REQ → SPEC → TSPEC → TASKS → Code
 
 Next Steps:
 1. Create requirements (REQ documents)

@@ -50,7 +50,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate TASKS traceability matrix
-python scripts/generate_traceability_matrix.py --type TASKS --output docs/10_TASKS/TASKS-00_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type TASKS --output docs/11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -279,7 +279,7 @@ graph TD
     style Tests1 fill:#e3f2fd
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 7.1 Inter-TASKS Dependencies
 
@@ -394,7 +394,7 @@ graph TD
 ```bash
 python ../scripts/generate_traceability_matrix.py \
   --type TASKS \
-  --input ../10_TASKS/ \
+  --input ../11_TASKS/ \
   --template TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_TASKS.md \
   --scan-code-repo

@@ -119,7 +119,7 @@ VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
         description="Technical Specification validator"
     ),
     "TASKS": ValidatorConfig(
-        script="../10_TASKS/scripts/validate_tasks_quality_score.sh",
+        script="../11_TASKS/scripts/validate_tasks_quality_score.sh",
         script_type="shell",
         implemented=True,
         layer=10,

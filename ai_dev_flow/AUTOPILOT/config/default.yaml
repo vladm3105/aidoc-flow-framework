@@ -13,7 +13,7 @@ defaults:
 
 # Default entry and exit points
 default_entry_point: L1_BRD
-default_exit_point: L10_TASKS
+default_exit_point: L11_TASKS
 
 # Auto-detect project mode (greenfield vs brownfield)
 project_modes:
@@ -61,7 +61,7 @@ entry_exit_points:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
-    - L10_TASKS
+    - L11_TASKS
 
 # Valid exit points (valid stop layers)
 valid_exits:
@@ -74,7 +74,7 @@ valid_exits:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
-    - L10_TASKS
+    - L11_TASKS
 
 # Common start/end combinations
 presets:
@@ -95,12 +95,12 @@ presets:
   
   full_docs:
     entry: L1_BRD
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: Complete documentation pipeline
   
   testing_focus:
     entry: L4_BDD
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: Start from BDD, generate through implementation plan
   
   contracts_only:

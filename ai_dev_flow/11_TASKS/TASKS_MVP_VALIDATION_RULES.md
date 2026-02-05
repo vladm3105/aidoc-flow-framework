@@ -411,15 +411,15 @@ fi
 ### Command
 
 ```bash
-./10_TASKS/scripts/validate_tasks.sh <TASKS_FILE>
+./11_TASKS/scripts/validate_tasks.sh <TASKS_FILE>
 ```
 
 ### Options
 
 ```bash
-./10_TASKS/scripts/validate_tasks.sh --help
-./10_TASKS/scripts/validate_tasks.sh --verbose TASKS-01.md
-./10_TASKS/scripts/validate_tasks.sh --strict TASKS-01.md  # Treat warnings as errors
+./11_TASKS/scripts/validate_tasks.sh --help
+./11_TASKS/scripts/validate_tasks.sh --verbose TASKS-01.md
+./11_TASKS/scripts/validate_tasks.sh --strict TASKS-01.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -521,7 +521,7 @@ Result: PASSED WITH WARNINGS
 
 - [TASKS_MVP_CREATION_RULES.md](./TASKS_MVP_CREATION_RULES.md) - Creation guidelines
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - Tasks template
-- [validate_tasks.sh](../10_TASKS/scripts/validate_tasks.sh) - Validation script
+- [validate_tasks.sh](../11_TASKS/scripts/validate_tasks.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 
 ---

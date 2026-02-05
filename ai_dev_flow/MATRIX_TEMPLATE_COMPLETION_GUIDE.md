@@ -26,7 +26,7 @@ custom_fields:
 ### ✅ Complete Templates (13/13)
 
 1. **TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md**
-   - Comprehensive 14-layer cumulative tagging table
+   - Comprehensive 15-layer cumulative tagging table
    - Complete examples for all layers
    - Validation rules and patterns
 

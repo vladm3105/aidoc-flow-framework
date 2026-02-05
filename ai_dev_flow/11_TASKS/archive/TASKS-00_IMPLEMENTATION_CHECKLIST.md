@@ -464,7 +464,7 @@ mypy --strict contracts/your_contracts.py
 **Step 1** (5 min): Analyze dependencies
 ```bash
 # Count downstream TASKS
-grep -r "TASKS-YOUR-ID" ../10_TASKS/*.md | wc -l
+grep -r "TASKS-YOUR-ID" ../11_TASKS/*.md | wc -l
 ```
 
 **Step 2** (2 min): Select contract type
@@ -569,7 +569,7 @@ All implementation contracts are embedded in TASKS Section 7-8.
 
 ### Internal Documentation
 - Implementation contracts guide (link intentionally omitted)
-- TASKS template with contracts section (see `TASKS-TEMPLATE.md` in the main 10_TASKS folder)
+- TASKS template with contracts section (see `TASKS-TEMPLATE.md` in the main 11_TASKS folder)
 - Example: CLAUDE.md (global instructions; link not included)
 
 ### External Resources

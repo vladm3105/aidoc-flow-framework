@@ -290,7 +290,7 @@ To discover which downstream documents reference a specific SPEC, use reverse tr
 
 ```bash
 # Find all TASKS documents referencing a SPEC
-  grep -r "@spec: SPEC\.NN" ../10_TASKS/
+  grep -r "@spec: SPEC\.NN" ../11_TASKS/
 
 
 # Find all code files referencing any SPEC
@@ -363,7 +363,7 @@ graph TD
     style SPEC02 fill:#e3f2fd
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 9.1 Inter-SPEC Dependencies
 
@@ -468,7 +468,7 @@ graph TD
 - **SPEC Index**: [SPEC-00_index.md](SPEC-00_index.md)
 - **SPEC Template**: [SPEC-MVP-TEMPLATE.yaml](SPEC-MVP-TEMPLATE.yaml)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../10_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 

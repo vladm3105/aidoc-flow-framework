@@ -39,8 +39,8 @@ The Implementation Plan serves as the **central command center** for tracking TA
 
 ```bash
 # Copy template to your project
-cp ai_dev_flow/10_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.md docs/IMPLEMENTATION_PLAN.md
-cp ai_dev_flow/10_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.yaml docs/IMPLEMENTATION_PLAN.yaml
+cp ai_dev_flow/11_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.md docs/IMPLEMENTATION_PLAN.md
+cp ai_dev_flow/11_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.yaml docs/IMPLEMENTATION_PLAN.yaml
 ```
 
 ### 2. Customize Implementation Strategy
@@ -395,9 +395,9 @@ The unified TASKS document (v2.0) has **11 sections**:
 - Aggregates YAML tracking blocks from individual TASKS documents
 
 ### References
-- **Template**: `ai_dev_flow/10_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
-- **TASKS Template**: `ai_dev_flow/10_TASKS/TASKS-TEMPLATE.md`
-- **TASKS Documentation**: `ai_dev_flow/10_TASKS/README.md`
+- **Template**: `ai_dev_flow/11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
+- **TASKS Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
+- **TASKS Documentation**: `ai_dev_flow/11_TASKS/README.md`
 - **Workflow Guide**: `../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 
 ---

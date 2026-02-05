@@ -99,7 +99,7 @@ Tasks are the **code generation bridge** that connects YAML specifications to ex
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Key Points**:
 - **REQ**: Business requirements (WHAT to build)
@@ -172,7 +172,7 @@ Verification requirements for completed implementation:
 
 This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
 
-- **Location**: `10_TASKS/scripts/`
+- **Location**: `11_TASKS/scripts/`
 - **Primary Validator**: `validate_tasks_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
@@ -181,7 +181,7 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 Tasks map to specific architectural components:
 
 ```
-`10_TASKS/
+`11_TASKS/
 ├── TASKS-01_resource_limit_service.md     # Service component
 ├── TASKS-02_ib_gateway_integration.md      # Integration component
 ├── TASKS-03_external_api_integration.md    # API client component
@@ -541,11 +541,11 @@ Capture lessons for future task planning:
 ### Task Validation Scripts
 ```bash
 # Validate task format and links
-python validate_tasks.py --directory 10_TASKS/
+python validate_tasks.py --directory 11_TASKS/
 
-python check_task_coverage.py --task-file 10_TASKS/TASKS-01_*.md
+python check_task_coverage.py --task-file 11_TASKS/TASKS-01_*.md
 
-python generate_task_reports.py --tasks 10_TASKS/TASKS-*.md --format html
+python generate_task_reports.py --tasks 11_TASKS/TASKS-*.md --format html
 
 ```
 
@@ -561,7 +561,7 @@ python show_task_dependencies.py --output dependencies.png
 ### Code Generation Integration
 ```bash
 # Generate implementation from task
-ai-codegen --task 10_TASKS/TASKS-01_resource_limit_service.md --framework fastapi
+ai-codegen --task 11_TASKS/TASKS-01_resource_limit_service.md --framework fastapi
 
 # Validate generated code against contracts
 ```
@@ -583,11 +583,11 @@ Every TASKS document MUST include "## 7. Implementation Contracts":
 
 **Check Section 7 count**:
 ```bash
-grep -r "## 7. Implementation Contracts" docs/10_TASKS/ | wc -l
+grep -r "## 7. Implementation Contracts" docs/11_TASKS/ | wc -l
 
 **Verify type hints in contracts**:
 ```bash
-grep -A5 "typing.Protocol" docs/10_TASKS/*.md | head -20
+grep -A5 "typing.Protocol" docs/11_TASKS/*.md | head -20
 
 ```
 

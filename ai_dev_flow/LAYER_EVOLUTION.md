@@ -20,7 +20,7 @@ custom_fields:
 
 ## Overview
 
-The SDD Framework uses a 14-layer document hierarchy (Layers 0-13). This guide documents the procedures and files that must be updated when evolving the layer structure.
+The SDD Framework uses a 15-layer document hierarchy (Layers 0-14). This guide documents the procedures and files that must be updated when evolving the layer structure.
 
 **Authoritative Source**: `LAYER_REGISTRY.yaml` is the single source of truth for layer definitions.
 
@@ -74,7 +74,7 @@ Until registry integration is complete, these files contain hardcoded layer defi
 | `scripts/validate_cross_document.py` | `LAYER_CONFIG` dict (line ~83) | Add layer entry with number, folder, tags |
 | `scripts/validate_all.py` | Layer type imports | Add new validator import and call |
 | `VALIDATION_STANDARDS.md` | Layer tables | Update validator tables |
-| `AI_ASSISTANT_RULES.md` | Layer references | Update Rule 14 layer diagram |
+| `AI_ASSISTANT_RULES.md` | Layer references | Update Rule 15 layer diagram |
 | `TRACEABILITY.md` | Layer mappings | Add layer to traceability rules |
 | `index.md` | Layer overview | Update layer listing |
 | `METADATA_TAGGING_GUIDE.md` | Tag requirements | Add tag requirements for new layer |
@@ -131,7 +131,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 ### Phase 1: Registry Creation (Complete)
 
 - [x] Create `LAYER_REGISTRY.yaml`
-- [x] Document all 14 layers
+- [x] Document all 15 layers
 
 ### Phase 2: Validation Tools (Future)
 

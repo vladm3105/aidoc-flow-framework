@@ -1305,7 +1305,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 - [ ] section 15 header exists
 - [ ] All 4 subsections present (15.1-15.4)
 - [ ] Business Objectives table includes Coverage Status column
-- [ ] Functional Requirements table includes downstream 09_SPEC and 10_TASKS references
+- [ ] Functional Requirements table includes downstream 09_SPEC and 11_TASKS references
 - [ ] Downstream layer numbering aligns with CTR=8, SPEC=9, TASKS=10
 - [ ] Cross-BRD Dependencies table lists all dependencies
 - [ ] Traceability Summary includes Health Score calculation
@@ -1345,7 +1345,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 - [ ] Zero orphaned Business Objectives (all have Coverage Status = "Complete" or "Partial")
 - [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NN table)
 - [ ] Zero orphaned User Stories (all have Related BRD.NN.EE.SS links)
-- [ ] All BRD.NN.EE.SS requirements have planned downstream 09_SPEC and 10_TASKS references
+- [ ] All BRD.NN.EE.SS requirements have planned downstream 09_SPEC and 11_TASKS references
 
 **Fix**:
 1. Add section 15 with all 4 subsections

@@ -11,7 +11,7 @@ custom_fields:
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
   version: "1.0"
-  workflow_layers: 14
+  workflow_layers: 15
 ---
 
 # Specification-Driven Development Principles Guide
@@ -26,7 +26,7 @@ custom_fields:
 - Strategic human checkpoints preserve quality (5 critical decision points, optional if quality score ≥90%)
 
 **Automation Capabilities**:
-- Document Generation: 90% automated (L1-L13, human review optional if score ≥90%)
+- Document Generation: 90% automated (L1-L14, human review optional if score ≥90%)
 - Code Generation: Full automation from SPEC+TASKS to Python
 - Test Execution: Auto-retry with 3 max attempts, 80% coverage minimum
 - Quality Gates: AI-scored validation enables auto-approval
@@ -51,7 +51,7 @@ custom_fields:
 
 ### Change Management (CHG) - Document Immutability
 
-⚠️ **Important**: CHG is NOT a layer in the 14-layer architecture - it's a **change management archival procedure**.
+⚠️ **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management archival procedure**.
 
 **Purpose**: Ensure document immutability by archiving superseded documents when requirements change fundamentally
 
@@ -74,18 +74,18 @@ custom_fields:
 
 ### Workflow Overview
 
-The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 14 layers (Layer 0: Strategy through Layer 13: Validation). **The framework enables 90%+ automation** with strategic human oversight, achieving rapid 1-2 week MVP cycles from idea to production.
+The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 15 layers (Layer 0: Strategy through Layer 14: Validation). **The framework enables 90%+ automation** with strategic human oversight, achieving rapid 1-2 week MVP cycles from idea to production.
 
 **Automation Architecture**:
-- **12 of 13 Production Layers Automated**: L1-L13 (excluding strategic L0)
+- **13 of 14 Production Layers Automated**: L1-L14 (excluding strategic L0)
 - **Quality-Gated Progression**: AI-scored validation at each layer (auto-approve if score ≥90%)
 - **5 Strategic Checkpoints** (optional if quality score ≥90%):
   - L1 (BRD): Business owner approval - strategic business alignment
-  - L2 (PRD): Product manager approval - product vision validation  
+  - L2 (PRD): Product manager approval - product vision validation
   - L5 (ADR): Architect approval - technical architecture decisions
-  - L11 (Code): Developer review - code quality and security
-  - L13 (Deployment): Ops approval - production release gating
-- **8 Fully Automated Layers**: L3 (EARS), L4 (BDD), L6 (SYS), L7 (REQ), L8 (CTR), L9 (SPEC), L10 (TASKS), L12 (Tests)
+  - L12 (Code): Developer review - code quality and security
+  - L14 (Deployment): Ops approval - production release gating
+- **9 Fully Automated Layers**: L3 (EARS), L4 (BDD), L6 (SYS), L7 (REQ), L8 (CTR), L9 (SPEC), L10 (TSPEC), L11 (TASKS), L13 (Tests)
 
 #### Quality Gates Integration
 
@@ -102,11 +102,11 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - Pre-commit automation: Quality gates run on every commit to docs/ directory
 - Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
 
-The quality gates ensure smooth 14-layer transitions and prevent immature artifacts from affecting downstream development.
+The quality gates ensure smooth 15-layer transitions and prevent immature artifacts from affecting downstream development.
 
 **Workflow Progression**:
 
-**Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Test Specifications (TSPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Decision Point**: After REQ, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -114,7 +114,7 @@ The quality gates ensure smooth 14-layer transitions and prevent immature artifa
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L9) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -142,15 +142,19 @@ graph LR
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)"]
     end
 
-    subgraph L7["Code Generation Layer"]
-        TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)"]
+    subgraph L7["Test Specifications (TSPEC)"]
+        TSPEC["TSPEC<br/>TDD Tests<br/><small>(@brd through @spec)"]
     end
 
-    subgraph L8["Execution Layer"]
+    subgraph L8["Code Generation Layer"]
+        TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @tspec)"]
+    end
+
+    subgraph L9["Execution Layer"]
         CODE["Code<br/><small>(@brd through @tasks)"] --> TESTS["Tests<br/><small>(@brd through @code)"]
     end
 
-    subgraph L9["Validation Layer"]
+    subgraph L10["Validation Layer"]
         VAL["Validation<br/><small>(all upstream)"] --> REV[Review] --> PROD[Production]
     end
 
@@ -159,7 +163,8 @@ graph LR
     SYS --> REQ
     REQ --> CTR
     CTR --> SPEC
-    SPEC --> TASKS
+    SPEC --> TSPEC
+    TSPEC --> TASKS
     TASKS --> CODE
     TESTS --> VAL
     PROD -.-> BRD
@@ -173,6 +178,7 @@ graph LR
     style REQ fill:#f8d7da,stroke:#d32f2f,stroke-width:2px
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style TSPEC fill:#b2ebf2,stroke:#00838f,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     style CODE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style TESTS fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
@@ -181,9 +187,9 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
-**Layer Descriptions** (Formal Layer Numbers 0-13):
+**Layer Descriptions** (Formal Layer Numbers 0-14):
 - **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional requirements and quality attributes, business constraints
 - **Layer 2 - Product Requirements** (Blue): PRD - User personas, user stories, user roles, product features, detailed functional requirements derived from business objectives
 - **Layer 3 - Engineering Requirements** (Blue): EARS - Event-Action-Response-State requirements bridging PRD to 04_BDD/05_ADR/SYS
@@ -192,16 +198,17 @@ graph LR
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
 - **Layer 8 - Interface** (Gray): CTR - API contracts (created when needed) - optional
 - **Layer 9 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
-- **Layer 10 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
-- **Layer 11 - Code** (Purple): Source code implementation
-- **Layer 12 - Tests** (Green): Test execution and verification
-- **Layer 13 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 10 - Test Specifications** (Cyan): TSPEC - TDD test specifications (UTEST, ITEST, STEST, FTEST)
+- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
+- **Layer 12 - Code** (Purple): Source code implementation
+- **Layer 13 - Tests** (Green): Test execution and verification
+- **Layer 14 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 **Note on Layer Numbering:**
-- **Formal layer numbers**: 0-13 (used in cumulative tagging, templates, specifications)
-- **Mermaid diagram groupings**: L1-L9 (visual organization for diagrams)
-- When implementing cumulative tagging, always use formal layer numbers (0-13)
-- The full 14-layer architecture includes optional CTR at layer 8 which may not always be present
+- **Formal layer numbers**: 0-14 (used in cumulative tagging, templates, specifications)
+- **Mermaid diagram groupings**: L1-L10 (visual organization for diagrams)
+- When implementing cumulative tagging, always use formal layer numbers (0-14)
+- The full 15-layer architecture includes optional CTR at layer 8 which may not always be present
 
 **Template Optimization (Updated 2025-11-26):**
 - BRD template optimized to ~21K tokens through modular appendices and content extraction
@@ -226,7 +233,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 
 ## Purpose
 - Establish a clear, repeatable, and testable process to move from product intent to code using specifications as the source of truth.
-- Ensure every behavior is traceable: PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code.
+- Ensure every behavior is traceable: PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code.
 
 ## Concept
 - Define behavior, interfaces, constraints, and verification in unambiguous specifications before coding.
@@ -281,7 +288,7 @@ custom_fields:
 
 **Location**: Immediately after main heading in documents
 
-**Required in**: All production documents (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS)
+**Required in**: All production documents (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS)
 
 **Example**:
 ```markdown
@@ -353,7 +360,10 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 | Layer 5 (ADR) | @brd, @prd, @ears, @bdd | 4 |
 | Layer 6 (SYS) | @brd, @prd, @ears, @bdd, @adr | 5 |
 | Layer 7 (REQ) | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
-| Layer 8-10 | Cumulative inheritance continues | 6-10 |
+| Layer 8 (CTR) | @brd, @prd, @ears, @bdd, @adr, @sys, @req | 7 |
+| Layer 9 (SPEC) | @brd, @prd, @ears, @bdd, @adr, @sys, @req, @ctr | 8 |
+| Layer 10 (TSPEC) | @brd, @prd, @ears, @bdd, @adr, @sys, @req, @ctr, @spec | 9 |
+| Layer 11-14 | Cumulative inheritance continues | 10-12 |
 
 **Quick Reference**: See [METADATA_VS_TRACEABILITY.md](./METADATA_VS_TRACEABILITY.md) for detailed comparison
 
@@ -634,7 +644,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Plan: Numbered sequence of development activities
   - Constraints: Technical boundaries and limitations
   - Acceptance: Verification requirements for completion
-- **Reference**: See [`10_TASKS/TASKS_IMPLEMENTATION_GUIDE.md`](./10_TASKS/TASKS_IMPLEMENTATION_GUIDE.md) for detailed workflow.
+- **Reference**: See [`11_TASKS/TASKS_IMPLEMENTATION_GUIDE.md`](./11_TASKS/TASKS_IMPLEMENTATION_GUIDE.md) for detailed workflow.
 - **resource**: Implementation roadmap connecting specifications to code
 
 ### Code Implementation
@@ -865,7 +875,7 @@ Cumulative tagging ensures complete traceability chains from business requiremen
 ### Mandatory Hierarchy
 
 ```
-Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TASKS → Code → Tests → Validation
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TSPEC → TASKS → Code → Tests → Validation
 
 **Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally CTR if they exist in the chain.
 
@@ -1440,7 +1450,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - **REQ V2**: [REQ-NN](./07_REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
 - CTR: [CTR-NN](./08_CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./08_CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
 - SPEC: [{service_name}.yaml](./09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml) ← Derived from REQ content
-- TASKS: [{service_name}_tasks.md](./10_TASKS/{service_name}_tasks.md)
+- TASKS: [{service_name}_tasks.md](./11_TASKS/{service_name}_tasks.md)
 - Code: `{project_root}/{module}/{service_name}.py`
 
 ### Example: REQ V2 → SPEC Workflow
@@ -1524,7 +1534,7 @@ performance:
 bash 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
 bash 07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
 bash 08_CTR/scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
-bash 10_TASKS/scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
+bash 11_TASKS/scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
 ```
 
 ## Traceability Matrix Management (MANDATORY)
@@ -1533,7 +1543,7 @@ bash 10_TASKS/scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md     # TASKS 
 
 **CRITICAL**: Traceability matrices are NOT optional. They are mandatory quality infrastructure for SDD workflow compliance.
 
-**Enforcement Rule**: Every time you create or update ANY artifact document (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS), you MUST create or update the corresponding traceability matrix in the SAME commit.
+**Enforcement Rule**: Every time you create or update ANY artifact document (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS), you MUST create or update the corresponding traceability matrix in the SAME commit.
 
 **Update Frequency**: Within same commit as artifact creation/update
 
@@ -1563,7 +1573,7 @@ Each document type has its own dedicated traceability matrix template:
 | **REQ** | `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `07_REQ/REQ-00_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **CTR** | `08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `08_CTR/CTR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **SPEC** | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **TASKS** | `10_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `10_TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **TASKS** | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | ✅ YES |
 
 ### Mandatory Matrix Update Workflow
@@ -1614,7 +1624,7 @@ When updating a traceability matrix, you MUST update these sections:
 | Document Type | Upstream Traceability | Downstream Traceability |
 |---------------|----------------------|------------------------|
 | BRD | OPTIONAL | OPTIONAL |
-| PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS | REQUIRED | OPTIONAL |
+| PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS | REQUIRED | OPTIONAL |
 
 - **section 8 (Implementation Status)**: Update completion percentage and validation status
 

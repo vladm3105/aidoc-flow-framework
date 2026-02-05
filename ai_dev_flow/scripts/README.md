@@ -70,6 +70,6 @@ To run validation for a specific layer manually, use the scripts in that layer's
 | REQ | `07_REQ/scripts/` |
 | CTR | `08_CTR/scripts/` |
 | SPEC | `09_SPEC/scripts/` |
-| TASKS | `10_TASKS/scripts/` |
+| TASKS | `11_TASKS/scripts/` |
 
 See [SCRIPT_INDEX.md](SCRIPT_INDEX.md) for details on specific scripts in each folder.

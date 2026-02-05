@@ -291,7 +291,7 @@ req_implementations:
 
 **Layer 9: Technical Specifications**
 
-SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 14-layer architecture (Layers 0-13):
+SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 15-layer architecture (Layers 0-14):
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 

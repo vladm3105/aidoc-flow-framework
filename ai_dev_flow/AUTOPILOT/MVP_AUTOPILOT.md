@@ -51,7 +51,7 @@ make docs
 2. **Template-Based Generation**: Uses repo templates with smart placeholder substitution
 3. **Per-Layer Validation**: Runs quality gate validators for each generated document
 4. **Auto-Fix Strategies**: Fixes frontmatter, titles, required sections, and traceability tags
-5. **Traceability Tagging**: Automatic cumulative tagging across all 14 layers
+5. **Traceability Tagging**: Automatic cumulative tagging across all 15 layers
 6. **Flexible Execution**: Supports multiple execution modes and entry/exit points
 
 ### What It Does NOT Do
@@ -266,7 +266,7 @@ ai_dev_flow/AUTOPILOT/
 - Minimum Score: 92% (non-strict), 95% (strict)
 
 ### TASKS (Layer 10)
-**Template**: `10_TASKS/TASKS-MVP-TEMPLATE.md`
+**Template**: `11_TASKS/TASKS-MVP-TEMPLATE.md`
 
 **Generation**:
 - Generated from template
@@ -274,7 +274,7 @@ ai_dev_flow/AUTOPILOT/
 - 8 cumulative tags: `@brd` through `@spec`
 
 **Validation**:
-- Script: `10_TASKS/scripts/validate_tasks_quality_score.sh`
+- Script: `11_TASKS/scripts/validate_tasks_quality_score.sh`
 - Minimum Score: 90%
 
 ---
@@ -530,13 +530,13 @@ python3 ai_dev_flow/scripts/validate_all.py \
 
 **Profile: `mvp`** (Default):
 - Entry: L1_BRD
-- Exit: L10_TASKS
+- Exit: L11_TASKS
 - Auto-fix: Enabled
 - Strict: Disabled
 
 **Profile: `strict`** (Production):
 - Entry: L1_BRD
-- Exit: L10_TASKS
+- Exit: L11_TASKS
 - Auto-fix: Enabled
 - Strict: Enabled
 
@@ -668,7 +668,7 @@ Support for multiple AI providers via pluggable architecture:
 ## Summary
 
 The MVP Autopilot provides:
-- **90%+ automation** of the 14-layer SDD workflow (L1-L10)
+- **90%+ automation** of the 15-layer SDD workflow (L1-L10)
 - **Quality enforcement** via automated validation gates
 - **Flexible execution** for local development and CI/CD
 - **Comprehensive documentation** for all features

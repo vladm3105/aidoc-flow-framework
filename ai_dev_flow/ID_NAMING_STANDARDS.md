@@ -371,7 +371,7 @@ Document ID Standards (ai_dev_flow)
 
 - AI Tasks (TASKS)
   - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT] Service Implementation`)
-  - Filename: `10_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `10_TASKS/TASKS-00_index.md`.
+  - Filename: `11_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `11_TASKS/TASKS-00_index.md`.
   - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (and associated SPEC ID).
   - Variable Length: DOC_NUM matches parent PRD.
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use Section Files when document exceeds 50KB.
@@ -1048,7 +1048,7 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - REQ: `07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - CTR: `08_CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
 - SPEC: `09_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
-- TASKS: `10_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+- TASKS: `11_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
 
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
@@ -1424,7 +1424,7 @@ python3 scripts/validate_all.py . --all
 
 ## Checklist
 
-- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/08_CTR/10_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
+- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/08_CTR/11_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
 - BDD tags are markdown links with valid relative paths and anchors.
 - Spec files named `SPEC-DOC_NUM_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.
 - All document types follow universal numbering pattern: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).

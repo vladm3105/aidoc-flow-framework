@@ -20,7 +20,7 @@ The Autopilot workflow uses **YAML templates exclusively** for all artifact gene
 | 7 | REQ | `07_REQ/REQ-MVP-TEMPLATE.yaml` | `REQ-MVP-TEMPLATE.md` |
 | 8 | CTR | `08_CTR/CTR-MVP-TEMPLATE.yaml` | `CTR-MVP-TEMPLATE.md` |
 | 9 | SPEC | `09_SPEC/SPEC-MVP-TEMPLATE.yaml` | N/A (already YAML) |
-| 10 | TASKS | `10_TASKS/TASKS-MVP-TEMPLATE.yaml` | `TASKS-TEMPLATE.md` |
+| 10 | TASKS | `11_TASKS/TASKS-MVP-TEMPLATE.yaml` | `TASKS-TEMPLATE.md` |
 
 ### Why YAML Templates Only?
 
@@ -95,7 +95,7 @@ def load_autopilot_template(artifact_type: str, layer_dir: str) -> dict:
 
 # Example usage
 req_template = load_autopilot_template("REQ", "07_REQ")
-tasks_template = load_autopilot_template("TASKS", "10_TASKS")
+tasks_template = load_autopilot_template("TASKS", "11_TASKS")
 ```
 
 ### Human Reference

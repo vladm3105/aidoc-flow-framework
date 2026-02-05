@@ -123,7 +123,7 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 
 **Tasks**:
 1. Confirm layer sequencing and deliverables
-   - Identify 08_CTR/09_SPEC/10_TASKS deliverables
+   - Identify 08_CTR/09_SPEC/11_TASKS deliverables
    - Confirm downstream traceability targets
 2. If contracts needed: Create CTR documents
    - Dual files: .md + .yaml
@@ -167,7 +167,7 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 **Tasks**:
 1. Create TASKS documents
    - Exact TODOs to implement SPEC
-   - 1:1 mapping: SPEC → TASKS
+   - 1:1 mapping: SPEC → TSPEC → TASKS
 2. Run validation scripts
    - Check for broken references
    - Validate requirement IDs
@@ -307,7 +307,7 @@ After Week 1 complete, plan for:
 1. **Complete requirements**: Fill out remaining REQ documents
 2. **Complete specifications**: SPEC for all REQ
 3. **Complete tasks**: TASKS for all SPEC
-4. **Begin code generation**: Implement from 09_SPEC/10_TASKS
+4. **Begin code generation**: Implement from 09_SPEC/11_TASKS
 5. **Test development**: Unit tests, integration tests, E2E tests
 6. **Validation cycles**: Continuous traceability checking
 

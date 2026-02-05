@@ -34,7 +34,7 @@ custom_fields:
 ## Workflows (current state)
 
 - **Quality sweep:**
-  - `bash scripts/validate_tasks_quality_score.sh docs/10_TASKS/<folder>`
+  - `bash scripts/validate_tasks_quality_score.sh docs/11_TASKS/<folder>`
 - **Inspect validator options:**
   - `bash scripts/validate_tasks.sh --help`
 

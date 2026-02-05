@@ -48,7 +48,7 @@ python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client
   python3 scripts/validate_links.py
 
   # TASKS structure (checks Section 8: Implementation Contracts)
-bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
+bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
 
   ```
 - Split only when needed: Files >20,000 tokens or strong logical boundaries.
@@ -114,7 +114,7 @@ python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client
 python3 scripts/validate_links.py
 
 # TASKS structure rules (includes Section 8: Implementation Contracts)
-bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
+bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
 ```
 
 Assistant guidance:
@@ -479,7 +479,7 @@ flowchart TD
     E -->|No| D
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 

@@ -10,8 +10,8 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.1"
-  workflow_layers: 14
+  version: "1.2"
+  workflow_layers: 15
 ---
 
 # Traceability Guidelines for AI Dev Flow
@@ -63,7 +63,8 @@ The following rules govern traceability in the SDD workflow:
 | REQ | `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml` | 7 |
 | CTR | `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml` | 8 |
 | SPEC | `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml` | 9 |
-| TASKS | `ai_dev_flow/10_TASKS/TASKS_MVP_SCHEMA.yaml` | 10 |
+| TSPEC | `ai_dev_flow/10_TSPEC/TSPEC_MVP_SCHEMA.yaml` | 10 |
+| TASKS | `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml` | 11 |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
@@ -82,7 +83,8 @@ ls -la docs/06_SYS/    # Layer 6 - System Requirements
 ls -la docs/07_REQ/    # Layer 7 - Atomic Requirements
 ls -la docs/08_CTR/    # Layer 8 - Contracts
 ls -la docs/09_SPEC/   # Layer 9 - Specifications
-ls -la docs/10_TASKS/  # Layer 10 - Task Breakdowns
+ls -la docs/10_TSPEC/  # Layer 10 - Test Specifications
+ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
 ```
 
 ### Step 2: Map Existing Documents to Traceability Tags
@@ -127,14 +129,14 @@ ls -la docs/10_TASKS/  # Layer 10 - Task Breakdowns
 @adr: ADR-05      # Verified: docs/05_ADR/ADR-05_architecture.md exists
 ```
 
-**14-Layer Workflow**: This traceability system implements the 14-layer SDD workflow (Layer 0: Strategy through Layer 13: Validation):
+**15-Layer Workflow**: This traceability system implements the 15-layer SDD workflow (Layer 0: Strategy through Layer 14: Validation):
 ```
 Strategy (Layer 0) → Business (01_BRD/02_PRD/EARS) → Testing (BDD) → Architecture (05_ADR/SYS) →
-Requirements (REQ) → Interface (CTR) → Implementation (SPEC) →
+Requirements (REQ) → Interface (CTR) → Implementation (SPEC) → Test Specs (TSPEC) →
 Code Generation (TASKS) → Execution (Code/Tests) → Validation
 ```
 
-**Note**: This repository does not use IPLAN. Layer 11 is Code, followed by Tests and Validation.
+**Note**: This repository does not use IPLAN. Layer 12 is Code, followed by Tests and Validation.
 
 ## Standard Traceability section Structure
 
@@ -142,11 +144,11 @@ Code Generation (TASKS) → Execution (Code/Tests) → Validation
 
 **Note**: Layers group related artifacts by function. The arrows show the actual sequential workflow. Follow the connections (arrows) for the correct document order, not the layer positioning.
 
-**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Tests → Validation
+**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code → Tests → Validation
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -174,15 +176,19 @@ graph LR
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
-    subgraph L7["Code Generation Layer"]
-        TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)</small>"]
+    subgraph L7["Test Specifications (TSPEC)"]
+        TSPEC["TSPEC<br/>TDD Tests<br/><small>(@brd through @spec)</small>"]
     end
 
-    subgraph L8["Execution Layer"]
+    subgraph L8["Code Generation Layer"]
+        TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @tspec)</small>"]
+    end
+
+    subgraph L9["Execution Layer"]
         CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
     end
 
-    subgraph L9["Validation Layer"]
+    subgraph L10["Validation Layer"]
         VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
 
@@ -191,7 +197,8 @@ graph LR
     SYS --> REQ
     REQ --> CTR
     CTR --> SPEC
-    SPEC --> TASKS
+    SPEC --> TSPEC
+    TSPEC --> TASKS
     TASKS --> CODE
     TESTS --> VAL
     PROD -.-> BRD
@@ -205,6 +212,7 @@ graph LR
     style REQ fill:#f8d7da,stroke:#d32f2f,stroke-width:2px
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style TSPEC fill:#b2ebf2,stroke:#00838f,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     style CODE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style TESTS fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
@@ -213,13 +221,13 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L9) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation.
+> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L10) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation.
 
-**14-Layer Workflow Flow:**
+**15-Layer Workflow Flow:**
 ```
 Business (BRD → PRD → EARS) → Testing (BDD) → Architecture (ADR → SYS) →
 Requirements (REQ) → Interface (CTR - optional) →
-Implementation (SPEC) → Code Generation (TASKS) →
+Implementation (SPEC) → Test Specifications (TSPEC) → Code Generation (TASKS) →
 Execution (Code → Tests) → Validation (Validation → Review → Production)
 ```
 
@@ -239,14 +247,15 @@ Execution (Code → Tests) → Validation (Validation → Review → Production)
 | 7 | Requirements (REQ) | Atomic requirements |
 | 8 | Contracts (CTR) | Interface contracts (dual-file format) |
 | 9 | Specifications (SPEC) | Detailed technical specs |
-| 10 | Tasks (TASKS) | Development task breakdown (includes execution commands) |
-| 11 | Code | Actual implementation |
-| 12 | Tests | Unit/integration tests |
-| 13 | Validation | End-to-end validation |
+| 10 | Test Specifications (TSPEC) | TDD test specifications (UTEST, ITEST, STEST, FTEST) |
+| 11 | Tasks (TASKS) | Development task breakdown (includes execution commands) |
+| 12 | Code | Actual implementation |
+| 13 | Tests | Unit/integration tests |
+| 14 | Validation | End-to-end validation |
 
 **Note**: REF (Reference Documents) are supplementary documentation that does NOT participate in the formal traceability chain. Use REF for external research, standards references, glossaries, and other supporting material.
 
-#### Mermaid Diagram Visual Groupings (L1-L9)
+#### Mermaid Diagram Visual Groupings (L1-L10)
 
 Diagrams use simplified labels for visual clarity:
 
@@ -256,27 +265,29 @@ Diagrams use simplified labels for visual clarity:
 - **L4**: Requirements Layer (contains Layer 7: REQ)
 - **L5**: Interface Layer (contains Layer 8: CTR)
 - **L6**: Technical Specs (contains Layer 9: SPEC)
-- **L7**: Code Generation (contains Layer 10: TASKS)
-- **L8**: Execution Layer (contains Layer 11: Code)
-- **L9**: Validation Layer (contains Layers 12-13: Tests, Validation)
+- **L7**: Test Specifications (contains Layer 10: TSPEC)
+- **L8**: Code Generation (contains Layer 11: TASKS)
+- **L9**: Execution Layer (contains Layer 12: Code)
+- **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
 
-**Important**: Always use formal layer numbers (0-13) in:
+**Important**: Always use formal layer numbers (0-14) in:
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
 - Traceability matrices
 
-**Legend** (Formal Layer Numbers 0-13):
+**Legend** (Formal Layer Numbers 0-14):
 - **Layers 1-3 - Business** (Blue): BRD (L1) → PRD (L2) → EARS (L3) - Strategic direction and product vision
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
 - **Layer 8 - Interface** (Gray): CTR - API contracts (created when needed) - optional
 - **Layer 9 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
-- **Layer 10 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
-- **Layer 11 - Code** (Purple): Source code implementation
-- **Layer 12 - Tests** (Green): Test execution and verification
-- **Layer 13 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 10 - Test Specifications** (Cyan): TSPEC - TDD test specifications (UTEST, ITEST, STEST, FTEST)
+- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
+- **Layer 12 - Code** (Purple): Source code implementation
+- **Layer 13 - Tests** (Green): Test execution and verification
+- **Layer 14 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 ## Quick Reference Card
 
@@ -293,9 +304,10 @@ Diagrams use simplified labels for visual clarity:
 | 7 | REQ | 6 | 6 |
 | 8 | CTR | 7 | 7 |
 | 9 | SPEC | 7 | 8 |
-| 10 | TASKS | 8 | 9 |
-| 11 | Code | 9 | 10 |
-| 12 | Tests | 10 | 11 |
+| 10 | TSPEC | 8 | 9 |
+| 11 | TASKS | 9 | 10 |
+| 12 | Code | 10 | 11 |
+| 13 | Tests | 11 | 12 |
 | 13 | Validation | 11 | 12 |
 
 ### Tag Separator Rules
@@ -335,7 +347,8 @@ Document the technical specifications and designs derived from this document.
 | CTR | [CTR-NN](../08_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
 | BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
 | SPEC | [SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
-| TASKS | [TASKS-NN](../10_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
+| TSPEC | [TSPEC-NN](../10_TSPEC/TSPEC-NN_...md) | [Test specification] | TDD test specifications (UTEST, ITEST, STEST, FTEST) |
+| TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
 
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 ### Same-Type References (Conditional)
@@ -1232,7 +1245,7 @@ The SDD framework employs two types of change management based on scope and impa
 
 ### CHG: Change Management for Architectural Pivots
 
-⚠️ **IMPORTANT**: CHG is NOT a layer in the 14-layer architecture - it's an archival and immutability enforcement procedure.
+⚠️ **IMPORTANT**: CHG is NOT a layer in the 15-layer architecture - it's an archival and immutability enforcement procedure.
 
 **When to Use CHG** (rare - \u003c5% of changes):
 - Complete architectural restructuring requiring new 01_BRD/PRD

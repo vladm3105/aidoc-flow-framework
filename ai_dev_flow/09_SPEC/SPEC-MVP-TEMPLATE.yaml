@@ -264,7 +264,7 @@ traceability:
 
     implementation_tasks:
       - id: "TASKS-NN"
-        link: "../10_TASKS/TASKS-NN_....md"
+        link: "../11_TASKS/TASKS-NN_....md"
         title: "[Implementation plan title]"
         status: "pending"  # pending, in_progress, completed
         spec_sections: ["interfaces", "behavior", "implementation"]

@@ -51,7 +51,7 @@ phases:
           
       - task_id: "TASKS-00"
         name: "Dev Tools Installation"
-        spec_path: "docs/10_TASKS/TASKS-00_dev_tools.yaml" # Virtual
+        spec_path: "docs/11_TASKS/TASKS-00_dev_tools.yaml" # Virtual
         status: "pending"
         steps:
           - "Copy framework dev_tools to project"
@@ -74,7 +74,7 @@ phases:
     tasks:
       - task_id: "TASKS-XX"
         name: "[Foundation Service Name]"
-        spec_path: "docs/10_TASKS/TASKS-XX_[service_name].md"
+        spec_path: "docs/11_TASKS/TASKS-XX_[service_name].md"
         status: "pending"
         steps:
           - "Initialize src/domain/[module] module"
@@ -97,7 +97,7 @@ phases:
     tasks:
       - task_id: "TASKS-YY"
         name: "[Support Service Name]"
-        spec_path: "docs/10_TASKS/TASKS-YY_[service_name].md"
+        spec_path: "docs/11_TASKS/TASKS-YY_[service_name].md"
         status: "pending"
         steps:
           - "Initialize module"
@@ -117,7 +117,7 @@ phases:
     tasks:
       - task_id: "TASKS-ZZ"
         name: "[Domain Service Name]"
-        spec_path: "docs/10_TASKS/TASKS-ZZ_[service_name].md"
+        spec_path: "docs/11_TASKS/TASKS-ZZ_[service_name].md"
         status: "pending"
         steps:
           - "Initialize module"
@@ -137,7 +137,7 @@ phases:
     tasks:
       - task_id: "TASKS-AA"
         name: "[UX Component]"
-        spec_path: "docs/10_TASKS/TASKS-AA_[component_name].md"
+        spec_path: "docs/11_TASKS/TASKS-AA_[component_name].md"
         status: "pending"
         steps:
           - "Initialize src/web"

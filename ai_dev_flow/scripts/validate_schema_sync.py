@@ -45,7 +45,7 @@ ARTIFACT_TYPES = {
     "REQ": {"dir": "07_REQ", "template": "REQ-MVP-TEMPLATE.md", "schema": "REQ_MVP_SCHEMA.yaml", "layer": 7},
     "SPEC": {"dir": "09_SPEC", "template": "SPEC-MVP-TEMPLATE.yaml", "schema": "SPEC_MVP_SCHEMA.yaml", "layer": 9},
     "SYS": {"dir": "06_SYS", "template": "SYS-MVP-TEMPLATE.md", "schema": "SYS_MVP_SCHEMA.yaml", "layer": 6},
-    "TASKS": {"dir": "10_TASKS", "template": "TASKS-TEMPLATE.md", "schema": "TASKS_MVP_SCHEMA.yaml", "layer": 10},
+    "TASKS": {"dir": "11_TASKS", "template": "TASKS-TEMPLATE.md", "schema": "TASKS_MVP_SCHEMA.yaml", "layer": 10},
 }
 
 
@@ -63,7 +63,7 @@ def find_ai_dev_flow_dir() -> Path:
         return env.resolve()
 
     # Check for numbered directories
-    sentinels = {"01_BRD", "02_PRD", "03_EARS", "09_SPEC", "10_TASKS"}
+    sentinels = {"01_BRD", "02_PRD", "03_EARS", "09_SPEC", "11_TASKS"}
 
     def has_sentinels(p: Path) -> bool:
         try:

@@ -89,7 +89,7 @@ def example_function():
 - `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
 - `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
 - `ai_dev_flow/08_CTR/CTR-MVP-TEMPLATE.md`
-- `ai_dev_flow/10_TASKS/TASKS-TEMPLATE.md`
+- `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
 
 **When to Use MD Template**:
 - ✅ Creating BRD/PRD for business stakeholders
@@ -197,7 +197,7 @@ traceability:
 - `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml` (NEW)
 - `ai_dev_flow/08_CTR/CTR-MVP-TEMPLATE.yaml` (NEW)
 - `ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (EXISTING)
-- `ai_dev_flow/10_TASKS/TASKS-MVP-TEMPLATE.yaml` (NEW)
+- `ai_dev_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml` (NEW)
 
 **When to Use YAML Template**:
 - ✅ Autopilot generating artifacts automatically
@@ -416,7 +416,7 @@ error_messages:
 - `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
 - `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml`
 - `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-- `ai_dev_flow/10_TASKS/TASKS_MVP_SCHEMA.yaml`
+- `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml`
 
 **Key Concepts**:
 - **Format-Aware**: Schemas validate both formats with format-specific rules
@@ -1022,7 +1022,7 @@ cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
 | 7 | REQ | `07_REQ/REQ-MVP-TEMPLATE.md` | `07_REQ/REQ-MVP-TEMPLATE.yaml` | `07_REQ/REQ_MVP_SCHEMA.yaml` |
 | 8 | CTR | `08_CTR/CTR-MVP-TEMPLATE.md` | `08_CTR/CTR-MVP-TEMPLATE.yaml` | `08_CTR/CTR_MVP_SCHEMA.yaml` |
 | 9 | SPEC | N/A (already YAML) | `09_SPEC/SPEC-MVP-TEMPLATE.yaml` | `09_SPEC/SPEC_MVP_SCHEMA.yaml` |
-| 10 | TASKS | `10_TASKS/TASKS-TEMPLATE.md` | `10_TASKS/TASKS-MVP-TEMPLATE.yaml` | `10_TASKS/TASKS_MVP_SCHEMA.yaml` |
+| 10 | TASKS | `11_TASKS/TASKS-TEMPLATE.md` | `11_TASKS/TASKS-MVP-TEMPLATE.yaml` | `11_TASKS/TASKS_MVP_SCHEMA.yaml` |
 
 ### Command Reference
 

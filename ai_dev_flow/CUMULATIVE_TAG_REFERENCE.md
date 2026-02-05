@@ -136,7 +136,7 @@ def get_expected_tag_count(layer: int, has_ctr: bool) -> tuple[int, int]:
     
     base = layer_bases[layer]
     
-    # Layer 13 (Validation) has advisory range
+    # Layer 14: Validation) has advisory range
     if layer == 13:
         return (base, 12)
     

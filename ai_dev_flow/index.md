@@ -179,18 +179,30 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
     - Flat (small): [SPEC-01](./09_SPEC/SPEC-01_api_client_example.yaml)
     - Nested (recommended): [SPEC-02 nested example](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
 
-### Code Generation Layer (Layer 10)
+### Test Specifications Layer (Layer 10)
 
-  - **TASKS** (`10_TASKS/`) - Layer 10: Code generation plans with exact TODOs
-   - Index: [TASKS-00_index.md](./10_TASKS/TASKS-00_index.md)
-   - Template: [TASKS-TEMPLATE.md](./10_TASKS/TASKS-TEMPLATE.md)
+  - **TSPEC** (`10_TSPEC/`) - Layer 10: Test specifications for TDD workflow
+   - Index: [TSPEC-00_index.md](./10_TSPEC/TSPEC-00_index.md)
+   - Templates:
+     - [UTEST-MVP-TEMPLATE.md](./10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md) - Unit tests
+     - [ITEST-MVP-TEMPLATE.md](./10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md) - Integration tests
+     - [STEST-MVP-TEMPLATE.md](./10_TSPEC/STEST/STEST-MVP-TEMPLATE.md) - Smoke tests
+     - [FTEST-MVP-TEMPLATE.md](./10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md) - Functional tests
+   - Purpose: Formalize test specifications before implementation (TDD)
+   - Test types: UTEST (40), ITEST (41), STEST (42), FTEST (43)
+
+### Code Generation Layer (Layer 11)
+
+  - **TASKS** (`11_TASKS/`) - Layer 11: Code generation plans with exact TODOs
+   - Index: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md)
+   - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
    - Purpose: Step-by-step guide to generate code from YAML SPEC
    - Each TASKS document corresponds to one SPEC
 
-### Session Execution Layer (Layer 11) - DEPRECATED
+### Session Execution Layer (Layer 12) - DEPRECATED
 
 
-  - **New Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
+  - **New Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
   - Execution commands now in TASKS Section 4: Execution Commands
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
@@ -201,7 +213,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 flowchart TD
@@ -226,8 +238,11 @@ flowchart TD
     %% Technical Specs (SPEC)
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
+    %% Test Specifications Layer
+    TSPEC[TSPEC<br/>Test Specifications<br/>TDD test cases before code<br/>UTEST, ITEST, STEST, FTEST<br/><small><i>@brd through @spec</i></small>]
+
     %% Code Generation Layer
-    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 4: Execution Commands<br/>Section 7-8: Implementation Contracts<br/><small><i>@brd through @spec</i></small>]
+    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 4: Execution Commands<br/>Section 7-8: Implementation Contracts<br/><small><i>@brd through @tspec</i></small>]
 
     %% Execution Layer
     Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS<br/><small><i>@brd through @tasks</i></small>]
@@ -251,7 +266,8 @@ flowchart TD
     CTR --> SPEC
 
     %% Implementation Flow
-    SPEC --> TASKS
+    SPEC --> TSPEC
+    TSPEC --> TASKS
     TASKS --> Code
     Code --> Tests
     Tests --> Validation
@@ -266,6 +282,7 @@ flowchart TD
     classDef requirementsLayer fill:#ffccbc,stroke:#e64a19,stroke-width:2px
     classDef interfaceLayer fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
     classDef implementationLayer fill:#dcedc8,stroke:#689f38,stroke-width:2px
+    classDef testspecLayer fill:#b2ebf2,stroke:#00838f,stroke-width:2px
     classDef codegenLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef executionLayer fill:#d1c4e9,stroke:#512da8,stroke-width:2px
 
@@ -275,6 +292,7 @@ flowchart TD
     class REQ requirementsLayer
     class CTR interfaceLayer
     class SPEC implementationLayer
+    class TSPEC testspecLayer
     class TASKS codegenLayer
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
@@ -284,11 +302,11 @@ flowchart TD
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. "Review" and "Prod" are outcomes, not formal layers.
 
 ### Workflow Explanation
 
-**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Interface Layer** → **Technical Specs (SPEC)** → **Code Generation Layer** → **Execution Layer**
+**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Interface Layer** → **Technical Specs (SPEC)** → **Test Specifications (TSPEC)** → **Code Generation Layer** → **Execution Layer**
 
 **Key Decision Point**: After REQ, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -379,7 +397,7 @@ python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement
 bash 01_BRD/scripts/validate_brd.py                    # BRD template compliance
 bash 07_REQ/scripts/validate_req_template.sh                    # REQ template compliance
 bash 08_CTR/scripts/validate_ctr.sh                             # CTR dual-file format compliance
-bash 10_TASKS/scripts/validate_tasks.sh                           # TASKS format including Section 7-8
+bash 11_TASKS/scripts/validate_tasks.sh                           # TASKS format including Section 7-8
 
 # Traceability generation
 python scripts/generate_traceability_matrix.py           # Generate traceability matrices

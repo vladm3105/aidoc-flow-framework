@@ -43,7 +43,7 @@ flowchart LR
 
 **Workflow (v2.0)**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ## Code Generation Plans Index
 
@@ -76,8 +76,8 @@ When creating a new TASKS Plan:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/10_TASKS/TASKS-TEMPLATE.md \
-      ai_dev_flow/10_TASKS/TASKS-NN_component_name.md
+   cp ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md \
+      ai_dev_flow/11_TASKS/TASKS-NN_component_name.md
    ```
 
 2. **Assign TASKS ID**: Use next sequential number (TASKS-02, TASKS-03, ...)
@@ -279,7 +279,7 @@ flowchart TB
     Deploy --> End([Code Ready])
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 

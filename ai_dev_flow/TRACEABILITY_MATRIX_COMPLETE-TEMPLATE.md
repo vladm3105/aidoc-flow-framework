@@ -62,7 +62,7 @@ See: [TRACEABILITY.md](./TRACEABILITY.md#tag-based-auto-discovery-alternative) f
 
 ### 1.1 Complete SDD Workflow
 
-This matrix tracks the complete 14-layer AI-Driven Specification-Driven Development workflow (Layer 0: Strategy through Layer 13: Validation):
+This matrix tracks the complete 15-layer AI-Driven Specification-Driven Development workflow (Layer 0: Strategy through Layer 14: Validation):
 
 **Layers 1-3 - Business**: BRD (L1) → PRD (L2) → EARS (L3)
 **Layer 4 - Testing**: BDD (acceptance criteria)
@@ -73,7 +73,7 @@ This matrix tracks the complete 14-layer AI-Driven Specification-Driven Developm
 **Layer 10 - Code Generation**: TASKS (implementation steps with execution commands)
 **Layer 11 - Code**: Source code implementation
 **Layer 12 - Tests**: Test execution and verification
-**Layer 13 - Validation**: Validation → Review → Production
+**Layer 14: Validation → Review → Production
 
 ### 1.2 Coverage Summary
 
@@ -603,7 +603,7 @@ CTR1 --> SPEC1
     style Production fill:#a5d6a7
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 5.2 Document Type Relationships Matrix
 
@@ -815,7 +815,7 @@ python 07_REQ/scripts/validate_requirement_ids.py \
   - [REQ Matrix](07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [CTR Matrix](08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [SPEC Matrix](09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [TASKS Matrix](10_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [TASKS Matrix](11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 
 - **Workflow Guides**:

@@ -155,7 +155,7 @@ def test_submit_request_accepts_valid_payload():
     assert True
 ```
 
-### Layer 13: Validation (Results)
+### Layer 14: Validation (Results)
 - All cumulative tags present from BRD through Tests.
 - No gaps detected; coverage acceptable.
 

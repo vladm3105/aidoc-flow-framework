@@ -86,7 +86,7 @@ User is prompted with:
 "Is this a full enterprise project or a rapid Minimum Viable Product (MVP)?"
 
  Options:
-1. Standard Flow (Full templates, 14 layers, strict validation) - Recommended for Enterprise
+1. Standard Flow (Full templates, 15 layers, strict validation) - Recommended for Enterprise
 2. MVP Track (Streamlined templates, faster setup, "Good Enough" validation) - Recommended for Startups/Prototypes
 ```
 
@@ -201,8 +201,8 @@ Options:
 
 **Output**: Workflow determined
 
-- **With CTR**: `REQ → CTR → SPEC → TASKS`
-- **Without CTR**: `REQ → SPEC → TASKS`
+- **With CTR**: `REQ → CTR → SPEC → TSPEC → TASKS`
+- **Without CTR**: `REQ → SPEC → TSPEC → TASKS`
 
 ---
 
@@ -224,7 +224,7 @@ touch docs/06_SYS/SYS-00_index.md
 touch docs/07_REQ/REQ-00_index.md
 touch docs/08_CTR/CTR-00_index.md
   touch docs/09_SPEC/SPEC-00_index.yaml
-  touch docs/10_TASKS/TASKS-00_index.md
+  touch docs/11_TASKS/TASKS-00_index.md
 
 ```
 
@@ -272,13 +272,13 @@ ls scripts/*.py
 ✓ Index Files: Initialized
 ✓ Scripts: Ready
 
-Workflow: 14-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
+Workflow: 15-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TSPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
 
 Next Steps:
 1. Use `doc-flow` skill to begin workflow execution (recommended)
 2. Or manually review [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) for Day 1-7 tasks
 3. Start with BRD-01 (Business Requirements Document)
-4. Follow 14-layer architecture sequentially
+4. Follow 15-layer architecture sequentially
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -583,7 +583,7 @@ grep "@req:" docs/09_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 **Validation Commands**:
 ```bash
 # Dependency validation
-python scripts/validate_task_dependencies.py docs/10_TASKS/TASKS-01_*.md
+python scripts/validate_task_dependencies.py docs/11_TASKS/TASKS-01_*.md
 
 # Contract verification: Check TASKS Section 7-8 for implementation contracts
 ```
@@ -863,7 +863,7 @@ Creating folder structure...
 ✓ Created: docs/07_REQ/
 ✓ Created: docs/08_CTR/
 ✓ Created: docs/09_SPEC/
-✓ Created: docs/10_TASKS/
+✓ Created: docs/11_TASKS/
 
 ✓ Created: docs/07_REQ/api/
 ✓ Created: docs/07_REQ/auth/
@@ -901,7 +901,7 @@ User: "1,2" (REST APIs and Event Schemas)
 AI Assistant:
 ✓ Contracts needed
 ✓ Contract types: REST/GraphQL APIs (OpenAPI), Event Schemas (AsyncAPI)
-✓ Workflow: REQ → CTR → SPEC → TASKS
+✓ Workflow: REQ → CTR → SPEC → TSPEC → TASKS
 
 Initializing index files...
 ✓ All index files created

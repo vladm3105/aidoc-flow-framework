@@ -14,7 +14,7 @@ Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validator
 chmod +x *.sh
 
 # Quality gates (directory)
-bash validate_tasks_quality_score.sh docs/10_TASKS/<folder>
+bash validate_tasks_quality_score.sh docs/11_TASKS/<folder>
 
 # Inspect validator options
 bash validate_tasks.sh --help

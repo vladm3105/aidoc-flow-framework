@@ -72,7 +72,7 @@ Rules for creating Data Contracts (CTR) documents in the SDD framework.
 ### Do NOT Create CTR When
 
 - [ ] Internal-only data structures (use SPEC instead)
-- [ ] Implementation contracts between TASKS (embed in TASKS Section 7-8 in docs/10_TASKS instead)
+- [ ] Implementation contracts between TASKS (embed in TASKS Section 7-8 in docs/11_TASKS instead)
 - [ ] Temporary or experimental interfaces
 - [ ] Simple configuration without external consumers
 

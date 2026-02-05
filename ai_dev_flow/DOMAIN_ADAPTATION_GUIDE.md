@@ -23,7 +23,7 @@ custom_fields:
 The AI Dev Flow framework is domain-agnostic and designed for reuse across any software development project. This guide provides checklists and guidance for adapting the framework templates to specific domains.
 
 **Framework Strengths**:
-- 14-layer architecture (11 documentation artifacts + 3 execution layers) from business requirements to production code
+- 15-layer architecture (11 documentation artifacts + 3 execution layers) from business requirements to production code
 - Complete traceability through the entire development lifecycle
 - AI-friendly YAML specifications for code generation
 - Dual-file contracts (.md + .yaml) for human and machine consumption

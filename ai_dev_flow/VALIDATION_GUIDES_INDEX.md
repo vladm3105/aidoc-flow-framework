@@ -163,13 +163,13 @@ Each document type has three type-specific guides with the pattern: `{TYPE}_{GUI
 
 ### Layer 10: Tasks (TASKS)
 
-**Location:** `10_TASKS/`
+**Location:** `11_TASKS/`
 
 | Document | Purpose | Quick Reference |
 |----------|---------|-----------------|
-| [TASKS_VALIDATION_STRATEGY.md](./10_TASKS/TASKS_VALIDATION_STRATEGY.md) | Quick reference | Gates, architecture for TASKS validation |
-| [TASKS_VALIDATION_COMMANDS.md](./10_TASKS/TASKS_VALIDATION_COMMANDS.md) | CLI commands | TASKS-specific validation commands |
-| [TASKS_AI_VALIDATION_DECISION_GUIDE.md](./10_TASKS/TASKS_AI_VALIDATION_DECISION_GUIDE.md) | Decision patterns | TASKS-specific decision trees and edge cases |
+| [TASKS_VALIDATION_STRATEGY.md](./11_TASKS/TASKS_VALIDATION_STRATEGY.md) | Quick reference | Gates, architecture for TASKS validation |
+| [TASKS_VALIDATION_COMMANDS.md](./11_TASKS/TASKS_VALIDATION_COMMANDS.md) | CLI commands | TASKS-specific validation commands |
+| [TASKS_AI_VALIDATION_DECISION_GUIDE.md](./11_TASKS/TASKS_AI_VALIDATION_DECISION_GUIDE.md) | Decision patterns | TASKS-specific decision trees and edge cases |
 
 ---
 
@@ -257,7 +257,7 @@ ai_dev_flow/
     │   ├── REQ_AI_VALIDATION_DECISION_GUIDE.md
     │   └── scripts/ → validate_all.sh + 6 validators
     │
-    └── 08_CTR, 09_SPEC, 10_TASKS
+    └── 08_CTR, 09_SPEC, 11_TASKS
         ├── {TYPE}_VALIDATION_STRATEGY.md
         ├── {TYPE}_VALIDATION_COMMANDS.md
         ├── {TYPE}_AI_VALIDATION_DECISION_GUIDE.md

@@ -69,7 +69,7 @@ The framework orchestrates three key participants to transform business ideas in
 - **PRD Approval** (Layer 2) - Product vision and feature validation
 - **ADR Approval** (Layer 5) - Architecture decisions and technical rationale
 - **Code Review** (Layer 12) - Code quality, security, and best practices
-- **Production Deployment** (Layer 13) - Final gate before live release
+- **Production Deployment** (Layer 14) - Final gate before live release
 
 **Responsibilities**:
 - Provides business requirements and strategic direction
@@ -1141,7 +1141,7 @@ python scripts/validate_artifact.py --type REQ --strict
 
 ### Business Requirements → Production Code
 
-The AI Dev Flow follows a structured progression through 14 layers:
+The AI Dev Flow follows a structured progression through 15 layers:
 
 **Documentation Layers (0-10)**:
 1. **Strategy** (Layer 0) - External business strategy documents
@@ -1154,12 +1154,13 @@ The AI Dev Flow follows a structured progression through 14 layers:
 8. **REQ** (Layer 7) - Atomic, testable requirements
 9. **CTR** (Layer 8) - API contracts (optional)
 10. **SPEC** (Layer 9) - YAML technical specifications
-11. **TASKS** (Layer 10) - Implementation task breakdown with execution commands
+11. **TSPEC** (Layer 10) - TDD test specifications (UTEST, ITEST, STEST, FTEST)
+12. **TASKS** (Layer 11) - Implementation task breakdown with execution commands
 
-**Execution Layers (11-13)**:
-12. **Code** (Layer 11) - Source code with cumulative tags
+**Execution Layers (12-14)**:
+13. **Code** (Layer 12) - Source code with cumulative tags
 14. **Tests** (Layer 13) - Test suite with cumulative tags
-14. **Validation** (Layer 13) - Production readiness verification
+15. **Validation** (Layer 14) - Production readiness verification
 
 **Key Workflow Patterns**:
 - **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
@@ -1305,7 +1306,7 @@ graph LR
 **Last Updated**: 2025-11-30
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **14-Layer Architecture**: Expanded from 10 to 14 layers (added Strategy, Code, Tests, Validation)
+- ✅ **14-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
@@ -1322,7 +1323,7 @@ graph LR
 - Enhanced TASKS templates for AI code generation
 
 **Framework Evolution**:
-- 14-layer architecture with complete cumulative tagging
+- 15-layer architecture with complete cumulative tagging
 - Automated traceability validation and matrix generation
 - Complete audit trail from business strategy to production code
 - AI-optimized YAML specifications for deterministic generation
@@ -1334,7 +1335,7 @@ graph LR
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Detailed SDD methodology
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards and cumulative tagging hierarchy
 - [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setup guide for cumulative tagging validation and CI/CD
-- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 14 layers
+- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 15 layers
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 

@@ -113,7 +113,7 @@ If user does not specify or says "default", use **Financial Services** configura
 ### Execution Command
 
 ```bash
-# Core 14-layer architecture (11 documentation artifacts + 3 execution layers)
+# Core 15-layer architecture (11 documentation artifacts + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -302,7 +302,7 @@ cp -r "$FRAMEWORK_ROOT/SYS"/*   docs/06_SYS/
 cp -r "$FRAMEWORK_ROOT/REQ"/*   docs/07_REQ/
 cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/08_CTR/
 cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/09_SPEC/
-cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/10_TASKS/
+cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/11_TASKS/
 
 # Copy validation scripts
 mkdir -p scripts
@@ -324,7 +324,7 @@ touch docs/06_SYS/SYS-00_index.md
 touch docs/07_REQ/REQ-00_index.md
 touch docs/08_CTR/CTR-00_index.md
 touch docs/09_SPEC/SPEC-00_index.md
-touch docs/10_TASKS/TASKS-00_index.md
+touch docs/11_TASKS/TASKS-00_index.md
 ```
 
 ### Index File Content Template
@@ -399,10 +399,10 @@ AI Assistant asks:
 | 4 (No) | Skip CTR layer, go directly REQ → SPEC |
 
 ```
-REQ → CTR → SPEC → TASKS → Code
+REQ → CTR → SPEC → TSPEC → TASKS → Code
 
 If CTR skipped:
-REQ → SPEC → TASKS → Code
+REQ → SPEC → TSPEC → TASKS → Code
 ```
 
 ---
@@ -922,11 +922,11 @@ AI Assistant should suggest framework updates when:
 **Before ANY TASKS Implementation**: The Development Plan (`docs/DEVELOPMENT_PLAN.md`) is the **central command center** for organizing and tracking all TASKS across implementation phases.
 
 **Mandatory Setup**:
-1. Copy `10_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
+1. Copy `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
 2. Populate with all TASKS organized by phase and priority
 3. Use YAML-based structure for machine-parsable tracking
 
-**See**: `10_TASKS/IMPLEMENTATION_PLAN_README.md` for complete documentation.
+**See**: `11_TASKS/IMPLEMENTATION_PLAN_README.md` for complete documentation.
 
 ### Mandatory Workflow Rules
 
@@ -1037,7 +1037,7 @@ User: "Initialize new financial services trading platform project"
 
 Claude Code:
 1. Domain Selection: "Financial Services (default) detected. Loading FINANCIAL_DOMAIN_CONFIG.md"
-2. Folder Creation: "Creating 14-layer architecture (11 artifact directories) + finance subdirectories..."
+2. Folder Creation: "Creating 15-layer architecture (11 artifact directories) + finance subdirectories..."
    [Runs mkdir commands]
 3. Validation: "Verifying structure... ✓ All directories created"
 4. Template Setup: "Copying templates and applying financial domain placeholders..."
@@ -1468,7 +1468,7 @@ Current challenges in assisted documentation creation:
 - Skill selection complexity (25+ skills; steep learning curve)
 - Context loss across artifacts and sessions
 - Quality inconsistency vs templates and validators
-- Workflow friction choosing next steps across 14 layers
+- Workflow friction choosing next steps across 15 layers
 
 Business impact:
 - Productivity loss (40–60% on skill/workflow overhead)

@@ -40,16 +40,16 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
-## 14-Layer Workflow
+## 15-Layer Workflow
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Tests → Validation
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code → Tests → Validation
 ```
 
 **Note**: Layer 0 (Strategy/STRAT) is external business context; formal documentation begins at Layer 1 (BRD). "Production" is an outcome, not a formal layer.
 
-**With Contracts**: `REQ → CTR → SPEC → TASKS`
-**Without Contracts**: `REQ → SPEC → TASKS`
+**With Contracts**: `REQ → CTR → SPEC → TSPEC → TASKS`
+**Without Contracts**: `REQ → SPEC → TSPEC → TASKS`
 
 **BRD Section Requirements**:
 - Platform BRDs (001-005): Foundation architecture, cross-cutting concerns
@@ -162,7 +162,7 @@ graph TB
     REQ["07_REQ/REQ-NN_{slug}/ - Atomic Requirements"]
     CTR["08_CTR/CTR-NN_{slug}/ - API Contracts"]
     SPEC["09_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
-    TASKS["10_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
+    TASKS["11_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
@@ -210,7 +210,7 @@ mkdir -p docs/03_EARS/EARS-01_event_processing
 mkdir -p docs/06_SYS/SYS-01_api_gateway
 mkdir -p docs/07_REQ/REQ-01_resource_limits
 mkdir -p docs/09_SPEC/SPEC-01_rate_limiter
-mkdir -p docs/10_TASKS/TASKS-01_implement_rate_limiter
+mkdir -p docs/11_TASKS/TASKS-01_implement_rate_limiter
 mkdir -p docs/08_CTR/CTR-01_data_service_api
 
 # Legacy category folders are not used in new projects.
@@ -273,7 +273,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ -
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | [SPEC-23](../09_SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
-| [TASKS-23](../10_TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
+| [TASKS-23](../11_TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
 - **REQ-03**: [placeholder] requirement title
@@ -413,7 +413,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **REQ** | Atomic requirements | .md | **Nested** | `07_REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
 | **CTR** | API contracts | .md + .yaml | **Nested** | `08_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
 | **SPEC** | Technical SPEC | .yaml | **Nested** | `09_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
-| **TASKS** | Implementation TODOs | .md | **Nested** | `10_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
+| **TASKS** | Implementation TODOs | .md | **Nested** | `11_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
 | **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
 
 **Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.

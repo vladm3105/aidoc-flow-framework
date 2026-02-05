@@ -100,7 +100,7 @@ entry_exit_points:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
-    - L10_TASKS
+    - L11_TASKS
   
   # Valid exit points (layers you can stop at)
   valid_exits:
@@ -113,7 +113,7 @@ entry_exit_points:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
-    - L10_TASKS
+    - L11_TASKS
   
   # Common start/end combinations
   presets:
@@ -134,12 +134,12 @@ entry_exit_points:
     
     full_docs:
       entry: L1_BRD
-      exit: L10_TASKS
+      exit: L11_TASKS
       description: "Complete documentation pipeline"
     
     testing_focus:
       entry: L4_BDD
-      exit: L10_TASKS
+      exit: L11_TASKS
       description: "Start from BDD, generate through implementation plan"
     
     contracts_only:
@@ -648,7 +648,7 @@ pipeline:
   # --------------------------------------------------------------------------
   # LAYER 10: Implementation Tasks (TASKS)
   # --------------------------------------------------------------------------
-  L10_TASKS:
+  L11_TASKS:
     enabled: true
     order: 10
     dependencies: ["L9_SPEC"]
@@ -660,22 +660,22 @@ pipeline:
         required: "if_not_entry_point"
       
       - name: "Brownfield: Check if TASKS exists"
-        command: "test -f ai_dev_flow/10_TASKS/TASKS-${NN}_*.md"
+        command: "test -f ai_dev_flow/11_TASKS/TASKS-${NN}_*.md"
         required: false
         mode: brownfield
         on_exists: "skip_generation"
     
     generation:
-      template: "10_TASKS/TASKS-MVP-TEMPLATE.md"
-      output_pattern: "10_TASKS/TASKS-{nn}_{slug}.md"
+      template: "11_TASKS/TASKS-MVP-TEMPLATE.md"
+      output_pattern: "11_TASKS/TASKS-{nn}_{slug}.md"
       auto_populate: true
       
       index_files:
-        - "10_TASKS/TASKS-00_index.md"
+        - "11_TASKS/TASKS-00_index.md"
     
     validation:
       validator: "python"
-      command: "python3 ai_dev_flow/scripts/validate_tasks.py ai_dev_flow/10_TASKS"
+      command: "python3 ai_dev_flow/scripts/validate_tasks.py ai_dev_flow/11_TASKS"
       min_score: 90
       strict_mode: false
       
@@ -685,7 +685,7 @@ pipeline:
     
     post_checks:
       - name: "Verify execution commands present"
-        command: "python3 ai_dev_flow/scripts/check_execution_commands.py ai_dev_flow/10_TASKS/TASKS-{nn}_{slug}.md"
+        command: "python3 ai_dev_flow/scripts/check_execution_commands.py ai_dev_flow/11_TASKS/TASKS-{nn}_{slug}.md"
         required: true
       
       - name: "Final link integrity check"
@@ -707,9 +707,9 @@ execution:
     stop_on_failure: true
     auto_approve_enabled: true
     default_entry: L1_BRD
-    default_exit: L10_TASKS
+    default_exit: L11_TASKS
     project_mode: auto
-    layers: ["L1_BRD", "L2_PRD", "L3_EARS", "L4_BDD", "L5_ADR", "L6_SYS", "L7_REQ", "L8_CTR", "L9_SPEC", "L10_TASKS"]
+    layers: ["L1_BRD", "L2_PRD", "L3_EARS", "L4_BDD", "L5_ADR", "L6_SYS", "L7_REQ", "L8_CTR", "L9_SPEC", "L11_TASKS"]
   
   # Strict validation mode
   strict_mode:
@@ -768,14 +768,14 @@ profiles:
   mvp:
     execution: "mvp_mode"
     entry: L1_BRD
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: "Fast MVP iteration with auto-approval ≥90%"
   
   # Strict validation profile
   strict:
     execution: "strict_mode"
     entry: L1_BRD
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: "Full validation for production release"
   
   # Planning only
@@ -803,7 +803,7 @@ profiles:
   testing_focus:
     execution: "mvp_mode"
     entry: L4_BDD
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: "Start from BDD, generate through implementation plan"
   
   # Contracts only (your example)
@@ -817,7 +817,7 @@ profiles:
   brownfield_resume:
     execution: "brownfield_mode"
     entry: auto  # Auto-detect last completed layer
-    exit: L10_TASKS
+    exit: L11_TASKS
     description: "Resume brownfield project from last completed layer"
 
 default_profile: mvp

@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional
 from collections import defaultdict
 
-# Cumulative Tagging Hierarchy Definition (14 layers)
+# Cumulative Tagging Hierarchy Definition (15 layers)
 LAYER_HIERARCHY = {
     0: {'type': 'Strategy', 'required_tags': [], 'tag_count': 0, 'optional': False},
     1: {'type': 'BRD', 'required_tags': [], 'tag_count': 0, 'optional': False},

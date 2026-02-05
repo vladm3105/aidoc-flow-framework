@@ -972,7 +972,7 @@ Business Rules Count?
 
 #### Edge Case 2: Quantitative Thresholds - Customer SLA vs Technical Metrics
 
-**Rule**: Keep customer-facing SLAs and business outcomes; remove technical performance metrics (defer to 09_SPEC/10_TASKS).
+**Rule**: Keep customer-facing SLAs and business outcomes; remove technical performance metrics (defer to 09_SPEC/11_TASKS).
 
 **Customer-Facing SLAs (KEEP)**:
 - ✅ "95% of transactions complete in <15 minutes" (customer experience requirement)
@@ -1089,7 +1089,7 @@ if (amount >= 501 && amount <= 2000) {
 
 #### Edge Case 6: ML Model Specifications (AI Agent BRDs)
 
-**Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to 09_SPEC/10_TASKS.
+**Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to 09_SPEC/11_TASKS.
 
 **PRD-Level Content (REMOVE)**:
 - ❌ Feature extraction code: `features = ['transaction_amount', 'device_risk_score', 'velocity_24h']`
@@ -1129,7 +1129,7 @@ if (amount >= 501 && amount <= 2000) {
 
 **Context**: Multi-region requirements (US, EU, APAC) involve both business variations (different regulations, limits, partners) and infrastructure concerns (data residency, latency). BRDs focus on business variations only.
 
-**Infrastructure Content (REMOVE to 09_SPEC/10_TASKS)**:
+**Infrastructure Content (REMOVE to 09_SPEC/11_TASKS)**:
 - ❌ Cloud region specifications: "Deploy to us-east-1 and eu-west-1"
 - ❌ Data residency implementation: "PII stored in region-local PostgreSQL"
 - ❌ CDN and latency optimization: "Use CloudFront edge locations"
@@ -1188,7 +1188,7 @@ if (amount >= 501 && amount <= 2000) {
 
 **Context**: Retry policies for failed transactions involve business decisions (when to retry, customer notification, escalation) and technical implementation (exponential backoff, circuit breakers). BRDs capture business policies only.
 
-**Technical Content (REMOVE to 09_SPEC/10_TASKS)**:
+**Technical Content (REMOVE to 09_SPEC/11_TASKS)**:
 - ❌ Retry implementation: "Exponential backoff with jitter: delay = base * 2^attempt + random(0, 1000ms)"
 - ❌ Circuit breaker configuration: "Trip after 5 failures, half-open after 30s"
 - ❌ Queue implementation: "Dead letter queue after 3 retries"
@@ -1248,7 +1248,7 @@ if (amount >= 501 && amount <= 2000) {
 - Retry with silent recovery: +1 complexity
 - Retry with customer notification and escalation: +2 complexity
 
-**Cross-Reference Pattern**: "Retry implementation patterns documented in 09_SPEC/SPEC-XXX Transaction Retry Handling or 10_TASKS/TASKS-XXX implementation notes"
+**Cross-Reference Pattern**: "Retry implementation patterns documented in 09_SPEC/SPEC-XXX Transaction Retry Handling or 11_TASKS/TASKS-XXX implementation notes"
 
 ---
 
@@ -1372,7 +1372,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 **Requirements**:
 
 - Every Functional Requirement (section 4) MUST appear in this table
-- Downstream artifacts initially marked "Planned" (created during 08_CTR/09_SPEC/10_TASKS phases)
+- Downstream artifacts initially marked "Planned" (created during 08_CTR/09_SPEC/11_TASKS phases)
 - SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-05 → SPEC-05.1)
 - CTR-XXX format: Use BRD ID as XXX (e.g., BRD-05 → CTR-05)
 
@@ -1830,7 +1830,7 @@ During BRD generation, AI assistants should clarify missing ADR information:
 | Detailed technical specs | Technical exploration | PRD §18 "Technical Options" |
 | Performance benchmarks | Technical criteria | PRD §18 "Evaluation Criteria" |
 | Implementation patterns | Technical approach | ADR "Decision" |
-| Configuration details | Technical implementation | 09_SPEC/10_TASKS documents |
+| Configuration details | Technical implementation | 09_SPEC/11_TASKS documents |
 
 ### 9.8 Layer Separation Principle
 
