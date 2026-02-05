@@ -58,10 +58,46 @@ REQ (L7) → Generate Unit Tests (Fail) → SPEC/TASKS → CODE (Pass)
 ### Multi-Level Validation
 
 Each layer of testing validates different aspects:
+
 1. **Unit tests**: Individual function correctness
 2. **Integration tests**: Component interaction
 3. **Smoke tests**: Post-deployment health
-4. **Acceptance tests**: Business requirement satisfaction
+4. **Functional tests**: System behavior validation
+5. **Acceptance tests**: Business requirement satisfaction
+
+### Test Pyramid
+
+The test pyramid illustrates the relative quantity and scope of each test type:
+
+```
+                      ▲
+                     ╱ ╲
+                    ╱   ╲           Acceptance (few)
+                   ╱─────╲          Business requirement validation
+                  ╱       ╲
+                 ╱ ─ ─ ─ ─ ╲        Functional (moderate)
+                ╱           ╲       System behavior validation
+               ╱─────────────╲
+              ╱               ╲     Smoke (few)
+             ╱ ─ ─ ─ ─ ─ ─ ─ ─ ╲    Post-deployment health checks
+            ╱                   ╲
+           ╱─────────────────────╲
+          ╱                       ╲   Integration (moderate)
+         ╱ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╲  Component interactions
+        ╱                           ╲
+       ╱─────────────────────────────╲
+      ╱                               ╲ Unit (many)
+     ╱ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╲ Individual functions
+    ╱___________________________________╲
+```
+
+| Level | Quantity | Speed | Stability | Maintenance |
+|-------|----------|-------|-----------|-------------|
+| Unit | Many (hundreds) | Fast (ms) | High | Low |
+| Integration | Moderate (dozens) | Medium (sec) | Medium | Medium |
+| Smoke | Few (5-10) | Fast (<5 min total) | High | Low |
+| Functional | Moderate (per system req) | Medium (min) | Medium | Medium |
+| Acceptance | Few (per feature) | Slow (min) | Lower | Higher |
 
 ---
 
@@ -99,6 +135,11 @@ graph TD
         SmokePass[Smoke Tests Pass]
     end
 
+    subgraph "Functional Testing Phase"
+        FuncGen[Generate Functional Tests from SYS]
+        FuncPass[Functional Tests Pass]
+    end
+
     subgraph "Acceptance Phase (Optional)"
         BDDGen[Generate Acceptance Tests from BDD]
         BDDTests[Acceptance Tests Pass]
@@ -117,7 +158,9 @@ graph TD
     IntegTests --> Deploy
     Deploy --> SmokeGen
     SmokeGen --> SmokePass
-    SmokePass --> BDDGen
+    SmokePass --> FuncGen
+    FuncGen --> FuncPass
+    FuncPass --> BDDGen
     BDDGen --> BDDTests
 
     style REQ fill:#f8d7da
@@ -127,13 +170,14 @@ graph TD
     style IntegGen fill:#fff3cd
     style Deploy fill:#d6d8d9
     style SmokeGen fill:#d1ecf1
+    style FuncGen fill:#fff3cd
     style BDDGen fill:#f8d7da
 
     classDef fail fill:#f8d7da,stroke:#721c24,stroke-width:2px
     classDef pass fill:#d4edda,stroke:#155724,stroke-width:2px
 
     class UnitTests fail
-    class UnitPass,IntegTests,SmokePass,BDDTests pass
+    class UnitPass,IntegTests,SmokePass,FuncPass,BDDTests pass
 ```
 
 ### Detailed Workflow Steps
@@ -163,7 +207,9 @@ graph TD
 
 **When**: After SPEC (Layer 9) is defined but before Code
 
-**Source**: **SPEC documents (Layer 9)**
+**Sources**:
+- **REQ (Layer 7)** - Test cases from Logical TDD (Step 1) define *what* to test
+- **SPEC (Layer 9)** - Function signatures define *how* to test
 
 **Purpose**: Enforce the contract (signatures, types, exceptions)
 
@@ -213,7 +259,7 @@ Unit tests for REQ-001
 """
 ```
 
-#### Step 3: Integration Tests - After All TASKS Complete
+#### Step 4: Integration Tests - After All TASKS Complete
 
 **When**: After all components are implemented and unit tests pass
 
@@ -273,7 +319,7 @@ class Test_UserAPI_Integration:
         validate(response.json(), schema)
 ```
 
-#### Step 4: Deployment - Layer 13
+#### Step 5: Deployment - Layer 13
 
 **When**: After all integration tests pass
 
@@ -281,7 +327,7 @@ class Test_UserAPI_Integration:
 
 **Validation**: Infrastructure health checks
 
-#### Step 5: Smoke Tests - After Deployment
+#### Step 6: Smoke Tests - After Deployment
 
 **When**: Immediately after deployment completes
 
@@ -355,15 +401,99 @@ class Test_DeploymentSmoke:
 
 **Decision Rule**:
 - **Smoke tests FAIL**: Stop deployment, rollback, fix immediately
-- **Smoke tests PASS**: Proceed to acceptance tests (optional)
+- **Smoke tests PASS**: Proceed to functional tests
 
-#### Step 6: Acceptance Tests (Optional) - Layer 4
+#### Step 7: Functional Tests - Layer 6
 
-**When**: After smoke tests pass (can run in parallel with production monitoring)
+**When**: After smoke tests pass, before business acceptance
+
+**Source**: **SYS documents (Layer 6)** - System requirements and quality attributes
+
+**Why SYS over PRD?**
+
+| Aspect | PRD (Layer 2) | SYS (Layer 6) |
+|--------|---------------|---------------|
+| Focus | What product does for users | How system behaves technically |
+| Content | User stories, features | Functional requirements, quality attributes |
+| Perspective | Business/user-oriented | System/technical-oriented |
+| Already validated by | BDD Acceptance Tests | Integration Tests (partially) |
+
+SYS is the appropriate source because:
+- PRD is already validated through BDD Acceptance Tests
+- SYS has a validation gap (Integration tests only partially cover it)
+- Functional tests validate *system behavior*, not *business requirements*
+
+**Purpose**: Validate system behavior matches functional requirements and quality attributes
+
+**Action**:
+```bash
+# Generate functional tests from SYS requirements
+test-automation generate-functional \
+  --input 06_SYS/ \
+  --output tests/functional/ \
+  --framework pytest
+```
+
+**Test Characteristics**:
+- Validates complete system workflows
+- Tests quality attributes (performance, reliability, security)
+- Runs against deployed system in production-like environment
+- More comprehensive than smoke, less business-focused than acceptance
+
+**Test Structure**:
+```python
+"""
+Functional tests for system behavior
+@brd: BRD-01
+@prd: PRD-01
+@sys: SYS-01.FR.001, SYS-01.QA.001
+@environment: staging
+"""
+class Test_SystemFunctional:
+    """Validate system behavior per SYS requirements"""
+
+    def test_user_workflow_completes(self, client):
+        """SYS-01.FR.001: User registration workflow"""
+        # Complete user registration flow
+        response = client.post('/api/users/register', json={
+            'username': 'newuser',
+            'email': 'new@example.com',
+            'password': 'SecureP@ss123'
+        })
+        assert response.status_code == 201
+
+        # Verify email sent (system integration)
+        assert email_service.was_sent_to('new@example.com')
+
+        # Verify user can login
+        login_response = client.post('/api/auth/login', json={
+            'username': 'newuser',
+            'password': 'SecureP@ss123'
+        })
+        assert login_response.status_code == 200
+
+    def test_performance_threshold(self, client):
+        """SYS-01.QA.001: Response time under load"""
+        import time
+        start = time.time()
+        response = client.get('/api/users/profile')
+        elapsed = time.time() - start
+
+        assert response.status_code == 200
+        assert elapsed < 0.200  # 200ms threshold from SYS
+```
+
+**Decision Rule**:
+- **Functional tests FAIL**: Fix system behavior, re-run
+- **Functional tests PASS**: Proceed to acceptance tests (optional)
+
+#### Step 8: Acceptance Tests (Optional) - Layer 4
+
+**When**: After functional tests pass (can run in parallel with production monitoring)
 
 **Source**: **BDD documents (Layer 4)** - Full scenario validation
 
-**Purpose**: Validate end-to-end behavior matches acceptance criteria
+**Purpose**: Validate end-to-end behavior matches business acceptance criteria
 
 **Action**:
 ```bash
@@ -425,23 +555,38 @@ def login_succeeds(context):
 
 | Test Type | Primary Source | Secondary Sources | SDD Layer | Purpose |
 |-----------|----------------|-------------------|------------|---------|
-| **Unit Tests** | REQ (L7) | - | L7 | Validate atomic requirements |
+| **Unit Tests** | REQ (L7) | SPEC (L9) | L7, L9 | Validate atomic requirements |
 | **Integration Tests** | CTR (L8) | SYS (L6), SPEC (L9) | L6-L9 | Validate component interactions |
 | **Smoke Tests** | EARS (L3), BDD (L4), REQ (L7) | - | L3-L4, L7 | Post-deployment health check |
+| **Functional Tests** | SYS (L6) | REQ (L7) | L6-L7 | Validate system behavior |
 | **Acceptance Tests** | BDD (L4) | - | L4 | Validate business requirements |
+
+**Unit Test Derivation Clarification**:
+- **REQ (L7)** defines *what* to test via Logical TDD (Step 1): input/output tables, test cases, coverage targets
+- **SPEC (L9)** defines *how* to test (Step 2): function signatures, parameter types, return types, exceptions
 
 ---
 
 ## Test Characteristics Comparison
 
-| Characteristic | Unit Tests | Integration Tests | Smoke Tests | Acceptance Tests |
-|----------------|--------------|-------------------|--------------|------------------|
-| **Scope** | Single function | Multiple components | Critical system paths | End-to-end workflows |
-| **Speed** | Milliseconds | Seconds/Minutes | <5 minutes | Minutes |
-| **Dependencies** | Mocked | Real/Test Containers | Deployed system | Deployed system |
-| **Failure Impact** | Fix function | Fix interaction | Rollback deployment | Fix business logic |
-| **Execution Timing** | During development | Before deployment | After deployment | After smoke tests |
-| **TDD Compatible** | ✅ Yes | ❌ No | ❌ No | ✅ Yes |
+| Characteristic | Unit Tests | Integration Tests | Smoke Tests | Functional Tests | Acceptance Tests |
+|----------------|------------|-------------------|-------------|------------------|------------------|
+| **Scope** | Single function | Multiple components | Critical paths | System workflows | Business workflows |
+| **Speed** | Milliseconds | Seconds/Minutes | <5 minutes | Minutes | Minutes |
+| **Dependencies** | Mocked | Real/Test Containers | Deployed system | Deployed system | Deployed system |
+| **Failure Impact** | Fix function | Fix interaction | Rollback | Fix system behavior | Fix business logic |
+| **Execution Timing** | During development | Before deployment | After deployment | After smoke | After functional |
+| **TDD Compatible** | ✅ Yes | ❌ No | ❌ No | ❌ No | ✅ Yes |
+
+**TDD Compatibility Explained**:
+
+| Test Type | TDD Compatible | Rationale |
+|-----------|----------------|-----------|
+| Unit | ✅ Yes | Written before code from SPEC signatures; code is written to make tests pass |
+| Integration | ❌ No | Requires multiple implemented components to exist; cannot be written before code |
+| Smoke | ❌ No | Requires deployed system; validates deployment, not implementation |
+| Functional | ❌ No | Requires deployed system; validates system behavior post-deployment |
+| Acceptance | ✅ Yes | BDD scenarios are written before implementation as acceptance criteria; implementation makes scenarios pass |
 
 ---
 
@@ -559,6 +704,20 @@ test-automation generate-smoke \
 pytest tests/smoke/ \
   --environment=production \
   --fail-fast
+```
+
+### Generate Functional Tests
+```bash
+test-automation generate-functional \
+  --input 06_SYS/ \
+  --output tests/functional/ \
+  --framework pytest
+```
+
+### Run Functional Tests
+```bash
+pytest tests/functional/ \
+  --environment=staging
 ```
 
 ### Generate Acceptance Tests
@@ -706,9 +865,27 @@ jobs:
         if: failure()
         run: rollback-deployment staging
 
-  # Phase 5: Acceptance Tests (Optional)
-  acceptance-tests:
+  # Phase 5: Functional Tests
+  functional-tests:
     needs: smoke-tests
+    runs-on: ubuntu-latest
+    steps:
+      - checkout
+      - setup-python
+      - install-dependencies
+      - name: Generate Functional Tests from SYS
+        run: |
+          test-automation generate-functional \
+            --input 06_SYS/ \
+            --output tests/functional/
+      - name: Run Functional Tests
+        run: |
+          pytest tests/functional/ \
+            --environment=staging
+
+  # Phase 6: Acceptance Tests (Optional)
+  acceptance-tests:
+    needs: functional-tests
     runs-on: ubuntu-latest
     steps:
       - checkout
@@ -723,7 +900,7 @@ jobs:
       - name: Run Acceptance Tests
         run: pytest tests/acceptance/
 
-  # Phase 6: Deploy to Production
+  # Phase 7: Deploy to Production
   deploy-production:
     needs: acceptance-tests
     runs-on: ubuntu-latest
@@ -793,6 +970,9 @@ tests/
 │   └── test_database_integration.py
 ├── smoke/
 │   └── test_deployment_smoke.py
+├── functional/
+│   ├── test_sys_001_user_workflow.py
+│   └── test_sys_002_performance.py
 └── acceptance/
     └── test_bdd_user_scenarios.py
 ```

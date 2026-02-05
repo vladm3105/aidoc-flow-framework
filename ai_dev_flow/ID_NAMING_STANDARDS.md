@@ -37,7 +37,8 @@ Purpose
   - `07_REQ/` - Requirements
   - `08_CTR/` - API Contracts (CTR)
   - `09_SPEC/` - Technical Specifications (YAML)
-  - `10_TASKS/` - AI Task Lists
+  - `10_TSPEC/` - Test Specifications (UTEST, ITEST, STEST, FTEST)
+  - `11_TASKS/` - AI Task Lists
   - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
 
@@ -1165,7 +1166,14 @@ Consistent across ALL document types:
 | 30 | Task Item | TASKS |
 | 31 | Plan Step | TASKS (Section 4) |
 | 32 | Architecture Topic | BRD |
-| 33-99 | Reserved for future use | - |
+| 33-39 | Reserved for future use | - |
+| 40 | Unit Test | TSPEC (UTEST) |
+| 41 | Integration Test | TSPEC (ITEST) |
+| 42 | Smoke Test | TSPEC (STEST) |
+| 43 | Functional Test | TSPEC (FTEST) |
+| 44 | Performance Test | TSPEC (PTEST) - Reserved |
+| 45 | Security Test | TSPEC (SECTEST) - Reserved |
+| 46-99 | Reserved for future use | - |
 
 ### Examples
 

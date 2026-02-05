@@ -1,15 +1,24 @@
 # SDD Framework Layer Registry
 # Single source of truth for all layer definitions
-# Version: 1.5
-# Last Updated: 2026-01-16
+# Version: 1.6
+# Last Updated: 2026-02-05
 
-version: "1.5"
+version: "1.6"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 14
+  total_layers: 15
   maintainer: "SDD Framework Team"
   template_policy: mvp_only
   deprecated_templates: archived/
+  changelog:
+    - version: "1.6"
+      date: "2026-02-05"
+      changes:
+        - "Added Layer 10 TSPEC (Test Specifications)"
+        - "Renumbered TASKS to Layer 11"
+        - "Renumbered CODE to Layer 12"
+        - "Renumbered TESTS to Layer 13"
+        - "Renumbered VALIDATION to Layer 14"
 
 # Optional pre-artifact layer (not part of core 15 artifact layers)
 conceptual_layers:
@@ -130,51 +139,88 @@ layers:
     template: "SPEC-MVP-TEMPLATE.yaml"
 
   - number: 10
-    artifact: TASKS
-    name: "Task Breakdown"
-    folder: 10_TASKS/
-    extensions: [.md]
+    artifact: TSPEC
+    name: "Test Specifications"
+    folder: 10_TSPEC/
+    extensions: [.md, .yaml]
     required_tags: [brd, prd, ears, bdd, adr, sys, req, spec]
     can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
-    error_prefix: TASKS
+    error_prefix: TSPEC
     optional: false
-    description: "Layer 10 - AI-structured TODO tasks from SPEC"
-    template: "TASKS-TEMPLATE.md"
+    description: "Layer 10 - Test specifications for TDD workflow (UTEST, ITEST, STEST, FTEST)"
+    template: null  # Multiple templates per test type
+    test_types:
+      - code: 40
+        type: UTEST
+        name: "Unit Test Specification"
+        template: "UTEST/UTEST-MVP-TEMPLATE.md"
+      - code: 41
+        type: ITEST
+        name: "Integration Test Specification"
+        template: "ITEST/ITEST-MVP-TEMPLATE.md"
+      - code: 42
+        type: STEST
+        name: "Smoke Test Specification"
+        template: "STEST/STEST-MVP-TEMPLATE.md"
+      - code: 43
+        type: FTEST
+        name: "Functional Test Specification"
+        template: "FTEST/FTEST-MVP-TEMPLATE.md"
+      - code: 44
+        type: PTEST
+        name: "Performance Test Specification"
+        template: null  # Reserved
+      - code: 45
+        type: SECTEST
+        name: "Security Test Specification"
+        template: null  # Reserved
 
   - number: 11
+    artifact: TASKS
+    name: "Task Breakdown"
+    folder: 11_TASKS/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tspec]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC]
+    error_prefix: TASKS
+    optional: false
+    description: "Layer 11 - AI-structured TODO tasks from SPEC and TSPEC"
+    template: "TASKS-TEMPLATE.md"
+
+  - number: 12
     artifact: CODE
     name: "Source Code"
     folder: src/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp, .c, .h]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tspec, tasks]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS]
     error_prefix: CODE
     optional: false
-    description: "Layer 11 - Source code implementation generated from TASKS"
+    description: "Layer 12 - Source code implementation generated from TASKS"
     template: null  # Code layer - no documentation template
 
-  - number: 12
+  - number: 13
     artifact: TESTS
     name: "Test Suite"
     folder: tests/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, code]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, CODE]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tspec, tasks, code]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS, CODE]
     error_prefix: TEST
     optional: false
-    description: "Layer 12 - Unit, integration, and end-to-end test implementations"
+    description: "Layer 13 - Unit, integration, and end-to-end test implementations"
     template: null  # Test layer - no documentation template
 
-  - number: 13
+  - number: 14
     artifact: VALIDATION
     name: "Validation Results"
     folder: validation/
     extensions: [.md, .json, .yaml, .xml]
     required_tags: []  # Consumes all upstream tags, count not strictly enforced
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, CODE, TESTS]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS, CODE, TESTS]
     error_prefix: VAL
     optional: false
-    description: "Layer 13 - Production readiness validation and quality gate results"
+    description: "Layer 14 - Production readiness validation and quality gate results"
     template: null  # Validation layer - no documentation template
 
 # Change Management Utilities (NOT layers)
@@ -196,11 +242,11 @@ layer_groups:
     description: "Architecture and detailed requirements"
 
   implementation_design:
-    layers: [8, 9, 10]
-    description: "Implementation design artifacts"
-  
+    layers: [8, 9, 10, 11]
+    description: "Implementation design artifacts (CTR, SPEC, TSPEC, TASKS)"
+
   execution:
-    layers: [11, 12, 13]
+    layers: [12, 13, 14]
     description: "Code execution and validation layers"
 
 id_patterns:

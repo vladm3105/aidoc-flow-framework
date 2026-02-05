@@ -36,7 +36,8 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 7 | REQ | `REQ-MVP-TEMPLATE.md` |
 | 8 | CTR | `CTR-MVP-TEMPLATE.md` |
 | 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
-| 10 | TASKS | `TASKS-TEMPLATE.md` |
+| 10 | TSPEC | `UTEST/ITEST/STEST/FTEST-MVP-TEMPLATE.md` |
+| 11 | TASKS | `TASKS-TEMPLATE.md` |
 
 ## Validation Decision Framework
 
@@ -64,7 +65,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - **Automation Flow**: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 **Key Automation Benefits**:
-- 90%+ automation (12 of 13 production layers)
+- 90%+ automation (13 of 14 production layers)
 - Quality gates enable optional human checkpoints (auto-approve if score ≥90%)
 - Code-from-specs capability (YAML → Python)
 - Auto-fix testing with 3 retry attempts
@@ -88,7 +89,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Change Management (CHG) - Archival Procedure
 
-⚠️ **Note**: CHG is NOT a layer in the 14-layer architecture - it's a change management archival procedure.
+⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management archival procedure.
 
 - **CHG** (`CHG/`) - Document immutability enforcement through archival
   - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
@@ -283,7 +284,7 @@ flowchart TD
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
 
 ### Workflow Explanation
 

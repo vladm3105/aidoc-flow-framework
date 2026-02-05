@@ -1,0 +1,128 @@
+# UTEST-MVP-TEMPLATE.yaml
+# Unit Test Specification Template for Autopilot Workflow
+# Schema: UTEST_MVP_SCHEMA.yaml
+
+metadata:
+  document_id: "UTEST-NN"
+  title: "[Component Name] Unit Test Specification"
+  artifact_type: "UTEST"
+  layer: 10
+  test_type_code: 40
+  template_profile: "mvp"
+  schema_version: "1.0"
+
+document_control:
+  status: "Draft"  # Draft | Review | Approved | Implemented
+  version: "0.1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Author name]"
+  component: "[Component/module name]"
+  spec_reference: "SPEC-NN"
+  coverage_target: 90
+  tasks_ready_score: null  # Calculated after validation
+  template_version: "1.0"
+
+test_scope:
+  component_under_test:
+    component: "[Component name]"
+    module_path: "src/[path]/[module].py"
+    spec_reference: "SPEC-NN"
+    req_coverage:
+      - "REQ.NN.10.01"
+      - "REQ.NN.10.02"
+
+  test_categories:
+    - category: "Logic"
+      count: 0
+      description: "Business logic validation"
+    - category: "State"
+      count: 0
+      description: "State transition tests"
+    - category: "Validation"
+      count: 0
+      description: "Input validation tests"
+    - category: "Edge"
+      count: 0
+      description: "Boundary condition tests"
+
+  dependencies:
+    - name: "Database"
+      mock_strategy: "In-memory SQLite"
+    - name: "External API"
+      mock_strategy: "Mock responses"
+
+test_case_index:
+  - id: "TSPEC.NN.40.01"
+    name: "[Test name]"
+    category: "Logic"
+    req_coverage: "REQ.NN.10.01"
+    priority: "P1"
+  - id: "TSPEC.NN.40.02"
+    name: "[Test name]"
+    category: "Validation"
+    req_coverage: "REQ.NN.10.02"
+    priority: "P1"
+
+test_case_details:
+  - id: "TSPEC.NN.40.01"
+    name: "[Test Name]"
+    category: "Logic"
+    traceability:
+      req: "REQ.NN.10.01"
+      spec: "SPEC-NN"
+      spec_section: "X.Y"
+    io_table:
+      - input: 'param1="valid"'
+        expected_output: "True"
+        notes: "Happy path"
+      - input: 'param1=""'
+        expected_output: "ValidationError"
+        notes: "Empty input"
+      - input: "param1=None"
+        expected_output: "TypeError"
+        notes: "Null input"
+    pseudocode: |
+      GIVEN valid input parameters
+      WHEN function_under_test(param1) is called
+      THEN result equals expected_output
+      AND no side effects occur
+    error_cases:
+      - condition: "Invalid input type"
+        expected_behavior: "Raise TypeError"
+      - condition: "Empty string"
+        expected_behavior: "Raise ValidationError"
+
+req_coverage_matrix:
+  - req_id: "REQ.NN.10.01"
+    req_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.40.01"
+      - "TSPEC.NN.40.03"
+    covered: true
+  - req_id: "REQ.NN.10.02"
+    req_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.40.02"
+    covered: true
+
+coverage_summary:
+  total_req_elements: 0
+  covered: 0
+  coverage_percent: 0
+
+traceability:
+  upstream:
+    - tag: "@req"
+      reference: "REQ.NN.10.01"
+      description: "[Requirement title]"
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "[Specification reference]"
+  downstream:
+    - tag: "@tasks"
+      reference: "TASKS-NN"
+      description: "Implementation tasks"
+    - tag: "@code"
+      reference: "tests/unit/test_[component].py"
+      description: "Test implementation"

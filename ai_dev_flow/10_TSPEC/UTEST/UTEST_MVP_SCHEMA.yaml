@@ -1,0 +1,334 @@
+# UTEST_MVP_SCHEMA.yaml
+# JSON Schema for Unit Test Specification validation
+# Version: 1.0
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ai-dev-flow/schemas/utest-mvp-v1.0.json"
+title: "UTEST MVP Schema"
+description: "Validation schema for Unit Test Specification documents"
+type: object
+
+required:
+  - metadata
+  - document_control
+  - test_scope
+  - test_case_index
+  - test_case_details
+  - req_coverage_matrix
+  - traceability
+
+properties:
+  metadata:
+    type: object
+    required:
+      - document_id
+      - title
+      - artifact_type
+      - layer
+      - test_type_code
+    properties:
+      document_id:
+        type: string
+        pattern: "^UTEST-\\d{2,}$"
+        description: "Document identifier"
+      title:
+        type: string
+        minLength: 10
+      artifact_type:
+        type: string
+        const: "UTEST"
+      layer:
+        type: integer
+        const: 10
+      test_type_code:
+        type: integer
+        const: 40
+      template_profile:
+        type: string
+        enum: ["mvp", "full"]
+      schema_version:
+        type: string
+
+  document_control:
+    type: object
+    required:
+      - status
+      - version
+      - component
+      - spec_reference
+      - coverage_target
+    properties:
+      status:
+        type: string
+        enum: ["Draft", "Review", "Approved", "Implemented"]
+      version:
+        type: string
+        pattern: "^\\d+\\.\\d+\\.\\d+$"
+      date_created:
+        type: string
+        format: date
+      last_updated:
+        type: string
+        format: date
+      author:
+        type: string
+      component:
+        type: string
+        minLength: 1
+      spec_reference:
+        type: string
+        pattern: "^SPEC-\\d{2,}$"
+      coverage_target:
+        type: integer
+        minimum: 80
+        maximum: 100
+      tasks_ready_score:
+        type: ["integer", "null"]
+        minimum: 0
+        maximum: 100
+
+  test_scope:
+    type: object
+    required:
+      - component_under_test
+      - test_categories
+    properties:
+      component_under_test:
+        type: object
+        required:
+          - component
+          - spec_reference
+          - req_coverage
+        properties:
+          component:
+            type: string
+          module_path:
+            type: string
+          spec_reference:
+            type: string
+            pattern: "^SPEC-\\d{2,}$"
+          req_coverage:
+            type: array
+            items:
+              type: string
+              pattern: "^REQ\\.\\d{2,}\\.\\d{2}\\.\\d{2,}$"
+            minItems: 1
+
+      test_categories:
+        type: array
+        items:
+          type: object
+          required:
+            - category
+            - count
+          properties:
+            category:
+              type: string
+              enum: ["Logic", "State", "Validation", "Edge"]
+            count:
+              type: integer
+              minimum: 0
+            description:
+              type: string
+
+      dependencies:
+        type: array
+        items:
+          type: object
+          required:
+            - name
+            - mock_strategy
+          properties:
+            name:
+              type: string
+            mock_strategy:
+              type: string
+
+  test_case_index:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - req_coverage
+        - priority
+      properties:
+        id:
+          type: string
+          pattern: "^TSPEC\\.\\d{2,}\\.40\\.\\d{2,}$"
+        name:
+          type: string
+          minLength: 5
+        category:
+          type: string
+          enum: ["Logic", "State", "Validation", "Edge"]
+        req_coverage:
+          type: string
+          pattern: "^REQ\\.\\d{2,}\\.\\d{2}\\.\\d{2,}$"
+        priority:
+          type: string
+          enum: ["P1", "P2", "P3"]
+
+  test_case_details:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - traceability
+        - io_table
+        - pseudocode
+        - error_cases
+      properties:
+        id:
+          type: string
+          pattern: "^TSPEC\\.\\d{2,}\\.40\\.\\d{2,}$"
+        name:
+          type: string
+        category:
+          type: string
+          enum: ["Logic", "State", "Validation", "Edge"]
+        traceability:
+          type: object
+          required:
+            - req
+            - spec
+          properties:
+            req:
+              type: string
+              pattern: "^REQ\\.\\d{2,}\\.\\d{2}\\.\\d{2,}$"
+            spec:
+              type: string
+              pattern: "^SPEC-\\d{2,}$"
+            spec_section:
+              type: string
+        io_table:
+          type: array
+          minItems: 3
+          items:
+            type: object
+            required:
+              - input
+              - expected_output
+            properties:
+              input:
+                type: string
+                minLength: 1
+              expected_output:
+                type: string
+                minLength: 1
+              notes:
+                type: string
+        pseudocode:
+          type: string
+          minLength: 20
+          description: "Must contain GIVEN, WHEN, THEN keywords"
+        error_cases:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - condition
+              - expected_behavior
+            properties:
+              condition:
+                type: string
+              expected_behavior:
+                type: string
+
+  req_coverage_matrix:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - req_id
+        - test_ids
+        - covered
+      properties:
+        req_id:
+          type: string
+          pattern: "^REQ\\.\\d{2,}\\.\\d{2}\\.\\d{2,}$"
+        req_title:
+          type: string
+        test_ids:
+          type: array
+          items:
+            type: string
+            pattern: "^TSPEC\\.\\d{2,}\\.40\\.\\d{2,}$"
+          minItems: 1
+        covered:
+          type: boolean
+
+  coverage_summary:
+    type: object
+    properties:
+      total_req_elements:
+        type: integer
+        minimum: 0
+      covered:
+        type: integer
+        minimum: 0
+      coverage_percent:
+        type: number
+        minimum: 0
+        maximum: 100
+
+  traceability:
+    type: object
+    required:
+      - upstream
+    properties:
+      upstream:
+        type: array
+        minItems: 2
+        items:
+          type: object
+          required:
+            - tag
+            - reference
+          properties:
+            tag:
+              type: string
+              enum: ["@req", "@spec", "@brd", "@prd", "@ears", "@bdd", "@adr", "@sys", "@ctr"]
+            reference:
+              type: string
+            description:
+              type: string
+      downstream:
+        type: array
+        items:
+          type: object
+          required:
+            - tag
+            - reference
+          properties:
+            tag:
+              type: string
+              enum: ["@tasks", "@code", "@impl"]
+            reference:
+              type: string
+            description:
+              type: string
+
+# Custom validation rules (implemented in validator script)
+x-validation-rules:
+  req_tag_required:
+    description: "At least one @req tag must be present in upstream traceability"
+    check: "upstream contains tag='@req'"
+  spec_tag_required:
+    description: "At least one @spec tag must be present in upstream traceability"
+    check: "upstream contains tag='@spec'"
+  pseudocode_keywords:
+    description: "Pseudocode must contain GIVEN, WHEN, THEN keywords"
+    check: "pseudocode matches /GIVEN.*WHEN.*THEN/s"
+  coverage_threshold:
+    description: "Coverage must meet target threshold"
+    check: "coverage_percent >= coverage_target"
