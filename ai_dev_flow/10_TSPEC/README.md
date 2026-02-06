@@ -80,7 +80,12 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 │   ├── validate_stest.py
 │   ├── validate_ftest.py
 │   ├── validate_tspec_quality_score.sh
-│   └── validate_all_tspec.sh
+│   ├── validate_all_tspec.sh
+│   ├── run_tests.py                       # Unified test runner
+│   ├── compare_test_results.py            # Regression detection
+│   ├── archive_test_results.py            # Result archival
+│   ├── generate_coverage_report.py        # Coverage reporting
+│   └── manage_test_registry.py            # Registry management
 │
 └── examples/
     ├── README.md

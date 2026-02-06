@@ -19,8 +19,8 @@ definitions:
 
   test_result:
     type: string
-    enum: ["pass", "fail", "skip", "error"]
-    description: "Last execution result"
+    enum: ["passed", "failed", "skipped", "error"]
+    description: "Last execution result (pytest-style terminology)"
 
   test_entry:
     type: object

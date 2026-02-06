@@ -198,6 +198,7 @@ Score = (CTR × 0.30) + (Contract × 0.25) + (Seq × 0.20) + (Effects × 0.15) +
 
 ## See Also
 
+- [ITEST-MVP-TEMPLATE.md](ITEST-MVP-TEMPLATE.md)
 - [ITEST_MVP_QUALITY_GATES.md](ITEST_MVP_QUALITY_GATES.md)
 - [ITEST_MVP_CREATION_RULES.md](ITEST_MVP_CREATION_RULES.md)
 - [../scripts/validate_itest.py](../scripts/validate_itest.py)

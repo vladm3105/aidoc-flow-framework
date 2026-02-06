@@ -27,6 +27,11 @@ Validation scripts for TSPEC (Test Specification) documents. Each script validat
 | `validate_ftest.py` | Functional Test | Validates FTEST documents |
 | `validate_tspec_quality_score.sh` | All | Combined quality score |
 | `validate_all_tspec.sh` | All | Batch validation |
+| `run_tests.py` | All | Unified test runner |
+| `compare_test_results.py` | All | Regression detection |
+| `archive_test_results.py` | All | Result archival |
+| `generate_coverage_report.py` | All | Coverage reporting |
+| `manage_test_registry.py` | All | Test registry management |
 
 ## Usage
 
@@ -94,7 +99,7 @@ bash validate_all_tspec.sh ../../docs/10_TSPEC/
 ```
 ✅ UTEST-01_auth_service.md: PASS (92%)
 ❌ ITEST-01_data_service.md: FAIL (78%)
-⚠️ STEST-01_deployment.md: WARN (95%)
+✅ STEST-01_deployment.md: PASS (100%)
 ```
 
 ### Detailed

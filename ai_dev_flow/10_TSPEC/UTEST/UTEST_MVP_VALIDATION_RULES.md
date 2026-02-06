@@ -217,6 +217,7 @@ The validator script performs:
 
 ## See Also
 
+- [UTEST-MVP-TEMPLATE.md](UTEST-MVP-TEMPLATE.md)
 - [UTEST_MVP_QUALITY_GATES.md](UTEST_MVP_QUALITY_GATES.md)
 - [UTEST_MVP_CREATION_RULES.md](UTEST_MVP_CREATION_RULES.md)
 - [../scripts/validate_utest.py](../scripts/validate_utest.py)

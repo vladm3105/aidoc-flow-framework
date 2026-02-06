@@ -114,5 +114,7 @@ Score = (SYS × 0.30) + (Threshold × 0.25) + (Workflow × 0.25) + (Measurement 
 
 ## See Also
 
+- [FTEST-MVP-TEMPLATE.md](FTEST-MVP-TEMPLATE.md)
 - [FTEST_MVP_QUALITY_GATES.md](FTEST_MVP_QUALITY_GATES.md)
 - [FTEST_MVP_CREATION_RULES.md](FTEST_MVP_CREATION_RULES.md)
+- [../scripts/validate_ftest.py](../scripts/validate_ftest.py)

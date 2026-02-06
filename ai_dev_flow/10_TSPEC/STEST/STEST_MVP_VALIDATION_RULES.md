@@ -151,6 +151,7 @@ Score = (Paths × 0.30) + (Timeout × 0.25) + (Rollback × 0.25) + (Health × 0.
 
 ## See Also
 
+- [STEST-MVP-TEMPLATE.md](STEST-MVP-TEMPLATE.md)
 - [STEST_MVP_QUALITY_GATES.md](STEST_MVP_QUALITY_GATES.md)
 - [STEST_MVP_CREATION_RULES.md](STEST_MVP_CREATION_RULES.md)
 - [../scripts/validate_stest.py](../scripts/validate_stest.py)
