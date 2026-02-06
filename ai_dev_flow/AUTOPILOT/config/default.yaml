@@ -1,6 +1,6 @@
 # MVP Autopilot Default Configuration
-# Version: 5.0
-# Last Updated: 2026-01-19
+# Version: 6.0
+# Last Updated: 2026-02-06
 
 # Global settings that apply to all executions
 defaults:
@@ -14,6 +14,71 @@ defaults:
 # Default entry and exit points
 default_entry_point: L1_BRD
 default_exit_point: L11_TASKS
+
+# =============================================================================
+# TSPEC Layer Configuration (v6.0)
+# =============================================================================
+tspec:
+  enabled: true
+  directory: "10_TSPEC"
+  test_types:
+    - type: UTEST
+      directory: UTEST
+      sources: [REQ, SPEC]
+      min_score: 90
+      description: Unit test specifications
+    - type: ITEST
+      directory: ITEST
+      sources: [CTR, SYS, SPEC]
+      min_score: 85
+      description: Integration test specifications
+    - type: STEST
+      directory: STEST
+      sources: [EARS, BDD, REQ]
+      min_score: 100
+      description: Smoke test specifications
+    - type: FTEST
+      directory: FTEST
+      sources: [SYS]
+      min_score: 85
+      description: Functional test specifications
+  validator: "10_TSPEC/scripts/validate_tspec_quality_score.sh"
+
+# =============================================================================
+# TDD Configuration (v6.0)
+# =============================================================================
+tdd:
+  enabled: false                    # Enable via --tdd-mode flag
+  generate_tests: true              # Generate test files from TSPEC
+  validate_failing: true            # Validate tests fail before code
+  validate_passing: true            # Validate tests pass after code
+  update_tags: true                 # Update PENDING tags to actual paths
+  test_framework: pytest
+  coverage_threshold: 90
+  test_output_dirs:
+    unit: tests/unit/
+    integration: tests/integration/
+    smoke: tests/smoke/
+    functional: tests/functional/
+
+# =============================================================================
+# Change Management Configuration (v6.0)
+# =============================================================================
+change_management:
+  enabled: false                    # Enable via --chg-mode flag
+  auto_classify: true               # Auto-determine L1/L2/L3
+  create_chg_doc: true              # Auto-create CHG document
+  validate_gates: true              # Run gate validation scripts
+  archive_obsolete: true            # Archive replaced artifacts (L3)
+  chg_directory: "docs/CHG"
+  templates:
+    l2: "CHG/CHG-MVP-TEMPLATE.md"
+    l3: "CHG/CHG-TEMPLATE.md"
+  gates:
+    gate01: "CHG/scripts/validate_gate01.sh"
+    gate05: "CHG/scripts/validate_gate05.sh"
+    gate09: "CHG/scripts/validate_gate09.sh"
+    gate12: "CHG/scripts/validate_gate12.sh"
 
 # Auto-detect project mode (greenfield vs brownfield)
 project_modes:
@@ -61,6 +126,7 @@ entry_exit_points:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
+    - L10_TSPEC
     - L11_TASKS
 
 # Valid exit points (valid stop layers)
@@ -74,6 +140,7 @@ valid_exits:
     - L7_REQ
     - L8_CTR
     - L9_SPEC
+    - L10_TSPEC
     - L11_TASKS
 
 # Common start/end combinations
@@ -82,28 +149,46 @@ presets:
     entry: L1_BRD
     exit: L5_ADR
     description: Business planning through architecture decisions
-  
+
   requirements_phase:
     entry: L2_PRD
     exit: L7_REQ
     description: Requirements definition and decomposition
-  
+
   specifications_phase:
     entry: L7_REQ
     exit: L9_SPEC
     description: Technical specifications
-  
+
+  tspec_phase:
+    entry: L9_SPEC
+    exit: L10_TSPEC
+    description: Generate test specifications from SPEC
+
   full_docs:
     entry: L1_BRD
     exit: L11_TASKS
     description: Complete documentation pipeline
-  
+
   testing_focus:
     entry: L4_BDD
     exit: L11_TASKS
     description: Start from BDD, generate through implementation plan
-  
+
   contracts_only:
     entry: L7_REQ
     exit: L8_CTR
     description: Generate API contracts from requirements
+
+  # TDD Presets (v6.0)
+  tdd_full:
+    entry: L1_BRD
+    exit: L11_TASKS
+    tdd_mode: true
+    description: Full TDD workflow with test-first validation
+
+  tdd_from_spec:
+    entry: L9_SPEC
+    exit: L11_TASKS
+    tdd_mode: true
+    description: TDD workflow starting from SPEC

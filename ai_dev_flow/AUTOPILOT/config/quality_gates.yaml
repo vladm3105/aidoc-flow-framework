@@ -1,6 +1,6 @@
 # MVP Autopilot Quality Gates Configuration
-# Version: 5.0
-# Last Updated: 2026-01-19
+# Version: 6.0
+# Last Updated: 2026-02-06
 
 # Quality gate thresholds and approval policies
 
@@ -16,51 +16,147 @@ layer_thresholds:
     min_score: 85
     target_score: 90
     notes: "Business documents - lower threshold for initial hypotheses"
-  
+
   PRD:
     min_score: 90
     target_score: 90
     notes: "Product requirements - high standard"
-  
+
   EARS:
     min_score: 90
     target_score: 90
     notes: "Formal requirements - high precision required"
-  
+
   BDD:
     min_score: 90
     target_score: 90
     notes: "Test scenarios - high clarity required"
-  
+
   ADR:
     min_score: 88
     target_score: 90
     notes: "Architecture decisions - lower threshold for flexibility"
-  
+
   SYS:
     min_score: 90
     target_score: 90
     notes: "System requirements - high standard"
-  
+
   REQ:
     min_score: 90
     target_score: 90
     notes: "Atomic requirements - high precision required"
-  
+
   CTR:
     min_score: 95
     target_score: 90
     notes: "API contracts - strict validation required"
-  
+
   SPEC:
     min_score: 92
     target_score: 90
     notes: "Technical specifications - high precision required"
-  
+
+  # TSPEC Layer Thresholds (v6.0)
+  TSPEC:
+    min_score: 90
+    target_score: 90
+    notes: "Test specifications - TDD readiness required"
+
   TASKS:
     min_score: 90
     target_score: 90
     notes: "Implementation tasks - clarity and executability required"
+
+# =============================================================================
+# TSPEC Quality Gates (v6.0)
+# =============================================================================
+tspec_quality_gates:
+  UTEST:
+    min_score: 90
+    target_score: 95
+    required_sections:
+      - purpose
+      - test_cases
+      - io_tables
+      - traceability
+    notes: "Unit test specifications - high coverage required"
+
+  ITEST:
+    min_score: 85
+    target_score: 90
+    required_sections:
+      - purpose
+      - component_interactions
+      - sequence_diagrams
+      - traceability
+    notes: "Integration test specifications"
+
+  STEST:
+    min_score: 100
+    target_score: 100
+    required_sections:
+      - critical_paths
+      - timeout_budget
+      - rollback_procedure
+      - traceability
+    notes: "Smoke test specifications - 100% coverage required"
+
+  FTEST:
+    min_score: 85
+    target_score: 90
+    required_sections:
+      - sys_requirements
+      - threshold_validation
+      - traceability
+    notes: "Functional test specifications"
+
+# =============================================================================
+# TDD Quality Gates (v6.0)
+# =============================================================================
+tdd_quality_gates:
+  red_state:
+    description: "All tests must fail before code generation"
+    exit_code_required: "!= 0"
+    notes: "Expected failure state - no implementation exists"
+
+  green_state:
+    description: "All tests must pass after code generation"
+    exit_code_required: "== 0"
+    notes: "Expected success state - implementation complete"
+
+  coverage:
+    min_threshold: 90
+    target_threshold: 95
+    notes: "Minimum line coverage for TDD workflow"
+
+# =============================================================================
+# CHG Quality Gates (v6.0)
+# =============================================================================
+chg_quality_gates:
+  gate01:
+    layers: [L1_BRD, L2_PRD, L3_EARS, L4_BDD]
+    description: "Business layer changes"
+    approval_required: true
+    script: "CHG/scripts/validate_gate01.sh"
+
+  gate05:
+    layers: [L5_ADR, L6_SYS, L7_REQ, L8_CTR]
+    description: "Architecture layer changes"
+    approval_required: true
+    script: "CHG/scripts/validate_gate05.sh"
+
+  gate09:
+    layers: [L9_SPEC, L10_TSPEC, L11_TASKS]
+    description: "Design/test layer changes"
+    approval_required: true
+    script: "CHG/scripts/validate_gate09.sh"
+
+  gate12:
+    layers: [L12_CODE, L13_TESTS, L14_DEPLOY]
+    description: "Implementation layer changes"
+    approval_required: true
+    script: "CHG/scripts/validate_gate12.sh"
 
 # Validation severity levels
 severity_levels:

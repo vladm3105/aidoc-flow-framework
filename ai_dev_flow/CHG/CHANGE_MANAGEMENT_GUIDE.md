@@ -40,7 +40,7 @@ The SDD framework handles changes through a structured approach that:
 
 ### 2.1 Three Levels of Change
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    CHANGE CLASSIFICATION                            │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -61,7 +61,7 @@ The SDD framework handles changes through a structured approach that:
 
 ### 2.2 Level Decision Flowchart
 
-```
+```text
                     ┌─────────────────────┐
                     │  Change Requested   │
                     └──────────┬──────────┘
@@ -100,7 +100,7 @@ The SDD framework handles changes through a structured approach that:
 
 ### 3.1 Change Source Map
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      CHANGE SOURCES                                  │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -136,6 +136,7 @@ The SDD framework handles changes through a structured approach that:
 ### 3.2 Source Details
 
 #### Source 1: UPSTREAM (Business-Driven)
+
 **Origin**: Layers 1-4 (BRD, PRD, EARS, BDD)
 **Direction**: Top-down cascade to L14
 
@@ -149,6 +150,7 @@ The SDD framework handles changes through a structured approach that:
 **Guide**: `sources/UPSTREAM_CHANGE_GUIDE.md`
 
 #### Source 2: MIDSTREAM (Architecture-Driven)
+
 **Origin**: Layers 5-11 (ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS)
 **Direction**: Bi-directional (may bubble up or cascade down)
 
@@ -163,6 +165,7 @@ The SDD framework handles changes through a structured approach that:
 **Guide**: `sources/MIDSTREAM_CHANGE_GUIDE.md`
 
 #### Source 3: DOWNSTREAM (Defect-Driven)
+
 **Origin**: Layers 12-14 (Code, Tests, Validation)
 **Direction**: Bottom-up (may bubble to source layer)
 
@@ -206,7 +209,7 @@ The SDD framework implements a formal 4-Gate system for validating changes at la
 
 ### 4.1 Gate Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        4-GATE CHANGE MANAGEMENT SYSTEM                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -351,7 +354,7 @@ Changes affecting L9+ MUST include TSPEC updates to maintain test-first workflow
 
 ### 6.2 Cascade Rules
 
-```
+```text
 Change at Layer N typically requires regeneration of Layers N+1 through 14
 
 Example: BRD change (L1)
@@ -374,7 +377,7 @@ Example: BRD change (L1)
 
 ### 7.1 L1 Patch Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │            L1 PATCH WORKFLOW                │
 ├─────────────────────────────────────────────┤
@@ -401,7 +404,7 @@ Example: BRD change (L1)
 
 ### 7.2 L2 Minor Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │           L2 MINOR WORKFLOW                 │
 ├─────────────────────────────────────────────┤
@@ -436,7 +439,7 @@ Example: BRD change (L1)
 
 ### 7.3 L3 Major Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │           L3 MAJOR WORKFLOW                 │
 ├─────────────────────────────────────────────┤
@@ -487,7 +490,7 @@ Example: BRD change (L1)
 
 ### 8.1 CHG Directory Structure
 
-```
+```text
 docs/CHG/
 ├── CHANGE_MANAGEMENT_GUIDE.md      # This file
 ├── CHANGE_CLASSIFICATION_GUIDE.md  # L1/L2/L3 decision guide
@@ -525,7 +528,7 @@ docs/CHG/
 
 The TSPEC layer (L10) plays a critical role in change management:
 
-```
+```text
 Change → SPEC update → TSPEC update → TASKS update → Code → Tests
                            │
                            └── Test specifications MUST be

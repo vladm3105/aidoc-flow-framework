@@ -1,20 +1,30 @@
 ---
-title: "MVP Autopilot: Core Guide (v5.0 - Simplified & Production-Ready)"
+title: "MVP Autopilot: Core Guide (v6.0 - TSPEC, TDD & CHG Integration)"
 tags:
   - framework-core
   - mvp-workflow
   - automation
+  - tspec
+  - tdd
+  - change-management
 custom_fields:
   document_type: guide
   artifact_type: DOCS
   layer: 0
   priority: primary
   development_status: active
+  version: "6.0"
+  last_updated: "2026-02-06"
 ---
 
-# MVP Autopilot: Core Guide (v5.0)
+# MVP Autopilot: Core Guide (v6.0)
 
 This document is the authoritative reference for MVP Autopilot in the AI Dev Flow framework. It explains what autopilot does, how to use it, and provides practical guidance for both local development and GitHub Actions CI/CD.
+
+**v6.0 Enhancements**:
+- **TSPEC Integration**: Layer 10 Test Specifications (UTEST, ITEST, STEST, FTEST)
+- **TDD Workflow**: Test-Driven Development with test-first validation
+- **CHG Integration**: 4-Gate Change Management for existing artifacts
 
 ## Quick Start
 
@@ -47,12 +57,15 @@ make docs
 
 ### Core Capabilities
 
-1. **Single-Command Scaffolding**: Generates all MVP artifacts from BRD to TASKS
+1. **Single-Command Scaffolding**: Generates all MVP artifacts from BRD through TSPEC to TASKS (L1-L11)
 2. **Template-Based Generation**: Uses repo templates with smart placeholder substitution
 3. **Per-Layer Validation**: Runs quality gate validators for each generated document
 4. **Auto-Fix Strategies**: Fixes frontmatter, titles, required sections, and traceability tags
-5. **Traceability Tagging**: Automatic cumulative tagging across all 15 layers
+5. **Traceability Tagging**: Automatic cumulative tagging across all 11 documentation layers
 6. **Flexible Execution**: Supports multiple execution modes and entry/exit points
+7. **TSPEC Generation**: Creates test specifications (Unit, Integration, Smoke, Functional) from upstream artifacts
+8. **TDD Workflow**: Test-first development with failing test validation before code generation
+9. **Change Management**: 4-Gate change validation system for modifying existing artifacts
 
 ### What It Does NOT Do
 
@@ -94,28 +107,44 @@ ai_dev_flow/AUTOPILOT/
 
 ```
 ┌─────────────────────────────────────────┐
-│  Configuration Loading              │
-│  (Load YAML configs)               │
+│  Configuration Loading                  │
+│  (Load YAML configs)                    │
 └─────────────────────────────────────────┘
                ↓
 ┌─────────────────────────────────────────┐
-│  Pre-Checks                       │
-│  (Validate paths, dependencies)       │
+│  Pre-Checks                             │
+│  (Validate paths, dependencies)         │
 └─────────────────────────────────────────┘
                ↓
 ┌─────────────────────────────────────────┐
-│  Document Generation                │
-│  (Use templates, auto-populate tags)  │
+│  Documentation Generation (L1-L9)       │
+│  BRD → PRD → EARS → BDD → ADR →        │
+│  SYS → REQ → CTR → SPEC                 │
 └─────────────────────────────────────────┘
                ↓
 ┌─────────────────────────────────────────┐
-│  Validation                       │
-│  (Run quality gate scripts)         │
+│  TSPEC Generation (L10)                 │
+│  UTEST, ITEST, STEST, FTEST             │
 └─────────────────────────────────────────┘
                ↓
 ┌─────────────────────────────────────────┐
-│  Post-Checks                      │
-│  (Verify outputs, link integrity)     │
+│  TDD Validation (if --tdd-mode)         │
+│  Generate tests, validate fail state    │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  TASKS Generation (L11)                 │
+│  (Implementation task breakdown)        │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Validation                             │
+│  (Run quality gate scripts)             │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Post-Checks                            │
+│  (Verify outputs, link integrity)       │
 └─────────────────────────────────────────┘
 ```
 
@@ -140,6 +169,17 @@ ai_dev_flow/AUTOPILOT/
 | `--config` | `-c` | No | Custom configuration file |
 | `--report` | `-R` | No | Report format: `none\|markdown\|json\|text` |
 
+### TDD & CHG Flags (v6.0)
+
+| Flag | Short | Required | Description |
+|-------|--------|----------|-------------|
+| `--tdd-mode` | `-T` | No | Enable TDD workflow with test-first validation |
+| `--chg-mode` | `-C` | No | Enable Change Management workflow |
+| `--chg-level` | | No | Change level: `L1`, `L2`, or `L3` |
+| `--chg-source` | | No | Change source: `upstream`, `midstream`, `downstream`, `external`, `feedback` |
+| `--skip-tspec` | | No | Skip TSPEC generation (legacy mode) |
+| `--validate-gates` | | No | Run CHG gate validation only |
+
 ### Execution Modes
 
 | Mode | Description | Use Case |
@@ -148,6 +188,8 @@ ai_dev_flow/AUTOPILOT/
 | **validate** | Run validators on existing documents | Quality assurance |
 | **resume** | Continue existing project, generate missing layers | Incremental updates |
 | **plan** | Generate execution plan without making changes | Preview mode |
+| **tdd** | TDD mode - Generate tests before code, validate fail/pass states | Test-first development |
+| **chg** | CHG mode - Change management with gate validation | Modifying existing artifacts |
 
 ### Configuration Profiles
 
@@ -265,13 +307,48 @@ ai_dev_flow/AUTOPILOT/
 - Script: `09_SPEC/scripts/validate_spec_quality_score.sh`
 - Minimum Score: 92% (non-strict), 95% (strict)
 
-### TASKS (Layer 10)
+### TSPEC (Layer 10) - Test Specifications
+**Directory**: `10_TSPEC/`
+
+TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable Test-Driven Development (TDD) workflow.
+
+**Test Type Specifications**:
+
+| Type | Directory | Sources | Purpose | Min Score |
+|------|-----------|---------|---------|-----------|
+| UTEST | `10_TSPEC/UTEST/` | REQ (L7), SPEC (L9) | Unit test specifications | 90% |
+| ITEST | `10_TSPEC/ITEST/` | CTR (L8), SYS (L6), SPEC (L9) | Integration test specifications | 85% |
+| STEST | `10_TSPEC/STEST/` | EARS (L3), BDD (L4), REQ (L7) | Smoke test specifications | 100% |
+| FTEST | `10_TSPEC/FTEST/` | SYS (L6) | Functional test specifications | 85% |
+
+**Generation** (per test type):
+- Template-based generation from upstream artifacts
+- I/O tables with input/expected output specifications
+- Pseudocode for test implementation
+- Traceability tags: `@brd` through `@spec`
+
+**Validation**:
+- Script: `10_TSPEC/scripts/validate_tspec_quality_score.sh`
+- Per-type validators: `validate_utest.py`, `validate_itest.py`, `validate_stest.py`, `validate_ftest.py`
+
+**TDD Integration**:
+- When `--tdd-mode` enabled, generates test files with `@code: PENDING` tags
+- Validates tests fail before code generation (Red state)
+- Updates tags after code generation passes tests (Green state)
+
+**Element ID Format**: `TSPEC.NN.TT.SS`
+- `NN`: Document number (01-99)
+- `TT`: Test type code (40=UTEST, 41=ITEST, 42=STEST, 43=FTEST)
+- `SS`: Sequential test case (01-99)
+
+### TASKS (Layer 11)
 **Template**: `11_TASKS/TASKS-MVP-TEMPLATE.md`
 
 **Generation**:
 - Generated from template
 - Includes execution commands in Section 4
-- 8 cumulative tags: `@brd` through `@spec`
+- 9 cumulative tags: `@brd` through `@tspec`
+- References TSPEC test specifications
 
 **Validation**:
 - Script: `11_TASKS/scripts/validate_tasks_quality_score.sh`
@@ -320,13 +397,23 @@ Every artifact includes tags from ALL upstream layers:
 | **BRD** (L1) | None | No upstream tags |
 | **PRD** (L2) | `@brd` | `@brd: BRD.01.01.01` |
 | **EARS** (L3) | `@brd`, `@prd` | `@brd: BRD.01.01.01`, `@prd: PRD.01.01.01` |
-| **BDD** (L4) | `@brd`, `@prd`, `@ears` | `@brd: BRD.01.01.01`, `@prd: PRD.01.01.01`, `@ears: EARS.01.01.01` |
+| **BDD** (L4) | `@brd`, `@prd`, `@ears` | All upstream tags |
 | **ADR** (L5) | `@brd`, `@prd`, `@ears`, `@bdd` | All upstream tags |
 | **SYS** (L6) | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | All upstream tags |
 | **REQ** (L7) | `@brd` through `@sys` | All upstream tags |
 | **CTR** (L8) | `@brd` through `@req` | All upstream tags |
 | **SPEC** (L9) | `@brd` through `@ctr` | All upstream tags |
-| **TASKS** (L10) | `@brd` through `@spec` | All upstream tags |
+| **TSPEC** (L10) | `@brd` through `@spec` | All upstream tags + `@tspec` |
+| **TASKS** (L11) | `@brd` through `@tspec` | All upstream tags |
+
+### TSPEC-Specific Tags
+
+| Test Type | Required Upstream Tags | Additional Tags |
+|-----------|------------------------|-----------------|
+| UTEST | `@req`, `@spec` | `@threshold` (optional) |
+| ITEST | `@ctr`, `@sys`, `@spec` | `@sequence` (optional) |
+| STEST | `@ears`, `@bdd`, `@req` | `@timeout`, `@rollback` |
+| FTEST | `@sys` | `@threshold` (required) |
 
 ### Dotted vs Hyphenated IDs
 
@@ -334,9 +421,10 @@ Auto-pilot converts hyphenated IDs to dotted forms where required:
 
 | Original | Converted | Where Used |
 |---------|----------|------------|
-| `BRD-01` | `BRD.01` | SYS, REQ, SPEC, TASKS references |
-| `PRD-01` | `PRD.01.01` | EARS, BDD, ADR, SYS, REQ, SPEC, TASKS |
-| `REQ-15` | `REQ.15.01.01` | SPEC, TASKS references |
+| `BRD-01` | `BRD.01` | SYS, REQ, SPEC, TSPEC, TASKS references |
+| `PRD-01` | `PRD.01.01` | EARS, BDD, ADR, SYS, REQ, SPEC, TSPEC, TASKS |
+| `REQ-15` | `REQ.15.01.01` | SPEC, TSPEC, TASKS references |
+| `TSPEC-01` | `TSPEC.01.40.01` | TASKS, Code references |
 
 ---
 
@@ -350,7 +438,7 @@ Auto-pilot converts hyphenated IDs to dotted forms where required:
 **Intent**: ${INTENT}
 **Slug**: ${SLUG}
 **Status**: PASS | FAIL
-**Configuration**: Profile: ${PROFILE}, Strict: ${STRICT}
+**Configuration**: Profile: ${PROFILE}, Strict: ${STRICT}, TDD: ${TDD_MODE}
 **Layers Summary**:
 | Layer | Status | Score | Notes |
 |-------|--------|-------|-------|
@@ -363,7 +451,16 @@ Auto-pilot converts hyphenated IDs to dotted forms where required:
 | REQ | PASS | 90% | ✅ |
 | CTR | PASS | 95% | ✅ |
 | SPEC | PASS | 95% | ✅ |
+| TSPEC | PASS | 91% | ✅ (UTEST:90%, ITEST:92%, STEST:100%, FTEST:88%) |
 | TASKS | PASS | 92% | ✅ |
+
+**TDD Summary** (when --tdd-mode enabled):
+| Phase | Status | Details |
+|-------|--------|---------|
+| Test Generation | ✅ | 24 test cases generated |
+| Red State | ✅ | All tests fail (expected) |
+| Green State | ✅ | All tests pass |
+| Tag Update | ✅ | 24 @code: PENDING → paths |
 ```
 
 **JSON** (`--report json`):
@@ -540,6 +637,281 @@ python3 ai_dev_flow/scripts/validate_all.py \
 - Auto-fix: Enabled
 - Strict: Enabled
 
+**Profile: `tdd`** (Test-Driven Development):
+- Entry: L1_BRD
+- Exit: L11_TASKS + Tests
+- TDD Mode: Enabled
+- Auto-fix: Enabled
+- Test Validation: Red→Green required
+
+---
+
+## TDD Workflow (v6.0)
+
+Test-Driven Development integration enables test-first workflow where tests are generated and validated before code implementation.
+
+### TDD Mode Activation
+
+```bash
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --tdd-mode \
+  --auto-fix \
+  --report markdown
+```
+
+### TDD Execution Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     TDD WORKFLOW                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Generate Documentation (L1-L9)                              │
+│         ↓                                                       │
+│  2. Generate TSPEC (L10)                                        │
+│     - UTEST from REQ + SPEC                                     │
+│     - ITEST from CTR + SYS + SPEC                               │
+│     - STEST from EARS + BDD + REQ                               │
+│     - FTEST from SYS                                            │
+│         ↓                                                       │
+│  3. Generate Test Files                                         │
+│     - Create tests/unit/, tests/integration/, etc.              │
+│     - Tag with @code: PENDING                                   │
+│         ↓                                                       │
+│  4. Validate RED State                                          │
+│     - Run pytest, expect failures                               │
+│     - Exit code != 0 required                                   │
+│         ↓                                                       │
+│  5. Generate TASKS (L11)                                        │
+│         ↓                                                       │
+│  6. Generate Code (if --up-to CODE)                             │
+│         ↓                                                       │
+│  7. Validate GREEN State                                        │
+│     - Run pytest, expect passes                                 │
+│     - Exit code == 0 required                                   │
+│         ↓                                                       │
+│  8. Update Traceability Tags                                    │
+│     - @code: PENDING → @code: src/actual/path.py                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### TDD Configuration
+
+Add to `config/default.yaml`:
+
+```yaml
+tdd:
+  enabled: false              # Enable via --tdd-mode flag
+  generate_tests: true        # Generate test files from TSPEC
+  validate_failing: true      # Validate tests fail before code
+  validate_passing: true      # Validate tests pass after code
+  update_tags: true           # Update PENDING tags to actual paths
+  test_framework: pytest
+  coverage_threshold: 90
+  test_output_dirs:
+    unit: tests/unit/
+    integration: tests/integration/
+    smoke: tests/smoke/
+    functional: tests/functional/
+```
+
+### TDD Traceability Tags
+
+**Before Code Generation**:
+```python
+"""
+Unit tests for REQ-001
+@brd: BRD.01.01.01
+@req: REQ-01.01.01
+@spec: SPEC-01.yaml
+@tspec: TSPEC.01.40.01
+@code: PENDING
+"""
+```
+
+**After Code Generation**:
+```python
+"""
+Unit tests for REQ-001
+@brd: BRD.01.01.01
+@req: REQ-01.01.01
+@spec: SPEC-01.yaml
+@tspec: TSPEC.01.40.01
+@code: src/services/validation_service.py
+"""
+```
+
+### TDD Quality Gates
+
+| Phase | Requirement | Exit Code |
+|-------|-------------|-----------|
+| Red State | All tests fail | != 0 |
+| Green State | All tests pass | == 0 |
+| Coverage | ≥90% line coverage | Check threshold |
+
+---
+
+## Change Management (CHG) Integration (v6.0)
+
+CHG integration enables formal change management with the 4-Gate validation system when modifying existing artifacts.
+
+### CHG Mode Activation
+
+```bash
+# For L2 Minor changes
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --chg-mode \
+  --chg-level L2 \
+  --chg-source midstream \
+  --auto-fix \
+  --report markdown
+
+# For L3 Major changes
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --chg-mode \
+  --chg-level L3 \
+  --chg-source upstream \
+  --auto-fix \
+  --report markdown
+```
+
+### 4-Gate System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    4-GATE CHANGE MANAGEMENT                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  GATE-01 (L1-L4)     GATE-05 (L5-L8)                           │
+│  Business Layer      Architecture Layer                        │
+│  BRD, PRD, EARS,     ADR, SYS, REQ, CTR                        │
+│  BDD                                                            │
+│       │                   │                                     │
+│       └─────────┬─────────┘                                     │
+│                 ↓                                               │
+│           GATE-09 (L9-L11)                                      │
+│           Design/Test Layer                                     │
+│           SPEC, TSPEC, TASKS                                    │
+│                 ↓                                               │
+│           GATE-12 (L12-L14)                                     │
+│           Implementation Layer                                  │
+│           Code, Tests, Deploy                                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Change Level Determination
+
+| Level | Criteria | Process |
+|-------|----------|---------|
+| **L1 Patch** | Bug fix, typo, no behavior change | Edit in place, version bump |
+| **L2 Minor** | Feature add, enhancement, non-breaking | CHG-MVP template, partial regeneration |
+| **L3 Major** | Architecture change, breaking change | CHG template, archive old, full cascade |
+
+### Change Source Routing
+
+| Source | Entry Gate | Cascade Path |
+|--------|------------|--------------|
+| Upstream (L1-L4) | GATE-01 | 01 → 05 → 09 → 12 |
+| Midstream (L5-L11) | GATE-05 | 05 → 09 → 12 |
+| Downstream (L12-L14) | GATE-12 | 12 only |
+| External | GATE-05 | 05 → 09 → 12 |
+| Feedback | GATE-12 | 12 (or bubble up) |
+
+### CHG Execution Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     CHG WORKFLOW                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Analyze Change Request                                      │
+│     - Identify affected layers                                  │
+│     - Determine change level (L1/L2/L3)                         │
+│     - Determine entry gate                                      │
+│         ↓                                                       │
+│  2. Create CHG Document                                         │
+│     - Use CHG-MVP-TEMPLATE (L2) or CHG-TEMPLATE (L3)            │
+│     - Populate impact analysis                                  │
+│         ↓                                                       │
+│  3. Validate Gates                                              │
+│     - Run gate validation scripts                               │
+│     - Collect approvals                                         │
+│         ↓                                                       │
+│  4. Archive Obsolete (L3 only)                                  │
+│     - Move old artifacts to archive/                            │
+│     - Add deprecation notices                                   │
+│         ↓                                                       │
+│  5. Process Affected Layers                                     │
+│     - Regenerate downstream artifacts                           │
+│     - Update TSPEC if L9+ affected                              │
+│         ↓                                                       │
+│  6. Repair Traceability                                         │
+│     - Update cross-references                                   │
+│     - Verify no broken links                                    │
+│         ↓                                                       │
+│  7. Complete CHG Document                                       │
+│     - Update status to Completed                                │
+│     - Document lessons learned                                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### CHG Configuration
+
+Add to `config/default.yaml`:
+
+```yaml
+change_management:
+  enabled: false              # Enable via --chg-mode flag
+  auto_classify: true         # Auto-determine L1/L2/L3
+  create_chg_doc: true        # Auto-create CHG document
+  validate_gates: true        # Run gate validation scripts
+  archive_obsolete: true      # Archive replaced artifacts (L3)
+  chg_directory: "docs/CHG"
+  templates:
+    l2: "CHG/CHG-MVP-TEMPLATE.md"
+    l3: "CHG/CHG-TEMPLATE.md"
+  gates:
+    gate01: "CHG/scripts/validate_gate01.sh"
+    gate05: "CHG/scripts/validate_gate05.sh"
+    gate09: "CHG/scripts/validate_gate09.sh"
+    gate12: "CHG/scripts/validate_gate12.sh"
+```
+
+### CHG Validation Commands
+
+```bash
+# Validate CHG routing
+python CHG/scripts/validate_chg_routing.py docs/CHG/CHG-XX/CHG-XX.md
+
+# Validate specific gates
+./CHG/scripts/validate_gate01.sh docs/CHG/CHG-XX.md
+./CHG/scripts/validate_gate05.sh docs/CHG/CHG-XX.md
+./CHG/scripts/validate_gate09.sh docs/CHG/CHG-XX.md
+./CHG/scripts/validate_gate12.sh docs/CHG/CHG-XX.md
+
+# Validate all applicable gates
+./CHG/scripts/validate_all_gates.sh docs/CHG/CHG-XX.md
+```
+
+### TSPEC in Change Management
+
+Changes affecting L9 (SPEC) or lower MUST include TSPEC updates:
+
+```
+Change → SPEC update → TSPEC update → TASKS update → Code → Tests
+                           │
+                           └── Test specifications MUST be
+                               updated BEFORE code changes
+```
+
 ---
 
 ## Safety & Security
@@ -636,16 +1008,40 @@ Support for multiple AI providers via pluggable architecture:
 - `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` - SDD methodology
 - `ai_dev_flow/TRACEABILITY.md` - Traceability standards
 
+**TSPEC & TDD** (v6.0):
+- `ai_dev_flow/10_TSPEC/README.md` - TSPEC layer overview
+- `ai_dev_flow/10_TSPEC/TSPEC-00_index.md` - Test specification index
+- `ai_dev_flow/TESTING_STRATEGY_TDD.md` - TDD integration guide
+
+**Change Management** (v6.0):
+- `ai_dev_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` - 4-Gate system
+- `ai_dev_flow/CHG/CHANGE_CLASSIFICATION_GUIDE.md` - L1/L2/L3 decision
+- `ai_dev_flow/CHG/CHG-MVP-TEMPLATE.md` - L2 change template
+- `ai_dev_flow/CHG/CHG-TEMPLATE.md` - L3 change template
+
 **Validation**:
 - `ai_dev_flow/VALIDATION_STANDARDS.md` - Validation rules
 - Layer-specific validation rules: `ai_dev_flow/{LAYER}/*_VALIDATION_RULES.md`
 
 **Scripts**:
 - `ai_dev_flow/scripts/README.md` - Script registry
+- `ai_dev_flow/10_TSPEC/scripts/README.md` - TSPEC validation scripts
+- `ai_dev_flow/CHG/scripts/` - CHG gate validation scripts
 
 ---
 
 ## Version History
+
+**v6.0** (2026-02-06):
+- Added TSPEC layer (L10) integration with 4 test types
+- Added TDD workflow mode (`--tdd-mode`) with Red→Green validation
+- Added CHG integration (`--chg-mode`) with 4-Gate system
+- Fixed layer numbering: TSPEC=L10, TASKS=L11
+- Added new CLI flags for TDD and CHG modes
+- Updated traceability hierarchy to include TSPEC
+- Added TDD configuration section
+- Added CHG configuration section
+- Enhanced reporting with TDD summary
 
 **v5.0** (2026-01-19):
 - Simplified configuration system (modular YAML configs)
@@ -668,7 +1064,10 @@ Support for multiple AI providers via pluggable architecture:
 ## Summary
 
 The MVP Autopilot provides:
-- **90%+ automation** of the 15-layer SDD workflow (L1-L10)
+- **90%+ automation** of the 11-layer SDD documentation workflow (L1-L11)
+- **TSPEC integration** for formal test specifications (Unit, Integration, Smoke, Functional)
+- **TDD workflow** with test-first development and Red→Green validation
+- **CHG integration** with 4-Gate change management system
 - **Quality enforcement** via automated validation gates
 - **Flexible execution** for local development and CI/CD
 - **Comprehensive documentation** for all features
@@ -678,6 +1077,8 @@ The MVP Autopilot provides:
 **Key Principles**:
 - Simplicity over complexity
 - Convention over configuration
+- Test-first development (TDD)
+- Formal change management (CHG)
 - Standard operations via Makefile
 - Modular configuration files
 - Comprehensive testing
