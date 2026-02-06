@@ -1,0 +1,170 @@
+# Test Registry Schema
+# Version: 1.0
+# Purpose: Validates entries in test_registry.yaml
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Test Registry Schema"
+description: "Schema for validating test registry entries in the AI Dev Flow framework"
+
+definitions:
+  test_status:
+    type: string
+    enum: ["active", "deprecated", "skipped"]
+    description: "Current status of the test"
+
+  test_type:
+    type: string
+    enum: ["UTEST", "ITEST", "STEST", "FTEST"]
+    description: "Test category according to TSPEC layer"
+
+  test_result:
+    type: string
+    enum: ["pass", "fail", "skip", "error"]
+    description: "Last execution result"
+
+  test_entry:
+    type: object
+    required:
+      - test_id
+      - test_type
+      - name
+      - file_path
+      - status
+      - created_date
+    properties:
+      test_id:
+        type: string
+        pattern: "^(UTEST|ITEST|STEST|FTEST)-[0-9]{3}$"
+        description: "Unique test identifier following naming standards"
+        examples: ["UTEST-001", "ITEST-002", "STEST-001", "FTEST-001"]
+
+      test_type:
+        $ref: "#/definitions/test_type"
+
+      name:
+        type: string
+        minLength: 5
+        maxLength: 100
+        description: "Human-readable test name"
+
+      file_path:
+        type: string
+        pattern: "^tests/.*\\.py(::.+)?$"
+        description: "Path to test file, optionally with test function"
+        examples:
+          - "tests/unit/test_auth.py"
+          - "tests/unit/test_auth.py::test_token_generation"
+
+      status:
+        $ref: "#/definitions/test_status"
+
+      created_date:
+        type: string
+        format: date
+        description: "Date test was created (YYYY-MM-DD)"
+
+      upstream_refs:
+        type: array
+        items:
+          type: string
+          pattern: "^(REQ|SPEC|CTR|BDD|SYS)-[0-9]{3}$"
+        description: "List of upstream artifact references"
+        examples:
+          - ["REQ-001", "SPEC-001"]
+
+      tags:
+        type: array
+        items:
+          type: string
+        description: "pytest markers and custom tags"
+        examples:
+          - ["auth", "security", "fast"]
+
+      execution_time:
+        type: number
+        minimum: 0
+        description: "Last known duration in seconds"
+
+      last_result:
+        $ref: "#/definitions/test_result"
+
+      last_run_date:
+        type: string
+        format: date-time
+        description: "Last execution timestamp (ISO 8601)"
+
+      coverage_targets:
+        type: array
+        items:
+          type: string
+        description: "Files or functions this test covers"
+        examples:
+          - ["src/auth.py::generate_token", "src/auth.py::validate_token"]
+
+      dependencies:
+        type: array
+        items:
+          type: string
+          pattern: "^(UTEST|ITEST|STEST|FTEST)-[0-9]{3}$"
+        description: "Tests that must run before this one"
+
+type: object
+required:
+  - version
+  - last_updated
+  - statistics
+  - tests
+
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+$"
+    description: "Registry schema version"
+
+  last_updated:
+    type: string
+    format: date
+    description: "Last modification date"
+
+  statistics:
+    type: object
+    required:
+      - total_tests
+      - by_type
+      - by_status
+    properties:
+      total_tests:
+        type: integer
+        minimum: 0
+      by_type:
+        type: object
+        properties:
+          UTEST:
+            type: integer
+            minimum: 0
+          ITEST:
+            type: integer
+            minimum: 0
+          STEST:
+            type: integer
+            minimum: 0
+          FTEST:
+            type: integer
+            minimum: 0
+      by_status:
+        type: object
+        properties:
+          active:
+            type: integer
+            minimum: 0
+          deprecated:
+            type: integer
+            minimum: 0
+          skipped:
+            type: integer
+            minimum: 0
+
+  tests:
+    type: array
+    items:
+      $ref: "#/definitions/test_entry"

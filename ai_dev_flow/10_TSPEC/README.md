@@ -186,9 +186,152 @@ bash scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
 bash scripts/validate_all_tspec.sh docs/10_TSPEC/
 ```
 
+## Runtime Test Infrastructure
+
+The TSPEC layer includes runtime infrastructure for test execution, tracking, and regression detection.
+
+### Test Registry System
+
+Central catalog for all tests with metadata and traceability:
+
+| File | Purpose |
+|------|---------|
+| `test_registry_schema.yaml` | JSON Schema for registry validation |
+| `test_registry.yaml` | Central test catalog |
+| `test_result_schema.yaml` | Schema for test result files |
+| `scripts/manage_test_registry.py` | Registry management CLI |
+
+**Registry Commands**:
+```bash
+# Initialize empty registry
+python scripts/manage_test_registry.py --init
+
+# Sync tests from filesystem
+python scripts/manage_test_registry.py --sync
+
+# Add test manually
+python scripts/manage_test_registry.py --add UTEST-001 UTEST "Test name" "tests/unit/test_file.py::test_func"
+
+# List all tests
+python scripts/manage_test_registry.py --list
+
+# Filter by type
+python scripts/manage_test_registry.py --list --type UTEST
+
+# Validate registry consistency
+python scripts/manage_test_registry.py --validate
+
+# Generate registry report
+python scripts/manage_test_registry.py --report
+```
+
+### Test Execution
+
+Project-level test runner with unified configuration:
+
+| File | Location | Purpose |
+|------|----------|---------|
+| `pytest.ini` | Project root | Pytest configuration |
+| `pyproject.toml` | Project root | Coverage and tool config |
+| `tests/conftest.py` | tests/ | Shared fixtures |
+| `scripts/run_tests.py` | scripts/ | Unified test runner |
+
+**Test Execution Commands**:
+```bash
+# Run by type
+python scripts/run_tests.py --type utest
+python scripts/run_tests.py --type itest
+python scripts/run_tests.py --type stest
+python scripts/run_tests.py --type ftest
+python scripts/run_tests.py --type all
+
+# Save results for comparison
+python scripts/run_tests.py --type utest --save
+
+# Run with coverage
+python scripts/run_tests.py --type all --coverage
+```
+
+### Regression Detection
+
+Compare test results between runs to detect regressions:
+
+| File | Purpose |
+|------|---------|
+| `scripts/compare_test_results.py` | Regression detection |
+| `scripts/archive_test_results.py` | Result archival |
+
+**Comparison Commands**:
+```bash
+# Compare two result files
+python scripts/compare_test_results.py baseline.json current.json
+
+# Compare latest results in directory
+python scripts/compare_test_results.py --latest tests/results/
+
+# Output as JSON
+python scripts/compare_test_results.py --json baseline.json current.json
+```
+
+### Coverage Reports
+
+Track and enforce coverage thresholds:
+
+| File | Purpose |
+|------|---------|
+| `scripts/generate_coverage_report.py` | Coverage generation |
+| `tests/coverage_html/` | HTML reports |
+| `tests/results/coverage.json` | JSON coverage data |
+
+**Coverage Commands**:
+```bash
+# Generate coverage report
+python scripts/generate_coverage_report.py --type all --html
+
+# Check threshold
+python scripts/generate_coverage_report.py --check --threshold 80
+
+# View trend
+python scripts/generate_coverage_report.py --trend
+```
+
+### CI/CD Integration
+
+GitHub Actions workflow at `.github/workflows/test-pipeline.yml`:
+
+- Unit tests run on every push
+- Integration tests run after unit tests pass
+- Smoke tests run on main branch deployments
+- Coverage reports generated and archived
+- Regression detection on pull requests
+
+### Test Directory Structure
+
+```
+tests/
+├── conftest.py              # Shared fixtures
+├── test_config.yaml         # Test environment config
+├── unit/                    # UTEST (Code 40)
+│   ├── conftest.py
+│   └── test_*.py
+├── integration/             # ITEST (Code 41)
+│   ├── conftest.py
+│   └── test_*.py
+├── smoke/                   # STEST (Code 42)
+│   ├── conftest.py
+│   └── test_*.py
+├── functional/              # FTEST (Code 43)
+│   ├── conftest.py
+│   └── test_*.py
+└── results/                 # Test result archives
+```
+
+---
+
 ## See Also
 
 - [TSPEC-00_index.md](TSPEC-00_index.md) - Master index of all test specifications
 - [TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md](TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md) - Combined matrix template
 - [TESTING_STRATEGY_TDD.md](../TESTING_STRATEGY_TDD.md) - TDD workflow overview
 - [TRACEABILITY.md](../TRACEABILITY.md) - Full traceability chain
+- [tests/README.md](../../tests/README.md) - Test directory documentation

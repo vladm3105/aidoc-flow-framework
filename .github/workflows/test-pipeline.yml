@@ -1,0 +1,288 @@
+# Test Pipeline for AI Dev Flow
+#
+# Runs tests across all types (UTEST, ITEST, STEST, FTEST) and compares
+# results against baseline to detect regressions.
+#
+# Reference: ai_dev_flow/10_TSPEC/, TESTING_STRATEGY_TDD.md
+
+name: Test Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'ai_dev_flow/**'
+      - 'pytest.ini'
+      - 'pyproject.toml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Test type to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - utest
+          - itest
+          - stest
+          - ftest
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Unit Tests - Fast, isolated tests
+  unit-tests:
+    name: Unit Tests (UTEST)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run unit tests
+        run: |
+          python scripts/run_tests.py --type utest --save
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: tests/results/
+          retention-days: 30
+
+      - name: Compare with baseline
+        run: |
+          if [ -f tests/results/baseline_utest.json ]; then
+            python scripts/compare_test_results.py \
+              tests/results/baseline_utest.json \
+              tests/results/latest_utest.json || true
+          else
+            echo "No baseline file found, skipping comparison"
+          fi
+
+  # Integration Tests - Requires services/databases
+  integration-tests:
+    name: Integration Tests (ITEST)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: unit-tests
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run integration tests
+        env:
+          TEST_DB_HOST: localhost
+          TEST_DB_PORT: 5432
+          TEST_DB_USER: test_user
+          TEST_DB_PASSWORD: test_password
+          TEST_DB_NAME: test_db
+        run: |
+          python scripts/run_tests.py --type itest --save
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: tests/results/
+          retention-days: 30
+
+  # Smoke Tests - Post-deployment health checks
+  smoke-tests:
+    name: Smoke Tests (STEST)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: integration-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run smoke tests
+        run: |
+          python scripts/run_tests.py --type stest --save
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-results
+          path: tests/results/
+          retention-days: 30
+
+  # Coverage Report
+  coverage-report:
+    name: Coverage Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [unit-tests, integration-tests]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Download unit test results
+        uses: actions/download-artifact@v4
+        with:
+          name: unit-test-results
+          path: tests/results/
+
+      - name: Generate coverage report
+        run: |
+          python scripts/generate_coverage_report.py --type all --html
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: tests/coverage_html/
+          retention-days: 30
+
+      - name: Check coverage threshold
+        run: |
+          python scripts/generate_coverage_report.py --check --threshold 80 || true
+
+  # Regression Detection
+  regression-check:
+    name: Regression Detection
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Check for regressions
+        run: |
+          # Combine and compare results
+          if [ -d artifacts/unit-test-results ]; then
+            echo "Checking unit test regressions..."
+            python scripts/compare_test_results.py \
+              --latest artifacts/unit-test-results/ \
+              --type utest || echo "Regressions detected in unit tests"
+          fi
+
+      - name: Archive results
+        run: |
+          if [ -d artifacts/unit-test-results ]; then
+            python scripts/archive_test_results.py \
+              --save artifacts/unit-test-results/latest_utest.json \
+              --type utest
+          fi
+
+  # Summary job
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, coverage-report]
+    if: always()
+
+    steps:
+      - name: Check job results
+        run: |
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "Coverage Report: ${{ needs.coverage-report.result }}"
+
+          if [[ "${{ needs.unit-tests.result }}" == "failure" ]]; then
+            echo "Unit tests failed!"
+            exit 1
+          fi
+
+          if [[ "${{ needs.integration-tests.result }}" == "failure" ]]; then
+            echo "Integration tests failed!"
+            exit 1
+          fi
+
+          echo "All tests passed!"

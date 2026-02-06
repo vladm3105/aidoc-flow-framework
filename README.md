@@ -701,6 +701,85 @@ Policy: `ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 - Precise data type specifications
 - Measurable impact criteria
 
+## Testing Infrastructure
+
+The framework includes a complete testing infrastructure aligned with the TSPEC layer (Layer 10).
+
+### Test Types (TSPEC Layer)
+
+| Type | Code | Directory | Purpose |
+|------|------|-----------|---------|
+| UTEST | 40 | `tests/unit/` | Unit tests (fast, isolated) |
+| ITEST | 41 | `tests/integration/` | Integration tests (component interaction) |
+| STEST | 42 | `tests/smoke/` | Smoke tests (post-deployment health) |
+| FTEST | 43 | `tests/functional/` | Functional tests (end-to-end) |
+
+### Quick Start
+
+```bash
+# Run all tests
+python scripts/run_tests.py --type all
+
+# Run specific test type
+python scripts/run_tests.py --type utest --save
+
+# Run with coverage
+python scripts/run_tests.py --type all --coverage
+
+# Compare test results for regression detection
+python scripts/compare_test_results.py baseline.json current.json
+```
+
+### Test Management Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/run_tests.py` | Unified test runner with result saving |
+| `scripts/compare_test_results.py` | Regression detection between runs |
+| `scripts/archive_test_results.py` | Result archival and trend tracking |
+| `scripts/generate_coverage_report.py` | Coverage report generation |
+| `ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py` | Central test catalog management |
+
+### Test Registry
+
+The test registry (`ai_dev_flow/10_TSPEC/test_registry.yaml`) provides a central catalog of all tests with:
+- Test ID and type tracking
+- Upstream artifact references (REQ, SPEC, CTR)
+- Execution history and results
+- Coverage targets
+
+```bash
+# List all registered tests
+python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --list
+
+# Add a test to registry
+python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --add UTEST-001 UTEST "Test name" "tests/unit/test_file.py::test_func"
+
+# Validate registry
+python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --validate
+```
+
+### CI/CD Integration
+
+GitHub Actions workflow (`.github/workflows/test-pipeline.yml`) provides:
+- Automated test execution on push/PR
+- Parallel test type execution
+- Coverage reporting
+- Regression detection against baseline
+- Artifact archival
+
+### Coverage Requirements
+
+| Metric | Threshold |
+|--------|-----------|
+| Unit test coverage | ≥80% |
+| Branch coverage | Enabled |
+| Fail on decrease | Configurable |
+
+Reference: `ai_dev_flow/10_TSPEC/`, `tests/README.md`
+
+---
+
 ## Validation Tools
 
 ### Cumulative Tag Automation (v2.0 - Recommended)
@@ -858,9 +937,24 @@ aidoc-flow-framework/
 │       ├── validate_brd_template.sh   # BRD template compliance
 │       ├── validate_req_template.sh   # REQ template compliance
 │       └── README.md                  # Complete scripts documentation
-├── scripts/                           # Project setup scripts (root level)
+├── scripts/                           # Project setup and test scripts (root level)
 │   ├── setup_project_hybrid.sh        # Automated hybrid project setup
-│   └── standardize_workflow_refs.sh   # Standardize workflow references
+│   ├── standardize_workflow_refs.sh   # Standardize workflow references
+│   ├── run_tests.py                   # Unified test runner
+│   ├── compare_test_results.py        # Regression detection
+│   ├── archive_test_results.py        # Result archival
+│   └── generate_coverage_report.py    # Coverage reports
+├── tests/                             # Test suite (aligned with TSPEC Layer 10)
+│   ├── conftest.py                    # Shared fixtures
+│   ├── test_config.yaml               # Test configuration
+│   ├── unit/                          # UTEST - Unit tests
+│   ├── integration/                   # ITEST - Integration tests
+│   ├── smoke/                         # STEST - Smoke tests
+│   ├── functional/                    # FTEST - Functional tests
+│   └── results/                       # Test result archives
+├── pytest.ini                         # Pytest configuration
+├── pyproject.toml                     # Project and tool configuration
+├── requirements-test.txt              # Test dependencies
 ├── work_plans/                        # Implementation plans
 └── docs/                              # Additional documentation
 ```
@@ -1071,11 +1165,29 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.2
-**Last Updated**: 2025-11-20
+**Version**: 2.3
+**Last Updated**: 2026-02-06
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.3 (2026-02-06)
+- ✅ **Testing Infrastructure**: Complete runtime test infrastructure for TSPEC layer
+  - Added `tests/` directory with 4 test type subdirectories (unit, integration, smoke, functional)
+  - Added `pytest.ini` with markers for test types (utest, itest, stest, ftest)
+  - Added `pyproject.toml` with coverage configuration
+  - Added `requirements-test.txt` with test dependencies
+  - Added `scripts/run_tests.py` - Unified test runner with result saving
+  - Added `scripts/compare_test_results.py` - Regression detection between runs
+  - Added `scripts/archive_test_results.py` - Result archival and trend tracking
+  - Added `scripts/generate_coverage_report.py` - Coverage report generation
+  - Added `ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py` - Test catalog management
+  - Added `ai_dev_flow/10_TSPEC/test_registry.yaml` - Central test registry
+  - Added `ai_dev_flow/10_TSPEC/test_registry_schema.yaml` - Registry validation schema
+  - Added `ai_dev_flow/10_TSPEC/test_result_schema.yaml` - Result file schema
+  - Added `.github/workflows/test-pipeline.yml` - CI/CD test automation
+- ✅ **Sample Tests**: 44 sample tests demonstrating patterns for each test type
+- ✅ **Documentation Updates**: Updated TSPEC README, main README, and tests/README
 
 ### Version 2.2 (2025-11-20)
 - ✅ **Validation Scripts Expansion**: Grew from 3 to 15 validation scripts

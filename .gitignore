@@ -10,6 +10,23 @@ work_plans/
 # Python bytecode
 *.pyc
 __pycache__/
+*.pyo
+*.pyd
 ai_dev_flow/scripts/__pycache__
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/coverage_html/
+tests/results/*.json
+!tests/results/baseline_*.json
+tests/results/archive/
+*.pytest_cache
+
+# Coverage reports
+coverage.xml
+*.cover
+.hypothesis/
 
 

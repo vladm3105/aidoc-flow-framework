@@ -1,0 +1,69 @@
+# Test Configuration for AI Dev Flow
+# This file contains environment-specific test settings
+
+# Environment settings
+environment: test
+debug: true
+
+# Timeouts (seconds)
+timeouts:
+  default: 30
+  unit_test: 5
+  integration_test: 60
+  smoke_test: 30
+  functional_test: 120
+
+# Deployment URLs for smoke/functional tests
+deployment_url: "http://localhost:8000"
+staging_url: "http://staging.example.com"
+
+# Database settings for integration tests
+database:
+  host: localhost
+  port: 5432
+  name: test_db
+  user: test_user
+  # password should be in environment variable: TEST_DB_PASSWORD
+
+# API settings for functional tests
+api:
+  base_url: "http://localhost:8000/api"
+  version: v1
+  timeout: 30
+
+# Coverage thresholds
+coverage:
+  minimum_percent: 80
+  fail_under: true
+  exclude_patterns:
+    - "tests/*"
+    - "*/__pycache__/*"
+    - "*/migrations/*"
+
+# Test result storage
+results:
+  output_dir: tests/results
+  archive_count: 10  # Keep last N runs
+  baseline_file: baseline.json
+
+# Markers configuration
+markers:
+  utest:
+    timeout: 5
+    description: "Unit tests - fast, isolated"
+  itest:
+    timeout: 60
+    description: "Integration tests - requires services"
+  stest:
+    timeout: 30
+    description: "Smoke tests - deployment verification"
+  ftest:
+    timeout: 120
+    description: "Functional tests - end-to-end"
+
+# Feature flags for test execution
+features:
+  parallel_execution: false
+  coverage_enabled: true
+  html_reports: true
+  json_output: true

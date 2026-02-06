@@ -1,0 +1,151 @@
+# Test Result Schema
+# Version: 1.0
+# Purpose: Validates test result files for comparison and archival
+
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Test Result Schema"
+description: "Schema for validating test execution result files"
+
+definitions:
+  test_outcome:
+    type: string
+    enum: ["passed", "failed", "skipped", "error"]
+    description: "Individual test outcome"
+
+  individual_test_result:
+    type: object
+    required:
+      - name
+      - nodeid
+      - outcome
+    properties:
+      name:
+        type: string
+        description: "Test function name"
+      nodeid:
+        type: string
+        description: "Pytest node identifier (file::class::function)"
+      outcome:
+        $ref: "#/definitions/test_outcome"
+      duration:
+        type: number
+        minimum: 0
+        description: "Execution time in seconds"
+      error_message:
+        type: string
+        description: "Error message if failed"
+      stdout:
+        type: string
+        description: "Captured stdout"
+      stderr:
+        type: string
+        description: "Captured stderr"
+      markers:
+        type: array
+        items:
+          type: string
+        description: "Applied pytest markers"
+
+type: object
+required:
+  - run_id
+  - started_at
+  - completed_at
+  - test_type
+  - environment
+  - summary
+  - tests
+
+properties:
+  run_id:
+    type: string
+    pattern: "^[0-9]{8}_[0-9]{6}$"
+    description: "Unique run identifier (YYYYMMDD_HHMMSS)"
+    examples: ["20260206_103000"]
+
+  started_at:
+    type: string
+    format: date-time
+    description: "Run start time (ISO 8601)"
+
+  completed_at:
+    type: string
+    format: date-time
+    description: "Run completion time (ISO 8601)"
+
+  test_type:
+    type: string
+    enum: ["UTEST", "ITEST", "STEST", "FTEST", "ALL"]
+    description: "Type of tests executed"
+
+  environment:
+    type: string
+    enum: ["test", "staging", "production", "ci"]
+    description: "Execution environment"
+
+  summary:
+    type: object
+    required:
+      - total
+      - passed
+      - failed
+      - skipped
+      - errors
+      - duration_seconds
+    properties:
+      total:
+        type: integer
+        minimum: 0
+      passed:
+        type: integer
+        minimum: 0
+      failed:
+        type: integer
+        minimum: 0
+      skipped:
+        type: integer
+        minimum: 0
+      errors:
+        type: integer
+        minimum: 0
+      duration_seconds:
+        type: number
+        minimum: 0
+
+  tests:
+    type: array
+    items:
+      $ref: "#/definitions/individual_test_result"
+
+  git_commit:
+    type: string
+    pattern: "^[a-f0-9]{40}$"
+    description: "Git commit SHA"
+
+  git_branch:
+    type: string
+    description: "Git branch name"
+
+  triggered_by:
+    type: string
+    enum: ["manual", "ci", "scheduled"]
+    description: "How the run was triggered"
+
+  coverage_percent:
+    type: number
+    minimum: 0
+    maximum: 100
+    description: "Overall code coverage percentage"
+
+  metadata:
+    type: object
+    description: "Additional run metadata"
+    properties:
+      python_version:
+        type: string
+      pytest_version:
+        type: string
+      platform:
+        type: string
+      hostname:
+        type: string
