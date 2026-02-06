@@ -86,16 +86,23 @@ ai_dev_flow/AUTOPILOT/
 ├── MVP_GITHUB_CICD_INTEGRATION_PLAN.md
 ├── MVP_PIPELINE_END_TO_END_USER_GUIDE.md
 ├── scripts/
-│   ├── mvp_autopilot.py         # Main orchestration script
-│   ├── validate_metadata.py        # Metadata validator
-│   ├── validate_quality_gates.py   # Quality gate checker (Python)
-│   ├── vertex_code_generator.py    # Optional code generator
-│   └── requirements.txt            # Python dependencies
+│   ├── mvp_autopilot.py              # Main orchestration script
+│   ├── validate_metadata.py          # Metadata validator
+│   ├── validate_quality_gates.py     # Quality gate checker
+│   ├── vertex_code_generator.py      # Optional code generator
+│   ├── analyze_test_requirements.py  # TDD: Test analysis (Phase 2)
+│   ├── generate_spec_tdd.py          # TDD: Test-aware SPEC generation
+│   ├── update_test_traceability.py   # TDD: PENDING tag updater
+│   ├── validate_tdd_stage.py         # TDD: Red/Green validation
+│   ├── generate_integration_tests.py # TDD: Integration test generator
+│   ├── generate_smoke_tests.py       # TDD: Smoke test generator
+│   └── requirements.txt              # Python dependencies
 ├── config/
-│   ├── default.yaml                # Default configuration
-│   ├── quality_gates.yaml           # Quality gate settings
-│   └── layers.yaml                # Layer-specific configs
-└── tests/                             # Test suite
+│   ├── default.yaml                  # Default configuration
+│   ├── tdd.yaml                      # TDD mode configuration
+│   ├── quality_gates.yaml            # Quality gate settings
+│   └── layers.yaml                   # Layer-specific configs
+└── tests/                            # Test suite
     ├── test_config_parsing.py
     ├── test_prechecks.py
     ├── test_cli_parsing.py
@@ -752,6 +759,75 @@ Unit tests for REQ-001
 | Red State | All tests fail | != 0 |
 | Green State | All tests pass | == 0 |
 | Coverage | ≥90% line coverage | Check threshold |
+
+### TDD Scripts Reference (v6.0)
+
+The following scripts support the TDD workflow:
+
+#### Test Analysis Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `analyze_test_requirements.py` | Parse test files, extract traceability tags and method signatures | `--test-dir tests/unit/ --output tmp/test_requirements.json` |
+| `generate_spec_tdd.py` | Generate SPEC YAML from test requirements | `--test-requirements tmp/test_requirements.json --output tmp/generated_specs/` |
+| `update_test_traceability.py` | Update PENDING tags with actual file paths | `--test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/` |
+| `validate_tdd_stage.py` | Validate Red/Green state | `--stage red --test-dir tests/unit/` |
+
+#### Test Generation Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `generate_integration_tests.py` | Generate integration tests from CTR/SYS/SPEC | `--spec-dir ai_dev_flow/09_SPEC/ --output tests/integration/` |
+| `generate_smoke_tests.py` | Generate smoke tests from EARS/BDD/REQ | `--bdd-dir ai_dev_flow/04_BDD/ --output tests/smoke/` |
+
+#### TDD Workflow Commands
+
+```bash
+# Step 1: Analyze existing tests
+python ai_dev_flow/AUTOPILOT/scripts/analyze_test_requirements.py \
+  --test-dir tests/unit/ \
+  --output tmp/test_requirements.json \
+  --verbose
+
+# Step 2: Generate test-aware SPEC
+python ai_dev_flow/AUTOPILOT/scripts/generate_spec_tdd.py \
+  --test-requirements tmp/test_requirements.json \
+  --output ai_dev_flow/09_SPEC/ \
+  --verbose
+
+# Step 3: Validate Red State (before implementation)
+python ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py \
+  --stage red \
+  --test-dir tests/unit/
+
+# Step 4: [Implement code based on SPEC]
+
+# Step 5: Validate Green State (after implementation)
+python ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py \
+  --stage green \
+  --test-dir tests/unit/ \
+  --code-dir src/ \
+  --coverage 90
+
+# Step 6: Update traceability tags
+python ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py \
+  --test-dir tests/unit/ \
+  --spec-dir ai_dev_flow/09_SPEC/ \
+  --tasks-dir ai_dev_flow/11_TASKS/ \
+  --code-dir src/
+
+# Step 7: Generate integration tests
+python ai_dev_flow/AUTOPILOT/scripts/generate_integration_tests.py \
+  --spec-dir ai_dev_flow/09_SPEC/ \
+  --ctr-dir ai_dev_flow/08_CTR/ \
+  --output tests/integration/
+
+# Step 8: Generate smoke tests
+python ai_dev_flow/AUTOPILOT/scripts/generate_smoke_tests.py \
+  --bdd-dir ai_dev_flow/04_BDD/ \
+  --ears-dir ai_dev_flow/03_EARS/ \
+  --output tests/smoke/
+```
 
 ---
 

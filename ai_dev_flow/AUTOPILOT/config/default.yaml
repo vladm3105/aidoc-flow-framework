@@ -62,6 +62,53 @@ tdd:
     functional: tests/functional/
 
 # =============================================================================
+# TDD Awareness Configuration (Phase 2)
+# Enables test-aware SPEC generation where SPEC is designed to satisfy
+# existing test requirements.
+# =============================================================================
+tdd_awareness:
+  enabled: true                      # Enable TDD awareness for SPEC generation
+
+  # Test Requirements Analysis
+  test_requirements_analyzer:
+    script: "AUTOPILOT/scripts/analyze_test_requirements.py"
+    output_file: "tmp/test_requirements.json"
+    pattern: "test_*.py"
+
+  # Test-Aware SPEC Generation
+  spec_generation:
+    script: "AUTOPILOT/scripts/generate_spec_tdd.py"
+    test_driven: true
+    validate_against_tests: true
+    output_dir: "09_SPEC/"
+
+  # Traceability Tag Updates
+  traceability_updater:
+    script: "AUTOPILOT/scripts/update_test_traceability.py"
+    resolve_pending_tags: true
+    validate_no_pending: true
+
+  # Two-Phase Tagging Strategy
+  # Phase 1: Tests generated with PENDING tags
+  # Phase 2: Tags updated after SPEC/Code generation
+  tagging:
+    phase1_tags:
+      - "@spec: PENDING"
+      - "@code: PENDING"
+      - "@tasks: PENDING"
+    phase2_resolution:
+      spec: "ai_dev_flow/09_SPEC/"
+      tasks: "ai_dev_flow/11_TASKS/"
+      code: "src/"
+
+  # Quality Gates for TDD Mode
+  quality_gates:
+    red_state_required: true         # Tests MUST fail before code
+    green_state_required: true       # Tests MUST pass after code
+    coverage_threshold: 90           # Minimum coverage %
+    pending_tags_allowed: false      # No PENDING tags at completion
+
+# =============================================================================
 # Change Management Configuration (v6.0)
 # =============================================================================
 change_management:

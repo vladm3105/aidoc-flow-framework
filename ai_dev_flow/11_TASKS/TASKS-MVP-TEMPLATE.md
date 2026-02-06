@@ -226,6 +226,49 @@ poetry run flake8 src/[module]                 # No lint errors
 poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 ```
 
+<h3>4.5 TDD Mode Commands (Optional)</h3>
+
+> **When to Use**: Enable this section when using `--tdd-mode` flag with MVP Autopilot or when tests exist before implementation.
+
+**Pre-existing Tests Reference**:
+```yaml
+# Test files associated with this TASKS document
+tdd_tests:
+  test_file: tests/unit/test_[module]_[feature].py
+  tspec_ref: TSPEC.NN.40.SS  # Unit test specification
+  req_coverage: [REQ.NN.XX.YY]  # Requirements covered by tests
+```
+
+**Test Execution Commands**:
+```bash
+# Red State: Verify tests fail before implementation
+poetry run pytest tests/unit/test_[module]_[feature].py -v
+# Expected: FAILED (tests should fail - no implementation yet)
+
+# Green State: Verify tests pass after implementation
+poetry run pytest tests/unit/test_[module]_[feature].py -v --tb=short
+# Expected: PASSED (all tests pass after code written)
+
+# Coverage validation
+poetry run pytest tests/unit/test_[module]_[feature].py -v \
+  --cov=src/[module] --cov-report=term-missing --cov-fail-under=90
+```
+
+**Traceability Update Commands**:
+```bash
+# Update PENDING tags in test files after implementation
+python ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py \
+  --test-dir tests/unit/ \
+  --spec-dir ai_dev_flow/09_SPEC/ \
+  --tasks-dir ai_dev_flow/11_TASKS/ \
+  --code-dir src/
+
+# Validate no PENDING tags remain
+python ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py \
+  --test-dir tests/unit/ --validate-only
+# Expected: Exit code 0 (all tags resolved)
+```
+
 ---
 
 <h2>TASKS.NN.18.05: Constraints</h2>

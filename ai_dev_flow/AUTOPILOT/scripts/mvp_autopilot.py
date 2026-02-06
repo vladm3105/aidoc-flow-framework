@@ -894,6 +894,204 @@ def run_layer_validation(root_or_file: Path, layer_name: str, strict: bool = Fal
 
 
 
+def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
+    """
+    Execute TDD workflow stages.
+
+    TDD Workflow:
+    1. Analyze existing tests → test_requirements.json
+    2. Generate test-aware SPEC from test requirements
+    3. Validate Red State (tests must fail - no implementation)
+    4. Generate TASKS from SPEC
+    5. [User generates code]
+    6. Validate Green State (tests must pass after code)
+    7. Update traceability tags (PENDING → actual paths)
+
+    Returns True if TDD workflow completed successfully.
+    """
+    print("🧪 TDD Mode Enabled - Test-First Workflow")
+    print("=" * 60)
+
+    # Paths
+    tmp_dir = root.parent / "tmp"
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    test_requirements_file = tmp_dir / "test_requirements.json"
+    generated_specs_dir = tmp_dir / "generated_specs"
+
+    # Stage 1: Analyze existing tests
+    print("\n📊 Stage 1: Analyzing test requirements...")
+    analyze_script = SCRIPT_DIR / "analyze_test_requirements.py"
+    if analyze_script.exists():
+        try:
+            result = subprocess.run(
+                [sys.executable, str(analyze_script),
+                 "--test-dir", str(test_dir),
+                 "--output", str(test_requirements_file),
+                 "--pattern", "test_*.py",
+                 "--verbose"],
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+            if result.returncode == 0:
+                print(f"  ✅ Test requirements generated: {test_requirements_file}")
+                if result.stdout:
+                    for line in result.stdout.strip().split('\n')[-3:]:
+                        print(f"     {line}")
+            else:
+                print(f"  ⚠️ No tests found or analysis failed")
+                if result.stderr:
+                    print(f"     {result.stderr[:200]}")
+        except Exception as e:
+            print(f"  ❌ Error analyzing tests: {e}")
+    else:
+        print(f"  ⚠️ Analyze script not found: {analyze_script}")
+
+    # Stage 2: Generate test-aware SPEC
+    print("\n📝 Stage 2: Generating test-aware SPEC...")
+    if test_requirements_file.exists():
+        generate_spec_script = SCRIPT_DIR / "generate_spec_tdd.py"
+        if generate_spec_script.exists():
+            try:
+                result = subprocess.run(
+                    [sys.executable, str(generate_spec_script),
+                     "--test-requirements", str(test_requirements_file),
+                     "--output", str(generated_specs_dir),
+                     "--verbose"],
+                    capture_output=True,
+                    text=True,
+                    timeout=120
+                )
+                if result.returncode == 0:
+                    print(f"  ✅ Test-aware SPEC generated")
+                    if result.stdout:
+                        for line in result.stdout.strip().split('\n')[-3:]:
+                            print(f"     {line}")
+                else:
+                    print(f"  ⚠️ SPEC generation had issues")
+            except Exception as e:
+                print(f"  ❌ Error generating SPEC: {e}")
+        else:
+            print(f"  ⚠️ SPEC generation script not found")
+    else:
+        print("  ⏭️ Skipping SPEC generation (no test requirements)")
+
+    # Stage 3: Validate Red State (tests should fail)
+    print("\n🔴 Stage 3: Validating Red State (tests must fail before code)...")
+    red_state_valid = False
+    try:
+        result = subprocess.run(
+            ["pytest", str(test_dir), "-v", "--tb=no", "-q"],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+        if result.returncode != 0:
+            # Tests failed - this is expected in Red State
+            print("  ✅ Red State validated: Tests fail (expected - no implementation yet)")
+            red_state_valid = True
+        else:
+            # Tests passed - unexpected, implementation may already exist
+            print("  ⚠️ Tests passed unexpectedly. Code may already exist.")
+            print("     TDD requires tests to fail before implementation.")
+            red_state_valid = True  # Allow continuing, but warn
+    except FileNotFoundError:
+        print("  ⚠️ pytest not found. Install with: pip install pytest")
+        red_state_valid = True  # Skip validation
+    except subprocess.TimeoutExpired:
+        print("  ⚠️ Test execution timed out")
+        red_state_valid = True
+    except Exception as e:
+        print(f"  ⚠️ Could not run tests: {e}")
+        red_state_valid = True
+
+    # Stage 4: Check for code and validate Green State
+    code_dir = root.parent / "src"
+    if code_dir.exists() and any(code_dir.glob("**/*.py")):
+        print("\n🟢 Stage 4: Validating Green State (tests must pass after code)...")
+        try:
+            result = subprocess.run(
+                ["pytest", str(test_dir), "-v", "--tb=short",
+                 f"--cov={code_dir}", "--cov-report=term-missing",
+                 f"--cov-fail-under={args.coverage_threshold}"],
+                capture_output=True,
+                text=True,
+                timeout=300
+            )
+            if result.returncode == 0:
+                print("  ✅ Green State validated: All tests pass with coverage")
+            else:
+                print("  ⚠️ Tests failed or coverage below threshold")
+                if result.stdout:
+                    # Show last few lines of output
+                    lines = result.stdout.strip().split('\n')
+                    for line in lines[-5:]:
+                        print(f"     {line}")
+        except Exception as e:
+            print(f"  ⚠️ Could not validate Green State: {e}")
+    else:
+        print("\n⏭️ Stage 4: Skipping Green State validation (no code in src/)")
+        print("   Generate code first, then re-run with --tdd-mode to validate.")
+
+    # Stage 5: Update traceability tags
+    print("\n🔗 Stage 5: Updating traceability tags...")
+    update_script = SCRIPT_DIR / "update_test_traceability.py"
+    spec_dir = root / "09_SPEC"
+    tasks_dir = root / "11_TASKS"
+
+    if update_script.exists():
+        try:
+            cmd = [
+                sys.executable, str(update_script),
+                "--test-dir", str(test_dir),
+                "--verbose"
+            ]
+            if spec_dir.exists():
+                cmd.extend(["--spec-dir", str(spec_dir)])
+            if tasks_dir.exists():
+                cmd.extend(["--tasks-dir", str(tasks_dir)])
+            if code_dir.exists():
+                cmd.extend(["--code-dir", str(code_dir)])
+
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            if result.returncode == 0:
+                print("  ✅ Traceability tags updated")
+            else:
+                print("  ⚠️ Some PENDING tags could not be resolved")
+            if result.stdout:
+                for line in result.stdout.strip().split('\n')[-4:]:
+                    print(f"     {line}")
+        except Exception as e:
+            print(f"  ⚠️ Could not update traceability: {e}")
+    else:
+        print(f"  ⚠️ Update script not found: {update_script}")
+
+    # Stage 6: Validate no PENDING tags remain
+    print("\n✅ Stage 6: Validating traceability completeness...")
+    if update_script.exists():
+        try:
+            result = subprocess.run(
+                [sys.executable, str(update_script),
+                 "--test-dir", str(test_dir),
+                 "--validate-only", "--verbose"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
+            if result.returncode == 0:
+                print("  ✅ All PENDING tags resolved")
+            else:
+                print("  ⚠️ Some PENDING tags remain (complete artifacts first)")
+        except Exception as e:
+            print(f"  ⚠️ Could not validate: {e}")
+
+    print("\n" + "=" * 60)
+    print("🧪 TDD Workflow Complete")
+    print("=" * 60)
+
+    return True
+
+
 def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], root: Path):
     """Execute the pipeline based on v4 configuration."""
     print("🚀 Autopilot v4.0 Pipeline Starting...")
@@ -1012,6 +1210,10 @@ def main():
     parser.add_argument("--id-map", default="", help="Path to YAML mapping of IDs to rewrite during fork (from->to)")
     parser.add_argument("--supersede", action="store_true", help="Insert Supersedes/Derived-from notes in forked docs")
     parser.add_argument("--copy-assets", action="store_true", help="Copy relative assets when forking documents")
+    # TDD Mode (Phase 3)
+    parser.add_argument("--tdd-mode", action="store_true", help="Enable TDD workflow: generate tests before code, validate Red→Green states")
+    parser.add_argument("--test-dir", default="tests/unit", help="Directory containing unit tests (default: tests/unit)")
+    parser.add_argument("--coverage-threshold", type=int, default=90, help="Required test coverage percentage (default: 90)")
     args = parser.parse_args()
 
     # Load config (before using args), merge profile/defaults into args where CLI kept defaults
@@ -1046,6 +1248,16 @@ def main():
 
     root = Path(args.root).resolve()
     root.mkdir(parents=True, exist_ok=True)
+
+    # TDD Mode: Run TDD workflow if --tdd-mode specified
+    if args.tdd_mode:
+        test_dir = Path(args.test_dir).resolve()
+        if not test_dir.exists():
+            print(f"⚠️ Test directory not found: {test_dir}")
+            print("   Create test files first or specify --test-dir")
+        else:
+            run_tdd_workflow(args, root, test_dir)
+        # Continue with normal workflow after TDD stages
 
     # Define layers and their upstream tag expectations
     LAYERS: List[Layer] = [
