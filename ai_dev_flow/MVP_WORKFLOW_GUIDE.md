@@ -355,6 +355,42 @@ custom_fields:
 
 ---
 
+## 🔀 Change Management
+
+When changes occur during MVP development, use the **4-Gate Change Management System**:
+
+### Change Levels
+
+| Level | When to Use | Process |
+|-------|-------------|---------|
+| **L1 Patch** | Bug fixes, typos | Edit in place, no CHG required |
+| **L2 Minor** | Feature adds, enhancements | Use `CHG-MVP-TEMPLATE.md` |
+| **L3 Major** | Architecture pivots | Full CHG with archive |
+
+### Gate Entry Points
+
+| Change Source | Entry Gate | Typical Scenario |
+|---------------|------------|------------------|
+| Business request | GATE-01 | New feature from stakeholder |
+| Architecture change | GATE-05 | Technology pivot |
+| Design optimization | GATE-09 | Better algorithm |
+| Bug/defect | GATE-12 | Test failure fix |
+| Emergency | BYPASS | P1 incident |
+
+### Validation Commands
+
+```bash
+# Validate change routing
+python CHG/scripts/validate_chg_routing.py <CHG_FILE>
+
+# Validate specific gate
+./CHG/scripts/validate_gate01.sh <CHG_FILE>
+```
+
+**Documentation**: [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md)
+
+---
+
 ## 🔄 Migration to Full Framework
 
 See the "Migration" section at the bottom of every MVP template when you are ready to scale.

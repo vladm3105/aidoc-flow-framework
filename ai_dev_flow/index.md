@@ -87,18 +87,33 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 > Default Directory Model: All artifact types use nested folders by default — `NN_{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`04_BDD/BDD-NN_{slug}/`) due to validator requirements.
 
-### Change Management (CHG) - Archival Procedure
+### Change Management (CHG) - 4-Gate System
 
-⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management archival procedure.
+⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management system with formal gate validation.
 
-- **CHG** (`CHG/`) - Document immutability enforcement through archival
-  - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
-  - Schema: [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
-  - Rules: [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md)
-  - Purpose: Archive superseded documents when requirements change; create NEW documents from scratch
-  - Why: Prevents LLM probabilistic errors from partial edits; ensures document immutability
-  - Structure: Directory-based (`CHG/CHG-XX_{slug}/`) containing Definition, Frozen Plan, and Archive
-  - When: Architectural pivots, document deprecation, major framework changes
+- **CHG** (`CHG/`) - 4-Gate change management with document immutability enforcement
+  - **Guide**: [CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete change management procedures
+  - **Templates**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) (L3) | [CHG-MVP-TEMPLATE.md](./CHG/CHG-MVP-TEMPLATE.md) (L2)
+  - **Schema**: [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
+  - **Rules**: [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md)
+
+  **4-Gate System**:
+  - **GATE-01** (L1-L4): Business/Product validation - [gates/GATE-01_BUSINESS_PRODUCT.md](./CHG/gates/GATE-01_BUSINESS_PRODUCT.md)
+  - **GATE-05** (L5-L8): Architecture/Contract validation - [gates/GATE-05_ARCHITECTURE_CONTRACT.md](./CHG/gates/GATE-05_ARCHITECTURE_CONTRACT.md)
+  - **GATE-09** (L9-L11): Design/Test validation - [gates/GATE-09_DESIGN_TEST.md](./CHG/gates/GATE-09_DESIGN_TEST.md)
+  - **GATE-12** (L12-L14): Implementation validation - [gates/GATE-12_IMPLEMENTATION.md](./CHG/gates/GATE-12_IMPLEMENTATION.md)
+
+  **Change Source Workflows**:
+  - [workflows/UPSTREAM_WORKFLOW.md](./CHG/workflows/UPSTREAM_WORKFLOW.md) - Business-driven (GATE-01)
+  - [workflows/MIDSTREAM_WORKFLOW.md](./CHG/workflows/MIDSTREAM_WORKFLOW.md) - Architecture-driven (GATE-05)
+  - [workflows/DESIGN_WORKFLOW.md](./CHG/workflows/DESIGN_WORKFLOW.md) - Design-driven (GATE-09)
+  - [workflows/DOWNSTREAM_WORKFLOW.md](./CHG/workflows/DOWNSTREAM_WORKFLOW.md) - Defect-driven (GATE-12)
+  - [workflows/EMERGENCY_WORKFLOW.md](./CHG/workflows/EMERGENCY_WORKFLOW.md) - P1/Security bypass
+
+  **Purpose**: Archive superseded documents when requirements change; create NEW documents from scratch
+  **Why**: Prevents LLM probabilistic errors from partial edits; ensures document immutability
+  **Structure**: Directory-based (`CHG/CHG-XX_{slug}/`) containing Definition, Frozen Plan, and Archive
+  **When**: Architectural pivots, document deprecation, major framework changes
 
 ### Layer 0: Strategy (STRAT) - Optional Pre-Documentation
 
@@ -355,6 +370,14 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 - **Project Kickoff**: [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) - Initial project tasks checklist
 - **Platform vs Feature BRD**: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md) - BRD type selection guide
 
+### Change Management
+
+- **Change Management Guide**: [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete change management procedures
+- **Change Classification**: [CHG/CHANGE_CLASSIFICATION_GUIDE.md](./CHG/CHANGE_CLASSIFICATION_GUIDE.md) - L1/L2/L3 decision guide
+- **Gate Specifications**: [CHG/gates/](./CHG/gates/) - 4-Gate system documentation
+- **Change Workflows**: [CHG/workflows/](./CHG/workflows/) - Change source workflow guides
+- **Gate Error Catalog**: [CHG/gates/GATE_ERROR_CATALOG.md](./CHG/gates/GATE_ERROR_CATALOG.md) - Validation error reference
+
 ### Decision Frameworks
 
 - **Contract Decision**: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR documents
@@ -403,6 +426,14 @@ bash 11_TASKS/scripts/validate_tasks.sh                           # TASKS format
 python scripts/generate_traceability_matrix.py           # Generate traceability matrices
 python scripts/update_traceability_matrix.py             # Update existing matrices
 python scripts/extract_tags.py                           # Extract tags to JSON
+
+# Change Management (4-Gate System)
+./CHG/scripts/validate_gate01.sh <CHG_FILE>              # GATE-01 (Business/Product)
+./CHG/scripts/validate_gate05.sh <CHG_FILE>              # GATE-05 (Architecture/Contract)
+./CHG/scripts/validate_gate09.sh <CHG_FILE>              # GATE-09 (Design/Test)
+./CHG/scripts/validate_gate12.sh <CHG_FILE>              # GATE-12 (Implementation)
+./CHG/scripts/validate_all_gates.sh <CHG_FILE>           # Validate all applicable gates
+python CHG/scripts/validate_chg_routing.py <CHG_FILE>    # Determine gate routing
 ```
 
 **Script Categories:**

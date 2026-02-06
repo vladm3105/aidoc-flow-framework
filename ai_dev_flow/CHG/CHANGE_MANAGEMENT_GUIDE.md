@@ -304,7 +304,7 @@ For P1 incidents or critical security (CVSS >= 9.0):
 
 ## 5. Core Principles
 
-### 4.1 Immutable History (CRITICAL)
+### 5.1 Immutable History (CRITICAL)
 
 > **NEVER edit an approved artifact for a major change.**
 > **ALWAYS archive the old and create a new artifact.**
@@ -315,15 +315,15 @@ For P1 incidents or critical security (CVSS >= 9.0):
 | L2 | Version or create new, document change |
 | L3 | MUST archive old, MUST create new ID |
 
-### 4.2 Formal Audit Trail
+### 5.2 Formal Audit Trail
 
 Every L2+ change must be tracked via a CHG artifact.
 
-### 4.3 Complete Traceability
+### 5.3 Complete Traceability
 
 Migration is not complete until all links are repaired across all 15 layers.
 
-### 4.4 TDD Integration
+### 5.4 TDD Integration
 
 Changes affecting L9+ MUST include TSPEC updates to maintain test-first workflow.
 

@@ -49,28 +49,44 @@ custom_fields:
 
 **⚠️ For the complete authoritative workflow diagram, see [index.md](./index.md#traceability-flow).**
 
-### Change Management (CHG) - Document Immutability
+### Change Management (CHG) - 4-Gate System
 
-⚠️ **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management archival procedure**.
+⚠️ **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management system** with formal gate validation.
 
-**Purpose**: Ensure document immutability by archiving superseded documents when requirements change fundamentally
+**Purpose**: Ensure structured change management with validation gates at layer boundaries
 
-**When to Use CHG**:
-- Architectural pivots requiring document restructuring
-- Deprecating/replacing existing artifacts due to major scope changes
-- Framework-wide changes affecting multiple layers
+**4-Gate System**:
+
+| Gate | Layers | Purpose | Validation Script |
+|------|--------|---------|-------------------|
+| **GATE-01** | L1-L4 | Business/Product changes | `validate_gate01.sh` |
+| **GATE-05** | L5-L8 | Architecture/Contract changes | `validate_gate05.sh` |
+| **GATE-09** | L9-L11 | Design/Test changes (TDD) | `validate_gate09.sh` |
+| **GATE-12** | L12-L14 | Implementation changes | `validate_gate12.sh` |
+
+**Change Levels**:
+- **L1 Patch**: Bug fixes, typos - edit in place
+- **L2 Minor**: Feature adds, enhancements - lightweight CHG
+- **L3 Major**: Architecture pivots, breaking changes - full CHG with archive
 
 **CHG Workflow**:
-1. **Archive old documents** in `CHG/CHG-XX_{slug}/archive/`
-2. **Create CHG record** documenting reason for change
-3. **Create NEW documents from scratch** (never edit in place)
-4. **Regenerate entire downstream chain** and source code
+1. **Determine routing** via `validate_chg_routing.py`
+2. **Validate entry gate** requirements
+3. **Archive old documents** (L3 only) in `CHG/CHG-XX_{slug}/archive/`
+4. **Create NEW documents from scratch** (never edit in place for L3)
+5. **Cascade through gates** to implementation
+6. **Close CHG** with completed status
+
+**Emergency Bypass**: For P1 incidents or critical security (CVSS >= 9.0), use `EMERGENCY_WORKFLOW.md` with post-incident documentation within 72 hours.
 
 **Why Immutability Matters**: LLMs are probabilistic - editing documents in place can introduce subtle inconsistencies. Creating fresh documents ensures coherent, bug-free artifacts aligned with new requirements.
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
+**Documentation**:
+- [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete procedures
+- [CHG/gates/](./CHG/gates/) - Gate specifications
+- [CHG/workflows/](./CHG/workflows/) - Change source workflows
 
-**Note**: Most projects never use CHG - it's only for major pivots, not routine updates.
+**Note**: Most projects never use full L3 CHG - it's only for major pivots, not routine updates.
 
 ### Workflow Overview
 

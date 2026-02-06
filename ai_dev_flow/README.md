@@ -14,7 +14,7 @@ custom_fields:
 
 **Status**: Active framework with MVP templates, domain adaptation guidance, cumulative tagging, and validation tooling.
 
-**Version**: 2.3 | **Last Updated**: 2026-02-05
+**Version**: 2.4 | **Last Updated**: 2026-02-05
 
 ## Overview
 
@@ -1137,6 +1137,49 @@ python scripts/validate_artifact.py --type REQ --strict
 | 9 | SPEC | @brd through @req + optional @ctr |
 | 10 | TASKS | @brd through @spec |
 
+## Change Management
+
+The framework implements a formal **4-Gate Change Management System** for validating changes at layer boundaries.
+
+### 4-Gate System Overview
+
+| Gate | Layers | Purpose | Entry Point For |
+|------|--------|---------|-----------------|
+| **GATE-01** | L1-L4 | Business/Product validation | Upstream changes |
+| **GATE-05** | L5-L8 | Architecture/Contract validation | Midstream/External changes |
+| **GATE-09** | L9-L11 | Design/Test validation (TDD) | Design changes |
+| **GATE-12** | L12-L14 | Implementation validation | Downstream/Feedback changes |
+
+### Change Levels
+
+| Level | Description | Process | Example |
+|-------|-------------|---------|---------|
+| **L1 Patch** | Bug fixes, typos | Edit in place | Fix null pointer |
+| **L2 Minor** | Feature adds, enhancements | Lightweight CHG | Add export feature |
+| **L3 Major** | Architecture pivots, breaking changes | Full CHG process | Switch to microservices |
+
+### Emergency Bypass
+
+For P1 incidents or critical security (CVSS >= 9.0):
+- Hotfix deployment with post-incident documentation
+- Retroactive gate validation within 72 hours
+- Post-mortem with action items
+
+### Validation Commands
+
+```bash
+# Validate gate requirements
+./CHG/scripts/validate_gate01.sh <CHG_FILE>
+./CHG/scripts/validate_all_gates.sh <CHG_FILE>
+
+# Determine routing
+python CHG/scripts/validate_chg_routing.py <CHG_FILE>
+```
+
+**Documentation**: See [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) for complete change management procedures.
+
+---
+
 ## Workflow Guides
 
 ### Business Requirements → Production Code
@@ -1302,8 +1345,17 @@ graph LR
 
 ## Framework Versions and Updates
 
-**Current Version**: 2.2
-**Last Updated**: 2025-11-30
+**Current Version**: 2.4
+**Last Updated**: 2026-02-05
+
+**Version 2.4 - 4-Gate Change Management System** (February 2026):
+- ✅ **4-Gate CHG System**: Formal validation gates at layer boundaries (GATE-01, GATE-05, GATE-09, GATE-12)
+- ✅ **Change Source Workflows**: 5 change sources (Upstream, Midstream, Downstream, External, Feedback)
+- ✅ **Emergency Bypass**: P1 incident and critical security (CVSS >= 9.0) handling
+- ✅ **Gate Validation Scripts**: Bash scripts for each gate with error catalogs
+- ✅ **Routing Logic**: Python-based CHG routing determination
+- ✅ **Approval Matrix**: Level-based approval requirements per gate
+- ✅ **Post-Mortem Template**: Structured incident analysis for emergency bypasses
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
 - ✅ **14-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
@@ -1338,6 +1390,12 @@ graph LR
 - [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 15 layers
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
+
+**Change Management**:
+- [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Change management procedures
+- [CHG/CHANGE_CLASSIFICATION_GUIDE.md](./CHG/CHANGE_CLASSIFICATION_GUIDE.md) - L1/L2/L3 decision guide
+- [CHG/gates/](./CHG/gates/) - 4-Gate system documentation
+- [CHG/workflows/](./CHG/workflows/) - Change source workflow guides
 
 **Automation & Workflow**:
 - [AUTOPILOT/MVP_AUTOPILOT.md](./AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide for MVP workflow
