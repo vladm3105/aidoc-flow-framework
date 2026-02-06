@@ -65,55 +65,96 @@ frontmatter:
 # DOCUMENT STRUCTURE
 # =============================================================================
 structure:
-  required_sections:
-    - "1. Change Identification"
-    - "2. Impact Assessment"
-    - "3. Implementation Plan"
-    - "4. Verification Criteria"
-    - "5. Closure Checklist"
+  # L3 Major (CHG-TEMPLATE.md) - Full change process
+  L3_required_sections:
+    - "1. Overview"
+    - "2. Scope & Impact Analysis"
+    - "3. Migration Steps"
+    - "4. Rollback Plan"
+    - "5. Verification Criteria"
+    - "6. Traceability"
+    - "7. Approval & Sign-off"
+
+  # L2 Minor (CHG-MVP-TEMPLATE.md) - Lightweight change process
+  L2_required_sections:
+    - "1. Change Summary"
+    - "2. Impact Analysis"
+    - "3. Implementation"
+    - "4. Validation"
+    - "5. Completion"
 
   optional_sections:
     - "Security Details"        # Required for external/security changes
     - "Post-Mortem"            # Required for P1/P2 incidents
     - "Deprecation Timeline"   # Required for L3 deprecations
     - "Migration Plan"         # Required for major version updates
-    - "Rollback Plan"          # Required for L3 changes
+    - "Gate Information"       # Gate validation status
 
   section_rules:
-    "1. Change Identification":
+    "1. Overview":
       required_fields:
-        - "CHG ID"
-        - "Status"
         - "Change Level"
         - "Change Source"
-        - "Entry Point"
+        - "Entry Gate"
       optional_fields:
         - "Related CHG"
         - "Supersedes"
+      applies_to: ["L3"]
 
-    "2. Impact Assessment":
+    "1. Change Summary":
+      required_fields:
+        - "CHG ID"
+        - "Change Level"
+        - "Change Source"
+      applies_to: ["L2"]
+
+    "2. Scope & Impact Analysis":
       required_content:
-        - "Layer impact matrix or list"
+        - "Layer impact matrix"
         - "Affected artifacts identification"
-      L3_additional:
         - "Archived artifacts list"
         - "New artifacts list"
+      applies_to: ["L3"]
 
-    "3. Implementation Plan":
+    "2. Impact Analysis":
+      required_content:
+        - "Affected layers list"
+        - "Affected artifacts identification"
+      applies_to: ["L2"]
+
+    "3. Migration Steps":
       required_content:
         - "Implementation steps"
-      L3_additional:
         - "Reference to implementation_plan.md"
+      applies_to: ["L3"]
 
-    "4. Verification Criteria":
+    "3. Implementation":
       required_content:
-        - "Verification checklist"
-        - "Test requirements"
+        - "Implementation steps"
+      applies_to: ["L2"]
 
-    "5. Closure Checklist":
+    "4. Rollback Plan":
       required_content:
-        - "Completion criteria"
-        - "Sign-off requirements"
+        - "Rollback procedure"
+        - "Recovery steps"
+      applies_to: ["L3"]
+
+    "4. Validation":
+      required_content:
+        - "Test verification"
+      applies_to: ["L2"]
+
+    "5. Verification Criteria":
+      required_content:
+        - "Success criteria checklist"
+        - "Quality gates"
+      applies_to: ["L3"]
+
+    "5. Completion":
+      required_content:
+        - "Completion checklist"
+        - "Sign-off"
+      applies_to: ["L2"]
 
 # =============================================================================
 # CHANGE CLASSIFICATION RULES
@@ -362,7 +403,7 @@ traceability:
 # VALIDATION RULES
 # =============================================================================
 validation_rules:
-  status_values: ["Draft", "In Review", "Approved", "In Progress", "Completed", "Cancelled", "Superseded"]
+  status_values: ["Draft", "In Review", "Approved", "In Progress", "Completed", "Cancelled", "Superseded", "Rolled Back"]
 
   level_validations:
     L1:

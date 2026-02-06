@@ -90,7 +90,7 @@ supersedes: [List, of, Artifact, IDs]
 > **Rule**: You MUST identify impacted artifacts at EVERY affected layer. Do not skip layers.
 
 | Layer | Type | Archived Artifacts (Old) | New Artifacts (Replacement) | Impact |
-|-------|------|--------------------------|-----------------------------| -------|
+|-------|------|--------------------------|-----------------------------|---------|
 | 0 | Strategy | - | - | ○ None |
 | 1 | BRD | `BRD-XX` | `BRD-YY` | ○/● |
 | 2 | PRD | `PRD-XX` | `PRD-YY` | ○/● |

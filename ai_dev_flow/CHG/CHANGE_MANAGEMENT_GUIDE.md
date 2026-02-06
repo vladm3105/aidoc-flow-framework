@@ -327,9 +327,9 @@ Migration is not complete until all links are repaired across all 15 layers.
 
 Changes affecting L9+ MUST include TSPEC updates to maintain test-first workflow.
 
-## 5. The 15-Layer Impact Model
+## 6. The 15-Layer Impact Model
 
-### 5.1 Layer Reference
+### 6.1 Layer Reference
 
 | Layer | Artifact | Purpose |
 |-------|----------|---------|
@@ -349,7 +349,7 @@ Changes affecting L9+ MUST include TSPEC updates to maintain test-first workflow
 | 13 | Tests | Test implementations |
 | 14 | Validation | Production readiness |
 
-### 5.2 Cascade Rules
+### 6.2 Cascade Rules
 
 ```
 Change at Layer N typically requires regeneration of Layers N+1 through 14
@@ -370,9 +370,9 @@ Example: BRD change (L1)
 └── Cascades to: Validation (L14)
 ```
 
-## 6. Workflows by Level
+## 7. Workflows by Level
 
-### 6.1 L1 Patch Workflow
+### 7.1 L1 Patch Workflow
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -399,7 +399,7 @@ Example: BRD change (L1)
 
 **No CHG document required.**
 
-### 6.2 L2 Minor Workflow
+### 7.2 L2 Minor Workflow
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -434,7 +434,7 @@ Example: BRD change (L1)
 
 **Use `CHG-MVP-TEMPLATE.md`**
 
-### 6.3 L3 Major Workflow
+### 7.3 L3 Major Workflow
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -483,9 +483,9 @@ Example: BRD change (L1)
 
 **Use `CHG-TEMPLATE.md`**
 
-## 7. File Organization
+## 8. File Organization
 
-### 7.1 CHG Directory Structure
+### 8.1 CHG Directory Structure
 
 ```
 docs/CHG/
@@ -504,7 +504,13 @@ docs/CHG/
 │   └── FEEDBACK_CHANGE_GUIDE.md
 │
 ├── scripts/                        # Validation scripts
-│   └── validate_chg.py
+│   ├── validate_chg_routing.py     # CHG routing validation
+│   ├── validate_gate01.sh          # GATE-01 validation
+│   ├── validate_gate05.sh          # GATE-05 validation
+│   ├── validate_gate09.sh          # GATE-09 validation
+│   ├── validate_gate12.sh          # GATE-12 validation
+│   ├── validate_all_gates.sh       # All gates validation
+│   └── validate_emergency_bypass.sh # Emergency bypass validation
 │
 └── CHG-XX_{slug}/                  # Individual CHG records
     ├── CHG-XX_{slug}.md
@@ -513,9 +519,9 @@ docs/CHG/
         └── [archived artifacts]
 ```
 
-## 8. Integration with TDD Workflow
+## 9. Integration with TDD Workflow
 
-### 8.1 TSPEC in Change Management
+### 9.1 TSPEC in Change Management
 
 The TSPEC layer (L10) plays a critical role in change management:
 
@@ -527,7 +533,7 @@ Change → SPEC update → TSPEC update → TASKS update → Code → Tests
                                (Test-Driven Development)
 ```
 
-### 8.2 Defect Root Cause Analysis
+### 9.2 Defect Root Cause Analysis
 
 When tests fail, trace to the source:
 
@@ -538,9 +544,9 @@ When tests fail, trace to the source:
 | Integration fails | CTR/SPEC (L8-L9) | L2: Update contract/spec |
 | Acceptance fails | BDD/REQ (L4-L7) | L2-L3: Update requirements |
 
-## 9. Quality Gates
+## 10. Quality Gates
 
-### 9.1 Change Completion Criteria
+### 10.1 Change Completion Criteria
 
 | Criterion | L1 | L2 | L3 |
 |-----------|----|----|----|
@@ -554,25 +560,28 @@ When tests fail, trace to the source:
 
 **Legend**: ○ Not required | ● Required
 
-### 9.2 Validation Commands
+### 10.2 Validation Commands
 
 ```bash
-# Validate CHG document
-python CHG/scripts/validate_chg.py docs/CHG/CHG-XX/
+# Validate CHG routing and structure
+python CHG/scripts/validate_chg_routing.py docs/CHG/CHG-XX/CHG-XX.md
+
+# Validate all gates
+./CHG/scripts/validate_all_gates.sh docs/CHG/CHG-XX/CHG-XX.md
 
 # Check traceability
-python scripts/validate_traceability_matrix.py
-
-# Run TSPEC tests
-python 10_TSPEC/scripts/validate_tspec.py
+python ai_dev_flow/scripts/validate_traceability_matrix.py
 
 # Verify no broken references
-python scripts/validate_forward_references.py
+python ai_dev_flow/scripts/validate_forward_references.py
+
+# Run pytest tests
+pytest tests/
 ```
 
-## 10. Quick Reference
+## 11. Quick Reference
 
-### 10.1 Level Selection Cheat Sheet
+### 11.1 Level Selection Cheat Sheet
 
 | If your change... | Use Level |
 |-------------------|-----------|
@@ -583,7 +592,7 @@ python scripts/validate_forward_references.py
 | Responds to a critical security vulnerability | L1-L3 (based on scope) |
 | Refactors code without changing behavior | L1 |
 
-### 10.2 Source Selection Cheat Sheet
+### 11.2 Source Selection Cheat Sheet
 
 | If change originates from... | Source |
 |------------------------------|--------|
@@ -592,6 +601,35 @@ python scripts/validate_forward_references.py
 | Test failure or bug report | Downstream |
 | Security patch or dependency update | External |
 | Production incident or user feedback | Feedback |
+
+---
+
+## 12. Glossary
+
+| Acronym | Full Name | Description |
+|---------|-----------|-------------|
+| **ADR** | Architecture Decision Record | Layer 5 artifact documenting architecture decisions |
+| **BDD** | Behavior-Driven Development | Layer 4 artifact with Given-When-Then scenarios |
+| **BRD** | Business Requirements Document | Layer 1 artifact defining business needs |
+| **CHG** | Change Management | Change management procedure and artifact |
+| **CTR** | Contract | Layer 8 artifact defining API contracts |
+| **CVE** | Common Vulnerabilities and Exposures | Standard identifier for security vulnerabilities |
+| **CVSS** | Common Vulnerability Scoring System | Scoring system for security vulnerability severity (0.0-10.0) |
+| **EARS** | Easy Approach to Requirements Syntax | Layer 3 artifact using WHEN-THE-SHALL-WITHIN format |
+| **EOL** | End of Life | Sunset date for deprecated software or services |
+| **IC** | Incident Commander | Role responsible for coordinating emergency response |
+| **PO** | Product Owner | Role responsible for product requirements and prioritization |
+| **PRD** | Product Requirements Document | Layer 2 artifact defining product features |
+| **QA** | Quality Assurance | Role or process ensuring quality standards |
+| **RCA** | Root Cause Analysis | Process to identify the underlying cause of issues |
+| **REQ** | Atomic Requirement | Layer 7 artifact with granular testable requirements |
+| **SDD** | Specification-Driven Development | Development methodology using layered documentation |
+| **SPEC** | Technical Specification | Layer 9 artifact with implementation details |
+| **SYS** | System Requirements | Layer 6 artifact defining system-level requirements |
+| **TASKS** | Task Breakdown | Layer 11 artifact with implementation tasks |
+| **TDD** | Test-Driven Development | Development practice writing tests before code |
+| **TL** | Technical Lead | Role responsible for technical decisions and code quality |
+| **TSPEC** | Test Specification | Layer 10 artifact with test specifications |
 
 ---
 

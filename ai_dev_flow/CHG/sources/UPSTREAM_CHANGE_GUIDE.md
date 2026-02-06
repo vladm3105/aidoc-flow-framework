@@ -275,13 +275,13 @@ After upstream changes, verify:
 
 ```bash
 # Check for broken references
-python scripts/validate_forward_references.py
+python ai_dev_flow/scripts/validate_forward_references.py
 
 # Verify traceability matrix
-python scripts/validate_traceability_matrix.py
+python ai_dev_flow/scripts/validate_traceability_matrix.py
 
-# Check TSPEC coverage
-python 10_TSPEC/scripts/validate_tspec.py
+# Run test suite to verify TSPEC coverage
+pytest tests/
 ```
 
 ### 8.1 Common Traceability Issues

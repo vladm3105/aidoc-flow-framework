@@ -97,12 +97,13 @@ The `status` field tracks the change's progress:
 
 | Status | Description | Next Action |
 |--------|-------------|-------------|
-| **Proposed** | Impact analysis in progress | Complete analysis, get approval |
+| **Draft** | Initial CHG created, impact analysis in progress | Complete analysis, submit for review |
+| **In Review** | CHG submitted for approval | Review and approve/reject |
 | **Approved** | Approved for implementation | Begin archival and creation |
-| **In Progress** | Migration steps being executed | Complete all steps |
-| **Implemented** | Archival and creation complete | Execute TASKS, run tests |
+| **In Progress** | Migration steps being executed | Complete all steps, run tests |
 | **Completed** | Verified and closed | None (terminal state) |
-| **Rejected** | Change not approved | Document reason, close |
+| **Cancelled** | Change not approved or abandoned | Document reason, close |
+| **Superseded** | Replaced by another CHG | Reference new CHG |
 | **Rolled Back** | Change failed, reverted | Post-mortem analysis |
 
 ## 5. Rule of Immutability (CRITICAL)
@@ -206,11 +207,14 @@ Note: L2 Minor changes typically don't require an archive folder.
 ### 10.1 Pre-Commit Checks
 
 ```bash
-# Validate CHG document structure
-python CHG/scripts/validate_chg.py docs/CHG/CHG-XX_{slug}/
+# Validate CHG routing and structure
+python CHG/scripts/validate_chg_routing.py docs/CHG/CHG-XX_{slug}/CHG-XX_{slug}.md
+
+# Validate all gates
+./CHG/scripts/validate_all_gates.sh docs/CHG/CHG-XX_{slug}/CHG-XX_{slug}.md
 
 # Verify no orphaned references
-python scripts/validate_traceability_matrix.py
+python ai_dev_flow/scripts/validate_traceability_matrix.py
 
 # Check archived files have deprecation notices
 grep -r "DEPRECATED" docs/CHG/CHG-XX_{slug}/archive/

@@ -106,8 +106,8 @@ Where:
 
 | Code | Category | Description | Resolution |
 |------|----------|-------------|------------|
-| GATE-12-E001 | Analysis | Root cause analysis completed | Add RCA section with 5-Whys or fishbone analysis |
-| GATE-12-E002 | Layer | Fix at correct layer (not symptom masking) | Trace to actual problem layer |
+| GATE-12-E001 | Analysis | Root cause analysis must be completed | Add RCA section with 5-Whys or fishbone analysis |
+| GATE-12-E002 | Layer | Fix must be at correct layer (not symptom masking) | Trace to actual problem layer |
 | GATE-12-E003 | Testing | Regression tests included | Add tests covering the fix |
 | GATE-12-E004 | Review | Code review required for L2/L3 changes | Complete review process |
 | GATE-12-E005 | Build | Build must pass before merge | Fix CI pipeline errors |

@@ -439,4 +439,5 @@ Actions:
 
 **Related Documents**:
 - [CHANGE_MANAGEMENT_GUIDE.md](../CHANGE_MANAGEMENT_GUIDE.md)
-- [SECURITY_RESPONSE_TEMPLATE.md](../SECURITY_RESPONSE_TEMPLATE.md) (if exists)
+- [CHG-EMERGENCY-TEMPLATE.md](../templates/CHG-EMERGENCY-TEMPLATE.md) (for security incidents)
+- [POST_MORTEM-TEMPLATE.md](../templates/POST_MORTEM-TEMPLATE.md) (for post-incident review)
