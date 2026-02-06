@@ -251,10 +251,11 @@ Prevents upstream documents from referencing specific downstream IDs.
 | 7 | REQ | Layers 1-6 |
 | 8 | CTR | Layers 1-7 |
 | 9 | SPEC | Layers 1-8 |
-| 10 | TASKS | Layers 1-9 |
-| 11 | CODE | Layers 1-10 |
-| 12 | TESTS | Layers 1-11 |
-| 13 | VALIDATION | Layers 1-12 |
+| 10 | TSPEC | Layers 1-9 |
+| 11 | TASKS | Layers 1-10 |
+| 12 | CODE | Layers 1-11 |
+| 13 | TESTS | Layers 1-12 |
+| 14 | VALIDATION | Layers 1-13 |
 
 **Correct** (PRD describing decision needs):
 ```markdown

@@ -49,11 +49,11 @@ Before creating TASKS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream SPEC**: Read technical specifications (PRIMARY SOURCE)
-3. **Template**: `ai_dev_flow/TASKS/TASKS-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/11_TASKS/TASKS_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_tasks.sh`
-7. **Implementation Contracts Guide**: `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md`
+7. **Implementation Contracts Guide**: `ai_dev_flow/11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md`
 
 ## When to Use This Skill
 
@@ -291,7 +291,7 @@ If this TASKS provides no contracts and consumes no contracts, state explicitly:
 4. **Data Models**: Pydantic/TypedDict schemas
 5. **DI Interfaces**: ABC classes for dependency injection
 
-**Reference**: See `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md` for detailed guidance.
+**Reference**: See `ai_dev_flow/11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md` for detailed guidance.
 
 ## Tag Format Convention (By Design)
 
@@ -432,7 +432,7 @@ Read SPEC (Layer 10) - technical specifications to decompose.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/TASKS/` for next available ID number.
+Check `docs/TASKS/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: TASKS-01, TASKS-99, TASKS-102
@@ -442,9 +442,9 @@ Check `ai_dev_flow/TASKS/` for next available ID number.
 
 ### Step 3: Create TASKS File
 
-**File naming**: `ai_dev_flow/TASKS/TASKS-NN_{slug}_tasks.md`
+**File naming**: `docs/TASKS/TASKS-NN_{slug}_tasks.md`
 
-**Example**: `ai_dev_flow/TASKS/TASKS-01_data_validation_tasks.md`
+**Example**: `docs/TASKS/TASKS-01_data_validation_tasks.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -483,12 +483,12 @@ Include all 8-10 upstream tags (@brd through @spec).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `docs/TASKS/TASKS-00_TRACEABILITY_MATRIX.md`
 
 ### Step 12: Validate TASKS
 
 ```bash
-./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-01_*.md
+./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
 ```
@@ -503,10 +503,10 @@ Commit TASKS file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/TASKS/TASKS-01_*.md
+./scripts/validate_quality_gates.sh docs/TASKS/TASKS-01_*.md
 
 # Task format validation
-./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-01_*.md
+./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -623,15 +623,15 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/TASKS/TASKS-TEMPLATE.md` (primary authority)
-- **TASKS Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
-- **TASKS Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
-- **TASKS README**: `ai_dev_flow/TASKS/README.md`
+- **Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md` (primary authority)
+- **TASKS Creation Rules**: `ai_dev_flow/11_TASKS/TASKS_CREATION_RULES.md`
+- **TASKS Validation Rules**: `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md`
+- **TASKS README**: `ai_dev_flow/11_TASKS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/TASKS/TASKS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/TASKS/TASKS-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/11_TASKS/TASKS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/11_TASKS/TASKS-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

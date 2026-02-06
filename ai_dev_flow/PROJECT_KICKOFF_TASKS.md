@@ -288,7 +288,7 @@ ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
 # Comprehensive validation
 python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
-python scripts/complete_traceability_matrix.py
+python scripts/validate_traceability_matrix.py
 
 # Generate matrices
 python scripts/generate_traceability_matrix.py --type ADR --input docs/05_ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md

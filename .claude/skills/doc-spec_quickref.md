@@ -85,7 +85,7 @@ BRD through REQ/IMPL/CTR → SPEC → TASKS → Code
 ## Template Location
 
 ```
-ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml
+ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml
 ```
 
 ## Related Skills

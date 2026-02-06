@@ -86,7 +86,7 @@ Tasks create the **code generation roadmap** that:
 | **Content** | Scope, steps, constraints, acceptance criteria, AND bash commands |
 | **Tracking** | YAML block for DEVELOPMENT_PLAN.md integration |
 
-**Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code (Layer 11) → Tests (Layer 12)`
+**Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 
 ---
 

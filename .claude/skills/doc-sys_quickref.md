@@ -73,7 +73,7 @@ BRD, PRD, EARS, BDD, ADR → SYS → REQ
 ## Template Location
 
 ```
-ai_dev_flow/SYS/SYS-TEMPLATE.md
+ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

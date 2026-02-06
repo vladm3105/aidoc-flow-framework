@@ -1,5 +1,5 @@
 ---
-name: "doc-adr: Create Architecture Decision Records (Layer 5)"
+name: doc-adr
 description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
 tags:
   - sdd-workflow
@@ -50,9 +50,9 @@ Before creating ADR, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
-4. **Template**: `ai_dev_flow/ADR/ADR-TEMPLATE.md`
-5. **Creation Rules**: `ai_dev_flow/ADR/ADR_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md`
+4. **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
+5. **Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -509,18 +509,18 @@ The SYS will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/ADR/ADR-TEMPLATE.md` (primary authority)
-- **Schema**: `ai_dev_flow/ADR/ADR_SCHEMA.yaml` (machine-readable validation)
+- **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
+- **Schema**: `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` (machine-readable validation)
 - **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md`
-- **ADR Creation Rules**: `ai_dev_flow/ADR/ADR_CREATION_RULES.md`
-- **ADR Validation Rules**: `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md`
-- **ADR README**: `ai_dev_flow/ADR/README.md`
+- **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
+- **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
+- **ADR README**: `ai_dev_flow/05_ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all ADR documents):
 - **Structure**: `docs/ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
-- Index template: `ai_dev_flow/ADR/ADR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/ADR/ADR-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/05_ADR/ADR-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/05_ADR/ADR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 - **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 

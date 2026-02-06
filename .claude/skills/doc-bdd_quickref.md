@@ -26,7 +26,7 @@ skill: "doc-bdd"
 
 ## Output Location
 
-```
+```text
 docs/BDD/BDD-NNN_{feature_name}.feature
 ```
 
@@ -50,7 +50,7 @@ Feature: User Authentication
 
 ## Upstream/Downstream
 
-```
+```text
 BRD, PRD, EARS → BDD → ADR, SYS
 ```
 
@@ -64,8 +64,8 @@ BRD, PRD, EARS → BDD → ADR, SYS
 
 ## Template Location
 
-```
-ai_dev_flow/BDD/BDD-TEMPLATE.feature
+```text
+ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature
 ```
 
 ## Related Skills

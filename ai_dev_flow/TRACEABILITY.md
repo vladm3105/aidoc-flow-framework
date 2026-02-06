@@ -63,7 +63,7 @@ The following rules govern traceability in the SDD workflow:
 | REQ | `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml` | 7 |
 | CTR | `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml` | 8 |
 | SPEC | `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml` | 9 |
-| TSPEC | `ai_dev_flow/10_TSPEC/TSPEC_MVP_SCHEMA.yaml` | 10 |
+| TSPEC | `ai_dev_flow/10_TSPEC/{UTEST,ITEST,STEST,FTEST}_MVP_SCHEMA.yaml` | 10 |
 | TASKS | `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml` | 11 |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
@@ -308,7 +308,7 @@ Diagrams use simplified labels for visual clarity:
 | 11 | TASKS | 9 | 10 |
 | 12 | Code | 10 | 11 |
 | 13 | Tests | 11 | 12 |
-| 13 | Validation | 11 | 12 |
+| 14 | Validation | 12 | 13 |
 
 ### Tag Separator Rules
 
@@ -465,7 +465,8 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@req` | 7 | Atomic Requirements | `@req: REQ-NN:REQ.NN.EE.SS` | `@req: REQ-03:REQ.03.26.01` |
 | `@ctr` | 8 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
 | `@spec` | 9 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
-| `@tasks` | 10 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
+| `@tspec` | 10 | Test Specifications | `@tspec: TSPEC-NN` | `@tspec: TSPEC-03` |
+| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
 
 **Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
 
@@ -1215,7 +1216,7 @@ python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
 
 # Generate traceability matrix (if available)
-python scripts/complete_traceability_matrix.py
+python scripts/generate_traceability_matrix.py --auto
 ```
 
 ## Change Management

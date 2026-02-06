@@ -481,7 +481,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 **What Happens:**
 1. Validates existing SPEC-01_{slug}.yaml
-2. Generates TASKS-01_{slug}.md (Layer 10)
+2. Generates TASKS-01_{slug}.md (Layer 11)
 3. Validates all traceability links
 4. Creates report
 

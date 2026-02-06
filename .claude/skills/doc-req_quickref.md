@@ -71,7 +71,7 @@ BRD, PRD, EARS, BDD, ADR, SYS → REQ → IMPL, CTR, SPEC
 ## Template Location
 
 ```
-ai_dev_flow/REQ/REQ-TEMPLATE.md
+ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

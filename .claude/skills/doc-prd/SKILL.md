@@ -49,9 +49,9 @@ Before creating a PRD, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD**: Read the BRD that drives this PRD
    **Note on Sectioned BRDs**: If BRD is split into multiple section files (0-18), read ALL files as ONE logical document. See `PRD_CREATION_RULES.md` Section 22.
-3. **Template**: `ai_dev_flow/PRD/PRD-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/PRD/PRD_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -557,17 +557,17 @@ The EARS will:
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **PRD Schema**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`
-- **PRD Template**: `ai_dev_flow/PRD/PRD-TEMPLATE.md`
-- **PRD Creation Rules**: `ai_dev_flow/PRD/PRD_CREATION_RULES.md`
-- **PRD Validation Rules**: `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md`
-- **PRD README**: `ai_dev_flow/PRD/README.md`
+- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml`
+- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
+- **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md`
+- **PRD README**: `ai_dev_flow/02_PRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all PRD documents):
 - **Structure**: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
-- Index template: `ai_dev_flow/PRD/PRD-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/PRD/PRD-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/02_PRD/PRD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/02_PRD/PRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 ## Quick Reference

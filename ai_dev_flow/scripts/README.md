@@ -20,6 +20,8 @@ This directory (`scripts/`) now contains only:
 1.  **Core Orchestrators**: Scripts that run across the entire project (`validate_all.py`).
 2.  **Shared Validators**: Logic used by multiple layers (`validate_cross_document.py`).
 3.  **Traceability Tools**: Matrix generation and validation (`generate_traceability_matrix.py`).
+4.  **Tag Extraction**: Extract traceability tags to JSON (`extract_tags.py`).
+5.  **File Utilities**: Check file sizes against limits (`lint_file_sizes.sh`).
 
 ## Core Scripts
 
@@ -52,6 +54,35 @@ Ensures links and dependencies between documents are valid.
 **Usage:**
 ```bash
 python3 validate_cross_document.py --full --strict
+```
+
+### 4. `extract_tags.py`
+
+Extracts traceability tags (@brd, @prd, @req, etc.) from source code, documentation, and test files.
+
+**Usage:**
+```bash
+# Extract tags to JSON
+python3 extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate tag format only
+python3 extract_tags.py --validate-only
+
+# Extract specific artifact type
+python3 extract_tags.py --type REQ --show-all-upstream
+```
+
+### 5. `lint_file_sizes.sh`
+
+Checks documentation files against size limits (target: 800 lines, max: 1200 lines).
+
+**Usage:**
+```bash
+# Check current directory
+./lint_file_sizes.sh
+
+# Check specific directory
+./lint_file_sizes.sh ai_dev_flow/
 ```
 
 ## Layer-Specific Validation

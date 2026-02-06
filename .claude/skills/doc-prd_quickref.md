@@ -70,7 +70,7 @@ When BRD is sectioned (multiple files):
 ## Template Location
 
 ```
-ai_dev_flow/PRD/PRD-TEMPLATE.md
+ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

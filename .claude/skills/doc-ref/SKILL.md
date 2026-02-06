@@ -72,7 +72,7 @@ Use `doc-ref` when creating supplementary documentation that:
 
 ## Template Reference
 
-**Template**: `ai_dev_flow/REF-TEMPLATE.md`
+**Template**: `ai_dev_flow/REF/REF-TEMPLATE.md`
 
 ### Required Sections (4 Mandatory)
 
@@ -115,7 +115,7 @@ ls docs/BRD/*-REF-*.md 2>/dev/null | sort -V | tail -1
 
 ### Step 4: Create Document
 
-1. Copy template: `ai_dev_flow/REF-TEMPLATE.md`
+1. Copy template: `ai_dev_flow/REF/REF-TEMPLATE.md`
 2. Rename to: `{TYPE}-REF-NN_{slug}.md` (NN = next sequence number, 2+ digits)
 3. Update H1 heading: `# {TYPE}-REF-NN: [Document Title]`
 4. Fill Document Control section
@@ -247,7 +247,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/REF-TEMPLATE.md`
+- **Template**: `ai_dev_flow/REF/REF-TEMPLATE.md`
 - **Naming Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 - **Validation**: `ai_dev_flow/scripts/validate_artifact.py`
 

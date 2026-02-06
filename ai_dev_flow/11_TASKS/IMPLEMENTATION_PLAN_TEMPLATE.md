@@ -32,7 +32,7 @@ custom_fields:
 6. **Agents**: L0-L5 Autonomous Units.
 7. **UI**: Reporting & Visualization.
 
-**Workflow**: SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests
+**Workflow**: SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)
 
 > **CRITICAL**: **Mandatory Review**: Before implementing any TASKS, verify it against upstream SPEC and REQ. If any inconsistencies are found, **STOP** implementation immediately and ask for instructions.
 

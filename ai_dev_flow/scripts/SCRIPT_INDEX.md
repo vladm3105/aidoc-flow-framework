@@ -17,6 +17,13 @@ This index lists all scripts available in the framework, categorized by logical 
 | `generate_traceability_matrix.py` | Generates traceability matrices from document headers. |
 | `update_traceability_matrix.py` | incrementally updates matrix files. |
 
+## Tag Extraction & File Utilities (root/scripts)
+
+| Script | Purpose |
+|--------|---------|
+| `extract_tags.py` | Extracts traceability tags from source files to JSON. |
+| `lint_file_sizes.sh` | Checks documentation files against size limits (800/1200 lines). |
+
 ## Utilities & Cross-Document Validators (root/scripts)
 
 | Script | Purpose |

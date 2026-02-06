@@ -42,7 +42,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 ## Validation Decision Framework
 
 - Core framework guidance for triaging validation findings and choosing whether to fix documents, adjust validators, or accept warnings: [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md)
-- REQ-specific addendum with validator patterns and common fixes: [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md)
+- REQ-specific addendum with validator patterns and common fixes: [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md)
 
 ### Configuration Reference
 
@@ -352,7 +352,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 - **ID Naming**: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document identification standards
 - **Traceability**: [TRACEABILITY.md](./TRACEABILITY.md) - Traceability requirements and conventions
-- **Traceability Style**: [Traceability Format Standards](./TRACEABILITY.md#traceability-format-standards) - Style guide for traceability links
+- **Traceability Style**: [Tag Format Specification](./TRACEABILITY.md#tag-format-specification) - Style guide for traceability links
 - **Traceability Setup**: [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setting up traceability in projects
 - **Traceability Validation**: [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) - Validation procedures
 
@@ -414,7 +414,7 @@ python scripts/validate_documentation_paths.py           # Path consistency
 python scripts/validate_links.py                         # Markdown link validation
 python scripts/validate_tags_against_docs.py             # Tag extraction and validation
 python scripts/validate_traceability_matrix.py           # Traceability matrix structure
-python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement rules
+python scripts/validate_traceability_matrix.py             # Matrix validation and enforcement
 
 # Template validation scripts
 bash 01_BRD/scripts/validate_brd.py                    # BRD template compliance

@@ -20,9 +20,9 @@ custom_fields:
 
 ## Purpose
 
-The Implementation Plan serves as the **central command center** for tracking TASKS (Layer 10) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
+The Implementation Plan serves as the **central command center** for tracking TASKS (Layer 11) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
 
-**Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
+**Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 
 **Key Functions:**
 - **Orchestration & Ordering**: Dictates the sequence of task execution by organizing `TASKS` files into phases and priority order.

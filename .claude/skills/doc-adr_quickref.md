@@ -77,7 +77,7 @@ BRD, PRD, EARS, BDD → ADR → SYS, REQ
 ## Template Location
 
 ```
-ai_dev_flow/ADR/ADR-TEMPLATE.md
+ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

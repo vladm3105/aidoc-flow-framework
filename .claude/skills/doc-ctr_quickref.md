@@ -77,8 +77,8 @@ BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL → CTR → SPEC
 ## Template Location
 
 ```
-ai_dev_flow/CTR/CTR-TEMPLATE.md
-ai_dev_flow/CTR/CTR-TEMPLATE.yaml
+ai_dev_flow/09_CTR/CTR-MVP-TEMPLATE.md
+ai_dev_flow/09_CTR/CTR-MVP-TEMPLATE.yaml
 ```
 
 ## Related Skills

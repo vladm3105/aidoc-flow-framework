@@ -50,9 +50,9 @@ Before creating SPEC, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (PRIMARY SOURCE)
 3. **Upstream CTR**: Read contracts if Layer 9 created
-4. **Template**: `ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml`
-5. **Creation Rules**: `ai_dev_flow/SPEC/SPEC_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md`
+4. **Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml`
+5. **Creation Rules**: `ai_dev_flow/09_SPEC/SPEC_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
 7. **Validation Script**: `./ai_dev_flow/scripts/validate_spec_template.sh` (under development - use template for manual validation until available)
 
 ## Reserved ID Exemption (SPEC-00_*)
@@ -530,7 +530,7 @@ Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` director
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
 
-**Note**: Templates and examples are in `ai_dev_flow/SPEC/` while project-specific SPECs go in `docs/SPEC/`.
+**Note**: Templates and examples are in `ai_dev_flow/09_SPEC/` while project-specific SPECs go in `docs/SPEC/`.
 
 ### Step 4: Fill Metadata Section
 
@@ -582,7 +582,7 @@ Upstream sources and downstream artifacts.
 
 ### Step 16: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Create or update `docs/SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 17: Validate SPEC
 
@@ -591,7 +591,7 @@ Upstream sources and downstream artifacts.
 yamllint docs/SPEC/SPEC-01_*.yaml
 
 # Schema validation (use SPEC_SCHEMA.yaml as reference)
-# Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
+# Manual: Compare against ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml structure
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SPEC-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts --strict
@@ -613,7 +613,7 @@ Commit SPEC file and traceability matrix.
 yamllint docs/SPEC/SPEC-01_*.yaml
 
 # Schema validation (use SPEC_SCHEMA.yaml as reference)
-# Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
+# Manual: Compare against ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml structure
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -739,11 +739,11 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/10_SPEC/SPEC-TEMPLATE.yaml` (primary authority)
-- **SPEC Creation Rules**: `ai_dev_flow/10_SPEC/SPEC_CREATION_RULES.md`
-- **SPEC Validation Rules**: `ai_dev_flow/10_SPEC/SPEC_VALIDATION_RULES.md`
-- **SPEC Schema**: `ai_dev_flow/10_SPEC/SPEC_SCHEMA.yaml`
-- **SPEC README**: `ai_dev_flow/10_SPEC/README.md`
+- **Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml` (primary authority)
+- **SPEC Creation Rules**: `ai_dev_flow/09_SPEC/SPEC_CREATION_RULES.md`
+- **SPEC Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
+- **SPEC Schema**: `ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml`
+- **SPEC README**: `ai_dev_flow/09_SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Quick Reference

@@ -49,9 +49,9 @@ Before creating CTR, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (especially Section 3: Interface Specifications, Section 4: Data Schemas)
-3. **Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
-4. **Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
+4. **Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
 
 ## Reserved ID Exemption (CTR-00_*)
@@ -756,18 +756,18 @@ For supplementary documentation related to CTR artifacts:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.md` (primary authority)
-- **Schema Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
-- **CTR README**: `ai_dev_flow/CTR/README.md`
+- **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
+- **CTR Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
+- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
+- **CTR README**: `ai_dev_flow/08_CTR/README.md`
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **JSON Schema**: https://json-schema.org/
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/CTR/CTR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/CTR/CTR-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/08_CTR/CTR-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/08_CTR/CTR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

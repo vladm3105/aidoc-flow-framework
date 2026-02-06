@@ -701,7 +701,7 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 | This Layer | Required Upstream Tags | Tag Count |
 |------------|------------------------|-----------|
-| TASKS (Layer 10) | @brd through @spec (+ optional @ctr) | 8-9 |
+| TASKS (Layer 11) | @brd through @tspec (+ optional @ctr) | 9-10 |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
@@ -727,5 +727,5 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 **Blocking**: YES - Cannot proceed to implementation until Phase 1 validation passes with 0 errors.
 
-**Workflow (v2.0)**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
+**Workflow (v2.0)**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 

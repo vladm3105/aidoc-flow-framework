@@ -39,10 +39,11 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 | 7 | REQ | 6 | 6 | @brd→@sys | |
 | 8 | CTR | 7 | 7 | @brd→@req | Optional layer |
 | 9 | SPEC | 7 | 8 | @brd→@req, +opt @ctr | |
-| 10 | TASKS | 8 | 9 | @brd→@spec, +opt @ctr | |
-| 11 | Code | 9 | 10 | @brd→@tasks, +opt @ctr | |
-| 12 | Tests | 10 | 11 | @brd→@code, +opt @ctr | |
-| 13 | Validation | 11 | 12 | All upstream (advisory) | Count not strictly enforced |
+| 10 | TSPEC | 8 | 9 | @brd→@spec, +opt @ctr | |
+| 11 | TASKS | 9 | 10 | @brd→@tspec, +opt @ctr | |
+| 12 | Code | 10 | 11 | @brd→@tasks, +opt @ctr | |
+| 13 | Tests | 11 | 12 | @brd→@code, +opt @ctr | |
+| 14 | Validation | 12 | 13 | All upstream (advisory) | Count not strictly enforced |
 
 **CHG Note**: CHG is NOT a layer - it's a change management procedure. CHG artifacts don't require tags.
 

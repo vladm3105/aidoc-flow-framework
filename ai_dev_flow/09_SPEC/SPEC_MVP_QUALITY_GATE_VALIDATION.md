@@ -50,7 +50,7 @@ CORPUS-FINAL: Holistic AI Review (manual) ← FINAL GATE
         ↓
 Fix ALL inconsistencies
         ↓
-PASS → Begin TASKS Creation (Layer 10)
+PASS → Begin TSPEC Creation (Layer 10) → Begin TASKS Creation (Layer 11)
 FAIL → Fix issues, re-run Quality Gate validation
 ```
 
@@ -95,7 +95,7 @@ docs/09_SPEC/
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
 |---------|-------|-------|
-| `TASKS-NN` | 10 | TASKS don't exist during SPEC creation |
+| `TASKS-NN` | 11 | TASKS don't exist during SPEC creation |
 
 **Allowed Patterns** (generic references):
 - "This will inform TASKS development"
@@ -530,7 +530,7 @@ SPEC Quality Gate validation should pass before creating TASKS documents:
 # Pre-TASKS gate check
 ./scripts/validate_spec_corpus.sh docs/SPEC
 if [ $? -eq 0 ]; then
-  echo "✓ SPEC corpus valid - ready for TASKS layer creation (Layer 10)"
+  echo "✓ SPEC corpus valid - ready for TSPEC layer creation (Layer 10) and TASKS layer creation (Layer 11)"
 else
   echo "❌ Fix SPEC corpus errors before proceeding to TASKS layer"
   exit 1

@@ -501,11 +501,12 @@ Need to create artifact?
 | 7 | REQ | **YAML** (primary) | Autopilot | Directly feeds SPEC generation |
 | 8 | CTR | **YAML** (primary) | Autopilot | Contract structure, no narrative needed |
 | 9 | SPEC | **YAML** (already YAML) | Autopilot | Already optimized |
-| 10 | TASKS | **YAML** (primary) | Autopilot | Directly feeds code execution |
+| 10 | TSPEC | **YAML** (primary) | Autopilot | Test specifications |
+| 11 | TASKS | **YAML** (primary) | Autopilot | Directly feeds code execution |
 
 **Key Pattern**:
 - **Layers 1-2**: MD primary (human-facing business/product documents)
-- **Layers 3-8, 10**: YAML primary (Autopilot-facing technical documents)
+- **Layers 3-8, 10-11**: YAML primary (Autopilot-facing technical documents)
 - **Layer 4**: `.feature` format (Gherkin standard for BDD)
 
 ---
@@ -1022,7 +1023,8 @@ cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
 | 7 | REQ | `07_REQ/REQ-MVP-TEMPLATE.md` | `07_REQ/REQ-MVP-TEMPLATE.yaml` | `07_REQ/REQ_MVP_SCHEMA.yaml` |
 | 8 | CTR | `08_CTR/CTR-MVP-TEMPLATE.md` | `08_CTR/CTR-MVP-TEMPLATE.yaml` | `08_CTR/CTR_MVP_SCHEMA.yaml` |
 | 9 | SPEC | N/A (already YAML) | `09_SPEC/SPEC-MVP-TEMPLATE.yaml` | `09_SPEC/SPEC_MVP_SCHEMA.yaml` |
-| 10 | TASKS | `11_TASKS/TASKS-TEMPLATE.md` | `11_TASKS/TASKS-MVP-TEMPLATE.yaml` | `11_TASKS/TASKS_MVP_SCHEMA.yaml` |
+| 10 | TSPEC | `10_TSPEC/TSPEC-TEMPLATE.md` | `10_TSPEC/TSPEC-MVP-TEMPLATE.yaml` | `10_TSPEC/TSPEC_MVP_SCHEMA.yaml` |
+| 11 | TASKS | `11_TASKS/TASKS-TEMPLATE.md` | `11_TASKS/TASKS-MVP-TEMPLATE.yaml` | `11_TASKS/TASKS_MVP_SCHEMA.yaml` |
 
 ### Command Reference
 

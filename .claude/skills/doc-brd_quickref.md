@@ -75,7 +75,7 @@ docs/BRD/BRD-NNN_{descriptive_name}.md
 ## Template Location
 
 ```
-ai_dev_flow/BRD/BRD-TEMPLATE.md
+ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

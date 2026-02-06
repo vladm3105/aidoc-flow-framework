@@ -86,7 +86,7 @@ docs/11_TASKS/
 
 **Severity**: Error (blocking)
 
-**Rationale**: TASKS is Layer 10. It should NOT reference specific code file paths that don't exist yet.
+**Rationale**: TASKS is Layer 11. It should NOT reference specific code file paths that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |

@@ -219,9 +219,11 @@ CTR (Layer 8) → API contracts
   ↓
 SPEC (Layer 9) → Technical specification (YAML)
   ↓
-TASKS (Layer 10) → Implementation tasks
+TSPEC (Layer 10) → Test specifications
   ↓
-Code (Layer 11) → Source code
+TASKS (Layer 11) → Implementation tasks
+  ↓
+Code (Layer 12) → Source code
 ```
 
 **Key Insight**: SPEC aggregates ALL design decisions and requirements into a single AI-optimized YAML document, enabling automated code generation via TASKS.

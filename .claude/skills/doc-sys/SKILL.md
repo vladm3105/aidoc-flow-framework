@@ -1,5 +1,5 @@
 ---
-name: "doc-sys: Create System Requirements (Layer 6)"
+name: doc-sys
 description: Create System Requirements (SYS) - Layer 6 artifact defining functional requirements and quality attributes
 tags:
   - sdd-workflow
@@ -49,9 +49,9 @@ Before creating SYS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream ADR**: Read architecture decisions constraining system
-3. **Template**: `ai_dev_flow/SYS/SYS-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/SYS/SYS_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/06_SYS/SYS_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -460,15 +460,15 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/SYS/SYS-TEMPLATE.md` (primary authority)
-- **SYS Creation Rules**: `ai_dev_flow/SYS/SYS_CREATION_RULES.md`
-- **SYS Validation Rules**: `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md`
-- **SYS README**: `ai_dev_flow/SYS/README.md`
+- **Template**: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` (primary authority)
+- **SYS Creation Rules**: `ai_dev_flow/06_SYS/SYS_CREATION_RULES.md`
+- **SYS Validation Rules**: `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md`
+- **SYS README**: `ai_dev_flow/06_SYS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/SYS/SYS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/SYS/SYS-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/06_SYS/SYS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/06_SYS/SYS-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

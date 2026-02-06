@@ -56,6 +56,25 @@ This directory provides a structured, traceable framework for Specification-Driv
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
+## Glossary
+
+| Acronym | Full Name | Description |
+|---------|-----------|-------------|
+| SDD | Specification-Driven Development | Methodology for creating software through layered documentation artifacts |
+| BRD | Business Requirements Document | Layer 1 - Defines business needs, objectives, and constraints |
+| PRD | Product Requirements Document | Layer 2 - Defines product features and user needs |
+| EARS | Easy Approach to Requirements Syntax | Layer 3 - Formal requirements using WHEN-THE-SHALL format |
+| BDD | Behavior-Driven Development | Layer 4 - Test scenarios using Gherkin Given-When-Then format |
+| ADR | Architecture Decision Record | Layer 5 - Documents architectural decisions with Context-Decision-Consequences |
+| SYS | System Requirements | Layer 6 - Defines functional requirements and quality attributes |
+| REQ | Atomic Requirements | Layer 7 - Individual testable requirements with unique IDs |
+| CTR | Contract | Layer 8 - API and data contracts for system interfaces |
+| SPEC | Technical Specification | Layer 9 - Implementation-ready specifications |
+| TSPEC | Test Specification | Layer 10 - Test specifications for unit, integration, system, and functional tests |
+| TASKS | Task Breakdown | Layer 11 - Decomposed implementation tasks derived from SPEC |
+| CHG | Change Management | Cross-cutting concern for tracking changes across all layers |
+| IPLAN | Implementation Plan | Session-based execution plans with bash commands |
+
 ## Roles & Automation in AI Dev Flow
 
 The framework orchestrates three key participants to transform business ideas into production code:
@@ -705,7 +724,8 @@ Note on ADR references:
 | REQ | REQ_MVP_SCHEMA.yaml | 7 | |
 | CTR | CTR_MVP_SCHEMA.yaml | 8 | |
 | SPEC | SPEC_MVP_SCHEMA.yaml | 9 | |
-| TASKS | TASKS_MVP_SCHEMA.yaml | 10 | |
+| TSPEC | TSPEC_MVP_SCHEMA.yaml | 10 | |
+| TASKS | TASKS_MVP_SCHEMA.yaml | 11 | |
 
 ¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_MVP_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_MVP_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
@@ -1083,7 +1103,7 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document identification rules
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability requirements
-- [Traceability Format Standards](./TRACEABILITY.md#traceability-format-standards) - Link formatting conventions
+- [Tag Format Specification](./TRACEABILITY.md#tag-format-specification) - Link formatting conventions
 - [index.md](./index.md) - Detailed directory structure reference
 
 ## Schema Definitions
@@ -1135,7 +1155,8 @@ python scripts/validate_artifact.py --type REQ --strict
 | 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys |
 | 8 | CTR | @brd through @req (optional layer) |
 | 9 | SPEC | @brd through @req + optional @ctr |
-| 10 | TASKS | @brd through @spec |
+| 10 | TSPEC | @brd through @spec |
+| 11 | TASKS | @brd through @tspec |
 
 ## Change Management
 

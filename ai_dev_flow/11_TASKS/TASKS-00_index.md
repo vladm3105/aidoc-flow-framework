@@ -41,7 +41,7 @@ flowchart LR
     style TASKS fill:#e1f5fe,stroke:#01579b,stroke-width:3px
 ```
 
-**Workflow (v2.0)**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
+**Workflow (v2.0)**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 

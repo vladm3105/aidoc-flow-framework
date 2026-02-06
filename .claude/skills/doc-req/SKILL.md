@@ -49,9 +49,9 @@ Before creating REQ, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream SYS**: Read system requirements driving this REQ
-3. **Template**: `ai_dev_flow/REQ/REQ-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/REQ/REQ_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_req_template.sh`
 
 ## When to Use This Skill
@@ -571,15 +571,15 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/REQ/REQ-TEMPLATE.md` (primary authority)
-- **REQ Creation Rules**: `ai_dev_flow/REQ/REQ_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md`
-- **REQ README**: `ai_dev_flow/REQ/README.md`
+- **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
+- **REQ Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
+- **REQ Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
+- **REQ README**: `ai_dev_flow/07_REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (for documents >50KB):
-- Index template: `ai_dev_flow/REQ/REQ-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/REQ/REQ-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/07_REQ/REQ-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/07_REQ/REQ-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

@@ -769,7 +769,8 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@req:` | 7 | Atomic Requirements | `@req: REQ.03.26.01` |
 | `@ctr:` | 8 | Data Contracts | `@ctr: CTR-01` |
 | `@spec:` | 9 | Technical Specs | `@spec: SPEC-03` |
-| `@tasks:` | 10 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
+| `@tspec:` | 10 | Test Specifications | `@tspec: TSPEC-03` |
+| `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
 
 **Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.08.25.15` for a performance quality attribute).
 
@@ -918,7 +919,8 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → 
 | 7 | **REQ** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Formal Template | Cumulative: BRD through SYS |
 | 8 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
 | 9 | **SPEC** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@ctr` | Formal Template | Cumulative: BRD through REQ + CTR if present |
-| 10 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional CTR if present; includes execution commands |
+| 10 | **TSPEC** | All upstream through `@spec` | Formal Template | Test specifications before TASKS |
+| 11 | **TASKS** | All upstream through `@tspec` | Formal Template | Include optional CTR if present; includes execution commands |
 | 12 | **Code** | **ALL tags** through `@tasks` | Docstring Tags | Complete traceability chain |
 | 13 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
 | 14 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
@@ -949,7 +951,6 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → 
 @sys: SYS.08.25.01
 @req: REQ.03.26.01, REQ.04.26.01
 @ctr: CTR-01
-@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 ```
@@ -970,7 +971,6 @@ Implements real-time resource limit validation and enforcement.
 @adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
-@ctr: CTR-01
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
@@ -1076,10 +1076,11 @@ The SDD workflow employs different tracking methods for different artifact types
 | 7 | REQ | Formal Template + Tags | Yes | Yes | 6 | @brd through @sys |
 | 8 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 7 | @brd through @req |
 | 9 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-8 | @brd through @req + optional @ctr |
-| 10 | TASKS | Formal Template + Tags | Yes | Yes | 8-9 | @brd through @spec; includes execution commands |
-| 11 | Code | Docstring Tags | No (Implementation) | Yes | 9-10 | ALL upstream tags |
-| 12 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-11 | All upstream + code |
-| 13 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
+| 10 | TSPEC | Formal Template + Tags | Yes | Yes | 8-9 | @brd through @spec; test specifications |
+| 11 | TASKS | Formal Template + Tags | Yes | Yes | 9-10 | @brd through @tspec; includes execution commands |
+| 12 | Code | Docstring Tags | No (Implementation) | Yes | 10-11 | ALL upstream tags |
+| 13 | Tests | BDD + Docstring Tags | Mixed | Yes | 11-12 | All upstream + code |
+| 14 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
 
 ### Example: Complete Tag Chain in Code
 
@@ -1542,7 +1543,7 @@ performance:
 - Validate requirement IDs: `python 07_REQ/scripts/validate_requirement_ids.py`
   - Enhanced to validate REQ V2 mandatory sections
 - Check links (repo-level tools if available): `python scripts/validate_links.py`
-- Generate matrices (if available): `python scripts/complete_traceability_matrix.py`
+- Generate matrices (if available): `python scripts/generate_traceability_matrix.py --auto`
 
 ### Artifact-Specific Validation Scripts
 ```bash
