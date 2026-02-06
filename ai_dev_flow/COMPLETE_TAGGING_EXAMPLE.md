@@ -98,7 +98,12 @@ implementation:
     method: POST
 ```
 
-### Layer 10: TASKS (Implementation Tasks)
+### Layer 10: TSPEC (Test Specifications)
+- TSPEC-NN: Test specification for request processing validation.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN, @spec: SPEC-NN
+
+### Layer 11: TASKS (Implementation Tasks)
 ```markdown
 # TASKS-NN: Implement submission endpoint
 ## Plan
@@ -113,9 +118,10 @@ implementation:
 @sys: SYS.NN.25.NN
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
+@tspec: TSPEC-NN
 ```
 
-### Layer 11: Code (Implementation)
+### Layer 12: Code (Implementation)
 
 ```python
 """Request service implementation
@@ -137,7 +143,7 @@ async def submit_request(payload: dict):
     return {"status": "accepted", "id": "REQ-123"}
 ```
 
-### Layer 12: Tests (Test Suites)
+### Layer 13: Tests (Test Suites)
 ```python
 """Test: Request processing
 @brd: BRD-NN
@@ -148,6 +154,7 @@ async def submit_request(payload: dict):
 @sys: SYS.NN.25.NN
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
+@tspec: TSPEC-NN
 @tasks: TASKS.NN.NN.NN
 @code: src/services/request_service.py
 """
@@ -170,10 +177,11 @@ Layer 6  SYS   -> +@adr
 Layer 7  REQ   -> +@sys
 Layer 8  CTR   -> +@req (Optional - skip if not needed)
 Layer 9  SPEC  -> +@req (+@ctr if exist)
-Layer 10 TASKS -> +@spec (+@ctr if exist)
-Layer 11 Code  -> +@tasks
-Layer 12 Tests -> +@code
-Layer 13 Valid -> all upstream tags
+Layer 10 TSPEC -> +@spec (Test Specifications)
+Layer 11 TASKS -> +@tspec (+@ctr if exist)
+Layer 12 Code  -> +@tasks
+Layer 13 Tests -> +@code
+Layer 14 Valid -> all upstream tags
 ```
 
 **Note on Layer 0 (Strategy/STRAT)**: Layer 0 represents strategic planning inputs that exist before formal documentation begins. The formal documentation layers start at Layer 1 (BRD).

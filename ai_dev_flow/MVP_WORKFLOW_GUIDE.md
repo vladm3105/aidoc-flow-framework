@@ -30,11 +30,11 @@ Important MVP note: MVP artifacts are single, flat files. Split only when a docu
 
 ## 🚀 The MVP Track
 
-The **MVP Track** delivers **90%+ automation** across 12 of 13 production layers, enabling **1-2 week cycles** from business idea to production MVP.
+The **MVP Track** delivers **90%+ automation** across 14 of 15 layers, enabling **1-2 week cycles** from business idea to production MVP.
 
 ### Automation Capabilities
 
-- **Automated Layers**: 12 of 13 (L1-L13, excluding L0 Strategy)
+- **Automated Layers**: 14 of 15 (L1-L14, excluding L0 Strategy)
 - **Quality Gates**: Auto-approve artifacts scoring ≥90%
 - **Human Oversight**: 5 strategic checkpoints (optional if score ≥90%)
 - **Target Cycle**: 1-2 weeks idea → production
@@ -44,7 +44,7 @@ The **MVP Track** delivers **90%+ automation** across 12 of 13 production layers
 
 | Feature | Standard Flow | MVP Track |
 |---------|---------------|-----------|
-| **Automation Level** | 90%+ | **90%+ (12 of 13 layers)** |
+| **Automation Level** | 90%+ | **90%+ (14 of 15 layers)** |
 | **Quality Gates** | ≥90% | **Auto-approve ≥90%** |
 | **Templates** | Full multi-section templates | **Streamlined, single-file MVP templates** |
 | **File Structure** | May use document splitting rules | **Single flat files; no splitting** |
@@ -309,7 +309,7 @@ ai_dev_flow/
 
 ### Key Takeaways
 
-- **Automation**: 12 of 13 layers automated (only 1 strategic review required)
+- **Automation**: 14 of 15 layers automated (only L0 Strategy requires manual review)
 - **Speed**: ~2 hours for complete documentation
 - **Quality**: 6 of 7 artifacts auto-approved (score ≥90%)
 - **Traceability**: Complete tag chain from BRD to TASKS

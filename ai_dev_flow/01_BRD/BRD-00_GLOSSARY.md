@@ -106,6 +106,7 @@ Standard abbreviations used across BRD framework.
 |---------|-----------|----------|
 | AC | Acceptance Criteria | BRD Framework |
 | ADR | Architecture Decision Record | SDD Framework |
+| ATDD | Acceptance Test-Driven Development | Testing |
 | AML | Anti-Money Laundering | Compliance |
 | API | Application Programming Interface | Technical |
 | BA | Business Analyst | Role |
@@ -116,7 +117,9 @@ Standard abbreviations used across BRD framework.
 | FR | Functional Requirement | BRD Framework |
 | KPI | Key Performance Indicator | Business |
 | Verification | Identity verification (individual or business) | Compliance |
+| IPLAN | Implementation Plan (deprecated) | SDD Framework |
 | MCP | Model Context Protocol | Technical |
+| MVP | Minimum Viable Product | Business |
 | NAV | Net Asset Value | Financial |
 | QA | Quality Attribute | BRD Framework |
 | PRD | Product Requirements Document | SDD Framework |
@@ -127,7 +130,29 @@ Standard abbreviations used across BRD framework.
 | SME | Subject Matter Expert | Role |
 | SPEC | Technical Specification | SDD Framework |
 | SYS | System Requirements | SDD Framework |
+| TDD | Test-Driven Development | Testing |
+| TSPEC | Test Specification | SDD Framework |
 | UAT | User Acceptance Testing | Testing |
+
+### 4.1 Requirement Type Clarification (FR vs EARS vs REQ)
+
+These three requirement types serve different purposes in the SDD workflow. Understanding when to use each prevents confusion during documentation:
+
+| Type | Layer | Full Name | Purpose | Format Example |
+|------|-------|-----------|---------|----------------|
+| **FR** | L1 (BRD) | Functional Requirement | Business-level capability statement from stakeholder perspective | "The system shall allow users to reset their password via email." |
+| **EARS** | L3 | Engineering Requirement (WHEN-THE-SHALL-WITHIN format) | Structured technical requirement with conditions and constraints | "WHEN a user requests password reset, THE system SHALL send a reset link WITHIN 30 seconds." |
+| **REQ** | L7 | Atomic Requirement | Implementation-ready requirement decomposed for development | "REQ.07.01.01: Implement password reset endpoint with rate limiting (max 3 attempts/hour)." |
+
+**Workflow Progression**:
+1. **FR** (BRD): Capture stakeholder intent in business language
+2. **EARS** (Layer 3): Add engineering precision with conditions and time constraints
+3. **REQ** (Layer 7): Decompose into atomic, testable, implementable units
+
+**Common Confusion**:
+- FRs are NOT the same as REQs - FRs are higher-level business statements
+- EARS is NOT a synonym for requirements - EARS is a specific format for engineering requirements
+- REQs always trace back to EARS which trace back to FRs, forming the traceability chain
 
 ---
 
@@ -167,17 +192,18 @@ Regulatory, industry, and technical standards referenced in BRDs.
 | Item | Details |
 |------|---------|
 | **Document ID** | BRD-00_GLOSSARY |
-| **Document Version** | 1.1 |
+| **Document Version** | 1.2 |
 | **Creation Date** | 2025-11-26 |
 | **Document Owner** | SDD Framework Team |
 | **Maintained By** | Business Analyst Team |
 | **Review Frequency** | Quarterly or with framework updates |
-| **Last Reviewed** | 2025-12-30 |
+| **Last Reviewed** | 2026-02-06 |
 
 ### Revision History
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
+| 1.2 | 2026-02-06 | Claude | Added FR vs EARS vs REQ clarification subsection 4.1 | Framework Lead |
 | 1.1 | 2025-12-30 | Claude | Added MCP, NAV, RAG terms per audit recommendation | Framework Lead |
 | 1.0 | 2025-11-26 | Claude | Initial master glossary creation | Framework Lead |
 

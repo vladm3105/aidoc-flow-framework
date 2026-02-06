@@ -161,7 +161,7 @@ Each document type has three type-specific guides with the pattern: `{TYPE}_{GUI
 
 ---
 
-### Layer 10: Tasks (TASKS)
+### Layer 11: Tasks (TASKS)
 
 **Location:** `11_TASKS/`
 
@@ -316,7 +316,7 @@ User Reviews Results & Consults Guides:
 | REQ (07) | ✅ | ✅ Complete | ✅ Complete | Template |
 | CTR (08) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
 | SPEC (09) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| TASKS (10) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
+| TASKS (11) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
 
 **Legend:**
 - ✅ Complete

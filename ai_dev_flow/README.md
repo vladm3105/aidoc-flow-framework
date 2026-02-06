@@ -40,7 +40,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - Slow transition from idea to production MVP
 
 **AI Dev Flow Solutions**:
-- ✅ **90%+ Automation**: 13 of 14 production layers generate automatically with quality gates
+- ✅ **90%+ Automation**: 14 of 15 layers generate automatically with quality gates
 - ✅ **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
 - ✅ **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
 - ✅ **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
@@ -1358,7 +1358,7 @@ graph LR
 - ✅ **Post-Mortem Template**: Structured incident analysis for emergency bypasses
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **14-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
+- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections

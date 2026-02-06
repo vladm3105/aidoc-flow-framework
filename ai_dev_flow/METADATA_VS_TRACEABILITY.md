@@ -182,8 +182,9 @@ Each SDD layer inherits ALL upstream traceability tags:
 | Layer 7 (REQ) | @brd, @prd, @ears, @bdd, @adr, @sys | 6 | Full upstream chain |
 | Layer 8 (CTR) | All Layer 7 + new tags | 7+ | Add contracts (if applicable) |
 | Layer 9 (SPEC) | All previous + new tags | 8+ | Add technical spec |
-| Layer 10 (TASKS) | All previous + new tags | 9+ | Add task breakdown |
-| Layer 11 (Code) | All previous + new tags | 10+ | Complete audit trail |
+| Layer 10 (TSPEC) | All previous + new tags | 9+ | Add test specifications |
+| Layer 11 (TASKS) | All previous + new tags | 10+ | Add task breakdown |
+| Layer 12 (Code) | All previous + new tags | 11+ | Complete audit trail |
 
 **Rule**: Each layer MUST include ALL upstream tags from previous layers.
 

@@ -107,9 +107,9 @@ docs/07_REQ/
 |---------|----------|----------------|
 | `TBD` (unbracketed) | Downstream reference tables | SPEC/TASKS don't exist during REQ phase |
 | `\| SPEC-NN \| TBD \|` | Traceability tables | Downstream artifacts are created later |
-| `\| TASKS-NN \| TBD \|` | Traceability tables | Layer 10 doesn't exist at Layer 7 |
+| `\| TASKS-NN \| TBD \|` | Traceability tables | Layer 11 doesn't exist at Layer 7 |
 
-**Rationale**: REQ documents (Layer 7) legitimately contain "TBD" in downstream reference tables because SPEC (Layer 9) and TASKS (Layer 10) documents don't exist yet during REQ creation. The validation only flags bracketed placeholders like `(TBD)` or `[TBD]` which indicate incomplete content within the current document.
+**Rationale**: REQ documents (Layer 7) legitimately contain "TBD" in downstream reference tables because SPEC (Layer 9) and TASKS (Layer 11) documents don't exist yet during REQ creation. The validation only flags bracketed placeholders like `(TBD)` or `[TBD]` which indicate incomplete content within the current document.
 
 ---
 

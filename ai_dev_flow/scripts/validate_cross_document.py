@@ -2,7 +2,7 @@
 """
 Cross-Document Validation System for AI Dev Flow Framework
 
-Validates upstream document content consistency across the 16-layer SDD workflow.
+Validates upstream document content consistency across the 15-layer SDD workflow.
 Auto-fixes issues without user confirmation following strict hierarchy rules.
 
 Usage:
@@ -92,7 +92,8 @@ LAYER_CONFIG = {
     "REQ": {"layer": 7, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys"], "extensions": [".md"]},
     "CTR": {"layer": 8, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req"], "extensions": [".md", ".yaml"]},
     "SPEC": {"layer": 9, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "ctr"], "extensions": [".yaml"]},
-    "TASKS": {"layer": 10, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec"], "extensions": [".md"]},
+    "TSPEC": {"layer": 10, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec"], "extensions": [".md"]},
+    "TASKS": {"layer": 11, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec", "tspec"], "extensions": [".md"]},
 }
 
 # Tag format patterns

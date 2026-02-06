@@ -318,9 +318,9 @@ Every artifact includes tags from ALL upstream layers:
 | Layer | Required Tags | Format |
 |-------|---------------|--------|
 | **BRD** (L1) | None | No upstream tags |
-| **PRD** (L2) | `@brd` | `@brd: BRD-01` |
-| **EARS** (L3) | `@brd`, `@prd` | `@brd: BRD-01`, `@prd: PRD-01` |
-| **BDD** (L4) | `@brd`, `@prd`, `@ears` | `@brd: BRD-01`, `@prd: PRD-01`, `@ears: EARS-01` |
+| **PRD** (L2) | `@brd` | `@brd: BRD.01.01.01` |
+| **EARS** (L3) | `@brd`, `@prd` | `@brd: BRD.01.01.01`, `@prd: PRD.01.01.01` |
+| **BDD** (L4) | `@brd`, `@prd`, `@ears` | `@brd: BRD.01.01.01`, `@prd: PRD.01.01.01`, `@ears: EARS.01.01.01` |
 | **ADR** (L5) | `@brd`, `@prd`, `@ears`, `@bdd` | All upstream tags |
 | **SYS** (L6) | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | All upstream tags |
 | **REQ** (L7) | `@brd` through `@sys` | All upstream tags |

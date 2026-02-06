@@ -1082,7 +1082,7 @@ BDD Tag Examples
 @brd: BRD.01.01.05    # BRD doc 01, Functional Requirement #5
 @brd: BRD.01.03.02    # BRD doc 01, Constraint #2
 @prd: PRD.02.07.15    # PRD doc 02, User Story #15
-@adr: ADR.03.10.01    # ADR doc 03, Decision #1
+@adr: ADR-03          # ADR doc 03 (dash notation for documents)
 ```
 
 Anchors & Linking

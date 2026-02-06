@@ -69,7 +69,7 @@ Each layer has dedicated validators located in `0X_LAYER/scripts/`.
 - `09_SPEC/scripts/validate_spec_quality_score.sh`: **Primary Quality Gate**. Validates YAML specs.
 - `09_SPEC/scripts/validate_spec.py`: Python usage of SPEC schema validation.
 
-### Layer 10: Tasks (TASKS)
+### Layer 11: Tasks (TASKS)
 - `11_TASKS/scripts/validate_tasks_quality_score.sh`: **Primary Quality Gate**. Validates task breakdown and linking.
 
 ## Autopilot & CI/CD

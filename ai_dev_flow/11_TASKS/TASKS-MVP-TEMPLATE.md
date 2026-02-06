@@ -8,7 +8,7 @@ tags:
 custom_fields:
   document_type: template
   artifact_type: TASKS
-  layer: 10
+  layer: 11
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
@@ -33,9 +33,9 @@ custom_fields:
 
 # TASKS-NN: [Descriptive Component/Feature Name]
 
-**Layer**: 10 (Code Generation) - Unified implementation plan combining WHAT to build and HOW to execute.
+**Layer**: 11 (Code Generation) - Unified implementation plan combining WHAT to build and HOW to execute.
 
-**Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code (Layer 11) → Tests (Layer 12) → Validation (Layer 13)`
+**Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13) → Validation (Layer 14)`
 
 ---
 

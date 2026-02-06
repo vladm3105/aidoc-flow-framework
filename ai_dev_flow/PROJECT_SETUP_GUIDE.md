@@ -110,8 +110,8 @@ cd /opt/data/project_name
 
 **Commands**:
 ```bash
-# Core 10-layer architecture artifact directories (BRD through TASKS)
-mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/CTR docs/SPEC docs/TASKS
+# Core 15-layer architecture artifact directories (BRD through TASKS)
+mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/CTR docs/SPEC docs/TSPEC docs/TASKS
 
 # NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
 # when documents are generated. This ensures folders match actual project needs.
@@ -463,7 +463,7 @@ python scripts/trace_check.py --type REQ
 
 ## Objective
 
-Initialize the project with 12-layer SDD documentation structure using STRICT framework templates, creation rules, and validation gates.
+Initialize the project with 15-layer SDD documentation structure using STRICT framework templates, creation rules, and validation gates.
 
 ## Key Principles
 

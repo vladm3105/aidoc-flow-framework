@@ -406,7 +406,7 @@ TASKS Section 4 contains session-based execution commands. Customize for domain-
 **Solution**: Create a glossary and stick to it consistently across all documents
 
 ### 2. Over-Engineering for Simple Projects
-**Problem**: Using all 10 layers for a simple CRUD application
+**Problem**: Using all 15 layers for a simple CRUD application
 **Solution**: Start with core layers (REQ, SPEC, code), add others as complexity grows
 
 ### 3. Ignoring Traceability

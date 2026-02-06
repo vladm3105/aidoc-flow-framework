@@ -30,6 +30,15 @@ custom_fields:
 - Project has single architecture only
 - All documents apply equally to all approaches
 
+### Architecture Approach Values
+
+| Value | Description | Layer Count |
+|-------|-------------|-------------|
+| `ai-agent-based` | Current AI-driven approach with full automation | 15 layers (L0-L14) |
+| `traditional-8layer` | Legacy approach (pre-2025) for reference | 8 layers (original) |
+
+**Note**: The `traditional-8layer` tag is maintained for backward compatibility with legacy documentation. New projects should use the 15-layer `ai-agent-based` approach. The 8-layer approach maps to the core documentation layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC) before the introduction of CTR, TASKS, TSPEC, CODE, and Validation layers.
+
 ---
 
 ## Three-Tier Template System
@@ -119,7 +128,7 @@ custom_fields:
 | Priority | Indicator | Meaning | Visual |
 |----------|-----------|---------|--------|
 | `primary` | ✅ | Recommended approach | Green, expanded |
-| `fallback` | ⚠️ | secondary option | Yellow, collapsed |
+| `fallback` | ⚠️ | Secondary option | Yellow, collapsed |
 | `shared` | ⚙️ | Required by all | Neutral |
 | `deprecated` | ⛔ | Legacy/archived | Red |
 

@@ -65,7 +65,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - **Automation Flow**: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 **Key Automation Benefits**:
-- 90%+ automation (13 of 14 production layers)
+- 90%+ automation (14 of 15 layers)
 - Quality gates enable optional human checkpoints (auto-approve if score ≥90%)
 - Code-from-specs capability (YAML → Python)
 - Auto-fix testing with 3 retry attempts

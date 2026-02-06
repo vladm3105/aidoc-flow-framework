@@ -1350,7 +1350,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 **Fix**:
 1. Add section 15 with all 4 subsections
 2. Create Business Objectives → FRs table listing all BOs from section 2.4
-3. Create FRs → SPEC (Layer 9) and TASKS (Layer 10) table with planned SPEC-XXX-NN and TASKS-XXX-NN references
+3. Create FRs → SPEC (Layer 9) and TASKS (Layer 11) table with planned SPEC-XXX-NN and TASKS-XXX-NN references
 4. Document Cross-BRD Dependencies if any exist
 5. Map requirements to planned test artifacts (TEST-XXX-UNIT, TEST-XXX-INT, etc.)
 6. Calculate Traceability Health Score: Average of all coverage percentages

@@ -70,9 +70,10 @@ This matrix tracks the complete 15-layer AI-Driven Specification-Driven Developm
 **Layer 7 - Requirements**: REQ (atomic requirements)
 **Layer 8 - Interface**: CTR (API contracts) - optional
 **Layer 9 - Technical Specifications**: SPEC (YAML blueprints)
-**Layer 10 - Code Generation**: TASKS (implementation steps with execution commands)
-**Layer 11 - Code**: Source code implementation
-**Layer 12 - Tests**: Test execution and verification
+**Layer 10 - Test Specifications**: TSPEC (test specifications)
+**Layer 11 - Code Generation**: TASKS (implementation steps with execution commands)
+**Layer 12 - Code**: Source code implementation
+**Layer 13 - Tests**: Test execution and verification
 **Layer 14: Validation → Review → Production
 
 ### 1.2 Coverage Summary
@@ -99,7 +100,9 @@ python scripts/generate_traceability_matrix.py --auto --report
 | CTR | [X]/[Y] | XX% | [Status] |
 | **Technical Specs (SPEC) (Layer 9)** | | | |
 | SPEC | [X]/[Y] | XX% | [Status] |
-| **Code Generation Layer (Layer 10)** | | | |
+| **Test Specifications (TSPEC) (Layer 10)** | | | |
+| TSPEC | [X]/[Y] | XX% | [Status] |
+| **Code Generation Layer (Layer 11)** | | | |
 | TASKS | [X]/[Y] | XX% | [Status] |
 | **Execution Layer** | | | |
 | Code Files | [X]/[Y] | XX% | [Status] |

@@ -75,7 +75,7 @@ custom_fields:
     - Tag count: 7
     - API contracts (optional layer)
 
-11. **TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 10)
+11. **TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 11)
     - Required tags: `@brd` through `@spec`
     - Tag count: 8-9
     - Implementation tasks with all upstream references
@@ -109,7 +109,7 @@ Each completed template follows this structure:
 - Downstream artifact references
 
 ### 2.4 Example: [Additional Context-Specific Example]
-- second example showing variation or detail
+- Second example showing variation or detail
 - Statement-level or structure-specific examples
 
 ### 2.5 Validation Rules
@@ -177,7 +177,8 @@ Layer 6 (SYS): @brd through @adr (5 tags)
 Layer 7 (REQ): @brd through @sys (6 tags)
 Layer 8 (CTR): @brd through @req (7 tags)  # Optional
 Layer 9 (SPEC): @brd through @req + optional @ctr (7-8 tags)
-Layer 10 (TASKS): @brd through @spec (8-9 tags)
+Layer 10 (TSPEC): @brd through @spec (8 tags)
+Layer 11 (TASKS): @brd through @tspec (9-10 tags)
 ```
 
 ### 3.3 Validation Commands Template

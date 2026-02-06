@@ -242,9 +242,11 @@ CTR (Layer 8) → API contracts (@brd through @req)
   ↓
 SPEC (Layer 9) → Technical specifications (@brd through @req + optional ctr)
   ↓
-TASKS (Layer 10) → Implementation tasks (@brd through @spec)
+TSPEC (Layer 10) → Test specifications (@brd through @spec)
   ↓
-Code (Layer 11) → Source code (@brd through @tasks)
+TASKS (Layer 11) → Implementation tasks (@brd through @tspec)
+  ↓
+Code (Layer 12) → Source code (@brd through @tasks)
 ```
 
 **Key Role**: REQ decomposes high-level requirements (EARS, SYS) into single-concern, atomic, testable requirements that map directly to code implementations, serving as the bridge between requirements and implementation.

@@ -22,7 +22,7 @@ custom_fields:
 - Create MVP v1.0 → Fix Defects → Production Release
 - Add Features (MVP v2.0) ← Market Feedback → Fix Defects → Production
 - Iterate continuously with 1-2 week cycles
-- Automation accelerates each cycle (12 of 13 production layers automated)
+- Automation accelerates each cycle (14 of 15 layers automated)
 - Strategic human checkpoints preserve quality (5 critical decision points, optional if quality score ≥90%)
 
 **Automation Capabilities**:
@@ -93,7 +93,7 @@ custom_fields:
 The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 15 layers (Layer 0: Strategy through Layer 14: Validation). **The framework enables 90%+ automation** with strategic human oversight, achieving rapid 1-2 week MVP cycles from idea to production.
 
 **Automation Architecture**:
-- **13 of 14 Production Layers Automated**: L1-L14 (excluding strategic L0)
+- **14 of 15 Layers Automated**: L1-L14 (excluding strategic L0)
 - **Quality-Gated Progression**: AI-scored validation at each layer (auto-approve if score ≥90%)
 - **5 Strategic Checkpoints** (optional if quality score ≥90%):
   - L1 (BRD): Business owner approval - strategic business alignment

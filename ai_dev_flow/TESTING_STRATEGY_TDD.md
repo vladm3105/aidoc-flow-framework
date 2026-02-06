@@ -228,7 +228,7 @@ test-automation generate-unit \
 ```python
 """
 Unit tests for REQ-001
-@brd: BRD-01
+@brd: BRD.01.01.01
 @req: REQ-01.01.01
 @spec: SPEC-01.yaml
 @code: PENDING
@@ -283,7 +283,7 @@ test-automation generate-integration \
 ```python
 """
 Integration tests for User API Service
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
 @bdd: BDD-01
@@ -357,7 +357,7 @@ test-automation generate-smoke \
 ```python
 """
 Smoke tests for deployed system
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01.03.01  # User login event
 @bdd: BDD-01_scenario:happy_login
@@ -444,7 +444,7 @@ test-automation generate-functional \
 ```python
 """
 Functional tests for system behavior
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @sys: SYS-01.FR.001, SYS-01.QA.001
 @environment: staging
@@ -508,7 +508,7 @@ test-automation generate-bdd \
 ```python
 """
 Acceptance tests from BDD scenarios
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
 @bdd: BDD-01_user_authentication.feature
@@ -598,7 +598,7 @@ Each test type includes all upstream traceability tags:
 
 **Unit Tests (Before Code)**:
 ```python
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
 @bdd: BDD-01
@@ -611,7 +611,7 @@ Each test type includes all upstream traceability tags:
 
 **Integration Tests**:
 ```python
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
 @bdd: BDD-01
@@ -626,7 +626,7 @@ Each test type includes all upstream traceability tags:
 
 **Smoke Tests**:
 ```python
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01.03.01  # Specific event
 @bdd: BDD-01_scenario:happy_login
@@ -637,7 +637,7 @@ Each test type includes all upstream traceability tags:
 
 **Acceptance Tests**:
 ```python
-@brd: BRD-01
+@brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
 @bdd: BDD-01_user_authentication.feature
