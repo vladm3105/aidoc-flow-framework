@@ -854,7 +854,7 @@ Roadmap document must satisfy:
 ### AI Dev Flow Framework
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Specification-driven development methodology
 - [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
-- [TOOL_OPTIMIZATION_GUIDE.md]({project_root}/ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md) - Token limits and optimization
+- [AI_TOOL_OPTIMIZATION_GUIDE.md]({project_root}/ai_dev_flow/AI_TOOL_OPTIMIZATION_GUIDE.md) - Token limits and optimization
 
 ### Related Skills
 - [project-mngt](../project-mngt/) - Use for requirement-based planning (BRD/PRD → MVP)

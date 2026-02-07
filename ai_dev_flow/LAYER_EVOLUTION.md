@@ -12,15 +12,21 @@ custom_fields:
 
 # SDD Framework Layer Evolution Guide
 
-**Version**: 1.0
-**Last Updated**: 2025-12-29
+**Version**: 1.1
+**Last Updated**: 2026-02-07
 **Purpose**: Procedures for adding, modifying, or deprecating layers in the SDD framework
 
 ---
 
 ## Overview
 
-The SDD Framework uses a 15-layer document hierarchy (Layers 0-14). This guide documents the procedures and files that must be updated when evolving the layer structure.
+The SDD Framework uses a 15-layer document hierarchy (Layers 0-14, with Layer 10 as TSPEC). This guide documents the procedures and files that must be updated when evolving the layer structure.
+
+**Current Layer Structure**:
+- Layers 1-9: Documentation artifacts (BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC)
+- Layer 10: TSPEC (Test Specifications - UTEST, ITEST, STEST, FTEST)
+- Layer 11: TASKS (Code Generation Plans)
+- Layers 12-14: Execution layers (Code → Tests → Validation)
 
 **Authoritative Source**: `LAYER_REGISTRY.yaml` is the single source of truth for layer definitions.
 
@@ -33,16 +39,16 @@ The SDD Framework uses a 15-layer document hierarchy (Layers 0-14). This guide d
 Add the new layer entry in the `layers` array:
 
 ```yaml
-- number: 13
+- number: 15
   artifact: NEWTYPE
   name: "New Layer Name"
-  folder: NEWTYPE/
+  folder: 15_NEWTYPE/
   extensions: [.md]
-  required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
-  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS]
+  required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tspec, tasks]
+  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS]
   error_prefix: NEWTYPE
   optional: false
-  description: "Layer 13 - Description of purpose"
+  description: "Layer 15 - Description of purpose"
 ```
 
 ### Step 2: Create Layer Directory
@@ -132,6 +138,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 
 - [x] Create `LAYER_REGISTRY.yaml`
 - [x] Document all 15 layers
+- [x] Add TSPEC (Layer 10) for TDD workflow (v1.6, 2026-02-05)
 
 ### Phase 2: Validation Tools (Future)
 

@@ -24,7 +24,7 @@ custom_fields:
 
 Guide users through the SDD workflow by determining current position, recommending next steps, identifying parallel work opportunities, and tracking progress.
 
-**Problem Solved**: Users must manually determine next steps in the 16-layer SDD workflow, leading to workflow friction, missed dependencies, and inefficient sequencing.
+**Problem Solved**: Users must manually determine next steps in the 15-layer SDD workflow, leading to workflow friction, missed dependencies, and inefficient sequencing.
 
 **Solution**: Analyze completed artifacts, determine workflow position, and provide prioritized recommendations for next steps with clear rationale.
 

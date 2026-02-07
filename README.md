@@ -125,7 +125,7 @@ template_profile: enterprise  # or "full" or "strict"
 - **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
 - **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
 - **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
-- **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TSPEC → TASKS → Code → Tests → Validation)
+- **15-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
@@ -350,9 +350,9 @@ ls docs/generated/matrices/
 
 ## Documentation Structure
 
-### 16-Layer Architecture with Cumulative Tagging
+### 15-Layer Architecture with Cumulative Tagging
 
-The SDD workflow organizes artifacts into 16 distinct layers with cumulative tagging hierarchy:
+The SDD workflow organizes artifacts into 15 distinct layers (0-14) with cumulative tagging hierarchy:
 
 ```
 Layer 0: Strategy Layer
@@ -379,16 +379,13 @@ Layer 6: System Requirements
 Layer 7: Atomic Requirements
 └── REQ (Requirements Specifications)
 
-Layer 8: Project Management [OPTIONAL]
-└── IMPL (Implementation Plans)
-
-Layer 9: Interface Contracts [OPTIONAL - IF INTERFACE REQUIREMENT]
+Layer 8: Interface Contracts [OPTIONAL]
 └── CTR (API Contracts - dual-file .md + .yaml)
 
-Layer 10: Technical Specifications
+Layer 9: Technical Specifications
 └── SPEC (YAML Technical Specifications)
 
-Layer 10b: Test Specifications (TSPEC)
+Layer 10: Test Specifications (TSPEC)
 └── TSPEC (Unit, Integration, Smoke, Functional test specs)
 
 Layer 11: Task Breakdown
@@ -675,7 +672,7 @@ Policy: `ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 
 ### General Rules
 - Create sequential files (doc_001.md, doc_002.md) only when exceeding 100,000 tokens
-- Reference: `ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md`
+- Reference: `ai_dev_flow/AI_TOOL_OPTIMIZATION_GUIDE.md`
 
 ## Documentation Standards
 
@@ -910,7 +907,7 @@ aidoc-flow-framework/
 │   ├── CONTRACT_DECISION_QUESTIONNAIRE.md  # CTR decision guide
 │   ├── WHEN_TO_CREATE_IMPL.md         # IMPL decision guide
 │   ├── PLATFORM_VS_FEATURE_BRD.md     # BRD type selection guide
-│   ├── TOOL_OPTIMIZATION_GUIDE.md     # AI tool optimization
+│   ├── AI_TOOL_OPTIMIZATION_GUIDE.md  # AI tool optimization
 │   ├── AI_ASSISTANT_RULES.md          # Rules for AI assistants
 │   ├── PROJECT_SETUP_GUIDE.md         # Single-project setup guide
 │   ├── PROJECT_KICKOFF_TASKS.md       # Project initialization checklist
@@ -1158,7 +1155,7 @@ MIT License - See LICENSE file for details
 - [CTR Policy](./ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
 
 ### AI Tool Optimization
-- [Tool Optimization Guide](./ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
+- [Tool Optimization Guide](./ai_dev_flow/AI_TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
 - [AI Assistant Rules](./ai_dev_flow/AI_ASSISTANT_RULES.md) - Rules for AI assistants
 
 ### Validation Scripts (v2.2)

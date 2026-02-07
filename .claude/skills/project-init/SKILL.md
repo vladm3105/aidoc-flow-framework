@@ -444,7 +444,7 @@ AI Assistant:
 ✓ Domain-specific subdirectories: tenant, subscription, billing, workspace
 
 Step 2: Folder Creation
-Creating 16-layer architecture (12 artifact directories)...
+Creating 15-layer architecture (12 artifact directories)...
 ✓ Created: docs/BRD/
 ✓ Created: docs/PRD/
 ✓ Created: docs/EARS/
