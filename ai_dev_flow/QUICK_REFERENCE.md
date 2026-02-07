@@ -11,10 +11,11 @@ custom_fields:
 
 # Quick Reference Card
 
-**Version**: 1.0
+**Version**: 2.0
 **Purpose**: One-page cheat sheet for AI Dev Flow framework
 **Target**: Developers and AI Assistants
 **Status**: Production
+**Last Updated**: 2026-02-07
 
 ---
 

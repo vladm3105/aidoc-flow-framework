@@ -71,7 +71,17 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - Auto-fix testing with 3 retry attempts
 - Maximum velocity to production MVP
 
-## Recent Updates (2025-11-20)
+## Recent Updates (2026-02-07)
+
+- ✅ **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG integration
+  - TDD workflow mode with Red→Green validation (`--tdd-mode`)
+  - CHG change management mode with 4-Gate system (`--chg-mode`)
+  - 7 new TDD scripts for test-driven development workflow
+  - Autopilot test suite (unit, smoke, regression, BDD)
+- ✅ **Multi-Project Setup**: Updated guides for new project initialization
+- ✅ **Documentation Updates**: Version 2.5 across all framework documentation
+
+### Previous Updates (2025-11-20)
 
 - ✅ **Validation Scripts**: Expanded from 1 to 13 validation scripts covering IDs, naming, tags, links, and traceability matrices
 - ✅ **Domain Adaptation**: Added domain-specific configuration guides (Financial, Software, Generic) with [PLACEHOLDER] examples

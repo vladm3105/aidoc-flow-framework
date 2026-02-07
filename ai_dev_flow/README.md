@@ -14,7 +14,7 @@ custom_fields:
 
 **Status**: Active framework with MVP templates, domain adaptation guidance, cumulative tagging, and validation tooling.
 
-**Version**: 2.4 | **Last Updated**: 2026-02-05
+**Version**: 2.5 | **Last Updated**: 2026-02-07
 
 ## Overview
 
@@ -1366,8 +1366,14 @@ graph LR
 
 ## Framework Versions and Updates
 
-**Current Version**: 2.4
-**Last Updated**: 2026-02-05
+**Current Version**: 2.5
+**Last Updated**: 2026-02-07
+
+**Version 2.5 - Autopilot v6.0 Integration** (February 2026):
+- ✅ **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG modes
+- ✅ **TDD Workflow Scripts**: 7 new scripts for test-driven development workflow
+- ✅ **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests for Autopilot scripts
+- ✅ **Documentation Updates**: Updated multi-project setup guides and main README
 
 **Version 2.4 - 4-Gate Change Management System** (February 2026):
 - ✅ **4-Gate CHG System**: Formal validation gates at layer boundaries (GATE-01, GATE-05, GATE-09, GATE-12)

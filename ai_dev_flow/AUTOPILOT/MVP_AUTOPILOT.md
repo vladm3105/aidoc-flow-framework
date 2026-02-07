@@ -103,6 +103,13 @@ ai_dev_flow/AUTOPILOT/
 │   ├── quality_gates.yaml            # Quality gate settings
 │   └── layers.yaml                   # Layer-specific configs
 └── tests/                            # Test suite
+    ├── conftest.py                   # Shared fixtures
+    ├── pytest.ini                    # Test configuration
+    ├── fixtures/                     # Baseline test data
+    ├── smoke/                        # Quick validation tests
+    ├── unit/                         # Unit tests
+    ├── regression/                   # Baseline comparison tests
+    ├── bdd/                          # BDD acceptance tests
     ├── test_config_parsing.py
     ├── test_prechecks.py
     ├── test_cli_parsing.py
@@ -1073,6 +1080,128 @@ Support for multiple AI providers via pluggable architecture:
 - OpenAI (via API)
 - Anthropic Claude
 - Local mock generator for testing
+
+---
+
+## Testing the Autopilot (v6.0)
+
+The Autopilot includes a comprehensive test suite for validating TDD scripts and workflow automation.
+
+### Test Suite Structure
+
+```
+ai_dev_flow/AUTOPILOT/tests/
+├── conftest.py                    # Shared fixtures & configuration
+├── pytest.ini                     # Pytest settings & markers
+├── fixtures/                      # Baseline data for comparisons
+│   ├── baseline_test_requirements.json
+│   └── baseline_spec.yaml
+├── smoke/                         # Quick validation tests
+│   └── test_scripts_smoke.py
+├── unit/                          # Isolated function tests
+│   ├── test_analyze_test_requirements.py
+│   ├── test_generate_spec_tdd.py
+│   ├── test_validate_tdd_stage.py
+│   ├── test_update_test_traceability.py
+│   └── test_generate_tests.py
+├── regression/                    # Baseline comparison tests
+│   └── test_workflow_regression.py
+└── bdd/                           # Acceptance tests
+    ├── features/
+    │   └── tdd_workflow.feature
+    └── test_tdd_workflow_steps.py
+```
+
+### Test Markers
+
+| Marker | Purpose | Run Command |
+|--------|---------|-------------|
+| `smoke` | Quick functionality validation | `pytest -m smoke` |
+| `unit` | Isolated function tests | `pytest -m unit` |
+| `regression` | Baseline comparisons | `pytest -m regression` |
+| `bdd` | Acceptance tests (Gherkin) | `pytest -m bdd` |
+| `slow` | Tests >5 seconds | `pytest -m "not slow"` |
+| `integration` | Workflow integration tests | `pytest -m integration` |
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest ai_dev_flow/AUTOPILOT/tests/ -v
+
+# Run smoke tests only (quick validation)
+pytest ai_dev_flow/AUTOPILOT/tests/ -m smoke -v
+
+# Run unit tests with coverage
+pytest ai_dev_flow/AUTOPILOT/tests/ -m unit \
+  --cov=ai_dev_flow/AUTOPILOT/scripts \
+  --cov-report=term-missing
+
+# Run regression tests
+pytest ai_dev_flow/AUTOPILOT/tests/ -m regression -v
+
+# Run BDD acceptance tests
+pytest ai_dev_flow/AUTOPILOT/tests/bdd/ -v
+
+# Exclude slow tests
+pytest ai_dev_flow/AUTOPILOT/tests/ -m "not slow" -v
+```
+
+### Test Fixtures
+
+The test suite provides shared fixtures via `conftest.py`:
+
+| Fixture | Purpose |
+|---------|---------|
+| `temp_project_dir` | Temporary SDD project structure |
+| `sample_test_file` | Unit test with traceability tags |
+| `sample_spec_file` | SPEC YAML with interfaces |
+| `sample_req_file` | REQ markdown document |
+| `sample_bdd_file` | Gherkin feature file |
+| `sample_code_file` | Implementation Python file |
+| `sample_test_requirements` | Pre-generated test requirements JSON |
+| `run_script` | Factory for running Autopilot scripts |
+
+### CI Integration
+
+Add to GitHub Actions workflow:
+
+```yaml
+- name: Run Autopilot Tests
+  run: |
+    pip install pytest pytest-cov pytest-bdd pyyaml
+    pytest ai_dev_flow/AUTOPILOT/tests/ -v \
+      --cov=ai_dev_flow/AUTOPILOT/scripts \
+      --cov-report=xml \
+      --junitxml=test-results.xml
+
+- name: Upload Coverage
+  uses: codecov/codecov-action@v3
+  with:
+    files: ./coverage.xml
+```
+
+### Writing New Tests
+
+When adding new TDD scripts, create corresponding tests:
+
+1. **Smoke test**: Add to `smoke/test_scripts_smoke.py`
+   - Verify script exists and imports
+   - Test `--help` flag works
+   - Basic execution with sample input
+
+2. **Unit tests**: Create `unit/test_<script_name>.py`
+   - Test individual functions and classes
+   - Use fixtures for test data
+   - Mock external dependencies
+
+3. **Regression tests**: Add to `regression/test_workflow_regression.py`
+   - Verify output structure matches baseline
+   - Test consistency of generated artifacts
+
+4. **BDD scenarios**: Add to `bdd/features/tdd_workflow.feature`
+   - Describe behavior in Gherkin
+   - Implement steps in `test_tdd_workflow_steps.py`
 
 ---
 

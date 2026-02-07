@@ -379,4 +379,36 @@ vim docs/BRD/BRD-001_my_requirements.md
 
 ---
 
-**Quick Reference Version**: 1.0 (2025-11-13)
+## Autopilot v6.0 Quick Start
+
+```bash
+# Run MVP Autopilot with TDD mode
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --tdd-mode \
+  --auto-fix \
+  --report markdown
+
+# Run with Change Management mode
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --chg-mode \
+  --chg-level L2 \
+  --auto-fix
+
+# Run validation only
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --validate-gates
+```
+
+**Key v6.0 Features**:
+- **TSPEC** (Layer 10): Test Specifications (UTEST, ITEST, STEST, FTEST)
+- **TDD Mode**: Test-first development with Red→Green validation
+- **CHG Integration**: 4-Gate change management system
+
+---
+
+**Quick Reference Version**: 2.0 (2026-02-07)

@@ -125,7 +125,7 @@ template_profile: enterprise  # or "full" or "strict"
 - **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
 - **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
 - **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
-- **15-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation)
+- **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TSPEC → TASKS → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
@@ -252,10 +252,12 @@ For organizations managing multiple projects with shared framework resources:
 
 | Capability | Status | Description |
 |------------|--------|-------------|
-| Document Generation | ✅ 90% | 12 layers auto-generate from upstream |
+| Document Generation | ✅ 90% | 12 layers auto-generate from upstream (L1-L11) |
+| Test Specs (TSPEC) | ✅ Full | UTEST, ITEST, STEST, FTEST from upstream artifacts |
 | Code Generation | ✅ Full | SPEC+TASKS → Production Python code |
-| Test Generation | ✅ Full | BDD scenarios → pytest test suites |
-| Test Execution | ✅ Full | Unit + Integration + BDD with auto-retry |
+| Test Generation | ✅ Full | BDD scenarios + TSPEC → pytest test suites |
+| TDD Workflow | ✅ Full | Red→Green validation with auto-fix |
+| Change Management | ✅ Full | 4-Gate CHG system with cascade detection |
 | Traceability | ✅ Full | Automated tag extraction and matrix generation |
 | Validation | ✅ Full | Contract compliance, security scans, coverage |
 | Deployment | ⚠️ Partial | Automated build, optional human-approved deployment |
@@ -385,6 +387,9 @@ Layer 9: Interface Contracts [OPTIONAL - IF INTERFACE REQUIREMENT]
 
 Layer 10: Technical Specifications
 └── SPEC (YAML Technical Specifications)
+
+Layer 10b: Test Specifications (TSPEC)
+└── TSPEC (Unit, Integration, Smoke, Functional test specs)
 
 Layer 11: Task Breakdown
 └── TASKS (Code Generation Plans)
@@ -921,7 +926,9 @@ aidoc-flow-framework/
 │   ├── IMPL/                          # Implementation plan templates (Layer 8)
 │   ├── CTR/                           # API contract templates - dual-file (Layer 9)
 │   ├── SPEC/                          # Technical specification templates (Layer 10)
+│   ├── 10_TSPEC/                      # Test specification templates (Layer 10b)
 │   ├── TASKS/                         # Code generation templates (Layer 11)
+│   ├── CHG/                           # Change management templates
 │   └── scripts/                       # Validation and automation scripts
 │       ├── extract_tags.py            # Extract tags from codebase
 │       ├── validate_tags_against_docs.py  # Validate cumulative tagging
@@ -1031,20 +1038,30 @@ Contributions welcome! Please:
 
 ## Automation & Workflow
 
-**MVP Autopilot Guide**:
-- [AUTOPILOT/MVP_AUTOPILOT.md](./AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide for MVP workflow
-- [AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
-- [AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
+**MVP Autopilot Guide (v6.0)**:
+- [ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md](./ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide with TSPEC, TDD, and CHG
+- [ai_dev_flow/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./ai_dev_flow/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
+- [ai_dev_flow/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./ai_dev_flow/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
 
 **Configuration**:
-- [AUTOPILOT/config/default.yaml](./AUTOPILOT/config/default.yaml) - Default configuration
-- [AUTOPILOT/config/quality_gates.yaml](./AUTOPILOT/config/quality_gates.yaml) - Quality gate settings
+- [ai_dev_flow/AUTOPILOT/config/default.yaml](./ai_dev_flow/AUTOPILOT/config/default.yaml) - Default configuration
+- [ai_dev_flow/AUTOPILOT/config/tdd.yaml](./ai_dev_flow/AUTOPILOT/config/tdd.yaml) - TDD mode configuration
+- [ai_dev_flow/AUTOPILOT/config/quality_gates.yaml](./ai_dev_flow/AUTOPILOT/config/quality_gates.yaml) - Quality gate settings
 
-**Scripts**:
-- [AUTOPILOT/scripts/mvp_autopilot.py](./AUTOPILOT/scripts/mvp_autopilot.py) - Main orchestration script
-- [AUTOPILOT/scripts/validate_metadata.py](./AUTOPILOT/scripts/validate_metadata.py) - Metadata validator
-- [AUTOPILOT/scripts/validate_quality_gates.py](./AUTOPILOT/scripts/validate_quality_gates.py) - Quality gate checker (Python)
-- [AUTOPILOT/scripts/validate_quality_gates.sh](./AUTOPILOT/scripts/validate_quality_gates.sh) - Quality gate validator (shell)
+**Core Scripts**:
+- [ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py](./ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py) - Main orchestration script
+- [ai_dev_flow/AUTOPILOT/scripts/validate_metadata.py](./ai_dev_flow/AUTOPILOT/scripts/validate_metadata.py) - Metadata validator
+- [ai_dev_flow/AUTOPILOT/scripts/validate_quality_gates.py](./ai_dev_flow/AUTOPILOT/scripts/validate_quality_gates.py) - Quality gate checker (Python)
+- [ai_dev_flow/AUTOPILOT/scripts/validate_quality_gates.sh](./ai_dev_flow/AUTOPILOT/scripts/validate_quality_gates.sh) - Quality gate validator (shell)
+
+**TDD Scripts (v6.0)**:
+- [ai_dev_flow/AUTOPILOT/scripts/analyze_test_requirements.py](./ai_dev_flow/AUTOPILOT/scripts/analyze_test_requirements.py) - Parse tests, extract traceability
+- [ai_dev_flow/AUTOPILOT/scripts/generate_spec_tdd.py](./ai_dev_flow/AUTOPILOT/scripts/generate_spec_tdd.py) - Generate test-aware SPEC
+- [ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py](./ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py) - Validate Red/Green state
+- [ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py](./ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py) - Update PENDING tags
+- [ai_dev_flow/AUTOPILOT/scripts/generate_integration_tests.py](./ai_dev_flow/AUTOPILOT/scripts/generate_integration_tests.py) - Generate integration tests
+- [ai_dev_flow/AUTOPILOT/scripts/generate_smoke_tests.py](./ai_dev_flow/AUTOPILOT/scripts/generate_smoke_tests.py) - Generate smoke tests
+- [ai_dev_flow/AUTOPILOT/scripts/validate_tdd_e2e.py](./ai_dev_flow/AUTOPILOT/scripts/validate_tdd_e2e.py) - End-to-end TDD validation
 
 **Makefile**:
 - [Makefile](./Makefile) - Standardized commands for common operations
@@ -1056,13 +1073,28 @@ Contributions welcome! Please:
 **Quick Start**:
 
 ```bash
-# Local development
+# Standard MVP generation
 python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
   --auto-fix \
   --report markdown
+
+# TDD mode (test-first development)
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --tdd-mode \
+  --auto-fix
+
+# Change Management mode
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --chg-mode \
+  --chg-level L2 \
+  --auto-fix
 
 # GitHub Actions
 make docs  # Runs mvp-autopilot.yml workflow
@@ -1165,11 +1197,27 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.3
-**Last Updated**: 2026-02-06
+**Version**: 2.4
+**Last Updated**: 2026-02-07
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.4 (2026-02-07)
+- ✅ **Autopilot v6.0**: Complete automation upgrade
+  - Added TSPEC (Layer 10) test specification integration
+  - Added TDD workflow mode with Red→Green validation
+  - Added CHG (Change Management) 4-Gate integration
+- ✅ **New TDD Scripts**:
+  - `analyze_test_requirements.py` - Extract traceability from tests
+  - `generate_spec_tdd.py` - Generate test-aware SPEC
+  - `validate_tdd_stage.py` - Validate Red/Green states
+  - `update_test_traceability.py` - Update PENDING tags
+  - `generate_integration_tests.py` - Generate integration tests
+  - `generate_smoke_tests.py` - Generate smoke tests
+  - `validate_tdd_e2e.py` - End-to-end TDD validation
+- ✅ **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests
+- ✅ **Documentation Updates**: Updated multi-project setup guides
 
 ### Version 2.3 (2026-02-06)
 - ✅ **Testing Infrastructure**: Complete runtime test infrastructure for TSPEC layer
