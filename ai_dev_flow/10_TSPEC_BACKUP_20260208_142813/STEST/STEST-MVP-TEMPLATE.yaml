@@ -1,0 +1,136 @@
+# STEST-MVP-TEMPLATE.yaml
+# Smoke Test Specification Template for Autopilot Workflow
+# Schema: STEST_MVP_SCHEMA.yaml
+
+metadata:
+  document_id: "STEST-NN"
+  title: "[Deployment Target] Smoke Test Specification"
+  artifact_type: "STEST"
+  layer: 10
+  test_type_code: 42
+  template_profile: "mvp"
+  schema_version: "1.0"
+
+document_control:
+  status: "Draft"
+  version: "0.1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Author name]"
+  deployment_target: "[Environment/service name]"
+  total_timeout_budget: 300  # max 300 seconds
+  ears_reference: "EARS.NN.25.01"
+  bdd_reference: "BDD.NN.01.01"
+  tasks_ready_score: null
+  template_version: "1.0"
+
+test_scope:
+  deployment_context:
+    environment: "Production"  # Production/Staging/Dev
+    deployment_type: "Blue-Green"  # Blue-Green/Rolling/Canary
+    trigger: "Post-deploy"  # Post-deploy/Manual/Scheduled
+    success_criteria: "All tests pass within timeout"
+
+  timeout_budget:
+    - test_id: "TSPEC.NN.42.01"
+      timeout: 30
+      cumulative: 30
+    - test_id: "TSPEC.NN.42.02"
+      timeout: 45
+      cumulative: 75
+    - test_id: "TSPEC.NN.42.03"
+      timeout: 60
+      cumulative: 135
+    - test_id: "TSPEC.NN.42.04"
+      timeout: 30
+      cumulative: 165
+    - test_id: "buffer"
+      timeout: 135
+      cumulative: 300
+
+  critical_paths:
+    - path: "Authentication"
+      priority: "P0"
+      impact: "Complete outage"
+    - path: "Health endpoints"
+      priority: "P0"
+      impact: "Monitoring blind"
+    - path: "Core API"
+      priority: "P0"
+      impact: "Service degraded"
+
+critical_path_index:
+  - id: "TSPEC.NN.42.01"
+    path: "Auth Flow"
+    timeout: 30
+    rollback_trigger: true
+    priority: "P0"
+  - id: "TSPEC.NN.42.02"
+    path: "Health Check"
+    timeout: 45
+    rollback_trigger: true
+    priority: "P0"
+
+test_case_details:
+  - id: "TSPEC.NN.42.01"
+    name: "Authentication Flow Smoke Test"
+    critical_path: "Authentication"
+    traceability:
+      ears: "EARS.NN.25.01"
+      bdd: "BDD.NN.01.01"
+      req: "REQ.NN.10.01"
+    timeout: 30
+    pass_fail_criteria:
+      - condition: "Login returns 200 with valid token"
+        result: "PASS"
+      - condition: "Login returns non-200"
+        result: "FAIL"
+      - condition: "Response time > 5s"
+        result: "FAIL"
+    health_check: |
+      curl -X POST https://api.example.com/auth/login \
+        -H "Content-Type: application/json" \
+        -d '{"user":"smoke_test","pass":"***"}' \
+        --max-time 5 \
+        -w "%{http_code}"
+    rollback_procedure:
+      - step: 1
+        action: "Alert on-call"
+        command: "PagerDuty trigger"
+      - step: 2
+        action: "Revert deployment"
+        command: "kubectl rollout undo"
+      - step: 3
+        action: "Verify rollback"
+        command: "Re-run smoke test"
+
+rollback_procedures:
+  global_rollback_matrix:
+    - test_failure: "Auth"
+      immediate_action: "Rollback + PagerDuty"
+      escalation: "P1 Incident"
+    - test_failure: "Health"
+      immediate_action: "Rollback"
+      escalation: "P2 Incident"
+  rollback_commands:
+    kubernetes: "kubectl rollout undo deployment/[service] -n [namespace]"
+    verify: "kubectl rollout status deployment/[service] -n [namespace]"
+
+traceability:
+  upstream:
+    - tag: "@ears"
+      reference: "EARS.NN.25.01"
+      description: "Behavioral requirement"
+    - tag: "@bdd"
+      reference: "BDD.NN.01.01"
+      description: "Feature scenario"
+    - tag: "@req"
+      reference: "REQ.NN.10.01"
+      description: "Functional requirement"
+  downstream:
+    - tag: "@tasks"
+      reference: "TASKS-NN"
+      description: "Implementation tasks"
+    - tag: "@code"
+      reference: "scripts/smoke_test.sh"
+      description: "Test script"

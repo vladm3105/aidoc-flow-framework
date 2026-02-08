@@ -29,8 +29,7 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 | 41 | Integration Test | IT | `ITEST/` | CTR (L8), SYS (L6), SPEC (L9) | Component interaction |
 | 42 | Smoke Test | ST | `STEST/` | EARS (L3), BDD (L4), REQ (L7) | Post-deployment health |
 | 43 | Functional Test | FT | `FTEST/` | SYS (L6) | System behavior validation |
-| 44 | Performance Test | PT | `PTEST/` | SYS (L6) | Performance validation |
-| 45 | Security Test | ST | `SECTEST/` | SEC (L8), CTR (L8) | Security validation |
+| 44-45 | Reserved | - | - | - | Future (performance, security) |
 
 **Note**: Acceptance tests remain in BDD (L4), not duplicated here.
 
@@ -74,22 +73,6 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 │   ├── FTEST_MVP_VALIDATION_RULES.md
 │   └── FTEST_MVP_QUALITY_GATES.md
 │
-├── PTEST/                                 # Performance Test Specifications
-│   ├── PTEST-MVP-TEMPLATE.md
-│   ├── PTEST-MVP-TEMPLATE.yaml
-│   ├── PTEST_MVP_SCHEMA.yaml
-│   ├── PTEST_MVP_CREATION_RULES.md
-│   ├── PTEST_MVP_VALIDATION_RULES.md
-│   └── PTEST_MVP_QUALITY_GATES.md
-│
-├── SECTEST/                               # Security Test Specifications
-│   ├── SECTEST-MVP-TEMPLATE.md
-│   ├── SECTEST-MVP-TEMPLATE.yaml
-│   ├── SECTEST_MVP_SCHEMA.yaml
-│   ├── SECTEST_MVP_CREATION_RULES.md
-│   ├── SECTEST_MVP_VALIDATION_RULES.md
-│   └── SECTEST_MVP_QUALITY_GATES.md
-│
 ├── scripts/
 │   ├── README.md
 │   ├── validate_utest.py
@@ -130,8 +113,8 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 | 41 | Integration Test | ITEST |
 | 42 | Smoke Test | STEST |
 | 43 | Functional Test | FTEST |
-| 44 | Performance Test | PTEST |
-| 45 | Security Test | SECTEST |
+| 44 | Reserved | PTEST (Performance) |
+| 45 | Reserved | SECTEST (Security) |
 
 **Examples**:
 - `TSPEC.01.40.01` = Document 1, Unit Test #1
@@ -164,8 +147,6 @@ Plus: `@threshold` for quantitative values
 | ITEST | `@ctr`, `@sys`, `@spec` |
 | STEST | `@ears`, `@bdd`, `@req` |
 | FTEST | `@sys`, `@threshold` |
-| PTEST | `@sys`, `@threshold` |
-| SECTEST | `@sec`, `@ctr`, `@sys` |
 
 ## Quality Gates Summary
 
@@ -175,8 +156,6 @@ Plus: `@threshold` for quantitative values
 | ITEST | ≥85% | CTR coverage, sequence diagrams |
 | STEST | 100% | Critical paths, timeout <5min, rollback |
 | FTEST | ≥85% | SYS coverage, threshold refs |
-| PTEST | ≥85% | SYS coverage, load scenarios, thresholds |
-| SECTEST | ≥90% | SEC coverage, threat scenarios, controls |
 
 ## TDD Workflow Position
 
@@ -204,8 +183,6 @@ python scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-01_*.md
 python scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-01_*.md
 python scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-01_*.md
 python scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-01_*.md
-python scripts/validate_ptest.py docs/10_TSPEC/PTEST/PTEST-01_*.md
-python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/SECTEST-01_*.md
 
 # Combined quality score
 bash scripts/validate_tspec_quality_score.sh docs/10_TSPEC/

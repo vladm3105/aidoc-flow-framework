@@ -25,8 +25,6 @@ Validation scripts for TSPEC (Test Specification) documents. Each script validat
 | `validate_itest.py` | Integration Test | Validates ITEST documents |
 | `validate_stest.py` | Smoke Test | Validates STEST documents |
 | `validate_ftest.py` | Functional Test | Validates FTEST documents |
-| `validate_ptest.py` | Performance Test | Validates PTEST documents |
-| `validate_sectest.py` | Security Test | Validates SECTEST documents |
 | `validate_tspec_quality_score.sh` | All | Combined quality score |
 | `validate_all_tspec.sh` | All | Batch validation |
 | `run_tests.py` | All | Unified test runner |
@@ -84,8 +82,6 @@ bash validate_all_tspec.sh ../../docs/10_TSPEC/
 | ITEST | ≥85% |
 | STEST | 100% |
 | FTEST | ≥85% |
-| PTEST | ≥85% |
-| SECTEST | ≥90% |
 
 ## Exit Codes
 

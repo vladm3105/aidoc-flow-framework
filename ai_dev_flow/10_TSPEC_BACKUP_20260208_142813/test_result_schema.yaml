@@ -75,7 +75,7 @@ properties:
 
   test_type:
     type: string
-    enum: ["UTEST", "ITEST", "STEST", "FTEST", "PTEST", "SECTEST", "ALL"]
+    enum: ["UTEST", "ITEST", "STEST", "FTEST", "ALL"]
     description: "Type of tests executed"
 
   environment:

@@ -1,0 +1,161 @@
+# PTEST-MVP-TEMPLATE.yaml
+# Performance Test Specification Template for Autopilot Workflow
+# Schema: PTEST_MVP_SCHEMA.yaml
+
+metadata:
+  document_id: "PTEST-NN"
+  title: "[Component/System] Performance Test Specification"
+  artifact_type: "PTEST"
+  layer: 10
+  test_type_code: 44
+  template_profile: "mvp"
+  schema_version: "1.0"
+
+document_control:
+  status: "Draft"  # Draft | Review | Approved | Implemented
+  version: "0.1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Author name]"
+  component: "[Component/system name]"
+  spec_reference: "SPEC-NN"
+  coverage_target: 85
+  tasks_ready_score: null  # Calculated after validation
+  template_version: "1.0"
+
+execution_profile:
+  primary_interface: "http"
+  debug_interfaces_allowed: ["cli"]
+  required_services:
+    - name: "api_server"
+      readiness_check:
+        type: "http"
+        value: "http://localhost:8080/health"
+    - name: "database"
+      readiness_check:
+        type: "command"
+        value: "pg_isready -h localhost"
+  required_env_vars:
+    - "LOAD_TEST_ENDPOINT"
+    - "LOAD_TEST_TOKEN"
+  ordering:
+    constraints: []
+  skip_policy:
+    conditions: "Skip in CI if resource constrained"
+    rationale: "Performance tests run on dedicated environment"
+  baseline_artifact_ref: "baseline_20260201"
+  comparison_policy: "Fail if p95 latency > baseline + 20%"
+
+test_scope:
+  component_under_test:
+    component: "[Component name]"
+    module_path: "src/[path]/[module].py"
+    spec_reference: "SPEC-NN"
+    sys_coverage:
+      - "SYS.NN.01"
+      - "SYS.NN.02"
+
+  test_categories:
+    - category: "Load"
+      count: 0
+      description: "Load testing under normal/peak conditions"
+    - category: "Stress"
+      count: 0
+      description: "Maximum capacity/breaking point tests"
+    - category: "Endurance"
+      count: 0
+      description: "Long-duration stability tests"
+    - category: "Spike"
+      count: 0
+      description: "Sudden traffic spike tests"
+
+  dependencies:
+    - name: "Load Generator"
+      setup_strategy: "Locust/k6/JMeter configuration"
+    - name: "Test Data"
+      setup_strategy: "Dataset preparation"
+
+test_case_index:
+  - id: "TSPEC.NN.44.01"
+    name: "[Test name]"
+    category: "Load"
+    sys_coverage: "SYS.NN.01"
+    priority: "P1"
+  - id: "TSPEC.NN.44.02"
+    name: "[Test name]"
+    category: "Stress"
+    sys_coverage: "SYS.NN.02"
+    priority: "P1"
+
+test_case_details:
+  - id: "TSPEC.NN.44.01"
+    name: "[Test Name]"
+    category: "Load"
+    traceability:
+      sys: "SYS.NN.01"
+      spec: "SPEC-NN"
+      spec_section: "X.Y"
+    load_scenarios:
+      - load_level: "Normal"
+        concurrent_users: 100
+        duration: "10 min"
+        target_throughput: 500
+      - load_level: "Peak"
+        concurrent_users: 500
+        duration: "5 min"
+        target_throughput: 1000
+      - load_level: "Stress"
+        concurrent_users: 1000
+        duration: "2 min"
+        target_throughput: 1500
+    performance_thresholds:
+      - metric: "Response Time (p95)"
+        target: 200
+        maximum: 500
+        unit: "ms"
+      - metric: "Error Rate"
+        target: 0.1
+        maximum: 1.0
+        unit: "%"
+    measurement_strategy:
+      tool: "Locust"
+      metrics:
+        - "Latency (p50/p95/p99)"
+        - "Throughput"
+        - "Error Rate"
+      sampling_method: "1-second intervals"
+      baseline_reference: "baseline_20260201"
+
+sys_coverage_matrix:
+  - sys_id: "SYS.NN.01"
+    sys_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.44.01"
+      - "TSPEC.NN.44.03"
+    covered: true
+  - sys_id: "SYS.NN.02"
+    sys_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.44.02"
+    covered: true
+
+coverage_summary:
+  total_sys_elements: 0
+  covered: 0
+  coverage_percent: 0
+
+traceability:
+  upstream:
+    - tag: "@sys"
+      reference: "SYS.NN.01"
+      description: "[Performance requirement title]"
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "[Specification reference]"
+  downstream:
+    - tag: "@tasks"
+      reference: "TASKS-NN"
+      description: "Implementation tasks"
+    - tag: "@code"
+      reference: "tests/performance/test_[component].py"
+      description: "Test implementation"

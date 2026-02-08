@@ -1,0 +1,154 @@
+# SECTEST-MVP-TEMPLATE.yaml
+# Security Test Specification Template for Autopilot Workflow
+# Schema: SECTEST_MVP_SCHEMA.yaml
+
+metadata:
+  document_id: "SECTEST-NN"
+  title: "[Component/Threat] Security Test Specification"
+  artifact_type: "SECTEST"
+  layer: 10
+  test_type_code: 45
+  template_profile: "mvp"
+  schema_version: "1.0"
+
+document_control:
+  status: "Draft"  # Draft | Review | Approved | Implemented
+  version: "0.1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Author name]"
+  component: "[Component/system name]"
+  spec_reference: "SPEC-NN"
+  coverage_target: 90
+  tasks_ready_score: null  # Calculated after validation
+  template_version: "1.0"
+
+execution_profile:
+  primary_interface: "http"
+  debug_interfaces_allowed: []
+  required_services:
+    - name: "target_application"
+      readiness_check:
+        type: "http"
+        value: "http://localhost:8080/health"
+    - name: "security_test_env"
+      readiness_check:
+        type: "command"
+        value: "echo $SECURITY_TEST_ENV | grep -q 'isolated'"
+  required_env_vars:
+    - "SECURITY_TEST_ENV"  # must be set to "isolated"
+    - "TEST_CREDENTIALS"   # test accounts only
+  ordering:
+    constraints: ["STEST-001"]  # smoke tests must pass first
+  skip_policy:
+    conditions: "Skip in production or shared environments"
+    rationale: "Security tests must run in isolated environment only to prevent accidental damage or data exposure"
+
+test_scope:
+  component_under_test:
+    component: "[Component name]"
+    module_path: "src/[path]/[module].py"
+    spec_reference: "SPEC-NN"
+    sec_coverage:
+      - "SEC.NN.01"
+      - "SEC.NN.02"
+
+  test_categories:
+    - category: "AuthN"
+      count: 0
+      description: "Authentication testing"
+    - category: "AuthZ"
+      count: 0
+      description: "Authorization testing"
+    - category: "Input"
+      count: 0
+      description: "Input validation testing"
+    - category: "Crypto"
+      count: 0
+      description: "Cryptographic testing"
+    - category: "Config"
+      count: 0
+      description: "Configuration security"
+    - category: "Session"
+      count: 0
+      description: "Session management testing"
+
+  dependencies:
+    - name: "Security Tools"
+      setup_strategy: "OWASP ZAP, Burp Suite, custom scripts"
+    - name: "Test Environment"
+      setup_strategy: "Isolated Docker/network"
+
+test_case_index:
+  - id: "TSPEC.NN.45.01"
+    name: "[Test name]"
+    category: "AuthN"
+    sec_coverage: "SEC.NN.01"
+    priority: "P1"
+  - id: "TSPEC.NN.45.02"
+    name: "[Test name]"
+    category: "AuthZ"
+    sec_coverage: "SEC.NN.02"
+    priority: "P1"
+
+test_case_details:
+  - id: "TSPEC.NN.45.01"
+    name: "[Test Name]"
+    category: "AuthN"
+    traceability:
+      sec: "SEC.NN.01"
+      spec: "SPEC-NN"
+      spec_section: "X.Y"
+    threat_scenario:
+      threat_actor: "External attacker with no credentials"
+      attack_vector: "Brute force password guessing"
+      prerequisites: "Valid username, no rate limiting"
+      impact: "Account takeover, unauthorized access"
+    security_controls:
+      - control: "Rate Limiting"
+        expected_behavior: "Block after 5 failed attempts"
+        validation_method: "HTTP 429 response"
+      - control: "Account Lockout"
+        expected_behavior: "Lock account after 10 attempts"
+        validation_method: "Cannot login with valid password"
+      - control: "Audit Logging"
+        expected_behavior: "Log all failed attempts"
+        validation_method: "Check security logs"
+    compliance_mapping:
+      owasp:
+        - "A07:2021 – Identification and Authentication Failures"
+      cwe:
+        - "CWE-307: Improper Restriction of Excessive Authentication Attempts"
+
+sec_coverage_matrix:
+  - sec_id: "SEC.NN.01"
+    sec_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.45.01"
+    covered: true
+  - sec_id: "SEC.NN.02"
+    sec_title: "[Title]"
+    test_ids:
+      - "TSPEC.NN.45.02"
+    covered: true
+
+coverage_summary:
+  total_sec_elements: 0
+  covered: 0
+  coverage_percent: 0
+
+traceability:
+  upstream:
+    - tag: "@sec"
+      reference: "SEC.NN.01"
+      description: "[Security requirement title]"
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "[Specification reference]"
+  downstream:
+    - tag: "@tasks"
+      reference: "TASKS-NN"
+      description: "Implementation tasks"
+    - tag: "@code"
+      reference: "tests/security/test_[component].py"
+      description: "Test implementation"

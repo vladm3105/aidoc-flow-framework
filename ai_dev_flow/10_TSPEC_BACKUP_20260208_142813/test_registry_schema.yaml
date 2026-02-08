@@ -14,7 +14,7 @@ definitions:
 
   test_type:
     type: string
-    enum: ["UTEST", "ITEST", "STEST", "FTEST", "PTEST", "SECTEST"]
+    enum: ["UTEST", "ITEST", "STEST", "FTEST"]
     description: "Test category according to TSPEC layer"
 
   test_result:
@@ -34,9 +34,9 @@ definitions:
     properties:
       test_id:
         type: string
-        pattern: "^(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)-[0-9]{3}$"
+        pattern: "^(UTEST|ITEST|STEST|FTEST)-[0-9]{3}$"
         description: "Unique test identifier following naming standards"
-        examples: ["UTEST-001", "ITEST-002", "STEST-001", "FTEST-001", "PTEST-001", "SECTEST-001"]
+        examples: ["UTEST-001", "ITEST-002", "STEST-001", "FTEST-001"]
 
       test_type:
         $ref: "#/definitions/test_type"
@@ -105,7 +105,7 @@ definitions:
         type: array
         items:
           type: string
-          pattern: "^(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)-[0-9]{3}$"
+          pattern: "^(UTEST|ITEST|STEST|FTEST)-[0-9]{3}$"
         description: "Tests that must run before this one"
 
 type: object
@@ -149,12 +149,6 @@ properties:
             type: integer
             minimum: 0
           FTEST:
-            type: integer
-            minimum: 0
-          PTEST:
-            type: integer
-            minimum: 0
-          SECTEST:
             type: integer
             minimum: 0
       by_status:

@@ -38,8 +38,6 @@ TEST_TYPE_MAP = {
     "itest": {"code": 41, "dir": "integration", "marker": "integration"},
     "stest": {"code": 42, "dir": "smoke", "marker": "smoke"},
     "ftest": {"code": 43, "dir": "functional", "marker": "functional"},
-    "ptest": {"code": 44, "dir": "performance", "marker": "performance"},
-    "sectest": {"code": 45, "dir": "security", "marker": "security"},
 }
 
 
@@ -227,7 +225,7 @@ def main():
     parser.add_argument(
         "--type",
         required=True,
-        choices=["utest", "itest", "stest", "ftest", "ptest", "sectest", "all"],
+        choices=["utest", "itest", "stest", "ftest", "all"],
         help="Test type to run",
     )
     parser.add_argument("--save", action="store_true", help="Save results for comparison")
@@ -238,7 +236,7 @@ def main():
 
     # Determine test types to run
     if args.type == "all":
-        test_types = ["utest", "itest", "stest", "ftest", "ptest", "sectest"]
+        test_types = ["utest", "itest", "stest", "ftest"]
     else:
         test_types = [args.type]
 

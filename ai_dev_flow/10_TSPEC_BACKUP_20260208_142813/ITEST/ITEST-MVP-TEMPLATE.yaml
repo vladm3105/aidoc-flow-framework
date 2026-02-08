@@ -1,0 +1,144 @@
+# ITEST-MVP-TEMPLATE.yaml
+# Integration Test Specification Template for Autopilot Workflow
+# Schema: ITEST_MVP_SCHEMA.yaml
+
+metadata:
+  document_id: "ITEST-NN"
+  title: "[Integration Scope] Integration Test Specification"
+  artifact_type: "ITEST"
+  layer: 10
+  test_type_code: 41
+  template_profile: "mvp"
+  schema_version: "1.0"
+
+document_control:
+  status: "Draft"
+  version: "0.1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Author name]"
+  integration_scope: "[Components being integrated]"
+  ctr_reference: "CTR-NN"
+  sys_reference: "SYS.NN.01.01"
+  coverage_target: 85
+  tasks_ready_score: null
+  template_version: "1.0"
+
+test_scope:
+  components_under_test:
+    - component: "[Component A]"
+      role: "Producer"
+      interface: "REST API"
+    - component: "[Component B]"
+      role: "Consumer"
+      interface: "REST API"
+    - component: "[Database]"
+      role: "Persistence"
+      interface: "SQL"
+
+  integration_points:
+    - id: "IP-01"
+      source: "Component A"
+      target: "Component B"
+      protocol: "REST/JSON"
+      ctr_reference: "CTR-NN"
+    - id: "IP-02"
+      source: "Component B"
+      target: "Database"
+      protocol: "SQL"
+      sys_reference: "SYS.NN.01.01"
+
+  dependencies:
+    - name: "External API"
+      strategy: "Wiremock stub"
+      notes: "Simulated responses"
+    - name: "Database"
+      strategy: "Test container"
+      notes: "PostgreSQL 15"
+
+test_case_index:
+  - id: "TSPEC.NN.41.01"
+    name: "[Test name]"
+    components: "A → B"
+    ctr_coverage: "/api/v1/endpoint"
+    priority: "P1"
+  - id: "TSPEC.NN.41.02"
+    name: "[Test name]"
+    components: "B → DB"
+    ctr_coverage: "SYS.NN.01.01"
+    priority: "P1"
+
+test_case_details:
+  - id: "TSPEC.NN.41.01"
+    name: "[Test Name]"
+    components: "Component A → Component B"
+    traceability:
+      ctr: "CTR-NN"
+      ctr_endpoint: "/api/v1/endpoint"
+      sys: "SYS.NN.01.01"
+      spec: "SPEC-NN"
+    contract_compliance:
+      - aspect: "Request Schema"
+        expected: '{"field": "string"}'
+        validation: "JSON Schema"
+      - aspect: "Response Schema"
+        expected: '{"result": "object"}'
+        validation: "JSON Schema"
+      - aspect: "Status Code"
+        expected: "200, 400, 500"
+        validation: "Assert"
+    sequence_diagram: |
+      sequenceDiagram
+          participant A as Component A
+          participant B as Component B
+          A->>B: POST /api/v1/endpoint
+          B-->>A: 200 OK + response
+    side_effects:
+      - effect: "Database record created"
+        verification: "Query assertion"
+      - effect: "Event published"
+        verification: "Message queue check"
+    error_cases:
+      - condition: "Invalid request"
+        expected_response: "400 Bad Request"
+        recovery: "No retry"
+      - condition: "Service unavailable"
+        expected_response: "503 + retry-after"
+        recovery: "Retry with backoff"
+
+ctr_coverage_matrix:
+  - endpoint: "/api/v1/endpoint"
+    method: "POST"
+    test_ids:
+      - "TSPEC.NN.41.01"
+      - "TSPEC.NN.41.03"
+    covered: true
+  - endpoint: "/api/v1/endpoint"
+    method: "GET"
+    test_ids:
+      - "TSPEC.NN.41.04"
+    covered: true
+
+coverage_summary:
+  total_ctr_endpoints: 0
+  covered: 0
+  coverage_percent: 0
+
+traceability:
+  upstream:
+    - tag: "@ctr"
+      reference: "CTR-NN"
+      description: "API contract specification"
+    - tag: "@sys"
+      reference: "SYS.NN.01.01"
+      description: "System requirement"
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "Technical specification"
+  downstream:
+    - tag: "@tasks"
+      reference: "TASKS-NN"
+      description: "Implementation tasks"
+    - tag: "@code"
+      reference: "tests/integration/test_[scope].py"
+      description: "Test implementation"

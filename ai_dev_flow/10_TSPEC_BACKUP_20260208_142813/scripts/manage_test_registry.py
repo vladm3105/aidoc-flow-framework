@@ -85,7 +85,7 @@ class TestRegistry:
             "last_updated": datetime.now().strftime("%Y-%m-%d"),
             "statistics": {
                 "total_tests": 0,
-                "by_type": {"UTEST": 0, "ITEST": 0, "STEST": 0, "FTEST": 0, "PTEST": 0, "SECTEST": 0},
+                "by_type": {"UTEST": 0, "ITEST": 0, "STEST": 0, "FTEST": 0},
                 "by_status": {"active": 0, "deprecated": 0, "skipped": 0},
             },
             "tests": [],
@@ -214,11 +214,9 @@ class TestRegistry:
             "integration": "ITEST",
             "smoke": "STEST",
             "functional": "FTEST",
-            "performance": "PTEST",
-            "security": "SECTEST",
         }
 
-        next_ids = {"UTEST": 1, "ITEST": 1, "STEST": 1, "FTEST": 1, "PTEST": 1, "SECTEST": 1}
+        next_ids = {"UTEST": 1, "ITEST": 1, "STEST": 1, "FTEST": 1}
 
         # Find highest existing IDs
         for test in self.data.get("tests", []):
@@ -295,7 +293,7 @@ class TestRegistry:
                     errors.append(f"Test at index {i}: missing required field '{field}'")
 
         # Check for valid test types
-        valid_types = ["UTEST", "ITEST", "STEST", "FTEST", "PTEST", "SECTEST"]
+        valid_types = ["UTEST", "ITEST", "STEST", "FTEST"]
         for test in self.data.get("tests", []):
             if test.get("test_type") not in valid_types:
                 errors.append(
@@ -341,8 +339,6 @@ class TestRegistry:
             f"| Integration Tests (ITEST) | {stats['by_type']['ITEST']} |",
             f"| Smoke Tests (STEST) | {stats['by_type']['STEST']} |",
             f"| Functional Tests (FTEST) | {stats['by_type']['FTEST']} |",
-            f"| Performance Tests (PTEST) | {stats['by_type']['PTEST']} |",
-            f"| Security Tests (SECTEST) | {stats['by_type']['SECTEST']} |",
             "",
             "## Status Breakdown",
             "",
@@ -382,7 +378,7 @@ def main():
     parser.add_argument("--remove", type=str, help="Remove test by ID")
     parser.add_argument("--hard-delete", action="store_true", help="Hard delete instead of deprecate")
     parser.add_argument("--list", action="store_true", help="List tests")
-    parser.add_argument("--type", type=str, choices=["UTEST", "ITEST", "STEST", "FTEST", "PTEST", "SECTEST"])
+    parser.add_argument("--type", type=str, choices=["UTEST", "ITEST", "STEST", "FTEST"])
     parser.add_argument("--status", type=str, choices=["active", "deprecated", "skipped"])
     parser.add_argument("--validate", action="store_true", help="Validate registry")
     parser.add_argument("--report", action="store_true", help="Generate report")

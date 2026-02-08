@@ -45,18 +45,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 |----|----------|---------|-------------------|--------|
 | FTEST-01 | [Template] | - | - | Template |
 
-### Performance Test Specifications (PTEST)
-
-| ID | Document | SYS Ref | Performance Targets | Status |
-|----|----------|---------|---------------------|--------|
-| PTEST-01 | [Template] | - | - | Template |
-
-### Security Test Specifications (SECTEST)
-
-| ID | Document | SEC/CTR Ref | Security Controls | Status |
-|----|----------|-------------|-------------------|--------|
-| SECTEST-01 | [Template] | - | - | Template |
-
 ## Coverage Summary
 
 ### By Test Type
@@ -67,8 +55,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 | ITEST | 0 | 0 | - | ≥85% target |
 | STEST | 0 | 0 | - | 100% required |
 | FTEST | 0 | 0 | - | ≥85% target |
-| PTEST | 0 | 0 | - | ≥85% target |
-| SECTEST | 0 | 0 | - | ≥90% target |
 
 ### By Upstream Artifact
 
@@ -91,8 +77,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 | Integration Test | 41 | `TSPEC.01.41.01` |
 | Smoke Test | 42 | `TSPEC.01.42.01` |
 | Functional Test | 43 | `TSPEC.01.43.01` |
-| Performance Test | 44 | `TSPEC.01.44.01` |
-| Security Test | 45 | `TSPEC.01.45.01` |
 
 ## Validation Status
 
@@ -102,8 +86,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 | validate_itest.py | - | - | - |
 | validate_stest.py | - | - | - |
 | validate_ftest.py | - | - | - |
-| validate_ptest.py | - | - | - |
-| validate_sectest.py | - | - | - |
 
 ## Navigation
 
@@ -113,8 +95,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 - [ITEST-MVP-TEMPLATE.md](ITEST/ITEST-MVP-TEMPLATE.md) - Integration test template
 - [STEST-MVP-TEMPLATE.md](STEST/STEST-MVP-TEMPLATE.md) - Smoke test template
 - [FTEST-MVP-TEMPLATE.md](FTEST/FTEST-MVP-TEMPLATE.md) - Functional test template
-- [PTEST-MVP-TEMPLATE.md](PTEST/PTEST-MVP-TEMPLATE.md) - Performance test template
-- [SECTEST-MVP-TEMPLATE.md](SECTEST/SECTEST-MVP-TEMPLATE.md) - Security test template
 
 ### Rules & Quality Gates
 
@@ -122,8 +102,6 @@ Central registry for all TSPEC documents organized by test type. This index prov
 - [ITEST_MVP_QUALITY_GATES.md](ITEST/ITEST_MVP_QUALITY_GATES.md)
 - [STEST_MVP_QUALITY_GATES.md](STEST/STEST_MVP_QUALITY_GATES.md)
 - [FTEST_MVP_QUALITY_GATES.md](FTEST/FTEST_MVP_QUALITY_GATES.md)
-- [PTEST_MVP_QUALITY_GATES.md](PTEST/PTEST_MVP_QUALITY_GATES.md)
-- [SECTEST_MVP_QUALITY_GATES.md](SECTEST/SECTEST_MVP_QUALITY_GATES.md)
 
 ### Examples
 

@@ -36,8 +36,6 @@ TEST_TYPE_MAP = {
     "itest": {"code": 41, "dir": "integration", "marker": "integration"},
     "stest": {"code": 42, "dir": "smoke", "marker": "smoke"},
     "ftest": {"code": 43, "dir": "functional", "marker": "functional"},
-    "ptest": {"code": 44, "dir": "performance", "marker": "performance"},
-    "sectest": {"code": 45, "dir": "security", "marker": "security"},
 }
 
 
@@ -261,7 +259,7 @@ def main():
     )
     parser.add_argument(
         "--type",
-        choices=["utest", "itest", "stest", "ftest", "ptest", "sectest", "all"],
+        choices=["utest", "itest", "stest", "ftest", "all"],
         default="all",
         help="Test type to measure coverage for",
     )

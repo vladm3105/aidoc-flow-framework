@@ -49,8 +49,6 @@ validate_type "UTEST" "validate_utest.py" "UTEST-*.md"
 validate_type "ITEST" "validate_itest.py" "ITEST-*.md"
 validate_type "STEST" "validate_stest.py" "STEST-*.md"
 validate_type "FTEST" "validate_ftest.py" "FTEST-*.md"
-validate_type "PTEST" "validate_ptest.py" "PTEST-*.md"
-validate_type "SECTEST" "validate_sectest.py" "SECTEST-*.md"
 
 # Summary
 echo "========================================="

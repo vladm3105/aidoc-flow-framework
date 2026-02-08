@@ -1,0 +1,20 @@
+version: '1.0'
+last_updated: '2026-02-06'
+statistics:
+  total_tests: 1
+  by_type:
+    UTEST: 1
+    ITEST: 0
+    STEST: 0
+    FTEST: 0
+  by_status:
+    active: 1
+    deprecated: 0
+    skipped: 0
+tests:
+- test_id: UTEST-001
+  test_type: UTEST
+  name: Test YAML parsing
+  file_path: tests/unit/test_sample.py::TestSampleUnit::test_yaml_parsing
+  status: active
+  created_date: '2026-02-06'
