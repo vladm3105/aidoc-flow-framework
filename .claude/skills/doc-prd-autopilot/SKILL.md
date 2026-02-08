@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "1.2"
+  version: "1.3"
 ---
 
 # doc-prd-autopilot
@@ -39,13 +39,16 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
+| `doc-naming` | Element ID format, threshold tags, legacy pattern detection | All Phases |
 | `doc-brd-validator` | Validate BRD PRD-Ready score | Phase 2: BRD Readiness |
 | `doc-prd` | PRD creation rules, template, section structure | Phase 3: PRD Generation |
+| `quality-advisor` | Real-time quality feedback during PRD generation | Phase 3: PRD Generation |
 | `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
 | `doc-prd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - PRD structure/content rules → `doc-prd` skill
+- Real-time quality feedback → `quality-advisor` skill
 - PRD validation logic → `doc-prd-validator` skill
 - BRD validation logic → `doc-brd-validator` skill
 - Final content review → `doc-prd-reviewer` skill (or inline review)
@@ -95,7 +98,8 @@ flowchart TD
         K --> L[Load BRD Content]
         L --> M[Apply PRD Template]
         M --> N[Generate PRD Sections]
-        N --> O[Add Traceability Tags]
+        N --> N2[quality-advisor: Real-time Feedback]
+        N2 --> O[Add Traceability Tags]
         O --> P[Write PRD Files]
     end
 
@@ -241,10 +245,13 @@ python ai_dev_flow/scripts/validate_prd_ready.py \
 
 ### Step 4: PRD Generation
 
-Generate the PRD document from the validated BRD.
+Generate the PRD document from the validated BRD with real-time quality feedback.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-prd` skill.
 > See: `.claude/skills/doc-prd/SKILL.md` for complete PRD creation guidance.
+>
+> **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
+> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -286,7 +293,14 @@ Generate the PRD document from the validated BRD.
    - Section 20: EARS Enhancement Appendix (timing, boundary, state, fallback)
    - Section 21: Quality Assurance & Testing Strategy
 
-5. **Traceability Tags**:
+5. **Real-Time Quality Feedback** (via `quality-advisor` skill):
+   - Monitor section completion as content is generated
+   - Detect anti-patterns (AP-001 to AP-017) during creation
+   - Validate cumulative tagging (@brd requirement for Layer 2)
+   - Check element ID format compliance (PRD.NN.TT.SS)
+   - Flag issues early to reduce post-generation rework
+
+6. **Traceability Tags**:
    ```markdown
    @brd: BRD.01.01.01, BRD.01.01.02, BRD.01.23.01
    ```
@@ -794,6 +808,7 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-08 | Integrated quality-advisor skill for real-time quality feedback in Phase 3 (PRD Generation) |
 | 1.2 | 2026-02-08 | Added Phase 5: Final Content Review with link integrity, threshold consistency, BRD alignment, and placeholder detection checks |
 | 1.1 | 2026-02-08 | Added skill dependencies, integrated doc-prd and doc-prd-validator skills |
 | 1.0 | 2026-02-08 | Initial skill creation with 7-step workflow |

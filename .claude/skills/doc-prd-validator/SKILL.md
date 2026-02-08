@@ -222,6 +222,8 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E015 | ERROR | SYS-Ready Score missing or below threshold |
 | PRD-E016 | ERROR | EARS-Ready Score missing or below threshold |
 | PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |
+| PRD-E018 | ERROR | Invalid threshold tag format (must be @threshold: PRD.NN.key) |
+| PRD-E019 | ERROR | Element type code not valid for PRD (see doc-naming) |
 | PRD-W001 | WARNING | File name does not match format PRD-NN_{slug}.md |
 | PRD-W002 | WARNING | Missing optional section (Glossary, Appendix) |
 | PRD-W003 | WARNING | Score below recommended threshold but above minimum |
@@ -305,6 +307,7 @@ Info: 1
 
 ## Related Resources
 
+- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, threshold tags)
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
 - **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
 - **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
@@ -316,5 +319,6 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-08 | Added doc-naming integration: PRD-E018 (threshold format), PRD-E019 (element type codes) |
 | 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template (17 sections), unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |
