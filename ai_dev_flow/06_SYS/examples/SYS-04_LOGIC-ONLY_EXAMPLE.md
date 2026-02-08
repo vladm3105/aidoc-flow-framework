@@ -86,20 +86,45 @@ This system enhancement improves validation logic for order management API, addi
 
 ### 4.1 Core System Behaviors
 
-**Enhanced Validation Logic**:
-| System Action | Enhancement | Impact |
-|-------------|-------------|---------|
-| `Validate Order` | Multi-factor fraud detection | Reduces fraudulent orders by 90% |
-| `Process Payment` | Enhanced validation rules | Improves payment success rate to 99.95% |
-| `Error Handling` | Specific error messages | Reduces customer support tickets by 40% |
+**ID Format**: `SYS.04.01.SS` (Functional Requirement)
+
+#### SYS.04.01.01: Enhanced Order Validation
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Validate orders using multi-factor fraud detection |
+| **Inputs** | Order data, customer profile, historical patterns, risk indicators |
+| **Processing** | Apply fraud detection rules, calculate risk score, check velocity limits |
+| **Outputs** | Validation result, risk score, fraud flags, approval/rejection |
+| **Success Criteria** | Fraudulent orders reduced by 90%, false positive rate < 2% |
+
+#### SYS.04.01.02: Enhanced Payment Processing
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Process payments with enhanced validation rules |
+| **Inputs** | Payment token, order details, customer history, validation context |
+| **Processing** | Validate payment method, check limits, apply enhanced rules, process charge |
+| **Outputs** | Payment result, transaction ID, validation details |
+| **Success Criteria** | Payment success rate improved to 99.95%, validation time < 200ms |
+
+#### SYS.04.01.03: Contextual Error Handling
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Provide specific error messages with remediation guidance |
+| **Inputs** | Error context, validation failures, system state |
+| **Processing** | Analyze error type, generate contextual message, suggest remediation |
+| **Outputs** | Error message, remediation steps, support context |
+| **Success Criteria** | Customer support tickets reduced by 40%, resolution time improved |
 
 ### 4.2 Business Rules
 
 | Rule ID | Condition | Action |
 |---------|-----------|--------|
-| SYS.NN.05.01 | IF order > $10,000 AND payment method = credit card | THEN apply multi-factor fraud detection |
-| SYS.NN.05.02 | IF customer returns > 5 items in 30 days | THEN apply velocity checks |
-| SYS.NN.05.03 | IF validation fails | THEN provide specific error message with remediation steps |
+| SYS.04.05.01 | IF order > $10,000 AND payment method = credit card | THEN apply multi-factor fraud detection |
+| SYS.04.05.02 | IF customer returns > 5 items in 30 days | THEN apply velocity checks |
+| SYS.04.05.03 | IF validation fails | THEN provide specific error message with remediation steps |
 
 ---
 

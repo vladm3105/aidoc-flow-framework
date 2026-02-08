@@ -85,23 +85,66 @@ The Order Management System requires a deployment infrastructure that:
 
 ### 4.1 Core System Behaviors
 
-**Primary Functions**:
-| System Action | Inputs | Outputs | Success Criteria |
-|-------------|--------|---------|----------------|----------------|
-| `Create Order` | Order data, payment method, customer info | Order created, validation passed, customer notified |
-| `Update Order` | Order ID, status update, fulfillment channel | Order status updated in all services |
-| `Process Payment` | Payment token, order amount | Payment processed, transaction recorded, customer charged |
-| `Validate Order` | Order data against business rules | Validation result passed/failed, appropriate error response |
-| `Cancel Order` | Order cancellation, refund processed, inventory restored |
+**ID Format**: `SYS.03.01.SS` (Functional Requirement)
+
+#### SYS.03.01.01: Create Order
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Create new order from cart data with validation and payment processing |
+| **Inputs** | Order data, payment method token, customer ID, shipping address |
+| **Processing** | Validate order data, reserve inventory, create order record, trigger payment |
+| **Outputs** | Order ID, order summary, payment confirmation, estimated delivery |
+| **Success Criteria** | Order created within 500ms, inventory reserved atomically |
+
+#### SYS.03.01.02: Update Order Status
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Update order status and synchronize across all services |
+| **Inputs** | Order ID, new status, fulfillment channel, tracking info |
+| **Processing** | Validate status transition, update order record, notify downstream services |
+| **Outputs** | Updated order status, notification events, audit log entry |
+| **Success Criteria** | Status updated in all services within 1 second |
+
+#### SYS.03.01.03: Process Payment
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Process payment for order using payment service |
+| **Inputs** | Payment token, order amount, currency, customer ID |
+| **Processing** | Validate payment method, charge customer, record transaction |
+| **Outputs** | Payment confirmation, transaction ID, receipt |
+| **Success Criteria** | Payment processed within 1 second, 99.95% success rate |
+
+#### SYS.03.01.04: Validate Order
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Validate order data against business rules and constraints |
+| **Inputs** | Order data, customer profile, inventory levels |
+| **Processing** | Apply validation rules, check fraud indicators, verify limits |
+| **Outputs** | Validation result, error details if invalid, approval status |
+| **Success Criteria** | Validation completed within 100ms |
+
+#### SYS.03.01.05: Cancel Order
+
+| Aspect | Specification |
+|--------|---------------|
+| **Description** | Cancel order and process refund if applicable |
+| **Inputs** | Order ID, cancellation reason, refund method |
+| **Processing** | Validate cancellation eligibility, process refund, restore inventory |
+| **Outputs** | Cancellation confirmation, refund transaction, inventory update |
+| **Success Criteria** | Order cancelled within 2 seconds, refund initiated |
 
 ### 4.2 Business Rules
 
 | Rule ID | Condition | Action |
 |---------|-----------|--------|
-| SYS.NN.05.01 | IF order > $10,000 AND payment method = credit card | THEN apply fraud detection rules |
-| SYS.NN.05.02 | IF inventory < 5 units | AND order total > $5,000 | THEN flag for manual review |
-| SYS.NN.05.03 | IF payment method = PayPal AND amount > $500 | THEN require additional verification |
-| SYS.NN.05.04 | IF customer returns > 5 items in 30 days | THEN apply velocity checks |
+| SYS.03.05.01 | IF order > $10,000 AND payment method = credit card | THEN apply fraud detection rules |
+| SYS.03.05.02 | IF inventory < 5 units | AND order total > $5,000 | THEN flag for manual review |
+| SYS.03.05.03 | IF payment method = PayPal AND amount > $500 | THEN require additional verification |
+| SYS.03.05.04 | IF customer returns > 5 items in 30 days | THEN apply velocity checks |
 
 ---
 
