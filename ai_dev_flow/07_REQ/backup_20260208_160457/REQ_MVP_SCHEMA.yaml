@@ -1,0 +1,629 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: REQ-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: REQ-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
+# - Consistency Requirement: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with REQ-MVP-TEMPLATE.md and REQ-MVP-TEMPLATE.yaml; keep changes synchronized.
+# =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
+#
+# REQ Schema Definition v1.1
+# Purpose: Define valid metadata structure and validation rules for REQ documents
+# Usage: Reference by validate_req.py for automated validation
+# Supports MVP template profile
+#
+schema_version: "1.1"
+artifact_type: REQ
+layer: 7
+last_updated: "2026-01-20"
+
+references:
+  md_template: "REQ-MVP-TEMPLATE.md"
+  yaml_template: "REQ-MVP-TEMPLATE.yaml"
+  creation_rules: "REQ_MVP_CREATION_RULES.md"
+  validation_rules: "REQ_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# Profiles (MVP)
+# =============================================================================
+
+profiles:
+  default: mvp
+  allowed: [mvp]
+  mvp:
+    enforcement_level: optional
+    spec_ready_min: 90
+    acceptance_criteria_min: 3
+    acceptance_criteria_format: "REQ.NN.06.SS"
+    acceptance_criteria_pattern: "^REQ\\.\\d{2}\\.06\\.\\d{2}$"
+    sections: mvp_sections
+    notes:
+      - "MVP REQs emphasize atomicity and SPEC-ready clarity; breadth checks are warnings."
+      - "MVP uses streamlined section names that remove Change History."
+      - "MVP allows ≥3 acceptance criteria using REQ.NN.06.SS."
+
+# =============================================================================
+# YAML Frontmatter Requirements
+# =============================================================================
+
+metadata:
+  # Required fields in custom_fields
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["req", "template"]
+      description: "Must be 'req' for documents, 'template' for templates"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["REQ"]
+      description: "Must be uppercase 'REQ'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [7]
+      description: "REQ is always Layer 7 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{2,}$"
+      description: "Required for ai-agent-primary documents"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp"]
+      description: "Template profile hint for validators (MVP-only)"
+
+    template_for:
+      type: string
+      description: "Required when document_type is 'template'"
+
+    infrastructure_type:
+      type: string
+      allowed_values: ["Compute", "Database", "Storage", "Network", "Cache", "Messaging", "Deployment_Automation", "Observability", "Security", "Cost", "None"]
+      description: "Type of infrastructure requirement (from SYS 9.1.x)"
+
+    category:
+      type: string
+      allowed_values: ["Functional", "Logic", "API", "UI", "UX", "Database", "Config", "Infra", "FinOps", "Security", "Performance", "Reliability", "Scalability", "Compliance", "None"]
+      description: "Category of requirement (Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance)"
+
+    iac_provider:
+      type: string
+      allowed_values: ["terraform", "cloudformation", "ansible", "pulumi", "kubernetes", "helm", "None"]
+      description: "IaC provider used for deployment"
+
+    config_file_type:
+      type: string
+      allowed_values: ["shell", "yaml", "json", "toml", "ini", "None"]
+      description: "Configuration file format type for config generation"
+
+    shell_scripts_dir:
+      type: string
+      allowed_values: ["scripts/"]
+      description: "Directory path for generated shell scripts"
+
+    source_code_url:
+      type: string
+      format: "url"
+      description: "URL to generated source code repository"
+
+    domain:
+      type: string
+      required: false
+      pattern: "^[a-z_]+$"
+      description: "Functional domain classification derived from document content and scope. Define based on the primary business domain covered by the requirement (e.g., 'auth' for IAM requirements, 'api' for API gateway requirements, 'trading' for trading logic requirements). Used by GATE-13 validator for domain classification in flat file structures. Flat, metadata-based organization is AI-friendly and preferred over folder hierarchies."
+
+  # Required tags
+  required_tags:
+    - req                 # Primary identifier (or req-template for templates)
+    - layer-7-artifact    # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^req-document$"          # Use 'req' instead
+    - "^requirements$"          # Use 'req' instead
+    - "^atomic-requirements$"   # Use 'req' instead
+    - "^req-\\d{2,}$"           # Don't include document number in tags
+
+# =============================================================================
+# Document Structure Requirements
+# =============================================================================
+
+structure:
+  # MVP Template Section Patterns (streamlined structure)
+  # Used when profile=mvp; section names differ from legacy full template
+  mvp_sections:
+    - pattern: "^# REQ-\\d{2,}:"
+      name: "Title (H1)"
+      description: "Single H1 with format REQ-NN: [RESOURCE_TYPE] Title"
+
+    - pattern: "^## 1\\. Document Control$"
+      name: "Document Control"
+      description: "Contains metadata table with required fields"
+
+    - pattern: "^## 2\\. Requirement Description$"
+      name: "Requirement Description"
+      description: "Section 2 with Statement, Context, and Use Case subsections"
+
+    - pattern: "^## 3\\. Functional Specification$"
+      name: "Functional Specification"
+      description: "Section 3 with Core Functionality, Business Rules, Input/Output"
+
+    - pattern: "^## 4\\. Interface Definition$"
+      name: "Interface Definition"
+      description: "Section 4 with API Contract and Data Schema"
+
+    - pattern: "^## 5\\. Error Handling$"
+      name: "Error Handling"
+      description: "Section 5 with Error Catalog and Recovery Strategy"
+
+    - pattern: "^## 6\\. Quality Attributes$"
+      name: "Quality Attributes"
+      description: "Section 6 with Performance, Security, Reliability"
+
+    - pattern: "^## 7\\. Configuration$"
+      name: "Configuration"
+      description: "Section 7 with Parameters and Feature Flags"
+
+    - pattern: "^## 8\\. Testing Requirements$"
+      name: "Testing Requirements"
+      description: "Section 8 with Unit Tests, Integration Tests, BDD Scenarios"
+      subsections:
+        - name: "8.1 Unit Tests"
+          required: true
+          description: "Define WHAT to test before HOW - drives SPEC interface design"
+          schema:
+            type: array
+            min_items: 3
+            items:
+              type: object
+              required: [test_case, input, expected_output, coverage]
+              properties:
+                test_case:
+                  type: string
+                  description: "Test name with category prefix [Logic], [State], [Validation], [Edge]"
+                input:
+                  type: string
+                  description: "Input parameters"
+                expected_output:
+                  type: string
+                  description: "Expected result or error"
+                coverage:
+                  type: string
+                  description: "Requirement ID or category covered"
+        - name: "8.2 Integration Tests"
+          required: false
+        - name: "8.3 BDD Scenarios"
+          required: false
+
+    - pattern: "^## 9\\. Acceptance Criteria$"
+      name: "Acceptance Criteria"
+      description: "Section 9 with Functional and Quality Acceptance (≥3 criteria for MVP)"
+
+    - pattern: "^## 10\\. Traceability$"
+      name: "Traceability"
+      description: "Section 10 with Upstream References, Downstream Artifacts, Tags"
+
+    - pattern: "^## 11\\. Implementation Notes$"
+      name: "Implementation Notes"
+      description: "Section 11 with Technical Approach, Code Location, Dependencies"
+
+  # Optional sections (Appendices)
+  optional_sections:
+    - pattern: "^## 12\\. Appendix A:"
+      name: "Appendix A"
+      description: "SPEC-Ready Score Calculation"
+
+    - pattern: "^## 13\\. Appendix B:"
+      name: "Appendix B"
+      description: "Quick Reference"
+
+  # Document Control table requirements
+  document_control:
+    required_fields:
+      - Status
+      - Version
+      - Date Created
+      - Last Updated
+      - Author
+      - Priority
+      - Category
+      - Infrastructure Type
+      - Source Document
+      - Verification Method
+      - Assigned Team
+      - SPEC-Ready Score
+
+    optional_fields:
+      - CTR-Ready Score
+      - Template Version
+
+    status_values:
+      - Draft
+      - Review
+      - Approved
+      - Implemented
+      - Verified
+      - Retired
+
+    priority_values:
+      - "Critical (P1)"
+      - "High (P2)"
+      - "Medium (P3)"
+      - "Low (P4)"
+
+    category_values:
+      - Functional
+      - Security
+      - Performance
+      - Reliability
+      - Scalability
+
+  # Section numbering rules
+  section_numbering:
+    # Core MVP has 11 mandatory sections (1–11); 12–13 are optional appendices (see optional_sections).
+    start: 1
+    end: 13
+    format: "## N. Section Title"
+    subsection_format: "### N.N Subsection Title"
+    no_duplicate_numbers: true
+
+  # File naming convention
+  file_naming:
+    pattern: "^REQ-\\d{2,}_[a-z0-9_]+\\.md$"
+    description: "Format: REQ-NN_descriptive_name.md"
+
+# =============================================================================
+# REQ-Specific Patterns
+# =============================================================================
+
+req_patterns:
+  # SHALL/SHOULD/MAY requirement statements
+  requirement_keywords:
+    - keyword: "SHALL"
+      description: "Mandatory requirement"
+      severity: "Must implement"
+    - keyword: "SHOULD"
+      description: "Recommended requirement"
+      severity: "Should implement"
+    - keyword: "MAY"
+      description: "Optional requirement"
+      severity: "Nice to have"
+
+  # Acceptance criteria format (profile-specific)
+  acceptance_criteria:
+    # MVP profile: REQ.NN.06.SS format with ≥3 criteria
+    mvp:
+      format: "REQ.NN.06.SS"
+      pattern: "^REQ\\.\\d{2}\\.06\\.\\d{2}$"
+      min_count: 3
+      categories:
+        - name: "Functional Acceptance"
+          min_count: 2
+        - name: "Quality Acceptance"
+          min_count: 1
+
+  # SPEC-Ready Score components (profile-specific thresholds)
+  spec_ready_score:
+    # Profile-specific thresholds
+    mvp:
+      min_threshold: 90
+    # Score components (MVP)
+    components:
+      interface_completeness:
+        weight: 15
+        criteria: "Protocol/ABC + DTOs + REST endpoints"
+      data_schema_completeness:
+        weight: 15
+        criteria: "JSON Schema + Pydantic + Database schema"
+      error_handling_completeness:
+        weight: 15
+        criteria: "Exception catalog + error response + state diagram + circuit breaker"
+      configuration_completeness:
+        weight: 15
+        criteria: "YAML schema + env vars + validation"
+      quality_attribute_completeness:
+        weight: 10
+        criteria: "Performance (p50/p95/p99) + reliability + security + scalability"
+      implementation_guidance:
+        weight: 10
+        criteria: "Architecture patterns + concurrency + DI"
+      acceptance_criteria:
+        weight: 10
+        criteria: "Profile-specific minimums (MVP: ≥3 using REQ.NN.06.SS)"
+      traceability_completeness:
+        weight: 10
+        criteria: "Complete upstream chain + downstream artifacts + code paths"
+
+# =============================================================================
+# Interface Specification Patterns
+# =============================================================================
+
+interface_patterns:
+  protocol_definition:
+    required: true
+    format: "Python Protocol or ABC with type hints"
+    components:
+      - method_signatures
+      - return_types
+      - docstrings_with_args_returns_raises
+
+  dto_definitions:
+    required: true
+    format: "dataclass or Pydantic BaseModel"
+    components:
+      - field_types
+      - field_descriptions
+      - validation_rules
+
+  rest_endpoints:
+    required: false
+    format: "Table with Endpoint, Method, Request Schema, Response Schema, Rate Limit"
+    components:
+      - base_url
+      - endpoint_details
+      - request_response_schemas
+
+# =============================================================================
+# Data Schema Patterns
+# =============================================================================
+
+data_schema_patterns:
+  json_schema:
+    required: true
+    format: "JSON Schema draft-07"
+    components:
+      - type_definitions
+      - required_fields
+      - validation_rules
+      - examples
+
+  pydantic_models:
+    required: true
+    format: "Pydantic BaseModel with Field validators"
+    components:
+      - field_validators
+      - model_validators
+      - config_class
+      - json_schema_extra
+
+  database_schema:
+    required: false
+    format: "SQLAlchemy or migration script"
+    components:
+      - table_definition
+      - constraints
+      - indexes
+      - migration_script
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'req' or 'template'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'req' (or 'req-template') and 'layer-7-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation
+  structure:
+    - rule: "Single H1 heading only"
+      severity: warning
+
+    - rule: "All 11 MVP sections must be present"
+      severity: error
+
+    - rule: "Sections must be numbered 1-11 sequentially (Appendices optional)"
+      severity: error
+
+    - rule: "Document Control must include required fields (incl. Infrastructure Type)"
+      severity: error
+
+    - rule: "File name must match REQ-NN_name.md format"
+      severity: warning
+
+    - rule: "Deployment Requirements section must include all 8 subsections"
+      severity: warning
+
+  # Content validation
+  content:
+    - rule: "Description must include Context and Use Case subsections"
+      severity: warning
+
+    - rule: "Interface Specifications must include Protocol/ABC definition"
+      severity: error
+
+    - rule: "Data Schemas must include JSON Schema and Pydantic models"
+      severity: error
+
+    - rule: "Error Handling must include Exception Catalog"
+      severity: error
+
+    - rule: "Acceptance Criteria must meet MVP minimum (≥3, REQ.NN.06.SS)"
+      severity: warning
+
+    - rule: "SPEC-Ready Score must meet MVP threshold (≥90%)"
+      severity: warning
+
+    - rule: "Traceability must include all 6 upstream artifact types"
+      severity: warning
+
+    - rule: "No numeric downstream references (IMPL-#, CTR-#, SPEC-#, TASKS-#)"
+      severity: error
+      fix: "Use generic downstream names (IMPL, CTR, SPEC, TASKS) until those artifacts exist."
+
+    - rule: "Deployment Requirements must reference cloud provider from @adr"
+      severity: warning
+
+    - rule: "Deployment scripts must specify all 6 required script types"
+      severity: info
+
+    - rule: "Ansible playbooks must specify all 6 required playbook types"
+      severity: info
+
+    - rule: "Infrastructure requirements must include compute and database"
+      severity: warning
+
+    - rule: "When infrastructure_type is set, iac_provider must be set or 'None'"
+      severity: warning
+
+    - rule: "When infrastructure_type is 'Deployment_Automation', iac_provider must include 'ansible' or 'terraform'"
+      severity: warning
+
+    - rule: "source_code_url must be valid URL format when set"
+      severity: error
+
+    - rule: "shell_scripts_dir must be 'scripts/' when deployment artifacts are generated"
+      severity: warning
+
+  # Code block validation
+  code_blocks:
+    - rule: "Python code blocks should have type hints"
+      severity: info
+
+    - rule: "Mermaid diagrams should use stateDiagram-v2 for state machines"
+      severity: info
+
+# =============================================================================
+# Cross-Reference Requirements (Cumulative Tagging - Layer 7)
+# =============================================================================
+
+traceability:
+  # Cumulative tagging requirements for Layer 7
+  cumulative_tags:
+    layer: 7
+    required:
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
+      - "@adr: ADR-NN"
+      - "@sys: SYS.NN.EE.SS"
+    description: "Layer 7 requires all 6 upstream artifact tags for complete traceability"
+
+  upstream:
+    required:
+      - type: BRD
+        format: "@brd: BRD.NN.EE.SS"
+        location: "Section 11.1 or Traceability Tags section"
+      - type: PRD
+        format: "@prd: PRD.NN.EE.SS"
+        location: "Section 11.1 or Traceability Tags section"
+      - type: EARS
+        format: "@ears: EARS.NN.EE.SS"
+        location: "Section 11.1 or Traceability Tags section"
+      - type: BDD
+        format: "@bdd: BDD.NN.EE.SS"
+        location: "Section 11.1 or Traceability Tags section"
+      - type: ADR
+        format: "@adr: ADR-NN"
+        location: "Section 11.1 or Traceability Tags section"
+      - type: SYS
+        format: "@sys: SYS.NN.EE.SS"
+        location: "Section 11.1 or Traceability Tags section"
+
+  downstream:
+    expected:
+      - type: CTR
+        format: "CTR"    # Generic name only; do not reference numeric IDs until they exist
+      - type: SPEC
+        format: "SPEC"   # Generic name only; do not reference numeric IDs until they exist
+      - type: TASKS
+        format: "TASKS"  # Generic name only; do not reference numeric IDs until they exist
+      - type: DEPLOYMENT_ARTIFACTS
+        format: "scripts/"
+        description: "Deployment shell scripts (setup, install, deploy, rollback, health-check, cleanup)"
+      - type: ANSIBLE_PLAYBOOKS
+        format: "ansible/"
+        description: "Ansible playbooks (provision_infra, configure_instances, deploy_app, configure_monitoring, configure_security, backup_restore)"
+      - type: IAC_TEMPLATES
+        format: "terraform/ or cloudformation/"
+        description: "Infrastructure as Code templates generated by devops-flow skill"
+
+  same_type:
+    optional:
+      - type: REQ
+        format: "@related-req: REQ-NN"
+        description: "Related REQ document sharing domain context"
+      - type: REQ
+        format: "@depends-req: REQ-NN"
+        description: "Prerequisite REQ document"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  REQ-E001: "Missing required tag 'req'"
+  REQ-E002: "Missing required tag 'layer-7-artifact'"
+  REQ-E003: "Invalid document_type: must be 'req' or 'template'"
+  REQ-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  REQ-E005: "Forbidden tag pattern detected"
+  REQ-E006: "Missing required section"
+  REQ-E007: "Multiple H1 headings detected"
+  REQ-E008: "Section numbering not sequential (1-11 for main sections)"
+  REQ-E009: "Document Control missing required fields"
+  REQ-E010: "Missing Interface Specifications (Section 3)"
+  REQ-E011: "Missing Data Schemas (Section 4)"
+  REQ-E012: "Missing Error Handling (Section 5)"
+  REQ-E013: "Missing Acceptance Criteria (Section 9)"
+  REQ-E014: "File name does not match REQ-NN_name.md format"
+  REQ-E015: "Missing Protocol/ABC definition in Interface Specifications (Section 3.4)"
+  REQ-E016: "Missing JSON Schema or Pydantic models in Data Schemas"
+  REQ-E017: "Missing Exception Catalog in Error Handling (Section 5.3)"
+  REQ-E018: "Missing YAML Configuration Schema (Section 7.3)"
+  REQ-W001: "SPEC-Ready Score below MVP threshold (≥90%)"
+  REQ-W002: "Acceptance Criteria count below MVP minimum (≥3)"
+  REQ-W003: "Missing upstream traceability tags (require all 6: @brd, @prd, @ears, @bdd, @adr, @sys) - use format DOC.NN.EE.SS"
+  REQ-W004: "Missing Description Context or Use Case subsections"
+  REQ-W005: "Missing Performance targets (p50/p95/p99)"
+  REQ-W006: "Missing Implementation Guidance patterns"
+  REQ-W007: "Code implementation paths appear to be placeholders"
+  REQ-I001: "Consider adding database schema if data persistence required"
+  REQ-I002: "Consider adding REST endpoints if API exposure required"
+  REQ-I003: "Python code blocks should include type hints"

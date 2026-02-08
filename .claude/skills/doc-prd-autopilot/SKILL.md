@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "1.0"
+  version: "1.1"
 ---
 
 # doc-prd-autopilot
@@ -30,6 +30,23 @@ Automated **Product Requirements Document (PRD)** generation pipeline that proce
 **Upstream**: BRD (Layer 1)
 
 **Downstream**: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+
+---
+
+## Skill Dependencies
+
+This autopilot orchestrates the following skills:
+
+| Skill | Purpose | Phase |
+|-------|---------|-------|
+| `doc-brd-validator` | Validate BRD PRD-Ready score | Phase 2: BRD Readiness |
+| `doc-prd` | PRD creation rules, template, section structure | Phase 3: PRD Generation |
+| `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
+
+**Delegation Principle**: The autopilot orchestrates workflow but delegates:
+- PRD structure/content rules → `doc-prd` skill
+- PRD validation logic → `doc-prd-validator` skill
+- BRD validation logic → `doc-brd-validator` skill
 
 ---
 
@@ -177,6 +194,9 @@ Dependency Analysis Complete:
 
 Before generating a PRD, validate that the source BRD meets PRD-Ready requirements.
 
+> **Skill Delegation**: This phase uses validation rules from `doc-brd-validator` skill.
+> See: `.claude/skills/doc-brd-validator/SKILL.md` for complete BRD validation rules.
+
 **PRD-Ready Scoring Criteria (100%)**:
 
 | Category | Weight | Criteria |
@@ -209,6 +229,9 @@ python ai_dev_flow/scripts/validate_prd_ready.py \
 
 Generate the PRD document from the validated BRD.
 
+> **Skill Delegation**: This phase follows rules defined in `doc-prd` skill.
+> See: `.claude/skills/doc-prd/SKILL.md` for complete PRD creation guidance.
+
 **Generation Process**:
 
 1. **Load BRD Content**:
@@ -216,8 +239,9 @@ Generate the PRD document from the validated BRD.
    - Extract business requirements, objectives, stakeholders
    - Parse Architecture Decision Requirements topics
 
-2. **Template Selection**:
-   - **Standard Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+2. **Template Selection** (per `doc-prd` skill):
+   - **MVP Template** (default): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥85% thresholds)
+   - **Full Template**: For enterprise/regulatory projects (21 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
 
 3. **Section Mapping** (BRD → PRD):
@@ -261,6 +285,9 @@ Generate the PRD document from the validated BRD.
 
 After PRD generation, validate EARS-Ready score.
 
+> **Skill Delegation**: This phase uses validation rules from `doc-prd-validator` skill.
+> See: `.claude/skills/doc-prd-validator/SKILL.md` for complete validation rules and error codes.
+
 **EARS-Ready Scoring Criteria (100%)**:
 
 | Category | Weight | Criteria |
@@ -270,16 +297,17 @@ After PRD generation, validate EARS-Ready score.
 | EARS Translation Readiness | 20% | User journeys, quality attributes quantified, timing profiles |
 | Strategic Alignment | 5% | Domain-specific business logic references |
 
-**Minimum Score**: 90% (configurable)
+**Minimum Score**: 85% for MVP (90% for full template) - configurable
 
-**Auto-Fix Actions**:
-| Issue | Auto-Fix Action |
-|-------|-----------------|
-| Missing timing profile matrix | Add Section 20.1 template |
-| Missing boundary value matrix | Add Section 20.2 template |
-| Missing state transition diagram | Add Section 20.3 Mermaid template |
-| Missing fallback documentation | Add Section 20.4 template |
-| Incomplete customer-facing content | Flag for manual review (Section 10) |
+**Auto-Fix Actions** (per `doc-prd-validator` error codes):
+
+| Issue | Error Code | Auto-Fix Action |
+|-------|------------|-----------------|
+| Missing timing profile matrix | PRD-W002 | Add Section 20.1 template |
+| Missing boundary value matrix | PRD-W002 | Add Section 20.2 template |
+| Missing state transition diagram | PRD-W002 | Add Section 20.3 Mermaid template |
+| Missing fallback documentation | PRD-W002 | Add Section 20.4 template |
+| Incomplete customer-facing content | PRD-E006 | Flag for manual review (Section 10) |
 
 ### Step 6: Process Next BRD
 
@@ -625,9 +653,21 @@ After autopilot completion:
 
 ## Related Resources
 
-- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
+### Skills (Delegated)
+
+- **PRD Skill**: `.claude/skills/doc-prd/SKILL.md` - PRD creation rules and structure
+- **PRD Validator Skill**: `.claude/skills/doc-prd-validator/SKILL.md` - Validation rules and error codes
+- **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md` - BRD readiness validation
+
+### Templates and Rules
+
 - **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
+- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+
+### Framework References
+
 - **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
 
@@ -637,4 +677,5 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-08 | Added skill dependencies, integrated doc-prd and doc-prd-validator skills |
 | 1.0 | 2026-02-08 | Initial skill creation with 7-step workflow |

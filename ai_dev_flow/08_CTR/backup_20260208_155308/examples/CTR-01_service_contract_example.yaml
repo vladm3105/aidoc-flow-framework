@@ -252,7 +252,7 @@ components:
         example: "123e4567-e89b-12d3-a456-426614174000"
 
   schemas:
-    "[RESOURCE]":
+    [RESOURCE]:
       type: object
       required:
         - id
@@ -332,7 +332,7 @@ components:
           nullable: true
           example: null
 
-    "[RESOURCE]CreateRequest":
+    [RESOURCE]CreateRequest:
       type: object
       required:
         - "[FIELD_1]"
@@ -352,7 +352,7 @@ components:
             "[SUB_FIELD_2]":
               type: string
 
-    "[RESOURCE]UpdateRequest":
+    [RESOURCE]UpdateRequest:
       type: object
       description: "All fields optional for partial updates"
       properties:

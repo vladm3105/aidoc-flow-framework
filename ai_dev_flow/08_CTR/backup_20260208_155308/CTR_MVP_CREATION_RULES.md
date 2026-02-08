@@ -7,7 +7,7 @@ tags:
 custom_fields:
   document_type: creation-rules
   artifact_type: CTR
-  layer: 8
+  layer: 9
   priority: shared
   development_status: active
 ---
@@ -134,7 +134,7 @@ tags:
 custom_fields:
   document_type: contract
   artifact_type: CTR
-  layer: 8
+  layer: 9
   complexity: 1
   contract_version: "1.0.0"
 ---

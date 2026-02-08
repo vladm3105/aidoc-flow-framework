@@ -1,0 +1,515 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: CTR-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: CTR-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
+# =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
+#
+# CTR Schema Definition v1.0
+# Purpose: Define valid metadata structure for CTR contract documents
+# Usage: Reference by validate_ctr.py for automated validation
+#
+schema_version: "1.0"
+artifact_type: CTR
+layer: 8
+last_updated: "2026-01-20"
+
+references:
+  md_template: "CTR-MVP-TEMPLATE.md"
+  yaml_template: "CTR-MVP-TEMPLATE.yaml"
+  creation_rules: "CTR_MVP_CREATION_RULES.md"
+  validation_rules: "CTR_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed: [full, mvp]
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP contracts may define minimal fields for iteration; validators treat omissions as warnings."
+
+# =============================================================================
+# YAML Frontmatter Requirements
+# =============================================================================
+
+metadata:
+  # Required fields in custom_fields
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["ctr", "template"]
+      description: "Must be 'ctr' for documents, 'template' for templates"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["CTR"]
+      description: "Must be uppercase 'CTR'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [8]
+      description: "CTR is always Layer 8 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{2,}$"
+      description: "Required for ai-agent-primary documents"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
+
+    template_for:
+      type: string
+      description: "Required when document_type is 'template'"
+
+  # Required tags
+  required_tags:
+    - ctr                 # Primary identifier (or ctr-template for templates)
+    - layer-9-artifact    # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^ctr-document$"          # Use 'ctr' instead
+    - "^contract$"              # Use 'ctr' instead
+    - "^api-contract$"          # Use 'ctr' instead
+    - "^ctr-\\d{2,}$"           # Don't include document number in tags
+
+# =============================================================================
+# Document Structure Requirements (Dual-File Format)
+# =============================================================================
+
+structure:
+  # CTR uses dual-file format: .md (documentation) + .yaml (schema)
+  file_format:
+    documentation: ".md"
+    schema: ".yaml"
+    naming_pattern:
+      md: "^CTR-\\d{2,}_[a-z0-9_]+\\.md$"
+      yaml: "^CTR-\\d{2,}_[a-z0-9_]+\\.yaml$"
+    description: "CTR-NN_descriptive_name.md + CTR-NN_descriptive_name.yaml"
+
+  # Required sections in .md file (12-section structure)
+  required_sections:
+    # Title
+    - pattern: "^# CTR-\\d{2,}:"
+      name: "Title (H1)"
+      description: "Single H1 with format CTR-NN: Title"
+
+    # Section 1: Document Control (absorbs Status)
+    - pattern: "^## 1\\. Document Control$"
+      name: "Document Control"
+      description: "Section 1 with metadata table, status, and versioning info"
+
+    # Section 2: Context (absorbs Consequences/Trade-offs)
+    - pattern: "^## 2\\. Context$"
+      name: "Context"
+      description: "Section 2 with Problem Statement, Background, Driving Forces, Constraints, Trade-offs"
+
+    # Section 3: Contract Definition
+    - pattern: "^## 3\\. Contract Definition$"
+      name: "Contract Definition"
+      description: "Section 3 with Interface Overview, Parties, Communication Pattern"
+
+    # Section 4: Requirements Satisfied
+    - pattern: "^## 4\\. Requirements Satisfied$"
+      name: "Requirements Satisfied"
+      description: "Section 4 with Primary Requirements, Source Business Logic"
+
+    # Section 5: Interface Definition (absorbs Schema Reference)
+    - pattern: "^## 5\\. Interface Definition$"
+      name: "Interface Definition"
+      description: "Section 5 with Schema Reference, Endpoints/Functions/Messages"
+
+    # Section 6: Error Handling
+    - pattern: "^## 6\\. Error Handling$"
+      name: "Error Handling"
+      description: "Section 6 with Error Codes and Failure Modes"
+
+    # Section 7: Quality Attributes (absorbs Monitoring)
+    - pattern: "^## 7\\. Quality Attributes$"
+      name: "Quality Attributes"
+      description: "Section 7 with Performance, Reliability, Security, Observability"
+
+    # Section 8: Versioning Strategy
+    - pattern: "^## 8\\. Versioning Strategy$"
+      name: "Versioning Strategy"
+      description: "Section 8 with Version Policy, Compatibility, Deprecation"
+
+    # Section 9: Examples
+    - pattern: "^## 9\\. Examples$"
+      name: "Examples"
+      description: "Section 9 with Request/Response examples"
+
+    # Section 10: Verification (absorbs Impact Analysis)
+    - pattern: "^## 10\\. Verification$"
+      name: "Verification"
+      description: "Section 10 with Contract Testing, BDD Scenarios, Impact Analysis"
+
+    # Section 11: Traceability (absorbs Related Contracts)
+    - pattern: "^## 11\\. Traceability$"
+      name: "Traceability"
+      description: "Section 11 with Upstream Sources, Downstream Artifacts, Related Contracts"
+
+    # Section 12: References
+    - pattern: "^## 12\\. References$"
+      name: "References"
+      description: "Section 12 with Internal and External Links"
+
+  # Optional Appendices
+  optional_sections:
+    - pattern: "^## Appendix A"
+      name: "Appendix A: Alternatives Considered"
+      description: "Optional - rejected alternative approaches"
+
+    - pattern: "^## Appendix B"
+      name: "Appendix B: Implementation Notes"
+      description: "Optional - Development Phases, Code Locations"
+
+  # Document Control table requirements
+  document_control:
+    required_fields:
+      - Project Name
+      - Document Version
+      - Date
+      - Document Owner
+      - Prepared By
+      - Status
+
+    optional_fields:
+      - Approver
+
+    status_values:
+      - Draft
+      - "In Review"
+      - Approved
+      - Active
+      - Deprecated
+
+  # Section numbering rules
+  section_numbering:
+    start: 1
+    end: 12
+    format: "## N. Section Title"
+    subsection_format: "### N.N Subsection Title"
+    no_duplicate_numbers: true
+    appendices: ["Appendix A", "Appendix B"]
+
+# =============================================================================
+# YAML Schema File Requirements
+# =============================================================================
+
+yaml_schema:
+  # Required sections in companion .yaml file
+  required_sections:
+    - openapi_version: "3.0.x or 3.1.x"
+      description: "OpenAPI specification version"
+    - info:
+        - title
+        - version
+        - description
+    - paths:
+        description: "API endpoint definitions"
+    - components:
+        - schemas:
+            description: "Request/Response schemas"
+
+  # Alternative: JSON Schema format
+  alternative_formats:
+    - name: "JSON Schema"
+      required_fields:
+        - "$schema"
+        - title
+        - type
+        - properties
+    - name: "AsyncAPI"
+      required_fields:
+        - asyncapi
+        - info
+        - channels
+
+  # Schema validation rules
+  schema_requirements:
+    - rule: "All request schemas must define required fields"
+      severity: error
+    - rule: "All response schemas must define required fields"
+      severity: error
+    - rule: "Error responses must follow ErrorResponse schema"
+      severity: warning
+
+# =============================================================================
+# CTR-Specific Patterns
+# =============================================================================
+
+ctr_patterns:
+  # Contract status values
+  status_values:
+    - value: "Draft"
+      description: "Initial development, not ready for use"
+    - value: "Active"
+      description: "In production use"
+    - value: "Deprecated"
+      description: "Scheduled for removal"
+
+  # Communication patterns
+  communication_patterns:
+    - type: "Synchronous"
+      protocols: ["REST", "gRPC", "GraphQL"]
+      description: "Request/Response pattern"
+    - type: "Asynchronous"
+      protocols: ["Event-driven", "Message Queue", "Pub/Sub"]
+      description: "Event/Message pattern"
+
+  # Error code format
+  error_codes:
+    format: "^[A-Z_]+$"
+    examples:
+      - "INVALID_INPUT"
+      - "INSUFFICIENT_DATA"
+      - "RATE_LIMITED"
+      - "SERVICE_UNAVAILABLE"
+      - "INTERNAL_ERROR"
+    http_mapping:
+      "INVALID_INPUT": 400
+      "INSUFFICIENT_DATA": 400
+      "RATE_LIMITED": 429
+      "SERVICE_UNAVAILABLE": 503
+      "INTERNAL_ERROR": 500
+
+  # Versioning pattern
+  versioning:
+    format: "MAJOR.MINOR.PATCH"
+    description: "Semantic versioning required"
+    rules:
+      major: "Breaking changes (incompatible schema)"
+      minor: "Backward-compatible additions"
+      patch: "Backward-compatible fixes"
+
+# =============================================================================
+# Contract Testing Requirements
+# =============================================================================
+
+testing_patterns:
+  provider_tests:
+    required: true
+    categories:
+      - "Schema validation"
+      - "Error handling"
+      - "Performance"
+      - "Idempotency"
+
+  consumer_tests:
+    required: true
+    categories:
+      - "Request generation"
+      - "Response handling"
+      - "Error handling"
+      - "Retry logic"
+
+  contract_tests:
+    required: true
+    frameworks:
+      - "Pact"
+      - "Spring Cloud Contract"
+    description: "Consumer-driven contract testing"
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'ctr' or 'template'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'ctr' (or 'ctr-template') and 'layer-9-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation (Markdown file)
+  structure:
+    - rule: "Single H1 heading only"
+      severity: warning
+
+    - rule: "All 12 required sections must be present"
+      severity: error
+
+    - rule: "Sections must be numbered 1-12 sequentially"
+      severity: error
+
+    - rule: "Document Control must have minimum 6 fields"
+      severity: error
+
+    - rule: "File name must match CTR-NN_name.md format"
+      severity: warning
+
+  # Schema validation (YAML file)
+  schema:
+    - rule: "Companion YAML schema file must exist"
+      severity: error
+
+    - rule: "YAML file must be valid OpenAPI 3.x or JSON Schema"
+      severity: error
+
+    - rule: "All endpoints must have request and response schemas"
+      severity: error
+
+    - rule: "Error responses must be defined"
+      severity: warning
+
+  # Content validation
+  content:
+    - rule: "Context section must include Problem Statement"
+      severity: warning
+
+    - rule: "Contract Definition must specify Parties (Provider/Consumer)"
+      severity: error
+
+    - rule: "Error Handling must include Error Codes table"
+      severity: error
+
+    - rule: "Examples section must include at least one success and one failure example"
+      severity: warning
+
+    - rule: "Versioning Strategy must include Version Policy"
+      severity: warning
+
+    - rule: "Traceability must reference upstream REQ documents"
+      severity: warning
+
+# =============================================================================
+# Cross-Reference Requirements (Cumulative Tagging - Layer 8)
+# =============================================================================
+
+traceability:
+  # Cumulative tagging requirements for Layer 8
+  cumulative_tags:
+    layer: 8
+    required:
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
+      - "@adr: ADR-NN"
+      - "@sys: SYS.NN.EE.SS"
+      - "@req: REQ.NN.EE.SS"
+    description: "Layer 8 requires 7 upstream artifact tags (@brd through @req)"
+
+  upstream:
+    required:
+      - type: BRD
+        format: "@brd: BRD.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+      - type: PRD
+        format: "@prd: PRD.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+      - type: EARS
+        format: "@ears: EARS.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+      - type: BDD
+        format: "@bdd: BDD.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+      - type: ADR
+        format: "@adr: ADR-NN"
+        location: "Section 11 or Traceability Tags section"
+      - type: SYS
+        format: "@sys: SYS.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+      - type: REQ
+        format: "@req: REQ.NN.EE.SS"
+        location: "Section 11 or Traceability Tags section"
+
+  downstream:
+    expected:
+      - type: SPEC
+        format: "SPEC-NN"
+      - type: TASKS
+        format: "TASKS-NN"
+      - type: Code
+        format: "src/..."
+
+  same_type:
+    optional:
+      - type: CTR
+        format: "@related-ctr: CTR-NN"
+        description: "Related CTR document sharing API context"
+      - type: CTR
+        format: "@depends-ctr: CTR-NN"
+        description: "Prerequisite CTR document"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  CTR-E001: "Missing required tag 'ctr'"
+  CTR-E002: "Missing required tag 'layer-9-artifact'"
+  CTR-E003: "Invalid document_type: must be 'ctr' or 'template'"
+  CTR-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  CTR-E005: "Forbidden tag pattern detected"
+  CTR-E006: "Missing required section"
+  CTR-E007: "Multiple H1 headings detected"
+  CTR-E008: "Section numbering not sequential (1-12)"
+  CTR-E009: "Document Control missing required fields"
+  CTR-E010: "Missing companion YAML schema file"
+  CTR-E011: "YAML schema is not valid OpenAPI 3.x or JSON Schema"
+  CTR-E012: "Missing request/response schemas for endpoints"
+  CTR-E013: "Missing Error Handling section"
+  CTR-E014: "File name does not match CTR-NN_name.md format"
+  CTR-E015: "Contract Definition missing Provider/Consumer specification"
+  CTR-E016: "Error Codes table missing in Error Handling section"
+  CTR-W001: "Missing Context Problem Statement"
+  CTR-W002: "Missing success/failure examples in Examples section"
+  CTR-W003: "Missing upstream traceability tags (require 7: @brd through @req)"
+  CTR-W004: "Missing Versioning Strategy Version Policy"
+  CTR-W005: "Error responses not defined in YAML schema"
+  CTR-W006: "Missing contract testing requirements in Verification section"
+  CTR-I001: "Consider adding performance metrics in Quality Attributes section"
+  CTR-I002: "Consider documenting migration strategy in Impact Analysis"
+  CTR-I003: "Consider adding alternative approaches in Alternatives Considered"

@@ -1,0 +1,1139 @@
+---
+title: "REQ MVP Validation Rules"
+tags:
+  - validation-rules
+  - layer-7-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: REQ
+  layer: 7
+  priority: shared
+  development_status: active
+---
+
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+# - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from REQ_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to REQ-MVP-TEMPLATE.md
+# =============================================================================
+
+**Document Role**: This is the **POST-CREATION VALIDATOR** for REQ documents.
+- Apply these rules after REQ creation or modification
+- **Authority**: Validates compliance with `REQ-MVP-TEMPLATE.md` (the primary standard)
+- **Scope**: Use for quality gates before committing REQ changes
+- **Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
+
+# REQ Validation Rules Reference
+
+## MVP Validation Profile (DEFAULT and ONLY)
+
+**MVP validation is the only supported profile.** Full profile checks are removed.
+
+### MVP Detection
+
+| Detection Method | Pattern | Result |
+|------------------|---------|--------|
+| Filename | `*-MVP-*.md` | MVP profile |
+| Frontmatter | `template_profile: mvp` | MVP profile |
+| Default (no markers) | — | MVP profile |
+
+### Validation Scope (MVP)
+
+| Check Category | MVP Profile |
+|----------------|-------------|
+| Required sections (11 total) | Error |
+| Document Control fields | Error |
+| Traceability tags (@brd through @sys) | Error |
+| SPEC-Ready Score threshold | 90/100 |
+| CTR-Ready Score threshold | Warning/optional |
+| Resource tag validation | Warning |
+| Link resolution | Warning |
+
+### Usage
+
+```bash
+./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile mvp
+```
+
+---
+
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
+**Version**: 3.0.0
+**Date**: 2025-11-18
+**Last Updated**: 2025-11-19
+**Purpose**: Complete validation rules for REQ documents
+**Script**: `07_REQ/scripts/validate_req_template.sh`
+**Primary Template**: `REQ-MVP-TEMPLATE.md` (MVP profile)
+**Baseline Template**: `REQ-MVP-TEMPLATE.md`
+**Framework**: AI Dev Flow SDD (100% compliant)
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Validation Checks](#validation-checks)
+3. [Error Fix Guide](#error-fix-guide)
+4. [Quick Reference](#quick-reference)
+5. [Common Mistakes](#common-mistakes)
+
+---
+
+## Overview
+
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
+The REQ validation script (`validate_req_template.sh`) performs **20 validation checks** to ensure compliance with:
+
+- **REQ-MVP-TEMPLATE.md**: Current template (MVP profile)
+- **AI Dev Flow SDD Framework**: Traceability and ID naming standards
+- **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
+- **Document Control**: 12 required fields (MVP profile)
+
+### Cross-Linking Tags (AI-Friendly)
+
+In addition to upstream traceability tags, REQ documents may include structured same-layer cross-links:
+- `@depends: REQ-NN` — hard prerequisite requirement(s) that must be satisfied first.
+- `@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)` — related REQs with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy “See also …” strings. Corpus-level Gate-05 reports presence of cross-links for visibility (informational).
+
+### Validation Tiers
+
+| Tier | Type | Exit Code | Description |
+|------|------|-----------|-------------|
+| **Tier 1** | Errors | 1 | Blocking issues - must fix before commit |
+| **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
+| **Tier 3** | Info | 0 | Informational - no action required |
+
+### Reserved ID Exemption (REQ-00_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `REQ-00_*.md`
+
+**Document Types**:
+- Index documents (`REQ-00_index.md`)
+- Traceability matrix templates (`REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `REQ-00_*` pattern.
+
+---
+
+## Validation Checks
+
+### CHECK 1: Required sections
+
+**Purpose**: Verify all 11 mandatory sections exist
+**Type**: Error (blocking)
+
+**Required sections**:
+```markdown
+## 1. Document Control
+## 2. Requirement Description
+## 3. Functional Specification
+## 4. Interface Definition
+## 5. Error Handling
+## 6. Quality Attributes
+## 7. Configuration
+## 8. Testing Requirements
+## 9. Acceptance Criteria
+## 10. Traceability
+## 11. Implementation Notes
+```
+
+**Error Message**:
+```
+❌ MISSING: ## 3. Functional Specification
+```
+
+**Fix**:
+1. Add missing section header
+2. Ensure exact spelling and numbering
+3. sections must be in order (1-11)
+
+---
+
+### CHECK 2: Document Control Fields
+
+**Purpose**: Validate metadata table completeness
+**Type**: Error (blocking)
+
+**Required Fields** (12 total):
+- Status
+- Version
+- Date Created
+- Last Updated
+- Author
+- Priority
+- Category
+- Infrastructure Type
+- Source Document
+- Verification Method
+- Assigned Team
+- SPEC-Ready Score
+
+**Optional (not validated)**: CTR-Ready Score, Template Version
+
+**Error Message**:
+```
+❌ MISSING: Source Document
+❌ MISSING: Author
+❌ MISSING: Category
+❌ MISSING: Verification Method
+```
+
+**Fix**:
+```markdown
+| **Source Document** | SYS-02 section 3.1.1 |
+| **Author** | System Architect |
+| **Category** | Functional |
+| **Verification Method** | BDD + Integration Test |
+| **Assigned Team** | IB Integration Team |
+```
+
+---
+
+### CHECK 2.5: Domain Field Validation (Frontmatter Metadata) ⭐ NEW
+
+**Purpose**: Verify domain field in frontmatter metadata for folder classification
+**Type**: Warning (non-blocking)
+
+**Applies To**: All REQ documents
+
+**Domain Definition**: Domain should be **derived from the document's primary functional scope**. Examples:
+- `auth` - Authentication, authorization, identity management  
+- `api` - API gateways, HTTP routing, REST contracts
+- `trading` - Trading logic, order execution, market data
+- `data` - Data persistence, schemas, database operations
+- `risk` - Risk management, compliance validation, monitoring
+- `core` - Core business logic, computation, algorithms
+- `collection` - Data collection, aggregation, ingestion
+- `compliance` - Regulatory requirements, audit trails
+- `ml` - Machine learning models, inference, training
+- Other custom domains based on your project structure
+
+**Validation Logic** (GATE-13 corpus-level validation):
+1. Read `domain:` field from frontmatter YAML metadata in `custom_fields` section
+2. Validate that domain is a valid identifier (lowercase alphanumeric + underscores only)
+3. Warn if domain contains invalid characters
+
+**Recommended Usage** (Flat Structure with Metadata):
+```yaml
+---
+title: "REQ-01: JWT Authentication"
+tags:
+  - req-document
+  - layer-7-artifact
+custom_fields:
+  document_type: req
+  artifact_type: REQ
+  domain: auth          # ← Define based on requirement's primary domain/scope
+  layer: 7
+  template_profile: mvp
+  # ... other fields
+---
+```
+
+**Flat File Pattern** (AI-Friendly - Recommended):
+```
+07_REQ/
+├── REQ-01_jwt_authentication.md         # domain: auth (in metadata)
+├── REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
+├── REQ-03_api_gateway_routing.md        # domain: api (in metadata)
+├── REQ-04_order_execution_logic.md      # domain: trading (in metadata)
+├── REQ-05_data_persistence_schema.md    # domain: data (in metadata)
+└── ... [flat structure, organized by metadata]
+```
+
+**Why Flat Structure**:
+- ✅ **AI-Friendly**: Easier for language models to navigate and discover files
+- ✅ **Scalable**: No folder hierarchy complexity
+- ✅ **Flexible**: Domain classification via metadata, not folder structure
+- ✅ **Simple**: Single directory for all REQ files, consistent navigation
+
+**Warning Messages**:
+```
+⚠️ WARNING (GATE-W013): REQ-01_jwt_auth.md has invalid domain 'f1_iam-invalid' (must be lowercase alphanumeric + underscores)
+```
+
+**Fix** (metadata-based):
+Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanumeric characters and underscores only.
+
+---
+
+### CHECK 3: Traceability Structure
+
+**Purpose**: Verify traceability subsections exist
+**Type**: Error + Warning
+
+**Required Subsections**:
+- `### Upstream Sources` (Error if missing)
+- `### Downstream Artifacts` (Warning if missing)
+- `### Code Implementation Paths` (Warning if missing)
+
+**Error Message**:
+```
+❌ MISSING: Upstream Sources subsection in section 10
+```
+
+**Fix**:
+```markdown
+## 10. Traceability
+
+### Upstream Sources
+
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
+|-------------|-------------|----------------|-------------------|--------------|
+| BRD | [BRD-01](../../01_BRD/BRD-01.md) | ... | ... | ... |
+```
+
+---
+
+### CHECK 4: Upstream Traceability Chain (LEGACY)
+
+**Purpose**: Deprecated in v3.0 - see CHECK 15
+**Type**: Info
+
+**Message**:
+```
+ℹ️  This check is deprecated in v3.0 - see CHECK 15 for complete validation
+```
+
+---
+
+### CHECK 5: Version Format Validation
+
+**Purpose**: Ensure semantic versioning (X.Y.Z)
+**Type**: Error (blocking)
+
+**Valid Examples**:
+- `2.0.0` ✅
+- `2.0.1` ✅
+- `1.5.3` ✅
+
+**Invalid Examples**:
+- `2.0` ❌
+- `v2.0.0` ❌
+- `Version 2.0` ❌
+
+**Error Message**:
+```
+❌ INVALID version format: 'v2.0' (expected X.Y.Z)
+```
+
+**Fix**:
+```markdown
+| **Version** | 2.0.1 |
+```
+
+---
+
+### CHECK 6: Date Format Validation
+
+**Purpose**: Validate ISO 8601 date format (YYYY-MM-DD)
+**Type**: Error (blocking)
+
+**Valid Examples**:
+- `2025-11-18` ✅
+- `2025-01-09` ✅
+
+**Invalid Examples**:
+- `Nov 18, 2025` ❌
+- `11/18/2025` ❌
+- `18-11-2025` ❌
+
+**Error Message**:
+```
+❌ INVALID Date Created format: 'Nov 18, 2025' (expected YYYY-MM-DD)
+```
+
+**Logical Check**:
+- Last Updated ≥ Date Created (or error)
+
+**Fix**:
+```markdown
+| **Date Created** | 2025-11-18 |
+| **Last Updated** | 2025-11-18 |
+```
+
+---
+
+### CHECK 7: Priority Format Validation
+
+**Purpose**: Ensure priority includes P-level designation
+**Type**: Warning
+
+**Valid Examples**:
+- `Critical (P1)` ✅
+- `High (P2)` ✅
+- `Medium (P3)` ✅
+- `Low (P4)` ✅
+
+**Invalid Examples**:
+- `Critical` ❌
+- `P1` ❌
+- `High Priority` ❌
+
+**Warning Message**:
+```
+⚠️  WARNING: Priority should include P-level: Critical (P1), High (P2), Medium (P3), Low (P4)
+```
+
+**Fix**:
+```markdown
+| **Priority** | High (P2) |
+```
+
+---
+
+### CHECK 8: Source Document Format
+
+**Purpose**: Verify source includes document ID + section
+**Type**: Warning
+
+**Valid Examples**:
+- `SYS-02 section 3.1.1` ✅
+- `BRD-01 section 4.2` ✅
+
+**Invalid Examples**:
+- `SYS-02` ❌
+- `section 3.1.1` ❌
+
+**Warning Message**:
+```
+⚠️  WARNING: Source Document should include section number (e.g., 'SYS-02 section 3.1.1')
+```
+
+**Fix**:
+```markdown
+| **Source Document** | SYS-02 section 3.1.1 |
+```
+
+---
+
+### CHECK 9: SPEC-Ready Score
+
+**Purpose**: Validate score format and threshold
+**Type**: Error + Warning
+
+**Valid Examples**:
+- `✅ 92% (Target: ≥90%)` ✅
+- `✅ 95% (Target: ≥90%)` ✅
+
+**Invalid Examples**:
+- `95%` ❌
+- `✓ 95%` ❌
+- `High` ❌
+
+**Error Message** (format):
+```
+❌ MISSING: SPEC-Ready Score with ✅ emoji and percentage
+```
+
+**Warning Message** (threshold):
+```
+⚠️  WARNING: SPEC-Ready Score below 90%: 65%
+```
+
+**Fix**:
+```markdown
+| **SPEC-Ready Score** | ✅ 90% (Target: ≥90%) |
+```
+
+---
+
+### CHECK 10: Reserved (Removed)
+
+> **Note**: CHECK 10 (Template Version) has been removed. Template Version is informational only and is not validated. Each template may use its own version numbering scheme.
+
+---
+
+### CHECK 11: Change History
+
+**Purpose**: Verify change history table exists and matches version
+**Type**: Error + Warning
+
+**Requirements**:
+1. At least 1 entry in table
+2. Latest entry version matches Document Control version
+
+**Error Message**:
+```
+❌ MISSING: Change History entries
+```
+
+**Warning Message**:
+```
+⚠️  WARNING: Latest change history version (2.0.0) doesn't match document version (2.0.1)
+```
+
+**Fix**:
+```markdown
+## 12. Change History
+
+| Date | Version | Change | Author |
+|------|---------|--------|---------|
+| 2025-11-18 | 2.0.1 | Fixed source document reference (3.1.2→3.1.1) | System Architect |
+| 2025-11-11 | 2.0.0 | Created using Template V2 | System Architect |
+```
+
+---
+
+### CHECK 12: Filename/ID Format Validation ⭐ NEW
+
+**Purpose**: Validate filename matches ID naming standards
+**Type**: Error (blocking)
+
+**Valid Examples**:
+- `REQ-02_connection_heartbeat.md` ✅
+- `REQ-023_quote_retrieval.md` ✅
+- `REQ-009.1_prerequisite.md` ✅ (section file)
+
+**Invalid Examples**:
+- `REQ-02.md` ❌ (missing description)
+- `req-002_connection.md` ❌ (wrong case)
+- `REQ002_connection.md` ❌ (missing hyphen)
+- `REQ-02_Connection.md` ❌ (uppercase in slug)
+
+**Pattern**: `REQ-\d{2,}(-\d{2,3})?_[a-z0-9_]+\.md`
+
+**Error Messages**:
+```
+❌ ERROR: Invalid filename format: req-002_connection.md
+         Expected: REQ-NN_{slug}.md or REQ-NN-YY_{slug}.md
+
+❌ ERROR: H1 header ID doesn't match filename
+         Filename ID: REQ-02
+         H1 Header: # REQ-03: Connection Monitoring
+```
+
+### CHECK 12b: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+**Type**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 20,000 tokens.
+2. **Cardinality**: More than 1 file for this ID (e.g. `REQ-02_...` and `REQ-02_...`).
+
+**Action**: Move to `07_REQ/REQ-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
+
+
+**Fix**:
+1. Rename file to match pattern
+2. Ensure H1 header ID matches filename ID
+3. Use lowercase with underscores in slug
+
+**Reference**: `ID_NAMING_STANDARDS.md`
+
+---
+
+### CHECK 13: Document Control Category Validation ⭐ NEW
+
+**Purpose**: Verify category field in Document Control is set and valid (Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None).
+
+**Validation Rules**:
+
+1. **Category Present**: Document Control table must include "Category" field
+
+2. **Valid Category Value**: Category must be one of allowed values
+
+3. **Category Alignment**: Category value should align with requirement description and scope
+
+**Type**: Warning
+
+**Error Messages**:
+- Missing: `⚠️ WARNING: Document Control missing 'Category' field`
+- Invalid: `❌ ERROR: Category '${category}' is not valid. Use one of: Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None`
+
+### CHECK 14: Infrastructure Metadata Validation ⭐ NEW
+
+**Purpose**: Verify infrastructure-related REQs have proper metadata and traceability tags.
+
+**Validation Rules**:
+
+1. **infrastructure_type Set**: If REQ relates to SYS infrastructure requirements, infrastructure_type must be set
+
+2. **Valid infrastructure_type Value**: Must be one of allowed values (Compute, Database, Storage, Network, Cache, Messaging, Deployment_Automation, Observability, Security, Cost, None)
+
+3. **@sys Tag Format**: Must reference specific SYS subsection: `@sys: SYS.NN.09.01.X` (X = 1-8 for 9.1.x, X = 1-3 for 9.2.x)
+
+4. **@iac Tag Consistency**: When infrastructure_type requires IaC artifacts:
+   - infra_type = Compute/Database/Storage/Network/Cache/Messaging → Must include `@iac: terraform/` or `@ansible: ansible/`
+   - infra_type = Deployment_Automation → Must include `@ansible: ansible/`
+   - infra_type = Observability → May include `@ansible: ansible/` if scripts generated
+
+5. **@deployment Tag**: Required when infra_type = Deployment_Automation or Observability → `@deployment: scripts/`
+
+6. **@config_file_type**: Required when config files generated → `@config_file_type: shell`/`yaml`/`json`/`toml`/`ini`
+
+7. **@source_code**: Optional when code generation required → `@source_code: [URL]`
+
+**Type**: Warning
+
+**Error Messages**:
+- Missing infrastructure_type: `⚠️ WARNING: Infrastructure-related REQ missing infrastructure_type metadata`
+- Invalid infrastructure_type: `❌ ERROR: infrastructure_type '${type}' is not valid`
+- Invalid @sys format: `⚠️ WARNING: @sys tag format invalid. Use: @sys: SYS.NN.09.01.X where X matches SYS subsection number`
+- Missing @iac: `⚠️ WARNING: infrastructure_type '${type}' requires @iac or @ansible tag`
+- Missing @deployment: `⚠️ WARNING: infrastructure_type 'Deployment_Automation' requires @deployment: scripts/ tag`
+- Missing @config_file_type: `⚠️ WARNING: Config generation REQ missing @config_file_type tag`
+
+---
+
+### CHECK 13: Resource Tag Validation (Template 2.0) ⭐ NEW
+
+**Purpose**: Verify [RESOURCE_INSTANCE] tag in H1 for Template 2.0
+**Type**: Error (blocking for Template 2.0)
+
+**Applies To**: Template 2.0 only (skipped for Template 1.0)
+
+**Valid Examples**:
+```markdown
+# REQ-01: [EXTERNAL_SERVICE_GATEWAY] IB Gateway Connection ✅
+# REQ-02: [HEALTH_CHECK_SERVICE] Heartbeat Monitoring ✅
+# REQ-03: [RESILIENCE_PATTERN] Automatic Reconnection ✅
+```
+
+**Invalid Examples**:
+```markdown
+# REQ-01: IB Gateway Connection ❌ (missing tag)
+# REQ-02: Connection Monitoring ❌ (missing tag)
+```
+
+**Valid Resource Tags**:
+
+**Note**: Resource tags are project-specific. See project architecture documentation (ADR) for the authoritative resource taxonomy. The examples below represent common patterns but are not exhaustive.
+
+**Common Examples**:
+- `[EXTERNAL_SERVICE_GATEWAY]`
+- `[HEALTH_CHECK_SERVICE]`
+- `[STATE_MACHINE]`
+- `[RESILIENCE_PATTERN]`
+- `[CONFIGURATION_LAYER]`
+- `[OBSERVABILITY]`
+- `[DATA_VALIDATION]`
+- `[ASYNC_PROCESSING]`
+
+**Projects may define custom resource tags in their architecture documentation.**
+
+**Error Message**:
+```
+❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
+         Current H1: # REQ-02: Connection Monitoring
+         Expected: # REQ-02: [HEALTH_CHECK_SERVICE] Connection Monitoring
+```
+
+**Fix**:
+```markdown
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+```
+
+**Reference**: `REQ-MVP-TEMPLATE.md` (H1 Header Format - includes resource instance tags)
+
+---
+
+### CHECK 14: Cumulative Tagging Hierarchy (Layer 7) ⭐ NEW
+
+**Purpose**: Enforce complete traceability chain via embedded tags
+**Type**: Error (blocking) - **CRITICAL**
+
+**Required Tags** (all 6 mandatory):
+```markdown
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
+@adr: ADR-NN
+@sys: SYS.NN.EE.SS
+```
+
+**Valid Examples**:
+```markdown
+@brd: BRD.09.01.15, BRD.09.01.06 ✅
+@prd: PRD.16.01.03 ✅
+@ears: EARS.12.24.02 ✅
+@bdd: BDD.15.13.07 ✅
+@adr: ADR-033 ✅
+@sys: SYS.12.25.01 ✅
+```
+
+**Invalid Examples**:
+```markdown
+@brd BRD.09.01.15 ❌ (missing colon after tag type)
+@brd: BRD-09 ❌ (missing element ID)
+brd: BRD.09.01.15 ❌ (missing @ prefix)
+```
+
+**Error Messages**:
+```
+❌ ERROR: Missing cumulative tags (Layer 7 requires all 6):
+         Missing: @ears @bdd @adr
+         Required: @brd, @prd, @ears, @bdd, @adr, @sys
+         Reference: doc-flow TRACEABILITY.md section 2.5
+
+❌ ERROR: Invalid tag format: @brd BRD.09.01.15
+         Expected: @type: TYPE.NN.TT.SS (unified 4-segment element ID)
+         Example: @brd: BRD.09.01.15
+```
+
+**Fix**:
+1. Add all 6 missing tags to section 10 (Traceability)
+2. Use format: `@type: TYPE.NN.TT.SS (Unified 4-Segment Element ID)`
+3. Verify all referenced documents exist
+
+**Reference**: `TRACEABILITY.md` section 2.5 (Cumulative Tagging Hierarchy)
+
+---
+
+### CHECK 15: Complete Upstream Chain (6 Layers) ⭐ NEW
+
+**Purpose**: Verify upstream sources table includes all required artifact types
+**Type**: Error (blocking)
+
+**Required Upstream Layers**:
+1. **BRD** - Business Requirements
+2. **PRD** - Product Requirements
+3. **EARS** - Event-Action-Response-State (Engineering Requirements)
+4. **BDD** - Behavior-Driven Development scenarios
+5. **ADR** - Architecture Decision Records
+6. **SYS** - System Requirements
+
+**Valid Example**:
+```markdown
+### Upstream Sources
+
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
+|-------------|-------------|----------------|-------------------|--------------|
+| BRD | [BRD-01](...) | ... | ... | Primary business need |
+| PRD | [PRD-01](...) | ... | ... | Product requirement |
+| EARS | [EARS-012](...) | ... | ... | Formal requirement |
+| BDD | [BDD-015](...) | ... | ... | Acceptance test |
+| ADR | [ADR-033](...) | ... | ... | Architecture decision |
+| SYS | [SYS-02](...) | ... | ... | Parent system requirement |
+```
+
+**Error Message**:
+```
+❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
+         Complete chain required: BRD → PRD → EARS (Engineering Requirements) → BDD → ADR → SYS
+         Reference: REQ-MVP-TEMPLATE.md section 10 (Traceability)
+```
+
+**Fix**:
+1. Add missing upstream source types to table
+2. Ensure markdown links include relative paths
+3. Add specific relationship descriptions (not generic)
+
+**Reference**: `REQ-MVP-TEMPLATE.md` section 10 (Traceability - Complete Upstream Chain)
+
+---
+
+### CHECK 16: Markdown Link Resolution ⭐ NEW
+
+**Purpose**: Validate all cross-reference links resolve to existing files
+**Type**: Error + Warning
+
+**Valid Link Format**:
+```markdown
+[REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) ✅
+[ADR-033](../../05_ADR/ADR-033_architecture.md#ADR-033) ✅
+```
+
+**Invalid Examples**:
+```markdown
+[REQ-03](REQ-03.md) ❌ (missing relative path)
+[ADR-033](../../05_ADR/ADR-999.md) ❌ (file doesn't exist)
+```
+
+**Error Message** (broken link):
+```
+❌ ERROR: Broken link - file not found
+         Link: ../../05_ADR/ADR-999_architecture.md
+         Resolved: [project_root]/docs/05_ADR/ADR-999_architecture.md
+```
+
+**Warning Message** (missing anchor):
+```
+⚠️  WARNING: Anchor possibly missing in ADR-033_architecture.md: #ADR-033
+```
+
+**Fix**:
+1. Verify file exists at specified path
+2. Use correct relative path from current file location
+3. Ensure anchor (#ID) exists in target document
+
+---
+
+### CHECK 17: Traceability Matrix (Complex REQs) ⭐ NEW
+
+**Purpose**: Recommend matrix for complex requirements
+**Type**: Warning
+
+**Complexity Indicators**:
+- Upstream sources ≥ 5
+- Sub-components present (REQ.NN.EE.SS format)
+
+**Warning Message**:
+```
+⚠️  WARNING: Complex REQ detected but section 10.4 (Traceability Matrix) missing
+         Upstream sources: 7 (≥5 suggests complexity)
+         Sub-components: yes
+         Recommendation: Add section 10.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md
+         Reference: REQ-MVP-TEMPLATE.md section 10 (Traceability)
+```
+
+**Fix Options**:
+
+**Option 1 - Inline Matrix** (3-10 components):
+```markdown
+### 11.4 Traceability Matrix
+
+| Component ID | Upstream Sources | Downstream Artifacts | Status |
+|--------------|------------------|---------------------|--------|
+| REQ.45.26.01 | SYS.12.25.01, ADR-033 | SPEC-018, CTR-005 | Complete |
+| REQ.45.26.02 | SYS.12.25.02, ADR-033 | SPEC-018 | Complete |
+```
+
+**Option 2 - Separate File** (10+ components):
+- Create: `REQ-045_TRACEABILITY_MATRIX.md`
+- Template: Available in AI Dev Flow framework
+- Link from section 10
+
+**Reference**: `REQ-MVP-TEMPLATE.md` section 10 (Traceability - includes matrix guidance)
+
+---
+
+### CHECK 18: SPEC-Ready Content Validation ⭐ NEW
+
+**Purpose**: Verify SPEC-ready documents have actual implementation code
+**Type**: Warning
+
+**Applies When**: SPEC-Ready Score ≥ 90%
+
+**Checks**:
+1. **section 3**: Protocol/ABC class present
+2. **section 4**: Pydantic/dataclass models present
+3. **section 5**: Exception definitions present
+4. **section 6**: YAML configuration present
+
+**Warning Messages**:
+```
+❌ ERROR: SPEC-Ready ≥90% but no Protocol/ABC class in section 3.4
+❌ ERROR: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4.2
+❌ ERROR: SPEC-Ready ≥90% but no exception definitions in section 5.3
+❌ ERROR: SPEC-Ready ≥90% but no YAML configuration in section 7.3
+```
+
+**Fix**: Add missing code examples to achieve claimed SPEC-Ready score
+
+**Example - section 3**:
+```python
+from typing import Protocol
+
+class HealthCheckMonitor(Protocol):
+    async def start_monitoring(self, connection: IbConnection) -> MonitoringSession:
+        ...
+```
+
+**Example - section 4**:
+```python
+from pydantic import BaseModel, Field
+
+class HeartbeatConfig(BaseModel):
+    heartbeat_interval_regulatory: float = Field(30.0, ge=1.0, le=300.0)
+    connection_timeout_regulatory: float = Field(5.0, gt=0, le=60.0)
+```
+
+### CHECK 19: CTR-Ready Score Validation ⭐ NEW
+
+**Purpose**: Validate CTR-ready score format and threshold for interface contract transition
+
+**Error Message**: `❌ MISSING: CTR-Ready Score with ✅ emoji and percentage`
+
+**Action**: Enforces REQ → CTR progression quality gates
+
+
+---
+
+### CHECK 20: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### REQ.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### R-XXX` | ❌ Fail - use REQ.NN.27.SS |
+| Removed pattern | `### REQ-XXX` | ❌ Fail - use REQ.NN.27.SS |
+| Removed pattern | `### FR-XXX` | ❌ Fail - use REQ.NN.01.SS |
+
+**Regex**: `^###\s+REQ\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for REQ**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | REQ.02.01.01 |
+| Dependency | 05 | REQ.02.05.01 |
+| Acceptance Criteria | 06 | REQ.02.06.01 |
+| Atomic Requirement | 27 | REQ.02.27.01 |
+
+**Fix**: Replace `### REQ-01: Requirement` with `### REQ.02.27.01: Requirement`
+
+**Reference**: REQ_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+
+---
+
+### CHECK 21: Unit Tests Table Validation ⭐ NEW
+
+**Purpose**: Verify Section 8.1 contains Unit Tests table with minimum entries
+**Type**: Warning
+
+**Requirements**:
+1. Section 8.1 must be titled "Unit Tests"
+2. Table must have 4 columns: Test Case | Input | Expected Output | Coverage
+3. Minimum 3 entries required
+4. Test Case should use category prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
+
+**Valid Example**:
+```markdown
+### 8.1 Unit Tests
+
+| Test Case | Input | Expected Output | Coverage |
+|-----------|-------|-----------------|----------|
+| **[Logic] Fee Calc** | `amount=100` | `fee=1.50` | REQ.NN.21.01 |
+| **[State] Circuit Trip** | `fails=5` | `State=OPEN` | Resilience |
+| **[Validation] Bad Input** | `amount=-1` | `Error: INVALID` | Input Check |
+```
+
+**Warning Messages**:
+```
+⚠️  WARNING: Section 8.1 missing "Unit Tests" title - drives SPEC interface design
+⚠️  WARNING: Unit Tests table has < 3 entries (found: 2, required: ≥3)
+⚠️  WARNING: Unit Tests entries missing category prefix [Logic/State/Validation/Edge]
+```
+
+**Fix**: Add Unit Tests table with Input/Output/Coverage columns and category prefixes
+
+**Reference**: TESTING_STRATEGY_TDD.md (Unit Tests Phase)
+
+---
+
+## Error Fix Guide
+
+### Quick Fix Matrix
+
+| Error Check | Quick Fix |
+|-------------|-----------|
+| **CHECK 1** | Add missing section: `## N. section Name` |
+| **CHECK 2** | Add all 12 required fields to Document Control table |
+| **CHECK 13** | Add valid Category field to Document Control table |
+| **CHECK 14** | Ensure infrastructure metadata (Type) and traceability tags (@sys, @iac) are complete |
+| **CHECK 5** | Change version to semver: `2.0.1` |
+| **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
+| **CHECK 9** | Update score format: `✅ 90% (Target: ≥90%)` |
+| **CHECK 11** | Add change history entry for current version |
+| **CHECK 12** | Rename file to match pattern, update H1 header |
+| **CHECK 13** | Add resource tag to H1: `[HEALTH_CHECK_SERVICE]` |
+| **CHECK 14** | Add all 6 cumulative tags (@brd through @sys) |
+| **CHECK 15** | Add missing upstream sources (01_BRD/02_PRD/03_EARS/04_BDD/05_ADR/SYS) |
+| **CHECK 16** | Fix broken links, use relative paths |
+
+---
+
+## Quick Reference
+
+### Pre-Commit Validation
+
+```bash
+# Validate single file
+./07_REQ/scripts/validate_req_template.sh docs/07_REQ/api/ib/REQ-02_connection_heartbeat.md
+
+# Validate all REQ files
+find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {} \;
+```
+
+### Expected Output
+
+**Success (no errors/warnings)**:
+```
+✅ PASSED: All validation checks passed with no warnings
+
+Errors: 0
+Warnings: 0
+```
+
+**Success with warnings**:
+```
+⚠️  PASSED WITH WARNINGS: Document valid but has 2 warnings
+
+Errors: 0
+Warnings: 2
+```
+
+**Failure**:
+```
+❌ FAILED: 3 critical errors found
+
+Errors: 3
+Warnings: 1
+```
+
+### Validation Tiers Summary
+
+| Tier | Checks | Type | Action |
+|------|--------|------|--------|
+| **Tier 1** | 1, 2, 3 (Upstream Sources), 5, 6, 9, 11, 12, 13, 14, 15, 16, 19, 20 | Error | Must fix before commit |
+| **Tier 2** | 3 (Downstream/Code paths), 7, 8, 17, 18 | Warning | Recommended to fix |
+| **Tier 3** | 4 | Info | No action required |
+
+---
+
+## Common Mistakes
+
+### Mistake #1: Missing Cumulative Tags
+
+**Error**:
+```
+❌ ERROR: Missing cumulative tags (Layer 7 requires all 6):
+         Missing: @ears @bdd @adr
+```
+
+**Cause**: REQ document missing upstream artifact tags
+
+**Fix**:
+```markdown
+## 10. Traceability
+
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.07
+@adr: ADR-033
+@sys: SYS.12.25.01
+```
+
+---
+
+### Mistake #2: Invalid Filename Format
+
+**Error**:
+```
+❌ ERROR: Invalid filename format: REQ-02.md
+         Expected: REQ-NN_{slug}.md
+```
+
+**Cause**: Missing descriptive slug in filename
+
+**Fix**: Rename file to `REQ-02_connection_heartbeat_monitoring.md`
+
+---
+
+### Mistake #3: H1 Header Mismatch
+
+**Error**:
+```
+❌ ERROR: H1 header ID doesn't match filename
+         Filename ID: REQ-02
+         H1 Header: # REQ-03: Connection Monitoring
+```
+
+**Cause**: H1 header has different ID than filename
+
+**Fix**: Update H1 to match filename:
+```markdown
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+```
+
+---
+
+### Mistake #4: Incomplete Upstream Chain
+
+**Error**:
+```
+❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
+         Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS
+```
+
+**Cause**: Missing required upstream artifact types in table
+
+**Fix**: Add all 6 upstream types to Upstream Sources table
+
+---
+
+### Mistake #5: Broken Links
+
+**Error**:
+```
+❌ ERROR: Broken link - file not found
+         Link: ../../05_ADR/ADR-999_architecture.md
+         Resolved: [project_root]/docs/05_ADR/ADR-999_architecture.md
+```
+
+**Cause**: Referenced file doesn't exist
+
+**Fix**:
+1. Verify file path is correct
+2. Create missing document if needed
+3. Update link to existing document
+
+---
+
+### Mistake #6: Missing Resource Tag (Template 2.0)
+
+**Error**:
+```
+❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
+         Current H1: # REQ-02: Connection Monitoring
+```
+
+**Cause**: Template 2.0 requires resource classification tag
+
+**Fix**:
+```markdown
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+```
+
+---
+
+### Mistake #7: SPEC-Ready Score Without Content
+
+**Warning**:
+```
+⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
+```
+
+**Cause**: Claimed SPEC-Ready score but missing implementation code
+
+**Fix**: Add code examples to sections 3-6 or reduce score to match completeness
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 3.0.1 | 2025-11-18 | Updated CHECK 2 to require all 11 Document Control fields, CHECK 10 to enforce template version 3.0 only (no legacy versions), enhanced CHECK 13 with project-specific resource tag guidance, corrected Validation Tiers Summary to split CHECK 3, updated Quick Fix Matrix | System Architect |
+| 3.0.0 | 2025-11-18 | Initial validation rules for v3.0 script with cumulative tagging, filename validation, resource tags, link resolution | System Architect |
+
+---
+
+---
+
+**Maintained By**: System Architect, Quality Assurance Team
+**Review Frequency**: Updated with script and template enhancements
+**Support**: See [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) for comprehensive template guidance
+**Related Documents**:
+- [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) - Current template (v3.0)
+- [README.md](README.md) - REQ directory guide with creation steps
+- [<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->](<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->) - Archived MVP template (v3.0.2)
