@@ -217,6 +217,7 @@ Active element type codes with document type applicability:
 | 27 | Atomic Requirement | REQ |
 | 28 | Specification Element | SPEC |
 | 30 | Task Item | TASKS |
+| 32 | Architecture Topic | BRD |
 | 40 | Unit Test Case | TSPEC (UTEST) |
 | 41 | Integration Test Case | TSPEC (ITEST) |
 | 42 | Smoke Test Case | TSPEC (STEST) |
@@ -226,7 +227,7 @@ Active element type codes with document type applicability:
 
 | Document | Common Element Codes |
 |----------|---------------------|
-| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24 |
+| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32 |
 | PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
 | EARS | 25 |
 | BDD | 14, 15 |

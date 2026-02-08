@@ -655,6 +655,8 @@ For supplementary documentation related to BRD artifacts:
 - **BRD Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
 - **BRD README**: `ai_dev_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
+- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
 
 ## Quick Reference
 
@@ -672,3 +674,10 @@ For supplementary documentation related to BRD artifacts:
 - Architecture Decision Requirements (list topics, NOT ADR numbers)
 
 **Next**: doc-prd
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0 | 2026-02-08 | Added element code 32 (Architecture Topic); Added Section 7.2 (Architecture Decision Requirements) with 7 mandatory topic categories; Updated to 18-section structure; Integrated doc-naming skill for element ID validation; Added Alternatives Overview and Cloud Provider Comparison tables |
+| 1.0 | 2025-01-06 | Initial version |

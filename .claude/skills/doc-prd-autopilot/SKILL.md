@@ -305,7 +305,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    @brd: BRD.01.01.01, BRD.01.01.02, BRD.01.23.01
    ```
 
-6. **File Output**:
+7. **File Output**:
    - **Monolithic** (<25KB): `docs/02_PRD/PRD-NN_{slug}.md`
    - **Sectioned** (>=25KB): `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{section}.md`
 
