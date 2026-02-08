@@ -12,6 +12,13 @@
 # CREATION_RULES: BDD_CREATION_RULES.md
 # VALIDATION_RULES: BDD_VALIDATION_RULES.md
 # MATRIX_TEMPLATE: BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md
+#
+# ID Format for Scenarios: BDD.NN.13.SS
+#   - NN = Document number (e.g., 01, 02)
+#   - 13 = Element type code for Scenario
+#   - SS = Sequence number (01, 02, 03, ...)
+# Example: BDD.01.13.01 = BDD doc 01, Scenario type, sequence 01
+#
 Feature: [Feature Name]
   As a [User Role]
   I want [Capability]

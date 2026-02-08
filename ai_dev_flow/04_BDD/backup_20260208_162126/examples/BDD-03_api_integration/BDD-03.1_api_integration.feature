@@ -4,12 +4,6 @@
 # Example BDD feature file demonstrating REST API testing scenarios
 # Includes Background steps, tags for filtering, and error response scenarios
 # =============================================================================
-#
-# Scenario ID Format: BDD.03.13.SS
-#   - 03 = Document number (BDD-03)
-#   - 13 = Element type code for Scenario
-#   - SS = Sequence number (01, 02, 03, ...)
-# Example: BDD.03.13.01 = First scenario in BDD-03.1
 
 ## Document Control
 

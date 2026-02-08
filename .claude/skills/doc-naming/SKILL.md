@@ -15,6 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
+  version: "1.3"
 ---
 
 # doc-naming Skill
@@ -35,7 +36,7 @@ Invoke this skill BEFORE creating or editing any SDD documentation artifact. Use
 
 ### Coverage
 
-This skill covers all 12 SDD document types:
+This skill covers all 11 SDD documentation artifact types (Layers 1-11):
 
 | Layer | Document Type | Description |
 |-------|---------------|-------------|
@@ -46,10 +47,12 @@ This skill covers all 12 SDD document types:
 | 5 | ADR | Architecture Decision Record |
 | 6 | SYS | System Requirements |
 | 7 | REQ | Atomic Requirements |
-| 8 | IMPL | Implementation Approach |
-| 9 | CTR | Data Contracts |
-| 10 | SPEC | Technical Specifications |
+| 8 | CTR | Data Contracts |
+| 9 | SPEC | Technical Specifications |
+| 10 | TSPEC | Test Specifications (UTEST, ITEST, STEST, FTEST) |
 | 11 | TASKS | AI Task Breakdown |
+
+**Note**: Layers 12-14 (CODE, TESTS, VALIDATION) are execution layers, not documentation artifacts.
 
 ---
 
@@ -182,7 +185,7 @@ Element IDs appear as markdown headings:
 
 ## 5. Element Type Codes Table
 
-All 31 element type codes with document type applicability:
+Active element type codes with document type applicability:
 
 | Code | Element Type | Applicable Document Types |
 |------|--------------|---------------------------|
@@ -213,8 +216,11 @@ All 31 element type codes with document type applicability:
 | 26 | System Requirement | SYS |
 | 27 | Atomic Requirement | REQ |
 | 28 | Specification Element | SPEC |
-| 29 | Implementation Phase | IMPL |
 | 30 | Task Item | TASKS |
+| 40 | Unit Test Case | TSPEC (UTEST) |
+| 41 | Integration Test Case | TSPEC (ITEST) |
+| 42 | Smoke Test Case | TSPEC (STEST) |
+| 43 | Functional Test Case | TSPEC (FTEST) |
 
 ### Quick Lookup by Document Type
 
@@ -227,9 +233,9 @@ All 31 element type codes with document type applicability:
 | ADR | 10, 12, 13 |
 | SYS | 01, 02, 11, 26 |
 | REQ | 01, 05, 06, 27 |
-| IMPL | 29 |
 | CTR | 16, 17, 20 |
 | SPEC | 15, 16, 17, 21, 28 |
+| TSPEC | 40 (UTEST), 41 (ITEST), 42 (STEST), 43 (FTEST) |
 | TASKS | 18, 30 |
 
 ---
@@ -253,8 +259,6 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `State-XXX` | `TYPE.NN.25.SS` | EARS |
 | `TASK-XXX` | `TYPE.NN.18.SS` | TASKS |
 | `T-XXX` | `TYPE.NN.18.SS` | TASKS |
-| `Phase-XXX` | `TYPE.NN.29.SS` | IMPL |
-| `IP-XXX` | `TYPE.NN.29.SS` | IMPL |
 | `IF-XXX` | `TYPE.NN.16.SS` | CTR |
 | `DM-XXX` | `TYPE.NN.17.SS` | CTR |
 | `CC-XXX` | `TYPE.NN.20.SS` | CTR |
@@ -270,7 +274,6 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `#### FR-01: User Auth` | `#### PRD.01.01.01: User Auth` |
 | `### Event-001: KYC Submission` | `### EARS.06.25.01: KYC Submission` |
 | `### TASK-01: Setup` | `### TASKS.02.18.01: Setup` |
-| `### Phase-01: Init` | `### IMPL.02.29.01: Init` |
 | `### DEC-01: Use PostgreSQL` | `### ADR.05.10.01: Use PostgreSQL` |
 | `### ALT-01: MongoDB Option` | `### ADR.05.12.01: MongoDB Option` |
 
@@ -379,18 +382,20 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 ### CTR.02.20.01: Rate Limit Clause
 ```
 
+### TSPEC Examples
+
+```markdown
+### TSPEC.01.40.01: User Authentication Unit Test
+### TSPEC.01.41.01: API Integration Test
+### TSPEC.01.42.01: Login Flow Smoke Test
+### TSPEC.01.43.01: Order Processing Functional Test
+```
+
 ### TASKS Examples
 
 ```markdown
 ### TASKS.02.18.01: Setup Development Environment
 ### TASKS.02.30.01: Configure CI Pipeline
-```
-
-### IMPL Examples
-
-```markdown
-### IMPL.02.29.01: Foundation Phase
-### IMPL.02.29.02: Integration Phase
 ```
 
 ---
@@ -495,17 +500,17 @@ Each document type has validation rules with Element ID compliance checks:
 
 | Document Type | Validation Rules File |
 |---------------|----------------------|
-| BRD | `ai_dev_flow/BRD/BRD_VALIDATION_RULES.md` |
-| PRD | `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md` |
-| EARS | `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md` |
-| BDD | `ai_dev_flow/BDD/BDD_VALIDATION_RULES.md` |
-| ADR | `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md` |
-| SYS | `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md` |
-| REQ | `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md` |
-| IMPL | `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md` |
-| CTR | `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md` |
-| SPEC | `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md` |
-| TASKS | `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md` |
+| BRD | `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md` |
+| PRD | `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md` |
+| EARS | `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md` |
+| BDD | `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md` |
+| ADR | `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md` |
+| SYS | `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md` |
+| REQ | `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md` |
+| CTR | `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md` |
+| SPEC | `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md` |
+| TSPEC | `ai_dev_flow/10_TSPEC/TSPEC_VALIDATION_RULES.md` |
+| TASKS | `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md` |
 
 ### Related Skills
 
@@ -526,6 +531,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
 | 1.2.0 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
 | 1.1.0 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
 | 1.0.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |

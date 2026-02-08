@@ -1,6 +1,6 @@
 ---
 name: doc-prd-autopilot
-description: Automated PRD generation pipeline from BRD documents - analyzes dependencies, validates readiness, generates PRDs, and supports parallel execution
+description: Automated PRD generation pipeline from BRD documents - analyzes dependencies, validates readiness, generates PRDs, performs final review, and supports parallel execution
 tags:
   - sdd-workflow
   - automation
@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "1.1"
+  version: "1.2"
 ---
 
 # doc-prd-autopilot
@@ -42,11 +42,13 @@ This autopilot orchestrates the following skills:
 | `doc-brd-validator` | Validate BRD PRD-Ready score | Phase 2: BRD Readiness |
 | `doc-prd` | PRD creation rules, template, section structure | Phase 3: PRD Generation |
 | `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
+| `doc-prd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - PRD structure/content rules → `doc-prd` skill
 - PRD validation logic → `doc-prd-validator` skill
 - BRD validation logic → `doc-brd-validator` skill
+- Final content review → `doc-prd-reviewer` skill (or inline review)
 
 ---
 
@@ -66,7 +68,7 @@ Use `doc-prd-autopilot` when:
 
 ---
 
-## 7-Step Autopilot Workflow
+## 8-Step Autopilot Workflow
 
 ### Overview Diagram
 
@@ -103,11 +105,23 @@ flowchart TD
         R -->|No| S[Auto-Fix PRD Issues]
         S --> T[Re-validate PRD]
         T --> R
-        R -->|Yes| U[Mark PRD Complete]
+        R -->|Yes| U[Validation Passed]
     end
 
-    subgraph Phase5["Phase 5: Parallel/Continue"]
-        U --> V{More BRDs?}
+    subgraph Phase5["Phase 5: Final Review"]
+        U --> U1[Check Link Integrity]
+        U1 --> U2[Verify Threshold Consistency]
+        U2 --> U3[Validate BRD Alignment]
+        U3 --> U4[Check Placeholder Text]
+        U4 --> U5{Review Passed?}
+        U5 -->|No| U6[Flag Issues]
+        U6 --> U7[Auto-Fix or Manual]
+        U7 --> U5
+        U5 -->|Yes| U8[Mark PRD Complete]
+    end
+
+    subgraph Phase6["Phase 6: Parallel/Continue"]
+        U8 --> V{More BRDs?}
         V -->|Yes| W{Independent?}
         W -->|Yes| X[Parallel Generation]
         W -->|No| F
@@ -309,7 +323,91 @@ After PRD generation, validate EARS-Ready score.
 | Missing fallback documentation | PRD-W002 | Add Section 20.4 template |
 | Incomplete customer-facing content | PRD-E006 | Flag for manual review (Section 10) |
 
-### Step 6: Process Next BRD
+### Step 6: Final Content Review
+
+After EARS-Ready validation passes, perform comprehensive content review.
+
+**Review Checklist**:
+
+| Check | Description | Auto-Fix | Manual |
+|-------|-------------|----------|--------|
+| Link Integrity | All internal links between sections resolve | Yes | - |
+| Threshold Consistency | Performance metrics match across sections | Yes | - |
+| BRD Alignment | PRD content accurately reflects BRD requirements | - | Review |
+| Placeholder Detection | No `[TODO]`, `[TBD]`, `YYYY-MM-DD` remaining | Yes | - |
+| Traceability Tags | All `@brd:` tags reference valid BRD IDs | Yes | - |
+| Cross-Reference Validity | `@depends:` and `@discoverability:` tags valid | Yes | - |
+| Section Completeness | No empty or stub sections | - | Flag |
+| Customer Content | Section 10 has substantive content | - | Flag |
+
+**Review Process**:
+
+1. **Link Integrity Check**:
+   ```
+   Scanning PRD-01 for internal links...
+   ├── PRD-01.0_index.md: 17 links found
+   │   ├── PRD-01.1_document_control.md ✓
+   │   ├── PRD-01.2_executive_summary.md ✓
+   │   └── ... (all valid)
+   └── Result: 0 broken links
+   ```
+
+2. **Threshold Consistency Check**:
+   ```
+   Comparing thresholds across sections...
+   ├── Section 5 (Success Metrics): auth.p99 = 100ms
+   ├── Section 9 (Quality Attributes): auth.p99 = 100ms
+   ├── Section 17 (Appendix B.1): auth.p99 = 100ms
+   └── Result: Consistent ✓
+   ```
+
+3. **BRD Alignment Check**:
+   ```
+   Verifying PRD requirements map to BRD source...
+   ├── PRD.01.01.01 → BRD.01.01.01 (Multi-Provider Auth) ✓
+   ├── PRD.01.01.02 → BRD.01.01.02 (4D Authorization) ✓
+   └── Result: 12/12 requirements aligned ✓
+   ```
+
+4. **Placeholder Detection**:
+   ```
+   Scanning for placeholder text...
+   ├── [TODO]: 0 found
+   ├── [TBD]: 0 found
+   ├── YYYY-MM-DD: 0 found
+   ├── [Name]: 0 found
+   └── Result: No placeholders ✓
+   ```
+
+**Review Output**:
+```
+Final Review Complete:
+├── Link Integrity: PASS (0 broken links)
+├── Threshold Consistency: PASS (all metrics aligned)
+├── BRD Alignment: PASS (12/12 requirements)
+├── Placeholder Detection: PASS (0 placeholders)
+├── Traceability Tags: PASS (15 valid @brd references)
+├── Section Completeness: PASS (17/17 sections)
+└── Customer Content: FLAG (Section 10 needs business review)
+
+Review Score: 95/100
+Status: PASS (threshold: 90)
+Flagged for Manual Review: Section 10 (Customer-Facing Content)
+```
+
+**Auto-Fix Actions**:
+
+| Issue | Auto-Fix Action |
+|-------|-----------------|
+| Broken internal link | Update link path or remove |
+| Inconsistent threshold | Align to BRD source value |
+| Placeholder text | Replace with actual content or flag |
+| Invalid @brd tag | Remove or correct reference |
+| Missing date | Insert current date |
+
+---
+
+### Step 7: Process Next BRD
 
 After completing one PRD:
 1. Mark current BRD→PRD as complete
@@ -336,7 +434,7 @@ Pending:
   ○ PRD-05 (from BRD-05)
 ```
 
-### Step 7: Parallel Generation
+### Step 8: Parallel Generation
 
 For independent BRDs (no cross-dependencies), generate PRDs in parallel.
 
@@ -363,11 +461,12 @@ Parallel Group Execution:
 ```yaml
 # config/prd_autopilot.yaml
 prd_autopilot:
-  version: "1.0"
+  version: "1.2"
 
   scoring:
     prd_ready_min: 90
     ears_ready_min: 90
+    review_score_min: 90
     strict_mode: false
 
   execution:
@@ -384,6 +483,17 @@ prd_autopilot:
   validation:
     skip_validation: false
     fix_iterations_max: 3
+
+  review:
+    enabled: true
+    check_links: true
+    check_thresholds: true
+    check_brd_alignment: true
+    check_placeholders: true
+    check_traceability: true
+    auto_fix_links: true
+    auto_fix_placeholders: true
+    flag_customer_content: true
 ```
 
 ### Command Line Options
@@ -392,11 +502,14 @@ prd_autopilot:
 |--------|---------|-------------|
 | `--min-prd-ready` | 90 | Minimum PRD-Ready score |
 | `--min-ears-ready` | 90 | Minimum EARS-Ready score |
+| `--min-review-score` | 90 | Minimum Final Review score |
 | `--max-parallel` | 3 | Maximum parallel PRD generations |
 | `--no-auto-fix` | false | Disable auto-fix (manual only) |
 | `--continue-on-error` | false | Continue if one BRD fails |
 | `--dry-run` | false | Preview execution plan only |
 | `--output-format` | auto | Force monolithic or sectioned output |
+| `--skip-review` | false | Skip final content review phase |
+| `--review-only` | false | Run only final review on existing PRD |
 
 ---
 
@@ -615,11 +728,15 @@ After autopilot completion:
 
 - [ ] All target PRDs generated
 - [ ] Each PRD has EARS-Ready score >= 90%
+- [ ] Each PRD has Final Review score >= 90%
 - [ ] Traceability matrix updated (`PRD-00_TRACEABILITY_MATRIX.md`)
 - [ ] Each PRD references upstream BRD with `@brd` tags
 - [ ] Section 10 (Customer-Facing Content) has substantive content
 - [ ] Section 20 (EARS Enhancement Appendix) completed
-- [ ] No broken links in generated documents
+- [ ] No broken links in generated documents (verified by Final Review)
+- [ ] No placeholder text remaining (verified by Final Review)
+- [ ] Thresholds consistent across sections (verified by Final Review)
+- [ ] BRD alignment verified (all PRD requirements trace to BRD source)
 
 ---
 
@@ -677,5 +794,6 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-08 | Added Phase 5: Final Content Review with link integrity, threshold consistency, BRD alignment, and placeholder detection checks |
 | 1.1 | 2026-02-08 | Added skill dependencies, integrated doc-prd and doc-prd-validator skills |
 | 1.0 | 2026-02-08 | Initial skill creation with 7-step workflow |

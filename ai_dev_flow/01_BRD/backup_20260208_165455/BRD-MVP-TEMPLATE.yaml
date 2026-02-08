@@ -1,0 +1,192 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated BRD artifact generation
+# - Validation: Validated by BRD_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See BRD-MVP-TEMPLATE.md for narrative explanations
+#
+# NOTE: This is a MINIMAL YAML template (structure only).
+# BRD is primarily human-facing. Humans should use BRD-MVP-TEMPLATE.md
+# for narrative content, business case, stakeholder analysis.
+# =============================================================================
+
+id: BRD-NN
+title: "[Business Requirements Title: e.g., E-Commerce Platform MVP]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  project_name: "[Project Name]"
+  version: "1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+
+# =============================================================================
+# Executive Summary
+# =============================================================================
+
+executive_summary:
+  business_objective: |
+    [Business objective statement: Clear, concise statement of what this
+    business requirement aims to achieve. Include business goals and
+    success criteria. Be specific and measurable where possible.
+    
+    Example: Launch MVP e-commerce platform within 4 months to validate
+    product-market fit, achieve $50,000 in first-quarter revenue,
+    and establish baseline customer acquisition metrics for Series A funding.]
+  
+  success_metrics:
+    - metric: "[Metric 1: e.g., Time to market]"
+      target_value: "[Target: e.g., 4 months]"
+      measurement: "[How measured: e.g., Calendar days from project start to MVP launch]"
+    
+    - metric: "[Metric 2: e.g., Revenue target]"
+      target_value: "[Target: e.g., $50,000]"
+      measurement: "[How measured: e.g., Total revenue in first 90 days]"
+    
+    - metric: "[Metric 3: e.g., User acquisition]"
+      target_value: "[Target: e.g., 10,000 active users]"
+      measurement: "[How measured: e.g., Unique user registrations with completed onboarding]"
+    
+    - metric: "[Metric 4: e.g., Customer satisfaction]"
+      target_value: "[Target: e.g., 4.5/5.0 NPS score]"
+      measurement: "[How measured: e.g., Net Promoter Score survey at 30 and 90 days]"
+  
+  scope: |
+    [High-level scope description: What is included and what is excluded
+    from this business requirement. Define boundaries of MVP/feature set.
+    Include major deliverables and key constraints.
+    
+    Example: 
+    In Scope:
+    - Core e-commerce functionality (product catalog, shopping cart, checkout)
+    - User account management and authentication
+    - Payment processing with credit cards
+    - Order tracking and order history
+    
+    Out of Scope:
+    - Mobile applications (separate project)
+    - Advanced features (recommendation engine, subscription management)
+    - International shipping (US only in MVP)
+    - B2B marketplace functionality]
+
+# =============================================================================
+# Business Requirements
+# =============================================================================
+
+business_requirements:
+  - id: "BRD-01.01"
+    priority: "P1"  # P1 (Critical), P2 (High), P3 (Medium), P4 (Low)
+    description: |
+      [Requirement description: Concise statement of business requirement.
+      Describe what the system must enable from a business perspective.
+      Focus on business value and user needs, not technical implementation.
+      
+      Example: Users must be able to browse products, add to cart,
+      and complete purchase with payment within 5 minutes on average.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: Users can search products by category]"
+      - "[Acceptance criterion 2: Users can add products to cart]"
+      - "[Acceptance criterion 3: Users can complete checkout with card payment]"
+      - "[Acceptance criterion 4: Average checkout time <= 5 minutes]"
+    
+    success_metrics:
+      - metric: "[Metric: e.g., Conversion rate]"
+        target: "[Target: e.g., 3% of product views result in purchase]"
+        measurement: "[How measured: e.g., Purchases / Product views]"
+      
+      - metric: "[Metric: e.g., Cart abandonment rate]"
+        target: "[Target: e.g., <30% abandonment]"
+        measurement: "[How measured: e.g., Carts with items abandoned / Carts created]"
+    
+    stakeholders:
+      - "[Stakeholder 1: e.g., Product Manager]"
+      - "[Stakeholder 2: e.g., Marketing Team]"
+      - "[Stakeholder 3: e.g., Sales Operations]"
+    
+    dependencies:
+      - "[Dependency 1: e.g., Payment gateway integration]"
+      - "[Dependency 2: e.g., Inventory management system]"
+  
+  - id: "BRD-01.02"
+    priority: "P1"
+    description: |
+      [Requirement description: Business requirement statement.
+      Example: Users must be able to create accounts, manage profiles,
+      and authenticate securely using email/password or social login.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: User registration completes in <2 minutes]"
+      - "[Acceptance criterion 2: Social login works with Google, Facebook, Apple]"
+      - "[Acceptance criterion 3: Password reset flow completes in <5 minutes]"
+    
+    success_metrics:
+      - metric: "[Metric]"
+        target: "[Target]"
+        measurement: "[How measured]"
+    
+    stakeholders:
+      - "[Stakeholder 1]"
+      - "[Stakeholder 2]"
+    
+    dependencies:
+      - "[Dependency 1]"
+
+  - id: "BRD-01.03"
+    priority: "P2"
+    description: |
+      [Requirement description: Business requirement statement.
+      Example: System must support product browsing, filtering,
+      and search functionality to help users find products.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1]"
+      - "[Acceptance criterion 2]"
+      - "[Acceptance criterion 3]"
+    
+    success_metrics:
+      - metric: "[Metric]"
+        target: "[Target]"
+        measurement: "[How measured]"
+    
+    stakeholders:
+      - "[Stakeholder 1]"
+      - "[Stakeholder 2]"
+    
+    dependencies:
+      - "[Dependency 1]"
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  tags:
+    - "@brd: BRD-NN"
+
+  cross_links:
+    depends:
+      - "@depends: BRD-NN"   # Hard prerequisite BRDs
+    discoverability:
+      - "@discoverability: BRD-NN (short rationale)"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: BRD-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: BRD_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: BRD_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: BRD_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - MINIMAL YAML template (structure only, no narrative sections)
+# - BRD is human-facing - use BRD-MVP-TEMPLATE.md for full narrative
+# - Business requirements structured as array with priority and acceptance criteria
+# - Success metrics defined for measurable outcomes
+# - No hypothesis, business case, or stakeholder analysis (in MD template only)
+
+# =============================================================================

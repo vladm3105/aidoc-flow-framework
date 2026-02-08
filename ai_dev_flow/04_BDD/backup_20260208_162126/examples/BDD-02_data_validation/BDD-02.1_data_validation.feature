@@ -4,12 +4,6 @@
 # Example BDD feature file demonstrating input validation scenarios
 # Demonstrates Scenario Outline with Examples tables and negative test cases
 # =============================================================================
-#
-# Scenario ID Format: BDD.02.13.SS
-#   - 02 = Document number (BDD-02)
-#   - 13 = Element type code for Scenario
-#   - SS = Sequence number (01, 02, 03, ...)
-# Example: BDD.02.13.01 = First scenario in BDD-02.1
 
 ## Document Control
 

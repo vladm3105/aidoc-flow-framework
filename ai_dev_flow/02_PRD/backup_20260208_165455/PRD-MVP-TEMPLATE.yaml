@@ -40,13 +40,13 @@ product_overview:
     solutions while maintaining ease of use.]
   
   target_audience:
-    - segment: "[Audience segment 1: e.g., Small business owners (1-10 employees)]"
+    - "[Audience segment 1: e.g., Small business owners (1-10 employees)]"
       description: "[Segment description: Needs and pain points]"
     
-    - segment: "[Audience segment 2: e.g., Independent artisans and creators]"
+    - "[Audience segment 2: e.g., Independent artisans and creators]"
       description: "[Segment description: Needs and pain points]"
     
-    - segment: "[Audience segment 3: e.g., Mid-market retailers (10-100 employees)]"
+    - "[Audience segment 3: e.g., Mid-market retailers (10-100 employees)]"
       description: "[Segment description: Needs and pain points]"
   
   value_proposition: |

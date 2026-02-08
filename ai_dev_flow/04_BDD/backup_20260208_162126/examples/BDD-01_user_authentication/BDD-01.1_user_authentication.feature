@@ -4,12 +4,6 @@
 # Example BDD feature file demonstrating authentication scenarios
 # Following section-based structure per BDD_SPLITTING_RULES.md
 # =============================================================================
-#
-# Scenario ID Format: BDD.01.13.SS
-#   - 01 = Document number (BDD-01)
-#   - 13 = Element type code for Scenario
-#   - SS = Sequence number (01, 02, 03, ...)
-# Example: BDD.01.13.01 = First scenario in BDD-01.1
 
 ## Document Control
 

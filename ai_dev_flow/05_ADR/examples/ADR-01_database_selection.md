@@ -159,7 +159,9 @@ replication:
 
 ## 5. Decision
 
-### 5.1 Chosen Solution
+**ID Format**: `ADR.01.10.SS` (Decision)
+
+### 5.1 Chosen Solution (ADR.01.10.01)
 
 **PostgreSQL 16** selected as the primary database for the Order Management System.
 
@@ -330,7 +332,9 @@ flowchart TD
 
 ## 12. Alternatives Considered
 
-### 12.1 Alternative A: MySQL 8.0
+**ID Format**: `ADR.01.12.SS` (Alternative)
+
+### 12.1 Alternative A: MySQL 8.0 (ADR.01.12.01)
 
 **Description**: Popular open-source RDBMS with InnoDB storage engine.
 
@@ -347,7 +351,7 @@ flowchart TD
 **Rejection Reason**: Insufficient analytical query capabilities for order reporting requirements.
 **Fit Score**: Good
 
-### 12.2 Alternative B: MongoDB 7.0
+### 12.2 Alternative B: MongoDB 7.0 (ADR.01.12.02)
 
 **Description**: Document-oriented NoSQL database with flexible schema.
 

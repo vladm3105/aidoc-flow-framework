@@ -162,7 +162,9 @@ versioning:
 
 ## 5. Decision
 
-### 5.1 Chosen Solution
+**ID Format**: `ADR.02.10.SS` (Decision)
+
+### 5.1 Chosen Solution (ADR.02.10.01)
 
 **RESTful API with OpenAPI 3.1 specification** selected as the primary API architecture.
 
@@ -425,7 +427,9 @@ POST   /v2/orders/{id}/submit  # Submit for payment
 
 ## 12. Alternatives Considered
 
-### 12.1 Alternative A: GraphQL
+**ID Format**: `ADR.02.12.SS` (Alternative)
+
+### 12.1 Alternative A: REST API (ADR.02.12.01) GraphQL
 
 **Description**: Query language for APIs with schema-based type system.
 

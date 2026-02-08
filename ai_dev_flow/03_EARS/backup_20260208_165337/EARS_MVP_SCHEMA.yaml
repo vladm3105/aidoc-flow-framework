@@ -27,6 +27,12 @@ references:
   yaml_template: "EARS-MVP-TEMPLATE.yaml"
   creation_rules: "EARS_MVP_CREATION_RULES.md"
   validation_rules: "EARS_MVP_VALIDATION_RULES.md"
+---
+> **🔄 Dual-Format Note**: > > This MD template is a **primary source** for human workflow. > - **For Autopilot**: See `{template}_MVP-TEMPLATE.yaml` (YAML template) > - **Shared Validation**: Both formats are validated by `{layer}_MVP_SCHEMA.yaml` > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. > > ---
+---
+> **🔄 Dual-Format Note**: > > This MD template is a **primary source** for human workflow. > - **For Autopilot**: See `{template}_MVP-TEMPLATE.yaml` (YAML template) > - **Shared Validation**: Both formats are validated by `{layer}_MVP_SCHEMA.yaml` > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. > > ---
+---
+> **🔄 Dual-Format Note**: > > This MD template is a **primary source** for human workflow. > - **For Autopilot**: See `{template}_MVP-TEMPLATE.yaml` (YAML template) > - **Shared Validation**: Both formats are validated by `{layer}_MVP_SCHEMA.yaml` > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. > > ---
 
 # =============================================================================
 # Profiles (Full vs MVP)
