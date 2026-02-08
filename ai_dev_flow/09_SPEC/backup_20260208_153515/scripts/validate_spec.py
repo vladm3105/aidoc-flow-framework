@@ -234,8 +234,8 @@ def validate_id_field(data: Dict, file_path: Path, result: ValidationResult):
     # Check if id matches filename slug
     file_name = file_path.stem  # SPEC-01_component_name
     
-    # Try monolithic pattern (2+ digits per ID_NAMING_STANDARDS.md)
-    match = re.match(r"SPEC-\d{2,}_(.+)", file_name)
+    # Try monolithic pattern
+    match = re.match(r"SPEC-\d{3}_(.+)", file_name)
     if not match:
         # Try decimal pattern
         match = re.match(r"SPEC-\d{2,}\.\d+_(.+)", file_name)

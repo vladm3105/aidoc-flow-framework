@@ -218,6 +218,11 @@ traceability:
           spec_sections: ["interfaces.classes"]
 
       supporting_code:
+          cross_links:
+            depends:
+              - "@depends: SPEC-NN"   # Hard prerequisite SPECs
+            discoverability:
+              - "@discoverability: SPEC-NN (short rationale)"
         - path: "src/[module_name]/services/[service_name].py"
           description: "Business logic and service layer"
           spec_sections: ["behavior.request_processing"]
@@ -227,14 +232,6 @@ traceability:
         - path: "src/[module_name]/handlers/[handler_name].py"
           description: "Event and error handlers"
           spec_sections: ["behavior.error_handling"]
-
-      # Cross-links for AI discoverability (same-type SPEC references)
-      # Place at end of implementation block, not inside lists
-      cross_links:
-        depends:
-          - "@depends: SPEC-NN"   # Hard prerequisite SPECs
-        discoverability:
-          - "@discoverability: SPEC-NN (short rationale)"
 
       configuration:
         - path: "config/[component_name].yaml"
@@ -384,26 +381,17 @@ traceability:
 
   # Cumulative Tagging Hierarchy (Layer 9)
   # Required tags from ALL upstream artifacts for complete traceability
-  # 
-  # NOTATION CLARIFICATION:
-  # - Feature ID notation (dot): "BRD.NN.EE.SS" - for element-level references within documents
-  # - File name notation (dash): "BRD-NN" - for document-level references
-  #
-  # Use Feature ID notation (dot) for: brd, prd, ears, bdd, sys, req (element-level traceability)
-  # Use File name notation (dash) for: adr, ctr, threshold (document-level references)
-  #
-  # Element Type Codes: 13=Scenario(BDD), 15=Step, 16=Interface, 17=Data Model, 
-  #                     21=Validation Rule, 24=EARS Stmt, 25=Sys Req, 26=Atomic Req
+  # Format: artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
   cumulative_tags:
-    brd: "BRD.NN.EE.SS"      # Feature ID notation: BRD doc NN, element type EE, sequence SS
-    prd: "PRD.NN.EE.SS"      # Feature ID notation: PRD doc NN, element type EE, sequence SS
-    ears: "EARS.NN.24.SS"    # Feature ID notation: EARS doc NN, element type 24, sequence SS
-    bdd: "BDD.NN.13.SS"      # Feature ID notation: BDD doc NN, element type 13 (scenario), sequence SS
-    adr: "ADR-NN"            # File name notation: document-level reference to ADR-NN
-    sys: "SYS.NN.25.SS"      # Feature ID notation: SYS doc NN, element type 25, sequence SS
-    req: "REQ.NN.26.SS"      # Feature ID notation: REQ doc NN, element type 26, sequence SS
-    ctr: "CTR-NN"            # File name notation: document-level reference to CTR-NN (optional)
-    threshold: "PRD-NN"      # File name notation: reference to threshold registry PRD-NN
+    brd: "BRD.NN.EE.SS"  # Business Requirements
+    prd: "PRD.NN.EE.SS"  # Product Requirements
+    ears: "EARS.NN.24.SS"  # Engineering Requirements (24=EARS Statement)
+    bdd: "BDD.NN.13.SS"  # BDD Test Scenarios (13=Test Scenario)
+    adr: "ADR-NN"  # Architecture Decisions
+    sys: "SYS.NN.25.SS"  # System Requirements (25=System Requirement)
+    req: "REQ.NN.26.SS"  # Atomic Requirements (26=Atomic Requirement)
+    ctr: "CTR-NN"  # API Contracts (optional)
+    threshold: "PRD-NN"  # Threshold Registry (when performance/SLA values used)
     # Layer 9: SPEC must include all upstream tags (BRD through REQ)
     # Optional: CTR and threshold if they exist in the traceability chain
     # Purpose: Complete traceability from business requirements to implementation

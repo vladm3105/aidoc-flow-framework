@@ -66,7 +66,9 @@ Use `doc-prd` when:
 
 ### 1. Required Sections (21 Total)
 
-PRD documents require exactly **21 numbered sections** (1-21). See `ai_dev_flow/PRD/PRD-TEMPLATE.md` for complete structure.
+PRD documents follow the **MVP template structure** (17 sections). See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
+
+> **Note**: MVP template is the framework default. It uses ≥85% score thresholds (vs ≥90% for full template). Full template (21 sections) is available for enterprise/regulatory projects.
 
 **Section 1. Document Control** (MANDATORY - First section):
 - Status, Version, Date Created, Last Updated
@@ -557,7 +559,7 @@ The EARS will:
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml`
+- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
 - **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
 - **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
 - **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md`

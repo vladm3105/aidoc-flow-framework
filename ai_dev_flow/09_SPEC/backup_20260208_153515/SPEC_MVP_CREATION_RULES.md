@@ -96,29 +96,20 @@ traceability:
       path: "../02_PRD/PRD-NN_{slug}.md"
       sections: ["§Y Functional Requirements"]
   
-  # Upstream links (REQUIRED) - Quick reference to source documents
-  upstream_links:
-    - artifact: "BRD-01"
-      path: "../01_BRD/BRD-NN_{slug}.md"
-      sections: ["§X Business Requirements"]
-    - artifact: "PRD-01"
-      path: "../02_PRD/PRD-NN_{slug}.md"
-      sections: ["§Y Functional Requirements"]
-
-# Threshold registry references (required when using @threshold)
-# MUST be at TOP LEVEL (not under traceability)
-threshold_references:
-  registry_document: "PRD-NN"
-  keys_used:
-    - perf.api.p95_latency
-    - timeout.request.sync
-
-# REQ implementations (required)
-# MUST be at TOP LEVEL (not under traceability)
-req_implementations:
-  - req_id: "REQ-NN"
-    req_link: "../07_REQ/..."
-    implementation: { interfaces, data_models, validation_rules, error_handling, test_approach }
+  # Threshold registry references (required when using @threshold)
+  # MUST be under traceability section
+  threshold_references:
+    registry_document: "PRD-NN"
+    keys_used:
+      - perf.api.p95_latency
+      - timeout.request.sync
+  
+  # REQ implementations (required)
+  # MUST be under traceability section  
+  req_implementations:
+    - req_id: "REQ-NN"
+      req_link: "../07_REQ/..."
+      implementation: { interfaces, data_models, validation_rules, error_handling, test_approach }
 
 # Architecture definition (REQUIRED subsections: overview, component_structure, element_ids)
 architecture:
@@ -217,101 +208,6 @@ operations: [...]
 > ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `STEP-XXX`, `INT-XXX`.
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
-
-### 4.2 ID Notation Standards: File Name vs Feature ID
-
-SPEC documents use **two distinct notation systems** depending on context:
-
-#### File Name Notation (Dash: `BRD-NN`, `SPEC-NN`)
-
-**Purpose**: Document-level references in filenames and links
-
-**Format**: `{TYPE}-{DOC_NUM}` (dash separator)
-
-**Usage**:
-- File names: `SPEC-01_external_api.yaml`, `BRD-01_business_requirements.md`
-- Document links: `"../01_BRD/BRD-01_business_requirements.md"`
-- Cumulative tags for document-level references: `adr: "ADR-05"`, `ctr: "CTR-03"`
-
-**Examples**:
-```yaml
-# In upstream_links
-upstream_links:
-  - artifact: "BRD-01"          # File name notation
-    path: "../01_BRD/BRD-01_business_requirements.md"
-  
-# In cumulative_tags for documents without sub-elements
-cumulative_tags:
-  adr: "ADR-05"                 # Document-level reference
-  ctr: "CTR-03"                 # Document-level reference
-```
-
-#### Feature ID Notation (Dot: `BRD.NN.EE.SS`)
-
-**Purpose**: Element-level references within documents (specific features, requirements, scenarios)
-
-**Format**: `{TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (dot separator)
-
-**Usage**:
-- Cumulative tags for element-level traceability
-- Referencing specific requirements, scenarios, or features within a document
-- Granular traceability from business requirement → product requirement → implementation
-
-**Element Type Codes**:
-| Code | Type | Example |
-|------|------|---------|
-| 01-99 | Varies by document | BRD.01.**01**.03 |
-| 13 | Test Scenario (BDD) | BDD.05.**13**.01 |
-| 15 | Step | SPEC.02.**15**.01 |
-| 16 | Interface | SPEC.02.**16**.01 |
-| 17 | Data Model | SPEC.02.**17**.01 |
-| 21 | Validation Rule | SPEC.02.**21**.01 |
-| 24 | EARS Statement | EARS.01.**24**.03 |
-| 25 | System Requirement | SYS.01.**25**.01 |
-| 26 | Atomic Requirement | REQ.15.**26**.01 |
-
-**Examples**:
-```yaml
-# In cumulative_tags for element-level references
-cumulative_tags:
-  brd: "BRD.01.01.03"          # Feature ID: BRD doc 01, element type 01, sequence 03
-  prd: "PRD.03.01.02"          # Feature ID: PRD doc 03, element type 01, sequence 02
-  bdd: "BDD.05.13.01"          # Feature ID: BDD doc 05, element type 13 (scenario), sequence 01
-  req: "REQ.15.26.01"          # Feature ID: REQ doc 15, element type 26 (atomic req), sequence 01
-```
-
-#### Quick Reference: When to Use Which Notation
-
-| Context | Notation | Example |
-|---------|----------|---------|
-| **File names** | Dash | `SPEC-01_api_client.yaml` |
-| **File paths** | Dash | `../02_PRD/PRD-03_product.md` |
-| **Document links** | Dash | `artifact: "BRD-01"` |
-| **cumulative_tags (document-level)** | Dash | `adr: "ADR-05"` |
-| **cumulative_tags (element-level)** | Dot | `brd: "BRD.01.01.03"` |
-| **Element IDs within SPEC** | Dot | `id: "SPEC.01.16.01"` |
-
-#### Common Mistake to Avoid
-
-```yaml
-# ❌ WRONG: Using dash notation for element-level references
-cumulative_tags:
-  brd: "BRD-01"               # This is file name notation, not element-level
-  prd: "PRD-03"               # Missing element type and sequence
-
-# ❌ WRONG: Using dot notation for file name references
-upstream_links:
-  - artifact: "BRD.01.01.03"  # Should be "BRD-01" for document reference
-
-# ✅ CORRECT: Appropriate notation for each context
-cumulative_tags:
-  brd: "BRD.01.01.03"         # Element-level (feature within BRD-01)
-  adr: "ADR-05"               # Document-level (ADR has no sub-elements)
-  
-upstream_links:
-  - artifact: "BRD-01"        # Document-level reference
-    path: "../01_BRD/BRD-01_business_requirements.md"
-```
 
 ---
 

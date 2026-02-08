@@ -1,0 +1,45 @@
+id: nested_example
+summary: Example component demonstrating nested SPEC layout (monolithic YAML + split Markdown).
+metadata:
+  version: "1.0.0"
+  status: draft
+  task_ready_score: "✅ 90% (Target: ≥90%)"
+  artifact_type: SPEC
+traceability:
+  upstream_sources: []  # e.g., REQ, ADR
+  downstream_artifacts: []  # e.g., TASKS
+  cumulative_tags:
+    - "@spec: SPEC-02"
+
+interfaces:
+  classes:
+    - name: ExampleService
+      methods:
+        - name: ping
+          params: { }
+          return: { type: string, description: "Simple health response" }
+      properties:
+        timeout_seconds: { type: integer, default: 5, minimum: 1, maximum: 60 }
+
+behavior:
+  ping:
+    semantics: "Returns static 'pong' for demonstration."
+
+performance:
+  latency:
+    p95_milliseconds: 50
+
+observability:
+  metrics:
+    - name: example_requests_total
+      type: counter
+      labels: [endpoint]
+
+implementation:
+  language: python
+  framework: fastapi
+  codegen:
+    language_targets: [python]
+    module_name: example_service
+    output_root: src/
+

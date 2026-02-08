@@ -168,25 +168,16 @@ spec_document:  # ❌ WRONG - wrapper key not allowed
 **Required Tag Chain**:
 ```yaml
 cumulative_tags:
-  # Feature ID notation (dot-separated): For element-level references within documents
-  brd: "BRD.NN.EE.SS"         # Feature ID: BRD doc NN, element type EE, sequence SS
-  prd: "PRD.NN.EE.SS"         # Feature ID: PRD doc NN, element type EE, sequence SS
-  ears: "EARS.NN.24.SS"       # Feature ID: EARS doc NN, element type 24 (EARS stmt), sequence SS
-  bdd: "BDD.NN.13.SS"         # Feature ID: BDD doc NN, element type 13 (scenario), sequence SS
-  sys: "SYS.NN.25.SS"         # Feature ID: SYS doc NN, element type 25 (sys req), sequence SS
-  req: "REQ.NN.26.SS"         # Feature ID: REQ doc NN, element type 26 (atomic req), sequence SS
-  
-  # File name notation (dash-separated): For document-level references
-  adr: "ADR-NN"               # Document reference: ADR-NN (no sub-elements)
-  ctr: "CTR-NN"               # Document reference: CTR-NN (optional, only if exists)
-  threshold: "PRD-NN"         # Document reference: PRD threshold registry
+  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  ears: "EARS.NN.EE.SS"       # Unified dot notation (or null if absent)
+  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  adr: "ADR-NN"               # Document-level reference (no sub-ID, or null if absent)
+  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  ctr: "CTR-NN"               # API Contract reference (or null if CTR file does not exist)
+  threshold: "PRD-NN"         # Threshold registry document reference (or null if registry not applicable)
 ```
-
-**Notation Reference**:
-- **Feature ID notation (dot)**: `TYPE.DOC_NUM.ELEM_TYPE.SEQ` - Use for elements within documents (brd, prd, ears, bdd, sys, req)
-- **File name notation (dash)**: `TYPE-DOC_NUM` - Use for document-level references (adr, ctr, threshold)
-- Use `null` only when the artifact type genuinely does not exist in the project
-- See SPEC_MVP_CREATION_RULES.md Section 4.2 for complete notation standards
 
 ### CHECK 5b: CTR Contract Validation (Conditional) ⭐ NEW
 

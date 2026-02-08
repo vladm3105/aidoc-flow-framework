@@ -1,459 +1,687 @@
-# SPEC-01: [EXTERNAL_API] Client Specification
-# This is a template example showing YAML specification format
-# Replace all [PLACEHOLDERS] with your project-specific values
+# SPEC-01: External API Client
+# Example specification following SPEC-MVP-TEMPLATE.yaml structure
+# This demonstrates a complete, compliant SPEC document
 
-component_name: "[COMPONENT_NAME - e.g., payment_gateway_client, weather_api_client]"
-component_type: "service"  # service | agent | library | infrastructure | ml_model
-version: "1.0.0"
-status: "example"  # planning | development | testing | production
+id: external_api_client
+summary: HTTP client for external API integration with caching, rate limiting, and circuit breaker patterns
 
-# === TRACEABILITY ===
-requirements:
-  - "REQ-01"  # [EXTERNAL_API] Integration
-  - "REQ-02"  # Data Validation
-  - "REQ-XXX"  # [Additional requirements]
+# ===================
+# METADATA & DOCUMENT CONTROL
+# ===================
 
-adrs:
-  - "ADR-XXX"  # [External Integration Architecture]
-  - "ADR-YYY"  # [API Client Patterns]
-
-bdd_scenarios:
-  - "[FEATURE_FILE.feature - e.g., api_integration.feature]"
-  - "[FEATURE_FILE.feature - e.g., error_handling.feature]"
-
-business_logic_source:
-  - "[DOCUMENT_PATH - e.g., product_strategy/external_integrations.md::section 3.2]"
-  - "[DOCUMENT_PATH - e.g., business_requirements/api_strategy.md::section 2.1]"
-
-# === COMPONENT METADATA ===
 metadata:
-  owner: "[TEAM_NAME - e.g., Integration Team, Platform Team]"
-  repository: "[REPO_URL - e.g., github.com/org/repo]"
-  documentation: "[DOC_URL - e.g., docs.example.com/api-client]"
-  support_channel: "[CHANNEL - e.g., #team-integrations slack channel]"
+  version: "1.0.0"
+  status: "draft"
+  created_date: "2026-02-08"
+  last_updated: "2026-02-08"
+  task_ready_score: "✅ 95% (Target: ≥90%)"
+  authors:
+    - name: "Integration Team Lead"
+      email: "integration@company.com"
+      role: "Technical Lead"
+  reviewers:
+    - name: "Architecture Team"
+      email: "architecture@company.com"
+      role: "Architecture Review"
+  owners:
+    - team: "Platform Integration Team"
+      contact: "platform@company.com"
+      slack: "#platform-integrations"
 
-# === DEPENDENCIES ===
-dependencies:
-  external:
-    - name: "[LIBRARY_NAME - e.g., requests, axios, http client lib]"
-      version: "[VERSION - e.g., ^2.28.0]"
-      purpose: "HTTP client for API calls"
+# ===================
+# TRACEABILITY
+# ===================
 
-    - name: "[LIBRARY_NAME - e.g., pydantic, joi, json-schema]"
-      version: "[VERSION]"
-      purpose: "Request/response validation"
+traceability:
+  upstream_sources:
+    business_requirements:
+      - id: "BRD-01"
+        link: "../01_BRD/BRD-01_platform_integration.md"
+        title: "Platform Integration Strategy"
+        relevant_sections: ["2.3", "4.1"]
+        relationship: "Business objectives driving external API integration"
+        context: "Need for reliable third-party service connectivity"
 
-    - name: "[LIBRARY_NAME - e.g., tenacity, retry, resilience4j]"
-      version: "[VERSION]"
-      purpose: "Retry logic with exponential backoff"
+    product_requirements:
+      - id: "PRD-03"
+        link: "../02_PRD/PRD-03_api_gateway.md"
+        title: "API Gateway Product Requirements"
+        relevant_sections: ["3.2 External Integrations"]
+        relationship: "Product features for external API management"
+        context: "Unified interface for external service calls"
 
-  internal:
-    - component: "[COMPONENT - e.g., logging_service]"
-      interface: "[INTERFACE - e.g., CTR-XXX_logging_api.yaml]"
-      purpose: "Structured logging and correlation tracking"
+    system_requirements:
+      - id: "SYS-02"
+        link: "../06_SYS/SYS-02_integration_layer.md"
+        title: "Integration Layer Architecture"
+        relevant_sections: ["2.1 Service Boundaries"]
+        relationship: "System-level integration specifications"
+        context: "Resilient external service communication"
 
-    - component: "[COMPONENT - e.g., metrics_service]"
-      interface: "[INTERFACE - e.g., CTR-YYY_metrics_api.yaml]"
-      purpose: "Performance metrics and monitoring"
+    architecture_decisions:
+      - id: "ADR-05"
+        link: "../05_ADR/ADR-05_circuit_breaker_pattern.md"
+        title: "Circuit Breaker Pattern Adoption"
+        relevant_sections: ["Decision", "Implementation"]
+        relationship: "Architectural approach for resilience"
+        context: "Fail-fast pattern for external service failures"
 
-    - component: "[COMPONENT - e.g., config_service]"
-      interface: "[INTERFACE - e.g., CTR-ZZZ_config_api.yaml]"
-      purpose: "Dynamic configuration management"
+    contracts:
+      - id: "CTR-03"
+        link: "../08_CTR/CTR-03_external_api_contract.md"
+        schema: "../08_CTR/CTR-03_external_api_contract.yaml"
+        title: "External API Contract"
+        relevant_sections: ["Request Schema", "Response Schema", "Error Codes"]
+        relationship: "Interface contract for external API"
+        context: "REST API endpoints specification"
 
-# === CONFIGURATION ===
-configuration:
-  environment_variables:
-    - name: "[API_BASE_URL - e.g., PAYMENT_API_URL]"
-      type: "string"
-      required: true
-      default: "[DEFAULT - e.g., https://api.example.com/v1]"
-      description: "Base URL for [EXTERNAL_API]"
+    atomic_requirements:
+      - id: "REQ-15"
+        link: "../07_REQ/SYS-02_integration/REQ-15_api_client.md"
+        title: "API Client Requirements"
+        relevant_sections: ["Acceptance Criteria"]
+        relationship: "Core requirement for API client implementation"
+        context: "HTTP client with resilience patterns"
 
-    - name: "[API_KEY_REF - e.g., PAYMENT_API_KEY]"
-      type: "Secret"
-      required: true
-      Secret_path: "[PATH - e.g., ${vault:api/credentials#api_key}]"
-      description: "Authentication credential"
+      - id: "REQ-16"
+        link: "../07_REQ/SYS-02_integration/REQ-16_rate_limiting.md"
+        title: "Rate Limiting Requirements"
+        relevant_sections: ["Constraints"]
+        relationship: "Rate limiting compliance requirement"
+        context: "External API rate limit adherence"
 
-    - name: "[TIMEOUT_MS - e.g., API_TIMEOUT_MS]"
-      type: "integer"
-      required: false
-      default: 5000
-      validation:
-        minimum: 1000
-        maximum: 30000
-      description: "Request timeout in milliseconds"
+  upstream_links:
+    - artifact: "BRD-01"
+      path: "../01_BRD/BRD-01_platform_integration.md"
+      sections: ["§2.3 Integration Strategy"]
+    - artifact: "PRD-03"
+      path: "../02_PRD/PRD-03_api_gateway.md"
+      sections: ["§3.2 External Integrations"]
+    - artifact: "SYS-02"
+      path: "../06_SYS/SYS-02_integration_layer.md"
+      sections: ["§2.1 Service Boundaries"]
+    - artifact: "CTR-03"
+      path: "../08_CTR/CTR-03_external_api_contract.md"
+      sections: ["§4 Error Handling"]
 
-    - name: "[MAX_RETRIES - e.g., API_MAX_RETRIES]"
-      type: "integer"
-      required: false
-      default: 3
-      validation:
-        minimum: 0
-        maximum: 10
-      description: "Maximum retry attempts for failed requests"
+  downstream_artifacts:
+    behavioral_tests:
+      - id: "BDD-05"
+        link: "../04_BDD/BDD-05_api_client/BDD-05.01_api_operations.feature"
+        title: "Feature: API Client Operations"
+        scenarios:
+          - name: "Successful API call with caching"
+            line_ref: "#L12"
+            spec_coverage: ["interfaces.external_apis", "caching"]
+          - name: "Circuit breaker opens on failure"
+            line_ref: "#L34"
+            spec_coverage: ["circuit_breaker"]
+        relationship: "BDD scenarios validating this SPEC"
+        coverage_percentage: 100
 
-  config_file:
-    path: "[PATH - e.g., config/api_client.yaml]"
-    format: "yaml"
-    schema:
-      rate_limiting:
-        requests_per_minute: "[LIMIT - e.g., 100]"
-        burst_size: "[BURST - e.g., 20]"
+    implementation:
+      primary_code:
+        - path: "src/integrations/external_api_client.py"
+          description: "Core API client implementation"
+          spec_sections: ["interfaces", "behavior", "caching"]
 
-      circuit_breaker:
-        failure_threshold: "[THRESHOLD - e.g., 5]"
-        timeout_seconds: "[TIMEOUT - e.g., 30]"
-        half_open_requests: "[COUNT - e.g., 3]"
+      tests:
+        unit_tests:
+          - path: "tests/unit/integrations/test_external_api_client.py"
+            description: "Unit tests for API client"
+            coverage_target: ">=85%"
+            spec_sections: ["verification.unit_tests"]
+        integration_tests:
+          - path: "tests/integration/integrations/test_api_workflows.py"
+            description: "Integration tests for API workflows"
+            coverage_target: ">=75%"
+            spec_sections: ["verification.integration_tests"]
 
-      retry_policy:
-        initial_delay_ms: 1000
-        max_delay_ms: 32000
-        multiplier: 2.0
-        retryable_status_codes: [408, 429, 500, 502, 503, 504]
+    implementation_tasks:
+      - id: "TASKS-08"
+        link: "../11_TASKS/TASKS-08_api_client_implementation.md"
+        title: "API Client Implementation Plan"
+        status: "pending"
+        spec_sections: ["interfaces", "behavior", "implementation"]
+        relationship: "Implementation tasks for this component"
 
-# === API SPECIFICATION ===
-api:
-  base_path: "/[PATH - e.g., api/v1]"
-  authentication:
-    type: "[TYPE - e.g., api_key, oauth2, bearer_token, mutual_tls]"
-    location: "[LOCATION - e.g., header, query_param]"
-    header_name: "[HEADER - e.g., X-API-Key, Authorization]"
+  cumulative_tags:
+    # File name notation (dash): BRD-NN, PRD-NN - for document-level references
+    # Feature ID notation (dot): BRD.NN.EE.SS - for element-level references within documents
+    brd: "BRD.01.01.03"      # Feature ID notation (element within BRD-01)
+    prd: "PRD.03.01.02"      # Feature ID notation
+    ears: "EARS.02.24.01"    # Feature ID notation
+    bdd: "BDD.05.13.01"      # Feature ID notation
+    adr: "ADR-05"            # Document-level (no sub-elements)
+    sys: "SYS.02.25.01"      # Feature ID notation
+    req: "REQ.15.26.01"      # Feature ID notation
+    ctr: "CTR-03"            # Document-level reference to CTR-03
+    threshold: "PRD-03"      # Document-level reference to threshold registry
 
-  endpoints:
-    - name: "[ENDPOINT_NAME - e.g., create_transaction]"
-      path: "/[PATH - e.g., transactions]"
-      method: "POST"
-      description: "[DESCRIPTION - e.g., Create new transaction]"
+  validation_evidence:
+    requirements_coverage:
+      total_requirements: 2
+      mapped_requirements: 2
+      coverage_percentage: 100
+      target_percentage: 100
+      unmapped_requirements: []
 
-      request:
-        content_type: "application/json"
-        schema:
-          type: "object"
-          required: ["[FIELD_1]", "[FIELD_2]"]
-          properties:
-            "[FIELD_1]":
-              type: "[TYPE - e.g., string, integer, object]"
-              description: "[DESCRIPTION]"
-              validation: "[RULES - e.g., min_length: 1, max_length: 255]"
-            "[FIELD_2]":
-              type: "[TYPE]"
-              description: "[DESCRIPTION]"
+same_type_references:
+  related_spec: ["SPEC-02"]
+  depends_spec: []
+  # Tags: @related-spec: SPEC-02 (Caching layer), @depends-spec: SPEC-NN
 
-      response:
-        success:
-          status_code: 201
-          content_type: "application/json"
-          schema:
-            type: "object"
-            properties:
-              id: { type: "string", format: "uuid" }
-              status: { type: "string", enum: ["pending", "completed", "failed"] }
-              created_at: { type: "string", format: "date-time" }
+# ===================
+# THRESHOLD REGISTRY REFERENCES
+# ===================
+# All quantitative values use @threshold references (no hardcoded numbers)
 
-        errors:
-          - status_code: 400
-            description: "Invalid request parameters"
-            schema:
-              error_code: "INVALID_REQUEST"
-              error_message: "string"
+threshold_references:
+  registry_document: "PRD-03"
+  format_reference: "../THRESHOLD_NAMING_RULES.md"
 
-          - status_code: 401
-            description: "Authentication failed"
-            schema:
-              error_code: "UNAUTHORIZED"
+  keys_used:
+    performance:
+      - key: "perf.api.p95_latency"
+        usage: "performance.latency_targets"
+      - key: "perf.api.p99_latency"
+        usage: "performance.latency_targets"
 
-          - status_code: 429
-            description: "Rate limit exceeded"
-            headers:
-              Retry-After: "integer (seconds)"
+    timeout:
+      - key: "timeout.request.sync"
+        usage: "behavior.request_processing"
+      - key: "timeout.connection.default"
+        usage: "architecture.dependencies"
 
-    - name: "[ENDPOINT_NAME - e.g., get_transaction_status]"
-      path: "/[PATH]/{transaction_id}"
+    limit:
+      - key: "limit.api.requests_per_minute"
+        usage: "rate_limiting.global_limits"
+      - key: "limit.api.burst"
+        usage: "rate_limiting.global_limits"
+
+# ===================
+# REQ IMPLEMENTATIONS
+# ===================
+
+req_implementations:
+  - req_id: "REQ-15"
+    req_link: "../07_REQ/SYS-02_integration/REQ-15_api_client.md"
+    implementation:
+      interfaces:
+        - class: "ExternalAPIClient"
+          method: "get"
+          signature: "async def get(self, endpoint: str, params: dict = None) -> APIResponse"
+          purpose: "Execute GET request with caching and retry logic"
+        - class: "ExternalAPIClient"
+          method: "post"
+          signature: "async def post(self, endpoint: str, data: dict) -> APIResponse"
+          purpose: "Execute POST request with request validation"
+
+      data_models:
+        - name: "APIResponse"
+          fields:
+            - name: "status_code"
+              type: "int"
+              constraints: "HTTP status code"
+            - name: "data"
+              type: "dict"
+              constraints: "Response body"
+            - name: "headers"
+              type: "dict"
+              constraints: "Response headers"
+
+      validation_rules:
+        - rule: "Endpoint URL Validation"
+          implementation: |
+            if not endpoint.startswith('/'):
+                raise ValidationError("Endpoint must start with /")
+
+      error_handling:
+        - error_code: "API_TIMEOUT"
+          condition: "Request exceeds timeout threshold"
+          http_status: 504
+          response_message: "Gateway timeout"
+
+      test_approach:
+        unit_tests:
+          - "Test successful GET request"
+          - "Test POST with JSON payload"
+          - "Test timeout handling"
+        integration_tests:
+          - "Test external API integration flow"
+
+  - req_id: "REQ-16"
+    req_link: "../07_REQ/SYS-02_integration/REQ-16_rate_limiting.md"
+    implementation:
+      interfaces:
+        - class: "RateLimiter"
+          method: "check_limit"
+          signature: "def check_limit(self, client_id: str) -> bool"
+          purpose: "Check if request is within rate limits"
+
+      validation_rules:
+        - rule: "Rate Limit Enforcement"
+          implementation: |
+            current_count = self.redis.incr(f"rate_limit:{client_id}")
+            if current_count > self.limit:
+                raise RateLimitExceeded()
+
+      test_approach:
+        unit_tests:
+          - "Test rate limit counter increment"
+          - "Test rate limit exceeded error"
+
+# ===================
+# COMPONENT ARCHITECTURE
+# ===================
+
+architecture:
+  overview: |
+    External API Client provides resilient HTTP communication with external services.
+    Built on aiohttp for async operations, with Redis-backed caching and circuit breaker
+    pattern for fault tolerance.
+    
+    Components: HTTP Client, Cache Manager, Rate Limiter, Circuit Breaker
+    Access Pattern: Async HTTP requests with automatic retries
+    Integration: Used by all services requiring external API calls
+
+  component_structure:
+    - name: "ExternalAPIClient"
+      responsibility: "Main client interface, request orchestration"
+      dependencies: ["CacheManager", "RateLimiter", "CircuitBreaker"]
+    - name: "CacheManager"
+      responsibility: "Redis-backed response caching with TTL"
+      dependencies: ["Redis Cluster"]
+    - name: "RateLimiter"
+      responsibility: "Token bucket rate limiting per client"
+      dependencies: ["Redis Cluster"]
+    - name: "CircuitBreaker"
+      responsibility: "Fail-fast pattern for external failures"
+      dependencies: []
+
+  element_ids:
+    - id: "SPEC.01.16.01"
+      type: "interface"
+      name: "GET /api/v1/resource"
+      description: "Retrieve resource with caching"
+    - id: "SPEC.01.16.02"
+      type: "interface"
+      name: "POST /api/v1/resource"
+      description: "Create new resource"
+    - id: "SPEC.01.17.01"
+      type: "data_model"
+      name: "APIResponse"
+      description: "Standard API response wrapper"
+    - id: "SPEC.01.21.01"
+      type: "validation_rule"
+      name: "URL Path Validation"
+      description: "Validate endpoint path format"
+
+  pattern: "service"
+  domain: "integration"
+  category: "client"
+  dependencies:
+    internal:
+      - name: "config_service"
+        interface: "ConfigProvider"
+        version: ">=1.0.0"
+        required: true
+    external:
+      - name: "external_payment_api"
+        interface: "REST API"
+        protocol: "https"
+        required: true
+        fallback_strategy: "cached_response"
+
+  scalability:
+    horizontal_scaling: true
+    stateless: true
+    shared_state_strategy: "redis"
+
+  resilience:
+    circuit_breaker_enabled: true
+    retry_policy:
+      max_attempts: 3
+      backoff_strategy: "exponential"
+      base_delay_ms: 1000
+      max_delay_ms: 30000
+    graceful_degradation: true
+
+# ===================
+# INTERFACE DEFINITIONS
+# ===================
+
+interfaces:
+  external_apis:
+    - endpoint: "GET /api/v1/resources/{id}"
       method: "GET"
-      description: "[DESCRIPTION]"
+      auth: "API Key"
+      rate_limit: "100 req/min"
+      request_schema:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            format: "uuid"
+      response_schema:
+        type: "object"
+        properties:
+          id: { type: "string" }
+          data: { type: "object" }
+          cached: { type: "boolean" }
+      latency_target: "@threshold: PRD.03.perf.api.p95_latency"
 
-      parameters:
-        - name: "transaction_id"
-          in: "path"
-          required: true
-          type: "string"
-          format: "uuid"
+    - endpoint: "POST /api/v1/resources"
+      method: "POST"
+      auth: "API Key"
+      rate_limit: "50 req/min"
+      request_schema:
+        type: "object"
+        required: ["name", "value"]
+        properties:
+          name: { type: "string", minLength: 1 }
+          value: { type: "number" }
+      response_schema:
+        type: "object"
+        properties:
+          id: { type: "string" }
+          status: { type: "string", enum: ["created", "pending"] }
+      latency_target: "@threshold: PRD.03.perf.api.p95_latency"
 
-      response:
-        success:
-          status_code: 200
-          schema:
-            type: "object"
-            properties:
-              id: { type: "string" }
-              status: { type: "string" }
-              updated_at: { type: "string", format: "date-time" }
+  internal_apis:
+    - interface: "ExternalAPIClient.get()"
+      signature: "async def get(self, endpoint: str, params: dict = None, use_cache: bool = True) -> APIResponse"
+      purpose: |
+        1. Check circuit breaker state - if OPEN, raise CircuitBreakerOpenError
+        2. If use_cache=True, check cache for existing response
+        3. Call rate limiter to check quota
+        4. Execute HTTP GET request with timeout
+        5. Cache successful response (TTL=300s)
+        6. Return APIResponse
 
-# === IMPLEMENTATION ===
-implementation:
-  language: "[LANGUAGE - e.g., Python, TypeScript, Java, Go]"
-  framework: "[FRAMEWORK - e.g., FastAPI, Express, Spring Boot]"
+    - interface: "ExternalAPIClient.post()"
+      signature: "async def post(self, endpoint: str, data: dict) -> APIResponse"
+      purpose: |
+        1. Validate request data schema
+        2. Check circuit breaker state
+        3. Execute HTTP POST request
+        4. Invalidate related cache entries on success
+        5. Return APIResponse
 
   classes:
-    - name: "[CLASS_NAME - e.g., ExternalAPIClient]"
-      type: "class"
-      responsibility: "Main client interface for [EXTERNAL_API]"
-
+    - name: "ExternalAPIClient"
+      description: "Main client for external API operations"
+      constructor:
+        params:
+          base_url:
+            type: string
+            required: true
+            description: "External API base URL"
+          api_key:
+            type: string
+            required: true
+            description: "API authentication key"
+          timeout_seconds:
+            type: integer
+            default: 30
+            description: "Request timeout"
       methods:
-        - name: "[METHOD_NAME - e.g., create_transaction]"
-          visibility: "public"
-          parameters:
-            - name: "[PARAM - e.g., transaction_data]"
-              type: "[TYPE - e.g., TransactionRequest]"
-              validation: "Pydantic model validation"
+        - name: "get"
+          description: "Execute GET request with caching"
+          input:
+            endpoint:
+              type: string
+              required: true
+            params:
+              type: object
+              required: false
+            use_cache:
+              type: boolean
+              default: true
+          output:
+            response:
+              type: APIResponse
+          errors:
+            CIRCUIT_OPEN: "Circuit breaker is open"
+            RATE_LIMITED: "Rate limit exceeded"
 
-          returns:
-            type: "[TYPE - e.g., TransactionResponse]"
-            description: "Transaction details with ID and status"
+        - name: "post"
+          description: "Execute POST request"
+          input:
+            endpoint:
+              type: string
+              required: true
+            data:
+              type: object
+              required: true
+          output:
+            response:
+              type: APIResponse
+          errors:
+            VALIDATION_ERROR: "Invalid request data"
 
-          raises:
-            - exception: "[EXCEPTION - e.g., APIAuthenticationError]"
-              condition: "Invalid or expired credentials"
-            - exception: "[EXCEPTION - e.g., APIRateLimitError]"
-              condition: "Rate limit exceeded"
-            - exception: "[EXCEPTION - e.g., APIServerError]"
-              condition: "Upstream server error (5xx)"
+# ===================
+# BEHAVIORAL SPECIFICATIONS
+# ===================
 
-          business_logic:
-            - "Validate request parameters using Pydantic"
-            - "Add authentication headers"
-            - "Send POST request to [EXTERNAL_API]"
-            - "Parse and validate response schema"
-            - "Log transaction ID for correlation"
-            - "Return typed response object"
+behavior:
+  lifecycle:
+    startup_sequence:
+      - validate_configuration
+      - establish_redis_connection
+      - initialize_circuit_breaker
+      - enable_request_processing
+    shutdown_sequence:
+      - stop_accepting_requests
+      - close_http_connections
+      - cleanup_resources
 
-        - name: "[METHOD_NAME - e.g., get_status]"
-          visibility: "public"
-          parameters:
-            - name: "transaction_id"
-              type: "str"
-          returns:
-            type: "[TYPE - e.g., TransactionStatus]"
-          business_logic:
-            - "Send GET request with transaction_id"
-            - "Handle 404 as TransactionNotFound"
-            - "Return status object"
+  state_management:
+    description: "Circuit breaker state machine"
+    states:
+      - CLOSED
+      - OPEN
+      - HALF_OPEN
+    transitions:
+      - from: "CLOSED"
+        to: "OPEN"
+        trigger: "failure_threshold_exceeded"
+        side_effects: ["log_state_change", "emit_metric"]
+      - from: "OPEN"
+        to: "HALF_OPEN"
+        trigger: "timeout_elapsed"
+        side_effects: ["allow_test_request"]
+      - from: "HALF_OPEN"
+        to: "CLOSED"
+        trigger: "test_request_success"
+        side_effects: ["reset_failure_count"]
+      - from: "HALF_OPEN"
+        to: "OPEN"
+        trigger: "test_request_failure"
+        side_effects: ["increment_failure_count"]
+    invariants:
+      - "failure_count <= max_failures OR state == OPEN"
 
-    - name: "[CLASS_NAME - e.g., RetryHandler]"
-      type: "class"
-      responsibility: "Implements retry logic with exponential backoff"
+  request_processing:
+    concurrency_model: "async"
+    max_concurrent_requests: 100
+    queue_strategy: "fifo"
+    timeout_handling:
+      request_timeout_seconds: "@threshold: PRD.03.timeout.request.sync"
+      connection_timeout_seconds: "@threshold: PRD.03.timeout.connection.default"
+    validation_strategy:
+      input_validation: "strict"
+      schema_validation: true
+    retry_strategy:
+      enabled: true
+      max_retries: 3
+      retryable_errors: ["TIMEOUT", "SERVICE_UNAVAILABLE"]
+      backoff_strategy: "exponential"
+      jitter_enabled: true
 
-      methods:
-        - name: "execute_with_retry"
-          parameters:
-            - name: "operation"
-              type: "Callable"
-            - name: "max_retries"
-              type: "int"
-          returns:
-            type: "Any"
-          business_logic:
-            - "Execute operation"
-            - "On failure, check if retryable (status code in config)"
-            - "Wait with exponential backoff: delay = base_delay * (multiplier ^ attempt)"
-            - "Retry up to max_retries times"
-            - "Raise exception if all retries exhausted"
+# ===================
+# CACHING STRATEGY
+# ===================
 
-    - name: "[CLASS_NAME - e.g., CircuitBreaker]"
-      type: "class"
-      responsibility: "Prevents cascading failures using circuit breaker pattern"
+caching:
+  enabled: true
+  strategy: "distributed"
+  policies:
+    api_response:
+      ttl_seconds: 300
+      max_entries: 10000
+      eviction_policy: "lru"
+    error_response:
+      ttl_seconds: 60
+      max_entries: 1000
+  layers:
+    - level: "distributed"
+      backend: "redis"
+      configuration:
+        host: "redis-cluster"
+        port: 6379
+        connection_pool_size: 20
+  cache_keys:
+    strategy: "hash_parameter_based"
+    include_parameters: ["endpoint", "params"]
+    exclude_parameters: ["correlation_id"]
+    hashing_algorithm: "sha256"
 
-      state:
-        - "CLOSED: Normal operation, requests pass through"
-        - "OPEN: Too many failures, requests fail fast"
-        - "HALF_OPEN: Testing if service recovered"
+# ===================
+# RATE LIMITING
+# ===================
 
-      methods:
-        - name: "call"
-          business_logic:
-            - "If OPEN and timeout not elapsed: raise CircuitBreakerOpenError"
-            - "If OPEN and timeout elapsed: transition to HALF_OPEN, allow limited requests"
-            - "If HALF_OPEN: execute request, on success transition to CLOSED, on failure return to OPEN"
-            - "If CLOSED: execute request, track failures, open circuit if threshold exceeded"
+rate_limiting:
+  enabled: true
+  strategy: "token_bucket"
+  global_limits:
+    requests_per_minute: "@threshold: PRD.03.limit.api.requests_per_minute"
+    burst_limit: "@threshold: PRD.03.limit.api.burst"
+  per_client_limits:
+    identified_users:
+      requests_per_minute: 60
+  enforcement:
+    rejection_strategy: "http_429"
+    retry_after_header: true
 
-# === ERROR HANDLING ===
-error_handling:
-  exception_hierarchy:
-    - name: "[BASE_EXCEPTION - e.g., APIClientError]"
-      description: "Base exception for all API client errors"
+# ===================
+# CIRCUIT BREAKER
+# ===================
 
-      subclasses:
-        - name: "[EXCEPTION - e.g., APIAuthenticationError]"
-          status_code: 401
-          retryable: false
-          action: "Refresh credentials and retry"
+circuit_breaker:
+  enabled: true
+  strategy: "time_based"
+  thresholds:
+    failure_percentage: 50
+    min_request_volume: 10
+    evaluation_window_seconds: 60
+  states:
+    closed:
+      name: "CLOSED"
+      behavior: "normal_operation"
+    open:
+      name: "OPEN"
+      behavior: "reject_all_requests"
+      wait_seconds: 30
+    half_open:
+      name: "HALF_OPEN"
+      behavior: "test_request_flow"
+      test_request_percentage: 10
 
-        - name: "[EXCEPTION - e.g., APIRateLimitError]"
-          status_code: 429
-          retryable: true
-          action: "Wait for Retry-After header duration"
+# ===================
+# PERFORMANCE SPECIFICATIONS
+# ===================
 
-        - name: "[EXCEPTION - e.g., APIServerError]"
-          status_code: 500-599
-          retryable: true
-          action: "Retry with exponential backoff"
-
-        - name: "[EXCEPTION - e.g., APITimeoutError]"
-          status_code: null
-          retryable: true
-          action: "Retry with increased timeout"
-
-        - name: "[EXCEPTION - e.g., APIValidationError]"
-          status_code: 400
-          retryable: false
-          action: "Fix request parameters"
-
-  logging:
-    - level: "INFO"
-      events: ["request_sent", "response_received"]
-      fields: ["correlation_id", "endpoint", "status_code", "latency_ms"]
-
-    - level: "WARNING"
-      events: ["retry_attempt", "circuit_breaker_opened"]
-      fields: ["attempt_number", "error_type", "next_retry_delay_ms"]
-
-    - level: "ERROR"
-      events: ["request_failed", "all_retries_exhausted"]
-      fields: ["error_message", "stack_trace", "request_body"]
-
-# === PERFORMANCE ===
 performance:
-  targets:
-    latency_p50_ms: "[TARGET - e.g., 200]"
-    latency_p95_ms: "[TARGET - e.g., 500]"
-    latency_p99_ms: "[TARGET - e.g., 1000]"
-    throughput_rps: "[TARGET - e.g., 100]"
+  latency_targets:
+    p50_milliseconds: 50
+    p95_milliseconds: "@threshold: PRD.03.perf.api.p95_latency"
+    p99_milliseconds: "@threshold: PRD.03.perf.api.p99_latency"
+  throughput_targets:
+    sustained_requests_per_second: 100
+  resource_limits:
+    cpu_cores_allocated: 1
+    memory_mb_allocated: 512
 
-  optimization:
-    - "Connection pooling: max [POOL_SIZE - e.g., 100] connections"
-    - "HTTP/2 multiplexing enabled"
-    - "Response caching for [CACHEABLE_ENDPOINTS]"
-    - "Request batching for bulk operations"
-    - "Compression: gzip/brotli for large payloads"
+# ===================
+# SECURITY SPECIFICATIONS
+# ===================
 
-  monitoring:
-    metrics:
-      - "api_requests_total (counter)"
-      - "api_request_duration_seconds (histogram)"
-      - "api_errors_total (counter by error_type)"
-      - "circuit_breaker_state (gauge)"
-      - "rate_limit_remaining (gauge)"
-
-# === TESTING ===
-testing:
-  unit_tests:
-    coverage_target: 95
-    frameworks: ["[FRAMEWORK - e.g., pytest, jest, junit]"]
-    focus_areas:
-      - "Request/response transformation"
-      - "Retry logic edge cases"
-      - "Circuit breaker state transitions"
-      - "Error handling and exception mapping"
-
-  integration_tests:
-    coverage_target: 85
-    approach: "Mock [EXTERNAL_API] using [TOOL - e.g., WireMock, nock, vcr]"
-    scenarios:
-      - "Successful request/response flow"
-      - "Authentication failure handling"
-      - "Rate limiting behavior"
-      - "Network timeout simulation"
-      - "Server error retry logic"
-
-  contract_tests:
-    tool: "[TOOL - e.g., Pact, Spring Cloud Contract]"
-    provider: "[EXTERNAL_API]"
-    consumer: "[YOUR_SERVICE]"
-    verification: "Ensure API schema compliance"
-
-  performance_tests:
-    tool: "[TOOL - e.g., Locust, k6, JMeter]"
-    scenarios:
-      - load: "[TPS] requests/second for [DURATION] minutes"
-      - stress: "Ramp up to [MAX_TPS] to find breaking point"
-      - spike: "Sudden [SPIKE_TPS] burst for [DURATION]"
-
-# === SECURITY ===
 security:
   authentication:
-    credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS Secrets Manager]"
-    rotation_policy: "[POLICY - e.g., Every 90 days]"
-    encryption: "TLS 1.3+ for all communication"
-
+    required: true
+    methods: ["api_key"]
+  authorization:
+    enabled: true
+    model: "api_key_based"
   input_validation:
-    - "Validate all request parameters using schema"
-    - "Sanitize user-provided data before sending to API"
-    - "Reject requests with invalid/malicious payloads"
+    strategy: "schema_based_validation"
+    sanitization_enabled: true
+  data_protection:
+    encryption_in_transit: true
+    sensitive_fields: ["api_key"]
 
-  output_validation:
-    - "Verify response schema matches expected format"
-    - "Detect and reject tampered responses"
-    - "Log suspicious response patterns"
+# ===================
+# OBSERVABILITY SPECIFICATIONS
+# ===================
 
-  audit:
-    - "Log all API calls with user context"
-    - "Retention: [PERIOD - e.g., 90 days]"
-    - "Immutable audit trail in [SYSTEM - e.g., Cloud Logging, Splunk]"
-
-# === DEPLOYMENT ===
-deployment:
-  containerization:
-    base_image: "[IMAGE - e.g., python:3.11-slim, node:18-alpine]"
-    registry: "[REGISTRY - e.g., gcr.io, docker.io]"
-
-  infrastructure:
-    platform: "[PLATFORM - e.g., Kubernetes, ECS, Cloud Run]"
-    scaling:
-      min_instances: "[MIN - e.g., 2]"
-      max_instances: "[MAX - e.g., 10]"
-      cpu_target: "[TARGET - e.g., 70%]"
-      memory_target: "[TARGET - e.g., 80%]"
-
+observability:
+  metrics:
+    standard_metrics:
+      - name: "api_requests_total"
+        type: "counter"
+        labels: ["method", "endpoint", "status_code"]
+      - name: "api_request_duration_seconds"
+        type: "histogram"
+        buckets: [0.1, 0.5, 1.0, 2.0, 5.0]
+  logging:
+    level: "INFO"
+    format: "json"
+    correlation_tracking_enabled: true
   health_checks:
-    liveness: "/health/live"
-    readiness: "/health/ready"
-    startup: "/health/startup"
+    enabled: true
+    endpoints:
+      - path: "/health/live"
+        description: "Liveness probe"
+      - path: "/health/ready"
+        description: "Readiness probe"
 
-  observability:
-    logging: "[SYSTEM - e.g., Cloud Logging, ELK Stack]"
-    metrics: "[SYSTEM - e.g., Prometheus, Datadog]"
-    tracing: "[SYSTEM - e.g., Jaeger, Cloud Trace]"
-    dashboards: "[TOOL - e.g., Grafana, Datadog]"
+# ===================
+# VERIFICATION & VALIDATION
+# ===================
 
-# === ACCEPTANCE CRITERIA (FROM BDD) ===
-acceptance_criteria:
-  - id: "SPEC.01.06.01"
-    scenario: "Successful API call"
-    given: "Valid authentication credentials"
-    when: "Client makes request to [ENDPOINT]"
-    then: "Response received within [TIMEOUT]ms with status 2xx"
+verification:
+  bdd_scenarios:
+    - "../04_BDD/BDD-05_api_client/BDD-05.01_api_operations.feature#L12"
+    - "../04_BDD/BDD-05_api_client/BDD-05.01_api_operations.feature#L34"
+  performance_tests:
+    - target_p95_latency_ms: "@threshold: PRD.03.perf.api.p95_latency"
+      test_scenario: "mixed_workload_100_rps"
+  integration_tests:
+    - dependencies_tested: ["redis", "external_api"]
+      test_coverage_min_percent: 85
 
-  - id: "SPEC.01.06.02"
-    scenario: "Rate limit handling"
-    given: "Rate limit is reached"
-    when: "Client makes additional request"
-    then: "Request is queued/rejected with appropriate error"
+# ===================
+# IMPLEMENTATION SPECIFICS
+# ===================
 
-  - id: "SPEC.01.06.03"
-    scenario: "Circuit breaker activation"
-    given: "[THRESHOLD] consecutive failures"
-    when: "Circuit breaker opens"
-    then: "Subsequent requests fail fast for [TIMEOUT] seconds"
-
-# === MIGRATION PLAN (if applicable) ===
-migration:
-  from: "[OLD_SYSTEM - e.g., Legacy SOAP client]"
-  to: "[NEW_SYSTEM - e.g., REST API client]"
-  strategy: "[STRATEGY - e.g., Parallel run, Feature flag, Blue-green]"
-  rollback_plan: "[PLAN]"
-
----
-# Example Usage Notes:
-# This is a template specification. Replace all [PLACEHOLDERS] with your actual values.
-# Use this YAML as input to code generation tools (see index.md#traceability-flow).
+implementation:
+  language: "python"
+  framework: "aiohttp"
+  module_path: "src/integrations/external_api_client.py"
+  dependencies:
+    runtime:
+      - name: "aiohttp"
+        version: ">=3.8.0"
+      - name: "redis"
+        version: ">=4.5.0"
+    development:
+      - name: "pytest-asyncio"
+        version: ">=0.21.0"
+  environment_variables:
+    - name: "EXTERNAL_API_URL"
+      required: true
+      sensitive: false
+    - name: "EXTERNAL_API_KEY"
+      required: true
+      sensitive: true
