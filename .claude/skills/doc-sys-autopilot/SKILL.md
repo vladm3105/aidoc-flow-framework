@@ -600,6 +600,9 @@ sys_autopilot:
     strict_mode: false
 
   execution:
+    max_parallel: 3        # HARD LIMIT - do not exceed
+    chunk_size: 3          # Documents per chunk
+    pause_between_chunks: true
     auto_fix: true
     continue_on_error: false
     timeout_per_adr: 180  # seconds

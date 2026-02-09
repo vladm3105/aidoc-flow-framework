@@ -461,6 +461,9 @@ brds:
 
 execution:
   parallel: true
+  max_parallel: 3        # HARD LIMIT - do not exceed
+  chunk_size: 3          # Documents per chunk
+  pause_between_chunks: true
   max_workers: 2
   fail_fast: false
 ```

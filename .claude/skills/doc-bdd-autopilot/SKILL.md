@@ -748,6 +748,9 @@ bdd_autopilot:
     strict_mode: false
 
   execution:
+    max_parallel: 3        # HARD LIMIT - do not exceed
+    chunk_size: 3          # Documents per chunk
+    pause_between_chunks: true
     auto_fix: true
     continue_on_error: false
     timeout_per_ears: 300  # seconds
@@ -789,6 +792,50 @@ bdd_autopilot:
 | `--dry-run` | false | Preview execution plan only |
 | `--skip-review` | false | Skip final review phase |
 | `--all-categories` | true | Require all 8 scenario categories |
+
+---
+
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group EARS documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all BDDs in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/5: Processing EARS-04, EARS-05, EARS-06")
+
+**Execution Pattern**:
+
+```text
+EARS: EARS-01, EARS-02, EARS-03, EARS-04, EARS-05, EARS-06, EARS-07
+
+Chunk 1: [EARS-01, EARS-02, EARS-03] → Process → Summary → Pause
+Chunk 2: [EARS-04, EARS-05, EARS-06] → Process → Summary → Pause
+Chunk 3: [EARS-07]                    → Process → Summary → Complete
+```
+
+**Chunk Completion Summary Template**:
+
+```text
+Chunk N/M Complete:
+├── Generated: BDD-01, BDD-02, BDD-03
+├── ADR-Ready Scores: 94%, 92%, 91%
+├── Status: All validated
+└── Next: Continue with Chunk N+1? [Y/n]
+```
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
 
 ---
 

@@ -624,6 +624,9 @@ ears_autopilot:
     strict_mode: false
 
   execution:
+    max_parallel: 3        # HARD LIMIT - do not exceed
+    chunk_size: 3          # Documents per chunk
+    pause_between_chunks: true
     auto_fix: true
     continue_on_error: false
     timeout_per_prd: 300  # seconds
@@ -657,6 +660,50 @@ ears_autopilot:
 | `--dry-run` | false | Preview execution plan only |
 | `--output-format` | auto | Force monolithic or sectioned output |
 | `--skip-review` | false | Skip final review phase |
+
+---
+
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group PRD documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all EARS in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/5: Processing PRD-04, PRD-05, PRD-06")
+
+**Execution Pattern**:
+
+```text
+PRDs: PRD-01, PRD-02, PRD-03, PRD-04, PRD-05, PRD-06, PRD-07
+
+Chunk 1: [PRD-01, PRD-02, PRD-03] → Process → Summary → Pause
+Chunk 2: [PRD-04, PRD-05, PRD-06] → Process → Summary → Pause
+Chunk 3: [PRD-07]                  → Process → Summary → Complete
+```
+
+**Chunk Completion Summary Template**:
+
+```text
+Chunk N/M Complete:
+├── Generated: EARS-01, EARS-02, EARS-03
+├── BDD-Ready Scores: 94%, 92%, 91%
+├── Status: All validated
+└── Next: Continue with Chunk N+1? [Y/n]
+```
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
 
 ---
 

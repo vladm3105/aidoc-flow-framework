@@ -527,6 +527,54 @@ prd_autopilot:
 
 ---
 
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+1. **Chunk Formation**: Group documents into chunks of maximum 3 documents each
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/5: Processing BRD-04, BRD-05, BRD-06")
+
+**Execution Pattern**:
+```
+Documents: BRD-01, BRD-02, BRD-03, BRD-04, BRD-05, BRD-06, BRD-07
+
+Chunk 1: [BRD-01, BRD-02, BRD-03] → Process → Summary → Pause
+Chunk 2: [BRD-04, BRD-05, BRD-06] → Process → Summary → Pause
+Chunk 3: [BRD-07]                  → Process → Summary → Complete
+```
+
+**Chunk Completion Summary Template**:
+```
+Chunk N/M Complete:
+├── Generated: PRD-01, PRD-02, PRD-03
+├── EARS-Ready Scores: 94%, 92%, 91%
+├── Status: All validated
+└── Next: Continue with Chunk N+1? [Y/n]
+```
+
+**Why Chunking is Required**:
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
+
+**Configuration Override**:
+```yaml
+execution:
+  max_parallel: 3        # HARD LIMIT - do not exceed
+  chunk_size: 3          # Documents per chunk
+  pause_between_chunks: true
+```
+
+---
+
 ## Execution Modes
 
 ### Mode 1: Interactive (Default)

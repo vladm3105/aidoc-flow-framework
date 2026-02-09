@@ -607,6 +607,9 @@ adr_autopilot:
     strict_mode: false
 
   execution:
+    max_parallel: 3        # HARD LIMIT - do not exceed
+    chunk_size: 3          # Documents per chunk
+    pause_between_chunks: true
     auto_fix: true
     continue_on_error: false
     timeout_per_topic: 180  # seconds
@@ -636,6 +639,50 @@ adr_autopilot:
 | `--dry-run` | false | Preview execution plan only |
 | `--output-format` | auto | Force monolithic or sectioned output |
 | `--skip-na` | false | Skip N/A topics entirely |
+
+---
+
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group ADR topics into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all ADRs in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/3: Processing ADR-04, ADR-05, ADR-06")
+
+**Execution Pattern**:
+
+```text
+ADR Topics: ADR-01, ADR-02, ADR-03, ADR-04, ADR-05, ADR-06, ADR-07
+
+Chunk 1: [ADR-01, ADR-02, ADR-03] → Process → Summary → Pause
+Chunk 2: [ADR-04, ADR-05, ADR-06] → Process → Summary → Pause
+Chunk 3: [ADR-07]                  → Process → Summary → Complete
+```
+
+**Chunk Completion Summary Template**:
+
+```text
+Chunk N/M Complete:
+├── Generated: ADR-01, ADR-02, ADR-03
+├── SYS-Ready Scores: 94%, 92%, 91%
+├── Status: All validated
+└── Next: Continue with Chunk N+1? [Y/n]
+```
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
 
 ---
 
