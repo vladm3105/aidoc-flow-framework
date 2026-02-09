@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.0"
+  last_updated: "2026-02-09"
 ---
 
 # doc-adr-autopilot
@@ -164,6 +164,41 @@ grep -E "BRD\.[0-9]+\.32\.[0-9]+" docs/01_BRD/BRD-NN_*.md
 | 7.2.7 Technology Selection | BRD.NN.32.07 | Framework, language, tool choices |
 
 **Output**: ADR topic catalog with business drivers, constraints, and status.
+
+### Phase 1.5: Folder Structure Analysis (NEW in v2.0)
+
+Determine whether ADR should use flat file or nested folder structure.
+
+**Cardinality Detection**:
+
+| BRD Cardinality | ADR Structure | Example |
+|-----------------|---------------|---------|
+| 1-to-1 (single decision) | Flat file | `ADR-02_Session_Architecture.md` |
+| 1-to-many (multiple decisions) | Nested folder | `ADR-01_iam/ADR-01.01_jwt.md`, `ADR-01.02_mfa.md` |
+
+**Nested Folder Structure** (when >2 decisions per topic):
+
+```
+docs/05_ADR/
+├── ADR-00_Technology_Stack_Foundation.md     # Flat (foundation)
+├── ADR-01_iam/                                # Nested folder
+│   ├── ADR-01.00_index.md                     # Index file
+│   ├── ADR-01.01_jwt_authentication.md
+│   ├── ADR-01.02_4d_authorization.md
+│   └── ADR-01.03_mfa_integration.md
+├── ADR-02_Session_Memory_Architecture.md      # Flat (single topic)
+└── ADR-08_trading_intelligence/               # Nested folder
+    ├── ADR-08.00_index.md
+    ├── ADR-08.01_Agent_Orchestration.md
+    └── ADR-08.02_Risk_Management.md
+```
+
+**Detection Rules**:
+1. Count distinct decisions in BRD Section 7.2.X
+2. If >2 decisions → create nested folder with index
+3. If ≤2 decisions → create flat file
+
+---
 
 ### Phase 2: ADR Topic Identification
 
@@ -327,15 +362,75 @@ Generate ADR documents with Context-Decision-Consequences format.
 
 9. **Generate Remaining Sections**:
    - Section 6: Requirements Satisfied (link to BRD/PRD)
+   - **Section 7: MVP/Post-MVP Scope** (NEW in v2.0)
    - Section 8: Architecture Flow (Mermaid diagram REQUIRED)
    - Section 9: Implementation Assessment (complexity, dependencies)
    - Section 10: Impact Analysis
-   - Section 11: Verification Approach
+   - **Section 11: Risk Thresholds** (NEW in v2.0)
+   - Section 12: Verification Approach
    - Section 13: Security Considerations
-   - Section 14: Related Decisions
-   - Section 15: Implementation Notes
-   - Section 16: Traceability
-   - Section 17: References
+   - **Section 14: Circuit Breaker Recovery** (if applicable, NEW in v2.0)
+   - Section 15: Related Decisions
+   - Section 16: Implementation Notes
+   - Section 17: Traceability
+   - Section 18: References
+
+10. **Generate MVP/Post-MVP Scope Section** (Section 7 - NEW in v2.0):
+
+    ```markdown
+    ### 7.1 MVP Scope (Phase 1)
+
+    - Coordinator with basic intent classification
+    - Risk Agent with position size circuit breaker
+    - Execution Agent with IB order submission
+
+    ### 7.2 Post-MVP Scope (Phase 2+)
+
+    - Full multi-agent orchestration
+    - All 7 circuit breakers active
+    - Machine learning optimization
+    ```
+
+    **Validation**: Cross-check with parent PRD MVP scope for consistency.
+
+11. **Generate Risk Thresholds Section** (Section 11 - NEW in v2.0):
+
+    **Table 1: Risk Assessment**:
+    ```markdown
+    | Risk | Probability | Impact | Mitigation |
+    |------|-------------|--------|------------|
+    | Coordinator overload | Medium | High | Queue management, rate limiting |
+    | Database unavailable | Low | Critical | Redis fallback, circuit breaker |
+    ```
+
+    **Table 2: Risk Thresholds** (quantified parameters):
+    ```markdown
+    | Parameter | Value | Description |
+    |-----------|-------|-------------|
+    | `max_concurrent_requests` | 100 | Maximum simultaneous requests |
+    | `queue_max_size` | 500 | Maximum pending requests |
+    | `backpressure_threshold` | 80% | Queue utilization trigger |
+    ```
+
+12. **Generate Circuit Breaker Recovery Section** (Section 14 - if applicable, NEW in v2.0):
+
+    Only include if ADR mentions circuit breakers, rate limits, or control mechanisms.
+
+    **Table 1: Circuit Breaker Definitions**:
+    ```markdown
+    | Circuit Breaker | Trigger | Action | Recovery |
+    |-----------------|---------|--------|----------|
+    | CB-01: Rate Limit | >100 req/min | Block requests | Auto-reset after 1 min |
+    | CB-02: Error Rate | >5% errors | Degrade service | Manual reset |
+    ```
+
+    **Table 2: Reset Procedures**:
+    ```markdown
+    | Circuit Breaker | Authorization Level | Required Documentation | Cooldown Period |
+    |-----------------|---------------------|------------------------|-----------------|
+    | CB-01 (Rate Limit) | Auto | None | 60 seconds |
+    | CB-02 (Error Rate) | Operator | Incident review | 15 minutes |
+    ```
 
 10. **Add Cumulative Tags (Section 16)**:
 
@@ -831,8 +926,35 @@ jobs:
 
 ---
 
+## Validation Rules (v2.0)
+
+| Check | Requirement | Error Code |
+|-------|-------------|------------|
+| Folder Structure | Nested for >2 decisions per topic | ADR-E030 |
+| Visual Score | Emoji indicator (✅/🟡/❌) present | ADR-E031 |
+| Risk Thresholds | Quantified parameter table in Section 11 | ADR-E032 |
+| Circuit Breaker | Recovery table if CB mentioned | ADR-E033 |
+| MVP Scope | Section 7.1/7.2 present | ADR-E034 |
+| Traceability Format | Hierarchical dot notation (@brd:BRD.NN.TT.SS) | ADR-E035 |
+| Index File | ADR-NN.00_index.md for nested folders | ADR-E036 |
+
+---
+
+## SYS-Ready Score Display (v2.0)
+
+**Visual Status Indicators**:
+
+```markdown
+| **SYS-Ready Score** | ✅ 92% (Target: ≥90%) |  # Passing
+| **SYS-Ready Score** | 🟡 87% (Target: ≥90%) |  # Near threshold
+| **SYS-Ready Score** | ❌ 75% (Target: ≥90%) |  # Failing
+```
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Post-MVP Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-adr, doc-adr-validator, quality-advisor skills; Added BRD Section 7.2 to ADR mapping; Context-Decision-Consequences generation |

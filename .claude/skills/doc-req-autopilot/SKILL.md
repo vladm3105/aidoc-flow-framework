@@ -1,6 +1,6 @@
 ---
 name: doc-req-autopilot
-description: Automated REQ generation from SYS requirements - decomposes system requirements into atomic units with SPEC-Ready scoring
+description: Automated REQ generation from SYS requirements - decomposes system requirements into atomic files with SPEC-Ready scoring
 tags:
   - sdd-workflow
   - layer-7-artifact
@@ -15,21 +15,23 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
   downstream_artifacts: [CTR, SPEC]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.0"
+  last_updated: "2026-02-09"
 ---
 
 # doc-req-autopilot
 
 ## Purpose
 
-Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS documents and generates implementation-ready requirements using REQ v3.0 format with 12 sections, dual readiness scoring (SPEC-Ready + IMPL-Ready), and cumulative traceability.
+Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS documents and decomposes them into **multiple atomic REQ files** (one per capability), using REQ v3.0 format with 12 sections, dual readiness scoring (SPEC-Ready + IMPL-Ready), and cumulative traceability.
 
 **Layer**: 7 (REQ Generation)
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6)
 
 **Downstream Artifacts**: CTR (Layer 9), SPEC (Layer 10)
+
+**Key Enhancement (v2.0)**: Based on Trading Nexus REQ layer analysis, this skill now generates **atomic file decomposition** (10-15 files per module) instead of monolithic REQ documents. See [Phase 1.5: Atomic Decomposition](#phase-15-atomic-decomposition-new-in-v20).
 
 ---
 
@@ -165,6 +167,76 @@ ls -la docs/SYS/
 ```
 
 **Output**: Requirement decomposition plan with atomic units, threshold references, and traceability links.
+
+### Phase 1.5: Atomic Decomposition (NEW in v2.0)
+
+Decompose SYS functional requirements into separate atomic REQ files.
+
+> **Reference**: Based on Trading Nexus project patterns (`/opt/data/trading_nexus_v4.2/Nexus_Platform_v4.2/docs/07_REQ/REQ-01_f1_iam/`)
+
+**Decomposition Strategy**:
+
+1. **One REQ File Per Capability**: Each SYS.NN.MM.SS functional requirement maps to one REQ-NN.MM file
+2. **Self-Contained Files**: Each file is complete with all 12 sections
+3. **Cross-Linked**: Files reference siblings via `@discoverability` tags
+
+**Output Structure Example** (for F1 IAM module):
+
+```
+docs/07_REQ/REQ-01_f1_iam/
+├── REQ-01.00_index.md                    # Index with capability matrix
+├── REQ-01.01_jwt_authentication.md       # SYS.01.01.01
+├── REQ-01.02_token_refresh_mechanism.md  # SYS.01.01.02
+├── REQ-01.03_token_revocation.md         # SYS.01.01.03
+├── REQ-01.04_session_binding.md          # SYS.01.01.04
+├── REQ-01.05_rbac_enforcement.md         # SYS.01.02.01
+├── REQ-01.06_4d_authorization_matrix.md  # SYS.01.02.02
+├── REQ-01.07_permission_inheritance.md   # SYS.01.02.03
+├── REQ-01.08_context_aware_access.md     # SYS.01.02.04
+├── REQ-01.09_mfa_integration.md          # SYS.01.03.01
+├── REQ-01.10_api_key_management.md       # SYS.01.03.02
+├── REQ-01.11_audit_logging.md            # SYS.01.04.01
+└── REQ-01.12_compliance_reporting.md     # SYS.01.04.02
+```
+
+**Decomposition Rules**:
+
+| Rule | Description |
+|------|-------------|
+| **File Naming** | `REQ-{module}.{sequence}_{capability_slug}.md` |
+| **Minimum Files** | ≥3 atomic files per SYS module (configurable) |
+| **Maximum Size** | 30KB per file (triggers additional split) |
+| **Index Required** | `REQ-NN.00_index.md` for navigation |
+| **Cross-Links** | Each file references related capabilities |
+
+**Index File Template** (`REQ-NN.00_index.md`):
+
+```markdown
+# REQ-01: F1 Identity & Access Management - Atomic Requirements Index
+
+## Capability Matrix
+
+| REQ ID | Capability | SYS Source | Priority | SPEC-Ready |
+|--------|------------|------------|----------|------------|
+| REQ-01.01 | JWT Authentication | SYS.01.01.01 | P1 | 94% |
+| REQ-01.02 | Token Refresh | SYS.01.01.02 | P1 | 92% |
+| REQ-01.03 | Token Revocation | SYS.01.01.03 | P1 | 91% |
+| ... | ... | ... | ... | ... |
+
+## Cross-Reference Matrix
+
+| REQ | Depends On | Discovered By |
+|-----|------------|---------------|
+| REQ-01.01 | - | REQ-01.02, REQ-01.11 |
+| REQ-01.02 | REQ-01.01 | REQ-01.03 |
+| REQ-01.06 | REQ-01.05, REQ-01.07, REQ-01.08 | REQ-01.11, REQ-01.12 |
+```
+
+**When NOT to Decompose** (use monolithic):
+
+- SYS module has ≤2 functional requirements
+- Total estimated REQ content < 20KB
+- `--monolithic` flag explicitly set
 
 ### Phase 2: REQ Readiness Check
 
@@ -305,17 +377,79 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    - Minimum 15 measurable criteria using REQ.NN.06.SS format
    - Categories: Primary Functional (5), Error/Edge Case (5), Quality/Constraint (3), Data Validation (2), Integration (3)
 
-   **Section 10: Verification Methods**
-   - BDD scenarios
-   - Unit test specifications
-   - Integration test specifications
-   - Contract test specifications
-   - Performance test specifications
+   **Section 8: Testing Requirements** (ENHANCED in v2.0)
+   - Unit tests with category prefixes (see below)
+   - Integration test checklist
+   - BDD scenario references
 
-   **Section 11: Traceability**
-   - Cumulative tags (6 required)
-   - Upstream source links
-   - Downstream artifact placeholders
+   **Unit Test Category Format** (NEW in v2.0):
+
+   | Category   | Prefix         | Description                     | Min Count |
+   |------------|----------------|---------------------------------|-----------|
+   | Logic      | `[Logic]`      | Core business logic tests       | 3         |
+   | Validation | `[Validation]` | Input validation tests          | 2         |
+   | State      | `[State]`      | State machine/transition tests  | 1         |
+   | Edge       | `[Edge]`       | Edge case and boundary tests    | 2         |
+   | Security   | `[Security]`   | Security-specific tests         | 1         |
+
+   **Example Unit Test Table**:
+
+   ```markdown
+   | Test Case                      | Input                  | Expected Output      | Coverage     |
+   |--------------------------------|------------------------|----------------------|--------------|
+   | **[Logic] Valid login**        | Valid email/password   | 200 with tokens      | REQ.01.01.01 |
+   | **[Validation] Invalid email** | "not-an-email"         | 400 INVALID_EMAIL    | REQ.01.21.01 |
+   | **[State] Locked account**     | Locked user            | 403 ACCOUNT_LOCKED   | REQ.01.27.01 |
+   | **[Edge] Rate limit boundary** | 5th attempt            | 200 OK (not blocked) | REQ.01.06.07 |
+   | **[Security] Missing token**   | No Authorization header| 401 Unauthorized     | REQ.01.02.02 |
+   ```
+
+   **Section 9: Acceptance Criteria** (ENHANCED in v2.0)
+   - Minimum 15 measurable criteria (split into subsections)
+   - 9.1 Functional Acceptance (≥10 criteria)
+   - 9.2 Quality Acceptance (≥5 criteria)
+   - Status checkbox for tracking
+
+   **Section 10: Traceability** (ENHANCED in v2.0)
+   - 10.1 Upstream Sources table
+   - 10.2 Downstream Artifacts table
+   - 10.3 Traceability Tags (6 required)
+   - 10.4 Traceability Matrix
+   - **10.5 Cross-Links (NEW)** - See below
+
+   **Section 10.5 Cross-Links Format** (NEW in v2.0):
+
+   ```markdown
+   ### 10.5 Cross-Links
+
+   @depends: REQ-NN.XX (direct dependency description)
+   @discoverability: REQ-NN.YY (interaction context); REQ-NN.ZZ (shared resource)
+   ```
+
+   **Example from Trading Nexus REQ-01.06**:
+
+   ```markdown
+   @discoverability: REQ-01.05 (role policies feed the matrix);
+                     REQ-01.07 (inheritance inputs drive matrix entries);
+                     REQ-01.08 (context dimensions align with matrix factors);
+                     REQ-01.11 (authz decisions must be audit-covered);
+                     REQ-01.12 (matrix outputs support compliance evidence)
+   ```
+
+   **Section 11: Implementation Notes** (ENHANCED in v2.0)
+   - 11.1 Technical Approach (specific patterns and libraries)
+   - 11.2 Code Implementation Paths (NEW - mandatory)
+   - 11.3 Dependencies table (NEW - mandatory)
+
+   **Section 11.2 Code Implementation Paths Format** (NEW):
+
+   ```markdown
+   ### 11.2 Code Implementation Paths
+
+   - **Primary**: `src/foundation/f1_iam/auth/jwt_auth.py`
+   - **Tests**: `tests/foundation/f1_iam/test_jwt_auth.py`
+   - **Integration**: `tests/integration/test_auth_endpoints.py`
+   ```
 
    **Section 12: Change History**
    - Version control table
@@ -385,19 +519,34 @@ python ai_dev_flow/scripts/validate_req.py docs/REQ/REQ-NN_{slug}.md --verbose
 
 **Validation Checks**:
 
-| Check | Requirement | Error Code |
-|-------|-------------|------------|
-| YAML Frontmatter | Valid metadata fields | REQ-E001 to REQ-E005 |
-| Section Structure | All 12 sections present | REQ-E006 |
-| Document Control | All 14 required fields | REQ-E009 |
-| Interface Specifications | Protocol/ABC definition | REQ-E010, REQ-E015 |
-| Data Schemas | JSON Schema or Pydantic | REQ-E011, REQ-E016 |
-| Error Handling | Exception catalog | REQ-E012, REQ-E017 |
-| Acceptance Criteria | >=15 criteria | REQ-E013, REQ-W002 |
-| Element ID Format | REQ.NN.TT.SS (4-segment) | REQ-E020 |
-| Cumulative Tags | 6 tags present | REQ-W003 |
-| SPEC-Ready Score | >= 90% | REQ-W001 |
-| IMPL-Ready Score | >= 90% | REQ-W001 |
+| Check                   | Requirement                        | Error Code             |
+|-------------------------|------------------------------------|-----------------------|
+| YAML Frontmatter        | Valid metadata fields              | REQ-E001 to REQ-E005  |
+| Section Structure       | All 12 sections present            | REQ-E006              |
+| Document Control        | All 14 required fields             | REQ-E009              |
+| Interface Specifications| Protocol/ABC definition            | REQ-E010, REQ-E015    |
+| Data Schemas            | JSON Schema or Pydantic            | REQ-E011, REQ-E016    |
+| Error Handling          | Exception catalog                  | REQ-E012, REQ-E017    |
+| Acceptance Criteria     | >=15 criteria                      | REQ-E013, REQ-W002    |
+| Element ID Format       | REQ.NN.TT.SS (4-segment)           | REQ-E020              |
+| Cumulative Tags         | 6 tags present                     | REQ-W003              |
+| SPEC-Ready Score        | >= 90%                             | REQ-W001              |
+| IMPL-Ready Score        | >= 90%                             | REQ-W001              |
+
+**NEW Validation Checks (v2.0)**:
+
+| Check                   | Requirement                        | Error Code  |
+|-------------------------|------------------------------------|-----------  |
+| Unit Test Categories    | All 5 categories present           | REQ-E025    |
+| Cross-Links Section     | Section 10.5 exists                | REQ-E026    |
+| Error Catalog Depth     | ≥5 error codes documented          | REQ-E027    |
+| Recovery Strategy       | Recovery table present             | REQ-E028    |
+| Code Paths              | Section 11.2 present               | REQ-E029    |
+| Acceptance Criteria Count| ≥15 total criteria                | REQ-E030    |
+| AC Split                | 9.1 Functional + 9.2 Quality       | REQ-E031    |
+| Atomic Decomposition    | ≥3 files if strategy=atomic        | REQ-E032    |
+| Dependencies Table      | Section 11.3 present               | REQ-E033    |
+| Index File              | REQ-NN.00_index.md exists          | REQ-E034    |
 
 **Auto-Fix Actions**:
 
@@ -590,7 +739,15 @@ python ai_dev_flow/scripts/req_autopilot.py \
 ```yaml
 # config/req_autopilot.yaml
 req_autopilot:
-  version: "1.0"
+  version: "2.0"
+
+  # NEW in v2.0: Atomic decomposition settings
+  decomposition:
+    strategy: atomic          # atomic | monolithic | auto
+    min_files: 3              # Minimum files for atomic decomposition
+    max_file_size_kb: 30      # Trigger additional split if exceeds
+    create_index: true        # Generate REQ-NN.00_index.md
+    require_cross_links: true # Mandate Section 10.5
 
   scoring:
     req_ready_min: 90
@@ -607,13 +764,19 @@ req_autopilot:
     timeout_per_sys: 300  # seconds
 
   output:
-    structure: auto  # auto, flat, domain-based, sectioned
-    size_threshold_kb: 50
+    structure: atomic  # atomic (default v2.0) | monolithic | auto
+    size_threshold_kb: 30
     report_format: markdown
 
   validation:
     skip_validation: false
     fix_iterations_max: 3
+    # NEW in v2.0: Enhanced validation rules
+    min_acceptance_criteria: 15
+    require_test_categories: true   # [Logic]/[Validation]/etc
+    require_error_catalog: true     # Full error table
+    require_recovery_strategy: true # Recovery table
+    require_code_paths: true        # Section 11.2 mandatory
 
   review:
     enabled: true
@@ -623,6 +786,9 @@ req_autopilot:
     check_atomicity: true
     auto_fix_sections: true
     min_acceptance_criteria: 15
+    # NEW in v2.0
+    check_cross_links: true
+    check_test_categories: true
 ```
 
 ### Command Line Options
@@ -924,6 +1090,7 @@ After autopilot completion:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-req, doc-req-validator, quality-advisor skills; Added REQ v3.0 12-section structure; Dual readiness scoring (SPEC-Ready + IMPL-Ready); 6 cumulative tags required (@brd, @prd, @ears, @bdd, @adr, @sys); Element ID types 01/05/06/27 |
+| Version | Date       | Changes |
+|---------|------------|---------|
+| 2.0     | 2026-02-09 | **Major Enhancement**: Added Phase 1.5 Atomic Decomposition based on Trading Nexus REQ layer analysis; New atomic file output (10-15 files per module); Enhanced Section 8 with unit test category prefixes ([Logic]/[Validation]/[State]/[Edge]/[Security]); New Section 10.5 Cross-Links with @discoverability tags; Enhanced Section 11 with mandatory Code Implementation Paths (11.2) and Dependencies table (11.3); Enhanced error catalog format with Recovery Strategy table; Minimum 15 acceptance criteria split into Functional (10+) and Quality (5+); New validation rules REQ-E025 through REQ-E032 |
+| 1.0     | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-req, doc-req-validator, quality-advisor skills; Added REQ v3.0 12-section structure; Dual readiness scoring (SPEC-Ready + IMPL-Ready); 6 cumulative tags required (@brd, @prd, @ears, @bdd, @adr, @sys); Element ID types 01/05/06/27 |

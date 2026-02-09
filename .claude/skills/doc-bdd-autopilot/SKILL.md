@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [ADR, SYS, REQ]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.0"
+  last_updated: "2026-02-09"
 ---
 
 # doc-bdd-autopilot
@@ -419,6 +419,12 @@ python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
 | ADR-Ready Score | >= 90% | BDD-W003 |
 | File Size | < 500 lines per .feature file | CHECK 9.4 |
 | Scenario Count | <= 12 per Feature block | CHECK 9.4 |
+| Scenario Type Tag | @scenario-type present on each scenario | BDD-E050 |
+| Priority Tag | @p0/@p1/@p2/@p3 present on each scenario | BDD-E051 |
+| Timing Constraint Format | WITHIN @threshold format for timed ops | BDD-E052 |
+| 5-Category Coverage | success, optional, recovery, parameterized, error | BDD-E053 |
+| Threshold Format | @threshold:PRD.NN.category.field syntax | BDD-E054 |
+| WITHIN Constraint | Required for performance scenarios | BDD-E055 |
 
 **Auto-Fix Actions**:
 
@@ -474,30 +480,42 @@ Comprehensive final review before marking BDD complete.
    - Edge cases for boundary conditions
    - Data-driven scenarios for parameterized tests
 
-5. **ADR-Ready Report**:
+5. **ADR-Ready Report** (v2.0 with Visual Indicators):
+
+   **Score Display Format**:
+   - ✅ >= 90% (Target Met)
+   - 🟡 85-89% (Near Threshold)
+   - ❌ < 85% (Failing)
 
    ```
    ADR-Ready Score Breakdown
    =========================
-   Scenario Completeness:      35/35
+   Scenario Completeness:      35/35 ✅
      EARS Translation:         15/15
      Success/Error/Edge:       15/15
      Observable Verification:  5/5
 
-   Testability:               30/30
+   Testability:               30/30 ✅
      Automatable Scenarios:   15/15
      Data-Driven Examples:    10/10
      Performance Benchmarks:  5/5
 
-   Architecture Requirements: 25/25
+   Architecture Requirements: 25/25 ✅
      Quality Attributes:      15/15
      Integration Points:      10/10
 
-   Business Validation:       10/10
+   Business Validation:       10/10 ✅
      Acceptance Criteria:     5/5
      Success Outcomes:        5/5
+
+   v2.0 Compliance:           (Bonus)
+     Scenario Type Tags:      ✅ All scenarios tagged
+     Priority Tags:           ✅ All scenarios prioritized
+     SHALL+WITHIN Language:   ✅ 15/15 timed scenarios
+     5-Category Coverage:     ✅ All 5 categories present
+     Threshold Format:        ✅ @threshold:PRD.NN format
    ----------------------------
-   Total ADR-Ready Score:     100/100 (Target: >= 90)
+   Total ADR-Ready Score:     ✅ 100/100 (Target: >= 90)
    Status: READY FOR ADR GENERATION
    ```
 
@@ -671,6 +689,120 @@ Scenario: Authentication service recovers from database failure
 
 ---
 
+## Enhanced Scenario Tagging (v2.0)
+
+### Scenario Type Classification
+
+All scenarios MUST include a `@scenario-type` tag for classification:
+
+| Tag | Purpose | Priority Default | Coverage Requirement |
+|-----|---------|------------------|---------------------|
+| `@scenario-type:success` | Primary happy path | @p0-critical | Required for all EARS event-driven |
+| `@scenario-type:optional` | Alternative workflows | @p2-medium | Optional parameters |
+| `@scenario-type:recovery` | Failure recovery | @p1-high | Resilience patterns |
+| `@scenario-type:parameterized` | Data-driven | @p2-medium | Multi-value validation |
+| `@scenario-type:error` | Negative cases | @p1-high | Error handling |
+
+### Priority Classification
+
+All scenarios MUST include a priority tag:
+
+| Tag | Definition | Impact |
+|-----|------------|--------|
+| `@p0-critical` | MVP blocking - must pass for release | Blocks deployment |
+| `@p1-high` | Sprint required - must pass within sprint | Sprint scope |
+| `@p2-medium` | Next iteration - important but deferrable | Next planning cycle |
+| `@p3-low` | Backlog - nice to have | Future consideration |
+
+### SHALL+WITHIN Language Pattern
+
+For timed operations, use formal EARS-derived language with WITHIN constraints:
+
+```gherkin
+@scenario-type:success @p0-critical
+Scenario: Authentication completes within performance threshold
+  Given user has valid credentials
+  When user submits authentication request
+  Then the system SHALL authenticate the user
+  And the response SHALL be returned WITHIN @threshold:PRD.01.perf.auth.p95_latency
+```
+
+**WITHIN Constraint Rules**:
+
+1. All performance-related scenarios MUST include WITHIN clauses
+2. WITHIN values MUST reference threshold registry (no hardcoded values)
+3. Format: `WITHIN @threshold:PRD.NN.category.field`
+
+### Enhanced Scenario Template
+
+```gherkin
+@section: NN.SS
+@parent_doc: BDD-NN
+@index: BDD-NN.0_index.md
+@brd:BRD.NN.01.SS
+@prd:PRD.NN.07.SS
+@ears:EARS.NN.25.SS
+
+Feature: BDD-NN.SS: [Feature Name]
+  As a [role]
+  I want [feature]
+  So that [benefit]
+
+  Background:
+    Given the system timezone is "America/New_York"
+    And the current time is "09:30:00" in "America/New_York"
+
+  @scenario-type:success @p0-critical @scenario-id:BDD.NN.14.01
+  Scenario: [Primary success path description]
+    Given [precondition from EARS WHEN clause]
+    When [action from EARS trigger]
+    Then the system SHALL [outcome from EARS SHALL clause]
+    And the response SHALL be returned WITHIN @threshold:PRD.NN.perf.api.p95_latency
+
+  @scenario-type:error @p1-high @scenario-id:BDD.NN.14.10
+  Scenario: [Error condition] results in [expected behavior]
+    Given [error precondition from EARS IF clause]
+    When [action that triggers error]
+    Then the system SHALL NOT [prevented behavior]
+    And error code "[ERROR_CODE]" SHALL be returned WITHIN @threshold:PRD.NN.timeout.error.response
+
+  @scenario-type:recovery @p1-high @scenario-id:BDD.NN.14.20
+  Scenario: System recovers from [failure type]
+    Given [failure condition]
+    When [recovery trigger]
+    Then the system SHALL recover WITHIN @threshold:PRD.NN.recovery.max_time
+    And circuit breaker state SHALL transition to "half-open"
+
+  @scenario-type:parameterized @p2-medium @scenario-id:BDD.NN.14.30
+  Scenario Outline: [Parameterized test description]
+    Given [context with <variable>]
+    When [action with <variable>]
+    Then the system SHALL [outcome with <expected>]
+
+    Examples:
+      | variable | expected |
+      | value1   | result1  |
+      | value2   | result2  |
+
+  @scenario-type:optional @p2-medium @scenario-id:BDD.NN.14.40
+  Scenario: [Alternative path with optional parameter]
+    Given [optional context]
+    When [alternative action]
+    Then the system SHALL [alternative outcome]
+```
+
+### 5-Category Coverage Matrix
+
+| Category | Minimum Scenarios | Priority Distribution |
+|----------|-------------------|----------------------|
+| Success | 1 per EARS event-driven | 100% @p0-critical or @p1-high |
+| Error | 1 per EARS unwanted behavior | 80% @p1-high, 20% @p2-medium |
+| Recovery | 1 per circuit breaker pattern | 100% @p1-high |
+| Parameterized | 1 per multi-value requirement | 50% @p1-high, 50% @p2-medium |
+| Optional | 1 per optional parameter | 100% @p2-medium or @p3-low |
+
+---
+
 ## Execution Modes
 
 ### Single EARS Mode
@@ -740,12 +872,17 @@ python ai_dev_flow/scripts/bdd_autopilot.py \
 ```yaml
 # config/bdd_autopilot.yaml
 bdd_autopilot:
-  version: "1.0"
+  version: "2.0"
 
   scoring:
     bdd_ready_min: 90
     adr_ready_min: 90
     strict_mode: false
+    # NEW: Visual score indicators
+    score_display:
+      pass_icon: "✅"      # >= 90%
+      warning_icon: "🟡"   # 85-89%
+      fail_icon: "❌"      # < 85%
 
   execution:
     max_parallel: 3        # HARD LIMIT - do not exceed
@@ -764,6 +901,11 @@ bdd_autopilot:
   validation:
     skip_validation: false
     fix_iterations_max: 3
+    # NEW: Enhanced validation checks
+    require_scenario_type_tags: true
+    require_priority_tags: true
+    require_within_constraints: true
+    require_5_category_coverage: true
 
   review:
     enabled: true
@@ -772,6 +914,8 @@ bdd_autopilot:
     check_coverage: true
     check_tags: true
     auto_fix_gherkin: true
+    # NEW: SHALL+WITHIN enforcement
+    check_timing_constraints: true
 
   coverage:
     require_success_paths: true
@@ -779,6 +923,35 @@ bdd_autopilot:
     require_edge_cases: true
     require_data_driven: true
     require_quality_attributes: true
+    # NEW: 5-Category Coverage
+    categories:
+      - success      # Primary happy path
+      - optional     # Alternative paths
+      - recovery     # Failure recovery
+      - parameterized # Data-driven
+      - error        # Negative cases
+
+  # NEW: Scenario Classification
+  scenario_classification:
+    type_tags:
+      - "@scenario-type:success"
+      - "@scenario-type:optional"
+      - "@scenario-type:recovery"
+      - "@scenario-type:parameterized"
+      - "@scenario-type:error"
+    priority_tags:
+      - "@p0-critical"  # MVP blocking
+      - "@p1-high"      # Sprint required
+      - "@p2-medium"    # Next iteration
+      - "@p3-low"       # Backlog
+
+  # NEW: Threshold Reference Format
+  threshold_format:
+    pattern: "@threshold:PRD.NN.category.field"
+    examples:
+      - "@threshold:PRD.01.perf.auth.p95_latency"
+      - "@threshold:PRD.01.timeout.session.idle"
+      - "@threshold:PRD.01.retry.max_attempts"
 ```
 
 ### Command Line Options
@@ -1075,4 +1248,5 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators (✅/🟡/❌); Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-bdd, doc-bdd-validator, quality-advisor skills; Added scenario category reference (8 categories); Added section-based structure requirements; Added Gherkin-native tag enforcement |

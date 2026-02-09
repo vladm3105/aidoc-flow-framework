@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.0"
+  last_updated: "2026-02-09"
 ---
 
 # doc-sys-autopilot
@@ -347,6 +347,166 @@ Generate SYS documents with functional requirements and quality attributes.
 10. **File Output**:
     - **Monolithic** (<25KB): `docs/SYS/SYS-NN_{slug}.md`
     - **Sectioned** (>=25KB): `docs/SYS/SYS-NN_{slug}/SYS-NN.S_{section}.md`
+    - **Modular** (v2.0): `docs/SYS/SYS-NN_{slug}/SYS-NN.MM_{capability}.md`
+
+---
+
+## Modular Splitting Pattern (v2.0)
+
+### Per-Capability Decomposition
+
+For complex SYS documents, split into atomic files per functional capability:
+
+```
+docs/06_SYS/SYS-01_f1_iam/
+├── SYS-01.00_index.md                    # Index with REQ-Ready score
+├── SYS-01.01_authentication.md           # Auth capabilities
+├── SYS-01.02_authorization.md            # Authz capabilities
+├── SYS-01.03_session_management.md       # Session handling
+├── SYS-01.04_audit_logging.md            # Audit requirements
+└── SYS-01.05_mfa_integration.md          # MFA requirements
+```
+
+### Modular File Structure
+
+Each modular SYS file contains:
+
+| Section | Content |
+|---------|---------|
+| Header | YAML frontmatter with parent reference |
+| Functional Requirements | Capability-specific FRs (SYS.NN.01.SS) |
+| Quality Attributes | Capability-specific QAs (SYS.NN.02.SS) |
+| Interface Specifications | APIs for this capability |
+| External Dependencies | Capability-specific dependencies |
+| Traceability | Capability-level tags |
+
+### Modular SYS Template
+
+```markdown
+---
+parent_doc: SYS-01
+capability_id: SYS-01.01
+capability_name: Authentication
+version: 1.0.0
+status: Draft
+---
+
+# SYS-01.01: Authentication
+
+## Functional Requirements
+
+| ID | Requirement | Priority | Source | Verification |
+|----|-------------|----------|--------|--------------|
+| SYS.01.01.01 | The system SHALL authenticate users via JWT | Must Have | ADR-01 | Integration Test |
+| SYS.01.01.02 | The system SHALL validate tokens within @threshold:PRD.01.perf.auth.p95_latency | Must Have | ADR-01 | Performance Test |
+
+## Quality Attributes
+
+| ID | Category | Attribute | Target | Measurement |
+|----|----------|-----------|--------|-------------|
+| SYS.01.02.01 | Performance | Auth latency | p95 < @threshold:PRD.01.perf.auth.p95_latency | APM |
+| SYS.01.02.02 | Reliability | Auth availability | @threshold:PRD.01.sla.auth.uptime | Uptime Monitor |
+
+## External Dependencies
+
+| Dependency | Type | Fallback Strategy | Timeout |
+|------------|------|-------------------|---------|
+| GCP Identity Platform | Infrastructure | Local JWT validation cache | @threshold:PRD.01.timeout.idp.max |
+| Redis Session Store | Data | In-memory session cache | @threshold:PRD.01.timeout.redis.max |
+
+## Traceability
+
+@brd: BRD.01.02.01
+@prd: PRD.01.07.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
+@adr: ADR-01
+```
+
+---
+
+## External Dependencies Table (v2.0)
+
+### Required Format
+
+All SYS documents MUST include an External Dependencies table with fallback strategy:
+
+| Column | Required | Description |
+|--------|----------|-------------|
+| Dependency | Yes | Service/system name |
+| Type | Yes | infrastructure/data/integration/security/observability |
+| Fallback Strategy | Yes | What happens when dependency fails |
+| Timeout | Yes | @threshold reference for timeout value |
+| Health Check | No | Health check endpoint/method |
+| Circuit Breaker | No | Circuit breaker configuration |
+
+### Example External Dependencies Table
+
+```markdown
+## External Dependencies
+
+| Dependency | Type | Fallback Strategy | Timeout | Health Check |
+|------------|------|-------------------|---------|--------------|
+| GCP Identity Platform | infrastructure | JWT validation cache; fallback to local auth | @threshold:PRD.01.timeout.idp.max | /health/ready |
+| Cloud SQL (PostgreSQL) | data | Read replica; local cache | @threshold:PRD.01.timeout.db.max | TCP check |
+| Redis Cache | data | In-memory cache; proceed without | @threshold:PRD.01.timeout.cache.max | PING |
+| Cloud Pub/Sub | integration | Retry with backoff; local queue | @threshold:PRD.01.timeout.pubsub.max | List topics |
+| Cloud Secret Manager | security | Cached secrets; fail-safe defaults | @threshold:PRD.01.timeout.secrets.max | Access check |
+| Cloud Monitoring | observability | Local metrics buffer; log to stdout | @threshold:PRD.01.timeout.monitoring.max | Write test |
+```
+
+### Fallback Strategy Guidelines
+
+| Dependency Type | Recommended Fallback Patterns |
+|-----------------|-------------------------------|
+| Authentication Provider | JWT cache, local validation, graceful degradation |
+| Database | Read replica, cache, retry with backoff |
+| Cache | In-memory cache, proceed without cache |
+| Message Queue | Local queue, retry with backoff, dead letter |
+| Secrets Manager | Cached secrets, environment variables |
+| Monitoring | Local buffer, stdout logging, fire-and-forget |
+
+---
+
+## 6-Category REQ-Ready Scoring (v2.0)
+
+### Scoring Breakdown
+
+| Category | Weight | Criteria |
+|----------|--------|----------|
+| Functional Decomposition | 25% | System boundaries, FR categories, dependencies |
+| Quality Attributes | 20% | All 6 QA categories with @threshold references |
+| Interface Specifications | 20% | External APIs, internal interfaces, protocols |
+| Data Management | 15% | Data schemas, storage requirements, migrations |
+| Testing Requirements | 10% | Test categories, coverage targets, test data |
+| Traceability | 10% | All 5 cumulative tags, ADR alignment |
+
+### Score Display Format
+
+```
+REQ-Ready Score: ✅ 94% (Target: ≥90%)
+
+Category Breakdown:
+├── Functional Decomposition:  24/25 ✅
+├── Quality Attributes:        20/20 ✅
+├── Interface Specifications:  18/20 🟡
+├── Data Management:           14/15 ✅
+├── Testing Requirements:       9/10 ✅
+└── Traceability:              10/10 ✅
+
+External Dependencies:
+├── Dependencies Documented:   ✅ 6/6
+├── Fallback Strategies:       ✅ 6/6
+└── Threshold References:      ✅ 12/12
+```
+
+### Visual Indicators
+
+| Icon | Score Range | Meaning |
+|------|-------------|---------|
+| ✅ | >= 90% | Target met |
+| 🟡 | 85-89% | Near threshold, review recommended |
+| ❌ | < 85% | Below threshold, must improve |
 
 ### Phase 4: SYS Validation
 
@@ -361,7 +521,7 @@ After SYS generation, validate structure and REQ-Ready score.
 python ai_dev_flow/scripts/validate_sys.py docs/SYS/SYS-NN_{slug}.md --verbose
 ```
 
-**Validation Checks** (8 Total):
+**Validation Checks** (14 Total for v2.0):
 
 | Check | Type | Description |
 |-------|------|-------------|
@@ -373,6 +533,12 @@ python ai_dev_flow/scripts/validate_sys.py docs/SYS/SYS-NN_{slug}.md --verbose
 | CHECK 6 | Warning | Interface Specifications (CTR-ready) |
 | CHECK 7 | Warning | Upstream Traceability |
 | CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+| SYS-E040 | Error | External Dependencies table present |
+| SYS-E041 | Error | Fallback Strategy column in dependencies |
+| SYS-E042 | Error | 6-Category REQ-Ready scoring breakdown |
+| SYS-E043 | Warning | Modular file structure (if >25KB) |
+| SYS-E044 | Error | @threshold references for all numeric values |
+| SYS-E045 | Warning | Health Check endpoints documented |
 
 **REQ-Ready Scoring Criteria (100%)**:
 
@@ -592,12 +758,25 @@ def handle_error(error_type: str, context: dict) -> Action:
 ```yaml
 # config/sys_autopilot.yaml
 sys_autopilot:
-  version: "1.0"
+  version: "2.0"
 
   scoring:
     sys_ready_min: 90  # ADR threshold
     req_ready_min: 90  # SYS output threshold
     strict_mode: false
+    # NEW: Visual score indicators
+    score_display:
+      pass_icon: "✅"      # >= 90%
+      warning_icon: "🟡"   # 85-89%
+      fail_icon: "❌"      # < 85%
+    # NEW: 6-category scoring weights
+    scoring_weights:
+      functional_decomposition: 25
+      quality_attributes: 20
+      interface_specifications: 20
+      data_management: 15
+      testing_requirements: 10
+      traceability: 10
 
   execution:
     max_parallel: 3        # HARD LIMIT - do not exceed
@@ -608,14 +787,23 @@ sys_autopilot:
     timeout_per_adr: 180  # seconds
 
   output:
-    structure: auto  # auto, monolithic, sectioned
+    structure: auto  # auto, monolithic, sectioned, modular
     size_threshold_kb: 25
     report_format: markdown
+    # NEW: Modular splitting options
+    modular_splitting:
+      enabled: true
+      strategy: per_capability  # per_capability, per_section
+      max_file_size_kb: 50
 
   validation:
     skip_validation: false
     fix_iterations_max: 3
     require_threshold_tags: true
+    # NEW: Enhanced validation checks
+    require_external_dependencies: true
+    require_fallback_strategy: true
+    require_6_category_coverage: true
 
   quality_attributes:
     require_performance: true
@@ -624,6 +812,17 @@ sys_autopilot:
     require_scalability: false
     require_observability: true
     require_maintainability: false
+
+  # NEW: External Dependencies Configuration
+  external_dependencies:
+    require_table: true
+    require_fallback: true
+    categories:
+      - infrastructure  # GCP, AWS, Azure
+      - data           # Databases, caches
+      - integration    # APIs, message queues
+      - security       # Identity providers
+      - observability  # Monitoring, logging
 ```
 
 ### Command Line Options
@@ -857,4 +1056,5 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-09 | Added modular splitting pattern with per-capability decomposition; Added External Dependencies table with fallback strategy requirement; Added 6-category REQ-Ready scoring with weighted breakdown; Added visual score indicators (✅/🟡/❌); Added validation rules SYS-E040 to SYS-E045 for new features; Added modular SYS template for atomic files; Added fallback strategy guidelines by dependency type |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-sys, doc-sys-validator, quality-advisor skills; Added ADR to SYS mapping; Functional requirements and quality attributes generation; REQ-Ready scoring |
