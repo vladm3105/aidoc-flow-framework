@@ -1,6 +1,26 @@
+---
+name: doc-ctr-validator
+description: Validate Data Contracts (CTR) documents against Layer 8 schema standards
+tags:
+  - sdd-workflow
+  - layer-8-artifact
+  - quality-assurance
+custom_fields:
+  layer: 8
+  artifact_type: CTR
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [CTR]
+  downstream_artifacts: []
+  version: "1.1"
+  last_updated: "2026-02-08"
+---
+
 # doc-ctr-validator
 
-Validate Data Contracts (CTR) documents against Layer 9 schema standards.
+Validate Data Contracts (CTR) documents against Layer 8 schema standards.
 
 ## Activation
 
@@ -9,7 +29,7 @@ Invoke when user requests validation of CTR documents or after creating/modifyin
 ## Validation Schema Reference
 
 Schema: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
-Layer: 9
+Layer: 8
 Artifact Type: CTR
 
 ## Validation Checklist
@@ -27,7 +47,7 @@ Required custom_fields:
 
 Required tags:
   - ctr (or ctr-template)
-  - layer-9-artifact
+  - layer-8-artifact
 
 Forbidden tag patterns:
   - "^ctr-document$"
@@ -111,7 +131,7 @@ Part 5: Traceability and Documentation
 
 ### 4. Traceability Validation
 
-**Layer 9 Cumulative Tags:**
+**Layer 8 Cumulative Tags:**
 - @brd: BRD.NN.EE.SS (required)
 - @prd: PRD.NN.EE.SS (required)
 - @ears: EARS.NN.EE.SS (required)
@@ -119,7 +139,6 @@ Part 5: Traceability and Documentation
 - @adr: ADR-NN (required)
 - @sys: SYS.NN.EE.SS (required)
 - @req: REQ.NN.EE.SS (required)
-- @impl: IMPL.NN.EE.SS (optional)
 
 **Downstream Expected:**
 - SPEC documents
@@ -135,7 +154,7 @@ Part 5: Traceability and Documentation
 | Code | Severity | Description |
 |------|----------|-------------|
 | CTR-E001 | error | Missing required tag 'ctr' |
-| CTR-E002 | error | Missing required tag 'layer-9-artifact' |
+| CTR-E002 | error | Missing required tag 'layer-8-artifact' |
 | CTR-E003 | error | Invalid document_type |
 | CTR-E004 | error | Invalid architecture_approaches format |
 | CTR-E005 | error | Forbidden tag pattern detected |
@@ -225,3 +244,19 @@ Info: N
 
 [Details listed by severity]
 ```
+
+## Related Resources
+
+- **CTR Skill**: `.claude/skills/doc-ctr/SKILL.md`
+- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
+- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
+- **CTR Schema**: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.1.0 | 2026-02-08 | Updated layer assignment from 9 to 8 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
+| 1.0.0 | 2025-01-15 | Initial validator skill definition | System |

@@ -1,3 +1,23 @@
+---
+name: doc-ears-validator
+description: Validate EARS (Easy Approach to Requirements Syntax) documents against Layer 3 schema standards
+tags:
+  - sdd-workflow
+  - layer-3-artifact
+  - quality-assurance
+custom_fields:
+  layer: 3
+  artifact_type: EARS
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [EARS]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-ears-validator
 
 Validate EARS (Easy Approach to Requirements Syntax) documents against Layer 3 schema standards.
@@ -188,3 +208,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

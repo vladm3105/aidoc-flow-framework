@@ -1,6 +1,26 @@
+---
+name: doc-spec-validator
+description: Validate Technical Specifications (SPEC) documents against Layer 9 schema standards
+tags:
+  - sdd-workflow
+  - layer-9-artifact
+  - quality-assurance
+custom_fields:
+  layer: 9
+  artifact_type: SPEC
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [SPEC]
+  downstream_artifacts: []
+  version: "1.1"
+  last_updated: "2026-02-08"
+---
+
 # doc-spec-validator
 
-Validate Technical Specifications (SPEC) documents against Layer 10 schema standards.
+Validate Technical Specifications (SPEC) documents against Layer 9 schema standards.
 
 ## Activation
 
@@ -9,7 +29,7 @@ Invoke when user requests validation of SPEC documents or after creating/modifyi
 ## Validation Schema Reference
 
 Schema: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
-Layer: 10
+Layer: 9
 Artifact Type: SPEC
 
 ## Validation Checklist
@@ -115,7 +135,7 @@ Optional fields:
 
 ### 8. Traceability Validation
 
-**Layer 10 Cumulative Tags:**
+**Layer 9 Cumulative Tags:**
 - @brd: BRD-NNN:XXX-NNN (required)
 - @prd: PRD-NNN:XXX-NNN (required)
 - @ears: EARS-NNN:NNN (required)
@@ -123,7 +143,6 @@ Optional fields:
 - @adr: ADR-NN (required)
 - @sys: SYS-NNN:XXX-NNN (required)
 - @req: REQ-NNN:feature-name (required)
-- @impl: IMPL-NNN:feature-name (optional)
 - @ctr: CTR-NNN (optional)
 
 **Downstream Expected:**
@@ -239,3 +258,19 @@ Info: N
 
 [Details listed by severity]
 ```
+
+## Related Resources
+
+- **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
+- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
+- **SPEC Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
+- **SPEC Schema**: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
+| 1.0.0 | 2025-01-15 | Initial validator skill definition | System |

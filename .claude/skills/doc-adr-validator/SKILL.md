@@ -1,3 +1,23 @@
+---
+name: doc-adr-validator
+description: Validate Architecture Decision Records (ADR) against Layer 5 schema standards
+tags:
+  - sdd-workflow
+  - layer-5-artifact
+  - quality-assurance
+custom_fields:
+  layer: 5
+  artifact_type: ADR
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [ADR]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-adr-validator
 
 Validate Architecture Decision Records (ADR) against Layer 5 schema standards.
@@ -206,3 +226,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

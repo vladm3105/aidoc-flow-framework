@@ -17,6 +17,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
   downstream_artifacts: []
+  version: "3.2"
+  last_updated: "2026-02-08"
 ---
 
 # doc-validator
@@ -401,27 +403,12 @@ Summary:
 
 ---
 
-## Version Information
+## Version History
 
-**Version**: 3.1.0
-**Last Updated**: 2025-12-29
-**Created**: 2025-11-01
-**Status**: Active
-
-**Change Log**:
-- 3.1.0 (2025-12-29): Updated layer validator references
-  - Changed from non-existent `doc-{type}-validator` skills to actual `{TYPE}_VALIDATION_RULES.md` files
-  - Added doc-naming skill reference for ID format validation
-  - Updated "Do NOT use" section with additional guidance
-- 3.0.0 (2025-12-20): Refactored to cross-document validation only
-  - Removed single-document validation (now in dedicated layer validators)
-  - Added references to 12 layer-specific validator skills
-  - Focused scope on cross-document relationships
-  - Updated workflow diagram for cross-document focus
-  - Streamlined error codes to XDOC, SEC, DIAG, TERM, COUNT, FWDREF
-  - Removed redundant single-document sections
-- 2.0.0 (2025-12-19): Complete overhaul
-  - Restructured following trace-check pattern
-  - Added [IMPLEMENTED]/[PLANNED] status markers
-  - Standardized error codes
-- 1.0.0 (2025-11-01): Initial release
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 3.2.0 | 2026-02-08 | Added YAML frontmatter version/last_updated fields; standardized Version History format | System |
+| 3.1.0 | 2025-12-29 | Updated layer validator references to `{TYPE}_VALIDATION_RULES.md` files; added doc-naming skill reference | System |
+| 3.0.0 | 2025-12-20 | Refactored to cross-document validation only; removed single-document validation | System |
+| 2.0.0 | 2025-12-19 | Complete overhaul; restructured following trace-check pattern; standardized error codes | System |
+| 1.0.0 | 2025-11-01 | Initial release | System |

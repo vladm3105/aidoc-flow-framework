@@ -1,32 +1,32 @@
 ---
 name: doc-ctr
-description: Create Data Contracts (CTR) - Optional Layer 9 artifact using dual-file format (.md + .yaml) for API/data contracts
+description: Create Data Contracts (CTR) - Optional Layer 8 artifact using dual-file format (.md + .yaml) for API/data contracts
 tags:
   - sdd-workflow
-  - layer-9-artifact
+  - layer-8-artifact
   - shared-architecture
 custom_fields:
-  layer: 9
+  layer: 8
   artifact_type: CTR
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL]
-  downstream_artifacts: [SPEC,TASKS,Code]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ]
+  downstream_artifacts: [SPEC,TSPEC,TASKS,Code]
 ---
 
 # doc-ctr
 
 ## Purpose
 
-Create **Data Contracts (CTR)** - Optional Layer 9 artifact in the SDD workflow that defines API contracts, data schemas, and interface specifications using dual-file format (markdown + YAML).
+Create **Data Contracts (CTR)** - Optional Layer 8 artifact in the SDD workflow that defines API contracts, data schemas, and interface specifications using dual-file format (markdown + YAML).
 
-**Layer**: 9 (Optional)
+**Layer**: 8 (Optional)
 
-**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7)
 
-**Downstream Artifacts**: SPEC (Layer 10), TASKS (Layer 11), Code (Layer 12)
+**Downstream Artifacts**: SPEC (Layer 9), TSPEC (Layer 10), TASKS (Layer 11), Code (Layer 12)
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ Create **Data Contracts (CTR)** - Optional Layer 9 artifact in the SDD workflow 
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/IMPL/ 2>/dev/null
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -77,7 +77,7 @@ Use `doc-ctr` when:
 - Multiple teams/services need shared contracts
 - Building microservices or distributed systems
 - REQ Section 3 (Interface Specifications) needs formal contract
-- This layer is **OPTIONAL** - skip if contracts are simple
+- This layer is **OPTIONAL** (Layer 8) - skip if contracts are simple
 
 ## CTR-Specific Guidance
 
@@ -439,9 +439,9 @@ Examples:
 
 ## Cumulative Tagging Requirements
 
-**Layer 9 (CTR)**: Must include tags from Layers 1-8 (BRD through IMPL)
+**Layer 8 (CTR)**: Must include tags from Layers 1-7 (BRD through REQ)
 
-**Tag Count**: 7-8 tags (7 if IMPL skipped, 8 if IMPL included)
+**Tag Count**: 7 tags
 
 **Element Type Codes for Cumulative Tags**:
 | Tag | Artifact | Element Type | Code |
@@ -453,25 +453,12 @@ Examples:
 | @adr | ADR | Document reference | (dash notation) |
 | @sys | SYS | System Requirement | 26 |
 | @req | REQ | Atomic Requirement | 27 |
-| @impl | IMPL | Implementation Phase | 29 |
 
-**Format** (if IMPL included):
+**Format**:
 ```markdown
 ## Traceability
 
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
-```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
-@adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.03
-@impl: IMPL.01.29.01
-```
-
-**Format** (if IMPL skipped):
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
@@ -492,13 +479,12 @@ Examples:
 - **ADR** (Layer 5) - Architecture decisions
 - **SYS** (Layer 6) - System requirements
 - **REQ** (Layer 7) - Atomic requirements (PRIMARY SOURCE - especially Section 3)
-- **IMPL** (Layer 8) - Implementation approach (optional)
 
 **Downstream Artifacts**:
-- **SPEC** (Layer 10) - Technical specifications
+- **SPEC** (Layer 9) - Technical specifications
+- **TSPEC** (Layer 10) - Test specifications
 - **TASKS** (Layer 11) - Task breakdown
 - **Code** (Layer 12) - Implementation code
-- **Tests** (Layer 13) - Test suites
 
 **Same-Type Document Relationships** (conditional):
 - `@related-ctr: CTR-NN` - CTRs sharing API context
@@ -705,7 +691,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
 
 | This Layer | Required Upstream Tags | Count |
 |------------|------------------------|-------|
-| CTR (Layer 9) | @brd, @prd, @ears, @bdd, @adr, @sys, @req (+ @impl if created) | 7-8 tags |
+| CTR (Layer 8) | @brd, @prd, @ears, @bdd, @adr, @sys, @req | 7 tags |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
@@ -737,11 +723,11 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
 
 After creating CTR (or skipping this optional layer), use:
 
-**`doc-spec`** - Create Technical Specifications (Layer 10)
+**`doc-spec`** - Create Technical Specifications (Layer 9)
 
 The SPEC will:
 - Reference CTR (if created) or REQ as upstream source
-- Include all 8-9 upstream tags
+- Include all 7-8 upstream tags
 - Use YAML format
 - Define implementation details
 - Achieve 100% implementation-readiness
@@ -764,6 +750,7 @@ For supplementary documentation related to CTR artifacts:
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **JSON Schema**: https://json-schema.org/
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
 
 **Section Templates** (for documents >25K tokens):
 - Index template: `ai_dev_flow/08_CTR/CTR-SECTION-0-TEMPLATE.md`
@@ -774,7 +761,7 @@ For supplementary documentation related to CTR artifacts:
 
 **CTR Purpose**: Define API contracts and data schemas
 
-**Layer**: 9 (Optional)
+**Layer**: 8 (Optional)
 
 **Element ID Format**: `CTR.NN.TT.SS`
 - Interface = 16
@@ -785,7 +772,7 @@ For supplementary documentation related to CTR artifacts:
 
 **Document Control Fields**: 9 required
 
-**Tags Required**: @brd through @req/impl (7-8 tags)
+**Tags Required**: @brd through @req (7 tags)
 
 **Format**: Dual-file (.md + .yaml)
 
@@ -809,3 +796,12 @@ For supplementary documentation related to CTR artifacts:
 **Optional**: Skip this layer if contracts are simple or embedded in REQ
 
 **Next**: doc-spec
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.1.0 | 2026-02-08 | Updated layer assignment from 9 to 8 per LAYER_REGISTRY v1.6; updated downstream artifacts (SPEC Layer 9, TSPEC Layer 10, TASKS Layer 11); removed IMPL from upstream | System |
+| 1.0.0 | 2025-01-15 | Initial skill definition | System |

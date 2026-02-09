@@ -15,7 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
-  version: "1.3"
+  version: "1.4"
 ---
 
 # doc-naming Skill
@@ -339,6 +339,8 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 ### BRD.02.23.01: Revenue Growth Objective
 ### BRD.02.09.01: User Onboarding Story
 ### BRD.02.10.01: Database Selection Decision
+### BRD.02.32.01: Infrastructure Architecture Topic
+### BRD.02.32.02: Data Architecture Topic
 @threshold: BRD.02.perf.response_time.max
 ```
 
@@ -532,7 +534,8 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.3.0 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
-| 1.2.0 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
-| 1.1.0 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
-| 1.0.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |
+| 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |
+| 1.3 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
+| 1.2 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
+| 1.1 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
+| 1.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |

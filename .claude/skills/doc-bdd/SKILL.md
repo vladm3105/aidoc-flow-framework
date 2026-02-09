@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [ADR, SYS, REQ]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-bdd
@@ -622,3 +624,11 @@ The ADR will:
 | **Time Format** | HH:MM:SS with IANA timezone |
 | **Quantitative Values** | Use `@threshold:PRD.NN.category.key` |
 | **Next Skill** | doc-adr |
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

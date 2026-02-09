@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD]
   downstream_artifacts: [BDD, ADR, SYS]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-ears
@@ -599,3 +601,11 @@ The BDD will:
 | **Downstream References** | Generic names only (no numeric IDs) |
 | **File Size Limit** | 600 lines maximum |
 | **Next Skill** | doc-bdd |
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

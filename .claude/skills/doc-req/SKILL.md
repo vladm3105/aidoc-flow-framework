@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS]
   downstream_artifacts: [IMPL,CTR,SPEC]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-req
@@ -609,3 +611,11 @@ For supplementary documentation needs, create:
 **File Size Limits**: >50KB use section files
 
 **Next**: doc-spec (or optionally doc-impl/doc-ctr first)
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

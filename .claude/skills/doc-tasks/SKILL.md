@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC]
   downstream_artifacts: [Code]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-tasks
@@ -668,3 +670,11 @@ For supplementary documentation needs, create:
 - Implementation Contracts (Section 8 - MANDATORY)
 
 **Next**: Implementation (Code → Tests → Validation)
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

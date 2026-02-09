@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ, Code]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-adr
@@ -545,3 +547,11 @@ The SYS will:
 **Critical**: Always check ADR-000 Technology Stack first
 
 **Next**: doc-sys
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

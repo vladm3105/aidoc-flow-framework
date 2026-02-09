@@ -1,32 +1,32 @@
 ---
 name: doc-spec
-description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
+description: Create Technical Specifications (SPEC) - Layer 9 artifact using YAML format for implementation-ready specifications
 tags:
   - sdd-workflow
-  - layer-10-artifact
+  - layer-9-artifact
   - shared-architecture
 custom_fields:
-  layer: 10
+  layer: 9
   artifact_type: SPEC
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR]
-  downstream_artifacts: [TASKS, Code]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR]
+  downstream_artifacts: [TSPEC, TASKS, Code]
 ---
 
 # doc-spec
 
 ## Purpose
 
-Create **Technical Specifications (SPEC)** - Layer 10 artifact in the SDD workflow that defines implementation-ready specifications in YAML format, providing complete technical details for code generation.
+Create **Technical Specifications (SPEC)** - Layer 9 artifact in the SDD workflow that defines implementation-ready specifications in YAML format, providing complete technical details for code generation.
 
-**Layer**: 10
+**Layer**: 9
 
-**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8), CTR (Layer 9)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), CTR (Layer 8 - optional)
 
-**Downstream Artifacts**: TASKS (Layer 11), Code (Layer 12)
+**Downstream Artifacts**: TSPEC (Layer 10), TASKS (Layer 11), Code (Layer 12)
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ Create **Technical Specifications (SPEC)** - Layer 10 artifact in the SDD workfl
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/IMPL/ docs/CTR/ 2>/dev/null
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/CTR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -77,7 +77,7 @@ Use `doc-spec` when:
 - Ready to create implementation-ready specifications
 - Preparing for code generation or implementation
 - Need complete technical details in structured format
-- You are at Layer 10 of the SDD workflow
+- You are at Layer 9 of the SDD workflow
 
 ## SPEC-Specific Guidance
 
@@ -107,8 +107,7 @@ cumulative_tags:
   adr: ["ADR-033", "ADR-045"]
   sys: ["SYS.01.26.01"]
   req: ["REQ.01.27.01"]
-  impl: ["IMPL.01.29.01"]  # optional
-  contracts: ["CTR-01"]  # optional
+  contracts: ["CTR-01"]  # optional - if Layer 8 created
 
 overview:
   purpose: "Define trade order validation service implementation"
@@ -372,10 +371,9 @@ rate_limit:
 | adr | ADR | Document reference | (dash notation) |
 | sys | SYS | System Requirement | 26 |
 | req | REQ | Atomic Requirement | 27 |
-| impl | IMPL | Implementation Phase | 29 |
 | contracts | CTR | Document reference | (dash notation) |
 
-**Format (maximum - IMPL and CTR included)**:
+**Format (maximum - CTR included)**:
 ```yaml
 cumulative_tags:
   brd: ["BRD.01.01.03", "BRD.01.01.05"]
@@ -385,11 +383,10 @@ cumulative_tags:
   adr: ["ADR-033", "ADR-045"]
   sys: ["SYS.01.26.01", "SYS.01.26.07"]
   req: ["REQ.01.27.01"]
-  impl: ["IMPL.01.29.01"]
   contracts: ["CTR-01"]
 ```
 
-**Format (minimum - IMPL and CTR skipped)**:
+**Format (minimum - CTR skipped)**:
 ```yaml
 cumulative_tags:
   brd: ["BRD.01.01.03"]
@@ -401,7 +398,7 @@ cumulative_tags:
   req: ["REQ.01.27.01"]
 ```
 
-**Tag Count**: 7-9 tags (minimum 7, maximum 9)
+**Tag Count**: 7-8 tags (minimum 7, maximum 8)
 
 ### 7. contract_ref Field
 
@@ -496,13 +493,12 @@ Examples:
 - **ADR** (Layer 5) - Architecture decisions
 - **SYS** (Layer 6) - System requirements
 - **REQ** (Layer 7) - Atomic requirements (PRIMARY SOURCE)
-- **IMPL** (Layer 8) - Implementation approach (optional)
-- **CTR** (Layer 9) - Data contracts (optional)
+- **CTR** (Layer 8) - Data contracts (optional)
 
 **Downstream Artifacts**:
+- **TSPEC** (Layer 10) - Test specifications
 - **TASKS** (Layer 11) - Task breakdown
 - **Code** (Layer 12) - Implementation code
-- **Tests** (Layer 13) - Test suites
 
 **Same-Type Document Relationships** (conditional):
 - `@related-spec: SPEC-NN` - SPECs sharing implementation context
@@ -689,7 +685,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 
 | This Layer | Required Upstream Tags | Count |
 |------------|------------------------|-------|
-| SPEC (Layer 10) | @brd, @prd, @ears, @bdd, @adr, @sys, @req (+ @impl, @ctr if created) | 7-9 tags |
+| SPEC (Layer 9) | @brd, @prd, @ears, @bdd, @adr, @sys, @req (+ @ctr if created) | 7-8 tags |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
@@ -725,7 +721,7 @@ After creating SPEC, use:
 
 The TASKS will:
 - Reference this SPEC as upstream source
-- Include all 8-10 upstream tags
+- Include all 8-9 upstream tags
 - Break SPEC into actionable tasks
 - Provide AI-structured TODO format
 
@@ -745,12 +741,13 @@ For supplementary documentation needs, create:
 - **SPEC Schema**: `ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml`
 - **SPEC README**: `ai_dev_flow/09_SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
 
 ## Quick Reference
 
 **SPEC Purpose**: Implementation-ready technical specifications
 
-**Layer**: 10
+**Layer**: 9
 
 **Element ID Format**: `SPEC.NN.TT.SS`
 - Step = 15
@@ -761,7 +758,7 @@ For supplementary documentation needs, create:
 
 **Removed Patterns**: STEP-XXX, IF-XXX, INT-XXX, DM-XXX, MODEL-XXX, VR-XXX
 
-**Tags Required**: @brd through @req/impl/contracts (7-9 tags)
+**Tags Required**: @brd through @req/contracts (7-8 tags)
 
 **Format**: Pure YAML (not markdown)
 
@@ -778,3 +775,12 @@ For supplementary documentation needs, create:
 **Quality Gate**: Must be 100% implementation-ready
 
 **Next**: doc-tasks
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; updated downstream artifacts (TSPEC Layer 10, TASKS Layer 11); removed IMPL from upstream; updated tag counts to 7-8 | System |
+| 1.0.0 | 2025-01-15 | Initial skill definition | System |

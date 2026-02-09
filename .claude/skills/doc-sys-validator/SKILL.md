@@ -1,3 +1,23 @@
+---
+name: doc-sys-validator
+description: Validate System Requirements (SYS) documents against Layer 6 schema standards
+tags:
+  - sdd-workflow
+  - layer-6-artifact
+  - quality-assurance
+custom_fields:
+  layer: 6
+  artifact_type: SYS
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [SYS]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-sys-validator
 
 Validate System Requirements (SYS) documents against Layer 6 schema standards.
@@ -195,3 +215,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

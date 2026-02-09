@@ -15,6 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
+  version: "2.1.1"
+  last_updated: "2026-02-08"
 ---
 
 # trace-check
@@ -1079,39 +1081,14 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 **Status**: Active
 **Author**: SDD Framework Team
 
-**Change Log**:
-- 2.1.1 (2025-12-15): Architecture Decision Topic format update
-  - **FORMAT CHANGE**: Updated ADT format from `BRD.NNN.NN` to `{DOC_TYPE}.NN.EE.SS`
-    - 3-digit topic number (001-999) for consistency with other IDs
-    - Generic doc type support (not BRD-specific)
-- 2.1.0 (2025-12-13): Architecture decision layer separation validation
-  - **NEW FEATURE**: Added Step 3.6 - Architecture Decision Topic validation
-    - Validates `{DOC_TYPE}.NN.EE.SS` subsection ID format (3-digit topic number)
-    - Cross-reference validation: BRD Section 7.2 → PRD Section 18 → ADR Section 4.1
-    - Content validation: Business-only in BRD, technical in PRD
-    - Layer separation principle enforcement
-  - **VALIDATION RULES**: Added content validation rules table
-  - **REGEX PATTERNS**: Added validation patterns for topic extraction
-- 2.0.1 (2025-11-13): Clarity improvements and CTR validation enhancement
-  - **NEW FEATURE**: Added Step 3.5 - CTR dual-file format validation (MANDATORY)
-    - Validates both .md and .yaml files exist for each CTR
-    - Verifies slug matching between filenames
-    - Validates YAML schema structure (OpenAPI/AsyncAPI/JSON Schema)
-    - Provides detailed error reporting for compliance issues
-  - **QUALITY GATE**: Added CTR dual-file compliance to Definition of Done checklist
-  - **CLARIFICATION**: Changed "12 layers" to "11 functional layers, 15+ artifact types" for accuracy
-  - **CLARIFICATION**: Renamed tag count table from "Layer" to "Artifact Type" to avoid confusion
-  - **CLARIFICATION**: Added note explaining that numbers indicate artifact sequence, not layer numbers
-  - **CONSISTENCY**: Updated all references from "layer validation" to "artifact type validation"
-- 2.0.0 (2025-11-13): Major update for SDD Framework v2.0
-  - Added cumulative tagging hierarchy validation (Step 2.6)
-  - Added artifact-type-specific tag count validation
-  - Updated artifact types: Added IMPL; clarified CTR as optional
-  - Updated workflow to 11-layer structure (aligned with TRACEABILITY.md v2.0)
-  - Added new validation parameter: validate_cumulative
-  - Added expected tag counts by artifact type (Artifact 0-15)
-  - Added cumulative tagging validation scenario (Scenario 5)
-  - Updated validation scripts with --validate-cumulative flag
-  - Enhanced error detection for cumulative tag chains
-  - Added regulatory compliance benefits documentation
-- 1.0.0 (2025-11-11): Initial release with full validation and auto-fix capabilities
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.1.1 | 2025-12-15 | Architecture Decision Topic format update: Updated ADT format from `BRD.NNN.NN` to `{DOC_TYPE}.NN.EE.SS` |
+| 2.1.0 | 2025-12-13 | Added Step 3.6 Architecture Decision Topic validation; cross-reference and content validation |
+| 2.0.1 | 2025-11-13 | Added Step 3.5 CTR dual-file format validation; clarity improvements |
+| 2.0.0 | 2025-11-13 | Major update: cumulative tagging hierarchy validation, 11-layer structure alignment |
+| 1.0.0 | 2025-11-11 | Initial release with full validation and auto-fix capabilities |

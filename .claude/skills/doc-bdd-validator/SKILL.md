@@ -1,3 +1,23 @@
+---
+name: doc-bdd-validator
+description: Validate Behavior-Driven Development (BDD) documents against Layer 4 schema standards
+tags:
+  - sdd-workflow
+  - layer-4-artifact
+  - quality-assurance
+custom_fields:
+  layer: 4
+  artifact_type: BDD
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [BDD]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-bdd-validator
 
 Validate Behavior-Driven Development (BDD) documents against Layer 4 schema standards.
@@ -213,3 +233,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

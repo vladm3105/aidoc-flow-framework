@@ -1,3 +1,23 @@
+---
+name: doc-tasks-validator
+description: Validate Task Breakdown (TASKS) documents against Layer 11 schema standards
+tags:
+  - sdd-workflow
+  - layer-11-artifact
+  - quality-assurance
+custom_fields:
+  layer: 11
+  artifact_type: TASKS
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [TASKS]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-tasks-validator
 
 Validate Task Breakdown (TASKS) documents against Layer 11 schema standards.
@@ -219,3 +239,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

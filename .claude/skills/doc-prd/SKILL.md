@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-prd
@@ -588,3 +590,11 @@ The EARS will:
 - Section 20: EARS Enhancement Appendix
 
 **Next**: doc-ears
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

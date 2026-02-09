@@ -1,3 +1,23 @@
+---
+name: doc-req-validator
+description: Validate Atomic Requirements (REQ) documents against Layer 7 schema standards
+tags:
+  - sdd-workflow
+  - layer-7-artifact
+  - quality-assurance
+custom_fields:
+  layer: 7
+  artifact_type: REQ
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: [REQ]
+  downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
+---
+
 # doc-req-validator
 
 Validate Atomic Requirements (REQ) documents against Layer 7 schema standards.
@@ -208,3 +228,11 @@ Info: N
 
 [Details listed by severity]
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

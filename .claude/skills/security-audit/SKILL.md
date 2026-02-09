@@ -1,5 +1,5 @@
 ---
-name: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
+title: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
 name: security-audit
 description: Security analysis, vulnerability assessment, and security code reviews
 tags:
@@ -15,6 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, CTR]
   downstream_artifacts: []
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # security-audit
@@ -676,3 +678,11 @@ Required software:
 - Monthly comprehensive security review recommended
 - Penetration testing recommended quarterly
 - Security guidelines documentation for development team required
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-02-08 | Initial skill creation with YAML frontmatter standardization |

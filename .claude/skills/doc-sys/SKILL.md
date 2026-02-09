@@ -14,6 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
+  version: "1.0"
+  last_updated: "2026-02-08"
 ---
 
 # doc-sys
@@ -491,3 +493,11 @@ For supplementary documentation needs, create:
 **Critical**: Use @threshold tags for all quantitative values
 
 **Next**: doc-req
+
+---
+
+## Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |
