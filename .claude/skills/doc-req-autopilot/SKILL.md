@@ -699,6 +699,54 @@ def handle_error(error_type: str, context: dict) -> Action:
 
 ---
 
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group SYS-derived REQ documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/4: Processing REQ-04, REQ-05, REQ-06...")
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
+
+**Execution Pattern**:
+
+```
+For REQ batch from multiple SYS documents:
+  Chunk 1: REQ-01, REQ-02, REQ-03 → Complete → Summary
+  [Context compaction opportunity]
+  Chunk 2: REQ-04, REQ-05, REQ-06 → Complete → Summary
+  [Context compaction opportunity]
+  ...continue until all documents processed
+```
+
+**Chunk Completion Template**:
+
+```markdown
+## Chunk N/M Complete
+
+Generated:
+- REQ-XX: SPEC-Ready 94%, IMPL-Ready 92%
+- REQ-YY: SPEC-Ready 91%, IMPL-Ready 93%
+- REQ-ZZ: SPEC-Ready 95%, IMPL-Ready 94%
+
+Proceeding to next chunk...
+```
+
+---
+
 ## Integration Points
 
 ### Pre-Execution Hooks

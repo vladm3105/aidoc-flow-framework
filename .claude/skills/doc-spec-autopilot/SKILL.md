@@ -176,6 +176,75 @@ data_models:
 
 ---
 
+## Configuration
+
+### Default Configuration
+
+```yaml
+spec_autopilot:
+  version: "1.0"
+
+  scoring:
+    spec_ready_min: 90
+    tasks_ready_min: 90
+    strict_mode: false
+
+  execution:
+    max_parallel: 3        # HARD LIMIT - do not exceed
+    chunk_size: 3          # Documents per chunk
+    pause_between_chunks: true
+    auto_fix: true
+    continue_on_error: false
+    timeout_per_req: 180  # seconds
+
+  output:
+    format: yaml
+    report_format: markdown
+
+  validation:
+    skip_validation: false
+    fix_iterations_max: 3
+```
+
+---
+
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group REQ-derived SPEC documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/4: Processing SPEC-04, SPEC-05, SPEC-06...")
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
+
+**Chunk Completion Template**:
+
+```markdown
+## Chunk N/M Complete
+
+Generated:
+- SPEC-XX: TASKS-Ready Score 94%
+- SPEC-YY: TASKS-Ready Score 92%
+- SPEC-ZZ: TASKS-Ready Score 95%
+
+Proceeding to next chunk...
+```
+
+---
+
 ## Related Resources
 
 - **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`

@@ -640,6 +640,54 @@ sys_autopilot:
 
 ---
 
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group ADR-derived SYS documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/3: Processing SYS-04, SYS-05, SYS-06...")
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
+
+**Execution Pattern**:
+
+```
+For SYS batch of 7 ADR-derived documents:
+  Chunk 1: SYS-01, SYS-02, SYS-03 → Complete → Summary
+  [Context compaction opportunity]
+  Chunk 2: SYS-04, SYS-05, SYS-06 → Complete → Summary
+  [Context compaction opportunity]
+  Chunk 3: SYS-07 → Complete → Summary
+```
+
+**Chunk Completion Template**:
+
+```markdown
+## Chunk N/M Complete
+
+Generated:
+- SYS-XX (Infrastructure): REQ-Ready Score 94%
+- SYS-YY (Data Architecture): REQ-Ready Score 92%
+- SYS-ZZ (Integration): REQ-Ready Score 95%
+
+Proceeding to next chunk...
+```
+
+---
+
 ## Integration Points
 
 ### Pre-Execution Hooks

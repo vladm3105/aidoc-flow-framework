@@ -543,6 +543,54 @@ def handle_error(error_type: str, context: dict) -> Action:
 
 ---
 
+## Context Management
+
+### Chunked Parallel Execution (MANDATORY)
+
+**CRITICAL**: To prevent conversation context overflow errors ("Prompt is too long", "Conversation too long"), all autopilot operations MUST follow chunked execution rules:
+
+**Chunk Size Limit**: Maximum 3 documents per chunk
+
+**Chunking Rules**:
+
+1. **Chunk Formation**: Group documents into chunks of maximum 3 at a time
+2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
+3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
+4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/5: Processing BRD-04, BRD-05, BRD-06...")
+
+**Why Chunking is Required**:
+
+- Prevents "Conversation too long" errors during batch processing
+- Allows context compaction between chunks
+- Enables recovery from failures without losing all progress
+- Provides natural checkpoints for user review
+
+**Execution Pattern**:
+
+```
+For BRD batch of N documents:
+  Chunk 1: BRD-01, BRD-02, BRD-03 → Complete → Summary
+  [Context compaction opportunity]
+  Chunk 2: BRD-04, BRD-05, BRD-06 → Complete → Summary
+  [Context compaction opportunity]
+  ...continue until all documents processed
+```
+
+**Chunk Completion Template**:
+
+```markdown
+## Chunk N/M Complete
+
+Generated:
+- BRD-XX: PRD-Ready Score 94%
+- BRD-YY: PRD-Ready Score 92%
+- BRD-ZZ: PRD-Ready Score 95%
+
+Proceeding to next chunk...
+```
+
+---
+
 ## Integration Points
 
 ### Pre-Execution Hooks
