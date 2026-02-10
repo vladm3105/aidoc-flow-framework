@@ -399,9 +399,10 @@ Addresses placeholders and incomplete content.
 
 ```python
 replacements = {
+    'YYYY-MM-DDTHH:MM:SS': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     'YYYY-MM-DD': datetime.now().strftime('%Y-%m-%d'),
     'MM/DD/YYYY': datetime.now().strftime('%m/%d/%Y'),
-    '[Current date]': datetime.now().strftime('%Y-%m-%d'),
+    '[Current date]': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     '[Status]': 'Draft',
     '[Priority]': 'P2',
     '[Version]': '0.1',
@@ -599,7 +600,7 @@ custom_fields:
   layer: 7
   parent_doc: REQ-NN
   source_review: REQ-NN.R_review_report_v001.md
-  fix_date: "YYYY-MM-DD"
+  fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-req-fixer
   fix_version: "1.0"
 ---

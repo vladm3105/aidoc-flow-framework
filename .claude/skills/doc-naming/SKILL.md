@@ -15,7 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
-  version: "1.5"
+  version: "1.6"
 ---
 
 # doc-naming Skill
@@ -330,7 +330,121 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 ---
 
-## 8. Validation Examples by Document Type
+## 8. ISO 8601 Datetime Format Standard
+
+### Purpose
+
+All date and time fields in SDD documentation MUST use ISO 8601 datetime format for:
+- Accurate upstream drift detection (same-day change tracking)
+- Consistent timestamp comparison across tools
+- Timezone-aware change tracking
+- File system mtime compatibility
+
+### Format Specification
+
+**Required Format**: `YYYY-MM-DDTHH:MM:SS` (ISO 8601 with time)
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Date | `YYYY-MM-DD` | `2026-02-10` |
+| Separator | `T` | `T` |
+| Time | `HH:MM:SS` | `14:30:00` |
+| Timezone (optional) | `Z` or `±HH:MM` | `Z` (UTC) or `+05:00` |
+
+### Full Format Options
+
+| Format | Example | Use Case |
+|--------|---------|----------|
+| **Local time** | `2026-02-10T14:30:00` | Default for most documents |
+| **UTC** | `2026-02-10T14:30:00Z` | Cross-timezone systems |
+| **With offset** | `2026-02-10T14:30:00+05:00` | Explicit timezone |
+
+### YAML Frontmatter Fields
+
+All datetime fields in YAML frontmatter use ISO 8601:
+
+```yaml
+---
+title: "BRD-01: Example Document"
+custom_fields:
+  created_date: "2026-02-10T09:15:00"
+  last_updated: "2026-02-10T14:30:00"
+  review_date: "2026-02-10T16:45:00"
+  fix_date: "2026-02-10T17:00:00"
+  approval_date: "2026-02-11T10:00:00"
+---
+```
+
+### Affected Fields
+
+| Field | Description | Location |
+|-------|-------------|----------|
+| `last_updated` | Document last modification time | YAML frontmatter |
+| `created_date` | Document creation time | YAML frontmatter |
+| `fix_date` | Fix report creation time | Fix reports |
+| `review_date` | Review execution time | Review reports |
+| `approval_date` | Document approval time | Document control |
+| `decision_date` | ADR decision time | ADR documents |
+| `release_date` | Release/deployment time | CTR, SPEC |
+
+### Migration from Date-Only Format
+
+**Deprecated** (date-only):
+```yaml
+last_updated: "2026-02-10"
+```
+
+**Required** (ISO 8601 datetime):
+```yaml
+last_updated: "2026-02-10T14:30:00"
+```
+
+### Validation Regex
+
+```regex
+^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})?$
+```
+
+### Placeholder Format
+
+For templates, use `YYYY-MM-DDTHH:MM:SS` as placeholder:
+
+```yaml
+# Template placeholder (to be replaced during generation)
+last_updated: "YYYY-MM-DDTHH:MM:SS"
+
+# After generation
+last_updated: "2026-02-10T14:30:00"
+```
+
+### Drift Detection Benefit
+
+ISO 8601 datetime enables same-day drift detection:
+
+| BRD Modified | PRD Created | Date-Only Detection | Datetime Detection |
+|--------------|-------------|---------------------|-------------------|
+| 2026-02-10T10:00:00 | 2026-02-10T08:00:00 | ❌ Same day, no drift | ✅ Drift detected (BRD newer) |
+| 2026-02-10T08:00:00 | 2026-02-10T10:00:00 | ❌ Same day, no drift | ✅ No drift (PRD is newer) |
+
+### Auto-Generation
+
+When generating documents, use current timestamp:
+
+```python
+from datetime import datetime
+
+# Generate ISO 8601 timestamp
+timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+# Result: "2026-02-10T14:30:00"
+
+# With UTC
+timestamp_utc = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+# Result: "2026-02-10T09:30:00Z"
+```
+
+---
+
+## 9. Validation Examples by Document Type
 
 ### BRD Examples
 
@@ -406,7 +520,7 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 ---
 
-## 9. Pre-Flight Checklist
+## 10. Pre-Flight Checklist
 
 Run this checklist BEFORE creating any SDD document:
 
@@ -438,7 +552,7 @@ Run this checklist BEFORE creating any SDD document:
 
 ---
 
-## 10. Error Recovery
+## 11. Error Recovery
 
 ### Detecting Legacy Patterns
 
@@ -491,7 +605,7 @@ grep -E "T-[0-9]+" file.md
 
 ---
 
-## 11. Source References
+## 12. Source References
 
 ### Primary Sources
 
@@ -537,6 +651,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-10 | Added Section 8: ISO 8601 Datetime Format Standard - all date fields now require `YYYY-MM-DDTHH:MM:SS` format for precise drift detection; Deprecated date-only format |
 | 1.5 | 2026-02-10 | Added element code 33 (Benefit Statement) for BRD Section 2.5; Updated BRD Quick Lookup to include code 33; Added BRD examples for code 33 |
 | 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |
 | 1.3 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |

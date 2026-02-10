@@ -44,8 +44,8 @@ custom_fields:
 |------|---------|
 | **Status** | Draft / Under Review / Approved / Implemented / Verified / Deprecated |
 | **Version** | [Semantic version, e.g., 1.0.0] |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Technical Lead/Architect] |
 | **Reviewers** | [Stakeholder names who have reviewed] |
 | **Owner** | [Team/Person responsible for maintenance] |
@@ -989,7 +989,7 @@ BDD scenarios and acceptance tests validating this system.
 | Test paths | ✅ Valid | All paths exist in test suites |
 
 **Reference Integrity**:
-- Last validated: [YYYY-MM-DD]
+- Last validated: [YYYY-MM-DDTHH:MM:SS]
 - Validation tool: [Tool name/version]
 - Broken references: [0] (target: 0)
 - Stale references: [0] references to deprecated/superseded documents (target: 0)
@@ -1180,11 +1180,11 @@ BDD scenarios and acceptance tests validating this system.
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| YYYY-MM-DD | 1.0 | Initial system requirements specification | [Author Name] |
-| YYYY-MM-DD | 1.1 | Updated performance requirements based on load testing | [Author Name] |
-| YYYY-MM-DD | 1.2 | Added security requirements for compliance | [Author Name] |
-| YYYY-MM-DD | 2.0 | Major revision incorporating distributed architecture | [Author Name] |
+| YYYY-MM-DDTHH:MM:SS | 1.0 | Initial system requirements specification | [Author Name] |
+| YYYY-MM-DDTHH:MM:SS | 1.1 | Updated performance requirements based on load testing | [Author Name] |
+| YYYY-MM-DDTHH:MM:SS | 1.2 | Added security requirements for compliance | [Author Name] |
+| YYYY-MM-DDTHH:MM:SS | 2.0 | Major revision incorporating distributed architecture | [Author Name] |
 
 **Template Version**: 1.0
-**Next Review Date**: YYYY-MM-DD (Quarterly review recommended)
+**Next Review Date**: YYYY-MM-DDTHH:MM:SS (Quarterly review recommended)
 **Technical Authority**: [Name/Role for technical clarification]

@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [TSPEC]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-tspec-reviewer
@@ -317,7 +317,7 @@ Location: `docs/10_TSPEC/.drift_cache.json`
 ```json
 {
   "tspec_version": "1.0",
-  "tspec_updated": "2026-02-10",
+  "tspec_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
     "../../09_SPEC/SPEC-03.yaml#interfaces": "e5f6g7h8..."
@@ -342,8 +342,8 @@ Location: `docs/10_TSPEC/.drift_cache.json`
 
 | Upstream Document | TSPEC Reference | Last Modified | TSPEC Updated | Days Stale | Severity |
 |-------------------|-----------------|---------------|---------------|------------|----------|
-| SPEC-03.yaml | @spec Section methods | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| SPEC-03.yaml | @spec interfaces | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| SPEC-03.yaml | @spec Section methods | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| SPEC-03.yaml | @spec interfaces | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream SPEC changes and update TSPEC if methods or interfaces have changed.
 ```

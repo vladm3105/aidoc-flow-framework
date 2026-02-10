@@ -46,8 +46,8 @@ custom_fields:
 | **TASKS ID** | TASKS-NN |
 | **Status** | Draft / Ready / In Progress / Completed / Blocked |
 | **Version** | 1.0.0 |
-| **Created** | YYYY-MM-DD |
-| **Updated** | YYYY-MM-DD |
+| **Created** | YYYY-MM-DDTHH:MM:SS |
+| **Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Developer/AI Assistant] |
 | **Assigned To** | [Primary developer] |
 | **Priority** | P0 (Critical) / P1 (High) / P2 (Normal) |
@@ -78,8 +78,8 @@ tasks_tracking:
     
     implementation:
       status: NOT_STARTED  # NOT_STARTED → IN_PROGRESS → COMPLETED
-      started: null        # YYYY-MM-DD
-      completed: null      # YYYY-MM-DD
+      started: null        # YYYY-MM-DDTHH:MM:SS
+      completed: null      # YYYY-MM-DDTHH:MM:SS
     
     post_check:
       status: NOT_STARTED
@@ -436,8 +436,8 @@ Prefer these tags over legacy "See also …" strings.
 
 | Date | Status | Summary |
 |------|--------|---------|
-| YYYY-MM-DD | IN_PROGRESS | Started implementation, completed Phase 1 |
-| YYYY-MM-DD | COMPLETED | **Implementation Complete**<br><ul><li>**Summary**: [Summary of deliverables]</li><li>**Tests**: [N]/[N] Passed ([X]%), [X]% Coverage.</li><li>**Artifacts**: `src/...`, `tests/...`</li></ul> |
+| YYYY-MM-DDTHH:MM:SS | IN_PROGRESS | Started implementation, completed Phase 1 |
+| YYYY-MM-DDTHH:MM:SS | COMPLETED | **Implementation Complete**<br><ul><li>**Summary**: [Summary of deliverables]</li><li>**Tests**: [N]/[N] Passed ([X]%), [X]% Coverage.</li><li>**Artifacts**: `src/...`, `tests/...`</li></ul> |
 
 ---
 
@@ -445,7 +445,7 @@ Prefer these tags over legacy "See also …" strings.
 
 | Date | Version | Change | Author |
 |------|---------|--------|--------|
-| YYYY-MM-DD | 1.0 | Initial document | [Author] |
+| YYYY-MM-DDTHH:MM:SS | 1.0 | Initial document | [Author] |
 
 ---
 

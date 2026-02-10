@@ -19,8 +19,8 @@ title: "[Business Requirements Title: e.g., E-Commerce Platform MVP]"
 document_control:
   project_name: "[Project Name]"
   version: "1.0"
-  date_created: "YYYY-MM-DD"
-  last_updated: "YYYY-MM-DD"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Primary Author]"
 
 # =============================================================================

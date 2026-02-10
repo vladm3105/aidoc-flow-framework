@@ -296,9 +296,10 @@ Addresses placeholders and incomplete content.
 
 ```python
 replacements = {
+    'YYYY-MM-DDTHH:MM:SS': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     'YYYY-MM-DD': datetime.now().strftime('%Y-%m-%d'),
     'MM/DD/YYYY': datetime.now().strftime('%m/%d/%Y'),
-    '[Current date]': datetime.now().strftime('%Y-%m-%d'),
+    '[Current date]': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     '"1.0.0"': f'"{calculate_version()}"',
 }
 ```
@@ -490,7 +491,7 @@ custom_fields:
   layer: 8
   parent_doc: CTR-NN-SSS
   source_review: CTR-NN-SSS.R_review_report_v001.md
-  fix_date: "YYYY-MM-DD"
+  fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-ctr-fixer
   fix_version: "1.0"
 ---

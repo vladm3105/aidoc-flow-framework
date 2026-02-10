@@ -84,8 +84,8 @@ custom_fields:
 |------|---------|
 | **Status** | Draft / Review / Approved |
 | **Version** | 0.1.0 |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Product Manager Name] |
 | **Reviewer** | [Technical Lead Name] |
 | **Approver** | [Stakeholder Name] |
@@ -100,7 +100,7 @@ custom_fields:
 
 | Version | Date | Author | Changes Made |
 |---------|------|--------|--------------|
-| 0.1.0 | YYYY-MM-DD | [Author] | Initial MVP draft |
+| 0.1.0 | YYYY-MM-DDTHH:MM:SS | [Author] | Initial MVP draft |
 
 ---
 
@@ -118,9 +118,9 @@ custom_fields:
 
 | Phase | Dates | Duration |
 |-------|-------|----------|
-| Development | YYYY-MM-DD to YYYY-MM-DD | X weeks |
-| Testing | YYYY-MM-DD to YYYY-MM-DD | X weeks |
-| MVP Launch | YYYY-MM-DD | - |
+| Development | YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS | X weeks |
+| Testing | YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS | X weeks |
+| MVP Launch | YYYY-MM-DDTHH:MM:SS | - |
 | Validation Period | +30 days post-launch | 30 days |
 
 ---
@@ -571,7 +571,7 @@ Prefer these tags over legacy "See also …" strings.
 
 **Document Version**: 0.1.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: YYYY-MM-DD
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 **Maintained By**: [Product Manager]
 
 ---

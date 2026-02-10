@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [SYS]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-sys-reviewer
@@ -303,7 +303,7 @@ Location: `docs/06_SYS/.drift_cache.json`
 ```json
 {
   "sys_version": "1.0",
-  "sys_updated": "2026-02-10",
+  "sys_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../05_ADR/ADR-01_authentication_strategy.md": "a1b2c3d4...",
     "../../05_ADR/ADR-05_data_storage.md": "e5f6g7h8..."
@@ -328,8 +328,8 @@ Location: `docs/06_SYS/.drift_cache.json`
 
 | Upstream Document | SYS Reference | Last Modified | SYS Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
-| ADR-01_authentication_strategy.md | @adr Decision | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| ADR-05_data_storage.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| ADR-01_authentication_strategy.md | @adr Decision | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| ADR-05_data_storage.md | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream ADR changes and update SYS if architecture decisions have changed.
 ```

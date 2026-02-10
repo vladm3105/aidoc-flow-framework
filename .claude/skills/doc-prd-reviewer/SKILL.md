@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [PRD]
   downstream_artifacts: []
   version: "1.3"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-prd-reviewer
@@ -231,7 +231,7 @@ Identifies incomplete content requiring replacement.
 
 **Scope**:
 - `[TODO]`, `[TBD]`, `[PLACEHOLDER]` text
-- Template dates: `YYYY-MM-DD`, `MM/DD/YYYY`
+- Template dates: `YYYY-MM-DDTHH:MM:SS`, `MM/DD/YYYY`
 - Template names: `[Name]`, `[Author]`, `[Reviewer]`
 - Empty sections: `<!-- Content here -->`
 - Lorem ipsum or sample text
@@ -242,14 +242,14 @@ Scanning for placeholder text...
 ├── [TODO]: 0 found ✓
 ├── [TBD]: 1 found
 │   └── PRD-01.10_customer_content.md:42: "[TBD: Marketing copy]"
-├── YYYY-MM-DD: 0 found ✓
+├── YYYY-MM-DDTHH:MM:SS: 0 found ✓
 ├── [Name]: 0 found ✓
 ├── Empty sections: 0 found ✓
 └── Result: 1 placeholder found
 ```
 
 **Auto-Fix**:
-- Replace `YYYY-MM-DD` with current date
+- Replace `YYYY-MM-DDTHH:MM:SS` with current datetime
 - Replace `[Name]` with document author from metadata
 - Remove empty comment placeholders
 - Flag `[TODO]`/`[TBD]` for manual completion
@@ -585,7 +585,7 @@ prd_reviewer:
         - "[TODO]"
         - "[TBD]"
         - "[PLACEHOLDER]"
-        - "YYYY-MM-DD"
+        - "YYYY-MM-DDTHH:MM:SS"
         - "[Name]"
       auto_fix_dates: true
       auto_fix_names: true
@@ -655,7 +655,7 @@ docs/02_PRD/PRD-01_f1_iam/
 ```markdown
 # PRD Review Report: PRD-01 (v003)
 
-**Review Date**: 2026-02-08
+**Review Date**: 2026-02-08T14:30:00
 **Review Version**: v003
 **PRD**: PRD-01 (F1 Identity & Access Management)
 **Status**: PASS
@@ -692,7 +692,7 @@ docs/02_PRD/PRD-01_f1_iam/
 
 | File | Line | Fix | Code |
 |------|------|-----|------|
-| PRD-01.1_document_control.md | 15 | Date: YYYY-MM-DD → 2026-02-08 | REV-P003 |
+| PRD-01.1_document_control.md | 15 | Date: YYYY-MM-DDTHH:MM:SS → 2026-02-08T14:30:00 | REV-P003 |
 
 ### Deferred Items (Acceptable)
 

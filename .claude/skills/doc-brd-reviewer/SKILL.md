@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
   version: "1.3"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-brd-reviewer
@@ -179,13 +179,13 @@ Identifies incomplete content requiring replacement.
 
 **Scope**:
 - `[TODO]`, `[TBD]`, `[PLACEHOLDER]` text
-- Template dates: `YYYY-MM-DD`, `MM/DD/YYYY`
+- Template dates: `YYYY-MM-DDTHH:MM:SS`, `MM/DD/YYYY`
 - Template names: `[Name]`, `[Author]`, `[Reviewer]`
 - Empty sections: `<!-- Content here -->`
 - Lorem ipsum or sample text
 
 **Auto-Fix**:
-- Replace `YYYY-MM-DD` with current date
+- Replace `YYYY-MM-DDTHH:MM:SS` with current datetime
 - Replace `[Name]` with document author from metadata
 - Remove empty comment placeholders
 - Flag `[TODO]`/`[TBD]` for manual completion
@@ -351,7 +351,7 @@ Location: `docs/01_BRD/{BRD_folder}/.drift_cache.json`
 ```json
 {
   "brd_version": "1.0",
-  "brd_updated": "2026-02-10",
+  "brd_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../00_REF/foundation/F1_IAM_Technical_Specification.md#3-authentication": "a1b2c3d4...",
     "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": "e5f6g7h8..."
@@ -376,8 +376,8 @@ Location: `docs/01_BRD/{BRD_folder}/.drift_cache.json`
 
 | Upstream Document | BRD Reference | Last Modified | BRD Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
-| F1_IAM_Technical_Specification.md | @ref Section 3 | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| GAP_Foundation_Module_Gap_Analysis.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| F1_IAM_Technical_Specification.md | @ref Section 3 | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| GAP_Foundation_Module_Gap_Analysis.md | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream changes and update BRD if requirements have changed.
 ```

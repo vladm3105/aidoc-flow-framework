@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [CTR]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-ctr-reviewer
@@ -292,7 +292,7 @@ Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
 ```json
 {
   "ctr_version": "1.0",
-  "ctr_updated": "2026-02-10",
+  "ctr_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../07_REQ/REQ-03.yaml#interfaces": "a1b2c3d4...",
     "../../07_REQ/REQ-03.yaml#external_apis": "e5f6g7h8..."
@@ -317,8 +317,8 @@ Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
 
 | Upstream Document | CTR Reference | Last Modified | CTR Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
-| REQ-03.yaml | @req Section interfaces | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| REQ-03.yaml | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| REQ-03.yaml | @req Section interfaces | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| REQ-03.yaml | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream REQ changes and update CTR if interface requirements have changed.
 ```

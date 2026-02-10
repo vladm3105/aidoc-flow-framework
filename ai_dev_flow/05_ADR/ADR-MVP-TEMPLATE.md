@@ -74,7 +74,7 @@ custom_fields:
 | Item | Details |
 |------|---------|
 | **Status** | Proposed / Accepted / Deprecated / Superseded |
-| **Date** | YYYY-MM-DD |
+| **Date** | YYYY-MM-DDTHH:MM:SS |
 | **Decision Makers** | [Names/Roles] |
 | **Author** | [Architect/Lead Name] |
 | **Version** | 1.0 |
@@ -392,7 +392,7 @@ Prefer these tags over legacy "See also …" strings.
 
 **Document Version**: 1.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: YYYY-MM-DD
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 

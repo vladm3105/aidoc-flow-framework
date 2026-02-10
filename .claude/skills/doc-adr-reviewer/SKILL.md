@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [ADR]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-adr-reviewer
@@ -302,7 +302,7 @@ Location: `docs/05_ADR/.drift_cache.json`
 ```json
 {
   "adr_version": "1.0",
-  "adr_updated": "2026-02-10",
+  "adr_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../04_BDD/BDD-01_authentication.feature": "a1b2c3d4...",
     "../../01_BRD/BRD-01_platform/07_technical_requirements.md#7.2": "e5f6g7h8..."
@@ -327,8 +327,8 @@ Location: `docs/05_ADR/.drift_cache.json`
 
 | Upstream Document | ADR Reference | Last Modified | ADR Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
-| BDD-01_authentication.feature | @bdd Section 3 | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| BRD-01 Section 7.2 | @brd Topic | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| BDD-01_authentication.feature | @bdd Section 3 | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| BRD-01 Section 7.2 | @brd Topic | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream changes and update ADR if decision context has changed.
 ```

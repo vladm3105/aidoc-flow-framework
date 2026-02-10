@@ -37,7 +37,7 @@ custom_fields:
 |------|---------|
 | **Project Name** | [Enter project name] |
 | **Document Version** | [e.g., 1.0] |
-| **Date** | [Current date] |
+| **Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Document Owner** | [Name and owner's title] |
 | **Prepared By** | [API Designer/Architect name] |
 | **Status** | [Draft / In Review / Approved] |
@@ -47,7 +47,7 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0 | [Date] | [Name] | Initial draft | |
+| 1.0 | [YYYY-MM-DDTHH:MM:SS] | [Name] | Initial draft | |
 | | | | | |
 
 ### 1.2 Contract Status
@@ -620,8 +620,8 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 ---
 
 **Template Version**: 1.0
-**Last Reviewed**: YYYY-MM-DD
-**Next Review**: YYYY-MM-DD (recommend quarterly for active contracts)
+**Last Reviewed**: YYYY-MM-DDTHH:MM:SS
+**Next Review**: YYYY-MM-DDTHH:MM:SS (recommend quarterly for active contracts)
 
 ---
 

@@ -342,9 +342,10 @@ Addresses placeholders and incomplete content.
 
 ```python
 replacements = {
+    'YYYY-MM-DDTHH:MM:SS': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     'YYYY-MM-DD': datetime.now().strftime('%Y-%m-%d'),
     'MM/DD/YYYY': datetime.now().strftime('%m/%d/%Y'),
-    '[Current date]': datetime.now().strftime('%Y-%m-%d'),
+    '[Current date]': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
 }
 ```
 
@@ -564,7 +565,7 @@ custom_fields:
   layer: 10
   parent_doc: TSPEC-NN
   source_review: TSPEC-NN.R_review_report_v001.md
-  fix_date: "YYYY-MM-DD"
+  fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-tspec-fixer
   fix_version: "1.0"
 ---

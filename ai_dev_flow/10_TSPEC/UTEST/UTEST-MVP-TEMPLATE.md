@@ -60,8 +60,8 @@ References: Schema `UTEST_MVP_SCHEMA.yaml` | Rules `UTEST_MVP_CREATION_RULES.md`
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | 0.1.0 |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Author name] |
 | **Component** | [Component/module name] |
 | **SPEC Reference** | SPEC-NN |

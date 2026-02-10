@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-tasks-reviewer
@@ -321,7 +321,7 @@ Location: `docs/11_TASKS/.drift_cache.json`
 ```json
 {
   "tasks_version": "1.0",
-  "tasks_updated": "2026-02-10",
+  "tasks_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
     "../../09_SPEC/SPEC-03.yaml#components": "e5f6g7h8...",
@@ -347,9 +347,9 @@ Location: `docs/11_TASKS/.drift_cache.json`
 
 | Upstream Document | TASKS Reference | Last Modified | TASKS Updated | Days Stale | Severity |
 |-------------------|-----------------|---------------|---------------|------------|----------|
-| SPEC-03.yaml | @spec Section methods | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| SPEC-03.yaml | @spec components | 2026-02-10 | 2026-02-05 | 5 | Warning |
-| TSPEC-03.md | @tspec test_cases | 2026-02-09 | 2026-02-05 | 4 | Warning |
+| SPEC-03.yaml | @spec Section methods | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| SPEC-03.yaml | @spec components | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+| TSPEC-03.md | @tspec test_cases | 2026-02-09T16:45:00 | 2026-02-05T09:00:00 | 4 | Warning |
 
 **Recommendation**: Review upstream SPEC/TSPEC changes and update TASKS if methods, components, or test cases have changed.
 ```

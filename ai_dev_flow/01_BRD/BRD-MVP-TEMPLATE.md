@@ -85,7 +85,7 @@ custom_fields:
 |------|---------|
 | **Project Name** | [Enter MVP project name] |
 | **Document Version** | [e.g., 1.0] |
-| **Date** | [Current date] |
+| **Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Document Owner** | [Name and title] |
 | **Prepared By** | [Business Analyst name] |
 | **Status** | [Draft / In Review / Approved] |
@@ -99,7 +99,7 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0 | [Date] | [Name] | Initial MVP draft | |
+| 1.0 | [YYYY-MM-DDTHH:MM:SS] | [Name] | Initial MVP draft | |
 
 ---
 

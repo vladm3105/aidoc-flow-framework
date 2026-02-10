@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-spec-reviewer
@@ -328,7 +328,7 @@ Location: `docs/09_SPEC/.drift_cache.json`
 ```json
 {
   "spec_version": "1.0",
-  "spec_updated": "2026-02-10",
+  "spec_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../07_REQ/REQ-03.yaml#req_implementations": "a1b2c3d4...",
     "../../08_CTR/CTR-03-001.yaml#endpoints": "e5f6g7h8..."
@@ -353,8 +353,8 @@ Location: `docs/09_SPEC/.drift_cache.json`
 
 | Upstream Document | SPEC Reference | Last Modified | SPEC Updated | Days Stale | Severity |
 |-------------------|----------------|---------------|--------------|------------|----------|
-| REQ-03.yaml | @req Section req_implementations | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| CTR-03-001.yaml | @ctr endpoints | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| REQ-03.yaml | @req Section req_implementations | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| CTR-03-001.yaml | @ctr endpoints | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream REQ/CTR changes and update SPEC if requirements or contracts have changed.
 ```

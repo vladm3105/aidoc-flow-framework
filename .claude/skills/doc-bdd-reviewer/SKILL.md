@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [BDD]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-bdd-reviewer

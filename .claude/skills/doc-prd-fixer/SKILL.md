@@ -295,9 +295,10 @@ Addresses placeholders and incomplete content.
 
 ```python
 replacements = {
+    'YYYY-MM-DDTHH:MM:SS': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     'YYYY-MM-DD': datetime.now().strftime('%Y-%m-%d'),
     'MM/DD/YYYY': datetime.now().strftime('%m/%d/%Y'),
-    '[Current date]': datetime.now().strftime('%Y-%m-%d'),
+    '[Current date]': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
     '[Product Name]': extract_product_name_from_metadata(),
 }
 ```
@@ -477,7 +478,7 @@ custom_fields:
   layer: 2
   parent_doc: PRD-NN
   source_review: PRD-NN.R_review_report_v001.md
-  fix_date: "YYYY-MM-DD"
+  fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-prd-fixer
   fix_version: "1.0"
 ---

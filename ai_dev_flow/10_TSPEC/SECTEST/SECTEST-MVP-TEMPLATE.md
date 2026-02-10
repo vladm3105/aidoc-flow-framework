@@ -62,8 +62,8 @@ References: Schema `SECTEST_MVP_SCHEMA.yaml` | Rules `SECTEST_MVP_CREATION_RULES
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | 0.1.0 |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Author name] |
 | **Component** | [Component/system name] |
 | **SPEC Reference** | @spec: SPEC-NN |

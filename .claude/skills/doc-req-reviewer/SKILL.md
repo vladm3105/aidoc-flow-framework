@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [REQ]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T14:30:00"
 ---
 
 # doc-req-reviewer
@@ -317,7 +317,7 @@ Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
 ```json
 {
   "req_version": "1.0",
-  "req_updated": "2026-02-10",
+  "req_updated": "2026-02-10T14:30:00",
   "upstream_hashes": {
     "../../06_SYS/SYS-01_f1_iam.md#3.2": "a1b2c3d4...",
     "../../06_SYS/SYS-03_f3_observability.md": "e5f6g7h8..."
@@ -342,8 +342,8 @@ Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
 
 | Upstream Document | REQ Reference | Last Modified | REQ Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
-| SYS-01_f1_iam.md | @sys Section 3.2 | 2026-02-08 | 2026-02-05 | 3 | Warning |
-| SYS-03_f3_observability.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| SYS-01_f1_iam.md | @sys Section 3.2 | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
+| SYS-03_f3_observability.md | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
 
 **Recommendation**: Review upstream SYS changes and update REQ if system requirements have changed.
 ```

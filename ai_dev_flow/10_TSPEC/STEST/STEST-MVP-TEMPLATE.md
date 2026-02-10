@@ -60,8 +60,8 @@ References: Schema `STEST_MVP_SCHEMA.yaml` | Rules `STEST_MVP_CREATION_RULES.md`
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | 0.1.0 |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Author name] |
 | **Deployment Target** | [Environment/service name] |
 | **Total Timeout Budget** | [N] seconds (max 300s) |
