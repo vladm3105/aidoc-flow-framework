@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.2"
+  version: "2.3"
   last_updated: "2026-02-10"
 ---
 
@@ -41,13 +41,15 @@ This autopilot orchestrates the following skills:
 | `doc-brd` | BRD creation rules, template, section structure, Platform vs Feature guidance | Phase 3: BRD Generation |
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-validator` | Validate BRD structure, content, PRD-Ready score | Phase 4: BRD Validation |
-| `doc-brd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-brd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-brd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - BRD structure/content rules → `doc-brd` skill
 - Real-time quality feedback → `quality-advisor` skill
 - BRD validation logic → `doc-brd-validator` skill
-- Final content review → `doc-brd-reviewer` skill
+- Content review and scoring → `doc-brd-reviewer` skill
+- Issue resolution and fixes → `doc-brd-fixer` skill
 - Element ID standards → `doc-naming` skill
 
 ---
@@ -77,10 +79,17 @@ flowchart TD
         B --> C[Identify Stakeholder Requirements]
         C --> D[Extract Business Context]
         D --> E[Catalog Input Sources]
+        E --> E1[Validate @ref Targets]
+        E1 --> E2{All refs valid?}
+        E2 -->|No| E3[Flag missing docs]
+        E3 --> E4{Required doc?}
+        E4 -->|Yes| E5[ABORT: Create missing doc first]
+        E4 -->|No| E6[Continue with warning]
+        E2 -->|Yes| E6
     end
 
     subgraph Phase2["Phase 2: BRD Type Determination"]
-        E --> F[Run Platform vs Feature Questionnaire]
+        E6 --> F[Run Platform vs Feature Questionnaire]
         F --> G{Platform BRD?}
         G -->|Yes| H[Configure Platform BRD Mode]
         G -->|No| I[Configure Feature BRD Mode]
@@ -98,7 +107,12 @@ flowchart TD
         O --> O2[Generate Section 7.2: ADR Topics]
         O2 --> P[quality-advisor: Real-time Feedback]
         P --> Q[Generate Sections 10-18]
-        Q --> R[Add Traceability References]
+        Q --> Q2[Handle Master Glossary]
+        Q2 --> Q3{Glossary exists?}
+        Q3 -->|No| Q4[Create BRD-00_GLOSSARY.md]
+        Q3 -->|Yes| Q5[Update path reference]
+        Q4 --> Q5
+        Q5 --> R[Add Traceability References]
         R --> S[Write BRD Files]
     end
 
@@ -111,15 +125,20 @@ flowchart TD
         U -->|Yes| X[Mark BRD Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        X --> Y[Check Section Completeness]
-        Y --> Z[Verify ADR Topics Coverage]
-        Z --> AA[Validate Element IDs]
-        AA --> AB[Generate PRD-Ready Report]
-        AB --> AC[Update Traceability Matrix]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        X --> Y[Run doc-brd-reviewer]
+        Y --> Y2{Score >= 90?}
+        Y2 -->|No| Y3[Run doc-brd-fixer]
+        Y3 --> Y4{Iteration < Max?}
+        Y4 -->|Yes| Y
+        Y4 -->|No| Y5[Flag Manual Review]
+        Y2 -->|Yes| Z[Verify Quality Checks]
+        Y5 --> Z
+        Z --> AA[Generate PRD-Ready Report]
+        AA --> AB[Update Traceability Matrix]
     end
 
-    AC --> AD[Complete]
+    AB --> AC[Complete]
 ```
 
 ---
@@ -154,6 +173,60 @@ ls -la {project_root}/strategy/
 ```
 
 **Output**: Input catalog with extracted requirements, objectives, and constraints.
+
+#### 1.1 Source Document Link Validation (NEW in v2.3)
+
+**Purpose**: Validate that all referenced source documents exist before proceeding to generation. This prevents broken `@ref:` links in the generated BRD.
+
+**Validation Checks**:
+
+| Check | Action | Severity |
+|-------|--------|----------|
+| Strategy documents exist | Verify files in `strategy/` directory | Error - blocks generation |
+| `@ref:` targets in source docs | Verify referenced files exist | Error - blocks generation |
+| Gap analysis documents | Verify `GAP_*.md` files if referenced | Warning - flag for creation |
+| Cross-reference documents | Verify upstream docs exist | Warning - document dependency |
+
+**Validation Process**:
+
+```bash
+# Check for referenced documents
+grep -h "@ref:" strategy/*.md docs/inputs/*.md 2>/dev/null | \
+  grep -oP '\[.*?\]\(([^)]+)\)' | \
+  while read link; do
+    file=$(echo "$link" | grep -oP '\(([^)]+)\)' | tr -d '()')
+    if [ ! -f "$file" ]; then
+      echo "WARNING: Referenced file not found: $file"
+    fi
+  done
+```
+
+**Error Handling**:
+
+| Scenario | Action |
+|----------|--------|
+| Required source doc missing | Abort with clear error message |
+| Optional reference missing | Log warning, continue with placeholder note |
+| Gap analysis doc missing | Prompt user: create doc or update references |
+
+**Example Output**:
+
+```
+Phase 1: Input Analysis
+=======================
+Strategy documents found: 5
+  ✅ strategy/README.md
+  ✅ strategy/core_algorithm.md
+  ✅ strategy/risk_management.md
+  ✅ strategy/selection_criteria.md
+  ✅ strategy/performance_targets.md
+
+Reference Validation:
+  ✅ docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+  ❌ docs/00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md (NOT FOUND)
+
+ACTION REQUIRED: Create missing reference document or update source references.
+```
 
 ### Phase 2: BRD Type Determination
 
@@ -305,7 +378,78 @@ Generate the BRD document with real-time quality feedback.
    | ADR-NN | Architecture Decisions | Pending |
    ```
 
-10. **File Output**:
+10. **Master Glossary Handling** (NEW in v2.3):
+
+    The BRD template references a master glossary. The autopilot MUST handle this reference correctly.
+
+    **Glossary Check Process**:
+
+    | Scenario | Action |
+    |----------|--------|
+    | `docs/BRD-00_GLOSSARY.md` exists | Use correct relative path in Section 14 |
+    | Glossary missing, first BRD | Create `docs/01_BRD/BRD-00_GLOSSARY.md` with template |
+    | Glossary missing, subsequent BRD | Reference existing glossary or create if missing |
+
+    **Glossary Creation Template**:
+
+    ```markdown
+    ---
+    title: "BRD-00: Master Glossary"
+    tags:
+      - brd
+      - glossary
+      - reference
+    custom_fields:
+      document_type: glossary
+      artifact_type: BRD-REFERENCE
+      layer: 1
+    ---
+
+    # BRD-00: Master Glossary
+
+    Common terminology used across all Business Requirements Documents.
+
+    ## Business Terms
+
+    | Term | Definition | Context |
+    |------|------------|---------|
+    | MVP | Minimum Viable Product | Scope definition |
+    | SLA | Service Level Agreement | Quality requirements |
+
+    ## Technical Terms
+
+    | Term | Definition | Context |
+    |------|------------|---------|
+    | API | Application Programming Interface | Integration |
+    | JWT | JSON Web Token | Authentication |
+
+    ## Domain Terms
+
+    [Add project-specific terminology here]
+    ```
+
+    **Section 14 Glossary Reference Format**:
+
+    ```markdown
+    ## 14. Glossary
+
+    📚 **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](../BRD-00_GLOSSARY.md)
+
+    ### {BRD-NN}-Specific Terms
+
+    | Term | Definition | Context |
+    |------|------------|---------|
+    | [Term 1] | [Definition] | [Where used] |
+    ```
+
+    **Path Resolution**:
+
+    | BRD Location | Glossary Path |
+    |--------------|---------------|
+    | `docs/01_BRD/BRD-01.md` (monolithic) | `BRD-00_GLOSSARY.md` |
+    | `docs/01_BRD/BRD-01_slug/BRD-01.3_*.md` (sectioned) | `../BRD-00_GLOSSARY.md` |
+
+11. **File Output**:
     - **Monolithic** (<25KB): `docs/01_BRD/BRD-NN_{slug}.md`
     - **Sectioned** (>=25KB): `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
 
@@ -357,11 +501,93 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.3)
 
-Comprehensive final review before marking BRD complete.
+Iterative review and fix cycle to ensure BRD quality before completion.
 
-**Review Checks**:
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-brd-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-brd-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-brd-reviewer` to identify issues.
+
+```bash
+/doc-brd-reviewer BRD-NN
+```
+
+**Output**: `BRD-NN.R_review_report_v001.md`
+
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-brd-fixer`.
+
+```bash
+/doc-brd-fixer BRD-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, GAP placeholders, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns, fix invalid type codes |
+| Content | Replace template placeholders, dates |
+| References | Update traceability tags |
+
+**Output**: `BRD-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-brd-reviewer BRD-NN
+```
+
+**Output**: `BRD-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 85 (2 errors, 4 warnings)
+  Fix v001: Fixed 5 issues, created 2 files
+
+Iteration 2:
+  Review v002: Score 94 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
 
 1. **Section Completeness**:
    - All 18 sections present and populated
@@ -376,7 +602,7 @@ Comprehensive final review before marking BRD complete.
 
 3. **Element ID Compliance** (per `doc-naming` skill):
    - All IDs use BRD.NN.TT.SS format
-   - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
+   - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33)
    - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
 
 4. **PRD-Ready Report**:
@@ -681,6 +907,7 @@ flowchart TD
 | **Element IDs** | Legacy FR-XXX format | Convert to BRD.NN.01.SS | ✅ |
 | **Element IDs** | Legacy AC-XXX format | Convert to BRD.NN.06.SS | ✅ |
 | **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.09.SS | ✅ |
+| **Element IDs** | Invalid type code for BRD | Suggest correct code (e.g., 25→33 for Benefits) | ✅ |
 | **Sections** | Missing Document Control fields | Add from template | ✅ |
 | **Sections** | Missing traceability section | Insert from template | ✅ |
 | **Sections** | Missing PRD-Ready score | Calculate and insert | ✅ |
@@ -690,6 +917,9 @@ flowchart TD
 | **Traceability** | Missing upstream sources | Add template structure | ✅ |
 | **Traceability** | Missing downstream artifacts | Add template structure | ✅ |
 | **Score** | Missing PRD-Ready breakdown | Calculate and add | ✅ |
+| **Broken Links** | Missing glossary file | Create BRD-00_GLOSSARY.md | ✅ |
+| **Broken Links** | Missing reference doc | Prompt to create or update link | ⚠️ |
+| **Broken Links** | Invalid relative path | Fix path based on BRD location | ✅ |
 
 **Content Preservation Rules**:
 
@@ -709,6 +939,23 @@ flowchart TD
 | `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.06.01 |
 | `BC-XXX` | `BRD.NN.09.SS` | BC-001 → BRD.01.09.01 |
 | `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.32.01 |
+
+**Element Type Code Migration** (v2.3):
+
+| Invalid Code | Correct Code | Context | Example |
+|--------------|--------------|---------|---------|
+| 25 in BRD | 33 | Benefits section | BRD.01.25.01 → BRD.01.33.01 |
+
+**Note**: Code 25 is valid only for EARS documents (EARS Statement). For BRD Benefits, use code 33 (Benefit Statement).
+
+**Broken Link Fixes** (v2.3):
+
+| Issue | Fix Action | Creates File |
+|-------|------------|--------------|
+| Missing `BRD-00_GLOSSARY.md` | Create from template | ✅ Yes |
+| Missing reference doc (GAP, REF) | Prompt user with options: (1) Create placeholder, (2) Update link, (3) Remove reference | ⚠️ Optional |
+| Wrong relative path | Recalculate path based on BRD location | ❌ No |
+| Cross-BRD reference to non-existent BRD | Log warning, suggest creating BRD | ❌ No |
 
 **Fix Report Structure**:
 
@@ -1117,6 +1364,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents (not in tmp/); review reports require YAML frontmatter, parent document references, and structured sections; file naming convention `{ARTIFACT}-NN.R_review_report.md` |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing BRD documents without modification; Added Fix Mode for auto-repairing BRD documents while preserving manual content; Added fix categories (element_ids, sections, adr_topics, traceability, score); Added content preservation rules; Added backup functionality; Added element ID migration (BO_XXX, FR_XXX, AC_XXX, BC_XXX to unified format) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-brd, doc-brd-validator, quality-advisor skills; Added Platform vs Feature BRD handling; Added Section 7.2 ADR Topics generation |

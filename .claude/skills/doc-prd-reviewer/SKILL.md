@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [PRD]
   downstream_artifacts: []
-  version: "1.2"
+  version: "1.3"
   last_updated: "2026-02-10"
 ---
 
@@ -86,9 +86,10 @@ flowchart TD
         K --> L[6. Section Completeness]
         L --> M[7. Customer Content]
         M --> M2[8. Naming Compliance]
+        M2 --> M3[9. Upstream Drift Detection]
     end
 
-    M2 --> N{Issues Found?}
+    M3 --> N{Issues Found?}
     N -->|Yes| O[Categorize Issues]
     O --> P{Auto-Fixable?}
     P -->|Yes| Q[Apply Auto-Fixes]
@@ -433,20 +434,60 @@ Validating naming compliance (per doc-naming skill)...
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream source documents have been modified after the PRD was created or last updated.
+
+**Purpose**: Identifies stale PRD content that may not reflect current BRD documentation.
+
+**Scope**:
+- `@ref:` tag targets
+- `@brd:` tag references
+- Traceability section upstream artifact links
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs PRD creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream document modified after PRD creation |
+| REV-D002 | Warning | Referenced section content changed |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream |
+| REV-D005 | Error | Critical upstream modification (>20% change) |
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Link Integrity | 15% | (valid_links / total_links) × 15 |
-| Threshold Consistency | 15% | (consistent_thresholds / total_thresholds) × 15 |
-| BRD Alignment | 25% | (aligned_requirements / total_requirements) × 25 |
+| Link Integrity | 14% | (valid_links / total_links) × 14 |
+| Threshold Consistency | 14% | (consistent_thresholds / total_thresholds) × 14 |
+| BRD Alignment | 24% | (aligned_requirements / total_requirements) × 24 |
 | Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (placeholder_count × 2)) |
-| Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
-| Section Completeness | 10% | (complete_sections / total_sections) × 10 |
+| Traceability Tags | 9% | (valid_tags / total_tags) × 9 |
+| Section Completeness | 9% | (complete_sections / total_sections) × 9 |
 | Customer Content | 5% | (exists && substantive ? 5 : 0) |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -763,6 +804,7 @@ review:
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-prd-autopilot` | Invokes this skill in Phase 5 |
 | `doc-prd-validator` | Structural validation (Phase 4) |
+| `doc-prd-fixer` | Applies fixes based on review findings |
 | `doc-prd` | PRD creation rules |
 | `doc-brd-validator` | BRD source validation |
 | `doc-ears-autopilot` | Downstream consumer |
@@ -773,6 +815,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when BRD documents modified after PRD creation; REV-D001-D005 error codes; drift configuration; Added doc-prd-fixer to related skills |
 | 1.2 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.1 | 2026-02-08 | Added Check #8: Naming Compliance (doc-naming integration) |
 | 1.0 | 2026-02-08 | Initial skill creation with 7 review checks |

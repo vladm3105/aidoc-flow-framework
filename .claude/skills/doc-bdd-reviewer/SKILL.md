@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,47 @@ Use `doc-bdd-reviewer` when:
 | **Output** | ADR-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | ADR-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: BDD Path] --> B[Load BDD Files]
+    B --> C{Single or Multiple Features?}
+
+    C -->|Multiple| D[Load All Feature Files]
+    C -->|Single| E[Load Single File]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Gherkin Syntax Compliance]
+        G --> H[2. Scenario Completeness]
+        H --> I[3. EARS Alignment]
+        I --> J[4. Step Definition Reusability]
+        J --> K[5. Data Table Validation]
+        K --> L[6. Placeholder Detection]
+        L --> M[7. Naming Compliance]
+        M --> M2[8. Upstream Drift Detection]
+    end
+
+    M2 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -208,19 +249,59 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 8. Upstream Drift Detection
+
+Detects when upstream source documents have been modified after the BDD was created or last updated.
+
+**Purpose**: Identifies stale BDD content that may not reflect current EARS documentation.
+
+**Scope**:
+- `@ref:` tag targets
+- `@ears:` tag references
+- Traceability section upstream artifact links
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs BDD creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream document modified after BDD creation |
+| REV-D002 | Warning | Referenced section content changed |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream |
+| REV-D005 | Error | Critical upstream modification (>20% change) |
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Gherkin Syntax Compliance | 20% | (valid_syntax / total) × 20 |
-| Scenario Completeness | 25% | (complete / total_scenarios) × 25 |
-| EARS Alignment | 20% | (aligned / total_scenarios) × 20 |
+| Gherkin Syntax Compliance | 19% | (valid_syntax / total) × 19 |
+| Scenario Completeness | 23% | (complete / total_scenarios) × 23 |
+| EARS Alignment | 19% | (aligned / total_scenarios) × 19 |
 | Step Definition Reusability | 10% | (reusable / total_steps) × 10 |
-| Data Table Validation | 10% | (valid_tables / total_tables) × 10 |
+| Data Table Validation | 9% | (valid_tables / total_tables) × 9 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -299,6 +380,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #7 |
 | `doc-bdd-autopilot` | Invokes this skill in Phase 5 |
 | `doc-bdd-validator` | Structural validation (Phase 4) |
+| `doc-bdd-fixer` | Applies fixes based on review findings |
 | `doc-bdd` | BDD creation rules |
 | `doc-ears-reviewer` | Upstream QA |
 | `doc-adr-autopilot` | Downstream consumer |
@@ -309,5 +391,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when EARS documents modified after BDD creation; REV-D001-D005 error codes; drift configuration; Added doc-bdd-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Gherkin syntax compliance; Scenario completeness; Step definition reusability |

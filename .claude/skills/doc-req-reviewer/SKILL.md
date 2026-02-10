@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,48 @@ Use `doc-req-reviewer` when:
 | **Output** | SPEC-Ready + IMPL-Ready scores | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | Score < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: REQ Path] --> B[Load REQ Files]
+    B --> C{Single or Module?}
+
+    C -->|Module| D[Load All REQ Files]
+    C -->|Single| E[Load Single File]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Requirement Atomicity]
+        G --> H[2. SYS Alignment]
+        H --> I[3. Acceptance Criteria Quality]
+        I --> J[4. Implementation Path Completeness]
+        J --> K[5. Unit Test Category Coverage]
+        K --> L[6. Cross-Link Integrity]
+        L --> M[7. Placeholder Detection]
+        M --> M2[8. Naming Compliance]
+        M2 --> N2[9. Upstream Drift Detection]
+    end
+
+    N2 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -222,20 +264,121 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream SYS documents have been modified after the REQ was created or last updated.
+
+**Purpose**: Identifies stale REQ content that may not reflect current system requirements. When SYS documents change, the REQ may need updates to maintain alignment with system-level specifications.
+
+**Upstream Documents**:
+- **SYS documents**: System Requirements that REQ atomic requirements decompose from
+
+**Scope**:
+- `@sys:` tag targets (SYS document references)
+- Traceability section upstream artifact links
+- Any markdown links to `../06_SYS/`
+- Section 10 parent requirement references
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares SYS doc `mtime` vs REQ creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced SYS requirement sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from REQ:
+   - @sys: tags → [SYS document ID, requirement ID]
+   - Links to ../06_SYS/ → [path]
+   - Traceability table upstream artifacts → [path]
+   - Section 10 parent SYS requirement → [SYS.NN.TT.SS]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #2)
+   c. Get file modification time (mtime)
+   d. Compare mtime > REQ last_updated date
+   e. If mtime > REQ date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
+
+```json
+{
+  "req_version": "1.0",
+  "req_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../06_SYS/SYS-01_f1_iam.md#3.2": "a1b2c3d4...",
+    "../../06_SYS/SYS-03_f3_observability.md": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream SYS modified after REQ creation |
+| REV-D002 | Warning | Referenced SYS requirement section has changed (hash mismatch) |
+| REV-D003 | Info | Upstream SYS version incremented |
+| REV-D004 | Info | New content added to upstream SYS |
+| REV-D005 | Error | Critical SYS substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | REQ Reference | Last Modified | REQ Updated | Days Stale | Severity |
+|-------------------|---------------|---------------|-------------|------------|----------|
+| SYS-01_f1_iam.md | @sys Section 3.2 | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| SYS-03_f3_observability.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream SYS changes and update REQ if system requirements have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @sys tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@sys:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Requirement Atomicity | 15% | (atomic / total_reqs) × 15 |
-| SYS Alignment | 15% | (aligned / total_reqs) × 15 |
-| Acceptance Criteria Quality | 20% | (quality_score) × 20 |
-| Implementation Path Completeness | 15% | (complete_paths / total) × 15 |
-| Unit Test Category Coverage | 15% | (covered_categories / 5) × 15 |
+| Requirement Atomicity | 14% | (atomic / total_reqs) × 14 |
+| SYS Alignment | 14% | (aligned / total_reqs) × 14 |
+| Acceptance Criteria Quality | 19% | (quality_score) × 19 |
+| Implementation Path Completeness | 14% | (complete_paths / total) × 14 |
+| Unit Test Category Coverage | 14% | (covered_categories / 5) × 14 |
 | Cross-Link Integrity | 5% | (valid_links / total) × 5 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -317,6 +460,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-req-autopilot` | Invokes this skill in Phase 5 |
 | `doc-req-validator` | Structural validation (Phase 4) |
+| `doc-req-fixer` | Applies fixes based on review findings |
 | `doc-req` | REQ creation rules |
 | `doc-sys-reviewer` | Upstream QA |
 | `doc-spec-autopilot` | Downstream consumer |
@@ -328,5 +472,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SYS documents modified after REQ creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-req-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Atomicity validation; Acceptance criteria quality; Implementation path completeness |

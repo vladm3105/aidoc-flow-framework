@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,48 @@ Use `doc-tasks-reviewer` when:
 | **Output** | CODE-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | CODE-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: TASKS Path] --> B[Load TASKS File]
+    B --> C{Valid Format?}
+
+    C -->|Yes| D[Parse TASKS Structure]
+    C -->|No| E[Report Format Error]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Task Completeness]
+        G --> H[2. SPEC Alignment]
+        H --> I[3. Implementation Contracts]
+        I --> J[4. Dependency Accuracy]
+        J --> K[5. Task Atomicity]
+        K --> L[6. AI Implementation Hints]
+        L --> M[7. Placeholder Detection]
+        M --> M2[8. Naming Compliance]
+        M2 --> M3[9. Upstream Drift Detection]
+    end
+
+    M3 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -228,25 +270,126 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream SPEC and TSPEC documents have been modified after the TASKS was created or last updated.
+
+**Purpose**: Identifies stale TASKS content that may not reflect current SPEC and TSPEC documentation. When SPEC documents (methods, interfaces, components) or TSPEC documents (test cases, coverage requirements) change, the TASKS may need updates to maintain implementation alignment.
+
+**Scope**:
+- `@spec:` tag targets (SPEC documents)
+- `@tspec:` tag targets (TSPEC documents)
+- Traceability section upstream artifact links
+- Any markdown links to `../09_SPEC/` or `../10_TSPEC/` source documents
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs TASKS creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from TASKS:
+   - @spec: tags → [path, section anchor]
+   - @tspec: tags → [path, section anchor]
+   - Links to ../09_SPEC/ → [path]
+   - Links to ../10_TSPEC/ → [path]
+   - Traceability table upstream artifacts → [path]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #2)
+   c. Get file modification time (mtime)
+   d. Compare mtime > TASKS last_updated date
+   e. If mtime > TASKS date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/11_TASKS/.drift_cache.json`
+
+```json
+{
+  "tasks_version": "1.0",
+  "tasks_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
+    "../../09_SPEC/SPEC-03.yaml#components": "e5f6g7h8...",
+    "../../10_TSPEC/TSPEC-03.md#test_cases": "i9j0k1l2..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream SPEC/TSPEC document modified after TASKS creation |
+| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream document |
+| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | TASKS Reference | Last Modified | TASKS Updated | Days Stale | Severity |
+|-------------------|-----------------|---------------|---------------|------------|----------|
+| SPEC-03.yaml | @spec Section methods | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| SPEC-03.yaml | @spec components | 2026-02-10 | 2026-02-05 | 5 | Warning |
+| TSPEC-03.md | @tspec test_cases | 2026-02-09 | 2026-02-05 | 4 | Warning |
+
+**Recommendation**: Review upstream SPEC/TSPEC changes and update TASKS if methods, components, or test cases have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @spec/@tspec tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@spec:`, `@tspec:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Task Completeness | 20% | (complete_tasks / total) × 20 |
-| SPEC Alignment | 20% | (aligned_tasks / total) × 20 |
-| Implementation Contracts | 15% | (contracts_present / required) × 15 |
-| Dependency Accuracy | 15% | (valid_deps / total_deps) × 15 |
+| Task Completeness | 19% | (complete_tasks / total) × 19 |
+| SPEC Alignment | 19% | (aligned_tasks / total) × 19 |
+| Implementation Contracts | 14% | (contracts_present / required) × 14 |
+| Dependency Accuracy | 14% | (valid_deps / total_deps) × 14 |
 | Task Atomicity | 10% | (atomic_tasks / total) × 10 |
 | AI Implementation Hints | 5% | (hints_present / total) × 5 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
-| Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Naming Compliance | 9% | (valid_ids / total_ids) × 9 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
 **Thresholds**:
-- **PASS**: ≥ 90
+- **PASS**: >= 90
 - **WARNING**: 80-89
 - **FAIL**: < 80
 
@@ -320,8 +463,10 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-tasks-autopilot` | Invokes this skill in Phase 5 |
 | `doc-tasks-validator` | Structural validation (Phase 4) |
+| `doc-tasks-fixer` | Applies fixes based on review findings |
 | `doc-tasks` | TASKS creation rules |
 | `doc-spec-reviewer` | Upstream QA |
+| `doc-tspec-reviewer` | Upstream QA (for test specifications) |
 
 ---
 
@@ -329,5 +474,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC/TSPEC documents modified after TASKS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tasks-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Task completeness; SPEC alignment; Implementation contracts; Dependency accuracy; Task atomicity |

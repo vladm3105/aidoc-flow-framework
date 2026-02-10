@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,47 @@ Use `doc-sys-reviewer` when:
 | **Output** | REQ-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | REQ-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: SYS Path] --> B[Load SYS Files]
+    B --> C{Single or Multiple?}
+
+    C -->|Multiple| D[Load All SYS Files]
+    C -->|Single| E[Load Single File]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Functional Requirement Completeness]
+        G --> H[2. ADR Alignment]
+        H --> I[3. Quality Attribute Coverage]
+        I --> J[4. Interface Definition Completeness]
+        J --> K[5. Constraint Validation]
+        K --> L[6. Placeholder Detection]
+        L --> M[7. Naming Compliance]
+        M --> N2[8. Upstream Drift Detection]
+    end
+
+    N2 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -209,19 +250,120 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 8. Upstream Drift Detection
+
+Detects when upstream ADR documents have been modified after the SYS was created or last updated.
+
+**Purpose**: Identifies stale SYS content that may not reflect current architecture decisions. When ADR documents change, the SYS may need updates to maintain alignment with architectural decisions.
+
+**Upstream Documents**:
+- **ADR documents**: Architecture Decision Records that SYS requirements must implement
+
+**Scope**:
+- `@adr:` tag targets (ADR document references)
+- Traceability section upstream artifact links
+- Any markdown links to `../05_ADR/`
+- Technology choice references that trace to ADR decisions
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares ADR doc `mtime` vs SYS creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced ADR decision sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from SYS:
+   - @adr: tags → [ADR document ID]
+   - Links to ../05_ADR/ → [path]
+   - Traceability table upstream artifacts → [path]
+   - Technology choices → [related ADR]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #2)
+   c. Get file modification time (mtime)
+   d. Compare mtime > SYS last_updated date
+   e. If mtime > SYS date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/06_SYS/.drift_cache.json`
+
+```json
+{
+  "sys_version": "1.0",
+  "sys_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../05_ADR/ADR-01_authentication_strategy.md": "a1b2c3d4...",
+    "../../05_ADR/ADR-05_data_storage.md": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream ADR modified after SYS creation |
+| REV-D002 | Warning | Referenced ADR decision section has changed (hash mismatch) |
+| REV-D003 | Info | Upstream ADR version incremented |
+| REV-D004 | Info | New content added to upstream ADR |
+| REV-D005 | Error | Critical ADR substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | SYS Reference | Last Modified | SYS Updated | Days Stale | Severity |
+|-------------------|---------------|---------------|-------------|------------|----------|
+| ADR-01_authentication_strategy.md | @adr Decision | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| ADR-05_data_storage.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream ADR changes and update SYS if architecture decisions have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @adr tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@adr:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Functional Requirement Completeness | 25% | (complete / total_reqs) × 25 |
-| ADR Alignment | 20% | (aligned / total_reqs) × 20 |
-| Quality Attribute Coverage | 20% | (covered / required_attrs) × 20 |
-| Interface Definition Completeness | 15% | (complete_interfaces / total) × 15 |
+| Functional Requirement Completeness | 24% | (complete / total_reqs) × 24 |
+| ADR Alignment | 19% | (aligned / total_reqs) × 19 |
+| Quality Attribute Coverage | 19% | (covered / required_attrs) × 19 |
+| Interface Definition Completeness | 14% | (complete_interfaces / total) × 14 |
 | Constraint Validation | 5% | (valid_constraints / total) × 5 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
-| Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Naming Compliance | 9% | (valid_ids / total_ids) × 9 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -300,6 +442,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #7 |
 | `doc-sys-autopilot` | Invokes this skill in Phase 5 |
 | `doc-sys-validator` | Structural validation (Phase 4) |
+| `doc-sys-fixer` | Applies fixes based on review findings |
 | `doc-sys` | SYS creation rules |
 | `doc-adr-reviewer` | Upstream QA |
 | `doc-req-autopilot` | Downstream consumer |
@@ -310,5 +453,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when ADR documents modified after SYS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-sys-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; ADR alignment; Quality attribute coverage; Interface completeness |

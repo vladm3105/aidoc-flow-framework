@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [ADR, SYS, REQ]
-  version: "2.0"
-  last_updated: "2026-02-09"
+  version: "2.1"
+  last_updated: "2026-02-10"
 ---
 
 # doc-bdd-autopilot
@@ -44,13 +44,15 @@ This autopilot orchestrates the following skills:
 | `doc-bdd` | BDD creation rules, Gherkin syntax, section-based structure | Phase 3: BDD Generation |
 | `quality-advisor` | Real-time quality feedback during BDD generation | Phase 3: BDD Generation |
 | `doc-bdd-validator` | Validate BDD structure, content, ADR-Ready score | Phase 4: BDD Validation |
-| `doc-bdd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-bdd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-bdd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - BDD structure/content rules -> `doc-bdd` skill
 - Real-time quality feedback -> `quality-advisor` skill
 - BDD validation logic -> `doc-bdd-validator` skill
-- Final content review -> `doc-bdd-reviewer` skill
+- Content review and scoring -> `doc-bdd-reviewer` skill
+- Issue resolution and fixes -> `doc-bdd-fixer` skill
 - EARS validation logic -> `doc-ears-validator` skill
 - Element ID standards -> `doc-naming` skill
 
@@ -451,9 +453,39 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.1)
 
-Comprehensive final review before marking BDD complete.
+Iterative review and fix cycle to ensure BDD quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-bdd-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-bdd-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-bdd-reviewer` to identify issues.
+
+```bash
+/doc-bdd-reviewer BDD-NN
+```
+
+**Output**: `BDD-NN.R_review_report_v001.md`
 
 **Review Checks**:
 
@@ -482,7 +514,62 @@ Comprehensive final review before marking BDD complete.
    - Edge cases for boundary conditions
    - Data-driven scenarios for parameterized tests
 
-5. **ADR-Ready Report** (v2.0 with Visual Indicators):
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-bdd-fixer`.
+
+```bash
+/doc-bdd-fixer BDD-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create index, redirect stubs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns to BDD.NN.14.SS/BDD.NN.15.SS |
+| Tags | Move comment tags to Gherkin-native, add missing tags |
+| Thresholds | Replace hardcoded values with @threshold references |
+| v2.0 Compliance | Add @scenario-type, @priority, WITHIN constraints |
+
+**Output**: `BDD-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-bdd-reviewer BDD-NN
+```
+
+**Output**: `BDD-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 84 (3 errors, 6 warnings)
+  Fix v001: Fixed 7 issues, added 5 threshold references
+
+Iteration 2:
+  Review v002: Score 92 (0 errors, 4 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **ADR-Ready Report** (with Visual Indicators):
 
    **Score Display Format**:
    - ✅ >= 90% (Target Met)
@@ -521,7 +608,7 @@ Comprehensive final review before marking BDD complete.
    Status: READY FOR ADR GENERATION
    ```
 
-6. **Traceability Matrix Update**:
+2. **Traceability Matrix Update**:
 
    ```bash
    # Update BDD-00_TRACEABILITY_MATRIX.md
@@ -1557,7 +1644,6 @@ docs/04_BDD/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
-| 2.1 | 2026-02-09 | Added Review Mode for validating existing BDD documents without modification; Added Fix Mode for auto-repairing BDD documents while preserving manual content; Added fix categories (structure, tags, thresholds, syntax, v2_compliance); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation; Updated command line options for new modes |
-| 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators (✅/🟡/❌); Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section |
+| 2.1 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-bdd-reviewer` and `doc-bdd-fixer`; Added `doc-bdd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
+| 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators; Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section; Added Review Mode for validating existing BDD documents; Added Fix Mode for auto-repairing BDD documents |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-bdd, doc-bdd-validator, quality-advisor skills; Added scenario category reference (8 categories); Added section-based structure requirements; Added Gherkin-native tag enforcement |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD]
   downstream_artifacts: [BDD, ADR, SYS]
-  version: "2.1"
-  last_updated: "2026-02-09"
+  version: "2.2"
+  last_updated: "2026-02-10"
 ---
 
 # doc-ears-autopilot
@@ -44,13 +44,15 @@ This autopilot orchestrates the following skills:
 | `doc-ears` | EARS creation rules, WHEN-THE-SHALL syntax, template, section structure | Phase 3: EARS Generation |
 | `quality-advisor` | Real-time quality feedback during EARS generation | Phase 3: EARS Generation |
 | `doc-ears-validator` | Validate EARS structure, content, BDD-Ready score | Phase 4: EARS Validation |
-| `doc-ears-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-ears-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-ears-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - EARS structure/content rules -> `doc-ears` skill
 - Real-time quality feedback -> `quality-advisor` skill
 - EARS validation logic -> `doc-ears-validator` skill
-- Final content review -> `doc-ears-reviewer` skill
+- Content review and scoring -> `doc-ears-reviewer` skill
+- Issue resolution and fixes -> `doc-ears-fixer` skill
 - PRD validation logic -> `doc-prd-validator` skill
 - Element ID standards -> `doc-naming` skill
 
@@ -401,9 +403,39 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.2)
 
-Comprehensive final review before marking EARS complete.
+Iterative review and fix cycle to ensure EARS quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-ears-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-ears-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-ears-reviewer` to identify issues.
+
+```bash
+/doc-ears-reviewer EARS-NN
+```
+
+**Output**: `EARS-NN.R_review_report_v001.md`
 
 **Review Checks**:
 
@@ -428,7 +460,62 @@ Comprehensive final review before marking EARS complete.
    - No compound requirements in single statements
    - Clear trigger-action-constraint structure
 
-5. **BDD-Ready Report**:
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-ears-fixer`.
+
+```bash
+/doc-ears-fixer EARS-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns (ER-XXX, SR-XXX, UB-XXX, UQ-XXX) |
+| Content | Replace template placeholders, dates |
+| References | Update traceability tags (@brd, @prd) |
+| Thresholds | Add missing @threshold references |
+
+**Output**: `EARS-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-ears-reviewer EARS-NN
+```
+
+**Output**: `EARS-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 82 (3 errors, 5 warnings)
+  Fix v001: Fixed 6 issues, added 4 threshold references
+
+Iteration 2:
+  Review v002: Score 91 (0 errors, 3 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **BDD-Ready Report**:
 
    ```
    BDD-Ready Score Breakdown
@@ -456,7 +543,7 @@ Comprehensive final review before marking EARS complete.
    Status: READY FOR BDD GENERATION
    ```
 
-6. **Traceability Matrix Update**:
+2. **Traceability Matrix Update**:
 
    ```bash
    # Update EARS-00_TRACEABILITY_MATRIX.md
@@ -1219,6 +1306,6 @@ docs/03_EARS/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
+| 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-ears-reviewer` and `doc-ears-fixer`; Added `doc-ears-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (ER-XXX→EARS.NN.25.0XX, SR-XXX→EARS.NN.25.1XX, UB-XXX→EARS.NN.25.2XX, UQ-XXX→EARS.NN.25.4XX) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-ears, doc-ears-validator, quality-advisor skills; Added EARS statement type reference (Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous); Added requirement categorization and ID range mapping |

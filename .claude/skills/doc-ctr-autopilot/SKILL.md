@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ]
   downstream_artifacts: [SPEC, TSPEC, TASKS]
-  version: "2.1"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-ctr-autopilot
@@ -42,7 +42,8 @@ Automated **Data Contracts (CTR)** generation pipeline that first analyzes which
 | `doc-ctr` | CTR creation rules, dual-file format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
 | `doc-ctr-validator` | Validation with SPEC-Ready scoring | Phase 4 |
-| `doc-ctr-reviewer` | Final content review and quality assurance | Phase 5 |
+| `doc-ctr-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-ctr-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 ---
 
@@ -98,9 +99,15 @@ flowchart TD
         S -->|Yes| V[Mark CTR Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        V --> W[Verify Dual-File Consistency]
-        W --> X[Check OpenAPI/JSON Schema]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        V --> W[Run doc-ctr-reviewer]
+        W --> W2{Score >= 90?}
+        W2 -->|No| W3[Run doc-ctr-fixer]
+        W3 --> W4{Iteration < Max?}
+        W4 -->|Yes| W
+        W4 -->|No| W5[Flag Manual Review]
+        W2 -->|Yes| X[Verify Quality Checks]
+        W5 --> X
         X --> Y[Update Traceability Matrix]
         Y --> Z[Generate Summary Report]
     end
@@ -379,15 +386,133 @@ Run `doc-ctr-validator` on each generated CTR document.
 
 ---
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.3)
 
-Complete the CTR generation process.
+Iterative review and fix cycle to ensure CTR quality before completion.
 
-**Final Checks**:
-- Dual-file consistency (md ↔ yaml)
-- OpenAPI schema validation
-- Update CTR index
-- Generate summary report
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-ctr-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-ctr-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-ctr-reviewer` to identify issues.
+
+```bash
+/doc-ctr-reviewer CTR-NN
+```
+
+**Output**: `CTR-NN.R_review_report_v001.md`
+
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-ctr-fixer`.
+
+```bash
+/doc-ctr-fixer CTR-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns, fix invalid type codes |
+| OpenAPI | Fix schema references, add missing responses |
+| Dual-File Sync | Synchronize MD and YAML content |
+| Traceability | Update cumulative tags |
+
+**Output**: `CTR-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-ctr-reviewer CTR-NN
+```
+
+**Output**: `CTR-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 85 (2 errors, 4 warnings)
+  Fix v001: Fixed 5 issues, created 1 file
+
+Iteration 2:
+  Review v002: Score 94 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **Dual-File Consistency**:
+   - MD and YAML files synchronized
+   - All endpoints documented in both files
+   - Schema definitions match
+
+2. **OpenAPI Compliance**:
+   - Valid OpenAPI 3.0.3 schema
+   - All operations have operationId
+   - Error responses complete (401, 403, 500)
+
+3. **Element ID Compliance** (per `doc-naming` skill):
+   - All IDs use CTR.NN.TT.SS format
+   - Element type codes valid for CTR (16, 17, 20)
+   - No legacy patterns (IF-XXX, DM-XXX, CC-XXX)
+
+4. **SPEC-Ready Report**:
+   ```
+   SPEC-Ready Score Breakdown
+   =========================
+   OpenAPI Validity:       25/25
+   Schema Completeness:    18/20
+   Error Responses:        15/15
+   Security Schemes:       15/15
+   Dual-File Consistency:  10/10
+   Traceability (7 tags):  10/10
+   Element IDs:            5/5
+   ----------------------------
+   Total SPEC-Ready Score: 98/100 (Target: >= 90)
+   Status: READY FOR SPEC GENERATION
+   ```
+
+5. **Traceability Matrix Update**:
+   ```bash
+   # Update CTR traceability
+   python ai_dev_flow/scripts/update_traceability_matrix.py \
+     --ctr docs/08_CTR/CTR-NN_{slug}.md \
+     --matrix docs/08_CTR/CTR-00_TRACEABILITY_MATRIX.md
+   ```
 
 ---
 
@@ -875,6 +1000,7 @@ docs/08_CTR/CTR-03-001_provider_api/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-ctr-reviewer` and `doc-ctr-fixer`; Added `doc-ctr-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (dual-file consistency, OpenAPI compliance, element ID compliance, SPEC-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode (read-only validation with dual-file consistency checks); Added Fix Mode (auto-repair with OpenAPI validation, element ID migration, traceability fixes); Added backup/restore capability; Content preservation rules |
 | 2.0 | 2026-02-09 | Added Phase 0: CTR Requirement Analysis; Added detection criteria for external APIs; Added user confirmation step; Renumbered phases; Added command options |

@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "2.2"
+  version: "2.3"
 ---
 
 # doc-prd-autopilot
@@ -44,14 +44,16 @@ This autopilot orchestrates the following skills:
 | `doc-prd` | PRD creation rules, template, section structure | Phase 3: PRD Generation |
 | `quality-advisor` | Real-time quality feedback during PRD generation | Phase 3: PRD Generation |
 | `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
-| `doc-prd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-prd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-prd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - PRD structure/content rules → `doc-prd` skill
 - Real-time quality feedback → `quality-advisor` skill
 - PRD validation logic → `doc-prd-validator` skill
 - BRD validation logic → `doc-brd-validator` skill
-- Final content review → `doc-prd-reviewer` skill (or inline review)
+- Content review and scoring → `doc-prd-reviewer` skill
+- Issue resolution and fixes → `doc-prd-fixer` skill
 
 ---
 
@@ -337,9 +339,39 @@ After PRD generation, validate EARS-Ready score.
 | Missing fallback documentation | PRD-W002 | Add Section 20.4 template |
 | Incomplete customer-facing content | PRD-E006 | Flag for manual review (Section 10) |
 
-### Step 6: Final Content Review
+### Step 6: Review & Fix Cycle (v2.3)
 
-After EARS-Ready validation passes, perform comprehensive content review.
+Iterative review and fix cycle to ensure PRD quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-prd-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-prd-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-prd-reviewer` to identify issues.
+
+```bash
+/doc-prd-reviewer PRD-NN
+```
+
+**Output**: `PRD-NN.R_review_report_v001.md`
 
 **Review Checklist**:
 
@@ -354,7 +386,60 @@ After EARS-Ready validation passes, perform comprehensive content review.
 | Section Completeness | No empty or stub sections | - | Flag |
 | Customer Content | Section 10 has substantive content | - | Flag |
 
-**Review Process**:
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-prd-fixer`.
+
+```bash
+/doc-prd-fixer PRD-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns, fix invalid type codes |
+| Content | Replace template placeholders, dates |
+| References | Update traceability tags |
+| Thresholds | Align inconsistent values to BRD source |
+
+**Output**: `PRD-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-prd-reviewer PRD-NN
+```
+
+**Output**: `PRD-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 85 (2 errors, 4 warnings)
+  Fix v001: Fixed 5 issues, created 1 file
+
+Iteration 2:
+  Review v002: Score 94 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
 
 1. **Link Integrity Check**:
    ```
@@ -383,41 +468,26 @@ After EARS-Ready validation passes, perform comprehensive content review.
    └── Result: 12/12 requirements aligned ✓
    ```
 
-4. **Placeholder Detection**:
+4. **EARS-Ready Report**:
    ```
-   Scanning for placeholder text...
-   ├── [TODO]: 0 found
-   ├── [TBD]: 0 found
-   ├── YYYY-MM-DD: 0 found
-   ├── [Name]: 0 found
-   └── Result: No placeholders ✓
+   EARS-Ready Score Breakdown
+   =========================
+   Business Requirements Clarity: 40/40
+   Requirements Maturity:         35/35
+   EARS Translation Readiness:    20/20
+   Strategic Alignment:           5/5
+   ----------------------------
+   Total EARS-Ready Score:        100/100 (Target: >= 90)
+   Status: READY FOR EARS GENERATION
    ```
 
-**Review Output**:
-```
-Final Review Complete:
-├── Link Integrity: PASS (0 broken links)
-├── Threshold Consistency: PASS (all metrics aligned)
-├── BRD Alignment: PASS (12/12 requirements)
-├── Placeholder Detection: PASS (0 placeholders)
-├── Traceability Tags: PASS (15 valid @brd references)
-├── Section Completeness: PASS (17/17 sections)
-└── Customer Content: FLAG (Section 10 needs business review)
-
-Review Score: 95/100
-Status: PASS (threshold: 90)
-Flagged for Manual Review: Section 10 (Customer-Facing Content)
-```
-
-**Auto-Fix Actions**:
-
-| Issue | Auto-Fix Action |
-|-------|-----------------|
-| Broken internal link | Update link path or remove |
-| Inconsistent threshold | Align to BRD source value |
-| Placeholder text | Replace with actual content or flag |
-| Invalid @brd tag | Remove or correct reference |
-| Missing date | Insert current date |
+5. **Traceability Matrix Update**:
+   ```bash
+   # Update PRD-00_TRACEABILITY_MATRIX.md
+   python ai_dev_flow/scripts/update_traceability_matrix.py \
+     --prd docs/02_PRD/PRD-NN_{slug}.md \
+     --matrix docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md
+   ```
 
 ---
 
@@ -1117,6 +1187,7 @@ docs/02_PRD/PRD-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Step 6) with iterative Review -> Fix cycle using `doc-prd-reviewer` and `doc-prd-fixer`; Added `doc-prd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references; references shared `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` |
 | 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (PO-XXX→PRD.NN.07.SS, FF-XXX→PRD.NN.01.SS, AC-XXX→PRD.NN.06.SS, US-XXX→PRD.NN.08.SS) |
 | 1.3 | 2026-02-08 | Integrated quality-advisor skill for real-time quality feedback in Phase 3 (PRD Generation) |

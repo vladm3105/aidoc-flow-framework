@@ -15,8 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: [PRD]
-  version: "2.0"
-  last_updated: "2026-02-08"
+  version: "2.1"
+  last_updated: "2026-02-10"
 ---
 
 # doc-brd-validator
@@ -165,7 +165,7 @@ Forbidden tag patterns:
 
 **Element ID Validation**:
 - Format: `BRD.NN.TT.SS` (4-segment unified format)
-- Valid element type codes for BRD: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32
+- Valid element type codes for BRD: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33
 - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
 
 **File Naming Convention**:
@@ -318,5 +318,6 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
 | 2.0 | 2026-02-08 | Complete rewrite: Added YAML frontmatter, doc-naming integration (BRD-E019/E020/E021), updated section structure to 18 sections, fixed file paths with numbered prefixes, added PRD-Ready score validation |
 | 1.0 | 2025-01-06 | Initial version (outdated 12-section structure) |

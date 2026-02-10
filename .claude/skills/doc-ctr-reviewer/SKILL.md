@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [CTR]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,47 @@ Use `doc-ctr-reviewer` when:
 | **Output** | SPEC-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | SPEC-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: CTR Path] --> B[Load CTR Files]
+    B --> C{MD + YAML Present?}
+
+    C -->|Both| D[Load Both Files]
+    C -->|Single| E[Load Available File]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Dual-File Consistency]
+        G --> H[2. OpenAPI Compliance]
+        H --> I[3. REQ Alignment]
+        I --> J[4. Endpoint Coverage]
+        J --> K[5. Security Definition]
+        K --> L[6. Placeholder Detection]
+        L --> M[7. Naming Compliance]
+        M --> M2[8. Upstream Drift Detection]
+    end
+
+    M2 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -203,24 +244,120 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 8. Upstream Drift Detection
+
+Detects when upstream REQ documents have been modified after the CTR was created or last updated.
+
+**Purpose**: Identifies stale CTR content that may not reflect current REQ documentation. When REQ documents (interface requirements, external API specifications) change, the CTR may need updates to maintain alignment.
+
+**Scope**:
+- `@req:` tag targets (REQ documents)
+- Traceability section upstream artifact links
+- Any markdown links to `../07_REQ/` or REQ source documents
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs CTR creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from CTR:
+   - @req: tags → [path, section anchor]
+   - Links to ../07_REQ/ → [path]
+   - Traceability table upstream artifacts → [path]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #3)
+   c. Get file modification time (mtime)
+   d. Compare mtime > CTR last_updated date
+   e. If mtime > CTR date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
+
+```json
+{
+  "ctr_version": "1.0",
+  "ctr_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../07_REQ/REQ-03.yaml#interfaces": "a1b2c3d4...",
+    "../../07_REQ/REQ-03.yaml#external_apis": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream REQ document modified after CTR creation |
+| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream document |
+| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | CTR Reference | Last Modified | CTR Updated | Days Stale | Severity |
+|-------------------|---------------|---------------|-------------|------------|----------|
+| REQ-03.yaml | @req Section interfaces | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| REQ-03.yaml | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream REQ changes and update CTR if interface requirements have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @req tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@req:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Dual-File Consistency | 25% | (consistent_elements / total) × 25 |
-| OpenAPI Compliance | 20% | (valid_fields / required_fields) × 20 |
-| REQ Alignment | 15% | (aligned_endpoints / total) × 15 |
-| Endpoint Coverage | 15% | (covered / expected) × 15 |
+| Dual-File Consistency | 24% | (consistent_elements / total) × 24 |
+| OpenAPI Compliance | 19% | (valid_fields / required_fields) × 19 |
+| REQ Alignment | 14% | (aligned_endpoints / total) × 14 |
+| Endpoint Coverage | 14% | (covered / expected) × 14 |
 | Security Definition | 10% | (security_score) × 10 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
-| Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Naming Compliance | 9% | (valid_ids / total_ids) × 9 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
 **Thresholds**:
-- **PASS**: ≥ 90
+- **PASS**: >= 90
 - **WARNING**: 80-89
 - **FAIL**: < 80
 
@@ -295,6 +432,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #7 |
 | `doc-ctr-autopilot` | Invokes this skill in Phase 5 |
 | `doc-ctr-validator` | Structural validation (Phase 4) |
+| `doc-ctr-fixer` | Applies fixes based on review findings |
 | `doc-ctr` | CTR creation rules |
 | `doc-req-reviewer` | Upstream QA |
 | `doc-spec-autopilot` | Downstream consumer |
@@ -305,5 +443,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when REQ documents modified after CTR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-ctr-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Dual-file consistency; OpenAPI compliance; Security definition |

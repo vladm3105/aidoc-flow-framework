@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC]
   downstream_artifacts: [Code]
-  version: "2.1"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-tasks-autopilot
@@ -43,7 +43,8 @@ Automated **Task Breakdown (TASKS)** generation pipeline that processes SPEC and
 | `doc-tasks` | TASKS creation rules, TODO format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
 | `doc-tasks-validator` | Validation with CODE-Ready scoring | Phase 4 |
-| `doc-tasks-reviewer` | Final content review and quality assurance | Phase 5 |
+| `doc-tasks-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-tasks-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 ---
 
@@ -92,15 +93,20 @@ flowchart TD
         Y -->|Yes| AB[Mark TASKS Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        AB --> AC[Verify Dependency Graph]
-        AC --> AD[Check Implementation Contracts]
-        AD --> AE[Validate Priority Assignments]
-        AE --> AF[Update Traceability Matrix]
-        AF --> AG[Generate Summary Report]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        AB --> AC[Run doc-tasks-reviewer]
+        AC --> AC2{Score >= 90?}
+        AC2 -->|No| AC3[Run doc-tasks-fixer]
+        AC3 --> AC4{Iteration < Max?}
+        AC4 -->|Yes| AC
+        AC4 -->|No| AC5[Flag Manual Review]
+        AC2 -->|Yes| AD[Verify Quality Checks]
+        AC5 --> AD
+        AD --> AE[Update Traceability Matrix]
+        AE --> AF[Generate Summary Report]
     end
 
-    AG --> AH[Complete]
+    AF --> AG[Complete]
     M --> AI[Exit with Error]
 ```
 
@@ -188,6 +194,135 @@ Per `IMPLEMENTATION_CONTRACTS_GUIDE.md`, generate contracts when:
 3. State Machine Contracts
 4. Data Models
 5. Dependency Injection Interfaces
+
+---
+
+## Phase 5: Review & Fix Cycle (v2.3)
+
+Iterative review and fix cycle to ensure TASKS quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-tasks-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-tasks-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+### 5.1 Initial Review
+
+Run `doc-tasks-reviewer` to identify issues.
+
+```bash
+/doc-tasks-reviewer TASKS-NN
+```
+
+**Output**: `TASKS-NN.R_review_report_v001.md`
+
+### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-tasks-fixer`.
+
+```bash
+/doc-tasks-fixer TASKS-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Sections | Add missing task overview, contracts sections |
+| Element IDs | Convert legacy patterns (TASK-XXX, TODO-XXX) |
+| Dependency Graph | Regenerate Mermaid diagram from task references |
+| Priority Format | Normalize to P0-P3 format |
+| Implementation Contracts | Generate when 3+ dependencies exist |
+| Traceability | Update cumulative tags (9 layers) |
+
+**Output**: `TASKS-NN.F_fix_report_v001.md`
+
+### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-tasks-reviewer TASKS-NN
+```
+
+**Output**: `TASKS-NN.R_review_report_v002.md`
+
+### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 75 (3 errors, 5 warnings)
+  Fix v001: Fixed 6 issues, regenerated dependency graph
+
+Iteration 2:
+  Review v002: Score 92 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **Task Structure Completeness**:
+   - All required task fields present (Priority, Upstream, Downstream)
+   - SPEC references valid and linked
+   - Complexity estimates provided
+
+2. **Dependency Graph Validity**:
+   - Valid DAG (no circular dependencies)
+   - All task references resolved
+   - Mermaid diagram renders correctly
+
+3. **Element ID Compliance** (per `doc-naming` skill):
+   - All IDs use TASKS.NN.TT.SS format
+   - Element type codes valid for TASKS (18, 30)
+   - No legacy patterns (TASK-XXX, TODO-XXX, TI-XXX)
+
+4. **CODE-Ready Report**:
+   ```
+   CODE-Ready Score Breakdown
+   ==========================
+   Task Completeness:        24/25 (all required fields)
+   Dependency Graph:         20/20 (valid DAG)
+   Priority Assignments:     15/15 (P0-P3 assigned)
+   Implementation Contracts: 14/15 (contracts where needed)
+   Traceability Tags:        15/15 (all 9 tags present)
+   SPEC/TSPEC Alignment:     10/10 (references valid)
+   ----------------------------
+   Total CODE-Ready Score:   98/100 (Target: >= 90)
+   Status: READY FOR CODE IMPLEMENTATION
+   ```
+
+5. **Traceability Matrix Update**:
+   ```bash
+   # Update TASKS traceability
+   python ai_dev_flow/scripts/update_traceability_matrix.py \
+     --tasks docs/11_TASKS/TASKS-NN_{slug}.md \
+     --matrix docs/11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md
+   ```
 
 ---
 
@@ -591,6 +726,7 @@ docs/11_TASKS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-tasks-reviewer` and `doc-tasks-fixer`; Added `doc-tasks-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (task structure completeness, dependency graph validity, element ID compliance, CODE-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Mode 2: Review Mode for validation-only analysis with visual score indicators; Added Mode 3: Fix Mode for auto-repair with backup and content preservation; Element ID migration (TASK-NNN→TASKS.NN.18.SS, TI-NNN→TASKS.NN.30.SS); Implementation contracts auto-generation |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-tasks, quality-advisor, doc-tasks-validator; Added implementation contracts support |

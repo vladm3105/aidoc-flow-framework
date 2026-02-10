@@ -15,7 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
-  version: "1.4"
+  version: "1.5"
 ---
 
 # doc-naming Skill
@@ -218,6 +218,7 @@ Active element type codes with document type applicability:
 | 28 | Specification Element | SPEC |
 | 30 | Task Item | TASKS |
 | 32 | Architecture Topic | BRD |
+| 33 | Benefit Statement | BRD |
 | 40 | Unit Test Case | TSPEC (UTEST) |
 | 41 | Integration Test Case | TSPEC (ITEST) |
 | 42 | Smoke Test Case | TSPEC (STEST) |
@@ -227,7 +228,7 @@ Active element type codes with document type applicability:
 
 | Document | Common Element Codes |
 |----------|---------------------|
-| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32 |
+| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33 |
 | PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
 | EARS | 25 |
 | BDD | 14, 15 |
@@ -341,6 +342,8 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 ### BRD.02.10.01: Database Selection Decision
 ### BRD.02.32.01: Infrastructure Architecture Topic
 ### BRD.02.32.02: Data Architecture Topic
+### BRD.02.33.01: Cost Reduction Benefit
+### BRD.02.33.02: Efficiency Improvement Benefit
 @threshold: BRD.02.perf.response_time.max
 ```
 
@@ -534,6 +537,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-10 | Added element code 33 (Benefit Statement) for BRD Section 2.5; Updated BRD Quick Lookup to include code 33; Added BRD examples for code 33 |
 | 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |
 | 1.3 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
 | 1.2 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |

@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.3"
   last_updated: "2026-02-10"
 ---
 
@@ -86,9 +86,10 @@ flowchart TD
         K --> L[6. Section Completeness]
         L --> M[7. Strategic Alignment]
         M --> M2[8. Naming Compliance]
+        M2 --> M3[9. Upstream Drift Detection]
     end
 
-    M2 --> N{Issues Found?}
+    M3 --> N{Issues Found?}
     N -->|Yes| O[Categorize Issues]
     O --> P{Auto-Fixable?}
     P -->|Yes| Q[Apply Auto-Fixes]
@@ -281,7 +282,7 @@ Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
 - Element IDs use `BRD.NN.TT.SS` format
-- Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
+- Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33)
 - No legacy patterns (BO-NNN, FR-NNN, etc.)
 
 **Auto-Fix**:
@@ -299,6 +300,104 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream source documents have been modified after the BRD was created or last updated.
+
+**Purpose**: Identifies stale BRD content that may not reflect current source documentation. When upstream documents (strategy specs, technical specifications, stakeholder inputs) change, the BRD may need updates to maintain alignment.
+
+**Scope**:
+- `@ref:` tag targets (technical specifications, strategy documents)
+- `@strategy:` tag references
+- Traceability section upstream artifact links
+- GAP analysis document references
+- Any markdown links to `../00_REF/` or source documents
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs BRD creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from BRD:
+   - @ref: tags → [path, section anchor]
+   - @strategy: tags → [document ID]
+   - Links to ../00_REF/ → [path]
+   - Traceability table upstream artifacts → [path]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #1)
+   c. Get file modification time (mtime)
+   d. Compare mtime > BRD last_updated date
+   e. If mtime > BRD date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/01_BRD/{BRD_folder}/.drift_cache.json`
+
+```json
+{
+  "brd_version": "1.0",
+  "brd_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../00_REF/foundation/F1_IAM_Technical_Specification.md#3-authentication": "a1b2c3d4...",
+    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream document modified after BRD creation |
+| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream document |
+| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | BRD Reference | Last Modified | BRD Updated | Days Stale | Severity |
+|-------------------|---------------|---------------|-------------|------------|----------|
+| F1_IAM_Technical_Specification.md | @ref Section 3 | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| GAP_Foundation_Module_Gap_Analysis.md | Traceability | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream changes and update BRD if requirements have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @ref tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@ref:`, `@strategy:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
@@ -306,13 +405,14 @@ Validates element IDs follow `doc-naming` standards.
 | Category | Weight | Calculation |
 |----------|--------|-------------|
 | Link Integrity | 10% | (valid_links / total_links) × 10 |
-| Requirement Completeness | 20% | (complete_reqs / total_reqs) × 20 |
-| ADR Topic Coverage | 20% | (covered_topics / required_topics) × 20 |
+| Requirement Completeness | 18% | (complete_reqs / total_reqs) × 18 |
+| ADR Topic Coverage | 18% | (covered_topics / required_topics) × 18 |
 | Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (count × 2)) |
 | Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
-| Section Completeness | 15% | (complete_sections / total_sections) × 15 |
+| Section Completeness | 14% | (complete_sections / total_sections) × 14 |
 | Strategic Alignment | 5% | (aligned_objectives / total_objectives) × 5 |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -421,6 +521,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-brd-autopilot` | Invokes this skill in Phase 5 |
 | `doc-brd-validator` | Structural validation (Phase 4) |
+| `doc-brd-fixer` | Applies fixes based on review findings |
 | `doc-brd` | BRD creation rules |
 | `doc-prd-autopilot` | Downstream consumer |
 
@@ -430,5 +531,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |
+| 1.2 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; ADR topic coverage validation; Strategic alignment check |

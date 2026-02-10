@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ]
-  version: "2.0"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-adr-autopilot
@@ -43,13 +43,15 @@ This autopilot orchestrates the following skills:
 | `doc-adr` | ADR creation rules, 17-section structure, lifecycle states | Phase 3: ADR Generation |
 | `quality-advisor` | Real-time quality feedback during ADR generation | Phase 3: ADR Generation |
 | `doc-adr-validator` | Validate ADR structure, content, SYS-Ready score | Phase 4: ADR Validation |
-| `doc-adr-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-adr-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-adr-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - ADR structure/content rules -> `doc-adr` skill
 - Real-time quality feedback -> `quality-advisor` skill
 - ADR validation logic -> `doc-adr-validator` skill
-- Final content review -> `doc-adr-reviewer` skill
+- Content review and scoring -> `doc-adr-reviewer` skill
+- Issue resolution and fixes -> `doc-adr-fixer` skill
 - Element ID standards -> `doc-naming` skill
 
 ---
@@ -115,16 +117,24 @@ flowchart TD
         X -->|Yes| AA[Mark ADR Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        AA --> AB{More Topics?}
-        AB -->|Yes| L
-        AB -->|No| AC[Check All ADRs Complete]
-        AC --> AD[Verify Cross-ADR Consistency]
-        AD --> AE[Update Traceability Matrix]
-        AE --> AF[Generate Summary Report]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        AA --> AB[Run doc-adr-reviewer]
+        AB --> AB2{Score >= 90?}
+        AB2 -->|No| AB3[Run doc-adr-fixer]
+        AB3 --> AB4{Iteration < Max?}
+        AB4 -->|Yes| AB
+        AB4 -->|No| AB5[Flag Manual Review]
+        AB2 -->|Yes| AC[Verify Quality Checks]
+        AB5 --> AC
+        AC --> AD{More Topics?}
+        AD -->|Yes| L
+        AD -->|No| AE[Check All ADRs Complete]
+        AE --> AF[Verify Cross-ADR Consistency]
+        AF --> AG[Update Traceability Matrix]
+        AG --> AH[Generate Summary Report]
     end
 
-    AF --> AG[Complete]
+    AH --> AI[Complete]
 ```
 
 ---
@@ -516,11 +526,94 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.1)
 
-Comprehensive final review before marking ADR generation complete.
+Iterative review and fix cycle to ensure ADR quality before completion.
 
-**Review Checks**:
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-adr-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Final Checks]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-adr-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-adr-reviewer` to identify issues.
+
+```bash
+/doc-adr-reviewer ADR-NN
+```
+
+**Output**: `ADR-NN.R_review_report_v001.md`
+
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-adr-fixer`.
+
+```bash
+/doc-adr-fixer ADR-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns (DEC-XXX, ALT-XXX, CON-XXX), fix invalid type codes |
+| Content | Replace template placeholders, update dates |
+| References | Update traceability tags |
+| Diagrams | Add missing Mermaid diagrams |
+
+**Output**: `ADR-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-adr-reviewer ADR-NN
+```
+
+**Output**: `ADR-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 85 (2 errors, 4 warnings)
+  Fix v001: Fixed 5 issues, added 1 diagram
+
+Iteration 2:
+  Review v002: Score 94 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
 
 1. **All ADRs Complete**:
    - All 7 mandatory topic categories addressed
@@ -540,7 +633,20 @@ Comprehensive final review before marking ADR generation complete.
      --matrix docs/ADR/ADR-00_TRACEABILITY_MATRIX.md
    ```
 
-4. **Summary Report Generation**:
+4. **SYS-Ready Report**:
+   ```
+   SYS-Ready Score Breakdown
+   =========================
+   Decision Completeness:      30/30 (Context/Decision/Consequences)
+   Architecture Clarity:       33/35 (Mermaid diagrams present)
+   Implementation Readiness:   19/20 (Complexity assessment)
+   Verification Approach:      14/15 (Testing strategy)
+   ----------------------------
+   Total SYS-Ready Score:      96/100 (Target: >= 90)
+   Status: READY FOR SYS GENERATION
+   ```
+
+5. **Summary Report Generation**:
    ```
    ADR Generation Summary
    ======================
@@ -1299,6 +1405,7 @@ docs/05_ADR/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-adr-reviewer` and `doc-adr-fixer`; Added `doc-adr-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing ADR documents without modification; Added Fix Mode for auto-repairing ADR documents while preserving manual content; Added fix categories (element_ids, structure, v2_sections, traceability, visual_indicators); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with score breakdown impact; Added element ID migration support (DEC_XXX, ALT_XXX, CON_XXX to unified format) |
 | 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Post-MVP Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |

@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,48 @@ Use `doc-spec-reviewer` when:
 | **Output** | TASKS-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | TASKS-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: SPEC Path] --> B[Load SPEC File]
+    B --> C{YAML Valid?}
+
+    C -->|Yes| D[Parse YAML Structure]
+    C -->|No| E[Report Syntax Error]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. YAML Structure Completeness]
+        G --> H[2. REQ Coverage]
+        H --> I[3. Interface Definition Completeness]
+        I --> J[4. Threshold Registry Compliance]
+        J --> K[5. Data Model Completeness]
+        K --> L[6. Error Handling Coverage]
+        L --> M[7. Placeholder Detection]
+        M --> M2[8. Naming Compliance]
+        M2 --> M3[9. Upstream Drift Detection]
+    end
+
+    M3 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -235,25 +277,124 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream REQ and CTR documents have been modified after the SPEC was created or last updated.
+
+**Purpose**: Identifies stale SPEC content that may not reflect current REQ and CTR documentation. When REQ documents (requirements, acceptance criteria) or CTR documents (external API contracts) change, the SPEC may need updates to maintain alignment.
+
+**Scope**:
+- `@req:` tag targets (REQ documents)
+- `@ctr:` tag targets (CTR documents)
+- Traceability section upstream artifact links
+- Any markdown links to `../07_REQ/` or `../08_CTR/` source documents
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs SPEC creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from SPEC:
+   - @req: tags → [path, section anchor]
+   - @ctr: tags → [path, section anchor]
+   - Links to ../07_REQ/ → [path]
+   - Links to ../08_CTR/ → [path]
+   - Traceability table upstream artifacts → [path]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #2)
+   c. Get file modification time (mtime)
+   d. Compare mtime > SPEC last_updated date
+   e. If mtime > SPEC date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/09_SPEC/.drift_cache.json`
+
+```json
+{
+  "spec_version": "1.0",
+  "spec_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../07_REQ/REQ-03.yaml#req_implementations": "a1b2c3d4...",
+    "../../08_CTR/CTR-03-001.yaml#endpoints": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream REQ/CTR document modified after SPEC creation |
+| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream document |
+| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | SPEC Reference | Last Modified | SPEC Updated | Days Stale | Severity |
+|-------------------|----------------|---------------|--------------|------------|----------|
+| REQ-03.yaml | @req Section req_implementations | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| CTR-03-001.yaml | @ctr endpoints | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream REQ/CTR changes and update SPEC if requirements or contracts have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @req/@ctr tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@req:`, `@ctr:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| YAML Structure Completeness | 15% | (complete_sections / 13) × 15 |
-| REQ Coverage | 20% | (implemented / total_reqs) × 20 |
-| Interface Definition Completeness | 20% | (complete_interfaces / total) × 20 |
+| YAML Structure Completeness | 14% | (complete_sections / 13) × 14 |
+| REQ Coverage | 19% | (implemented / total_reqs) × 19 |
+| Interface Definition Completeness | 19% | (complete_interfaces / total) × 19 |
 | Threshold Registry Compliance | 10% | (compliant / total_thresholds) × 10 |
-| Data Model Completeness | 15% | (complete_models / total) × 15 |
+| Data Model Completeness | 14% | (complete_models / total) × 14 |
 | Error Handling Coverage | 5% | (covered / required) × 5 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
-| Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Naming Compliance | 9% | (valid_ids / total_ids) × 9 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
 **Thresholds**:
-- **PASS**: ≥ 90
+- **PASS**: >= 90
 - **WARNING**: 80-89
 - **FAIL**: < 80
 
@@ -327,6 +468,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-spec-autopilot` | Invokes this skill in Phase 5 |
 | `doc-spec-validator` | Structural validation (Phase 4) |
+| `doc-spec-fixer` | Applies fixes based on review findings |
 | `doc-spec` | SPEC creation rules |
 | `doc-req-reviewer` | Upstream QA |
 | `doc-ctr-reviewer` | Upstream QA (for external APIs) |
@@ -339,5 +481,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; YAML structure validation; REQ coverage; Interface completeness; Threshold compliance |

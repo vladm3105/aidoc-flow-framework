@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -61,6 +61,47 @@ Use `doc-ears-reviewer` when:
 | **Output** | BDD-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
 | **Blocking** | BDD-Ready < threshold blocks | Review score < threshold flags |
+
+---
+
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: EARS Path] --> B[Load EARS Files]
+    B --> C{Sectioned or Monolithic?}
+
+    C -->|Sectioned| D[Load All Section Files]
+    C -->|Monolithic| E[Load Single File]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. EARS Syntax Compliance]
+        G --> H[2. Threshold Quantification]
+        H --> I[3. PRD Alignment]
+        I --> J[4. Testability Assessment]
+        J --> K[5. Placeholder Detection]
+        K --> L[6. Section Completeness]
+        L --> M[7. Naming Compliance]
+        M --> M2[8. Upstream Drift Detection]
+    end
+
+    M2 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
 
 ---
 
@@ -200,19 +241,59 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 8. Upstream Drift Detection
+
+Detects when upstream source documents have been modified after the EARS was created or last updated.
+
+**Purpose**: Identifies stale EARS content that may not reflect current PRD documentation.
+
+**Scope**:
+- `@ref:` tag targets
+- `@prd:` tag references
+- Traceability section upstream artifact links
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs EARS creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream document modified after EARS creation |
+| REV-D002 | Warning | Referenced section content changed |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream |
+| REV-D005 | Error | Critical upstream modification (>20% change) |
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| EARS Syntax Compliance | 25% | (valid_syntax / total_reqs) × 25 |
-| Threshold Quantification | 20% | (quantified / requiring_threshold) × 20 |
-| PRD Alignment | 20% | (aligned_reqs / total_reqs) × 20 |
-| Testability Assessment | 15% | (testable_reqs / total_reqs) × 15 |
+| EARS Syntax Compliance | 23% | (valid_syntax / total_reqs) × 23 |
+| Threshold Quantification | 19% | (quantified / requiring_threshold) × 19 |
+| PRD Alignment | 19% | (aligned_reqs / total_reqs) × 19 |
+| Testability Assessment | 14% | (testable_reqs / total_reqs) × 14 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
 | Section Completeness | 10% | (complete / total_sections) × 10 |
 | Naming Compliance | 5% | (valid_ids / total_ids) × 5 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -291,6 +372,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #7 |
 | `doc-ears-autopilot` | Invokes this skill in Phase 5 |
 | `doc-ears-validator` | Structural validation (Phase 4) |
+| `doc-ears-fixer` | Applies fixes based on review findings |
 | `doc-ears` | EARS creation rules |
 | `doc-prd-reviewer` | Upstream QA |
 | `doc-bdd-autopilot` | Downstream consumer |
@@ -301,5 +383,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when PRD documents modified after EARS creation; REV-D001-D005 error codes; drift configuration; Added doc-ears-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; EARS syntax compliance; Threshold quantification; Testability assessment |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
-  version: "2.0"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-sys-autopilot
@@ -43,13 +43,15 @@ This autopilot orchestrates the following skills:
 | `doc-sys` | SYS creation rules, 5-part structure, quality attribute categories | Phase 3: SYS Generation |
 | `quality-advisor` | Real-time quality feedback during SYS generation | Phase 3: SYS Generation |
 | `doc-sys-validator` | Validate SYS structure, content, REQ-Ready score | Phase 4: SYS Validation |
-| `doc-sys-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-sys-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-sys-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - SYS structure/content rules -> `doc-sys` skill
 - Real-time quality feedback -> `quality-advisor` skill
 - SYS validation logic -> `doc-sys-validator` skill
-- Final content review -> `doc-sys-reviewer` skill
+- Content review and scoring -> `doc-sys-reviewer` skill
+- Issue resolution and fixes -> `doc-sys-fixer` skill
 - Element ID standards -> `doc-naming` skill
 
 ---
@@ -113,8 +115,16 @@ flowchart TD
         W -->|Yes| Z[Mark SYS Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        Z --> AA{More ADR Topics?}
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        Z --> ZA[Run doc-sys-reviewer]
+        ZA --> ZB{Score >= 90?}
+        ZB -->|No| ZC[Run doc-sys-fixer]
+        ZC --> ZD{Iteration < Max?}
+        ZD -->|Yes| ZA
+        ZD -->|No| ZE[Flag Manual Review]
+        ZB -->|Yes| ZF[Verify Quality Checks]
+        ZE --> ZF
+        ZF --> AA{More ADR Topics?}
         AA -->|Yes| L
         AA -->|No| AB[Check All SYS Complete]
         AB --> AC[Verify Cross-SYS Consistency]
@@ -577,11 +587,94 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.1)
 
-Comprehensive final review before marking SYS generation complete.
+Iterative review and fix cycle to ensure SYS quality before completion.
 
-**Review Checks**:
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-sys-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Final Checks]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-sys-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-sys-reviewer` to identify issues.
+
+```bash
+/doc-sys-reviewer SYS-NN
+```
+
+**Output**: `SYS-NN.R_review_report_v001.md`
+
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-sys-fixer`.
+
+```bash
+/doc-sys-fixer SYS-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create glossary, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns (FR-XXX, QA-XXX, SR-XXX), fix invalid type codes |
+| Content | Replace template placeholders, update dates |
+| References | Update traceability tags, @threshold references |
+| Dependencies | Add missing fallback strategies, timeout values |
+
+**Output**: `SYS-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-sys-reviewer SYS-NN
+```
+
+**Output**: `SYS-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 86 (3 errors, 5 warnings)
+  Fix v001: Fixed 6 issues, updated 2 tables
+
+Iteration 2:
+  Review v002: Score 93 (0 errors, 3 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
 
 1. **All SYS Complete**:
    - All ADR-derived system domains addressed
@@ -603,7 +696,22 @@ Comprehensive final review before marking SYS generation complete.
      --matrix docs/SYS/SYS-00_TRACEABILITY_MATRIX.md
    ```
 
-4. **Summary Report Generation**:
+4. **REQ-Ready Report**:
+   ```
+   REQ-Ready Score Breakdown
+   =========================
+   Functional Decomposition:     24/25 (System boundaries clear)
+   Quality Attributes:           20/20 (All 6 categories present)
+   Interface Specifications:     19/20 (CTR-ready)
+   Data Management:              14/15 (Schemas documented)
+   Testing Requirements:          9/10 (Coverage targets)
+   Traceability:                 10/10 (All 5 tags present)
+   ----------------------------
+   Total REQ-Ready Score:        96/100 (Target: >= 90)
+   Status: READY FOR REQ GENERATION
+   ```
+
+5. **Summary Report Generation**:
    ```
    SYS Generation Summary
    ======================
@@ -1398,6 +1506,7 @@ docs/06_SYS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-sys-reviewer` and `doc-sys-fixer`; Added `doc-sys-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing SYS documents without modification; Added Fix Mode for auto-repairing SYS documents while preserving manual content; Added fix categories (element_ids, thresholds, dependencies, structure, traceability); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 6-category score impact; Added element ID migration support (FR_XXX, QA_XXX, SR_XXX to unified format) |
 | 2.0 | 2026-02-09 | Added modular splitting pattern with per-capability decomposition; Added External Dependencies table with fallback strategy requirement; Added 6-category REQ-Ready scoring with weighted breakdown; Added visual score indicators (✅/🟡/❌); Added validation rules SYS-E040 to SYS-E045 for new features; Added modular SYS template for atomic files; Added fallback strategy guidelines by dependency type |

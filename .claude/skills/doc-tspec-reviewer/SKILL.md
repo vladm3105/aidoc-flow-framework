@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TSPEC]
   downstream_artifacts: []
-  version: "1.1"
+  version: "1.2"
   last_updated: "2026-02-10"
 ---
 
@@ -64,6 +64,48 @@ Use `doc-tspec-reviewer` when:
 
 ---
 
+## Review Workflow
+
+```mermaid
+flowchart TD
+    A[Input: TSPEC Path] --> B[Load TSPEC File]
+    B --> C{Valid Format?}
+
+    C -->|Yes| D[Parse TSPEC Structure]
+    C -->|No| E[Report Format Error]
+
+    D --> F[Run Review Checks]
+    E --> F
+
+    subgraph Review["Review Checks"]
+        F --> G[1. Test Coverage Targets]
+        G --> H[2. SPEC Alignment]
+        H --> I[3. Test Case Completeness]
+        I --> J[4. Test Data Definition]
+        J --> K[5. Test Environment Requirements]
+        K --> L[6. Edge Case Coverage]
+        L --> M[7. Placeholder Detection]
+        M --> M2[8. Naming Compliance]
+        M2 --> M3[9. Upstream Drift Detection]
+    end
+
+    M3 --> N{Issues Found?}
+    N -->|Yes| O[Categorize Issues]
+    O --> P{Auto-Fixable?}
+    P -->|Yes| Q[Apply Auto-Fixes]
+    Q --> R[Re-run Affected Checks]
+    P -->|No| S[Flag for Manual Review]
+    R --> N
+    S --> T[Generate Report]
+    N -->|No| T
+    T --> U[Calculate Review Score]
+    U --> V{Score >= Threshold?}
+    V -->|Yes| W[PASS]
+    V -->|No| X[FAIL with Details]
+```
+
+---
+
 ## Review Checks
 
 ### 1. Test Coverage Targets
@@ -71,10 +113,10 @@ Use `doc-tspec-reviewer` when:
 Validates coverage targets are met.
 
 **Coverage Targets**:
-- Unit Tests (UTEST): ≥ 80%
-- Integration Tests (ITEST): ≥ 70%
+- Unit Tests (UTEST): >= 80%
+- Integration Tests (ITEST): >= 70%
 - Smoke Tests (STEST): Critical paths
-- Functional Tests (FTEST): ≥ 85%
+- Functional Tests (FTEST): >= 85%
 
 **Error Codes**:
 
@@ -227,25 +269,121 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
+### 9. Upstream Drift Detection
+
+Detects when upstream SPEC documents have been modified after the TSPEC was created or last updated.
+
+**Purpose**: Identifies stale TSPEC content that may not reflect current SPEC documentation. When SPEC documents (methods, interfaces, data models) change, the TSPEC may need updates to maintain test coverage alignment.
+
+**Scope**:
+- `@spec:` tag targets (SPEC documents)
+- Traceability section upstream artifact links
+- Any markdown links to `../09_SPEC/` source documents
+
+**Detection Methods**:
+
+| Method | Description | Precision |
+|--------|-------------|-----------|
+| **Timestamp Comparison** | Compares source doc `mtime` vs TSPEC creation/update date | Medium |
+| **Content Hash** | SHA-256 hash of referenced sections | High |
+| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+
+**Algorithm**:
+
+```
+1. Extract all upstream references from TSPEC:
+   - @spec: tags → [path, section anchor]
+   - Links to ../09_SPEC/ → [path]
+   - Traceability table upstream artifacts → [path]
+
+2. For each upstream reference:
+   a. Resolve path to absolute file path
+   b. Check file exists (already covered by Check #2)
+   c. Get file modification time (mtime)
+   d. Compare mtime > TSPEC last_updated date
+   e. If mtime > TSPEC date → flag as DRIFT
+
+3. Optional (high-precision mode):
+   a. Extract specific section referenced by anchor
+   b. Compute SHA-256 hash of section content
+   c. Compare to cached hash (stored in .drift_cache.json)
+   d. If hash differs → flag as CONTENT_DRIFT
+```
+
+**Drift Cache File** (optional):
+
+Location: `docs/10_TSPEC/.drift_cache.json`
+
+```json
+{
+  "tspec_version": "1.0",
+  "tspec_updated": "2026-02-10",
+  "upstream_hashes": {
+    "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
+    "../../09_SPEC/SPEC-03.yaml#interfaces": "e5f6g7h8..."
+  }
+}
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D001 | Warning | Upstream SPEC document modified after TSPEC creation |
+| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
+| REV-D003 | Info | Upstream document version incremented |
+| REV-D004 | Info | New content added to upstream document |
+| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+
+**Report Output**:
+
+```markdown
+## Upstream Drift Analysis
+
+| Upstream Document | TSPEC Reference | Last Modified | TSPEC Updated | Days Stale | Severity |
+|-------------------|-----------------|---------------|---------------|------------|----------|
+| SPEC-03.yaml | @spec Section methods | 2026-02-08 | 2026-02-05 | 3 | Warning |
+| SPEC-03.yaml | @spec interfaces | 2026-02-10 | 2026-02-05 | 5 | Warning |
+
+**Recommendation**: Review upstream SPEC changes and update TSPEC if methods or interfaces have changed.
+```
+
+**Auto-Actions**:
+- Update `.drift_cache.json` with current hashes after review
+- Add `[DRIFT]` marker to affected @spec tags (optional)
+- Generate drift summary in review report
+
+**Configuration**:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `drift_threshold_days` | 7 | Days before drift becomes Warning |
+| `critical_threshold_days` | 30 | Days before drift becomes Error |
+| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `tracked_patterns` | `@spec:` | Patterns to track for drift |
+
+---
+
 ## Review Score Calculation
 
 **Scoring Formula**:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Test Coverage Targets | 20% | (coverage_met / 4) × 20 |
-| SPEC Alignment | 20% | (aligned_tests / total) × 20 |
-| Test Case Completeness | 20% | (complete / total_cases) × 20 |
-| Test Data Definition | 10% | (data_score) × 10 |
+| Test Coverage Targets | 19% | (coverage_met / 4) × 19 |
+| SPEC Alignment | 19% | (aligned_tests / total) × 19 |
+| Test Case Completeness | 19% | (complete / total_cases) × 19 |
+| Test Data Definition | 9% | (data_score) × 9 |
 | Test Environment Requirements | 5% | (requirements_met / total) × 5 |
-| Edge Case Coverage | 10% | (covered / identified) × 10 |
+| Edge Case Coverage | 9% | (covered / identified) × 9 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
 **Thresholds**:
-- **PASS**: ≥ 90
+- **PASS**: >= 90
 - **WARNING**: 80-89
 - **FAIL**: < 80
 
@@ -319,6 +457,7 @@ flowchart LR
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-tspec-autopilot` | Invokes this skill in Phase 5 |
 | `doc-tspec-validator` | Structural validation (Phase 4) |
+| `doc-tspec-fixer` | Applies fixes based on review findings |
 | `doc-tspec` | TSPEC creation rules |
 | `doc-spec-reviewer` | Upstream QA |
 
@@ -328,5 +467,6 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC documents modified after TSPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tspec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Coverage target validation; SPEC alignment; Test case completeness; Edge case coverage |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
   downstream_artifacts: [TASKS]
-  version: "2.1"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-tspec-autopilot
@@ -42,7 +42,8 @@ Automated **Test Specifications (TSPEC)** generation pipeline that processes SPE
 | `doc-tspec` | TSPEC creation rules, test type structure | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
 | `doc-tspec-validator` | Validation with TASKS-Ready scoring | Phase 4 |
-| `doc-tspec-reviewer` | Final content review and quality assurance | Phase 5 |
+| `doc-tspec-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-tspec-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 ---
 
@@ -90,9 +91,15 @@ flowchart TD
         X -->|Yes| AA[Mark TSPEC Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        AA --> AB[Verify Coverage Matrix]
-        AB --> AC[Check All Types Present]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        AA --> AB[Run doc-tspec-reviewer]
+        AB --> AB2{Score >= 90?}
+        AB2 -->|No| AB3[Run doc-tspec-fixer]
+        AB3 --> AB4{Iteration < Max?}
+        AB4 -->|Yes| AB
+        AB4 -->|No| AB5[Flag Manual Review]
+        AB2 -->|Yes| AC[Verify Quality Checks]
+        AB5 --> AC
         AC --> AD[Update Traceability Matrix]
         AD --> AE[Generate Summary Report]
     end
@@ -146,6 +153,135 @@ docs/10_TSPEC/
 | ITEST | 41 | TSPEC.NN.41.SS | TSPEC.01.41.01 |
 | STEST | 42 | TSPEC.NN.42.SS | TSPEC.01.42.01 |
 | FTEST | 43 | TSPEC.NN.43.SS | TSPEC.01.43.01 |
+
+---
+
+## Phase 5: Review & Fix Cycle (v2.3)
+
+Iterative review and fix cycle to ensure TSPEC quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-tspec-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-tspec-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+### 5.1 Initial Review
+
+Run `doc-tspec-reviewer` to identify issues.
+
+```bash
+/doc-tspec-reviewer TSPEC-NN
+```
+
+**Output**: `TSPEC-NN.R_review_report_v001.md`
+
+### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-tspec-fixer`.
+
+```bash
+/doc-tspec-fixer TSPEC-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Test Types | Create missing UTEST/ITEST/STEST/FTEST files |
+| Broken Links | Update SPEC references |
+| Element IDs | Convert legacy patterns (UT-XXX, IT-XXX, etc.) |
+| Coverage Matrix | Regenerate from test specifications |
+| Test Structure | Add missing sections per test type template |
+| Traceability | Update cumulative tags (8 layers) |
+
+**Output**: `TSPEC-NN.F_fix_report_v001.md`
+
+### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-tspec-reviewer TSPEC-NN
+```
+
+**Output**: `TSPEC-NN.R_review_report_v002.md`
+
+### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 78 (2 errors, 6 warnings)
+  Fix v001: Fixed 5 issues, created 1 test file
+
+Iteration 2:
+  Review v002: Score 91 (0 errors, 2 warnings)
+  Status: PASS (score >= 90)
+```
+
+### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **Test Type Completeness**:
+   - All 4 test types present (UTEST, ITEST, STEST, FTEST)
+   - Each test type file has required sections
+   - No placeholder text remaining
+
+2. **Coverage Matrix Accuracy**:
+   - All SPEC elements have test coverage
+   - Coverage percentages calculated correctly
+   - Target coverage met per test type
+
+3. **Element ID Compliance** (per `doc-naming` skill):
+   - All IDs use TSPEC.NN.TT.SS format
+   - Element type codes valid for TSPEC (40, 41, 42, 43)
+   - No legacy patterns (UT-XXX, IT-XXX, ST-XXX, FT-XXX)
+
+4. **TASKS-Ready Report**:
+   ```
+   TASKS-Ready Score Breakdown
+   ===========================
+   Test Type Completeness:  25/25 (all 4 types present)
+   Coverage Matrix:         18/20 (coverage targets met)
+   SPEC Alignment:          20/20 (tests trace to SPEC)
+   Element ID Format:       15/15 (valid format)
+   Traceability Tags:       10/10 (8 required tags)
+   Test Assertions:         8/10 (assertions present)
+   ----------------------------
+   Total TASKS-Ready Score: 96/100 (Target: >= 90)
+   Status: READY FOR TASKS GENERATION
+   ```
+
+5. **Traceability Matrix Update**:
+   ```bash
+   # Update TSPEC traceability
+   python ai_dev_flow/scripts/update_traceability_matrix.py \
+     --tspec docs/10_TSPEC/TSPEC-NN_{slug}/ \
+     --matrix docs/10_TSPEC/TSPEC-00_TRACEABILITY_MATRIX.md
+   ```
 
 ---
 
@@ -579,6 +715,7 @@ docs/10_TSPEC/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-tspec-reviewer` and `doc-tspec-fixer`; Added `doc-tspec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (test type completeness, coverage matrix accuracy, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Mode 2: Review Mode for validation-only analysis with visual score indicators and coverage targets; Added Mode 3: Fix Mode for auto-repair with backup, content preservation, and test stub generation; Element ID migration (UT-NNN→TSPEC.NN.40.SS, IT-NNN→TSPEC.NN.41.SS, ST-NNN→TSPEC.NN.42.SS, FT-NNN→TSPEC.NN.43.SS) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-tspec, quality-advisor, doc-tspec-validator; Support for all 4 test types |

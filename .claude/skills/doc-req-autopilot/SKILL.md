@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
   downstream_artifacts: [CTR, SPEC]
-  version: "2.0"
-  last_updated: "2026-02-09"
+  version: "2.3"
+  last_updated: "2026-02-10"
 ---
 
 # doc-req-autopilot
@@ -46,13 +46,15 @@ This autopilot orchestrates the following skills:
 | `doc-req` | REQ creation rules, REQ v3.0 12-section structure, template | Phase 3: REQ Generation |
 | `quality-advisor` | Real-time quality feedback during REQ generation | Phase 3: REQ Generation |
 | `doc-req-validator` | Validate REQ structure, content, SPEC-Ready score | Phase 4: REQ Validation |
-| `doc-req-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
+| `doc-req-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-req-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - REQ structure/content rules -> `doc-req` skill
 - Real-time quality feedback -> `quality-advisor` skill
 - REQ validation logic -> `doc-req-validator` skill
-- Final content review -> `doc-req-reviewer` skill
+- Content review and scoring -> `doc-req-reviewer` skill
+- Issue resolution and fixes -> `doc-req-fixer` skill
 - SYS validation logic -> `doc-sys-validator` skill
 - Element ID standards -> `doc-naming` skill
 
@@ -119,22 +121,26 @@ flowchart TD
         Y -->|Yes| Z[Validation Passed]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        Z --> AA[Check 12-Section Completeness]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        Z --> ZA[Run doc-req-reviewer]
+        ZA --> ZB{Score >= 90?}
+        ZB -->|No| ZC[Run doc-req-fixer]
+        ZC --> ZD{Iteration < Max?}
+        ZD -->|Yes| ZA
+        ZD -->|No| ZE[Flag Manual Review]
+        ZB -->|Yes| ZF[Verify Quality Checks]
+        ZE --> ZF
+        ZF --> AA[Check 12-Section Completeness]
         AA --> AB[Verify Cumulative Tags - 6 Required]
         AB --> AC[Validate Threshold References]
         AC --> AD[Check Atomic Requirement Principles]
-        AD --> AE{Review Passed?}
-        AE -->|No| AF[Flag Issues]
-        AF --> AG[Auto-Fix or Manual]
-        AG --> AE
-        AE -->|Yes| AH[Mark REQ Complete]
+        AD --> AE[Mark REQ Complete]
     end
 
-    AH --> AI{More SYS?}
-    AI -->|Yes| G
-    AI -->|No| AJ[Generate Summary Report]
-    AJ --> AK[Complete]
+    AE --> AF{More SYS?}
+    AF -->|Yes| G
+    AF -->|No| AG[Generate Summary Report]
+    AG --> AH[Complete]
 ```
 
 ---
@@ -576,11 +582,95 @@ LOOP (max 3 iterations):
   7. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Final Review
+### Phase 5: Review & Fix Cycle (v2.1)
 
-Comprehensive final review before marking REQ complete.
+Iterative review and fix cycle to ensure REQ quality before completion.
 
-**Review Checks**:
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-req-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Final Checks]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-req-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+#### 5.1 Initial Review
+
+Run `doc-req-reviewer` to identify issues.
+
+```bash
+/doc-req-reviewer REQ-NN
+```
+
+**Output**: `REQ-NN.R_review_report_v001.md`
+
+#### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-req-fixer`.
+
+```bash
+/doc-req-fixer REQ-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Files | Create index, reference docs |
+| Broken Links | Update paths, create targets |
+| Element IDs | Convert legacy patterns (AC-XXX, FR-XXX, R-XXX), fix invalid type codes |
+| Content | Replace template placeholders, update dates |
+| References | Update traceability tags, @threshold references |
+| Cross-Links | Add missing @discoverability tags |
+| Criteria | Add missing test category prefixes, add placeholder criteria |
+
+**Output**: `REQ-NN.F_fix_report_v001.md`
+
+#### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-req-reviewer REQ-NN
+```
+
+**Output**: `REQ-NN.R_review_report_v002.md`
+
+#### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 84 (4 errors, 6 warnings)
+  Fix v001: Fixed 8 issues, updated 3 files
+
+Iteration 2:
+  Review v002: Score 92 (0 errors, 4 warnings)
+  Status: PASS (score >= 90)
+```
+
+#### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
 
 1. **12-Section Completeness**:
    - All 12 sections present and substantive
@@ -1413,6 +1503,7 @@ docs/07_REQ/REQ-03_f3_observability/
 
 | Version | Date       | Changes |
 |---------|------------|---------|
+| 2.3     | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-req-reviewer` and `doc-req-fixer`; Added `doc-req-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2     | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1     | 2026-02-09 | Added Review Mode for validating existing REQ documents without modification; Added Fix Mode for auto-repairing REQ documents while preserving manual content; Added fix categories (element_ids, sections, cross_links, criteria, traceability, index); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with dual score impact (SPEC-Ready + IMPL-Ready); Added element ID migration support (AC_XXX, FR_XXX, R_XXX to unified format) |
 | 2.0     | 2026-02-09 | **Major Enhancement**: Added Phase 1.5 Atomic Decomposition based on Trading Nexus REQ layer analysis; New atomic file output (10-15 files per module); Enhanced Section 8 with unit test category prefixes ([Logic]/[Validation]/[State]/[Edge]/[Security]); New Section 10.5 Cross-Links with @discoverability tags; Enhanced Section 11 with mandatory Code Implementation Paths (11.2) and Dependencies table (11.3); Enhanced error catalog format with Recovery Strategy table; Minimum 15 acceptance criteria split into Functional (10+) and Quality (5+); New validation rules REQ-E025 through REQ-E032 |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
   downstream_artifacts: [TSPEC, TASKS]
-  version: "2.0"
-  last_updated: "2026-02-09"
+  version: "2.2"
+  last_updated: "2026-02-10"
 ---
 
 # doc-spec-autopilot
@@ -42,7 +42,8 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 | `doc-spec` | SPEC creation rules, YAML format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
 | `doc-spec-validator` | Validation with TASKS-Ready scoring | Phase 4 |
-| `doc-spec-reviewer` | Final content review and quality assurance | Phase 5 |
+| `doc-spec-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-spec-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 ---
 
@@ -86,9 +87,15 @@ flowchart TD
         T -->|Yes| W[Mark SPEC Validated]
     end
 
-    subgraph Phase5["Phase 5: Final Review"]
-        W --> X[Verify YAML Syntax]
-        X --> Y[Check Method Completeness]
+    subgraph Phase5["Phase 5: Review & Fix Cycle"]
+        W --> X[Run doc-spec-reviewer]
+        X --> X2{Score >= 90?}
+        X2 -->|No| X3[Run doc-spec-fixer]
+        X3 --> X4{Iteration < Max?}
+        X4 -->|Yes| X
+        X4 -->|No| X5[Flag Manual Review]
+        X2 -->|Yes| Y[Verify Quality Checks]
+        X5 --> Y
         Y --> Z[Update Traceability Matrix]
         Z --> AA[Generate Summary Report]
     end
@@ -291,6 +298,136 @@ threshold_references:
       - key: "sla.uptime.target"
         usage: "operations.slo.uptime"
 ```
+
+---
+
+## Phase 5: Review & Fix Cycle (v2.2)
+
+Iterative review and fix cycle to ensure SPEC quality before completion.
+
+```mermaid
+flowchart TD
+    A[Phase 5 Start] --> B[Run doc-spec-reviewer]
+    B --> C[Generate Review Report]
+    C --> D{Review Score >= 90?}
+
+    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|No| F{Iteration < Max?}
+
+    F -->|Yes| G[Run doc-spec-fixer]
+    G --> H[Apply Fixes]
+    H --> I[Generate Fix Report]
+    I --> J[Increment Iteration]
+    J --> B
+
+    F -->|No| K[Flag for Manual Review]
+    K --> L[Generate Final Report with Remaining Issues]
+    L --> E
+```
+
+### 5.1 Initial Review
+
+Run `doc-spec-reviewer` to identify issues.
+
+```bash
+/doc-spec-reviewer SPEC-NN
+```
+
+**Output**: `SPEC-NN.R_review_report_v001.md`
+
+### 5.2 Fix Cycle
+
+If review score < 90%, invoke `doc-spec-fixer`.
+
+```bash
+/doc-spec-fixer SPEC-NN --revalidate
+```
+
+**Fix Categories**:
+
+| Category | Fixes Applied |
+|----------|---------------|
+| Missing Sections | Add missing 13 required sections |
+| Broken Links | Update paths, fix REQ references |
+| Element IDs | Convert legacy patterns, fix invalid type codes |
+| Threshold References | Replace hardcoded values with @threshold syntax |
+| Interface Levels | Add missing external/internal/classes stubs |
+| Traceability | Update cumulative tags (9 layers) |
+
+**Output**: `SPEC-NN.F_fix_report_v001.md`
+
+### 5.3 Re-Review
+
+After fixes, automatically re-run reviewer.
+
+```bash
+/doc-spec-reviewer SPEC-NN
+```
+
+**Output**: `SPEC-NN.R_review_report_v002.md`
+
+### 5.4 Iteration Control
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `max_iterations` | 3 | Maximum fix-review cycles |
+| `target_score` | 90 | Minimum passing score |
+| `stop_on_manual` | false | Stop if only manual issues remain |
+
+**Iteration Example**:
+
+```
+Iteration 1:
+  Review v001: Score 82 (3 errors, 5 warnings)
+  Fix v001: Fixed 6 issues, added 2 sections
+
+Iteration 2:
+  Review v002: Score 93 (0 errors, 3 warnings)
+  Status: PASS (score >= 90)
+```
+
+### 5.5 Quality Checks (Post-Fix)
+
+After passing the fix cycle:
+
+1. **Section Completeness**:
+   - All 13 required sections present
+   - No placeholder text remaining ([TBD], TODO, XXX)
+   - Minimum content length per section
+
+2. **Three-Level Interface Coverage**:
+   - external_apis defined with OpenAPI format
+   - internal_apis defined with method signatures
+   - classes defined with constructors and methods
+
+3. **Element ID Compliance** (per `doc-naming` skill):
+   - All IDs use SPEC.NN.TT.SS format
+   - Element type codes valid for SPEC (15, 16, 17, 21, 28)
+   - No legacy patterns
+
+4. **TASKS-Ready Report**:
+   ```
+   TASKS-Ready Score Breakdown
+   ===========================
+   Interface Completeness:  23/25 (3 levels defined)
+   Data Models:             20/20 (Pydantic + JSON Schema)
+   Validation Rules:        15/15 (input/output validated)
+   Error Handling:          15/15 (catalog with HTTP status)
+   Test Approach:           10/10 (unit + integration tests)
+   Traceability:            10/10 (all 9 cumulative tags)
+   Performance Specs:        5/5 (@threshold references)
+   ----------------------------
+   Total TASKS-Ready Score: 98/100 (Target: >= 90)
+   Status: READY FOR TASKS GENERATION
+   ```
+
+5. **Traceability Matrix Update**:
+   ```bash
+   # Update SPEC traceability
+   python ai_dev_flow/scripts/update_traceability_matrix.py \
+     --spec docs/09_SPEC/SPEC-NN.yaml \
+     --matrix docs/09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md
+   ```
 
 ---
 
@@ -805,7 +942,8 @@ docs/09_SPEC/SPEC-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
-| 2.1 | 2026-02-09 | Added Review Mode for validating existing SPEC documents without modification; Added Fix Mode for auto-repairing SPEC documents while preserving manual content; Added fix categories (sections, thresholds, traceability, interfaces, yaml); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 7-component score impact; Added execution modes section (single, batch, dry-run, review, fix) |
-| 2.0 | 2026-02-09 | Added 13-section YAML structure; Added 9-layer cumulative traceability; Added three-level interface specification (external, internal, classes); Added threshold registry pattern; Added req_implementations section for REQ-to-implementation bridges; Added 7-component TASKS-Ready scoring; Added file splitting strategy (<66KB); Added validation rules SPEC-E030 to SPEC-E038 |
+| 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-spec-reviewer` and `doc-spec-fixer`; Added `doc-spec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (section completeness, three-level interface coverage, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
+| 2.1 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
+| 2.0 | 2026-02-09 | Added Review Mode for validating existing SPEC documents without modification; Added Fix Mode for auto-repairing SPEC documents while preserving manual content; Added fix categories (sections, thresholds, traceability, interfaces, yaml); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 7-component score impact; Added execution modes section (single, batch, dry-run, review, fix) |
+| 1.1 | 2026-02-09 | Added 13-section YAML structure; Added 9-layer cumulative traceability; Added three-level interface specification (external, internal, classes); Added threshold registry pattern; Added req_implementations section for REQ-to-implementation bridges; Added 7-component TASKS-Ready scoring; Added file splitting strategy (<66KB); Added validation rules SPEC-E030 to SPEC-E038 |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-spec, quality-advisor, doc-spec-validator |
