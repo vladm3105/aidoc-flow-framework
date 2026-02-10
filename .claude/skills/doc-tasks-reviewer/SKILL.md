@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-tasks-reviewer
@@ -270,9 +270,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream SPEC and TSPEC documents have been modified after the TASKS was created or last updated.
+
+**The drift cache is mandatory.** All drift detection operations require cache initialization and maintenance.
 
 **Purpose**: Identifies stale TASKS content that may not reflect current SPEC and TSPEC documentation. When SPEC documents (methods, interfaces, components) or TSPEC documents (test cases, coverage requirements) change, the TASKS may need updates to maintain implementation alignment.
 
@@ -282,15 +284,65 @@ Detects when upstream SPEC and TSPEC documents have been modified after the TASK
 - Traceability section upstream artifact links
 - Any markdown links to `../09_SPEC/` or `../10_TSPEC/` source documents
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs TASKS creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+#### Drift Cache File (MANDATORY)
 
-**Algorithm**:
+**Location**: `docs/11_TASKS/.drift_cache.json`
+
+**Schema**:
+
+```json
+{
+  "schema_version": "1.0",
+  "cache_created": "2026-02-10T17:00:00Z",
+  "cache_updated": "2026-02-10T17:00:00Z",
+  "tasks_files": {
+    "TASKS-03_f3_observability.md": {
+      "tasks_version": "1.0",
+      "tasks_updated": "2026-02-10T14:30:00",
+      "last_review": "2026-02-10T17:00:00",
+      "upstream_hashes": {
+        "../../09_SPEC/SPEC-03.yaml": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+        "../../09_SPEC/SPEC-03.yaml#methods": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1",
+        "../../09_SPEC/SPEC-03.yaml#components": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2",
+        "../../10_TSPEC/TSPEC-03.md": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3",
+        "../../10_TSPEC/TSPEC-03.md#test_cases": "e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4"
+      },
+      "upstream_mtimes": {
+        "../../09_SPEC/SPEC-03.yaml": "2026-02-08T10:15:00",
+        "../../10_TSPEC/TSPEC-03.md": "2026-02-09T16:45:00"
+      }
+    }
+  }
+}
+```
+
+**Cache Management**:
+- Cache file is created on first review if not present
+- Cache is updated after each successful review
+- Missing cache triggers REV-D006 error
+- Corrupted cache triggers cache rebuild with warning
+
+---
+
+#### Three-Phase Detection Algorithm
+
+**Phase 1: Cache Validation**
+
+```
+1. Check if .drift_cache.json exists
+   - If missing → ERROR REV-D006: "Drift cache not initialized"
+   - If corrupted → Rebuild cache, emit WARNING
+
+2. Validate cache schema version
+   - If outdated → Migrate cache to current schema
+
+3. Load TASKS entry from cache
+   - If TASKS not in cache → Initialize entry
+```
+
+**Phase 2: Reference Extraction**
 
 ```
 1. Extract all upstream references from TASKS:
@@ -304,33 +356,56 @@ Detects when upstream SPEC and TSPEC documents have been modified after the TASK
    a. Resolve path to absolute file path
    b. Check file exists (already covered by Check #2)
    c. Get file modification time (mtime)
-   d. Compare mtime > TASKS last_updated date
-   e. If mtime > TASKS date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
 ```
 
-**Drift Cache File** (optional):
+**Phase 3: Drift Comparison**
 
-Location: `docs/11_TASKS/.drift_cache.json`
+```
+1. For each upstream reference:
+   a. Compare mtime > cached mtime
+      - If newer → flag as TIMESTAMP_DRIFT
+   b. Compute SHA-256 hash of content
+   c. Compare to cached hash
+      - If differs → flag as CONTENT_DRIFT
+   d. Calculate change percentage
+      - If > 20% → flag as SUBSTANTIAL_DRIFT
 
-```json
-{
-  "tasks_version": "1.0",
-  "tasks_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
-    "../../09_SPEC/SPEC-03.yaml#components": "e5f6g7h8...",
-    "../../10_TSPEC/TSPEC-03.md#test_cases": "i9j0k1l2..."
-  }
-}
+2. Update cache with current values after comparison
 ```
 
-**Error Codes**:
+---
+
+#### Hash Calculation
+
+**Full File Hash**:
+
+```python
+import hashlib
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of entire file."""
+    with open(file_path, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()
+```
+
+**Section Hash** (for anchor references):
+
+```python
+def compute_section_hash(file_path: str, anchor: str) -> str:
+    """Compute SHA-256 hash of specific section."""
+    content = extract_section(file_path, anchor)
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
+def extract_section(file_path: str, anchor: str) -> str:
+    """Extract section content from markdown/yaml by anchor."""
+    # For markdown: Find ## {anchor} heading to next ## heading
+    # For yaml: Find {anchor}: key to next top-level key
+    ...
+```
+
+---
+
+#### Error Codes
 
 | Code | Severity | Description |
 |------|----------|-------------|
@@ -339,33 +414,46 @@ Location: `docs/11_TASKS/.drift_cache.json`
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache not initialized or missing |
 
-**Report Output**:
+---
+
+#### Report Output
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | TASKS Reference | Last Modified | TASKS Updated | Days Stale | Severity |
-|-------------------|-----------------|---------------|---------------|------------|----------|
-| SPEC-03.yaml | @spec Section methods | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| SPEC-03.yaml | @spec components | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
-| TSPEC-03.md | @tspec test_cases | 2026-02-09T16:45:00 | 2026-02-05T09:00:00 | 4 | Warning |
+**Cache Status**: Valid (last updated: 2026-02-10T17:00:00Z)
+
+| Upstream Document | TASKS Reference | Last Modified | Cached Modified | Hash Match | Days Stale | Severity |
+|-------------------|-----------------|---------------|-----------------|------------|------------|----------|
+| SPEC-03.yaml | @spec Section methods | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | No | 3 | Warning |
+| SPEC-03.yaml | @spec components | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | No | 5 | Warning |
+| TSPEC-03.md | @tspec test_cases | 2026-02-09T16:45:00 | 2026-02-05T09:00:00 | Yes | 4 | Info |
 
 **Recommendation**: Review upstream SPEC/TSPEC changes and update TASKS if methods, components, or test cases have changed.
+
+**Cache Updated**: 2026-02-10T17:00:00Z (3 entries refreshed)
 ```
 
-**Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
+---
+
+#### Auto-Actions
+
+- Create `.drift_cache.json` if not present (first review)
+- Update cache with current hashes and mtimes after review
 - Add `[DRIFT]` marker to affected @spec/@tspec tags (optional)
 - Generate drift summary in review report
 
-**Configuration**:
+---
+
+#### Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | **Mandatory** - Cache is always enabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
 | `tracked_patterns` | `@spec:`, `@tspec:` | Patterns to track for drift |
 
 ---
@@ -474,6 +562,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for missing cache; Defined cache schema with schema_version; Added Three-Phase Detection Algorithm; Added hash calculation examples; Cache location at docs/11_TASKS/.drift_cache.json; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC/TSPEC documents modified after TASKS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tasks-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Task completeness; SPEC alignment; Implementation contracts; Dependency accuracy; Task atomicity |

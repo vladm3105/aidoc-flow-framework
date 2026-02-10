@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.4"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-brd-reviewer
@@ -300,9 +300,9 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
-Detects when upstream source documents have been modified after the BRD was created or last updated.
+Detects when upstream source documents have been modified after the BRD was created or last updated. **The drift cache is mandatory** - the reviewer MUST create/update it after each review.
 
 **Purpose**: Identifies stale BRD content that may not reflect current source documentation. When upstream documents (strategy specs, technical specifications, stakeholder inputs) change, the BRD may need updates to maintain alignment.
 
@@ -313,88 +313,205 @@ Detects when upstream source documents have been modified after the BRD was crea
 - GAP analysis document references
 - Any markdown links to `../00_REF/` or source documents
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs BRD creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+#### 9.1 Drift Cache File (MANDATORY)
 
-**Algorithm**:
+**Location**: `docs/01_BRD/{BRD_folder}/.drift_cache.json`
 
-```
-1. Extract all upstream references from BRD:
-   - @ref: tags → [path, section anchor]
-   - @strategy: tags → [document ID]
-   - Links to ../00_REF/ → [path]
-   - Traceability table upstream artifacts → [path]
+**IMPORTANT**: The reviewer MUST:
+1. **Read** the cache if it exists (for hash comparison)
+2. **Create** the cache if it doesn't exist
+3. **Update** the cache after every review with current hashes
 
-2. For each upstream reference:
-   a. Resolve path to absolute file path
-   b. Check file exists (already covered by Check #1)
-   c. Get file modification time (mtime)
-   d. Compare mtime > BRD last_updated date
-   e. If mtime > BRD date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
-```
-
-**Drift Cache File** (optional):
-
-Location: `docs/01_BRD/{BRD_folder}/.drift_cache.json`
+**Cache Schema**:
 
 ```json
 {
-  "brd_version": "1.0",
-  "brd_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../00_REF/foundation/F1_IAM_Technical_Specification.md#3-authentication": "a1b2c3d4...",
-    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": "e5f6g7h8..."
-  }
+  "schema_version": "1.0",
+  "document_id": "BRD-01",
+  "document_version": "1.0",
+  "last_reviewed": "2026-02-10T17:00:00",
+  "reviewer_version": "1.4",
+  "upstream_documents": {
+    "../../00_REF/foundation/F1_IAM_Technical_Specification.md": {
+      "hash": "sha256:a1b2c3d4e5f6g7h8i9j0...",
+      "last_modified": "2026-02-10T15:34:26",
+      "file_size": 50781,
+      "version": "1.0",
+      "sections_tracked": ["#3-authentication", "#4-authorization", "#5-user-profile"]
+    },
+    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": {
+      "hash": "sha256:k1l2m3n4o5p6q7r8s9t0...",
+      "last_modified": "2026-02-10T15:34:21",
+      "file_size": 4730,
+      "version": "1.0",
+      "sections_tracked": ["#f1-iam-gaps"]
+    }
+  },
+  "review_history": [
+    {
+      "date": "2026-02-10T16:30:00",
+      "score": 97,
+      "drift_detected": false,
+      "report_version": "v002"
+    }
+  ]
 }
 ```
 
-**Error Codes**:
+---
 
-| Code | Severity | Description |
-|------|----------|-------------|
-| REV-D001 | Warning | Upstream document modified after BRD creation |
-| REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
-| REV-D003 | Info | Upstream document version incremented |
-| REV-D004 | Info | New content added to upstream document |
-| REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+#### 9.2 Detection Algorithm (Three-Phase)
 
-**Report Output**:
+```
+PHASE 1: Load Cache (if exists)
+=========================================
+1. Check for .drift_cache.json in BRD folder
+2. If exists:
+   - Load cached hashes and metadata
+   - Set detection_mode = "hash_comparison"
+3. If not exists:
+   - Set detection_mode = "timestamp_only"
+   - Will create cache at end of review
 
-```markdown
-## Upstream Drift Analysis
+PHASE 2: Detect Drift
+=========================================
+For each upstream reference in BRD:
 
-| Upstream Document | BRD Reference | Last Modified | BRD Updated | Days Stale | Severity |
-|-------------------|---------------|---------------|-------------|------------|----------|
-| F1_IAM_Technical_Specification.md | @ref Section 3 | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| GAP_Foundation_Module_Gap_Analysis.md | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+  A. Extract reference:
+     - @ref: tags → [path, section anchor]
+     - @strategy: tags → [document ID]
+     - Links to ../00_REF/ → [path]
+     - Traceability table upstream artifacts → [path]
 
-**Recommendation**: Review upstream changes and update BRD if requirements have changed.
+  B. Resolve and validate:
+     - Resolve path to absolute file path
+     - Check file exists (skip if covered by Check #1)
+     - Get file stats: mtime, size
+
+  C. Compare (based on detection_mode):
+
+     IF detection_mode == "hash_comparison":
+       - Compute SHA-256 hash of current file content
+       - Compare to cached hash
+       - IF hash differs:
+           - Calculate change_percentage
+           - Flag as CONTENT_DRIFT (REV-D002)
+           - IF change > 20%: Flag as CRITICAL (REV-D005)
+
+     ELSE (timestamp_only):
+       - Compare file mtime > BRD last_updated
+       - IF mtime > BRD date:
+           - Flag as TIMESTAMP_DRIFT (REV-D001)
+
+  D. Check version field (if YAML frontmatter):
+     - Extract version from upstream doc
+     - Compare to cached version
+     - IF version incremented: Flag REV-D003
+
+PHASE 3: Update Cache (MANDATORY)
+=========================================
+1. Compute SHA-256 hash for ALL upstream documents
+2. Create/update .drift_cache.json with:
+   - Current hashes
+   - Current timestamps
+   - Current file sizes
+   - Review metadata
+3. Append to review_history array
 ```
 
-**Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
-- Add `[DRIFT]` marker to affected @ref tags (optional)
-- Generate drift summary in review report
+---
 
-**Configuration**:
+#### 9.3 Hash Calculation
+
+```python
+import hashlib
+from pathlib import Path
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content."""
+    sha256 = hashlib.sha256()
+    with open(file_path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return f"sha256:{sha256.hexdigest()}"
+
+def compute_section_hash(file_path: str, section_anchor: str) -> str:
+    """Compute hash of specific section (for anchor references)."""
+    content = Path(file_path).read_text()
+    # Extract section from anchor to next heading
+    section_pattern = f"#{section_anchor.lstrip('#')}"
+    # ... section extraction logic ...
+    section_content = extract_section(content, section_pattern)
+    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+
+def calculate_change_percentage(old_hash: str, new_content: str) -> float:
+    """Estimate change percentage using content diff."""
+    # Use difflib to calculate similarity ratio
+    import difflib
+    # ... comparison logic ...
+    return change_percentage
+```
+
+---
+
+#### 9.4 Error Codes
+
+| Code | Severity | Description | Trigger |
+|------|----------|-------------|---------|
+| REV-D001 | Warning | Upstream document modified after BRD creation | mtime > BRD date (no cache) |
+| REV-D002 | Warning | Referenced content has changed | hash mismatch (with cache) |
+| REV-D003 | Info | Upstream document version incremented | version field changed |
+| REV-D004 | Info | New content added to upstream | file size increased >10% |
+| REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
+| REV-D006 | Info | Cache created (first review) | no prior cache existed |
+
+---
+
+#### 9.5 Report Output
+
+```markdown
+## 9. Upstream Drift Detection (5/5)
+
+### Cache Status
+
+| Field | Value |
+|-------|-------|
+| Cache File | `.drift_cache.json` |
+| Cache Status | ✅ Updated |
+| Detection Mode | Hash Comparison |
+| Documents Tracked | 2 |
+
+### Upstream Document Analysis
+
+| Upstream Document | Hash Status | Last Modified | Change % | Status |
+|-------------------|-------------|---------------|----------|--------|
+| F1_IAM_Technical_Specification.md | ✅ Match | 2026-02-10T15:34:26 | 0% | Current |
+| GAP_Foundation_Module_Gap_Analysis.md | ✅ Match | 2026-02-10T15:34:21 | 0% | Current |
+
+### Drift Summary
+
+| Status | Count | Details |
+|--------|-------|---------|
+| ✅ Current | 2 | All upstream documents synchronized |
+| ⚠️ Warning | 0 | No drift detected |
+| ❌ Critical | 0 | No major changes |
+
+**Cache updated**: 2026-02-10T17:00:00
+```
+
+---
+
+#### 9.6 Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `drift_threshold_days` | 7 | Days before drift becomes Warning |
-| `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
-| `tracked_patterns` | `@ref:`, `@strategy:` | Patterns to track for drift |
+| `cache_enabled` | **true** | **Mandatory** - always create/update cache |
+| `drift_threshold_days` | 7 | Days before timestamp drift becomes Warning |
+| `critical_change_pct` | 20 | Percentage change for critical drift |
+| `track_sections` | true | Track individual section hashes for anchored refs |
+| `max_history_entries` | 10 | Maximum review_history entries to retain |
 
 ---
 
@@ -531,7 +648,8 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.3 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |
+| 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
+| 1.3 | 2026-02-10T14:30:00 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |
 | 1.2 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; ADR topic coverage validation; Strategic alignment check |

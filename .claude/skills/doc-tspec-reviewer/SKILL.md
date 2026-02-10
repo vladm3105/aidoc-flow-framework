@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TSPEC]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-tspec-reviewer
@@ -269,9 +269,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream SPEC documents have been modified after the TSPEC was created or last updated.
+
+**The drift cache is mandatory.** All TSPEC reviews must maintain and validate against the drift cache to ensure test specifications remain synchronized with SPEC changes.
 
 **Purpose**: Identifies stale TSPEC content that may not reflect current SPEC documentation. When SPEC documents (methods, interfaces, data models) change, the TSPEC may need updates to maintain test coverage alignment.
 
@@ -280,49 +282,99 @@ Detects when upstream SPEC documents have been modified after the TSPEC was crea
 - Traceability section upstream artifact links
 - Any markdown links to `../09_SPEC/` source documents
 
-**Detection Methods**:
-
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs TSPEC creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
-
-**Algorithm**:
-
-```
-1. Extract all upstream references from TSPEC:
-   - @spec: tags → [path, section anchor]
-   - Links to ../09_SPEC/ → [path]
-   - Traceability table upstream artifacts → [path]
-
-2. For each upstream reference:
-   a. Resolve path to absolute file path
-   b. Check file exists (already covered by Check #2)
-   c. Get file modification time (mtime)
-   d. Compare mtime > TSPEC last_updated date
-   e. If mtime > TSPEC date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
-```
-
-**Drift Cache File** (optional):
+#### Drift Cache File (MANDATORY)
 
 Location: `docs/10_TSPEC/.drift_cache.json`
 
+**Schema**:
+
 ```json
 {
-  "tspec_version": "1.0",
-  "tspec_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../09_SPEC/SPEC-03.yaml#methods": "a1b2c3d4...",
-    "../../09_SPEC/SPEC-03.yaml#interfaces": "e5f6g7h8..."
+  "cache_version": "2.0",
+  "created": "2026-02-10T17:00:00Z",
+  "last_validated": "2026-02-10T17:00:00Z",
+  "documents": {
+    "TSPEC-03": {
+      "tspec_path": "docs/10_TSPEC/TSPEC-03_f3_observability.md",
+      "tspec_hash": "sha256:abc123...",
+      "last_updated": "2026-02-10T14:30:00Z",
+      "upstream_refs": {
+        "SPEC-03.yaml": {
+          "path": "docs/09_SPEC/SPEC-03_f3_observability.yaml",
+          "content_hash": "sha256:def456...",
+          "section_hashes": {
+            "methods": "sha256:ghi789...",
+            "interfaces": "sha256:jkl012...",
+            "data_models": "sha256:mno345..."
+          },
+          "last_validated": "2026-02-10T14:30:00Z"
+        }
+      }
+    }
   }
 }
+```
+
+#### Three-Phase Detection Algorithm
+
+**Phase 1: Cache Initialization**
+```
+IF .drift_cache.json does not exist:
+    1. Create cache file with schema version 2.0
+    2. Scan all TSPEC documents in docs/10_TSPEC/
+    3. For each TSPEC:
+       a. Extract upstream SPEC references
+       b. Compute content hashes for TSPEC
+       c. Compute content hashes for each upstream SPEC
+       d. Store in cache
+    4. Report: "Cache initialized with N TSPEC documents"
+```
+
+**Phase 2: Drift Detection**
+```
+FOR each TSPEC being reviewed:
+    1. Load cached hashes for this TSPEC
+    2. For each upstream SPEC reference:
+       a. Compute current hash of SPEC document
+       b. Compare to cached hash
+       c. IF hashes differ:
+          - Flag as DRIFT
+          - Compute section-level hashes to identify changed sections
+          - Calculate change percentage
+    3. Check timestamp: SPEC mtime > TSPEC last_updated
+    4. Aggregate drift findings by severity
+```
+
+**Phase 3: Cache Update**
+```
+AFTER successful review (score >= threshold):
+    1. Update content hashes for reviewed TSPEC
+    2. Update upstream SPEC hashes
+    3. Set last_validated timestamp
+    4. Write updated cache to disk
+    5. Report: "Cache updated for TSPEC-NN"
+```
+
+#### Hash Calculation
+
+**Content Hash** (SHA-256):
+
+```python
+import hashlib
+
+def compute_content_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content, normalized."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Normalize: strip whitespace, lowercase for comparison
+    normalized = content.strip()
+    return f"sha256:{hashlib.sha256(normalized.encode()).hexdigest()[:16]}"
+
+def compute_section_hash(file_path: str, section_name: str) -> str:
+    """Compute hash of specific YAML section."""
+    # Extract section content between section_name: and next top-level key
+    # Apply same normalization and hash
+    pass
 ```
 
 **Error Codes**:
@@ -334,32 +386,43 @@ Location: `docs/10_TSPEC/.drift_cache.json`
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache missing or corrupted - must initialize before review |
 
 **Report Output**:
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | TSPEC Reference | Last Modified | TSPEC Updated | Days Stale | Severity |
-|-------------------|-----------------|---------------|---------------|------------|----------|
-| SPEC-03.yaml | @spec Section methods | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| SPEC-03.yaml | @spec interfaces | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+**Cache Status**: Valid | Last validated: 2026-02-10T14:30:00Z
 
-**Recommendation**: Review upstream SPEC changes and update TSPEC if methods or interfaces have changed.
+| Upstream Document | TSPEC Reference | Cached Hash | Current Hash | Change % | Severity |
+|-------------------|-----------------|-------------|--------------|----------|----------|
+| SPEC-03.yaml | @spec methods | sha256:abc1... | sha256:xyz9... | 15% | Warning |
+| SPEC-03.yaml | @spec interfaces | sha256:def4... | sha256:def4... | 0% | OK |
+
+### Changed Sections Detail
+
+**SPEC-03.yaml#methods** (15% change):
+- Lines 45-67: Method signature changed
+- Lines 120-135: New parameter added
+
+**Recommendation**: Review upstream SPEC changes and update TSPEC test cases for modified methods.
 ```
 
 **Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
-- Add `[DRIFT]` marker to affected @spec tags (optional)
-- Generate drift summary in review report
+- Initialize `.drift_cache.json` if missing (Phase 1)
+- Update cache with current hashes after successful review (Phase 3)
+- Add `[DRIFT]` marker to affected @spec tags in review report
+- Generate drift summary with section-level detail
 
 **Configuration**:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | **Mandatory** - cache is always enabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `change_threshold_percent` | 20 | Change percentage triggering Error severity |
 | `tracked_patterns` | `@spec:` | Patterns to track for drift |
 
 ---
@@ -467,6 +530,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required for all reviews; Three-phase detection algorithm; SHA-256 hash calculation with Python example; REV-D006 error code for missing cache; Cache schema v2.0 with section-level hashes; Report output with cache status and change percentages |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC documents modified after TSPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tspec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Coverage target validation; SPEC alignment; Test case completeness; Edge case coverage |

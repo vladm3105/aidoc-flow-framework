@@ -3,18 +3,20 @@ title: "Traceability Setup Guide"
 tags:
   - framework-guide
   - shared-architecture
+  - drift-detection
 custom_fields:
   document_type: guide
   priority: shared
   development_status: active
+  last_updated: "2026-02-10T16:30:00"
 ---
 
 # Traceability Setup Guide
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 
-**Version**: 1.0
-**Purpose**: Configure automated traceability validation for projects
+**Version**: 1.1
+**Purpose**: Configure automated traceability validation and drift detection for projects
 **Target**: AI Assistants setting up continuous validation
 **Status**: Production
 
@@ -98,6 +100,121 @@ python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs d
 - Tag count matches expected range for each layer
 - Optional layer (CTR) handled correctly
 - Tag chain completeness (e.g., if @adr exists, @brd through @bdd must exist)
+
+---
+
+## Drift Detection System (v1.4)
+
+### Overview
+
+Reviewer skills (v1.4) implement mandatory drift detection to identify when upstream documents have changed since the last review. This ensures downstream artifacts remain synchronized with their sources.
+
+### Drift Cache File
+
+Each document folder contains a `.drift_cache.json` file:
+
+```
+docs/
+├── 01_BRD/
+│   └── BRD-01_feature/
+│       ├── BRD-01.md
+│       ├── BRD-01.R_review_report_vNNN.md
+│       └── .drift_cache.json  ← Drift cache
+├── 02_PRD/
+│   └── PRD-01_feature/
+│       └── .drift_cache.json
+```
+
+### Cache Schema
+
+```json
+{
+  "schema_version": "1.0",
+  "document_id": "BRD-01",
+  "document_version": "1.0",
+  "last_reviewed": "2026-02-10T16:30:00",
+  "reviewer_version": "1.4",
+  "upstream_documents": {
+    "../../00_REF/source.md": {
+      "hash": "sha256:abc123...",
+      "last_modified": "2026-02-10T15:34:26",
+      "file_size": 50781,
+      "version": "1.0",
+      "sections_tracked": ["#1-section", "#2-section"]
+    }
+  },
+  "review_history": [
+    {
+      "date": "2026-02-10T16:30:00",
+      "score": 97,
+      "drift_detected": false,
+      "report_version": "v002"
+    }
+  ]
+}
+```
+
+### Three-Phase Detection Algorithm
+
+**Phase 1: Load Cache**
+```
+IF .drift_cache.json exists:
+    Load cache from file
+ELSE:
+    Create new cache structure
+    Log: REV-D006 "First review - creating drift cache"
+```
+
+**Phase 2: Detect Drift**
+```
+FOR each upstream_document in references:
+    current_hash = compute_sha256(upstream_document)
+    IF cached_hash != current_hash:
+        drift_detected = true
+        Log: REV-D001 "Upstream drift detected in {document}"
+```
+
+**Phase 3: Update Cache (MANDATORY)**
+```
+Update cache with:
+    - Current timestamps (ISO 8601)
+    - New SHA-256 hashes
+    - Review history entry
+Write .drift_cache.json
+```
+
+### Hash Calculation
+
+SHA-256 hash computation for content comparison:
+
+```python
+import hashlib
+
+def compute_file_hash(file_path: str) -> str:
+    sha256 = hashlib.sha256()
+    with open(file_path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return f"sha256:{sha256.hexdigest()}"
+```
+
+### Drift Detection Error Codes
+
+| Code | Meaning |
+|------|---------|
+| REV-D001 | Upstream drift detected - content changed |
+| REV-D002 | Upstream file deleted |
+| REV-D003 | Upstream file added |
+| REV-D004 | Cache corrupted - regenerating |
+| REV-D005 | Hash mismatch |
+| REV-D006 | First review - creating cache |
+
+### ISO 8601 Datetime Format
+
+All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SS`
+- Enables same-day drift detection
+- Example: `2026-02-10T16:30:00`
+- Required in: last_reviewed, review_history.date, last_modified
 
 **Layer-specific validation:**
 ```bash

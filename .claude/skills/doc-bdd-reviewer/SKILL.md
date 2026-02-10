@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-bdd-reviewer
@@ -249,16 +249,83 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 8. Upstream Drift Detection
+### 8. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream source documents have been modified after the BDD was created or last updated.
 
 **Purpose**: Identifies stale BDD content that may not reflect current EARS documentation.
 
+**The drift cache is mandatory** - the reviewer MUST create/update it after every review.
+
 **Scope**:
 - `@ref:` tag targets
 - `@ears:` tag references
 - Traceability section upstream artifact links
+
+#### Drift Cache File (MANDATORY)
+
+**Location**: `docs/04_BDD/.drift_cache.json`
+
+**Cache Schema**:
+
+```json
+{
+  "cache_version": "1.0",
+  "last_updated": "2026-02-10T17:00:00Z",
+  "upstream_type": "EARS",
+  "documents": {
+    "BDD-01_f1_iam.feature": {
+      "bdd_hash": "sha256:abc123...",
+      "bdd_mtime": "2026-02-10T15:00:00Z",
+      "upstream_refs": {
+        "docs/03_EARS/EARS-01_f1_iam.md": {
+          "content_hash": "sha256:def456...",
+          "version": "1.2",
+          "mtime": "2026-02-09T12:00:00Z",
+          "sections_referenced": ["REQ-F1-001", "REQ-F1-002"]
+        }
+      },
+      "last_review": "2026-02-10T16:30:00Z",
+      "drift_status": "fresh"
+    }
+  }
+}
+```
+
+#### Three-Phase Detection Algorithm
+
+**Phase 1: Load Cache**
+1. Check if `.drift_cache.json` exists
+2. If exists, load and validate schema
+3. If not exists, initialize empty cache structure
+
+**Phase 2: Detect Drift**
+1. For each BDD document being reviewed:
+   - Extract all `@ears:` and `@ref:` references
+   - For each upstream reference:
+     - Calculate current content hash
+     - Compare with cached hash
+     - Check `mtime` and `version` fields
+   - Flag drift if any mismatch detected
+
+**Phase 3: Update Cache (MANDATORY)**
+1. Update document entry with current hashes
+2. Update `last_review` timestamp
+3. Set `drift_status` based on detection results
+4. Write cache file atomically
+5. Log cache update in review report
+
+#### Hash Calculation
+
+```python
+import hashlib
+
+def calculate_content_hash(file_path: str) -> str:
+    """Calculate SHA-256 hash of file content."""
+    with open(file_path, 'rb') as f:
+        content = f.read()
+    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+```
 
 **Detection Methods**:
 
@@ -277,14 +344,32 @@ Detects when upstream source documents have been modified after the BDD was crea
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream |
 | REV-D005 | Error | Critical upstream modification (>20% change) |
+| REV-D006 | Info | Cache created (first review of this document) |
+
+**Report Output**:
+
+```markdown
+### Drift Detection Results
+
+**Cache Status**: Updated (docs/04_BDD/.drift_cache.json)
+**Documents Checked**: 5
+**Fresh**: 4
+**Drifted**: 1 (BDD-03_f3_observability.feature)
+
+| Document | Upstream | Status | Hash Match | Details |
+|----------|----------|--------|------------|---------|
+| BDD-01 | EARS-01 | Fresh | Yes | - |
+| BDD-03 | EARS-03 | Drifted | No | Section 4.2 modified |
+```
 
 **Configuration**:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | Mandatory - cannot be disabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `enable_hash_check` | true | SHA-256 content hashing (mandatory with cache) |
 
 ---
 
@@ -391,6 +476,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache at `docs/04_BDD/.drift_cache.json`; Three-phase detection algorithm (Load Cache, Detect Drift, Update Cache); SHA-256 hash calculation; REV-D006 error code (Cache created); Report output with cache status; `cache_enabled: true` mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when EARS documents modified after BDD creation; REV-D001-D005 error codes; drift configuration; Added doc-bdd-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Gherkin syntax compliance; Scenario completeness; Step definition reusability |

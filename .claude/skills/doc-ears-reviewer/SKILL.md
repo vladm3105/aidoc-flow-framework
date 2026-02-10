@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-ears-reviewer
@@ -241,9 +241,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 8. Upstream Drift Detection
+### 8. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream source documents have been modified after the EARS was created or last updated.
+
+**The drift cache is mandatory** - the reviewer MUST create/update it after every review.
 
 **Purpose**: Identifies stale EARS content that may not reflect current PRD documentation.
 
@@ -252,13 +254,90 @@ Detects when upstream source documents have been modified after the EARS was cre
 - `@prd:` tag references
 - Traceability section upstream artifact links
 
-**Detection Methods**:
+#### 8.1 Drift Cache File (MANDATORY)
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs EARS creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+**Location**: `docs/03_EARS/.drift_cache.json`
+
+**Schema**:
+
+```json
+{
+  "cache_version": "1.0",
+  "artifact_type": "EARS",
+  "upstream_type": "PRD",
+  "last_updated": "2026-02-10T17:00:00Z",
+  "entries": {
+    "EARS-01": {
+      "ears_file": "docs/03_EARS/EARS-01_f1_iam.md",
+      "ears_hash": "sha256:abc123...",
+      "ears_mtime": "2026-02-10T15:00:00Z",
+      "upstream_refs": [
+        {
+          "prd_id": "PRD-01",
+          "prd_file": "docs/02_PRD/PRD-01_f1_iam.md",
+          "prd_hash": "sha256:def456...",
+          "prd_mtime": "2026-02-10T14:00:00Z",
+          "prd_version": "1.2"
+        }
+      ],
+      "last_review": "2026-02-10T16:00:00Z",
+      "drift_status": "clean"
+    }
+  }
+}
+```
+
+#### 8.2 Detection Algorithm (Three-Phase)
+
+**Phase 1: Load Cache**
+```
+IF cache file exists:
+    Load existing cache
+    Validate cache schema
+ELSE:
+    Initialize empty cache
+    Mark as first review (REV-D006)
+```
+
+**Phase 2: Detect Drift**
+```
+FOR each EARS document:
+    Calculate current EARS hash
+    FOR each upstream PRD reference:
+        Calculate current PRD hash
+        IF cache entry exists:
+            Compare PRD hash with cached hash
+            IF hashes differ:
+                Flag drift (REV-D001/D002/D005)
+            Compare PRD mtime with cached mtime
+            IF mtime newer:
+                Flag potential drift (REV-D003)
+        ELSE:
+            New reference - no drift comparison possible
+```
+
+**Phase 3: Update Cache (MANDATORY)**
+```
+FOR each reviewed EARS document:
+    Update EARS hash and mtime
+    FOR each upstream PRD reference:
+        Update PRD hash, mtime, and version
+    Set drift_status based on review results
+    Set last_review to current timestamp
+Write updated cache to disk
+```
+
+#### 8.3 Hash Calculation
+
+```python
+import hashlib
+
+def calculate_content_hash(file_path: str) -> str:
+    """Calculate SHA-256 hash of file content."""
+    with open(file_path, 'rb') as f:
+        content = f.read()
+    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+```
 
 **Error Codes**:
 
@@ -269,14 +348,32 @@ Detects when upstream source documents have been modified after the EARS was cre
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream |
 | REV-D005 | Error | Critical upstream modification (>20% change) |
+| REV-D006 | Info | Cache created - first review |
+
+#### 8.5 Report Output
+
+The review report MUST include cache status:
+
+```markdown
+## Upstream Drift Detection
+
+**Cache Status**: Updated | Created | Error
+**Cache Location**: `docs/03_EARS/.drift_cache.json`
+
+| EARS | Upstream PRD | Drift Status | Last Verified |
+|------|--------------|--------------|---------------|
+| EARS-01 | PRD-01 | Clean | 2026-02-10T17:00:00Z |
+| EARS-02 | PRD-02 | Drift Detected (REV-D002) | 2026-02-10T17:00:00Z |
+```
 
 **Configuration**:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | Mandatory - cannot be disabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `enable_hash_check` | true | SHA-256 content hashing enabled |
 
 ---
 
@@ -383,6 +480,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Made drift cache mandatory; Added cache schema and location (`docs/03_EARS/.drift_cache.json`); Three-phase detection algorithm; SHA-256 hash calculation; REV-D006 error code for cache creation; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when PRD documents modified after EARS creation; REV-D001-D005 error codes; drift configuration; Added doc-ears-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; EARS syntax compliance; Threshold quantification; Testability assessment |

@@ -1,5 +1,5 @@
 ---
-title: "MVP Autopilot: Core Guide (v6.0 - TSPEC, TDD & CHG Integration)"
+title: "MVP Autopilot: Core Guide (v6.1 - Reviewer & Fixer Integration)"
 tags:
   - framework-core
   - mvp-workflow
@@ -7,19 +7,26 @@ tags:
   - tspec
   - tdd
   - change-management
+  - drift-detection
+  - auto-merge
 custom_fields:
   document_type: guide
   artifact_type: DOCS
   layer: 0
   priority: primary
   development_status: active
-  version: "6.0"
-  last_updated: "2026-02-06T00:00:00"
+  version: "6.1"
+  last_updated: "2026-02-10T16:30:00"
 ---
 
-# MVP Autopilot: Core Guide (v6.0)
+# MVP Autopilot: Core Guide (v6.1)
 
 This document is the authoritative reference for MVP Autopilot in the AI Dev Flow framework. It explains what autopilot does, how to use it, and provides practical guidance for both local development and GitHub Actions CI/CD.
+
+**v6.1 Enhancements**:
+- **Reviewer Skills v1.4**: Mandatory drift cache with SHA-256 hash-based detection
+- **Fixer Skills v2.0**: Tiered auto-merge system (<5%, 5-15%, >15% thresholds)
+- **ISO 8601 Datetime**: Standardized `YYYY-MM-DDTHH:MM:SS` format throughout
 
 **v6.0 Enhancements**:
 - **TSPEC Integration**: Layer 10 Test Specifications (UTEST, ITEST, STEST, FTEST)
@@ -73,6 +80,30 @@ make docs
 - Does NOT execute arbitrary system commands
 - Does NOT write outside the project directory
 - Does NOT execute TASKS bash commands (content-only)
+
+### Reviewer & Fixer Integration (v6.1)
+
+**Reviewer Skills (v1.4)** - Mandatory drift detection with cache:
+- Three-phase detection: Load Cache → Detect Drift → Update Cache
+- SHA-256 hash comparison for high-precision upstream change detection
+- `.drift_cache.json` file created/updated after every review
+- Complete review history tracking for audit trails
+
+**Fixer Skills (v2.0)** - Tiered auto-merge with no-deletion policy:
+
+| Tier | Change % | Action | Version Increment |
+|------|----------|--------|-------------------|
+| Tier 1 | <5% | Auto-merge additions/updates | Patch (1.0→1.0.1) |
+| Tier 2 | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
+| Tier 3 | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
+
+**No Deletion Policy**: Content is never deleted, only marked as:
+- `[DEPRECATED]` - Replaced by newer content
+- `[SUPERSEDED]` - Replaced by different approach
+- `[CANCELLED]` - Business decision to remove
+- `@deprecated` - Code-style deprecation marker
+
+**ISO 8601 Datetime Format**: All timestamps use `YYYY-MM-DDTHH:MM:SS`
 
 ---
 

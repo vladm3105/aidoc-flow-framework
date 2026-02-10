@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-req-reviewer
@@ -264,9 +264,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream SYS documents have been modified after the REQ was created or last updated.
+
+**The drift cache is mandatory** - the reviewer MUST create/update it after every review.
 
 **Purpose**: Identifies stale REQ content that may not reflect current system requirements. When SYS documents change, the REQ may need updates to maintain alignment with system-level specifications.
 
@@ -287,9 +289,55 @@ Detects when upstream SYS documents have been modified after the REQ was created
 | **Content Hash** | SHA-256 hash of referenced SYS requirement sections | High |
 | **Version Tracking** | Checks `version` field in YAML frontmatter | High |
 
-**Algorithm**:
+**Drift Cache File** (MANDATORY):
+
+Location: `docs/07_REQ/.drift_cache.json`
+
+```json
+{
+  "cache_version": "1.0",
+  "last_review": "2026-02-10T17:00:00",
+  "reviewer_version": "1.3",
+  "upstream_hashes": {
+    "docs/06_SYS/SYS-01_f1_iam.md": {
+      "hash": "a1b2c3d4e5f6...",
+      "mtime": "2026-02-08T10:15:00",
+      "version": "1.0"
+    },
+    "docs/06_SYS/SYS-03_f3_observability.md": {
+      "hash": "e5f6g7h8i9j0...",
+      "mtime": "2026-02-10T14:30:00",
+      "version": "1.2"
+    }
+  },
+  "req_states": {
+    "REQ-01": {
+      "last_reviewed": "2026-02-10T17:00:00",
+      "upstream_refs": ["docs/06_SYS/SYS-01_f1_iam.md"]
+    },
+    "REQ-03": {
+      "last_reviewed": "2026-02-10T17:00:00",
+      "upstream_refs": ["docs/06_SYS/SYS-03_f3_observability.md"]
+    }
+  }
+}
+```
+
+**Three-Phase Detection Algorithm**:
 
 ```
+Phase 1: Load Cache
+─────────────────────
+1. Check if docs/07_REQ/.drift_cache.json exists
+2. If exists:
+   a. Load cached upstream hashes
+   b. Load cached REQ states
+3. If not exists:
+   a. Initialize empty cache structure
+   b. Flag as first review (REV-D006)
+
+Phase 2: Detect Drift
+─────────────────────
 1. Extract all upstream references from REQ:
    - @sys: tags → [SYS document ID, requirement ID]
    - Links to ../06_SYS/ → [path]
@@ -299,30 +347,37 @@ Detects when upstream SYS documents have been modified after the REQ was created
 2. For each upstream reference:
    a. Resolve path to absolute file path
    b. Check file exists (already covered by Check #2)
-   c. Get file modification time (mtime)
-   d. Compare mtime > REQ last_updated date
-   e. If mtime > REQ date → flag as DRIFT
+   c. Compute current SHA-256 hash
+   d. Compare to cached hash
+   e. If hash differs → flag as DRIFT (REV-D002)
+   f. If mtime > REQ last_reviewed → flag as TIMESTAMP_DRIFT (REV-D001)
 
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
+3. Calculate drift severity:
+   a. Compute content diff percentage
+   b. If >20% change → Critical (REV-D005)
+   c. If version incremented → Info (REV-D003)
+
+Phase 3: Update Cache (MANDATORY)
+─────────────────────────────────
+1. For each upstream document reviewed:
+   a. Compute current SHA-256 hash
+   b. Record current mtime
+   c. Extract version from frontmatter
+2. Update req_states with review timestamp
+3. Write updated cache to docs/07_REQ/.drift_cache.json
+4. Cache update is MANDATORY - never skip this step
 ```
 
-**Drift Cache File** (optional):
+**Hash Calculation**:
 
-Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
+```python
+import hashlib
 
-```json
-{
-  "req_version": "1.0",
-  "req_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../06_SYS/SYS-01_f1_iam.md#3.2": "a1b2c3d4...",
-    "../../06_SYS/SYS-03_f3_observability.md": "e5f6g7h8..."
-  }
-}
+def compute_upstream_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of upstream document content."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
 ```
 
 **Error Codes**:
@@ -334,11 +389,15 @@ Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
 | REV-D003 | Info | Upstream SYS version incremented |
 | REV-D004 | Info | New content added to upstream SYS |
 | REV-D005 | Error | Critical SYS substantially modified (>20% change) |
+| REV-D006 | Info | Cache created - first review |
 
 **Report Output**:
 
 ```markdown
 ## Upstream Drift Analysis
+
+**Cache Status**: Updated | Created | N/A
+**Cache Location**: docs/07_REQ/.drift_cache.json
 
 | Upstream Document | REQ Reference | Last Modified | REQ Updated | Days Stale | Severity |
 |-------------------|---------------|---------------|-------------|------------|----------|
@@ -349,7 +408,7 @@ Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
 ```
 
 **Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
+- Update `docs/07_REQ/.drift_cache.json` with current hashes after review (MANDATORY)
 - Add `[DRIFT]` marker to affected @sys tags (optional)
 - Generate drift summary in review report
 
@@ -357,9 +416,9 @@ Location: `docs/07_REQ/{REQ_folder}/.drift_cache.json`
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true (Mandatory) | Cache is always enabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
 | `tracked_patterns` | `@sys:` | Patterns to track for drift |
 
 ---
@@ -472,6 +531,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Made drift cache mandatory; Three-phase detection algorithm (Load/Detect/Update); Added REV-D006 error code for first review; Cache location standardized to docs/07_REQ/.drift_cache.json; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SYS documents modified after REQ creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-req-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; Atomicity validation; Acceptance criteria quality; Implementation path completeness |

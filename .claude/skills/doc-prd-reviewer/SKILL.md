@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [PRD]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.4"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-prd-reviewer
@@ -434,42 +434,217 @@ Validating naming compliance (per doc-naming skill)...
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
-Detects when upstream source documents have been modified after the PRD was created or last updated.
+Detects when upstream source documents have been modified after the PRD was created or last updated. **The drift cache is mandatory** - the reviewer MUST create/update it after every review.
 
-**Purpose**: Identifies stale PRD content that may not reflect current BRD documentation.
+**Purpose**: Identifies stale PRD content that may not reflect current BRD documentation. When upstream documents (BRD specifications, business requirements) change, the PRD may need updates to maintain alignment.
 
 **Scope**:
-- `@ref:` tag targets
+- `@ref:` tag targets (BRD documents, technical specifications)
 - `@brd:` tag references
 - Traceability section upstream artifact links
+- Any markdown links to `../01_BRD/` or source documents
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs PRD creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+#### 9.1 Drift Cache File (MANDATORY)
 
-**Error Codes**:
+**Location**: `docs/02_PRD/{PRD_folder}/.drift_cache.json`
 
-| Code | Severity | Description |
-|------|----------|-------------|
-| REV-D001 | Warning | Upstream document modified after PRD creation |
-| REV-D002 | Warning | Referenced section content changed |
-| REV-D003 | Info | Upstream document version incremented |
-| REV-D004 | Info | New content added to upstream |
-| REV-D005 | Error | Critical upstream modification (>20% change) |
+**IMPORTANT**: The reviewer MUST:
+1. **Read** the cache if it exists (for hash comparison)
+2. **Create** the cache if it doesn't exist
+3. **Update** the cache after every review with current hashes
 
-**Configuration**:
+**Cache Schema**:
+
+```json
+{
+  "schema_version": "1.0",
+  "document_id": "PRD-01",
+  "document_version": "1.0",
+  "last_reviewed": "2026-02-10T17:00:00",
+  "reviewer_version": "1.4",
+  "upstream_documents": {
+    "../../01_BRD/BRD-01_f1_iam/BRD-01.0_index.md": {
+      "hash": "sha256:a1b2c3d4e5f6g7h8i9j0...",
+      "last_modified": "2026-02-10T15:34:26",
+      "file_size": 50781,
+      "version": "1.0",
+      "sections_tracked": ["#7-functional-requirements", "#8-non-functional-requirements"]
+    },
+    "../../01_BRD/BRD-01_f1_iam/BRD-01.7_functional_requirements.md": {
+      "hash": "sha256:k1l2m3n4o5p6q7r8s9t0...",
+      "last_modified": "2026-02-10T15:34:21",
+      "file_size": 4730,
+      "version": "1.0",
+      "sections_tracked": ["#authentication", "#authorization"]
+    }
+  },
+  "review_history": [
+    {
+      "date": "2026-02-10T16:30:00",
+      "score": 97,
+      "drift_detected": false,
+      "report_version": "v002"
+    }
+  ]
+}
+```
+
+---
+
+#### 9.2 Detection Algorithm (Three-Phase)
+
+```
+PHASE 1: Load Cache (if exists)
+=========================================
+1. Check for .drift_cache.json in PRD folder
+2. If exists:
+   - Load cached hashes and metadata
+   - Set detection_mode = "hash_comparison"
+3. If not exists:
+   - Set detection_mode = "timestamp_only"
+   - Will create cache at end of review
+
+PHASE 2: Detect Drift
+=========================================
+For each upstream reference in PRD:
+
+  A. Extract reference:
+     - @ref: tags → [path, section anchor]
+     - @brd: tags → [BRD ID, requirement ID]
+     - Links to ../01_BRD/ → [path]
+     - Traceability table upstream artifacts → [path]
+
+  B. Resolve and validate:
+     - Resolve path to absolute file path
+     - Check file exists (skip if covered by Check #1)
+     - Get file stats: mtime, size
+
+  C. Compare (based on detection_mode):
+
+     IF detection_mode == "hash_comparison":
+       - Compute SHA-256 hash of current file content
+       - Compare to cached hash
+       - IF hash differs:
+           - Calculate change_percentage
+           - Flag as CONTENT_DRIFT (REV-D002)
+           - IF change > 20%: Flag as CRITICAL (REV-D005)
+
+     ELSE (timestamp_only):
+       - Compare file mtime > PRD last_updated
+       - IF mtime > PRD date:
+           - Flag as TIMESTAMP_DRIFT (REV-D001)
+
+  D. Check version field (if YAML frontmatter):
+     - Extract version from upstream doc
+     - Compare to cached version
+     - IF version incremented: Flag REV-D003
+
+PHASE 3: Update Cache (MANDATORY)
+=========================================
+1. Compute SHA-256 hash for ALL upstream documents
+2. Create/update .drift_cache.json with:
+   - Current hashes
+   - Current timestamps
+   - Current file sizes
+   - Review metadata
+3. Append to review_history array
+```
+
+---
+
+#### 9.3 Hash Calculation
+
+```python
+import hashlib
+from pathlib import Path
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content."""
+    sha256 = hashlib.sha256()
+    with open(file_path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return f"sha256:{sha256.hexdigest()}"
+
+def compute_section_hash(file_path: str, section_anchor: str) -> str:
+    """Compute hash of specific section (for anchor references)."""
+    content = Path(file_path).read_text()
+    # Extract section from anchor to next heading
+    section_pattern = f"#{section_anchor.lstrip('#')}"
+    # ... section extraction logic ...
+    section_content = extract_section(content, section_pattern)
+    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+
+def calculate_change_percentage(old_hash: str, new_content: str) -> float:
+    """Estimate change percentage using content diff."""
+    # Use difflib to calculate similarity ratio
+    import difflib
+    # ... comparison logic ...
+    return change_percentage
+```
+
+---
+
+#### 9.4 Error Codes
+
+| Code | Severity | Description | Trigger |
+|------|----------|-------------|---------|
+| REV-D001 | Warning | Upstream document modified after PRD creation | mtime > PRD date (no cache) |
+| REV-D002 | Warning | Referenced content has changed | hash mismatch (with cache) |
+| REV-D003 | Info | Upstream document version incremented | version field changed |
+| REV-D004 | Info | New content added to upstream | file size increased >10% |
+| REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
+| REV-D006 | Info | Cache created (first review) | no prior cache existed |
+
+---
+
+#### 9.5 Report Output
+
+```markdown
+## 9. Upstream Drift Detection (5/5)
+
+### Cache Status
+
+| Field | Value |
+|-------|-------|
+| Cache File | `.drift_cache.json` |
+| Cache Status | ✅ Updated |
+| Detection Mode | Hash Comparison |
+| Documents Tracked | 2 |
+
+### Upstream Document Analysis
+
+| Upstream Document | Hash Status | Last Modified | Change % | Status |
+|-------------------|-------------|---------------|----------|--------|
+| BRD-01.0_index.md | ✅ Match | 2026-02-10T15:34:26 | 0% | Current |
+| BRD-01.7_functional_requirements.md | ✅ Match | 2026-02-10T15:34:21 | 0% | Current |
+
+### Drift Summary
+
+| Status | Count | Details |
+|--------|-------|---------|
+| ✅ Current | 2 | All upstream documents synchronized |
+| ⚠️ Warning | 0 | No drift detected |
+| ❌ Critical | 0 | No major changes |
+
+**Cache updated**: 2026-02-10T17:00:00
+```
+
+---
+
+#### 9.6 Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `drift_threshold_days` | 7 | Days before drift becomes Warning |
-| `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `cache_enabled` | **true** | **Mandatory** - always create/update cache |
+| `drift_threshold_days` | 7 | Days before timestamp drift becomes Warning |
+| `critical_change_pct` | 20 | Percentage change for critical drift |
+| `track_sections` | true | Track individual section hashes for anchored refs |
+| `max_history_entries` | 10 | Maximum review_history entries to retain |
 
 ---
 
@@ -815,6 +990,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when BRD documents modified after PRD creation; REV-D001-D005 error codes; drift configuration; Added doc-prd-fixer to related skills |
 | 1.2 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.1 | 2026-02-08 | Added Check #8: Naming Compliance (doc-naming integration) |

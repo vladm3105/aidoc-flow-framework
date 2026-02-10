@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-spec-reviewer
@@ -277,9 +277,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection
+### 9. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream REQ and CTR documents have been modified after the SPEC was created or last updated.
+
+**The drift cache is mandatory**. All SPEC review operations must maintain drift cache state to enable accurate incremental drift detection. The cache persists hash values between reviews, eliminating false positives from timestamp-only comparisons.
 
 **Purpose**: Identifies stale SPEC content that may not reflect current REQ and CTR documentation. When REQ documents (requirements, acceptance criteria) or CTR documents (external API contracts) change, the SPEC may need updates to maintain alignment.
 
@@ -289,15 +291,72 @@ Detects when upstream REQ and CTR documents have been modified after the SPEC wa
 - Traceability section upstream artifact links
 - Any markdown links to `../07_REQ/` or `../08_CTR/` source documents
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs SPEC creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+#### Drift Cache File (MANDATORY)
 
-**Algorithm**:
+Location: `docs/09_SPEC/.drift_cache.json`
+
+**Schema**:
+
+```json
+{
+  "cache_version": "1.0",
+  "last_review": "2026-02-10T17:00:00",
+  "spec_files": {
+    "SPEC-03.yaml": {
+      "spec_hash": "sha256:abc123...",
+      "last_reviewed": "2026-02-10T17:00:00",
+      "upstream_refs": {
+        "REQ-03.yaml": {
+          "file_hash": "sha256:def456...",
+          "section_hashes": {
+            "req_implementations": "sha256:ghi789...",
+            "acceptance_criteria": "sha256:jkl012..."
+          },
+          "last_modified": "2026-02-08T10:15:00"
+        },
+        "CTR-03-001.yaml": {
+          "file_hash": "sha256:mno345...",
+          "section_hashes": {
+            "endpoints": "sha256:pqr678..."
+          },
+          "last_modified": "2026-02-09T14:30:00"
+        }
+      }
+    }
+  }
+}
+```
+
+**Cache Fields**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `cache_version` | string | Schema version for cache format |
+| `last_review` | ISO8601 | Timestamp of most recent review run |
+| `spec_files` | object | Map of SPEC filename to review state |
+| `spec_hash` | string | SHA-256 hash of SPEC file content |
+| `last_reviewed` | ISO8601 | When this SPEC was last reviewed |
+| `upstream_refs` | object | Map of upstream file to hash state |
+| `file_hash` | string | SHA-256 hash of entire upstream file |
+| `section_hashes` | object | Map of section name to content hash |
+| `last_modified` | ISO8601 | File modification timestamp |
+
+---
+
+#### Three-Phase Detection Algorithm
+
+**Phase 1: Cache Load**
+
+```
+1. Load .drift_cache.json from docs/09_SPEC/
+2. If cache missing → initialize empty cache, flag REV-D006
+3. Validate cache_version compatibility
+4. Extract cached state for target SPEC file
+```
+
+**Phase 2: Drift Detection**
 
 ```
 1. Extract all upstream references from SPEC:
@@ -310,33 +369,59 @@ Detects when upstream REQ and CTR documents have been modified after the SPEC wa
 2. For each upstream reference:
    a. Resolve path to absolute file path
    b. Check file exists (already covered by Check #2)
-   c. Get file modification time (mtime)
-   d. Compare mtime > SPEC last_updated date
-   e. If mtime > SPEC date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
+   c. Compute current SHA-256 hash of file
+   d. Compare to cached file_hash
+   e. If hash differs → DRIFT detected, proceed to section check
+   f. If section anchor specified:
+      - Extract section content
+      - Compute SHA-256 of section
+      - Compare to cached section_hash
+      - If differs → SECTION_DRIFT detected
 ```
 
-**Drift Cache File** (optional):
+**Phase 3: Cache Update**
 
-Location: `docs/09_SPEC/.drift_cache.json`
-
-```json
-{
-  "spec_version": "1.0",
-  "spec_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../07_REQ/REQ-03.yaml#req_implementations": "a1b2c3d4...",
-    "../../08_CTR/CTR-03-001.yaml#endpoints": "e5f6g7h8..."
-  }
-}
+```
+1. After review completes (regardless of pass/fail):
+   a. Update spec_hash with current SPEC hash
+   b. Update last_reviewed timestamp
+   c. For each upstream reference:
+      - Update file_hash
+      - Update section_hashes
+      - Update last_modified
+   d. Write .drift_cache.json atomically
+2. Cache update is MANDATORY - failure to update is REV-D006
 ```
 
-**Error Codes**:
+---
+
+#### Hash Calculation
+
+**SHA-256 Implementation**:
+
+```python
+import hashlib
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of entire file."""
+    sha256 = hashlib.sha256()
+    with open(file_path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return f"sha256:{sha256.hexdigest()}"
+
+def compute_section_hash(file_path: str, section_name: str) -> str:
+    """Compute SHA-256 hash of specific YAML section."""
+    import yaml
+    with open(file_path, 'r') as f:
+        doc = yaml.safe_load(f)
+    section_content = yaml.dump(doc.get(section_name, {}), sort_keys=True)
+    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+```
+
+---
+
+#### Error Codes
 
 | Code | Severity | Description |
 |------|----------|-------------|
@@ -345,32 +430,47 @@ Location: `docs/09_SPEC/.drift_cache.json`
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache missing or invalid - cache is mandatory |
 
-**Report Output**:
+---
+
+#### Report Output
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | SPEC Reference | Last Modified | SPEC Updated | Days Stale | Severity |
-|-------------------|----------------|---------------|--------------|------------|----------|
-| REQ-03.yaml | @req Section req_implementations | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| CTR-03-001.yaml | @ctr endpoints | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+**Cache Status**: Active (last updated: 2026-02-10T14:30:00)
+
+| Upstream Document | SPEC Reference | Cached Hash | Current Hash | Status | Severity |
+|-------------------|----------------|-------------|--------------|--------|----------|
+| REQ-03.yaml | @req Section req_implementations | sha256:abc1... | sha256:def4... | DRIFT | Warning |
+| CTR-03-001.yaml | @ctr endpoints | sha256:ghi7... | sha256:ghi7... | FRESH | - |
+
+**Drift Summary**:
+- Files checked: 2
+- Files with drift: 1
+- Sections with drift: 1
 
 **Recommendation**: Review upstream REQ/CTR changes and update SPEC if requirements or contracts have changed.
 ```
 
-**Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
+---
+
+#### Auto-Actions
+
+- **Mandatory**: Update `.drift_cache.json` with current hashes after every review
 - Add `[DRIFT]` marker to affected @req/@ctr tags (optional)
 - Generate drift summary in review report
 
-**Configuration**:
+---
+
+#### Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | **Mandatory** - cache cannot be disabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
 | `tracked_patterns` | `@req:`, `@ctr:` | Patterns to track for drift |
 
 ---
@@ -481,6 +581,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required (REV-D006 error if missing); Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; Enhanced cache schema with section-level hashing; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; YAML structure validation; REQ coverage; Interface completeness; Threshold compliance |

@@ -1097,6 +1097,83 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 make docs  # Runs mvp-autopilot.yml workflow
 ```
 
+## Reviewer and Fixer Skills System
+
+The framework includes a comprehensive quality assurance system with reviewer skills (v1.4) and fixer skills (v2.0) for all 11 artifact types.
+
+### Reviewer Skills (v1.4)
+
+Reviewer skills perform comprehensive content review with mandatory drift detection:
+
+| Artifact | Skill | Cache Location |
+|----------|-------|----------------|
+| BRD | `doc-brd-reviewer` | `docs/01_BRD/{folder}/.drift_cache.json` |
+| PRD | `doc-prd-reviewer` | `docs/02_PRD/{folder}/.drift_cache.json` |
+| EARS | `doc-ears-reviewer` | `docs/03_EARS/{folder}/.drift_cache.json` |
+| BDD | `doc-bdd-reviewer` | `docs/04_BDD/{folder}/.drift_cache.json` |
+| ADR | `doc-adr-reviewer` | `docs/05_ADR/{folder}/.drift_cache.json` |
+| SYS | `doc-sys-reviewer` | `docs/06_SYS/{folder}/.drift_cache.json` |
+| REQ | `doc-req-reviewer` | `docs/07_REQ/{folder}/.drift_cache.json` |
+| CTR | `doc-ctr-reviewer` | `docs/08_CTR/{folder}/.drift_cache.json` |
+| SPEC | `doc-spec-reviewer` | `docs/09_SPEC/{folder}/.drift_cache.json` |
+| TSPEC | `doc-tspec-reviewer` | `docs/10_TSPEC/{folder}/.drift_cache.json` |
+| TASKS | `doc-tasks-reviewer` | `docs/11_TASKS/{folder}/.drift_cache.json` |
+
+**Mandatory Three-Phase Drift Detection**:
+1. **Load Cache**: Read existing `.drift_cache.json` or create new
+2. **Detect Drift**: Compare SHA-256 hashes of upstream documents
+3. **Update Cache**: Write updated cache after every review (MANDATORY)
+
+**Drift Cache Schema**:
+```json
+{
+  "schema_version": "1.0",
+  "document_id": "BRD-01",
+  "last_reviewed": "2026-02-10T16:30:00",
+  "reviewer_version": "1.4",
+  "upstream_documents": {
+    "../../00_REF/source.md": {
+      "hash": "sha256:abc123...",
+      "last_modified": "2026-02-10T15:34:26",
+      "file_size": 50781
+    }
+  },
+  "review_history": [
+    {"date": "2026-02-10T16:30:00", "score": 97, "report_version": "v002"}
+  ]
+}
+```
+
+### Fixer Skills (v2.0)
+
+Fixer skills implement tiered auto-merge with no-deletion policy:
+
+| Tier | Change % | Action | Version Increment |
+|------|----------|--------|-------------------|
+| **Tier 1** | <5% | Auto-merge additions/updates | Patch (1.0→1.0.1) |
+| **Tier 2** | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
+| **Tier 3** | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
+
+**No Deletion Policy**:
+- Content is never deleted, only marked as deprecated
+- Markers: `[DEPRECATED]`, `[SUPERSEDED]`, `[CANCELLED]`, `@deprecated`
+- Archive manifest created for Tier 3 changes
+- Complete audit trail maintained
+
+**Change Percentage Calculation**:
+```python
+change_percentage = ((added_lines + deleted_lines) / original_lines) * 100
+```
+
+### ISO 8601 Datetime Format
+
+All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SS`
+- Enables same-day drift detection with timestamp precision
+- Required in: frontmatter, review reports, drift cache, changelogs
+- Example: `2026-02-10T16:30:00`
+
+---
+
 ## Development Tools
 
 A comprehensive suite of tools is included for building, testing, and debugging AI agents:
@@ -1194,11 +1271,29 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.4
-**Last Updated**: 2026-02-07T00:00:00
+**Version**: 2.5
+**Last Updated**: 2026-02-10T16:30:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.5 (2026-02-10T16:30:00)
+- ✅ **Fixer Skills v2.0**: Tiered auto-merge system for all 11 artifact types
+  - **Tier 1 (<5% change)**: Auto-merge additions/updates, patch version increment (1.0→1.0.1)
+  - **Tier 2 (5-15% change)**: Auto-merge with detailed changelog, minor version increment (1.0→1.1)
+  - **Tier 3 (>15% change)**: Archive current version, trigger regeneration, major version increment (1.x→2.0)
+  - **No Deletion Policy**: Mark content as [DEPRECATED], [SUPERSEDED], [CANCELLED], or @deprecated
+  - Supports all artifact types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS
+- ✅ **Reviewer Skills v1.4**: Mandatory drift cache with three-phase detection algorithm
+  - **Drift Cache File**: `.drift_cache.json` in each document folder
+  - **Three-Phase Detection**: Load Cache → Detect Drift → Update Cache (MANDATORY)
+  - **SHA-256 Hash Computation**: High-precision content comparison
+  - **Review History Tracking**: Complete audit trail of all reviews
+  - Supports all 11 artifact types with cache at `docs/{NN}_{TYPE}/.drift_cache.json`
+- ✅ **ISO 8601 Datetime Format**: Standardized `YYYY-MM-DDTHH:MM:SS` format across all skills and templates
+  - Enables same-day drift detection with timestamp precision
+  - Consistent datetime format in frontmatter, review reports, and cache files
+- ✅ **Enhanced Documentation**: Updated README and skills documentation
 
 ### Version 2.4 (2026-02-07T00:00:00)
 - ✅ **Autopilot v6.0**: Complete automation upgrade

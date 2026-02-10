@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-adr-reviewer
@@ -247,70 +247,119 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 8. Upstream Drift Detection
+### 8. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream source documents have been modified after the ADR was created or last updated.
 
-**Purpose**: Identifies stale ADR content that may not reflect current BDD scenarios or BRD topic definitions. When upstream documents change, the ADR may need updates to maintain alignment.
+**The drift cache is mandatory.** All drift detection operations must read from and write to the cache file. Reviewers must fail with REV-D006 if the cache file cannot be created or accessed.
+
+**Purpose**: Identifies stale ADR content that may not reflect current BDD scenarios. When upstream documents change, the ADR may need updates to maintain alignment.
 
 **Upstream Documents**:
 - **BDD documents**: Feature files and scenario definitions that ADR decisions must support
-- **BRD Section 7.2**: ADR topic definitions that scope this decision
 
 **Scope**:
 - `@bdd:` tag targets (BDD feature files)
-- `@brd:` tag references (BRD topic sections)
 - Traceability section upstream artifact links
-- Any markdown links to `../04_BDD/` or `../01_BRD/`
+- Any markdown links to `../04_BDD/`
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs ADR creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+#### Drift Cache File (MANDATORY)
 
-**Algorithm**:
+**Location**: `docs/05_ADR/.drift_cache.json`
 
-```
-1. Extract all upstream references from ADR:
-   - @bdd: tags → [path, scenario anchor]
-   - @brd: tags → [document ID, section 7.2 topic]
-   - Links to ../04_BDD/ → [path]
-   - Links to ../01_BRD/ → [path]
-   - Traceability table upstream artifacts → [path]
-
-2. For each upstream reference:
-   a. Resolve path to absolute file path
-   b. Check file exists (already covered by Check #5)
-   c. Get file modification time (mtime)
-   d. Compare mtime > ADR last_updated date
-   e. If mtime > ADR date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
-```
-
-**Drift Cache File** (optional):
-
-Location: `docs/05_ADR/.drift_cache.json`
+**Schema**:
 
 ```json
 {
-  "adr_version": "1.0",
-  "adr_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../04_BDD/BDD-01_authentication.feature": "a1b2c3d4...",
-    "../../01_BRD/BRD-01_platform/07_technical_requirements.md#7.2": "e5f6g7h8..."
+  "cache_version": "1.0",
+  "last_updated": "2026-02-10T17:00:00",
+  "documents": {
+    "ADR-01_authentication_strategy.md": {
+      "adr_hash": "sha256:abc123...",
+      "adr_updated": "2026-02-10T17:00:00",
+      "upstream_refs": {
+        "../../04_BDD/BDD-01_authentication.feature": {
+          "hash": "sha256:def456...",
+          "last_checked": "2026-02-10T17:00:00",
+          "status": "current"
+        }
+      }
+    }
   }
 }
 ```
 
-**Error Codes**:
+**Cache Requirements**:
+1. Cache file MUST be created on first review if it does not exist
+2. Cache MUST be updated after every review run
+3. Cache entries MUST include SHA-256 hashes for all upstream references
+4. Stale cache entries (>30 days) MUST trigger re-validation
+
+---
+
+#### Three-Phase Detection Algorithm
+
+```
+PHASE 1: Cache Initialization
+   1. Check if .drift_cache.json exists
+   2. If not exists → create with empty documents object
+   3. If exists → load and validate schema
+   4. If schema invalid → backup and recreate
+
+PHASE 2: Upstream Reference Extraction
+   1. Extract all upstream references from ADR:
+      - @bdd: tags → [path, scenario anchor]
+      - Links to ../04_BDD/ → [path]
+      - Traceability table upstream artifacts → [path]
+
+   2. For each upstream reference:
+      a. Resolve path to absolute file path
+      b. Check file exists (already covered by Check #5)
+      c. Read file content
+      d. Compute SHA-256 hash of content
+
+PHASE 3: Drift Comparison
+   1. For each upstream reference:
+      a. Look up cached hash for this reference
+      b. If no cached hash → flag as NEW_REFERENCE
+      c. If hash matches → status = "current"
+      d. If hash differs → flag as CONTENT_DRIFT
+
+   2. Calculate drift severity:
+      a. Compare content size change percentage
+      b. If >20% change → CRITICAL (REV-D005)
+      c. If <20% change → WARNING (REV-D002)
+
+   3. Update cache with new hashes and timestamps
+```
+
+---
+
+#### Hash Calculation
+
+**Algorithm**: SHA-256
+
+**Python Implementation**:
+
+```python
+import hashlib
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content."""
+    with open(file_path, 'rb') as f:
+        content = f.read()
+    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+```
+
+**Hash Scope**:
+- Full file content for BDD feature files
+- Specific section content when anchor specified (e.g., `#scenario-login`)
+
+---
+
+#### Error Codes
 
 | Code | Severity | Description |
 |------|----------|-------------|
@@ -319,33 +368,51 @@ Location: `docs/05_ADR/.drift_cache.json`
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache file cannot be created or accessed (mandatory) |
 
-**Report Output**:
+---
+
+#### Report Output
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | ADR Reference | Last Modified | ADR Updated | Days Stale | Severity |
-|-------------------|---------------|---------------|-------------|------------|----------|
-| BDD-01_authentication.feature | @bdd Section 3 | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| BRD-01 Section 7.2 | @brd Topic | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+**Cache Status**: Active | Last Updated: 2026-02-10T17:00:00
+
+| Upstream Document | ADR Reference | Current Hash | Cached Hash | Status | Severity |
+|-------------------|---------------|--------------|-------------|--------|----------|
+| BDD-01_authentication.feature | @bdd Section 3 | sha256:abc... | sha256:def... | DRIFT | Warning |
+| BDD-02_authorization.feature | @bdd Section 5 | sha256:ghi... | sha256:ghi... | Current | - |
+
+**Drift Summary**:
+- Documents checked: 2
+- Current: 1
+- Drifted: 1
+- Critical: 0
 
 **Recommendation**: Review upstream changes and update ADR if decision context has changed.
 ```
 
-**Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
-- Add `[DRIFT]` marker to affected @bdd/@brd tags (optional)
-- Generate drift summary in review report
+---
 
-**Configuration**:
+#### Auto-Actions
+
+1. **Cache Update**: Update `.drift_cache.json` with current hashes after every review
+2. **Drift Markers**: Add `[DRIFT]` marker to affected @bdd tags (optional)
+3. **Report Generation**: Include drift summary in review report
+4. **Cache Backup**: Create `.drift_cache.json.bak` before updates
+
+---
+
+#### Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | Enable drift cache (Mandatory - cannot be disabled) |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
-| `tracked_patterns` | `@bdd:`, `@brd:` | Patterns to track for drift |
+| `tracked_patterns` | `@bdd:` | Patterns to track for drift |
+| `cache_backup` | true | Create backup before cache updates |
 
 ---
 
@@ -452,6 +519,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for cache access failures; Three-phase detection algorithm; SHA-256 hash calculation with Python example; Updated cache schema with document-level tracking; Focused upstream on BDD documents only; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when BDD/BRD documents modified after ADR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-adr-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Decision completeness; Consequence coverage; Alternative evaluation |

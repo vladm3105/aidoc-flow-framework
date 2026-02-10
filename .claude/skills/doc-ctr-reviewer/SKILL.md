@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [CTR]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-ctr-reviewer
@@ -244,9 +244,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 8. Upstream Drift Detection
+### 8. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream REQ documents have been modified after the CTR was created or last updated.
+
+**The drift cache is mandatory**. All CTR reviewer operations must maintain the drift cache to enable reliable change detection across sessions.
 
 **Purpose**: Identifies stale CTR content that may not reflect current REQ documentation. When REQ documents (interface requirements, external API specifications) change, the CTR may need updates to maintain alignment.
 
@@ -255,49 +257,84 @@ Detects when upstream REQ documents have been modified after the CTR was created
 - Traceability section upstream artifact links
 - Any markdown links to `../07_REQ/` or REQ source documents
 
-**Detection Methods**:
+#### Drift Cache File (MANDATORY)
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares source doc `mtime` vs CTR creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
+**Location**: `docs/08_CTR/.drift_cache.json`
 
-**Algorithm**:
-
-```
-1. Extract all upstream references from CTR:
-   - @req: tags → [path, section anchor]
-   - Links to ../07_REQ/ → [path]
-   - Traceability table upstream artifacts → [path]
-
-2. For each upstream reference:
-   a. Resolve path to absolute file path
-   b. Check file exists (already covered by Check #3)
-   c. Get file modification time (mtime)
-   d. Compare mtime > CTR last_updated date
-   e. If mtime > CTR date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
-```
-
-**Drift Cache File** (optional):
-
-Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
+**Schema**:
 
 ```json
 {
-  "ctr_version": "1.0",
-  "ctr_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../07_REQ/REQ-03.yaml#interfaces": "a1b2c3d4...",
-    "../../07_REQ/REQ-03.yaml#external_apis": "e5f6g7h8..."
+  "schema_version": "1.0",
+  "last_updated": "2026-02-10T17:00:00",
+  "documents": {
+    "CTR-03-001": {
+      "ctr_path": "docs/08_CTR/CTR-03-001_provider_api/CTR-03-001.md",
+      "ctr_updated": "2026-02-10T14:30:00",
+      "upstream_hashes": {
+        "docs/07_REQ/REQ-03.md": {
+          "full_hash": "a1b2c3d4e5f6...",
+          "section_hashes": {
+            "interfaces": "1a2b3c4d...",
+            "external_apis": "5e6f7g8h..."
+          },
+          "last_checked": "2026-02-10T17:00:00"
+        }
+      }
+    }
   }
 }
+```
+
+#### Three-Phase Detection Algorithm
+
+```
+Phase 1: Cache Initialization
+  1. Check if docs/08_CTR/.drift_cache.json exists
+  2. If not exists → create with schema_version: "1.0"
+  3. Load cache into memory
+
+Phase 2: Reference Extraction and Hash Comparison
+  1. Extract all upstream references from CTR:
+     - @req: tags → [path, section anchor]
+     - Links to ../07_REQ/ → [path]
+     - Traceability table upstream artifacts → [path]
+
+  2. For each upstream reference:
+     a. Resolve path to absolute file path
+     b. Check file exists (already covered by Check #3)
+     c. Compute SHA-256 hash of full file content
+     d. If section anchor specified → compute section hash
+     e. Compare hashes against cached values
+     f. If hash differs → flag as DRIFT
+
+Phase 3: Cache Update
+  1. Update upstream_hashes with current values
+  2. Set last_checked timestamp
+  3. Write cache to disk
+  4. Report cache status in output
+```
+
+#### Hash Calculation
+
+**Full File Hash**:
+
+```python
+import hashlib
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content."""
+    with open(file_path, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()
+```
+
+**Section Hash**:
+
+```python
+def compute_section_hash(file_path: str, section_anchor: str) -> str:
+    """Compute SHA-256 hash of specific section content."""
+    content = extract_section(file_path, section_anchor)
+    return hashlib.sha256(content.encode()).hexdigest()
 ```
 
 **Error Codes**:
@@ -309,22 +346,32 @@ Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache missing or corrupted - regenerating |
 
 **Report Output**:
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | CTR Reference | Last Modified | CTR Updated | Days Stale | Severity |
-|-------------------|---------------|---------------|-------------|------------|----------|
-| REQ-03.yaml | @req Section interfaces | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| REQ-03.yaml | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+**Cache Status**: Active | Last Updated: 2026-02-10T17:00:00
+
+| Upstream Document | CTR Reference | Hash Status | Last Modified | Days Stale | Severity |
+|-------------------|---------------|-------------|---------------|------------|----------|
+| REQ-03.md | @req interfaces | CHANGED | 2026-02-08 | 3 | Warning |
+| REQ-03.md | Traceability | UNCHANGED | 2026-02-05 | 0 | OK |
+
+**Drift Summary**:
+- Total References: 5
+- Unchanged: 3
+- Changed: 2
+- New (uncached): 0
 
 **Recommendation**: Review upstream REQ changes and update CTR if interface requirements have changed.
 ```
 
 **Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
+- Create `.drift_cache.json` if not exists
+- Update cache with current hashes after every review
 - Add `[DRIFT]` marker to affected @req tags (optional)
 - Generate drift summary in review report
 
@@ -332,9 +379,9 @@ Location: `docs/08_CTR/{CTR_folder}/.drift_cache.json`
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | Drift cache (Mandatory - cannot be disabled) |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
 | `tracked_patterns` | `@req:` | Patterns to track for drift |
 
 ---
@@ -443,6 +490,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache now required; Three-Phase Detection Algorithm; SHA-256 hash calculation with Python examples; REV-D006 error code for missing/corrupted cache; cache status in report output; centralized cache at docs/08_CTR/.drift_cache.json |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when REQ documents modified after CTR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-ctr-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Dual-file consistency; OpenAPI compliance; Security definition |

@@ -1108,6 +1108,55 @@ pip install google-adk
 
 ---
 
+### SDD Reviewer Skills (v1.4)
+
+Reviewer skills perform comprehensive content review and quality assurance with mandatory drift detection:
+
+#### doc-brd-reviewer
+**Purpose**: Review BRD documents for quality, completeness, and upstream drift detection
+**Version**: 1.4
+**Key Features**:
+- Mandatory `.drift_cache.json` usage with three-phase detection
+- SHA-256 hash comparison for upstream documents
+- Link integrity validation
+- Strategic alignment verification
+- Review history tracking
+
+#### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-tasks-reviewer
+**Purpose**: Review respective artifact types with drift detection
+**Version**: 1.4 (all updated)
+**Common Features**:
+- Three-phase drift detection: Load Cache → Detect Drift → Update Cache
+- SHA-256 hash computation for content comparison
+- Mandatory cache update after every review
+- Complete review history in `.drift_cache.json`
+
+---
+
+### SDD Fixer Skills (v2.0)
+
+Fixer skills implement tiered auto-merge with no-deletion policy:
+
+#### Tiered Auto-Merge System
+
+| Tier | Change % | Action | Version Increment |
+|------|----------|--------|-------------------|
+| **Tier 1** | <5% | Auto-merge additions/updates | Patch (1.0→1.0.1) |
+| **Tier 2** | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
+| **Tier 3** | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
+
+#### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-tasks-fixer
+**Purpose**: Fix issues identified by reviewer skills using tiered auto-merge
+**Version**: 2.0 (all updated)
+**Common Features**:
+- Tiered auto-merge based on change percentage
+- No deletion policy (mark as [DEPRECATED], [SUPERSEDED], [CANCELLED])
+- Archive manifest creation for Tier 3 changes
+- Document-specific ID patterns for new requirements
+- Version increment automation
+
+---
+
 ### SDD Core Workflow Skills (doc-*)
 
 The following skills implement the 12-layer SDD workflow. Each creates specific artifact types:
@@ -1360,6 +1409,24 @@ This functional grouping simplifies understanding the workflow while maintaining
 
 ---
 
-**Index Version**: 1.8
-**Last Updated**: 2025-11-29
-**Next Review**: 2026-02-29 (quarterly)
+**Index Version**: 2.0
+**Last Updated**: 2026-02-10T16:30:00
+**Next Review**: 2026-05-10 (quarterly)
+
+---
+
+## Skill Version Summary
+
+| Skill Category | Version | Key Changes |
+|----------------|---------|-------------|
+| **Reviewer Skills** | v1.4 | Mandatory drift cache, three-phase detection, SHA-256 hashing |
+| **Fixer Skills** | v2.0 | Tiered auto-merge (<5%, 5-15%, >15%), no-deletion policy |
+| **Core Workflow (doc-*)** | Varies | Per-artifact generation and validation |
+| **Autopilot Skills** | v6.0 | TSPEC, TDD, CHG integration |
+
+## Datetime Format Standard
+
+All skills use ISO 8601 datetime format: `YYYY-MM-DDTHH:MM:SS`
+- Example: `2026-02-10T16:30:00`
+- Required in: frontmatter, review reports, drift cache, changelogs
+- Enables same-day drift detection with timestamp precision

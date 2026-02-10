@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-10T14:30:00"
+  version: "1.3"
+  last_updated: "2026-02-10T17:00:00"
 ---
 
 # doc-sys-reviewer
@@ -250,9 +250,11 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 8. Upstream Drift Detection
+### 8. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream ADR documents have been modified after the SYS was created or last updated.
+
+**The drift cache is mandatory.** All drift detection operations require cache initialization and maintenance.
 
 **Purpose**: Identifies stale SYS content that may not reflect current architecture decisions. When ADR documents change, the SYS may need updates to maintain alignment with architectural decisions.
 
@@ -265,53 +267,123 @@ Detects when upstream ADR documents have been modified after the SYS was created
 - Any markdown links to `../05_ADR/`
 - Technology choice references that trace to ADR decisions
 
-**Detection Methods**:
+---
 
-| Method | Description | Precision |
-|--------|-------------|-----------|
-| **Timestamp Comparison** | Compares ADR doc `mtime` vs SYS creation/update date | Medium |
-| **Content Hash** | SHA-256 hash of referenced ADR decision sections | High |
-| **Version Tracking** | Checks `version` field in YAML frontmatter | High |
-
-**Algorithm**:
-
-```
-1. Extract all upstream references from SYS:
-   - @adr: tags → [ADR document ID]
-   - Links to ../05_ADR/ → [path]
-   - Traceability table upstream artifacts → [path]
-   - Technology choices → [related ADR]
-
-2. For each upstream reference:
-   a. Resolve path to absolute file path
-   b. Check file exists (already covered by Check #2)
-   c. Get file modification time (mtime)
-   d. Compare mtime > SYS last_updated date
-   e. If mtime > SYS date → flag as DRIFT
-
-3. Optional (high-precision mode):
-   a. Extract specific section referenced by anchor
-   b. Compute SHA-256 hash of section content
-   c. Compare to cached hash (stored in .drift_cache.json)
-   d. If hash differs → flag as CONTENT_DRIFT
-```
-
-**Drift Cache File** (optional):
+#### Drift Cache File (MANDATORY)
 
 Location: `docs/06_SYS/.drift_cache.json`
 
+**Schema**:
+
 ```json
 {
-  "sys_version": "1.0",
-  "sys_updated": "2026-02-10T14:30:00",
-  "upstream_hashes": {
-    "../../05_ADR/ADR-01_authentication_strategy.md": "a1b2c3d4...",
-    "../../05_ADR/ADR-05_data_storage.md": "e5f6g7h8..."
+  "cache_version": "1.0",
+  "created": "2026-02-10T17:00:00",
+  "last_checked": "2026-02-10T17:00:00",
+  "sys_documents": {
+    "SYS-01_f1_iam.md": {
+      "sys_hash": "sha256:abc123...",
+      "last_updated": "2026-02-10T17:00:00",
+      "upstream_refs": {
+        "ADR-01_authentication_strategy.md": {
+          "path": "../../05_ADR/ADR-01_authentication_strategy.md",
+          "hash": "sha256:def456...",
+          "checked": "2026-02-10T17:00:00",
+          "status": "current"
+        },
+        "ADR-05_data_storage.md": {
+          "path": "../../05_ADR/ADR-05_data_storage.md",
+          "hash": "sha256:ghi789...",
+          "checked": "2026-02-10T17:00:00",
+          "status": "current"
+        }
+      }
+    }
   }
 }
 ```
 
-**Error Codes**:
+**Cache Status Values**:
+- `current`: Hash matches, no drift detected
+- `drifted`: Hash mismatch, upstream modified
+- `missing`: Upstream file not found
+- `new`: New reference, not yet cached
+
+---
+
+#### Three-Phase Detection Algorithm
+
+**Phase 1: Cache Initialization**
+
+```
+1. Check if .drift_cache.json exists
+   - If missing → Create new cache file
+   - If exists → Load and validate schema
+
+2. For each SYS document:
+   a. Extract all upstream references:
+      - @adr: tags → [ADR document ID]
+      - Links to ../05_ADR/ → [path]
+      - Traceability table upstream artifacts → [path]
+      - Technology choices → [related ADR]
+   b. Resolve paths to absolute file paths
+   c. Initialize upstream_refs entries if missing
+```
+
+**Phase 2: Hash Comparison**
+
+```
+1. For each upstream reference in cache:
+   a. Read upstream file content
+   b. Compute SHA-256 hash
+   c. Compare to cached hash:
+      - Match → status = "current"
+      - Mismatch → status = "drifted", flag REV-D002
+      - File missing → status = "missing", flag REV-D006
+
+2. Detect new references not in cache:
+   a. Add to upstream_refs with status = "new"
+   b. Compute initial hash
+```
+
+**Phase 3: Cache Update**
+
+```
+1. Update last_checked timestamp
+2. For each drifted reference:
+   a. Store new hash
+   b. Update checked timestamp
+   c. Preserve previous hash for delta analysis
+3. Write updated cache to disk
+4. Generate drift report
+```
+
+---
+
+#### Hash Calculation
+
+**Python SHA-256 Implementation**:
+
+```python
+import hashlib
+from pathlib import Path
+
+def compute_file_hash(file_path: str) -> str:
+    """Compute SHA-256 hash of file content."""
+    content = Path(file_path).read_bytes()
+    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+
+def compute_section_hash(file_path: str, section_anchor: str) -> str:
+    """Compute SHA-256 hash of specific section."""
+    content = Path(file_path).read_text()
+    # Extract section from anchor to next heading
+    section = extract_section(content, section_anchor)
+    return f"sha256:{hashlib.sha256(section.encode()).hexdigest()}"
+```
+
+---
+
+#### Error Codes
 
 | Code | Severity | Description |
 |------|----------|-------------|
@@ -320,32 +392,51 @@ Location: `docs/06_SYS/.drift_cache.json`
 | REV-D003 | Info | Upstream ADR version incremented |
 | REV-D004 | Info | New content added to upstream ADR |
 | REV-D005 | Error | Critical ADR substantially modified (>20% change) |
+| REV-D006 | Error | Drift cache missing or corrupted - requires initialization |
 
-**Report Output**:
+---
+
+#### Report Output
 
 ```markdown
 ## Upstream Drift Analysis
 
-| Upstream Document | SYS Reference | Last Modified | SYS Updated | Days Stale | Severity |
-|-------------------|---------------|---------------|-------------|------------|----------|
-| ADR-01_authentication_strategy.md | @adr Decision | 2026-02-08T10:15:00 | 2026-02-05T09:00:00 | 3 | Warning |
-| ADR-05_data_storage.md | Traceability | 2026-02-10T14:30:00 | 2026-02-05T09:00:00 | 5 | Warning |
+**Cache Status**: Loaded from docs/06_SYS/.drift_cache.json (last checked: 2026-02-10T17:00:00)
+
+| Upstream Document | SYS Reference | Cached Hash | Current Hash | Status | Severity |
+|-------------------|---------------|-------------|--------------|--------|----------|
+| ADR-01_authentication_strategy.md | @adr Decision | sha256:abc123... | sha256:xyz789... | DRIFTED | Warning |
+| ADR-05_data_storage.md | Traceability | sha256:def456... | sha256:def456... | Current | - |
+
+**Drift Summary**:
+- Total upstream references: 2
+- Current: 1
+- Drifted: 1
+- Missing: 0
 
 **Recommendation**: Review upstream ADR changes and update SYS if architecture decisions have changed.
 ```
 
-**Auto-Actions**:
-- Update `.drift_cache.json` with current hashes after review
+---
+
+#### Auto-Actions
+
+- Initialize `.drift_cache.json` if missing (mandatory)
+- Update cache with current hashes after review
 - Add `[DRIFT]` marker to affected @adr tags (optional)
 - Generate drift summary in review report
+- Preserve hash history for trend analysis
 
-**Configuration**:
+---
+
+#### Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `cache_enabled` | true | **Mandatory** - Cache must be enabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `enable_hash_check` | false | Enable SHA-256 content hashing |
+| `hash_algorithm` | SHA-256 | Hash algorithm for content comparison |
 | `tracked_patterns` | `@adr:` | Patterns to track for drift |
 
 ---
@@ -453,6 +544,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-10 | **Mandatory Drift Cache**: Cache now required for all drift detection; Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; REV-D006 error code for missing/corrupted cache; Enhanced report output with cache status; cache_enabled=true is mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when ADR documents modified after SYS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-sys-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; ADR alignment; Quality attribute coverage; Interface completeness |
