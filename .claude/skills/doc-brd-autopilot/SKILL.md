@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.1"
-  last_updated: "2026-02-09"
+  version: "2.2"
+  last_updated: "2026-02-10"
 ---
 
 # doc-brd-autopilot
@@ -41,11 +41,13 @@ This autopilot orchestrates the following skills:
 | `doc-brd` | BRD creation rules, template, section structure, Platform vs Feature guidance | Phase 3: BRD Generation |
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-validator` | Validate BRD structure, content, PRD-Ready score | Phase 4: BRD Validation |
+| `doc-brd-reviewer` | Final content review and quality assurance | Phase 5: Final Review |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - BRD structure/content rules → `doc-brd` skill
 - Real-time quality feedback → `quality-advisor` skill
 - BRD validation logic → `doc-brd-validator` skill
+- Final content review → `doc-brd-reviewer` skill
 - Element ID standards → `doc-naming` skill
 
 ---
@@ -833,13 +835,97 @@ flowchart LR
 | BRD-NN.0_index.md | Section index | `docs/01_BRD/BRD-NN_{slug}/` |
 | BRD-NN.S_{section}.md | Section files | `docs/01_BRD/BRD-NN_{slug}/` |
 
-### Validation Reports
+### Review Reports (v2.2)
+
+**IMPORTANT**: Review reports are project documents and MUST be stored alongside the reviewed documents, not in temporary folders.
+
+| Report Type | File Name | Location |
+|-------------|-----------|----------|
+| BRD Review Report | `BRD-NN.R_review_report.md` | Same folder as reviewed BRD |
+| Monolithic BRD | `BRD-NN.R_review_report.md` | `docs/01_BRD/` |
+| Sectioned BRD | `BRD-NN.R_review_report.md` | `docs/01_BRD/BRD-NN_{slug}/` |
+
+**Review Document Requirements**:
+
+Review reports are formal project documents and MUST comply with all project document standards:
+
+1. **YAML Frontmatter** (MANDATORY):
+
+   ```yaml
+   ---
+   title: "BRD-NN.R: {Module Name} - Review Report"
+   tags:
+     - brd
+     - {module-type}
+     - layer-1-artifact
+     - review-report
+     - quality-assurance
+   custom_fields:
+     document_type: review-report
+     artifact_type: BRD-REVIEW
+     layer: 1
+     parent_doc: BRD-NN
+     reviewed_document: BRD-NN_{slug}
+     module_id: {module_id}
+     module_name: {module_name}
+     review_date: "YYYY-MM-DD"
+     review_tool: doc-brd-autopilot
+     review_version: "{version}"
+     review_mode: read-only
+     prd_ready_score_claimed: {claimed}
+     prd_ready_score_validated: {validated}
+     validation_status: PASS|FAIL
+     errors_count: {n}
+     warnings_count: {n}
+     info_count: {n}
+     auto_fixable_count: {n}
+   ---
+   ```
+
+2. **Parent Document Reference** (MANDATORY):
+   - Navigation link to parent document index
+   - `@parent-brd: BRD-NN` tag in Traceability section
+   - Cross-references using relative paths
+
+3. **Section Structure** (MANDATORY):
+
+   | Section | Content |
+   |---------|---------|
+   | 0. Document Control | Report metadata, review date, tool version |
+   | 1. Executive Summary | Score, status, issue counts |
+   | 2. Document Overview | Reviewed document details, files reviewed |
+   | 3. Score Breakdown | Category scores with max values |
+   | 4-N. Validation Details | Section-specific validation results |
+   | N+1. Issues Summary | Errors, warnings, info categorized |
+   | N+2. Recommendations | Priority-ordered fix recommendations |
+   | N+3. Traceability | Parent document reference |
+
+4. **File Naming Convention**:
+   - Pattern: `{ARTIFACT}-NN.R_review_report.md`
+   - `R` suffix indicates Review document type
+   - Example: `BRD-03.R_review_report.md`
+
+**Example Review Report Location**:
+
+```
+docs/01_BRD/
+├── BRD-03_f3_observability/
+│   ├── BRD-03.0_index.md
+│   ├── BRD-03.1_core.md
+│   ├── BRD-03.2_requirements.md
+│   ├── BRD-03.3_quality_ops.md
+│   └── BRD-03.R_review_report.md    # ← Review report stored here
+```
+
+### Temporary Files
 
 | Report | Purpose | Location |
 |--------|---------|----------|
-| brd_validation_report.json | Validation results | `tmp/` |
-| prd_ready_score.json | PRD-Ready breakdown | `tmp/` |
+| brd_validation_report.json | Machine-readable validation data | `tmp/` |
+| prd_ready_score.json | PRD-Ready score calculation | `tmp/` |
 | autopilot_log.md | Execution log | `tmp/` |
+
+**Note**: JSON reports in `tmp/` are for programmatic access. Human-readable review reports MUST be stored with the reviewed documents.
 
 ---
 
@@ -1031,5 +1117,6 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents (not in tmp/); review reports require YAML frontmatter, parent document references, and structured sections; file naming convention `{ARTIFACT}-NN.R_review_report.md` |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing BRD documents without modification; Added Fix Mode for auto-repairing BRD documents while preserving manual content; Added fix categories (element_ids, sections, adr_topics, traceability, score); Added content preservation rules; Added backup functionality; Added element ID migration (BO_XXX, FR_XXX, AC_XXX, BC_XXX to unified format) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-brd, doc-brd-validator, quality-advisor skills; Added Platform vs Feature BRD handling; Added Section 7.2 ADR Topics generation |
