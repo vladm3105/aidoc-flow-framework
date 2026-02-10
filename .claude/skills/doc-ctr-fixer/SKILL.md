@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, CTR, Review Report]
   downstream_artifacts: [Fixed CTR, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-ctr-fixer
@@ -342,33 +342,249 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream REQ documents have changed since CTR creation.
+Addresses issues where upstream REQ documents have changed since CTR creation using a tiered auto-merge system.
 
-**Drift Issue Codes** (from `doc-ctr-reviewer`):
+**Upstream**: REQ (Layer 7)
+**Downstream**: SPEC (Layer 9)
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | REQ document modified after CTR | No (flag for review) |
-| REV-D002 | Warning | Referenced requirement content changed | No (flag for review) |
-| REV-D003 | Info | REQ document version incremented | Yes (update @req version) |
-| REV-D004 | Info | New requirements added to upstream | No (flag for review) |
-| REV-D005 | Error | Critical REQ modification (>20% change) | No (flag for review) |
+#### Contract ID Pattern
 
-**Fix Actions**:
+**Format**: `CTR-NN-TYPE-SS`
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@req:` tag to include current version |
+| Component | Description | Examples |
+|-----------|-------------|----------|
+| `CTR` | Artifact prefix | CTR |
+| `NN` | Document number (01-99) | 01, 02, 15 |
+| `TYPE` | Contract type | API, DATA, EVENT, SERVICE |
+| `SS` | Sequence within type (01-99) | 01, 02, 13 |
 
-**Drift Marker Format**:
+**Auto-Generated ID Examples**:
+- `CTR-01-API-01` - First API contract in document 01
+- `CTR-01-API-13` - 13th API contract in document 01
+- `CTR-02-DATA-05` - 5th data contract in document 02
+- `CTR-03-EVENT-02` - 2nd event contract in document 03
+
+#### Tiered Auto-Merge System
+
+Change percentage is calculated by comparing upstream REQ content hash at CTR creation vs current:
+
+```python
+def calculate_drift_percentage(ctr_path: str, req_path: str) -> float:
+    """Calculate percentage of upstream REQ changes affecting CTR."""
+    drift_cache = load_drift_cache(ctr_path)
+    original_hash = drift_cache.get('req_content_hash')
+    current_hash = compute_content_hash(req_path)
+
+    if original_hash == current_hash:
+        return 0.0
+
+    # Line-by-line diff comparison
+    original_lines = drift_cache.get('req_snapshot_lines', [])
+    current_lines = read_file_lines(req_path)
+
+    changed_lines = len(set(original_lines) ^ set(current_lines))
+    total_lines = max(len(original_lines), len(current_lines))
+
+    return (changed_lines / total_lines) * 100
+```
+
+| Tier | Change % | Action | Version Impact |
+|------|----------|--------|----------------|
+| **Tier 1** | < 5% | Auto-merge contract updates | Patch increment (1.0.0 → 1.0.1) |
+| **Tier 2** | 5-15% | Auto-merge with detailed changelog | Minor increment (1.0.0 → 1.1.0) |
+| **Tier 3** | > 15% | Archive current, trigger regeneration | Major increment (1.0.0 → 2.0.0) |
+
+#### Tier 1: Minor Drift (< 5%)
+
+Auto-merge with minimal disruption:
+
+**Actions**:
+1. Update `@req:` references to current REQ version
+2. Sync metadata fields from REQ
+3. Increment contract patch version
+4. Update drift cache
+
+**Example Update**:
+
+```yaml
+# Before (CTR-01-API-05.yaml)
+contract:
+  id: CTR-01-API-05
+  version: "1.0.0"
+  req_version: "1.0.0"
+
+# After auto-merge
+contract:
+  id: CTR-01-API-05
+  version: "1.0.1"
+  req_version: "1.0.1"
+  last_merge: "2026-02-10T16:00:00"
+```
+
+#### Tier 2: Moderate Drift (5-15%)
+
+Auto-merge with detailed changelog:
+
+**Actions**:
+1. All Tier 1 actions
+2. Generate detailed changelog entry
+3. Add `[MERGED]` markers to affected sections
+4. Increment contract minor version
+5. Update companion MD file with changelog
+
+**Changelog Format**:
 
 ```markdown
-<!-- DRIFT: REQ-01.md modified 2026-02-08 (CTR created 2026-02-05) -->
-@req: [REQ-01.28.01](../07_REQ/REQ-01.md#req-01-28-01)
+## Changelog
+
+### v1.1.0 (2026-02-10) - Auto-Merged
+
+**Upstream Changes** (REQ-01.md v1.0.0 → v1.1.0):
+- Modified: REQ-01.28.03 - Updated validation rules
+- Added: REQ-01.28.07 - New authentication requirement
+- Drift: 8.5%
+
+**Contract Updates**:
+- [MERGED] Section 3.2: Updated schema validation
+- [MERGED] Section 4.1: Added auth contract reference
 ```
+
+#### Tier 3: Significant Drift (> 15%)
+
+Archive and regenerate:
+
+**Actions**:
+1. Create archive manifest
+2. Move current CTR to archive
+3. Trigger CTR regeneration via `doc-ctr-autopilot`
+4. Increment major version
+5. Link archive in new CTR
+
+**Archive Manifest** (`CTR-NN-TYPE_archive_manifest.yaml`):
+
+```yaml
+# CTR Archive Manifest
+archive:
+  original_id: CTR-01-API-05
+  archived_version: "1.1.0"
+  archive_date: "2026-02-10T16:00:00"
+  archive_reason: "upstream_drift_exceeded_15%"
+  drift_percentage: 23.5
+
+upstream_trigger:
+  document: REQ-01.md
+  original_version: "1.0.0"
+  current_version: "2.0.0"
+
+archived_files:
+  - path: "archive/CTR-01-API-05_v1.1.0.md"
+    hash: "sha256:abc123..."
+  - path: "archive/CTR-01-API-05_v1.1.0.yaml"
+    hash: "sha256:def456..."
+
+regeneration:
+  new_id: CTR-01-API-05
+  new_version: "2.0.0"
+  trigger_skill: doc-ctr-autopilot
+  regenerated: "2026-02-10T16:05:00"
+```
+
+#### No Deletion Policy
+
+Contracts are NEVER deleted. When a contract becomes obsolete:
+
+**Deprecation Marker**:
+
+```yaml
+# CTR-01-API-03.yaml
+contract:
+  id: CTR-01-API-03
+  status: "[DEPRECATED]"
+  deprecated_date: "2026-02-10"
+  deprecated_reason: "Superseded by CTR-01-API-15"
+  successor: CTR-01-API-15
+```
+
+**MD Deprecation Header**:
+
+```markdown
+---
+status: deprecated
+deprecated_date: "2026-02-10"
+successor: CTR-01-API-15
+---
+
+# CTR-01-API-03: Legacy User Authentication Contract
+
+> **[DEPRECATED]** This contract has been superseded by [CTR-01-API-15](./CTR-01-API-15.md).
+> Retained for historical reference and backward compatibility documentation.
+```
+
+#### Enhanced Drift Cache
+
+The drift cache tracks merge history for audit purposes:
+
+**File**: `.drift_cache.json` (per CTR directory)
+
+```json
+{
+  "CTR-01-API-05": {
+    "current_version": "1.1.0",
+    "req_content_hash": "sha256:abc123...",
+    "req_snapshot_lines": ["line1", "line2", "..."],
+    "last_checked": "2026-02-10T16:00:00",
+    "last_modified": "2026-02-10T15:30:00",
+    "merge_history": [
+      {
+        "date": "2026-02-08T14:00:00",
+        "tier": 1,
+        "drift_percentage": 3.2,
+        "version_before": "1.0.0",
+        "version_after": "1.0.1",
+        "req_version": "1.0.1"
+      },
+      {
+        "date": "2026-02-10T16:00:00",
+        "tier": 2,
+        "drift_percentage": 8.5,
+        "version_before": "1.0.1",
+        "version_after": "1.1.0",
+        "req_version": "1.1.0",
+        "changelog_entries": 3
+      }
+    ],
+    "archive_history": []
+  }
+}
+```
+
+#### File Type Handling
+
+Both `.md` and `.yaml` contract files are processed:
+
+| File Type | Merge Actions |
+|-----------|---------------|
+| `.md` | Update frontmatter, @req references, changelog section |
+| `.yaml` | Update contract metadata, version, timestamps |
+| Both | Sync version numbers, maintain dual-file consistency |
+
+**Sync Order**:
+1. Process YAML first (authoritative for contract data)
+2. Sync changes to MD companion
+3. Update drift cache
+4. Generate fix report entry
+
+#### Drift Issue Codes
+
+| Code | Severity | Tier | Description | Action |
+|------|----------|------|-------------|--------|
+| REV-D001 | Info | 1 | Minor REQ modification (< 5%) | Auto-merge, patch version |
+| REV-D002 | Warning | 2 | Moderate REQ modification (5-15%) | Auto-merge with changelog, minor version |
+| REV-D003 | Error | 3 | Major REQ modification (> 15%) | Archive and regenerate, major version |
+| REV-D004 | Info | 1-2 | New requirements added | Add contract stubs |
+| REV-D005 | Warning | N/A | Deprecated contract referenced | Update reference to successor |
 
 ---
 
@@ -628,4 +844,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1/2/3 thresholds (<5%, 5-15%, >15%); Contract ID pattern CTR-NN-TYPE-SS; No deletion policy with [DEPRECATED] markers; Archive manifest for Tier 3; Enhanced drift cache with merge history; Support for both .md and .yaml contract files |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Dual-file (MD + YAML) synchronization; Element ID conversion (types 28, 29); YAML syntax repair; REQ drift handling; Integration with autopilot Review->Fix cycle |

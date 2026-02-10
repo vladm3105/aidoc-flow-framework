@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, CTR, SPEC, Review Report]
   downstream_artifacts: [Fixed SPEC, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-spec-fixer
@@ -335,35 +335,291 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream REQ/CTR documents have changed since SPEC creation.
+Addresses issues where upstream REQ/CTR documents have changed since SPEC creation using a tiered auto-merge system.
+
+**SPEC ID Pattern**: `SPEC-NN-COMPONENT-SS`
+
+- `NN`: Sequential spec number (01-99)
+- `COMPONENT`: Component identifier (e.g., AUTH, API, DATA)
+- `SS`: Sub-spec number within component (01-99)
+
+Example: `SPEC-01-AUTH-13`, `SPEC-02-API-05`, `SPEC-03-DATA-21`
 
 **Drift Issue Codes** (from `doc-spec-reviewer`):
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | REQ/CTR document modified after SPEC | No (flag for review) |
-| REV-D002 | Warning | Referenced requirement content changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New requirements added to upstream | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+| Code | Severity | Description | Change % | Auto-Fix Possible |
+|------|----------|-------------|----------|-------------------|
+| REV-D001 | Info | Minor upstream modification | < 5% | Yes (Tier 1) |
+| REV-D002 | Warning | Moderate upstream modification | 5-15% | Yes (Tier 2) |
+| REV-D003 | Info | Upstream document version incremented | N/A | Yes (update @ref version) |
+| REV-D004 | Warning | New requirements added to upstream | 5-15% | Yes (Tier 2) |
+| REV-D005 | Error | Critical upstream modification | > 15% | Yes (Tier 3) |
 
-**Fix Actions**:
+#### Tiered Auto-Merge System
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@req:` or `@ctr:` tag to include current version |
+**Tier 1: Minor Changes (< 5% drift)**
 
-**Drift Marker Format**:
+| Aspect | Behavior |
+|--------|----------|
+| Trigger | Change percentage < 5% |
+| Action | Auto-merge spec updates |
+| Version | Increment PATCH (1.0.0 -> 1.0.1) |
+| Logging | Brief changelog entry |
+| Review | No manual review required |
+
+**Tier 2: Moderate Changes (5-15% drift)**
+
+| Aspect | Behavior |
+|--------|----------|
+| Trigger | Change percentage 5-15% |
+| Action | Auto-merge with detailed changelog |
+| Version | Increment MINOR (1.0.0 -> 1.1.0) |
+| Logging | Detailed changelog with diff summary |
+| Review | Optional review recommended |
+
+**Tier 3: Major Changes (> 15% drift)**
+
+| Aspect | Behavior |
+|--------|----------|
+| Trigger | Change percentage > 15% |
+| Action | Archive current version, trigger regeneration |
+| Version | Increment MAJOR (1.0.0 -> 2.0.0) |
+| Logging | Full archive manifest creation |
+| Review | Manual review required post-regeneration |
+
+#### Change Percentage Calculation
+
+```python
+def calculate_drift_percentage(
+    upstream_doc: str,
+    spec_references: list,
+    upstream_modified: datetime,
+    spec_created: datetime
+) -> float:
+    """Calculate drift percentage between upstream and SPEC.
+
+    Factors:
+    - Line diff percentage in referenced sections
+    - Number of new/removed requirements
+    - Structural changes (new sections, moved content)
+    - Time since last sync (decay factor)
+
+    Returns:
+        float: Drift percentage (0.0 - 100.0)
+    """
+    line_changes = count_line_changes(upstream_doc, spec_references)
+    total_lines = count_referenced_lines(upstream_doc, spec_references)
+
+    if total_lines == 0:
+        return 0.0
+
+    base_percentage = (line_changes / total_lines) * 100
+
+    # Apply time decay factor (older drift = more significant)
+    days_stale = (datetime.now() - spec_created).days
+    decay_factor = min(1.0 + (days_stale / 30) * 0.1, 1.5)
+
+    return min(base_percentage * decay_factor, 100.0)
+```
+
+#### Auto-Generated SPEC IDs
+
+```python
+def generate_spec_id(
+    spec_number: int,
+    component: str,
+    sub_spec: int
+) -> str:
+    """Generate SPEC ID following SPEC-NN-COMPONENT-SS pattern.
+
+    Args:
+        spec_number: Main spec number (1-99)
+        component: Component identifier (e.g., AUTH, API, DATA)
+        sub_spec: Sub-spec number (1-99)
+
+    Returns:
+        str: Formatted SPEC ID
+
+    Example:
+        generate_spec_id(1, "AUTH", 13) -> "SPEC-01-AUTH-13"
+    """
+    return f"SPEC-{spec_number:02d}-{component.upper()}-{sub_spec:02d}"
+```
+
+#### No-Deletion Policy
+
+**CRITICAL**: SPECs are NEVER deleted. Mark as deprecated instead.
 
 ```markdown
-<!-- DRIFT: REQ-01.md modified 2026-02-08 (SPEC created 2026-02-05) -->
-@req: [REQ-01.28.01](../07_REQ/REQ-01.md#req-01-28-01)
+<!-- DEPRECATED: 2026-02-10 - Superseded by SPEC-01-AUTH-14 -->
+<!-- Reason: Major upstream drift (>15%) triggered regeneration -->
+<!-- Archive: archive/SPEC-01-AUTH-13_v1.2.0_20260210.md -->
+---
+title: "[DEPRECATED] SPEC-01-AUTH-13: Authentication Flow"
+status: deprecated
+superseded_by: SPEC-01-AUTH-14
+---
+```
 
-<!-- DRIFT: CTR-01-API.yaml modified 2026-02-09 (SPEC created 2026-02-05) -->
-@ctr: [CTR-01-API](../08_CTR/CTR-01-API.md)
+**Deprecation Rules**:
+
+| Rule | Description |
+|------|-------------|
+| Never delete | SPECs are marked [DEPRECATED], not removed |
+| Preserve history | Original content remains for audit trail |
+| Add superseded_by | Link to replacement SPEC if applicable |
+| Archive location | `archive/` folder with version and date |
+
+#### Archive Manifest (Tier 3)
+
+When Tier 3 triggers regeneration, create an archive manifest:
+
+```yaml
+# archive/SPEC-01-AUTH-13_archive_manifest.yaml
+archive_manifest:
+  spec_id: SPEC-01-AUTH-13
+  archived_version: "1.2.0"
+  archive_date: "2026-02-10T16:00:00"
+  archive_reason: "Major upstream drift (>15%)"
+
+  drift_details:
+    upstream_documents:
+      - doc: REQ-01.md
+        drift_percentage: 23.5
+        lines_changed: 47
+        sections_affected: [3, 5, 7]
+      - doc: CTR-01-API.yaml
+        drift_percentage: 18.2
+        endpoints_changed: 5
+        schemas_modified: 3
+
+    total_drift: 20.85
+    trigger_tier: 3
+
+  archived_files:
+    - source: docs/09_SPEC/SPEC-01-AUTH-13.md
+      archive: archive/SPEC-01-AUTH-13_v1.2.0_20260210.md
+    - source: docs/09_SPEC/schemas/SPEC-01-AUTH-13_schemas.yaml
+      archive: archive/SPEC-01-AUTH-13_schemas_v1.2.0_20260210.yaml
+
+  regeneration:
+    triggered: true
+    new_spec_id: SPEC-01-AUTH-14
+    new_version: "2.0.0"
+
+  downstream_impact:
+    tspec_documents:
+      - TSPEC-01-AUTH-13 (requires update)
+    tasks_documents:
+      - TASKS-01-AUTH-13 (requires review)
+```
+
+#### Enhanced Drift Cache
+
+The `.drift_cache.json` file tracks drift state and merge history:
+
+```json
+{
+  "cache_version": "2.0",
+  "last_updated": "2026-02-10T16:00:00",
+  "specs": {
+    "SPEC-01-AUTH-13": {
+      "current_version": "1.2.0",
+      "created": "2026-02-05T10:00:00",
+      "last_sync": "2026-02-08T14:30:00",
+      "upstream_refs": {
+        "REQ-01.md": {
+          "last_known_hash": "a1b2c3d4",
+          "last_modified": "2026-02-08T09:00:00",
+          "sections_tracked": ["3.1", "3.2", "5.4"]
+        },
+        "CTR-01-API.yaml": {
+          "last_known_hash": "e5f6g7h8",
+          "last_modified": "2026-02-07T16:00:00",
+          "endpoints_tracked": ["/auth/login", "/auth/refresh"]
+        }
+      },
+      "merge_history": [
+        {
+          "date": "2026-02-06T11:00:00",
+          "tier": 1,
+          "drift_percentage": 3.2,
+          "version_before": "1.0.0",
+          "version_after": "1.0.1",
+          "changes_merged": ["REQ-01.md: Updated validation rules"]
+        },
+        {
+          "date": "2026-02-08T14:30:00",
+          "tier": 2,
+          "drift_percentage": 8.5,
+          "version_before": "1.0.1",
+          "version_after": "1.1.0",
+          "changes_merged": [
+            "REQ-01.md: Added new requirement REQ-01.28.05",
+            "CTR-01-API.yaml: Modified /auth/refresh response"
+          ],
+          "changelog_file": "changelogs/SPEC-01-AUTH-13_v1.1.0_changelog.md"
+        }
+      ],
+      "downstream_documents": {
+        "tspec": ["TSPEC-01-AUTH-13"],
+        "tasks": ["TASKS-01-AUTH-13"]
+      }
+    }
+  }
+}
+```
+
+#### YAML Spec Format Handling
+
+SPEC documents use embedded YAML blocks. Drift handling preserves YAML structure:
+
+```yaml
+# Merged YAML section with drift metadata
+schemas:
+  _drift_metadata:
+    last_merge: "2026-02-08T14:30:00"
+    merge_tier: 2
+    upstream_version: "REQ-01.md@v1.3.0"
+
+  AuthRequest:
+    type: object
+    properties:
+      username:
+        type: string
+        # @merged: 2026-02-08 from REQ-01.28.01
+        minLength: 3
+        maxLength: 64
+      password:
+        type: string
+        format: password
+        # @merged: 2026-02-08 from REQ-01.28.02 (new validation)
+        minLength: 12
+```
+
+#### Fix Actions by Tier
+
+| Tier | Version Change | Auto-Fix Actions |
+|------|----------------|------------------|
+| 1 | PATCH | Update referenced content, update @ref tags, brief changelog |
+| 2 | MINOR | All Tier 1 actions + detailed changelog, diff summary, notification |
+| 3 | MAJOR | Archive current, create manifest, mark deprecated, trigger regeneration |
+
+**Drift Marker Format** (Updated for v2.0):
+
+```markdown
+<!-- DRIFT-MERGED: Tier 1 | REQ-01.md | 3.2% | 2026-02-08 | v1.0.0 -> v1.0.1 -->
+@req: [REQ-01.28.01](../07_REQ/REQ-01.md#req-01-28-01) @version:1.3.0
+
+<!-- DRIFT-MERGED: Tier 2 | CTR-01-API.yaml | 8.5% | 2026-02-08 | v1.0.1 -> v1.1.0 -->
+<!-- See: changelogs/SPEC-01-AUTH-13_v1.1.0_changelog.md -->
+@ctr: [CTR-01-API](../08_CTR/CTR-01-API.md) @version:2.1.0
+
+<!-- DRIFT-ARCHIVED: Tier 3 | 20.85% | 2026-02-10 | Regeneration triggered -->
+<!-- Archive: archive/SPEC-01-AUTH-13_v1.2.0_20260210.md -->
+<!-- New SPEC: SPEC-01-AUTH-14 -->
 ```
 
 ---
@@ -619,4 +875,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5%, Tier 2: 5-15%, Tier 3: >15%); Auto-generated SPEC IDs (SPEC-NN-COMPONENT-SS pattern); No-deletion policy with [DEPRECATED] marking; Archive manifest creation for Tier 3; Enhanced drift cache with merge history; YAML spec format handling with drift metadata; Change percentage calculation algorithm |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; YAML structure repair; Schema and config file generation; YAML path-based element IDs; REQ/CTR drift handling; Integration with autopilot Review->Fix cycle |

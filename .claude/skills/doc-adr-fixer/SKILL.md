@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR, Review Report, BDD, BRD]
   downstream_artifacts: [Fixed ADR, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-adr-fixer
@@ -345,82 +345,312 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream source documents (BDD, BRD) have changed since ADR creation.
+Addresses issues where upstream source documents (BDD) have changed since ADR creation. Implements tiered auto-merge with version management.
 
-**Drift Issue Codes** (from `doc-adr-reviewer` Check #9):
+**Upstream/Downstream Context**:
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | BDD document modified after ADR | No (flag for review) |
-| REV-D002 | Warning | BRD topic changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New scenarios added to BDD | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+| Direction | Layer | Artifact | Relationship |
+|-----------|-------|----------|--------------|
+| Upstream | 4 | BDD | Provides behavior specifications that drive decisions |
+| Current | 5 | ADR | Architecture Decision Records |
+| Downstream | 6 | SYS | System design implementing decisions |
 
-**Fix Actions**:
+**ADR ID Pattern**: `ADR-NN-SS` where:
+- `NN` = Module number (01-99)
+- `SS` = Sequence number within module (01-99)
+- Example: `ADR-01-15` = Module 01, Decision 15
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+---
 
-**Drift Marker Format**:
+#### Tiered Auto-Merge System
 
-```markdown
-<!-- DRIFT: BDD-01.feature modified 2026-02-08 (ADR created 2026-02-05) -->
-@ref: [BDD Scenario 3](../../04_BDD/BDD-01.feature#scenario-3)
+**Change Percentage Calculation**:
+
+```python
+def calculate_drift_percentage(current_hash: str, upstream_hash: str,
+                                current_content: str, upstream_content: str) -> float:
+    """Calculate percentage of content change between versions."""
+    if current_hash == upstream_hash:
+        return 0.0
+
+    # Line-based diff calculation
+    current_lines = set(current_content.strip().split('\n'))
+    upstream_lines = set(upstream_content.strip().split('\n'))
+
+    added = upstream_lines - current_lines
+    removed = current_lines - upstream_lines
+    total_changes = len(added) + len(removed)
+    total_lines = max(len(current_lines), len(upstream_lines), 1)
+
+    return (total_changes / total_lines) * 100
 ```
 
-**Drift Summary Block** (added to Fix Report):
+**Tier Definitions**:
+
+| Tier | Change % | Action | Version Increment | Human Review |
+|------|----------|--------|-------------------|--------------|
+| Tier 1 | < 5% | Auto-merge decision updates | Patch (x.x.+1) | No |
+| Tier 2 | 5-15% | Auto-merge with changelog | Minor (x.+1.0) | No |
+| Tier 3 | > 15% | Archive + regenerate | Major (+1.0.0) | Yes |
+
+---
+
+#### Tier 1: Minor Updates (< 5% change)
+
+**Trigger**: Small upstream modifications (typos, clarifications, minor additions)
+
+**Auto-Merge Actions**:
+
+1. Update affected `@ref:` tags with new upstream version
+2. Refresh decision context if wording changed
+3. Increment ADR patch version (e.g., `1.0.0` -> `1.0.1`)
+4. Log change in drift cache
+
+**Example Tier 1 Fix**:
 
 ```markdown
-## Upstream Drift Summary
+<!-- Before -->
+@ref: BDD-01.09.03 (v1.2.0)
 
-| Upstream Document | Reference | Modified | ADR Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|-------------|------------|-----------------|
-| BDD-01.feature | ADR-01:L57 | 2026-02-08 | 2026-02-05 | 3 | Review behavior changes |
-| BRD-01.md | ADR-01:L89 | 2026-02-10 | 2026-02-05 | 5 | Review business context |
-
-**Recommendation**: Review upstream documents and update ADR sections if architecture decisions are affected.
-Sections potentially affected:
-- ADR-01 Context (Section 2)
-- ADR-01 Decision (Section 4)
+<!-- After (auto-merged) -->
+@ref: BDD-01.09.03 (v1.2.1)
+<!-- Tier 1 auto-merge: Minor upstream update (2.3% change) - 2026-02-10 -->
 ```
 
-**Drift Cache Update**:
+---
 
-After processing drift issues, update `.drift_cache.json`:
+#### Tier 2: Moderate Updates (5-15% change)
+
+**Trigger**: Meaningful upstream changes (new scenarios, modified behaviors)
+
+**Auto-Merge Actions**:
+
+1. Apply all Tier 1 actions
+2. Generate detailed changelog section
+3. Update decision rationale if affected
+4. Mark decisions as needing review with `[REVIEW-SUGGESTED]`
+5. Increment ADR minor version (e.g., `1.0.1` -> `1.1.0`)
+6. Add changelog block to ADR
+
+**Changelog Block Format**:
+
+```markdown
+## Upstream Change Log
+
+### Version 1.1.0 (2026-02-10)
+
+**Source**: BDD-01.feature (v1.3.0)
+**Change Percentage**: 8.7%
+**Auto-Merge Tier**: 2
+
+| Change Type | Description | ADR Impact |
+|-------------|-------------|------------|
+| Added | Scenario: Error handling for timeout | Decision ADR-01-03 context updated |
+| Modified | Scenario: Authentication flow steps | Decision ADR-01-01 rationale refreshed |
+| Removed | None | N/A |
+
+**Decisions Flagged for Review**:
+- ADR-01-03 [REVIEW-SUGGESTED]: New error handling scenario may affect retry strategy
+```
+
+---
+
+#### Tier 3: Major Updates (> 15% change)
+
+**Trigger**: Substantial upstream restructuring or new requirements
+
+**Actions** (Requires Human Review):
+
+1. Archive current ADR version (no deletion)
+2. Create archive manifest
+3. Mark all decisions as `[SUPERSEDED]` (not deleted)
+4. Trigger regeneration workflow
+5. Increment major version (e.g., `1.1.0` -> `2.0.0`)
+6. Generate new ADR with fresh decision IDs
+
+**No Deletion Policy**:
+
+Decisions are NEVER deleted. Instead, they are marked as superseded:
+
+```markdown
+### ADR-01-05: Authentication Token Strategy [SUPERSEDED]
+
+> **Superseded by**: ADR-01-15 (v2.0.0)
+> **Superseded date**: 2026-02-10
+> **Reason**: Upstream BDD restructured authentication flow
+
+**Original Decision** (preserved for audit):
+...
+```
+
+**Archive Manifest Format** (`ADR-NN_archive_manifest.json`):
 
 ```json
 {
-  "adr_version": "1.0",
-  "adr_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
-  "upstream_hashes": {
-    "../../04_BDD/BDD-01.feature#scenario-3": "a1b2c3d4...",
-    "../../01_BRD/BRD-01.md#section-5": "e5f6g7h8..."
+  "archive_version": "1.0",
+  "archive_date": "2026-02-10T16:00:00",
+  "archived_adr": "ADR-01",
+  "archived_version": "1.1.0",
+  "new_version": "2.0.0",
+  "trigger": {
+    "type": "tier_3_drift",
+    "upstream_document": "BDD-01.feature",
+    "change_percentage": 23.5,
+    "upstream_version_before": "1.2.0",
+    "upstream_version_after": "2.0.0"
   },
+  "superseded_decisions": [
+    {
+      "id": "ADR-01-05",
+      "title": "Authentication Token Strategy",
+      "superseded_by": "ADR-01-15",
+      "reason": "Upstream BDD restructured authentication flow"
+    },
+    {
+      "id": "ADR-01-07",
+      "title": "Session Management Approach",
+      "superseded_by": "ADR-01-16",
+      "reason": "New session requirements in BDD"
+    }
+  ],
+  "preserved_decisions": [
+    {
+      "id": "ADR-01-01",
+      "title": "Database Selection",
+      "status": "unchanged",
+      "carried_forward_as": "ADR-01-01"
+    }
+  ],
+  "archive_location": "docs/05_ADR/archive/ADR-01_v1.1.0/"
+}
+```
+
+---
+
+#### Enhanced Drift Cache
+
+**Updated `.drift_cache.json` Structure**:
+
+```json
+{
+  "cache_version": "2.0",
+  "adr_id": "ADR-01",
+  "adr_version": "1.1.0",
+  "adr_updated": "2026-02-10T16:00:00",
+  "drift_reviewed": "2026-02-10T16:00:00",
+  "upstream_tracking": {
+    "BDD": {
+      "document": "../../04_BDD/BDD-01.feature",
+      "tracked_version": "1.3.0",
+      "content_hash": "a1b2c3d4e5f6...",
+      "last_sync": "2026-02-10T16:00:00"
+    }
+  },
+  "downstream_tracking": {
+    "SYS": {
+      "document": "../../06_SYS/SYS-01.md",
+      "notified_version": "1.1.0",
+      "notification_date": "2026-02-10T16:00:00"
+    }
+  },
+  "merge_history": [
+    {
+      "date": "2026-02-10T16:00:00",
+      "tier": 2,
+      "change_percentage": 8.7,
+      "upstream_document": "BDD-01.feature",
+      "version_before": "1.0.1",
+      "version_after": "1.1.0",
+      "decisions_updated": ["ADR-01-01", "ADR-01-03"],
+      "decisions_flagged": ["ADR-01-03"],
+      "auto_merged": true
+    },
+    {
+      "date": "2026-02-08T10:00:00",
+      "tier": 1,
+      "change_percentage": 2.3,
+      "upstream_document": "BDD-01.feature",
+      "version_before": "1.0.0",
+      "version_after": "1.0.1",
+      "decisions_updated": ["ADR-01-02"],
+      "decisions_flagged": [],
+      "auto_merged": true
+    }
+  ],
   "acknowledged_drift": [
     {
       "document": "BDD-01.feature",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no ADR impact"
+      "acknowledged_date": "2026-02-07",
+      "acknowledged_version": "1.1.5",
+      "reason": "Reviewed - documentation-only changes, no ADR impact"
     }
   ]
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+---
 
-When drift is flagged but no ADR update is needed:
+#### Auto-Merge Decision Flow
 
-1. Run `/doc-adr-fixer ADR-01 --acknowledge-drift`
-2. Fixer prompts: "Review drift for BDD-01.feature?"
-3. User confirms no ADR changes needed
-4. Fixer adds to `acknowledged_drift` array
-5. Future reviews skip this drift until upstream changes again
+```mermaid
+flowchart TD
+    A[Detect Upstream Drift] --> B[Calculate Change %]
+    B --> C{Change < 5%?}
+
+    C -->|Yes| D[Tier 1: Auto-Merge]
+    D --> D1[Update @ref tags]
+    D1 --> D2[Increment patch version]
+    D2 --> D3[Log to drift cache]
+    D3 --> Z[Complete]
+
+    C -->|No| E{Change 5-15%?}
+
+    E -->|Yes| F[Tier 2: Auto-Merge + Changelog]
+    F --> F1[Apply Tier 1 actions]
+    F1 --> F2[Generate changelog block]
+    F2 --> F3[Mark REVIEW-SUGGESTED]
+    F3 --> F4[Increment minor version]
+    F4 --> F5[Log to merge history]
+    F5 --> Z
+
+    E -->|No| G[Tier 3: Archive + Regenerate]
+    G --> G1[Create archive manifest]
+    G1 --> G2[Archive current version]
+    G2 --> G3[Mark decisions SUPERSEDED]
+    G3 --> G4[Increment major version]
+    G4 --> G5[Trigger regeneration]
+    G5 --> G6[Notify downstream SYS]
+    G6 --> H[Human Review Required]
+```
+
+---
+
+#### Downstream Notification
+
+When ADR changes (any tier), notify downstream SYS documents:
+
+```markdown
+<!-- Downstream notification added to SYS-01.md -->
+<!-- ADR-DRIFT-NOTIFICATION: ADR-01 updated to v1.1.0 (2026-02-10) -->
+<!-- Tier 2 merge: 8.7% upstream change from BDD-01.feature -->
+<!-- Decisions potentially affecting this SYS: ADR-01-01, ADR-01-03 -->
+<!-- Review recommended for: Section 4 (Authentication Design) -->
+```
+
+---
+
+#### Command Options for Phase 6
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--auto-merge` | true | Enable tiered auto-merge system |
+| `--merge-tier-override` | none | Force specific tier (1, 2, or 3) |
+| `--skip-archive` | false | Skip archiving for Tier 3 (not recommended) |
+| `--notify-downstream` | true | Send notifications to SYS documents |
+| `--generate-changelog` | true | Generate changelog for Tier 2+ |
+| `--preserve-superseded` | true | Keep superseded decisions (required) |
 
 ---
 
@@ -619,4 +849,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Three-tier thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); No deletion policy - superseded decisions preserved; Archive manifest for Tier 3; Enhanced drift cache with merge history; Auto-generated ADR IDs (ADR-NN-SS pattern); Downstream SYS notification; Change percentage calculation |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; ADR Index and Architecture file creation; Element ID conversion (types 13, 14, 15, 16); Broken link fixes; BDD/BRD upstream drift handling; Integration with autopilot Review->Fix cycle |

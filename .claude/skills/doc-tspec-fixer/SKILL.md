@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, TSPEC, Review Report]
   downstream_artifacts: [Fixed TSPEC, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-tspec-fixer
@@ -389,31 +389,332 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream SPEC documents have changed since TSPEC creation.
+Addresses issues where upstream SPEC documents have changed since TSPEC creation using a tiered auto-merge system.
+
+**Upstream/Downstream Context**:
+- **Upstream**: SPEC (Layer 9) - Test specifications derive from specifications
+- **Downstream**: TASKS (Layer 11) / Code - Tests inform implementation tasks
 
 **Drift Issue Codes** (from `doc-tspec-reviewer`):
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | SPEC document modified after TSPEC | No (flag for review) |
-| REV-D002 | Warning | Referenced specification content changed | No (flag for review) |
-| REV-D003 | Info | SPEC document version incremented | Yes (update @spec version) |
-| REV-D004 | Info | New specifications added to upstream | No (flag for review) |
-| REV-D005 | Error | Critical SPEC modification (>20% change) | No (flag for review) |
+| Code | Severity | Description | Tier Mapping |
+|------|----------|-------------|--------------|
+| REV-D001 | Warning | SPEC document modified after TSPEC | Calculated per threshold |
+| REV-D002 | Warning | Referenced specification content changed | Calculated per threshold |
+| REV-D003 | Info | SPEC document version incremented | Tier 1 |
+| REV-D004 | Info | New specifications added to upstream | Tier 1 or 2 |
+| REV-D005 | Error | Critical SPEC modification (>20% change) | Tier 3 |
 
-**Fix Actions**:
+#### Tiered Auto-Merge Thresholds
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@spec:` tag to include current version |
+| Tier | Change % | Action | Version Bump | Requires Review |
+|------|----------|--------|--------------|-----------------|
+| **Tier 1** | < 5% | Auto-merge new test cases | Patch (x.y.Z) | No |
+| **Tier 2** | 5-15% | Auto-merge with changelog | Minor (x.Y.0) | Summary only |
+| **Tier 3** | > 15% | Archive + regeneration trigger | Major (X.0.0) | Yes (mandatory) |
 
-**Drift Marker Format**:
+#### Change Percentage Calculation
+
+```python
+def calculate_change_percentage(spec_before: str, spec_after: str, tspec: str) -> float:
+    """
+    Calculate drift percentage based on:
+    1. Specification section changes affecting test cases
+    2. New requirements requiring new tests
+    3. Modified requirements requiring test updates
+    4. Removed requirements requiring test deprecation
+    """
+    spec_elements = extract_testable_elements(spec_before)
+    spec_elements_new = extract_testable_elements(spec_after)
+    tspec_coverage = extract_test_coverage(tspec)
+
+    added = spec_elements_new - spec_elements
+    removed = spec_elements - spec_elements_new
+    modified = detect_modifications(spec_before, spec_after)
+
+    total_elements = len(spec_elements_new)
+    changed_elements = len(added) + len(removed) + len(modified)
+
+    return (changed_elements / total_elements) * 100 if total_elements > 0 else 0
+```
+
+#### Test ID Patterns for TSPEC
+
+**Format**: `{TYPE}-NN-TC-SS`
+
+| Type | Description | Example |
+|------|-------------|---------|
+| UTEST | Unit Test | UTEST-01-TC-01 |
+| ITEST | Integration Test | ITEST-01-TC-01 |
+| STEST | System Test | STEST-01-TC-01 |
+| FTEST | Functional Test | FTEST-01-TC-01 |
+| PTEST | Performance Test | PTEST-01-TC-01 |
+| SECTEST | Security Test | SECTEST-01-TC-01 |
+
+Where:
+- `NN` = TSPEC document number (01-99)
+- `TC` = Test Case identifier
+- `SS` = Sequence number within type (01-99)
+
+**Auto-Generated ID Example**:
+```python
+def generate_test_id(tspec_num: int, test_type: str, existing_ids: list) -> str:
+    """Generate next available test ID."""
+    type_prefix = test_type.upper()  # UTEST, ITEST, etc.
+    existing_for_type = [id for id in existing_ids if id.startswith(f"{type_prefix}-{tspec_num:02d}-TC-")]
+
+    if existing_for_type:
+        max_seq = max(int(id.split("-")[-1]) for id in existing_for_type)
+        next_seq = max_seq + 1
+    else:
+        next_seq = 1
+
+    return f"{type_prefix}-{tspec_num:02d}-TC-{next_seq:02d}"
+
+# Example: UTEST-01-TC-13 (13th unit test in TSPEC-01)
+```
+
+#### Tier 1: Auto-Merge (< 5% Change)
+
+**Trigger**: Minor SPEC updates that require additional test coverage.
+
+**Actions**:
+1. Parse new/modified specifications from SPEC
+2. Generate new test case stubs with auto-generated IDs
+3. Insert test cases in appropriate section
+4. Increment patch version (1.0.0 -> 1.0.1)
+5. Update drift cache with merge record
+
+**Example Auto-Generated Test Case**:
+
+```markdown
+## UTEST-01-TC-13: [Auto-Generated] Validate new_field parameter
+
+@spec: [SPEC-01.api.new_field](../09_SPEC/SPEC-01.md#api-new-field)
+@drift-merge: Tier-1 auto-merge on 2026-02-10
+@status: PENDING_REVIEW
+
+**Priority**: P2
+**Type**: Unit
+
+### Preconditions
+
+[TODO: Define preconditions based on SPEC-01.api.new_field]
+
+### Test Steps
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | [TODO: Derived from SPEC-01.api.new_field] | [TODO] |
+
+### Expected Results
+
+[TODO: Define expected outcome based on SPEC-01.api.new_field]
+```
+
+#### Tier 2: Auto-Merge with Changelog (5-15% Change)
+
+**Trigger**: Moderate SPEC updates affecting multiple test cases.
+
+**Actions**:
+1. Perform all Tier 1 actions
+2. Generate detailed changelog section
+3. Mark affected existing tests for review
+4. Increment minor version (1.0.0 -> 1.1.0)
+5. Create drift summary in fix report
+
+**Changelog Section Format**:
+
+```markdown
+## Drift Changelog (Tier 2 Auto-Merge)
+
+**Merge Date**: 2026-02-10T16:00:00
+**SPEC Version**: SPEC-01 v2.3.0 -> v2.4.0
+**Change Percentage**: 8.5%
+**Version Bump**: 1.2.0 -> 1.3.0
+
+### New Test Cases Added
+
+| Test ID | Source Spec | Description |
+|---------|-------------|-------------|
+| ITEST-01-TC-08 | SPEC-01.api.batch_endpoint | Batch processing integration test |
+| UTEST-01-TC-14 | SPEC-01.validation.new_rule | New validation rule unit test |
+
+### Existing Tests Marked for Review
+
+| Test ID | Reason | Action Required |
+|---------|--------|-----------------|
+| UTEST-01-TC-03 | Upstream spec modified | Review expected results |
+| ITEST-01-TC-02 | API contract changed | Update test steps |
+
+### Tests Deprecated (Not Deleted)
+
+| Test ID | Reason | Status |
+|---------|--------|--------|
+| UTEST-01-TC-05 | Spec section removed | [DEPRECATED] |
+```
+
+#### Tier 3: Archive and Regeneration (> 15% Change)
+
+**Trigger**: Major SPEC overhaul requiring significant test restructuring.
+
+**Actions**:
+1. Create archive manifest
+2. Archive current TSPEC version
+3. Generate regeneration request for `doc-tspec-autopilot`
+4. Increment major version (1.0.0 -> 2.0.0)
+5. Flag for mandatory human review
+
+**Archive Manifest Format**:
+
+```yaml
+# TSPEC-01_archive_manifest.yaml
+archive:
+  tspec_id: TSPEC-01
+  archived_version: "1.5.2"
+  archive_date: "2026-02-10T16:00:00"
+  archive_reason: "Tier 3 drift - SPEC changes exceed 15%"
+  change_percentage: 23.4
+
+  upstream_trigger:
+    document: SPEC-01.md
+    previous_version: "2.3.0"
+    current_version: "3.0.0"
+    modification_date: "2026-02-10T14:00:00"
+
+archived_tests:
+  total_count: 25
+  by_type:
+    UTEST: 12
+    ITEST: 8
+    STEST: 3
+    FTEST: 2
+
+  deprecated_not_deleted:
+    - id: UTEST-01-TC-05
+      reason: "Spec section FR-001.3 removed"
+      original_spec_ref: "SPEC-01.fr.001.3"
+    - id: ITEST-01-TC-03
+      reason: "Integration point deprecated"
+      original_spec_ref: "SPEC-01.api.legacy"
+
+regeneration:
+  triggered: true
+  target_skill: doc-tspec-autopilot
+  new_version: "2.0.0"
+  preserve_deprecated: true
+
+archive_location: "docs/10_TSPEC/archive/TSPEC-01_v1.5.2/"
+```
+
+#### No-Deletion Policy
+
+**CRITICAL**: Tests are NEVER deleted, only marked as deprecated.
+
+**Deprecation Format**:
+
+```markdown
+## [DEPRECATED] UTEST-01-TC-05: Validate legacy_field parameter
+
+@status: DEPRECATED
+@deprecated-date: 2026-02-10
+@deprecated-reason: Upstream SPEC-01.fr.001.3 removed in v3.0.0
+@original-spec: [SPEC-01.fr.001.3](../09_SPEC/SPEC-01.md#fr-001-3) (no longer exists)
+
+> **DEPRECATION NOTICE**: This test case is deprecated and will not be executed.
+> It is preserved for historical traceability and audit purposes.
+
+**Priority**: P2
+**Type**: Unit
+
+[Original test content preserved below...]
+```
+
+**Deprecation Rules**:
+
+| Scenario | Action | Marker |
+|----------|--------|--------|
+| SPEC section removed | Mark deprecated | `[DEPRECATED]` |
+| SPEC requirement obsoleted | Mark deprecated | `[DEPRECATED]` |
+| Test superseded by new test | Mark deprecated with reference | `[DEPRECATED] See: NEW-TC-ID` |
+| Test temporarily disabled | Mark skipped (not deprecated) | `[SKIP]` |
+
+#### Enhanced Drift Cache
+
+The drift cache tracks merge history for audit and rollback purposes.
+
+**Cache Location**: `.drift_cache.json` (project root or docs folder)
+
+**Enhanced Structure**:
+
+```json
+{
+  "version": "2.0",
+  "last_updated": "2026-02-10T16:00:00",
+  "documents": {
+    "TSPEC-01": {
+      "current_version": "1.3.0",
+      "last_check": "2026-02-10T16:00:00",
+      "upstream": {
+        "SPEC-01": {
+          "last_version": "2.4.0",
+          "last_modified": "2026-02-10T14:00:00",
+          "content_hash": "sha256:abc123..."
+        }
+      },
+      "merge_history": [
+        {
+          "merge_date": "2026-02-10T16:00:00",
+          "tier": 1,
+          "change_percentage": 3.2,
+          "version_before": "1.2.5",
+          "version_after": "1.2.6",
+          "tests_added": ["UTEST-01-TC-13"],
+          "tests_modified": [],
+          "tests_deprecated": [],
+          "auto_merged": true
+        },
+        {
+          "merge_date": "2026-02-08T10:00:00",
+          "tier": 2,
+          "change_percentage": 8.5,
+          "version_before": "1.1.0",
+          "version_after": "1.2.0",
+          "tests_added": ["ITEST-01-TC-08", "UTEST-01-TC-14"],
+          "tests_modified": ["UTEST-01-TC-03", "ITEST-01-TC-02"],
+          "tests_deprecated": ["UTEST-01-TC-05"],
+          "auto_merged": true,
+          "changelog_ref": "TSPEC-01.md#drift-changelog-2026-02-08"
+        }
+      ],
+      "deprecated_tests": [
+        {
+          "id": "UTEST-01-TC-05",
+          "deprecated_date": "2026-02-08",
+          "reason": "SPEC section FR-001.3 removed",
+          "original_spec_ref": "SPEC-01.fr.001.3"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Drift Fix Actions Summary
+
+| Tier | Change % | Auto-Fix | Version | Tests Added | Tests Modified | Tests Deprecated | Archive |
+|------|----------|----------|---------|-------------|----------------|------------------|---------|
+| 1 | < 5% | Yes | Patch | Auto-generate | None | None | No |
+| 2 | 5-15% | Yes | Minor | Auto-generate | Flag for review | Mark deprecated | No |
+| 3 | > 15% | No | Major | Regenerate all | N/A | Preserve all | Yes |
+
+**Drift Marker Format** (retained for backward compatibility):
 
 ```markdown
 <!-- DRIFT: SPEC-01.md modified 2026-02-08 (TSPEC created 2026-02-05) -->
+<!-- DRIFT-TIER: 2 | CHANGE: 8.5% | AUTO-MERGED: 2026-02-10 -->
 @spec: [SPEC-01.auth.login](../09_SPEC/SPEC-01.md#auth-login)
 ```
 
@@ -708,4 +1009,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge patch, Tier 2: 5-15% auto-merge minor with changelog, Tier 3: >15% archive and regenerate major); Added test ID patterns for TSPEC (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-NN-TC-SS format); Implemented no-deletion policy with [DEPRECATED] markers; Enhanced drift cache with merge history tracking; Added archive manifest creation for Tier 3; Auto-generated test ID support |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Test case structure repair; Test data and fixture file generation; Element ID conversion (types 40-43); SPEC drift handling; Integration with autopilot Review->Fix cycle |

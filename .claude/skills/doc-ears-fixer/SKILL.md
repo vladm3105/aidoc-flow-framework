@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS, Review Report, PRD]
   downstream_artifacts: [Fixed EARS, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-ears-fixer
@@ -350,82 +350,428 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream PRD documents have changed since EARS creation.
+Addresses issues where upstream PRD documents have changed since EARS creation. This phase implements a tiered auto-merge system based on drift percentage.
 
-**Drift Issue Codes** (from `doc-ears-reviewer` Check #9):
+**Upstream**: PRD (Layer 2)
+**Downstream**: BDD (Layer 4)
+**ID Pattern**: `EARS.NN.TT.SS` (e.g., `EARS.01.25.13`)
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | PRD modified after EARS | No (flag for review) |
-| REV-D002 | Warning | Referenced PRD section content changed | No (flag for review) |
-| REV-D003 | Info | PRD version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New features added to PRD | No (flag for review) |
-| REV-D005 | Error | Critical PRD modification (>20% change) | No (flag for review) |
+#### Drift Issue Codes (from `doc-ears-reviewer` Check #9)
 
-**Fix Actions**:
+| Code | Severity | Description | Auto-Fix Tier |
+|------|----------|-------------|---------------|
+| REV-D001 | Warning | PRD modified after EARS | Tier 1-2 |
+| REV-D002 | Warning | Referenced PRD section content changed | Tier 1-3 |
+| REV-D003 | Info | PRD version incremented | Tier 1 |
+| REV-D004 | Info | New features added to PRD | Tier 1-2 |
+| REV-D005 | Error | Critical PRD modification (>20% change) | Tier 3 |
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+#### Tiered Auto-Merge System
 
-**Drift Marker Format**:
+**Tier Classification**:
 
-```markdown
-<!-- DRIFT: PRD-01.md modified 2026-02-08 (EARS created 2026-02-05) -->
-@ref: [PRD-01 Section 3](../02_PRD/PRD-01.md#3-feature-requirements)
+| Tier | Change % | Auto-Merge | Version Action | Description |
+|------|----------|------------|----------------|-------------|
+| Tier 1 | < 5% | Full auto-merge | Patch (+0.0.1) | Additions, threshold updates |
+| Tier 2 | 5-15% | Auto-merge with changelog | Minor (+0.1.0) | Significant additions, minor modifications |
+| Tier 3 | > 15% | Archive + regenerate | Major (+1.0.0) | Structural changes, major content drift |
+
+#### Change Percentage Calculation
+
+```python
+def calculate_drift_percentage(
+    upstream_current: str,
+    upstream_cached: str,
+    referenced_sections: list[str]
+) -> float:
+    """
+    Calculate drift percentage between cached and current upstream.
+
+    Args:
+        upstream_current: Current PRD content
+        upstream_cached: Cached PRD content from last sync
+        referenced_sections: List of PRD sections referenced by EARS
+
+    Returns:
+        Drift percentage (0.0 - 100.0)
+    """
+    # Extract referenced sections only
+    current_sections = extract_sections(upstream_current, referenced_sections)
+    cached_sections = extract_sections(upstream_cached, referenced_sections)
+
+    # Calculate line-based diff
+    diff = unified_diff(cached_sections.splitlines(), current_sections.splitlines())
+
+    added_lines = sum(1 for line in diff if line.startswith('+') and not line.startswith('+++'))
+    removed_lines = sum(1 for line in diff if line.startswith('-') and not line.startswith('---'))
+    total_lines = max(len(cached_sections.splitlines()), 1)
+
+    # Weighted calculation: additions weighted 1.0, removals weighted 1.5
+    drift_score = (added_lines * 1.0 + removed_lines * 1.5) / total_lines * 100
+
+    return min(drift_score, 100.0)
+
+def determine_tier(drift_percentage: float) -> int:
+    """Determine merge tier based on drift percentage."""
+    if drift_percentage < 5.0:
+        return 1
+    elif drift_percentage <= 15.0:
+        return 2
+    else:
+        return 3
 ```
 
-**Drift Summary Block** (added to Fix Report):
+#### Tier 1: Auto-Merge (< 5% Drift)
 
-```markdown
-## Upstream Drift Summary
+**Trigger Conditions**:
+- Minor additions to PRD sections
+- Threshold/limit updates
+- Clarification text additions
+- No structural changes
 
-| Upstream Document | Reference | Modified | EARS Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|--------------|------------|-----------------|
-| PRD-01.md | EARS-01.1:L57 | 2026-02-08 | 2026-02-05 | 3 | Review for changes |
-| PRD-02.md | EARS-01.3:L319 | 2026-02-10 | 2026-02-05 | 5 | Review feature updates |
+**Auto-Merge Actions**:
 
-**Recommendation**: Review upstream PRD documents and update EARS statements if requirements have changed.
-Sections potentially affected:
-- EARS-01.1 Section 3 (Functional Requirements)
-- EARS-01.3 Section 13.1 (Upstream Dependencies)
+| Change Type | Action | ID Assignment |
+|-------------|--------|---------------|
+| New requirement in PRD | Add EARS statement | Next sequential ID (e.g., `EARS.01.25.13`) |
+| Updated threshold | Update constraint value | Keep existing ID |
+| Added clarification | Append to existing statement | Keep existing ID |
+
+**ID Generation for New Requirements**:
+
+```python
+def generate_next_ears_id(ears_doc: str, type_code: str = "25") -> str:
+    """
+    Generate next sequential EARS ID.
+
+    ID Pattern: EARS.NN.TT.SS
+    - NN: Document number (01-99)
+    - TT: Type code (25=Statement, 26=Constraint)
+    - SS: Sequence number (01-99)
+
+    Args:
+        ears_doc: Path to EARS document
+        type_code: Type code ("25" for statement, "26" for constraint)
+
+    Returns:
+        Next available EARS ID
+    """
+    # Extract document number from filename
+    doc_num = extract_doc_number(ears_doc)  # e.g., "01" from "EARS-01.md"
+
+    # Find highest existing sequence for this type
+    pattern = rf'EARS\.{doc_num}\.{type_code}\.(\d{{2}})'
+    existing_ids = re.findall(pattern, read_file(ears_doc))
+
+    if existing_ids:
+        max_seq = max(int(seq) for seq in existing_ids)
+        next_seq = str(max_seq + 1).zfill(2)
+    else:
+        next_seq = "01"
+
+    return f"EARS.{doc_num}.{type_code}.{next_seq}"
 ```
 
-**Drift Cache Update**:
+**Version Update**:
+
+```python
+# Tier 1: Increment patch version
+# 1.0.0 -> 1.0.1
+current_version = "1.0.0"
+new_version = increment_version(current_version, "patch")  # "1.0.1"
+```
+
+#### Tier 2: Auto-Merge with Changelog (5-15% Drift)
+
+**Trigger Conditions**:
+- Multiple new features in PRD
+- Section reorganization (minor)
+- Requirement refinements
+- New constraint categories
+
+**Auto-Merge Actions**:
+
+| Change Type | Action | Documentation |
+|-------------|--------|---------------|
+| New feature section | Generate EARS statements | Changelog entry |
+| Modified requirements | Update existing statements | Changelog + diff |
+| New constraints | Add constraint statements | Changelog entry |
+
+**Changelog Entry Format**:
+
+```markdown
+## Changelog Entry (Auto-Merge Tier 2)
+
+**Date**: 2026-02-10T16:00:00
+**Source**: PRD-01.md (v1.2.0 -> v1.3.0)
+**Drift Percentage**: 8.3%
+
+### Additions
+
+| New ID | Statement Summary | Source PRD Section |
+|--------|-------------------|-------------------|
+| EARS.01.25.13 | System shall support batch processing | PRD-01 Section 5.2 |
+| EARS.01.25.14 | System shall provide progress notifications | PRD-01 Section 5.3 |
+| EARS.01.26.05 | Response time constraint for batch ops | PRD-01 Section 7.1 |
+
+### Modifications
+
+| ID | Previous | Updated | Reason |
+|----|----------|---------|--------|
+| EARS.01.25.07 | "within 100ms" | "within 50ms" | Performance threshold tightened |
+
+### No Deletions (See No-Deletion Policy)
+```
+
+**Version Update**:
+
+```python
+# Tier 2: Increment minor version
+# 1.0.1 -> 1.1.0
+current_version = "1.0.1"
+new_version = increment_version(current_version, "minor")  # "1.1.0"
+```
+
+#### Tier 3: Archive and Regenerate (> 15% Drift)
+
+**Trigger Conditions**:
+- Major PRD restructuring
+- Feature scope changes
+- Fundamental requirement changes
+- More than 15% content drift
+
+**Archive Process**:
+
+1. **Create Archive Manifest**:
+
+```markdown
+---
+title: "EARS-NN Archive Manifest"
+tags:
+  - ears
+  - archive
+  - drift-management
+custom_fields:
+  archive_date: "2026-02-10T16:00:00"
+  archived_version: "1.1.0"
+  drift_percentage: 23.5
+  trigger: "Tier 3 - Major Drift"
+  upstream_source: "PRD-01.md v2.0.0"
+---
+
+# EARS-NN Archive Manifest
+
+## Archive Details
+
+| Field | Value |
+|-------|-------|
+| Archive Date | 2026-02-10T16:00:00 |
+| Archived Version | 1.1.0 |
+| Archive Location | `archive/EARS-01_v1.1.0_20260210/` |
+| Drift Percentage | 23.5% |
+| Reason | Major PRD restructuring |
+
+## Archived Files
+
+| File | Original Location | Archive Location |
+|------|-------------------|------------------|
+| EARS-01.md | docs/03_EARS/ | archive/EARS-01_v1.1.0_20260210/ |
+| EARS-01.1_core.md | docs/03_EARS/EARS-01_slug/ | archive/EARS-01_v1.1.0_20260210/ |
+| EARS-01.2_requirements.md | docs/03_EARS/EARS-01_slug/ | archive/EARS-01_v1.1.0_20260210/ |
+
+## Regeneration Instructions
+
+1. Run `/doc-ears-autopilot PRD-01` to generate new EARS
+2. New version will be 2.0.0
+3. Review archived statements for potential reuse
+4. Update downstream BDD references
+```
+
+2. **Move to Archive**:
+
+```python
+def archive_ears_document(ears_path: str, version: str, drift_pct: float) -> str:
+    """
+    Archive EARS document before regeneration.
+
+    Args:
+        ears_path: Path to EARS document
+        version: Current version being archived
+        drift_pct: Drift percentage that triggered archive
+
+    Returns:
+        Archive directory path
+    """
+    timestamp = datetime.now().strftime('%Y%m%d')
+    archive_dir = f"archive/EARS-{doc_num}_v{version}_{timestamp}/"
+
+    # Create archive directory
+    os.makedirs(archive_dir, exist_ok=True)
+
+    # Copy all EARS files
+    for ears_file in glob(f"{ears_dir}/EARS-{doc_num}*"):
+        shutil.copy2(ears_file, archive_dir)
+
+    # Generate archive manifest
+    generate_archive_manifest(archive_dir, version, drift_pct)
+
+    return archive_dir
+```
+
+3. **Trigger Regeneration**:
+
+```python
+# Invoke doc-ears-autopilot with major version increment
+regeneration_params = {
+    "source_prd": "PRD-01",
+    "version_override": "2.0.0",
+    "archive_reference": archive_dir,
+    "preserve_custom_statements": True
+}
+```
+
+**Version Update**:
+
+```python
+# Tier 3: Increment major version
+# 1.1.0 -> 2.0.0
+current_version = "1.1.0"
+new_version = increment_version(current_version, "major")  # "2.0.0"
+```
+
+#### No-Deletion Policy
+
+**Critical**: EARS requirements are NEVER deleted during auto-merge. Items removed from upstream PRD are marked as deprecated.
+
+**Deprecation Marker Format**:
+
+```markdown
+### EARS.01.25.05 [DEPRECATED]
+
+> **Deprecation Date**: 2026-02-10
+> **Reason**: Removed from PRD-01 v1.3.0 (Section 4.2 deleted)
+> **Downstream Impact**: BDD-01.2 scenarios affected
+
+**Original Statement**:
+When the user initiates export, the system shall generate CSV output within 5 seconds.
+
+**Status**: Deprecated - Do not implement. Retained for traceability.
+```
+
+**Deprecation Tracking**:
+
+```python
+def mark_deprecated(
+    ears_id: str,
+    reason: str,
+    upstream_ref: str,
+    downstream_refs: list[str]
+) -> None:
+    """
+    Mark EARS requirement as deprecated instead of deleting.
+
+    Args:
+        ears_id: EARS ID to deprecate (e.g., "EARS.01.25.05")
+        reason: Reason for deprecation
+        upstream_ref: PRD reference that triggered deprecation
+        downstream_refs: List of downstream BDD references affected
+    """
+    deprecation_block = f"""
+### {ears_id} [DEPRECATED]
+
+> **Deprecation Date**: {datetime.now().strftime('%Y-%m-%d')}
+> **Reason**: {reason}
+> **Upstream Reference**: {upstream_ref}
+> **Downstream Impact**: {', '.join(downstream_refs) if downstream_refs else 'None identified'}
+
+**Status**: Deprecated - Do not implement. Retained for traceability.
+"""
+    # Insert deprecation block, preserve original statement
+```
+
+#### Enhanced Drift Cache
 
 After processing drift issues, update `.drift_cache.json`:
 
 ```json
 {
-  "ears_version": "1.0",
-  "ears_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
-  "upstream_hashes": {
-    "../02_PRD/PRD-01.md#3": "a1b2c3d4...",
-    "../02_PRD/PRD-02.md": "e5f6g7h8..."
+  "ears_document": "EARS-01",
+  "ears_version": "1.1.0",
+  "ears_updated": "2026-02-10T16:00:00",
+  "drift_reviewed": "2026-02-10T16:00:00",
+  "upstream": {
+    "document": "PRD-01.md",
+    "version": "1.3.0",
+    "last_sync": "2026-02-10T16:00:00"
   },
+  "downstream": {
+    "documents": ["BDD-01.md"],
+    "notification_sent": "2026-02-10T16:05:00"
+  },
+  "section_hashes": {
+    "PRD-01#section-3": "a1b2c3d4e5f6...",
+    "PRD-01#section-5": "g7h8i9j0k1l2...",
+    "PRD-01#section-7": "m3n4o5p6q7r8..."
+  },
+  "merge_history": [
+    {
+      "date": "2026-02-10T16:00:00",
+      "tier": 2,
+      "drift_percentage": 8.3,
+      "version_before": "1.0.1",
+      "version_after": "1.1.0",
+      "additions": ["EARS.01.25.13", "EARS.01.25.14", "EARS.01.26.05"],
+      "modifications": ["EARS.01.25.07"],
+      "deprecations": []
+    }
+  ],
   "acknowledged_drift": [
     {
       "document": "PRD-01.md",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no EARS impact"
+      "section": "section-8",
+      "acknowledged_date": "2026-02-08",
+      "reason": "Informational section - no EARS impact"
     }
   ]
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+#### Drift Acknowledgment Workflow
 
 When drift is flagged but no EARS update is needed:
 
 1. Run `/doc-ears-fixer EARS-01 --acknowledge-drift`
-2. Fixer prompts: "Review drift for PRD-01.md?"
+2. Fixer prompts: "Review drift for PRD-01.md Section 8?"
 3. User confirms no EARS changes needed
 4. Fixer adds to `acknowledged_drift` array
 5. Future reviews skip this drift until upstream changes again
+
+#### Downstream Notification
+
+After any auto-merge, notify downstream BDD documents:
+
+```python
+def notify_downstream(ears_id: str, changes: list[dict]) -> None:
+    """
+    Create notification for downstream BDD documents.
+
+    Args:
+        ears_id: EARS document ID (e.g., "EARS-01")
+        changes: List of changes made during auto-merge
+    """
+    notification = {
+        "type": "UPSTREAM_CHANGE",
+        "source": ears_id,
+        "timestamp": datetime.now().isoformat(),
+        "changes": changes,
+        "action_required": "Run /doc-bdd-fixer to sync"
+    }
+
+    # Write to .downstream_notifications.json
+    write_notification(f"docs/04_BDD/.downstream_notifications.json", notification)
+```
 
 ---
 
@@ -460,6 +806,10 @@ When drift is flagged but no EARS update is needed:
 | `--dry-run` | false | Preview fixes without applying |
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
+| `--auto-merge-tier` | auto | Force specific tier (1, 2, 3, or auto) |
+| `--skip-archive` | false | Skip archiving for Tier 3 (regenerate in-place) |
+| `--notify-downstream` | true | Send notifications to downstream BDD documents |
+| `--preserve-deprecated` | true | Keep deprecated items (no-deletion policy) |
 
 ### Fix Types
 
@@ -471,6 +821,8 @@ When drift is flagged but no EARS update is needed:
 | `content` | Fix placeholders, dates, names |
 | `references` | Update traceability and cross-references |
 | `drift` | Handle upstream drift detection issues |
+| `auto_merge` | Apply tiered auto-merge for upstream changes |
+| `deprecate` | Mark removed upstream items as deprecated |
 | `all` | All fix types (default) |
 
 ---
@@ -623,4 +975,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.TT.SS pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary and pattern file creation; Element ID conversion for EARS codes (25, 26); Broken link fixes; PRD drift detection; EARS pattern syntax validation; Integration with autopilot Review->Fix cycle |

@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, Review Report, SYS]
   downstream_artifacts: [Fixed REQ, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-req-fixer
@@ -449,82 +449,354 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream source documents (SYS) have changed since REQ creation.
+Addresses issues where upstream source documents (SYS) have changed since REQ creation. This phase implements a tiered auto-merge system that automatically integrates upstream changes based on change magnitude.
 
-**Drift Issue Codes** (from `doc-req-reviewer` Check #9):
+**Upstream**: SYS (Layer 6 - System Design)
+**Downstream**: CTR (Layer 8 - Contracts), SPEC (Layer 9 - Specifications)
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | SYS document modified after REQ | No (flag for review) |
-| REV-D002 | Warning | System component changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New component added to SYS | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+**ID Pattern**: `REQ.NN.TT.SS` where:
+- `NN` = Module number (01-99)
+- `TT` = Type code (01=Functional, 05=UseCase, 06=AcceptanceCriteria, 27=NFR)
+- `SS` = Sequence number (01-99)
 
-**Fix Actions**:
+---
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+#### Tiered Auto-Merge Thresholds
 
-**Drift Marker Format**:
+| Tier | Change % | Action | Version Bump | Human Review |
+|------|----------|--------|--------------|--------------|
+| **Tier 1** | < 5% | Auto-merge additions | Patch (1.0 -> 1.0.1) | No |
+| **Tier 2** | 5-15% | Auto-merge with changelog | Minor (1.0 -> 1.1) | Optional |
+| **Tier 3** | > 15% | Archive + Regenerate | Major (1.x -> 2.0) | Yes |
 
-```markdown
-<!-- DRIFT: SYS-01.md modified 2026-02-08 (REQ created 2026-02-05) -->
-@ref: [SYS-01 Component 3](../../06_SYS/SYS-01.md#component-3)
+---
+
+#### Change Percentage Calculation
+
+```python
+def calculate_change_percentage(sys_current: str, sys_baseline: str) -> float:
+    """
+    Calculate percentage of change between SYS versions.
+
+    Algorithm:
+    1. Tokenize both documents (sections, components, interfaces)
+    2. Calculate added tokens (new content)
+    3. Calculate modified tokens (changed content)
+    4. Calculate removed tokens (deleted content - weighted 2x)
+    5. Return: (added + modified + 2*removed) / total_baseline * 100
+    """
+    baseline_tokens = tokenize_sys_document(sys_baseline)
+    current_tokens = tokenize_sys_document(sys_current)
+
+    added = len(current_tokens - baseline_tokens)
+    removed = len(baseline_tokens - current_tokens)
+    modified = count_modified_tokens(baseline_tokens, current_tokens)
+
+    total_baseline = len(baseline_tokens)
+    if total_baseline == 0:
+        return 100.0  # New document = 100% change
+
+    change_score = added + modified + (2 * removed)
+    return (change_score / total_baseline) * 100
+
+def tokenize_sys_document(content: str) -> set:
+    """Extract meaningful tokens from SYS document."""
+    tokens = set()
+    # Extract component definitions (SYS.NN.17.SS)
+    tokens.update(re.findall(r'SYS\.\d{2}\.17\.\d{2}', content))
+    # Extract interface definitions (SYS.NN.18.SS)
+    tokens.update(re.findall(r'SYS\.\d{2}\.18\.\d{2}', content))
+    # Extract decision references (SYS.NN.13.SS)
+    tokens.update(re.findall(r'SYS\.\d{2}\.13\.\d{2}', content))
+    # Extract section headers
+    tokens.update(re.findall(r'^##+ .+$', content, re.MULTILINE))
+    return tokens
 ```
 
-**Drift Summary Block** (added to Fix Report):
+---
 
-```markdown
-## Upstream Drift Summary
+#### Tier 1: Auto-Merge Additions (< 5% Change)
 
-| Upstream Document | Reference | Modified | REQ Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|-------------|------------|-----------------|
-| SYS-01.md | REQ-01:L57 | 2026-02-08 | 2026-02-05 | 3 | Review system changes |
-| SYS-03.md | REQ-01:L89 | 2026-02-10 | 2026-02-05 | 5 | Review new component |
+**Trigger**: Minor additions to SYS that extend existing components.
 
-**Recommendation**: Review upstream SYS documents and update REQ sections if requirements are affected.
-Sections potentially affected:
-- REQ-01 Functional Requirements (Section 3)
-- REQ-01 Use Cases (Section 5)
+**Actions**:
+1. Identify new SYS elements (components, interfaces)
+2. Generate corresponding REQ elements with auto-assigned IDs
+3. Insert new requirements in appropriate sections
+4. Increment patch version (1.0 -> 1.0.1)
+5. Update drift cache with merge record
+
+**Auto-ID Generation**:
+
+```python
+def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str:
+    """
+    Generate next available REQ ID.
+
+    Example: If REQ.01.01.12 exists, next is REQ.01.01.13
+    """
+    pattern = f"REQ.{module}.{type_code}."
+    max_seq = 0
+
+    for id in existing_ids:
+        if id.startswith(pattern):
+            seq = int(id.split('.')[-1])
+            max_seq = max(max_seq, seq)
+
+    next_seq = str(max_seq + 1).zfill(2)
+    return f"REQ.{module}.{type_code}.{next_seq}"
+
+# Example: REQ.01.01.12 exists -> new ID is REQ.01.01.13
 ```
 
-**Drift Cache Update**:
+**Tier 1 Merge Template**:
+
+```markdown
+<!-- AUTO-MERGED from SYS-01 v1.2 | Tier 1 | 2026-02-10T16:00:00 -->
+### REQ.01.01.13: [New Requirement Title]
+
+| Attribute | Value |
+|-----------|-------|
+| ID | REQ.01.01.13 |
+| Status | Draft |
+| Priority | P2 |
+| Source | SYS.01.17.05 (auto-merged) |
+| Version Added | 1.0.1 |
+
+**Description**: [Auto-extracted from SYS component description]
+
+**Acceptance Criteria**:
+- [ ] AC-01: [Derived from SYS interface contracts]
+
+@trace: SYS.01.17.05
+```
+
+---
+
+#### Tier 2: Auto-Merge with Changelog (5-15% Change)
+
+**Trigger**: Moderate changes including new sections or modified components.
+
+**Actions**:
+1. Perform all Tier 1 actions
+2. Generate detailed changelog section
+3. Mark modified existing requirements with `[UPDATED]` tag
+4. Increment minor version (1.0 -> 1.1)
+5. Create merge summary for optional human review
+
+**Changelog Format**:
+
+```markdown
+## Changelog (Auto-Merged v1.1)
+
+**Merge Date**: 2026-02-10T16:00:00
+**Source**: SYS-01 v1.3 (baseline: v1.1)
+**Change Percentage**: 8.5%
+**Tier**: 2 (Auto-Merge with Changelog)
+
+### Added Requirements
+
+| REQ ID | Title | Source SYS Element |
+|--------|-------|-------------------|
+| REQ.01.01.13 | New Data Validation | SYS.01.17.05 |
+| REQ.01.01.14 | Extended Logging | SYS.01.17.06 |
+
+### Updated Requirements
+
+| REQ ID | Change Type | Previous | Current |
+|--------|-------------|----------|---------|
+| REQ.01.01.03 | Priority | P3 | P2 |
+| REQ.01.01.07 | Description | [truncated] | [truncated] |
+
+### Deprecated (No Deletion)
+
+| REQ ID | Reason | Superseded By |
+|--------|--------|---------------|
+| REQ.01.01.02 | Component removed in SYS | REQ.01.01.13 |
+```
+
+**No Deletion Policy**:
+
+Requirements are NEVER deleted. Instead, mark as deprecated:
+
+```markdown
+### REQ.01.01.02: Legacy Authentication [DEPRECATED]
+
+> **DEPRECATED**: This requirement is superseded by REQ.01.01.13 as of v1.1.
+> Reason: Source component SYS.01.17.02 removed in SYS v1.3.
+> Retained for historical traceability.
+
+| Attribute | Value |
+|-----------|-------|
+| ID | REQ.01.01.02 |
+| Status | **Deprecated** |
+| Deprecated Date | 2026-02-10 |
+| Superseded By | REQ.01.01.13 |
+```
+
+---
+
+#### Tier 3: Archive and Regenerate (> 15% Change)
+
+**Trigger**: Major architectural changes in SYS requiring fundamental REQ restructure.
+
+**Actions**:
+1. Create archive manifest
+2. Archive current REQ version
+3. Trigger full REQ regeneration via `doc-req-autopilot`
+4. Increment major version (1.x -> 2.0)
+5. Require human review before finalization
+
+**Archive Manifest**:
+
+```markdown
+---
+title: "REQ-01 Archive Manifest"
+archive_date: "2026-02-10T16:00:00"
+archive_reason: "Tier 3 upstream drift (>15% change)"
+archived_version: "1.2"
+new_version: "2.0"
+---
+
+# REQ-01 Archive Manifest
+
+## Archive Summary
+
+| Attribute | Value |
+|-----------|-------|
+| Document | REQ-01 |
+| Archived Version | 1.2 |
+| Archive Date | 2026-02-10T16:00:00 |
+| Change Percentage | 23.7% |
+| Trigger | Tier 3 Upstream Drift |
+| Upstream Source | SYS-01 v2.0 |
+
+## Archived Files
+
+| File | Archive Location | Hash |
+|------|------------------|------|
+| REQ-01.md | archive/REQ-01_v1.2/ | sha256:abc123... |
+| REQ-01.F_fix_report_v003.md | archive/REQ-01_v1.2/ | sha256:def456... |
+
+## Migration Notes
+
+| Old REQ ID | Status | New REQ ID | Notes |
+|------------|--------|------------|-------|
+| REQ.01.01.01 | Retained | REQ.01.01.01 | No change |
+| REQ.01.01.02 | Deprecated | - | Functionality removed |
+| REQ.01.01.03 | Merged | REQ.01.01.02 | Combined with REQ.01.01.04 |
+| - | New | REQ.01.01.10 | New from SYS.01.17.08 |
+
+## Regeneration Trigger
+
+```bash
+/doc-req-autopilot SYS-01 --from-archive REQ-01_v1.2 --target-version 2.0
+```
+```
+
+**Archive Directory Structure**:
+
+```
+docs/07_REQ/
+├── archive/
+│   └── REQ-01_v1.2/
+│       ├── ARCHIVE_MANIFEST.md
+│       ├── REQ-01.md
+│       ├── REQ-01.F_fix_report_v003.md
+│       └── .drift_cache.json
+├── REQ-01.md (v2.0 - regenerated)
+└── REQ-00_INDEX.md
+```
+
+---
+
+#### Enhanced Drift Cache with Merge History
 
 After processing drift issues, update `.drift_cache.json`:
 
 ```json
 {
-  "req_version": "1.0",
-  "req_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
+  "req_version": "1.1",
+  "req_updated": "2026-02-10T16:00:00",
+  "drift_reviewed": "2026-02-10T16:00:00",
   "upstream_hashes": {
-    "../../06_SYS/SYS-01.md#component-3": "a1b2c3d4...",
-    "../../06_SYS/SYS-03.md": "e5f6g7h8..."
+    "../../06_SYS/SYS-01.md": "sha256:a1b2c3d4e5f6...",
+    "../../06_SYS/SYS-01.md#component-3": "sha256:g7h8i9j0k1l2..."
   },
+  "merge_history": [
+    {
+      "merge_date": "2026-02-10T16:00:00",
+      "tier": 2,
+      "change_percentage": 8.5,
+      "version_before": "1.0",
+      "version_after": "1.1",
+      "upstream_version": "SYS-01 v1.3",
+      "added_ids": ["REQ.01.01.13", "REQ.01.01.14"],
+      "updated_ids": ["REQ.01.01.03", "REQ.01.01.07"],
+      "deprecated_ids": ["REQ.01.01.02"]
+    }
+  ],
   "acknowledged_drift": [
     {
       "document": "SYS-01.md",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no REQ impact"
+      "acknowledged_date": "2026-02-08",
+      "reason": "Reviewed - cosmetic changes only",
+      "hash_at_acknowledgment": "sha256:xyz789..."
     }
-  ]
+  ],
+  "downstream_notifications": {
+    "CTR-01": {
+      "notified": "2026-02-10T16:05:00",
+      "req_version": "1.1",
+      "pending_review": true
+    },
+    "SPEC-01": {
+      "notified": "2026-02-10T16:05:00",
+      "req_version": "1.1",
+      "pending_review": true
+    }
+  }
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+---
 
-When drift is flagged but no REQ update is needed:
+#### Drift Issue Codes (Updated)
 
-1. Run `/doc-req-fixer REQ-01 --acknowledge-drift`
-2. Fixer prompts: "Review drift for SYS-01.md?"
-3. User confirms no REQ changes needed
-4. Fixer adds to `acknowledged_drift` array
-5. Future reviews skip this drift until upstream changes again
+| Code | Severity | Description | Tier | Auto-Fix |
+|------|----------|-------------|------|----------|
+| REV-D001 | Info | SYS minor addition (< 5%) | 1 | Yes |
+| REV-D002 | Warning | SYS moderate change (5-15%) | 2 | Yes |
+| REV-D003 | Info | Upstream version incremented | 1 | Yes |
+| REV-D004 | Warning | New component added to SYS | 1-2 | Yes |
+| REV-D005 | Error | Major upstream modification (> 15%) | 3 | No (archive) |
+| REV-D006 | Warning | Deprecated upstream element | 2 | Yes (mark deprecated) |
+
+---
+
+#### Command Options for Drift Handling
+
+```bash
+# Auto-merge with tier detection
+/doc-req-fixer REQ-01 --auto-merge
+
+# Force specific tier (override auto-detection)
+/doc-req-fixer REQ-01 --auto-merge --force-tier 2
+
+# Preview merge without applying
+/doc-req-fixer REQ-01 --auto-merge --dry-run
+
+# Acknowledge drift without merge
+/doc-req-fixer REQ-01 --acknowledge-drift
+
+# View merge history
+/doc-req-fixer REQ-01 --show-merge-history
+
+# Restore from archive
+/doc-req-fixer REQ-01 --restore-archive v1.2
+```
 
 ---
 
@@ -562,6 +834,11 @@ When drift is flagged but no REQ update is needed:
 | `--dry-run` | false | Preview fixes without applying |
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
+| `--auto-merge` | false | Enable tiered auto-merge for upstream drift |
+| `--force-tier` | auto | Force specific merge tier (1, 2, or 3) |
+| `--show-merge-history` | false | Display merge history from drift cache |
+| `--restore-archive` | none | Restore REQ from archived version (e.g., v1.2) |
+| `--notify-downstream` | true | Notify CTR/SPEC of REQ changes after merge |
 
 ### Fix Types
 
@@ -573,6 +850,9 @@ When drift is flagged but no REQ update is needed:
 | `content` | Fix placeholders, dates, status, priority |
 | `references` | Update traceability and cross-references |
 | `drift` | Handle upstream drift detection issues |
+| `drift_merge` | Auto-merge upstream SYS changes (tiered) |
+| `drift_archive` | Archive current version for Tier 3 changes |
+| `deprecate` | Mark obsolete requirements as deprecated (no deletion) |
 | `all` | All fix types (default) |
 
 ---
@@ -732,4 +1012,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | **Enhanced Phase 6 Auto-Merge System**: Tiered auto-merge thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); Change percentage calculation algorithm; Auto-generated IDs for new requirements (REQ.NN.TT.SS pattern); No deletion policy - mark as [DEPRECATED] instead; Archive manifest creation for Tier 3; Enhanced drift cache with merge history and downstream notifications; New options: --auto-merge, --force-tier, --show-merge-history, --restore-archive, --notify-downstream; New fix types: drift_merge, drift_archive, deprecate; Semantic versioning (patch/minor/major) based on change tier |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; REQ Index, Glossary, and Use Case file creation; Element ID conversion (types 01, 05, 06, 27); Broken link fixes; SYS upstream drift handling; Support for sectioned REQ naming (REQ-NN-SSS); Integration with autopilot Review->Fix cycle |

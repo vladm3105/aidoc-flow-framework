@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD, Review Report, EARS]
   downstream_artifacts: [Fixed BDD, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-bdd-fixer
@@ -408,82 +408,359 @@ Feature: User Authentication
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream EARS documents have changed since BDD creation.
+Addresses issues where upstream EARS documents have changed since BDD creation. Uses a tiered auto-merge system based on change percentage to automatically incorporate new requirements.
 
-**Drift Issue Codes** (from `doc-bdd-reviewer` Check #9):
+**Upstream**: EARS (Layer 3)
+**Downstream**: ADR (Layer 5)
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | EARS modified after BDD | No (flag for review) |
-| REV-D002 | Warning | Referenced EARS statement content changed | No (flag for review) |
-| REV-D003 | Info | EARS version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New requirements added to EARS | No (flag for review) |
-| REV-D005 | Error | Critical EARS modification (>20% change) | No (flag for review) |
+---
 
-**Fix Actions**:
+#### 6.1 Change Percentage Calculation
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+Calculate drift percentage by comparing EARS content hashes:
 
-**Drift Marker Format**:
+```python
+def calculate_change_percentage(
+    original_ears_hash: str,
+    current_ears_hash: str,
+    original_content: str,
+    current_content: str
+) -> float:
+    """Calculate percentage of content changed in upstream EARS."""
 
-```markdown
-<!-- DRIFT: EARS-01.md modified 2026-02-08 (BDD created 2026-02-05) -->
-@ref: [EARS-01 Section 3](../03_EARS/EARS-01.md#3-functional-requirements)
+    if original_ears_hash == current_ears_hash:
+        return 0.0
+
+    # Line-based diff calculation
+    original_lines = set(original_content.strip().split('\n'))
+    current_lines = set(current_content.strip().split('\n'))
+
+    added_lines = current_lines - original_lines
+    removed_lines = original_lines - current_lines
+
+    total_original = len(original_lines)
+    if total_original == 0:
+        return 100.0 if current_lines else 0.0
+
+    change_percentage = (len(added_lines) + len(removed_lines)) / total_original * 100
+    return round(change_percentage, 2)
 ```
 
-**Feature File Drift Marker**:
+---
+
+#### 6.2 Tiered Auto-Merge Thresholds
+
+| Tier | Change % | Action | Version Increment | User Approval |
+|------|----------|--------|-------------------|---------------|
+| **Tier 1** | < 5% | Auto-merge new scenarios | Patch (1.0.0 -> 1.0.1) | No |
+| **Tier 2** | 5-15% | Auto-merge with detailed changelog | Minor (1.0.1 -> 1.1.0) | No |
+| **Tier 3** | > 15% | Archive current, trigger regeneration | Major (1.1.0 -> 2.0.0) | Yes (recommended) |
+
+---
+
+#### 6.3 Tier 1: Minor Drift (< 5%)
+
+**Trigger**: Small additions or clarifications in upstream EARS.
+
+**Actions**:
+
+1. Parse new EARS requirements not covered by existing BDD scenarios
+2. Generate new scenarios with auto-generated tags
+3. Append to appropriate feature file
+4. Increment patch version
+
+**Auto-Generated Scenario Tag Format**:
+
+```
+@BDD-{NN}-SC-{SS}
+```
+
+Where:
+- `NN` = BDD document number (01-99)
+- `SC` = Scenario identifier
+- `SS` = Sequential scenario number (01-99)
+
+**Example**:
 
 ```gherkin
-# DRIFT: EARS-01.25.01 modified 2026-02-08 (Scenario created 2026-02-05)
-@trace:EARS-01.25.01 @needs-review
-Scenario: User authenticates with valid credentials
+# Auto-merged from EARS-01 drift (2026-02-10)
+@BDD-01-SC-13 @auto-merged @trace:EARS-01.25.12
+Scenario: User receives notification on password expiry
+  Given a user with password expiring in 7 days
+  When the daily notification job runs
+  Then the user receives an expiry warning email
 ```
 
-**Drift Summary Block** (added to Fix Report):
+**Tier 1 Changelog Entry**:
 
 ```markdown
-## Upstream Drift Summary
+### v1.0.1 (2026-02-10) - Patch
 
-| Upstream Document | Reference | Modified | BDD Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|-------------|------------|-----------------|
-| EARS-01.md | BDD-01.1:L57 | 2026-02-08 | 2026-02-05 | 3 | Review for changes |
-| EARS-02.md | BDD-01.3:L319 | 2026-02-10 | 2026-02-05 | 5 | Review requirement updates |
+**Drift Merge**: Tier 1 (3.2% change detected in EARS-01)
 
-**Recommendation**: Review upstream EARS documents and update BDD scenarios if requirements have changed.
-Features potentially affected:
-- BDD-01.1 auth.feature (Authentication scenarios)
-- BDD-01.3 api.feature (API scenarios)
+| Added Scenarios | Tag | Source |
+|-----------------|-----|--------|
+| User receives notification on password expiry | @BDD-01-SC-13 | EARS-01.25.12 |
 ```
 
-**Drift Cache Update**:
+---
+
+#### 6.4 Tier 2: Moderate Drift (5-15%)
+
+**Trigger**: Significant additions or modifications in upstream EARS.
+
+**Actions**:
+
+1. Parse all new/modified EARS requirements
+2. Generate new scenarios for additions
+3. Mark existing scenarios for review if source requirement modified
+4. Generate detailed changelog
+5. Increment minor version
+
+**Detailed Changelog Format**:
+
+```markdown
+### v1.1.0 (2026-02-10) - Minor
+
+**Drift Merge**: Tier 2 (8.7% change detected in EARS-01, EARS-02)
+
+#### New Scenarios Added
+
+| Scenario | Tag | Feature File | Source |
+|----------|-----|--------------|--------|
+| User receives notification on password expiry | @BDD-01-SC-13 | auth.feature | EARS-01.25.12 |
+| Admin can force password reset | @BDD-01-SC-14 | auth.feature | EARS-01.25.13 |
+| Session timeout configurable per role | @BDD-01-SC-15 | session.feature | EARS-02.25.05 |
+
+#### Scenarios Marked for Review
+
+| Scenario | Tag | Reason | Source Change |
+|----------|-----|--------|---------------|
+| User authenticates with valid credentials | @BDD-01-SC-01 | Source requirement modified | EARS-01.25.01 v2 |
+
+#### Upstream Changes Summary
+
+| Document | Sections Changed | Lines Added | Lines Removed |
+|----------|------------------|-------------|---------------|
+| EARS-01.md | 3.1, 3.5, 4.2 | 24 | 6 |
+| EARS-02.md | 5.1 | 8 | 0 |
+```
+
+**Review Marker for Modified Source**:
+
+```gherkin
+# REVIEW: Source requirement EARS-01.25.01 modified on 2026-02-10
+# Original: "User must authenticate with username and password"
+# Updated: "User must authenticate with username and password or SSO"
+@BDD-01-SC-01 @needs-review @trace:EARS-01.25.01
+Scenario: User authenticates with valid credentials
+  # ... existing steps ...
+```
+
+---
+
+#### 6.5 Tier 3: Major Drift (> 15%)
+
+**Trigger**: Substantial changes indicating major requirement evolution.
+
+**Actions**:
+
+1. Archive current BDD version
+2. Create archive manifest
+3. Trigger regeneration workflow
+4. Increment major version
+
+**No Deletion Policy**:
+
+Existing scenarios are NEVER deleted. Instead:
+
+```gherkin
+# DEPRECATED: Superseded by EARS-01 v3 changes (2026-02-10)
+# Reason: Authentication flow redesigned to support SSO-only mode
+# Archive: BDD-01_v1.1.0_archive/auth.feature
+@BDD-01-SC-01 @deprecated @archive:v1.1.0
+Scenario: User authenticates with username and password
+  # ... existing steps preserved ...
+```
+
+**Archive Manifest Creation**:
+
+Location: `docs/04_BDD/BDD-{NN}_v{X.Y.Z}_archive/MANIFEST.md`
+
+```markdown
+---
+title: "BDD-01 Archive Manifest v1.1.0"
+tags:
+  - bdd
+  - archive
+  - manifest
+custom_fields:
+  archive_date: "2026-02-10T16:00:00"
+  archive_reason: "Tier 3 drift (22.4% change in EARS-01)"
+  original_version: "1.1.0"
+  new_version: "2.0.0"
+  triggering_upstream: "EARS-01 v3"
+---
+
+# BDD-01 Archive Manifest v1.1.0
+
+## Archive Summary
+
+| Field | Value |
+|-------|-------|
+| Archived Version | 1.1.0 |
+| Archive Date | 2026-02-10T16:00:00 |
+| Reason | Tier 3 upstream drift (22.4% change) |
+| Triggering Upstream | EARS-01 v3 |
+| New Version | 2.0.0 (regeneration triggered) |
+
+## Archived Files
+
+| File | Scenarios | Status |
+|------|-----------|--------|
+| BDD-01.md | - | Archived |
+| auth.feature | 5 | 3 deprecated, 2 preserved |
+| session.feature | 3 | 1 deprecated, 2 preserved |
+| api.feature | 8 | 4 deprecated, 4 preserved |
+
+## Deprecated Scenarios
+
+| Tag | Scenario | Deprecation Reason |
+|-----|----------|-------------------|
+| @BDD-01-SC-01 | User authenticates with username and password | SSO-only authentication in v3 |
+| @BDD-01-SC-02 | User fails authentication with wrong password | Replaced by SSO error handling |
+| @BDD-01-SC-05 | Password complexity validation | Removed - SSO handles auth |
+
+## Preserved Scenarios
+
+| Tag | Scenario | Preserved In |
+|-----|----------|--------------|
+| @BDD-01-SC-03 | User session expires after timeout | BDD-01 v2.0.0 |
+| @BDD-01-SC-04 | User can logout from all devices | BDD-01 v2.0.0 |
+
+## Regeneration Trigger
+
+Command to regenerate BDD from updated EARS:
+
+```bash
+/doc-bdd-autopilot EARS-01 --version 2.0.0 --preserve-from BDD-01_v1.1.0_archive
+```
+```
+
+---
+
+#### 6.6 Enhanced Drift Cache
 
 After processing drift issues, update `.drift_cache.json`:
 
 ```json
 {
-  "bdd_version": "1.0",
-  "bdd_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
+  "bdd_id": "BDD-01",
+  "bdd_version": "1.1.0",
+  "bdd_updated": "2026-02-10T16:00:00",
+  "drift_reviewed": "2026-02-10T16:00:00",
+  "upstream_type": "EARS",
+  "downstream_type": "ADR",
   "upstream_hashes": {
-    "../03_EARS/EARS-01.md#3": "a1b2c3d4...",
-    "../03_EARS/EARS-02.md": "e5f6g7h8..."
+    "EARS-01.md": {
+      "hash": "a1b2c3d4e5f6...",
+      "version": "2.0",
+      "last_checked": "2026-02-10T16:00:00"
+    },
+    "EARS-02.md": {
+      "hash": "e5f6g7h8i9j0...",
+      "version": "1.5",
+      "last_checked": "2026-02-10T16:00:00"
+    }
   },
+  "merge_history": [
+    {
+      "date": "2026-02-08T10:00:00",
+      "tier": 1,
+      "change_percentage": 3.2,
+      "version_before": "1.0.0",
+      "version_after": "1.0.1",
+      "scenarios_added": ["@BDD-01-SC-10"],
+      "scenarios_deprecated": [],
+      "upstream_trigger": "EARS-01 v1.8"
+    },
+    {
+      "date": "2026-02-10T16:00:00",
+      "tier": 2,
+      "change_percentage": 8.7,
+      "version_before": "1.0.1",
+      "version_after": "1.1.0",
+      "scenarios_added": ["@BDD-01-SC-13", "@BDD-01-SC-14", "@BDD-01-SC-15"],
+      "scenarios_deprecated": [],
+      "upstream_trigger": "EARS-01 v2.0, EARS-02 v1.5"
+    }
+  ],
   "acknowledged_drift": [
     {
-      "document": "EARS-01.md",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no BDD impact"
+      "document": "EARS-03.md",
+      "acknowledged_date": "2026-02-09",
+      "reason": "Documentation-only change - no BDD impact"
     }
-  ]
+  ],
+  "next_scenario_number": 16
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+---
+
+#### 6.7 Auto-Merge Workflow
+
+```mermaid
+flowchart TD
+    A[Detect Upstream Drift] --> B[Calculate Change %]
+    B --> C{Change < 5%?}
+
+    C -->|Yes| D[Tier 1: Auto-Merge]
+    D --> D1[Generate new scenarios]
+    D1 --> D2[Add @BDD-NN-SC-SS tags]
+    D2 --> D3[Increment patch version]
+    D3 --> E[Update drift cache]
+
+    C -->|No| F{Change 5-15%?}
+
+    F -->|Yes| G[Tier 2: Auto-Merge + Changelog]
+    G --> G1[Generate new scenarios]
+    G1 --> G2[Mark modified for review]
+    G2 --> G3[Generate detailed changelog]
+    G3 --> G4[Increment minor version]
+    G4 --> E
+
+    F -->|No| H[Tier 3: Archive + Regenerate]
+    H --> H1[Archive current version]
+    H1 --> H2[Create archive manifest]
+    H2 --> H3[Mark deprecated scenarios]
+    H3 --> H4[Trigger regeneration]
+    H4 --> H5[Increment major version]
+    H5 --> E
+
+    E --> I[Update .drift_cache.json]
+    I --> J[Generate Fix Report]
+```
+
+---
+
+#### 6.8 Drift Issue Codes
+
+| Code | Severity | Description | Tier | Auto-Fix |
+|------|----------|-------------|------|----------|
+| REV-D001 | Info | EARS modified after BDD (< 5%) | 1 | Yes (auto-merge) |
+| REV-D002 | Warning | EARS modified after BDD (5-15%) | 2 | Yes (auto-merge + changelog) |
+| REV-D003 | Info | EARS version incremented | 1-2 | Yes (update version ref) |
+| REV-D004 | Info | New requirements added to EARS | 1-2 | Yes (generate scenarios) |
+| REV-D005 | Warning | Critical EARS modification (> 15%) | 3 | Partial (archive + trigger regen) |
+| REV-D006 | Info | Scenario added via auto-merge | - | N/A (informational) |
+| REV-D007 | Warning | Scenario marked @deprecated | 3 | Yes (add deprecation marker) |
+
+---
+
+#### 6.9 Drift Acknowledgment Workflow
 
 When drift is flagged but no BDD update is needed:
 
@@ -702,4 +979,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1 (< 5%) auto-merge with patch version; Added Tier 2 (5-15%) auto-merge with detailed changelog and minor version; Added Tier 3 (> 15%) archive and regeneration with major version; Implemented no-deletion policy with @deprecated markers; Added archive manifest creation; Enhanced drift cache with merge history; Added scenario tag pattern @BDD-NN-SC-SS; Defined EARS as upstream, ADR as downstream |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary, step definitions, and feature file creation; Element ID conversion for BDD codes (35, 36, 37); Broken link fixes including feature files; EARS drift detection; Gherkin syntax validation; Integration with autopilot Review->Fix cycle |

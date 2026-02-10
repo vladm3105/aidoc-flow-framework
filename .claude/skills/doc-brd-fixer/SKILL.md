@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BRD, Review Report]
   downstream_artifacts: [Fixed BRD, Fix Report]
-  version: "1.1"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-brd-fixer
@@ -303,82 +303,379 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream source documents have changed since BRD creation.
+Automatically merges upstream changes into the document based on change percentage thresholds.
 
-**Drift Issue Codes** (from `doc-brd-reviewer` Check #9):
+**Drift Detection Workflow**:
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | Upstream document modified after BRD | No (flag for review) |
-| REV-D002 | Warning | Referenced section content changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New content added to upstream | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+```mermaid
+flowchart TD
+    A[Detect Upstream Changes] --> B[Calculate Change %]
+    B --> C{Change Analysis}
 
-**Fix Actions**:
+    C -->|< 5%| D[TIER 1: Auto-Merge]
+    C -->|5-15%| E[TIER 2: Auto-Merge + Detailed Log]
+    C -->|> 15%| F[TIER 3: Archive + Regenerate]
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+    D --> D1[Add new requirements]
+    D1 --> D2[Update thresholds]
+    D2 --> D3[Update references]
+    D3 --> D4[Increment patch: 1.0→1.0.1]
 
-**Drift Marker Format**:
+    E --> E1[Add new requirements]
+    E1 --> E2[Update thresholds]
+    E2 --> E3[Update references]
+    E3 --> E4[Generate detailed changelog]
+    E4 --> E5[Increment minor: 1.0→1.1]
 
-```markdown
-<!-- DRIFT: F1_IAM_Technical_Specification.md modified 2026-02-08 (BRD created 2026-02-05) -->
-@ref: [F1 Section 3](../../00_REF/foundation/F1_IAM_Technical_Specification.md#3-authentication)
+    F --> F1[Mark current as ARCHIVED]
+    F1 --> F2[Update status in frontmatter]
+    F2 --> F3[Trigger regeneration via autopilot]
+    F3 --> F4[Increment major: 1.x→2.0]
+
+    D4 --> G[Update Drift Cache]
+    E5 --> G
+    F4 --> G
+    G --> H[Add to Fix Report]
 ```
 
-**Drift Summary Block** (added to Fix Report):
+---
 
-```markdown
-## Upstream Drift Summary
+#### 6.1 Change Percentage Calculation
 
-| Upstream Document | Reference | Modified | BRD Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|-------------|------------|-----------------|
-| F1_IAM_Technical_Specification.md | BRD-01.1:L57 | 2026-02-08 | 2026-02-05 | 3 | Review for changes |
-| GAP_Foundation_Module_Gap_Analysis.md | BRD-01.3:L319 | 2026-02-10 | 2026-02-05 | 5 | Review gap updates |
+```python
+def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
+    """
+    Calculate change percentage between upstream versions.
 
-**Recommendation**: Review upstream documents and update BRD sections if requirements have changed.
-Sections potentially affected:
-- BRD-01.1 Section 3 (Authentication System)
-- BRD-01.3 Section 13.1 (Upstream Dependencies)
+    Returns:
+        {
+            'total_change_pct': float,      # Overall change percentage
+            'additions_pct': float,          # New content added
+            'modifications_pct': float,      # Existing content modified
+            'deletions_pct': float,          # Content removed (tracked, not applied)
+            'change_type': str               # 'minor' | 'moderate' | 'major'
+        }
+    """
+    old_lines = upstream_old.strip().split('\n')
+    new_lines = upstream_new.strip().split('\n')
+
+    # Use difflib for precise change detection
+    import difflib
+    diff = difflib.unified_diff(old_lines, new_lines)
+
+    additions = sum(1 for line in diff if line.startswith('+') and not line.startswith('+++'))
+    deletions = sum(1 for line in diff if line.startswith('-') and not line.startswith('---'))
+
+    total_lines = max(len(old_lines), len(new_lines))
+    total_change_pct = ((additions + deletions) / total_lines) * 100 if total_lines > 0 else 0
+
+    return {
+        'total_change_pct': round(total_change_pct, 2),
+        'additions_pct': round((additions / total_lines) * 100, 2) if total_lines > 0 else 0,
+        'modifications_pct': round((min(additions, deletions) / total_lines) * 100, 2) if total_lines > 0 else 0,
+        'deletions_pct': round((deletions / total_lines) * 100, 2) if total_lines > 0 else 0,
+        'change_type': 'minor' if total_change_pct < 5 else 'moderate' if total_change_pct < 15 else 'major'
+    }
 ```
 
-**Drift Cache Update**:
+---
 
-After processing drift issues, update `.drift_cache.json`:
+#### 6.2 Tier 1: Auto-Merge (< 5% Change)
+
+**Trigger**: Total change percentage < 5%
+
+**Actions**:
+
+| Change Type | Auto-Action | Example |
+|-------------|-------------|---------|
+| New requirement added | Append with generated ID | `BRD.01.01.13` |
+| Threshold value changed | Find & replace value | `timeout: 30 → 45` |
+| Reference updated | Update `@ref:` path | Path correction |
+| Version incremented | Update version reference | `v1.2 → v1.3` |
+
+**ID Generation for New Requirements**:
+
+```python
+def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_ids: list) -> str:
+    """
+    Generate next sequential ID for new requirement.
+
+    Args:
+        doc_type: 'BRD', 'PRD', etc.
+        doc_num: '01', '02', etc.
+        element_type: '01' (Functional), '02' (Quality), etc.
+        existing_ids: List of existing IDs in document
+
+    Returns:
+        Next available ID (e.g., 'BRD.01.01.13')
+    """
+    pattern = f"{doc_type}.{doc_num}.{element_type}."
+    matching = [id for id in existing_ids if id.startswith(pattern)]
+
+    if not matching:
+        return f"{pattern}01"
+
+    max_seq = max(int(id.split('.')[-1]) for id in matching)
+    return f"{pattern}{str(max_seq + 1).zfill(2)}"
+```
+
+**Auto-Merge Template for New Requirements**:
+
+```markdown
+### {GENERATED_ID}: {Requirement Title}
+
+**Source**: Auto-merged from {upstream_doc} ({change_date})
+
+**Requirement**: {requirement_text}
+
+**Acceptance Criteria**:
+{acceptance_criteria}
+
+**Priority**: {priority}
+
+<!-- AUTO-MERGED: {timestamp} from {upstream_doc}#{section} -->
+```
+
+**Version Update**:
+- Increment patch version: `1.0` → `1.0.1`
+- Update `last_updated` in frontmatter
+- Add changelog entry
+
+---
+
+#### 6.3 Tier 2: Auto-Merge with Detailed Log (5-15% Change)
+
+**Trigger**: Total change percentage between 5% and 15%
+
+**Actions**: Same as Tier 1, plus:
+
+| Additional Action | Description |
+|-------------------|-------------|
+| Detailed changelog | Section-by-section change log |
+| Impact analysis | Which downstream artifacts affected |
+| Merge markers | `<!-- MERGED: ... -->` comments |
+| Version history | Detailed version history entry |
+
+**Changelog Entry Format**:
+
+```markdown
+## Changelog
+
+### Version 1.1 (2026-02-10T16:00:00)
+
+**Upstream Sync**: Auto-merged 8.5% changes from upstream documents
+
+| Change | Source | Section | Description |
+|--------|--------|---------|-------------|
+| Added | F1_IAM_Technical_Specification.md | 3.5 | New passkey authentication requirement |
+| Updated | F1_IAM_Technical_Specification.md | 4.2 | Session timeout changed 30→45 min |
+| Added | GAP_Analysis.md | GAP-F1-07 | New gap identified for WebAuthn |
+
+**New Requirements Added**:
+- BRD.01.01.13: Passkey Authentication Support
+- BRD.01.01.14: WebAuthn Fallback Mechanism
+
+**Thresholds Updated**:
+- BRD.01.02.05: session_idle_timeout: 30→45 min
+
+**Impact**: PRD-01, EARS-01, ADR-01 may require review
+```
+
+**Version Update**:
+- Increment minor version: `1.0` → `1.1`
+- Update `last_updated` in frontmatter
+- Add detailed changelog entry
+
+---
+
+#### 6.4 Tier 3: Archive and Regenerate (> 15% Change)
+
+**Trigger**: Total change percentage > 15%
+
+**Actions**:
+
+| Step | Action | Result |
+|------|--------|--------|
+| 1 | Mark current version as ARCHIVED | Status update in frontmatter |
+| 2 | Create archive copy | `BRD-01_v1.0_archived.md` |
+| 3 | Update frontmatter status | `status: archived` |
+| 4 | Trigger autopilot regeneration | New version generated |
+| 5 | Increment major version | `1.x` → `2.0` |
+
+**Archive Frontmatter Update**:
+
+```yaml
+---
+title: "BRD-01: F1 Identity & Access Management"
+custom_fields:
+  version: "1.2"
+  status: "archived"                    # Changed from 'current'
+  archived_date: "2026-02-10T16:00:00"
+  archived_reason: "upstream_drift_major"
+  superseded_by: "BRD-01_v2.0"
+  upstream_change_pct: 18.5
+---
+```
+
+**Archive File Naming**:
+
+```
+docs/01_BRD/BRD-01_f1_iam/
+├── BRD-01.0_index.md              # Current (v2.0)
+├── BRD-01.1_core.md               # Current (v2.0)
+├── .archive/
+│   ├── v1.2/
+│   │   ├── BRD-01.0_index.md      # Archived v1.2
+│   │   ├── BRD-01.1_core.md
+│   │   └── ARCHIVE_MANIFEST.md    # Archive metadata
+```
+
+**ARCHIVE_MANIFEST.md**:
+
+```markdown
+# Archive Manifest: BRD-01 v1.2
+
+| Field | Value |
+|-------|-------|
+| Archived Version | 1.2 |
+| Archived Date | 2026-02-10T16:00:00 |
+| Reason | Upstream drift > 15% (18.5%) |
+| Superseded By | v2.0 |
+| Upstream Changes | F1_IAM_Technical_Specification.md (major revision) |
+
+## Change Summary
+
+| Upstream Document | Change % | Key Changes |
+|-------------------|----------|-------------|
+| F1_IAM_Technical_Specification.md | 18.5% | New auth methods, revised security model |
+
+## Downstream Impact
+
+Documents requiring update after regeneration:
+- PRD-01 (references BRD-01)
+- EARS-01 (derived from PRD-01)
+- ADR-01 (architecture decisions)
+```
+
+**No Deletion Policy**:
+
+- Upstream content marked as deleted is **NOT** removed from document
+- Instead, marked with `[DEPRECATED]` status:
+
+```markdown
+### BRD.01.01.05: Legacy Authentication Method [DEPRECATED]
+
+> **Status**: DEPRECATED (upstream removed 2026-02-10T16:00:00)
+> **Reason**: Replaced by BRD.01.01.13 (Passkey Authentication)
+> **Action**: Retain for traceability; do not implement
+
+**Original Requirement**: {original_text}
+```
+
+---
+
+#### 6.5 Drift Cache Update
+
+After processing drift, update `.drift_cache.json`:
 
 ```json
 {
-  "brd_version": "1.0",
-  "brd_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
-  "upstream_hashes": {
-    "../../00_REF/foundation/F1_IAM_Technical_Specification.md#3": "a1b2c3d4...",
-    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": "e5f6g7h8..."
+  "document_version": "1.1",
+  "last_synced": "2026-02-10T16:00:00",
+  "sync_status": "auto-merged",
+  "upstream_state": {
+    "../../00_REF/foundation/F1_IAM_Technical_Specification.md": {
+      "hash": "sha256:a1b2c3d4e5f6...",
+      "version": "2.3",
+      "last_modified": "2026-02-10T15:30:00",
+      "change_pct": 4.2,
+      "sync_action": "tier1_auto_merge"
+    },
+    "../../00_REF/foundation/GAP_Analysis.md": {
+      "hash": "sha256:g7h8i9j0k1l2...",
+      "version": "1.5",
+      "last_modified": "2026-02-10T14:00:00",
+      "change_pct": 8.7,
+      "sync_action": "tier2_auto_merge_detailed"
+    }
   },
-  "acknowledged_drift": [
+  "merge_history": [
     {
-      "document": "F1_IAM_Technical_Specification.md",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no BRD impact"
+      "date": "2026-02-10T16:00:00",
+      "tier": 1,
+      "change_pct": 4.2,
+      "items_added": 1,
+      "items_updated": 2,
+      "version_before": "1.0",
+      "version_after": "1.0.1"
+    }
+  ],
+  "deprecated_items": [
+    {
+      "id": "BRD.01.01.05",
+      "deprecated_date": "2026-02-10T16:00:00",
+      "reason": "Upstream removal",
+      "replaced_by": "BRD.01.01.13"
     }
   ]
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+---
 
-When drift is flagged but no BRD update is needed:
+#### 6.6 Fix Report: Drift Section
 
-1. Run `/doc-brd-fixer BRD-01 --acknowledge-drift`
-2. Fixer prompts: "Review drift for F1_IAM_Technical_Specification.md?"
-3. User confirms no BRD changes needed
-4. Fixer adds to `acknowledged_drift` array
-5. Future reviews skip this drift until upstream changes again
+**Drift Summary in Fix Report**:
+
+```markdown
+## Phase 6: Upstream Drift Resolution
+
+### Drift Analysis Summary
+
+| Upstream Document | Change % | Tier | Action Taken |
+|-------------------|----------|------|--------------|
+| F1_IAM_Technical_Specification.md | 4.2% | 1 | Auto-merged |
+| GAP_Analysis.md | 8.7% | 2 | Auto-merged (detailed) |
+| F2_Session_Specification.md | 18.5% | 3 | Archived + Regenerated |
+
+### Tier 1 Auto-Merges (< 5%)
+
+| ID | Type | Source | Description |
+|----|------|--------|-------------|
+| BRD.01.01.13 | Added | F1_IAM:3.5 | Passkey authentication support |
+| BRD.01.02.05 | Updated | F1_IAM:4.2 | Session timeout 30→45 min |
+
+### Tier 2 Auto-Merges (5-15%)
+
+| ID | Type | Source | Description |
+|----|------|--------|-------------|
+| BRD.01.01.14 | Added | GAP:GAP-F1-07 | WebAuthn fallback mechanism |
+| BRD.01.07.04 | Added | GAP:GAP-F1-08 | New risk: credential phishing |
+
+### Tier 3 Archives (> 15%)
+
+| Document | Previous Version | New Version | Reason |
+|----------|------------------|-------------|--------|
+| BRD-01.2_requirements.md | 1.2 | 2.0 | 18.5% upstream change |
+
+**Archive Location**: `docs/01_BRD/BRD-01_f1_iam/.archive/v1.2/`
+
+### Deprecated Items (No Deletion)
+
+| ID | Deprecated Date | Reason | Replaced By |
+|----|-----------------|--------|-------------|
+| BRD.01.01.05 | 2026-02-10T16:00:00 | Upstream removed | BRD.01.01.13 |
+
+### Version Changes
+
+| File | Before | After | Change Type |
+|------|--------|-------|-------------|
+| BRD-01.1_core.md | 1.0 | 1.0.1 | Patch (Tier 1) |
+| BRD-01.2_requirements.md | 1.0 | 1.1 | Minor (Tier 2) |
+| BRD-01.3_quality_ops.md | 1.2 | 2.0 | Major (Tier 3) |
+```
 
 ---
 
@@ -574,5 +871,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1 | 2026-02-10 | Added Phase 6: Handle Upstream Drift - processes REV-D001-D005 issues from reviewer Check #9; drift marker insertion; drift cache management; acknowledgment workflow |
-| 1.0 | 2026-02-10 | Initial skill creation; 5-phase fix workflow; Glossary and GAP file creation; Element ID conversion (type 25→33); Broken link fixes; Integration with autopilot Review→Fix cycle |
+| 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates; Tier 2 (5-15%): auto-merge with detailed changelog; Tier 3 (>15%): archive current version and trigger regeneration; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements; Archive manifest creation; Enhanced drift cache with merge history |
+| 1.1 | 2026-02-10T14:30:00 | Added Phase 6: Handle Upstream Drift - processes REV-D001-D005 issues from reviewer Check #9; drift marker insertion; drift cache management; acknowledgment workflow |
+| 1.0 | 2026-02-10T12:00:00 | Initial skill creation; 5-phase fix workflow; Glossary and GAP file creation; Element ID conversion (type 25→33); Broken link fixes; Integration with autopilot Review→Fix cycle |

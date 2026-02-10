@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, TSPEC, TASKS, Review Report]
   downstream_artifacts: [Fixed TASKS, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-tasks-fixer
@@ -435,36 +435,455 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream SPEC/TSPEC documents have changed since TASKS creation.
+Addresses issues where upstream SPEC/TSPEC documents have changed since TASKS creation using a tiered auto-merge system.
 
-**Drift Issue Codes** (from `doc-tasks-reviewer`):
+**Upstream/Downstream Context**:
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | SPEC/TSPEC document modified after TASKS | No (flag for review) |
-| REV-D002 | Warning | Referenced specification content changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New specifications added to upstream | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+| Direction | Artifacts | Relationship |
+|-----------|-----------|--------------|
+| Upstream | SPEC, TSPEC | Source of requirements and test specifications |
+| Downstream | Code, IPLAN | Implementation artifacts that depend on TASKS |
 
-**Fix Actions**:
+#### Tiered Auto-Merge Thresholds
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@spec:` or `@tspec:` tag to include current version |
+The auto-merge system uses three tiers based on the percentage of change detected in upstream documents.
 
-**Drift Marker Format**:
+| Tier | Change % | Action | Version Bump | Human Review |
+|------|----------|--------|--------------|--------------|
+| **Tier 1** | < 5% | Auto-merge new tasks | Patch (x.x.+1) | No |
+| **Tier 2** | 5-15% | Auto-merge with detailed changelog | Minor (x.+1.0) | Optional |
+| **Tier 3** | > 15% | Archive current, trigger regeneration | Major (+1.0.0) | Required |
+
+#### Change Percentage Calculation
+
+```python
+def calculate_change_percentage(
+    upstream_doc: str,
+    tasks_doc: str,
+    drift_cache: dict
+) -> float:
+    """Calculate upstream change percentage affecting TASKS.
+
+    Args:
+        upstream_doc: Path to SPEC or TSPEC document
+        tasks_doc: Path to TASKS document
+        drift_cache: Previous drift state from .drift_cache.json
+
+    Returns:
+        Change percentage (0.0 to 100.0)
+    """
+    # Count affected elements
+    current_refs = extract_upstream_references(tasks_doc)
+    cached_refs = drift_cache.get('references', {})
+
+    # Calculate changes
+    added_refs = set(current_refs) - set(cached_refs)
+    removed_refs = set(cached_refs) - set(current_refs)
+    modified_refs = [r for r in current_refs
+                     if r in cached_refs and current_refs[r] != cached_refs[r]]
+
+    total_refs = max(len(current_refs), len(cached_refs), 1)
+    changed_refs = len(added_refs) + len(removed_refs) + len(modified_refs)
+
+    return (changed_refs / total_refs) * 100
+```
+
+#### Task ID Pattern
+
+Auto-generated tasks follow the pattern: `TASK-NN-SSS`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `NN` | Module number (from TASKS-NN) | `01`, `02`, `15` |
+| `SSS` | Sequence number within module | `001`, `002`, `999` |
+
+**Full Pattern**: `TASK-{module:02d}-{sequence:03d}`
+
+**Examples**:
+- `TASK-01-001`: First task in module 01
+- `TASK-03-042`: 42nd task in module 03
+- `TASK-15-007`: 7th task in module 15
+
+```python
+def generate_task_id(module_number: int, existing_tasks: list[str]) -> str:
+    """Generate next available task ID for a module.
+
+    Args:
+        module_number: The TASKS module number (NN from TASKS-NN)
+        existing_tasks: List of existing task IDs in the module
+
+    Returns:
+        Next available task ID in format TASK-NN-SSS
+    """
+    # Extract sequence numbers from existing tasks
+    pattern = re.compile(rf'TASK-{module_number:02d}-(\d{{3}})')
+    sequences = [int(m.group(1)) for t in existing_tasks
+                 if (m := pattern.match(t))]
+
+    next_seq = max(sequences, default=0) + 1
+    return f"TASK-{module_number:02d}-{next_seq:03d}"
+```
+
+#### No Deletion Policy
+
+Tasks are NEVER deleted. Instead, they are marked as `[CANCELLED]` with a reason.
+
+**Rationale**: Preserves audit trail, prevents orphaned downstream references, maintains traceability.
 
 ```markdown
-<!-- DRIFT: SPEC-01.md modified 2026-02-08 (TASKS created 2026-02-05) -->
-@spec: [SPEC-01.auth.handler](../09_SPEC/SPEC-01.md#auth-handler)
+<!-- Before: Active task -->
+### TASK-01-003: Implement Rate Limiting
 
-<!-- DRIFT: TSPEC-01.md modified 2026-02-09 (TASKS created 2026-02-05) -->
-@tspec: [TSPEC-01.40.01](../10_TSPEC/TSPEC-01.md#tspec-01-40-01)
+@spec: SPEC-01.rate_limit
+Status: pending
+Priority: P2
+
+<!-- After: Cancelled task -->
+### TASK-01-003: Implement Rate Limiting [CANCELLED]
+
+@spec: SPEC-01.rate_limit
+Status: cancelled
+Cancelled: 2026-02-10
+Cancel-Reason: Upstream SPEC-01 removed rate limiting requirement (REV-D007)
+Original-Priority: P2
+
+<!-- Cancellation preserves all original content below -->
 ```
+
+**Cancellation Metadata**:
+
+| Field | Description |
+|-------|-------------|
+| `Status` | Changed to `cancelled` |
+| `Cancelled` | Date of cancellation (YYYY-MM-DD) |
+| `Cancel-Reason` | Why task was cancelled (with issue code) |
+| `Original-Priority` | Preserved for audit trail |
+
+#### Tier 1: Auto-Merge (< 5% Change)
+
+Minor changes are automatically merged without human intervention.
+
+**Actions**:
+1. Generate new task IDs for added requirements
+2. Update existing task references to new upstream versions
+3. Increment patch version (e.g., 1.0.0 -> 1.0.1)
+4. Update drift cache
+
+```python
+def tier1_auto_merge(tasks_doc: str, upstream_changes: dict) -> MergeResult:
+    """Auto-merge minor upstream changes.
+
+    Args:
+        tasks_doc: Path to TASKS document
+        upstream_changes: Dict of detected changes
+
+    Returns:
+        MergeResult with applied changes
+    """
+    result = MergeResult()
+
+    # Add new tasks for new specifications
+    for spec_ref in upstream_changes.get('added', []):
+        task_id = generate_task_id(get_module_number(tasks_doc), get_existing_tasks(tasks_doc))
+        new_task = create_task_from_spec(spec_ref, task_id)
+        result.tasks_added.append(new_task)
+
+    # Update version references
+    for ref in upstream_changes.get('version_changed', []):
+        update_spec_reference(tasks_doc, ref['old'], ref['new'])
+        result.refs_updated.append(ref)
+
+    # Increment patch version
+    result.new_version = increment_patch_version(get_tasks_version(tasks_doc))
+
+    return result
+```
+
+#### Tier 2: Auto-Merge with Changelog (5-15% Change)
+
+Moderate changes are merged with detailed documentation.
+
+**Actions**:
+1. All Tier 1 actions
+2. Generate detailed changelog entry
+3. Mark affected tasks with `[DRIFT-REVIEWED]` marker
+4. Increment minor version (e.g., 1.0.1 -> 1.1.0)
+5. Update dependency links
+6. Flag for optional human review
+
+**Changelog Format**:
+
+```markdown
+## Changelog
+
+### v1.1.0 (2026-02-10) - Upstream Drift Merge
+
+**Merge Type**: Tier 2 Auto-Merge (8.3% change)
+**Upstream Documents**: SPEC-01.md, TSPEC-01.md
+
+#### Tasks Added
+| ID | Title | Source |
+|----|-------|--------|
+| TASK-01-015 | Implement OAuth2 PKCE flow | SPEC-01.auth.oauth2_pkce (added 2026-02-09) |
+| TASK-01-016 | Add token refresh mechanism | SPEC-01.auth.token_refresh (added 2026-02-09) |
+
+#### Tasks Modified
+| ID | Change | Reason |
+|----|--------|--------|
+| TASK-01-003 | Updated acceptance criteria | SPEC-01.auth.session updated |
+
+#### References Updated
+| Old Reference | New Reference |
+|---------------|---------------|
+| SPEC-01.md@v1.2.0 | SPEC-01.md@v1.3.0 |
+| TSPEC-01.md@v1.1.0 | TSPEC-01.md@v1.2.0 |
+
+#### Implementation Contracts Affected
+| Contract | Change |
+|----------|--------|
+| AuthProtocol | New method: `refresh_token()` |
+| TokenModel | New field: `refresh_expires_at` |
+```
+
+#### Tier 3: Archive and Regenerate (> 15% Change)
+
+Major changes require archiving and regeneration.
+
+**Actions**:
+1. Create archive manifest
+2. Archive current TASKS version
+3. Trigger full TASKS regeneration via `doc-tasks-autopilot`
+4. Increment major version (e.g., 1.1.0 -> 2.0.0)
+5. Require human review before finalization
+
+**Archive Manifest Format**:
+
+```yaml
+# TASKS-NN_archive_manifest_vNNN.yaml
+archive:
+  document: TASKS-01
+  archived_version: "1.1.0"
+  archive_date: "2026-02-10T16:00:00"
+  archive_reason: "Tier 3 upstream drift (23.5% change)"
+  archive_location: "archive/TASKS-01_v1.1.0/"
+
+drift_summary:
+  total_change_percentage: 23.5
+  upstream_documents:
+    - document: SPEC-01.md
+      previous_version: "1.3.0"
+      current_version: "2.0.0"
+      change_percentage: 18.2
+    - document: TSPEC-01.md
+      previous_version: "1.2.0"
+      current_version: "1.5.0"
+      change_percentage: 12.1
+
+affected_tasks:
+  total: 42
+  cancelled: 8
+  modified: 15
+  unchanged: 19
+
+implementation_contracts:
+  protocols_affected: 3
+  exceptions_affected: 1
+  state_machines_affected: 2
+  data_models_affected: 4
+
+downstream_impact:
+  iplan_documents:
+    - IPLAN-001: "Requires regeneration"
+    - IPLAN-002: "Minor updates needed"
+  code_files:
+    - src/auth/handler.py: "Interface changes required"
+    - src/auth/models.py: "Data model updates required"
+
+regeneration:
+  trigger_skill: doc-tasks-autopilot
+  trigger_args: "SPEC-01 --force-regenerate"
+  new_version: "2.0.0"
+  human_review_required: true
+```
+
+#### Enhanced Drift Cache
+
+The drift cache tracks merge history and upstream state.
+
+**File**: `.drift_cache.json` (in TASKS directory)
+
+```json
+{
+  "tasks_document": "TASKS-01",
+  "cache_version": "2.0",
+  "last_updated": "2026-02-10T16:00:00",
+  "current_version": "1.1.0",
+
+  "upstream_state": {
+    "SPEC-01.md": {
+      "version": "1.3.0",
+      "hash": "sha256:abc123...",
+      "last_checked": "2026-02-10T16:00:00",
+      "sections_referenced": [
+        "SPEC-01.auth.handler",
+        "SPEC-01.auth.session",
+        "SPEC-01.auth.oauth2_pkce"
+      ]
+    },
+    "TSPEC-01.md": {
+      "version": "1.2.0",
+      "hash": "sha256:def456...",
+      "last_checked": "2026-02-10T16:00:00",
+      "test_cases_referenced": [
+        "TSPEC-01.40.01",
+        "TSPEC-01.40.02"
+      ]
+    }
+  },
+
+  "merge_history": [
+    {
+      "date": "2026-02-08T10:00:00",
+      "tier": 1,
+      "change_percentage": 2.3,
+      "version_before": "1.0.0",
+      "version_after": "1.0.1",
+      "tasks_added": ["TASK-01-012"],
+      "tasks_modified": [],
+      "tasks_cancelled": []
+    },
+    {
+      "date": "2026-02-10T16:00:00",
+      "tier": 2,
+      "change_percentage": 8.3,
+      "version_before": "1.0.1",
+      "version_after": "1.1.0",
+      "tasks_added": ["TASK-01-015", "TASK-01-016"],
+      "tasks_modified": ["TASK-01-003"],
+      "tasks_cancelled": [],
+      "changelog_entry": "v1.1.0"
+    }
+  ],
+
+  "task_registry": {
+    "TASK-01-001": {"status": "completed", "spec_ref": "SPEC-01.auth.init"},
+    "TASK-01-002": {"status": "in_progress", "spec_ref": "SPEC-01.auth.login"},
+    "TASK-01-003": {"status": "pending", "spec_ref": "SPEC-01.auth.session"},
+    "TASK-01-012": {"status": "pending", "spec_ref": "SPEC-01.auth.logout"},
+    "TASK-01-015": {"status": "pending", "spec_ref": "SPEC-01.auth.oauth2_pkce"},
+    "TASK-01-016": {"status": "pending", "spec_ref": "SPEC-01.auth.token_refresh"}
+  },
+
+  "implementation_contracts": {
+    "protocols": ["AuthProtocol", "SessionProtocol"],
+    "exceptions": ["AuthException", "SessionException"],
+    "state_machines": ["AuthState", "SessionState"],
+    "data_models": ["UserModel", "TokenModel", "SessionModel"]
+  }
+}
+```
+
+#### Handling Task Dependencies
+
+When upstream drift affects tasks with dependencies, the auto-merge system handles cascading updates.
+
+```python
+def handle_task_dependencies(
+    affected_task: str,
+    task_graph: dict,
+    change_type: str
+) -> list[str]:
+    """Propagate changes through task dependency graph.
+
+    Args:
+        affected_task: Task ID that was modified/cancelled
+        task_graph: Dict mapping task IDs to their dependencies
+        change_type: 'modified' or 'cancelled'
+
+    Returns:
+        List of downstream tasks requiring update
+    """
+    downstream_tasks = []
+
+    # Find tasks that depend on the affected task
+    for task_id, deps in task_graph.items():
+        if affected_task in deps.get('blocked_by', []):
+            downstream_tasks.append(task_id)
+
+            if change_type == 'cancelled':
+                # Remove dependency, add warning
+                add_task_warning(task_id,
+                    f"Dependency {affected_task} was cancelled")
+            elif change_type == 'modified':
+                # Mark for review
+                add_task_marker(task_id, '[UPSTREAM-MODIFIED]')
+
+    return downstream_tasks
+```
+
+#### Handling Implementation Contracts
+
+When upstream drift affects implementation contracts, the auto-merge system updates contract definitions.
+
+```python
+def update_implementation_contracts(
+    contracts: dict,
+    upstream_changes: dict
+) -> ContractUpdateResult:
+    """Update implementation contracts based on upstream drift.
+
+    Args:
+        contracts: Current contract definitions
+        upstream_changes: Detected upstream changes
+
+    Returns:
+        ContractUpdateResult with changes applied
+    """
+    result = ContractUpdateResult()
+
+    for spec_change in upstream_changes.get('spec_changes', []):
+        # Check if change affects a protocol
+        if affects_protocol(spec_change, contracts['protocols']):
+            protocol = get_affected_protocol(spec_change)
+            if spec_change['type'] == 'method_added':
+                add_protocol_method(protocol, spec_change['method'])
+                result.protocols_modified.append(protocol)
+            elif spec_change['type'] == 'method_signature_changed':
+                update_protocol_signature(protocol, spec_change)
+                result.protocols_modified.append(protocol)
+
+        # Check if change affects a data model
+        if affects_data_model(spec_change, contracts['data_models']):
+            model = get_affected_model(spec_change)
+            if spec_change['type'] == 'field_added':
+                add_model_field(model, spec_change['field'])
+                result.models_modified.append(model)
+
+    return result
+```
+
+#### Drift Issue Codes
+
+| Code | Severity | Description | Auto-Fix | Tier |
+|------|----------|-------------|----------|------|
+| REV-D001 | Info | Upstream version incremented | Yes | 1 |
+| REV-D002 | Warning | Minor specification content changed (< 5%) | Yes | 1 |
+| REV-D003 | Warning | Moderate specification change (5-15%) | Yes | 2 |
+| REV-D004 | Warning | New specifications added to upstream | Yes | 1-2 |
+| REV-D005 | Error | Specifications removed from upstream | Yes (cancel) | 2 |
+| REV-D006 | Error | Major upstream modification (> 15%) | Partial | 3 |
+| REV-D007 | Error | Breaking change to implementation contract | Partial | 3 |
+| REV-D008 | Info | Task dependency graph affected | Yes | 1-2 |
+
+#### Fix Actions Summary
+
+| Tier | Issue Codes | Auto-Fix Action |
+|------|-------------|-----------------|
+| 1 | REV-D001, REV-D002, REV-D004 (minor) | Auto-merge, patch version |
+| 2 | REV-D003, REV-D004 (moderate), REV-D005, REV-D008 | Auto-merge with changelog, minor version |
+| 3 | REV-D006, REV-D007 | Archive, regenerate, major version |
 
 ---
 
@@ -622,6 +1041,21 @@ class EntityModel:
 
 # Fix contracts only
 /doc-tasks-fixer TASKS-01 --fix-types contracts
+
+# Handle upstream drift with auto-merge
+/doc-tasks-fixer TASKS-01 --fix-types drift
+
+# Force Tier 2 merge with changelog
+/doc-tasks-fixer TASKS-01 --fix-types drift --auto-merge-tier 2
+
+# Custom tier thresholds
+/doc-tasks-fixer TASKS-01 --tier1-threshold 3 --tier2-threshold 10
+
+# Force regeneration (Tier 3) for major upstream changes
+/doc-tasks-fixer TASKS-01 --force-regenerate
+
+# Preview drift merge without applying
+/doc-tasks-fixer TASKS-01 --fix-types drift --dry-run
 ```
 
 ### Options
@@ -639,6 +1073,14 @@ class EntityModel:
 | `--type-check` | false | Run mypy on contract code blocks |
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
+| `--auto-merge-tier` | auto | Force specific tier (1, 2, 3) or auto-detect |
+| `--tier1-threshold` | 5 | Maximum change % for Tier 1 auto-merge |
+| `--tier2-threshold` | 15 | Maximum change % for Tier 2 auto-merge |
+| `--skip-archive` | false | Skip archive creation for Tier 3 (not recommended) |
+| `--force-regenerate` | false | Force Tier 3 regeneration regardless of change % |
+| `--preserve-cancelled` | true | Keep cancelled tasks in document |
+| `--generate-changelog` | true | Generate changelog for Tier 2+ merges |
+| `--notify-downstream` | true | Flag downstream IPLAN/Code for updates |
 
 ### Fix Types
 
@@ -649,9 +1091,19 @@ class EntityModel:
 | `element_ids` | Convert invalid/legacy element IDs (18, 30) |
 | `content` | Fix placeholders, dates, names |
 | `references` | Update SPEC/TSPEC traceability and cross-references |
-| `drift` | Handle upstream drift detection issues |
+| `drift` | Handle upstream drift with tiered auto-merge (Tier 1-3) |
 | `contracts` | Fix implementation contract structure issues |
 | `all` | All fix types (default) |
+
+### Drift Fix Sub-Options
+
+| Sub-Option | Description |
+|------------|-------------|
+| `drift:detect` | Only detect drift, do not apply fixes |
+| `drift:tier1` | Apply only Tier 1 (< 5%) auto-merges |
+| `drift:tier2` | Apply Tier 1 and Tier 2 (5-15%) auto-merges |
+| `drift:tier3` | Full drift handling including archive/regenerate |
+| `drift:changelog` | Generate changelog without applying merges |
 
 ---
 
@@ -834,4 +1286,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%) auto-merge with patch version; Tier 2 (5-15%) auto-merge with changelog and minor version; Tier 3 (> 15%) archive and regenerate with major version; Task ID pattern TASK-NN-SSS; No deletion policy (mark as [CANCELLED]); Archive manifest creation for Tier 3; Enhanced drift cache with merge history and task registry; Task dependency propagation; Implementation contract update handling; New drift issue codes (REV-D001 through REV-D008) |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Implementation contract repair (Protocol, Exception, State Machine, Data Model); Contract stub and dependency file generation; Element ID conversion (types 18, 30); SPEC/TSPEC drift handling; Optional mypy type checking; Integration with autopilot Review->Fix cycle |

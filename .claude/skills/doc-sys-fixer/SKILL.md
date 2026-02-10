@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS, Review Report, ADR]
   downstream_artifacts: [Fixed SYS, Fix Report]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0"
+  last_updated: "2026-02-10T16:00:00"
 ---
 
 # doc-sys-fixer
@@ -408,82 +408,322 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift
+### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream source documents (ADR) have changed since SYS creation.
+Addresses issues where upstream source documents (ADR) have changed since SYS creation. Uses a tiered auto-merge system based on change percentage.
 
-**Drift Issue Codes** (from `doc-sys-reviewer` Check #9):
+**Upstream**: ADR (Architecture Decision Records)
+**Downstream**: REQ (Requirements Specifications)
+**ID Pattern**: `SYS.NN.TT.SS` (Document.Type.Sequence)
 
-| Code | Severity | Description | Auto-Fix Possible |
-|------|----------|-------------|-------------------|
-| REV-D001 | Warning | ADR document modified after SYS | No (flag for review) |
-| REV-D002 | Warning | Architecture decision changed | No (flag for review) |
-| REV-D003 | Info | Upstream document version incremented | Yes (update @ref version) |
-| REV-D004 | Info | New ADR added to project | No (flag for review) |
-| REV-D005 | Error | Critical upstream modification (>20% change) | No (flag for review) |
+#### Tiered Auto-Merge System
 
-**Fix Actions**:
+| Tier | Change % | Action | Version Impact |
+|------|----------|--------|----------------|
+| Tier 1 | < 5% | Auto-merge additions | Patch (+0.0.1) |
+| Tier 2 | 5-15% | Auto-merge with detailed changelog | Minor (+0.1.0) |
+| Tier 3 | > 15% | Archive current, trigger regeneration | Major (+1.0.0) |
 
-| Issue | Auto-Fix | Action |
-|-------|----------|--------|
-| REV-D001/D002/D004/D005 | No | Add `[DRIFT]` marker to affected references, generate drift summary |
-| REV-D003 (version change) | Yes | Update `@ref:` tag to include current version |
+#### Change Percentage Calculation
 
-**Drift Marker Format**:
+```python
+def calculate_change_percentage(upstream_diff: dict) -> float:
+    """Calculate change percentage from upstream ADR modifications.
 
-```markdown
-<!-- DRIFT: ADR-01.md modified 2026-02-08 (SYS created 2026-02-05) -->
-@ref: [ADR-01 Decision 3](../../05_ADR/ADR-01.md#decision-3)
+    Args:
+        upstream_diff: Dict containing added, modified, deprecated counts
+
+    Returns:
+        Change percentage (0.0 to 100.0)
+    """
+    total_elements = upstream_diff.get('total_elements', 0)
+    if total_elements == 0:
+        return 0.0
+
+    added = upstream_diff.get('added', 0)
+    modified = upstream_diff.get('modified', 0)
+    deprecated = upstream_diff.get('deprecated', 0)
+
+    # Additions count less than modifications
+    weighted_changes = (added * 0.5) + (modified * 1.0) + (deprecated * 0.3)
+
+    return min(100.0, (weighted_changes / total_elements) * 100)
 ```
 
-**Drift Summary Block** (added to Fix Report):
+#### Tier 1: Auto-Merge Additions (< 5%)
 
-```markdown
-## Upstream Drift Summary
+**Trigger**: Minor additions from ADR that do not affect existing SYS elements.
 
-| Upstream Document | Reference | Modified | SYS Updated | Days Stale | Action Required |
-|-------------------|-----------|----------|-------------|------------|-----------------|
-| ADR-01.md | SYS-01:L57 | 2026-02-08 | 2026-02-05 | 3 | Review architecture changes |
-| ADR-03.md | SYS-01:L89 | 2026-02-10 | 2026-02-05 | 5 | Review new decision |
+**Actions**:
 
-**Recommendation**: Review upstream ADRs and update SYS sections if system design is affected.
-Sections potentially affected:
-- SYS-01 Component Architecture (Section 3)
-- SYS-01 Interface Definitions (Section 5)
+1. Parse new ADR decisions/constraints
+2. Generate new SYS element IDs (auto-increment sequence)
+3. Insert new elements in appropriate sections
+4. Increment patch version (e.g., 1.0.0 -> 1.0.1)
+
+**Auto-Generated ID Pattern**:
+
+```python
+def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str:
+    """Generate next available SYS element ID.
+
+    Args:
+        sys_doc_num: Document number (e.g., "01")
+        type_code: Element type code (e.g., "17" for Component)
+        existing_ids: List of existing IDs for this type
+
+    Returns:
+        Next available ID (e.g., "SYS.01.17.13")
+    """
+    # Extract sequence numbers from existing IDs
+    sequences = [int(id.split('.')[-1]) for id in existing_ids
+                 if id.startswith(f'SYS.{sys_doc_num}.{type_code}.')]
+
+    next_seq = max(sequences, default=0) + 1
+    return f'SYS.{sys_doc_num}.{type_code}.{next_seq:02d}'
+
+# Example: If SYS-01 has SYS.01.17.01 through SYS.01.17.12
+# New ID: SYS.01.17.13
 ```
 
-**Drift Cache Update**:
+**Tier 1 Fix Report Entry**:
 
-After processing drift issues, update `.drift_cache.json`:
+```markdown
+## Tier 1 Auto-Merge Applied
+
+| ADR Source | New SYS Element | Section | Description |
+|------------|-----------------|---------|-------------|
+| ADR-01.14.05 | SYS.01.17.13 | Components | New auth cache component |
+| ADR-01.14.06 | SYS.01.18.08 | Interfaces | New event bus interface |
+
+**Version**: 1.0.0 -> 1.0.1
+**Change Percentage**: 3.2%
+```
+
+#### Tier 2: Auto-Merge with Changelog (5-15%)
+
+**Trigger**: Moderate changes requiring documentation but not restructuring.
+
+**Actions**:
+
+1. Apply all Tier 1 actions
+2. Generate detailed changelog section
+3. Update traceability matrix
+4. Add `[MODIFIED]` markers to affected elements
+5. Increment minor version (e.g., 1.0.1 -> 1.1.0)
+
+**Changelog Format**:
+
+```markdown
+## Changelog (Auto-Generated)
+
+### Version 1.1.0 (2026-02-10)
+
+**Upstream Trigger**: ADR-01.md v2.0 (modified 2026-02-09)
+
+#### Added
+- SYS.01.17.13: Authentication cache component (from ADR-01.14.05)
+- SYS.01.17.14: Rate limiting component (from ADR-01.14.06)
+- SYS.01.18.08: Event bus interface (from ADR-01.14.07)
+
+#### Modified
+- SYS.01.17.03: Updated auth flow to include cache [MODIFIED]
+- SYS.01.18.02: Added rate limit headers to API interface [MODIFIED]
+
+#### Deprecated
+- None
+
+**Traceability Impact**: 5 REQ elements may need review
+```
+
+**Modified Element Marker**:
+
+```markdown
+### SYS.01.17.03: Authentication Service [MODIFIED]
+
+<!-- MODIFIED: 2026-02-10 via auto-merge from ADR-01.14.05 -->
+<!-- Previous version: 1.0.1 -->
+
+**Component**: Authentication Service
+**Status**: Active
+**Modified Reason**: ADR-01 added caching requirement
+
+[Component details...]
+```
+
+#### Tier 3: Archive and Regenerate (> 15%)
+
+**Trigger**: Significant upstream changes requiring SYS restructuring.
+
+**Actions**:
+
+1. Create archive of current SYS version
+2. Generate archive manifest
+3. Flag for regeneration via `doc-sys-autopilot`
+4. Increment major version (e.g., 1.1.0 -> 2.0.0)
+5. Preserve deprecated elements with `[DEPRECATED]` markers
+
+**Archive Manifest Format**:
 
 ```json
 {
-  "sys_version": "1.0",
-  "sys_updated": "2026-02-10",
-  "drift_reviewed": "2026-02-10",
-  "upstream_hashes": {
-    "../../05_ADR/ADR-01.md#decision-3": "a1b2c3d4...",
-    "../../05_ADR/ADR-03.md": "e5f6g7h8..."
+  "archive_id": "SYS-01_v1.1.0_20260210",
+  "archive_date": "2026-02-10T16:30:00",
+  "archived_version": "1.1.0",
+  "new_version": "2.0.0",
+  "archive_location": "tmp/archive/SYS-01_v1.1.0_20260210/",
+  "trigger": {
+    "upstream_document": "ADR-01.md",
+    "upstream_version": "3.0",
+    "change_percentage": 23.5,
+    "tier": 3
   },
-  "acknowledged_drift": [
-    {
-      "document": "ADR-01.md",
-      "acknowledged_date": "2026-02-10",
-      "reason": "Reviewed - no SYS impact"
-    }
-  ]
+  "preserved_files": [
+    "SYS-01.md",
+    "SYS-01.1_components.md",
+    "SYS-01.2_interfaces.md"
+  ],
+  "regeneration_required": true,
+  "regeneration_command": "/doc-sys-autopilot ADR-01 --from-archive SYS-01_v1.1.0_20260210"
 }
 ```
 
-**Drift Acknowledgment Workflow**:
+**Archive Directory Structure**:
 
-When drift is flagged but no SYS update is needed:
+```
+tmp/archive/SYS-01_v1.1.0_20260210/
+├── MANIFEST.json
+├── SYS-01.md
+├── SYS-01.1_components.md
+├── SYS-01.2_interfaces.md
+├── .drift_cache.json
+└── CHANGELOG.md
+```
 
-1. Run `/doc-sys-fixer SYS-01 --acknowledge-drift`
-2. Fixer prompts: "Review drift for ADR-01.md?"
-3. User confirms no SYS changes needed
-4. Fixer adds to `acknowledged_drift` array
-5. Future reviews skip this drift until upstream changes again
+#### No-Deletion Policy
+
+Elements are NEVER deleted during auto-merge. Instead, mark as deprecated:
+
+**Deprecated Element Format**:
+
+```markdown
+### SYS.01.17.05: Legacy Cache Service [DEPRECATED]
+
+<!-- DEPRECATED: 2026-02-10 -->
+<!-- Deprecation Reason: Superseded by SYS.01.17.13 per ADR-01.14.05 -->
+<!-- Replaced By: SYS.01.17.13 -->
+<!-- Original Version: 1.0.0 -->
+
+> **Status**: DEPRECATED - Do not use in new implementations
+> **Superseded By**: [SYS.01.17.13](#sys011713-authentication-cache)
+> **Deprecation Date**: 2026-02-10
+
+[Original content preserved for reference...]
+```
+
+**Deprecation Tracking**:
+
+```markdown
+## Deprecated Elements
+
+| Element ID | Deprecated | Reason | Replaced By |
+|------------|------------|--------|-------------|
+| SYS.01.17.05 | 2026-02-10 | ADR-01.14.05 supersedes | SYS.01.17.13 |
+| SYS.01.18.03 | 2026-02-10 | Interface redesign | SYS.01.18.08 |
+```
+
+#### Enhanced Drift Cache
+
+After processing drift issues, update `.drift_cache.json` with merge history:
+
+```json
+{
+  "sys_version": "1.1.0",
+  "sys_updated": "2026-02-10T16:30:00",
+  "drift_reviewed": "2026-02-10T16:30:00",
+  "upstream_type": "ADR",
+  "downstream_type": "REQ",
+  "upstream_hashes": {
+    "../../05_ADR/ADR-01.md": "a1b2c3d4e5f6...",
+    "../../05_ADR/ADR-01.md#decision-3": "g7h8i9j0k1l2...",
+    "../../05_ADR/ADR-03.md": "m3n4o5p6q7r8..."
+  },
+  "merge_history": [
+    {
+      "merge_date": "2026-02-10T16:30:00",
+      "tier": 2,
+      "change_percentage": 8.5,
+      "version_before": "1.0.1",
+      "version_after": "1.1.0",
+      "elements_added": ["SYS.01.17.13", "SYS.01.18.08"],
+      "elements_modified": ["SYS.01.17.03", "SYS.01.18.02"],
+      "elements_deprecated": [],
+      "upstream_trigger": "ADR-01.md v2.0"
+    }
+  ],
+  "acknowledged_drift": [
+    {
+      "document": "ADR-03.md",
+      "acknowledged_date": "2026-02-08",
+      "reason": "Informational only - no SYS impact"
+    }
+  ],
+  "pending_regeneration": null
+}
+```
+
+#### Drift Detection Issue Codes
+
+| Code | Severity | Description | Tier | Auto-Fix |
+|------|----------|-------------|------|----------|
+| REV-D001 | Info | Minor ADR addition (< 5% impact) | 1 | Yes |
+| REV-D002 | Warning | Moderate ADR changes (5-15% impact) | 2 | Yes |
+| REV-D003 | Error | Major ADR restructure (> 15% impact) | 3 | Partial |
+| REV-D004 | Info | New ADR added to project | 1 | Yes |
+| REV-D005 | Warning | ADR version incremented | 1-3 | Depends |
+
+#### Drift Fix Workflow
+
+```mermaid
+flowchart TD
+    A[Detect ADR Changes] --> B[Calculate Change %]
+    B --> C{Change < 5%?}
+    C -->|Yes| D[Tier 1: Auto-Merge]
+    C -->|No| E{Change < 15%?}
+    E -->|Yes| F[Tier 2: Merge + Changelog]
+    E -->|No| G[Tier 3: Archive + Regenerate]
+
+    D --> H[Generate New IDs]
+    H --> I[Insert Elements]
+    I --> J[Patch Version ++]
+
+    F --> K[Apply Tier 1 Actions]
+    K --> L[Generate Changelog]
+    L --> M[Add MODIFIED Markers]
+    M --> N[Minor Version ++]
+
+    G --> O[Create Archive]
+    O --> P[Generate Manifest]
+    P --> Q[Mark for Regeneration]
+    Q --> R[Major Version ++]
+
+    J --> S[Update Drift Cache]
+    N --> S
+    R --> S
+    S --> T[Generate Fix Report]
+```
+
+#### Command Options for Drift Handling
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--auto-merge` | true | Enable tiered auto-merge system |
+| `--merge-tier` | auto | Force specific tier (1, 2, 3, or auto) |
+| `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
+| `--archive-path` | tmp/archive/ | Location for Tier 3 archives |
+| `--preserve-deprecated` | true | Keep deprecated elements (no-deletion policy) |
+| `--changelog-detail` | standard | Changelog verbosity (minimal, standard, verbose) |
+| `--notify-downstream` | true | Flag REQ documents for review after merge |
 
 ---
 
@@ -686,4 +926,5 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.TT.SS pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; SYS Index, Component, and Interface file creation; Element ID conversion (types 01, 05, 17, 18, 19, 20, 21); Broken link fixes; ADR upstream drift handling; Integration with autopilot Review->Fix cycle |
