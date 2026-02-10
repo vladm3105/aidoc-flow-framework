@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.1"
+  last_updated: "2026-02-09"
 ---
 
 # doc-brd-autopilot
@@ -468,6 +468,339 @@ execution:
   fail_fast: false
 ```
 
+### Dry Run Mode
+
+Preview execution plan without generating files.
+
+```bash
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --strategy strategy/ \
+  --output docs/01_BRD/ \
+  --dry-run
+```
+
+### Review Mode (v2.1)
+
+Validate existing BRD documents and generate a quality report without modification.
+
+**Purpose**: Audit existing BRD documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single BRD
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/BRD-01_platform.md \
+  --mode review
+
+# Review all BRDs
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/ \
+  --mode review \
+  --output-report tmp/brd_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing BRD] --> B[Load BRD Documents]
+    B --> C[Run Validation Checks]
+    C --> D[Calculate PRD-Ready Score]
+    D --> E[Check Section 7.2 ADR Topics]
+    E --> F[Validate Platform vs Feature]
+    F --> G[Identify Issues]
+    G --> H{Generate Report}
+    H --> I[Fixable Issues List]
+    H --> J[Manual Review Items]
+    H --> K[Score Breakdown]
+    I --> L[Output: Review Report]
+    J --> L
+    K --> L
+```
+
+**Review Report Structure**:
+
+```markdown
+# BRD Review Report: BRD-01_platform
+
+## Summary
+- **PRD-Ready Score**: 87% 🟡
+- **Total Issues**: 14
+- **Auto-Fixable**: 10
+- **Manual Review**: 4
+
+## Score Breakdown
+| Category | Score | Status |
+|----------|-------|--------|
+| Business Objectives | 14/15 | 🟡 |
+| Requirements Complete | 18/20 | 🟡 |
+| Success Metrics | 10/10 | ✅ |
+| Constraints Defined | 10/10 | ✅ |
+| Stakeholder Analysis | 10/10 | ✅ |
+| Risk Assessment | 8/10 | 🟡 |
+| Traceability | 10/10 | ✅ |
+| ADR Topics | 12/15 | 🟡 |
+
+## Section 7.2 ADR Topics Check
+| Category | Status | Details |
+|----------|--------|---------|
+| Infrastructure | ✅ | Complete with tables |
+| Data Architecture | ✅ | Complete with tables |
+| Integration | 🟡 | Missing Cloud Comparison |
+| Security | ✅ | Complete with tables |
+| Observability | ❌ | Missing alternatives table |
+| AI/ML | ✅ | Complete with tables |
+| Technology Selection | ✅ | Complete with tables |
+
+## Platform vs Feature Check
+| Check | Status | Details |
+|-------|--------|---------|
+| BRD Type | Platform | Correctly identified |
+| Section 3.6 | ✅ | Technology details present |
+| Section 3.7 | ✅ | Conditions populated |
+| Cross-references | ✅ | Valid references |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Legacy element ID | Section 4:L45 | Convert BO-001 to BRD.01.23.01 |
+| 2 | Missing PRD-Ready score | Document Control | Calculate and insert |
+| 3 | Invalid ID format | Section 5:L78 | Convert FR-001 to BRD.01.01.01 |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete risk assessment | Section 8:L102 | Domain knowledge needed |
+| 2 | Missing Observability tables | Section 7.2.5 | Architecture decision required |
+| ... | ... | ... | ... |
+
+## Recommendations
+1. Run fix mode to address 10 auto-fixable issues
+2. Complete Observability ADR topic tables
+3. Review and complete risk assessment section
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - structure_validation      # 18 sections, Document Control
+    - element_id_compliance     # BRD.NN.TT.SS format
+    - adr_topics_validation     # 7 ADR categories in Section 7.2
+    - platform_feature_check    # Correct section handling
+    - cumulative_tags           # Traceability references
+    - score_calculation         # PRD-Ready score
+  output:
+    format: markdown           # markdown, json, html
+    include_line_numbers: true
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing BRD documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to BRD documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single BRD
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/BRD-01_platform.md \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/BRD-01_platform.md \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/BRD-01_platform.md \
+  --mode fix \
+  --fix-types "element_ids,sections,adr_topics"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --brd docs/01_BRD/BRD-01_platform.md \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing BRD] --> B[Run Review Mode]
+    B --> C[Identify Fixable Issues]
+    C --> D{Backup Enabled?}
+    D -->|Yes| E[Create Backup]
+    D -->|No| F[Skip Backup]
+    E --> G[Apply Fixes by Category]
+    F --> G
+
+    subgraph FixCategories["Fix Categories"]
+        G --> H[Element ID Fixes]
+        G --> I[Section Fixes]
+        G --> J[ADR Topics Fixes]
+        G --> K[Traceability Fixes]
+        G --> L[Score Fixes]
+    end
+
+    H --> M[Preserve Manual Content]
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+
+    M --> N[Re-validate]
+    N --> O{Score Improved?}
+    O -->|Yes| P[Generate Fix Report]
+    O -->|No| Q[Log Warnings]
+    Q --> P
+    P --> R[Output: Fixed BRD + Report]
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Element IDs** | Legacy BO-XXX format | Convert to BRD.NN.23.SS | ✅ |
+| **Element IDs** | Legacy FR-XXX format | Convert to BRD.NN.01.SS | ✅ |
+| **Element IDs** | Legacy AC-XXX format | Convert to BRD.NN.06.SS | ✅ |
+| **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.09.SS | ✅ |
+| **Sections** | Missing Document Control fields | Add from template | ✅ |
+| **Sections** | Missing traceability section | Insert from template | ✅ |
+| **Sections** | Missing PRD-Ready score | Calculate and insert | ✅ |
+| **ADR Topics** | Missing category | Add template entry | ✅ |
+| **ADR Topics** | Missing Alternatives table | Add table template | ✅ |
+| **ADR Topics** | Missing Cloud Comparison table | Add table template | ✅ |
+| **Traceability** | Missing upstream sources | Add template structure | ✅ |
+| **Traceability** | Missing downstream artifacts | Add template structure | ✅ |
+| **Score** | Missing PRD-Ready breakdown | Calculate and add | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing business requirements
+2. **Never modify** executive summary content
+3. **Never change** stakeholder analysis details
+4. **Only add** missing sections and metadata
+5. **Only replace** legacy element IDs with unified format
+6. **Backup first** if `--backup` flag is set
+
+**Element ID Migration**:
+
+| Legacy Pattern | New Format | Example |
+|----------------|------------|---------|
+| `BO-XXX` | `BRD.NN.23.SS` | BO-001 → BRD.01.23.01 |
+| `FR-XXX` | `BRD.NN.01.SS` | FR-001 → BRD.01.01.01 |
+| `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.06.01 |
+| `BC-XXX` | `BRD.NN.09.SS` | BC-001 → BRD.01.09.01 |
+| `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.32.01 |
+
+**Fix Report Structure**:
+
+```markdown
+# BRD Fix Report: BRD-01_platform
+
+## Summary
+- **Before PRD-Ready Score**: 87% 🟡
+- **After PRD-Ready Score**: 94% ✅
+- **Issues Fixed**: 10
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Legacy element ID | Section 4:L45 | Converted BO-001 → BRD.01.23.01 |
+| 2 | Missing PRD-Ready score | Document Control | Added 94% with breakdown |
+| 3 | Missing Cloud Comparison | Section 7.2.3 | Added template table |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/01_BRD/BRD-01_platform.md
+
+## Backup Location
+- tmp/backup/BRD-01_platform_20260209_143022.md
+
+## Remaining Issues (Manual Review)
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete risk assessment | Section 8:L102 | Domain knowledge needed |
+| 2 | Missing Observability tables | Section 7.2.5 | Architecture decision required |
+| ... | ... | ... | ... |
+
+## Score Breakdown Impact
+| Category | Before | After | Delta |
+|----------|--------|-------|-------|
+| Business Objectives | 14/15 | 15/15 | +1 |
+| Requirements Complete | 18/20 | 20/20 | +2 |
+| ADR Topics | 12/15 | 14/15 | +2 |
+| Traceability | 10/10 | 10/10 | 0 |
+
+## Next Steps
+1. Review manually flagged items
+2. Complete Observability ADR topic
+3. Re-run validation to confirm score
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    element_ids: true        # Legacy ID conversion
+    sections: true           # Missing sections
+    adr_topics: true         # Section 7.2 ADR topics
+    traceability: true       # Upstream/downstream refs
+    score: true              # PRD-Ready score
+
+  preservation:
+    executive_summary: true      # Never modify
+    business_requirements: true  # Never modify content
+    stakeholder_analysis: true   # Never modify
+    comments: true               # Preserve user comments
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+
+  element_id_migration:
+    BO_XXX_to_BRD_NN_23_SS: true   # BO-001 → BRD.01.23.01
+    FR_XXX_to_BRD_NN_01_SS: true   # FR-001 → BRD.01.01.01
+    AC_XXX_to_BRD_NN_06_SS: true   # AC-001 → BRD.01.06.01
+    BC_XXX_to_BRD_NN_09_SS: true   # BC-001 → BRD.01.09.01
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+
 ### Parallel Execution
 
 Execute independent BRDs concurrently after Platform BRD.
@@ -698,4 +1031,5 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode for validating existing BRD documents without modification; Added Fix Mode for auto-repairing BRD documents while preserving manual content; Added fix categories (element_ids, sections, adr_topics, traceability, score); Added content preservation rules; Added backup functionality; Added element ID migration (BO_XXX, FR_XXX, AC_XXX, BC_XXX to unified format) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-brd, doc-brd-validator, quality-advisor skills; Added Platform vs Feature BRD handling; Added Section 7.2 ADR Topics generation |

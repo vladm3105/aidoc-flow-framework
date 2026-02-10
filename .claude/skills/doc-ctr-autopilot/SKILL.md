@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ]
   downstream_artifacts: [SPEC, TSPEC, TASKS]
-  version: "2.0"
+  version: "2.1"
   last_updated: "2026-02-09"
 ---
 
@@ -499,6 +499,340 @@ Runs full workflow: Phase 0 analysis → user confirmation → generate all CTR-
 ```
 Skip Phase 0 and generate CTR for ALL REQ documents (not recommended).
 
+### Dry Run Mode
+```bash
+/doc-ctr-autopilot --all --dry-run
+```
+Preview execution plan without generating or modifying files.
+
+---
+
+## Review Mode
+
+Validate existing CTR documents and generate quality reports without modification.
+
+### Review Mode Command
+```bash
+/doc-ctr-autopilot --review docs/08_CTR/
+```
+
+### Review Mode Process
+
+```mermaid
+flowchart TD
+    A[Start Review] --> B[Scan CTR Directory]
+    B --> C[Identify Dual-File Pairs]
+    C --> D{For Each Pair}
+    D --> E[Validate MD Structure]
+    E --> F[Validate YAML/OpenAPI]
+    F --> G[Check Consistency]
+    G --> H[Calculate SPEC-Ready]
+    H --> I[Categorize Issues]
+    I --> J{More Pairs?}
+    J -->|Yes| D
+    J -->|No| K[Generate Report]
+    K --> L[Complete]
+```
+
+### Review Mode Output
+
+**No files modified** - Read-only analysis with detailed report.
+
+#### Review Report Template
+
+```markdown
+## CTR Review Report
+
+**Generated**: YYYY-MM-DD HH:MM:SS
+**Mode**: Review (Read-Only)
+**Scope**: docs/08_CTR/
+
+### Document Summary
+
+| CTR ID | Module | MD | YAML | Consistency | SPEC-Ready | Status |
+|--------|--------|---|----|-------------|------------|--------|
+| CTR-01 | F1 IAM | ✅ | ✅ | ✅ | 94% ✅ | Passed |
+| CTR-02 | F2 Session | ✅ | 🟡 | 🟡 | 87% 🟡 | Needs Review |
+| CTR-08 | D1 Agent | ✅ | ❌ | ❌ | 72% ❌ | Failed |
+| CTR-09 | D2 Cost | ✅ | ✅ | ✅ | 92% ✅ | Passed |
+| CTR-13 | D6 Gateway | ✅ | ✅ | ✅ | 95% ✅ | Passed |
+
+### Score Breakdown (Aggregate)
+
+| Component | Weight | Score | Status |
+|-----------|--------|-------|--------|
+| OpenAPI Validity | 25% | 23/25 | ✅ |
+| Schema Completeness | 20% | 18/20 | ✅ |
+| Error Responses | 15% | 12/15 | 🟡 |
+| Security Schemes | 15% | 15/15 | ✅ |
+| Dual-File Consistency | 10% | 8/10 | 🟡 |
+| Traceability (7 tags) | 10% | 9/10 | ✅ |
+| Element IDs | 5% | 5/5 | ✅ |
+| **Total** | **100%** | **90/100** | **✅** |
+
+### Issues Detected
+
+#### Auto-Fixable Issues
+| CTR | Issue | Fix Action |
+|-----|-------|------------|
+| CTR-02 | Missing @ears tag | Add placeholder reference |
+| CTR-02 | YAML schema $ref mismatch | Sync with MD definitions |
+| CTR-08 | Invalid OpenAPI operationId | Generate from path |
+| CTR-08 | Missing 401 response | Add from error template |
+
+#### Manual Review Required
+| CTR | Issue | Reason |
+|-----|-------|--------|
+| CTR-08 | Incomplete streaming spec | Business logic unclear |
+| CTR-08 | Missing SSE event types | Requires domain knowledge |
+
+### Recommendations
+
+1. Run Fix Mode to auto-repair 4 issues
+2. Manual review needed for CTR-08 streaming specification
+3. Consider regenerating CTR-08 from REQ-08
+
+### Fix Mode Command
+
+To auto-fix detected issues:
+\`\`\`bash
+/doc-ctr-autopilot --fix docs/08_CTR/
+\`\`\`
+```
+
+### Review Configuration
+
+```yaml
+review_mode:
+  enabled: true
+  scope: directory  # single, directory, all
+  report_output: tmp/ctr_review_report.md
+  checks:
+    openapi_validation: true
+    schema_completeness: true
+    error_responses: true
+    security_schemes: true
+    dual_file_consistency: true
+    traceability: true
+    element_ids: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Review Command Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--review` | - | Enable review mode (required) |
+| `--report` | tmp/ctr_review_report.md | Output report path |
+| `--format` | markdown | Report format (markdown, json) |
+| `--verbose` | false | Include detailed issue descriptions |
+| `--check-openapi` | true | Validate OpenAPI schema |
+| `--check-consistency` | true | Verify md ↔ yaml sync |
+
+---
+
+## Fix Mode
+
+Auto-repair existing CTR documents while preserving manually-created content.
+
+### Fix Mode Command
+```bash
+/doc-ctr-autopilot --fix docs/08_CTR/
+```
+
+### Fix Mode Process
+
+```mermaid
+flowchart TD
+    A[Start Fix] --> B[Run Review First]
+    B --> C[Identify Fixable Issues]
+    C --> D[Create Backups]
+    D --> E{For Each Issue}
+    E --> F{Issue Type?}
+    F -->|openapi| G[Fix OpenAPI Schema]
+    F -->|consistency| H[Sync MD ↔ YAML]
+    F -->|element_ids| I[Migrate Legacy IDs]
+    F -->|traceability| J[Add Missing Tags]
+    F -->|sections| K[Add Missing Sections]
+    F -->|responses| L[Add Error Responses]
+    G --> M[Apply Fix]
+    H --> M
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+    M --> N{More Issues?}
+    N -->|Yes| E
+    N -->|No| O[Re-validate]
+    O --> P[Generate Fix Report]
+    P --> Q[Complete]
+```
+
+### Fix Categories
+
+| Category | Fixes Applied | Risk Level |
+|----------|---------------|------------|
+| `openapi` | Missing operationId, invalid $refs, schema errors | Low |
+| `consistency` | MD ↔ YAML endpoint mismatch, schema sync | Low |
+| `element_ids` | CTR_XXX → CTR.NN.TT.SS format | Low |
+| `traceability` | Add missing cumulative tags (7 required) | Low |
+| `sections` | Add missing document sections from template | Low |
+| `responses` | Add standard error responses (401, 403, 500) | Low |
+| `security` | Add missing security schemes | Medium |
+| `paths` | Standardize path naming conventions | Medium |
+
+### Content Preservation Rules
+
+**NEVER Modified**:
+- Manually written endpoint descriptions
+- Custom schema properties
+- Business-specific error messages
+- Existing operationIds (unless invalid)
+- Custom security scheme configurations
+- API versioning in paths
+
+**Always Preserved**:
+- Existing endpoint definitions
+- Custom schema validators
+- Response examples
+- Manually added headers
+- Custom component definitions
+
+### Element ID Migration
+
+Legacy patterns are converted to unified format:
+
+| Legacy Pattern | New Format | Example |
+|----------------|------------|---------|
+| `IF-XXX` | `CTR.NN.16.SS` | IF-001 → CTR.01.16.01 |
+| `DM-XXX` | `CTR.NN.17.SS` | DM-003 → CTR.01.17.03 |
+| `CC-XXX` | `CTR.NN.20.SS` | CC-005 → CTR.01.20.05 |
+| `CTR_XXX` | `CTR.NN.TT.SS` | CTR_001 → CTR.01.16.01 |
+
+### Dual-File Consistency Fixes
+
+| Issue | Auto-Fix Action |
+|-------|-----------------|
+| Endpoint in MD not in YAML | Add path stub to YAML |
+| Endpoint in YAML not in MD | Add documentation to MD |
+| Schema mismatch | Sync YAML schema to MD definitions |
+| Response code mismatch | Add missing responses to YAML |
+| Security scheme mismatch | Sync security definitions |
+
+### OpenAPI Auto-Fixes
+
+| Issue | Fix Applied |
+|-------|-------------|
+| Missing operationId | Generate from HTTP method + path |
+| Invalid $ref | Correct path to components/schemas |
+| Missing 401 response | Add from standard template |
+| Missing 500 response | Add RFC 7807 ProblemDetails |
+| Empty description | Copy from MD section |
+| Missing tags | Generate from path prefix |
+
+### Fix Report Template
+
+```markdown
+## CTR Fix Report
+
+**Generated**: YYYY-MM-DD HH:MM:SS
+**Mode**: Fix (Auto-Repair)
+**Scope**: docs/08_CTR/
+
+### Backup Created
+Location: `tmp/ctr_backup_YYYYMMDD_HHMMSS/`
+
+### Fixes Applied
+
+| CTR | Category | Issue | Fix Applied | Result |
+|-----|----------|-------|-------------|--------|
+| CTR-02 | traceability | Missing @ears | Added @ears: EARS.02.25.01 | ✅ |
+| CTR-02 | consistency | Schema mismatch | Synced SessionModel | ✅ |
+| CTR-08 | openapi | Missing operationId | Added getChatStream | ✅ |
+| CTR-08 | responses | Missing 401 | Added Unauthorized | ✅ |
+| CTR-08 | element_ids | IF-001 format | → CTR.08.16.01 | ✅ |
+
+### Before/After Scores
+
+| CTR | Before | After | Change |
+|-----|--------|-------|--------|
+| CTR-02 | 87% | 94% | +7% ✅ |
+| CTR-08 | 72% | 91% | +19% ✅ |
+
+### Issues Requiring Manual Review
+
+| CTR | Issue | Reason |
+|-----|-------|--------|
+| CTR-08 | SSE event type definitions | Requires business input |
+| CTR-08 | Streaming protocol details | Domain-specific |
+
+### Summary
+- **Total Issues Detected**: 7
+- **Auto-Fixed**: 5
+- **Manual Review Required**: 2
+- **Documents Modified**: 2 (CTR-02, CTR-08)
+- **Documents Unchanged**: 3 (passed validation)
+```
+
+### Fix Configuration
+
+```yaml
+fix_mode:
+  enabled: true
+  create_backup: true  # Always backup before fix
+  backup_location: tmp/ctr_backup_{timestamp}/
+  categories:
+    openapi: true
+    consistency: true
+    element_ids: true
+    traceability: true
+    sections: true
+    responses: true
+    security: false  # Requires review - medium risk
+    paths: false     # Requires review - medium risk
+  max_iterations: 3
+  dry_run: false
+  preserve_content: true
+```
+
+### Fix Command Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--fix` | - | Enable fix mode (required) |
+| `--backup` | true | Create backup before fixing |
+| `--category` | all | Specific fix category |
+| `--dry-run` | false | Preview fixes without applying |
+| `--max-iter` | 3 | Maximum fix iterations |
+| `--report` | tmp/ctr_fix_report.md | Output report path |
+| `--preserve` | true | Preserve existing content |
+| `--force` | false | Apply medium-risk fixes |
+
+### Fix Mode Examples
+
+```bash
+# Fix all auto-fixable issues
+/doc-ctr-autopilot --fix docs/08_CTR/
+
+# Fix specific CTR document
+/doc-ctr-autopilot --fix docs/08_CTR/CTR-08_d1_agent_api.md
+
+# Preview fixes without applying
+/doc-ctr-autopilot --fix docs/08_CTR/ --dry-run
+
+# Fix only OpenAPI issues
+/doc-ctr-autopilot --fix docs/08_CTR/ --category openapi
+
+# Fix with force (includes medium-risk fixes)
+/doc-ctr-autopilot --fix docs/08_CTR/ --force
+
+# Fix and regenerate if needed
+/doc-ctr-autopilot --fix docs/08_CTR/ --regenerate-on-fail
+```
+
 ---
 
 ## Related Resources
@@ -515,5 +849,6 @@ Skip Phase 0 and generate CTR for ALL REQ documents (not recommended).
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode (read-only validation with dual-file consistency checks); Added Fix Mode (auto-repair with OpenAPI validation, element ID migration, traceability fixes); Added backup/restore capability; Content preservation rules |
 | 2.0 | 2026-02-09 | Added Phase 0: CTR Requirement Analysis; Added detection criteria for external APIs; Added user confirmation step; Renumbered phases; Added command options |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-ctr, quality-advisor, doc-ctr-validator |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD]
   downstream_artifacts: [BDD, ADR, SYS]
-  version: "1.0"
-  last_updated: "2026-02-08"
+  version: "2.1"
+  last_updated: "2026-02-09"
 ---
 
 # doc-ears-autopilot
@@ -607,6 +607,267 @@ python ai_dev_flow/scripts/ears_autopilot.py \
   --dry-run
 ```
 
+### Mode 4: Review Mode (v2.1)
+
+Validate existing EARS documents without modification. Generates quality report with actionable recommendations.
+
+**Command**:
+```bash
+# Review single EARS
+/doc-ears-autopilot EARS-01 --review
+
+# Review all EARS in directory
+/doc-ears-autopilot docs/03_EARS/ --review --all
+
+# Review with detailed report
+/doc-ears-autopilot EARS-01 --review --verbose
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: EARS Document] --> B[Load EARS Content]
+    B --> C[Validate EARS Syntax]
+    C --> D[Check BDD-Ready Score]
+    D --> E[Verify Cumulative Tags]
+    E --> F[Validate Element IDs]
+    F --> G[Check Threshold References]
+    G --> H[Validate Statement Atomicity]
+    H --> I[Generate Review Report]
+    I --> J{Issues Found?}
+    J -->|Yes| K[Categorize Issues]
+    K --> L[Generate Fix Recommendations]
+    L --> M[Output Review Report]
+    J -->|No| M
+```
+
+**Review Report Template**:
+
+```markdown
+# EARS Review Report: EARS-NN_{slug}
+
+## Summary
+- **BDD-Ready Score**: NN% (✅/🟡/❌)
+- **Total Issues**: N (E errors, W warnings)
+- **Auto-Fixable**: N issues
+- **Manual Review**: N issues
+
+## Score Breakdown
+| Category | Score | Max | Status |
+|----------|-------|-----|--------|
+| EARS Syntax Compliance | NN | 25 | ✅/🟡/❌ |
+| Statement Atomicity | NN | 20 | ✅/🟡/❌ |
+| Quantifiable Constraints | NN | 15 | ✅/🟡/❌ |
+| BDD Translation Ready | NN | 15 | ✅/🟡/❌ |
+| Traceability Tags | NN | 15 | ✅/🟡/❌ |
+| Threshold References | NN | 10 | ✅/🟡/❌ |
+
+## Issues by Category
+
+### Auto-Fixable Issues
+| Issue | Location | Fix Action |
+|-------|----------|------------|
+| Legacy ID pattern | EARS.01.25.001 | Convert ER-001 → EARS.01.25.001 |
+| Missing @threshold | Line 45 | Add @threshold: PRD.01.xx.yy |
+
+### Manual Review Required
+| Issue | Location | Recommendation |
+|-------|----------|----------------|
+| Ambiguous term | Line 23 | Replace "fast" with quantified value |
+| Compound requirement | Line 67 | Split into atomic statements |
+```
+
+**Score Indicators**:
+- ✅ Green (>=90%): BDD-Ready
+- 🟡 Yellow (70-89%): Needs improvement
+- ❌ Red (<70%): Significant issues
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - ears_syntax          # WHEN-THE-SHALL-WITHIN patterns
+    - statement_atomicity  # One testable concept per statement
+    - threshold_refs       # @threshold tag validation
+    - cumulative_tags      # @brd, @prd presence
+    - element_ids          # EARS.NN.25.SS format
+    - quantifiable         # No ambiguous terms
+  output:
+    format: markdown       # markdown, json, html
+    include_recommendations: true
+    include_fix_commands: true
+```
+
+### Mode 5: Fix Mode (v2.1)
+
+Auto-repair existing EARS documents with backup and content preservation.
+
+**Command**:
+```bash
+# Fix single EARS
+/doc-ears-autopilot EARS-01 --fix
+
+# Fix with backup
+/doc-ears-autopilot EARS-01 --fix --backup
+
+# Fix all EARS
+/doc-ears-autopilot docs/03_EARS/ --fix --all
+
+# Fix specific categories only
+/doc-ears-autopilot EARS-01 --fix --only element_ids,thresholds
+
+# Dry-run fix (preview changes)
+/doc-ears-autopilot EARS-01 --fix --dry-run
+```
+
+**Fix Process**:
+
+```mermaid
+flowchart TD
+    A[Input: EARS Document] --> B[Create Backup]
+    B --> C[Load EARS Content]
+    C --> D[Run Review Analysis]
+    D --> E{Auto-Fixable Issues?}
+    E -->|No| F[Report: No Fixes Needed]
+    E -->|Yes| G[Apply Fixes by Category]
+
+    subgraph FixCategories["Fix Categories"]
+        G --> H[Fix Element IDs]
+        H --> I[Fix EARS Syntax]
+        I --> J[Fix Threshold References]
+        J --> K[Add Missing Tags]
+        K --> L[Fix Section Structure]
+    end
+
+    L --> M[Validate Fixed Document]
+    M --> N{Validation Passed?}
+    N -->|No| O[Rollback to Backup]
+    O --> P[Report: Fix Failed]
+    N -->|Yes| Q[Save Fixed Document]
+    Q --> R[Generate Fix Report]
+```
+
+**EARS-Specific Fix Categories**:
+
+| Category | Description | Auto-Fix Actions |
+|----------|-------------|------------------|
+| `element_ids` | Element ID format | Convert legacy patterns to EARS.NN.25.SS |
+| `ears_syntax` | EARS statement format | Add missing SHALL, fix WHEN-THE-SHALL structure |
+| `thresholds` | @threshold tags | Add missing threshold references from PRD |
+| `cumulative_tags` | Traceability tags | Add missing @brd, @prd tags |
+| `sections` | Section structure | Add missing Quality Attributes, Traceability sections |
+| `atomicity` | Statement atomicity | Flag compound statements (manual split required) |
+| `ambiguous_terms` | Vague language | Flag "fast", "efficient", etc. (manual fix) |
+
+**Element ID Migration** (Layer 3):
+
+| Legacy Pattern | New Format | Example |
+|----------------|------------|---------|
+| ER-XXX | EARS.NN.25.0XX | ER-001 → EARS.01.25.001 |
+| SR-XXX | EARS.NN.25.1XX | SR-101 → EARS.01.25.101 |
+| UB-XXX | EARS.NN.25.2XX | UB-201 → EARS.01.25.201 |
+| UQ-XXX | EARS.NN.25.4XX | UQ-401 → EARS.01.25.401 |
+| QA-XXX | EARS.NN.02.SS | QA-001 → EARS.01.02.01 |
+
+**Content Preservation Rules**:
+
+| Content Type | Preservation Rule |
+|--------------|-------------------|
+| Custom EARS statements | Never delete, only enhance |
+| Business context | Preserve all domain-specific content |
+| Threshold values | Update format, preserve values |
+| PRD references | Validate and update format only |
+| Quality Attributes | Add missing, preserve existing |
+| Traceability section | Append missing tags, keep existing |
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backups/"
+    timestamp: true
+  fix_categories:
+    element_ids: true      # Convert legacy ID patterns
+    ears_syntax: true      # Fix WHEN-THE-SHALL structure
+    thresholds: true       # Add @threshold references
+    cumulative_tags: true  # Add @brd, @prd tags
+    sections: true         # Add missing sections
+    atomicity: false       # Manual only (flag but don't auto-fix)
+    ambiguous_terms: false # Manual only (flag but don't auto-fix)
+  validation:
+    post_fix: true         # Validate after fixes
+    rollback_on_fail: true # Restore backup if validation fails
+  preserve:
+    custom_statements: true
+    domain_content: true
+    threshold_values: true
+```
+
+**Fix Report Template**:
+
+```markdown
+# EARS Fix Report: EARS-NN_{slug}
+
+## Summary
+- **Backup Created**: tmp/backups/EARS-NN_{slug}_20260209_143022.md
+- **Issues Fixed**: N of M auto-fixable issues
+- **Manual Review**: N issues flagged
+
+## Fixes Applied
+
+### Element ID Migration
+| Original | Fixed | Location |
+|----------|-------|----------|
+| ER-001 | EARS.01.25.001 | Line 45 |
+| SR-101 | EARS.01.25.101 | Line 78 |
+
+### Threshold References Added
+| Statement | Threshold Added |
+|-----------|-----------------|
+| EARS.01.25.001 | @threshold: PRD.01.auth.p95 |
+
+### Cumulative Tags Added
+- @brd: BRD.01.01.03 (added)
+- @prd: PRD.01.07.02 (verified)
+
+## Manual Review Required
+
+### Compound Statements (Split Required)
+| Statement ID | Issue | Recommendation |
+|--------------|-------|----------------|
+| EARS.01.25.015 | Multiple actions | Split into EARS.01.25.015, .016 |
+
+### Ambiguous Terms
+| Location | Term | Suggested Replacement |
+|----------|------|----------------------|
+| Line 89 | "quickly" | "WITHIN 100ms" |
+| Line 156 | "efficiently" | Remove or quantify |
+
+## Validation Results
+- **BDD-Ready Score**: Before: 78% → After: 94%
+- **Syntax Errors**: Before: 5 → After: 0
+- **Status**: ✅ All auto-fixes validated
+```
+
+**Command Line Options** (Review/Fix Modes):
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--review` | false | Run review mode only |
+| `--fix` | false | Run fix mode |
+| `--backup` | true | Create backup before fixing |
+| `--dry-run` | false | Preview fixes without applying |
+| `--only` | all | Comma-separated fix categories |
+| `--verbose` | false | Detailed output |
+| `--all` | false | Process all EARS in directory |
+| `--output-format` | markdown | Report format (markdown, json) |
+
 ---
 
 ## Configuration
@@ -931,4 +1192,5 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (ER-XXX→EARS.NN.25.0XX, SR-XXX→EARS.NN.25.1XX, UB-XXX→EARS.NN.25.2XX, UQ-XXX→EARS.NN.25.4XX) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-ears, doc-ears-validator, quality-advisor skills; Added EARS statement type reference (Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous); Added requirement categorization and ID range mapping |

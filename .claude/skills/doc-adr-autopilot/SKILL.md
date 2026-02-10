@@ -632,6 +632,322 @@ Preview ADR generation plan without creating files.
 # No files will be created in dry-run mode.
 ```
 
+### Review Mode (v2.1)
+
+Validate existing ADR documents and generate a quality report without modification.
+
+**Purpose**: Audit existing ADR documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single ADR
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ADR-01_infrastructure.md \
+  --mode review
+
+# Review all ADRs
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ \
+  --mode review \
+  --output-report tmp/adr_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing ADR] --> B[Load ADR Documents]
+    B --> C[Run Validation Checks]
+    C --> D[Calculate SYS-Ready Score]
+    D --> E[Check v2.0 Compliance]
+    E --> F[Validate Structure]
+    F --> G[Identify Issues]
+    G --> H{Generate Report}
+    H --> I[Fixable Issues List]
+    H --> J[Manual Review Items]
+    H --> K[Score Breakdown]
+    I --> L[Output: Review Report]
+    J --> L
+    K --> L
+```
+
+**Review Report Structure**:
+
+```markdown
+# ADR Review Report: ADR-01_infrastructure
+
+## Summary
+- **SYS-Ready Score**: 87% 🟡
+- **Total Issues**: 11
+- **Auto-Fixable**: 7
+- **Manual Review**: 4
+
+## Score Breakdown
+| Category | Score | Status |
+|----------|-------|--------|
+| Decision Completeness | 27/30 | 🟡 |
+| Architecture Clarity | 32/35 | 🟡 |
+| Implementation Readiness | 18/20 | ✅ |
+| Verification Approach | 12/15 | 🟡 |
+
+## v2.0 Compliance
+| Check | Status | Details |
+|-------|--------|---------|
+| Folder Structure | ✅ | Nested structure used correctly |
+| Visual Score Indicator | ❌ | Missing emoji indicator |
+| Risk Thresholds Table | ❌ | Section 11 missing quantified parameters |
+| Circuit Breaker Recovery | 🟡 | CB mentioned but no recovery table |
+| MVP/Post-MVP Scope | ✅ | Section 7 present |
+| Traceability Format | 🟡 | 2 tags missing hierarchical format |
+| Index File | ✅ | ADR-01.00_index.md present |
+
+## Structure Validation
+| Section | Present | Status |
+|---------|---------|--------|
+| Context | ✅ | Complete |
+| Decision | ✅ | Complete |
+| Consequences | ✅ | Complete |
+| Alternatives | 🟡 | Missing "Why Rejected" column |
+| Architecture Flow | ❌ | Mermaid diagram missing |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Missing visual indicator | Document Control | Add ✅/🟡/❌ to SYS-Ready Score |
+| 2 | Legacy element ID | Section 5:L45 | Convert DEC-001 to ADR.01.10.01 |
+| 3 | Missing traceability tag | Section 17 | Add @bdd tag |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete context | Section 4.2:L78 | Domain knowledge needed |
+| 2 | Missing Mermaid diagram | Section 8 | Architecture decision required |
+| ... | ... | ... | ... |
+
+## Recommendations
+1. Run fix mode to address 7 auto-fixable issues
+2. Add Mermaid architecture diagram
+3. Complete Risk Thresholds table (Section 11)
+4. Add Circuit Breaker Recovery table if applicable
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - structure_validation      # Document control, required sections
+    - element_id_compliance     # ADR.NN.TT.SS format
+    - mermaid_diagrams          # Architecture flow presence
+    - v2_compliance             # New v2.0 sections
+    - cumulative_tags           # 4 upstream tags
+    - score_calculation         # SYS-Ready score
+    - folder_structure          # Nested vs flat
+  output:
+    format: markdown           # markdown, json, html
+    include_line_numbers: true
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing ADR documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to ADR documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single ADR
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ADR-01_infrastructure.md \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ADR-01_infrastructure.md \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ADR-01_infrastructure.md \
+  --mode fix \
+  --fix-types "element_ids,tags,v2_sections"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/adr_autopilot.py \
+  --adr docs/ADR/ADR-01_infrastructure.md \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing ADR] --> B[Run Review Mode]
+    B --> C[Identify Fixable Issues]
+    C --> D{Backup Enabled?}
+    D -->|Yes| E[Create Backup]
+    D -->|No| F[Skip Backup]
+    E --> G[Apply Fixes by Category]
+    F --> G
+
+    subgraph FixCategories["Fix Categories"]
+        G --> H[Element ID Fixes]
+        G --> I[Structure Fixes]
+        G --> J[v2.0 Section Fixes]
+        G --> K[Traceability Fixes]
+        G --> L[Visual Indicator Fixes]
+    end
+
+    H --> M[Preserve Manual Content]
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+
+    M --> N[Re-validate]
+    N --> O{Score Improved?}
+    O -->|Yes| P[Generate Fix Report]
+    O -->|No| Q[Log Warnings]
+    Q --> P
+    P --> R[Output: Fixed ADR + Report]
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Element IDs** | Legacy DEC-XXX format | Convert to ADR.NN.10.SS | ✅ |
+| **Element IDs** | Legacy ALT-XXX format | Convert to ADR.NN.12.SS | ✅ |
+| **Element IDs** | Legacy CON-XXX format | Convert to ADR.NN.13.SS | ✅ |
+| **Structure** | Missing Document Control fields | Add from template | ✅ |
+| **Structure** | Missing traceability section | Insert from template | ✅ |
+| **Structure** | Missing SYS-Ready Score | Calculate and insert | ✅ |
+| **v2.0 Sections** | Missing visual indicator | Add ✅/🟡/❌ based on score | ✅ |
+| **v2.0 Sections** | Missing Risk Thresholds | Add template table | ✅ |
+| **v2.0 Sections** | Missing MVP Scope | Add Section 7 template | ✅ |
+| **v2.0 Sections** | Missing CB Recovery | Add template if CB mentioned | ✅ |
+| **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
+| **Traceability** | Non-hierarchical format | Convert to BRD.NN.TT.SS format | ✅ |
+| **Diagrams** | Missing Mermaid | Insert template diagram | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing decision content
+2. **Never modify** Context section text
+3. **Never change** Alternatives evaluation
+4. **Only add** missing sections and metadata
+5. **Only replace** legacy element IDs
+6. **Backup first** if `--backup` flag is set
+
+**Fix Report Structure**:
+
+```markdown
+# ADR Fix Report: ADR-01_infrastructure
+
+## Summary
+- **Before SYS-Ready Score**: 87% 🟡
+- **After SYS-Ready Score**: 94% ✅
+- **Issues Fixed**: 7
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Legacy element ID | Section 5:L45 | Converted DEC-001 → ADR.01.10.01 |
+| 2 | Missing visual indicator | Document Control | Added ✅ 94% (Target: ≥90%) |
+| 3 | Missing @bdd tag | Section 17 | Added @bdd: BDD.01.14.01 |
+| 4 | Missing Risk Thresholds | Section 11 | Added template table |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/ADR/ADR-01_infrastructure/ADR-01.00_index.md
+- docs/ADR/ADR-01_infrastructure/ADR-01.1_context.md
+- docs/ADR/ADR-01_infrastructure/ADR-01.5_decision.md
+
+## Backup Location
+- tmp/backup/ADR-01_infrastructure_20260209_143022/
+
+## Remaining Issues (Manual Review)
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete context | Section 4.2:L78 | Domain knowledge needed |
+| 2 | Missing Mermaid diagram | Section 8 | Architecture decision required |
+| ... | ... | ... | ... |
+
+## Score Breakdown Impact
+| Category | Before | After | Delta |
+|----------|--------|-------|-------|
+| Decision Completeness | 27/30 | 29/30 | +2 |
+| Architecture Clarity | 32/35 | 33/35 | +1 |
+| Implementation Readiness | 18/20 | 19/20 | +1 |
+| Verification Approach | 12/15 | 13/15 | +1 |
+
+## Next Steps
+1. Add Mermaid architecture diagram to Section 8
+2. Review and complete context in Section 4.2
+3. Re-run validation to confirm score
+4. Commit changes if satisfied
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    element_ids: true        # Legacy ID conversion
+    structure: true          # Document sections
+    v2_sections: true        # New v2.0 sections
+    traceability: true       # Cumulative tags
+    visual_indicators: true  # Score emoji indicators
+    mermaid: false           # Diagram insertion (risky)
+
+  preservation:
+    context_section: true    # Never modify context
+    decision_section: true   # Never modify decision
+    alternatives: true       # Never modify evaluation
+    comments: true           # Preserve user comments
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+
+  element_id_migration:
+    DEC_XXX_to_ADR_NN_10_SS: true   # DEC-001 → ADR.01.10.01
+    ALT_XXX_to_ADR_NN_12_SS: true   # ALT-001 → ADR.01.12.01
+    CON_XXX_to_ADR_NN_13_SS: true   # CON-001 → ADR.01.13.01
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+| `--min-score-gain` | Fix | 0 | Minimum score improvement required |
+
 ---
 
 ## Output Artifacts
@@ -956,5 +1272,6 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode for validating existing ADR documents without modification; Added Fix Mode for auto-repairing ADR documents while preserving manual content; Added fix categories (element_ids, structure, v2_sections, traceability, visual_indicators); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with score breakdown impact; Added element ID migration support (DEC_XXX, ALT_XXX, CON_XXX to unified format) |
 | 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Post-MVP Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-adr, doc-adr-validator, quality-advisor skills; Added BRD Section 7.2 to ADR mapping; Context-Decision-Consequences generation |

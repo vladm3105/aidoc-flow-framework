@@ -14,7 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "1.0"
+  schema_version: "2.0"
 ---
 > **🔄 Dual-Format Note**: 
 > 
@@ -26,10 +26,11 @@ custom_fields:
 ---
 
 > **📋 Document Authority**: This is the **STANDARD** for SYS structure.
-> - **Schema**: `SYS_MVP_SCHEMA.yaml v1.0` - Validation rules
+> - **Schema**: `SYS_MVP_SCHEMA.yaml v2.0` - Validation rules
 > - **Creation Rules**: `SYS_MVP_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `SYS_MVP_VALIDATION_RULES.md` - Post-creation checks
 > - **File Size Limits**: Warning 15,000 tokens, max 20,000 tokens per file. Split using `SYS-SECTION-TEMPLATE.md` if exceeded.
+> - **v2.0 Features**: External Dependencies table with fallback strategy (Section 4.5)
 
 # SYS-NN: [System Name/Component Name]
 
@@ -199,6 +200,44 @@ custom_fields:
   - Authentication and authorization for external service access
   - Rate limiting and quota management for API consumption
   - Error handling and retry logic for external service failures
+
+### 4.5 External Dependencies (v2.0)
+
+> **v2.0 Requirement**: All SYS documents MUST include an External Dependencies table with fallback strategy for each dependency.
+
+**External Dependencies Table**:
+
+| Dependency | Type | Fallback Strategy | Timeout | Health Check |
+|------------|------|-------------------|---------|--------------|
+| [Service Name] | infrastructure | [What happens when dependency fails] | @threshold: PRD.NN.timeout.xxx.max | [Health endpoint] |
+| [Database] | data | [Fallback approach - e.g., read replica, cache] | @threshold: PRD.NN.timeout.db.max | [Check method] |
+| [Cache] | data | [Fallback - e.g., proceed without cache] | @threshold: PRD.NN.timeout.cache.max | PING |
+| [Message Queue] | integration | [Fallback - e.g., retry with backoff, local queue] | @threshold: PRD.NN.timeout.mq.max | [Check method] |
+| [Secret Manager] | security | [Fallback - e.g., cached secrets, env vars] | @threshold: PRD.NN.timeout.secrets.max | [Check method] |
+| [Monitoring] | observability | [Fallback - e.g., local buffer, stdout] | @threshold: PRD.NN.timeout.monitoring.max | [Check method] |
+
+**Dependency Type Categories**:
+
+| Type | Description | Examples |
+|------|-------------|----------|
+| infrastructure | Cloud platform services | GCP Identity Platform, AWS Cognito, Azure AD |
+| data | Databases and caches | Cloud SQL, Redis, Firestore, DynamoDB |
+| integration | APIs and messaging | Pub/Sub, SQS, external REST APIs |
+| security | Security services | Secret Manager, KMS, Vault |
+| observability | Monitoring and logging | Cloud Monitoring, Datadog, Prometheus |
+
+**Fallback Strategy Guidelines**:
+
+| Dependency Type | Recommended Fallback Patterns |
+|-----------------|-------------------------------|
+| Authentication Provider | JWT cache, local validation, graceful degradation |
+| Database | Read replica, local cache, retry with backoff |
+| Cache | In-memory cache, proceed without cache |
+| Message Queue | Local queue, retry with backoff, dead letter queue |
+| Secrets Manager | Cached secrets, environment variables |
+| Monitoring | Local buffer, stdout logging, fire-and-forget |
+
+> **Validation**: Each dependency MUST have a defined fallback strategy. Dependencies without fallback strategies fail SYS-E040 validation.
 
 ## 5. Quality Attributes
 

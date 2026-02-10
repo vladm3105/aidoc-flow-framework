@@ -695,6 +695,321 @@ Preview SYS generation plan without creating files.
 # No files will be created in dry-run mode.
 ```
 
+### Review Mode (v2.1)
+
+Validate existing SYS documents and generate a quality report without modification.
+
+**Purpose**: Audit existing SYS documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single SYS document
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/SYS-01_f1_iam.md \
+  --mode review
+
+# Review all SYS documents
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/ \
+  --mode review \
+  --output-report tmp/sys_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing SYS] --> B[Load SYS Documents]
+    B --> C[Run Validation Checks]
+    C --> D[Calculate REQ-Ready Score]
+    D --> E[Check 6-Category Breakdown]
+    E --> F[Validate External Dependencies]
+    F --> G[Identify Issues]
+    G --> H{Generate Report}
+    H --> I[Fixable Issues List]
+    H --> J[Manual Review Items]
+    H --> K[Score Breakdown]
+    I --> L[Output: Review Report]
+    J --> L
+    K --> L
+```
+
+**Review Report Structure**:
+
+```markdown
+# SYS Review Report: SYS-01_f1_iam
+
+## Summary
+- **REQ-Ready Score**: 87% 🟡
+- **Total Issues**: 14
+- **Auto-Fixable**: 10
+- **Manual Review**: 4
+
+## 6-Category Score Breakdown
+| Category | Score | Status |
+|----------|-------|--------|
+| Functional Decomposition | 23/25 | 🟡 |
+| Quality Attributes | 18/20 | 🟡 |
+| Interface Specifications | 18/20 | 🟡 |
+| Data Management | 14/15 | ✅ |
+| Testing Requirements | 8/10 | 🟡 |
+| Traceability | 10/10 | ✅ |
+
+## External Dependencies Check
+| Check | Status | Details |
+|-------|--------|---------|
+| Dependencies Table Present | ✅ | 6 dependencies documented |
+| Fallback Strategies | ❌ | 2 dependencies missing fallback |
+| Timeout Thresholds | 🟡 | 4 hardcoded values found |
+| Health Check Endpoints | ❌ | 3 dependencies missing health check |
+
+## v2.0 Compliance
+| Check | Status | Details |
+|-------|--------|---------|
+| Modular Structure | ✅ | Per-capability split (5 files) |
+| 6-Category Scoring | 🟡 | Missing testing requirements detail |
+| @threshold References | ❌ | 8 hardcoded numeric values |
+| Fallback Strategy Column | ❌ | Missing in 2 dependencies |
+| Visual Score Indicators | ✅ | Present in index |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Hardcoded timeout value | SYS-01.01:L45 | Replace with @threshold:PRD.01.timeout.auth |
+| 2 | Missing fallback strategy | SYS-01.03:L78 | Add fallback column |
+| 3 | Legacy element ID | SYS-01.02:L23 | Convert FR-001 to SYS.01.01.01 |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete quality attribute | SYS-01.02:L102 | Domain knowledge needed |
+| 2 | Missing interface specification | SYS-01.03 | API design decision required |
+| ... | ... | ... | ... |
+
+## Recommendations
+1. Run fix mode to address 10 auto-fixable issues
+2. Review 4 items requiring manual attention
+3. Add missing external dependency fallback strategies
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - structure_validation      # Document control, sections
+    - element_id_compliance     # SYS.NN.TT.SS format
+    - threshold_references      # @threshold format and validity
+    - external_dependencies     # Table, fallback, timeouts
+    - quality_attributes        # 6 categories present
+    - cumulative_tags           # 5 upstream tags
+    - score_calculation         # REQ-Ready score
+    - modular_structure         # If >25KB
+  output:
+    format: markdown           # markdown, json, html
+    include_line_numbers: true
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing SYS documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to SYS documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single SYS document
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/SYS-01_f1_iam.md \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/SYS-01_f1_iam.md \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/SYS-01_f1_iam.md \
+  --mode fix \
+  --fix-types "element_ids,thresholds,dependencies"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/sys_autopilot.py \
+  --sys docs/SYS/SYS-01_f1_iam.md \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing SYS] --> B[Run Review Mode]
+    B --> C[Identify Fixable Issues]
+    C --> D{Backup Enabled?}
+    D -->|Yes| E[Create Backup]
+    D -->|No| F[Skip Backup]
+    E --> G[Apply Fixes by Category]
+    F --> G
+
+    subgraph FixCategories["Fix Categories"]
+        G --> H[Element ID Fixes]
+        G --> I[Threshold Fixes]
+        G --> J[Dependencies Fixes]
+        G --> K[Structure Fixes]
+        G --> L[Traceability Fixes]
+    end
+
+    H --> M[Preserve Manual Content]
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+
+    M --> N[Re-validate]
+    N --> O{Score Improved?}
+    O -->|Yes| P[Generate Fix Report]
+    O -->|No| Q[Log Warnings]
+    Q --> P
+    P --> R[Output: Fixed SYS + Report]
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Element IDs** | Legacy FR-XXX format | Convert to SYS.NN.01.SS | ✅ |
+| **Element IDs** | Legacy QA-XXX format | Convert to SYS.NN.02.SS | ✅ |
+| **Element IDs** | Invalid segment count | Restructure to 4-segment | ✅ |
+| **Thresholds** | Hardcoded numeric values | Replace with @threshold:PRD.NN.xxx | ✅ |
+| **Thresholds** | Invalid threshold format | Convert to @threshold:PRD.NN.category.field | ✅ |
+| **Dependencies** | Missing fallback column | Add Fallback Strategy column | ✅ |
+| **Dependencies** | Missing timeout @threshold | Add @threshold reference | ✅ |
+| **Dependencies** | Missing health check | Add placeholder health check | ✅ |
+| **Structure** | Missing REQ-Ready score | Calculate and insert | ✅ |
+| **Structure** | Missing 6-category breakdown | Add breakdown table | ✅ |
+| **Structure** | Missing traceability section | Insert from template | ✅ |
+| **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
+| **Traceability** | Incomplete @adr reference | Link to source ADR | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing functional requirements
+2. **Never modify** quality attribute targets
+3. **Never change** interface specification content
+4. **Only add** missing columns and metadata
+5. **Only replace** hardcoded values with threshold references
+6. **Backup first** if `--backup` flag is set
+
+**Fix Report Structure**:
+
+```markdown
+# SYS Fix Report: SYS-01_f1_iam
+
+## Summary
+- **Before REQ-Ready Score**: 87% 🟡
+- **After REQ-Ready Score**: 94% ✅
+- **Issues Fixed**: 10
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Legacy element ID | SYS-01.01:L23 | Converted FR-001 → SYS.01.01.01 |
+| 2 | Hardcoded timeout | SYS-01.02:L45 | Replaced with @threshold:PRD.01.timeout.auth |
+| 3 | Missing fallback | SYS-01.03:L78 | Added "JWT cache; local validation" |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/SYS/SYS-01_f1_iam/SYS-01.00_index.md
+- docs/SYS/SYS-01_f1_iam/SYS-01.01_authentication.md
+- docs/SYS/SYS-01_f1_iam/SYS-01.02_authorization.md
+- docs/SYS/SYS-01_f1_iam/SYS-01.03_session_management.md
+
+## Backup Location
+- tmp/backup/SYS-01_f1_iam_20260209_143022/
+
+## Remaining Issues (Manual Review)
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete QA target | SYS-01.02:L102 | Domain expertise needed |
+| 2 | Missing interface spec | SYS-01.03 | API design decision |
+| ... | ... | ... | ... |
+
+## 6-Category Score Impact
+| Category | Before | After | Delta |
+|----------|--------|-------|-------|
+| Functional Decomposition | 23/25 | 25/25 | +2 |
+| Quality Attributes | 18/20 | 19/20 | +1 |
+| Interface Specifications | 18/20 | 19/20 | +1 |
+| Data Management | 14/15 | 14/15 | 0 |
+| Testing Requirements | 8/10 | 9/10 | +1 |
+| Traceability | 10/10 | 10/10 | 0 |
+
+## Next Steps
+1. Review manually flagged items
+2. Re-run validation to confirm score
+3. Commit changes if satisfied
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    element_ids: true        # Legacy ID conversion
+    thresholds: true         # @threshold references
+    dependencies: true       # External dependencies table
+    structure: true          # Document sections
+    traceability: true       # Cumulative tags
+
+  preservation:
+    functional_requirements: true   # Never modify FR content
+    quality_attributes: true        # Never modify QA targets
+    interface_specs: true           # Never modify interface content
+    comments: true                  # Preserve user comments
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+
+  element_id_migration:
+    FR_XXX_to_SYS_NN_01_SS: true   # FR-001 → SYS.01.01.01
+    QA_XXX_to_SYS_NN_02_SS: true   # QA-001 → SYS.01.02.01
+    SR_XXX_to_SYS_NN_26_SS: true   # SR-001 → SYS.01.26.01
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+| `--min-score-gain` | Fix | 0 | Minimum score improvement required |
+
 ---
 
 ## Output Artifacts
@@ -1056,5 +1371,6 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode for validating existing SYS documents without modification; Added Fix Mode for auto-repairing SYS documents while preserving manual content; Added fix categories (element_ids, thresholds, dependencies, structure, traceability); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 6-category score impact; Added element ID migration support (FR_XXX, QA_XXX, SR_XXX to unified format) |
 | 2.0 | 2026-02-09 | Added modular splitting pattern with per-capability decomposition; Added External Dependencies table with fallback strategy requirement; Added 6-category REQ-Ready scoring with weighted breakdown; Added visual score indicators (✅/🟡/❌); Added validation rules SYS-E040 to SYS-E045 for new features; Added modular SYS template for atomic files; Added fallback strategy guidelines by dependency type |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-sys, doc-sys-validator, quality-advisor skills; Added ADR to SYS mapping; Functional requirements and quality attributes generation; REQ-Ready scoring |

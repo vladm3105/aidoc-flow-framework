@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "1.3"
+  version: "2.1"
 ---
 
 # doc-prd-autopilot
@@ -646,6 +646,237 @@ Preview execution plan without generating files.
 # No files will be created in dry-run mode.
 ```
 
+### Mode 4: Review Mode (v2.1)
+
+Validate existing PRD documents and generate a quality report without modification.
+
+**Purpose**: Audit existing PRD documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single PRD
+/doc-prd-autopilot PRD-01 --mode review
+
+# Review all PRDs
+/doc-prd-autopilot all --mode review --output-report tmp/prd_review_report.md
+```
+
+**Review Report Structure**:
+
+```markdown
+# PRD Review Report: PRD-01_f1_iam
+
+## Summary
+- **EARS-Ready Score**: 87% 🟡
+- **Final Review Score**: 85% 🟡
+- **Total Issues**: 14
+- **Auto-Fixable**: 10
+- **Manual Review**: 4
+
+## Score Breakdown
+| Category | Score | Status |
+|----------|-------|--------|
+| Business Requirements Clarity | 38/40 | 🟡 |
+| Requirements Maturity | 32/35 | 🟡 |
+| EARS Translation Readiness | 18/20 | 🟡 |
+| Strategic Alignment | 5/5 | ✅ |
+
+## Final Review Checks
+| Check | Status | Details |
+|-------|--------|---------|
+| Link Integrity | ✅ | All links valid |
+| Threshold Consistency | 🟡 | 2 mismatches found |
+| BRD Alignment | ✅ | All requirements traced |
+| Placeholder Detection | ❌ | 3 [TODO] markers found |
+| Traceability Tags | ✅ | Valid @brd references |
+| Section 10 Content | 🟡 | Needs business review |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Legacy element ID | Section 9:L45 | Convert PO-001 to PRD.01.07.01 |
+| 2 | Placeholder text | Section 14:L78 | Remove [TODO] marker |
+| 3 | Inconsistent threshold | Section 5:L23 | Align to BRD value |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete Section 10 | Customer-Facing Content | Requires business input |
+| 2 | Missing timing profile | Section 20.1 | Domain expertise needed |
+| ... | ... | ... | ... |
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - structure_validation      # 17/21 sections
+    - element_id_compliance     # PRD.NN.TT.SS format
+    - link_integrity            # Internal link check
+    - threshold_consistency     # Cross-section consistency
+    - brd_alignment             # Upstream traceability
+    - placeholder_detection     # [TODO], [TBD] markers
+    - traceability_tags         # @brd tag validation
+    - section_10_content        # Customer-facing content
+    - score_calculation         # EARS-Ready score
+  output:
+    format: markdown
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Mode 5: Fix Mode (v2.1)
+
+Auto-repair existing PRD documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to PRD documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single PRD
+/doc-prd-autopilot PRD-01 --mode fix
+
+# Fix with backup
+/doc-prd-autopilot PRD-01 --mode fix --backup
+
+# Fix specific issue types only
+/doc-prd-autopilot PRD-01 --mode fix --fix-types "element_ids,thresholds,placeholders"
+
+# Dry-run fix (preview changes)
+/doc-prd-autopilot PRD-01 --mode fix --dry-run
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Element IDs** | Legacy PO-XXX format | Convert to PRD.NN.07.SS | ✅ |
+| **Element IDs** | Legacy FF-XXX format | Convert to PRD.NN.01.SS | ✅ |
+| **Element IDs** | Legacy AC-XXX format | Convert to PRD.NN.06.SS | ✅ |
+| **Thresholds** | Inconsistent values | Align to BRD source | ✅ |
+| **Thresholds** | Hardcoded values | Replace with @threshold | ✅ |
+| **Links** | Broken internal links | Update paths or remove | ✅ |
+| **Placeholders** | [TODO], [TBD] text | Remove markers, flag content | ✅ |
+| **Sections** | Missing Document Control | Add from template | ✅ |
+| **Sections** | Missing EARS-Ready score | Calculate and insert | ✅ |
+| **Sections** | Missing Section 20 | Add EARS Enhancement template | ✅ |
+| **Traceability** | Missing @brd tags | Add with placeholder | ✅ |
+| **Traceability** | Invalid @brd reference | Correct or remove | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing requirements or user stories
+2. **Never modify** executive summary content
+3. **Never change** stakeholder analysis details
+4. **Only add** missing sections and metadata
+5. **Only replace** legacy element IDs and placeholders
+6. **Backup first** if `--backup` flag is set
+
+**Element ID Migration**:
+
+| Legacy Pattern | New Format | Example |
+|----------------|------------|---------|
+| `PO-XXX` | `PRD.NN.07.SS` | PO-001 → PRD.01.07.01 |
+| `FF-XXX` | `PRD.NN.01.SS` | FF-001 → PRD.01.01.01 |
+| `AC-XXX` | `PRD.NN.06.SS` | AC-001 → PRD.01.06.01 |
+| `US-XXX` | `PRD.NN.08.SS` | US-001 → PRD.01.08.01 |
+
+**Fix Report Structure**:
+
+```markdown
+# PRD Fix Report: PRD-01_f1_iam
+
+## Summary
+- **Before EARS-Ready Score**: 87% 🟡
+- **After EARS-Ready Score**: 94% ✅
+- **Issues Fixed**: 10
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Legacy element ID | Section 9:L45 | Converted PO-001 → PRD.01.07.01 |
+| 2 | Placeholder text | Section 14:L78 | Removed [TODO] marker |
+| 3 | Inconsistent threshold | Section 5:L23 | Aligned to BRD.01 value |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/02_PRD/PRD-01_f1_iam/PRD-01.0_index.md
+- docs/02_PRD/PRD-01_f1_iam/PRD-01.5_success_metrics.md
+- docs/02_PRD/PRD-01_f1_iam/PRD-01.9_functional_requirements.md
+
+## Backup Location
+- tmp/backup/PRD-01_f1_iam_20260209_143022/
+
+## Score Impact
+| Category | Before | After | Delta |
+|----------|--------|-------|-------|
+| Requirements Clarity | 38/40 | 40/40 | +2 |
+| Requirements Maturity | 32/35 | 34/35 | +2 |
+| EARS Translation | 18/20 | 19/20 | +1 |
+
+## Next Steps
+1. Complete Section 10 (Customer-Facing Content)
+2. Add timing profile to Section 20.1
+3. Re-run validation to confirm score
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    element_ids: true        # Legacy ID conversion
+    thresholds: true         # Consistency fixes
+    links: true              # Broken link repair
+    placeholders: true       # [TODO]/[TBD] removal
+    sections: true           # Missing sections
+    traceability: true       # @brd tag fixes
+
+  preservation:
+    executive_summary: true     # Never modify
+    requirements: true          # Never delete
+    user_stories: true          # Never modify
+    comments: true              # Preserve user comments
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+
+  element_id_migration:
+    PO_XXX_to_PRD_NN_07_SS: true
+    FF_XXX_to_PRD_NN_01_SS: true
+    AC_XXX_to_PRD_NN_06_SS: true
+    US_XXX_to_PRD_NN_08_SS: true
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+
 ---
 
 ## Output Files
@@ -856,6 +1087,7 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (PO-XXX→PRD.NN.07.SS, FF-XXX→PRD.NN.01.SS, AC-XXX→PRD.NN.06.SS, US-XXX→PRD.NN.08.SS) |
 | 1.3 | 2026-02-08 | Integrated quality-advisor skill for real-time quality feedback in Phase 3 (PRD Generation) |
 | 1.2 | 2026-02-08 | Added Phase 5: Final Content Review with link integrity, threshold consistency, BRD alignment, and placeholder detection checks |
 | 1.1 | 2026-02-08 | Added skill dependencies, integrated doc-prd and doc-prd-validator skills |

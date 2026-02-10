@@ -863,6 +863,288 @@ python ai_dev_flow/scripts/bdd_autopilot.py \
   --dry-run
 ```
 
+### Review Mode (v2.1)
+
+Validate existing BDD documents and generate a quality report without modification.
+
+**Purpose**: Audit existing BDD documents for compliance, quality scores, and identify issues.
+
+**Command**:
+```bash
+# Review single BDD suite
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/BDD-01_f1_iam/ \
+  --mode review
+
+# Review all BDD suites
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/ \
+  --mode review \
+  --output-report tmp/bdd_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing BDD] --> B[Load BDD Documents]
+    B --> C[Run Validation Checks]
+    C --> D[Calculate ADR-Ready Score]
+    D --> E[Identify Issues]
+    E --> F[Categorize Issues]
+    F --> G{Generate Report}
+    G --> H[Fixable Issues List]
+    G --> I[Manual Review Items]
+    G --> J[Score Breakdown]
+    H --> K[Output: Review Report]
+    I --> K
+    J --> K
+```
+
+**Review Report Structure**:
+
+```markdown
+# BDD Review Report: BDD-01_f1_iam
+
+## Summary
+- **ADR-Ready Score**: 87% 🟡
+- **Total Issues**: 12
+- **Auto-Fixable**: 8
+- **Manual Review**: 4
+
+## Score Breakdown
+| Category | Score | Status |
+|----------|-------|--------|
+| Scenario Completeness | 32/35 | 🟡 |
+| Testability | 28/30 | ✅ |
+| Architecture Requirements | 20/25 | 🟡 |
+| Business Validation | 7/10 | ❌ |
+
+## v2.0 Compliance
+| Check | Status | Details |
+|-------|--------|---------|
+| Scenario Type Tags | ❌ | 5 scenarios missing @scenario-type |
+| Priority Tags | 🟡 | 3 scenarios missing priority |
+| SHALL+WITHIN Language | ❌ | 8 timed scenarios lack WITHIN |
+| 5-Category Coverage | ✅ | All categories present |
+| Threshold Format | 🟡 | 2 hardcoded values found |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Missing @scenario-type tag | BDD-01.1:L45 | Add @scenario-type:success |
+| 2 | Hardcoded timeout value | BDD-01.2:L78 | Replace with @threshold |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Ambiguous step definition | BDD-01.3:L102 | Requires domain knowledge |
+| 2 | Missing edge case scenario | BDD-01.1 | Content decision needed |
+| ... | ... | ... | ... |
+
+## Recommendations
+1. Run fix mode to address 8 auto-fixable issues
+2. Review and update 4 items requiring manual attention
+3. Add 2 missing edge case scenarios for full coverage
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - structure_validation      # Index, sections, redirects
+    - gherkin_syntax           # Given-When-Then compliance
+    - tag_validation           # Cumulative tags, scenario tags
+    - threshold_references     # @threshold format and validity
+    - v2_compliance            # Scenario types, priorities, WITHIN
+    - coverage_analysis        # 5-category coverage
+    - score_calculation        # ADR-Ready score
+  output:
+    format: markdown           # markdown, json, html
+    include_line_numbers: true
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing BDD documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to BDD documents to improve quality scores and compliance.
+
+**Command**:
+```bash
+# Fix single BDD suite
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/BDD-01_f1_iam/ \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/BDD-01_f1_iam/ \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/BDD-01_f1_iam/ \
+  --mode fix \
+  --fix-types "tags,thresholds,syntax"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/bdd_autopilot.py \
+  --bdd docs/04_BDD/BDD-01_f1_iam/ \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing BDD] --> B[Run Review Mode]
+    B --> C[Identify Fixable Issues]
+    C --> D{Backup Enabled?}
+    D -->|Yes| E[Create Backup]
+    D -->|No| F[Skip Backup]
+    E --> G[Apply Fixes by Category]
+    F --> G
+
+    subgraph FixCategories["Fix Categories"]
+        G --> H[Structure Fixes]
+        G --> I[Tag Fixes]
+        G --> J[Threshold Fixes]
+        G --> K[Syntax Fixes]
+        G --> L[v2.0 Compliance Fixes]
+    end
+
+    H --> M[Preserve Manual Content]
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+
+    M --> N[Re-validate]
+    N --> O{Score Improved?}
+    O -->|Yes| P[Generate Fix Report]
+    O -->|No| Q[Log Warnings]
+    Q --> P
+    P --> R[Output: Fixed BDD + Report]
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Structure** | Missing index file | Generate from existing sections | ✅ |
+| **Structure** | Missing redirect stub | Create redirect stub | ✅ |
+| **Tags** | Missing @scenario-type | Add based on scenario content analysis | ✅ |
+| **Tags** | Missing @priority | Add default @p2-medium | ✅ |
+| **Tags** | Tags in comments | Move to Gherkin-native position | ✅ |
+| **Tags** | Missing cumulative tags | Add with placeholder references | ✅ |
+| **Thresholds** | Hardcoded numeric values | Replace with @threshold:PRD.NN.xxx | ✅ |
+| **Thresholds** | Invalid threshold format | Convert to @threshold:PRD.NN.category.field | ✅ |
+| **Syntax** | Missing Given/When/Then | Flag for manual (content needed) | N/A |
+| **Syntax** | Vague language | Suggest replacements in report | ✅ |
+| **v2.0** | Missing WITHIN clause | Add WITHIN @threshold for timed ops | ✅ |
+| **v2.0** | Missing SHALL language | Convert "should" to "SHALL" | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing scenario content
+2. **Never modify** step definitions (Given/When/Then text)
+3. **Never change** Examples table data
+4. **Only add** missing tags and metadata
+5. **Only replace** hardcoded values with threshold references
+6. **Backup first** if `--backup` flag is set
+
+**Fix Report Structure**:
+
+```markdown
+# BDD Fix Report: BDD-01_f1_iam
+
+## Summary
+- **Before ADR-Ready Score**: 87% 🟡
+- **After ADR-Ready Score**: 94% ✅
+- **Issues Fixed**: 8
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Missing @scenario-type | BDD-01.1:L45 | Added @scenario-type:success |
+| 2 | Hardcoded timeout | BDD-01.2:L78 | Replaced with @threshold:PRD.01.timeout.api.max |
+| 3 | Tags in comments | BDD-01.3:L12 | Moved to Gherkin-native position |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/04_BDD/BDD-01_f1_iam/BDD-01.1_authentication.feature
+- docs/04_BDD/BDD-01_f1_iam/BDD-01.2_session.feature
+- docs/04_BDD/BDD-01_f1_iam/BDD-01.3_authorization.feature
+
+## Backup Location
+- tmp/backup/BDD-01_f1_iam_20260209_143022/
+
+## Remaining Issues (Manual Review)
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Ambiguous step | BDD-01.3:L102 | Requires domain knowledge |
+| ... | ... | ... | ... |
+
+## Next Steps
+1. Review manually flagged items
+2. Re-run validation to confirm score
+3. Commit changes if satisfied
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    structure: true          # Index, redirects
+    tags: true               # Scenario tags, cumulative tags
+    thresholds: true         # @threshold references
+    syntax: false            # Gherkin syntax (risky, disabled by default)
+    v2_compliance: true      # Scenario types, priorities, WITHIN
+
+  preservation:
+    step_definitions: true   # Never modify step text
+    examples_data: true      # Never modify Examples tables
+    comments: true           # Preserve user comments
+    custom_tags: true        # Preserve non-standard tags
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+| `--min-score-gain` | Fix | 0 | Minimum score improvement required |
+
 ---
 
 ## Configuration
@@ -1248,5 +1530,6 @@ After autopilot completion:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode for validating existing BDD documents without modification; Added Fix Mode for auto-repairing BDD documents while preserving manual content; Added fix categories (structure, tags, thresholds, syntax, v2_compliance); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation; Updated command line options for new modes |
 | 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators (✅/🟡/❌); Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-bdd, doc-bdd-validator, quality-advisor skills; Added scenario category reference (8 categories); Added section-based structure requirements; Added Gherkin-native tag enforcement |

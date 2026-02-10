@@ -431,6 +431,309 @@ Proceeding to next chunk...
 
 ---
 
+## Execution Modes
+
+### Single SPEC Mode
+
+Generate SPEC from one REQ document.
+
+```bash
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --req docs/REQ/REQ-01_authentication.md \
+  --output docs/SPEC/ \
+  --id 01
+```
+
+### Batch Mode
+
+Generate SPEC from multiple REQ documents.
+
+```bash
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --batch config/spec_batch.yaml \
+  --output docs/SPEC/
+```
+
+### Dry Run Mode
+
+Preview execution plan without generating files.
+
+```bash
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --req docs/REQ/ \
+  --dry-run
+```
+
+### Review Mode (v2.1)
+
+Validate existing SPEC documents and generate a quality report without modification.
+
+**Purpose**: Audit existing SPEC documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single SPEC
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/SPEC-01.yaml \
+  --mode review
+
+# Review all SPECs
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/ \
+  --mode review \
+  --output-report tmp/spec_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing SPEC] --> B[Load YAML Files]
+    B --> C[Validate YAML Syntax]
+    C --> D[Check 13 Required Sections]
+    D --> E[Validate 3-Level Interfaces]
+    E --> F[Check Threshold References]
+    F --> G[Calculate TASKS-Ready Score]
+    G --> H{Generate Report}
+    H --> I[Fixable Issues List]
+    H --> J[Manual Review Items]
+    H --> K[7-Component Breakdown]
+    I --> L[Output: Review Report]
+    J --> L
+    K --> L
+```
+
+**Review Report Structure**:
+
+```markdown
+# SPEC Review Report: SPEC-01.yaml
+
+## Summary
+- **TASKS-Ready Score**: 87% 🟡
+- **Total Issues**: 9
+- **Auto-Fixable**: 6
+- **Manual Review**: 3
+
+## 7-Component Score Breakdown
+| Component | Score | Status |
+|-----------|-------|--------|
+| Interface Completeness | 23/25 | 🟡 |
+| Data Models | 18/20 | 🟡 |
+| Validation Rules | 14/15 | ✅ |
+| Error Handling | 13/15 | 🟡 |
+| Test Approach | 9/10 | ✅ |
+| Traceability | 8/10 | 🟡 |
+| Performance Specs | 4/5 | 🟡 |
+
+## Section Completeness
+| Section | Present | Status |
+|---------|---------|--------|
+| metadata | ✅ | Complete |
+| traceability | ✅ | Missing @ctr tag |
+| interfaces | 🟡 | Missing internal_apis |
+| data_models | ✅ | Complete |
+| validation_rules | ✅ | Complete |
+| error_handling | ✅ | Complete |
+| configuration | ✅ | Complete |
+| performance | 🟡 | Hardcoded values |
+| behavior | ✅ | Complete |
+| behavioral_examples | ✅ | Complete |
+| architecture | ✅ | Complete |
+| operations | ✅ | Complete |
+| req_implementations | ❌ | Missing |
+
+## v2.0 Compliance
+| Check | Status | Details |
+|-------|--------|---------|
+| 13 Sections Present | ❌ | Missing req_implementations |
+| Three Interface Levels | 🟡 | Missing internal_apis |
+| Threshold Registry | ✅ | Present |
+| Nested REQ Paths | ✅ | Correct format |
+| 9-Layer Traceability | 🟡 | Missing @ctr |
+| @threshold Format | ❌ | 2 hardcoded values |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Missing @ctr tag | traceability | Add placeholder @ctr reference |
+| 2 | Hardcoded latency | performance.latency_targets | Replace with @threshold:perf.api.p95 |
+| 3 | Missing req_implementations | root | Add template section |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Missing internal_apis | interfaces | Architecture decision needed |
+| 2 | Incomplete behavior | behavior.login_flow | Domain knowledge required |
+| ... | ... | ... | ... |
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - yaml_syntax              # Valid YAML structure
+    - section_completeness     # All 13 sections present
+    - interface_levels         # 3-level interface hierarchy
+    - threshold_references     # @threshold format
+    - cumulative_tags          # 9-layer traceability
+    - score_calculation        # TASKS-Ready score
+    - file_size                # <66KB check
+  output:
+    format: markdown
+    include_fix_suggestions: true
+  thresholds:
+    pass: 90
+    warning: 85
+    fail: 0
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing SPEC documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to SPEC documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single SPEC
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/SPEC-01.yaml \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/SPEC-01.yaml \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/SPEC-01.yaml \
+  --mode fix \
+  --fix-types "sections,thresholds,traceability"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/spec_autopilot.py \
+  --spec docs/SPEC/SPEC-01.yaml \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Sections** | Missing req_implementations | Add template section | ✅ |
+| **Sections** | Missing threshold_references | Add template section | ✅ |
+| **Sections** | Missing metadata fields | Add required fields | ✅ |
+| **Thresholds** | Hardcoded numeric values | Replace with @threshold:xxx | ✅ |
+| **Thresholds** | Invalid @threshold format | Convert to category.field format | ✅ |
+| **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
+| **Traceability** | Wrong REQ path format | Convert to nested format | ✅ |
+| **Interfaces** | Missing level placeholder | Add template structure | ✅ |
+| **Interfaces** | Missing method signatures | Flag for manual (content needed) | N/A |
+| **YAML** | Formatting issues | Auto-format with ruamel.yaml | ✅ |
+| **Score** | Missing TASKS-Ready score | Calculate and insert | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing interface definitions
+2. **Never modify** method signatures or logic
+3. **Never change** data model schemas
+4. **Only add** missing sections and metadata
+5. **Only replace** hardcoded values with threshold references
+6. **Backup first** if `--backup` flag is set
+
+**Fix Report Structure**:
+
+```markdown
+# SPEC Fix Report: SPEC-01.yaml
+
+## Summary
+- **Before TASKS-Ready Score**: 87% 🟡
+- **After TASKS-Ready Score**: 94% ✅
+- **Issues Fixed**: 6
+- **Issues Remaining**: 3 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Missing req_implementations | root | Added template section |
+| 2 | Hardcoded latency | performance.latency_targets | Replaced with @threshold:perf.api.p95 |
+| 3 | Missing @ctr tag | traceability | Added @ctr: CTR.01.16.01 |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/SPEC/SPEC-01.yaml
+
+## Backup Location
+- tmp/backup/SPEC-01_20260209_143022.yaml
+
+## 7-Component Score Impact
+| Component | Before | After | Delta |
+|-----------|--------|-------|-------|
+| Interface Completeness | 23/25 | 24/25 | +1 |
+| Data Models | 18/20 | 18/20 | 0 |
+| Validation Rules | 14/15 | 14/15 | 0 |
+| Error Handling | 13/15 | 13/15 | 0 |
+| Test Approach | 9/10 | 10/10 | +1 |
+| Traceability | 8/10 | 10/10 | +2 |
+| Performance Specs | 4/5 | 5/5 | +1 |
+
+## Next Steps
+1. Add internal_apis level to interfaces section
+2. Complete behavior.login_flow pseudocode
+3. Re-run validation to confirm score
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    sections: true           # Missing required sections
+    thresholds: true         # @threshold references
+    traceability: true       # Cumulative tags
+    interfaces: false        # Interface placeholders (risky)
+    yaml: true               # YAML formatting
+
+  preservation:
+    interfaces: true         # Never modify existing interfaces
+    data_models: true        # Never modify schemas
+    behavior: true           # Never modify logic
+    comments: true           # Preserve YAML comments
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+
+---
+
 ## Related Resources
 
 - **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
@@ -471,5 +774,6 @@ Proceeding to next chunk...
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-09 | Added Review Mode for validating existing SPEC documents without modification; Added Fix Mode for auto-repairing SPEC documents while preserving manual content; Added fix categories (sections, thresholds, traceability, interfaces, yaml); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 7-component score impact; Added execution modes section (single, batch, dry-run, review, fix) |
 | 2.0 | 2026-02-09 | Added 13-section YAML structure; Added 9-layer cumulative traceability; Added three-level interface specification (external, internal, classes); Added threshold registry pattern; Added req_implementations section for REQ-to-implementation bridges; Added 7-component TASKS-Ready scoring; Added file splitting strategy (<66KB); Added validation rules SPEC-E030 to SPEC-E038 |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-spec, quality-advisor, doc-spec-validator |

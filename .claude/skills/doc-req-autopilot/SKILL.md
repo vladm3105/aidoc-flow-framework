@@ -730,6 +730,299 @@ python ai_dev_flow/scripts/req_autopilot.py \
   --dry-run
 ```
 
+### Review Mode (v2.1)
+
+Validate existing REQ documents and generate a quality report without modification.
+
+**Purpose**: Audit existing REQ documents for compliance, quality scores, and identify issues.
+
+**Command**:
+
+```bash
+# Review single REQ folder
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/REQ-01_f1_iam/ \
+  --mode review
+
+# Review all REQ folders
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/ \
+  --mode review \
+  --output-report tmp/req_review_report.md
+```
+
+**Review Process**:
+
+```mermaid
+flowchart TD
+    A[Input: Existing REQ] --> B[Load REQ Files]
+    B --> C[Validate 12-Section Structure]
+    C --> D[Check Atomic Decomposition]
+    D --> E[Validate Dual Scores]
+    E --> F[Check Cross-Links]
+    F --> G[Identify Issues]
+    G --> H{Generate Report}
+    H --> I[Fixable Issues List]
+    H --> J[Manual Review Items]
+    H --> K[Dual Score Breakdown]
+    I --> L[Output: Review Report]
+    J --> L
+    K --> L
+```
+
+**Review Report Structure**:
+
+```markdown
+# REQ Review Report: REQ-01_f1_iam
+
+## Summary
+- **SPEC-Ready Score**: 88% 🟡
+- **IMPL-Ready Score**: 85% 🟡
+- **Total Files**: 12 atomic REQ files
+- **Total Issues**: 15
+- **Auto-Fixable**: 11
+- **Manual Review**: 4
+
+## Dual Score Breakdown
+
+### SPEC-Ready Score (88%)
+| Component | Score | Status |
+|-----------|-------|--------|
+| Interface Completeness | 18/20 | 🟡 |
+| Data Schema | 14/15 | ✅ |
+| Error Handling | 13/15 | 🟡 |
+| Configuration | 9/10 | ✅ |
+| Quality Attributes | 14/15 | ✅ |
+| Implementation Guidance | 8/10 | 🟡 |
+| Acceptance Criteria | 9/10 | ✅ |
+| Traceability | 5/5 | ✅ |
+
+### IMPL-Ready Score (85%)
+| Component | Score | Status |
+|-----------|-------|--------|
+| Implementation Guidance | 22/25 | 🟡 |
+| Architecture Patterns | 18/20 | 🟡 |
+| Concurrency Handling | 13/15 | 🟡 |
+| DI Patterns | 14/15 | ✅ |
+| Algorithm Specifications | 12/15 | 🟡 |
+| Testing Strategy | 9/10 | ✅ |
+
+## Atomic Decomposition Check
+| Check | Status | Details |
+|-------|--------|---------|
+| Index File Present | ✅ | REQ-01.00_index.md exists |
+| Cross-Links Valid | 🟡 | 3 files missing @discoverability |
+| Section 11.2 Code Paths | ❌ | 4 files missing implementation paths |
+| Acceptance Criteria Count | 🟡 | 2 files below 15 criteria |
+
+## v2.0 Compliance
+| Check | Status | Details |
+|-------|--------|---------|
+| 12 Sections Present | ✅ | All atomic files complete |
+| Element ID Format | 🟡 | 2 legacy IDs found |
+| Test Category Prefixes | ❌ | Missing [Logic]/[Validation] tags |
+| Recovery Strategy Table | ❌ | 3 files missing recovery table |
+| @threshold References | ✅ | All numeric values parameterized |
+| 6 Cumulative Tags | ✅ | All present |
+
+## Auto-Fixable Issues
+| # | Issue | Location | Fix Action |
+|---|-------|----------|------------|
+| 1 | Missing @discoverability | REQ-01.03 | Add cross-link tags |
+| 2 | Legacy element ID | REQ-01.05:L45 | Convert AC-001 to REQ.01.06.01 |
+| 3 | Missing test category | REQ-01.07:AC-003 | Add [Logic] prefix |
+| ... | ... | ... | ... |
+
+## Manual Review Required
+| # | Issue | Location | Reason |
+|---|-------|----------|--------|
+| 1 | Incomplete interface spec | REQ-01.04:S3 | Domain knowledge needed |
+| 2 | Missing algorithm | REQ-01.08:S8 | Architecture decision required |
+| ... | ... | ... | ... |
+```
+
+**Review Configuration**:
+
+```yaml
+review_mode:
+  enabled: true
+  checks:
+    - section_completeness     # All 12 sections
+    - atomic_decomposition     # File structure
+    - element_id_compliance    # REQ.NN.TT.SS format
+    - acceptance_criteria      # >= 15 count
+    - cross_links              # @discoverability tags
+    - cumulative_tags          # 6 upstream tags
+    - dual_score_calculation   # SPEC-Ready + IMPL-Ready
+    - test_categories          # [Logic]/[Validation] prefixes
+  output:
+    format: markdown
+    include_fix_suggestions: true
+  thresholds:
+    spec_ready_pass: 90
+    impl_ready_pass: 90
+    warning: 85
+```
+
+### Fix Mode (v2.1)
+
+Auto-repair existing REQ documents while preserving manual content.
+
+**Purpose**: Apply automated fixes to REQ documents to improve quality scores and compliance.
+
+**Command**:
+
+```bash
+# Fix single REQ folder
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/REQ-01_f1_iam/ \
+  --mode fix
+
+# Fix with backup
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/REQ-01_f1_iam/ \
+  --mode fix \
+  --backup
+
+# Fix specific issue types only
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/REQ-01_f1_iam/ \
+  --mode fix \
+  --fix-types "element_ids,sections,cross_links"
+
+# Dry-run fix (preview changes)
+python ai_dev_flow/scripts/req_autopilot.py \
+  --req docs/REQ/REQ-01_f1_iam/ \
+  --mode fix \
+  --dry-run
+```
+
+**Fix Categories and Actions**:
+
+| Category | Issue | Auto-Fix Action | Preserves Content |
+|----------|-------|-----------------|-------------------|
+| **Element IDs** | Legacy AC-XXX format | Convert to REQ.NN.06.SS | ✅ |
+| **Element IDs** | Legacy FR-XXX format | Convert to REQ.NN.01.SS | ✅ |
+| **Element IDs** | Legacy R-XXX format | Convert to REQ.NN.27.SS | ✅ |
+| **Sections** | Missing section | Insert from template | ✅ |
+| **Sections** | Missing SPEC-Ready Score | Calculate and insert | ✅ |
+| **Sections** | Missing IMPL-Ready Score | Calculate and insert | ✅ |
+| **Cross-Links** | Missing @discoverability | Add related REQ references | ✅ |
+| **Cross-Links** | Missing Section 10.5 | Add cross-link section | ✅ |
+| **Criteria** | Missing test category | Add [Logic]/[Validation] prefix | ✅ |
+| **Criteria** | Count below 15 | Add placeholder criteria | ✅ |
+| **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
+| **Index** | Outdated capability matrix | Regenerate from files | ✅ |
+
+**Content Preservation Rules**:
+
+1. **Never delete** existing acceptance criteria
+2. **Never modify** functional requirement text
+3. **Never change** interface specifications
+4. **Only add** missing sections and metadata
+5. **Only convert** legacy element IDs
+6. **Backup first** if `--backup` flag is set
+
+**Fix Report Structure**:
+
+```markdown
+# REQ Fix Report: REQ-01_f1_iam
+
+## Summary
+- **Before SPEC-Ready Score**: 88% 🟡
+- **After SPEC-Ready Score**: 94% ✅
+- **Before IMPL-Ready Score**: 85% 🟡
+- **After IMPL-Ready Score**: 92% ✅
+- **Issues Fixed**: 11
+- **Issues Remaining**: 4 (manual review required)
+
+## Fixes Applied
+| # | Issue | Location | Fix Applied |
+|---|-------|----------|-------------|
+| 1 | Legacy element ID | REQ-01.05:L45 | Converted AC-001 → REQ.01.06.01 |
+| 2 | Missing @discoverability | REQ-01.03 | Added cross-links to REQ-01.01, REQ-01.11 |
+| 3 | Missing test category | REQ-01.07:AC-003 | Added [Logic] prefix |
+| 4 | Below 15 criteria | REQ-01.09 | Added 3 placeholder criteria |
+| ... | ... | ... | ... |
+
+## Files Modified
+- docs/REQ/REQ-01_f1_iam/REQ-01.00_index.md
+- docs/REQ/REQ-01_f1_iam/REQ-01.03_token_revocation.md
+- docs/REQ/REQ-01_f1_iam/REQ-01.05_rbac_enforcement.md
+- docs/REQ/REQ-01_f1_iam/REQ-01.07_permission_inheritance.md
+- docs/REQ/REQ-01_f1_iam/REQ-01.09_mfa_integration.md
+
+## Backup Location
+- tmp/backup/REQ-01_f1_iam_20260209_143022/
+
+## Dual Score Impact
+### SPEC-Ready
+| Component | Before | After | Delta |
+|-----------|--------|-------|-------|
+| Interface Completeness | 18/20 | 19/20 | +1 |
+| Error Handling | 13/15 | 15/15 | +2 |
+| Acceptance Criteria | 9/10 | 10/10 | +1 |
+
+### IMPL-Ready
+| Component | Before | After | Delta |
+|-----------|--------|-------|-------|
+| Implementation Guidance | 22/25 | 24/25 | +2 |
+| Architecture Patterns | 18/20 | 19/20 | +1 |
+| Algorithm Specifications | 12/15 | 14/15 | +2 |
+
+## Next Steps
+1. Complete interface spec in REQ-01.04
+2. Add algorithm details to REQ-01.08
+3. Re-run validation to confirm scores
+```
+
+**Fix Configuration**:
+
+```yaml
+fix_mode:
+  enabled: true
+  backup:
+    enabled: true
+    location: "tmp/backup/"
+    retention_days: 7
+
+  fix_categories:
+    element_ids: true        # Legacy ID conversion
+    sections: true           # Missing required sections
+    cross_links: true        # @discoverability tags
+    criteria: true           # Acceptance criteria
+    traceability: true       # Cumulative tags
+    index: true              # Regenerate index
+
+  preservation:
+    acceptance_criteria: true   # Never delete criteria
+    functional_requirements: true
+    interface_specs: true
+    comments: true
+
+  validation:
+    re_validate_after_fix: true
+    require_score_improvement: false
+    max_fix_iterations: 3
+
+  element_id_migration:
+    AC_XXX_to_REQ_NN_06_SS: true   # AC-001 → REQ.01.06.01
+    FR_XXX_to_REQ_NN_01_SS: true   # FR-001 → REQ.01.01.01
+    R_XXX_to_REQ_NN_27_SS: true    # R-001 → REQ.01.27.01
+```
+
+**Command Line Options (Review/Fix)**:
+
+| Option | Mode | Default | Description |
+|--------|------|---------|-------------|
+| `--mode review` | Review | - | Run review mode only |
+| `--mode fix` | Fix | - | Run fix mode |
+| `--output-report` | Both | auto | Report output path |
+| `--backup` | Fix | true | Create backup before fixing |
+| `--fix-types` | Fix | all | Comma-separated fix categories |
+| `--dry-run` | Fix | false | Preview fixes without applying |
+| `--preserve-all` | Fix | false | Extra cautious preservation |
+
 ---
 
 ## Configuration
@@ -1092,5 +1385,6 @@ After autopilot completion:
 
 | Version | Date       | Changes |
 |---------|------------|---------|
+| 2.1     | 2026-02-09 | Added Review Mode for validating existing REQ documents without modification; Added Fix Mode for auto-repairing REQ documents while preserving manual content; Added fix categories (element_ids, sections, cross_links, criteria, traceability, index); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with dual score impact (SPEC-Ready + IMPL-Ready); Added element ID migration support (AC_XXX, FR_XXX, R_XXX to unified format) |
 | 2.0     | 2026-02-09 | **Major Enhancement**: Added Phase 1.5 Atomic Decomposition based on Trading Nexus REQ layer analysis; New atomic file output (10-15 files per module); Enhanced Section 8 with unit test category prefixes ([Logic]/[Validation]/[State]/[Edge]/[Security]); New Section 10.5 Cross-Links with @discoverability tags; Enhanced Section 11 with mandatory Code Implementation Paths (11.2) and Dependencies table (11.3); Enhanced error catalog format with Recovery Strategy table; Minimum 15 acceptance criteria split into Functional (10+) and Quality (5+); New validation rules REQ-E025 through REQ-E032 |
 | 1.0     | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-req, doc-req-validator, quality-advisor skills; Added REQ v3.0 12-section structure; Dual readiness scoring (SPEC-Ready + IMPL-Ready); 6 cumulative tags required (@brd, @prd, @ears, @bdd, @adr, @sys); Element ID types 01/05/06/27 |
