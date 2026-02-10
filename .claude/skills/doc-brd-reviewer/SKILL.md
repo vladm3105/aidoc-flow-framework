@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.0"
+  version: "1.1"
   last_updated: "2026-02-10"
 ---
 
@@ -356,9 +356,46 @@ Validates element IDs follow `doc-naming` standards.
 
 Review reports are stored alongside the reviewed document per project standards.
 
-**File Naming**: `BRD-NN.R_review_report.md`
+**File Naming**: `BRD-NN.R_review_report_vNNN.md`
 
 **Location**: Same folder as the reviewed BRD document.
+
+### Versioning Rules
+
+1. **First Review**: Creates `BRD-NN.R_review_report_v001.md`
+2. **Subsequent Reviews**: Auto-increments version (v002, v003, etc.)
+3. **Same-Day Reviews**: Each review gets unique version number
+
+**Version Detection Algorithm**:
+
+```
+1. Scan folder for pattern: BRD-NN.R_review_report_v*.md
+2. Extract highest version number (N)
+3. Create new file with version (N + 1)
+```
+
+**Example**:
+
+```
+docs/01_BRD/BRD-03_f3_observability/
+├── BRD-03.R_review_report_v001.md    # First review
+├── BRD-03.R_review_report_v002.md    # After fixes
+└── BRD-03.R_review_report_v003.md    # Final review
+```
+
+### Delta Reporting
+
+When previous reviews exist, include score comparison:
+
+```markdown
+## Score Comparison
+
+| Metric | Previous (v002) | Current (v003) | Delta |
+|--------|-----------------|----------------|-------|
+| Overall Score | 85 | 94 | +9 |
+| Errors | 3 | 0 | -3 |
+| Warnings | 5 | 2 | -3 |
+```
 
 See `REVIEW_DOCUMENT_STANDARDS.md` for complete requirements.
 
@@ -393,4 +430,5 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; ADR topic coverage validation; Strategic alignment check |

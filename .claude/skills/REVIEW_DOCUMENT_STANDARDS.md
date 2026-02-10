@@ -9,7 +9,7 @@ tags:
 custom_fields:
   document_type: standards
   applies_to: all-autopilot-skills
-  version: "1.0"
+  version: "2.0"
   last_updated: "2026-02-10"
 ---
 
@@ -63,7 +63,7 @@ docs/02_PRD/
 
 ## 2. File Naming Convention (MANDATORY)
 
-**Pattern**: `{ARTIFACT}-NN.R_review_report.md`
+**Pattern**: `{ARTIFACT}-NN.R_review_report_vNNN.md`
 
 | Component | Description | Example |
 |-----------|-------------|---------|
@@ -71,21 +71,100 @@ docs/02_PRD/
 | `-NN` | Document number | -01, -03, -12 |
 | `.R` | Review document suffix | Always `.R` |
 | `_review_report` | Document type descriptor | Always `_review_report` |
+| `_vNNN` | Version number (3 digits, zero-padded) | `_v001`, `_v002`, `_v015` |
 | `.md` | File extension | Always `.md` |
 
 **Examples by Artifact Type**:
 
-| Artifact | Review Report File Name |
-|----------|-------------------------|
-| BRD-01 | `BRD-01.R_review_report.md` |
-| BRD-03 | `BRD-03.R_review_report.md` |
-| PRD-01 | `PRD-01.R_review_report.md` |
-| ADR-05 | `ADR-05.R_review_report.md` |
-| SYS-02 | `SYS-02.R_review_report.md` |
-| REQ-03-001 | `REQ-03-001.R_review_report.md` |
-| SPEC-01 | `SPEC-01.R_review_report.md` |
-| TSPEC-01 | `TSPEC-01.R_review_report.md` |
-| TASKS-01 | `TASKS-01.R_review_report.md` |
+| Artifact | Review Report File Name (First Review) | Subsequent Reviews |
+|----------|----------------------------------------|-------------------|
+| BRD-01 | `BRD-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| BRD-03 | `BRD-03.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| PRD-01 | `PRD-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| ADR-05 | `ADR-05.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| SYS-02 | `SYS-02.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| REQ-03-001 | `REQ-03-001.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| SPEC-01 | `SPEC-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| TSPEC-01 | `TSPEC-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| TASKS-01 | `TASKS-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+
+### 2.1 Version Number Rules
+
+**Auto-Increment Behavior**:
+
+1. **First Review**: Always creates `_v001.md`
+2. **Subsequent Reviews**: Scans existing files, increments to next version
+3. **Same-Day Reviews**: Each review gets unique version (no overwrites)
+
+**Version Detection Algorithm**:
+
+```
+1. Scan folder for pattern: {ARTIFACT}-NN.R_review_report_v*.md
+2. Extract version numbers from matching files
+3. Determine highest existing version (N)
+4. Create new file with version (N + 1)
+```
+
+**Example Directory with Multiple Reviews**:
+
+```
+docs/01_BRD/BRD-03_f3_observability/
+├── BRD-03.0_index.md
+├── BRD-03.1_core.md
+├── BRD-03.2_requirements.md
+├── BRD-03.R_review_report_v001.md    # First review (2026-02-08)
+├── BRD-03.R_review_report_v002.md    # Second review (2026-02-10 AM)
+└── BRD-03.R_review_report_v003.md    # Third review (2026-02-10 PM)
+```
+
+### 2.2 YAML Frontmatter Version Fields
+
+Review reports MUST include version tracking in frontmatter:
+
+```yaml
+custom_fields:
+  review_version: "v001"              # Current review version
+  review_sequence: 1                  # Numeric sequence (1, 2, 3, ...)
+  previous_review: null               # null for v001, or "v001" for v002
+  review_date: "2026-02-10"           # ISO date
+  review_time: "14:30:00"             # ISO time (optional, for same-day tracking)
+```
+
+### 2.3 Version History Section
+
+Each review report SHOULD include a Version History section:
+
+```markdown
+## Version History
+
+| Version | Date | Time | Reviewer | Status | Score |
+|---------|------|------|----------|--------|-------|
+| v001 | 2026-02-08 | 10:15 | doc-brd-autopilot | FAIL | 72/100 |
+| v002 | 2026-02-10 | 09:30 | doc-brd-reviewer | PASS | 91/100 |
+| v003 | 2026-02-10 | 14:30 | doc-brd-reviewer | PASS | 95/100 |
+```
+
+### 2.4 Referencing Previous Reviews
+
+When generating a new review, the skill SHOULD:
+
+1. **Read previous review** (if exists) to compare scores
+2. **Include delta information** in executive summary
+3. **Track issue resolution** across versions
+
+**Delta Report Example**:
+
+```markdown
+## Score Comparison
+
+| Metric | v002 | v003 (Current) | Delta |
+|--------|------|----------------|-------|
+| Overall Score | 91 | 95 | +4 |
+| Errors | 2 | 0 | -2 |
+| Warnings | 5 | 3 | -2 |
+| Issues Resolved | - | 4 | - |
+| New Issues | - | 0 | - |
+```
 
 ---
 
@@ -95,7 +174,7 @@ All review reports MUST include YAML frontmatter with the following fields:
 
 ```yaml
 ---
-title: "{ARTIFACT}-NN.R: {Module Name} - Review Report"
+title: "{ARTIFACT}-NN.R: {Module Name} - Review Report v{NNN}"
 tags:
   - {artifact-type-lowercase}     # e.g., brd, prd, adr
   - {module-type}                 # e.g., foundation-module, domain-module
@@ -111,8 +190,12 @@ custom_fields:
   module_id: {module_id}              # e.g., F3, D1
   module_name: {module_name}          # e.g., Observability, Agent Orchestration
   review_date: "YYYY-MM-DD"           # ISO date format
-  review_tool: doc-{type}-autopilot   # e.g., doc-brd-autopilot
-  review_version: "{version}"         # Tool version
+  review_time: "HH:MM:SS"             # ISO time format (for same-day tracking)
+  review_tool: doc-{type}-reviewer    # e.g., doc-brd-reviewer
+  tool_version: "{version}"           # Tool version (e.g., 1.0)
+  review_version: "vNNN"              # Review version (e.g., v001, v002)
+  review_sequence: {n}                # Numeric sequence (1, 2, 3, ...)
+  previous_review: "vNNN"|null        # Previous version or null for first
   review_mode: read-only              # or fix-mode
   {score_field}_claimed: {claimed}    # e.g., prd_ready_score_claimed: 92
   {score_field}_validated: {validated} # e.g., prd_ready_score_validated: 85
@@ -258,4 +341,5 @@ See: `docs/01_BRD/BRD-03_f3_observability/BRD-03.R_review_report.md` for a compl
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-02-10 | Added review versioning (Section 2.1-2.4); Pattern changed to `_vNNN.md`; Added version tracking in frontmatter; Added delta reporting |
 | 1.0 | 2026-02-10 | Initial standards document; Defines storage location, file naming, YAML frontmatter, section structure, parent document references |

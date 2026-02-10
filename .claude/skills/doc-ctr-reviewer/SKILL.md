@@ -16,7 +16,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [CTR]
   downstream_artifacts: []
-  version: "1.0"
+  version: "1.1"
   last_updated: "2026-02-10"
 ---
 
@@ -245,11 +245,33 @@ Validates element IDs follow `doc-naming` standards.
 
 Review reports are stored alongside the reviewed document per project standards.
 
-**File Naming**: `CTR-NN-SSS.R_review_report.md`
+**File Naming**: `CTR-NN-SSS.R_review_report_vNNN.md`
 
 **Location**: Same folder as the reviewed CTR document.
 
-See `REVIEW_DOCUMENT_STANDARDS.md` for complete requirements.
+### Versioning Rules
+
+1. **First Review**: Creates `CTR-NN-SSS.R_review_report_v001.md`
+2. **Subsequent Reviews**: Auto-increments version (v002, v003, etc.)
+3. **Same-Day Reviews**: Each review gets unique version number
+
+**Version Detection**: Scans folder for existing `CTR-NN-SSS.R_review_report_v*.md` files and increments.
+
+**Example**:
+
+```
+docs/08_CTR/CTR-03-001_provider_api/
+├── CTR-03-001.md
+├── CTR-03-001.yaml
+├── CTR-03-001.R_review_report_v001.md    # First review
+└── CTR-03-001.R_review_report_v002.md    # After fixes
+```
+
+### Delta Reporting
+
+When previous reviews exist, include score comparison in the report.
+
+See `REVIEW_DOCUMENT_STANDARDS.md` for complete versioning requirements.
 
 ---
 
@@ -283,4 +305,5 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Dual-file consistency; OpenAPI compliance; Security definition |
