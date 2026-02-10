@@ -17,7 +17,7 @@ custom_fields:
 # ADR-CTR: API Contract Files Policy
 
 **Status**: Accepted
-**Date**: 2025-11-02
+**Date**: 2025-11-02T00:00:00
 **Decision Makers**: AI Dev Flow Working Group
 **Scope**: All API contracts (internal and external)
 
@@ -297,10 +297,10 @@ Before merging PR with new CTR:
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
-| 2025-11-02 | 1.0 | Initial ADR - Separate CTR files policy | AI Dev Flow Working Group |
+| 2025-11-02T00:00:00 | 1.0 | Initial ADR - Separate CTR files policy | AI Dev Flow Working Group |
 
 ---
 
 **Decision**: ACCEPTED
-**Effective Date**: 2025-11-02
-**Review Date**: 2026-02-02 (3 months)
+**Effective Date**: 2025-11-02T00:00:00
+**Review Date**: 2026-02-02T00:00:00 (3 months)

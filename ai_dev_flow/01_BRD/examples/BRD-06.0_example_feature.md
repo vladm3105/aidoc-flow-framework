@@ -19,7 +19,7 @@ custom_fields:
 |------|---------|
 | **Project Name** | Example Feature BRD |
 | **Document Version** | 1.0 |
-| **Date** | 2025-12-28 |
+| **Date** | 2025-12-28T00:00:00 |
 | **Document Owner** | Product Owner |
 | **Prepared By** | Business Analyst |
 | **Status** | Draft |
@@ -29,7 +29,7 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0 | 2025-12-28 | Business Analyst | Initial draft | |
+| 1.0 | 2025-12-28T00:00:00 | Business Analyst | Initial draft | |
 
 ---
 

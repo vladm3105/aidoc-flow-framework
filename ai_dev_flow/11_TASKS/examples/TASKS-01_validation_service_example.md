@@ -24,13 +24,13 @@ custom_fields:
 |------|---------|
 | **Status** | Example/Approved |
 | **Version** | 1.0.0 |
-| **Date Created** | 2025-11-15 |
-| **Last Updated** | 2025-11-15 |
+| **Date Created** | 2025-11-15T00:00:00 |
+| **Last Updated** | 2025-11-15T00:00:00 |
 | **Author** | Example Team |
 | **Assigned To** | Backend Developer |
 | **Priority** | High |
 | **Estimated Effort** | 16 hours |
-| **Due Date** | 2025-12-01 |
+| **Due Date** | 2025-12-01T00:00:00 |
 | **Dependencies** | None |
 | **Blockers** | None |
 
@@ -291,5 +291,5 @@ class ValidationProtocol(Protocol):
 
 **Document Control**:
 - **Version**: 1.0
-- **Last Updated**: 2025-11-15
+- **Last Updated**: 2025-11-15T00:00:00
 - **Template Reference**: TASKS-TEMPLATE.md

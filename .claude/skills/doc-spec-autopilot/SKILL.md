@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
   downstream_artifacts: [TSPEC, TASKS]
   version: "2.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-spec-autopilot
@@ -119,8 +119,8 @@ metadata:
   title: "Component Specification"
   version: "1.0.0"
   status: "approved"
-  created_date: "2026-02-09"
-  last_updated: "2026-02-09"
+  created_date: "2026-02-09T00:00:00"
+  last_updated: "2026-02-09T00:00:00"
   task_ready_score: "✅ 95% (Target: ≥90%)"
   authors: [{name: "...", email: "...", role: "..."}]
   reviewers: [{name: "...", email: "...", role: "..."}]

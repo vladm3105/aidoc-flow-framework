@@ -44,8 +44,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 3.2
-**Date**: 2025-11-19
-**Last Updated**: 2025-11-30
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-11-30T00:00:00
 **Source**: Extracted from REQ-MVP-TEMPLATE.md, REQ_MVP_VALIDATION_RULES.md, README.md, and REQ-00_index.md
 **Purpose**: Complete reference for creating REQ files according to doc-flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v3.2). Previous: Status/Score mapping, common mistakes section (v3.1)
@@ -552,7 +552,7 @@ Must include standard fields plus `complexity`:
 type: plan
 project: [Project Name]
 status: planning
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 complexity: [1-5]
 ---
 ```

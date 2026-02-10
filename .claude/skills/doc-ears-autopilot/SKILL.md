@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD]
   downstream_artifacts: [BDD, ADR, SYS]
   version: "2.2"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-ears-autopilot

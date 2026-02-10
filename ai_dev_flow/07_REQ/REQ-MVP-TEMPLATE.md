@@ -523,7 +523,7 @@ Use cross-links to make dependencies and discoverability AI-friendly:
 
 **Document Version**: 0.1.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: 2026-01-13
+**Last Updated**: 2026-01-13T00:00:00
 
 ---
 

@@ -193,19 +193,19 @@ Regulatory, industry, and technical standards referenced in BRDs.
 |------|---------|
 | **Document ID** | BRD-00_GLOSSARY |
 | **Document Version** | 1.2 |
-| **Creation Date** | 2025-11-26 |
+| **Creation Date** | 2025-11-26T00:00:00 |
 | **Document Owner** | SDD Framework Team |
 | **Maintained By** | Business Analyst Team |
 | **Review Frequency** | Quarterly or with framework updates |
-| **Last Reviewed** | 2026-02-06 |
+| **Last Reviewed** | 2026-02-06T00:00:00 |
 
 ### Revision History
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.2 | 2026-02-06 | Claude | Added FR vs EARS vs REQ clarification subsection 4.1 | Framework Lead |
-| 1.1 | 2025-12-30 | Claude | Added MCP, NAV, RAG terms per audit recommendation | Framework Lead |
-| 1.0 | 2025-11-26 | Claude | Initial master glossary creation | Framework Lead |
+| 1.2 | 2026-02-06T00:00:00 | Claude | Added FR vs EARS vs REQ clarification subsection 4.1 | Framework Lead |
+| 1.1 | 2025-12-30T00:00:00 | Claude | Added MCP, NAV, RAG terms per audit recommendation | Framework Lead |
+| 1.0 | 2025-11-26T00:00:00 | Claude | Initial master glossary creation | Framework Lead |
 
 ---
 

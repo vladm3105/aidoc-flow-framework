@@ -20,7 +20,7 @@ custom_fields:
 |-------|-------|
 | Document ID | REQ_QUALITY_GATE_VALIDATION |
 | Version | 1.0 |
-| Created | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete REQ corpus |
 | Trigger | Run after ALL REQ files are complete |
 | Scope | Entire REQ Quality Gate validation |
@@ -497,7 +497,7 @@ grep -rn "@adr:" "$REQ_DIR"/*.md | grep "ADR\." && echo "ERROR: @adr should use 
 
 **Severity**: Error
 
-**Required Format**: `YYYY-MM-DD` (e.g., `2026-01-05`)
+**Required Format**: `YYYY-MM-DDTHH:MM:SS` (e.g., `2026-01-05T00:00:00`)
 
 **Invalid Formats**:
 | Pattern | Example | Issue |

@@ -74,8 +74,8 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
-**Date**: 2025-11-19
-**Last Updated**: 2026-01-19
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2026-01-19T00:00:00
 **Purpose**: Complete validation rules for SYS documents
 **Script**: `python 06_SYS/scripts/validate_sys.py`
 **Primary Template**: `SYS-MVP-TEMPLATE.md` (full template archived)

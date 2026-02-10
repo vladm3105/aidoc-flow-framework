@@ -18,7 +18,7 @@ custom_fields:
 
 Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
 
-**Plan Date**: 2026-01-17  
+**Plan Date**: 2026-01-17T00:00:00  
 **Status**: FINAL REVIEW  
 **Scope**: Full L1-L14 pipeline (Documentation → Code → Tests → Validation → Production)
 **Automation Level**: 90%+ (14 of 15 layers automated)  

@@ -30,7 +30,7 @@ custom_fields:
 - [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) - Decision framework
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Universal rules
 
-**Last Updated:** 2026-01-24
+**Last Updated:** 2026-01-24T00:00:00
 
 ---
 
@@ -405,7 +405,7 @@ ai_dev_flow/07_REQ/
 
 ---
 
-**Last Updated:** 2026-01-24  
+**Last Updated:** 2026-01-24T00:00:00  
 **Status:** Architecture documentation for validation framework  
 **Scope:** REQ validation (with framework-wide applicability)  
 **Audience:** Framework architects, validator maintainers, advanced users

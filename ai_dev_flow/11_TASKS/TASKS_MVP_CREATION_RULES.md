@@ -11,7 +11,7 @@ custom_fields:
   priority: shared
   development_status: active
   schema_version: "2.0"
-  last_updated: "2026-01-15"
+  last_updated: "2026-01-15T00:00:00"
 ---
 
 # =============================================================================
@@ -41,8 +41,8 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 | Field | Value |
 |-------|-------|
 | **Version** | 2.0.0 |
-| **Created** | 2025-11-27 |
-| **Last Updated** | 2026-01-15 |
+| **Created** | 2025-11-27T00:00:00 |
+| **Last Updated** | 2026-01-15T00:00:00 |
 | **Status** | Active |
 | **Breaking Change** | v2.0: 13 sections, execution commands in Section 4 |
 
@@ -242,7 +242,7 @@ custom_fields:
 | Title | Yes | Descriptive task name |
 | Status | Yes | Draft/Ready/In Progress/Completed |
 | Version | Yes | Semantic version (X.Y.Z) |
-| Created | Yes | YYYY-MM-DD |
+| Created | Yes | YYYY-MM-DDTHH:MM:SS |
 | Author | Yes | Creator name |
 | Parent SPEC | Yes | SPEC-NN reference |
 | Complexity | Yes | 1-5 scale |
@@ -667,7 +667,7 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 ---
 
 **Document Version**: 2.0.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-15T00:00:00
 **Schema Version**: TASKS v2.0 (13 sections)
 
 ---

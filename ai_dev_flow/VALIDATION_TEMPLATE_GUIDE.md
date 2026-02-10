@@ -446,7 +446,7 @@ As validators improve:
 
 ---
 
-**Last Updated:** 2026-01-24  
+**Last Updated:** 2026-01-24T00:00:00  
 **Status:** Template guide for scaling validation framework  
 **Audience:** Framework architects, document-type implementers  
 **Scope:** Implementation guide for new document types

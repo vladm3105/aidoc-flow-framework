@@ -13,7 +13,7 @@ custom_fields:
 # Domain Adaptation Guide
 
 **Version**: 1.0
-**Last Updated**: 2025-11-05
+**Last Updated**: 2025-11-05T00:00:00
 **Purpose**: Guide for adapting the AI Dev Flow framework to specific project domains
 
 ---
@@ -448,6 +448,6 @@ TASKS Section 4 contains session-based execution commands. Customize for domain-
 
 **Document Control**:
 - **Version**: 1.0
-- **Last Updated**: 2025-11-05
+- **Last Updated**: 2025-11-05T00:00:00
 - **Maintainer**: Framework Steward
 - **Feedback**: Submit issues via project repository

@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [SPEC, CTR]
   downstream_artifacts: []
   version: "1.0"
-  last_updated: "2026-02-08"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # security-audit

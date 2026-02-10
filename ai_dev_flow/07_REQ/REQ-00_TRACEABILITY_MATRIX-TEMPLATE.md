@@ -26,8 +26,8 @@ custom_fields:
 | Title | Comprehensive Atomic Requirements Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
-| Last Updated | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
+| Last Updated | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | **Layer** | **7 (Requirements)** |
 | Purpose | Track upstream traceability for all Atomic Requirements Documents |
@@ -77,7 +77,7 @@ This matrix tracks all REQ documents and their upstream sources (BRD, PRD, EARS,
 - **Total REQ Tracked**: [X] documents
 - **Requirement Domains**: [Y] domains
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -257,8 +257,8 @@ Code (Layer 12) → Source code (@brd through @tasks)
 
 | REQ ID | Title | Domain | Priority | Status | Date | Upstream Sources |
 |--------|-------|--------|----------|--------|------|------------------|
-| REQ-01 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01, SYS-01 |
-| REQ-02 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-02, BDD-02, ADR-01, SYS-02 |
+| REQ-01 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DDTHH:MM:SS | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01, SYS-01 |
+| REQ-02 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DDTHH:MM:SS | BRD-01, PRD-01, EARS-02, BDD-02, ADR-01, SYS-02 |
 | REQ-NN | ... | ... | ... | ... | ... | ... |
 
 **Priority Legend**: Must, Should, Could, Won't (MoSCoW)
@@ -464,7 +464,7 @@ python scripts/generate_reverse_traceability.py --upstream REQ --downstream CTR,
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial creation | [Author Name] |
 
 ---
 

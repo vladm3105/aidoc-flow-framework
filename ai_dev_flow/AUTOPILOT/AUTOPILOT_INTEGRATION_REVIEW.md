@@ -12,7 +12,7 @@ custom_fields:
   priority: recommended-approach
   development_status: active
   version: "1.0"
-  date_created: "2026-02-06"
+  date_created: "2026-02-06T00:00:00"
 ---
 
 # Autopilot Integration Review: CHG, TSPEC, and TDD
@@ -653,7 +653,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 | Field | Value |
 |-------|-------|
 | Version | 1.0 |
-| Date Created | 2026-02-06 |
+| Date Created | 2026-02-06T00:00:00 |
 | Status | Draft |
 | Author | AI Dev Flow Framework |
 | Review Required | Yes |

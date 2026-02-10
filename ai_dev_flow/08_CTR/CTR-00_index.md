@@ -37,7 +37,7 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 
 | Contract ID | Title | Service Type | Status | Version | Upstream REQ | Downstream SPEC | Last Updated |
 |-------------|-------|--------------|--------|---------|--------------|-----------------|--------------|
-| CTR-TEMPLATE | Contract Template | template | Draft | 1.0.0 | N/A | N/A | YYYY-MM-DD |
+| CTR-TEMPLATE | Contract Template | template | Draft | 1.0.0 | N/A | N/A | YYYY-MM-DDTHH:MM:SS |
 
 *Add new contracts below as they are created*
 
@@ -143,5 +143,5 @@ SPEC (Technical Implementation)
 ---
 
 **Index Version**: 1.0
-**Last Updated**: YYYY-MM-DD
-**Next Review**: YYYY-MM-DD (recommend quarterly review)
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
+**Next Review**: YYYY-MM-DDTHH:MM:SS (recommend quarterly review)

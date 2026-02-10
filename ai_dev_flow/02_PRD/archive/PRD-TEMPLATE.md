@@ -106,8 +106,8 @@ Schema: See `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` for complete rules
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | [Semantic version, e.g., 1.0.0] |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
@@ -138,7 +138,7 @@ Select the appropriate template variant based on domain:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0.0 | YYYY-MM-DD | [Author Name] | Initial draft | [Approver] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | [Author Name] | Initial draft | [Approver] |
 
 ## 2. Executive Summary
 
@@ -150,11 +150,11 @@ Select the appropriate template variant based on domain:
 
 ### 2.2 Timeline
 
-- **Discovery & Planning**: YYYY-MM-DD to YYYY-MM-DD ([duration])
-- **Development**: YYYY-MM-DD to YYYY-MM-DD ([duration])
-- **Testing & Validation**: YYYY-MM-DD to YYYY-MM-DD ([duration])
-- **Launch**: YYYY-MM-DD
-- **Post-Launch Monitoring**: YYYY-MM-DD onwards ([duration])
+- **Discovery & Planning**: YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS ([duration])
+- **Development**: YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS ([duration])
+- **Testing & Validation**: YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS ([duration])
+- **Launch**: YYYY-MM-DDTHH:MM:SS
+- **Post-Launch Monitoring**: YYYY-MM-DDTHH:MM:SS onwards ([duration])
 
 ---
 
@@ -248,17 +248,17 @@ Select the appropriate template variant based on domain:
 
 ### 5.3 Success Criteria by Phase
 
-**Phase 1 - Launch (YYYY-MM-DD)**:
+**Phase 1 - Launch (YYYY-MM-DDTHH:MM:SS)**:
 - [Measurable outcomes for initial release]
 - [User adoption targets]
 - [Performance benchmarks]
 
-**Phase 2 - Stabilization (YYYY-MM-DD to YYYY-MM-DD)**:
+**Phase 2 - Stabilization (YYYY-MM-DDTHH:MM:SS to YYYY-MM-DDTHH:MM:SS)**:
 - [Usage growth targets]
 - [Feature maturity metrics]
 - [Issue resolution benchmarks]
 
-**Phase 3 - Optimization (YYYY-MM-DD onwards)**:
+**Phase 3 - Optimization (YYYY-MM-DDTHH:MM:SS onwards)**:
 - [Continuous improvement goals]
 - [Advanced feature adoption]
 - [Business impact maximization]
@@ -344,13 +344,13 @@ Select the appropriate template variant based on domain:
 
 #### Business Dependencies
 
-- **Dependency 1**: [Required organizational change], Owner: [person/team], Target Date: [YYYY-MM-DD]
-- **Dependency 2**: [Required process change], Owner: [person/team], Target Date: [YYYY-MM-DD]
+- **Dependency 1**: [Required organizational change], Owner: [person/team], Target Date: [YYYY-MM-DDTHH:MM:SS]
+- **Dependency 2**: [Required process change], Owner: [person/team], Target Date: [YYYY-MM-DDTHH:MM:SS]
 
 #### External Dependencies
 
-- **Dependency 1**: [Vendor/third-party requirement], Contract Status: [signed/pending], Target Date: [YYYY-MM-DD]
-- **Dependency 2**: [Regulatory/Compliance requirement], Status: [approved/pending], Target Date: [YYYY-MM-DD]]
+- **Dependency 1**: [Vendor/third-party requirement], Contract Status: [signed/pending], Target Date: [YYYY-MM-DDTHH:MM:SS]
+- **Dependency 2**: [Regulatory/Compliance requirement], Status: [approved/pending], Target Date: [YYYY-MM-DDTHH:MM:SS]]
 
 ---
 
@@ -840,19 +840,19 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 [MVP-first approach with iterative delivery:
 
-#### Phase 1 MVP (YYYY-MM-DD): Core Capabilities
+#### Phase 1 MVP (YYYY-MM-DDTHH:MM:SS): Core Capabilities
 
 - Deliver: [Essential features for basic functionality]
 - Value: [What users can immediately achieve]
 - Success Criteria: [Measurable validation points]
 
-#### Phase 2 Enhancement (YYYY-MM-DD): Extended Features
+#### Phase 2 Enhancement (YYYY-MM-DDTHH:MM:SS): Extended Features
 
 - Deliver: [Advanced functionality and integrations]
 - Value: [Additional capabilities and efficiency gains]
 - Success Criteria: [Enhanced user experience validation]
 
-#### Phase 3 Optimization (YYYY-MM-DD): Maturity & Scale
+#### Phase 3 Optimization (YYYY-MM-DDTHH:MM:SS): Maturity & Scale
 
 - Deliver: [Performance optimization and advanced features]
 - Value: [Enterprise-grade reliability and scalability]
@@ -1145,10 +1145,10 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | Reference Type | Total Count | Valid Links | Broken Links | Last Validated |
 |----------------|-------------|-------------|--------------|----------------|
-| Upstream (01_BRD/Strategy) | [count] | [count] | [count] | YYYY-MM-DD |
-| Downstream (06_SYS/03_EARS/07_REQ/ADR) | [count] | [count] | [count] | YYYY-MM-DD |
-| BDD Scenarios | [count] | [count] | [count] | YYYY-MM-DD |
-| External References | [count] | [count] | [count] | YYYY-MM-DD |
+| Upstream (01_BRD/Strategy) | [count] | [count] | [count] | YYYY-MM-DDTHH:MM:SS |
+| Downstream (06_SYS/03_EARS/07_REQ/ADR) | [count] | [count] | [count] | YYYY-MM-DDTHH:MM:SS |
+| BDD Scenarios | [count] | [count] | [count] | YYYY-MM-DDTHH:MM:SS |
+| External References | [count] | [count] | [count] | YYYY-MM-DDTHH:MM:SS |
 
 ### 18.7 Validation Evidence
 
@@ -1156,9 +1156,9 @@ Document evidence that PRD requirements have been translated to technical specif
 
 | PRD Feature ID | Validation Method | Evidence Location | Result | Date Validated |
 |----------------|------------------|-------------------|--------|----------------|
-| 001 | User acceptance testing | UAT report [location] | PASS | YYYY-MM-DD |
-| 002 | Integration test | Test results [location] | PASS | YYYY-MM-DD |
-| 003 | Performance benchmark | Load test results [location] | PASS (meets targets) | YYYY-MM-DD |
+| 001 | User acceptance testing | UAT report [location] | PASS | YYYY-MM-DDTHH:MM:SS |
+| 002 | Integration test | Test results [location] | PASS | YYYY-MM-DDTHH:MM:SS |
+| 003 | Performance benchmark | Load test results [location] | PASS (meets targets) | YYYY-MM-DDTHH:MM:SS |
 
 **Validation Status Summary**:
 - Validated features: [count] / [total]
@@ -1389,8 +1389,8 @@ Before progressing to EARS creation, verify:
 
 **Document Version**: 1.0.0
 **Template Version**: 3.0
-**Last Business Review**: YYYY-MM-DD
-**Next Business Review**: YYYY-MM-DD (recommend quarterly review for active PRDs)
+**Last Business Review**: YYYY-MM-DDTHH:MM:SS
+**Next Business Review**: YYYY-MM-DDTHH:MM:SS (recommend quarterly review for active PRDs)
 **Approval Status**: [Draft/Under Review/Approved/Rejected]
 **Approver Signatures**: [Space for stakeholder signatures or approval tracking]
 **Maintained By**: [Product Manager/Team responsible for PRD maintenance]

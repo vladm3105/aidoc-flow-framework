@@ -15,7 +15,7 @@ custom_fields:
 **Purpose**: One-page cheat sheet for AI Dev Flow framework
 **Target**: Developers and AI Assistants
 **Status**: Production
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-07T00:00:00
 
 ---
 

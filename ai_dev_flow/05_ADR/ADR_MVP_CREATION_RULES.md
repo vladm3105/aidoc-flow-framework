@@ -55,8 +55,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
-**Date**: 2025-11-19
-**Last Updated**: 2025-11-30
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-11-30T00:00:00
 **Source**: Derived from ADR-MVP-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (full template archived)
 **Purpose**: Complete reference for creating ADR documents according to AI Dev Flow SDD framework
 **Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
@@ -466,7 +466,7 @@ Must include standard fields plus `complexity`:
 type: plan
 project: [Project Name]
 status: planning
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 complexity: [1-5]
 ---
 ```

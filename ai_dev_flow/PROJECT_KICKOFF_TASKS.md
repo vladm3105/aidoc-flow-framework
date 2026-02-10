@@ -233,7 +233,7 @@ section 7 Traceability:
 Task 6: Updating BRD-00_index.md...
 
 Added entry:
-| BRD-01 | service Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |
+| BRD-01 | service Platform Business Requirements | Draft | High | 2025-01-15T00:00:00 | 2025-01-15T00:00:00 |
 
 ✓ Index updated
 

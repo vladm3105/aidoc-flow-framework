@@ -29,8 +29,8 @@ custom_fields:
 |-------|---------|
 | **Status** | Example |
 | **Version** | 1.0.0 |
-| **Date Created** | 2026-01-19 |
-| **Last Updated** | 2026-01-19 |
+| **Date Created** | 2026-01-19T00:00:00 |
+| **Last Updated** | 2026-01-19T00:00:00 |
 | **Author** | System Architect |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
@@ -418,7 +418,7 @@ This system enhancement improves validation logic for order management API, addi
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| 2026-01-19 | 1.0.0 | Initial example - Pure logic changes with all deployment/operational subsections marked NA | System Architect |
+| 2026-01-19T00:00:00 | 1.0.0 | Initial example - Pure logic changes with all deployment/operational subsections marked NA | System Architect |
 
 ---
 

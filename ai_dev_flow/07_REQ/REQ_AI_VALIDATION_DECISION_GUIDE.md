@@ -25,7 +25,7 @@ custom_fields:
 
 **Audience**: AI assistants (Claude, GPT-4, Gemini, etc.) working with REQ artifacts in ai_dev_flow
 
-**Last Updated**: 2026-01-24
+**Last Updated**: 2026-01-24T00:00:00
 
 ---
 
@@ -738,8 +738,8 @@ These are genuinely standalone and should NOT have forced cross-references:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1 | 2026-01-24 | Added GATE-05 cross-linking guidance and GATE-13 domain classification |
-| 1.0 | 2026-01-24 | Initial creation based on REQ-02 validation session |
+| 1.1 | 2026-01-24T00:00:00 | Added GATE-05 cross-linking guidance and GATE-13 domain classification |
+| 1.0 | 2026-01-24T00:00:00 | Initial creation based on REQ-02 validation session |
 
 ---
 

@@ -781,8 +781,8 @@ except ValidationError as e:
 ---
 
 **README Version**: 1.0
-**Last Updated**: YYYY-MM-DD
-**Next Review**: YYYY-MM-DD (recommend quarterly for active documentation)
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
+**Next Review**: YYYY-MM-DDTHH:MM:SS (recommend quarterly for active documentation)
 ## File Size Limits
 
 - **Target**: <15,000 tokens per file

@@ -15,7 +15,7 @@ custom_fields:
 # BDD Suite Generation Checklist (Section-Based Format)
 
 **Version**: 2.0
-**Date**: 2025-12-27
+**Date**: 2025-12-27T00:00:00
 **Purpose**: Step-by-step checklist for creating section-based BDD suites
 **Framework**: AI Dev Flow SDD methodology
 
@@ -411,4 +411,4 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 **Document Path**: `04_BDD/BDD_GENERATION_CHECKLIST.md`
 **Framework**: AI Dev Flow SDD
-**Last Updated**: 2025-12-27
+**Last Updated**: 2025-12-27T00:00:00

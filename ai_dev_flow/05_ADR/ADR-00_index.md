@@ -54,7 +54,7 @@ flowchart LR
 
 | ADR ID | Title | Status | Category | Related BDD | Impact | Last Updated |
 |--------|-------|--------|----------|-------------|--------|--------------|
-| [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13 |
+| [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13T00:00:00 |
 
 ## Planned
 
@@ -154,9 +154,9 @@ When creating a new ADR:
 ```mermaid
 gantt
     title Architecture Decision Timeline
-    dateFormat YYYY-MM-DD
+    dateFormat YYYY-MM-DDTHH:MM:SS
     section Decisions
-    No ADRs yet :2025-11-13, 1d
+    No ADRs yet :2025-11-13T00:00:00, 1d
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
@@ -211,5 +211,5 @@ Before marking ADR as "Accepted":
 ---
 
 **Index Version**: 2.0
-**Last Updated**: 2025-11-13
+**Last Updated**: 2025-11-13T00:00:00
 **Maintainer**: [Project Team]

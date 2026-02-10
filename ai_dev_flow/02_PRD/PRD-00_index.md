@@ -47,7 +47,7 @@ flowchart LR
 
 | PRD ID | Title | Status | Related BRD | Features | Priority | Last Updated |
 |--------|-------|--------|-------------|----------|----------|--------------|
-| [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md) | Template (default) | Reference | - | - | - | 2025-11-13 |
+| [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md) | Template (default) | Reference | - | - | - | 2025-11-13T00:00:00 |
 
 ## Planned
 
@@ -55,7 +55,7 @@ flowchart LR
 
 | ID | Title | Priority | Target Date | Notes |
 |----|-------|----------|-------------|-------|
-| PRD-XX | … | High/Med/Low | YYYY-MM-DD | … |
+| PRD-XX | … | High/Med/Low | YYYY-MM-DDTHH:MM:SS | … |
 
 ## Status Definitions
 
@@ -324,11 +324,11 @@ Before marking PRD as "Approved":
 ---
 
 **Index Version**: 3.0
-**Last Updated**: 2025-11-29
+**Last Updated**: 2025-11-29T00:00:00
 **Maintainer**: [Project Team]
 
 ### Version History
 | Version | Date | Changes |
 |---------|------|---------|
-| 3.0 | 2025-11-29 | Added Template Variants, Threshold Registry Integration, Migration Guide, enhanced Quality Metrics |
-| 2.0 | 2025-11-13 | Initial structured index |
+| 3.0 | 2025-11-29T00:00:00 | Added Template Variants, Threshold Registry Integration, Migration Guide, enhanced Quality Metrics |
+| 2.0 | 2025-11-13T00:00:00 | Initial structured index |

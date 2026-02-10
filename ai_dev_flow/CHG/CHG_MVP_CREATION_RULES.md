@@ -10,7 +10,7 @@ custom_fields:
   priority: shared
   development_status: active
   version: "2.0"
-  last_updated: "2026-02-05"
+  last_updated: "2026-02-05T00:00:00"
 ---
 
 # CHG Creation Rules

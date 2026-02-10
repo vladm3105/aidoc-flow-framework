@@ -711,7 +711,7 @@ custom_fields:
   section_type: content  # or "index" for section 0
   architecture_approach: ai-agent-primary
   priority: primary|fallback|shared
-  split_date: YYYY-MM-DD
+  split_date: YYYY-MM-DDTHH:MM:SS
 ---
 ```
 
@@ -773,7 +773,7 @@ section: 0
 title: "Platform Requirements - Index"
 total_sections: 7
 original_size_kb: 146
-split_date: 2025-12-17
+split_date: 2025-12-17T00:00:00
 tags:
   - section-index
   - platform-brd

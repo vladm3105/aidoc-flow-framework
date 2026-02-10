@@ -340,7 +340,7 @@ Stay within limits for development
 | Field | Value |
 |-------|-------|
 | Version | 1.0 |
-| Created | 2026-01-02 |
+| Created | 2026-01-02T00:00:00 |
 | Author | Cost Analysis Review |
 | Previous Estimate | $95-162/month |
 | **Revised Estimate** | **$175-525/month** |

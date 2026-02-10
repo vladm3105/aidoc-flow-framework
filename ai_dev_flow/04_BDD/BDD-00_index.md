@@ -337,7 +337,7 @@ Track acceptance test coverage for requirements:
 
 ## Maintenance
 
-**Last Updated**: 2025-11-02
+**Last Updated**: 2025-11-02T00:00:00
 **Maintained By**: AI Dev Flow Working Group
 **Review Frequency**: Monthly or when new BDD files are added
 **Version**: 1.0

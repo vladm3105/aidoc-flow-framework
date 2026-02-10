@@ -13,7 +13,7 @@ custom_fields:
 # SDD Framework Layer Evolution Guide
 
 **Version**: 1.1
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-07T00:00:00
 **Purpose**: Procedures for adding, modifying, or deprecating layers in the SDD framework
 
 ---
@@ -138,7 +138,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 
 - [x] Create `LAYER_REGISTRY.yaml`
 - [x] Document all 15 layers
-- [x] Add TSPEC (Layer 10) for TDD workflow (v1.6, 2026-02-05)
+- [x] Add TSPEC (Layer 10) for TDD workflow (v1.6, 2026-02-05T00:00:00)
 
 ### Phase 2: Validation Tools (Future)
 

@@ -15,7 +15,7 @@ custom_fields:
 
 > **CHG Reference**: CHG-XX
 > **Change Title**: {Title}
-> **Date**: {YYYY-MM-DD}
+> **Date**: {YYYY-MM-DDTHH:MM:SS}
 
 ## 1. Change Summary
 
@@ -29,7 +29,7 @@ custom_fields:
 | **Change Source** | Upstream / Midstream / Downstream / External / Feedback |
 | **Entry Gate** | GATE-01 / GATE-05 / GATE-09 / GATE-12 |
 | **Requested By** | {Name} |
-| **Request Date** | {YYYY-MM-DD} |
+| **Request Date** | {YYYY-MM-DDTHH:MM:SS} |
 
 ### 1.2 Change Description
 

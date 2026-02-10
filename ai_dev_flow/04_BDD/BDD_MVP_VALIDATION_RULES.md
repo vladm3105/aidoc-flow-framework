@@ -88,8 +88,8 @@ Validation handling: Info-level (non-blocking). Reported for visibility only. Ta
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
-**Date**: 2025-11-19
-**Last Updated**: 2025-12-26
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-12-26T00:00:00
 **Purpose**: Complete validation rules for BDD feature files
 **Script**: `python 04_BDD/scripts/validate_bdd.py`
 **Primary Template**: `BDD-MVP-TEMPLATE.feature`

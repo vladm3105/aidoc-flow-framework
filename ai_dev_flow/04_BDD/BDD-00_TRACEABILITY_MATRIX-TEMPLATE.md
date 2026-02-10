@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive BDD Test Scenarios Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all Behavior-Driven Development (BDD) test scenarios |
 
@@ -75,7 +75,7 @@ This matrix tracks all BDD feature files and their upstream sources (BRD, PRD, E
 - **Total Scenarios**: [Y] test scenarios
 - **Total Steps**: [Z] test steps
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -226,8 +226,8 @@ Test Implementation & Code (Layers 13-14)
 
 | BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources |
 |--------|-------|------------------|-----------|-------|--------|------|------------------|
-| BDD-01 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DD | EARS-01, PRD-01, BRD-01 |
-| BDD-02 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DD | EARS-02, PRD-02, BRD-01 |
+| BDD-01 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DDTHH:MM:SS | EARS-01, PRD-01, BRD-01 |
+| BDD-02 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DDTHH:MM:SS | EARS-02, PRD-02, BRD-01 |
 | BDD-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -467,10 +467,10 @@ graph TD
 
 | Improvement Area | BDD Affected | Target Date | Owner |
 |------------------|--------------|-------------|-------|
-| Fix failing API tests | BDD-02 | YYYY-MM-DD | [Owner] |
-| Implement pending scenarios | BDD-03, BDD-007 | YYYY-MM-DD | [Owner] |
-| Reduce test execution time | BDD-NN, BDD-NN | YYYY-MM-DD | [Owner] |
-| Stabilize flaky tests | BDD-02, BDD-009 | YYYY-MM-DD | [Owner] |
+| Fix failing API tests | BDD-02 | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Implement pending scenarios | BDD-03, BDD-007 | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Reduce test execution time | BDD-NN, BDD-NN | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Stabilize flaky tests | BDD-02, BDD-009 | YYYY-MM-DDTHH:MM:SS | [Owner] |
 
 ---
 
@@ -478,7 +478,7 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial traceability matrix creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial traceability matrix creation | [Author Name] |
 
 ---
 

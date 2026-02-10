@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive Product Requirements Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all Product Requirements Documents |
 
@@ -74,7 +74,7 @@ This matrix tracks all PRD documents, mapping each to its upstream business requ
 - **Total PRDs Tracked**: [X] documents
 - **Document Status**: [Y] active, [Z] in development
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -140,8 +140,8 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 | PRD ID | Title | Feature Category | Status | Date | Upstream Sources | EARS | Variant | Migration |
 |--------|-------|------------------|--------|------|------------------|------|---------|-----------|
-| PRD-01 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-01, BRD-02 | 95 | S | Current |
-| PRD-02 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-03 | 88 | S | Current |
+| PRD-01 | [Product feature title] | [Category] | Active | YYYY-MM-DDTHH:MM:SS | BRD-01, BRD-02 | 95 | S | Current |
+| PRD-02 | [Product feature title] | [Category] | Active | YYYY-MM-DDTHH:MM:SS | BRD-03 | 88 | S | Current |
 | PRD-NN | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
@@ -373,9 +373,9 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 
 | Release | Target Date | Required PRDs | Status | Completion % |
 |---------|-------------|---------------|--------|--------------|
-| [Release 1.0: MVP] | YYYY-MM-DD | PRD-01 through PRD-005 | On Track | 85% |
-| [Release 1.1: Feature Pack] | YYYY-MM-DD | PRD-NN range | Planning | 30% |
-| [Release 2.0: Major Update] | YYYY-MM-DD | All PRDs | Not Started | 0% |
+| [Release 1.0: MVP] | YYYY-MM-DDTHH:MM:SS | PRD-01 through PRD-005 | On Track | 85% |
+| [Release 1.1: Feature Pack] | YYYY-MM-DDTHH:MM:SS | PRD-NN range | Planning | 30% |
+| [Release 2.0: Major Update] | YYYY-MM-DDTHH:MM:SS | All PRDs | Not Started | 0% |
 
 ### 11.3 Quality Metrics Summary
 
@@ -416,8 +416,8 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial traceability matrix creation | [Author Name] |
-| 0.9.0 | YYYY-MM-DD | Draft version for review | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial traceability matrix creation | [Author Name] |
+| 0.9.0 | YYYY-MM-DDTHH:MM:SS | Draft version for review | [Author Name] |
 
 ---
 

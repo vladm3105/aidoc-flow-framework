@@ -19,7 +19,7 @@ custom_fields:
 | Title | Complete End-to-End Traceability Matrix |
 | Status | Active |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track complete traceability chain: Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Production |
 
@@ -425,7 +425,7 @@ Tests: tests/test_order_service.py + contract tests (95% coverage)
    ↓ validates
 BDD-NN: Acceptance tests pass (100% scenarios passing)
    ↓ deploys
-Production: Deployed v1.2.0 (YYYY-MM-DD)
+Production: Deployed v1.2.0 (YYYY-MM-DDTHH:MM:SS)
 ```
 
 **Status**: ✅ Complete end-to-end traceability
@@ -800,8 +800,8 @@ python 07_REQ/scripts/validate_requirement_ids.py \
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial complete traceability matrix creation | [Author Name] |
-| 0.9.0 | YYYY-MM-DD | Draft version for stakeholder review | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial complete traceability matrix creation | [Author Name] |
+| 0.9.0 | YYYY-MM-DDTHH:MM:SS | Draft version for stakeholder review | [Author Name] |
 
 ---
 
@@ -931,5 +931,5 @@ python scripts/generate_traceability_matrix.py --auto --report
 ---
 
 **Matrix Status**: ✅ Active and Maintained
-**Last Full Validation**: YYYY-MM-DD
-**Next Scheduled Update**: YYYY-MM-DD
+**Last Full Validation**: YYYY-MM-DDTHH:MM:SS
+**Next Scheduled Update**: YYYY-MM-DDTHH:MM:SS

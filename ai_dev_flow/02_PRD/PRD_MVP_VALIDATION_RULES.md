@@ -88,8 +88,8 @@ Validation handling: Recognized as info-level (non-blocking). Reported for visib
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.0.0
-**Date**: 2025-11-26
-**Last Updated**: 2025-11-26
+**Date**: 2025-11-26T00:00:00
+**Last Updated**: 2025-11-26T00:00:00
 **Purpose**: Complete validation rules for PRD documents
 **Script**: `python 02_PRD/scripts/validate_prd.py`
 **Primary Template**: `PRD-MVP-TEMPLATE.md` (full template archived)
@@ -184,8 +184,8 @@ All PRD requirements must include:
 | Author | Product Manager/Owner Name | MANDATORY |
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
-| Created Date | YYYY-MM-DD | MANDATORY |
-| Last Updated | YYYY-MM-DD | MANDATORY |
+| Created Date | YYYY-MM-DDTHH:MM:SS | MANDATORY |
+| Last Updated | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |

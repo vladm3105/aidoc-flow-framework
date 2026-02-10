@@ -51,7 +51,7 @@ custom_fields:
 |------|---------|
 | **Project Name** | Order Management Platform |
 | **Document Version** | 1.0 |
-| **Date** | 2025-12-29 |
+| **Date** | 2025-12-29T00:00:00 |
 | **Document Owner** | Platform Architecture Team |
 | **Prepared By** | API Architect |
 | **Status** | Approved |
@@ -61,9 +61,9 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 0.1 | 2025-12-05 | API Architect | Initial draft | - |
-| 0.2 | 2025-12-18 | API Architect | Added versioning strategy | Tech Lead |
-| 1.0 | 2025-12-29 | API Architect | Final approval | CTO |
+| 0.1 | 2025-12-05T00:00:00 | API Architect | Initial draft | - |
+| 0.2 | 2025-12-18T00:00:00 | API Architect | Added versioning strategy | Tech Lead |
+| 1.0 | 2025-12-29T00:00:00 | API Architect | Final approval | CTO |
 
 ---
 
@@ -72,10 +72,10 @@ custom_fields:
 ## 3. Status
 
 **Status**: Approved
-**Date**: 2025-12-29
+**Date**: 2025-12-29T00:00:00
 **Decision Makers**: Platform Architecture Team, API Guild
 **ADR Author**: API Architect
-**Last Updated**: 2025-12-29
+**Last Updated**: 2025-12-29T00:00:00
 
 ## 4. Context
 

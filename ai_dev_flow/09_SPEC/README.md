@@ -941,7 +941,7 @@ Specification updates for new requirements:
 ```yaml
 changelog:
   - version: 1.2.0
-    date: "2025-01-15"
+    date: "2025-01-15T00:00:00"
     changes:
       - "Added support for mobile push notifications"
       - "Improved rate limiting accuracy"

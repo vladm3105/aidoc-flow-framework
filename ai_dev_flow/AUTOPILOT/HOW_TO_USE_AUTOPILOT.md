@@ -1,7 +1,7 @@
 # How to Use MVP Autopilot
 
 **Version**: 5.0  
-**Date**: 2026-01-19  
+**Date**: 2026-01-19T00:00:00  
 **Status**: Production-Ready
 
 ---

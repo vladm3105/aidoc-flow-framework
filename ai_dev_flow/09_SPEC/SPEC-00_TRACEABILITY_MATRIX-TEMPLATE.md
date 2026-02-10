@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive Technical Specifications Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all Technical Specification Documents (YAML format) |
 
@@ -77,7 +77,7 @@ This matrix tracks all SPEC documents and their upstream sources (BRD, PRD, EARS
 - **Total SPEC Tracked**: [X] documents
 - **Total Components**: [Y] services/agents/infrastructure
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -234,8 +234,8 @@ Code (Layer 12) → Source code
 
 | SPEC ID | Title | Spec Type | Status | Date | Upstream Sources |
 |---------|-------|-----------|--------|------|------------------|
-| SPEC-NN | [Technical specification title] | Service | Active | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN, CTR-NN |
-| SPEC-NN | [Technical specification title] | Agent | Active | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN |
+| SPEC-NN | [Technical specification title] | Service | Active | YYYY-MM-DDTHH:MM:SS | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN, CTR-NN |
+| SPEC-NN | [Technical specification title] | Agent | Active | YYYY-MM-DDTHH:MM:SS | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN |
 | SPEC-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -451,9 +451,9 @@ graph TD
 
 | Review Type | Target Date | SPEC Scope | Status |
 |-------------|-------------|------------|--------|
-| Technical Review | YYYY-MM-DD | All active SPEC | Scheduled |
-| Performance Review | YYYY-MM-DD | Service SPEC | Planning |
-| security Review | YYYY-MM-DD | All SPEC | Scheduled |
+| Technical Review | YYYY-MM-DDTHH:MM:SS | All active SPEC | Scheduled |
+| Performance Review | YYYY-MM-DDTHH:MM:SS | Service SPEC | Planning |
+| security Review | YYYY-MM-DDTHH:MM:SS | All SPEC | Scheduled |
 
 ---
 
@@ -461,7 +461,7 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial creation | [Author Name] |
 
 ---
 

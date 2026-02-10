@@ -1195,12 +1195,12 @@ Developed for AI-assisted software engineering workflows optimized for:
 ---
 
 **Version**: 2.4
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-07T00:00:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
 
-### Version 2.4 (2026-02-07)
+### Version 2.4 (2026-02-07T00:00:00)
 - ✅ **Autopilot v6.0**: Complete automation upgrade
   - Added TSPEC (Layer 10) test specification integration
   - Added TDD workflow mode with Red→Green validation
@@ -1216,7 +1216,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 - ✅ **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests
 - ✅ **Documentation Updates**: Updated multi-project setup guides
 
-### Version 2.3 (2026-02-06)
+### Version 2.3 (2026-02-06T00:00:00)
 - ✅ **Testing Infrastructure**: Complete runtime test infrastructure for TSPEC layer
   - Added `tests/` directory with 4 test type subdirectories (unit, integration, smoke, functional)
   - Added `pytest.ini` with markers for test types (utest, itest, stest, ftest)
@@ -1234,7 +1234,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 - ✅ **Sample Tests**: 44 sample tests demonstrating patterns for each test type
 - ✅ **Documentation Updates**: Updated TSPEC README, main README, and tests/README
 
-### Version 2.2 (2025-11-20)
+### Version 2.2 (2025-11-20T00:00:00)
 - ✅ **Validation Scripts Expansion**: Grew from 3 to 15 validation scripts
   - Added `validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
   - Added `validate_documentation_paths.py` - Path consistency validation
@@ -1255,10 +1255,10 @@ Developed for AI-assisted software engineering workflows optimized for:
 - ✅ **Decision Frameworks**: Contract and IMPL decision questionnaires
 - ✅ **Tool Optimization**: Token limits guide for Claude Code, Gemini CLI, GitHub Copilot
 
-### Version 2.1 (2025-11-19)
+### Version 2.1 (2025-11-19T00:00:00)
 - Updated REQ references to v3.0 (REQ v3.0 sections 3-7 for SPEC-ready ≥90%)
 
-### Version 2.0 (2025-11-13) - Cumulative Tagging Hierarchy
+### Version 2.0 (2025-11-13T00:00:00) - Cumulative Tagging Hierarchy
 - ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (Strategy → Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
@@ -1274,7 +1274,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 - ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
 - ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
 
-### Version 1.1.0 (2025-11-12)
+### Version 1.1.0 (2025-11-12T00:00:00)
 - Added tag-based auto-discovery traceability system
 - Introduced unified tag format (TYPE.NN.TT.SS)
 - Added automated validation scripts
@@ -1282,7 +1282,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 - Added CI/CD integration examples for traceability validation
 - Legacy Section 7 approach still supported during migration
 
-### Version 1.0.0 (2025-11-09)
+### Version 1.0.0 (2025-11-09T00:00:00)
 - Initial release with 10-layer SDD workflow
 - Complete template system for all artifact types
 - Traditional Section 7 traceability

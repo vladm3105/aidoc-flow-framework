@@ -93,4 +93,4 @@ Documents
 
 | ID | Title | Priority | Target Date | Notes |
 |----|-------|----------|-------------|-------|
-| CHG-XX | ... | High/Med/Low | YYYY-MM-DD | ... |
+| CHG-XX | ... | High/Med/Low | YYYY-MM-DDTHH:MM:SS | ... |

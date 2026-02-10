@@ -20,7 +20,7 @@ custom_fields:
 |-------|-------|
 | Document ID | PRD_QUALITY_GATE_VALIDATION |
 | Version | 1.0 |
-| Created | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete PRD corpus |
 | Trigger | Run after ALL PRDs are complete |
 | Scope | Entire PRD Quality Gate validation |
@@ -647,8 +647,8 @@ done
 | `title` | Yes | Document title |
 | `status` | Yes | Draft/Review/Approved |
 | `version` | Yes | Semantic version |
-| `created` | Yes | ISO date (YYYY-MM-DD) |
-| `modified` | Yes | ISO date (YYYY-MM-DD) |
+| `created` | Yes | ISO date (YYYY-MM-DDTHH:MM:SS) |
+| `modified` | Yes | ISO date (YYYY-MM-DDTHH:MM:SS) |
 | `brd_refs` | Yes | Array of BRD references |
 | `sys_ready_score` | Yes | Numeric 0-100 |
 
@@ -672,11 +672,11 @@ done
 
 ### CORPUS-19: ISO Date Format Compliance
 
-**Purpose**: Ensure all dates use ISO 8601 format (YYYY-MM-DD)
+**Purpose**: Ensure all dates use ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
 
 **Severity**: Warning
 
-**Valid Format**: `2026-01-04`, `2026-12-31`
+**Valid Format**: `2026-01-04T00:00:00`, `2026-12-31T00:00:00`
 
 **Invalid Formats**:
 | Format | Example | Issue |
@@ -751,7 +751,7 @@ done
 | CORPUS-E014 | Improve PRD quality until sys_ready_score >= 85 |
 | CORPUS-W015 | Add hypothesis: "We believe that [X] will [Y] if we [Z]" |
 | CORPUS-W018 | Add YAML frontmatter with required fields |
-| CORPUS-W019 | Convert dates to YYYY-MM-DD format |
+| CORPUS-W019 | Convert dates to YYYY-MM-DDTHH:MM:SS format |
 
 ---
 

@@ -11,7 +11,7 @@ custom_fields:
   layer: 11
   priority: shared
   schema_version: "2.0"
-  last_updated: "2026-01-15"
+  last_updated: "2026-01-15T00:00:00"
 ---
 
 # TASKS-000: Code Generation Plans Master Index
@@ -49,7 +49,7 @@ flowchart LR
 
 | TASKS ID | Title | Status | Related SPEC | Related CTR | Components | Generated Code | Last Updated |
 |----------|-------|--------|--------------|-------------|------------|----------------|--------------|
-| [TASKS-01](./examples/TASKS-01_risk_validator_implementation.md) | Risk Validator Implementation | Planned | SPEC-03 | CTR-03 | RiskValidator class | `src/risk/validator.py` | 2025-11-02 |
+| [TASKS-01](./examples/TASKS-01_risk_validator_implementation.md) | Risk Validator Implementation | Planned | SPEC-03 | CTR-03 | RiskValidator class | `src/risk/validator.py` | 2025-11-02T00:00:00 |
 
 ## Planned
 
@@ -284,6 +284,6 @@ flowchart TB
 ---
 
 **Index Version**: 2.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-15T00:00:00
 **Maintained By**: Development Team
 **Schema Version**: TASKS v2.0 (11 sections)

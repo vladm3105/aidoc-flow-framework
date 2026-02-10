@@ -14,7 +14,7 @@ custom_fields:
 
 **Status**: Active framework with MVP templates, domain adaptation guidance, cumulative tagging, and validation tooling.
 
-**Version**: 2.5 | **Last Updated**: 2026-02-07
+**Version**: 2.5 | **Last Updated**: 2026-02-07T00:00:00
 
 ## Overview
 
@@ -354,7 +354,7 @@ custom_fields:
 | Version | 1.2.0 |
 | Status | Approved |
 | Author | Product Team |
-| Last Updated | 2025-11-15 |
+| Last Updated | 2025-11-15T00:00:00 |
 | Approved By | Chief Product Officer |
 ```
 
@@ -1362,12 +1362,12 @@ graph LR
 | `TRACEABILITY.md` | Traceability requirements and conventions |
 
 <!-- Directory Structure Migration History -->
-<!-- 2025-01-13: CONTRACTS/ → 08_CTR/ (contracts now use dual-file format) -->
+<!-- 2025-01-13T00:00:00: CONTRACTS/ → 08_CTR/ (contracts now use dual-file format) -->
 
 ## Framework Versions and Updates
 
 **Current Version**: 2.5
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-07T00:00:00
 
 **Version 2.5 - Autopilot v6.0 Integration** (February 2026):
 - ✅ **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG modes

@@ -36,7 +36,7 @@ custom_fields:
 # BDD Pre-Generation Checklist
 
 **Version**: 1.0
-**Date**: 2025-11-30
+**Date**: 2025-11-30T00:00:00
 **Purpose**: Prevent common BDD generation errors by verifying requirements before creation
 **Use Case**: Run this checklist BEFORE generating any BDD feature file
 

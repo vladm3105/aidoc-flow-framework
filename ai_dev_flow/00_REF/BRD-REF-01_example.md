@@ -25,7 +25,7 @@ custom_fields:
 |------|---------|
 | **Parent Type** | BRD |
 | **Document Version** | 1.0 |
-| **Date** | 2025-01-08 |
+| **Date** | 2025-01-08T00:00:00 |
 | **Author** | Security Analyst |
 | **Status** | Final |
 
@@ -33,7 +33,7 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0 | 2025-01-08 | Security Analyst | Initial draft | |
+| 1.0 | 2025-01-08T00:00:00 | Security Analyst | Initial draft | |
 
 ---
 

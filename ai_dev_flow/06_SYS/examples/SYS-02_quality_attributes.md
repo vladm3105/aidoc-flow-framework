@@ -27,8 +27,8 @@ custom_fields:
 |------|---------|
 | **Status** | Approved |
 | **Version** | 1.0.0 |
-| **Date Created** | 2025-12-29 |
-| **Last Updated** | 2025-12-29 |
+| **Date Created** | 2025-12-29T00:00:00 |
+| **Last Updated** | 2025-12-29T00:00:00 |
 | **Author** | Platform Architecture Team |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
@@ -423,7 +423,7 @@ flowchart LR
 
 **Document Version**: 1.0.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: 2025-12-29
+**Last Updated**: 2025-12-29T00:00:00
 
 ---
 
@@ -517,6 +517,6 @@ src/
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0.0 | 2025-12-29 | Technical Architecture Team | Initial version - Data Processing System requirements |
-| 1.1.0 | 2026-02-08 | Technical Architecture Team | Added missing sections 13-15 (Traceability, Implementation Notes, Change History) |
+| 1.0.0 | 2025-12-29T00:00:00 | Technical Architecture Team | Initial version - Data Processing System requirements |
+| 1.1.0 | 2026-02-08T00:00:00 | Technical Architecture Team | Added missing sections 13-15 (Traceability, Implementation Notes, Change History) |
 

@@ -13,7 +13,7 @@ custom_fields:
   change_source: null
   development_status: proposed
 status: Proposed
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 author: [Author Name]
 supersedes: [List, of, Artifact, IDs]
 ---
@@ -30,7 +30,7 @@ supersedes: [List, of, Artifact, IDs]
 |-----------|-------|
 | **Entry Gate** | GATE-XX |
 | **Gate Status** | [ ] Pending / [ ] In Progress / [ ] Passed / [ ] Failed |
-| **Validation Date** | YYYY-MM-DD |
+| **Validation Date** | YYYY-MM-DDTHH:MM:SS |
 | **Validation Result** | [Exit code: 0/1/2] |
 
 ### Gate Cascade Path

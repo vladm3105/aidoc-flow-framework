@@ -20,7 +20,7 @@ custom_fields:
 |-------|-------|
 | Document ID | BRD_QUALITY_GATE_VALIDATION |
 | Version | 1.1 |
-| Created | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete BRD corpus |
 | Trigger | Run after ALL BRDs are complete |
 | Scope | Entire BRD Quality Gate validation |
@@ -907,7 +907,7 @@ This section captures verified counts from Quality Gate validation runs. Update 
 
 | BRD | Sections | Elements | Lines | Last Verified |
 |-----|----------|----------|-------|---------------|
-| (Template) | - | - | - | YYYY-MM-DD |
+| (Template) | - | - | - | YYYY-MM-DDTHH:MM:SS |
 | **TOTAL** | **-** | **-** | **-** | |
 
 **Validation Command**:
@@ -926,8 +926,8 @@ done
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.1 | 2026-01-04 | - | Added type-specific file limits (CORPUS-10); added Errors Found section; added Baseline Metrics section; added Complete Validation Script; added Layer 1 traceability note; reorganized bash checks |
-| 1.0 | 2026-01-04 | - | Initial Quality Gate validation rules |
+| 1.1 | 2026-01-04T00:00:00 | - | Added type-specific file limits (CORPUS-10); added Errors Found section; added Baseline Metrics section; added Complete Validation Script; added Layer 1 traceability note; reorganized bash checks |
+| 1.0 | 2026-01-04T00:00:00 | - | Initial Quality Gate validation rules |
 
 ---
 

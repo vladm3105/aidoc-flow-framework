@@ -26,8 +26,8 @@ custom_fields:
 |------|---------|
 | **Status** | Example |
 | **Version** | 1.0.0 |
-| **Date Created** | 2026-02-08 |
-| **Last Updated** | 2026-02-08 |
+| **Date Created** | 2026-02-08T00:00:00 |
+| **Last Updated** | 2026-02-08T00:00:00 |
 | **Author** | Integration Team |
 | **Priority** | High (P2) |
 | **Category** | API |
@@ -488,4 +488,4 @@ src/
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0.0 | 2026-02-08 | Integration Team | Initial version - Complete rewrite to REQ-MVP-TEMPLATE v1.1 structure |
+| 1.0.0 | 2026-02-08T00:00:00 | Integration Team | Initial version - Complete rewrite to REQ-MVP-TEMPLATE v1.1 structure |

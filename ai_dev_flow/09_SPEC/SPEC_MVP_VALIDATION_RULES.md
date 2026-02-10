@@ -23,8 +23,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.2
-**Date**: 2025-11-30
-**Last Updated**: 2025-11-30
+**Date**: 2025-11-30T00:00:00
+**Last Updated**: 2025-11-30T00:00:00
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python 09_SPEC/scripts/validate_spec.py`
 **Primary Template**: `SPEC-MVP-TEMPLATE.yaml`

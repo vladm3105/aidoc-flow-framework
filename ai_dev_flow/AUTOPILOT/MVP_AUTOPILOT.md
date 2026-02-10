@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   version: "6.0"
-  last_updated: "2026-02-06"
+  last_updated: "2026-02-06T00:00:00"
 ---
 
 # MVP Autopilot: Core Guide (v6.0)
@@ -1237,7 +1237,7 @@ When adding new TDD scripts, create corresponding tests:
 
 ## Version History
 
-**v6.0** (2026-02-06):
+**v6.0** (2026-02-06T00:00:00):
 - Added TSPEC layer (L10) integration with 4 test types
 - Added TDD workflow mode (`--tdd-mode`) with Red→Green validation
 - Added CHG integration (`--chg-mode`) with 4-Gate system
@@ -1248,7 +1248,7 @@ When adding new TDD scripts, create corresponding tests:
 - Added CHG configuration section
 - Enhanced reporting with TDD summary
 
-**v5.0** (2026-01-19):
+**v5.0** (2026-01-19T00:00:00):
 - Simplified configuration system (modular YAML configs)
 - Added Makefile for common operations
 - Implemented actual GitHub Actions workflows
@@ -1259,7 +1259,7 @@ When adding new TDD scripts, create corresponding tests:
 - Simplified CLI with better defaults
 - Decoupled code generation (plugin architecture)
 
-**v4.0** (2026-01-18):
+**v4.0** (2026-01-18T00:00:00):
 - Original comprehensive autopilot guide
 - Single monolithic YAML configuration
 - Documentation-only GitHub integration plan

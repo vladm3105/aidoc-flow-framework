@@ -13,7 +13,7 @@ custom_fields:
 # Schema-Template Relationship Guide
 
 **Version**: 1.0
-**Last Updated**: 2025-11-30
+**Last Updated**: 2025-11-30T00:00:00
 **Status**: Active
 
 ## 1. Overview
@@ -76,7 +76,7 @@ Each schema includes a references section at the top:
 schema_version: "1.0"
 artifact_type: {TYPE}
 layer: {N}
-last_updated: "YYYY-MM-DD"
+last_updated: "YYYY-MM-DDTHH:MM:SS"
 
 references:
   template: "{TYPE}-TEMPLATE.md"

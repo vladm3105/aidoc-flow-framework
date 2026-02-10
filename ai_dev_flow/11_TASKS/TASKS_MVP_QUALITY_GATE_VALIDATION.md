@@ -20,7 +20,7 @@ custom_fields:
 |-------|-------|
 | Document ID | TASKS_QUALITY_GATE_VALIDATION |
 | Version | 1.0 |
-| Created | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete TASKS corpus |
 | Trigger | Run after ALL TASKS files are complete |
 | Scope | Entire TASKS Quality Gate validation |

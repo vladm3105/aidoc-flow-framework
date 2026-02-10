@@ -46,7 +46,7 @@ flowchart LR
 
 | SYS ID | Title | System Category | Status | Related ADR | Requirements | Last Updated |
 |--------|-------|-----------------|--------|-------------|--------------|--------------|
-| [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13 |
+| [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13T00:00:00 |
 
 ## Planned
 
@@ -206,5 +206,5 @@ Before marking SYS as "Approved":
 ---
 
 **Index Version**: 2.0
-**Last Updated**: 2025-11-13
+**Last Updated**: 2025-11-13T00:00:00
 **Maintainer**: [Project Team]

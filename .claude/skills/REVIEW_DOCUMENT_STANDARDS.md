@@ -10,7 +10,7 @@ custom_fields:
   document_type: standards
   applies_to: all-autopilot-skills
   version: "2.0"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # Review Document Standards for Autopilot Skills

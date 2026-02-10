@@ -47,9 +47,9 @@ flowchart LR
 
 | SPEC ID | Title | Specification Type | Status | Related REQ | Related CTR | Priority | Last Updated |
 |---------|-------|--------------------|--------|-------------|-------------|----------|--------------|
-| [SPEC-MVP-TEMPLATE](./SPEC-MVP-TEMPLATE.yaml) | Template | Reference | Reference | - | - | - | 2025-11-13 |
-| [SPEC-01_api_client_example](./SPEC-01_api_client_example.yaml) | API Client (flat example) | Example | Draft | REQ-.. | CTR-.. | Medium | 2025-12-28 |
-| [SPEC-02_nested_example](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) | Nested Example (YAML+MD) | Example | Draft | REQ-.. | CTR-.. | Low | 2025-12-28 |
+| [SPEC-MVP-TEMPLATE](./SPEC-MVP-TEMPLATE.yaml) | Template | Reference | Reference | - | - | - | 2025-11-13T00:00:00 |
+| [SPEC-01_api_client_example](./SPEC-01_api_client_example.yaml) | API Client (flat example) | Example | Draft | REQ-.. | CTR-.. | Medium | 2025-12-28T00:00:00 |
+| [SPEC-02_nested_example](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) | Nested Example (YAML+MD) | Example | Draft | REQ-.. | CTR-.. | Low | 2025-12-28T00:00:00 |
 
 ## Planned
 
@@ -212,5 +212,5 @@ Before marking SPEC as "Approved":
 ---
 
 **Index Version**: 2.0
-**Last Updated**: 2025-11-13
+**Last Updated**: 2025-11-13T00:00:00
 **Maintainer**: [Project Team]

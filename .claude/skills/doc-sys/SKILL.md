@@ -15,7 +15,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
   version: "1.0"
-  last_updated: "2026-02-08"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-sys

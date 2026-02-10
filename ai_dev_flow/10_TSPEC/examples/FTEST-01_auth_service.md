@@ -22,8 +22,8 @@ custom_fields:
 |------|---------|
 | **Status** | Approved |
 | **Version** | 1.0.0 |
-| **Date Created** | 2026-02-01 |
-| **Last Updated** | 2026-02-05 |
+| **Date Created** | 2026-02-01T00:00:00 |
+| **Last Updated** | 2026-02-05T00:00:00 |
 | **Author** | Test Engineering Team |
 | **System Scope** | Authentication Service |
 | **SYS Reference** | SYS.01.01.01 |

@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive EARS Requirements Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all EARS (Event-Action-Response-State) Engineering Requirements |
 
@@ -77,7 +77,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 - **Total EARS Tracked**: [X] documents
 - **EARS Statements**: [Y] total formal requirements
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -214,8 +214,8 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 | EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources |
 |---------|-------|---------------------|------------------|--------|------|------------------|
-| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-NN, BRD-NN |
-| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-NN, BRD-NN |
+| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DDTHH:MM:SS | PRD-NN, BRD-NN |
+| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DDTHH:MM:SS | PRD-NN, BRD-NN |
 | EARS-NN | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
@@ -461,17 +461,17 @@ graph TD
 
 | Improvement Area | EARS Affected | Target Date | Owner |
 |------------------|---------------|-------------|-------|
-| Add performance criteria (WITHIN) | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
-| Create missing BDD scenarios | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
-| Refine ambiguous statements | EARS-NN | YYYY-MM-DD | [Owner] |
-| Complete REQ decomposition | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
+| Add performance criteria (WITHIN) | EARS-NN, EARS-NN | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Create missing BDD scenarios | EARS-NN, EARS-NN | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Refine ambiguous statements | EARS-NN | YYYY-MM-DDTHH:MM:SS | [Owner] |
+| Complete REQ decomposition | EARS-NN, EARS-NN | YYYY-MM-DDTHH:MM:SS | [Owner] |
 
 ### 12.3 Validation Milestones
 
 | Milestone | Target Date | EARS Scope | Status |
 |-----------|-------------|------------|--------|
-| [Milestone 1: MVP Validation] | YYYY-MM-DD | EARS-NN range | On Track |
-| [Milestone 2: Full Coverage] | YYYY-MM-DD | All EARS | Planning |
+| [Milestone 1: MVP Validation] | YYYY-MM-DDTHH:MM:SS | EARS-NN range | On Track |
+| [Milestone 2: Full Coverage] | YYYY-MM-DDTHH:MM:SS | All EARS | Planning |
 
 ---
 
@@ -479,8 +479,8 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial traceability matrix creation | [Author Name] |
-| 0.9.0 | YYYY-MM-DD | Draft version for review | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial traceability matrix creation | [Author Name] |
+| 0.9.0 | YYYY-MM-DDTHH:MM:SS | Draft version for review | [Author Name] |
 
 ---
 

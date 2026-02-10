@@ -49,8 +49,8 @@ custom_fields:
 |------|---------|
 | **Status** | Approved |
 | **Version** | 1.0.0 |
-| **Date Created** | 2025-12-29 |
-| **Last Updated** | 2025-12-29 |
+| **Date Created** | 2025-12-29T00:00:00 |
+| **Last Updated** | 2025-12-29T00:00:00 |
 | **Author** | Platform Engineering Team |
 | **Priority** | High |
 | **Source Document** | @prd: PRD.01.12.01 |
@@ -499,7 +499,7 @@ alert:
 
 **Document Version**: 1.0.0
 **Template Version**: 3.0
-**Last Reviewed**: 2025-12-29
+**Last Reviewed**: 2025-12-29T00:00:00
 **Maintained By**: Platform Engineering Team
 
 # =============================================================================

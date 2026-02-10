@@ -4,7 +4,7 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-07T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
@@ -744,7 +744,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 ## Changelog
 
-### Version 2.0 (2026-02-07)
+### Version 2.0 (2026-02-07T00:00:00)
 
 - Updated for Autopilot v6.0 integration
 - Added TSPEC (Layer 10) test specification support
@@ -753,7 +753,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - Updated project structure with tests/ directory
 - Added Autopilot v6.0 quick start section to quick reference
 
-### Version 1.0 (2025-11-13)
+### Version 1.0 (2025-11-13T00:00:00)
 
 - Initial hybrid approach documentation
 - Setup script for shared/custom resource pattern

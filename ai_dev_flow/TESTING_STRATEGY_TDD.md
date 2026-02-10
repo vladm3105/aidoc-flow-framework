@@ -12,7 +12,7 @@ custom_fields:
   priority: recommended-approach
   development_status: active
   version: "1.0"
-  last_updated: "2026-01-21"
+  last_updated: "2026-01-21T00:00:00"
 ---
 
 # SDD Testing Strategy with Test-Driven Development
@@ -20,7 +20,7 @@ custom_fields:
 **Purpose**: Define comprehensive testing approach for AI Dev Flow framework integrating Test-Driven Development with specification-driven development.
 
 **Version**: 1.0
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-01-21T00:00:00
 
 ---
 
@@ -1216,8 +1216,8 @@ python AUTOPILOT/scripts/update_test_traceability.py \
 |------|---------|
 | **Framework Version** | SDD v2.2 |
 | **Test Strategy Version** | 1.0 |
-| **Date Created** | 2026-01-21 |
-| **Last Updated** | 2026-01-21 |
+| **Date Created** | 2026-01-21T00:00:00 |
+| **Last Updated** | 2026-01-21T00:00:00 |
 | **Status** | Active |
 | **Maintained By** | AI Dev Flow Working Group |
 | **Review Frequency** | Quarterly or on major framework updates |
@@ -1226,4 +1226,4 @@ python AUTOPILOT/scripts/update_test_traceability.py \
 
 | Version | Date | Changes | Author |
 |---------|-------|---------|---------|
-| 1.0 | 2026-01-21 | Initial TDD integration with SDD framework | Framework Team |
+| 1.0 | 2026-01-21T00:00:00 | Initial TDD integration with SDD framework | Framework Team |

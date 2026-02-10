@@ -344,7 +344,7 @@ User Reviews Results & Consults Guides:
 
 ---
 
-**Last Updated:** 2026-01-24  
+**Last Updated:** 2026-01-24T00:00:00  
 **Status:** Framework foundation complete, scaling in progress  
 **Audience:** All SDD users, framework maintainers, CI/CD operators  
 **Scope:** Validation guidance index across all document types

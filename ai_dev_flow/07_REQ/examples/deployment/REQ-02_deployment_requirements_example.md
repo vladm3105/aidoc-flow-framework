@@ -26,8 +26,8 @@ custom_fields:
 |-------|---------|
 | **Status** | Example |
 | **Version** | 1.0.0 |
-| **Date Created** | 2026-01-19 |
-| **Last Updated** | 2026-01-19 |
+| **Date Created** | 2026-01-19T00:00:00 |
+| **Last Updated** | 2026-01-19T00:00:00 |
 | **Author** | Example Team |
 | **Priority** | High (P2) |
 | **Category** | Infra |
@@ -540,13 +540,13 @@ Implementation follows MVP deployment automation pattern:
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| 2026-01-19 | 1.0.0 | Initial draft - Example REQ with Section 9.5 deployment requirements | Example Team |
+| 2026-01-19T00:00:00 | 1.0.0 | Initial draft - Example REQ with Section 9.5 deployment requirements | Example Team |
 
 ---
 
 **Document Version**: 1.0.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: 2026-01-19
+**Last Updated**: 2026-01-19T00:00:00
 
 ---
 

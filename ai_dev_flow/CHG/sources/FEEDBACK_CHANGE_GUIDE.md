@@ -367,7 +367,7 @@ When analytics show a feature is unused:
 ```markdown
 ## Incident Post-Mortem: [Title]
 
-**Date**: YYYY-MM-DD
+**Date**: YYYY-MM-DDTHH:MM:SS
 **Duration**: X hours Y minutes
 **Severity**: P1/P2/P3/P4
 **Impact**: [Users/revenue/systems affected]

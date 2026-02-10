@@ -22,7 +22,7 @@ custom_fields:
 | Title | Minimal Requirements Traceability Matrix |
 | Status | Active |
 | Version | 2.0.0 |
-| Date Created | 2025-01-15 |
+| Date Created | 2025-01-15T00:00:00 |
 | Author | Auto-generated |
 | Purpose | Demonstrate bidirectional traceability with a compact example |
 | Generator | generate_traceability_matrix.py |
@@ -46,15 +46,15 @@ custom_fields:
 
 | REQ ID | Title | Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |---|---|---|---|---|---|---|
-| REQ-01 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-05, SYS-01, ADR-NN | CTR-03, SPEC-08 |
-| REQ-02 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-06, SYS-02, ADR-NN | CTR-04, SPEC-09 |
-| REQ-03 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-07, SYS-01, ADR-NN | SPEC-10 |
-| REQ-05 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-10, SYS-03, ADR-NN | CTR-05, SPEC-12 |
-| REQ-08 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21 | EARS-15, SYS-04, ADR-NN | CTR-06, SPEC-14 |
-| REQ-11 | Kubernetes pod MUST have resource limits defined | deployment | Approved | 2024-11-23 | EARS-20, SYS-05, ADR-NN | SPEC-17 |
-| REQ-14 | OAuth token MUST expire after 1 hour | authentication | Approved | 2024-11-26 | EARS-25, SYS-06, ADR-NN | CTR-08, SPEC-20 |
-| REQ-17 | GraphQL query MUST validate against schema | api | Approved | 2024-12-02 | EARS-30, SYS-07, ADR-NN | CTR-09, SPEC-23 |
-| REQ-19 | Cache TTL SHOULD be configurable per data type | caching | In Review | 2024-12-11 | EARS-35, SYS-08, ADR-NN | None |
+| REQ-01 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16T00:00:00 | EARS-05, SYS-01, ADR-NN | CTR-03, SPEC-08 |
+| REQ-02 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16T00:00:00 | EARS-06, SYS-02, ADR-NN | CTR-04, SPEC-09 |
+| REQ-03 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17T00:00:00 | EARS-07, SYS-01, ADR-NN | SPEC-10 |
+| REQ-05 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19T00:00:00 | EARS-10, SYS-03, ADR-NN | CTR-05, SPEC-12 |
+| REQ-08 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21T00:00:00 | EARS-15, SYS-04, ADR-NN | CTR-06, SPEC-14 |
+| REQ-11 | Kubernetes pod MUST have resource limits defined | deployment | Approved | 2024-11-23T00:00:00 | EARS-20, SYS-05, ADR-NN | SPEC-17 |
+| REQ-14 | OAuth token MUST expire after 1 hour | authentication | Approved | 2024-11-26T00:00:00 | EARS-25, SYS-06, ADR-NN | CTR-08, SPEC-20 |
+| REQ-17 | GraphQL query MUST validate against schema | api | Approved | 2024-12-02T00:00:00 | EARS-30, SYS-07, ADR-NN | CTR-09, SPEC-23 |
+| REQ-19 | Cache TTL SHOULD be configurable per data type | caching | In Review | 2024-12-11T00:00:00 | EARS-35, SYS-08, ADR-NN | None |
 
 ## 3. Upstream Traceability
 

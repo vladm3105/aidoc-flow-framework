@@ -365,6 +365,6 @@ bash /absolute/path/to/validate_all.sh --file /absolute/path/to/file.md
 
 ---
 
-**Last Updated:** 2026-01-24  
+**Last Updated:** 2026-01-24T00:00:00  
 **Scope:** Framework-wide validation commands for all SDD document types  
 **Audience:** All SDD users (engineers, architects, validators)

@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive System Requirements Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all System Requirements Documents |
 
@@ -74,7 +74,7 @@ This matrix tracks all SYS documents and their upstream sources (BRD, PRD, EARS,
 - **Total SYS Tracked**: [X] documents
 - **Total Requirements**: [Y] system requirements
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -168,8 +168,8 @@ python scripts/generate_traceability_matrix.py \
 
 | SYS ID | Title | System Category | Total Requirements | Status | Date | Upstream Sources |
 |--------|-------|-----------------|-------------------|--------|------|------------------|
-| SYS-01 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01 |
-| SYS-02 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | BRD-01, PRD-02, EARS-02, BDD-02, ADR-02 |
+| SYS-01 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DDTHH:MM:SS | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01 |
+| SYS-02 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DDTHH:MM:SS | BRD-01, PRD-02, EARS-02, BDD-02, ADR-02 |
 | SYS-NN | ... | ... | ... | ... | ... | ... |
 
 ---
@@ -309,7 +309,7 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial creation | [Author Name] |
 
 ---
 

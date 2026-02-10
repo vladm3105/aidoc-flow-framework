@@ -3,7 +3,7 @@
 **Version:** 1.0.0
 **Framework:** AI Dev Flow
 **Layer:** 8 (Contracts)
-**Created:** 2026-01-25
+**Created:** 2026-01-25T00:00:00
 
 ## Overview
 
@@ -275,7 +275,7 @@ These validators integrate with the **AI Dev Flow Framework**:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| **1.0.0** | 2024-01-25 | Initial validation suite: validate_ctr_all, validate_ctr, validate_ctr_ids, validate_ctr_spec_readiness, validate_ctr_quality_score |
+| **1.0.0** | 2024-01-25T00:00:00 | Initial validation suite: validate_ctr_all, validate_ctr, validate_ctr_ids, validate_ctr_spec_readiness, validate_ctr_quality_score |
 
 ---
 
@@ -283,4 +283,4 @@ These validators integrate with the **AI Dev Flow Framework**:
 
 Part of the **AI Dev Flow Framework**  
 Framework Location: `/opt/data/docs_flow_framework/ai_dev_flow/`  
-Last Updated: 2024-01-25
+Last Updated: 2024-01-25T00:00:00

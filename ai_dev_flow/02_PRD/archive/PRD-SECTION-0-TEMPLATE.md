@@ -4,7 +4,7 @@ section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
 original_size_kb: {SIZE}
-split_date: {YYYY-MM-DD}
+split_date: {YYYY-MM-DDTHH:MM:SS}
 tags:
   - section-index
   - prd-section
@@ -35,7 +35,7 @@ custom_fields:
 | **Title** | {Document Title} |
 | **Total Sections** | {N} |
 | **Original Size** | {SIZE} KB |
-| **Split Date** | {YYYY-MM-DD} |
+| **Split Date** | {YYYY-MM-DDTHH:MM:SS} |
 | **Status** | {status} |
 
 ---
@@ -90,7 +90,7 @@ custom_fields:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | {YYYY-MM-DD} | {Author} | Initial split from monolithic document |
+| 1.0 | {YYYY-MM-DDTHH:MM:SS} | {Author} | Initial split from monolithic document |
 
 ---
 

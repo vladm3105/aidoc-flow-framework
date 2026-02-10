@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [ADR, SYS, REQ]
   version: "2.1"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-bdd-autopilot

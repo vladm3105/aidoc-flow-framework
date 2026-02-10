@@ -93,8 +93,8 @@ metadata:
   spec_id: SPEC-01
   title: "Order Validation Service Specification"
   version: "1.0.0"
-  created_date: "2025-01-15"
-  updated_date: "2025-01-15"
+  created_date: "2025-01-15T00:00:00"
+  updated_date: "2025-01-15T00:00:00"
   status: "approved"
   owner: "team-backend"
   task_ready_score: "✅ 95% (Target: ≥90%)"

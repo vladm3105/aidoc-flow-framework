@@ -36,7 +36,7 @@ custom_fields:
 # BDD AI-Agent Extension
 
 **Version**: 1.0
-**Date**: 2025-11-30
+**Date**: 2025-11-30T00:00:00
 **Purpose**: Additional standards for AI-Agent Primary architecture BDD files
 **Applies To**: BDD-022, BDD-023, BDD-025, and future AI-agent BDD documents
 **Base Template**: BDD-MVP-TEMPLATE.feature (all base requirements apply)
@@ -73,7 +73,7 @@ AI-Agent BDD files MUST include the following additional field in Document Contr
 |------|---------|
 | **Project Name** | [Project Name] |
 | **Document Version** | 1.0.0 |
-| **Date** | YYYY-MM-DD |
+| **Date** | YYYY-MM-DDTHH:MM:SS |
 | **Document Owner** | [Team Name] |
 | **Prepared By** | [Author Name] |
 | **Status** | Draft |

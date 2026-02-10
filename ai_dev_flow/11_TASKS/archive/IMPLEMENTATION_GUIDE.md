@@ -963,7 +963,7 @@ class ServiceConnector(Protocol):
 ```python
 # contracts/v1/ib_gateway.py
 class ServiceConnector(Protocol):
-    """Version 1 - Deprecated 2025-01-15."""
+    """Version 1 - Deprecated 2025-01-15T00:00:00."""
     ...
 
 # contracts/v2/ib_gateway.py
@@ -1146,7 +1146,7 @@ class ServiceConnector(Protocol):
 ```markdown
 # Changelog: ServiceConnector
 
-## [2.0.0] - 2025-02-01
+## [2.0.0] - 2025-02-01T00:00:00
 ### Breaking Changes
 - connect() now async (requires await)
 - Removed sync_connect() method
@@ -1160,12 +1160,12 @@ connector.connect("localhost", 4002)
 await connector.connect("localhost", 4002)
 ```
 
-## [1.1.0] - 2025-01-15
+## [1.1.0] - 2025-01-15T00:00:00
 ### Added
 - get_connection_info() method
 - ConnectionInfo data model
 
-## [1.0.0] - 2025-01-01
+## [1.0.0] - 2025-01-01T00:00:00
 ### Initial Release
 - ServiceConnector protocol
 - ServiceConnectionError hierarchy
@@ -1201,8 +1201,8 @@ await connector.connect("localhost", 4002)
 ## Document Metadata
 
 **Version**: 1.1.0
-**Created**: 2025-11-24
-**Last Updated**: 2025-11-25
+**Created**: 2025-11-24T00:00:00
+**Last Updated**: 2025-11-25T00:00:00
 **Author**: AI Dev Flow Framework Team
 **Complexity**: 3/5
 **Token Count**: ~12,000 tokens

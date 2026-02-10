@@ -11,13 +11,13 @@ custom_fields:
   development_status: active
   applies_to: [all-artifacts, ai-tools]
   version: "1.0"
-  last_updated: "2025-11-07"
+  last_updated: "2025-11-07T00:00:00"
 ---
 
 # AI Coding Tool Optimization Guide
 
 **Version**: 1.0
-**Last Updated**: 2025-11-07
+**Last Updated**: 2025-11-07T00:00:00
 **Purpose**: Guide for selecting and optimizing AI coding tools for this framework
 
 ---

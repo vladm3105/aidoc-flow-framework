@@ -101,7 +101,7 @@ custom_fields:
   change_source: emergency
   development_status: in-progress
 status: In Progress
-date: {YYYY-MM-DD}
+date: {YYYY-MM-DDTHH:MM:SS}
 author: {On-call engineer}
 incident_ticket: {INC-XXX}
 ---
@@ -206,7 +206,7 @@ tags:
 custom_fields:
   chg_reference: CHG-EMG-YYYYMMDD-HHMM
   incident_ticket: INC-XXX
-  post_mortem_date: YYYY-MM-DD
+  post_mortem_date: YYYY-MM-DDTHH:MM:SS
 ---
 
 # Post-Mortem: {CHG-ID}

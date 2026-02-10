@@ -12,7 +12,7 @@ custom_fields:
 # Quality Gates Integration with 15-Layer Traceability
 
 **Version**: 1.1
-**Date**: 2026-02-05
+**Date**: 2026-02-05T00:00:00
 **Status**: Active
 **Framework**: AI Dev Flow SDD (MVP-first)
 **Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy; supports the MVP-to-production loop (create MVP → fix defects → promote → add new MVP features → fix → repeat)
@@ -351,7 +351,7 @@ git diff --name-only | grep '^docs/' | xargs ./AUTOPILOT/scripts/validate_qualit
 ./scripts/generate_quality_report.py > docs/QUALITY_DASHBOARD.md
 
 # Sample output in markdown
-# # Quality Dashboard - 2025-11-19
+# # Quality Dashboard - 2025-11-19T00:00:00
 #
 # ## Layer Readiness Summary
 # - BRD Layer: 15/15 (100%) ready for EARS
@@ -429,5 +429,5 @@ This quality gate system provides **smooth transitions** between SDD workflow la
 **Document End**
 
 **Version**: 1.0 - Aligned with TRACEABILITY.md §1-4
-**Updated**: 2025-11-19
-**Next Review**: 2025-12-19
+**Updated**: 2025-11-19T00:00:00
+**Next Review**: 2025-12-19T00:00:00

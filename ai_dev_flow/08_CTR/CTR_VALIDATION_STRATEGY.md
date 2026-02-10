@@ -60,7 +60,7 @@ The `validate_ctr_spec_readiness.py` validator awards 10 points per passing chec
 | **OpenAPI/Schema** | OpenAPI reference or inline JSON Schema | Automated tooling validation |
 | **Type Annotations** | 3+ type-annotated function examples | Use Pydantic + `def fn(param: Type) -> ReturnType` patterns |
 | **Error Recovery** | 2+ recovery keywords: retry, backoff, fallback, circuit breaker, timeout | Strategic resilience documented |
-| **Concrete Examples** | 10+ concrete domain-specific instances | Real IDs, dates, symbols (e.g., `TSLA`, `2026-01-25`, `user_id: "usr_789"`) |
+| **Concrete Examples** | 10+ concrete domain-specific instances | Real IDs, dates, symbols (e.g., `TSLA`, `2026-01-25T00:00:00`, `user_id: "usr_789"`) |
 
 **Target**: ≥90 points (9/10 checks) for SPEC generation readiness.
 

@@ -20,8 +20,8 @@ custom_fields:
 |-------|-------|
 | Document ID | EARS_QUALITY_GATE_VALIDATION |
 | Version | 1.1 |
-| Created | 2026-01-04 |
-| Last Updated | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
+| Last Updated | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete EARS corpus |
 | Trigger | Run after ALL EARS are complete |
 | Scope | Entire EARS Quality Gate validation |

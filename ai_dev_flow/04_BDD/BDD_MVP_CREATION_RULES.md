@@ -60,8 +60,8 @@ custom_fields:
 - Generators use: `BDD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
 **Version**: 1.3
-**Date**: 2025-11-19
-**Last Updated**: 2025-12-26
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-12-26T00:00:00
 **Purpose**: Complete reference for creating BDD feature files according to AI Dev Flow SDD framework
 **Changes**: Added Split-File Structure section (v1.3). Previous: Threshold Registry Integration section (v1.2)
 

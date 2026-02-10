@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive API Contracts Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track bidirectional traceability for all API Contract Documents (dual-file format) |
 
@@ -74,7 +74,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 - **Total CTR Tracked**: [X] contracts ([Y] .md + [Y] .yaml)
 - **Contract Types**: [Z] (OpenAPI, AsyncAPI, etc.)
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -143,8 +143,8 @@ python scripts/generate_traceability_matrix.py \
 
 | CTR ID | Title | Contract Type | Files | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|---------------|-------|--------|------|------------------|---------------------|
-| CTR-01 | [API contract title] | OpenAPI 3.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-01 | SPEC-01 (provider), SPEC-02 (consumer), Code |
-| CTR-02 | [API contract title] | AsyncAPI 2.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-02 | SPEC-03, Code |
+| CTR-01 | [API contract title] | OpenAPI 3.0 | .md + .yaml | Active | YYYY-MM-DDTHH:MM:SS | REQ-01 | SPEC-01 (provider), SPEC-02 (consumer), Code |
+| CTR-02 | [API contract title] | AsyncAPI 2.0 | .md + .yaml | Active | YYYY-MM-DDTHH:MM:SS | REQ-02 | SPEC-03, Code |
 | CTR-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -272,9 +272,9 @@ graph TD
 
 | CTR ID | Schema Valid | Examples Valid | Breaking Changes | Last Validated |
 |--------|--------------|----------------|------------------|----------------|
-| CTR-01 | ✅ | ✅ | None | YYYY-MM-DD |
-| CTR-02 | ❌ | ✅ | None | YYYY-MM-DD |
-| CTR-03 | ✅ | ❌ | 2 Breaking | YYYY-MM-DD |
+| CTR-01 | ✅ | ✅ | None | YYYY-MM-DDTHH:MM:SS |
+| CTR-02 | ❌ | ✅ | None | YYYY-MM-DDTHH:MM:SS |
+| CTR-03 | ✅ | ❌ | 2 Breaking | YYYY-MM-DDTHH:MM:SS |
 | CTR-NN | ... | ... | ... | ... |
 
 ---
@@ -319,9 +319,9 @@ graph TD
 
 | CTR ID | Current Version | Planned Changes | Breaking | Target Date |
 |--------|----------------|-----------------|----------|-------------|
-| CTR-01 | v1.0 | Add pagination | No | YYYY-MM-DD |
-| CTR-02 | v2.0 | Change auth method | Yes | YYYY-MM-DD |
-| CTR-03 | v1.0 | Add new endpoints | No | YYYY-MM-DD |
+| CTR-01 | v1.0 | Add pagination | No | YYYY-MM-DDTHH:MM:SS |
+| CTR-02 | v2.0 | Change auth method | Yes | YYYY-MM-DDTHH:MM:SS |
+| CTR-03 | v1.0 | Add new endpoints | No | YYYY-MM-DDTHH:MM:SS |
 
 ---
 
@@ -329,7 +329,7 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial creation | [Author Name] |
 
 ---
 

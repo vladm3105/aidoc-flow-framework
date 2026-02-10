@@ -11,7 +11,7 @@ custom_fields:
   priority: shared
   development_status: active
   schema_version: "2.0"
-  last_updated: "2026-01-15"
+  last_updated: "2026-01-15T00:00:00"
 ---
 
 # =============================================================================
@@ -38,8 +38,8 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | Field | Value |
 |-------|-------|
 | **Version** | 2.0.0 |
-| **Created** | 2025-11-27 |
-| **Last Updated** | 2026-01-15 |
+| **Created** | 2025-11-27T00:00:00 |
+| **Last Updated** | 2026-01-15T00:00:00 |
 | **Status** | Active |
 | **Breaking Change** | TASKS v2.0: 11 sections (was 12), includes execution commands |
 
@@ -139,7 +139,7 @@ fi
 | Title | Yes | Non-empty string |
 | Status | Yes | Draft/Ready/In Progress/Completed |
 | Version | Yes | X.Y.Z (semantic) |
-| Created | Yes | YYYY-MM-DD |
+| Created | Yes | YYYY-MM-DDTHH:MM:SS |
 | Author | Yes | Non-empty string |
 | Parent SPEC | Yes | SPEC-NN |
 | Complexity | Yes | 1-5 integer |
@@ -527,5 +527,5 @@ Result: PASSED WITH WARNINGS
 ---
 
 **Document Version**: 2.0.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-15T00:00:00
 **Schema Version**: TASKS v2.0 (11 sections)

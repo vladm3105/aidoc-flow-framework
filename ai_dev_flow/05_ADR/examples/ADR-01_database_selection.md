@@ -50,7 +50,7 @@ custom_fields:
 |------|---------|
 | **Project Name** | Order Management Platform |
 | **Document Version** | 1.0 |
-| **Date** | 2025-12-29 |
+| **Date** | 2025-12-29T00:00:00 |
 | **Document Owner** | Platform Architecture Team |
 | **Prepared By** | Database Architect |
 | **Status** | Approved |
@@ -60,9 +60,9 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 0.1 | 2025-12-01 | DB Architect | Initial draft | - |
-| 0.2 | 2025-12-15 | DB Architect | Added benchmark results | Tech Lead |
-| 1.0 | 2025-12-29 | DB Architect | Final approval | CTO |
+| 0.1 | 2025-12-01T00:00:00 | DB Architect | Initial draft | - |
+| 0.2 | 2025-12-15T00:00:00 | DB Architect | Added benchmark results | Tech Lead |
+| 1.0 | 2025-12-29T00:00:00 | DB Architect | Final approval | CTO |
 
 ---
 
@@ -71,10 +71,10 @@ custom_fields:
 ## 3. Status
 
 **Status**: Approved
-**Date**: 2025-12-29
+**Date**: 2025-12-29T00:00:00
 **Decision Makers**: Platform Architecture Team, CTO
 **ADR Author**: Database Architect
-**Last Updated**: 2025-12-29
+**Last Updated**: 2025-12-29T00:00:00
 
 ## 4. Context
 

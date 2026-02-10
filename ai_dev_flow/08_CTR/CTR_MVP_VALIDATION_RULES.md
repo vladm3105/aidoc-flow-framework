@@ -35,8 +35,8 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 | Field | Value |
 |-------|-------|
 | **Version** | 1.0.0 |
-| **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Created** | 2025-11-27T00:00:00 |
+| **Last Updated** | 2025-11-27T00:00:00 |
 | **Status** | Active |
 
 ### Reserved ID Exemption (CTR-00_*)
@@ -124,8 +124,8 @@ fi
 | Title | Yes | Non-empty string |
 | Version | Yes | X.Y.Z (semantic) |
 | Status | Yes | Draft/Active/Deprecated |
-| Created | Yes | YYYY-MM-DD |
-| Last Updated | Yes | YYYY-MM-DD |
+| Created | Yes | YYYY-MM-DDTHH:MM:SS |
+| Last Updated | Yes | YYYY-MM-DDTHH:MM:SS |
 | Author | Yes | Non-empty string |
 | Consumers | Yes | List or "None" |
 | Providers | Yes | List or "None" |
@@ -485,4 +485,4 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 ---
 
 **Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Last Updated**: 2025-11-27T00:00:00

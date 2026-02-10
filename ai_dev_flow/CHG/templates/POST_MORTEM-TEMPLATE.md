@@ -9,7 +9,7 @@ custom_fields:
   document_type: post-mortem
   chg_reference: CHG-EMG-{YYYYMMDD-HHMM}
   incident_ticket: INC-XXX
-  post_mortem_date: YYYY-MM-DD
+  post_mortem_date: YYYY-MM-DDTHH:MM:SS
   post_mortem_facilitator: {Name}
   blameless: true
 ---
@@ -27,8 +27,8 @@ custom_fields:
 | Field | Value |
 |-------|-------|
 | **Incident Type** | P1 / Critical Security / Data Breach |
-| **Start Time** | {YYYY-MM-DD HH:MM TZ} |
-| **End Time** | {YYYY-MM-DD HH:MM TZ} |
+| **Start Time** | {YYYY-MM-DDTHH:MM:SS HH:MM TZ} |
+| **End Time** | {YYYY-MM-DDTHH:MM:SS HH:MM TZ} |
 | **Duration** | {X hours Y minutes} |
 | **Detection Method** | {Monitoring/User Report/Security Scan} |
 | **Time to Detect (TTD)** | {X minutes} |
@@ -264,7 +264,7 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| **Date** | {YYYY-MM-DD} |
+| **Date** | {YYYY-MM-DDTHH:MM:SS} |
 | **Duration** | {X hours} |
 | **Attendees** | {List} |
 | **Format** | {In-person/Video} |

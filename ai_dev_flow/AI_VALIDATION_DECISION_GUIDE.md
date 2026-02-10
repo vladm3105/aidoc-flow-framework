@@ -27,7 +27,7 @@ custom_fields:
 **Document-Specific Guides:**
 - [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
 
-**Last Updated:** 2026-01-24
+**Last Updated:** 2026-01-24T00:00:00
 
 ---
 
@@ -345,7 +345,7 @@ To add a new validator:
 
 ---
 
-**Last Updated:** 2026-01-24  
+**Last Updated:** 2026-01-24T00:00:00  
 **Status:** Framework-wide decision guide for all document types  
 **Audience:** AI assistants, engineers, validator maintainers  
 **Scope:** Validation decision-making across entire SDD framework

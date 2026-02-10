@@ -16,7 +16,7 @@ custom_fields:
 # Implementation Plan & Tracker - User Guide
 
 **Schema Version**: 2.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-15T00:00:00
 
 ## Purpose
 
@@ -83,8 +83,8 @@ tasks_tracking:
     # MAIN IMPLEMENTATION
     implementation:
       status: NOT_STARTED             # NOT_STARTED → IN_PROGRESS → COMPLETED
-      started: null                   # YYYY-MM-DD
-      completed: null                 # YYYY-MM-DD
+      started: null                   # YYYY-MM-DDTHH:MM:SS
+      completed: null                 # YYYY-MM-DDTHH:MM:SS
     
     # POST-EXECUTION UPDATES (Rules 1 & 2)
     post_check:
@@ -143,7 +143,7 @@ post_check:
    ```yaml
    implementation:
      status: COMPLETED            # Change from IN_PROGRESS
-     completed: 2026-01-15        # Add completion date
+     completed: 2026-01-15T00:00:00        # Add completion date
    ```
 2. Mark post_check checklist items as `true`
 
@@ -167,7 +167,7 @@ post_check:
 1. Scroll to Section 3: Session Log
 2. Add new row:
    ```markdown
-   | 2026-01-08 | TASKS-XX | COMPLETED | Implemented [Service] with [Tech]. Verified [Tests]. |
+   | 2026-01-08T00:00:00 | TASKS-XX | COMPLETED | Implemented [Service] with [Tech]. Verified [Tests]. |
    ```
 3. Mark session log checklist items as `true` in YAML
 
@@ -229,14 +229,14 @@ post_check:     NOT_STARTED → COMPLETED (update tracking)
 **Purpose**: Audit trail and continuity between sessions
 
 **Required Fields:**
-- **Date**: YYYY-MM-DD format
+- **Date**: YYYY-MM-DDTHH:MM:SS format
 - **Task ID**: TASKS-NN
 - **Status**: Current status after this session
 - **Notes**: Key accomplishments, technologies, blockers, verification
 
 **Example Entry:**
 ```markdown
-| 2026-01-08 | TASKS-42 | COMPLETED | Implemented Rate Limiter with Token Bucket algorithm. All 12 BDD scenarios pass. Performance: 50k req/s. |
+| 2026-01-08T00:00:00 | TASKS-42 | COMPLETED | Implemented Rate Limiter with Token Bucket algorithm. All 12 BDD scenarios pass. Performance: 50k req/s. |
 ```
 
 ---
@@ -432,7 +432,7 @@ pre_check:
 ```yaml
 implementation:
   status: IN_PROGRESS        # ← Mark when you start
-  started: 2026-01-15        # ← Add start date
+  started: 2026-01-15T00:00:00        # ← Add start date
   completed: null
 ```
 
@@ -441,8 +441,8 @@ implementation:
 ```yaml
 implementation:
   status: COMPLETED          # ← Mark when done
-  started: 2026-01-15
-  completed: 2026-01-15      # ← Add completion date
+  started: 2026-01-15T00:00:00
+  completed: 2026-01-15T00:00:00      # ← Add completion date
 ```
 
 ### 3. Post-Execution (Rules 1 & 2)
@@ -469,7 +469,7 @@ post_check:
 
 **Session Log Entry Added:**
 ```markdown
-| 2026-01-08 | TASKS-42 | COMPLETED | Implemented Rate Limiter service. All tests pass. |
+| 2026-01-08T00:00:00 | TASKS-42 | COMPLETED | Implemented Rate Limiter service. All tests pass. |
 ```
 
 ---
@@ -488,5 +488,5 @@ The Implementation Plan transforms implementation tracking from "optional docume
 ---
 
 **Document Version**: 2.0
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-15T00:00:00
 **Schema Reference**: TASKS-TEMPLATE.md v2.0

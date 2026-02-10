@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive Architecture Decision Records Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track upstream traceability for all Architecture Decision Records |
 
@@ -75,7 +75,7 @@ This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Do
 - **Active Decisions**: [Y] ADRs
 - **Superseded Decisions**: [Z] ADRs
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -165,8 +165,8 @@ python scripts/generate_traceability_matrix.py \
 
 | ADR ID | Title | Decision Category | Status | Date | Upstream Sources |
 |--------|-------|-------------------|--------|------|------------------|
-| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
-| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
+| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DDTHH:MM:SS | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
+| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DDTHH:MM:SS | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
 | ADR-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -422,9 +422,9 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 
 | Review Type | Target Date | ADRs Scope | Status |
 |-------------|-------------|------------|--------|
-| [Quarterly Architecture Review] | YYYY-MM-DD | All active ADRs | Scheduled |
-| [Technology Stack Review] | YYYY-MM-DD | Infrastructure ADRs | Planning |
-| [security Architecture Review] | YYYY-MM-DD | security ADRs | Scheduled |
+| [Quarterly Architecture Review] | YYYY-MM-DDTHH:MM:SS | All active ADRs | Scheduled |
+| [Technology Stack Review] | YYYY-MM-DDTHH:MM:SS | Infrastructure ADRs | Planning |
+| [security Architecture Review] | YYYY-MM-DDTHH:MM:SS | security ADRs | Scheduled |
 
 ### 10.3 Quality Improvement Recommendations
 
@@ -439,7 +439,7 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial traceability matrix creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial traceability matrix creation | [Author Name] |
 
 ---
 

@@ -1474,7 +1474,7 @@ Risk Validator Service - Contract Provider
 
 **Document Version**: 2.1
 **Replaces**: Previous TRACEABILITY.md and TRACEABILITY_STYLE.md (legacy)
-**Last Updated**: 2025-11-30
+**Last Updated**: 2025-11-30T00:00:00
 **Maintained By**: AI Dev Flow Standards Team
 
 **Version 2.1 Changes**:

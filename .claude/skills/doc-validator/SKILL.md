@@ -18,7 +18,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
   downstream_artifacts: []
   version: "3.2"
-  last_updated: "2026-02-08"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-validator

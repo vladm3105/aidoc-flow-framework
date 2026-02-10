@@ -20,7 +20,7 @@ custom_fields:
 | **Document Type** | Framework Guide |
 | **Version** | 1.0 |
 | **Status** | Active |
-| **Last Updated** | 2025-11-23 |
+| **Last Updated** | 2025-11-23T00:00:00 |
 | **Purpose** | Define metadata tagging standards for dual-architecture documentation |
 
 ---
@@ -423,7 +423,7 @@ section: 0
 title: "Trading Platform - Index"
 total_sections: 7
 original_size_kb: 150
-split_date: 2025-12-17
+split_date: 2025-12-17T00:00:00
 tags:
   - section-index
   - [document-type-tag]
@@ -1632,7 +1632,7 @@ primary_docs = query_metadata('docs/BRD', {
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2025-11-23 | AI Agent | Initial metadata tagging guide creation |
+| 1.0 | 2025-11-23T00:00:00 | AI Agent | Initial metadata tagging guide creation |
 
 ---
 

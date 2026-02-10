@@ -20,7 +20,7 @@ custom_fields:
 |-------|-------|
 | Document ID | CTR_QUALITY_GATE_VALIDATION |
 | Version | 1.0 |
-| Created | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete CTR corpus |
 | Trigger | Run after ALL CTR files are complete |
 | Scope | Entire CTR Quality Gate validation |
@@ -179,7 +179,7 @@ docs/08_CTR/{subdomain}/
 | Format | Example |
 |--------|---------|
 | Semantic | `1.0.0`, `2.1.3` |
-| Date-based | `2026-01-04` |
+| Date-based | `2026-01-04T00:00:00` |
 
 ---
 

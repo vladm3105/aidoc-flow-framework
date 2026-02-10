@@ -84,8 +84,8 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1.0
-**Date**: 2025-11-19
-**Last Updated**: 2025-12-12
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-12-12T00:00:00
 **Purpose**: Complete validation rules for ADR documents
 **Script**: `python 05_ADR/scripts/validate_adr.py`
 **Primary Template**: `ADR-MVP-TEMPLATE.md` (full template archived)

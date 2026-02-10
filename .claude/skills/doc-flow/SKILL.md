@@ -610,7 +610,8 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.3 | 2026-01-17 | Updated to 15-layer architecture (Layers 0-14) |
-| 1.2 | 2025-12-29 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section |
-| 1.1 | 2025-11-30 | Added REF documents, ICON section |
-| 1.0 | 2025-11-01 | Initial skill creation |
+| 1.4 | 2026-02-10T15:00:00 | Updated version history dates to ISO 8601 format |
+| 1.3 | 2026-01-17T00:00:00 | Updated to 15-layer architecture (Layers 0-14) |
+| 1.2 | 2025-12-29T00:00:00 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section |
+| 1.1 | 2025-11-30T00:00:00 | Added REF documents, ICON section |
+| 1.0 | 2025-11-01T00:00:00 | Initial skill creation |

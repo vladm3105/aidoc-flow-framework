@@ -1,7 +1,7 @@
 # REQ Validation Testing Guide
 
 **Location**: `/opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/`  
-**Date**: 2026-01-25
+**Date**: 2026-01-25T00:00:00
 
 ## Overview
 

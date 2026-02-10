@@ -53,4 +53,4 @@ Documents
 
 | ID | Title | Priority | Target Date | Notes |
 |----|-------|----------|-------------|-------|
-| BRD-XX | … | High/Med/Low | YYYY-MM-DD | … |
+| BRD-XX | … | High/Med/Low | YYYY-MM-DDTHH:MM:SS | … |

@@ -25,7 +25,7 @@ custom_fields:
 | Title | Comprehensive Code Generation Tasks Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
-| Date Created | YYYY-MM-DD |
+| Date Created | YYYY-MM-DDTHH:MM:SS |
 | Author | [Team Name] |
 | Purpose | Track bidirectional traceability for all AI Code Generation Task Documents |
 
@@ -77,7 +77,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 - **Total TASKS Tracked**: [X] documents
 - **Total Tasks**: [Y] implementation tasks
 - **Coverage Period**: [Start Date] to [End Date]
-- **Last Updated**: YYYY-MM-DD
+- **Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ---
 
@@ -177,8 +177,8 @@ python scripts/generate_traceability_matrix.py \
 
 | TASKS ID | Title | Related SPEC | Total Tasks | Status | Date | Upstream Sources | Downstream Artifacts |
 |----------|-------|--------------|-------------|--------|------|------------------|---------------------|
-| TASKS-NN | [Code generation plan title] | SPEC-NN | 15 | Complete | YYYY-MM-DD | SPEC-NN | Code: src/service.py, Tests: tests/test_service.py |
-| TASKS-NN | [Code generation plan title] | SPEC-NN | 10 | In Progress | YYYY-MM-DD | SPEC-NN | Code: src/feature.py |
+| TASKS-NN | [Code generation plan title] | SPEC-NN | 15 | Complete | YYYY-MM-DDTHH:MM:SS | SPEC-NN | Code: src/service.py, Tests: tests/test_service.py |
+| TASKS-NN | [Code generation plan title] | SPEC-NN | 10 | In Progress | YYYY-MM-DDTHH:MM:SS | SPEC-NN | Code: src/feature.py |
 | TASKS-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -365,9 +365,9 @@ graph TD
 
 | Sprint | TASKS IDs | Focus Area | Target Date | Status |
 |--------|-----------|------------|-------------|--------|
-| Sprint 5 | TASKS-02 | Complete in-progress features | YYYY-MM-DD | Active |
-| Sprint 6 | TASKS-03, TASKS-004 | Start agent implementation | YYYY-MM-DD | Planning |
-| Sprint 7 | TASKS-05, TASKS-006 | Infrastructure & integration | YYYY-MM-DD | Not Started |
+| Sprint 5 | TASKS-02 | Complete in-progress features | YYYY-MM-DDTHH:MM:SS | Active |
+| Sprint 6 | TASKS-03, TASKS-004 | Start agent implementation | YYYY-MM-DDTHH:MM:SS | Planning |
+| Sprint 7 | TASKS-05, TASKS-006 | Infrastructure & integration | YYYY-MM-DDTHH:MM:SS | Not Started |
 
 ---
 
@@ -375,7 +375,7 @@ graph TD
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | YYYY-MM-DD | Initial creation | [Author Name] |
+| 1.0.0 | YYYY-MM-DDTHH:MM:SS | Initial creation | [Author Name] |
 
 ---
 

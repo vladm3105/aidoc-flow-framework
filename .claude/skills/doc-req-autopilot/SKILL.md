@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
   downstream_artifacts: [CTR, SPEC]
   version: "2.3"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-req-autopilot

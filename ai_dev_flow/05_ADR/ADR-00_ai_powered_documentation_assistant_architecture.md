@@ -26,8 +26,8 @@ custom_fields:
 |------|---------|
 | **Project Name** | AI Dev Flow Framework Enhancement |
 | **Document Version** | 1.0.0 |
-| **Date Created** | 2025-11-29 |
-| **Last Updated** | 2025-11-29 |
+| **Date Created** | 2025-11-29T00:00:00 |
+| **Last Updated** | 2025-11-29T00:00:00 |
 | **Status** | Proposed |
 | **Decision Maker** | Framework Team |
 
@@ -35,7 +35,7 @@ custom_fields:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0.0 | 2025-11-29 | AI Assistant | Initial draft - AI-powered documentation assistant architecture |
+| 1.0.0 | 2025-11-29T00:00:00 | AI Assistant | Initial draft - AI-powered documentation assistant architecture |
 
 ---
 
@@ -449,7 +449,7 @@ workflow_recommendations:
 | Item | Value |
 |------|-------|
 | **Decision** | Implement modular assistant skill architecture |
-| **Date** | 2025-11-29 |
+| **Date** | 2025-11-29T00:00:00 |
 | **Status** | Proposed |
 | **Supersedes** | None |
 | **Superseded By** | None |
@@ -460,4 +460,4 @@ workflow_recommendations:
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
-| 2025-11-29 | 1.0.0 | Initial draft | AI Assistant |
+| 2025-11-29T00:00:00 | 1.0.0 | Initial draft | AI Assistant |

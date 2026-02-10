@@ -58,8 +58,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
-**Date**: 2025-11-19
-**Last Updated**: 2025-12-19
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-12-19T00:00:00
 **Source**: Extracted from BRD-MVP-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-00_index.md
 **Purpose**: Complete reference for creating BRD files according to doc-flow SDD framework
 **Changes**: Added Section Classification table (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
@@ -199,7 +199,7 @@ Every BRD contains these sections (mandatory unless noted):
 
 > **Note**: Technical QA (quality standards, testing strategy, defect management) is handled in PRD-MVP-TEMPLATE.md.
 
-**Important Updates (2025-11-26)**: Several sections have been simplified for better 01_BRD/PRD layer separation:
+**Important Updates (2025-11-26T00:00:00)**: Several sections have been simplified for better 01_BRD/PRD layer separation:
 - **section 4 (Stakeholders)**: Now high-level identification only. Detailed stakeholder analysis, communication plans, and team structure moved to PRD.
 - **section 5 (User Stories)**: Now high-level summary only (3-5 key categories). Detailed user story tables, acceptance criteria, and role definitions moved to PRD.
 - **section 6.4 (User Roles)**: Now high-level role identification only. Detailed permissions matrices and role responsibilities moved to PRD.
@@ -332,7 +332,7 @@ sequenceDiagram
 **Required Fields** (7 mandatory):
 - Project Name: [Enter project name]
 - Document Version: [e.g., 1.0] (semantic versioning X.Y)
-- Date: [Current date in YYYY-MM-DD format]
+- Date: [Current date in YYYY-MM-DDTHH:MM:SS format]
 - Document Owner: [Name and title of responsible business executive]
 - Prepared By: [Business Analyst name who authored document]
 - Status: [Draft / In Review / Approved]
@@ -388,7 +388,7 @@ When performing major FR structure refactoring, use this template in Document Re
 ```markdown
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 2.0 | 2024-11-24 | [BA Name] | **Major Refactoring**: Converted all FRs from tabular format to 4-subsection business-level structure; removed PRD-level content (API specs, JSON schemas, code blocks); added Complexity ratings; improved PRD-Ready Score from 65/100 to 95/100. See refactoring summary in CHANGELOG.md. | [Approver] |
+| 2.0 | 2024-11-24T00:00:00 | [BA Name] | **Major Refactoring**: Converted all FRs from tabular format to 4-subsection business-level structure; removed PRD-level content (API specs, JSON schemas, code blocks); added Complexity ratings; improved PRD-Ready Score from 65/100 to 95/100. See refactoring summary in CHANGELOG.md. | [Approver] |
 ```
 
 **Required Elements**:
@@ -408,7 +408,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 2. **Document in CHANGELOG.md** (or work plan):
    ```markdown
-   ## BRD-09 v2.0 Major Refactoring (2024-11-24)
+   ## BRD-09 v2.0 Major Refactoring (2024-11-24T00:00:00)
 
    **PRD-Ready Score Improvement**: 65/100 → 95/100
 
@@ -776,7 +776,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 ## 5.6 User Stories Requirements (BRD Template section 5)
 
-**Updated Guidance (2025-11-26)**: User Stories are now HIGH-LEVEL SUMMARIES in BRD (Layer 1), with complete details in PRD (Layer 2).
+**Updated Guidance (2025-11-26T00:00:00)**: User Stories are now HIGH-LEVEL SUMMARIES in BRD (Layer 1), with complete details in PRD (Layer 2).
 
 **Purpose**: Provide high-level summary of key user stories to demonstrate business value and user needs. Detailed user stories with full acceptance criteria belong in PRD.
 
@@ -786,7 +786,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 ### Simplified BRD Requirements (High-Level Summary)
 
-**BRD section 5 Content** (as of 2025-11-26):
+**BRD section 5 Content** (as of 2025-11-26T00:00:00):
 - High-level summary of key user story categories (3-5 bullet points per category)
 - Aggregate counts only (no detailed tables): Primary users, Operational users, Total
 - High-level business objective alignment (mapping details in PRD)
@@ -1789,8 +1789,8 @@ Future phases may introduce ML capabilities; revisit this topic if scope changes
 **Business Driver**: [Complete as normal]
 **Business Constraints**: [Complete as normal]
 
-**Alternatives Overview**: [Placeholder - To be completed by YYYY-MM-DD]
-**Cloud Provider Comparison**: [Placeholder - To be completed by YYYY-MM-DD]
+**Alternatives Overview**: [Placeholder - To be completed by YYYY-MM-DDTHH:MM:SS]
+**Cloud Provider Comparison**: [Placeholder - To be completed by YYYY-MM-DDTHH:MM:SS]
 
 **Recommended Selection**: Pending vendor evaluation
 **PRD Requirements**: Complete alternatives analysis before PRD development.

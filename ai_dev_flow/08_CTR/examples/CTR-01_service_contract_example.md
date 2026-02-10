@@ -22,8 +22,8 @@ custom_fields:
 **Owner Team**: [TEAM_NAME]
 **Consumers**: [CONSUMER_LIST - e.g., Frontend App, Mobile App, Partner Integrations]
 
-**Created**: [YYYY-MM-DD]
-**Updated**: [YYYY-MM-DD]
+**Created**: [YYYY-MM-DDTHH:MM:SS]
+**Updated**: [YYYY-MM-DDTHH:MM:SS]
 
 ---
 
@@ -566,7 +566,7 @@ Link: </api/v2/users>; rel="successor-version"
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | [YYYY-MM-DD] | Initial release | [AUTHOR] |
+| 1.0.0 | [YYYY-MM-DDTHH:MM:SS] | Initial release | [AUTHOR] |
 
 ---
 

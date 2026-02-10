@@ -20,8 +20,8 @@ custom_fields:
 |-------|-------|
 | Document ID | BDD_QUALITY_GATE_VALIDATION |
 | Version | 1.1 |
-| Created | 2026-01-04 |
-| Updated | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
+| Updated | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete BDD corpus |
 | Trigger | Run after ALL BDD files are complete |
 | Scope | Entire BDD Quality Gate validation |
@@ -943,8 +943,8 @@ fi
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.1 | 2026-01-04 | - | Added Section 0 (Errors Found); Added numbered check comments (Check 1-22); Added Section 3 (Traceability Requirements); Added Section 4 (Gherkin Syntax Standards); Added complete validation script; Added Section 6 (Post-Validation Actions); Added Section 7 (Baseline Metrics); Renumbered sections |
-| 1.0 | 2026-01-04 | - | Initial Quality Gate validation rules |
+| 1.1 | 2026-01-04T00:00:00 | - | Added Section 0 (Errors Found); Added numbered check comments (Check 1-22); Added Section 3 (Traceability Requirements); Added Section 4 (Gherkin Syntax Standards); Added complete validation script; Added Section 6 (Post-Validation Actions); Added Section 7 (Baseline Metrics); Renumbered sections |
+| 1.0 | 2026-01-04T00:00:00 | - | Initial Quality Gate validation rules |
 
 ---
 

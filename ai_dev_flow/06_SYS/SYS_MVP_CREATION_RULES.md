@@ -34,8 +34,8 @@ Generators use: `SYS-00_index.md` + standard template profile (`mvp`).
 Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix. When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
-**Date**: 2025-11-19
-**Last Updated**: 2026-01-19
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2026-01-19T00:00:00
 
 
 **Source**: Derived from SYS-MVP-TEMPLATE.md and ADR decisions

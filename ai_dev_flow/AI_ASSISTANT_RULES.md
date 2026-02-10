@@ -342,7 +342,7 @@ touch docs/11_TASKS/TASKS-00_index.md
 
 | ID | Title | Status | Priority | Created | Last Modified |
 |----|-------|--------|----------|---------|---------------|
-| {TYPE}-01 | [First Document Title](../path/to/doc.md) | Draft | High | YYYY-MM-DD | YYYY-MM-DD |
+| {TYPE}-01 | [First Document Title](../path/to/doc.md) | Draft | High | YYYY-MM-DDTHH:MM:SS | YYYY-MM-DDTHH:MM:SS |
 
 ---
 

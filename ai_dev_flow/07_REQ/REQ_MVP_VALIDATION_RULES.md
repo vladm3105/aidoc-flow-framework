@@ -63,8 +63,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 3.0.0
-**Date**: 2025-11-18
-**Last Updated**: 2025-11-19
+**Date**: 2025-11-18T00:00:00
+**Last Updated**: 2025-11-19T00:00:00
 **Purpose**: Complete validation rules for REQ documents
 **Script**: `07_REQ/scripts/validate_req_template.sh`
 **Primary Template**: `REQ-MVP-TEMPLATE.md` (MVP profile)
@@ -338,12 +338,12 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 ### CHECK 6: Date Format Validation
 
-**Purpose**: Validate ISO 8601 date format (YYYY-MM-DD)
+**Purpose**: Validate ISO 8601 date format (YYYY-MM-DDTHH:MM:SS)
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `2025-11-18` ✅
-- `2025-01-09` ✅
+- `2025-11-18T00:00:00` ✅
+- `2025-01-09T00:00:00` ✅
 
 **Invalid Examples**:
 - `Nov 18, 2025` ❌
@@ -352,7 +352,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Error Message**:
 ```
-❌ INVALID Date Created format: 'Nov 18, 2025' (expected YYYY-MM-DD)
+❌ INVALID Date Created format: 'Nov 18, 2025' (expected YYYY-MM-DDTHH:MM:SS)
 ```
 
 **Logical Check**:
@@ -360,8 +360,8 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Fix**:
 ```markdown
-| **Date Created** | 2025-11-18 |
-| **Last Updated** | 2025-11-18 |
+| **Date Created** | 2025-11-18T00:00:00 |
+| **Last Updated** | 2025-11-18T00:00:00 |
 ```
 
 ---
@@ -481,8 +481,8 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| 2025-11-18 | 2.0.1 | Fixed source document reference (3.1.2→3.1.1) | System Architect |
-| 2025-11-11 | 2.0.0 | Created using Template V2 | System Architect |
+| 2025-11-18T00:00:00 | 2.0.1 | Fixed source document reference (3.1.2→3.1.1) | System Architect |
+| 2025-11-11T00:00:00 | 2.0.0 | Created using Template V2 | System Architect |
 ```
 
 ---
@@ -939,7 +939,7 @@ class HeartbeatConfig(BaseModel):
 | **CHECK 13** | Add valid Category field to Document Control table |
 | **CHECK 14** | Ensure infrastructure metadata (Type) and traceability tags (@sys, @iac) are complete |
 | **CHECK 5** | Change version to semver: `2.0.1` |
-| **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
+| **CHECK 6** | Change dates to ISO 8601: `2025-11-18T00:00:00` |
 | **CHECK 9** | Update score format: `✅ 90% (Target: ≥90%)` |
 | **CHECK 11** | Add change history entry for current version |
 | **CHECK 12** | Rename file to match pattern, update H1 header |
@@ -1123,8 +1123,8 @@ Warnings: 1
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 3.0.1 | 2025-11-18 | Updated CHECK 2 to require all 11 Document Control fields, CHECK 10 to enforce template version 3.0 only (no legacy versions), enhanced CHECK 13 with project-specific resource tag guidance, corrected Validation Tiers Summary to split CHECK 3, updated Quick Fix Matrix | System Architect |
-| 3.0.0 | 2025-11-18 | Initial validation rules for v3.0 script with cumulative tagging, filename validation, resource tags, link resolution | System Architect |
+| 3.0.1 | 2025-11-18T00:00:00 | Updated CHECK 2 to require all 11 Document Control fields, CHECK 10 to enforce template version 3.0 only (no legacy versions), enhanced CHECK 13 with project-specific resource tag guidance, corrected Validation Tiers Summary to split CHECK 3, updated Quick Fix Matrix | System Architect |
+| 3.0.0 | 2025-11-18T00:00:00 | Initial validation rules for v3.0 script with cumulative tagging, filename validation, resource tags, link resolution | System Architect |
 
 ---
 

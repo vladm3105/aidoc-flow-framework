@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [BRD, Review Report]
   downstream_artifacts: [Fixed BRD, Fix Report]
   version: "1.1"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-brd-fixer

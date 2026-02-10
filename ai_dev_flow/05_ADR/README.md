@@ -326,8 +326,8 @@ Decision is under review and not yet approved:
 
 ```markdown
 **Status**: Proposed
-**Date**: YYYY-MM-DD
-**Last Updated**: YYYY-MM-DD
+**Date**: YYYY-MM-DDTHH:MM:SS
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 ```
 
 - Not yet implemented
@@ -341,8 +341,8 @@ Decision is approved and implementation is underway:
 
 ```markdown
 **Status**: Accepted
-**Date**: YYYY-MM-DD
-**Last Updated**: YYYY-MM-DD
+**Date**: YYYY-MM-DDTHH:MM:SS
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 ```
 
 - Fully approved by decision makers
@@ -356,9 +356,9 @@ Decision is no longer recommended but still in use:
 
 ```markdown
 **Status**: Deprecated
-**Date**: YYYY-MM-DD
-**Deprecation Notice**: Deprecated in favor of ADR-NN; sunset date: YYYY-MM-DD
-**Last Updated**: YYYY-MM-DD
+**Date**: YYYY-MM-DDTHH:MM:SS
+**Deprecation Notice**: Deprecated in favor of ADR-NN; sunset date: YYYY-MM-DDTHH:MM:SS
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 ```
 
 - No longer recommended for new development
@@ -373,8 +373,8 @@ Decision has been completely replaced by another:
 ```markdown
 **Status**: Superseded
 **Superseded By**: ADR-NN: Descriptive Title
-**Date**: YYYY-MM-DD
-**Last Updated**: YYYY-MM-DD
+**Date**: YYYY-MM-DDTHH:MM:SS
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 ```
 
 - Completely replaced by newer decision
@@ -611,7 +611,7 @@ Include monitoring results and operational experience:
 
 ```markdown
 **Status**: Accepted
-**Last Updated**: YYYY-MM-DD
+**Last Updated**: YYYY-MM-DDTHH:MM:SS
 
 ## Implementation Assessment
 [Updated with actual performance data]
@@ -627,7 +627,7 @@ Document successor and migration path:
 ```markdown
 **Status**: Deprecated
 **Superseded By**: ADR-NN: [Title]
-**Sunset Date**: YYYY-MM-DD
+**Sunset Date**: YYYY-MM-DDTHH:MM:SS
 **Migration Guide**: [How to migrate from this decision]
 ```
 
@@ -1037,7 +1037,7 @@ Include links to evidence and supporting analysis:
 - Failure Mode Analysis: `docs/fmea/cloud_run_fmea.md` (detailed FMEA for critical components)
 
 **Architecture Validation:**
-- Architecture Review Board Approval: `docs/arb_reviews/ARB_2025-10-15_cloud_run_approval.md` (stakeholder sign-off)
+- Architecture Review Board Approval: `docs/arb_reviews/ARB_2025-10-15T00:00:00_cloud_run_approval.md` (stakeholder sign-off)
 - security Assessment: `docs/security/cloud_run_security_audit.md` (SOC 2 compliance validation)
 ```
 
@@ -1098,7 +1098,7 @@ See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive 
 ---
 
 **README Version**: 1.0
-**Last Updated**: 2025-10-28
+**Last Updated**: 2025-10-28T00:00:00
 **Template Version**: ADR-MVP-TEMPLATE.md v1.0
 
 **Related Documentation:**

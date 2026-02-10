@@ -17,8 +17,8 @@ custom_fields:
   downstream_artifacts: []
 version: "1.0.0"
 document_control:
-  created: "2025-12-13"
-  last_updated: "2025-12-13"
+  created: "2025-12-13T00:00:00"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # analytics-flow

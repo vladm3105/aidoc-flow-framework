@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [BDD, Review Report, EARS]
   downstream_artifacts: [Fixed BDD, Fix Report]
   version: "1.0"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-bdd-fixer

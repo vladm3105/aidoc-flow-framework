@@ -12,7 +12,7 @@ custom_fields:
   change_source: null
   development_status: proposed
 status: Proposed
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 author: [Author Name]
 affected_layers: []
 ---
@@ -133,4 +133,4 @@ affected_layers: []
 
 **Status**: [Proposed → In Progress → Completed]
 
-**Completion Date**: [YYYY-MM-DD when completed]
+**Completion Date**: [YYYY-MM-DDTHH:MM:SS when completed]

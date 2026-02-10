@@ -23,8 +23,8 @@ custom_fields:
 |------|---------|
 | **Status** | Approved |
 | **Version** | 1.0.0 |
-| **Date Created** | 2025-01-10 |
-| **Last Updated** | 2025-01-12 |
+| **Date Created** | 2025-01-10T00:00:00 |
+| **Last Updated** | 2025-01-12T00:00:00 |
 | **Author** | Product Manager |
 | **Reviewer** | Technical Lead |
 | **Approver** | Engineering Director |
@@ -37,8 +37,8 @@ custom_fields:
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0.0 | 2025-01-10 | PM | Initial draft | ED |
-| 1.0.1 | 2025-01-12 | PM | Added security requirements | ED |
+| 1.0.0 | 2025-01-10T00:00:00 | PM | Initial draft | ED |
+| 1.0.1 | 2025-01-12T00:00:00 | PM | Added security requirements | ED |
 
 ---
 

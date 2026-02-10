@@ -38,8 +38,8 @@ Rules for creating Data Contracts (CTR) documents in the SDD framework.
 | Field | Value |
 |-------|-------|
 | **Version** | 1.0.0 |
-| **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Created** | 2025-11-27T00:00:00 |
+| **Last Updated** | 2025-11-27T00:00:00 |
 | **Status** | Active |
 
 ---
@@ -148,8 +148,8 @@ custom_fields:
 | Title | Yes | Descriptive contract name |
 | Version | Yes | Semantic version (X.Y.Z) |
 | Status | Yes | Draft/Active/Deprecated |
-| Created | Yes | YYYY-MM-DD |
-| Last Updated | Yes | YYYY-MM-DD |
+| Created | Yes | YYYY-MM-DDTHH:MM:SS |
+| Last Updated | Yes | YYYY-MM-DDTHH:MM:SS |
 | Author | Yes | Creator name |
 | Consumers | Yes | List of consuming systems |
 | Providers | Yes | List of providing systems |
@@ -398,7 +398,7 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 ---
 
 **Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Last Updated**: 2025-11-27T00:00:00
 
 ---
 
@@ -468,7 +468,7 @@ Must include standard fields plus `complexity`:
 type: plan
 project: [Project Name]
 status: planning
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 complexity: [1-5]
 ---
 ```

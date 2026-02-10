@@ -18,7 +18,7 @@ custom_fields:
 | Item | Details |
 |------|---------|
 | **Template Version** | 3.0 |
-| **Last Updated** | 2026-01-13 |
+| **Last Updated** | 2026-01-13T00:00:00 |
 | **Layer** | 7 (Requirements) |
 | **Status** | Active |
 

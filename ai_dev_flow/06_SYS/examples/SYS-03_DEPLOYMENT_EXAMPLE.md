@@ -29,8 +29,8 @@ custom_fields:
 |-------|---------|
 | **Status** | Example |
 | **Version** | 1.0.0 |
-| **Date Created** | 2026-01-19 |
-| **Last Updated** | 2026-01-19 |
+| **Date Created** | 2026-01-19T00:00:00 |
+| **Last Updated** | 2026-01-19T00:00:00 |
 | **Author** | System Architect |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
@@ -617,8 +617,8 @@ class Order(Base):
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| 2026-01-19 | 1.0.0 | Initial draft - SYS deployment example demonstrating Section 9 deployment requirements | System Architect |
-| 2026-01-19 | 1.1.0 | Added Appendix A (No Infrastructure Changes) and Appendix B (Mixed Infrastructure Scenario) | System Architect |
+| 2026-01-19T00:00:00 | 1.0.0 | Initial draft - SYS deployment example demonstrating Section 9 deployment requirements | System Architect |
+| 2026-01-19T00:00:00 | 1.1.0 | Added Appendix A (No Infrastructure Changes) and Appendix B (Mixed Infrastructure Scenario) | System Architect |
 
 ---
 

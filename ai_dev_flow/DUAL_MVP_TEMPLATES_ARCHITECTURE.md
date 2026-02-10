@@ -2,7 +2,7 @@
 
 **Version**: 1.0
 **Purpose**: Explain dual-format architecture (MD templates for humans, YAML templates for Autopilot, shared YAML schemas)
-**Date**: 2026-01-20
+**Date**: 2026-01-20T00:00:00
 **Status**: Active
 **Target Audience**: Framework users, AI developers, Autopilot operators
 
@@ -146,8 +146,8 @@ summary: "[Single-sentence description]"
 document_control:
   status: "Draft"
   version: "1.0"
-  date_created: "YYYY-MM-DD"
-  last_updated: "YYYY-MM-DD"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Author Name]"
   priority: "Critical (P1)"
   source_document: "@req: REQ.NN.EE.SS"
@@ -1063,7 +1063,7 @@ python3 ai_dev_flow/scripts/md_to_yaml_converter.py \
 | **Title** | Dual-Format Architecture: YAML + MD Templates |
 | **Version** | 1.0 |
 | **Status** | Active |
-| **Date** | 2026-01-20 |
+| **Date** | 2026-01-20T00:00:00 |
 | **Maintained By** | AI Dev Flow Team |
 | **Related Documents** | DUAL_FORMAT_ARCHITECTURE_IMPLEMENTATION_PLAN.md |
 | **Purpose** | Explain dual-format architecture, document types, and usage guidelines |

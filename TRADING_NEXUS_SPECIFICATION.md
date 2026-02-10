@@ -5,8 +5,8 @@
 | Field | Value |
 |-------|-------|
 | Version | 2.0 |
-| Created | 2026-01-01 |
-| Updated | 2026-01-02 |
+| Created | 2026-01-01T00:00:00 |
+| Updated | 2026-01-02T00:00:00 |
 | Status | **Final** |
 | Codename | **Trading Nexus** |
 
@@ -764,9 +764,9 @@ gcloud logging read "resource.type=cloud_run_revision"
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-01-01 | Initial platform proposal |
-| 1.3 | 2026-01-02 | Added AI Gateway architecture |
-| 2.0 | 2026-01-02 | Consolidated spec with ADK + MCP decisions |
+| 1.0 | 2026-01-01T00:00:00 | Initial platform proposal |
+| 1.3 | 2026-01-02T00:00:00 | Added AI Gateway architecture |
+| 2.0 | 2026-01-02T00:00:00 | Consolidated spec with ADK + MCP decisions |
 
 ---
 

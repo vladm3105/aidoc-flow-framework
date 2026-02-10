@@ -226,7 +226,7 @@ graph LR
 - When implementing cumulative tagging, always use formal layer numbers (0-14)
 - The full 15-layer architecture includes optional CTR at layer 8 which may not always be present
 
-**Template Optimization (Updated 2025-11-26):**
+**Template Optimization (Updated 2025-11-26T00:00:00):**
 - BRD template optimized to ~21K tokens through modular appendices and content extraction
 - Teaching materials (FR examples, content exclusion rules) moved to standalone reference guides
 - User stories, user roles, and product appendices relocated to PRD for proper layer separation
@@ -314,8 +314,8 @@ custom_fields:
 |------|---------|
 | **Project Name** | Partner Ecosystem Integration |
 | **Document Version** | 1.2.0 |
-| **Date Created** | 2025-01-15 |
-| **Last Updated** | 2025-02-20 |
+| **Date Created** | 2025-01-15T00:00:00 |
+| **Last Updated** | 2025-02-20T00:00:00 |
 | **Status** | Approved |
 ```
 

@@ -400,8 +400,8 @@ docs/07_REQ/
 | **Status** | Approved |
 | **Priority** | Critical |
 | **Version** | 1.2 |
-| **Created** | 2024-12-15 |
-| **Last Modified** | 2025-01-10 |
+| **Created** | 2024-12-15T00:00:00 |
+| **Last Modified** | 2025-01-10T00:00:00 |
 
 ---
 
@@ -682,9 +682,9 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2024-12-15 | Risk Team | Initial requirement |
-| 1.1 | 2025-01-05 | Risk Team | Added soft limit support per trader feedback |
-| 1.2 | 2025-01-10 | Compliance Team | Added regulatory 15c3-5 traceability |
+| 1.0 | 2024-12-15T00:00:00 | Risk Team | Initial requirement |
+| 1.1 | 2025-01-05T00:00:00 | Risk Team | Added soft limit support per trader feedback |
+| 1.2 | 2025-01-10T00:00:00 | Compliance Team | Added regulatory 15c3-5 traceability |
 
 ---
 

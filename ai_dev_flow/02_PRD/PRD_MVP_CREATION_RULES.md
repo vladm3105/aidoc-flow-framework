@@ -63,8 +63,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 2.1
-**Date**: 2025-11-26
-**Last Updated**: 2025-11-30
+**Date**: 2025-11-26T00:00:00
+**Last Updated**: 2025-11-30T00:00:00
 **Source**: Extracted from PRD-MVP-TEMPLATE.md (full template archived), PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
 **Changes**: Updated to 21-section structure (1-21) with Section 20 (EARS Enhancement Appendix) and Section 21 (Quality Assurance & Testing Strategy). Previous: 19-section structure (0-18)
@@ -115,8 +115,8 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 | Author | Product Manager/Owner Name | MANDATORY |
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
-| Created Date | YYYY-MM-DD | MANDATORY |
-| Last Updated | YYYY-MM-DD | MANDATORY |
+| Created Date | YYYY-MM-DDTHH:MM:SS | MANDATORY |
+| Last Updated | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
@@ -140,8 +140,8 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | [Semantic version, e.g., 1.0.0] |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
@@ -219,8 +219,8 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 - Document ID: PRD-XXX format in H1 header
 - Version: Semantic versioning (X.Y.Z)
 - Status: Draft / Review / Approved / Implemented
-- Date Created: YYYY-MM-DD format
-- Last Updated: YYYY-MM-DD format
+- Date Created: YYYY-MM-DDTHH:MM:SS format
+- Last Updated: YYYY-MM-DDTHH:MM:SS format
 - Author: [Product Manager/Owner Name]
 - Reviewer: [Technical Reviewer Name]
 - Approver: [Stakeholder Name]
@@ -236,8 +236,8 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 |------|---------|
 | **Status** | Draft / Review / Approved / Implemented |
 | **Version** | [Semantic version, e.g., 1.0.0] |
-| **Date Created** | YYYY-MM-DD |
-| **Last Updated** | YYYY-MM-DD |
+| **Date Created** | YYYY-MM-DDTHH:MM:SS |
+| **Last Updated** | YYYY-MM-DDTHH:MM:SS |
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
@@ -1250,7 +1250,7 @@ Must include standard fields plus `complexity`:
 type: plan
 project: [Project Name]
 status: planning
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:MM:SS
 complexity: [1-5]
 ---
 ```

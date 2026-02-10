@@ -86,8 +86,8 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 ---
 
 **Version**: 1.4.0
-**Date**: 2025-11-19
-**Last Updated**: 2025-12-19
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-12-19T00:00:00
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `01_BRD/scripts/validate_brd.py`
 **Primary Template**: `BRD-MVP-TEMPLATE.md` (full template archived)
@@ -1149,12 +1149,12 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 
 ---
 
-### CHECK 20: User Stories section ⭐ UPDATED 2025-11-26
+### CHECK 20: User Stories section ⭐ UPDATED 2025-11-26T00:00:00
 
 **Purpose**: Verify section 5 (User Stories) exists as HIGH-LEVEL SUMMARY (detailed user stories in PRD)
 **Type**: Error (blocking) - User Stories section mandatory in BRD, but simplified format
 
-**Updated Guidance (2025-11-26)**: BRD section 5 now contains only a high-level summary of key user story categories. Detailed user story tables, acceptance criteria, and role definitions have been moved to PRD.
+**Updated Guidance (2025-11-26T00:00:00)**: BRD section 5 now contains only a high-level summary of key user story categories. Detailed user story tables, acceptance criteria, and role definitions have been moved to PRD.
 
 **Location**: section 5 (User Stories - High-Level Summary)
 
@@ -1187,7 +1187,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 **Error Message**:
 ```
 ❌ MISSING: section 5 (User Stories)
-Required in BRD template (simplified format as of 2025-11-26)
+Required in BRD template (simplified format as of 2025-11-26T00:00:00)
 
 Add section with high-level summary:
 - Key user story categories (3-5 bullet points per category)
@@ -1670,7 +1670,7 @@ Warnings: 1
 |------|---------|
 | **Project Name** | Service Platform Enhancement |
 | **Document Version** | 1.0 |
-| **Date** | 2025-11-19 |
+| **Date** | 2025-11-19T00:00:00 |
 | **Document Owner** | Jane Smith, VP Product Management |
 | **Prepared By** | Business Analyst Team |
 | **Status** | Draft |
@@ -1772,8 +1772,8 @@ BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | 2025-11-19 | Initial validation rules for BRD documents | System Architect |
-| 1.3.0 | 2025-12-12 | Added BRD-REF as third document category with reduced validation; Updated CHECK 4 and CHECK 5 for reference documents | Claude Code |
+| 1.0.0 | 2025-11-19T00:00:00 | Initial validation rules for BRD documents | System Architect |
+| 1.3.0 | 2025-12-12T00:00:00 | Added BRD-REF as third document category with reduced validation; Updated CHECK 4 and CHECK 5 for reference documents | Claude Code |
 
 ---
 

@@ -14,12 +14,12 @@ custom_fields:
   development_status: in-progress
   gate_entry: BYPASS
 status: In Progress
-date: {YYYY-MM-DD}
+date: {YYYY-MM-DDTHH:MM:SS}
 author: {On-call Engineer}
 incident_ticket: {INC-XXX}
 incident_commander: {Name}
 bypass_authorized_by: {Name}
-bypass_authorization_time: {YYYY-MM-DD HH:MM TZ}
+bypass_authorization_time: {YYYY-MM-DDTHH:MM:SS HH:MM TZ}
 ---
 
 # CHG-EMG-{YYYYMMDD-HHMM}: EMERGENCY - {Brief Description}
@@ -34,11 +34,11 @@ bypass_authorization_time: {YYYY-MM-DD HH:MM TZ}
 
 | Field | Value |
 |-------|-------|
-| **Incident Declared** | {YYYY-MM-DD HH:MM TZ} |
+| **Incident Declared** | {YYYY-MM-DDTHH:MM:SS HH:MM TZ} |
 | **Incident Commander** | {Name} |
 | **Severity** | P1 / Critical Security |
 | **Bypass Authorized By** | {Name} |
-| **Bypass Authorization Time** | {YYYY-MM-DD HH:MM TZ} |
+| **Bypass Authorization Time** | {YYYY-MM-DDTHH:MM:SS HH:MM TZ} |
 
 ### 1.2 Classification
 

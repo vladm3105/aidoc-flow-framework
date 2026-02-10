@@ -9,7 +9,7 @@ custom_fields:
   priority: core
   development_status: active
   version: 1.0
-  last_updated: 2025-12-28
+  last_updated: 2025-12-28T00:00:00
 ---
 
 # Document Splitting Rules

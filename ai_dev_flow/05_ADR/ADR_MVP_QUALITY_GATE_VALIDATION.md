@@ -20,8 +20,8 @@ custom_fields:
 |-------|-------|
 | Document ID | ADR_QUALITY_GATE_VALIDATION |
 | Version | 1.1 |
-| Created | 2026-01-04 |
-| Updated | 2026-01-04 |
+| Created | 2026-01-04T00:00:00 |
+| Updated | 2026-01-04T00:00:00 |
 | Purpose | Quality gate for complete ADR corpus |
 | Trigger | Run after ALL ADRs are complete |
 | Scope | Entire ADR Quality Gate validation |
@@ -957,8 +957,8 @@ fi
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-04 | Claude | Initial Quality Gate validation rules |
-| 1.1 | 2026-01-04 | Claude | Added Section 0 (Errors Template), Section 3 (Structure Requirements), Section 4 (Cumulative Tagging), complete validation script, Section 6 (Post-Validation Actions), Section 7 (ADR-Specific Rules), Section 8 (Baseline Metrics), numbered check comments |
+| 1.0 | 2026-01-04T00:00:00 | Claude | Initial Quality Gate validation rules |
+| 1.1 | 2026-01-04T00:00:00 | Claude | Added Section 0 (Errors Template), Section 3 (Structure Requirements), Section 4 (Cumulative Tagging), complete validation script, Section 6 (Post-Validation Actions), Section 7 (ADR-Specific Rules), Section 8 (Baseline Metrics), numbered check comments |
 
 ---
 

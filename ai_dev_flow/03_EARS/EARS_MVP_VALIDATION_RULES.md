@@ -87,8 +87,8 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 2.0
-**Date**: 2025-11-29
-**Last Updated**: 2025-11-29
+**Date**: 2025-11-29T00:00:00
+**Last Updated**: 2025-11-29T00:00:00
 **Purpose**: Complete validation rules for EARS documents
 **Script**: `03_EARS/scripts/validate_ears.py`
 **Primary Template**: `EARS-MVP-TEMPLATE.md` (full template archived)

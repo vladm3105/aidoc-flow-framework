@@ -10,7 +10,7 @@ custom_fields:
   layer: 10
   priority: shared
   schema_version: "2.0"
-  last_updated: "2026-01-15"
+  last_updated: "2026-01-15T00:00:00"
 ---
 
 # AI Tasks (TASKS): SPEC Implementation Plans and TODOs

@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: []
   downstream_artifacts: [PRD]
   version: "2.1"
-  last_updated: "2026-02-10"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-brd-validator

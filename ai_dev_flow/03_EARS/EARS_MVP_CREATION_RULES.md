@@ -55,8 +55,8 @@ custom_fields:
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
-**Date**: 2025-11-19
-**Last Updated**: 2025-11-30
+**Date**: 2025-11-19T00:00:00
+**Last Updated**: 2025-11-30T00:00:00
 **Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (full template archived)
 **Purpose**: Complete reference for creating EARS files according to doc-flow SDD framework
 **Changes**: Merged EARS_STYLE_GUIDE.md content - added Status/BDD-Score mapping, code block formatting, traceability format details, and extended common mistakes table

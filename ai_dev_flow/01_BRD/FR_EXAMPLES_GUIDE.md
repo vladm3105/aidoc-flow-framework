@@ -511,7 +511,7 @@ See the following BRDs for examples of business-level FRs that achieved perfect 
 **Document Control**:
 
 - **Version**: 2.0
-- **Created**: 2025-11-26
-- **Updated**: 2025-12-10 (migrated to unified `BRD.NN.EE.SS` heading format)
+- **Created**: 2025-11-26T00:00:00
+- **Updated**: 2025-12-10T00:00:00 (migrated to unified `BRD.NN.EE.SS` heading format)
 - **Source**: Extracted from BRD-MVP-TEMPLATE.md Appendix C
 - **Maintenance**: Update when BRD template functional requirement structure changes

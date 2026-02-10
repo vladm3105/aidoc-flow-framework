@@ -19,8 +19,8 @@ custom_fields:
   downstream_artifacts: []
 version: "1.1.0"
 document_control:
-  created: "2026-01-01"
-  last_updated: "2026-01-01"
+  created: "2026-01-01T00:00:00"
+  last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-review
