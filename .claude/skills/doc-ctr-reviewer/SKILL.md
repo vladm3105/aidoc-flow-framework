@@ -429,9 +429,11 @@ def compute_section_hash(file_path: str, section_anchor: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL CTR use nested folders (`CTR-NN_{slug}/`) regardless of size. This ensures dual files (.md + .yaml), review reports, fix reports, and drift cache files are organized together.
+
 **File Naming**: `CTR-NN-SSS.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed CTR document.
+**Location**: Inside the CTR nested folder: `docs/08_CTR/CTR-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -448,7 +450,8 @@ docs/08_CTR/CTR-03-001_provider_api/
 ├── CTR-03-001.md
 ├── CTR-03-001.yaml
 ├── CTR-03-001.R_review_report_v001.md    # First review
-└── CTR-03-001.R_review_report_v002.md    # After fixes
+├── CTR-03-001.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

@@ -777,9 +777,11 @@ flowchart TD
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL SYS use nested folders (`SYS-NN_{slug}/`) regardless of size. Fix reports are stored alongside the SYS document in the nested folder.
+
 **File Naming**: `SYS-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the SYS document.
+**Location**: Inside the SYS nested folder: `docs/SYS/SYS-NN_{slug}/`
 
 **Structure**:
 

@@ -484,9 +484,11 @@ def compute_section_hash(file_path: str, section_anchor: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL SYS use nested folders (`SYS-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `SYS-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed SYS document.
+**Location**: Inside the SYS nested folder: `docs/SYS/SYS-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -499,10 +501,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/06_SYS/
+docs/SYS/SYS-01_f1_iam/
 ├── SYS-01_f1_iam.md
 ├── SYS-01.R_review_report_v001.md    # First review
-└── SYS-01.R_review_report_v002.md    # After fixes
+├── SYS-01.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

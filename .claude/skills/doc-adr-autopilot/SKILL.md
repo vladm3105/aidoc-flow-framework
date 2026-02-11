@@ -454,9 +454,12 @@ Generate ADR documents with Context-Decision-Consequences format.
     @bdd: BDD.NN.14.XX
     ```
 
-11. **File Output**:
-    - **Monolithic** (<25KB): `docs/ADR/ADR-NN_{slug}.md`
-    - **Sectioned** (>=25KB): `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{section}.md`
+11. **File Output** (ALWAYS use nested folder):
+    - **Monolithic** (<20k tokens): `docs/ADR/ADR-NN_{slug}/ADR-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/ADR/ADR-NN_{slug}/ADR-NN.0_index.md`, `ADR-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/ADR/ADR-00_index.md` (create or update)
+
+    **Nested Folder Rule**: ALL ADRs use nested folders (`ADR-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 **Element ID Format** (per `doc-naming` skill):
 
@@ -1062,12 +1065,17 @@ fix_mode:
 
 ### Generated Files
 
+**All ADRs use nested folders** (`ADR-NN_{slug}/`) regardless of size. Document sectioning (monolithic vs sectioned) depends only on document size (>20k tokens = sectioned).
+
 | File | Purpose | Location |
 |------|---------|----------|
-| ADR-NN_{slug}.md | Main ADR document (monolithic) | `docs/ADR/` |
-| ADR-NN_{slug}/ | ADR folder (sectioned) | `docs/ADR/` |
-| ADR-NN.0_index.md | Section index | `docs/ADR/ADR-NN_{slug}/` |
-| ADR-NN.S_{section}.md | Section files | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN_{slug}/ | ADR folder (ALWAYS created) | `docs/ADR/` |
+| ADR-NN_{slug}.md | Main ADR document (monolithic <20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN.R_review_report_v{VVV}.md | Review report | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN.F_fix_report_v{VVV}.md | Fix report | `docs/ADR/ADR-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/ADR/ADR-NN_{slug}/` |
 
 ### Validation Reports
 

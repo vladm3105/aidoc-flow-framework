@@ -130,6 +130,57 @@ next_section: "TYPE-NN.(S+1)_{slug}.md"
 
 ---
 
+# Companion Files
+
+When documents go through automated review/fix workflows, companion files are generated and stored alongside document files in the nested folder.
+
+## Companion File Types
+
+| File Type | Pattern | Purpose |
+|-----------|---------|---------|
+| Review Report | `{TYPE}-{NN}.R_review_report_v{VVV}.md` | Quality review findings |
+| Fix Report | `{TYPE}-{NN}.F_fix_report_v{VVV}.md` | Applied fixes summary |
+| Drift Cache | `.drift_cache.json` | Upstream change detection |
+
+## Placement Rules
+
+1. Companion files live inside the nested folder with the document
+2. Review/fix reports use 3-digit version numbers (v001, v002)
+3. Drift cache is always named `.drift_cache.json` (hidden file)
+
+## Example: Monolithic BRD with Review Cycle
+
+```text
+docs/01_BRD/BRD-07_f7_config/
+├── BRD-07_f7_config.md
+├── BRD-07.R_review_report_v001.md
+├── BRD-07.F_fix_report_v001.md
+└── .drift_cache.json
+```
+
+## Example: Sectioned BRD with Review Cycle
+
+```text
+docs/01_BRD/BRD-01_f1_iam/
+├── BRD-01.0_index.md
+├── BRD-01.1_core.md
+├── BRD-01.2_requirements.md
+├── BRD-01.3_quality_ops.md
+├── BRD-01.R_review_report_v001.md
+├── BRD-01.R_review_report_v002.md
+├── BRD-01.F_fix_report_v001.md
+└── .drift_cache.json
+```
+
+## Companion File Lifecycle
+
+1. **First review**: Creates `.R_review_report_v001.md` and `.drift_cache.json`
+2. **Fix cycle**: Creates `.F_fix_report_v001.md`
+3. **Re-review**: Creates `.R_review_report_v002.md`, updates `.drift_cache.json`
+4. **Subsequent cycles**: Increment version numbers sequentially
+
+---
+
 # FAQ
 
 - Why keep an index file? It is the authoritative map of sections and the stable entry point for links.

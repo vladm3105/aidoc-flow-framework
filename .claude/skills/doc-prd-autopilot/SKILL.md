@@ -307,9 +307,12 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    @brd: BRD.01.01.01, BRD.01.01.02, BRD.01.23.01
    ```
 
-7. **File Output**:
-   - **Monolithic** (<25KB): `docs/02_PRD/PRD-NN_{slug}.md`
-   - **Sectioned** (>=25KB): `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{section}.md`
+7. **File Output** (ALWAYS use nested folder):
+   - **Monolithic** (<20k tokens): `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md`
+   - **Sectioned** (≥20k tokens): `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_core.md`, etc.
+   - **Master Index** (always): `docs/02_PRD/PRD-00_index.md` (create or update)
+
+   **Nested Folder Rule**: ALL PRDs use nested folders (`PRD-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 ### Step 5: EARS-Ready Score Validation
 
@@ -485,7 +488,7 @@ After passing the fix cycle:
    ```bash
    # Update PRD-00_TRACEABILITY_MATRIX.md
    python ai_dev_flow/scripts/update_traceability_matrix.py \
-     --prd docs/02_PRD/PRD-NN_{slug}.md \
+     --prd docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md \
      --matrix docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md
    ```
 

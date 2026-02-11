@@ -506,11 +506,14 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    | @threshold: PRD.01.retry.max_attempts | Retry | 3 | PRD Section 20.4 |
    ```
 
-10. **File Output**:
-    - **Flat**: `docs/REQ/REQ-NN_{slug}.md`
-    - **Domain-based**: `docs/REQ/{domain}/REQ-NN_{slug}.md`
-    - **Subdomain**: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}.md`
-    - **Sectioned** (>50KB): `docs/REQ/REQ-NN_{slug}/REQ-NN.S_{section}.md`
+10. **File Output** (ALWAYS use nested folder):
+    - **Monolithic** (<20k tokens): `docs/REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Domain-based**: `docs/REQ/{domain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Subdomain**: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/REQ/REQ-00_index.md` (create or update)
+
+    **Nested Folder Rule**: ALL REQ use nested folders (`REQ-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 ### Phase 4: REQ Validation
 
@@ -1196,12 +1199,17 @@ req_autopilot:
 
 ### Generated Files
 
+**All REQ use nested folders** (`REQ-NN_{slug}/`) regardless of size. Document sectioning (monolithic vs sectioned) depends only on document size (>20k tokens = sectioned).
+
 | File | Purpose | Location |
 |------|---------|----------|
-| REQ-NN_{slug}.md | Main REQ document (flat) | `docs/REQ/` |
-| REQ-NN_{slug}.md | Domain-based REQ | `docs/REQ/{domain}/` |
-| REQ-NN_{slug}/ | REQ folder (sectioned) | `docs/REQ/` |
-| REQ-NN.S_{section}.md | Section files | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN_{slug}/ | REQ folder (ALWAYS created) | `docs/REQ/` or `docs/REQ/{domain}/` |
+| REQ-NN_{slug}.md | Main REQ document (monolithic <20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN.R_review_report_v{VVV}.md | Review report | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN.F_fix_report_v{VVV}.md | Fix report | `docs/REQ/REQ-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/REQ/REQ-NN_{slug}/` |
 
 ### Validation Reports
 

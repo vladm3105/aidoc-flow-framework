@@ -498,6 +498,112 @@ File Organization Rules
     - `08_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml`
     - `04_BDD/BDD-DOC_NUM_{suite}/` (Always Nested for Suites)
 
+## Nested Folder Organization
+
+All documents with review/fix workflows use nested folders to keep related files together.
+
+### When to Use Nested Folders
+
+| Trigger | Example |
+|---------|---------|
+| Document has review/fix workflow | BRD with `doc-brd-reviewer` cycle |
+| Document exceeds 20,000 tokens | Large BRD needing sections |
+| Multiple related files | Document + companion files |
+
+### Folder Naming
+
+**Pattern**: `{TYPE}-{NN}_{slug}/`
+
+**Examples**:
+- `BRD-01_f1_iam/`
+- `BRD-07_f7_config/`
+- `PRD-03_user_auth/`
+
+### Two Document Patterns Within Folders
+
+**Pattern A: Monolithic** (document < 20k tokens)
+- Single document file: `{TYPE}-{NN}_{slug}.md`
+- Example: `BRD-07_f7_config/BRD-07_f7_config.md`
+
+**Pattern B: Sectioned** (document > 20k tokens)
+- Index file: `{TYPE}-{NN}.0_index.md`
+- Section files: `{TYPE}-{NN}.{S}_{section}.md`
+- Example: `BRD-01_f1_iam/BRD-01.0_index.md`, `BRD-01.1_core.md`
+
+## Companion Document Patterns
+
+When documents go through review/fix cycles, companion files are generated and stored in the same nested folder.
+
+### Review Reports
+
+**Pattern**: `{TYPE}-{NN}.R_review_report_v{VVV}.md`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `{TYPE}` | Document type | BRD, PRD, ADR |
+| `{NN}` | Document number | 01, 02, 03 |
+| `.R` | Review suffix (literal) | `.R` |
+| `_review_report` | Report type (literal) | `_review_report` |
+| `v{VVV}` | Version (3-digit, zero-padded) | v001, v002, v015 |
+
+**Examples**:
+- `BRD-01.R_review_report_v001.md`
+- `PRD-03.R_review_report_v002.md`
+
+### Fix Reports
+
+**Pattern**: `{TYPE}-{NN}.F_fix_report_v{VVV}.md`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `.F` | Fix suffix (literal) | `.F` |
+| `_fix_report` | Report type (literal) | `_fix_report` |
+
+**Examples**:
+- `BRD-01.F_fix_report_v001.md`
+- `ADR-05.F_fix_report_v002.md`
+
+### Drift Cache
+
+**Pattern**: `.drift_cache.json` (hidden file, exact name)
+
+**Purpose**: Tracks upstream document hashes for drift detection.
+
+**Location**: Inside the nested folder alongside document files.
+
+### Complete Nested Folder Examples
+
+**Monolithic Document with Review Cycle**:
+
+```text
+BRD-07_f7_config/
+├── BRD-07_f7_config.md              # Single complete document
+├── BRD-07.R_review_report_v001.md   # Review report v1
+├── BRD-07.F_fix_report_v001.md      # Fix report v1
+└── .drift_cache.json                 # Drift detection
+```
+
+**Sectioned Document with Review Cycle**:
+
+```text
+BRD-01_f1_iam/
+├── BRD-01.0_index.md                # Index/navigation
+├── BRD-01.1_core.md                 # Section 1
+├── BRD-01.2_requirements.md         # Section 2
+├── BRD-01.3_quality_ops.md          # Section 3
+├── BRD-01.R_review_report_v001.md   # Review report v1
+├── BRD-01.R_review_report_v002.md   # Review report v2
+├── BRD-01.F_fix_report_v001.md      # Fix report v1
+└── .drift_cache.json                 # Drift detection
+```
+
+### Companion File Lifecycle
+
+1. **First review**: Creates `.R_review_report_v001.md` and `.drift_cache.json`
+2. **Fix cycle**: Creates `.F_fix_report_v001.md`
+3. **Re-review**: Creates `.R_review_report_v002.md`, updates `.drift_cache.json`
+4. **Subsequent cycles**: Increment version numbers sequentially
+
 ## Section-Based File Splitting (Document Chunking)
 
 **Purpose**: When documents exceed 50KB standard limit (or 100KB maximum), split into section-based files using dot notation. This maintains document cohesion while enabling AI tool processing.

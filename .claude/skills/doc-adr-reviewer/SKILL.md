@@ -459,9 +459,11 @@ def compute_file_hash(file_path: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL ADRs use nested folders (`ADR-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `ADR-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed ADR document.
+**Location**: Inside the ADR nested folder: `docs/ADR/ADR-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -474,10 +476,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/05_ADR/
+docs/ADR/ADR-01_authentication_strategy/
 ├── ADR-01_authentication_strategy.md
 ├── ADR-01.R_review_report_v001.md    # First review
-└── ADR-01.R_review_report_v002.md    # After fixes
+├── ADR-01.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

@@ -350,9 +350,12 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    | @threshold: PRD.01.perf.api.p95 | Performance | 100ms | PRD Section 14 |
    ```
 
-10. **File Output**:
-    - **Monolithic** (<300 lines): `docs/03_EARS/EARS-NN_{slug}.md`
-    - **Sectioned** (>=300 lines): `docs/03_EARS/EARS-NN_{slug}/EARS-NN.S_{section}.md`
+10. **File Output** (ALWAYS use nested folder):
+    - **Monolithic** (<20k tokens): `docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/03_EARS/EARS-NN_{slug}/EARS-NN.0_index.md`, `EARS-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/03_EARS/EARS-00_index.md` (create or update)
+
+    **Nested Folder Rule**: ALL EARS use nested folders (`EARS-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 ### Phase 4: EARS Validation
 
@@ -1061,12 +1064,17 @@ Chunk N/M Complete:
 
 ### Generated Files
 
+**All EARS use nested folders** (`EARS-NN_{slug}/`) regardless of size. Document sectioning (monolithic vs sectioned) depends only on document size (>20k tokens = sectioned).
+
 | File | Purpose | Location |
 |------|---------|----------|
-| EARS-NN_{slug}.md | Main EARS document (monolithic) | `docs/03_EARS/` |
-| EARS-NN_{slug}/ | EARS folder (sectioned) | `docs/03_EARS/` |
-| EARS-NN.0_index.md | Section index | `docs/03_EARS/EARS-NN_{slug}/` |
-| EARS-NN.S_{section}.md | Section files | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN_{slug}/ | EARS folder (ALWAYS created) | `docs/03_EARS/` |
+| EARS-NN_{slug}.md | Main EARS document (monolithic <20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.R_review_report_v{VVV}.md | Review report | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/03_EARS/EARS-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/03_EARS/EARS-NN_{slug}/` |
 
 ### Validation Reports
 

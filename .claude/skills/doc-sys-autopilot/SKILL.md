@@ -356,10 +356,13 @@ Generate SYS documents with functional requirements and quality attributes.
    @adr: ADR-01, ADR-04
    ```
 
-10. **File Output**:
-    - **Monolithic** (<25KB): `docs/SYS/SYS-NN_{slug}.md`
-    - **Sectioned** (>=25KB): `docs/SYS/SYS-NN_{slug}/SYS-NN.S_{section}.md`
+10. **File Output** (ALWAYS use nested folder):
+    - **Monolithic** (<20k tokens): `docs/SYS/SYS-NN_{slug}/SYS-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/SYS/SYS-NN_{slug}/SYS-NN.0_index.md`, `SYS-NN.1_core.md`, etc.
     - **Modular** (v2.0): `docs/SYS/SYS-NN_{slug}/SYS-NN.MM_{capability}.md`
+    - **Master Index** (always): `docs/SYS/SYS-00_index.md` (create or update)
+
+    **Nested Folder Rule**: ALL SYS use nested folders (`SYS-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 ---
 
@@ -1126,12 +1129,17 @@ fix_mode:
 
 ### Generated Files
 
+**All SYS use nested folders** (`SYS-NN_{slug}/`) regardless of size. Document sectioning (monolithic vs sectioned) depends only on document size (>20k tokens = sectioned).
+
 | File | Purpose | Location |
 |------|---------|----------|
-| SYS-NN_{slug}.md | Main SYS document (monolithic) | `docs/SYS/` |
-| SYS-NN_{slug}/ | SYS folder (sectioned) | `docs/SYS/` |
-| SYS-NN.0_index.md | Section index | `docs/SYS/SYS-NN_{slug}/` |
-| SYS-NN.S_{section}.md | Section files | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN_{slug}/ | SYS folder (ALWAYS created) | `docs/SYS/` |
+| SYS-NN_{slug}.md | Main SYS document (monolithic <20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN.R_review_report_v{VVV}.md | Review report | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/SYS/SYS-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/SYS/SYS-NN_{slug}/` |
 
 ### Validation Reports
 

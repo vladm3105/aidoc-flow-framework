@@ -567,10 +567,12 @@ Generate the BRD document with real-time quality feedback.
     | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | [BRD-NN](BRD-NN_{slug}/BRD-NN.0_index.md) |
     ```
 
-12. **File Output**:
-    - **Monolithic** (<25KB): `docs/01_BRD/BRD-NN_{slug}.md`
-    - **Sectioned** (>=25KB): `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
-    - **Index** (always): `docs/01_BRD/BRD-00_index.md` (create or update)
+12. **File Output** (ALWAYS use nested folder):
+    - **Monolithic** (<20k tokens): `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md`
+    - **Sectioned** (>=20k tokens): `docs/01_BRD/BRD-NN_{slug}/BRD-NN.0_index.md`, `BRD-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/01_BRD/BRD-00_index.md` (create or update)
+
+    **Nested Folder Rule**: ALL BRDs use nested folders (`BRD-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
 ### Phase 4: BRD Validation
 
@@ -1200,24 +1202,28 @@ flowchart LR
 
 ### Generated Files
 
+**All BRDs use nested folders** (`BRD-NN_{slug}/`) regardless of size. Document sectioning (monolithic vs sectioned) depends only on document size (>20k tokens = sectioned).
+
 | File | Purpose | Location |
 |------|---------|----------|
 | BRD-00_index.md | Master BRD index (created/updated) | `docs/01_BRD/` |
 | BRD-00_GLOSSARY.md | Master glossary (created if missing) | `docs/01_BRD/` |
-| BRD-NN_{slug}.md | Main BRD document (monolithic) | `docs/01_BRD/` |
-| BRD-NN_{slug}/ | BRD folder (sectioned) | `docs/01_BRD/` |
-| BRD-NN.0_index.md | Section index | `docs/01_BRD/BRD-NN_{slug}/` |
-| BRD-NN.S_{section}.md | Section files | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD-NN_{slug}/ | BRD folder (ALWAYS created) | `docs/01_BRD/` |
+| BRD-NN_{slug}.md | Main BRD document (monolithic <20k tokens) | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/01_BRD/BRD-NN_{slug}/` |
 
-### Review Reports (v2.2)
+### Review Reports (v2.3)
 
-**IMPORTANT**: Review reports are project documents and MUST be stored alongside the reviewed documents, not in temporary folders.
+**IMPORTANT**: Review reports are project documents and MUST be stored alongside the reviewed documents in the nested folder, not in temporary folders.
 
 | Report Type | File Name | Location |
 |-------------|-----------|----------|
-| BRD Review Report | `BRD-NN.R_review_report.md` | Same folder as reviewed BRD |
-| Monolithic BRD | `BRD-NN.R_review_report.md` | `docs/01_BRD/` |
-| Sectioned BRD | `BRD-NN.R_review_report.md` | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD Review Report | `BRD-NN.R_review_report_v{VVV}.md` | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD Fix Report | `BRD-NN.F_fix_report_v{VVV}.md` | `docs/01_BRD/BRD-NN_{slug}/` |
+| Drift Cache | `.drift_cache.json` | `docs/01_BRD/BRD-NN_{slug}/` |
+
+**Note**: ALL BRDs (both monolithic and sectioned) use nested folders, so all companion files go in the same location.
 
 **Review Document Requirements**:
 
@@ -1279,16 +1285,27 @@ Review reports are formal project documents and MUST comply with all project doc
    - `R` suffix indicates Review document type
    - Example: `BRD-03.R_review_report.md`
 
-**Example Review Report Location**:
+**Example Folder Structures**:
 
 ```
+# Monolithic BRD (document <20k tokens)
 docs/01_BRD/
-├── BRD-03_f3_observability/
-│   ├── BRD-03.0_index.md
-│   ├── BRD-03.1_core.md
-│   ├── BRD-03.2_requirements.md
-│   ├── BRD-03.3_quality_ops.md
-│   └── BRD-03.R_review_report.md    # ← Review report stored here
+├── BRD-07_f7_config/
+│   ├── BRD-07_f7_config.md              # ← Monolithic document
+│   ├── BRD-07.R_review_report_v001.md   # ← Review report
+│   ├── BRD-07.F_fix_report_v001.md      # ← Fix report
+│   └── .drift_cache.json                 # ← Drift cache
+
+# Sectioned BRD (document ≥20k tokens)
+docs/01_BRD/
+├── BRD-01_f1_iam/
+│   ├── BRD-01.0_index.md                # ← Section index
+│   ├── BRD-01.1_core.md                 # ← Section 1
+│   ├── BRD-01.2_requirements.md         # ← Section 2
+│   ├── BRD-01.3_quality_ops.md          # ← Section 3
+│   ├── BRD-01.R_review_report_v001.md   # ← Review report
+│   ├── BRD-01.F_fix_report_v001.md      # ← Fix report
+│   └── .drift_cache.json                 # ← Drift cache
 ```
 
 ### Temporary Files

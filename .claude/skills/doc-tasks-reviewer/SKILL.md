@@ -502,9 +502,11 @@ def extract_section(file_path: str, anchor: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL TASKS use nested folders (`TASKS-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `TASKS-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed TASKS document.
+**Location**: Inside the TASKS nested folder: `docs/11_TASKS/TASKS-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -517,10 +519,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/11_TASKS/
+docs/11_TASKS/TASKS-03_f3_observability/
 ├── TASKS-03_f3_observability.md
 ├── TASKS-03.R_review_report_v001.md    # First review
-└── TASKS-03.R_review_report_v002.md    # After fixes
+├── TASKS-03.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

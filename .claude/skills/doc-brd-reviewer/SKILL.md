@@ -573,9 +573,11 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL BRDs use nested folders (`BRD-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `BRD-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed BRD document.
+**Location**: Inside the BRD nested folder: `docs/01_BRD/BRD-NN_{slug}/`
 
 ### Versioning Rules
 

@@ -416,9 +416,11 @@ def calculate_content_hash(file_path: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL BDD suites use nested folders (`BDD-NN_{slug}/`). This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `BDD-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed BDD document.
+**Location**: Inside the BDD nested folder: `docs/04_BDD/BDD-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -431,10 +433,13 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/04_BDD/
-├── BDD-01_f1_iam.feature
+docs/04_BDD/BDD-01_f1_iam/
+├── BDD-01.0_index.md
+├── BDD-01.1_authentication.feature
+├── BDD-01.2_authorization.feature
 ├── BDD-01.R_review_report_v001.md    # First review
-└── BDD-01.R_review_report_v002.md    # After fixes
+├── BDD-01.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

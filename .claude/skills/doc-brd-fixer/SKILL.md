@@ -729,9 +729,11 @@ After processing drift, update `.drift_cache.json`:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL BRDs use nested folders (`BRD-NN_{slug}/`) regardless of size. Fix reports are stored alongside the BRD document in the nested folder.
+
 **File Naming**: `BRD-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the BRD document.
+**Location**: Inside the BRD nested folder: `docs/01_BRD/BRD-NN_{slug}/`
 
 **Structure**:
 

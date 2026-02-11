@@ -288,21 +288,26 @@ Validate that source REQ documents meet quality thresholds.
 
 Generate dual-file contracts for each CTR-required module.
 
-**Dual-File Structure**:
+**Dual-File Structure** (ALWAYS use nested folders):
 
 ```
 docs/08_CTR/
-├── CTR-01_f1_iam_api.md        # Documentation file
-├── CTR-01_f1_iam_api.yaml      # OpenAPI specification
-├── CTR-02_f2_session_api.md
-├── CTR-02_f2_session_api.yaml
-├── CTR-08_d1_agent_api.md
-├── CTR-08_d1_agent_api.yaml
-├── CTR-09_d2_cost_api.md
-├── CTR-09_d2_cost_api.yaml
-├── CTR-13_d6_gateway_api.md
-└── CTR-13_d6_gateway_api.yaml
+├── CTR-01_f1_iam_api/
+│   ├── CTR-01_f1_iam_api.md         # Documentation file
+│   ├── CTR-01_f1_iam_api.yaml       # OpenAPI specification
+│   ├── CTR-01.R_review_report_v001.md
+│   ├── CTR-01.F_fix_report_v001.md
+│   └── .drift_cache.json
+├── CTR-02_f2_session_api/
+│   ├── CTR-02_f2_session_api.md
+│   └── CTR-02_f2_session_api.yaml
+├── CTR-08_d1_agent_api/
+│   ├── CTR-08_d1_agent_api.md
+│   └── CTR-08_d1_agent_api.yaml
+└── ...
 ```
+
+**Nested Folder Rule**: ALL CTRs use nested folders (`CTR-NN_{slug}/`) regardless of size. This keeps dual files (.md + .yaml) and companion files (review reports, fix reports, drift cache) organized together.
 
 **Markdown File Structure** (CTR-NN_{slug}.md):
 - Document Control

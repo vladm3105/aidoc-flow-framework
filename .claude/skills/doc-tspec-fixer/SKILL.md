@@ -847,9 +847,11 @@ def find_test_cases(content: str) -> list:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL TSPEC use nested folders (`TSPEC-NN_{slug}/`) regardless of size. Fix reports are stored alongside the TSPEC document in the nested folder.
+
 **File Naming**: `TSPEC-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the TSPEC document.
+**Location**: Inside the TSPEC nested folder: `docs/10_TSPEC/TSPEC-NN_{slug}/`
 
 **Structure**:
 

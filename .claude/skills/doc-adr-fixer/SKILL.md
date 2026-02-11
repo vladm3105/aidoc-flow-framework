@@ -704,9 +704,11 @@ When ADR changes (any tier), notify downstream SYS documents:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL ADRs use nested folders (`ADR-NN_{slug}/`) regardless of size. Fix reports are stored alongside the ADR document in the nested folder.
+
 **File Naming**: `ADR-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the ADR document.
+**Location**: Inside the ADR nested folder: `docs/ADR/ADR-NN_{slug}/`
 
 **Structure**:
 

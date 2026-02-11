@@ -688,9 +688,11 @@ CTR documents consist of paired MD + YAML files that must remain synchronized.
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL CTR use nested folders (`CTR-NN_{slug}/`) regardless of size. Fix reports are stored alongside the CTR dual files (.md + .yaml) in the nested folder.
+
 **File Naming**: `CTR-NN-SSS.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the CTR document.
+**Location**: Inside the CTR nested folder: `docs/08_CTR/CTR-NN_{slug}/`
 
 **Structure**:
 

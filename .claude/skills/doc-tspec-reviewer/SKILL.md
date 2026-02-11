@@ -471,9 +471,11 @@ def compute_section_hash(file_path: str, section_name: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL TSPEC use nested folders (`TSPEC-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `TSPEC-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed TSPEC document.
+**Location**: Inside the TSPEC nested folder: `docs/10_TSPEC/TSPEC-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -486,10 +488,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/10_TSPEC/
+docs/10_TSPEC/TSPEC-03_f3_observability/
 ├── TSPEC-03_f3_observability.md
 ├── TSPEC-03.R_review_report_v001.md    # First review
-└── TSPEC-03.R_review_report_v002.md    # After fixes
+├── TSPEC-03.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

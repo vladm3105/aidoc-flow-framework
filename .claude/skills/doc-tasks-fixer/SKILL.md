@@ -1111,9 +1111,11 @@ class EntityModel:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL TASKS use nested folders (`TASKS-NN_{slug}/`) regardless of size. Fix reports are stored alongside the TASKS document in the nested folder.
+
 **File Naming**: `TASKS-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the TASKS document.
+**Location**: Inside the TASKS nested folder: `docs/11_TASKS/TASKS-NN_{slug}/`
 
 **Structure**:
 

@@ -831,9 +831,11 @@ def notify_downstream(ears_id: str, changes: list[dict]) -> None:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL EARS use nested folders (`EARS-NN_{slug}/`) regardless of size. Fix reports are stored alongside the EARS document in the nested folder.
+
 **File Naming**: `EARS-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the EARS document.
+**Location**: Inside the EARS nested folder: `docs/03_EARS/EARS-NN_{slug}/`
 
 **Structure**:
 

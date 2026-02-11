@@ -420,9 +420,11 @@ The review report MUST include cache status:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL EARS use nested folders (`EARS-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `EARS-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed EARS document.
+**Location**: Inside the EARS nested folder: `docs/03_EARS/EARS-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -435,10 +437,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/03_EARS/
+docs/03_EARS/EARS-01_f1_iam/
 ├── EARS-01_f1_iam.md
 ├── EARS-01.R_review_report_v001.md    # First review
-└── EARS-01.R_review_report_v002.md    # After fixes
+├── EARS-01.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

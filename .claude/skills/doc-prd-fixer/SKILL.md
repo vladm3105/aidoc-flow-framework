@@ -764,9 +764,11 @@ After processing drift, update `.drift_cache.json`:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL PRDs use nested folders (`PRD-NN_{slug}/`) regardless of size. Fix reports are stored alongside the PRD document in the nested folder.
+
 **File Naming**: `PRD-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the PRD document.
+**Location**: Inside the PRD nested folder: `docs/02_PRD/PRD-NN_{slug}/`
 
 **Structure**:
 

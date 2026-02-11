@@ -1387,12 +1387,17 @@ Chunk N/M Complete:
 
 ### Generated Files
 
+**All BDD suites use nested folders** (`BDD-NN_{slug}/`). This keeps feature files and companion files (review reports, fix reports, drift cache) organized together.
+
 | File | Purpose | Location |
 |------|---------|----------|
-| BDD-NN_{slug}/ | BDD suite folder | `docs/04_BDD/` |
+| BDD-NN_{slug}/ | BDD suite folder (ALWAYS created) | `docs/04_BDD/` |
 | BDD-NN.0_index.md | Suite index | `docs/04_BDD/BDD-NN_{slug}/` |
 | BDD-NN.S_{section}.feature | Section files | `docs/04_BDD/BDD-NN_{slug}/` |
 | BDD-NN_{slug}.feature | Redirect stub | `docs/04_BDD/` |
+| BDD-NN.R_review_report_v{VVV}.md | Review report | `docs/04_BDD/BDD-NN_{slug}/` |
+| BDD-NN.F_fix_report_v{VVV}.md | Fix report | `docs/04_BDD/BDD-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/04_BDD/BDD-NN_{slug}/` |
 
 ### Section File Structure
 

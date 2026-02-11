@@ -470,9 +470,11 @@ def compute_upstream_hash(file_path: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL REQ use nested folders (`REQ-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
 **File Naming**: `REQ-NN.R_review_report_vNNN.md` (module-level) or `REQ-NN-SSS.R_review_report_vNNN.md` (atomic-level)
 
-**Location**: Same folder as the reviewed REQ document.
+**Location**: Inside the REQ nested folder: `docs/REQ/REQ-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -485,10 +487,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/07_REQ/REQ-03_f3_observability/
+docs/REQ/REQ-03_f3_observability/
 ├── REQ-03-001_metrics_collection.md
 ├── REQ-03-001.R_review_report_v001.md    # First review
-└── REQ-03-001.R_review_report_v002.md    # After fixes
+├── REQ-03-001.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

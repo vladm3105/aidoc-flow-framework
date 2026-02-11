@@ -519,9 +519,11 @@ def compute_section_hash(file_path: str, section_name: str) -> str:
 
 Review reports are stored alongside the reviewed document per project standards.
 
+**Nested Folder Rule**: ALL SPEC use nested folders (`SPEC-NN_{slug}/`) regardless of size. This ensures YAML files, review reports, fix reports, and drift cache files are organized together.
+
 **File Naming**: `SPEC-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed SPEC document.
+**Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -534,10 +536,11 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/09_SPEC/
-├── SPEC-03.yaml
+docs/09_SPEC/SPEC-03_f3_observability/
+├── SPEC-03_f3_observability.yaml
 ├── SPEC-03.R_review_report_v001.md    # First review
-└── SPEC-03.R_review_report_v002.md    # After fixes
+├── SPEC-03.R_review_report_v002.md    # After fixes
+└── .drift_cache.json
 ```
 
 ### Delta Reporting

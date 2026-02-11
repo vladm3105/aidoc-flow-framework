@@ -861,9 +861,11 @@ After processing drift issues, update `.drift_cache.json`:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL REQ use nested folders (`REQ-NN_{slug}/`) regardless of size. Fix reports are stored alongside the REQ document in the nested folder.
+
 **File Naming**: `REQ-NN.F_fix_report_vNNN.md` or `REQ-NN-SSS.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the REQ document.
+**Location**: Inside the REQ nested folder: `docs/REQ/REQ-NN_{slug}/`
 
 **Structure**:
 

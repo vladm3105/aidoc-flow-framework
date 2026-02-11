@@ -711,9 +711,11 @@ def find_yaml_blocks(content: str) -> list:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL SPEC use nested folders (`SPEC-NN_{slug}/`) regardless of size. Fix reports are stored alongside the SPEC YAML file(s) in the nested folder.
+
 **File Naming**: `SPEC-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the SPEC document.
+**Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
 
 **Structure**:
 

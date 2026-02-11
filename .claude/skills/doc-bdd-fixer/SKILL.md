@@ -824,9 +824,11 @@ When drift is flagged but no BDD update is needed:
 
 ### Fix Report
 
+**Nested Folder Rule**: ALL BDD suites use nested folders (`BDD-NN_{slug}/`). Fix reports are stored alongside the BDD feature files in the nested folder.
+
 **File Naming**: `BDD-NN.F_fix_report_vNNN.md`
 
-**Location**: Same folder as the BDD document.
+**Location**: Inside the BDD nested folder: `docs/04_BDD/BDD-NN_{slug}/`
 
 **Structure**:
 

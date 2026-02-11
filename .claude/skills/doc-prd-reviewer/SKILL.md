@@ -807,7 +807,9 @@ prd_reviewer:
 
 **Pattern**: `PRD-NN.R_review_report_vNNN.md`
 
-**Location**: Same folder as the reviewed PRD document.
+**Nested Folder Rule**: ALL PRDs use nested folders (`PRD-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
+
+**Location**: Inside the PRD nested folder: `docs/02_PRD/PRD-NN_{slug}/`
 
 **Versioning Rules**:
 
