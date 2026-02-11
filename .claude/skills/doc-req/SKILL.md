@@ -38,7 +38,7 @@ Create **Atomic Requirements (REQ)** documents - Layer 7 artifact in the SDD wor
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -238,12 +238,12 @@ The SDD framework uses two distinct notation systems for cross-references:
 ```
 
 **Upstream Sources**:
-- [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
-- [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
-- [EARS-01](../EARS/EARS-01_risk.md#EARS-01)
-- [BDD-01](../BDD/BDD-01_limits.feature)
-- [ADR-033](../ADR/ADR-033_database.md#ADR-033)
-- [SYS-01](../SYS/SYS-01_order.md#SYS-01)
+- [BRD-01](../../01_BRD/BRD-01_platform/BRD-01_platform.md#BRD-01)
+- [PRD-01](../../02_PRD/PRD-01_integration/PRD-01_integration.md#PRD-01)
+- [EARS-01](../../03_EARS/EARS-01_risk/EARS-01_risk.md#EARS-01)
+- [BDD-01](../../04_BDD/BDD-01_limits/)
+- [ADR-033](../../05_ADR/ADR-033_database/ADR-033_database.md#ADR-033)
+- [SYS-01](../../06_SYS/SYS-01_order/SYS-01_order.md#SYS-01)
 
 **Downstream Artifacts**:
 - IMPL-NN (to be created) - Implementation approach
@@ -341,18 +341,22 @@ Check `ai_dev_flow/REQ/` for next available ID number.
 
 ### Step 3: Create REQ File
 
+**Nested Folder Rule (MANDATORY)**: ALL REQ documents MUST use nested folders regardless of document size.
+
 **Location Options**:
-- Flat: `docs/REQ/REQ-{NN}_{slug}.md`
-- Domain-based: `docs/REQ/{domain}/REQ-NN_{slug}.md`
-- Subdomain: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}.md`
+- Standard: `docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+- Domain-based: `docs/07_REQ/{domain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
+- Subdomain: `docs/07_REQ/{domain}/{subdomain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
 
 **On-Demand Folder Creation**: Before saving the document, create the target directory:
 ```bash
-# Create target directory if it doesn't exist
-mkdir -p docs/REQ/{domain}/         # For domain-based structure
-# OR
-mkdir -p docs/REQ/{domain}/{subdomain}/  # For subdomain structure
+# Create target directory (ALWAYS use nested folder)
+mkdir -p docs/07_REQ/REQ-NN_{slug}/
+# OR for domain-based structure
+mkdir -p docs/07_REQ/{domain}/REQ-NN_{slug}/
 ```
+
+**CRITICAL**: Never create REQ files directly in `docs/07_REQ/` without a nested folder structure.
 
 **Domain Selection**: Use domain from project configuration or upstream SYS context:
 - Financial: `risk/`, `trading/`, `collection/`, `compliance/`, `ml/`

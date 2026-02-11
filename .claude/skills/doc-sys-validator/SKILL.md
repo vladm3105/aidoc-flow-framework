@@ -164,13 +164,13 @@ Pattern: `SYS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single SYS document
-python ai_dev_flow/scripts/validate_sys.py docs/SYS/SYS-001_example.md
+python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/SYS-001_example.md
 
 # Validate all SYS documents
-python ai_dev_flow/scripts/validate_sys.py docs/SYS/
+python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_sys.py docs/SYS/ --verbose
+python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/ --verbose
 ```
 
 ## Validation Workflow

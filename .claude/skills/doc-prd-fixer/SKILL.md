@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [PRD, Review Report, BRD]
   downstream_artifacts: [Fixed PRD, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11"
 ---
 
 # doc-prd-fixer
@@ -73,7 +73,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -94,6 +95,76 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes PRDs that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL PRDs MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| PRD Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md` |
+| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_*.md`, etc. |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | PRD not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | PRD folder name doesn't match PRD ID | Rename folder to match |
+| REV-STR004 | BRD link path incorrect for nested folder | Update `../01_BRD/` → `../../01_BRD/` |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_prd_structure(prd_path: str) -> list[Fix]:
+    """Fix PRD structure violations."""
+    fixes = []
+
+    filename = os.path.basename(prd_path)
+    parent_folder = os.path.dirname(prd_path)
+
+    # Extract PRD ID and slug from filename
+    match = re.match(r'PRD-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    prd_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"PRD-{prd_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(prd_path, new_path)
+        fixes.append(f"Moved {prd_path} to {new_path}")
+
+        # Update BRD links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../01_BRD/', '../../01_BRD/')
+        updated_content = updated_content.replace('../00_REF/', '../../00_REF/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../01_BRD/BRD-00_GLOSSARY.md` | `../../01_BRD/BRD-00_GLOSSARY.md` |
+| `../00_REF/domain/spec.md` | `../../00_REF/domain/spec.md` |
+| `PRD-00_GLOSSARY.md` | `../PRD-00_GLOSSARY.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -215,22 +286,20 @@ Updates links to point to correct locations.
 def fix_link_path(prd_location: str, target_path: str) -> str:
     """Calculate correct relative path based on PRD location."""
 
-    # Monolithic PRD: docs/02_PRD/PRD-01.md
+    # ALL PRDs are in nested folders (mandatory rule):
+    # Monolithic PRD: docs/02_PRD/PRD-01_slug/PRD-01_slug.md
     # Sectioned PRD: docs/02_PRD/PRD-01_slug/PRD-01.3_section.md
 
-    if is_sectioned_prd(prd_location):
-        # Need to go up one more level
-        return "../" + calculate_relative_path(prd_location, target_path)
-    else:
-        return calculate_relative_path(prd_location, target_path)
+    # Both types need to go up two levels to reach 01_BRD or 00_REF
+    return "../../" + calculate_relative_path(prd_location, target_path)
 ```
 
-**BRD Link Fix**:
+**BRD Link Fix** (All PRDs in nested folders):
 
-| PRD Type | Original Link | Fixed Link |
-|----------|---------------|------------|
-| Monolithic | `../01_BRD/BRD-01.md` | `../01_BRD/BRD-01.md` |
-| Sectioned | `../01_BRD/BRD-01.md` | `../../01_BRD/BRD-01.md` |
+| Issue | Original Link | Fixed Link |
+|-------|---------------|------------|
+| After move to nested folder | `../01_BRD/BRD-01.md` | `../../01_BRD/BRD-01_slug/BRD-01_slug.md` |
+| Incorrect depth | `../../01_BRD/` | `../../01_BRD/` (already correct) |
 
 ---
 
@@ -910,5 +979,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.TT.SS format); Archive manifest creation; Enhanced drift cache with merge history |
 | 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion for PRD codes (01-09, 11, 22, 24); Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |

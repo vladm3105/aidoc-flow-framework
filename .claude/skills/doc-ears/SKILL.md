@@ -38,7 +38,7 @@ Create **EARS (Easy Approach to Requirements Syntax)** documents - Layer 3 artif
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -387,17 +387,35 @@ Read and understand BRD and PRD that drive these formal requirements.
 
 ### Step 2: Reserve ID Number
 
-Check `docs/EARS/` for next available ID number (e.g., EARS-01, EARS-02).
+Check `docs/03_EARS/` for next available ID number (e.g., EARS-01, EARS-02).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: EARS-01, EARS-99, EARS-102
 - ❌ Incorrect: EARS-001, EARS-009 (extra leading zero not required)
 
-### Step 3: Create EARS File
+### Step 3: Create EARS Folder and File
 
-**Location**: `docs/EARS/EARS-NN_{slug}.md`
+**Nested Folder Rule (MANDATORY)**: ALL EARS documents MUST be in nested folders regardless of size.
 
-**Example**: `docs/EARS/EARS-01_risk_limits.md`
+**Folder structure**:
+1. Create folder: `docs/03_EARS/EARS-NN_{slug}/`
+2. Create EARS file(s) inside the folder
+
+**Monolithic EARS** (for smaller documents ≤25KB):
+```
+docs/03_EARS/EARS-01_risk_limits/
+  EARS-01_risk_limits.md
+```
+
+**Sectioned EARS** (for larger documents >25KB):
+```
+docs/03_EARS/EARS-01_risk_limits/
+  EARS-01.0_index.md
+  EARS-01.1_event_driven.md
+  ...
+```
+
+**CRITICAL**: Even monolithic EARS MUST be in a nested folder. Never create `docs/03_EARS/EARS-NN_{slug}.md` directly in the `03_EARS/` directory.
 
 ### Step 4: Fill Document Control Section
 
@@ -439,14 +457,14 @@ Document all thresholds used in section 5.4.
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/EARS/EARS-00_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/03_EARS/EARS-00_TRACEABILITY_MATRIX.md`
 
 ### Step 11: Validate EARS
 
 Run validation scripts:
 ```bash
-# EARS validation
-python scripts/validate_ears.py --path docs/EARS/EARS-01_*.md
+# EARS validation (must be in nested folder)
+python scripts/validate_ears.py --path docs/03_EARS/EARS-01_{slug}/EARS-01_{slug}.md
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -472,7 +490,7 @@ Before starting batch creation:
 ### Every 5-Document Checkpoint
 
 After creating every 5 EARS documents:
-1. Run validation: `python scripts/validate_ears.py --path docs/EARS`
+1. Run validation: `python scripts/validate_ears.py --path docs/03_EARS/`
 2. Check for tag consistency, document_type, Source Document format
 3. Fix any errors before continuing
 

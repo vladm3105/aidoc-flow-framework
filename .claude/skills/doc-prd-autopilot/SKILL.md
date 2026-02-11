@@ -16,7 +16,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "2.3"
+  version: "2.5"
 ---
 
 # doc-prd-autopilot
@@ -54,6 +54,74 @@ This autopilot orchestrates the following skills:
 - BRD validation logic → `doc-brd-validator` skill
 - Content review and scoring → `doc-prd-reviewer` skill
 - Issue resolution and fixes → `doc-prd-fixer` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `PRD-NN` | Self type | Review existing PRD document |
+| `BRD-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "PRD": Review Mode
+   - ELSE IF TYPE == "BRD": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does PRD-{NN} exist in docs/02_PRD/?
+   - IF exists: Switch to Review Mode for PRD-{NN}
+   - ELSE: Proceed with Generation from BRD-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/02_PRD/PRD-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - PRD input)
+/doc-prd-autopilot PRD-01          # Reviews existing PRD-01
+
+# Generate/Find mode (upstream type - BRD input)
+/doc-prd-autopilot BRD-01          # Generates PRD-01 if missing, or reviews existing PRD-01
+
+# Multiple inputs
+/doc-prd-autopilot BRD-01,BRD-02   # Generates/reviews PRD-01 and PRD-02
+/doc-prd-autopilot PRD-01,PRD-02   # Reviews PRD-01 and PRD-02
+```
+
+### Action Determination Output
+
+```
+Input: BRD-01
+├── Detected Type: BRD (upstream)
+├── Expected PRD: PRD-01
+├── PRD Exists: Yes → docs/02_PRD/PRD-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-prd-reviewer on PRD-01
+
+Input: BRD-05
+├── Detected Type: BRD (upstream)
+├── Expected PRD: PRD-05
+├── PRD Exists: No
+└── Action: GENERATE MODE - Creating PRD-05 from BRD-05
+
+Input: PRD-03
+├── Detected Type: PRD (self)
+└── Action: REVIEW MODE - Running doc-prd-reviewer on PRD-03
+```
 
 ---
 
@@ -138,26 +206,44 @@ flowchart TD
     Y --> Z[Complete]
 ```
 
-### Step 1: Input BRD List
+### Step 1: Input Document List
 
 **Command Format**:
 ```
-/doc-prd-autopilot <BRD_LIST>
+/doc-prd-autopilot <DOCUMENT_LIST>
 ```
 
+**Input Patterns** (Smart Detection):
+
+| Pattern | Type | Action |
+|---------|------|--------|
+| `BRD-NN` | Upstream | Generate PRD if missing, review if exists |
+| `PRD-NN` | Self | Review existing PRD document |
+| `BRD-NN,BRD-MM` | Multiple upstream | Batch generate/review |
+| `PRD-NN,PRD-MM` | Multiple self | Batch review |
+| `all` | All upstream | Process all BRDs |
+
 **Input Options**:
-- **Single BRD**: `BRD-01` or `docs/01_BRD/BRD-01_f1_iam/`
+- **Single BRD** (generate/find): `BRD-01` or `docs/01_BRD/BRD-01_f1_iam/`
+- **Single PRD** (review): `PRD-01` or `docs/02_PRD/PRD-01_f1_iam/`
 - **Multiple BRDs**: `BRD-01,BRD-02,BRD-03` (comma-separated)
+- **Multiple PRDs**: `PRD-01,PRD-02,PRD-03` (comma-separated)
 - **All BRDs**: `all` or `*` (scan entire docs/01_BRD/ directory)
-- **Pattern Match**: `BRD-0*` (glob patterns)
+- **Pattern Match**: `BRD-0*` or `PRD-0*` (glob patterns)
 
 **Example Invocations**:
 ```bash
-# Single BRD
-/doc-prd-autopilot BRD-01
+# Generate/Find mode (BRD input)
+/doc-prd-autopilot BRD-01              # Generates PRD-01 if missing, reviews if exists
 
-# Multiple specific BRDs
+# Review mode (PRD input)
+/doc-prd-autopilot PRD-01              # Reviews existing PRD-01
+
+# Multiple specific BRDs (generate/find)
 /doc-prd-autopilot BRD-01,BRD-02,BRD-05
+
+# Multiple specific PRDs (review)
+/doc-prd-autopilot PRD-01,PRD-02,PRD-05
 
 # All available BRDs
 /doc-prd-autopilot all
@@ -956,18 +1042,21 @@ fix_mode:
 
 ### Generated PRD Structure
 
-**Monolithic Output** (single file <25KB):
+**Nested Folder Rule**: ALL PRDs use nested folders (`PRD-NN_{slug}/`) regardless of size.
+
+**Monolithic Output** (single file ≤25KB - in nested folder):
 ```
 docs/02_PRD/
 ├── PRD-00_TRACEABILITY_MATRIX.md  # Updated
-└── PRD-01_f1_iam.md               # New PRD
+└── PRD-01_f1_iam/                  # Nested folder (REQUIRED)
+    └── PRD-01_f1_iam.md            # Monolithic PRD inside folder
 ```
 
-**Sectioned Output** (folder structure >=25KB):
+**Sectioned Output** (multiple files >25KB - in nested folder):
 ```
 docs/02_PRD/
 ├── PRD-00_TRACEABILITY_MATRIX.md  # Updated
-└── PRD-01_f1_iam/
+└── PRD-01_f1_iam/                  # Nested folder (REQUIRED)
     ├── PRD-01.0_index.md
     ├── PRD-01.1_document_control.md
     ├── PRD-01.2_executive_summary.md
@@ -1171,17 +1260,21 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 | YAML Frontmatter | MANDATORY - see shared standards |
 | Parent Reference | MANDATORY - link to PRD index |
 
-**Example Location**:
+**Example Location** (ALL PRDs use nested folders):
 
 ```
-docs/02_PRD/
-├── PRD-03_f3_observability.md
-└── PRD-03.R_review_report.md    # ← Review report stored here
+docs/02_PRD/PRD-03_f3_observability/        # Nested folder (REQUIRED)
+├── PRD-03_f3_observability.md              # Monolithic PRD
+├── PRD-03.R_review_report_v001.md          # Review report v001
+├── PRD-03.R_review_report_v002.md          # Review report v002
+├── PRD-03.F_fix_report_v001.md             # Fix report (if fixes applied)
+└── .drift_cache.json                        # Drift cache
 
-docs/02_PRD/PRD-03_f3_observability/
-├── PRD-03.0_index.md
-├── PRD-03.1_core.md
-└── PRD-03.R_review_report.md    # ← Review report stored here
+docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
+├── PRD-04.0_index.md                        # Index file
+├── PRD-04.1_core.md
+├── PRD-04.R_review_report_v001.md          # Review report
+└── .drift_cache.json                        # Drift cache
 ```
 
 ---
@@ -1190,6 +1283,8 @@ docs/02_PRD/PRD-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (PRD-NN) triggers review mode; Upstream-type input (BRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
+| 2.4 | 2026-02-11 | **Nested Folder Enforcement**: Fixed output structure examples to show ALL PRDs in nested folders regardless of size; Removed incorrect non-nested monolithic PRD example; Updated review report location examples |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Step 6) with iterative Review -> Fix cycle using `doc-prd-reviewer` and `doc-prd-fixer`; Added `doc-prd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references; references shared `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` |
 | 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (PO-XXX→PRD.NN.07.SS, FF-XXX→PRD.NN.01.SS, AC-XXX→PRD.NN.06.SS, US-XXX→PRD.NN.08.SS) |

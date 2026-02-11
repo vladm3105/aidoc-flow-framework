@@ -38,7 +38,7 @@ Create **System Requirements (SYS)** documents - Layer 6 artifact in the SDD wor
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -223,11 +223,11 @@ Use `doc-sys` when:
 ```
 
 **Upstream Sources**:
-- [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
-- [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
-- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - EARS type code: 25
-- [BDD-01](../BDD/BDD-01_limits/) - BDD scenario type code: 14
-- [ADR-033](../ADR/ADR-033_database.md#ADR-033)
+- [BRD-01](../../01_BRD/BRD-01_platform/BRD-01_platform.md#BRD-01)
+- [PRD-01](../../02_PRD/PRD-01_integration/PRD-01_integration.md#PRD-01)
+- [EARS-01](../../03_EARS/EARS-01_risk/EARS-01_risk.md#EARS-01) - EARS type code: 25
+- [BDD-01](../../04_BDD/BDD-01_limits/) - BDD scenario type code: 14
+- [ADR-033](../../05_ADR/ADR-033_database/ADR-033_database.md#ADR-033)
 
 ## Upstream/Downstream Artifacts
 
@@ -262,9 +262,13 @@ Check `ai_dev_flow/SYS/` for next available ID number.
 
 ### Step 3: Create SYS File
 
-**Location**: `docs/SYS/SYS-NN_{slug}.md` (template at `ai_dev_flow/SYS/`)
+**Nested Folder Rule (MANDATORY)**: ALL SYS documents MUST use nested folders regardless of document size.
 
-**Example**: `docs/SYS/SYS-01_order_management.md`
+**Location**: `docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md`
+
+**Example**: `docs/06_SYS/SYS-01_order_management/SYS-01_order_management.md`
+
+**CRITICAL**: Never create SYS files directly in `docs/06_SYS/` without a nested folder structure.
 
 ### Step 4: Fill Document Control Section
 

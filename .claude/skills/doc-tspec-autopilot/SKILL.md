@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
   downstream_artifacts: [TASKS]
-  version: "2.3"
+  version: "2.4"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -44,6 +44,74 @@ Automated **Test Specifications (TSPEC)** generation pipeline that processes SPE
 | `doc-tspec-validator` | Validation with TASKS-Ready scoring | Phase 4 |
 | `doc-tspec-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
 | `doc-tspec-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `TSPEC-NN` | Self type | Review existing TSPEC document |
+| `SPEC-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "TSPEC": Review Mode
+   - ELSE IF TYPE == "SPEC": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does TSPEC-{NN} exist in docs/10_TSPEC/?
+   - IF exists: Switch to Review Mode for TSPEC-{NN}
+   - ELSE: Proceed with Generation from SPEC-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/10_TSPEC/TSPEC-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - TSPEC input)
+/doc-tspec-autopilot TSPEC-01        # Reviews existing TSPEC-01
+
+# Generate/Find mode (upstream type - SPEC input)
+/doc-tspec-autopilot SPEC-01         # Generates TSPEC-01 if missing, or reviews existing TSPEC-01
+
+# Multiple inputs
+/doc-tspec-autopilot SPEC-01,SPEC-02 # Generates/reviews TSPEC-01 and TSPEC-02
+/doc-tspec-autopilot TSPEC-01,TSPEC-02 # Reviews TSPEC-01 and TSPEC-02
+```
+
+### Action Determination Output
+
+```
+Input: SPEC-01
+├── Detected Type: SPEC (upstream)
+├── Expected TSPEC: TSPEC-01
+├── TSPEC Exists: Yes → docs/10_TSPEC/TSPEC-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-tspec-reviewer on TSPEC-01
+
+Input: SPEC-05
+├── Detected Type: SPEC (upstream)
+├── Expected TSPEC: TSPEC-05
+├── TSPEC Exists: No
+└── Action: GENERATE MODE - Creating TSPEC-05 from SPEC-05
+
+Input: TSPEC-03
+├── Detected Type: TSPEC (self)
+└── Action: REVIEW MODE - Running doc-tspec-reviewer on TSPEC-03
+```
 
 ---
 
@@ -724,6 +792,7 @@ docs/10_TSPEC/TSPEC-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (TSPEC-NN) triggers review mode; Upstream-type input (SPEC-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-tspec-reviewer` and `doc-tspec-fixer`; Added `doc-tspec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (test type completeness, coverage matrix accuracy, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Mode 2: Review Mode for validation-only analysis with visual score indicators and coverage targets; Added Mode 3: Fix Mode for auto-repair with backup, content preservation, and test stub generation; Element ID migration (UT-NNN→TSPEC.NN.40.SS, IT-NNN→TSPEC.NN.41.SS, ST-NNN→TSPEC.NN.42.SS, FT-NNN→TSPEC.NN.43.SS) |

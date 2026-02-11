@@ -176,13 +176,13 @@ Pattern: `TASKS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single TASKS document
-python ai_dev_flow/scripts/validate_tasks.py docs/TASKS/TASKS-001_example.md
+python ai_dev_flow/scripts/validate_tasks.py docs/11_TASKS/TASKS-001_example.md
 
 # Validate all TASKS documents
-python ai_dev_flow/scripts/validate_tasks.py docs/TASKS/
+python ai_dev_flow/scripts/validate_tasks.py docs/11_TASKS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_tasks.py docs/TASKS/ --verbose
+python ai_dev_flow/scripts/validate_tasks.py docs/11_TASKS/ --verbose
 ```
 
 ## Validation Workflow

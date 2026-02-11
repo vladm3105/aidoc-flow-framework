@@ -146,13 +146,13 @@ Pattern: `EARS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single EARS document
-python ai_dev_flow/scripts/validate_ears.py docs/EARS/EARS-001_example.md
+python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
 
 # Validate all EARS documents
-python ai_dev_flow/scripts/validate_ears.py docs/EARS/
+python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_ears.py docs/EARS/ --verbose
+python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/ --verbose
 ```
 
 ## Validation Workflow

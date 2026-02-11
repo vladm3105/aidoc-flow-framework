@@ -38,7 +38,7 @@ Create **Task Breakdown (TASKS)** - Layer 11 artifact in the SDD workflow that d
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -434,7 +434,7 @@ Read SPEC (Layer 10) - technical specifications to decompose.
 
 ### Step 2: Reserve ID Number
 
-Check `docs/TASKS/` for next available ID number.
+Check `docs/11_TASKS/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: TASKS-01, TASKS-99, TASKS-102
@@ -444,9 +444,13 @@ Check `docs/TASKS/` for next available ID number.
 
 ### Step 3: Create TASKS File
 
-**File naming**: `docs/TASKS/TASKS-NN_{slug}_tasks.md`
+**Nested Folder Rule (MANDATORY)**: ALL TASKS documents MUST use nested folders regardless of document size.
 
-**Example**: `docs/TASKS/TASKS-01_data_validation_tasks.md`
+**File naming**: `docs/11_TASKS/TASKS-NN_{slug}/TASKS-NN_{slug}.md`
+
+**Example**: `docs/11_TASKS/TASKS-01_data_validation/TASKS-01_data_validation.md`
+
+**CRITICAL**: Never create TASKS files directly in `docs/11_TASKS/` without a nested folder structure.
 
 ### Step 4: Fill Document Control Section
 

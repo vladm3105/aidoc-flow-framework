@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
   downstream_artifacts: [CTR, SPEC]
-  version: "2.3"
+  version: "2.4"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -57,6 +57,74 @@ This autopilot orchestrates the following skills:
 - Issue resolution and fixes -> `doc-req-fixer` skill
 - SYS validation logic -> `doc-sys-validator` skill
 - Element ID standards -> `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `REQ-NN` | Self type | Review existing REQ document |
+| `SYS-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "REQ": Review Mode
+   - ELSE IF TYPE == "SYS": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does REQ-{NN} exist in docs/07_REQ/?
+   - IF exists: Switch to Review Mode for REQ-{NN}
+   - ELSE: Proceed with Generation from SYS-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/07_REQ/REQ-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - REQ input)
+/doc-req-autopilot REQ-01           # Reviews existing REQ-01
+
+# Generate/Find mode (upstream type - SYS input)
+/doc-req-autopilot SYS-01           # Generates REQ-01 if missing, or reviews existing REQ-01
+
+# Multiple inputs
+/doc-req-autopilot SYS-01,SYS-02    # Generates/reviews REQ-01 and REQ-02
+/doc-req-autopilot REQ-01,REQ-02    # Reviews REQ-01 and REQ-02
+```
+
+### Action Determination Output
+
+```
+Input: SYS-01
+├── Detected Type: SYS (upstream)
+├── Expected REQ: REQ-01
+├── REQ Exists: Yes → docs/07_REQ/REQ-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-req-reviewer on REQ-01
+
+Input: SYS-05
+├── Detected Type: SYS (upstream)
+├── Expected REQ: REQ-05
+├── REQ Exists: No
+└── Action: GENERATE MODE - Creating REQ-05 from SYS-05
+
+Input: REQ-03
+├── Detected Type: REQ (self)
+└── Action: REVIEW MODE - Running doc-req-reviewer on REQ-03
+```
 
 ---
 
@@ -167,7 +235,7 @@ Analyze SYS documents to extract requirements for REQ decomposition.
 
 ```bash
 # Check for SYS documents
-ls -la docs/SYS/
+ls -la docs/06_SYS/
 
 # Expected structure:
 # - SYS-NN_{slug}.md (monolithic)
@@ -279,7 +347,7 @@ Validate that source SYS documents meet REQ-Ready requirements before generation
 
 ```bash
 python ai_dev_flow/scripts/validate_sys.py \
-  --sys docs/SYS/SYS-NN_{slug}.md \
+  --sys docs/06_SYS/SYS-NN_{slug}.md \
   --min-score 90 \
   --auto-fix
 ```
@@ -299,7 +367,7 @@ Generate REQ documents from validated SYS with real-time quality feedback.
 1. **Reserve REQ ID**:
    ```bash
    # Check for next available ID
-   ls docs/REQ/REQ-*.md docs/REQ/*/REQ-*.md 2>/dev/null | \
+   ls docs/07_REQ/REQ-*.md docs/07_REQ/*/REQ-*.md 2>/dev/null | \
      grep -oP 'REQ-\K\d+' | sort -n | tail -1
    # Increment for new REQ
    ```
@@ -507,11 +575,11 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    ```
 
 10. **File Output** (ALWAYS use nested folder):
-    - **Monolithic** (<20k tokens): `docs/REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
-    - **Domain-based**: `docs/REQ/{domain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
-    - **Subdomain**: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
-    - **Sectioned** (≥20k tokens): `docs/REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_core.md`, etc.
-    - **Master Index** (always): `docs/REQ/REQ-00_index.md` (create or update)
+    - **Monolithic** (<20k tokens): `docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Domain-based**: `docs/07_REQ/{domain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Subdomain**: `docs/07_REQ/{domain}/{subdomain}/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/07_REQ/REQ-00_index.md` (create or update)
 
     **Nested Folder Rule**: ALL REQ use nested folders (`REQ-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
@@ -525,7 +593,7 @@ After REQ generation, validate structure and dual readiness scores.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_req.py docs/REQ/REQ-NN_{slug}.md --verbose
+python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -734,8 +802,8 @@ After passing the fix cycle:
    ```bash
    # Update REQ-00_TRACEABILITY_MATRIX.md
    python ai_dev_flow/scripts/update_traceability_matrix.py \
-     --req docs/REQ/REQ-NN_{slug}.md \
-     --matrix docs/REQ/REQ-00_TRACEABILITY_MATRIX.md
+     --req docs/07_REQ/REQ-NN_{slug}.md \
+     --matrix docs/07_REQ/REQ-00_TRACEABILITY_MATRIX.md
    ```
 
 ---
@@ -771,8 +839,8 @@ Generate REQ from one SYS document.
 ```bash
 # Example: Generate REQ from SYS-01
 python ai_dev_flow/scripts/req_autopilot.py \
-  --sys docs/SYS/SYS-01_order_management.md \
-  --output docs/REQ/ \
+  --sys docs/06_SYS/SYS-01_order_management.md \
+  --output docs/07_REQ/ \
   --id 01 \
   --slug order_validation
 ```
@@ -785,7 +853,7 @@ Generate REQ from multiple SYS documents in sequence.
 # Example: Generate REQ from all SYS
 python ai_dev_flow/scripts/req_autopilot.py \
   --batch config/req_batch.yaml \
-  --output docs/REQ/
+  --output docs/07_REQ/
 ```
 
 **Batch Configuration** (`config/req_batch.yaml`):
@@ -821,7 +889,7 @@ Preview execution plan without generating files.
 
 ```bash
 python ai_dev_flow/scripts/req_autopilot.py \
-  --sys docs/SYS/SYS-01_order_management.md \
+  --sys docs/06_SYS/SYS-01_order_management.md \
   --dry-run
 ```
 
@@ -836,12 +904,12 @@ Validate existing REQ documents and generate a quality report without modificati
 ```bash
 # Review single REQ folder
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/REQ-01_f1_iam/ \
+  --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode review
 
 # Review all REQ folders
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/ \
+  --req docs/07_REQ/ \
   --mode review \
   --output-report tmp/req_review_report.md
 ```
@@ -970,24 +1038,24 @@ Auto-repair existing REQ documents while preserving manual content.
 ```bash
 # Fix single REQ folder
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/REQ-01_f1_iam/ \
+  --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix
 
 # Fix with backup
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/REQ-01_f1_iam/ \
+  --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --backup
 
 # Fix specific issue types only
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/REQ-01_f1_iam/ \
+  --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --fix-types "element_ids,sections,cross_links"
 
 # Dry-run fix (preview changes)
 python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/REQ/REQ-01_f1_iam/ \
+  --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --dry-run
 ```
@@ -1041,11 +1109,11 @@ python ai_dev_flow/scripts/req_autopilot.py \
 | ... | ... | ... | ... |
 
 ## Files Modified
-- docs/REQ/REQ-01_f1_iam/REQ-01.00_index.md
-- docs/REQ/REQ-01_f1_iam/REQ-01.03_token_revocation.md
-- docs/REQ/REQ-01_f1_iam/REQ-01.05_rbac_enforcement.md
-- docs/REQ/REQ-01_f1_iam/REQ-01.07_permission_inheritance.md
-- docs/REQ/REQ-01_f1_iam/REQ-01.09_mfa_integration.md
+- docs/07_REQ/REQ-01_f1_iam/REQ-01.00_index.md
+- docs/07_REQ/REQ-01_f1_iam/REQ-01.03_token_revocation.md
+- docs/07_REQ/REQ-01_f1_iam/REQ-01.05_rbac_enforcement.md
+- docs/07_REQ/REQ-01_f1_iam/REQ-01.07_permission_inheritance.md
+- docs/07_REQ/REQ-01_f1_iam/REQ-01.09_mfa_integration.md
 
 ## Backup Location
 - tmp/backup/REQ-01_f1_iam_20260209_143022/
@@ -1203,13 +1271,13 @@ req_autopilot:
 
 | File | Purpose | Location |
 |------|---------|----------|
-| REQ-NN_{slug}/ | REQ folder (ALWAYS created) | `docs/REQ/` or `docs/REQ/{domain}/` |
-| REQ-NN_{slug}.md | Main REQ document (monolithic <20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
-| REQ-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
-| REQ-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/REQ/REQ-NN_{slug}/` |
-| REQ-NN.R_review_report_v{VVV}.md | Review report | `docs/REQ/REQ-NN_{slug}/` |
-| REQ-NN.F_fix_report_v{VVV}.md | Fix report | `docs/REQ/REQ-NN_{slug}/` |
-| .drift_cache.json | Drift detection cache | `docs/REQ/REQ-NN_{slug}/` |
+| REQ-NN_{slug}/ | REQ folder (ALWAYS created) | `docs/07_REQ/` or `docs/07_REQ/{domain}/` |
+| REQ-NN_{slug}.md | Main REQ document (monolithic <20k tokens) | `docs/07_REQ/REQ-NN_{slug}/` |
+| REQ-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/07_REQ/REQ-NN_{slug}/` |
+| REQ-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/07_REQ/REQ-NN_{slug}/` |
+| REQ-NN.R_review_report_v{VVV}.md | Review report | `docs/07_REQ/REQ-NN_{slug}/` |
+| REQ-NN.F_fix_report_v{VVV}.md | Fix report | `docs/07_REQ/REQ-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/07_REQ/REQ-NN_{slug}/` |
 
 ### Validation Reports
 
@@ -1316,7 +1384,7 @@ Proceeding to next chunk...
 ./hooks/pre_req_generation.sh
 
 # Example: Validate SYS exists and is ready
-if [ ! -f "docs/SYS/SYS-01_*.md" ]; then
+if [ ! -f "docs/06_SYS/SYS-01_*.md" ]; then
   echo "ERROR: SYS-01 required"
   exit 1
 fi
@@ -1346,7 +1414,7 @@ name: REQ Autopilot
 on:
   push:
     paths:
-      - 'docs/SYS/**'
+      - 'docs/06_SYS/**'
 
 jobs:
   generate-req:
@@ -1357,8 +1425,8 @@ jobs:
       - name: Run REQ Autopilot
         run: |
           python ai_dev_flow/scripts/req_autopilot.py \
-            --sys docs/SYS/ \
-            --output docs/REQ/ \
+            --sys docs/06_SYS/ \
+            --output docs/07_REQ/ \
             --validate
 
       - name: Upload Validation Report
@@ -1511,6 +1579,7 @@ docs/07_REQ/REQ-03_f3_observability/
 
 | Version | Date       | Changes |
 |---------|------------|---------|
+| 2.4     | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (REQ-NN) triggers review mode; Upstream-type input (SYS-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3     | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-req-reviewer` and `doc-req-fixer`; Added `doc-req-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2     | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1     | 2026-02-09 | Added Review Mode for validating existing REQ documents without modification; Added Fix Mode for auto-repairing REQ documents while preserving manual content; Added fix categories (element_ids, sections, cross_links, criteria, traceability, index); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with dual score impact (SPEC-Ready + IMPL-Ready); Added element ID migration support (AC_XXX, FR_XXX, R_XXX to unified format) |

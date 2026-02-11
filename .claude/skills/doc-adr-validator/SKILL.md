@@ -175,13 +175,13 @@ Pattern: `ADR-NNN_descriptive_name.md`
 
 ```bash
 # Validate single ADR document
-python ai_dev_flow/scripts/validate_adr.py docs/ADR/ADR-001_example.md
+python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ADR-001_example.md
 
 # Validate all ADR documents
-python ai_dev_flow/scripts/validate_adr.py docs/ADR/
+python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_adr.py docs/ADR/ --verbose
+python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ --verbose
 ```
 
 ## Validation Workflow

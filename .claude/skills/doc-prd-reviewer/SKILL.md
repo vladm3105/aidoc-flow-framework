@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [PRD]
   downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.6"
+  last_updated: "2026-02-11"
 ---
 
 # doc-prd-reviewer
@@ -86,10 +86,11 @@ flowchart TD
         K --> L[6. Section Completeness]
         L --> M[7. Customer Content]
         M --> M2[8. Naming Compliance]
-        M2 --> M3[9. Upstream Drift Detection]
+        M2 --> M3[9. Structure Compliance]
+        M3 --> M4[10. Upstream Drift Detection]
     end
 
-    M3 --> N{Issues Found?}
+    M4 --> N{Issues Found?}
     N -->|Yes| O[Categorize Issues]
     O --> P{Auto-Fixable?}
     P -->|Yes| Q[Apply Auto-Fixes]
@@ -434,7 +435,57 @@ Validating naming compliance (per doc-naming skill)...
 
 ---
 
-### 9. Upstream Drift Detection (Mandatory Cache)
+### 9. Structure Compliance (CRITICAL)
+
+Validates PRD follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL PRDs MUST be in nested folders regardless of size.
+
+**Required Structure**:
+| PRD Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md` |
+| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_*.md`, etc. |
+
+**Detection**:
+```
+Validating folder structure...
+├── PRD Location: docs/02_PRD/PRD-01_f1_iam/PRD-01_f1_iam.md
+├── Expected Folder: PRD-01_f1_iam ✓
+├── Parent Path: docs/02_PRD/ ✓
+├── Nested Structure: Valid ✓
+└── Result: PASS
+```
+
+**Failure Detection**:
+```
+Validating folder structure...
+├── PRD Location: docs/02_PRD/PRD-02_f2_session.md
+├── Expected: docs/02_PRD/PRD-02_f2_session/PRD-02_f2_session.md
+├── Nested Structure: INVALID ✗
+└── Result: FAIL - PRD not in nested folder
+```
+
+**Auto-Fix**:
+1. Create the nested folder `docs/02_PRD/PRD-NN_{slug}/`
+2. Move the PRD file(s) into the folder
+3. Update all internal links (navigation, cross-references)
+4. Update upstream BRD links: `../01_BRD/` → `../../01_BRD/`
+5. Update any glossary links to correct path
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | PRD not in nested folder (blocking) |
+| REV-STR002 | Error | PRD folder name doesn't match PRD ID |
+| REV-STR003 | Warning | Monolithic PRD should be sectioned (>25KB) |
+| REV-STR004 | Error | BRD link path incorrect for nested folder |
+
+**This check is BLOCKING** - PRD must pass structure validation before other checks proceed.
+
+---
+
+### 10. Upstream Drift Detection (Mandatory Cache)
 
 Detects when upstream source documents have been modified after the PRD was created or last updated. **The drift cache is mandatory** - the reviewer MUST create/update it after every review.
 
@@ -448,7 +499,7 @@ Detects when upstream source documents have been modified after the PRD was crea
 
 ---
 
-#### 9.1 Drift Cache File (MANDATORY)
+#### 10.1 Drift Cache File (MANDATORY)
 
 **Location**: `docs/02_PRD/{PRD_folder}/.drift_cache.json`
 
@@ -495,7 +546,7 @@ Detects when upstream source documents have been modified after the PRD was crea
 
 ---
 
-#### 9.2 Detection Algorithm (Three-Phase)
+#### 10.2 Detection Algorithm (Three-Phase)
 
 ```
 PHASE 1: Load Cache (if exists)
@@ -556,7 +607,7 @@ PHASE 3: Update Cache (MANDATORY)
 
 ---
 
-#### 9.3 Hash Calculation
+#### 10.3 Hash Calculation
 
 ```python
 import hashlib
@@ -589,7 +640,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 ---
 
-#### 9.4 Error Codes
+#### 10.4 Error Codes
 
 | Code | Severity | Description | Trigger |
 |------|----------|-------------|---------|
@@ -602,7 +653,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 ---
 
-#### 9.5 Report Output
+#### 10.5 Report Output
 
 ```markdown
 ## 9. Upstream Drift Detection (5/5)
@@ -636,7 +687,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 ---
 
-#### 9.6 Configuration
+#### 10.6 Configuration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -654,17 +705,20 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Link Integrity | 14% | (valid_links / total_links) × 14 |
-| Threshold Consistency | 14% | (consistent_thresholds / total_thresholds) × 14 |
-| BRD Alignment | 24% | (aligned_requirements / total_requirements) × 24 |
+| Link Integrity | 10% | (valid_links / total_links) × 10 |
+| Threshold Consistency | 10% | (consistent_thresholds / total_thresholds) × 10 |
+| BRD Alignment | 18% | (aligned_requirements / total_requirements) × 18 |
 | Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (placeholder_count × 2)) |
-| Traceability Tags | 9% | (valid_tags / total_tags) × 9 |
-| Section Completeness | 9% | (complete_sections / total_sections) × 9 |
+| Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
+| Section Completeness | 10% | (complete_sections / total_sections) × 10 |
 | Customer Content | 5% | (exists && substantive ? 5 : 0) |
 | Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| **Structure Compliance** | **12%** | (nested_folder_valid ? 12 : 0) - **BLOCKING** |
 | Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
+
+**Note**: Structure Compliance is a **blocking check**. If structure validation fails (REV-STR001), the review cannot pass regardless of other scores.
 
 **Thresholds**:
 - **PASS**: ≥ 90 (configurable)
@@ -992,6 +1046,8 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-11 | **Numbering Fix**: Corrected Check #10 subsections from 9.1-9.6 to 10.1-10.6 (drift cache, detection algorithm, hash calculation, error codes, report output, configuration) |
+| 1.5 | 2026-02-11 | **Structure Compliance**: Added Check #9 for nested folder rule enforcement (REV-STR001-STR004); Shifted Upstream Drift to Check #10; Added structure compliance to scoring (12% weight, blocking); Updated workflow diagram to 10 checks |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when BRD documents modified after PRD creation; REV-D001-D005 error codes; drift configuration; Added doc-prd-fixer to related skills |
 | 1.2 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

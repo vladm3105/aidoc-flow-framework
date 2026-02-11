@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC]
   downstream_artifacts: [Code]
-  version: "2.3"
+  version: "2.4"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -45,6 +45,78 @@ Automated **Task Breakdown (TASKS)** generation pipeline that processes SPEC and
 | `doc-tasks-validator` | Validation with CODE-Ready scoring | Phase 4 |
 | `doc-tasks-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
 | `doc-tasks-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition (Multiple Upstreams)
+
+TASKS can be derived from SPEC and/or TSPEC:
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `TASKS-NN` | Self type | Review existing TASKS document |
+| `SPEC-NN` | Primary upstream | Generate if missing, review if exists |
+| `TSPEC-NN` | Alternative upstream | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "TASKS": Review Mode
+   - ELSE IF TYPE in ["SPEC", "TSPEC"]: Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does TASKS-{NN} exist in docs/11_TASKS/?
+   - IF exists: Switch to Review Mode for TASKS-{NN}
+   - ELSE: Proceed with Generation from {TYPE}-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/11_TASKS/TASKS-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - TASKS input)
+/doc-tasks-autopilot TASKS-01         # Reviews existing TASKS-01
+
+# Generate/Find mode (upstream types)
+/doc-tasks-autopilot SPEC-01          # Generates TASKS-01 if missing, or reviews existing TASKS-01
+/doc-tasks-autopilot TSPEC-01         # Generates TASKS-01 if missing, or reviews existing TASKS-01
+
+# Multiple inputs
+/doc-tasks-autopilot SPEC-01,SPEC-02  # Generates/reviews TASKS-01 and TASKS-02
+/doc-tasks-autopilot TASKS-01,TASKS-02 # Reviews TASKS-01 and TASKS-02
+```
+
+### Action Determination Output
+
+```
+Input: SPEC-01
+├── Detected Type: SPEC (primary upstream)
+├── Expected TASKS: TASKS-01
+├── TASKS Exists: Yes → docs/11_TASKS/TASKS-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-tasks-reviewer on TASKS-01
+
+Input: TSPEC-05
+├── Detected Type: TSPEC (alternative upstream)
+├── Expected TASKS: TASKS-05
+├── TASKS Exists: No
+└── Action: GENERATE MODE - Creating TASKS-05 from TSPEC-05
+
+Input: TASKS-03
+├── Detected Type: TASKS (self)
+└── Action: REVIEW MODE - Running doc-tasks-reviewer on TASKS-03
+```
 
 ---
 
@@ -730,6 +802,7 @@ docs/11_TASKS/TASKS-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (TASKS-NN) triggers review mode; Multiple upstream-type inputs (SPEC/TSPEC-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-tasks-reviewer` and `doc-tasks-fixer`; Added `doc-tasks-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (task structure completeness, dependency graph validity, element ID compliance, CODE-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Mode 2: Review Mode for validation-only analysis with visual score indicators; Added Mode 3: Fix Mode for auto-repair with backup and content preservation; Element ID migration (TASK-NNN→TASKS.NN.18.SS, TI-NNN→TASKS.NN.30.SS); Implementation contracts auto-generation |

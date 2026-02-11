@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.4"
+  version: "2.5"
   last_updated: "2026-02-10T22:30:00"
 ---
 
@@ -51,6 +51,77 @@ This autopilot orchestrates the following skills:
 - Content review and scoring → `doc-brd-reviewer` skill
 - Issue resolution and fixes → `doc-brd-fixer` skill
 - Element ID standards → `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition (No Upstream - Layer 1)
+
+BRD has no upstream document type. Smart detection works differently:
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `BRD-NN` | Self type | Review existing BRD document |
+| `docs/00_REF/...` | Reference docs | Generate BRD from reference |
+| `REF/...` | Reference docs | Generate BRD from reference |
+| `--prompt "..."` | User prompt | Generate BRD from prompt |
+
+### Detection Algorithm
+
+```
+1. Parse input: Determine input type
+2. Determine action:
+   - IF input matches "BRD-NN": Review Mode
+   - ELSE IF input is a reference path: Generate Mode
+   - ELSE IF input is --prompt: Generate Mode
+   - ELSE: Error (invalid input for this autopilot)
+3. For Review Mode:
+   - Check: Does BRD-{NN} exist in docs/01_BRD/?
+   - IF exists: Run doc-brd-reviewer on BRD-{NN}
+   - ELSE: Error (BRD not found)
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/01_BRD/BRD-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (BRD input)
+/doc-brd-autopilot BRD-01            # Reviews existing BRD-01
+
+# Generate mode (reference input)
+/doc-brd-autopilot docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+/doc-brd-autopilot all               # Process all reference documents
+
+# Generate mode (prompt input)
+/doc-brd-autopilot --prompt "Create a BRD for user authentication system"
+```
+
+### Action Determination Output
+
+```
+Input: BRD-01
+├── Detected Type: BRD (self)
+├── BRD Exists: Yes → docs/01_BRD/BRD-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-brd-reviewer on BRD-01
+
+Input: BRD-15
+├── Detected Type: BRD (self)
+├── BRD Exists: No
+└── Action: ERROR - BRD-15 not found. Use reference docs or --prompt to generate.
+
+Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+├── Detected Type: Reference document
+└── Action: GENERATE MODE - Creating BRD from reference specification
+```
 
 ---
 
@@ -1508,6 +1579,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BRD-NN) triggers review mode; Reference docs and prompts trigger generation; Special handling for Layer 1 (no upstream documents) |
 | 2.4 | 2026-02-10 | **Source Directory Update**: Changed input sources from `strategy/`, `docs/inputs/` to `docs/00_REF/` (primary), `REF/` (alternative), user prompts (fallback); **BRD Index**: Added automatic creation/update of `BRD-00_index.md` master index with Document Registry, Module Categories, Statistics; Updated all examples and CI/CD configurations |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents (not in tmp/); review reports require YAML frontmatter, parent document references, and structured sections; file naming convention `{ARTIFACT}-NN.R_review_report.md` |

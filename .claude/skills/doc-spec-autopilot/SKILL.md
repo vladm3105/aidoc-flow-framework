@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
   downstream_artifacts: [TSPEC, TASKS]
-  version: "2.2"
+  version: "2.3"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -44,6 +44,78 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 | `doc-spec-validator` | Validation with TASKS-Ready scoring | Phase 4 |
 | `doc-spec-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
 | `doc-spec-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition (Multiple Upstreams)
+
+SPEC can be derived from REQ and/or CTR:
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `SPEC-NN` | Self type | Review existing SPEC document |
+| `REQ-NN` | Primary upstream | Generate if missing, review if exists |
+| `CTR-NN` | Alternative upstream | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "SPEC": Review Mode
+   - ELSE IF TYPE in ["REQ", "CTR"]: Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does SPEC-{NN} exist in docs/09_SPEC/?
+   - IF exists: Switch to Review Mode for SPEC-{NN}
+   - ELSE: Proceed with Generation from {TYPE}-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/09_SPEC/SPEC-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - SPEC input)
+/doc-spec-autopilot SPEC-01          # Reviews existing SPEC-01
+
+# Generate/Find mode (upstream types)
+/doc-spec-autopilot REQ-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
+/doc-spec-autopilot CTR-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
+
+# Multiple inputs
+/doc-spec-autopilot REQ-01,REQ-02    # Generates/reviews SPEC-01 and SPEC-02
+/doc-spec-autopilot SPEC-01,SPEC-02  # Reviews SPEC-01 and SPEC-02
+```
+
+### Action Determination Output
+
+```
+Input: REQ-01
+├── Detected Type: REQ (primary upstream)
+├── Expected SPEC: SPEC-01
+├── SPEC Exists: Yes → docs/09_SPEC/SPEC-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-spec-reviewer on SPEC-01
+
+Input: CTR-05
+├── Detected Type: CTR (alternative upstream)
+├── Expected SPEC: SPEC-05
+├── SPEC Exists: No
+└── Action: GENERATE MODE - Creating SPEC-05 from CTR-05
+
+Input: SPEC-03
+├── Detected Type: SPEC (self)
+└── Action: REVIEW MODE - Running doc-spec-reviewer on SPEC-03
+```
 
 ---
 
@@ -950,6 +1022,7 @@ docs/09_SPEC/SPEC-01_f1_iam/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (SPEC-NN) triggers review mode; Multiple upstream-type inputs (REQ/CTR-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-spec-reviewer` and `doc-spec-fixer`; Added `doc-spec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (section completeness, three-level interface coverage, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
 | 2.1 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.0 | 2026-02-09 | Added Review Mode for validating existing SPEC documents without modification; Added Fix Mode for auto-repairing SPEC documents while preserving manual content; Added fix categories (sections, thresholds, traceability, interfaces, yaml); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 7-component score impact; Added execution modes section (single, batch, dry-run, review, fix) |

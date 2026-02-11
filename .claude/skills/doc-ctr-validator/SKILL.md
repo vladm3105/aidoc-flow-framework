@@ -183,13 +183,13 @@ Part 5: Traceability and Documentation
 
 ```bash
 # Validate single CTR document (validates both .md and .yaml)
-python ai_dev_flow/scripts/validate_ctr.py docs/CTR/CTR-001_example.md
+python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/CTR-001_example.md
 
 # Validate all CTR documents
-python ai_dev_flow/scripts/validate_ctr.py docs/CTR/
+python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_ctr.py docs/CTR/ --verbose
+python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/ --verbose
 ```
 
 ## Validation Workflow

@@ -171,13 +171,13 @@ Pattern: `REQ-NNN_descriptive_name.md`
 
 ```bash
 # Validate single REQ document
-python ai_dev_flow/scripts/validate_req.py docs/REQ/REQ-001_example.md
+python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-001_example.md
 
 # Validate all REQ documents
-python ai_dev_flow/scripts/validate_req.py docs/REQ/
+python ai_dev_flow/scripts/validate_req.py docs/07_REQ/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_req.py docs/REQ/ --verbose
+python ai_dev_flow/scripts/validate_req.py docs/07_REQ/ --verbose
 ```
 
 ## Validation Workflow

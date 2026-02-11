@@ -36,7 +36,7 @@ Create **Business Requirements Documents (BRD)** - Layer 1 artifact in the SDD w
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -161,21 +161,21 @@ Use `doc-brd` when:
 
 > **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
-**Two Structure Options**:
+**Nested Folder Rule (MANDATORY)**: ALL BRDs MUST be in nested folders regardless of document size.
 
 | Structure | Format | Use When |
 |-----------|--------|----------|
-| **Monolithic (Flat)** | `docs/BRD/BRD-NN_{slug}.md` | Single-file documents <25KB, MVP templates |
-| **Section-Based (Nested)** | `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md` | Documents >25KB, complex multi-section |
+| **Monolithic** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` | Single-file documents ≤25KB |
+| **Section-Based** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md` | Documents >25KB |
 
-**Monolithic Structure (Flat)** - for MVP/small documents:
-- **Location**: `docs/BRD/BRD-NN_{slug}.md` (directly in BRD directory, no nested folder)
+**Monolithic Structure** - for MVP/small documents:
+- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` (INSIDE nested folder)
 - **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
-- **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md` or simplified `BRD-TEMPLATE.md`
-- **Rule**: Do NOT create a folder for monolithic files
+- **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **CRITICAL**: Even monolithic BRDs MUST be in a nested folder
 
-**Section-Based Structure (Nested)** - for large/complex documents:
-- **Location**: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
+**Section-Based Structure** - for large/complex documents:
+- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
 - **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
 - Index template: `ai_dev_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
@@ -451,7 +451,7 @@ Choose appropriate template (comprehensive, simplified, or domain-specific).
 
 ### Step 4: Reserve ID Number
 
-Check `docs/BRD/` for next available ID number (e.g., BRD-01, BRD-02).
+Check `docs/01_BRD/` for next available ID number (e.g., BRD-01, BRD-02).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: BRD-01, BRD-99, BRD-102
@@ -460,13 +460,13 @@ Check `docs/BRD/` for next available ID number (e.g., BRD-01, BRD-02).
 ### Step 5: Create BRD Folder and Files
 
 **Folder structure** (DEFAULT - nested folder per document with descriptive slug):
-1. Create folder: `docs/BRD/BRD-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{section_type}.md` (shortened, PREFERRED)
-3. Create section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section_type}.md` (shortened, PREFERRED)
+1. Create folder: `docs/01_BRD/BRD-NN_{slug}/` (folder slug MUST match index file slug)
+2. Create index file: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.0_{section_type}.md` (shortened, PREFERRED)
+3. Create section files: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section_type}.md` (shortened, PREFERRED)
 
 **Example (Shortened Pattern - PREFERRED)**:
 ```
-docs/BRD/BRD-01_platform_architecture/
+docs/01_BRD/BRD-01_platform_architecture/
 ├── BRD-01.0_index.md
 ├── BRD-01.1_executive_summary.md
 ├── BRD-01.2_business_context.md
@@ -475,7 +475,7 @@ docs/BRD/BRD-01_platform_architecture/
 
 **Note**: Folder contains descriptive slug, so filenames can omit it. Full pattern (`BRD-01.0_platform_architecture_index.md`) also accepted for backward compatibility.
 
-**OPTIONAL** (for small documents <25KB): `docs/BRD/BRD-NN_{slug}.md` (monolithic)
+**Monolithic Option** (for small documents ≤25KB): `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` (still in nested folder)
 
 ### Step 6: Fill Document Control Section
 
@@ -498,7 +498,7 @@ In Traceability section, link to specific `{project_root}/strategy/` sections.
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/BRD/BRD-00_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md`
 - Use template: `ai_dev_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - Add BRD entry with upstream sources and downstream artifacts
 - Update traceability matrix in same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
@@ -508,10 +508,10 @@ In Traceability section, link to specific `{project_root}/strategy/` sections.
 Run validation scripts:
 ```bash
 # BRD structure validation
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_*.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_*.md
 
 # Link integrity
-./ai_dev_flow/scripts/validate_links.py --path docs/BRD/
+./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
 ```
 
 ### Step 12: Commit Changes
@@ -524,12 +524,12 @@ Commit BRD file and traceability matrix together.
 
 **BRD-Specific Validation**:
 ```bash
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform.md
 ```
 
 **Quality Gates Validation**:
 ```bash
-./scripts/validate_quality_gates.sh docs/BRD/BRD-01_platform.md
+./scripts/validate_quality_gates.sh docs/01_BRD/BRD-01_platform.md
 ```
 
 ### Manual Checklist
@@ -577,13 +577,13 @@ LOOP:
 
 ```bash
 # BRD structure validation (primary)
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-NN_slug.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-NN_slug.md
 
 # Link integrity validation
-./ai_dev_flow/scripts/validate_links.py --path docs/BRD/
+./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
 
 # Quality gates validation
-./scripts/validate_quality_gates.sh docs/BRD/BRD-NN_slug.md
+./scripts/validate_quality_gates.sh docs/01_BRD/BRD-NN_slug.md
 ```
 
 ### Layer-Specific Upstream Requirements

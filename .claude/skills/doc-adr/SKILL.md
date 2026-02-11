@@ -38,7 +38,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -50,7 +50,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 Before creating ADR, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md` (approved technologies)
+2. **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
 4. **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
 5. **Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
@@ -257,11 +257,11 @@ From BRD/PRD Architecture Decision Requirements sections, identify topic needing
 
 ### Step 2: Read Technology Stack
 
-Check `docs/ADR/ADR-00_technology_stack.md` for approved technologies.
+Check `docs/05_ADR/ADR-00_technology_stack.md` for approved technologies.
 
 ### Step 3: Reserve ID Number
 
-Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-33).
+Check `docs/05_ADR/` for next available ID number (e.g., ADR-01, ADR-33).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: ADR-01, ADR-99, ADR-102
@@ -274,20 +274,20 @@ Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-33).
 ### Step 4: Create ADR Folder and Files
 
 **Folder structure** (DEFAULT - nested folder per document):
-1. Create folder: `docs/ADR/ADR-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
-3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{section_type}.md`
+1. Create folder: `docs/05_ADR/ADR-NN_{slug}/` (folder slug MUST match index file slug)
+2. Create index file: `docs/05_ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
+3. Create section files: `docs/05_ADR/ADR-NN_{slug}/ADR-NN.S_{section_type}.md`
 
 **Example (Section-Based Pattern - DEFAULT)**:
 ```
-docs/ADR/ADR-033_database_selection/
+docs/05_ADR/ADR-033_database_selection/
 ├── ADR-033.0_database_selection_index.md
 ├── ADR-033.1_context.md
 ├── ADR-033.2_decision.md
 └── ADR-033.3_consequences.md
 ```
 
-**OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NN_{slug}.md` (monolithic)
+**Monolithic Option** (for small documents ≤25KB): `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md` (still in nested folder)
 
 ### Step 5: Fill Document Control Section
 
@@ -352,7 +352,7 @@ Include @brd, @prd, @ears, @bdd tags (Layers 1-4).
 
 ### Step 13: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `docs/ADR/ADR-00_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `docs/05_ADR/ADR-00_TRACEABILITY_MATRIX.md`
 - Add ADR entry with **upstream sources only** (BRD, PRD, EARS, BDD)
 - Do NOT add downstream links (SYS, REQ track their own references to ADRs)
 
@@ -387,7 +387,7 @@ Commit ADR and traceability matrix.
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -513,18 +513,18 @@ The SYS will:
 
 - **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
 - **Schema**: `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` (machine-readable validation)
-- **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md`
+- **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
 - **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
 - **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
 - **ADR README**: `ai_dev_flow/05_ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all ADR documents):
-- **Structure**: `docs/ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
+- **Structure**: `docs/05_ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
 - Index template: `ai_dev_flow/05_ADR/ADR-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/05_ADR/ADR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
-- **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
+- **Note**: Monolithic format allowed for small documents (≤25KB), but MUST still be in nested folder
 
 ## Quick Reference
 

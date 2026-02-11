@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ]
-  version: "2.3"
+  version: "2.4"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -53,6 +53,82 @@ This autopilot orchestrates the following skills:
 - Content review and scoring -> `doc-adr-reviewer` skill
 - Issue resolution and fixes -> `doc-adr-fixer` skill
 - Element ID standards -> `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition (Multiple Upstreams)
+
+ADR can be derived from BRD, PRD, EARS, or BDD. Detection accepts any:
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `ADR-NN` | Self type | Review existing ADR document |
+| `BDD-NN` | Primary upstream | Generate if missing, review if exists |
+| `EARS-NN` | Alternative upstream | Generate if missing, review if exists |
+| `PRD-NN` | Alternative upstream | Generate if missing, review if exists |
+| `BRD-NN` | Alternative upstream | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "ADR": Review Mode
+   - ELSE IF TYPE in ["BDD", "EARS", "PRD", "BRD"]: Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does ADR-{NN} exist in docs/05_ADR/?
+   - IF exists: Switch to Review Mode for ADR-{NN}
+   - ELSE: Proceed with Generation from {TYPE}-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/05_ADR/ADR-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - ADR input)
+/doc-adr-autopilot ADR-01           # Reviews existing ADR-01
+
+# Generate/Find mode (upstream types)
+/doc-adr-autopilot BDD-01           # Generates ADR-01 if missing, or reviews existing ADR-01
+/doc-adr-autopilot EARS-01          # Generates ADR-01 if missing, or reviews existing ADR-01
+/doc-adr-autopilot PRD-01           # Generates ADR-01 if missing, or reviews existing ADR-01
+/doc-adr-autopilot BRD-01           # Generates ADR-01 if missing, or reviews existing ADR-01
+
+# Multiple inputs
+/doc-adr-autopilot BDD-01,BDD-02    # Generates/reviews ADR-01 and ADR-02
+/doc-adr-autopilot ADR-01,ADR-02    # Reviews ADR-01 and ADR-02
+```
+
+### Action Determination Output
+
+```
+Input: BDD-01
+├── Detected Type: BDD (primary upstream)
+├── Expected ADR: ADR-01
+├── ADR Exists: Yes → docs/05_ADR/ADR-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-adr-reviewer on ADR-01
+
+Input: BRD-05
+├── Detected Type: BRD (alternative upstream)
+├── Expected ADR: ADR-05
+├── ADR Exists: No
+└── Action: GENERATE MODE - Creating ADR-05 from BRD-05
+
+Input: ADR-03
+├── Detected Type: ADR (self)
+└── Action: REVIEW MODE - Running doc-adr-reviewer on ADR-03
+```
 
 ---
 
@@ -151,7 +227,7 @@ Analyze BRD Section 7.2 to extract Architecture Decision Requirements.
 |----------|--------|----------|--------------|
 | 1 | BRD Section 7.2 | `docs/01_BRD/BRD-NN_{slug}/` | Architecture Decision Requirements |
 | 2 | PRD Section 18 | `docs/02_PRD/PRD-NN_{slug}/` | Architecture Decision Requirements (inherited) |
-| 3 | Technology Stack | `docs/ADR/ADR-00_technology_stack.md` | Approved technologies |
+| 3 | Technology Stack | `docs/05_ADR/ADR-00_technology_stack.md` | Approved technologies |
 
 **Analysis Process**:
 
@@ -280,7 +356,7 @@ Generate ADR documents with Context-Decision-Consequences format.
 1. **Reserve ADR ID**:
    ```bash
    # Check for next available ID
-   ls docs/ADR/ADR-*.md docs/ADR/ADR-*/ADR-*.0_*.md 2>/dev/null | \
+   ls docs/05_ADR/ADR-*.md docs/05_ADR/ADR-*/ADR-*.0_*.md 2>/dev/null | \
      grep -oP 'ADR-\K\d+' | sort -n | tail -1
    # Increment for new ADR
    ```
@@ -455,9 +531,9 @@ Generate ADR documents with Context-Decision-Consequences format.
     ```
 
 11. **File Output** (ALWAYS use nested folder):
-    - **Monolithic** (<20k tokens): `docs/ADR/ADR-NN_{slug}/ADR-NN_{slug}.md`
-    - **Sectioned** (≥20k tokens): `docs/ADR/ADR-NN_{slug}/ADR-NN.0_index.md`, `ADR-NN.1_core.md`, etc.
-    - **Master Index** (always): `docs/ADR/ADR-00_index.md` (create or update)
+    - **Monolithic** (<20k tokens): `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/05_ADR/ADR-NN_{slug}/ADR-NN.0_index.md`, `ADR-NN.1_core.md`, etc.
+    - **Master Index** (always): `docs/05_ADR/ADR-00_index.md` (create or update)
 
     **Nested Folder Rule**: ALL ADRs use nested folders (`ADR-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
@@ -479,7 +555,7 @@ After ADR generation, validate structure and SYS-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_adr.py docs/ADR/ADR-NN_{slug}.md --verbose
+python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.md --verbose
 ```
 
 **Validation Checks** (8 Total):
@@ -633,7 +709,7 @@ After passing the fix cycle:
    # Update ADR-00_TRACEABILITY_MATRIX.md
    python ai_dev_flow/scripts/update_traceability_matrix.py \
      --type ADR \
-     --matrix docs/ADR/ADR-00_TRACEABILITY_MATRIX.md
+     --matrix docs/05_ADR/ADR-00_TRACEABILITY_MATRIX.md
    ```
 
 4. **SYS-Ready Report**:
@@ -754,12 +830,12 @@ Validate existing ADR documents and generate a quality report without modificati
 ```bash
 # Review single ADR
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ADR-01_infrastructure.md \
+  --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode review
 
 # Review all ADRs
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ \
+  --adr docs/05_ADR/ \
   --mode review \
   --output-report tmp/adr_review_report.md
 ```
@@ -878,24 +954,24 @@ Auto-repair existing ADR documents while preserving manual content.
 ```bash
 # Fix single ADR
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ADR-01_infrastructure.md \
+  --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix
 
 # Fix with backup
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ADR-01_infrastructure.md \
+  --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --backup
 
 # Fix specific issue types only
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ADR-01_infrastructure.md \
+  --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --fix-types "element_ids,tags,v2_sections"
 
 # Dry-run fix (preview changes)
 python ai_dev_flow/scripts/adr_autopilot.py \
-  --adr docs/ADR/ADR-01_infrastructure.md \
+  --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --dry-run
 ```
@@ -982,9 +1058,9 @@ flowchart TD
 | ... | ... | ... | ... |
 
 ## Files Modified
-- docs/ADR/ADR-01_infrastructure/ADR-01.00_index.md
-- docs/ADR/ADR-01_infrastructure/ADR-01.1_context.md
-- docs/ADR/ADR-01_infrastructure/ADR-01.5_decision.md
+- docs/05_ADR/ADR-01_infrastructure/ADR-01.00_index.md
+- docs/05_ADR/ADR-01_infrastructure/ADR-01.1_context.md
+- docs/05_ADR/ADR-01_infrastructure/ADR-01.5_decision.md
 
 ## Backup Location
 - tmp/backup/ADR-01_infrastructure_20260209_143022/
@@ -1069,13 +1145,13 @@ fix_mode:
 
 | File | Purpose | Location |
 |------|---------|----------|
-| ADR-NN_{slug}/ | ADR folder (ALWAYS created) | `docs/ADR/` |
-| ADR-NN_{slug}.md | Main ADR document (monolithic <20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
-| ADR-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
-| ADR-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/ADR/ADR-NN_{slug}/` |
-| ADR-NN.R_review_report_v{VVV}.md | Review report | `docs/ADR/ADR-NN_{slug}/` |
-| ADR-NN.F_fix_report_v{VVV}.md | Fix report | `docs/ADR/ADR-NN_{slug}/` |
-| .drift_cache.json | Drift detection cache | `docs/ADR/ADR-NN_{slug}/` |
+| ADR-NN_{slug}/ | ADR folder (ALWAYS created) | `docs/05_ADR/` |
+| ADR-NN_{slug}.md | Main ADR document (monolithic <20k tokens) | `docs/05_ADR/ADR-NN_{slug}/` |
+| ADR-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/05_ADR/ADR-NN_{slug}/` |
+| ADR-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/05_ADR/ADR-NN_{slug}/` |
+| ADR-NN.R_review_report_v{VVV}.md | Review report | `docs/05_ADR/ADR-NN_{slug}/` |
+| ADR-NN.F_fix_report_v{VVV}.md | Fix report | `docs/05_ADR/ADR-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/05_ADR/ADR-NN_{slug}/` |
 
 ### Validation Reports
 
@@ -1239,8 +1315,8 @@ grep -q "7.2.*Architecture Decision Requirements" docs/01_BRD/BRD-*.md || {
 # Example: Trigger SYS autopilot for validated ADRs
 if [ "$ALL_ADRS_VALIDATED" = "true" ]; then
   python ai_dev_flow/scripts/sys_autopilot.py \
-    --adr-dir docs/ADR/ \
-    --output docs/SYS/
+    --adr-dir docs/05_ADR/ \
+    --output docs/06_SYS/
 fi
 ```
 
@@ -1265,7 +1341,7 @@ jobs:
         run: |
           python ai_dev_flow/scripts/adr_autopilot.py \
             --brd docs/01_BRD/ \
-            --output docs/ADR/ \
+            --output docs/05_ADR/ \
             --validate
 
       - name: Upload Validation Report
@@ -1312,7 +1388,7 @@ jobs:
 - **ADR Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
 - **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
 - **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
-- **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md`
+- **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
 - **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
 
@@ -1413,6 +1489,7 @@ docs/05_ADR/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (ADR-NN) triggers review mode; Multiple upstream-type inputs (BDD/EARS/PRD/BRD-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-adr-reviewer` and `doc-adr-fixer`; Added `doc-adr-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing ADR documents without modification; Added Fix Mode for auto-repairing ADR documents while preserving manual content; Added fix categories (element_ids, structure, v2_sections, traceability, visual_indicators); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with score breakdown impact; Added element ID migration support (DEC_XXX, ALT_XXX, CON_XXX to unified format) |

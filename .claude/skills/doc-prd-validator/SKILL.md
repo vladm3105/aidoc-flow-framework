@@ -224,6 +224,9 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |
 | PRD-E018 | ERROR | Invalid threshold tag format (must be @threshold: PRD.NN.key) |
 | PRD-E019 | ERROR | Element type code not valid for PRD (see doc-naming) |
+| PRD-E020 | ERROR | PRD not in nested folder structure (must be in `docs/02_PRD/PRD-NN_{slug}/`) |
+| PRD-E021 | ERROR | PRD folder name doesn't match PRD ID |
+| PRD-E022 | ERROR | Monolithic PRD not in nested folder (must be `PRD-NN_{slug}/PRD-NN_{slug}.md`) |
 | PRD-W001 | WARNING | File name does not match format PRD-NN_{slug}.md |
 | PRD-W002 | WARNING | Missing optional section (Glossary, Appendix) |
 | PRD-W003 | WARNING | Score below recommended threshold but above minimum |
@@ -235,20 +238,20 @@ Both scores must be present and meet thresholds for downstream artifact generati
 ## Validation Commands
 
 ```bash
-# Validate single PRD document
-python ai_dev_flow/scripts/validate_prd.py docs/PRD/PRD-01_example.md
+# Validate single PRD document (must be in nested folder)
+python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
 
 # Validate all PRD documents in directory
-python ai_dev_flow/scripts/validate_prd.py docs/PRD/
+python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/
 
 # Validate with verbose output
-python ai_dev_flow/scripts/validate_prd.py docs/PRD/ --verbose
+python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --verbose
 
-# Validate with auto-fix
-python ai_dev_flow/scripts/validate_prd.py docs/PRD/ --auto-fix
+# Validate with auto-fix (includes structure fixes)
+python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --auto-fix
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/PRD/PRD-01.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
 
 # Layer-wide validation
 python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
@@ -256,22 +259,65 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 
 ## Validation Workflow
 
-1. Parse YAML frontmatter
-2. Check required metadata fields (document_type, artifact_type, layer)
-3. Validate tag taxonomy (prd, layer-2-artifact)
-4. Verify section structure (1-17 for MVP)
-5. Validate Document Control table completeness
-6. Check dual scoring (SYS-Ready + EARS-Ready ≥85%)
-7. Validate upstream @brd reference format
-8. Check element ID format (PRD.NN.TT.SS)
-9. Detect deprecated patterns (US-NNN, FR-NNN)
-10. Verify file naming convention
-11. Generate validation report
+1. **Validate folder structure** (CRITICAL - must be in `docs/02_PRD/PRD-NN_{slug}/`)
+2. Parse YAML frontmatter
+3. Check required metadata fields (document_type, artifact_type, layer)
+4. Validate tag taxonomy (prd, layer-2-artifact)
+5. Verify section structure (1-17 for MVP)
+6. Validate Document Control table completeness
+7. Check dual scoring (SYS-Ready + EARS-Ready ≥85%)
+8. Validate upstream @brd reference format
+9. Check element ID format (PRD.NN.TT.SS)
+10. Detect deprecated patterns (US-NNN, FR-NNN)
+11. Verify file naming convention
+12. Generate validation report
+
+### Structure Validation (Step 1)
+
+**Nested Folder Rule**: ALL PRDs MUST use nested folders regardless of size.
+
+| PRD Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md` |
+| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_*.md`, etc. |
+
+**Validation Logic**:
+```python
+def validate_prd_structure(prd_path: str) -> list[Error]:
+    errors = []
+
+    # Extract PRD ID from filename
+    filename = os.path.basename(prd_path)
+    match = re.match(r'PRD-(\d+)_([^/]+)\.md', filename)
+
+    if not match:
+        errors.append(PRD_E001)  # Invalid filename
+        return errors
+
+    prd_id = match.group(1)
+    slug = match.group(2)
+
+    # Check parent folder
+    parent_folder = os.path.dirname(prd_path)
+    expected_folder = f"PRD-{prd_id}_{slug}"
+
+    if os.path.basename(parent_folder) != expected_folder:
+        errors.append(PRD_E020)  # Not in nested folder
+
+    # Verify folder is under docs/02_PRD/
+    if "/docs/02_PRD/" not in prd_path:
+        errors.append(PRD_E020)  # Wrong base path
+
+    return errors
+```
 
 ## Auto-Fix Actions
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
+| PRD not in nested folder (PRD-E020) | Create folder, move file, update internal links |
+| Folder name mismatch (PRD-E021) | Rename folder to match PRD ID |
+| Link paths broken after move | Update `../01_BRD/` → `../../01_BRD/` |
 | Missing cumulative @brd tag | Add with upstream document reference |
 | Invalid element ID format | Convert to PRD.NN.TT.SS format |
 | Missing traceability section | Insert from template |
@@ -319,6 +365,7 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-11 | **Structure Validation**: Added PRD-E020/E021/E022 for nested folder rule enforcement; Structure validation as Step 1 in workflow; Auto-fix for structure violations; Fixed paths `docs/PRD/` → `docs/02_PRD/` |
 | 2.1 | 2026-02-08 | Added doc-naming integration: PRD-E018 (threshold format), PRD-E019 (element type codes) |
 | 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template (17 sections), unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |

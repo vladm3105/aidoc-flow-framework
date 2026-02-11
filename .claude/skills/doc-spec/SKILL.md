@@ -36,7 +36,7 @@ Create **Technical Specifications (SPEC)** - Layer 9 artifact in the SDD workflo
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/CTR/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ docs/08_CTR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -512,7 +512,7 @@ Focus on REQ (Layer 7) and optionally CTR (Layer 9).
 
 ### Step 2: Reserve ID Number
 
-Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` directory if first SPEC).
+Check `docs/09_SPEC/` for next available ID number (or create `docs/09_SPEC/` directory if first SPEC).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: SPEC-01, SPEC-99, SPEC-102
@@ -520,13 +520,17 @@ Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` director
 
 ### Step 3: Create SPEC File
 
-**File naming**: `docs/SPEC/SPEC-NN_{slug}.yaml`
+**Nested Folder Rule (MANDATORY)**: ALL SPEC documents MUST use nested folders regardless of document size.
 
-**Example**: `docs/SPEC/SPEC-01_trade_validation.yaml`
+**File naming**: `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml`
+
+**Example**: `docs/09_SPEC/SPEC-01_trade_validation/SPEC-01_trade_validation.yaml`
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
 
-**Note**: Templates and examples are in `ai_dev_flow/09_SPEC/` while project-specific SPECs go in `docs/SPEC/`.
+**Note**: Templates and examples are in `ai_dev_flow/09_SPEC/` while project-specific SPECs go in `docs/09_SPEC/`.
+
+**CRITICAL**: Never create SPEC files directly in `docs/09_SPEC/` without a nested folder structure.
 
 ### Step 4: Fill Metadata Section
 

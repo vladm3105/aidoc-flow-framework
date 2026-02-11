@@ -163,16 +163,16 @@ Scenario Outline: [Description]
 
 ```bash
 # Validate single BDD document
-python ai_dev_flow/scripts/validate_bdd.py docs/BDD/BDD-001_example.md
+python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
 
 # Validate all BDD documents
-python ai_dev_flow/scripts/validate_bdd.py docs/BDD/
+python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/
 
 # Validate .feature files
 python ai_dev_flow/scripts/validate_bdd.py tests/bdd/features/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_bdd.py docs/BDD/ --verbose
+python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/ --verbose
 ```
 
 ## Validation Workflow

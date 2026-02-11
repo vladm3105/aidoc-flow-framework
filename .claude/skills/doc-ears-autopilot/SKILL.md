@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD]
   downstream_artifacts: [BDD, ADR, SYS]
-  version: "2.2"
+  version: "2.3"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -55,6 +55,74 @@ This autopilot orchestrates the following skills:
 - Issue resolution and fixes -> `doc-ears-fixer` skill
 - PRD validation logic -> `doc-prd-validator` skill
 - Element ID standards -> `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `EARS-NN` | Self type | Review existing EARS document |
+| `PRD-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "EARS": Review Mode
+   - ELSE IF TYPE == "PRD": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does EARS-{NN} exist in docs/03_EARS/?
+   - IF exists: Switch to Review Mode for EARS-{NN}
+   - ELSE: Proceed with Generation from PRD-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/03_EARS/EARS-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - EARS input)
+/doc-ears-autopilot EARS-01          # Reviews existing EARS-01
+
+# Generate/Find mode (upstream type - PRD input)
+/doc-ears-autopilot PRD-01           # Generates EARS-01 if missing, or reviews existing EARS-01
+
+# Multiple inputs
+/doc-ears-autopilot PRD-01,PRD-02    # Generates/reviews EARS-01 and EARS-02
+/doc-ears-autopilot EARS-01,EARS-02  # Reviews EARS-01 and EARS-02
+```
+
+### Action Determination Output
+
+```
+Input: PRD-01
+├── Detected Type: PRD (upstream)
+├── Expected EARS: EARS-01
+├── EARS Exists: Yes → docs/03_EARS/EARS-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-ears-reviewer on EARS-01
+
+Input: PRD-05
+├── Detected Type: PRD (upstream)
+├── Expected EARS: EARS-05
+├── EARS Exists: No
+└── Action: GENERATE MODE - Creating EARS-05 from PRD-05
+
+Input: EARS-03
+├── Detected Type: EARS (self)
+└── Action: REVIEW MODE - Running doc-ears-reviewer on EARS-03
+```
 
 ---
 
@@ -1314,6 +1382,7 @@ docs/03_EARS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (EARS-NN) triggers review mode; Upstream-type input (PRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-ears-reviewer` and `doc-ears-fixer`; Added `doc-ears-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (ER-XXX→EARS.NN.25.0XX, SR-XXX→EARS.NN.25.1XX, UB-XXX→EARS.NN.25.2XX, UQ-XXX→EARS.NN.25.4XX) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-ears, doc-ears-validator, quality-advisor skills; Added EARS statement type reference (Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous); Added requirement categorization and ID range mapping |

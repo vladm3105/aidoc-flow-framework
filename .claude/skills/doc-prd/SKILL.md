@@ -14,8 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD]
   downstream_artifacts: [EARS, BDD, ADR]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-11"
 ---
 
 # doc-prd
@@ -38,7 +38,7 @@ Create **Product Requirements Documents (PRD)** - Layer 2 artifact in the SDD wo
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -317,14 +317,14 @@ Business constraints           Evaluation criteria         Trade-off analysis
 Read and understand the BRD that drives this PRD.
 
 **Sectioned BRD Handling**:
-If BRD is split into multiple section files (folder structure `docs/BRD/BRD-NN_{slug}/`):
+If BRD is split into multiple section files (folder structure `docs/01_BRD/BRD-NN_{slug}/`):
 1. Read ALL section files (BRD-NN.0 through BRD-NN.18)
 2. Treat as ONE logical document
 3. Extract information holistically (no section-to-section mapping)
 
 ### Step 2: Reserve ID Number
 
-Check `docs/PRD/` for next available ID number (e.g., PRD-01, PRD-02).
+Check `docs/02_PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: PRD-01, PRD-99, PRD-102
@@ -334,21 +334,28 @@ Check `docs/PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 
 ### Step 3: Create PRD Folder and Files
 
-**Folder structure** (DEFAULT - nested folder per document):
-1. Create folder: `docs/PRD/PRD-NN_{slug}/`
-2. Create index file: `docs/PRD/PRD-NN_{slug}/PRD-NN.0_index.md`
-3. Create section files: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{section_type}.md`
+**Nested Folder Rule (MANDATORY)**: ALL PRDs MUST use nested folders regardless of document size.
 
-**Example**:
+**Folder structure**:
+1. Create folder: `docs/02_PRD/PRD-NN_{slug}/`
+2. Create document file(s) inside the folder
+
+**Sectioned PRD** (for large documents >25KB):
 ```
-docs/PRD/PRD-01_user_authentication/
+docs/02_PRD/PRD-01_user_authentication/
   PRD-01.0_index.md
   PRD-01.1_executive_summary.md
   PRD-01.2_problem_statement.md
   ...
 ```
 
-**OPTIONAL** (for small documents <25KB): `docs/PRD/PRD-NN_{slug}.md` (monolithic)
+**Monolithic PRD** (for smaller documents ≤25KB):
+```
+docs/02_PRD/PRD-01_user_authentication/
+  PRD-01_user_authentication.md
+```
+
+**CRITICAL**: Even monolithic PRDs MUST be in a nested folder. Never create `docs/02_PRD/PRD-NN_{slug}.md` directly in the `02_PRD/` directory.
 
 ### Step 4: Complete Document Control
 
@@ -393,18 +400,18 @@ Quality standards and testing strategy (moved from BRD).
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/PRD/PRD-00_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md`
 
 ### Step 11: Update Upstream BRD Traceability (MANDATORY)
 
 **CRITICAL - Often Missed**: When creating a PRD, you MUST update the parent BRD's traceability section.
 
 **Process**:
-1. Open the upstream BRD (e.g., `docs/BRD/BRD-01_platform.md`)
+1. Open the upstream BRD (e.g., `docs/01_BRD/BRD-01_platform/BRD-01_platform.md`)
 2. Locate the `## Traceability` section
 3. Add this PRD to `Downstream Artifacts`:
    ```markdown
-   - Downstream Artifacts: [PRD-01](../PRD/PRD-01_user_authentication/PRD-01.0_index.md#PRD-01)
+   - Downstream Artifacts: [PRD-01](../../02_PRD/PRD-01_user_authentication/PRD-01_user_authentication.md#PRD-01)
    ```
 4. Commit BRD update with PRD creation (single commit)
 
@@ -418,11 +425,11 @@ Quality standards and testing strategy (moved from BRD).
 ### Step 12: Validate PRD
 
 ```bash
-# PRD validation
-python ai_dev_flow/scripts/validate_prd.py docs/PRD/PRD-NN_{slug}/
+# PRD validation (must be in nested folder)
+python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-NN_{slug}/
 
 # Link integrity
-python ai_dev_flow/scripts/validate_links.py --path docs/PRD/
+python ai_dev_flow/scripts/validate_links.py --path docs/02_PRD/
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NN --expected-layers brd --strict
@@ -484,8 +491,8 @@ LOOP:
 ### Validation Command
 
 ```bash
-# Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/PRD/PRD-NN_slug.md --auto-fix
+# Per-document validation (Phase 1) - must use nested folder path
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md --auto-fix
 
 # Layer validation (Phase 2) - run when all PRD documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
@@ -569,7 +576,7 @@ The EARS will:
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all PRD documents):
-- **Structure**: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
+- **Structure**: `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
 - Index template: `ai_dev_flow/02_PRD/PRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/02_PRD/PRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md`
@@ -597,4 +604,5 @@ The EARS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-11 | **Nested Folder Enforcement**: Fixed all paths from `docs/PRD/` to `docs/02_PRD/` and `docs/BRD/` to `docs/01_BRD/`; Removed OPTIONAL monolithic path outside nested folder; All PRDs must now be in nested folders regardless of size | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
-  version: "2.3"
+  version: "2.4"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -53,6 +53,74 @@ This autopilot orchestrates the following skills:
 - Content review and scoring -> `doc-sys-reviewer` skill
 - Issue resolution and fixes -> `doc-sys-fixer` skill
 - Element ID standards -> `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `SYS-NN` | Self type | Review existing SYS document |
+| `ADR-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "SYS": Review Mode
+   - ELSE IF TYPE == "ADR": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does SYS-{NN} exist in docs/06_SYS/?
+   - IF exists: Switch to Review Mode for SYS-{NN}
+   - ELSE: Proceed with Generation from ADR-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/06_SYS/SYS-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - SYS input)
+/doc-sys-autopilot SYS-01           # Reviews existing SYS-01
+
+# Generate/Find mode (upstream type - ADR input)
+/doc-sys-autopilot ADR-01           # Generates SYS-01 if missing, or reviews existing SYS-01
+
+# Multiple inputs
+/doc-sys-autopilot ADR-01,ADR-02    # Generates/reviews SYS-01 and SYS-02
+/doc-sys-autopilot SYS-01,SYS-02    # Reviews SYS-01 and SYS-02
+```
+
+### Action Determination Output
+
+```
+Input: ADR-01
+├── Detected Type: ADR (upstream)
+├── Expected SYS: SYS-01
+├── SYS Exists: Yes → docs/06_SYS/SYS-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-sys-reviewer on SYS-01
+
+Input: ADR-05
+├── Detected Type: ADR (upstream)
+├── Expected SYS: SYS-05
+├── SYS Exists: No
+└── Action: GENERATE MODE - Creating SYS-05 from ADR-05
+
+Input: SYS-03
+├── Detected Type: SYS (self)
+└── Action: REVIEW MODE - Running doc-sys-reviewer on SYS-03
+```
 
 ---
 
@@ -147,8 +215,8 @@ Analyze ADR documents to extract architecture decisions and system constraints.
 
 | Priority | Source | Location | Content Type |
 |----------|--------|----------|--------------|
-| 1 | ADR Documents | `docs/ADR/ADR-NN_{slug}.md` | Architecture Decisions |
-| 2 | ADR-00 Technology Stack | `docs/ADR/ADR-00_technology_stack.md` | Approved Technologies |
+| 1 | ADR Documents | `docs/05_ADR/ADR-NN_{slug}.md` | Architecture Decisions |
+| 2 | ADR-00 Technology Stack | `docs/05_ADR/ADR-00_technology_stack.md` | Approved Technologies |
 | 3 | BRD Section 7.2 | `docs/01_BRD/BRD-NN_{slug}/` | Architecture Decision Requirements |
 | 4 | PRD Section 18 | `docs/02_PRD/PRD-NN_{slug}/` | Architecture Decision Requirements |
 
@@ -156,10 +224,10 @@ Analyze ADR documents to extract architecture decisions and system constraints.
 
 ```bash
 # Locate ADR documents
-find docs/ADR/ -name "ADR-*.md" -type f | sort
+find docs/05_ADR/ -name "ADR-*.md" -type f | sort
 
 # Check for SYS-Ready scores in ADRs
-grep -E "SYS-Ready.*Score" docs/ADR/ADR-*.md
+grep -E "SYS-Ready.*Score" docs/05_ADR/ADR-*.md
 ```
 
 **Required ADR Content per Topic**:
@@ -249,7 +317,7 @@ Generate SYS documents with functional requirements and quality attributes.
 1. **Reserve SYS ID**:
    ```bash
    # Check for next available ID
-   ls docs/SYS/SYS-*.md 2>/dev/null | \
+   ls docs/06_SYS/SYS-*.md 2>/dev/null | \
      grep -oP 'SYS-\K\d+' | sort -n | tail -1
    # Increment for new SYS
    ```
@@ -357,10 +425,10 @@ Generate SYS documents with functional requirements and quality attributes.
    ```
 
 10. **File Output** (ALWAYS use nested folder):
-    - **Monolithic** (<20k tokens): `docs/SYS/SYS-NN_{slug}/SYS-NN_{slug}.md`
-    - **Sectioned** (≥20k tokens): `docs/SYS/SYS-NN_{slug}/SYS-NN.0_index.md`, `SYS-NN.1_core.md`, etc.
-    - **Modular** (v2.0): `docs/SYS/SYS-NN_{slug}/SYS-NN.MM_{capability}.md`
-    - **Master Index** (always): `docs/SYS/SYS-00_index.md` (create or update)
+    - **Monolithic** (<20k tokens): `docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md`
+    - **Sectioned** (≥20k tokens): `docs/06_SYS/SYS-NN_{slug}/SYS-NN.0_index.md`, `SYS-NN.1_core.md`, etc.
+    - **Modular** (v2.0): `docs/06_SYS/SYS-NN_{slug}/SYS-NN.MM_{capability}.md`
+    - **Master Index** (always): `docs/06_SYS/SYS-00_index.md` (create or update)
 
     **Nested Folder Rule**: ALL SYS use nested folders (`SYS-NN_{slug}/`) regardless of size. This keeps companion files (review reports, fix reports, drift cache) organized with their parent document.
 
@@ -533,7 +601,7 @@ After SYS generation, validate structure and REQ-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_sys.py docs/SYS/SYS-NN_{slug}.md --verbose
+python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}.md --verbose
 ```
 
 **Validation Checks** (14 Total for v2.0):
@@ -696,7 +764,7 @@ After passing the fix cycle:
    # Update SYS-00_TRACEABILITY_MATRIX.md
    python ai_dev_flow/scripts/update_traceability_matrix.py \
      --type SYS \
-     --matrix docs/SYS/SYS-00_TRACEABILITY_MATRIX.md
+     --matrix docs/06_SYS/SYS-00_TRACEABILITY_MATRIX.md
    ```
 
 4. **REQ-Ready Report**:
@@ -819,12 +887,12 @@ Validate existing SYS documents and generate a quality report without modificati
 ```bash
 # Review single SYS document
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/SYS-01_f1_iam.md \
+  --sys docs/06_SYS/SYS-01_f1_iam.md \
   --mode review
 
 # Review all SYS documents
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/ \
+  --sys docs/06_SYS/ \
   --mode review \
   --output-report tmp/sys_review_report.md
 ```
@@ -942,24 +1010,24 @@ Auto-repair existing SYS documents while preserving manual content.
 ```bash
 # Fix single SYS document
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/SYS-01_f1_iam.md \
+  --sys docs/06_SYS/SYS-01_f1_iam.md \
   --mode fix
 
 # Fix with backup
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/SYS-01_f1_iam.md \
+  --sys docs/06_SYS/SYS-01_f1_iam.md \
   --mode fix \
   --backup
 
 # Fix specific issue types only
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/SYS-01_f1_iam.md \
+  --sys docs/06_SYS/SYS-01_f1_iam.md \
   --mode fix \
   --fix-types "element_ids,thresholds,dependencies"
 
 # Dry-run fix (preview changes)
 python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/SYS/SYS-01_f1_iam.md \
+  --sys docs/06_SYS/SYS-01_f1_iam.md \
   --mode fix \
   --dry-run
 ```
@@ -1045,10 +1113,10 @@ flowchart TD
 | ... | ... | ... | ... |
 
 ## Files Modified
-- docs/SYS/SYS-01_f1_iam/SYS-01.00_index.md
-- docs/SYS/SYS-01_f1_iam/SYS-01.01_authentication.md
-- docs/SYS/SYS-01_f1_iam/SYS-01.02_authorization.md
-- docs/SYS/SYS-01_f1_iam/SYS-01.03_session_management.md
+- docs/06_SYS/SYS-01_f1_iam/SYS-01.00_index.md
+- docs/06_SYS/SYS-01_f1_iam/SYS-01.01_authentication.md
+- docs/06_SYS/SYS-01_f1_iam/SYS-01.02_authorization.md
+- docs/06_SYS/SYS-01_f1_iam/SYS-01.03_session_management.md
 
 ## Backup Location
 - tmp/backup/SYS-01_f1_iam_20260209_143022/
@@ -1133,13 +1201,13 @@ fix_mode:
 
 | File | Purpose | Location |
 |------|---------|----------|
-| SYS-NN_{slug}/ | SYS folder (ALWAYS created) | `docs/SYS/` |
-| SYS-NN_{slug}.md | Main SYS document (monolithic <20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
-| SYS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
-| SYS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/SYS/SYS-NN_{slug}/` |
-| SYS-NN.R_review_report_v{VVV}.md | Review report | `docs/SYS/SYS-NN_{slug}/` |
-| SYS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/SYS/SYS-NN_{slug}/` |
-| .drift_cache.json | Drift detection cache | `docs/SYS/SYS-NN_{slug}/` |
+| SYS-NN_{slug}/ | SYS folder (ALWAYS created) | `docs/06_SYS/` |
+| SYS-NN_{slug}.md | Main SYS document (monolithic <20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
+| SYS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
+| SYS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
+| SYS-NN.R_review_report_v{VVV}.md | Review report | `docs/06_SYS/SYS-NN_{slug}/` |
+| SYS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/06_SYS/SYS-NN_{slug}/` |
+| .drift_cache.json | Drift detection cache | `docs/06_SYS/SYS-NN_{slug}/` |
 
 ### Validation Reports
 
@@ -1330,7 +1398,7 @@ Proceeding to next chunk...
 ./hooks/pre_sys_generation.sh
 
 # Example: Verify ADR SYS-Ready scores
-for adr in docs/ADR/ADR-*.md; do
+for adr in docs/05_ADR/ADR-*.md; do
   score=$(grep -oP 'SYS-Ready.*\K\d+' "$adr")
   if [ "$score" -lt 90 ]; then
     echo "ERROR: $adr SYS-Ready score below 90%"
@@ -1349,8 +1417,8 @@ done
 # Example: Trigger REQ autopilot for validated SYS
 if [ "$ALL_SYS_VALIDATED" = "true" ]; then
   python ai_dev_flow/scripts/req_autopilot.py \
-    --sys-dir docs/SYS/ \
-    --output docs/REQ/
+    --sys-dir docs/06_SYS/ \
+    --output docs/07_REQ/
 fi
 ```
 
@@ -1363,7 +1431,7 @@ name: SYS Autopilot
 on:
   push:
     paths:
-      - 'docs/ADR/**/ADR-*.md'
+      - 'docs/05_ADR/**/ADR-*.md'
 
 jobs:
   generate-sys:
@@ -1374,8 +1442,8 @@ jobs:
       - name: Run SYS Autopilot
         run: |
           python ai_dev_flow/scripts/sys_autopilot.py \
-            --adr docs/ADR/ \
-            --output docs/SYS/ \
+            --adr docs/05_ADR/ \
+            --output docs/06_SYS/ \
             --validate
 
       - name: Upload Validation Report
@@ -1514,6 +1582,7 @@ docs/06_SYS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (SYS-NN) triggers review mode; Upstream-type input (ADR-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-sys-reviewer` and `doc-sys-fixer`; Added `doc-sys-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing SYS documents without modification; Added Fix Mode for auto-repairing SYS documents while preserving manual content; Added fix categories (element_ids, thresholds, dependencies, structure, traceability); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 6-category score impact; Added element ID migration support (FR_XXX, QA_XXX, SR_XXX to unified format) |

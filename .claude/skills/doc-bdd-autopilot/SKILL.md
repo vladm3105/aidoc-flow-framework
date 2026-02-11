@@ -15,7 +15,7 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [ADR, SYS, REQ]
-  version: "2.1"
+  version: "2.2"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -55,6 +55,74 @@ This autopilot orchestrates the following skills:
 - Issue resolution and fixes -> `doc-bdd-fixer` skill
 - EARS validation logic -> `doc-ears-validator` skill
 - Element ID standards -> `doc-naming` skill
+
+---
+
+## Smart Document Detection
+
+The autopilot automatically determines the action based on the input document type.
+
+### Input Type Recognition
+
+| Input | Detected As | Action |
+|-------|-------------|--------|
+| `BDD-NN` | Self type | Review existing BDD document |
+| `EARS-NN` | Upstream type | Generate if missing, review if exists |
+
+### Detection Algorithm
+
+```
+1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
+2. Determine action:
+   - IF TYPE == "BDD": Review Mode
+   - ELSE IF TYPE == "EARS": Generate/Find Mode
+   - ELSE: Error (invalid type for this autopilot)
+3. For Generate/Find Mode:
+   - Check: Does BDD-{NN} exist in docs/04_BDD/?
+   - IF exists: Switch to Review Mode for BDD-{NN}
+   - ELSE: Proceed with Generation from EARS-{NN}
+```
+
+### File Existence Check
+
+```bash
+# Check for nested folder structure (mandatory)
+ls docs/04_BDD/BDD-{NN}_*/
+```
+
+### Examples
+
+```bash
+# Review mode (same type - BDD input)
+/doc-bdd-autopilot BDD-01           # Reviews existing BDD-01
+
+# Generate/Find mode (upstream type - EARS input)
+/doc-bdd-autopilot EARS-01          # Generates BDD-01 if missing, or reviews existing BDD-01
+
+# Multiple inputs
+/doc-bdd-autopilot EARS-01,EARS-02  # Generates/reviews BDD-01 and BDD-02
+/doc-bdd-autopilot BDD-01,BDD-02    # Reviews BDD-01 and BDD-02
+```
+
+### Action Determination Output
+
+```
+Input: EARS-01
+├── Detected Type: EARS (upstream)
+├── Expected BDD: BDD-01
+├── BDD Exists: Yes → docs/04_BDD/BDD-01_f1_iam/
+└── Action: REVIEW MODE - Running doc-bdd-reviewer on BDD-01
+
+Input: EARS-05
+├── Detected Type: EARS (upstream)
+├── Expected BDD: BDD-05
+├── BDD Exists: No
+└── Action: GENERATE MODE - Creating BDD-05 from EARS-05
+
+Input: BDD-03
+├── Detected Type: BDD (self)
+└── Action: REVIEW MODE - Running doc-bdd-reviewer on BDD-03
+```
 
 ---
 
@@ -1649,6 +1717,7 @@ docs/04_BDD/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BDD-NN) triggers review mode; Upstream-type input (EARS-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.1 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-bdd-reviewer` and `doc-bdd-fixer`; Added `doc-bdd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators; Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section; Added Review Mode for validating existing BDD documents; Added Fix Mode for auto-repairing BDD documents |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-bdd, doc-bdd-validator, quality-advisor skills; Added scenario category reference (8 categories); Added section-based structure requirements; Added Gherkin-native tag enforcement |

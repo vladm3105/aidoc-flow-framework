@@ -38,7 +38,7 @@ Create **BDD (Behavior-Driven Development)** test scenarios - Layer 4 artifact i
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -70,9 +70,11 @@ Use `doc-bdd` when:
 
 ### Directory Structure
 
+**Nested Folder Rule (MANDATORY)**: ALL BDD suites MUST use nested folders regardless of size.
+
 ```
-docs/BDD/
-├── BDD-02_knowledge_engine/           # Suite folder
+docs/04_BDD/
+├── BDD-02_knowledge_engine/           # Suite folder (REQUIRED)
 │   ├── BDD-02.0_index.md              # Index file (MANDATORY)
 │   ├── BDD-02.1_ingest.feature        # Section 1
 │   ├── BDD-02.2_query.feature         # Section 2
@@ -83,6 +85,8 @@ docs/BDD/
 │   └── BDD-02_TRACEABILITY.md         # Optional companion
 └── BDD-02_knowledge_engine.feature    # Redirect stub (0 scenarios)
 ```
+
+**CRITICAL**: Never create BDD files directly in `docs/04_BDD/` without a nested folder structure.
 
 ### Three Valid File Patterns (ONLY)
 
@@ -412,7 +416,7 @@ Read BRD, PRD, and EARS to understand requirements to test.
 
 ### Step 2: Reserve Suite ID
 
-Check `docs/BDD/` for next available ID (e.g., BDD-01, BDD-02).
+Check `docs/04_BDD/` for next available ID (e.g., BDD-01, BDD-02).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: BDD-01, BDD-99, BDD-102
@@ -421,13 +425,13 @@ Check `docs/BDD/` for next available ID (e.g., BDD-01, BDD-02).
 ### Step 3: Create Suite Folder
 
 ```bash
-mkdir -p docs/BDD/BDD-02_knowledge_engine/
+mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
 ```
 
 ### Step 4: Create Index File
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
+cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
 ```
 
 ### Step 5: Design Section Split
@@ -439,7 +443,7 @@ cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/BDD/BDD-02_knowledge_engine
 ### Step 6: Create Section Files
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature docs/BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
+cp ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
 ```
 
 ### Step 7: Add Section Metadata Tags
@@ -463,8 +467,8 @@ For each requirement from EARS/PRD:
 ### Step 10: Create Redirect Stub
 
 ```bash
-# Create redirect stub at docs/BDD/ root
-touch docs/BDD/BDD-02_knowledge_engine.feature
+# Create redirect stub at docs/04_BDD/ root
+touch docs/04_BDD/BDD-02_knowledge_engine.feature
 ```
 
 Add minimal content with `@redirect` tag and 0 scenarios.
@@ -618,7 +622,7 @@ The ADR will:
 | **Tags Required** | @brd, @prd, @ears (3 tags) |
 | **ADR-Ready Score** | ≥90% required for "Approved" status |
 | **Element ID Format** | `BDD.NN.14.SS` (scenarios), `BDD.NN.15.SS` (steps) |
-| **File Structure** | Nested suite folder: `docs/BDD/BDD-NN_{slug}/` |
+| **File Structure** | Nested suite folder: `docs/04_BDD/BDD-NN_{slug}/` |
 | **Max File Size** | 500 lines (soft: 400) |
 | **Max Scenarios** | 12 per Feature block |
 | **Time Format** | HH:MM:SS with IANA timezone |

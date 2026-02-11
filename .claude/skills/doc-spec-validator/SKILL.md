@@ -191,13 +191,13 @@ Optional fields:
 
 ```bash
 # Validate single SPEC document
-python ai_dev_flow/scripts/validate_spec.py docs/SPEC/SPEC-001_example.yaml
+python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/SPEC-001_example.yaml
 
 # Validate all SPEC documents
-python ai_dev_flow/scripts/validate_spec.py docs/SPEC/
+python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_spec.py docs/SPEC/ --verbose
+python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/ --verbose
 ```
 
 ## Validation Workflow

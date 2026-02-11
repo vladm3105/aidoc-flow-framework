@@ -36,7 +36,7 @@ Create **Data Contracts (CTR)** - Optional Layer 8 artifact in the SDD workflow 
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -535,14 +535,18 @@ Check `ai_dev_flow/CTR/` for next available ID number.
 
 ### Step 3: Create CTR Files (Dual Format)
 
-**Location Options**:
-- Flat: `docs/CTR/CTR-NN_{slug}.md` + `.yaml`
-- Service-based: `docs/CTR/{service_type}/CTR-NN_{slug}.md` + `.yaml`
+**Nested Folder Rule (MANDATORY)**: ALL CTR documents MUST use nested folders regardless of document size.
 
-**On-Demand Folder Creation**: Before saving, create the target directory if needed:
+**Location**:
+- Standard: `docs/08_CTR/CTR-NN_{slug}/CTR-NN_{slug}.md` + `.yaml`
+- Service-based: `docs/08_CTR/{service_type}/CTR-NN_{slug}/CTR-NN_{slug}.md` + `.yaml`
+
+**On-Demand Folder Creation**: Before saving, create the target directory:
 ```bash
-# For 10+ contracts, create service-type subdirectory
-mkdir -p docs/CTR/{service_type}/
+# Create nested folder (ALWAYS required)
+mkdir -p docs/08_CTR/CTR-NN_{slug}/
+# OR for service-type subdirectory
+mkdir -p docs/08_CTR/{service_type}/CTR-NN_{slug}/
 ```
 
 **Service Types** (when 10+ contracts):
@@ -552,8 +556,10 @@ mkdir -p docs/CTR/{service_type}/
 - `shared/` - Cross-cutting contracts
 
 **Example**:
-- Flat: `docs/CTR/CTR-01_data_validation.md` + `.yaml`
-- Subdirectory: `docs/CTR/agents/CTR-01_data_validation.md` + `.yaml`
+- Standard: `docs/08_CTR/CTR-01_data_validation/CTR-01_data_validation.md` + `.yaml`
+- Service-based: `docs/08_CTR/agents/CTR-01_data_validation/CTR-01_data_validation.md` + `.yaml`
+
+**CRITICAL**: Never create CTR files directly in `docs/08_CTR/` without a nested folder structure.
 
 ### Step 4: Fill Document Control Section (Markdown)
 
