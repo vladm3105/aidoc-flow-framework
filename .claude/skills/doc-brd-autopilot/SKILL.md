@@ -1,6 +1,6 @@
 ---
 name: doc-brd-autopilot
-description: Automated BRD generation pipeline from strategy documents and stakeholder inputs - analyzes sources, determines BRD type, generates content, validates readiness, and supports parallel execution
+description: Automated BRD generation pipeline from reference documents (docs/00_REF/ or REF/) or user prompts - analyzes sources, determines BRD type, generates content, validates readiness, creates BRD-00_index.md, and supports parallel execution
 tags:
   - sdd-workflow
   - layer-1-artifact
@@ -15,15 +15,15 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.3"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.4"
+  last_updated: "2026-02-10T22:30:00"
 ---
 
 # doc-brd-autopilot
 
 ## Purpose
 
-Automated **Business Requirements Document (BRD)** generation pipeline that processes strategy documents, stakeholder requirements, and business context to generate comprehensive BRDs with type determination, readiness validation, and parallel execution support.
+Automated **Business Requirements Document (BRD)** generation pipeline that processes reference documents (`docs/00_REF/` or `REF/`) or user prompts to generate comprehensive BRDs with type determination, readiness validation, master index management, and parallel execution support.
 
 **Layer**: 1 (Entry point - no upstream document dependencies)
 
@@ -153,23 +153,30 @@ Analyze available input sources to extract business requirements.
 
 | Priority | Source | Location | Content Type |
 |----------|--------|----------|--------------|
-| 1 | Strategy Documents | `{project_root}/strategy/` | Business goals, targets, algorithms |
-| 2 | Stakeholder Requirements | User-provided or `docs/inputs/` | Business needs, constraints |
-| 3 | Market Analysis | `docs/inputs/market/` | Competitive context, opportunities |
-| 4 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
+| 1 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
+| 2 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
+| 3 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
+| 4 | User Prompts | Interactive | Business context, objectives, constraints |
 
 **Analysis Process**:
 
 ```bash
-# Check for strategy documents
-ls -la {project_root}/strategy/
+# Check for reference documents (primary location)
+ls -la docs/00_REF/
 
-# Expected files:
-# - README.md (performance targets, strategy goals)
-# - strategy_overview.md (strategic framework)
-# - core_algorithm.md (primary algorithm specs)
-# - risk_management.md (risk policies)
-# - selection_criteria/ (entry criteria)
+# Alternative location
+ls -la REF/
+
+# Expected structure:
+# docs/00_REF/
+# ├── foundation/           # Foundation module specs (F1-F7)
+# │   ├── F1_IAM_Technical_Specification.md
+# │   ├── F2_Session_Technical_Specification.md
+# │   └── GAP_Foundation_Module_Gap_Analysis.md
+# ├── domain/               # Domain module specs (D1-D7)
+# │   ├── D1_Agent_Technical_Specification.md
+# │   └── architecture/     # Architecture documents
+# └── external/             # External references
 ```
 
 **Output**: Input catalog with extracted requirements, objectives, and constraints.
@@ -182,7 +189,7 @@ ls -la {project_root}/strategy/
 
 | Check | Action | Severity |
 |-------|--------|----------|
-| Strategy documents exist | Verify files in `strategy/` directory | Error - blocks generation |
+| Reference documents exist | Verify files in `docs/00_REF/` or `REF/` | Error - blocks generation |
 | `@ref:` targets in source docs | Verify referenced files exist | Error - blocks generation |
 | Gap analysis documents | Verify `GAP_*.md` files if referenced | Warning - flag for creation |
 | Cross-reference documents | Verify upstream docs exist | Warning - document dependency |
@@ -191,7 +198,7 @@ ls -la {project_root}/strategy/
 
 ```bash
 # Check for referenced documents
-grep -h "@ref:" strategy/*.md docs/inputs/*.md 2>/dev/null | \
+grep -h "@ref:" docs/00_REF/**/*.md REF/**/*.md 2>/dev/null | \
   grep -oP '\[.*?\]\(([^)]+)\)' | \
   while read link; do
     file=$(echo "$link" | grep -oP '\(([^)]+)\)' | tr -d '()')
@@ -214,12 +221,12 @@ grep -h "@ref:" strategy/*.md docs/inputs/*.md 2>/dev/null | \
 ```
 Phase 1: Input Analysis
 =======================
-Strategy documents found: 5
-  ✅ strategy/README.md
-  ✅ strategy/core_algorithm.md
-  ✅ strategy/risk_management.md
-  ✅ strategy/selection_criteria.md
-  ✅ strategy/performance_targets.md
+Reference documents found: 5
+  ✅ docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+  ✅ docs/00_REF/foundation/F2_Session_Technical_Specification.md
+  ✅ docs/00_REF/foundation/F3_Observability_Technical_Specification.md
+  ✅ docs/00_REF/domain/D1_Agent_Technical_Specification.md
+  ✅ docs/00_REF/GLOSSARY_Master.md
 
 Reference Validation:
   ✅ docs/00_REF/foundation/F1_IAM_Technical_Specification.md
@@ -367,8 +374,8 @@ Generate the BRD document with real-time quality feedback.
    ### Upstream Sources
    | Source | Type | Reference |
    |--------|------|-----------|
-   | strategy/README.md | Strategy Document | Performance targets |
-   | strategy/core_algorithm.md | Strategy Document | Algorithm specifications |
+   | docs/00_REF/foundation/F1_Technical_Specification.md | Reference Document | Technical specifications |
+   | docs/00_REF/foundation/GAP_Analysis.md | Reference Document | Gap analysis |
    | [Stakeholder] | Business Input | Initial requirements |
 
    ### Downstream Artifacts
@@ -449,9 +456,121 @@ Generate the BRD document with real-time quality feedback.
     | `docs/01_BRD/BRD-01.md` (monolithic) | `BRD-00_GLOSSARY.md` |
     | `docs/01_BRD/BRD-01_slug/BRD-01.3_*.md` (sectioned) | `../BRD-00_GLOSSARY.md` |
 
-11. **File Output**:
+11. **BRD Index Handling** (NEW in v2.4):
+
+    The autopilot MUST create or update `BRD-00_index.md` to serve as the master index for all BRD documents.
+
+    **Index Check Process**:
+
+    | Scenario | Action |
+    |----------|--------|
+    | `docs/01_BRD/BRD-00_index.md` exists | Update with new BRD entry |
+    | Index missing | Create `docs/01_BRD/BRD-00_index.md` with template |
+
+    **BRD-00_index.md Creation Template**:
+
+    ```markdown
+    ---
+    title: "BRD-00: Business Requirements Document Index"
+    tags:
+      - brd
+      - index
+      - layer-1-artifact
+    custom_fields:
+      document_type: brd-index
+      artifact_type: BRD-INDEX
+      layer: 1
+      last_updated: "YYYY-MM-DDTHH:MM:SS"
+    ---
+
+    # BRD-00: Business Requirements Document Index
+
+    Master index of all Business Requirements Documents for the project.
+
+    ---
+
+    ## Document Registry
+
+    | BRD ID | Module | Type | Status | PRD-Ready | Location |
+    |--------|--------|------|--------|-----------|----------|
+    | BRD-01 | F1 IAM | Foundation | Draft | 97% | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) |
+
+    ---
+
+    ## Module Categories
+
+    ### Foundation Modules (F1-F7)
+
+    Domain-agnostic, reusable infrastructure modules.
+
+    | ID | Module Name | BRD | Status |
+    |----|-------------|-----|--------|
+    | F1 | Identity & Access Management | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) | Draft |
+    | F2 | Session Management | Pending | - |
+    | F3 | Observability | Pending | - |
+    | F4 | SecOps | Pending | - |
+    | F5 | Events | Pending | - |
+    | F6 | Infrastructure | Pending | - |
+    | F7 | Configuration | Pending | - |
+
+    ### Domain Modules (D1-D7)
+
+    Business-specific modules for cost monitoring.
+
+    | ID | Module Name | BRD | Status |
+    |----|-------------|-----|--------|
+    | D1 | Agent Orchestration | Pending | - |
+    | D2 | Cloud Accounts | Pending | - |
+    | D3 | Cost Analytics | Pending | - |
+    | D4 | Recommendations | Pending | - |
+    | D5 | Reporting | Pending | - |
+    | D6 | Alerting | Pending | - |
+    | D7 | Budgets | Pending | - |
+
+    ---
+
+    ## Quick Links
+
+    - **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
+    - **Reference Documents**: [00_REF](../00_REF/)
+    - **PRD Layer**: [02_PRD](../02_PRD/)
+
+    ---
+
+    ## Statistics
+
+    | Metric | Value |
+    |--------|-------|
+    | Total BRDs | 1 |
+    | Foundation Modules | 1/7 |
+    | Domain Modules | 0/7 |
+    | Average PRD-Ready Score | 97% |
+
+    ---
+
+    *Last Updated: YYYY-MM-DDTHH:MM:SS*
+    ```
+
+    **Index Update Logic**:
+
+    After generating each BRD:
+    1. Read existing `BRD-00_index.md`
+    2. Parse Document Registry table
+    3. Add or update entry for new BRD
+    4. Update Statistics section
+    5. Update `last_updated` timestamp
+    6. Write updated index
+
+    **Entry Format**:
+
+    ```markdown
+    | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | [BRD-NN](BRD-NN_{slug}/BRD-NN.0_index.md) |
+    ```
+
+12. **File Output**:
     - **Monolithic** (<25KB): `docs/01_BRD/BRD-NN_{slug}.md`
     - **Sectioned** (>=25KB): `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
+    - **Index** (always): `docs/01_BRD/BRD-00_index.md` (create or update)
 
 ### Phase 4: BRD Validation
 
@@ -639,9 +758,17 @@ After passing the fix cycle:
 Generate one BRD from input sources.
 
 ```bash
-# Example: Generate Platform BRD
+# Example: Generate Platform BRD from reference documents
 python ai_dev_flow/scripts/brd_autopilot.py \
-  --strategy strategy/ \
+  --ref docs/00_REF/ \
+  --type platform \
+  --output docs/01_BRD/ \
+  --id 01 \
+  --slug platform_architecture
+
+# Alternative: Generate from REF/ directory
+python ai_dev_flow/scripts/brd_autopilot.py \
+  --ref REF/ \
   --type platform \
   --output docs/01_BRD/ \
   --id 01 \
@@ -664,28 +791,26 @@ python ai_dev_flow/scripts/brd_autopilot.py \
 ```yaml
 brds:
   - id: "01"
-    slug: "platform_architecture"
+    slug: "f1_iam"
     type: "platform"
     priority: 1
     sources:
-      - strategy/README.md
-      - strategy/core_algorithm.md
+      - docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+      - docs/00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md
 
   - id: "02"
-    slug: "user_authentication"
-    type: "feature"
-    priority: 2
-    depends_on: ["01"]
+    slug: "f2_session"
+    type: "platform"
+    priority: 1
     sources:
-      - docs/inputs/auth_requirements.md
+      - docs/00_REF/foundation/F2_Session_Technical_Specification.md
 
   - id: "03"
-    slug: "data_analytics"
-    type: "feature"
-    priority: 2
-    depends_on: ["01"]
+    slug: "f3_observability"
+    type: "platform"
+    priority: 1
     sources:
-      - docs/inputs/analytics_requirements.md
+      - docs/00_REF/foundation/F3_Observability_Technical_Specification.md
 
 execution:
   parallel: true
@@ -702,7 +827,7 @@ Preview execution plan without generating files.
 
 ```bash
 python ai_dev_flow/scripts/brd_autopilot.py \
-  --strategy strategy/ \
+  --ref docs/00_REF/ \
   --output docs/01_BRD/ \
   --dry-run
 ```
@@ -1077,6 +1202,8 @@ flowchart LR
 
 | File | Purpose | Location |
 |------|---------|----------|
+| BRD-00_index.md | Master BRD index (created/updated) | `docs/01_BRD/` |
+| BRD-00_GLOSSARY.md | Master glossary (created if missing) | `docs/01_BRD/` |
 | BRD-NN_{slug}.md | Main BRD document (monolithic) | `docs/01_BRD/` |
 | BRD-NN_{slug}/ | BRD folder (sectioned) | `docs/01_BRD/` |
 | BRD-NN.0_index.md | Section index | `docs/01_BRD/BRD-NN_{slug}/` |
@@ -1267,8 +1394,8 @@ Proceeding to next chunk...
 ./hooks/pre_brd_generation.sh
 
 # Example: Validate input sources exist
-if [ ! -d "strategy/" ]; then
-  echo "ERROR: strategy/ directory required"
+if [ ! -d "docs/00_REF/" ] && [ ! -d "REF/" ]; then
+  echo "ERROR: docs/00_REF/ or REF/ directory required"
   exit 1
 fi
 ```
@@ -1297,8 +1424,8 @@ name: BRD Autopilot
 on:
   push:
     paths:
-      - 'strategy/**'
-      - 'docs/inputs/**'
+      - 'docs/00_REF/**'
+      - 'REF/**'
 
 jobs:
   generate-brd:
@@ -1309,7 +1436,7 @@ jobs:
       - name: Run BRD Autopilot
         run: |
           python ai_dev_flow/scripts/brd_autopilot.py \
-            --strategy strategy/ \
+            --ref docs/00_REF/ \
             --output docs/01_BRD/ \
             --validate
 
@@ -1328,7 +1455,7 @@ jobs:
 
 | Phase | Gate | Criteria |
 |-------|------|----------|
-| Phase 1 | Input Gate | At least one strategy document found |
+| Phase 1 | Input Gate | At least one reference document found in `docs/00_REF/` or `REF/`, or user prompts provided |
 | Phase 2 | Type Gate | BRD type determined (Platform/Feature) |
 | Phase 3 | Generation Gate | All 18 sections generated |
 | Phase 4 | Validation Gate | PRD-Ready Score >= 90% |
@@ -1364,6 +1491,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-10 | **Source Directory Update**: Changed input sources from `strategy/`, `docs/inputs/` to `docs/00_REF/` (primary), `REF/` (alternative), user prompts (fallback); **BRD Index**: Added automatic creation/update of `BRD-00_index.md` master index with Document Registry, Module Categories, Statistics; Updated all examples and CI/CD configurations |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents (not in tmp/); review reports require YAML frontmatter, parent document references, and structured sections; file naming convention `{ARTIFACT}-NN.R_review_report.md` |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing BRD documents without modification; Added Fix Mode for auto-repairing BRD documents while preserving manual content; Added fix categories (element_ids, sections, adr_topics, traceability, score); Added content preservation rules; Added backup functionality; Added element ID migration (BO_XXX, FR_XXX, AC_XXX, BC_XXX to unified format) |

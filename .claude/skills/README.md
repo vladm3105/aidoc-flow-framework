@@ -1157,6 +1157,45 @@ Fixer skills implement tiered auto-merge with no-deletion policy:
 
 ---
 
+### SDD Autopilot Skills (doc-*-autopilot)
+
+Autopilot skills automate artifact generation with validation and review cycles.
+
+#### doc-brd-autopilot (Layer 1 Entry Point)
+**Purpose**: Automated BRD generation from reference documents or user prompts
+**Version**: 2.4
+**Input Sources** (priority order):
+1. `docs/00_REF/` - Technical specs, gap analysis, architecture
+2. `REF/` - Alternative reference document location
+3. User prompts - Interactive fallback
+
+**Auto-Generated Files**:
+- `BRD-00_index.md` - Master BRD registry (created/updated)
+- `BRD-00_GLOSSARY.md` - Master glossary (created if missing)
+
+**Workflow Phases**:
+1. Input Analysis - Scan reference documents
+2. BRD Type Determination - Platform vs Feature
+3. BRD Generation - Create from template
+4. Validation - Run `doc-brd-validator`
+5. Review & Fix Cycle - `doc-brd-reviewer` → `doc-brd-fixer`
+6. Summary - Update index, generate report
+
+#### Other Autopilot Skills
+All other autopilots require upstream documents:
+- `doc-prd-autopilot` - Requires BRD
+- `doc-ears-autopilot` - Requires PRD
+- `doc-bdd-autopilot` - Requires EARS
+- `doc-adr-autopilot` - Requires BRD
+- `doc-sys-autopilot` - Requires ADR
+- `doc-req-autopilot` - Requires SYS
+- `doc-ctr-autopilot` - Requires REQ
+- `doc-spec-autopilot` - Requires REQ+CTR
+- `doc-tspec-autopilot` - Requires SPEC
+- `doc-tasks-autopilot` - Requires SPEC+TSPEC
+
+---
+
 ### SDD Core Workflow Skills (doc-*)
 
 The following skills implement the 12-layer SDD workflow. Each creates specific artifact types:
@@ -1422,7 +1461,7 @@ This functional grouping simplifies understanding the workflow while maintaining
 | **Reviewer Skills** | v1.4 | Mandatory drift cache, three-phase detection, SHA-256 hashing |
 | **Fixer Skills** | v2.0 | Tiered auto-merge (<5%, 5-15%, >15%), no-deletion policy |
 | **Core Workflow (doc-*)** | Varies | Per-artifact generation and validation |
-| **Autopilot Skills** | v6.0 | TSPEC, TDD, CHG integration |
+| **Autopilot Skills** | v2.4 | Source from `docs/00_REF/` or `REF/`, auto-create `BRD-00_index.md` |
 
 ## Datetime Format Standard
 

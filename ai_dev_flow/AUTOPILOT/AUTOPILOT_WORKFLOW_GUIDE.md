@@ -1,6 +1,60 @@
 # Autopilot Workflow Guide
 
-**Purpose**: Document YAML-only template usage for Autopilot workflow
+**Purpose**: Document autopilot workflow including source directories, template usage, and auto-generated files.
+
+---
+
+## Source Directories
+
+### BRD Autopilot Input Sources
+
+The `doc-brd-autopilot` skill uses reference documents as input sources (Layer 1 entry point):
+
+| Priority | Source | Location | Content Type |
+|----------|--------|----------|--------------|
+| 1 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
+| 2 | Reference Documents (alt) | `REF/` | Alternative location |
+| 3 | Existing Documentation | `docs/` or `README.md` | Project context |
+| 4 | User Prompts | Interactive | Business context, objectives (fallback) |
+
+### Other Autopilots
+
+All other autopilots require upstream documents to exist:
+
+| Autopilot | Upstream Required | Source |
+|-----------|-------------------|--------|
+| `doc-prd-autopilot` | BRD | `docs/01_BRD/BRD-NN_*` |
+| `doc-ears-autopilot` | PRD | `docs/02_PRD/PRD-NN_*` |
+| `doc-bdd-autopilot` | EARS | `docs/03_EARS/EARS-NN_*` |
+| `doc-adr-autopilot` | BRD | `docs/01_BRD/BRD-NN_*` |
+| `doc-sys-autopilot` | ADR | `docs/05_ADR/ADR-NN_*` |
+| `doc-req-autopilot` | SYS | `docs/06_SYS/SYS-NN_*` |
+| `doc-ctr-autopilot` | REQ | `docs/07_REQ/REQ-NN_*` |
+| `doc-spec-autopilot` | REQ+CTR | `docs/07_REQ/` + `docs/08_CTR/` |
+| `doc-tspec-autopilot` | SPEC | `docs/09_SPEC/SPEC-NN_*` |
+| `doc-tasks-autopilot` | SPEC+TSPEC | `docs/09_SPEC/` + `docs/10_TSPEC/` |
+
+---
+
+## Auto-Generated Index Files
+
+### BRD Layer Auto-Generated Files
+
+The BRD autopilot automatically creates/updates these files:
+
+| File | Purpose | Auto-Created | Auto-Updated |
+|------|---------|--------------|--------------|
+| `docs/01_BRD/BRD-00_index.md` | Master BRD registry | Yes (if missing) | Yes (on each BRD) |
+| `docs/01_BRD/BRD-00_GLOSSARY.md` | Master glossary | Yes (if missing) | No (manual updates) |
+
+### Index Update Logic
+
+After generating each BRD:
+1. Read existing `BRD-00_index.md`
+2. Parse Document Registry table
+3. Add or update entry for new BRD
+4. Update Statistics section
+5. Update `last_updated` timestamp
 
 ---
 
@@ -121,8 +175,65 @@ For complete Autopilot usage, execution modes, and configuration, see:
 - **`HOW_TO_USE_AUTOPILOT.md`** - Quick start guide for local development
 - **`MVP_GITHUB_CICD_INTEGRATION_PLAN.md`** - GitHub Actions CI/CD integration
 
+## Autopilot Mode Detection
+
+Autopilot skills automatically detect whether to generate or review based on document existence:
+
+### Document Exists vs Missing
+
+| Upstream | Target | Mode | Phases Run |
+|----------|--------|------|------------|
+| Missing | Missing | **ERROR** | Abort - create upstream first |
+| Exists | Missing | **Generate** | Full pipeline (Phases 1-6) |
+| Exists | Exists | **Review/Fix** | Phase 5 only (review cycle) |
+
+### Generate Mode (Target Missing)
+
+Full 6-phase pipeline:
+
+1. **Phase 1**: Dependency Analysis - Find upstream docs, validate `@ref:` targets
+2. **Phase 2**: Readiness Validation - Check upstream score, verify prerequisites
+3. **Phase 3**: Document Generation - Load template, generate all sections
+4. **Phase 4**: Validation - Run `doc-TYPE-validator`, calculate readiness score
+5. **Phase 5**: Review & Fix Cycle - Run `doc-TYPE-reviewer` → `doc-TYPE-fixer` until score ≥ threshold
+6. **Phase 6**: Summary - Update index, generate completion report
+
+### Review/Fix Mode (Target Exists)
+
+Abbreviated pipeline (Phase 5 only):
+
+1. Run `doc-TYPE-reviewer` → Generate review report
+2. If score < threshold → Run `doc-TYPE-fixer` → Apply fixes
+3. Re-run reviewer until PASS or max iterations
+
+### Force Regeneration
+
+Use `--regenerate` flag to force full regeneration (archives existing):
+
+```bash
+/doc-prd-autopilot BRD-01 --regenerate
+# Archives existing PRD-01, generates fresh PRD-01 (Phases 1-6)
+```
+
+---
+
+## Tiered Drift Handling
+
+When upstream documents change, autopilot applies tiered auto-merge:
+
+| Change % | Tier | Action |
+|----------|------|--------|
+| < 5% | Tier 1 | Auto-merge additions, patch version (1.0→1.0.1) |
+| 5-15% | Tier 2 | Auto-merge with changelog, minor version (1.0→1.1) |
+| > 15% | Tier 3 | Archive existing, regenerate, major version (1.x→2.0) |
+
+**No Deletion Policy**: Upstream deletions mark content as `[DEPRECATED]` rather than removing.
+
+---
+
 ## Related Documentation
 
 - **`DUAL_MVP_TEMPLATES_ARCHITECTURE.md`** - Complete explanation of dual-format architecture
 - **`MVP_WORKFLOW_GUIDE.md`** - MVP workflow documentation
 - **Layer-specific schemas** - Each `XX_MVP_SCHEMA.yaml` validates both formats
+- **Skill Documentation**: `.claude/skills/doc-{type}-autopilot/SKILL.md`

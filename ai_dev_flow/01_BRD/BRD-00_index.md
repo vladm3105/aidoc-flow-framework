@@ -1,56 +1,139 @@
 ---
-title: "BRD-000: BRD Index"
+title: "BRD-00: Business Requirements Document Index"
 tags:
-  - index-document
+  - brd
+  - index
   - layer-1-artifact
-  - shared-architecture
 custom_fields:
-  document_type: index
-  artifact_type: BRD
+  document_type: brd-index
+  artifact_type: BRD-INDEX
   layer: 1
-  priority: shared
+  last_updated: "2026-02-10T22:30:00"
 ---
 
-# BRD Index (Business Requirements Documents)
+# BRD-00: Business Requirements Document Index
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Master index of all Business Requirements Documents for the project.
 
-Purpose
+---
 
-- Central index for Business Requirements Documents (BRDs).
-- Tracks allocation and sequencing for `BRD-NN_{descriptive}.md` descriptors.
+## Quick Start
 
-Allocation Rules
+### Generate New BRD
 
-- Numbering: allocate sequentially starting at `01`; keep numbers stable.
-- BRDs define high-level business objectives, market context, and strategic goals.
-- Each BRD should link to downstream PRDs that translate business requirements into product features.
-- BRDs are typically created during initial project planning and major strategic initiatives.
+```bash
+# From reference documents (primary)
+/doc-brd-autopilot docs/00_REF/foundation/F1_Technical_Specification.md
 
-Document Organization
+# From REF directory (alternative)
+/doc-brd-autopilot REF/
 
-- BRDs focus on the "why" and "what" from a business perspective
-- Include [DATA_ANALYSIS - e.g., user behavior analysis, trend detection], stakeholder needs, success metrics, and constraints
-- Avoid technical implementation details (those belong in downstream documents)
+# Interactive mode (prompts for input)
+/doc-brd-autopilot
+```
 
-Templates
+### Review Existing BRD
 
-- [BRD-MVP-TEMPLATE.md](./BRD-MVP-TEMPLATE.md): BRD template (default; full template archived)
-- [BRD_MVP_CREATION_RULES.md](./BRD_MVP_CREATION_RULES.md): Complete reference for creating BRD documents according to doc-flow SDD framework
-- [BRD_MVP_VALIDATION_RULES.md](./BRD_MVP_VALIDATION_RULES.md): Validation rules and quality gates for BRD documents
+```bash
+/doc-brd-reviewer BRD-01
+```
 
-Validation Tools
+### Fix BRD Issues
 
-- validate_brd_template.sh (../../01_BRD/scripts/validate_brd.py): Pre-commit validation script for BRD documents (example)
+```bash
+/doc-brd-fixer BRD-01
+```
 
-Documents
+---
 
-(No BRD documents created yet. Add entries here as new BRDs are created.)
+## Document Registry
 
-## Planned
+| BRD ID | Module | Type | Status | PRD-Ready | Location |
+|--------|--------|------|--------|-----------|----------|
+| - | - | - | - | - | No BRDs created yet |
 
-- Use this section to list BRDs planned but not yet created. Move rows to the documents table when created.
+---
+
+## Module Categories
+
+### Foundation Modules (F1-F7)
+
+Domain-agnostic, reusable infrastructure modules.
+
+| ID | Module Name | BRD | Status |
+|----|-------------|-----|--------|
+| F1 | Identity & Access Management | Pending | - |
+| F2 | Session Management | Pending | - |
+| F3 | Observability | Pending | - |
+| F4 | SecOps | Pending | - |
+| F5 | Events | Pending | - |
+| F6 | Infrastructure | Pending | - |
+| F7 | Configuration | Pending | - |
+
+### Domain Modules (D1-D7)
+
+Business-specific modules (customize per project).
+
+| ID | Module Name | BRD | Status |
+|----|-------------|-----|--------|
+| D1 | [Domain Module 1] | Pending | - |
+| D2 | [Domain Module 2] | Pending | - |
+| D3 | [Domain Module 3] | Pending | - |
+| D4 | [Domain Module 4] | Pending | - |
+| D5 | [Domain Module 5] | Pending | - |
+| D6 | [Domain Module 6] | Pending | - |
+| D7 | [Domain Module 7] | Pending | - |
+
+---
+
+## Input Sources
+
+BRD autopilot uses these source directories (in priority order):
+
+| Priority | Location | Content |
+|----------|----------|---------|
+| 1 | `docs/00_REF/` | Technical specifications, gap analysis |
+| 2 | `REF/` | Alternative reference documents |
+| 3 | `docs/` | Existing project documentation |
+| 4 | User Prompts | Interactive input (fallback) |
+
+---
+
+## Quick Links
+
+- **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
+- **Reference Documents**: [00_REF](../00_REF/)
+- **PRD Layer**: [02_PRD](../02_PRD/)
+- **Templates**: [BRD-MVP-TEMPLATE.md](../../ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md)
+
+---
+
+## Statistics
+
+| Metric | Value |
+|--------|-------|
+| Total BRDs | 0 |
+| Foundation Modules | 0/7 |
+| Domain Modules | 0/7 |
+| Average PRD-Ready Score | - |
+
+---
+
+## Planned BRDs
 
 | ID | Title | Priority | Target Date | Notes |
 |----|-------|----------|-------------|-------|
-| BRD-XX | … | High/Med/Low | YYYY-MM-DDTHH:MM:SS | … |
+| BRD-01 | [First module] | High | TBD | - |
+
+---
+
+## Allocation Rules
+
+- **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
+- **Foundation**: F1-F7 modules use BRD-01 through BRD-07
+- **Domain**: D1-D7 modules use BRD-08 through BRD-14 (or custom numbering)
+- **Feature BRDs**: Continue sequence from last allocated number
+
+---
+
+*Last Updated: 2026-02-10T22:30:00*

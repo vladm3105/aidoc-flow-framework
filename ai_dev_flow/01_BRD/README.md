@@ -32,6 +32,52 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 - Provide traceability to downstream product and technical artifacts
 - Create the authoritative source for business validation
 
+## Autopilot Generation
+
+Use `doc-brd-autopilot` for automated BRD generation with validation and review cycles.
+
+### Input Sources (Priority Order)
+
+| Priority | Source | Location | Content Type |
+|----------|--------|----------|--------------|
+| 1 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
+| 2 | Reference Documents (alt) | `REF/` | Alternative location |
+| 3 | Existing Documentation | `docs/` or `README.md` | Project context |
+| 4 | User Prompts | Interactive | Business context, objectives (fallback) |
+
+### Auto-Generated Files
+
+The autopilot automatically creates/updates these files:
+
+| File | Purpose | Location |
+|------|---------|----------|
+| `BRD-00_index.md` | Master BRD index with registry | `docs/01_BRD/` |
+| `BRD-00_GLOSSARY.md` | Master glossary | `docs/01_BRD/` |
+
+### Usage Examples
+
+```bash
+# Generate from reference documents
+/doc-brd-autopilot docs/00_REF/foundation/F1_IAM_Technical_Specification.md
+
+# Generate from REF directory
+/doc-brd-autopilot REF/
+
+# Interactive mode (prompts for input)
+/doc-brd-autopilot
+```
+
+### Workflow Phases
+
+1. **Phase 1**: Input Analysis - Scan `docs/00_REF/` or `REF/` for source documents
+2. **Phase 2**: BRD Type Determination - Platform vs Feature
+3. **Phase 3**: BRD Generation - Create content from template
+4. **Phase 4**: Validation - Run `doc-brd-validator`
+5. **Phase 5**: Review & Fix - Run `doc-brd-reviewer` → `doc-brd-fixer` cycle
+6. **Phase 6**: Summary - Update `BRD-00_index.md`, generate report
+
+See `.claude/skills/doc-brd-autopilot/SKILL.md` for complete documentation.
+
 ## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
