@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.2"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-spec-validator
@@ -33,6 +33,56 @@ Layer: 9
 Artifact Type: SPEC
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL SPEC documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| SPEC Type | Required Location |
+|-----------|-------------------|
+| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/09_SPEC/SPEC-NN_{slug}/
+2. Verify folder name matches SPEC ID pattern: SPEC-NN_{slug}
+3. Verify file name matches folder: SPEC-NN_{slug}.yaml
+4. Parent path must be: docs/09_SPEC/
+```
+
+**Example Valid Structure**:
+
+```
+docs/09_SPEC/
+├── SPEC-01_f1_iam/
+│   ├── SPEC-01_f1_iam.yaml        ✓ Valid
+│   ├── SPEC-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── SPEC-02_f2_session/
+│   └── SPEC-02_f2_session.yaml    ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/09_SPEC/
+├── SPEC-01_f1_iam.yaml            ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| SPEC-E020 | ERROR | SPEC not in nested folder (BLOCKING) |
+| SPEC-E021 | ERROR | Folder name doesn't match SPEC ID |
+| SPEC-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - SPEC must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. File Format Validation
 
@@ -272,5 +322,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SPEC must be in `docs/09_SPEC/SPEC-NN_{slug}/` folders; Added error codes SPEC-E020, SPEC-E021, SPEC-E022 |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
 | 1.0.0 | 2025-01-15 | Initial validator skill definition | System |

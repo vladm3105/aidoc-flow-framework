@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ]
   downstream_artifacts: []
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-req-validator
@@ -33,6 +33,56 @@ Layer: 7
 Artifact Type: REQ
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL REQ documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| REQ Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/07_REQ/REQ-NN_{slug}/
+2. Verify folder name matches REQ ID pattern: REQ-NN_{slug}
+3. Verify file name matches folder: REQ-NN_{slug}.md
+4. Parent path must be: docs/07_REQ/
+```
+
+**Example Valid Structure**:
+
+```
+docs/07_REQ/
+├── REQ-01_f1_iam/
+│   ├── REQ-01_f1_iam.md           ✓ Valid
+│   ├── REQ-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── REQ-02_f2_session/
+│   └── REQ-02_f2_session.md       ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/07_REQ/
+├── REQ-01_f1_iam.md               ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REQ-E020 | ERROR | REQ not in nested folder (BLOCKING) |
+| REQ-E021 | ERROR | Folder name doesn't match REQ ID |
+| REQ-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - REQ must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -235,4 +285,5 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); REQ must be in `docs/07_REQ/REQ-NN_{slug}/` folders; Added error codes REQ-E020, REQ-E021, REQ-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: [TASKS]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-tspec-validator
@@ -59,6 +59,71 @@ Invoke when:
 | Artifact Type | TSPEC |
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL TSPEC documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| TSPEC Type | Required Location |
+|------------|-------------------|
+| UTEST | `docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md` |
+| ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
+| STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
+| FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/10_TSPEC/{TYPE}/{TYPE}-NN_{slug}/
+2. Verify folder name matches TSPEC ID pattern: {TYPE}-NN_{slug}
+3. Verify file name matches folder: {TYPE}-NN_{slug}.md
+4. Parent path must be: docs/10_TSPEC/{TYPE}/
+```
+
+**Example Valid Structure**:
+
+```
+docs/10_TSPEC/
+├── UTEST/
+│   ├── UTEST-01_auth_service/
+│   │   ├── UTEST-01_auth_service.md   ✓ Valid
+│   │   ├── UTEST-01.R_review_report_v001.md
+│   │   └── .drift_cache.json
+│   └── UTEST-02_session_service/
+│       └── UTEST-02_session_service.md ✓ Valid
+├── ITEST/
+│   └── ITEST-01_api_integration/
+│       └── ITEST-01_api_integration.md ✓ Valid
+├── STEST/
+│   └── STEST-01_deployment_smoke/
+│       └── STEST-01_deployment_smoke.md ✓ Valid
+└── FTEST/
+    └── FTEST-01_user_workflow/
+        └── FTEST-01_user_workflow.md   ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/10_TSPEC/
+├── UTEST/
+│   ├── UTEST-01_auth_service.md       ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| TSPEC-E030 | ERROR | TSPEC not in nested folder (BLOCKING) |
+| TSPEC-E031 | ERROR | Folder name doesn't match TSPEC ID |
+| TSPEC-E032 | ERROR | File name doesn't match folder name |
+| TSPEC-E033 | ERROR | TSPEC not in correct type subdirectory |
+
+**This check is BLOCKING** - TSPEC must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -483,4 +548,5 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TSPEC must be in `docs/10_TSPEC/{TYPE}/{TYPE}-NN_{slug}/` folders; Added error codes TSPEC-E030 through TSPEC-E033 |
 | 1.0 | 2026-02-08 | Initial release: Full TSPEC validation for UTEST/ITEST/STEST/FTEST (codes 40-43), cumulative tagging (8 required), type-specific requirements, doc-naming integration |

@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD]
   downstream_artifacts: []
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-bdd-validator
@@ -33,6 +33,58 @@ Layer: 4
 Artifact Type: BDD
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL BDD documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| BDD Type | Required Location |
+|----------|-------------------|
+| Markdown | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.md` |
+| Feature | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.feature` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/04_BDD/BDD-NN_{slug}/
+2. Verify folder name matches BDD ID pattern: BDD-NN_{slug}
+3. Verify file name matches folder: BDD-NN_{slug}.md or .feature
+4. Parent path must be: docs/04_BDD/
+```
+
+**Example Valid Structure**:
+
+```
+docs/04_BDD/
+├── BDD-01_f1_iam/
+│   ├── BDD-01_f1_iam.md           ✓ Valid
+│   ├── BDD-01_f1_iam.feature      ✓ Valid (optional companion)
+│   ├── BDD-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── BDD-02_f2_session/
+│   └── BDD-02_f2_session.md       ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/04_BDD/
+├── BDD-01_f1_iam.md               ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| BDD-E020 | ERROR | BDD not in nested folder (BLOCKING) |
+| BDD-E021 | ERROR | Folder name doesn't match BDD ID |
+| BDD-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - BDD must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -240,4 +292,5 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); BDD must be in `docs/04_BDD/BDD-NN_{slug}/` folders; Added error codes BDD-E020, BDD-E021, BDD-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

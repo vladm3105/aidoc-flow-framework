@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TSPEC]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-tspec-reviewer
@@ -107,6 +107,34 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates TSPEC follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL TSPEC documents MUST be in nested folders.
+
+**Required Structure**:
+
+| TSPEC Type | Required Location |
+|------------|-------------------|
+| UTEST | `docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md` |
+| ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
+| STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
+| FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | TSPEC not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match TSPEC ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+| REV-STR004 | Error | TSPEC not in correct type subdirectory |
+
+**This check is BLOCKING** - TSPEC must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Test Coverage Targets
 
@@ -533,6 +561,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | **BLOCKING Structure Compliance check**: Added Check #0 as BLOCKING gate; Validates nested folder rule for all TSPEC types (UTEST/ITEST/STEST/FTEST); REV-STR001-STR004 error codes; TSPEC must pass structure validation before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required for all reviews; Three-phase detection algorithm; SHA-256 hash calculation with Python example; REV-D006 error code for missing cache; Cache schema v2.0 with section-level hashes; Report output with cache status and change percentages |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC documents modified after TSPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tspec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

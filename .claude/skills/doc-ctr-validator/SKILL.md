@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [CTR]
   downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.2"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-ctr-validator
@@ -33,6 +33,59 @@ Layer: 8
 Artifact Type: CTR
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL CTR documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| CTR Type | Required Location |
+|----------|-------------------|
+| Dual-File | `docs/08_CTR/CTR-NN_{slug}/CTR-NN_{slug}.md` + `CTR-NN_{slug}.yaml` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/08_CTR/CTR-NN_{slug}/
+2. Verify folder name matches CTR ID pattern: CTR-NN_{slug}
+3. Verify both .md and .yaml files exist with matching names
+4. Parent path must be: docs/08_CTR/
+```
+
+**Example Valid Structure**:
+
+```
+docs/08_CTR/
+├── CTR-01_f1_iam_api/
+│   ├── CTR-01_f1_iam_api.md       ✓ Valid
+│   ├── CTR-01_f1_iam_api.yaml     ✓ Valid (companion schema)
+│   ├── CTR-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── CTR-02_f2_session_api/
+│   ├── CTR-02_f2_session_api.md   ✓ Valid
+│   └── CTR-02_f2_session_api.yaml ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/08_CTR/
+├── CTR-01_f1_iam_api.md           ✗ NOT in nested folder
+├── CTR-01_f1_iam_api.yaml         ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| CTR-E020 | ERROR | CTR not in nested folder (BLOCKING) |
+| CTR-E021 | ERROR | Folder name doesn't match CTR ID |
+| CTR-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - CTR must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -258,5 +311,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); CTR must be in `docs/08_CTR/CTR-NN_{slug}/` folders; Added error codes CTR-E020, CTR-E021, CTR-E022 |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 9 to 8 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
 | 1.0.0 | 2025-01-15 | Initial validator skill definition | System |

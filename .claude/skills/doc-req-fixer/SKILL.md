@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, Review Report, SYS]
   downstream_artifacts: [Fixed REQ, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T00:00:00"
 ---
 
 # doc-req-fixer
@@ -73,7 +73,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -94,6 +95,73 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes REQ documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL REQ documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| REQ Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | REQ not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | REQ folder name doesn't match REQ ID | Rename folder to match |
+| REV-STR003 | Monolithic REQ >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_req_structure(req_path: str) -> list[Fix]:
+    """Fix REQ structure violations."""
+    fixes = []
+
+    filename = os.path.basename(req_path)
+    parent_folder = os.path.dirname(req_path)
+
+    # Extract REQ ID and slug from filename
+    match = re.match(r'REQ-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    req_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"REQ-{req_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(req_path, new_path)
+        fixes.append(f"Moved {req_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../06_SYS/', '../../06_SYS/')
+        updated_content = updated_content.replace('../05_ADR/', '../../05_ADR/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../06_SYS/SYS-01_slug/SYS-01.md` | `../../06_SYS/SYS-01_slug/SYS-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -1014,5 +1082,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | **Enhanced Phase 6 Auto-Merge System**: Tiered auto-merge thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); Change percentage calculation algorithm; Auto-generated IDs for new requirements (REQ.NN.TT.SS pattern); No deletion policy - mark as [DEPRECATED] instead; Archive manifest creation for Tier 3; Enhanced drift cache with merge history and downstream notifications; New options: --auto-merge, --force-tier, --show-merge-history, --restore-archive, --notify-downstream; New fix types: drift_merge, drift_archive, deprecate; Semantic versioning (patch/minor/major) based on change tier |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; REQ Index, Glossary, and Use Case file creation; Element ID conversion (types 01, 05, 06, 27); Broken link fixes; SYS upstream drift handling; Support for sectioned REQ naming (REQ-NN-SSS); Integration with autopilot Review->Fix cycle |

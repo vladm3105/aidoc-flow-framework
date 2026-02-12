@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR, Review Report, BDD, BRD]
   downstream_artifacts: [Fixed ADR, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-adr-fixer
@@ -73,7 +73,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -94,6 +95,75 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes ADR documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL ADR documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| ADR Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | ADR not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | ADR folder name doesn't match ADR ID | Rename folder to match |
+| REV-STR003 | Monolithic ADR >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_adr_structure(adr_path: str) -> list[Fix]:
+    """Fix ADR structure violations."""
+    fixes = []
+
+    filename = os.path.basename(adr_path)
+    parent_folder = os.path.dirname(adr_path)
+
+    # Extract ADR ID and slug from filename
+    match = re.match(r'ADR-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    adr_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"ADR-{adr_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(adr_path, new_path)
+        fixes.append(f"Moved {adr_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../04_BDD/', '../../04_BDD/')
+        updated_content = updated_content.replace('../03_EARS/', '../../03_EARS/')
+        updated_content = updated_content.replace('../01_BRD/', '../../01_BRD/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../04_BDD/BDD-01_slug/BDD-01.md` | `../../04_BDD/BDD-01_slug/BDD-01.md` |
+| `../01_BRD/BRD-01_slug/BRD-01.md` | `../../01_BRD/BRD-01_slug/BRD-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -851,5 +921,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Three-tier thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); No deletion policy - superseded decisions preserved; Archive manifest for Tier 3; Enhanced drift cache with merge history; Auto-generated ADR IDs (ADR-NN-SS pattern); Downstream SYS notification; Change percentage calculation |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; ADR Index and Architecture file creation; Element ID conversion (types 13, 14, 15, 16); Broken link fixes; BDD/BRD upstream drift handling; Integration with autopilot Review->Fix cycle |

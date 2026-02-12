@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-tasks-validator
@@ -33,6 +33,56 @@ Layer: 11
 Artifact Type: TASKS
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL TASKS documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| TASKS Type | Required Location |
+|------------|-------------------|
+| Monolithic | `docs/11_TASKS/TASKS-NN_{slug}/TASKS-NN_{slug}.md` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/11_TASKS/TASKS-NN_{slug}/
+2. Verify folder name matches TASKS ID pattern: TASKS-NN_{slug}
+3. Verify file name matches folder: TASKS-NN_{slug}.md
+4. Parent path must be: docs/11_TASKS/
+```
+
+**Example Valid Structure**:
+
+```
+docs/11_TASKS/
+├── TASKS-01_f1_iam/
+│   ├── TASKS-01_f1_iam.md         ✓ Valid
+│   ├── TASKS-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── TASKS-02_f2_session/
+│   └── TASKS-02_f2_session.md     ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/11_TASKS/
+├── TASKS-01_f1_iam.md             ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| TASKS-E020 | ERROR | TASKS not in nested folder (BLOCKING) |
+| TASKS-E021 | ERROR | Folder name doesn't match TASKS ID |
+| TASKS-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - TASKS must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -246,4 +296,5 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TASKS must be in `docs/11_TASKS/TASKS-NN_{slug}/` folders; Added error codes TASKS-E020, TASKS-E021, TASKS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

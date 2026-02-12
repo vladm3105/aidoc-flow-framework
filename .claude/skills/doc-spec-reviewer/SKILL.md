@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-spec-reviewer
@@ -107,6 +107,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates SPEC follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL SPEC documents MUST be in nested folders.
+
+**Required Structure**:
+
+| SPEC Type | Required Location |
+|-----------|-------------------|
+| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | SPEC not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match SPEC ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - SPEC must pass structure validation before other checks proceed.
+
+---
 
 ### 1. YAML Structure Completeness
 
@@ -584,6 +608,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | **Structure Compliance BLOCKING check**: Added Check #0 as BLOCKING prerequisite; Validates nested folder rule for SPEC documents; REV-STR001-STR003 error codes; Must pass before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required (REV-D006 error if missing); Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; Enhanced cache schema with section-level hashing; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

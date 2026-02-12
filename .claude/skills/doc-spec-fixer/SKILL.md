@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, CTR, SPEC, Review Report]
   downstream_artifacts: [Fixed SPEC, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-spec-fixer
@@ -75,7 +75,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -104,6 +105,74 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes SPEC documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL SPEC documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| SPEC Type | Required Location |
+|-----------|-------------------|
+| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | SPEC not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | SPEC folder name doesn't match SPEC ID | Rename folder to match |
+| REV-STR003 | SPEC >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_spec_structure(spec_path: str) -> list[Fix]:
+    """Fix SPEC structure violations."""
+    fixes = []
+
+    filename = os.path.basename(spec_path)
+    parent_folder = os.path.dirname(spec_path)
+
+    # Extract SPEC ID and slug from filename
+    match = re.match(r'SPEC-(\d+)_([^/]+)\.yaml', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    spec_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"SPEC-{spec_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(spec_path, new_path)
+        fixes.append(f"Moved {spec_path} to {new_path}")
+
+        # Update upstream references in YAML file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../08_CTR/', '../../08_CTR/')
+        updated_content = updated_content.replace('../07_REQ/', '../../07_REQ/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../08_CTR/CTR-01_slug/CTR-01.yaml` | `../../08_CTR/CTR-01_slug/CTR-01.yaml` |
+| `../07_REQ/REQ-01_slug/REQ-01.md` | `../../07_REQ/REQ-01_slug/REQ-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -877,5 +946,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5%, Tier 2: 5-15%, Tier 3: >15%); Auto-generated SPEC IDs (SPEC-NN-COMPONENT-SS pattern); No-deletion policy with [DEPRECATED] marking; Archive manifest creation for Tier 3; Enhanced drift cache with merge history; YAML spec format handling with drift metadata; Change percentage calculation algorithm |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; YAML structure repair; Schema and config file generation; YAML path-based element IDs; REQ/CTR drift handling; Integration with autopilot Review->Fix cycle |

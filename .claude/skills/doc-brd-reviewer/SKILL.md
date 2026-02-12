@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.5"
+  last_updated: "2026-02-11T18:00:00"
 ---
 
 # doc-brd-reviewer
@@ -74,8 +74,12 @@ flowchart TD
     C -->|Sectioned| D[Load All Section Files]
     C -->|Monolithic| E[Load Single File]
 
-    D --> F[Run Review Checks]
-    E --> F
+    D --> F0[Check #0: Structure Compliance]
+    E --> F0
+
+    F0 --> F0a{Nested Folder Valid?}
+    F0a -->|No| F0b[FAIL - BLOCKING]
+    F0a -->|Yes| F[Run Review Checks]
 
     subgraph Review["Review Checks"]
         F --> G[1. Link Integrity]
@@ -107,6 +111,68 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (BLOCKING)
+
+Validates BRD follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL BRDs MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| BRD Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` |
+| Sectioned | `docs/01_BRD/BRD-NN_{slug}/BRD-NN.0_index.md`, `BRD-NN.1_*.md`, etc. |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/01_BRD/BRD-NN_{slug}/
+2. Verify folder name matches BRD ID pattern: BRD-NN_{slug}
+3. Verify file name matches folder: BRD-NN_{slug}.md or BRD-NN.N_*.md
+4. Parent path must be: docs/01_BRD/
+```
+
+**Example Valid Structure**:
+
+```
+docs/01_BRD/
+├── BRD-01_f1_iam/
+│   ├── BRD-01_f1_iam.md           ✓ Valid (monolithic)
+│   ├── BRD-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── BRD-02_f2_session/
+│   ├── BRD-02.0_index.md          ✓ Valid (sectioned)
+│   ├── BRD-02.1_core.md
+│   └── BRD-02.2_requirements.md
+```
+
+**Invalid Structure**:
+
+```
+docs/01_BRD/
+├── BRD-01_f1_iam.md               ✗ NOT in nested folder
+```
+
+**Auto-Fix**:
+
+1. Create the nested folder `docs/01_BRD/BRD-NN_{slug}/`
+2. Move the BRD file(s) into the folder
+3. Update all internal links (navigation, cross-references)
+4. Update any downstream PRD links to correct path
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | BRD not in nested folder (blocking) |
+| REV-STR002 | Error | BRD folder name doesn't match BRD ID |
+| REV-STR003 | Warning | Monolithic BRD should be sectioned (>25KB) |
+
+**This check is BLOCKING** - BRD must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Link Integrity
 
@@ -521,17 +587,20 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| Link Integrity | 10% | (valid_links / total_links) × 10 |
-| Requirement Completeness | 18% | (complete_reqs / total_reqs) × 18 |
-| ADR Topic Coverage | 18% | (covered_topics / required_topics) × 18 |
+| **Structure Compliance** | **12%** | (nested_folder_valid ? 12 : 0) - **BLOCKING** |
+| Link Integrity | 8% | (valid_links / total_links) × 8 |
+| Requirement Completeness | 15% | (complete_reqs / total_reqs) × 15 |
+| ADR Topic Coverage | 15% | (covered_topics / required_topics) × 15 |
 | Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (count × 2)) |
 | Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
-| Section Completeness | 14% | (complete_sections / total_sections) × 14 |
+| Section Completeness | 12% | (complete_sections / total_sections) × 12 |
 | Strategic Alignment | 5% | (aligned_objectives / total_objectives) × 5 |
-| Naming Compliance | 10% | (valid_ids / total_ids) × 10 |
+| Naming Compliance | 8% | (valid_ids / total_ids) × 8 |
 | Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
+
+**Note**: Structure Compliance is a **blocking check**. If structure validation fails (REV-STR001), the review cannot pass regardless of other scores.
 
 **Thresholds**:
 - **PASS**: ≥ 90 (configurable)
@@ -650,6 +719,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-11T18:00:00 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram with structure validation decision node; Added structure compliance to scoring (12% weight, blocking); Consistent with other reviewer skills |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10T14:30:00 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |
 | 1.2 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |

@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-tasks-reviewer
@@ -74,8 +74,11 @@ flowchart TD
     C -->|Yes| D[Parse TASKS Structure]
     C -->|No| E[Report Format Error]
 
-    D --> F[Run Review Checks]
-    E --> F
+    D --> F0[0. Structure Compliance]
+    E --> F0
+    F0 --> F0C{BLOCKING Check}
+    F0C -->|FAIL| BLOCK[STOP - Fix Structure First]
+    F0C -->|PASS| F[Run Review Checks]
 
     subgraph Review["Review Checks"]
         F --> G[1. Task Completeness]
@@ -107,6 +110,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates TASKS follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL TASKS documents MUST be in nested folders.
+
+**Required Structure**:
+
+| TASKS Type | Required Location |
+|------------|-------------------|
+| Monolithic | `docs/11_TASKS/TASKS-NN_{slug}/TASKS-NN_{slug}.md` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | TASKS not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match TASKS ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - TASKS must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Task Completeness
 
@@ -565,6 +592,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance as BLOCKING check; REV-STR001-STR003 error codes; Enforces nested folder rule before other checks proceed |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for missing cache; Defined cache schema with schema_version; Added Three-Phase Detection Algorithm; Added hash calculation examples; Cache location at docs/11_TASKS/.drift_cache.json; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC/TSPEC documents modified after TASKS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tasks-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

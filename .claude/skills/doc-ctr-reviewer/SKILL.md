@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [CTR]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-ctr-reviewer
@@ -106,6 +106,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates CTR follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL CTR documents MUST be in nested folders.
+
+**Required Structure**:
+
+| CTR Type | Required Location |
+|----------|-------------------|
+| Dual-File | `docs/08_CTR/CTR-NN_{slug}/CTR-NN_{slug}.md` + `.yaml` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | CTR not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match CTR ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - CTR must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Dual-File Consistency
 
@@ -493,6 +517,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates nested folder rule; REV-STR001-003 error codes; BLOCKING behavior prevents other checks until structure passes |
 | 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache now required; Three-Phase Detection Algorithm; SHA-256 hash calculation with Python examples; REV-D006 error code for missing/corrupted cache; cache status in report output; centralized cache at docs/08_CTR/.drift_cache.json |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when REQ documents modified after CTR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-ctr-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

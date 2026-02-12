@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD, Review Report, EARS]
   downstream_artifacts: [Fixed BDD, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-bdd-fixer
@@ -73,7 +73,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -94,6 +95,75 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes BDD documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL BDD documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| BDD Type | Required Location |
+|----------|-------------------|
+| Markdown | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.md` |
+| Feature | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.feature` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | BDD not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | BDD folder name doesn't match BDD ID | Rename folder to match |
+| REV-STR003 | Monolithic BDD >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_bdd_structure(bdd_path: str) -> list[Fix]:
+    """Fix BDD structure violations."""
+    fixes = []
+
+    filename = os.path.basename(bdd_path)
+    parent_folder = os.path.dirname(bdd_path)
+
+    # Extract BDD ID and slug from filename (supports .md and .feature)
+    match = re.match(r'BDD-(\d+)_([^/]+)\.(md|feature)', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    bdd_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"BDD-{bdd_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(bdd_path, new_path)
+        fixes.append(f"Moved {bdd_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../03_EARS/', '../../03_EARS/')
+        updated_content = updated_content.replace('../02_PRD/', '../../02_PRD/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../03_EARS/EARS-01_slug/EARS-01.md` | `../../03_EARS/EARS-01_slug/EARS-01.md` |
+| `../02_PRD/PRD-01_slug/PRD-01.md` | `../../02_PRD/PRD-01_slug/PRD-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -981,5 +1051,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1 (< 5%) auto-merge with patch version; Added Tier 2 (5-15%) auto-merge with detailed changelog and minor version; Added Tier 3 (> 15%) archive and regeneration with major version; Implemented no-deletion policy with @deprecated markers; Added archive manifest creation; Enhanced drift cache with merge history; Added scenario tag pattern @BDD-NN-SC-SS; Defined EARS as upstream, ADR as downstream |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary, step definitions, and feature file creation; Element ID conversion for BDD codes (35, 36, 37); Broken link fixes including feature files; EARS drift detection; Gherkin syntax validation; Integration with autopilot Review->Fix cycle |

@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, TSPEC, TASKS, Review Report]
   downstream_artifacts: [Fixed TASKS, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-tasks-fixer
@@ -75,7 +75,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -104,6 +105,74 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes TASKS documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL TASKS documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| TASKS Type | Required Location |
+|------------|-------------------|
+| Monolithic | `docs/11_TASKS/TASKS-NN_{slug}/TASKS-NN_{slug}.md` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | TASKS not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | TASKS folder name doesn't match TASKS ID | Rename folder to match |
+| REV-STR003 | Monolithic TASKS >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_tasks_structure(tasks_path: str) -> list[Fix]:
+    """Fix TASKS structure violations."""
+    fixes = []
+
+    filename = os.path.basename(tasks_path)
+    parent_folder = os.path.dirname(tasks_path)
+
+    # Extract TASKS ID and slug from filename
+    match = re.match(r'TASKS-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    tasks_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"TASKS-{tasks_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(tasks_path, new_path)
+        fixes.append(f"Moved {tasks_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../10_TSPEC/', '../../10_TSPEC/')
+        updated_content = updated_content.replace('../09_SPEC/', '../../09_SPEC/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../09_SPEC/SPEC-01_slug/SPEC-01.yaml` | `../../09_SPEC/SPEC-01_slug/SPEC-01.yaml` |
+| `../10_TSPEC/UTEST/UTEST-01_slug/UTEST-01.md` | `../../10_TSPEC/UTEST/UTEST-01_slug/UTEST-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -1288,5 +1357,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%) auto-merge with patch version; Tier 2 (5-15%) auto-merge with changelog and minor version; Tier 3 (> 15%) archive and regenerate with major version; Task ID pattern TASK-NN-SSS; No deletion policy (mark as [CANCELLED]); Archive manifest creation for Tier 3; Enhanced drift cache with merge history and task registry; Task dependency propagation; Implementation contract update handling; New drift issue codes (REV-D001 through REV-D008) |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Implementation contract repair (Protocol, Exception, State Machine, Data Model); Contract stub and dependency file generation; Element ID conversion (types 18, 30); SPEC/TSPEC drift handling; Optional mypy type checking; Integration with autopilot Review->Fix cycle |

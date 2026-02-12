@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-sys-reviewer
@@ -106,6 +106,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (BLOCKING)
+
+Validates SYS follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL SYS documents MUST be in nested folders.
+
+**Required Structure**:
+
+| SYS Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | SYS not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match SYS ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - SYS must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Functional Requirement Completeness
 
@@ -547,6 +571,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates SYS in nested folders; REV-STR001-STR003 error codes; Must pass before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory Drift Cache**: Cache now required for all drift detection; Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; REV-D006 error code for missing/corrupted cache; Enhanced report output with cache status; cache_enabled=true is mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when ADR documents modified after SYS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-sys-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

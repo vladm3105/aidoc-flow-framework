@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-ears-reviewer
@@ -78,7 +78,8 @@ flowchart TD
     E --> F
 
     subgraph Review["Review Checks"]
-        F --> G[1. EARS Syntax Compliance]
+        F --> F0[0. Structure Compliance]
+        F0 --> G[1. EARS Syntax Compliance]
         G --> H[2. Threshold Quantification]
         H --> I[3. PRD Alignment]
         I --> J[4. Testability Assessment]
@@ -106,6 +107,41 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates EARS follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL EARS documents MUST be in nested folders.
+
+**Required Structure**:
+
+| EARS Type | Required Location |
+|-----------|-------------------|
+| Monolithic | `docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md` |
+
+**Detection**:
+
+```
+Validating folder structure...
+├── EARS Location: docs/03_EARS/EARS-01_f1_iam/EARS-01_f1_iam.md
+├── Expected Folder: EARS-01_f1_iam ✓
+├── Parent Path: docs/03_EARS/ ✓
+├── Nested Structure: Valid ✓
+└── Result: PASS
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | EARS not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match EARS ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - EARS must pass structure validation before other checks proceed.
+
+---
 
 ### 1. EARS Syntax Compliance
 
@@ -383,13 +419,14 @@ The review report MUST include cache status:
 
 | Category | Weight | Calculation |
 |----------|--------|-------------|
-| EARS Syntax Compliance | 23% | (valid_syntax / total_reqs) × 23 |
-| Threshold Quantification | 19% | (quantified / requiring_threshold) × 19 |
-| PRD Alignment | 19% | (aligned_reqs / total_reqs) × 19 |
-| Testability Assessment | 14% | (testable_reqs / total_reqs) × 14 |
+| Structure Compliance | 12% | BLOCKING - must pass before other checks |
+| EARS Syntax Compliance | 20% | (valid_syntax / total_reqs) × 20 |
+| Threshold Quantification | 17% | (quantified / requiring_threshold) × 17 |
+| PRD Alignment | 17% | (aligned_reqs / total_reqs) × 17 |
+| Testability Assessment | 12% | (testable_reqs / total_reqs) × 12 |
 | Placeholder Detection | 5% | (no_placeholders ? 5 : 5 - count) |
-| Section Completeness | 10% | (complete / total_sections) × 10 |
-| Naming Compliance | 5% | (valid_ids / total_ids) × 5 |
+| Section Completeness | 8% | (complete / total_sections) × 8 |
+| Naming Compliance | 4% | (valid_ids / total_ids) × 4 |
 | Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
@@ -483,6 +520,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram; Structure check is BLOCKING |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added cache schema and location (`docs/03_EARS/.drift_cache.json`); Three-phase detection algorithm; SHA-256 hash calculation; REV-D006 error code for cache creation; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when PRD documents modified after EARS creation; REV-D001-D005 error codes; drift configuration; Added doc-ears-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

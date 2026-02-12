@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BDD]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-bdd-reviewer
@@ -69,7 +69,10 @@ Use `doc-bdd-reviewer` when:
 ```mermaid
 flowchart TD
     A[Input: BDD Path] --> B[Load BDD Files]
-    B --> C{Single or Multiple Features?}
+    B --> B2[0. Structure Compliance]
+    B2 --> B3{Structure Valid?}
+    B3 -->|No| B4[BLOCKING - Stop Review]
+    B3 -->|Yes| C{Single or Multiple Features?}
 
     C -->|Multiple| D[Load All Feature Files]
     C -->|Single| E[Load Single File]
@@ -106,6 +109,31 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates BDD follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL BDD documents MUST be in nested folders.
+
+**Required Structure**:
+
+| BDD Type | Required Location |
+|----------|-------------------|
+| Markdown | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.md` |
+| Feature | `docs/04_BDD/BDD-NN_{slug}/BDD-NN_{slug}.feature` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | BDD not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match BDD ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - BDD must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Gherkin Syntax Compliance
 
@@ -481,6 +509,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance as BLOCKING check - validates BDD follows mandatory nested folder rule; REV-STR001-STR003 error codes; Updated workflow diagram with structure validation gate |
 | 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache at `docs/04_BDD/.drift_cache.json`; Three-phase detection algorithm (Load Cache, Detect Drift, Update Cache); SHA-256 hash calculation; REV-D006 error code (Cache created); Report output with cache status; `cache_enabled: true` mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when EARS documents modified after BDD creation; REV-D001-D005 error codes; drift configuration; Added doc-bdd-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

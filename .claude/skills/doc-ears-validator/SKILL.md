@@ -14,7 +14,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS]
   downstream_artifacts: []
-  version: "1.0"
+  version: "1.1"
   last_updated: "2026-02-10T15:00:00"
 ---
 
@@ -33,6 +33,56 @@ Layer: 3
 Artifact Type: EARS
 
 ## Validation Checklist
+
+### 0. Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL EARS documents MUST be in nested folders regardless of size.
+
+**Required Structure**:
+
+| EARS Type | Required Location |
+|-----------|-------------------|
+| Monolithic | `docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md` |
+
+**Validation**:
+
+```
+1. Check document is inside a nested folder: docs/03_EARS/EARS-NN_{slug}/
+2. Verify folder name matches EARS ID pattern: EARS-NN_{slug}
+3. Verify file name matches folder: EARS-NN_{slug}.md
+4. Parent path must be: docs/03_EARS/
+```
+
+**Example Valid Structure**:
+
+```
+docs/03_EARS/
+├── EARS-01_f1_iam/
+│   ├── EARS-01_f1_iam.md          ✓ Valid
+│   ├── EARS-01.R_review_report_v001.md
+│   └── .drift_cache.json
+├── EARS-02_f2_session/
+│   └── EARS-02_f2_session.md      ✓ Valid
+```
+
+**Invalid Structure**:
+
+```
+docs/03_EARS/
+├── EARS-01_f1_iam.md              ✗ NOT in nested folder
+```
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| EARS-E020 | ERROR | EARS not in nested folder (BLOCKING) |
+| EARS-E021 | ERROR | Folder name doesn't match EARS ID |
+| EARS-E022 | ERROR | File name doesn't match folder name |
+
+**This check is BLOCKING** - EARS must pass folder structure validation before other checks proceed.
+
+---
 
 ### 1. Metadata Validation
 
@@ -215,4 +265,5 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); EARS must be in `docs/03_EARS/EARS-NN_{slug}/` folders; Added error codes EARS-E020, EARS-E021, EARS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

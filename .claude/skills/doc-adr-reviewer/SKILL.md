@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-adr-reviewer
@@ -106,6 +106,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates ADR follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL ADR documents MUST be in nested folders.
+
+**Required Structure**:
+
+| ADR Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | ADR not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match ADR ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - ADR must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Decision Completeness
 
@@ -522,6 +546,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates ADR follows mandatory nested folder rule; Added REV-STR001-003 error codes; Structure check blocks other checks if failed |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for cache access failures; Three-phase detection algorithm; SHA-256 hash calculation with Python example; Updated cache schema with document-level tracking; Focused upstream on BDD documents only; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when BDD/BRD documents modified after ADR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-adr-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

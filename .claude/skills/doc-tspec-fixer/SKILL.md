@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, TSPEC, Review Report]
   downstream_artifacts: [Fixed TSPEC, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-tspec-fixer
@@ -74,7 +74,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -103,6 +104,79 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes TSPEC documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL TSPEC documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| TSPEC Type | Required Location |
+|------------|-------------------|
+| UTEST | `docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md` |
+| ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
+| STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
+| FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | TSPEC not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | TSPEC folder name doesn't match TSPEC ID | Rename folder to match |
+| REV-STR003 | TSPEC >25KB should be sectioned | Flag for manual review |
+| REV-STR004 | TSPEC not in correct subdirectory (UTEST/ITEST/STEST/FTEST) | Move to correct subdirectory |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_tspec_structure(tspec_path: str) -> list[Fix]:
+    """Fix TSPEC structure violations."""
+    fixes = []
+
+    filename = os.path.basename(tspec_path)
+    parent_folder = os.path.dirname(tspec_path)
+
+    # Extract TSPEC type, ID and slug from filename
+    match = re.match(r'(UTEST|ITEST|STEST|FTEST)-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    tspec_type = match.group(1)
+    tspec_id = match.group(2)
+    slug = match.group(3)
+    expected_folder = f"{tspec_type}-{tspec_id}_{slug}"
+
+    # Check if already in nested folder within correct subdirectory
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder in correct subdirectory
+        base_path = os.path.dirname(os.path.dirname(parent_folder))
+        new_folder = os.path.join(base_path, tspec_type, expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(tspec_path, new_path)
+        fixes.append(f"Moved {tspec_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../09_SPEC/', '../../../09_SPEC/')
+        updated_content = updated_content.replace('../../09_SPEC/', '../../../09_SPEC/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../../09_SPEC/SPEC-01_slug/SPEC-01.yaml` | `../../../09_SPEC/SPEC-01_slug/SPEC-01.yaml` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -1011,5 +1085,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge patch, Tier 2: 5-15% auto-merge minor with changelog, Tier 3: >15% archive and regenerate major); Added test ID patterns for TSPEC (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-NN-TC-SS format); Implemented no-deletion policy with [DEPRECATED] markers; Enhanced drift cache with merge history tracking; Added archive manifest creation for Tier 3; Auto-generated test ID support |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Test case structure repair; Test data and fixture file generation; Element ID conversion (types 40-43); SPEC drift handling; Integration with autopilot Review->Fix cycle |

@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS, Review Report, ADR]
   downstream_artifacts: [Fixed SYS, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-sys-fixer
@@ -73,7 +73,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -94,6 +95,73 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes SYS documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL SYS documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| SYS Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | SYS not in nested folder | Create folder, move file, update all links |
+| REV-STR002 | SYS folder name doesn't match SYS ID | Rename folder to match |
+| REV-STR003 | Monolithic SYS >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_sys_structure(sys_path: str) -> list[Fix]:
+    """Fix SYS structure violations."""
+    fixes = []
+
+    filename = os.path.basename(sys_path)
+    parent_folder = os.path.dirname(sys_path)
+
+    # Extract SYS ID and slug from filename
+    match = re.match(r'SYS-(\d+)_([^/]+)\.md', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    sys_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"SYS-{sys_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move file
+        new_path = os.path.join(new_folder, filename)
+        shutil.move(sys_path, new_path)
+        fixes.append(f"Moved {sys_path} to {new_path}")
+
+        # Update upstream links in moved file
+        content = Path(new_path).read_text()
+        updated_content = content.replace('../05_ADR/', '../../05_ADR/')
+        updated_content = updated_content.replace('../04_BDD/', '../../04_BDD/')
+        Path(new_path).write_text(updated_content)
+        fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../05_ADR/ADR-01_slug/ADR-01.md` | `../../05_ADR/ADR-01_slug/ADR-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -928,5 +996,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.TT.SS pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; SYS Index, Component, and Interface file creation; Element ID conversion (types 01, 05, 17, 18, 19, 20, 21); Broken link fixes; ADR upstream drift handling; Integration with autopilot Review->Fix cycle |

@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ]
   downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-10T17:00:00"
+  version: "1.4"
+  last_updated: "2026-02-11T12:00:00"
 ---
 
 # doc-req-reviewer
@@ -107,6 +107,30 @@ flowchart TD
 ---
 
 ## Review Checks
+
+### 0. Structure Compliance (12/12) - BLOCKING
+
+Validates REQ follows the mandatory nested folder rule.
+
+**Nested Folder Rule**: ALL REQ documents MUST be in nested folders.
+
+**Required Structure**:
+
+| REQ Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md` |
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-STR001 | Error | REQ not in nested folder (BLOCKING) |
+| REV-STR002 | Error | Folder name doesn't match REQ ID |
+| REV-STR003 | Warning | File name doesn't match folder name |
+
+**This check is BLOCKING** - REQ must pass structure validation before other checks proceed.
+
+---
 
 ### 1. Requirement Atomicity
 
@@ -534,6 +558,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates nested folder rule; REV-STR001-STR003 error codes; BLOCKING gate before other checks proceed |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Three-phase detection algorithm (Load/Detect/Update); Added REV-D006 error code for first review; Cache location standardized to docs/07_REQ/.drift_cache.json; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SYS documents modified after REQ creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-req-fixer to Related Skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |

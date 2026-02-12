@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [REQ, CTR, Review Report]
   downstream_artifacts: [Fixed CTR, Fix Report]
-  version: "2.0"
-  last_updated: "2026-02-10T16:00:00"
+  version: "2.1"
+  last_updated: "2026-02-11T10:00:00"
 ---
 
 # doc-ctr-fixer
@@ -74,7 +74,8 @@ flowchart TD
     E --> F[Categorize Issues]
 
     subgraph FixPhases["Fix Phases"]
-        F --> G[Phase 1: Create Missing Files]
+        F --> F0[Phase 0: Fix Structure Violations]
+        F0 --> G[Phase 1: Create Missing Files]
         G --> H[Phase 2: Fix Broken Links]
         H --> I[Phase 3: Fix Element IDs]
         I --> J[Phase 4: Fix Content Issues]
@@ -103,6 +104,79 @@ flowchart TD
 ---
 
 ## Fix Phases
+
+### Phase 0: Fix Structure Violations (CRITICAL)
+
+Fixes CTR documents that are not in nested folders. This phase runs FIRST because all subsequent phases depend on correct folder structure.
+
+**Nested Folder Rule**: ALL CTR documents MUST be in nested folders regardless of document size.
+
+**Required Structure**:
+| CTR Type | Required Location |
+|----------|-------------------|
+| Dual-File | `docs/08_CTR/CTR-NN_{slug}/CTR-NN_{slug}.md` + `CTR-NN_{slug}.yaml` |
+
+**Fix Actions**:
+
+| Issue Code | Issue | Fix Action |
+|------------|-------|------------|
+| REV-STR001 | CTR not in nested folder | Create folder, move both files, update all links |
+| REV-STR002 | CTR folder name doesn't match CTR ID | Rename folder to match |
+| REV-STR003 | CTR >25KB should be sectioned | Flag for manual review |
+
+**Structure Fix Workflow**:
+
+```python
+def fix_ctr_structure(ctr_path: str) -> list[Fix]:
+    """Fix CTR structure violations."""
+    fixes = []
+
+    filename = os.path.basename(ctr_path)
+    parent_folder = os.path.dirname(ctr_path)
+
+    # Extract CTR ID and slug from filename
+    match = re.match(r'CTR-(\d+)_([^/]+)\.(md|yaml)', filename)
+    if not match:
+        return []  # Cannot auto-fix invalid filename
+
+    ctr_id = match.group(1)
+    slug = match.group(2)
+    expected_folder = f"CTR-{ctr_id}_{slug}"
+
+    # Check if already in nested folder
+    if os.path.basename(parent_folder) != expected_folder:
+        # Create nested folder
+        new_folder = os.path.join(os.path.dirname(parent_folder), expected_folder)
+        os.makedirs(new_folder, exist_ok=True)
+
+        # Move both .md and .yaml files
+        base_name = f"CTR-{ctr_id}_{slug}"
+        for ext in ['.md', '.yaml']:
+            old_file = os.path.join(parent_folder, base_name + ext)
+            if os.path.exists(old_file):
+                new_file = os.path.join(new_folder, base_name + ext)
+                shutil.move(old_file, new_file)
+                fixes.append(f"Moved {old_file} to {new_file}")
+
+        # Update upstream links in moved .md file
+        md_path = os.path.join(new_folder, base_name + '.md')
+        if os.path.exists(md_path):
+            content = Path(md_path).read_text()
+            updated_content = content.replace('../07_REQ/', '../../07_REQ/')
+            updated_content = updated_content.replace('../06_SYS/', '../../06_SYS/')
+            Path(md_path).write_text(updated_content)
+            fixes.append(f"Updated relative links for nested folder structure")
+
+    return fixes
+```
+
+**Link Path Updates After Move**:
+
+| Original Path | Updated Path |
+|---------------|--------------|
+| `../07_REQ/REQ-01_slug/REQ-01.md` | `../../07_REQ/REQ-01_slug/REQ-01.md` |
+
+---
 
 ### Phase 1: Create Missing Files
 
@@ -846,5 +920,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1/2/3 thresholds (<5%, 5-15%, >15%); Contract ID pattern CTR-NN-TYPE-SS; No deletion policy with [DEPRECATED] markers; Archive manifest for Tier 3; Enhanced drift cache with merge history; Support for both .md and .yaml contract files |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Dual-file (MD + YAML) synchronization; Element ID conversion (types 28, 29); YAML syntax repair; REQ drift handling; Integration with autopilot Review->Fix cycle |
