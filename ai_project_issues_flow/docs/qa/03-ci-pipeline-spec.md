@@ -1,6 +1,6 @@
 # CI Pipeline Specification
 
-**Project**: AI Cloud Cost Monitoring
+**Project**: {PROJECT_NAME}
 **Version**: 1.0
 **Last Updated**: {DATE}
 

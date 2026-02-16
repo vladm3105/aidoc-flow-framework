@@ -1,6 +1,6 @@
 # Testing Strategy
 
-**Project**: AI Cloud Cost Monitoring
+**Project**: {PROJECT_NAME}
 **Version**: 1.0
 **Last Updated**: {DATE}
 
@@ -30,9 +30,9 @@ The project follows the standard testing pyramid with emphasis on fast, isolated
 | Component | Unit | Integration | E2E |
 |:----------|:-----|:------------|:----|
 | `{SERVICE_NAME}` | 80% | 15% | 5% |
-| `mcp-servers` | 70% | 25% | 5% |
-| `agents` | 60% | 30% | 10% |
-| `frontend` | 70% | 20% | 10% |
+| `{COMPONENT_1}` | 70% | 25% | 5% |
+| `{COMPONENT_2}` | 60% | 30% | 10% |
+| `{COMPONENT_3}` | 70% | 20% | 10% |
 
 ---
 
@@ -66,7 +66,7 @@ Lines excluded from coverage calculation:
 Staging mirrors production configuration except:
 - Reduced instance counts (min: 1 vs 2)
 - Reduced resource allocation (1 CPU vs 2)
-- Separate GCP project with isolated billing
+- Separate cloud project with isolated billing
 - Test data, not production data
 
 ---
@@ -79,7 +79,7 @@ Staging mirrors production configuration except:
 - Use `faker` for realistic but fake data
 
 ### Integration Tests
-- Use `testcontainers` for databases (Firestore emulator, PostgreSQL)
+- Use `testcontainers` for databases
 - Use `respx` for HTTP service mocking
 - Seed data via setup fixtures, clean up via teardown
 
@@ -97,7 +97,7 @@ Staging mirrors production configuration except:
 | Scenario | Mock? | Rationale |
 |:---------|:------|:----------|
 | External HTTP APIs | Yes | Network unreliability, rate limits |
-| GCP services in unit tests | Yes | Speed, isolation |
+| Cloud services in unit tests | Yes | Speed, isolation |
 | Database in unit tests | Yes | Speed, isolation |
 | Database in integration tests | No | Test real behavior |
 | Time-dependent logic | Yes | Reproducibility |
@@ -109,7 +109,7 @@ Staging mirrors production configuration except:
 |:---------|:--------|
 | Function/method mocking | `pytest-mock` (unittest.mock wrapper) |
 | HTTP request mocking | `respx` (for httpx) or `responses` (for requests) |
-| GCP service emulation | Firestore emulator, Pub/Sub emulator |
+| Cloud service emulation | Provider-specific emulators |
 | Time manipulation | `freezegun` |
 
 ### Mock Best Practices
@@ -180,3 +180,12 @@ Staging mirrors production configuration except:
 - [02-test-standards.md](02-test-standards.md) — How to write tests
 - [03-ci-pipeline-spec.md](03-ci-pipeline-spec.md) — CI workflow details
 - [06-security-testing.md](06-security-testing.md) — Security test requirements
+
+---
+
+## Template Usage
+
+Replace placeholders with your project values:
+- `{PROJECT_NAME}` — Your project name
+- `{SERVICE_NAME}` — Primary service name
+- `{COMPONENT_N}` — Component names (e.g., `backend`, `frontend`, `agents`)

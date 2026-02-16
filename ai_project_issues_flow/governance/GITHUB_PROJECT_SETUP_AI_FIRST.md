@@ -27,7 +27,7 @@ Phase 2: Project Board Setup ✅ COMPLETED
 
 Phase 3: Automation Setup ✅ COMPLETED
 [x] Create PROJECT_TOKEN secret
-[x] Create ELEVATED_PAT secret (for IPLAN-010 workflows)
+[x] Create ELEVATED_PAT secret (for phase-gated workflows)
 [x] Add GitHub Actions workflows (18 workflows)
 [x] Configure .github directory structure
 
@@ -57,10 +57,10 @@ Phase 5: Issue Population & Kickoff ✅ COMPLETED (Phase 1)
 
 | Component | Documented | Actual | Status |
 |:----------|:-----------|:-------|:------:|
-| Labels | 42 | 76 | ✅ Exceeds (incl. IPLAN-010 labels) |
+| Labels | 42 | 76 | ✅ Exceeds (incl. phase-gated labels) |
 | Milestones | 9 | 10 | ✅ Exceeds |
 | Custom Fields | 7 | 19 | ✅ Exceeds |
-| Workflows | 4 | 18 | ✅ Exceeds (incl. IPLAN-010 workflows) |
+| Workflows | 4 | 18 | ✅ Exceeds (incl. phase-gated workflows) |
 | Issue Templates | 2 | 9 | ✅ Exceeds |
 | MCP Servers | — | 6 | ✅ Active |
 | Open Issues | — | varies | ✅ 8 epics + phase tasks |
@@ -162,8 +162,8 @@ gh label create "ai:blocked" --color "b60205" --description "AI stuck - needs hu
 gh label create "ai:review-requested" --color "6f42c1" --description "AI work complete - PR ready for human review"
 gh label create "ai:human-required" --color "c5def5" --description "Task requires human implementation - not suitable for AI"
 
-# === AI IPLAN-010 Labels (7) ===
-gh label create "ai:development" --color "0e8a16" --description "Development issue (IPLAN-010)"
+# === AI Phase-Gated Labels (7) ===
+gh label create "ai:development" --color "0e8a16" --description "Development issue (phase-gated QA)"
 gh label create "ai:deployment" --color "1d76db" --description "Deployment issue (auto-created on PR merge)"
 gh label create "ai:qa-testing" --color "fbca04" --description "QA testing issue (auto-created for functional changes)"
 gh label create "ai:qa-passed" --color "0e8a16" --description "QA tests passed"
@@ -297,7 +297,7 @@ gh api repos/$GH_ORG/$GH_REPO/milestones -f title="AIOCTO - Phase 8: Security & 
 | Security Report | `security_report.md` | Security issues |
 | Cost Analysis | `cost_analysis.md` | Cost investigations |
 | MCP Server | `mcp_server.md` | MCP server development |
-| Development Issue (IPLAN-010) | `development_issue.md` | 4-stage QA workflow development issues |
+| Development Issue | `development_issue.md` | 4-stage QA workflow development issues |
 
 <details>
 <summary>Example: AI-Ready Feature Template (reference)</summary>
@@ -403,11 +403,11 @@ Size:
 
 </details>
 
-### 1.4.1 PR Template (IPLAN-010)
+### 1.4.1 PR Template
 
 **File**: `.github/PULL_REQUEST_TEMPLATE.md`
 
-The PR template is optimized for the IPLAN-010 4-stage QA workflow:
+The PR template is optimized for the 4-stage QA workflow:
 
 | Section | Purpose |
 |:--------|:--------|
@@ -675,24 +675,24 @@ mutation($projectId: ID!, $repoId: ID!) {
 | AI Review | `ai-review.yml` | Reusable AI PR review (Gemini) |
 | Agent Dispatch | `agent-dispatch.yml` | AI agent dispatch for issue work |
 
-**IPLAN-011 Deployment (7)**
+**Phase-Gated Deployment (7)**
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
-| Deploy Dev | `deploy-dev.yml` | Phase-gated dev deployment (IPLAN-011) |
-| Check All Phases | `check-all-phases-dev.yml` | Staging gate when all phases dev_deployed (IPLAN-011) |
+| Deploy Dev | `deploy-dev.yml` | Phase-gated dev deployment |
+| Check All Phases | `check-all-phases-dev.yml` | Staging gate when all phases dev_deployed |
 | Deploy Staging | `deploy-staging.yml` | Staging deployment (all phases complete) |
 | Deploy Prod | `deploy-prod.yml` | Production deployment (manual approval) |
 | Rollback Prod | `rollback-prod.yml` | Production rollback |
 | Create Deployment Issue | `create-deployment-issue.yml` | Auto-create deployment issues |
 | Check Phase Completion | `check-phase-completion.yml` | Phase completion checker |
 
-**Deprecated (IPLAN-011)**
+**Deprecated**
 | Workflow | File | Status |
 |:---------|:-----|:-------|
 | ~~Deploy PR~~ | `deploy-dev-pr.yml.disabled` | Deprecated — per-PR deploys removed |
 | ~~Cleanup PR Env~~ | `cleanup-pr-env.yml.disabled` | Deprecated — no longer needed |
 
-**IPLAN-010 QA Loop (3)**
+**QA Loop (3)**
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | Create QA Testing Issue | `create-qa-testing-issue.yml` | Auto-create QA testing issues |
@@ -712,7 +712,7 @@ mutation($projectId: ID!, $repoId: ID!) {
    gh secret set PROJECT_TOKEN --body "ghp_xxxxxxxxxxxx"
    ```
 
-### 3.2 Create ELEVATED_PAT Secret (IPLAN-010)
+### 3.2 Create ELEVATED_PAT Secret
 
 The `ELEVATED_PAT` allows workflows to push commits to protected branches (e.g., updating `governance/cicd/phase-deployments.json`).
 
@@ -1320,7 +1320,7 @@ ai:ready → ai:in-progress → ai:review-requested → (PR merge)
           ai:blocked (if stuck)
 ```
 
-**4-Stage Iterative QA Loop (IPLAN-010):**
+**4-Stage Iterative QA Loop:**
 ```
 Development (ai:development) → PR merge
      ├─→ Deployment (ai:deployment)     → staging deploy
@@ -1338,7 +1338,7 @@ Development (ai:development) → PR merge
                                     PRODUCTION ◀───────┘
 ```
 
-**Additional Labels for IPLAN-010:**
+**Additional Labels for QA Loop:**
 | Label | Description |
 |:------|:------------|
 | `ai:deployment` | Deployment issue (auto-created on PR merge) |
@@ -1349,7 +1349,7 @@ Development (ai:development) → PR merge
 | `iteration:1-3` | Bug fix iteration count |
 | `needs-human` | Max iterations exceeded |
 
-See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) and [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) for full details.
+See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) for full details.
 
 **Note:** `ai:approved`/`ai:rejected` labels are intentionally not used - PR state already indicates approval status.
 

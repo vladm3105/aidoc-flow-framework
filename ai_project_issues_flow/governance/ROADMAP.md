@@ -13,7 +13,7 @@
 - [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
 - [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) — 4-stage issue lifecycle (Development → Deployment → QA → Bug Fix)
-- [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) — AI-first phase-gated deployment workflow
+- [Implementation Plans](./plans/) — AI-first phase-gated deployment and other workflows
 
 ---
 
@@ -351,7 +351,7 @@ All phases AI-optimized (20 weeks total)
 
 ## Deployment & Testing Strategy
 
-This project uses a **phase-gated deployment model** with a **4-stage iterative QA loop** optimized for AI-first development. See [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) for full details.
+This project uses a **phase-gated deployment model** with a **4-stage iterative QA loop** optimized for AI-first development. See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) and [plans/](./plans/) for full details.
 
 ### Deployment Model
 

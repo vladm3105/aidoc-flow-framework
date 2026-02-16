@@ -57,19 +57,19 @@ The home repo serves as:
 │   │   ├── pr-merge-cleanup.yml # Set merged PR board status to Done
 │   │   ├── phase-transition.yml # Bulk phase status transitions
 │   │   ├── ai-review.yml        # Unified AI PR review
-│   │   ├── agent-dispatch.yml           # IPLAN-010: Dispatch issues to AI agents
-│   │   ├── deploy-dev.yml               # IPLAN-011: Phase-gated dev deployment
-│   │   ├── check-all-phases-dev.yml     # IPLAN-011: Staging gate (all phases dev_deployed)
+│   │   ├── agent-dispatch.yml           # Dispatch issues to AI agents
+│   │   ├── deploy-dev.yml               # Phase-gated dev deployment
+│   │   ├── check-all-phases-dev.yml     # Staging gate (all phases dev_deployed)
 │   │   ├── deploy-dev-pr.yml.disabled   # DEPRECATED: Per-PR dev environments
 │   │   ├── cleanup-pr-env.yml.disabled  # DEPRECATED: Cleanup PR environments
-│   │   ├── create-deployment-issue.yml  # IPLAN-010: Auto-create deployment issues
-│   │   ├── create-qa-testing-issue.yml  # IPLAN-010: Auto-create QA issues
-│   │   ├── check-phase-completion.yml   # IPLAN-010: Detect phase completion
-│   │   ├── deploy-staging.yml           # IPLAN-011: Unified staging deploy (all phases)
-│   │   ├── execute-qa-testing.yml       # IPLAN-010: Run QA test suite
-│   │   ├── create-bug-issue.yml         # IPLAN-010: Auto-create bug issues
-│   │   ├── deploy-prod.yml              # IPLAN-010: Production deployment
-│   │   └── rollback-prod.yml            # IPLAN-010: Production rollback
+│   │   ├── create-deployment-issue.yml  # Auto-create deployment issues
+│   │   ├── create-qa-testing-issue.yml  # Auto-create QA issues
+│   │   ├── check-phase-completion.yml   # Detect phase completion
+│   │   ├── deploy-staging.yml           # Unified staging deploy (all phases)
+│   │   ├── execute-qa-testing.yml       # Run QA test suite
+│   │   ├── create-bug-issue.yml         # Auto-create bug issues
+│   │   ├── deploy-prod.yml              # Production deployment
+│   │   └── rollback-prod.yml            # Production rollback
 │   ├── labeler.yml              # PR labeling rules
 │   ├── CODEOWNERS               # Auto-assign PR reviewers by file path
 │   ├── dependabot.yml           # Dependency updates

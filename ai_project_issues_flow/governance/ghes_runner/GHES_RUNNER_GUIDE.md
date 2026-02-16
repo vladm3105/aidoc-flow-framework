@@ -75,9 +75,9 @@ Runs inside a Docker container for isolation. Requires GHES CA certificate to be
 
 **When to use**: CI environments, shared servers, production-like isolation.
 
-### Option C: Cloud Run Worker Pool (Future — IPLAN-004)
+### Option C: Cloud Run Worker Pool (Future)
 
-Serverless runners on GCP with scale-to-zero autoscaling. See [IPLAN-004](../plans/IPLAN-004_ghes-runner-cloud-run.md).
+Serverless runners on GCP with scale-to-zero autoscaling. See implementation plans in [plans/](../plans/) directory.
 
 **When to use**: Production, multi-repo, cost-optimized long-term solution.
 
@@ -328,7 +328,7 @@ scripts/ghes-runner/
 | Current | Target | Trigger |
 |:--------|:-------|:--------|
 | Host runner | Docker runner | Need isolation; add `ghes-ca.crt` |
-| Host runner | Cloud Run | Multi-repo; see IPLAN-004 |
+| Host runner | Cloud Run | Multi-repo; see plans/ |
 | Docker runner | Cloud Run | Production deployment |
 
 When upgrading, deregister the old runner first:
@@ -340,7 +340,7 @@ scripts/ghes-runner/setup-local-runner.sh remove
 
 ## Related Documents
 
-- [IPLAN-004: Cloud Run Worker Pool](../plans/IPLAN-004_ghes-runner-cloud-run.md) — Production runner plan
+- [Implementation Plans](../plans/) — Production runner and other plans
 - [GITHUB_WORKFLOWS.md](../GITHUB_WORKFLOWS.md) — All workflow documentation
 - [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) — Project operational rules
 

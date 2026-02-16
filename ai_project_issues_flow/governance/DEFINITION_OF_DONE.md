@@ -66,7 +66,7 @@ A phase is **Done** when:
 - [ ] Governance document sync completed (see [GOVERNANCE_RULES.md §6](./GOVERNANCE_RULES.md#6-document-maintenance))
 - [ ] Integration with Platform repo is verified (if applicable)
 
-## Phase-Gated Deployment (IPLAN-010)
+## Phase-Gated Deployment
 
 ### Development Issue Complete
 A development issue (`ai:development`) is **Complete** when:

@@ -1,6 +1,6 @@
 # Environment Specification
 
-**Project**: AI Cloud Cost Monitoring
+**Project**: {PROJECT_NAME}
 **Version**: 1.0
 **Last Updated**: {DATE}
 
@@ -44,7 +44,7 @@ Dev receives incremental deployments; staging deploys only when complete:
 
 **Why**: Partial staging deployments don't make sense. Staging should always be a complete, production-like environment.
 
-**Reference**: [IPLAN-011](../../governance/plans/IPLAN-011_unified-phase-gated-deployment.md)
+**Reference**: See `governance/plans/` for deployment implementation plans.
 
 ---
 

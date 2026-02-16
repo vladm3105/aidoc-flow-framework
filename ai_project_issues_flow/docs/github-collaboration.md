@@ -4,34 +4,32 @@ Best practices for managing multiple repositories, nested projects, and GitHub i
 
 ## 1. Multiple Tied Repositories (The "Meta-Repo" Pattern)
 
-When working with related repositories (e.g., `ai-ops-monitoring` as the parent/umbrella and `{REPO_NAME}` as a component), you have two main strategies:
+When working with related repositories (e.g., a parent/umbrella repo and component repos), you have two main strategies:
 
 ### Strategy A: Loose Coupling (Recommended for Microservices)
 Treat each repo as independent. Use **GitHub Projects** to glue them together.
-- **Project Board**: Create a single board at the **Organization Level** (e.g., `{GITHUB_ORG}/projects/26`).
-- **Unified Views**: Add issues from both `ai-ops-monitoring` and `{REPO_NAME}` to this single board.
+- **Project Board**: Create a single board at the **Organization Level** (e.g., `{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}`).
+- **Unified Views**: Add issues from multiple repos to this single board.
 - **AI Workflow**:
   - When asking AI to plan, provide the **Project Board Context** (copy-paste the column status or relevant card details).
   - AI can help draft cross-repo integration tests but will need context from both codebases (you may need to checkout both locally).
 
-### Strategy B: Git Submodules (Deprecated)
-
-> **DEPRECATED**: This project has migrated to a monorepo structure. All components now live under `components/` in a single repository. The submodule workflow below is preserved for historical reference only.
-
-~~Use this if `{REPO_NAME}` must be built/deployed *inside* `ai-ops-monitoring`.~~
-
-**Current approach**: All component code lives in `components/` within the home repo. No submodule commands needed.
+### Strategy B: Monorepo (Recommended for Small Teams)
+Use a single repository with all components under `components/`.
+- **Branching**: Single branch covers all components
+- **CI/CD**: Single workflow runs on all changes
+- **Docs**: Component docs stay with components in `components/*/README.md`
 
 ## 2. Cross-Repo Project Structure (Epics & Features)
 
 **Yes, you can link multiple repos in a single Project.**
-GitHub Projects (V2) are organization-level. You can pull in issues from `repo-1`, `repo-2`, and `repo-3` into the same view.
+GitHub Projects (V2) are organization-level. You can pull in issues from multiple repos into the same view.
 
 ### What is an "Epic"?
-In GitHub, an **Epic** is simply a **parent tracking issue**. It represents a large body of work (e.g., "Implement Multi-Cloud Support") that is too big to be completed in a single pull request. It is broken down into smaller **Feature** or **Story** issues.
+In GitHub, an **Epic** is simply a **parent tracking issue**. It represents a large body of work that is too big to be completed in a single pull request. It is broken down into smaller **Feature** or **Story** issues.
 
 ### What is a "Feature"?
-A **Feature** is a tangible piece of value (e.g., "Add Azure Cost API integration"). It is small enough to be implemented by a developer in a few days but large enough to require testing. Features are broken down into **Tasks** or merged via a single Pull Request.
+A **Feature** is a tangible piece of value. It is small enough to be implemented by a developer in a few days but large enough to require testing. Features are broken down into **Tasks** or merged via a single Pull Request.
 
 ### Defining Your Own Tags (Labels)
 In GitHub, tags are called **Labels**. You can define any taxonomy you want.
@@ -45,26 +43,25 @@ In GitHub, tags are called **Labels**. You can define any taxonomy you want.
 Since GitHub doesn't have native "Epics", use **Tasklists** and **Labels** to simulate the hierarchy across repos:
 
 #### Scenario: Epic in Repo #1, Feature in Repo #2
-1.  **Create the Epic**: Create an Issue in **Repo #1** (e.g., `ai-ops-monitoring`) titled "Epic: Cloud Cost Integration".
+1.  **Create the Epic**: Create an Issue in **Repo #1** titled "Epic: {Epic Name}".
     -   Label: `Epic`
-    -   Add to Project #26.
-2.  **Create the Feature**: Create an Issue in **Repo #2** (e.g., `{REPO_NAME}`) titled "Feature: Azure Cost Collector".
+    -   Add to Project Board.
+2.  **Create the Feature**: Create an Issue in **Repo #2** titled "Feature: {Feature Name}".
     -   Label: `Feature`
-    -   Add to Project #26.
+    -   Add to Project Board.
 3.  **Link Them (Parent-Child)**:
     -   Open the **Epic** issue in Repo #1.
     -   Add a Tasklist item pasting the URL of the **Feature** issue from Repo #2.
-    -   *Result*: The Epic issue will show a progress bar (e.g., "1 of 5 tasks completed") tracking the status of the linked Feature issues, even though they are in different repos.
+    -   *Result*: The Epic issue will show a progress bar tracking the status of linked Feature issues, even across repos.
 
-### Customizing Project Columns ("Titles")
+### Customizing Project Columns
 In GitHub Projects, the columns (e.g., "Todo", "In Progress") are values of the **Status** field.
 To add or rename them:
-1.  **Open Project Settings**: Click the `▼` next to the active view (e.g., "Board") > **Field settings**.
+1.  **Open Project Settings**: Click the `▼` next to the active view > **Field settings**.
 2.  **Edit Status**: Click on the **Status** field.
 3.  **Add/Rename Options**:
     -   Click `+` to add a new option (e.g., "In Review", "QA").
     -   Click the pencil icon to rename an existing one.
-    -   *Result*: A new column appears on your board immediately.
 
 ### Adding Custom Fields
 If you need more than just Status (e.g., "Estimate", "Team"), you can add **Custom Fields**:
@@ -74,43 +71,43 @@ If you need more than just Status (e.g., "Estimate", "Team"), you can add **Cust
 4.  *Example*: Create a "Size" field (Single select: S, M, L) to track feature complexity.
 
 ### Project Board Setup (Best Practices)
--   **Group by "Repository"**: In Project #26, use the "Group by" feature to see swimlanes for each repo.
--   **Custom Field "Parent Epic"**: Create a text or iteration field in the Project to manually tag the Epic ID if you need filterable views (e.g., "Epic-101").
+-   **Group by "Repository"**: Use the "Group by" feature to see swimlanes for each repo.
+-   **Custom Field "Parent Epic"**: Create a text field to manually tag the Epic ID for filterable views.
 
 ## 3. Managing Issues with AI
 
 ### The "Issue-to-Plan" Pipeline
-1. **Source Issue**: `ai-ops-monitoring/issues/123`.
+1. **Source Issue**: `{GITHUB_ORG}/{REPO_NAME}/issues/{ISSUE_NUMBER}`.
 2. **AI Verification**: Ask AI to read the issue and create a **Task List** in `task.md`.
 3. **Implementation**: AI works on items in `task.md`.
-4. **Closing**: AI generates a PR description referencing the issue (`Fixes #123`).
+4. **Closing**: AI generates a PR description referencing the issue (`Fixes #{ISSUE_NUMBER}`).
 
 ### Synchronization Tips
-- **Labels**: Use strict labels (e.g., `component:cost-monitoring`) so AI can filter relevant issues.
-- **Context injection**: If an issue depends on another repo, paste the dependent issue's content into the AI chat. "I'm working on Issue A, which depends on Issue B (pasted below...)".
-
-## 3. Nested Repo Best Practices (Deprecated)
-
-> **DEPRECATED**: This project uses a monorepo structure. The advice below about nested repos is no longer applicable.
-
-With the monorepo approach, all components are in `components/` within a single repository:
-- **Branching**: Single branch covers all components
-- **CI/CD**: Single workflow runs on all changes
-- **Docs**: Component docs can stay with components in `components/*/README.md`
+- **Labels**: Use strict labels (e.g., `component:{component-name}`) so AI can filter relevant issues.
+- **Context injection**: If an issue depends on another repo, paste the dependent issue's content into the AI chat.
 
 ## 4. AI Prompting Patterns
 
 **Scenario: Updating a shared interface**
-> "I need to update the `AgentProtocol` interface and implement it across multiple components. Please:
-> 1. Plan the interface change in `components/agents/`.
+> "I need to update the `{InterfaceName}` interface and implement it across multiple components. Please:
+> 1. Plan the interface change in `components/{component}/`.
 > 2. Update all dependent components in the monorepo.
 > 3. Verify no breaking changes across the codebase."
 
 **Scenario: Project Board Management**
-> "Here is the text dump of our refined backlog for Project 26. Please summarize the high-priority items for 'Cost Monitoring' and update my local `task.md`."
+> "Here is the text dump of our refined backlog for Project {PROJECT_BOARD_NUMBER}. Please summarize the high-priority items for '{Component Name}' and update my local `task.md`."
 
 ## 5. Automation (GitHub Actions)
 
 Use GitHub Actions to reduce manual syncing:
-- **Auto-add to Project**: Workflow that adds every new issue in `{REPO_NAME}` to Project 26.
-- **Label Syncer**: If an issue is labeled `bug` in a child repo, add `bug` to the tracking issue in the parent repo (if using tracking issues).
+- **Auto-add to Project**: Workflow that adds every new issue in `{REPO_NAME}` to the Project Board.
+- **Label Syncer**: If an issue is labeled `bug` in a child repo, auto-sync the label to tracking issues.
+
+---
+
+## Template Usage
+
+This document uses placeholder variables from [CONFIG.md](../CONFIG.md):
+- `{GITHUB_ORG}` — Your GitHub organization
+- `{REPO_NAME}` — Repository name
+- `{PROJECT_BOARD_NUMBER}` — GitHub Project V2 board number

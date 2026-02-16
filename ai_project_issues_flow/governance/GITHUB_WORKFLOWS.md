@@ -18,21 +18,21 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 | [PR Merge Cleanup](#pr-merge-cleanup-workflow) | `pr-merge-cleanup.yml` | PR closed | Set PR board status to Done |
 | [Phase Transition](#phase-transition-workflow) | `phase-transition.yml` | Manual dispatch | Bulk phase status transitions |
 | [AI PR Review](#ai-pr-review-workflow) | `ai-review.yml` | PR opened/synced/ready + workflow_call | Unified AI code review ({AI_TOOL_NAME} Code CLI) |
-| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch issues to AI agents (IPLAN-010) |
-| [Deploy to Dev](#deploy-to-dev-workflow) | `deploy-dev.yml` | Phase complete | Phase-gated dev deployment with smoke tests (IPLAN-011) |
-| [Check All Phases Dev](#check-all-phases-dev-workflow) | `check-all-phases-dev.yml` | After dev deploy | Check if all phases dev_deployed, trigger staging (IPLAN-011) |
-| ~~Deploy PR Environment~~ | `deploy-dev-pr.yml.disabled` | — | **DEPRECATED** (IPLAN-011) |
-| ~~Cleanup PR Environment~~ | `cleanup-pr-env.yml.disabled` | — | **DEPRECATED** (IPLAN-011) |
-| [Create Deployment Issue](#create-deployment-issue-workflow) | `create-deployment-issue.yml` | PR merged | Auto-create deployment issues (IPLAN-010) |
-| [Create QA Testing Issue](#create-qa-testing-issue-workflow) | `create-qa-testing-issue.yml` | PR merged | Auto-create QA issues for functional changes (IPLAN-010) |
-| [Check Phase Completion](#check-phase-completion-workflow) | `check-phase-completion.yml` | Schedule + manual | Hourly check for phase completion (IPLAN-010) |
-| [Execute QA Testing](#execute-qa-testing-workflow) | `execute-qa-testing.yml` | Deployments complete + schedule | Run QA tests on staging (IPLAN-010) |
-| [Create Bug Issue](#create-bug-issue-workflow) | `create-bug-issue.yml` | QA failure | Create bug issues from test failures (IPLAN-010) |
-| [Deploy to Staging](#deploy-to-staging-workflow) | `deploy-staging.yml` | Phase complete | Phase-gated staging deployment (IPLAN-010) |
-| [Deploy to Production](#deploy-to-production-workflow) | `deploy-prod.yml` | Manual dispatch | Gradual production rollout (IPLAN-010) |
-| [Rollback Production](#rollback-production-workflow) | `rollback-prod.yml` | Manual dispatch | Multi-step production rollback (IPLAN-010) |
+| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch issues to AI agents  |
+| [Deploy to Dev](#deploy-to-dev-workflow) | `deploy-dev.yml` | Phase complete | Phase-gated dev deployment with smoke tests  |
+| [Check All Phases Dev](#check-all-phases-dev-workflow) | `check-all-phases-dev.yml` | After dev deploy | Check if all phases dev_deployed, trigger staging  |
+| ~~Deploy PR Environment~~ | `deploy-dev-pr.yml.disabled` | — | **DEPRECATED**  |
+| ~~Cleanup PR Environment~~ | `cleanup-pr-env.yml.disabled` | — | **DEPRECATED**  |
+| [Create Deployment Issue](#create-deployment-issue-workflow) | `create-deployment-issue.yml` | PR merged | Auto-create deployment issues  |
+| [Create QA Testing Issue](#create-qa-testing-issue-workflow) | `create-qa-testing-issue.yml` | PR merged | Auto-create QA issues for functional changes  |
+| [Check Phase Completion](#check-phase-completion-workflow) | `check-phase-completion.yml` | Schedule + manual | Hourly check for phase completion  |
+| [Execute QA Testing](#execute-qa-testing-workflow) | `execute-qa-testing.yml` | Deployments complete + schedule | Run QA tests on staging  |
+| [Create Bug Issue](#create-bug-issue-workflow) | `create-bug-issue.yml` | QA failure | Create bug issues from test failures  |
+| [Deploy to Staging](#deploy-to-staging-workflow) | `deploy-staging.yml` | Phase complete | Phase-gated staging deployment  |
+| [Deploy to Production](#deploy-to-production-workflow) | `deploy-prod.yml` | Manual dispatch | Gradual production rollout  |
+| [Rollback Production](#rollback-production-workflow) | `rollback-prod.yml` | Manual dispatch | Multi-step production rollback  |
 
-> **Note**: Per-PR deployments (`deploy-dev-pr.yml`) have been deprecated as of IPLAN-011. The project now uses phase-gated deployments via `deploy-dev.yml` → `check-all-phases-dev.yml` → `deploy-staging.yml`.
+> **Note**: Per-PR deployments (`deploy-dev-pr.yml`) have been deprecated. The project now uses phase-gated deployments via `deploy-dev.yml` → `check-all-phases-dev.yml` → `deploy-staging.yml`.
 
 ---
 
@@ -551,7 +551,7 @@ For architecture and review policy details, see [governance/AI_PR_Review/README.
 
 **File**: `.github/workflows/deploy-dev.yml`
 
-Phase-gated deployment to dev environment. Each phase deploys independently when its issues complete. Implements IPLAN-011 unified deployment model.
+Phase-gated deployment to dev environment. Each phase deploys independently when its issues complete.
 
 ### Triggers
 
@@ -617,7 +617,7 @@ permissions:
 
 **File**: `.github/workflows/check-all-phases-dev.yml`
 
-Checks if all 8 phases are `dev_deployed` and triggers staging deployment when complete. Implements IPLAN-011 staging gate.
+Checks if all 8 phases are `dev_deployed` and triggers staging deployment when complete.
 
 ### Triggers
 
@@ -662,7 +662,7 @@ permissions:
 
 **File**: `.github/workflows/deploy-staging.yml`
 
-Deploys the complete application to staging when ALL 8 phases are `dev_deployed`. Implements IPLAN-011 unified deployment model — staging is never partial.
+Deploys the complete application to staging when ALL 8 phases are `dev_deployed`. Staging is never partial.
 
 ### Triggers
 
@@ -928,9 +928,9 @@ scripts/project_setup/gcp/setup-environments.sh
 
 ---
 
-## IPLAN-010 Workflows (Phase-Gated Deployment)
+## Phase-Gated Deployment Workflows
 
-The following workflows implement the AI-first phase-gated deployment model with 4-stage iterative QA loop. See [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) and [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) for architecture details.
+The following workflows implement the AI-first phase-gated deployment model with 4-stage iterative QA loop. See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) for architecture details. Implementation plans are available in the [plans/](./plans/) directory.
 
 ### Agent Dispatch Workflow
 
@@ -949,7 +949,7 @@ The following workflows implement the AI-first phase-gated deployment model with
 
 **File**: `.github/workflows/deploy-dev-pr.yml.disabled`
 
-> **DEPRECATED**: As of IPLAN-011, per-PR ephemeral deployments have been replaced by phase-gated dev deployments. See [Deploy to Dev Workflow](#deploy-to-dev-workflow).
+> **DEPRECATED**: Per-PR ephemeral deployments have been replaced by phase-gated dev deployments. See [Deploy to Dev Workflow](#deploy-to-dev-workflow).
 
 | Setting | Value |
 |:--------|:------|
@@ -963,7 +963,7 @@ The following workflows implement the AI-first phase-gated deployment model with
 
 **File**: `.github/workflows/cleanup-pr-env.yml.disabled`
 
-> **DEPRECATED**: No longer needed since per-PR ephemeral deployments are removed. See [IPLAN-011](./plans/IPLAN-011_unified-phase-gated-deployment.md).
+> **DEPRECATED**: No longer needed since per-PR ephemeral deployments are removed.
 
 | Setting | Value |
 |:--------|:------|
@@ -1168,9 +1168,9 @@ Before first deployment, complete these steps:
 | 4.2 | {DATE} | Added Deployment Requirements section: container build requirements, health check specification, deployment architecture, first-time setup checklist |
 | 4.1 | {DATE} | Added ELEVATED_PAT documentation: creation steps, security notes, usage summary. Updated Required Secrets Summary with IPLAN-010 secrets (ELEVATED_PAT, WIF_CREDENTIALS_*, TEAMS_WEBHOOK). Removed PagerDuty secrets. |
 | 4.0 | {DATE} | Added IPLAN-010 phase-gated deployment workflows: agent-dispatch, deploy-dev-pr, cleanup-pr-env, create-deployment-issue, create-qa-testing-issue, check-phase-completion, execute-qa-testing, create-bug-issue, rollback-prod. Deprecated deploy-dev.yml (replaced by deploy-dev-pr.yml). |
-| 3.3 | {DATE} | Added deployment workflows: deploy-dev.yml, deploy-staging.yml, deploy-prod.yml (IPLAN-009) |
+| 3.3 | {DATE} | Added deployment workflows: deploy-dev.yml, deploy-staging.yml, deploy-prod.yml  |
 | 3.2 | {DATE} | Consolidated ai-review-reusable.yml into ai-review.yml — single unified workflow for both direct triggers and workflow_call |
-| 3.1 | {DATE} | Added `issues: write` permission and conclusion comment + PR label steps to AI PR Review (IPLAN-006) |
+| 3.1 | {DATE} | Added `issues: write` permission and conclusion comment + PR label steps to AI PR Review  |
 | 3.0 | {DATE} | Remove 5 workflows (bulk-add, codeql, pr-labeler, stale, test-runner); rewrite CI and Release to zero marketplace actions; update AI review to {AI_TOOL_NAME} Code CLI; update secrets summary |
 | 2.3 | {DATE} | CI: add permissions block, fix skip-ci for PRs, remove failure suppression; AI review: add GH_HOST for GHES diff fetch, add caller permissions; fix phase-transition subshell bug; clean up unused pagination vars; fix stale schedule to EST; fix release changelog fallback; remove deprecated pr-labeler repo-token |
 | 2.2 | {DATE} | Add AI PR Review and AI PR Review (Reusable) workflow sections, WIF secrets, review script config files, AI review troubleshooting |

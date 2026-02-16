@@ -1,7 +1,7 @@
 # AI Issue Lifecycle
 
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
-**Related**: [IPLAN-010](plans/IPLAN-010_ai-first-phase-gated-deployment.md) — AI-First Phase-Gated Deployment
+**Related**: See `governance/plans/` for implementation plans (IPLAN documents)
 
 This document describes how GitHub issues flow through the AI-first development workflow, from creation to deployment.
 
@@ -205,7 +205,7 @@ https://{GITHUB_HOST}/.../issues/100
 │  3. AI posts review comments and applies ai:review-passed/failed label        │
 │  4. Human reviewer approves or requests changes                                 │
 │                                                                                 │
-│  NOTE: Per-PR dev deployments are deprecated (IPLAN-011).                      │
+│  NOTE: Per-PR dev deployments are deprecated.                                  │
 │  Dev deployment now occurs at phase completion, not per-PR.                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -370,7 +370,7 @@ Implement cost alerts
 
 ---
 
-### Stage 8.5: Dev Deployment (Per-Phase) — IPLAN-011
+### Stage 8.5: Dev Deployment (Per-Phase)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -395,7 +395,7 @@ Implement cost alerts
 
 ---
 
-### Stage 9: Staging Deployment (Automated) — IPLAN-011
+### Stage 9: Staging Deployment (Automated)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -889,7 +889,7 @@ When multiple AI Agents work in parallel, `check_conflicts.py` prevents merge co
 
 ## Related Documents
 
-- [IPLAN-010](plans/IPLAN-010_ai-first-phase-gated-deployment.md) — Implementation plan
+- [Implementation Plans](plans/) — IPLAN documents for deployment workflows
 - [GOVERNANCE_RULES.md](GOVERNANCE_RULES.md) — AI workflow rules
 - [GITHUB_WORKFLOWS.md](GITHUB_WORKFLOWS.md) — Workflow documentation
 - [AI_AGENT_REVIEW_WORKFLOW.md](AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) — PR review process

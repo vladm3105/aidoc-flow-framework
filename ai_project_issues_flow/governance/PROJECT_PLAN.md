@@ -193,7 +193,7 @@ graph TD
                                                    +--- 1.10 Release
 ```
 
-> _Corrected per [IPLAN-001](plans/IPLAN-001_phase1-issue-review.md): 1.2 depends on 1.0a (not 1.1). 1.1 and 1.2 are parallel. All functional issues block 1.9._
+> _Corrected per implementation plan review: 1.2 depends on 1.0a (not 1.1). 1.1 and 1.2 are parallel. All functional issues block 1.9._
 
 #### Task Details
 
@@ -227,7 +227,7 @@ All estimates include **20% buffer** for reviews, test deployment, and changes.
 
 #### Daily Schedule
 
-> _Schedule revised per [IPLAN-001](plans/IPLAN-001_phase1-issue-review.md) §4: #28 moved to Day 1 (BigQuery needs 24h data population). #22/#23 parallelized on Day 2._
+> _Schedule revised per implementation plan review: #28 moved to Day 1 (BigQuery needs 24h data population). #22/#23 parallelized on Day 2._
 
 ##### Day 1 (Mon Feb 24): Repository + Infrastructure
 
@@ -1018,7 +1018,7 @@ For AI-assisted time estimation methodology, speedup factors, buffer rationale, 
 
 ## 13. Deployment Model
 
-This project uses **phase-gated deployment** with a 4-stage iterative QA loop. See [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) for full details.
+This project uses **phase-gated deployment** with a 4-stage iterative QA loop. See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) and [plans/](./plans/) for full details.
 
 ### Deployment Flow
 

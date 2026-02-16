@@ -60,7 +60,7 @@
 4. **Update** all documentation references (25+ files)
 5. **Archive** original component repo (read-only, do not delete)
 
-See: [IPLAN-008_monorepo-migration.md](plans/IPLAN-008_monorepo-migration.md)
+See: [Implementation Plans](plans/) for migration details.
 
 ---
 
@@ -73,4 +73,4 @@ See: [IPLAN-008_monorepo-migration.md](plans/IPLAN-008_monorepo-migration.md)
 ## References
 
 - [REPOSITORY_STRATEGY.md](REPOSITORY_STRATEGY.md) — Updated strategy document
-- [IPLAN-008_monorepo-migration.md](plans/IPLAN-008_monorepo-migration.md) — Detailed migration plan
+- [Implementation Plans](plans/) — Detailed migration and other plans

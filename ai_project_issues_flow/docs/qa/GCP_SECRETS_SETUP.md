@@ -1,6 +1,6 @@
 # GCP Secrets Setup Guide
 
-This document explains how to configure GCP-related secrets for the phase-gated deployment workflows (IPLAN-011).
+This document explains how to configure GCP-related secrets for the phase-gated deployment workflows.
 
 ---
 
@@ -413,7 +413,7 @@ gcloud artifacts repositories describe {PROJECT_PREFIX} \
 
 ## Related Documents
 
-- [IPLAN-011: Unified Phase-Gated Deployment](../../governance/plans/IPLAN-011_unified-phase-gated-deployment.md)
+- [Deployment Plans](../../governance/plans/) — Implementation plans for deployment
 - [GITHUB_WORKFLOWS.md](../../governance/GITHUB_WORKFLOWS.md)
 - [setup-wif.sh](../../scripts/project_setup/gcp/setup-wif.sh)
 - [setup-environments.sh](../../scripts/project_setup/gcp/setup-environments.sh)

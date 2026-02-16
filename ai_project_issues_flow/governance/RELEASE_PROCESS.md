@@ -69,7 +69,7 @@ Use these tags:
 
 ---
 
-## Phase-Gated Deployment (IPLAN-010)
+## Phase-Gated Deployment
 
 This project uses **phase-gated deployment** instead of continuous deployment. Releases are grouped by project phases (1-8) and deployed together after QA validation.
 
@@ -115,4 +115,4 @@ Production rollback is handled by `rollback-prod.yml`:
 2. Verify health checks pass
 3. Update tracking file
 
-See [IPLAN-010](./plans/IPLAN-010_ai-first-phase-gated-deployment.md) for full workflow details.
+See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) and [plans/](./plans/) for full workflow details.

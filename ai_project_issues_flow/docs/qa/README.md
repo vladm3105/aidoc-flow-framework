@@ -1,6 +1,6 @@
 # Quality Assurance Documentation
 
-This directory contains QA strategy, testing standards, and deployment specifications for the AI Cloud Cost Monitoring platform.
+This directory contains QA strategy, testing standards, and deployment specifications for {PROJECT_NAME}.
 
 ## Document Index
 
@@ -55,4 +55,9 @@ pytest tests/unit/test_models.py -v
 - [GOVERNANCE_RULES.md §8](../../governance/GOVERNANCE_RULES.md) — QA & Deployment rules
 - [DEFINITION_OF_DONE.md](../../governance/DEFINITION_OF_DONE.md) — Testing checklist items
 - [GITHUB_WORKFLOWS.md](../../governance/GITHUB_WORKFLOWS.md) — CI/CD workflow documentation
-- [IPLAN-009](../../governance/plans/IPLAN-009_qa-deployment-pipelines.md) — Implementation plan
+
+---
+
+## Template Usage
+
+Replace `{PROJECT_NAME}` with your project name. See [CONFIG.md](../../CONFIG.md) for placeholder reference.

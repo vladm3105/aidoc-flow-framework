@@ -152,7 +152,7 @@ ai:ready → ai:in-progress → ai:review-requested → (PR merge)
 
 ### Issue Type Labels (4 types)
 
-The 4-stage iterative QA loop (IPLAN-010) uses these issue type labels:
+The 4-stage iterative QA loop uses these issue type labels:
 
 | Label | Color | Purpose | Created By |
 |:------|:------|:--------|:-----------|

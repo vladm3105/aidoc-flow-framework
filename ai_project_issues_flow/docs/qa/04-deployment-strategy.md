@@ -1,6 +1,6 @@
 # Deployment Strategy
 
-**Project**: AI Cloud Cost Monitoring
+**Project**: {PROJECT_NAME}
 **Version**: 1.0
 **Last Updated**: {DATE}
 
@@ -36,7 +36,7 @@ This project uses an **AI-first development approach** where AI agents create PR
 
 **Production**: Requires manual trigger with deployment window enforcement (Mon-Fri 10am-4pm EST).
 
-**Reference**: [IPLAN-011](../../governance/plans/IPLAN-011_unified-phase-gated-deployment.md)
+**Reference**: See `governance/plans/` for deployment implementation plans.
 
 ---
 

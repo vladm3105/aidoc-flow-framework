@@ -181,4 +181,4 @@ This project migrated from a polyrepo (Git submodules) structure to a monorepo o
 
 **Rationale**: AI-agent-driven development with a small team requires single git context, single-PR workflows, and atomic cross-component commits. See [REPO_STRUCTURE_DECISION_MATRIX.md](./REPO_STRUCTURE_DECISION_MATRIX.md) for the full decision analysis.
 
-**Migration plan**: [IPLAN-008_monorepo-migration.md](./plans/IPLAN-008_monorepo-migration.md)
+**Migration plan**: See [plans/](./plans/) directory for migration implementation plans.
