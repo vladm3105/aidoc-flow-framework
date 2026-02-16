@@ -1,6 +1,25 @@
+---
+title: "SDD Project Model v2.2 - Implementation Plan"
+tags:
+  - framework-guide
+  - shared-architecture
+  - project-management
+  - sdd-workflow
+  - implementation-plan
+custom_fields:
+  document_type: implementation-plan
+  artifact_type: IPLAN
+  layer: 12
+  priority: shared
+  development_status: active
+  location: ai_dev_ssd_flow/PROJECT/IMPLEMENTATION_PLAN.md
+  created: 2026-02-16
+  updated: 2026-02-16
+---
+
 # SDD Project Model v2.2 - Implementation Plan
 
-**Version**: 2.1
+**Version**: 2.2
 **Created**: 2026-02-16
 **Updated**: 2026-02-16
 **Source**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
@@ -941,3 +960,4 @@ python scripts/raci_generator.py --output docs/RACI_MATRIX.md
 | 1.0 | 2026-02-16 | AI Assistant | Initial implementation plan |
 | 2.0 | 2026-02-16 | AI Assistant | Fixed all gaps: updated paths, added SPEC-07/08/09/10, Phase 0, Project V2 sync, 4-Gate system, Sprint 0 automation, RACI generator, layer selector, sample fixtures, expanded TASKS breakdown |
 | 2.1 | 2026-02-16 | AI Assistant | Added TASKS-05.02.05/06 for raci_generator and layer_selector tests; updated traceability matrix; clarified Phase 5 DoD; ensured project-agnostic language |
+| 2.2 | 2026-02-16 | AI Assistant | Added YAML frontmatter metadata; aligned version with PROJECT_MODEL.md v2.2 |
