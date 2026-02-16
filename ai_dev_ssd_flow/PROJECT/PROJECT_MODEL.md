@@ -1194,7 +1194,7 @@ These common mistakes undermine the hybrid model's effectiveness:
 
 | # | Task | Owner | Deliverable | Dependencies |
 |---|------|-------|-------------|--------------|
-| 1.1 | Review and approve Hybrid Model v2.1 | Project Lead | Signed-off document | None |
+| 1.1 | Review and approve Hybrid Model v2.2 | Project Lead | Signed-off document | None |
 | 1.2 | Create `scripts/tasks_to_github.py` | Developer | Working automation script | 1.1 |
 | 1.3 | Create GitHub Issue template | Developer | `.github/ISSUE_TEMPLATE/sdd-task.yml` | 1.1 |
 | 1.4 | Set up validator CI integration | DevOps | `.github/workflows/sdd-validation.yml` | 1.1 |
@@ -1358,7 +1358,7 @@ python scripts/extract_tags.py --source docs/
 
 ```text
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                      HYBRID DEVELOPMENT MODEL v2.1                            ║
+║                      HYBRID DEVELOPMENT MODEL v2.2                            ║
 ║              Sprint-Based Governance + Document Flow Framework                 ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                               ║
@@ -1473,7 +1473,7 @@ flowchart TB
 
 | Aspect | Description |
 |--------|-------------|
-| **Model** | Hybrid v2.1: Sprint Governance + SDD |
+| **Model** | Hybrid v2.2: Sprint Governance + SDD |
 | **Tiers** | 1: Strategic (L1-5), 2: Integration (L6-11), 3: Execution (Sprints) |
 | **Sprint Length** | 2 weeks |
 | **Sprint 0** | 1 week for research + Tier 1 artifacts |
