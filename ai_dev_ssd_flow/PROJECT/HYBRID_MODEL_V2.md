@@ -103,7 +103,7 @@ This document defines a **hybrid development methodology** that integrates:
 | Component | Purpose | Setup Reference |
 |-----------|---------|-----------------|
 | GitHub Repository | Issue tracking, PR workflow | Standard |
-| GitHub Project (V2) | Sprint board, phase tracking | `ai_project_flow/governance/GITHUB_PROJECT_SETUP_AI_FIRST.md` |
+| GitHub Project (V2) | Sprint board, phase tracking | `ai_project_issues_flow/governance/GITHUB_PROJECT_SETUP_AI_FIRST.md` |
 | Claude Code / Skills | SDD artifact generation | `.claude/skills/` |
 | Python 3.10+ | Validation scripts | `requirements.txt` |
 | CI/CD Pipeline | Validator integration | `.github/workflows/` |
@@ -114,8 +114,8 @@ This document defines a **hybrid development methodology** that integrates:
 |----------|--------|-------------------|
 | BRD-00_index.md | Required | Create using `/doc-brd` skill |
 | ADR folder structure | Required | Create `docs/05_ADR/` |
-| TASKS template | Required | Copy from `ai_dev_flow/11_TASKS/` (SDD) or use IPLANs from `ai_project_flow/governance/plans/` |
-| CHG template | Required | Copy from `ai_dev_flow/CHG/` (SDD projects only) |
+| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) or use IPLANs from `ai_project_issues_flow/governance/plans/` |
+| CHG template | Required | Copy from `ai_dev_ssd_flow/CHG/` (SDD projects only) |
 
 ### 2.3 Team Readiness
 
@@ -132,7 +132,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.1 Sprint-Based Governance
 
-**Source Reference**: `ai_project_flow/governance/`
+**Source Reference**: `ai_project_issues_flow/governance/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -174,7 +174,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.2 Document Flow Framework (SDD)
 
-**Source Reference**: `ai_dev_flow/`
+**Source Reference**: `ai_dev_ssd_flow/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -218,7 +218,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.3 AI Project Flow
 
-**Source Reference**: `ai_project_flow/`
+**Source Reference**: `ai_project_issues_flow/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -507,7 +507,7 @@ flowchart TB
 
 **CHG Document Location**: `docs/CHG/CHG-NN_{slug}/`
 
-**Reference**: `ai_dev_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `ai_project_flow/governance/plans/` (AI Project Flow)
+**Reference**: `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `ai_project_issues_flow/governance/plans/` (AI Project Flow)
 
 ---
 
@@ -1234,37 +1234,37 @@ These common mistakes undermine the hybrid model's effectiveness:
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| MVP Workflow Guide | `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` | SDD workflow reference |
-| ID Naming Standards | `ai_dev_flow/ID_NAMING_STANDARDS.md` | Artifact naming conventions |
-| Traceability Guide | `ai_dev_flow/TRACEABILITY.md` | Cumulative tagging rules |
-| CHG Guide | `ai_dev_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` | Change management procedures |
-| 4-Gate System | `ai_dev_flow/CHG/gates/` | Gate validation rules |
-| TASKS Template | `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md` | Task breakdown format |
+| MVP Workflow Guide | `ai_dev_ssd_flow/MVP_WORKFLOW_GUIDE.md` | SDD workflow reference |
+| ID Naming Standards | `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` | Artifact naming conventions |
+| Traceability Guide | `ai_dev_ssd_flow/TRACEABILITY.md` | Cumulative tagging rules |
+| CHG Guide | `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` | Change management procedures |
+| 4-Gate System | `ai_dev_ssd_flow/CHG/gates/` | Gate validation rules |
+| TASKS Template | `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md` | Task breakdown format |
 
 ### AI Project Flow
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Framework Overview | `ai_project_flow/README.md` | Quick start and structure |
-| Configuration Guide | `ai_project_flow/CONFIG.md` | 47+ placeholder variables |
-| Setup Guide | `ai_project_flow/SETUP_GUIDE.md` | Step-by-step customization |
-| Cloud Guide | `ai_project_flow/CLOUD_GUIDE.md` | GCP/AWS/Azure setup |
-| Governance Rules | `ai_project_flow/governance/GOVERNANCE_RULES.md` | AI-first governance |
-| IPLAN Templates | `ai_project_flow/governance/plans/` | Implementation plan templates |
-| GitHub Workflows | `ai_project_flow/governance/GITHUB_WORKFLOWS.md` | 18 workflow documentation |
-| AI PR Review | `ai_project_flow/governance/AI_PR_Review/` | AI code review setup |
+| Framework Overview | `ai_project_issues_flow/README.md` | Quick start and structure |
+| Configuration Guide | `ai_project_issues_flow/CONFIG.md` | 47+ placeholder variables |
+| Setup Guide | `ai_project_issues_flow/SETUP_GUIDE.md` | Step-by-step customization |
+| Cloud Guide | `ai_project_issues_flow/CLOUD_GUIDE.md` | GCP/AWS/Azure setup |
+| Governance Rules | `ai_project_issues_flow/governance/GOVERNANCE_RULES.md` | AI-first governance |
+| IPLAN Templates | `ai_project_issues_flow/governance/plans/` | Implementation plan templates |
+| GitHub Workflows | `ai_project_issues_flow/governance/GITHUB_WORKFLOWS.md` | 18 workflow documentation |
+| AI PR Review | `ai_project_issues_flow/governance/AI_PR_Review/` | AI code review setup |
 
 ### Sprint Governance (AI Project Flow)
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Governance Rules | `ai_project_flow/governance/GOVERNANCE_RULES.md` | Sprint governance policies |
-| Project Plan | `ai_project_flow/governance/PROJECT_PLAN.md` | Phase and task breakdown |
-| Definition of Done | `ai_project_flow/governance/DEFINITION_OF_DONE.md` | Completion criteria |
-| AI Issue Lifecycle | `ai_project_flow/governance/AI_ISSUE_LIFECYCLE.md` | AI label workflow |
-| Branching Strategy | `ai_project_flow/governance/BRANCHING_STRATEGY.md` | Git branching rules |
-| Release Process | `ai_project_flow/governance/RELEASE_PROCESS.md` | Release workflow |
-| Roadmap | `ai_project_flow/governance/ROADMAP.md` | Project phases and timeline |
+| Governance Rules | `ai_project_issues_flow/governance/GOVERNANCE_RULES.md` | Sprint governance policies |
+| Project Plan | `ai_project_issues_flow/governance/PROJECT_PLAN.md` | Phase and task breakdown |
+| Definition of Done | `ai_project_issues_flow/governance/DEFINITION_OF_DONE.md` | Completion criteria |
+| AI Issue Lifecycle | `ai_project_issues_flow/governance/AI_ISSUE_LIFECYCLE.md` | AI label workflow |
+| Branching Strategy | `ai_project_issues_flow/governance/BRANCHING_STRATEGY.md` | Git branching rules |
+| Release Process | `ai_project_issues_flow/governance/RELEASE_PROCESS.md` | Release workflow |
+| Roadmap | `ai_project_issues_flow/governance/ROADMAP.md` | Project phases and timeline |
 
 ---
 

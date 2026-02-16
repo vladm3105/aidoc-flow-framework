@@ -15,7 +15,7 @@
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/ai_dev_flow/ → framework
+# ✓ Symlinks .templates/ai_dev_ssd_flow/ → framework
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
 #
@@ -53,7 +53,7 @@ done
 │   └── CLAUDE.md            ✓ Tracked in git (optional)
 │
 ├── .templates/
-│   └── ai_dev_flow/         → /opt/data/docs_flow_framework/ai_dev_flow/
+│   └── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 │
 ├── scripts/
 │   ├── validate/            → /opt/data/docs_flow_framework/scripts/
@@ -133,7 +133,7 @@ ls /opt/data/docs_flow_framework/.claude/skills/
 
 ```bash
 # View templates
-ls /opt/data/docs_flow_framework/ai_dev_flow/
+ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 
 # Template directories (11 artifacts):
 # BRD/, PRD/, EARS/, BDD/, ADR/, SYS/, REQ/,
@@ -187,7 +187,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 
 ```bash
 # Edit in framework
-vim /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-TEMPLATE.md
+vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/REQ/REQ-TEMPLATE.md
 
 # Changes immediately available to ALL projects
 ```
@@ -238,7 +238,7 @@ cd /opt/data/project_name
 ### Verify Template Access
 
 ```bash
-ls -la /opt/data/project_name/.templates/ai_dev_flow/BRD/
+ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/BRD/
 # Should list: BRD-TEMPLATE.md, BRD-template-2.md, etc.
 ```
 
@@ -355,10 +355,10 @@ git commit -m "Add project-specific skill"
 
 ```bash
 # 1. Access template via symlink
-cat /opt/data/project_name/.templates/ai_dev_flow/BRD/BRD-TEMPLATE.md
+cat /opt/data/project_name/.templates/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md
 
 # 2. Copy to project docs
-cp .templates/ai_dev_flow/BRD/BRD-TEMPLATE.md \
+cp .templates/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md \
    docs/BRD/BRD-001_my_requirements.md
 
 # 3. Edit project copy
@@ -383,7 +383,7 @@ vim docs/BRD/BRD-001_my_requirements.md
 
 ```bash
 # Run MVP Autopilot with TDD mode
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -392,14 +392,14 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --report markdown
 
 # Run with Change Management mode
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --chg-mode \
   --chg-level L2 \
   --auto-fix
 
 # Run validation only
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --validate-gates
 ```

@@ -17,7 +17,7 @@
 ```
 /opt/data/
 ├── docs_flow_framework/          # Central framework repository
-│   ├── ai_dev_flow/              # Document templates
+│   ├── ai_dev_ssd_flow/              # Document templates
 │   ├── scripts/                  # Validation and automation tools
 │   └── .claude/
 │       ├── skills/               # Shared skills (15+)
@@ -55,7 +55,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Skills** | `.claude/skills/` | `.claude/custom_skills/` | Both merged |
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
-| **Templates** | `.templates/ai_dev_flow/` | N/A | Symlink only |
+| **Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
 
 ---
@@ -69,7 +69,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 ls -la /opt/data/docs_flow_framework/.claude/
 # Expected: skills/, commands/, agents/
 
-ls -la /opt/data/docs_flow_framework/ai_dev_flow/
+ls -la /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 # Expected: BRD/, PRD/, ADR/, REQ/, etc.
 ```
 
@@ -126,8 +126,8 @@ ln -sf "$FRAMEWORK_DIR/.claude/agents" "$PROJECT_DIR/.claude/agents"
 
 # Setup template symlinks
 mkdir -p "$PROJECT_DIR/.templates"
-backup_if_needed "$PROJECT_DIR/.templates/ai_dev_flow"
-ln -sf "$FRAMEWORK_DIR/ai_dev_flow" "$PROJECT_DIR/.templates/ai_dev_flow"
+backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
 
 # Setup validation script symlinks
 mkdir -p "$PROJECT_DIR/scripts"
@@ -247,7 +247,7 @@ done
 │   └── CLAUDE.md                    # Project instructions (optional)
 │
 ├── .templates/
-│   └── ai_dev_flow/                 # Symlink → framework templates
+│   └── ai_dev_ssd_flow/                 # Symlink → framework templates
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── BRD/
@@ -390,7 +390,7 @@ Test service connection and report status with diagnostics
 # Project: [PROJECT_NAME]
 
 **Active Framework**: /opt/data/docs_flow_framework
-**Templates**: .templates/ai_dev_flow/
+**Templates**: .templates/ai_dev_ssd_flow/
 **Work Plans**: work_plans/
 
 ## Project-Specific Rules
@@ -463,7 +463,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 
 ```bash
 # Edit framework template
-vim /opt/data/docs_flow_framework/ai_dev_flow/BRD/BRD-TEMPLATE.md
+vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md
 
 # Changes immediately available to all projects
 ```
@@ -511,7 +511,7 @@ cd ${PROJECT_PATH}
 # /skill ib-api-helper  # Should work (custom, if exists)
 
 # Verify template access
-ls -la ${PROJECT_PATH}/.templates/ai_dev_flow/BRD/
+ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/BRD/
 # Should list template files
 ```
 
@@ -730,9 +730,9 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ### Related Documentation
 
 - [AI Dev Flow Framework README](./README.md) - Framework overview
-- [Specification-Driven Development Guide](./ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow
-- [ID Naming Standards](./ai_dev_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
-- [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
+- [Specification-Driven Development Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow
+- [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
+- [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
 
 ### External Resources
 
