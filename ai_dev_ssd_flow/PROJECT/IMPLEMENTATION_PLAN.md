@@ -1,6 +1,6 @@
 # SDD Project Model v2.2 - Implementation Plan
 
-**Version**: 2.0
+**Version**: 2.1
 **Created**: 2026-02-16
 **Updated**: 2026-02-16
 **Source**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
@@ -730,8 +730,10 @@ python scripts/layer_selector.py --work-type "bug fix" --description "Fix null p
 | TASKS-05.02.02 | Unit tests for validate_artifact.py | TASKS-02.02.04 | M | P1 |
 | TASKS-05.02.03 | Unit tests for chg_generator.py | TASKS-03.01.04 | M | P1 |
 | TASKS-05.02.04 | Unit tests for sprint0_setup.py | TASKS-03.02.04 | M | P1 |
+| TASKS-05.02.05 | Unit tests for raci_generator.py | TASKS-04.01.04 | M | P2 |
+| TASKS-05.02.06 | Unit tests for layer_selector.py | TASKS-04.02.04 | M | P2 |
 | TASKS-05.03.01 | End-to-end workflow validation | All | L | P0 |
-| TASKS-05.03.02 | Validate against Budget Alert worked example | TASKS-00.02.01-02, All | L | P0 |
+| TASKS-05.03.02 | Validate against sample fixtures (worked example) | TASKS-00.02.01-02, All | L | P0 |
 
 ---
 
@@ -770,6 +772,8 @@ ai_dev_ssd_flow/
 │       ├── test_validate_artifact.py  # TASKS-05.02.02
 │       ├── test_chg_generator.py      # TASKS-05.02.03
 │       ├── test_sprint0_setup.py      # TASKS-05.02.04
+│       ├── test_raci_generator.py     # TASKS-05.02.05
+│       ├── test_layer_selector.py     # TASKS-05.02.06
 │       └── conftest.py                # Shared fixtures
 ├── scripts/                           # Scripts (existing + new)
 │   ├── tasks_to_github.py             # SPEC-01 (NEW)
@@ -863,8 +867,9 @@ ai_dev_ssd_flow/
 ### Definition of Done for Phase 5
 - [ ] All unit tests pass with 85%+ coverage
 - [ ] Integration test creates real Issues (in test repo)
-- [ ] End-to-end workflow validated with Budget Alert example
-- [ ] All 10 scripts tested and documented
+- [ ] End-to-end workflow validated with sample fixtures
+- [ ] All 7 scripts tested and documented
+- [ ] All 3 configuration files (issue template, CI workflow, config YAML) validated
 
 ---
 
@@ -879,10 +884,10 @@ ai_dev_ssd_flow/
 | FR-05 | SPEC-05 | TASKS-02.01.02 | TASKS-05.03.01 |
 | FR-06 | SPEC-07 | TASKS-03.01.* | TASKS-05.02.03 |
 | FR-07 | SPEC-08 | TASKS-03.02.* | TASKS-05.02.04 |
-| FR-08 | SPEC-09 | TASKS-04.01.* | - |
+| FR-08 | SPEC-09 | TASKS-04.01.* | TASKS-05.02.05 |
 | FR-09 | SPEC-06 | TASKS-00.01.02, TASKS-02.03.01 | - |
 | FR-10 | SPEC-01 | TASKS-01.01.03 | TASKS-05.01.03 |
-| FR-11 | SPEC-10 | TASKS-04.02.* | - |
+| FR-11 | SPEC-10 | TASKS-04.02.* | TASKS-05.02.06 |
 | FR-12 | - | TASKS-00.02.* | TASKS-05.03.02 |
 
 ---
@@ -935,3 +940,4 @@ python scripts/raci_generator.py --output docs/RACI_MATRIX.md
 |---------|------|--------|---------|
 | 1.0 | 2026-02-16 | AI Assistant | Initial implementation plan |
 | 2.0 | 2026-02-16 | AI Assistant | Fixed all gaps: updated paths, added SPEC-07/08/09/10, Phase 0, Project V2 sync, 4-Gate system, Sprint 0 automation, RACI generator, layer selector, sample fixtures, expanded TASKS breakdown |
+| 2.1 | 2026-02-16 | AI Assistant | Added TASKS-05.02.05/06 for raci_generator and layer_selector tests; updated traceability matrix; clarified Phase 5 DoD; ensured project-agnostic language |
