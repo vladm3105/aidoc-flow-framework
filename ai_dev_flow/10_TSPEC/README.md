@@ -262,22 +262,22 @@ Project-level test runner with unified configuration:
 | `pytest.ini` | Project root | Pytest configuration |
 | `pyproject.toml` | Project root | Coverage and tool config |
 | `tests/conftest.py` | tests/ | Shared fixtures |
-| `scripts/run_tests.py` | scripts/ | Unified test runner |
+| `tests/scripts/run_tests.py` | scripts/ | Unified test runner |
 
 **Test Execution Commands**:
 ```bash
 # Run by type
-python scripts/run_tests.py --type utest
-python scripts/run_tests.py --type itest
-python scripts/run_tests.py --type stest
-python scripts/run_tests.py --type ftest
-python scripts/run_tests.py --type all
+python tests/scripts/run_tests.py --type utest
+python tests/scripts/run_tests.py --type itest
+python tests/scripts/run_tests.py --type stest
+python tests/scripts/run_tests.py --type ftest
+python tests/scripts/run_tests.py --type all
 
 # Save results for comparison
-python scripts/run_tests.py --type utest --save
+python tests/scripts/run_tests.py --type utest --save
 
 # Run with coverage
-python scripts/run_tests.py --type all --coverage
+python tests/scripts/run_tests.py --type all --coverage
 ```
 
 ### Regression Detection
@@ -286,19 +286,19 @@ Compare test results between runs to detect regressions:
 
 | File | Purpose |
 |------|---------|
-| `scripts/compare_test_results.py` | Regression detection |
-| `scripts/archive_test_results.py` | Result archival |
+| `tests/scripts/compare_test_results.py` | Regression detection |
+| `tests/scripts/archive_test_results.py` | Result archival |
 
 **Comparison Commands**:
 ```bash
 # Compare two result files
-python scripts/compare_test_results.py baseline.json current.json
+python tests/scripts/compare_test_results.py baseline.json current.json
 
 # Compare latest results in directory
-python scripts/compare_test_results.py --latest tests/results/
+python tests/scripts/compare_test_results.py --latest tests/results/
 
 # Output as JSON
-python scripts/compare_test_results.py --json baseline.json current.json
+python tests/scripts/compare_test_results.py --json baseline.json current.json
 ```
 
 ### Coverage Reports
@@ -307,20 +307,20 @@ Track and enforce coverage thresholds:
 
 | File | Purpose |
 |------|---------|
-| `scripts/generate_coverage_report.py` | Coverage generation |
+| `tests/scripts/generate_coverage_report.py` | Coverage generation |
 | `tests/coverage_html/` | HTML reports |
 | `tests/results/coverage.json` | JSON coverage data |
 
 **Coverage Commands**:
 ```bash
 # Generate coverage report
-python scripts/generate_coverage_report.py --type all --html
+python tests/scripts/generate_coverage_report.py --type all --html
 
 # Check threshold
-python scripts/generate_coverage_report.py --check --threshold 80
+python tests/scripts/generate_coverage_report.py --check --threshold 80
 
 # View trend
-python scripts/generate_coverage_report.py --trend
+python tests/scripts/generate_coverage_report.py --trend
 ```
 
 ### CI/CD Integration

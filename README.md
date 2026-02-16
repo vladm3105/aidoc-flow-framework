@@ -760,26 +760,26 @@ The framework includes a complete testing infrastructure aligned with the TSPEC 
 
 ```bash
 # Run all tests
-python scripts/run_tests.py --type all
+python tests/scripts/run_tests.py --type all
 
 # Run specific test type
-python scripts/run_tests.py --type utest --save
+python tests/scripts/run_tests.py --type utest --save
 
 # Run with coverage
-python scripts/run_tests.py --type all --coverage
+python tests/scripts/run_tests.py --type all --coverage
 
 # Compare test results for regression detection
-python scripts/compare_test_results.py baseline.json current.json
+python tests/scripts/compare_test_results.py baseline.json current.json
 ```
 
 ### Test Management Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/run_tests.py` | Unified test runner with result saving |
-| `scripts/compare_test_results.py` | Regression detection between runs |
-| `scripts/archive_test_results.py` | Result archival and trend tracking |
-| `scripts/generate_coverage_report.py` | Coverage report generation |
+| `tests/scripts/run_tests.py` | Unified test runner with result saving |
+| `tests/scripts/compare_test_results.py` | Regression detection between runs |
+| `tests/scripts/archive_test_results.py` | Result archival and trend tracking |
+| `tests/scripts/generate_coverage_report.py` | Coverage report generation |
 | `ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py` | Central test catalog management |
 
 ### Test Registry
@@ -1449,10 +1449,10 @@ Developed for AI-assisted software engineering workflows optimized for:
   - Added `pytest.ini` with markers for test types (utest, itest, stest, ftest)
   - Added `pyproject.toml` with coverage configuration
   - Added `requirements-test.txt` with test dependencies
-  - Added `scripts/run_tests.py` - Unified test runner with result saving
-  - Added `scripts/compare_test_results.py` - Regression detection between runs
-  - Added `scripts/archive_test_results.py` - Result archival and trend tracking
-  - Added `scripts/generate_coverage_report.py` - Coverage report generation
+  - Added `tests/scripts/run_tests.py` - Unified test runner with result saving
+  - Added `tests/scripts/compare_test_results.py` - Regression detection between runs
+  - Added `tests/scripts/archive_test_results.py` - Result archival and trend tracking
+  - Added `tests/scripts/generate_coverage_report.py` - Coverage report generation
   - Added `ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py` - Test catalog management
   - Added `ai_dev_flow/10_TSPEC/test_registry.yaml` - Central test registry
   - Added `ai_dev_flow/10_TSPEC/test_registry_schema.yaml` - Registry validation schema

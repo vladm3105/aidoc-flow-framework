@@ -45,19 +45,19 @@ tests/
 
 ```bash
 # Run all tests
-python scripts/run_tests.py --type all
+python tests/scripts/run_tests.py --type all
 
 # Run specific test type
-python scripts/run_tests.py --type utest
-python scripts/run_tests.py --type itest
-python scripts/run_tests.py --type stest
-python scripts/run_tests.py --type ftest
+python tests/scripts/run_tests.py --type utest
+python tests/scripts/run_tests.py --type itest
+python tests/scripts/run_tests.py --type stest
+python tests/scripts/run_tests.py --type ftest
 
 # Run and save results for comparison
-python scripts/run_tests.py --type utest --save
+python tests/scripts/run_tests.py --type utest --save
 
 # Run with coverage
-python scripts/run_tests.py --type all --coverage
+python tests/scripts/run_tests.py --type all --coverage
 ```
 
 ### Using pytest Directly
@@ -164,7 +164,7 @@ Tool configuration:
 
 ```bash
 # Run and save results
-python scripts/run_tests.py --type utest --save
+python tests/scripts/run_tests.py --type utest --save
 # Creates: tests/results/results_utest_{timestamp}.json
 # Updates: tests/results/latest_utest.json
 ```
@@ -173,29 +173,29 @@ python scripts/run_tests.py --type utest --save
 
 ```bash
 # Compare two result files
-python scripts/compare_test_results.py baseline.json current.json
+python tests/scripts/compare_test_results.py baseline.json current.json
 
 # Compare latest results
-python scripts/compare_test_results.py --latest tests/results/
+python tests/scripts/compare_test_results.py --latest tests/results/
 
 # Save comparison report
-python scripts/compare_test_results.py --output report.md baseline.json current.json
+python tests/scripts/compare_test_results.py --output report.md baseline.json current.json
 ```
 
 ### Archiving Results
 
 ```bash
 # Archive results with metadata
-python scripts/archive_test_results.py --save tests/results/latest_utest.json
+python tests/scripts/archive_test_results.py --save tests/results/latest_utest.json
 
 # Set baseline for comparison
-python scripts/archive_test_results.py --set-baseline tests/results/latest_utest.json
+python tests/scripts/archive_test_results.py --set-baseline tests/results/latest_utest.json
 
 # Prune old archives (keep last 10)
-python scripts/archive_test_results.py --prune --keep 10
+python tests/scripts/archive_test_results.py --prune --keep 10
 
 # View trend report
-python scripts/archive_test_results.py --trend
+python tests/scripts/archive_test_results.py --trend
 ```
 
 ## Coverage Reports
@@ -204,13 +204,13 @@ python scripts/archive_test_results.py --trend
 
 ```bash
 # Generate coverage report
-python scripts/generate_coverage_report.py --type all
+python tests/scripts/generate_coverage_report.py --type all
 
 # Generate HTML report
-python scripts/generate_coverage_report.py --type all --html
+python tests/scripts/generate_coverage_report.py --type all --html
 
 # Check threshold
-python scripts/generate_coverage_report.py --check --threshold 80
+python tests/scripts/generate_coverage_report.py --check --threshold 80
 ```
 
 ### Coverage Thresholds
