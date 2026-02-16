@@ -1,12 +1,52 @@
-# AI Dev Flow Framework
-# AI Dev Flow Framework
+# Docs Flow Framework
 
-**Specification-Driven Development (SDD) Template System for AI-Assisted Software Engineering**
+**Two Complementary Frameworks for AI-Assisted Software Development**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](./ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
-## Overview
+## Repository Contents
+
+This repository contains **two distinct frameworks** for AI-assisted development:
+
+| Framework | Directory | Purpose | Best For |
+|-----------|-----------|---------|----------|
+| **AI Dev Flow** | `ai_dev_flow/` | Specification-Driven Development (SDD) | Large projects, regulatory compliance, formal traceability |
+| **AI Project Flow** | `ai_project_flow/` | AI-First Project Governance | Small-medium projects, rapid iteration, phase-gated deployment |
+
+### Quick Comparison
+
+| Aspect | AI Dev Flow (SDD) | AI Project Flow |
+|--------|-------------------|-----------------|
+| **Scope** | Enterprise/regulated projects | Small AI-first projects |
+| **Layers** | 15 formal layers (BRD→Production) | Agile phases/sprints |
+| **Documentation** | Full traceability matrices | PROJECT_PLAN + IPLANs |
+| **Deployment** | CI/CD integration | Phase-gated (dev→staging→prod) |
+| **Timeline** | Months to years | 1-6 months |
+| **Team** | Multiple roles | Solo/small team + AI |
+| **AI Integration** | AI generates artifacts | AI executes issues (ai:ready workflow) |
+
+### Choosing a Framework
+
+**Use AI Dev Flow when:**
+- Building enterprise software with regulatory requirements (SEC, FINRA, FDA, ISO)
+- Need complete audit trails and bidirectional traceability
+- Multiple teams working on complex systems
+- Formal architecture decisions required (ADRs)
+
+**Use AI Project Flow when:**
+- Building MVPs or small-to-medium AI-first projects
+- Want phase-gated deployment with AI-powered code review
+- Working solo or with a small team + AI assistants
+- Need quick setup with GitHub Actions automation
+
+---
+
+## Framework 1: AI Dev Flow (SDD)
+
+**Specification-Driven Development Template System for AI-Assisted Software Engineering**
+
+### Overview
 
 The AI Dev Flow Framework is a comprehensive template system for implementing AI-Driven Specification-Driven Development (SDD). It provides structured workflows, document templates, and traceability mechanisms to transform business requirements into production-ready code through a systematic, traceable approach optimized for AI-assisted development.
 
@@ -1194,6 +1234,98 @@ A comprehensive suite of tools is included for building, testing, and debugging 
 👉 **[View All Development Tools](dev_tools/README.md)**
 
 ---
+---
+
+## Framework 2: AI Project Flow
+
+**AI-First Project Governance Framework for Small-Medium Projects**
+
+### Overview
+
+AI Project Flow is a lightweight, reusable framework for AI-first projects that emphasizes rapid iteration with AI assistants. It provides project governance, CI/CD pipelines, and phase-gated deployment without the overhead of formal SDD traceability.
+
+### Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Phase-Gated Deployment** | dev → staging → prod with automated gates |
+| **AI Label Lifecycle** | `ai:ready` → `ai:in-progress` → `ai:review-requested` |
+| **AI PR Review** | Automated code review via Claude Code CLI |
+| **Multi-Cloud Support** | Setup scripts for GCP, AWS, Azure |
+| **GitHub Actions** | 18 workflow templates |
+| **IPLAN Templates** | Session-scoped implementation plans |
+
+### Quick Start
+
+```bash
+# Copy framework to your project
+cp -r ai_project_flow/ /path/to/your/project/
+
+# Configure placeholders
+cd /path/to/your/project
+./scripts/project_setup/validate_configuration.sh
+
+# Replace placeholders (see CONFIG.md for full list)
+find . -type f \( -name "*.md" -o -name "*.yml" \) \
+  -exec sed -i 's|{PROJECT_PREFIX}|myproj|g' {} \;
+```
+
+### Framework Structure
+
+```
+ai_project_flow/
+├── README.md                    # Framework overview
+├── CONFIG.md                    # 47+ placeholder variables
+├── SETUP_GUIDE.md               # Step-by-step customization
+├── CLOUD_GUIDE.md               # GCP/AWS/Azure setup
+├── governance/                  # Project governance docs
+│   ├── PROJECT_PLAN.md
+│   ├── ROADMAP.md
+│   ├── GOVERNANCE_RULES.md
+│   ├── AI_PR_Review/            # AI code review docs
+│   └── plans/                   # IPLAN templates
+├── .github/                     # GitHub automation
+│   ├── workflows/               # 18 workflow templates
+│   └── ISSUE_TEMPLATE/          # Issue templates
+├── templates/                   # Root doc templates
+│   ├── CLAUDE.md
+│   ├── README_AIAGENT.md
+│   └── .mcp.json
+├── scripts/                     # Setup automation
+│   └── project_setup/
+│       ├── cloud/gcp/
+│       ├── cloud/aws/
+│       └── cloud/azure/
+└── docs/                        # Technical docs
+```
+
+### Deployment Pipeline
+
+```
+Issue Closed (phase N)
+       │
+       ▼
+deploy-dev.yml (phase N)
+       │
+       ▼ (all 8 phases complete)
+check-all-phases-dev.yml
+       │
+       ▼
+deploy-staging.yml
+       │
+       ▼ (manual + 2 approvers)
+deploy-prod.yml (gradual rollout)
+```
+
+### Documentation
+
+- [README.md](./ai_project_flow/README.md) - Framework overview
+- [CONFIG.md](./ai_project_flow/CONFIG.md) - All placeholder variables
+- [SETUP_GUIDE.md](./ai_project_flow/SETUP_GUIDE.md) - Customization guide
+- [CLOUD_GUIDE.md](./ai_project_flow/CLOUD_GUIDE.md) - Cloud provider setup
+
+---
+
 ## License
 
 MIT License - See LICENSE file for details
