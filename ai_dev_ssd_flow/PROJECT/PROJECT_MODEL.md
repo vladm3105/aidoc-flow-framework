@@ -137,7 +137,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 | Aspect | Description |
 |--------|-------------|
-| **Structure** | 8 phases, 2-week sprints, 20-week timeline |
+| **Structure** | Configurable phases, 2-week sprints, project-defined timeline |
 | **Focus** | Task execution and iterative delivery |
 | **Tracking** | GitHub Project boards, Issues, PRs |
 | **Automation** | 43% time reduction via AI-assisted development |
@@ -223,7 +223,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 | Aspect | Description |
 |--------|-------------|
-| **Structure** | 8 phases, phase-gated deployment, AI label lifecycle |
+| **Structure** | Configurable phases, phase-gated deployment, AI label lifecycle |
 | **Focus** | Rapid AI-assisted development with governance guardrails |
 | **Tracking** | GitHub Project boards, AI-powered issue execution |
 | **Automation** | AI PR review, phase-gated deployment, automated QA |
@@ -1285,7 +1285,7 @@ These common mistakes undermine the hybrid model's effectiveness:
 | Aspect | Sprint-Based | AI Project Flow | Document Flow | Hybrid v2.2 |
 |--------|--------------|-----------------|---------------|-------------|
 | **Focus** | Task execution | AI-assisted delivery | Traceability | Both |
-| **Structure** | 8 phases, sprints | 8 phases, phase-gated | 15 layers | Tiers 1-3 + Sprints |
+| **Structure** | Configurable phases, sprints | Configurable phases, phase-gated | 15 layers | Tiers 1-3 + Sprints |
 | **Automation** | 43% time reduction | AI PR review, phase gates | 90% artifact generation | Combined |
 | **Traceability** | Issue→PR→Code | Phase→Issue→PR→Deploy | BRD→Code (full) | Full with automation |
 | **Human Touchpoints** | Every sprint | PR review, prod deploy | 5 checkpoints | Sprint + checkpoints |
