@@ -1,19 +1,21 @@
-# SDD Implementation Plan for Hybrid Development Model v2.2
+# SDD Project Model v2.2 - Implementation Plan
 
 **Version**: 1.0
 **Created**: 2026-02-16
-**Source**: `/opt/data/docs_flow_framework/HYBRID_MODEL_V2.md`
-**Target**: `/opt/data/docs_flow_framework/ai_project_ssd_flow/`
+**Updated**: 2026-02-16
+**Source**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
+**Location**: `ai_dev_ssd_flow/PROJECT/IMPLEMENTATION_PLAN.md`
 
 ---
 
 ## 1. Executive Summary
 
-This implementation plan defines the scope, architecture decisions, specifications, and tasks required to implement the automation and tooling described in `HYBRID_MODEL_V2.md`.
+This implementation plan defines the scope, architecture decisions, specifications, and tasks required to implement the automation and tooling described in `PROJECT_MODEL.md`.
 
-The Hybrid Model v2.2 bridges two existing frameworks:
-- **AI Dev Flow (SDD)**: 15-layer specification-driven development at `ai_dev_ssd_flow/`
-- **AI Project Flow**: AI-first project governance at `ai_project_issues_flow/`
+The SDD Project Model v2.2 extends the core SDD framework with:
+- **Sprint Integration**: TASKS→GitHub Issue automation, drift checking
+- **CI/CD Validation**: Artifact validators integrated in workflows
+- **Feedback Loop**: CHG-based change management during sprints
 
 ---
 

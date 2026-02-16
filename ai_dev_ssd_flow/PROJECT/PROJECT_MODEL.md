@@ -1,35 +1,36 @@
 ---
-title: "Hybrid Development Model v2.2"
+title: "SDD Project Model v2.2"
 tags:
   - framework-guide
   - shared-architecture
   - project-management
   - sprint-governance
   - sdd-workflow
-  - ai-project-flow
+  - project-model
 custom_fields:
   document_type: methodology
   artifact_type: REF
   layer: 0
   priority: shared
   development_status: active
+  location: ai_dev_ssd_flow/PROJECT/
   architecture_approaches:
     - ai-agent-based
     - traditional-8layer
     - hybrid-sprint-sdd
-    - ai-project-flow
 ---
 
 <!-- markdownlint-disable MD025 MD032 MD036 MD040 MD060 -->
 
-# Hybrid Development Model v2.2
+# SDD Project Model v2.2
 
-## Sprint-Based Governance + Document Flow Framework Integration
+## Sprint-Based Governance + Specification-Driven Development Integration
 
 **Version**: 2.2
 **Created**: 2026-02-14
 **Updated**: 2026-02-16
-**Status**: Draft - Pending Review
+**Location**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
+**Status**: Active
 **Applicable To**: Production projects requiring both agile delivery and requirements traceability
 
 ---
@@ -1223,7 +1224,7 @@ These common mistakes undermine the hybrid model's effectiveness:
 |---|------|-------|-------------|--------------|
 | 4.1 | Analyze pilot sprint metrics | Project Lead | Metrics report | 3.4 |
 | 4.2 | Refine automation based on feedback | Developer | Updated scripts | 4.1 |
-| 4.3 | Update this document with lessons learned | Architect | HYBRID_MODEL_V2.2.md | 4.1 |
+| 4.3 | Update this document with lessons learned | Architect | PROJECT_MODEL.md | 4.1 |
 | 4.4 | Roll out to full project | Team | Full adoption | 4.1-4.3 |
 
 ---
