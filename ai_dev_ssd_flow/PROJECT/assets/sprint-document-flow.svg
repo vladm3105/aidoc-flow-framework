@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="sprint0Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="sprint1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="sprintNGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#6A1B9A;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#f5f5f5;stop-opacity:1"/>
+    </linearGradient>
+
+    <!-- Arrow markers -->
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2196F3"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9C27B0"/>
+    </marker>
+
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">
+    Sprint Document Preparation Flow
+  </text>
+  <text x="600" y="62" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666">
+    SDD Project Model v2.2 - Document Timeline by Sprint Phase
+  </text>
+
+  <!-- Sprint 0 Column -->
+  <g transform="translate(50, 90)">
+    <!-- Header -->
+    <rect width="340" height="50" fill="url(#sprint0Grad)" rx="8"/>
+    <text x="170" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">SPRINT 0</text>
+    <text x="170" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,0.9)">Research &amp; Strategic Foundation</text>
+
+    <!-- Tier 1 Label -->
+    <rect x="5" y="60" width="330" height="24" fill="#E8F5E9" rx="4"/>
+    <text x="170" y="77" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#2E7D32">TIER 1: Layers 1-5 (GATE-01)</text>
+
+    <!-- Document Cards -->
+    <g transform="translate(15, 95)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#4CAF50" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#4CAF50" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L1</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">BRD</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Business Requirements</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">/doc-brd</text>
+    </g>
+
+    <g transform="translate(175, 95)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#4CAF50" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#4CAF50" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L2</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">PRD</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Product Requirements</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">/doc-prd-autopilot</text>
+    </g>
+
+    <g transform="translate(15, 170)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#4CAF50" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#4CAF50" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L3</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">EARS</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Formal Requirements</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">/doc-ears-autopilot</text>
+    </g>
+
+    <g transform="translate(175, 170)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#4CAF50" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#4CAF50" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L4</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">BDD</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Behavior Scenarios</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">/doc-bdd-autopilot</text>
+    </g>
+
+    <g transform="translate(95, 245)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#4CAF50" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#4CAF50" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L5</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">ADR</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Architecture Decisions</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">/doc-adr</text>
+    </g>
+
+    <!-- Arrows between docs -->
+    <line x1="87" y1="162" x2="87" y2="168" stroke="#4CAF50" stroke-width="2" marker-end="url(#arrowGreen)"/>
+    <line x1="247" y1="162" x2="247" y2="168" stroke="#4CAF50" stroke-width="2" marker-end="url(#arrowGreen)"/>
+    <line x1="160" y1="140" x2="175" y2="140" stroke="#4CAF50" stroke-width="2" marker-end="url(#arrowGreen)"/>
+    <line x1="87" y1="237" x2="120" y2="243" stroke="#4CAF50" stroke-width="2" stroke-dasharray="3,2"/>
+    <line x1="247" y1="237" x2="215" y2="243" stroke="#4CAF50" stroke-width="2" stroke-dasharray="3,2"/>
+
+    <!-- Exit criteria -->
+    <rect x="5" y="325" width="330" height="35" fill="#C8E6C9" rx="4"/>
+    <text x="170" y="348" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#2E7D32">✓ GATE-01 Validation ≥90%</text>
+  </g>
+
+  <!-- Sprint 1 Column -->
+  <g transform="translate(430, 90)">
+    <!-- Header -->
+    <rect width="340" height="50" fill="url(#sprint1Grad)" rx="8"/>
+    <text x="170" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">SPRINT 1</text>
+    <text x="170" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,0.9)">Specification &amp; Planning</text>
+
+    <!-- Tier 2 Label -->
+    <rect x="5" y="60" width="330" height="24" fill="#E3F2FD" rx="4"/>
+    <text x="170" y="77" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1565C0">TIER 2: Layers 6-11 (GATE-05 + GATE-09)</text>
+
+    <!-- Document Cards Row 1 -->
+    <g transform="translate(15, 95)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#2196F3" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#2196F3" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L6</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">SYS</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">System Req</text>
+    </g>
+
+    <g transform="translate(120, 95)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#2196F3" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#2196F3" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L7</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">REQ</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Atomic Req</text>
+    </g>
+
+    <g transform="translate(225, 95)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#2196F3" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#2196F3" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L8</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">CTR</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Contracts</text>
+    </g>
+
+    <!-- Document Cards Row 2 -->
+    <g transform="translate(15, 160)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#FF9800" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#FF9800" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L9</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">SPEC</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Tech Spec</text>
+    </g>
+
+    <g transform="translate(120, 160)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#FF9800" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#FF9800" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L10</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">TSPEC</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Test Spec</text>
+    </g>
+
+    <g transform="translate(225, 160)" filter="url(#shadow)">
+      <rect width="100" height="55" fill="url(#docGrad)" rx="6" stroke="#FF9800" stroke-width="2"/>
+      <rect width="25" height="18" x="5" y="5" fill="#FF9800" rx="3"/>
+      <text x="17" y="17" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">L11</text>
+      <text x="50" y="30" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">TASKS</text>
+      <text x="50" y="45" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Breakdown</text>
+    </g>
+
+    <!-- GitHub Issues -->
+    <g transform="translate(95, 230)" filter="url(#shadow)">
+      <rect width="145" height="50" fill="#24292E" rx="6"/>
+      <text x="72" y="22" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="white">GitHub Issues</text>
+      <text x="72" y="38" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="rgba(255,255,255,0.7)">tasks_to_github.py</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="115" y1="123" x2="120" y2="123" stroke="#2196F3" stroke-width="2" marker-end="url(#arrowBlue)"/>
+    <line x1="220" y1="123" x2="225" y2="123" stroke="#2196F3" stroke-width="2" marker-end="url(#arrowBlue)"/>
+    <line x1="65" y1="152" x2="65" y2="158" stroke="#2196F3" stroke-width="2" marker-end="url(#arrowBlue)"/>
+    <line x1="170" y1="152" x2="170" y2="158" stroke="#FF9800" stroke-width="2"/>
+    <line x1="115" y1="190" x2="120" y2="190" stroke="#FF9800" stroke-width="2"/>
+    <line x1="220" y1="190" x2="225" y2="190" stroke="#FF9800" stroke-width="2"/>
+    <line x1="275" y1="217" x2="200" y2="228" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Exit criteria -->
+    <rect x="5" y="295" width="160" height="35" fill="#BBDEFB" rx="4"/>
+    <text x="85" y="318" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#1565C0">✓ GATE-05 ≥90%</text>
+    <rect x="175" y="295" width="160" height="35" fill="#FFE0B2" rx="4"/>
+    <text x="255" y="318" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#E65100">✓ GATE-09 ≥90%</text>
+  </g>
+
+  <!-- Sprint N Column -->
+  <g transform="translate(810, 90)">
+    <!-- Header -->
+    <rect width="340" height="50" fill="url(#sprintNGrad)" rx="8"/>
+    <text x="170" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">SPRINT N</text>
+    <text x="170" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="rgba(255,255,255,0.9)">Implementation Execution</text>
+
+    <!-- Tier 3 Label -->
+    <rect x="5" y="60" width="330" height="24" fill="#F3E5F5" rx="4"/>
+    <text x="170" y="77" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#6A1B9A">TIER 3: Layers 12-14 (GATE-12)</text>
+
+    <!-- Document Cards -->
+    <g transform="translate(15, 95)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#9C27B0" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#9C27B0" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L12</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Code</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Implementation</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">Traceability Tags</text>
+    </g>
+
+    <g transform="translate(175, 95)" filter="url(#shadow)">
+      <rect width="145" height="65" fill="url(#docGrad)" rx="6" stroke="#9C27B0" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#9C27B0" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L13</text>
+      <text x="72" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Tests</text>
+      <text x="72" y="45" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Unit / Integration / E2E</text>
+      <text x="72" y="58" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">Coverage ≥85%</text>
+    </g>
+
+    <g transform="translate(95, 175)" filter="url(#shadow)">
+      <rect width="145" height="55" fill="url(#docGrad)" rx="6" stroke="#9C27B0" stroke-width="2"/>
+      <rect width="30" height="20" x="5" y="5" fill="#9C27B0" rx="3"/>
+      <text x="20" y="18" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">L14</text>
+      <text x="72" y="28" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Release</text>
+      <text x="72" y="43" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Deployment Validation</text>
+    </g>
+
+    <!-- CHG Document (conditional) -->
+    <g transform="translate(95, 245)" filter="url(#shadow)">
+      <rect width="145" height="55" fill="#FFF3E0" rx="6" stroke="#FF9800" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="72" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#E65100">CHG</text>
+      <text x="72" y="38" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Change Request</text>
+      <text x="72" y="50" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#999">(if scope changes)</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="160" y1="140" x2="175" y2="140" stroke="#9C27B0" stroke-width="2" marker-end="url(#arrowPurple)"/>
+    <line x1="167" y1="162" x2="167" y2="173" stroke="#9C27B0" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+    <!-- Exit criteria -->
+    <rect x="5" y="315" width="330" height="35" fill="#E1BEE7" rx="4"/>
+    <text x="170" y="338" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#6A1B9A">✓ GATE-12 Validation + Drift Check</text>
+  </g>
+
+  <!-- Phase Arrows -->
+  <line x1="400" y1="180" x2="420" y2="180" stroke="#666" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="780" y1="180" x2="800" y2="180" stroke="#666" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Feedback loop -->
+  <path d="M 980 400 L 980 450 L 220 450 L 220 400" fill="none" stroke="#FF5722" stroke-width="2" stroke-dasharray="8,4"/>
+  <polygon points="220,400 215,415 225,415" fill="#FF5722"/>
+  <text x="600" y="468" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#FF5722">
+    Feedback Loop (CHG triggers artifact updates)
+  </text>
+
+  <!-- Legend -->
+  <g transform="translate(50, 520)">
+    <rect width="1100" height="150" fill="white" rx="8" stroke="#E0E0E0" stroke-width="1" filter="url(#shadow)"/>
+    <text x="550" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Document Preparation Summary</text>
+
+    <!-- Sprint 0 docs -->
+    <g transform="translate(30, 45)">
+      <rect width="15" height="15" fill="#4CAF50" rx="3"/>
+      <text x="25" y="13" font-family="Arial, sans-serif" font-size="11" fill="#333">Sprint 0 (Tier 1): BRD, PRD, EARS, BDD, ADR</text>
+      <text x="25" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Complete before Sprint 1 • GATE-01 validation required</text>
+    </g>
+
+    <!-- Sprint 1 docs -->
+    <g transform="translate(30, 85)">
+      <rect width="15" height="15" fill="#2196F3" rx="3"/>
+      <text x="25" y="13" font-family="Arial, sans-serif" font-size="11" fill="#333">Sprint 1 (Tier 2): SYS, REQ, CTR, SPEC, TSPEC, TASKS</text>
+      <text x="25" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Specification phase • GATE-05 + GATE-09 validation required</text>
+    </g>
+
+    <!-- Sprint N docs -->
+    <g transform="translate(30, 125)">
+      <rect width="15" height="15" fill="#9C27B0" rx="3"/>
+      <text x="25" y="13" font-family="Arial, sans-serif" font-size="11" fill="#333">Sprint N (Tier 3): Code, Tests, Release, CHG (if needed)</text>
+      <text x="25" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Implementation phase • GATE-12 validation + drift check</text>
+    </g>
+
+    <!-- Decision guide -->
+    <g transform="translate(550, 50)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#333">When to Create Documents:</text>
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="10" fill="#666">• New Feature: Full Tier 1 → Tier 2 → Tier 3</text>
+      <text x="0" y="38" font-family="Arial, sans-serif" font-size="10" fill="#666">• Enhancement: Update PRD→TASKS → Code</text>
+      <text x="0" y="56" font-family="Arial, sans-serif" font-size="10" fill="#666">• Bug Fix: TASKS + Code only</text>
+      <text x="0" y="74" font-family="Arial, sans-serif" font-size="10" fill="#666">• Hotfix: Code only (72h retroactive docs)</text>
+      <text x="0" y="92" font-family="Arial, sans-serif" font-size="10" fill="#666">• Refactoring: ADR + SPEC→TASKS → Code</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="690" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#999">
+    SDD Project Model v2.2 • ai_dev_ssd_flow/PROJECT/SPRINT_DOCUMENT_GUIDE.md
+  </text>
+</svg>

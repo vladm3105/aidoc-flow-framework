@@ -104,3 +104,120 @@ To run validation for a specific layer manually, use the scripts in that layer's
 | TASKS | `11_TASKS/scripts/` |
 
 See [SCRIPT_INDEX.md](SCRIPT_INDEX.md) for details on specific scripts in each folder.
+
+---
+
+## PROJECT Model v2.2 Scripts
+
+The following scripts support the SDD Project Model v2.2 methodology for sprint integration,
+drift detection, and change management. See [PROJECT/SETUP_GUIDE.md](../PROJECT/SETUP_GUIDE.md).
+
+### 6. `tasks_to_github.py`
+
+Converts TASKS YAML to GitHub Issues with Project V2 board integration.
+
+**Usage:**
+```bash
+python3 tasks_to_github.py \
+  --tasks-file docs/11_TASKS/TASKS-01.yaml \
+  --repo owner/repo \
+  --project-number 31 \
+  --dry-run
+```
+
+### 7. `drift_check.py`
+
+Detects documentation drift by comparing artifact dates with GitHub issue close dates.
+
+**Usage:**
+```bash
+python3 drift_check.py \
+  --sdd-root docs/ \
+  --repo owner/repo \
+  --max-age-days 14 \
+  --report tmp/drift_report.md
+```
+
+### 8. `validate_artifact.py`
+
+Unified artifact validation with 4-Gate system integration.
+
+**Usage:**
+```bash
+# Validate single artifact
+python3 validate_artifact.py --path docs/BRD/BRD-01.md --strict
+
+# Validate with gate check
+python3 validate_artifact.py --path docs/BRD/BRD-01.md --gate GATE-01
+
+# Detect affected gates
+python3 validate_artifact.py --path docs/ --detect-gates
+```
+
+### 9. `chg_generator.py`
+
+Generates CHG (Change Request) documents with 4-Gate validation requirements.
+
+**Usage:**
+```bash
+python3 chg_generator.py \
+  --description "Add email localization support" \
+  --affected-layers 2,9,11 \
+  --output docs/CHG/
+```
+
+### 10. `sprint0_setup.py`
+
+Sprint 0 checklist generation and artifact readiness validation.
+
+**Usage:**
+```bash
+# Check artifact readiness
+python3 sprint0_setup.py --docs-root docs/ --check-readiness
+
+# Create Sprint 0 GitHub issues
+python3 sprint0_setup.py --repo owner/repo --create-issues
+```
+
+### 11. `raci_generator.py`
+
+Generates RACI matrix from PROJECT_MODEL configuration.
+
+**Usage:**
+```bash
+python3 raci_generator.py \
+  --output docs/RACI_MATRIX.md \
+  --format markdown \
+  --validate
+```
+
+### 12. `layer_selector.py`
+
+Decision framework for determining which SDD layers are needed.
+
+**Usage:**
+```bash
+# Interactive decision tree
+python3 layer_selector.py --interactive
+
+# Automated classification
+python3 layer_selector.py --work-type "bug fix"
+
+# Show decision matrix
+python3 layer_selector.py --show-matrix
+```
+
+---
+
+## Dependencies
+
+**Core Scripts** (existing):
+```bash
+pip install pyyaml
+```
+
+**PROJECT Model Scripts** (additional):
+```bash
+pip install -r requirements-project.txt
+# Includes: PyGithub, click, rich, requests, python-dateutil
+```

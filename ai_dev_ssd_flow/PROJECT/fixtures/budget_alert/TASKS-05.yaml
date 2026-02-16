@@ -1,0 +1,132 @@
+# Sample TASKS YAML for Budget Alert Feature
+# This fixture demonstrates the TASKS format for tasks_to_github.py
+
+metadata:
+  id: TASKS-05
+  title: "Budget Alert System Implementation"
+  version: "1.0"
+  created: "2026-02-16"
+  spec_reference: SPEC-05
+  sprint: "Sprint 2.1"
+  phase: "P1"
+  traceability:
+    brd: "BRD-01"
+    prd: "PRD-01"
+
+tasks:
+  - id: TASKS-05.01.01
+    title: "Implement BudgetThresholdChecker class"
+    description: "Create class to compare current spend against budget thresholds"
+    traceability:
+      brd: "BRD-01:FR-03"
+      prd: "PRD-01:PRD.01.03"
+      spec: "SPEC-05"
+    acceptance_criteria:
+      - "BudgetThresholdChecker initializes with budget configuration"
+      - "check_threshold() returns threshold breach status"
+      - "Supports 50%, 80%, 100% threshold levels"
+      - "Returns breach details including current spend and threshold"
+    size: "M"
+    priority: "P0"
+    dependencies: []
+    implementation_notes: |
+      Use Decimal for currency calculations.
+      Load thresholds from config file.
+      Return structured BudgetStatus dataclass.
+
+  - id: TASKS-05.01.02
+    title: "Implement AlertNotifier class"
+    description: "Create class to send budget alerts via configured channels"
+    traceability:
+      brd: "BRD-01:FR-04"
+      prd: "PRD-01:PRD.01.04"
+      spec: "SPEC-05"
+    acceptance_criteria:
+      - "AlertNotifier supports email, Slack, and webhook channels"
+      - "send_alert() dispatches to configured channels"
+      - "Includes budget details in alert payload"
+      - "Handles channel failures gracefully"
+    size: "L"
+    priority: "P0"
+    dependencies:
+      - "TASKS-05.01.01"
+    implementation_notes: |
+      Use Strategy pattern for notification channels.
+      Implement retry logic with exponential backoff.
+      Log all notification attempts.
+
+  - id: TASKS-05.02.01
+    title: "Create budget check scheduler"
+    description: "Implement scheduled job to run budget checks periodically"
+    traceability:
+      brd: "BRD-01:FR-05"
+      prd: "PRD-01:PRD.01.05"
+      spec: "SPEC-05"
+    acceptance_criteria:
+      - "Scheduler runs budget checks at configured intervals"
+      - "Supports hourly, daily, weekly schedules"
+      - "Handles check failures without stopping scheduler"
+      - "Logs all check results"
+    size: "M"
+    priority: "P1"
+    dependencies:
+      - "TASKS-05.01.01"
+      - "TASKS-05.01.02"
+    implementation_notes: |
+      Use APScheduler or similar library.
+      Make schedule configurable via config file.
+      Implement health check endpoint.
+
+  - id: TASKS-05.02.02
+    title: "Add budget alert API endpoints"
+    description: "Create REST endpoints for manual budget checks and alert configuration"
+    traceability:
+      brd: "BRD-01:FR-06"
+      prd: "PRD-01:PRD.01.06"
+      spec: "SPEC-05"
+    acceptance_criteria:
+      - "POST /api/v1/budget/check triggers immediate check"
+      - "GET /api/v1/budget/status returns current budget status"
+      - "PUT /api/v1/budget/thresholds updates threshold config"
+      - "All endpoints require authentication"
+    size: "M"
+    priority: "P1"
+    dependencies:
+      - "TASKS-05.01.01"
+    implementation_notes: |
+      Use FastAPI with Pydantic models.
+      Implement proper authentication middleware.
+      Add OpenAPI documentation.
+
+  - id: TASKS-05.03.01
+    title: "Write unit tests for BudgetThresholdChecker"
+    description: "Comprehensive unit test coverage for threshold checking logic"
+    traceability:
+      brd: "BRD-01:QA-01"
+      prd: "PRD-01:PRD.02.01"
+      spec: "SPEC-05"
+    acceptance_criteria:
+      - "Test threshold breach detection at 50%, 80%, 100%"
+      - "Test edge cases (zero budget, negative values)"
+      - "Test currency precision handling"
+      - "Achieve 90%+ line coverage"
+    size: "M"
+    priority: "P0"
+    dependencies:
+      - "TASKS-05.01.01"
+    implementation_notes: |
+      Use pytest with parametrized tests.
+      Mock external dependencies.
+      Include both happy path and error cases.
+
+summary:
+  total_tasks: 5
+  by_priority:
+    P0: 3
+    P1: 2
+  by_size:
+    S: 0
+    M: 4
+    L: 1
+    XL: 0
+  estimated_sprints: 1

@@ -1,0 +1,124 @@
+name: SDD Task
+description: Task generated from TASKS specification
+title: "[${PHASE}-${TASK_ID}] ${TITLE}"
+labels: ["ai:ready", "source:sdd"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Traceability
+        Auto-populated from TASKS file. Ensure all references are valid.
+
+  - type: input
+    id: brd_ref
+    attributes:
+      label: "@brd"
+      description: "BRD reference (e.g., BRD-01:FR-01)"
+      placeholder: "BRD-NN:BRD.NN.TT.SS"
+    validations:
+      required: true
+
+  - type: input
+    id: prd_ref
+    attributes:
+      label: "@prd"
+      description: "PRD reference (e.g., PRD-01:PRD.01.02)"
+      placeholder: "PRD-NN:PRD.NN.TT.SS"
+    validations:
+      required: false
+
+  - type: input
+    id: spec_ref
+    attributes:
+      label: "@spec"
+      description: "SPEC reference (e.g., SPEC-01)"
+      placeholder: "SPEC-NN"
+    validations:
+      required: true
+
+  - type: input
+    id: tasks_ref
+    attributes:
+      label: "@tasks"
+      description: "TASKS element ID (e.g., TASKS-01.02.03)"
+      placeholder: "TASKS-NN.TT.SS"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: "Size"
+      description: "Estimated effort for this task"
+      options:
+        - S
+        - M
+        - L
+        - XL
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: "Task priority level"
+      options:
+        - P0
+        - P1
+        - P2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: "Phase"
+      description: "Implementation phase"
+      options:
+        - P0 - Setup
+        - P1 - Core
+        - P2 - Integration
+        - P3 - Enhancement
+        - P4 - Documentation
+        - P5 - Testing
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Acceptance Criteria"
+      description: "Imported from SPEC acceptance criteria"
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: "Implementation Notes"
+      description: "From TASKS guidance and technical context"
+      placeholder: |
+        **Dependencies**: List any task dependencies
+        **Technical Notes**: Implementation guidance
+        **Files to Modify**: Expected file changes
+    validations:
+      required: false
+
+  - type: textarea
+    id: definition_of_done
+    attributes:
+      label: "Definition of Done"
+      description: "Checklist for task completion"
+      value: |
+        - [ ] Code implemented and passing lint
+        - [ ] Unit tests written and passing
+        - [ ] Traceability tags added to code
+        - [ ] Documentation updated (if required)
+        - [ ] Code reviewed
+    validations:
+      required: false

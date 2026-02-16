@@ -1,0 +1,197 @@
+# SDD Project Model v2.2 Configuration
+# This file configures automation scripts for sprint integration and validation.
+# Location: ai_dev_ssd_flow/PROJECT/config/project_model.yaml
+
+# Project settings
+project:
+  name: "${PROJECT_NAME}"
+  repo: "${GITHUB_ORG}/${REPO_NAME}"
+  board_number: ${PROJECT_BOARD_NUMBER:-0}
+  sdd_root: "docs/"
+
+# Validation settings
+validation:
+  strict_mode: true
+  coverage_threshold: 85
+  max_complexity: 10
+  validators_path: "ai_dev_ssd_flow/scripts/"
+
+# Drift check settings
+drift_check:
+  max_age_days: 14
+  schedule: "0 17 * * 5"  # Friday 5pm EST
+  excluded_patterns:
+    - "docs/generated/*"
+    - "docs/archive/*"
+    - "docs/**/*.bak"
+  report_path: "tmp/drift_report.md"
+
+# Quality gates (4-Gate System)
+quality_gates:
+  GATE-01:
+    name: "Business Requirements Gate"
+    layers: [1, 2, 3, 4]
+    validators:
+      - "doc-brd-validator"
+      - "doc-prd-validator"
+      - "doc-ears-validator"
+      - "doc-bdd-validator"
+    threshold: 90
+    description: "Validates Tier 1 artifacts (BRD→BDD)"
+  GATE-05:
+    name: "Architecture Gate"
+    layers: [5, 6, 7, 8]
+    validators:
+      - "doc-adr-validator"
+      - "doc-sys-validator"
+      - "doc-req-validator"
+      - "doc-ctr-validator"
+    threshold: 90
+    description: "Validates architecture and atomic requirements"
+  GATE-09:
+    name: "Implementation Specification Gate"
+    layers: [9, 10, 11]
+    validators:
+      - "doc-spec-validator"
+      - "doc-tspec-validator"
+      - "doc-tasks-validator"
+    threshold: 90
+    description: "Validates implementation specifications"
+  GATE-12:
+    name: "Code Implementation Gate"
+    layers: [12, 13, 14]
+    validators:
+      - "trace-check"
+      - "coverage-check"
+    threshold: 85
+    description: "Validates code and test coverage"
+
+# Sprint settings
+sprint:
+  duration_days: 14
+  sprint_0_max_days: 7
+  naming_format: "Sprint {major}.{minor}"
+
+# GitHub Labels
+labels:
+  source: "source:sdd"
+  ai_ready: "ai:ready"
+  sizes:
+    - "size:S"
+    - "size:M"
+    - "size:L"
+    - "size:XL"
+  priorities:
+    - "priority:P0"
+    - "priority:P1"
+    - "priority:P2"
+  phases:
+    - "phase:P0"
+    - "phase:P1"
+    - "phase:P2"
+    - "phase:P3"
+    - "phase:P4"
+    - "phase:P5"
+
+# Change levels (CHG)
+change_levels:
+  L1:
+    name: "Patch"
+    description: "Bug fix, no spec change"
+    gates_required: []
+    approval: "Developer"
+    sla_days: 0
+  L2:
+    name: "Minor"
+    description: "Scope change, spec update"
+    gates_required: ["affected"]
+    approval: "PO"
+    sla_days: 2
+  L3:
+    name: "Major"
+    description: "Architecture change"
+    gates_required: ["all"]
+    approval: "Architect"
+    sla_days: 5
+
+# Layer to artifact mapping
+layer_mapping:
+  1: "BRD"
+  2: "PRD"
+  3: "EARS"
+  4: "BDD"
+  5: "ADR"
+  6: "SYS"
+  7: "REQ"
+  8: "CTR"
+  9: "SPEC"
+  10: "TSPEC"
+  11: "TASKS"
+  12: "CODE"
+  13: "TESTS"
+  14: "RELEASE"
+
+# Work type to layer mapping
+work_types:
+  new_feature:
+    layers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    description: "Full SDD flow"
+  enhancement:
+    layers: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    description: "PRD→TASKS"
+  bug_fix:
+    layers: [11]
+    description: "TASKS only"
+  hotfix:
+    layers: []
+    description: "Code only + 72h retroactive docs"
+  config_change:
+    layers: [5, 11]
+    description: "ADR + TASKS"
+  refactoring:
+    layers: [5, 9, 10, 11]
+    description: "ADR + SPEC + TSPEC + TASKS"
+
+# RACI roles
+raci_roles:
+  - "Project Lead"
+  - "Product Manager"
+  - "Architect"
+  - "Developer"
+  - "QA Lead"
+  - "DevOps"
+
+# Sprint 0 checklist
+sprint_0_checklist:
+  - id: "0.1"
+    task: "Identify blocking technical questions"
+    output: "Question list"
+    blocks: ["all"]
+  - id: "0.2"
+    task: "Research each question"
+    output: "Research notes"
+    blocks: ["0.3"]
+  - id: "0.3"
+    task: "Document decisions as ADRs"
+    output: "ADR-01 through ADR-NN"
+    blocks: ["sprint_1"]
+  - id: "0.4"
+    task: "Validate BRD completeness"
+    output: "BRD validation report"
+    blocks: ["0.5"]
+  - id: "0.5"
+    task: "Generate PRD from BRD"
+    output: "PRD-01 through PRD-NN"
+    blocks: ["0.6"]
+  - id: "0.6"
+    task: "Generate EARS from PRD"
+    output: "EARS-01 through EARS-NN"
+    blocks: ["0.7"]
+  - id: "0.7"
+    task: "Generate BDD from EARS"
+    output: "BDD-01 through BDD-NN"
+    blocks: ["sprint_1"]
+  - id: "0.8"
+    task: "Set up GitHub Project board"
+    output: "Configured board"
+    blocks: ["sprint_1"]
