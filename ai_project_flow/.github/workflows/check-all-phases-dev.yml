@@ -1,0 +1,95 @@
+name: Check All Phases Dev Complete
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: write
+
+env:
+  TOTAL_PHASES: 8
+  GH_HOST: "{GITHUB_HOST}"
+
+jobs:
+  check:
+    name: Check All Phases
+    runs-on: self-hosted
+    outputs:
+      all_complete: ${{ steps.check.outputs.all_complete }}
+      final_image_tag: ${{ steps.check.outputs.final_image_tag }}
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Check all phases dev_deployed
+        id: check
+        run: |
+          ALL_COMPLETE="true"
+          FINAL_IMAGE=""
+          INCOMPLETE_PHASES=""
+
+          echo "Checking ${TOTAL_PHASES} phases for dev_deployed status..."
+          echo ""
+
+          for phase in $(seq 1 ${TOTAL_PHASES}); do
+            STATUS=$(jq -r ".phases.\"${phase}\".status // \"pending\"" governance/cicd/phase-deployments.json)
+            SMOKE=$(jq -r ".phases.\"${phase}\".dev.smoke_results // \"null\"" governance/cicd/phase-deployments.json)
+            NAME=$(jq -r ".phases.\"${phase}\".name // \"Phase ${phase}\"" governance/cicd/phase-deployments.json)
+
+            if [ "$STATUS" == "dev_deployed" ] && [ "$SMOKE" == "passed" ]; then
+              echo "✓ Phase ${phase} (${NAME}): ${STATUS}, smoke: ${SMOKE}"
+            else
+              echo "✗ Phase ${phase} (${NAME}): ${STATUS}, smoke: ${SMOKE}"
+              ALL_COMPLETE="false"
+              INCOMPLETE_PHASES="${INCOMPLETE_PHASES} ${phase}"
+            fi
+          done
+
+          echo ""
+
+          if [ "$ALL_COMPLETE" == "true" ]; then
+            # Get final phase image tag
+            FINAL_IMAGE=$(jq -r ".phases.\"${TOTAL_PHASES}\".image_tag // empty" governance/cicd/phase-deployments.json)
+            echo "All ${TOTAL_PHASES} phases complete!"
+            echo "Final image tag: ${FINAL_IMAGE}"
+          else
+            echo "Waiting for phases:${INCOMPLETE_PHASES}"
+          fi
+
+          echo "all_complete=${ALL_COMPLETE}" >> $GITHUB_OUTPUT
+          echo "final_image_tag=${FINAL_IMAGE}" >> $GITHUB_OUTPUT
+
+  trigger-staging:
+    name: Trigger Staging Deployment
+    runs-on: self-hosted
+    needs: [check]
+    if: needs.check.outputs.all_complete == 'true'
+    steps:
+      - name: Post Teams notification
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "good",
+            "summary": "All Phases Dev Complete",
+            "sections": [{
+              "activityTitle": "All 8 Phases Deployed to Dev",
+              "facts": [
+                {"name": "Status", "value": "Triggering staging deployment"},
+                {"name": "Image", "value": "'${{ needs.check.outputs.final_image_tag }}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
+
+      - name: Trigger staging deployment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Triggering staging deployment with image: ${{ needs.check.outputs.final_image_tag }}"
+          GH_HOST={GITHUB_HOST} gh workflow run deploy-staging.yml \
+            -f image_tag=${{ needs.check.outputs.final_image_tag }}

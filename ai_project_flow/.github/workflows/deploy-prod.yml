@@ -1,0 +1,266 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "DEPLOY" to confirm'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  issues: read
+
+env:
+  SERVICE_NAME: "{PROJECT_PREFIX}-{SERVICE_NAME}"
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT_PROD }}
+  GCP_PROJECT_STAGING: ${{ secrets.GCP_PROJECT_STAGING }}
+  REGION: "{GCP_REGION}"
+  TOTAL_PHASES: 8
+  ROLLOUT_ERROR_THRESHOLD: 0.01
+  ROLLOUT_STEP_DURATION: 60
+  DEPLOYMENT_WINDOW_START: 10
+  DEPLOYMENT_WINDOW_END: 16
+
+jobs:
+  verify:
+    name: Verify Prerequisites
+    runs-on: self-hosted
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+      staging_image: ${{ steps.image.outputs.image }}
+    steps:
+      - name: Validate confirmation
+        if: inputs.confirm != 'DEPLOY'
+        run: |
+          echo "::error::You must type 'DEPLOY' to confirm"
+          exit 1
+
+      - name: Check deployment window
+        run: |
+          HOUR=$(TZ={TIMEZONE} date +%H)
+          DAY=$(TZ={TIMEZONE} date +%u)
+
+          if [ "$DAY" -gt 5 ]; then
+            echo "::error::Production deployments not allowed on weekends"
+            exit 1
+          fi
+
+          if [ "$HOUR" -lt "$DEPLOYMENT_WINDOW_START" ] || [ "$HOUR" -ge "$DEPLOYMENT_WINDOW_END" ]; then
+            echo "::error::Production deployments only allowed ${DEPLOYMENT_WINDOW_START}:00-${DEPLOYMENT_WINDOW_END}:00 EST"
+            exit 1
+          fi
+
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Check all phases complete
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/verify_prod_readiness.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --total-phases ${TOTAL_PHASES} \
+            --check-blockers
+
+      - name: Authenticate to GCP (WIF) - Staging
+        run: |
+          echo '${{ secrets.WIF_CREDENTIALS_STAGING }}' > /tmp/creds.json
+          gcloud auth login --cred-file=/tmp/creds.json --quiet
+          gcloud config set project ${GCP_PROJECT_STAGING}
+
+      - name: Get staging image
+        id: image
+        run: |
+          IMAGE=$(gcloud run services describe ${SERVICE_NAME} \
+            --project ${GCP_PROJECT_STAGING} \
+            --region ${REGION} \
+            --format 'value(spec.template.spec.containers[0].image)')
+          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/creds.json
+
+      - name: Notify Teams - Deployment Starting
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "0076D7",
+            "summary": "Production Deployment Starting",
+            "sections": [{
+              "activityTitle": "🚀 Production Deployment Starting",
+              "facts": [
+                {"name": "Triggered by", "value": "${{ github.actor }}"},
+                {"name": "Run", "value": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
+
+  deploy:
+    name: Deploy to Production
+    runs-on: self-hosted
+    needs: [verify]
+    if: needs.verify.outputs.ready == 'true'
+    environment: production
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Authenticate to GCP (WIF) - Production
+        run: |
+          echo '${{ secrets.WIF_CREDENTIALS_PROD }}' > /tmp/creds.json
+          gcloud auth login --cred-file=/tmp/creds.json --quiet
+          gcloud config set project ${GCP_PROJECT}
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+
+      - name: Record previous revisions
+        id: previous
+        run: |
+          # Store last 5 revisions for multi-step rollback
+          REVISIONS=$(gcloud run revisions list \
+            --service ${SERVICE_NAME} \
+            --region ${REGION} \
+            --format="value(name)" \
+            --limit 5 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+
+          PREV_REVISION=$(echo $REVISIONS | cut -d',' -f1)
+
+          echo "revision=${PREV_REVISION}" >> $GITHUB_OUTPUT
+          echo "revision_history=${REVISIONS}" >> $GITHUB_OUTPUT
+
+      - name: Copy image to production registry
+        run: |
+          docker pull ${{ needs.verify.outputs.staging_image }}
+          docker tag ${{ needs.verify.outputs.staging_image }} \
+            ${REGION}-docker.pkg.dev/${GCP_PROJECT}/{PROJECT_PREFIX}/${SERVICE_NAME}:prod-${{ github.sha }}
+          docker push ${REGION}-docker.pkg.dev/${GCP_PROJECT}/{PROJECT_PREFIX}/${SERVICE_NAME}:prod-${{ github.sha }}
+
+      - name: Deploy with 0% traffic
+        run: |
+          gcloud run deploy ${SERVICE_NAME} \
+            --image ${REGION}-docker.pkg.dev/${GCP_PROJECT}/{PROJECT_PREFIX}/${SERVICE_NAME}:prod-${{ github.sha }} \
+            --region ${REGION} \
+            --min-instances 2 \
+            --max-instances 10 \
+            --memory 2Gi \
+            --cpu 2 \
+            --no-traffic \
+            --set-env-vars="ENVIRONMENT=production"
+
+      - name: Get new revision
+        id: new_revision
+        run: |
+          NEW_REVISION=$(gcloud run revisions list \
+            --service ${SERVICE_NAME} \
+            --region ${REGION} \
+            --format 'value(name)' \
+            --limit 1)
+          echo "revision=${NEW_REVISION}" >> $GITHUB_OUTPUT
+
+      - name: Get service URL
+        id: url
+        run: |
+          URL=$(gcloud run services describe ${SERVICE_NAME} --region ${REGION} --format 'value(status.url)')
+          echo "url=${URL}" >> $GITHUB_OUTPUT
+
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt --quiet
+
+      - name: Run smoke tests (0% traffic)
+        run: |
+          REVISION_URL=$(gcloud run revisions describe ${{ steps.new_revision.outputs.revision }} \
+            --region ${REGION} \
+            --format 'value(status.url)')
+          TOKEN=$(gcloud auth print-identity-token --audiences=${REVISION_URL})
+
+          pytest tests/acceptance/smoke -v \
+            --base-url=${REVISION_URL} \
+            --auth-token=${TOKEN}
+
+      - name: Gradual rollout with monitoring
+        id: rollout
+        run: |
+          for PERCENT in 10 50 100; do
+            echo "Shifting $PERCENT% traffic to new revision..."
+
+            gcloud run services update-traffic ${SERVICE_NAME} \
+              --region ${REGION} \
+              --to-revisions=${{ steps.new_revision.outputs.revision }}=${PERCENT}
+
+            if [ "$PERCENT" -lt 100 ]; then
+              echo "Monitoring for ${ROLLOUT_STEP_DURATION}s..."
+              sleep ${ROLLOUT_STEP_DURATION}
+
+              ERROR_RATE=$(python3 scripts/workflows/check_error_rate.py \
+                --project ${GCP_PROJECT} \
+                --service ${SERVICE_NAME} \
+                --window ${ROLLOUT_STEP_DURATION} \
+                --threshold ${ROLLOUT_ERROR_THRESHOLD} || echo "ok")
+
+              if [ "$ERROR_RATE" == "exceeded" ]; then
+                echo "::error::Error rate exceeded at ${PERCENT}% - rolling back"
+                gcloud run services update-traffic ${SERVICE_NAME} \
+                  --region ${REGION} \
+                  --to-revisions=${{ steps.previous.outputs.revision }}=100
+                echo "rollback_needed=true" >> $GITHUB_OUTPUT
+                exit 1
+              fi
+            fi
+          done
+          echo "rollback_needed=false" >> $GITHUB_OUTPUT
+
+      - name: Update tracking file
+        if: steps.rollout.outputs.rollback_needed != 'true'
+        run: |
+          python3 scripts/workflows/update_prod_tracking.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --commit-sha ${{ github.sha }} \
+            --current-revision ${{ steps.new_revision.outputs.revision }} \
+            --previous-revision ${{ steps.previous.outputs.revision }} \
+            --revision-history "${{ steps.previous.outputs.revision_history }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add governance/cicd/phase-deployments.json
+          git commit -m "chore: production deployed ${{ github.sha }}
+
+          Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>"
+          git push origin main
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/creds.json
+
+      - name: Post success to Teams
+        if: steps.rollout.outputs.rollback_needed != 'true'
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "good",
+            "summary": "Production Deployment Complete",
+            "sections": [{
+              "activityTitle": "Production Deployment Complete",
+              "facts": [
+                {"name": "Status", "value": "SUCCESS"},
+                {"name": "URL", "value": "'${{ steps.url.outputs.url }}'"},
+                {"name": "Triggered by", "value": "'${{ github.actor }}'"},
+                {"name": "Revision", "value": "'${{ steps.new_revision.outputs.revision }}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK}
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/creds.json

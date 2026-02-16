@@ -1,0 +1,184 @@
+name: Phase Transition
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase_number:
+        description: 'Phase number to transition'
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+          - '7'
+          - '8'
+      target_status:
+        description: 'Target board status'
+        required: true
+        default: 'Backlog'
+        type: choice
+        options:
+          - Todo
+          - Backlog
+
+permissions:
+  issues: read
+  repository-projects: write
+
+env:
+  PROJECT_NUMBER: 31
+  ORG: "{GITHUB_ORG}"
+
+jobs:
+  transition-phase:
+    name: Transition Phase ${{ inputs.phase_number }} to ${{ inputs.target_status }}
+    runs-on: self-hosted
+    steps:
+      - name: Transition phase issues
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          GH_HOST: "{GITHUB_HOST}"
+          PHASE_LABEL: "phase:${{ inputs.phase_number }}"
+        run: |
+          echo "=== Phase Transition ==="
+          echo "Phase: ${{ inputs.phase_number }}"
+          echo "Target Status: ${{ inputs.target_status }}"
+          echo ""
+
+          # Get project ID
+          PROJECT_ID=$(gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org) {
+                projectV2(number: $number) {
+                  id
+                }
+              }
+            }' -f org="${ORG}" -F number=${PROJECT_NUMBER} --jq '.data.organization.projectV2.id')
+
+          echo "Project ID: $PROJECT_ID"
+
+          # Get Status field ID and option IDs
+          FIELD_DATA=$(gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org) {
+                projectV2(number: $number) {
+                  field(name: "Status") {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      options {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org="${ORG}" -F number=${PROJECT_NUMBER})
+
+          STATUS_FIELD_ID=$(echo "$FIELD_DATA" | jq -r '.data.organization.projectV2.field.id')
+          TARGET_OPTION_ID=$(echo "$FIELD_DATA" | jq -r --arg status "${{ inputs.target_status }}" '.data.organization.projectV2.field.options[] | select(.name == $status) | .id')
+
+          echo "Status Field ID: $STATUS_FIELD_ID"
+          echo "Target Option ID: $TARGET_OPTION_ID"
+
+          # List issues with the phase label
+          REPO="${{ github.repository }}"
+          ISSUES=$(gh issue list --repo "$REPO" --label "$PHASE_LABEL" --state open --json number,nodeId,title --limit 100)
+          ISSUE_COUNT=$(echo "$ISSUES" | jq length)
+
+          echo ""
+          echo "Found $ISSUE_COUNT open issues with label '$PHASE_LABEL'"
+          echo ""
+
+          if [ "$ISSUE_COUNT" -eq 0 ]; then
+            echo "No issues to transition."
+            exit 0
+          fi
+
+          # Determine which source statuses to transition from
+          if [ "${{ inputs.target_status }}" = "Backlog" ]; then
+            SOURCE_STATUS="Todo"
+          else
+            SOURCE_STATUS="Backlog"
+          fi
+
+          SOURCE_OPTION_ID=$(echo "$FIELD_DATA" | jq -r --arg status "$SOURCE_STATUS" '.data.organization.projectV2.field.options[] | select(.name == $status) | .id')
+
+          UPDATED=0
+          SKIPPED=0
+
+          while read -r issue; do
+            ISSUE_NUM=$(echo "$issue" | jq -r '.number')
+            ISSUE_NODE_ID=$(echo "$issue" | jq -r '.nodeId')
+            ISSUE_TITLE=$(echo "$issue" | jq -r '.title')
+
+            echo "Processing #${ISSUE_NUM}: ${ISSUE_TITLE}"
+
+            # Find project item for this issue
+            ITEM_DATA=$(gh api graphql -f query='
+              query($org: String!, $number: Int!) {
+                organization(login: $org) {
+                  projectV2(number: $number) {
+                    items(first: 100) {
+                      nodes {
+                        id
+                        content {
+                          ... on Issue {
+                            id
+                          }
+                        }
+                        fieldValueByName(name: "Status") {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            optionId
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }' -f org="${ORG}" -F number="${PROJECT_NUMBER}" \
+              --jq ".data.organization.projectV2.items.nodes[] | select(.content.id == \"$ISSUE_NODE_ID\")")
+
+            if [ -z "$ITEM_DATA" ]; then
+              echo "  - Not on project board, skipping"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            ITEM_ID=$(echo "$ITEM_DATA" | jq -r '.id')
+            CURRENT_STATUS=$(echo "$ITEM_DATA" | jq -r '.fieldValueByName.name // "none"')
+
+            # Only transition from the expected source status
+            if [ "$CURRENT_STATUS" != "$SOURCE_STATUS" ]; then
+              echo "  - Current status: $CURRENT_STATUS (not $SOURCE_STATUS), skipping"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            # Update status
+            gh api graphql -f query='
+              mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $project
+                  itemId: $item
+                  fieldId: $field
+                  value: {singleSelectOptionId: $value}
+                }) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }' -f project="$PROJECT_ID" -f item="$ITEM_ID" -f field="$STATUS_FIELD_ID" -f value="$TARGET_OPTION_ID"
+
+            echo "  ✓ #${ISSUE_NUM}: $SOURCE_STATUS -> ${{ inputs.target_status }}"
+            UPDATED=$((UPDATED + 1))
+          done < <(echo "$ISSUES" | jq -c '.[]')
+
+          echo ""
+          echo "=== Phase ${{ inputs.phase_number }} Transition Complete ==="
+          echo "Updated: $UPDATED | Skipped: $SKIPPED"

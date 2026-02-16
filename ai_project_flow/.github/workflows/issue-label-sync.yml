@@ -1,0 +1,195 @@
+name: Issue Label Sync
+
+on:
+  issues:
+    types: [labeled, unlabeled, assigned, closed]
+
+permissions:
+  issues: write
+  repository-projects: write
+
+env:
+  PROJECT_NUMBER: 31
+  ORG: "{GITHUB_ORG}"
+
+jobs:
+  sync-status:
+    name: Sync Label to Board Status
+    runs-on: self-hosted
+    steps:
+      - name: Determine target status
+        id: target
+        env:
+          EVENT: ${{ github.event.action }}
+          LABEL: ${{ github.event.label.name }}
+        run: |
+
+          TARGET_STATUS=""
+
+          if [ "$EVENT" = "closed" ]; then
+            TARGET_STATUS="Done"
+          elif [ "$EVENT" = "labeled" ]; then
+            case "$LABEL" in
+              "ai:in-progress"|"status:in-progress")
+                TARGET_STATUS="In Progress"
+                ;;
+              "ai:review-requested"|"status:review")
+                TARGET_STATUS="In Review"
+                ;;
+              "ai:blocked"|"status:blocked")
+                # Do not change board status for blocked labels
+                ;;
+            esac
+          elif [ "$EVENT" = "unlabeled" ]; then
+            case "$LABEL" in
+              "ai:in-progress"|"status:in-progress")
+                LABELS='${{ toJSON(github.event.issue.labels.*.name) }}'
+                HAS_REVIEW=$(echo "$LABELS" | jq -r '.[] | select(. == "ai:review-requested" or . == "status:review")' | head -1)
+                if [ -z "$HAS_REVIEW" ]; then
+                  TARGET_STATUS="Backlog"
+                fi
+                ;;
+            esac
+          elif [ "$EVENT" = "assigned" ]; then
+            LABELS='${{ toJSON(github.event.issue.labels.*.name) }}'
+            HAS_AI_LABEL=$(echo "$LABELS" | jq -r '.[] | select(startswith("ai:"))' | head -1)
+            if [ -z "$HAS_AI_LABEL" ]; then
+              TARGET_STATUS="In Progress"
+            fi
+          fi
+
+          echo "target_status=$TARGET_STATUS" >> "$GITHUB_OUTPUT"
+          if [ -n "$TARGET_STATUS" ]; then
+            echo "Status transition: $EVENT ($LABEL) -> $TARGET_STATUS"
+          else
+            echo "No status transition needed for: $EVENT ($LABEL)"
+          fi
+
+      - name: Update board status
+        if: steps.target.outputs.target_status != ''
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          GH_HOST: "{GITHUB_HOST}"
+          TARGET_STATUS: ${{ steps.target.outputs.target_status }}
+        run: |
+          ISSUE_NODE_ID="${{ github.event.issue.node_id }}"
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+
+          # Get project ID, Status field, and options in one query
+          PROJECT_DATA=$(gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org) {
+                projectV2(number: $number) {
+                  id
+                  field(name: "Status") {
+                    ... on ProjectV2SingleSelectField {
+                      id
+                      options {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org="${ORG}" -F number=${PROJECT_NUMBER})
+
+          PROJECT_ID=$(echo "$PROJECT_DATA" | jq -r '.data.organization.projectV2.id')
+          STATUS_FIELD_ID=$(echo "$PROJECT_DATA" | jq -r '.data.organization.projectV2.field.id')
+          OPTION_ID=$(echo "$PROJECT_DATA" | jq -r --arg status "$TARGET_STATUS" \
+            '.data.organization.projectV2.field.options[] | select(.name == $status) | .id')
+
+          if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "null" ]; then
+            echo "ERROR: Could not find project #${PROJECT_NUMBER}"
+            exit 1
+          fi
+
+          if [ -z "$STATUS_FIELD_ID" ] || [ -z "$OPTION_ID" ] || [ "$OPTION_ID" = "null" ]; then
+            echo "Warning: Could not find status option '${TARGET_STATUS}'"
+            exit 0
+          fi
+
+          # Find project item by content ID (paginate up to 500 items)
+          ITEM_ID=""
+          CURSOR=""
+          for i in 1 2 3 4 5; do
+            if [ -z "$CURSOR" ]; then
+              PAGE=$(gh api graphql -f query='
+                query($org: String!, $number: Int!) {
+                  organization(login: $org) {
+                    projectV2(number: $number) {
+                      items(first: 100) {
+                        pageInfo { hasNextPage endCursor }
+                        nodes { id content { ... on Issue { id } } }
+                      }
+                    }
+                  }
+                }' -f org="${ORG}" -F number=${PROJECT_NUMBER})
+            else
+              PAGE=$(gh api graphql -f query='
+                query($org: String!, $number: Int!, $cursor: String!) {
+                  organization(login: $org) {
+                    projectV2(number: $number) {
+                      items(first: 100, after: $cursor) {
+                        pageInfo { hasNextPage endCursor }
+                        nodes { id content { ... on Issue { id } } }
+                      }
+                    }
+                  }
+                }' -f org="${ORG}" -F number=${PROJECT_NUMBER} -f cursor="$CURSOR")
+            fi
+
+            ITEM_ID=$(echo "$PAGE" | jq -r --arg cid "$ISSUE_NODE_ID" \
+              '.data.organization.projectV2.items.nodes[] | select(.content.id == $cid) | .id')
+            if [ -n "$ITEM_ID" ] && [ "$ITEM_ID" != "null" ]; then
+              break
+            fi
+
+            HAS_NEXT=$(echo "$PAGE" | jq -r '.data.organization.projectV2.items.pageInfo.hasNextPage')
+            if [ "$HAS_NEXT" != "true" ]; then
+              break
+            fi
+            CURSOR=$(echo "$PAGE" | jq -r '.data.organization.projectV2.items.pageInfo.endCursor')
+          done
+
+          if [ -z "$ITEM_ID" ] || [ "$ITEM_ID" = "null" ]; then
+            echo "Issue #${ISSUE_NUMBER} not found on project board, skipping"
+            exit 0
+          fi
+
+          # Update status
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: {singleSelectOptionId: $value}
+              }) {
+                projectV2Item { id }
+              }
+            }' -f project="$PROJECT_ID" -f item="$ITEM_ID" \
+            -f field="$STATUS_FIELD_ID" -f value="$OPTION_ID" > /dev/null
+
+          echo "Issue #${ISSUE_NUMBER} status set to: ${TARGET_STATUS}"
+
+      - name: Remove stale labels on close
+        if: github.event.action == 'closed'
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          GH_HOST: "{GITHUB_HOST}"
+        run: |
+          REPO="${{ github.repository }}"
+          ISSUE="${{ github.event.issue.number }}"
+          STALE_LABELS="ai:ready ai:in-progress ai:review-requested status:planning"
+
+          for LABEL in $STALE_LABELS; do
+            ENCODED=$(echo "$LABEL" | sed 's/:/%3A/g')
+            HTTP_CODE=$(gh api "repos/${REPO}/issues/${ISSUE}/labels/${ENCODED}" \
+              -X DELETE --silent -i 2>/dev/null | head -1 | awk '{print $2}')
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Removed label: $LABEL"
+            else
+              echo "  Label not present (skipped): $LABEL"
+            fi
+          done

@@ -1,0 +1,88 @@
+name: Check Phase Completion
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  issues:
+    types: [closed, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+  actions: write
+
+env:
+  GH_HOST: "{GITHUB_HOST}"
+  TOTAL_PHASES: 8
+
+jobs:
+  check:
+    name: Check Phase Completion
+    runs-on: self-hosted
+    outputs:
+      phase_completed: ${{ steps.check.outputs.phase_completed }}
+      phase_number: ${{ steps.check.outputs.phase_number }}
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Handle issue reopen
+        if: github.event_name == 'issues' && github.event.action == 'reopened'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/handle_issue_reopen.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --issue-number ${{ github.event.issue.number }}
+
+      - name: Check phase completion
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/check_phase_completion.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --total-phases ${TOTAL_PHASES} \
+            --output-github-actions \
+            --rate-limit 100
+
+      - name: Commit tracking updates
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add governance/cicd/phase-deployments.json || true
+          git diff --staged --quiet || git commit -m "chore: update phase tracking
+
+          Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>"
+          git push origin main || true
+
+      - name: Post phase completion notification
+        if: steps.check.outputs.phase_completed == 'true'
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "good",
+            "summary": "Phase '${{ steps.check.outputs.phase_number }}' Complete",
+            "sections": [{
+              "activityTitle": "Phase '${{ steps.check.outputs.phase_number }}' Development Complete",
+              "facts": [
+                {"name": "Status", "value": "All issues done"},
+                {"name": "Next Step", "value": "Dev deployment triggered"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
+
+      - name: Trigger dev deployment
+        if: steps.check.outputs.phase_completed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # IPLAN-011: Phase-gated deployment - deploy to dev first, staging when all phases complete
+          GH_HOST={GITHUB_HOST} gh workflow run deploy-dev.yml \
+            -f phase=${{ steps.check.outputs.phase_number }}

@@ -1,0 +1,29 @@
+services:
+  ghes-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUNNER_VERSION: "2.311.0"
+        GHES_RUNNER_URL: ""
+    container_name: ghes-runner-{PROJECT_PREFIX}
+    restart: unless-stopped
+    environment:
+      GHES_URL: "https://{GITHUB_HOST}"
+      GHES_PAT: "${GHES_PAT}"
+      GHES_ORG: "{GITHUB_ORG}"
+      GHES_REPO: "{REPO_NAME}"
+      RUNNER_NAME: "local-docker-01"
+      RUNNER_LABELS: "ubuntu-latest"
+      RUNNER_SCOPE: "repo"
+      RUNNER_EPHEMERAL: "false"
+      GH_HOST: "{GITHUB_HOST}"
+    volumes:
+      # Mount host Docker socket so runner can run container actions
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Optional: limit resources to avoid workflow jobs consuming all host resources
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G

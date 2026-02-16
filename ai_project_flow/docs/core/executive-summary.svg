@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1100" font-family="Arial, sans-serif">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#4285f4"/>
+    </linearGradient>
+    <linearGradient id="gcpGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4285f4"/>
+      <stop offset="100%" style="stop-color:#1a73e8"/>
+    </linearGradient>
+    <linearGradient id="awsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9900"/>
+      <stop offset="100%" style="stop-color:#ec7211"/>
+    </linearGradient>
+    <linearGradient id="azureGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078d4"/>
+      <stop offset="100%" style="stop-color:#005a9e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5f6368"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="1100" fill="#f8f9fa"/>
+  
+  <!-- Title Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="35" text-anchor="middle" fill="white" font-size="28" font-weight="bold">AI Cost Monitoring System</text>
+  <text x="600" y="60" text-anchor="middle" fill="#c2e0ff" font-size="16">Executive Summary — Protect Your Cloud Budget Automatically</text>
+  
+  <!-- The Problem -->
+  <rect x="50" y="100" width="530" height="130" rx="10" fill="white" stroke="#ea4335" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="100" width="530" height="35" rx="10" fill="#ea4335"/>
+  <rect x="50" y="127" width="530" height="8" fill="#ea4335"/>
+  <text x="315" y="125" text-anchor="middle" fill="white" font-weight="bold" font-size="14">THE PROBLEM</text>
+  
+  <text x="70" y="160" font-size="12" fill="#5f6368">• 30-47% of cloud spend is wasted</text>
+  <text x="70" y="180" font-size="12" fill="#5f6368">• AI/ML services can generate $10K+ daily from one bug</text>
+  <text x="70" y="200" font-size="12" fill="#ea4335" font-weight="bold">• Cloud providers send alerts but do NOT stop services</text>
+  <text x="70" y="220" font-size="12" fill="#5f6368">• By the time you see the bill, the damage is done</text>
+  
+  <!-- The Solution -->
+  <rect x="620" y="100" width="530" height="130" rx="10" fill="white" stroke="#34a853" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="620" y="100" width="530" height="35" rx="10" fill="#34a853"/>
+  <rect x="620" y="127" width="530" height="8" fill="#34a853"/>
+  <text x="885" y="125" text-anchor="middle" fill="white" font-weight="bold" font-size="14">THE SOLUTION</text>
+  
+  <text x="640" y="160" font-size="12" fill="#5f6368">• Intelligent circuit breaker with automatic actions</text>
+  <text x="640" y="180" font-size="12" fill="#5f6368">• Per-service + overall threshold protection</text>
+  <text x="640" y="200" font-size="12" fill="#34a853" font-weight="bold">• YOUR agent executes stop commands automatically</text>
+  <text x="640" y="220" font-size="12" fill="#5f6368">• Production resources protected via labels</text>
+  
+  <!-- Architecture Overview -->
+  <rect x="50" y="250" width="1100" height="280" rx="10" fill="white" stroke="#1a73e8" stroke-width="2" filter="url(#shadow)"/>
+  <text x="600" y="280" text-anchor="middle" font-weight="bold" font-size="16" fill="#1a73e8">SYSTEM ARCHITECTURE</text>
+  
+  <!-- Cloud Providers -->
+  <rect x="100" y="310" width="140" height="60" rx="8" fill="url(#gcpGrad)"/>
+  <text x="170" y="345" text-anchor="middle" fill="white" font-weight="bold" font-size="12">GCP</text>
+  <text x="170" y="360" text-anchor="middle" fill="#c2e0ff" font-size="9">Phase 1 ✓</text>
+  
+  <rect x="280" y="310" width="140" height="60" rx="8" fill="url(#awsGrad)"/>
+  <text x="350" y="345" text-anchor="middle" fill="white" font-weight="bold" font-size="12">AWS</text>
+  <text x="350" y="360" text-anchor="middle" fill="#ffe0b2" font-size="9">Phase 2</text>
+  
+  <rect x="460" y="310" width="140" height="60" rx="8" fill="url(#azureGrad)"/>
+  <text x="530" y="345" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Azure</text>
+  <text x="530" y="360" text-anchor="middle" fill="#bbdefb" font-size="9">Phase 3</text>
+  
+  <!-- Arrows down -->
+  <path d="M170 370 L170 400 L400 400 L400 420" stroke="#5f6368" stroke-width="2" fill="none"/>
+  <path d="M350 370 L350 400 L400 400" stroke="#5f6368" stroke-width="2" fill="none"/>
+  <path d="M530 370 L530 400 L400 400" stroke="#5f6368" stroke-width="2" fill="none"/>
+  
+  <!-- MCP Server -->
+  <rect x="300" y="420" width="200" height="50" rx="8" fill="#fef7e0" stroke="#fbbc04" stroke-width="2"/>
+  <text x="400" y="445" text-anchor="middle" font-weight="bold" font-size="11" fill="#e37400">MCP Server</text>
+  <text x="400" y="460" text-anchor="middle" font-size="9" fill="#5f6368">Your Agent</text>
+  
+  <!-- Arrow to Circuit Breaker -->
+  <path d="M400 470 L400 490" stroke="#5f6368" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Circuit Breaker -->
+  <rect x="300" y="490" width="200" height="50" rx="8" fill="#fce8e6" stroke="#ea4335" stroke-width="2"/>
+  <text x="400" y="515" text-anchor="middle" font-weight="bold" font-size="11" fill="#ea4335">Circuit Breaker</text>
+  <text x="400" y="530" text-anchor="middle" font-size="9" fill="#5f6368">Two-Level Protection</text>
+  
+  <!-- Key Features Box -->
+  <rect x="650" y="300" width="450" height="210" rx="8" fill="#e8f0fe"/>
+  <text x="875" y="325" text-anchor="middle" font-weight="bold" font-size="12" fill="#1a73e8">KEY CAPABILITIES</text>
+  
+  <text x="670" y="350" font-size="11" fill="#5f6368">✓ 8 GCP APIs integrated</text>
+  <text x="670" y="370" font-size="11" fill="#5f6368">✓ 10 MCP tools available</text>
+  <text x="670" y="390" font-size="11" fill="#5f6368">✓ Natural language interface</text>
+  <text x="670" y="410" font-size="11" fill="#5f6368">✓ ML-powered recommendations</text>
+  <text x="670" y="430" font-size="11" fill="#5f6368">✓ Statistical anomaly detection</text>
+  <text x="670" y="450" font-size="11" fill="#5f6368">✓ Automatic stop actions</text>
+  <text x="670" y="470" font-size="11" fill="#5f6368">✓ Production protection labels</text>
+  <text x="670" y="490" font-size="11" fill="#5f6368">✓ Full audit trail</text>
+  
+  <!-- Two-Level Thresholds -->
+  <rect x="50" y="550" width="540" height="180" rx="10" fill="white" stroke="#ea4335" stroke-width="2" filter="url(#shadow)"/>
+  <text x="320" y="575" text-anchor="middle" font-weight="bold" font-size="14" fill="#ea4335">TWO-LEVEL CIRCUIT BREAKER</text>
+  
+  <!-- Per-Service -->
+  <rect x="70" y="595" width="240" height="120" rx="6" fill="#fce8e6"/>
+  <text x="190" y="615" text-anchor="middle" font-weight="bold" font-size="11" fill="#c5221f">Per-Service Thresholds</text>
+  <text x="85" y="640" font-size="10" fill="#5f6368">Vertex AI: $500→$1K→$2.5K→$5K</text>
+  <text x="85" y="658" font-size="10" fill="#5f6368">Compute: $300→$750→$1.5K→$3K</text>
+  <text x="85" y="676" font-size="10" fill="#5f6368">BigQuery: $200→$500→$1K→$2K</text>
+  <text x="190" y="700" text-anchor="middle" font-size="9" fill="#999">Granular control per service</text>
+  
+  <!-- Overall -->
+  <rect x="330" y="595" width="240" height="120" rx="6" fill="#fef7e0"/>
+  <text x="450" y="615" text-anchor="middle" font-weight="bold" font-size="11" fill="#e37400">Overall Thresholds</text>
+  <text x="345" y="640" font-size="10" fill="#5f6368">WARNING: $1,000/day</text>
+  <text x="345" y="658" font-size="10" fill="#5f6368">ELEVATED: $2,500/day</text>
+  <text x="345" y="676" font-size="10" fill="#5f6368">CRITICAL: $5,000/day</text>
+  <text x="345" y="694" font-size="10" fill="#c5221f">EMERGENCY: $10,000/day</text>
+  <text x="450" y="710" text-anchor="middle" font-size="9" fill="#999">Safety net for total spend</text>
+  
+  <!-- Who Does What -->
+  <rect x="610" y="550" width="540" height="180" rx="10" fill="white" stroke="#1a73e8" stroke-width="2" filter="url(#shadow)"/>
+  <text x="880" y="575" text-anchor="middle" font-weight="bold" font-size="14" fill="#1a73e8">WHO DOES WHAT</text>
+  
+  <!-- Google -->
+  <rect x="630" y="595" width="240" height="55" rx="6" fill="#e8f5e9"/>
+  <text x="750" y="617" text-anchor="middle" font-weight="bold" font-size="11" fill="#34a853">Cloud Providers</text>
+  <text x="750" y="637" text-anchor="middle" font-size="10" fill="#5f6368">Send Pub/Sub alerts only</text>
+  
+  <!-- Your Agent -->
+  <rect x="890" y="595" width="240" height="55" rx="6" fill="#e8f0fe"/>
+  <text x="1010" y="617" text-anchor="middle" font-weight="bold" font-size="11" fill="#1a73e8">YOUR Agent</text>
+  <text x="1010" y="637" text-anchor="middle" font-size="10" fill="#5f6368">Executes all stop commands</text>
+  
+  <!-- Warning -->
+  <rect x="630" y="660" width="500" height="55" rx="6" fill="#fff3e0"/>
+  <text x="880" y="685" text-anchor="middle" font-weight="bold" font-size="11" fill="#e65100">⚠️ CRITICAL INSIGHT</text>
+  <text x="880" y="705" text-anchor="middle" font-size="10" fill="#5f6368">Google/AWS/Azure will let you spend unlimited money. YOUR agent must take action.</text>
+  
+  <!-- Real Scenario -->
+  <rect x="50" y="750" width="700" height="180" rx="10" fill="white" stroke="#9334e6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="400" y="775" text-anchor="middle" font-weight="bold" font-size="14" fill="#9334e6">REAL SCENARIO: LLM Cost Spike</text>
+  
+  <!-- Timeline -->
+  <rect x="70" y="795" width="100" height="40" rx="4" fill="#e8f5e9"/>
+  <text x="120" y="812" text-anchor="middle" font-size="9" fill="#34a853">9 AM</text>
+  <text x="120" y="828" text-anchor="middle" font-size="8" fill="#5f6368">Bug deployed</text>
+  
+  <path d="M170 815 L190 815" stroke="#5f6368" stroke-width="1" marker-end="url(#arrow)"/>
+  
+  <rect x="190" y="795" width="100" height="40" rx="4" fill="#fff8e1"/>
+  <text x="240" y="812" text-anchor="middle" font-size="9" fill="#f9a825">11:30 AM</text>
+  <text x="240" y="828" text-anchor="middle" font-size="8" fill="#5f6368">$500 WARNING</text>
+  
+  <path d="M290 815 L310 815" stroke="#5f6368" stroke-width="1" marker-end="url(#arrow)"/>
+  
+  <rect x="310" y="795" width="100" height="40" rx="4" fill="#fff3e0"/>
+  <text x="360" y="812" text-anchor="middle" font-size="9" fill="#ef6c00">2:15 PM</text>
+  <text x="360" y="828" text-anchor="middle" font-size="8" fill="#5f6368">$1K ELEVATED</text>
+  
+  <path d="M410 815 L430 815" stroke="#5f6368" stroke-width="1" marker-end="url(#arrow)"/>
+  
+  <rect x="430" y="795" width="100" height="40" rx="4" fill="#fce8e6"/>
+  <text x="480" y="812" text-anchor="middle" font-size="9" fill="#ea4335">4:45 PM</text>
+  <text x="480" y="828" text-anchor="middle" font-size="8" fill="#c5221f">$2.5K CRITICAL</text>
+  
+  <path d="M530 815 L550 815" stroke="#5f6368" stroke-width="1" marker-end="url(#arrow)"/>
+  
+  <rect x="550" y="795" width="100" height="40" rx="4" fill="#e8f5e9"/>
+  <text x="600" y="812" text-anchor="middle" font-size="9" fill="#34a853">6 PM</text>
+  <text x="600" y="828" text-anchor="middle" font-size="8" fill="#5f6368">Bug fixed</text>
+  
+  <path d="M650 815 L670 815" stroke="#5f6368" stroke-width="1" marker-end="url(#arrow)"/>
+  
+  <rect x="670" y="795" width="60" height="40" rx="4" fill="#e8f0fe"/>
+  <text x="700" y="818" text-anchor="middle" font-size="9" fill="#1a73e8">$3,456</text>
+  
+  <!-- Result -->
+  <rect x="70" y="850" width="300" height="65" rx="4" fill="#fce8e6"/>
+  <text x="220" y="872" text-anchor="middle" font-weight="bold" font-size="11" fill="#c5221f">Without Protection</text>
+  <text x="220" y="892" text-anchor="middle" font-size="10" fill="#5f6368">Could reach $10,000+</text>
+  <text x="220" y="908" text-anchor="middle" font-size="10" fill="#5f6368">Production affected</text>
+  
+  <rect x="390" y="850" width="300" height="65" rx="4" fill="#e8f5e9"/>
+  <text x="540" y="872" text-anchor="middle" font-weight="bold" font-size="11" fill="#34a853">With Protection</text>
+  <text x="540" y="892" text-anchor="middle" font-size="10" fill="#5f6368">Capped at ~$3,500</text>
+  <text x="540" y="908" text-anchor="middle" font-size="10" fill="#5f6368">Production unaffected ✓</text>
+  
+  <!-- ROI Box -->
+  <rect x="770" y="750" width="380" height="180" rx="10" fill="white" stroke="#34a853" stroke-width="2" filter="url(#shadow)"/>
+  <text x="960" y="775" text-anchor="middle" font-weight="bold" font-size="14" fill="#34a853">RETURN ON INVESTMENT</text>
+  
+  <rect x="790" y="795" width="170" height="55" rx="6" fill="#e8f5e9"/>
+  <text x="875" y="817" text-anchor="middle" font-weight="bold" font-size="20" fill="#34a853">$20-80</text>
+  <text x="875" y="840" text-anchor="middle" font-size="10" fill="#5f6368">Monthly Cost</text>
+  
+  <rect x="970" y="795" width="170" height="55" rx="6" fill="#e8f0fe"/>
+  <text x="1055" y="817" text-anchor="middle" font-weight="bold" font-size="20" fill="#1a73e8">$1,000+</text>
+  <text x="1055" y="840" text-anchor="middle" font-size="10" fill="#5f6368">Per Incident Saved</text>
+  
+  <rect x="790" y="860" width="350" height="55" rx="6" fill="#fff3e0"/>
+  <text x="965" y="885" text-anchor="middle" font-weight="bold" font-size="12" fill="#e65100">System pays for itself by preventing</text>
+  <text x="965" y="905" text-anchor="middle" font-weight="bold" font-size="12" fill="#e65100">a single cost spike incident</text>
+  
+  <!-- Bottom Summary -->
+  <rect x="50" y="950" width="1100" height="60" rx="10" fill="#1a73e8" filter="url(#shadow)"/>
+  <text x="600" y="980" text-anchor="middle" font-weight="bold" font-size="16" fill="white">THE BOTTOM LINE</text>
+  <text x="600" y="1000" text-anchor="middle" font-size="13" fill="#c2e0ff">Google will let you spend unlimited money. This system won't.</text>
+  
+  <!-- Footer -->
+  <rect x="50" y="1025" width="1100" height="55" rx="8" fill="white" stroke="#dadce0" stroke-width="1"/>
+  <text x="150" y="1050" text-anchor="middle" font-size="11" fill="#5f6368"><tspan font-weight="bold">Target:</tspan> SMBs $50K-$500K/mo</text>
+  <text x="400" y="1050" text-anchor="middle" font-size="11" fill="#5f6368"><tspan font-weight="bold">Setup:</tspan> 45-60 minutes</text>
+  <text x="650" y="1050" text-anchor="middle" font-size="11" fill="#5f6368"><tspan font-weight="bold">Cost:</tspan> $20-80/month</text>
+  <text x="900" y="1050" text-anchor="middle" font-size="11" fill="#5f6368"><tspan font-weight="bold">Risk:</tspan> Zero (prod protected)</text>
+  <text x="600" y="1072" text-anchor="middle" font-size="10" fill="#9aa0a6">AI Cost Monitoring System — Executive Summary v1.0 — February 2026</text>
+</svg>

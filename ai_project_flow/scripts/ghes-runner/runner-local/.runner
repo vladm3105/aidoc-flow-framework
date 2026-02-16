@@ -1,0 +1,10 @@
+﻿{
+  "isHostedServer": false,
+  "agentId": 2,
+  "agentName": "local-aiocto-01",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://github.techtrend.us/_services/pipelines/0t4QfwEx6GYQlChZ9npWW6AytQOCHotO48MuBUFXumJJeSeCKg",
+  "gitHubUrl": "https://github.techtrend.us/USDA-AI-Innovation-Hub/AI-Cloud-Cost-Monitoring",
+  "workFolder": "_work"
+}

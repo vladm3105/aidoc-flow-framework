@@ -1,0 +1,34 @@
+# CODEOWNERS — Auto-assign PR reviewers by file path
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Rules:
+# - Later patterns override earlier ones
+# - Teams use @org/team-slug, individuals use @username
+# - Reviewers are automatically requested when a PR touches matching paths
+
+# Default — project leads review anything not matched below
+*                                       @vmyakota @jvalenzano
+
+# Governance and project management
+/governance/                            @vmyakota @jvalenzano
+/CLAUDE.md                              @vmyakota
+/README_AIAGENT.md                      @vmyakota @jvalenzano
+/CONTRIBUTING.md                        @vmyakota @jvalenzano
+
+# Security-sensitive files
+/.github/workflows/                     @vmyakota @jvalenzano
+/.github/CODEOWNERS                     @vmyakota @jvalenzano
+
+# Infrastructure
+/components/*/terraform/                @vmyakota @jvalenzano
+/components/infrastructure/             @vmyakota @jvalenzano
+
+# Components
+/components/gcp-cost-guard/             @vmyakota @jvalenzano
+/components/mcp-servers/                @vmyakota @jvalenzano
+/components/agents/                     @vmyakota @jvalenzano
+/components/frontend/                   @vmyakota @jvalenzano
+
+# Documentation and specs
+/docs/                                  @vmyakota @jvalenzano
+/docs/adr/                              @vmyakota @jvalenzano

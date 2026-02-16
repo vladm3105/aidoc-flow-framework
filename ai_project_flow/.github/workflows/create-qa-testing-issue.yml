@@ -1,0 +1,334 @@
+name: Create QA Testing Issue
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to create QA testing issue for'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+env:
+  GH_HOST: "{GITHUB_HOST}"
+
+jobs:
+  create-qa-testing-issue:
+    name: Create QA Testing Issue
+    runs-on: self-hosted
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true)
+    steps:
+      - name: Checkout
+        run: |
+          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
+          git checkout ${{ github.sha }}
+
+      - name: Get PR info
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            PR_NUMBER="${{ inputs.pr_number }}"
+          else
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+
+          echo "number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+
+          # Get PR details
+          PR_DATA=$(GH_HOST={GITHUB_HOST} gh pr view ${PR_NUMBER} --json title,body,mergedAt,headRefName,files)
+          PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
+          PR_BODY=$(echo "$PR_DATA" | jq -r '.body')
+          MERGED_AT=$(echo "$PR_DATA" | jq -r '.mergedAt')
+
+          echo "title=${PR_TITLE}" >> $GITHUB_OUTPUT
+          echo "merged_at=${MERGED_AT}" >> $GITHUB_OUTPUT
+
+          # Extract linked issue number from PR body (Closes #N, Fixes #N, Resolves #N)
+          DEV_ISSUE=$(echo "$PR_BODY" | grep -oiE '(closes|fixes|resolves)\s*#[0-9]+' | grep -oE '[0-9]+' | head -1)
+          echo "dev_issue=${DEV_ISSUE}" >> $GITHUB_OUTPUT
+
+          # Get changed files for QA determination
+          FILES=$(echo "$PR_DATA" | jq -r '.files[].path' | tr '\n' ',' | sed 's/,$//')
+          echo "files=${FILES}" >> $GITHUB_OUTPUT
+
+      - name: Skip if no linked development issue
+        if: steps.pr.outputs.dev_issue == ''
+        run: |
+          echo "::warning::No linked development issue found in PR body. Skipping QA issue creation."
+          exit 0
+
+      - name: Check if QA testing is required
+        if: steps.pr.outputs.dev_issue != ''
+        id: qa_check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/check_qa_required.py \
+            --pr-number "${{ steps.pr.outputs.number }}" \
+            --files "${{ steps.pr.outputs.files }}" \
+            --output-file /tmp/qa_check.json
+
+          QA_REQUIRED=$(jq -r '.qa_required' /tmp/qa_check.json)
+          REASON=$(jq -r '.reason' /tmp/qa_check.json)
+
+          echo "qa_required=${QA_REQUIRED}" >> $GITHUB_OUTPUT
+          echo "reason=${REASON}" >> $GITHUB_OUTPUT
+
+          if [ "$QA_REQUIRED" == "false" ]; then
+            echo "::notice::QA testing not required: ${REASON}"
+          fi
+
+      - name: Skip if QA not required
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'false'
+        run: |
+          echo "::notice::Skipping QA issue creation: ${{ steps.qa_check.outputs.reason }}"
+          exit 0
+
+      - name: Get development issue details
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true'
+        id: dev
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+
+          # Get issue details
+          ISSUE_DATA=$(GH_HOST={GITHUB_HOST} gh issue view ${DEV_ISSUE} --json title,labels,body)
+          ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')
+          ISSUE_BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
+
+          # Extract phase label
+          PHASE=$(echo "$ISSUE_DATA" | jq -r '.labels[].name' | grep -oE '^phase:[0-9]+$' | head -1)
+          PHASE_NUM=$(echo "$PHASE" | cut -d: -f2)
+
+          # Check if it's a development issue
+          IS_DEV=$(echo "$ISSUE_DATA" | jq -r '.labels[].name' | grep -c 'ai:development' || echo "0")
+
+          echo "title=${ISSUE_TITLE}" >> $GITHUB_OUTPUT
+          echo "phase=${PHASE}" >> $GITHUB_OUTPUT
+          echo "phase_num=${PHASE_NUM}" >> $GITHUB_OUTPUT
+          echo "is_dev=${IS_DEV}" >> $GITHUB_OUTPUT
+
+          # Extract task ID from title (e.g., [P1-1.1] or [P2-2.3])
+          TASK_ID=$(echo "$ISSUE_TITLE" | grep -oE '\[P[0-9]+-[0-9]+\.[0-9a-z]+\]' | tr -d '[]' || echo "")
+          if [ -z "$TASK_ID" ]; then
+            TASK_ID="P${PHASE_NUM}-$(echo $DEV_ISSUE)"
+          fi
+          echo "task_id=${TASK_ID}" >> $GITHUB_OUTPUT
+
+          # Extract feature name (title without task ID prefix)
+          FEATURE_NAME=$(echo "$ISSUE_TITLE" | sed 's/\[P[0-9]*-[0-9]*\.[0-9a-z]*\]\s*//' | head -c 80)
+          echo "feature_name=${FEATURE_NAME}" >> $GITHUB_OUTPUT
+
+          # Save issue body for test plan extraction
+          echo "$ISSUE_BODY" > /tmp/dev_issue_body.txt
+
+      - name: Skip if not a development issue
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev == '0'
+        run: |
+          echo "::notice::Issue #${{ steps.pr.outputs.dev_issue }} does not have ai:development label. Skipping."
+          exit 0
+
+      - name: Extract test plan from development issue
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev != '0'
+        id: test_plan
+        run: |
+          python3 scripts/workflows/extract_test_plan.py \
+            --issue-body-file /tmp/dev_issue_body.txt \
+            --output-file /tmp/test_plan.md
+
+          # Read test plan (escape for GitHub Actions)
+          TEST_PLAN=$(cat /tmp/test_plan.md | head -c 5000)
+          echo "test_plan<<EOF" >> $GITHUB_OUTPUT
+          echo "$TEST_PLAN" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get deployment issue number
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev != '0'
+        id: deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PHASE="${{ steps.dev.outputs.phase }}"
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+
+          # Find the deployment issue created for this dev issue
+          DEPLOY_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue list \
+            --label "${PHASE}" \
+            --label "ai:deployment" \
+            --json number,body \
+            --jq ".[] | select(.body | contains(\"#${DEV_ISSUE}\")) | .number" | head -1)
+
+          echo "number=${DEPLOY_ISSUE}" >> $GITHUB_OUTPUT
+
+      - name: Check for existing QA issue
+        if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev != '0'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+          PHASE="${{ steps.dev.outputs.phase }}"
+
+          # Check if QA issue already exists for this dev issue
+          EXISTING=$(GH_HOST={GITHUB_HOST} gh issue list \
+            --label "${PHASE}" \
+            --label "ai:qa-testing" \
+            --json number,body \
+            --jq ".[] | select(.body | contains(\"#${DEV_ISSUE}\")) | .number" | head -1)
+
+          if [ -n "$EXISTING" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "number=${EXISTING}" >> $GITHUB_OUTPUT
+            echo "::notice::QA testing issue #${EXISTING} already exists for dev issue #${DEV_ISSUE}"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create QA testing issue
+        if: |
+          steps.pr.outputs.dev_issue != '' &&
+          steps.qa_check.outputs.qa_required == 'true' &&
+          steps.dev.outputs.is_dev != '0' &&
+          steps.existing.outputs.exists == 'false'
+        id: create
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PHASE="${{ steps.dev.outputs.phase }}"
+          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
+          TASK_ID="${{ steps.dev.outputs.task_id }}"
+          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+          DEPLOY_ISSUE="${{ steps.deploy.outputs.number }}"
+          TEST_PLAN="${{ steps.test_plan.outputs.test_plan }}"
+
+          # Create issue body
+          BODY=$(cat <<'ISSUE_BODY'
+## QA Testing Issue
+
+**Source**
+| Field | Value |
+|:------|:------|
+| Development Issue | #DEV_ISSUE_PLACEHOLDER |
+| Pull Request | #PR_NUMBER_PLACEHOLDER |
+| Phase | PHASE_NUM_PLACEHOLDER |
+| Iteration | 1 |
+
+**Blocked by**: Deployment Issue #DEPLOY_ISSUE_PLACEHOLDER (must deploy first)
+
+---
+
+## Test Plan
+
+### Automated Tests
+- [ ] Unit tests pass (coverage ≥90%)
+- [ ] Integration tests pass (coverage ≥70%)
+- [ ] E2E tests pass
+
+### Feature-Specific Tests
+TEST_PLAN_PLACEHOLDER
+
+---
+
+## Environment
+- **Target**: Staging
+- **URL**: https://staging.{PROJECT_PREFIX}.{DOMAIN}
+- **Test window**: 06:00-08:00 EST (after deployment)
+
+---
+
+## Results
+<!-- AI Agent fills this section after test execution -->
+
+### Test Execution Summary
+| Category | Passed | Failed | Skipped |
+|:---------|-------:|-------:|--------:|
+| Unit | - | - | - |
+| Integration | - | - | - |
+| E2E | - | - | - |
+| Feature | - | - | - |
+
+### Failures (if any)
+<!-- Detailed failure info for bug issue creation -->
+
+---
+
+*Created automatically from PR #PR_NUMBER_PLACEHOLDER merge*
+ISSUE_BODY
+)
+
+          # Replace placeholders
+          BODY=$(echo "$BODY" | sed "s/DEV_ISSUE_PLACEHOLDER/${DEV_ISSUE}/g")
+          BODY=$(echo "$BODY" | sed "s/PR_NUMBER_PLACEHOLDER/${PR_NUMBER}/g")
+          BODY=$(echo "$BODY" | sed "s/PHASE_NUM_PLACEHOLDER/${PHASE_NUM}/g")
+          BODY=$(echo "$BODY" | sed "s/DEPLOY_ISSUE_PLACEHOLDER/${DEPLOY_ISSUE}/g")
+          BODY=$(echo "$BODY" | sed "s|TEST_PLAN_PLACEHOLDER|${TEST_PLAN}|g")
+
+          # Create the QA testing issue
+          QA_TITLE="[${TASK_ID}-QA] ${FEATURE_NAME}"
+
+          QA_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue create \
+            --title "${QA_TITLE}" \
+            --body "${BODY}" \
+            --label "${PHASE}" \
+            --label "ai:qa-testing" \
+            --json number --jq '.number')
+
+          echo "number=${QA_ISSUE}" >> $GITHUB_OUTPUT
+          echo "Created QA testing issue #${QA_ISSUE}"
+
+      - name: Link QA issue to development issue
+        if: steps.create.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+          QA_ISSUE="${{ steps.create.outputs.number }}"
+
+          # Add comment to development issue
+          GH_HOST={GITHUB_HOST} gh issue comment ${DEV_ISSUE} \
+            --body "QA testing issue created: #${QA_ISSUE}
+
+This QA issue will be activated after all Phase ${{ steps.dev.outputs.phase_num }} deployment issues are closed."
+
+      - name: Post to Teams
+        if: steps.create.outputs.number != ''
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          QA_ISSUE="${{ steps.create.outputs.number }}"
+          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
+          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
+
+          ISSUE_URL="${{ github.server_url }}/${{ github.repository }}/issues/${QA_ISSUE}"
+
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "7B68EE",
+            "summary": "QA Testing Issue Created",
+            "sections": [{
+              "activityTitle": "QA Testing Issue #'${QA_ISSUE}' Created",
+              "facts": [
+                {"name": "Phase", "value": "'${PHASE_NUM}'"},
+                {"name": "Feature", "value": "'${FEATURE_NAME}'"},
+                {"name": "Source PR", "value": "#'${PR_NUMBER}'"},
+                {"name": "Dev Issue", "value": "#'${DEV_ISSUE}'"},
+                {"name": "Link", "value": "'${ISSUE_URL}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
