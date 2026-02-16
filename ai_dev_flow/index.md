@@ -357,6 +357,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 - **Workflow Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
 - **Quick Reference**: [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Quick reference for common tasks
+- **Hybrid Model v2.0**: [HYBRID_MODEL_V2.md](./HYBRID_MODEL_V2.md) - Sprint-based governance + SDD integration for production projects
 
 ### Naming & Organization
 
