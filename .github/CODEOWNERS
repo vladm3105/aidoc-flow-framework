@@ -7,28 +7,28 @@
 # - Reviewers are automatically requested when a PR touches matching paths
 
 # Default — project leads review anything not matched below
-*                                       @vmyakota @jvalenzano
+*                                       @project-lead @tech-lead
 
 # Governance and project management
-/governance/                            @vmyakota @jvalenzano
-/CLAUDE.md                              @vmyakota
-/README_AIAGENT.md                      @vmyakota @jvalenzano
-/CONTRIBUTING.md                        @vmyakota @jvalenzano
+/governance/                            @project-lead @tech-lead
+/CLAUDE.md                              @project-lead
+/README_AIAGENT.md                      @project-lead @tech-lead
+/CONTRIBUTING.md                        @project-lead @tech-lead
 
 # Security-sensitive files
-/.github/workflows/                     @vmyakota @jvalenzano
-/.github/CODEOWNERS                     @vmyakota @jvalenzano
+/.github/workflows/                     @project-lead @tech-lead
+/.github/CODEOWNERS                     @project-lead @tech-lead
 
 # Infrastructure
-/components/*/terraform/                @vmyakota @jvalenzano
-/components/infrastructure/             @vmyakota @jvalenzano
+/components/*/terraform/                @project-lead @tech-lead
+/components/infrastructure/             @project-lead @tech-lead
 
 # Components
-/components/gcp-cost-guard/             @vmyakota @jvalenzano
-/components/mcp-servers/                @vmyakota @jvalenzano
-/components/agents/                     @vmyakota @jvalenzano
-/components/frontend/                   @vmyakota @jvalenzano
+/components/gcp-cost-guard/             @project-lead @tech-lead
+/components/mcp-servers/                @project-lead @tech-lead
+/components/agents/                     @project-lead @tech-lead
+/components/frontend/                   @project-lead @tech-lead
 
 # Documentation and specs
-/docs/                                  @vmyakota @jvalenzano
-/docs/adr/                              @vmyakota @jvalenzano
+/docs/                                  @project-lead @tech-lead
+/docs/adr/                              @project-lead @tech-lead
