@@ -1,0 +1,311 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COVERAGE_THRESHOLD: 80
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: self-hosted
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: Lint with ruff
+        run: |
+          python3 -m venv /tmp/ci-lint-venv
+          source /tmp/ci-lint-venv/bin/activate
+          pip install --quiet ruff
+          cd "${GITHUB_WORKSPACE}"
+          echo "::group::Ruff Check"
+          ruff check . --output-format=github
+          echo "::endgroup::"
+          echo "::group::Ruff Format"
+          ruff format --check .
+          echo "::endgroup::"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/ci-lint-venv
+
+  type-check:
+    name: Type Check
+    runs-on: self-hosted
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: Type check with mypy
+        run: |
+          python3 -m venv /tmp/ci-typecheck-venv
+          source /tmp/ci-typecheck-venv/bin/activate
+          pip install --quiet mypy types-requests
+          cd "${GITHUB_WORKSPACE}"
+          for COMPONENT in components/*/; do
+            if [ -f "${COMPONENT}pyproject.toml" ]; then
+              echo "::group::Type checking ${COMPONENT}"
+              cd "${GITHUB_WORKSPACE}/${COMPONENT}"
+              pip install --quiet -e ".[dev]" 2>/dev/null || true
+              mypy . --ignore-missing-imports || true
+              echo "::endgroup::"
+            fi
+          done
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/ci-typecheck-venv
+
+  test-unit:
+    name: Unit Tests
+    runs-on: self-hosted
+    needs: [lint]
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: Run unit tests
+        run: |
+          python3 -m venv /tmp/ci-test-venv
+          source /tmp/ci-test-venv/bin/activate
+          pip install --quiet pytest pytest-cov pytest-asyncio pytest-mock
+          cd "${GITHUB_WORKSPACE}"
+          FAILED=0
+          for COMPONENT in components/*/; do
+            if [ -d "${COMPONENT}tests/unit" ]; then
+              echo "::group::Testing ${COMPONENT}"
+              cd "${GITHUB_WORKSPACE}/${COMPONENT}"
+              pip install --quiet -e ".[dev]" 2>/dev/null || pip install --quiet -e . || true
+              set +e
+              pytest tests/unit/ -v \
+                --cov=src --cov-report=xml --cov-report=term-missing \
+                --cov-fail-under=${COVERAGE_THRESHOLD} \
+                -m "unit or not integration and not e2e and not slow"
+              EXIT_CODE=$?
+              set -e
+              if [ $EXIT_CODE -eq 5 ]; then
+                echo "No tests collected in ${COMPONENT}"
+              elif [ $EXIT_CODE -ne 0 ]; then
+                echo "::error::Tests failed in ${COMPONENT}"
+                FAILED=1
+              fi
+              echo "::endgroup::"
+            fi
+          done
+          exit $FAILED
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/ci-test-venv
+
+  test-integration:
+    name: Integration Tests
+    runs-on: self-hosted
+    needs: [lint, test-unit]
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: Run integration tests
+        run: |
+          python3 -m venv /tmp/ci-integration-venv
+          source /tmp/ci-integration-venv/bin/activate
+          pip install --quiet pytest pytest-asyncio pytest-timeout
+          cd "${GITHUB_WORKSPACE}"
+          for COMPONENT in components/*/; do
+            if [ -d "${COMPONENT}tests/integration" ]; then
+              echo "::group::Integration testing ${COMPONENT}"
+              cd "${GITHUB_WORKSPACE}/${COMPONENT}"
+              pip install --quiet -e ".[dev]" 2>/dev/null || pip install --quiet -e . || true
+              set +e
+              pytest tests/integration/ -v --timeout=300 -m "integration"
+              EXIT_CODE=$?
+              set -e
+              if [ $EXIT_CODE -eq 5 ]; then
+                echo "No integration tests in ${COMPONENT}"
+              elif [ $EXIT_CODE -ne 0 ]; then
+                echo "::warning::Integration tests failed in ${COMPONENT}"
+              fi
+              echo "::endgroup::"
+            fi
+          done
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/ci-integration-venv
+
+  security:
+    name: Security Scan
+    runs-on: self-hosted
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: SAST with Bandit
+        run: |
+          python3 -m venv /tmp/ci-security-venv
+          source /tmp/ci-security-venv/bin/activate
+          pip install --quiet bandit
+          cd "${GITHUB_WORKSPACE}"
+          echo "::group::Bandit Security Scan"
+          bandit -r components/ -x "*/tests/*" -ll --severity-level high -f json -o bandit-report.json || {
+            echo "::error::Bandit found HIGH severity issues"
+            cat bandit-report.json
+            exit 1
+          }
+          echo "Bandit scan passed - no HIGH severity issues"
+          echo "::endgroup::"
+
+      - name: Dependency Audit
+        run: |
+          source /tmp/ci-security-venv/bin/activate
+          pip install --quiet pip-audit
+          cd "${GITHUB_WORKSPACE}"
+          echo "::group::Dependency Audit"
+          AUDIT_FAILED=0
+          for COMPONENT in components/*/; do
+            if [ -f "${COMPONENT}pyproject.toml" ]; then
+              echo "Auditing ${COMPONENT}..."
+              cd "${GITHUB_WORKSPACE}/${COMPONENT}"
+              pip install --quiet -e . 2>/dev/null || true
+              pip-audit --strict --desc on 2>&1 || {
+                echo "::warning::Vulnerabilities found in ${COMPONENT}"
+                AUDIT_FAILED=1
+              }
+            fi
+          done
+          echo "::endgroup::"
+          if [ $AUDIT_FAILED -eq 1 ]; then
+            echo "::warning::Some dependencies have known vulnerabilities"
+          fi
+
+      - name: Secret Detection
+        run: |
+          cd "${GITHUB_WORKSPACE}"
+          echo "::group::Secret Detection (gitleaks)"
+          if ! command -v gitleaks &>/dev/null; then
+            curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz \
+              | tar xz -C /tmp/
+            chmod +x /tmp/gitleaks
+            GITLEAKS=/tmp/gitleaks
+          else
+            GITLEAKS=gitleaks
+          fi
+          $GITLEAKS detect --source . --no-git --report-format json --report-path gitleaks-report.json || {
+            echo "::error::Secrets detected in codebase!"
+            cat gitleaks-report.json
+            exit 1
+          }
+          echo "No secrets detected"
+          echo "::endgroup::"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/ci-security-venv /tmp/gitleaks
+
+  build:
+    name: Build Container
+    runs-on: self-hosted
+    needs: [test-unit, test-integration, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch main
+
+      - name: Build service image
+        run: |
+          cd "${GITHUB_WORKSPACE}/components/{SERVICE_NAME}"
+          if [ -f Dockerfile ]; then
+            echo "::group::Building {SERVICE_NAME}"
+            docker build -t {PROJECT_PREFIX}-{SERVICE_NAME}:${GITHUB_SHA::8} .
+            docker tag {PROJECT_PREFIX}-{SERVICE_NAME}:${GITHUB_SHA::8} {PROJECT_PREFIX}-{SERVICE_NAME}:latest
+            echo "Built: {PROJECT_PREFIX}-{SERVICE_NAME}:${GITHUB_SHA::8}"
+            echo "::endgroup::"
+          else
+            echo "No Dockerfile found, skipping build"
+          fi
+
+      - name: Scan image
+        run: |
+          if docker image inspect {PROJECT_PREFIX}-{SERVICE_NAME}:latest &>/dev/null; then
+            echo "::group::Container Security Scan"
+            if ! command -v trivy &>/dev/null; then
+              curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+                | sh -s -- -b /tmp v0.48.0
+              TRIVY=/tmp/trivy
+            else
+              TRIVY=trivy
+            fi
+            $TRIVY image {PROJECT_PREFIX}-{SERVICE_NAME}:latest \
+              --severity HIGH,CRITICAL \
+              --exit-code 1 \
+              --format table || {
+              echo "::error::Container has HIGH/CRITICAL vulnerabilities"
+              exit 1
+            }
+            echo "Container scan passed"
+            echo "::endgroup::"
+          fi
