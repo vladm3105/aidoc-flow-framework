@@ -12,8 +12,12 @@ def run_gh_command(args: list[str]) -> tuple[int, str]:
     """Run gh CLI command."""
     env = os.environ.copy()
     env["GH_HOST"] = "{GITHUB_HOST}"
-    result = subprocess.run(args, capture_output=True, text=True, env=env)
-    return result.returncode, result.stdout
+    try:
+        result = subprocess.run(args, capture_output=True, text=True, env=env)
+        return result.returncode, result.stdout
+    except subprocess.SubprocessError as e:
+        print(f"Error running gh command: {e}")
+        return 1, ""
 
 
 def get_open_prs() -> list[dict]:

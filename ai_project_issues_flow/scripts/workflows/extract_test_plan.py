@@ -107,12 +107,25 @@ def main():
     )
     args = parser.parse_args()
 
-    issue_body = args.issue_body_file.read_text()
+    try:
+        issue_body = args.issue_body_file.read_text()
+    except FileNotFoundError:
+        print(f"Error: Issue body file not found: {args.issue_body_file}")
+        return
+    except OSError as e:
+        print(f"Error reading issue body file: {e}")
+        return
+
     criteria = extract_acceptance_criteria(issue_body)
     special = extract_special_instructions(issue_body)
     test_plan = format_test_plan(criteria, special)
 
-    args.output_file.write_text(test_plan)
+    try:
+        args.output_file.write_text(test_plan)
+    except OSError as e:
+        print(f"Error writing output file: {e}")
+        return
+
     print(f"Extracted {len(criteria)} acceptance criteria")
 
 

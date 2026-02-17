@@ -9,6 +9,7 @@ For dev deployment: Checks that previous phases are dev_deployed.
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -19,7 +20,14 @@ def main():
     parser.add_argument("--target-phase", required=True, type=int)
     args = parser.parse_args()
 
-    tracking = json.loads(args.tracking_file.read_text())
+    try:
+        tracking = json.loads(args.tracking_file.read_text())
+    except FileNotFoundError:
+        print(f"::error::Tracking file not found: {args.tracking_file}")
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"::error::Invalid JSON in tracking file: {e}")
+        sys.exit(1)
 
     for prev in range(1, args.target_phase):
         phase_data = tracking.get("phases", {}).get(str(prev), {})
@@ -31,8 +39,10 @@ def main():
         if status == "needs-revalidation":
             print(f"::error::Phase {prev} needs revalidation before Phase {args.target_phase}")
             print("can_deploy=false", file=sys.stdout)
-            with open("GITHUB_OUTPUT", "a") as f:
-                f.write("can_deploy=false\n") if Path("GITHUB_OUTPUT").exists() else None
+            github_output = os.environ.get("GITHUB_OUTPUT")
+            if github_output:
+                with open(github_output, "a") as f:
+                    f.write("can_deploy=false\n")
             sys.exit(1)
 
         # Check if phase is deployed to dev

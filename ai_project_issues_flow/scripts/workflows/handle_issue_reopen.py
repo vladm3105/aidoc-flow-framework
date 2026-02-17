@@ -12,11 +12,15 @@ def get_issue_labels(issue_number: int) -> list[str]:
     """Get labels for an issue."""
     env = os.environ.copy()
     env["GH_HOST"] = "{GITHUB_HOST}"
-    result = subprocess.run(
-        ["gh", "issue", "view", str(issue_number), "--json", "labels", "--jq", ".labels[].name"],
-        capture_output=True, text=True, env=env
-    )
-    return result.stdout.strip().split("\n") if result.stdout.strip() else []
+    try:
+        result = subprocess.run(
+            ["gh", "issue", "view", str(issue_number), "--json", "labels", "--jq", ".labels[].name"],
+            capture_output=True, text=True, env=env
+        )
+        return result.stdout.strip().split("\n") if result.stdout.strip() else []
+    except subprocess.SubprocessError as e:
+        print(f"Error getting issue labels: {e}")
+        return []
 
 
 def main():
@@ -38,7 +42,14 @@ def main():
         return
 
     # Load tracking
-    tracking = json.loads(args.tracking_file.read_text())
+    try:
+        tracking = json.loads(args.tracking_file.read_text())
+    except FileNotFoundError:
+        print(f"Tracking file not found: {args.tracking_file}")
+        return
+    except json.JSONDecodeError as e:
+        print(f"Error parsing tracking file: {e}")
+        return
 
     # Check if phase was deployed
     phase_data = tracking.get("phases", {}).get(phase, {})

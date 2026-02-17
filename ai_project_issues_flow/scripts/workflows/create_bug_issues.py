@@ -78,7 +78,14 @@ def main():
     )
     args = parser.parse_args()
 
-    results = json.loads(args.results_file.read_text())
+    try:
+        results = json.loads(args.results_file.read_text())
+    except FileNotFoundError:
+        print(f"Results file not found: {args.results_file}")
+        return
+    except json.JSONDecodeError as e:
+        print(f"Error parsing results file: {e}")
+        return
 
     if results.get("all_passed", True):
         print("All tests passed, no bug issues needed")

@@ -18,8 +18,15 @@ def run_gh_command(args: list[str]) -> int:
 
 def parse_failures(junit_file: Path) -> list[dict]:
     """Parse JUnit XML for failures."""
-    tree = ET.parse(junit_file)
-    root = tree.getroot()
+    try:
+        tree = ET.parse(junit_file)
+        root = tree.getroot()
+    except ET.ParseError as e:
+        print(f"Error parsing JUnit XML: {e}")
+        return []
+    except OSError as e:
+        print(f"Error reading JUnit file: {e}")
+        return []
 
     failures = []
     for testcase in root.iter("testcase"):

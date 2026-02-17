@@ -13,7 +13,7 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 ## AI Operating Rules
 
 ### Never Do
-- Use Slack (Teams/Email only)
+- Use Slack — Teams/Email only per governance policy
 - Use service account JSON keys (`GCP_SA_KEY`) — Workload Identity Federation only
 - Use `ai:approved` or `ai:rejected` labels (they do not exist)
 - Use `services.delete` for Cloud Run remediation (scale-to-0 only)

@@ -69,7 +69,10 @@ def run_tests(
         # Parse pytest JSON report
         report_file = Path("/tmp/pytest_report.json")
         if report_file.exists():
-            report = json.loads(report_file.read_text())
+            try:
+                report = json.loads(report_file.read_text())
+            except json.JSONDecodeError:
+                report = {"summary": {}, "tests": []}
             summary = report.get("summary", {})
             result["passed"] = summary.get("passed", 0)
             result["failed"] = summary.get("failed", 0)

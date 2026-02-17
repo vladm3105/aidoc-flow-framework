@@ -27,13 +27,23 @@ def main():
     parser.add_argument("--test-report-url", default=None)
     args = parser.parse_args()
 
-    tracking = json.loads(args.tracking_file.read_text()) if args.tracking_file.exists() else {
-        "config": {"total_phases": 8},
-        "phases": {},
-        "staging": {},
-        "production": {},
-        "last_check": None
-    }
+    try:
+        tracking = json.loads(args.tracking_file.read_text()) if args.tracking_file.exists() else {
+            "config": {"total_phases": 8},
+            "phases": {},
+            "staging": {},
+            "production": {},
+            "last_check": None
+        }
+    except json.JSONDecodeError as e:
+        print(f"Error parsing tracking file: {e}")
+        tracking = {
+            "config": {"total_phases": 8},
+            "phases": {},
+            "staging": {},
+            "production": {},
+            "last_check": None
+        }
 
     now = datetime.now(timezone.utc).isoformat()
 
