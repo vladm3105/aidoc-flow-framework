@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Vulnerability
+    url: mailto:security@{DOMAIN}
+    about: Report security vulnerabilities privately via email
+  - name: Project Board
+    url: https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}
+    about: View the project roadmap and sprint planning
+  - name: Documentation
+    url: https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/tree/main/docs
+    about: Check existing documentation before creating an issue
