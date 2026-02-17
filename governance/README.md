@@ -4,6 +4,18 @@ Unified governance rules for both SDD and AI Project Flow frameworks.
 
 ---
 
+## Framework Setup
+
+Getting started guides for configuring and customizing the framework.
+
+| Document | Description |
+|:---------|:------------|
+| [SETUP_GUIDE.md](./SETUP_GUIDE.md) | Step-by-step framework customization guide |
+| [CONFIG.md](./CONFIG.md) | All 50 placeholder variables reference |
+| [CLOUD_GUIDE.md](./CLOUD_GUIDE.md) | Multi-cloud setup (GCP, AWS, Azure) with OIDC/WIF |
+
+---
+
 ## Core Governance
 
 | Document | Description |

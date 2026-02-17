@@ -191,7 +191,7 @@ GH_HOST=YOUR_GITHUB_HOST gh api repos/YOUR_ORG/YOUR_REPO/branches/main/protectio
 
 ### Option A: GCP Setup
 
-See [CLOUD_GUIDE.md](CLOUD_GUIDE.md#gcp-setup) for detailed instructions.
+See [CLOUD_GUIDE.md](./CLOUD_GUIDE.md#gcp-setup) for detailed instructions.
 
 ```bash
 # Run GCP setup scripts
@@ -212,11 +212,11 @@ cd scripts/project_setup/cloud/gcp
 
 ### Option B: AWS Setup
 
-See [CLOUD_GUIDE.md](CLOUD_GUIDE.md#aws-setup) for detailed instructions.
+See [CLOUD_GUIDE.md](./CLOUD_GUIDE.md#aws-setup) for detailed instructions.
 
 ### Option C: Azure Setup
 
-See [CLOUD_GUIDE.md](CLOUD_GUIDE.md#azure-setup) for detailed instructions.
+See [CLOUD_GUIDE.md](./CLOUD_GUIDE.md#azure-setup) for detailed instructions.
 
 ---
 
@@ -367,4 +367,4 @@ git push -u origin test/setup-verification
 2. Check Claude Code CLI is available in runner
 3. Review ai-review workflow logs
 
-For more help, see [governance/GOVERNANCE_RULES.md](governance/GOVERNANCE_RULES.md).
+For more help, see [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md).

@@ -248,4 +248,4 @@ A helper script is provided for bulk replacement:
   --github-host "github.com"
 ```
 
-See [SETUP_GUIDE.md](SETUP_GUIDE.md) for the complete customization process.
+See [SETUP_GUIDE.md](./SETUP_GUIDE.md) for the complete customization process.
