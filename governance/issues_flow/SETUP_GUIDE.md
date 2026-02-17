@@ -1,6 +1,10 @@
 # Framework Setup Guide
 
-Step-by-step guide for customizing the AI-First Project Governance Framework for your project.
+**Framework**: AI Project Issues Flow
+
+> **Note**: This setup guide is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects where issues are created directly from project descriptions. For SDD Flow setup (15-layer formal documentation), see [`ai_dev_ssd_flow/PROJECT_SETUP_GUIDE.md`](../../ai_dev_ssd_flow/PROJECT_SETUP_GUIDE.md).
+
+Step-by-step guide for customizing the AI Project Issues Flow framework for your project.
 
 ## Prerequisites
 

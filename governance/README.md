@@ -13,6 +13,8 @@ This repository contains **two complementary frameworks**:
 
 ## Framework Selection
 
+> **Detailed comparison**: See [FRAMEWORK_COMPARISON.md](./FRAMEWORK_COMPARISON.md) for complete side-by-side analysis.
+
 ### Use Issues Flow when:
 - Building MVPs or small-to-medium projects
 - Creating issues directly from project description

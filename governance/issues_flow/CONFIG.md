@@ -1,6 +1,10 @@
 # Framework Configuration Variables
 
-This document lists all placeholder variables used throughout the AI-First Project Governance Framework. Replace these values when customizing the framework for your project.
+**Framework**: AI Project Issues Flow
+
+> **Note**: This configuration is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects. For SDD Flow configuration, see [`ai_dev_ssd_flow/`](../../ai_dev_ssd_flow/).
+
+This document lists all placeholder variables used throughout the AI Project Issues Flow framework. Replace these values when customizing the framework for your project.
 
 ## Quick Reference
 

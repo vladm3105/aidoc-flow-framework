@@ -1,9 +1,31 @@
 # AI Issue Lifecycle
 
+**Framework**: AI Project Issues Flow
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
-**Related**: See `governance/plans/` for implementation plans (IPLAN documents)
+**Related**: See `plans/` for implementation plans (IPLAN documents)
+
+> **Note**: This document is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects. For formal specification-driven development (15-layer architecture), see [`../sdd_flow/`](../sdd_flow/).
 
 This document describes how GitHub issues flow through the AI-first development workflow, from creation to deployment.
+
+## How Issues Are Created in Issues Flow
+
+Unlike SDD Flow where issues are derived from formal TASKS documents, **Issues Flow creates issues directly from the project description**:
+
+```
+00_REF/ (Project Description)
+    ↓
+Human reviews requirements
+    ↓
+Human creates GitHub issue with:
+    - Clear title: [Phase-Sprint] Task description
+    - Labels: phase:N, ai:development, component:X
+    - Acceptance criteria in body
+    ↓
+AI agent picks up issue when ai:ready label is added
+```
+
+This approach is faster but less formal than SDD Flow's 15-layer documentation chain.
 
 ---
 
