@@ -74,7 +74,7 @@ bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
 - No emotional language; state outcomes, rationale, and next steps plainly.
 - Emoji policy: only informational emoji when helpful; keep to a minimum (0–1 typical).
 - Prefer actionable output: commands, file paths, code identifiers, and checklists.
-- Avoid redundancy: don’t restate prompts; summarize only when it adds value.
+- Avoid redundancy: don't restate prompts; summarize only when it adds value.
 
 ---
 
@@ -99,7 +99,7 @@ This framework is optimized for large-context tools (e.g., **Claude Code**, **Ge
 
 ## Traceability and Validation
 
-Use your AI coding assistant for quick “trace-check” style reviews, and rely on local scripts for deterministic validation during CI or pre-commit.
+Use your AI coding assistant for quick "trace-check" style reviews, and rely on local scripts for deterministic validation during CI or pre-commit.
 
 Common local checks:
 
@@ -118,7 +118,7 @@ bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
 ```
 
 Assistant guidance:
-- If your assistant offers a built-in “trace-check” capability, use it to sanity-check tags and references.
+- If your assistant offers a built-in "trace-check" capability, use it to sanity-check tags and references.
 - Prefer local scripts for authoritative results and CI integration.
 
 ---
@@ -157,7 +157,7 @@ Assistant guidance:
 
 **Cost**: ~$3/hour of active usage
 
-Reference: [AI_Coding_Tools_Comparison.md](../AI_Coding_Tools_Comparison.md)
+Reference: See "Token Limit Standards by Tool" section above
 
 #### Style and Tone (Strict)
 
@@ -216,7 +216,7 @@ gemini @SMALL_FILE.md "Analyze this document"
 
 **Cost**: Free tier available, paid tiers for higher limits
 
-**Detailed Guidance**: See this guide’s Gemini CLI notes below
+**Detailed Guidance**: See this guide's Gemini CLI notes below
 
 #### Style and Tone (Recommended)
 
@@ -577,7 +577,6 @@ See [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) for comprehensive s
 
 ## References
 
-- [AI_Coding_Tools_Comparison.md](../AI_Coding_Tools_Comparison.md) - Detailed comparison of all tools
-- Gemini CLI file handling strategies: see this guide’s Gemini section
+- Gemini CLI file handling strategies: see this guide's Gemini section
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete framework documentation standards
 - [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) - Dual-architecture metadata standards for documentation sites

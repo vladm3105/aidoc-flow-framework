@@ -17,7 +17,7 @@ This repository contains **two distinct frameworks** for AI-assisted development
 ### Quick Comparison
 
 | Aspect | AI Dev Flow (SDD) | AI Project Flow |
-|--------|-------------------|-----------------|
+|--------|-------------------|-----------------||
 | **Scope** | Enterprise/regulated projects | Small AI-first projects |
 | **Layers** | 15 formal layers (BRD→Production) | Agile phases/sprints |
 | **Documentation** | Full traceability matrices | PROJECT_PLAN + IPLANs |
@@ -130,7 +130,7 @@ Each cycle leverages automation to maintain velocity while ensuring quality thro
 
 ### Available MVP Templates (Layers 1-7)
 | Layer | Artifact | Default Template |
-|-------|----------|-----------------|
+|-------|----------|------------------|
 | 1 | BRD | `BRD-MVP-TEMPLATE.md` |
 | 2 | PRD | `PRD-MVP-TEMPLATE.md` |
 | 3 | EARS | `EARS-MVP-TEMPLATE.md` |
@@ -178,7 +178,7 @@ template_profile: enterprise  # or "full" or "strict"
 - **Automated Validation**: Scripts for tag extraction, cumulative tagging validation, and matrix generation with CI/CD integration
 - **Regulatory Compliance**: Complete audit trails meet SEC, FINRA, FDA, ISO requirements
 
-## 🤖 Agent Swarm Integration (.aidev)
+## Agent Swarm Integration (.aidev)
 
 The framework now includes a native **Agent Orchestration System** located in `.aidev/`. This system implements the **BMAD Methodology**, deploying a swarm of 16 specialized AI agents (using Claude Code, Gemini, and Codex) to autonomously generate and validate the documentation artifacts.
 
@@ -187,7 +187,7 @@ The framework now includes a native **Agent Orchestration System** located in `.
 *   **Adversarial Pair Architecture**: Every step is executed by one model (e.g., Gemini) and reviewed by another (e.g., Claude) to minimize hallucinations.
 *   **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`).
 
-👉 **[Get Started with the Agent Swarm](.aidev/README.md)**
+**[Get Started with the Agent Swarm](.aidev/README.md)**
 
 ## Quality Gates and Traceability Validation
 
@@ -196,7 +196,7 @@ The framework includes automated quality gates that ensure each layer in the 16-
 ### Quality Gate Architecture
 
 **Automatic Validation Points:**
-- **Ready Score Gates**: Each artifact includes a maturity score (e.g., `EARS-Ready Score: ✅ 95% ≥90%`)
+- **Ready Score Gates**: Each artifact includes a maturity score (e.g., `EARS-Ready Score: [PASS] 95% ≥90%`)
 - **Cumulative Tag Enforcement**: All artifacts must include traceability tags from upstream layers
 - **Pre-commit Blocking**: Git hooks validate artifacts before commits
 
@@ -210,7 +210,7 @@ The framework includes automated quality gates that ensure each layer in the 16-
 Each layer transition has specific quality requirements:
 
 | **From→To** | **Quality Gate** | **Validation Command** |
-|-------------|------------------|----------------------|
+|-------------|------------------|------------------------|
 | **BRD→PRD** | `EARS-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/BRD/BRD-001.md` |
 | **PRD→EARS** | `BDD-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` |
 | **EARS→BDD** | `ADR-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/EARS/EARS-001.md` |
@@ -226,7 +226,7 @@ Each layer transition has specific quality requirements:
 # Automatic validation on git commit
 git add docs/SYS/SYS-001.md
 git commit -m "Add SYS requirements"
-# Output: ✅ Quality gates passed! Ready for next layer transition.
+# Output: [PASS] Quality gates passed! Ready for next layer transition.
 ```
 
 ### Git Pre-commit Hook Activation
@@ -243,11 +243,11 @@ chmod +x .git/hooks/pre-commit
 ```
 
 **What Quality Gates Prevent:**
-- ✅ Undervalidating artifacts proceeding to next layer
-- ✅ Cumulatived traceability tag violations
-- ✅ Missing upstream dependencies
-- ✅ Regulator Paygrade compliance (SEC, FINRA, FDA, ISO audit requirements)
-- ✅ Implications from premature artifacts propagating downstream
+- [PASS] Undervalidating artifacts proceeding to next layer
+- [PASS] Cumulatived traceability tag violations
+- [PASS] Missing upstream dependencies
+- [PASS] Regulator Paygrade compliance (SEC, FINRA, FDA, ISO audit requirements)
+- [PASS] Implications from premature artifacts propagating downstream
 
 ### Outcome Metrics
 
@@ -292,15 +292,15 @@ For organizations managing multiple projects with shared framework resources:
 
 | Capability | Status | Description |
 |------------|--------|-------------|
-| Document Generation | ✅ 90% | 12 layers auto-generate from upstream (L1-L11) |
-| Test Specs (TSPEC) | ✅ Full | UTEST, ITEST, STEST, FTEST from upstream artifacts |
-| Code Generation | ✅ Full | SPEC+TASKS → Production Python code |
-| Test Generation | ✅ Full | BDD scenarios + TSPEC → pytest test suites |
-| TDD Workflow | ✅ Full | Red→Green validation with auto-fix |
-| Change Management | ✅ Full | 4-Gate CHG system with cascade detection |
-| Traceability | ✅ Full | Automated tag extraction and matrix generation |
-| Validation | ✅ Full | Contract compliance, security scans, coverage |
-| Deployment | ⚠️ Partial | Automated build, optional human-approved deployment |
+| Document Generation | [PASS] 90% | 12 layers auto-generate from upstream (L1-L11) |
+| Test Specs (TSPEC) | [PASS] Full | UTEST, ITEST, STEST, FTEST from upstream artifacts |
+| Code Generation | [PASS] Full | SPEC+TASKS → Production Python code |
+| Test Generation | [PASS] Full | BDD scenarios + TSPEC → pytest test suites |
+| TDD Workflow | [PASS] Full | Red→Green validation with auto-fix |
+| Change Management | [PASS] Full | 4-Gate CHG system with cascade detection |
+| Traceability | [PASS] Full | Automated tag extraction and matrix generation |
+| Validation | [PASS] Full | Contract compliance, security scans, coverage |
+| Deployment | [WARN] Partial | Automated build, optional human-approved deployment |
 
 ### What Requires Human Review
 
@@ -537,13 +537,13 @@ Embed cumulative tags in code docstrings using namespaced format:
 - `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
 
 **Benefits:**
-- ✅ Complete audit trail from strategy to code
-- ✅ Regulatory compliance (SEC, FINRA, FDA, ISO)
-- ✅ Impact analysis (identify all affected artifacts)
-- ✅ Automated cumulative validation (scripts enforce hierarchy)
-- ✅ No sync drift (tags can't become stale)
-- ✅ Bidirectional matrices auto-generated
-- ✅ CI/CD enforceable (pre-commit hooks)
+- [PASS] Complete audit trail from strategy to code
+- [PASS] Regulatory compliance (SEC, FINRA, FDA, ISO)
+- [PASS] Impact analysis (identify all affected artifacts)
+- [PASS] Automated cumulative validation (scripts enforce hierarchy)
+- [PASS] No sync drift (tags can't become stale)
+- [PASS] Bidirectional matrices auto-generated
+- [PASS] CI/CD enforceable (pre-commit hooks)
 
 **Why Cumulative?**
 - Each layer N includes tags from layers 1 through N-1
@@ -551,9 +551,9 @@ Embed cumulative tags in code docstrings using namespaced format:
 - Instant impact analysis when upstream requirements change
 
 **Why Unified Format?**
-- `@brd: BRD.30` ❌ Ambiguous (which BRD document?)
-- `@brd: BRD-001:30` ❌ Old format (deprecated)
-- `@brd: BRD.01.01.30` ✅ Unified format (current standard)
+- `@brd: BRD.30` [FAIL] Ambiguous (which BRD document?)
+- `@brd: BRD-001:30` [FAIL] Old format (deprecated)
+- `@brd: BRD.01.01.30` [PASS] Unified format (current standard)
 
 #### Traditional Section 7 (Legacy)
 
@@ -577,11 +577,11 @@ Manual traceability sections in documents remain supported during migration:
 
 **SCOPE**: These standards apply ONLY to **documentation artifacts**, NOT source code.
 
-#### ✅ Apply To:
+#### [PASS] Apply To:
 - Documentation files in `docs/` directories (BRD, PRD, REQ, ADR, SPEC, CTR, etc.)
 - BDD feature files (`.feature`) in test directories
 
-#### ❌ Do NOT Apply To:
+#### [FAIL] Do NOT Apply To:
 - **Source code files**: Follow language-specific conventions (PEP 8 for Python, etc.)
 - **Test files**: Follow testing framework conventions (pytest, Jest, JUnit, etc.)
 
@@ -606,14 +606,14 @@ All documentation follows standardized ID formats:
 **Forward Matrix Example:**
 ```markdown
 | Requirement | Implementing Files | Status |
-|-------------|-------------------|--------|
-| BRD.01.01.30 | src/services/account.py:12 | ✓ Complete |
+|-------------|-------------------|---------|
+| BRD.01.01.30 | src/services/account.py:12 | [PASS] Complete |
 ```
 
 **Reverse Matrix Example:**
 ```markdown
 | Source File | Requirements | Status |
-|-------------|-------------|--------|
+|-------------|-------------|---------|
 | src/services/account.py | BRD.01.01.30, SYS.01.25.06 | Complete |
 ```
 
@@ -750,7 +750,7 @@ The framework includes a complete testing infrastructure aligned with the TSPEC 
 ### Test Types (TSPEC Layer)
 
 | Type | Code | Directory | Purpose |
-|------|------|-----------|---------|
+|------|------|-----------|----------|
 | UTEST | 40 | `tests/unit/` | Unit tests (fast, isolated) |
 | ITEST | 41 | `tests/integration/` | Integration tests (component interaction) |
 | STEST | 42 | `tests/smoke/` | Smoke tests (post-deployment health) |
@@ -991,14 +991,12 @@ aidoc-flow-framework/
 ├── tests/                             # Test suite (aligned with TSPEC Layer 10)
 │   ├── conftest.py                    # Shared fixtures
 │   ├── test_config.yaml               # Test configuration
+│   ├── requirements.txt               # Test dependencies
 │   ├── unit/                          # UTEST - Unit tests
 │   ├── integration/                   # ITEST - Integration tests
 │   ├── smoke/                         # STEST - Smoke tests
 │   ├── functional/                    # FTEST - Functional tests
 │   └── results/                       # Test result archives
-├── pytest.ini                         # Pytest configuration
-├── pyproject.toml                     # Project and tool configuration
-├── requirements-test.txt              # Test dependencies
 ├── work_plans/                        # Implementation plans
 └── docs/                              # Additional documentation
 ```
@@ -1099,13 +1097,6 @@ Contributions welcome! Please:
 - [ai_dev_ssd_flow/AUTOPILOT/scripts/generate_integration_tests.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/generate_integration_tests.py) - Generate integration tests
 - [ai_dev_ssd_flow/AUTOPILOT/scripts/generate_smoke_tests.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/generate_smoke_tests.py) - Generate smoke tests
 - [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_e2e.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_e2e.py) - End-to-end TDD validation
-
-**Makefile**:
-- [Makefile](./Makefile) - Standardized commands for common operations
-
-**Docker Support**:
-- [Dockerfile](./Dockerfile) - Docker configuration
-- [docker-compose.yml](./docker-compose.yml) - Docker Compose setup
 
 **Quick Start**:
 
@@ -1231,7 +1222,7 @@ A comprehensive suite of tools is included for building, testing, and debugging 
 | **[Runtime Validator](dev_tools/safety/README.md)** | Safety | Ensure agent handling of safe structured outputs |
 | **[Human Inspector](dev_tools/inspector/README.md)** | Manual | Interactive REPL for manual debugging |
 
-👉 **[View All Development Tools](dev_tools/README.md)**
+**[View All Development Tools](dev_tools/README.md)**
 
 ---
 ---
@@ -1403,36 +1394,46 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.5
-**Last Updated**: 2026-02-10T16:30:00
+**Version**: 2.6
+**Last Updated**: 2026-02-17T12:00:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
 
+### Version 2.6 (2026-02-17T12:00:00)
+- [PASS] **Production Readiness**: Both frameworks cleaned and production-ready
+  - **ai_dev_ssd_flow**: Removed 10 backup directories (191 files), added 4 missing templates
+  - **ai_project_issues_flow**: Fixed error handling in 10 Python workflow scripts
+  - Removed broken IPLAN references (IPLAN-004, 006, 008, 009, 010, 011) from 18 files
+  - Standardized emoji decorations to text notation across 326 files
+- [PASS] **Error Handling Improvements**: Added try/except for FileNotFoundError, json.JSONDecodeError, subprocess.SubprocessError, ET.ParseError in deployment scripts
+- [PASS] **Template Fixes**: Fixed hardcoded paths in `.env.example` and `settings.local.json.template` to use `{LOCAL_PROJECT_PATH}` placeholder
+- [PASS] **Documentation Cleanup**: Removed emoji decorations, standardized to [PASS]/[FAIL]/[WARN] notation
+
 ### Version 2.5 (2026-02-10T16:30:00)
-- ✅ **Fixer Skills v2.0**: Tiered auto-merge system for all 11 artifact types
+- [PASS] **Fixer Skills v2.0**: Tiered auto-merge system for all 11 artifact types
   - **Tier 1 (<5% change)**: Auto-merge additions/updates, patch version increment (1.0→1.0.1)
   - **Tier 2 (5-15% change)**: Auto-merge with detailed changelog, minor version increment (1.0→1.1)
   - **Tier 3 (>15% change)**: Archive current version, trigger regeneration, major version increment (1.x→2.0)
   - **No Deletion Policy**: Mark content as [DEPRECATED], [SUPERSEDED], [CANCELLED], or @deprecated
   - Supports all artifact types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS
-- ✅ **Reviewer Skills v1.4**: Mandatory drift cache with three-phase detection algorithm
+- [PASS] **Reviewer Skills v1.4**: Mandatory drift cache with three-phase detection algorithm
   - **Drift Cache File**: `.drift_cache.json` in each document folder
   - **Three-Phase Detection**: Load Cache → Detect Drift → Update Cache (MANDATORY)
   - **SHA-256 Hash Computation**: High-precision content comparison
   - **Review History Tracking**: Complete audit trail of all reviews
   - Supports all 11 artifact types with cache at `docs/{NN}_{TYPE}/.drift_cache.json`
-- ✅ **ISO 8601 Datetime Format**: Standardized `YYYY-MM-DDTHH:MM:SS` format across all skills and templates
+- [PASS] **ISO 8601 Datetime Format**: Standardized `YYYY-MM-DDTHH:MM:SS` format across all skills and templates
   - Enables same-day drift detection with timestamp precision
   - Consistent datetime format in frontmatter, review reports, and cache files
-- ✅ **Enhanced Documentation**: Updated README and skills documentation
+- [PASS] **Enhanced Documentation**: Updated README and skills documentation
 
 ### Version 2.4 (2026-02-07T00:00:00)
-- ✅ **Autopilot v6.0**: Complete automation upgrade
+- [PASS] **Autopilot v6.0**: Complete automation upgrade
   - Added TSPEC (Layer 10) test specification integration
   - Added TDD workflow mode with Red→Green validation
   - Added CHG (Change Management) 4-Gate integration
-- ✅ **New TDD Scripts**:
+- [PASS] **New TDD Scripts**:
   - `analyze_test_requirements.py` - Extract traceability from tests
   - `generate_spec_tdd.py` - Generate test-aware SPEC
   - `validate_tdd_stage.py` - Validate Red/Green states
@@ -1440,15 +1441,13 @@ Developed for AI-assisted software engineering workflows optimized for:
   - `generate_integration_tests.py` - Generate integration tests
   - `generate_smoke_tests.py` - Generate smoke tests
   - `validate_tdd_e2e.py` - End-to-end TDD validation
-- ✅ **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests
-- ✅ **Documentation Updates**: Updated multi-project setup guides
+- [PASS] **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests
+- [PASS] **Documentation Updates**: Updated multi-project setup guides
 
 ### Version 2.3 (2026-02-06T00:00:00)
-- ✅ **Testing Infrastructure**: Complete runtime test infrastructure for TSPEC layer
+- [PASS] **Testing Infrastructure**: Complete runtime test infrastructure for TSPEC layer
   - Added `tests/` directory with 4 test type subdirectories (unit, integration, smoke, functional)
-  - Added `pytest.ini` with markers for test types (utest, itest, stest, ftest)
-  - Added `pyproject.toml` with coverage configuration
-  - Added `requirements-test.txt` with test dependencies
+  - Added `tests/requirements.txt` with test dependencies
   - Added `tests/scripts/run_tests.py` - Unified test runner with result saving
   - Added `tests/scripts/compare_test_results.py` - Regression detection between runs
   - Added `tests/scripts/archive_test_results.py` - Result archival and trend tracking
@@ -1458,48 +1457,48 @@ Developed for AI-assisted software engineering workflows optimized for:
   - Added `ai_dev_ssd_flow/10_TSPEC/test_registry_schema.yaml` - Registry validation schema
   - Added `ai_dev_ssd_flow/10_TSPEC/test_result_schema.yaml` - Result file schema
   - Added `.github/workflows/test-pipeline.yml` - CI/CD test automation
-- ✅ **Sample Tests**: 44 sample tests demonstrating patterns for each test type
-- ✅ **Documentation Updates**: Updated TSPEC README, main README, and tests/README
+- [PASS] **Sample Tests**: 44 sample tests demonstrating patterns for each test type
+- [PASS] **Documentation Updates**: Updated TSPEC README, main README, and tests/README
 
 ### Version 2.2 (2025-11-20T00:00:00)
-- ✅ **Validation Scripts Expansion**: Grew from 3 to 15 validation scripts
+- [PASS] **Validation Scripts Expansion**: Grew from 3 to 15 validation scripts
   - Added `validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
   - Added `validate_documentation_paths.py` - Path consistency validation
   - Added `validate_links.py` - Markdown link validation
   - Added `validate_traceability_matrix_enforcement.py` - Matrix enforcement rules
   - Added `validate_brd_template.sh` - BRD template compliance
   - Added `validate_req_template.sh` - REQ template compliance
-- ✅ **Domain Adaptation**: Added comprehensive domain configuration guides
+- [PASS] **Domain Adaptation**: Added comprehensive domain configuration guides
   - `FINANCIAL_DOMAIN_CONFIG.md` - Financial sector-specific guidance
   - `SOFTWARE_DOMAIN_CONFIG.md` - Generic software project guidance
   - `GENERIC_DOMAIN_CONFIG.md` - Minimal configuration template
   - `DOMAIN_SELECTION_QUESTIONNAIRE.md` - Domain selection tool
-- ✅ **Enhanced Documentation**:
+- [PASS] **Enhanced Documentation**:
   - `PLATFORM_VS_FEATURE_BRD.md` - BRD type selection guidance
   - `TRACEABILITY_SETUP.md` - Enhanced setup guide
   - `TRACEABILITY_VALIDATION.md` - Validation procedures
   - Updated `index.md` with 7 categorized documentation sections
-- ✅ **Decision Frameworks**: Contract and IMPL decision questionnaires
-- ✅ **Tool Optimization**: Token limits guide for Claude Code, Gemini CLI, GitHub Copilot
+- [PASS] **Decision Frameworks**: Contract and IMPL decision questionnaires
+- [PASS] **Tool Optimization**: Token limits guide for Claude Code, Gemini CLI, GitHub Copilot
 
 ### Version 2.1 (2025-11-19T00:00:00)
 - Updated REQ references to v3.0 (REQ v3.0 sections 3-7 for SPEC-ready ≥90%)
 
 ### Version 2.0 (2025-11-13T00:00:00) - Cumulative Tagging Hierarchy
-- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (Strategy → Validation)
-- ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
-- ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
+- [PASS] **15-Layer Architecture**: Expanded from 10 to 15 layers (Strategy → Validation)
+- [PASS] **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
+- [PASS] **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
   - `extract_tags.py` - Extract tags from codebase
   - `validate_tags_against_docs.py` - Validate cumulative hierarchy with `--validate-cumulative`
   - `generate_traceability_matrices.py` - Auto-generate bidirectional matrices
-- ✅ **Traceability Matrix Templates**: All 13 artifact types include cumulative tagging sections
-- ✅ **Complete Documentation**:
+- [PASS] **Traceability Matrix Templates**: All 13 artifact types include cumulative tagging sections
+- [PASS] **Complete Documentation**:
   - `COMPLETE_TAGGING_EXAMPLE.md` - End-to-end cumulative tagging example
   - `TRACEABILITY_SETUP.md` - Setup guide with CI/CD integration
   - `DOMAIN_ADAPTATION_GUIDE.md` - Domain customization checklists
-- ✅ **Directory Updates**: CONTRACTS → CTR (dual-file format)
-- ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
-- ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
+- [PASS] **Directory Updates**: CONTRACTS → CTR (dual-file format)
+- [PASS] **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
+- [PASS] **Impact Analysis**: Instant identification of affected downstream artifacts
 
 ### Version 1.1.0 (2025-11-12T00:00:00)
 - Added tag-based auto-discovery traceability system
@@ -1513,135 +1512,3 @@ Developed for AI-assisted software engineering workflows optimized for:
 - Initial release with 10-layer SDD workflow
 - Complete template system for all artifact types
 - Traditional Section 7 traceability
-
----
-
-## Project Example: Trading Nexus (merged)
-
-# Trading Nexus
-
-**AI-Powered Options Trading Intelligence Platform**
-
-[![Status](https://img.shields.io/badge/status-development-yellow)]()
-[![Framework](https://img.shields.io/badge/framework-Google%20ADK-blue)]()
-[![Protocol](https://img.shields.io/badge/tools-MCP-green)]()
-
----
-
-## Overview
-
-Trading Nexus is a comprehensive AI trading platform that combines:
-
-- **Multi-LLM Ensemble**: 5 voting agents across 200+ models via AI Gateway
-- **MCP-First Architecture**: Unified tool protocol with ecosystem leverage
-- **Google ADK Framework**: Production-grade agent orchestration
-- **GCP Cloud-Native**: Serverless, scale-to-zero infrastructure
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              TRADING NEXUS                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐        │
-│   │  22+ Agents     │    │   MCP Tools     │    │   AI Gateway    │        │
-│   │  (Google ADK)   │───►│  (IB, Data,     │───►│  (200+ Models)  │        │
-│   │                 │    │   SEC, etc.)    │    │                 │        │
-│   └─────────────────┘    └─────────────────┘    └─────────────────┘        │
-│                                                                              │
-│   Strategies: Earnings Plays │ Covered Calls │ Cash-Secured Puts │ Hedging │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-## Key Features
-
-| Feature | Description |
-|---------|-------------|
-| **Earnings Trading** | Systematic analysis with multi-agent consensus |
-| **Income Strategies** | Covered calls, cash-secured puts, iron condors |
-| **Multi-LLM Voting** | 5 agents (Claude, GPT-4, Gemini, DeepSeek, Llama) |
-| **Risk Management** | 7 circuit breaker types, position limits |
-| **Continuous Learning** | Graph RAG with bias detection |
-| **Full Observability** | Metrics, logging, performance tracking |
-
-## Technology Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Agent Framework** | Google ADK (LlmAgent, ParallelAgent, SequentialAgent) |
-| **Tool Protocol** | MCP (Model Context Protocol) |
-| **AI Gateway** | LiteLLM (200+ models, cost optimization) |
-| **Broker** | Interactive Brokers |
-| **Infrastructure** | GCP (Cloud Run, Firestore, BigQuery) |
-| **Knowledge** | Neo4j (Graph) + ChromaDB (Vectors) |
-
-## Cost Estimate
-
-| Phase | Monthly Cost |
-|-------|--------------|
-| Development | $175 |
-| Active Trading | $375 |
-| Production | $525 |
-
-*See [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md) for detailed breakdown.*
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [**TRADING_NEXUS_SPECIFICATION.md**](docs/TRADING_NEXUS_SPECIFICATION.md) | Complete technical specification |
-
-The specification covers:
-- System architecture
-- 22+ agent hierarchy
-- Agent ensemble engine
-- Google ADK implementation
-- MCP tool architecture
-- Infrastructure design
-- 16-week roadmap
-- Success metrics
-
-## Quick Start
-
-```bash
-# Install Google ADK
-pip install google-adk litellm
-
-# Start development UI
-adk web
-
-# Access at http://localhost:4200
-```
-
-## Project Structure
-
-```
-trading-nexus/
-├── docs/
-│   └── TRADING_NEXUS_SPECIFICATION.md  # Complete specification
-├── agents/                              # ADK agent definitions
-│   ├── earnings_agent.py
-│   ├── ensemble.py
-│   └── ...
-├── tools/                               # MCP server implementations
-│   ├── ib_mcp_server/
-│   └── browser_mcp_server/
-├── config/                              # Agent configurations
-└── tests/                               # Test suites
-```
-
-## Roadmap
-
-| Phase | Duration | Focus |
-|-------|----------|-------|
-| **Foundation** | Weeks 1-4 | ADK setup, infrastructure |
-| **Ensemble** | Weeks 5-8 | Voting agents, consensus |
-| **MCP Integration** | Weeks 9-12 | Third-party MCPs, Graph RAG |
-| **Production** | Weeks 13-16 | Strategy agents, hardening |
-
-## Architecture Decisions
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Agent Framework | Google ADK | Native GCP, multi-agent, Dev UI |
-| Tool Protocol | MCP | Industry standard, 2000+ servers |
