@@ -1,3 +1,14 @@
+---
+title: "MVP GitHub CI/CD Integration Plan"
+tags:
+  - autopilot
+  - workflow-guide
+  - ai-agent-primary
+custom_fields:
+  document_type: "workflow-guide"
+  status: "active"
+---
+
 # Option 3: Comprehensive CI/CD + GitHub Integration
 
 **Date**: 2026-01-18T00:00:00  

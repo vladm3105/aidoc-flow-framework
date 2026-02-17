@@ -360,7 +360,7 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 **Test Type Specifications**:
 
 | Type | Directory | Sources | Purpose | Min Score |
-|------|-----------|---------|---------|-----------|
+|------|-----------|---------|---------|------------|
 | UTEST | `10_TSPEC/UTEST/` | REQ (L7), SPEC (L9) | Unit test specifications | 90% |
 | ITEST | `10_TSPEC/ITEST/` | CTR (L8), SYS (L6), SPEC (L9) | Integration test specifications | 85% |
 | STEST | `10_TSPEC/STEST/` | EARS (L3), BDD (L4), REQ (L7) | Smoke test specifications | 100% |
@@ -387,7 +387,7 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 - `SS`: Sequential test case (01-99)
 
 ### TASKS (Layer 11)
-**Template**: `11_TASKS/TASKS-MVP-TEMPLATE.md`
+**Template**: `11_TASKS/TASKS-TEMPLATE.md`
 
 **Generation**:
 - Generated from template
@@ -454,7 +454,7 @@ Every artifact includes tags from ALL upstream layers:
 ### TSPEC-Specific Tags
 
 | Test Type | Required Upstream Tags | Additional Tags |
-|-----------|------------------------|-----------------|
+|-----------|------------------------|------------------|
 | UTEST | `@req`, `@spec` | `@threshold` (optional) |
 | ITEST | `@ctr`, `@sys`, `@spec` | `@sequence` (optional) |
 | STEST | `@ears`, `@bdd`, `@req` | `@timeout`, `@rollback` |
@@ -501,7 +501,7 @@ Auto-pilot converts hyphenated IDs to dotted forms where required:
 
 **TDD Summary** (when --tdd-mode enabled):
 | Phase | Status | Details |
-|-------|--------|---------|
+|-------|--------|----------|
 | Test Generation | [PASS] | 24 test cases generated |
 | Red State | [PASS] | All tests fail (expected) |
 | Green State | [PASS] | All tests pass |
@@ -793,7 +793,7 @@ Unit tests for REQ-001
 ### TDD Quality Gates
 
 | Phase | Requirement | Exit Code |
-|-------|-------------|-----------|
+|-------|-------------|------------|
 | Red State | All tests fail | != 0 |
 | Green State | All tests pass | == 0 |
 | Coverage | ≥90% line coverage | Check threshold |
@@ -907,7 +907,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   BRD, PRD, EARS,     ADR, SYS, REQ, CTR                        
   BDD                                                            
                                                                
-                                            
+                            
                  ↓                                               
            GATE-09 (L9-L11)                                      
            Design/Test Layer                                     
@@ -923,7 +923,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### Change Level Determination
 
 | Level | Criteria | Process |
-|-------|----------|---------|
+|-------|----------|----------|
 | **L1 Patch** | Bug fix, typo, no behavior change | Edit in place, version bump |
 | **L2 Minor** | Feature add, enhancement, non-breaking | CHG-MVP template, partial regeneration |
 | **L3 Major** | Architecture change, breaking change | CHG template, archive old, full cascade |
@@ -931,7 +931,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### Change Source Routing
 
 | Source | Entry Gate | Cascade Path |
-|--------|------------|--------------|
+|--------|------------|---------------|
 | Upstream (L1-L4) | GATE-01 | 01 → 05 → 09 → 12 |
 | Midstream (L5-L11) | GATE-05 | 05 → 09 → 12 |
 | Downstream (L12-L14) | GATE-12 | 12 only |
@@ -1146,7 +1146,7 @@ ai_dev_flow/AUTOPILOT/tests/
 ### Test Markers
 
 | Marker | Purpose | Run Command |
-|--------|---------|-------------|
+|--------|---------|---------------|
 | `smoke` | Quick functionality validation | `pytest -m smoke` |
 | `unit` | Isolated function tests | `pytest -m unit` |
 | `regression` | Baseline comparisons | `pytest -m regression` |

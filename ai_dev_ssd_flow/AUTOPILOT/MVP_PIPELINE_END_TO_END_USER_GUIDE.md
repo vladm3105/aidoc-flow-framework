@@ -1,3 +1,14 @@
+---
+title: "MVP Pipeline End-to-End User Guide"
+tags:
+  - autopilot
+  - workflow-guide
+  - ai-agent-primary
+custom_fields:
+  document_type: "workflow-guide"
+  status: "active"
+---
+
 # End-to-End Pipeline User Guide: PRD → Deployed Code
 
 **Scenario**: You have a PRD document and want to get to deployed code  
