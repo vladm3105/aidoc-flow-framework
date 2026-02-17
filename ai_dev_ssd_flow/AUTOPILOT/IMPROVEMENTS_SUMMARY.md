@@ -1,3 +1,14 @@
+---
+title: "Autopilot Improvements Summary"
+tags:
+  - autopilot
+  - workflow-guide
+  - ai-agent-primary
+custom_fields:
+  document_type: "workflow-guide"
+  status: "active"
+---
+
 # Autopilot Framework Improvements - Summary
 
 **Date**: 2026-01-19T00:00:00  
