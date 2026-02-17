@@ -65,7 +65,19 @@ Phase-gated deployment tracking and configuration.
 
 ---
 
-## Plan Templates
+## Project Planning Templates
+
+Templates for project kickoff, planning, and roadmap documentation.
+
+| Document | Description |
+|:---------|:------------|
+| [PROJECT_KICKOFF_PLAN-TEMPLATE.md](./PROJECT_KICKOFF_PLAN-TEMPLATE.md) | Project kickoff template with executive summary, architecture, and risks |
+| [PROJECT_PLAN-TEMPLATE.md](./PROJECT_PLAN-TEMPLATE.md) | Full project plan template with phases, sprints, and task specifications |
+| [ROADMAP-TEMPLATE.md](./ROADMAP-TEMPLATE.md) | Phase timeline template with dependency graphs and deployment strategy |
+
+---
+
+## Implementation Plan Templates
 
 Implementation plan (IPLAN) templates and guidance.
 
@@ -76,14 +88,6 @@ Implementation plan (IPLAN) templates and guidance.
 | [plans/IPLAN-001_phase-issue-review.md](./plans/IPLAN-001_phase-issue-review.md) | Pre-sprint phase issue audit template |
 | [plans/IPLAN-002_ai-pr-review-workflow.md](./plans/IPLAN-002_ai-pr-review-workflow.md) | AI PR review setup template |
 | [plans/IPLAN-003_phase-gated-deployment.md](./plans/IPLAN-003_phase-gated-deployment.md) | Phase-gated deployment configuration template |
-
----
-
-## Project-Specific Governance
-
-Project-specific planning documents remain in their respective locations:
-
-- `ai_project_issues_flow/governance/` - AI Project Flow specific plans and roadmaps
 
 ---
 
