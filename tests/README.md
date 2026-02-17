@@ -321,7 +321,7 @@ pytest-bdd>=7.0.0        # BDD integration
 
 ## References
 
-- [ai_dev_flow/10_TSPEC/README.md](../ai_dev_flow/10_TSPEC/README.md) - TSPEC layer documentation
-- [ai_dev_flow/TESTING_STRATEGY_TDD.md](../ai_dev_flow/TESTING_STRATEGY_TDD.md) - TDD workflow
+- [ai_dev_ssd_flow/10_TSPEC/README.md](../ai_dev_ssd_flow/10_TSPEC/README.md) - TSPEC layer documentation
+- [ai_dev_ssd_flow/TESTING_STRATEGY_TDD.md](../ai_dev_ssd_flow/TESTING_STRATEGY_TDD.md) - TDD workflow
 - [pytest.ini](../pytest.ini) - Pytest configuration
 - [pyproject.toml](../pyproject.toml) - Tool configuration
