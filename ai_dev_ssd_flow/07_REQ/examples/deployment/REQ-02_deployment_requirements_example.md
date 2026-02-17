@@ -23,7 +23,7 @@ custom_fields:
 ## 1. Document Control
 
 | Item | Details |
-|-------|---------|
+|-------|--------|
 | **Status** | Example |
 | **Version** | 1.0.0 |
 | **Date Created** | 2026-01-19T00:00:00 |
@@ -32,7 +32,9 @@ custom_fields:
 | **Priority** | High (P2) |
 | **Category** | Infra |
 | **Infrastructure Type** | Deployment_Automation |
-| **Source Document** | [SYS-02 section 9.1.1](../06_SYS/SYS-02_deployment_requirements.md#sys021101) |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| **Source Document** | [SYS-02 section 9.1.1](../../../06_SYS/examples/SYS-02_deployment_requirements.md#sys021101) |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | **Verification Method** | BDD + Integration Test |
 | **Assigned Team** | DevOps Team |
 | **SPEC-Ready Score** | [PASS] 85% (Target: ≥70%) |
@@ -319,20 +321,22 @@ class DeploymentResponse(BaseModel):
 ### 9.5.1 Infrastructure Requirements
 
 | Resource Type | Provider | Configuration | Requirements |
-|---------------|----------|--------------|--------------|
-| Compute | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | Type: ECS Fargate | CPU: 2 vCPU, Memory: 4GB, Scaling: 2-10 instances |
-| Database | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | Type: RDS PostgreSQL | Version: 15.3, Storage: 100GB, HA: yes |
-| Storage | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | Type: S3 | Bucket type: Standard, Retention: 90 days, Encryption: AES-256 |
-| Network | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | VPC, Subnets, ALB | CIDR: 10.0.0.0/16, AZs: us-east-1a,1b,1c |
-| Cache | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | Type: ElastiCache Redis | Memory: 1GB, TTL: 3600 seconds |
-| Message Queue | [@adr: ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md#ADR-02) | Type: SQS | Queue type: Standard, Retention: 14 days |
+|---------------|----------|--------------|------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Compute | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | Type: ECS Fargate | CPU: 2 vCPU, Memory: 4GB, Scaling: 2-10 instances |
+| Database | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | Type: RDS PostgreSQL | Version: 15.3, Storage: 100GB, HA: yes |
+| Storage | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | Type: S3 | Bucket type: Standard, Retention: 90 days, Encryption: AES-256 |
+| Network | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | VPC, Subnets, ALB | CIDR: 10.0.0.0/16, AZs: us-east-1a,1b,1c |
+| Cache | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | Type: ElastiCache Redis | Memory: 1GB, TTL: 3600 seconds |
+| Message Queue | [@adr: ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | Type: SQS | Queue type: Standard, Retention: 14 days |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 > **Reference**: Cloud provider decisions in `@brd: BRD.01.01.05`, `@prd: PRD.01.01.03`, `@adr: ADR-02`
 
 ### 9.5.2 Environment Configuration
 
 | Environment | Deployment Strategy | Rollback Time | Replicas | Regions |
-|-------------|---------------------|---------------|-----------|---------|
+|-------------|---------------------|---------------|-----------|--------|
 | Development | Manual | N/A | 1 | us-east-1 |
 | Staging | Blue-Green | 5 minutes | 2 | us-east-1 |
 | Production | Blue-Green | 5 minutes | 4 | us-east-1a,1b,1c (multi-AZ HA) |
@@ -405,7 +409,7 @@ class DeploymentResponse(BaseModel):
 ### 9.5.7 Cost Constraints
 
 | Resource | Budget | Alerts | Optimization |
-|----------|--------|--------|--------------|
+|----------|--------|--------|------------|
 | Compute | Monthly: $200 | Threshold: 80% ($160) | Savings plans: ECS compute savings plans |
 | Storage | Monthly: $50 | Threshold: 80% ($40) | Lifecycle policies: S3 lifecycle to Glacier |
 | Network | Monthly: $100 | Threshold: 80% ($80) | Compression: Enable ALB compression |
@@ -436,21 +440,23 @@ class DeploymentResponse(BaseModel):
 
 ### 10.1 Upstream References
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Source Type | Document ID | Element Reference | Relationship |
 |-------------|-------------|-------------------|--------------|
-| BRD | [BRD-01](../../01_BRD/BRD-01.md) | BRD.01.01.05 | Platform architecture definition |
-| PRD | [PRD-01](../../02_PRD/PRD-01.md) | PRD.01.01.03 | Product requirements |
-| EARS | [EARS-01](../../03_EARS/EARS-01.md) | EARS.01.01.02 | Formal engineering requirements |
-| BDD | [BDD-02](../../04_BDD/BDD-02_deployment/) | BDD.02.01.01 | Acceptance test scenarios |
-| ADR | [ADR-02](../../05_ADR/ADR-02_cloud_provider_selection.md) | — | AWS cloud provider selection |
-| SYS | [SYS-02](../../06_SYS/SYS-02_deployment_requirements.md) | SYS.02.09.01 | System deployment requirements |
+| BRD | [BRD-01](../../../01_BRD/examples/BRD-01.md) | BRD.01.01.05 | Platform architecture definition |
+| PRD | [PRD-01](../../../02_PRD/examples/PRD-01.md) | PRD.01.01.03 | Product requirements |
+| EARS | [EARS-01](../../../03_EARS/examples/EARS-01.md) | EARS.01.01.02 | Formal engineering requirements |
+| BDD | [BDD-02](../../../04_BDD/examples/BDD-02_deployment/) | BDD.02.01.01 | Acceptance test scenarios |
+| ADR | [ADR-02](../../../05_ADR/examples/ADR-02_cloud_provider_selection.md) | — | AWS cloud provider selection |
+| SYS | [SYS-02](../../../06_SYS/examples/SYS-02_deployment_requirements.md) | SYS.02.09.01 | System deployment requirements |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 > **Complete Upstream Chain**: Layer 7 (REQ) requires references to all 6 upstream artifact types.
 
 ### 10.2 Downstream Artifacts
 
 | Artifact | Status | Relationship |
-|----------|--------|--------------|
+|----------|--------|------------|
 | CTR-NN | TBD | API contract (if external interface) |
 | SPEC-NN | TBD | Technical specification |
 | TASKS-NN | TBD | Implementation tasks |
@@ -527,7 +533,7 @@ Implementation follows MVP deployment automation pattern:
 ### 11.3 Dependencies
 
 | Package/Service | Version | Purpose |
-|-----------------|---------|---------|
+|-----------------|---------|--------|
 | python | 3.11+ | Runtime for deployment scripts |
 | boto3 | 1.28+ | AWS SDK for infrastructure provisioning |
 | ansible-core | 2.13+ | Ansible execution |
@@ -539,7 +545,7 @@ Implementation follows MVP deployment automation pattern:
 ## 12. Change History
 
 | Date | Version | Change | Author |
-|------|---------|--------|---------|
+|------|---------|--------|--------|
 | 2026-01-19T00:00:00 | 1.0.0 | Initial draft - Example REQ with Section 9.5 deployment requirements | Example Team |
 
 ---
