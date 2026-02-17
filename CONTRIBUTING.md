@@ -1,1 +1,1 @@
-governance/templates/CONTRIBUTING.md
+governance/issues_flow/templates/CONTRIBUTING.md
