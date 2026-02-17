@@ -1,3 +1,14 @@
+---
+title: "Autopilot Workflow Guide"
+tags:
+  - autopilot
+  - workflow-guide
+  - ai-agent-primary
+custom_fields:
+  document_type: "workflow-guide"
+  status: "active"
+---
+
 # Autopilot Workflow Guide
 
 **Purpose**: Document autopilot workflow including source directories, template usage, and auto-generated files.
@@ -11,7 +22,7 @@
 The `doc-brd-autopilot` skill uses reference documents as input sources (Layer 1 entry point):
 
 | Priority | Source | Location | Content Type |
-|----------|--------|----------|--------------|
+|----------|--------|----------|---------------|
 | 1 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
 | 2 | Reference Documents (alt) | `REF/` | Alternative location |
 | 3 | Existing Documentation | `docs/` or `README.md` | Project context |
@@ -43,7 +54,7 @@ All other autopilots require upstream documents to exist:
 The BRD autopilot automatically creates/updates these files:
 
 | File | Purpose | Auto-Created | Auto-Updated |
-|------|---------|--------------|--------------|
+|------|---------|--------------|---------------|
 | `docs/01_BRD/BRD-00_index.md` | Master BRD registry | Yes (if missing) | Yes (on each BRD) |
 | `docs/01_BRD/BRD-00_GLOSSARY.md` | Master glossary | Yes (if missing) | No (manual updates) |
 
@@ -65,7 +76,7 @@ The Autopilot workflow uses **YAML templates exclusively** for all artifact gene
 ### YAML Template Path Mapping
 
 | Layer | Artifact | YAML Template | MD Template (Reference Only) |
-|-------|----------|---------------|---------------------------|
+|-------|----------|---------------|----------------------------|
 | 1 | BRD | `01_BRD/BRD-MVP-TEMPLATE.yaml` | `BRD-MVP-TEMPLATE.md` |
 | 2 | PRD | `02_PRD/PRD-MVP-TEMPLATE.yaml` | `PRD-MVP-TEMPLATE.md` |
 | 3 | EARS | `03_EARS/EARS-MVP-TEMPLATE.yaml` | `EARS-MVP-TEMPLATE.md` |

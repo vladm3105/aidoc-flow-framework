@@ -1,3 +1,16 @@
+---
+title: "SPEC Framework Review Report"
+tags:
+  - layer-09-artifact
+  - review-report
+  - framework-guide
+custom_fields:
+  layer: 9
+  artifact_type: "SPEC"
+  document_type: "review-report"
+  status: "completed"
+---
+
 # SPEC Framework Review Report
 
 **Review Date**: 2026-02-08T00:00:00  
@@ -204,7 +217,7 @@ Status: PASS (0 errors, 1 info)
 ## Notation Quick Reference
 
 | Context | Notation | Example | Used In |
-|---------|----------|---------|---------|
+|---------|----------|---------|----------|
 | File names | Dash | `SPEC-01_api_client.yaml` | File system |
 | File paths | Dash | `../02_PRD/PRD-03_product.md` | Links |
 | upstream_links | Dash | `artifact: "BRD-01"` | traceability |

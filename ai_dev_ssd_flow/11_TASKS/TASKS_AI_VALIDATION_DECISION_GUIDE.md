@@ -51,7 +51,7 @@ This TASKS guide is a starter scaffold. Populate with TASKS-specific patterns as
 
 ## Immediate Best Practices
 
-- Confirm the document follows [TASKS-MVP-TEMPLATE.md](./TASKS-MVP-TEMPLATE.md) before changing validators.
+- Confirm the document follows [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) before changing validators.
 - Prioritize fixes that improve readiness for downstream implementation planning.
 - Treat formatting-only warnings as validator candidates unless they block clarity or traceability.
 - Record false positives with repro snippets to refine validators.

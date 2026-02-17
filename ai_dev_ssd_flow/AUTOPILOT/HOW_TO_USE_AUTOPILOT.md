@@ -1,3 +1,14 @@
+---
+title: "How to Use Autopilot"
+tags:
+  - autopilot
+  - workflow-guide
+  - ai-agent-primary
+custom_fields:
+  document_type: "workflow-guide"
+  status: "active"
+---
+
 # How to Use MVP Autopilot
 
 **Version**: 5.0  

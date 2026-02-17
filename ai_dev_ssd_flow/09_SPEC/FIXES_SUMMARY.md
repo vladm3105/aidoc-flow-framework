@@ -1,3 +1,16 @@
+---
+title: "SPEC Framework Fixes Summary"
+tags:
+  - layer-09-artifact
+  - fixes-summary
+  - framework-guide
+custom_fields:
+  layer: 9
+  artifact_type: "SPEC"
+  document_type: "fixes-summary"
+  status: "completed"
+---
+
 # SPEC Framework Fixes - Summary
 
 **Date**: 2026-02-08T00:00:00
@@ -98,7 +111,7 @@ req_implementations:
 ## Element Type Code Reference
 
 | Code | Element Type | Example |
-|------|--------------|---------|
+|------|--------------|----------|
 | 13 | Test Scenario (BDD) | `BDD.05.13.01` |
 | 15 | Step | `SPEC.02.15.01` |
 | 16 | Interface | `SPEC.02.16.01` |
@@ -113,7 +126,7 @@ req_implementations:
 ## Notation Quick Reference
 
 | Context | Notation | Example |
-|---------|----------|---------|
+|---------|----------|----------|
 | **File names** | Dash | `SPEC-01_api_client.yaml` |
 | **File paths** | Dash | `../02_PRD/PRD-03_product.md` |
 | **upstream_links.artifact** | Dash | `"BRD-01"` |

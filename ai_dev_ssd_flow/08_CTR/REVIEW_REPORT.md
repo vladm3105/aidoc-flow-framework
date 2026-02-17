@@ -1,3 +1,16 @@
+---
+title: "CTR Framework Review Report"
+tags:
+  - layer-08-artifact
+  - review-report
+  - framework-guide
+custom_fields:
+  layer: 8
+  artifact_type: "CTR"
+  document_type: "review-report"
+  status: "completed"
+---
+
 # CTR Framework Review Report
 
 **Review Date**: 2026-02-08T00:00:00  
@@ -102,7 +115,7 @@ CTR is documented as **Layer 8** in README and main template, but metadata in se
 ### Dual-Format System Explained
 
 | Format | Purpose | Structure | Example |
-|--------|---------|-----------|---------|
+|--------|---------|-----------|----------|
 | **.md files** | Human-readable docs | 12 sections per template | `CTR-01_contract.md` |
 | **.yaml files** | Machine-readable schemas | OpenAPI 3.x specification | `CTR-01_contract.yaml` |
 | **CTR-MVP-TEMPLATE.yaml** | Autopilot alternative | Custom YAML structure | For AI generation |
@@ -219,7 +232,7 @@ bash scripts/validate_ctr.sh
 ## Summary
 
 | Issue | Severity | Status | Action Required |
-|-------|----------|--------|-----------------|
+|-------|----------|--------|------------------|
 | YAML syntax error in example |  Critical | [FAIL] Found | Fix quoting on lines 255, 335 |
 | Layer number inconsistency | Medium | [FAIL] Found | Update 3 files to layer: 8 |
 
