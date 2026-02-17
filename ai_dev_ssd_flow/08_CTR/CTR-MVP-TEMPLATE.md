@@ -34,7 +34,7 @@ custom_fields:
 ## 1. Document Control
 
 | Item | Details |
-|------|---------|
+|------|--------|
 | **Project Name** | [Enter project name] |
 | **Document Version** | [e.g., 1.0] |
 | **Date** | [YYYY-MM-DDTHH:MM:SS] |
@@ -451,8 +451,8 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 | REQ | [REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 | REQ | [REQ-000](../07_REQ/REQ-00_index.md) | Requirements Index | Index | Defines risk limits to validate against |
-| ADR | [ADR-000](../05_ADR/ADR-00_index.md#ADR-000) | Architecture Index | Index | Architecture reference |
-| SYS | [SYS-000](../06_SYS/SYS-00_index.md#SYS-000) | System Index | Index | System requirement reference |
+| ADR | [ADR-00](../05_ADR/ADR-00_index.md) | Architecture Index | Index | Architecture reference |
+| SYS | [SYS-00](../06_SYS/SYS-00_index.md) | System Index | Index | System requirement reference |
 
 ### 11.3 SPEC Requirements
 
@@ -491,7 +491,7 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 **Include this section only if same-type relationships exist between CTR documents.**
 
 | Relationship | Document ID | Document Title | Purpose |
-|--------------|-------------|----------------|---------|
+|--------------|-------------|----------------|--------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [CTR-NN](./CTR-NN_...md) | [Related CTR title] | Shared API context |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
@@ -523,9 +523,9 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 ### 12.1 Internal Links
 
 - [REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md)
-- [REQ-000: Requirements Index](../07_REQ/REQ-00_index.md#REQ-000)
-- [ADR-000: Architecture Index](../05_ADR/ADR-00_index.md#ADR-000)
-- [SYS-000: System Index](../06_SYS/SYS-00_index.md#SYS-000)
+- [REQ-00: Requirements Index](../07_REQ/REQ-00_index.md)
+- [ADR-00: Architecture Index](../05_ADR/ADR-00_index.md)
+- [SYS-00: System Index](../06_SYS/SYS-00_index.md)
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SPEC-05: Risk Validation Service](../09_SPEC/SPEC-05_risk_validation_service/SPEC-05_risk_validation_service.yaml)
 <!-- VALIDATOR:IGNORE-LINKS-END -->
