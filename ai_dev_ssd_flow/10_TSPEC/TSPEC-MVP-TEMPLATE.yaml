@@ -1,0 +1,221 @@
+# =============================================================================
+# TSPEC-MVP-TEMPLATE: Test Specification Aggregator
+# =============================================================================
+#
+# This is the AGGREGATOR template for TSPEC documents.
+# Use subtype templates for individual test specifications:
+#   - UTEST/UTEST-MVP-TEMPLATE.yaml - Unit tests
+#   - ITEST/ITEST-MVP-TEMPLATE.yaml - Integration tests
+#   - STEST/STEST-MVP-TEMPLATE.yaml - System tests
+#   - FTEST/FTEST-MVP-TEMPLATE.yaml - Functional tests
+#   - PTEST/PTEST-MVP-TEMPLATE.yaml - Performance tests
+#   - SECTEST/SECTEST-MVP-TEMPLATE.yaml - Security tests
+#
+# SCHEMA_VERSION: 1.0
+# =============================================================================
+
+id: tspec_component_name
+summary: Test specification aggregator for [Component Name]
+
+# =============================================================================
+# METADATA
+# =============================================================================
+
+metadata:
+  version: "1.0.0"
+  status: "draft"  # draft, review, approved
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  authors:
+    - name: "Test Architect"
+      email: "architect@company.com"
+      role: "Test Lead"
+  component: "[Component/Module Name]"
+  spec_reference: "SPEC-NN"
+  coverage_target: 90
+
+# =============================================================================
+# TRACEABILITY
+# =============================================================================
+
+traceability:
+  upstream_sources:
+    specifications:
+      - id: "SPEC-NN"
+        title: "[Specification title]"
+        link: "../09_SPEC/SPEC-NN.yaml"
+        coverage: "all"
+    requirements:
+      - id: "REQ-NN"
+        title: "[Requirements document]"
+        link: "../07_REQ/REQ-NN.md"
+
+  test_documents:
+    unit_tests:
+      id: "UTEST-NN"
+      status: "draft"  # draft, review, approved, implemented
+      coverage_percent: 0
+      link: "./UTEST/UTEST-NN.md"
+
+    integration_tests:
+      id: "ITEST-NN"
+      status: "draft"
+      coverage_percent: 0
+      link: "./ITEST/ITEST-NN.md"
+
+    system_tests:
+      id: "STEST-NN"
+      status: "draft"
+      coverage_percent: 0
+      link: "./STEST/STEST-NN.md"
+
+    functional_tests:
+      id: "FTEST-NN"
+      status: "draft"
+      coverage_percent: 0
+      link: "./FTEST/FTEST-NN.md"
+
+    performance_tests:
+      id: "PTEST-NN"
+      status: "draft"
+      coverage_percent: 0
+      link: "./PTEST/PTEST-NN.md"
+
+    security_tests:
+      id: "SECTEST-NN"
+      status: "draft"
+      coverage_percent: 0
+      link: "./SECTEST/SECTEST-NN.md"
+
+# =============================================================================
+# TEST STRATEGY
+# =============================================================================
+
+test_strategy:
+  pyramid:
+    unit_tests:
+      percentage: 70
+      coverage_target: 90
+      priority: critical
+    integration_tests:
+      percentage: 20
+      coverage_target: 85
+      priority: high
+    system_tests:
+      percentage: 10
+      coverage_target: 75
+      priority: medium
+
+  coverage_requirements:
+    - test_level: "unit"
+      target: 90
+      priority: "critical"
+    - test_level: "integration"
+      target: 85
+      priority: "high"
+    - test_level: "system"
+      target: 75
+      priority: "medium"
+    - test_level: "functional"
+      target: 100  # happy paths
+      priority: "high"
+    - test_level: "performance"
+      target: 100  # all NFRs
+      priority: "medium"
+    - test_level: "security"
+      target: 100  # all security REQs
+      priority: "critical"
+
+  environments:
+    - name: "local"
+      purpose: "Unit tests"
+      configuration: "Developer machine"
+    - name: "ci"
+      purpose: "All tests"
+      configuration: "GitHub Actions"
+    - name: "staging"
+      purpose: "Integration, E2E"
+      configuration: "Cloud staging"
+
+# =============================================================================
+# TEST SUMMARIES
+# =============================================================================
+
+test_summaries:
+  unit_tests:
+    total_tests: 0
+    categories:
+      logic: 0
+      state: 0
+      validation: 0
+      edge_cases: 0
+    coverage_percent: 0
+
+  integration_tests:
+    total_tests: 0
+    integration_points:
+      database: 0
+      external_apis: 0
+      internal_services: 0
+    coverage_percent: 0
+
+  system_tests:
+    total_tests: 0
+    scenario_types:
+      happy_path: 0
+      error_scenarios: 0
+      edge_cases: 0
+
+  functional_tests:
+    total_tests: 0
+    features: []  # List of feature names with test counts
+
+  performance_tests:
+    nfrs:
+      - metric: "response_time"
+        target: "< 100ms p95"
+        test_type: "load"
+      - metric: "throughput"
+        target: "> 1000 req/s"
+        test_type: "stress"
+
+  security_tests:
+    total_tests: 0
+    categories:
+      authentication: 0
+      authorization: 0
+      input_validation: 0
+      data_protection: 0
+
+# =============================================================================
+# QUALITY GATES
+# =============================================================================
+
+quality_gates:
+  readiness_checklist:
+    utest_complete: false
+    itest_complete: false
+    stest_complete: false
+    ftest_complete: false
+    ptest_complete: false
+    sectest_complete: false
+    coverage_targets_met: false
+    traceability_verified: false
+
+  coverage_summary:
+    overall_unit:
+      target: 90
+      actual: 0
+      status: "pending"
+    overall_integration:
+      target: 85
+      actual: 0
+      status: "pending"
+    req_coverage:
+      target: 100
+      actual: 0
+      status: "pending"
+    spec_coverage:
+      target: 100
+      actual: 0
+      status: "pending"

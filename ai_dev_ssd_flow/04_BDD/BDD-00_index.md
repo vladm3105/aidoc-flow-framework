@@ -34,6 +34,24 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ---
 
+## File Format Note
+
+> **Architecture Decision**: BDD uses `.feature` files (Gherkin syntax) instead of `.md` files.
+>
+> **Rationale**:
+> - Gherkin is the standard format for BDD scenarios (Given/When/Then)
+> - `.feature` files are executable by testing frameworks (Cucumber, Behave, pytest-bdd)
+> - IDE syntax highlighting and validation for Gherkin
+> - Direct integration with CI/CD test pipelines
+>
+> **Templates**:
+> - `BDD-MVP-TEMPLATE.feature` - Standard BDD scenarios
+> - `BDD-AGGREGATOR-TEMPLATE.feature` - Multi-feature aggregator
+>
+> This is an intentional deviation from the dual-format (MD + YAML) pattern used by other artifacts.
+
+---
+
 ## Purpose
 
 - Central index for Behavior-Driven Development (BDD) feature files

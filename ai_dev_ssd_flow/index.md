@@ -224,11 +224,19 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
    - Purpose: Step-by-step guide to generate code from YAML SPEC
    - Each TASKS document corresponds to one SPEC
 
-### Session Execution Layer (Layer 12) - DEPRECATED
+### Execution Layers (Layers 12-14)
 
+Layer 12 and beyond are **implementation layers** (not SDD documentation artifacts):
 
-  - **New Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
-  - Execution commands now in TASKS Section 4: Execution Commands
+| Layer | Name | Description |
+|-------|------|-------------|
+| 12 | Code | Source code implementation |
+| 13 | Tests | Test implementations |
+| 14 | Validation | Test results, metrics |
+
+**Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
+
+> **Note**: The former "IPLAN" (Implementation Plan) artifact was deprecated. Execution commands are now in TASKS Section 4.
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
