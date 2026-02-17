@@ -1,0 +1,214 @@
+name: Execute QA Testing
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Staging"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Phase number to run QA tests for'
+        required: true
+        type: string
+  schedule:
+    - cron: '0 11 * * 1-5'
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  GH_HOST: "{GITHUB_HOST}"
+  QA_TIMEOUT_MINUTES: 120
+  MAX_QA_ITERATIONS: 3
+
+jobs:
+  check-qa-readiness:
+    name: Check QA Readiness
+    runs-on: self-hosted
+    outputs:
+      ready_phases: ${{ steps.check.outputs.ready_phases }}
+      has_ready: ${{ steps.check.outputs.has_ready }}
+    steps:
+      - name: Checkout
+        run: |
+          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
+          git checkout ${{ github.sha }}
+
+      - name: Check for phases ready for QA
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            READY_PHASES="${{ inputs.phase }}"
+            echo "ready_phases=${READY_PHASES}" >> $GITHUB_OUTPUT
+            echo "has_ready=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          READY_PHASES=""
+          for PHASE in $(seq 1 8); do
+            OPEN_DEPLOY=$(GH_HOST={GITHUB_HOST} gh issue list \
+              --label "phase:${PHASE}" \
+              --label "ai:deployment" \
+              --state open \
+              --json number | jq 'length')
+            if [ "$OPEN_DEPLOY" -gt 0 ]; then
+              continue
+            fi
+            PENDING_QA=$(GH_HOST={GITHUB_HOST} gh issue list \
+              --label "phase:${PHASE}" \
+              --label "ai:qa-testing" \
+              --state open \
+              --json number,labels \
+              --jq '[.[] | select(.labels[].name != "ai:in-progress")] | length')
+            if [ "$PENDING_QA" -gt 0 ]; then
+              if [ -z "$READY_PHASES" ]; then
+                READY_PHASES="${PHASE}"
+              else
+                READY_PHASES="${READY_PHASES},${PHASE}"
+              fi
+            fi
+          done
+          echo "ready_phases=${READY_PHASES}" >> $GITHUB_OUTPUT
+          if [ -n "$READY_PHASES" ]; then
+            echo "has_ready=true" >> $GITHUB_OUTPUT
+            echo "::notice::Phases ready for QA: ${READY_PHASES}"
+          else
+            echo "has_ready=false" >> $GITHUB_OUTPUT
+            echo "::notice::No phases ready for QA testing"
+          fi
+
+  execute-qa:
+    name: Execute QA Tests
+    needs: check-qa-readiness
+    if: needs.check-qa-readiness.outputs.has_ready == 'true'
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        phase: ${{ fromJson(format('[{0}]', needs.check-qa-readiness.outputs.ready_phases)) }}
+      fail-fast: false
+    steps:
+      - name: Checkout
+        run: |
+          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
+          git checkout ${{ github.sha }}
+
+      - name: Setup Python
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements-dev.txt
+
+      - name: Get QA issues for phase
+        id: qa_issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PHASE="${{ matrix.phase }}"
+          QA_ISSUES=$(GH_HOST={GITHUB_HOST} gh issue list \
+            --label "phase:${PHASE}" \
+            --label "ai:qa-testing" \
+            --state open \
+            --json number,title,body \
+            --jq '.[].number' | tr '\n' ',' | sed 's/,$//')
+          echo "issues=${QA_ISSUES}" >> $GITHUB_OUTPUT
+          echo "::notice::QA issues for phase ${PHASE}: ${QA_ISSUES}"
+
+      - name: Execute QA tests
+        id: tests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STAGING_URL: https://staging.{PROJECT_PREFIX}.{DOMAIN}
+        run: |
+          source .venv/bin/activate
+          python3 scripts/workflows/execute_qa_tests.py \
+            --phase ${{ matrix.phase }} \
+            --qa-issues "${{ steps.qa_issues.outputs.issues }}" \
+            --staging-url "${STAGING_URL}" \
+            --timeout-minutes ${QA_TIMEOUT_MINUTES} \
+            --output-file /tmp/qa_results.json
+          ALL_PASSED=$(jq -r '.all_passed' /tmp/qa_results.json)
+          FAILED_COUNT=$(jq -r '.failed_count' /tmp/qa_results.json)
+          PASSED_COUNT=$(jq -r '.passed_count' /tmp/qa_results.json)
+          echo "all_passed=${ALL_PASSED}" >> $GITHUB_OUTPUT
+          echo "failed_count=${FAILED_COUNT}" >> $GITHUB_OUTPUT
+          echo "passed_count=${PASSED_COUNT}" >> $GITHUB_OUTPUT
+
+      - name: Process passed QA issues
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PASSED_ISSUES=$(jq -r '.passed_issues[]' /tmp/qa_results.json 2>/dev/null || echo "")
+          for ISSUE in $PASSED_ISSUES; do
+            GH_HOST={GITHUB_HOST} gh issue edit ${ISSUE} \
+              --remove-label "ai:in-progress" \
+              --add-label "ai:qa-passed"
+            GH_HOST={GITHUB_HOST} gh issue close ${ISSUE} \
+              --reason completed \
+              --comment "QA testing completed successfully."
+          done
+
+      - name: Process failed QA issues
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FAILED_ISSUES=$(jq -r '.failed_issues[]' /tmp/qa_results.json 2>/dev/null || echo "")
+          for ISSUE in $FAILED_ISSUES; do
+            GH_HOST={GITHUB_HOST} gh issue edit ${ISSUE} \
+              --remove-label "ai:in-progress" \
+              --add-label "ai:qa-failed"
+            FAILURES=$(jq -r ".issue_results[\"${ISSUE}\"].failures" /tmp/qa_results.json)
+            GH_HOST={GITHUB_HOST} gh issue comment ${ISSUE} \
+              --body "## QA Testing Failed
+
+**Failed Tests**
+${FAILURES}
+
+Bug issues will be created for each failure.
+
+*Tested at $(date -u +%Y-%m-%dT%H:%M:%SZ)*"
+          done
+
+      - name: Create bug issues for failures
+        if: steps.tests.outputs.failed_count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/create_bug_issues.py \
+            --phase ${{ matrix.phase }} \
+            --results-file /tmp/qa_results.json \
+            --max-iterations ${MAX_QA_ITERATIONS}
+
+      - name: Post summary to Teams
+        if: always()
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          PHASE="${{ matrix.phase }}"
+          ALL_PASSED="${{ steps.tests.outputs.all_passed }}"
+          PASSED_COUNT="${{ steps.tests.outputs.passed_count }}"
+          FAILED_COUNT="${{ steps.tests.outputs.failed_count }}"
+          if [ "$ALL_PASSED" == "true" ]; then
+            COLOR="28A745"
+            STATUS="PASSED"
+          else
+            COLOR="DC3545"
+            STATUS="FAILED"
+          fi
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "'${COLOR}'",
+            "summary": "QA Testing '${STATUS}'",
+            "sections": [{
+              "activityTitle": "Phase '${PHASE}' QA Testing '${STATUS}'",
+              "facts": [
+                {"name": "Phase", "value": "'${PHASE}'"},
+                {"name": "Status", "value": "'${STATUS}'"},
+                {"name": "Passed", "value": "'${PASSED_COUNT}'"},
+                {"name": "Failed", "value": "'${FAILED_COUNT}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
