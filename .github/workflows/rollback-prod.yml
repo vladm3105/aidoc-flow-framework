@@ -1,0 +1,139 @@
+name: Rollback Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      steps_back:
+        description: 'Number of revisions to rollback (1-5)'
+        required: false
+        default: '1'
+        type: choice
+        options: ['1', '2', '3', '4', '5']
+      confirm:
+        description: 'Type "ROLLBACK" to confirm'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  SERVICE_NAME: "{PROJECT_PREFIX}-{SERVICE_NAME}"
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT_PROD }}
+  REGION: "{GCP_REGION}"
+
+jobs:
+  rollback:
+    name: Rollback Production
+    runs-on: self-hosted
+    if: inputs.confirm == 'ROLLBACK'
+    environment: production
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Authenticate to GCP (WIF)
+        run: |
+          echo '${{ secrets.WIF_CREDENTIALS_PROD }}' > /tmp/creds.json
+          gcloud auth login --cred-file=/tmp/creds.json --quiet
+          gcloud config set project ${GCP_PROJECT}
+
+      - name: Get target revision from history
+        id: target
+        run: |
+          HISTORY=$(python3 -c "
+import json
+with open('governance/cicd/phase-deployments.json') as f:
+    data = json.load(f)
+history = data.get('production', {}).get('revision_history', '').split(',')
+steps = int('${{ inputs.steps_back }}')
+if steps <= len(history):
+    print(history[steps - 1])
+else:
+    print('')
+")
+          if [ -z "$HISTORY" ]; then
+            TARGET=$(gcloud run revisions list \
+              --service ${SERVICE_NAME} \
+              --region ${REGION} \
+              --format="value(name)" \
+              --sort-by="~metadata.creationTimestamp" | sed -n '${{ inputs.steps_back }}p')
+          else
+            TARGET="$HISTORY"
+          fi
+          if [ -z "$TARGET" ]; then
+            echo "::error::Could not find revision to rollback to"
+            exit 1
+          fi
+          echo "revision=${TARGET}" >> $GITHUB_OUTPUT
+          echo "Rolling back to: ${TARGET}"
+
+      - name: Get current revision
+        id: current
+        run: |
+          CURRENT=$(gcloud run services describe ${SERVICE_NAME} \
+            --region ${REGION} \
+            --format 'value(status.traffic[0].revisionName)')
+          echo "revision=${CURRENT}" >> $GITHUB_OUTPUT
+
+      - name: Shift traffic to target revision
+        run: |
+          gcloud run services update-traffic ${SERVICE_NAME} \
+            --region ${REGION} \
+            --to-revisions=${{ steps.target.outputs.revision }}=100
+
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt --quiet
+
+      - name: Run smoke tests
+        run: |
+          URL=$(gcloud run services describe ${SERVICE_NAME} --region ${REGION} --format 'value(status.url)')
+          TOKEN=$(gcloud auth print-identity-token --audiences=${URL})
+          pytest tests/acceptance/smoke -v \
+            --base-url=${URL} \
+            --auth-token=${TOKEN}
+
+      - name: Update tracking file
+        run: |
+          python3 scripts/workflows/update_prod_tracking.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --current-revision ${{ steps.target.outputs.revision }} \
+            --previous-revision ${{ steps.current.outputs.revision }} \
+            --rollback
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add governance/cicd/phase-deployments.json
+          git commit -m "chore: production rollback to ${{ steps.target.outputs.revision }}
+
+Rolled back from: ${{ steps.current.outputs.revision }}
+Steps back: ${{ inputs.steps_back }}
+Triggered by: ${{ github.actor }}
+
+Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>"
+          git push origin main
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/creds.json
+
+      - name: Post alert to Teams
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "warning",
+            "summary": "Production Rollback",
+            "sections": [{
+              "activityTitle": "PRODUCTION ROLLBACK EXECUTED",
+              "facts": [
+                {"name": "Rolled back to", "value": "'${{ steps.target.outputs.revision }}'"},
+                {"name": "Rolled back from", "value": "'${{ steps.current.outputs.revision }}'"},
+                {"name": "Steps back", "value": "'${{ inputs.steps_back }}'"},
+                {"name": "Triggered by", "value": "'${{ github.actor }}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK}
