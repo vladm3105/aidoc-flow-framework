@@ -2,30 +2,26 @@
 
 Governance rules, templates, and workflows for the **Docs Flow Framework**.
 
-This repository contains **two complementary frameworks**:
-
-| Framework | Directory | Best For |
-|:----------|:----------|:---------|
-| **AI Project Issues Flow** | [`issues_flow/`](./issues_flow/) | Small-medium AI-first projects (1-6 months) |
-| **AI Dev SDD Flow** | [`sdd_flow/`](./sdd_flow/) → [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/) | Large/enterprise/regulated projects |
+This repository uses **Specification-Driven Development (SDD)** with scalable depth based on project complexity.
 
 ---
 
-## Framework Selection
+## SDD Depth Selection
 
-> **Detailed comparison**: See [FLOW_COMPARISON.md](./FLOW_COMPARISON.md) for complete side-by-side analysis.
+> **Detailed guide**: See [SDD_DEPTH_GUIDE.md](./SDD_DEPTH_GUIDE.md) for complete layer mappings and decision criteria.
 
-### Use Issues Flow when:
-- Building MVPs or small-to-medium projects
-- Creating issues directly from project description
-- Working solo or with small team + AI
-- Need rapid iteration with phase-gated deployment
+| Depth | Layers | Best For | Timeline |
+|:------|:-------|:---------|:---------|
+| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS-MVP | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Standard** | REF → BRD → PRD → EARS → ADR → SYS → REQ → TASKS | Production apps, small teams | 3-6 months |
+| **SDD-Full** | All 15 layers with 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
 
-### Use SDD Flow when:
-- Building enterprise software with regulatory requirements
-- Need complete audit trails and bidirectional traceability
-- Multiple teams working on complex systems
-- Formal 15-layer documentation required
+### Quick Selection
+
+- **Start with SDD-Lite** for new projects, MVPs, or when speed matters
+- **Use SDD-Standard** for production applications with moderate traceability needs
+- **Use SDD-Full** for enterprise projects with regulatory/audit requirements
+- **Scale up** by adding layers as project complexity grows
 
 ---
 
@@ -33,29 +29,35 @@ This repository contains **two complementary frameworks**:
 
 ```
 governance/
-├── shared/           # Both frameworks
+├── SDD_DEPTH_GUIDE.md   # Lite vs Standard vs Full comparison
+├── shared/              # Applies to all SDD depths
 │   ├── AI_PR_Review/
 │   ├── BRANCHING_STRATEGY.md
 │   ├── DEFINITION_OF_DONE.md
 │   ├── RELEASE_PROCESS.md
 │   ├── github/
 │   └── (repository patterns)
-├── issues_flow/      # AI Project Issues Flow
-│   ├── GOVERNANCE_RULES.md
-│   ├── AI_ISSUE_LIFECYCLE.md
-│   ├── templates/
-│   ├── scripts/
-│   ├── plans/
-│   └── (setup guides)
-└── sdd_flow/         # AI Dev SDD Flow (references)
-    └── README.md     # Links to ai_dev_ssd_flow/
+└── sdd/                 # SDD governance (all depths)
+    ├── GOVERNANCE_RULES.md
+    ├── AI_ISSUE_LIFECYCLE.md
+    ├── templates/
+    ├── scripts/
+    ├── plans/
+    └── (setup guides)
+
+ai_dev_ssd_flow/         # Layer documentation and templates
+├── BRD/                 # Layer 1 templates
+├── PRD/                 # Layer 2 templates
+├── EARS/                # Layer 3 templates
+├── ...                  # Layers 4-14
+└── README.md            # Full SDD methodology
 ```
 
 ---
 
-## Shared Governance (Both Frameworks)
+## Shared Governance (All SDD Depths)
 
-Documents that apply to **both** Issues Flow and SDD Flow.
+Documents that apply to **all** SDD depths (Lite, Standard, Full).
 
 | Document | Description |
 |:---------|:------------|
@@ -72,83 +74,99 @@ Documents that apply to **both** Issues Flow and SDD Flow.
 
 ---
 
-## Issues Flow Governance
+## SDD Governance
 
-Documents specific to **AI Project Issues Flow** (issue-based, phase-gated development).
+Core governance documents for all SDD depths.
 
 ### Core Workflow
 
 | Document | Description |
 |:---------|:------------|
-| [issues_flow/GOVERNANCE_RULES.md](./issues_flow/GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
-| [issues_flow/AI_ISSUE_LIFECYCLE.md](./issues_flow/AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
-| [issues_flow/AI_TIME_ESTIMATION.md](./issues_flow/AI_TIME_ESTIMATION.md) | AI-assisted time estimation methodology |
+| [sdd/GOVERNANCE_RULES.md](./sdd/GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
+| [sdd/AI_ISSUE_LIFECYCLE.md](./sdd/AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
+| [sdd/AI_TIME_ESTIMATION.md](./sdd/AI_TIME_ESTIMATION.md) | AI-assisted time estimation methodology |
 
 ### Framework Setup
 
 | Document | Description |
 |:---------|:------------|
-| [issues_flow/SETUP_GUIDE.md](./issues_flow/SETUP_GUIDE.md) | Step-by-step framework customization |
-| [issues_flow/CONFIG.md](./issues_flow/CONFIG.md) | All 50 placeholder variables reference |
-| [issues_flow/CLOUD_GUIDE.md](./issues_flow/CLOUD_GUIDE.md) | Multi-cloud setup (GCP, AWS, Azure) |
+| [sdd/SETUP_GUIDE.md](./sdd/SETUP_GUIDE.md) | Step-by-step framework customization |
+| [sdd/CONFIG.md](./sdd/CONFIG.md) | All 50 placeholder variables reference |
+| [sdd/CLOUD_GUIDE.md](./sdd/CLOUD_GUIDE.md) | Multi-cloud setup (GCP, AWS, Azure) |
 
 ### Project Planning
 
 | Document | Description |
 |:---------|:------------|
-| [issues_flow/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./issues_flow/PROJECT_KICKOFF_PLAN-TEMPLATE.md) | Project kickoff template |
-| [issues_flow/PROJECT_PLAN-TEMPLATE.md](./issues_flow/PROJECT_PLAN-TEMPLATE.md) | Full project plan with phases/sprints |
-| [issues_flow/ROADMAP-TEMPLATE.md](./issues_flow/ROADMAP-TEMPLATE.md) | Phase timeline with dependency graphs |
+| [sdd/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./sdd/PROJECT_KICKOFF_PLAN-TEMPLATE.md) | Project kickoff template |
+| [sdd/PROJECT_PLAN-TEMPLATE.md](./sdd/PROJECT_PLAN-TEMPLATE.md) | Full project plan with phases/sprints |
+| [sdd/ROADMAP-TEMPLATE.md](./sdd/ROADMAP-TEMPLATE.md) | Phase timeline with dependency graphs |
 
 ### Implementation Plans
 
 | Document | Description |
 |:---------|:------------|
-| [issues_flow/plans/README.md](./issues_flow/plans/README.md) | Plan management guide |
-| [issues_flow/plans/IPLAN-TEMPLATE.md](./issues_flow/plans/IPLAN-TEMPLATE.md) | Blank IPLAN template |
+| [sdd/plans/README.md](./sdd/plans/README.md) | Plan management guide |
+| [sdd/plans/IPLAN-TEMPLATE.md](./sdd/plans/IPLAN-TEMPLATE.md) | Blank IPLAN template |
 
 ### Project Templates
 
 | Template | Description |
 |:---------|:------------|
-| [issues_flow/templates/README.md](./issues_flow/templates/README.md) | Project README template |
-| [issues_flow/templates/CONTRIBUTING.md](./issues_flow/templates/CONTRIBUTING.md) | Contributing guidelines |
-| [issues_flow/templates/CLAUDE.md](./issues_flow/templates/CLAUDE.md) | Claude Code settings template |
-| [issues_flow/templates/DEVELOPER_GUIDE.md](./issues_flow/templates/DEVELOPER_GUIDE.md) | Developer setup guide |
+| [sdd/templates/README.md](./sdd/templates/README.md) | Project README template |
+| [sdd/templates/CONTRIBUTING.md](./sdd/templates/CONTRIBUTING.md) | Contributing guidelines |
+| [sdd/templates/CLAUDE.md](./sdd/templates/CLAUDE.md) | Claude Code settings template |
+| [sdd/templates/DEVELOPER_GUIDE.md](./sdd/templates/DEVELOPER_GUIDE.md) | Developer setup guide |
 
 ### Setup Scripts
 
 | Directory | Description |
 |:----------|:------------|
-| [issues_flow/scripts/project_setup/](./issues_flow/scripts/project_setup/) | Cloud setup (GCP, AWS, Azure) |
-| [issues_flow/scripts/workflows/](./issues_flow/scripts/workflows/) | GitHub Actions helper scripts |
-| [issues_flow/scripts/ghes-runner/](./issues_flow/scripts/ghes-runner/) | GHES runner setup |
+| [sdd/scripts/project_setup/](./sdd/scripts/project_setup/) | Cloud setup (GCP, AWS, Azure) |
+| [sdd/scripts/workflows/](./sdd/scripts/workflows/) | GitHub Actions helper scripts |
+| [sdd/scripts/ghes-runner/](./sdd/scripts/ghes-runner/) | GHES runner setup |
 
 ---
 
-## SDD Flow Governance
+## Layer Documentation
 
-Documents specific to **AI Dev SDD Flow** (15-layer formal specification).
+Full SDD layer documentation and templates are in [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/).
 
-See [sdd_flow/README.md](./sdd_flow/README.md) for links to:
-
-- 15-layer architecture documentation
-- ID naming standards
-- Cumulative traceability tagging
-- Change management (4-Gate CHG system)
-- Domain adaptation guides
-- Validation scripts
-
-Full SDD documentation: [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/)
+| Layer | Artifact | Description |
+|:------|:---------|:------------|
+| 0 | REF | Strategy and reference documents |
+| 1 | BRD | Business requirements |
+| 2 | PRD | Product requirements |
+| 3 | EARS | Formal WHEN-THE-SHALL requirements |
+| 4 | BDD | Gherkin behavior tests |
+| 5 | ADR | Architecture Decision Records |
+| 6 | SYS | System requirements |
+| 7 | REQ | Atomic requirements |
+| 8 | CTR | API contracts (optional) |
+| 9 | SPEC | Technical specifications (YAML) |
+| 10 | TSPEC | Test specifications |
+| 11 | TASKS | Implementation task breakdown |
+| 12-14 | IMPL | Code, tests, validation |
 
 ---
 
-## Issue Creation Comparison
+## Issue Creation (All Depths)
 
-| Framework | How Issues Are Created |
-|:----------|:-----------------------|
-| **Issues Flow** | AI Agent creates issues from `00_REF/` (human-written project description) → AI executes |
-| **SDD Flow** | Create BRD→PRD→...→TASKS documents first → Issues derived from TASKS layer |
+All SDD depths follow the same issue creation pattern:
+
+```
+Human creates REF/ (Project Description)
+    ↓
+AI Agent generates specification layers (depth varies)
+    ↓
+AI Agent generates TASKS from specifications
+    ↓
+AI Agent creates GitHub Issues from TASKS
+    ↓
+AI Agent executes issues (ai:ready → ai:in-progress → PR)
+```
+
+**More specification layers = more precise issues with better traceability.**
 
 ---
 

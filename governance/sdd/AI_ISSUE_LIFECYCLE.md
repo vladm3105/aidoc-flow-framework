@@ -1,31 +1,37 @@
 # AI Issue Lifecycle
 
-**Framework**: AI Project Issues Flow
+**Framework**: Specification-Driven Development (SDD)
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
 **Related**: See `plans/` for implementation plans (IPLAN documents)
 
-> **Note**: This document is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects. For formal specification-driven development (15-layer architecture), see [`../sdd_flow/`](../sdd_flow/).
+> **Depth Selection**: This lifecycle applies to all SDD depths. The number of specification layers before issue creation varies by depth - see [SDD_DEPTH_GUIDE.md](../SDD_DEPTH_GUIDE.md).
 
 This document describes how GitHub issues flow through the AI-first development workflow, from creation to deployment.
 
-## How Issues Are Created in Issues Flow
+## How Issues Are Created (All SDD Depths)
 
-Unlike SDD Flow where issues are derived from formal TASKS documents, **Issues Flow has the AI Agent create issues directly from the project description**:
+All SDD depths follow the same issue creation pattern - the difference is how many specification layers are generated before TASKS:
 
 ```
-Human creates 00_REF/ (Project Description)
+Human creates REF/ (Project Description)
     ↓
-AI Agent reads 00_REF/ documents
+AI Agent generates specification layers:
+    - SDD-Lite: BRD-MVP → PRD-MVP
+    - SDD-Standard: BRD → PRD → EARS → ADR → SYS → REQ
+    - SDD-Full: All 15 layers
     ↓
-AI Agent creates GitHub issues with:
+AI Agent generates TASKS from specifications
+    ↓
+AI Agent creates GitHub issues from TASKS with:
     - Clear title: [Phase-Sprint] Task description
     - Labels: phase:N, ai:development, component:X
-    - Acceptance criteria in body
+    - Acceptance criteria (traced to specs)
+    - Traceability tags (@brd, @prd, @req, etc.)
     ↓
 AI Agent executes issues (ai:ready → ai:in-progress → PR)
 ```
 
-This approach is faster but less formal than SDD Flow's 15-layer documentation chain.
+**More layers = more precise issues with better traceability.**
 
 ---
 

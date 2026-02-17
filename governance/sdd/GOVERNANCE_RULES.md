@@ -1,20 +1,21 @@
 # Governance Rules
 
-**Framework**: AI Project Issues Flow
+**Framework**: Specification-Driven Development (SDD)
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
 
-> **Note**: This document is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects. For formal specification-driven development, see [`sdd_flow/`](../sdd_flow/).
+> **Depth Selection**: This document applies to all SDD depths (Lite, Standard, Full). Choose your depth based on project complexity - see [SDD_DEPTH_GUIDE.md](../SDD_DEPTH_GUIDE.md).
 
 Operational policies and conventions that govern how this project is developed. These are **rules** (how we work), distinct from [DEFINITION_OF_DONE.md](../shared/DEFINITION_OF_DONE.md) (completion checklists).
 
-## Issues Flow vs SDD Flow
+## SDD Depth Variants
 
-| Aspect | Issues Flow (this doc) | SDD Flow |
-|:-------|:-----------------------|:---------|
-| **Issue Creation** | AI Agent creates issues directly from `00_REF/` (human-written project description) | Issues derived from TASKS layer after 15-layer documentation |
-| **Documentation** | PROJECT_PLAN + IPLANs | BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS |
-| **Traceability** | GitHub issue links | Cumulative @tags across all layers |
-| **Best For** | MVPs, small-medium projects (1-6 months) | Enterprise/regulated projects (months-years) |
+| Depth | Layers | Best For | Timeline |
+|:------|:-------|:---------|:---------|
+| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS-MVP | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Standard** | REF → BRD → PRD → EARS → ADR → SYS → REQ → TASKS | Production apps, small teams | 3-6 months |
+| **SDD-Full** | All 15 layers with 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
+
+**Issue Creation (all depths):** Human creates REF/ → AI generates specs → AI creates issues from TASKS → AI executes
 
 ---
 

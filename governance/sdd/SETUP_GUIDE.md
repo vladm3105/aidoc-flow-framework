@@ -1,10 +1,10 @@
-# Framework Setup Guide
+# SDD Framework Setup Guide
 
-**Framework**: AI Project Issues Flow
+**Framework**: Specification-Driven Development (SDD)
 
-> **Note**: This setup guide is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects where issues are created directly from project descriptions. For SDD Flow setup (15-layer formal documentation), see [`ai_dev_ssd_flow/PROJECT_SETUP_GUIDE.md`](../../ai_dev_ssd_flow/PROJECT_SETUP_GUIDE.md).
+> **Depth Selection**: This setup guide applies to all SDD depths (Lite, Standard, Full). Choose your depth based on project complexity - see [SDD_DEPTH_GUIDE.md](../SDD_DEPTH_GUIDE.md). For layer-specific templates and documentation, see [`ai_dev_ssd_flow/`](../../ai_dev_ssd_flow/).
 
-Step-by-step guide for customizing the AI Project Issues Flow framework for your project.
+Step-by-step guide for customizing the SDD framework governance for your project.
 
 ## Prerequisites
 

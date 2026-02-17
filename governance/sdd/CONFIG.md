@@ -1,10 +1,10 @@
-# Framework Configuration Variables
+# SDD Framework Configuration Variables
 
-**Framework**: AI Project Issues Flow
+**Framework**: Specification-Driven Development (SDD)
 
-> **Note**: This configuration is for **AI Project Issues Flow** - the lightweight, issue-based framework for small-medium AI-first projects. For SDD Flow configuration, see [`ai_dev_ssd_flow/`](../../ai_dev_ssd_flow/).
+> **Depth Selection**: This configuration applies to all SDD depths (Lite, Standard, Full). Layer-specific templates are in [`ai_dev_ssd_flow/`](../../ai_dev_ssd_flow/).
 
-This document lists all placeholder variables used throughout the AI Project Issues Flow framework. Replace these values when customizing the framework for your project.
+This document lists all placeholder variables used throughout the SDD governance framework. Replace these values when customizing the framework for your project.
 
 ## Quick Reference
 
