@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Configure Cloud Run revision retention policy
-# Phase 5 - GCP Configuration (IPLAN-010)
+# Phase 5 - GCP Configuration
 #
 # This script configures Cloud Run services to retain only the last N revisions,
 # reducing storage costs and cleanup overhead.

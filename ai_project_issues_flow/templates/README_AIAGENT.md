@@ -288,7 +288,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | 1.8 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
-| 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 (IPLAN-006) |
+| 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 |
 | 1.6 | {DATE} | Consolidated acceptance criteria sync and PR link into mandatory Post-PR Checklist — all 5 steps must execute immediately after PR creation |
 | 1.5 | {DATE} | Added prohibited marketplace actions rule — all workflows must be self-contained due to unreliable GitHub Connect on GHES v3.12.4 |
 | 1.4 | {DATE} | Added on-demand PR review reference — formal GitHub Reviews API with fix-and-verify loop |

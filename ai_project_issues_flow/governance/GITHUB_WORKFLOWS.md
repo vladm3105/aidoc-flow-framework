@@ -1158,7 +1158,7 @@ Before first deployment, complete these steps:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 5.0 | {DATE} | **IPLAN-011**: Phase-gated unified deployment model. Added `deploy-dev.yml` (phase-gated with smoke tests), `check-all-phases-dev.yml` (staging gate). Updated `deploy-staging.yml` to accept `image_tag` instead of `phase`. Deprecated `deploy-dev-pr.yml` and `cleanup-pr-env.yml` (per-PR deployments removed). Added `smoke_test.sh` and `update_staging_tracking.py` scripts. |
+| 5.0 | {DATE} | Phase-gated unified deployment model. Added `deploy-dev.yml` (phase-gated with smoke tests), `check-all-phases-dev.yml` (staging gate). Updated `deploy-staging.yml` to accept `image_tag` instead of `phase`. Deprecated `deploy-dev-pr.yml` and `cleanup-pr-env.yml` (per-PR deployments removed). Added `smoke_test.sh` and `update_staging_tracking.py` scripts. |
 | 4.8 | {DATE} | Environment field now mandatory: PRs inherit Environment from linked issues (parsed from Closes/Fixes/Resolves #X); defaults to Development if no linked issue; updated GraphQL Operations |
 | 4.7 | {DATE} | Added Environment field to auto-add-to-project.yml: new issues get Environment=Development by default; updated Behavior and GraphQL Operations sections |
 | 4.6 | {DATE} | Updated Deploying/Testing status option IDs with actual values (ea04ab37, cabb455e) after statuses were added to Project Board #{PROJECT_BOARD_NUMBER} |
@@ -1166,8 +1166,8 @@ Before first deployment, complete these steps:
 | 4.4 | {DATE} | Fix pr-merge-cleanup.yml to handle closed-without-merge PRs: set board status to Done for all closed PRs, only update linked issues when merged |
 | 4.3 | {DATE} | Added WIF Secrets section: authentication flow diagram, workflow usage example, WIF vs service account keys comparison, failure modes, verification commands |
 | 4.2 | {DATE} | Added Deployment Requirements section: container build requirements, health check specification, deployment architecture, first-time setup checklist |
-| 4.1 | {DATE} | Added ELEVATED_PAT documentation: creation steps, security notes, usage summary. Updated Required Secrets Summary with IPLAN-010 secrets (ELEVATED_PAT, WIF_CREDENTIALS_*, TEAMS_WEBHOOK). Removed PagerDuty secrets. |
-| 4.0 | {DATE} | Added IPLAN-010 phase-gated deployment workflows: agent-dispatch, deploy-dev-pr, cleanup-pr-env, create-deployment-issue, create-qa-testing-issue, check-phase-completion, execute-qa-testing, create-bug-issue, rollback-prod. Deprecated deploy-dev.yml (replaced by deploy-dev-pr.yml). |
+| 4.1 | {DATE} | Added ELEVATED_PAT documentation: creation steps, security notes, usage summary. Updated Required Secrets Summary (ELEVATED_PAT, WIF_CREDENTIALS_*, TEAMS_WEBHOOK). Removed PagerDuty secrets. |
+| 4.0 | {DATE} | Added phase-gated deployment workflows: agent-dispatch, deploy-dev-pr, cleanup-pr-env, create-deployment-issue, create-qa-testing-issue, check-phase-completion, execute-qa-testing, create-bug-issue, rollback-prod. Deprecated deploy-dev.yml (replaced by deploy-dev-pr.yml). |
 | 3.3 | {DATE} | Added deployment workflows: deploy-dev.yml, deploy-staging.yml, deploy-prod.yml  |
 | 3.2 | {DATE} | Consolidated ai-review-reusable.yml into ai-review.yml — single unified workflow for both direct triggers and workflow_call |
 | 3.1 | {DATE} | Added `issues: write` permission and conclusion comment + PR label steps to AI PR Review  |

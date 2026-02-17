@@ -1,5 +1,5 @@
 ---
-name: Development Issue (IPLAN-010)
+name: Development Issue
 about: Create a development issue for the 4-stage QA workflow
 title: "[P{phase}-{task_id}] "
 labels: ai:development

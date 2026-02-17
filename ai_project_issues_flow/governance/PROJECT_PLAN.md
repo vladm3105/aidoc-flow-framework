@@ -1044,8 +1044,8 @@ Development → Deployment → QA Testing → Bug Fix (max 3 iterations)
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | 2.6 | {DATE} | Fixed task 1.0b Technical Notes: removed prohibited marketplace actions, added reference to GOVERNANCE_RULES.md §2a |
-| 2.5 | {DATE} | Added Deployment Model section referencing IPLAN-010 phase-gated deployment |
-| 2.4 | {DATE} | Applied IPLAN-001 corrections: fixed 1.2 dependency (1.0a not 1.1), revised daily schedule (#28→Day 1, #22/#23 parallel), Slack→Teams throughout, WIF-only auth |
+| 2.5 | {DATE} | Added Deployment Model section for phase-gated deployment |
+| 2.4 | {DATE} | Fixed 1.2 dependency (1.0a not 1.1), revised daily schedule (#28→Day 1, #22/#23 parallel), Slack→Teams throughout, WIF-only auth |
 | 2.3 | {DATE} | Added Board Status Rules: Todo (default), Backlog (nearest phase only); updated Phase Summary and Issues Summary to reflect current board state |
 | 2.2 | {DATE} | Updated gap analysis: Phase 1 issues (#19-32) verified complete on GitHub; added to Project Board #{PROJECT_BOARD_NUMBER} |
 | 2.1 | {DATE} | Consistency fixes: aligned task IDs across all phases with ROADMAP.md; fixed task/effort counts; replaced Appendix A with AI_TIME_ESTIMATION.md reference |

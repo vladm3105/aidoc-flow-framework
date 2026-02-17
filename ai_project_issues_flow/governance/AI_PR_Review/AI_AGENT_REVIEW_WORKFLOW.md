@@ -715,7 +715,7 @@ Check off each verified criterion (`- [ ]` to `- [x]`) in the issue body before 
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 1.5 | {DATE} | Added machine-readable JSON metadata to §7d, PR label application to §8, PR labels to §11; replaced Gemini references with {AI_TOOL_NAME} Code CLI (IPLAN-006) |
+| 1.5 | {DATE} | Added machine-readable JSON metadata to §7d, PR label application to §8, PR labels to §11; replaced Gemini references with {AI_TOOL_NAME} Code CLI |
 | 1.4 | {DATE} | Added §7d (Review Conclusion Comment) — mandatory separate conclusion comment with "Approved to merge" or "Work needed" decision after every review cycle |
 | 1.3 | {DATE} | Added Issue PR Link verification in §8 (Label and Assign) — ensure linked issue has PR number and URL comment for board navigation |
 | 1.2 | {DATE} | Added §7c (Issue Review History Comment) — mandatory cross-post of review summary to linked issue after every review and re-review; creates audit trail on the issue |

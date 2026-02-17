@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Setup Artifact Registry repositories for AIOCTO environments
-# Phase 5 - GCP Configuration (IPLAN-010)
+# Phase 5 - GCP Configuration
 #
 # Prerequisites:
 #   - gcloud CLI authenticated with appropriate permissions

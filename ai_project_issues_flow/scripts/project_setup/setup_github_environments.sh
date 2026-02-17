@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Setup GitHub environments for AIOCTO deployment
-# Phase 5 - GCP Configuration (IPLAN-010)
+# Phase 5 - GCP Configuration
 #
 # Creates and configures GitHub environments:
 #   - development (auto-deploy on PR)

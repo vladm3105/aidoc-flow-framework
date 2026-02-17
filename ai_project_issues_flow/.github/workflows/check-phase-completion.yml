@@ -83,6 +83,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # IPLAN-011: Phase-gated deployment - deploy to dev first, staging when all phases complete
+          # Phase-gated deployment - deploy to dev first, staging when all phases complete
           GH_HOST={GITHUB_HOST} gh workflow run deploy-dev.yml \
             -f phase=${{ steps.check.outputs.phase_number }}

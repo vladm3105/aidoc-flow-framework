@@ -219,7 +219,7 @@ AI reviews are **advisory**. Human review is still required per branch protectio
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 1.5 | {DATE} | Replaced Gemini references with {AI_TOOL_NAME} Code CLI; added PR label step and output row (IPLAN-006) |
+| 1.5 | {DATE} | Replaced Gemini references with {AI_TOOL_NAME} Code CLI; added PR label step and output row |
 | 1.4 | {DATE} | Added conclusion step to agent workflow summary and output table — mandatory "Approved to merge" or "Work needed" comment |
 | 1.3 | {DATE} | Updated agent workflow summary — review cross-posts summary to linked issue for audit trail |
 | 1.2 | {DATE} | Added ADR-009 and GOVERNANCE_RULES.md to Related Documents |

@@ -1402,10 +1402,10 @@ echo "Blocked: $(gh issue list --label 'ai:blocked' --json number | jq length)"
 | 4.2 | {DATE} | Added Board Status Rules: Todo (default for new issues), Backlog (nearest planning phase only); documented status lifecycle; updated §2.5, §5.4, Current Status table |
 | 4.1 | {DATE} | Board #{PROJECT_BOARD_NUMBER} overhaul: updated README to v2.0 architecture; fixed epic dates (20-week timeline); recreated Phase field (8 options), Component field (8 options), Roadmap Phase field (9 options); set Phase/Component/Roadmap/Sprint values for all items; updated field IDs |
 | 3.5 | {DATE} | Implemented minimal practical AI workflow labels (5 labels); removed unused `ai:approved`/`ai:rejected` (63 labels total) |
-| 4.3 | {DATE} | Updated §3.0 workflow list from 6 to actual 18 workflows (removed non-existent pr-labeler.yml, stale.yml, codeql.yml; added all IPLAN-010 and AI review workflows) |
-| 4.4 | {DATE} | Updated §1.2 labels to match actual repo (76 labels): added IPLAN-010 labels, AI PR review labels, cloud/cost labels, fixed status:wip→status:in-progress, removed non-existent quality:* labels |
-| 4.5 | {DATE} | Added Development Issue (IPLAN-010) template to §1.4 (8→9 templates); template supports 4-stage QA workflow with Test Plan section |
-| 4.6 | {DATE} | Added §1.4.1 PR Template documentation; streamlined PR template with `Closes #` for IPLAN-010 workflow integration |
+| 4.3 | {DATE} | Updated §3.0 workflow list from 6 to actual 18 workflows (removed non-existent pr-labeler.yml, stale.yml, codeql.yml; added all deployment and AI review workflows) |
+| 4.4 | {DATE} | Updated §1.2 labels to match actual repo (76 labels): added deployment labels, AI PR review labels, cloud/cost labels, fixed status:wip→status:in-progress, removed non-existent quality:* labels |
+| 4.5 | {DATE} | Added Development Issue template to §1.4 (8→9 templates); template supports 4-stage QA workflow with Test Plan section |
+| 4.6 | {DATE} | Added §1.4.1 PR Template documentation; streamlined PR template with `Closes #` for workflow integration |
 | 4.9 | {DATE} | Environment field now mandatory: PRs inherit from linked issues; updated Environment Rules with inheritance logic (6 rules) |
 | 4.8 | {DATE} | Added Environment field for Deployment Pipeline view (Planning/Development/Staging/Production); Environment=Development set as default for new issues; added Field IDs and Environment Options tables |
 | 4.7 | {DATE} | Added Deploying and Testing board statuses for CI/CD pipeline visibility; updated status progression to show different flows for development, deployment, and QA issues; added Status Options table |

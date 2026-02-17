@@ -1,6 +1,6 @@
 name: Deploy to Staging
 
-# IPLAN-011: Staging receives deployment only when ALL phases are complete on dev.
+# Staging receives deployment only when ALL phases are complete on dev.
 # The image deployed is the final Phase 8 image from dev.
 
 on:

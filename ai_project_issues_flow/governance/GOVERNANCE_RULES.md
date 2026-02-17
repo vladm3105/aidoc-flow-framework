@@ -713,7 +713,7 @@ See [docs/qa/06-security-testing.md](../docs/qa/06-security-testing.md) for full
 | 2.8 | {DATE} | Fixed Quick Reference ADR count (8 → 9) |
 | 2.7 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
 | 2.6 | {DATE} | Added mandatory Pre-Implementation Checklist — AI must transition `ai:ready` → `ai:in-progress` + board "In Progress" before writing any code |
-| 2.5 | {DATE} | Added PR Review Labels subsection (`ai:review-passed`/`ai:review-failed`); updated AI PR Review to {AI_TOOL_NAME} Code CLI + conclusion comments (IPLAN-006) |
+| 2.5 | {DATE} | Added PR Review Labels subsection (`ai:review-passed`/`ai:review-failed`); updated AI PR Review to {AI_TOOL_NAME} Code CLI + conclusion comments |
 | 2.4 | {DATE} | Added mandatory Post-PR Checklist — consolidated acceptance criteria sync, label transition, board status update, and PR link into a single atomic sequence that must execute immediately after PR creation |
 | 2.3 | {DATE} | Added §2a No Marketplace Actions rule — all workflows must be self-contained, no `actions/*` or third-party marketplace actions due to unreliable GitHub Connect on GHES v3.12.4 |
 | 2.2 | {DATE} | Added GHES Runner Guide to Quick Reference |

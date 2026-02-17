@@ -129,8 +129,8 @@ A component repo is **Release-Ready** when:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 2.0 | {DATE} | Added Phase-Gated Deployment section (IPLAN-010): Development Issue Complete, Phase Development Complete, Staging Deployment Complete, QA Testing Complete, Bug Fix Iteration Complete, Production Ready checklists |
-| 1.9 | {DATE} | Added PR label criterion (`ai:review-passed`/`ai:review-failed`) to AI-Implemented Task checklist (IPLAN-006) |
+| 2.0 | {DATE} | Added Phase-Gated Deployment section: Development Issue Complete, Phase Development Complete, Staging Deployment Complete, QA Testing Complete, Bug Fix Iteration Complete, Production Ready checklists |
+| 1.9 | {DATE} | Added PR label criterion (`ai:review-passed`/`ai:review-failed`) to AI-Implemented Task checklist |
 | 1.8 | {DATE} | Added PR link posted to linked issue as AI-Implemented Task checklist item |
 | 1.7 | {DATE} | Added review history cross-post to linked issue as AI-Implemented Task checklist item |
 | 1.6 | {DATE} | Added linked issue verification as Task Level checklist item |

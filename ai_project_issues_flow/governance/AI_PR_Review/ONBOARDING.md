@@ -156,6 +156,6 @@ npm install -g @anthropic-ai/claude-code
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | 2.2 | {DATE} | Updated workflow reference: ai-review-reusable.yml → ai-review.yml (consolidated workflow) |
-| 2.1 | {DATE} | Added `ai:review-passed` and `ai:review-failed` labels to Step 3 (IPLAN-006) |
+| 2.1 | {DATE} | Added `ai:review-passed` and `ai:review-failed` labels to Step 3 |
 | 2.0 | {DATE} | Rewritten for {AI_TOOL_NAME} Code CLI — simplified onboarding (1 secret, no GCP setup) |
-| 1.0 | {DATE} | Initial creation — extracted deployment/onboarding from IPLAN-003 |
+| 1.0 | {DATE} | Initial creation — deployment/onboarding documentation |

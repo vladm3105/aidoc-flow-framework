@@ -2,7 +2,7 @@
 <!-- Brief description of changes -->
 
 ## Linked Issue
-<!-- REQUIRED for IPLAN-010: Use Closes/Fixes/Resolves to auto-create deployment/QA issues -->
+<!-- REQUIRED: Use Closes/Fixes/Resolves to auto-create deployment/QA issues -->
 Closes #
 
 <!-- For bug fix iterations: -->

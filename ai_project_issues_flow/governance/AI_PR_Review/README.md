@@ -185,9 +185,9 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | 2.2 | {DATE} | Updated for consolidated workflow — single ai-review.yml replaces separate caller + reusable; added conclusion + label steps to architecture |
-| 2.1 | {DATE} | Added PR labels (`ai:review-passed`/`ai:review-failed`) to Key Properties, Review Policy rule 10, Review Events table (IPLAN-006) |
+| 2.1 | {DATE} | Added PR labels (`ai:review-passed`/`ai:review-failed`) to Key Properties, Review Policy rule 10, Review Events table |
 | 2.0 | {DATE} | Replaced Gemini 2.5 Flash + Python script with {AI_TOOL_NAME} Code CLI on self-hosted runner (ADR-009 v1.1) |
 | 1.3 | {DATE} | Added linked issue verification to Review Policy (rule 9) |
 | 1.2 | {DATE} | Added MANUAL_REVIEW_GUIDE.md to Related Documents |
 | 1.1 | {DATE} | Added AI_AGENT_REVIEW_WORKFLOW.md to Related Documents |
-| 1.0 | {DATE} | Initial creation — extracted from IPLAN-003, restructured as operational guidance |
+| 1.0 | {DATE} | Initial creation — restructured as operational guidance |
