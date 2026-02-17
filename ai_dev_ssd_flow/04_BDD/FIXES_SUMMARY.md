@@ -1,3 +1,16 @@
+---
+title: "BDD Framework Fixes Summary"
+tags:
+  - layer-04-artifact
+  - fixes-summary
+  - framework-guide
+custom_fields:
+  layer: 4
+  artifact_type: "BDD"
+  document_type: "fixes-summary"
+  status: "completed"
+---
+
 # BDD Framework Fixes - Summary
 
 **Date**: 2026-02-08T00:00:00  

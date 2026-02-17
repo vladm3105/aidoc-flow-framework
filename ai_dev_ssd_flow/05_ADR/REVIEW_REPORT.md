@@ -1,3 +1,16 @@
+---
+title: "ADR Framework Review Report"
+tags:
+  - layer-05-artifact
+  - review-report
+  - framework-guide
+custom_fields:
+  layer: 5
+  artifact_type: "ADR"
+  document_type: "review-report"
+  status: "completed"
+---
+
 # ADR Framework Review Report
 
 **Review Date**: 2026-02-08T00:00:00  
@@ -102,7 +115,7 @@ The ADR framework is in **good condition** with only minor formatting inconsiste
 
 ### Layer Number Consistency [PASS]
 | File | Layer | Status |
-|------|-------|--------|
+|------|-------|---------|
 | README.md | 5 | [PASS] Correct |
 | ADR-MVP-TEMPLATE.md | 5 | [PASS] Correct |
 | ADR_MVP_CREATION_RULES.md | 5 | [PASS] Correct |
@@ -160,7 +173,7 @@ The ADR-MVP-TEMPLATE.md defines these sections:
 ## Verification Summary
 
 | Check | Status |
-|-------|--------|
+|-------|---------|
 | YAML Syntax | [PASS] All valid |
 | Layer Numbers | [PASS] All correct (Layer 5) |
 | Template Consistency | [PASS] MD and YAML match |
@@ -172,7 +185,7 @@ The ADR-MVP-TEMPLATE.md defines these sections:
 ## Comparison with Other Frameworks
 
 | Framework | Critical Issues | Status |
-|-----------|----------------|--------|
+|-----------|----------------|---------|
 | 09_SPEC | Fixed [PASS] | Excellent |
 | 08_CTR | Fixed [PASS] | Excellent |
 | 07_REQ | Fixed [PASS] | Excellent |

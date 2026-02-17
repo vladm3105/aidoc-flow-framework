@@ -1,3 +1,16 @@
+---
+title: "REQ Framework Review Report"
+tags:
+  - layer-07-artifact
+  - review-report
+  - framework-guide
+custom_fields:
+  layer: 7
+  artifact_type: "REQ"
+  document_type: "review-report"
+  status: "completed"
+---
+
 # REQ Framework Review Report
 
 **Review Date**: 2026-02-08T00:00:00  
@@ -86,7 +99,7 @@ The deployment example (`examples/deployment/REQ-02_deployment_requirements_exam
 
 ### Layer Number Consistency [PASS]
 | File | Layer | Status |
-|------|-------|--------|
+|------|-------|---------|
 | README.md | 7 | [PASS] Correct |
 | REQ-MVP-TEMPLATE.md | 7 | [PASS] Correct |
 | REQ_MVP_CREATION_RULES.md | 7 | [PASS] Correct |
@@ -123,7 +136,7 @@ The deployment example (`examples/deployment/REQ-02_deployment_requirements_exam
 ## Verification Summary
 
 | Check | Status |
-|-------|--------|
+|-------|---------|
 | YAML Syntax | [PASS] All valid |
 | Layer Numbers | [PASS] All correct (Layer 7) |
 | Template Consistency | [PASS] MD and YAML match |

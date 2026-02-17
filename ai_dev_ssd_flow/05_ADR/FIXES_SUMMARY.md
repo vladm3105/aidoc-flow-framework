@@ -1,3 +1,16 @@
+---
+title: "ADR Framework Fixes Summary"
+tags:
+  - layer-05-artifact
+  - fixes-summary
+  - framework-guide
+custom_fields:
+  layer: 5
+  artifact_type: "ADR"
+  document_type: "fixes-summary"
+  status: "completed"
+---
+
 # ADR Framework Fixes - Summary
 
 **Date**: 2026-02-08T00:00:00  

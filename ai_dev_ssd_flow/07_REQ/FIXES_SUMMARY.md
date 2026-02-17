@@ -1,3 +1,16 @@
+---
+title: "REQ Framework Fixes Summary"
+tags:
+  - layer-07-artifact
+  - fixes-summary
+  - framework-guide
+custom_fields:
+  layer: 7
+  artifact_type: "REQ"
+  document_type: "fixes-summary"
+  status: "completed"
+---
+
 # REQ Framework Fixes - Summary
 
 **Date**: 2026-02-08T00:00:00  
@@ -93,7 +106,7 @@ Complete rewrite to REQ-MVP-TEMPLATE.md v1.1 structure with all 11 sections:
 
 ### Content Quality Check
 | Check | Status |
-|-------|--------|
+|-------|---------|
 | SHALL statement present | [PASS] |
 | @threshold references | [PASS] |
 | Business rules (REQ.01.21.SS) | [PASS] |
