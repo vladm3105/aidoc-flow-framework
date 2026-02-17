@@ -1,0 +1,84 @@
+# Governance Documentation
+
+Unified governance rules for both SDD and AI Project Flow frameworks.
+
+---
+
+## Core Governance
+
+| Document | Description |
+|:---------|:------------|
+| [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
+| [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) | Git workflow and branch conventions |
+| [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Completion criteria at task/sprint/phase levels |
+| [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) | SemVer versioning and phase-gated deployment |
+| [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) | Mono-repo architecture patterns |
+| [REPO_STRUCTURE_DECISION_MATRIX.md](./REPO_STRUCTURE_DECISION_MATRIX.md) | Repository structure decision guide |
+| [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) | Human vs AI task split and tool requirements |
+| [HOME_REPO.md](./HOME_REPO.md) | Home repository structure and purpose |
+
+---
+
+## AI PR Review
+
+Automated and on-demand AI-powered pull request review workflows.
+
+| Document | Description |
+|:---------|:------------|
+| [AI_PR_Review/README.md](./AI_PR_Review/README.md) | System overview and architecture |
+| [AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) | On-demand agent review with fix-and-verify loop |
+| [AI_PR_Review/LOCAL_SETUP.md](./AI_PR_Review/LOCAL_SETUP.md) | Developer environment configuration |
+| [AI_PR_Review/MANUAL_REVIEW_GUIDE.md](./AI_PR_Review/MANUAL_REVIEW_GUIDE.md) | Human-facing guide for local AI assistants |
+| [AI_PR_Review/ONBOARDING.md](./AI_PR_Review/ONBOARDING.md) | Adding AI review to new repositories |
+
+---
+
+## GitHub Setup
+
+GitHub tools, workflows, and project configuration guides.
+
+| Document | Description |
+|:---------|:------------|
+| [github/GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) | gh CLI and MCP server configuration |
+| [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) | GitHub Actions workflow documentation |
+| [github/GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) | GitHub Project board setup for AI workflow |
+| [github/ghes_runner/GHES_RUNNER_GUIDE.md](./github/ghes_runner/GHES_RUNNER_GUIDE.md) | Self-hosted GHES runner setup |
+
+---
+
+## CI/CD
+
+Phase-gated deployment tracking and configuration.
+
+| File | Description |
+|:-----|:------------|
+| [cicd/phase-deployments.json](./cicd/phase-deployments.json) | Phase tracking file for deployment workflows |
+
+---
+
+## Plan Templates
+
+Implementation plan (IPLAN) templates and guidance.
+
+| Document | Description |
+|:---------|:------------|
+| [plans/README.md](./plans/README.md) | Plan management guide and conventions |
+| [plans/IPLAN-TEMPLATE.md](./plans/IPLAN-TEMPLATE.md) | Blank IPLAN template |
+
+---
+
+## Project-Specific Governance
+
+Project-specific planning documents remain in their respective locations:
+
+- `ai_project_issues_flow/governance/` - AI Project Flow specific plans and roadmaps
+
+---
+
+## Related Root Files
+
+| File | Description |
+|:-----|:------------|
+| [/CONTRIBUTING.md](/CONTRIBUTING.md) | Contributing guidelines with reviewer roster |
+| [/README_AIAGENT.md](/README_AIAGENT.md) | Universal AI agent rules |
+| [/.github/CODEOWNERS](/.github/CODEOWNERS) | PR reviewer auto-assignment |

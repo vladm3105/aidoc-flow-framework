@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "description": "Phase-gated deployment tracking file",
+  "phases": {
+    "phase-1": {
+      "name": "Foundation",
+      "status": "not_started",
+      "environments": {
+        "dev": { "deployed": false, "version": null, "timestamp": null },
+        "staging": { "deployed": false, "version": null, "timestamp": null },
+        "prod": { "deployed": false, "version": null, "timestamp": null }
+      }
+    }
+  },
+  "last_updated": null,
+  "updated_by": null
+}
