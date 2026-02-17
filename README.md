@@ -187,7 +187,7 @@ The framework now includes a native **Agent Orchestration System** located in `.
 *   **Adversarial Pair Architecture**: Every step is executed by one model (e.g., Gemini) and reviewed by another (e.g., Claude) to minimize hallucinations.
 *   **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`).
 
-**[Get Started with the Agent Swarm](.aidev/README.md)**
+**[Get Started with the Framework](./ai_dev_ssd_flow/README.md)**
 
 ## Quality Gates and Traceability Validation
 
@@ -606,14 +606,14 @@ All documentation follows standardized ID formats:
 **Forward Matrix Example:**
 ```markdown
 | Requirement | Implementing Files | Status |
-|-------------|-------------------|---------|
+|-------------|-------------------|--------|
 | BRD.01.01.30 | src/services/account.py:12 | [PASS] Complete |
 ```
 
 **Reverse Matrix Example:**
 ```markdown
 | Source File | Requirements | Status |
-|-------------|-------------|---------|
+|-------------|-------------|--------|
 | src/services/account.py | BRD.01.01.30, SYS.01.25.06 | Complete |
 ```
 
@@ -775,7 +775,7 @@ python tests/scripts/compare_test_results.py baseline.json current.json
 ### Test Management Scripts
 
 | Script | Purpose |
-|--------|---------|
+|--------|--------|
 | `tests/scripts/run_tests.py` | Unified test runner with result saving |
 | `tests/scripts/compare_test_results.py` | Regression detection between runs |
 | `tests/scripts/archive_test_results.py` | Result archival and trend tracking |
@@ -813,7 +813,7 @@ GitHub Actions workflow (`.github/workflows/test-pipeline.yml`) provides:
 ### Coverage Requirements
 
 | Metric | Threshold |
-|--------|-----------|
+|--------|----------|
 | Unit test coverage | ≥80% |
 | Branch coverage | Enabled |
 | Fail on decrease | Configurable |
@@ -1210,7 +1210,7 @@ All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SS`
 A comprehensive suite of tools is included for building, testing, and debugging AI agents:
 
 | Tool | Category | Purpose |
-|------|----------|---------|
+|------|----------|--------|
 | **[Mock MCP Server](dev_tools/mcp/README.md)** | Mocking | Simulate MCP tools for offline testing |
 | **[Mock A2A Server](dev_tools/a2a/README.md)** | Mocking | Simulate agent-to-agent interactions |
 | **[Agent Evaluator](dev_tools/evaluator/README.md)** | Testing | "LLM-as-a-Judge" semantic testing |
@@ -1349,10 +1349,9 @@ MIT License - See LICENSE file for details
 - [Generic Domain Config](./ai_dev_ssd_flow/GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
 
 ### Decision Guides
-- [When to Create IMPL](./ai_dev_ssd_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC
 - [Contract Decision Questionnaire](./ai_dev_ssd_flow/CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR
 - [Platform vs Feature BRD](./ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md) - BRD type selection
-- [CTR Policy](./ai_dev_ssd_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
+- [CTR Policy](./ai_dev_ssd_flow/05_ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
 
 ### AI Tool Optimization
 - [Tool Optimization Guide](./ai_dev_ssd_flow/AI_TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
