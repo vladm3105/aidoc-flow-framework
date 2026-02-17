@@ -131,74 +131,45 @@ jobs:
         id: load_report
         run: |
           python3 -c "
-          import json
-          import sys
-          
-          try:
-              with open('ai_dev_flow/work_plans/validation_report.json') as f:
-                  report = json.load(f)
-          except FileNotFoundError:
-              print('No validation report found')
-              sys.exit(0)
-          
-          if report.get('layers'):
-              scores = [layer['score'] for layer in report['layers']]
-              avg_score = sum(scores) / len(scores)
-              print(f'average_score={int(avg_score)}')
-          "
+import json
+import sys
+
+try:
+    with open('ai_dev_flow/work_plans/validation_report.json') as f:
+        report = json.load(f)
+except FileNotFoundError:
+    print('No validation report found')
+    sys.exit(0)
+
+if report.get('layers'):
+    scores = [layer['score'] for layer in report['layers']]
+    avg_score = sum(scores) / len(scores)
+    print(f'average_score={int(avg_score)}')
+"
       
       - name: Check Quality Gate
         id: check_quality
         run: |
           python3 -c "
-          import sys
-          import json
-          import os
-          
-          try:
-              with open('ai_dev_flow/work_plans/validation_report.json') as f:
-                  report = json.load(f)
-                  avg_score = float('${{ steps.load_report.outputs.average_score }}')
-                  print(f'average_score={avg_score}')
-                  
-                  threshold = 90
-                  if avg_score >= threshold:
-                      sys.exit(0)
-                  else:
-                      print(f'Quality gate failed: score {avg_score}% < threshold {threshold}%')
-                      sys.exit(1)
-          except FileNotFoundError:
-              print('No validation report found')
-              avg_score = 0
-              if avg_score < threshold:
-                  sys.exit(1)
-          "
-      
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            import json
-            import os
-            
-            try:
-                with open('ai_dev_flow/work_plans/validation_report.json') as f:
-                    report = json.load(f)
-                    avg_score = float('${{ steps.check_quality.outputs.average_score }}')
-                    
-                message = f\"\"## Quality Gate\\n\\n\"
-                message += f\"\"✅ Average Score: {avg_score}%\\n\\n\"
-                message += f\"\"\\n\\n\" + ('✅ Auto-approved' if avg_score >= 90 else '⚠️ Manual review required')
-                message += f\"\"\\n\\n\"
-                message += f\"\"See attached autopilot report for details.\\n\\n\"\"
-                
-                github.rest.issues.createComment({
-                    'owner': context.repo.owner,
-                    'repo': context.repo.repo,
-                    'issue_number': context.issue.number,
-                    'body': message
-                })
-            except FileNotFoundError:
-                print('No validation report found')
+import sys
+import json
+import os
+
+try:
+    with open('ai_dev_flow/work_plans/validation_report.json') as f:
+        report = json.load(f)
+        avg_score = float('\${{ steps.load_report.outputs.average_score }}')
+        print(f'average_score={avg_score}')
+        
+        threshold = 90
+        if avg_score >= threshold:
+            sys.exit(0)
+        else:
+            print(f'Quality gate failed: score {avg_score}% < threshold {threshold}%')
+            sys.exit(1)
+except FileNotFoundError:
+    print('No validation report found')
+    avg_score = 0
+    if avg_score < threshold:
+        sys.exit(1)
+"
