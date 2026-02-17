@@ -1,0 +1,210 @@
+name: Deploy to Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Phase number to deploy'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      phase:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+  actions: write
+
+env:
+  SERVICE_NAME: "{PROJECT_PREFIX}-{SERVICE_NAME}"
+  GCP_PROJECT_DEV: ${{ secrets.GCP_PROJECT_DEV }}
+  REGION: "{GCP_REGION}"
+  GH_HOST: "{GITHUB_HOST}"
+
+jobs:
+  verify-prerequisites:
+    name: Verify Prerequisites
+    runs-on: self-hosted
+    outputs:
+      can_deploy: ${{ steps.verify.outputs.can_deploy }}
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Verify previous phases
+        id: verify
+        run: |
+          if [ "${{ inputs.phase }}" == "1" ]; then
+            echo "Phase 1 has no prerequisites"
+            echo "can_deploy=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          python3 scripts/workflows/verify_phase_prerequisites.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --target-phase ${{ inputs.phase }}
+
+  deploy-dev:
+    name: Deploy Phase ${{ inputs.phase }} to Dev
+    runs-on: self-hosted
+    needs: [verify-prerequisites]
+    if: needs.verify-prerequisites.outputs.can_deploy == 'true'
+    outputs:
+      dev_url: ${{ steps.url.outputs.url }}
+      image_tag: ${{ steps.build.outputs.image_tag }}
+      smoke_passed: ${{ steps.smoke.outputs.passed }}
+    steps:
+      - name: Checkout
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+
+      - name: Set image tag
+        id: build
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          IMAGE_TAG="phase-${{ inputs.phase }}-${SHORT_SHA}"
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "Image tag: ${IMAGE_TAG}"
+
+      - name: Update phase status to dev_deploying
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/workflows/update_phase_tracking.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --phase ${{ inputs.phase }} \
+            --status dev_deploying \
+            --commit-sha ${{ github.sha }} \
+            --image-tag ${{ steps.build.outputs.image_tag }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add governance/cicd/phase-deployments.json
+          git commit -m "chore: phase ${{ inputs.phase }} dev_deploying
+
+          Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>" || true
+          git push origin main || true
+
+      - name: Authenticate to GCP (WIF)
+        run: |
+          echo '${{ secrets.WIF_CREDENTIALS_DEV }}' > /tmp/creds.json
+          gcloud auth login --cred-file=/tmp/creds.json --quiet
+          gcloud config set project ${{ env.GCP_PROJECT_DEV }}
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+
+      - name: Build and push image
+        run: |
+          IMAGE_URI="${REGION}-docker.pkg.dev/${GCP_PROJECT_DEV}/{PROJECT_PREFIX}/${SERVICE_NAME}:${{ steps.build.outputs.image_tag }}"
+          cd components/{SERVICE_NAME}
+          docker build -t ${IMAGE_URI} .
+          docker push ${IMAGE_URI}
+
+      - name: Deploy to Cloud Run (Dev)
+        run: |
+          IMAGE_URI="${REGION}-docker.pkg.dev/${GCP_PROJECT_DEV}/{PROJECT_PREFIX}/${SERVICE_NAME}:${{ steps.build.outputs.image_tag }}"
+          gcloud run deploy ${SERVICE_NAME} \
+            --image ${IMAGE_URI} \
+            --region ${REGION} \
+            --min-instances 0 \
+            --max-instances 2 \
+            --memory 512Mi \
+            --cpu 1 \
+            --set-env-vars="ENVIRONMENT=development,PHASE=${{ inputs.phase }}"
+
+      - name: Get service URL
+        id: url
+        run: |
+          URL=$(gcloud run services describe ${SERVICE_NAME} --region ${REGION} --format 'value(status.url)')
+          echo "url=${URL}" >> $GITHUB_OUTPUT
+          echo "Dev URL: ${URL}"
+
+      - name: Run smoke tests
+        id: smoke
+        run: |
+          set +e
+          chmod +x scripts/workflows/smoke_test.sh
+          scripts/workflows/smoke_test.sh "${{ steps.url.outputs.url }}"
+          SMOKE_EXIT=$?
+          set -e
+          if [ $SMOKE_EXIT -eq 0 ]; then
+            echo "passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "passed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update phase tracking (dev complete)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ steps.smoke.outputs.passed }}" == "true" ]; then
+            STATUS="dev_deployed"
+            SMOKE_RESULT="passed"
+          else
+            STATUS="dev_failed"
+            SMOKE_RESULT="failed"
+          fi
+          python3 scripts/workflows/update_phase_tracking.py \
+            --tracking-file governance/cicd/phase-deployments.json \
+            --phase ${{ inputs.phase }} \
+            --status ${STATUS} \
+            --dev-url ${{ steps.url.outputs.url }} \
+            --dev-smoke-results ${SMOKE_RESULT}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase || true
+          git add governance/cicd/phase-deployments.json
+          git commit -m "chore: phase ${{ inputs.phase }} ${STATUS}
+
+          Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>"
+          git push origin main
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/creds.json
+
+      - name: Post Teams notification
+        if: always()
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          if [ "${{ steps.smoke.outputs.passed }}" == "true" ]; then
+            STATUS="DEV PASSED"
+            COLOR="good"
+          else
+            STATUS="DEV FAILED"
+            COLOR="attention"
+          fi
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "'${COLOR}'",
+            "summary": "Phase '${{ inputs.phase }}' Dev",
+            "sections": [{
+              "activityTitle": "Phase '${{ inputs.phase }}' Dev Deployment",
+              "facts": [
+                {"name": "Status", "value": "'${STATUS}'"},
+                {"name": "URL", "value": "'${{ steps.url.outputs.url }}'"},
+                {"name": "Image", "value": "'${{ steps.build.outputs.image_tag }}'"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
+
+      - name: Fail if smoke tests failed
+        if: steps.smoke.outputs.passed == 'false'
+        run: exit 1
+
+  check-all-phases:
+    name: Check All Phases Complete
+    runs-on: self-hosted
+    needs: [deploy-dev]
+    if: needs.deploy-dev.outputs.smoke_passed == 'true'
+    steps:
+      - name: Trigger all-phases check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          GH_HOST={GITHUB_HOST} gh workflow run check-all-phases-dev.yml
