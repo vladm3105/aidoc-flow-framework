@@ -1,0 +1,82 @@
+name: Dispatch Issue to AI Agent
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to dispatch'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  GH_HOST: "{GITHUB_HOST}"
+
+jobs:
+  dispatch:
+    name: Dispatch to AI Agent
+    runs-on: self-hosted
+    if: >
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.label.name == 'ai:ready')
+    steps:
+      - name: Get issue number
+        id: issue
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "number=${{ inputs.issue_number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if already assigned
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LABELS=$(GH_HOST={GITHUB_HOST} gh issue view ${{ steps.issue.outputs.number }} --json labels --jq '.labels[].name')
+          if echo "$LABELS" | grep -q "ai:in-progress"; then
+            echo "already_assigned=true" >> $GITHUB_OUTPUT
+            echo "::warning::Issue already has ai:in-progress label"
+          else
+            echo "already_assigned=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Lock issue for AI Agent
+        if: steps.check.outputs.already_assigned != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Remove ai:ready, add ai:in-progress
+          GH_HOST={GITHUB_HOST} gh issue edit ${{ steps.issue.outputs.number }} \
+            --remove-label "ai:ready" \
+            --add-label "ai:in-progress"
+
+      - name: Post dispatch notification to Teams
+        if: steps.check.outputs.already_assigned != 'true'
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+        run: |
+          ISSUE_URL="${{ github.server_url }}/${{ github.repository }}/issues/${{ steps.issue.outputs.number }}"
+
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "0076D7",
+            "summary": "Issue Dispatched to AI Agent",
+            "sections": [{
+              "activityTitle": "Issue #'${{ steps.issue.outputs.number }}' Dispatched",
+              "facts": [
+                {"name": "Issue", "value": "'${ISSUE_URL}'"},
+                {"name": "Status", "value": "AI Agent assigned"}
+              ]
+            }]
+          }' ${TEAMS_WEBHOOK} || true
+
+      # Note: AI Agent integration would be triggered here via webhook
+      # The actual AI Agent ({AI_TOOL_NAME} Code, Gemini CLI) polls for ai:in-progress issues
+      # or receives webhook notification
