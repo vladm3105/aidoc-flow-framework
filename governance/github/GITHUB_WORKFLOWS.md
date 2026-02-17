@@ -914,7 +914,7 @@ GH_HOST={GITHUB_HOST} gh secret list \
   --repo {GITHUB_ORG}/{REPO_NAME}
 
 # Setup script (creates secrets automatically)
-scripts/project_setup/gcp/setup-environments.sh
+scripts/project_setup/cloud/gcp/setup-environments.sh
 ```
 
 ---
@@ -1111,10 +1111,10 @@ The `/health` endpoint must return HTTP 200 with JSON:
 
 Before first deployment, complete these steps:
 
-1. **GCP Projects**: Run `scripts/project_setup/gcp/setup-projects.sh`
-2. **Workload Identity**: Run `scripts/project_setup/gcp/setup-wif.sh`
-3. **Artifact Registry**: Run `scripts/project_setup/gcp/setup_artifact_registry.sh`
-4. **GitHub Environments**: Run `scripts/project_setup/gcp/setup-environments.sh`
+1. **GCP Projects**: Run `scripts/project_setup/cloud/gcp/setup-projects.sh`
+2. **Workload Identity**: Run `scripts/project_setup/cloud/gcp/setup-wif.sh`
+3. **Artifact Registry**: Run `scripts/project_setup/cloud/gcp/setup_artifact_registry.sh`
+4. **GitHub Environments**: Run `scripts/project_setup/cloud/gcp/setup-environments.sh`
 5. **Terraform**: Apply `components/{SERVICE_NAME}/terraform/`
 
 ---

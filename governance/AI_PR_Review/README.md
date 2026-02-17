@@ -84,7 +84,7 @@ Caller workflow (~10 lines)
 | File | Purpose | Lines |
 |:-----|:--------|------:|
 | [`.github/workflows/ai-review.yml`](../../.github/workflows/ai-review.yml) | Unified workflow — {AI_TOOL_NAME} Code CLI (triggers locally + callable by component repos) | ~230 |
-| [`scripts/project_setup/gcp/setup-ai-review-gcp.sh`](../../scripts/project_setup/gcp/setup-ai-review-gcp.sh) | GCP prerequisite automation (WIF setup) | ~479 |
+| [`scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh`](../../scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh) | GCP prerequisite automation (WIF setup) | ~479 |
 
 ### Component Repos (per-repo)
 
