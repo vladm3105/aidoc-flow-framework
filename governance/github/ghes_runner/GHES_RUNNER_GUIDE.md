@@ -53,8 +53,8 @@ Runs directly on the development workstation. Uses existing system tools (Python
 
 | Aspect | Detail |
 |:-------|:-------|
-| **Script** | `scripts/ghes-runner/setup-local-runner.sh` |
-| **Location** | `scripts/ghes-runner/runner-local/` (gitignored) |
+| **Script** | `governance/scripts/ghes-runner/setup-local-runner.sh` |
+| **Location** | `governance/scripts/ghes-runner/runner-local/` (gitignored) |
 | **Process** | Background `nohup` process with PID file |
 | **Auth** | Uses `gh auth token` from host (OAuth `gho_*` token) |
 | **Label** | `ubuntu-latest` (matches all existing workflows) |
@@ -99,19 +99,19 @@ Serverless runners on GCP with scale-to-zero autoscaling. See implementation pla
 
 ```bash
 # Make script executable (first time only)
-chmod +x scripts/ghes-runner/setup-local-runner.sh
+chmod +x governance/scripts/ghes-runner/setup-local-runner.sh
 
 # Start runner (downloads binary on first run)
-scripts/ghes-runner/setup-local-runner.sh start
+governance/scripts/ghes-runner/setup-local-runner.sh start
 
 # Check status and GHES registration
-scripts/ghes-runner/setup-local-runner.sh status
+governance/scripts/ghes-runner/setup-local-runner.sh status
 
 # Stop runner (keeps registration)
-scripts/ghes-runner/setup-local-runner.sh stop
+governance/scripts/ghes-runner/setup-local-runner.sh stop
 
 # Fully deregister and stop
-scripts/ghes-runner/setup-local-runner.sh remove
+governance/scripts/ghes-runner/setup-local-runner.sh remove
 ```
 
 ### Verification
@@ -221,7 +221,7 @@ The `gh` CLI and `curl` inside the container can reach GHES (they obtained the r
 1. Extract the GHES CA certificate on the host:
    ```bash
    openssl s_client -connect {GITHUB_HOST}:443 -showcerts </dev/null 2>/dev/null \
-     | openssl x509 -outform PEM > scripts/ghes-runner/ghes-ca.crt
+     | openssl x509 -outform PEM > governance/scripts/ghes-runner/ghes-ca.crt
    ```
 
 2. Add to `Dockerfile` before the runner binary download:
@@ -249,17 +249,17 @@ The `gh` CLI and `curl` inside the container can reach GHES (they obtained the r
 
 | Runner Type | Log Path |
 |:------------|:---------|
-| Host-based | `scripts/ghes-runner/runner-local/runner.log` |
+| Host-based | `governance/scripts/ghes-runner/runner-local/runner.log` |
 | Docker | `docker logs ghes-runner-{PROJECT_PREFIX}` |
 
 ### Process Management
 
 ```bash
 # Check if runner process is alive
-scripts/ghes-runner/setup-local-runner.sh status
+governance/scripts/ghes-runner/setup-local-runner.sh status
 
 # View live logs (host runner)
-tail -f scripts/ghes-runner/runner-local/runner.log
+tail -f governance/scripts/ghes-runner/runner-local/runner.log
 
 # View workflow execution logs on GHES
 GH_HOST={GITHUB_HOST} gh run list --repo {GITHUB_ORG}/{REPO_NAME}
@@ -305,7 +305,7 @@ The host-based runner does not auto-start on reboot. Options:
 ## 10. File Inventory
 
 ```
-scripts/ghes-runner/
+governance/scripts/ghes-runner/
  setup-local-runner.sh     # Host runner: start/stop/status/remove
  Dockerfile                # Docker runner image (Ubuntu 22.04)
  docker-compose.yml        # Docker runner compose config
@@ -333,7 +333,7 @@ scripts/ghes-runner/
 
 When upgrading, deregister the old runner first:
 ```bash
-scripts/ghes-runner/setup-local-runner.sh remove
+governance/scripts/ghes-runner/setup-local-runner.sh remove
 ```
 
 ---

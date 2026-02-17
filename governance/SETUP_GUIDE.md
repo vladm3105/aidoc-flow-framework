@@ -195,7 +195,7 @@ See [CLOUD_GUIDE.md](./CLOUD_GUIDE.md#gcp-setup) for detailed instructions.
 
 ```bash
 # Run GCP setup scripts
-cd scripts/project_setup/cloud/gcp
+cd governance/scripts/project_setup/cloud/gcp
 
 # 1. Create GCP projects
 ./setup-projects.sh

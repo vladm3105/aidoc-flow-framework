@@ -214,10 +214,10 @@ After replacing all variables, validate no placeholders remain:
 
 ```bash
 # Use the validation script (recommended)
-./scripts/project_setup/validate_configuration.sh
+./governance/scripts/project_setup/validate_configuration.sh
 
 # Or run with --fix to see replacement commands
-./scripts/project_setup/validate_configuration.sh --fix
+./governance/scripts/project_setup/validate_configuration.sh --fix
 ```
 
 The validation script:

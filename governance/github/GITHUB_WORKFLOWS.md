@@ -589,7 +589,7 @@ check-all-phases-dev.yml (triggered on success)
 | Version | `GET /version` | JSON with `version` field |
 | Config | `GET /health/config` | HTTP 200 (optional) |
 
-Smoke tests use `scripts/workflows/smoke_test.sh` with retry logic (5 attempts, 10s delay).
+Smoke tests use `governance/scripts/workflows/smoke_test.sh` with retry logic (5 attempts, 10s delay).
 
 ### Required Secrets
 
@@ -914,7 +914,7 @@ GH_HOST={GITHUB_HOST} gh secret list \
   --repo {GITHUB_ORG}/{REPO_NAME}
 
 # Setup script (creates secrets automatically)
-scripts/project_setup/cloud/gcp/setup-environments.sh
+governance/scripts/project_setup/cloud/gcp/setup-environments.sh
 ```
 
 ---
@@ -1111,10 +1111,10 @@ The `/health` endpoint must return HTTP 200 with JSON:
 
 Before first deployment, complete these steps:
 
-1. **GCP Projects**: Run `scripts/project_setup/cloud/gcp/setup-projects.sh`
-2. **Workload Identity**: Run `scripts/project_setup/cloud/gcp/setup-wif.sh`
-3. **Artifact Registry**: Run `scripts/project_setup/cloud/gcp/setup_artifact_registry.sh`
-4. **GitHub Environments**: Run `scripts/project_setup/cloud/gcp/setup-environments.sh`
+1. **GCP Projects**: Run `governance/scripts/project_setup/cloud/gcp/setup-projects.sh`
+2. **Workload Identity**: Run `governance/scripts/project_setup/cloud/gcp/setup-wif.sh`
+3. **Artifact Registry**: Run `governance/scripts/project_setup/cloud/gcp/setup_artifact_registry.sh`
+4. **GitHub Environments**: Run `governance/scripts/project_setup/cloud/gcp/setup-environments.sh`
 5. **Terraform**: Apply `components/{SERVICE_NAME}/terraform/`
 
 ---

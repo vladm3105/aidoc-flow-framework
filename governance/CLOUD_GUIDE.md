@@ -27,7 +27,7 @@ GCP is the primary supported cloud provider with full automation scripts.
 ### Step 1: Create GCP Projects
 
 ```bash
-cd scripts/project_setup/cloud/gcp
+cd governance/scripts/project_setup/cloud/gcp
 
 # Edit variables at the top of the script
 nano setup-projects.sh

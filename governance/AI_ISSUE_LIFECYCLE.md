@@ -155,7 +155,7 @@ HUMAN CREATES DEVELOPMENT ISSUE
    Regression Tests: pytest tests/ -x                                         
    Security Scan: bandit -r src/ && pip-audit                                
    Local Smoke Test: curl -f http://localhost:8080/health                    
-   Conflict Check: python3 scripts/workflows/check_conflicts.py                        
+   Conflict Check: python3 governance/scripts/workflows/check_conflicts.py                        
                                                                                  
   STEP 5: Create PR                                                              
    Stop local services                                                        
