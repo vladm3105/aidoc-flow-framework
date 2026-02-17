@@ -80,7 +80,7 @@ BRD through SPEC → TASKS → Code
 ## Template Location
 
 ```
-ai_dev_flow/11_TASKS/TASKS-MVP-TEMPLATE.md
+ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md
 ```
 
 ## Related Skills
