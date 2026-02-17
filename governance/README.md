@@ -1,6 +1,28 @@
 # Governance Documentation
 
-Unified governance rules for both SDD and AI Project Flow frameworks.
+Governance rules and templates for the **AI Project Flow** framework (issue-based, phase-gated development for small-medium AI-first projects).
+
+> **Note**: For **AI Dev Flow (SDD)** documentation (15-layer formal specification), see [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/).
+
+---
+
+## Project Templates
+
+Templates for initializing new AI Project Flow projects.
+
+| Template | Description |
+|:---------|:------------|
+| [templates/README.md](./templates/README.md) | Project README template |
+| [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) | Contributing guidelines template |
+| [templates/README_AIAGENT.md](./templates/README_AIAGENT.md) | AI agent rules template |
+| [templates/CLAUDE.md](./templates/CLAUDE.md) | Claude Code settings template |
+| [templates/DEVELOPER_GUIDE.md](./templates/DEVELOPER_GUIDE.md) | Developer setup guide template |
+| [templates/HANDOFF.md](./templates/HANDOFF.md) | AI session handoff template |
+| [templates/GCP-DEPLOYMENT.md](./templates/GCP-DEPLOYMENT.md) | GCP deployment guide |
+| [templates/AWS-DEPLOYMENT.md](./templates/AWS-DEPLOYMENT.md) | AWS deployment guide |
+| [templates/AZURE-DEPLOYMENT.md](./templates/AZURE-DEPLOYMENT.md) | Azure deployment guide |
+| [templates/.env.example](./templates/.env.example) | Environment variables template |
+| [templates/.mcp.json](./templates/.mcp.json) | MCP server configuration template |
 
 ---
 
@@ -103,10 +125,22 @@ Implementation plan (IPLAN) templates and guidance.
 
 ---
 
+## Setup Scripts
+
+Automation scripts for project setup and GitHub Actions workflows.
+
+| Directory | Description |
+|:----------|:------------|
+| [scripts/project_setup/](./scripts/project_setup/) | Cloud setup scripts (GCP, AWS, Azure) and validation |
+| [scripts/workflows/](./scripts/workflows/) | GitHub Actions helper scripts (phase checks, QA, deployment) |
+| [scripts/ghes-runner/](./scripts/ghes-runner/) | GitHub Enterprise Server self-hosted runner setup |
+
+---
+
 ## Related Root Files
 
 | File | Description |
 |:-----|:------------|
-| [/CONTRIBUTING.md](/CONTRIBUTING.md) | Contributing guidelines with reviewer roster |
-| [/README_AIAGENT.md](/README_AIAGENT.md) | Universal AI agent rules |
+| [/CONTRIBUTING.md](/CONTRIBUTING.md) | Contributing guidelines (symlink to templates/) |
+| [/README_AIAGENT.md](/README_AIAGENT.md) | AI agent rules (symlink to templates/) |
 | [/.github/CODEOWNERS](/.github/CODEOWNERS) | PR reviewer auto-assignment |

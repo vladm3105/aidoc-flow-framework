@@ -1,1 +1,1 @@
-ai_project_issues_flow/templates/README_AIAGENT.md
+governance/templates/README_AIAGENT.md
