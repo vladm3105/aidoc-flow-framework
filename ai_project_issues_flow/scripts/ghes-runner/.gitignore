@@ -1,5 +1,0 @@
-# Ignore runner local data and externals
-runner-local/externals/
-runner-local/_work/
-runner-local/_diag/
-runner-local/_PipelineMapping/
