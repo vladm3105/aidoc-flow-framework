@@ -26,12 +26,12 @@ The AI Dev Flow Framework now supports **two parallel documentation formats** op
 
 ### Key Principles
 
-- ✅ **MD Templates**: Primary source of truth for **human workflow**
-- ✅ **YAML Templates**: Primary source of truth for **Autopilot workflow**
-- ✅ **YAML Schemas**: Derivative of **both** templates, validate both formats
-- ✅ **No format bias**: Both formats have equal authority in their workflows
-- ✅ **Shared validation**: Same quality gates apply to both formats
-- ✅ **Clear separation**: Easy to understand which format to use when
+- [PASS] **MD Templates**: Primary source of truth for **human workflow**
+- [PASS] **YAML Templates**: Primary source of truth for **Autopilot workflow**
+- [PASS] **YAML Schemas**: Derivative of **both** templates, validate both formats
+- [PASS] **No format bias**: Both formats have equal authority in their workflows
+- [PASS] **Shared validation**: Same quality gates apply to both formats
+- [PASS] **Clear separation**: Easy to understand which format to use when
 
 ---
 
@@ -42,12 +42,12 @@ The AI Dev Flow Framework now supports **two parallel documentation formats** op
 **Purpose**: Human-readable template for creating narrative documents
 
 **Characteristics**:
-- ✅ Rich text formatting (headers, tables, bullet lists, code blocks)
-- ✅ Narrative explanations and contextual information
-- ✅ Embedded diagrams (Mermaid, ASCII art)
-- ✅ Easy human review and editing
-- ✅ Familiar Markdown syntax
-- ❌ Requires regex parsing for AI consumption
+- [PASS] Rich text formatting (headers, tables, bullet lists, code blocks)
+- [PASS] Narrative explanations and contextual information
+- [PASS] Embedded diagrams (Mermaid, ASCII art)
+- [PASS] Easy human review and editing
+- [PASS] Familiar Markdown syntax
+- [FAIL] Requires regex parsing for AI consumption
 
 **Authority**: **Primary source of truth for Human Workflow**
 
@@ -92,12 +92,12 @@ def example_function():
 - `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
 
 **When to Use MD Template**:
-- ✅ Creating BRD/PRD for business stakeholders
-- ✅ Writing narrative explanations for complex requirements
-- ✅ Documents requiring rich formatting (tables, diagrams, code blocks)
-- ✅ Human reviews and approval processes
-- ✅ Documentation with extensive prose and explanations
-- ✅ Learning framework structure for the first time
+- [PASS] Creating BRD/PRD for business stakeholders
+- [PASS] Writing narrative explanations for complex requirements
+- [PASS] Documents requiring rich formatting (tables, diagrams, code blocks)
+- [PASS] Human reviews and approval processes
+- [PASS] Documentation with extensive prose and explanations
+- [PASS] Learning framework structure for the first time
 
 **Advantages for Humans**:
 - **Readability**: Natural language flow with narrative structure
@@ -119,13 +119,13 @@ def example_function():
 **Purpose**: AI-optimized template for Autopilot code generation
 
 **Characteristics**:
-- ✅ Structured data (key-value pairs, lists, nested objects)
-- ✅ Direct YAML parsing (no regex overhead)
-- ✅ Type-safe (schema validation possible at parse time)
-- ✅ Zero parsing ambiguity
-- ✅ Direct mapping to programming language data structures
-- ❌ Less readable for humans (no rich text formatting)
-- ❌ Limited narrative explanation capabilities
+- [PASS] Structured data (key-value pairs, lists, nested objects)
+- [PASS] Direct YAML parsing (no regex overhead)
+- [PASS] Type-safe (schema validation possible at parse time)
+- [PASS] Zero parsing ambiguity
+- [PASS] Direct mapping to programming language data structures
+- [FAIL] Less readable for humans (no rich text formatting)
+- [FAIL] Limited narrative explanation capabilities
 
 **Authority**: **Primary source of truth for Autopilot Workflow**
 
@@ -200,12 +200,12 @@ traceability:
 - `ai_dev_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml` (NEW)
 
 **When to Use YAML Template**:
-- ✅ Autopilot generating artifacts automatically
-- ✅ Code generation from specifications
-- ✅ Structured data validation
-- ✅ Machine-to-machine communication
-- ✅ Processing large volumes of artifacts
-- ✅ Type-safe data exchange between systems
+- [PASS] Autopilot generating artifacts automatically
+- [PASS] Code generation from specifications
+- [PASS] Structured data validation
+- [PASS] Machine-to-machine communication
+- [PASS] Processing large volumes of artifacts
+- [PASS] Type-safe data exchange between systems
 
 **Advantages for Autopilot**:
 - **Performance**: 3-5x faster parsing than Markdown regex
@@ -230,14 +230,14 @@ traceability:
 **Purpose**: Machine-readable validation rules for both MD and YAML documents
 
 **Characteristics**:
-- ✅ Defines validation rules (required fields, patterns, constraints)
-- ✅ Format-aware (validates both `.md` and `.yaml` documents)
-- ✅ Shared validation rules (traceability tags, metadata, structure)
-- ✅ Error codes with severity levels (error, warning, info)
-- ✅ Reference documentation (templates, creation rules, validation rules)
-- ❌ Not a document creation template
-- ❌ Not a source of truth for content
-- ❌ No example values (only validation rules)
+- [PASS] Defines validation rules (required fields, patterns, constraints)
+- [PASS] Format-aware (validates both `.md` and `.yaml` documents)
+- [PASS] Shared validation rules (traceability tags, metadata, structure)
+- [PASS] Error codes with severity levels (error, warning, info)
+- [PASS] Reference documentation (templates, creation rules, validation rules)
+- [FAIL] Not a document creation template
+- [FAIL] Not a source of truth for content
+- [FAIL] No example values (only validation rules)
 
 **Authority**: **Derivative of both MD and YAML templates**
 
@@ -432,12 +432,12 @@ error_messages:
 |---------|-------------|---------------|-------------|
 | **Purpose** | Document creation | Document creation | Validation |
 | **Authority** | Human workflow (primary) | Autopilot workflow (primary) | Derivative of both |
-| **Readability** | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐ Fair | ❌ N/A (rules only) |
-| **AI Parsing Speed** | ⚠️ Medium (regex) | ✅ Fast (direct load) | ✅ Fast (direct load) |
-| **Rich Formatting** | ✅ Yes (tables, bold, etc.) | ❌ No | ❌ N/A |
-| **Type Safety** | ⚠️ Limited | ✅ Full | ✅ Full |
-| **Example Values** | ✅ Yes | ✅ Yes | ❌ No (rules only) |
-| **Narrative Text** | ✅ Yes | ❌ Limited | ❌ No |
+| **Readability** |  Excellent |  Fair | [FAIL] N/A (rules only) |
+| **AI Parsing Speed** | [WARN] Medium (regex) | [PASS] Fast (direct load) | [PASS] Fast (direct load) |
+| **Rich Formatting** | [PASS] Yes (tables, bold, etc.) | [FAIL] No | [FAIL] N/A |
+| **Type Safety** | [WARN] Limited | [PASS] Full | [PASS] Full |
+| **Example Values** | [PASS] Yes | [PASS] Yes | [FAIL] No (rules only) |
+| **Narrative Text** | [PASS] Yes | [FAIL] Limited | [FAIL] No |
 | **Used For** | Human editing | AI generation | Validation |
 | **Line Count** | 200-800 | 100-400 | 300-999 |
 | **File Extension** | `.md` | `.yaml` | `.yaml` |
@@ -451,41 +451,41 @@ error_messages:
 
 ```
 Need to create artifact?
-  │
-  ├──────────────────────────────────────────────────────────────┤
-  │                                                             │
-  │ Is this for human review/editing?                             │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                                                         │  │
-  ├─ YES → Use MD Template (.md)                                 │  │
-  │  • Rich formatting (tables, diagrams, code blocks)               │  │
-  │  • Narrative explanations and context                              │  │
-  │  • Easy human review and editing                                │  │
-  │  • Familiar Markdown syntax                                       │  │
-  │                                                             │  │
-  └────────────────────────────────────────────────────────────┘  │
-  │                                                             │
-  ├──────────────────────────────────────────────────────────────┤  │
-  │                                                             │
-  │ Is this for Autopilot code generation?                       │  │
-  │  ┌────────────────────────────────────────────────────────────┐  │
-  │  │                                                         │  │
-  ├─ YES → Use YAML Template (.yaml)                            │  │
-  │  • Structured data (key-value, lists, objects)                   │  │
-  │  • Fast parsing (3-5x faster than Markdown)                   │  │
-  │  • Zero ambiguity in data extraction                            │  │
-  │  • Type-safe validation at parse time                             │  │
-  │  • Direct mapping to Python/data structures                     │  │
-  │                                                             │  │
-  └────────────────────────────────────────────────────────────┘  │
-  │                                                             │
-  └──────────────────────────────────────────────────────────────┤
-  │                                                             │
-  Uncertain? → Create both (MD + YAML)                          │
-  • MD version for human review/editing                              │
-  • YAML version for Autopilot generation                           │
-  │                                                             │
-  └─────────────────────────────────────────────────────────────┘
+  
+  
+                                                               
+   Is this for human review/editing?                             
+      
+                                                               
+   YES → Use MD Template (.md)                                   
+    • Rich formatting (tables, diagrams, code blocks)                 
+    • Narrative explanations and context                                
+    • Easy human review and editing                                  
+    • Familiar Markdown syntax                                         
+                                                                 
+    
+                                                               
+    
+                                                               
+   Is this for Autopilot code generation?                         
+      
+                                                               
+   YES → Use YAML Template (.yaml)                              
+    • Structured data (key-value, lists, objects)                     
+    • Fast parsing (3-5x faster than Markdown)                     
+    • Zero ambiguity in data extraction                              
+    • Type-safe validation at parse time                               
+    • Direct mapping to Python/data structures                       
+                                                                 
+    
+                                                               
+  
+                                                               
+  Uncertain? → Create both (MD + YAML)                          
+  • MD version for human review/editing                              
+  • YAML version for Autopilot generation                           
+                                                               
+  
 ```
 
 ### Use Cases by Layer
@@ -516,42 +516,42 @@ Need to create artifact?
 ### Complete Authority Diagram
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                    Dual-Authority Architecture                      │
-├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  ┌─────────────────────────────┐      ┌─────────────────────────────┐  │
-│  │      Human Workflow       │      │    Autopilot Workflow     │  │
-│  │                           │      │                           │  │
-│  │  1. MD Template           │      │  1. YAML Template          │  │
-│  │     (XXXX-MVP-TEMPLATE.md) │      │     (XXXX-MVP-TEMPLATE.yaml)│  │
-│  │     PRIMARY SOURCE        │      │     PRIMARY SOURCE          │  │
-│  │     ↓                    │      │     ↓                       │  │
-│  │  2. YAML Schema          │      │  2. YAML Schema           │  │
-│  │     (XXXX_MVP_SCHEMA.yaml)│      │     (XXXX_MVP_SCHEMA.yaml)│  │
-│  │     validates MD only       │      │     validates YAML only     │  │
-│  │     ↓                    │      │     ↓                       │  │
-│  │  3. Validators           │      │  3. Validators            │  │
-│  │     (format-aware)        │      │     (format-aware)         │  │
-│  │                           │      │                           │  │
-│  └─────────────────────────────┘      └─────────────────────────────┘  │
-│                                                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │            YAML Schema (DERIVATIVE of both templates)       │  │
-│  │                                                               │  │
-│  │  • Validates MD documents (human workflow)                      │  │
-│  │  • Validates YAML documents (autopilot workflow)                    │  │
-│  │  • Shared validation rules (traceability, metadata)                  │  │
-│  │  • Format-specific rules (MD: headings, YAML: keys)                │  │
-│  │  • Single schema version per file (no format-specific versions)          │  │
-│  │                                                               │  │
-│  │  References:                                                   │  │
-│  │    - md_template: XXXX-MVP-TEMPLATE.md                      │  │
-│  │    - yaml_template: XXXX-MVP-TEMPLATE.yaml                    │  │
-│  │                                                               │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                       │
-└────────────────────────────────────────────────────────────────────────────────┘
+
+                    Dual-Authority Architecture                      
+
+                                                                       
+          
+        Human Workflow                 Autopilot Workflow       
+                                                                
+    1. MD Template                   1. YAML Template            
+       (XXXX-MVP-TEMPLATE.md)            (XXXX-MVP-TEMPLATE.yaml)  
+       PRIMARY SOURCE                   PRIMARY SOURCE            
+       ↓                               ↓                         
+    2. YAML Schema                  2. YAML Schema             
+       (XXXX_MVP_SCHEMA.yaml)           (XXXX_MVP_SCHEMA.yaml)  
+       validates MD only                  validates YAML only       
+       ↓                               ↓                         
+    3. Validators                   3. Validators              
+       (format-aware)                   (format-aware)           
+                                                                
+          
+                                                                       
+    
+              YAML Schema (DERIVATIVE of both templates)         
+                                                                   
+    • Validates MD documents (human workflow)                        
+    • Validates YAML documents (autopilot workflow)                      
+    • Shared validation rules (traceability, metadata)                    
+    • Format-specific rules (MD: headings, YAML: keys)                  
+    • Single schema version per file (no format-specific versions)            
+                                                                   
+    References:                                                     
+      - md_template: XXXX-MVP-TEMPLATE.md                        
+      - yaml_template: XXXX-MVP-TEMPLATE.yaml                      
+                                                                   
+    
+                                                                       
+
 ```
 
 ### Authority Rules
@@ -673,18 +673,18 @@ def parse_yaml_traceability(yaml_content):
 ### When to Convert MD to YAML
 
 **Convert When**:
-- ✅ Autopilot needs to consume existing MD documents
-- ✅ Moving from human review to code generation phase
-- ✅ Integrating MD documents into CI/CD pipelines
-- ✅ Need type-safe validation before processing
-- ✅ Performance is critical (large document volumes)
+- [PASS] Autopilot needs to consume existing MD documents
+- [PASS] Moving from human review to code generation phase
+- [PASS] Integrating MD documents into CI/CD pipelines
+- [PASS] Need type-safe validation before processing
+- [PASS] Performance is critical (large document volumes)
 
 **Keep as MD When**:
-- ✅ Document is primarily for human review/editing
-- ✅ Business stakeholders need narrative explanations
-- ✅ Rich formatting (tables, diagrams) is important
-- ✅ Document is in early phases (BRD, PRD)
-- ✅ No automation requirement
+- [PASS] Document is primarily for human review/editing
+- [PASS] Business stakeholders need narrative explanations
+- [PASS] Rich formatting (tables, diagrams) is important
+- [PASS] Document is in early phases (BRD, PRD)
+- [PASS] No automation requirement
 
 ### Conversion Process
 
@@ -870,11 +870,11 @@ python3 ai_dev_flow/scripts/md_to_yaml_converter.py \
 **Validation Process**:
 ```
 Document File Detected (.md or .yaml)
-  │
-  ├─ .md → Apply Markdown-specific rules
-  │          + Apply shared rules (traceability, metadata)
-  │
-  └─ .yaml → Apply YAML-specific rules
+  
+   .md → Apply Markdown-specific rules
+            + Apply shared rules (traceability, metadata)
+  
+   .yaml → Apply YAML-specific rules
                + Apply shared rules (traceability, metadata)
 ```
 

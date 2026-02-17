@@ -80,7 +80,7 @@ check_placeholder_text() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -108,7 +108,7 @@ check_premature_references() {
   done < <(grep -rnE "$downstream_patterns" "$ADR_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -131,9 +131,9 @@ check_count_consistency() {
   done < <(grep -rnE "[0-9]+ alternatives?|[0-9]+ consequences?|[0-9]+ decisions?" "$ADR_DIR"/*.md 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   else
-    echo -e "${GREEN}  ✓ Found $found count claims (manual verification recommended)${NC}"
+    echo -e "${GREEN}   Found $found count claims (manual verification recommended)${NC}"
   fi
 }
 
@@ -173,7 +173,7 @@ check_index_sync() {
   done < <(grep -E "\| *Planned *\|" "$index_file" 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
 }
 
@@ -218,7 +218,7 @@ check_diagrams() {
   shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
@@ -245,7 +245,7 @@ check_glossary() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Terminology consistent across corpus${NC}"
+    echo -e "${GREEN}   Terminology consistent across corpus${NC}"
   fi
 }
 
@@ -267,7 +267,7 @@ check_element_ids() {
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate ADR references${NC}"
+    echo -e "${GREEN}   No duplicate ADR references${NC}"
   fi
 }
 
@@ -299,7 +299,7 @@ check_decision_status() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All decision statuses are valid${NC}"
+    echo -e "${GREEN}   All decision statuses are valid${NC}"
   fi
 }
 
@@ -377,7 +377,7 @@ check_adr_structure() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All ADRs have Context-Decision-Consequences structure${NC}"
+    echo -e "${GREEN}   All ADRs have Context-Decision-Consequences structure${NC}"
   fi
 }
 
@@ -433,7 +433,7 @@ check_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All standard ADRs have cumulative traceability tags${NC}"
+    echo -e "${GREEN}   All standard ADRs have cumulative traceability tags${NC}"
   fi
 }
 
@@ -457,7 +457,7 @@ check_decision_conflicts() {
       ((WARNINGS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No decision conflicts detected${NC}"
+    echo -e "${GREEN}   No decision conflicts detected${NC}"
   fi
 }
 
@@ -487,7 +487,7 @@ check_sys_ready() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All ADRs are SYS-ready${NC}"
+    echo -e "${GREEN}   All ADRs are SYS-ready${NC}"
   fi
 }
 

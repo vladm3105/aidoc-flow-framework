@@ -192,25 +192,25 @@ The SDD Project Model v2.2 extends the core SDD framework with:
 **Component Architecture**:
 ```
 tasks_to_github.py
-├── TasksParser (class)
-│   ├── load_yaml(filepath) -> Dict
-│   ├── extract_tasks(yaml_data) -> List[TaskElement]
-│   └── validate_traceability(task) -> bool
-├── GitHubIssueCreator (class)
-│   ├── __init__(repo, token)
-│   ├── find_existing_issue(tasks_id) -> Optional[Issue]
-│   ├── create_issue(task) -> Issue
-│   └── update_issue(issue, task) -> Issue
-├── ProjectV2Sync (class)
-│   ├── __init__(repo, project_number, token)
-│   ├── add_issue_to_project(issue) -> ProjectItem
-│   ├── set_custom_fields(item, task) -> None
-│   └── update_status(item, status) -> None
-├── IssueFormatter (class)
-│   ├── format_title(task, phase) -> str
-│   ├── format_body(task) -> str
-│   └── format_labels(task) -> List[str]
-└── main(args) -> int
+ TasksParser (class)
+    load_yaml(filepath) -> Dict
+    extract_tasks(yaml_data) -> List[TaskElement]
+    validate_traceability(task) -> bool
+ GitHubIssueCreator (class)
+    __init__(repo, token)
+    find_existing_issue(tasks_id) -> Optional[Issue]
+    create_issue(task) -> Issue
+    update_issue(issue, task) -> Issue
+ ProjectV2Sync (class)
+    __init__(repo, project_number, token)
+    add_issue_to_project(issue) -> ProjectItem
+    set_custom_fields(item, task) -> None
+    update_status(item, status) -> None
+ IssueFormatter (class)
+    format_title(task, phase) -> str
+    format_body(task) -> str
+    format_labels(task) -> List[str]
+ main(args) -> int
 ```
 
 **Input Format** (from TASKS YAML):
@@ -256,18 +256,18 @@ python scripts/tasks_to_github.py \
 **Component Architecture**:
 ```
 drift_check.py
-├── ArtifactScanner (class)
-│   ├── scan_directory(path) -> List[Artifact]
-│   ├── get_last_modified(artifact) -> datetime
-│   └── extract_tasks_refs(artifact) -> List[str]
-├── GitHubIssueQuery (class)
-│   ├── get_closed_issues(repo, sprint) -> List[Issue]
-│   └── get_issue_close_date(issue) -> datetime
-├── DriftAnalyzer (class)
-│   ├── compare_timestamps(artifact, issues) -> DriftStatus
-│   ├── calculate_drift_days(artifact) -> int
-│   └── generate_report(drifts) -> str
-└── main(args) -> int
+ ArtifactScanner (class)
+    scan_directory(path) -> List[Artifact]
+    get_last_modified(artifact) -> datetime
+    extract_tasks_refs(artifact) -> List[str]
+ GitHubIssueQuery (class)
+    get_closed_issues(repo, sprint) -> List[Issue]
+    get_issue_close_date(issue) -> datetime
+ DriftAnalyzer (class)
+    compare_timestamps(artifact, issues) -> DriftStatus
+    calculate_drift_days(artifact) -> int
+    generate_report(drifts) -> str
+ main(args) -> int
 ```
 
 **Detection Logic**:
@@ -293,18 +293,18 @@ python scripts/drift_check.py \
 **Component Architecture**:
 ```
 validate_artifact.py
-├── ArtifactTypeDetector (class)
-│   ├── detect_type(filepath) -> str
-│   ├── detect_layer(filepath) -> int
-│   └── get_validator_path(type) -> str
-├── GateValidator (class)
-│   ├── get_applicable_gate(layer) -> str
-│   ├── validate_gate_requirements(artifact, gate) -> GateResult
-│   └── check_upstream_gates(artifact) -> bool
-├── ValidatorRunner (class)
-│   ├── run_validator(path, artifact) -> ValidationResult
-│   └── collect_results(results) -> int
-└── main(args) -> int
+ ArtifactTypeDetector (class)
+    detect_type(filepath) -> str
+    detect_layer(filepath) -> int
+    get_validator_path(type) -> str
+ GateValidator (class)
+    get_applicable_gate(layer) -> str
+    validate_gate_requirements(artifact, gate) -> GateResult
+    check_upstream_gates(artifact) -> bool
+ ValidatorRunner (class)
+    run_validator(path, artifact) -> ValidationResult
+    collect_results(results) -> int
+ main(args) -> int
 ```
 
 **Validation Dispatch Table**:
@@ -501,19 +501,19 @@ labels:
 **Component Architecture**:
 ```
 chg_generator.py
-├── ChangeClassifier (class)
-│   ├── classify_change(description) -> ChangeLevel  # L1, L2, L3
-│   ├── identify_affected_layers(change) -> List[int]
-│   └── determine_gates(layers) -> List[str]
-├── CHGDocumentGenerator (class)
-│   ├── create_chg_document(change, level) -> str
-│   ├── generate_impact_analysis(change) -> ImpactReport
-│   └── create_approval_checklist(gates) -> str
-├── GateTransitionValidator (class)
-│   ├── validate_gate_entry(artifact, gate) -> bool
-│   ├── validate_gate_exit(artifact, gate) -> bool
-│   └── generate_gate_report(results) -> str
-└── main(args) -> int
+ ChangeClassifier (class)
+    classify_change(description) -> ChangeLevel  # L1, L2, L3
+    identify_affected_layers(change) -> List[int]
+    determine_gates(layers) -> List[str]
+ CHGDocumentGenerator (class)
+    create_chg_document(change, level) -> str
+    generate_impact_analysis(change) -> ImpactReport
+    create_approval_checklist(gates) -> str
+ GateTransitionValidator (class)
+    validate_gate_entry(artifact, gate) -> bool
+    validate_gate_exit(artifact, gate) -> bool
+    generate_gate_report(results) -> str
+ main(args) -> int
 ```
 
 **Change Levels**:
@@ -540,22 +540,22 @@ python scripts/chg_generator.py \
 **Component Architecture**:
 ```
 sprint0_setup.py
-├── Sprint0Checklist (class)
-│   ├── generate_checklist(project_config) -> Checklist
-│   ├── check_tier1_artifacts() -> Dict[str, bool]
-│   ├── check_adr_decisions() -> Dict[str, bool]
-│   └── validate_sprint1_readiness() -> bool
-├── ChecklistIssueCreator (class)
-│   ├── create_sprint0_epic(checklist) -> Issue
-│   ├── create_task_issues(checklist) -> List[Issue]
-│   └── link_blocking_dependencies() -> None
-├── ArtifactReadinessChecker (class)
-│   ├── check_brd_readiness() -> ReadinessScore
-│   ├── check_prd_readiness() -> ReadinessScore
-│   ├── check_ears_readiness() -> ReadinessScore
-│   ├── check_bdd_readiness() -> ReadinessScore
-│   └── check_adr_completeness() -> ReadinessScore
-└── main(args) -> int
+ Sprint0Checklist (class)
+    generate_checklist(project_config) -> Checklist
+    check_tier1_artifacts() -> Dict[str, bool]
+    check_adr_decisions() -> Dict[str, bool]
+    validate_sprint1_readiness() -> bool
+ ChecklistIssueCreator (class)
+    create_sprint0_epic(checklist) -> Issue
+    create_task_issues(checklist) -> List[Issue]
+    link_blocking_dependencies() -> None
+ ArtifactReadinessChecker (class)
+    check_brd_readiness() -> ReadinessScore
+    check_prd_readiness() -> ReadinessScore
+    check_ears_readiness() -> ReadinessScore
+    check_bdd_readiness() -> ReadinessScore
+    check_adr_completeness() -> ReadinessScore
+ main(args) -> int
 ```
 
 **Sprint 0 Checklist** (from PROJECT_MODEL.md Section 4.5):
@@ -587,19 +587,19 @@ python scripts/sprint0_setup.py \
 **Component Architecture**:
 ```
 raci_generator.py
-├── RACIParser (class)
-│   ├── load_roles(config) -> List[Role]
-│   ├── load_activities(config) -> List[Activity]
-│   └── load_assignments(config) -> Dict[Activity, Dict[Role, str]]
-├── RACIMatrixGenerator (class)
-│   ├── generate_matrix(roles, activities, assignments) -> str
-│   ├── export_markdown(matrix) -> str
-│   └── export_csv(matrix) -> str
-├── RACIValidator (class)
-│   ├── validate_single_accountable(matrix) -> bool
-│   ├── validate_no_gaps(matrix) -> bool
-│   └── generate_warnings(matrix) -> List[str]
-└── main(args) -> int
+ RACIParser (class)
+    load_roles(config) -> List[Role]
+    load_activities(config) -> List[Activity]
+    load_assignments(config) -> Dict[Activity, Dict[Role, str]]
+ RACIMatrixGenerator (class)
+    generate_matrix(roles, activities, assignments) -> str
+    export_markdown(matrix) -> str
+    export_csv(matrix) -> str
+ RACIValidator (class)
+    validate_single_accountable(matrix) -> bool
+    validate_no_gaps(matrix) -> bool
+    generate_warnings(matrix) -> List[str]
+ main(args) -> int
 ```
 
 **RACI Matrix** (from PROJECT_MODEL.md Section 5.1):
@@ -636,20 +636,20 @@ python scripts/raci_generator.py \
 **Component Architecture**:
 ```
 layer_selector.py
-├── WorkItemClassifier (class)
-│   ├── classify_work_type(description) -> WorkType
-│   ├── is_new_capability() -> bool
-│   ├── is_scope_change() -> bool
-│   ├── is_bug_fix() -> bool
-│   └── is_hotfix() -> bool
-├── LayerRecommender (class)
-│   ├── recommend_layers(work_type) -> List[int]
-│   ├── recommend_artifacts(layers) -> List[str]
-│   └── estimate_effort(layers) -> str
-├── DecisionTreeRunner (class)
-│   ├── run_interactive() -> LayerRecommendation
-│   └── run_automated(work_item) -> LayerRecommendation
-└── main(args) -> int
+ WorkItemClassifier (class)
+    classify_work_type(description) -> WorkType
+    is_new_capability() -> bool
+    is_scope_change() -> bool
+    is_bug_fix() -> bool
+    is_hotfix() -> bool
+ LayerRecommender (class)
+    recommend_layers(work_type) -> List[int]
+    recommend_artifacts(layers) -> List[str]
+    estimate_effort(layers) -> str
+ DecisionTreeRunner (class)
+    run_interactive() -> LayerRecommendation
+    run_automated(work_item) -> LayerRecommendation
+ main(args) -> int
 ```
 
 **Decision Matrix** (from PROJECT_MODEL.md Section 10.1):
@@ -760,52 +760,52 @@ python scripts/layer_selector.py --work-type "bug fix" --description "Fix null p
 
 ```
 ai_dev_ssd_flow/
-├── PROJECT/                           # SDD Project Model v2.2
-│   ├── PROJECT_MODEL.md               # Methodology document
-│   ├── IMPLEMENTATION_PLAN.md         # This document
-│   ├── SETUP_GUIDE.md                 # TASKS-04.03.01
-│   ├── ANTI_PATTERNS.md               # TASKS-04.03.03
-│   ├── config/
-│   │   └── project_model.yaml         # SPEC-06
-│   ├── templates/
-│   │   ├── CHG-PROJECT-TEMPLATE.md    # CHG template
-│   │   ├── SPRINT0_CHECKLIST.md       # Sprint 0 checklist
-│   │   └── RACI_MATRIX.md             # RACI template
-│   ├── .github/
-│   │   ├── ISSUE_TEMPLATE/
-│   │   │   └── sdd-task.yml           # SPEC-04
-│   │   └── workflows/
-│   │       └── sdd-validation.yml     # SPEC-05
-│   ├── fixtures/                      # Test data
-│   │   ├── budget_alert/              # Worked example
-│   │   │   ├── BRD-01.md
-│   │   │   ├── PRD-01.md
-│   │   │   ├── SPEC-05.yaml
-│   │   │   └── TASKS-05.yaml
-│   │   └── README.md
-│   └── tests/
-│       ├── test_tasks_parser.py       # TASKS-05.01.01
-│       ├── test_issue_creator.py      # TASKS-05.01.02
-│       ├── test_project_v2_sync.py    # TASKS-05.01.03
-│       ├── test_drift_check.py        # TASKS-05.02.01
-│       ├── test_validate_artifact.py  # TASKS-05.02.02
-│       ├── test_chg_generator.py      # TASKS-05.02.03
-│       ├── test_sprint0_setup.py      # TASKS-05.02.04
-│       ├── test_raci_generator.py     # TASKS-05.02.05
-│       ├── test_layer_selector.py     # TASKS-05.02.06
-│       └── conftest.py                # Shared fixtures
-├── scripts/                           # Scripts (existing + new)
-│   ├── tasks_to_github.py             # SPEC-01 (NEW)
-│   ├── drift_check.py                 # SPEC-02 (NEW)
-│   ├── validate_artifact.py           # SPEC-03 (NEW)
-│   ├── chg_generator.py               # SPEC-07 (NEW)
-│   ├── sprint0_setup.py               # SPEC-08 (NEW)
-│   ├── raci_generator.py              # SPEC-09 (NEW)
-│   ├── layer_selector.py              # SPEC-10 (NEW)
-│   ├── requirements-project.txt       # Dependencies for PROJECT scripts
-│   ├── README.md                      # TASKS-04.03.02
-│   └── (existing validators...)
-└── (existing template directories: 01_BRD/, 02_PRD/, etc.)
+ PROJECT/                           # SDD Project Model v2.2
+    PROJECT_MODEL.md               # Methodology document
+    IMPLEMENTATION_PLAN.md         # This document
+    SETUP_GUIDE.md                 # TASKS-04.03.01
+    ANTI_PATTERNS.md               # TASKS-04.03.03
+    config/
+       project_model.yaml         # SPEC-06
+    templates/
+       CHG-PROJECT-TEMPLATE.md    # CHG template
+       SPRINT0_CHECKLIST.md       # Sprint 0 checklist
+       RACI_MATRIX.md             # RACI template
+    .github/
+       ISSUE_TEMPLATE/
+          sdd-task.yml           # SPEC-04
+       workflows/
+           sdd-validation.yml     # SPEC-05
+    fixtures/                      # Test data
+       budget_alert/              # Worked example
+          BRD-01.md
+          PRD-01.md
+          SPEC-05.yaml
+          TASKS-05.yaml
+       README.md
+    tests/
+        test_tasks_parser.py       # TASKS-05.01.01
+        test_issue_creator.py      # TASKS-05.01.02
+        test_project_v2_sync.py    # TASKS-05.01.03
+        test_drift_check.py        # TASKS-05.02.01
+        test_validate_artifact.py  # TASKS-05.02.02
+        test_chg_generator.py      # TASKS-05.02.03
+        test_sprint0_setup.py      # TASKS-05.02.04
+        test_raci_generator.py     # TASKS-05.02.05
+        test_layer_selector.py     # TASKS-05.02.06
+        conftest.py                # Shared fixtures
+ scripts/                           # Scripts (existing + new)
+    tasks_to_github.py             # SPEC-01 (NEW)
+    drift_check.py                 # SPEC-02 (NEW)
+    validate_artifact.py           # SPEC-03 (NEW)
+    chg_generator.py               # SPEC-07 (NEW)
+    sprint0_setup.py               # SPEC-08 (NEW)
+    raci_generator.py              # SPEC-09 (NEW)
+    layer_selector.py              # SPEC-10 (NEW)
+    requirements-project.txt       # Dependencies for PROJECT scripts
+    README.md                      # TASKS-04.03.02
+    (existing validators...)
+ (existing template directories: 01_BRD/, 02_PRD/, etc.)
 ```
 
 ---

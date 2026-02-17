@@ -32,7 +32,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 ## Pre-Generation Planning Checklist
 
-**⚠️ MANDATORY: Execute ALL checks below BEFORE creating a SPEC generation plan.**
+**[WARN] MANDATORY: Execute ALL checks below BEFORE creating a SPEC generation plan.**
 
 This checklist prevents critical errors discovered in production (e.g., Trading Nexus v4.2 where 13 of 16 SPECs exceeded 20KB file size limit by 2-9x).
 
@@ -90,7 +90,7 @@ This checklist prevents critical errors discovered in production (e.g., Trading 
 
 **Output**: Section in generation plan titled "File Size Impact Analysis" with:
 - Estimated size per SPEC
-- Violation flags (⚠️ 2-5x over, 🔴 5x+ over)
+- Violation flags ([WARN] 2-5x over,  5x+ over)
 - Mitigation recommendations
 
 ### 3. One-to-Many Structure Validation
@@ -157,7 +157,7 @@ This checklist prevents critical errors discovered in production (e.g., Trading 
 Every SPEC generation plan MUST include these sections (copy to generation plan):
 
 ```markdown
-## Pre-Plan Verification (COMPLETED ✅)
+## Pre-Plan Verification (COMPLETED [PASS])
 
 ### REQ Inventory Verification
 - Total REQ files: [COUNT]
@@ -210,7 +210,7 @@ Note: `SPEC-MVP-TEMPLATE.yaml` is the reference template. YAML stays monolithic 
 
 The workflow transforms business requirements into production-ready code through traceable artifacts:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## Purpose
 
@@ -233,7 +233,7 @@ SPECs serve as the **technical implementation contracts** that:
 SPECs **reference** REQ files rather than copying requirement text:
 
 ```yaml
-# ✅ CORRECT: Reference the REQ
+# [PASS] CORRECT: Reference the REQ
 traceability:
   upstream_sources:
     atomic_requirements:
@@ -241,7 +241,7 @@ traceability:
         link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
         title: "Session Creation Requirements"
 
-# ❌ WRONG: Duplicating requirement text in SPEC
+# [FAIL] WRONG: Duplicating requirement text in SPEC
 # requirement_text: "The system shall create a session within 100ms..."
 ```
 
@@ -287,13 +287,13 @@ req_implementations:
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 **Layer 9: Technical Specifications**
 
 SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 15-layer architecture (Layers 0-14):
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## Implementation-Readiness & Concrete Examples
 
@@ -787,13 +787,13 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 
 ```
 `09_SPEC/
-├── services/         # Service component specifications
-│   ├── SPEC-01_external_api_client.yaml
-│   └── SPEC-02_ib_gateway_service.yaml
-├── data/            # Data processing and storage SPEC
-├── api/             # API gateway and routing SPEC
-├── integration/     # External system integration SPEC
-└── infrastructure/  # Deployment and infrastructure SPEC
+ services/         # Service component specifications
+    SPEC-01_external_api_client.yaml
+    SPEC-02_ib_gateway_service.yaml
+ data/            # Data processing and storage SPEC
+ api/             # API gateway and routing SPEC
+ integration/     # External system integration SPEC
+ infrastructure/  # Deployment and infrastructure SPEC
 ```
 
 ## File Naming Convention
@@ -827,14 +827,14 @@ Where:
 - Follow YAML schema validation rules
 
 **SPEC validation checklist:**
-- ✅ Valid YAML syntax with proper indentation
-- ✅ id field uses snake_case naming convention
-- ✅ All required interface fields are specified
-- ✅ Error conditions are documented with specific codes
-- ✅ Performance targets are quantifiable (not "fast" but "p95 < 200ms")
-- ✅ Observability requirements include specific metric names and thresholds
-- ✅ Cross-reference links resolve to existing artifacts
-- ✅ Component responsibilities are clearly bounded
+- [PASS] Valid YAML syntax with proper indentation
+- [PASS] id field uses snake_case naming convention
+- [PASS] All required interface fields are specified
+- [PASS] Error conditions are documented with specific codes
+- [PASS] Performance targets are quantifiable (not "fast" but "p95 < 200ms")
+- [PASS] Observability requirements include specific metric names and thresholds
+- [PASS] Cross-reference links resolve to existing artifacts
+- [PASS] Component responsibilities are clearly bounded
 
 ## SPEC Writing Guidelines
 

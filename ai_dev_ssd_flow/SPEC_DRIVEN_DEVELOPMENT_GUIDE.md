@@ -40,18 +40,18 @@ custom_fields:
 
 > MVP Mode: Follow the Universal Splitting Rule. Default to single files until the 20,000-token trigger is hit.
 
-> ⚠️ **Token Limit Update (2025-11)**: This guide reflects the current **20,000 token** hard limit for corpus files.
+> [WARN] **Token Limit Update (2025-11)**: This guide reflects the current **20,000 token** hard limit for corpus files.
 > For tool-specific optimization strategies, see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
 >
 > Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrix.py` refer to the same tool; use the singular script.
 
 ## The AI-Driven Specification-Driven Development Workflow
 
-**⚠️ For the complete authoritative workflow diagram, see [index.md](./index.md#traceability-flow).**
+**[WARN] For the complete authoritative workflow diagram, see [index.md](./index.md#traceability-flow).**
 
 ### Change Management (CHG) - 4-Gate System
 
-⚠️ **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management system** with formal gate validation.
+[WARN] **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management system** with formal gate validation.
 
 **Purpose**: Ensure structured change management with validation gates at layer boundaries
 
@@ -107,7 +107,7 @@ The SDD workflow transforms business needs into production-ready code through tr
 
 Quality gates prevent progression to downstream layers until artifacts meet specified maturity thresholds:
 
-- **Ready Score Gates**: Each artifact includes a score field (e.g., `EARS-Ready Score: ✅ 95% ≥90%`) indicating readiness for next layer
+- **Ready Score Gates**: Each artifact includes a score field (e.g., `EARS-Ready Score: [PASS] 95% ≥90%`) indicating readiness for next layer
 - **Automated Approval**: Artifacts with scores ≥90% can proceed automatically without human review
 - **Cumulative Tag Validation**: Each artifact must include ALL upstream traceability tags (e.g., `@brd @prd @ears @bdd`)
 - **Pre-commit Blocking**: Git hooks enforce quality gates, preventing immature artifacts from being committed
@@ -130,7 +130,7 @@ The quality gates ensure smooth 15-layer transitions and prevent immature artifa
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> [WARN] **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -385,7 +385,7 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 
 ## Document Discovery and ID Independence
 
-**⚠️ CRITICAL: Document IDs are independent of document content**
+**[WARN] CRITICAL: Document IDs are independent of document content**
 
 - **ID Numbers Do Not Match Content**: A document's ID number (e.g., PRD-09, REQ-15, BDD-03) does NOT necessarily correspond to related documents in other artifact types
 - **Always Try to Find and Use Index Files**: To find documents by topic/content, consult the index file for each artifact type
@@ -870,12 +870,12 @@ pre-commit run validate-traceability-tags
 ```
 
 **Benefits Over Manual section 7:**
-- ✅ Single source of truth: Code contains tags
-- ✅ Automated validation: Scripts check correctness
-- ✅ No drift: Tags embedded in code cannot become stale
-- ✅ Bidirectional: Forward/reverse matrices auto-generated
-- ✅ CI/CD enforceable: Pre-commit hooks validate tags
-- ✅ Namespace clarity: Explicit document identification (BRD.01.01.30)
+- [PASS] Single source of truth: Code contains tags
+- [PASS] Automated validation: Scripts check correctness
+- [PASS] No drift: Tags embedded in code cannot become stale
+- [PASS] Bidirectional: Forward/reverse matrices auto-generated
+- [PASS] CI/CD enforceable: Pre-commit hooks validate tags
+- [PASS] Namespace clarity: Explicit document identification (BRD.01.01.30)
 
 **Tag Validation Rules:**
 1. **Format Check:** All @brd/@prd/@req tags must use TYPE.DOC.FEATURE unified format
@@ -1237,30 +1237,30 @@ def test_validate_resource_limit_within_threshold():
 A SPEC-ready REQ contains ≥90% of the technical information required to generate a complete SPEC without additional research:
 
 **Core Requirements**:
-- ✅ **Interface Specifications**: Protocol/ABC definitions with complete type annotations, docstrings, and parameter descriptions
-- ✅ **Data Schemas**: JSON Schema + Pydantic models with validators + SQLAlchemy database models
-- ✅ **Error Handling**: Exception catalog with HTTP codes, error codes, recovery strategies, and state machines
-- ✅ **Configuration Specifications**: YAML examples with realistic values, environment variables, validation schemas
-- ✅ **Quality Attributes**: Quantified performance targets (p50/p95/p99), reliability requirements, security constraints
-- ✅ **No Placeholders**: All examples use concrete values, realistic data, domain-specific patterns
+- [PASS] **Interface Specifications**: Protocol/ABC definitions with complete type annotations, docstrings, and parameter descriptions
+- [PASS] **Data Schemas**: JSON Schema + Pydantic models with validators + SQLAlchemy database models
+- [PASS] **Error Handling**: Exception catalog with HTTP codes, error codes, recovery strategies, and state machines
+- [PASS] **Configuration Specifications**: YAML examples with realistic values, environment variables, validation schemas
+- [PASS] **Quality Attributes**: Quantified performance targets (p50/p95/p99), reliability requirements, security constraints
+- [PASS] **No Placeholders**: All examples use concrete values, realistic data, domain-specific patterns
 
 **REQ → SPEC Data Flow**:
 ```
 REQ (Requirement Layer)                    SPEC (Technical Specs)
-├─ Interface Specifications          →    interfaces: (copy signatures)
-│  └─ Protocol/ABC with type hints         └─ Add implementation notes
-├─ Data Schemas                      →    schemas: (copy JSON Schema/Pydantic)
-│  ├─ JSON Schema                          └─ Add validation rules
-│  ├─ Pydantic models
-│  └─ SQLAlchemy models              →    data_model: (copy DB schema)
-├─ Error Handling                    →    errors: (copy exception catalog)
-│  ├─ Exception catalog                    └─ Add retry policies
-│  └─ State machines                  →    behavioral_specifications:
-│                                          └─ Add circuit breaker config
-├─ Configuration Specifications      →    configuration: (copy YAML)
-│  └─ YAML + validation                    └─ Add deployment overrides
-└─ QAs                               →    performance: (copy targets)
-   └─ Performance targets                  └─ Add monitoring config
+ Interface Specifications          →    interfaces: (copy signatures)
+   Protocol/ABC with type hints          Add implementation notes
+ Data Schemas                      →    schemas: (copy JSON Schema/Pydantic)
+   JSON Schema                           Add validation rules
+   Pydantic models
+   SQLAlchemy models              →    data_model: (copy DB schema)
+ Error Handling                    →    errors: (copy exception catalog)
+   Exception catalog                     Add retry policies
+   State machines                  →    behavioral_specifications:
+                                           Add circuit breaker config
+ Configuration Specifications      →    configuration: (copy YAML)
+   YAML + validation                     Add deployment overrides
+ QAs                               →    performance: (copy targets)
+    Performance targets                   Add monitoring config
 ```
 
 **Why SPEC-Ready REQs Matter**:
@@ -1389,7 +1389,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 **Pre-Commit Checklist:**
 - [ ] IDs comply with ID_NAMING_STANDARDS.md
 - [ ] All cross-references use markdown links
-- [ ] **Traceability tags validated** ⚠️ **MANDATORY**
+- [ ] **Traceability tags validated** [WARN] **MANDATORY**
   - [ ] All code files must have @brd:/@req:/@spec: tags
   - [ ] Tag format validation passes: `python scripts/extract_tags.py --validate-only`
   - [ ] Tags reference existing documents: `python scripts/validate_tags_against_docs.py --strict`
@@ -1581,17 +1581,17 @@ Each document type has its own dedicated traceability matrix template:
 
 | Document Type | Template Location | Matrix File | MANDATORY |
 |---------------|------------------|-------------|-----------|
-| **BRD** | `01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `01_BRD/BRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **PRD** | `02_PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `02_PRD/PRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **EARS** | `03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `03_EARS/EARS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **BDD** | `04_BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `04_BDD/BDD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **ADR** | `05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `05_ADR/ADR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SYS** | `06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `06_SYS/SYS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **REQ** | `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `07_REQ/REQ-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **CTR** | `08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `08_CTR/CTR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SPEC** | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **TASKS** | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | ✅ YES |
+| **BRD** | `01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `01_BRD/BRD-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **PRD** | `02_PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `02_PRD/PRD-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **EARS** | `03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `03_EARS/EARS-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **BDD** | `04_BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `04_BDD/BDD-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **ADR** | `05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `05_ADR/ADR-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **SYS** | `06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `06_SYS/SYS-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **REQ** | `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `07_REQ/REQ-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **CTR** | `08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `08_CTR/CTR-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **SPEC** | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **TASKS** | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | [PASS] YES |
+| **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | [PASS] YES |
 
 ### Mandatory Matrix Update Workflow
 
@@ -1671,12 +1671,12 @@ Before committing, verify:
 ### Failure Modes If Matrix Missing
 
 **Consequences**:
-- ❌ Cannot determine impact of requirement changes
-- ❌ Orphaned requirements (no implementation)
-- ❌ Failed regulatory audits (incomplete audit trail)
-- ❌ Manual validation required (expensive, error-prone)
-- ❌ Pull requests rejected by automated checks
-- ❌ Project delays due to quality gate failures
+- [FAIL] Cannot determine impact of requirement changes
+- [FAIL] Orphaned requirements (no implementation)
+- [FAIL] Failed regulatory audits (incomplete audit trail)
+- [FAIL] Manual validation required (expensive, error-prone)
+- [FAIL] Pull requests rejected by automated checks
+- [FAIL] Project delays due to quality gate failures
 5. **Update Regularly**: Incremental updates as new documents are created
 
 ### Automated Matrix Generation
@@ -1702,7 +1702,7 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
 
 ## Diagram Standards
 
-> **📋 Authoritative Source**: [`ai_dev_flow/DIAGRAM_STANDARDS.md`](DIAGRAM_STANDARDS.md) is the single source of truth for all diagram requirements. This section provides a summary; defer to the core document for complete specifications.
+> ** Authoritative Source**: [`ai_dev_flow/DIAGRAM_STANDARDS.md`](DIAGRAM_STANDARDS.md) is the single source of truth for all diagram requirements. This section provides a summary; defer to the core document for complete specifications.
 
 **Mandatory Rule**: All diagrams, charts, workflows, and visual representations MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 
@@ -1710,7 +1710,7 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
 |--------|---------------|
 | **Format** | Mermaid syntax in fenced code blocks |
 | **Prohibited** | ASCII art, Unicode box-drawing, text arrows outside Mermaid |
-| **Exempted** | Directory trees (`├── └── │`), code blocks, ASCII tables |
+| **Exempted** | Directory trees (`  `), code blocks, ASCII tables |
 | **Validation** | Pre-commit quality gates check for prohibited patterns |
 
 **Diagram Types** (from core document):

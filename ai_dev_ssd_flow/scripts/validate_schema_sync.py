@@ -236,7 +236,7 @@ def check_artifact_sync(artifact_type: str, base_dir: Path) -> SyncResult:
 
 def print_result(result: SyncResult, verbose: bool = False):
     """Print sync check result."""
-    status = "✅" if result.is_synced else "❌"
+    status = "[PASS]" if result.is_synced else "[FAIL]"
 
     if result.is_synced:
         if verbose:
@@ -280,10 +280,10 @@ def main():
     total_count = len(results)
 
     if synced_count == total_count:
-        print(f"✅ All {total_count} artifact types are synchronized")
+        print(f"[PASS] All {total_count} artifact types are synchronized")
         sys.exit(0)
     else:
-        print(f"❌ {synced_count}/{total_count} artifact types are synchronized")
+        print(f"[FAIL] {synced_count}/{total_count} artifact types are synchronized")
         print(f"   {total_count - synced_count} need attention")
         sys.exit(1)
 

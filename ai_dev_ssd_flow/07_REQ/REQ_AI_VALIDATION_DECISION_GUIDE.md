@@ -89,9 +89,9 @@ When a REQ validation fails, you must decide:
 
 **Question**: Does fixing this issue improve **SPEC-generation readiness**?
 
-- ✅ **Yes** → Fix is valuable (add missing schemas, complete interfaces)
-- ⚠️ **Marginal** → Evaluate cost/benefit (add 3rd method when 2 are sufficient)
-- ❌ **No** → Validator is likely wrong (formatting doesn't affect SPEC generation)
+- [PASS] **Yes** → Fix is valuable (add missing schemas, complete interfaces)
+- [WARN] **Marginal** → Evaluate cost/benefit (add 3rd method when 2 are sufficient)
+- [FAIL] **No** → Validator is likely wrong (formatting doesn't affect SPEC generation)
 
 ---
 
@@ -132,7 +132,7 @@ graph TD
 
 **Example Error**:
 ```
-⚠️ WARNING: Section 5 missing exception catalog table
+[WARN] WARNING: Section 5 missing exception catalog table
 ```
 
 **Diagnosis Steps**:
@@ -180,7 +180,7 @@ EXCEPTION_CATALOG_PATTERN = r"\|\s*\*?\*?\s*(Exception\s+Type|Error\s+Code)\s*\*
 
 **Example Error**:
 ```
-⚠️ WARNING: Limited type annotations found (2). Expected 3+ annotated functions
+[WARN] WARNING: Limited type annotations found (2). Expected 3+ annotated functions
 ```
 
 **Diagnosis Steps**:
@@ -244,7 +244,7 @@ def _check_type_annotations(self, content: str, result: ValidationResult) -> boo
 
 **Example Error**:
 ```
-❌ ERROR: Missing Section 3: Interface Specifications
+[FAIL] ERROR: Missing Section 3: Interface Specifications
 ```
 
 **Diagnosis Steps**:
@@ -300,7 +300,7 @@ def _check_section_3(self, content: str, result: ValidationResult) -> bool:
 
 **Example Error**:
 ```
-⚠️ WARNING: Found 9 placeholder(s): ...
+[WARN] WARNING: Found 9 placeholder(s): ...
 ```
 
 **Diagnosis Steps**:
@@ -542,7 +542,7 @@ Create/update validation report:
 
 ### After Fixes
 - Average Score: 93.3%
-- Passing Files: 6/6 ✅
+- Passing Files: 6/6 [PASS]
 - Remaining Warnings: 0 false positives, 1 informational (state diagram suggestion)
 ```
 
@@ -550,7 +550,7 @@ Create/update validation report:
 
 ## Best Practices for AI Assistants
 
-### DO ✅
+### DO [PASS]
 
 1. **Always read the actual document content** before deciding
 2. **Check the template profile** (MVP vs Full) first
@@ -560,7 +560,7 @@ Create/update validation report:
 6. **Test fixes** by re-running validation
 7. **Document your changes** in validation reports
 
-### DON'T ❌
+### DON'T [FAIL]
 
 1. **Don't blindly follow validator warnings** without analysis
 2. **Don't add boilerplate** just to satisfy arbitrary thresholds
@@ -632,7 +632,7 @@ EXCEPTION_CATALOG_PATTERN = r"\|\s*\*?\*?\s*(Exception\s+Type|Error\s+Code)\s*\*
 
 ```
 Re-validation:
-- REQ-02.04_session_invalidation.md: 90% ✅
+- REQ-02.04_session_invalidation.md: 90% [PASS]
 - All errors resolved
 - 1 informational warning remains (consider adding state diagram)
 ```
@@ -656,11 +656,11 @@ Re-validation:
 
 | Validation Result | Action Priority |
 |-------------------|----------------|
-| ❌ ERROR + Content genuinely missing | 🔴 P0: Fix Document Immediately |
-| ❌ ERROR + False positive | 🟠 P1: Fix Validator (high trust impact) |
-| ⚠️ WARNING + Blocks SPEC generation | 🟡 P2: Fix Document |
-| ⚠️ WARNING + Format/style issue | 🟢 P3: Fix Validator (low urgency) |
-| ⚠️ WARNING + Informational only | ⚪ P4: Accept (document in report) |
+| [FAIL] ERROR + Content genuinely missing |  P0: Fix Document Immediately |
+| [FAIL] ERROR + False positive |  P1: Fix Validator (high trust impact) |
+| [WARN] WARNING + Blocks SPEC generation |  P2: Fix Document |
+| [WARN] WARNING + Format/style issue |  P3: Fix Validator (low urgency) |
+| [WARN] WARNING + Informational only |  P4: Accept (document in report) |
 
 ---
 

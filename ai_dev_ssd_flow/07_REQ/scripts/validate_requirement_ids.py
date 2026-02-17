@@ -590,7 +590,7 @@ class RequirementIDValidator:
         # Report duplicate IDs
         for req_id, files in self.id_to_files.items():
             if len(files) > 1:
-                print(f"\n❌ DUPLICATE ID: {req_id} found in:")
+                print(f"\n[FAIL] DUPLICATE ID: {req_id} found in:")
                 for file_path in files:
                     print(f"    - {file_path}")
 
@@ -623,29 +623,29 @@ class RequirementIDValidator:
                     gaps.append(i)
 
             if gaps:
-                print(f"⚠️  ID Gaps: REQ-{', REQ-'.join(f'{g:03d}' for g in gaps)}\n")
+                print(f"[WARN]  ID Gaps: REQ-{', REQ-'.join(f'{g:03d}' for g in gaps)}\n")
 
         # Detailed results
         for result in results:
             if not result.valid:
-                print(f"❌ FAIL {result.file_path.name}")
+                print(f"[FAIL] FAIL {result.file_path.name}")
 
                 for error in result.errors:
-                    print(f"    ❌ ERROR: {error}")
+                    print(f"    [FAIL] ERROR: {error}")
 
                 for warning in result.warnings:
-                    print(f"    ⚠️  WARNING: {warning}")
+                    print(f"    [WARN]  WARNING: {warning}")
 
                 print()
 
         # Summary of warnings for valid files
         valid_with_warnings = [r for r in valid if r.warnings]
         if valid_with_warnings:
-            print(f"\n✅ Valid files with warnings: {len(valid_with_warnings)}")
+            print(f"\n[PASS] Valid files with warnings: {len(valid_with_warnings)}")
             for result in valid_with_warnings:
                 print(f"    {result.file_path.name}")
                 for warning in result.warnings:
-                    print(f"        ⚠️  {warning}")
+                    print(f"        [WARN]  {warning}")
 
 
 def main():

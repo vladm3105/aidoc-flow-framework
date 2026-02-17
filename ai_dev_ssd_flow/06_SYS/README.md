@@ -44,12 +44,12 @@ SYS documents establish the **system behavior contracts** that:
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 SYS are the **system-level specifications** that operationalize product requirements into technical boundaries within the complete SDD workflow:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## SYS Document Structure
 
@@ -202,11 +202,11 @@ Systems organize by functional domains and subdomains:
 
 ```
 `06_SYS/
-├── SYS-01_api_gateway.md           # API layer requirements
-├── SYS-02_authentication_service.md # Authentication requirements
-├── SYS-03_data_processing_core.md   # Core processing requirements
-├── SYS-004_external_integrations.md  # Third-party integrations
-└── SYS-005_monitoring_observability.md # System monitoring requirements
+ SYS-01_api_gateway.md           # API layer requirements
+ SYS-02_authentication_service.md # Authentication requirements
+ SYS-03_data_processing_core.md   # Core processing requirements
+ SYS-004_external_integrations.md  # Third-party integrations
+ SYS-005_monitoring_observability.md # System monitoring requirements
 ```
 
 ### Cross-System Integration
@@ -326,13 +326,13 @@ Define how system correctness will be measured:
 - Maintain traceability to upstream business requirements
 
 **SYS validation checklist:**
-- ✅ Scope clearly defines what's included and excluded from system
-- ✅ Functional requirements specify objective, testable behaviors
-- ✅ Quality attributes include quantifiable thresholds
-- ✅ Integration requirements define external system interactions
-- ✅ Error handling covers all documented failure scenarios
-- ✅ Acceptance criteria provide binary validation conditions
-- ✅ Cross-references link to all related development artifacts
+- [PASS] Scope clearly defines what's included and excluded from system
+- [PASS] Functional requirements specify objective, testable behaviors
+- [PASS] Quality attributes include quantifiable thresholds
+- [PASS] Integration requirements define external system interactions
+- [PASS] Error handling covers all documented failure scenarios
+- [PASS] Acceptance criteria provide binary validation conditions
+- [PASS] Cross-references link to all related development artifacts
 
 ## Writing Guidelines
 
@@ -533,7 +533,7 @@ These examples demonstrate well-structured system requirements specifications in
 
 **Quality Gate Requirements**:
 - **REQ-Ready Score**: MVP ≥85%, Full ≥90% to pass validation and progress to REQ phase
-- **Format**: `✅ NN% (Target: ≥85% for MVP)` or `✅ NN% (Target: ≥90%)` in Document Control table
+- **Format**: `[PASS] NN% (Target: ≥85% for MVP)` or `[PASS] NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
 - **Validation**: Enforced before commit via `python 06_SYS/scripts/validate_sys.py`
 
@@ -564,12 +564,12 @@ These examples demonstrate well-structured system requirements specifications in
 
 **High Scoring SYS (95%)**:
 ```markdown
-| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 **MVP SYS Meeting Threshold (87%)**:
 ```markdown
-| **REQ-Ready Score** | ✅ 87% (Target: ≥85% for MVP) |
+| **REQ-Ready Score** | [PASS] 87% (Target: ≥85% for MVP) |
 ```
 
 **Workflow Integration**:

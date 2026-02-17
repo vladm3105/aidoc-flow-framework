@@ -313,10 +313,10 @@ assert failed_attempts <= 5, "Brute force protection not triggered"
 
 | SYS ID | Quality Attribute | Test IDs | Coverage |
 |--------|-------------------|----------|----------|
-| SYS.01.01.01 | Performance (Response) | TSPEC.01.43.01 | ✅ |
-| SYS.01.01.02 | Performance (Throughput) | TSPEC.01.43.02 | ✅ |
-| SYS.01.02.01 | Reliability | TSPEC.01.43.03 | ✅ |
-| SYS.01.03.01 | Security | TSPEC.01.43.04 | ✅ |
+| SYS.01.01.01 | Performance (Response) | TSPEC.01.43.01 | [PASS] |
+| SYS.01.01.02 | Performance (Throughput) | TSPEC.01.43.02 | [PASS] |
+| SYS.01.02.01 | Reliability | TSPEC.01.43.03 | [PASS] |
+| SYS.01.03.01 | Security | TSPEC.01.43.04 | [PASS] |
 
 **Coverage Summary**:
 - Total SYS quality attributes: 4

@@ -80,7 +80,7 @@ check_emergency_authorization() {
 
   # Check for incident commander authorization
   if grep -qiE "incident.commander|authorized.by|bypass.authorized" "$chg_file" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Emergency authorization documented${NC}"
+    echo -e "${GREEN}   Emergency authorization documented${NC}"
   else
     echo -e "${RED}EMG-E001: Emergency not authorized by incident commander${NC}"
     echo "  → Document 'Bypass Authorized By' field"
@@ -101,7 +101,7 @@ check_emergency_criteria() {
   fi
 
   if [[ $is_emergency -eq 1 ]]; then
-    echo -e "${GREEN}  ✓ Valid emergency criteria met${NC}"
+    echo -e "${GREEN}   Valid emergency criteria met${NC}"
   else
     echo -e "${RED}EMG-E002: Non-critical issue using emergency bypass${NC}"
     echo "  → Use standard gate process for non-emergency changes"
@@ -121,7 +121,7 @@ check_emergency_stub() {
     has_incident_ref=$(grep -ciE "INC-[0-9]|incident.ticket" "$chg_file" 2>/dev/null || echo 0)
 
     if [[ $has_summary -gt 0 ]]; then
-      echo -e "${GREEN}  ✓ Emergency stub created with summary${NC}"
+      echo -e "${GREEN}   Emergency stub created with summary${NC}"
     else
       echo -e "${YELLOW}  ℹ Consider adding incident summary to stub${NC}"
       ((INFO++)) || true
@@ -144,11 +144,11 @@ check_postmortem() {
   postmortem_file=$(find "$chg_dir" -name "POST_MORTEM*.md" -o -name "post_mortem*.md" -o -name "postmortem*.md" 2>/dev/null | head -1 || true)
 
   if [[ -n "$postmortem_file" && -f "$postmortem_file" ]]; then
-    echo -e "${GREEN}  ✓ Post-mortem document found: $(basename "$postmortem_file")${NC}"
+    echo -e "${GREEN}   Post-mortem document found: $(basename "$postmortem_file")${NC}"
 
     # Check for RCA
     if grep -qiE "5.why|root.cause|rca" "$postmortem_file" 2>/dev/null; then
-      echo -e "${GREEN}  ✓ Root cause analysis present${NC}"
+      echo -e "${GREEN}   Root cause analysis present${NC}"
     else
       echo -e "${YELLOW}EMG-W003: Post-mortem may be missing root cause analysis${NC}"
       echo "  → Complete 5-Whys analysis"
@@ -157,7 +157,7 @@ check_postmortem() {
 
     # Check for action items
     if grep -qiE "action.item|follow.up|preventive" "$postmortem_file" 2>/dev/null; then
-      echo -e "${GREEN}  ✓ Action items documented${NC}"
+      echo -e "${GREEN}   Action items documented${NC}"
     else
       echo -e "${YELLOW}  ℹ Consider adding action items to post-mortem${NC}"
       ((INFO++)) || true
@@ -206,7 +206,7 @@ check_emergency_closure() {
     fi
 
     if [[ $closure_items -ge 2 ]]; then
-      echo -e "${GREEN}  ✓ Emergency CHG properly closed${NC}"
+      echo -e "${GREEN}   Emergency CHG properly closed${NC}"
     else
       echo -e "${YELLOW}EMG-E005: Emergency CHG may have incomplete closure${NC}"
       echo "  → Verify: post-mortem, gate validation, follow-up CHGs"
@@ -227,9 +227,9 @@ check_incident_reference() {
     local inc_ref
     inc_ref=$(grep -oE "INC-[0-9]+" "$chg_file" 2>/dev/null | head -1 || echo "")
     if [[ -n "$inc_ref" ]]; then
-      echo -e "${GREEN}  ✓ Incident reference: $inc_ref${NC}"
+      echo -e "${GREEN}   Incident reference: $inc_ref${NC}"
     else
-      echo -e "${GREEN}  ✓ Incident reference field present${NC}"
+      echo -e "${GREEN}   Incident reference field present${NC}"
     fi
   else
     echo -e "${YELLOW}EMG-W001: Missing incident ticket reference${NC}"
@@ -246,7 +246,7 @@ check_followup_chg() {
 
   # Check if follow-up CHG is mentioned
   if grep -qiE "follow.up.*CHG|preventive.*measure.*CHG|CHG-[0-9]" "$chg_file" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Follow-up CHG referenced${NC}"
+    echo -e "${GREEN}   Follow-up CHG referenced${NC}"
   else
     # Only warn if post-mortem exists (follow-up should come from post-mortem)
     local postmortem_file

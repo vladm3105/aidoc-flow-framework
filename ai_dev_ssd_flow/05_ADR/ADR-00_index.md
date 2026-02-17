@@ -199,14 +199,14 @@ gantt
 ### Quality Checks
 
 Before marking ADR as "Accepted":
-- ✅ Problem statement clearly defined with business context
-- ✅ At least 2-3 alternatives considered and documented
-- ✅ Consequences analysis includes both positive and negative outcomes
-- ✅ Technology Stack Compliance section references ADR-000
-- ✅ Architecture flow diagrams included (Mermaid format)
-- ✅ Implementation assessment covers complexity, dependencies, resources
-- ✅ Rollback procedures documented
-- ✅ Cross-references to BDD scenarios and downstream artifacts complete
+- [PASS] Problem statement clearly defined with business context
+- [PASS] At least 2-3 alternatives considered and documented
+- [PASS] Consequences analysis includes both positive and negative outcomes
+- [PASS] Technology Stack Compliance section references ADR-000
+- [PASS] Architecture flow diagrams included (Mermaid format)
+- [PASS] Implementation assessment covers complexity, dependencies, resources
+- [PASS] Rollback procedures documented
+- [PASS] Cross-references to BDD scenarios and downstream artifacts complete
 
 ---
 

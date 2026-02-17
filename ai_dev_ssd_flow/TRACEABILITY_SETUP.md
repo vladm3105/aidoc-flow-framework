@@ -115,14 +115,14 @@ Each document folder contains a `.drift_cache.json` file:
 
 ```
 docs/
-├── 01_BRD/
-│   └── BRD-01_feature/
-│       ├── BRD-01.md
-│       ├── BRD-01.R_review_report_vNNN.md
-│       └── .drift_cache.json  ← Drift cache
-├── 02_PRD/
-│   └── PRD-01_feature/
-│       └── .drift_cache.json
+ 01_BRD/
+    BRD-01_feature/
+        BRD-01.md
+        BRD-01.R_review_report_vNNN.md
+        .drift_cache.json  ← Drift cache
+ 02_PRD/
+    PRD-01_feature/
+        .drift_cache.json
 ```
 
 ### Cache Schema
@@ -274,25 +274,25 @@ echo "Running tag-based traceability validation..."
 # Extract and validate tags
 python scripts/extract_tags.py --validate-only
 if [ $? -ne 0 ]; then
-  echo "❌ Tag extraction/format validation failed"
+  echo "[FAIL] Tag extraction/format validation failed"
   exit 1
 fi
 
 # Validate tags against documents
 python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --strict
 if [ $? -ne 0 ]; then
-  echo "❌ Tag validation failed - orphaned or invalid tags found"
+  echo "[FAIL] Tag validation failed - orphaned or invalid tags found"
   exit 1
 fi
 
 # Validate cumulative tagging hierarchy
 python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
 if [ $? -ne 0 ]; then
-  echo "❌ Cumulative tagging validation failed - missing upstream tags or gaps in chain"
+  echo "[FAIL] Cumulative tagging validation failed - missing upstream tags or gaps in chain"
   exit 1
 fi
 
-echo "✅ Traceability tag validation passed (including cumulative tagging)"
+echo "[PASS] Traceability tag validation passed (including cumulative tagging)"
 exit 0
 ```
 
@@ -395,9 +395,9 @@ def after_document_created(document_path):
 
     # Report results
     if validation_passed:
-        print(f"✅ {document_path} validated successfully")
+        print(f"[PASS] {document_path} validated successfully")
     else:
-        print(f"❌ {document_path} has validation errors")
+        print(f"[FAIL] {document_path} has validation errors")
         print("Fix errors before proceeding")
 ```
 
@@ -413,7 +413,7 @@ def end_of_day_validation():
         validate_matrix(doc_type)
 
     # Summary report
-    print("📊 Traceability Summary:")
+    print(" Traceability Summary:")
     print(f"  ADRs: {count_documents('ADR')}")
     print(f"  REQs: {count_documents('REQ')}")
     print(f"  SPECs: {count_documents('SPEC')}")

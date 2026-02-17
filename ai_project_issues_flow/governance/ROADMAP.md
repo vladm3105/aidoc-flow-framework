@@ -325,9 +325,9 @@ graph LR
 
 ```
 Feb 2026                                               Jul 2026
-│                                                          │
-▼                                                          ▼
-[S0]─[P1]─[ P2 ]─[P3]─[ P4 ]─[P5]─[P6]─[  P7  ]─[  P8  ]
+                                                          
+                                                          
+[S0][P1][ P2 ][P3][ P4 ][P5][P6][  P7  ][  P8  ]
 1wk  1wk   3wk   2wk   3wk   2wk  2wk    4wk      4wk
 
 All phases AI-optimized (20 weeks total)
@@ -356,15 +356,15 @@ This project uses a **phase-gated deployment model** with a **4-stage iterative 
 ### Deployment Model
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                      PHASE-GATED DEPLOYMENT MODEL                               │
-│                                                                                 │
-│  Phase 1 ──▶ Staging (all P1 features) ──▶ QA Pass ──▶ Prod Gate               │
-│  Phase 2 ──▶ Staging (all P1+P2)       ──▶ QA Pass ──▶ Prod Gate               │
-│  ...                                                                            │
-│  Phase 8 ──▶ Staging (all P1-P8)       ──▶ QA Pass ──▶ Production               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+                      PHASE-GATED DEPLOYMENT MODEL                               
+                                                                                 
+  Phase 1  Staging (all P1 features)  QA Pass  Prod Gate               
+  Phase 2  Staging (all P1+P2)        QA Pass  Prod Gate               
+  ...                                                                            
+  Phase 8  Staging (all P1-P8)        QA Pass  Production               
+                                                                                 
+
 ```
 
 | Environment | Trigger | Purpose |
@@ -379,8 +379,8 @@ Each development issue flows through 4 stages with automatic bug iteration:
 
 ```
 Development → Deployment → QA Testing → Bug Fix (if needed)
-     ↑                                        │
-     └────────────────────────────────────────┘
+     ↑                                        
+     
                   (max 3 iterations)
 ```
 

@@ -67,10 +67,10 @@ if [ ${#failed_files[@]} -gt 0 ]; then
         echo "  - $file"
     done
     echo ""
-    echo "Status: ❌ FAIL"
+    echo "Status: [FAIL] FAIL"
     exit 1
 else
     echo ""
-    echo "Status: ✅ ALL PASSED"
+    echo "Status: [PASS] ALL PASSED"
     exit 0
 fi

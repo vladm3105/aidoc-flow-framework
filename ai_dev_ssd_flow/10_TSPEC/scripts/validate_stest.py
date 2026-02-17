@@ -145,7 +145,7 @@ class STESTValidator:
 
                 # Check for pass/fail criteria
                 tc.has_pass_fail = bool(
-                    re.search(r"✅\s*PASS|❌\s*FAIL", section)
+                    re.search(r"[PASS]\s*PASS|[FAIL]\s*FAIL", section)
                     or re.search(r"\|\s*PASS\s*\||\|\s*FAIL\s*\|", section)
                 )
 
@@ -244,7 +244,7 @@ class STESTValidator:
 
 def format_result(result: ValidationResult, verbose: bool = False) -> str:
     """Format validation result for output."""
-    status = "✅ PASS" if result.passed else "❌ FAIL"
+    status = "[PASS] PASS" if result.passed else "[FAIL] FAIL"
 
     output = [f"{status} {result.file_path}: {result.overall_score:.1f}%"]
 
@@ -257,7 +257,7 @@ def format_result(result: ValidationResult, verbose: bool = False) -> str:
             "health_checks": "GATE-04 Health Checks",
         }
         for gate, score in result.gate_scores.items():
-            gate_status = "✅" if score >= 100 else "❌"
+            gate_status = "[PASS]" if score >= 100 else "[FAIL]"
             output.append(f"  {gate_names[gate]}: {score:.1f}% {gate_status}")
 
         if result.issues:

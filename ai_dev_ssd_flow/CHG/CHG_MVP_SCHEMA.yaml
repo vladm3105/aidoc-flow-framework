@@ -372,10 +372,10 @@ layer_impact_matrix:
     folder: "14_Validation"
 
 impact_symbols:
-  affected: "●"
-  not_affected: "○"
-  archived: "◐"
-  new: "◆"
+  affected: ""
+  not_affected: ""
+  archived: ""
+  new: ""
 
 # =============================================================================
 # TRACEABILITY REQUIREMENTS

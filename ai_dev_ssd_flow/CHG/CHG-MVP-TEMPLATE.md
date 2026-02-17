@@ -55,11 +55,11 @@ affected_layers: []
 
 | Source | Selected | Details |
 |--------|----------|---------|
-| Upstream (L1-L4) | ☐ | |
-| Midstream (L5-L11) | ☐ | |
-| Downstream (L12-L14) | ☐ | |
-| External | ☐ | |
-| Feedback | ☐ | |
+| Upstream (L1-L4) |  | |
+| Midstream (L5-L11) |  | |
+| Downstream (L12-L14) |  | |
+| External |  | |
+| Feedback |  | |
 
 ## 2. Impact Analysis
 
@@ -82,9 +82,9 @@ affected_layers: []
 
 | # | Artifact | Before | After | Status |
 |---|----------|--------|-------|--------|
-| 1 | | | | ☐ Pending |
-| 2 | | | | ☐ Pending |
-| 3 | | | | ☐ Pending |
+| 1 | | | |  Pending |
+| 2 | | | |  Pending |
+| 3 | | | |  Pending |
 
 ### 3.2 TSPEC Updates
 
@@ -92,10 +92,10 @@ affected_layers: []
 
 | Test Spec | Update Required | Status |
 |-----------|-----------------|--------|
-| UTEST | Yes/No | ☐ |
-| ITEST | Yes/No | ☐ |
-| STEST | Yes/No | ☐ |
-| FTEST | Yes/No | ☐ |
+| UTEST | Yes/No |  |
+| ITEST | Yes/No |  |
+| STEST | Yes/No |  |
+| FTEST | Yes/No |  |
 
 ## 4. Validation
 

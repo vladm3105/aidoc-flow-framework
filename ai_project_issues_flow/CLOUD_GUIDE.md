@@ -9,8 +9,8 @@ This guide covers cloud provider setup for the AI-First Project Governance Frame
 | **Container Service** | Cloud Run | ECS/Fargate | Container Apps |
 | **Container Registry** | Artifact Registry | ECR | ACR |
 | **OIDC Auth** | Workload Identity Federation | IAM OIDC | Managed Identity |
-| **Setup Scripts** | ✅ Included | ⚠️ Template only | ⚠️ Template only |
-| **Workflow Support** | ✅ Full | ✅ Full | ✅ Full |
+| **Setup Scripts** | [PASS] Included | [WARN] Template only | [WARN] Template only |
+| **Workflow Support** | [PASS] Full | [PASS] Full | [PASS] Full |
 
 ---
 

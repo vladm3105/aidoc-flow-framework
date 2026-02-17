@@ -106,11 +106,11 @@ Before entering GATE-12, the change request must satisfy:
 
 ```
 L1 (Self + Peer Review)
-     │
-     ▼ (if test failure persists)
+     
+      (if test failure persists)
 L2 (TL + QA)
-     │
-     ▼ (if root cause is upstream)
+     
+      (if root cause is upstream)
 Bubble Up to GATE-09/05/01
 ```
 
@@ -155,29 +155,29 @@ After passing GATE-12:
 
 ```
 Test Failure Analysis:
-     │
-     ▼
-┌───────────────────────────────────────┐
-│ Where is the actual problem?          │
-├───────────────────────────────────────┤
-│                                       │
-│ Code bug (L12)?          → Fix L12    │
-│                                       │
-│ Test spec wrong (L10)?   → Fix TSPEC  │
-│                          → GATE-09    │
-│                                       │
-│ SPEC ambiguous (L9)?     → Fix SPEC   │
-│                          → GATE-09    │
-│                                       │
-│ Contract mismatch (L8)?  → Fix CTR    │
-│                          → GATE-05    │
-│                                       │
-│ Requirement unclear (L7)?→ Fix REQ    │
-│                          → GATE-05    │
-│                                       │
-│ Business rule wrong?     → GATE-01    │
-│                                       │
-└───────────────────────────────────────┘
+     
+     
+
+ Where is the actual problem?          
+
+                                       
+ Code bug (L12)?          → Fix L12    
+                                       
+ Test spec wrong (L10)?   → Fix TSPEC  
+                          → GATE-09    
+                                       
+ SPEC ambiguous (L9)?     → Fix SPEC   
+                          → GATE-09    
+                                       
+ Contract mismatch (L8)?  → Fix CTR    
+                          → GATE-05    
+                                       
+ Requirement unclear (L7)?→ Fix REQ    
+                          → GATE-05    
+                                       
+ Business rule wrong?     → GATE-01    
+                                       
+
 ```
 
 ### 6.2 Bubble-Up Process

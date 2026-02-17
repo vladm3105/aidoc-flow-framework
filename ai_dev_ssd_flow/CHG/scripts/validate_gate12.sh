@@ -77,10 +77,10 @@ check_root_cause_analysis() {
       echo "  → Add 'Root Cause Analysis' section with 5-Whys"
       ((ERRORS++)) || true
     else
-      echo -e "${GREEN}  ✓ Root cause analysis present${NC}"
+      echo -e "${GREEN}   Root cause analysis present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ RCA not required (not downstream change)${NC}"
+    echo -e "${GREEN}   RCA not required (not downstream change)${NC}"
   fi
 }
 
@@ -90,13 +90,13 @@ check_correct_layer_fix() {
 
   # Check for layer justification
   if grep -qiE "root.cause.layer|fix.layer|correct.layer|layer.determination" "$CHG_FILE" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Layer justification present${NC}"
+    echo -e "${GREEN}   Layer justification present${NC}"
   elif grep -qiE "change_source:.*downstream" "$CHG_FILE" 2>/dev/null; then
     echo -e "${YELLOW}  ℹ Verify fix is at correct layer (not symptom masking)${NC}"
     echo "  → Document: Why is L12-L14 the correct layer to fix?"
     ((INFO++)) || true
   else
-    echo -e "${GREEN}  ✓ Layer check N/A (not defect fix)${NC}"
+    echo -e "${GREEN}   Layer check N/A (not defect fix)${NC}"
   fi
 }
 
@@ -106,13 +106,13 @@ check_regression_tests() {
 
   # Check for test-related content
   if grep -qiE "regression.test|test.added|test.included|test.cover" "$CHG_FILE" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Regression tests mentioned${NC}"
+    echo -e "${GREEN}   Regression tests mentioned${NC}"
   elif grep -qiE "code|implementation|fix" "$CHG_FILE" 2>/dev/null; then
     echo -e "${YELLOW}GATE-12-E003: Code change should include regression tests${NC}"
     echo "  → Document tests that cover the fix"
     ((WARNINGS++)) || true
   else
-    echo -e "${GREEN}  ✓ N/A (no code changes)${NC}"
+    echo -e "${GREEN}   N/A (no code changes)${NC}"
   fi
 }
 
@@ -124,14 +124,14 @@ check_code_review() {
   if grep -qE "change_level:.*L[23]|Change Level.*L[23]" "$CHG_FILE" 2>/dev/null; then
     # Check for review mention
     if grep -qiE "code.review|review.approved|reviewed.by|PR.approved" "$CHG_FILE" 2>/dev/null; then
-      echo -e "${GREEN}  ✓ Code review documented${NC}"
+      echo -e "${GREEN}   Code review documented${NC}"
     else
       echo -e "${RED}GATE-12-E004: L2/L3 change requires code review${NC}"
       echo "  → Document code review approval"
       ((ERRORS++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ Code review not required (L1 change)${NC}"
+    echo -e "${GREEN}   Code review not required (L1 change)${NC}"
   fi
 }
 
@@ -141,7 +141,7 @@ check_build_status() {
 
   # Check for build/CI mention
   if grep -qiE "build.pass|CI.pass|pipeline.green|build.*success" "$CHG_FILE" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Build status documented${NC}"
+    echo -e "${GREEN}   Build status documented${NC}"
   else
     echo -e "${BLUE}  ℹ Reminder: Verify build passes before merge${NC}"
     ((INFO++)) || true
@@ -158,9 +158,9 @@ check_coverage() {
     local coverage
     coverage=$(grep -oE "[0-9]+%" "$CHG_FILE" 2>/dev/null | head -1 || echo "")
     if [[ -n "$coverage" ]]; then
-      echo -e "${GREEN}  ✓ Coverage documented: $coverage${NC}"
+      echo -e "${GREEN}   Coverage documented: $coverage${NC}"
     else
-      echo -e "${GREEN}  ✓ Coverage mentioned${NC}"
+      echo -e "${GREEN}   Coverage mentioned${NC}"
     fi
   else
     echo -e "${BLUE}  ℹ Reminder: Verify coverage is maintained or improved${NC}"
@@ -179,10 +179,10 @@ check_tspec_update_warning() {
       echo "  → Consider updating TSPEC for TDD compliance"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ TSPEC referenced${NC}"
+      echo -e "${GREEN}   TSPEC referenced${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no code changes)${NC}"
+    echo -e "${GREEN}   N/A (no code changes)${NC}"
   fi
 }
 
@@ -201,10 +201,10 @@ check_change_level_appropriate() {
       echo "  → Consider L2 classification for multi-file changes"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Change level appears appropriate${NC}"
+      echo -e "${GREEN}   Change level appears appropriate${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ Not L1 change${NC}"
+    echo -e "${GREEN}   Not L1 change${NC}"
   fi
 }
 
@@ -219,10 +219,10 @@ check_performance_benchmark() {
       echo "  → Add performance test to validate change"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Performance metrics present${NC}"
+      echo -e "${GREEN}   Performance metrics present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not performance-related)${NC}"
+    echo -e "${GREEN}   N/A (not performance-related)${NC}"
   fi
 }
 
@@ -237,10 +237,10 @@ check_security_review() {
       echo "  → Request security review for auth/crypto changes"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Security review mentioned${NC}"
+      echo -e "${GREEN}   Security review mentioned${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not security-sensitive)${NC}"
+    echo -e "${GREEN}   N/A (not security-sensitive)${NC}"
   fi
 }
 

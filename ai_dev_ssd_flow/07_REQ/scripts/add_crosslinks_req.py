@@ -123,7 +123,7 @@ def add_crosslinks(folder_path: str, req_num: int) -> int:
         Count of files updated
     """
     if req_num not in CROSSLINKS_MAP:
-        print(f"✗ No crosslinks defined for REQ-{req_num:02d}")
+        print(f" No crosslinks defined for REQ-{req_num:02d}")
         return 0
     
     crosslinks_dict = CROSSLINKS_MAP[req_num]
@@ -131,7 +131,7 @@ def add_crosslinks(folder_path: str, req_num: int) -> int:
     count = 0
     
     if not folder.exists():
-        print(f"✗ Folder not found: {folder_path}")
+        print(f" Folder not found: {folder_path}")
         return 0
     
     for file_path in sorted(folder.glob(f"REQ-{req_num:02d}.*.md")):
@@ -146,7 +146,7 @@ def add_crosslinks(folder_path: str, req_num: int) -> int:
         
         # Check if already has 10.5
         if "### 10.5 Cross-Links" in content:
-            print(f"  ✓ {filename}")
+            print(f"   {filename}")
             continue
         
         # Find section 10.4 and add 10.5 after it
@@ -168,7 +168,7 @@ def add_crosslinks(folder_path: str, req_num: int) -> int:
             print(f"  + {filename}")
             count += 1
         else:
-            print(f"  ✗ {filename} (pattern not found)")
+            print(f"   {filename} (pattern not found)")
     
     return count
 
@@ -245,7 +245,7 @@ def main():
         print(f"REQ-{args.req_num:02d} ({folder_name}):")
         count = add_crosslinks(str(folder_path), args.req_num)
     
-    print(f"\n✓ Added cross-links to {count} file(s)")
+    print(f"\n Added cross-links to {count} file(s)")
     return 0
 
 

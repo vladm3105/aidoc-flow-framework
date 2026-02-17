@@ -59,40 +59,40 @@ custom_fields:
 External changes originate from outside the project - dependencies, security vulnerabilities, third-party APIs, infrastructure changes, or compliance mandates. They must be analyzed to determine which layer to inject the change.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   EXTERNAL CHANGE FLOW                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │              EXTERNAL TRIGGERS                       │   │
-│  │  • Security vulnerability (CVE)                     │   │
-│  │  • Dependency deprecation                           │   │
-│  │  • Third-party API change                          │   │
-│  │  • Infrastructure EOL                               │   │
-│  │  • Compliance mandate                               │   │
-│  │  • License change                                   │   │
-│  └────────────────────────┬────────────────────────────┘   │
-│                           │                                 │
-│                           ▼                                 │
-│             ┌─────────────────────────┐                    │
-│             │   IMPACT ASSESSMENT     │                    │
-│             │   Which layer affected? │                    │
-│             └───────────┬─────────────┘                    │
-│                         │                                   │
-│    ┌────────────────────┼────────────────────┐             │
-│    │                    │                    │             │
-│    ▼                    ▼                    ▼             │
-│ ┌──────┐          ┌──────────┐         ┌──────────┐       │
-│ │ L1-L4│          │  L5-L11  │         │ L12-L14  │       │
-│ │Policy│          │Architecture│       │  Code    │       │
-│ │Impact│          │  Impact   │         │  Impact │       │
-│ └──┬───┘          └────┬─────┘         └────┬────┘       │
-│    │                   │                    │             │
-│    ▼                   ▼                    ▼             │
-│ L3 Major          L2-L3              L1-L2               │
-│ Full cascade      Partial cascade    Limited scope       │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                   EXTERNAL CHANGE FLOW                      
+
+                                                             
+     
+                EXTERNAL TRIGGERS                          
+    • Security vulnerability (CVE)                        
+    • Dependency deprecation                              
+    • Third-party API change                             
+    • Infrastructure EOL                                  
+    • Compliance mandate                                  
+    • License change                                      
+     
+                                                            
+                                                            
+                                 
+                IMPACT ASSESSMENT                         
+                Which layer affected?                     
+                                 
+                                                            
+                 
+                                                         
+                                                         
+                           
+  L1-L4            L5-L11            L12-L14         
+ Policy          Architecture         Code           
+ Impact            Impact              Impact        
+                           
+                                                        
+                                                        
+ L3 Major          L2-L3              L1-L2               
+ Full cascade      Partial cascade    Limited scope       
+                                                             
+
 ```
 
 ## 2. External Trigger Types
@@ -185,32 +185,32 @@ Ask these questions to find where to inject the change:
 ### 4.2 Emergency Security Response
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│            EMERGENCY SECURITY RESPONSE                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  PHASE 1: TRIAGE (1-4 hours)                               │
-│  ───────────────────────────                                │
-│  1. Assess vulnerability severity                          │
-│  2. Determine if exploitable                               │
-│  3. Identify affected components                           │
-│  4. Decide: patch, workaround, or disable                  │
-│                                                             │
-│  PHASE 2: MITIGATE (4-24 hours)                            │
-│  ─────────────────────────────                              │
-│  1. Apply immediate workaround if possible                 │
-│  2. Create emergency CHG (minimal documentation)           │
-│  3. Implement fix                                          │
-│  4. Deploy to production                                   │
-│                                                             │
-│  PHASE 3: DOCUMENT (24-72 hours)                           │
-│  ──────────────────────────────                             │
-│  1. Complete CHG documentation                             │
-│  2. Update affected artifacts                              │
-│  3. Run full test suite                                    │
-│  4. Conduct post-mortem                                    │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+            EMERGENCY SECURITY RESPONSE                      
+
+                                                             
+  PHASE 1: TRIAGE (1-4 hours)                               
+                                  
+  1. Assess vulnerability severity                          
+  2. Determine if exploitable                               
+  3. Identify affected components                           
+  4. Decide: patch, workaround, or disable                  
+                                                             
+  PHASE 2: MITIGATE (4-24 hours)                            
+                                
+  1. Apply immediate workaround if possible                 
+  2. Create emergency CHG (minimal documentation)           
+  3. Implement fix                                          
+  4. Deploy to production                                   
+                                                             
+  PHASE 3: DOCUMENT (24-72 hours)                           
+                               
+  1. Complete CHG documentation                             
+  2. Update affected artifacts                              
+  3. Run full test suite                                    
+  4. Conduct post-mortem                                    
+                                                             
+
 ```
 
 ### 4.3 Security CHG Template Additions
@@ -250,41 +250,41 @@ For security-related CHGs, include:
 ### 5.1 Major Version Update (L3)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│            MAJOR DEPENDENCY UPDATE (L3)                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. CREATE CHG                                              │
-│     - CHG-XX_dependency_upgrade/                           │
-│     - Document breaking changes                            │
-│                                                             │
-│  2. ASSESS ARCHITECTURE IMPACT                              │
-│     - Review ADRs for affected patterns                    │
-│     - Update ADR if architecture changes                   │
-│                                                             │
-│  3. UPDATE CONTRACTS                                        │
-│     - Review CTR for API changes                           │
-│     - Update contracts if affected                         │
-│                                                             │
-│  4. UPDATE SPEC                                             │
-│     - Modify implementation details                        │
-│     - Update to new API patterns                           │
-│                                                             │
-│  5. UPDATE TSPEC                                            │
-│     - Update tests for new behavior                        │
-│     - Add migration tests                                  │
-│                                                             │
-│  6. UPDATE TASKS                                            │
-│     - Include migration steps                              │
-│                                                             │
-│  7. IMPLEMENT & TEST                                        │
-│     - Apply changes                                        │
-│     - Run full test suite                                  │
-│     - Performance testing                                  │
-│                                                             │
-│  8. CLOSE CHG                                               │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+            MAJOR DEPENDENCY UPDATE (L3)                     
+
+                                                             
+  1. CREATE CHG                                              
+     - CHG-XX_dependency_upgrade/                           
+     - Document breaking changes                            
+                                                             
+  2. ASSESS ARCHITECTURE IMPACT                              
+     - Review ADRs for affected patterns                    
+     - Update ADR if architecture changes                   
+                                                             
+  3. UPDATE CONTRACTS                                        
+     - Review CTR for API changes                           
+     - Update contracts if affected                         
+                                                             
+  4. UPDATE SPEC                                             
+     - Modify implementation details                        
+     - Update to new API patterns                           
+                                                             
+  5. UPDATE TSPEC                                            
+     - Update tests for new behavior                        
+     - Add migration tests                                  
+                                                             
+  6. UPDATE TASKS                                            
+     - Include migration steps                              
+                                                             
+  7. IMPLEMENT & TEST                                        
+     - Apply changes                                        
+     - Run full test suite                                  
+     - Performance testing                                  
+                                                             
+  8. CLOSE CHG                                               
+                                                             
+
 ```
 
 ### 5.2 Minor/Patch Update (L1-L2)
@@ -302,38 +302,38 @@ For security-related CHGs, include:
 ### 6.1 API Migration Process
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│              THIRD-PARTY API MIGRATION                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. ASSESS CHANGES                                          │
-│     - Review API changelog                                 │
-│     - Identify breaking vs non-breaking                    │
-│     - Map old → new endpoints/fields                       │
-│                                                             │
-│  2. UPDATE CTR                                              │
-│     - Modify contract definitions                          │
-│     - Update request/response schemas                      │
-│     - Version contract if breaking                         │
-│                                                             │
-│  3. UPDATE SPEC                                             │
-│     - Modify integration code design                       │
-│     - Handle backward compatibility if needed              │
-│                                                             │
-│  4. UPDATE TSPEC                                            │
-│     - Update ITEST for new API                            │
-│     - Add migration tests                                  │
-│     - Mock new API responses                               │
-│                                                             │
-│  5. IMPLEMENT                                               │
-│     - Update integration code                              │
-│     - Handle deprecation warnings                          │
-│                                                             │
-│  6. VALIDATE                                                │
-│     - Test against sandbox/staging                         │
-│     - Verify production compatibility                      │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+              THIRD-PARTY API MIGRATION                      
+
+                                                             
+  1. ASSESS CHANGES                                          
+     - Review API changelog                                 
+     - Identify breaking vs non-breaking                    
+     - Map old → new endpoints/fields                       
+                                                             
+  2. UPDATE CTR                                              
+     - Modify contract definitions                          
+     - Update request/response schemas                      
+     - Version contract if breaking                         
+                                                             
+  3. UPDATE SPEC                                             
+     - Modify integration code design                       
+     - Handle backward compatibility if needed              
+                                                             
+  4. UPDATE TSPEC                                            
+     - Update ITEST for new API                            
+     - Add migration tests                                  
+     - Mock new API responses                               
+                                                             
+  5. IMPLEMENT                                               
+     - Update integration code                              
+     - Handle deprecation warnings                          
+                                                             
+  6. VALIDATE                                                
+     - Test against sandbox/staging                         
+     - Verify production compatibility                      
+                                                             
+
 ```
 
 ## 7. Compliance Change Process

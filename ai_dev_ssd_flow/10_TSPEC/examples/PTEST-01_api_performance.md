@@ -134,8 +134,8 @@ execution_profile:
 
 | SYS ID | SYS Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| SYS.01.01 | API Response Time < 200ms | TSPEC.01.44.01, TSPEC.01.44.02 | ✅ |
-| SYS.01.02 | API Throughput > 1000 req/s | TSPEC.01.44.03, TSPEC.01.44.04 | ✅ |
+| SYS.01.01 | API Response Time < 200ms | TSPEC.01.44.01, TSPEC.01.44.02 | [PASS] |
+| SYS.01.02 | API Throughput > 1000 req/s | TSPEC.01.44.03, TSPEC.01.44.04 | [PASS] |
 
 **Coverage Summary**:
 - Total SYS elements: 2

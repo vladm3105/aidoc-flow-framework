@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Validates EARS-MVP-TEMPLATE.md (default)
+#  Document Role: Validates EARS-MVP-TEMPLATE.md (default)
 # - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from EARS_CREATION_RULES.md plus validation extensions
@@ -325,7 +325,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 ---
 
-### E030: Requirement ID Format ⭐ ENHANCED
+### E030: Requirement ID Format  ENHANCED
 
 **Type**: Error (blocking)
 
@@ -337,17 +337,17 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `#### EARS.NN.25.SS:` | ✅ Pass |
-| Removed pattern | `#### Event-XXX` | ❌ Fail - use EARS.NN.25.SS |
-| Removed pattern | `#### State-XXX` | ❌ Fail - use EARS.NN.25.SS |
-| Removed pattern | `#### EARS-NN-XXX` | ❌ Fail - use EARS.NN.25.SS |
+| Valid format | `#### EARS.NN.25.SS:` | [PASS] Pass |
+| Removed pattern | `#### Event-XXX` | [FAIL] Fail - use EARS.NN.25.SS |
+| Removed pattern | `#### State-XXX` | [FAIL] Fail - use EARS.NN.25.SS |
+| Removed pattern | `#### EARS-NN-XXX` | [FAIL] Fail - use EARS.NN.25.SS |
 
 **Common Element Types for EARS**:
 | Element Type | Code | Example |
 |--------------|------|---------|
 | EARS Statement | 25 | EARS.06.25.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `Event-XXX` → Use `EARS.NN.25.SS`
 > - `State-XXX` → Use `EARS.NN.25.SS`
 > - `EARS-NN-XXX` → Use `EARS.NN.25.SS`
@@ -478,7 +478,7 @@ Downstream: BDD, ADR, SYS
 
 ---
 
-### E050: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+### E050: Universal Splitting Trigger (Size/Cardinality)  NEW
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 **Type**: Error (blocking)
@@ -489,7 +489,7 @@ Downstream: BDD, ADR, SYS
 
 **Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 ---
 
@@ -556,7 +556,7 @@ Downstream: BDD, ADR, SYS
 
 **Type**: Warning
 
-**Required Format**: `✅ NN% (Target: ≥90%)`
+**Required Format**: `[PASS] NN% (Target: ≥90%)`
 
 ---
 
@@ -612,29 +612,29 @@ python3 03_EARS/scripts/validate_ears.py --summary-only
 
 ### Mistake #1: Wrong Tag Format
 ```
-❌ tags: ears-030, ears-requirements
-✅ tags: ears, layer-3-artifact
+[FAIL] tags: ears-030, ears-requirements
+[PASS] tags: ears, layer-3-artifact
 ```
 
 ### Mistake #2: Singular architecture_approach
 ```
-❌ architecture_approach: ai-agent-based
-✅ architecture_approaches: [ai-agent-based]
+[FAIL] architecture_approach: ai-agent-based
+[PASS] architecture_approaches: [ai-agent-based]
 ```
 
 ### Mistake #3: Non-Standard Requirement IDs
 ```
-❌ #### Event-001: L1 Verification Submission
-✅ #### EARS.06.25.01: L1 Verification Submission
+[FAIL] #### Event-001: L1 Verification Submission
+[PASS] #### EARS.06.25.01: L1 Verification Submission
 ```
 
 ### Mistake #4: List-Style Document Control
 ```
-❌ ## 0. Document Control
+[FAIL] ## 0. Document Control
    **Document Metadata**
    - **Version**: 1.0
 
-✅ ## Document Control
+[PASS] ## Document Control
    | Item | Details |
    |------|---------|
    | **Version** | 1.0.0 |
@@ -642,14 +642,14 @@ python3 03_EARS/scripts/validate_ears.py --summary-only
 
 ### Mistake #5: Missing Traceability Separators
 ```
-❌ **Traceability**: @brd: X @prd: Y @threshold: Z
-✅ **Traceability**: @brd: X | @prd: Y | @threshold: Z
+[FAIL] **Traceability**: @brd: X @prd: Y @threshold: Z
+[PASS] **Traceability**: @brd: X | @prd: Y | @threshold: Z
 ```
 
 ### Mistake #6: Table Separator Typo
 ```
-❌ |------|---------| |
-✅ |------|---------|
+[FAIL] |------|---------| |
+[PASS] |------|---------|
 ```
 
 ---

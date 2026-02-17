@@ -320,31 +320,31 @@ stateDiagram-v2
 
 ```
 sdd-workflow-orchestrator/
-├── workflow.sh                    # Main orchestrator script
-├── config.yaml                    # Layer configuration & checkpoints
-├── state/
-│   └── state.yaml                 # Workflow state tracking
-├── handlers/
-│   ├── checkpoint.sh              # Human review handler
-│   ├── auto-chain.sh              # Automated layer executor
-│   ├── generate.sh                # Single layer generator
-│   ├── validation.sh              # Readiness scorer
-│   ├── code-generator.sh          # L11: Code generation handler
-│   ├── test-executor.sh           # L12: Test execution handler
-│   └── deploy.sh                  # L13: Validation & deployment handler
-├── prompts/
-│   ├── brd-generator.md
-│   ├── prd-generator.md
-│   ├── code-generator.md          # Code generation prompt
-│   ├── test-generator.md          # Test generation prompt
-│   └── ...
-└── scripts/
-    ├── extract_tags.py            # Tag extraction from code
-    ├── validate_tags.py           # Tag validation
-    ├── generate_traceability.py   # Traceability matrix generation
-    ├── contract_checker.py        # CTR compliance validation
-    ├── collect_upstream_tags.py   # Cumulative tag collection
-    └── generate_tests_from_bdd.py # BDD to pytest conversion
+ workflow.sh                    # Main orchestrator script
+ config.yaml                    # Layer configuration & checkpoints
+ state/
+    state.yaml                 # Workflow state tracking
+ handlers/
+    checkpoint.sh              # Human review handler
+    auto-chain.sh              # Automated layer executor
+    generate.sh                # Single layer generator
+    validation.sh              # Readiness scorer
+    code-generator.sh          # L11: Code generation handler
+    test-executor.sh           # L12: Test execution handler
+    deploy.sh                  # L13: Validation & deployment handler
+ prompts/
+    brd-generator.md
+    prd-generator.md
+    code-generator.md          # Code generation prompt
+    test-generator.md          # Test generation prompt
+    ...
+ scripts/
+     extract_tags.py            # Tag extraction from code
+     validate_tags.py           # Tag validation
+     generate_traceability.py   # Traceability matrix generation
+     contract_checker.py        # CTR compliance validation
+     collect_upstream_tags.py   # Cumulative tag collection
+     generate_tests_from_bdd.py # BDD to pytest conversion
 ```
 
 ### Configuration (`config.yaml`)
@@ -569,9 +569,9 @@ STATE_FILE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 SCORE=$(yq ".layers.$LAYER.readiness_score" "$STATE_FILE")
 MIN_SCORE=$(yq ".layers.$LAYER.min_readiness_score" "$STATE_FILE" || echo "90")
 
-echo "═══════════════════════════════════════════════════════════"
+echo ""
 echo " CHECKPOINT: $LAYER"
-echo "═══════════════════════════════════════════════════════════"
+echo ""
 echo ""
 echo "Document: $DOC_PATH"
 echo "Readiness Score: $SCORE% (threshold: $MIN_SCORE%)"
@@ -579,7 +579,7 @@ echo ""
 
 # Auto-approval if score meets threshold
 if (( $(echo "$SCORE >= $MIN_SCORE" | bc -l) )); then
-  echo "✅ Quality score ≥${MIN_SCORE}% - Auto-approved"
+  echo "[PASS] Quality score ≥${MIN_SCORE}% - Auto-approved"
   yq -i ".layers.$LAYER.status = \"approved\"" "$STATE_FILE"
   yq -i ".layers.$LAYER.approved_by = \"auto\"" "$STATE_FILE"
   yq -i ".layers.$LAYER.approved_at = \"$(date -Iseconds)\"" "$STATE_FILE"
@@ -606,18 +606,18 @@ case $decision in
     yq -i ".layers.$LAYER.status = \"approved\"" "$STATE_FILE"
     yq -i ".layers.$LAYER.approved_by = \"human\"" "$STATE_FILE"
     yq -i ".layers.$LAYER.approved_at = \"$(date -Iseconds)\"" "$STATE_FILE"
-    echo "✅ $LAYER approved. Proceeding to next layer..."
+    echo "[PASS] $LAYER approved. Proceeding to next layer..."
     ;;
   [Rr])
     read -p "Revision feedback: " feedback
     yq -i ".layers.$LAYER.status = \"needs_revision\"" "$STATE_FILE"
     yq -i ".layers.$LAYER.revision_feedback = \"$feedback\"" "$STATE_FILE"
-    echo "🔄 Regenerating $LAYER with feedback..."
+    echo " Regenerating $LAYER with feedback..."
     ;;
   [Xx])
     yq -i ".layers.$LAYER.status = \"rejected\"" "$STATE_FILE"
     yq -i ".workflow.status = \"stopped\"" "$STATE_FILE"
-    echo "❌ Workflow stopped at $LAYER"
+    echo "[FAIL] Workflow stopped at $LAYER"
     exit 1
     ;;
 esac
@@ -632,9 +632,9 @@ esac
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 PROMPTS=".aidev/plugins/sdd-workflow-orchestrator/prompts"
 
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
  echo " L11: CODE GENERATION"
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
 
 # Get input artifacts
 TASKS_FILE=$(yq '.layers.L11_TASKS.file' "$STATE")
@@ -643,7 +643,7 @@ CTR_FILE=$(yq '.layers.L8_CTR.file' "$STATE")
 BDD_FILE=$(yq '.layers.L4_BDD.file' "$STATE")
 
 # Collect all upstream traceability tags
-echo "📋 Collecting traceability context..."
+echo " Collecting traceability context..."
 TRACE_CONTEXT=$(python scripts/collect_upstream_tags.py \
   --brd "$(yq '.layers.L1_BRD.file' "$STATE")" \
   --prd "$(yq '.layers.L2_PRD.file' "$STATE")" \
@@ -654,7 +654,7 @@ TRACE_CONTEXT=$(python scripts/collect_upstream_tags.py \
   --req "$(yq '.layers.L7_REQ.file' "$STATE")" \
   --spec "$SPEC_FILE")
 
-echo "🤖 Generating source code from SPEC + TASKS..."
+echo " Generating source code from SPEC + TASKS..."
 
 # Generate code using claude with full context
 claude --prompt "$(cat $PROMPTS/code-generator.md)
@@ -682,11 +682,11 @@ Generate complete Python source code that:
 " --output-dir src/
 
 # Validate generated code
-echo "🔍 Validating contract compliance..."
+echo " Validating contract compliance..."
 python scripts/contract_checker.py --code src/ --contract "$CTR_FILE"
 CONTRACT_SCORE=$?
 
-echo "🔍 Validating traceability tags..."
+echo " Validating traceability tags..."
 python scripts/validate_tags.py --source src/ --strict
 TAG_SCORE=$?
 
@@ -696,7 +696,7 @@ yq -i ".layers.L11_CODE.contract_compliance = $CONTRACT_SCORE" "$STATE"
 yq -i ".layers.L11_CODE.traceability_score = $TAG_SCORE" "$STATE"
 yq -i ".layers.L11_CODE.generated_at = \"$(date -Iseconds)\"" "$STATE"
 
-echo "✅ Code generated. Ready for human review."
+echo "[PASS] Code generated. Ready for human review."
 ```
 
 ### Test Executor (`handlers/test-executor.sh`)
@@ -707,29 +707,29 @@ echo "✅ Code generated. Ready for human review."
 
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
  echo " L12: TEST EXECUTION"
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
 
 # Generate test files if not exists
 BDD_FILE=$(yq '.layers.L4_BDD.file' "$STATE")
 
-echo "🧪 Generating test files from BDD scenarios..."
+echo " Generating test files from BDD scenarios..."
 python scripts/generate_tests_from_bdd.py --bdd "$BDD_FILE" --output tests/
 
 # Run unit tests
-echo "🧪 Running unit tests..."
+echo " Running unit tests..."
 pytest tests/unit/ -v --cov=src --cov-report=html:reports/coverage \
   --cov-report=json:reports/coverage.json 2>&1 | tee reports/unit_tests.log
 UNIT_RESULT=$?
 
 # Run integration tests
-echo "🧪 Running integration tests..."
+echo " Running integration tests..."
 pytest tests/integration/ -v 2>&1 | tee reports/integration_tests.log
 INTEGRATION_RESULT=$?
 
 # Run BDD scenarios
-echo "🧪 Running BDD scenarios..."
+echo " Running BDD scenarios..."
 behave tests/bdd/ --format json -o reports/bdd_results.json 2>&1 | tee reports/bdd_tests.log
 BDD_RESULT=$?
 
@@ -738,14 +738,14 @@ COVERAGE=$(jq '.totals.percent_covered' reports/coverage.json)
 MIN_COVERAGE=80
 
 echo ""
-echo "═══════════════════════════════════════════════════════════"
+echo ""
 echo " TEST RESULTS SUMMARY"
-echo "═══════════════════════════════════════════════════════════"
-echo "Unit Tests:        $([ $UNIT_RESULT -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
-echo "Integration Tests: $([ $INTEGRATION_RESULT -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
-echo "BDD Scenarios:     $([ $BDD_RESULT -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
+echo ""
+echo "Unit Tests:        $([ $UNIT_RESULT -eq 0 ] && echo '[PASS] PASS' || echo '[FAIL] FAIL')"
+echo "Integration Tests: $([ $INTEGRATION_RESULT -eq 0 ] && echo '[PASS] PASS' || echo '[FAIL] FAIL')"
+echo "BDD Scenarios:     $([ $BDD_RESULT -eq 0 ] && echo '[PASS] PASS' || echo '[FAIL] FAIL')"
 echo "Coverage:          ${COVERAGE}% (min: ${MIN_COVERAGE}%)"
-echo "═══════════════════════════════════════════════════════════"
+echo ""
 
 # Update state
     yq -i ".layers.L12_TESTS.test_results.unit_tests = $UNIT_RESULT" "$STATE"
@@ -757,14 +757,14 @@ echo "════════════════════════�
 if [ $UNIT_RESULT -eq 0 ] && [ $INTEGRATION_RESULT -eq 0 ] && [ $BDD_RESULT -eq 0 ]; then
   if (( $(echo "$COVERAGE >= $MIN_COVERAGE" | bc -l) )); then
     yq -i ".layers.L12_TESTS.status = \"completed\"" "$STATE"
-    echo "✅ All tests passed. Proceeding to validation..."
+    echo "[PASS] All tests passed. Proceeding to validation..."
     exit 0
   else
-    echo "⚠️ Coverage below threshold. Generating additional tests..."
+    echo "[WARN] Coverage below threshold. Generating additional tests..."
     yq -i ".layers.L12_TESTS.status = \"needs_more_coverage\"" "$STATE"
   fi
 else
-  echo "❌ Tests failed. Triggering code fix..."
+  echo "[FAIL] Tests failed. Triggering code fix..."
   yq -i ".layers.L12_TESTS.status = \"failed\"" "$STATE"
   exit 1
 fi
@@ -778,17 +778,17 @@ fi
 
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
  echo " L13: VALIDATION & DEPLOYMENT"
- echo "═══════════════════════════════════════════════════════════"
+ echo ""
 
 # 1. Tag Validation
-echo "📋 Validating traceability tags..."
+echo " Validating traceability tags..."
 python scripts/validate_tags.py --source src/ docs/ tests/ --strict
 TAG_VALID=$?
 
 # 2. Generate Traceability Matrix
-echo "📊 Generating traceability matrix..."
+echo " Generating traceability matrix..."
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 python scripts/generate_traceability_matrix.py \
   --tags docs/generated/tags.json \
@@ -796,28 +796,28 @@ python scripts/generate_traceability_matrix.py \
 MATRIX_GEN=$?
 
 # 3. Security Scan
-echo "🔒 Running security scan..."
+echo " Running security scan..."
 bandit -r src/ -f json -o reports/security_scan.json
 SECURITY_RESULT=$?
 safety check --json > reports/dependency_scan.json
 DEPS_RESULT=$?
 
 # 4. Build Artifact
-echo "📦 Building deployment artifact..."
+echo " Building deployment artifact..."
 python -m build
 BUILD_RESULT=$?
 
 # Summary
 echo ""
-echo "═══════════════════════════════════════════════════════════"
+echo ""
 echo " VALIDATION SUMMARY"
-echo "═══════════════════════════════════════════════════════════"
-echo "Tag Validation:     $([ $TAG_VALID -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
-echo "Traceability Matrix:$([ $MATRIX_GEN -eq 0 ] && echo '✅ GENERATED' || echo '❌ FAIL')"
-echo "Security Scan:      $([ $SECURITY_RESULT -eq 0 ] && echo '✅ PASS' || echo '⚠️ WARNINGS')"
-echo "Dependency Check:   $([ $DEPS_RESULT -eq 0 ] && echo '✅ PASS' || echo '⚠️ WARNINGS')"
-echo "Build:              $([ $BUILD_RESULT -eq 0 ] && echo '✅ SUCCESS' || echo '❌ FAIL')"
-echo "═══════════════════════════════════════════════════════════"
+echo ""
+echo "Tag Validation:     $([ $TAG_VALID -eq 0 ] && echo '[PASS] PASS' || echo '[FAIL] FAIL')"
+echo "Traceability Matrix:$([ $MATRIX_GEN -eq 0 ] && echo '[PASS] GENERATED' || echo '[FAIL] FAIL')"
+echo "Security Scan:      $([ $SECURITY_RESULT -eq 0 ] && echo '[PASS] PASS' || echo '[WARN] WARNINGS')"
+echo "Dependency Check:   $([ $DEPS_RESULT -eq 0 ] && echo '[PASS] PASS' || echo '[WARN] WARNINGS')"
+echo "Build:              $([ $BUILD_RESULT -eq 0 ] && echo '[PASS] SUCCESS' || echo '[FAIL] FAIL')"
+echo ""
 
 # Update state
 yq -i ".layers.L13_VALIDATION.tag_validation = $TAG_VALID" "$STATE"
@@ -828,7 +828,7 @@ yq -i ".layers.L13_VALIDATION.build_status = $BUILD_RESULT" "$STATE"
 if [ $BUILD_RESULT -eq 0 ]; then
   yq -i ".layers.L13_VALIDATION.status = \"pending_deployment_approval\"" "$STATE"
   echo ""
-  echo "🚀 Build successful. Awaiting human approval for deployment."
+  echo " Build successful. Awaiting human approval for deployment."
 else
   yq -i ".layers.L13_VALIDATION.status = \"build_failed\"" "$STATE"
   exit 1
@@ -849,52 +849,52 @@ STATE_FILE="$SCRIPT_DIR/state/state.yaml"
 CONFIG_FILE="$SCRIPT_DIR/config.yaml"
 
 main() {
-  echo "🚀 SDD Full Automation Workflow Starting..."
+  echo " SDD Full Automation Workflow Starting..."
   echo "   Scope: L1 (BRD) → L13 (Production Deployment)"
   echo ""
 
-  # ═══════════════════════════════════════════════════════════
+  # 
   # PHASE 2: Document Generation (L1-L10)
-  # ═══════════════════════════════════════════════════════════
+  # 
 
   # Phase 2a: BRD (Human Checkpoint)
-  echo "═══ Layer 1: BRD Generation ═══"
+  echo " Layer 1: BRD Generation "
   ./handlers/generate.sh L1_BRD
   ./handlers/checkpoint.sh L1_BRD "docs/BRD/BRD-001.md"
 
   # Phase 2b: PRD (Human Checkpoint)
-  echo "═══ Layer 2: PRD Generation ═══"
+  echo " Layer 2: PRD Generation "
   ./handlers/generate.sh L2_PRD
   ./handlers/checkpoint.sh L2_PRD "docs/PRD/PRD-001.md"
 
   # Phase 2c: Auto-chain EARS → BDD
-  echo "═══ Layers 3-4: Auto-generation ═══"
+  echo " Layers 3-4: Auto-generation "
   ./handlers/auto-chain.sh L3 L4
 
   # Phase 2d: ADR (Human Checkpoint)
-  echo "═══ Layer 5: ADR Generation ═══"
+  echo " Layer 5: ADR Generation "
   ./handlers/generate.sh L5_ADR
   ./handlers/checkpoint.sh L5_ADR "docs/ADR/ADR-001.md"
 
   # Phase 2e: Auto-chain SYS → TASKS
-  echo "═══ Layers 6-10: Auto-generation ═══"
+  echo " Layers 6-10: Auto-generation "
   ./handlers/auto-chain.sh L6 L10
 
-  # ═══════════════════════════════════════════════════════════
+  # 
   # PHASE 3: Code Generation (L11)
-  # ═══════════════════════════════════════════════════════════
+  # 
 
   echo ""
-  echo "═══ Layer 11: Code Generation ═══"
+  echo " Layer 11: Code Generation "
   ./handlers/code-generator.sh
   ./handlers/checkpoint.sh L11_CODE "src/"
 
-  # ═══════════════════════════════════════════════════════════
+  # 
   # PHASE 4: Test Execution (L12)
-  # ═══════════════════════════════════════════════════════════
+  # 
 
   echo ""
-  echo "═══ Layer 12: Test Execution ═══"
+  echo " Layer 12: Test Execution "
 
   # Retry loop for failed tests
   MAX_RETRIES=3
@@ -909,42 +909,42 @@ main() {
     fi
 
     RETRY_COUNT=$((RETRY_COUNT + 1))
-    echo "⚠️ Tests failed. Attempting fix (retry $RETRY_COUNT/$MAX_RETRIES)..."
+    echo "[WARN] Tests failed. Attempting fix (retry $RETRY_COUNT/$MAX_RETRIES)..."
 
     # Auto-fix code based on test failures
     ./handlers/auto-fix.sh
   done
 
   if [ $TEST_STATUS -ne 0 ]; then
-    echo "❌ Tests failed after $MAX_RETRIES attempts. Stopping workflow."
+    echo "[FAIL] Tests failed after $MAX_RETRIES attempts. Stopping workflow."
     exit 1
   fi
 
-  # ═══════════════════════════════════════════════════════════
+  # 
   # PHASE 5: Validation & Deployment (L13)
-  # ═══════════════════════════════════════════════════════════
+  # 
 
   echo ""
-  echo "═══ Layer 14: Validation & Deployment ═══"
+  echo " Layer 14: Validation & Deployment "
   ./handlers/deploy.sh
   ./handlers/checkpoint.sh L13_VALIDATION "dist/"
 
-  # ═══════════════════════════════════════════════════════════
+  # 
   # COMPLETE
-  # ═══════════════════════════════════════════════════════════
+  # 
 
   echo ""
-  echo "════════════════════════════════════════════════════════════"
-  echo "🎉 SDD FULL WORKFLOW COMPLETE!"
-  echo "════════════════════════════════════════════════════════════"
+  echo ""
+  echo " SDD FULL WORKFLOW COMPLETE!"
+  echo ""
   echo ""
   echo "Generated Artifacts:"
-  echo "  📄 Documents: docs/BRD/, docs/PRD/, docs/EARS/, docs/BDD/, docs/ADR/"
+  echo "   Documents: docs/BRD/, docs/PRD/, docs/EARS/, docs/BDD/, docs/ADR/"
   echo "                docs/SYS/, docs/REQ/, docs/CTR/, docs/SPEC/, docs/TASKS/"
-  echo "  💻 Source:    src/"
-  echo "  🧪 Tests:     tests/"
-  echo "  📊 Reports:   reports/"
-  echo "  📦 Build:     dist/"
+  echo "   Source:    src/"
+  echo "   Tests:     tests/"
+  echo "   Reports:   reports/"
+  echo "   Build:     dist/"
   echo ""
   echo "Traceability Matrix: docs/generated/traceability_matrix.md"
   echo ""
@@ -1009,19 +1009,19 @@ Module/Class/Function description.
 
 \`\`\`
 src/
-├── __init__.py
-├── models/
-│   ├── __init__.py
-│   └── {domain}_models.py
-├── services/
-│   ├── __init__.py
-│   └── {domain}_service.py
-├── api/
-│   ├── __init__.py
-│   └── routes.py
-└── utils/
-    ├── __init__.py
-    └── helpers.py
+ __init__.py
+ models/
+    __init__.py
+    {domain}_models.py
+ services/
+    __init__.py
+    {domain}_service.py
+ api/
+    __init__.py
+    routes.py
+ utils/
+     __init__.py
+     helpers.py
 \`\`\`
 
 Generate complete, production-ready Python code.
@@ -1078,11 +1078,11 @@ Let's walk through generating a simple **trading bot** from idea to production u
 
 # L1 BRD Generation (AI + Human Review)
 # Generated: docs/BRD/BRD-001.md
-# Score: 92% → Auto-approved ✅
+# Score: 92% → Auto-approved [PASS]
 
 # L2 PRD Generation (AI + Human Review)
 # Generated: docs/PRD/PRD-001.md  
-# Score: 94% → Auto-approved ✅
+# Score: 94% → Auto-approved [PASS]
 
 # L3-L4 Auto-chain (EARS → BDD)
 # Generated: docs/EARS/EARS-001.md (Score: 95%)
@@ -1090,7 +1090,7 @@ Let's walk through generating a simple **trading bot** from idea to production u
 
 # L5 ADR Generation (AI + Architect Review)
 # Generated: docs/ADR/ADR-001.md
-# Score: 88% → Human review required ⚠️
+# Score: 88% → Human review required [WARN]
 # Architect approves with minor revisions
 
 # L6-L10 Auto-chain (SYS → TASKS)
@@ -1105,19 +1105,19 @@ Let's walk through generating a simple **trading bot** from idea to production u
 # L11 Code Generation
 # Input: SPEC-001.yaml, TASKS-001.md, CTR-001.yaml
 # Output: src/trading_bot.py (342 lines)
-# Contract compliance: 98% ✅
+# Contract compliance: 98% [PASS]
 # Human review: Approved
 
 # L12 Test Execution
-# Unit tests: 47/47 passed ✅
-# Integration tests: 12/12 passed ✅
-# BDD scenarios: 8/8 passed ✅
-# Coverage: 87% (threshold: 80%) ✅
+# Unit tests: 47/47 passed [PASS]
+# Integration tests: 12/12 passed [PASS]
+# BDD scenarios: 8/8 passed [PASS]
+# Coverage: 87% (threshold: 80%) [PASS]
 
 # L13 Validation
-# Tag validation: ✅
-# Security scan: ✅ (0 high, 2 low)
-# Build: ✅
+# Tag validation: [PASS]
+# Security scan: [PASS] (0 high, 2 low)
+# Build: [PASS]
 # Deploy approval: Human approves → Production
 
 # RESULT: Working trading bot deployed in <2 days
@@ -1127,20 +1127,20 @@ Let's walk through generating a simple **trading bot** from idea to production u
 
 ```
 trading-bot/
-├── docs/
-│   ├── BRD/BRD-001.md               (Business requirements)
-│   ├── PRD/PRD-001.md               (Product spec)
-│   ├── EARS/EARS-001.md             (Engineering requirements)
-│   ├── BDD/BDD-001.feature          (Test scenarios)
-│   ├── ADR/ADR-001.md               (Tech stack decision)
-│   ├── SYS/SYS-001.md               (System architecture)
-│   ├── REQ/REQ-001.md ... REQ-015.md (15 atomic requirements)
-│   ├── CTR/CTR-001.yaml             (API contracts)
-│   ├── SPEC/SPEC-001.yaml           (Technical spec)
-│   └── TASKS/TASKS-001.md           (Implementation plan)
-├── src/trading_bot.py               (342 lines, 98% contract compliant)
-├── tests/                            (87% coverage)
-└── dist/trading_bot-1.0.0.whl       (Production artifact)
+ docs/
+    BRD/BRD-001.md               (Business requirements)
+    PRD/PRD-001.md               (Product spec)
+    EARS/EARS-001.md             (Engineering requirements)
+    BDD/BDD-001.feature          (Test scenarios)
+    ADR/ADR-001.md               (Tech stack decision)
+    SYS/SYS-001.md               (System architecture)
+    REQ/REQ-001.md ... REQ-015.md (15 atomic requirements)
+    CTR/CTR-001.yaml             (API contracts)
+    SPEC/SPEC-001.yaml           (Technical spec)
+    TASKS/TASKS-001.md           (Implementation plan)
+ src/trading_bot.py               (342 lines, 98% contract compliant)
+ tests/                            (87% coverage)
+ dist/trading_bot-1.0.0.whl       (Production artifact)
 ```
 
 ### Key Takeaways
@@ -1158,30 +1158,30 @@ trading-bot/
 ### New Files
 ```
 .aidev/plugins/sdd-workflow-orchestrator/
-├── workflow.sh                      # Extended main orchestrator
-├── config.yaml                      # Extended configuration
-├── handlers/
-│   ├── checkpoint.sh
-│   ├── auto-chain.sh
-│   ├── generate.sh
-│   ├── validation.sh
-│   ├── code-generator.sh            # NEW: L11 handler
-│   ├── test-executor.sh             # NEW: L12 handler
-│   ├── deploy.sh                    # NEW: L13 handler
-│   └── auto-fix.sh                  # NEW: Auto-fix failed tests
-├── prompts/
-│   ├── code-generator.md            # NEW: Code generation prompt
-│   ├── test-generator.md            # NEW: Test generation prompt
-│   └── ...
-├── scripts/
-│   ├── extract_tags.py              # Tag extraction
-│   ├── validate_tags.py             # Tag validation
-│   ├── generate_traceability.py     # Matrix generation
-│   ├── contract_checker.py          # CTR compliance
-│   ├── collect_upstream_tags.py     # NEW: Cumulative tag collection
-│   └── generate_tests_from_bdd.py   # NEW: BDD to pytest conversion
-└── state/
-    └── .gitkeep
+ workflow.sh                      # Extended main orchestrator
+ config.yaml                      # Extended configuration
+ handlers/
+    checkpoint.sh
+    auto-chain.sh
+    generate.sh
+    validation.sh
+    code-generator.sh            # NEW: L11 handler
+    test-executor.sh             # NEW: L12 handler
+    deploy.sh                    # NEW: L13 handler
+    auto-fix.sh                  # NEW: Auto-fix failed tests
+ prompts/
+    code-generator.md            # NEW: Code generation prompt
+    test-generator.md            # NEW: Test generation prompt
+    ...
+ scripts/
+    extract_tags.py              # Tag extraction
+    validate_tags.py             # Tag validation
+    generate_traceability.py     # Matrix generation
+    contract_checker.py          # CTR compliance
+    collect_upstream_tags.py     # NEW: Cumulative tag collection
+    generate_tests_from_bdd.py   # NEW: BDD to pytest conversion
+ state/
+     .gitkeep
 ```
 
 ### Modifications to Existing Files

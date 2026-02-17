@@ -106,7 +106,7 @@ check_placeholder_text() {
   echo "DEBUG: Finished processing all files..."
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -135,7 +135,7 @@ check_premature_references() {
   done < <(find "$REQ_DIR" -name "*.md" -exec grep -HnE "$downstream_patterns" {} \; 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -158,9 +158,9 @@ check_count_consistency() {
   done < <(find "$REQ_DIR" -name "*.md" -exec grep -HnE "[0-9]+ (acceptance criteria|dependencies|requirements)" {} \; 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   else
-    echo -e "${GREEN}  ✓ Found $found count claims (manual verification recommended)${NC}"
+    echo -e "${GREEN}   Found $found count claims (manual verification recommended)${NC}"
   fi
 }
 
@@ -218,7 +218,7 @@ check_index_sync() {
   done < <(grep -E "\| *Planned *\|" "$index_file" 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
 }
 
@@ -327,10 +327,10 @@ check_cross_linking() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $isolated -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No isolated requirements found${NC}"
+    echo -e "${GREEN}   No isolated requirements found${NC}"
   elif [[ $isolated -eq $total_files && $total_files -gt 0 ]]; then
     # CRITICAL: ALL files are isolated - corpus has no cross-linking
-    echo -e "${RED}  ✗ GATE-05 ERROR: ALL $total_files files have no cross-references (corpus completely isolated)${NC}"
+    echo -e "${RED}   GATE-05 ERROR: ALL $total_files files have no cross-references (corpus completely isolated)${NC}"
     echo -e "${YELLOW}  → Attempting auto-fix: running cross-reference injection script${NC}"
     ((ERRORS++)) || true
     
@@ -341,7 +341,7 @@ check_cross_linking() {
       python3 "$xref_script" 2>&1 | sed 's/^/    /'
       echo "  → Cross-references injected. Re-run validation to confirm."
     else
-      echo -e "${YELLOW}  ⚠ Cross-reference script not found at $xref_script${NC}"
+      echo -e "${YELLOW}   Cross-reference script not found at $xref_script${NC}"
       echo "  → Create it with: python3 -c 'from pathlib import Path; ...' (see directive DIR-05)"
     fi
   elif [[ $isolated -gt 0 ]]; then
@@ -395,7 +395,7 @@ check_visualization() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
 }
 
@@ -420,7 +420,7 @@ check_glossary() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Terminology consistent across corpus${NC}"
+    echo -e "${GREEN}   Terminology consistent across corpus${NC}"
   fi
 }
 
@@ -454,7 +454,7 @@ check_element_ids() {
   fi
 
   if [[ $dup_count -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No cross-file duplicate element IDs${NC}"
+    echo -e "${GREEN}   No cross-file duplicate element IDs${NC}"
   fi
 }
 
@@ -480,7 +480,7 @@ check_priority_distribution() {
       ((WARNINGS++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ Priority distribution check skipped (no priority tags found)${NC}"
+    echo -e "${GREEN}   Priority distribution check skipped (no priority tags found)${NC}"
   fi
 }
 
@@ -517,7 +517,7 @@ check_file_size() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
   fi
 }
 
@@ -586,7 +586,7 @@ check_traceability() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ have cumulative traceability tags (6 upstream)${NC}"
+    echo -e "${GREEN}   All REQ have cumulative traceability tags (6 upstream)${NC}"
   fi
 }
 
@@ -627,7 +627,7 @@ check_upstream_tbd() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No TBD placeholders in upstream references${NC}"
+    echo -e "${GREEN}   No TBD placeholders in upstream references${NC}"
   fi
 }
 
@@ -669,7 +669,7 @@ check_section_format() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ have required MVP sections${NC}"
+    echo -e "${GREEN}   All REQ have required MVP sections${NC}"
   fi
 }
 
@@ -742,7 +742,7 @@ check_domain_classification() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ have valid domain (folder or metadata)${NC}"
+    echo -e "${GREEN}   All REQ have valid domain (folder or metadata)${NC}"
   fi
 }
 
@@ -776,7 +776,7 @@ check_spec_ready() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 && $missing -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ meet SPEC-Ready threshold${NC}"
+    echo -e "${GREEN}   All REQ meet SPEC-Ready threshold${NC}"
   elif [[ $missing -gt 0 ]]; then
     echo -e "${YELLOW}  $missing REQ files missing SPEC-Ready Score${NC}"
   fi
@@ -808,7 +808,7 @@ check_impl_ready() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ IMPL-Ready scores acceptable${NC}"
+    echo -e "${GREEN}   IMPL-Ready scores acceptable${NC}"
   fi
 }
 
@@ -843,7 +843,7 @@ check_acceptance_criteria() {
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Acceptance criteria coverage adequate${NC}"
+    echo -e "${GREEN}   Acceptance criteria coverage adequate${NC}"
   else
     echo -e "${YELLOW}  $found REQ files may need more acceptance criteria${NC}"
   fi

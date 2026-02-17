@@ -372,10 +372,10 @@ grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" | \
 **Valid vs Invalid Formats**:
 | Format | Example | Status |
 |--------|---------|--------|
-| 4-segment dot | `@brd: BRD.07.01.01` | ✓ Correct |
-| 3-segment dot | `@brd: BRD.07.01` | ✗ Invalid (missing sequence) |
-| Dash notation | `@brd: BRD-07` | ✗ Invalid (document-level only) |
-| No dots | `@brd: BRD07` | ✗ Invalid (missing separators) |
+| 4-segment dot | `@brd: BRD.07.01.01` |  Correct |
+| 3-segment dot | `@brd: BRD.07.01` |  Invalid (missing sequence) |
+| Dash notation | `@brd: BRD-07` |  Invalid (document-level only) |
+| No dots | `@brd: BRD07` |  Invalid (missing separators) |
 
 **Validation Logic**:
 ```bash

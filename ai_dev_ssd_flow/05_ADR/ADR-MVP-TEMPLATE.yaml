@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+#  Document Authority: PRIMARY STANDARD for Autopilot Workflow
 # - Purpose: AI-consumable template for automated ADR artifact generation
 # - Validation: Validated by ADR_MVP_SCHEMA.yaml (shared with MD template)
 # - Human Reference: See ADR-MVP-TEMPLATE.md for narrative explanations

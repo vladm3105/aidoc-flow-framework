@@ -36,39 +36,39 @@ This workflow handles changes originating from design optimizations, test specif
 
 ```
 DESIGN TRIGGER (L9-L11)
-         │
-         ▼
-   ┌──────────────────────────────────────┐
-   │ Does change affect L5-L8?            │
-   │ (Architecture/Contract/Requirements) │
-   └─────────────────┬────────────────────┘
-                     │
-         ┌───────────┼───────────┐
-         │ Yes       │           │ No
-         ▼           │           ▼
-     GATE-05         │       GATE-09
-     (Bubble Up)     │       (Entry)
-         │           │           │
-         ▼           │           │
-     Update L5-L8    │           │
-         │           │           │
-         ▼           │           │
-     GATE-09 ◄───────┘           │
-         │                       │
-         └───────────────────────┘
-                     │
-                     ▼
-              ┌──────────────┐
-              │  TDD ORDER:  │
-              │  1. TSPEC    │
-              │  2. SPEC     │
-              │  3. TASKS    │
-              └──────┬───────┘
-                     │
-                     ▼
+         
+         
+   
+    Does change affect L5-L8?            
+    (Architecture/Contract/Requirements) 
+   
+                     
+         
+          Yes                   No
+                               
+     GATE-05                GATE-09
+     (Bubble Up)            (Entry)
+                               
+                               
+     Update L5-L8               
+                               
+                               
+     GATE-09            
+                                
+         
+                     
+                     
+              
+                TDD ORDER:  
+                1. TSPEC    
+                2. SPEC     
+                3. TASKS    
+              
+                     
+                     
                  GATE-12
-                     │
-                     ▼
+                     
+                     
                  DEPLOYED
 ```
 
@@ -90,25 +90,25 @@ Before initiating the design change workflow:
 **Critical Rule**: All design changes MUST follow TDD order:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│              TDD ORDER FOR DESIGN CHANGES           │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  1. TSPEC (L10) ◄── Update test specifications FIRST│
-│      │                                              │
-│      ▼                                              │
-│  2. SPEC (L9)  ◄── Then update implementation spec │
-│      │                                              │
-│      ▼                                              │
-│  3. TASKS (L11) ◄── Finally update task breakdown  │
-│      │                                              │
-│      ▼                                              │
-│  4. Code (L12) ◄── Implement to pass tests         │
-│      │                                              │
-│      ▼                                              │
-│  5. Tests (L13) ◄── Run tests (should pass now)   │
-│                                                     │
-└─────────────────────────────────────────────────────┘
+
+              TDD ORDER FOR DESIGN CHANGES           
+
+                                                     
+  1. TSPEC (L10)  Update test specifications FIRST
+                                                    
+                                                    
+  2. SPEC (L9)   Then update implementation spec 
+                                                    
+                                                    
+  3. TASKS (L11)  Finally update task breakdown  
+                                                    
+                                                    
+  4. Code (L12)  Implement to pass tests         
+                                                    
+                                                    
+  5. Tests (L13)  Run tests (should pass now)   
+                                                     
+
 ```
 
 ### 3.1 TDD Compliance Violations

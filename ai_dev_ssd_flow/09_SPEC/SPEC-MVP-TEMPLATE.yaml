@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC structure.
+#  Document Authority: This is the PRIMARY STANDARD for SPEC structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
 # - Schema: SPEC_MVP_SCHEMA.yaml - Machine-readable validation (derivative)
@@ -17,7 +17,7 @@
 #
 # Reference Template — For learning and small specs only. Real SPECs are monolithic YAML per component for code generation.
 #
-# ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
+# [WARN] CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 #
@@ -42,7 +42,7 @@ summary: Single-sentence description of component purpose, scope, and primary va
 # METADATA & DOCUMENT CONTROL
 # ===================
 #
-# ⚠️ UPSTREAM ARTIFACT REQUIREMENT: Before completing traceability tags:
+# [WARN] UPSTREAM ARTIFACT REQUIREMENT: Before completing traceability tags:
 # 1. Check existing artifacts: List what upstream documents actually exist in docs/
 # 2. Reference only existing documents: Use actual document IDs, not placeholders
 # 3. Use null appropriately: Only when upstream artifact type genuinely doesn't exist
@@ -57,7 +57,7 @@ metadata:
   # - Maximum (Markdown): 20,000 tokens (Error limit)
   # - YAML (monolithic): Warning at 20,000 tokens
   # ===================
-  # 🧠 HIGH-GUIDANCE MODE: This template is optimized for "Algorithmic Specificity"
+  #  HIGH-GUIDANCE MODE: This template is optimized for "Algorithmic Specificity"
   # Strategy:
   # 1. Logic-First Interfaces: Define HOW (pseudocode/steps), not just WHAT.
   # 2. Mapper Pattern: Map REQ items to specific code logic/exceptions.
@@ -65,10 +65,10 @@ metadata:
   # ===================
   version: "1.0.0"
   status: "draft"  # draft, review, approved, implemented, deprecated
-  # ⚠️ REQUIRED: Ensure these dates are valid YYYY-MM-DD
+  # [WARN] REQUIRED: Ensure these dates are valid YYYY-MM-DD
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
-  task_ready_score: "✅ 95% (Target: ≥90%)"  # Added for quality gates
+  task_ready_score: "[PASS] 95% (Target: ≥90%)"  # Added for quality gates
   authors:
     - name: "Primary Author"
       email: "author@company.com"
@@ -555,7 +555,7 @@ req_implementations:
               type: "list[str]"
               constraints: "User roles (e.g., 'admin', 'user')"
 
-      # 🟢 HIGH-GUIDANCE: Specific logic rules mapped to REQ acceptance criteria
+      #  HIGH-GUIDANCE: Specific logic rules mapped to REQ acceptance criteria
       validation_rules:
         - rule: "RS256 Algorithm Enforcement"
           implementation: |
@@ -740,7 +740,7 @@ interfaces:
       latency_target: "@threshold:perf.api.p95_latency"
 
   # Internal APIs - REQUIRED (service method signatures)
-  # 🟢 HIGH-GUIDANCE: Use 'purpose' to write Logic-First pseudocode steps
+  #  HIGH-GUIDANCE: Use 'purpose' to write Logic-First pseudocode steps
   internal_apis:
     - interface: "AuthService.authenticate()"
       signature: "authenticate(email: str, password: str) -> TokenPair"
@@ -927,7 +927,7 @@ behavior:
       - cleanup_resources
 
   state_management:
-    # 🟢 HIGH-GUIDANCE: Explicit State Transitions & Side Effects
+    #  HIGH-GUIDANCE: Explicit State Transitions & Side Effects
     description: "Lifecycle of an Entity (e.g. Order, Session)"
     states:
       - UNINITIALIZED

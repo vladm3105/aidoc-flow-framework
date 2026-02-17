@@ -80,7 +80,7 @@ See `.claude/skills/doc-brd-autopilot/SKILL.md` for complete documentation.
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
@@ -89,11 +89,11 @@ BRDs are the **first step** in specification-driven development within the compl
 
 ## ADR References in BRD
 
-**⚠️ CRITICAL - Workflow Order**: BRDs are created BEFORE ADRs in the SDD workflow. Therefore:
+**[WARN] CRITICAL - Workflow Order**: BRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in BRD documents
+[FAIL] **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in BRD documents
 
-✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
+[PASS] **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
 **Correct Workflow Order**: **BRD** → PRD → EARS → BDD → **ADR** → SYS → REQ → CTR → SPEC → TASKS
 
@@ -165,7 +165,7 @@ Each ADR topic **MUST** include:
 ```
 BRD Section 7.2          →    PRD Section 18         →    ADR
 (WHAT & WHY & HOW MUCH)       (HOW to evaluate)          (Final decision)
-─────────────────────────────────────────────────────────────────────────
+
 Business drivers              Technical details          Implementation decision
 Business constraints          Deep-dive analysis         Trade-off analysis
 Cost estimates                Evaluation criteria        Selected approach
@@ -400,23 +400,23 @@ All BRD documents with review/fix workflows use nested folders to keep related f
 
 ```text
 BRD-07_f7_config/
-├── BRD-07_f7_config.md
-├── BRD-07.R_review_report_v001.md
-├── BRD-07.F_fix_report_v001.md
-└── .drift_cache.json
+ BRD-07_f7_config.md
+ BRD-07.R_review_report_v001.md
+ BRD-07.F_fix_report_v001.md
+ .drift_cache.json
 ```
 
 **Sectioned (large document)**:
 
 ```text
 BRD-01_f1_iam/
-├── BRD-01.0_index.md
-├── BRD-01.1_core.md
-├── BRD-01.2_requirements.md
-├── BRD-01.3_quality_ops.md
-├── BRD-01.R_review_report_v001.md
-├── BRD-01.F_fix_report_v001.md
-└── .drift_cache.json
+ BRD-01.0_index.md
+ BRD-01.1_core.md
+ BRD-01.2_requirements.md
+ BRD-01.3_quality_ops.md
+ BRD-01.R_review_report_v001.md
+ BRD-01.F_fix_report_v001.md
+ .drift_cache.json
 ```
 
 ## Writing Guidelines
@@ -470,7 +470,7 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 | **PRD-Ready Score** | 95/100 (Target: ≥90/100) |
 ```
 
-- **Format**: `[Score]/100 (Target: ≥90/100)` (optional ✅ emoji allowed)
+- **Format**: `[Score]/100 (Target: ≥90/100)` (optional [PASS] emoji allowed)
 - **Validation**: Required in Document Control table (blocking validation)
 - **Warnings**: Scores below 90/100 trigger validation warnings
 

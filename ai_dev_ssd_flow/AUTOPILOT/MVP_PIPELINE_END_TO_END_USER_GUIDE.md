@@ -133,7 +133,7 @@ WHEN the system is active, THE system SHALL monitor BTC/USD price every 5 second
 @prd: PRD.01.03.01
 ```
 
-**Quality Score**: 92% → ✅ Auto-approved
+**Quality Score**: 92% → [PASS] Auto-approved
 
 ---
 
@@ -157,7 +157,7 @@ Scenario: Execute buy on MA crossover
   And position size SHALL be ≤2% of capital
 ```
 
-**Quality Score**: 94% → ✅ Auto-approved
+**Quality Score**: 94% → [PASS] Auto-approved
 
 ---
 
@@ -186,7 +186,7 @@ Scenario: Execute buy on MA crossover
 - Con: Requires Python 3.11+
 ```
 
-**Quality Score**: 88% → ⚠️ **Manual Review Required**
+**Quality Score**: 88% → [WARN] **Manual Review Required**
 
 **What you do**:
 1. GitHub creates comment on PR: "ADR requires review (score: 88%)"
@@ -201,7 +201,7 @@ Scenario: Execute buy on MA crossover
 
 **Includes**: All 15 required sections (scope, interfaces, data, testing, etc.)
 
-**Quality Score**: 91% → ✅ Auto-approved
+**Quality Score**: 91% → [PASS] Auto-approved
 
 ---
 
@@ -212,21 +212,21 @@ Scenario: Execute buy on MA crossover
 **Generated**: 12 requirement files
 ```
 ai_dev_flow/07_REQ/
-├── REQ-01_market_data.md
-├── REQ-02_ma_calculation.md
-├── REQ-03_signal_detection.md
-├── REQ-04_order_execution.md
-├── REQ-05_risk_management.md
-├── REQ-06_position_tracking.md
-├── REQ-07_logging.md
-├── REQ-08_error_handling.md
-├── REQ-09_api_authentication.md
-├── REQ-10_data_persistence.md
-├── REQ-11_monitoring.md
-└── REQ-12_configuration.md
+ REQ-01_market_data.md
+ REQ-02_ma_calculation.md
+ REQ-03_signal_detection.md
+ REQ-04_order_execution.md
+ REQ-05_risk_management.md
+ REQ-06_position_tracking.md
+ REQ-07_logging.md
+ REQ-08_error_handling.md
+ REQ-09_api_authentication.md
+ REQ-10_data_persistence.md
+ REQ-11_monitoring.md
+ REQ-12_configuration.md
 ```
 
-**Quality Score**: 90% average → ✅ Auto-approved
+**Quality Score**: 90% average → [PASS] Auto-approved
 
 ---
 
@@ -266,7 +266,7 @@ paths:
           description: Trade executed
 ```
 
-**Quality Score**: 93% → ✅ Auto-approved
+**Quality Score**: 93% → [PASS] Auto-approved
 
 ---
 
@@ -324,7 +324,7 @@ traceability:
   req: REQ.01, REQ.02, REQ.03, REQ.04, REQ.05
 ```
 
-**Quality Score**: 95% → ✅ Auto-approved
+**Quality Score**: 95% → [PASS] Auto-approved
 
 **Autopilot Complete!** All documents generated in ~1 hour.
 
@@ -343,10 +343,10 @@ traceability:
 
 **PR will show**:
 ```
-✅ Quality Gate: 92% (threshold: 90%)
-✅ All validations passed
-✅ Traceability verified
-⚠️ 1 manual review pending (ADR)
+[PASS] Quality Gate: 92% (threshold: 90%)
+[PASS] All validations passed
+[PASS] Traceability verified
+[WARN] 1 manual review pending (ADR)
 ```
 
 ---
@@ -380,28 +380,28 @@ traceability:
 **Generated Files**:
 ```
 src/
-├── trading_bot/
-│   ├── __init__.py
-│   ├── main.py                    # FastAPI app
-│   ├── services/
-│   │   ├── market_data.py         # Market data service
-│   │   ├── signal_generator.py    # MA crossover logic
-│   │   ├── order_executor.py      # Order execution
-│   │   └── risk_manager.py        # Risk limits
-│   ├── models/
-│   │   ├── trade.py               # Pydantic models
-│   │   └── order.py
-│   ├── api/
-│   │   ├── routes.py              # API endpoints
-│   │   └── websocket.py           # WebSocket handler
-│   └── config.py                  # Configuration
-└── tests/
-    ├── unit/
-    │   ├── test_signal_generator.py
-    │   ├── test_risk_manager.py
-    │   └── test_order_executor.py
-    └── integration/
-        └── test_trading_flow.py
+ trading_bot/
+    __init__.py
+    main.py                    # FastAPI app
+    services/
+       market_data.py         # Market data service
+       signal_generator.py    # MA crossover logic
+       order_executor.py      # Order execution
+       risk_manager.py        # Risk limits
+    models/
+       trade.py               # Pydantic models
+       order.py
+    api/
+       routes.py              # API endpoints
+       websocket.py           # WebSocket handler
+    config.py                  # Configuration
+ tests/
+     unit/
+        test_signal_generator.py
+        test_risk_manager.py
+        test_order_executor.py
+     integration/
+         test_trading_flow.py
 ```
 
 **Example Generated Code** (src/services/signal_generator.py):
@@ -472,12 +472,12 @@ class SignalGenerator:
 
 **Code Generation Report**:
 ```
-✅ Generated 8 source files
-✅ Generated 6 test files
-✅ Contract compliance: 98%
-✅ Test coverage: 85%
-✅ All type hints present
-✅ All docstrings present
+[PASS] Generated 8 source files
+[PASS] Generated 6 test files
+[PASS] Contract compliance: 98%
+[PASS] Test coverage: 85%
+[PASS] All type hints present
+[PASS] All docstrings present
 ```
 
 ---
@@ -507,10 +507,10 @@ class SignalGenerator:
 
 **Validation Results**:
 ```
-✅ Syntax: All files valid
-✅ Type hints: 100% coverage
-✅ Contract compliance: 98% (threshold: 95%)
-✅ Security: No high/critical issues
+[PASS] Syntax: All files valid
+[PASS] Type hints: 100% coverage
+[PASS] Contract compliance: 98% (threshold: 95%)
+[PASS] Security: No high/critical issues
 ```
 
 ---
@@ -560,10 +560,10 @@ src/tests/integration/test_trading_flow.py ...   [100%]
 **Generation Time**: 47 seconds
 
 ### Generated Files
-- ✅ 8 source files (src/trading_bot/)
-- ✅ 6 test files (tests/)
-- ✅ 1 Dockerfile
-- ✅ 1 Cloud Run config
+- [PASS] 8 source files (src/trading_bot/)
+- [PASS] 6 test files (tests/)
+- [PASS] 1 Dockerfile
+- [PASS] 1 Cloud Run config
 
 ### Quality Metrics
 - **Contract Compliance**: 98%
@@ -572,10 +572,10 @@ src/tests/integration/test_trading_flow.py ...   [100%]
 - **Security Score**: A
 
 ### Validation
-- ✅ All tests passing (16/16)
-- ✅ Security scan clean
-- ✅ Type checking passed
-- ✅ Contract compliance verified
+- [PASS] All tests passing (16/16)
+- [PASS] Security scan clean
+- [PASS] Type checking passed
+- [PASS] Contract compliance verified
 
 Ready for review and merge.
 ```
@@ -592,10 +592,10 @@ Ready for review and merge.
 4. **Approve**: Click "Approve and Merge"
 
 **Tips for Review**:
-- ✅ Focus on business logic correctness
-- ✅ Verify MA periods (20, 50) match PRD
-- ✅ Check risk limits (2%) implemented
-- ⏭️  Skip coding style (already validated)
+- [PASS] Focus on business logic correctness
+- [PASS] Verify MA periods (20, 50) match PRD
+- [PASS] Check risk limits (2%) implemented
+- ⏭  Skip coding style (already validated)
 
 ---
 
@@ -617,10 +617,10 @@ Ready for review and merge.
 
 **Deployment Output**:
 ```
-✅ Building source using Buildpacks
-✅ Creating revision trading-bot-00001
-✅ Routing traffic to revision
-✅ Service deployed
+[PASS] Building source using Buildpacks
+[PASS] Creating revision trading-bot-00001
+[PASS] Routing traffic to revision
+[PASS] Service deployed
 
 URL: https://trading-bot-xyz123.a.run.app
 ```
@@ -631,22 +631,22 @@ URL: https://trading-bot-xyz123.a.run.app
 
 | Step | Layer | Task | Time | Automated? |
 |------|-------|------|------|------------|
-| 1 | L2 | Write PRD | 1h | ❌ Manual |
-| 2 | - | Trigger pipeline | 1m | ✅ GitHub UI |
-| 3a | L3 | Generate EARS | 5m | ✅ Autopilot |
-| 3b | L4 | Generate BDD | 5m | ✅ Autopilot |
-| 3c | L5 | Generate ADR | 10m | ✅ Autopilot |
-| 3d | L6 | Generate SYS | 10m | ✅ Autopilot |
-| 3e | L7 | Generate REQ | 15m | ✅ Autopilot |
-| 3f | L8 | Generate CTR | 10m | ✅ Autopilot |
-| 3g | L9 | Generate SPEC | 15m | ✅ Autopilot |
-| 4 | - | Review PR | 15m | ❌ Manual |
-| 5 | L11 | Generate code | 15m | ✅ Vertex AI |
-| 6 | L12 | Validate code | 5m | ✅ GitHub Actions |
-| 7 | L12 | Run tests | 5m | ✅ GitHub Actions |
-| 8 | - | Create code PR | 1m | ✅ GitHub Actions |
-| 9 | - | Review code | 10m | ❌ Manual |
-| 10 | L13 | Deploy Cloud Run | 5m | ✅ GitHub Actions |
+| 1 | L2 | Write PRD | 1h | [FAIL] Manual |
+| 2 | - | Trigger pipeline | 1m | [PASS] GitHub UI |
+| 3a | L3 | Generate EARS | 5m | [PASS] Autopilot |
+| 3b | L4 | Generate BDD | 5m | [PASS] Autopilot |
+| 3c | L5 | Generate ADR | 10m | [PASS] Autopilot |
+| 3d | L6 | Generate SYS | 10m | [PASS] Autopilot |
+| 3e | L7 | Generate REQ | 15m | [PASS] Autopilot |
+| 3f | L8 | Generate CTR | 10m | [PASS] Autopilot |
+| 3g | L9 | Generate SPEC | 15m | [PASS] Autopilot |
+| 4 | - | Review PR | 15m | [FAIL] Manual |
+| 5 | L11 | Generate code | 15m | [PASS] Vertex AI |
+| 6 | L12 | Validate code | 5m | [PASS] GitHub Actions |
+| 7 | L12 | Run tests | 5m | [PASS] GitHub Actions |
+| 8 | - | Create code PR | 1m | [PASS] GitHub Actions |
+| 9 | - | Review code | 10m | [FAIL] Manual |
+| 10 | L13 | Deploy Cloud Run | 5m | [PASS] GitHub Actions |
 
 **Total Time**: 2h 12m  
 **Your Effort**: 1h 26m (PRD + 2 reviews)  
@@ -657,24 +657,24 @@ URL: https://trading-bot-xyz123.a.run.app
 ## What You Get
 
 ### Documentation
-- ✅ Complete traceability (PRD → SPEC)
-- ✅ 12 atomic requirements
-- ✅ API contracts (OpenAPI)
-- ✅ Test scenarios (BDD)
-- ✅ Architecture decisions
+- [PASS] Complete traceability (PRD → SPEC)
+- [PASS] 12 atomic requirements
+- [PASS] API contracts (OpenAPI)
+- [PASS] Test scenarios (BDD)
+- [PASS] Architecture decisions
 
 ### Code
-- ✅ Production-ready Python code
-- ✅ 100% type hints
-- ✅ Comprehensive docstrings
-- ✅ 85%+ test coverage
-- ✅ Contract-compliant APIs
+- [PASS] Production-ready Python code
+- [PASS] 100% type hints
+- [PASS] Comprehensive docstrings
+- [PASS] 85%+ test coverage
+- [PASS] Contract-compliant APIs
 
 ### Deployment
-- ✅ Deployed to Cloud Run
-- ✅ Public URL
-- ✅ Auto-scaling
-- ✅ Monitoring enabled
+- [PASS] Deployed to Cloud Run
+- [PASS] Public URL
+- [PASS] Auto-scaling
+- [PASS] Monitoring enabled
 
 ---
 
@@ -693,7 +693,7 @@ URL: https://trading-bot-xyz123.a.run.app
 - **Free tier**: 2M requests/month
 - **Cost**: $0 for MVP testing
 
-**Total per MVP**: **~$0.25** 🎉
+**Total per MVP**: **~$0.25** 
 
 ---
 
@@ -741,4 +741,4 @@ URL: https://trading-bot-xyz123.a.run.app
 ↓  
 **Deploy to Cloud Run (automated, 5 min)**  
 ↓  
-**🎉 Live application in <2 hours!**
+** Live application in <2 hours!**

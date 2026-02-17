@@ -118,9 +118,9 @@ fi
 # Convert to absolute path
 TARGET="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
 
-echo -e "${BLUE}╔══════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║              CTR VALIDATION SUITE                                ║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}${NC}"
+echo -e "${BLUE}              CTR VALIDATION SUITE                                ${NC}"
+echo -e "${BLUE}${NC}"
 echo ""
 echo -e "Mode:   ${YELLOW}${MODE}${NC}"
 echo -e "Target: ${YELLOW}${TARGET}${NC}"
@@ -133,24 +133,24 @@ TOTAL_WARNINGS=0
 run_validator() {
     local name="$1"
     local cmd="$2"
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${BLUE}▶ ${name}${NC}"
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}${NC}"
+    echo -e "${BLUE} ${name}${NC}"
+    echo -e "${BLUE}${NC}"
     echo ""
     if eval $cmd; then
         echo ""
-        echo -e "${GREEN}✓ ${name} PASSED${NC}"
+        echo -e "${GREEN} ${name} PASSED${NC}"
         ((TOTAL_PASSED++))
         return 0
     else
         local exit_code=$?
         echo ""
         if [[ $exit_code -eq 1 ]]; then
-            echo -e "${YELLOW}⚠ ${name} PASSED WITH WARNINGS${NC}"
+            echo -e "${YELLOW} ${name} PASSED WITH WARNINGS${NC}"
             ((TOTAL_WARNINGS++))
             return 0
         else
-            echo -e "${RED}✗ ${name} FAILED${NC}"
+            echo -e "${RED} ${name} FAILED${NC}"
             ((TOTAL_FAILED++))
             return $exit_code
         fi
@@ -195,18 +195,18 @@ if [[ "$SKIP_IDS" == false ]]; then
     echo ""
 fi
 
-echo -e "${BLUE}╔══════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║                    VALIDATION SUMMARY                            ║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}${NC}"
+echo -e "${BLUE}                    VALIDATION SUMMARY                            ${NC}"
+echo -e "${BLUE}${NC}"
 echo ""
 echo -e "Passed: ${GREEN}${TOTAL_PASSED}${NC}"
 echo -e "Failed: ${RED}${TOTAL_FAILED}${NC}"
 echo ""
 
 if [[ $TOTAL_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All validation checks passed!${NC}"
+    echo -e "${GREEN} All validation checks passed!${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some validation checks failed${NC}"
+    echo -e "${RED} Some validation checks failed${NC}"
     exit 1
 fi

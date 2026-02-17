@@ -61,18 +61,18 @@ done
 
 print_header() {
   echo ""
-  echo "╔══════════════════════════════════════════════════════════════════════╗"
-  echo "║              4-GATE CHANGE MANAGEMENT VALIDATION                     ║"
-  echo "╠══════════════════════════════════════════════════════════════════════╣"
-  echo "║  File: $(printf '%-60s' "$CHG_FILE") ║"
-  echo "║  Date: $(printf '%-60s' "$(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')") ║"
+  echo ""
+  echo "              4-GATE CHANGE MANAGEMENT VALIDATION                     "
+  echo ""
+  echo "  File: $(printf '%-60s' "$CHG_FILE") "
+  echo "  Date: $(printf '%-60s' "$(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')") "
   if [[ -n "$SOURCE" ]]; then
-    echo "║  Source: $(printf '%-58s' "$SOURCE") ║"
+    echo "  Source: $(printf '%-58s' "$SOURCE") "
   fi
   if [[ -n "$RETROACTIVE" ]]; then
-    echo "║  Mode: $(printf '%-60s' "RETROACTIVE (post-emergency)") ║"
+    echo "  Mode: $(printf '%-60s' "RETROACTIVE (post-emergency)") "
   fi
-  echo "╚══════════════════════════════════════════════════════════════════════╝"
+  echo ""
   echo ""
 }
 
@@ -173,9 +173,9 @@ run_gate_validation() {
   local script=""
 
   echo ""
-  echo "┌──────────────────────────────────────────────────────────────────────┐"
-  echo "│  $gate VALIDATION"
-  echo "└──────────────────────────────────────────────────────────────────────┘"
+  echo ""
+  echo "  $gate VALIDATION"
+  echo ""
 
   case "$gate" in
     GATE-01)
@@ -194,7 +194,7 @@ run_gate_validation() {
       script="$SCRIPT_DIR/validate_emergency_bypass.sh"
       ;;
     *)
-      echo -e "${YELLOW}  ⚠ Unknown gate: $gate (skipped)${NC}"
+      echo -e "${YELLOW}   Unknown gate: $gate (skipped)${NC}"
       ((GATES_SKIPPED++)) || true
       return 0
       ;;
@@ -202,7 +202,7 @@ run_gate_validation() {
 
   # Check if script exists
   if [[ ! -x "$script" ]]; then
-    echo -e "${YELLOW}  ⚠ Script not found or not executable: $script${NC}"
+    echo -e "${YELLOW}   Script not found or not executable: $script${NC}"
     ((GATES_SKIPPED++)) || true
     return 0
   fi
@@ -235,32 +235,32 @@ run_gate_validation() {
 
 print_summary() {
   echo ""
-  echo "╔══════════════════════════════════════════════════════════════════════╗"
-  echo "║                    VALIDATION SUMMARY                                 ║"
-  echo "╠══════════════════════════════════════════════════════════════════════╣"
-  printf "║  Gates Passed:  %-54s ║\n" "${GREEN}$GATES_PASSED${NC}"
-  printf "║  Gates Failed:  %-54s ║\n" "${RED}$GATES_FAILED${NC}"
-  printf "║  Gates Skipped: %-54s ║\n" "${YELLOW}$GATES_SKIPPED${NC}"
-  echo "╠══════════════════════════════════════════════════════════════════════╣"
-  printf "║  Total Errors:   %-53s ║\n" "${RED}$TOTAL_ERRORS${NC}"
-  printf "║  Total Warnings: %-53s ║\n" "${YELLOW}$TOTAL_WARNINGS${NC}"
-  echo "╚══════════════════════════════════════════════════════════════════════╝"
+  echo ""
+  echo "                    VALIDATION SUMMARY                                 "
+  echo ""
+  printf "  Gates Passed:  %-54s \n" "${GREEN}$GATES_PASSED${NC}"
+  printf "  Gates Failed:  %-54s \n" "${RED}$GATES_FAILED${NC}"
+  printf "  Gates Skipped: %-54s \n" "${YELLOW}$GATES_SKIPPED${NC}"
+  echo ""
+  printf "  Total Errors:   %-53s \n" "${RED}$TOTAL_ERRORS${NC}"
+  printf "  Total Warnings: %-53s \n" "${YELLOW}$TOTAL_WARNINGS${NC}"
+  echo ""
   echo ""
 
   if [[ $GATES_FAILED -gt 0 ]]; then
-    echo -e "${RED}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${RED}║  VALIDATION FAILED: $GATES_FAILED gate(s) failed validation                      ║${NC}"
-    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${RED}${NC}"
+    echo -e "${RED}  VALIDATION FAILED: $GATES_FAILED gate(s) failed validation                      ${NC}"
+    echo -e "${RED}${NC}"
     exit 2
   elif [[ $TOTAL_WARNINGS -gt 0 ]]; then
-    echo -e "${YELLOW}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${YELLOW}║  VALIDATION PASSED with $TOTAL_WARNINGS warning(s)                               ║${NC}"
-    echo -e "${YELLOW}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${YELLOW}${NC}"
+    echo -e "${YELLOW}  VALIDATION PASSED with $TOTAL_WARNINGS warning(s)                               ${NC}"
+    echo -e "${YELLOW}${NC}"
     exit 1
   else
-    echo -e "${GREEN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║  ALL GATES PASSED                                                    ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${GREEN}${NC}"
+    echo -e "${GREEN}  ALL GATES PASSED                                                    ${NC}"
+    echo -e "${GREEN}${NC}"
     exit 0
   fi
 }
@@ -291,14 +291,14 @@ main() {
 
   # Run routing validation first
   echo ""
-  echo "┌──────────────────────────────────────────────────────────────────────┐"
-  echo "│  ROUTING VALIDATION"
-  echo "└──────────────────────────────────────────────────────────────────────┘"
+  echo ""
+  echo "  ROUTING VALIDATION"
+  echo ""
 
   if [[ -x "$SCRIPT_DIR/validate_chg_routing.py" ]]; then
     python3 "$SCRIPT_DIR/validate_chg_routing.py" "$CHG_FILE" $VERBOSE || true
   else
-    echo -e "${YELLOW}  ⚠ Routing validation script not found${NC}"
+    echo -e "${YELLOW}   Routing validation script not found${NC}"
   fi
 
   # Run gate validations

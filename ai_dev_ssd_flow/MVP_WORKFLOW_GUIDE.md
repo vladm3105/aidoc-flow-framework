@@ -15,7 +15,7 @@ custom_fields:
 **Purpose**: Streamlined workflow for rapid Minimum Viable Product (MVP) development using AI Dev Flow.
 **Target Audience**: AI Assistants and small teams (2-10 people) building early-stage products.
 
-> **🎯 MVP-ONLY FRAMEWORK**
+> ** MVP-ONLY FRAMEWORK**
 >
 > As of v2.0, the framework uses MVP templates exclusively.
 > Full templates have been deprecated and archived in `archived/` subdirectories.
@@ -28,7 +28,7 @@ Important MVP note: MVP artifacts are single, flat files. Split only when a docu
 
 ---
 
-## 🚀 The MVP Track
+##  The MVP Track
 
 The **MVP Track** delivers **90%+ automation** across 14 of 15 layers, enabling **1-2 week cycles** from business idea to production MVP.
 
@@ -56,7 +56,7 @@ The **MVP Track** delivers **90%+ automation** across 14 of 15 layers, enabling 
 
 ---
 
-## 🔄 The 6-Step Universal Verification Loop
+##  The 6-Step Universal Verification Loop
 
 For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact micro-workflow:
 
@@ -69,7 +69,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ---
 
-## ⚡ 7-Step MVP Workflow
+##  7-Step MVP Workflow
 
 ### Step 1: Business Hypothesis (BRD) — **Day 1 (Morning)**
 **Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD_MVP_CREATION_RULES.md`
@@ -132,7 +132,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ---
 
-## 🔁 MVP-to-Production Loop: Continuous Delivery
+##  MVP-to-Production Loop: Continuous Delivery
 
 The framework enables **continuous product evolution** through rapid MVP cycles:
 
@@ -152,7 +152,7 @@ MVP v3.0 (Add Features) ← Iterate...
 
 ---
 
-## 🚀 Quick-Start Commands
+##  Quick-Start Commands
 
 ### Common Scenarios
 
@@ -248,7 +248,7 @@ python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow \
 
 ---
 
-## 📘 Practical Example: Trading Bot MVP
+##  Practical Example: Trading Bot MVP
 
 Let's walk through generating a **crypto trading bot** from idea to production using the MVP workflow.
 
@@ -268,15 +268,15 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
 
 **What Happens** (automated):
 1. **BRD Generation** → `BRD-01_trading_bot.md`  
-   - Score: 92% → ✅ Auto-approved
+   - Score: 92% → [PASS] Auto-approved
 2. **PRD Generation** → `PRD-01_trading_bot.md`  
-   - Score: 94% → ✅ Auto-approved
+   - Score: 94% → [PASS] Auto-approved
 3. **EARS Generation** → `EARS-01_trading_bot.md`  
-   - Score: 95% → ✅ Auto-approved
+   - Score: 95% → [PASS] Auto-approved
 4. **BDD Generation** → `BDD-01_trading_bot.feature`  
-   - Score: 91% → ✅ Auto-approved
+   - Score: 91% → [PASS] Auto-approved
 5. **ADR Generation** → `ADR-01_trading_bot.md`  
-   - Score: 88% → ⚠️ Human review required
+   - Score: 88% → [WARN] Human review required
    - Architect reviews (15 min), approves
 6. **SYS/REQ/SPEC/TASKS** → All auto-generated
    - All artifacts score ≥90%
@@ -296,15 +296,15 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```
 ai_dev_flow/
-├── 01_BRD/BRD-01_trading_bot.md               (Business hypothesis)
-├── 02_PRD/PRD-01_trading_bot.md               (Product requirements)
-├── 03_EARS/EARS-01_trading_bot.md             (Engineering requirements)
-├── 04_BDD/BDD-01_trading_bot.feature          (Test scenarios)
-├── 05_ADR/ADR-01_trading_bot.md               (Tech stack decisions)
-├── 06_SYS/SYS-01_trading_bot.md               (System architecture)
-├── 07_REQ/REQ-01...15_trading_bot.md          (15 atomic requirements)
-├── 09_SPEC/SPEC-01_trading_bot.yaml           (Technical spec)
-└── 11_TASKS/TASKS-01_trading_bot.md           (Implementation plan)
+ 01_BRD/BRD-01_trading_bot.md               (Business hypothesis)
+ 02_PRD/PRD-01_trading_bot.md               (Product requirements)
+ 03_EARS/EARS-01_trading_bot.md             (Engineering requirements)
+ 04_BDD/BDD-01_trading_bot.feature          (Test scenarios)
+ 05_ADR/ADR-01_trading_bot.md               (Tech stack decisions)
+ 06_SYS/SYS-01_trading_bot.md               (System architecture)
+ 07_REQ/REQ-01...15_trading_bot.md          (15 atomic requirements)
+ 09_SPEC/SPEC-01_trading_bot.yaml           (Technical spec)
+ 11_TASKS/TASKS-01_trading_bot.md           (Implementation plan)
 ```
 
 ### Key Takeaways
@@ -326,7 +326,7 @@ ai_dev_flow/
 
 Use MVP templates by default; split files only when size blocks AI assistants.
 
-## 🛠️ Validation for MVP
+##  Validation for MVP
 
 When using the MVP track, run validation with awareness:
 
@@ -355,7 +355,7 @@ custom_fields:
 
 ---
 
-## 🔀 Change Management
+##  Change Management
 
 When changes occur during MVP development, use the **4-Gate Change Management System**:
 
@@ -391,7 +391,7 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE>
 
 ---
 
-## 🔄 Migration to Full Framework
+##  Migration to Full Framework
 
 See the "Migration" section at the bottom of every MVP template when you are ready to scale.
 

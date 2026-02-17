@@ -60,11 +60,11 @@ Each artifact includes a readiness assessment field:
 ```yaml
 # SPEC-MVP-TEMPLATE.yaml (Layer 9)
 metadata:
-  task_ready_score: "✅ 95% (Target: ≥90%)"
+  task_ready_score: "[PASS] 95% (Target: ≥90%)"
 
 # Document Control (MarkDown artifacts)
-| SPEC-Ready Score | ✅ 92% (Target: ≥90%) |
-| CTR-Ready Score | ✅ 95% (Target: ≥90%) |
+| SPEC-Ready Score | [PASS] 92% (Target: ≥90%) |
+| CTR-Ready Score | [PASS] 95% (Target: ≥90%) |
 ```
 
 ---
@@ -145,12 +145,12 @@ validate_quality_gates() {
         validate_upstream_chain "$file"
 
         if [ $? -ne 0 ]; then
-            echo "❌ Quality gate failed for $file"
+            echo "[FAIL] Quality gate failed for $file"
             exit 1
         fi
     done
 
-    echo "✅ All quality gates passed"
+    echo "[PASS] All quality gates passed"
 }
 ```
 
@@ -166,16 +166,16 @@ validate_ready_score() {
     score=$(extract_ready_score "$file" "$score_type")
 
     if [ -z "$score" ]; then
-        echo "❌ Missing $score_type in $file"
+        echo "[FAIL] Missing $score_type in $file"
         return 1
     fi
 
     if [ "$score" -lt "$min_threshold" ]; then
-        echo "❌ $score_type too low: $score% (minimum: ${min_threshold}%)"
+        echo "[FAIL] $score_type too low: $score% (minimum: ${min_threshold}%)"
         return 1
     fi
 
-    echo "✅ $score_type valid: $score% ≥ ${min_threshold}%"
+    echo "[PASS] $score_type valid: $score% ≥ ${min_threshold}%"
     return 0
 }
 
@@ -188,12 +188,12 @@ validate_cumulative_tags() {
     # Check tags are present and valid
     for tag in $required_tags; do
         if ! grep -q "^@$tag:" "$file"; then
-            echo "❌ Missing tag: @$tag"
+            echo "[FAIL] Missing tag: @$tag"
             return 1
         fi
     done
 
-    echo "✅ Cumulative tagging valid"
+    echo "[PASS] Cumulative tagging valid"
     return 0
 }
 ```
@@ -212,7 +212,7 @@ cat > .git/hooks/pre-commit << 'EOF'
 # AI Dev Flow Quality Gates Integration
 # Validates against 14-Layer Architecture (TRACEABILITY.md)
 
-echo "🔍 Running AI Dev Flow quality gate validation..."
+echo " Running AI Dev Flow quality gate validation..."
 
 # Get changed artifact files
 changed_artifacts=$(git diff --cached --name-only | grep '^docs/')
@@ -222,14 +222,14 @@ if [ -n "$changed_artifacts" ]; then
     for artifact in $changed_artifacts; do
         echo "Validating: $artifact"
         if ! ./AUTOPILOT/scripts/validate_quality_gates.sh "$artifact"; then
-            echo "❌ Quality gate failed for $artifact"
-            echo "💡 Run: ./scripts/fix_quality_gate.sh '$artifact'"
+            echo "[FAIL] Quality gate failed for $artifact"
+            echo " Run: ./scripts/fix_quality_gate.sh '$artifact'"
             exit 1
         fi
     done
 fi
 
-echo "✅ All quality gates passed!"
+echo "[PASS] All quality gates passed!"
 EOF
 
 chmod +x .git/hooks/pre-commit
@@ -264,14 +264,14 @@ validate_score() {
     local file="$1"
     local score_field="$2"
 
-    score=$(grep "| $score_field" "$file" | sed 's/.*✅ \([0-9]*\)%.*/\1/')
+    score=$(grep "| $score_field" "$file" | sed 's/.*[PASS] \([0-9]*\)%.*/\1/')
 
     if [ -z "$score" ] || [ "$score" -lt 90 ]; then
-        echo "❌ $score_field: $score% (requires ≥90%)"
+        echo "[FAIL] $score_field: $score% (requires ≥90%)"
         return 1
     fi
 
-    echo "✅ $score_field: $score%"
+    echo "[PASS] $score_field: $score%"
     return 0
 }
 
@@ -279,14 +279,14 @@ validate_meta_score() {
     local file="$1"
     local meta_field="$2"
 
-    score=$(grep "task_ready_score:" "$file" | sed 's/.*✅ \([0-9]*\)%.*/\1/')
+    score=$(grep "task_ready_score:" "$file" | sed 's/.*[PASS] \([0-9]*\)%.*/\1/')
 
     if [ -z "$score" ] || [ "$score" -lt 90 ]; then
-        echo "❌ $meta_field: $score% (requires ≥90%)"
+        echo "[FAIL] $meta_field: $score% (requires ≥90%)"
         return 1
     fi
 
-    echo "✅ $meta_field: $score%"
+    echo "[PASS] $meta_field: $score%"
     return 0
 }
 
@@ -304,12 +304,12 @@ validate_cumulative_tags() {
 
     for tag in "${required_tags[@]}"; do
         if ! grep -q "^@$tag:" "$file"; then
-            echo "❌ Missing cumulative tag: @$tag"
+            echo "[FAIL] Missing cumulative tag: @$tag"
             return 1
         fi
     done
 
-    echo "✅ Cumulative tagging valid"
+    echo "[PASS] Cumulative tagging valid"
     return 0
 }
 
@@ -331,9 +331,9 @@ chmod +x AUTOPILOT/scripts/validate_quality_gates.sh
 # Validate specific artifact
 ./AUTOPILOT/scripts/validate_quality_gates.sh docs/06_SYS/SYS-01.md
 
-# Output: ✅ SPEC-Ready Score: 95% ≥90%
-# Output: ✅ Cumulative tagging valid
-# Output: ✅ Quality gates passed for docs/06_SYS/SYS-01.md
+# Output: [PASS] SPEC-Ready Score: 95% ≥90%
+# Output: [PASS] Cumulative tagging valid
+# Output: [PASS] Quality gates passed for docs/06_SYS/SYS-01.md
 ```
 
 **Batch Validation:**
@@ -384,9 +384,9 @@ git diff --name-only | grep '^docs/' | xargs ./AUTOPILOT/scripts/validate_qualit
 # Get specific improvement recommendations
 ./scripts/suggest_quality_improvements.sh docs/07_REQ/REQ-01.md
 # Output: 
-# 💡 IMPROVEMENT: Add interface schemas (section 3)
-# 💡 IMPROVEMENT: Add error handling examples (section 5)
-# 💡 IMPROVEMENT: IMPROVEMENT Connect 2 upstream sources to reach 90%
+#  IMPROVEMENT: Add interface schemas (section 3)
+#  IMPROVEMENT: Add error handling examples (section 5)
+#  IMPROVEMENT: IMPROVEMENT Connect 2 upstream sources to reach 90%
 ```
 
 ---

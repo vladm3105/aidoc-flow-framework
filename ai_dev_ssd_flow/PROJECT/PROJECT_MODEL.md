@@ -83,16 +83,16 @@ This document defines a **hybrid development methodology** that integrates:
 ### 1.5 Key Outcomes
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│                    HYBRID MODEL OUTCOMES                    │
-├─────────────────────────────────────────────────────────────┤
-│  Velocity        │ 2-week sprint delivery cycles            │
-│  Traceability    │ 100% requirement→code lineage            │
-│  Quality         │ 14+ validators integrated in CI          │
-│  Flexibility     │ Skip layers for bug fixes/hotfixes       │
-│  Compliance      │ Full audit trail when needed             │
-│  Automation      │ 90% artifact generation + issue sync     │
-└─────────────────────────────────────────────────────────────┘
+
+                    HYBRID MODEL OUTCOMES                    
+
+  Velocity         2-week sprint delivery cycles            
+  Traceability     100% requirement→code lineage            
+  Quality          14+ validators integrated in CI          
+  Flexibility      Skip layers for bug fixes/hotfixes       
+  Compliance       Full audit trail when needed             
+  Automation       90% artifact generation + issue sync     
+
 ```
 
 ---
@@ -950,12 +950,12 @@ python scripts/tasks_to_github.py \
 
 ```
 Sprint 3.1 (Days 1-10):
-├── Day 1: Sprint planning, pull TASKS-05 into backlog
-├── Day 2-3: Implement ThresholdChecker (TASKS-05.01.01)
-├── Day 4-5: Implement AlertDispatcher (TASKS-05.01.02)
-├── Day 6-7: Integration testing against BDD scenarios
-├── Day 8-9: Code review, address feedback
-├── Day 10: Sprint review, demo to stakeholders
+ Day 1: Sprint planning, pull TASKS-05 into backlog
+ Day 2-3: Implement ThresholdChecker (TASKS-05.01.01)
+ Day 4-5: Implement AlertDispatcher (TASKS-05.01.02)
+ Day 6-7: Integration testing against BDD scenarios
+ Day 8-9: Code review, address feedback
+ Day 10: Sprint review, demo to stakeholders
 ```
 
 **Step 10: Feedback Loop** (if needed)
@@ -1137,13 +1137,13 @@ These common mistakes undermine the hybrid model's effectiveness:
 **Red Flags to Watch For**:
 
 ```text
-⚠️  Documentation last updated > 14 days ago with open issues
-⚠️  GitHub issues without @tasks traceability tags
-⚠️  CHG backlog > 5 items
-⚠️  Validator pass rate < 80%
-⚠️  Sprint retrospectives without CHG review
-⚠️  PRs merged without traceability check
-⚠️  Features shipped without BDD scenarios
+[WARN]  Documentation last updated > 14 days ago with open issues
+[WARN]  GitHub issues without @tasks traceability tags
+[WARN]  CHG backlog > 5 items
+[WARN]  Validator pass rate < 80%
+[WARN]  Sprint retrospectives without CHG review
+[WARN]  PRs merged without traceability check
+[WARN]  Features shipped without BDD scenarios
 ```
 
 ---
@@ -1174,16 +1174,16 @@ These common mistakes undermine the hybrid model's effectiveness:
 ### 12.3 Health Dashboard
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                    HYBRID MODEL HEALTH                          │
-├─────────────────────────────────────────────────────────────────┤
-│  Traceability Coverage    │ ████████████████████ 100%          │
-│  Validator Pass Rate      │ ██████████████████░░  95%          │
-│  Documentation Currency   │ ████████████████████ 100% (<7d)    │
-│  Sprint Velocity Trend    │ ████████████████░░░░  +18%         │
-│  Defect Escape Rate       │ ██░░░░░░░░░░░░░░░░░░   3%          │
-│  CHG Backlog              │ ████░░░░░░░░░░░░░░░░   2 open      │
-└─────────────────────────────────────────────────────────────────┘
+
+                    HYBRID MODEL HEALTH                          
+
+  Traceability Coverage      100%          
+  Validator Pass Rate         95%          
+  Documentation Currency     100% (<7d)    
+  Sprint Velocity Trend       +18%         
+  Defect Escape Rate           3%          
+  CHG Backlog                  2 open      
+
 ```
 
 ---
@@ -1357,82 +1357,82 @@ python scripts/extract_tags.py --source docs/
 **Use this page for presentations, onboarding, or quick reference.**
 
 ```text
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                      HYBRID DEVELOPMENT MODEL v2.2                            ║
-║              Sprint-Based Governance + Document Flow Framework                 ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║                                                                               ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐  ║
-║  │                    TIER 1: STRATEGIC FOUNDATION                         │  ║
-║  │                         (Complete in Sprint 0)                          │  ║
-║  │                                                                         │  ║
-║  │    BRD ──► PRD ──► EARS ──► BDD        ADR (decisions)                 │  ║
-║  │    (L1)   (L2)    (L3)    (L4)         (L5)                            │  ║
-║  │                                                                         │  ║
-║  │    Output: Phase-aligned requirements ready for sprint execution        │  ║
-║  └─────────────────────────────────────────────────────────────────────────┘  ║
-║                                    │                                          ║
-║                                    ▼                                          ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐  ║
-║  │                    TIER 2: SPRINT INTEGRATION                           │  ║
-║  │                        (Per-Feature/Sprint)                             │  ║
-║  │                                                                         │  ║
-║  │    SYS ──► REQ ──► SPEC ──► TASKS ──► GitHub Issues                    │  ║
-║  │    (L6)   (L7)    (L9)    (L11)       (Auto-sync)                      │  ║
-║  │                     │                                                   │  ║
-║  │                   [CTR]  ◄── Optional for interfaces (L8)              │  ║
-║  │                   [TSPEC] ◄── Test specs for TDD (L10)                 │  ║
-║  │                                                                         │  ║
-║  │    ┌──────────────────────────────────────────────────────────┐        │  ║
-║  │    │  FEEDBACK LOOP: Retrospective ──► CHG ──► Update SDD     │        │  ║
-║  │    └──────────────────────────────────────────────────────────┘        │  ║
-║  └─────────────────────────────────────────────────────────────────────────┘  ║
-║                                    │                                          ║
-║                                    ▼                                          ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐  ║
-║  │                    TIER 3: EXECUTION GOVERNANCE                         │  ║
-║  │                          (2-Week Sprints)                               │  ║
-║  │                                                                         │  ║
-║  │    Planning ──► Execution ──► Review ──► Retrospective                 │  ║
-║  │       │            │            │              │                        │  ║
-║  │    Pull SPEC    TDD from     Validate      Create CHG                  │  ║
-║  │    to backlog   TSPEC        vs BDD        if needed                   │  ║
-║  └─────────────────────────────────────────────────────────────────────────┘  ║
-║                                                                               ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  DECISION QUICK GUIDE                                                         ║
-║  ─────────────────────────────────────────────────────────────────────────── ║
-║  New Feature    │ Full SDD (Layers 1-11)      │ 1-2 sprints                  ║
-║  Enhancement    │ PRD→TASKS (Layers 2-11)     │ 1 sprint                     ║
-║  Bug Fix        │ TASKS only (Layer 11)       │ Same sprint                  ║
-║  Hotfix         │ Code only + 72h docs        │ Hours                        ║
-║  Config Change  │ ADR + TASKS (Layers 5, 11)  │ Same sprint                  ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  KEY AUTOMATION                                                               ║
-║  ─────────────────────────────────────────────────────────────────────────── ║
-║  TASKS → GitHub Issues    │ python scripts/tasks_to_github.py               ║
-║  Validation in CI         │ .github/workflows/sdd-validation.yml            ║
-║  Traceability Matrix      │ python scripts/generate_traceability_matrix.py  ║
-║  Drift Check              │ python scripts/drift_check.py (weekly)          ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  SUCCESS METRICS                                                              ║
-║  ─────────────────────────────────────────────────────────────────────────── ║
-║  Traceability: 100%  │  Velocity: +20%  │  Defect Escape: <5%  │  Docs: <7d  ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  ANTI-PATTERNS TO AVOID                                                       ║
-║  ─────────────────────────────────────────────────────────────────────────── ║
-║  ✗ Skip Tier 1 for "simple" features    ✗ Manual TASKS→Issue sync           ║
-║  ✗ Treat SDD as one-time documentation  ✗ Skip Sprint 0 research            ║
-║  ✗ Bypass validators to save time       ✗ Over-document bug fixes           ║
-║  ✗ Create CHG for every change          ✗ Ignore retrospective feedback     ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  WHEN TO USE                           │  WHEN NOT TO USE                    ║
-║  ─────────────────────────────────────│──────────────────────────────────── ║
-║  ✓ Production product (3+ months)      │  ✗ Pure prototype/POC              ║
-║  ✓ Team size 5-15 developers           │  ✗ Solo developer project          ║
-║  ✓ Need traceability + velocity        │  ✗ Strict FDA/ISO (use Full SDD)   ║
-║  ✓ Mix of planned + exploratory work   │  ✗ Fixed-scope contract            ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
+
+                      HYBRID DEVELOPMENT MODEL v2.2                            
+              Sprint-Based Governance + Document Flow Framework                 
+
+                                                                               
+    
+                      TIER 1: STRATEGIC FOUNDATION                           
+                           (Complete in Sprint 0)                            
+                                                                             
+      BRD  PRD  EARS  BDD        ADR (decisions)                   
+      (L1)   (L2)    (L3)    (L4)         (L5)                              
+                                                                             
+      Output: Phase-aligned requirements ready for sprint execution          
+    
+                                                                              
+                                                                              
+    
+                      TIER 2: SPRINT INTEGRATION                             
+                          (Per-Feature/Sprint)                               
+                                                                             
+      SYS  REQ  SPEC  TASKS  GitHub Issues                      
+      (L6)   (L7)    (L9)    (L11)       (Auto-sync)                        
+                                                                            
+                     [CTR]   Optional for interfaces (L8)                
+                     [TSPEC]  Test specs for TDD (L10)                   
+                                                                             
+                
+        FEEDBACK LOOP: Retrospective  CHG  Update SDD               
+                
+    
+                                                                              
+                                                                              
+    
+                      TIER 3: EXECUTION GOVERNANCE                           
+                            (2-Week Sprints)                                 
+                                                                             
+      Planning  Execution  Review  Retrospective                   
+                                                                         
+      Pull SPEC    TDD from     Validate      Create CHG                    
+      to backlog   TSPEC        vs BDD        if needed                     
+    
+                                                                               
+
+  DECISION QUICK GUIDE                                                         
+   
+  New Feature     Full SDD (Layers 1-11)       1-2 sprints                  
+  Enhancement     PRD→TASKS (Layers 2-11)      1 sprint                     
+  Bug Fix         TASKS only (Layer 11)        Same sprint                  
+  Hotfix          Code only + 72h docs         Hours                        
+  Config Change   ADR + TASKS (Layers 5, 11)   Same sprint                  
+
+  KEY AUTOMATION                                                               
+   
+  TASKS → GitHub Issues     python scripts/tasks_to_github.py               
+  Validation in CI          .github/workflows/sdd-validation.yml            
+  Traceability Matrix       python scripts/generate_traceability_matrix.py  
+  Drift Check               python scripts/drift_check.py (weekly)          
+
+  SUCCESS METRICS                                                              
+   
+  Traceability: 100%    Velocity: +20%    Defect Escape: <5%    Docs: <7d  
+
+  ANTI-PATTERNS TO AVOID                                                       
+   
+   Skip Tier 1 for "simple" features     Manual TASKS→Issue sync           
+   Treat SDD as one-time documentation   Skip Sprint 0 research            
+   Bypass validators to save time        Over-document bug fixes           
+   Create CHG for every change           Ignore retrospective feedback     
+
+  WHEN TO USE                             WHEN NOT TO USE                    
+   
+   Production product (3+ months)         Pure prototype/POC              
+   Team size 5-15 developers              Solo developer project          
+   Need traceability + velocity           Strict FDA/ISO (use Full SDD)   
+   Mix of planned + exploratory work      Fixed-scope contract            
+
 ```
 
 ### Visual Summary as Mermaid (for rendering)

@@ -33,9 +33,9 @@ Contracts enable parallel development by allowing providers and consumers to imp
 
 ## 2. Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
@@ -136,24 +136,24 @@ Organize contracts in subdirectories by service type for better document managem
 ### 5.2 Directory Structure Example
 ```
 `08_CTR/
-├── agents/              # Agent-to-agent communication contracts
-│   ├── CTR-01_service_orchestrator_api.md
-│   ├── CTR-01_service_orchestrator_api.yaml
-│   ├── CTR-02_item_selection_interface.md
-│   └── CTR-02_item_selection_interface.yaml
-├── mcp/                 # MCP server contracts
-│   ├── CTR-010_risk_validator_mcp.md
-│   ├── CTR-010_risk_validator_mcp.yaml
-│   ├── CTR-011_greeks_calculator_mcp.md
-│   └── CTR-011_greeks_calculator_mcp.yaml
-├── infra/               # Infrastructure service contracts
-│   ├── CTR-020_pubsub_message_schema.md
-│   ├── CTR-020_pubsub_message_schema.yaml
-│   ├── CTR-021_cloud_sql_data_model.md
-│   └── CTR-021_cloud_sql_data_model.yaml
-└── shared/              # Cross-cutting contracts (optional)
-    ├── CTR-100_common_data_types.md
-    └── CTR-100_common_data_types.yaml
+ agents/              # Agent-to-agent communication contracts
+    CTR-01_service_orchestrator_api.md
+    CTR-01_service_orchestrator_api.yaml
+    CTR-02_item_selection_interface.md
+    CTR-02_item_selection_interface.yaml
+ mcp/                 # MCP server contracts
+    CTR-010_risk_validator_mcp.md
+    CTR-010_risk_validator_mcp.yaml
+    CTR-011_greeks_calculator_mcp.md
+    CTR-011_greeks_calculator_mcp.yaml
+ infra/               # Infrastructure service contracts
+    CTR-020_pubsub_message_schema.md
+    CTR-020_pubsub_message_schema.yaml
+    CTR-021_cloud_sql_data_model.md
+    CTR-021_cloud_sql_data_model.yaml
+ shared/              # Cross-cutting contracts (optional)
+     CTR-100_common_data_types.md
+     CTR-100_common_data_types.yaml
 ```
 
 ### 5.3 Service Type Definitions

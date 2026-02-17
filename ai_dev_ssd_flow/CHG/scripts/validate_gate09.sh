@@ -68,14 +68,14 @@ check_spec_readiness() {
         echo "  → Improve SPEC completeness before proceeding"
         ((ERRORS++)) || true
       else
-        echo -e "${GREEN}  ✓ SPEC readiness score: $score%${NC}"
+        echo -e "${GREEN}   SPEC readiness score: $score%${NC}"
       fi
     else
       echo -e "${YELLOW}  ℹ SPEC referenced - verify readiness score >= 90% in SPEC file${NC}"
       ((INFO++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no SPEC changes)${NC}"
+    echo -e "${GREEN}   N/A (no SPEC changes)${NC}"
   fi
 }
 
@@ -94,13 +94,13 @@ check_tspec_coverage() {
     done
 
     if [[ $test_types -gt 0 ]]; then
-      echo -e "${GREEN}  ✓ TSPEC test types referenced: $test_types types${NC}"
+      echo -e "${GREEN}   TSPEC test types referenced: $test_types types${NC}"
     else
       echo -e "${YELLOW}  ℹ TSPEC referenced - verify interface coverage in TSPEC file${NC}"
       ((INFO++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no TSPEC changes)${NC}"
+    echo -e "${GREEN}   N/A (no TSPEC changes)${NC}"
   fi
 }
 
@@ -119,10 +119,10 @@ check_tasks_linkage() {
       echo -e "${YELLOW}  ℹ TASKS referenced - verify @spec and @tspec tags in TASKS file${NC}"
       ((INFO++)) || true
     else
-      echo -e "${GREEN}  ✓ TASKS traceability present (@spec: $has_spec, @tspec: $has_tspec)${NC}"
+      echo -e "${GREEN}   TASKS traceability present (@spec: $has_spec, @tspec: $has_tspec)${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no TASKS changes)${NC}"
+    echo -e "${GREEN}   N/A (no TASKS changes)${NC}"
   fi
 }
 
@@ -132,13 +132,13 @@ check_tspec_spec_alignment() {
 
   # Check for both TSPEC and SPEC changes
   if grep -qiE "TSPEC" "$CHG_FILE" 2>/dev/null && grep -qiE "SPEC-" "$CHG_FILE" 2>/dev/null; then
-    echo -e "${GREEN}  ✓ Both TSPEC and SPEC mentioned - verify alignment${NC}"
+    echo -e "${GREEN}   Both TSPEC and SPEC mentioned - verify alignment${NC}"
   elif grep -qiE "SPEC-" "$CHG_FILE" 2>/dev/null && ! grep -qiE "TSPEC" "$CHG_FILE" 2>/dev/null; then
     echo -e "${YELLOW}GATE-09-E004: SPEC change without TSPEC mention${NC}"
     echo "  → Verify TSPEC is aligned with SPEC changes (TDD compliance)"
     ((WARNINGS++)) || true
   else
-    echo -e "${GREEN}  ✓ Alignment check N/A${NC}"
+    echo -e "${GREEN}   Alignment check N/A${NC}"
   fi
 }
 
@@ -150,13 +150,13 @@ check_tdd_compliance() {
   if grep -qiE "SPEC" "$CHG_FILE" 2>/dev/null; then
     # Look for TDD indicators
     if grep -qiE "TDD|test.first|TSPEC.*before|update.*TSPEC.*then.*SPEC" "$CHG_FILE" 2>/dev/null; then
-      echo -e "${GREEN}  ✓ TDD workflow indicated${NC}"
+      echo -e "${GREEN}   TDD workflow indicated${NC}"
     else
       echo -e "${BLUE}  ℹ Reminder: Follow TDD order (TSPEC → SPEC → TASKS)${NC}"
       ((INFO++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no SPEC changes)${NC}"
+    echo -e "${GREEN}   N/A (no SPEC changes)${NC}"
   fi
 }
 
@@ -168,16 +168,16 @@ check_tasks_dependencies() {
   if grep -qiE "TASKS|task" "$CHG_FILE" 2>/dev/null; then
     if grep -qiE "circular|cycle|depend" "$CHG_FILE" 2>/dev/null; then
       if grep -qiE "no.*circular|resolved.*cycle|valid.*depend" "$CHG_FILE" 2>/dev/null; then
-        echo -e "${GREEN}  ✓ Dependencies addressed${NC}"
+        echo -e "${GREEN}   Dependencies addressed${NC}"
       else
         echo -e "${YELLOW}  ℹ Dependency mentioned - verify no circular dependencies${NC}"
         ((INFO++)) || true
       fi
     else
-      echo -e "${GREEN}  ✓ No dependency issues detected${NC}"
+      echo -e "${GREEN}   No dependency issues detected${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no TASKS changes)${NC}"
+    echo -e "${GREEN}   N/A (no TASKS changes)${NC}"
   fi
 }
 
@@ -192,10 +192,10 @@ check_performance_baseline() {
       echo "  → Document current performance baseline before changes"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Performance metrics present${NC}"
+      echo -e "${GREEN}   Performance metrics present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not performance-related)${NC}"
+    echo -e "${GREEN}   N/A (not performance-related)${NC}"
   fi
 }
 
@@ -210,10 +210,10 @@ check_edge_case_coverage() {
       echo "  → Consider adding boundary condition tests"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Edge case coverage mentioned${NC}"
+      echo -e "${GREEN}   Edge case coverage mentioned${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no test changes)${NC}"
+    echo -e "${GREEN}   N/A (no test changes)${NC}"
   fi
 }
 
@@ -230,7 +230,7 @@ check_complexity() {
     echo "  → Consider decomposing into smaller SPECs"
     ((WARNINGS++)) || true
   else
-    echo -e "${GREEN}  ✓ Complexity acceptable${NC}"
+    echo -e "${GREEN}   Complexity acceptable${NC}"
   fi
 }
 

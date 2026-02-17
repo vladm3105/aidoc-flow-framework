@@ -70,29 +70,29 @@ custom_fields:
 ### 2.2 Timeline Visualization
 
 ```
-{time}  ┌──────────────────┐
-        │ Incident Start   │
-        └────────┬─────────┘
-                 │
-{time}  ┌────────▼─────────┐
-        │ Detection        │ TTD: {X min}
-        └────────┬─────────┘
-                 │
-{time}  ┌────────▼─────────┐
-        │ P1 Declared      │
-        └────────┬─────────┘
-                 │
-{time}  ┌────────▼─────────┐
-        │ RCA Complete     │
-        └────────┬─────────┘
-                 │
-{time}  ┌────────▼─────────┐
-        │ Mitigation       │ TTM: {X min}
-        └────────┬─────────┘
-                 │
-{time}  ┌────────▼─────────┐
-        │ Resolution       │ TTR: {X hours}
-        └──────────────────┘
+{time}  
+         Incident Start   
+        
+                 
+{time}  
+         Detection         TTD: {X min}
+        
+                 
+{time}  
+         P1 Declared      
+        
+                 
+{time}  
+         RCA Complete     
+        
+                 
+{time}  
+         Mitigation        TTM: {X min}
+        
+                 
+{time}  
+         Resolution        TTR: {X hours}
+        
 ```
 
 ## 3. Root Cause Analysis

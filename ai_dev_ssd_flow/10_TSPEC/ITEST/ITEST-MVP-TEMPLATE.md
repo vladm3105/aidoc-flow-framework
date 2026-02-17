@@ -237,9 +237,9 @@ sequenceDiagram
 
 | CTR Endpoint | Method | Test IDs | Coverage |
 |--------------|--------|----------|----------|
-| /api/v1/endpoint | POST | TSPEC.NN.41.01, TSPEC.NN.41.03 | ✅ |
-| /api/v1/endpoint | GET | TSPEC.NN.41.04 | ✅ |
-| /api/v1/health | GET | - | ❌ (STEST) |
+| /api/v1/endpoint | POST | TSPEC.NN.41.01, TSPEC.NN.41.03 | [PASS] |
+| /api/v1/endpoint | GET | TSPEC.NN.41.04 | [PASS] |
+| /api/v1/health | GET | - | [FAIL] (STEST) |
 
 **Coverage Summary**:
 - Total CTR endpoints: [N]

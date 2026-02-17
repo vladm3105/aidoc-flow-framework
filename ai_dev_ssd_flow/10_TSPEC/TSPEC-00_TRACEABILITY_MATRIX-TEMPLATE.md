@@ -133,10 +133,10 @@ Maps test specifications to implementation tasks.
 
 | Test Type | Document | Target | Actual | Status |
 |-----------|----------|--------|--------|--------|
-| UTEST | UTEST-01 | ≥90% | [XX]% | ✅/❌ |
-| ITEST | ITEST-01 | ≥85% | [XX]% | ✅/❌ |
-| STEST | STEST-01 | 100% | [XX]% | ✅/❌ |
-| FTEST | FTEST-01 | ≥85% | [XX]% | ✅/❌ |
+| UTEST | UTEST-01 | ≥90% | [XX]% | [PASS]/[FAIL] |
+| ITEST | ITEST-01 | ≥85% | [XX]% | [PASS]/[FAIL] |
+| STEST | STEST-01 | 100% | [XX]% | [PASS]/[FAIL] |
+| FTEST | FTEST-01 | ≥85% | [XX]% | [PASS]/[FAIL] |
 
 **Overall TASKS-Ready**: [YES/NO]
 

@@ -34,7 +34,7 @@ custom_fields:
 | **Author** | System Architect |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
-| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 | **CTR-Ready Score** | N/A |
 
 ---

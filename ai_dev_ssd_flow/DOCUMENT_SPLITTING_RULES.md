@@ -152,24 +152,24 @@ When documents go through automated review/fix workflows, companion files are ge
 
 ```text
 docs/01_BRD/BRD-07_f7_config/
-├── BRD-07_f7_config.md
-├── BRD-07.R_review_report_v001.md
-├── BRD-07.F_fix_report_v001.md
-└── .drift_cache.json
+ BRD-07_f7_config.md
+ BRD-07.R_review_report_v001.md
+ BRD-07.F_fix_report_v001.md
+ .drift_cache.json
 ```
 
 ## Example: Sectioned BRD with Review Cycle
 
 ```text
 docs/01_BRD/BRD-01_f1_iam/
-├── BRD-01.0_index.md
-├── BRD-01.1_core.md
-├── BRD-01.2_requirements.md
-├── BRD-01.3_quality_ops.md
-├── BRD-01.R_review_report_v001.md
-├── BRD-01.R_review_report_v002.md
-├── BRD-01.F_fix_report_v001.md
-└── .drift_cache.json
+ BRD-01.0_index.md
+ BRD-01.1_core.md
+ BRD-01.2_requirements.md
+ BRD-01.3_quality_ops.md
+ BRD-01.R_review_report_v001.md
+ BRD-01.R_review_report_v002.md
+ BRD-01.F_fix_report_v001.md
+ .drift_cache.json
 ```
 
 ## Companion File Lifecycle

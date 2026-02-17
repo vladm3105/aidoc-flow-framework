@@ -59,8 +59,8 @@ FAIL → Fix issues, re-run Quality Gate validation
 SPEC documents use YAML format for machine-readable specifications:
 ```
 docs/09_SPEC/
-├── SPEC-NN_{name}.yaml    # Technical specification
-└── SPEC-000_index.md      # Registry/index file
+ SPEC-NN_{name}.yaml    # Technical specification
+ SPEC-000_index.md      # Registry/index file
 ```
 
 ---
@@ -202,7 +202,7 @@ docs/09_SPEC/
 
 **Action**: Move to `09_SPEC/SPEC-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SPEC-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 09_SPEC/SPEC-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: SPEC-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 09_SPEC/SPEC-NN_{Slug}/`
 
 **File Format**: YAML (.yaml, .yml)
 
@@ -312,7 +312,7 @@ done
 
 ---
 
-### CORPUS-16: Required Subsection Coverage ⭐ NEW
+### CORPUS-16: Required Subsection Coverage  NEW
 
 **Purpose**: Verify all SPEC files contain the 6 required subsections
 
@@ -340,11 +340,11 @@ for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
 done
 ```
 
-**Error Message**: `❌ CORPUS-E016: Missing required subsection {subsection} in {filename}`
+**Error Message**: `[FAIL] CORPUS-E016: Missing required subsection {subsection} in {filename}`
 
 ---
 
-### CORPUS-17: High-Guidance Coverage ⭐ NEW
+### CORPUS-17: High-Guidance Coverage  NEW
 
 **Purpose**: Verify significant portion of implementation is defined via High-Guidance fields
 
@@ -498,10 +498,10 @@ if git diff --cached --name-only | grep -qE "^docs/09_SPEC/.*\.(yaml|yml|md)$"; 
   echo "Running SPEC Quality Gate validation..."
   ./scripts/validate_spec_corpus.sh docs/SPEC --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ SPEC Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] SPEC Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ SPEC Quality Gate validation passed"
+  echo " SPEC Quality Gate validation passed"
 fi
 ```
 
@@ -530,9 +530,9 @@ SPEC Quality Gate validation should pass before creating TASKS documents:
 # Pre-TASKS gate check
 ./scripts/validate_spec_corpus.sh docs/SPEC
 if [ $? -eq 0 ]; then
-  echo "✓ SPEC corpus valid - ready for TSPEC layer creation (Layer 10) and TASKS layer creation (Layer 11)"
+  echo " SPEC corpus valid - ready for TSPEC layer creation (Layer 10) and TASKS layer creation (Layer 11)"
 else
-  echo "❌ Fix SPEC corpus errors before proceeding to TASKS layer"
+  echo "[FAIL] Fix SPEC corpus errors before proceeding to TASKS layer"
   exit 1
 fi
 ```
@@ -541,7 +541,7 @@ fi
 
 ## 3. CORPUS-FINAL: Holistic Project-Level Review (MANDATORY)
 
-> **⚠️ CRITICAL**: This is the FINAL validation step before TASKS creation. All errors and inconsistencies MUST be fixed.
+> **[WARN] CRITICAL**: This is the FINAL validation step before TASKS creation. All errors and inconsistencies MUST be fixed.
 
 ### Purpose
 

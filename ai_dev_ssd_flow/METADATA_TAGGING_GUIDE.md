@@ -48,16 +48,16 @@ Define YAML frontmatter metadata standards for projects supporting multiple arch
 ### 1.3 When to Use Metadata Tagging
 
 Use metadata tagging when:
-- ✅ Project supports dual/multiple architectural approaches
-- ✅ Need to indicate priority/recommendation between approaches
-- ✅ Building documentation sites (Docusaurus, MkDocs, etc.)
-- ✅ Require cross-referencing between equivalent implementations
-- ✅ Need to filter/query documents by architecture approach
+- [PASS] Project supports dual/multiple architectural approaches
+- [PASS] Need to indicate priority/recommendation between approaches
+- [PASS] Building documentation sites (Docusaurus, MkDocs, etc.)
+- [PASS] Require cross-referencing between equivalent implementations
+- [PASS] Need to filter/query documents by architecture approach
 
 Do NOT use when:
-- ❌ Project has single architecture only
-- ❌ All documents apply equally to all approaches
-- ❌ Metadata adds no value to documentation navigation
+- [FAIL] Project has single architecture only
+- [FAIL] All documents apply equally to all approaches
+- [FAIL] Metadata adds no value to documentation navigation
 
 ---
 
@@ -116,36 +116,36 @@ AI coding assistants use metadata tags to automatically:
 ### Tag-Specific AI Assistant Behavior
 
 **When `ai-agent-primary` tag is present**, AI assistants will:
-- ✅ Use AI/ML terminology and patterns
-- ✅ Reference agent-to-agent communication (A2A Protocol)
-- ✅ Include ML-specific requirements (training data, model endpoints, inference)
-- ✅ Suggest AI-appropriate testing strategies (model validation, bias testing)
-- ✅ Automatically add `:::recommended` admonition to key documents
+- [PASS] Use AI/ML terminology and patterns
+- [PASS] Reference agent-to-agent communication (A2A Protocol)
+- [PASS] Include ML-specific requirements (training data, model endpoints, inference)
+- [PASS] Suggest AI-appropriate testing strategies (model validation, bias testing)
+- [PASS] Automatically add `:::recommended` admonition to key documents
 
 **When `traditional-fallback` tag is present**, AI assistants will:
-- ✅ Use traditional software architecture patterns
-- ✅ Reference proven implementation approaches
-- ✅ Include deterministic logic and rule-based systems
-- ✅ Automatically add `:::fallback` admonition
-- ✅ Link to primary (AI-agent) alternative
+- [PASS] Use traditional software architecture patterns
+- [PASS] Reference proven implementation approaches
+- [PASS] Include deterministic logic and rule-based systems
+- [PASS] Automatically add `:::fallback` admonition
+- [PASS] Link to primary (AI-agent) alternative
 
 **When `priority: primary` field is set**, AI assistants will:
-- ✅ Mark document as recommended approach
-- ✅ Place higher in navigation hierarchy
-- ✅ Set to expanded by default in documentation sites
-- ✅ Include link to fallback alternative (if exists)
+- [PASS] Mark document as recommended approach
+- [PASS] Place higher in navigation hierarchy
+- [PASS] Set to expanded by default in documentation sites
+- [PASS] Include link to fallback alternative (if exists)
 
 **When `priority: fallback` field is set**, AI assistants will:
-- ✅ Mark document as reference implementation
-- ✅ Set to collapsed by default in documentation sites
-- ✅ Include prominent link to recommended alternative
-- ✅ Add "use only if primary not viable" guidance
+- [PASS] Mark document as reference implementation
+- [PASS] Set to collapsed by default in documentation sites
+- [PASS] Include prominent link to recommended alternative
+- [PASS] Add "use only if primary not viable" guidance
 
 **When `agent_id: AGENT-XXX` field is present**, AI assistants will:
-- ✅ Validate uniqueness across all documents
-- ✅ Use agent ID in A2A Protocol references
-- ✅ Include in traceability matrices
-- ✅ Cross-reference with related agent documents
+- [PASS] Validate uniqueness across all documents
+- [PASS] Use agent ID in A2A Protocol references
+- [PASS] Include in traceability matrices
+- [PASS] Cross-reference with related agent documents
 
 ### Tag Processing Order
 
@@ -177,12 +177,12 @@ AI assistants automatically validate:
 
 | Check | Requirement | Error if Violated |
 |-------|-------------|-------------------|
-| Required Fields | `title`, `tags`, `priority`, `architecture_approach` present | ❌ Missing required field |
-| Valid Priorities | Only `primary`, `fallback`, `shared`, `deprecated` | ❌ Invalid priority value |
-| Tag Taxonomy | Tags follow standard categories | ⚠️ Non-standard tag (warning) |
-| Bidirectional Refs | Primary ↔ fallback links exist | ❌ Orphan reference |
-| Agent ID Format | `AGENT-XXX` (three digits) | ❌ Invalid format |
-| Agent ID Unique | No duplicate agent IDs | ❌ Duplicate agent ID |
+| Required Fields | `title`, `tags`, `priority`, `architecture_approach` present | [FAIL] Missing required field |
+| Valid Priorities | Only `primary`, `fallback`, `shared`, `deprecated` | [FAIL] Invalid priority value |
+| Tag Taxonomy | Tags follow standard categories | [WARN] Non-standard tag (warning) |
+| Bidirectional Refs | Primary ↔ fallback links exist | [FAIL] Orphan reference |
+| Agent ID Format | `AGENT-XXX` (three digits) | [FAIL] Invalid format |
+| Agent ID Unique | No duplicate agent IDs | [FAIL] Duplicate agent ID |
 
 ### Example: AI Assistant Workflow
 
@@ -204,13 +204,13 @@ custom_fields:
 ```
 
 **AI Assistant Automatically:**
-1. ✅ Recognizes this as a primary AI Agent BRD
-2. ✅ Uses ML/AI terminology throughout
-3. ✅ Adds `:::recommended` admonition
-4. ✅ Validates AGENT-009 is unique
-5. ✅ Checks if fallback reference needed
-6. ✅ Suggests A2A Protocol integration points
-7. ✅ Recommends ML-specific test strategies
+1. [PASS] Recognizes this as a primary AI Agent BRD
+2. [PASS] Uses ML/AI terminology throughout
+3. [PASS] Adds `:::recommended` admonition
+4. [PASS] Validates AGENT-009 is unique
+5. [PASS] Checks if fallback reference needed
+6. [PASS] Suggests A2A Protocol integration points
+7. [PASS] Recommends ML-specific test strategies
 
 ---
 
@@ -220,19 +220,19 @@ custom_fields:
 
 | Priority | Meaning | Visual Indicator | Use Case |
 |----------|---------|------------------|----------|
-| `primary` | Recommended approach | ✅ Green, expanded | AI Agent-based implementation (recommended) |
-| `fallback` | secondary/reference option | ⚠️ Yellow, collapsed | Traditional implementation (use if primary not viable) |
-| `shared` | Required by all approaches | ⚙️ Neutral | Platform requirements, shared infrastructure |
-| `deprecated` | No longer recommended | ⛔ Red | Legacy documentation (archived) |
+| `primary` | Recommended approach | [PASS] Green, expanded | AI Agent-based implementation (recommended) |
+| `fallback` | secondary/reference option | [WARN] Yellow, collapsed | Traditional implementation (use if primary not viable) |
+| `shared` | Required by all approaches |  Neutral | Platform requirements, shared infrastructure |
+| `deprecated` | No longer recommended |  Red | Legacy documentation (archived) |
 
 ### 3.2 Development Status
 
 | Status | Meaning | Indicator |
 |--------|---------|-----------|
-| `active` | Currently implemented/in development | ✅ |
-| `reference` | Reference implementation only | 📖 |
-| `planned` | Future implementation | 🔮 |
-| `deprecated` | Legacy/archived | ⛔ |
+| `active` | Currently implemented/in development | [PASS] |
+| `reference` | Reference implementation only |  |
+| `planned` | Future implementation |  |
+| `deprecated` | Legacy/archived |  |
 
 ---
 
@@ -463,7 +463,7 @@ Use for primary/recommended implementations:
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
-**Priority**: ✅ Recommended approach
+**Priority**: [PASS] Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-XXX
 
@@ -483,7 +483,7 @@ Use for fallback/reference implementations:
 ```markdown
 :::fallback Fallback Implementation (Traditional 8-Layer)
 **Architecture**: Traditional 8-Layer Platform (@adr: ADR-01)
-**Priority**: ⚠️ Fallback option (use only if AI approach not viable)
+**Priority**: [WARN] Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
 **Recommended Alternative**: [@brd: BRD-XXX - Feature Name](./BRD-XXX_name.md) (AI-powered, preferred approach)
@@ -653,7 +653,7 @@ function RecommendedAdmonition(props) {
       backgroundColor: 'var(--ifm-alert-background-color)',
     }}>
       <h5 style={{ color: 'var(--ifm-color-success)' }}>
-        ✅ {props.title || 'Recommended Approach'}
+        [PASS] {props.title || 'Recommended Approach'}
       </h5>
       <div>{props.children}</div>
     </div>
@@ -673,7 +673,7 @@ const AdmonitionTypes = {
 ```typescript
 {
   type: 'category',
-  label: '🤖 AI Agent-Based Architecture (Recommended)',
+  label: ' AI Agent-Based Architecture (Recommended)',
   collapsed: false,  // Expanded by default
   className: 'primary-architecture',
   items: [...]
@@ -684,7 +684,7 @@ const AdmonitionTypes = {
 ```typescript
 {
   type: 'category',
-  label: '🏗️ Traditional 8-Layer (Fallback/Reference)',
+  label: ' Traditional 8-Layer (Fallback/Reference)',
   collapsed: true,  // Collapsed by default
   className: 'fallback-architecture',
   items: [...]
@@ -800,7 +800,7 @@ def validate_metadata(file_path):
 if __name__ == '__main__':
     import sys
     result, message = validate_metadata(sys.argv[1])
-    print(f"{'✅' if result else '❌'} {message}")
+    print(f"{'[PASS]' if result else '[FAIL]'} {message}")
     sys.exit(0 if result else 1)
 ```
 
@@ -815,13 +815,13 @@ for file in $(git diff --cached --name-only | grep -E '(BRD|ADR)/.*\.md$'); do
   if [ -f "$file" ]; then
     python scripts/validate_metadata.py "$file"
     if [ $? -ne 0 ]; then
-      echo "❌ Metadata validation failed for $file"
+      echo "[FAIL] Metadata validation failed for $file"
       exit 1
     fi
   fi
 done
 
-echo "✅ Metadata validation passed"
+echo "[PASS] Metadata validation passed"
 ```
 
 ---
@@ -882,22 +882,22 @@ done
 
 ### 11.1 Do's
 
-✅ **Do** use metadata for architectural differentiation
-✅ **Do** maintain bidirectional cross-references
-✅ **Do** keep metadata in sync between source and build locations
-✅ **Do** validate metadata before committing
-✅ **Do** use custom admonitions for visual clarity
-✅ **Do** follow tag taxonomy consistently
-✅ **Do** update metadata when document status changes
+[PASS] **Do** use metadata for architectural differentiation
+[PASS] **Do** maintain bidirectional cross-references
+[PASS] **Do** keep metadata in sync between source and build locations
+[PASS] **Do** validate metadata before committing
+[PASS] **Do** use custom admonitions for visual clarity
+[PASS] **Do** follow tag taxonomy consistently
+[PASS] **Do** update metadata when document status changes
 
 ### 11.2 Don'ts
 
-❌ **Don't** add metadata to source code files
-❌ **Don't** use metadata when single architecture only
-❌ **Don't** create orphan references (primary without fallback link)
-❌ **Don't** mix architecture approaches in single document
-❌ **Don't** use custom tag names outside taxonomy
-❌ **Don't** skip validation steps
+[FAIL] **Don't** add metadata to source code files
+[FAIL] **Don't** use metadata when single architecture only
+[FAIL] **Don't** create orphan references (primary without fallback link)
+[FAIL] **Don't** mix architecture approaches in single document
+[FAIL] **Don't** use custom tag names outside taxonomy
+[FAIL] **Don't** skip validation steps
 
 ### 11.3 Common Pitfalls
 
@@ -943,7 +943,7 @@ custom_fields:
 
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
-**Priority**: ✅ Recommended approach
+**Priority**: [PASS] Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-001
 
@@ -981,7 +981,7 @@ custom_fields:
 
 :::fallback Fallback Implementation (Traditional 8-Layer)
 **Architecture**: Traditional 8-Layer Platform (@adr: ADR-01)
-**Priority**: ⚠️ Fallback option (use only if AI approach not viable)
+**Priority**: [WARN] Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
 **Recommended Alternative**: [@brd: BRD-22 - Fraud Detection Agent](./BRD-22_fraud_detection_agent_ml_based_risk.md) (AI-powered, preferred approach)
@@ -1191,48 +1191,48 @@ AI assistants automatically apply specific behaviors when they detect certain ke
 #### "AI-agent" or "ai-agent-primary" Keyword
 
 **Triggers:**
-- ✅ Add `ai-agent-primary` tag
-- ✅ Add `recommended-approach` tag
-- ✅ Set `priority: primary`
-- ✅ Set `architecture_approach: ai-agent-based`
-- ✅ Use ML/AI terminology throughout document
-- ✅ Reference A2A Protocol for agent communication
-- ✅ Include ML-specific requirements (training data, model endpoints)
-- ✅ Add `:::recommended` admonition to key documents
-- ✅ Suggest AI-appropriate testing strategies
+- [PASS] Add `ai-agent-primary` tag
+- [PASS] Add `recommended-approach` tag
+- [PASS] Set `priority: primary`
+- [PASS] Set `architecture_approach: ai-agent-based`
+- [PASS] Use ML/AI terminology throughout document
+- [PASS] Reference A2A Protocol for agent communication
+- [PASS] Include ML-specific requirements (training data, model endpoints)
+- [PASS] Add `:::recommended` admonition to key documents
+- [PASS] Suggest AI-appropriate testing strategies
 
 #### "Traditional" or "fallback" Keyword
 
 **Triggers:**
-- ✅ Add `traditional-fallback` tag
-- ✅ Add `reference-implementation` tag
-- ✅ Set `priority: fallback`
-- ✅ Set `architecture_approach: traditional-8layer`
-- ✅ Use traditional software architecture patterns
-- ✅ Reference proven implementation approaches
-- ✅ Add `:::fallback` admonition
-- ✅ Include link to primary (AI-agent) alternative
-- ✅ Add "use only if primary not viable" guidance
+- [PASS] Add `traditional-fallback` tag
+- [PASS] Add `reference-implementation` tag
+- [PASS] Set `priority: fallback`
+- [PASS] Set `architecture_approach: traditional-8layer`
+- [PASS] Use traditional software architecture patterns
+- [PASS] Reference proven implementation approaches
+- [PASS] Add `:::fallback` admonition
+- [PASS] Include link to primary (AI-agent) alternative
+- [PASS] Add "use only if primary not viable" guidance
 
 #### "Shared" or "platform" Keyword
 
 **Triggers:**
-- ✅ Add `shared-architecture` tag
-- ✅ Add `required-both-approaches` tag
-- ✅ Set `priority: shared`
-- ✅ Set `architecture_approaches: [ai-agent-based, traditional-8layer]`
-- ✅ Note which approach is primary implementation
-- ✅ Indicate if implementation differs between approaches
+- [PASS] Add `shared-architecture` tag
+- [PASS] Add `required-both-approaches` tag
+- [PASS] Set `priority: shared`
+- [PASS] Set `architecture_approaches: [ai-agent-based, traditional-8layer]`
+- [PASS] Note which approach is primary implementation
+- [PASS] Indicate if implementation differs between approaches
 
 #### "Agent ID: AGENT-XXX" Pattern
 
 **Triggers:**
-- ✅ Add `agent_id: AGENT-XXX` field
-- ✅ Validate format (AGENT-XXX with three digits)
-- ✅ Check uniqueness across all documents
-- ✅ Use agent ID in A2A Protocol references
-- ✅ Include in traceability matrices
-- ✅ Cross-reference with related agent documents
+- [PASS] Add `agent_id: AGENT-XXX` field
+- [PASS] Validate format (AGENT-XXX with three digits)
+- [PASS] Check uniqueness across all documents
+- [PASS] Use agent ID in A2A Protocol references
+- [PASS] Include in traceability matrices
+- [PASS] Cross-reference with related agent documents
 
 ### 13.4 Common Prompt Patterns
 
@@ -1367,39 +1367,39 @@ AI assistant will automatically perform these checks after creating the document
 
 ### 13.8 Anti-Patterns (Avoid These)
 
-**❌ Ambiguous Priority:**
+**[FAIL] Ambiguous Priority:**
 ```
 Create a BRD for payment routing
 ```
 *Problem: AI assistant doesn't know if this is primary, fallback, or shared*
 
-**✅ Clear Priority:**
+**[PASS] Clear Priority:**
 ```
 Create an AI-agent primary BRD for payment routing (AGENT-009)
 ```
 
 ---
 
-**❌ Missing Agent ID:**
+**[FAIL] Missing Agent ID:**
 ```
 Create AI-agent BRD for fraud detection
 ```
 *Problem: No agent ID specified for agent-specific document*
 
-**✅ With Agent ID:**
+**[PASS] With Agent ID:**
 ```
 Create AI-agent BRD for fraud detection (AGENT-011, active)
 ```
 
 ---
 
-**❌ Incomplete Cross-Reference:**
+**[FAIL] Incomplete Cross-Reference:**
 ```
 Create BRD-30 with a fallback version
 ```
 *Problem: Fallback version not identified*
 
-**✅ Complete Cross-Reference:**
+**[PASS] Complete Cross-Reference:**
 ```
 Create BRD-30 (AI-agent primary) with BRD-18 as traditional fallback
 ```

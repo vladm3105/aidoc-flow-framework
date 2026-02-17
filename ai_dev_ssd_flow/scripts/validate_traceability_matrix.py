@@ -400,15 +400,15 @@ class TraceabilityMatrixValidator:
 
         # Overall status
         if severity_counts[ValidationIssue.SEVERITY_CRITICAL] > 0:
-            status = "❌ FAILED (Critical issues found)"
+            status = "[FAIL] FAILED (Critical issues found)"
         elif severity_counts[ValidationIssue.SEVERITY_ERROR] > 0:
-            status = "❌ FAILED (Errors found)"
+            status = "[FAIL] FAILED (Errors found)"
         elif self.strict and severity_counts[ValidationIssue.SEVERITY_WARNING] > 0:
-            status = "❌ FAILED (Warnings in strict mode)"
+            status = "[FAIL] FAILED (Warnings in strict mode)"
         elif severity_counts[ValidationIssue.SEVERITY_WARNING] > 0:
-            status = "🟡 PASSED WITH WARNINGS"
+            status = " PASSED WITH WARNINGS"
         else:
-            status = "✅ PASSED"
+            status = "[PASS] PASSED"
 
         report += f"**Overall Status**: {status}\n\n"
 
@@ -416,7 +416,7 @@ class TraceabilityMatrixValidator:
         report += "## Document Counts\n\n"
         report += f"- **Matrix Inventory**: {len(self.matrix_doc_ids)} documents\n"
         report += f"- **Actual Files**: {len(self.actual_doc_ids)} documents\n"
-        report += f"- **Match**: {'✅ Yes' if len(self.matrix_doc_ids) == len(self.actual_doc_ids) else '❌ No'}\n\n"
+        report += f"- **Match**: {'[PASS] Yes' if len(self.matrix_doc_ids) == len(self.actual_doc_ids) else '[FAIL] No'}\n\n"
 
         # Issues by category
         if self.issues:
@@ -431,10 +431,10 @@ class TraceabilityMatrixValidator:
 
                 for issue in issues_by_category[category]:
                     icon = {
-                        ValidationIssue.SEVERITY_CRITICAL: "🔴",
-                        ValidationIssue.SEVERITY_ERROR: "❌",
-                        ValidationIssue.SEVERITY_WARNING: "⚠️",
-                        ValidationIssue.SEVERITY_INFO: "ℹ️"
+                        ValidationIssue.SEVERITY_CRITICAL: "",
+                        ValidationIssue.SEVERITY_ERROR: "[FAIL]",
+                        ValidationIssue.SEVERITY_WARNING: "[WARN]",
+                        ValidationIssue.SEVERITY_INFO: "ℹ"
                     }.get(issue.severity, "•")
 
                     report += f"{icon} **[{issue.severity}]** {issue.message}\n"
@@ -444,7 +444,7 @@ class TraceabilityMatrixValidator:
 
         else:
             report += "## Validation Results\n\n"
-            report += "✅ No issues found. Matrix is valid and consistent with actual documents.\n\n"
+            report += "[PASS] No issues found. Matrix is valid and consistent with actual documents.\n\n"
 
         # Recommendations
         if self.issues:
@@ -565,13 +565,13 @@ Examples:
             report = validator.generate_report()
             with open(args.output, 'w', encoding='utf-8') as f:
                 f.write(report)
-            print(f"✅ Validation report saved: {args.output}")
+            print(f"[PASS] Validation report saved: {args.output}")
 
         # Return appropriate exit code
         return 0 if is_valid else 1
 
     except Exception as e:
-        print(f"❌ Validation failed: {e}", file=sys.stderr)
+        print(f"[FAIL] Validation failed: {e}", file=sys.stderr)
         return 1
 
 

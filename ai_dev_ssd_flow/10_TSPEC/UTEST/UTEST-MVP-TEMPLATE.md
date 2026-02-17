@@ -245,9 +245,9 @@ AND state_changed event is emitted
 
 | REQ ID | REQ Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| REQ.NN.10.01 | [Title] | TSPEC.NN.40.01, TSPEC.NN.40.03 | ✅ |
-| REQ.NN.10.02 | [Title] | TSPEC.NN.40.02 | ✅ |
-| REQ.NN.10.03 | [Title] | TSPEC.NN.40.04 | ✅ |
+| REQ.NN.10.01 | [Title] | TSPEC.NN.40.01, TSPEC.NN.40.03 | [PASS] |
+| REQ.NN.10.02 | [Title] | TSPEC.NN.40.02 | [PASS] |
+| REQ.NN.10.03 | [Title] | TSPEC.NN.40.04 | [PASS] |
 
 **Coverage Summary**:
 - Total REQ elements: [N]

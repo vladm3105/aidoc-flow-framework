@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+#  Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
 # - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from REQ_CREATION_RULES.md plus validation extensions
@@ -151,7 +151,7 @@ Prefer these tags over legacy “See also …” strings. Corpus-level Gate-05 r
 
 **Error Message**:
 ```
-❌ MISSING: ## 3. Functional Specification
+[FAIL] MISSING: ## 3. Functional Specification
 ```
 
 **Fix**:
@@ -184,10 +184,10 @@ Prefer these tags over legacy “See also …” strings. Corpus-level Gate-05 r
 
 **Error Message**:
 ```
-❌ MISSING: Source Document
-❌ MISSING: Author
-❌ MISSING: Category
-❌ MISSING: Verification Method
+[FAIL] MISSING: Source Document
+[FAIL] MISSING: Author
+[FAIL] MISSING: Category
+[FAIL] MISSING: Verification Method
 ```
 
 **Fix**:
@@ -201,7 +201,7 @@ Prefer these tags over legacy “See also …” strings. Corpus-level Gate-05 r
 
 ---
 
-### CHECK 2.5: Domain Field Validation (Frontmatter Metadata) ⭐ NEW
+### CHECK 2.5: Domain Field Validation (Frontmatter Metadata)  NEW
 
 **Purpose**: Verify domain field in frontmatter metadata for folder classification
 **Type**: Warning (non-blocking)
@@ -245,23 +245,23 @@ custom_fields:
 **Flat File Pattern** (AI-Friendly - Recommended):
 ```
 07_REQ/
-├── REQ-01_jwt_authentication.md         # domain: auth (in metadata)
-├── REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
-├── REQ-03_api_gateway_routing.md        # domain: api (in metadata)
-├── REQ-04_order_execution_logic.md      # domain: trading (in metadata)
-├── REQ-05_data_persistence_schema.md    # domain: data (in metadata)
-└── ... [flat structure, organized by metadata]
+ REQ-01_jwt_authentication.md         # domain: auth (in metadata)
+ REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
+ REQ-03_api_gateway_routing.md        # domain: api (in metadata)
+ REQ-04_order_execution_logic.md      # domain: trading (in metadata)
+ REQ-05_data_persistence_schema.md    # domain: data (in metadata)
+ ... [flat structure, organized by metadata]
 ```
 
 **Why Flat Structure**:
-- ✅ **AI-Friendly**: Easier for language models to navigate and discover files
-- ✅ **Scalable**: No folder hierarchy complexity
-- ✅ **Flexible**: Domain classification via metadata, not folder structure
-- ✅ **Simple**: Single directory for all REQ files, consistent navigation
+- [PASS] **AI-Friendly**: Easier for language models to navigate and discover files
+- [PASS] **Scalable**: No folder hierarchy complexity
+- [PASS] **Flexible**: Domain classification via metadata, not folder structure
+- [PASS] **Simple**: Single directory for all REQ files, consistent navigation
 
 **Warning Messages**:
 ```
-⚠️ WARNING (GATE-W013): REQ-01_jwt_auth.md has invalid domain 'f1_iam-invalid' (must be lowercase alphanumeric + underscores)
+[WARN] WARNING (GATE-W013): REQ-01_jwt_auth.md has invalid domain 'f1_iam-invalid' (must be lowercase alphanumeric + underscores)
 ```
 
 **Fix** (metadata-based):
@@ -281,7 +281,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Error Message**:
 ```
-❌ MISSING: Upstream Sources subsection in section 10
+[FAIL] MISSING: Upstream Sources subsection in section 10
 ```
 
 **Fix**:
@@ -304,7 +304,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Message**:
 ```
-ℹ️  This check is deprecated in v3.0 - see CHECK 15 for complete validation
+ℹ  This check is deprecated in v3.0 - see CHECK 15 for complete validation
 ```
 
 ---
@@ -315,18 +315,18 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `2.0.0` ✅
-- `2.0.1` ✅
-- `1.5.3` ✅
+- `2.0.0` [PASS]
+- `2.0.1` [PASS]
+- `1.5.3` [PASS]
 
 **Invalid Examples**:
-- `2.0` ❌
-- `v2.0.0` ❌
-- `Version 2.0` ❌
+- `2.0` [FAIL]
+- `v2.0.0` [FAIL]
+- `Version 2.0` [FAIL]
 
 **Error Message**:
 ```
-❌ INVALID version format: 'v2.0' (expected X.Y.Z)
+[FAIL] INVALID version format: 'v2.0' (expected X.Y.Z)
 ```
 
 **Fix**:
@@ -342,17 +342,17 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `2025-11-18T00:00:00` ✅
-- `2025-01-09T00:00:00` ✅
+- `2025-11-18T00:00:00` [PASS]
+- `2025-01-09T00:00:00` [PASS]
 
 **Invalid Examples**:
-- `Nov 18, 2025` ❌
-- `11/18/2025` ❌
-- `18-11-2025` ❌
+- `Nov 18, 2025` [FAIL]
+- `11/18/2025` [FAIL]
+- `18-11-2025` [FAIL]
 
 **Error Message**:
 ```
-❌ INVALID Date Created format: 'Nov 18, 2025' (expected YYYY-MM-DDTHH:MM:SS)
+[FAIL] INVALID Date Created format: 'Nov 18, 2025' (expected YYYY-MM-DDTHH:MM:SS)
 ```
 
 **Logical Check**:
@@ -372,19 +372,19 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Warning
 
 **Valid Examples**:
-- `Critical (P1)` ✅
-- `High (P2)` ✅
-- `Medium (P3)` ✅
-- `Low (P4)` ✅
+- `Critical (P1)` [PASS]
+- `High (P2)` [PASS]
+- `Medium (P3)` [PASS]
+- `Low (P4)` [PASS]
 
 **Invalid Examples**:
-- `Critical` ❌
-- `P1` ❌
-- `High Priority` ❌
+- `Critical` [FAIL]
+- `P1` [FAIL]
+- `High Priority` [FAIL]
 
 **Warning Message**:
 ```
-⚠️  WARNING: Priority should include P-level: Critical (P1), High (P2), Medium (P3), Low (P4)
+[WARN]  WARNING: Priority should include P-level: Critical (P1), High (P2), Medium (P3), Low (P4)
 ```
 
 **Fix**:
@@ -400,16 +400,16 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Warning
 
 **Valid Examples**:
-- `SYS-02 section 3.1.1` ✅
-- `BRD-01 section 4.2` ✅
+- `SYS-02 section 3.1.1` [PASS]
+- `BRD-01 section 4.2` [PASS]
 
 **Invalid Examples**:
-- `SYS-02` ❌
-- `section 3.1.1` ❌
+- `SYS-02` [FAIL]
+- `section 3.1.1` [FAIL]
 
 **Warning Message**:
 ```
-⚠️  WARNING: Source Document should include section number (e.g., 'SYS-02 section 3.1.1')
+[WARN]  WARNING: Source Document should include section number (e.g., 'SYS-02 section 3.1.1')
 ```
 
 **Fix**:
@@ -425,27 +425,27 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Error + Warning
 
 **Valid Examples**:
-- `✅ 92% (Target: ≥90%)` ✅
-- `✅ 95% (Target: ≥90%)` ✅
+- `[PASS] 92% (Target: ≥90%)` [PASS]
+- `[PASS] 95% (Target: ≥90%)` [PASS]
 
 **Invalid Examples**:
-- `95%` ❌
-- `✓ 95%` ❌
-- `High` ❌
+- `95%` [FAIL]
+- ` 95%` [FAIL]
+- `High` [FAIL]
 
 **Error Message** (format):
 ```
-❌ MISSING: SPEC-Ready Score with ✅ emoji and percentage
+[FAIL] MISSING: SPEC-Ready Score with [PASS] emoji and percentage
 ```
 
 **Warning Message** (threshold):
 ```
-⚠️  WARNING: SPEC-Ready Score below 90%: 65%
+[WARN]  WARNING: SPEC-Ready Score below 90%: 65%
 ```
 
 **Fix**:
 ```markdown
-| **SPEC-Ready Score** | ✅ 90% (Target: ≥90%) |
+| **SPEC-Ready Score** | [PASS] 90% (Target: ≥90%) |
 ```
 
 ---
@@ -467,12 +467,12 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Error Message**:
 ```
-❌ MISSING: Change History entries
+[FAIL] MISSING: Change History entries
 ```
 
 **Warning Message**:
 ```
-⚠️  WARNING: Latest change history version (2.0.0) doesn't match document version (2.0.1)
+[WARN]  WARNING: Latest change history version (2.0.0) doesn't match document version (2.0.1)
 ```
 
 **Fix**:
@@ -487,35 +487,35 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 ---
 
-### CHECK 12: Filename/ID Format Validation ⭐ NEW
+### CHECK 12: Filename/ID Format Validation  NEW
 
 **Purpose**: Validate filename matches ID naming standards
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `REQ-02_connection_heartbeat.md` ✅
-- `REQ-023_quote_retrieval.md` ✅
-- `REQ-009.1_prerequisite.md` ✅ (section file)
+- `REQ-02_connection_heartbeat.md` [PASS]
+- `REQ-023_quote_retrieval.md` [PASS]
+- `REQ-009.1_prerequisite.md` [PASS] (section file)
 
 **Invalid Examples**:
-- `REQ-02.md` ❌ (missing description)
-- `req-002_connection.md` ❌ (wrong case)
-- `REQ002_connection.md` ❌ (missing hyphen)
-- `REQ-02_Connection.md` ❌ (uppercase in slug)
+- `REQ-02.md` [FAIL] (missing description)
+- `req-002_connection.md` [FAIL] (wrong case)
+- `REQ002_connection.md` [FAIL] (missing hyphen)
+- `REQ-02_Connection.md` [FAIL] (uppercase in slug)
 
 **Pattern**: `REQ-\d{2,}(-\d{2,3})?_[a-z0-9_]+\.md`
 
 **Error Messages**:
 ```
-❌ ERROR: Invalid filename format: req-002_connection.md
+[FAIL] ERROR: Invalid filename format: req-002_connection.md
          Expected: REQ-NN_{slug}.md or REQ-NN-YY_{slug}.md
 
-❌ ERROR: H1 header ID doesn't match filename
+[FAIL] ERROR: H1 header ID doesn't match filename
          Filename ID: REQ-02
          H1 Header: # REQ-03: Connection Monitoring
 ```
 
-### CHECK 12b: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+### CHECK 12b: Universal Splitting Trigger (Size/Cardinality)  NEW
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 **Type**: Error (blocking)
 
@@ -525,7 +525,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Action**: Move to `07_REQ/REQ-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
 
 
 **Fix**:
@@ -537,7 +537,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 ---
 
-### CHECK 13: Document Control Category Validation ⭐ NEW
+### CHECK 13: Document Control Category Validation  NEW
 
 **Purpose**: Verify category field in Document Control is set and valid (Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None).
 
@@ -552,10 +552,10 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Warning
 
 **Error Messages**:
-- Missing: `⚠️ WARNING: Document Control missing 'Category' field`
-- Invalid: `❌ ERROR: Category '${category}' is not valid. Use one of: Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None`
+- Missing: `[WARN] WARNING: Document Control missing 'Category' field`
+- Invalid: `[FAIL] ERROR: Category '${category}' is not valid. Use one of: Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None`
 
-### CHECK 14: Infrastructure Metadata Validation ⭐ NEW
+### CHECK 14: Infrastructure Metadata Validation  NEW
 
 **Purpose**: Verify infrastructure-related REQs have proper metadata and traceability tags.
 
@@ -581,16 +581,16 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 **Type**: Warning
 
 **Error Messages**:
-- Missing infrastructure_type: `⚠️ WARNING: Infrastructure-related REQ missing infrastructure_type metadata`
-- Invalid infrastructure_type: `❌ ERROR: infrastructure_type '${type}' is not valid`
-- Invalid @sys format: `⚠️ WARNING: @sys tag format invalid. Use: @sys: SYS.NN.09.01.X where X matches SYS subsection number`
-- Missing @iac: `⚠️ WARNING: infrastructure_type '${type}' requires @iac or @ansible tag`
-- Missing @deployment: `⚠️ WARNING: infrastructure_type 'Deployment_Automation' requires @deployment: scripts/ tag`
-- Missing @config_file_type: `⚠️ WARNING: Config generation REQ missing @config_file_type tag`
+- Missing infrastructure_type: `[WARN] WARNING: Infrastructure-related REQ missing infrastructure_type metadata`
+- Invalid infrastructure_type: `[FAIL] ERROR: infrastructure_type '${type}' is not valid`
+- Invalid @sys format: `[WARN] WARNING: @sys tag format invalid. Use: @sys: SYS.NN.09.01.X where X matches SYS subsection number`
+- Missing @iac: `[WARN] WARNING: infrastructure_type '${type}' requires @iac or @ansible tag`
+- Missing @deployment: `[WARN] WARNING: infrastructure_type 'Deployment_Automation' requires @deployment: scripts/ tag`
+- Missing @config_file_type: `[WARN] WARNING: Config generation REQ missing @config_file_type tag`
 
 ---
 
-### CHECK 13: Resource Tag Validation (Template 2.0) ⭐ NEW
+### CHECK 13: Resource Tag Validation (Template 2.0)  NEW
 
 **Purpose**: Verify [RESOURCE_INSTANCE] tag in H1 for Template 2.0
 **Type**: Error (blocking for Template 2.0)
@@ -599,15 +599,15 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Valid Examples**:
 ```markdown
-# REQ-01: [EXTERNAL_SERVICE_GATEWAY] IB Gateway Connection ✅
-# REQ-02: [HEALTH_CHECK_SERVICE] Heartbeat Monitoring ✅
-# REQ-03: [RESILIENCE_PATTERN] Automatic Reconnection ✅
+# REQ-01: [EXTERNAL_SERVICE_GATEWAY] IB Gateway Connection [PASS]
+# REQ-02: [HEALTH_CHECK_SERVICE] Heartbeat Monitoring [PASS]
+# REQ-03: [RESILIENCE_PATTERN] Automatic Reconnection [PASS]
 ```
 
 **Invalid Examples**:
 ```markdown
-# REQ-01: IB Gateway Connection ❌ (missing tag)
-# REQ-02: Connection Monitoring ❌ (missing tag)
+# REQ-01: IB Gateway Connection [FAIL] (missing tag)
+# REQ-02: Connection Monitoring [FAIL] (missing tag)
 ```
 
 **Valid Resource Tags**:
@@ -628,7 +628,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Error Message**:
 ```
-❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
+[FAIL] ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
          Current H1: # REQ-02: Connection Monitoring
          Expected: # REQ-02: [HEALTH_CHECK_SERVICE] Connection Monitoring
 ```
@@ -642,7 +642,7 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 ---
 
-### CHECK 14: Cumulative Tagging Hierarchy (Layer 7) ⭐ NEW
+### CHECK 14: Cumulative Tagging Hierarchy (Layer 7)  NEW
 
 **Purpose**: Enforce complete traceability chain via embedded tags
 **Type**: Error (blocking) - **CRITICAL**
@@ -659,29 +659,29 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 
 **Valid Examples**:
 ```markdown
-@brd: BRD.09.01.15, BRD.09.01.06 ✅
-@prd: PRD.16.01.03 ✅
-@ears: EARS.12.24.02 ✅
-@bdd: BDD.15.13.07 ✅
-@adr: ADR-033 ✅
-@sys: SYS.12.25.01 ✅
+@brd: BRD.09.01.15, BRD.09.01.06 [PASS]
+@prd: PRD.16.01.03 [PASS]
+@ears: EARS.12.24.02 [PASS]
+@bdd: BDD.15.13.07 [PASS]
+@adr: ADR-033 [PASS]
+@sys: SYS.12.25.01 [PASS]
 ```
 
 **Invalid Examples**:
 ```markdown
-@brd BRD.09.01.15 ❌ (missing colon after tag type)
-@brd: BRD-09 ❌ (missing element ID)
-brd: BRD.09.01.15 ❌ (missing @ prefix)
+@brd BRD.09.01.15 [FAIL] (missing colon after tag type)
+@brd: BRD-09 [FAIL] (missing element ID)
+brd: BRD.09.01.15 [FAIL] (missing @ prefix)
 ```
 
 **Error Messages**:
 ```
-❌ ERROR: Missing cumulative tags (Layer 7 requires all 6):
+[FAIL] ERROR: Missing cumulative tags (Layer 7 requires all 6):
          Missing: @ears @bdd @adr
          Required: @brd, @prd, @ears, @bdd, @adr, @sys
          Reference: doc-flow TRACEABILITY.md section 2.5
 
-❌ ERROR: Invalid tag format: @brd BRD.09.01.15
+[FAIL] ERROR: Invalid tag format: @brd BRD.09.01.15
          Expected: @type: TYPE.NN.TT.SS (unified 4-segment element ID)
          Example: @brd: BRD.09.01.15
 ```
@@ -695,7 +695,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 ---
 
-### CHECK 15: Complete Upstream Chain (6 Layers) ⭐ NEW
+### CHECK 15: Complete Upstream Chain (6 Layers)  NEW
 
 **Purpose**: Verify upstream sources table includes all required artifact types
 **Type**: Error (blocking)
@@ -724,7 +724,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Error Message**:
 ```
-❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
+[FAIL] ERROR: Incomplete upstream chain - missing: EARS BDD ADR
          Complete chain required: BRD → PRD → EARS (Engineering Requirements) → BDD → ADR → SYS
          Reference: REQ-MVP-TEMPLATE.md section 10 (Traceability)
 ```
@@ -738,33 +738,33 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 ---
 
-### CHECK 16: Markdown Link Resolution ⭐ NEW
+### CHECK 16: Markdown Link Resolution  NEW
 
 **Purpose**: Validate all cross-reference links resolve to existing files
 **Type**: Error + Warning
 
 **Valid Link Format**:
 ```markdown
-[REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) ✅
-[ADR-033](../../05_ADR/ADR-033_architecture.md#ADR-033) ✅
+[REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) [PASS]
+[ADR-033](../../05_ADR/ADR-033_architecture.md#ADR-033) [PASS]
 ```
 
 **Invalid Examples**:
 ```markdown
-[REQ-03](REQ-03.md) ❌ (missing relative path)
-[ADR-033](../../05_ADR/ADR-999.md) ❌ (file doesn't exist)
+[REQ-03](REQ-03.md) [FAIL] (missing relative path)
+[ADR-033](../../05_ADR/ADR-999.md) [FAIL] (file doesn't exist)
 ```
 
 **Error Message** (broken link):
 ```
-❌ ERROR: Broken link - file not found
+[FAIL] ERROR: Broken link - file not found
          Link: ../../05_ADR/ADR-999_architecture.md
          Resolved: [project_root]/docs/05_ADR/ADR-999_architecture.md
 ```
 
 **Warning Message** (missing anchor):
 ```
-⚠️  WARNING: Anchor possibly missing in ADR-033_architecture.md: #ADR-033
+[WARN]  WARNING: Anchor possibly missing in ADR-033_architecture.md: #ADR-033
 ```
 
 **Fix**:
@@ -774,7 +774,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 ---
 
-### CHECK 17: Traceability Matrix (Complex REQs) ⭐ NEW
+### CHECK 17: Traceability Matrix (Complex REQs)  NEW
 
 **Purpose**: Recommend matrix for complex requirements
 **Type**: Warning
@@ -785,7 +785,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Message**:
 ```
-⚠️  WARNING: Complex REQ detected but section 10.4 (Traceability Matrix) missing
+[WARN]  WARNING: Complex REQ detected but section 10.4 (Traceability Matrix) missing
          Upstream sources: 7 (≥5 suggests complexity)
          Sub-components: yes
          Recommendation: Add section 10.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md
@@ -813,7 +813,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 ---
 
-### CHECK 18: SPEC-Ready Content Validation ⭐ NEW
+### CHECK 18: SPEC-Ready Content Validation  NEW
 
 **Purpose**: Verify SPEC-ready documents have actual implementation code
 **Type**: Warning
@@ -828,10 +828,10 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Messages**:
 ```
-❌ ERROR: SPEC-Ready ≥90% but no Protocol/ABC class in section 3.4
-❌ ERROR: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4.2
-❌ ERROR: SPEC-Ready ≥90% but no exception definitions in section 5.3
-❌ ERROR: SPEC-Ready ≥90% but no YAML configuration in section 7.3
+[FAIL] ERROR: SPEC-Ready ≥90% but no Protocol/ABC class in section 3.4
+[FAIL] ERROR: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4.2
+[FAIL] ERROR: SPEC-Ready ≥90% but no exception definitions in section 5.3
+[FAIL] ERROR: SPEC-Ready ≥90% but no YAML configuration in section 7.3
 ```
 
 **Fix**: Add missing code examples to achieve claimed SPEC-Ready score
@@ -854,28 +854,28 @@ class HeartbeatConfig(BaseModel):
     connection_timeout_regulatory: float = Field(5.0, gt=0, le=60.0)
 ```
 
-### CHECK 19: CTR-Ready Score Validation ⭐ NEW
+### CHECK 19: CTR-Ready Score Validation  NEW
 
 **Purpose**: Validate CTR-ready score format and threshold for interface contract transition
 
-**Error Message**: `❌ MISSING: CTR-Ready Score with ✅ emoji and percentage`
+**Error Message**: `[FAIL] MISSING: CTR-Ready Score with [PASS] emoji and percentage`
 
 **Action**: Enforces REQ → CTR progression quality gates
 
 
 ---
 
-### CHECK 20: Element ID Format Compliance ⭐ NEW
+### CHECK 20: Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `### REQ.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `### R-XXX` | ❌ Fail - use REQ.NN.27.SS |
-| Removed pattern | `### REQ-XXX` | ❌ Fail - use REQ.NN.27.SS |
-| Removed pattern | `### FR-XXX` | ❌ Fail - use REQ.NN.01.SS |
+| Valid format | `### REQ.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `### R-XXX` | [FAIL] Fail - use REQ.NN.27.SS |
+| Removed pattern | `### REQ-XXX` | [FAIL] Fail - use REQ.NN.27.SS |
+| Removed pattern | `### FR-XXX` | [FAIL] Fail - use REQ.NN.01.SS |
 
 **Regex**: `^###\s+REQ\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -893,7 +893,7 @@ class HeartbeatConfig(BaseModel):
 
 ---
 
-### CHECK 21: Unit Tests Table Validation ⭐ NEW
+### CHECK 21: Unit Tests Table Validation  NEW
 
 **Purpose**: Verify Section 8.1 contains Unit Tests table with minimum entries
 **Type**: Warning
@@ -917,9 +917,9 @@ class HeartbeatConfig(BaseModel):
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Section 8.1 missing "Unit Tests" title - drives SPEC interface design
-⚠️  WARNING: Unit Tests table has < 3 entries (found: 2, required: ≥3)
-⚠️  WARNING: Unit Tests entries missing category prefix [Logic/State/Validation/Edge]
+[WARN]  WARNING: Section 8.1 missing "Unit Tests" title - drives SPEC interface design
+[WARN]  WARNING: Unit Tests table has < 3 entries (found: 2, required: ≥3)
+[WARN]  WARNING: Unit Tests entries missing category prefix [Logic/State/Validation/Edge]
 ```
 
 **Fix**: Add Unit Tests table with Input/Output/Coverage columns and category prefixes
@@ -940,7 +940,7 @@ class HeartbeatConfig(BaseModel):
 | **CHECK 14** | Ensure infrastructure metadata (Type) and traceability tags (@sys, @iac) are complete |
 | **CHECK 5** | Change version to semver: `2.0.1` |
 | **CHECK 6** | Change dates to ISO 8601: `2025-11-18T00:00:00` |
-| **CHECK 9** | Update score format: `✅ 90% (Target: ≥90%)` |
+| **CHECK 9** | Update score format: `[PASS] 90% (Target: ≥90%)` |
 | **CHECK 11** | Add change history entry for current version |
 | **CHECK 12** | Rename file to match pattern, update H1 header |
 | **CHECK 13** | Add resource tag to H1: `[HEALTH_CHECK_SERVICE]` |
@@ -966,7 +966,7 @@ find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {
 
 **Success (no errors/warnings)**:
 ```
-✅ PASSED: All validation checks passed with no warnings
+[PASS] PASSED: All validation checks passed with no warnings
 
 Errors: 0
 Warnings: 0
@@ -974,7 +974,7 @@ Warnings: 0
 
 **Success with warnings**:
 ```
-⚠️  PASSED WITH WARNINGS: Document valid but has 2 warnings
+[WARN]  PASSED WITH WARNINGS: Document valid but has 2 warnings
 
 Errors: 0
 Warnings: 2
@@ -982,7 +982,7 @@ Warnings: 2
 
 **Failure**:
 ```
-❌ FAILED: 3 critical errors found
+[FAIL] FAILED: 3 critical errors found
 
 Errors: 3
 Warnings: 1
@@ -1004,7 +1004,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Missing cumulative tags (Layer 7 requires all 6):
+[FAIL] ERROR: Missing cumulative tags (Layer 7 requires all 6):
          Missing: @ears @bdd @adr
 ```
 
@@ -1028,7 +1028,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Invalid filename format: REQ-02.md
+[FAIL] ERROR: Invalid filename format: REQ-02.md
          Expected: REQ-NN_{slug}.md
 ```
 
@@ -1042,7 +1042,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: H1 header ID doesn't match filename
+[FAIL] ERROR: H1 header ID doesn't match filename
          Filename ID: REQ-02
          H1 Header: # REQ-03: Connection Monitoring
 ```
@@ -1060,7 +1060,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
+[FAIL] ERROR: Incomplete upstream chain - missing: EARS BDD ADR
          Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS
 ```
 
@@ -1074,7 +1074,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Broken link - file not found
+[FAIL] ERROR: Broken link - file not found
          Link: ../../05_ADR/ADR-999_architecture.md
          Resolved: [project_root]/docs/05_ADR/ADR-999_architecture.md
 ```
@@ -1092,7 +1092,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
+[FAIL] ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
          Current H1: # REQ-02: Connection Monitoring
 ```
 
@@ -1109,8 +1109,8 @@ Warnings: 1
 
 **Warning**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
+[WARN]  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+[WARN]  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
 ```
 
 **Cause**: Claimed SPEC-Ready score but missing implementation code

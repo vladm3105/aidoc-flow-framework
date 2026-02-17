@@ -37,14 +37,14 @@ except ImportError:
 def load_spec(spec_path: Path) -> Dict[str, Any]:
     """Load and parse the SPEC YAML file."""
     if not spec_path.exists():
-        print(f"❌ Error: SPEC file not found: {spec_path}")
+        print(f"[FAIL] Error: SPEC file not found: {spec_path}")
         sys.exit(1)
     
     with open(spec_path, 'r', encoding='utf-8') as f:
         try:
             return yaml.safe_load(f) or {}
         except yaml.YAMLError as e:
-            print(f"❌ Error parsing SPEC file: {e}")
+            print(f"[FAIL] Error parsing SPEC file: {e}")
             sys.exit(1)
 
 def load_contracts(contracts_path: Path) -> str:
@@ -111,7 +111,7 @@ Generate the implementation now.
 
 def generate_code_mock(prompt: str) -> str:
     """Mock generation for testing without API keys."""
-    print("⚠️  Vertex AI SDK not found or API call disabled. Returning mock response.")
+    print("[WARN]  Vertex AI SDK not found or API call disabled. Returning mock response.")
     
     mock_response = {
         "files": [
@@ -126,13 +126,13 @@ def generate_code_mock(prompt: str) -> str:
 def generate_code_vertex(prompt: str, project: str, location: str, model_name: str) -> str:
     """Call Vertex AI to generate code."""
     if not VERTEX_AVAILABLE:
-        print("❌ Error: google-cloud-aiplatform not installed. Run: pip install google-cloud-aiplatform")
+        print("[FAIL] Error: google-cloud-aiplatform not installed. Run: pip install google-cloud-aiplatform")
         return generate_code_mock(prompt)
 
-    print(f"🤖 Initializing Vertex AI (Project: {project}, Location: {location})...")
+    print(f" Initializing Vertex AI (Project: {project}, Location: {location})...")
     vertexai.init(project=project, location=location)
     
-    print(f"🧠 Loading Model: {model_name}...")
+    print(f" Loading Model: {model_name}...")
     model = GenerativeModel(model_name)
     
     config = {
@@ -141,7 +141,7 @@ def generate_code_vertex(prompt: str, project: str, location: str, model_name: s
         "top_p": 0.95,
     }
     
-    print("🚀 Sending request to Vertex AI...")
+    print(" Sending request to Vertex AI...")
     try:
         response = model.generate_content(
             prompt,
@@ -150,7 +150,7 @@ def generate_code_vertex(prompt: str, project: str, location: str, model_name: s
         )
         return response.text
     except Exception as e:
-        print(f"❌ Vertex AI Error: {e}")
+        print(f"[FAIL] Vertex AI Error: {e}")
         return generate_code_mock(prompt)
 
 def save_files(json_content: str, output_root: Path):
@@ -166,7 +166,7 @@ def save_files(json_content: str, output_root: Path):
         data = json.loads(clean_json)
         
         if "files" not in data:
-            print("❌ Error: Invalid response format (missing 'files' key)")
+            print("[FAIL] Error: Invalid response format (missing 'files' key)")
             return
 
         for file_entry in data["files"]:
@@ -182,10 +182,10 @@ def save_files(json_content: str, output_root: Path):
             with open(full_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             
-            print(f"✅ Wrote: {full_path}")
+            print(f"[PASS] Wrote: {full_path}")
             
     except json.JSONDecodeError as e:
-        print(f"❌ Error decoding JSON response: {e}")
+        print(f"[FAIL] Error decoding JSON response: {e}")
         print(f"Raw response start: {json_content[:500]}...")
 
 def main():
@@ -205,12 +205,12 @@ def main():
     contracts_path = Path(args.contracts) if args.contracts else None
     
     # 1. Load context
-    print(f"📖 Loading SPEC: {spec_path}")
+    print(f" Loading SPEC: {spec_path}")
     spec_data = load_spec(spec_path)
     
     contracts_context = ""
     if contracts_path:
-        print(f"📜 Loading Contracts from: {contracts_path}")
+        print(f" Loading Contracts from: {contracts_path}")
         contracts_context = load_contracts(contracts_path)
 
     # 2. Construct Prompt
@@ -224,15 +224,15 @@ def main():
 
     # 3. Generate
     if not args.project:
-        print("⚠️  No GCP Project ID provided. Using mock generation.")
+        print("[WARN]  No GCP Project ID provided. Using mock generation.")
         response_text = generate_code_mock(prompt)
     else:
         response_text = generate_code_vertex(prompt, args.project, args.location, args.model)
         
     # 4. Save
-    print("\n💾 Saving Generated Files...")
+    print("\n Saving Generated Files...")
     save_files(response_text, output_root)
-    print("\n✨ Generation Complete!")
+    print("\n Generation Complete!")
 
 if __name__ == "__main__":
     main()

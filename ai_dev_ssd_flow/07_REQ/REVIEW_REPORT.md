@@ -9,10 +9,10 @@
 ## Executive Summary
 
 The REQ framework appears well-structured overall, with:
-- ✅ Consistent YAML and Markdown templates
-- ✅ Correct layer numbers (Layer 7) across all files
-- ✅ Valid YAML syntax in all template files
-- ✅ Threshold registry references present
+- [PASS] Consistent YAML and Markdown templates
+- [PASS] Correct layer numbers (Layer 7) across all files
+- [PASS] Valid YAML syntax in all template files
+- [PASS] Threshold registry references present
 
 ### Critical Issues Found: 1
 ### Medium Issues Found: 0
@@ -22,7 +22,7 @@ The REQ framework appears well-structured overall, with:
 
 ## Critical Issue
 
-### Issue 1: API Example File Non-Compliant ⭐ CRITICAL
+### Issue 1: API Example File Non-Compliant  CRITICAL
 
 **File**: `examples/api/REQ-01_api_integration_example.md`
 
@@ -54,16 +54,16 @@ Document Control (no number)
 ```
 
 **Missing Sections** (10 out of 11):
-- ❌ Requirement Description
-- ❌ Functional Specification
-- ❌ Interface Definition
-- ❌ Error Handling
-- ❌ Quality Attributes
-- ❌ Configuration
-- ❌ Testing Requirements
-- ❌ Acceptance Criteria (has different "Acceptance Criteria" section)
-- ❌ Traceability (has different "Traceability" section)
-- ❌ Implementation Notes
+- [FAIL] Requirement Description
+- [FAIL] Functional Specification
+- [FAIL] Interface Definition
+- [FAIL] Error Handling
+- [FAIL] Quality Attributes
+- [FAIL] Configuration
+- [FAIL] Testing Requirements
+- [FAIL] Acceptance Criteria (has different "Acceptance Criteria" section)
+- [FAIL] Traceability (has different "Traceability" section)
+- [FAIL] Implementation Notes
 
 **Impact**: 
 - Users referencing this example will create non-compliant REQ documents
@@ -77,33 +77,33 @@ The deployment example (`examples/deployment/REQ-02_deployment_requirements_exam
 
 ## Framework Status Overview
 
-### Template Consistency ✅
+### Template Consistency [PASS]
 | Aspect | Status |
 |--------|--------|
-| YAML Template (REQ-MVP-TEMPLATE.yaml) | ✅ Valid, 11 sections |
-| MD Template (REQ-MVP-TEMPLATE.md) | ✅ Valid, 11 sections |
-| Templates synchronized | ✅ Yes |
+| YAML Template (REQ-MVP-TEMPLATE.yaml) | [PASS] Valid, 11 sections |
+| MD Template (REQ-MVP-TEMPLATE.md) | [PASS] Valid, 11 sections |
+| Templates synchronized | [PASS] Yes |
 
-### Layer Number Consistency ✅
+### Layer Number Consistency [PASS]
 | File | Layer | Status |
 |------|-------|--------|
-| README.md | 7 | ✅ Correct |
-| REQ-MVP-TEMPLATE.md | 7 | ✅ Correct |
-| REQ_MVP_CREATION_RULES.md | 7 | ✅ Correct |
-| REQ_MVP_VALIDATION_RULES.md | 7 | ✅ Correct |
-| REQ_MVP_SCHEMA.yaml | 7 | ✅ Correct |
+| README.md | 7 | [PASS] Correct |
+| REQ-MVP-TEMPLATE.md | 7 | [PASS] Correct |
+| REQ_MVP_CREATION_RULES.md | 7 | [PASS] Correct |
+| REQ_MVP_VALIDATION_RULES.md | 7 | [PASS] Correct |
+| REQ_MVP_SCHEMA.yaml | 7 | [PASS] Correct |
 
-### YAML Syntax ✅
+### YAML Syntax [PASS]
 | File | Status |
 |------|--------|
-| REQ-MVP-TEMPLATE.yaml | ✅ Valid |
-| REQ_MVP_SCHEMA.yaml | ✅ Valid |
+| REQ-MVP-TEMPLATE.yaml | [PASS] Valid |
+| REQ_MVP_SCHEMA.yaml | [PASS] Valid |
 
 ### Example Files Status
 | File | Structure | Status |
 |------|-----------|--------|
-| examples/api/REQ-01_api_integration_example.md | 5 sections (legacy) | ❌ **Non-compliant** |
-| examples/deployment/REQ-02_deployment_requirements_example.md | 11 sections | ✅ Compliant |
+| examples/api/REQ-01_api_integration_example.md | 5 sections (legacy) | [FAIL] **Non-compliant** |
+| examples/deployment/REQ-02_deployment_requirements_example.md | 11 sections | [PASS] Compliant |
 
 ---
 
@@ -124,11 +124,11 @@ The deployment example (`examples/deployment/REQ-02_deployment_requirements_exam
 
 | Check | Status |
 |-------|--------|
-| YAML Syntax | ✅ All valid |
-| Layer Numbers | ✅ All correct (Layer 7) |
-| Template Consistency | ✅ MD and YAML match |
-| Threshold References | ✅ Present in all docs |
-| Example Compliance | ❌ API example non-compliant |
+| YAML Syntax | [PASS] All valid |
+| Layer Numbers | [PASS] All correct (Layer 7) |
+| Template Consistency | [PASS] MD and YAML match |
+| Threshold References | [PASS] Present in all docs |
+| Example Compliance | [FAIL] API example non-compliant |
 
 ---
 

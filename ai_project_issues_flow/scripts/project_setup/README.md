@@ -6,26 +6,26 @@ Scripts for initializing and configuring the AI-First Project Governance Framewo
 
 ```
 project_setup/
-├── README.md                          # This file
-├── setup_github_environments.sh       # GitHub environment configuration
-├── validate_configuration.sh          # Placeholder validation script
-└── cloud/
-    ├── gcp/                           # Google Cloud Platform setup
-    │   ├── README.md
-    │   ├── setup-projects.sh
-    │   ├── setup-wif.sh
-    │   ├── setup_artifact_registry.sh
-    │   ├── setup-environments.sh
-    │   ├── setup-ai-review-gcp.sh
-    │   └── configure_revision_retention.sh
-    ├── aws/                           # Amazon Web Services setup
-    │   ├── README.md
-    │   ├── setup-iam-oidc.sh
-    │   └── setup-ecr.sh
-    └── azure/                         # Microsoft Azure setup
-        ├── README.md
-        ├── setup-managed-identity.sh
-        └── setup-acr.sh
+ README.md                          # This file
+ setup_github_environments.sh       # GitHub environment configuration
+ validate_configuration.sh          # Placeholder validation script
+ cloud/
+     gcp/                           # Google Cloud Platform setup
+        README.md
+        setup-projects.sh
+        setup-wif.sh
+        setup_artifact_registry.sh
+        setup-environments.sh
+        setup-ai-review-gcp.sh
+        configure_revision_retention.sh
+     aws/                           # Amazon Web Services setup
+        README.md
+        setup-iam-oidc.sh
+        setup-ecr.sh
+     azure/                         # Microsoft Azure setup
+         README.md
+         setup-managed-identity.sh
+         setup-acr.sh
 ```
 
 ## Quick Start

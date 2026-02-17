@@ -222,7 +222,7 @@ For each subsection:
 ```markdown
 | Item | Details |
 |------|---------|
-| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 > **Note**: SYS templates include REQ-Ready Score (mandatory for Layer 7 progression). EARS-Ready Score is optional and informational when present.
@@ -254,7 +254,7 @@ For each subsection:
 | Use Case | 11 | SYS.02.11.01 |
 | System Requirement | 26 | SYS.02.26.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `FR-XXX` → Use `SYS.NN.01.SS`
 > - `QA-XXX` → Use `SYS.NN.02.SS`
 >
@@ -292,12 +292,12 @@ For each subsection:
 
 ---
 
-## 7. REQ-Ready Scoring System ⭐ NEW
+## 7. REQ-Ready Scoring System  NEW
 
 ### Overview
 REQ-ready scoring measures SYS maturity and readiness for progression to Requirements (REQ) decomposition.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: Document Control table
 **Validation**: Enforced before REQ creation (single standard profile)
 
@@ -327,7 +327,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 ### Quality Gate Enforcement
 - Score below 90% prevents REQ artifact creation
-- Format validation requires ✅ emoji and percentage
+- Format validation requires [PASS] emoji and percentage
 - Threshold enforcement at pre-commit uses the standard SYS profile
 
 ---

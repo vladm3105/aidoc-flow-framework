@@ -101,9 +101,9 @@ bash validate_all_tspec.sh ../../docs/10_TSPEC/
 ### Summary
 
 ```
-✅ UTEST-01_auth_service.md: PASS (92%)
-❌ ITEST-01_data_service.md: FAIL (78%)
-✅ STEST-01_deployment.md: PASS (100%)
+[PASS] UTEST-01_auth_service.md: PASS (92%)
+[FAIL] ITEST-01_data_service.md: FAIL (78%)
+[PASS] STEST-01_deployment.md: PASS (100%)
 ```
 
 ### Detailed
@@ -115,11 +115,11 @@ Status: PASS
 Overall Score: 92%
 
 Quality Gates:
-  GATE-01 REQ Coverage:    95% (30/30)  ✅
-  GATE-02 I/O Tables:      100% (25/25) ✅
-  GATE-03 Category Prefix: 100% (25/25) ✅
-  GATE-04 Pseudocode:      80% (20/25)  ⚠️
-  GATE-05 Error Cases:     88% (22/25)  ✅
+  GATE-01 REQ Coverage:    95% (30/30)  [PASS]
+  GATE-02 I/O Tables:      100% (25/25) [PASS]
+  GATE-03 Category Prefix: 100% (25/25) [PASS]
+  GATE-04 Pseudocode:      80% (20/25)  [WARN]
+  GATE-05 Error Cases:     88% (22/25)  [PASS]
 
 Issues:
   - TSPEC.01.40.15: Missing pseudocode

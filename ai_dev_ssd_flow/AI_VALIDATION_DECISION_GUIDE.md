@@ -123,7 +123,7 @@ When a validation fails, you must decide:
 ### Step 1: Understand the Validation Error
 
 ```
-✗ GATE-XX: Error message
+ GATE-XX: Error message
   File: path/to/document.md
   Details: Specific failing condition
 ```
@@ -188,27 +188,27 @@ Update the relevant decision guide or validator rules for future reference.
 
 ### Fix the Document If:
 
-✅ Required section truly missing  
-✅ Content is incomplete or placeholder  
-✅ File in wrong domain/folder  
-✅ Metadata fields incorrect or inconsistent  
-✅ Cross-links logically related  
-✅ Grammar/spelling errors in critical sections  
+[PASS] Required section truly missing  
+[PASS] Content is incomplete or placeholder  
+[PASS] File in wrong domain/folder  
+[PASS] Metadata fields incorrect or inconsistent  
+[PASS] Cross-links logically related  
+[PASS] Grammar/spelling errors in critical sections  
 
 ### Fix the Validator If:
 
-✅ Template variant not recognized (MVP vs full)  
-✅ Valid markdown syntax rejected  
-✅ Too-strict threshold on metrics  
-✅ Incorrect regex pattern matching  
-✅ False positive for format violations  
+[PASS] Template variant not recognized (MVP vs full)  
+[PASS] Valid markdown syntax rejected  
+[PASS] Too-strict threshold on metrics  
+[PASS] Incorrect regex pattern matching  
+[PASS] False positive for format violations  
 
 ### Accept the Warning If:
 
-✅ Informational only (GATE-05 without critical links)  
-✅ Style preference (icon choice, heading levels)  
-✅ Non-blocking threshold slightly exceeded  
-✅ Legacy compatibility note (document is valid, rule is legacy)  
+[PASS] Informational only (GATE-05 without critical links)  
+[PASS] Style preference (icon choice, heading levels)  
+[PASS] Non-blocking threshold slightly exceeded  
+[PASS] Legacy compatibility note (document is valid, rule is legacy)  
 
 ---
 

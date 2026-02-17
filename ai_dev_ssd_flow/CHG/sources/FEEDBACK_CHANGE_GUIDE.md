@@ -60,42 +60,42 @@ custom_fields:
 Feedback changes originate from production operations, user feedback, and analytics insights. They loop back into the development workflow at the appropriate layer based on root cause analysis.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   FEEDBACK CHANGE FLOW                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│            ┌─────────────────────────────┐                 │
-│            │       PRODUCTION            │                 │
-│            │  ┌─────────────────────┐   │                 │
-│            │  │ • Monitoring/Alerts │   │                 │
-│            │  │ • User Feedback     │   │                 │
-│            │  │ • Support Tickets   │   │                 │
-│            │  │ • Analytics Data    │   │                 │
-│            │  │ • Incident Reports  │   │                 │
-│            │  └──────────┬──────────┘   │                 │
-│            └─────────────┼──────────────┘                 │
-│                          │                                 │
-│                          ▼                                 │
-│            ┌─────────────────────────────┐                 │
-│            │    ROOT CAUSE ANALYSIS      │                 │
-│            │    Where should fix go?     │                 │
-│            └─────────────┬───────────────┘                 │
-│                          │                                 │
-│    ┌─────────────────────┼─────────────────────┐          │
-│    │                     │                     │          │
-│    ▼                     ▼                     ▼          │
-│ ┌──────────┐       ┌──────────┐        ┌──────────┐      │
-│ │ HOTFIX   │       │ DESIGN   │        │ PRODUCT  │      │
-│ │ Code bug │       │ ISSUE    │        │ CHANGE   │      │
-│ │ (L12)    │       │ (L5-L11) │        │ (L1-L4)  │      │
-│ └────┬─────┘       └────┬─────┘        └────┬─────┘      │
-│      │                  │                   │            │
-│      ▼                  ▼                   ▼            │
-│   L1 Patch         L2 Minor            L2-L3            │
-│                                                             │
-│            ◄───── FEEDBACK LOOP ─────►                     │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                   FEEDBACK CHANGE FLOW                      
+
+                                                             
+                             
+                   PRODUCTION                             
+                                  
+               • Monitoring/Alerts                     
+               • User Feedback                         
+               • Support Tickets                       
+               • Analytics Data                        
+               • Incident Reports                      
+                                  
+                             
+                                                           
+                                                           
+                             
+                ROOT CAUSE ANALYSIS                       
+                Where should fix go?                      
+                             
+                                                           
+              
+                                                        
+                                                        
+                      
+  HOTFIX           DESIGN            PRODUCT        
+  Code bug         ISSUE             CHANGE         
+  (L12)            (L5-L11)          (L1-L4)        
+                      
+                                                       
+                                                       
+   L1 Patch         L2 Minor            L2-L3            
+                                                             
+             FEEDBACK LOOP                      
+                                                             
+
 ```
 
 ## 2. Feedback Types
@@ -141,69 +141,69 @@ Feedback changes originate from production operations, user feedback, and analyt
 ### 3.1 P1 Critical Incident
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│               P1 CRITICAL INCIDENT RESPONSE                 │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  PHASE 1: DETECT & ALERT (0-5 min)                         │
-│  ─────────────────────────────────                          │
-│  • Monitoring triggers alert                               │
-│  • On-call engineer notified                               │
-│  • Incident channel opened                                 │
-│                                                             │
-│  PHASE 2: TRIAGE (5-15 min)                                │
-│  ─────────────────────────                                  │
-│  • Assess impact (users affected)                          │
-│  • Identify affected component                             │
-│  • Determine if rollback possible                          │
-│                                                             │
-│  PHASE 3: MITIGATE (15-60 min)                             │
-│  ─────────────────────────────                              │
-│  • Rollback if possible                                    │
-│  • Apply hotfix if identified                              │
-│  • Enable failover if available                            │
-│                                                             │
-│  PHASE 4: RESOLVE (1-4 hours)                              │
-│  ────────────────────────────                               │
-│  • Root cause analysis                                     │
-│  • Implement permanent fix                                 │
-│  • Deploy fix                                              │
-│                                                             │
-│  PHASE 5: POST-MORTEM (24-72 hours)                        │
-│  ──────────────────────────────────                         │
-│  • Document incident                                       │
-│  • Identify preventive measures                            │
-│  • Create follow-up CHG if needed                          │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+               P1 CRITICAL INCIDENT RESPONSE                 
+
+                                                             
+  PHASE 1: DETECT & ALERT (0-5 min)                         
+                            
+  • Monitoring triggers alert                               
+  • On-call engineer notified                               
+  • Incident channel opened                                 
+                                                             
+  PHASE 2: TRIAGE (5-15 min)                                
+                                    
+  • Assess impact (users affected)                          
+  • Identify affected component                             
+  • Determine if rollback possible                          
+                                                             
+  PHASE 3: MITIGATE (15-60 min)                             
+                                
+  • Rollback if possible                                    
+  • Apply hotfix if identified                              
+  • Enable failover if available                            
+                                                             
+  PHASE 4: RESOLVE (1-4 hours)                              
+                                 
+  • Root cause analysis                                     
+  • Implement permanent fix                                 
+  • Deploy fix                                              
+                                                             
+  PHASE 5: POST-MORTEM (24-72 hours)                        
+                           
+  • Document incident                                       
+  • Identify preventive measures                            
+  • Create follow-up CHG if needed                          
+                                                             
+
 ```
 
 ### 3.2 Incident-to-CHG Flow
 
 ```
 Incident Detected
-       │
-       ▼
-┌─────────────────┐
-│ Hotfix Applied? │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │ YES     │ NO
-    ▼         ▼
-┌────────┐  ┌────────────┐
-│ L1     │  │ Requires   │
-│ Patch  │  │ design     │
-│        │  │ change?    │
-└────────┘  └─────┬──────┘
-                  │
-             ┌────┴────┐
-             │ YES     │ NO
-             ▼         ▼
-        ┌────────┐  ┌────────┐
-        │ L2-L3  │  │ L1     │
-        │ CHG    │  │ Patch  │
-        └────────┘  └────────┘
+       
+       
+
+ Hotfix Applied? 
+
+         
+    
+     YES      NO
+             
+  
+ L1        Requires   
+ Patch     design     
+           change?    
+  
+                  
+             
+              YES      NO
+                      
+          
+         L2-L3     L1     
+         CHG       Patch  
+          
 ```
 
 ## 4. User Feedback Process
@@ -211,39 +211,39 @@ Incident Detected
 ### 4.1 Feedback Triage
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 USER FEEDBACK TRIAGE                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. COLLECT                                                 │
-│     • Support tickets                                      │
-│     • App store reviews                                    │
-│     • Social media                                         │
-│     • In-app feedback                                      │
-│     • User interviews                                      │
-│                                                             │
-│  2. CATEGORIZE                                              │
-│     ┌─────────────┬─────────────┬─────────────┐            │
-│     │    BUG      │  FEATURE    │     UX      │            │
-│     │  REPORT     │  REQUEST    │  FEEDBACK   │            │
-│     └──────┬──────┴──────┬──────┴──────┬──────┘            │
-│            │             │             │                   │
-│            ▼             ▼             ▼                   │
-│       Downstream    Upstream      Midstream                │
-│       (L12-L14)     (L1-L4)       (L5-L11)                 │
-│                                                             │
-│  3. PRIORITIZE                                              │
-│     • Impact (users affected)                              │
-│     • Frequency (how often reported)                       │
-│     • Severity (workaround available?)                     │
-│     • Strategic alignment                                  │
-│                                                             │
-│  4. ROUTE                                                   │
-│     • Bug → Downstream change guide                        │
-│     • Feature → Upstream change guide                      │
-│     • UX → Midstream change guide                          │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                 USER FEEDBACK TRIAGE                        
+
+                                                             
+  1. COLLECT                                                 
+     • Support tickets                                      
+     • App store reviews                                    
+     • Social media                                         
+     • In-app feedback                                      
+     • User interviews                                      
+                                                             
+  2. CATEGORIZE                                              
+                 
+         BUG        FEATURE         UX                  
+       REPORT       REQUEST      FEEDBACK               
+                 
+                                                         
+                                                         
+       Downstream    Upstream      Midstream                
+       (L12-L14)     (L1-L4)       (L5-L11)                 
+                                                             
+  3. PRIORITIZE                                              
+     • Impact (users affected)                              
+     • Frequency (how often reported)                       
+     • Severity (workaround available?)                     
+     • Strategic alignment                                  
+                                                             
+  4. ROUTE                                                   
+     • Bug → Downstream change guide                        
+     • Feature → Upstream change guide                      
+     • UX → Midstream change guide                          
+                                                             
+
 ```
 
 ### 4.2 Bug Report Workflow
@@ -306,24 +306,24 @@ Incident Detected
 
 ```
 Analytics Insight
-       │
-       ▼
-┌─────────────────────────┐
-│ Validate with           │
-│ qualitative data        │
-│ (user feedback, support)│
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│ Determine change type   │
-│ • Optimize (L1-L2)      │
-│ • Enhance (L2)          │
-│ • Redesign (L2-L3)      │
-│ • Deprecate (L3)        │
-└───────────┬─────────────┘
-            │
-            ▼
+       
+       
+
+ Validate with           
+ qualitative data        
+ (user feedback, support)
+
+            
+            
+
+ Determine change type   
+ • Optimize (L1-L2)      
+ • Enhance (L2)          
+ • Redesign (L2-L3)      
+ • Deprecate (L3)        
+
+            
+            
    Route to appropriate
    change process
 ```

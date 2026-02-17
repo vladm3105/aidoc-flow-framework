@@ -343,7 +343,7 @@ class TraceabilityMatrixUpdater:
     def update_matrix(self):
         """Update the matrix file with changes"""
         if not self.updates and len(self.matrix_doc_ids) == len(self.actual_documents):
-            print("✅ Matrix is already up-to-date. No changes needed.")
+            print("[PASS] Matrix is already up-to-date. No changes needed.")
             return
 
         print(f"Updating matrix file: {self.matrix_path}")
@@ -434,9 +434,9 @@ class TraceabilityMatrixUpdater:
         # Update coverage metrics table (Section 5)
         coverage_table = "| Metric | Value | Target | Status |\n"
         coverage_table += "|--------|-------|--------|--------|\n"
-        coverage_table += f"| Upstream Traceability | {metrics['upstream_coverage_pct']:.1f}% | 100% | {'✅' if metrics['upstream_coverage_pct'] >= 100 else '🟡' if metrics['upstream_coverage_pct'] >= 80 else '🔴'} |\n"
-        coverage_table += f"| Downstream Artifacts | {metrics['downstream_coverage_pct']:.1f}% | 90% | {'✅' if metrics['downstream_coverage_pct'] >= 90 else '🟡' if metrics['downstream_coverage_pct'] >= 70 else '🔴'} |\n"
-        coverage_table += f"| Orphaned Documents | {len(metrics['orphaned_documents'])} | 0 | {'✅' if len(metrics['orphaned_documents']) == 0 else '🔴'} |\n\n"
+        coverage_table += f"| Upstream Traceability | {metrics['upstream_coverage_pct']:.1f}% | 100% | {'[PASS]' if metrics['upstream_coverage_pct'] >= 100 else '' if metrics['upstream_coverage_pct'] >= 80 else ''} |\n"
+        coverage_table += f"| Downstream Artifacts | {metrics['downstream_coverage_pct']:.1f}% | 90% | {'[PASS]' if metrics['downstream_coverage_pct'] >= 90 else '' if metrics['downstream_coverage_pct'] >= 70 else ''} |\n"
+        coverage_table += f"| Orphaned Documents | {len(metrics['orphaned_documents'])} | 0 | {'[PASS]' if len(metrics['orphaned_documents']) == 0 else ''} |\n\n"
 
         content = re.sub(
             r'(##\s+5\.\s+Coverage\s+Metrics\s*\n\n)(.*?)(?=\n\n##)',
@@ -469,8 +469,8 @@ class TraceabilityMatrixUpdater:
             with open(self.matrix_path, 'w', encoding='utf-8') as f:
                 f.write(content)
 
-            print(f"✅ Matrix updated successfully")
-            print(f"📊 Updated statistics:")
+            print(f"[PASS] Matrix updated successfully")
+            print(f" Updated statistics:")
             print(f"   - Total documents: {metrics['total_documents']}")
             print(f"   - Upstream coverage: {metrics['upstream_coverage_pct']:.1f}%")
             print(f"   - Downstream coverage: {metrics['downstream_coverage_pct']:.1f}%")
@@ -596,12 +596,12 @@ Examples:
             changelog = updater.generate_changelog()
             with open(args.changelog, 'w', encoding='utf-8') as f:
                 f.write(changelog)
-            print(f"✅ Changelog saved: {args.changelog}")
+            print(f"[PASS] Changelog saved: {args.changelog}")
 
         return 0
 
     except Exception as e:
-        print(f"❌ Update failed: {e}", file=sys.stderr)
+        print(f"[FAIL] Update failed: {e}", file=sys.stderr)
         return 1
 
 

@@ -266,9 +266,9 @@ sequenceDiagram
 
 | CTR Endpoint | Method | Test IDs | Coverage |
 |--------------|--------|----------|----------|
-| /api/v1/auth/login | POST | TSPEC.01.41.01 | ✅ |
-| /api/v1/auth/logout | POST | TSPEC.01.41.02 | ✅ |
-| /api/v1/auth/refresh | POST | TSPEC.01.41.03 | ✅ |
+| /api/v1/auth/login | POST | TSPEC.01.41.01 | [PASS] |
+| /api/v1/auth/logout | POST | TSPEC.01.41.02 | [PASS] |
+| /api/v1/auth/refresh | POST | TSPEC.01.41.03 | [PASS] |
 
 **Coverage Summary**:
 - Total CTR endpoints: 3

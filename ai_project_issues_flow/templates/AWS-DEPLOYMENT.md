@@ -73,11 +73,11 @@ Application Load Balancer (ALB)
     ↓
 ECS Fargate (Frontend + Backend containers)
     ↓
-├── RDS PostgreSQL (VPC, private subnet)
-├── Athena + S3 (Analytics queries)
-├── SQS + Lambda (Background tasks)
-├── Secrets Manager (Credentials)
-└── ElastiCache Redis (Optional cache)
+ RDS PostgreSQL (VPC, private subnet)
+ Athena + S3 (Analytics queries)
+ SQS + Lambda (Background tasks)
+ Secrets Manager (Credentials)
+ ElastiCache Redis (Optional cache)
 ```
 
 ---
@@ -233,13 +233,13 @@ REDIS_PORT=6379
 
 To implement AWS deployment:
 
-1. ✅ Review this service mapping
-2. ⬜ Create Terraform modules in `terraform/aws/`
-3. ⬜ Adapt application code for AWS services (Boto3 for Athena, SQS, Secrets Manager)
-4. ⬜ Create ECS task definitions
-5. ⬜ Set up CI/CD pipeline (AWS CodePipeline or GitHub Actions)
-6. ⬜ Test full deployment
-7. ⬜ Expand this guide with actual deployment commands
+1. [PASS] Review this service mapping
+2.  Create Terraform modules in `terraform/aws/`
+3.  Adapt application code for AWS services (Boto3 for Athena, SQS, Secrets Manager)
+4.  Create ECS task definitions
+5.  Set up CI/CD pipeline (AWS CodePipeline or GitHub Actions)
+6.  Test full deployment
+7.  Expand this guide with actual deployment commands
 
 ---
 

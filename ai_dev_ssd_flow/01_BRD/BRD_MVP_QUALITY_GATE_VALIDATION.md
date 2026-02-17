@@ -549,10 +549,10 @@ done
 **Fix**: Split into section-based files:
 ```
 docs/01_BRD/BRD-07_ai_gateway/
-├── BRD-07.0_index.md
-├── BRD-07.1_executive_summary.md
-├── BRD-07.2_architecture.md
-└── BRD-07.3_integration.md
+ BRD-07.0_index.md
+ BRD-07.1_executive_summary.md
+ BRD-07.2_architecture.md
+ BRD-07.3_integration.md
 ```
 
 ---
@@ -897,9 +897,9 @@ ls docs/01_BRD/BRD-07_*.md && \
 
 | Check | Status | Date | Reviewer |
 |-------|--------|------|----------|
-| Errors (E001-E005) | ☐ Pass | | |
-| Warnings (W001-W005) | ☐ Reviewed | | |
-| Info (I001-I002) | ☐ Acknowledged | | |
+| Errors (E001-E005) |  Pass | | |
+| Warnings (W001-W005) |  Reviewed | | |
+| Info (I001-I002) |  Acknowledged | | |
 
 ### 5.3 BRD Corpus Baseline Metrics
 

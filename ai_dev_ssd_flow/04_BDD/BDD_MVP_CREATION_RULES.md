@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+#  Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
 # - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to BDD-MVP-TEMPLATE.feature
@@ -32,7 +32,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: CREATION GUIDANCE for BDD documents (DERIVATIVE).
+> ** Document Role**: CREATION GUIDANCE for BDD documents (DERIVATIVE).
 > - **Authority**: `BDD-MVP-TEMPLATE.feature` is the PRIMARY STANDARD (single source of truth)
 > - **Purpose**: Human-readable explanation of Template structure
 > - **Scope**: Does NOT define new rules - only explains Template
@@ -113,9 +113,9 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 **Example**:
 ```
 docs/04_BDD/
-├── BDD-03_graph_database_architecture.feature  (131 scenarios)
-├── BDD-04_vector_search_embeddings.feature     (84 scenarios)
-└── BDD-12_technical_infrastructure.feature     (77 scenarios)
+ BDD-03_graph_database_architecture.feature  (131 scenarios)
+ BDD-04_vector_search_embeddings.feature     (84 scenarios)
+ BDD-12_technical_infrastructure.feature     (77 scenarios)
 ```
 
 ### 1.0.2 Split-File Structure (Required)
@@ -128,15 +128,15 @@ docs/04_BDD/
 **Example**:
 ```
 docs/04_BDD/
-├── BDD-06_level0_system_agents/
-│   ├── BDD-06.0_index.md
-│   ├── BDD-06.1_health_monitor.feature        (38 scenarios)
-│   ├── BDD-06.2_data_guardian.feature         (38 scenarios)
-│   ├── BDD-06.3_position_reconciliation.feature (37 scenarios)
-│   ├── BDD-06.4_integration.feature           (37 scenarios)
-│   ├── BDD-06_README.md                       (optional)
-│   └── BDD-06_TRACEABILITY.md                 (optional)
-└── BDD-06_level0_system_agents.feature  (redirect stub - 0 scenarios)
+ BDD-06_level0_system_agents/
+    BDD-06.0_index.md
+    BDD-06.1_health_monitor.feature        (38 scenarios)
+    BDD-06.2_data_guardian.feature         (38 scenarios)
+    BDD-06.3_position_reconciliation.feature (37 scenarios)
+    BDD-06.4_integration.feature           (37 scenarios)
+    BDD-06_README.md                       (optional)
+    BDD-06_TRACEABILITY.md                 (optional)
+ BDD-06_level0_system_agents.feature  (redirect stub - 0 scenarios)
 ```
 
 **Key Rule**: All `.feature` files MUST reside at the suite folder root. `BDD-NN` MUST match parent PRD ID.
@@ -325,14 +325,14 @@ Background:
 
 These legacy formats are **PROHIBITED** and will cause validation failure:
 
-❌ **_partN Suffix**: `BDD-02_query_part1.feature`, `BDD-02_query_part2.feature`
-✅ **Use instead**: `BDD-02.2.01_query_semantic.feature`, `BDD-02.2.02_query_graph.feature`
+[FAIL] **_partN Suffix**: `BDD-02_query_part1.feature`, `BDD-02_query_part2.feature`
+[PASS] **Use instead**: `BDD-02.2.01_query_semantic.feature`, `BDD-02.2.02_query_graph.feature`
 
-❌ **Single-File Format**: `BDD-02_knowledge_engine.feature` (legacy)
-✅ **Use instead**: `BDD-02.1_ingest.feature`, `BDD-02.2_query.feature` (section-based)
+[FAIL] **Single-File Format**: `BDD-02_knowledge_engine.feature` (legacy)
+[PASS] **Use instead**: `BDD-02.1_ingest.feature`, `BDD-02.2_query.feature` (section-based)
 
-❌ **Directory-Based Structure**: `BDD-02_knowledge_engine/features/`
-✅ **Use instead**: Nested suite folder `docs/04_BDD/BDD-NN_{slug}/` with section-based naming
+[FAIL] **Directory-Based Structure**: `BDD-02_knowledge_engine/features/`
+[PASS] **Use instead**: Nested suite folder `docs/04_BDD/BDD-NN_{slug}/` with section-based naming
 
 ### 1.2.3 File Organization Structure
 
@@ -340,14 +340,14 @@ These legacy formats are **PROHIBITED** and will cause validation failure:
 
 ```
 docs/04_BDD/BDD-02_knowledge_engine/
-├── BDD-02.0_index.md                          # Index file (MANDATORY)
-├── BDD-02.1_ingest.feature                    # Section 1
-├── BDD-02.2_query.feature                     # Section 2
-├── BDD-02.3.00_learning.feature               # Section 3 aggregator
-├── BDD-02.3.01_learning_path.feature          # Section 3, subsection 01
-├── BDD-02.3.02_bias_detection.feature         # Section 3, subsection 02
-├── BDD-02_README.md                           # Optional companion doc
-└── BDD-02_TRACEABILITY.md                     # Optional companion doc
+ BDD-02.0_index.md                          # Index file (MANDATORY)
+ BDD-02.1_ingest.feature                    # Section 1
+ BDD-02.2_query.feature                     # Section 2
+ BDD-02.3.00_learning.feature               # Section 3 aggregator
+ BDD-02.3.01_learning_path.feature          # Section 3, subsection 01
+ BDD-02.3.02_bias_detection.feature         # Section 3, subsection 02
+ BDD-02_README.md                           # Optional companion doc
+ BDD-02_TRACEABILITY.md                     # Optional companion doc
 ```
 
 **Key Rules**:
@@ -453,13 +453,13 @@ BDD-02.26_quality_reliability.feature
 #### Splitting Decision Tree
 ```
 Is section >500 lines?
-├─ NO  → Keep as section-only format (BDD-NN.SS_{slug}.feature)
-└─ YES → Create subsections
-    ├─ 2-4 subsections?
-    │  └─ Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
-    └─ 5+ subsections?
-       ├─ Create: BDD-NN.SS.00_{slug}.feature (aggregator)
-       └─ Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
+ NO  → Keep as section-only format (BDD-NN.SS_{slug}.feature)
+ YES → Create subsections
+     2-4 subsections?
+       Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
+     5+ subsections?
+        Create: BDD-NN.SS.00_{slug}.feature (aggregator)
+        Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
 ```
 
 ### 1.2.7 Section Metadata Requirements
@@ -592,26 +592,26 @@ See `BDD-02.0_index.md` for complete section map.
 ### 1.2.11 Quality Gates (Pre-Commit)
 
 **File Structure**:
-- ✅ All `.feature` files live inside suite folders: `docs/04_BDD/BDD-NN_{slug}/`
-- ✅ Index file exists inside each suite folder: `BDD-NN.0_index.md`
-- ✅ No `.feature` file exceeds 500 lines
-- ✅ No Feature block exceeds 12 scenarios
+- [PASS] All `.feature` files live inside suite folders: `docs/04_BDD/BDD-NN_{slug}/`
+- [PASS] Index file exists inside each suite folder: `BDD-NN.0_index.md`
+- [PASS] No `.feature` file exceeds 500 lines
+- [PASS] No Feature block exceeds 12 scenarios
 
 **File Naming**:
-- ✅ All files match one of 3 valid patterns (section-only, subsection, aggregator)
-- ✅ No prohibited patterns (`_partN`, single-file format, directory-based)
+- [PASS] All files match one of 3 valid patterns (section-only, subsection, aggregator)
+- [PASS] No prohibited patterns (`_partN`, single-file format, directory-based)
 
 **Metadata**:
-- ✅ All quantitative values use `@threshold:` keys
-- ✅ Times include seconds (HH:MM:SS) with IANA timezone
-- ✅ Section metadata tags present in all `.feature` files
+- [PASS] All quantitative values use `@threshold:` keys
+- [PASS] Times include seconds (HH:MM:SS) with IANA timezone
+- [PASS] Section metadata tags present in all `.feature` files
 
 **Aggregators**:
-- ✅ Aggregator files (.00) have `@redirect` tag
-- ✅ Aggregator files have 0 scenarios
+- [PASS] Aggregator files (.00) have `@redirect` tag
+- [PASS] Aggregator files have 0 scenarios
 
 **Validation**:
-- ✅ Validation passes: `python validate_bdd_suite.py --root docs/BDD`
+- [PASS] Validation passes: `python validate_bdd_suite.py --root docs/BDD`
 
 ### 1.2.12 Canonical Step Phrases
 
@@ -651,32 +651,32 @@ And memory usage SHALL NOT exceed @threshold:PRD.02.perf.max_memory
 **Example 1: Simple Suite** (3 sections, no subsections):
 ```
 docs/04_BDD/
-├── BDD-03.0_index.md
-├── BDD-03.1_registration.feature       # 25 scenarios, 312 lines
-├── BDD-03.2_login.feature              # 28 scenarios, 367 lines
-├── BDD-03.3_password_reset.feature     # 18 scenarios, 245 lines
-└── BDD-03_README.md                     # Optional
+ BDD-03.0_index.md
+ BDD-03.1_registration.feature       # 25 scenarios, 312 lines
+ BDD-03.2_login.feature              # 28 scenarios, 367 lines
+ BDD-03.3_password_reset.feature     # 18 scenarios, 245 lines
+ BDD-03_README.md                     # Optional
 ```
 
 **Example 2: Complex Suite** (with subsections):
 ```
 docs/04_BDD/
-├── BDD-02.0_index.md
-├── BDD-02.1_ingest.feature             # 42 scenarios, 387 lines
-├── BDD-02.2_query.feature              # 38 scenarios, 421 lines
-├── BDD-02.3.00_learning.feature        # Aggregator (0 scenarios)
-├── BDD-02.3.01_learning_path.feature   # 20 scenarios, 298 lines
-├── BDD-02.3.02_bias_detection.feature  # 15 scenarios, 215 lines
-├── BDD-02_README.md                     # Optional
-└── BDD-02_TRACEABILITY.md               # Optional
+ BDD-02.0_index.md
+ BDD-02.1_ingest.feature             # 42 scenarios, 387 lines
+ BDD-02.2_query.feature              # 38 scenarios, 421 lines
+ BDD-02.3.00_learning.feature        # Aggregator (0 scenarios)
+ BDD-02.3.01_learning_path.feature   # 20 scenarios, 298 lines
+ BDD-02.3.02_bias_detection.feature  # 15 scenarios, 215 lines
+ BDD-02_README.md                     # Optional
+ BDD-02_TRACEABILITY.md               # Optional
 ```
 
 **Example 3: Quality Attributes** (cross-cutting scenarios):
 ```
 docs/04_BDD/
-├── BDD-02.24_quality_performance.feature
-├── BDD-02.25_quality_security.feature
-└── BDD-02.26_quality_reliability.feature
+ BDD-02.24_quality_performance.feature
+ BDD-02.25_quality_security.feature
+ BDD-02.26_quality_reliability.feature
 ```
 
 ---
@@ -725,7 +725,7 @@ Feature: [Business Capability Title]
 4. Document Owner
 5. Prepared By
 6. Status
-7. ADR-Ready Score (format: `✅ NN% (Target: ≥90%)`)
+7. ADR-Ready Score (format: `[PASS] NN% (Target: ≥90%)`)
 
 **Format**:
 ```gherkin
@@ -734,7 +734,7 @@ Feature: [Business Capability Title]
 | Item | Details |
 |------|---------|
 | **Project Name** | [Service Platform v2.0] |
-| **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 ### Status and ADR-Ready Score Mapping
@@ -771,7 +771,7 @@ Feature: [Business Capability Title]
 | Test Scenario | 14 | BDD.02.14.01 |
 | Step | 15 | BDD.02.15.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `SCENARIO-XXX` → Use `BDD.NN.14.SS`
 > - `STEP-XXX` → Use `BDD.NN.15.SS`
 > - `TC-XXX` → Use `BDD.NN.14.SS`
@@ -791,14 +791,14 @@ Feature: [Business Capability Title]
 4. **And/But** (continuations) - After any step type
 
 **Invalid Sequences**:
-- `When` before `Given` ❌
-- `Then` before `When` ❌
-- `Then` before `Given` ❌
+- `When` before `Given` [FAIL]
+- `Then` before `When` [FAIL]
+- `Then` before `Given` [FAIL]
 
 **Valid Sequences**:
-- `Given → When → Then` ✅
-- `Given → And → When → Then → And` ✅
-- `Given → When → And → Then → And → But` ✅
+- `Given → When → Then` [PASS]
+- `Given → And → When → Then → And` [PASS]
+- `Given → When → And → Then → And → But` [PASS]
 
 ---
 
@@ -840,20 +840,20 @@ Feature: [Business Capability Title]
 
 ---
 
-## 7. ADR-Ready Scoring System ⭐ NEW
+## 7. ADR-Ready Scoring System  NEW
 
 ### Overview
 ADR-ready scoring measures BDD maturity and readiness for progression to Architecture Decision Records (ADR) phase.
 
 ### ADR-Ready Score Format Specification
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 
 **Format Rules**:
-- Must include checkmark emoji (✅) at start
+- Must include checkmark emoji ([PASS]) at start
 - Percentage as integer (1-100)
 - Target threshold in parentheses
-- Example: `✅ 85% (Target: ≥90%)`
+- Example: `[PASS] 85% (Target: ≥90%)`
 
 **Location**: Document Control table (mandatory field)
 **Validation**: Enforced before ADR creation
@@ -880,7 +880,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 ### Quality Gate Enforcement
 - Score <90% prevents ADR artifact creation
-- Format validation requires ✅ emoji and percentage
+- Format validation requires [PASS] emoji and percentage
 - Threshold enforcement at pre-commit
 
 ---
@@ -987,7 +987,7 @@ Feature: BDD-03: Core Behaviors
 
 #### Anti-Pattern 1: Tags in Comments (BLOCKING)
 
-**❌ WRONG** (Gherkin frameworks cannot parse comment-based tags):
+**[FAIL] WRONG** (Gherkin frameworks cannot parse comment-based tags):
 ```gherkin
 # @brd: BRD.01.01.01
 # @prd: PRD.01.01.01
@@ -995,7 +995,7 @@ Feature: BDD-03: Core Behaviors
 Feature: My Feature
 ```
 
-**✅ CORRECT** (Gherkin-native tags before Feature):
+**[PASS] CORRECT** (Gherkin-native tags before Feature):
 ```gherkin
 @brd:BRD.01.01.01
 @prd:PRD.01.01.01
@@ -1007,28 +1007,28 @@ Feature: My Feature
 
 #### Anti-Pattern 2: ADR-Ready Score Format (BLOCKING)
 
-**❌ WRONG** (missing checkmark and ≥ symbol):
+**[FAIL] WRONG** (missing checkmark and ≥ symbol):
 ```markdown
 | **ADR-Ready Score** | 75% (Target: 90%) |
 ```
 
-**✅ CORRECT** (with checkmark and ≥ symbol):
+**[PASS] CORRECT** (with checkmark and ≥ symbol):
 ```markdown
-| **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 75% (Target: ≥90%) |
 ```
 
 **Why this matters**: Automated validation scripts parse this exact format. Inconsistent formatting breaks dashboard reporting and quality gates.
 
 #### Anti-Pattern 3: Hardcoded Magic Numbers (HIGH)
 
-**❌ WRONG** (hardcoded values):
+**[FAIL] WRONG** (hardcoded values):
 ```gherkin
 Then response time is less than 200ms
 And timeout occurs after 5000ms
 And rate limit is 100 requests per second
 ```
 
-**✅ CORRECT** (threshold registry references):
+**[PASS] CORRECT** (threshold registry references):
 ```gherkin
 Then response time is less than @threshold: PRD.035.perf.api.p95_latency
 And timeout occurs after @threshold: PRD.035.timeout.default
@@ -1039,7 +1039,7 @@ And rate limit is @threshold: PRD.035.limit.api.requests_per_second
 
 #### Anti-Pattern 4: Missing Scenario Categories (MEDIUM)
 
-**❌ WRONG** (only success scenarios):
+**[FAIL] WRONG** (only success scenarios):
 ```gherkin
 @primary @functional
 Scenario: User logs in successfully
@@ -1048,7 +1048,7 @@ Scenario: User logs in successfully
   Then user is authenticated
 ```
 
-**✅ CORRECT** (all 8 categories represented):
+**[PASS] CORRECT** (all 8 categories represented):
 ```gherkin
 # Include scenarios for: @primary, @alternative, @negative,
 # @edge_case, @data_driven, @integration, @quality_attribute, @failure_recovery

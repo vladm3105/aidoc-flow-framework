@@ -14,7 +14,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Guides creation of PRD-MVP-TEMPLATE.md (default)
+#  Document Role: Guides creation of PRD-MVP-TEMPLATE.md (default)
 # - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
@@ -33,11 +33,11 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for PRD-MVP-TEMPLATE.md (default).
+> ** Document Role**: This is a **CREATION HELPER** for PRD-MVP-TEMPLATE.md (default).
 > - **Authority**: `PRD-MVP-TEMPLATE.md` is the primary standard for PRD structure
 > - **Validation**: Use `PRD_MVP_VALIDATION_RULES.md` after PRD creation/changes
 >
-> **⚠️ Numbering Note**: This document's Table of Contents uses rule category numbers (0-15),
+> **[WARN] Numbering Note**: This document's Table of Contents uses rule category numbers (0-15),
 > which are different from PRD section numbers (1-21). Always refer to PRD-MVP-TEMPLATE.md for
 > actual PRD section structure.
 
@@ -118,8 +118,8 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 | Created Date | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | Last Updated | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
-| SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
-| EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
+| SYS-Ready Score | [PASS] XX% (Target: ≥90%) | MANDATORY |
+| EARS-Ready Score | [PASS] XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
 | Target Release | Release version/Quarter | OPTIONAL |
 | Estimated Effort | Story Points or Person-Months | OPTIONAL |
@@ -130,7 +130,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 - Both SYS-Ready Score and EARS-Ready Score must be present
 - Both scores must be ≥90% for progression to 03_EARS/SYS
 - Scores reflect readiness for downstream artifact generation
-- Use exact format: `✅ XX% (Target: ≥90%)`
+- Use exact format: `[PASS] XX% (Target: ≥90%)`
 
 **Template**:
 ```markdown
@@ -146,8 +146,8 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
 | **BRD Reference** | @brd: BRD.NN.EE.SS |
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
-| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+| **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 ### Status and Ready Score Mapping
@@ -225,8 +225,8 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 - Reviewer: [Technical Reviewer Name]
 - Approver: [Stakeholder Name]
 - BRD Reference: @brd: BRD.NN.EE.SS tag
-- SYS-Ready Score: Format `✅ NN% (Target: ≥90%)`
-- EARS-Ready Score: Format `✅ NN% (Target: ≥90%)`
+- SYS-Ready Score: Format `[PASS] NN% (Target: ≥90%)`
+- EARS-Ready Score: Format `[PASS] NN% (Target: ≥90%)`
 
 **Also Required**: Document Revision History table with at least one initial entry
 
@@ -242,8 +242,8 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
 | **BRD Reference** | @brd: BRD.NN.EE.SS |
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
-| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+| **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 
 ### Document Revision History
 
@@ -281,7 +281,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 | Feature Item | 22 | PRD.02.22.01 |
 | Stakeholder Need | 24 | PRD.02.24.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `AC-XXX` → Use `PRD.NN.06.SS`
 > - `FR-XXX` → Use `PRD.NN.01.SS`
 > - `BC-XXX` → Use `PRD.NN.03.SS`
@@ -326,13 +326,13 @@ Define who the users are (personas):
 
 **Format**: "As a [role], I want [capability] so that [benefit]"
 
-**PRD-Level Content** (✅ INCLUDE):
+**PRD-Level Content** ([PASS] INCLUDE):
 - High-level story titles
 - Story summaries (2-3 sentences max)
 - Product-level acceptance criteria (what, not how)
 - Business value justification
 
-**NOT PRD-Level** (❌ EXCLUDE):
+**NOT PRD-Level** ([FAIL] EXCLUDE):
 - EARS-level specifications (WHEN-THE-SHALL-WITHIN format) → belongs in EARS
 - BDD-level test scenarios (Given-When-Then) → belongs in BDD
 - Technical implementation details → belongs in 06_SYS/REQ
@@ -357,7 +357,7 @@ Every PRD must include Section 18 (Traceability) with "Architecture Decision Req
 ```
 BRD Section 7.2          →    PRD Section 18         →    ADR
 (WHAT & WHY)                  (HOW to evaluate)          (Final decision)
-─────────────────────────────────────────────────────────────────────────
+
 Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
                               Product constraints        Consequences
@@ -506,9 +506,9 @@ All customer-facing content must meet:
 
 **CRITICAL DISTINCTION**: PRDs are created BEFORE ADRs in SDD workflow
 
-❌ **NEVER** reference specific ADR numbers (ADR-012, ADR-033, etc.) in PRD documents
+[FAIL] **NEVER** reference specific ADR numbers (ADR-012, ADR-033, etc.) in PRD documents
 
-✅ **DO** include "Architecture Decision Requirements" subsection listing topics for architectural decisions
+[PASS] **DO** include "Architecture Decision Requirements" subsection listing topics for architectural decisions
 
 **Workflow Order**:
 1. BRD identifies architecture topics requiring decisions
@@ -524,12 +524,12 @@ PRD (Layer 2) documents are subject to automated forward reference validation. T
 
 | Layer | Artifact | PRD Can Reference |
 |-------|----------|-------------------|
-| 1 | BRD | ✅ Yes |
-| 2 | PRD | ✅ Yes (same layer) |
-| 3 | EARS | ❌ No - created after PRD |
-| 4 | BDD | ❌ No - created after PRD |
-| 5 | ADR | ❌ No - created after PRD |
-| 6+ | SYS, REQ, etc. | ❌ No - created after PRD |
+| 1 | BRD | [PASS] Yes |
+| 2 | PRD | [PASS] Yes (same layer) |
+| 3 | EARS | [FAIL] No - created after PRD |
+| 4 | BDD | [FAIL] No - created after PRD |
+| 5 | ADR | [FAIL] No - created after PRD |
+| 6+ | SYS, REQ, etc. | [FAIL] No - created after PRD |
 
 **Validation Error Codes**:
 
@@ -541,14 +541,14 @@ PRD (Layer 2) documents are subject to automated forward reference validation. T
 
 **Examples**:
 
-❌ **INCORRECT** (triggers FWDREF-E001):
+[FAIL] **INCORRECT** (triggers FWDREF-E001):
 ```markdown
 See ADR-01 through ADR-05 for implementation details.
 @adr: ADR-01, ADR-02
 The database selection is documented in ADR-003.
 ```
 
-✅ **CORRECT** (describes needs without specific IDs):
+[PASS] **CORRECT** (describes needs without specific IDs):
 ```markdown
 Architecture decisions required for:
 - Database technology selection (PostgreSQL vs MongoDB vs TimescaleDB)
@@ -576,7 +576,7 @@ python3 scripts/validate_forward_references.py 02_PRD/
 ### Overview
 SYS-ready scoring measures PRD maturity and readiness for progression to System Requirements (SYS) phase in SDD workflow. Minimum score of 90% required to advance to SYS creation.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: Document Control table (required field)
 **Validation**: Enforced before commit via validation checks
 
@@ -605,7 +605,7 @@ SYS-ready scoring measures PRD maturity and readiness for progression to System 
 
 ### Quality Gate Enforcement
 - **Blocking Validation**: Score <90% prevents progression to SYS phase
-- **Format Validation**: Must follow exact format with ✅ emoji and percentage
+- **Format Validation**: Must follow exact format with [PASS] emoji and percentage
 - **Threshold Enforcement**: ≥90% required for SYS-ready status
 
 ---
@@ -615,7 +615,7 @@ SYS-ready scoring measures PRD maturity and readiness for progression to System 
 ### Overview
 EARS-ready scoring measures PRD maturity and readiness for progression to Engineering Requirements (EARS) phase in SDD workflow. Minimum score of 90% required to advance to EARS creation.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: Document Control table (required field)
 **Validation**: Enforced before commit via validation checks
 
@@ -640,7 +640,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 ### Quality Gate Enforcement
 - **Blocking Validation**: Score <90% prevents progression to EARS phase
-- **Format Validation**: Must follow exact format with ✅ emoji and percentage
+- **Format Validation**: Must follow exact format with [PASS] emoji and percentage
 - **Threshold Enforcement**: ≥90% required for EARS-ready status
 
 ---
@@ -826,18 +826,18 @@ PRDs vary in structure based on domain. Select the appropriate variant at PRD cr
 
 ```
 START: What is the primary domain of this PRD?
-│
-├─► MVP / Rapid Prototype / Hypothesis Validation?
-│   └─► YES → Use **MVP** template (PRD-MVP-TEMPLATE.md)
-│
-├─► ML/AI Agent or Intelligent System?
-│   └─► YES → Use **Agent-Based** template
-│
-├─► n8n Workflow or Event-Driven Automation?
-│   └─► YES → Use **Automation-Focused** template
-│
-└─► Business Feature, Core Platform, or User-Facing Product?
-    └─► YES → Use **Standard** template (default)
+
+ MVP / Rapid Prototype / Hypothesis Validation?
+    YES → Use **MVP** template (PRD-MVP-TEMPLATE.md)
+
+ ML/AI Agent or Intelligent System?
+    YES → Use **Agent-Based** template
+
+ n8n Workflow or Event-Driven Automation?
+    YES → Use **Automation-Focused** template
+
+ Business Feature, Core Platform, or User-Facing Product?
+     YES → Use **Standard** template (default)
 ```
 
 ### Template Variant Field
@@ -1105,7 +1105,7 @@ When referencing features from other PRDs, use the cross-reference format:
 | `Status: Approved` (with 70% score) | `Status: In Review` (match status to score) |
 | `@adr: ADR-012` (referencing ADR before it exists) | Omit ADR references in PRD (ADRs created after PRD) |
 | Missing section numbering | Use explicit `## N. Section Title` format |
-| Placeholder scores `✅ TBD%` | Calculate actual score before committing |
+| Placeholder scores `[PASS] TBD%` | Calculate actual score before committing |
 | Section 9 with only "TBD" | Substantive customer-facing content required |
 
 ### Migration Guide
@@ -1218,10 +1218,10 @@ BRD documents may be split into 19 section files (0-18) for AI context window ma
 
 ```
 docs/01_BRD/BRD-NN_{slug}/
-├── BRD-NN.0_index.md          <- Read first
-├── BRD-NN.1_introduction.md    <- Read in order
-├── ...
-└── BRD-NN.18_appendices.md     <- Read last
+ BRD-NN.0_index.md          <- Read first
+ BRD-NN.1_introduction.md    <- Read in order
+ ...
+ BRD-NN.18_appendices.md     <- Read last
 ```
 
 ### Extraction Guidelines

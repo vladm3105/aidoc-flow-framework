@@ -21,12 +21,12 @@ custom_fields:
 
 ## When to Use
 
-✅ **Use metadata tagging when:**
+[PASS] **Use metadata tagging when:**
 - Project supports dual/multiple architectural approaches
 - Building documentation sites (Docusaurus, MkDocs)
 - Need to indicate priority between approaches
 
-❌ **Do NOT use when:**
+[FAIL] **Do NOT use when:**
 - Project has single architecture only
 - All documents apply equally to all approaches
 
@@ -43,7 +43,7 @@ custom_fields:
 
 ## Three-Tier Template System
 
-### 1️⃣ Primary (Recommended) Implementation
+###  Primary (Recommended) Implementation
 
 ```yaml
 ---
@@ -65,7 +65,7 @@ custom_fields:
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
-**Priority**: ✅ Recommended approach
+**Priority**: [PASS] Recommended approach
 **Status**: Active development
 
 **Fallback Alternative**: [@doc: DOC-YYY](./DOC-YYY_name.md)
@@ -74,7 +74,7 @@ custom_fields:
 
 ---
 
-### 2️⃣ Fallback (Reference) Implementation
+###  Fallback (Reference) Implementation
 
 ```yaml
 ---
@@ -95,7 +95,7 @@ custom_fields:
 ```markdown
 :::fallback Fallback Implementation (Traditional)
 **Architecture**: Traditional Platform (@adr: ADR-01)
-**Priority**: ⚠️ Fallback option (use only if primary not viable)
+**Priority**: [WARN] Fallback option (use only if primary not viable)
 **Status**: Reference implementation
 
 **Recommended Alternative**: [@doc: DOC-YYY](./DOC-YYY_name.md)
@@ -104,7 +104,7 @@ custom_fields:
 
 ---
 
-### 3️⃣ Shared Platform Requirements
+###  Shared Platform Requirements
 
 ```yaml
 ---
@@ -127,10 +127,10 @@ custom_fields:
 
 | Priority | Indicator | Meaning | Visual |
 |----------|-----------|---------|--------|
-| `primary` | ✅ | Recommended approach | Green, expanded |
-| `fallback` | ⚠️ | Secondary option | Yellow, collapsed |
-| `shared` | ⚙️ | Required by all | Neutral |
-| `deprecated` | ⛔ | Legacy/archived | Red |
+| `primary` | [PASS] | Recommended approach | Green, expanded |
+| `fallback` | [WARN] | Secondary option | Yellow, collapsed |
+| `shared` |  | Required by all | Neutral |
+| `deprecated` |  | Legacy/archived | Red |
 
 ---
 
@@ -205,21 +205,21 @@ When you add metadata tags, AI assistants automatically:
 ### Tag Behavior by Type
 
 **`ai-agent-primary` tag** → AI assistants will:
-- ✅ Use AI/ML terminology and patterns
-- ✅ Reference agent-to-agent communication (A2A Protocol)
-- ✅ Include ML-specific requirements (training data, models)
-- ✅ Add `:::recommended` admonition
+- [PASS] Use AI/ML terminology and patterns
+- [PASS] Reference agent-to-agent communication (A2A Protocol)
+- [PASS] Include ML-specific requirements (training data, models)
+- [PASS] Add `:::recommended` admonition
 
 **`priority: primary` field** → AI assistants will:
-- ✅ Mark as recommended approach
-- ✅ Place higher in navigation hierarchy
-- ✅ Expand by default in documentation sites
-- ✅ Link to fallback alternatives
+- [PASS] Mark as recommended approach
+- [PASS] Place higher in navigation hierarchy
+- [PASS] Expand by default in documentation sites
+- [PASS] Link to fallback alternatives
 
 **`agent_id: AGENT-XXX` field** → AI assistants will:
-- ✅ Validate uniqueness across documents
-- ✅ Use in A2A Protocol references
-- ✅ Include in traceability matrices
+- [PASS] Validate uniqueness across documents
+- [PASS] Use in A2A Protocol references
+- [PASS] Include in traceability matrices
 
 ### Required vs Optional Fields
 
@@ -256,12 +256,12 @@ AI assistants process documents in this order:
 
 AI assistants automatically check:
 
-- ✅ Required fields present: `title`, `tags`, `priority`, `architecture_approach`
-- ✅ Valid priority values: Only `primary`, `fallback`, `shared`, `deprecated`
-- ✅ Tag taxonomy compliance: Tags follow standard categories
-- ✅ Bidirectional references: Primary ↔ fallback links exist
-- ✅ Agent ID format: `AGENT-XXX` (three digits)
-- ✅ Agent ID uniqueness: No duplicate agent IDs
+- [PASS] Required fields present: `title`, `tags`, `priority`, `architecture_approach`
+- [PASS] Valid priority values: Only `primary`, `fallback`, `shared`, `deprecated`
+- [PASS] Tag taxonomy compliance: Tags follow standard categories
+- [PASS] Bidirectional references: Primary ↔ fallback links exist
+- [PASS] Agent ID format: `AGENT-XXX` (three digits)
+- [PASS] Agent ID uniqueness: No duplicate agent IDs
 
 ---
 
@@ -368,23 +368,23 @@ Update BRD-NN: change status to "active", add fallback_reference: BRD-NN
 ### What AI Assistants Automatically Apply
 
 **From "AI-agent" keyword:**
-- ✅ `ai-agent-primary` tag
-- ✅ `priority: primary`
-- ✅ `recommended-approach` tag
-- ✅ ML/AI terminology
-- ✅ `:::recommended` admonition
+- [PASS] `ai-agent-primary` tag
+- [PASS] `priority: primary`
+- [PASS] `recommended-approach` tag
+- [PASS] ML/AI terminology
+- [PASS] `:::recommended` admonition
 
 **From "Traditional" or "fallback" keyword:**
-- ✅ `traditional-fallback` tag
-- ✅ `priority: fallback`
-- ✅ `reference-implementation` tag
-- ✅ `:::fallback` admonition
-- ✅ Link to primary alternative
+- [PASS] `traditional-fallback` tag
+- [PASS] `priority: fallback`
+- [PASS] `reference-implementation` tag
+- [PASS] `:::fallback` admonition
+- [PASS] Link to primary alternative
 
 **From "Shared" or "platform" keyword:**
-- ✅ `shared-architecture` tag
-- ✅ `priority: shared`
-- ✅ `architecture_approaches: [ai-agent-based, traditional-8layer]`
+- [PASS] `shared-architecture` tag
+- [PASS] `priority: shared`
+- [PASS] `architecture_approaches: [ai-agent-based, traditional-8layer]`
 
 ---
 
@@ -487,7 +487,7 @@ custom_fields:
 
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
-**Priority**: ✅ Recommended approach
+**Priority**: [PASS] Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-XXX
 

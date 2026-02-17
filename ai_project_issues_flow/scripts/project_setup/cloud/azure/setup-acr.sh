@@ -55,14 +55,14 @@ az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 echo "Step 1: Creating Azure Container Registry..."
 
 if az acr show --name "${ACR_NAME}" --resource-group "${AZURE_RESOURCE_GROUP}" &>/dev/null; then
-    echo "  ⓘ ACR ${ACR_NAME} already exists"
+    echo "   ACR ${ACR_NAME} already exists"
 else
     az acr create \
         --resource-group "${AZURE_RESOURCE_GROUP}" \
         --name "${ACR_NAME}" \
         --sku "${SKU}" \
         --location "${LOCATION}"
-    echo "  ✓ ACR created: ${ACR_NAME}"
+    echo "   ACR created: ${ACR_NAME}"
 fi
 
 # ============================================
@@ -75,7 +75,7 @@ az acr update \
     --resource-group "${AZURE_RESOURCE_GROUP}" \
     --admin-enabled true
 
-echo "  ✓ Admin user enabled"
+echo "   Admin user enabled"
 
 # ============================================
 # STEP 3: Get ACR Details
@@ -85,7 +85,7 @@ echo "Step 3: Retrieving ACR details..."
 ACR_LOGIN_SERVER=$(az acr show --name "${ACR_NAME}" --resource-group "${AZURE_RESOURCE_GROUP}" --query loginServer -o tsv)
 ACR_USERNAME=$(az acr credential show --name "${ACR_NAME}" --resource-group "${AZURE_RESOURCE_GROUP}" --query username -o tsv)
 
-echo "  ✓ Login server: ${ACR_LOGIN_SERVER}"
+echo "   Login server: ${ACR_LOGIN_SERVER}"
 
 # ============================================
 # OUTPUT

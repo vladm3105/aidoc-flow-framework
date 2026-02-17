@@ -90,7 +90,7 @@ for file in "$EARS_DIR"/EARS-{01..99}_*.md; do
     duplicates=$(grep -oh "\*\*EARS\.[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9][0-9]" "$file" 2>/dev/null | sort | uniq -d || true)
 
     if [[ -n "$duplicates" ]]; then
-        echo -e "${RED}❌ $filename has duplicate requirement IDs:${NC}"
+        echo -e "${RED}[FAIL] $filename has duplicate requirement IDs:${NC}"
         echo "$duplicates" | sed 's/^/   /'
         echo ""
         has_duplicates=1
@@ -100,16 +100,16 @@ done
 # Summary
 echo "========================================"
 if [[ $files_checked -eq 0 ]]; then
-    echo -e "${YELLOW}⚠  No EARS files found in $EARS_DIR${NC}"
+    echo -e "${YELLOW}  No EARS files found in $EARS_DIR${NC}"
     exit 0
 fi
 
 if [[ $has_duplicates -eq 0 ]]; then
-    echo -e "${GREEN}✅ No duplicate requirement IDs found${NC}"
+    echo -e "${GREEN}[PASS] No duplicate requirement IDs found${NC}"
     echo "Files checked: $files_checked"
     exit 0
 else
-    echo -e "${RED}❌ Duplicates found - review required${NC}"
+    echo -e "${RED}[FAIL] Duplicates found - review required${NC}"
     echo "Files checked: $files_checked"
     exit 1
 fi

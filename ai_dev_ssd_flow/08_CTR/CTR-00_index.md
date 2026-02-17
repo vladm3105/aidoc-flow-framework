@@ -83,15 +83,15 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 For projects with 10+ contracts or multiple service types, consider organizing contracts in subdirectories:
 ```
 `08_CTR/
-├── agents/
-│   ├── CTR-01_data_processor_api.md
-│   └── CTR-01_data_processor_api.yaml
-├── mcp/
-│   ├── CTR-010_validation_service_mcp.md
-│   └── CTR-010_validation_service_mcp.yaml
-└── infra/
-    ├── CTR-020_pubsub_message_schema.md
-    └── CTR-020_pubsub_message_schema.yaml
+ agents/
+    CTR-01_data_processor_api.md
+    CTR-01_data_processor_api.yaml
+ mcp/
+    CTR-010_validation_service_mcp.md
+    CTR-010_validation_service_mcp.yaml
+ infra/
+     CTR-020_pubsub_message_schema.md
+     CTR-020_pubsub_message_schema.yaml
 ```
 
 ## Maintenance

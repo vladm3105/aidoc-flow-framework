@@ -93,10 +93,10 @@ if [ "$total_count" -gt 0 ]; then
 
     # Determine overall status
     if (( $(echo "$combined >= 85" | bc -l) )); then
-        echo "Status: ✅ PASS"
+        echo "Status: [PASS] PASS"
         exit 0
     else
-        echo "Status: ❌ FAIL (target: ≥85%)"
+        echo "Status: [FAIL] FAIL (target: ≥85%)"
         exit 1
     fi
 else

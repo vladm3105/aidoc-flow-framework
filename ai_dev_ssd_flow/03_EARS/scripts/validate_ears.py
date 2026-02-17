@@ -600,18 +600,18 @@ class EarsValidator:
                 rule="W020",
                 severity="warning",
                 message="Missing BDD-Ready Score in Document Control",
-                fix_suggestion="Add: | **BDD-Ready Score** | ✅ NN% (Target: ≥90%) |"
+                fix_suggestion="Add: | **BDD-Ready Score** | [PASS] NN% (Target: ≥90%) |"
             ))
         else:
             # Check format includes emoji and target
-            full_pattern = r"✅\s*\d+%\s*\(Target:\s*≥\d+%\)"
+            full_pattern = r"[PASS]\s*\d+%\s*\(Target:\s*≥\d+%\)"
             if not re.search(full_pattern, content):
                 self.results.append(ValidationResult(
                     file=str(file_path),
                     rule="W021",
                     severity="warning",
-                    message="BDD-Ready Score format incomplete (missing ✅ or target)",
-                    fix_suggestion="Use format: ✅ NN% (Target: ≥90%)"
+                    message="BDD-Ready Score format incomplete (missing [PASS] or target)",
+                    fix_suggestion="Use format: [PASS] NN% (Target: ≥90%)"
                 ))
 
     # === STATUS vs BDD-READY CONSISTENCY ===
@@ -758,7 +758,7 @@ def main():
     print(f"{'='*70}\n")
 
     if not results:
-        print("✅ All EARS documents passed validation!")
+        print("[PASS] All EARS documents passed validation!")
         sys.exit(0)
 
     if args.summary_only:
@@ -775,7 +775,7 @@ def main():
             print(f"  [{rule}]: {count} occurrences")
     else:
         if errors:
-            print(f"❌ ERRORS ({len(errors)}):\n")
+            print(f"[FAIL] ERRORS ({len(errors)}):\n")
             # Group by file
             files_with_errors = {}
             for r in errors:
@@ -785,16 +785,16 @@ def main():
                 files_with_errors[fname].append(r)
 
             for fname, file_errors in sorted(files_with_errors.items()):
-                print(f"  📄 {fname}")
+                print(f"   {fname}")
                 for r in file_errors:
                     line_info = f" (line {r.line})" if r.line else ""
                     print(f"    [{r.rule}]{line_info} {r.message}")
                     if args.fix_suggestions and r.fix_suggestion:
-                        print(f"      💡 {r.fix_suggestion}")
+                        print(f"       {r.fix_suggestion}")
                 print()
 
         if warnings:
-            print(f"⚠️  WARNINGS ({len(warnings)}):\n")
+            print(f"[WARN]  WARNINGS ({len(warnings)}):\n")
             files_with_warnings = {}
             for r in warnings:
                 fname = Path(r.file).name
@@ -803,11 +803,11 @@ def main():
                 files_with_warnings[fname].append(r)
 
             for fname, file_warnings in sorted(files_with_warnings.items()):
-                print(f"  📄 {fname}")
+                print(f"   {fname}")
                 for r in file_warnings:
                     print(f"    [{r.rule}] {r.message}")
                     if args.fix_suggestions and r.fix_suggestion:
-                        print(f"      💡 {r.fix_suggestion}")
+                        print(f"       {r.fix_suggestion}")
                 print()
 
     # Rule reference

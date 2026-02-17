@@ -54,41 +54,41 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE> --validate-root-cause
 Downstream changes originate from defects discovered during implementation, testing, or validation. The key is **root cause analysis** to determine where the fix should be applied.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 DOWNSTREAM CHANGE FLOW                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │              DEFECT DETECTION POINTS                │   │
-│  │  • Unit test failure (L13)                          │   │
-│  │  • Integration test failure (L13)                   │   │
-│  │  • Smoke test failure (L13)                         │   │
-│  │  • Validation failure (L14)                         │   │
-│  │  • Code review finding (L12)                        │   │
-│  └────────────────────────┬────────────────────────────┘   │
-│                           │                                 │
-│                           ▼                                 │
-│             ┌─────────────────────────┐                    │
-│             │   ROOT CAUSE ANALYSIS   │                    │
-│             │   Where is the bug?     │                    │
-│             └───────────┬─────────────┘                    │
-│                         │                                   │
-│         ┌───────────────┼───────────────┐                  │
-│         │               │               │                  │
-│         ▼               ▼               ▼                  │
-│   ┌──────────┐   ┌──────────┐   ┌──────────────┐          │
-│   │ CODE BUG │   │SPEC ERROR│   │REQUIREMENT   │          │
-│   │  (L12)   │   │ (L9-L11) │   │   GAP (L1-L7)│          │
-│   └────┬─────┘   └────┬─────┘   └──────┬───────┘          │
-│        │              │                │                   │
-│        ▼              ▼                ▼                   │
-│   ┌──────────┐   ┌──────────┐   ┌──────────────┐          │
-│   │ L1: Fix  │   │ L2: Fix  │   │ L2-L3: Fix   │          │
-│   │ code     │   │ spec +   │   │ requirement  │          │
-│   │ only     │   │ regen    │   │ + cascade    │          │
-│   └──────────┘   └──────────┘   └──────────────┘          │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                 DOWNSTREAM CHANGE FLOW                      
+
+                                                             
+     
+                DEFECT DETECTION POINTS                   
+    • Unit test failure (L13)                             
+    • Integration test failure (L13)                      
+    • Smoke test failure (L13)                            
+    • Validation failure (L14)                            
+    • Code review finding (L12)                           
+     
+                                                            
+                                                            
+                                 
+                ROOT CAUSE ANALYSIS                       
+                Where is the bug?                         
+                                 
+                                                            
+                           
+                                                         
+                                                         
+                   
+    CODE BUG    SPEC ERROR   REQUIREMENT             
+     (L12)       (L9-L11)       GAP (L1-L7)          
+                   
+                                                         
+                                                         
+                   
+    L1: Fix      L2: Fix      L2-L3: Fix             
+    code         spec +       requirement            
+    only         regen        + cascade              
+                   
+                                                             
+
 ```
 
 ## 2. Root Cause Analysis
@@ -107,39 +107,39 @@ When a test fails, ask: **"Where does the truth lie?"**
 ### 2.2 Root Cause Decision Tree
 
 ```
-                    ┌───────────────────────┐
-                    │    Test Failed        │
-                    └───────────┬───────────┘
-                                │
-                                ▼
-                    ┌───────────────────────┐
-                    │ Does test match TSPEC?│
-                    └───────────┬───────────┘
-                                │
-               ┌────────────────┴────────────────┐
-               │ NO                              │ YES
-               ▼                                 ▼
-    ┌───────────────────┐           ┌───────────────────┐
-    │ Test impl wrong   │           │ Does TSPEC match  │
-    │ Fix: L13 Tests    │           │ SPEC?             │
-    │ Level: L1         │           └─────────┬─────────┘
-    └───────────────────┘                     │
-                               ┌──────────────┴──────────────┐
-                               │ NO                          │ YES
-                               ▼                             ▼
-                    ┌───────────────────┐       ┌───────────────────┐
-                    │ TSPEC wrong       │       │ Does SPEC match   │
-                    │ Fix: L10 TSPEC    │       │ REQ?              │
-                    │ Level: L1         │       └─────────┬─────────┘
-                    └───────────────────┘                 │
-                                          ┌──────────────┴──────────────┐
-                                          │ NO                          │ YES
-                                          ▼                             ▼
-                               ┌───────────────────┐       ┌───────────────────┐
-                               │ SPEC wrong        │       │ Code bug          │
-                               │ Fix: L9 SPEC      │       │ Fix: L12 Code     │
-                               │ Level: L2         │       │ Level: L1         │
-                               └───────────────────┘       └───────────────────┘
+                    
+                        Test Failed        
+                    
+                                
+                                
+                    
+                     Does test match TSPEC?
+                    
+                                
+               
+                NO                               YES
+                                                
+               
+     Test impl wrong               Does TSPEC match  
+     Fix: L13 Tests                SPEC?             
+     Level: L1                    
+                         
+                               
+                                NO                           YES
+                                                            
+                           
+                     TSPEC wrong               Does SPEC match   
+                     Fix: L10 TSPEC            REQ?              
+                     Level: L1                
+                                     
+                                          
+                                           NO                           YES
+                                                                       
+                                      
+                                SPEC wrong                Code bug          
+                                Fix: L9 SPEC              Fix: L12 Code     
+                                Level: L2                 Level: L1         
+                                      
 ```
 
 ## 3. Defect Classification
@@ -173,27 +173,27 @@ When a test fails, ask: **"Where does the truth lie?"**
 **When**: Root cause is in L12 Code only
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  CODE BUG FIX (L1)                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. Reproduce the bug                                       │
-│     - Identify failing test                                 │
-│     - Confirm TSPEC is correct                              │
-│                                                             │
-│  2. Fix the code                                            │
-│     - Edit source file                                      │
-│     - Follow SPEC design                                    │
-│                                                             │
-│  3. Verify fix                                              │
-│     - Run failing test → Now passes                        │
-│     - Run related tests → No regression                    │
-│                                                             │
-│  4. Commit                                                  │
-│     - "fix: [description]"                                 │
-│     - Reference issue/ticket if applicable                 │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                  CODE BUG FIX (L1)                          
+
+                                                             
+  1. Reproduce the bug                                       
+     - Identify failing test                                 
+     - Confirm TSPEC is correct                              
+                                                             
+  2. Fix the code                                            
+     - Edit source file                                      
+     - Follow SPEC design                                    
+                                                             
+  3. Verify fix                                              
+     - Run failing test → Now passes                        
+     - Run related tests → No regression                    
+                                                             
+  4. Commit                                                  
+     - "fix: [description]"                                 
+     - Reference issue/ticket if applicable                 
+                                                             
+
 ```
 
 **No CHG required.**
@@ -203,30 +203,30 @@ When a test fails, ask: **"Where does the truth lie?"**
 **When**: Root cause is in L10 TSPEC or L13 Test implementation
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│               TEST/TSPEC FIX (L1)                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. Identify incorrect test                                 │
-│     - Compare test with SPEC                                │
-│     - Confirm code behavior is correct                      │
-│                                                             │
-│  2. Fix TSPEC (if spec wrong)                               │
-│     - Update test case definition                           │
-│     - Update I/O tables                                     │
-│     - Update expected results                               │
-│                                                             │
-│  3. Fix Test implementation (if impl wrong)                 │
-│     - Update test code to match TSPEC                       │
-│                                                             │
-│  4. Verify                                                  │
-│     - Test now passes                                       │
-│     - TSPEC matches SPEC                                    │
-│                                                             │
-│  5. Commit                                                  │
-│     - "fix(test): [description]"                           │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+               TEST/TSPEC FIX (L1)                           
+
+                                                             
+  1. Identify incorrect test                                 
+     - Compare test with SPEC                                
+     - Confirm code behavior is correct                      
+                                                             
+  2. Fix TSPEC (if spec wrong)                               
+     - Update test case definition                           
+     - Update I/O tables                                     
+     - Update expected results                               
+                                                             
+  3. Fix Test implementation (if impl wrong)                 
+     - Update test code to match TSPEC                       
+                                                             
+  4. Verify                                                  
+     - Test now passes                                       
+     - TSPEC matches SPEC                                    
+                                                             
+  5. Commit                                                  
+     - "fix(test): [description]"                           
+                                                             
+
 ```
 
 **No CHG required.**
@@ -236,36 +236,36 @@ When a test fails, ask: **"Where does the truth lie?"**
 **When**: Root cause is in L9 SPEC design
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 SPEC FIX (L2)                               │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. Create CHG document                                     │
-│     - CHG-XX_spec_fix/                                     │
-│     - Use CHG-MVP-TEMPLATE.md                              │
-│                                                             │
-│  2. Verify upstream alignment                               │
-│     - Does REQ support correct behavior?                   │
-│     - If not → Escalate to L7                              │
-│                                                             │
-│  3. Update SPEC                                             │
-│     - Fix design error                                      │
-│     - Increment version                                     │
-│                                                             │
-│  4. Update TSPEC                                            │
-│     - Align test specs with fixed SPEC                     │
-│                                                             │
-│  5. Update TASKS                                            │
-│     - Reflect implementation changes                       │
-│                                                             │
-│  6. Regenerate Code                                         │
-│     - Implement corrected design                           │
-│                                                             │
-│  7. Validate                                                │
-│     - All tests pass                                        │
-│     - Close CHG                                            │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                 SPEC FIX (L2)                               
+
+                                                             
+  1. Create CHG document                                     
+     - CHG-XX_spec_fix/                                     
+     - Use CHG-MVP-TEMPLATE.md                              
+                                                             
+  2. Verify upstream alignment                               
+     - Does REQ support correct behavior?                   
+     - If not → Escalate to L7                              
+                                                             
+  3. Update SPEC                                             
+     - Fix design error                                      
+     - Increment version                                     
+                                                             
+  4. Update TSPEC                                            
+     - Align test specs with fixed SPEC                     
+                                                             
+  5. Update TASKS                                            
+     - Reflect implementation changes                       
+                                                             
+  6. Regenerate Code                                         
+     - Implement corrected design                           
+                                                             
+  7. Validate                                                
+     - All tests pass                                        
+     - Close CHG                                            
+                                                             
+
 ```
 
 ### 4.4 L2-L3: Requirement Gap Fix
@@ -273,36 +273,36 @@ When a test fails, ask: **"Where does the truth lie?"**
 **When**: Root cause is in L1-L7 requirements
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│              REQUIREMENT GAP FIX (L2-L3)                    │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. Create CHG document                                     │
-│     - CHG-XX_requirement_gap/                              │
-│     - Assess L2 vs L3 based on scope                       │
-│                                                             │
-│  2. Identify gap in requirements                            │
-│     - Which layer has the ambiguity?                       │
-│     - BRD? PRD? EARS? BDD? REQ?                            │
-│                                                             │
-│  3. Clarify requirement                                     │
-│     - Work with stakeholders                               │
-│     - Document correct behavior                            │
-│                                                             │
-│  4. Update requirement artifact                             │
-│     - Add/modify requirement                               │
-│     - Update traceability                                  │
-│                                                             │
-│  5. Cascade downstream                                      │
-│     - Update all affected layers                           │
-│     - SPEC → TSPEC → TASKS → Code → Tests                  │
-│                                                             │
-│  6. Validate                                                │
-│     - All tests pass                                        │
-│     - Behavior matches clarified requirement               │
-│     - Close CHG                                            │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+              REQUIREMENT GAP FIX (L2-L3)                    
+
+                                                             
+  1. Create CHG document                                     
+     - CHG-XX_requirement_gap/                              
+     - Assess L2 vs L3 based on scope                       
+                                                             
+  2. Identify gap in requirements                            
+     - Which layer has the ambiguity?                       
+     - BRD? PRD? EARS? BDD? REQ?                            
+                                                             
+  3. Clarify requirement                                     
+     - Work with stakeholders                               
+     - Document correct behavior                            
+                                                             
+  4. Update requirement artifact                             
+     - Add/modify requirement                               
+     - Update traceability                                  
+                                                             
+  5. Cascade downstream                                      
+     - Update all affected layers                           
+     - SPEC → TSPEC → TASKS → Code → Tests                  
+                                                             
+  6. Validate                                                
+     - All tests pass                                        
+     - Behavior matches clarified requirement               
+     - Close CHG                                            
+                                                             
+
 ```
 
 ## 5. Test Failure Triage

@@ -44,31 +44,31 @@ The SDD Project Model v2.2 extends the core Specification-Driven Development fra
 <summary>Text Diagram (fallback)</summary>
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        SDD Project Model v2.2                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌───────────┐ │
-│  │   GATE-01   │────▶│   GATE-05   │────▶│   GATE-09   │────▶│  GATE-12  │ │
-│  │  Business   │     │Architecture │     │   Impl.     │     │   Code    │ │
-│  │  L1-L4      │     │   L5-L8     │     │   L9-L11    │     │  L12-L14  │ │
-│  └─────────────┘     └─────────────┘     └─────────────┘     └───────────┘ │
-│        │                   │                   │                   │        │
-│        ▼                   ▼                   ▼                   ▼        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    GitHub Project V2 Board                          │   │
-│  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐        │   │
-│  │  │Backlog │  │Sprint 0│  │Sprint N│  │Review  │  │  Done  │        │   │
-│  │  └────────┘  └────────┘  └────────┘  └────────┘  └────────┘        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                         Automation Scripts                           │   │
-│  │  tasks_to_github │ drift_check │ validate_artifact │ chg_generator  │   │
-│  │  sprint0_setup   │ raci_generator │ layer_selector                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                        SDD Project Model v2.2                               
+
+                                                                             
+                  
+     GATE-01      GATE-05      GATE-09     GATE-12   
+    Business        Architecture         Impl.             Code     
+    L1-L4              L5-L8             L9-L11           L12-L14   
+                  
+                                                                         
+                                                                         
+     
+                      GitHub Project V2 Board                             
+                       
+    Backlog   Sprint 0  Sprint N  Review      Done             
+                       
+     
+                                                                             
+     
+                           Automation Scripts                              
+    tasks_to_github  drift_check  validate_artifact  chg_generator     
+    sprint0_setup    raci_generator  layer_selector                     
+     
+                                                                             
+
 ```
 </details>
 
@@ -114,29 +114,29 @@ python ../scripts/layer_selector.py --interactive
 
 ```
 PROJECT/
-├── assets/
-│   └── sdd-project-model-v2.svg  # Architecture diagram
-├── config/
-│   └── project_model.yaml        # Central configuration
-├── templates/
-│   ├── CHG-PROJECT-TEMPLATE.md   # Change request template
-│   ├── SPRINT0_CHECKLIST.md      # Sprint 0 checklist
-│   └── RACI_MATRIX.md            # RACI matrix template
-├── fixtures/
-│   └── budget_alert/             # Sample worked example
-│       ├── BRD-01.md
-│       ├── PRD-01.md
-│       └── TASKS-05.yaml
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   │   └── sdd-task.yml          # GitHub issue template
-│   └── workflows/
-│       └── sdd-validation.yml    # CI validation workflow
-├── tests/                        # Unit tests (9 files)
-├── PROJECT_MODEL.md              # Methodology document
-├── IMPLEMENTATION_PLAN.md        # Technical specifications
-├── SETUP_GUIDE.md                # Setup instructions
-└── README.md                     # This file
+ assets/
+    sdd-project-model-v2.svg  # Architecture diagram
+ config/
+    project_model.yaml        # Central configuration
+ templates/
+    CHG-PROJECT-TEMPLATE.md   # Change request template
+    SPRINT0_CHECKLIST.md      # Sprint 0 checklist
+    RACI_MATRIX.md            # RACI matrix template
+ fixtures/
+    budget_alert/             # Sample worked example
+        BRD-01.md
+        PRD-01.md
+        TASKS-05.yaml
+ .github/
+    ISSUE_TEMPLATE/
+       sdd-task.yml          # GitHub issue template
+    workflows/
+        sdd-validation.yml    # CI validation workflow
+ tests/                        # Unit tests (9 files)
+ PROJECT_MODEL.md              # Methodology document
+ IMPLEMENTATION_PLAN.md        # Technical specifications
+ SETUP_GUIDE.md                # Setup instructions
+ README.md                     # This file
 ```
 
 ## 4-Gate System

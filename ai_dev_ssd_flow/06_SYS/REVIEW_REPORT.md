@@ -14,7 +14,7 @@ The SYS framework is in **excellent condition** with only minor issues found:
 ### Medium Issues Found: 0
 ### Minor Issues Found: 3
 
-**Overall Status**: ✅ Framework is production-ready with minor improvements recommended.
+**Overall Status**: [PASS] Framework is production-ready with minor improvements recommended.
 
 ---
 
@@ -27,9 +27,9 @@ The SYS framework is in **excellent condition** with only minor issues found:
 - `examples/SYS-02_quality_attributes.md`
 
 **Problem**: Both files are missing the final 3 sections of the template:
-- ❌ Section 13: Traceability
-- ❌ Section 14: Implementation Notes
-- ❌ Section 15: Change History
+- [FAIL] Section 13: Traceability
+- [FAIL] Section 14: Implementation Notes
+- [FAIL] Section 15: Change History
 
 **Impact**: Low - Examples still demonstrate core functionality but are incomplete.
 
@@ -65,35 +65,35 @@ The SYS framework is in **excellent condition** with only minor issues found:
 
 ## Framework Status Overview
 
-### Template Consistency ✅
+### Template Consistency [PASS]
 | Aspect | Status |
 |--------|--------|
-| YAML Template (SYS-MVP-TEMPLATE.yaml) | ✅ Valid |
-| MD Template (SYS-MVP-TEMPLATE.md) | ✅ Valid, 15 sections |
-| Templates synchronized | ✅ Yes |
+| YAML Template (SYS-MVP-TEMPLATE.yaml) | [PASS] Valid |
+| MD Template (SYS-MVP-TEMPLATE.md) | [PASS] Valid, 15 sections |
+| Templates synchronized | [PASS] Yes |
 
-### Layer Number Consistency ✅
+### Layer Number Consistency [PASS]
 | File | Layer | Status |
 |------|-------|--------|
-| README.md | 6 | ✅ Correct |
-| SYS-MVP-TEMPLATE.md | 6 | ✅ Correct |
-| SYS_MVP_CREATION_RULES.md | 6 | ✅ Correct |
-| SYS_MVP_VALIDATION_RULES.md | 6 | ✅ Correct |
-| SYS_MVP_SCHEMA.yaml | 6 | ✅ Correct |
+| README.md | 6 | [PASS] Correct |
+| SYS-MVP-TEMPLATE.md | 6 | [PASS] Correct |
+| SYS_MVP_CREATION_RULES.md | 6 | [PASS] Correct |
+| SYS_MVP_VALIDATION_RULES.md | 6 | [PASS] Correct |
+| SYS_MVP_SCHEMA.yaml | 6 | [PASS] Correct |
 
-### YAML Syntax ✅
+### YAML Syntax [PASS]
 | File | Status |
 |------|--------|
-| SYS-MVP-TEMPLATE.yaml | ✅ Valid |
-| SYS_MVP_SCHEMA.yaml | ✅ Valid |
+| SYS-MVP-TEMPLATE.yaml | [PASS] Valid |
+| SYS_MVP_SCHEMA.yaml | [PASS] Valid |
 
 ### Example Files Status
 | File | All 15 Sections | Requirement IDs | Status |
 |------|-----------------|-----------------|--------|
-| SYS-01_functional_requirements.md | ⚠️ Missing 3 | ✅ Yes | ⚠️ Incomplete |
-| SYS-02_quality_attributes.md | ⚠️ Missing 3 | ✅ Yes | ⚠️ Incomplete |
-| SYS-03_DEPLOYMENT_EXAMPLE.md | ✅ Yes | ⚠️ No | ⚠️ Missing IDs |
-| SYS-04_LOGIC-ONLY_EXAMPLE.md | ✅ Yes | ⚠️ No | ⚠️ Missing IDs |
+| SYS-01_functional_requirements.md | [WARN] Missing 3 | [PASS] Yes | [WARN] Incomplete |
+| SYS-02_quality_attributes.md | [WARN] Missing 3 | [PASS] Yes | [WARN] Incomplete |
+| SYS-03_DEPLOYMENT_EXAMPLE.md | [PASS] Yes | [WARN] No | [WARN] Missing IDs |
+| SYS-04_LOGIC-ONLY_EXAMPLE.md | [PASS] Yes | [WARN] No | [WARN] Missing IDs |
 
 ---
 
@@ -101,21 +101,21 @@ The SYS framework is in **excellent condition** with only minor issues found:
 
 The SYS-MVP-TEMPLATE.md defines these 15 required sections:
 
-1. ✅ Document Control
-2. ✅ Executive Summary
-3. ✅ Scope
-4. ✅ Functional Requirements
-5. ✅ Quality Attributes
-6. ✅ Interface Specifications
-7. ✅ Data Management Requirements
-8. ✅ Testing and Validation Requirements
-9. ✅ Deployment and Operations Requirements
-10. ✅ Compliance and Regulatory Requirements
-11. ✅ Acceptance Criteria
-12. ✅ Risk Assessment
-13. ⚠️ Traceability (missing in SYS-01, SYS-02)
-14. ⚠️ Implementation Notes (missing in SYS-01, SYS-02)
-15. ⚠️ Change History (missing in SYS-01, SYS-02)
+1. [PASS] Document Control
+2. [PASS] Executive Summary
+3. [PASS] Scope
+4. [PASS] Functional Requirements
+5. [PASS] Quality Attributes
+6. [PASS] Interface Specifications
+7. [PASS] Data Management Requirements
+8. [PASS] Testing and Validation Requirements
+9. [PASS] Deployment and Operations Requirements
+10. [PASS] Compliance and Regulatory Requirements
+11. [PASS] Acceptance Criteria
+12. [PASS] Risk Assessment
+13. [WARN] Traceability (missing in SYS-01, SYS-02)
+14. [WARN] Implementation Notes (missing in SYS-01, SYS-02)
+15. [WARN] Change History (missing in SYS-01, SYS-02)
 
 ---
 
@@ -147,11 +147,11 @@ The SYS-MVP-TEMPLATE.md defines these 15 required sections:
 
 | Check | Status |
 |-------|--------|
-| YAML Syntax | ✅ All valid |
-| Layer Numbers | ✅ All correct (Layer 6) |
-| Template Consistency | ✅ MD and YAML match |
-| Threshold References | ✅ Present in key docs |
-| Example Compliance | ⚠️ 2 examples incomplete |
+| YAML Syntax | [PASS] All valid |
+| Layer Numbers | [PASS] All correct (Layer 6) |
+| Template Consistency | [PASS] MD and YAML match |
+| Threshold References | [PASS] Present in key docs |
+| Example Compliance | [WARN] 2 examples incomplete |
 
 ---
 
@@ -159,10 +159,10 @@ The SYS-MVP-TEMPLATE.md defines these 15 required sections:
 
 | Framework | Critical Issues | Status |
 |-----------|----------------|--------|
-| 09_SPEC | 0 | ✅ Excellent (after fixes) |
-| 08_CTR | 0 | ✅ Excellent (after fixes) |
-| 07_REQ | 0 | ✅ Excellent (after fixes) |
-| 06_SYS | 0 | ✅ Excellent (minor optional fixes) |
+| 09_SPEC | 0 | [PASS] Excellent (after fixes) |
+| 08_CTR | 0 | [PASS] Excellent (after fixes) |
+| 07_REQ | 0 | [PASS] Excellent (after fixes) |
+| 06_SYS | 0 | [PASS] Excellent (minor optional fixes) |
 
 ---
 

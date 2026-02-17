@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
+#  Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
 # - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Machine-readable validation rules derived from the template
 # - On conflict: Defer to BDD-TEMPLATE.feature
@@ -176,9 +176,9 @@ structure:
       - ADR-Ready Score
 
     adr_ready_score_format:
-      pattern: "✅ \\d{1,3}% \\(Target: ≥90%\\)"
-      description: "Format: ✅ NN% (Target: ≥90%)"
-      example: "✅ 85% (Target: ≥90%)"
+      pattern: "[PASS] \\d{1,3}% \\(Target: ≥90%\\)"
+      description: "Format: [PASS] NN% (Target: ≥90%)"
+      example: "[PASS] 85% (Target: ≥90%)"
       required: true
 
   # File naming conventions (Section-Based ONLY)

@@ -90,7 +90,7 @@ check_placeholder_text() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -118,7 +118,7 @@ check_premature_references() {
   done < <(grep -rnE "$downstream_patterns" "$TASKS_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -129,7 +129,7 @@ check_premature_references() {
 check_count_consistency() {
   echo ""
   echo "--- GATE-03: Internal Count Consistency ---"
-  echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
+  echo -e "${GREEN}   Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -189,7 +189,7 @@ check_index_sync() {
   done
 
   if [[ $found_warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index file appears to be synchronized.${NC}"
+    echo -e "${GREEN}   Index file appears to be synchronized.${NC}"
   fi
 }
 
@@ -227,9 +227,9 @@ check_visualization() {
   shopt -u nullglob
 
   if [[ $total -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No TASKS files to check${NC}"
+    echo -e "${GREEN}   No TASKS files to check${NC}"
   elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All TASKS have Mermaid diagrams${NC}"
+    echo -e "${GREEN}   All TASKS have Mermaid diagrams${NC}"
   else
     echo -e "${BLUE}  ℹ $found of $total TASKS files have no Mermaid diagrams${NC}"
   fi
@@ -242,7 +242,7 @@ check_visualization() {
 check_glossary() {
   echo ""
   echo "--- GATE-07: Glossary Consistency ---"
-  echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
+  echo -e "${GREEN}   Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -262,7 +262,7 @@ check_task_ids() {
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate task IDs${NC}"
+    echo -e "${GREEN}   No duplicate task IDs${NC}"
   fi
 }
 
@@ -273,7 +273,7 @@ check_task_ids() {
 check_priority_format() {
   echo ""
   echo "--- GATE-09: Priority Format Consistency ---"
-  echo -e "${GREEN}  ✓ Priority formats acceptable${NC}"
+  echo -e "${GREEN}   Priority formats acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -308,7 +308,7 @@ check_file_size() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
   fi
 }
 
@@ -367,7 +367,7 @@ check_dependency_dag() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious circular dependencies detected${NC}"
+    echo -e "${GREEN}   No obvious circular dependencies detected${NC}"
   fi
 }
 
@@ -411,7 +411,7 @@ check_spec_coverage() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All SPEC files are covered by TASKS documents.${NC}"
+    echo -e "${GREEN}   All SPEC files are covered by TASKS documents.${NC}"
   fi
 }
 
@@ -444,7 +444,7 @@ check_impl_contracts() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Implementation contracts present${NC}"
+    echo -e "${GREEN}   Implementation contracts present${NC}"
   else
     echo -e "${YELLOW}  $found TASKS files may benefit from implementation contracts${NC}"
   fi
@@ -478,7 +478,7 @@ check_task_status() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Task status tracking present${NC}"
+    echo -e "${GREEN}   Task status tracking present${NC}"
   fi
 }
 
@@ -515,7 +515,7 @@ check_cumulative_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Cumulative traceability complete${NC}"
+    echo -e "${GREEN}   Cumulative traceability complete${NC}"
   else
     echo -e "${YELLOW}  $found TASKS files may need traceability updates${NC}"
   fi
@@ -549,7 +549,7 @@ check_effort_estimates() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Effort estimates present${NC}"
+    echo -e "${GREEN}   Effort estimates present${NC}"
   fi
 }
 

@@ -46,9 +46,9 @@ AI Assistant **MUST** run this questionnaire:
 AI Assistant presents this question to the user:
 
 ```
-═══════════════════════════════════════════════════════════
+
                  PROJECT DOMAIN SELECTION
-═══════════════════════════════════════════════════════════
+
 
 What is the purpose and focus of this new project?
 
@@ -433,9 +433,9 @@ def process_domain_selection(user_input):
         subdirs = []  # Standard subdirs only
 
     # Confirm with user
-    print(f"✓ Domain selected: {domain.title()}")
-    print(f"✓ Loading configuration: {config_file}")
-    print(f"✓ Domain-specific subdirectories: {subdirs}")
+    print(f" Domain selected: {domain.title()}")
+    print(f" Loading configuration: {config_file}")
+    print(f" Domain-specific subdirectories: {subdirs}")
 
     # Load and apply configuration
     load_domain_config(config_file)
@@ -540,9 +540,9 @@ After domain selection, AI Assistant **MAY** ask clarifying questions:
 User: "Initialize new project"
 
 AI Assistant:
-═══════════════════════════════════════════════════════════
+
                  PROJECT DOMAIN SELECTION
-═══════════════════════════════════════════════════════════
+
 
 What is the purpose and focus of this new project?
 
@@ -560,9 +560,9 @@ Enter selection (1-6) or press Enter for default (1):
 User: "2"
 
 AI Assistant:
-✓ Domain selected: Software/SaaS
-✓ Loading configuration: SOFTWARE_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: ['tenant', 'subscription', 'billing', 'workspace']
+ Domain selected: Software/SaaS
+ Loading configuration: SOFTWARE_DOMAIN_CONFIG.md
+ Domain-specific subdirectories: ['tenant', 'subscription', 'billing', 'workspace']
 
 Applying Software/SaaS terminology:
 - [RESOURCE_COLLECTION] → Workspace
@@ -572,10 +572,10 @@ Applying Software/SaaS terminology:
 - [REGULATORY_REQUIREMENT] → SOC2 Control
 
 Creating folder structure...
-✓ Created: docs/07_REQ/tenant/
-✓ Created: docs/07_REQ/subscription/
-✓ Created: docs/07_REQ/billing/
-✓ Created: docs/07_REQ/workspace/
+ Created: docs/07_REQ/tenant/
+ Created: docs/07_REQ/subscription/
+ Created: docs/07_REQ/billing/
+ Created: docs/07_REQ/workspace/
 
 Ready to proceed. Next: Run contract decision questionnaire.
 ```
@@ -592,7 +592,7 @@ If user provides invalid input:
 User: "blockchain"
 
 AI Assistant:
-⚠ Input "blockchain" not recognized.
+ Input "blockchain" not recognized.
 
 Please select from:
 1. Financial Services (DEFAULT)

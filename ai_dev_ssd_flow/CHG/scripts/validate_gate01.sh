@@ -73,7 +73,7 @@ check_business_justification() {
     echo "  → Add 'Business Justification' section with measurable impact"
     ((ERRORS++)) || true
   else
-    echo -e "${GREEN}  ✓ Business justification present${NC}"
+    echo -e "${GREEN}   Business justification present${NC}"
   fi
 }
 
@@ -89,10 +89,10 @@ check_prd_brd_linkage() {
       echo "  → Add @brd: BRD-XXX tag linking to business requirement"
       ((ERRORS++)) || true
     else
-      echo -e "${GREEN}  ✓ PRD-BRD linkage present${NC}"
+      echo -e "${GREEN}   PRD-BRD linkage present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not a PRD change)${NC}"
+    echo -e "${GREEN}   N/A (not a PRD change)${NC}"
   fi
 }
 
@@ -113,7 +113,7 @@ check_ears_syntax() {
       ((INFO++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no EARS changes)${NC}"
+    echo -e "${GREEN}   N/A (no EARS changes)${NC}"
   fi
 }
 
@@ -132,7 +132,7 @@ check_bdd_format() {
       ((INFO++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no BDD changes)${NC}"
+    echo -e "${GREEN}   N/A (no BDD changes)${NC}"
   fi
 }
 
@@ -153,10 +153,10 @@ check_breaking_change_classification() {
       echo "  → Breaking changes MUST be classified as L3 (Major)"
       ((ERRORS++)) || true
     else
-      echo -e "${GREEN}  ✓ Breaking change correctly classified as L3${NC}"
+      echo -e "${GREEN}   Breaking change correctly classified as L3${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ No breaking changes detected${NC}"
+    echo -e "${GREEN}   No breaking changes detected${NC}"
   fi
 }
 
@@ -172,10 +172,10 @@ check_stakeholder_approval() {
       echo "  → L3 changes require stakeholder sign-off"
       ((ERRORS++)) || true
     else
-      echo -e "${GREEN}  ✓ Stakeholder approval documented${NC}"
+      echo -e "${GREEN}   Stakeholder approval documented${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not L3 change)${NC}"
+    echo -e "${GREEN}   N/A (not L3 change)${NC}"
   fi
 }
 
@@ -198,7 +198,7 @@ check_scope_warning() {
       ((WARNINGS++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ Scope acceptable ($layer_count layers affected)${NC}"
+    echo -e "${GREEN}   Scope acceptable ($layer_count layers affected)${NC}"
   fi
 }
 
@@ -214,10 +214,10 @@ check_l2_approval() {
       echo "  → Recommend obtaining PO sign-off"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ L2 approval documented${NC}"
+      echo -e "${GREEN}   L2 approval documented${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not L2 change)${NC}"
+    echo -e "${GREEN}   N/A (not L2 change)${NC}"
   fi
 }
 

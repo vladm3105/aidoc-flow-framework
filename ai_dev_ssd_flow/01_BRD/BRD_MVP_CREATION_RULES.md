@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Guides creation of BRD-MVP-TEMPLATE.md (default)
+#  Document Role: Guides creation of BRD-MVP-TEMPLATE.md (default)
 # - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to BRD-MVP-TEMPLATE.md
@@ -32,7 +32,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for BRD-MVP-TEMPLATE.md (default).
+> ** Document Role**: This is a **CREATION HELPER** for BRD-MVP-TEMPLATE.md (default).
 > - **Authority**: `BRD-MVP-TEMPLATE.md` is the primary standard for BRD structure
 > - **Validation**: Use `BRD_MVP_VALIDATION_RULES.md` after BRD creation/changes
 
@@ -237,9 +237,9 @@ See section 5.6 below for detailed guidance on the simplified user stories appro
 > Initial launch targets 10,000 monthly active users within 6 months, representing $5M monthly transaction volume. At 3.5% effective margin, this generates $175K monthly gross revenue. Customer acquisition cost target is <$50, enabling payback within 3 transactions per customer.
 
 **Anti-Patterns (Avoid)**:
-- ❌ "[Company] will provide a fast and affordable way to send money" - No quantitative measures
-- ❌ "The solution will significantly improve the customer experience" - Subjective, not measurable
-- ❌ "We expect strong market adoption" - No specific targets
+- [FAIL] "[Company] will provide a fast and affordable way to send money" - No quantitative measures
+- [FAIL] "The solution will significantly improve the customer experience" - Subjective, not measurable
+- [FAIL] "We expect strong market adoption" - No specific targets
 
 **Reference**: See BRD-MVP-TEMPLATE.md for template structure.
 
@@ -280,10 +280,10 @@ sequenceDiagram
 | 1 | [Actor] | [Action description] | [System] | [Business rule applied] | [Success criteria] |
 
 **Anti-Patterns**:
-- ❌ Technical implementation details ("POST /api/endpoint", "SQL query")
-- ❌ Infrastructure components ("Load Balancer", "Redis cache")
-- ❌ Code-level operations ("validate JWT token", "serialize JSON")
-- ✓ Business-level actions ("Submit transaction request", "Verify customer identity")
+- [FAIL] Technical implementation details ("POST /api/endpoint", "SQL query")
+- [FAIL] Infrastructure components ("Load Balancer", "Redis cache")
+- [FAIL] Code-level operations ("validate JWT token", "serialize JSON")
+-  Business-level actions ("Submit transaction request", "Verify customer identity")
 
 #### section 3.5.5: Error and Exception Handling Workflows
 
@@ -427,7 +427,7 @@ When performing major refactoring (version X.0), document the transformation:
    - All FRs now have 6 required subsections (Business Capability, Business Requirements, Business Rules, Business Acceptance Criteria, Related Requirements, Complexity)
    - Zero code blocks remaining in FR sections
    - Zero technical API/database terminology in FR descriptions
-   - PRD-Ready Score: 95/100 (Target: ≥90/100) ✅
+   - PRD-Ready Score: 95/100 (Target: ≥90/100) [PASS]
    ```
 
 3. **Example Before/After FR Transformation**:
@@ -515,7 +515,7 @@ When performing major refactoring (version X.0), document the transformation:
 | Business Objective | 23 | BRD.02.23.01 |
 | Stakeholder Need | 24 | BRD.02.24.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `AC-XXX` → Use `BRD.NN.06.SS`
 > - `FR-XXX` → Use `BRD.NN.01.SS`
 > - `BC-XXX` → Use `BRD.NN.03.SS`
@@ -563,14 +563,14 @@ When performing major refactoring (version X.0), document the transformation:
 | New Capability | `N/A - new capability` with target only | N/A → <15 min delivery time |
 
 **Business Objectives Without Baselines**:
-- ❌ "Improve transaction speed" - No baseline or target
-- ❌ "Reduce costs" - No quantitative measure
-- ❌ "Better customer experience" - Subjective, not measurable
+- [FAIL] "Improve transaction speed" - No baseline or target
+- [FAIL] "Reduce costs" - No quantitative measure
+- [FAIL] "Better customer experience" - Subjective, not measurable
 
 **Business Objectives With Baselines**:
-- ✅ "Reduce transaction delivery time from industry average 24-48 hours to <15 minutes for 95% of transactions"
-- ✅ "Achieve customer acquisition cost <$50/customer vs industry average $75"
-- ✅ "Deliver 98% first-attempt transaction success rate (no baseline - new region)"
+- [PASS] "Reduce transaction delivery time from industry average 24-48 hours to <15 minutes for 95% of transactions"
+- [PASS] "Achieve customer acquisition cost <$50/customer vs industry average $75"
+- [PASS] "Deliver 98% first-attempt transaction success rate (no baseline - new region)"
 
 ---
 
@@ -765,10 +765,10 @@ When performing major refactoring (version X.0), document the transformation:
 ```
 
 **Incorrect Format Examples**:
-- ❌ "4/5 (Complex integration)" - missing partner chain and regulatory details
-- ❌ "4/5 (Multiple APIs and compliance rules)" - too vague, no specific references
-- ❌ "4/5 (Requires significant development effort)" - technical rationale, not business-level
-- ❌ "4/5 (A, B, C partners)" - missing chain notation, unclear dependencies
+- [FAIL] "4/5 (Complex integration)" - missing partner chain and regulatory details
+- [FAIL] "4/5 (Multiple APIs and compliance rules)" - too vague, no specific references
+- [FAIL] "4/5 (Requires significant development effort)" - technical rationale, not business-level
+- [FAIL] "4/5 (A, B, C partners)" - missing chain notation, unclear dependencies
 
 **Reference Examples**: See BRD-MVP-TEMPLATE.md Appendix C for complete FR examples at each complexity level.
 
@@ -806,11 +806,11 @@ When performing major refactoring (version X.0), document the transformation:
    - Example: "Business Objective 1: Supported by [XX] user stories (See PRD for details)"
 
 **Complete Requirements Moved to PRD**: The following detailed content now belongs in PRD-MVP-TEMPLATE.md section "User Stories & User Roles":
-- ❌ ~~Detailed user story tables with Story ID, Priority, Acceptance Criteria~~
-- ❌ ~~User story to FR mapping tables~~
-- ❌ ~~Detailed user story to business objective mapping~~
-- ❌ ~~User story summary rollup by persona and priority~~
-- ❌ ~~Subsections 5.1-5.5 with full tables~~
+- [FAIL] ~~Detailed user story tables with Story ID, Priority, Acceptance Criteria~~
+- [FAIL] ~~User story to FR mapping tables~~
+- [FAIL] ~~Detailed user story to business objective mapping~~
+- [FAIL] ~~User story summary rollup by persona and priority~~
+- [FAIL] ~~Subsections 5.1-5.5 with full tables~~
 
 ### User Story Best Practices
 
@@ -822,16 +822,16 @@ When performing major refactoring (version X.0), document the transformation:
 - Map to business objectives
 
 **Avoid**:
-- ❌ Technical implementation details ("query database", "call API")
-- ❌ UI implementation ("click button", "display modal dialog")
-- ❌ Stories without clear business value
-- ❌ Stories that duplicate Functional Requirements
-- ❌ Stories without persona attribution
+- [FAIL] Technical implementation details ("query database", "call API")
+- [FAIL] UI implementation ("click button", "display modal dialog")
+- [FAIL] Stories without clear business value
+- [FAIL] Stories that duplicate Functional Requirements
+- [FAIL] Stories without persona attribution
 
 **Example Anti-Patterns**:
-- ❌ "As a user, I want the system to store data in PostgreSQL" - technical implementation
-- ❌ "As a user, I want to click the submit button" - UI implementation detail
-- ✓ "As a **sender**, I want to **track transaction status in real-time**, so that **I know when funds are received**" - business-level need
+- [FAIL] "As a user, I want the system to store data in PostgreSQL" - technical implementation
+- [FAIL] "As a user, I want to click the submit button" - UI implementation detail
+-  "As a **sender**, I want to **track transaction status in real-time**, so that **I know when funds are received**" - business-level need
 
 **Reference**: See BRD-MVP-TEMPLATE.md section 5 for complete structure and additional examples.
 
@@ -928,12 +928,12 @@ Use bullets when Business Rules are **sequential**, have **single conditions**, 
 
 ```
 Business Rules Count?
-├── ≥3 variables → Consider table
-│   └── Tiered/Matrix structure? → Use TABLE
-│   └── Narrative needed? → Use BULLETS with sub-bullets
-├── <3 variables → Consider bullets
-│   └── Sequential flow? → Use BULLETS
-│   └── Single conditions? → Use BULLETS
+ ≥3 variables → Consider table
+    Tiered/Matrix structure? → Use TABLE
+    Narrative needed? → Use BULLETS with sub-bullets
+ <3 variables → Consider bullets
+    Sequential flow? → Use BULLETS
+    Single conditions? → Use BULLETS
 ```
 
 **Reference**: See BRD-MVP-TEMPLATE.md Appendix C, Subsection 3: Business Rules for complete pattern examples.
@@ -952,14 +952,14 @@ Business Rules Count?
 
 **Examples**:
 
-❌ **REMOVE (PRD-Level)**: "Platform MUST use a specific custody provider for wallet operations"
+[FAIL] **REMOVE (PRD-Level)**: "Platform MUST use a specific custody provider for wallet operations"
 
-✅ **KEEP (Business-Level)**: "Platform requires segregated custody with appropriate licensing (BRD-02 partner selection)"
+[PASS] **KEEP (Business-Level)**: "Platform requires segregated custody with appropriate licensing (BRD-02 partner selection)"
 
 **Additional Examples**:
-- ❌ "MUST use PostgreSQL" → ✅ "Platform requires scalable relational data storage with ACID compliance (BRD-01 technology stack)"
-- ❌ "MUST use Auth0" → ✅ "Platform requires OAuth 2.0/OIDC authentication with MFA support (BRD-03 authentication)"
-- ❌ "MUST use Kafka" → ✅ "Platform requires async event streaming for partner integrations (BRD-01 messaging)"
+- [FAIL] "MUST use PostgreSQL" → [PASS] "Platform requires scalable relational data storage with ACID compliance (BRD-01 technology stack)"
+- [FAIL] "MUST use Auth0" → [PASS] "Platform requires OAuth 2.0/OIDC authentication with MFA support (BRD-03 authentication)"
+- [FAIL] "MUST use Kafka" → [PASS] "Platform requires async event streaming for partner integrations (BRD-01 messaging)"
 
 **When to Reference Platform BRDs**:
 - BRD-01: Platform architecture and technology stack
@@ -975,16 +975,16 @@ Business Rules Count?
 **Rule**: Keep customer-facing SLAs and business outcomes; remove technical performance metrics (defer to 09_SPEC/11_TASKS).
 
 **Customer-Facing SLAs (KEEP)**:
-- ✅ "95% of transactions complete in <15 minutes" (customer experience requirement)
-- ✅ "Email delivery: ≥95% within 60 seconds" (customer notification SLA)
-- ✅ "Screening completion: ≤3 seconds for 95% of transactions" (regulatory compliance timing)
-- ✅ "Refund processing: <1 hour from delivery failure (95% of cases)" (customer service SLA)
+- [PASS] "95% of transactions complete in <15 minutes" (customer experience requirement)
+- [PASS] "Email delivery: ≥95% within 60 seconds" (customer notification SLA)
+- [PASS] "Screening completion: ≤3 seconds for 95% of transactions" (regulatory compliance timing)
+- [PASS] "Refund processing: <1 hour from delivery failure (95% of cases)" (customer service SLA)
 
 **Technical Metrics (REMOVE - Defer to PRD)**:
-- ❌ "API latency <200ms (95th percentile)"
-- ❌ "Database query time <50ms"
-- ❌ "WebSocket connection establishment <500ms"
-- ❌ "Cache hit rate ≥90%"
+- [FAIL] "API latency <200ms (95th percentile)"
+- [FAIL] "Database query time <50ms"
+- [FAIL] "WebSocket connection establishment <500ms"
+- [FAIL] "Cache hit rate ≥90%"
 
 **Decision Criteria**:
 - **KEEP**: Metric affects customer experience, regulatory compliance, or business operations
@@ -997,16 +997,16 @@ Business Rules Count?
 **Rule**: Document business process state NAMES and flow; remove technical state management implementation.
 
 **Business State Names (KEEP)**:
-- ✅ Transaction states: INITIATED, FUNDED, COMPLETED, FAILED
-- ✅ Compliance review states: APPROVED, MANUAL_REVIEW, DECLINED
-- ✅ Business process flow: Initiation → Compliance → Funding → Delivery
-- ✅ Refund states: PROCESSING, COMPLETED
+- [PASS] Transaction states: INITIATED, FUNDED, COMPLETED, FAILED
+- [PASS] Compliance review states: APPROVED, MANUAL_REVIEW, DECLINED
+- [PASS] Business process flow: Initiation → Compliance → Funding → Delivery
+- [PASS] Refund states: PROCESSING, COMPLETED
 
 **State Management Implementation (REMOVE)**:
-- ❌ Event handlers: "on wallet_debited event, transition to FUNDED"
-- ❌ State machine coordination logic
-- ❌ Technical state transitions with database updates: "StateMachine.transition(from: INITIATED, to: FUNDED)"
-- ❌ State persistence mechanisms: "Update transaction_state column in PostgreSQL"
+- [FAIL] Event handlers: "on wallet_debited event, transition to FUNDED"
+- [FAIL] State machine coordination logic
+- [FAIL] Technical state transitions with database updates: "StateMachine.transition(from: INITIATED, to: FUNDED)"
+- [FAIL] State persistence mechanisms: "Update transaction_state column in PostgreSQL"
 
 **Proper Format**:
 ```markdown
@@ -1014,7 +1014,7 @@ Business Rules Count?
 
 vs.
 
-❌ **Technical Implementation**:
+[FAIL] **Technical Implementation**:
 StateMachine.transition(from: INITIATED, to: FUNDED, on: wallet_debited event, with: update_database)
 ```
 
@@ -1025,16 +1025,16 @@ StateMachine.transition(from: INITIATED, to: FUNDED, on: wallet_debited event, w
 **Rule**: Remove ALL code blocks from BRDs without exception.
 
 **Code Blocks (REMOVE)**:
-- ❌ Python functions and pseudocode
-- ❌ JSON schema examples
-- ❌ SQL queries
-- ❌ Algorithm implementations
-- ❌ Feature engineering functions for ML models
+- [FAIL] Python functions and pseudocode
+- [FAIL] JSON schema examples
+- [FAIL] SQL queries
+- [FAIL] Algorithm implementations
+- [FAIL] Feature engineering functions for ML models
 
 **Business-Level Alternatives (KEEP)**:
-- ✅ "High-value transactions (>$1,000) receive additional risk scoring weight"
-- ✅ "First-time recipients flagged for enhanced review"
-- ✅ "Risk scoring algorithm documented in PRD-022 Fraud Detection implementation"
+- [PASS] "High-value transactions (>$1,000) receive additional risk scoring weight"
+- [PASS] "First-time recipients flagged for enhanced review"
+- [PASS] "Risk scoring algorithm documented in PRD-022 Fraud Detection implementation"
 
 **Exception**: High-level business process diagrams using Mermaid flowcharts showing business states only (NOT technical implementation).
 
@@ -1074,16 +1074,16 @@ graph LR
 
 **Calculation Algorithms (REMOVE)**:
 ```javascript
-❌ fee = Math.max(MIN_FEE, amount * tier_rate)
+[FAIL] fee = Math.max(MIN_FEE, amount * tier_rate)
 if (amount >= 501 && amount <= 2000) {
   fee = 5.00
 }
 ```
 
 **Proper Business-Level Format**:
-- ✅ Fee tables with tiers, amounts, and competitive benchmarks
-- ✅ Business rationale: "Tiered pricing provides 40% cost advantage vs Western Union for amounts >$200"
-- ✅ Fee transparency requirement: "Fee disclosure mandatory before customer authorization"
+- [PASS] Fee tables with tiers, amounts, and competitive benchmarks
+- [PASS] Business rationale: "Tiered pricing provides 40% cost advantage vs Western Union for amounts >$200"
+- [PASS] Fee transparency requirement: "Fee disclosure mandatory before customer authorization"
 
 ---
 
@@ -1092,32 +1092,32 @@ if (amount >= 501 && amount <= 2000) {
 **Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to 09_SPEC/11_TASKS.
 
 **PRD-Level Content (REMOVE)**:
-- ❌ Feature extraction code: `features = ['transaction_amount', 'device_risk_score', 'velocity_24h']`
-- ❌ Model hyperparameters: `XGBoost(max_depth=5, learning_rate=0.1, n_estimators=100)`
-- ❌ Training pipeline specifications
-- ❌ Model deployment architecture
+- [FAIL] Feature extraction code: `features = ['transaction_amount', 'device_risk_score', 'velocity_24h']`
+- [FAIL] Model hyperparameters: `XGBoost(max_depth=5, learning_rate=0.1, n_estimators=100)`
+- [FAIL] Training pipeline specifications
+- [FAIL] Model deployment architecture
 
 **Business-Level Content (KEEP)**:
 
 **Business Capability**:
-✅ "System must assess transaction fraud risk using ML-based scoring model"
+[PASS] "System must assess transaction fraud risk using ML-based scoring model"
 
 **Business Requirements**:
-- ✅ Analyze transaction characteristics (amount, frequency, recipient patterns)
-- ✅ Assign risk score 0-100 based on multiple fraud indicators
-- ✅ Support automated decision-making for low-risk transactions
-- ✅ Provide manual review queue for medium-risk transactions
+- [PASS] Analyze transaction characteristics (amount, frequency, recipient patterns)
+- [PASS] Assign risk score 0-100 based on multiple fraud indicators
+- [PASS] Support automated decision-making for low-risk transactions
+- [PASS] Provide manual review queue for medium-risk transactions
 
 **Business Rules (Risk Thresholds)**:
-- ✅ Risk score 0-59: Auto-approve transaction
-- ✅ Risk score 60-79: Queue for manual compliance review (target <5% of volume)
-- ✅ Risk score 80-100: Auto-decline with SAR consideration
+- [PASS] Risk score 0-59: Auto-approve transaction
+- [PASS] Risk score 60-79: Queue for manual compliance review (target <5% of volume)
+- [PASS] Risk score 80-100: Auto-decline with SAR consideration
 
 **Business Acceptance Criteria**:
-- ✅ True positive rate ≥95% (catch actual fraud)
-- ✅ False positive rate ≤3% (minimize blocking legitimate users)
-- ✅ Model inference latency <200ms for real-time screening (customer experience requirement)
-- ✅ Model retraining: Weekly with new fraud patterns (operational requirement)
+- [PASS] True positive rate ≥95% (catch actual fraud)
+- [PASS] False positive rate ≤3% (minimize blocking legitimate users)
+- [PASS] Model inference latency <200ms for real-time screening (customer experience requirement)
+- [PASS] Model retraining: Weekly with new fraud patterns (operational requirement)
 
 **Cross-Reference**: "ML model architecture and feature engineering documented in PRD-022 Fraud Detection Agent"
 
@@ -1130,10 +1130,10 @@ if (amount >= 501 && amount <= 2000) {
 **Context**: Multi-region requirements (US, EU, APAC) involve both business variations (different regulations, limits, partners) and infrastructure concerns (data residency, latency). BRDs focus on business variations only.
 
 **Infrastructure Content (REMOVE to 09_SPEC/11_TASKS)**:
-- ❌ Cloud region specifications: "Deploy to us-east-1 and eu-west-1"
-- ❌ Data residency implementation: "PII stored in region-local PostgreSQL"
-- ❌ CDN and latency optimization: "Use CloudFront edge locations"
-- ❌ Database replication topology: "Cross-region active-passive replication"
+- [FAIL] Cloud region specifications: "Deploy to us-east-1 and eu-west-1"
+- [FAIL] Data residency implementation: "PII stored in region-local PostgreSQL"
+- [FAIL] CDN and latency optimization: "Use CloudFront edge locations"
+- [FAIL] Database replication topology: "Cross-region active-passive replication"
 
 **Business-Level Content (KEEP)**:
 
@@ -1162,15 +1162,15 @@ if (amount >= 501 && amount <= 2000) {
 **Business Acceptance Criteria by Region**:
 ```markdown
 **US Region**:
-- ✅ Transactions complete within US business hours (9am-6pm EST)
-- ✅ Bank transfer funding settles next business day
-- ✅ Customer support available in English and Spanish
+- [PASS] Transactions complete within US business hours (9am-6pm EST)
+- [PASS] Bank transfer funding settles next business day
+- [PASS] Customer support available in English and Spanish
 
 **EU Region**:
-- ✅ Regional bank transfers complete within 1 business day
-- ✅ Customer support available in English, German, French, Spanish
-- ✅ GDPR data subject rights (access, deletion, portability) within 30 days
-- ✅ Strong Customer Authentication (SCA) for transactions >€30
+- [PASS] Regional bank transfers complete within 1 business day
+- [PASS] Customer support available in English, German, French, Spanish
+- [PASS] GDPR data subject rights (access, deletion, portability) within 30 days
+- [PASS] Strong Customer Authentication (SCA) for transactions >€30
 ```
 
 **Complexity Impact**:
@@ -1189,16 +1189,16 @@ if (amount >= 501 && amount <= 2000) {
 **Context**: Retry policies for failed transactions involve business decisions (when to retry, customer notification, escalation) and technical implementation (exponential backoff, circuit breakers). BRDs capture business policies only.
 
 **Technical Content (REMOVE to 09_SPEC/11_TASKS)**:
-- ❌ Retry implementation: "Exponential backoff with jitter: delay = base * 2^attempt + random(0, 1000ms)"
-- ❌ Circuit breaker configuration: "Trip after 5 failures, half-open after 30s"
-- ❌ Queue implementation: "Dead letter queue after 3 retries"
-- ❌ Idempotency key management: "UUID v4 stored in Redis with 24h TTL"
+- [FAIL] Retry implementation: "Exponential backoff with jitter: delay = base * 2^attempt + random(0, 1000ms)"
+- [FAIL] Circuit breaker configuration: "Trip after 5 failures, half-open after 30s"
+- [FAIL] Queue implementation: "Dead letter queue after 3 retries"
+- [FAIL] Idempotency key management: "UUID v4 stored in Redis with 24h TTL"
 
 **Business-Level Content (KEEP)**:
 
 **Business Capability**:
 ```markdown
-✅ "System must provide automated transaction recovery with customer notification for transient delivery failures"
+[PASS] "System must provide automated transaction recovery with customer notification for transient delivery failures"
 ```
 
 **Retry Business Rules Table**:
@@ -1236,11 +1236,11 @@ if (amount >= 501 && amount <= 2000) {
 
 **Business Acceptance Criteria**:
 ```markdown
-- ✅ 95% of retryable failures recovered within 4 hours
-- ✅ Customer notified within 15 minutes of status change to "Delayed"
-- ✅ Refunds processed within 24 hours for permanent failures
-- ✅ No duplicate transactions from retry logic
-- ✅ Customer support can view retry history and override retry policy
+- [PASS] 95% of retryable failures recovered within 4 hours
+- [PASS] Customer notified within 15 minutes of status change to "Delayed"
+- [PASS] Refunds processed within 24 hours for permanent failures
+- [PASS] No duplicate transactions from retry logic
+- [PASS] Customer support can view retry history and override retry policy
 ```
 
 **Complexity Impact**:
@@ -1272,18 +1272,18 @@ if (amount >= 501 && amount <= 2000) {
 #### Business Capability Starter Phrases
 
 **Approved Starters**:
-- ✅ "System must enable [actor] to [action]..."
-- ✅ "System must support [capability]..."
-- ✅ "System must provide [outcome]..."
-- ✅ "System must ensure [condition]..."
-- ✅ "System must maintain [state/property]..."
-- ✅ "System must validate [business rule]..."
+- [PASS] "System must enable [actor] to [action]..."
+- [PASS] "System must support [capability]..."
+- [PASS] "System must provide [outcome]..."
+- [PASS] "System must ensure [condition]..."
+- [PASS] "System must maintain [state/property]..."
+- [PASS] "System must validate [business rule]..."
 
 **Avoided Technical Starters**:
-- ❌ "System must call [API endpoint]..."
-- ❌ "System must store [data] in [database]..."
-- ❌ "System must implement [technical pattern]..."
-- ❌ "System must expose [interface]..."
+- [FAIL] "System must call [API endpoint]..."
+- [FAIL] "System must store [data] in [database]..."
+- [FAIL] "System must implement [technical pattern]..."
+- [FAIL] "System must expose [interface]..."
 
 #### Business Rule Language Patterns
 
@@ -1312,9 +1312,9 @@ if (amount >= 501 && amount <= 2000) {
 
 **CRITICAL DISTINCTION**: BRDs are created BEFORE ADRs in SDD workflow
 
-❌ **NEVER** reference specific ADR numbers (ADR-012, ADR-033) in BRD documents
+[FAIL] **NEVER** reference specific ADR numbers (ADR-012, ADR-033) in BRD documents
 
-✅ **DO** include "Architecture Decision Requirements" section identifying topics for architectural decisions
+[PASS] **DO** include "Architecture Decision Requirements" section identifying topics for architectural decisions
 
 **Workflow Order**:
 1. BRD identifies architecture topics needing decisions
@@ -1837,7 +1837,7 @@ During BRD generation, AI assistants should clarify missing ADR information:
 ```
 BRD Section 7.2          →    PRD Section 18         →    ADR
 (WHAT & WHY & HOW MUCH)       (HOW to evaluate)          (Final decision)
-─────────────────────────────────────────────────────────────────────────
+
 Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
 Cost estimates                Performance benchmarks     Consequences
@@ -2021,10 +2021,10 @@ All business objectives in section 2.4 must follow SMART criteria:
 - Document rationale for major version increments
 
 **Avoid**:
-- ❌ Vague approval criteria ("all concerns addressed")
-- ❌ Missing approvers (Technology Lead, Compliance)
-- ❌ No change control process defined
-- ❌ Approval table left entirely blank (populate with [TBD])
+- [FAIL] Vague approval criteria ("all concerns addressed")
+- [FAIL] Missing approvers (Technology Lead, Compliance)
+- [FAIL] No change control process defined
+- [FAIL] Approval table left entirely blank (populate with [TBD])
 
 **Reference**: See BRD-MVP-TEMPLATE.md section 14.5 for complete structure and table examples.
 

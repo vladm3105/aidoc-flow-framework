@@ -68,10 +68,10 @@ check_adr_structure() {
       echo -e "${YELLOW}  ℹ ADR referenced - verify Context-Decision-Consequences in ADR file${NC}"
       ((INFO++)) || true
     else
-      echo -e "${GREEN}  ✓ ADR structure elements present${NC}"
+      echo -e "${GREEN}   ADR structure elements present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no ADR changes)${NC}"
+    echo -e "${GREEN}   N/A (no ADR changes)${NC}"
   fi
 }
 
@@ -83,14 +83,14 @@ check_sys_measurable() {
   if grep -qiE "SYS-|system requirement|quality attribute" "$CHG_FILE" 2>/dev/null; then
     # Check for measurable thresholds
     if grep -qE "[0-9]+\s*(ms|s|%|MB|GB|req/s|rps|qps)" "$CHG_FILE" 2>/dev/null; then
-      echo -e "${GREEN}  ✓ Measurable thresholds present${NC}"
+      echo -e "${GREEN}   Measurable thresholds present${NC}"
     else
       echo -e "${YELLOW}GATE-05-E002: Quality attributes may lack measurable thresholds${NC}"
       echo "  → Add quantified thresholds (e.g., '< 100ms', '>= 99.9%')"
       ((WARNINGS++)) || true
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no SYS changes)${NC}"
+    echo -e "${GREEN}   N/A (no SYS changes)${NC}"
   fi
 }
 
@@ -113,10 +113,10 @@ check_req_traceability() {
       echo "  → Found $tags_found/6 tags in CHG. Verify REQ has: @brd, @prd, @ears, @bdd, @adr, @sys"
       ((INFO++)) || true
     else
-      echo -e "${GREEN}  ✓ All 6 traceability tags present${NC}"
+      echo -e "${GREEN}   All 6 traceability tags present${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no REQ changes)${NC}"
+    echo -e "${GREEN}   N/A (no REQ changes)${NC}"
   fi
 }
 
@@ -130,7 +130,7 @@ check_ctr_validation() {
     echo "  → Run: python scripts/validate_ctr.py <CTR_FILE>"
     ((INFO++)) || true
   else
-    echo -e "${GREEN}  ✓ N/A (no CTR changes)${NC}"
+    echo -e "${GREEN}   N/A (no CTR changes)${NC}"
   fi
 }
 
@@ -145,10 +145,10 @@ check_breaking_api_classification() {
       echo "  → Breaking API changes MUST be classified as L3 (Major)"
       ((ERRORS++)) || true
     else
-      echo -e "${GREEN}  ✓ Breaking API correctly classified as L3${NC}"
+      echo -e "${GREEN}   Breaking API correctly classified as L3${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ No breaking API changes detected${NC}"
+    echo -e "${GREEN}   No breaking API changes detected${NC}"
   fi
 }
 
@@ -164,11 +164,11 @@ check_security_review() {
         echo "  → Complete security assessment before proceeding"
         ((ERRORS++)) || true
       else
-        echo -e "${GREEN}  ✓ Security review documented${NC}"
+        echo -e "${GREEN}   Security review documented${NC}"
       fi
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not external/security change)${NC}"
+    echo -e "${GREEN}   N/A (not external/security change)${NC}"
   fi
 }
 
@@ -185,10 +185,10 @@ check_cve_reference() {
     else
       local cve
       cve=$(grep -oE "CVE-[0-9]{4}-[0-9]+" "$CHG_FILE" 2>/dev/null | head -1)
-      echo -e "${GREEN}  ✓ CVE reference found: $cve${NC}"
+      echo -e "${GREEN}   CVE reference found: $cve${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (not security-related)${NC}"
+    echo -e "${GREEN}   N/A (not security-related)${NC}"
   fi
 }
 
@@ -203,10 +203,10 @@ check_ctr_changelog() {
       echo "  → Document API changes in changelog section"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ CTR changelog documented${NC}"
+      echo -e "${GREEN}   CTR changelog documented${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no CTR version change)${NC}"
+    echo -e "${GREEN}   N/A (no CTR version change)${NC}"
   fi
 }
 
@@ -221,10 +221,10 @@ check_adr_alternatives() {
       echo "  → Document considered alternatives in ADR"
       ((WARNINGS++)) || true
     else
-      echo -e "${GREEN}  ✓ Alternatives considered documented${NC}"
+      echo -e "${GREEN}   Alternatives considered documented${NC}"
     fi
   else
-    echo -e "${GREEN}  ✓ N/A (no ADR changes)${NC}"
+    echo -e "${GREEN}   N/A (no ADR changes)${NC}"
   fi
 }
 

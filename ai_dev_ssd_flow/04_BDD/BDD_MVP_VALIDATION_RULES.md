@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+#  Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
 # - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from BDD_CREATION_RULES.md plus validation extensions
@@ -33,7 +33,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: VALIDATION CHECKLIST for BDD documents (DERIVATIVE).
+> ** Document Role**: VALIDATION CHECKLIST for BDD documents (DERIVATIVE).
 > - **Authority**: Validates compliance with `BDD-MVP-TEMPLATE.feature` (PRIMARY STANDARD)
 > - **Purpose**: Post-creation quality gate checks
 > - **Scope**: Use for quality gates before committing BDD changes
@@ -159,14 +159,14 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 - Valid Given/When/Then structure
 - Proper tag format (@scenario_name)
 
-### CHECK 3: ADR-Ready Score Validation ⭐ NEW
+### CHECK 3: ADR-Ready Score Validation  NEW
 
 **Purpose**: Validate ADR-ready score format and threshold
 **Type**: Error (blocking)
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Valid Examples**: `[PASS] 95% (Target: ≥90%)`
 
-**Error Message**: `❌ MISSING: ADR-Ready Score with ✅ emoji and percentage`
+**Error Message**: `[FAIL] MISSING: ADR-Ready Score with [PASS] emoji and percentage`
 
 ### CHECK 4: Upstream Traceability Tags
 
@@ -182,21 +182,21 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Format**: Extended format with requirement ID suffix (`:NN`) is REQUIRED.
 
-### CHECK 4.1: Tag Placement Validation ⭐ NEW
+### CHECK 4.1: Tag Placement Validation  NEW
 
 **Purpose**: Verify tags are Gherkin-native, not in comments
 **Type**: Error (blocking)
 
 **Validation Rule**: Tags MUST appear as Gherkin-native tags on separate lines before `Feature:` keyword, NOT inside comment blocks.
 
-**❌ INVALID** (comment-based tags - frameworks cannot parse):
+**[FAIL] INVALID** (comment-based tags - frameworks cannot parse):
 ```gherkin
 # @brd: BRD.01.01.01
 # @prd: PRD.01.01.01
 Feature: My Feature
 ```
 
-**✅ VALID** (Gherkin-native tags):
+**[PASS] VALID** (Gherkin-native tags):
 ```gherkin
 @brd:BRD.01.01.01
 @prd:PRD.01.01.01
@@ -212,7 +212,7 @@ grep -n "^#.*@prd:" docs/04_BDD/BDD-*/BDD-*.feature
 grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 ```
 
-**Error Message**: `❌ INVALID: Tags found in comments. Move to Gherkin-native format before Feature: keyword`
+**Error Message**: `[FAIL] INVALID: Tags found in comments. Move to Gherkin-native format before Feature: keyword`
 
 ### CHECK 5: Scenario Coverage Completeness
 
@@ -249,17 +249,17 @@ grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 
 ---
 
-### CHECK 8: Element ID Format Compliance ⭐ NEW
+### CHECK 8: Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `BDD.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `TS-XXX` | ❌ Fail - use BDD.NN.14.SS |
-| Removed pattern | `Scenario-XXX` | ❌ Fail - use BDD.NN.14.SS |
-| Removed pattern | `STEP-XXX` | ❌ Fail - use BDD.NN.15.SS |
+| Valid format | `BDD.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `TS-XXX` | [FAIL] Fail - use BDD.NN.14.SS |
+| Removed pattern | `Scenario-XXX` | [FAIL] Fail - use BDD.NN.14.SS |
+| Removed pattern | `STEP-XXX` | [FAIL] Fail - use BDD.NN.15.SS |
 
 **Regex**: `^###?\s+BDD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -275,7 +275,7 @@ grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 
 ---
 
-### CHECK 9: Section-Based Structure Validation ⭐ UPDATED
+### CHECK 9: Section-Based Structure Validation  UPDATED
 
 **Purpose**: Validate section-based BDD structure compliance (MANDATORY format)
 **Type**: Error (blocking)
@@ -309,18 +309,18 @@ grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 filename="BDD-02.14_query.feature"
 
 # Test section-only pattern
-echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+_[a-z0-9_]+\.feature$" && echo "✅ Section-only"
+echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+_[a-z0-9_]+\.feature$" && echo "[PASS] Section-only"
 
 # Test subsection pattern
-echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.[0-9]{2}_[a-z0-9_]+\.feature$" && echo "✅ Subsection"
+echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.[0-9]{2}_[a-z0-9_]+\.feature$" && echo "[PASS] Subsection"
 
 # Test aggregator pattern
-echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.00_[a-z0-9_]+\.feature$" && echo "✅ Aggregator"
+echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.00_[a-z0-9_]+\.feature$" && echo "[PASS] Aggregator"
 ```
 
 **Error Messages**:
-- `❌ INVALID: File does not match any valid section-based pattern`
-- `❌ INVALID: Use BDD-NN.SS_{slug}.feature, BDD-NN.SS.mm_{slug}.feature, or BDD-NN.SS.00_{slug}.feature`
+- `[FAIL] INVALID: File does not match any valid section-based pattern`
+- `[FAIL] INVALID: Use BDD-NN.SS_{slug}.feature, BDD-NN.SS.mm_{slug}.feature, or BDD-NN.SS.00_{slug}.feature`
 
 #### 9.2 Prohibited Pattern Detection
 
@@ -330,36 +330,36 @@ echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.00_[a-z0-9_]+\.feature$" &&
 
 1. **_partN Suffix** (Legacy splitting convention)
    - Pattern: `^BDD-\d{2,}_[a-z0-9_]+_part\d+\.feature$`
-   - Example: `BDD-02_query_part1.feature` ❌
+   - Example: `BDD-02_query_part1.feature` [FAIL]
    - Fix: Use subsection format `BDD-02.SS.01_query.feature`
 
 2. **Single-File Format** (Legacy)
    - Pattern: `^BDD-\d{2,}_[a-z0-9_]+\.feature$` (without dot notation)
-   - Example: `BDD-02_knowledge_engine.feature` ❌
+   - Example: `BDD-02_knowledge_engine.feature` [FAIL]
    - Fix: Use section format `BDD-02.SS_{slug}.feature`
 
 3. **Directory-Based Structure** (Legacy)
    - Pattern: `BDD-NN_{slug}/features/` subdirectory
-   - Example: `BDD-02_knowledge_engine/features/` ❌
+   - Example: `BDD-02_knowledge_engine/features/` [FAIL]
    - Fix: Move `.feature` files to the suite folder root: `docs/04_BDD/BDD-NN_{slug}/BDD-NN.SS_{slug}.feature`
 
 **Validation Commands**:
 ```bash
 # Detect _partN suffix (prohibited)
-find docs/BDD -name "*.feature" | grep -E "BDD-[0-9]{2,}_.*_part[0-9]+" && echo "❌ Prohibited _partN suffix found"
+find docs/BDD -name "*.feature" | grep -E "BDD-[0-9]{2,}_.*_part[0-9]+" && echo "[FAIL] Prohibited _partN suffix found"
 
 # Detect single-file format (prohibited)
-find docs/BDD -name "*.feature" | grep -vE "\.[0-9]+" && echo "❌ Prohibited single-file format found"
+find docs/BDD -name "*.feature" | grep -vE "\.[0-9]+" && echo "[FAIL] Prohibited single-file format found"
 
 # Detect features/ subdirectory (prohibited)
-find docs/BDD -type d -name "features" && echo "❌ Prohibited features/ subdirectory found"
+find docs/BDD -type d -name "features" && echo "[FAIL] Prohibited features/ subdirectory found"
 ```
 
 **Error Messages**:
-- `❌ PROHIBITED: _partN suffix detected. Use subsection format: BDD-NN.SS.01_{}, BDD-NN.SS.02_{}, etc.`
-- `❌ PROHIBITED: Single-file format detected. Use section-based format: BDD-NN.SS_{}.feature`
-- `❌ PROHIBITED: Legacy directory structure detected. Use nested suite folder with section-based files`
-- `❌ PROHIBITED: features/ subdirectory detected. Use nested suite folder; no features/ subfolder`
+- `[FAIL] PROHIBITED: _partN suffix detected. Use subsection format: BDD-NN.SS.01_{}, BDD-NN.SS.02_{}, etc.`
+- `[FAIL] PROHIBITED: Single-file format detected. Use section-based format: BDD-NN.SS_{}.feature`
+- `[FAIL] PROHIBITED: Legacy directory structure detected. Use nested suite folder with section-based files`
+- `[FAIL] PROHIBITED: features/ subdirectory detected. Use nested suite folder; no features/ subfolder`
 
 #### 9.3 Aggregator Validation
 
@@ -394,20 +394,20 @@ Background:
 **Validation Commands**:
 ```bash
 # Check for @redirect tag
-grep -q "^@redirect" BDD-02.12.00_query.feature || echo "❌ Missing @redirect tag"
+grep -q "^@redirect" BDD-02.12.00_query.feature || echo "[FAIL] Missing @redirect tag"
 
 # Check for 0 scenarios
 scenario_count=$(grep -c "^\s*Scenario" BDD-02.12.00_query.feature)
-[ "$scenario_count" -eq 0 ] || echo "❌ Aggregator contains $scenario_count scenarios (must be 0)"
+[ "$scenario_count" -eq 0 ] || echo "[FAIL] Aggregator contains $scenario_count scenarios (must be 0)"
 
 # Check for subsection .00 pattern
-echo "BDD-02.12.00_query.feature" | grep -qE "\.00_" && echo "✅ Valid aggregator pattern"
+echo "BDD-02.12.00_query.feature" | grep -qE "\.00_" && echo "[PASS] Valid aggregator pattern"
 ```
 
 **Error Messages**:
-- `❌ ERROR: Aggregator file (.00) missing required @redirect tag`
-- `❌ ERROR: Aggregator file (.00) must have 0 scenarios (redirect stub only)`
-- `⚠️  WARNING: Aggregator missing subsection list in Feature description`
+- `[FAIL] ERROR: Aggregator file (.00) missing required @redirect tag`
+- `[FAIL] ERROR: Aggregator file (.00) must have 0 scenarios (redirect stub only)`
+- `[WARN]  WARNING: Aggregator missing subsection list in Feature description`
 
 #### 9.4 File Size Limits
 
@@ -428,15 +428,15 @@ python3 04_BDD/scripts/validate_bdd.py docs/04_BDD --profile mvp
 for f in docs/04_BDD/BDD-*/BDD-*.feature; do
   count=$(grep -c "^\s*Scenario" "$f")
   if [ $count -gt 12 ]; then
-    echo "❌ $f: $count scenarios (max 12)"
+    echo "[FAIL] $f: $count scenarios (max 12)"
   fi
 done
 ```
 
 **Error Messages**:
-- `❌ ERROR: File exceeds 20,000 token limit (current: NNN tokens)`
-- `⚠️  WARNING: File exceeds soft limit of 15,000 tokens (current: NNN tokens)`
-- `❌ ERROR: Feature block contains NN scenarios (max 12 per block)`
+- `[FAIL] ERROR: File exceeds 20,000 token limit (current: NNN tokens)`
+- `[WARN]  WARNING: File exceeds soft limit of 15,000 tokens (current: NNN tokens)`
+- `[FAIL] ERROR: Feature block contains NN scenarios (max 12 per block)`
 
 **Fix**: Split into subsections using `BDD-NN.SS.mm_{slug}.feature` format
 
@@ -481,26 +481,26 @@ done
 **Validation Commands**:
 ```bash
 # Check for @section tag
-grep -q "^@section:" BDD-02.14_query.feature || echo "❌ Missing @section tag"
+grep -q "^@section:" BDD-02.14_query.feature || echo "[FAIL] Missing @section tag"
 
 # Check for @parent_doc tag
-grep -q "^@parent_doc:" BDD-02.14_query.feature || echo "❌ Missing @parent_doc tag"
+grep -q "^@parent_doc:" BDD-02.14_query.feature || echo "[FAIL] Missing @parent_doc tag"
 
 # Check for @index tag
-grep -q "^@index:" BDD-02.14_query.feature || echo "❌ Missing @index tag"
+grep -q "^@index:" BDD-02.14_query.feature || echo "[FAIL] Missing @index tag"
 
 # For subsections, check @parent_section tag
 filename="BDD-02.24.01_performance.feature"
 if echo "$filename" | grep -qE "\.[0-9]{2}_"; then
-  grep -q "^@parent_section:" "$filename" || echo "❌ Missing @parent_section tag (required for subsections)"
+  grep -q "^@parent_section:" "$filename" || echo "[FAIL] Missing @parent_section tag (required for subsections)"
 fi
 ```
 
 **Error Messages**:
-- `❌ ERROR: Missing required @section: N.S metadata tag`
-- `❌ ERROR: Missing required @parent_doc: BDD-NN metadata tag`
-- `❌ ERROR: Missing required @index: BDD-NN.0_index.md metadata tag`
-- `❌ ERROR: Missing required @parent_section: N.S tag (subsections only)`
+- `[FAIL] ERROR: Missing required @section: N.S metadata tag`
+- `[FAIL] ERROR: Missing required @parent_doc: BDD-NN metadata tag`
+- `[FAIL] ERROR: Missing required @index: BDD-NN.0_index.md metadata tag`
+- `[FAIL] ERROR: Missing required @parent_section: N.S tag (subsections only)`
 
 #### 9.6 Index File Existence
 
@@ -526,13 +526,13 @@ suite_nums=$(find docs/BDD -maxdepth 1 -name "BDD-*.*.*.feature" -o -name "BDD-*
 # Check for index file for each suite
 for num in $suite_nums; do
   index_file="docs/04_BDD/BDD-${num}.0_index.md"
-  [ -f "$index_file" ] || echo "❌ Missing index file: BDD-${num}.0_index.md"
+  [ -f "$index_file" ] || echo "[FAIL] Missing index file: BDD-${num}.0_index.md"
 done
 ```
 
 **Error Messages**:
-- `❌ ERROR: Missing required index file: BDD-NN.0_index.md`
-- `⚠️  WARNING: Index file exists but is empty`
+- `[FAIL] ERROR: Missing required index file: BDD-NN.0_index.md`
+- `[WARN]  WARNING: Index file exists but is empty`
 
 #### 9.7 Non-Gherkin Content Validation
 
@@ -552,46 +552,46 @@ done
 **Validation Commands**:
 ```bash
 # Detect Markdown tables in .feature files (invalid)
-grep -n "^|.*|.*|$" docs/04_BDD/BDD-*/BDD-*.feature && echo "❌ Markdown table found in .feature file"
+grep -n "^|.*|.*|$" docs/04_BDD/BDD-*/BDD-*.feature && echo "[FAIL] Markdown table found in .feature file"
 
 # Detect Markdown headers in .feature files (invalid - Gherkin uses ##)
-grep -n "^# [^@]" docs/04_BDD/BDD-*/BDD-*.feature && echo "❌ Non-Gherkin Markdown header found"
+grep -n "^# [^@]" docs/04_BDD/BDD-*/BDD-*.feature && echo "[FAIL] Non-Gherkin Markdown header found"
 ```
 
 **Error Messages**:
-- `❌ INVALID: Markdown table found in .feature file (move to BDD-NN.0_index.md or BDD-NN_README.md)`
-- `❌ INVALID: Non-Gherkin Markdown content in .feature file`
+- `[FAIL] INVALID: Markdown table found in .feature file (move to BDD-NN.0_index.md or BDD-NN_README.md)`
+- `[FAIL] INVALID: Non-Gherkin Markdown content in .feature file`
 
 #### 9.8 Quality Gate Pre-Commit Checklist
 
 **File Naming** (ALL REQUIRED):
-- ✅ Matches one of 3 valid patterns (section-only, subsection, aggregator)
-- ✅ NO prohibited patterns (_partN, single-file, directory-based)
-- ✅ NO features/ subdirectory
+- [PASS] Matches one of 3 valid patterns (section-only, subsection, aggregator)
+- [PASS] NO prohibited patterns (_partN, single-file, directory-based)
+- [PASS] NO features/ subdirectory
 
 **File Structure** (ALL REQUIRED):
-- ✅ ALL .feature files live inside suite folders: docs/04_BDD/BDD-NN_{slug}/
-- ✅ Index file exists for each suite: BDD-NN.0_index.md (inside the suite folder)
-- ✅ Optional companion docs live with the suite: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
+- [PASS] ALL .feature files live inside suite folders: docs/04_BDD/BDD-NN_{slug}/
+- [PASS] Index file exists for each suite: BDD-NN.0_index.md (inside the suite folder)
+- [PASS] Optional companion docs live with the suite: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
 
 **Feature File Quality** (ALL REQUIRED):
-- ✅ No .feature exceeds 500 lines
-- ✅ No Feature block exceeds 12 scenarios
-- ✅ No non-Gherkin Markdown in .feature files
-- ✅ All quantitative values use `@threshold:` keys
-- ✅ Times have seconds; timezone is `America/New_York` or approved IANA zone
+- [PASS] No .feature exceeds 500 lines
+- [PASS] No Feature block exceeds 12 scenarios
+- [PASS] No non-Gherkin Markdown in .feature files
+- [PASS] All quantitative values use `@threshold:` keys
+- [PASS] Times have seconds; timezone is `America/New_York` or approved IANA zone
 
 **Section Metadata** (ALL REQUIRED):
-- ✅ @section tag present (N.S or N.S.m format)
-- ✅ @parent_doc tag present (BDD-NN format)
-- ✅ @index tag present (BDD-NN.0_index.md format)
-- ✅ @parent_section tag present (subsections only)
+- [PASS] @section tag present (N.S or N.S.m format)
+- [PASS] @parent_doc tag present (BDD-NN format)
+- [PASS] @index tag present (BDD-NN.0_index.md format)
+- [PASS] @parent_section tag present (subsections only)
 
 **Aggregator Requirements** (IF APPLICABLE):
-- ✅ Has @redirect tag
-- ✅ Has 0 executable scenarios
-- ✅ Lists subsections in Feature description
-- ✅ Has .00 subsection number
+- [PASS] Has @redirect tag
+- [PASS] Has 0 executable scenarios
+- [PASS] Lists subsections in Feature description
+- [PASS] Has .00 subsection number
 
 #### 9.9 Validation Script Integration
 
@@ -606,7 +606,7 @@ python3 04_BDD/scripts/validate_bdd_suite.py --root BDD --prd-root PRD | grep "B
 
 **Expected Output**:
 ```
-✓ BDD validation passed (no violations)
+ BDD validation passed (no violations)
 ```
 
 **Error Output Example**:
@@ -616,7 +616,7 @@ ERROR: BDD-02.14_query.feature:1: Missing required @section: N.S metadata tag
 ERROR: docs/BDD:1: Missing required index file: BDD-02.0_index.md
 ERROR: BDD-02.12.00_query.feature:15: Aggregator file (.00) must have 0 scenarios (redirect stub only)
 
-❌ Validation failed: 4 error(s), 0 warning(s)
+[FAIL] Validation failed: 4 error(s), 0 warning(s)
 ```
 
 **Exit Codes**:
@@ -627,7 +627,7 @@ ERROR: BDD-02.12.00_query.feature:15: Aggregator file (.00) must have 0 scenario
 
 ---
 
-### CHECK 10: Section Numbering Sequence Validation ⭐ NEW
+### CHECK 10: Section Numbering Sequence Validation  NEW
 
 **Purpose**: Validate section numbering is sequential with no gaps
 **Type**: Warning (recommended to fix)
@@ -647,7 +647,7 @@ BDD-02.3_learning.feature
 ```
 BDD-02.0_index.md
 BDD-02.1_ingest.feature
-BDD-02.3_learning.feature  # ❌ Missing section 2
+BDD-02.3_learning.feature  # [FAIL] Missing section 2
 BDD-02.4_processing.feature
 ```
 
@@ -660,16 +660,16 @@ sections=$(find docs/BDD -name "BDD-02.*.feature" | sed -E 's/.*BDD-02\.([0-9]+)
 prev=0
 for num in $sections; do
   if [ $((num - prev)) -gt 1 ]; then
-    echo "⚠️  WARNING: Gap in section numbering between $prev and $num"
+    echo "[WARN]  WARNING: Gap in section numbering between $prev and $num"
   fi
   prev=$num
 done
 ```
 
 **Error Messages**:
-- `⚠️  WARNING: Section numbering gap detected between N.S1 and N.S2`
-- `⚠️  WARNING: Duplicate section number N.S detected`
-- `⚠️  WARNING: Section numbers not sequential (found: 1, 3, 5)`
+- `[WARN]  WARNING: Section numbering gap detected between N.S1 and N.S2`
+- `[WARN]  WARNING: Duplicate section number N.S detected`
+- `[WARN]  WARNING: Section numbers not sequential (found: 1, 3, 5)`
 
 **Fix**: Renumber sections to be sequential (1, 2, 3, 4...) or document intentional gaps in index file
 
@@ -707,7 +707,7 @@ python 04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-01_feature_scenarios/BDD-0
 find docs/BDD -name "BDD-*.feature" -exec python 04_BDD/scripts/validate_bdd.py {} \;
 ```
 
-### ADR-Ready Scoring Criteria ⭐ NEW
+### ADR-Ready Scoring Criteria  NEW
 
 **Scenario Completeness (35%)**:
 - All EARS statements translated to BDD: 15%
@@ -741,62 +741,62 @@ find docs/BDD -name "BDD-*.feature" -exec python 04_BDD/scripts/validate_bdd.py 
 
 ### Mistake #1: Incomplete Traceability Tags (ALL THREE ARE REQUIRED)
 ```
-❌ @brd: BRD-01           (missing element ID suffix)
-✅ @brd: BRD.01.01.30       (correct 4-segment element ID format)
-❌ Missing @brd tag        (ALL three tags are MANDATORY)
-✅ @brd: BRD.01.01.30
+[FAIL] @brd: BRD-01           (missing element ID suffix)
+[PASS] @brd: BRD.01.01.30       (correct 4-segment element ID format)
+[FAIL] Missing @brd tag        (ALL three tags are MANDATORY)
+[PASS] @brd: BRD.01.01.30
    @prd: PRD.01.01.02
    @ears: EARS.01.24.03
 ```
 
 ### Mistake #2: Subjective Language
 ```
-❌ Given the system is running fast
-✅ Given response time is under 500ms
+[FAIL] Given the system is running fast
+[PASS] Given response time is under 500ms
 ```
 
 ### Mistake #3: ADR-Ready Score Format
 ```
-❌ ADR-Ready Score: 95%
-✅ ADR-Ready Score: ✅ 95% (Target: ≥90%)
+[FAIL] ADR-Ready Score: 95%
+[PASS] ADR-Ready Score: [PASS] 95% (Target: ≥90%)
 ```
 
 ### Mistake #4: Missing Scenario Types
 ```
-❌ Only success scenarios included
-✅ Include @negative @edge_case @quality_attribute scenarios
+[FAIL] Only success scenarios included
+[PASS] Include @negative @edge_case @quality_attribute scenarios
 ```
 
 ### Mistake #5: Incorrect Split-File Structure
 ```
-✅ .feature files at suite folder root (no features/ subdirectory)
+[PASS] .feature files at suite folder root (no features/ subdirectory)
 docs/04_BDD/BDD-06_level0_system_agents/
-├── BDD-06.0_index.md
-├── BDD-06.1_health_monitor.feature     (CORRECT - at suite root)
-├── BDD-06.2_data_guardian.feature      (CORRECT - at suite root)
-├── BDD-06.3.00_integration.feature     (CORRECT - aggregator)
-└── BDD-06_README.md
+ BDD-06.0_index.md
+ BDD-06.1_health_monitor.feature     (CORRECT - at suite root)
+ BDD-06.2_data_guardian.feature      (CORRECT - at suite root)
+ BDD-06.3.00_integration.feature     (CORRECT - aggregator)
+ BDD-06_README.md
 
-❌ features/ subdirectory present (legacy)
+[FAIL] features/ subdirectory present (legacy)
 docs/04_BDD/BDD-06_level0_system_agents/
-├── README.md
-├── TRACEABILITY.md
-├── GLOSSARY.md
-└── features/
-    ├── BDD-06_health_monitor.feature  (WRONG - move to suite root)
-    ├── BDD-06_data_guardian.feature   (WRONG - move to suite root)
-    └── BDD-06_integration.feature     (WRONG - move to suite root)
+ README.md
+ TRACEABILITY.md
+ GLOSSARY.md
+ features/
+     BDD-06_health_monitor.feature  (WRONG - move to suite root)
+     BDD-06_data_guardian.feature   (WRONG - move to suite root)
+     BDD-06_integration.feature     (WRONG - move to suite root)
 
-❌ Missing aggregator stub when 5+ subsections
+[FAIL] Missing aggregator stub when 5+ subsections
 docs/04_BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (MISSING)
 
-✅ Redirect/aggregator stub inside suite folder
+[PASS] Redirect/aggregator stub inside suite folder
 docs/04_BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (redirect stub with 0 scenarios)
 
-❌ File exceeds 500 lines
+[FAIL] File exceeds 500 lines
 BDD-06.1_health_monitor.feature: 625 lines (SPLIT NEEDED)
 
-✅ Files within size limits
+[PASS] Files within size limits
 BDD-06_health_monitor.feature: 450 lines (GOOD)
 ```
 

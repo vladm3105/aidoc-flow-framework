@@ -52,8 +52,8 @@ Issue A → Issue B → Issue C
 
 **After:**
 ```
-Issue A ──┬── Issue B
-          └── Issue C (parallel)
+Issue A  Issue B
+           Issue C (parallel)
 ```
 
 ---

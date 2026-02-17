@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is an EXTENSION to BDD-MVP-TEMPLATE.feature
+#  Document Role: This is an EXTENSION to BDD-MVP-TEMPLATE.feature
 # - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Additional requirements for AI-Agent Primary architecture BDD files
 # - Scope: Applies to BDD files with AGENT-NNN identifiers
@@ -78,7 +78,7 @@ AI-Agent BDD files MUST include the following additional field in Document Contr
 | **Prepared By** | [Author Name] |
 | **Status** | Draft |
 | **Architecture** | AI-Agent Primary (AGENT-NNN) |
-| **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 75% (Target: ≥90%) |
 ```
 
 ### 2.2 Feature-Level Tags

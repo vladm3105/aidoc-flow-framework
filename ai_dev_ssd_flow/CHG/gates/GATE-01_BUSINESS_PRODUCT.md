@@ -98,11 +98,11 @@ Before entering GATE-01, the change request must satisfy:
 
 ```
 L1 (Self-approved)
-     │
-     ▼ (if scope expands)
+     
+      (if scope expands)
 L2 (PO + TL)
-     │
-     ▼ (if breaking change detected)
+     
+      (if breaking change detected)
 L3 (Full Board)
 ```
 
@@ -154,26 +154,26 @@ After passing GATE-01:
 
 ```
                     GATE-01 PASSED
-                          │
-                          ▼
-            ┌─────────────────────────┐
-            │ Does change affect ADR? │
-            └───────────┬─────────────┘
-                        │
-         ┌──────────────┼──────────────┐
-         │ Yes          │              │ No
-         ▼              │              ▼
-    ┌─────────┐         │       ┌─────────────────┐
-    │ GATE-05 │         │       │ SPEC/TSPEC only?│
-    └─────────┘         │       └────────┬────────┘
-                        │                │
-                        │     ┌──────────┼──────────┐
-                        │     │ Yes      │          │ No
-                        │     ▼          │          ▼
-                        │ ┌─────────┐    │    ┌─────────┐
-                        │ │ GATE-09 │    │    │ GATE-12 │
-                        │ └─────────┘    │    └─────────┘
-                        │                │
+                          
+                          
+            
+             Does change affect ADR? 
+            
+                        
+         
+          Yes                         No
+                                     
+                    
+     GATE-05                  SPEC/TSPEC only?
+                    
+                                        
+                             
+                              Yes                 No
+                                                 
+                                 
+                          GATE-09          GATE-12 
+                                 
+                                        
 ```
 
 ## 7. Error Catalog

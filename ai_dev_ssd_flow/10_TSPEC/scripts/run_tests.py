@@ -211,7 +211,7 @@ def print_summary(result: TestResult) -> None:
     """Print test result summary."""
     s = result.summary
     status = "PASS" if s["failed"] == 0 and s["errors"] == 0 else "FAIL"
-    status_icon = "✅" if status == "PASS" else "❌"
+    status_icon = "[PASS]" if status == "PASS" else "[FAIL]"
 
     print(f"\n{status_icon} {result.test_type} Test Results: {status}")
     print(f"  Total:   {s['total']}")

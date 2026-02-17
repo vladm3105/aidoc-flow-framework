@@ -36,18 +36,18 @@ This document reviews the current MVP Autopilot (v5.0) and identifies integratio
 
 | Layer | Artifact | Current Autopilot | Directory |
 |-------|----------|-------------------|-----------|
-| L1 | BRD | ✅ Included | `01_BRD/` |
-| L2 | PRD | ✅ Included | `02_PRD/` |
-| L3 | EARS | ✅ Included | `03_EARS/` |
-| L4 | BDD | ✅ Included | `04_BDD/` |
-| L5 | ADR | ✅ Included | `05_ADR/` |
-| L6 | SYS | ✅ Included | `06_SYS/` |
-| L7 | REQ | ✅ Included | `07_REQ/` |
-| L8 | CTR | ✅ Included | `08_CTR/` |
-| L9 | SPEC | ✅ Included | `09_SPEC/` |
-| **L10** | **TSPEC** | ❌ **MISSING** | `10_TSPEC/` |
-| L11 | TASKS | ✅ Included (as L10) | `11_TASKS/` |
-| - | CHG | ❌ **MISSING** | `CHG/` |
+| L1 | BRD | [PASS] Included | `01_BRD/` |
+| L2 | PRD | [PASS] Included | `02_PRD/` |
+| L3 | EARS | [PASS] Included | `03_EARS/` |
+| L4 | BDD | [PASS] Included | `04_BDD/` |
+| L5 | ADR | [PASS] Included | `05_ADR/` |
+| L6 | SYS | [PASS] Included | `06_SYS/` |
+| L7 | REQ | [PASS] Included | `07_REQ/` |
+| L8 | CTR | [PASS] Included | `08_CTR/` |
+| L9 | SPEC | [PASS] Included | `09_SPEC/` |
+| **L10** | **TSPEC** | [FAIL] **MISSING** | `10_TSPEC/` |
+| L11 | TASKS | [PASS] Included (as L10) | `11_TASKS/` |
+| - | CHG | [FAIL] **MISSING** | `CHG/` |
 
 ### 1.2 Layer Numbering Inconsistency
 
@@ -62,34 +62,34 @@ The MVP_AUTOPILOT.md document shows TASKS as "Layer 10", but:
 #### TSPEC Layer (10_TSPEC/)
 ```
 10_TSPEC/
-├── UTEST/          # Unit Test Specifications
-├── ITEST/          # Integration Test Specifications
-├── STEST/          # Smoke Test Specifications
-├── FTEST/          # Functional Test Specifications
-├── scripts/        # Validation scripts
-│   ├── validate_utest.py
-│   ├── validate_itest.py
-│   ├── validate_stest.py
-│   ├── validate_ftest.py
-│   └── validate_tspec_quality_score.sh
-└── test_registry.yaml
+ UTEST/          # Unit Test Specifications
+ ITEST/          # Integration Test Specifications
+ STEST/          # Smoke Test Specifications
+ FTEST/          # Functional Test Specifications
+ scripts/        # Validation scripts
+    validate_utest.py
+    validate_itest.py
+    validate_stest.py
+    validate_ftest.py
+    validate_tspec_quality_score.sh
+ test_registry.yaml
 ```
 
 #### Change Management (CHG/)
 ```
 CHG/
-├── CHANGE_MANAGEMENT_GUIDE.md   # 4-Gate system
-├── CHG-MVP-TEMPLATE.md          # L2 Minor changes
-├── CHG-TEMPLATE.md              # L3 Major changes
-├── CHG_MVP_SCHEMA.yaml
-├── sources/                     # Change source guides
-├── scripts/                     # Gate validation scripts
-│   ├── validate_chg_routing.py
-│   ├── validate_gate01.sh
-│   ├── validate_gate05.sh
-│   ├── validate_gate09.sh
-│   └── validate_gate12.sh
-└── templates/
+ CHANGE_MANAGEMENT_GUIDE.md   # 4-Gate system
+ CHG-MVP-TEMPLATE.md          # L2 Minor changes
+ CHG-TEMPLATE.md              # L3 Major changes
+ CHG_MVP_SCHEMA.yaml
+ sources/                     # Change source guides
+ scripts/                     # Gate validation scripts
+    validate_chg_routing.py
+    validate_gate01.sh
+    validate_gate05.sh
+    validate_gate09.sh
+    validate_gate12.sh
+ templates/
 ```
 
 #### TDD Strategy (TESTING_STRATEGY_TDD.md)
@@ -134,29 +134,29 @@ CHG/
 ### 3.1 Updated Layer Model
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    UPDATED 12-LAYER MODEL                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  L1  BRD ──┐                                                    │
-│  L2  PRD ──┼── GATE-01 (Business)                              │
-│  L3  EARS ─┤                                                    │
-│  L4  BDD ──┘                                                    │
-│            ↓                                                    │
-│  L5  ADR ──┐                                                    │
-│  L6  SYS ──┼── GATE-05 (Architecture)                          │
-│  L7  REQ ──┤                                                    │
-│  L8  CTR ──┘                                                    │
-│            ↓                                                    │
-│  L9  SPEC ─┐                                                    │
-│  L10 TSPEC ┼── GATE-09 (Design/Test) ← NEW: TSPEC INTEGRATION  │
-│  L11 TASKS ┘                                                    │
-│            ↓                                                    │
-│  L12+ Code/Tests/Deploy ── GATE-12 (Implementation)            │
-│                                                                 │
-│  CHG: Cross-cutting for L2+ changes                            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                    UPDATED 12-LAYER MODEL                        
+
+                                                                 
+  L1  BRD                                                     
+  L2  PRD  GATE-01 (Business)                              
+  L3  EARS                                                     
+  L4  BDD                                                     
+            ↓                                                    
+  L5  ADR                                                     
+  L6  SYS  GATE-05 (Architecture)                          
+  L7  REQ                                                     
+  L8  CTR                                                     
+            ↓                                                    
+  L9  SPEC                                                     
+  L10 TSPEC  GATE-09 (Design/Test) ← NEW: TSPEC INTEGRATION  
+  L11 TASKS                                                     
+            ↓                                                    
+  L12+ Code/Tests/Deploy  GATE-12 (Implementation)            
+                                                                 
+  CHG: Cross-cutting for L2+ changes                            
+                                                                 
+
 ```
 
 ### 3.2 MVP_AUTOPILOT.md Updates Required
@@ -352,102 +352,102 @@ change_management:
 ### 5.1 Standard Workflow (with TSPEC)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   AUTOPILOT STANDARD WORKFLOW                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Configuration Loading                                          │
-│         ↓                                                       │
-│  Pre-Checks                                                     │
-│         ↓                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │            Documentation Generation                   │      │
-│  │  BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR    │      │
-│  │         ↓                                             │      │
-│  │       SPEC                                            │      │
-│  │         ↓                                             │      │
-│  │       TSPEC (Unit/Integration/Smoke/Functional)  ← NEW│      │
-│  │         ↓                                             │      │
-│  │       TASKS                                           │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         ↓                                                       │
-│  Validation (All Layers)                                        │
-│         ↓                                                       │
-│  Post-Checks                                                    │
-│         ↓                                                       │
-│  Report Generation                                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                   AUTOPILOT STANDARD WORKFLOW                    
+
+                                                                 
+  Configuration Loading                                          
+         ↓                                                       
+  Pre-Checks                                                     
+         ↓                                                       
+        
+              Documentation Generation                         
+    BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR          
+           ↓                                                   
+         SPEC                                                  
+           ↓                                                   
+         TSPEC (Unit/Integration/Smoke/Functional)  ← NEW      
+           ↓                                                   
+         TASKS                                                 
+        
+         ↓                                                       
+  Validation (All Layers)                                        
+         ↓                                                       
+  Post-Checks                                                    
+         ↓                                                       
+  Report Generation                                              
+                                                                 
+
 ```
 
 ### 5.2 TDD Workflow Mode
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     AUTOPILOT TDD WORKFLOW                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Documentation Generation (L1-L9)                               │
-│         ↓                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │                TDD CYCLE                              │      │
-│  │                                                       │      │
-│  │  TSPEC Generation (L10)                              │      │
-│  │         ↓                                             │      │
-│  │  Test File Generation (@code: PENDING)               │      │
-│  │         ↓                                             │      │
-│  │  Validate Tests FAIL (Red State) ✓                   │      │
-│  │         ↓                                             │      │
-│  │  TASKS Generation (L11)                              │      │
-│  │         ↓                                             │      │
-│  │  Code Generation (L12)                               │      │
-│  │         ↓                                             │      │
-│  │  Validate Tests PASS (Green State) ✓                 │      │
-│  │         ↓                                             │      │
-│  │  Update @code Tags (PENDING → path)                  │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         ↓                                                       │
-│  Report with TDD Metrics                                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                     AUTOPILOT TDD WORKFLOW                       
+
+                                                                 
+  Documentation Generation (L1-L9)                               
+         ↓                                                       
+        
+                  TDD CYCLE                                    
+                                                               
+    TSPEC Generation (L10)                                    
+           ↓                                                   
+    Test File Generation (@code: PENDING)                     
+           ↓                                                   
+    Validate Tests FAIL (Red State)                          
+           ↓                                                   
+    TASKS Generation (L11)                                    
+           ↓                                                   
+    Code Generation (L12)                                     
+           ↓                                                   
+    Validate Tests PASS (Green State)                        
+           ↓                                                   
+    Update @code Tags (PENDING → path)                        
+        
+         ↓                                                       
+  Report with TDD Metrics                                        
+                                                                 
+
 ```
 
 ### 5.3 CHG Workflow Mode
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     AUTOPILOT CHG WORKFLOW                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Change Request                                                 │
-│         ↓                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │            CHANGE CLASSIFICATION                      │      │
-│  │                                                       │      │
-│  │  Analyze affected layers                             │      │
-│  │         ↓                                             │      │
-│  │  Determine change level (L1/L2/L3)                   │      │
-│  │         ↓                                             │      │
-│  │  Determine entry gate (GATE-01/05/09/12)             │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         ↓                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │            GATE VALIDATION                            │      │
-│  │                                                       │      │
-│  │  Run gate validation scripts                         │      │
-│  │         ↓                                             │      │
-│  │  Create CHG document                                 │      │
-│  │         ↓                                             │      │
-│  │  Archive obsolete artifacts (L3 only)                │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         ↓                                                       │
-│  Process Affected Layers (downstream cascade)                   │
-│         ↓                                                       │
-│  Update Traceability                                            │
-│         ↓                                                       │
-│  Complete CHG Document                                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                     AUTOPILOT CHG WORKFLOW                       
+
+                                                                 
+  Change Request                                                 
+         ↓                                                       
+        
+              CHANGE CLASSIFICATION                            
+                                                               
+    Analyze affected layers                                   
+           ↓                                                   
+    Determine change level (L1/L2/L3)                         
+           ↓                                                   
+    Determine entry gate (GATE-01/05/09/12)                   
+        
+         ↓                                                       
+        
+              GATE VALIDATION                                  
+                                                               
+    Run gate validation scripts                               
+           ↓                                                   
+    Create CHG document                                       
+           ↓                                                   
+    Archive obsolete artifacts (L3 only)                      
+        
+         ↓                                                       
+  Process Affected Layers (downstream cascade)                   
+         ↓                                                       
+  Update Traceability                                            
+         ↓                                                       
+  Complete CHG Document                                          
+                                                                 
+
 ```
 
 ---

@@ -40,21 +40,21 @@ This directory provides a structured, traceable framework for Specification-Driv
 - Slow transition from idea to production MVP
 
 **AI Dev Flow Solutions**:
-- ✅ **90%+ Automation**: 14 of 15 layers generate automatically with quality gates
-- ✅ **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
-- ✅ **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
-- ✅ **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
-- ✅ **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
-- ✅ **Domain-Agnostic**: Adaptable to any software project (e-commerce, SaaS, IoT, healthcare, finance)
-- ✅ **Complete Traceability**: Bidirectional links from business requirements to production code
-- ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
-- ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
-- ✅ **15-Layer Architecture**: Structured progression from strategy through validation (including TSPEC for TDD)
-- ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API contracts
-- ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
-- ✅ **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
+- [PASS] **90%+ Automation**: 14 of 15 layers generate automatically with quality gates
+- [PASS] **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
+- [PASS] **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
+- [PASS] **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
+- [PASS] **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
+- [PASS] **Domain-Agnostic**: Adaptable to any software project (e-commerce, SaaS, IoT, healthcare, finance)
+- [PASS] **Complete Traceability**: Bidirectional links from business requirements to production code
+- [PASS] **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
+- [PASS] **AI-Optimized**: YAML specifications designed for deterministic code generation
+- [PASS] **15-Layer Architecture**: Structured progression from strategy through validation (including TSPEC for TDD)
+- [PASS] **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API contracts
+- [PASS] **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
+- [PASS] **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
-**📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
+** New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
 ## Glossary
 
@@ -227,7 +227,7 @@ flowchart TD
 
 ## Using This Repo
 
-- **📚 Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
+- ** Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
 - Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
@@ -386,7 +386,7 @@ python3 scripts/validate_metadata.py .
 
 ## Complete Development Workflow
 
-**⚠️ See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**
+**[WARN] See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**
 
 #### SDD Workflow Overview
 
@@ -649,11 +649,11 @@ flowchart TD
 
 **IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
 
-#### ✅ Apply To (Documentation):
+#### [PASS] Apply To (Documentation):
 - Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 - BDD feature files (`.feature` format) in `tests/bdd/` directories
 
-#### ❌ Do NOT Apply To (Source Code):
+#### [FAIL] Do NOT Apply To (Source Code):
 - **Python files**: Follow PEP 8 conventions (`snake_case.py`, `PascalCase` classes)
 - **Test files**: Follow pytest conventions (`test_*.py`, `test_*()` functions)
 - **Other languages**: Follow language-specific style guides (Java, JavaScript, Go, etc.)
@@ -938,7 +938,7 @@ See [CUMULATIVE_TAG_REFERENCE.md](./CUMULATIVE_TAG_REFERENCE.md) for complete ta
 
 **Output Example**:
 ```
-✅ VALIDATION PASSED
+[PASS] VALIDATION PASSED
 
 Statistics:
 - Total artifacts validated: 147
@@ -949,16 +949,16 @@ Statistics:
 
 **Error Example**:
 ```
-❌ CUMULATIVE TAGGING ERRORS FOUND: 3
+[FAIL] CUMULATIVE TAGGING ERRORS FOUND: 3
 
 MISSING_REQUIRED_TAGS: 1
-  📄 docs/07_REQ/api/REQ-NN_submit_request.md
-     ❌ Missing required upstream tags for REQ (Layer 7): bdd
+   docs/07_REQ/api/REQ-NN_submit_request.md
+     [FAIL] Missing required upstream tags for REQ (Layer 7): bdd
 
 TAG_CHAIN_GAP: 2
-   📄 docs/09_SPEC/service.yaml
+    docs/09_SPEC/service.yaml
 
-     ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
+     [FAIL] Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
 ```
 
 #### 3. Traceability Matrix Generation (`generate_traceability_matrix.py`)
@@ -1370,29 +1370,29 @@ graph LR
 **Last Updated**: 2026-02-07T00:00:00
 
 **Version 2.5 - Autopilot v6.0 Integration** (February 2026):
-- ✅ **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG modes
-- ✅ **TDD Workflow Scripts**: 7 new scripts for test-driven development workflow
-- ✅ **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests for Autopilot scripts
-- ✅ **Documentation Updates**: Updated multi-project setup guides and main README
+- [PASS] **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG modes
+- [PASS] **TDD Workflow Scripts**: 7 new scripts for test-driven development workflow
+- [PASS] **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests for Autopilot scripts
+- [PASS] **Documentation Updates**: Updated multi-project setup guides and main README
 
 **Version 2.4 - 4-Gate Change Management System** (February 2026):
-- ✅ **4-Gate CHG System**: Formal validation gates at layer boundaries (GATE-01, GATE-05, GATE-09, GATE-12)
-- ✅ **Change Source Workflows**: 5 change sources (Upstream, Midstream, Downstream, External, Feedback)
-- ✅ **Emergency Bypass**: P1 incident and critical security (CVSS >= 9.0) handling
-- ✅ **Gate Validation Scripts**: Bash scripts for each gate with error catalogs
-- ✅ **Routing Logic**: Python-based CHG routing determination
-- ✅ **Approval Matrix**: Level-based approval requirements per gate
-- ✅ **Post-Mortem Template**: Structured incident analysis for emergency bypasses
+- [PASS] **4-Gate CHG System**: Formal validation gates at layer boundaries (GATE-01, GATE-05, GATE-09, GATE-12)
+- [PASS] **Change Source Workflows**: 5 change sources (Upstream, Midstream, Downstream, External, Feedback)
+- [PASS] **Emergency Bypass**: P1 incident and critical security (CVSS >= 9.0) handling
+- [PASS] **Gate Validation Scripts**: Bash scripts for each gate with error catalogs
+- [PASS] **Routing Logic**: Python-based CHG routing determination
+- [PASS] **Approval Matrix**: Level-based approval requirements per gate
+- [PASS] **Post-Mortem Template**: Structured incident analysis for emergency bypasses
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
-- ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
-- ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
-- ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
-- ✅ **Complete Example**: COMPLETE_TAGGING_EXAMPLE.md shows end-to-end tagging
-- ✅ **Setup Guide**: TRACEABILITY_SETUP.md with CI/CD integration patterns
-- ✅ **Regulatory Compliance**: Complete audit trails for regulatory, FDA, ISO
-- ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
+- [PASS] **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
+- [PASS] **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
+- [PASS] **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
+- [PASS] **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
+- [PASS] **Complete Example**: COMPLETE_TAGGING_EXAMPLE.md shows end-to-end tagging
+- [PASS] **Setup Guide**: TRACEABILITY_SETUP.md with CI/CD integration patterns
+- [PASS] **Regulatory Compliance**: Complete audit trails for regulatory, FDA, ISO
+- [PASS] **Impact Analysis**: Instant identification of affected downstream artifacts
 
 **Version 1.0 Enhancements** (November 2025):
 - Added CTR (API Contracts) dual-file format for interface definitions

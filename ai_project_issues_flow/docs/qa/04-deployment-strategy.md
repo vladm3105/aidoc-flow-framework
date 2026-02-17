@@ -9,11 +9,11 @@
 ## Environment Flow
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│ Development │────►│   Staging   │────►│ Production  │
-│  (auto)     │     │   (auto)    │     │  (manual)   │
-└─────────────┘     └─────────────┘     └─────────────┘
-      │                   │                   │
+          
+ Development    Staging    Production  
+  (auto)             (auto)           (manual)   
+          
+                                            
   Per-phase          All phases          Manual dispatch
   incremental        complete            + approval
 ```
@@ -163,15 +163,15 @@ For critical production issues that cannot wait for normal release cycle:
 ### Hotfix Flow
 
 ```
-main ─────────────────────────────────────────►
+main 
        \                     /
-        hotfix/issue-xxx ───►
-              │
-              ├── Fix implemented
-              ├── Unit tests added
-              ├── PR reviewed (expedited)
-              ├── Merge to main
-              └── Direct deploy to prod (skip staging)
+        hotfix/issue-xxx 
+              
+               Fix implemented
+               Unit tests added
+               PR reviewed (expedited)
+               Merge to main
+               Direct deploy to prod (skip staging)
 ```
 
 ### Hotfix Criteria

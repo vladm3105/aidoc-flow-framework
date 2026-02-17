@@ -297,10 +297,10 @@ assert results.error_rate < 1, f"Error rate {results.error_rate}% too high"
 
 | SYS ID | Quality Attribute | Test IDs | Coverage |
 |--------|-------------------|----------|----------|
-| SYS.NN.01.01 | Performance | TSPEC.NN.43.01 | ✅ |
-| SYS.NN.02.01 | Reliability | TSPEC.NN.43.02 | ✅ |
-| SYS.NN.03.01 | Security | TSPEC.NN.43.03 | ✅ |
-| SYS.NN.04.01 | Scalability | TSPEC.NN.43.04 | ✅ |
+| SYS.NN.01.01 | Performance | TSPEC.NN.43.01 | [PASS] |
+| SYS.NN.02.01 | Reliability | TSPEC.NN.43.02 | [PASS] |
+| SYS.NN.03.01 | Security | TSPEC.NN.43.03 | [PASS] |
+| SYS.NN.04.01 | Scalability | TSPEC.NN.43.04 | [PASS] |
 
 **Coverage Summary**:
 - Total SYS quality attributes: [N]

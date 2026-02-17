@@ -7,36 +7,36 @@ Complete setup guide for GitHub Projects V2 optimized for AI-assisted developmen
 ## Quick Start Checklist
 
 ```
-Phase 0: Prerequisites ✅ COMPLETED
+Phase 0: Prerequisites [PASS] COMPLETED
 [x] GitHub CLI installed and authenticated
 [x] gh-projects extension installed
 [x] Project scope added to token
 
-Phase 1: Repository Setup ✅ COMPLETED
+Phase 1: Repository Setup [PASS] COMPLETED
 [x] Create repository
 [x] Create labels (76 labels - exceeds 42 requirement)
 [x] Create milestones (10 milestones)
 [x] Add issue templates (9 templates)
 [ ] Configure branch protection
 
-Phase 2: Project Board Setup ✅ COMPLETED
+Phase 2: Project Board Setup [PASS] COMPLETED
 [x] Create GitHub Project V2 (#{PROJECT_BOARD_NUMBER}: {PROJECT_NAME})
 [x] Add custom fields (19 fields - exceeds 7 requirement)
 [x] Create views (11 views)
 [x] Enable built-in workflows
 
-Phase 3: Automation Setup ✅ COMPLETED
+Phase 3: Automation Setup [PASS] COMPLETED
 [x] Create PROJECT_TOKEN secret
 [x] Create ELEVATED_PAT secret (for phase-gated workflows)
 [x] Add GitHub Actions workflows (18 workflows)
 [x] Configure .github directory structure
 
-Phase 4: AI Tool Configuration ✅ COMPLETED
+Phase 4: AI Tool Configuration [PASS] COMPLETED
 [x] Configure MCP servers (6 servers with -tt-{PROJECT_PREFIX} suffix)
 [ ] Set up IDE integration (optional)
 [ ] Create AI context directory
 
-Phase 5: Issue Population & Kickoff ✅ COMPLETED (Phase 1)
+Phase 5: Issue Population & Kickoff [PASS] COMPLETED (Phase 1)
 [x] Create Phase 1 sub-task issues (14 issues: #19-#32)
 [x] Add issues to Project Board #{PROJECT_BOARD_NUMBER}
 [x] Verify compliance with PROJECT_PLAN.md
@@ -57,13 +57,13 @@ Phase 5: Issue Population & Kickoff ✅ COMPLETED (Phase 1)
 
 | Component | Documented | Actual | Status |
 |:----------|:-----------|:-------|:------:|
-| Labels | 42 | 76 | ✅ Exceeds (incl. phase-gated labels) |
-| Milestones | 9 | 10 | ✅ Exceeds |
-| Custom Fields | 7 | 19 | ✅ Exceeds |
-| Workflows | 4 | 18 | ✅ Exceeds (incl. phase-gated workflows) |
-| Issue Templates | 2 | 9 | ✅ Exceeds |
-| MCP Servers | — | 6 | ✅ Active |
-| Open Issues | — | varies | ✅ 8 epics + phase tasks |
+| Labels | 42 | 76 | [PASS] Exceeds (incl. phase-gated labels) |
+| Milestones | 9 | 10 | [PASS] Exceeds |
+| Custom Fields | 7 | 19 | [PASS] Exceeds |
+| Workflows | 4 | 18 | [PASS] Exceeds (incl. phase-gated workflows) |
+| Issue Templates | 2 | 9 | [PASS] Exceeds |
+| MCP Servers | — | 6 | [PASS] Active |
+| Open Issues | — | varies | [PASS] 8 epics + phase tasks |
 
 ---
 
@@ -283,7 +283,7 @@ gh api repos/$GH_ORG/$GH_REPO/milestones -f title="AIOCTO - Phase 8: Security & 
   -f due_on="2026-07-18T00:00:00Z"
 ```
 
-### 1.4 Create Issue Templates ✅ COMPLETED
+### 1.4 Create Issue Templates [PASS] COMPLETED
 
 **Current Templates (9 total)**:
 
@@ -477,7 +477,7 @@ PROJECT_ID=$(gh api graphql -f query='
 echo "Project ID: $PROJECT_ID"
 ```
 
-### 2.3 Create Custom Fields ✅ COMPLETED
+### 2.3 Create Custom Fields [PASS] COMPLETED
 
 **Current Fields (19 total)**:
 
@@ -626,11 +626,11 @@ Views must be created via the GitHub UI:
 
 | Workflow | Enable | Action |
 |:---------|:------:|:-------|
-| Item added to project | ✅ | Set Status → **Todo** (default for all new issues) |
-| Item reopened | ✅ | Set Status → Todo |
-| Pull request merged | ✅ | Set Status → Done |
-| Item closed | ✅ | Set Status → Done |
-| Auto-add to project | ✅ | Filter: `is:issue repo:ORG/REPO` |
+| Item added to project | [PASS] | Set Status → **Todo** (default for all new issues) |
+| Item reopened | [PASS] | Set Status → Todo |
+| Pull request merged | [PASS] | Set Status → Done |
+| Item closed | [PASS] | Set Status → Done |
+| Auto-add to project | [PASS] | Filter: `is:issue repo:ORG/REPO` |
 
 > **Status Assignment Rules**:
 > - **Todo** (default): All new issues added to the board receive Status=Todo automatically via the built-in workflow.
@@ -651,7 +651,7 @@ mutation($projectId: ID!, $repoId: ID!) {
 
 ---
 
-## Phase 3: Automation Setup ✅ COMPLETED
+## Phase 3: Automation Setup [PASS] COMPLETED
 
 ### 3.0 Current Workflows (18 total)
 
@@ -803,7 +803,7 @@ jobs:
         run: |
           if [ "${{ steps.validate.outputs.valid }}" == "false" ]; then
             gh issue comment ${{ github.event.issue.number }} \
-              --body "## ⚠️ AI-Ready Validation Failed
+              --body "## [WARN] AI-Ready Validation Failed
 
               Missing required sections:
               ${{ steps.validate.outputs.errors }}
@@ -812,7 +812,7 @@ jobs:
             gh issue edit ${{ github.event.issue.number }} --remove-label "ai:ready"
           else
             gh issue comment ${{ github.event.issue.number }} \
-              --body "## ✅ AI-Ready Validated
+              --body "## [PASS] AI-Ready Validated
 
               This issue is now in the AI queue."
           fi
@@ -929,7 +929,7 @@ jobs:
         run: |
           if [ -n "${{ steps.security.outputs.findings }}" ]; then
             gh pr comment ${{ github.event.pull_request.number }} \
-              --body "## 🔒 Security Findings
+              --body "##  Security Findings
               ${{ steps.security.outputs.findings }}"
             gh pr edit ${{ github.event.pull_request.number }} \
               --add-label "quality:security-review"
@@ -979,7 +979,7 @@ git push
 
 ---
 
-## Phase 4: AI Tool Configuration ✅ COMPLETED
+## Phase 4: AI Tool Configuration [PASS] COMPLETED
 
 ### 4.1 MCP Server Configuration
 
@@ -987,12 +987,12 @@ The project has 6 MCP servers configured in `.mcp.json` using the `-tt-{PROJECT_
 
 | Server | Package | Purpose | Status |
 |:-------|:--------|:--------|:------:|
-| `github-{PROJECT_PREFIX}-{PROJECT_PREFIX}` | `ghcr.io/github/github-mcp-server` | GitHub Enterprise operations | ✅ |
-| `filesystem-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-filesystem` | File operations | ✅ |
-| `memory-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-memory` | Knowledge graph | ✅ |
-| `sequential-thinking-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-sequential-thinking` | Problem decomposition | ✅ |
-| `context7-tt-{PROJECT_PREFIX}` | `@upstash/context7-mcp` | Library documentation | ✅ |
-| `playwright-tt-{PROJECT_PREFIX}` | `@playwright/mcp` | Browser automation | ✅ |
+| `github-{PROJECT_PREFIX}-{PROJECT_PREFIX}` | `ghcr.io/github/github-mcp-server` | GitHub Enterprise operations | [PASS] |
+| `filesystem-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-filesystem` | File operations | [PASS] |
+| `memory-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-memory` | Knowledge graph | [PASS] |
+| `sequential-thinking-tt-{PROJECT_PREFIX}` | `@modelcontextprotocol/server-sequential-thinking` | Problem decomposition | [PASS] |
+| `context7-tt-{PROJECT_PREFIX}` | `@upstash/context7-mcp` | Library documentation | [PASS] |
+| `playwright-tt-{PROJECT_PREFIX}` | `@playwright/mcp` | Browser automation | [PASS] |
 
 **Naming Convention**: `{function}-tt-{PROJECT_PREFIX}`
 - `tt` = TechTrend (GitHub Enterprise instance)
@@ -1080,7 +1080,7 @@ Create `.vscode/settings.json`:
 
 ---
 
-## Phase 5: Issue Population & Kickoff ✅ COMPLETED (Phase 1)
+## Phase 5: Issue Population & Kickoff [PASS] COMPLETED (Phase 1)
 
 ### 5.1 Create Phase Sub-Task Issues
 
@@ -1323,19 +1323,19 @@ ai:ready → ai:in-progress → ai:review-requested → (PR merge)
 **4-Stage Iterative QA Loop:**
 ```
 Development (ai:development) → PR merge
-     ├─→ Deployment (ai:deployment)     → staging deploy
-     └─→ QA Testing (ai:qa-testing)     → execute tests
-                                              │
-                                         ┌────┴────┐
+     → Deployment (ai:deployment)     → staging deploy
+     → QA Testing (ai:qa-testing)     → execute tests
+                                              
+                                         
                                         Pass     Fail
-                                         │         │
+                                                  
                                     ai:qa-passed   Create Bug Issue
-                                         │         (ai:development + bug)
-                                         │         iteration:1-3
-                                         │              │
-                                         │         Loop back (max 3x)
-                                         ▼              │
-                                    PRODUCTION ◀───────┘
+                                                  (ai:development + bug)
+                                                  iteration:1-3
+                                                       
+                                                  Loop back (max 3x)
+                                                       
+                                    PRODUCTION 
 ```
 
 **Additional Labels for QA Loop:**

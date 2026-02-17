@@ -46,22 +46,22 @@ The **home repo** is [`{REPO_NAME}`](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NA
 
 ```
 {REPO_NAME}/               ← Monorepo (this repo)
-├── governance/                         ← Project governance
-├── docs/                               ← Documentation
-│   ├── adr/                            ← Architecture Decision Records (9)
-│   ├── core/                           ← Core specifications (8 specs)
-│   └── architecture/                   ← System architecture diagrams
-├── components/                         ← All component source code
-│   ├── {SERVICE_NAME}/                 ← GCP budget protection (Phase 1)
-│   ├── mcp-servers/                    ← 4 MCP servers (Phase 3)
-│   ├── agents/                         ← 5 AI agents (Phase 4)
-│   ├── frontend/                       ← Next.js + CopilotKit (Phase 5)
-│   └── infrastructure/                 ← Terraform modules (Phase 2)
-├── scripts/                            ← Utility scripts
-├── .github/
-│   ├── ISSUE_TEMPLATE/                 ← Issue templates
-│   └── workflows/                      ← CI/CD workflows
-└── README.md
+ governance/                         ← Project governance
+ docs/                               ← Documentation
+    adr/                            ← Architecture Decision Records (9)
+    core/                           ← Core specifications (8 specs)
+    architecture/                   ← System architecture diagrams
+ components/                         ← All component source code
+    {SERVICE_NAME}/                 ← GCP budget protection (Phase 1)
+    mcp-servers/                    ← 4 MCP servers (Phase 3)
+    agents/                         ← 5 AI agents (Phase 4)
+    frontend/                       ← Next.js + CopilotKit (Phase 5)
+    infrastructure/                 ← Terraform modules (Phase 2)
+ scripts/                            ← Utility scripts
+ .github/
+    ISSUE_TEMPLATE/                 ← Issue templates
+    workflows/                      ← CI/CD workflows
+ README.md
 ```
 
 ### Component Directories

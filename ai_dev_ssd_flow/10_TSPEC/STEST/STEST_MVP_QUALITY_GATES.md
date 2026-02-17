@@ -133,8 +133,8 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.25) + (G4 × 0.20)
 
 | Score | Status | Action |
 |-------|--------|--------|
-| 100% | ✅ PASS | Proceed to TASKS |
-| <100% | ❌ FAIL | Remediation required |
+| 100% | [PASS] PASS | Proceed to TASKS |
+| <100% | [FAIL] FAIL | Remediation required |
 
 **Note**: Unlike other TSPEC types, STEST has no WARN threshold. Smoke tests must be 100% compliant.
 

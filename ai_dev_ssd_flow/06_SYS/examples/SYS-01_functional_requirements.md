@@ -32,7 +32,7 @@ custom_fields:
 | **Author** | Technical Architecture Team |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
-| **REQ-Ready Score** | ✅ 95% (Target: ≥85% for MVP) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥85% for MVP) |
 
 ---
 
@@ -444,16 +444,16 @@ flowchart LR
 
 ```
 src/
-├── order-service/
-│   ├── src/main/java/com/example/order/
-│   │   ├── api/           # REST controllers
-│   │   ├── service/       # Business logic
-│   │   ├── repository/    # Data access
-│   │   ├── domain/        # Domain models
-│   │   └── events/        # Event publishers
-│   └── src/test/
-│       ├── unit/          # Unit tests
-│       └── integration/   # Integration tests
+ order-service/
+    src/main/java/com/example/order/
+       api/           # REST controllers
+       service/       # Business logic
+       repository/    # Data access
+       domain/        # Domain models
+       events/        # Event publishers
+    src/test/
+        unit/          # Unit tests
+        integration/   # Integration tests
 ```
 
 ### 14.3 Dependencies

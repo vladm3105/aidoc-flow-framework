@@ -222,7 +222,7 @@ grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md | sort | uniq -d
 
 **Action**: Move to `06_SYS/SYS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
@@ -612,10 +612,10 @@ if git diff --cached --name-only | grep -q "^docs/06_SYS/"; then
   echo "Running SYS Quality Gate validation..."
   ./scripts/validate_sys_corpus.sh docs/SYS --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ SYS Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] SYS Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ SYS Quality Gate validation passed"
+  echo " SYS Quality Gate validation passed"
 fi
 ```
 
@@ -644,9 +644,9 @@ SYS Quality Gate validation should pass before creating REQ documents:
 # Pre-REQ gate check
 ./scripts/validate_sys_corpus.sh docs/SYS
 if [ $? -eq 0 ]; then
-  echo "✓ SYS corpus valid - ready for REQ layer creation"
+  echo " SYS corpus valid - ready for REQ layer creation"
 else
-  echo "❌ Fix SYS corpus errors before proceeding to REQ layer"
+  echo "[FAIL] Fix SYS corpus errors before proceeding to REQ layer"
   exit 1
 fi
 ```

@@ -196,12 +196,12 @@ When creating a new SYS document:
 ### Quality Checks
 
 Before marking SYS as "Approved":
-- ✅ Functional requirements clearly defined
-- ✅ Quality attributes with measurable criteria
-- ✅ System constraints documented
-- ✅ Cross-references to upstream 05_ADR/EARS complete
-- ✅ Decomposition plan for atomic REQ created
-- ✅ Test strategy defined
+- [PASS] Functional requirements clearly defined
+- [PASS] Quality attributes with measurable criteria
+- [PASS] System constraints documented
+- [PASS] Cross-references to upstream 05_ADR/EARS complete
+- [PASS] Decomposition plan for atomic REQ created
+- [PASS] Test strategy defined
 
 ---
 

@@ -325,29 +325,29 @@ All estimates include **20% buffer** for reviews, test deployment, and changes.
 - [ ] Python project structure initialized:
   ```
   {PROJECT_PREFIX}-{SERVICE_NAME}/
-  ├── src/
-  │   └── cost_guard/
-  │       ├── __init__.py
-  │       ├── llm_wrapper.py
-  │       ├── functions/
-  │       │   ├── __init__.py
-  │       │   ├── budget_remediation.py
-  │       │   └── idle_scanner.py
-  │       └── utils/
-  │           ├── __init__.py
-  │           ├── firestore.py
-  │           └── logging.py
-  ├── tests/
-  │   ├── __init__.py
-  │   ├── test_llm_wrapper.py
-  │   ├── test_budget_remediation.py
-  │   └── test_idle_scanner.py
-  ├── terraform/
-  ├── .github/
-  ├── pyproject.toml
-  ├── README.md
-  ├── CHANGELOG.md
-  └── .gitignore
+   src/
+      cost_guard/
+          __init__.py
+          llm_wrapper.py
+          functions/
+             __init__.py
+             budget_remediation.py
+             idle_scanner.py
+          utils/
+              __init__.py
+              firestore.py
+              logging.py
+   tests/
+      __init__.py
+      test_llm_wrapper.py
+      test_budget_remediation.py
+      test_idle_scanner.py
+   terraform/
+   .github/
+   pyproject.toml
+   README.md
+   CHANGELOG.md
+   .gitignore
   ```
 - [ ] `pyproject.toml` with dependencies: `litellm`, `google-cloud-firestore`, `google-cloud-pubsub`, `google-cloud-logging`, `google-cloud-monitoring`, `google-cloud-recommender`, `functions-framework`
 - [ ] Development dependencies: `pytest`, `pytest-cov`, `ruff`, `mypy`
@@ -373,31 +373,31 @@ All estimates include **20% buffer** for reviews, test deployment, and changes.
 - [ ] Terraform directory structure:
   ```
   terraform/
-  ├── main.tf
-  ├── variables.tf
-  ├── outputs.tf
-  ├── versions.tf
-  ├── terraform.tfvars.example
-  ├── modules/
-  │   ├── firestore/
-  │   │   ├── main.tf
-  │   │   ├── variables.tf
-  │   │   └── outputs.tf
-  │   ├── pubsub/
-  │   │   ├── main.tf
-  │   │   ├── variables.tf
-  │   │   └── outputs.tf
-  │   ├── cloud-functions/
-  │   │   ├── main.tf
-  │   │   ├── variables.tf
-  │   │   └── outputs.tf
-  │   └── scheduler/
-  │       ├── main.tf
-  │       ├── variables.tf
-  │       └── outputs.tf
-  └── environments/
-      ├── dev.tfvars
-      └── prod.tfvars
+   main.tf
+   variables.tf
+   outputs.tf
+   versions.tf
+   terraform.tfvars.example
+   modules/
+      firestore/
+         main.tf
+         variables.tf
+         outputs.tf
+      pubsub/
+         main.tf
+         variables.tf
+         outputs.tf
+      cloud-functions/
+         main.tf
+         variables.tf
+         outputs.tf
+      scheduler/
+          main.tf
+          variables.tf
+          outputs.tf
+   environments/
+       dev.tfvars
+       prod.tfvars
   ```
 - [ ] Provider configuration for GCP (version pinned)
 - [ ] Variables for: `project_id`, `region`, `environment`

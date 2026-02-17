@@ -39,7 +39,7 @@ PLACEHOLDERS=$(grep -roh '\{[A-Z][A-Z0-9_]*\}' "${PROJECT_ROOT}" \
     2>/dev/null | sort -u | grep -v "^{}$" || true)
 
 if [ -z "${PLACEHOLDERS}" ]; then
-    echo -e "${GREEN}  ✓ No unreplaced placeholders found!${NC}"
+    echo -e "${GREEN}   No unreplaced placeholders found!${NC}"
     echo ""
     echo "Configuration is complete."
     exit 0

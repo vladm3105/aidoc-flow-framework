@@ -63,8 +63,8 @@ FAIL → Fix issues, re-run Quality Gate validation
 Each contract requires two files:
 ```
 docs/08_CTR/{subdomain}/
-├── CTR-NN_{name}.md      # Human-readable contract documentation
-└── CTR-NN_{name}.yaml    # Machine-readable schema
+ CTR-NN_{name}.md      # Human-readable contract documentation
+ CTR-NN_{name}.yaml    # Machine-readable schema
 ```
 
 ---
@@ -195,7 +195,7 @@ docs/08_CTR/{subdomain}/
 
 **Action**: Move to `08_CTR/CTR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: CTR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 08_CTR/CTR-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: CTR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 08_CTR/CTR-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
@@ -304,7 +304,7 @@ done
 ---
 
 
-### CORPUS-17: Element ID Format Compliance ⭐ NEW
+### CORPUS-17: Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 
@@ -448,10 +448,10 @@ if git diff --cached --name-only | grep -qE "^docs/08_CTR/.*\.(md|yaml|yml)$"; t
   echo "Running CTR Quality Gate validation..."
   ./scripts/validate_ctr_corpus.sh docs/CTR --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ CTR Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] CTR Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ CTR Quality Gate validation passed"
+  echo " CTR Quality Gate validation passed"
 fi
 ```
 
@@ -481,9 +481,9 @@ CTR Quality Gate validation should pass before creating SPEC documents (when CTR
 if [ -d "docs/CTR" ] && [ "$(ls -A docs/CTR 2>/dev/null)" ]; then
   ./scripts/validate_ctr_corpus.sh docs/CTR
   if [ $? -eq 0 ]; then
-    echo "✓ CTR corpus valid - ready for SPEC layer creation"
+    echo " CTR corpus valid - ready for SPEC layer creation"
   else
-    echo "❌ Fix CTR corpus errors before proceeding to SPEC layer"
+    echo "[FAIL] Fix CTR corpus errors before proceeding to SPEC layer"
     exit 1
   fi
 fi

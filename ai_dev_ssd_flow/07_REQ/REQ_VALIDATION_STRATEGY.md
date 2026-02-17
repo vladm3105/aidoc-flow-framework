@@ -30,15 +30,15 @@ custom_fields:
 
 ```
 validate_all.sh (Master Orchestrator)
-├── File Mode:
-│   ├─ validate_req_spec_readiness.py --req-file <file>
-│   ├─ validate_req_template.sh <file>
-│   └─ validate_requirement_ids.py --req-file <file>
-│
-└── Directory Mode:
-    ├─ validate_req_quality_score.sh <directory>
-    ├─ validate_req_spec_readiness.py --directory <directory>
-    └─ validate_requirement_ids.py --directory <directory>
+ File Mode:
+    validate_req_spec_readiness.py --req-file <file>
+    validate_req_template.sh <file>
+    validate_requirement_ids.py --req-file <file>
+
+ Directory Mode:
+     validate_req_quality_score.sh <directory>
+     validate_req_spec_readiness.py --directory <directory>
+     validate_requirement_ids.py --directory <directory>
 ```
 
 ---

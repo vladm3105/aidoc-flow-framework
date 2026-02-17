@@ -49,13 +49,13 @@ filename=$(basename "$TASKS_FILE")
 
 # Pattern: TASKS-NNN_descriptive_slug.md
 if [[ $filename =~ ^TASKS-[0-9]{2,}_[a-z0-9_]+\.md$ ]]; then
-  echo -e "  ${GREEN}✅ Filename format valid: $filename${NC}"
+  echo -e "  ${GREEN}[PASS] Filename format valid: $filename${NC}"
 
   # Extract TASKS ID
   TASKS_ID=$(echo "$filename" | grep -oE "TASKS-[0-9]+" | head -1)
   echo "  TASKS ID: $TASKS_ID"
 else
-  echo -e "  ${RED}❌ ERROR: Invalid filename format: $filename${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: Invalid filename format: $filename${NC}"
   echo "           Expected: TASKS-NNN_descriptive_slug.md"
   echo "           Pattern: ^TASKS-[0-9]{2,}_[a-z0-9_]+\\.md$"
   ((ERRORS++))
@@ -71,40 +71,40 @@ echo "-----------------------------------------"
 
 # Check for YAML frontmatter (--- delimiters)
 if grep -q "^---" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ YAML frontmatter present${NC}"
+  echo -e "  ${GREEN}[PASS] YAML frontmatter present${NC}"
 
   # Check for required fields
   if grep -q "artifact_type: TASKS" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ artifact_type: TASKS${NC}"
+    echo -e "  ${GREEN}[PASS] artifact_type: TASKS${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Missing or invalid artifact_type (must be TASKS)${NC}"
+    echo -e "  ${RED}[FAIL] ERROR: Missing or invalid artifact_type (must be TASKS)${NC}"
     ((ERRORS++))
   fi
 
   if grep -q "layer: 10" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ layer: 10${NC}"
+    echo -e "  ${GREEN}[PASS] layer: 10${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 10)${NC}"
+    echo -e "  ${RED}[FAIL] ERROR: Missing or invalid layer (must be 10)${NC}"
     ((ERRORS++))
   fi
 
   if grep -q "layer-10-artifact" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ layer-10-artifact tag present${NC}"
+    echo -e "  ${GREEN}[PASS] layer-10-artifact tag present${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-10-artifact tag${NC}"
+    echo -e "  ${YELLOW}[WARN]  WARNING: Missing layer-10-artifact tag${NC}"
     ((WARNINGS++))
   fi
 
   # Check parent_spec
   if grep -q "parent_spec: SPEC-" "$TASKS_FILE"; then
     parent_spec=$(grep -oE "parent_spec: SPEC-[0-9]+" "$TASKS_FILE" | head -1 | cut -d':' -f2 | tr -d ' ')
-    echo -e "  ${GREEN}✅ parent_spec: $parent_spec${NC}"
+    echo -e "  ${GREEN}[PASS] parent_spec: $parent_spec${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Missing parent_spec field${NC}"
+    echo -e "  ${RED}[FAIL] ERROR: Missing parent_spec field${NC}"
     ((ERRORS++))
   fi
 else
-  echo -e "  ${RED}❌ ERROR: Missing YAML frontmatter (--- delimiters)${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: Missing YAML frontmatter (--- delimiters)${NC}"
   ((ERRORS++))
 fi
 
@@ -130,18 +130,18 @@ required_dc_fields=(
 
 for field in "${required_dc_fields[@]}"; do
   if grep -qi "$field" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ Found: $field${NC}"
+    echo -e "  ${GREEN}[PASS] Found: $field${NC}"
   else
-    echo -e "  ${RED}❌ MISSING: $field${NC}"
+    echo -e "  ${RED}[FAIL] MISSING: $field${NC}"
     ((ERRORS++))
   fi
 done
 
 # Check status value
 if grep -qE "Status.*\|.*(Draft|Ready|In Progress|Completed|Blocked)" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Status has valid enum value${NC}"
+  echo -e "  ${GREEN}[PASS] Status has valid enum value${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Status should be Draft, Ready, In Progress, Completed, or Blocked${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Status should be Draft, Ready, In Progress, Completed, or Blocked${NC}"
   ((WARNINGS++))
 fi
 
@@ -163,9 +163,9 @@ required_sections=(
 
 for section in "${required_sections[@]}"; do
   if grep -q "$section" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ Found: $section${NC}"
+    echo -e "  ${GREEN}[PASS] Found: $section${NC}"
   else
-    echo -e "  ${RED}❌ MISSING: $section${NC}"
+    echo -e "  ${RED}[FAIL] MISSING: $section${NC}"
     ((ERRORS++))
   fi
 done
@@ -183,9 +183,9 @@ phase_count=$(grep -cE "^### Phase [0-9]+" "$TASKS_FILE" 2>/dev/null | tr -d '\n
 [[ -z "$phase_count" || ! "$phase_count" =~ ^[0-9]+$ ]] && phase_count=0
 
 if [ "$phase_count" -ge 1 ]; then
-  echo -e "  ${GREEN}✅ Found $phase_count phase(s)${NC}"
+  echo -e "  ${GREEN}[PASS] Found $phase_count phase(s)${NC}"
 else
-  echo -e "  ${RED}❌ ERROR: No phases defined${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: No phases defined${NC}"
   ((ERRORS++))
 fi
 
@@ -193,9 +193,9 @@ fi
 task_count=$(grep -cE "^#### TASK-[0-9]+" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
 [[ -z "$task_count" || ! "$task_count" =~ ^[0-9]+$ ]] && task_count=0
 if [ "$task_count" -ge 1 ]; then
-  echo -e "  ${GREEN}✅ Found $task_count task(s)${NC}"
+  echo -e "  ${GREEN}[PASS] Found $task_count task(s)${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No TASK-NNN items found${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No TASK-NNN items found${NC}"
   ((WARNINGS++))
 fi
 
@@ -203,9 +203,9 @@ fi
 checkbox_count=$(grep -c "\[[ x]\]" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
 [[ -z "$checkbox_count" || ! "$checkbox_count" =~ ^[0-9]+$ ]] && checkbox_count=0
 if [ "$checkbox_count" -ge 1 ]; then
-  echo -e "  ${GREEN}✅ Found $checkbox_count checkbox(es)${NC}"
+  echo -e "  ${GREEN}[PASS] Found $checkbox_count checkbox(es)${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No task checkboxes found${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No task checkboxes found${NC}"
   ((WARNINGS++))
 fi
 
@@ -228,9 +228,9 @@ for field in "${task_fields[@]}"; do
   field_count=$(grep -ci "$field" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
   [[ -z "$field_count" || ! "$field_count" =~ ^[0-9]+$ ]] && field_count=0
   if [ "$field_count" -ge 1 ]; then
-    echo -e "  ${GREEN}✅ Found $field_count \"$field\" field(s)${NC}"
+    echo -e "  ${GREEN}[PASS] Found $field_count \"$field\" field(s)${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: No \"$field\" fields found in tasks${NC}"
+    echo -e "  ${YELLOW}[WARN]  WARNING: No \"$field\" fields found in tasks${NC}"
     ((WARNINGS++))
   fi
 done
@@ -239,9 +239,9 @@ done
 if grep -qE "\`[a-z_/]+\.(py|ts|js|yaml|json|md)\`" "$TASKS_FILE"; then
   file_refs=$(grep -cE "\`[a-z_/]+\.(py|ts|js|yaml|json|md)\`" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
   [[ -z "$file_refs" || ! "$file_refs" =~ ^[0-9]+$ ]] && file_refs=0
-  echo -e "  ${GREEN}✅ Found $file_refs file reference(s)${NC}"
+  echo -e "  ${GREEN}[PASS] Found $file_refs file reference(s)${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No file references found${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No file references found${NC}"
   ((WARNINGS++))
 fi
 
@@ -255,25 +255,25 @@ echo "-----------------------------------------"
 
 # Check for upstream dependencies
 if grep -qi "upstream" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Upstream dependencies section present${NC}"
+  echo -e "  ${GREEN}[PASS] Upstream dependencies section present${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Document upstream dependencies${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Document upstream dependencies${NC}"
   ((WARNINGS++))
 fi
 
 # Check for downstream dependencies
 if grep -qi "downstream" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Downstream dependencies section present${NC}"
+  echo -e "  ${GREEN}[PASS] Downstream dependencies section present${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Document downstream dependencies${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Document downstream dependencies${NC}"
   ((WARNINGS++))
 fi
 
 # Check for blocking relationships
 if grep -qi "blocks\|blocked by\|depends on" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Dependency relationships documented${NC}"
+  echo -e "  ${GREEN}[PASS] Dependency relationships documented${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No blocking relationships documented${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No blocking relationships documented${NC}"
   ((WARNINGS++))
 fi
 
@@ -287,9 +287,9 @@ echo "-----------------------------------------"
 
 # Check for test coverage targets
 if grep -qE "(unit|integration|e2e|coverage).*[0-9]+%" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Test coverage targets defined${NC}"
+  echo -e "  ${GREEN}[PASS] Test coverage targets defined${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No test coverage targets found${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No test coverage targets found${NC}"
   ((WARNINGS++))
 fi
 
@@ -297,17 +297,17 @@ fi
 bdd_refs=$(grep -oE "BDD-[0-9]+" "$TASKS_FILE" 2>/dev/null | sort -u || echo "")
 if [ -n "$bdd_refs" ]; then
   bdd_count=$(echo "$bdd_refs" | wc -l)
-  echo -e "  ${GREEN}✅ Found $bdd_count BDD reference(s)${NC}"
+  echo -e "  ${GREEN}[PASS] Found $bdd_count BDD reference(s)${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No BDD scenario references found${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No BDD scenario references found${NC}"
   ((WARNINGS++))
 fi
 
 # Check for completion criteria
 if grep -qi "definition of done\|completion criteria\|done when" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Completion criteria documented${NC}"
+  echo -e "  ${GREEN}[PASS] Completion criteria documented${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: No completion criteria documented${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: No completion criteria documented${NC}"
   ((WARNINGS++))
 fi
 
@@ -321,17 +321,17 @@ echo "-----------------------------------------"
 
 # Check for embedded contracts in Section 7-8
 if grep -qE "(Protocol|TypedDict|BaseModel|dataclass)" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Embedded contract definitions found${NC}"
+  echo -e "  ${GREEN}[PASS] Embedded contract definitions found${NC}"
 
   # Check for type hints
   if grep -qE "-> [A-Za-z\[\]|]+:" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ Type hints present in contracts${NC}"
+    echo -e "  ${GREEN}[PASS] Type hints present in contracts${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: Add return type hints to contract methods${NC}"
+    echo -e "  ${YELLOW}[WARN]  WARNING: Add return type hints to contract methods${NC}"
     ((WARNINGS++))
   fi
 else
-  echo -e "  ${BLUE}ℹ️  INFO: No embedded contracts (may not be needed)${NC}"
+  echo -e "  ${BLUE}ℹ  INFO: No embedded contracts (may not be needed)${NC}"
 fi
 
 echo ""
@@ -354,7 +354,7 @@ for pattern in "${deprecated_patterns[@]}"; do
   matches=$(grep -cE "$pattern" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
   [[ -z "$matches" || ! "$matches" =~ ^[0-9]+$ ]] && matches=0
   if [ "$matches" -gt 0 ]; then
-    echo -e "  ${RED}❌ ERROR: Deprecated element ID format found ($matches occurrences)${NC}"
+    echo -e "  ${RED}[FAIL] ERROR: Deprecated element ID format found ($matches occurrences)${NC}"
     echo "           Pattern: $pattern"
     echo "           Use unified format: TASKS.NN.TT.SS"
     deprecated_found=$((deprecated_found + matches))
@@ -362,7 +362,7 @@ for pattern in "${deprecated_patterns[@]}"; do
 done
 
 if [ "$deprecated_found" -eq 0 ]; then
-  echo -e "  ${GREEN}✅ No deprecated element ID formats found${NC}"
+  echo -e "  ${GREEN}[PASS] No deprecated element ID formats found${NC}"
 fi
 
 # Validate unified format element IDs (TYPE.NN.TT.SS)
@@ -388,10 +388,10 @@ required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec")
 tag_count=0
 for tag in "${required_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ Found: $tag${NC}"
+    echo -e "  ${GREEN}[PASS] Found: $tag${NC}"
     ((tag_count++))
   else
-    echo -e "  ${RED}❌ MISSING: $tag${NC}"
+    echo -e "  ${RED}[FAIL] MISSING: $tag${NC}"
     ((ERRORS++))
   fi
 done
@@ -400,19 +400,19 @@ done
 optional_tags=("@ctr")
 for tag in "${optional_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ Optional tag present: $tag${NC}"
+    echo -e "  ${GREEN}[PASS] Optional tag present: $tag${NC}"
     ((tag_count++))
   fi
 done
 
 echo "  Total traceability tags: $tag_count"
 if [ $tag_count -lt 8 ]; then
-  echo -e "  ${RED}❌ ERROR: Minimum 8 tags required for Layer 10${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: Minimum 8 tags required for Layer 10${NC}"
 fi
 
 # Check for empty tags
 if grep -qE "@[a-z]+:\s*$" "$TASKS_FILE"; then
-  echo -e "  ${RED}❌ ERROR: Empty tag value found${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: Empty tag value found${NC}"
   ((ERRORS++))
 fi
 
@@ -434,13 +434,13 @@ if [ -n "$parent_spec" ]; then
 
   spec_file=$(find "$spec_dir" -name "${parent_spec}*.yaml" 2>/dev/null | head -1)
   if [ -n "$spec_file" ]; then
-    echo -e "  ${GREEN}✅ Parent SPEC file exists${NC}"
+    echo -e "  ${GREEN}[PASS] Parent SPEC file exists${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Parent SPEC file not found: $parent_spec${NC}"
+    echo -e "  ${RED}[FAIL] ERROR: Parent SPEC file not found: $parent_spec${NC}"
     ((ERRORS++))
   fi
 else
-  echo -e "  ${RED}❌ ERROR: No parent SPEC reference found${NC}"
+  echo -e "  ${RED}[FAIL] ERROR: No parent SPEC reference found${NC}"
   ((ERRORS++))
 fi
 
@@ -468,25 +468,25 @@ echo "-----------------------------------------"
 
 # Check for module/file structure
 if grep -qE "module|file|class|function" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Code structure elements documented${NC}"
+  echo -e "  ${GREEN}[PASS] Code structure elements documented${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Document module/file/class structure${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Document module/file/class structure${NC}"
   ((WARNINGS++))
 fi
 
 # Check for import/dependency information
 if grep -qiE "import|dependency|require" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Import/dependency information present${NC}"
+  echo -e "  ${GREEN}[PASS] Import/dependency information present${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Document import dependencies${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Document import dependencies${NC}"
   ((WARNINGS++))
 fi
 
 # Check for error handling
 if grep -qiE "error|exception|handle" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Error handling documented${NC}"
+  echo -e "  ${GREEN}[PASS] Error handling documented${NC}"
 else
-  echo -e "  ${YELLOW}⚠️  WARNING: Document error handling approach${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: Document error handling approach${NC}"
   ((WARNINGS++))
 fi
 
@@ -505,13 +505,13 @@ file_kb=$((file_size / 1024))
 echo "  File size: ${file_kb}KB"
 
 if [ "$file_kb" -gt 200 ]; then
-  echo -e "  ${YELLOW}⚠️  WARNING: File size ${file_kb}KB exceeds 200KB optimal${NC}"
+  echo -e "  ${YELLOW}[WARN]  WARNING: File size ${file_kb}KB exceeds 200KB optimal${NC}"
   echo "           Consider splitting into multiple TASKS files"
   ((WARNINGS++))
 elif [ "$file_kb" -gt 100 ]; then
-  echo -e "  ${BLUE}ℹ️  INFO: File size ${file_kb}KB - consider optimization${NC}"
+  echo -e "  ${BLUE}ℹ  INFO: File size ${file_kb}KB - consider optimization${NC}"
 else
-  echo -e "  ${GREEN}✅ File size within optimal range${NC}"
+  echo -e "  ${GREEN}[PASS] File size within optimal range${NC}"
 fi
 
 echo ""
@@ -534,7 +534,7 @@ echo "Warnings: $WARNINGS"
 echo ""
 
 if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
-  echo -e "${GREEN}✅ PASSED: All validation checks passed${NC}"
+  echo -e "${GREEN}[PASS] PASSED: All validation checks passed${NC}"
   echo ""
   echo "Document complies with:"
   echo "  - TASKS-TEMPLATE.md structure"
@@ -543,7 +543,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo "  - Code generation readiness requirements"
   exit 0
 elif [ $ERRORS -eq 0 ]; then
-  echo -e "${YELLOW}⚠️  PASSED WITH WARNINGS: Document valid but has $WARNINGS warnings${NC}"
+  echo -e "${YELLOW}[WARN]  PASSED WITH WARNINGS: Document valid but has $WARNINGS warnings${NC}"
   echo ""
   echo "Recommendations:"
   echo "  - Review warnings for quality improvements"
@@ -551,7 +551,7 @@ elif [ $ERRORS -eq 0 ]; then
   echo "  - Ensure all task details are complete"
   exit 0
 else
-  echo -e "${RED}❌ FAILED: $ERRORS critical errors found${NC}"
+  echo -e "${RED}[FAIL] FAILED: $ERRORS critical errors found${NC}"
   echo ""
   echo "Action Required:"
   echo "  1. Fix all errors listed above"

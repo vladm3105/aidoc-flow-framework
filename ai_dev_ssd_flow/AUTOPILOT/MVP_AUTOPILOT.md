@@ -113,84 +113,84 @@ make docs
 
 ```
 ai_dev_flow/AUTOPILOT/
-├── MVP_AUTOPILOT.md              # This guide
-├── MVP_GITHUB_CICD_INTEGRATION_PLAN.md
-├── MVP_PIPELINE_END_TO_END_USER_GUIDE.md
-├── scripts/
-│   ├── mvp_autopilot.py              # Main orchestration script
-│   ├── validate_metadata.py          # Metadata validator
-│   ├── validate_quality_gates.py     # Quality gate checker
-│   ├── vertex_code_generator.py      # Optional code generator
-│   ├── analyze_test_requirements.py  # TDD: Test analysis (Phase 2)
-│   ├── generate_spec_tdd.py          # TDD: Test-aware SPEC generation
-│   ├── update_test_traceability.py   # TDD: PENDING tag updater
-│   ├── validate_tdd_stage.py         # TDD: Red/Green validation
-│   ├── generate_integration_tests.py # TDD: Integration test generator
-│   ├── generate_smoke_tests.py       # TDD: Smoke test generator
-│   └── requirements.txt              # Python dependencies
-├── config/
-│   ├── default.yaml                  # Default configuration
-│   ├── tdd.yaml                      # TDD mode configuration
-│   ├── quality_gates.yaml            # Quality gate settings
-│   └── layers.yaml                   # Layer-specific configs
-└── tests/                            # Test suite
-    ├── conftest.py                   # Shared fixtures
-    ├── pytest.ini                    # Test configuration
-    ├── fixtures/                     # Baseline test data
-    ├── smoke/                        # Quick validation tests
-    ├── unit/                         # Unit tests
-    ├── regression/                   # Baseline comparison tests
-    ├── bdd/                          # BDD acceptance tests
-    ├── test_config_parsing.py
-    ├── test_prechecks.py
-    ├── test_cli_parsing.py
-    └── integration/
-        └── test_full_pipeline.py
+ MVP_AUTOPILOT.md              # This guide
+ MVP_GITHUB_CICD_INTEGRATION_PLAN.md
+ MVP_PIPELINE_END_TO_END_USER_GUIDE.md
+ scripts/
+    mvp_autopilot.py              # Main orchestration script
+    validate_metadata.py          # Metadata validator
+    validate_quality_gates.py     # Quality gate checker
+    vertex_code_generator.py      # Optional code generator
+    analyze_test_requirements.py  # TDD: Test analysis (Phase 2)
+    generate_spec_tdd.py          # TDD: Test-aware SPEC generation
+    update_test_traceability.py   # TDD: PENDING tag updater
+    validate_tdd_stage.py         # TDD: Red/Green validation
+    generate_integration_tests.py # TDD: Integration test generator
+    generate_smoke_tests.py       # TDD: Smoke test generator
+    requirements.txt              # Python dependencies
+ config/
+    default.yaml                  # Default configuration
+    tdd.yaml                      # TDD mode configuration
+    quality_gates.yaml            # Quality gate settings
+    layers.yaml                   # Layer-specific configs
+ tests/                            # Test suite
+     conftest.py                   # Shared fixtures
+     pytest.ini                    # Test configuration
+     fixtures/                     # Baseline test data
+     smoke/                        # Quick validation tests
+     unit/                         # Unit tests
+     regression/                   # Baseline comparison tests
+     bdd/                          # BDD acceptance tests
+     test_config_parsing.py
+     test_prechecks.py
+     test_cli_parsing.py
+     integration/
+         test_full_pipeline.py
 ```
 
 ### Execution Flow
 
 ```
-┌─────────────────────────────────────────┐
-│  Configuration Loading                  │
-│  (Load YAML configs)                    │
-└─────────────────────────────────────────┘
+
+  Configuration Loading                  
+  (Load YAML configs)                    
+
                ↓
-┌─────────────────────────────────────────┐
-│  Pre-Checks                             │
-│  (Validate paths, dependencies)         │
-└─────────────────────────────────────────┘
+
+  Pre-Checks                             
+  (Validate paths, dependencies)         
+
                ↓
-┌─────────────────────────────────────────┐
-│  Documentation Generation (L1-L9)       │
-│  BRD → PRD → EARS → BDD → ADR →        │
-│  SYS → REQ → CTR → SPEC                 │
-└─────────────────────────────────────────┘
+
+  Documentation Generation (L1-L9)       
+  BRD → PRD → EARS → BDD → ADR →        
+  SYS → REQ → CTR → SPEC                 
+
                ↓
-┌─────────────────────────────────────────┐
-│  TSPEC Generation (L10)                 │
-│  UTEST, ITEST, STEST, FTEST             │
-└─────────────────────────────────────────┘
+
+  TSPEC Generation (L10)                 
+  UTEST, ITEST, STEST, FTEST             
+
                ↓
-┌─────────────────────────────────────────┐
-│  TDD Validation (if --tdd-mode)         │
-│  Generate tests, validate fail state    │
-└─────────────────────────────────────────┘
+
+  TDD Validation (if --tdd-mode)         
+  Generate tests, validate fail state    
+
                ↓
-┌─────────────────────────────────────────┐
-│  TASKS Generation (L11)                 │
-│  (Implementation task breakdown)        │
-└─────────────────────────────────────────┘
+
+  TASKS Generation (L11)                 
+  (Implementation task breakdown)        
+
                ↓
-┌─────────────────────────────────────────┐
-│  Validation                             │
-│  (Run quality gate scripts)             │
-└─────────────────────────────────────────┘
+
+  Validation                             
+  (Run quality gate scripts)             
+
                ↓
-┌─────────────────────────────────────────┐
-│  Post-Checks                            │
-│  (Verify outputs, link integrity)       │
-└─────────────────────────────────────────┘
+
+  Post-Checks                            
+  (Verify outputs, link integrity)       
+
 ```
 
 ---
@@ -487,25 +487,25 @@ Auto-pilot converts hyphenated IDs to dotted forms where required:
 **Layers Summary**:
 | Layer | Status | Score | Notes |
 |-------|--------|-------|-------|
-| BRD | PASS | 92% | ✅ |
-| PRD | PASS | 91% | ✅ |
-| EARS | PASS | 90% | ✅ |
-| BDD | PASS | 94% | ✅ |
-| ADR | PASS | 88% | ⚠️ Manual review |
-| SYS | PASS | 91% | ✅ |
-| REQ | PASS | 90% | ✅ |
-| CTR | PASS | 95% | ✅ |
-| SPEC | PASS | 95% | ✅ |
-| TSPEC | PASS | 91% | ✅ (UTEST:90%, ITEST:92%, STEST:100%, FTEST:88%) |
-| TASKS | PASS | 92% | ✅ |
+| BRD | PASS | 92% | [PASS] |
+| PRD | PASS | 91% | [PASS] |
+| EARS | PASS | 90% | [PASS] |
+| BDD | PASS | 94% | [PASS] |
+| ADR | PASS | 88% | [WARN] Manual review |
+| SYS | PASS | 91% | [PASS] |
+| REQ | PASS | 90% | [PASS] |
+| CTR | PASS | 95% | [PASS] |
+| SPEC | PASS | 95% | [PASS] |
+| TSPEC | PASS | 91% | [PASS] (UTEST:90%, ITEST:92%, STEST:100%, FTEST:88%) |
+| TASKS | PASS | 92% | [PASS] |
 
 **TDD Summary** (when --tdd-mode enabled):
 | Phase | Status | Details |
 |-------|--------|---------|
-| Test Generation | ✅ | 24 test cases generated |
-| Red State | ✅ | All tests fail (expected) |
-| Green State | ✅ | All tests pass |
-| Tag Update | ✅ | 24 @code: PENDING → paths |
+| Test Generation | [PASS] | 24 test cases generated |
+| Red State | [PASS] | All tests fail (expected) |
+| Green State | [PASS] | All tests pass |
+| Tag Update | [PASS] | 24 @code: PENDING → paths |
 ```
 
 **JSON** (`--report json`):
@@ -710,38 +710,38 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### TDD Execution Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     TDD WORKFLOW                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. Generate Documentation (L1-L9)                              │
-│         ↓                                                       │
-│  2. Generate TSPEC (L10)                                        │
-│     - UTEST from REQ + SPEC                                     │
-│     - ITEST from CTR + SYS + SPEC                               │
-│     - STEST from EARS + BDD + REQ                               │
-│     - FTEST from SYS                                            │
-│         ↓                                                       │
-│  3. Generate Test Files                                         │
-│     - Create tests/unit/, tests/integration/, etc.              │
-│     - Tag with @code: PENDING                                   │
-│         ↓                                                       │
-│  4. Validate RED State                                          │
-│     - Run pytest, expect failures                               │
-│     - Exit code != 0 required                                   │
-│         ↓                                                       │
-│  5. Generate TASKS (L11)                                        │
-│         ↓                                                       │
-│  6. Generate Code (if --up-to CODE)                             │
-│         ↓                                                       │
-│  7. Validate GREEN State                                        │
-│     - Run pytest, expect passes                                 │
-│     - Exit code == 0 required                                   │
-│         ↓                                                       │
-│  8. Update Traceability Tags                                    │
-│     - @code: PENDING → @code: src/actual/path.py                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                     TDD WORKFLOW                                 
+
+                                                                 
+  1. Generate Documentation (L1-L9)                              
+         ↓                                                       
+  2. Generate TSPEC (L10)                                        
+     - UTEST from REQ + SPEC                                     
+     - ITEST from CTR + SYS + SPEC                               
+     - STEST from EARS + BDD + REQ                               
+     - FTEST from SYS                                            
+         ↓                                                       
+  3. Generate Test Files                                         
+     - Create tests/unit/, tests/integration/, etc.              
+     - Tag with @code: PENDING                                   
+         ↓                                                       
+  4. Validate RED State                                          
+     - Run pytest, expect failures                               
+     - Exit code != 0 required                                   
+         ↓                                                       
+  5. Generate TASKS (L11)                                        
+         ↓                                                       
+  6. Generate Code (if --up-to CODE)                             
+         ↓                                                       
+  7. Validate GREEN State                                        
+     - Run pytest, expect passes                                 
+     - Exit code == 0 required                                   
+         ↓                                                       
+  8. Update Traceability Tags                                    
+     - @code: PENDING → @code: src/actual/path.py                
+                                                                 
+
 ```
 
 ### TDD Configuration
@@ -898,26 +898,26 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### 4-Gate System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    4-GATE CHANGE MANAGEMENT                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  GATE-01 (L1-L4)     GATE-05 (L5-L8)                           │
-│  Business Layer      Architecture Layer                        │
-│  BRD, PRD, EARS,     ADR, SYS, REQ, CTR                        │
-│  BDD                                                            │
-│       │                   │                                     │
-│       └─────────┬─────────┘                                     │
-│                 ↓                                               │
-│           GATE-09 (L9-L11)                                      │
-│           Design/Test Layer                                     │
-│           SPEC, TSPEC, TASKS                                    │
-│                 ↓                                               │
-│           GATE-12 (L12-L14)                                     │
-│           Implementation Layer                                  │
-│           Code, Tests, Deploy                                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                    4-GATE CHANGE MANAGEMENT                      
+
+                                                                 
+  GATE-01 (L1-L4)     GATE-05 (L5-L8)                           
+  Business Layer      Architecture Layer                        
+  BRD, PRD, EARS,     ADR, SYS, REQ, CTR                        
+  BDD                                                            
+                                                               
+                                            
+                 ↓                                               
+           GATE-09 (L9-L11)                                      
+           Design/Test Layer                                     
+           SPEC, TSPEC, TASKS                                    
+                 ↓                                               
+           GATE-12 (L12-L14)                                     
+           Implementation Layer                                  
+           Code, Tests, Deploy                                   
+                                                                 
+
 ```
 
 ### Change Level Determination
@@ -941,40 +941,40 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### CHG Execution Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     CHG WORKFLOW                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. Analyze Change Request                                      │
-│     - Identify affected layers                                  │
-│     - Determine change level (L1/L2/L3)                         │
-│     - Determine entry gate                                      │
-│         ↓                                                       │
-│  2. Create CHG Document                                         │
-│     - Use CHG-MVP-TEMPLATE (L2) or CHG-TEMPLATE (L3)            │
-│     - Populate impact analysis                                  │
-│         ↓                                                       │
-│  3. Validate Gates                                              │
-│     - Run gate validation scripts                               │
-│     - Collect approvals                                         │
-│         ↓                                                       │
-│  4. Archive Obsolete (L3 only)                                  │
-│     - Move old artifacts to archive/                            │
-│     - Add deprecation notices                                   │
-│         ↓                                                       │
-│  5. Process Affected Layers                                     │
-│     - Regenerate downstream artifacts                           │
-│     - Update TSPEC if L9+ affected                              │
-│         ↓                                                       │
-│  6. Repair Traceability                                         │
-│     - Update cross-references                                   │
-│     - Verify no broken links                                    │
-│         ↓                                                       │
-│  7. Complete CHG Document                                       │
-│     - Update status to Completed                                │
-│     - Document lessons learned                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                     CHG WORKFLOW                                 
+
+                                                                 
+  1. Analyze Change Request                                      
+     - Identify affected layers                                  
+     - Determine change level (L1/L2/L3)                         
+     - Determine entry gate                                      
+         ↓                                                       
+  2. Create CHG Document                                         
+     - Use CHG-MVP-TEMPLATE (L2) or CHG-TEMPLATE (L3)            
+     - Populate impact analysis                                  
+         ↓                                                       
+  3. Validate Gates                                              
+     - Run gate validation scripts                               
+     - Collect approvals                                         
+         ↓                                                       
+  4. Archive Obsolete (L3 only)                                  
+     - Move old artifacts to archive/                            
+     - Add deprecation notices                                   
+         ↓                                                       
+  5. Process Affected Layers                                     
+     - Regenerate downstream artifacts                           
+     - Update TSPEC if L9+ affected                              
+         ↓                                                       
+  6. Repair Traceability                                         
+     - Update cross-references                                   
+     - Verify no broken links                                    
+         ↓                                                       
+  7. Complete CHG Document                                       
+     - Update status to Completed                                
+     - Document lessons learned                                  
+                                                                 
+
 ```
 
 ### CHG Configuration
@@ -1021,8 +1021,8 @@ Changes affecting L9 (SPEC) or lower MUST include TSPEC updates:
 
 ```
 Change → SPEC update → TSPEC update → TASKS update → Code → Tests
-                           │
-                           └── Test specifications MUST be
+                           
+                            Test specifications MUST be
                                updated BEFORE code changes
 ```
 
@@ -1122,25 +1122,25 @@ The Autopilot includes a comprehensive test suite for validating TDD scripts and
 
 ```
 ai_dev_flow/AUTOPILOT/tests/
-├── conftest.py                    # Shared fixtures & configuration
-├── pytest.ini                     # Pytest settings & markers
-├── fixtures/                      # Baseline data for comparisons
-│   ├── baseline_test_requirements.json
-│   └── baseline_spec.yaml
-├── smoke/                         # Quick validation tests
-│   └── test_scripts_smoke.py
-├── unit/                          # Isolated function tests
-│   ├── test_analyze_test_requirements.py
-│   ├── test_generate_spec_tdd.py
-│   ├── test_validate_tdd_stage.py
-│   ├── test_update_test_traceability.py
-│   └── test_generate_tests.py
-├── regression/                    # Baseline comparison tests
-│   └── test_workflow_regression.py
-└── bdd/                           # Acceptance tests
-    ├── features/
-    │   └── tdd_workflow.feature
-    └── test_tdd_workflow_steps.py
+ conftest.py                    # Shared fixtures & configuration
+ pytest.ini                     # Pytest settings & markers
+ fixtures/                      # Baseline data for comparisons
+    baseline_test_requirements.json
+    baseline_spec.yaml
+ smoke/                         # Quick validation tests
+    test_scripts_smoke.py
+ unit/                          # Isolated function tests
+    test_analyze_test_requirements.py
+    test_generate_spec_tdd.py
+    test_validate_tdd_stage.py
+    test_update_test_traceability.py
+    test_generate_tests.py
+ regression/                    # Baseline comparison tests
+    test_workflow_regression.py
+ bdd/                           # Acceptance tests
+     features/
+        tdd_workflow.feature
+     test_tdd_workflow_steps.py
 ```
 
 ### Test Markers

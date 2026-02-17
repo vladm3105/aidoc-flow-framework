@@ -54,47 +54,47 @@ Choose your cloud provider and run the appropriate setup scripts:
 ## Framework Structure
 
 ```
-├── README.md                    # This file
-├── CONFIG.md                    # All placeholder variables
-├── SETUP_GUIDE.md              # Step-by-step customization
-├── CLOUD_GUIDE.md              # Cloud provider guidance
-│
-├── governance/                  # Project governance docs
-│   ├── GOVERNANCE_RULES.md     # Core operational rules
-│   ├── PROJECT_PLAN.md         # Project planning template
-│   ├── AI_PR_Review/           # AI code review documentation
-│   ├── plans/                  # IPLAN structure (README template)
-│   └── ...                     # Additional governance docs
-│
-├── .github/                     # GitHub automation
-│   ├── workflows/              # 20 GitHub Actions workflows
-│   ├── ISSUE_TEMPLATE/         # 10 issue templates
-│   ├── CODEOWNERS              # Reviewer assignment
-│   └── ...
-│
-├── templates/                   # Root documentation templates
-│   ├── README.md               # Project README template
-│   ├── CLAUDE.md               # AI agent configuration
-│   ├── CONTRIBUTING.md         # Contribution guide
-│   └── ...
-│
-├── scripts/                     # Automation scripts
-│   ├── project_setup/          # Initial setup scripts
-│   │   └── cloud/             # Cloud-specific scripts (GCP/AWS/Azure)
-│   ├── workflows/              # CI/CD helper scripts
-│   └── ghes-runner/            # Optional GHES runner setup
-│
-├── components/                  # Component structure templates
-│   └── {component}/            # Component README templates
-│
-├── .claude/                     # Claude Code configuration
-│   └── settings.local.json.template
-│
-└── docs/                        # Technical documentation
-    ├── adr/                    # Architecture Decision Records
-    ├── qa/                     # QA documentation
-    ├── core/                   # Technical specifications
-    └── ...
+ README.md                    # This file
+ CONFIG.md                    # All placeholder variables
+ SETUP_GUIDE.md              # Step-by-step customization
+ CLOUD_GUIDE.md              # Cloud provider guidance
+
+ governance/                  # Project governance docs
+    GOVERNANCE_RULES.md     # Core operational rules
+    PROJECT_PLAN.md         # Project planning template
+    AI_PR_Review/           # AI code review documentation
+    plans/                  # IPLAN structure (README template)
+    ...                     # Additional governance docs
+
+ .github/                     # GitHub automation
+    workflows/              # 20 GitHub Actions workflows
+    ISSUE_TEMPLATE/         # 10 issue templates
+    CODEOWNERS              # Reviewer assignment
+    ...
+
+ templates/                   # Root documentation templates
+    README.md               # Project README template
+    CLAUDE.md               # AI agent configuration
+    CONTRIBUTING.md         # Contribution guide
+    ...
+
+ scripts/                     # Automation scripts
+    project_setup/          # Initial setup scripts
+       cloud/             # Cloud-specific scripts (GCP/AWS/Azure)
+    workflows/              # CI/CD helper scripts
+    ghes-runner/            # Optional GHES runner setup
+
+ components/                  # Component structure templates
+    {component}/            # Component README templates
+
+ .claude/                     # Claude Code configuration
+    settings.local.json.template
+
+ docs/                        # Technical documentation
+     adr/                    # Architecture Decision Records
+     qa/                     # QA documentation
+     core/                   # Technical specifications
+     ...
 ```
 
 ## Key Features

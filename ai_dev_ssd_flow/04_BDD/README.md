@@ -33,7 +33,7 @@ BDD files serve as the **living specification** that:
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 BDD is in the **Testing Layer** within the complete SDD workflow:
 
@@ -54,7 +54,7 @@ BDD files should be created **after** business requirements are defined but **be
 
 BDD files should be created **immediately after** initial requirements are gathered but **before** any code implementation begins:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ```
 Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implementation
@@ -70,19 +70,19 @@ Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implement
 
 ### Prerequisites for BDD Creation
 
-#### ✅ **Must Exist Before BDD Creation**
+#### [PASS] **Must Exist Before BDD Creation**
 - **Business Requirements Documents (PRDs)**: High-level business needs and user stories
 - **Domain Understanding**: Clear grasp of business rules, processes, and terminology
 - **Stakeholder Agreement**: Consensus among business stakeholders on what the system should do
 - **Acceptance Criteria**: Measurable success criteria defined for each business requirement
 
-#### ✅ **Should Exist Before BDD Creation**
+#### [PASS] **Should Exist Before BDD Creation**
 - **Atomic Requirements (03_EARS/SYS)**: Atomic, testable requirements using conditional WHEN/THEN format
 - **Architecture Decision Records (ADRs)**: High-level technical architecture decisions
 - **System Boundaries**: Defined scope and interfaces for the system
 - **Success Metrics**: Quantifiable measures of system success
 
-#### ❌ **Should NOT Be Started Before BDD**
+#### [FAIL] **Should NOT Be Started Before BDD**
 - **Detailed Technical Design**: BDD focuses on what the system should do, not how it will be implemented
 - **Code Implementation**: BDD defines requirements that code must fulfill, not the implementation approach
 - **Unit Test Creation**: BDD creates acceptance tests, not granular implementation tests

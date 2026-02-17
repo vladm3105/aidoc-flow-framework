@@ -89,10 +89,10 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `TASKS-01_gateway_service.md` | ✅ | Correct format |
-| `tasks-001_gateway_service.md` | ❌ | Lowercase prefix |
-| `TASKS-1_gateway_service.md` | ❌ | Single digit ID |
-| `TASKS-01-gateway-service.md` | ❌ | Hyphens in slug |
+| `TASKS-01_gateway_service.md` | [PASS] | Correct format |
+| `tasks-001_gateway_service.md` | [FAIL] | Lowercase prefix |
+| `TASKS-1_gateway_service.md` | [FAIL] | Single digit ID |
+| `TASKS-01-gateway-service.md` | [FAIL] | Hyphens in slug |
 
 ---
 
@@ -432,25 +432,25 @@ File: TASKS-01_gateway_service.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
-  ✅ Filename format valid
+  [PASS] Filename format valid
 
 CHECK 2: Frontmatter
-  ✅ YAML frontmatter present
-  ✅ Required fields present
+  [PASS] YAML frontmatter present
+  [PASS] Required fields present
 
 CHECK 3: Required Sections (v2.0)
-  ✅ All 11 required sections found
+  [PASS] All 11 required sections found
 
 CHECK 4: Section 7 Implementation Contracts (v2.0)
-  ✅ Section 7 exists
-  ✅ Proper subsections present
+  [PASS] Section 7 exists
+  [PASS] Proper subsections present
 
 CHECK 5: Traceability Tags
-  ✅ All 8 required tags present
+  [PASS] All 8 required tags present
 
 CHECK 6: Cross-References
-  ✅ Parent SPEC exists
-  ✅ Section 7-8 contracts have type hints
+  [PASS] Parent SPEC exists
+  [PASS] Section 7-8 contracts have type hints
 
 =========================================
 SUMMARY
@@ -462,16 +462,16 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 14. Element ID Format Compliance ⭐ NEW
+## 14. Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `TASKS.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `TASK-XXX` | ❌ Fail - use TASKS.NN.18.SS |
-| Removed pattern | `T-XXX` | ❌ Fail - use TASKS.NN.18.SS |
+| Valid format | `TASKS.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `TASK-XXX` | [FAIL] Fail - use TASKS.NN.18.SS |
+| Removed pattern | `T-XXX` | [FAIL] Fail - use TASKS.NN.18.SS |
 
 **Regex**: `^###?\s+TASKS\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -481,7 +481,7 @@ Result: PASSED WITH WARNINGS
 | Task | 18 | TASKS.02.18.01 |
 | Task Item | 30 | TASKS.02.30.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `TASK-XXX` → Use `TASKS.NN.18.SS`
 > - `T-XXX` → Use `TASKS.NN.18.SS`
 >

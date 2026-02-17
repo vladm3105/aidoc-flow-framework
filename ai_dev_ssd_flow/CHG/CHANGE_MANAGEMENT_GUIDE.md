@@ -41,59 +41,59 @@ The SDD framework handles changes through a structured approach that:
 ### 2.1 Three Levels of Change
 
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CHANGE CLASSIFICATION                            │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  L1 PATCH          L2 MINOR           L3 MAJOR                     │
-│  ──────────        ──────────         ──────────                   │
-│  Bug fixes         Feature adds       Architecture pivots          │
-│  Typos             Enhancements       Breaking changes             │
-│  Clarifications    Non-breaking       Mass deprecation             │
-│                                                                     │
-│  Edit in place     Lightweight CHG    Full CHG process             │
-│  Version bump      Partial regen      Full cascade                 │
-│                                                                     │
-│  ◄── Increasing Impact & Process Overhead ──►                      │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+
+                    CHANGE CLASSIFICATION                            
+
+                                                                     
+  L1 PATCH          L2 MINOR           L3 MAJOR                     
+                                      
+  Bug fixes         Feature adds       Architecture pivots          
+  Typos             Enhancements       Breaking changes             
+  Clarifications    Non-breaking       Mass deprecation             
+                                                                     
+  Edit in place     Lightweight CHG    Full CHG process             
+  Version bump      Partial regen      Full cascade                 
+                                                                     
+   Increasing Impact & Process Overhead                       
+                                                                     
+
 ```
 
 ### 2.2 Level Decision Flowchart
 
 ```text
-                    ┌─────────────────────┐
-                    │  Change Requested   │
-                    └──────────┬──────────┘
-                               ▼
-                    ┌─────────────────────┐
-                    │ Breaks backward     │
-                    │ compatibility?      │
-                    └──────────┬──────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │ No             │                │ Yes
-              ▼                │                ▼
-    ┌─────────────────┐        │      ┌─────────────────┐
-    │ Requires ADR    │        │      │    L3 MAJOR     │
-    │ changes?        │        │      │  Full CHG       │
-    └────────┬────────┘        │      └─────────────────┘
-             │                 │
-    ┌────────┼────────┐        │
-    │ No     │        │ Yes    │
-    ▼        │        ▼        │
-┌────────┐   │   ┌─────────────────┐
-│Affects │   │   │    L3 MAJOR     │
-│2+ layers│  │   │  Full CHG       │
-└───┬────┘   │   └─────────────────┘
-    │        │
-┌───┼───┐    │
-│No │   │Yes │
-▼   │   ▼    │
-┌───────┐ ┌─────────────────┐
-│L1     │ │    L2 MINOR     │
-│PATCH  │ │ Lightweight CHG │
-└───────┘ └─────────────────┘
+                    
+                      Change Requested   
+                    
+                               
+                    
+                     Breaks backward     
+                     compatibility?      
+                    
+                               
+              
+               No                              Yes
+                                              
+                  
+     Requires ADR                      L3 MAJOR     
+     changes?                        Full CHG       
+                  
+                              
+            
+     No              Yes    
+                            
+      
+Affects           L3 MAJOR     
+2+ layers       Full CHG       
+      
+            
+    
+No    Yes 
+          
+ 
+L1          L2 MINOR     
+PATCH    Lightweight CHG 
+ 
 ```
 
 ## 3. Five Change Sources
@@ -101,36 +101,36 @@ The SDD framework handles changes through a structured approach that:
 ### 3.1 Change Source Map
 
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                      CHANGE SOURCES                                  │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│     ┌──────────────┐                                                │
-│     │ 1. UPSTREAM  │◄── Business/Product/Market                     │
-│     │   (L1-L4)    │    BRD, PRD, EARS, BDD                        │
-│     └──────┬───────┘                                                │
-│            ▼                                                        │
-│     ┌──────────────┐                                                │
-│     │ 2. MIDSTREAM │◄── Architecture/Design                         │
-│     │   (L5-L11)   │    ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS     │
-│     └──────┬───────┘                                                │
-│            ▼                                                        │
-│     ┌──────────────┐                                                │
-│     │ 3. DOWNSTREAM│◄── Implementation/Defects                      │
-│     │   (L12-L14)  │    Code, Tests, Validation                    │
-│     └──────┬───────┘                                                │
-│            ▼                                                        │
-│     ┌──────────────┐                                                │
-│     │ 4. EXTERNAL  │◄── Environment/Dependencies                    │
-│     │   (Outside)  │    Security, APIs, Libraries                  │
-│     └──────┬───────┘                                                │
-│            ▼                                                        │
-│     ┌──────────────┐                                                │
-│     │ 5. FEEDBACK  │◄── Production/Operations                       │
-│     │   (Post-L14) │    Incidents, User feedback                   │
-│     └──────────────┘                                                │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+
+                      CHANGE SOURCES                                  
+
+                                                                     
+                                                     
+      1. UPSTREAM   Business/Product/Market                     
+        (L1-L4)        BRD, PRD, EARS, BDD                        
+                                                     
+                                                                    
+                                                     
+      2. MIDSTREAM  Architecture/Design                         
+        (L5-L11)       ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS     
+                                                     
+                                                                    
+                                                     
+      3. DOWNSTREAM Implementation/Defects                      
+        (L12-L14)      Code, Tests, Validation                    
+                                                     
+                                                                    
+                                                     
+      4. EXTERNAL   Environment/Dependencies                    
+        (Outside)      Security, APIs, Libraries                  
+                                                     
+                                                                    
+                                                     
+      5. FEEDBACK   Production/Operations                       
+        (Post-L14)     Incidents, User feedback                   
+                                                     
+                                                                     
+
 ```
 
 ### 3.2 Source Details
@@ -210,43 +210,43 @@ The SDD framework implements a formal 4-Gate system for validating changes at la
 ### 4.1 Gate Overview
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        4-GATE CHANGE MANAGEMENT SYSTEM                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│    CHANGE REQUEST                                                           │
-│          │                                                                  │
-│          ▼                                                                  │
-│    ┌───────────────────────────────────────────────────────────────┐       │
-│    │                   ROUTING DETERMINATION                        │       │
-│    │              (validate_chg_routing.py)                         │       │
-│    └───────────────────────────────┬───────────────────────────────┘       │
-│                                    │                                        │
-│         ┌──────────────────────────┼──────────────────────────────┐        │
-│         │                          │                              │        │
-│         ▼                          ▼                              ▼        │
-│    ┌─────────┐              ┌─────────┐                    ┌──────────┐    │
-│    │ GATE-01 │              │ GATE-05 │                    │ EMERGENCY│    │
-│    │ L1-L4   │──────────────│ L5-L8   │                    │  BYPASS  │    │
-│    │ Business│              │ Arch/Ctr│                    │  P1/Sec  │    │
-│    └────┬────┘              └────┬────┘                    └────┬─────┘    │
-│         │                        │                               │         │
-│         │      ┌─────────────────┘                               │         │
-│         ▼      ▼                                                 │         │
-│    ┌─────────────┐                                               │         │
-│    │   GATE-09   │◄──────────────────────────────────────────────┘         │
-│    │   L9-L11    │         (Post-mortem review)                            │
-│    │ Design/Test │                                                         │
-│    └──────┬──────┘                                                         │
-│           │                                                                 │
-│           ▼                                                                 │
-│    ┌─────────────┐                                                         │
-│    │   GATE-12   │                                                         │
-│    │   L12-L14   │                                                         │
-│    │Implementation│                                                         │
-│    └──────────────┘                                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                        4-GATE CHANGE MANAGEMENT SYSTEM                       
+
+                                                                             
+    CHANGE REQUEST                                                           
+                                                                            
+                                                                            
+           
+                       ROUTING DETERMINATION                               
+                  (validate_chg_routing.py)                                
+           
+                                                                            
+                 
+                                                                         
+                                                                         
+                                          
+     GATE-01                GATE-05                      EMERGENCY    
+     L1-L4    L5-L8                         BYPASS      
+     Business               Arch/Ctr                      P1/Sec      
+                                          
+                                                                         
+                                                       
+                                                                         
+                                                            
+       GATE-09            
+       L9-L11             (Post-mortem review)                            
+     Design/Test                                                          
+                                                             
+                                                                            
+                                                                            
+                                                             
+       GATE-12                                                            
+       L12-L14                                                            
+    Implementation                                                         
+                                                             
+                                                                             
+
 ```
 
 ### 4.2 Gate Definitions
@@ -358,19 +358,19 @@ Changes affecting L9+ MUST include TSPEC updates to maintain test-first workflow
 Change at Layer N typically requires regeneration of Layers N+1 through 14
 
 Example: BRD change (L1)
-├── Cascades to: PRD (L2)
-├── Cascades to: EARS (L3)
-├── Cascades to: BDD (L4)
-├── Cascades to: ADR (L5) - if architecture affected
-├── Cascades to: SYS (L6)
-├── Cascades to: REQ (L7)
-├── Cascades to: CTR (L8) - if interface affected
-├── Cascades to: SPEC (L9)
-├── Cascades to: TSPEC (L10) ← NEW: Test specs must be updated
-├── Cascades to: TASKS (L11)
-├── Cascades to: Code (L12)
-├── Cascades to: Tests (L13)
-└── Cascades to: Validation (L14)
+ Cascades to: PRD (L2)
+ Cascades to: EARS (L3)
+ Cascades to: BDD (L4)
+ Cascades to: ADR (L5) - if architecture affected
+ Cascades to: SYS (L6)
+ Cascades to: REQ (L7)
+ Cascades to: CTR (L8) - if interface affected
+ Cascades to: SPEC (L9)
+ Cascades to: TSPEC (L10) ← NEW: Test specs must be updated
+ Cascades to: TASKS (L11)
+ Cascades to: Code (L12)
+ Cascades to: Tests (L13)
+ Cascades to: Validation (L14)
 ```
 
 ## 7. Workflows by Level
@@ -378,26 +378,26 @@ Example: BRD change (L1)
 ### 7.1 L1 Patch Workflow
 
 ```text
-┌─────────────────────────────────────────────┐
-│            L1 PATCH WORKFLOW                │
-├─────────────────────────────────────────────┤
-│                                             │
-│  1. Identify bug/issue                      │
-│         │                                   │
-│         ▼                                   │
-│  2. Fix in place                            │
-│     - Edit artifact directly                │
-│     - Increment patch version (1.0.0→1.0.1) │
-│         │                                   │
-│         ▼                                   │
-│  3. Validate                                │
-│     - Run affected tests                    │
-│         │                                   │
-│         ▼                                   │
-│  4. Commit with message                     │
-│     "fix: [brief description]"              │
-│                                             │
-└─────────────────────────────────────────────┘
+
+            L1 PATCH WORKFLOW                
+
+                                             
+  1. Identify bug/issue                      
+                                            
+                                            
+  2. Fix in place                            
+     - Edit artifact directly                
+     - Increment patch version (1.0.0→1.0.1) 
+                                            
+                                            
+  3. Validate                                
+     - Run affected tests                    
+                                            
+                                            
+  4. Commit with message                     
+     "fix: [brief description]"              
+                                             
+
 ```
 
 **No CHG document required.**
@@ -405,34 +405,34 @@ Example: BRD change (L1)
 ### 7.2 L2 Minor Workflow
 
 ```text
-┌─────────────────────────────────────────────┐
-│           L2 MINOR WORKFLOW                 │
-├─────────────────────────────────────────────┤
-│                                             │
-│  1. Create CHG directory                    │
-│     docs/CHG/CHG-XX_{slug}/                 │
-│         │                                   │
-│         ▼                                   │
-│  2. Document change (CHG-MVP-TEMPLATE)      │
-│     - Change summary                        │
-│     - Affected layers                       │
-│     - Impact assessment                     │
-│         │                                   │
-│         ▼                                   │
-│  3. Update affected artifacts               │
-│     - Version increment or new artifact     │
-│     - Update TSPEC if L9+ affected         │
-│         │                                   │
-│         ▼                                   │
-│  4. Repair traceability                     │
-│     - Update cross-references               │
-│         │                                   │
-│         ▼                                   │
-│  5. Validate & Close                        │
-│     - Run tests                             │
-│     - Update CHG status to Completed        │
-│                                             │
-└─────────────────────────────────────────────┘
+
+           L2 MINOR WORKFLOW                 
+
+                                             
+  1. Create CHG directory                    
+     docs/CHG/CHG-XX_{slug}/                 
+                                            
+                                            
+  2. Document change (CHG-MVP-TEMPLATE)      
+     - Change summary                        
+     - Affected layers                       
+     - Impact assessment                     
+                                            
+                                            
+  3. Update affected artifacts               
+     - Version increment or new artifact     
+     - Update TSPEC if L9+ affected         
+                                            
+                                            
+  4. Repair traceability                     
+     - Update cross-references               
+                                            
+                                            
+  5. Validate & Close                        
+     - Run tests                             
+     - Update CHG status to Completed        
+                                             
+
 ```
 
 **Use `CHG-MVP-TEMPLATE.md`**
@@ -440,48 +440,48 @@ Example: BRD change (L1)
 ### 7.3 L3 Major Workflow
 
 ```text
-┌─────────────────────────────────────────────┐
-│           L3 MAJOR WORKFLOW                 │
-├─────────────────────────────────────────────┤
-│                                             │
-│  STEP 1: INITIALIZE                         │
-│  ─────────────────                          │
-│  - Create CHG directory with archive/       │
-│  - Create CHG document (CHG-TEMPLATE)       │
-│  - Create implementation_plan.md            │
-│         │                                   │
-│         ▼                                   │
-│  STEP 2: ARCHIVE & DEPRECATE                │
-│  ───────────────────────────                │
-│  - Move obsolete artifacts to archive/      │
-│  - Add deprecation notices to each          │
-│         │                                   │
-│         ▼                                   │
-│  STEP 3: SUPERSEDE                          │
-│  ─────────────────                          │
-│  - Create new artifacts in standard paths   │
-│  - Update "Supersedes" metadata             │
-│         │                                   │
-│         ▼                                   │
-│  STEP 4: REPAIR TRACEABILITY                │
-│  ──────────────────────────                 │
-│  - Update all downstream references         │
-│  - Verify no orphaned links                 │
-│         │                                   │
-│         ▼                                   │
-│  STEP 5: EXECUTE                            │
-│  ───────────────                            │
-│  - Implement new TASKS                      │
-│  - Run TSPEC tests                          │
-│  - Validate all layers                      │
-│         │                                   │
-│         ▼                                   │
-│  STEP 6: CLOSE                              │
-│  ──────────                                 │
-│  - Update CHG status to Completed           │
-│  - Document lessons learned                 │
-│                                             │
-└─────────────────────────────────────────────┘
+
+           L3 MAJOR WORKFLOW                 
+
+                                             
+  STEP 1: INITIALIZE                         
+                            
+  - Create CHG directory with archive/       
+  - Create CHG document (CHG-TEMPLATE)       
+  - Create implementation_plan.md            
+                                            
+                                            
+  STEP 2: ARCHIVE & DEPRECATE                
+                  
+  - Move obsolete artifacts to archive/      
+  - Add deprecation notices to each          
+                                            
+                                            
+  STEP 3: SUPERSEDE                          
+                            
+  - Create new artifacts in standard paths   
+  - Update "Supersedes" metadata             
+                                            
+                                            
+  STEP 4: REPAIR TRACEABILITY                
+                   
+  - Update all downstream references         
+  - Verify no orphaned links                 
+                                            
+                                            
+  STEP 5: EXECUTE                            
+                              
+  - Implement new TASKS                      
+  - Run TSPEC tests                          
+  - Validate all layers                      
+                                            
+                                            
+  STEP 6: CLOSE                              
+                                   
+  - Update CHG status to Completed           
+  - Document lessons learned                 
+                                             
+
 ```
 
 **Use `CHG-TEMPLATE.md`**
@@ -492,34 +492,34 @@ Example: BRD change (L1)
 
 ```text
 docs/CHG/
-├── CHANGE_MANAGEMENT_GUIDE.md      # This file
-├── CHANGE_CLASSIFICATION_GUIDE.md  # L1/L2/L3 decision guide
-├── CHG-TEMPLATE.md                 # L3 Major template
-├── CHG-MVP-TEMPLATE.md             # L2 Minor template
-├── CHG_MVP_CREATION_RULES.md       # Creation rules
-├── CHG_MVP_SCHEMA.yaml             # Validation schema
-│
-├── sources/                        # Change source guides
-│   ├── UPSTREAM_CHANGE_GUIDE.md
-│   ├── MIDSTREAM_CHANGE_GUIDE.md
-│   ├── DOWNSTREAM_CHANGE_GUIDE.md
-│   ├── EXTERNAL_CHANGE_GUIDE.md
-│   └── FEEDBACK_CHANGE_GUIDE.md
-│
-├── scripts/                        # Validation scripts
-│   ├── validate_chg_routing.py     # CHG routing validation
-│   ├── validate_gate01.sh          # GATE-01 validation
-│   ├── validate_gate05.sh          # GATE-05 validation
-│   ├── validate_gate09.sh          # GATE-09 validation
-│   ├── validate_gate12.sh          # GATE-12 validation
-│   ├── validate_all_gates.sh       # All gates validation
-│   └── validate_emergency_bypass.sh # Emergency bypass validation
-│
-└── CHG-XX_{slug}/                  # Individual CHG records
-    ├── CHG-XX_{slug}.md
-    ├── implementation_plan.md
-    └── archive/                    # L3 only
-        └── [archived artifacts]
+ CHANGE_MANAGEMENT_GUIDE.md      # This file
+ CHANGE_CLASSIFICATION_GUIDE.md  # L1/L2/L3 decision guide
+ CHG-TEMPLATE.md                 # L3 Major template
+ CHG-MVP-TEMPLATE.md             # L2 Minor template
+ CHG_MVP_CREATION_RULES.md       # Creation rules
+ CHG_MVP_SCHEMA.yaml             # Validation schema
+
+ sources/                        # Change source guides
+    UPSTREAM_CHANGE_GUIDE.md
+    MIDSTREAM_CHANGE_GUIDE.md
+    DOWNSTREAM_CHANGE_GUIDE.md
+    EXTERNAL_CHANGE_GUIDE.md
+    FEEDBACK_CHANGE_GUIDE.md
+
+ scripts/                        # Validation scripts
+    validate_chg_routing.py     # CHG routing validation
+    validate_gate01.sh          # GATE-01 validation
+    validate_gate05.sh          # GATE-05 validation
+    validate_gate09.sh          # GATE-09 validation
+    validate_gate12.sh          # GATE-12 validation
+    validate_all_gates.sh       # All gates validation
+    validate_emergency_bypass.sh # Emergency bypass validation
+
+ CHG-XX_{slug}/                  # Individual CHG records
+     CHG-XX_{slug}.md
+     implementation_plan.md
+     archive/                    # L3 only
+         [archived artifacts]
 ```
 
 ## 9. Integration with TDD Workflow
@@ -530,8 +530,8 @@ The TSPEC layer (L10) plays a critical role in change management:
 
 ```text
 Change → SPEC update → TSPEC update → TASKS update → Code → Tests
-                           │
-                           └── Test specifications MUST be
+                           
+                            Test specifications MUST be
                                updated BEFORE code changes
                                (Test-Driven Development)
 ```
@@ -553,15 +553,15 @@ When tests fail, trace to the source:
 
 | Criterion | L1 | L2 | L3 |
 |-----------|----|----|----|
-| CHG document created | ○ | ● | ● |
-| Impact analysis complete | ○ | ● | ● |
-| Artifacts archived | ○ | ○ | ● |
-| New artifacts validated | ● | ● | ● |
-| TSPEC tests pass | ● | ● | ● |
-| Traceability verified | ○ | ● | ● |
-| Status set to Completed | ○ | ● | ● |
+| CHG document created |  |  |  |
+| Impact analysis complete |  |  |  |
+| Artifacts archived |  |  |  |
+| New artifacts validated |  |  |  |
+| TSPEC tests pass |  |  |  |
+| Traceability verified |  |  |  |
+| Status set to Completed |  |  |  |
 
-**Legend**: ○ Not required | ● Required
+**Legend**:  Not required |  Required
 
 ### 10.2 Validation Commands
 

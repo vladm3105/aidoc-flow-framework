@@ -17,7 +17,7 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> **🔄 Dual-Format Note**:
+> ** Dual-Format Note**:
 >
 > This MD template is the **primary source** for human workflow.
 > - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)
@@ -679,7 +679,7 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 
 ## 14. Glossary
 
-📚 **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
+ **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
 
 ### 14.1 MVP-Specific Terms
 

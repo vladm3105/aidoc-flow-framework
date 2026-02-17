@@ -93,7 +93,7 @@ check_placeholder_text() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -120,7 +120,7 @@ check_premature_references() {
   done < <(find "$CTR_DIR" -name "*.md" -exec grep -HnE "$downstream_patterns" {} \; 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -131,7 +131,7 @@ check_premature_references() {
 check_count_consistency() {
   echo ""
   echo "--- GATE-03: Internal Count Consistency ---"
-  echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
+  echo -e "${GREEN}   Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -155,7 +155,7 @@ check_index_sync() {
     return
   fi
 
-  echo -e "${GREEN}  ✓ Index file found${NC}"
+  echo -e "${GREEN}   Index file found${NC}"
 
   # Flag CTR entries marked Planned that actually exist
   local found=0
@@ -173,7 +173,7 @@ check_index_sync() {
   done < <(grep -E "CTR-[0-9]+" "$index_file" 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
 }
 
@@ -233,7 +233,7 @@ check_visualization() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
 }
 
@@ -244,7 +244,7 @@ check_visualization() {
 check_glossary() {
   echo ""
   echo "--- GATE-07: Glossary Consistency ---"
-  echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
+  echo -e "${GREEN}   Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -265,7 +265,7 @@ check_contract_ids() {
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate contract IDs${NC}"
+    echo -e "${GREEN}   No duplicate contract IDs${NC}"
   fi
 }
 
@@ -293,7 +293,7 @@ check_version_format() {
     echo -e "${YELLOW}GATE-W009: Mixed version formats (semantic: $semantic, date: $date_based)${NC}"
     ((WARNINGS++)) || true
   else
-    echo -e "${GREEN}  ✓ Version formats consistent${NC}"
+    echo -e "${GREEN}   Version formats consistent${NC}"
   fi
 }
 
@@ -328,7 +328,7 @@ check_file_size() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤20,000 tokens)${NC}"
   fi
 }
 
@@ -367,7 +367,7 @@ check_dual_file() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.yaml" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR have matching .md/.yaml pairs${NC}"
+    echo -e "${GREEN}   All CTR have matching .md/.yaml pairs${NC}"
   fi
 }
 
@@ -398,7 +398,7 @@ check_yaml_syntax() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.yaml" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All YAML files are valid${NC}"
+    echo -e "${GREEN}   All YAML files are valid${NC}"
   fi
 }
 
@@ -435,7 +435,7 @@ check_version_compat() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Version compatibility documented${NC}"
+    echo -e "${GREEN}   Version compatibility documented${NC}"
   fi
 }
 
@@ -489,7 +489,7 @@ check_subdomain() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR in valid subdirectories${NC}"
+    echo -e "${GREEN}   All CTR in valid subdirectories${NC}"
   fi
 }
 
@@ -517,7 +517,7 @@ check_spec_ready() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ SPEC-Ready scores acceptable${NC}"
+    echo -e "${GREEN}   SPEC-Ready scores acceptable${NC}"
   fi
 }
 

@@ -96,10 +96,10 @@ custom_fields:
 
 | Condition | Result |
 |-----------|--------|
-| /health returns 200 | ✅ PASS |
-| /health/ready returns 200 | ✅ PASS |
-| Any health endpoint fails | ❌ FAIL |
-| Response time > 5s | ❌ FAIL |
+| /health returns 200 | [PASS] PASS |
+| /health/ready returns 200 | [PASS] PASS |
+| Any health endpoint fails | [FAIL] FAIL |
+| Response time > 5s | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -140,10 +140,10 @@ curl -f https://auth.example.com/health --max-time 5
 
 | Condition | Result |
 |-----------|--------|
-| Login returns 200 with token | ✅ PASS |
-| Login returns 401 for invalid creds | ✅ PASS |
-| Login timeout > 5s | ❌ FAIL |
-| Login returns 5xx | ❌ FAIL |
+| Login returns 200 with token | [PASS] PASS |
+| Login returns 401 for invalid creds | [PASS] PASS |
+| Login timeout > 5s | [FAIL] FAIL |
+| Login returns 5xx | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -185,10 +185,10 @@ status_code=$(echo "$response" | tail -n1)
 
 | Condition | Result |
 |-----------|--------|
-| Valid token accepted | ✅ PASS |
-| Expired token rejected | ✅ PASS |
-| Invalid token rejected | ✅ PASS |
-| Validation error | ❌ FAIL |
+| Valid token accepted | [PASS] PASS |
+| Expired token rejected | [PASS] PASS |
+| Invalid token rejected | [PASS] PASS |
+| Validation error | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -230,10 +230,10 @@ curl -f -X GET https://auth.example.com/api/v1/auth/validate \
 
 | Condition | Result |
 |-----------|--------|
-| /health/db returns 200 | ✅ PASS |
-| DB ping succeeds | ✅ PASS |
-| Connection pool healthy | ✅ PASS |
-| Any DB error | ❌ FAIL |
+| /health/db returns 200 | [PASS] PASS |
+| DB ping succeeds | [PASS] PASS |
+| Connection pool healthy | [PASS] PASS |
+| Any DB error | [FAIL] FAIL |
 
 **Health Check**:
 

@@ -94,7 +94,7 @@ Follow the prompts:
 
 ```bash
 GH_HOST={GITHUB_HOST} gh auth status
-# Expected: ✓ Logged in to {GITHUB_HOST} as <username>
+# Expected:  Logged in to {GITHUB_HOST} as <username>
 
 GH_HOST={GITHUB_HOST} gh repo view {GITHUB_ORG}/{REPO_NAME} --json name
 # Expected: {"name":"{REPO_NAME}"}
@@ -202,7 +202,7 @@ Expected output:
 GH_HOST: {GITHUB_HOST}
 ANTHROPIC_API_KEY: sk-ant-api03-...
 {AI_TOOL_NAME} Code 2.x.x
-✓ Logged in to {GITHUB_HOST} as <username>
+ Logged in to {GITHUB_HOST} as <username>
 ```
 
 ---

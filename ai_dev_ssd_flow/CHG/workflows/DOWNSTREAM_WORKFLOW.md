@@ -37,25 +37,25 @@ This workflow handles changes originating from code bugs, test failures, and val
 
 ```
 DOWNSTREAM TRIGGER (L12-L14)
-         │
-         ▼
-   ┌──────────────────────────────────────┐
-   │         ROOT CAUSE ANALYSIS          │
-   │     Where is the actual problem?     │
-   └─────────────────┬────────────────────┘
-                     │
-     ┌───────────────┼───────────────────┬───────────────────┐
-     │               │                   │                   │
-     ▼               ▼                   ▼                   ▼
+         
+         
+   
+            ROOT CAUSE ANALYSIS          
+        Where is the actual problem?     
+   
+                     
+     
+                                                          
+                                                          
   Code Bug        SPEC/TSPEC         REQ/CTR            BRD/PRD
   (L12-L14)        Wrong              Wrong              Wrong
-     │            (L9-L11)           (L5-L8)            (L1-L4)
-     │               │                   │                   │
-     ▼               ▼                   ▼                   ▼
+                 (L9-L11)           (L5-L8)            (L1-L4)
+                                                          
+                                                          
   GATE-12        GATE-09             GATE-05            GATE-01
   Fix Here       Bubble Up           Bubble Up          Bubble Up
-     │               │                   │                   │
-     ▼               ▼                   ▼                   ▼
+                                                          
+                                                          
   DEPLOYED       Cascade             Cascade            Full
                  L9→L14              L5→L14             Cascade
 ```
@@ -119,15 +119,15 @@ Test X fails with error Y
 
 ```
 ANTI-PATTERN: Symptom Masking
-────────────────────────────
+
 Test fails → Add try/catch to suppress error
-             ✗ This masks the symptom, not fix root cause
+              This masks the symptom, not fix root cause
 
 CORRECT: Root Cause Fix
-───────────────────────
+
 Test fails → Trace to SPEC → Trace to REQ → Fix REQ
              Cascade fix through all layers
-             ✓ This fixes the actual problem
+              This fixes the actual problem
 ```
 
 ## 4. Step-by-Step Process

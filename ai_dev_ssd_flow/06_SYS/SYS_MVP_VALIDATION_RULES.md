@@ -13,14 +13,14 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Validates SYS-MVP-TEMPLATE.md (default)
+#  Document Role: Validates SYS-MVP-TEMPLATE.md (default)
 # - Authority: SYS-MVP-TEMPLATE.md is the primary standard for SYS structure; full template is archived
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from SYS_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to SYS-MVP-TEMPLATE.md
 # =============================================================================
 
-**📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
+** Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
  Apply these rules after SYS creation or modification
  **Authority**: Validates compliance with `SYS-MVP-TEMPLATE.md` (primary standard; full template archived)
  **Scope**: Use for quality gates before committing SYS changes
@@ -145,14 +145,14 @@ The SYS validation script ensures system requirements meet quality standards for
 - Architectural patterns align with ADR specifications
 - Performance targets meet ADR scalability requirements
 
-### CHECK 3: REQ-Ready Score Validation ⭐ NEW
+### CHECK 3: REQ-Ready Score Validation  NEW
 
 **Purpose**: Validate REQ-ready score format and threshold
 **Type**: Error (blocking)
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Valid Examples**: `[PASS] 95% (Target: ≥90%)`
 
-**Error Message**: `❌ MISSING: REQ-Ready Score with ✅ emoji and percentage`
+**Error Message**: `[FAIL] MISSING: REQ-Ready Score with [PASS] emoji and percentage`
 
 ### CHECK 4: Quality Attribute Quantification
 
@@ -200,7 +200,7 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ---
 
-### CHECK 8: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+### CHECK 8: Universal Splitting Trigger (Size/Cardinality)  NEW
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 **Type**: Error (blocking)
 
@@ -210,9 +210,9 @@ The SYS validation script ensures system requirements meet quality standards for
 
 **Action**: Move to `06_SYS/SYS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
 
-### CHECK 9: Element ID Format Compliance ⭐ NEW
+### CHECK 9: Element ID Format Compliance  NEW
 
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
@@ -220,11 +220,11 @@ The SYS validation script ensures system requirements meet quality standards for
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `### SYS.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `### FR-XXX` | ❌ Fail - use SYS.NN.01.SS |
-| Removed pattern | `### QA-XXX` | ❌ Fail - use SYS.NN.02.SS |
-| Removed pattern | `### UC-XXX` | ❌ Fail - use SYS.NN.11.SS |
-| Removed pattern | `### SR-XXX` | ❌ Fail - use SYS.NN.26.SS |
+| Valid format | `### SYS.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `### FR-XXX` | [FAIL] Fail - use SYS.NN.01.SS |
+| Removed pattern | `### QA-XXX` | [FAIL] Fail - use SYS.NN.02.SS |
+| Removed pattern | `### UC-XXX` | [FAIL] Fail - use SYS.NN.11.SS |
+| Removed pattern | `### SR-XXX` | [FAIL] Fail - use SYS.NN.26.SS |
 
 **Regex**: `^###\s+SYS\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -243,7 +243,7 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ---
 
-### CHECK 10: Deployment Requirements Completeness ⭐ NEW
+### CHECK 10: Deployment Requirements Completeness  NEW
 
 **Purpose**: Verify Section 9.1 Deployment Requirements includes all required subsections with either details or appropriate NA markings.
 **Type**: Warning
@@ -275,13 +275,13 @@ The SYS validation script ensures system requirements meet quality standards for
 **Architectural Principle**: Deployment infrastructure is a **system-level concern**, not an atomic requirement. When no infrastructure changes are needed, mark subsections as NA rather than omitting them.
 
 **Error Messages**:
-- Missing: `❌ ERROR: Section 9.1 missing subsection [9.1.x]`
-- Empty without NA: `⚠️ WARNING: Subsection [9.1.x] present but empty. Mark as NA with rationale or provide details.`
-- NA without rationale: `⚠️ WARNING: Subsection [9.1.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
+- Missing: `[FAIL] ERROR: Section 9.1 missing subsection [9.1.x]`
+- Empty without NA: `[WARN] WARNING: Subsection [9.1.x] present but empty. Mark as NA with rationale or provide details.`
+- NA without rationale: `[WARN] WARNING: Subsection [9.1.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
 
 ---
 
-### CHECK 11: Operational Requirements Completeness ⭐ NEW
+### CHECK 11: Operational Requirements Completeness  NEW
 
 **Purpose**: Verify Section 9.2 Operational Requirements includes all required subsections with either details or appropriate NA markings.
 **Type**: Warning
@@ -308,9 +308,9 @@ The SYS validation script ensures system requirements meet quality standards for
 **Architectural Principle**: Operational requirements are **system-level concerns**, not atomic requirements. When no operational changes are needed, mark subsections as NA rather than omitting them.
 
 **Error Messages**:
-- Missing: `❌ ERROR: Section 9.2 missing subsection [9.2.x]`
-- Empty without NA: `⚠️ WARNING: Subsection [9.2.x] present but empty. Mark as NA with rationale or provide details.`
-- NA without rationale: `⚠️ WARNING: Subsection [9.2.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
+- Missing: `[FAIL] ERROR: Section 9.2 missing subsection [9.2.x]`
+- Empty without NA: `[WARN] WARNING: Subsection [9.2.x] present but empty. Mark as NA with rationale or provide details.`
+- NA without rationale: `[WARN] WARNING: Subsection [9.2.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
 
 ---
 
@@ -342,7 +342,7 @@ python 06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-01_system_requirements.md
 find docs/SYS -name "SYS-*.md" -exec python 06_SYS/scripts/validate_sys.py {} \;
 ```
 
-### REQ-Ready Scoring Criteria ⭐ NEW
+### REQ-Ready Scoring Criteria  NEW
 
 **Requirements Decomposition Clarity (35%)**:
 - System boundaries with acceptance/failure scopes: 15%
@@ -380,26 +380,26 @@ find docs/SYS -name "SYS-*.md" -exec python 06_SYS/scripts/validate_sys.py {} \;
 
 ### Mistake #1: ADR Non-Compliance
 ```
-❌ SYS specifies MongoDB when ADR selected PostgreSQL
-✅ Align SYS technology selections with ADR decisions
+[FAIL] SYS specifies MongoDB when ADR selected PostgreSQL
+[PASS] Align SYS technology selections with ADR decisions
 ```
 
 ### Mistake #2: Unquantified Quality Attributes
 ```
-❌ System shall be highly available
-✅ System shall maintain 99.9% uptime during business hours
+[FAIL] System shall be highly available
+[PASS] System shall maintain 99.9% uptime during business hours
 ```
 
 ### Mistake #3: REQ-Ready Score Format
 ```
-❌ REQ-Ready Score: 95%
-✅ REQ-Ready Score: ✅ 95% (Target: ≥90%)
+[FAIL] REQ-Ready Score: 95%
+[PASS] REQ-Ready Score: [PASS] 95% (Target: ≥90%)
 ```
 
 ### Mistake #4: Incomplete Traceability
 ```
-❌ @brd: BRD-01
-✅ @brd: BRD.01.01.30, @prd: PRD.03.01.02
+[FAIL] @brd: BRD-01
+[PASS] @brd: BRD.01.01.30, @prd: PRD.03.01.02
 ```
 
 ---

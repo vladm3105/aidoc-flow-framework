@@ -14,7 +14,7 @@ The ADR framework is in **good condition** with only minor formatting inconsiste
 ### Medium Issues Found: 0
 ### Minor Issues Found: 2
 
-**Overall Status**: ✅ Framework is production-ready with minor optional improvements.
+**Overall Status**: [PASS] Framework is production-ready with minor optional improvements.
 
 ---
 
@@ -93,33 +93,33 @@ The ADR framework is in **good condition** with only minor formatting inconsiste
 
 ## Framework Status Overview
 
-### Template Consistency ✅
+### Template Consistency [PASS]
 | Aspect | Status |
 |--------|--------|
-| YAML Template (ADR-MVP-TEMPLATE.yaml) | ✅ Valid |
-| MD Template (ADR-MVP-TEMPLATE.md) | ✅ Valid, 11 sections |
-| Templates synchronized | ✅ Yes |
+| YAML Template (ADR-MVP-TEMPLATE.yaml) | [PASS] Valid |
+| MD Template (ADR-MVP-TEMPLATE.md) | [PASS] Valid, 11 sections |
+| Templates synchronized | [PASS] Yes |
 
-### Layer Number Consistency ✅
+### Layer Number Consistency [PASS]
 | File | Layer | Status |
 |------|-------|--------|
-| README.md | 5 | ✅ Correct |
-| ADR-MVP-TEMPLATE.md | 5 | ✅ Correct |
-| ADR_MVP_CREATION_RULES.md | 5 | ✅ Correct |
-| ADR_MVP_VALIDATION_RULES.md | 5 | ✅ Correct |
-| ADR_MVP_SCHEMA.yaml | 5 | ✅ Correct |
+| README.md | 5 | [PASS] Correct |
+| ADR-MVP-TEMPLATE.md | 5 | [PASS] Correct |
+| ADR_MVP_CREATION_RULES.md | 5 | [PASS] Correct |
+| ADR_MVP_VALIDATION_RULES.md | 5 | [PASS] Correct |
+| ADR_MVP_SCHEMA.yaml | 5 | [PASS] Correct |
 
-### YAML Syntax ✅
+### YAML Syntax [PASS]
 | File | Status |
 |------|--------|
-| ADR-MVP-TEMPLATE.yaml | ✅ Valid |
-| ADR_MVP_SCHEMA.yaml | ✅ Valid |
+| ADR-MVP-TEMPLATE.yaml | [PASS] Valid |
+| ADR_MVP_SCHEMA.yaml | [PASS] Valid |
 
 ### Example Files Status
 | File | Sections | Decision IDs | Alternative IDs | Status |
 |------|----------|--------------|-----------------|--------|
-| ADR-01_database_selection.md | 15 | ⚠️ Missing | ⚠️ Missing | ⚠️ Incomplete |
-| ADR-02_api_architecture.md | 16 | ⚠️ Missing | ⚠️ Missing | ⚠️ Incomplete |
+| ADR-01_database_selection.md | 15 | [WARN] Missing | [WARN] Missing | [WARN] Incomplete |
+| ADR-02_api_architecture.md | 16 | [WARN] Missing | [WARN] Missing | [WARN] Incomplete |
 
 ---
 
@@ -127,17 +127,17 @@ The ADR framework is in **good condition** with only minor formatting inconsiste
 
 The ADR-MVP-TEMPLATE.md defines these sections:
 
-1. ✅ Document Control
-2. ✅ Context
-3. ✅ Decision (expects ADR.NN.10.SS format)
-4. ✅ Alternatives Considered (expects ADR.NN.12.SS format)
-5. ✅ Consequences
-6. ✅ Architecture Flow
-7. ✅ Implementation Assessment
-8. ✅ Verification
-9. ✅ Traceability
-10. ✅ Related Decisions
-11. ✅ Migration to Full ADR Template
+1. [PASS] Document Control
+2. [PASS] Context
+3. [PASS] Decision (expects ADR.NN.10.SS format)
+4. [PASS] Alternatives Considered (expects ADR.NN.12.SS format)
+5. [PASS] Consequences
+6. [PASS] Architecture Flow
+7. [PASS] Implementation Assessment
+8. [PASS] Verification
+9. [PASS] Traceability
+10. [PASS] Related Decisions
+11. [PASS] Migration to Full ADR Template
 
 ---
 
@@ -161,11 +161,11 @@ The ADR-MVP-TEMPLATE.md defines these sections:
 
 | Check | Status |
 |-------|--------|
-| YAML Syntax | ✅ All valid |
-| Layer Numbers | ✅ All correct (Layer 5) |
-| Template Consistency | ✅ MD and YAML match |
-| Threshold References | ✅ Present |
-| Example Compliance | ⚠️ Missing formal IDs |
+| YAML Syntax | [PASS] All valid |
+| Layer Numbers | [PASS] All correct (Layer 5) |
+| Template Consistency | [PASS] MD and YAML match |
+| Threshold References | [PASS] Present |
+| Example Compliance | [WARN] Missing formal IDs |
 
 ---
 
@@ -173,11 +173,11 @@ The ADR-MVP-TEMPLATE.md defines these sections:
 
 | Framework | Critical Issues | Status |
 |-----------|----------------|--------|
-| 09_SPEC | Fixed ✅ | Excellent |
-| 08_CTR | Fixed ✅ | Excellent |
-| 07_REQ | Fixed ✅ | Excellent |
-| 06_SYS | Fixed ✅ | Excellent |
-| 05_ADR | 0 | ✅ Excellent (minor optional fixes) |
+| 09_SPEC | Fixed [PASS] | Excellent |
+| 08_CTR | Fixed [PASS] | Excellent |
+| 07_REQ | Fixed [PASS] | Excellent |
+| 06_SYS | Fixed [PASS] | Excellent |
+| 05_ADR | 0 | [PASS] Excellent (minor optional fixes) |
 
 ---
 

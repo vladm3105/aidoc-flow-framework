@@ -18,7 +18,7 @@ Enhanced the GATE-05 Inter-REQ Cross-Linking validator to automatically detect a
 ### After
 - **Critical Case**: If `isolated_files == total_files` (all files isolated)
   - **Status**: ERROR (blocking, increments ERRORS counter)
-  - **Output**: `✗ GATE-05 ERROR: ALL <N> files have no cross-references (corpus completely isolated)`
+  - **Output**: ` GATE-05 ERROR: ALL <N> files have no cross-references (corpus completely isolated)`
   - **Auto-Fix**: Automatically invokes `/tmp/add_cross_refs.py` to inject theme-based cross-references
   - **Recovery**: User instructed to re-run validation
 
@@ -43,7 +43,7 @@ local isolated=0           # Count isolated files
 ```bash
 elif [[ $isolated -eq $total_files && $total_files -gt 0 ]]; then
     # CRITICAL: ALL files are isolated - corpus has no cross-linking
-    echo -e "${RED}  ✗ GATE-05 ERROR: ALL $total_files files have no cross-references..."
+    echo -e "${RED}   GATE-05 ERROR: ALL $total_files files have no cross-references..."
     ((ERRORS++)) || true
     
     # Run the cross-reference script if available
@@ -75,7 +75,7 @@ fi
 
 ```
 --- GATE-05: Inter-REQ Cross-Linking (Informational; Error if All Isolated) ---
-  ✗ GATE-05 ERROR: ALL 85 files have no cross-references (corpus completely isolated)
+   GATE-05 ERROR: ALL 85 files have no cross-references (corpus completely isolated)
   → Attempting auto-fix: running cross-reference injection script
   → Executing: python3 /tmp/add_cross_refs.py
     Updated REQ-11.01_llm_model_registry.md
@@ -99,7 +99,7 @@ fi
 
 ```
 --- GATE-05: Inter-REQ Cross-Linking (Informational; Error if All Isolated) ---
-  ✓ No isolated requirements found
+   No isolated requirements found
 ```
 
 ## Integration with Validation Suite
@@ -121,9 +121,9 @@ cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ && \
 
 ## Deployment Status
 
-✅ **Deployed**: `validate_req_quality_score.sh`  
-✅ **Dependencies**: `/tmp/add_cross_refs.py` (must exist)  
-✅ **Tested**: REQ-11 corpus (85 files)
+[PASS] **Deployed**: `validate_req_quality_score.sh`  
+[PASS] **Dependencies**: `/tmp/add_cross_refs.py` (must exist)  
+[PASS] **Tested**: REQ-11 corpus (85 files)
 
 ## Future Enhancements
 

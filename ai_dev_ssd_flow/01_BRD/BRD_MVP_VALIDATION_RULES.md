@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Validates BRD-MVP-TEMPLATE.md (default)
+#  Document Role: Validates BRD-MVP-TEMPLATE.md (default)
 # - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from BRD_MVP_CREATION_RULES.md plus validation extensions
@@ -33,7 +33,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for BRD documents.
+> ** Document Role**: This is the **POST-CREATION VALIDATOR** for BRD documents.
 > - Apply these rules after BRD creation or modification
 > - **Authority**: Validates compliance with `BRD-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing BRD changes
@@ -272,7 +272,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 **Error Message**:
 ```
-❌ MISSING: ## 2. Business Objectives
+[FAIL] MISSING: ## 2. Business Objectives
 ```
 
 **Fix**:
@@ -294,7 +294,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - Document Owner
 - Prepared By
 - Status
-- PRD-Ready Score (⭐ NEW - v1.1)
+- PRD-Ready Score ( NEW - v1.1)
 
 **MVP Template Additional Fields** (optional for validation):
 - MVP Target Launch
@@ -303,11 +303,11 @@ These fields are recognized but not required by validation.
 
 **Error Message**:
 ```
-❌ MISSING: Document Owner
-❌ MISSING: Prepared By
-❌ MISSING: PRD-Ready Score
-❌ MISSING: Status
-❌ MISSING: PRD-Ready Score
+[FAIL] MISSING: Document Owner
+[FAIL] MISSING: Prepared By
+[FAIL] MISSING: PRD-Ready Score
+[FAIL] MISSING: Status
+[FAIL] MISSING: PRD-Ready Score
 ```
 
 **Fix**:
@@ -334,7 +334,7 @@ These fields are recognized but not required by validation.
 
 **Error Message**:
 ```
-❌ MISSING: Document Revision History entries
+[FAIL] MISSING: Document Revision History entries
 ```
 
 **Fix**:
@@ -354,18 +354,18 @@ These fields are recognized but not required by validation.
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `BRD-01_platform_architecture_technology_stack.md` ✅ (Platform BRD)
-- `BRD-06_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
-- `BRD-09.1_provider_integration_prerequisites.md` ✅ (Feature BRD section file)
-- `BRD-REF-01_glossary_financial_terms.md` ✅ (Reference document)
-- `BRD-REF-02_regulatory_standards_matrix.md` ✅ (Reference document)
+- `BRD-01_platform_architecture_technology_stack.md` [PASS] (Platform BRD)
+- `BRD-06_b2c_progressive_kyc_onboarding.md` [PASS] (Feature BRD)
+- `BRD-09.1_provider_integration_prerequisites.md` [PASS] (Feature BRD section file)
+- `BRD-REF-01_glossary_financial_terms.md` [PASS] (Reference document)
+- `BRD-REF-02_regulatory_standards_matrix.md` [PASS] (Reference document)
 
 **Invalid Examples**:
-- `BRD-01.md` ❌ (missing description)
-- `brd-001_platform.md` ❌ (wrong case)
-- `BRD001_platform.md` ❌ (missing hyphen)
-- `BRD-01_Platform_Architecture.md` ❌ (uppercase in slug)
-- `BRD-REF001_glossary.md` ❌ (missing hyphen after REF)
+- `BRD-01.md` [FAIL] (missing description)
+- `brd-001_platform.md` [FAIL] (wrong case)
+- `BRD001_platform.md` [FAIL] (missing hyphen)
+- `BRD-01_Platform_Architecture.md` [FAIL] (uppercase in slug)
+- `BRD-REF001_glossary.md` [FAIL] (missing hyphen after REF)
 
 **Patterns**:
 - Platform/Feature BRD: `BRD-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md`
@@ -373,10 +373,10 @@ These fields are recognized but not required by validation.
 
 **Error Messages**:
 ```
-❌ ERROR: Invalid filename format: brd-001_platform.md
+[FAIL] ERROR: Invalid filename format: brd-001_platform.md
          Expected: BRD-NN_descriptive_title.md or BRD-NN-YY_descriptive_title.md
 
-❌ ERROR: Filename doesn't match Platform, Feature, or Reference BRD pattern
+[FAIL] ERROR: Filename doesn't match Platform, Feature, or Reference BRD pattern
          Platform: BRD-NN_platform_* or BRD-NN_infrastructure_*
          Feature: BRD-NN_{feature_name}
          Reference: BRD-REF-NN_{descriptive_slug}
@@ -420,15 +420,15 @@ These fields are recognized but not required by validation.
 
 **Error Message**:
 ```
-❌ ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
-❌ ERROR: Feature BRD missing required section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Feature BRD missing required section 3.7 (Mandatory Technology Conditions)
+[FAIL] ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
+[FAIL] ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
+[FAIL] ERROR: Feature BRD missing required section 3.6 (Technology Stack Prerequisites)
+[FAIL] ERROR: Feature BRD missing required section 3.7 (Mandatory Technology Conditions)
 ```
 
 **Info Message** (for BRD-REF):
 ```
-ℹ️  INFO: BRD-REF document detected - applying reduced validation
+ℹ  INFO: BRD-REF document detected - applying reduced validation
          Checks 5-24 exempt for reference documents
          Validating: Document Control, Revision History, Introduction, H1 ID match
 ```
@@ -450,9 +450,9 @@ These fields are recognized but not required by validation.
 
 **Error Message**:
 ```
-❌ MISSING: section 7.2 Architecture Decision Requirements
-❌ ERROR: section 7.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
-❌ ERROR: section 7.2 must identify at least 3 architectural topics
+[FAIL] MISSING: section 7.2 Architecture Decision Requirements
+[FAIL] ERROR: section 7.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
+[FAIL] ERROR: section 7.2 must identify at least 3 architectural topics
 ```
 
 **Fix**:
@@ -486,9 +486,9 @@ These fields are recognized but not required by validation.
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Business objective missing measurable target: "Improve system performance"
-⚠️  WARNING: Business objective missing time-bound criteria: "Increase revenue"
-⚠️  WARNING: Business objectives should include quantifiable metrics (e.g., "50%", "$5M", "5 seconds")
+[WARN]  WARNING: Business objective missing measurable target: "Improve system performance"
+[WARN]  WARNING: Business objective missing time-bound criteria: "Increase revenue"
+[WARN]  WARNING: Business objectives should include quantifiable metrics (e.g., "50%", "$5M", "5 seconds")
 ```
 
 **Fix**:
@@ -512,9 +512,9 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Business acceptance criteria missing quantifiable measures
-⚠️  WARNING: Functional acceptance criteria not mapped to specific BRD.NN.EE.SS IDs
-⚠️  WARNING: Success metrics table missing owners or measurement frequency
+[WARN]  WARNING: Business acceptance criteria missing quantifiable measures
+[WARN]  WARNING: Functional acceptance criteria not mapped to specific BRD.NN.EE.SS IDs
+[WARN]  WARNING: Success metrics table missing owners or measurement frequency
 ```
 
 **Fix**:
@@ -537,17 +537,17 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 **Type**: Error (blocking)
 
 **Prohibited References**:
-- `ADR-XXX`, `ADR-012`, `ADR-033` ❌
-- Links to ADR files ❌
-- Specific ADR numbers in any context ❌
+- `ADR-XXX`, `ADR-012`, `ADR-033` [FAIL]
+- Links to ADR files [FAIL]
+- Specific ADR numbers in any context [FAIL]
 
 **Allowed References**:
-- "Architecture Decision Requirements" section ✅
-- Generic references to future ADR process ✅
+- "Architecture Decision Requirements" section [PASS]
+- Generic references to future ADR process [PASS]
 
 **Error Message**:
 ```
-❌ ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
+[FAIL] ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
          BRDs are created BEFORE ADRs - only identify decision topics in section 7.2
          Found: ADR-033_risk_architecture.md
 ```
@@ -573,9 +573,9 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Business objective missing strategy document reference
-⚠️  WARNING: No references to domain-specific business logic documents found
-⚠️  WARNING: Strategic alignment references should include specific sections
+[WARN]  WARNING: Business objective missing strategy document reference
+[WARN]  WARNING: No references to domain-specific business logic documents found
+[WARN]  WARNING: Strategic alignment references should include specific sections
 ```
 
 **Fix**:
@@ -602,20 +602,20 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 **Invalid Examples**:
 ```markdown
-[PRD-01](../../02_PRD/PRD-01.md) ❌ (missing relative path)
-[BRD-999](../../01_BRD/BRD-999.md) ❌ (file doesn't exist)
+[PRD-01](../../02_PRD/PRD-01.md) [FAIL] (missing relative path)
+[BRD-999](../../01_BRD/BRD-999.md) [FAIL] (file doesn't exist)
 ```
 
 **Error Message** (blocking):
 ```
-❌ ERROR: Broken link - file not found
+[FAIL] ERROR: Broken link - file not found
          Link: ../../02_PRD/PRD-999_product_requirements.md
          Resolved: /opt/data/docs_flow_framework/docs/02_PRD/PRD-999_product_requirements.md
 ```
 
 **Warning Message**:
 ```
-⚠️  WARNING: Link exists but anchor missing: #BRD.NN.23.01 not found in target document
+[WARN]  WARNING: Link exists but anchor missing: #BRD.NN.23.01 not found in target document
 ```
 
 **Fix**:
@@ -637,9 +637,9 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Out-of-scope items section is minimal or empty
-⚠️  WARNING: Out-of-scope items missing clear rationale
-⚠️  WARNING: Critical business functions not explicitly included/excluded
+[WARN]  WARNING: Out-of-scope items section is minimal or empty
+[WARN]  WARNING: Out-of-scope items missing clear rationale
+[WARN]  WARNING: Critical business functions not explicitly included/excluded
 ```
 
 **Fix**:
@@ -655,33 +655,33 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 ---
 
-### CHECK 13: PRD-Ready Score Validation ⭐ NEW
+### CHECK 13: PRD-Ready Score Validation  NEW
 
 **Purpose**: Validate PRD-Ready Score format and threshold (BRD v1.1 enhancement)
 **Type**: Error (blocking) - Required for BRD documents
 
 **Valid Examples**:
-- `95/100 (Target: ≥90/100)` ✅
-- `✅ 92/100 (Target: ≥90/100)` ✅
+- `95/100 (Target: ≥90/100)` [PASS]
+- `[PASS] 92/100 (Target: ≥90/100)` [PASS]
 
 **Invalid Examples**:
-- `95%` ❌
-- `65/100` with missing target clause ❌
-- `High` ❌
+- `95%` [FAIL]
+- `65/100` with missing target clause [FAIL]
+- `High` [FAIL]
 
 **Error Message** (format):
 ```
-❌ MISSING: PRD-Ready Score in format: [Score]/100 (Target: ≥90/100)
+[FAIL] MISSING: PRD-Ready Score in format: [Score]/100 (Target: ≥90/100)
 ```
 
 **Warning Message** (threshold):
 ```
-⚠️  WARNING: PRD-Ready Score below 90/100: 85/100
+[WARN]  WARNING: PRD-Ready Score below 90/100: 85/100
 ```
 
 **Error Message** (threshold blocking):
 ```
-❌ ERROR: PRD-Ready Score below minimum threshold: 65/100
+[FAIL] ERROR: PRD-Ready Score below minimum threshold: 65/100
 Target: ≥90/100
 Current score fails to meet business-level content requirements.
 
@@ -794,7 +794,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Total Deductions**: 20 + 16 + 8 + 10 + 2 = 56 points
 
-**PRD-Ready Score**: 100 - 56 = **44/100** ❌
+**PRD-Ready Score**: 100 - 56 = **44/100** [FAIL]
 
 **Validation Result**: **FAIL** (Target: ≥90/100)
 
@@ -812,7 +812,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Total Deductions**: 0 points
 
-**PRD-Ready Score**: 100 - 0 = **100/100** ✅
+**PRD-Ready Score**: 100 - 0 = **100/100** [PASS]
 
 **Validation Result**: **PASS** (Exceeds ≥90/100 target)
 
@@ -827,9 +827,9 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Step 5**: Generate detailed feedback report
 
 **Validation Outcome**:
-- **Score ≥90/100**: ✅ PASS - BRD ready for PRD development
-- **Score 70-89/100**: ⚠️  WARNING - Moderate PRD-level contamination, refactoring recommended
-- **Score <70/100**: ❌ FAIL - Heavy PRD-level contamination, major refactoring required
+- **Score ≥90/100**: [PASS] PASS - BRD ready for PRD development
+- **Score 70-89/100**: [WARN]  WARNING - Moderate PRD-level contamination, refactoring recommended
+- **Score <70/100**: [FAIL] FAIL - Heavy PRD-level contamination, major refactoring required
 
 **Fix**:
 1. Run automated validation script: `./01_BRD/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-XXX.md`
@@ -842,7 +842,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 ---
 
-### CHECK 14: Code Blocks in Functional Requirements ⭐ NEW
+### CHECK 14: Code Blocks in Functional Requirements  NEW
 
 **Purpose**: Prevent PRD-level technical implementation from appearing in BRD Functional Requirements
 **Type**: Error (blocking) - Code blocks are strictly prohibited in BRD FRs
@@ -850,12 +850,12 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Scan Pattern**: Search for triple backticks (```) within section 4 (Functional Requirements)
 
 **Prohibited Content**:
-- ❌ Python/JavaScript/SQL code blocks
-- ❌ JSON/YAML/XML schema examples
-- ❌ API request/response examples
-- ❌ Pseudocode or algorithm implementations
-- ❌ Database query examples
-- ❌ Configuration file snippets
+- [FAIL] Python/JavaScript/SQL code blocks
+- [FAIL] JSON/YAML/XML schema examples
+- [FAIL] API request/response examples
+- [FAIL] Pseudocode or algorithm implementations
+- [FAIL] Database query examples
+- [FAIL] Configuration file snippets
 
 **Exception**: Business process flowcharts using Mermaid diagrams showing business states only (NOT technical implementation)
 
@@ -877,7 +877,7 @@ def calculate_fee(amount):
 
 **Error Message**:
 ```
-❌ ERROR: Code block found in Functional Requirements (section 4)
+[FAIL] ERROR: Code block found in Functional Requirements (section 4)
 Line X: ```python (or ```json, ```sql, etc.)
 
 Code blocks are PRD-level content and must be removed from BRDs.
@@ -894,7 +894,7 @@ Code blocks are PRD-level content and must be removed from BRDs.
 
 ---
 
-### CHECK 15: API/Technical Terminology in Functional Requirements ⭐ NEW
+### CHECK 15: API/Technical Terminology in Functional Requirements  NEW
 
 **Purpose**: Prevent technical API/database terminology from appearing in business-level FRs
 **Type**: Warning (non-blocking) - Technical terms indicate potential PRD-level contamination
@@ -910,14 +910,14 @@ Code blocks are PRD-level content and must be removed from BRDs.
 - **Infrastructure**: transaction (when referring to database transaction vs business transaction)
 
 **Business-Level Alternatives**:
-- ✅ "Customer submits transaction details" (NOT "POST /api/v1/transactions")
-- ✅ "System validates customer identity" (NOT "Query users table WHERE user_id = X")
-- ✅ "Platform receives transaction confirmation" (NOT "API returns 200 OK with JSON response")
-- ✅ "Customer provides funding source information" (NOT "Request body contains card_id field")
+- [PASS] "Customer submits transaction details" (NOT "POST /api/v1/transactions")
+- [PASS] "System validates customer identity" (NOT "Query users table WHERE user_id = X")
+- [PASS] "Platform receives transaction confirmation" (NOT "API returns 200 OK with JSON response")
+- [PASS] "Customer provides funding source information" (NOT "Request body contains card_id field")
 
 **Warning Message**:
 ```
-⚠️  WARNING: Technical terminology found in Functional Requirements
+[WARN]  WARNING: Technical terminology found in Functional Requirements
 Line X: "POST /api/v1/transactions" - API endpoint specification
 Line Y: "Query database for recipient status" - Database implementation detail
 
@@ -937,7 +937,7 @@ See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template arc
 
 ---
 
-### CHECK 16: UI-Specific Language in Functional Requirements ⭐ NEW
+### CHECK 16: UI-Specific Language in Functional Requirements  NEW
 
 **Purpose**: Prevent UI implementation details from appearing in business-level FRs
 **Type**: Warning (non-blocking) - UI terms indicate potential PRD-level contamination
@@ -952,14 +952,14 @@ See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template arc
 - **UI Layout**: top-right corner, left sidebar, main panel, above/below element
 
 **Business-Level Alternatives**:
-- ✅ "Customer selects recipient from saved list" (NOT "Customer clicks recipient dropdown and selects from list")
-- ✅ "Customer confirms transaction details" (NOT "Customer clicks 'Confirm' button in modal")
-- ✅ "System displays transaction status" (NOT "Status shown in top-right notification panel")
-- ✅ "Customer provides amount and funding source" (NOT "Customer enters amount in form field and selects card from dropdown")
+- [PASS] "Customer selects recipient from saved list" (NOT "Customer clicks recipient dropdown and selects from list")
+- [PASS] "Customer confirms transaction details" (NOT "Customer clicks 'Confirm' button in modal")
+- [PASS] "System displays transaction status" (NOT "Status shown in top-right notification panel")
+- [PASS] "Customer provides amount and funding source" (NOT "Customer enters amount in form field and selects card from dropdown")
 
 **Warning Message**:
 ```
-⚠️  WARNING: UI-specific language found in Functional Requirements
+[WARN]  WARNING: UI-specific language found in Functional Requirements
 Line X: "Customer clicks 'Send Money' button" - UI implementation detail
 Line Y: "Modal displays recipient selection dropdown" - UI component specification
 
@@ -979,7 +979,7 @@ UI implementation details should be deferred to PRD.
 
 ---
 
-### CHECK 17: Functional Requirement 6-Subsection Structure ⭐ NEW
+### CHECK 17: Functional Requirement 6-Subsection Structure  NEW
 
 **Purpose**: Ensure all Functional Requirements use the standardized 4-subsection business-level format
 **Type**: Error (blocking) - All FRs must have complete subsection structure
@@ -1019,18 +1019,18 @@ UI implementation details should be deferred to PRD.
 
 **Error Message**:
 ```
-❌ ERROR: Functional Requirement BRD.NN.005 missing required subsections
+[FAIL] ERROR: Functional Requirement BRD.NN.005 missing required subsections
 Missing:
 - Business Capability
 - Complexity
 
 Found structure:
-✅ Business Requirements
-✅ Business Rules
-✅ Business Acceptance Criteria
-✅ Related Requirements
-❌ Business Capability
-❌ Complexity
+[PASS] Business Requirements
+[PASS] Business Rules
+[PASS] Business Acceptance Criteria
+[PASS] Related Requirements
+[FAIL] Business Capability
+[FAIL] Complexity
 
 Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full template archived)
 ```
@@ -1044,7 +1044,7 @@ Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full te
 
 ---
 
-### CHECK 18: Related Requirements Cross-Reference Validation ⭐ NEW
+### CHECK 18: Related Requirements Cross-Reference Validation  NEW
 
 **Purpose**: Ensure all Platform/Feature BRD cross-references in FRs are valid and exist
 **Type**: Warning (non-blocking) - Invalid cross-references reduce traceability
@@ -1064,14 +1064,14 @@ Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full te
 
 **Warning Message**:
 ```
-⚠️  WARNING: Invalid BRD cross-references in BRD.NN.005 Related Requirements
+[WARN]  WARNING: Invalid BRD cross-references in BRD.NN.005 Related Requirements
 - BRD-099: File not found (docs/01_BRD/BRD-099_*.md does not exist)
 - BRD-2: Invalid ID format (should be BRD-02)
 - BRD-01 referenced but file path broken
 
 Valid cross-references:
-✅ BRD-01 (Platform Architecture) - exists
-✅ BRD-NN (Wallet Funding) - exists
+[PASS] BRD-01 (Platform Architecture) - exists
+[PASS] BRD-NN (Wallet Funding) - exists
 
 Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 ```
@@ -1086,7 +1086,7 @@ Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 
 ---
 
-### CHECK 19: Executive Summary Structure ⭐ NEW
+### CHECK 19: Executive Summary Structure  NEW
 
 **Purpose**: Validate Executive Summary contains 6 required quantitative elements for business impact assessment
 **Type**: Warning (non-blocking) - Quantitative Executive Summary improves stakeholder comprehension
@@ -1128,7 +1128,7 @@ of **$500K-$750K** for platform development and regulatory compliance.
 
 **Warning Message**:
 ```
-⚠️  WARNING: Executive Summary missing quantitative elements
+[WARN]  WARNING: Executive Summary missing quantitative elements
 Missing elements:
 - Market data (no $ amount, user count, or % metric found)
 - Target segments sizing (no user or transaction volume mentioned)
@@ -1149,7 +1149,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 
 ---
 
-### CHECK 20: User Stories section ⭐ UPDATED 2025-11-26T00:00:00
+### CHECK 20: User Stories section  UPDATED 2025-11-26T00:00:00
 
 **Purpose**: Verify section 5 (User Stories) exists as HIGH-LEVEL SUMMARY (detailed user stories in PRD)
 **Type**: Error (blocking) - User Stories section mandatory in BRD, but simplified format
@@ -1162,7 +1162,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 ```markdown
 ## 5. User Stories (High-Level Summary)
 
-📚 Complete User Stories: For detailed user stories with acceptance criteria, permissions, and user roles, see:
+ Complete User Stories: For detailed user stories with acceptance criteria, permissions, and user roles, see:
 - [PRD MVP Template - User Stories & User Roles section](../02_PRD/PRD-MVP-TEMPLATE.md#user-stories--user-roles)
 
 ### Key User Story Categories
@@ -1186,7 +1186,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 
 **Error Message**:
 ```
-❌ MISSING: section 5 (User Stories)
+[FAIL] MISSING: section 5 (User Stories)
 Required in BRD template (simplified format as of 2025-11-26T00:00:00)
 
 Add section with high-level summary:
@@ -1199,7 +1199,7 @@ Reference: BRD-MVP-TEMPLATE.md section 5 (lines 453-488; full template archived)
 
 **Warning Message** (quality issues):
 ```
-⚠️  WARNING: section 5 should be high-level summary only
+[WARN]  WARNING: section 5 should be high-level summary only
 Issues found:
 - Contains detailed user story tables (belongs in PRD)
 - Contains acceptance criteria (belongs in PRD)
@@ -1218,7 +1218,7 @@ Fix: Simplify to high-level summary and add PRD reference link
 
 ---
 
-### CHECK 21: Workflow Diagrams ⭐ NEW
+### CHECK 21: Workflow Diagrams  NEW
 
 **Purpose**: Validate sections 3.5.4-3.5.5 contain required Mermaid workflow diagrams
 **Type**: Warning (non-blocking) - Workflow diagrams improve business process clarity
@@ -1260,7 +1260,7 @@ sequenceDiagram
 
 **Warning Message**:
 ```
-⚠️  WARNING: Workflow diagrams missing or incomplete
+[WARN]  WARNING: Workflow diagrams missing or incomplete
 Missing sections:
 - section 3.5.4 (End-to-End Workflow) not found
 - section 3.5.5 (Exception Handling) not found
@@ -1285,7 +1285,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 
 ---
 
-### CHECK 22: Traceability Matrix ⭐ NEW
+### CHECK 22: Traceability Matrix  NEW
 
 **Purpose**: Verify section 15 (Traceability) contains complete bidirectional requirements mapping
 **Type**: Error (blocking) - Traceability mandatory in BRD v1.1
@@ -1313,7 +1313,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 
 **Error Message**:
 ```
-❌ MISSING: section 15 (Traceability)
+[FAIL] MISSING: section 15 (Traceability)
 Required in BRD v1.1 template
 
 Add section with structure:
@@ -1330,7 +1330,7 @@ Reference: BRD-MVP-TEMPLATE.md section 15 (full template archived)
 
 **Warning Message** (orphan detection):
 ```
-⚠️  WARNING: Traceability orphans detected
+[WARN]  WARNING: Traceability orphans detected
 Orphaned Requirements:
 - BRD.NN.23.03: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
 - BRD.NN.012: Not linked to any Business Objective
@@ -1361,7 +1361,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 
 ---
 
-### CHECK 23: Approval and Sign-off section ⭐ NEW
+### CHECK 23: Approval and Sign-off section  NEW
 
 **Purpose**: Verify section 14.5 (Approval and Sign-off) contains approval workflow and change control
 **Type**: Error (blocking) - Approval process mandatory in BRD v1.1
@@ -1382,7 +1382,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 
 **Error Message**:
 ```
-❌ MISSING: section 14.5 (Approval and Sign-off)
+[FAIL] MISSING: section 14.5 (Approval and Sign-off)
 Required in BRD v1.1 template
 
 Add subsection within section 14 (Project Governance):
@@ -1414,7 +1414,7 @@ Reference: BRD-MVP-TEMPLATE.md section 14.5 (full template archived)
 
 **Warning Message** (incomplete approval table):
 ```
-⚠️  WARNING: Incomplete approval workflow in section 14.5
+[WARN]  WARNING: Incomplete approval workflow in section 14.5
 Issues found:
 - Approval table missing Compliance Lead (required for regulatory projects)
 - Approval Criteria lists only 3 conditions (minimum 5 required)
@@ -1439,7 +1439,7 @@ Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (ful
 
 ---
 
-### CHECK 24: Glossary Subsections ⭐ NEW
+### CHECK 24: Glossary Subsections  NEW
 
 **Purpose**: Verify section 17 (Glossary) contains all 6 required subsections for comprehensive terminology documentation
 **Type**: Warning (non-blocking) - Complete glossary improves document clarity and reduces ambiguity
@@ -1467,7 +1467,7 @@ Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (ful
 
 **Warning Message**:
 ```
-⚠️  WARNING: Incomplete Glossary structure in section 17
+[WARN]  WARNING: Incomplete Glossary structure in section 17
 Missing subsections:
 - 17.3 Domain-Specific Terms not found
 - 17.5 Cross-References not found
@@ -1533,19 +1533,19 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 
 ---
 
-### CHECK 25: Element ID Format Compliance ⭐ NEW
+### CHECK 25: Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `### BRD.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `### AC-XXX` | ❌ Fail - use BRD.NN.06.SS |
-| Removed pattern | `### FR-XXX` | ❌ Fail - use BRD.NN.01.SS |
-| Removed pattern | `### BC-XXX` | ❌ Fail - use BRD.NN.03.SS |
-| Removed pattern | `### BO-XXX` | ❌ Fail - use BRD.NN.23.SS |
-| Removed pattern | `### QA-XXX` | ❌ Fail - use BRD.NN.02.SS |
+| Valid format | `### BRD.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `### AC-XXX` | [FAIL] Fail - use BRD.NN.06.SS |
+| Removed pattern | `### FR-XXX` | [FAIL] Fail - use BRD.NN.01.SS |
+| Removed pattern | `### BC-XXX` | [FAIL] Fail - use BRD.NN.03.SS |
+| Removed pattern | `### BO-XXX` | [FAIL] Fail - use BRD.NN.23.SS |
+| Removed pattern | `### QA-XXX` | [FAIL] Fail - use BRD.NN.02.SS |
 
 **Regex**: `^###\s+BRD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -1581,7 +1581,7 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 | **CHECK 6** | Add section 7.2 with table structure and at least 3 architectural topics |
 | **CHECK 9** | Remove ADR-NN references; ensure ADRs only identified as topics in section 7.2 |
 | **CHECK 11** | Fix broken links, use relative paths, verify target files exist |
-| **CHECK 13** | Add PRD-Ready Score to Document Control: `✅ [Score]/100 (Target: ≥90/100)` |
+| **CHECK 13** | Add PRD-Ready Score to Document Control: `[PASS] [Score]/100 (Target: ≥90/100)` |
 | **CHECK 14** | Remove all code blocks (```) from section 4 FRs; replace with business-level descriptions |
 | **CHECK 15** | Replace API/technical terms (POST, GET, JSON, database, query) with business-level language |
 | **CHECK 16** | Replace UI terms (button, modal, click, screen) with business action descriptions |
@@ -1635,7 +1635,7 @@ find docs/BRD -type f -name "BRD-*.md" -exec ./01_BRD/scripts/validate_brd.py {}
 
 **Failure**:
 ```
-❌ FAILED: 3 critical errors found
+[FAIL] FAILED: 3 critical errors found
 
 Errors: 3
 Warnings: 1
@@ -1657,9 +1657,9 @@ Warnings: 1
 
 **Error**:
 ```
-❌ MISSING: Document Owner
-❌ MISSING: Prepared By
-❌ MISSING: Status
+[FAIL] MISSING: Document Owner
+[FAIL] MISSING: Prepared By
+[FAIL] MISSING: Status
 ```
 
 **Cause**: Incomplete Document Control table
@@ -1682,7 +1682,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Invalid filename format: BRD-01.md
+[FAIL] ERROR: Invalid filename format: BRD-01.md
          Expected: BRD-NN_descriptive_title.md
 ```
 
@@ -1698,8 +1698,8 @@ Warnings: 1
 
 **Error**:
 ```
-❌ MISSING: section 7.2 Architecture Decision Requirements
-❌ ERROR: section 7.2 must identify at least 3 architectural topics
+[FAIL] MISSING: section 7.2 Architecture Decision Requirements
+[FAIL] ERROR: section 7.2 must identify at least 3 architectural topics
 ```
 
 **Cause**: Missing required section or empty/inadequate table
@@ -1721,7 +1721,7 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
+[FAIL] ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
          Found: ADR-033_risk_architecture.md
 ```
 
@@ -1738,8 +1738,8 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
+[FAIL] ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
+[FAIL] ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
 ```
 
 **Cause**: Platform BRD filename pattern but missing required technology sections
@@ -1755,8 +1755,8 @@ Warnings: 1
 
 **Warning**:
 ```
-⚠️  WARNING: Business objective missing measurable target: "Improve system performance"
-⚠️  WARNING: Business objective missing time-bound criteria: "Increase revenue"
+[WARN]  WARNING: Business objective missing measurable target: "Improve system performance"
+[WARN]  WARNING: Business objective missing time-bound criteria: "Increase revenue"
 ```
 
 **Cause**: Business objectives not following SMART criteria

@@ -55,12 +55,12 @@ REQs create the **formal contract** for system behavior by:
 
 ## Position in Document Workflow
 
-**⚠️ See [index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 REQs are the **testable specification layer** that operationalizes business requirements within the complete SDD workflow:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## REQ Document Structure
 
@@ -145,15 +145,15 @@ REQ files are organized by functional domains and subdomains:
 
 ```
 `07_REQ/
-├── api/           # API Integration Requirements
-│   ├── av/        # [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
-│   └── ib/        # [EXTERNAL_SERVICE_GATEWAY] API
-├── data/          # Data Management Requirements
-├── risk/          # resource management Requirements
-│   ├── lim/       # resource Limits
-│   ├── mon/       # Risk Monitoring
-│   └── hed/       # balancing Requirements
-└── perf/          # Performance Requirements
+ api/           # API Integration Requirements
+    av/        # [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
+    ib/        # [EXTERNAL_SERVICE_GATEWAY] API
+ data/          # Data Management Requirements
+ risk/          # resource management Requirements
+    lim/       # resource Limits
+    mon/       # Risk Monitoring
+    hed/       # balancing Requirements
+ perf/          # Performance Requirements
 ```
 
 ## File Naming Convention
@@ -319,12 +319,12 @@ Track implementation artifacts that realize the requirement:
 - Maintain traceability to downstream implementation artifacts
 
 **REQ validation checklist:**
-- ✅ Description uses precise SHALL/SHOULD/MAY language
-- ✅ Acceptance criteria are quantitative and testable
-- ✅ No compound requirements (single responsibility principle)
-- ✅ Cross-reference links are functional and point to valid artifacts
-- ✅ No implementation details (focus on what, not how)
-- ✅ Requirement is independently verifiable
+- [PASS] Description uses precise SHALL/SHOULD/MAY language
+- [PASS] Acceptance criteria are quantitative and testable
+- [PASS] No compound requirements (single responsibility principle)
+- [PASS] Cross-reference links are functional and point to valid artifacts
+- [PASS] No implementation details (focus on what, not how)
+- [PASS] Requirement is independently verifiable
 
 ## REQ Writing Guidelines
 
@@ -518,7 +518,7 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 
 | Version | File | Status | Lines | Notes |
 |---------|------|--------|-------|-------|
-| **MVP** | [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) | **✅ CURRENT** | ~350 | Streamlined MVP atomic requirements |
+| **MVP** | [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) | **[PASS] CURRENT** | ~350 | Streamlined MVP atomic requirements |
 
 ### Template Evolution
 
@@ -527,7 +527,7 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 - **Layer 7**: Corrected layer numbering (was Layer 4 in V2)
 - **Absolute paths**: All cross-references use project root paths (`../../` not `../`)
 - **Priority format**: Requires P-level designation (e.g., `High (P2)`)
-- **SPEC-Ready Score**: Requires ✅ emoji (e.g., `✅ 95% (Target: ≥90%)`)
+- **SPEC-Ready Score**: Requires [PASS] emoji (e.g., `[PASS] 95% (Target: ≥90%)`)
 - **section 3.3**: REST API Endpoints table with rate limits
 - **section 4.3**: Database schema (SQLAlchemy + Alembic migrations)
 - **section 5.4**: Circuit breaker configuration dataclass
@@ -555,7 +555,7 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 2. Update layer references: `Layer 4` → `Layer 7`
 3. Update all paths from relative (`../`) to absolute (`../../`)
 4. Update Priority format: add P-level (e.g., `High` → `High (P2)`)
-5. Update SPEC-Ready Score: add ✅ emoji (e.g., `95%` → `✅ 95% (Target: ≥90%)`)
+5. Update SPEC-Ready Score: add [PASS] emoji (e.g., `95%` → `[PASS] 95% (Target: ≥90%)`)
 6. Add Source Document section reference (e.g., `SYS-02` → `SYS-02 section 3.1.1`)
 7. Add resource tag to H1 header (e.g., `# REQ-01: [EXTERNAL_SERVICE_GATEWAY] Title`)
 8. Add all 6 cumulative tags to section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
@@ -576,12 +576,12 @@ A SPEC-ready REQ contains complete technical specifications that enable automate
 **SPEC-Ready Score**: ≥90% completeness across all required sections
 
 **Required sections** (100% coverage target):
-1. ✅ **Interfaces**: Protocol/ABC definitions with type annotations
-2. ✅ **Schemas**: JSON Schema + Pydantic models + database models
-3. ✅ **Error Handling**: Exception catalog + state machines + recovery strategies
-4. ✅ **Configuration**: YAML examples + validation + environment variables
-5. ✅ **QAs**: Performance targets (p50/p95/p99) + security + scalability
-6. ✅ **Implementation Guidance**: Algorithms + concurrency patterns + dependency injection
+1. [PASS] **Interfaces**: Protocol/ABC definitions with type annotations
+2. [PASS] **Schemas**: JSON Schema + Pydantic models + database models
+3. [PASS] **Error Handling**: Exception catalog + state machines + recovery strategies
+4. [PASS] **Configuration**: YAML examples + validation + environment variables
+5. [PASS] **QAs**: Performance targets (p50/p95/p99) + security + scalability
+6. [PASS] **Implementation Guidance**: Algorithms + concurrency patterns + dependency injection
 
 ### V2 Template Structure
 
@@ -807,7 +807,7 @@ Before marking a REQ as complete, verify:
 ./07_REQ/scripts/validate_req_template.sh 07_REQ/api/REQ-01_api_integration.md
 
 # Expected output (success):
-# ✅ PASSED: All validation checks passed with no warnings
+# [PASS] PASSED: All validation checks passed with no warnings
 # Errors: 0
 # Warnings: 0
 
@@ -833,12 +833,12 @@ python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-0
 # Output:
 # REQ-01: External data service API Integration
 # SPEC-Ready Score: 95%
-# ✅ Interfaces: Present with type annotations
-# ✅ Schemas: JSON Schema + Pydantic + Database
-# ✅ Errors: Exception catalog + state machines
-# ✅ Config: YAML with validation
-# ✅ QAs: Performance targets specified
-# ✅ Implementation: Algorithms documented
+# [PASS] Interfaces: Present with type annotations
+# [PASS] Schemas: JSON Schema + Pydantic + Database
+# [PASS] Errors: Exception catalog + state machines
+# [PASS] Config: YAML with validation
+# [PASS] QAs: Performance targets specified
+# [PASS] Implementation: Algorithms documented
 ```
 
 **Requirement ID Validator**:

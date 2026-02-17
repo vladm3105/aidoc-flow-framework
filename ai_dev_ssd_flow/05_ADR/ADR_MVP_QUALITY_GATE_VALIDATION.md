@@ -297,7 +297,7 @@ grep -rn "Status.*:\s*\(Proposed\|Accepted\|Deprecated\|Superseded\)" "$ADR_DIR"
 
 **Action**: Move to `05_ADR/ADR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |

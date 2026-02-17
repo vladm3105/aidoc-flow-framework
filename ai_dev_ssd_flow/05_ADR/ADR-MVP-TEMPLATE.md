@@ -17,7 +17,7 @@ custom_fields:
   schema_version: "1.0"
   complexity: 1 # 1-5 scale
 ---
-> **🔄 Dual-Format Note**:
+> ** Dual-Format Note**:
 >
 > This MD template is the **primary source** for human workflow.
 > - **For Autopilot**: See `ADR-MVP-TEMPLATE.yaml` (YAML template)
@@ -146,7 +146,7 @@ custom_fields:
 
 **ID Format**: `ADR.NN.12.SS` (Alternative)
 
-### 4.1 Option A: [Selected Option Name] ✓ (ADR.NN.12.01)
+### 4.1 Option A: [Selected Option Name]  (ADR.NN.12.01)
 
 **Description**: [Brief description of the chosen approach]
 

@@ -92,12 +92,12 @@ Tasks create the **code generation roadmap** that:
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 Tasks are the **code generation bridge** that connects YAML specifications to executable code:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
@@ -182,10 +182,10 @@ Tasks map to specific architectural components:
 
 ```
 `11_TASKS/
-├── TASKS-01_resource_limit_service.md     # Service component
-├── TASKS-02_ib_gateway_integration.md      # Integration component
-├── TASKS-03_external_api_integration.md    # API client component
-└── TASKS-004_user_interface_implementation.md # UI component
+ TASKS-01_resource_limit_service.md     # Service component
+ TASKS-02_ib_gateway_integration.md      # Integration component
+ TASKS-03_external_api_integration.md    # API client component
+ TASKS-004_user_interface_implementation.md # UI component
 ```
 
 ## File Naming Convention
@@ -326,17 +326,17 @@ Verification Methods:
 - Include risk assessment and session logging (Sections 9-10)
 
 **Task validation checklist (v2.0):**
-- ✅ Objective and deliverables clearly defined (Section 1)
-- ✅ Scope has inclusions, exclusions, and prerequisites (Section 2)
-- ✅ Implementation plan with phased steps and durations (Section 3)
-- ✅ Execution commands for setup, implementation, and validation (Section 4)
-- ✅ Technical and quality constraints specified (Section 5)
-- ✅ Acceptance criteria are specific and verifiable (Section 6)
-- ✅ Implementation contracts documented if applicable (Section 7)
-- ✅ Traceability tags and code locations defined (Section 8)
-- ✅ Risk assessment with mitigation strategies (Section 9)
-- ✅ Session log for tracking progress (Section 10)
-- ✅ Change history maintained (Section 11)
+- [PASS] Objective and deliverables clearly defined (Section 1)
+- [PASS] Scope has inclusions, exclusions, and prerequisites (Section 2)
+- [PASS] Implementation plan with phased steps and durations (Section 3)
+- [PASS] Execution commands for setup, implementation, and validation (Section 4)
+- [PASS] Technical and quality constraints specified (Section 5)
+- [PASS] Acceptance criteria are specific and verifiable (Section 6)
+- [PASS] Implementation contracts documented if applicable (Section 7)
+- [PASS] Traceability tags and code locations defined (Section 8)
+- [PASS] Risk assessment with mitigation strategies (Section 9)
+- [PASS] Session log for tracking progress (Section 10)
+- [PASS] Change history maintained (Section 11)
 
 ## Common Task Patterns
 

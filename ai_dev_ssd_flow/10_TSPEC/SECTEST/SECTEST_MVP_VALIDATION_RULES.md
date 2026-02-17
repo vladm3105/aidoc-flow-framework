@@ -190,7 +190,7 @@ Score = (SEC × 0.30) + (Threat × 0.25) + (Control × 0.20) + (Profile × 0.15)
 ### Pass Output
 
 ```
-✅ SECTEST-01_authentication.md: PASS (95%)
+[PASS] SECTEST-01_authentication.md: PASS (95%)
   - SEC Coverage: 100% (10/10)
   - Threat Scenarios: 100% (8/8)
   - Security Controls: 100% (8/8)
@@ -201,7 +201,7 @@ Score = (SEC × 0.30) + (Threat × 0.25) + (Control × 0.20) + (Profile × 0.15)
 ### Fail Output
 
 ```
-❌ SECTEST-01_authentication.md: FAIL (82%)
+[FAIL] SECTEST-01_authentication.md: FAIL (82%)
   - SEC Coverage: 90% (9/10)
     Missing: SEC.01.05
   - Threat Scenarios: 100% (8/8)

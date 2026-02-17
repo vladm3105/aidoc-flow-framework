@@ -44,16 +44,16 @@ The REQ validation system follows a **layered orchestrator pattern** for reliabi
 
 ```
 validate_all.sh (Master Orchestrator)
-├── File Mode:
-│   ├─ validate_req_spec_readiness.py --req-file <file>
-│   ├─ validate_req_template.sh <file>
-│   └─ validate_requirement_ids.py --req-file <file>
-│   Output: 3 validators run
-│
-└── Directory Mode:
-    ├─ validate_req_quality_score.sh <directory>
-    ├─ validate_req_spec_readiness.py --directory <directory>
-    └─ validate_requirement_ids.py --directory <directory>
+ File Mode:
+    validate_req_spec_readiness.py --req-file <file>
+    validate_req_template.sh <file>
+    validate_requirement_ids.py --req-file <file>
+   Output: 3 validators run
+
+ Directory Mode:
+     validate_req_quality_score.sh <directory>
+     validate_req_spec_readiness.py --directory <directory>
+     validate_requirement_ids.py --directory <directory>
     Output: 3 validators run (quality gates for corpus-level)
 ```
 
@@ -172,9 +172,9 @@ WARNING gates indicate quality issues. Fixing recommended before:
 ### INFO Gates (Informational)
 
 **GATE-05** (cross-linking) is informational:
-- ✅ Files with cross-links = framework-compliant
-- ⚪ Files without cross-links = acceptable (standalone domains)
-- 🔄 Recommended for platform features (infrastructure, security, ops)
+- [PASS] Files with cross-links = framework-compliant
+-  Files without cross-links = acceptable (standalone domains)
+-  Recommended for platform features (infrastructure, security, ops)
 
 ---
 
@@ -194,10 +194,10 @@ bash validate_all.sh --file docs/07_REQ/REQ-06.01_cloud_run_deployment.md
 
 **Expected Output:**
 ```
-✓ SPEC-Readiness Validator   (scores 0-100%)
-✓ Template Compliance        (checks 11 sections)
-✓ Requirement IDs Validator  (validates REQ-NN.MM format)
-✓ All validation checks passed!
+ SPEC-Readiness Validator   (scores 0-100%)
+ Template Compliance        (checks 11 sections)
+ Requirement IDs Validator  (validates REQ-NN.MM format)
+ All validation checks passed!
 ```
 
 ---
@@ -218,10 +218,10 @@ bash validate_all.sh --directory docs/07_REQ/REQ-06_f6_infrastructure
 
 **Expected Output:**
 ```
-✓ Quality Gate Validator     (14 gates across 40 files)
-✓ SPEC-Readiness Validator  (scores each file 0-100%)
-✓ Requirement IDs Validator  (validates all IDs)
-✓ All validation checks passed!
+ Quality Gate Validator     (14 gates across 40 files)
+ SPEC-Readiness Validator  (scores each file 0-100%)
+ Requirement IDs Validator  (validates all IDs)
+ All validation checks passed!
 ```
 
 ---
@@ -266,7 +266,7 @@ bash validate_all.sh --directory docs/07_REQ/REQ-06 --min-score 75
 
 ## Assessment & Quality
 
-### ✅ What's Working
+### [PASS] What's Working
 
 - **Master orchestrator** (`validate_all.sh`) properly delegates to all validators
 - **All 5 validators actively used** - no dead code
@@ -280,7 +280,7 @@ bash validate_all.sh --directory docs/07_REQ/REQ-06 --min-score 75
 - **Color-coded output** for clarity
 - **Complementary checking** - each validator addresses different quality aspects
 
-### ✨ Strengths
+###  Strengths
 
 - Consistent CLI patterns: `--file`, `--directory`, `--min-score`
 - Sensible defaults: 90% SPEC-ready threshold
@@ -291,7 +291,7 @@ bash validate_all.sh --directory docs/07_REQ/REQ-06 --min-score 75
 - Clean separation between infrastructure and decision-making
 - Framework extensible to other document types (BRD, SPEC, etc.)
 
-### 🔧 Optional Future Enhancements
+###  Optional Future Enhancements
 
 - Config file for threshold tuning (YAML-based `.validation.yaml`)
 - CSV/JSON export for tracking trends and metrics
@@ -360,7 +360,7 @@ for req_file in $(git diff --name-only | grep 'REQ-.*\.md'); do
   bash scripts/validate_all.sh --file "$req_file" || exit 1
 done
 
-echo "✓ All REQ files passed validation"
+echo " All REQ files passed validation"
 ```
 
 ---
@@ -382,20 +382,20 @@ Each document type has its own `scripts/validate_all.sh` that delegates to type-
 
 ```
 ai_dev_flow/07_REQ/
-├── scripts/
-│   ├── add_crosslinks_req.py          # Cross-link generator
-│   ├── validate_all.sh                # Master orchestrator
-│   ├── validate_req_quality_score.sh  # Quality gate validator
-│   ├── validate_req_spec_readiness.py # SPEC-readiness scorer
-│   ├── validate_req_template.sh       # Template compliance
-│   ├── validate_requirement_ids.py    # ID format validator
-│   └── README.md                      # Quick start guide
-│
-├── VALIDATION_COMMANDS.md             # CLI reference (in 07_REQ/)
-├── VALIDATION_STRATEGY_GUIDE.md       # ← You are here (in 07_REQ/)
-├── AI_VALIDATION_DECISION_GUIDE.md    # Decision framework (in 07_REQ/)
-├── REQ-MVP-TEMPLATE.md                # Document template
-└── ...other files
+ scripts/
+    add_crosslinks_req.py          # Cross-link generator
+    validate_all.sh                # Master orchestrator
+    validate_req_quality_score.sh  # Quality gate validator
+    validate_req_spec_readiness.py # SPEC-readiness scorer
+    validate_req_template.sh       # Template compliance
+    validate_requirement_ids.py    # ID format validator
+    README.md                      # Quick start guide
+
+ VALIDATION_COMMANDS.md             # CLI reference (in 07_REQ/)
+ VALIDATION_STRATEGY_GUIDE.md       # ← You are here (in 07_REQ/)
+ AI_VALIDATION_DECISION_GUIDE.md    # Decision framework (in 07_REQ/)
+ REQ-MVP-TEMPLATE.md                # Document template
+ ...other files
 ```
 
 **Framework-Level Versions:**

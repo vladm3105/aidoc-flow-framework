@@ -62,7 +62,7 @@ This directory contains a comprehensive validation suite for CTR (Contract) arti
 12. OpenAPI/Swagger compliance
 
 **Output:**
-- Detailed check results with ✅/❌ status
+- Detailed check results with [PASS]/[FAIL] status
 - Error summaries and recommendations
 - Exit codes: 0 (pass), 1 (warnings), 2 (errors)
 
@@ -207,9 +207,9 @@ python3 validate_ctr_spec_readiness.py ../CTR-NN_name.md
 
 | Code | Meaning | Action |
 |------|---------|--------|
-| **0** | ✅ PASS | No errors or warnings. Ready to merge. |
-| **1** | ⚠️ WARNING | Warnings present but no errors. Review and merge with caution. |
-| **2** | ❌ ERROR | Critical errors found. Fix before merging. |
+| **0** | [PASS] PASS | No errors or warnings. Ready to merge. |
+| **1** | [WARN] WARNING | Warnings present but no errors. Review and merge with caution. |
+| **2** | [FAIL] ERROR | Critical errors found. Fix before merging. |
 
 ---
 

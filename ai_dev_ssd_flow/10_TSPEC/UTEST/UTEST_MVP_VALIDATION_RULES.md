@@ -181,7 +181,7 @@ Score = (REQ × 0.30) + (IO × 0.25) + (Cat × 0.15) + (Pseudo × 0.15) + (Err �
 ### Pass Output
 
 ```
-✅ UTEST-01_auth_service.md: PASS (92%)
+[PASS] UTEST-01_auth_service.md: PASS (92%)
   - REQ Coverage: 95% (30/30)
   - I/O Tables: 100% (25/25)
   - Categories: 100% (25/25)
@@ -192,7 +192,7 @@ Score = (REQ × 0.30) + (IO × 0.25) + (Cat × 0.15) + (Pseudo × 0.15) + (Err �
 ### Fail Output
 
 ```
-❌ UTEST-01_auth_service.md: FAIL (78%)
+[FAIL] UTEST-01_auth_service.md: FAIL (78%)
   - REQ Coverage: 70% (21/30)
     Missing: REQ.01.10.05, REQ.01.10.08
   - I/O Tables: 80% (20/25)

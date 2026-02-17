@@ -13,12 +13,12 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
+#  Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
 # - Authority: CTR-MVP-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to CTR-MVP-TEMPLATE.md
 # =============================================================================
-> **📋 Document Role**: This is a **CREATION HELPER** for CTR-MVP-TEMPLATE.md.
+> ** Document Role**: This is a **CREATION HELPER** for CTR-MVP-TEMPLATE.md.
 > - **Authority**: `CTR-MVP-TEMPLATE.md` is the source of truth for CTR structure; YAML schemas must follow OpenAPI 3.x
 > - **Validation**: Use `CTR_MVP_VALIDATION_RULES.md` after CTR creation/changes
 
@@ -111,7 +111,7 @@ CTR-NN_{descriptive_slug}.yaml
 | Data Model | 17 | CTR.02.17.01 |
 | Contract Clause | 20 | CTR.02.20.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `INT-XXX` → Use `CTR.NN.16.SS`
 > - `MODEL-XXX` → Use `CTR.NN.17.SS`
 > - `CLAUSE-XXX` → Use `CTR.NN.20.SS`

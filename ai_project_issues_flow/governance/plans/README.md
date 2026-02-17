@@ -61,9 +61,9 @@ Every plan starts with these fields:
 ## Lifecycle
 
 ```
-Draft ──→ Approved ──→ In Progress ──→ Complete
-                │                         │
-                └──→ Superseded ←─────────┘
+Draft → Approved → In Progress → Complete
+                                         
+                → Superseded ←
                      (by IPLAN-NNN)
 ```
 
@@ -125,11 +125,11 @@ Track your project's IPLANs here. Copy the template row and update for each new 
 
 ```
 ROADMAP.md          ← What to build (phases, timeline)
-  │
+  
 PROJECT_PLAN.md     ← How to build it (tasks, specs, schedule)
-  │
+  
 governance/plans/   ← Execution adjustments (this directory)
-  │
+  
 GitHub Issues       ← Tracking units (updated per plan checklists)
 ```
 

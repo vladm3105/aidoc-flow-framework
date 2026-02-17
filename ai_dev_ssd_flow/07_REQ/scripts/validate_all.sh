@@ -132,22 +132,22 @@ if [[ -n "$TARGET" ]]; then
     TARGET="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
 fi
 
-echo -e "${BLUE}╔══════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║              REQ VALIDATION SUITE                                ║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}${NC}"
+echo -e "${BLUE}              REQ VALIDATION SUITE                                ${NC}"
+echo -e "${BLUE}${NC}"
 echo ""
 
 # Handle special test mode
 if [[ "$TEST_GATE05" == true ]]; then
-    echo -e "${YELLOW}▶ GATE-05 Isolation Detection Test${NC}"
+    echo -e "${YELLOW} GATE-05 Isolation Detection Test${NC}"
     echo ""
     if bash "$SCRIPT_DIR/test_gate05_isolation.sh"; then
         echo ""
-        echo -e "${GREEN}✓ GATE-05 Test PASSED${NC}"
+        echo -e "${GREEN} GATE-05 Test PASSED${NC}"
         exit 0
     else
         echo ""
-        echo -e "${RED}✗ GATE-05 Test FAILED${NC}"
+        echo -e "${RED} GATE-05 Test FAILED${NC}"
         exit 1
     fi
 fi
@@ -166,25 +166,25 @@ run_validator() {
     local name="$1"
     local cmd="$2"
     
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${BLUE}▶ ${name}${NC}"
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}${NC}"
+    echo -e "${BLUE} ${name}${NC}"
+    echo -e "${BLUE}${NC}"
     echo ""
     
         if eval $cmd; then
         echo ""
-        echo -e "${GREEN}✓ ${name} PASSED${NC}"
+        echo -e "${GREEN} ${name} PASSED${NC}"
         ((TOTAL_PASSED++))
         return 0
     else
             local exit_code=$?
             echo ""
             if [[ $exit_code -eq 1 ]]; then
-                echo -e "${YELLOW}⚠ ${name} PASSED WITH WARNINGS${NC}"
+                echo -e "${YELLOW} ${name} PASSED WITH WARNINGS${NC}"
                 ((TOTAL_WARNINGS++))
                 return 0
             else
-                echo -e "${RED}✗ ${name} FAILED${NC}"
+                echo -e "${RED} ${name} FAILED${NC}"
                 ((TOTAL_FAILED++))
                 return $exit_code
             fi
@@ -230,18 +230,18 @@ if [[ "$SKIP_IDS" == false ]]; then
 fi
 
 # Summary
-echo -e "${BLUE}╔══════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║                    VALIDATION SUMMARY                            ║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}${NC}"
+echo -e "${BLUE}                    VALIDATION SUMMARY                            ${NC}"
+echo -e "${BLUE}${NC}"
 echo ""
 echo -e "Passed: ${GREEN}${TOTAL_PASSED}${NC}"
 echo -e "Failed: ${RED}${TOTAL_FAILED}${NC}"
 echo ""
 
 if [[ $TOTAL_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All validation checks passed!${NC}"
+    echo -e "${GREEN} All validation checks passed!${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some validation checks failed${NC}"
+    echo -e "${RED} Some validation checks failed${NC}"
     exit 1
 fi

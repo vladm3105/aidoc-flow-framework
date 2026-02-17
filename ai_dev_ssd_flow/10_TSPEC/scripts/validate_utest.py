@@ -231,9 +231,9 @@ class UTESTValidator:
 
 def format_result(result: ValidationResult, verbose: bool = False) -> str:
     """Format validation result for output."""
-    status = "✅ PASS" if result.passed else "❌ FAIL"
+    status = "[PASS] PASS" if result.passed else "[FAIL] FAIL"
     if not result.passed and result.overall_score >= 80:
-        status = "⚠️ WARN"
+        status = "[WARN] WARN"
 
     output = [f"{status} {result.file_path}: {result.overall_score:.1f}%"]
 
@@ -247,7 +247,7 @@ def format_result(result: ValidationResult, verbose: bool = False) -> str:
             "error_cases": "GATE-05 Error Cases",
         }
         for gate, score in result.gate_scores.items():
-            gate_status = "✅" if score >= 80 else "❌"
+            gate_status = "[PASS]" if score >= 80 else "[FAIL]"
             output.append(f"  {gate_names[gate]}: {score:.1f}% {gate_status}")
 
         if result.issues:

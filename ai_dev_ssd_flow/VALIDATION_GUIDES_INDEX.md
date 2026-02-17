@@ -121,7 +121,7 @@ Each document type has three type-specific guides with the pattern: `{TYPE}_{GUI
 
 ---
 
-### Layer 7: Requirements (REQ) ✅
+### Layer 7: Requirements (REQ) [PASS]
 
 **Location:** `07_REQ/`
 
@@ -133,7 +133,7 @@ Each document type has three type-specific guides with the pattern: `{TYPE}_{GUI
 
 **Scripts location:** `07_REQ/scripts/` (master orchestrator + 6 individual validators)
 
-**Status:** ✅ Complete (template for other types)
+**Status:** [PASS] Complete (template for other types)
 
 ---
 
@@ -229,39 +229,39 @@ bash validate_all.sh --file path/to/document.md
 
 ```
 ai_dev_flow/
-├── Framework-Level (universal, no prefix):
-│   ├── VALIDATION_DECISION_FRAMEWORK.md    [Universal rules]
-│   ├── VALIDATION_STANDARDS.md             [Error codes]
-│   ├── VALIDATION_COMMANDS.md              [CLI for all types]
-│   ├── VALIDATION_STRATEGY_GUIDE.md        [Architecture]
-│   └── AI_VALIDATION_DECISION_GUIDE.md     [Decision framework]
-│
-└── Document-Type Specific (prefixed: TYPE_):
-    ├── 01_BRD/
-    │   ├── BRD_VALIDATION_STRATEGY.md
-    │   ├── BRD_VALIDATION_COMMANDS.md
-    │   ├── BRD_AI_VALIDATION_DECISION_GUIDE.md
-    │   └── scripts/ → validate_all.sh + validators
-    │
-    ├── 02_PRD/
-    │   ├── PRD_VALIDATION_STRATEGY.md
-    │   ├── PRD_VALIDATION_COMMANDS.md
-    │   ├── PRD_AI_VALIDATION_DECISION_GUIDE.md
-    │   └── scripts/ → validate_all.sh + validators
-    │
-    ├── ...similarly for EARS, BDD, ADR, SYS...
-    │
-    ├── 07_REQ/ ✅ Complete template
-    │   ├── REQ_VALIDATION_STRATEGY.md
-    │   ├── REQ_VALIDATION_COMMANDS.md
-    │   ├── REQ_AI_VALIDATION_DECISION_GUIDE.md
-    │   └── scripts/ → validate_all.sh + 6 validators
-    │
-    └── 08_CTR, 09_SPEC, 11_TASKS
-        ├── {TYPE}_VALIDATION_STRATEGY.md
-        ├── {TYPE}_VALIDATION_COMMANDS.md
-        ├── {TYPE}_AI_VALIDATION_DECISION_GUIDE.md
-        └── scripts/ → validate_all.sh + validators
+ Framework-Level (universal, no prefix):
+    VALIDATION_DECISION_FRAMEWORK.md    [Universal rules]
+    VALIDATION_STANDARDS.md             [Error codes]
+    VALIDATION_COMMANDS.md              [CLI for all types]
+    VALIDATION_STRATEGY_GUIDE.md        [Architecture]
+    AI_VALIDATION_DECISION_GUIDE.md     [Decision framework]
+
+ Document-Type Specific (prefixed: TYPE_):
+     01_BRD/
+        BRD_VALIDATION_STRATEGY.md
+        BRD_VALIDATION_COMMANDS.md
+        BRD_AI_VALIDATION_DECISION_GUIDE.md
+        scripts/ → validate_all.sh + validators
+    
+     02_PRD/
+        PRD_VALIDATION_STRATEGY.md
+        PRD_VALIDATION_COMMANDS.md
+        PRD_AI_VALIDATION_DECISION_GUIDE.md
+        scripts/ → validate_all.sh + validators
+    
+     ...similarly for EARS, BDD, ADR, SYS...
+    
+     07_REQ/ [PASS] Complete template
+        REQ_VALIDATION_STRATEGY.md
+        REQ_VALIDATION_COMMANDS.md
+        REQ_AI_VALIDATION_DECISION_GUIDE.md
+        scripts/ → validate_all.sh + 6 validators
+    
+     08_CTR, 09_SPEC, 11_TASKS
+         {TYPE}_VALIDATION_STRATEGY.md
+         {TYPE}_VALIDATION_COMMANDS.md
+         {TYPE}_AI_VALIDATION_DECISION_GUIDE.md
+         scripts/ → validate_all.sh + validators
 ```
 
 ---
@@ -283,22 +283,22 @@ User runs: scripts/validate_all.sh --file document.md
 
 ↓
 Master Orchestrator (validate_all.sh)
-  ├─ Delegates to Type-Specific Validators
-  ├─ Collects Results
-  └─ Outputs Unified Report
+   Delegates to Type-Specific Validators
+   Collects Results
+   Outputs Unified Report
 
 ↓
 Type-Specific Validators (e.g., validate_req_quality_score.sh)
-  ├─ Runs Gate 1-N
-  ├─ Returns EXIT_CODE (0=pass, 1=warn, 2=error)
-  └─ Colors output for clarity
+   Runs Gate 1-N
+   Returns EXIT_CODE (0=pass, 1=warn, 2=error)
+   Colors output for clarity
 
 ↓
 User Reviews Results & Consults Guides:
-  ├─ {TYPE}_VALIDATION_STRATEGY.md (architecture)
-  ├─ {TYPE}_VALIDATION_COMMANDS.md (commands)
-  ├─ {TYPE}_AI_VALIDATION_DECISION_GUIDE.md (decisions)
-  └─ scripts/README.md (troubleshooting)
+   {TYPE}_VALIDATION_STRATEGY.md (architecture)
+   {TYPE}_VALIDATION_COMMANDS.md (commands)
+   {TYPE}_AI_VALIDATION_DECISION_GUIDE.md (decisions)
+   scripts/README.md (troubleshooting)
 ```
 
 ---
@@ -307,35 +307,35 @@ User Reviews Results & Consults Guides:
 
 | Type | Framework | Guides | Scripts | Status |
 |------|-----------|--------|---------|--------|
-| BRD (01) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| PRD (02) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| EARS (03) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| BDD (04) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| ADR (05) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| SYS (06) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| REQ (07) | ✅ | ✅ Complete | ✅ Complete | Template |
-| CTR (08) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| SPEC (09) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
-| TASKS (11) | ✅ | 🔄 Planned | 🔄 Planned | Foundation ready |
+| BRD (01) | [PASS] |  Planned |  Planned | Foundation ready |
+| PRD (02) | [PASS] |  Planned |  Planned | Foundation ready |
+| EARS (03) | [PASS] |  Planned |  Planned | Foundation ready |
+| BDD (04) | [PASS] |  Planned |  Planned | Foundation ready |
+| ADR (05) | [PASS] |  Planned |  Planned | Foundation ready |
+| SYS (06) | [PASS] |  Planned |  Planned | Foundation ready |
+| REQ (07) | [PASS] | [PASS] Complete | [PASS] Complete | Template |
+| CTR (08) | [PASS] |  Planned |  Planned | Foundation ready |
+| SPEC (09) | [PASS] |  Planned |  Planned | Foundation ready |
+| TASKS (11) | [PASS] |  Planned |  Planned | Foundation ready |
 
 **Legend:**
-- ✅ Complete
-- 🔄 Planned/In Progress
-- ❌ Not started
+- [PASS] Complete
+-  Planned/In Progress
+- [FAIL] Not started
 
 ---
 
 ## Next Steps
 
 ### Immediate (Foundation Complete)
-1. ✅ Framework-level docs created
-2. ✅ REQ guides complete (template)
-3. 🔄 Update framework docs with type-specific references
+1. [PASS] Framework-level docs created
+2. [PASS] REQ guides complete (template)
+3.  Update framework docs with type-specific references
 
 ### Short Term (Scale to Other Types)
-1. 🔄 Create BRD guides (copy REQ template, adapt)
-2. 🔄 Create PRD guides
-3. 🔄 Create SPEC guides (code generation focus)
+1.  Create BRD guides (copy REQ template, adapt)
+2.  Create PRD guides
+3.  Create SPEC guides (code generation focus)
 
 ### Medium Term (Full Coverage)
 1. Create guides for remaining types (EARS, BDD, ADR, SYS, CTR, TASKS)

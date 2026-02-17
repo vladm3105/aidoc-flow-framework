@@ -34,7 +34,7 @@ custom_fields:
 | **Author** | System Architect |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
-| **REQ-Ready Score** | ✅ 90% (Target: ≥85%) |
+| **REQ-Ready Score** | [PASS] 90% (Target: ≥85%) |
 | **CTR-Ready Score** | N/A |
 
 ---
@@ -848,8 +848,8 @@ class Order(Base):
 | B | Mixed Infrastructure | 1 Required + 7 NA | All 3 NA | New features using existing infrastructure, partial infrastructure changes |
 
 **Validation Status**: All appendices pass validation with:
-- ✅ All 11 subsections present (8 in 9.1, 3 in 9.2)
-- ✅ All subsections have "Applicability" marker
-- ✅ NA subsections include rationale
-- ✅ Required subsections include detailed specifications
-- ✅ Consistent with SYS-MVP-TEMPLATE.md requirements
+- [PASS] All 11 subsections present (8 in 9.1, 3 in 9.2)
+- [PASS] All subsections have "Applicability" marker
+- [PASS] NA subsections include rationale
+- [PASS] Required subsections include detailed specifications
+- [PASS] Consistent with SYS-MVP-TEMPLATE.md requirements

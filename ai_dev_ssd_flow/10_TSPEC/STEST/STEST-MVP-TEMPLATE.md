@@ -134,10 +134,10 @@ References: Schema `STEST_MVP_SCHEMA.yaml` | Rules `STEST_MVP_CREATION_RULES.md`
 
 | Condition | Result |
 |-----------|--------|
-| Login returns 200 with valid token | ✅ PASS |
-| Login returns non-200 | ❌ FAIL |
-| Response time > 5s | ❌ FAIL |
-| Token validation fails | ❌ FAIL |
+| Login returns 200 with valid token | [PASS] PASS |
+| Login returns non-200 | [FAIL] FAIL |
+| Response time > 5s | [FAIL] FAIL |
+| Token validation fails | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -175,10 +175,10 @@ curl -X POST https://api.example.com/auth/login \
 
 | Condition | Result |
 |-----------|--------|
-| /health returns 200 | ✅ PASS |
-| /health/ready returns 200 | ✅ PASS |
-| /health/live returns 200 | ✅ PASS |
-| Any health endpoint fails | ❌ FAIL |
+| /health returns 200 | [PASS] PASS |
+| /health/ready returns 200 | [PASS] PASS |
+| /health/live returns 200 | [PASS] PASS |
+| Any health endpoint fails | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -218,10 +218,10 @@ curl -f https://api.example.com/health --max-time 20
 
 | Condition | Result |
 |-----------|--------|
-| GET /api/v1/status returns 200 | ✅ PASS |
-| Response contains expected fields | ✅ PASS |
-| Response time < 2s | ✅ PASS |
-| Any failure | ❌ FAIL |
+| GET /api/v1/status returns 200 | [PASS] PASS |
+| Response contains expected fields | [PASS] PASS |
+| Response time < 2s | [PASS] PASS |
+| Any failure | [FAIL] FAIL |
 
 **Health Check**:
 
@@ -259,10 +259,10 @@ status_code=$(echo "$response" | tail -n1)
 
 | Condition | Result |
 |-----------|--------|
-| DB ping succeeds | ✅ PASS |
-| Read query succeeds | ✅ PASS |
-| Connection pool active | ✅ PASS |
-| Any DB error | ❌ FAIL |
+| DB ping succeeds | [PASS] PASS |
+| Read query succeeds | [PASS] PASS |
+| Connection pool active | [PASS] PASS |
+| Any DB error | [FAIL] FAIL |
 
 **Health Check**:
 

@@ -170,11 +170,11 @@ When creating a new EARS document:
 ### Quality Checks
 
 Before marking EARS as "Approved":
-- ✅ All requirements follow EARS patterns (WHEN/THEN, WHILE/THEN, etc.)
-- ✅ Requirements are atomic and independently testable
-- ✅ Measurable acceptance criteria defined
-- ✅ Cross-references to PRD complete
-- ✅ BDD scenarios planned or created
+- [PASS] All requirements follow EARS patterns (WHEN/THEN, WHILE/THEN, etc.)
+- [PASS] Requirements are atomic and independently testable
+- [PASS] Measurable acceptance criteria defined
+- [PASS] Cross-references to PRD complete
+- [PASS] BDD scenarios planned or created
 
 ---
 

@@ -44,23 +44,23 @@ This document defines the workflow for **on-demand AI agent PR reviews** — dis
 ## 3. Review Lifecycle State Machine
 
 ```
-                  ┌────────────────────────────────────────────────────────────────────────┐
-                  │                                                                        │
-                  ▼                                                                        │
-  [1. READ PR] ──→ [2. VERIFY LINKED ISSUE] ──→ [3. ANALYZE] ──→ [4. POST REVIEW]────────┤
-                                                                       │                  │
-                                                         ┌─────────────┼────────┐         │
-                                                         ▼             ▼        ▼         │
-                                                     APPROVE      COMMENT  REQ_CHG        │
-                                                         │             │        │         │
-                                                         ▼             ▼   [5. FIX]       │
-                                                   [CONCLUSION]  [CONCLUSION]  │          │
-                                                         │             │  [6. PUSH]       │
-                                                      (done)        (done)     │          │
-                                                                         [7. RE-REVIEW]───┘
-                                                                               │
+                  
+                                                                                          
+                                                                                          
+  [1. READ PR] → [2. VERIFY LINKED ISSUE] → [3. ANALYZE] → [4. POST REVIEW]
+                                                                                         
+                                                                  
+                                                                                       
+                                                     APPROVE      COMMENT  REQ_CHG        
+                                                                                       
+                                                                         [5. FIX]       
+                                                   [CONCLUSION]  [CONCLUSION]            
+                                                                        [6. PUSH]       
+                                                      (done)        (done)               
+                                                                         [7. RE-REVIEW]
+                                                                               
                                                                          [CONCLUSION]
-                                                                               │
+                                                                               
                                                                      (max 3 iterations,
                                                                       then escalate)
 ```
@@ -206,17 +206,17 @@ Same as automated review system prompt (`scripts/ai_review.py`):
 
 ```
 Has Critical findings?
-├── YES → REQUEST_CHANGES
-└── NO
+ YES → REQUEST_CHANGES
+ NO
     Has Medium findings?
-    ├── YES
-    │   Affects correctness or security?
-    │   ├── YES → REQUEST_CHANGES
-    │   └── NO (performance/style only) → COMMENT
-    └── NO
+     YES
+       Affects correctness or security?
+        YES → REQUEST_CHANGES
+        NO (performance/style only) → COMMENT
+     NO
         Has Low findings?
-        ├── YES → COMMENT (with inline suggestions)
-        └── NO → APPROVE
+         YES → COMMENT (with inline suggestions)
+         NO → APPROVE
 ```
 
 ---

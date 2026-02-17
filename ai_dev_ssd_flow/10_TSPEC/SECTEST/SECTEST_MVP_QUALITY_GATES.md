@@ -241,9 +241,9 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.20) + (G4 × 0.15) + (G5 × 0.10)
 
 | Score | Status | Action |
 |-------|--------|--------|
-| ≥90% | ✅ PASS | Proceed to TASKS |
-| 80-89% | ⚠️ WARN | Review and improve |
-| <80% | ❌ FAIL | Remediation required |
+| ≥90% | [PASS] PASS | Proceed to TASKS |
+| 80-89% | [WARN] WARN | Review and improve |
+| <80% | [FAIL] FAIL | Remediation required |
 
 ---
 

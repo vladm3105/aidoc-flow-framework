@@ -89,9 +89,9 @@ bash validate_all.sh --directory . --skip-quality
 
 **Output:**
 ```
-GATE-01: ✓ PASS
-GATE-02: ✓ PASS
-GATE-03: ⚠ WARN
+GATE-01:  PASS
+GATE-02:  PASS
+GATE-03:  WARN
 ...
 Total: 14 gates, 12 passed, 2 warnings
 ```
@@ -123,11 +123,11 @@ python3 validate_req_spec_readiness.py --directory <folder> --min-score 90
 
 **Output:**
 ```
-SPEC-Ready Score: 92/100 ✓ PASS
-✓ Protocol definitions present
-✓ Pydantic models: 3
-✓ Exception classes: 2
-✓ YAML config present
+SPEC-Ready Score: 92/100  PASS
+ Protocol definitions present
+ Pydantic models: 3
+ Exception classes: 2
+ YAML config present
 ```
 
 ---
@@ -150,9 +150,9 @@ SPEC-Ready Score: 92/100 ✓ PASS
 
 **Output:**
 ```
-✓ All 11 sections present
-✓ Metadata complete
-✓ Template version: 1.0
+ All 11 sections present
+ Metadata complete
+ Template version: 1.0
 Template validation: PASS
 ```
 
@@ -182,9 +182,9 @@ python3 validate_requirement_ids.py --directory <folder>
 
 **Output:**
 ```
-✓ ID format valid: REQ-06.01
-✓ No duplicate IDs
-✓ Hierarchical structure valid
+ ID format valid: REQ-06.01
+ No duplicate IDs
+ Hierarchical structure valid
 ID validation: PASS
 ```
 
@@ -204,7 +204,7 @@ python3 add_crosslinks_req.py --folder <path>
 **Example:**
 ```bash
 python3 add_crosslinks_req.py --req-num 8
-# Output: ✓ Added cross-links to 73 file(s)
+# Output:  Added cross-links to 73 file(s)
 ```
 
 **Scope:** REQ-03 through REQ-11 (292+ files, 98% coverage)
@@ -311,7 +311,7 @@ bash validate_all.sh --directory /full/path/to/REQ-06_infrastructure
 #!/bin/bash
 cd /path/to/docs
 bash ai_dev_flow/07_REQ/scripts/validate_all.sh --directory ai_dev_flow/07_REQ || exit 1
-echo "✓ All REQ validations passed"
+echo " All REQ validations passed"
 ```
 
 ### 4. Iterative Development (Quick Check)

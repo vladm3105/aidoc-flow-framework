@@ -219,18 +219,18 @@ CIRCUIT_FAILURE_COUNT = config.get("thresholds.circuit.failure.count")  # 5
 
 ```text
 Source Documents (define thresholds):
-├── BRD (business thresholds)     → defines: @threshold: BRD.01.risk.high.min
-├── PRD (product thresholds)      → defines: @threshold: PRD.01.quota.l1.daily
-└── ADR (technical thresholds)    → defines: @threshold: ADR.15.circuit.failure.count
+ BRD (business thresholds)     → defines: @threshold: BRD.01.risk.high.min
+ PRD (product thresholds)      → defines: @threshold: PRD.01.quota.l1.daily
+ ADR (technical thresholds)    → defines: @threshold: ADR.15.circuit.failure.count
          ↓
 Consumer Documents (reference via @threshold: tags):
-├── EARS  → references: @threshold: PRD.01.quota.l1.daily
-├── BDD   → references: @threshold: PRD.01.quota.l1.daily
-├── SYS   → references: @threshold: ADR.15.pool.db.max
-├── ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
-├── REQ   → references: @threshold: BRD.01.risk.high.min
-├── CTR   → references: @threshold: PRD.01.rate.api.user
-└── SPEC  → references: @threshold: ADR.15.circuit.failure.count
+ EARS  → references: @threshold: PRD.01.quota.l1.daily
+ BDD   → references: @threshold: PRD.01.quota.l1.daily
+ SYS   → references: @threshold: ADR.15.pool.db.max
+ ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
+ REQ   → references: @threshold: BRD.01.risk.high.min
+ CTR   → references: @threshold: PRD.01.rate.api.user
+ SPEC  → references: @threshold: ADR.15.circuit.failure.count
          ↓
 Code (implements with config reference)
 ```
@@ -865,11 +865,11 @@ thresholds:
 
 ```text
 {category}.{scope}.{metric}[.{qualifier}]
-     │        │       │         │
-     │        │       │         └── Optional: min/max/p50/p95/warning/critical
-     │        │       └── Required: daily/monthly/timeout/threshold/rate
-     │        └── Required: l1/l2/l3/api/partner/user/session
-     └── Required: kyc/kyb/risk/perf/timeout/rate/amount/compliance/alert
+                             
+                              Optional: min/max/p50/p95/warning/critical
+                     Required: daily/monthly/timeout/threshold/rate
+              Required: l1/l2/l3/api/partner/user/session
+      Required: kyc/kyb/risk/perf/timeout/rate/amount/compliance/alert
 ```
 
 ### 14.2 Common Patterns

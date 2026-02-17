@@ -200,14 +200,14 @@ When creating a new SPEC:
 ### Quality Checks
 
 Before marking SPEC as "Approved":
-- ✅ All required sections complete (ID, Summary, Interfaces, Traceability)
-- ✅ Technical details implementation-ready
-- ✅ API/interface definitions complete and unambiguous
-- ✅ Quality attributes specified (performance, caching, security)
-- ✅ Cross-references to upstream 07_REQ/CTR complete
-- ✅ Test strategy defined
-- ✅ Deployment configuration specified
-- ✅ YAML format valid and parseable
+- [PASS] All required sections complete (ID, Summary, Interfaces, Traceability)
+- [PASS] Technical details implementation-ready
+- [PASS] API/interface definitions complete and unambiguous
+- [PASS] Quality attributes specified (performance, caching, security)
+- [PASS] Cross-references to upstream 07_REQ/CTR complete
+- [PASS] Test strategy defined
+- [PASS] Deployment configuration specified
+- [PASS] YAML format valid and parseable
 
 ---
 

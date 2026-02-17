@@ -132,12 +132,12 @@ custom_fields:
 
 | REQ ID | Verification Method | Test Type | Verification Status |
 |--------|---------------------|-----------|---------------------|
-| REQ-01 | Integration test | Automated | ✅ Verified |
-| REQ-03 | Performance test | Automated | ✅ Verified |
-| REQ-05 | Unit test | Automated | ✅ Verified |
-| REQ-08 | Integration test | Automated | ✅ Verified |
-| REQ-14 | Security test | Automated | ✅ Verified |
-| REQ-19 | Performance test | Automated | 🟡 Pending |
+| REQ-01 | Integration test | Automated | [PASS] Verified |
+| REQ-03 | Performance test | Automated | [PASS] Verified |
+| REQ-05 | Unit test | Automated | [PASS] Verified |
+| REQ-08 | Integration test | Automated | [PASS] Verified |
+| REQ-14 | Security test | Automated | [PASS] Verified |
+| REQ-19 | Performance test | Automated |  Pending |
 
 ## 7. Visualization (Mermaid)
 

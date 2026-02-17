@@ -72,11 +72,11 @@ cd {REPO_NAME}
 **Style Guide:** PEP 8
 
 **Requirements:**
-- ✅ Type hints required for all functions
-- ✅ Docstrings for all public functions/classes (Google style)
-- ✅ Maximum line length: 100 characters
-- ✅ Use `black` for formatting
-- ✅ Use `ruff` for linting
+- [PASS] Type hints required for all functions
+- [PASS] Docstrings for all public functions/classes (Google style)
+- [PASS] Maximum line length: 100 characters
+- [PASS] Use `black` for formatting
+- [PASS] Use `ruff` for linting
 
 **Example:**
 ```python
@@ -110,10 +110,10 @@ def calculate_cost(
 **Style Guide:** Airbnb + Prettier
 
 **Requirements:**
-- ✅ TypeScript for all new code
-- ✅ ESLint + Prettier configured
-- ✅ React functional components with hooks
-- ✅ Interfaces for all props
+- [PASS] TypeScript for all new code
+- [PASS] ESLint + Prettier configured
+- [PASS] React functional components with hooks
+- [PASS] Interfaces for all props
 
 **Example:**
 ```typescript
@@ -134,10 +134,10 @@ export function calculateTotalCost(metrics: CostMetric[]): number {
 **Style Guide:** sqlfluff
 
 **Requirements:**
-- ✅ Keywords in UPPERCASE
-- ✅ Table/column names in snake_case
-- ✅ Indentation: 2 spaces
-- ✅ Comments for complex queries
+- [PASS] Keywords in UPPERCASE
+- [PASS] Table/column names in snake_case
+- [PASS] Indentation: 2 spaces
+- [PASS] Comments for complex queries
 
 **Example:**
 ```sql
@@ -157,10 +157,10 @@ ORDER BY date DESC;
 **Style Guide:** HashiCorp style
 
 **Requirements:**
-- ✅ Use modules for reusable components
-- ✅ Variables with descriptions
-- ✅ Outputs documented
-- ✅ Run `terraform fmt` before commit
+- [PASS] Use modules for reusable components
+- [PASS] Variables with descriptions
+- [PASS] Outputs documented
+- [PASS] Run `terraform fmt` before commit
 
 ---
 
@@ -243,10 +243,10 @@ instead of query-time aggregation.
 
 ### Requirements
 
-- ✅ Unit tests for all new features
-- ✅ Integration tests for APIs
-- ✅ Minimum 80% code coverage
-- ✅ All tests must pass before merge
+- [PASS] Unit tests for all new features
+- [PASS] Integration tests for APIs
+- [PASS] Minimum 80% code coverage
+- [PASS] All tests must pass before merge
 
 ### Running Tests
 
@@ -303,10 +303,10 @@ describe('calculateTotalCost', () => {
 
 ### When to Update Documentation
 
-- ✅ Adding new features → Update relevant `/core` spec
-- ✅ Changing APIs → Update `docs/core/05-api-endpoint-spec.md`
-- ✅ Infrastructure changes → Update deployment guides
-- ✅ Breaking changes → Document in PR + CHANGELOG
+- [PASS] Adding new features → Update relevant `/core` spec
+- [PASS] Changing APIs → Update `docs/core/05-api-endpoint-spec.md`
+- [PASS] Infrastructure changes → Update deployment guides
+- [PASS] Breaking changes → Document in PR + CHANGELOG
 
 ### Documentation Files
 
@@ -385,4 +385,4 @@ How you tested these changes
 
 ---
 
-**Thank you for contributing!** 🎉
+**Thank you for contributing!** 

@@ -295,17 +295,17 @@ def execute_checks(checks: List[PreCheck], context: Dict) -> bool:
             
             if result.returncode != 0:
                 if check.required:
-                    print(f"  ❌ Check failed: {check.name}")
+                    print(f"  [FAIL] Check failed: {check.name}")
                     print(f"  Output: {result.stderr}")
                     if check.action == 'halt':
                         return False
                 else:
-                    print(f"  ⚠️ Check failed (optional): {check.name}")
+                    print(f"  [WARN] Check failed (optional): {check.name}")
             else:
-                print(f"  ✅ Check passed: {check.name}")
+                print(f"  [PASS] Check passed: {check.name}")
                 
         except Exception as e:
-            print(f"  ❌ Check execution error: {e}")
+            print(f"  [FAIL] Check execution error: {e}")
             if check.required:
                 return False
                 
@@ -909,7 +909,7 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
 
     Returns True if TDD workflow completed successfully.
     """
-    print("🧪 TDD Mode Enabled - Test-First Workflow")
+    print(" TDD Mode Enabled - Test-First Workflow")
     print("=" * 60)
 
     # Paths
@@ -919,7 +919,7 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
     generated_specs_dir = tmp_dir / "generated_specs"
 
     # Stage 1: Analyze existing tests
-    print("\n📊 Stage 1: Analyzing test requirements...")
+    print("\n Stage 1: Analyzing test requirements...")
     analyze_script = SCRIPT_DIR / "analyze_test_requirements.py"
     if analyze_script.exists():
         try:
@@ -934,21 +934,21 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
                 timeout=120
             )
             if result.returncode == 0:
-                print(f"  ✅ Test requirements generated: {test_requirements_file}")
+                print(f"  [PASS] Test requirements generated: {test_requirements_file}")
                 if result.stdout:
                     for line in result.stdout.strip().split('\n')[-3:]:
                         print(f"     {line}")
             else:
-                print(f"  ⚠️ No tests found or analysis failed")
+                print(f"  [WARN] No tests found or analysis failed")
                 if result.stderr:
                     print(f"     {result.stderr[:200]}")
         except Exception as e:
-            print(f"  ❌ Error analyzing tests: {e}")
+            print(f"  [FAIL] Error analyzing tests: {e}")
     else:
-        print(f"  ⚠️ Analyze script not found: {analyze_script}")
+        print(f"  [WARN] Analyze script not found: {analyze_script}")
 
     # Stage 2: Generate test-aware SPEC
-    print("\n📝 Stage 2: Generating test-aware SPEC...")
+    print("\n Stage 2: Generating test-aware SPEC...")
     if test_requirements_file.exists():
         generate_spec_script = SCRIPT_DIR / "generate_spec_tdd.py"
         if generate_spec_script.exists():
@@ -963,21 +963,21 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
                     timeout=120
                 )
                 if result.returncode == 0:
-                    print(f"  ✅ Test-aware SPEC generated")
+                    print(f"  [PASS] Test-aware SPEC generated")
                     if result.stdout:
                         for line in result.stdout.strip().split('\n')[-3:]:
                             print(f"     {line}")
                 else:
-                    print(f"  ⚠️ SPEC generation had issues")
+                    print(f"  [WARN] SPEC generation had issues")
             except Exception as e:
-                print(f"  ❌ Error generating SPEC: {e}")
+                print(f"  [FAIL] Error generating SPEC: {e}")
         else:
-            print(f"  ⚠️ SPEC generation script not found")
+            print(f"  [WARN] SPEC generation script not found")
     else:
-        print("  ⏭️ Skipping SPEC generation (no test requirements)")
+        print("  ⏭ Skipping SPEC generation (no test requirements)")
 
     # Stage 3: Validate Red State (tests should fail)
-    print("\n🔴 Stage 3: Validating Red State (tests must fail before code)...")
+    print("\n Stage 3: Validating Red State (tests must fail before code)...")
     red_state_valid = False
     try:
         result = subprocess.run(
@@ -988,27 +988,27 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
         )
         if result.returncode != 0:
             # Tests failed - this is expected in Red State
-            print("  ✅ Red State validated: Tests fail (expected - no implementation yet)")
+            print("  [PASS] Red State validated: Tests fail (expected - no implementation yet)")
             red_state_valid = True
         else:
             # Tests passed - unexpected, implementation may already exist
-            print("  ⚠️ Tests passed unexpectedly. Code may already exist.")
+            print("  [WARN] Tests passed unexpectedly. Code may already exist.")
             print("     TDD requires tests to fail before implementation.")
             red_state_valid = True  # Allow continuing, but warn
     except FileNotFoundError:
-        print("  ⚠️ pytest not found. Install with: pip install pytest")
+        print("  [WARN] pytest not found. Install with: pip install pytest")
         red_state_valid = True  # Skip validation
     except subprocess.TimeoutExpired:
-        print("  ⚠️ Test execution timed out")
+        print("  [WARN] Test execution timed out")
         red_state_valid = True
     except Exception as e:
-        print(f"  ⚠️ Could not run tests: {e}")
+        print(f"  [WARN] Could not run tests: {e}")
         red_state_valid = True
 
     # Stage 4: Check for code and validate Green State
     code_dir = root.parent / "src"
     if code_dir.exists() and any(code_dir.glob("**/*.py")):
-        print("\n🟢 Stage 4: Validating Green State (tests must pass after code)...")
+        print("\n Stage 4: Validating Green State (tests must pass after code)...")
         try:
             result = subprocess.run(
                 ["pytest", str(test_dir), "-v", "--tb=short",
@@ -1019,22 +1019,22 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
                 timeout=300
             )
             if result.returncode == 0:
-                print("  ✅ Green State validated: All tests pass with coverage")
+                print("  [PASS] Green State validated: All tests pass with coverage")
             else:
-                print("  ⚠️ Tests failed or coverage below threshold")
+                print("  [WARN] Tests failed or coverage below threshold")
                 if result.stdout:
                     # Show last few lines of output
                     lines = result.stdout.strip().split('\n')
                     for line in lines[-5:]:
                         print(f"     {line}")
         except Exception as e:
-            print(f"  ⚠️ Could not validate Green State: {e}")
+            print(f"  [WARN] Could not validate Green State: {e}")
     else:
-        print("\n⏭️ Stage 4: Skipping Green State validation (no code in src/)")
+        print("\n⏭ Stage 4: Skipping Green State validation (no code in src/)")
         print("   Generate code first, then re-run with --tdd-mode to validate.")
 
     # Stage 5: Update traceability tags
-    print("\n🔗 Stage 5: Updating traceability tags...")
+    print("\n Stage 5: Updating traceability tags...")
     update_script = SCRIPT_DIR / "update_test_traceability.py"
     spec_dir = root / "09_SPEC"
     tasks_dir = root / "11_TASKS"
@@ -1055,19 +1055,19 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
             if result.returncode == 0:
-                print("  ✅ Traceability tags updated")
+                print("  [PASS] Traceability tags updated")
             else:
-                print("  ⚠️ Some PENDING tags could not be resolved")
+                print("  [WARN] Some PENDING tags could not be resolved")
             if result.stdout:
                 for line in result.stdout.strip().split('\n')[-4:]:
                     print(f"     {line}")
         except Exception as e:
-            print(f"  ⚠️ Could not update traceability: {e}")
+            print(f"  [WARN] Could not update traceability: {e}")
     else:
-        print(f"  ⚠️ Update script not found: {update_script}")
+        print(f"  [WARN] Update script not found: {update_script}")
 
     # Stage 6: Validate no PENDING tags remain
-    print("\n✅ Stage 6: Validating traceability completeness...")
+    print("\n[PASS] Stage 6: Validating traceability completeness...")
     if update_script.exists():
         try:
             result = subprocess.run(
@@ -1079,14 +1079,14 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
                 timeout=60
             )
             if result.returncode == 0:
-                print("  ✅ All PENDING tags resolved")
+                print("  [PASS] All PENDING tags resolved")
             else:
-                print("  ⚠️ Some PENDING tags remain (complete artifacts first)")
+                print("  [WARN] Some PENDING tags remain (complete artifacts first)")
         except Exception as e:
-            print(f"  ⚠️ Could not validate: {e}")
+            print(f"  [WARN] Could not validate: {e}")
 
     print("\n" + "=" * 60)
-    print("🧪 TDD Workflow Complete")
+    print(" TDD Workflow Complete")
     print("=" * 60)
 
     return True
@@ -1094,25 +1094,25 @@ def run_tdd_workflow(args, root: Path, test_dir: Path) -> bool:
 
 def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], root: Path):
     """Execute the pipeline based on v4 configuration."""
-    print("🚀 Autopilot v4.0 Pipeline Starting...")
+    print(" Autopilot v4.0 Pipeline Starting...")
     
     # 1. Project Mode
     mode = detect_project_mode(root, args.mode if hasattr(args, 'mode') else None)
-    print(f"📋 Project Mode: {mode.value.upper()}")
+    print(f" Project Mode: {mode.value.upper()}")
     
     # 2. Resolve Range
     layer_ids = resolve_layer_range(config, args.from_layer, args.up_to)
     if not layer_ids:
-        print("⚠️ No layers selected to run.")
+        print("[WARN] No layers selected to run.")
         return
 
-    print(f"🎯 Pipeline: [{' -> '.join(layer_ids)}]")
+    print(f" Pipeline: [{' -> '.join(layer_ids)}]")
     
     # 3. Execution Loop
     for layer_id in layer_ids:
         layer_cfg = config['pipeline'].get(layer_id)
         if not layer_cfg:
-            print(f"⚠️ Skipping unknown layer: {layer_id}")
+            print(f"[WARN] Skipping unknown layer: {layer_id}")
             continue
             
         # Resolve Layer Object (heuristic: 'L2_PRD' -> 'PRD')
@@ -1124,19 +1124,19 @@ def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], ro
         
         # Skip logic
         if should_skip_layer(layer_cfg, mode):
-            print(f"  ⏭️ Skipping layer {layer_id} (disabled/skipped in {mode.value} mode)")
+            print(f"  ⏭ Skipping layer {layer_id} (disabled/skipped in {mode.value} mode)")
             continue
 
-        print(f"\n▶️ Executing Layer: {layer_id}")
+        print(f"\n Executing Layer: {layer_id}")
 
         # Pre-checks
         if layer_cfg.pre_checks:
-            print(f"  🔍 Running Pre-checks...")
+            print(f"   Running Pre-checks...")
             if not execute_checks(layer_cfg.pre_checks, {'mode': mode}):
                 if layer_cfg.on_failure.get('pre_check', 'halt') == 'halt':
-                    print("  ❌ Pre-checks failed. Halting.")
+                    print("  [FAIL] Pre-checks failed. Halting.")
                     return
-                print("  ⚠️ Pre-checks failed but continuing (on_failure != halt)")
+                print("  [WARN] Pre-checks failed but continuing (on_failure != halt)")
 
         # Generation
         if layer_obj:
@@ -1144,13 +1144,13 @@ def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], ro
             nn = args.nn
             slug_hint = args.slug
             
-            print(f"  ⚙️ Generating {layer_obj.name}...")
+            print(f"   Generating {layer_obj.name}...")
             # Reuse existing generation logic
             generate_from_template(layer_obj, root, nn, intent, slug_hint)
             
         # Validation
         if layer_obj and layer_cfg.validation and not getattr(args, 'skip_validate', False):
-            print(f"  ✅ Validating {layer_obj.name}...")
+            print(f"  [PASS] Validating {layer_obj.name}...")
             strict = getattr(args, 'strict', False) or layer_cfg.validation.strict_mode
             
             if layer_cfg.validation.command:
@@ -1158,18 +1158,18 @@ def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], ro
                     cmd = layer_cfg.validation.command.replace('{target}', str(root))
                     res = subprocess.run(cmd, shell=True, check=False)
                     if res.returncode != 0:
-                        print(f"  ❌ Validation command failed.")
+                        print(f"  [FAIL] Validation command failed.")
                     else:
-                        print(f"  ✅ Validation passed.")
+                        print(f"  [PASS] Validation passed.")
                 except Exception as e:
-                    print(f"  ❌ Validation error: {e}")
+                    print(f"  [FAIL] Validation error: {e}")
             else:
                 # Fallback to legcy validator
                 run_layer_validation(root, layer_obj.name, strict=strict, mvp_validators=getattr(args, 'mvp_validators', False))
 
         # Post-checks
         if layer_cfg.post_checks:
-            print(f"  🔍 Running Post-checks...")
+            print(f"   Running Post-checks...")
             execute_checks(layer_cfg.post_checks, {'mode': mode})
 
 def main():
@@ -1253,7 +1253,7 @@ def main():
     if args.tdd_mode:
         test_dir = Path(args.test_dir).resolve()
         if not test_dir.exists():
-            print(f"⚠️ Test directory not found: {test_dir}")
+            print(f"[WARN] Test directory not found: {test_dir}")
             print("   Create test files first or specify --test-dir")
         else:
             run_tdd_workflow(args, root, test_dir)
@@ -1459,11 +1459,11 @@ def main():
         if not args.no_precheck:
             ok_paths, out_paths = _run_path_precheck()
             if not ok_paths:
-                print("⚠️  Pre-Check (paths) reported issues")
+                print("[WARN]  Pre-Check (paths) reported issues")
                 if out_paths:
                     print(out_paths)
                 if args.precheck_strict:
-                    print("❌ Pre-Check failed in strict mode; aborting")
+                    print("[FAIL] Pre-Check failed in strict mode; aborting")
                     last_success = False
                     break
 
@@ -1476,9 +1476,9 @@ def main():
                 if not _find_upstream_file(up_name, effective_nn):
                     missing_up.append(up_name)
             if missing_up:
-                print(f"⚠️  Pre-Check: missing upstream artifacts for {layer.name}: {', '.join(missing_up)}")
+                print(f"[WARN]  Pre-Check: missing upstream artifacts for {layer.name}: {', '.join(missing_up)}")
                 if args.precheck_strict:
-                    print("❌ Pre-Check missing upstream (strict); aborting")
+                    print("[FAIL] Pre-Check missing upstream (strict); aborting")
                     last_success = False
                     break
 
@@ -1524,10 +1524,10 @@ def main():
         # Validate
         ok, msg = run_layer_validation(target, layer.name, strict=args.strict, mvp_validators=args.mvp_validators)
         if ok:
-            print(f"✅ {layer.name} validation passed")
+            print(f"[PASS] {layer.name} validation passed")
             results.append({"layer": layer.name, "file": str(target), "status": "pass", "notes": ""})
         else:
-            print(f"❌ {layer.name} validation failed")
+            print(f"[FAIL] {layer.name} validation failed")
             if msg:
                 print(msg)
 
@@ -1537,11 +1537,11 @@ def main():
                 # Re-run validation once after fix
                 ok2, msg2 = run_layer_validation(target, layer.name, strict=args.strict, mvp_validators=args.mvp_validators)
                 if ok2:
-                    print(f"🩹 {layer.name} auto-fix succeeded")
+                    print(f" {layer.name} auto-fix succeeded")
                     results.append({"layer": layer.name, "file": str(target), "status": "fixed", "notes": "auto-fix"})
                 else:
                     # Auto-fix did not resolve issues; no skeleton fallback
-                    print(f"🩹 {layer.name} auto-fix did not resolve all issues")
+                    print(f" {layer.name} auto-fix did not resolve all issues")
                     if msg2:
                         print(msg2)
                     last_success = False
@@ -1564,10 +1564,10 @@ def main():
             if vcfg is not None:
                 result = run_validator(vcfg, root)
                 if result.success and result.error_count == 0:
-                    print("🔗 Link integrity check passed")
+                    print(" Link integrity check passed")
                     links_result = True
                 else:
-                    print("🔗 Link integrity issues detected")
+                    print(" Link integrity issues detected")
                     if hasattr(result, 'output') and result.output:
                          print(result.output)
                     elif hasattr(result, 'messages') and result.messages:
@@ -1633,9 +1633,9 @@ def main():
                 if links_result is not None:
                     lines.append(f"- Links OK: {links_result}")
                 out_path.write_text("\n".join(lines), encoding="utf-8")
-            print(f"📝 Report written to {out_path}")
+            print(f" Report written to {out_path}")
         except Exception as e:
-            print(f"⚠️  Failed to write report: {e}")
+            print(f"[WARN]  Failed to write report: {e}")
 
     # Plan-only output file
     if args.plan_only:
@@ -1658,9 +1658,9 @@ def main():
             for a in plan_actions:
                 plan_lines.append(f"| {a['action']} | {a['layer']} | `{a['file']}` | {a['note']} |")
             plan_path.write_text("\n".join(plan_lines), encoding="utf-8")
-            print(f"📝 Plan written to {plan_path}")
+            print(f" Plan written to {plan_path}")
         except Exception as e:
-            print(f"⚠️  Failed to write plan: {e}")
+            print(f"[WARN]  Failed to write plan: {e}")
 
 
 if __name__ == "__main__":

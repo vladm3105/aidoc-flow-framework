@@ -132,20 +132,20 @@ This ensures:
 
 ```
 docs/CHG/CHG-XX_{slug}/
-├── CHG-XX_{slug}.md        # The Definition (from CHG-TEMPLATE.md)
-├── implementation_plan.md  # The Audit Log (frozen plan)
-└── archive/                # The Graveyard (moved artifacts)
-    ├── ADR-XX_old.md
-    ├── SPEC-XX_old.yaml
-    └── ...
+ CHG-XX_{slug}.md        # The Definition (from CHG-TEMPLATE.md)
+ implementation_plan.md  # The Audit Log (frozen plan)
+ archive/                # The Graveyard (moved artifacts)
+     ADR-XX_old.md
+     SPEC-XX_old.yaml
+     ...
 ```
 
 ### 6.2 L2 Minor CHG Structure (Lightweight)
 
 ```
 docs/CHG/CHG-XX_{slug}/
-├── CHG-XX_{slug}.md        # The Definition (from CHG-MVP-TEMPLATE.md)
-└── implementation_plan.md  # Brief change log
+ CHG-XX_{slug}.md        # The Definition (from CHG-MVP-TEMPLATE.md)
+ implementation_plan.md  # Brief change log
 ```
 
 Note: L2 Minor changes typically don't require an archive folder.

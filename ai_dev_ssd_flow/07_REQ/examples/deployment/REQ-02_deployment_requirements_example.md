@@ -35,8 +35,8 @@ custom_fields:
 | **Source Document** | [SYS-02 section 9.1.1](../06_SYS/SYS-02_deployment_requirements.md#sys021101) |
 | **Verification Method** | BDD + Integration Test |
 | **Assigned Team** | DevOps Team |
-| **SPEC-Ready Score** | ✅ 85% (Target: ≥70%) |
-| **CTR-Ready Score** | ✅ 75% (Target: ≥70%) |
+| **SPEC-Ready Score** | [PASS] 85% (Target: ≥70%) |
+| **CTR-Ready Score** | [PASS] 75% (Target: ≥70%) |
 | **Template Version** | 1.0 |
 
 ---

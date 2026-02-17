@@ -71,7 +71,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
 ## 0. SPEC Dependency Analysis (MANDATORY FIRST STEP)
 
-> **⚠️ CRITICAL**: Before creating ANY TASKS documents, you MUST complete SPEC dependency analysis to determine the correct code generation order.
+> **[WARN] CRITICAL**: Before creating ANY TASKS documents, you MUST complete SPEC dependency analysis to determine the correct code generation order.
 
 ### 0.1 Why This Matters
 
@@ -126,9 +126,9 @@ interfaces:
 ### 0.5 Example Dependency Analysis
 
 ```
-SPEC-01 (IAM) ────────────────→ No dependencies (Foundation)
-SPEC-02 (Session) ────────────→ Depends on SPEC-01 (IAM)
-SPEC-03 (Observability) ──────→ No dependencies (Foundation)
+SPEC-01 (IAM) → No dependencies (Foundation)
+SPEC-02 (Session) → Depends on SPEC-01 (IAM)
+SPEC-03 (Observability) → No dependencies (Foundation)
 SPEC-08 (Trading Intelligence) → Depends on SPEC-01, SPEC-03, SPEC-07
 ```
 
@@ -207,7 +207,7 @@ TASKS-NN_{descriptive_component}.md
 | Task | 18 | TASKS.02.18.01 |
 | Task Item | 30 | TASKS.02.30.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `TASK-XXX` → Use `TASKS.NN.18.SS`
 > - `T-XXX` → Use `TASKS.NN.18.SS`
 >
@@ -498,8 +498,8 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 | Test Suite | Function | Result | Coverage |
 |------------|----------|--------|----------|
-| `tests/unit/auth` | User Authentication | ✅ Passed | 98% |
-| `tests/unit/api` | API Endpoints | ✅ Passed | 92% |
+| `tests/unit/auth` | User Authentication | [PASS] Passed | 98% |
+| `tests/unit/api` | API Endpoints | [PASS] Passed | 92% |
 ```
 
 ---

@@ -77,7 +77,7 @@ check_placeholder_text() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -106,7 +106,7 @@ check_premature_references() {
   done < <(grep -rnE "$downstream_patterns" "$EARS_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -130,9 +130,9 @@ check_count_consistency() {
   done < <(grep -rnE "[0-9]+ requirements?|[0-9]+ EARS" "$EARS_DIR"/*.md 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   else
-    echo -e "${GREEN}  ✓ Found $found count claims (manual verification recommended)${NC}"
+    echo -e "${GREEN}   Found $found count claims (manual verification recommended)${NC}"
   fi
 }
 
@@ -174,7 +174,7 @@ check_index_sync() {
   done < <(grep -E "\| *Planned *\|" "$index_file" 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
 }
 
@@ -219,7 +219,7 @@ check_diagrams() {
   shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
@@ -257,7 +257,7 @@ check_glossary() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Terminology consistent across corpus${NC}"
+    echo -e "${GREEN}   Terminology consistent across corpus${NC}"
   fi
 }
 
@@ -278,7 +278,7 @@ check_element_ids() {
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate element IDs${NC}"
+    echo -e "${GREEN}   No duplicate element IDs${NC}"
   fi
 }
 
@@ -306,7 +306,7 @@ check_timing_format() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Timing constraints use measurable formats${NC}"
+    echo -e "${GREEN}   Timing constraints use measurable formats${NC}"
   fi
 }
 
@@ -365,7 +365,7 @@ check_ears_syntax() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS have SHALL statements${NC}"
+    echo -e "${GREEN}   All EARS have SHALL statements${NC}"
   fi
 }
 
@@ -403,7 +403,7 @@ check_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS have cumulative traceability tags (@brd + @prd)${NC}"
+    echo -e "${GREEN}   All EARS have cumulative traceability tags (@brd + @prd)${NC}"
   fi
 }
 
@@ -443,7 +443,7 @@ check_bdd_ready() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS are BDD-ready${NC}"
+    echo -e "${GREEN}   All EARS are BDD-ready${NC}"
   fi
 }
 

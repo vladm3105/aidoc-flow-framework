@@ -35,24 +35,24 @@ This workflow handles changes originating from business requirements, product de
 
 ```
 UPSTREAM TRIGGER
-       │
-       ▼
-   GATE-01 ──────────────────────────────────────┐
-   (L1-L4)                                       │
-       │                                         │
-       ▼                                         │
-   GATE-05 ──────────────────────────────┐       │
-   (L5-L8)                               │       │
-       │                                 │       │
-       ▼                                 │       │ Full
-   GATE-09 ──────────────────┐           │       │ Cascade
-   (L9-L11)                  │           │       │ (L3)
-       │                     │           │       │
-       ▼                     │           │       │
-   GATE-12                   │           │       │
-   (L12-L14)                 │           │       │
-       │                     │           │       │
-       ▼                     ▼           ▼       ▼
+       
+       
+   GATE-01 
+   (L1-L4)                                       
+                                                
+                                                
+   GATE-05        
+   (L5-L8)                                      
+                                               
+                                                Full
+   GATE-09                    Cascade
+   (L9-L11)                                     (L3)
+                                              
+                                              
+   GATE-12                                     
+   (L12-L14)                                   
+                                              
+                                              
    DEPLOYED              Partial     Partial   Full
                         Cascade     Cascade  Cascade
 ```
@@ -115,11 +115,11 @@ custom_fields:
 **L3 Major Change**: Archive old artifacts, create new versions
 ```
 docs/CHG/CHG-XX/
-├── CHG-XX.md
-├── archive/
-│   ├── BRD-old.md
-│   └── PRD-old.md
-└── implementation_plan.md
+ CHG-XX.md
+ archive/
+    BRD-old.md
+    PRD-old.md
+ implementation_plan.md
 ```
 
 ### Step 4: GATE-05 Cascade

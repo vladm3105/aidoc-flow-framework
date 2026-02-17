@@ -59,42 +59,42 @@ Gates:
 ## Deployment Flow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        PR Workflow                               │
-│  Feature Branch → PR → AI Review → Human Review → Merge to Main │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Dev Environment                              │
-│  Trigger: Push to main                                          │
-│  Gate: CI passes                                                │
-│  Action: Auto-deploy to {GCP_PROJECT_DEV}                       │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   Staging Environment                            │
-│  Trigger: All phase:N issues closed                             │
-│  Gate: Dev smoke tests pass                                     │
-│  Action: Auto-deploy to {GCP_PROJECT_STAGING}                   │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   QA Testing                                     │
-│  Trigger: Staging deployment complete                           │
-│  Gate: QA test suite passes                                     │
-│  Action: Create QA testing issue, await approval                │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                 Production Environment                           │
-│  Trigger: Manual (workflow_dispatch)                            │
-│  Gate: QA passed + deployment window + approvals                │
-│  Action: Deploy to {GCP_PROJECT_PROD} with rollback ready       │
-└─────────────────────────────────────────────────────────────────┘
+
+                        PR Workflow                               
+  Feature Branch → PR → AI Review → Human Review → Merge to Main 
+
+                                
+                                
+
+                     Dev Environment                              
+  Trigger: Push to main                                          
+  Gate: CI passes                                                
+  Action: Auto-deploy to {GCP_PROJECT_DEV}                       
+
+                                
+                                
+
+                   Staging Environment                            
+  Trigger: All phase:N issues closed                             
+  Gate: Dev smoke tests pass                                     
+  Action: Auto-deploy to {GCP_PROJECT_STAGING}                   
+
+                                
+                                
+
+                   QA Testing                                     
+  Trigger: Staging deployment complete                           
+  Gate: QA test suite passes                                     
+  Action: Create QA testing issue, await approval                
+
+                                
+                                
+
+                 Production Environment                           
+  Trigger: Manual (workflow_dispatch)                            
+  Gate: QA passed + deployment window + approvals                
+  Action: Deploy to {GCP_PROJECT_PROD} with rollback ready       
+
 ```
 
 ---

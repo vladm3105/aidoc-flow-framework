@@ -65,17 +65,17 @@ FAIL → Fix issues, re-run Quality Gate validation
 REQ uses domain-based subdirectories:
 ```
 docs/07_REQ/
-├── REQ-000_index.md
-├── api/
-│   └── REQ-01_api_authentication.md
-├── auth/
-├── core/
-├── data/
-├── risk/
-├── trading/
-├── collection/
-├── compliance/
-└── ml/
+ REQ-000_index.md
+ api/
+    REQ-01_api_authentication.md
+ auth/
+ core/
+ data/
+ risk/
+ trading/
+ collection/
+ compliance/
+ ml/
 ```
 
 ---
@@ -168,7 +168,7 @@ docs/07_REQ/
 
 ---
 
-### CORPUS-05: Unit Tests Coverage ⭐ NEW
+### CORPUS-05: Unit Tests Coverage  NEW
 
 **Purpose**: Verify all REQ files contain Section 8.1 Unit Tests tables
 
@@ -277,7 +277,7 @@ find "$REQ_DIR" -name "REQ-*.md" -exec grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" {
 
 **Action**: Move to `07_REQ/REQ-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
@@ -521,12 +521,12 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$REQ_DIR"/*.md && echo "ERROR: Invalid da
 
 **Exempt Files**: `*_index.md` (directory structure visualization allowed)
 
-**Characters to Detect**: `┌┐└┘─│├┤┬┴┼`
+**Characters to Detect**: ``
 
 **Validation Logic**:
 ```bash
 find "$REQ_DIR" -name "REQ-[0-9]*_*.md" ! -name "*_index.md" | while read f; do
-  if grep -qE "┌|┐|└|┘|─|│|├|┤|┬|┴|┼" "$f"; then
+  if grep -qE "||||||||||" "$f"; then
     echo "WARNING: $(basename $f) contains box drawing characters"
   fi
 done
@@ -569,8 +569,8 @@ done
 **Upstream vs Downstream TBD**:
 | Direction | Documents | TBD Allowed? | Reason |
 |-----------|-----------|--------------|--------|
-| **Upstream** | BRD, PRD, EARS, BDD, ADR, SYS | ✗ No | Must exist before REQ |
-| **Downstream** | SPEC, TASKS, CTR | ✓ Yes | Created after REQ |
+| **Upstream** | BRD, PRD, EARS, BDD, ADR, SYS |  No | Must exist before REQ |
+| **Downstream** | SPEC, TASKS, CTR |  Yes | Created after REQ |
 
 **Patterns Flagged**:
 | Pattern | Error |
@@ -751,10 +751,10 @@ if git diff --cached --name-only | grep -q "^docs/07_REQ/"; then
   echo "Running REQ Quality Gate validation..."
   ./scripts/validate_req_corpus.sh docs/REQ --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ REQ Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] REQ Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ REQ Quality Gate validation passed"
+  echo " REQ Quality Gate validation passed"
 fi
 ```
 
@@ -783,9 +783,9 @@ REQ Quality Gate validation should pass before creating SPEC documents:
 # Pre-SPEC gate check
 ./scripts/validate_req_corpus.sh docs/REQ
 if [ $? -eq 0 ]; then
-  echo "✓ REQ corpus valid - ready for SPEC layer creation"
+  echo " REQ corpus valid - ready for SPEC layer creation"
 else
-  echo "❌ Fix REQ corpus errors before proceeding to SPEC layer"
+  echo "[FAIL] Fix REQ corpus errors before proceeding to SPEC layer"
   exit 1
 fi
 ```

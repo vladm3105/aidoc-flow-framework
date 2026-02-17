@@ -68,7 +68,7 @@ Use this matrix to determine if implementation contracts are required:
 
 Select contract type(s) based on what you're sharing:
 
-#### Protocol Interfaces ✓ Use When:
+#### Protocol Interfaces  Use When:
 - [ ] Defining async/sync service interfaces
 - [ ] Creating plugin architectures
 - [ ] Implementing adapter patterns
@@ -76,7 +76,7 @@ Select contract type(s) based on what you're sharing:
 
 **Example**: `ServiceConnector` protocol with `connect()`, `disconnect()` methods
 
-#### Exception Hierarchies ✓ Use When:
+#### Exception Hierarchies  Use When:
 - [ ] Defining service failure modes
 - [ ] Implementing retry logic
 - [ ] Standardizing error codes
@@ -84,7 +84,7 @@ Select contract type(s) based on what you're sharing:
 
 **Example**: `GatewayConnectionError` hierarchy with error codes and retry flags
 
-#### State Machine Contracts ✓ Use When:
+#### State Machine Contracts  Use When:
 - [ ] Managing connection lifecycles
 - [ ] Tracking request/workflow states
 - [ ] Validating state transitions
@@ -92,7 +92,7 @@ Select contract type(s) based on what you're sharing:
 
 **Example**: `ConnectionState` enum with valid transition mappings
 
-#### Data Models ✓ Use When:
+#### Data Models  Use When:
 - [ ] Defining API request/response schemas
 - [ ] Sharing configuration structures
 - [ ] Creating database models
@@ -100,7 +100,7 @@ Select contract type(s) based on what you're sharing:
 
 **Example**: `ConnectionConfig` Pydantic model with validation rules
 
-#### Dependency Injection Interfaces ✓ Use When:
+#### Dependency Injection Interfaces  Use When:
 - [ ] Implementing service registration
 - [ ] Enabling testing with mocks
 - [ ] Creating plugin architectures
@@ -114,7 +114,7 @@ Select contract type(s) based on what you're sharing:
 
 ### 5-Step Workflow
 
-#### Step 1: Dependency Analysis ✓
+#### Step 1: Dependency Analysis 
 - [ ] Review TASKS file for dependencies
 - [ ] Count downstream TASKS (how many depend on this?)
 - [ ] Identify shared interfaces
@@ -122,7 +122,7 @@ Select contract type(s) based on what you're sharing:
 
 **Output**: List of upstream/downstream dependencies
 
-#### Step 2: Contract Type Selection ✓
+#### Step 2: Contract Type Selection 
 - [ ] Review 5 contract types above
 - [ ] Select types matching your interfaces
 - [ ] Combine multiple types if needed
@@ -130,7 +130,7 @@ Select contract type(s) based on what you're sharing:
 
 **Output**: Selected contract types with justification
 
-#### Step 3: Contract Implementation ✓
+#### Step 3: Contract Implementation 
 - [ ] Write contract code with full type hints
 - [ ] Add docstrings for all public methods
 - [ ] Define exception hierarchies
@@ -139,7 +139,7 @@ Select contract type(s) based on what you're sharing:
 
 **Output**: Contract code ready for validation
 
-#### Step 4: Contract Documentation ✓
+#### Step 4: Contract Documentation 
 - [ ] Add "Implementation Contracts" section to TASKS
 - [ ] Document contract purpose and scope
 - [ ] Provide usage examples
@@ -148,7 +148,7 @@ Select contract type(s) based on what you're sharing:
 
 **Output**: Complete contract documentation
 
-#### Step 5: Validation ✓
+#### Step 5: Validation 
 - [ ] Run `mypy --strict` on contracts
 - [ ] Verify all type hints present
 - [ ] Test with mock implementations
@@ -368,7 +368,7 @@ class ServiceConfig(BaseModel):
 
 ## 6. Common Pitfalls
 
-### Pitfall 1: Over-Specification ❌
+### Pitfall 1: Over-Specification [FAIL]
 **Problem**: Including implementation details in contracts
 
 **Example** (incorrect):
@@ -378,9 +378,9 @@ class ServiceInterface(Protocol):
     def _private_helper(self) -> None: ...  # Don't include!
 ```
 
-**Solution**: Contracts define public interface only ✓
+**Solution**: Contracts define public interface only 
 
-### Pitfall 2: Missing Type Hints ❌
+### Pitfall 2: Missing Type Hints [FAIL]
 **Problem**: Incomplete type annotations
 
 **Example** (incorrect):
@@ -389,32 +389,32 @@ def connect(self, host, port):  # No type hints
     ...
 ```
 
-**Solution**: Add complete type hints ✓
+**Solution**: Add complete type hints 
 ```python
 def connect(self, host: str, port: int) -> None:
     ...
 ```
 
-### Pitfall 3: Mutable Contracts ❌
+### Pitfall 3: Mutable Contracts [FAIL]
 **Problem**: Changing contracts frequently breaks consumers
 
-**Solution**: Use semantic versioning and deprecation ✓
+**Solution**: Use semantic versioning and deprecation 
 - Version contracts (v1, v2)
 - Deprecate old versions gradually
 - Communicate breaking changes
 
-### Pitfall 4: No Validation ❌
+### Pitfall 4: No Validation [FAIL]
 **Problem**: Contracts not validated with type checkers
 
-**Solution**: Run `mypy --strict` on all contracts ✓
+**Solution**: Run `mypy --strict` on all contracts 
 ```bash
 mypy --strict contracts/your_contracts.py
 ```
 
-### Pitfall 5: Insufficient Documentation ❌
+### Pitfall 5: Insufficient Documentation [FAIL]
 **Problem**: Contracts lack usage examples or error conditions
 
-**Solution**: Document thoroughly ✓
+**Solution**: Document thoroughly 
 - Purpose and scope
 - Usage examples
 - Exception conditions

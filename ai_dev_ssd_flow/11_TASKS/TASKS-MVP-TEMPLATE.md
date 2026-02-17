@@ -16,7 +16,7 @@ custom_fields:
   schema_reference: "TASKS_MVP_SCHEMA.yaml"
   schema_version: "2.0"
 ---
-> **🔄 Dual-Format Note**: 
+> ** Dual-Format Note**: 
 > 
 > This MD template is the **primary source** for human workflow. 
 > - **For Autopilot**: See `TASKS-MVP-TEMPLATE.yaml` (YAML template) 
@@ -409,8 +409,8 @@ Prefer these tags over legacy "See also …" strings.
 
 | Test Suite | Function | Result | Coverage |
 |------------|----------|--------|----------|
-| `tests/unit/...` | [Core Logic] | ✅ Passed | 95% |
-| `tests/integration/...` | [API Integration] | ✅ Passed | 88% |
+| `tests/unit/...` | [Core Logic] | [PASS] Passed | 95% |
+| `tests/integration/...` | [API Integration] | [PASS] Passed | 88% |
 
 ---
 

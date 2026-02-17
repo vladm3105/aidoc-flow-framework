@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+#  Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
 # - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Pre-generation checklist to prevent common errors
 # - Scope: Use BEFORE generating any BDD feature file
@@ -47,14 +47,14 @@ custom_fields:
 ### ADR-Ready Score Format (MANDATORY)
 
 ```markdown
-| **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 75% (Target: ≥90%) |
 ```
 
 **Checklist**:
-- [ ] Contains `✅` checkmark emoji at start of value
+- [ ] Contains `[PASS]` checkmark emoji at start of value
 - [ ] Percentage is integer (1-100)
 - [ ] Contains `≥` symbol before 90
-- [ ] Format exactly: `✅ NN% (Target: ≥90%)`
+- [ ] Format exactly: `[PASS] NN% (Target: ≥90%)`
 
 ### Feature-Level Tags Format (MANDATORY)
 
@@ -189,7 +189,7 @@ Feature: [Agent Feature Title]
 
 ## Common Anti-Patterns to Avoid
 
-### ❌ Anti-Pattern 1: Tags in Comments
+### [FAIL] Anti-Pattern 1: Tags in Comments
 
 ```gherkin
 # WRONG - frameworks cannot parse
@@ -203,7 +203,7 @@ Feature: My Feature
 Feature: My Feature
 ```
 
-### ❌ Anti-Pattern 2: ADR-Ready Score Wrong Format
+### [FAIL] Anti-Pattern 2: ADR-Ready Score Wrong Format
 
 ```markdown
 # WRONG - missing checkmark and ≥
@@ -212,10 +212,10 @@ Feature: My Feature
 
 ```markdown
 # CORRECT - with checkmark and ≥
-| **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 75% (Target: ≥90%) |
 ```
 
-### ❌ Anti-Pattern 3: Hardcoded Magic Numbers
+### [FAIL] Anti-Pattern 3: Hardcoded Magic Numbers
 
 ```gherkin
 # WRONG - hardcoded values
@@ -227,7 +227,7 @@ Then response time is less than 200ms
 Then response time is less than @threshold:PRD.035.perf.api.p95_latency
 ```
 
-### ❌ Anti-Pattern 4: Wrong Step Order
+### [FAIL] Anti-Pattern 4: Wrong Step Order
 
 ```gherkin
 # WRONG - When before Given
@@ -259,7 +259,7 @@ grep -n "^#.*@prd:" docs/04_BDD/BDD-NN_*/BDD-NN*.feature
 grep -n "^#.*@ears:" docs/04_BDD/BDD-NN_*/BDD-NN*.feature
 
 # Verify ADR-Ready Score format
-grep "ADR-Ready Score" docs/04_BDD/BDD-NN_*/BDD-NN*.feature | grep -v "✅"
+grep "ADR-Ready Score" docs/04_BDD/BDD-NN_*/BDD-NN*.feature | grep -v "[PASS]"
 ```
 
 ---
@@ -269,7 +269,7 @@ grep "ADR-Ready Score" docs/04_BDD/BDD-NN_*/BDD-NN*.feature | grep -v "✅"
 Before committing any BDD file, verify:
 
 - [ ] Document Control table has 7 required fields
-- [ ] ADR-Ready Score: `✅ NN% (Target: ≥90%)`
+- [ ] ADR-Ready Score: `[PASS] NN% (Target: ≥90%)`
 - [ ] Feature-level tags are Gherkin-native (not comments)
 - [ ] All three upstream tags present: @brd, @prd, @ears
 - [ ] For AI-agent: `@ctr:CTR-005` tag included

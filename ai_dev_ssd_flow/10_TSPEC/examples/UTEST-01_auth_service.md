@@ -297,9 +297,9 @@ AND subsequent attempts raise AccountLockedError
 
 | REQ ID | REQ Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| REQ.01.10.01 | User authentication | TSPEC.01.40.01, TSPEC.01.40.02, TSPEC.01.40.06 | ✅ |
-| REQ.01.10.02 | Token management | TSPEC.01.40.03, TSPEC.01.40.04 | ✅ |
-| REQ.01.10.03 | Session handling | TSPEC.01.40.05 | ✅ |
+| REQ.01.10.01 | User authentication | TSPEC.01.40.01, TSPEC.01.40.02, TSPEC.01.40.06 | [PASS] |
+| REQ.01.10.02 | Token management | TSPEC.01.40.03, TSPEC.01.40.04 | [PASS] |
+| REQ.01.10.03 | Session handling | TSPEC.01.40.05 | [PASS] |
 
 **Coverage Summary**:
 - Total REQ elements: 3

@@ -274,31 +274,31 @@ The following subdirectories are recommended for Financial Services projects. Th
 
 ```
 docs/07_REQ/
-├── risk/
-│   ├── REQ-01_resource_limit_enforcement.md
-│   ├── REQ-02_var_calculation_methodology.md
-│   ├── REQ-03_stress_test_scenarios.md
-│   └── lim/
-│       ├── REQ-010_hard_limit_implementation.md
-│       └── REQ-011_soft_limit_warnings.md
-├── trading/
-│   ├── REQ-020_order_validation.md
-│   ├── REQ-021_execution_algorithms.md
-│   └── ord/
-│       ├── REQ-030_order_types.md
-│       └── REQ-031_order_lifecycle.md
-├── collection/
-│   ├── REQ-040_asset_allocation_engine.md
-│   └── alloc/
-│       └── REQ-050_rebalancing_triggers.md
-├── compliance/
-│   ├── REQ-060_trade_surveillance.md
-│   └── regulatory/
-│       └── REQ-070_rule_15c3-5_compliance.md
-└── ml/
-    ├── REQ-080_ml_model_requirements.md
-    └── pricing/
-        └── REQ-090_option_pricing_model.md
+ risk/
+    REQ-01_resource_limit_enforcement.md
+    REQ-02_var_calculation_methodology.md
+    REQ-03_stress_test_scenarios.md
+    lim/
+        REQ-010_hard_limit_implementation.md
+        REQ-011_soft_limit_warnings.md
+ trading/
+    REQ-020_order_validation.md
+    REQ-021_execution_algorithms.md
+    ord/
+        REQ-030_order_types.md
+        REQ-031_order_lifecycle.md
+ collection/
+    REQ-040_asset_allocation_engine.md
+    alloc/
+        REQ-050_rebalancing_triggers.md
+ compliance/
+    REQ-060_trade_surveillance.md
+    regulatory/
+        REQ-070_rule_15c3-5_compliance.md
+ ml/
+     REQ-080_ml_model_requirements.md
+     pricing/
+         REQ-090_option_pricing_model.md
 ```
 
 ---

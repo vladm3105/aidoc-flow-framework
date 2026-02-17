@@ -12,7 +12,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SPEC documents.
+> ** Document Role**: This is the **POST-CREATION VALIDATOR** for SPEC documents.
 > - Apply these rules after SPEC creation or modification
 > - **Authority**: Validates compliance with `SPEC-MVP-TEMPLATE.yaml` (MVP default profile; use full profile only when explicitly requested)
 > - **Scope**: Use for quality gates before committing SPEC changes
@@ -92,7 +92,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 - Proper indentation
 - Correct data types (strings, numbers, booleans, arrays, objects)
 
-### CHECK 1b: Flat YAML Structure ⭐ NEW
+### CHECK 1b: Flat YAML Structure  NEW
 
 **Purpose**: Ensure SPEC uses flat structure with top-level keys (not nested under `spec_document` or similar wrapper)
 **Type**: Error (blocking)
@@ -118,7 +118,7 @@ interfaces: ...
 
 **Invalid Structure (Nested)**:
 ```yaml
-spec_document:  # ❌ WRONG - wrapper key not allowed
+spec_document:  # [FAIL] WRONG - wrapper key not allowed
   metadata:
     version: "1.0.0"
   traceability: ...
@@ -129,7 +129,7 @@ spec_document:  # ❌ WRONG - wrapper key not allowed
 2. If `spec_document`, `spec`, `document`, or `specification` is a top-level key → Error
 3. Verify `metadata` or `traceability` exists at root level
 
-**Error Message**: `❌ SPEC-E001b: Invalid nested structure - SPEC must use flat YAML structure (no spec_document wrapper)`
+**Error Message**: `[FAIL] SPEC-E001b: Invalid nested structure - SPEC must use flat YAML structure (no spec_document wrapper)`
 
 **Rationale**: Flat structure ensures consistent parsing across all SPEC files and enables uniform TASKS code generation. Nested structures break tooling expectations and create inconsistent validation paths.
 
@@ -139,18 +139,18 @@ spec_document:  # ❌ WRONG - wrapper key not allowed
 
 **Required Fields**:
 - metadata.version, metadata.status, metadata.created_date
-- metadata.task_ready_score with `✅ NN% (Target: ≥90%)` format
+- metadata.task_ready_score with `[PASS] NN% (Target: ≥90%)` format
 
-### CHECK 3: TASKS-Ready Score Validation ⭐ NEW
+### CHECK 3: TASKS-Ready Score Validation  NEW
 
 **Purpose**: Validate TASKS-ready score format and threshold
 **Type**: Error (blocking)
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Valid Examples**: `[PASS] 95% (Target: ≥90%)`
 
-**Error Message**: `❌ MISSING: TASKS-ready score with ✅ emoji and percentage`
+**Error Message**: `[FAIL] MISSING: TASKS-ready score with [PASS] emoji and percentage`
 
-### CHECK 4: Threshold Registry Compliance ⭐ NEW
+### CHECK 4: Threshold Registry Compliance  NEW
 
 **Purpose**: Enforce @threshold usage and registry traceability
 **Type**: Error (blocking)
@@ -188,7 +188,7 @@ cumulative_tags:
 - Use `null` only when the artifact type genuinely does not exist in the project
 - See SPEC_MVP_CREATION_RULES.md Section 4.2 for complete notation standards
 
-### CHECK 5b: CTR Contract Validation (Conditional) ⭐ NEW
+### CHECK 5b: CTR Contract Validation (Conditional)  NEW
 
 **Purpose**: Verify CTR reference when corresponding CTR file exists
 **Type**: Warning (non-blocking, but recommended)
@@ -199,8 +199,8 @@ cumulative_tags:
 3. If CTR exists AND `cumulative_tags.ctr` is `null` → Warning
 4. If CTR does not exist AND `cumulative_tags.ctr` is not `null` → Error (invalid reference)
 
-**Warning Message**: `⚠️ SPEC-W012: CTR-NN exists but cumulative_tags.ctr is null - should reference CTR-NN`
-**Error Message**: `❌ SPEC-E012: cumulative_tags.ctr references CTR-NN but file does not exist`
+**Warning Message**: `[WARN] SPEC-W012: CTR-NN exists but cumulative_tags.ctr is null - should reference CTR-NN`
+**Error Message**: `[FAIL] SPEC-E012: cumulative_tags.ctr references CTR-NN but file does not exist`
 
 ### CHECK 6: Interface Specifications
 
@@ -262,11 +262,11 @@ cumulative_tags:
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `SPEC.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `STEP-XXX` | ❌ Fail - use SPEC.NN.15.SS |
-| Removed pattern | `IF-XXX` | ❌ Fail - use SPEC.NN.16.SS |
-| Removed pattern | `DM-XXX` | ❌ Fail - use SPEC.NN.17.SS |
-| Removed pattern | `VR-XXX` | ❌ Fail - use SPEC.NN.21.SS |
+| Valid format | `SPEC.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `STEP-XXX` | [FAIL] Fail - use SPEC.NN.15.SS |
+| Removed pattern | `IF-XXX` | [FAIL] Fail - use SPEC.NN.16.SS |
+| Removed pattern | `DM-XXX` | [FAIL] Fail - use SPEC.NN.17.SS |
+| Removed pattern | `VR-XXX` | [FAIL] Fail - use SPEC.NN.21.SS |
 
 **Regex**: `^###?\s+SPEC\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -285,7 +285,7 @@ cumulative_tags:
 
 ---
 
-### CHECK 11: Required Subsection Compliance ⭐ NEW
+### CHECK 11: Required Subsection Compliance  NEW
 
 **Purpose**: Verify all new required subsections are present in SPEC files
 **Type**: Error (blocking)
@@ -319,18 +319,18 @@ for section, subsection in required_subsections:
 ```
 
 **Error Messages**:
-- `❌ SPEC-E020: Missing traceability.upstream_links`
-- `❌ SPEC-E021: Missing architecture.overview`
-- `❌ SPEC-E022: Missing architecture.component_structure`
-- `❌ SPEC-E023: Missing architecture.element_ids`
-- `❌ SPEC-E024: Missing interfaces.external_apis`
-- `❌ SPEC-E025: Missing interfaces.internal_apis`
+- `[FAIL] SPEC-E020: Missing traceability.upstream_links`
+- `[FAIL] SPEC-E021: Missing architecture.overview`
+- `[FAIL] SPEC-E022: Missing architecture.component_structure`
+- `[FAIL] SPEC-E023: Missing architecture.element_ids`
+- `[FAIL] SPEC-E024: Missing interfaces.external_apis`
+- `[FAIL] SPEC-E025: Missing interfaces.internal_apis`
 
-- `❌ SPEC-E025: Missing interfaces.internal_apis`
+- `[FAIL] SPEC-E025: Missing interfaces.internal_apis`
 
 ---
 
-### CHECK 12: High-Guidance Pseudocode Validation ⭐ NEW
+### CHECK 12: High-Guidance Pseudocode Validation  NEW
 
 **Purpose**: Verify "High-Guidance" fields contain meaningful logic descriptions, not just placeholders.
 **Type**: Warning
@@ -345,8 +345,8 @@ for section, subsection in required_subsections:
 3. **Placeholder Detection**: Should not be "TBD", "TODO", "Coming soon".
 
 **Messages**:
-- `⚠️ SPEC-W030: Pseudocode in REQ-NN implementation too short (<10 chars). Describe the logic.`
-- `⚠️ SPEC-W031: Internal API 'process_order' purpose missing logic keywords (if/else/validate).`
+- `[WARN] SPEC-W030: Pseudocode in REQ-NN implementation too short (<10 chars). Describe the logic.`
+- `[WARN] SPEC-W031: Internal API 'process_order' purpose missing logic keywords (if/else/validate).`
 
 ---
 
@@ -381,7 +381,7 @@ python 09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_component_spec/SPEC
 find docs/SPEC -name "SPEC-*.yaml" -exec python 09_SPEC/scripts/validate_spec.py {} \;
 ```
 
-### TASKS-Ready Scoring Criteria ⭐ NEW
+### TASKS-Ready Scoring Criteria  NEW
 
 **YAML Completeness (25%)**:
 - Metadata fields complete: 10%
@@ -419,20 +419,20 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python 09_SPEC/scripts/validate_spec.py
 
 ### Mistake #1: Invalid YAML Syntax
 ```
-❌ version: '1.0.0  # Missing closing quote
-✅ version: "1.0.0"  # Proper quotes
+[FAIL] version: '1.0.0  # Missing closing quote
+[PASS] version: "1.0.0"  # Proper quotes
 ```
 
 ### Mistake #1b: Nested Structure (spec_document wrapper)
 ```yaml
-❌ # WRONG - nested under spec_document wrapper
+[FAIL] # WRONG - nested under spec_document wrapper
 spec_document:
   metadata:
     version: "1.0.0"
   traceability: ...
   req_implementations: ...
 
-✅ # CORRECT - flat structure at root level
+[PASS] # CORRECT - flat structure at root level
 metadata:
   version: "1.0.0"
 traceability: ...
@@ -443,21 +443,21 @@ req_implementations: ...
 
 ### Mistake #2: Missing TASKS-Ready Score
 ```
-❌ metadata:
+[FAIL] metadata:
     version: "1.0.0"
     status: "draft"
-✅ metadata:
+[PASS] metadata:
     version: "1.0.0"
     status: "draft"
-    task_ready_score: "✅ 95% (Target: ≥90%)"
+    task_ready_score: "[PASS] 95% (Target: ≥90%)"
 ```
 
 ### Mistake #3: Incomplete Traceability
 ```
-❌ cumulative_tags:
+[FAIL] cumulative_tags:
     brd: "BRD-NN"
     threshold: null  # missing registry reference despite thresholds in spec
-✅ cumulative_tags:
+[PASS] cumulative_tags:
     brd: "BRD.01.01.30"
     prd: "PRD.03.01.02"
     ears: "EARS.01.24.03"
@@ -471,19 +471,19 @@ req_implementations: ...
 
 ### Mistake #4: Missing CTR Reference When CTR Exists
 ```
-❌ # CTR-01_iam.yaml exists in docs/08_CTR/ but SPEC-01 has:
+[FAIL] # CTR-01_iam.yaml exists in docs/08_CTR/ but SPEC-01 has:
 cumulative_tags:
     ctr: null  # WRONG - CTR file exists
 
-✅ # Check for CTR file first, then reference it:
+[PASS] # Check for CTR file first, then reference it:
 cumulative_tags:
     ctr: "CTR-01"  # Reference the existing CTR contract
 ```
 
 ### Mistake #5: CTR Contract Mismatch
 ```
-❌ # CTR-NN references interface that doesn't exist
-✅ # Verified CTR-01_iam.yaml exists and matches API spec
+[FAIL] # CTR-NN references interface that doesn't exist
+[PASS] # Verified CTR-01_iam.yaml exists and matches API spec
 ```
 
 ---

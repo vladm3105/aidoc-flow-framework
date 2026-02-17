@@ -49,22 +49,22 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 
 ### Use YAML Frontmatter When:
 
-- ✅ Classifying document type (BRD, PRD, REQ, etc.)
-- ✅ Marking document status (draft, approved, deprecated)
-- ✅ Organizing documentation site structure
-- ✅ Enabling automated validation
-- ✅ Filtering/searching documents by attributes
-- ✅ Specifying architecture approach (ai-agent vs traditional)
+- [PASS] Classifying document type (BRD, PRD, REQ, etc.)
+- [PASS] Marking document status (draft, approved, deprecated)
+- [PASS] Organizing documentation site structure
+- [PASS] Enabling automated validation
+- [PASS] Filtering/searching documents by attributes
+- [PASS] Specifying architecture approach (ai-agent vs traditional)
 
 ### Use Traceability Tags When:
 
-- ✅ Linking specific upstream requirements
-- ✅ Tracking downstream implementations
-- ✅ Creating audit trail for compliance
-- ✅ Enabling impact analysis (what depends on this?)
-- ✅ Supporting regulatory documentation
-- ✅ Providing context for reviewers
-- ✅ AI assistants need to follow dependency chains
+- [PASS] Linking specific upstream requirements
+- [PASS] Tracking downstream implementations
+- [PASS] Creating audit trail for compliance
+- [PASS] Enabling impact analysis (what depends on this?)
+- [PASS] Supporting regulatory documentation
+- [PASS] Providing context for reviewers
+- [PASS] AI assistants need to follow dependency chains
 
 ---
 
@@ -230,7 +230,7 @@ python3 scripts/validate_metadata.py --strict .
 
 ## Common Mistakes to Avoid
 
-### ❌ Wrong: Using YAML for Audit Trail
+### [FAIL] Wrong: Using YAML for Audit Trail
 
 ```yaml
 # DON'T DO THIS - Too generic, no audit trail
@@ -240,7 +240,7 @@ custom_fields:
 
 **Problem**: No context, no descriptions, no compliance value
 
-### ✅ Right: Use Traceability Tags
+### [PASS] Right: Use Traceability Tags
 
 ```markdown
 ## 7. Traceability
@@ -256,7 +256,7 @@ custom_fields:
 
 ---
 
-### ❌ Wrong: Putting Traceability in YAML
+### [FAIL] Wrong: Putting Traceability in YAML
 
 ```yaml
 custom_fields:
@@ -273,7 +273,7 @@ custom_fields:
 
 ---
 
-### ❌ Wrong: Omitting YAML Frontmatter
+### [FAIL] Wrong: Omitting YAML Frontmatter
 
 ```markdown
 # REQ-NN: WebSocket Reconnection Logic

@@ -161,9 +161,9 @@ execution_profile:
 
 | SEC ID | SEC Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| SEC.01.01 | Authentication must resist brute force | TSPEC.01.45.01, TSPEC.01.45.04 | ✅ |
-| SEC.01.02 | Passwords must meet complexity requirements | TSPEC.01.45.02 | ✅ |
-| SEC.01.03 | Input must be sanitized | TSPEC.01.45.03 | ✅ |
+| SEC.01.01 | Authentication must resist brute force | TSPEC.01.45.01, TSPEC.01.45.04 | [PASS] |
+| SEC.01.02 | Passwords must meet complexity requirements | TSPEC.01.45.02 | [PASS] |
+| SEC.01.03 | Input must be sanitized | TSPEC.01.45.03 | [PASS] |
 
 **Coverage Summary**:
 - Total SEC elements: 3

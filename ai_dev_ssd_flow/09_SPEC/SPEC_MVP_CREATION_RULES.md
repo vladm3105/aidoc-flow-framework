@@ -12,7 +12,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for SPEC-MVP-TEMPLATE.yaml (MVP profile).
+> ** Document Role**: This is a **CREATION HELPER** for SPEC-MVP-TEMPLATE.yaml (MVP profile).
 > - **Authority**: `SPEC-MVP-TEMPLATE.yaml` (MVP profile) is the primary source of truth for SPEC structure; use the full profile only when explicitly requested
 > - **Validation**: Use `SPEC_MVP_VALIDATION_RULES.md` after SPEC creation/changes
 
@@ -79,7 +79,7 @@ summary: Single-sentence description
 metadata:
   version: "1.0.0"
   status: "draft"
-  task_ready_score: ✅ 95% (Target: ≥90%)  # Added for quality gates
+  task_ready_score: [PASS] 95% (Target: ≥90%)  # Added for quality gates
 
 # Complete traceability chain
 traceability:
@@ -180,7 +180,7 @@ operations: [...]
 
 **Required Metadata Fields**:
 - version, status, created_date, authors, reviewers
-- TASKS-ready score (⭐ NEW) format: `✅ NN% (Target: ≥90%)`
+- TASKS-ready score ( NEW) format: `[PASS] NN% (Target: ≥90%)`
 
 ### Status and TASKS-Ready Score Mapping
 
@@ -214,7 +214,7 @@ operations: [...]
 | Validation Rule | 21 | SPEC.02.21.01 |
 | Specification Element | 28 | SPEC.02.28.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `STEP-XXX`, `INT-XXX`.
+> [WARN] **REMOVED PATTERNS** - Do NOT use legacy formats like `STEP-XXX`, `INT-XXX`.
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
@@ -294,16 +294,16 @@ cumulative_tags:
 #### Common Mistake to Avoid
 
 ```yaml
-# ❌ WRONG: Using dash notation for element-level references
+# [FAIL] WRONG: Using dash notation for element-level references
 cumulative_tags:
   brd: "BRD-01"               # This is file name notation, not element-level
   prd: "PRD-03"               # Missing element type and sequence
 
-# ❌ WRONG: Using dot notation for file name references
+# [FAIL] WRONG: Using dot notation for file name references
 upstream_links:
   - artifact: "BRD.01.01.03"  # Should be "BRD-01" for document reference
 
-# ✅ CORRECT: Appropriate notation for each context
+# [PASS] CORRECT: Appropriate notation for each context
 cumulative_tags:
   brd: "BRD.01.01.03"         # Element-level (feature within BRD-01)
   adr: "ADR-05"               # Document-level (ADR has no sub-elements)
@@ -369,12 +369,12 @@ Only now define the JSON schema/API contract, derived from the internal logic.
 
 ---
 
-## 7. TASKS-Ready Scoring System ⭐ NEW
+## 7. TASKS-Ready Scoring System  NEW
 
 ### Overview
 TASKS-ready scoring measures SPEC maturity and readiness for progression to TASKS implementation planning.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: metadata.task_ready_score field
 **Validation**: Enforced before TASKS creation
 
@@ -402,7 +402,7 @@ TASKS-ready scoring measures SPEC maturity and readiness for progression to TASK
 
 ### Quality Gate Enforcement
 - Score <90% prevents TASKS artifact creation
-- Format validation requires ✅ emoji and percentage
+- Format validation requires [PASS] emoji and percentage
 - YAML syntax must be valid for TASKS parsing
 
 ---
@@ -443,7 +443,7 @@ cumulative_tags:
 SPECs **reference** REQ files - they do NOT copy requirement text:
 
 ```yaml
-# ✅ CORRECT: Reference the REQ
+# [PASS] CORRECT: Reference the REQ
 traceability:
   upstream_sources:
     atomic_requirements:
@@ -451,7 +451,7 @@ traceability:
         link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
         title: "Session Creation Requirements"
 
-# ❌ WRONG: Duplicating requirement text
+# [FAIL] WRONG: Duplicating requirement text
 # requirement_text: "The system shall create a session within 100ms..."
 ```
 

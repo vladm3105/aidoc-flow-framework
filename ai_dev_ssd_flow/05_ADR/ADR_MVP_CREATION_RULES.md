@@ -14,7 +14,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Guides creation of ADR-MVP-TEMPLATE.md (default)
+#  Document Role: Guides creation of ADR-MVP-TEMPLATE.md (default)
 # - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure; full template is archived
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
@@ -33,7 +33,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
+> ** Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
 > - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; full template archived
 > - **Validation**: Use `ADR_MVP_VALIDATION_RULES.md` after ADR creation/changes
 
@@ -124,13 +124,13 @@ ADR documents follow a comprehensive 4-part structure:
 - Document Owner
 - Prepared By
 - Status
-- SYS-Ready Score (⭐ NEW)
+- SYS-Ready Score ( NEW)
 
 **Format**:
 ```markdown
 | Item | Details |
 |------|---------|
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 ### Status and SYS-Ready Score Mapping
@@ -160,7 +160,7 @@ ADR documents follow a comprehensive 4-part structure:
 | Alternative | 12 | ADR.02.12.01 |
 | Consequence | 13 | ADR.02.13.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `DEC-XXX`, `ALT-XXX`.
+> [WARN] **REMOVED PATTERNS** - Do NOT use legacy formats like `DEC-XXX`, `ALT-XXX`.
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
@@ -199,12 +199,12 @@ ADR documents follow a comprehensive 4-part structure:
 
 ---
 
-## 7. SYS-Ready Scoring System ⭐ NEW
+## 7. SYS-Ready Scoring System  NEW
 
 ### Overview
 SYS-ready scoring measures ADR maturity and readiness for progression to System Requirements (SYS) phase.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: Document Control table
 **Validation**: Enforced before SYS creation
 
@@ -232,7 +232,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ### Quality Gate Enforcement
 - Score <90% prevents SYS artifact creation
-- Format validation requires ✅ emoji and percentage
+- Format validation requires [PASS] emoji and percentage
 - Threshold enforcement at pre-commit
 
 ---
@@ -321,7 +321,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ## 12. Diagram Standards
 
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`├── └── │`) are exempted.
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`  `) are exempted.
 
 **Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
 **Diagram Skill**: `mermaid-gen` skill

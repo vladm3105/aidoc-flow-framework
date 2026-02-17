@@ -71,8 +71,8 @@ TSPEC.NN.42.SS
 ```markdown
 | Condition | Result |
 |-----------|--------|
-| [Success condition] | ✅ PASS |
-| [Failure condition] | ❌ FAIL |
+| [Success condition] | [PASS] PASS |
+| [Failure condition] | [FAIL] FAIL |
 ```
 
 **Validation**: Must have at least one PASS and one FAIL condition
@@ -120,8 +120,8 @@ Score = (Paths × 0.30) + (Timeout × 0.25) + (Rollback × 0.25) + (Health × 0.
 
 | Score | Status |
 |-------|--------|
-| 100% | ✅ PASS |
-| <100% | ❌ FAIL |
+| 100% | [PASS] PASS |
+| <100% | [FAIL] FAIL |
 
 **Note**: STEST requires 100% compliance. No partial passes.
 
@@ -130,7 +130,7 @@ Score = (Paths × 0.30) + (Timeout × 0.25) + (Rollback × 0.25) + (Health × 0.
 ### Pass Output
 
 ```
-✅ STEST-01_production.md: PASS (100%)
+[PASS] STEST-01_production.md: PASS (100%)
   - Critical Paths: 100% (4/4)
   - Timeout Budget: 100% (165s/300s)
   - Rollback Defined: 100% (4/4)
@@ -140,7 +140,7 @@ Score = (Paths × 0.30) + (Timeout × 0.25) + (Rollback × 0.25) + (Health × 0.
 ### Fail Output
 
 ```
-❌ STEST-01_production.md: FAIL (85%)
+[FAIL] STEST-01_production.md: FAIL (85%)
   - Critical Paths: 100% (4/4)
   - Timeout Budget: 100% (165s/300s)
   - Rollback Defined: 75% (3/4)

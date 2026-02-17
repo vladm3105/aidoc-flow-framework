@@ -17,32 +17,32 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 | Capability | Human | AI ({AI_TOOL_NAME} Code) |
 |:-----------|:-----:|:----------------:|
 | **GitHub Repository** |
-| Create/read issues | ✅ | ✅ (MCP) |
-| Update issue labels | ✅ | ✅ (MCP) |
-| Create branches | ✅ | ✅ (MCP) |
-| Push code | ✅ | ✅ (MCP) |
-| Create/merge PRs | ✅ | ✅ Create / ❌ Merge |
-| Approve PRs | ✅ | ❌ |
+| Create/read issues | [PASS] | [PASS] (MCP) |
+| Update issue labels | [PASS] | [PASS] (MCP) |
+| Create branches | [PASS] | [PASS] (MCP) |
+| Push code | [PASS] | [PASS] (MCP) |
+| Create/merge PRs | [PASS] | [PASS] Create / [FAIL] Merge |
+| Approve PRs | [PASS] | [FAIL] |
 | **GitHub Project Board** |
-| View project board (UI) | ✅ | ❌ |
-| Update board status (GraphQL) | ✅ | ✅ (gh CLI) |
-| Update custom fields (UI) | ✅ | ❌ |
-| Create/edit views | ✅ | ❌ |
-| Move cards (UI) | ✅ | ❌ |
+| View project board (UI) | [PASS] | [FAIL] |
+| Update board status (GraphQL) | [PASS] | [PASS] (gh CLI) |
+| Update custom fields (UI) | [PASS] | [FAIL] |
+| Create/edit views | [PASS] | [FAIL] |
+| Move cards (UI) | [PASS] | [FAIL] |
 | **GCP Console** |
-| Create budgets | ✅ | ❌ |
-| Enable billing export | ✅ | ❌ |
-| IAM permissions | ✅ | ❌ |
+| Create budgets | [PASS] | [FAIL] |
+| Enable billing export | [PASS] | [FAIL] |
+| IAM permissions | [PASS] | [FAIL] |
 | **Code & Infrastructure** |
-| Write application code | ✅ | ✅ |
-| Write Terraform | ✅ | ✅ |
-| Write tests | ✅ | ✅ |
-| Review code | ✅ | ❌ (advisory only) |
-| Deploy to production | ✅ | ❌ |
+| Write application code | [PASS] | [PASS] |
+| Write Terraform | [PASS] | [PASS] |
+| Write tests | [PASS] | [PASS] |
+| Review code | [PASS] | [FAIL] (advisory only) |
+| Deploy to production | [PASS] | [FAIL] |
 | **Decision Making** |
-| Architecture decisions | ✅ | ❌ (research only) |
-| Technology selection | ✅ | ❌ (research only) |
-| Release approval | ✅ | ❌ |
+| Architecture decisions | [PASS] | [FAIL] (research only) |
+| Technology selection | [PASS] | [FAIL] (research only) |
+| Release approval | [PASS] | [FAIL] |
 
 ---
 
@@ -144,7 +144,7 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 
 **Capabilities**:
 ```
-✅ CAN DO:
+[PASS] CAN DO:
 - Query issues by label (find ai:ready work)
 - Read issue bodies (acceptance criteria)
 - Update issue labels (signal progress)
@@ -158,7 +158,7 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 - Search documentation
 - Update board status via gh CLI GraphQL (mandatory per GOVERNANCE_RULES.md)
 
-❌ CANNOT DO:
+[FAIL] CANNOT DO:
 - Access GitHub Project board UI (view/navigate)
 - Update project custom fields via MCP (use gh CLI GraphQL instead)
 - Merge pull requests
@@ -172,27 +172,27 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 **Workflow**:
 ```
 1. FIND WORK
-   └─► list_issues(labels=["ai:ready"])
+    list_issues(labels=["ai:ready"])
 
 2. CLAIM ISSUE
-   └─► issue_write(labels=["ai:in-progress"])
+    issue_write(labels=["ai:in-progress"])
 
 3. UNDERSTAND REQUIREMENTS
-   └─► Read issue body, linked docs
+    Read issue body, linked docs
 
 4. IMPLEMENT
-   └─► create_branch("ai/{issue}-{slug}")
-   └─► Write code, tests
-   └─► push_files(branch, files)
+    create_branch("ai/{issue}-{slug}")
+    Write code, tests
+    push_files(branch, files)
 
 5. CREATE PR
-   └─► create_pull_request(head, base, title, body)
+    create_pull_request(head, base, title, body)
 
 6. REQUEST REVIEW
-   └─► issue_write(labels=["ai:review-requested"])
+    issue_write(labels=["ai:review-requested"])
 
 7. WAIT FOR HUMAN
-   └─► Human reviews, approves/rejects
+    Human reviews, approves/rejects
 ```
 
 ---
@@ -202,75 +202,75 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 ### GitHub Tools
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                    GITHUB ECOSYSTEM                            │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  REPOSITORY LAYER (AI + Human)                                 │
-│  ┌──────────────────────────────────────────────────────────┐ │
-│  │                                                          │ │
-│  │  Issues ◄──────► Labels ◄──────► Branches ◄──────► PRs   │ │
-│  │    │                │                │              │    │ │
-│  │    │    ┌───────────┴───────────┐    │              │    │ │
-│  │    │    │   AI ACCESS (MCP)     │    │              │    │ │
-│  │    │    │   - list_issues       │    │              │    │ │
-│  │    │    │   - issue_write       │    │              │    │ │
-│  │    │    │   - create_branch     │    │              │    │ │
-│  │    │    │   - push_files        │    │              │    │ │
-│  │    │    │   - create_pull_req   │    │              │    │ │
-│  │    │    └───────────────────────┘    │              │    │ │
-│  │    │                                  │              │    │ │
-│  └────┼──────────────────────────────────┼──────────────┼────┘ │
-│       │                                  │              │      │
-│       │    ┌─────────────────────────────┴──────────────┘      │
-│       │    │                                                   │
-│  PROJECT LAYER (Human Only)                                    │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │                                                         │  │
-│  │  Board ◄────► Views ◄────► Custom Fields ◄────► Roadmap │  │
-│  │                                                         │  │
-│  │    ┌─────────────────────────────────────────────┐     │  │
-│  │    │   HUMAN ACCESS ONLY                         │     │  │
-│  │    │   - gh CLI (GraphQL)                        │     │  │
-│  │    │   - GitHub Web UI                           │     │  │
-│  │    │   - No MCP tools available                  │     │  │
-│  │    └─────────────────────────────────────────────┘     │  │
-│  │                                                         │  │
-│  └─────────────────────────────────────────────────────────┘  │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
+
+                    GITHUB ECOSYSTEM                            
+
+                                                                
+  REPOSITORY LAYER (AI + Human)                                 
+   
+                                                             
+    Issues  Labels  Branches  PRs    
+                                                         
+                                 
+             AI ACCESS (MCP)                            
+             - list_issues                              
+             - issue_write                              
+             - create_branch                            
+             - push_files                               
+             - create_pull_req                          
+                                 
+                                                           
+   
+                                                             
+                 
+                                                              
+  PROJECT LAYER (Human Only)                                    
+    
+                                                             
+    Board  Views  Custom Fields  Roadmap   
+                                                             
+             
+         HUMAN ACCESS ONLY                                
+         - gh CLI (GraphQL)                               
+         - GitHub Web UI                                  
+         - No MCP tools available                         
+             
+                                                             
+    
+                                                                
+
 ```
 
 ### GCP Tools
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                      GCP ECOSYSTEM                             │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  INFRASTRUCTURE AS CODE (AI + Human)                           │
-│  ┌──────────────────────────────────────────────────────────┐ │
-│  │                                                          │ │
-│  │  Terraform ◄──► Python Code ◄──► Config Files            │ │
-│  │                                                          │ │
-│  │  AI can WRITE these files, but CANNOT APPLY them         │ │
-│  │                                                          │ │
-│  └──────────────────────────────────────────────────────────┘ │
-│                           │                                    │
-│                           ▼                                    │
-│  GCP CONSOLE / CLI (Human Only)                                │
-│  ┌──────────────────────────────────────────────────────────┐ │
-│  │                                                          │ │
-│  │  Billing ◄──► IAM ◄──► APIs ◄──► Resources               │ │
-│  │                                                          │ │
-│  │  - Create budgets (Console)                              │ │
-│  │  - Enable billing export (Console)                       │ │
-│  │  - terraform apply (CLI)                                 │ │
-│  │  - gcloud commands (CLI)                                 │ │
-│  │                                                          │ │
-│  └──────────────────────────────────────────────────────────┘ │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
+
+                      GCP ECOSYSTEM                             
+
+                                                                
+  INFRASTRUCTURE AS CODE (AI + Human)                           
+   
+                                                             
+    Terraform  Python Code  Config Files             
+                                                             
+    AI can WRITE these files, but CANNOT APPLY them          
+                                                             
+   
+                                                               
+                                                               
+  GCP CONSOLE / CLI (Human Only)                                
+   
+                                                             
+    Billing  IAM  APIs  Resources                
+                                                             
+    - Create budgets (Console)                               
+    - Enable billing export (Console)                        
+    - terraform apply (CLI)                                  
+    - gcloud commands (CLI)                                  
+                                                             
+   
+                                                                
+
 ```
 
 ---
@@ -329,42 +329,42 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 ### Typical Task Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      TASK LIFECYCLE                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. SPECIFICATION (Human)                                       │
-│     └─► Create issue with acceptance criteria                   │
-│     └─► Add labels: type, priority, component                   │
-│     └─► Add to milestone                                        │
-│     └─► Set project fields (Size, etc.) ◄── Project Board       │
-│     └─► Add label: ai:ready (or ai:human-required)              │
-│                         │                                       │
-│                         ▼                                       │
-│  2. IMPLEMENTATION                                              │
-│     ┌─────────────────────────────────────────────────────┐    │
-│     │  IF ai:ready          │  IF ai:human-required       │    │
-│     │  ─────────────────    │  ────────────────────       │    │
-│     │  AI claims issue      │  Human implements           │    │
-│     │  AI writes code       │  Human writes code          │    │
-│     │  AI creates PR        │  Human creates PR           │    │
-│     │  AI requests review   │  Human requests review      │    │
-│     └─────────────────────────────────────────────────────┘    │
-│                         │                                       │
-│                         ▼                                       │
-│  3. REVIEW (Human)                                              │
-│     └─► Review PR diff                                          │
-│     └─► Check acceptance criteria                               │
-│     └─► Approve or request changes                              │
-│                         │                                       │
-│                         ▼                                       │
-│  4. MERGE & DEPLOY (Human)                                      │
-│     └─► Merge PR                                                │
-│     └─► CI/CD runs automatically                                │
-│     └─► Human verifies deployment                               │
-│     └─► Close issue                                             │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                      TASK LIFECYCLE                             
+
+                                                                 
+  1. SPECIFICATION (Human)                                       
+      Create issue with acceptance criteria                   
+      Add labels: type, priority, component                   
+      Add to milestone                                        
+      Set project fields (Size, etc.)  Project Board       
+      Add label: ai:ready (or ai:human-required)              
+                                                                
+                                                                
+  2. IMPLEMENTATION                                              
+         
+       IF ai:ready            IF ai:human-required           
+                        
+       AI claims issue        Human implements               
+       AI writes code         Human writes code              
+       AI creates PR          Human creates PR               
+       AI requests review     Human requests review          
+         
+                                                                
+                                                                
+  3. REVIEW (Human)                                              
+      Review PR diff                                          
+      Check acceptance criteria                               
+      Approve or request changes                              
+                                                                
+                                                                
+  4. MERGE & DEPLOY (Human)                                      
+      Merge PR                                                
+      CI/CD runs automatically                                
+      Human verifies deployment                               
+      Close issue                                             
+                                                                 
+
 ```
 
 ---
@@ -419,24 +419,24 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 ### AI Access Restrictions
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    TRUST BOUNDARY                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  AI CAN ACCESS:                                             │
-│  ├── Public repository code                                 │
-│  ├── Issue content (non-secret)                             │
-│  ├── Documentation                                          │
-│  └── Test fixtures (non-production data)                    │
-│                                                             │
-│  AI CANNOT ACCESS:                                          │
-│  ├── GCP service account keys                               │
-│  ├── API tokens (except via environment)                    │
-│  ├── Production databases                                   │
-│  ├── Customer data                                          │
-│  └── Billing account credentials                            │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                    TRUST BOUNDARY                           
+
+                                                             
+  AI CAN ACCESS:                                             
+   Public repository code                                 
+   Issue content (non-secret)                             
+   Documentation                                          
+   Test fixtures (non-production data)                    
+                                                             
+  AI CANNOT ACCESS:                                          
+   GCP service account keys                               
+   API tokens (except via environment)                    
+   Production databases                                   
+   Customer data                                          
+   Billing account credentials                            
+                                                             
+
 ```
 
 ### Human Oversight Requirements

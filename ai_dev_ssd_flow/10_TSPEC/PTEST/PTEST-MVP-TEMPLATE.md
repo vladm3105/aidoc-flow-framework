@@ -274,9 +274,9 @@ execution_profile:
 
 | SYS ID | SYS Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| SYS.NN.01 | [Title] | TSPEC.NN.44.01, TSPEC.NN.44.03 | ✅ |
-| SYS.NN.02 | [Title] | TSPEC.NN.44.02 | ✅ |
-| SYS.NN.03 | [Title] | TSPEC.NN.44.04 | ✅ |
+| SYS.NN.01 | [Title] | TSPEC.NN.44.01, TSPEC.NN.44.03 | [PASS] |
+| SYS.NN.02 | [Title] | TSPEC.NN.44.02 | [PASS] |
+| SYS.NN.03 | [Title] | TSPEC.NN.44.04 | [PASS] |
 
 **Coverage Summary**:
 - Total SYS elements: [N]

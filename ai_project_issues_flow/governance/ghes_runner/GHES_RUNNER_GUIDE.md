@@ -17,28 +17,28 @@ GHES does not provide hosted runners. Unlike github.com, `runs-on: ubuntu-latest
 ## 2. Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│  GHES ({GITHUB_HOST})                     │
-│  ┌─────────────┐  ┌──────────────────────────┐  │
-│  │  8 Workflows │  │  Project Board #{PROJECT_BOARD_NUMBER}       │  │
-│  │  (queued)    │  │  (status sync blocked)   │  │
-│  └──────┬──────┘  └──────────────────────────┘  │
-│         │ job dispatch                           │
-│         ▼                                        │
-│  ┌──────────────────┐                            │
-│  │  Runner Registry  │ ◄── registration token   │
-│  └──────┬───────────┘                            │
-└─────────┼───────────────────────────────────────┘
-          │ long-poll (HTTPS)
-          ▼
-┌──────────────────────────────────────┐
-│  Self-Hosted Runner                  │
-│  (host process or Docker container)  │
-│                                      │
-│  Labels: ubuntu-latest               │
-│  Mode:   persistent (long-running)   │
-│  Auth:   registration token via PAT  │
-└──────────────────────────────────────┘
+
+  GHES ({GITHUB_HOST})                     
+      
+    8 Workflows     Project Board #{PROJECT_BOARD_NUMBER}         
+    (queued)        (status sync blocked)     
+      
+          job dispatch                           
+                                                 
+                              
+    Runner Registry    registration token   
+                              
+
+           long-poll (HTTPS)
+          
+
+  Self-Hosted Runner                  
+  (host process or Docker container)  
+                                      
+  Labels: ubuntu-latest               
+  Mode:   persistent (long-running)   
+  Auth:   registration token via PAT  
+
 ```
 
 The runner long-polls GHES for queued jobs matching its labels. When a job arrives, the runner executes it locally, reports results back to GHES, then resumes polling.
@@ -306,19 +306,19 @@ The host-based runner does not auto-start on reboot. Options:
 
 ```
 scripts/ghes-runner/
-├── setup-local-runner.sh     # Host runner: start/stop/status/remove
-├── Dockerfile                # Docker runner image (Ubuntu 22.04)
-├── docker-compose.yml        # Docker runner compose config
-├── start.sh                  # Docker entrypoint (register + run)
-├── .env.example              # PAT template for Docker runner
-├── runner-local/             # (gitignored) Runner binary + work dir
-│   ├── config.sh             # Runner configuration script
-│   ├── run.sh                # Runner execution script
-│   ├── .runner               # Registration state
-│   ├── _work/                # Workflow job workspaces
-│   ├── runner.log            # Runner output log
-│   └── runner.pid            # PID file for process management
-└── ghes-ca.crt               # (optional) GHES TLS CA certificate
+ setup-local-runner.sh     # Host runner: start/stop/status/remove
+ Dockerfile                # Docker runner image (Ubuntu 22.04)
+ docker-compose.yml        # Docker runner compose config
+ start.sh                  # Docker entrypoint (register + run)
+ .env.example              # PAT template for Docker runner
+ runner-local/             # (gitignored) Runner binary + work dir
+    config.sh             # Runner configuration script
+    run.sh                # Runner execution script
+    .runner               # Registration state
+    _work/                # Workflow job workspaces
+    runner.log            # Runner output log
+    runner.pid            # PID file for process management
+ ghes-ca.crt               # (optional) GHES TLS CA certificate
 ```
 
 ---

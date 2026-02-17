@@ -51,28 +51,28 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE> --check-bubble-up
 Midstream changes originate from architecture decisions, design improvements, or technical discoveries. They can propagate both downstream (implementation) and upstream (requirements clarification).
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   MIDSTREAM CHANGE FLOW                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│                 ┌─────────────────┐                         │
-│      BUBBLE UP  │  CHANGE ORIGIN  │  CASCADE DOWN           │
-│         ▲       │   L5-L11        │       ▼                 │
-│         │       └────────┬────────┘       │                 │
-│         │                │                │                 │
-│  ┌──────┴──────┐         │        ┌───────┴──────┐         │
-│  │  L1-L4      │         │        │  L12-L14     │         │
-│  │  May need   │◄────────┴───────►│  Regenerate  │         │
-│  │  clarify    │                  │  downstream  │         │
-│  └─────────────┘                  └──────────────┘         │
-│                                                             │
-│  MIDSTREAM LAYERS:                                          │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ L5 ADR → L6 SYS → L7 REQ → L8 CTR → L9 SPEC →      │   │
-│  │                            L10 TSPEC → L11 TASKS    │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                   MIDSTREAM CHANGE FLOW                     
+
+                                                             
+                                          
+      BUBBLE UP    CHANGE ORIGIN    CASCADE DOWN           
+                   L5-L11                                
+                                        
+                                                          
+                            
+    L1-L4                         L12-L14              
+    May need     Regenerate           
+    clarify                        downstream           
+                             
+                                                             
+  MIDSTREAM LAYERS:                                          
+     
+   L5 ADR → L6 SYS → L7 REQ → L8 CTR → L9 SPEC →         
+                              L10 TSPEC → L11 TASKS       
+     
+                                                             
+
 ```
 
 ## 2. Common Triggers
@@ -318,40 +318,40 @@ Midstream changes cascade downstream when:
 For major architecture changes (L3):
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│               ARCHITECTURE PIVOT PROCESS                    │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. CREATE CHG                                              │
-│     └── CHG-XX_architecture_pivot/                         │
-│         ├── CHG-XX_architecture_pivot.md                   │
-│         ├── implementation_plan.md                         │
-│         └── archive/                                        │
-│                                                             │
-│  2. ASSESS UPSTREAM IMPACT                                  │
-│     └── Does BRD/PRD support new architecture?             │
-│         ├── Yes → Proceed                                  │
-│         └── No → Clarify/update upstream first             │
-│                                                             │
-│  3. ARCHIVE OLD ADR                                         │
-│     └── Move ADR-XX to archive/                            │
-│         └── Add deprecation notice                         │
-│                                                             │
-│  4. CREATE NEW ADR                                          │
-│     └── ADR-YY with new architecture                       │
-│         └── "Supersedes: ADR-XX"                           │
-│                                                             │
-│  5. CASCADE DOWNSTREAM                                      │
-│     └── SYS → REQ → CTR → SPEC → TSPEC → TASKS            │
-│         └── Archive old, create new for each               │
-│                                                             │
-│  6. IMPLEMENT & VALIDATE                                    │
-│     └── Regenerate Code, run all tests                     │
-│                                                             │
-│  7. CLOSE CHG                                               │
-│     └── Status: Completed                                  │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+               ARCHITECTURE PIVOT PROCESS                    
+
+                                                             
+  1. CREATE CHG                                              
+      CHG-XX_architecture_pivot/                         
+          CHG-XX_architecture_pivot.md                   
+          implementation_plan.md                         
+          archive/                                        
+                                                             
+  2. ASSESS UPSTREAM IMPACT                                  
+      Does BRD/PRD support new architecture?             
+          Yes → Proceed                                  
+          No → Clarify/update upstream first             
+                                                             
+  3. ARCHIVE OLD ADR                                         
+      Move ADR-XX to archive/                            
+          Add deprecation notice                         
+                                                             
+  4. CREATE NEW ADR                                          
+      ADR-YY with new architecture                       
+          "Supersedes: ADR-XX"                           
+                                                             
+  5. CASCADE DOWNSTREAM                                      
+      SYS → REQ → CTR → SPEC → TSPEC → TASKS            
+          Archive old, create new for each               
+                                                             
+  6. IMPLEMENT & VALIDATE                                    
+      Regenerate Code, run all tests                     
+                                                             
+  7. CLOSE CHG                                               
+      Status: Completed                                  
+                                                             
+
 ```
 
 ## 6. Examples

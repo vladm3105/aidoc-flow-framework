@@ -119,7 +119,7 @@ check_placeholders() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
   echo ""
 }
@@ -146,7 +146,7 @@ check_downstream_refs() {
            grep -v "_SCHEMA\|_TEMPLATE\|_RULES\|_GUIDE" || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
   echo ""
 }
@@ -183,7 +183,7 @@ check_count_consistency() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   fi
   echo ""
 }
@@ -233,7 +233,7 @@ check_index_sync() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
   echo ""
 }
@@ -243,7 +243,7 @@ check_index_sync() {
 # =============================================================================
 check_crosslinks() {
   echo "--- GATE-05: Inter-PRD Cross-Linking ---"
-  echo -e "${GREEN}  ✓ Check deprecated - document name references are valid per traceability rules${NC}"
+  echo -e "${GREEN}   Check deprecated - document name references are valid per traceability rules${NC}"
   echo ""
 }
 
@@ -277,7 +277,7 @@ check_diagrams() {
   shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
@@ -312,7 +312,7 @@ check_glossary() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious terminology inconsistencies${NC}"
+    echo -e "${GREEN}   No obvious terminology inconsistencies${NC}"
   fi
   echo ""
 }
@@ -342,7 +342,7 @@ check_duplicates() {
   done < <(grep -rohE "(^###\s+PRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*PRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$PRD_DIR" 2>/dev/null | grep -oE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
 
   if [[ $duplicates_found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No duplicate element IDs found across corpus${NC}"
+    echo -e "${GREEN}   No duplicate element IDs found across corpus${NC}"
   fi
 
   # --- Check 2: Find potentially misplaced element IDs ---
@@ -379,7 +379,7 @@ check_duplicates() {
   if [[ $misplaced_found -ge $max_show ]]; then
     echo -e "${YELLOW}  (Showing first $max_show of $misplaced_found potential misplaced ID warnings)${NC}"
   elif [[ $misplaced_found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No misplaced element IDs found${NC}"
+    echo -e "${GREEN}   No misplaced element IDs found${NC}"
   fi
   echo ""
 }
@@ -409,7 +409,7 @@ check_costs() {
            head -10 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Cost estimates use appropriate formats${NC}"
+    echo -e "${GREEN}   Cost estimates use appropriate formats${NC}"
   fi
   echo ""
 }
@@ -451,7 +451,7 @@ check_sizes() {
   shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
   fi
   echo ""
 }
@@ -485,7 +485,7 @@ check_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All PRDs have BRD traceability tags${NC}"
+    echo -e "${GREEN}   All PRDs have BRD traceability tags${NC}"
   fi
   echo ""
 }
@@ -532,7 +532,7 @@ check_template_structure() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All PRDs have required template sections${NC}"
+    echo -e "${GREEN}   All PRDs have required template sections${NC}"
   fi
   echo ""
 }
@@ -561,7 +561,7 @@ check_sys_ready_score() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All PRDs meet SYS-Ready threshold (>= 85)${NC}"
+    echo -e "${GREEN}   All PRDs meet SYS-Ready threshold (>= 85)${NC}"
   fi
   echo ""
 }
@@ -589,7 +589,7 @@ check_mvp_hypothesis() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All PRDs have MVP hypothesis format${NC}"
+    echo -e "${GREEN}   All PRDs have MVP hypothesis format${NC}"
   fi
   echo ""
 }
@@ -619,7 +619,7 @@ check_glossary_path() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Glossary paths standardized${NC}"
+    echo -e "${GREEN}   Glossary paths standardized${NC}"
   fi
   echo ""
 }
@@ -657,7 +657,7 @@ check_token_count() {
   shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within token limits${NC}"
+    echo -e "${GREEN}   All files within token limits${NC}"
   fi
   echo ""
 }
@@ -691,7 +691,7 @@ check_yaml_frontmatter() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ YAML frontmatter fields present${NC}"
+    echo -e "${GREEN}   YAML frontmatter fields present${NC}"
   fi
   echo ""
 }
@@ -721,7 +721,7 @@ check_date_format() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All dates use ISO format${NC}"
+    echo -e "${GREEN}   All dates use ISO format${NC}"
   fi
   echo ""
 }

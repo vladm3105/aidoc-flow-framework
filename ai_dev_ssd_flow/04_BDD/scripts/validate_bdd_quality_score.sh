@@ -75,7 +75,7 @@ check_placeholder_text() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -103,7 +103,7 @@ check_premature_references() {
   done < <(grep -rnE "$downstream_patterns" "$BDD_DIR"/*.feature "$BDD_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -126,9 +126,9 @@ check_count_consistency() {
   done < <(grep -rnE "[0-9]+ scenarios?|[0-9]+ features?" "$BDD_DIR"/*.feature "$BDD_DIR"/*.md 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   else
-    echo -e "${GREEN}  ✓ Found $found count claims (manual verification recommended)${NC}"
+    echo -e "${GREEN}   Found $found count claims (manual verification recommended)${NC}"
   fi
 }
 
@@ -168,7 +168,7 @@ check_index_sync() {
   done < <(grep -E "\| *Planned *\|" "$index_file" 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
 }
 
@@ -213,7 +213,7 @@ check_diagrams() {
   shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
@@ -240,7 +240,7 @@ check_glossary() {
   fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Terminology consistent across corpus${NC}"
+    echo -e "${GREEN}   Terminology consistent across corpus${NC}"
   fi
 }
 
@@ -261,7 +261,7 @@ check_element_ids() {
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate element IDs${NC}"
+    echo -e "${GREEN}   No duplicate element IDs${NC}"
   fi
 }
 
@@ -287,7 +287,7 @@ check_timing_format() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Timing constraints use measurable formats${NC}"
+    echo -e "${GREEN}   Timing constraints use measurable formats${NC}"
   fi
 }
 
@@ -358,7 +358,7 @@ check_gherkin_syntax() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All BDD files have proper Gherkin syntax${NC}"
+    echo -e "${GREEN}   All BDD files have proper Gherkin syntax${NC}"
   fi
 }
 
@@ -404,7 +404,7 @@ check_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All BDD have cumulative traceability tags (@brd + @prd + @ears)${NC}"
+    echo -e "${GREEN}   All BDD have cumulative traceability tags (@brd + @prd + @ears)${NC}"
   fi
 }
 
@@ -430,7 +430,7 @@ check_split_files() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Split-file structures are consistent${NC}"
+    echo -e "${GREEN}   Split-file structures are consistent${NC}"
   fi
 }
 
@@ -455,7 +455,7 @@ check_step_reusability() {
       ((INFO++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No frequently duplicated steps detected${NC}"
+    echo -e "${GREEN}   No frequently duplicated steps detected${NC}"
   fi
   shopt -u nullglob
 }
@@ -485,7 +485,7 @@ check_adr_ready() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All BDD are ADR-ready${NC}"
+    echo -e "${GREEN}   All BDD are ADR-ready${NC}"
   fi
 }
 

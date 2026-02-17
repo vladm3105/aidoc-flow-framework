@@ -14,7 +14,7 @@ metadata:
   status: "draft"
   created_date: "2026-02-08"
   last_updated: "2026-02-08"
-  task_ready_score: "✅ 95% (Target: ≥90%)"
+  task_ready_score: "[PASS] 95% (Target: ≥90%)"
   authors:
     - name: "Integration Team Lead"
       email: "integration@company.com"

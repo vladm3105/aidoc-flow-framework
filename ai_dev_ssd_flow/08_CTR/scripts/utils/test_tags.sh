@@ -7,9 +7,9 @@ echo "Testing tag detection loop..."
 for tag in "@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req"; do
   echo "Checking tag: $tag"
   if grep -qE "^${tag}:|^\- \`${tag}:" "$CTR_FILE"; then
-    echo "  ✅ Found"
+    echo "  [PASS] Found"
   else
-    echo "  ❌ MISSING"
+    echo "  [FAIL] MISSING"
   fi
 done
 

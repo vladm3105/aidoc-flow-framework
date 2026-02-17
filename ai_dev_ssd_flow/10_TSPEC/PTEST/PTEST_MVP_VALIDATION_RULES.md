@@ -180,7 +180,7 @@ Score = (SYS × 0.25) + (Load × 0.25) + (Thresh × 0.20) + (Profile × 0.15) + 
 ### Pass Output
 
 ```
-✅ PTEST-01_api_response_time.md: PASS (92%)
+[PASS] PTEST-01_api_response_time.md: PASS (92%)
   - SYS Coverage: 95% (20/20)
   - Load Scenarios: 100% (15/15)
   - Performance Thresholds: 90% (15/15)
@@ -191,7 +191,7 @@ Score = (SYS × 0.25) + (Load × 0.25) + (Thresh × 0.20) + (Profile × 0.15) + 
 ### Fail Output
 
 ```
-❌ PTEST-01_api_response_time.md: FAIL (78%)
+[FAIL] PTEST-01_api_response_time.md: FAIL (78%)
   - SYS Coverage: 80% (16/20)
     Missing: SYS.01.05, SYS.01.08
   - Load Scenarios: 90% (14/15)

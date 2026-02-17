@@ -18,7 +18,7 @@ custom_fields:
   complexity: 1 # 1-5 scale
 ---
 
-> **🔄 Dual-Format Note**:
+> ** Dual-Format Note**:
 >
 > This MD template is the **primary source** for human workflow.
 > - **For Autopilot**: See `PRD-MVP-TEMPLATE.yaml` (YAML template)
@@ -70,7 +70,7 @@ custom_fields:
 
 # PRD-NN: [MVP Product/Feature Name]
 
-**⚠️ MVP Scope**: This PRD focuses on core hypothesis validation. Use MVP only.
+**[WARN] MVP Scope**: This PRD focuses on core hypothesis validation. Use MVP only.
 
 **Upstream guardrails**: Use only existing upstream artifacts (BRD/ADR/EARS/BDD/SYS); set `null` only when a layer is absent.
 
@@ -186,9 +186,9 @@ custom_fields:
 ### 5.3 Go/No-Go Decision Gate
 
 **At MVP+90 days**, evaluate:
-- ✅ **Proceed to Full Product**: All targets met
-- 🔄 **Iterate**: 60-80% of targets met
-- ❌ **Pivot/Shutdown**: <60% of targets met
+- [PASS] **Proceed to Full Product**: All targets met
+-  **Iterate**: 60-80% of targets met
+- [FAIL] **Pivot/Shutdown**: <60% of targets met
 
 ---
 

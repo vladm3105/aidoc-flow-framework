@@ -151,7 +151,7 @@ def compare_results(baseline: Dict, current: Dict) -> RegressionReport:
 
 def print_report(report: RegressionReport) -> None:
     """Print regression report to console."""
-    status_icon = "❌" if report.has_regressions else "✅"
+    status_icon = "[FAIL]" if report.has_regressions else "[PASS]"
     status = "REGRESSIONS DETECTED" if report.has_regressions else "NO REGRESSIONS"
 
     print(f"\n{status_icon} Regression Analysis: {status}")
@@ -168,7 +168,7 @@ def print_report(report: RegressionReport) -> None:
 
     # New failures (regressions)
     if report.new_failures:
-        print(f"\n❌ New Failures ({len(report.new_failures)}):")
+        print(f"\n[FAIL] New Failures ({len(report.new_failures)}):")
         for test in report.new_failures[:10]:
             print(f"  - {test['nodeid']}")
             print(f"    Was: {test['baseline_outcome']} → Now: {test['current_outcome']}")
@@ -177,7 +177,7 @@ def print_report(report: RegressionReport) -> None:
 
     # Fixed tests
     if report.fixed_tests:
-        print(f"\n✅ Fixed Tests ({len(report.fixed_tests)}):")
+        print(f"\n[PASS] Fixed Tests ({len(report.fixed_tests)}):")
         for test in report.fixed_tests[:10]:
             print(f"  - {test['nodeid']}")
         if len(report.fixed_tests) > 10:
@@ -185,16 +185,16 @@ def print_report(report: RegressionReport) -> None:
 
     # New tests
     if report.new_tests:
-        print(f"\n📝 New Tests ({len(report.new_tests)}):")
+        print(f"\n New Tests ({len(report.new_tests)}):")
         for test in report.new_tests[:5]:
-            outcome_icon = "✅" if test["outcome"] == "passed" else "❌"
+            outcome_icon = "[PASS]" if test["outcome"] == "passed" else "[FAIL]"
             print(f"  {outcome_icon} {test['nodeid']}")
         if len(report.new_tests) > 5:
             print(f"  ... and {len(report.new_tests) - 5} more")
 
     # Removed tests
     if report.removed_tests:
-        print(f"\n🗑️  Removed Tests ({len(report.removed_tests)}):")
+        print(f"\n  Removed Tests ({len(report.removed_tests)}):")
         for test in report.removed_tests[:5]:
             print(f"  - {test['nodeid']}")
         if len(report.removed_tests) > 5:

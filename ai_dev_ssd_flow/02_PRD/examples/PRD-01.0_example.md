@@ -31,7 +31,7 @@ custom_fields:
 | **BRD Reference** | @brd: BRD.01.01.01 |
 | **Priority** | High |
 | **Target Release** | Q1 2025 |
-| **EARS-Ready Score** | ✅ 95% |
+| **EARS-Ready Score** | [PASS] 95% |
 
 ### Document Revision History
 

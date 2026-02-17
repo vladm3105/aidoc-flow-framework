@@ -305,28 +305,28 @@ def check_dependencies(plan):
 ## Best Practices
 
 ### 1. Update Immediately
-- ✅ Update YAML status as soon as work completes
-- ✅ Add session log entries same day
-- ❌ Don't batch updates at end of week
+- [PASS] Update YAML status as soon as work completes
+- [PASS] Add session log entries same day
+- [FAIL] Don't batch updates at end of week
 
 ### 2. Be Specific in Session Log
-- ✅ "Implemented OAuth2 with PKCE flow. Tests: 15/15 pass. Performance: <100ms p95"
-- ❌ "Worked on auth stuff"
+- [PASS] "Implemented OAuth2 with PKCE flow. Tests: 15/15 pass. Performance: <100ms p95"
+- [FAIL] "Worked on auth stuff"
 
 ### 3. Use Checklist Discipline
-- ✅ Check every boolean flag as you complete items
-- ✅ Don't mark pre_check complete until ALL items verified
-- ❌ Don't skip checklist items "because you know what you're doing"
+- [PASS] Check every boolean flag as you complete items
+- [PASS] Don't mark pre_check complete until ALL items verified
+- [FAIL] Don't skip checklist items "because you know what you're doing"
 
 ### 4. Track Blockers
-- ✅ Use `BLOCKED` status with notes about what's blocking
-- ✅ Update `dependents` field to track impact
-- ✅ Add session log entry explaining blocker
+- [PASS] Use `BLOCKED` status with notes about what's blocking
+- [PASS] Update `dependents` field to track impact
+- [PASS] Add session log entry explaining blocker
 
 ### 5. Maintain YAML Validity
-- ✅ Use YAML validators before committing
-- ✅ Maintain consistent indentation (2 spaces)
-- ❌ Don't break YAML syntax with missing colons or quotes
+- [PASS] Use YAML validators before committing
+- [PASS] Maintain consistent indentation (2 spaces)
+- [FAIL] Don't break YAML syntax with missing colons or quotes
 
 ---
 

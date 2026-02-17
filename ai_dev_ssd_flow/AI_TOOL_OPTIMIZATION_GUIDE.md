@@ -333,24 +333,24 @@ gemini @SMALL_FILE.md "Analyze this document"
 
 ```
 Is file >100K tokens?
-├─ YES → Must split at logical boundaries
-└─ NO → Continue to tool selection
+ YES → Must split at logical boundaries
+ NO → Continue to tool selection
 
 Primary tool: Claude Code?
-├─ YES → Keep as single file (optimal up to 50K tokens)
-└─ NO → Which tool?
-    ├─ Gemini CLI → Use file read tool (no split needed)
-    ├─ GitHub Copilot → Consider companion summary if >30KB
-    └─ Multiple tools → Optimize for Claude Code, provide notes for others
+ YES → Keep as single file (optimal up to 50K tokens)
+ NO → Which tool?
+     Gemini CLI → Use file read tool (no split needed)
+     GitHub Copilot → Consider companion summary if >30KB
+     Multiple tools → Optimize for Claude Code, provide notes for others
 ```
 
 ### Decision Matrix
 
 | File Size | Claude Code | Gemini CLI | GitHub Copilot |
 |-----------|-------------|------------|----------------|
-| <10KB | ✅ Excellent | ✅ @ reference works | ✅ Excellent |
-| 10-50KB (~15k tokens) | ✅ Optimal | ✅ Use file read tool | ✅ Good |
-| >60KB (>20k tokens) | ❌ Must split | ✅ Use file read tool | ❌ Must split |
+| <10KB | [PASS] Excellent | [PASS] @ reference works | [PASS] Excellent |
+| 10-50KB (~15k tokens) | [PASS] Optimal | [PASS] Use file read tool | [PASS] Good |
+| >60KB (>20k tokens) | [FAIL] Must split | [PASS] Use file read tool | [FAIL] Must split |
 
 ---
 
@@ -399,9 +399,9 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 **File**: REQ-01_authentication.md (20KB, ~5,000 tokens)
 
 **Tool Usage:**
-- **Claude Code**: ✅ Optimal (uses 2.5% of context)
-- **Gemini CLI**: ✅ Excellent (use file read tool or @ reference)
-- **GitHub Copilot**: ✅ Perfect size
+- **Claude Code**: [PASS] Optimal (uses 2.5% of context)
+- **Gemini CLI**: [PASS] Excellent (use file read tool or @ reference)
+- **GitHub Copilot**: [PASS] Perfect size
 
 **Recommendation**: Keep as single file, no special handling needed.
 
@@ -412,9 +412,9 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 **File**: BRD-MVP-TEMPLATE.md (default; full template archived) (60KB, ~15,000 tokens)
 
 **Tool Usage:**
-- **Claude Code**: ✅ Optimal (uses 7.5% of context, can load 10+ files simultaneously)
-- **Gemini CLI**: ✅ Use file read tool (not @ reference)
-- **GitHub Copilot**: ⚠️ Consider creating 20KB summary for quick reference
+- **Claude Code**: [PASS] Optimal (uses 7.5% of context, can load 10+ files simultaneously)
+- **Gemini CLI**: [PASS] Use file read tool (not @ reference)
+- **GitHub Copilot**: [WARN] Consider creating 20KB summary for quick reference
 
 **Gemini CLI Commands:**
 ```bash
@@ -435,9 +435,9 @@ gemini
 **File**: SPEC-COMPLETE-SYSTEM.md (120KB, ~30,000 tokens)
 
 **Tool Usage:**
-- **Claude Code**: ⚠️ Exceeds 100K token limit → Must split
-- **Gemini CLI**: ✅ Use file read tool (no issue)
-- **GitHub Copilot**: ❌ Far too large
+- **Claude Code**: [WARN] Exceeds 100K token limit → Must split
+- **Gemini CLI**: [PASS] Use file read tool (no issue)
+- **GitHub Copilot**: [FAIL] Far too large
 
 **Recommended Split:**
 ```
@@ -496,20 +496,20 @@ When building documentation sites (Docusaurus, MkDocs) for dual-architecture pro
 ### Tool Compatibility
 
 **Claude Code:**
-- ✅ Fully supports YAML frontmatter editing
-- ✅ Can add metadata to multiple files efficiently
-- ✅ Validates YAML syntax automatically
-- ✅ Optimal for bulk metadata migration
+- [PASS] Fully supports YAML frontmatter editing
+- [PASS] Can add metadata to multiple files efficiently
+- [PASS] Validates YAML syntax automatically
+- [PASS] Optimal for bulk metadata migration
 
 **Gemini CLI:**
-- ✅ Supports YAML frontmatter
-- ⚠️ Use file read tool for files >10K tokens
-- ✅ Good for single-file metadata updates
+- [PASS] Supports YAML frontmatter
+- [WARN] Use file read tool for files >10K tokens
+- [PASS] Good for single-file metadata updates
 
 **GitHub Copilot:**
-- ✅ Supports YAML frontmatter
-- ⚠️ Limited context for bulk operations
-- ✅ Good for individual file updates
+- [PASS] Supports YAML frontmatter
+- [WARN] Limited context for bulk operations
+- [PASS] Good for individual file updates
 
 ### Token Impact
 

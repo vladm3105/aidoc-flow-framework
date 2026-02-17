@@ -252,10 +252,10 @@ def main():
     for filepath in files:
         archive_path = archive_file(filepath, compress=not args.no_compress)
         if archive_path:
-            print(f"  ✓ {filepath.name} → {archive_path.name}")
+            print(f"   {filepath.name} → {archive_path.name}")
             archived += 1
         else:
-            print(f"  ✗ Failed: {filepath.name}")
+            print(f"   Failed: {filepath.name}")
 
     print(f"\nArchived {archived}/{len(files)} files")
     return 0

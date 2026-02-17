@@ -35,32 +35,32 @@ This workflow handles changes originating from architectural decisions, system r
 
 ```
 MIDSTREAM TRIGGER (L5-L8)
-          │
-          ▼
-     ┌────────────────────────────────┐
-     │ Does change affect L1-L4?      │
-     │ (Business requirements impact) │
-     └────────────┬───────────────────┘
-                  │
-      ┌───────────┼───────────┐
-      │ Yes       │           │ No
-      ▼           │           ▼
-   GATE-01        │       GATE-05
-   (Bubble Up)    │       (Entry)
-      │           │           │
-      ▼           │           ▼
-   Update L1-L4   │       Update L5-L8
-      │           │           │
-      ▼           │           ▼
-   GATE-05 ◄──────┘       GATE-09
-      │                       │
-      ▼                       ▼
+          
+          
+     
+      Does change affect L1-L4?      
+      (Business requirements impact) 
+     
+                  
+      
+       Yes                   No
+                            
+   GATE-01               GATE-05
+   (Bubble Up)           (Entry)
+                            
+                            
+   Update L1-L4          Update L5-L8
+                            
+                            
+   GATE-05        GATE-09
+                             
+                             
    GATE-09               GATE-12
-      │                       │
-      ▼                       ▼
+                             
+                             
    GATE-12               DEPLOYED
-      │
-      ▼
+      
+      
    DEPLOYED
 ```
 
@@ -94,27 +94,27 @@ Before initiating the midstream change workflow:
 
 ```
 Midstream Change Identified
-         │
-         ▼
-┌─────────────────────────────────┐
-│ Impact Assessment:              │
-│ - Does this change business     │
-│   requirements?                 │
-│ - Does this change product      │
-│   features?                     │
-│ - Does this affect stakeholder  │
-│   commitments?                  │
-└─────────────────┬───────────────┘
-                  │
-        ┌─────────┼─────────┐
-        │ Any Yes │         │ All No
-        ▼         │         ▼
-    GATE-01       │     GATE-05
-    Entry         │     Entry
-        │         │         │
-        ▼         │         ▼
-    Continue      │     Continue
-    Full Cascade  │     Midstream
+         
+         
+
+ Impact Assessment:              
+ - Does this change business     
+   requirements?                 
+ - Does this change product      
+   features?                     
+ - Does this affect stakeholder  
+   commitments?                  
+
+                  
+        
+         Any Yes           All No
+                          
+    GATE-01            GATE-05
+    Entry              Entry
+                          
+                          
+    Continue           Continue
+    Full Cascade       Midstream
 ```
 
 ## 4. Step-by-Step Process

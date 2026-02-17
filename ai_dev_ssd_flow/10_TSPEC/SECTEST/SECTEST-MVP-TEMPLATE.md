@@ -278,10 +278,10 @@ execution_profile:
 
 | SEC ID | SEC Title | Test IDs | Coverage |
 |--------|-----------|----------|----------|
-| SEC.NN.01 | [Title] | TSPEC.NN.45.01 | ✅ |
-| SEC.NN.02 | [Title] | TSPEC.NN.45.02 | ✅ |
-| SEC.NN.03 | [Title] | TSPEC.NN.45.03 | ✅ |
-| SEC.NN.04 | [Title] | TSPEC.NN.45.04 | ✅ |
+| SEC.NN.01 | [Title] | TSPEC.NN.45.01 | [PASS] |
+| SEC.NN.02 | [Title] | TSPEC.NN.45.02 | [PASS] |
+| SEC.NN.03 | [Title] | TSPEC.NN.45.03 | [PASS] |
+| SEC.NN.04 | [Title] | TSPEC.NN.45.04 | [PASS] |
 
 **Coverage Summary**:
 - Total SEC elements: [N]

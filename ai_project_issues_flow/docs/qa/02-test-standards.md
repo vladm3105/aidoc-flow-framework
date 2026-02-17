@@ -53,24 +53,24 @@ class TestBudgetConfig:
 
 ```
 {component}/
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py              # Shared fixtures
-│   ├── unit/
-│   │   ├── __init__.py
-│   │   ├── conftest.py          # Unit-specific fixtures
-│   │   ├── test_models.py
-│   │   ├── test_utils.py
-│   │   └── test_validators.py
-│   ├── integration/
-│   │   ├── __init__.py
-│   │   ├── conftest.py          # Integration-specific fixtures
-│   │   ├── test_firestore_client.py
-│   │   └── test_pubsub_handler.py
-│   └── e2e/
-│       ├── __init__.py
-│       ├── conftest.py          # E2E-specific fixtures
-│       └── test_budget_workflow.py
+ tests/
+    __init__.py
+    conftest.py              # Shared fixtures
+    unit/
+       __init__.py
+       conftest.py          # Unit-specific fixtures
+       test_models.py
+       test_utils.py
+       test_validators.py
+    integration/
+       __init__.py
+       conftest.py          # Integration-specific fixtures
+       test_firestore_client.py
+       test_pubsub_handler.py
+    e2e/
+        __init__.py
+        conftest.py          # E2E-specific fixtures
+        test_budget_workflow.py
 ```
 
 ---

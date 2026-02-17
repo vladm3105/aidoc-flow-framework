@@ -43,10 +43,10 @@ custom_fields:
 **Section Planning Example**:
 ```
 BDD-02: Knowledge Engine Test Suite
-├── Section 1: Ingest and Analysis
-├── Section 2: Query Processing
-├── Section 3: Learning and Adaptation
-└── Section 4: Performance Monitoring
+ Section 1: Ingest and Analysis
+ Section 2: Query Processing
+ Section 3: Learning and Adaptation
+ Section 4: Performance Monitoring
 ```
 
 ---
@@ -287,7 +287,7 @@ python ai_dev_flow/04_BDD/scripts/validate_bdd_suite.py \
 ### Validation Output Expected
 
 ```
-✓ BDD validation passed (no violations)
+ BDD validation passed (no violations)
 ```
 
 ---
@@ -350,7 +350,7 @@ git commit -m "feat(bdd): add BDD-NN [Suite Title] section-based suite
 - All validation checks passed (500-line limit, 12-scenario limit)
 - EARS coverage: [X] requirements across [Y] scenarios
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+ Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ```

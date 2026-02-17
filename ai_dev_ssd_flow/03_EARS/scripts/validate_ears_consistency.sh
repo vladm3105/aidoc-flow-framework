@@ -116,47 +116,47 @@ for file in "$EARS_DIR"/EARS-{01..99}_*.md; do
 
     # Check for Document Control section (CRITICAL)
     if ! grep -q "^## Document Control" "$file"; then
-        echo -e "  ${RED}❌ Missing Document Control section${NC}"
+        echo -e "  ${RED}[FAIL] Missing Document Control section${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for BDD-Ready Score (CRITICAL)
     if ! grep -q "BDD-Ready Score" "$file"; then
-        echo -e "  ${RED}❌ Missing BDD-Ready Score${NC}"
+        echo -e "  ${RED}[FAIL] Missing BDD-Ready Score${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for Document Revision History (CRITICAL)
     if ! grep -q "Document Revision History" "$file"; then
-        echo -e "  ${RED}❌ Missing Document Revision History${NC}"
+        echo -e "  ${RED}[FAIL] Missing Document Revision History${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for Traceability section (CRITICAL)
     if ! grep -q "^## [0-9]\+\. Traceability" "$file"; then
-        echo -e "  ${RED}❌ Missing Traceability section${NC}"
+        echo -e "  ${RED}[FAIL] Missing Traceability section${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for @brd tags (CRITICAL)
     if ! grep -q "^@brd:" "$file"; then
-        echo -e "  ${RED}❌ Missing @brd tags${NC}"
+        echo -e "  ${RED}[FAIL] Missing @brd tags${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for @prd tags (CRITICAL)
     if ! grep -q "^@prd:" "$file"; then
-        echo -e "  ${RED}❌ Missing @prd tags${NC}"
+        echo -e "  ${RED}[FAIL] Missing @prd tags${NC}"
         critical_issues=$((critical_issues + 1))
     fi
 
     # Check for References section (WARNING in normal mode, ERROR in strict mode)
     if ! grep -q "^## [0-9]\+\. References" "$file"; then
         if [[ "$STRICT_MODE" == "true" ]]; then
-            echo -e "  ${RED}❌ Missing References section (strict mode)${NC}"
+            echo -e "  ${RED}[FAIL] Missing References section (strict mode)${NC}"
             critical_issues=$((critical_issues + 1))
         else
-            echo -e "  ${YELLOW}⚠  Missing References section (non-blocking)${NC}"
+            echo -e "  ${YELLOW}  Missing References section (non-blocking)${NC}"
             warnings=$((warnings + 1))
         fi
     fi
@@ -164,10 +164,10 @@ for file in "$EARS_DIR"/EARS-{01..99}_*.md; do
     # Determine file status
     if [[ $critical_issues -eq 0 ]]; then
         if [[ $warnings -eq 0 ]]; then
-            echo -e "  ${GREEN}✅ All checks passed${NC}"
+            echo -e "  ${GREEN}[PASS] All checks passed${NC}"
             pass_count=$((pass_count + 1))
         else
-            echo -e "  ${YELLOW}⚠  Passed with warnings${NC}"
+            echo -e "  ${YELLOW}  Passed with warnings${NC}"
             pass_count=$((pass_count + 1))
             files_with_warnings=$((files_with_warnings + 1))
         fi
@@ -179,7 +179,7 @@ done
 # Summary
 echo "========================================"
 if [[ $total_files -eq 0 ]]; then
-    echo -e "${YELLOW}⚠  No EARS files found in $EARS_DIR${NC}"
+    echo -e "${YELLOW}  No EARS files found in $EARS_DIR${NC}"
     exit 0
 fi
 
@@ -191,13 +191,13 @@ fi
 echo "========================================"
 
 if [[ $pass_count -eq $total_files ]]; then
-    echo -e "${GREEN}✅ All structural consistency checks passed${NC}"
+    echo -e "${GREEN}[PASS] All structural consistency checks passed${NC}"
     if [[ $files_with_warnings -gt 0 ]]; then
         echo -e "${YELLOW}Note: $files_with_warnings file(s) have non-blocking warnings${NC}"
     fi
     exit 0
 else
     failed=$((total_files - pass_count))
-    echo -e "${RED}❌ $failed file(s) failed critical checks${NC}"
+    echo -e "${RED}[FAIL] $failed file(s) failed critical checks${NC}"
     exit 1
 fi

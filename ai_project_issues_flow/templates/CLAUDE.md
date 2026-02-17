@@ -41,24 +41,24 @@ When processing a GitHub issue, follow this 4-phase workflow **before writing an
 
 ```
 Phase 1: Issue Analysis
-  ├─ Read issue body, acceptance criteria, comments
-  ├─ Read linked/dependent issues (Depends on #X, Blocks #Y)
-  ├─ Read related governance docs, ADRs, specs
-  └─ Review existing code that will be modified
+   Read issue body, acceptance criteria, comments
+   Read linked/dependent issues (Depends on #X, Blocks #Y)
+   Read related governance docs, ADRs, specs
+   Review existing code that will be modified
 
 Phase 2: Create Implementation Plan
-  ├─ Create: governance/plans/IPLAN-NNN_{slug}.md
-  ├─ Document: scope, steps, acceptance criteria mapping
-  └─ Include: risks, edge cases, testing approach
+   Create: governance/plans/IPLAN-NNN_{slug}.md
+   Document: scope, steps, acceptance criteria mapping
+   Include: risks, edge cases, testing approach
 
 Phase 3: Review & Refine Plan
-  ├─ Re-read plan as if seeing it for the first time
-  ├─ Identify gaps: missing steps, unclear actions
-  ├─ Verify: every acceptance criterion has a mapped step
-  └─ Update plan with improvements
+   Re-read plan as if seeing it for the first time
+   Identify gaps: missing steps, unclear actions
+   Verify: every acceptance criterion has a mapped step
+   Update plan with improvements
 
 Phase 4: Transition to Implementation
-  └─ Execute Pre-Implementation Checklist below
+   Execute Pre-Implementation Checklist below
 ```
 
 **Full details**: See [GOVERNANCE_RULES.md §3 Issue Processing Workflow](governance/GOVERNANCE_RULES.md#issue-processing-workflow-mandatory)
@@ -176,13 +176,13 @@ GH_HOST={GITHUB_HOST} gh label create "name" --color "hex"
 
 | Operation | Use MCP | Use gh CLI |
 |:----------|:-------:|:----------:|
-| Issue CRUD | ✅ | |
-| PR CRUD | ✅ | |
-| Create branch | ✅ | |
-| Push files (multi-file) | ✅ | |
-| Projects V2 board status | | ✅ |
-| Labels CRUD | | ✅ |
-| GraphQL mutations | | ✅ |
+| Issue CRUD | [PASS] | |
+| PR CRUD | [PASS] | |
+| Create branch | [PASS] | |
+| Push files (multi-file) | [PASS] | |
+| Projects V2 board status | | [PASS] |
+| Labels CRUD | | [PASS] |
+| GraphQL mutations | | [PASS] |
 
 ### Project Board
 

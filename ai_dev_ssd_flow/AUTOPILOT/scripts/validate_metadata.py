@@ -356,17 +356,17 @@ class MetadataValidator:
         print("="*70)
 
         if self.errors:
-            print(f"\n❌ ERRORS ({len(self.errors)}):")
+            print(f"\n[FAIL] ERRORS ({len(self.errors)}):")
             for error in self.errors:
                 print(f"  • {error}")
 
         if self.warnings:
-            print(f"\n⚠️  WARNINGS ({len(self.warnings)}):")
+            print(f"\n[WARN]  WARNINGS ({len(self.warnings)}):")
             for warning in self.warnings:
                 print(f"  • {warning}")
 
         if not self.errors and not self.warnings:
-            print("\n✅ All metadata validation checks passed!")
+            print("\n[PASS] All metadata validation checks passed!")
 
         print("\n" + "="*70)
 

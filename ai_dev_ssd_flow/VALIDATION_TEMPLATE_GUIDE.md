@@ -26,17 +26,17 @@ Every document type (BRD, PRD, REQ, SPEC, etc.) needs:
 
 ```
 {LAYER}/{TYPE_FOLDER}/
-├── {TYPE}_VALIDATION_STRATEGY.md          [Quick reference: gates, architecture]
-├── {TYPE}_VALIDATION_COMMANDS.md          [CLI commands specific to type]
-├── {TYPE}_AI_VALIDATION_DECISION_GUIDE.md [Decision patterns, edge cases]
-├── scripts/
-│   ├── README.md                          [Quick start for tools]
-│   ├── validate_all.sh                    [Master orchestrator]
-│   ├── validate_{type}_quality_score.sh   [Quality gates validator]
-│   ├── validate_{type}_spec_readiness.py  [Readiness scorer]
-│   ├── validate_{type}_template.sh        [Template compliance]
-│   └── validate_{type}_ids.py             [ID format validator]
-└── [existing templates, examples, etc.]
+ {TYPE}_VALIDATION_STRATEGY.md          [Quick reference: gates, architecture]
+ {TYPE}_VALIDATION_COMMANDS.md          [CLI commands specific to type]
+ {TYPE}_AI_VALIDATION_DECISION_GUIDE.md [Decision patterns, edge cases]
+ scripts/
+    README.md                          [Quick start for tools]
+    validate_all.sh                    [Master orchestrator]
+    validate_{type}_quality_score.sh   [Quality gates validator]
+    validate_{type}_spec_readiness.py  [Readiness scorer]
+    validate_{type}_template.sh        [Template compliance]
+    validate_{type}_ids.py             [ID format validator]
+ [existing templates, examples, etc.]
 ```
 
 ---

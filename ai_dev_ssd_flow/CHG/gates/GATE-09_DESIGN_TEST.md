@@ -110,11 +110,11 @@ All SPEC changes MUST follow TDD workflow:
 
 ```
 L1 (Self-approved)
-     │
-     ▼ (if interface change)
+     
+      (if interface change)
 L2 (Technical Lead)
-     │
-     ▼ (if algorithm/performance impact)
+     
+      (if algorithm/performance impact)
 L3 (TL + Domain Expert)
 ```
 
@@ -159,25 +159,25 @@ After passing GATE-09:
 
 ```
                     GATE-09 PASSED
-                          │
-                          ▼
-            ┌─────────────────────────┐
-            │ Ready for implementation│
-            └───────────┬─────────────┘
-                        │
-                        ▼
-                   ┌─────────┐
-                   │ GATE-12 │
-                   │  Impl   │
-                   └─────────┘
-                        │
-         ┌──────────────┼──────────────┐
-         │              │              │
-         ▼              ▼              ▼
-    ┌─────────┐   ┌─────────┐   ┌─────────┐
-    │  Code   │   │  Tests  │   │  Valid  │
-    │  (L12)  │   │  (L13)  │   │  (L14)  │
-    └─────────┘   └─────────┘   └─────────┘
+                          
+                          
+            
+             Ready for implementation
+            
+                        
+                        
+                   
+                    GATE-12 
+                     Impl   
+                   
+                        
+         
+                                     
+                                     
+          
+      Code        Tests       Valid  
+      (L12)       (L13)       (L14)  
+          
 ```
 
 ## 7. Error Catalog

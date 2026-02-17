@@ -301,19 +301,19 @@ class DocumentationPathValidator:
 
         # Print success message if no issues
         if not self.issues:
-            print("\n✅ No issues found! All documentation paths are valid.")
+            print("\n[PASS] No issues found! All documentation paths are valid.")
 
         print("\n" + "="*80)
 
         # Determine exit code
         if strict and (high_issues or medium_issues):
-            print("\n❌ VALIDATION FAILED (strict mode)")
+            print("\n[FAIL] VALIDATION FAILED (strict mode)")
             return 1
         elif high_issues:
-            print("\n⚠️  HIGH severity issues found - please fix")
+            print("\n[WARN]  HIGH severity issues found - please fix")
             return 1
         else:
-            print("\n✅ VALIDATION PASSED")
+            print("\n[PASS] VALIDATION PASSED")
             return 0
 
     def _print_issue(self, issue: Issue):
@@ -322,7 +322,7 @@ class DocumentationPathValidator:
         print(f"  [{issue.severity.value}] {issue.issue_type}")
         print(f"  {issue.description}")
         if issue.suggestion:
-            print(f"  💡 Suggestion: {issue.suggestion}")
+            print(f"   Suggestion: {issue.suggestion}")
 
 
 def main():

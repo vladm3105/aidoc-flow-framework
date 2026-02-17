@@ -15,13 +15,13 @@ if [[ "$filename" == *.md ]]; then
     
     if command -v python3 &> /dev/null; then
       if python3 -c "import yaml; yaml.safe_load(open('$yaml_file'))" 2>/dev/null; then
-        echo "✅ YAML syntax valid"
+        echo "[PASS] YAML syntax valid"
       else
-        echo "❌ YAML syntax invalid"
+        echo "[FAIL] YAML syntax invalid"
       fi
     fi
   else
-    echo "❌ No YAML file found"
+    echo "[FAIL] No YAML file found"
   fi
 fi
 

@@ -42,20 +42,20 @@ PRDs transform high-level business objectives into concrete, measurable product 
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 PRDs are the **starting point** of specification-driven development within the complete SDD workflow:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## ADR References in PRD
 
-**⚠️ CRITICAL - Workflow Order**: PRDs are created BEFORE ADRs in the SDD workflow. Therefore:
+**[WARN] CRITICAL - Workflow Order**: PRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in PRD documents
+[FAIL] **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in PRD documents
 
-✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
+[PASS] **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
 **Correct Workflow Order**: BRD → PRD → EARS → BDD → **ADR** → SYS → REQ → CTR → SPEC → TASKS
 
@@ -187,13 +187,13 @@ PRDs inherit categorization context from their source BRDs:
 
 **Reference**: See [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for BRD categorization methodology
 
-## SYS-Ready Scoring System ⭐ NEW
+## SYS-Ready Scoring System  NEW
 
 **Purpose**: SYS-ready scoring measures PRD maturity and readiness for progression to System Requirements (SYS) phase in SDD workflow. Minimum score of 90% required to advance to SYS creation.
 
 **Quality Gate Requirements**:
 - **SYS-Ready Score**: Must be ≥90% to pass validation and progress to SYS phase
-- **Format**: `✅ NN% (Target: ≥90%)` in Document Control table
+- **Format**: `[PASS] NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
 - **Validation**: Enforced before commit via `python 02_PRD/scripts/validate_prd.py`
 
@@ -224,12 +224,12 @@ PRDs inherit categorization context from their source BRDs:
 
 **High Scoring PRD (95%)**:
 ```markdown
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 **Marginal PRD (85%) - Requires Improvement**:
 ```markdown
-| **SYS-Ready Score** | ⚠️ 85% (Below 90% target) |
+| **SYS-Ready Score** | [WARN] 85% (Below 90% target) |
 ```
 
 **Workflow Integration**:

@@ -51,7 +51,7 @@ def load_tags(tags_file: Path) -> Dict:
         with open(tags_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
-        print(f"❌ Failed to load tags file: {e}")
+        print(f"[FAIL] Failed to load tags file: {e}")
         return {}
 
 
@@ -74,7 +74,7 @@ def build_document_index(docs_dir: Path) -> Dict:
     docs_path = Path(docs_dir)
 
     if not docs_path.exists():
-        print(f"⚠️  Documentation directory not found: {docs_dir}")
+        print(f"[WARN]  Documentation directory not found: {docs_dir}")
         return doc_index
 
     # Document type directories
@@ -126,7 +126,7 @@ def build_document_index(docs_dir: Path) -> Dict:
                 }
 
             except Exception as e:
-                print(f"⚠️  Failed to read {doc_file}: {e}")
+                print(f"[WARN]  Failed to read {doc_file}: {e}")
 
     return doc_index
 
@@ -233,12 +233,12 @@ def validate_all_tags(tags_data: Dict, doc_index: Dict) -> List[Dict]:
 def generate_error_report(errors: List[Dict]) -> str:
     """Generate human-readable error report."""
     if not errors:
-        return "✅ No validation errors found"
+        return "[PASS] No validation errors found"
 
     lines = [
         "",
         "=" * 80,
-        f"❌ VALIDATION ERRORS FOUND: {len(errors)}",
+        f"[FAIL] VALIDATION ERRORS FOUND: {len(errors)}",
         "=" * 80,
         ""
     ]
@@ -250,7 +250,7 @@ def generate_error_report(errors: List[Dict]) -> str:
 
     for file_path in sorted(errors_by_file.keys()):
         file_errors = errors_by_file[file_path]
-        lines.append(f"📄 {file_path}")
+        lines.append(f" {file_path}")
 
         for i, error in enumerate(file_errors, 1):
             line_num = error.get('line', 0)
@@ -258,7 +258,7 @@ def generate_error_report(errors: List[Dict]) -> str:
             error_msg = error.get('error', '')
 
             lines.append(f"   {i}. Line {line_num}: {tag}")
-            lines.append(f"      ❌ {error_msg}")
+            lines.append(f"      [FAIL] {error_msg}")
 
         lines.append("")
 
@@ -447,7 +447,7 @@ def generate_coverage_report(tags_data: Dict, doc_index: Dict) -> str:
     lines = [
         "",
         "=" * 80,
-        "✓ COVERAGE METRICS",
+        " COVERAGE METRICS",
         "=" * 80,
         "",
         f"Documents Available: {len(doc_index)}",
@@ -503,7 +503,7 @@ def main():
     if args.tags:
         tags_file = Path(args.tags)
         if not tags_file.exists():
-            print(f"❌ Tags file not found: {args.tags}")
+            print(f"[FAIL] Tags file not found: {args.tags}")
             return 1
 
         print(f"Loading tags from: {args.tags}")
@@ -518,13 +518,13 @@ def main():
         source_dirs = [Path(s) for s in args.source]
         tags_data = scan_directory(source_dirs)
     else:
-        print("❌ Either --tags or --source must be provided")
+        print("[FAIL] Either --tags or --source must be provided")
         return 1
 
     # Build document index
     print(f"Building document index from: {args.docs}")
     doc_index = build_document_index(Path(args.docs))
-    print(f"✓ Indexed {len(doc_index)} documents")
+    print(f" Indexed {len(doc_index)} documents")
 
     # Validate tags
     print("Validating tags against documents...")
@@ -542,7 +542,7 @@ def main():
     if cumulative_errors:
         print("")
         print("=" * 80)
-        print(f"❌ CUMULATIVE TAGGING ERRORS FOUND: {len(cumulative_errors)}")
+        print(f"[FAIL] CUMULATIVE TAGGING ERRORS FOUND: {len(cumulative_errors)}")
         print("=" * 80)
         print("")
 
@@ -554,8 +554,8 @@ def main():
         for error_type, type_errors in sorted(errors_by_type.items()):
             print(f"\n{error_type.upper().replace('_', ' ')}: {len(type_errors)}")
             for error in type_errors[:10]:  # Show first 10 of each type
-                print(f"  📄 {error['file']}")
-                print(f"     ❌ {error['error']}")
+                print(f"   {error['file']}")
+                print(f"     [FAIL] {error['error']}")
             if len(type_errors) > 10:
                 print(f"  ... and {len(type_errors) - 10} more")
 
@@ -563,7 +563,7 @@ def main():
         print("=" * 80)
     elif args.validate_cumulative:
         print("")
-        print("✅ Cumulative tagging validation passed")
+        print("[PASS] Cumulative tagging validation passed")
 
     print(generate_coverage_report(tags_data, doc_index))
 

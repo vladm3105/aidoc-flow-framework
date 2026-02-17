@@ -9,15 +9,15 @@
 ## Security Testing Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Security Testing Pipeline                    │
-├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
-│    SAST     │  Dependency │  Container  │   Secret    │  DAST   │
-│   (Code)    │    Scan     │    Scan     │  Detection  │  (API)  │
-├─────────────┼─────────────┼─────────────┼─────────────┼─────────┤
-│   bandit    │  pip-audit  │   trivy     │  gitleaks   │ (TBD)   │
-│   semgrep   │  npm audit  │             │             │         │
-└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
+
+                     Security Testing Pipeline                    
+
+    SAST       Dependency   Container     Secret      DAST   
+   (Code)        Scan         Scan       Detection    (API)  
+
+   bandit      pip-audit     trivy       gitleaks    (TBD)   
+   semgrep     npm audit                                     
+
 ```
 
 ---
@@ -205,8 +205,8 @@ allowlist = true
 
 ```
 Discovery → Triage → Assign → Fix → Verify → Close
-    │          │        │       │       │
-    └──────────┴────────┴───────┴───────┴── Track in issue
+                                    
+     Track in issue
 ```
 
 ### Exception Process

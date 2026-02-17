@@ -16,7 +16,7 @@ custom_fields:
   development_status: active
   schema_version: "2.0"
 ---
-> **🔄 Dual-Format Note**: 
+> ** Dual-Format Note**: 
 > 
 > This MD template is the **primary source** for human workflow. 
 > - **For Autopilot**: See `SYS-MVP-TEMPLATE.yaml` (YAML template) 
@@ -25,7 +25,7 @@ custom_fields:
 > 
 ---
 
-> **📋 Document Authority**: This is the **STANDARD** for SYS structure.
+> ** Document Authority**: This is the **STANDARD** for SYS structure.
 > - **Schema**: `SYS_MVP_SCHEMA.yaml v2.0` - Validation rules
 > - **Creation Rules**: `SYS_MVP_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `SYS_MVP_VALIDATION_RULES.md` - Post-creation checks
@@ -34,7 +34,7 @@ custom_fields:
 
 # SYS-NN: [System Name/Component Name]
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**[WARN] CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **resource**: SYS is in Layer 6 (System Requirements Layer) - translates ADR decisions into system requirements.
 
@@ -50,8 +50,8 @@ custom_fields:
 | **Reviewers** | [Stakeholder names who have reviewed] |
 | **Owner** | [Team/Person responsible for maintenance] |
 | **Priority** | High / Medium / Low |
-| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
-| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 
 ## 2. Executive Summary
 [2-3 sentence overview of what this system component accomplishes and its architectural role]
@@ -870,16 +870,16 @@ BDD scenarios and acceptance tests validating this system.
 | System Capability (section) | BDD Feature File | Scenario Count | Coverage Status |
 |-----------------------------|-----------------|----------------|-----------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Core System Behaviors (3.1) | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | 8 scenarios | ✅ Complete |
+| Core System Behaviors (3.1) | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | 8 scenarios | [PASS] Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Data Processing (3.2) | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | 12 scenarios | ✅ Complete |
+| Data Processing (3.2) | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | 12 scenarios | [PASS] Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Error Handling (3.3) | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` | 15 scenarios | ✅ Complete |
+| Error Handling (3.3) | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` | 15 scenarios | [PASS] Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Integration Points (3.4) | `04_BDD/BDD-QQQ_{suite}/BDD-QQQ.SS_{slug}.feature` | 10 scenarios | 🔄 In Progress |
+| Integration Points (3.4) | `04_BDD/BDD-QQQ_{suite}/BDD-QQQ.SS_{slug}.feature` | 10 scenarios |  In Progress |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Acceptance Criteria Validation**:
@@ -887,13 +887,13 @@ BDD scenarios and acceptance tests validating this system.
 | Acceptance Criterion (section 11) | BDD Validation | Status |
 |-----------------------------------|----------------|--------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Functional Validation Points | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-250 | ✅ Validated |
+| Functional Validation Points | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-250 | [PASS] Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Quality Attribute Validation Points | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 50-120 | ✅ Validated |
+| Quality Attribute Validation Points | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 50-120 | [PASS] Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Operational Validation Points | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` Lines 200-300 | 🔄 Pending |
+| Operational Validation Points | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` Lines 200-300 |  Pending |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 13.4 Code Implementation Paths
@@ -955,10 +955,10 @@ BDD scenarios and acceptance tests validating this system.
 ### 13.6 Validation Evidence
 
 **Requirements Coverage**:
-- ✅ All functional requirements mapped to REQ-IDs: [X/X requirements]
-- ✅ All quality attributes mapped to specifications: [Y/Y requirements]
-- ✅ All interfaces mapped to contracts: [Z/Z interfaces]
-- ✅ All acceptance criteria mapped to BDD scenarios: [W/W criteria]
+- [PASS] All functional requirements mapped to REQ-IDs: [X/X requirements]
+- [PASS] All quality attributes mapped to specifications: [Y/Y requirements]
+- [PASS] All interfaces mapped to contracts: [Z/Z interfaces]
+- [PASS] All acceptance criteria mapped to BDD scenarios: [W/W criteria]
 
 **Test Coverage**:
 - Unit test coverage: [X]% (target: ≥85%)
@@ -978,15 +978,15 @@ BDD scenarios and acceptance tests validating this system.
 
 | Artifact Type | Status | Notes |
 |---------------|--------|-------|
-| BRD references | ✅ Valid | All links resolve |
-| PRD references | ✅ Valid | All links resolve |
-| EARS references | ✅ Valid | All links resolve |
-| ADR references | ✅ Valid | All sections exist |
-| REQ references | ✅ Valid | All requirements exist |
-| SPEC references | ✅ Valid | All specifications exist |
-| BDD references | ✅ Valid | All scenarios exist |
-| Code paths | ✅ Valid | All paths exist in implementation |
-| Test paths | ✅ Valid | All paths exist in test suites |
+| BRD references | [PASS] Valid | All links resolve |
+| PRD references | [PASS] Valid | All links resolve |
+| EARS references | [PASS] Valid | All links resolve |
+| ADR references | [PASS] Valid | All sections exist |
+| REQ references | [PASS] Valid | All requirements exist |
+| SPEC references | [PASS] Valid | All specifications exist |
+| BDD references | [PASS] Valid | All scenarios exist |
+| Code paths | [PASS] Valid | All paths exist in implementation |
+| Test paths | [PASS] Valid | All paths exist in test suites |
 
 **Reference Integrity**:
 - Last validated: [YYYY-MM-DDTHH:MM:SS]
@@ -1093,7 +1093,7 @@ BDD scenarios and acceptance tests validating this system.
 
 ---
 
-> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> **[WARN] UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
 > 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
 > 2. **Reference only existing documents**: Use actual document IDs, not placeholders
 > 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature

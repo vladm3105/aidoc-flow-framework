@@ -315,8 +315,8 @@ def create_index_file(dest: Path, suite_num: str) -> None:
 **Purpose**: [Brief description of what this BDD suite tests]
 
 **Scope**: Define boundaries of test coverage
-- ✅ **In Scope**: What is tested
-- ❌ **Out of Scope**: What is not tested
+- [PASS] **In Scope**: What is tested
+- [FAIL] **Out of Scope**: What is not tested
 
 ---
 
@@ -464,7 +464,7 @@ def main() -> int:
     print(f"Migration type: {migration_type}")
     
     if migration_type == "already-migrated":
-        print("✓ Suite already uses section-based format. No migration needed.")
+        print(" Suite already uses section-based format. No migration needed.")
         return 0
     
     if migration_type == "unknown":
@@ -497,13 +497,13 @@ def main() -> int:
     success = execute_migration(actions, dry_run=args.dry_run)
     
     if not success:
-        print("\n❌ Migration completed with errors")
+        print("\n[FAIL] Migration completed with errors")
         return 1
     
     if args.dry_run:
-        print("\n✓ Dry run completed successfully. Run without --dry-run to apply changes.")
+        print("\n Dry run completed successfully. Run without --dry-run to apply changes.")
     else:
-        print("\n✓ Migration completed successfully")
+        print("\n Migration completed successfully")
         print("\nNext steps:")
         print("  1. Review migrated files")
         print("  2. Update section metadata tags (@section, @brd, @prd, @ears)")

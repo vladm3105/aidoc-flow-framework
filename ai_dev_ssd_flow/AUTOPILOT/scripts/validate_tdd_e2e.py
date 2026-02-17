@@ -737,7 +737,7 @@ Feature: Sample Feature
                 status = "PASSED" if result.passed else "FAILED"
                 print(f"\n{scenario_name}: {status} ({result.total_duration_ms}ms)")
                 for stage in result.stages:
-                    stage_status = "✓" if stage.passed else "✗"
+                    stage_status = "" if stage.passed else ""
                     print(f"  {stage_status} {stage.stage}: {stage.message}")
 
         passed = len([r for r in results if r.passed])
@@ -871,13 +871,13 @@ Examples:
             ""
         ]
         for r in report.results:
-            status = "✅" if r.passed else "❌"
+            status = "[PASS]" if r.passed else "[FAIL]"
             lines.append(f"### {status} {r.scenario}")
             lines.append(f"")
             lines.append(f"| Stage | Status | Duration | Message |")
             lines.append(f"|-------|--------|----------|---------|")
             for s in r.stages:
-                s_status = "✅" if s.passed else "❌"
+                s_status = "[PASS]" if s.passed else "[FAIL]"
                 lines.append(f"| {s.stage} | {s_status} | {s.duration_ms}ms | {s.message} |")
             lines.append("")
         output = "\n".join(lines)

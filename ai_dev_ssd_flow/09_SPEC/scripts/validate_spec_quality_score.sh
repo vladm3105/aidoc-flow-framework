@@ -94,7 +94,7 @@ check_placeholder_text() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
 }
 
@@ -121,7 +121,7 @@ check_premature_references() {
   done < <(grep -rnE "$downstream_patterns" "$SPEC_DIR" --include="*.yaml" --include="*.md" 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
 }
 
@@ -132,7 +132,7 @@ check_premature_references() {
 check_count_consistency() {
   echo ""
   echo "--- GATE-03: Internal Count Consistency ---"
-  echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
+  echo -e "${GREEN}   Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -191,7 +191,7 @@ check_index_sync() {
   fi
 
   if [[ $found_warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index file appears to be synchronized.${NC}"
+    echo -e "${GREEN}   Index file appears to be synchronized.${NC}"
   fi
 }
 
@@ -226,9 +226,9 @@ check_visualization() {
   done < <(get_spec_files)
 
   if [[ $total -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No SPEC files to check${NC}"
+    echo -e "${GREEN}   No SPEC files to check${NC}"
   elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All SPEC have diagrams or visualization references${NC}"
+    echo -e "${GREEN}   All SPEC have diagrams or visualization references${NC}"
   else
     echo -e "${BLUE}  ℹ $found of $total SPEC files have no diagram references${NC}"
   fi
@@ -241,7 +241,7 @@ check_visualization() {
 check_glossary() {
   echo ""
   echo "--- GATE-07: Glossary Consistency ---"
-  echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
+  echo -e "${GREEN}   Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -280,7 +280,7 @@ check_spec_ids() {
   done
 
   if [[ $duplicates_found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No duplicate internal component IDs found${NC}"
+    echo -e "${GREEN}   No duplicate internal component IDs found${NC}"
   fi
 }
 
@@ -291,7 +291,7 @@ check_spec_ids() {
 check_param_format() {
   echo ""
   echo "--- GATE-09: Parameter Type Format ---"
-  echo -e "${GREEN}  ✓ Parameter type formats acceptable${NC}"
+  echo -e "${GREEN}   Parameter type formats acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -324,7 +324,7 @@ check_file_size() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤20,000 tokens)${NC}"
   fi
 }
 
@@ -346,7 +346,7 @@ check_yaml_syntax() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All YAML files syntactically valid${NC}"
+    echo -e "${GREEN}   All YAML files syntactically valid${NC}"
   fi
 }
 
@@ -357,7 +357,7 @@ check_yaml_syntax() {
 check_param_consistency() {
   echo ""
   echo "--- GATE-12: Parameter Type Consistency ---"
-  echo -e "${GREEN}  ✓ Parameter type consistency acceptable${NC}"
+  echo -e "${GREEN}   Parameter type consistency acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -383,7 +383,7 @@ check_req_coverage() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All SPEC files have REQ coverage${NC}"
+    echo -e "${GREEN}   All SPEC files have REQ coverage${NC}"
   else
     echo -e "${RED}  $found SPEC files are missing REQ traceability.${NC}"
   fi
@@ -413,7 +413,7 @@ check_required_fields() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All required YAML fields present${NC}"
+    echo -e "${GREEN}   All required YAML fields present${NC}"
   fi
 }
 
@@ -454,7 +454,7 @@ check_cumulative_traceability() {
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Cumulative traceability complete${NC}"
+    echo -e "${GREEN}   Cumulative traceability complete${NC}"
   else
     echo -e "${RED}  $found SPEC files have traceability errors.${NC}"
   fi

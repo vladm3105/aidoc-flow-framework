@@ -22,11 +22,11 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 log_pass() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}${NC} $1"
 }
 
 log_fail() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}${NC} $1"
 }
 
 log_info() {

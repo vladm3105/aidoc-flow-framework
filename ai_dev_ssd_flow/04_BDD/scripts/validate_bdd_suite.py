@@ -400,7 +400,7 @@ def main() -> int:
 
     v = validate(root, prd_root)
     if not v:
-        print("✓ BDD validation passed (no violations)")
+        print(" BDD validation passed (no violations)")
         return 0
 
     # Print grouped output
@@ -417,7 +417,7 @@ def main() -> int:
         print(f"{prefix}: {rel}:{item.line}: {item.message}")
 
     warnings = len(v) - errors
-    print(f"\n❌ Validation failed: {errors} error(s), {warnings} warning(s)")
+    print(f"\n[FAIL] Validation failed: {errors} error(s), {warnings} warning(s)")
 
     if errors:
         return 2

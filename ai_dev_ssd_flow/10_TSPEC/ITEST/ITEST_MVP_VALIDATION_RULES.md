@@ -175,7 +175,7 @@ Score = (CTR × 0.30) + (Contract × 0.25) + (Seq × 0.20) + (Effects × 0.15) +
 ### Pass Output
 
 ```
-✅ ITEST-01_auth_service.md: PASS (88%)
+[PASS] ITEST-01_auth_service.md: PASS (88%)
   - CTR Coverage: 90% (9/10)
   - Contract Tables: 100% (8/8)
   - Sequence Diagrams: 80% (4/5)
@@ -186,7 +186,7 @@ Score = (CTR × 0.30) + (Contract × 0.25) + (Seq × 0.20) + (Effects × 0.15) +
 ### Fail Output
 
 ```
-❌ ITEST-01_auth_service.md: FAIL (72%)
+[FAIL] ITEST-01_auth_service.md: FAIL (72%)
   - CTR Coverage: 70% (7/10)
     Missing: /api/v1/logout, /api/v1/refresh
   - Contract Tables: 75% (6/8)

@@ -29,26 +29,26 @@ custom_fields:
 The SDD Project Model v2.2 organizes document preparation into three tiers aligned with sprint phases:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        DOCUMENT PREPARATION TIMELINE                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  SPRINT 0          │  SPRINT 1 (Prep)     │  SPRINT N (Implementation)      │
-│  (Research)        │  (Specification)     │  (Execution)                    │
-│  ─────────────     │  ──────────────      │  ────────────────────           │
-│                    │                       │                                 │
-│  ┌─────────────┐   │  ┌─────────────┐     │  ┌─────────────┐                │
-│  │ TIER 1      │   │  │ TIER 2      │     │  │ TIER 3      │                │
-│  │ Strategic   │──▶│  │ Spec        │────▶│  │ Execution   │                │
-│  │ L1-L5       │   │  │ L6-L11      │     │  │ L12-L14     │                │
-│  └─────────────┘   │  └─────────────┘     │  └─────────────┘                │
-│                    │                       │                                 │
-│  BRD, PRD, EARS    │  SYS, REQ, CTR       │  Code, Tests                    │
-│  BDD, ADR          │  SPEC, TSPEC, TASKS  │  CHG (if changes)               │
-│                    │                       │                                 │
-│  GATE-01 ✓         │  GATE-05, GATE-09 ✓  │  GATE-12 ✓                      │
-│                    │                       │                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                        DOCUMENT PREPARATION TIMELINE                         
+
+                                                                              
+  SPRINT 0            SPRINT 1 (Prep)       SPRINT N (Implementation)      
+  (Research)          (Specification)       (Execution)                    
+                            
+                                                                            
+                              
+   TIER 1            TIER 2              TIER 3                      
+   Strategic      Spec           Execution                   
+   L1-L5             L6-L11              L12-L14                     
+                              
+                                                                            
+  BRD, PRD, EARS      SYS, REQ, CTR         Code, Tests                    
+  BDD, ADR            SPEC, TSPEC, TASKS    CHG (if changes)               
+                                                                            
+  GATE-01            GATE-05, GATE-09     GATE-12                       
+                                                                            
+
 ```
 
 ---
@@ -72,15 +72,15 @@ The SDD Project Model v2.2 organizes document preparation into three tiers align
 ### Sprint 0 Checklist
 
 ```
-□ 0.1  Identify blocking technical questions
-□ 0.2  Research each question
-□ 0.3  Document decisions as ADRs (ADR-01 through ADR-NN)
-□ 0.4  Validate BRD completeness (score ≥90)
-□ 0.5  Generate PRD from BRD
-□ 0.6  Generate EARS from PRD
-□ 0.7  Generate BDD from EARS
-□ 0.8  Set up GitHub Project board
-□ 0.9  Pass GATE-01 validation
+ 0.1  Identify blocking technical questions
+ 0.2  Research each question
+ 0.3  Document decisions as ADRs (ADR-01 through ADR-NN)
+ 0.4  Validate BRD completeness (score ≥90)
+ 0.5  Generate PRD from BRD
+ 0.6  Generate EARS from PRD
+ 0.7  Generate BDD from EARS
+ 0.8  Set up GitHub Project board
+ 0.9  Pass GATE-01 validation
 ```
 
 ### Exit Criteria
@@ -128,17 +128,17 @@ python scripts/validate_artifact.py --path docs/ --gate GATE-01
 ### Sprint 1 Workflow
 
 ```
-ADR-01 ───▶ SYS-01 ───▶ REQ-01 ───▶ SPEC-01 ───▶ TSPEC-01 ───▶ TASKS-01
-   │           │           │           │            │            │
-   │           │           │           │            │            ▼
-   │           │           │           │            │      GitHub Issues
-   │           │           │           ▼            │            │
-   │           │           │        CTR-01          │            │
-   │           │           │        (optional)      │            │
-   │           │           │                        │            │
-   │           └───────────┴────────────────────────┴────────────┘
-   │                                                │
-   ▼                                                ▼
+ADR-01  SYS-01  REQ-01  SPEC-01  TSPEC-01  TASKS-01
+                                                            
+                                                            
+                                                      GitHub Issues
+                                                            
+                                 CTR-01                      
+                                 (optional)                  
+                                                             
+              
+                                                   
+                                                   
 GATE-05 validation                           GATE-09 validation
 ```
 
@@ -194,19 +194,19 @@ python scripts/validate_artifact.py --path docs/ --gate GATE-09
 ### Implementation Sprint Workflow
 
 ```
-Sprint Planning ───▶ Development ───▶ PR Review ───▶ Sprint Review
-      │                   │               │               │
-      │                   │               │               │
-      ▼                   ▼               ▼               ▼
+Sprint Planning  Development  PR Review  Sprint Review
+                                                       
+                                                       
+                                                       
  TASKS→Issues        Code + Tests    Validation      Retrospective
-      │                   │               │               │
-      │                   │               │               │
-      │                   │               ▼               ▼
-      │                   │          GATE-12         CHG (if needed)
-      │                   │               │               │
-      │                   └───────────────┴───────────────┘
-      │                                   │
-      └───────────────────────────────────┘
+                                                       
+                                                       
+                                                       
+                                   GATE-12         CHG (if needed)
+                                                       
+                         
+                                         
+      
                     Feedback Loop
 ```
 
@@ -265,37 +265,37 @@ python scripts/chg_generator.py \
 ```
 SPRINT 0                    SPRINT 1                    SPRINT N
 (Research)                  (Specification)             (Implementation)
-────────────────────────────────────────────────────────────────────────
 
-    ┌───┐                       ┌───┐
-    │BRD│ L1                    │SYS│ L6
-    └─┬─┘                       └─┬─┘
-      │                           │
-      ▼                           ▼
-    ┌───┐                       ┌───┐
-    │PRD│ L2                    │REQ│ L7                    ┌────┐
-    └─┬─┘                       └─┬─┘                       │Code│ L12
-      │                           │                         └──┬─┘
-      ▼                           ├─────────┐                  │
-    ┌────┐                        │         ▼                  ▼
-    │EARS│ L3                   ┌───┐     ┌───┐            ┌─────┐
-    └─┬──┘                      │CTR│ L8  │SPEC│ L9        │Tests│ L13
-      │                         └───┘     └─┬─┘            └──┬──┘
-      ▼                                     │                 │
-    ┌───┐                                   ▼                 ▼
-    │BDD│ L4                             ┌─────┐          ┌───────┐
-    └───┘                                │TSPEC│ L10      │Release│ L14
-                                         └──┬──┘          └───────┘
-    ┌───┐                                   │
-    │ADR│ L5                                ▼                 ┌───┐
-    └───┘                               ┌─────┐               │CHG│
-                                        │TASKS│ L11  ───────▶ └───┘
-                                        └──┬──┘            (if needed)
-                                           │
-                                           ▼
+
+                           
+    BRD L1                    SYS L6
+                           
+                                 
+                                 
+                           
+    PRD L2                    REQ L7                    
+                                                  Code L12
+                                                          
+                                                   
+                                                       
+    EARS L3                                    
+                          CTR L8  SPEC L9        Tests L13
+                                                
+                                                            
+                                                        
+    BDD L4                                       
+                                    TSPEC L10      Release L14
+                                                   
+                                       
+    ADR L5                                                 
+                                                  CHG
+                                        TASKS L11   
+                                                    (if needed)
+                                           
+                                           
                                      GitHub Issues
 
-────────────────────────────────────────────────────────────────────────
+
     GATE-01                    GATE-05 + GATE-09              GATE-12
 ```
 

@@ -364,32 +364,32 @@ Only after Phases 1-3 are complete, proceed to the [Pre-Implementation Checklist
 **Workflow summary**:
 ```
 Issue (ai:ready)
-    │
-    ▼
-┌─────────────────────────────────┐
-│ Phase 1: Issue Analysis          │
-│ (read issue, deps, docs, code)   │
-└─────────────────────────────────┘
-    │
-    ▼
-┌─────────────────────────────────┐
-│ Phase 2: Create Plan             │
-│ (IPLAN-NNN_{slug}.md)            │
-└─────────────────────────────────┘
-    │
-    ▼
-┌─────────────────────────────────┐
-│ Phase 3: Review & Refine Plan    │
-│ (identify gaps, improve)         │
-└─────────────────────────────────┘
-    │
-    ▼
-┌─────────────────────────────────┐
-│ Phase 4: Pre-Implementation      │
-│ (label, board, branch)           │
-└─────────────────────────────────┘
-    │
-    ▼
+    
+    
+
+ Phase 1: Issue Analysis          
+ (read issue, deps, docs, code)   
+
+    
+    
+
+ Phase 2: Create Plan             
+ (IPLAN-NNN_{slug}.md)            
+
+    
+    
+
+ Phase 3: Review & Refine Plan    
+ (identify gaps, improve)         
+
+    
+    
+
+ Phase 4: Pre-Implementation      
+ (label, board, branch)           
+
+    
+    
 Implementation begins
 ```
 

@@ -91,23 +91,23 @@ supersedes: [List, of, Artifact, IDs]
 
 | Layer | Type | Archived Artifacts (Old) | New Artifacts (Replacement) | Impact |
 |-------|------|--------------------------|-----------------------------|---------|
-| 0 | Strategy | - | - | ○ None |
-| 1 | BRD | `BRD-XX` | `BRD-YY` | ○/● |
-| 2 | PRD | `PRD-XX` | `PRD-YY` | ○/● |
-| 3 | EARS | `EARS-XX` | `EARS-YY` | ○/● |
-| 4 | BDD | `BDD-XX` | `BDD-YY` | ○/● |
-| 5 | ADR | `ADR-XX` | `ADR-YY` | ○/● |
-| 6 | SYS | `SYS-XX` | `SYS-YY` | ○/● |
-| 7 | REQ | `REQ-XX` | `REQ-YY` | ○/● |
-| 8 | CTR | `CTR-XX` | `CTR-YY` | ○/● |
-| 9 | SPEC | `SPEC-XX` | `SPEC-YY` | ○/● |
-| 10 | **TSPEC** | `TSPEC-XX` | `TSPEC-YY` | ○/● |
-| 11 | TASKS | `TASKS-XX` | `TASKS-YY` | ○/● |
-| 12 | Code | `src/...` | `src/...` | ○/● |
-| 13 | Tests | `tests/...` | `tests/...` | ○/● |
-| 14 | Validation | `validation/...` | `validation/...` | ○/● |
+| 0 | Strategy | - | - |  None |
+| 1 | BRD | `BRD-XX` | `BRD-YY` | / |
+| 2 | PRD | `PRD-XX` | `PRD-YY` | / |
+| 3 | EARS | `EARS-XX` | `EARS-YY` | / |
+| 4 | BDD | `BDD-XX` | `BDD-YY` | / |
+| 5 | ADR | `ADR-XX` | `ADR-YY` | / |
+| 6 | SYS | `SYS-XX` | `SYS-YY` | / |
+| 7 | REQ | `REQ-XX` | `REQ-YY` | / |
+| 8 | CTR | `CTR-XX` | `CTR-YY` | / |
+| 9 | SPEC | `SPEC-XX` | `SPEC-YY` | / |
+| 10 | **TSPEC** | `TSPEC-XX` | `TSPEC-YY` | / |
+| 11 | TASKS | `TASKS-XX` | `TASKS-YY` | / |
+| 12 | Code | `src/...` | `src/...` | / |
+| 13 | Tests | `tests/...` | `tests/...` | / |
+| 14 | Validation | `validation/...` | `validation/...` | / |
 
-**Legend**: ○ No impact | ● Impacted
+**Legend**:  No impact |  Impacted
 
 ### 2.3 Dependency Check
 
@@ -137,12 +137,12 @@ See `implementation_plan.md` in this directory for the detailed audit log.
 
 | Step | Action | Status |
 |------|--------|--------|
-| 1 | **Initialize** | ☐ Pending |
-| 2 | **Archive & Deprecate** | ☐ Pending |
-| 3 | **Create New Artifacts** | ☐ Pending |
-| 4 | **Repair Traceability** | ☐ Pending |
-| 5 | **Execute & Validate** | ☐ Pending |
-| 6 | **Close** | ☐ Pending |
+| 1 | **Initialize** |  Pending |
+| 2 | **Archive & Deprecate** |  Pending |
+| 3 | **Create New Artifacts** |  Pending |
+| 4 | **Repair Traceability** |  Pending |
+| 5 | **Execute & Validate** |  Pending |
+| 6 | **Close** |  Pending |
 
 ### 3.2 Step Details
 
@@ -208,10 +208,10 @@ If this change fails verification:
 
 | Role | Name | Date | Signature |
 |------|------|------|-----------|
-| Change Author | | | ☐ |
-| Technical Lead | | | ☐ |
-| Product Owner | | | ☐ |
-| QA Lead | | | ☐ |
+| Change Author | | |  |
+| Technical Lead | | |  |
+| Product Owner | | |  |
+| QA Lead | | |  |
 
 ---
 

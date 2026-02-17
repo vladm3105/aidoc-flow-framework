@@ -50,10 +50,10 @@ az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 echo "Step 1: Ensuring resource group exists..."
 
 if az group show --name "${AZURE_RESOURCE_GROUP}" &>/dev/null; then
-    echo "  ⓘ Resource group ${AZURE_RESOURCE_GROUP} already exists"
+    echo "   Resource group ${AZURE_RESOURCE_GROUP} already exists"
 else
     az group create --name "${AZURE_RESOURCE_GROUP}" --location "${LOCATION}"
-    echo "  ✓ Resource group created: ${AZURE_RESOURCE_GROUP}"
+    echo "   Resource group created: ${AZURE_RESOURCE_GROUP}"
 fi
 
 # ============================================
@@ -66,10 +66,10 @@ EXISTING_APP=$(az ad app list --display-name "${APP_NAME}" --query "[0].appId" -
 
 if [ -n "${EXISTING_APP}" ]; then
     APP_ID="${EXISTING_APP}"
-    echo "  ⓘ Application ${APP_NAME} already exists: ${APP_ID}"
+    echo "   Application ${APP_NAME} already exists: ${APP_ID}"
 else
     APP_ID=$(az ad app create --display-name "${APP_NAME}" --query appId -o tsv)
-    echo "  ✓ Application created: ${APP_ID}"
+    echo "   Application created: ${APP_ID}"
 fi
 
 # ============================================
@@ -78,10 +78,10 @@ fi
 echo "Step 3: Creating service principal..."
 
 if az ad sp show --id "${APP_ID}" &>/dev/null; then
-    echo "  ⓘ Service principal already exists"
+    echo "   Service principal already exists"
 else
     az ad sp create --id "${APP_ID}"
-    echo "  ✓ Service principal created"
+    echo "   Service principal created"
 fi
 
 # ============================================
@@ -115,13 +115,13 @@ EOF
 # Apply federated credentials (ignore errors if already exists)
 az ad app federated-credential create \
     --id "${APP_OBJECT_ID}" \
-    --parameters @/tmp/federated-credential-main.json 2>/dev/null || echo "  ⓘ Main branch credential already exists"
+    --parameters @/tmp/federated-credential-main.json 2>/dev/null || echo "   Main branch credential already exists"
 
 az ad app federated-credential create \
     --id "${APP_OBJECT_ID}" \
-    --parameters @/tmp/federated-credential-pr.json 2>/dev/null || echo "  ⓘ PR credential already exists"
+    --parameters @/tmp/federated-credential-pr.json 2>/dev/null || echo "   PR credential already exists"
 
-echo "  ✓ Federated credentials configured"
+echo "   Federated credentials configured"
 
 # ============================================
 # STEP 5: Assign Role
@@ -135,9 +135,9 @@ az role assignment create \
     --assignee-principal-type ServicePrincipal \
     --role "Contributor" \
     --scope "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}" \
-    2>/dev/null || echo "  ⓘ Role assignment already exists"
+    2>/dev/null || echo "   Role assignment already exists"
 
-echo "  ✓ Contributor role assigned"
+echo "   Contributor role assigned"
 
 # ============================================
 # OUTPUT

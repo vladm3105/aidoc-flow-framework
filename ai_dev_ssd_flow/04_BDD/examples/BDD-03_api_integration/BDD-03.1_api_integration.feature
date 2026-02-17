@@ -21,7 +21,7 @@
 | **Document Owner** | QA Engineering Team |
 | **Prepared By** | Business Analyst |
 | **Status** | Approved |
-| **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **ADR-Ready Score** | [PASS] 95% (Target: ≥90%) |
 
 ---
 

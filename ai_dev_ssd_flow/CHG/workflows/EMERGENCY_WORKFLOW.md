@@ -36,37 +36,37 @@ This workflow handles critical incidents and security vulnerabilities that requi
 
 ```
 EMERGENCY TRIGGER
-       │
-       ▼
-┌─────────────────────────────────────┐
-│          PHASE 1: TRIAGE            │
-│           (0-30 minutes)            │
-│  1. Incident declared               │
-│  2. Severity confirmed              │
-│  3. Bypass authorized               │
-│  4. Emergency stub created          │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│          PHASE 2: HOTFIX            │
-│         (30 min - 4 hours)          │
-│  1. Implement hotfix                │
-│  2. Minimal smoke test              │
-│  3. Deploy to production            │
-│  4. Monitor for resolution          │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│       PHASE 3: POST-INCIDENT        │
-│          (24-72 hours)              │
-│  1. Complete CHG document           │
-│  2. Conduct post-mortem             │
-│  3. Pass applicable gates           │
-│  4. Create preventive CHGs          │
-│  5. Close emergency CHG             │
-└─────────────────────────────────────┘
+       
+       
+
+          PHASE 1: TRIAGE            
+           (0-30 minutes)            
+  1. Incident declared               
+  2. Severity confirmed              
+  3. Bypass authorized               
+  4. Emergency stub created          
+
+                  
+                  
+
+          PHASE 2: HOTFIX            
+         (30 min - 4 hours)          
+  1. Implement hotfix                
+  2. Minimal smoke test              
+  3. Deploy to production            
+  4. Monitor for resolution          
+
+                  
+                  
+
+       PHASE 3: POST-INCIDENT        
+          (24-72 hours)              
+  1. Complete CHG document           
+  2. Conduct post-mortem             
+  3. Pass applicable gates           
+  4. Create preventive CHGs          
+  5. Close emergency CHG             
+
 ```
 
 ## 2. Phase 1: Triage (0-30 minutes)

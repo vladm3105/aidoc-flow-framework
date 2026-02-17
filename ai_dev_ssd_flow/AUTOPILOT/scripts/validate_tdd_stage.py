@@ -375,12 +375,12 @@ Examples:
 
         # Print result
         status_icons = {
-            'PASS': '✅',
-            'FAIL': '❌',
-            'SKIP': '⏭️'
+            'PASS': '[PASS]',
+            'FAIL': '[FAIL]',
+            'SKIP': '⏭'
         }
 
-        icon = status_icons.get(result.status, '❓')
+        icon = status_icons.get(result.status, '')
         print(f"\n{icon} TDD {args.stage.upper()} State: {result.status}")
         print(f"   {result.message}")
 

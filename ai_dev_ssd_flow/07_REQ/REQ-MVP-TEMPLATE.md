@@ -17,7 +17,7 @@ custom_fields:
   schema_version: "1.1"
   complexity: 1 # 1-5 scale
 ---
-> **🔄 Dual-Format Note**: 
+> ** Dual-Format Note**: 
 > 
 > This MD template is the **primary source** for human workflow. 
 > - **For Autopilot**: See `REQ-MVP-TEMPLATE.yaml` (YAML template) 
@@ -73,8 +73,8 @@ AI_CONTEXT_END
 | **Source Document** | [SYS-NN section X.Y.Z] |
 | **Verification Method** | BDD / Unit Test / Integration Test |
 | **Assigned Team** | [Team name] |
-| **SPEC-Ready Score** | ✅ [XX]% (Target: ≥90%) |
-| **CTR-Ready Score** | ✅ [XX]% (Target: ≥90%) |
+| **SPEC-Ready Score** | [PASS] [XX]% (Target: ≥90%) |
+| **CTR-Ready Score** | [PASS] [XX]% (Target: ≥90%) |
 | **Template Version** | 1.1 |
 
 ---

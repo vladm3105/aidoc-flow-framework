@@ -53,7 +53,7 @@ GATE-05 TEST: Complete Isolation Detection
 2. Running validation on isolated corpus (should trigger GATE-05 ERROR)...
 
 --- GATE-05: Inter-REQ Cross-Linking (Informational; Error if All Isolated) ---
-  ✗ GATE-05 ERROR: ALL 10 files have no cross-references (corpus completely isolated)
+   GATE-05 ERROR: ALL 10 files have no cross-references (corpus completely isolated)
   → Attempting auto-fix: running cross-reference injection script
   → Executing: python3 /tmp/add_cross_refs.py
     Updated REQ-X.01.md
@@ -64,11 +64,11 @@ GATE-05 TEST: Complete Isolation Detection
 3. Testing EXIT CODE logic...
   Exit code: 2
   (Expected: 2 = ERROR, 1 = WARNING-only, 0 = PASS)
-  ✅ GATE-05 ERROR detected correctly
+  [PASS] GATE-05 ERROR detected correctly
 
 4. Cleanup...
 
-✅ TEST COMPLETE
+[PASS] TEST COMPLETE
 ```
 
 ## Integration with validate_all.sh
@@ -110,17 +110,17 @@ cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
 set -e
 cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
 ./scripts/validate_all.sh --test-gate05
-echo "✅ GATE-05 test passed"
+echo "[PASS] GATE-05 test passed"
 ```
 
 ## Test Coverage
 
 | Test | Validates | Gate | Status |
 |------|-----------|------|--------|
-| test_gate05_isolation.sh | Complete corpus isolation detection | GATE-05 | ✅ Deployed |
-| Error counter increment | ERRORS variable incremented | GATE-05 | ✅ Tested |
-| Auto-fix invocation | Cross-ref script called | GATE-05 | ✅ Tested |
-| Exit code semantics | Error = exit 2 | Validation Suite | ✅ Tested |
+| test_gate05_isolation.sh | Complete corpus isolation detection | GATE-05 | [PASS] Deployed |
+| Error counter increment | ERRORS variable incremented | GATE-05 | [PASS] Tested |
+| Auto-fix invocation | Cross-ref script called | GATE-05 | [PASS] Tested |
+| Exit code semantics | Error = exit 2 | Validation Suite | [PASS] Tested |
 
 ## Troubleshooting
 

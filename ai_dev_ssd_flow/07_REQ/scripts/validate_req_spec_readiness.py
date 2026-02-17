@@ -320,16 +320,16 @@ class REQSpecReadinessValidator:
 
         # Detailed results
         for result in results:
-            status = "✅ PASS" if result.passed else "❌ FAIL"
+            status = "[PASS] PASS" if result.passed else "[FAIL] FAIL"
             print(f"{status} [{result.score:3d}%] {result.file_path.name}")
 
             if result.errors:
                 for error in result.errors:
-                    print(f"    ❌ ERROR: {error}")
+                    print(f"    [FAIL] ERROR: {error}")
 
             if result.warnings and not result.passed:
                 for warning in result.warnings:
-                    print(f"    ⚠️  WARNING: {warning}")
+                    print(f"    [WARN]  WARNING: {warning}")
 
             print()
 

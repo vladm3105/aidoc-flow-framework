@@ -239,7 +239,7 @@ docker run -i --rm ghcr.io/github/github-mcp-server --version
 }
 ```
 
-**Option B: Project-Level Config** (`.mcp.json` in repo root) - **Recommended** ✅ Current
+**Option B: Project-Level Config** (`.mcp.json` in repo root) - **Recommended** [PASS] Current
 
 ```json
 {
@@ -297,9 +297,9 @@ After configuration changes, restart the AI assistant to load the new MCP server
 
 | Scope | Required | Purpose |
 |:------|:--------:|:--------|
-| `repo` | ✅ | Full repository access (issues, PRs, code) |
-| `workflow` | ✅ | GitHub Actions (run, view, cancel) |
-| `read:org` | ✅ | Organization membership, teams |
+| `repo` | [PASS] | Full repository access (issues, PRs, code) |
+| `workflow` | [PASS] | GitHub Actions (run, view, cancel) |
+| `read:org` | [PASS] | Organization membership, teams |
 | `gist` | Optional | Gist creation/management |
 | `notifications` | Optional | Notification management |
 | `project` | Optional | Projects V2 (if using GraphQL via gh CLI) |
@@ -425,34 +425,34 @@ Expected: List of repository issues (not 401 error)
 | Feature | MCP Server | gh CLI | Winner |
 |:--------|:----------:|:------:|:-------|
 | **Issues** |
-| List/View/Create/Update | ✅ | ✅ | Equal |
-| Sub-issues | ✅ | ❌ | **MCP** |
+| List/View/Create/Update | [PASS] | [PASS] | Equal |
+| Sub-issues | [PASS] | [FAIL] | **MCP** |
 | **Pull Requests** |
-| Full CRUD | ✅ | ✅ | Equal |
-| Update branch from base | ✅ | ❌ | **MCP** |
+| Full CRUD | [PASS] | [PASS] | Equal |
+| Update branch from base | [PASS] | [FAIL] | **MCP** |
 | **Branches** |
-| List | ✅ | ✅ | Equal |
-| Create (remote, no local git) | ✅ | ❌ | **MCP** |
+| List | [PASS] | [PASS] | Equal |
+| Create (remote, no local git) | [PASS] | [FAIL] | **MCP** |
 | **Files** |
-| Read/Write single | ✅ | ✅ | Equal |
-| Push multiple files (atomic) | ✅ | ❌ | **MCP** |
+| Read/Write single | [PASS] | [PASS] | Equal |
+| Push multiple files (atomic) | [PASS] | [FAIL] | **MCP** |
 | **Projects V2** |
-| Full access | ❌ | ✅ (GraphQL) | **gh CLI** |
+| Full access | [FAIL] | [PASS] (GraphQL) | **gh CLI** |
 | **Labels** |
-| CRUD | ❌ | ✅ | **gh CLI** |
+| CRUD | [FAIL] | [PASS] | **gh CLI** |
 | **Milestones** |
-| CRUD | ❌ | ✅ | **gh CLI** |
+| CRUD | [FAIL] | [PASS] | **gh CLI** |
 | **Workflows** |
-| Full access | ✅ | ✅ | Equal |
+| Full access | [PASS] | [PASS] | Equal |
 | **Search** |
-| Code/Issues/Repos | ✅ | ✅ | Equal |
+| Code/Issues/Repos | [PASS] | [PASS] | Equal |
 | **Notifications** |
-| List/Manage | ✅ | ❌ | **MCP** |
+| List/Manage | [PASS] | [FAIL] | **MCP** |
 | **Discussions** |
-| Read | ✅ | ❌ | **MCP** |
+| Read | [PASS] | [FAIL] | **MCP** |
 | **API Flexibility** |
-| Any endpoint | ❌ | ✅ (`gh api`) | **gh CLI** |
-| GraphQL | ❌ | ✅ | **gh CLI** |
+| Any endpoint | [FAIL] | [PASS] (`gh api`) | **gh CLI** |
+| GraphQL | [FAIL] | [PASS] | **gh CLI** |
 
 ### 3.2 Why MCP is Primary
 
@@ -516,8 +516,8 @@ MCP lacks support for these operations (use gh CLI):
 
 | Tool | Status | Notes |
 |:-----|:-------|:------|
-| MCP Servers (6 total) | ✅ All Active | See Section 4.5 for details |
-| gh CLI | ✅ Active | Fallback for Projects V2, labels |
+| MCP Servers (6 total) | [PASS] All Active | See Section 4.5 for details |
+| gh CLI | [PASS] Active | Fallback for Projects V2, labels |
 
 ### 4.3 MCP Configuration for This Project
 
@@ -582,12 +582,12 @@ All 6 servers configured in `.mcp.json` are open source and active.
 
 | Server | Package | License | Purpose | Status |
 |:-------|:--------|:--------|:--------|:------:|
-| **github-{PROJECT_PREFIX}-{PROJECT_PREFIX}** | `ghcr.io/github/github-mcp-server` (Docker) | MIT | Issues, PRs, branches, files, workflows | ✅ Active |
-| **filesystem-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-filesystem` | MIT | Secure file operations | ✅ Active |
-| **memory-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-memory` | MIT | Persistent knowledge graph | ✅ Active |
-| **sequential-thinking-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-sequential-thinking` | MIT | Problem decomposition | ✅ Active |
-| **context7-tt-{PROJECT_PREFIX}** | `@upstash/context7-mcp` | Free Tier | Library documentation lookup | ✅ Active |
-| **playwright-tt-{PROJECT_PREFIX}** | `@playwright/mcp` | Apache 2.0 | Browser automation, E2E tests | ✅ Active |
+| **github-{PROJECT_PREFIX}-{PROJECT_PREFIX}** | `ghcr.io/github/github-mcp-server` (Docker) | MIT | Issues, PRs, branches, files, workflows | [PASS] Active |
+| **filesystem-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-filesystem` | MIT | Secure file operations | [PASS] Active |
+| **memory-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-memory` | MIT | Persistent knowledge graph | [PASS] Active |
+| **sequential-thinking-tt-{PROJECT_PREFIX}** | `@modelcontextprotocol/server-sequential-thinking` | MIT | Problem decomposition | [PASS] Active |
+| **context7-tt-{PROJECT_PREFIX}** | `@upstash/context7-mcp` | Free Tier | Library documentation lookup | [PASS] Active |
+| **playwright-tt-{PROJECT_PREFIX}** | `@playwright/mcp` | Apache 2.0 | Browser automation, E2E tests | [PASS] Active |
 
 **Total: 6 MCP Servers (All Open Source)**
 
@@ -614,36 +614,36 @@ All 6 servers configured in `.mcp.json` are open source and active.
 ### 4.6 AI Assistant Workflow
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│              AI ASSISTANT - 6 ACTIVE MCP SERVERS                  │
-│              (All using -tt-{PROJECT_PREFIX} suffix)                        │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  CORE DEVELOPMENT (4)                                            │
-│  ├── github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)                                   │
-│  │   └── Issues, PRs, branches, files, workflows                 │
-│  ├── filesystem-tt-{PROJECT_PREFIX}                                        │
-│  │   └── File operations                                         │
-│  ├── memory-tt-{PROJECT_PREFIX}                                            │
-│  │   └── Knowledge graph                                         │
-│  └── sequential-thinking-tt-{PROJECT_PREFIX}                               │
-│      └── Problem decomposition                                   │
-│                                                                   │
-│  DOCUMENTATION (1)                                               │
-│  └── context7-tt-{PROJECT_PREFIX}                                          │
-│      └── Library docs lookup                                     │
-│                                                                   │
-│  BROWSER AUTOMATION (1)                                          │
-│  └── playwright-tt-{PROJECT_PREFIX}                                        │
-│      └── E2E tests, web scraping                                 │
-│                                                                   │
-├──────────────────────────────────────────────────────────────────┤
-│  gh CLI (Fallback - only when MCP lacks support)                 │
-│  └── Projects V2, Labels, Milestones, GraphQL                    │
-├──────────────────────────────────────────────────────────────────┤
-│  Local git (Workspace operations)                                │
-│  └── git add, commit, push                                       │
-└──────────────────────────────────────────────────────────────────┘
+
+              AI ASSISTANT - 6 ACTIVE MCP SERVERS                  
+              (All using -tt-{PROJECT_PREFIX} suffix)                        
+
+                                                                   
+  CORE DEVELOPMENT (4)                                            
+   github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)                                   
+      Issues, PRs, branches, files, workflows                 
+   filesystem-tt-{PROJECT_PREFIX}                                        
+      File operations                                         
+   memory-tt-{PROJECT_PREFIX}                                            
+      Knowledge graph                                         
+   sequential-thinking-tt-{PROJECT_PREFIX}                               
+       Problem decomposition                                   
+                                                                   
+  DOCUMENTATION (1)                                               
+   context7-tt-{PROJECT_PREFIX}                                          
+       Library docs lookup                                     
+                                                                   
+  BROWSER AUTOMATION (1)                                          
+   playwright-tt-{PROJECT_PREFIX}                                        
+       E2E tests, web scraping                                 
+                                                                   
+
+  gh CLI (Fallback - only when MCP lacks support)                 
+   Projects V2, Labels, Milestones, GraphQL                    
+
+  Local git (Workspace operations)                                
+   git add, commit, push                                       
+
 ```
 
 ### 4.7 Operation Mapping

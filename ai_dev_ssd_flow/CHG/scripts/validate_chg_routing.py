@@ -270,7 +270,7 @@ def validate_routing(chg_file: Path, verbose: bool = False) -> int:
         print("    -> Add change_source to frontmatter or document body")
         warnings += 1
     else:
-        print(f"  {GREEN}✓ Change source specified: {change_source}{NC}")
+        print(f"  {GREEN} Change source specified: {change_source}{NC}")
 
     # Check: Level should be specified
     if not change_level:
@@ -278,14 +278,14 @@ def validate_routing(chg_file: Path, verbose: bool = False) -> int:
         print("    -> Add change_level to frontmatter (L1/L2/L3)")
         warnings += 1
     else:
-        print(f"  {GREEN}✓ Change level specified: {change_level}{NC}")
+        print(f"  {GREEN} Change level specified: {change_level}{NC}")
 
     # Check: Breaking change should be L3
     if is_breaking and change_level and change_level != 'L3':
         print(f"  {RED}ERROR: Breaking change must be L3 (found: {change_level}){NC}")
         errors += 1
     elif is_breaking:
-        print(f"  {GREEN}✓ Breaking change correctly classified{NC}")
+        print(f"  {GREEN} Breaking change correctly classified{NC}")
 
     # Check: Emergency should have proper authorization
     if is_emergency:
@@ -293,7 +293,7 @@ def validate_routing(chg_file: Path, verbose: bool = False) -> int:
             print(f"  {YELLOW}WARNING: Emergency bypass should document authorization{NC}")
             warnings += 1
         else:
-            print(f"  {GREEN}✓ Emergency authorization documented{NC}")
+            print(f"  {GREEN} Emergency authorization documented{NC}")
 
     # Check: Layers should be documented
     if not affected_layers:
@@ -301,7 +301,7 @@ def validate_routing(chg_file: Path, verbose: bool = False) -> int:
         print("    -> Document which layers are impacted")
         warnings += 1
     else:
-        print(f"  {GREEN}✓ Affected layers documented: {len(affected_layers)} layers{NC}")
+        print(f"  {GREEN} Affected layers documented: {len(affected_layers)} layers{NC}")
 
     print()
     print("=" * 50)

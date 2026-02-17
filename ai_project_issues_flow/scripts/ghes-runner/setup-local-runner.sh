@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# ──────────────────────────────────────────────────────────
+# 
 # GHES Self-Hosted Runner — Local Setup Script
 # Registers and starts a persistent runner on the host
 #
@@ -10,7 +10,7 @@ set -euo pipefail
 # Prerequisites:
 #   - gh CLI authenticated to {GITHUB_HOST}
 #   - 64-bit Linux (x86_64)
-# ──────────────────────────────────────────────────────────
+# 
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RUNNER_DIR="${SCRIPT_DIR}/runner-local"
@@ -23,7 +23,7 @@ RUNNER_LABELS="ubuntu-latest"
 PID_FILE="${RUNNER_DIR}/runner.pid"
 LOG_FILE="${RUNNER_DIR}/runner.log"
 
-# ── Helper functions ──
+#  Helper functions 
 info()  { echo ">> $*"; }
 error() { echo "ERROR: $*" >&2; exit 1; }
 
@@ -33,7 +33,7 @@ get_reg_token() {
         --jq '.token' 2>/dev/null
 }
 
-# ── Commands ──
+#  Commands 
 cmd_start() {
     if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
         info "Runner already running (PID $(cat "$PID_FILE"))"
@@ -139,7 +139,7 @@ cmd_remove() {
     info "To remove runner files: rm -rf ${RUNNER_DIR}"
 }
 
-# ── Main ──
+#  Main 
 ACTION="${1:-start}"
 
 case "$ACTION" in

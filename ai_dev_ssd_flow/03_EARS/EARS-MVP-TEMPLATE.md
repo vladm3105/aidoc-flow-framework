@@ -17,7 +17,7 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> **🔄 Dual-Format Note**:
+> ** Dual-Format Note**:
 >
 > This MD template is the **primary source** for human workflow.
 > - **For Autopilot**: See `EARS-MVP-TEMPLATE.yaml` (YAML template)

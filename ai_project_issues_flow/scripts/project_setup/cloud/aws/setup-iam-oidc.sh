@@ -53,9 +53,9 @@ if [ -z "${EXISTING_PROVIDER}" ]; then
         --url https://token.actions.githubusercontent.com \
         --client-id-list sts.amazonaws.com \
         --thumbprint-list "6938fd4d98bab03faadb97b34396831e3780aea1"
-    echo "  ✓ OIDC provider created"
+    echo "   OIDC provider created"
 else
-    echo "  ⓘ OIDC provider already exists"
+    echo "   OIDC provider already exists"
 fi
 
 # ============================================
@@ -86,7 +86,7 @@ cat > /tmp/trust-policy.json << EOF
 }
 EOF
 
-echo "  ✓ Trust policy created at /tmp/trust-policy.json"
+echo "   Trust policy created at /tmp/trust-policy.json"
 
 # ============================================
 # STEP 3: Create IAM Role
@@ -95,7 +95,7 @@ echo "Step 3: Creating IAM role..."
 
 # Check if role already exists
 if aws iam get-role --role-name "${ROLE_NAME}" &>/dev/null; then
-    echo "  ⓘ Role ${ROLE_NAME} already exists, updating trust policy..."
+    echo "   Role ${ROLE_NAME} already exists, updating trust policy..."
     aws iam update-assume-role-policy \
         --role-name "${ROLE_NAME}" \
         --policy-document file:///tmp/trust-policy.json
@@ -104,7 +104,7 @@ else
         --role-name "${ROLE_NAME}" \
         --assume-role-policy-document file:///tmp/trust-policy.json \
         --description "GitHub Actions role for ${PROJECT_PREFIX}"
-    echo "  ✓ Role created: ${ROLE_NAME}"
+    echo "   Role created: ${ROLE_NAME}"
 fi
 
 # ============================================
@@ -116,13 +116,13 @@ echo "Step 4: Attaching policies..."
 aws iam attach-role-policy \
     --role-name "${ROLE_NAME}" \
     --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess || true
-echo "  ✓ ECR policy attached"
+echo "   ECR policy attached"
 
 # ECS access for container orchestration (optional - uncomment if using ECS)
 # aws iam attach-role-policy \
 #     --role-name "${ROLE_NAME}" \
 #     --policy-arn arn:aws:iam::aws:policy/AmazonECS_FullAccess || true
-# echo "  ✓ ECS policy attached"
+# echo "   ECS policy attached"
 
 # ============================================
 # OUTPUT

@@ -59,7 +59,7 @@ Execute the plan phase by phase.
 ## 5. Documentation & Completion
 1.  **Update TASKS**: Mark all tasks as `[x]` in Section 4.
 2.  **Update Development Plan**:
-    *   Change status icon to ✅ in the Phase Table.
+    *   Change status icon to [PASS] in the Phase Table.
     *   Add an entry to the **Session Log** summarizing the work.
 3.  **Update Walkthrough**: Add a section to `walkthrough.md` describing the design and verification results.
 4.  **Notify User**: Report completion with key deliverables.

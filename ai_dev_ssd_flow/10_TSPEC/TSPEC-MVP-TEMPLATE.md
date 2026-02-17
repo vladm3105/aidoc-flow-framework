@@ -231,17 +231,17 @@ References: Matrix `TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ```
 10_TSPEC/
-├── TSPEC-NN_{component}_overview.md  (this document)
-├── UTEST/
-│   └── UTEST-NN_{component}_unit_tests.md
-├── ITEST/
-│   └── ITEST-NN_{component}_integration_tests.md
-├── STEST/
-│   └── STEST-NN_{component}_system_tests.md
-├── FTEST/
-│   └── FTEST-NN_{component}_functional_tests.md
-├── PTEST/
-│   └── PTEST-NN_{component}_performance_tests.md
-└── SECTEST/
-    └── SECTEST-NN_{component}_security_tests.md
+ TSPEC-NN_{component}_overview.md  (this document)
+ UTEST/
+    UTEST-NN_{component}_unit_tests.md
+ ITEST/
+    ITEST-NN_{component}_integration_tests.md
+ STEST/
+    STEST-NN_{component}_system_tests.md
+ FTEST/
+    FTEST-NN_{component}_functional_tests.md
+ PTEST/
+    PTEST-NN_{component}_performance_tests.md
+ SECTEST/
+     SECTEST-NN_{component}_security_tests.md
 ```

@@ -413,11 +413,11 @@ REQ → SPEC → TSPEC → TASKS → Code
 
 **CRITICAL**: ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow. Source code files follow language-specific conventions.
 
-#### ✅ Apply ID Standards To:
+#### [PASS] Apply ID Standards To:
 - Documentation in `docs/` directories: BRD, PRD, REQ, ADR, SPEC, CTR, TASKS, EARS, SYS
 - BDD feature files (`.feature`) in `tests/bdd/` or similar directories
 
-#### ❌ Do NOT Apply ID Standards To:
+#### [FAIL] Do NOT Apply ID Standards To:
 - **Python source code** (`src/`, `[project_module]/`): Follow PEP 8 conventions
   - Modules: `snake_case.py`
   - Classes: `PascalCase`
@@ -600,20 +600,20 @@ python scripts/check_traceability_coverage.py --all
 ### Failure Modes If Matrix Missing
 
 **Consequences**:
-- ❌ Cannot determine impact of requirement changes
-- ❌ Orphaned requirements (no implementation)
-- ❌ Failed regulatory audits (incomplete audit trail)
-- ❌ Manual validation required (expensive, error-prone)
-- ❌ Pull requests rejected by automated checks
-- ❌ Project delays due to quality gate failures
+- [FAIL] Cannot determine impact of requirement changes
+- [FAIL] Orphaned requirements (no implementation)
+- [FAIL] Failed regulatory audits (incomplete audit trail)
+- [FAIL] Manual validation required (expensive, error-prone)
+- [FAIL] Pull requests rejected by automated checks
+- [FAIL] Project delays due to quality gate failures
 
 ### Success Criteria
 
-✅ 100% of artifacts tracked in matrices
-✅ Zero orphaned documents
-✅ All upstream/downstream links resolve
-✅ Automated validation passes
-✅ Audit-ready traceability at all times
+[PASS] 100% of artifacts tracked in matrices
+[PASS] Zero orphaned documents
+[PASS] All upstream/downstream links resolve
+[PASS] Automated validation passes
+[PASS] Audit-ready traceability at all times
 
 ---
 
@@ -1039,12 +1039,12 @@ Claude Code:
 1. Domain Selection: "Financial Services (default) detected. Loading FINANCIAL_DOMAIN_CONFIG.md"
 2. Folder Creation: "Creating 15-layer architecture (11 artifact directories) + finance subdirectories..."
    [Runs mkdir commands]
-3. Validation: "Verifying structure... ✓ All directories created"
+3. Validation: "Verifying structure...  All directories created"
 4. Template Setup: "Copying templates and applying financial domain placeholders..."
 5. Contract Decision: "Running contract questionnaire..."
    User response: "Yes - REST API for market data"
    Action: "Including CTR layer in workflow"
-6. Index Initialization: "Creating index files for all document types... ✓ Complete"
+6. Index Initialization: "Creating index files for all document types...  Complete"
 7. Ready: "Project initialized. Ready to create BRD-01. Next: Define business objectives."
 ```
 
@@ -1062,7 +1062,7 @@ Gemini CLI:
    User: "Yes - GraphQL API for workspace management"
    Action: "Including CTR layer"
 5. Templates: "Initializing with SaaS examples..."
-6. Status: "✓ Project ready. Starting with BRD-01..."
+6. Status: " Project ready. Starting with BRD-01..."
 ```
 
 ---
@@ -1080,14 +1080,14 @@ When projects support multiple architectural approaches (e.g., AI Agent-Based vs
 ### When to Apply Metadata Tagging
 
 **Use metadata tagging when:**
-- ✅ Project supports dual/multiple architectural approaches
-- ✅ Need to indicate recommendation between approaches
-- ✅ Building documentation sites (Docusaurus, MkDocs)
-- ✅ Require cross-referencing between equivalent implementations
+- [PASS] Project supports dual/multiple architectural approaches
+- [PASS] Need to indicate recommendation between approaches
+- [PASS] Building documentation sites (Docusaurus, MkDocs)
+- [PASS] Require cross-referencing between equivalent implementations
 
 **Do NOT use when:**
-- ❌ Project has single architecture only
-- ❌ All documents apply equally to all approaches
+- [FAIL] Project has single architecture only
+- [FAIL] All documents apply equally to all approaches
 
 ### Quick Reference Templates
 
@@ -1148,7 +1148,7 @@ Add visual indicators for primary/fallback documents:
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
-**Priority**: ✅ Recommended approach
+**Priority**: [PASS] Recommended approach
 **Status**: Active development
 
 **Fallback Alternative**: [@brd: BRD-YYY](./BRD-YYY_name.md)
@@ -1159,7 +1159,7 @@ Add visual indicators for primary/fallback documents:
 ```markdown
 :::fallback Fallback Implementation (Traditional)
 **Architecture**: Traditional Platform (@adr: ADR-01)
-**Priority**: ⚠️ Fallback option (use only if primary not viable)
+**Priority**: [WARN] Fallback option (use only if primary not viable)
 **Status**: Reference implementation
 
 **Recommended Alternative**: [@brd: BRD-XXX](./BRD-XXX_name.md)

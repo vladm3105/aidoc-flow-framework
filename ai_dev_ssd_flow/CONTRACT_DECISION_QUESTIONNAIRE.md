@@ -41,22 +41,22 @@ AI Assistant **MUST** run this questionnaire:
 ### Primary Question
 
 ```
-═══════════════════════════════════════════════════════════
+
               CONTRACT DECISION QUESTIONNAIRE
-═══════════════════════════════════════════════════════════
+
 
 Does this project require API contracts or interface definitions?
 
 Select all that apply:
 
-1. ☐ REST/GraphQL APIs (External HTTP endpoints)
-2. ☐ Event Schemas (Pub/Sub, message queues, webhooks)
-3. ☐ Data Contracts (Shared database schemas, data models between services)
-4. ☐ RPC/gRPC Interfaces (Service-to-service communication)
-5. ☐ WebSocket APIs (Real-time bidirectional communication)
-6. ☐ File Format Specifications (CSV, JSON, XML exchange formats)
-7. ☐ None - Internal logic only
-8. ☐ Unsure - Need guidance
+1.  REST/GraphQL APIs (External HTTP endpoints)
+2.  Event Schemas (Pub/Sub, message queues, webhooks)
+3.  Data Contracts (Shared database schemas, data models between services)
+4.  RPC/gRPC Interfaces (Service-to-service communication)
+5.  WebSocket APIs (Real-time bidirectional communication)
+6.  File Format Specifications (CSV, JSON, XML exchange formats)
+7.  None - Internal logic only
+8.  Unsure - Need guidance
 
 Enter selections (comma-separated, e.g., "1,2" or single "7"):
 ```
@@ -325,7 +325,7 @@ def process_contract_decision(user_selections):
     # Decision logic
     if "7" in selections:  # None - internal only
         include_ctr = False
-        message = "✓ No contracts needed. Workflow: REQ → SPEC → TSPEC → TASKS"
+        message = " No contracts needed. Workflow: REQ → SPEC → TSPEC → TASKS"
 
     elif "8" in selections:  # Unsure
         run_follow_up_questions()
@@ -334,8 +334,8 @@ def process_contract_decision(user_selections):
     else:  # 1-6 selected (has external interfaces)
         include_ctr = True
         contract_types = map_selections_to_contract_types(selections)
-        message = f"✓ Contracts needed. Contract types: {contract_types}"
-        message += "\n✓ Workflow: REQ → CTR → SPEC → TSPEC → TASKS"
+        message = f" Contracts needed. Contract types: {contract_types}"
+        message += "\n Workflow: REQ → CTR → SPEC → TSPEC → TASKS"
 
     # Apply decision
     set_workflow_mode(include_ctr)
@@ -434,13 +434,13 @@ When CTR layer is included:
 After decision, AI Assistant should confirm:
 
 ```
-═══════════════════════════════════════════════════════════
-              CONTRACT DECISION SUMMARY
-═══════════════════════════════════════════════════════════
 
-Decision: Contracts (CTR layer) INCLUDED ✓
+              CONTRACT DECISION SUMMARY
+
+
+Decision: Contracts (CTR layer) INCLUDED 
   or
-Decision: Contracts (CTR layer) SKIPPED ✓
+Decision: Contracts (CTR layer) SKIPPED 
 
 Contract Types:
 - REST API (OpenAPI 3.0)
@@ -458,7 +458,7 @@ Next Steps:
 4. Create implementation tasks (TASKS documents)
 5. Generate code from SPEC
 
-═══════════════════════════════════════════════════════════
+
 ```
 
 ---

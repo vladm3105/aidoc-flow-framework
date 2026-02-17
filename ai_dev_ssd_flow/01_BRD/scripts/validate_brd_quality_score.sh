@@ -122,7 +122,7 @@ check_placeholders() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
+    echo -e "${GREEN}   No placeholder text for existing documents${NC}"
   fi
   echo ""
 }
@@ -152,7 +152,7 @@ check_downstream_refs() {
            grep -v "^.*:- \*\*\(PRD\|ADR\|SPEC\|TASKS\\|EARS\|BDD\)-" || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No premature downstream references${NC}"
+    echo -e "${GREEN}   No premature downstream references${NC}"
   fi
   echo ""
 }
@@ -195,7 +195,7 @@ check_count_consistency() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
+    echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
   fi
   echo ""
 }
@@ -248,7 +248,7 @@ check_index_sync() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+    echo -e "${GREEN}   Index synchronized with actual files${NC}"
   fi
   echo ""
 }
@@ -262,7 +262,7 @@ check_index_sync() {
 # Hyperlinks are optional - document IDs are sufficient for traceability.
 check_crosslinks() {
   echo "--- GATE-05: Inter-BRD Cross-Linking ---"
-  echo -e "${GREEN}  ✓ Check deprecated - document name references are valid per traceability rules${NC}"
+  echo -e "${GREEN}   Check deprecated - document name references are valid per traceability rules${NC}"
   echo ""
 }
 
@@ -296,7 +296,7 @@ check_diagrams() {
   shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
@@ -333,7 +333,7 @@ check_glossary() {
   done
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious terminology inconsistencies${NC}"
+    echo -e "${GREEN}   No obvious terminology inconsistencies${NC}"
   fi
   echo ""
 }
@@ -363,7 +363,7 @@ check_duplicates() {
   done < <(grep -rohE "(^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*BRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$BRD_DIR" 2>/dev/null | grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
 
   if [[ $duplicates_found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No duplicate element IDs found across corpus${NC}"
+    echo -e "${GREEN}   No duplicate element IDs found across corpus${NC}"
   fi
 
   # --- Check 2: Find potentially misplaced element IDs ---
@@ -400,7 +400,7 @@ check_duplicates() {
   if [[ $misplaced_found -ge $max_show ]]; then
     echo -e "${YELLOW}  (Showing first $max_show of $misplaced_found potential misplaced ID warnings)${NC}"
   elif [[ $misplaced_found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No misplaced element IDs found${NC}"
+    echo -e "${GREEN}   No misplaced element IDs found${NC}"
   fi
   echo ""
 }
@@ -432,7 +432,7 @@ check_costs() {
            head -10 || true)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Cost estimates use appropriate formats${NC}"
+    echo -e "${GREEN}   Cost estimates use appropriate formats${NC}"
   fi
   echo ""
 }
@@ -474,7 +474,7 @@ check_sizes() {
   shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
+    echo -e "${GREEN}   All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
   fi
   echo ""
 }

@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of template(s)
+#  Document Role: This is a DERIVATIVE of template(s)
 # - Authority:
 #   * MD Template: BRD-MVP-TEMPLATE.md (primary for human workflow)
 #   * YAML Template: BRD-MVP-TEMPLATE.yaml (primary for autopilot workflow)
@@ -30,7 +30,7 @@ references:
   creation_rules: "BRD_MVP_CREATION_RULES.md"
   validation_rules: "BRD_MVP_VALIDATION_RULES.md"
 ---
-> **🔄 Dual-Format Note**:
+> ** Dual-Format Note**:
 > 
 > This MD template is a **primary source** for human workflow.
 > - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)

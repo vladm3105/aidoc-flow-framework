@@ -73,11 +73,11 @@ Azure Application Gateway or Front Door
     ↓
 Azure Container Apps (Frontend + Backend)
     ↓
-├── Azure Database for PostgreSQL (VNet, private endpoint)
-├── Azure Synapse Analytics (Serverless SQL for analytics)
-├── Service Bus + Functions (Background tasks)
-├── Key Vault (Credentials)
-└── Azure Cache for Redis (Optional cache)
+ Azure Database for PostgreSQL (VNet, private endpoint)
+ Azure Synapse Analytics (Serverless SQL for analytics)
+ Service Bus + Functions (Background tasks)
+ Key Vault (Credentials)
+ Azure Cache for Redis (Optional cache)
 ```
 
 ---
@@ -284,14 +284,14 @@ az keyvault set-policy \
 
 To implement Azure deployment:
 
-1. ✅ Review this service mapping
-2. ⬜ Create Terraform modules in `terraform/azure/`
-3. ⬜ Adapt application code for Azure services (Azure SDK for Synapse, Service Bus, Key Vault)
-4. ⬜ Create Container App definitions
-5. ⬜ Set up CI/CD pipeline (Azure DevOps or GitHub Actions)
-6. ⬜ Configure Managed Identity for passwordless authentication
-7. ⬜ Test full deployment
-8. ⬜ Expand this guide with actual deployment commands
+1. [PASS] Review this service mapping
+2.  Create Terraform modules in `terraform/azure/`
+3.  Adapt application code for Azure services (Azure SDK for Synapse, Service Bus, Key Vault)
+4.  Create Container App definitions
+5.  Set up CI/CD pipeline (Azure DevOps or GitHub Actions)
+6.  Configure Managed Identity for passwordless authentication
+7.  Test full deployment
+8.  Expand this guide with actual deployment commands
 
 ---
 

@@ -3,7 +3,7 @@ summary: Example component demonstrating nested SPEC layout (monolithic YAML + s
 metadata:
   version: "1.0.0"
   status: draft
-  task_ready_score: "✅ 90% (Target: ≥90%)"
+  task_ready_score: "[PASS] 90% (Target: ≥90%)"
   artifact_type: SPEC
 traceability:
   upstream_sources: []  # e.g., REQ, ADR

@@ -218,14 +218,14 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 
 ## Common Mistakes to Avoid
 
-### ❌ Platform BRD Mistakes
+### [FAIL] Platform BRD Mistakes
 
 1. **Empty sections 3.6/3.7**: Platform BRDs must populate both sections
 2. **Missing "Platform BRDs Only" Label**: Feature BRD authors won't know to skip
 3. **No Business Impact**: Must explain consequence of missing each prerequisite
 4. **Missing Exception Paths**: section 3.7 must state exception conditions or "None"
 
-### ❌ Feature BRD Mistakes
+### [FAIL] Feature BRD Mistakes
 
 1. **Duplicating Prerequisites**: Feature BRDs should reference Platform BRD, not duplicate
 2. **Populating sections 3.6/3.7**: Feature BRDs use "N/A - See Platform BRD-XXX"

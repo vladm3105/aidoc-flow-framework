@@ -134,77 +134,77 @@ make watch            # Watch for file changes and auto-reload
 ## COMPLETE WORKFLOW (Intent → Production)
 
 ```
-┌────────────────────────────────────────────┐
-│         1. USER INPUT                     │
-│         Intent: "My MVP idea"           │
-│         Slug: "my_mvp"                │
-└────────────────────────────────────────────┘
+
+         1. USER INPUT                     
+         Intent: "My MVP idea"           
+         Slug: "my_mvp"                
+
                     ↓
-┌────────────────────────────────────────────┐
-│         2. PROJECT MODE DETECTION          │
-│         • Check for existing layers         │
-│         • Greenfield (new)              │
-│         • Brownfield (partial)            │
-│         • Auto (default)                │
-└────────────────────────────────────────────┘
+
+         2. PROJECT MODE DETECTION          
+         • Check for existing layers         
+         • Greenfield (new)              
+         • Brownfield (partial)            
+         • Auto (default)                
+
                     ↓
-┌────────────────────────────────────────────┐
-│         3. CONFIGURATION LOADING            │
-│         • Load default.yaml                 │
-│         • Load quality_gates.yaml           │
-│         • Apply profile (mvp/strict)       │
-│         • Override with CLI flags            │
-└────────────────────────────────────────────┘
+
+         3. CONFIGURATION LOADING            
+         • Load default.yaml                 
+         • Load quality_gates.yaml           
+         • Apply profile (mvp/strict)       
+         • Override with CLI flags            
+
                     ↓
-┌────────────────────────────────────────────┐
-│         4. PRE-CHECKS                      │
-│         • Validate documentation paths       │
-│         • Verify upstream dependencies       │
-│         • Check for existing artifacts       │
-│         (Skip if --no-precheck)           │
-└────────────────────────────────────────────┘
+
+         4. PRE-CHECKS                      
+         • Validate documentation paths       
+         • Verify upstream dependencies       
+         • Check for existing artifacts       
+         (Skip if --no-precheck)           
+
                     ↓
-┌────────────────────────────────────────────┐
-│         5. GENERATION LAYERS                │
-│         BRD → PRD → EARS → BDD         │
-│         → ADR → SYS → REQ → CTR        │
-│         → SPEC → TASKS                    │
-│         • Use MVP templates               │
-│         • Auto-populate traceability      │
-│         • Insert placeholders             │
-└────────────────────────────────────────────┘
+
+         5. GENERATION LAYERS                
+         BRD → PRD → EARS → BDD         
+         → ADR → SYS → REQ → CTR        
+         → SPEC → TASKS                    
+         • Use MVP templates               
+         • Auto-populate traceability      
+         • Insert placeholders             
+
                     ↓
-┌────────────────────────────────────────────┐
-│         6. VALIDATION                       │
-│         • Run quality gate scripts          │
-│         • Calculate quality scores          │
-│         • Check thresholds                 │
-│         • Score ≥90%: Auto-approve      │
-│         • Score <90%: Require manual review  │
-└────────────────────────────────────────────┘
+
+         6. VALIDATION                       
+         • Run quality gate scripts          
+         • Calculate quality scores          
+         • Check thresholds                 
+         • Score ≥90%: Auto-approve      
+         • Score <90%: Require manual review  
+
                     ↓
-┌────────────────────────────────────────────┐
-│         7. AUTO-FIX LOOP                   │
-│         • Apply targeted fixes               │
-│         • Frontmatter, titles, tags         │
-│         • Max 3 attempts per layer          │
-│         • Re-validate after each fix       │
-└────────────────────────────────────────────┘
+
+         7. AUTO-FIX LOOP                   
+         • Apply targeted fixes               
+         • Frontmatter, titles, tags         
+         • Max 3 attempts per layer          
+         • Re-validate after each fix       
+
                     ↓
-┌────────────────────────────────────────────┐
-│         8. POST-CHECKS                     │
-│         • Verify file creation              │
-│         • Validate link integrity           │
-│         • Check ID format consistency       │
-└────────────────────────────────────────────┘
+
+         8. POST-CHECKS                     
+         • Verify file creation              
+         • Validate link integrity           
+         • Check ID format consistency       
+
                     ↓
-┌────────────────────────────────────────────┐
-│         9. REPORTING                       │
-│         • Markdown/JSON/Text report        │
-│         • Layer-by-layer status            │
-│         • Quality scores & notes           │
-│         • Upload to work_plans/            │
-└────────────────────────────────────────────┘
+
+         9. REPORTING                       
+         • Markdown/JSON/Text report        
+         • Layer-by-layer status            
+         • Quality scores & notes           
+         • Upload to work_plans/            
+
 ```
 
 ---
@@ -214,52 +214,52 @@ make watch            # Watch for file changes and auto-reload
 ### 1. Modular Configuration
 
 **Benefits:**
-- ✅ Easier to maintain (3 files vs 824 lines)
-- ✅ Can override per project without touching defaults
-- ✅ Clear separation of concerns
-- ✅ Version control for layer-specific configs
+- [PASS] Easier to maintain (3 files vs 824 lines)
+- [PASS] Can override per project without touching defaults
+- [PASS] Clear separation of concerns
+- [PASS] Version control for layer-specific configs
 
 ### 2. GitHub Actions Integration
 
 **Benefits:**
-- ✅ Real CI/CD (not just documented)
-- ✅ Automated validation on every PR
-- ✅ Quality gate enforcement
-- ✅ Artifact uploads for audit trail
-- ✅ PR comments with quality scores
+- [PASS] Real CI/CD (not just documented)
+- [PASS] Automated validation on every PR
+- [PASS] Quality gate enforcement
+- [PASS] Artifact uploads for audit trail
+- [PASS] PR comments with quality scores
 
 ### 3. Simplified CLI
 
 **Benefits:**
-- ✅ Easier to use (10 essential flags vs 20+)
-- ✅ Better defaults (most flags optional)
-- ✅ Shorter commands
-- ✅ Better help text
+- [PASS] Easier to use (10 essential flags vs 20+)
+- [PASS] Better defaults (most flags optional)
+- [PASS] Shorter commands
+- [PASS] Better help text
 
 ### 4. Makefile Standardization
 
 **Benefits:**
-- ✅ Consistent commands across local/CI
-- ✅ Easy to remember (`make docs`, `make validate`)
-- ✅ Cross-platform (Linux/Mac/Windows)
-- ✅ Colored output for better UX
+- [PASS] Consistent commands across local/CI
+- [PASS] Easy to remember (`make docs`, `make validate`)
+- [PASS] Cross-platform (Linux/Mac/Windows)
+- [PASS] Colored output for better UX
 
 ### 5. Docker Support
 
 **Benefits:**
-- ✅ Consistent environment (local/CI/production)
-- ✅ Dependency isolation
-- ✅ Easy to run on any platform
-- ✅ Volume management for reports
+- [PASS] Consistent environment (local/CI/production)
+- [PASS] Dependency isolation
+- [PASS] Easy to run on any platform
+- [PASS] Volume management for reports
 
 ### 6. Simplified Documentation
 
 **Benefits:**
-- ✅ Clear v5.0 guide (completely rewritten)
-- ✅ Quick start examples
-- ✅ Layer-by-layer behavior documentation
-- ✅ Configuration system explanation
-- ✅ Troubleshooting guide
+- [PASS] Clear v5.0 guide (completely rewritten)
+- [PASS] Quick start examples
+- [PASS] Layer-by-layer behavior documentation
+- [PASS] Configuration system explanation
+- [PASS] Troubleshooting guide
 
 ---
 
@@ -390,26 +390,26 @@ make docker-run \
 ## SUMMARY
 
 ### What Changed
-- ✅ 10 new files created/updated
-- ✅ +30 lines added to main README
-- ✅ Complete v5.0 documentation rewrite
-- ✅ Modular configuration system
-- ✅ Real GitHub Actions workflows
-- ✅ Makefile with 17 targets
-- ✅ Docker support (Dockerfile + docker-compose.yml)
+- [PASS] 10 new files created/updated
+- [PASS] +30 lines added to main README
+- [PASS] Complete v5.0 documentation rewrite
+- [PASS] Modular configuration system
+- [PASS] Real GitHub Actions workflows
+- [PASS] Makefile with 17 targets
+- [PASS] Docker support (Dockerfile + docker-compose.yml)
 
 ### Workflow Improvements
-- ✅ 10x easier to use (Makefile shortcuts)
-- ✅ Real CI/CD integration (GitHub Actions)
-- ✅ Consistent environments (Docker)
-- ✅ Better configuration management
-- ✅ Clear documentation (v5.0 guide)
+- [PASS] 10x easier to use (Makefile shortcuts)
+- [PASS] Real CI/CD integration (GitHub Actions)
+- [PASS] Consistent environments (Docker)
+- [PASS] Better configuration management
+- [PASS] Clear documentation (v5.0 guide)
 
 ### Production-Ready
-- ✅ Works locally (Python 3.11)
-- ✅ Works in CI/CD (GitHub Actions)
-- ✅ Works in Docker containers
-- ✅ All paths relative and platform-agnostic
+- [PASS] Works locally (Python 3.11)
+- [PASS] Works in CI/CD (GitHub Actions)
+- [PASS] Works in Docker containers
+- [PASS] All paths relative and platform-agnostic
 
 ---
 

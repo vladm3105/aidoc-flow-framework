@@ -40,14 +40,14 @@ fi
 echo "Step 1: Creating ECR repository..."
 
 if aws ecr describe-repositories --repository-names "${REPO_NAME}" --region "${AWS_REGION}" &>/dev/null; then
-    echo "  ⓘ Repository ${REPO_NAME} already exists"
+    echo "   Repository ${REPO_NAME} already exists"
 else
     aws ecr create-repository \
         --repository-name "${REPO_NAME}" \
         --region "${AWS_REGION}" \
         --image-scanning-configuration scanOnPush=true \
         --encryption-configuration encryptionType=AES256
-    echo "  ✓ Repository created: ${REPO_NAME}"
+    echo "   Repository created: ${REPO_NAME}"
 fi
 
 # ============================================
@@ -79,7 +79,7 @@ aws ecr put-lifecycle-policy \
     --region "${AWS_REGION}" \
     --lifecycle-policy-text file:///tmp/ecr-lifecycle-policy.json
 
-echo "  ✓ Lifecycle policy applied (keeps last 10 images)"
+echo "   Lifecycle policy applied (keeps last 10 images)"
 
 # ============================================
 # OUTPUT

@@ -18,119 +18,119 @@ This document provides visual representation of the 4-Gate Change Management Sys
 ## 1. System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        4-GATE CHANGE MANAGEMENT SYSTEM                       │
-│                          15-Layer SDD Framework                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│    CHANGE REQUEST                                                           │
-│          │                                                                  │
-│          ▼                                                                  │
-│    ┌───────────────────────────────────────────────────────────────┐       │
-│    │                   ROUTING DETERMINATION                        │       │
-│    │              (validate_chg_routing.py)                         │       │
-│    │    Analyzes: source, scope, breaking changes, layers           │       │
-│    └───────────────────────────────┬───────────────────────────────┘       │
-│                                    │                                        │
-│         ┌──────────────────────────┼──────────────────────────────┐        │
-│         │                          │                              │        │
-│         ▼                          ▼                              ▼        │
-│    ┌─────────┐              ┌─────────┐                    ┌──────────┐    │
-│    │ GATE-01 │              │ GATE-05 │                    │ EMERGENCY│    │
-│    │ L1-L4   │──────────────│ L5-L8   │                    │  BYPASS  │    │
-│    │ Business│              │ Arch/Ctr│                    │  P1/Sec  │    │
-│    └────┬────┘              └────┬────┘                    └────┬─────┘    │
-│         │                        │                               │         │
-│         │      ┌─────────────────┘                               │         │
-│         │      │                                                 │         │
-│         ▼      ▼                                                 │         │
-│    ┌─────────────┐                                               │         │
-│    │   GATE-09   │                                               │         │
-│    │   L9-L11    │◄──────────────────────────────────────────────┘         │
-│    │ Design/Test │         (Post-mortem review)                            │
-│    └──────┬──────┘                                                         │
-│           │                                                                 │
-│           ▼                                                                 │
-│    ┌─────────────┐                                                         │
-│    │   GATE-12   │                                                         │
-│    │   L12-L14   │                                                         │
-│    │Implementation│                                                         │
-│    └──────┬──────┘                                                         │
-│           │                                                                 │
-│           ▼                                                                 │
-│    ┌─────────────┐                                                         │
-│    │  DEPLOYED   │                                                         │
-│    └─────────────┘                                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                        4-GATE CHANGE MANAGEMENT SYSTEM                       
+                          15-Layer SDD Framework                              
+
+                                                                             
+    CHANGE REQUEST                                                           
+                                                                            
+                                                                            
+           
+                       ROUTING DETERMINATION                               
+                  (validate_chg_routing.py)                                
+        Analyzes: source, scope, breaking changes, layers                  
+           
+                                                                            
+                 
+                                                                         
+                                                                         
+                                          
+     GATE-01                GATE-05                      EMERGENCY    
+     L1-L4    L5-L8                         BYPASS      
+     Business               Arch/Ctr                      P1/Sec      
+                                          
+                                                                         
+                                                       
+                                                                         
+                                                                         
+                                                            
+       GATE-09                                                           
+       L9-L11             
+     Design/Test          (Post-mortem review)                            
+                                                             
+                                                                            
+                                                                            
+                                                             
+       GATE-12                                                            
+       L12-L14                                                            
+    Implementation                                                         
+                                                             
+                                                                            
+                                                                            
+                                                             
+      DEPLOYED                                                            
+                                                             
+                                                                             
+
 ```
 
 ## 2. Gate-to-Layer Mapping
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          GATE-TO-LAYER MAPPING                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  GATE-01                GATE-05              GATE-09           GATE-12      │
-│  ┌─────┐                ┌─────┐              ┌─────┐           ┌─────┐     │
-│  │ L1  │ BRD            │ L5  │ ADR          │ L9  │ SPEC      │ L12 │ Code│
-│  │ L2  │ PRD            │ L6  │ SYS          │ L10 │ TSPEC     │ L13 │Tests│
-│  │ L3  │ EARS           │ L7  │ REQ          │ L11 │ TASKS     │ L14 │ Val │
-│  │ L4  │ BDD            │ L8  │ CTR          │     │           │     │     │
-│  └─────┘                └─────┘              └─────┘           └─────┘     │
-│                                                                             │
-│  Business/Product       Architecture/        Design/Test      Implementation│
-│  Changes                Contract Changes     Changes          Changes       │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                          GATE-TO-LAYER MAPPING                              
+
+                                                                             
+  GATE-01                GATE-05              GATE-09           GATE-12      
+                                                
+   L1   BRD             L5   ADR           L9   SPEC       L12  Code
+   L2   PRD             L6   SYS           L10  TSPEC      L13 Tests
+   L3   EARS            L7   REQ           L11  TASKS      L14  Val 
+   L4   BDD             L8   CTR                                    
+                                                
+                                                                             
+  Business/Product       Architecture/        Design/Test      Implementation
+  Changes                Contract Changes     Changes          Changes       
+                                                                             
+
 ```
 
 ## 3. Change Source Routing
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         CHANGE SOURCE ROUTING                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  UPSTREAM (Business/Product)                                                │
-│  ┌───────────────────┐                                                     │
-│  │ Market feedback   │                                                     │
-│  │ Stakeholder req   │────────────────► GATE-01 ─► GATE-05 ─► GATE-09 ─►  │
-│  │ Regulatory change │                    L1-L4     L5-L8     L9-L11       │
-│  └───────────────────┘                                   │                  │
-│                                                          ▼                  │
-│  MIDSTREAM (Architecture/Design)                     GATE-12                │
-│  ┌───────────────────┐                               L12-L14                │
-│  │ Tech decisions    │                                   │                  │
-│  │ Design optimize   │────────────────► GATE-05 ─► GATE-09 ─► GATE-12 ─►  │
-│  │ Contract change   │                    L5-L8     L9-L11    L12-L14      │
-│  └───────────────────┘                                                     │
-│                                                                             │
-│  DOWNSTREAM (Defects)                                                       │
-│  ┌───────────────────┐                                                     │
-│  │ Bug reports       │                                                     │
-│  │ Test failures     │────────────────► GATE-12                            │
-│  │ Code issues       │                   L12-L14                           │
-│  └───────────────────┘                      │                               │
-│                                             │ (if root cause upstream)      │
-│                                             └──► Bubble up to GATE-09/05/01 │
-│                                                                             │
-│  EXTERNAL (Environment)                                                     │
-│  ┌───────────────────┐                                                     │
-│  │ Security CVE      │────► Critical? ──► EMERGENCY BYPASS                 │
-│  │ Dependency update │                                                     │
-│  │ Third-party API   │────► Standard ──► GATE-05 ─► GATE-09 ─► GATE-12    │
-│  └───────────────────┘                                                     │
-│                                                                             │
-│  FEEDBACK (Production)                                                      │
-│  ┌───────────────────┐                                                     │
-│  │ P1 incident       │────► P1? ──────► EMERGENCY BYPASS                   │
-│  │ User feedback     │                                                     │
-│  │ Performance issue │────► P2-P4 ────► GATE-12 (with RCA)                 │
-│  └───────────────────┘                                                     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                         CHANGE SOURCE ROUTING                               
+
+                                                                             
+  UPSTREAM (Business/Product)                                                
+                                                       
+   Market feedback                                                        
+   Stakeholder req    GATE-01  GATE-05  GATE-09   
+   Regulatory change                     L1-L4     L5-L8     L9-L11       
+                                                       
+                                                                            
+  MIDSTREAM (Architecture/Design)                     GATE-12                
+                                 L12-L14                
+   Tech decisions                                                         
+   Design optimize    GATE-05  GATE-09  GATE-12   
+   Contract change                       L5-L8     L9-L11    L12-L14      
+                                                       
+                                                                             
+  DOWNSTREAM (Defects)                                                       
+                                                       
+   Bug reports                                                            
+   Test failures      GATE-12                            
+   Code issues                          L12-L14                           
+                                                       
+                                              (if root cause upstream)      
+                                              Bubble up to GATE-09/05/01 
+                                                                             
+  EXTERNAL (Environment)                                                     
+                                                       
+   Security CVE       Critical?  EMERGENCY BYPASS                 
+   Dependency update                                                      
+   Third-party API    Standard  GATE-05  GATE-09  GATE-12    
+                                                       
+                                                                             
+  FEEDBACK (Production)                                                      
+                                                       
+   P1 incident        P1?  EMERGENCY BYPASS                   
+   User feedback                                                          
+   Performance issue  P2-P4  GATE-12 (with RCA)                 
+                                                       
+                                                                             
+
 ```
 
 ## 4. Cascade Flow Patterns
@@ -139,15 +139,15 @@ This document provides visual representation of the 4-Gate Change Management Sys
 
 ```
 UPSTREAM Change (e.g., new business requirement)
-     │
-     ▼
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ GATE-01 │───►│ GATE-05 │───►│ GATE-09 │───►│ GATE-12 │
-│  L1-L4  │    │  L5-L8  │    │  L9-L11 │    │ L12-L14 │
-│ passed  │    │ passed  │    │ passed  │    │ passed  │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-     │              │              │              │
-     ▼              ▼              ▼              ▼
+     
+     
+            
+ GATE-01  GATE-05  GATE-09  GATE-12 
+  L1-L4        L5-L8        L9-L11      L12-L14 
+ passed       passed       passed       passed  
+            
+                                               
+                                               
   Update:       Update:        Update:       Update:
   BRD, PRD      ADR, SYS       SPEC          Code
   EARS, BDD    REQ, CTR      TSPEC, TASKS   Tests, Val
@@ -157,15 +157,15 @@ UPSTREAM Change (e.g., new business requirement)
 
 ```
 MIDSTREAM Change (e.g., architecture decision)
-     │
-     ▼
-┌─────────┐    ┌─────────┐    ┌─────────┐
-│ GATE-05 │───►│ GATE-09 │───►│ GATE-12 │
-│  L5-L8  │    │  L9-L11 │    │ L12-L14 │
-│ passed  │    │ passed  │    │ passed  │
-└─────────┘    └─────────┘    └─────────┘
-     │              │              │
-     ▼              ▼              ▼
+     
+     
+        
+ GATE-05  GATE-09  GATE-12 
+  L5-L8        L9-L11      L12-L14 
+ passed       passed       passed  
+        
+                                 
+                                 
   Update:       Update:       Update:
   ADR, SYS      SPEC          Code
   REQ, CTR     TSPEC, TASKS   Tests, Val
@@ -175,15 +175,15 @@ MIDSTREAM Change (e.g., architecture decision)
 
 ```
 DESIGN Change (e.g., algorithm optimization)
-     │
-     ▼
-┌─────────┐    ┌─────────┐
-│ GATE-09 │───►│ GATE-12 │
-│  L9-L11 │    │ L12-L14 │
-│ passed  │    │ passed  │
-└─────────┘    └─────────┘
-     │              │
-     ▼              ▼
+     
+     
+    
+ GATE-09  GATE-12 
+  L9-L11      L12-L14 
+ passed       passed  
+    
+                   
+                   
   Update:       Update:
   SPEC          Code
   TSPEC, TASKS  Tests, Val
@@ -193,15 +193,15 @@ DESIGN Change (e.g., algorithm optimization)
 
 ```
 DOWNSTREAM Change (e.g., bug fix at correct layer)
-     │
-     ▼
-┌─────────┐
-│ GATE-12 │
-│ L12-L14 │
-│ passed  │
-└─────────┘
-     │
-     ▼
+     
+     
+
+ GATE-12 
+ L12-L14 
+ passed  
+
+     
+     
   Update:
   Code/Tests/Val
   (L12, L13, or L14)
@@ -210,100 +210,100 @@ DOWNSTREAM Change (e.g., bug fix at correct layer)
 ## 5. Emergency Bypass Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          EMERGENCY BYPASS FLOW                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PHASE 1: TRIAGE (0-30 min)                                                │
-│  ┌────────────────────────────────────────────────────────────────────┐    │
-│  │ 1. Incident declared (P1 or Security CVSS ≥ 9.0)                   │    │
-│  │ 2. On-call engineer assesses severity                              │    │
-│  │ 3. Incident commander authorizes bypass                            │    │
-│  │ 4. Create CHG-EMG-{timestamp}.md (minimal stub)                    │    │
-│  └────────────────────────────────────────────────────────────────────┘    │
-│                      │                                                      │
-│                      ▼                                                      │
-│  PHASE 2: HOTFIX (30 min - 4 hours)                                        │
-│  ┌────────────────────────────────────────────────────────────────────┐    │
-│  │ 1. Implement hotfix (bypass gates)                                 │    │
-│  │ 2. Minimal smoke testing                                           │    │
-│  │ 3. Deploy to production                                            │    │
-│  │ 4. Monitor for resolution                                          │    │
-│  └────────────────────────────────────────────────────────────────────┘    │
-│                      │                                                      │
-│                      ▼                                                      │
-│  PHASE 3: POST-INCIDENT (24-72 hours)                                      │
-│  ┌────────────────────────────────────────────────────────────────────┐    │
-│  │ 1. Complete CHG document with full details                         │    │
-│  │ 2. Conduct post-mortem (POST_MORTEM-{CHG-ID}.md)                   │    │
-│  │ 3. Retroactively pass applicable gates                             │    │
-│  │ 4. Create follow-up CHGs for preventive measures                   │    │
-│  │ 5. Close emergency CHG                                             │    │
-│  └────────────────────────────────────────────────────────────────────┘    │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                          EMERGENCY BYPASS FLOW                              
+
+                                                                             
+  PHASE 1: TRIAGE (0-30 min)                                                
+      
+   1. Incident declared (P1 or Security CVSS ≥ 9.0)                       
+   2. On-call engineer assesses severity                                  
+   3. Incident commander authorizes bypass                                
+   4. Create CHG-EMG-{timestamp}.md (minimal stub)                        
+      
+                                                                            
+                                                                            
+  PHASE 2: HOTFIX (30 min - 4 hours)                                        
+      
+   1. Implement hotfix (bypass gates)                                     
+   2. Minimal smoke testing                                               
+   3. Deploy to production                                                
+   4. Monitor for resolution                                              
+      
+                                                                            
+                                                                            
+  PHASE 3: POST-INCIDENT (24-72 hours)                                      
+      
+   1. Complete CHG document with full details                             
+   2. Conduct post-mortem (POST_MORTEM-{CHG-ID}.md)                       
+   3. Retroactively pass applicable gates                                 
+   4. Create follow-up CHGs for preventive measures                       
+   5. Close emergency CHG                                                 
+      
+                                                                             
+
 ```
 
 ## 6. Bubble-Up Pattern
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                            BUBBLE-UP PATTERN                                │
-│              (When root cause is found in upstream layer)                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Defect discovered at L13 (Test fails)                                     │
-│                      │                                                      │
-│                      ▼                                                      │
-│  ┌──────────────────────────────────────────────────────────────┐          │
-│  │              ROOT CAUSE ANALYSIS                              │          │
-│  │  Q: Where is the actual problem?                             │          │
-│  └──────────────────────────────────────────────────────────────┘          │
-│                      │                                                      │
-│     ┌────────────────┼────────────────┬──────────────────┐                 │
-│     │                │                │                  │                 │
-│     ▼                ▼                ▼                  ▼                 │
-│  ┌──────┐        ┌──────┐        ┌──────┐          ┌──────┐               │
-│  │ L12  │        │ L9-10│        │ L7-8 │          │ L1-4 │               │
-│  │ Code │        │ SPEC │        │ REQ  │          │ BRD  │               │
-│  │ bug  │        │ wrong│        │ wrong│          │ wrong│               │
-│  └──┬───┘        └──┬───┘        └──┬───┘          └──┬───┘               │
-│     │               │               │                  │                   │
-│     ▼               ▼               ▼                  ▼                   │
-│  GATE-12         GATE-09         GATE-05           GATE-01                 │
-│  Fix code        Fix SPEC        Fix REQ           Fix BRD                 │
-│                  Fix TSPEC       Fix CTR           Fix PRD                 │
-│                      │               │                  │                   │
-│                      ▼               ▼                  ▼                   │
-│                  Cascade to      Cascade to        Cascade to              │
-│                  L12-L14         L9-L14           L5-L14                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                            BUBBLE-UP PATTERN                                
+              (When root cause is found in upstream layer)                   
+
+                                                                             
+  Defect discovered at L13 (Test fails)                                     
+                                                                            
+                                                                            
+            
+                ROOT CAUSE ANALYSIS                                        
+    Q: Where is the actual problem?                                       
+            
+                                                                            
+                      
+                                                                        
+                                                                        
+                                           
+   L12           L9-10         L7-8            L1-4                
+   Code          SPEC          REQ             BRD                 
+   bug           wrong         wrong           wrong               
+                                           
+                                                                        
+                                                                        
+  GATE-12         GATE-09         GATE-05           GATE-01                 
+  Fix code        Fix SPEC        Fix REQ           Fix BRD                 
+                  Fix TSPEC       Fix CTR           Fix PRD                 
+                                                                          
+                                                                          
+                  Cascade to      Cascade to        Cascade to              
+                  L12-L14         L9-L14           L5-L14                   
+                                                                             
+
 ```
 
 ## 7. Approval Flow Matrix
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           APPROVAL MATRIX                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│                    │ GATE-01    │ GATE-05      │ GATE-09   │ GATE-12     │ │
-│  Change Level      │ (Business) │ (Arch/Ctr)   │ (Design)  │ (Impl)      │ │
-│  ──────────────────┼────────────┼──────────────┼───────────┼─────────────│ │
-│  L1 (Patch)        │ Self       │ Self         │ Self      │ Self        │ │
-│                    │            │              │           │ +Peer Review│ │
-│  ──────────────────┼────────────┼──────────────┼───────────┼─────────────│ │
-│  L2 (Minor)        │ PO + TL    │ TL + Domain  │ TL        │ TL + QA     │ │
-│                    │            │              │           │ +Code Review│ │
-│  ──────────────────┼────────────┼──────────────┼───────────┼─────────────│ │
-│  L3 (Major)        │ PO + Arch  │ Arch +       │ TL +      │ TL + Arch   │ │
-│                    │ + Stakehld │ Security     │ Domain    │ +Full Review│ │
-│  ──────────────────┼────────────┼──────────────┼───────────┼─────────────│ │
-│  Emergency         │ Skip       │ Skip         │ Skip      │ Incident    │ │
-│                    │            │              │           │ Commander   │ │
-│                    │            │              │           │ Post-mortem │ │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+                           APPROVAL MATRIX                                   
+
+                                                                             
+                     GATE-01     GATE-05       GATE-09    GATE-12      
+  Change Level       (Business)  (Arch/Ctr)    (Design)   (Impl)       
+   
+  L1 (Patch)         Self        Self          Self       Self         
+                                                          +Peer Review 
+   
+  L2 (Minor)         PO + TL     TL + Domain   TL         TL + QA      
+                                                          +Code Review 
+   
+  L3 (Major)         PO + Arch   Arch +        TL +       TL + Arch    
+                     + Stakehld  Security      Domain     +Full Review 
+   
+  Emergency          Skip        Skip          Skip       Incident     
+                                                          Commander    
+                                                          Post-mortem  
+
 
 Legend:
   PO = Product Owner

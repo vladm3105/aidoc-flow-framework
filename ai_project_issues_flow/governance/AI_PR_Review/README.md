@@ -18,28 +18,28 @@ AI review is **advisory**. It supplements but does not replace human review. At 
 
 ```
 Home repo: PR opened / synchronize / ready_for_review
-  │
-  ▼
+  
+  
 ai-review.yml (triggers directly)
-  │
-  ├─ Verify {AI_TOOL_NAME} Code CLI on runner
-  ├─ Checkout PR branch (inline git clone, no marketplace actions)
-  ├─ Fetch PR diff + metadata via gh API
-  ├─ Run {AI_TOOL_NAME} Code (-p mode, non-interactive)
-  │    ├─ Read diff and source files for context
-  │    ├─ Analyze for bugs, security, performance, error handling
-  │    ├─ Build review payload (inline comments + summary)
-  │    ├─ POST formal GitHub review via gh API
-  │    ├─ POST conclusion comment with JSON metadata
-  │    └─ Apply PR label (ai:review-passed or ai:review-failed)
-  └─ Cleanup temp files
+  
+   Verify {AI_TOOL_NAME} Code CLI on runner
+   Checkout PR branch (inline git clone, no marketplace actions)
+   Fetch PR diff + metadata via gh API
+   Run {AI_TOOL_NAME} Code (-p mode, non-interactive)
+       Read diff and source files for context
+       Analyze for bugs, security, performance, error handling
+       Build review payload (inline comments + summary)
+       POST formal GitHub review via gh API
+       POST conclusion comment with JSON metadata
+       Apply PR label (ai:review-passed or ai:review-failed)
+   Cleanup temp files
 
 Component repos: PR opened / synchronize / ready_for_review
-  │
-  ▼
+  
+  
 Caller workflow (~10 lines)
-  │
-  └─ uses: {REPO_NAME}/.github/workflows/ai-review.yml@main
+  
+   uses: {REPO_NAME}/.github/workflows/ai-review.yml@main
            secrets: inherit
 ```
 

@@ -36,7 +36,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 |-------------|---------|-------------------|
 | ASCII art boxes | `+----+`, `|    |`, `+----+` | Not renderable, inconsistent display |
 | Text-based flowcharts | `A --> B --> C` (outside Mermaid) | No semantic structure |
-| Unicode box-drawing | `┌──┐`, `│  │`, `└──┘` | Font-dependent rendering |
+| Unicode box-drawing | ``, `  `, `` | Font-dependent rendering |
 | Manual arrow diagrams | `==>`, `->`, `<--` (outside Mermaid) | No styling or layout control |
 | Indented hierarchy text | Manual spacing alignment | Fragile, breaks with formatting |
 
@@ -44,7 +44,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 
 | Exception | Permitted Use | Example |
 |-----------|---------------|---------|
-| Directory trees | File/folder structure representation | `├── src/`, `└── tests/` |
+| Directory trees | File/folder structure representation | ` src/`, ` tests/` |
 | Inline code references | Simple path or command notation | `src/main.py` |
 | Table-based data | Structured data display | Markdown tables |
 
@@ -88,10 +88,10 @@ click <node_id> "<relative_path>" "<tooltip_text>"
 
 | Use Case | Recommended | Example |
 |----------|-------------|---------|
-| Traceability diagrams | ✅ Yes | Link BRD → PRD → EARS nodes |
-| Architecture overviews | ✅ Yes | Link to component docs |
-| Workflow diagrams | ⚠️ Optional | Link to process docs |
-| Simple concept diagrams | ❌ No | Static is sufficient |
+| Traceability diagrams | [PASS] Yes | Link BRD → PRD → EARS nodes |
+| Architecture overviews | [PASS] Yes | Link to component docs |
+| Workflow diagrams | [WARN] Optional | Link to process docs |
+| Simple concept diagrams | [FAIL] No | Static is sufficient |
 
 **Best Practices**:
 
@@ -120,9 +120,9 @@ flowchart LR
 
 | Aspect | Static Diagram | Click Handlers | Inline Anchors |
 |--------|---------------|----------------|----------------|
-| **Compatibility** | ✅ All viewers | ✅ Most viewers | ⚠️ HTML only |
-| **Maintainability** | ✅ No path updates | ❌ Path breakage risk | ❌ Path breakage risk |
-| **Navigation** | ❌ Manual | ✅ One-click | ✅ One-click |
+| **Compatibility** | [PASS] All viewers | [PASS] Most viewers | [WARN] HTML only |
+| **Maintainability** | [PASS] No path updates | [FAIL] Path breakage risk | [FAIL] Path breakage risk |
+| **Navigation** | [FAIL] Manual | [PASS] One-click | [PASS] One-click |
 | **Recommended For** | Conceptual diagrams | Published traceability | In-document navigation |
 
 ### Related Skills

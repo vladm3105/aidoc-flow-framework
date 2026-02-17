@@ -10,11 +10,11 @@ custom_fields:
 
 # Validation and Traceability Scripts
 
-**⚠️ IMPORTANT: Layer-specific scripts have moved!**
+**[WARN] IMPORTANT: Layer-specific scripts have moved!**
 
 Scripts that validate specific document types (BRD, PRD, etc.) have been moved to their respective layer directories (e.g., `01_BRD/scripts/`).
 
-**👉 See [SCRIPT_INDEX.md](SCRIPT_INDEX.md) for the complete location registry.**
+** See [SCRIPT_INDEX.md](SCRIPT_INDEX.md) for the complete location registry.**
 
 This directory (`scripts/`) now contains only:
 1.  **Core Orchestrators**: Scripts that run across the entire project (`validate_all.py`).

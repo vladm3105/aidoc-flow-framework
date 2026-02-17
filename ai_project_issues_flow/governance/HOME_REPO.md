@@ -38,125 +38,125 @@ The home repo serves as:
 
 ```
 {REPO_NAME}/
-├── .github/
-│   ├── ISSUE_TEMPLATE/          # Issue templates (bug, feature, etc.)
-│   │   ├── bug_report.md
-│   │   ├── feature_request.md
-│   │   ├── architecture_proposal.md
-│   │   ├── research_task.md
-│   │   ├── infra_task.md
-│   │   ├── security_report.md
-│   │   ├── cost_analysis.md
-│   │   ├── mcp_server.md
-│   │   └── config.yml
-│   ├── workflows/               # GitHub Actions (18 workflows)
-│   │   ├── ci.yml               # Lint, test, security scan
-│   │   ├── release.yml          # Release automation
-│   │   ├── auto-add-to-project.yml  # Add new issues/PRs to board
-│   │   ├── issue-label-sync.yml # Sync labels → board status, cleanup on close
-│   │   ├── pr-merge-cleanup.yml # Set merged PR board status to Done
-│   │   ├── phase-transition.yml # Bulk phase status transitions
-│   │   ├── ai-review.yml        # Unified AI PR review
-│   │   ├── agent-dispatch.yml           # Dispatch issues to AI agents
-│   │   ├── deploy-dev.yml               # Phase-gated dev deployment
-│   │   ├── check-all-phases-dev.yml     # Staging gate (all phases dev_deployed)
-│   │   ├── deploy-dev-pr.yml.disabled   # DEPRECATED: Per-PR dev environments
-│   │   ├── cleanup-pr-env.yml.disabled  # DEPRECATED: Cleanup PR environments
-│   │   ├── create-deployment-issue.yml  # Auto-create deployment issues
-│   │   ├── create-qa-testing-issue.yml  # Auto-create QA issues
-│   │   ├── check-phase-completion.yml   # Detect phase completion
-│   │   ├── deploy-staging.yml           # Unified staging deploy (all phases)
-│   │   ├── execute-qa-testing.yml       # Run QA test suite
-│   │   ├── create-bug-issue.yml         # Auto-create bug issues
-│   │   ├── deploy-prod.yml              # Production deployment
-│   │   └── rollback-prod.yml            # Production rollback
-│   ├── labeler.yml              # PR labeling rules
-│   ├── CODEOWNERS               # Auto-assign PR reviewers by file path
-│   ├── dependabot.yml           # Dependency updates
-│   └── PULL_REQUEST_TEMPLATE.md
-│
-├── governance/                  # Project governance (this directory)
-│   ├── HOME_REPO.md             # This document
-│   ├── PROJECT_PLAN.md          # Full project plan (all phases, ~75 tasks)
-│   ├── ROADMAP.md               # Phase timeline and dependencies
-│   ├── REPOSITORY_STRATEGY.md   # Monorepo architecture
-│   ├── PROJECT_KICKOFF_PLAN.md  # Executive summary
-│   ├── BRANCHING_STRATEGY.md    # Git branching model
-│   ├── GOVERNANCE_RULES.md      # Operational policies and conventions
-│   ├── DEFINITION_OF_DONE.md    # Completion criteria (references rules)
-│   ├── RELEASE_PROCESS.md       # Versioning and releases
-│   ├── GITHUB_WORKFLOWS.md      # All GitHub Actions documentation
-│   ├── GITHUB_PROJECT_SETUP_AI_FIRST.md  # AI workflow setup
-│   ├── GITHUB_TOOLS_SETUP.md    # CLI and MCP configuration
-│   ├── AI_PR_Review/            # AI PR review operational docs
-│   │   ├── README.md            # Overview, architecture, review policy
-│   │   ├── LOCAL_SETUP.md       # Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth)
-│   │   ├── GCP_SETUP.md         # Deprecated — GCP prerequisites (Vertex AI, WIF, IAM)
-│   │   ├── ONBOARDING.md        # Add AI review to new component repos
-│   │   ├── AI_AGENT_REVIEW_WORKFLOW.md  # On-demand AI agent review + fix-verify loop
-│   │   └── MANUAL_REVIEW_GUIDE.md  # Human guide: use {AI_TOOL_NAME} Code CLI to review PRs
-│   └── plans/                   # Implementation plans (execution adjustments)
-│       ├── README.md            # Plan management guide and index
-│       └── IPLAN-NNN_slug.md    # Individual plans (IPLAN-001, etc.)
-│
-├── docs/                        # Technical documentation
-│   ├── adr/                     # 9 Architecture Decision Records
-│   │   ├── 001-use-mcp-servers.md
-│   │   ├── 002-gcp-only-first.md
-│   │   ├── 003-use-bigquery-not-timescaledb.md
-│   │   ├── 004-cloud-run-not-kubernetes.md
-│   │   ├── 005-use-litellm-for-llms.md
-│   │   ├── 006-cloud-native-task-queues-not-celery.md
-│   │   ├── 007-grafana-plus-agui-hybrid.md
-│   │   ├── 008-otel-gen-ai-conventions.md
-│   │   └── 009-ai-pr-review-custom-workflow.md
-│   ├── core/                    # 8 Technical specifications
-│   │   ├── 01-database-schema.md
-│   │   ├── 02-mcp-tool-contracts.md
-│   │   ├── 03-agent-routing-spec.md
-│   │   ├── 04-tenant-onboarding.md
-│   │   ├── 05-api-endpoint-spec.md
-│   │   ├── 07-deployment-infrastructure.md
-│   │   ├── 08-cost-model.md
-│   │   └── 09-observability-spec.md
-│   ├── architecture/            # System diagrams
-│   ├── UX/                      # Implementation guides
-│   └── qa/                      # 7 QA and deployment docs
-│
-├── components/                  # Component source code
-│   ├── {SERVICE_NAME}/          # Phase 1: GCP budget protection
-│   ├── mcp-servers/             # Phase 3: 4 MCP servers (data access)
-│   ├── agents/                  # Phase 4: 5 AI agents
-│   ├── frontend/                # Phase 5: Next.js + CopilotKit
-│   └── infrastructure/          # Phase 2: Terraform modules
-│
-├── scripts/                     # Shared scripts
-│   ├── workflows/               # GitHub workflow helper scripts (14 Python)
-│   │   ├── check_*.py           # Validation scripts (conflicts, errors, limits)
-│   │   ├── create_*.py          # Issue creation scripts (bugs, test failures)
-│   │   ├── execute_qa_tests.py  # QA test execution
-│   │   ├── extract_test_plan.py # Test plan extraction from issues
-│   │   ├── handle_issue_reopen.py  # Issue reopen handler
-│   │   ├── update_*.py          # Tracking file update scripts
-│   │   └── verify_*.py          # Prerequisite verification scripts
-│   ├── project_setup/           # One-time project setup scripts
-│   │   ├── gcp/                 # GCP setup scripts
-│   │   │   ├── setup-wif.sh             # Workload Identity Federation
-│   │   │   ├── setup-projects.sh        # GCP project creation
-│   │   │   ├── setup-environments.sh    # GCP environment config
-│   │   │   ├── setup-ai-review-gcp.sh   # AI review prerequisites
-│   │   │   ├── setup_artifact_registry.sh   # Artifact Registry
-│   │   │   └── configure_revision_retention.sh  # Revision cleanup
-│   │   └── setup_github_environments.sh # GitHub environment setup
-│   └── ghes-runner/             # Self-hosted runner setup
-│
-├── .mcp.json                    # MCP server configuration for development
-├── CLAUDE.md                    # {AI_TOOL_NAME} Code-specific instructions
-├── README_AIAGENT.md            # Universal AI agent rules (all AI tools)
-├── README.md                    # Project overview
-├── CONTRIBUTING.md              # Contribution guidelines + reviewer roster
-├── DEVELOPER_GUIDE.md           # Local setup guide
-└── HANDOFF.md                   # Developer handoff notes
+ .github/
+    ISSUE_TEMPLATE/          # Issue templates (bug, feature, etc.)
+       bug_report.md
+       feature_request.md
+       architecture_proposal.md
+       research_task.md
+       infra_task.md
+       security_report.md
+       cost_analysis.md
+       mcp_server.md
+       config.yml
+    workflows/               # GitHub Actions (18 workflows)
+       ci.yml               # Lint, test, security scan
+       release.yml          # Release automation
+       auto-add-to-project.yml  # Add new issues/PRs to board
+       issue-label-sync.yml # Sync labels → board status, cleanup on close
+       pr-merge-cleanup.yml # Set merged PR board status to Done
+       phase-transition.yml # Bulk phase status transitions
+       ai-review.yml        # Unified AI PR review
+       agent-dispatch.yml           # Dispatch issues to AI agents
+       deploy-dev.yml               # Phase-gated dev deployment
+       check-all-phases-dev.yml     # Staging gate (all phases dev_deployed)
+       deploy-dev-pr.yml.disabled   # DEPRECATED: Per-PR dev environments
+       cleanup-pr-env.yml.disabled  # DEPRECATED: Cleanup PR environments
+       create-deployment-issue.yml  # Auto-create deployment issues
+       create-qa-testing-issue.yml  # Auto-create QA issues
+       check-phase-completion.yml   # Detect phase completion
+       deploy-staging.yml           # Unified staging deploy (all phases)
+       execute-qa-testing.yml       # Run QA test suite
+       create-bug-issue.yml         # Auto-create bug issues
+       deploy-prod.yml              # Production deployment
+       rollback-prod.yml            # Production rollback
+    labeler.yml              # PR labeling rules
+    CODEOWNERS               # Auto-assign PR reviewers by file path
+    dependabot.yml           # Dependency updates
+    PULL_REQUEST_TEMPLATE.md
+
+ governance/                  # Project governance (this directory)
+    HOME_REPO.md             # This document
+    PROJECT_PLAN.md          # Full project plan (all phases, ~75 tasks)
+    ROADMAP.md               # Phase timeline and dependencies
+    REPOSITORY_STRATEGY.md   # Monorepo architecture
+    PROJECT_KICKOFF_PLAN.md  # Executive summary
+    BRANCHING_STRATEGY.md    # Git branching model
+    GOVERNANCE_RULES.md      # Operational policies and conventions
+    DEFINITION_OF_DONE.md    # Completion criteria (references rules)
+    RELEASE_PROCESS.md       # Versioning and releases
+    GITHUB_WORKFLOWS.md      # All GitHub Actions documentation
+    GITHUB_PROJECT_SETUP_AI_FIRST.md  # AI workflow setup
+    GITHUB_TOOLS_SETUP.md    # CLI and MCP configuration
+    AI_PR_Review/            # AI PR review operational docs
+       README.md            # Overview, architecture, review policy
+       LOCAL_SETUP.md       # Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth)
+       GCP_SETUP.md         # Deprecated — GCP prerequisites (Vertex AI, WIF, IAM)
+       ONBOARDING.md        # Add AI review to new component repos
+       AI_AGENT_REVIEW_WORKFLOW.md  # On-demand AI agent review + fix-verify loop
+       MANUAL_REVIEW_GUIDE.md  # Human guide: use {AI_TOOL_NAME} Code CLI to review PRs
+    plans/                   # Implementation plans (execution adjustments)
+        README.md            # Plan management guide and index
+        IPLAN-NNN_slug.md    # Individual plans (IPLAN-001, etc.)
+
+ docs/                        # Technical documentation
+    adr/                     # 9 Architecture Decision Records
+       001-use-mcp-servers.md
+       002-gcp-only-first.md
+       003-use-bigquery-not-timescaledb.md
+       004-cloud-run-not-kubernetes.md
+       005-use-litellm-for-llms.md
+       006-cloud-native-task-queues-not-celery.md
+       007-grafana-plus-agui-hybrid.md
+       008-otel-gen-ai-conventions.md
+       009-ai-pr-review-custom-workflow.md
+    core/                    # 8 Technical specifications
+       01-database-schema.md
+       02-mcp-tool-contracts.md
+       03-agent-routing-spec.md
+       04-tenant-onboarding.md
+       05-api-endpoint-spec.md
+       07-deployment-infrastructure.md
+       08-cost-model.md
+       09-observability-spec.md
+    architecture/            # System diagrams
+    UX/                      # Implementation guides
+    qa/                      # 7 QA and deployment docs
+
+ components/                  # Component source code
+    {SERVICE_NAME}/          # Phase 1: GCP budget protection
+    mcp-servers/             # Phase 3: 4 MCP servers (data access)
+    agents/                  # Phase 4: 5 AI agents
+    frontend/                # Phase 5: Next.js + CopilotKit
+    infrastructure/          # Phase 2: Terraform modules
+
+ scripts/                     # Shared scripts
+    workflows/               # GitHub workflow helper scripts (14 Python)
+       check_*.py           # Validation scripts (conflicts, errors, limits)
+       create_*.py          # Issue creation scripts (bugs, test failures)
+       execute_qa_tests.py  # QA test execution
+       extract_test_plan.py # Test plan extraction from issues
+       handle_issue_reopen.py  # Issue reopen handler
+       update_*.py          # Tracking file update scripts
+       verify_*.py          # Prerequisite verification scripts
+    project_setup/           # One-time project setup scripts
+       gcp/                 # GCP setup scripts
+          setup-wif.sh             # Workload Identity Federation
+          setup-projects.sh        # GCP project creation
+          setup-environments.sh    # GCP environment config
+          setup-ai-review-gcp.sh   # AI review prerequisites
+          setup_artifact_registry.sh   # Artifact Registry
+          configure_revision_retention.sh  # Revision cleanup
+       setup_github_environments.sh # GitHub environment setup
+    ghes-runner/             # Self-hosted runner setup
+
+ .mcp.json                    # MCP server configuration for development
+ CLAUDE.md                    # {AI_TOOL_NAME} Code-specific instructions
+ README_AIAGENT.md            # Universal AI agent rules (all AI tools)
+ README.md                    # Project overview
+ CONTRIBUTING.md              # Contribution guidelines + reviewer roster
+ DEVELOPER_GUIDE.md           # Local setup guide
+ HANDOFF.md                   # Developer handoff notes
 ```
 
 ---

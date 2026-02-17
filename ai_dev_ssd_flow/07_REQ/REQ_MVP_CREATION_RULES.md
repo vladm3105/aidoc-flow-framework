@@ -14,14 +14,14 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+#  Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
 # - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to REQ-MVP-TEMPLATE.md
 # =============================================================================
 
 
-**📋 Document Role**: This is a **CREATION HELPER** for REQ-MVP-TEMPLATE.md.
+** Document Role**: This is a **CREATION HELPER** for REQ-MVP-TEMPLATE.md.
 - **Authority**: `REQ-MVP-TEMPLATE.md` is the single source of truth for REQ structure
 - **Validation**: Use `REQ_MVP_VALIDATION_RULES.md` after REQ creation/changes
 - **Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
@@ -86,20 +86,20 @@ REQ documents are classified by **functional domain** through metadata to suppor
 **Recommended Pattern: Flat Structure with Metadata**
 ```
 07_REQ/
-├── REQ-01_jwt_authentication.md         # domain: auth (in metadata)
-├── REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
-├── REQ-03_api_gateway_routing.md        # domain: api (in metadata)
-├── REQ-04_order_execution_logic.md      # domain: trading (in metadata)
-├── REQ-05_data_persistence_schema.md    # domain: data (in metadata)
-└── ... [flat structure, no subfolders]
+ REQ-01_jwt_authentication.md         # domain: auth (in metadata)
+ REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
+ REQ-03_api_gateway_routing.md        # domain: api (in metadata)
+ REQ-04_order_execution_logic.md      # domain: trading (in metadata)
+ REQ-05_data_persistence_schema.md    # domain: data (in metadata)
+ ... [flat structure, no subfolders]
 ```
 
 **Why Flat Structure**:
-- ✅ **AI-Friendly**: Easier for language models to navigate and process
-- ✅ **Scalable**: No folder hierarchy management overhead
-- ✅ **Flexible**: Domain classification via metadata, not folder structure
-- ✅ **Simple**: Clear, flat organization that's intuitive to all tools
-- ✅ **Searchable**: Single directory for quick file discovery
+- [PASS] **AI-Friendly**: Easier for language models to navigate and process
+- [PASS] **Scalable**: No folder hierarchy management overhead
+- [PASS] **Flexible**: Domain classification via metadata, not folder structure
+- [PASS] **Simple**: Clear, flat organization that's intuitive to all tools
+- [PASS] **Searchable**: Single directory for quick file discovery
 
 **Domain Definition**: Domain should be **derived from the document's primary functional scope**. Examples:
 - `auth` - Authentication, authorization, identity management
@@ -164,7 +164,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/Reliability/Scalability/Compliance)
 - Infrastructure Type (Compute/Database/Storage/Network/Deployment/None)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
-- SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)")
+- SPEC-Ready Score (format: "[PASS] XX% (Target: ≥90%)")
 
 **Optional (not validated):** CTR-Ready Score, Template Version
 
@@ -199,7 +199,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 | **Acceptance Criteria** | **06** | **REQ.02.06.01** |
 | Atomic Requirement | 27 | REQ.02.27.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `AC-XXX` → Use `REQ.NN.06.SS`
 > - `FR-XXX` → Use `REQ.NN.01.SS`
 >

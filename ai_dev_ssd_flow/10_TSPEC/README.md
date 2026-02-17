@@ -38,78 +38,78 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 
 ```
 10_TSPEC/
-├── README.md                              # This file
-├── TSPEC-00_index.md                      # Master index
-├── TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md
-│
-├── UTEST/                                 # Unit Test Specifications
-│   ├── UTEST-MVP-TEMPLATE.md
-│   ├── UTEST-MVP-TEMPLATE.yaml
-│   ├── UTEST_MVP_SCHEMA.yaml
-│   ├── UTEST_MVP_CREATION_RULES.md
-│   ├── UTEST_MVP_VALIDATION_RULES.md
-│   └── UTEST_MVP_QUALITY_GATES.md
-│
-├── ITEST/                                 # Integration Test Specifications
-│   ├── ITEST-MVP-TEMPLATE.md
-│   ├── ITEST-MVP-TEMPLATE.yaml
-│   ├── ITEST_MVP_SCHEMA.yaml
-│   ├── ITEST_MVP_CREATION_RULES.md
-│   ├── ITEST_MVP_VALIDATION_RULES.md
-│   └── ITEST_MVP_QUALITY_GATES.md
-│
-├── STEST/                                 # Smoke Test Specifications
-│   ├── STEST-MVP-TEMPLATE.md
-│   ├── STEST-MVP-TEMPLATE.yaml
-│   ├── STEST_MVP_SCHEMA.yaml
-│   ├── STEST_MVP_CREATION_RULES.md
-│   ├── STEST_MVP_VALIDATION_RULES.md
-│   └── STEST_MVP_QUALITY_GATES.md
-│
-├── FTEST/                                 # Functional Test Specifications
-│   ├── FTEST-MVP-TEMPLATE.md
-│   ├── FTEST-MVP-TEMPLATE.yaml
-│   ├── FTEST_MVP_SCHEMA.yaml
-│   ├── FTEST_MVP_CREATION_RULES.md
-│   ├── FTEST_MVP_VALIDATION_RULES.md
-│   └── FTEST_MVP_QUALITY_GATES.md
-│
-├── PTEST/                                 # Performance Test Specifications
-│   ├── PTEST-MVP-TEMPLATE.md
-│   ├── PTEST-MVP-TEMPLATE.yaml
-│   ├── PTEST_MVP_SCHEMA.yaml
-│   ├── PTEST_MVP_CREATION_RULES.md
-│   ├── PTEST_MVP_VALIDATION_RULES.md
-│   └── PTEST_MVP_QUALITY_GATES.md
-│
-├── SECTEST/                               # Security Test Specifications
-│   ├── SECTEST-MVP-TEMPLATE.md
-│   ├── SECTEST-MVP-TEMPLATE.yaml
-│   ├── SECTEST_MVP_SCHEMA.yaml
-│   ├── SECTEST_MVP_CREATION_RULES.md
-│   ├── SECTEST_MVP_VALIDATION_RULES.md
-│   └── SECTEST_MVP_QUALITY_GATES.md
-│
-├── scripts/
-│   ├── README.md
-│   ├── validate_utest.py
-│   ├── validate_itest.py
-│   ├── validate_stest.py
-│   ├── validate_ftest.py
-│   ├── validate_tspec_quality_score.sh
-│   ├── validate_all_tspec.sh
-│   ├── run_tests.py                       # Unified test runner
-│   ├── compare_test_results.py            # Regression detection
-│   ├── archive_test_results.py            # Result archival
-│   ├── generate_coverage_report.py        # Coverage reporting
-│   └── manage_test_registry.py            # Registry management
-│
-└── examples/
-    ├── README.md
-    ├── UTEST-01_auth_service.md
-    ├── ITEST-01_auth_service.md
-    ├── STEST-01_auth_service.md
-    └── FTEST-01_auth_service.md
+ README.md                              # This file
+ TSPEC-00_index.md                      # Master index
+ TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md
+
+ UTEST/                                 # Unit Test Specifications
+    UTEST-MVP-TEMPLATE.md
+    UTEST-MVP-TEMPLATE.yaml
+    UTEST_MVP_SCHEMA.yaml
+    UTEST_MVP_CREATION_RULES.md
+    UTEST_MVP_VALIDATION_RULES.md
+    UTEST_MVP_QUALITY_GATES.md
+
+ ITEST/                                 # Integration Test Specifications
+    ITEST-MVP-TEMPLATE.md
+    ITEST-MVP-TEMPLATE.yaml
+    ITEST_MVP_SCHEMA.yaml
+    ITEST_MVP_CREATION_RULES.md
+    ITEST_MVP_VALIDATION_RULES.md
+    ITEST_MVP_QUALITY_GATES.md
+
+ STEST/                                 # Smoke Test Specifications
+    STEST-MVP-TEMPLATE.md
+    STEST-MVP-TEMPLATE.yaml
+    STEST_MVP_SCHEMA.yaml
+    STEST_MVP_CREATION_RULES.md
+    STEST_MVP_VALIDATION_RULES.md
+    STEST_MVP_QUALITY_GATES.md
+
+ FTEST/                                 # Functional Test Specifications
+    FTEST-MVP-TEMPLATE.md
+    FTEST-MVP-TEMPLATE.yaml
+    FTEST_MVP_SCHEMA.yaml
+    FTEST_MVP_CREATION_RULES.md
+    FTEST_MVP_VALIDATION_RULES.md
+    FTEST_MVP_QUALITY_GATES.md
+
+ PTEST/                                 # Performance Test Specifications
+    PTEST-MVP-TEMPLATE.md
+    PTEST-MVP-TEMPLATE.yaml
+    PTEST_MVP_SCHEMA.yaml
+    PTEST_MVP_CREATION_RULES.md
+    PTEST_MVP_VALIDATION_RULES.md
+    PTEST_MVP_QUALITY_GATES.md
+
+ SECTEST/                               # Security Test Specifications
+    SECTEST-MVP-TEMPLATE.md
+    SECTEST-MVP-TEMPLATE.yaml
+    SECTEST_MVP_SCHEMA.yaml
+    SECTEST_MVP_CREATION_RULES.md
+    SECTEST_MVP_VALIDATION_RULES.md
+    SECTEST_MVP_QUALITY_GATES.md
+
+ scripts/
+    README.md
+    validate_utest.py
+    validate_itest.py
+    validate_stest.py
+    validate_ftest.py
+    validate_tspec_quality_score.sh
+    validate_all_tspec.sh
+    run_tests.py                       # Unified test runner
+    compare_test_results.py            # Regression detection
+    archive_test_results.py            # Result archival
+    generate_coverage_report.py        # Coverage reporting
+    manage_test_registry.py            # Registry management
+
+ examples/
+     README.md
+     UTEST-01_auth_service.md
+     ITEST-01_auth_service.md
+     STEST-01_auth_service.md
+     FTEST-01_auth_service.md
 ```
 
 ## Element ID Format
@@ -182,10 +182,10 @@ Plus: `@threshold` for quantitative values
 
 ```
 SPEC (L9) → TSPEC (L10) → TASKS (L11) → Code
-    │           │              │
-    │           └──────────────┼─── Tests written first
-    │                          │
-    └──────────────────────────┴─── Implementation follows tests
+                             
+                Tests written first
+                              
+     Implementation follows tests
 ```
 
 ## Usage
@@ -337,21 +337,21 @@ GitHub Actions workflow at `.github/workflows/test-pipeline.yml`:
 
 ```
 tests/
-├── conftest.py              # Shared fixtures
-├── test_config.yaml         # Test environment config
-├── unit/                    # UTEST (Code 40)
-│   ├── conftest.py
-│   └── test_*.py
-├── integration/             # ITEST (Code 41)
-│   ├── conftest.py
-│   └── test_*.py
-├── smoke/                   # STEST (Code 42)
-│   ├── conftest.py
-│   └── test_*.py
-├── functional/              # FTEST (Code 43)
-│   ├── conftest.py
-│   └── test_*.py
-└── results/                 # Test result archives
+ conftest.py              # Shared fixtures
+ test_config.yaml         # Test environment config
+ unit/                    # UTEST (Code 40)
+    conftest.py
+    test_*.py
+ integration/             # ITEST (Code 41)
+    conftest.py
+    test_*.py
+ smoke/                   # STEST (Code 42)
+    conftest.py
+    test_*.py
+ functional/              # FTEST (Code 43)
+    conftest.py
+    test_*.py
+ results/                 # Test result archives
 ```
 
 ---

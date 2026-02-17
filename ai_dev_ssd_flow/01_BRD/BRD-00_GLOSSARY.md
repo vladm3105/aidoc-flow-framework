@@ -35,11 +35,11 @@ This document provides centralized definitions for common business, technical, r
 
 | Define in BRD-00_GLOSSARY.md | Define in Individual BRD section 17 |
 |-------------------------------|-------------------------------------|
-| ✅ Terms used across 3+ BRDs | ✅ Project-specific terminology |
-| ✅ Standard BRD framework terms (FR, QA, BO) | ✅ Unique partner names |
-| ✅ Common business terms (KPI, ROI, stakeholder) | ✅ Project-specific acronyms |
-| ✅ Standard abbreviations | ✅ Domain concepts unique to ONE project |
-| ✅ Industry-standard regulatory terms | ✅ Custom workflow terminology |
+| [PASS] Terms used across 3+ BRDs | [PASS] Project-specific terminology |
+| [PASS] Standard BRD framework terms (FR, QA, BO) | [PASS] Unique partner names |
+| [PASS] Common business terms (KPI, ROI, stakeholder) | [PASS] Project-specific acronyms |
+| [PASS] Standard abbreviations | [PASS] Domain concepts unique to ONE project |
+| [PASS] Industry-standard regulatory terms | [PASS] Custom workflow terminology |
 
 ### Maintenance
 

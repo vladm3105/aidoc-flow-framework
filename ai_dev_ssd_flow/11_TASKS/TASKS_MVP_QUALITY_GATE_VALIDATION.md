@@ -55,8 +55,8 @@ FAIL → Fix issues, re-run Quality Gate validation
 TASKS documents use Markdown format with structured task entries:
 ```
 docs/11_TASKS/
-├── TASKS-NN_{name}.md     # Task breakdown document
-└── TASKS-000_index.md     # Registry/index file
+ TASKS-NN_{name}.md     # Task breakdown document
+ TASKS-000_index.md     # Registry/index file
 ```
 
 ---
@@ -481,10 +481,10 @@ if git diff --cached --name-only | grep -q "^docs/11_TASKS/"; then
   echo "Running TASKS Quality Gate validation..."
   ./scripts/validate_tasks_corpus.sh docs/TASKS --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ TASKS Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] TASKS Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ TASKS Quality Gate validation passed"
+  echo " TASKS Quality Gate validation passed"
 fi
 ```
 
@@ -513,9 +513,9 @@ TASKS Quality Gate validation should pass before beginning code implementation:
 # Pre-Code gate check
 ./scripts/validate_tasks_corpus.sh docs/TASKS
 if [ $? -eq 0 ]; then
-  echo "✓ TASKS corpus valid - ready for code implementation (Layer 11)"
+  echo " TASKS corpus valid - ready for code implementation (Layer 11)"
 else
-  echo "❌ Fix TASKS corpus errors before proceeding to code implementation"
+  echo "[FAIL] Fix TASKS corpus errors before proceeding to code implementation"
   exit 1
 fi
 ```

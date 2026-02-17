@@ -326,7 +326,7 @@ grep -rohE "EARS\.[0-9]+\.[0-9]+\.[0-9]+" "$EARS_DIR" | \
 
 **Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
@@ -576,10 +576,10 @@ if git diff --cached --name-only | grep -q "^docs/03_EARS/"; then
   echo "Running EARS Quality Gate validation..."
   ./scripts/validate_ears_corpus.sh docs/EARS --errors-only
   if [ $? -ne 0 ]; then
-    echo "❌ EARS Quality Gate validation failed. Fix errors before committing."
+    echo "[FAIL] EARS Quality Gate validation failed. Fix errors before committing."
     exit 1
   fi
-  echo "✓ EARS Quality Gate validation passed"
+  echo " EARS Quality Gate validation passed"
 fi
 ```
 
@@ -608,9 +608,9 @@ EARS Quality Gate validation should pass before creating BDD documents:
 # Pre-BDD gate check
 ./scripts/validate_ears_corpus.sh docs/EARS
 if [ $? -eq 0 ]; then
-  echo "✓ EARS corpus valid - ready for BDD layer creation"
+  echo " EARS corpus valid - ready for BDD layer creation"
 else
-  echo "❌ Fix EARS corpus errors before proceeding to BDD layer"
+  echo "[FAIL] Fix EARS corpus errors before proceeding to BDD layer"
   exit 1
 fi
 ```

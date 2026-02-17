@@ -17,7 +17,7 @@ custom_fields:
   schema_reference: "CTR_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
-> **🔄 Dual-Format Note**: 
+> ** Dual-Format Note**: 
 > 
 > This MD template is the **primary source** for human workflow. 
 > - **For Autopilot**: See `CTR-MVP-TEMPLATE.yaml` (YAML template) 
@@ -27,7 +27,7 @@ custom_fields:
 ---
 
 >
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_MVP_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.
+> ** Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_MVP_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.
 
 # CTR-NN: [Contract Title]
 
@@ -58,7 +58,7 @@ custom_fields:
 
 ---
 
-> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags: (1) Check existing artifacts in `docs/`, (2) Reference only existing documents with actual IDs, (3) Use `null` only when upstream artifact type doesn't exist for this feature, (4) Do NOT create phantom references to non-existent documents, (5) Do NOT create missing upstream artifacts - skip that functionality.
+> **[WARN] UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags: (1) Check existing artifacts in `docs/`, (2) Reference only existing documents with actual IDs, (3) Use `null` only when upstream artifact type doesn't exist for this feature, (4) Do NOT create phantom references to non-existent documents, (5) Do NOT create missing upstream artifacts - skip that functionality.
 
 ---
 

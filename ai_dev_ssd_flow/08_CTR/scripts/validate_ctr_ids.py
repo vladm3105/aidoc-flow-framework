@@ -121,12 +121,12 @@ def print_report(results: List[ValidationResult]) -> int:
     warnings = sum(1 for r in results if r.warnings)
     print("\nCTR ID VALIDATION REPORT\n")
     for r in results:
-        status = "✅ PASS" if not r.errors else "❌ FAIL"
+        status = "[PASS] PASS" if not r.errors else "[FAIL] FAIL"
         print(f"{status} {r.file_path.name}")
         for e in r.errors:
-            print(f"    ❌ ERROR: {e}")
+            print(f"    [FAIL] ERROR: {e}")
         for w in r.warnings:
-            print(f"    ⚠️  WARNING: {w}")
+            print(f"    [WARN]  WARNING: {w}")
     if errors:
         return 2
     if warnings:

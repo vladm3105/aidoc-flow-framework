@@ -57,7 +57,7 @@ Since GitHub doesn't have native "Epics", use **Tasklists** and **Labels** to si
 ### Customizing Project Columns
 In GitHub Projects, the columns (e.g., "Todo", "In Progress") are values of the **Status** field.
 To add or rename them:
-1.  **Open Project Settings**: Click the `▼` next to the active view > **Field settings**.
+1.  **Open Project Settings**: Click the `` next to the active view > **Field settings**.
 2.  **Edit Status**: Click on the **Status** field.
 3.  **Add/Rename Options**:
     -   Click `+` to add a new option (e.g., "In Review", "QA").

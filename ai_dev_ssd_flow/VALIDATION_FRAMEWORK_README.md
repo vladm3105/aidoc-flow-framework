@@ -17,11 +17,11 @@ custom_fields:
 **Purpose:** Central hub for all validation guidance across the entire SDD framework (10 document layers, 5 core validation documents).
 
 **Quick Entry Points:**
-- 🎯 [VALIDATION_GUIDES_INDEX.md](./VALIDATION_GUIDES_INDEX.md) - **Find guides for your document type**
-- 🛠️ [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI commands for validation
-- 📋 [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - Architecture and patterns
-- 🤖 [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) - Decision-making framework
-- 📖 [VALIDATION_TEMPLATE_GUIDE.md](./VALIDATION_TEMPLATE_GUIDE.md) - How to create guides for new types
+-  [VALIDATION_GUIDES_INDEX.md](./VALIDATION_GUIDES_INDEX.md) - **Find guides for your document type**
+-  [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI commands for validation
+-  [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - Architecture and patterns
+-  [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) - Decision-making framework
+-  [VALIDATION_TEMPLATE_GUIDE.md](./VALIDATION_TEMPLATE_GUIDE.md) - How to create guides for new types
 
 ---
 
@@ -47,31 +47,31 @@ These apply to **all document types**:
 
 ```
 {LAYER}_{FOLDER}/
-├── {TYPE}_VALIDATION_STRATEGY.md          ← Quick reference
-├── {TYPE}_VALIDATION_COMMANDS.md          ← Type-specific CLI
-├── {TYPE}_AI_VALIDATION_DECISION_GUIDE.md ← Type-specific decisions
-├── scripts/
-│   ├── README.md                          ← Tool quick start
-│   ├── validate_all.sh                    ← Master orchestrator
-│   └── [individual validators]            ← Type-specific validators
+ {TYPE}_VALIDATION_STRATEGY.md          ← Quick reference
+ {TYPE}_VALIDATION_COMMANDS.md          ← Type-specific CLI
+ {TYPE}_AI_VALIDATION_DECISION_GUIDE.md ← Type-specific decisions
+ scripts/
+    README.md                          ← Tool quick start
+    validate_all.sh                    ← Master orchestrator
+    [individual validators]            ← Type-specific validators
 ```
 
 ### Complete List (10 Types)
 
 | Layer | Type | Guides | Scripts | Status |
 |-------|------|--------|---------|--------|
-| 01 | **BRD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-1-business-requirements-brd) | 🔄 | Planned |
-| 02 | **PRD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-2-product-requirements-prd) | 🔄 | Planned |
-| 03 | **EARS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-3-event-analysis-ears) | 🔄 | Planned |
-| 04 | **BDD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-4-behavior-driven-development-bdd) | 🔄 | Planned |
-| 05 | **ADR** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-5-architecture-decision-records-adr) | 🔄 | Planned |
-| 06 | **SYS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-6-system-design-sys) | 🔄 | Planned |
-| 07 | **REQ** ✅ | [REQ_VALIDATION_STRATEGY](./07_REQ/REQ_VALIDATION_STRATEGY.md) | ✅ | Complete |
-| 08 | **CTR** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-8-contracts-ctr) | 🔄 | Planned |
-| 09 | **SPEC** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-9-specifications-spec) | 🔄 | Planned |
-| 10 | **TASKS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-10-tasks-tasks) | 🔄 | Planned |
+| 01 | **BRD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-1-business-requirements-brd) |  | Planned |
+| 02 | **PRD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-2-product-requirements-prd) |  | Planned |
+| 03 | **EARS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-3-event-analysis-ears) |  | Planned |
+| 04 | **BDD** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-4-behavior-driven-development-bdd) |  | Planned |
+| 05 | **ADR** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-5-architecture-decision-records-adr) |  | Planned |
+| 06 | **SYS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-6-system-design-sys) |  | Planned |
+| 07 | **REQ** [PASS] | [REQ_VALIDATION_STRATEGY](./07_REQ/REQ_VALIDATION_STRATEGY.md) | [PASS] | Complete |
+| 08 | **CTR** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-8-contracts-ctr) |  | Planned |
+| 09 | **SPEC** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-9-specifications-spec) |  | Planned |
+| 10 | **TASKS** | [Guide Index](./VALIDATION_GUIDES_INDEX.md#layer-10-tasks-tasks) |  | Planned |
 
-**Legend:** ✅ Complete | 🔄 Planned | ❌ Not started
+**Legend:** [PASS] Complete |  Planned | [FAIL] Not started
 
 ---
 
@@ -167,58 +167,58 @@ bash validate_all.sh --file path/to/document.md
 ## Validation Flow (End-to-End)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ USER RUNS: bash scripts/validate_all.sh --file document.md  │
-└────────────────────────────┬────────────────────────────────┘
+
+ USER RUNS: bash scripts/validate_all.sh --file document.md  
+
                              ↓
-            ┌────────────────────────────────┐
-            │ Master Orchestrator            │
-            │ (validate_all.sh)              │
-            └────────────────┬───────────────┘
+            
+             Master Orchestrator            
+             (validate_all.sh)              
+            
                              ↓
-        ┌────────────────────────────────────────┐
-        │  Delegates to Type-Specific Validators │
-        ├────────────────────────────────────────┤
-        │ ✓ Quality gates validator             │
-        │ ✓ Template compliance checker         │
-        │ ✓ SPEC-readiness scorer              │
-        │ ✓ ID format validator                │
-        └────────────────┬───────────────────────┘
+        
+          Delegates to Type-Specific Validators 
+        
+          Quality gates validator             
+          Template compliance checker         
+          SPEC-readiness scorer              
+          ID format validator                
+        
                          ↓
-        ┌────────────────────────────────────────┐
-        │  Collects Results & Generates Report  │
-        │  (Color-coded, exit codes)            │
-        └────────────────┬───────────────────────┘
+        
+          Collects Results & Generates Report  
+          (Color-coded, exit codes)            
+        
                          ↓
-┌─────────────────────────────────────────────────────────────┐
-│ USER GETS RESULTS:                                          │
-│ ✅ All passed                                               │
-│ ⚠️  Warnings (review recommended)                           │
-│ ❌ Errors (fix required)                                    │
-└────────────────┬────────────────────────────────────────────┘
+
+ USER GETS RESULTS:                                          
+ [PASS] All passed                                               
+ [WARN]  Warnings (review recommended)                           
+ [FAIL] Errors (fix required)                                    
+
                  ↓
-┌─────────────────────────────────────────────────────────────┐
-│ USER CONSULTS GUIDES:                                       │
-│ 📖 {TYPE}_VALIDATION_STRATEGY.md (what gates check)        │
-│ 📖 {TYPE}_VALIDATION_COMMANDS.md (how to fix)              │
-│ 📖 {TYPE}_AI_VALIDATION_DECISION_GUIDE.md (decisions)      │
-│ 📖 VALIDATION_DECISION_FRAMEWORK.md (universal rules)      │
-└────────────────┬────────────────────────────────────────────┘
+
+ USER CONSULTS GUIDES:                                       
+  {TYPE}_VALIDATION_STRATEGY.md (what gates check)        
+  {TYPE}_VALIDATION_COMMANDS.md (how to fix)              
+  {TYPE}_AI_VALIDATION_DECISION_GUIDE.md (decisions)      
+  VALIDATION_DECISION_FRAMEWORK.md (universal rules)      
+
                  ↓
-        ┌────────────────────────────────┐
-        │ USER FIXES ISSUE               │
-        │ (Document or Validator)        │
-        └────────────────┬───────────────┘
+        
+         USER FIXES ISSUE               
+         (Document or Validator)        
+        
                          ↓
-        ┌────────────────────────────────┐
-        │ USER RE-RUNS VALIDATION        │
-        │ bash validate_all.sh --file... │
-        └────────────────┬───────────────┘
+        
+         USER RE-RUNS VALIDATION        
+         bash validate_all.sh --file... 
+        
                          ↓
-           ┌─────────────────────────────┐
-           │ ✅ PASS: Ready for next     │
-           │    document layer           │
-           └─────────────────────────────┘
+           
+            [PASS] PASS: Ready for next     
+               document layer           
+           
 ```
 
 ---
@@ -227,39 +227,39 @@ bash validate_all.sh --file path/to/document.md
 
 ```
 ai_dev_flow/
-│
-├─ CORE FRAMEWORK (universal, no type prefix)
-│  ├─ VALIDATION_DECISION_FRAMEWORK.md      ← Core rules
-│  ├─ VALIDATION_STANDARDS.md               ← Error codes
-│  ├─ VALIDATION_COMMANDS.md                ← CLI reference
-│  ├─ VALIDATION_STRATEGY_GUIDE.md          ← Architecture
-│  ├─ AI_VALIDATION_DECISION_GUIDE.md       ← AI framework
-│  ├─ VALIDATION_GUIDES_INDEX.md            ← Navigation hub
-│  └─ VALIDATION_TEMPLATE_GUIDE.md          ← Implementation template
-│
-└─ DOCUMENT TYPES (with {TYPE}_ prefix)
-   ├─ 01_BRD/
-   │  ├─ BRD_VALIDATION_STRATEGY.md
-   │  ├─ BRD_VALIDATION_COMMANDS.md
-   │  ├─ BRD_AI_VALIDATION_DECISION_GUIDE.md
-   │  └─ scripts/
-   │     ├─ validate_all.sh
-   │     └─ [validators]
-   │
-   ├─ 07_REQ/ ✅ COMPLETE TEMPLATE
-   │  ├─ REQ_VALIDATION_STRATEGY.md
-   │  ├─ REQ_VALIDATION_COMMANDS.md
-   │  ├─ REQ_AI_VALIDATION_DECISION_GUIDE.md
-   │  └─ scripts/
-   │     ├─ validate_all.sh
-   │     ├─ validate_req_quality_score.sh
-   │     ├─ validate_req_template.sh
-   │     ├─ validate_req_spec_readiness.py
-   │     ├─ validate_requirement_ids.py
-   │     ├─ add_crosslinks_req.py
-   │     └─ README.md
-   │
-   └─ 02_PRD, 03_EARS, ... (follow same pattern)
+
+ CORE FRAMEWORK (universal, no type prefix)
+   VALIDATION_DECISION_FRAMEWORK.md      ← Core rules
+   VALIDATION_STANDARDS.md               ← Error codes
+   VALIDATION_COMMANDS.md                ← CLI reference
+   VALIDATION_STRATEGY_GUIDE.md          ← Architecture
+   AI_VALIDATION_DECISION_GUIDE.md       ← AI framework
+   VALIDATION_GUIDES_INDEX.md            ← Navigation hub
+   VALIDATION_TEMPLATE_GUIDE.md          ← Implementation template
+
+ DOCUMENT TYPES (with {TYPE}_ prefix)
+    01_BRD/
+      BRD_VALIDATION_STRATEGY.md
+      BRD_VALIDATION_COMMANDS.md
+      BRD_AI_VALIDATION_DECISION_GUIDE.md
+      scripts/
+         validate_all.sh
+         [validators]
+   
+    07_REQ/ [PASS] COMPLETE TEMPLATE
+      REQ_VALIDATION_STRATEGY.md
+      REQ_VALIDATION_COMMANDS.md
+      REQ_AI_VALIDATION_DECISION_GUIDE.md
+      scripts/
+         validate_all.sh
+         validate_req_quality_score.sh
+         validate_req_template.sh
+         validate_req_spec_readiness.py
+         validate_requirement_ids.py
+         add_crosslinks_req.py
+         README.md
+   
+    02_PRD, 03_EARS, ... (follow same pattern)
 ```
 
 ---
@@ -327,22 +327,22 @@ ai_dev_flow/
 
 ## Quick Links
 
-**🎯 Navigation & Discovery**
+** Navigation & Discovery**
 - [VALIDATION_GUIDES_INDEX.md](./VALIDATION_GUIDES_INDEX.md) - Find guides by document type
 
-**🛠️ Using Validators**
+** Using Validators**
 - [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI commands
 - [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - How validators work
 
-**🤖 Making Decisions**
+** Making Decisions**
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Universal rules
 - [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) - AI assistant guide
 
-**📖 Learning & Extending**
+** Learning & Extending**
 - [VALIDATION_TEMPLATE_GUIDE.md](./VALIDATION_TEMPLATE_GUIDE.md) - How to create new guides
 - [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md) - Standards and conventions
 
-**📋 Complete Example**
+** Complete Example**
 - [07_REQ/](./07_REQ/) - Full implementation of all 3 guides + scripts
 
 ---
@@ -351,32 +351,32 @@ ai_dev_flow/
 
 | Component | Status | Coverage |
 |-----------|--------|----------|
-| Framework Foundation | ✅ Complete | 5 core documents |
-| REQ Implementation | ✅ Complete | All 3 guides + scripts |
-| Guides Index | ✅ Complete | All 10 types referenced |
-| Template Guide | ✅ Complete | Step-by-step implementation |
-| BRD/PRD/SPEC | 🔄 Planned | Ready to scale |
-| Full Coverage | 🔄 In Progress | 7 remaining types |
+| Framework Foundation | [PASS] Complete | 5 core documents |
+| REQ Implementation | [PASS] Complete | All 3 guides + scripts |
+| Guides Index | [PASS] Complete | All 10 types referenced |
+| Template Guide | [PASS] Complete | Step-by-step implementation |
+| BRD/PRD/SPEC |  Planned | Ready to scale |
+| Full Coverage |  In Progress | 7 remaining types |
 
 ---
 
 ## Next Steps
 
 ### Immediate (Framework Complete)
-✅ Core framework documents created  
-✅ REQ complete as template  
-✅ Navigation index established  
-✅ Template guide written  
+[PASS] Core framework documents created  
+[PASS] REQ complete as template  
+[PASS] Navigation index established  
+[PASS] Template guide written  
 
 ### Short Term (Scale to Key Types)
-🔄 BRD validation guides (most used)  
-🔄 SPEC validation guides (code generation)  
-🔄 PRD validation guides (product focus)  
+ BRD validation guides (most used)  
+ SPEC validation guides (code generation)  
+ PRD validation guides (product focus)  
 
 ### Medium Term (Full Coverage)
-🔄 Remaining types (EARS, BDD, ADR, SYS, CTR, TASKS)  
-🔄 Integrate into CI/CD pipelines  
-🔄 Create automated validator generators  
+ Remaining types (EARS, BDD, ADR, SYS, CTR, TASKS)  
+ Integrate into CI/CD pipelines  
+ Create automated validator generators  
 
 ### Long Term (Optimization)
 - AI-powered validator suggestions
@@ -412,7 +412,7 @@ ai_dev_flow/
 **Last Updated:** 2026-01-24T00:00:00  
 **Framework Version:** 1.0  
 **Maturity:** Foundation complete, scaling in progress  
-**Status:** ✅ Framework core done, 📈 Expansion phase  
+**Status:** [PASS] Framework core done,  Expansion phase  
 
 ---
 

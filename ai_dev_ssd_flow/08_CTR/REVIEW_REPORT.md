@@ -20,7 +20,7 @@ The CTR (API Contracts) framework uses a **dual-format system**:
 
 ## Critical Issues
 
-### Issue 1: YAML Syntax Error in Example File ⭐ CRITICAL
+### Issue 1: YAML Syntax Error in Example File  CRITICAL
 
 **File**: `examples/CTR-01_service_contract_example.yaml`
 
@@ -29,11 +29,11 @@ YAML parsing error due to unquoted keys containing square brackets:
 ```yaml
 # BROKEN (lines 255, 335)
 schemas:
-  [RESOURCE]:              # ❌ Square brackets need quoting
+  [RESOURCE]:              # [FAIL] Square brackets need quoting
     type: object
     ...
   
-  [RESOURCE]CreateRequest:  # ❌ Square brackets need quoting
+  [RESOURCE]CreateRequest:  # [FAIL] Square brackets need quoting
     type: object
 ```
 
@@ -53,11 +53,11 @@ expected <block end>, but found '<scalar>'
 ```yaml
 # CORRECT
 schemas:
-  "[RESOURCE]":              # ✅ Quoted
+  "[RESOURCE]":              # [PASS] Quoted
     type: object
     ...
   
-  "[RESOURCE]CreateRequest":  # ✅ Quoted
+  "[RESOURCE]CreateRequest":  # [PASS] Quoted
     type: object
 ```
 
@@ -75,10 +75,10 @@ schemas:
 ### Issue 2: Layer Number Inconsistency in Documentation
 
 **Files Affected**:
-- `README.md` (line 11): Says `layer: 9` ❌
-- `CTR-MVP-TEMPLATE.md` (line 11): Says `layer: 8` ✅
-- `CTR_MVP_CREATION_RULES.md` (line 10): Says `layer: 9` ❌
-- `CTR_MVP_VALIDATION_RULES.md` (line 10): Says `layer: 9` ❌
+- `README.md` (line 11): Says `layer: 9` [FAIL]
+- `CTR-MVP-TEMPLATE.md` (line 11): Says `layer: 8` [PASS]
+- `CTR_MVP_CREATION_RULES.md` (line 10): Says `layer: 9` [FAIL]
+- `CTR_MVP_VALIDATION_RULES.md` (line 10): Says `layer: 9` [FAIL]
 
 **Problem**:  
 CTR is documented as **Layer 8** in README and main template, but metadata in several files lists **layer: 9**.
@@ -124,12 +124,12 @@ Per `CTR_MVP_CREATION_RULES.md` Section 4.2:
 
 | Component | Required | Description |
 |-----------|----------|-------------|
-| `openapi` | ✅ Yes | Version specification (e.g., "3.0.3") |
-| `info` | ✅ Yes | Contract metadata |
-| `paths` | ✅ Yes | API endpoints |
-| `components/schemas` | ✅ Yes | Data models |
-| `components/responses` | ⚠️ Recommended | Reusable responses |
-| `components/securitySchemes` | ⚠️ Conditional | If auth required |
+| `openapi` | [PASS] Yes | Version specification (e.g., "3.0.3") |
+| `info` | [PASS] Yes | Contract metadata |
+| `paths` | [PASS] Yes | API endpoints |
+| `components/schemas` | [PASS] Yes | Data models |
+| `components/responses` | [WARN] Recommended | Reusable responses |
+| `components/securitySchemes` | [WARN] Conditional | If auth required |
 
 ---
 
@@ -138,21 +138,21 @@ Per `CTR_MVP_CREATION_RULES.md` Section 4.2:
 ### YAML Syntax Check
 | File | Status |
 |------|--------|
-| CTR-MVP-TEMPLATE.yaml | ✅ Valid |
-| CTR_MVP_SCHEMA.yaml | ✅ Valid |
-| examples/CTR-01_data_validation_api.yaml | ✅ Valid |
-| examples/CTR-01_service_contract_example.yaml | ❌ **SYNTAX ERROR** |
+| CTR-MVP-TEMPLATE.yaml | [PASS] Valid |
+| CTR_MVP_SCHEMA.yaml | [PASS] Valid |
+| examples/CTR-01_data_validation_api.yaml | [PASS] Valid |
+| examples/CTR-01_service_contract_example.yaml | [FAIL] **SYNTAX ERROR** |
 
 ### OpenAPI Structure Check
 | File | OpenAPI Version | Required Fields | Status |
 |------|-----------------|-----------------|--------|
-| examples/CTR-01_data_validation_api.yaml | 3.0.3 | All present | ✅ Valid |
-| examples/CTR-01_service_contract_example.yaml | N/A | Cannot parse | ❌ Invalid |
+| examples/CTR-01_data_validation_api.yaml | 3.0.3 | All present | [PASS] Valid |
+| examples/CTR-01_service_contract_example.yaml | N/A | Cannot parse | [FAIL] Invalid |
 
 ### File Naming Convention
 | File | Status |
 |------|--------|
-| All files | ✅ Follow pattern `CTR-NN_name.(md|yaml)` |
+| All files | [PASS] Follow pattern `CTR-NN_name.(md|yaml)` |
 
 ---
 
@@ -207,7 +207,7 @@ python3 -c "import yaml; yaml.safe_load(open('examples/CTR-01_service_contract_e
 
 # 2. Check all examples
 for f in examples/*.yaml; do
-  python3 -c "import yaml; yaml.safe_load(open('$f'))" && echo "✅ $f" || echo "❌ $f"
+  python3 -c "import yaml; yaml.safe_load(open('$f'))" && echo "[PASS] $f" || echo "[FAIL] $f"
 done
 
 # 3. Run validation scripts (if available)
@@ -220,8 +220,8 @@ bash scripts/validate_ctr.sh
 
 | Issue | Severity | Status | Action Required |
 |-------|----------|--------|-----------------|
-| YAML syntax error in example | ⭐ Critical | ❌ Found | Fix quoting on lines 255, 335 |
-| Layer number inconsistency | Medium | ❌ Found | Update 3 files to layer: 8 |
+| YAML syntax error in example |  Critical | [FAIL] Found | Fix quoting on lines 255, 335 |
+| Layer number inconsistency | Medium | [FAIL] Found | Update 3 files to layer: 8 |
 
 **Total Time to Fix**: ~15 minutes  
 **Impact if Not Fixed**: Users cannot use example files; confusion about layer numbers

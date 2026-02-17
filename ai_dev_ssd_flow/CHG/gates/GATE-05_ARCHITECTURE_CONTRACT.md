@@ -107,11 +107,11 @@ Before entering GATE-05, the change request must satisfy:
 
 ```
 L1 (Self-approved)
-     │
-     ▼ (if contract change)
+     
+      (if contract change)
 L2 (TL + Domain)
-     │
-     ▼ (if breaking or security)
+     
+      (if breaking or security)
 L3 (Architect + Security)
 ```
 
@@ -156,25 +156,25 @@ After passing GATE-05:
 
 ```
                     GATE-05 PASSED
-                          │
-                          ▼
-            ┌─────────────────────────┐
-            │ Does change affect SPEC?│
-            └───────────┬─────────────┘
-                        │
-         ┌──────────────┼──────────────┐
-         │ Yes          │              │ No
-         ▼              │              ▼
-    ┌─────────┐         │       ┌─────────────────┐
-    │ GATE-09 │         │       │ Code-only fix?  │
-    └─────────┘         │       └────────┬────────┘
-                        │                │
-                        │     ┌──────────┼──────────┐
-                        │     │ Yes      │          │ No (Tests)
-                        │     ▼          │          ▼
-                        │ ┌─────────┐    │    ┌─────────┐
-                        │ │ GATE-12 │    │    │ GATE-09 │
-                        │ └─────────┘    │    └─────────┘
+                          
+                          
+            
+             Does change affect SPEC?
+            
+                        
+         
+          Yes                         No
+                                     
+                    
+     GATE-09                  Code-only fix?  
+                    
+                                        
+                             
+                              Yes                 No (Tests)
+                                                 
+                                 
+                          GATE-12          GATE-09 
+                                 
 ```
 
 ## 7. Error Catalog

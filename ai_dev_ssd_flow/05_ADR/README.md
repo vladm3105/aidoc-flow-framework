@@ -59,10 +59,10 @@ Foundation ADRs establish project-wide standards that all other ADRs must refere
 - Monitoring, security, and Compliance standards
 
 **When to Reference ADR-000**:
-- ✅ **Before proposing new technologies**: Check if technology is already approved in ADR-000
-- ✅ **When writing new ADRs**: Include "Technology Stack Compliance" section (see ADR-MVP-TEMPLATE.md)
-- ✅ **When creating specifications**: Ensure SPEC technologies align with ADR-000
-- ✅ **If proposing technology not in ADR-000**: Document justification and recommend updating ADR-000
+- [PASS] **Before proposing new technologies**: Check if technology is already approved in ADR-000
+- [PASS] **When writing new ADRs**: Include "Technology Stack Compliance" section (see ADR-MVP-TEMPLATE.md)
+- [PASS] **When creating specifications**: Ensure SPEC technologies align with ADR-000
+- [PASS] **If proposing technology not in ADR-000**: Document justification and recommend updating ADR-000
 
 **Future Foundation ADRs** (referenced but not yet created):
 - **ADR-01**: Google ADK Framework - Agent orchestration and lifecycle management
@@ -82,7 +82,7 @@ See [ADR-MVP-TEMPLATE.md](ADR-MVP-TEMPLATE.md) for the compliance section templa
 
 ## Position in Document Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 ADR is in the **Architecture Layer** within the complete SDD workflow:
 
@@ -103,7 +103,7 @@ ADRs should be created **after** business and technical requirements are gathere
 
 ADRs should be created **immediately after** initial requirements and BDD scenarios are established but **before** system specifications and implementation plans:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ```text
 Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/09_SPEC/Implementation
@@ -120,7 +120,7 @@ Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/09_SPEC
 
 ### Prerequisites for ADR Creation
 
-#### ✅ **Must Exist Before ADR Creation**
+#### [PASS] **Must Exist Before ADR Creation**
 
 - **Business Requirements (PRD)**: Clear understanding of business problems and goals
 - **Technical Requirements (EARS)**: Atomic, measurable requirements in WHEN/THEN format
@@ -128,14 +128,14 @@ Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/09_SPEC
 - **Constraints and Driving Forces**: Understanding of performance, cost, compliance, and operational constraints
 - **Problem Context**: Clear definition of the architectural problem being solved
 
-#### ✅ **Should Exist Before ADR Creation**
+#### [PASS] **Should Exist Before ADR Creation**
 
 - **Existing System Architecture**: Understanding of current state and legacy systems
 - **Technology Landscape**: Knowledge of available technologies and tools
 - **Team Capabilities**: Understanding of team skills and available expertise
 - **Risk Assessment**: Preliminary identification of key risks and concerns
 
-#### ❌ **Should NOT Be Started Before ADR**
+#### [FAIL] **Should NOT Be Started Before ADR**
 
 - **Detailed System Specifications**: ADRs focus on architectural decisions, not implementation details
 - **Code Implementation**: ADRs establish constraints and direction for code, not the code itself
@@ -653,11 +653,11 @@ Document successor and migration path:
 
 ### Pre-Implementation Gate
 
-- ✅ ADR is Accepted status
-- ✅ All stakeholders have reviewed and approved
-- ✅ Traceability established to 02_PRD/03_EARS/BDD
-- ✅ Risks and mitigation strategies documented
-- ✅ Rollback procedures planned
+- [PASS] ADR is Accepted status
+- [PASS] All stakeholders have reviewed and approved
+- [PASS] Traceability established to 02_PRD/03_EARS/BDD
+- [PASS] Risks and mitigation strategies documented
+- [PASS] Rollback procedures planned
 
 ### Implementation Phase
 
@@ -863,10 +863,10 @@ Each link in the chain is bidirectional:
 Use specific file paths and line numbers for unambiguous linking:
 
 ```markdown
-# ❌ Insufficient: Vague reference
+# [FAIL] Insufficient: Vague reference
 @PRD: Product requirements somewhere
 
-# ✅ Complete: Specific file and anchor
+# [PASS] Complete: Specific file and anchor
 @PRD:[PRD-01](../02_PRD/PRD-01_serverless_deployment.md#PRD-01)
 @EARS:[EARS-01](../03_EARS/EARS-01_infrastructure_requirements.md#EARS-01-scaling)
 ```
@@ -908,7 +908,7 @@ When upstream documents change:
 Structure traceability for LLMs/AI agents to understand context:
 
 ```markdown
-# ✅ AI-Friendly: Clear context and relationships
+# [PASS] AI-Friendly: Clear context and relationships
 ## Requirements Satisfied
 
 **From PRD-01 (section 2.1)**: "System must support concurrent execution of 11 agents"

@@ -11,10 +11,10 @@
 
 **Option 3** adds CI/CD integration on top of Option 2, with **GitHub as the primary platform**. This is **highly recommended** because:
 
-✅ **Moderate Complexity**: GitHub Actions is well-documented  
-✅ **High Value**: Automated validation + code generation  
-✅ **Your Preference**: GitHub-focused  
-✅ **Agent Integration**: GitHub Copilot/Actions can generate code  
+[PASS] **Moderate Complexity**: GitHub Actions is well-documented  
+[PASS] **High Value**: Automated validation + code generation  
+[PASS] **Your Preference**: GitHub-focused  
+[PASS] **Agent Integration**: GitHub Copilot/Actions can generate code  
 
 **Estimated Effort**: 3-4 weeks total
 - Option 2 implementation: 1-2 weeks
@@ -25,19 +25,19 @@
 
 ## Complexity Assessment
 
-### Low Complexity ⭐⭐ (Easy)
+### Low Complexity  (Easy)
 - GitHub Actions workflow creation
 - PR validation automation
 - Makefile targets
 - Basic reporting
 
-### Medium Complexity ⭐⭐⭐ (Moderate)
+### Medium Complexity  (Moderate)
 - Auto-generating workflows from config
 - Secret management
 - Multi-environment deployment
 - Cache optimization
 
-### High Complexity ⭐⭐⭐⭐ (Challenging)
+### High Complexity  (Challenging)
 - GitHub agent code generation (L11)
 - Full CI/CD pipeline (L1-L13)
 - Advanced deployment strategies
@@ -52,26 +52,26 @@
 ### Three-Tier Approach
 
 ```
-┌─────────────────────────────────────────────────────┐
-│         Tier 1: Documentation Pipeline              │
-│         (L1-L10: BRD → TASKS)                      │
-│         Complexity: Low                             │
-│         Time: 1 week                                │
-└─────────────────────────────────────────────────────┘
+
+         Tier 1: Documentation Pipeline              
+         (L1-L10: BRD → TASKS)                      
+         Complexity: Low                             
+         Time: 1 week                                
+
               ↓
-┌─────────────────────────────────────────────────────┐
-│         Tier 2: Validation & Quality Gates          │
-│         (Auto-validation on PR, quality scoring)    │
-│         Complexity: Low-Medium                      │
-│         Time: 3-4 days                              │
-└─────────────────────────────────────────────────────┘
+
+         Tier 2: Validation & Quality Gates          
+         (Auto-validation on PR, quality scoring)    
+         Complexity: Low-Medium                      
+         Time: 3-4 days                              
+
               ↓
-┌─────────────────────────────────────────────────────┐
-│         Tier 3: Code Generation (L11-L13)          │
-│         (GitHub agents generate code from SPEC)     │
-│         Complexity: Medium-High                     │
-│         Time: 1-2 weeks                             │
-└─────────────────────────────────────────────────────┘
+
+         Tier 3: Code Generation (L11-L13)          
+         (GitHub agents generate code from SPEC)     
+         Complexity: Medium-High                     
+         Time: 1-2 weeks                             
+
 ```
 
 ---
@@ -228,11 +228,11 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Quality Gate\n\n✅ Score: ${{ steps.quality.outputs.score }}%\n\n${${{ steps.quality.outputs.score }} >= 90 ? '**Auto-approved**' : '**Manual review required**'}`
+              body: `## Quality Gate\n\n[PASS] Score: ${{ steps.quality.outputs.score }}%\n\n${${{ steps.quality.outputs.score }} >= 90 ? '**Auto-approved**' : '**Manual review required**'}`
             })
 ```
 
-**Complexity**: ⭐⭐ Low  
+**Complexity**:  Low  
 **Time**: 2-3 days  
 **Value**: High (automates validation on every PR)
 
@@ -298,13 +298,13 @@ jobs:
             --directory ai_dev_flow/07_REQ
 ```
 
-**Complexity**: ⭐⭐ Low  
+**Complexity**:  Low  
 **Time**: 1-2 days  
 **Value**: Medium (ensures quality standards)
 
 ---
 
-## Tier 3: GitHub Agent Code Generation ⭐ **Key Innovation**
+## Tier 3: GitHub Agent Code Generation  **Key Innovation**
 
 ### Using GitHub Copilot / Actions for L11 (Code Generation)
 
@@ -407,7 +407,7 @@ jobs:
             **Contract Compliance**: See validation report
 ```
 
-**Complexity**: ⭐⭐⭐⭐ Medium-High  
+**Complexity**:  Medium-High  
 **Time**: 1-2 weeks  
 **Value**: Very High (automated code generation!)
 
@@ -478,40 +478,40 @@ def generate_code_from_spec(spec_path: Path, output_dir: Path):
 
 ### Phase 1: Documentation Pipeline (Week 1)
 **Deliverables**:
-- ✅ GitHub Actions for validation
-- ✅ PR automation
-- ✅ Quality gate checks
-- ✅ Reporting
+- [PASS] GitHub Actions for validation
+- [PASS] PR automation
+- [PASS] Quality gate checks
+- [PASS] Reporting
 
 **Complexity**: Low  
 **Risk**: Low
 
 ### Phase 2: Enhanced Validation (Week 2)
 **Deliverables**:
-- ✅ Traceability validation
-- ✅ Cross-document checks
-- ✅ Automated reporting
-- ✅ PR comments
+- [PASS] Traceability validation
+- [PASS] Cross-document checks
+- [PASS] Automated reporting
+- [PASS] PR comments
 
 **Complexity**: Low-Medium  
 **Risk**: Low
 
 ### Phase 3: Code Generation Setup (Week 3)
 **Deliverables**:
-- ✅ GitHub Copilot integration
-- ✅ SPEC parser
-- ✅ Contract validator
-- ✅ Basic code generation
+- [PASS] GitHub Copilot integration
+- [PASS] SPEC parser
+- [PASS] Contract validator
+- [PASS] Basic code generation
 
 **Complexity**: Medium-High  
 **Risk**: Medium
 
 ### Phase 4: Testing & Refinement (Week 4)
 **Deliverables**:
-- ✅ Test generation
-- ✅ Contract compliance checking
-- ✅ Full L1-L13 pipeline
-- ✅ Documentation
+- [PASS] Test generation
+- [PASS] Contract compliance checking
+- [PASS] Full L1-L13 pipeline
+- [PASS] Documentation
 
 **Complexity**: Medium  
 **Risk**: Low
@@ -669,7 +669,7 @@ jobs:
 
 ## Recommendations
 
-### ✅ **Highly Recommended**
+### [PASS] **Highly Recommended**
 
 1. **Start with Tier 1** (Week 1)
    - Low risk, high value
@@ -686,7 +686,7 @@ jobs:
    - Native GitHub integration
    - Maintains context
 
-### ⚠️ **Consider Carefully**
+### [WARN] **Consider Carefully**
 
 1. **Cost of AI APIs**
    - GitHub Copilot: ~$10-20/user/month
@@ -704,11 +704,11 @@ jobs:
 
 **Option 3 is HIGHLY RECOMMENDED** for your use case because:
 
-✅ **Moderate Complexity**: Mostly straightforward GitHub Actions  
-✅ **High Value**: Automation + code generation  
-✅ **Your Platform**: GitHub-native  
-✅ **Scalable**: Supports team growth  
-✅ **ROI**: Positive after 2-3 MVP cycles  
+[PASS] **Moderate Complexity**: Mostly straightforward GitHub Actions  
+[PASS] **High Value**: Automation + code generation  
+[PASS] **Your Platform**: GitHub-native  
+[PASS] **Scalable**: Supports team growth  
+[PASS] **ROI**: Positive after 2-3 MVP cycles  
 
 **Timeline**: 3-4 weeks  
 **Effort**: Medium  

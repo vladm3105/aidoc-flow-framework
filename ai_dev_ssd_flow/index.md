@@ -73,23 +73,23 @@ This framework provides structured, traceable steps for AI-assisted software dev
 
 ## Recent Updates (2026-02-07T00:00:00)
 
-- ✅ **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG integration
+- [PASS] **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG integration
   - TDD workflow mode with Red→Green validation (`--tdd-mode`)
   - CHG change management mode with 4-Gate system (`--chg-mode`)
   - 7 new TDD scripts for test-driven development workflow
   - Autopilot test suite (unit, smoke, regression, BDD)
-- ✅ **Multi-Project Setup**: Updated guides for new project initialization
-- ✅ **Documentation Updates**: Version 2.5 across all framework documentation
+- [PASS] **Multi-Project Setup**: Updated guides for new project initialization
+- [PASS] **Documentation Updates**: Version 2.5 across all framework documentation
 
 ### Previous Updates (2025-11-20T00:00:00)
 
-- ✅ **Validation Scripts**: Expanded from 1 to 13 validation scripts covering IDs, naming, tags, links, and traceability matrices
-- ✅ **Domain Adaptation**: Added domain-specific configuration guides (Financial, Software, Generic) with [PLACEHOLDER] examples
-- ✅ **Project Setup**: New comprehensive setup guide with domain selection questionnaire
-- ✅ **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
-- ✅ **Decision Frameworks**: Contract decision questionnaire and CTR guidance
-- ✅ **Dual-Format Architecture**: Created DUAL_MVP_TEMPLATES_ARCHITECTURE.md with MD/YAML template authority hierarchy
-- ✅ **Autopilot Documentation**: Created AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md with YAML-only template usage guide
+- [PASS] **Validation Scripts**: Expanded from 1 to 13 validation scripts covering IDs, naming, tags, links, and traceability matrices
+- [PASS] **Domain Adaptation**: Added domain-specific configuration guides (Financial, Software, Generic) with [PLACEHOLDER] examples
+- [PASS] **Project Setup**: New comprehensive setup guide with domain selection questionnaire
+- [PASS] **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
+- [PASS] **Decision Frameworks**: Contract decision questionnaire and CTR guidance
+- [PASS] **Dual-Format Architecture**: Created DUAL_MVP_TEMPLATES_ARCHITECTURE.md with MD/YAML template authority hierarchy
+- [PASS] **Autopilot Documentation**: Created AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md with YAML-only template usage guide
 
 ## Document Structure
 
@@ -99,7 +99,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Change Management (CHG) - 4-Gate System
 
-⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management system with formal gate validation.
+[WARN] **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management system with formal gate validation.
 
 - **CHG** (`CHG/`) - 4-Gate change management with document immutability enforcement
   - **Guide**: [CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete change management procedures
@@ -242,11 +242,11 @@ Layer 12 and beyond are **implementation layers** (not SDD documentation artifac
 
 ## Traceability Flow
 
-**⚠️ AUTHORITATIVE WORKFLOW**: This is the single source of truth for the AI Dev Flow traceability chain. All template diagrams reference this section.
+**[WARN] AUTHORITATIVE WORKFLOW**: This is the single source of truth for the AI Dev Flow traceability chain. All template diagrams reference this section.
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> [WARN] **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 flowchart TD
@@ -477,16 +477,16 @@ See [scripts/README.md](./scripts/README.md) for detailed script documentation.
 
 ```
 BRD (Layer 1)                 REQ (Layer 7)
-┌─────────────────────┐      ┌─────────────────────┐
-│ Functional          │      │ Atomic              │
-│ Requirements        │─────>│ Requirements        │
-│ (Business-Level)    │      │ (Implementation)    │
-│                     │      │                     │
-│ FR-001: "System     │      │ REQ-001: "Login     │
-│ shall authenticate  │      │ timeout = 30 min"   │
-│ users"              │      │ REQ-002: "Max 3     │
-│                     │      │ failed attempts"    │
-└─────────────────────┘      └─────────────────────┘
+      
+ Functional                 Atomic              
+ Requirements        > Requirements        
+ (Business-Level)           (Implementation)    
+                                                
+ FR-001: "System            REQ-001: "Login     
+ shall authenticate         timeout = 30 min"   
+ users"                     REQ-002: "Max 3     
+                            failed attempts"    
+      
 ```
 
 Business-level Functional Requirements (BRD) are decomposed into Atomic Requirements (REQ) during the SDD workflow. This distinction prevents ambiguity when referencing requirements across layers.

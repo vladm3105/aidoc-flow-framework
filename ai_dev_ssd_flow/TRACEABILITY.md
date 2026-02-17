@@ -66,7 +66,7 @@ The following rules govern traceability in the SDD workflow:
 | TSPEC | `ai_dev_flow/10_TSPEC/{UTEST,ITEST,STEST,FTEST}_MVP_SCHEMA.yaml` | 10 |
 | TASKS | `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml` | 11 |
 
-## ⚠️ Upstream Artifact Verification (CRITICAL)
+## [WARN] Upstream Artifact Verification (CRITICAL)
 
 **Before completing traceability tags in ANY document, you MUST:**
 
@@ -115,14 +115,14 @@ ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
 
 ### Example: Correct vs Incorrect References
 
-**❌ INCORRECT** (phantom references):
+**[FAIL] INCORRECT** (phantom references):
 ```markdown
 @brd: BRD.01.01.01  # Document doesn't exist yet
 @prd: PRD.NN.EE.SS  # Placeholder ID
 @adr: TBD           # Invalid reference
 ```
 
-**✅ CORRECT** (verified references):
+**[PASS] CORRECT** (verified references):
 ```markdown
 @brd: BRD.01.01.30  # Verified: docs/01_BRD/BRD-01_project.md exists
 @prd: null         # No PRD exists for this feature (legitimate)
@@ -148,7 +148,7 @@ Code Generation (TASKS) → Execution (Code/Tests) → Validation
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> [WARN] **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -548,12 +548,12 @@ python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json 
 
 ### Benefits
 
-- ✅ Code is single source of truth
-- ✅ No manual section 7 maintenance
-- ✅ Automated validation prevents drift
-- ✅ Bidirectional matrices auto-generated
-- ✅ CI/CD can enforce tag presence
-- ✅ Explicit document namespacing prevents ambiguity (BRD.01.01.30 vs BRD.02.01.30)
+- [PASS] Code is single source of truth
+- [PASS] No manual section 7 maintenance
+- [PASS] Automated validation prevents drift
+- [PASS] Bidirectional matrices auto-generated
+- [PASS] CI/CD can enforce tag presence
+- [PASS] Explicit document namespacing prevents ambiguity (BRD.01.01.30 vs BRD.02.01.30)
 
 ### Example: Complete Traceability section
 
@@ -1246,7 +1246,7 @@ The SDD framework employs two types of change management based on scope and impa
 
 ### CHG: Change Management for Architectural Pivots
 
-⚠️ **IMPORTANT**: CHG is NOT a layer in the 15-layer architecture - it's an archival and immutability enforcement procedure.
+[WARN] **IMPORTANT**: CHG is NOT a layer in the 15-layer architecture - it's an archival and immutability enforcement procedure.
 
 **When to Use CHG** (rare - \u003c5% of changes):
 - Complete architectural restructuring requiring new 01_BRD/PRD

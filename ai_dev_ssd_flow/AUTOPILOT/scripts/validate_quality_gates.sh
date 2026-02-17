@@ -21,7 +21,7 @@ set -e
 validate_quality_gates() {
     local file="$1"
 
-    echo "🔍 Validating quality gates for: $file"
+    echo " Validating quality gates for: $file"
 
     # Determine validation based on file path and type
     case "$file" in
@@ -50,7 +50,7 @@ validate_quality_gates() {
             validate_tasks_ready "$file"
             ;;
         docs/TASKS/*.md)
-            echo "ℹ️ TASKS is terminal layer - no downstream validation"
+            echo "ℹ TASKS is terminal layer - no downstream validation"
             ;;
         docs/IMPL/*.md)
             validate_ctr_ready "$file"
@@ -59,7 +59,7 @@ validate_quality_gates() {
             validate_ctr_files "$file"
             ;;
         *)
-            echo "ℹ️ No quality gate for: $file"
+            echo "ℹ No quality gate for: $file"
             return 0
             ;;
     esac
@@ -67,7 +67,7 @@ validate_quality_gates() {
     # Validate cumulative tagging for all document types
     validate_cumulative_tags "$file"
 
-    echo "✅ Quality gates passed for $file"
+    echo "[PASS] Quality gates passed for $file"
 }
 
 validate_ears_ready() {
@@ -117,11 +117,11 @@ validate_ctr_files() {
     local yaml_file="${file%.md}.yaml"
 
     if [[ ! -f "$yaml_file" ]]; then
-        echo "❌ Missing CTR YAML file: $yaml_file"
+        echo "[FAIL] Missing CTR YAML file: $yaml_file"
         return 1
     fi
 
-    echo "✅ CTR dual-file requirement satisfied"
+    echo "[PASS] CTR dual-file requirement satisfied"
     return 0
 }
 
@@ -134,20 +134,20 @@ validate_ready_score() {
     local score_line=$(grep "| $score_field" "$file" 2>/dev/null || echo "")
 
     if [[ -z "$score_line" ]]; then
-        echo "❌ Missing $score_field in $file"
-        echo "💡 Add to Document Control: | $score_field | ✅ NN% (Target: ≥${min_threshold}%) |"
+        echo "[FAIL] Missing $score_field in $file"
+        echo " Add to Document Control: | $score_field | [PASS] NN% (Target: ≥${min_threshold}%) |"
         return 1
     fi
 
-    local score=$(echo "$score_line" | sed 's/.*✅ \([0-9]*\)%.*/\1/' | tr -d ' ')
+    local score=$(echo "$score_line" | sed 's/.*[PASS] \([0-9]*\)%.*/\1/' | tr -d ' ')
 
     if ! [[ "$score" =~ ^[0-9]+$ ]] || [ "$score" -lt "$min_threshold" ]; then
-        echo "❌ $score_field too low: ${score}% (minimum: ${min_threshold}%)"
-        echo "💡 Improve document completeness to reach ${min_threshold}%+ score"
+        echo "[FAIL] $score_field too low: ${score}% (minimum: ${min_threshold}%)"
+        echo " Improve document completeness to reach ${min_threshold}%+ score"
         return 1
     fi
 
-    echo "✅ $score_field: ${score}% ≥ ${min_threshold}%"
+    echo "[PASS] $score_field: ${score}% ≥ ${min_threshold}%"
     return 0
 }
 
@@ -159,21 +159,21 @@ validate_yaml_meta_score() {
     local score_line=$(grep "task_ready_score:" "$file" 2>/dev/null || echo "")
 
     if [[ -z "$score_line" ]]; then
-        echo "❌ Missing $meta_field in $file"
-        echo "💡 Add to metadata section:"
-        echo "  task_ready_score: \"✅ NN% (Target: ≥${min_threshold}%)\""
+        echo "[FAIL] Missing $meta_field in $file"
+        echo " Add to metadata section:"
+        echo "  task_ready_score: \"[PASS] NN% (Target: ≥${min_threshold}%)\""
         return 1
     fi
 
-    local score=$(echo "$score_line" | sed 's/.*✅ \([0-9]*\)%.*/\1/' | tr -d ' ')
+    local score=$(echo "$score_line" | sed 's/.*[PASS] \([0-9]*\)%.*/\1/' | tr -d ' ')
 
     if ! [[ "$score" =~ ^[0-9]+$ ]] || [ "$score" -lt "$min_threshold" ]; then
-        echo "❌ $meta_field too low: ${score}% (minimum: ${min_threshold}%)"
-        echo "💡 Improve YAML spec completeness to reach ${min_threshold}%+ score"
+        echo "[FAIL] $meta_field too low: ${score}% (minimum: ${min_threshold}%)"
+        echo " Improve YAML spec completeness to reach ${min_threshold}%+ score"
         return 1
     fi
 
-    echo "✅ $meta_field: ${score}% ≥ ${min_threshold}%"
+    echo "[PASS] $meta_field: ${score}% ≥ ${min_threshold}%"
     return 0
 }
 
@@ -205,15 +205,15 @@ validate_tags_presence() {
 
     for tag in "${required_tags[@]}"; do
         if ! grep -q "^@$tag:" "$file"; then
-            echo "❌ Missing cumulative tag: @$tag (required for layer progression)"
-            echo "💡 Add to Traceability section:"
+            echo "[FAIL] Missing cumulative tag: @$tag (required for layer progression)"
+            echo " Add to Traceability section:"
             echo "  @$tag: DOCUMENT-ID:REQ-ID"
             return 1
         fi
     done
 
     if [ ${#required_tags[@]} -gt 0 ]; then
-        echo "✅ Cumulative tagging valid (${#required_tags[@]} upstream tags present)"
+        echo "[PASS] Cumulative tagging valid (${#required_tags[@]} upstream tags present)"
     fi
 
     return 0

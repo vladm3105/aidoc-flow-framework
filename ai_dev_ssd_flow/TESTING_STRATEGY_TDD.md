@@ -70,25 +70,25 @@ Each layer of testing validates different aspects:
 The test pyramid illustrates the relative quantity and scope of each test type:
 
 ```
-                      ▲
-                     ╱ ╲
-                    ╱   ╲           Acceptance (few)
-                   ╱─────╲          Business requirement validation
-                  ╱       ╲
-                 ╱ ─ ─ ─ ─ ╲        Functional (moderate)
-                ╱           ╲       System behavior validation
-               ╱─────────────╲
-              ╱               ╲     Smoke (few)
-             ╱ ─ ─ ─ ─ ─ ─ ─ ─ ╲    Post-deployment health checks
-            ╱                   ╲
-           ╱─────────────────────╲
-          ╱                       ╲   Integration (moderate)
-         ╱ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╲  Component interactions
-        ╱                           ╲
-       ╱─────────────────────────────╲
-      ╱                               ╲ Unit (many)
-     ╱ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╲ Individual functions
-    ╱___________________________________╲
+                      
+                      
+                                  Acceptance (few)
+                             Business requirement validation
+                         
+                              Functional (moderate)
+                                  System behavior validation
+               
+                                  Smoke (few)
+                          Post-deployment health checks
+                               
+           
+                                    Integration (moderate)
+                        Component interactions
+                                   
+       
+                                      Unit (many)
+                       Individual functions
+    ___________________________________
 ```
 
 | Level | Quantity | Speed | Stability | Maintenance |
@@ -576,17 +576,17 @@ def login_succeeds(context):
 | **Dependencies** | Mocked | Real/Test Containers | Deployed system | Deployed system | Deployed system |
 | **Failure Impact** | Fix function | Fix interaction | Rollback | Fix system behavior | Fix business logic |
 | **Execution Timing** | During development | Before deployment | After deployment | After smoke | After functional |
-| **TDD Compatible** | ✅ Yes | ❌ No | ❌ No | ❌ No | ✅ Yes |
+| **TDD Compatible** | [PASS] Yes | [FAIL] No | [FAIL] No | [FAIL] No | [PASS] Yes |
 
 **TDD Compatibility Explained**:
 
 | Test Type | TDD Compatible | Rationale |
 |-----------|----------------|-----------|
-| Unit | ✅ Yes | Written before code from SPEC signatures; code is written to make tests pass |
-| Integration | ❌ No | Requires multiple implemented components to exist; cannot be written before code |
-| Smoke | ❌ No | Requires deployed system; validates deployment, not implementation |
-| Functional | ❌ No | Requires deployed system; validates system behavior post-deployment |
-| Acceptance | ✅ Yes | BDD scenarios are written before implementation as acceptance criteria; implementation makes scenarios pass |
+| Unit | [PASS] Yes | Written before code from SPEC signatures; code is written to make tests pass |
+| Integration | [FAIL] No | Requires multiple implemented components to exist; cannot be written before code |
+| Smoke | [FAIL] No | Requires deployed system; validates deployment, not implementation |
+| Functional | [FAIL] No | Requires deployed system; validates system behavior post-deployment |
+| Acceptance | [PASS] Yes | BDD scenarios are written before implementation as acceptance criteria; implementation makes scenarios pass |
 
 ---
 
@@ -960,21 +960,21 @@ jobs:
 ### Test File Structure
 ```
 tests/
-├── unit/
-│   ├── test_req_001_email_validation.py
-│   ├── test_req_002_user_creation.py
-│   └── test_req_003_password_hashing.py
-├── integration/
-│   ├── test_user_api_integration.py
-│   ├── test_auth_service_integration.py
-│   └── test_database_integration.py
-├── smoke/
-│   └── test_deployment_smoke.py
-├── functional/
-│   ├── test_sys_001_user_workflow.py
-│   └── test_sys_002_performance.py
-└── acceptance/
-    └── test_bdd_user_scenarios.py
+ unit/
+    test_req_001_email_validation.py
+    test_req_002_user_creation.py
+    test_req_003_password_hashing.py
+ integration/
+    test_user_api_integration.py
+    test_auth_service_integration.py
+    test_database_integration.py
+ smoke/
+    test_deployment_smoke.py
+ functional/
+    test_sys_001_user_workflow.py
+    test_sys_002_performance.py
+ acceptance/
+     test_bdd_user_scenarios.py
 ```
 
 ### Traceability Example: End-to-End

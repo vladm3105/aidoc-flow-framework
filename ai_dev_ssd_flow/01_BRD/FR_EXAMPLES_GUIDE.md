@@ -93,13 +93,13 @@ custom_fields:
 
 **Problems**:
 
-- ❌ API endpoint specification (POST /screening/ofac)
-- ❌ JSON response format details
-- ❌ UI interaction (display warning modal)
-- ❌ Database table name (PostgreSQL screening_results)
-- ❌ Webhook implementation details
-- ❌ Code-level retry logic (exponential backoff values)
-- ❌ Uses deprecated `FR-XXX` heading format
+- [FAIL] API endpoint specification (POST /screening/ofac)
+- [FAIL] JSON response format details
+- [FAIL] UI interaction (display warning modal)
+- [FAIL] Database table name (PostgreSQL screening_results)
+- [FAIL] Webhook implementation details
+- [FAIL] Code-level retry logic (exponential backoff values)
+- [FAIL] Uses deprecated `FR-XXX` heading format
 
 ### AFTER (Business-Level - Score 100/100)
 
@@ -134,14 +134,14 @@ custom_fields:
 
 **What Changed**:
 
-- ✅ Removed API specifications → Kept business capability ("screen all transactions")
-- ✅ Removed JSON format → Kept business rules (auto-decline, queue for review)
-- ✅ Removed UI details → Kept business acceptance criteria (completion time ≤3 seconds)
-- ✅ Removed database/webhook → Kept business requirement (audit trail for regulatory examination)
-- ✅ Removed retry logic → Kept business SLA (completion time target)
-- ✅ Added complexity rating with business rationale
-- ✅ Added cross-references to related Platform and Compliance BRDs
-- ✅ Updated heading format from `FR-XXX` to `BRD.NN.EE.SS`
+- [PASS] Removed API specifications → Kept business capability ("screen all transactions")
+- [PASS] Removed JSON format → Kept business rules (auto-decline, queue for review)
+- [PASS] Removed UI details → Kept business acceptance criteria (completion time ≤3 seconds)
+- [PASS] Removed database/webhook → Kept business requirement (audit trail for regulatory examination)
+- [PASS] Removed retry logic → Kept business SLA (completion time target)
+- [PASS] Added complexity rating with business rationale
+- [PASS] Added cross-references to related Platform and Compliance BRDs
+- [PASS] Updated heading format from `FR-XXX` to `BRD.NN.EE.SS`
 
 ---
 
@@ -175,10 +175,10 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 | 5/5 | System must orchestrate end-to-end transaction lifecycle across multiple partners with automated failure recovery and regulatory compliance across jurisdictions. |
 
 **Anti-Patterns (Avoid)**:
-- ❌ "System must call the fraud detection API endpoint"
-- ❌ "System must store transaction data in PostgreSQL"
-- ❌ "System must display a modal dialog for confirmation"
-- ❌ "System must implement webhook handlers for partner callbacks"
+- [FAIL] "System must call the fraud detection API endpoint"
+- [FAIL] "System must store transaction data in PostgreSQL"
+- [FAIL] "System must display a modal dialog for confirmation"
+- [FAIL] "System must implement webhook handlers for partner callbacks"
 
 ---
 
@@ -465,7 +465,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 
 **Notification Text**:
 - Push (initiation): "Transfer started: $[amount] to [recipient_name]"
-- Push (delivered): "✓ Delivered: [recipient_name] received [localized_amount] [CURRENCY]"
+- Push (delivered): " Delivered: [recipient_name] received [localized_amount] [CURRENCY]"
 - SMS (delivered): "[Your App]: Your transfer of [local_amount] [CURRENCY] to [recipient_name] has been delivered."
 ```
 

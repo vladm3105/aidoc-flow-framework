@@ -13,13 +13,13 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
+#  Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
 # - Authority: CTR-MVP-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from CTR_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to CTR-MVP-TEMPLATE.md
 # =============================================================================
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
+> ** Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
 > - Apply these rules after CTR creation or modification
 > - **Authority**: Validates compliance with `CTR-MVP-TEMPLATE.md` (the primary standard) and OpenAPI 3.x for YAML schemas
 > - **Scope**: Use for quality gates before committing CTR changes
@@ -78,11 +78,11 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `CTR-01_user_api.md` | ✅ | Correct format |
-| `CTR-01_user_api.yaml` | ✅ | Correct format |
-| `ctr-001_user_api.md` | ❌ | Lowercase prefix |
-| `CTR-1_user_api.md` | ❌ | Single digit ID |
-| `CTR-01-user-api.md` | ❌ | Hyphens in slug |
+| `CTR-01_user_api.md` | [PASS] | Correct format |
+| `CTR-01_user_api.yaml` | [PASS] | Correct format |
+| `ctr-001_user_api.md` | [FAIL] | Lowercase prefix |
+| `CTR-1_user_api.md` | [FAIL] | Single digit ID |
+| `CTR-01-user-api.md` | [FAIL] | Hyphens in slug |
 
 ---
 
@@ -382,21 +382,21 @@ File: CTR-01_user_api.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
-  ✅ Filename format valid
+  [PASS] Filename format valid
 
 CHECK 2: Frontmatter
-  ✅ YAML frontmatter present
-  ✅ Required fields present
+  [PASS] YAML frontmatter present
+  [PASS] Required fields present
 
 CHECK 3: Required Sections
-  ✅ All 12 required sections found
+  [PASS] All 12 required sections found
 
 CHECK 4: YAML Schema (if .yaml exists)
-  ✅ OpenAPI schema valid
+  [PASS] OpenAPI schema valid
 
 CHECK 5: Traceability Tags
-  ✅ @req tag present
-  ⚠️  WARNING: @adr tag missing
+  [PASS] @req tag present
+  [WARN]  WARNING: @adr tag missing
 
 =========================================
 SUMMARY
@@ -408,17 +408,17 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 13. Element ID Format Compliance ⭐ NEW
+## 13. Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `CTR.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `IF-XXX` | ❌ Fail - use CTR.NN.16.SS |
-| Removed pattern | `DM-XXX` | ❌ Fail - use CTR.NN.17.SS |
-| Removed pattern | `CC-XXX` | ❌ Fail - use CTR.NN.20.SS |
+| Valid format | `CTR.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `IF-XXX` | [FAIL] Fail - use CTR.NN.16.SS |
+| Removed pattern | `DM-XXX` | [FAIL] Fail - use CTR.NN.17.SS |
+| Removed pattern | `CC-XXX` | [FAIL] Fail - use CTR.NN.20.SS |
 
 **Regex**: `^###?\s+CTR\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -429,7 +429,7 @@ Result: PASSED WITH WARNINGS
 | Data Model | 17 | CTR.02.17.01 |
 | Contract Clause | 20 | CTR.02.20.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `IF-XXX` → Use `CTR.NN.16.SS`
 > - `DM-XXX` → Use `CTR.NN.17.SS`
 > - `CC-XXX` → Use `CTR.NN.20.SS`

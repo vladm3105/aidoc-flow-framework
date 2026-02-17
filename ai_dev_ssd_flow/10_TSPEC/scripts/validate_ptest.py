@@ -237,9 +237,9 @@ class PTESTValidator:
 
 def format_result(result: ValidationResult, verbose: bool = False) -> str:
     """Format validation result for output."""
-    status = "✅ PASS" if result.passed else "❌ FAIL"
+    status = "[PASS] PASS" if result.passed else "[FAIL] FAIL"
     if not result.passed and result.overall_score >= 75:
-        status = "⚠️ WARN"
+        status = "[WARN] WARN"
 
     output = [f"{status} {result.file_path}: {result.overall_score:.1f}%"]
 
@@ -253,7 +253,7 @@ def format_result(result: ValidationResult, verbose: bool = False) -> str:
             "measurement_strategy": "GATE-05 Measurement Strategy",
         }
         for gate, score in result.gate_scores.items():
-            gate_status = "✅" if score >= 75 else "❌"
+            gate_status = "[PASS]" if score >= 75 else "[FAIL]"
             output.append(f"  {gate_names[gate]}: {score:.1f}% {gate_status}")
 
         if result.issues:

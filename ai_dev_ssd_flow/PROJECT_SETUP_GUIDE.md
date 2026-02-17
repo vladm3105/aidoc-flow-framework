@@ -22,7 +22,7 @@ custom_fields:
 
 This guide walks AI Assistants through initializing a brand new project using the AI Dev Flow framework. Follow these steps in order.
 
-### 🚀 Using the project-init Skill (Recommended)
+###  Using the project-init Skill (Recommended)
 
 For users of AI coding assistants: If your assistant provides a project initialization capability (e.g., a `project-init` skill), use it to automate this guide. See AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific tips.
 
@@ -70,9 +70,9 @@ Options:
 
 **Example**:
 ```
-✓ Domain selected: Financial Services
-✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific REQ subdirectories will be created on-demand during document generation
+ Domain selected: Financial Services
+ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
+ Domain-specific REQ subdirectories will be created on-demand during document generation
 ```
 
 ---
@@ -261,16 +261,16 @@ ls scripts/*.py
 
 **AI Assistant Confirmation**:
 ```
-═══════════════════════════════════════════════════════════
-              PROJECT INITIALIZATION COMPLETE
-═══════════════════════════════════════════════════════════
 
-✓ Domain: Financial Services
-✓ Folders: Created (13 artifact directories + domain subdirectories)
-✓ Templates: Copied and customized
-✓ Contracts: Included (CTR layer active)
-✓ Index Files: Initialized
-✓ Scripts: Ready
+              PROJECT INITIALIZATION COMPLETE
+
+
+ Domain: Financial Services
+ Folders: Created (13 artifact directories + domain subdirectories)
+ Templates: Copied and customized
+ Contracts: Included (CTR layer active)
+ Index Files: Initialized
+ Scripts: Ready
 
 Workflow: 15-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TSPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
 
@@ -280,7 +280,7 @@ Next Steps:
 3. Start with BRD-01 (Business Requirements Document)
 4. Follow 15-layer architecture sequentially
 
-═══════════════════════════════════════════════════════════
+
 ```
 
 ---
@@ -423,10 +423,10 @@ python scripts/trace_check.py --type REQ
 
 ## Current Progress Summary (2025-12-01T00:00:00)
 
-### ✅ Completed Milestones
+### [PASS] Completed Milestones
 
 **Layer 1: Business Requirements Documents (BRD)**
-- **Status**: ✅ COMPLETE (100% compliance, 70/70 checks passed)
+- **Status**: [PASS] COMPLETE (100% compliance, 70/70 checks passed)
 - **Documents Created**: 5 MVP BRDs (BRD-01 through BRD-05)
 - **Creation Method**: doc-brd skill (AI-powered generation)
 - **Validation Method**: Dual-layer (automated script + manual review)
@@ -434,13 +434,13 @@ python scripts/trace_check.py --type REQ
 - **Pass Rate**: 100%
 
 **MVP BRD Documents**:
-1. ✅ BRD-01: Platform Overview (Platform BRD)
-2. ✅ BRD-02: Content Ingestion (Feature BRD)
-3. ✅ BRD-03: Analysis Engine (Feature BRD)
-4. ✅ BRD-04: Reporting System (Feature BRD)
-5. ✅ BRD-05: REST API (Feature BRD)
+1. [PASS] BRD-01: Platform Overview (Platform BRD)
+2. [PASS] BRD-02: Content Ingestion (Feature BRD)
+3. [PASS] BRD-03: Analysis Engine (Feature BRD)
+4. [PASS] BRD-04: Reporting System (Feature BRD)
+5. [PASS] BRD-05: REST API (Feature BRD)
 
-### ⚠️ Known Issues
+### [WARN] Known Issues
 
 **BRD-01 Structural Inconsistencies** (P2 Priority - Not Blocking):
 - Missing YAML frontmatter with `brd_type: platform` field
@@ -448,7 +448,7 @@ python scripts/trace_check.py --type REQ
 - Content is complete and correct (manually validated)
 - Impact: Low (formatting/parsing only, not content)
 
-### 🎯 Next Steps
+###  Next Steps
 
 **Immediate Actions** (Optional):
 1. Update BRD-00_index.md with all 5 created BRDs
@@ -637,17 +637,17 @@ DO NOT:
 **Before Starting Next Document Type**:
 
 ```text
-☐ All documents of current type created
-☐ All automated validations pass (0 errors)
-☐ All manual checks completed
-☐ All warnings resolved
-☐ Cross-document consistency verified
-☐ Upstream traceability validated
-☐ Downstream references checked
-☐ Phase review completed
-☐ Project execution plan (work_plans/) updated with phase outcomes
-☐ Quality gate approved
-☐ Git commit with validation summary
+ All documents of current type created
+ All automated validations pass (0 errors)
+ All manual checks completed
+ All warnings resolved
+ Cross-document consistency verified
+ Upstream traceability validated
+ Downstream references checked
+ Phase review completed
+ Project execution plan (work_plans/) updated with phase outcomes
+ Quality gate approved
+ Git commit with validation summary
 ```
 
 ### Common Validation Failures
@@ -725,7 +725,7 @@ python scripts/quality_metrics.py --phase REQ
 # Acceptance criteria: 45/45 (100%)
 # Duplicate IDs: 0
 # Broken references: 0
-# Quality gate: PASS ✓
+# Quality gate: PASS 
 ```
 
 ### Integration with Workflow
@@ -778,19 +778,19 @@ Document: REQ-01_example.md
 Status: Created
 
 Validation Results:
-✓ YAML frontmatter valid
-✓ REQ-ID unique (REQ-032)
-✓ Priority specified (MUST)
-✓ Acceptance criteria complete (5-part format)
-✓ Traceability tags present (@prd: PRD.01.07.01, @ears: EARS.01.24.01)
-✓ Verification methods defined
-✓ Metadata compliant
+ YAML frontmatter valid
+ REQ-ID unique (REQ-032)
+ Priority specified (MUST)
+ Acceptance criteria complete (5-part format)
+ Traceability tags present (@prd: PRD.01.07.01, @ears: EARS.01.24.01)
+ Verification methods defined
+ Metadata compliant
 
 Automated Checks:
-✓ validate_req_template.sh: PASS
-✓ validate_metadata.py: PASS
+ validate_req_template.sh: PASS
+ validate_metadata.py: PASS
 
-Status: Ready for review ✓
+Status: Ready for review 
 ```
 
 **Error Reporting Format**:
@@ -799,12 +799,12 @@ Document: REQ-02_example.md
 Status: Created
 
 Validation Results:
-✗ ERROR: Duplicate REQ-ID (REQ-032 already exists)
-✗ ERROR: Missing acceptance criteria section
-⚠ WARNING: Incomplete traceability (@prd tag missing)
+ ERROR: Duplicate REQ-ID (REQ-032 already exists)
+ ERROR: Missing acceptance criteria section
+ WARNING: Incomplete traceability (@prd tag missing)
 
 Automated Checks:
-✗ validate_req_template.sh: FAIL (2 errors, 1 warning)
+ validate_req_template.sh: FAIL (2 errors, 1 warning)
 
 Status: Requires fixes before proceeding
 
@@ -836,7 +836,7 @@ User: "Initialize new project"
 
 AI Assistant: Running domain selection questionnaire...
 
-═══════════════════════════════════════════════════════════
+
 What is the purpose and focus of this new project?
 1. Financial Services (DEFAULT)
 2. Software/SaaS
@@ -844,76 +844,76 @@ What is the purpose and focus of this new project?
 4. E-commerce
 5. IoT
 6. Other/Generic
-═══════════════════════════════════════════════════════════
+
 
 User: [Enter] (selects default: Financial Services)
 
 AI Assistant:
-✓ Domain selected: Financial Services
-✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: risk, operations, data, compliance, ml
+ Domain selected: Financial Services
+ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
+ Domain-specific subdirectories: risk, operations, data, compliance, ml
 
 Creating folder structure...
-✓ Created: docs/01_BRD/
-✓ Created: docs/02_PRD/
-✓ Created: docs/03_EARS/
-✓ Created: docs/04_BDD/
-✓ Created: docs/05_ADR/
-✓ Created: docs/06_SYS/
-✓ Created: docs/07_REQ/
-✓ Created: docs/08_CTR/
-✓ Created: docs/09_SPEC/
-✓ Created: docs/11_TASKS/
+ Created: docs/01_BRD/
+ Created: docs/02_PRD/
+ Created: docs/03_EARS/
+ Created: docs/04_BDD/
+ Created: docs/05_ADR/
+ Created: docs/06_SYS/
+ Created: docs/07_REQ/
+ Created: docs/08_CTR/
+ Created: docs/09_SPEC/
+ Created: docs/11_TASKS/
 
-✓ Created: docs/07_REQ/api/
-✓ Created: docs/07_REQ/auth/
-✓ Created: docs/07_REQ/data/
-✓ Created: docs/07_REQ/risk/
-✓ Created: docs/07_REQ/operations/
-✓ Created: docs/07_REQ/collection/
-✓ Created: docs/07_REQ/compliance/
-✓ Created: docs/07_REQ/ml/
+ Created: docs/07_REQ/api/
+ Created: docs/07_REQ/auth/
+ Created: docs/07_REQ/data/
+ Created: docs/07_REQ/risk/
+ Created: docs/07_REQ/operations/
+ Created: docs/07_REQ/collection/
+ Created: docs/07_REQ/compliance/
+ Created: docs/07_REQ/ml/
 
-✓ Created: scripts/
-✓ Created: work_plans/
+ Created: scripts/
+ Created: work_plans/
 
 Copying templates...
-✓ Templates copied from framework
+ Templates copied from framework
 
 Applying Financial Services domain configuration...
-✓ [RESOURCE_COLLECTION] → collection
-✓ [RESOURCE_ITEM] → Position
-✓ [USER_ROLE] → Trader
-✓ [REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5
+ [RESOURCE_COLLECTION] → collection
+ [RESOURCE_ITEM] → Position
+ [USER_ROLE] → Trader
+ [REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5
 
 Running contract decision questionnaire...
 
-═══════════════════════════════════════════════════════════
+
 Does this project require API contracts or interface definitions?
 1. REST/GraphQL APIs
 2. Event Schemas
 3. Data Contracts
 7. None - Internal logic only
-═══════════════════════════════════════════════════════════
+
 
 User: "1,2" (REST APIs and Event Schemas)
 
 AI Assistant:
-✓ Contracts needed
-✓ Contract types: REST/GraphQL APIs (OpenAPI), Event Schemas (AsyncAPI)
-✓ Workflow: REQ → CTR → SPEC → TSPEC → TASKS
+ Contracts needed
+ Contract types: REST/GraphQL APIs (OpenAPI), Event Schemas (AsyncAPI)
+ Workflow: REQ → CTR → SPEC → TSPEC → TASKS
 
 Initializing index files...
-✓ All index files created
+ All index files created
 
 Validation...
-✓ All directories verified
-✓ All index files verified
-✓ Scripts ready
+ All directories verified
+ All index files verified
+ Scripts ready
 
-═══════════════════════════════════════════════════════════
+
               PROJECT INITIALIZATION COMPLETE
-═══════════════════════════════════════════════════════════
+
 
 Project Ready!
 
@@ -1011,8 +1011,8 @@ ls -laR docs/
 
 **When to use skill vs manual**:
 
-- ✅ **Use skill**: For standard project initialization (recommended)
-- ✅ **Use manual**: For custom setups, debugging, or understanding the process
+- [PASS] **Use skill**: For standard project initialization (recommended)
+- [PASS] **Use manual**: For custom setups, debugging, or understanding the process
 
 ### Workflow Integration
 
@@ -1021,7 +1021,7 @@ project-init skill (automates this guide)
          ↓
 PROJECT_SETUP_GUIDE.md (8 steps)
          ↓
-Project Initialized ✅
+Project Initialized [PASS]
          ↓
 doc-flow skill (workflow execution)
          ↓

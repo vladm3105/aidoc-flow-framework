@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Validates PRD-MVP-TEMPLATE.md (default)
+#  Document Role: Validates PRD-MVP-TEMPLATE.md (default)
 # - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from PRD_CREATION_RULES.md plus validation extensions
@@ -33,7 +33,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
+> ** Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
 > - Apply these rules after PRD creation or modification
 > - **Authority**: Validates compliance with `PRD-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing PRD changes
@@ -187,8 +187,8 @@ All PRD requirements must include:
 | Created Date | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | Last Updated | YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
-| SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
-| EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
+| SYS-Ready Score | [PASS] XX% (Target: ≥90%) | MANDATORY |
+| EARS-Ready Score | [PASS] XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
 | Target Release | Release version/Quarter | OPTIONAL |
 | Estimated Effort | Story Points or Person-Months | OPTIONAL |
@@ -197,16 +197,16 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ MISSING FIELD: SYS-Ready Score
-❌ MISSING FIELD: EARS-Ready Score
-❌ INVALID FORMAT: Version must use semantic versioning (X.Y.Z)
+[FAIL] MISSING FIELD: SYS-Ready Score
+[FAIL] MISSING FIELD: EARS-Ready Score
+[FAIL] INVALID FORMAT: Version must use semantic versioning (X.Y.Z)
 ```
 
 **Resolution Steps**:
 1. Add missing field to Document Control table
 2. Use exact field names as specified
 3. Follow format requirements for each field
-4. Include both scoring fields with ✅ emoji
+4. Include both scoring fields with [PASS] emoji
 
 ### CHECK 2: Dual Scoring Format Validation
 
@@ -215,33 +215,33 @@ All PRD requirements must include:
 
 **Requirements**:
 - Both scores must be present in Document Control table
-- Both must use ✅ emoji prefix
+- Both must use [PASS] emoji prefix
 - Both must show percentage (XX%)
 - Both must include target threshold in parentheses: (Target: ≥90%)
 
 **Valid Format Example**:
 ```markdown
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
-| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+| **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 **Invalid Formats**:
 ```markdown
-❌ | **SYS-Ready Score** | 95% |           # Missing emoji and target
-❌ | **SYS-Ready Score** | ✅ 95 |           # Missing percentage symbol
-❌ | **SYS-Ready Score** | ✅ 95% |          # Missing target threshold
-❌ | **EARS-Ready Score** | N/A |            # Score must be numeric
+[FAIL] | **SYS-Ready Score** | 95% |           # Missing emoji and target
+[FAIL] | **SYS-Ready Score** | [PASS] 95 |           # Missing percentage symbol
+[FAIL] | **SYS-Ready Score** | [PASS] 95% |          # Missing target threshold
+[FAIL] | **EARS-Ready Score** | N/A |            # Score must be numeric
 ```
 
 **Error Messages**:
 ```
-❌ INVALID FORMAT: SYS-Ready Score must include ✅ emoji
-❌ INVALID FORMAT: EARS-Ready Score missing target threshold
-❌ INVALID FORMAT: Score must be percentage (XX%)
+[FAIL] INVALID FORMAT: SYS-Ready Score must include [PASS] emoji
+[FAIL] INVALID FORMAT: EARS-Ready Score missing target threshold
+[FAIL] INVALID FORMAT: Score must be percentage (XX%)
 ```
 
 **Resolution Steps**:
-1. Add ✅ emoji before percentage
+1. Add [PASS] emoji before percentage
 2. Include percentage symbol after number
 3. Add target threshold: (Target: ≥90%)
 4. Verify both scores follow identical format
@@ -257,8 +257,8 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ BLOCKING ERROR: SYS-Ready Score is 85% (minimum: 90%)
-❌ BLOCKING ERROR: EARS-Ready Score is 88% (minimum: 90%)
+[FAIL] BLOCKING ERROR: SYS-Ready Score is 85% (minimum: 90%)
+[FAIL] BLOCKING ERROR: EARS-Ready Score is 88% (minimum: 90%)
 ```
 
 **Resolution Steps**:
@@ -307,9 +307,9 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ MISSING NUMBER: section header must be "## 1. Document Control"
-❌ INCORRECT NUMBER: Found "## Document Control", expected "## 1. Document Control"
-❌ DUPLICATE NUMBER: section number 6 appears twice
+[FAIL] MISSING NUMBER: section header must be "## 1. Document Control"
+[FAIL] INCORRECT NUMBER: Found "## Document Control", expected "## 1. Document Control"
+[FAIL] DUPLICATE NUMBER: section number 6 appears twice
 ```
 
 **Resolution Steps**:
@@ -327,8 +327,8 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ MISSING SECTION: ## 8. User Stories & User Roles
-❌ MISSING SECTION: ## 10. Customer-Facing Content & Messaging (MANDATORY)
+[FAIL] MISSING SECTION: ## 8. User Stories & User Roles
+[FAIL] MISSING SECTION: ## 10. Customer-Facing Content & Messaging (MANDATORY)
 ```
 
 **Resolution Steps**:
@@ -348,8 +348,8 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-⚠️ WARNING: section 8 title should be "Customer-Facing Content & Messaging (MANDATORY)"
-⚠️ WARNING: section 3 title should use "&" not "and"
+[WARN] WARNING: section 8 title should be "Customer-Facing Content & Messaging (MANDATORY)"
+[WARN] WARNING: section 3 title should use "&" not "and"
 ```
 
 **Resolution Steps**:
@@ -364,13 +364,13 @@ All PRD requirements must include:
 
 **Layer Separation Requirements**:
 
-**✅ PRD-Level Content (Layer 2)**:
+**[PASS] PRD-Level Content (Layer 2)**:
 - User role definitions (personas)
 - Story titles: "As a [role], I want [capability] so that [benefit]"
 - Story summaries (2-3 sentences max)
 - Product-level acceptance criteria (what, not how)
 
-**❌ NOT PRD-Level (belongs in downstream layers)**:
+**[FAIL] NOT PRD-Level (belongs in downstream layers)**:
 - EARS-level specifications (WHEN-THE-SHALL-WITHIN format) → Layer 3
 - BDD-level test scenarios (Given-When-Then) → Layer 4
 - Technical implementation details → Layer 6/7
@@ -384,9 +384,9 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
-❌ MISSING: section 8 scope note explaining layer separation
+[FAIL] SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
+[FAIL] SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
+[FAIL] MISSING: section 8 scope note explaining layer separation
 ```
 
 **Resolution Steps**:
@@ -420,9 +420,9 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: section 10 header missing (MANDATORY) designation
-❌ BLOCKING ERROR: section 10 contains only placeholder text
+[FAIL] BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
+[FAIL] BLOCKING ERROR: section 10 header missing (MANDATORY) designation
+[FAIL] BLOCKING ERROR: section 10 contains only placeholder text
 ```
 
 **Resolution Steps**:
@@ -438,7 +438,7 @@ All PRD requirements must include:
 
 **Rule**: PRDs are created BEFORE ADRs in SDD workflow. Never reference specific ADR numbers (ADR-012, ADR-033, etc.).
 
-**✅ ALLOWED**:
+**[PASS] ALLOWED**:
 ```markdown
 #### Architecture Decision Requirements
 
@@ -448,7 +448,7 @@ All PRD requirements must include:
 | API Protocol | REST vs GraphQL | Client flexibility requirements |
 ```
 
-**❌ NOT ALLOWED**:
+**[FAIL] NOT ALLOWED**:
 ```markdown
 This requirement is based on ADR-012 (Database Selection)  ← BLOCKING ERROR
 See ADR-033 for API design decisions                       ← BLOCKING ERROR
@@ -456,8 +456,8 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Error Messages**:
 ```
-❌ BLOCKING ERROR: Found ADR-012 reference (PRDs created before ADRs)
-❌ BLOCKING ERROR: Remove ADR-XXX references, use topic names only
+[FAIL] BLOCKING ERROR: Found ADR-012 reference (PRDs created before ADRs)
+[FAIL] BLOCKING ERROR: Remove ADR-XXX references, use topic names only
 ```
 
 **Resolution Steps**:
@@ -487,8 +487,8 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Error Messages**:
 ```
-⚠️ WARNING: Missing @brd upstream reference
-⚠️ WARNING: Traceability section incomplete
+[WARN] WARNING: Missing @brd upstream reference
+[WARN] WARNING: Traceability section incomplete
 ```
 
 **Resolution Steps**:
@@ -637,20 +637,20 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 ### Progression Criteria
 
 **When to Advance to 03_EARS/SYS**:
-- ✅ Both SYS-Ready and EARS-Ready scores ≥90%
-- ✅ All 21 sections complete with substantive content
-- ✅ section 10 (Customer-Facing Content) populated
-- ✅ section 8 (User Stories) within PRD scope
-- ✅ @brd upstream reference valid
-- ✅ No blocking validation errors
+- [PASS] Both SYS-Ready and EARS-Ready scores ≥90%
+- [PASS] All 21 sections complete with substantive content
+- [PASS] section 10 (Customer-Facing Content) populated
+- [PASS] section 8 (User Stories) within PRD scope
+- [PASS] @brd upstream reference valid
+- [PASS] No blocking validation errors
 
 **Blocking Conditions**:
-- ❌ Either score <90%
-- ❌ Missing mandatory sections
-- ❌ section 10 missing or placeholder-only
-- ❌ section 8 contains 03_EARS/BDD-level detail
-- ❌ ADR-XXX forward references present
-- ❌ Missing Document Control fields
+- [FAIL] Either score <90%
+- [FAIL] Missing mandatory sections
+- [FAIL] section 10 missing or placeholder-only
+- [FAIL] section 8 contains 03_EARS/BDD-level detail
+- [FAIL] ADR-XXX forward references present
+- [FAIL] Missing Document Control fields
 
 ---
 
@@ -660,8 +660,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Symptoms**:
 ```
-❌ MISSING FIELD: SYS-Ready Score
-❌ MISSING FIELD: EARS-Ready Score
+[FAIL] MISSING FIELD: SYS-Ready Score
+[FAIL] MISSING FIELD: EARS-Ready Score
 ```
 
 **Root Cause**: Document Control table incomplete or using old template format
@@ -669,8 +669,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 **Fix**:
 1. Add both scoring rows to Document Control table:
    ```markdown
-   | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
-   | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+   | **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+   | **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
    ```
 2. Calculate scores using criteria in PRD_CREATION_RULES.md sections 8-9
 3. Ensure both scores ≥90% before commit
@@ -679,8 +679,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Symptoms**:
 ```
-❌ MISSING NUMBER: Found "## Document Control", expected "## 1. Document Control"
-❌ DUPLICATE NUMBER: section number 6 appears twice
+[FAIL] MISSING NUMBER: Found "## Document Control", expected "## 1. Document Control"
+[FAIL] DUPLICATE NUMBER: section number 6 appears twice
 ```
 
 **Root Cause**: Manual editing without systematic renumbering or old template format
@@ -699,8 +699,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Symptoms**:
 ```
-❌ SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
+[FAIL] SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
+[FAIL] SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
 ```
 
 **Root Cause**: Mixing PRD-level requirements with 03_EARS/BDD-level technical details
@@ -719,8 +719,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Symptoms**:
 ```
-❌ BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: section 10 contains only placeholder text
+[FAIL] BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
+[FAIL] BLOCKING ERROR: section 10 contains only placeholder text
 ```
 
 **Root Cause**: section 10 treated as optional or overlooked as new mandatory requirement
@@ -742,8 +742,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Symptoms**:
 ```
-❌ BLOCKING ERROR: Found ADR-012 reference (PRDs created before ADRs)
-❌ BLOCKING ERROR: Remove ADR-XXX references, use topic names only
+[FAIL] BLOCKING ERROR: Found ADR-012 reference (PRDs created before ADRs)
+[FAIL] BLOCKING ERROR: Remove ADR-XXX references, use topic names only
 ```
 
 **Root Cause**: Misunderstanding SDD workflow order (PRD created before ADR)
@@ -788,11 +788,11 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Error Messages**:
 ```
-❌ MISSING SECTION: ## 20. EARS Enhancement Appendix
-❌ INCOMPLETE: Section 20.1 requires at least 3 operations with timing profiles
-❌ INCOMPLETE: Section 20.2 requires explicit boundary operators (≥, >, ≤, <)
-❌ INCOMPLETE: Section 20.3 state diagram missing error transitions
-❌ INCOMPLETE: Section 20.4 missing fallback documentation for external dependencies
+[FAIL] MISSING SECTION: ## 20. EARS Enhancement Appendix
+[FAIL] INCOMPLETE: Section 20.1 requires at least 3 operations with timing profiles
+[FAIL] INCOMPLETE: Section 20.2 requires explicit boundary operators (≥, >, ≤, <)
+[FAIL] INCOMPLETE: Section 20.3 state diagram missing error transitions
+[FAIL] INCOMPLETE: Section 20.4 missing fallback documentation for external dependencies
 ```
 
 **Resolution Steps**:
@@ -827,10 +827,10 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Error Messages**:
 ```
-⚠️ WARNING: @prd: PRD.22.01.01 reference found, but PRD-022 does not reference this document
-⚠️ WARNING: Found placeholder ID "PRD.NN.EE.SS" - replace with actual ID or null
-⚠️ WARNING: @prd: PRD.99.01.01 references non-existent document
-⚠️ WARNING: Prose reference "see PRD-NN" should use tag format @prd: PRD.NN.NN.NN
+[WARN] WARNING: @prd: PRD.22.01.01 reference found, but PRD-022 does not reference this document
+[WARN] WARNING: Found placeholder ID "PRD.NN.EE.SS" - replace with actual ID or null
+[WARN] WARNING: @prd: PRD.99.01.01 references non-existent document
+[WARN] WARNING: Prose reference "see PRD-NN" should use tag format @prd: PRD.NN.NN.NN
 ```
 
 **Resolution Steps**:
@@ -843,7 +843,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 ```markdown
 | This PRD | References | Relationship | Reciprocal Status |
 |----------|------------|--------------|-------------------|
-| PRD-NN | @prd: PRD.NN.EE.SS | Primary/Fallback | ✅/❌ |
+| PRD-NN | @prd: PRD.NN.EE.SS | Primary/Fallback | [PASS]/[FAIL] |
 ```
 
 ---
@@ -869,9 +869,9 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Error Messages**:
 ```
-⚠️ WARNING: Deprecated Feature ID "Feature-001" found - use PRD.NN.TT.SS format
-⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NN.EE.SS format
-⚠️ WARNING: Text format "Feature 3.1" detected - convert to PRD.NN.EE.SS
+[WARN] WARNING: Deprecated Feature ID "Feature-001" found - use PRD.NN.TT.SS format
+[WARN] WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NN.EE.SS format
+[WARN] WARNING: Text format "Feature 3.1" detected - convert to PRD.NN.EE.SS
 ```
 
 **Resolution Steps**:
@@ -909,9 +909,9 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 
 **Error Messages**:
 ```
-⚠️ WARNING: Hardcoded quota limit "$1,000" found - reference @threshold: PRD.035.quota.l1.daily
-⚠️ WARNING: Risk score threshold "75" found - reference @threshold: PRD.035.risk.high.min
-⚠️ WARNING: Timeout value "30s" found - reference @threshold: PRD.035.timeout.partner.bridge
+[WARN] WARNING: Hardcoded quota limit "$1,000" found - reference @threshold: PRD.035.quota.l1.daily
+[WARN] WARNING: Risk score threshold "75" found - reference @threshold: PRD.035.risk.high.min
+[WARN] WARNING: Timeout value "30s" found - reference @threshold: PRD.035.timeout.partner.bridge
 ```
 
 **Resolution Steps**:
@@ -931,18 +931,18 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 
 ---
 
-### CHECK 15: Element ID Format Compliance ⭐ NEW
+### CHECK 15: Element ID Format Compliance  NEW
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `### PRD.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `### F-XXX` | ❌ Fail - use PRD.NN.09.SS |
-| Removed pattern | `### US-XXX` | ❌ Fail - use PRD.NN.09.SS |
-| Removed pattern | `### FR-XXX` | ❌ Fail - use PRD.NN.01.SS |
-| Removed pattern | `### AC-XXX` | ❌ Fail - use PRD.NN.06.SS |
+| Valid format | `### PRD.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `### F-XXX` | [FAIL] Fail - use PRD.NN.09.SS |
+| Removed pattern | `### US-XXX` | [FAIL] Fail - use PRD.NN.09.SS |
+| Removed pattern | `### FR-XXX` | [FAIL] Fail - use PRD.NN.01.SS |
+| Removed pattern | `### AC-XXX` | [FAIL] Fail - use PRD.NN.06.SS |
 
 **Regex**: `^###\s+PRD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 

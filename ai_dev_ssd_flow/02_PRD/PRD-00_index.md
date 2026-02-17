@@ -124,16 +124,16 @@ flowchart TD
 
 | Section | Standard (S) | Agent-Based (A) | Automation (W) |
 |---------|:------------:|:---------------:|:--------------:|
-| YAML Metadata | ✓ | ✓ | ✓ |
-| Document Control | ✓ | ✓ | ✓ |
-| Product Overview | ✓ | ✓ | ✓ |
-| User Stories | ✓ | ○ (condensed) | ○ (optional) |
-| Functional Requirements | ✓ | ✓ | ✓ |
-| ML Pipeline Specification | ○ | ✓ | ○ |
-| Workflow Specification | ○ | ○ | ✓ |
-| EARS Enhancement Appendix | ✓ | ✓ | ✓ |
+| YAML Metadata |  |  |  |
+| Document Control |  |  |  |
+| Product Overview |  |  |  |
+| User Stories |  |  (condensed) |  (optional) |
+| Functional Requirements |  |  |  |
+| ML Pipeline Specification |  |  |  |
+| Workflow Specification |  |  |  |
+| EARS Enhancement Appendix |  |  |  |
 
-**Legend**: ✓ = Required, ○ = Optional/Condensed
+**Legend**:  = Required,  = Optional/Condensed
 
 ## Threshold Registry Integration
 
@@ -310,16 +310,16 @@ When migrating a Legacy PRD to Current status:
 ### Quality Checks
 
 Before marking PRD as "Approved":
-- ✅ All user stories follow standard format (As a... I want... So that...)
-- ✅ Functional requirements are testable and specific
-- ✅ Quality attributes have measurable criteria
-- ✅ Cross-references to BRD are complete
-- ✅ Acceptance criteria defined for each feature
-- ✅ **EARS-Ready score ≥90** (required for EARS progression)
-- ✅ **Bidirectional references validated** (all A→B have B→A)
-- ✅ **Template variant declared** in YAML metadata
-- ✅ **Feature IDs follow standard format** (`PRD.NN.01.SS`)
-- ✅ **Threshold registry references** for shared values
+- [PASS] All user stories follow standard format (As a... I want... So that...)
+- [PASS] Functional requirements are testable and specific
+- [PASS] Quality attributes have measurable criteria
+- [PASS] Cross-references to BRD are complete
+- [PASS] Acceptance criteria defined for each feature
+- [PASS] **EARS-Ready score ≥90** (required for EARS progression)
+- [PASS] **Bidirectional references validated** (all A→B have B→A)
+- [PASS] **Template variant declared** in YAML metadata
+- [PASS] **Feature IDs follow standard format** (`PRD.NN.01.SS`)
+- [PASS] **Threshold registry references** for shared values
 
 ---
 

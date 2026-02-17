@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Guides creation of EARS-MVP-TEMPLATE.md (default)
+#  Document Role: Guides creation of EARS-MVP-TEMPLATE.md (default)
 # - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
@@ -32,7 +32,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
+> ** Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
 > - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
 > - **Schema**: `EARS_MVP_SCHEMA.yaml` defines machine-readable validation rules
 > - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `03_EARS/scripts/validate_ears.py`
@@ -119,7 +119,7 @@ EARS documents require specific structural elements for behavioral specification
 - Version: Semantic versioning
 - Date Created/Last Updated
 - Author and Priority
-- BDD-Ready Score: Format `✅ NN% (Target: ≥90%)`
+- BDD-Ready Score: Format `[PASS] NN% (Target: ≥90%)`
 
 ### Status and BDD-Ready Score Mapping
 
@@ -135,7 +135,7 @@ EARS documents require specific structural elements for behavioral specification
 |------|---------|
 | **Status** | Draft / In Review / Approved / Implemented |
 | **Version** | [e.g., 1.0.0] |
-| **BDD-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **BDD-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
 ---
@@ -157,7 +157,7 @@ EARS documents require specific structural elements for behavioral specification
 |--------------|------|---------|
 | EARS Statement | 25 | EARS.02.25.01 |
 
-> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - Category prefixes: `E-XXX`, `S-XXX`, `U-XXX`, `UB-XXX`, `EVENT-XXX`, `STATE-XXX`, `UNWANTED-XXX`, `UBIQ-XXX`
 > - 3-segment format: `EARS.NN.EE`
 >
@@ -263,12 +263,12 @@ When formalizing quality attributes from 01_BRD/PRD:
 
 ---
 
-## 8. BDD-Ready Scoring System ⭐ NEW
+## 8. BDD-Ready Scoring System  NEW
 
 ### Overview
 BDD-ready scoring measures EARS maturity and readiness for progression to Behavior-Driven Development (BDD) phase.
 
-**Format**: `✅ NN% (Target: ≥90%)`
+**Format**: `[PASS] NN% (Target: ≥90%)`
 **Location**: Document Control table
 **Validation**: Enforced before BDD creation
 
@@ -295,7 +295,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 ### Quality Gate Enforcement
 - Score <90% prevents BDD artifact creation
-- Format validation requires ✅ emoji and percentage
+- Format validation requires [PASS] emoji and percentage
 - Threshold enforcement at pre-commit
 
 ---
@@ -498,7 +498,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 ## EARS Batch Session Summary
 
 - **Documents Created**: N
-- **Validation Status**: ✅ Pass / ❌ Fail
+- **Validation Status**: [PASS] Pass / [FAIL] Fail
 - **Errors Found**: N
 - **Errors Fixed**: N
 - **Index Updated**: Yes/No

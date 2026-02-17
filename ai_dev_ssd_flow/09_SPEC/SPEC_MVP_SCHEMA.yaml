@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of template(s)
+#  Document Role: This is a DERIVATIVE of template(s)
 # - Authority:
 #   * MD Template: N/A (SPEC is YAML-only for both workflows)
 #   * YAML Template: SPEC-MVP-TEMPLATE.yaml (primary for both workflows)
@@ -205,7 +205,7 @@ metadata_schema:
   optional_fields:
     task_ready_score:
       type: string
-      pattern: "^✅ \\d+% \\(Target: ≥\\d+%\\)$"
+      pattern: "^[PASS] \\d+% \\(Target: ≥\\d+%\\)$"
       description: "Quality gate score"
 
     template_profile:

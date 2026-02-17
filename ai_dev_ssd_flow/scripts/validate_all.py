@@ -498,7 +498,7 @@ def generate_text_report(report: ValidationReport) -> str:
 
 def generate_markdown_report(report: ValidationReport) -> str:
     """Generate Markdown report."""
-    status_emoji = "✅" if report.total_errors == 0 else "❌"
+    status_emoji = "[PASS]" if report.total_errors == 0 else "[FAIL]"
 
     lines = [
         "# SDD Document Validation Report",
@@ -545,11 +545,11 @@ def generate_markdown_report(report: ValidationReport) -> str:
 
     for result in report.results:
         if result.skipped:
-            status = "⏭️ Skipped"
+            status = "⏭ Skipped"
         elif result.success and result.error_count == 0:
-            status = "✅ Pass"
+            status = "[PASS] Pass"
         else:
-            status = "❌ Fail"
+            status = "[FAIL] Fail"
 
         lines.append(
             f"| {result.validator} | {status} | "

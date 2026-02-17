@@ -139,28 +139,28 @@ Every API contract requires:
 
 **Alternative 1: Embed Contracts in SPEC**
 
-- ❌ Blocks parallel development
-- ❌ Incompatible with contract testing tools
-- ❌ Creates traceability gaps (no CTR-NNN ID)
-- ❌ Mixes interface with implementation concerns
+- [FAIL] Blocks parallel development
+- [FAIL] Incompatible with contract testing tools
+- [FAIL] Creates traceability gaps (no CTR-NNN ID)
+- [FAIL] Mixes interface with implementation concerns
 
 **Alternative 2: YAML Only (No Markdown)**
 
-- ❌ Poor developer experience (no examples, context)
-- ❌ Harder to review (YAML not human-friendly)
-- ❌ Missing rationale and design decisions
+- [FAIL] Poor developer experience (no examples, context)
+- [FAIL] Harder to review (YAML not human-friendly)
+- [FAIL] Missing rationale and design decisions
 
 **Alternative 3: Markdown Only (No YAML)**
 
-- ❌ Ambiguous specifications (natural language imprecise)
-- ❌ Incompatible with tooling (no machine-readable schema)
-- ❌ Cannot generate mocks or validate automatically
+- [FAIL] Ambiguous specifications (natural language imprecise)
+- [FAIL] Incompatible with tooling (no machine-readable schema)
+- [FAIL] Cannot generate mocks or validate automatically
 
 **Alternative 4: Optional Dual Files ("SHOULD" not "MUST")**
 
-- ❌ Inconsistent practices across project
-- ❌ Some teams skip CTR, embed in SPEC → tooling breaks
-- ❌ Traceability matrix incomplete
+- [FAIL] Inconsistent practices across project
+- [FAIL] Some teams skip CTR, embed in SPEC → tooling breaks
+- [FAIL] Traceability matrix incomplete
 
 ## Implementation
 
@@ -232,32 +232,32 @@ fi
 
 ### Positive
 
-- ✅ **Parallel Development**: Teams start implementation while SPEC is drafted
-- ✅ **Tool Compatibility**: Contract testing, mocking, validation tools work
-- ✅ **Clear Traceability**: Explicit REQ → CTR → SPEC → TASKS chain
-- ✅ **Version Control**: Granular commits, easier code review
-- ✅ **Reusability**: Multiple SPECs share common CTR contracts
-- ✅ **Documentation Quality**: Markdown + YAML ensures completeness
+- [PASS] **Parallel Development**: Teams start implementation while SPEC is drafted
+- [PASS] **Tool Compatibility**: Contract testing, mocking, validation tools work
+- [PASS] **Clear Traceability**: Explicit REQ → CTR → SPEC → TASKS chain
+- [PASS] **Version Control**: Granular commits, easier code review
+- [PASS] **Reusability**: Multiple SPECs share common CTR contracts
+- [PASS] **Documentation Quality**: Markdown + YAML ensures completeness
 
 ### Negative (Mitigated)
 
-- ⚠️ **More Files**: Accepted as necessary for clarity and tooling
-- ⚠️ **Sync Effort**: Mitigated by validation scripts and pre-commit hooks
-- ⚠️ **Learning Curve**: Mitigated by templates, examples (CTR-01), documentation
+- [WARN] **More Files**: Accepted as necessary for clarity and tooling
+- [WARN] **Sync Effort**: Mitigated by validation scripts and pre-commit hooks
+- [WARN] **Learning Curve**: Mitigated by templates, examples (CTR-01), documentation
 
 ### [NORMAL_CONDITION - e.g., steady state, balanced load]
 
-- 🔵 **Process Change**: Teams must create CTR before SPEC (new habit)
-- 🔵 **Validation Required**: Pre-commit hooks ensure compliance (automated)
+-  **Process Change**: Teams must create CTR before SPEC (new habit)
+-  **Validation Required**: Pre-commit hooks ensure compliance (automated)
 
 ## Compliance
 
 ### Mandatory
 
-- ✅ Every API contract MUST have dual files (CTR-NNN.md + CTR-NNN.yaml)
-- ✅ SPEC files MUST reference CTR files (no embedded contracts)
-- ✅ CTR files MUST exist before referencing SPEC is created
-- ✅ CTR markdown MUST include examples matching YAML schemas
+- [PASS] Every API contract MUST have dual files (CTR-NNN.md + CTR-NNN.yaml)
+- [PASS] SPEC files MUST reference CTR files (no embedded contracts)
+- [PASS] CTR files MUST exist before referencing SPEC is created
+- [PASS] CTR markdown MUST include examples matching YAML schemas
 
 ### Validation
 

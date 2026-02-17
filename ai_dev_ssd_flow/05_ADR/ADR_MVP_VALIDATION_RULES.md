@@ -13,7 +13,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: Validates ADR-MVP-TEMPLATE.md (default)
+#  Document Role: Validates ADR-MVP-TEMPLATE.md (default)
 # - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from ADR_MVP_CREATION_RULES.md plus validation extensions
@@ -32,7 +32,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
+> ** Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
 > - Apply these rules after ADR creation or modification
 > - **Authority**: Validates compliance with `ADR-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing ADR changes
@@ -175,20 +175,20 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Required sections**: Status, Context, Decision, Consequences, Architecture Flow, Alternatives Considered
 
-### CHECK 3: SYS-Ready Score Validation ⭐ NEW
+### CHECK 3: SYS-Ready Score Validation  NEW
 
 **Purpose**: Validate SYS-ready score format and threshold
 **Type**: Error (blocking) - Standard ADR only
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Valid Examples**: `[PASS] 95% (Target: ≥90%)`
 
-**Error Message**: `❌ MISSING: SYS-Ready Score with ✅ emoji and percentage`
+**Error Message**: `[FAIL] MISSING: SYS-Ready Score with [PASS] emoji and percentage`
 
 **ADR-REF Exemption**: ADR-REF documents are EXEMPT from SYS-Ready Score requirements. Reference documents use free format with no scores.
 
 **Info Message** (for ADR-REF):
 ```
-ℹ️  INFO: ADR-REF document detected - SYS-Ready Score NOT REQUIRED
+ℹ  INFO: ADR-REF document detected - SYS-Ready Score NOT REQUIRED
          REF documents use free format with no downstream quality gates
 ```
 
@@ -209,7 +209,7 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Info Message** (for ADR-REF):
 ```
-ℹ️  INFO: ADR-REF document detected - applying reduced validation
+ℹ  INFO: ADR-REF document detected - applying reduced validation
          Checks 3-7 exempt for reference documents
          Validating: Document Control, Revision History, Status/Context, H1 ID match
 ```
@@ -247,7 +247,7 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ---
 
-### CHECK 8: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+### CHECK 8: Universal Splitting Trigger (Size/Cardinality)  NEW
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 **Type**: Error (blocking)
 
@@ -257,9 +257,9 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Action**: Move to `05_ADR/ADR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
+**Error Message**: `[FAIL] ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
 
-### CHECK 9: Element ID Format Compliance ⭐ NEW
+### CHECK 9: Element ID Format Compliance  NEW
 
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
@@ -267,10 +267,10 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 | Check | Pattern | Result |
 |-------|---------|--------|
-| Valid format | `### ADR.NN.TT.SS:` | ✅ Pass |
-| Removed pattern | `### DEC-XXX` | ❌ Fail - use ADR.NN.10.SS |
-| Removed pattern | `### ALT-XXX` | ❌ Fail - use ADR.NN.12.SS |
-| Removed pattern | `### CON-XXX` | ❌ Fail - use ADR.NN.13.SS |
+| Valid format | `### ADR.NN.TT.SS:` | [PASS] Pass |
+| Removed pattern | `### DEC-XXX` | [FAIL] Fail - use ADR.NN.10.SS |
+| Removed pattern | `### ALT-XXX` | [FAIL] Fail - use ADR.NN.12.SS |
+| Removed pattern | `### CON-XXX` | [FAIL] Fail - use ADR.NN.13.SS |
 
 **Regex**: `^###\s+ADR\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
@@ -323,7 +323,7 @@ find docs/ADR -type f -name "ADR-*.md" -exec python 05_ADR/scripts/validate_adr.
 python 05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision.md
 ```
 
-### SYS-Ready Scoring Criteria ⭐ NEW
+### SYS-Ready Scoring Criteria  NEW
 
 **Decision Completeness (30%)**:
 - Complete decision process (Context/Decision/Consequences/Alternatives): 15%
@@ -357,7 +357,7 @@ python 05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision.m
 
 ## Diagram Standards
 
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`├── └── │`) are exempted.
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`  `) are exempted.
 
 **Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
 **Diagram Skill**: `mermaid-gen` skill
@@ -368,26 +368,26 @@ All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawin
 
 ### Mistake #1: Incomplete Decision Process
 ```
-❌ Missing alternatives considered section
-✅ Document evaluated alternatives with rejection rationale
+[FAIL] Missing alternatives considered section
+[PASS] Document evaluated alternatives with rejection rationale
 ```
 
 ### Mistake #2: Vague Architecture Documentation
 ```
-❌ "Use microservices architecture"
-✅ "Use event-driven microservices with CQRS pattern for order processing, deployed on Kubernetes with Istio service mesh"
+[FAIL] "Use microservices architecture"
+[PASS] "Use event-driven microservices with CQRS pattern for order processing, deployed on Kubernetes with Istio service mesh"
 ```
 
 ### Mistake #3: SYS-Ready Score Format
 ```
-❌ SYS-Ready Score: 95%
-✅ SYS-Ready Score: ✅ 95% (Target: ≥90%)
+[FAIL] SYS-Ready Score: 95%
+[PASS] SYS-Ready Score: [PASS] 95% (Target: ≥90%)
 ```
 
 ### Mistake #4: Missing Traceability Tags
 ```
-❌ @brd: BRD-01
-✅ @brd: BRD.01.01.30, BRD.01.01.06
+[FAIL] @brd: BRD-01
+[PASS] @brd: BRD.01.01.30, BRD.01.01.06
 ```
 
 ---

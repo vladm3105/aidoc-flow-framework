@@ -44,35 +44,35 @@ custom_fields:
 Upstream changes originate from business, product, or market inputs and cascade downward through all affected layers.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    UPSTREAM CHANGE FLOW                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────┐                   │
-│  │         CHANGE TRIGGERS             │                   │
-│  │  • Market feedback                  │                   │
-│  │  • Stakeholder request              │                   │
-│  │  • Regulatory change                │                   │
-│  │  • Competitive pressure             │                   │
-│  │  • User story refinement            │                   │
-│  └──────────────┬──────────────────────┘                   │
-│                 │                                           │
-│                 ▼                                           │
-│  ┌─────────────────────────────────────┐                   │
-│  │  L1 BRD  →  L2 PRD  →  L3 EARS  →  L4 BDD              │
-│  └──────────────┬──────────────────────┘                   │
-│                 │                                           │
-│                 ▼ CASCADE                                   │
-│  ┌─────────────────────────────────────┐                   │
-│  │  L5-L11 Architecture/Design/Tasks   │                   │
-│  └──────────────┬──────────────────────┘                   │
-│                 │                                           │
-│                 ▼ CASCADE                                   │
-│  ┌─────────────────────────────────────┐                   │
-│  │  L12-L14 Code/Tests/Validation      │                   │
-│  └─────────────────────────────────────┘                   │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+
+                    UPSTREAM CHANGE FLOW                     
+
+                                                             
+                     
+           CHANGE TRIGGERS                                
+    • Market feedback                                     
+    • Stakeholder request                                 
+    • Regulatory change                                   
+    • Competitive pressure                                
+    • User story refinement                               
+                     
+                                                            
+                                                            
+                     
+    L1 BRD  →  L2 PRD  →  L3 EARS  →  L4 BDD              
+                     
+                                                            
+                  CASCADE                                   
+                     
+    L5-L11 Architecture/Design/Tasks                      
+                     
+                                                            
+                  CASCADE                                   
+                     
+    L12-L14 Code/Tests/Validation                         
+                     
+                                                             
+
 ```
 
 ## 2. Common Triggers

@@ -186,7 +186,7 @@ def load_history() -> List[Dict]:
 
 def print_report(report: CoverageReport) -> None:
     """Print coverage report."""
-    status_icon = "✅" if report.coverage_percent >= 80 else "⚠️" if report.coverage_percent >= 60 else "❌"
+    status_icon = "[PASS]" if report.coverage_percent >= 80 else "[WARN]" if report.coverage_percent >= 60 else "[FAIL]"
 
     print(f"\n{status_icon} Coverage Report: {report.test_type.upper()}")
     print("=" * 60)
@@ -195,7 +195,7 @@ def print_report(report: CoverageReport) -> None:
     print(f"  Missing:    {report.missing_statements}")
 
     if report.threshold is not None:
-        threshold_icon = "✅" if report.threshold_passed else "❌"
+        threshold_icon = "[PASS]" if report.threshold_passed else "[FAIL]"
         print(f"  Threshold:  {report.threshold}% {threshold_icon}")
 
     # Show lowest coverage files
@@ -207,7 +207,7 @@ def print_report(report: CoverageReport) -> None:
             if len(path) > 45:
                 path = "..." + path[-42:]
             percent = file_info["percent"]
-            icon = "❌" if percent < 50 else "⚠️" if percent < 80 else "✅"
+            icon = "[FAIL]" if percent < 50 else "[WARN]" if percent < 80 else "[PASS]"
             print(f"  {icon} {path}: {percent:.1f}%")
 
     print()

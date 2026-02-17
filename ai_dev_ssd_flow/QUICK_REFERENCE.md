@@ -97,7 +97,7 @@ TASKS-23_implement_risk_calculator.md
 - **Dash** (document-level): ADR, SPEC, CTR
 - **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, TASKS
 
-**Common mistakes**: `@brd: BRD-07` ❌ → `@brd: BRD.07.01.01` ✓ | `@adr: ADR.33.10.01` ❌ → `@adr: ADR-33` ✓
+**Common mistakes**: `@brd: BRD-07` [FAIL] → `@brd: BRD.07.01.01`  | `@adr: ADR.33.10.01` [FAIL] → `@adr: ADR-33` 
 
 ### General Utility Documents (`{DOC_TYPE}-00_*`)
 - Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
@@ -355,7 +355,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 - [ ] Validate inline cross-references use anchor format: `#[TYPE]-NN`
 
 ### Post-Creation (MANDATORY)
-- [ ] **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **CRITICAL STEP**
+- [ ] **CREATE/UPDATE TRACEABILITY MATRIX** [WARN] **CRITICAL STEP**
   - [ ] Check if `[TYPE]-00_TRACEABILITY_MATRIX.md` exists
   - [ ] If missing: Create from `[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
   - [ ] Add this document to section 2 (Complete Inventory) with:
@@ -486,22 +486,22 @@ Purpose: Suite overview, section map, traceability matrix
 
 ### Prohibited Patterns (ERROR)
 ```
-❌ BDD-02_query_part1.feature          # _partN suffix
-❌ BDD-02_knowledge_engine.feature     # Single-file format
-❌ BDD-02_knowledge_engine/features/   # Directory-based structure
+[FAIL] BDD-02_query_part1.feature          # _partN suffix
+[FAIL] BDD-02_knowledge_engine.feature     # Single-file format
+[FAIL] BDD-02_knowledge_engine/features/   # Directory-based structure
 ```
 
 ### File Organization (Nested Suite)
 ```
 docs/04_BDD/
-└── BDD-02_knowledge_engine/
-    ├── BDD-02.0_index.md                       # Index (MANDATORY)
-    ├── BDD-02.1_ingest.feature                 # Section-only
-    ├── BDD-02.2_query.feature                  # Section-only
-    ├── BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
-    ├── BDD-02.12.01_depth_first.feature        # Subsection
-    ├── BDD-02.12.02_breadth_first.feature      # Subsection
-    └── BDD-02.3_learning.feature               # Section-only
+ BDD-02_knowledge_engine/
+     BDD-02.0_index.md                       # Index (MANDATORY)
+     BDD-02.1_ingest.feature                 # Section-only
+     BDD-02.2_query.feature                  # Section-only
+     BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
+     BDD-02.12.01_depth_first.feature        # Subsection
+     BDD-02.12.02_breadth_first.feature      # Subsection
+     BDD-02.3_learning.feature               # Section-only
 ```
 
 ### Section Metadata Tags (Required)

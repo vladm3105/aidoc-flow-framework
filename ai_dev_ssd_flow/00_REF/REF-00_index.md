@@ -90,9 +90,9 @@ Examples:
 REF documents are the primary **upstream source** for BRD documents:
 
 ```
-REF-01 (Business Context)  ──┐
-REF-02 (Market Analysis)   ──┼──→ BRD-01 (Business Requirements)
-REF-03 (Stakeholder Input) ──┘
+REF-01 (Business Context)  
+REF-02 (Market Analysis)   → BRD-01 (Business Requirements)
+REF-03 (Stakeholder Input) 
 ```
 
 ## RAG Integration

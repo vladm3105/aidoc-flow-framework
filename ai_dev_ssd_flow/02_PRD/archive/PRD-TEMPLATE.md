@@ -16,7 +16,7 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for PRD structure.
+#  Document Authority: This is the PRIMARY STANDARD for PRD structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
 # - Schema: PRD_MVP_SCHEMA.yaml - Machine-readable validation (derivative)
@@ -80,7 +80,7 @@ Validation: Run `python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-NN*.md`
 Schema: See `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
+> ** Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
 > - **Schema**: `PRD_MVP_SCHEMA.yaml v1.0` - Validation rules (21 sections: 1-21)
 > - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `PRD_MVP_VALIDATION_RULES.md` - Post-creation checks
@@ -96,7 +96,7 @@ Schema: See `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` for complete rules
 
 # PRD-NN: [Descriptive Product Name/Feature Name]
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**[WARN] CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **resource**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
 
@@ -115,8 +115,8 @@ Schema: See `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` for complete rules
 | **Priority** | High / Medium / Low |
 | **Target Release** | [Release version/Quarter] |
 | **Estimated Effort** | [Story Points or Person-Months] |
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
-| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SYS-Ready Score** | [PASS] 95% (Target: ≥90%) |
+| **EARS-Ready Score** | [PASS] 95% (Target: ≥90%) |
 | **Template Variant** | Standard / Agent-Based / Automation-Focused |
 
 ### 1.1 Template Variant Selection
@@ -158,7 +158,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> **[WARN] UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
 > 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
 > 2. **Reference only existing documents**: Use actual document IDs, not placeholders
 > 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
@@ -454,7 +454,7 @@ User stories follow the standard format:
 
 ### 8.8 Threshold Registry References
 
-**⚠️ IMPORTANT**: PRD documents serve as the **PRIMARY DEFINITION SOURCE** for technical thresholds. All downstream artifacts (EARS, BDD, SYS, SPEC, CTR) REFERENCE thresholds defined here.
+**[WARN] IMPORTANT**: PRD documents serve as the **PRIMARY DEFINITION SOURCE** for technical thresholds. All downstream artifacts (EARS, BDD, SYS, SPEC, CTR) REFERENCE thresholds defined here.
 
 **Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
@@ -595,7 +595,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 **Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and consistent user experience across all customer interactions.
 
-**📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
+** Complete Business Context**: For business-level messaging requirements and approval workflows, see:
 - **[BRD-MVP Template - Appendix N: Customer Communication Templates](../../01_BRD/BRD-MVP-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
 
 ### 10.1 Transaction Status Messages
@@ -1086,7 +1086,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 ### 18.5 Bidirectional Reference Validation
 
-**⚠️ IMPORTANT**: All cross-PRD references must be bidirectional. If PRD-A references PRD-B, then PRD-B must also reference PRD-A.
+**[WARN] IMPORTANT**: All cross-PRD references must be bidirectional. If PRD-A references PRD-B, then PRD-B must also reference PRD-A.
 
 **Validation Requirements**:
 
@@ -1101,7 +1101,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | This PRD | References PRD | Relationship Type | Reciprocal Reference Status |
 |----------|---------------|-------------------|----------------------------|
-| PRD-NN | @prd: PRD.NN.09.SS | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
+| PRD-NN | @prd: PRD.NN.09.SS | [Primary/Fallback/Related/Orchestrates] | [PASS] Verified / [FAIL] Missing |
 
 **Common Relationship Types**:
 - **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)

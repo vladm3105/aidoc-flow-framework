@@ -348,9 +348,9 @@ class TraceabilityMatrixGenerator:
         content += "## 5. Coverage Metrics\n\n"
         content += "| Metric | Value | Target | Status |\n"
         content += "|--------|-------|--------|--------|\n"
-        content += f"| Upstream Traceability | {metrics['upstream_coverage_pct']:.1f}% | 100% | {'✅' if metrics['upstream_coverage_pct'] >= 100 else '🟡' if metrics['upstream_coverage_pct'] >= 80 else '🔴'} |\n"
-        content += f"| Downstream Artifacts | {metrics['downstream_coverage_pct']:.1f}% | 90% | {'✅' if metrics['downstream_coverage_pct'] >= 90 else '🟡' if metrics['downstream_coverage_pct'] >= 70 else '🔴'} |\n"
-        content += f"| Orphaned Documents | {len(metrics['orphaned_documents'])} | 0 | {'✅' if len(metrics['orphaned_documents']) == 0 else '🔴'} |\n\n"
+        content += f"| Upstream Traceability | {metrics['upstream_coverage_pct']:.1f}% | 100% | {'[PASS]' if metrics['upstream_coverage_pct'] >= 100 else '' if metrics['upstream_coverage_pct'] >= 80 else ''} |\n"
+        content += f"| Downstream Artifacts | {metrics['downstream_coverage_pct']:.1f}% | 90% | {'[PASS]' if metrics['downstream_coverage_pct'] >= 90 else '' if metrics['downstream_coverage_pct'] >= 70 else ''} |\n"
+        content += f"| Orphaned Documents | {len(metrics['orphaned_documents'])} | 0 | {'[PASS]' if len(metrics['orphaned_documents']) == 0 else ''} |\n\n"
 
         content += "## 6. Validation Commands\n\n"
         content += "```bash\n"
@@ -376,8 +376,8 @@ class TraceabilityMatrixGenerator:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(content)
 
-        print(f"✅ Traceability matrix generated: {output_path}")
-        print(f"📊 Statistics:")
+        print(f"[PASS] Traceability matrix generated: {output_path}")
+        print(f" Statistics:")
         print(f"   - Total documents: {metrics['total_documents']}")
         print(f"   - Upstream coverage: {metrics['upstream_coverage_pct']:.1f}%")
         print(f"   - Downstream coverage: {metrics['downstream_coverage_pct']:.1f}%")
@@ -440,7 +440,7 @@ Examples:
         return 0
 
     except Exception as e:
-        print(f"❌ Error: {e}", file=sys.stderr)
+        print(f"[FAIL] Error: {e}", file=sys.stderr)
         return 1
 
 

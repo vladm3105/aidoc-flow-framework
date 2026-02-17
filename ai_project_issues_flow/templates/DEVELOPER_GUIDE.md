@@ -85,50 +85,50 @@ This is a **monorepo**. All documentation, governance, and component source code
 
 ```
 {REPO_NAME}/              (Monorepo)
-├── .github/
-│   ├── ISSUE_TEMPLATE/               8 issue templates
-│   ├── workflows/                    9 GitHub Actions workflows
-│   ├── labeler.yml                   PR labeling rules
-│   └── PULL_REQUEST_TEMPLATE.md
-│
-├── governance/                       Project governance
-│   ├── PROJECT_PLAN.md               Full project plan (~75 tasks)
-│   ├── ROADMAP.md                    Phase timeline and dependencies
-│   ├── GOVERNANCE_RULES.md           Operational policies and conventions
-│   ├── DEFINITION_OF_DONE.md         Completion criteria
-│   ├── REPOSITORY_STRATEGY.md        Monorepo architecture
-│   ├── HOME_REPO.md                  Repository guide
-│   ├── BRANCHING_STRATEGY.md         Git branching model
-│   ├── RELEASE_PROCESS.md            Versioning and releases
-│   ├── ROLES_AND_TOOLS.md            Human vs AI responsibilities
-│   ├── GITHUB_WORKFLOWS.md           Workflow documentation
-│   ├── GITHUB_PROJECT_SETUP_AI_FIRST.md  AI workflow setup
-│   ├── GITHUB_TOOLS_SETUP.md         CLI and MCP configuration
-│   └── plans/                        Implementation plans (IPLAN index)
-│
-├── docs/
-│   ├── adr/                          9 Architecture Decision Records
-│   ├── core/                         8 Technical specifications
-│   ├── architecture/                 System diagrams
-│   └── UX/                           Implementation guides
-│
-├── components/                       Component source code
-│   ├── {SERVICE_NAME}/               GCP budget alerts + auto-remediation
-│   ├── mcp-servers/                  MCP server specifications
-│   ├── agents/                       AI agents (Phase 4)
-│   ├── frontend/                     CopilotKit frontend (Phase 5)
-│   └── infrastructure/               Terraform modules (Phase 2)
-│
-├── scripts/                          Utility scripts
-│
-├── CLAUDE.md                         {AI_TOOL_NAME} Code-specific instructions
-├── README_AIAGENT.md                 Universal AI agent rules
-├── DEVELOPER_GUIDE.md                This document
-├── CONTRIBUTING.md                   Contribution guidelines
-├── HANDOFF.md                        Developer handoff notes
-├── GCP-DEPLOYMENT.md                 GCP deployment guide
-├── .env.example                      Environment template
-└── README.md                         Project overview
+ .github/
+    ISSUE_TEMPLATE/               8 issue templates
+    workflows/                    9 GitHub Actions workflows
+    labeler.yml                   PR labeling rules
+    PULL_REQUEST_TEMPLATE.md
+
+ governance/                       Project governance
+    PROJECT_PLAN.md               Full project plan (~75 tasks)
+    ROADMAP.md                    Phase timeline and dependencies
+    GOVERNANCE_RULES.md           Operational policies and conventions
+    DEFINITION_OF_DONE.md         Completion criteria
+    REPOSITORY_STRATEGY.md        Monorepo architecture
+    HOME_REPO.md                  Repository guide
+    BRANCHING_STRATEGY.md         Git branching model
+    RELEASE_PROCESS.md            Versioning and releases
+    ROLES_AND_TOOLS.md            Human vs AI responsibilities
+    GITHUB_WORKFLOWS.md           Workflow documentation
+    GITHUB_PROJECT_SETUP_AI_FIRST.md  AI workflow setup
+    GITHUB_TOOLS_SETUP.md         CLI and MCP configuration
+    plans/                        Implementation plans (IPLAN index)
+
+ docs/
+    adr/                          9 Architecture Decision Records
+    core/                         8 Technical specifications
+    architecture/                 System diagrams
+    UX/                           Implementation guides
+
+ components/                       Component source code
+    {SERVICE_NAME}/               GCP budget alerts + auto-remediation
+    mcp-servers/                  MCP server specifications
+    agents/                       AI agents (Phase 4)
+    frontend/                     CopilotKit frontend (Phase 5)
+    infrastructure/               Terraform modules (Phase 2)
+
+ scripts/                          Utility scripts
+
+ CLAUDE.md                         {AI_TOOL_NAME} Code-specific instructions
+ README_AIAGENT.md                 Universal AI agent rules
+ DEVELOPER_GUIDE.md                This document
+ CONTRIBUTING.md                   Contribution guidelines
+ HANDOFF.md                        Developer handoff notes
+ GCP-DEPLOYMENT.md                 GCP deployment guide
+ .env.example                      Environment template
+ README.md                         Project overview
 ```
 
 ### Component Directories

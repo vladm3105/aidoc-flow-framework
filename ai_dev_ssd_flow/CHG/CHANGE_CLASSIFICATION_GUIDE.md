@@ -21,25 +21,25 @@ This guide provides detailed criteria for classifying changes into L1 (Patch), L
 ## 1. Classification Overview
 
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                      CHANGE CLASSIFICATION SPECTRUM                        │
-├────────────────────────────────────────────────────────────────────────────┤
-│                                                                            │
-│   L1 PATCH              L2 MINOR                L3 MAJOR                  │
-│   ──────────            ──────────              ──────────                │
-│                                                                            │
-│   ▪ Bug fixes           ▪ New features          ▪ Architecture pivots     │
-│   ▪ Typos               ▪ Enhancements          ▪ Breaking changes        │
-│   ▪ Clarifications      ▪ Extensions            ▪ Mass deprecation        │
-│   ▪ Minor refactoring   ▪ Non-breaking adds     ▪ Technology switches     │
-│                                                                            │
-│   Process: None         Process: Lightweight    Process: Full CHG         │
-│   Template: None        Template: MVP           Template: Full            │
-│   Archive: No           Archive: Optional       Archive: Required         │
-│                                                                            │
-│   ◄─────────────── Increasing Impact & Overhead ──────────────────►       │
-│                                                                            │
-└────────────────────────────────────────────────────────────────────────────┘
+
+                      CHANGE CLASSIFICATION SPECTRUM                        
+
+                                                                            
+   L1 PATCH              L2 MINOR                L3 MAJOR                  
+                                             
+                                                                            
+    Bug fixes            New features           Architecture pivots     
+    Typos                Enhancements           Breaking changes        
+    Clarifications       Extensions             Mass deprecation        
+    Minor refactoring    Non-breaking adds      Technology switches     
+                                                                            
+   Process: None         Process: Lightweight    Process: Full CHG         
+   Template: None        Template: MVP           Template: Full            
+   Archive: No           Archive: Optional       Archive: Required         
+                                                                            
+    Increasing Impact & Overhead        
+                                                                            
+
 ```
 
 ## 2. Decision Flowchart
@@ -47,47 +47,47 @@ This guide provides detailed criteria for classifying changes into L1 (Patch), L
 Use this flowchart to determine the appropriate change level:
 
 ```
-                         ┌─────────────────────────┐
-                         │    Change Requested     │
-                         └───────────┬─────────────┘
-                                     │
-                                     ▼
-                         ┌─────────────────────────┐
-                         │  Does it break backward │
-                         │  compatibility?         │
-                         └───────────┬─────────────┘
-                                     │
-                    ┌────────────────┴────────────────┐
-                    │ NO                              │ YES
-                    ▼                                 ▼
-          ┌─────────────────────┐          ┌─────────────────────┐
-          │ Does it require     │          │      L3 MAJOR       │
-          │ ADR changes?        │          │   (Full CHG)        │
-          └─────────┬───────────┘          └─────────────────────┘
-                    │
-       ┌────────────┴────────────┐
-       │ NO                      │ YES
-       ▼                         ▼
-┌─────────────────────┐  ┌─────────────────────┐
-│ Does it affect more │  │      L3 MAJOR       │
-│ than 3 layers?      │  │   (Full CHG)        │
-└─────────┬───────────┘  └─────────────────────┘
-          │
-     ┌────┴────┐
-     │ NO      │ YES
-     ▼         ▼
-┌──────────┐  ┌─────────────────────┐
-│ Is it a  │  │      L2 MINOR       │
-│ bug fix? │  │  (Lightweight CHG)  │
-└────┬─────┘  └─────────────────────┘
-     │
-┌────┴────┐
-│ YES     │ NO
-▼         ▼
-┌──────────┐  ┌─────────────────────┐
-│ L1 PATCH │  │      L2 MINOR       │
-│ (No CHG) │  │  (Lightweight CHG)  │
-└──────────┘  └─────────────────────┘
+                         
+                             Change Requested     
+                         
+                                     
+                                     
+                         
+                           Does it break backward 
+                           compatibility?         
+                         
+                                     
+                    
+                     NO                               YES
+                                                     
+                    
+           Does it require                     L3 MAJOR       
+           ADR changes?                     (Full CHG)        
+                    
+                    
+       
+        NO                       YES
+                                
+  
+ Does it affect more         L3 MAJOR       
+ than 3 layers?           (Full CHG)        
+  
+          
+     
+      NO       YES
+              
+  
+ Is it a          L2 MINOR       
+ bug fix?     (Lightweight CHG)  
+  
+     
+
+ YES      NO
+         
+  
+ L1 PATCH         L2 MINOR       
+ (No CHG)     (Lightweight CHG)  
+  
 ```
 
 ## 3. L1 Patch - Detailed Criteria
@@ -102,23 +102,23 @@ A change qualifies as L1 if ALL of the following are true:
 
 | # | Criterion | Must Be |
 |---|-----------|---------|
-| 1 | Backward compatible | ✅ Yes |
-| 2 | Affects ADR/architecture | ❌ No |
-| 3 | Changes API contracts | ❌ No |
-| 4 | Affects more than 1 layer | ❌ No |
-| 5 | Requires stakeholder approval | ❌ No |
-| 6 | Deprecates existing artifacts | ❌ No |
+| 1 | Backward compatible | [PASS] Yes |
+| 2 | Affects ADR/architecture | [FAIL] No |
+| 3 | Changes API contracts | [FAIL] No |
+| 4 | Affects more than 1 layer | [FAIL] No |
+| 5 | Requires stakeholder approval | [FAIL] No |
+| 6 | Deprecates existing artifacts | [FAIL] No |
 
 ### 3.3 Examples
 
 | Change | Classification | Reason |
 |--------|----------------|--------|
-| Fix typo in BRD description | ✅ L1 | No functional change |
-| Correct calculation bug in code | ✅ L1 | Code-only fix, behavior as designed |
-| Update outdated comment | ✅ L1 | Documentation only |
-| Fix failing unit test (test was wrong) | ✅ L1 | Test correction, not behavior change |
-| Refactor method for readability | ✅ L1 | No behavioral change |
-| Security patch for dependency | ✅ L1* | *Unless API changes |
+| Fix typo in BRD description | [PASS] L1 | No functional change |
+| Correct calculation bug in code | [PASS] L1 | Code-only fix, behavior as designed |
+| Update outdated comment | [PASS] L1 | Documentation only |
+| Fix failing unit test (test was wrong) | [PASS] L1 | Test correction, not behavior change |
+| Refactor method for readability | [PASS] L1 | No behavioral change |
+| Security patch for dependency | [PASS] L1* | *Unless API changes |
 
 ### 3.4 Process
 
@@ -144,23 +144,23 @@ A change qualifies as L2 if ALL of the following are true:
 
 | # | Criterion | Must Be |
 |---|-----------|---------|
-| 1 | Backward compatible | ✅ Yes |
-| 2 | Affects ADR/architecture | ❌ No |
-| 3 | Changes API contracts | ✅ Can add (not break) |
-| 4 | Affects 2-5 layers | ✅ Yes |
-| 5 | Requires regeneration | ✅ Partial |
-| 6 | Deprecates artifacts | ⚪ Optional |
+| 1 | Backward compatible | [PASS] Yes |
+| 2 | Affects ADR/architecture | [FAIL] No |
+| 3 | Changes API contracts | [PASS] Can add (not break) |
+| 4 | Affects 2-5 layers | [PASS] Yes |
+| 5 | Requires regeneration | [PASS] Partial |
+| 6 | Deprecates artifacts |  Optional |
 
 ### 4.3 Examples
 
 | Change | Classification | Reason |
 |--------|----------------|--------|
-| Add new optional field to API | ✅ L2 | Non-breaking addition |
-| New feature with 4 layers affected | ✅ L2 | Multi-layer but compatible |
-| Enhance existing capability | ✅ L2 | Extension, not breaking |
-| Add new test type (e.g., PTEST) | ✅ L2 | New capability |
-| Update dependency (minor version) | ✅ L2 | May affect multiple layers |
-| Performance optimization in SPEC | ✅ L2 | Design change, compatible |
+| Add new optional field to API | [PASS] L2 | Non-breaking addition |
+| New feature with 4 layers affected | [PASS] L2 | Multi-layer but compatible |
+| Enhance existing capability | [PASS] L2 | Extension, not breaking |
+| Add new test type (e.g., PTEST) | [PASS] L2 | New capability |
+| Update dependency (minor version) | [PASS] L2 | May affect multiple layers |
+| Performance optimization in SPEC | [PASS] L2 | Design change, compatible |
 
 ### 4.4 Process
 
@@ -189,25 +189,25 @@ A change qualifies as L3 if ANY of the following are true:
 
 | # | Criterion | If True → L3 |
 |---|-----------|--------------|
-| 1 | Breaks backward compatibility | ✅ L3 |
-| 2 | Requires ADR changes | ✅ L3 |
-| 3 | Changes fundamental architecture | ✅ L3 |
-| 4 | Deprecates multiple artifacts | ✅ L3 |
-| 5 | Affects >5 layers significantly | ✅ L3 |
-| 6 | Technology stack change | ✅ L3 |
-| 7 | Requires stakeholder sign-off | ✅ L3 |
+| 1 | Breaks backward compatibility | [PASS] L3 |
+| 2 | Requires ADR changes | [PASS] L3 |
+| 3 | Changes fundamental architecture | [PASS] L3 |
+| 4 | Deprecates multiple artifacts | [PASS] L3 |
+| 5 | Affects >5 layers significantly | [PASS] L3 |
+| 6 | Technology stack change | [PASS] L3 |
+| 7 | Requires stakeholder sign-off | [PASS] L3 |
 
 ### 5.3 Examples
 
 | Change | Classification | Reason |
 |--------|----------------|--------|
-| Switch from REST to GraphQL | ✅ L3 | Architecture change |
-| Database migration (PostgreSQL→MongoDB) | ✅ L3 | Technology stack |
-| Monolith to microservices | ✅ L3 | Fundamental architecture |
-| Remove deprecated feature | ✅ L3 | Mass deprecation |
-| Breaking API change (v1→v2) | ✅ L3 | Backward incompatible |
-| Regulatory compliance overhaul | ✅ L3 | Multiple layers, policy change |
-| Security incident requiring redesign | ✅ L3 | Architecture response |
+| Switch from REST to GraphQL | [PASS] L3 | Architecture change |
+| Database migration (PostgreSQL→MongoDB) | [PASS] L3 | Technology stack |
+| Monolith to microservices | [PASS] L3 | Fundamental architecture |
+| Remove deprecated feature | [PASS] L3 | Mass deprecation |
+| Breaking API change (v1→v2) | [PASS] L3 | Backward incompatible |
+| Regulatory compliance overhaul | [PASS] L3 | Multiple layers, policy change |
+| Security incident requiring redesign | [PASS] L3 | Architecture response |
 
 ### 5.4 Process
 
@@ -333,32 +333,32 @@ Use this checklist to confirm your classification:
 ## 9. Quick Reference Card
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│              CHANGE CLASSIFICATION QUICK REFERENCE             │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  L1 PATCH                                                      │
-│  ─────────                                                     │
-│  ✓ Bug fix, typo, clarification                               │
-│  ✓ Single layer only                                          │
-│  ✓ No CHG document needed                                     │
-│  ✓ Version: 1.0.0 → 1.0.1                                     │
-│                                                                │
-│  L2 MINOR                                                      │
-│  ─────────                                                     │
-│  ✓ New feature, enhancement                                   │
-│  ✓ 2-5 layers affected                                        │
-│  ✓ Use CHG-MVP-TEMPLATE.md                                    │
-│  ✓ Version: 1.0.0 → 1.1.0                                     │
-│                                                                │
-│  L3 MAJOR                                                      │
-│  ─────────                                                     │
-│  ✓ Breaking change, pivot                                     │
-│  ✓ >5 layers or architecture change                           │
-│  ✓ Use CHG-TEMPLATE.md + archive/                             │
-│  ✓ Version: 1.0.0 → 2.0.0                                     │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
+
+              CHANGE CLASSIFICATION QUICK REFERENCE             
+
+                                                                
+  L1 PATCH                                                      
+                                                       
+   Bug fix, typo, clarification                               
+   Single layer only                                          
+   No CHG document needed                                     
+   Version: 1.0.0 → 1.0.1                                     
+                                                                
+  L2 MINOR                                                      
+                                                       
+   New feature, enhancement                                   
+   2-5 layers affected                                        
+   Use CHG-MVP-TEMPLATE.md                                    
+   Version: 1.0.0 → 1.1.0                                     
+                                                                
+  L3 MAJOR                                                      
+                                                       
+   Breaking change, pivot                                     
+   >5 layers or architecture change                           
+   Use CHG-TEMPLATE.md + archive/                             
+   Version: 1.0.0 → 2.0.0                                     
+                                                                
+
 ```
 
 ---

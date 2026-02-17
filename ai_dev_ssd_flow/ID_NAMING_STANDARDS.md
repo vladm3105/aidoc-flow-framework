@@ -26,7 +26,7 @@ Purpose
 
 **IMPORTANT**: This naming standard applies ONLY to Specification-Driven Development (SDD) **documentation artifacts**. It does NOT apply to source code files.
 
-### ✅ Apply ID_NAMING_STANDARDS To:
+### [PASS] Apply ID_NAMING_STANDARDS To:
 - Documentation files in `docs/` directories:
   - `01_BRD/` - Business Requirements Documents
   - `02_PRD/` - Product Requirements Documents
@@ -42,7 +42,7 @@ Purpose
   - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
 
-### ❌ Do NOT Apply ID_NAMING_STANDARDS To:
+### [FAIL] Do NOT Apply ID_NAMING_STANDARDS To:
 - **Python source code**: Follow PEP 8 naming conventions
   - Modules: `snake_case.py`
   - Classes: `PascalCase`
@@ -233,8 +233,8 @@ Universal Numbering Pattern (All Document Types)
 - **Uniqueness Rule**: Each DOC_NUM is unique within its type
   - Monolithic: `TYPE-DOC_NUM_{slug}.md` (e.g., `BRD-01_platform.md`)
   - Section-based: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `BRD-01.0_index.md`)
-  - ❌ INVALID: Cannot have both `BRD-09_platform.md` AND `BRD-09.0_index.md` (collision - same DOC_NUM, different structure)
-  - ✅ VALID: `BRD-09.0_index.md` AND `BRD-09.1_requirements.md` (same DOC_NUM, different sections in nested folder)
+  - [FAIL] INVALID: Cannot have both `BRD-09_platform.md` AND `BRD-09.0_index.md` (collision - same DOC_NUM, different structure)
+  - [PASS] VALID: `BRD-09.0_index.md` AND `BRD-09.1_requirements.md` (same DOC_NUM, different sections in nested folder)
 - **Vertical ID Alignment (Unified)**:
   - **Rule**: All downstream artifacts (`ADR`, `EARS`, `BDD`, `SYS`, `REQ`, `CTR`, `SPEC`) MUST match the ID of their parent `PRD` (or `BRD` if no PRD exists). **Exception**: `TASKS` have independent sequential numbering.
   - **Mapping**: `PRD-12` → `ADR-12`, `EARS-12`, `BDD-12`, `SPEC-12`, `SYS-12`, `REQ-12`, `CTR-12`.
@@ -445,31 +445,31 @@ When a single PRD requires multiple downstream artifacts of the same type, ALL a
 - **ADR (Architecture Decision Records)**
   ```
   PRD-01 → 05_ADR/ADR-01_iam/
-    ├── ADR-01.01_Authentication_Architecture.md
-    └── ADR-01.02_4D_Authorization_Matrix.md
+     ADR-01.01_Authentication_Architecture.md
+     ADR-01.02_4D_Authorization_Matrix.md
   ```
 
 - **SYS (System Requirements)**
   ```
   PRD-08 → 06_SYS/SYS-08_trading_intelligence/
-    ├── SYS-08.01_LLM_Context_Automation.md
-    ├── SYS-08.02_LLM_Ensemble.md
-    └── SYS-08.03_Trading_Agent_Swarm.md
+     SYS-08.01_LLM_Context_Automation.md
+     SYS-08.02_LLM_Ensemble.md
+     SYS-08.03_Trading_Agent_Swarm.md
   ```
 
 - **BDD (Behavior-Driven Development)**
   ```
   PRD-03 → 04_BDD/BDD-03_risk_management/
-    ├── BDD-03.01_position_limits.feature
-    ├── BDD-03.02_margin_requirements.feature
-    └── BDD-03.03_circuit_breakers.feature
+     BDD-03.01_position_limits.feature
+     BDD-03.02_margin_requirements.feature
+     BDD-03.03_circuit_breakers.feature
   ```
 
 - **EARS (Event-Action-Response-State)**
   ```
   PRD-05 → 03_EARS/EARS-05_data_feeds/
-    ├── EARS-05.01_market_data_ingestion.md
-    └── EARS-05.02_historical_data_sync.md
+     EARS-05.01_market_data_ingestion.md
+     EARS-05.02_historical_data_sync.md
   ```
 
 **Key Rules**:
@@ -577,24 +577,24 @@ When documents go through review/fix cycles, companion files are generated and s
 
 ```text
 BRD-07_f7_config/
-├── BRD-07_f7_config.md              # Single complete document
-├── BRD-07.R_review_report_v001.md   # Review report v1
-├── BRD-07.F_fix_report_v001.md      # Fix report v1
-└── .drift_cache.json                 # Drift detection
+ BRD-07_f7_config.md              # Single complete document
+ BRD-07.R_review_report_v001.md   # Review report v1
+ BRD-07.F_fix_report_v001.md      # Fix report v1
+ .drift_cache.json                 # Drift detection
 ```
 
 **Sectioned Document with Review Cycle**:
 
 ```text
 BRD-01_f1_iam/
-├── BRD-01.0_index.md                # Index/navigation
-├── BRD-01.1_core.md                 # Section 1
-├── BRD-01.2_requirements.md         # Section 2
-├── BRD-01.3_quality_ops.md          # Section 3
-├── BRD-01.R_review_report_v001.md   # Review report v1
-├── BRD-01.R_review_report_v002.md   # Review report v2
-├── BRD-01.F_fix_report_v001.md      # Fix report v1
-└── .drift_cache.json                 # Drift detection
+ BRD-01.0_index.md                # Index/navigation
+ BRD-01.1_core.md                 # Section 1
+ BRD-01.2_requirements.md         # Section 2
+ BRD-01.3_quality_ops.md          # Section 3
+ BRD-01.R_review_report_v001.md   # Review report v1
+ BRD-01.R_review_report_v002.md   # Review report v2
+ BRD-01.F_fix_report_v001.md      # Fix report v1
+ .drift_cache.json                 # Drift detection
 ```
 
 ### Companion File Lifecycle
@@ -667,10 +667,10 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 | Aspect | Tag-Only | Hyperlinked |
 |--------|----------|-------------|
-| **Validation** | ✅ Easy regex parsing | ⚠️ Requires link checker |
-| **Maintainability** | ✅ No path breakage | ❌ Breaks when files move |
-| **Navigation** | ❌ Manual search required | ✅ One-click access |
-| **Automation** | ✅ Script-friendly extraction | ⚠️ Complex link parsing |
+| **Validation** | [PASS] Easy regex parsing | [WARN] Requires link checker |
+| **Maintainability** | [PASS] No path breakage | [FAIL] Breaks when files move |
+| **Navigation** | [FAIL] Manual search required | [PASS] One-click access |
+| **Automation** | [PASS] Script-friendly extraction | [WARN] Complex link parsing |
 | **Recommended For** | Working drafts, automation | Published documentation |
 
 **Hybrid Approach** (Best Practice):
@@ -843,26 +843,26 @@ custom_fields:
 
 ```
 docs/01_BRD/
-└── BRD-03_platform_example/             # Nested folder with descriptive slug
-    ├── BRD-03.0_index.md                        # Section 0: Index/Overview
+ BRD-03_platform_example/             # Nested folder with descriptive slug
+     BRD-03.0_index.md                        # Section 0: Index/Overview
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-    ├── BRD-03.1_executive_summary.md            # Section 1: Executive Summary
+     BRD-03.1_executive_summary.md            # Section 1: Executive Summary
 <!-- VALIDATOR:IGNORE-LINKS-END -->
-    ├── BRD-03.2_business_context.md             # Section 2: Business Context
-    ├── BRD-03.3_functional_requirements.md      # Section 3: Functional Requirements
-    ├── BRD-03.4_non_functional_requirements.md  # Section 4: Non-Functional Requirements
-    ├── BRD-03.5_architecture_decisions.md       # Section 5: Architecture Decisions
-    └── BRD-03.6_appendices.md                   # Section 6: Appendices
+     BRD-03.2_business_context.md             # Section 2: Business Context
+     BRD-03.3_functional_requirements.md      # Section 3: Functional Requirements
+     BRD-03.4_non_functional_requirements.md  # Section 4: Non-Functional Requirements
+     BRD-03.5_architecture_decisions.md       # Section 5: Architecture Decisions
+     BRD-03.6_appendices.md                   # Section 6: Appendices
 ```
 
 **Split into Section Files (full pattern - backward compatible)**:
 
 ```
 docs/01_BRD/
-└── BRD-03_platform_example/             # Nested folder with descriptive slug
-    ├── BRD-03.0_platform_example_index.md              # Section 0
-    ├── BRD-03.1_platform_example_executive_summary.md  # Section 1
-    └── ...
+ BRD-03_platform_example/             # Nested folder with descriptive slug
+     BRD-03.0_platform_example_index.md              # Section 0
+     BRD-03.1_platform_example_executive_summary.md  # Section 1
+     ...
 ```
 
 **Key Rules**:
@@ -1225,7 +1225,7 @@ The SDD framework uses a **single unified format** for all internal element refe
 
 ### Standardized Element Type Codes
 
-> ⚠️ **REMOVED PATTERNS**: The following formats are INVALID:
+> [WARN] **REMOVED PATTERNS**: The following formats are INVALID:
 > - `AC-XXX` → Use `TYPE.NN.06.SS` (Acceptance Criteria)
 > - `FR-XXX` → Use `TYPE.NN.01.SS` (Functional Requirement)
 > - `BC-XXX` → Use `TYPE.NN.03.SS` (Constraint)
@@ -1497,20 +1497,20 @@ ID naming standards are enforced by automated validators. For the complete error
 
 **Mixed ID Notation** (IDPAT-E003):
 ```markdown
-❌ Incorrect: BRD-01.02, PRD-001.AC.05
-✓ Correct: BRD.01.02.01, PRD.001.06.05
+[FAIL] Incorrect: BRD-01.02, PRD-001.AC.05
+ Correct: BRD.01.02.01, PRD.001.06.05
 ```
 
 **Legacy ID Format** (IDPAT-W001):
 ```markdown
-❌ Legacy: FR-001, AC-005, NFR-003
-✓ Unified: REQ.01.01.001, REQ.01.06.005, SYS.01.02.003
+[FAIL] Legacy: FR-001, AC-005, NFR-003
+ Unified: REQ.01.01.001, REQ.01.06.005, SYS.01.02.003
 ```
 
 **Forward Reference** (FWDREF-E001):
 ```markdown
-❌ In PRD: "See ADR-01 for database decision"
-✓ In PRD: "Architecture decisions required for: database selection"
+[FAIL] In PRD: "See ADR-01 for database decision"
+ In PRD: "Architecture decisions required for: database selection"
 ```
 
 ### Running Validators

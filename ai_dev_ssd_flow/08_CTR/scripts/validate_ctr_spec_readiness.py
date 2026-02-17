@@ -182,13 +182,13 @@ class CTRSpecReadinessValidator:
         print(f"Failed (<{self.min_score}%): {len(failed)}")
         print(f"Average Score: {avg:.1f}%\n")
         for r in results:
-            status = "✅ PASS" if r.passed else "❌ FAIL"
+            status = "[PASS] PASS" if r.passed else "[FAIL] FAIL"
             print(f"{status} [{r.score:3d}%] {r.file_path.name}")
             for e in r.errors:
-                print(f"    ❌ ERROR: {e}")
+                print(f"    [FAIL] ERROR: {e}")
             if not r.passed:
                 for w in r.warnings:
-                    print(f"    ⚠️  WARNING: {w}")
+                    print(f"    [WARN]  WARNING: {w}")
             print()
 
 

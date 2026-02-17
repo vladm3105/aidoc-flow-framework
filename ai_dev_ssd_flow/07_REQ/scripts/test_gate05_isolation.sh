@@ -49,7 +49,7 @@ echo ""
 cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
 
 # Run quality gate only (faster, more direct)
-./scripts/validate_req_quality_score.sh "$TEST_DIR" 2>&1 | tee /tmp/gate05_test_output.txt | grep -E "(GATE-05|ERROR|✗)" | head -10
+./scripts/validate_req_quality_score.sh "$TEST_DIR" 2>&1 | tee /tmp/gate05_test_output.txt | grep -E "(GATE-05|ERROR|)" | head -10
 
 echo ""
 echo "3. Testing EXIT CODE logic..."
@@ -59,11 +59,11 @@ echo "  Exit code: $EXIT_CODE"
 echo "  (Expected: 2 = ERROR with all files isolated)"
 
 if grep -q "GATE-05 ERROR.*ALL" /tmp/gate05_test_output.txt; then
-  echo "  ✅ GATE-05 ERROR detected: ALL files isolated"
+  echo "  [PASS] GATE-05 ERROR detected: ALL files isolated"
 elif grep -q "GATE-05 ERROR" /tmp/gate05_test_output.txt; then
-  echo "  ✅ GATE-05 ERROR detected"
+  echo "  [PASS] GATE-05 ERROR detected"
 else
-  echo "  ⚠️  GATE-05 ERROR not detected"
+  echo "  [WARN]  GATE-05 ERROR not detected"
   grep "GATE-05" /tmp/gate05_test_output.txt || echo "    (No GATE-05 output found)"
 fi
 
@@ -73,7 +73,7 @@ rm -rf "$TEST_DIR"
 rm -f /tmp/gate05_test_output.txt
 
 echo ""
-echo "✅ TEST COMPLETE"
+echo "[PASS] TEST COMPLETE"
 echo ""
 echo "Summary:"
 echo "  • Test corpus created with 10 REQ files using correct naming pattern (REQ-##.name.md)"

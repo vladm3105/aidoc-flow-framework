@@ -41,7 +41,7 @@ def update_schema(schema_path):
     with open(schema_path, 'w') as f:
         f.write(content)
     
-    print(f"✅ Updated: {schema_path}")
+    print(f"[PASS] Updated: {schema_path}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
