@@ -5,6 +5,7 @@
 set -e
 
 PROJECT_DIR=$1
+INCLUDE_GITHUB=$2  # Optional: pass "--with-github" to include .github symlink
 FRAMEWORK_DIR="/opt/data/docs_flow_framework"
 
 # Color output
@@ -15,7 +16,10 @@ NC='\033[0m' # No Color
 
 if [ -z "$PROJECT_DIR" ]; then
     echo -e "${RED}Error: Project directory required${NC}"
-    echo "Usage: $0 /opt/data/project_name"
+    echo "Usage: $0 /opt/data/project_name [--with-github]"
+    echo ""
+    echo "Options:"
+    echo "  --with-github    Also symlink .github/ (workflows, issue templates, etc.)"
     exit 1
 fi
 
@@ -83,11 +87,34 @@ fi
 echo ""
 echo "Setting up template symlinks..."
 
-# Setup template symlinks
+# Setup template symlinks (BOTH frameworks)
 mkdir -p "$PROJECT_DIR/.templates"
-backup_if_needed "$PROJECT_DIR/.templates/ai_dev_flow"
-ln -sf "$FRAMEWORK_DIR/ai_dev_flow" "$PROJECT_DIR/.templates/ai_dev_flow"
-echo -e "${GREEN}  ✓ Templates linked${NC}"
+
+# SDD Framework templates
+backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+echo -e "${GREEN}  ✓ SDD templates linked (ai_dev_ssd_flow)${NC}"
+
+# Issues Flow templates
+backup_if_needed "$PROJECT_DIR/.templates/ai_project_issues_flow"
+ln -sf "$FRAMEWORK_DIR/ai_project_issues_flow" "$PROJECT_DIR/.templates/ai_project_issues_flow"
+echo -e "${GREEN}  ✓ Issues Flow templates linked (ai_project_issues_flow)${NC}"
+
+# Optional: Setup .github symlink for CI/CD workflows
+if [ "$INCLUDE_GITHUB" = "--with-github" ]; then
+    echo ""
+    echo "Setting up GitHub workflows symlink..."
+
+    if [ -d "$FRAMEWORK_DIR/.github" ]; then
+        backup_if_needed "$PROJECT_DIR/.github"
+        ln -sf "$FRAMEWORK_DIR/.github" "$PROJECT_DIR/.github"
+        WORKFLOW_COUNT=$(find "$PROJECT_DIR/.github/workflows" -name "*.yml" 2>/dev/null | wc -l)
+        TEMPLATE_COUNT=$(find "$PROJECT_DIR/.github/ISSUE_TEMPLATE" -name "*.md" 2>/dev/null | wc -l)
+        echo -e "${GREEN}  ✓ GitHub linked ($WORKFLOW_COUNT workflows, $TEMPLATE_COUNT issue templates)${NC}"
+    else
+        echo -e "${YELLOW}  ⚠ Framework .github directory not found${NC}"
+    fi
+fi
 
 echo ""
 echo "Setting up validation script symlinks..."
@@ -117,8 +144,14 @@ add_gitignore_entry() {
 add_gitignore_entry ".claude/skills"
 add_gitignore_entry ".claude/commands"
 add_gitignore_entry ".claude/agents"
-add_gitignore_entry ".templates/"
+add_gitignore_entry ".templates/ai_dev_ssd_flow"
+add_gitignore_entry ".templates/ai_project_issues_flow"
 add_gitignore_entry "scripts/validate"
+
+# Add .github if included
+if [ "$INCLUDE_GITHUB" = "--with-github" ]; then
+    add_gitignore_entry ".github"
+fi
 add_gitignore_entry ""
 add_gitignore_entry "# Keep project-specific Claude resources"
 add_gitignore_entry "!.claude/custom_skills/"
@@ -166,11 +199,17 @@ echo "Custom resources (directories):"
 ls -la "$PROJECT_DIR/.claude/" | grep "^d" | grep custom || echo "  (none found)"
 echo ""
 echo "Template access:"
-if [ -L "$PROJECT_DIR/.templates/ai_dev_flow" ]; then
-    TEMPLATE_COUNT=$(find "$PROJECT_DIR/.templates/ai_dev_flow" -name "*-TEMPLATE.md" -o -name "*-template.md" 2>/dev/null | wc -l)
-    echo -e "${GREEN}  ✓ $TEMPLATE_COUNT templates accessible${NC}"
+if [ -L "$PROJECT_DIR/.templates/ai_dev_ssd_flow" ]; then
+    SDD_COUNT=$(find "$PROJECT_DIR/.templates/ai_dev_ssd_flow" -name "*-TEMPLATE.md" -o -name "*-template.md" 2>/dev/null | wc -l)
+    echo -e "${GREEN}  ✓ SDD: $SDD_COUNT templates accessible${NC}"
 else
-    echo -e "${RED}  ✗ Template symlink not found${NC}"
+    echo -e "${RED}  ✗ SDD template symlink not found${NC}"
+fi
+if [ -L "$PROJECT_DIR/.templates/ai_project_issues_flow" ]; then
+    ISSUES_COUNT=$(find "$PROJECT_DIR/.templates/ai_project_issues_flow" -name "*.md" 2>/dev/null | wc -l)
+    echo -e "${GREEN}  ✓ Issues Flow: $ISSUES_COUNT docs accessible${NC}"
+else
+    echo -e "${RED}  ✗ Issues Flow template symlink not found${NC}"
 fi
 echo ""
 
@@ -182,12 +221,23 @@ echo ""
 echo "Available resources:"
 echo "  • Shared skills: .claude/skills/ (symlink)"
 echo "  • Custom skills: .claude/custom_skills/ (tracked)"
-echo "  • Templates: .templates/ai_dev_flow/ (symlink)"
+echo "  • SDD Templates: .templates/ai_dev_ssd_flow/ (12 layers)"
+echo "  • Issues Flow: .templates/ai_project_issues_flow/ (governance)"
 echo "  • Validation: scripts/validate/ (symlink)"
+if [ "$INCLUDE_GITHUB" = "--with-github" ]; then
+    echo "  • GitHub CI/CD: .github/ (20 workflows, 10 issue templates)"
+fi
 echo ""
 echo "Next steps:"
 echo "  1. Review .gitignore entries"
 echo "  2. Create project-specific skills in .claude/custom_skills/"
 echo "  3. Configure .claude/settings.local.json"
 echo "  4. Optional: Create .claude/CLAUDE.md for project context"
+if [ "$INCLUDE_GITHUB" != "--with-github" ]; then
+    echo "  5. Optional: Re-run with --with-github to add CI/CD workflows"
+fi
+echo ""
+echo "Framework Selection:"
+echo "  • Large projects (months-years): Use ai_dev_ssd_flow"
+echo "  • Small projects (1-6 months): Use ai_project_issues_flow"
 echo ""

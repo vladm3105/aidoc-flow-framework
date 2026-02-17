@@ -4,9 +4,32 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-02-07T00:00:00
+**Last Updated**: 2026-02-17T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
+
+---
+
+## Framework Selection
+
+This repository contains **two complementary frameworks**:
+
+| Framework | Purpose | Best For |
+|-----------|---------|----------|
+| **ai_dev_ssd_flow** | Full Specification-Driven Development (SDD) | Large projects requiring formal requirements traceability |
+| **ai_project_issues_flow** | Lightweight AI-First Governance | Small-medium projects, solo/small teams, rapid iteration |
+
+### Decision Matrix
+
+| Criteria | Use SDD (ai_dev_ssd_flow) | Use Issues Flow (ai_project_issues_flow) |
+|----------|---------------------------|------------------------------------------|
+| Project timeline | Months-years | 1-6 months |
+| Team size | Multiple roles | Solo/small team + AI |
+| Traceability | Full requirement→code tracing | Issue-based tracking |
+| Documentation | 12 formal layers (BRD→TASKS) | PROJECT_PLAN + IPLANs |
+| Change management | 4-gate CHG system | PR-based governance |
+
+**Hybrid Usage**: Projects can use both frameworks - SDD for requirements/specs and Issues Flow for CI/CD and governance.
 
 ---
 
@@ -16,25 +39,38 @@
 
 ```
 /opt/data/
-├── docs_flow_framework/          # Central framework repository
-│   ├── ai_dev_ssd_flow/              # Document templates
-│   ├── scripts/                  # Validation and automation tools
+├── docs_flow_framework/              # Central framework repository
+│   ├── ai_dev_ssd_flow/              # SDD templates (12 layers)
+│   │   ├── 01_BRD/                   # Business Requirements
+│   │   ├── 02_PRD/                   # Product Requirements
+│   │   ├── ...                       # (layers 03-11)
+│   │   └── AUTOPILOT/                # Automation scripts
+│   │
+│   ├── ai_project_issues_flow/       # Issues Flow templates
+│   │   ├── governance/               # PROJECT_PLAN, rules
+│   │   ├── templates/                # README, CLAUDE.md
+│   │   ├── .github/                  # Workflows, issue templates
+│   │   └── docs/                     # ADRs, QA docs
+│   │
+│   ├── scripts/                      # Validation and automation tools
 │   └── .claude/
-│       ├── skills/               # Shared skills (15+)
-│       ├── commands/             # Shared slash commands
-│       └── agents/               # Shared agent configurations
+│       ├── skills/                   # Shared skills (50+)
+│       ├── commands/                 # Shared slash commands
+│       └── agents/                   # Shared agent configurations
 │
 └── projects/
-    ├── project_a/                # Individual projects
-    │   ├── docs/                 # Project artifacts (BRD, ADR, etc.)
-    │   ├── src/                  # Source code
-    │   ├── .templates/           # Symlink → framework templates
+    ├── project_a/                    # Individual projects
+    │   ├── docs/                     # Project artifacts (BRD, ADR, etc.)
+    │   ├── src/                      # Source code
+    │   ├── .templates/
+    │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD templates
+    │   │   └── ai_project_issues_flow/ # Symlink → Issues Flow
     │   └── .claude/
-    │       ├── skills/           # Symlink → shared skills
-    │       ├── commands/         # Symlink → shared commands
-    │       ├── agents/           # Symlink → shared agents
-    │       ├── custom_skills/    # Project-specific skills
-    │       └── settings.local.json  # Project configuration
+    │       ├── skills/               # Symlink → shared skills
+    │       ├── commands/             # Symlink → shared commands
+    │       ├── agents/               # Symlink → shared agents
+    │       ├── custom_skills/        # Project-specific skills
+    │       └── settings.local.json   # Project configuration
     │
     └── project_b/
         └── [same structure]
@@ -55,7 +91,9 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Skills** | `.claude/skills/` | `.claude/custom_skills/` | Both merged |
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
-| **Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
+| **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
+| **Issues Templates** | `.templates/ai_project_issues_flow/` | N/A | Symlink only |
+| **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
 
 ---
@@ -124,10 +162,12 @@ ln -sf "$FRAMEWORK_DIR/.claude/skills" "$PROJECT_DIR/.claude/skills"
 ln -sf "$FRAMEWORK_DIR/.claude/commands" "$PROJECT_DIR/.claude/commands"
 ln -sf "$FRAMEWORK_DIR/.claude/agents" "$PROJECT_DIR/.claude/agents"
 
-# Setup template symlinks
+# Setup template symlinks (BOTH frameworks)
 mkdir -p "$PROJECT_DIR/.templates"
 backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+backup_if_needed "$PROJECT_DIR/.templates/ai_project_issues_flow"
 ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+ln -sf "$FRAMEWORK_DIR/ai_project_issues_flow" "$PROJECT_DIR/.templates/ai_project_issues_flow"
 
 # Setup validation script symlinks
 mkdir -p "$PROJECT_DIR/scripts"
@@ -208,11 +248,14 @@ mkdir -p scripts
 # Make script executable
 chmod +x /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh
 
-# Setup one project
+# Setup one project (basic - templates and skills)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH}
+
+# Setup with GitHub CI/CD workflows (20 workflows + issue templates)
+/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH} --with-github
 ```
 
-### 4. Bulk Project Setup
+### 5. Bulk Project Setup
 
 ```bash
 # Setup all projects at once
@@ -227,6 +270,27 @@ done
 ---
 
 ## Directory Structure Details
+
+### GitHub CI/CD Resources (--with-github)
+
+When using `--with-github`, the following resources are symlinked:
+
+**Workflows (20)**:
+
+| Category | Workflows |
+|----------|-----------|
+| **CI/CD** | ci.yml, deploy-dev.yml, deploy-staging.yml, deploy-prod.yml |
+| **AI Review** | ai-review.yml, agent-dispatch.yml |
+| **Issue Creation** | create-bug-issue.yml, create-deployment-issue.yml, create-qa-testing-issue.yml |
+| **Phase Management** | phase-transition.yml, check-phase-completion.yml, check-all-phases-dev.yml |
+| **QA** | execute-qa-testing.yml |
+| **Project Mgmt** | auto-add-to-project.yml, issue-label-sync.yml, pr-merge-cleanup.yml |
+| **Operations** | release.yml, rollback-prod.yml |
+| **SDD** | mvp-docs-generation.yml, test-pipeline.yml |
+
+**Issue Templates (10)**: architecture_proposal, bug_report, cost_analysis, development_issue, feature_request, infra_task, mcp_server, research_task, security_report
+
+**Config Files**: CODEOWNERS, dependabot.yml, labeler.yml, PULL_REQUEST_TEMPLATE.md
 
 ### Complete Project Layout
 
@@ -246,8 +310,17 @@ done
 │   ├── settings.local.json          # Project configuration
 │   └── CLAUDE.md                    # Project instructions (optional)
 │
+├── .github/                         # Optional: with --with-github flag
+│   ├── workflows/                   # 20 CI/CD workflows
+│   ├── ISSUE_TEMPLATE/              # 10 issue templates
+│   ├── CODEOWNERS
+│   ├── dependabot.yml
+│   ├── labeler.yml
+│   └── PULL_REQUEST_TEMPLATE.md
+│
 ├── .templates/
-│   └── ai_dev_ssd_flow/                 # Symlink → framework templates
+│   ├── ai_dev_ssd_flow/             # Symlink → SDD templates (12 layers)
+│   └── ai_project_issues_flow/      # Symlink → Issues Flow templates
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── BRD/
@@ -419,7 +492,8 @@ Add to each project's `.gitignore`:
 .claude/skills
 .claude/commands
 .claude/agents
-.templates/
+.templates/ai_dev_ssd_flow
+.templates/ai_project_issues_flow
 scripts/validate
 
 # Keep project-specific resources (commit these)
@@ -462,8 +536,11 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 ### Updating Framework Templates
 
 ```bash
-# Edit framework template
-vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md
+# Edit SDD framework template
+vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
+
+# Edit Issues Flow framework template
+vim /opt/data/docs_flow_framework/ai_project_issues_flow/governance/PROJECT_PLAN.md
 
 # Changes immediately available to all projects
 ```
@@ -510,9 +587,13 @@ cd ${PROJECT_PATH}
 # /skill doc-flow  # Should work (shared)
 # /skill ib-api-helper  # Should work (custom, if exists)
 
-# Verify template access
-ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/BRD/
-# Should list template files
+# Verify SDD template access
+ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/01_BRD/
+# Should list: BRD-MVP-TEMPLATE.md, etc.
+
+# Verify Issues Flow template access
+ls -la ${PROJECT_PATH}/.templates/ai_project_issues_flow/governance/
+# Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
 ### Troubleshooting
@@ -630,18 +711,18 @@ rm -rf skills.backup_20251113
 
 ## Use Cases
 
-### Use Case 1: Greenfield Project
+### Use Case 1: Greenfield Project (SDD)
 
-**Scenario**: Starting new project with framework
+**Scenario**: Starting new large project with full SDD methodology
 
 ```bash
 # 1. Create project root directory
 mkdir -p /opt/data/new_project
 
-# 2. Setup hybrid resources (symlinks only)
+# 2. Setup hybrid resources (symlinks to BOTH frameworks)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
-# 3. Create project structure (docs, work_plans, src, tests)
+# 3. Create SDD project structure (docs, work_plans, src, tests)
 cd /opt/data/new_project
 # Use /skill project-init for full structure
 # OR manually:
@@ -649,7 +730,30 @@ mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p work_plans
 mkdir -p src tests
 
-# 4. Result: Complete project setup with framework access
+# 4. Result: Complete project setup with SDD framework access
+# Access templates: .templates/ai_dev_ssd_flow/
+```
+
+### Use Case 1b: Greenfield Project (Issues Flow)
+
+**Scenario**: Starting new small-medium project with lightweight governance
+
+```bash
+# 1. Create project root directory
+mkdir -p /opt/data/new_project
+
+# 2. Setup hybrid resources (symlinks to BOTH frameworks)
+/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
+
+# 3. Copy Issues Flow structure
+cd /opt/data/new_project
+cp -r .templates/ai_project_issues_flow/.github .
+cp .templates/ai_project_issues_flow/governance/PROJECT_PLAN.md docs/
+cp .templates/ai_project_issues_flow/governance/GOVERNANCE_RULES.md docs/
+mkdir -p docs/adr docs/qa
+
+# 4. Result: Project with CI/CD and governance templates
+# Access templates: .templates/ai_project_issues_flow/
 ```
 
 ### Use Case 2: Existing Project Migration
@@ -730,9 +834,16 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ### Related Documentation
 
 - [AI Dev Flow Framework README](./README.md) - Framework overview
-- [Specification-Driven Development Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow
+
+**SDD Framework (ai_dev_ssd_flow)**:
+- [SDD Methodology Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 12-layer workflow
 - [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
+
+**Issues Flow Framework (ai_project_issues_flow)**:
+- [Issues Flow README](./ai_project_issues_flow/README.md) - Lightweight governance overview
+- [Setup Guide](./ai_project_issues_flow/SETUP_GUIDE.md) - Quick start
+- [Governance Rules](./ai_project_issues_flow/governance/GOVERNANCE_RULES.md) - Operational rules
 
 ### External Resources
 
@@ -743,6 +854,16 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ---
 
 ## Changelog
+
+### Version 2.1 (2026-02-17T00:00:00)
+
+- **Dual Framework Support**: Added `ai_project_issues_flow` alongside `ai_dev_ssd_flow`
+- Updated setup script to symlink BOTH framework template directories
+- Added framework selection decision matrix
+- Added Use Case 1b for Issues Flow greenfield projects
+- Updated directory structure diagrams to show both templates
+- Updated .gitignore patterns for dual framework symlinks
+- Updated all template path references to use numbered layer directories
 
 ### Version 2.0 (2026-02-07T00:00:00)
 

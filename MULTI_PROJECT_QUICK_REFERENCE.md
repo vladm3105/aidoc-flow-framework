@@ -4,20 +4,36 @@
 
 ---
 
+## Framework Options
+
+| Framework | Use Case | Structure |
+|-----------|----------|-----------|
+| **ai_dev_ssd_flow** | Large projects, formal requirements | 12 layers: BRD→TASKS |
+| **ai_project_issues_flow** | Small-medium projects, agile | PROJECT_PLAN + IPLANs |
+
+---
+
 ## Setup New Project
 
 ```bash
-# Setup hybrid shared/custom resources
+# Setup hybrid shared/custom resources (BOTH frameworks)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/project_name
+
+# With GitHub CI/CD workflows and issue templates
+/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/project_name --with-github
 
 # What it does:
 # ✓ Creates .claude/custom_skills/, custom_commands/, custom_agents/
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/ai_dev_ssd_flow/ → framework
+# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD templates (12 layers)
+# ✓ Symlinks .templates/ai_project_issues_flow/ → Issues flow templates
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
+#
+# With --with-github flag:
+# ✓ Symlinks .github/ → framework (20 workflows, 10 issue templates)
 #
 # IMPORTANT: This creates symlinks only
 # To complete project setup (create docs/, work_plans/, etc.):
@@ -52,8 +68,16 @@ done
 │   ├── settings.local.json  ✓ Tracked in git
 │   └── CLAUDE.md            ✓ Tracked in git (optional)
 │
+├── .github/                 → /opt/data/docs_flow_framework/.github/ (with --with-github)
+│   ├── workflows/           20 CI/CD workflows
+│   ├── ISSUE_TEMPLATE/      10 issue templates
+│   ├── CODEOWNERS
+│   ├── dependabot.yml
+│   └── PULL_REQUEST_TEMPLATE.md
+│
 ├── .templates/
-│   └── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
+│   ├── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
+│   └── ai_project_issues_flow/  → /opt/data/docs_flow_framework/ai_project_issues_flow/
 │
 ├── scripts/
 │   ├── validate/            → /opt/data/docs_flow_framework/scripts/
@@ -132,12 +156,39 @@ ls /opt/data/docs_flow_framework/.claude/skills/
 ### Templates (All Projects)
 
 ```bash
-# View templates
+# View SDD templates (12 layers - large projects)
 ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 
-# Template directories (11 artifacts):
-# BRD/, PRD/, EARS/, BDD/, ADR/, SYS/, REQ/,
-# IMPL/, CTR/, SPEC/, TASKS/
+# Template directories:
+# 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SYS/,
+# 07_REQ/, 08_CTR/, 09_SPEC/, 10_TSPEC/, 11_TASKS/, AUTOPILOT/
+
+# View Issues Flow templates (lightweight - small projects)
+ls /opt/data/docs_flow_framework/ai_project_issues_flow/
+
+# Key directories:
+# governance/ - PROJECT_PLAN, GOVERNANCE_RULES
+# templates/ - README, CLAUDE.md, CONTRIBUTING
+# .github/ - workflows, issue templates
+# docs/ - ADRs, QA docs, core specs
+```
+
+### GitHub Workflows (with --with-github)
+
+```bash
+# Available workflows (20 total):
+ls /opt/data/docs_flow_framework/.github/workflows/
+
+# CI/CD: ci.yml, deploy-dev.yml, deploy-staging.yml, deploy-prod.yml
+# AI Review: ai-review.yml, agent-dispatch.yml
+# Issue Management: create-bug-issue.yml, create-deployment-issue.yml,
+#                   create-qa-testing-issue.yml, issue-label-sync.yml
+# Phase Management: phase-transition.yml, check-phase-completion.yml,
+#                   check-all-phases-dev.yml
+# QA: execute-qa-testing.yml
+# Project: auto-add-to-project.yml, pr-merge-cleanup.yml
+# Ops: release.yml, rollback-prod.yml
+# SDD: mvp-docs-generation.yml, test-pipeline.yml
 ```
 
 ### Validation Scripts (All Projects)
@@ -186,8 +237,11 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 ### Update Template
 
 ```bash
-# Edit in framework
-vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/REQ/REQ-TEMPLATE.md
+# Edit SDD template in framework
+vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
+
+# Edit Issues Flow template in framework
+vim /opt/data/docs_flow_framework/ai_project_issues_flow/governance/PROJECT_PLAN.md
 
 # Changes immediately available to ALL projects
 ```
@@ -238,8 +292,13 @@ cd /opt/data/project_name
 ### Verify Template Access
 
 ```bash
-ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/BRD/
-# Should list: BRD-TEMPLATE.md, BRD-template-2.md, etc.
+# Verify SDD templates
+ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/
+# Should list: BRD-MVP-TEMPLATE.md, etc.
+
+# Verify Issues Flow templates
+ls -la /opt/data/project_name/.templates/ai_project_issues_flow/governance/
+# Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
 ---
@@ -351,18 +410,35 @@ git commit -m "Add project-specific skill"
 # 3. Only available in this project
 ```
 
-### Pattern 3: Template Usage
+### Pattern 3: Template Usage (SDD Framework)
 
 ```bash
-# 1. Access template via symlink
-cat /opt/data/project_name/.templates/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md
+# 1. Access SDD template via symlink
+cat /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
 
 # 2. Copy to project docs
-cp .templates/ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md \
+cp .templates/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md \
    docs/BRD/BRD-001_my_requirements.md
 
 # 3. Edit project copy
 vim docs/BRD/BRD-001_my_requirements.md
+```
+
+### Pattern 4: Template Usage (Issues Flow)
+
+```bash
+# 1. Access Issues Flow template via symlink
+cat /opt/data/project_name/.templates/ai_project_issues_flow/governance/PROJECT_PLAN.md
+
+# 2. Copy governance docs to project
+cp .templates/ai_project_issues_flow/governance/PROJECT_PLAN.md \
+   docs/PROJECT_PLAN.md
+
+# 3. Copy GitHub workflows/templates
+cp -r .templates/ai_project_issues_flow/.github/* .github/
+
+# 4. Customize for project
+vim docs/PROJECT_PLAN.md
 ```
 
 ---
@@ -376,6 +452,13 @@ vim docs/BRD/BRD-001_my_requirements.md
 **Setup Script**: `/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh`
 
 **Skills Catalog**: `/opt/data/docs_flow_framework/.claude/skills/README.md`
+
+### Framework-Specific Documentation
+
+| Framework | README | Key Docs |
+|-----------|--------|----------|
+| **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 12-layer SDD methodology |
+| **ai_project_issues_flow** | `ai_project_issues_flow/README.md` | Governance, CI/CD, Issues |
 
 ---
 
@@ -411,4 +494,4 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ---
 
-**Quick Reference Version**: 2.0 (2026-02-07T00:00:00)
+**Quick Reference Version**: 2.1 (2026-02-17T00:00:00)
