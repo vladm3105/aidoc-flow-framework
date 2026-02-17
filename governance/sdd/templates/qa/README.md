@@ -52,9 +52,9 @@ pytest tests/unit/test_models.py -v
 
 ## Related Documents
 
-- [GOVERNANCE_RULES.md §8](../../governance/GOVERNANCE_RULES.md) — QA & Deployment rules
-- [DEFINITION_OF_DONE.md](../../governance/DEFINITION_OF_DONE.md) — Testing checklist items
-- [GITHUB_WORKFLOWS.md](../../governance/GITHUB_WORKFLOWS.md) — CI/CD workflow documentation
+- [GOVERNANCE_RULES.md](../../GOVERNANCE_RULES.md) — Operational rules
+- [DEFINITION_OF_DONE.md](../../../shared/DEFINITION_OF_DONE.md) — Testing checklist items
+- [GITHUB_WORKFLOWS.md](../../../shared/github/GITHUB_WORKFLOWS.md) — CI/CD workflow documentation
 
 ---
 
