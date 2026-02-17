@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "project-docs": {
+      "serverUrl": "http://localhost:1416/sse",
+      "transport": "sse",
+      "description": "Haystack RAG for project documentation"
+    },
+    "research-kb": {
+      "serverUrl": "http://localhost:9621/sse",
+      "transport": "sse",
+      "description": "LightRAG for research and analysis"
+    }
+  }
+}

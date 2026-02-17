@@ -1,0 +1,26 @@
+{
+  "mcp": {
+    "servers": {
+      "project-docs": {
+        "type": "sse",
+        "url": "http://localhost:1416/sse",
+        "description": "Haystack RAG for project documentation"
+      },
+      "research-kb": {
+        "type": "sse",
+        "url": "http://localhost:9621/sse",
+        "description": "LightRAG for research and analysis"
+      }
+    }
+  },
+  "claude.mcpServers": {
+    "project-docs": {
+      "url": "http://localhost:1416/sse",
+      "transport": "sse"
+    },
+    "research-kb": {
+      "url": "http://localhost:9621/sse",
+      "transport": "sse"
+    }
+  }
+}

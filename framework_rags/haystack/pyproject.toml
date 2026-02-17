@@ -1,0 +1,51 @@
+[project]
+name = "haystack-rag"
+version = "1.0.0"
+description = "Haystack RAG service for project documentation"
+requires-python = ">=3.10"
+
+dependencies = [
+    "haystack-ai>=2.0",
+    "pgvector-haystack>=0.3.0",
+    "hayhooks[mcp]>=0.1.0",
+    "cohere>=5.0",
+    "openai>=1.0",
+    "pyyaml>=6.0",
+    "psycopg2-binary>=2.9",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.23",
+    "ragas>=0.1.0",
+    "black>=24.0",
+    "ruff>=0.3.0",
+]
+
+evaluation = [
+    "ragas>=0.1.0",
+    "datasets>=2.0",
+]
+
+rerankers = [
+    "cohere>=5.0",
+    "jina-reranker>=0.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "utest: unit tests",
+    "itest: integration tests (requires database)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]

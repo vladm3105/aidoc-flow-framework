@@ -1,0 +1,41 @@
+[project]
+name = "lightrag-service"
+version = "1.0.0"
+description = "LightRAG service for research and analysis knowledge base"
+requires-python = ">=3.10"
+
+dependencies = [
+    "lightrag-hku>=0.1.0",
+    "neo4j>=5.0",
+    "psycopg2-binary>=2.9",
+    "cohere>=5.0",
+    "openai>=1.0",
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.23",
+    "black>=24.0",
+    "ruff>=0.3.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "utest: unit tests",
+    "itest: integration tests (requires database)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]

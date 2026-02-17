@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "project-docs": {
+      "command": "hayhooks",
+      "args": ["mcp", "--host", "localhost", "--port", "1416"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "PG_CONN_STR": "postgresql://raguser:ragpass@localhost:5432/ragdb"
+      },
+      "description": "Haystack RAG for project documentation (REF, BRD, PRD, SPEC, etc.)"
+    },
+    "research-kb": {
+      "command": "python",
+      "args": ["-m", "daniel_lightrag_mcp"],
+      "env": {
+        "LIGHTRAG_BASE_URL": "http://localhost:9621",
+        "LIGHTRAG_API_KEY": "lightragsecretkey",
+        "LIGHTRAG_TIMEOUT": "60"
+      },
+      "description": "LightRAG for research and cross-document analysis"
+    }
+  }
+}
