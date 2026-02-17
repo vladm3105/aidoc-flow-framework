@@ -342,7 +342,7 @@ scripts/ghes-runner/setup-local-runner.sh remove
 
 - [Implementation Plans](../plans/) — Production runner and other plans
 - [GITHUB_WORKFLOWS.md](../GITHUB_WORKFLOWS.md) — All workflow documentation
-- [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) — Project operational rules
+- [GOVERNANCE_RULES.md](../../GOVERNANCE_RULES.md) — Project operational rules
 
 ---
 

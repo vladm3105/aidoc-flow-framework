@@ -15,9 +15,9 @@ Operational policies and conventions that govern how this project is developed. 
 | Know which branch to create | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) |
 | Tag and release a component | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) |
 | Understand human vs AI task split | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) |
-| Set up gh CLI or MCP servers | [GITHUB_TOOLS_SETUP.md](./GITHUB_TOOLS_SETUP.md) |
-| Configure GitHub Actions workflows | [GITHUB_WORKFLOWS.md](./GITHUB_WORKFLOWS.md) |
-| Set up project board, labels, fields | [GITHUB_PROJECT_SETUP_AI_FIRST.md](./GITHUB_PROJECT_SETUP_AI_FIRST.md) |
+| Set up gh CLI or MCP servers | [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) |
+| Configure GitHub Actions workflows | [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) |
+| Set up project board, labels, fields | [GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP.md) |
 | Understand the phase timeline | [ROADMAP.md](./ROADMAP.md) |
 | Find task specs and sprint schedules | [PROJECT_PLAN.md](./PROJECT_PLAN.md) |
 | Review AI time estimates | [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) |
@@ -34,7 +34,7 @@ Operational policies and conventions that govern how this project is developed. 
 | Set up or troubleshoot AI PR review | [AI_PR_Review/](./AI_PR_Review/) (overview, local setup, onboarding) |
 | Conduct on-demand AI agent PR review | [AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) |
 | Use local AI ({AI_TOOL_NAME} Code, Gemini CLI) to review a PR | [MANUAL_REVIEW_GUIDE.md](./AI_PR_Review/MANUAL_REVIEW_GUIDE.md) |
-| Set up or manage GHES self-hosted runner | [GHES_RUNNER_GUIDE.md](./ghes_runner/GHES_RUNNER_GUIDE.md) |
+| Set up or manage GHES self-hosted runner | [GHES_RUNNER_GUIDE.md](./github/ghes_runner/GHES_RUNNER_GUIDE.md) |
 
 > **Canonical file index**: [HOME_REPO.md](./HOME_REPO.md) (directory tree) | **Categorized links**: [PROJECT_KICKOFF_PLAN.md §9](./PROJECT_KICKOFF_PLAN.md)
 
@@ -56,7 +56,7 @@ Operational policies and conventions that govern how this project is developed. 
 | Rule | Detail | Reference |
 |:-----|:-------|:----------|
 | **Authentication** | Workload Identity Federation (WIF) for all GCP auth. No service account JSON keys. | ADR-002 |
-| **CI/CD Secrets** | `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`. Never `GCP_SA_KEY`. | [GITHUB_TOOLS_SETUP.md](./GITHUB_TOOLS_SETUP.md) |
+| **CI/CD Secrets** | `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`. Never `GCP_SA_KEY`. | [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) |
 | **Branch Protection** | `main` is protected. All changes via PR. Minimum 1 review. No force-push. | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) |
 | **PR Reviewers** | Auto-assigned via CODEOWNERS; fallback: assign from reviewer roster. At least 1 reviewer per PR. | [CODEOWNERS](../.github/CODEOWNERS), [CONTRIBUTING.md](../CONTRIBUTING.md) §Reviewers |
 | **AI Trust Boundary** | AI has no access to: GCP service account keys, API tokens, production databases, customer data, billing credentials. | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) |

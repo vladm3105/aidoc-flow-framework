@@ -1349,7 +1349,7 @@ Development (ai:development) → PR merge
 | `iteration:1-3` | Bug fix iteration count |
 | `needs-human` | Max iterations exceeded |
 
-See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) for full details.
+See [AI_ISSUE_LIFECYCLE.md](../AI_ISSUE_LIFECYCLE.md) for full details.
 
 **Note:** `ai:approved`/`ai:rejected` labels are intentionally not used - PR state already indicates approval status.
 

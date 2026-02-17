@@ -19,6 +19,15 @@ Unified governance rules for both SDD and AI Project Flow frameworks.
 
 ---
 
+## AI Development Workflow
+
+| Document | Description |
+|:---------|:------------|
+| [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) | 4-stage iterative quality loop (Development → Deployment → QA → Bug Fix) |
+| [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) | AI-assisted time estimation methodology with speedup factors |
+
+---
+
 ## AI PR Review
 
 Automated and on-demand AI-powered pull request review workflows.
@@ -64,6 +73,9 @@ Implementation plan (IPLAN) templates and guidance.
 |:---------|:------------|
 | [plans/README.md](./plans/README.md) | Plan management guide and conventions |
 | [plans/IPLAN-TEMPLATE.md](./plans/IPLAN-TEMPLATE.md) | Blank IPLAN template |
+| [plans/IPLAN-001_phase-issue-review.md](./plans/IPLAN-001_phase-issue-review.md) | Pre-sprint phase issue audit template |
+| [plans/IPLAN-002_ai-pr-review-workflow.md](./plans/IPLAN-002_ai-pr-review-workflow.md) | AI PR review setup template |
+| [plans/IPLAN-003_phase-gated-deployment.md](./plans/IPLAN-003_phase-gated-deployment.md) | Phase-gated deployment configuration template |
 
 ---
 

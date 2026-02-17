@@ -43,7 +43,7 @@ The project has two AI review modes. Use the right one:
 | Repo cloned locally | `cd {LOCAL_PROJECT_PATH}/{REPO_NAME}` (or your local path) |
 | Write access (for fix loop) | Repo collaborator with push permission to PR branches |
 
-For detailed `gh` and MCP setup, see [GITHUB_TOOLS_SETUP.md](../GITHUB_TOOLS_SETUP.md).
+For detailed `gh` and MCP setup, see [GITHUB_TOOLS_SETUP.md](../github/GITHUB_TOOLS_SETUP.md).
 
 ---
 
@@ -210,7 +210,7 @@ AI reviews are **advisory**. Human review is still required per branch protectio
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale for AI PR review approach |
 | [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) | AI PR review policy (§3), board sync rules |
-| [GITHUB_TOOLS_SETUP.md](../GITHUB_TOOLS_SETUP.md) | `gh` CLI and MCP server configuration |
+| [GITHUB_TOOLS_SETUP.md](../github/GITHUB_TOOLS_SETUP.md) | `gh` CLI and MCP server configuration |
 | [CONTRIBUTING.md](../../CONTRIBUTING.md#reviewer-roster) | Reviewer roster for PR assignment |
 
 ---

@@ -29,7 +29,7 @@ The **home repo** is [`{REPO_NAME}`](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NA
 | Root `README.md`, `CONTRIBUTING.md` |
 
 > [!IMPORTANT]
-> All issues, milestones, and labels are tracked in this repo. The [V2 Project Board (#{PROJECT_BOARD_NUMBER})](https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}) pulls issues from this repo. See [GITHUB_PROJECT_SETUP_AI_FIRST.md](./GITHUB_PROJECT_SETUP_AI_FIRST.md) for AI-optimized workflow setup.
+> All issues, milestones, and labels are tracked in this repo. The [V2 Project Board (#{PROJECT_BOARD_NUMBER})](https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}) pulls issues from this repo. See [GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP.md) for AI-optimized workflow setup.
 
 ### Why Monorepo?
 

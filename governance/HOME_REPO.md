@@ -303,9 +303,9 @@ The home repo has **63 labels** organized by category:
 - [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) — Versioning and releases
 
 ### GitHub Integration
-- [GITHUB_WORKFLOWS.md](./GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation
-- [GITHUB_PROJECT_SETUP_AI_FIRST.md](./GITHUB_PROJECT_SETUP_AI_FIRST.md) — Project board setup
-- [GITHUB_TOOLS_SETUP.md](./GITHUB_TOOLS_SETUP.md) — CLI and MCP configuration
+- [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation
+- [GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP.md) — Project board setup
+- [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) — CLI and MCP configuration
 
 ---
 

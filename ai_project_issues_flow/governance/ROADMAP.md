@@ -10,10 +10,10 @@
 
 **Related Planning Documents**:
 - [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with task specifications and sprint planning
-- [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
-- [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
-- [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) — 4-stage issue lifecycle (Development → Deployment → QA → Bug Fix)
-- [Implementation Plans](./plans/) — AI-first phase-gated deployment and other workflows
+- [AI_TIME_ESTIMATION.md](../../governance/AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
+- [DEFINITION_OF_DONE.md](../../governance/DEFINITION_OF_DONE.md) — Completion criteria
+- [AI_ISSUE_LIFECYCLE.md](../../governance/AI_ISSUE_LIFECYCLE.md) — 4-stage issue lifecycle (Development → Deployment → QA → Bug Fix)
+- [Implementation Plans](../../governance/plans/) — AI-first phase-gated deployment and other workflows
 
 ---
 
@@ -315,7 +315,7 @@ graph LR
 | 8.8 | Developer onboarding guide | **P2** | — |
 | 8.9 | Release Platform `v4.0.0` | **P0** | All above |
 
-> **Tooling**: E2E tests use Playwright MCP for AI-assisted test development and Playwright test runner for CI. See [GITHUB_TOOLS_SETUP.md](./GITHUB_TOOLS_SETUP.md#7-browser-automation-playwright-mcp) for configuration.
+> **Tooling**: E2E tests use Playwright MCP for AI-assisted test development and Playwright test runner for CI. See [GITHUB_TOOLS_SETUP.md](../../governance/github/GITHUB_TOOLS_SETUP.md#7-browser-automation-playwright-mcp) for configuration.
 
 **Exit Criteria**: All Cloud Run services pass Trivy scan (0 critical CVEs). E2E tests cover all 4 operational modes. Load test confirms < 5s p95 latency at 100 tenants. Documentation reviewed by at least 1 external developer.
 
@@ -351,7 +351,7 @@ All phases AI-optimized (20 weeks total)
 
 ## Deployment & Testing Strategy
 
-This project uses a **phase-gated deployment model** with a **4-stage iterative QA loop** optimized for AI-first development. See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) and [plans/](./plans/) for full details.
+This project uses a **phase-gated deployment model** with a **4-stage iterative QA loop** optimized for AI-first development. See [AI_ISSUE_LIFECYCLE.md](../../governance/AI_ISSUE_LIFECYCLE.md) and [plans/](../../governance/plans/) for full details.
 
 ### Deployment Model
 

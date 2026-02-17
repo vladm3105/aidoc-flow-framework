@@ -543,7 +543,7 @@ permissions:
   issues: write          # Required for PR label operations via /issues/{pr}/labels API
 ```
 
-For architecture and review policy details, see [governance/AI_PR_Review/README.md](./AI_PR_Review/README.md).
+For architecture and review policy details, see [governance/AI_PR_Review/README.md](../AI_PR_Review/README.md).
 
 ---
 
@@ -930,7 +930,7 @@ scripts/project_setup/gcp/setup-environments.sh
 
 ## Phase-Gated Deployment Workflows
 
-The following workflows implement the AI-first phase-gated deployment model with 4-stage iterative QA loop. See [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) for architecture details. Implementation plans are available in the [plans/](./plans/) directory.
+The following workflows implement the AI-first phase-gated deployment model with 4-stage iterative QA loop. See [AI_ISSUE_LIFECYCLE.md](../AI_ISSUE_LIFECYCLE.md) for architecture details. Implementation plans are available in the [plans/](../plans/) directory.
 
 ### Agent Dispatch Workflow
 

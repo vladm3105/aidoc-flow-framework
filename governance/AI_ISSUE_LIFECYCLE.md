@@ -891,5 +891,5 @@ When multiple AI Agents work in parallel, `check_conflicts.py` prevents merge co
 
 - [Implementation Plans](plans/) — IPLAN documents for deployment workflows
 - [GOVERNANCE_RULES.md](GOVERNANCE_RULES.md) — AI workflow rules
-- [GITHUB_WORKFLOWS.md](GITHUB_WORKFLOWS.md) — Workflow documentation
+- [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — Workflow documentation
 - [AI_AGENT_REVIEW_WORKFLOW.md](AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) — PR review process
