@@ -1,6 +1,6 @@
-# Framework Comparison: Issues Flow vs SDD Flow
+# Flow Comparison: Issues Flow vs SDD Flow
 
-This document explains the two complementary frameworks in the Docs Flow Framework repository and helps you choose the right one for your project.
+This document explains the two complementary development flows in the Docs Flow Framework repository and helps you choose the right one for your project.
 
 ---
 

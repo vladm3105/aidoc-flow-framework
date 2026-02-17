@@ -13,7 +13,7 @@ This repository contains **two complementary frameworks**:
 
 ## Framework Selection
 
-> **Detailed comparison**: See [FRAMEWORK_COMPARISON.md](./FRAMEWORK_COMPARISON.md) for complete side-by-side analysis.
+> **Detailed comparison**: See [FLOW_COMPARISON.md](./FLOW_COMPARISON.md) for complete side-by-side analysis.
 
 ### Use Issues Flow when:
 - Building MVPs or small-to-medium projects
@@ -147,7 +147,7 @@ Full SDD documentation: [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/)
 
 | Framework | How Issues Are Created |
 |:----------|:-----------------------|
-| **Issues Flow** | Human creates issue directly from `00_REF/` (project description) → AI executes |
+| **Issues Flow** | AI Agent creates issues from `00_REF/` (human-written project description) → AI executes |
 | **SDD Flow** | Create BRD→PRD→...→TASKS documents first → Issues derived from TASKS layer |
 
 ---
