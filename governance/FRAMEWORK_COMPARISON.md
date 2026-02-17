@@ -39,20 +39,20 @@ This document explains the two complementary frameworks in the Docs Flow Framewo
 ### Issues Flow: Direct from Project Description
 
 ```
-00_REF/ (Project Description)
+Human writes 00_REF/ (Project Description)
        ↓
-  Human reads requirements
+  AI Agent reads 00_REF/ documents
        ↓
-  Human creates GitHub issue
+  AI Agent creates GitHub issues
        ↓
-  AI agent executes when ai:ready
+  AI Agent executes issues (ai:ready → ai:in-progress)
        ↓
   PR → Review → Merge → Deploy
 ```
 
 **Characteristics:**
 - Fast setup (minutes)
-- Human judgment for task breakdown
+- AI creates issues from human-written project description
 - GitHub issues are the tracking unit
 - Traceability via issue links
 - 4-stage loop: Dev → Deploy → QA → Bug Fix

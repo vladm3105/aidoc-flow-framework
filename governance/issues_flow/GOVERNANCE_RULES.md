@@ -11,7 +11,7 @@ Operational policies and conventions that govern how this project is developed. 
 
 | Aspect | Issues Flow (this doc) | SDD Flow |
 |:-------|:-----------------------|:---------|
-| **Issue Creation** | Human creates issue directly from `00_REF/` project description | Issues derived from TASKS layer after 15-layer documentation |
+| **Issue Creation** | AI Agent creates issues directly from `00_REF/` (human-written project description) | Issues derived from TASKS layer after 15-layer documentation |
 | **Documentation** | PROJECT_PLAN + IPLANs | BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS |
 | **Traceability** | GitHub issue links | Cumulative @tags across all layers |
 | **Best For** | MVPs, small-medium projects (1-6 months) | Enterprise/regulated projects (months-years) |

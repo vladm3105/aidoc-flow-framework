@@ -10,19 +10,19 @@ This document describes how GitHub issues flow through the AI-first development 
 
 ## How Issues Are Created in Issues Flow
 
-Unlike SDD Flow where issues are derived from formal TASKS documents, **Issues Flow creates issues directly from the project description**:
+Unlike SDD Flow where issues are derived from formal TASKS documents, **Issues Flow has the AI Agent create issues directly from the project description**:
 
 ```
-00_REF/ (Project Description)
+Human creates 00_REF/ (Project Description)
     ↓
-Human reviews requirements
+AI Agent reads 00_REF/ documents
     ↓
-Human creates GitHub issue with:
+AI Agent creates GitHub issues with:
     - Clear title: [Phase-Sprint] Task description
     - Labels: phase:N, ai:development, component:X
     - Acceptance criteria in body
     ↓
-AI agent picks up issue when ai:ready label is added
+AI Agent executes issues (ai:ready → ai:in-progress → PR)
 ```
 
 This approach is faster but less formal than SDD Flow's 15-layer documentation chain.
