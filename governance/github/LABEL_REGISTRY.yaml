@@ -1,0 +1,192 @@
+# Label Registry - Single Source of Truth
+# Used by: setup-all-labels.sh, tasks_to_github.py, workflows
+#
+# Update this file when adding/modifying labels.
+# Run setup-all-labels.sh to apply changes.
+
+version: "2.0"
+last_updated: "2026-02-18"
+
+categories:
+  # === WORKFLOW LABELS (Issue State) ===
+  workflow:
+    - name: "ai:ready"
+      color: "0052CC"
+      description: "Ready for AI agent to work on"
+    - name: "ai:in-progress"
+      color: "FBCA04"
+      description: "AI agent actively working"
+    - name: "ai:review-requested"
+      color: "1D76DB"
+      description: "AI work complete, human review needed"
+
+  # === ISSUE TYPE LABELS ===
+  issue_type:
+    - name: "ai:development"
+      color: "5319E7"
+      description: "Development issue (code changes)"
+    - name: "ai:deployment"
+      color: "006B75"
+      description: "Deployment issue"
+    - name: "ai:qa-testing"
+      color: "7B68EE"
+      description: "QA testing issue"
+    - name: "bug"
+      color: "D73A4A"
+      description: "Bug fix"
+    - name: "enhancement"
+      color: "A2EEEF"
+      description: "New feature or enhancement"
+    - name: "documentation"
+      color: "0075CA"
+      description: "Documentation only"
+
+  # === SOURCE LABELS ===
+  source:
+    - name: "source:sdd"
+      color: "7057FF"
+      description: "Issue generated from SDD TASKS"
+    - name: "source:manual"
+      color: "BFD4F2"
+      description: "Manually created issue"
+    - name: "source:automation"
+      color: "D4C5F9"
+      description: "Auto-generated (QA, deployment)"
+
+  # === PHASE LABELS ===
+  phase:
+    - name: "phase:0"
+      color: "EEEEEE"
+      description: "Phase 0 (Sprint 0 / Setup)"
+    - name: "phase:1"
+      color: "D93F0B"
+      description: "Phase 1 work item"
+    - name: "phase:2"
+      color: "E99695"
+      description: "Phase 2 work item"
+    - name: "phase:3"
+      color: "FEF2C0"
+      description: "Phase 3 work item"
+    - name: "phase:4"
+      color: "C2E0C6"
+      description: "Phase 4 work item"
+    - name: "phase:5"
+      color: "BFDADC"
+      description: "Phase 5 work item"
+    - name: "phase:6"
+      color: "C5DEF5"
+      description: "Phase 6 work item"
+    - name: "phase:7"
+      color: "BFD4F2"
+      description: "Phase 7 work item"
+    - name: "phase:8"
+      color: "D4C5F9"
+      description: "Phase 8 work item"
+
+  # === SIZE LABELS ===
+  size:
+    - name: "size:XS"
+      color: "C2E0C6"
+      description: "Extra small (< 1 hour)"
+    - name: "size:S"
+      color: "C2E0C6"
+      description: "Small (1-4 hours)"
+    - name: "size:M"
+      color: "FEF2C0"
+      description: "Medium (4-8 hours)"
+    - name: "size:L"
+      color: "F9D0C4"
+      description: "Large (1-2 days)"
+    - name: "size:XL"
+      color: "E99695"
+      description: "Extra large (3+ days)"
+
+  # === PRIORITY LABELS ===
+  priority:
+    - name: "priority:P0"
+      color: "B60205"
+      description: "Critical - drop everything"
+    - name: "priority:P1"
+      color: "D93F0B"
+      description: "High - current sprint"
+    - name: "priority:P2"
+      color: "FBCA04"
+      description: "Medium - next sprint"
+    - name: "priority:P3"
+      color: "0E8A16"
+      description: "Low - backlog"
+
+  # === QA STATUS LABELS ===
+  qa:
+    - name: "ai:qa-passed"
+      color: "28A745"
+      description: "QA tests passed"
+    - name: "ai:qa-failed"
+      color: "DC3545"
+      description: "QA tests failed"
+    - name: "iteration:1"
+      color: "6C757D"
+      description: "First bug fix attempt"
+    - name: "iteration:2"
+      color: "6C757D"
+      description: "Second bug fix attempt"
+    - name: "iteration:3"
+      color: "6C757D"
+      description: "Third (final) bug fix attempt"
+    - name: "needs-human"
+      color: "FF0000"
+      description: "Max iterations exceeded, needs human"
+
+  # === PR REVIEW LABELS ===
+  review:
+    - name: "ai:review-passed"
+      color: "0E8A16"
+      description: "AI review approved"
+    - name: "ai:review-failed"
+      color: "B60205"
+      description: "AI review requested changes"
+    - name: "skip-ai-review"
+      color: "EEEEEE"
+      description: "Skip AI code review for this PR"
+
+  # === CHG LABELS (SDD-Full) ===
+  chg:
+    - name: "chg:pending"
+      color: "F9A825"
+      description: "CHG document awaiting approval"
+    - name: "chg:approved"
+      color: "43A047"
+      description: "CHG document approved"
+    - name: "chg:rejected"
+      color: "D32F2F"
+      description: "CHG document rejected"
+
+  # === COMPONENT LABELS ===
+  component:
+    - name: "component:api"
+      color: "1D76DB"
+      description: "API/backend component"
+    - name: "component:frontend"
+      color: "5319E7"
+      description: "Frontend/UI component"
+    - name: "component:infrastructure"
+      color: "006B75"
+      description: "Infrastructure/DevOps"
+    - name: "component:agents"
+      color: "7057FF"
+      description: "AI agents"
+    - name: "component:docs"
+      color: "0075CA"
+      description: "Documentation"
+
+  # === STATUS LABELS ===
+  status:
+    - name: "status:blocked"
+      color: "D73A4A"
+      description: "Blocked by dependency"
+    - name: "status:wontfix"
+      color: "FFFFFF"
+      description: "Will not be fixed"
+    - name: "status:duplicate"
+      color: "CFD3D7"
+      description: "Duplicate issue"

@@ -257,6 +257,24 @@ All templates in `ai_dev_ssd_flow/` - see [ai_dev_ssd_flow/README.md](../ai_dev_
 
 ---
 
+## Testing Requirements by Depth
+
+| Depth | UTEST | ITEST | STEST/FTEST | BDD |
+|-------|-------|-------|-------------|-----|
+| **Lite** | >=60% coverage | Optional | Optional | Not required |
+| **Standard** | >=80% coverage | >=60% coverage | Critical paths | Optional |
+| **Full** | >=80% coverage | >=60% coverage | Full coverage | Required |
+
+### Execution Model
+
+All depths follow the same test pyramid execution model:
+- **CI Pipeline**: UTEST + ITEST (development)
+- **QA Staging**: STEST + FTEST + BDD (pre-production)
+
+See: [`ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md`](../ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md)
+
+---
+
 ## Summary
 
 | Choose | When |

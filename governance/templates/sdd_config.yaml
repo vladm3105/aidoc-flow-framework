@@ -1,0 +1,64 @@
+# SDD Project Configuration
+# Copy to project root and customize.
+#
+# This file configures which SDD depth is used and enables
+# corresponding validation and change management rules.
+
+# SDD depth: lite | standard | full
+sdd_depth: "standard"
+
+# Required layers per depth
+required_layers:
+  lite:
+    - 0   # REF
+    - 1   # BRD-MVP
+    - 2   # PRD-MVP
+    - 11  # TASKS-MVP
+  standard:
+    - 0   # REF
+    - 1   # BRD
+    - 2   # PRD
+    - 3   # EARS
+    - 5   # ADR
+    - 6   # SYS
+    - 7   # REQ
+    - 11  # TASKS
+  full:
+    - 0   # REF
+    - 1   # BRD
+    - 2   # PRD
+    - 3   # EARS
+    - 4   # BDD
+    - 5   # ADR
+    - 6   # SYS
+    - 7   # REQ
+    - 8   # CTR (optional)
+    - 9   # SPEC
+    - 10  # TSPEC
+    - 11  # TASKS
+
+# Validation settings
+validation:
+  enforce_traceability: true
+  require_quality_score: 90      # Auto-approve if score >= this
+  block_on_missing_layers: true  # Fail CI if required layers missing
+
+# Change management
+change_management:
+  method: "pr-based"             # pr-based | chg-gated
+  # Note: chg-gated only valid for full depth
+
+# Test requirements by depth
+testing:
+  lite:
+    utest_coverage: 60
+    itest_coverage: 0
+    require_bdd: false
+  standard:
+    utest_coverage: 80
+    itest_coverage: 60
+    require_bdd: false
+  full:
+    utest_coverage: 80
+    itest_coverage: 60
+    require_bdd: true

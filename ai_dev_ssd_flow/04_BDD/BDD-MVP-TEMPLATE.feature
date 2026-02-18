@@ -1,6 +1,16 @@
 # =============================================================================
 # BDD-MVP-TEMPLATE: Behavior Driven Development (MVP v2.0)
 # =============================================================================
+#
+# EXECUTION ENVIRONMENT: QA STAGING ONLY
+# - BDD tests run AFTER staging deployment
+# - Tests validate user acceptance criteria
+# - Part of QA workflow (ai:qa-testing)
+#
+# DO NOT run in CI pipeline - use UTEST/ITEST for CI
+#
+# See: ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md for test pyramid documentation
+# =============================================================================
 
 # MVP Note: Use a single .feature file per module; split into multiple files only when >500 lines.
 

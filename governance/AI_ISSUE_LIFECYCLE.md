@@ -35,6 +35,41 @@ AI Agent executes issues (ai:ready → ai:in-progress → PR)
 
 ---
 
+## Issue Sources
+
+Issues can be created through three channels:
+
+### 1. TASKS-Generated (SDD Workflow)
+
+**Script**: `ai_dev_ssd_flow/scripts/tasks_to_github.py`
+**Source**: TASKS YAML files from SDD Layer 11
+**Labels**: `source:sdd`, `ai:ready`, `phase:N`
+**Includes**: Full traceability tags (@brd, @prd, @spec, @tasks)
+
+```bash
+python ai_dev_ssd_flow/scripts/tasks_to_github.py \
+  --tasks-file docs/11_TASKS/TASKS-01.yaml \
+  --repo owner/repo
+```
+
+### 2. Human-Created (Manual)
+
+**Method**: Direct issue creation in GitHub
+**Labels**: `ai:development`, `phase:N`
+**Template**: `.github/ISSUE_TEMPLATE/development-task.yml`
+
+### 3. Automation-Generated
+
+| Workflow | Creates | Trigger |
+|----------|---------|---------|
+| `create-bug-issue.yml` | Bug issues from QA failures | Test failure |
+| `create-deployment-issue.yml` | Deployment issues | PR merge |
+| `create-qa-testing-issue.yml` | QA testing issues | Deploy complete |
+
+**Bridge Documentation**: See [TASKS_IPLAN_BRIDGE.md](./TASKS_IPLAN_BRIDGE.md) for TASKS-to-IPLAN workflow.
+
+---
+
 ## Overview
 
 This workflow uses a **4-stage iterative quality loop** with four issue types:

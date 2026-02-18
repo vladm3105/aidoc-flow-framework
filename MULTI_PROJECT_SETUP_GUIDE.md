@@ -25,7 +25,7 @@ This repository provides a **unified SDD framework** with scalable depth:
 | Directory | Purpose |
 |:----------|:--------|
 | `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
-| `governance/sdd/` | Project governance, setup guides, scripts, CI/CD templates |
+| `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 
 **See**: [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) for detailed layer mappings.
@@ -45,7 +45,7 @@ This repository provides a **unified SDD framework** with scalable depth:
 │   │   ├── ...                       # (layers 03-11)
 │   │   └── AUTOPILOT/                # Automation scripts
 │   │
-│   ├── governance/sdd/       # SDD governance templates
+│   ├── governance/       # SDD governance templates
 │   │   ├── governance/               # PROJECT_PLAN, rules
 │   │   ├── templates/                # README, CLAUDE.md
 │   │   ├── .github/                  # Workflows, issue templates
@@ -63,7 +63,7 @@ This repository provides a **unified SDD framework** with scalable depth:
     │   ├── src/                      # Source code
     │   ├── .templates/
     │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD templates
-    │   │   └── governance/sdd/ # Symlink → SDD governance
+    │   │   └── governance/ # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
     │       ├── commands/             # Symlink → shared commands
@@ -91,7 +91,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
 | **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
-| **Issues Templates** | `.templates/governance/sdd/` | N/A | Symlink only |
+| **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
 
@@ -164,9 +164,9 @@ ln -sf "$FRAMEWORK_DIR/.claude/agents" "$PROJECT_DIR/.claude/agents"
 # Setup template symlinks (BOTH frameworks)
 mkdir -p "$PROJECT_DIR/.templates"
 backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
-backup_if_needed "$PROJECT_DIR/.templates/governance/sdd"
+backup_if_needed "$PROJECT_DIR/.templates/governance"
 ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
-ln -sf "$FRAMEWORK_DIR/governance/sdd" "$PROJECT_DIR/.templates/governance/sdd"
+ln -sf "$FRAMEWORK_DIR/governance" "$PROJECT_DIR/.templates/governance"
 
 # Setup validation script symlinks
 mkdir -p "$PROJECT_DIR/scripts"
@@ -319,7 +319,7 @@ When using `--with-github`, the following resources are symlinked:
 │
 ├── .templates/
 │   ├── ai_dev_ssd_flow/             # Symlink → SDD templates (12 layers)
-│   └── governance/sdd/      # Symlink → SDD governance templates
+│   └── governance/      # Symlink → SDD governance templates
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── BRD/
@@ -492,7 +492,7 @@ Add to each project's `.gitignore`:
 .claude/commands
 .claude/agents
 .templates/ai_dev_ssd_flow
-.templates/governance/sdd
+.templates/governance
 scripts/validate
 
 # Keep project-specific resources (commit these)
@@ -539,7 +539,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
 
 # Edit SDD governance framework template
-vim /opt/data/docs_flow_framework/governance/sdd/governance/PROJECT_PLAN.md
+vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
 
 # Changes immediately available to all projects
 ```
@@ -591,7 +591,7 @@ ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
 # Verify SDD governance template access
-ls -la ${PROJECT_PATH}/.templates/governance/sdd/governance/
+ls -la ${PROJECT_PATH}/.templates/governance/
 # Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
@@ -746,13 +746,13 @@ mkdir -p /opt/data/new_project
 
 # 3. Copy SDD governance structure
 cd /opt/data/new_project
-cp -r .templates/governance/sdd/.github .
-cp .templates/governance/sdd/governance/PROJECT_PLAN.md docs/
-cp .templates/governance/sdd/governance/GOVERNANCE_RULES.md docs/
+cp -r .templates/governance/.github .
+cp .templates/governance/PROJECT_PLAN.md docs/
+cp .templates/governance/GOVERNANCE_RULES.md docs/
 mkdir -p docs/adr docs/qa
 
 # 4. Result: Project with CI/CD and governance templates
-# Access templates: .templates/governance/sdd/
+# Access templates: .templates/governance/
 ```
 
 ### Use Case 2: Existing Project Migration
@@ -839,10 +839,10 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
 
-**SDD governance Framework (governance/sdd)**:
-- [SDD governance README](./governance/sdd/README.md) - Lightweight governance overview
-- [Setup Guide](./governance/sdd/SETUP_GUIDE.md) - Quick start
-- [Governance Rules](./governance/sdd/governance/GOVERNANCE_RULES.md) - Operational rules
+**SDD Governance Framework (governance)**:
+- [SDD governance README](./governance/README.md) - Lightweight governance overview
+- [Setup Guide](./governance/SETUP_GUIDE.md) - Quick start
+- [Governance Rules](./governance/GOVERNANCE_RULES.md) - Operational rules
 
 ### External Resources
 
@@ -856,7 +856,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 ### Version 2.1 (2026-02-17T00:00:00)
 
-- **Dual Framework Support**: Added `governance/sdd` alongside `ai_dev_ssd_flow`
+- **Dual Framework Support**: Added `governance` alongside `ai_dev_ssd_flow`
 - Updated setup script to symlink BOTH framework template directories
 - Added framework selection decision matrix
 - Added Use Case 1b for SDD governance greenfield projects

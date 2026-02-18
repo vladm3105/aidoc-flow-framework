@@ -83,6 +83,13 @@ create_label "ai:ready" "0052CC" "Ready for AI agent to work on"
 create_label "ai:in-progress" "FBCA04" "AI agent actively working"
 create_label "ai:review-requested" "5319E7" "AI work complete, human review requested"
 
+# CHG labels (SDD-Full change management)
+log_info "Creating CHG labels (SDD-Full only)..."
+
+create_label "chg:pending" "F9A825" "CHG document awaiting approval"
+create_label "chg:approved" "43A047" "CHG document approved"
+create_label "chg:rejected" "D32F2F" "CHG document rejected"
+
 log_info "Label setup complete!"
 
 # Verify labels

@@ -20,7 +20,7 @@ This repository provides a **unified SDD framework** with three depth variants t
 | Directory | Purpose |
 |:----------|:--------|
 | `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
-| `governance/sdd/` | Project governance, setup guides, scripts, CI/CD templates |
+| `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 
 ### Quick Comparison
@@ -1262,7 +1262,7 @@ The `governance/` directory provides project governance that applies to all SDD 
 
 ```bash
 # Copy governance to your project
-cp -r governance/sdd/ /path/to/your/project/governance/
+cp -r governance/ /path/to/your/project/governance/
 cp -r governance/shared/ /path/to/your/project/governance/
 
 # Configure placeholders
@@ -1320,10 +1320,10 @@ deploy-prod.yml (gradual rollout)
 ### Documentation
 
 - [SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) - Choose Lite/Standard/Full
-- [GOVERNANCE_RULES.md](./governance/sdd/GOVERNANCE_RULES.md) - Operational policies
-- [CONFIG.md](./governance/sdd/CONFIG.md) - All placeholder variables
-- [SETUP_GUIDE.md](./governance/sdd/SETUP_GUIDE.md) - Customization guide
-- [CLOUD_GUIDE.md](./governance/sdd/CLOUD_GUIDE.md) - Cloud provider setup
+- [GOVERNANCE_RULES.md](./governance/GOVERNANCE_RULES.md) - Operational policies
+- [CONFIG.md](./governance/CONFIG.md) - All placeholder variables
+- [SETUP_GUIDE.md](./governance/SETUP_GUIDE.md) - Customization guide
+- [CLOUD_GUIDE.md](./governance/CLOUD_GUIDE.md) - Cloud provider setup
 
 ---
 
@@ -1412,16 +1412,16 @@ Developed for AI-assisted software engineering workflows optimized for:
 ### Version 2.7 (2026-02-18T12:00:00)
 - [PASS] **Unified SDD Framework**: Consolidated governance around single SDD methodology with scalable depth
   - Removed separate "Issues Flow" concept - now SDD-Lite/Standard/Full depth variants
-  - Renamed `governance/issues_flow/` → `governance/sdd/`
+  - Renamed `governance/issues_flow/` → `governance/`
   - Created `SDD_DEPTH_GUIDE.md` with layer mappings for each depth
-  - Removed `ai_project_issues_flow/` directory (integrated useful templates into `governance/sdd/templates/`)
-  - Added QA templates (`governance/sdd/templates/qa/`) and Claude settings template
+  - Removed `ai_project_issues_flow/` directory (integrated useful templates into `governance/templates/`)
+  - Added QA templates (`governance/templates/qa/`) and Claude settings template
   - Updated all documentation to reflect unified approach
 
 ### Version 2.6 (2026-02-17T12:00:00)
 - [PASS] **Production Readiness**: Framework cleaned and production-ready
   - **ai_dev_ssd_flow**: Removed 10 backup directories (191 files), added 4 missing templates
-  - **governance/sdd**: Fixed error handling in 10 Python workflow scripts
+  - **governance**: Fixed error handling in 10 Python workflow scripts
   - Removed broken IPLAN references (IPLAN-004, 006, 008, 009, 010, 011) from 18 files
   - Standardized emoji decorations to text notation across 326 files
 - [PASS] **Error Handling Improvements**: Added try/except for FileNotFoundError, json.JSONDecodeError, subprocess.SubprocessError, ET.ParseError in deployment scripts

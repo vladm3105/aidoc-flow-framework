@@ -11,6 +11,18 @@
 #   - PTEST/PTEST-MVP-TEMPLATE.yaml - Performance tests
 #   - SECTEST/SECTEST-MVP-TEMPLATE.yaml - Security tests
 #
+# TEST EXECUTION ENVIRONMENTS:
+# +----------+----------------+-------------------+
+# | Type     | Environment    | Coverage Target   |
+# +----------+----------------+-------------------+
+# | UTEST    | CI Pipeline    | >=80% code        |
+# | ITEST    | CI Pipeline    | >=60% integration |
+# | STEST    | QA Staging     | Critical paths    |
+# | FTEST    | QA Staging     | Feature coverage  |
+# +----------+----------------+-------------------+
+#
+# See: TEST_PYRAMID_GUIDE.md for full documentation
+#
 # SCHEMA_VERSION: 1.0
 # =============================================================================
 

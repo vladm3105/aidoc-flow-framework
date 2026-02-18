@@ -9,6 +9,54 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+try:
+    import yaml
+    YAML_AVAILABLE = True
+except ImportError:
+    YAML_AVAILABLE = False
+
+
+# === TSPEC Registry Integration ===
+
+def load_tspec_registry(path: Path = Path("docs/10_TSPEC/test_registry.yaml")) -> dict:
+    """Load TSPEC test registry for result mapping."""
+    if not YAML_AVAILABLE:
+        return {"tests": []}
+    if path.exists():
+        with open(path) as f:
+            return yaml.safe_load(f) or {"tests": []}
+    return {"tests": []}
+
+
+def map_results_to_tspec(pytest_results: dict, registry: dict) -> list:
+    """Map pytest results to TSPEC entries for traceability."""
+    registry_map = {t["nodeid"]: t for t in registry.get("tests", [])}
+    mapped = []
+    for test in pytest_results.get("tests", []):
+        tspec_entry = registry_map.get(test.get("nodeid", ""))
+        if tspec_entry:
+            mapped.append({
+                "tspec_id": tspec_entry.get("tspec_id"),
+                "bdd_scenario": tspec_entry.get("bdd_scenario"),
+                "outcome": test.get("outcome"),
+                "duration": test.get("duration", 0),
+                "upstream_refs": tspec_entry.get("upstream_refs", [])
+            })
+    return mapped
+
+
+def generate_traceability_report(mapped_results: list) -> str:
+    """Generate markdown traceability report for QA issue."""
+    if not mapped_results:
+        return ""
+    lines = ["## Test Traceability Report", "", "| TSPEC ID | Outcome | Duration | Upstream |"]
+    lines.append("|----------|---------|----------|----------|")
+    for r in mapped_results:
+        refs = ", ".join(r.get("upstream_refs", [])[:2])
+        duration = r.get("duration", 0)
+        lines.append(f"| {r.get('tspec_id', 'N/A')} | {r.get('outcome', 'unknown')} | {duration:.2f}s | {refs} |")
+    return "\n".join(lines)
+
 
 def run_tests(
     test_type: str,
@@ -192,6 +240,25 @@ def main():
                 "failures": failures_summary,
             }
 
+    # Load TSPEC registry for traceability
+    tspec_registry = load_tspec_registry()
+
+    # Collect all test nodeids for TSPEC mapping
+    all_tests = []
+    for test_type, result in all_results.items():
+        # Try to load pytest JSON report if available
+        report_file = Path("/tmp/pytest_report.json")
+        if report_file.exists():
+            try:
+                report = json.loads(report_file.read_text())
+                all_tests.extend(report.get("tests", []))
+            except json.JSONDecodeError:
+                pass
+
+    # Map results to TSPEC entries
+    tspec_mapped = map_results_to_tspec({"tests": all_tests}, tspec_registry)
+    tspec_report = generate_traceability_report(tspec_mapped)
+
     output = {
         "phase": args.phase,
         "all_passed": all_passed,
@@ -206,6 +273,10 @@ def main():
             "passed": total_passed,
             "failed": total_failed,
             "skipped": total_skipped,
+        },
+        "tspec_traceability": {
+            "mapped_tests": len(tspec_mapped),
+            "report": tspec_report,
         },
         "executed_at": datetime.utcnow().isoformat() + "Z",
     }

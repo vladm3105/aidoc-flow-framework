@@ -104,7 +104,7 @@ This document defines a **hybrid development methodology** that integrates:
 | Component | Purpose | Setup Reference |
 |-----------|---------|-----------------|
 | GitHub Repository | Issue tracking, PR workflow | Standard |
-| GitHub Project (V2) | Sprint board, phase tracking | `governance/sdd/governance/GITHUB_PROJECT_SETUP_AI_FIRST.md` |
+| GitHub Project (V2) | Sprint board, phase tracking | `governance/GITHUB_PROJECT_SETUP_AI_FIRST.md` |
 | Claude Code / Skills | SDD artifact generation | `.claude/skills/` |
 | Python 3.10+ | Validation scripts | `requirements.txt` |
 | CI/CD Pipeline | Validator integration | `.github/workflows/` |
@@ -115,7 +115,7 @@ This document defines a **hybrid development methodology** that integrates:
 |----------|--------|-------------------|
 | BRD-00_index.md | Required | Create using `/doc-brd` skill |
 | ADR folder structure | Required | Create `docs/05_ADR/` |
-| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) or use IPLANs from `governance/sdd/governance/plans/` |
+| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) or use IPLANs from `governance/plans/` |
 | CHG template | Required | Copy from `ai_dev_ssd_flow/CHG/` (SDD projects only) |
 
 ### 2.3 Team Readiness
@@ -133,7 +133,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.1 Sprint-Based Governance
 
-**Source Reference**: `governance/sdd/governance/`
+**Source Reference**: `governance/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -219,7 +219,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.3 AI Project Flow
 
-**Source Reference**: `governance/sdd/`
+**Source Reference**: `governance/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -508,7 +508,7 @@ flowchart TB
 
 **CHG Document Location**: `docs/CHG/CHG-NN_{slug}/`
 
-**Reference**: `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `governance/sdd/governance/plans/` (AI Project Flow)
+**Reference**: `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `governance/plans/` (AI Project Flow)
 
 ---
 
@@ -1246,26 +1246,26 @@ These common mistakes undermine the hybrid model's effectiveness:
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Framework Overview | `governance/sdd/README.md` | Quick start and structure |
-| Configuration Guide | `governance/sdd/CONFIG.md` | 47+ placeholder variables |
-| Setup Guide | `governance/sdd/SETUP_GUIDE.md` | Step-by-step customization |
-| Cloud Guide | `governance/sdd/CLOUD_GUIDE.md` | GCP/AWS/Azure setup |
-| Governance Rules | `governance/sdd/governance/GOVERNANCE_RULES.md` | AI-first governance |
-| IPLAN Templates | `governance/sdd/governance/plans/` | Implementation plan templates |
-| GitHub Workflows | `governance/sdd/governance/GITHUB_WORKFLOWS.md` | 18 workflow documentation |
-| AI PR Review | `governance/sdd/governance/AI_PR_Review/` | AI code review setup |
+| Framework Overview | `governance/README.md` | Quick start and structure |
+| Configuration Guide | `governance/CONFIG.md` | 47+ placeholder variables |
+| Setup Guide | `governance/SETUP_GUIDE.md` | Step-by-step customization |
+| Cloud Guide | `governance/CLOUD_GUIDE.md` | GCP/AWS/Azure setup |
+| Governance Rules | `governance/GOVERNANCE_RULES.md` | AI-first governance |
+| IPLAN Templates | `governance/plans/` | Implementation plan templates |
+| GitHub Workflows | `governance/GITHUB_WORKFLOWS.md` | 18 workflow documentation |
+| AI PR Review | `governance/AI_PR_Review/` | AI code review setup |
 
 ### Sprint Governance (AI Project Flow)
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Governance Rules | `governance/sdd/governance/GOVERNANCE_RULES.md` | Sprint governance policies |
-| Project Plan | `governance/sdd/governance/PROJECT_PLAN.md` | Phase and task breakdown |
-| Definition of Done | `governance/sdd/governance/DEFINITION_OF_DONE.md` | Completion criteria |
-| AI Issue Lifecycle | `governance/sdd/governance/AI_ISSUE_LIFECYCLE.md` | AI label workflow |
-| Branching Strategy | `governance/sdd/governance/BRANCHING_STRATEGY.md` | Git branching rules |
-| Release Process | `governance/sdd/governance/RELEASE_PROCESS.md` | Release workflow |
-| Roadmap | `governance/sdd/governance/ROADMAP.md` | Project phases and timeline |
+| Governance Rules | `governance/GOVERNANCE_RULES.md` | Sprint governance policies |
+| Project Plan | `governance/PROJECT_PLAN.md` | Phase and task breakdown |
+| Definition of Done | `governance/DEFINITION_OF_DONE.md` | Completion criteria |
+| AI Issue Lifecycle | `governance/AI_ISSUE_LIFECYCLE.md` | AI label workflow |
+| Branching Strategy | `governance/BRANCHING_STRATEGY.md` | Git branching rules |
+| Release Process | `governance/RELEASE_PROCESS.md` | Release workflow |
+| Roadmap | `governance/ROADMAP.md` | Project phases and timeline |
 
 ---
 

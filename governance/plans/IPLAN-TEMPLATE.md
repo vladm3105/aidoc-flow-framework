@@ -9,6 +9,24 @@
 
 ---
 
+## SDD Traceability (if source:sdd)
+
+<!-- Complete if issue has source:sdd label, otherwise delete this section -->
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @tasks | TASKS-NN.MM.PP | Source task element |
+| @spec | SPEC-NN | Technical specification |
+| @req | REQ-NN:REQ.NN.MM | Atomic requirement |
+| @sys | SYS-NN:SYS.NN.MM | System requirement |
+| @adr | ADR-NN | Architecture decision |
+| @ears | EARS-NN:EARS.NN.MM | Formal requirement |
+| @brd | BRD-NN:BRD.NN.MM | Business requirement |
+
+**TASKS Source File**: `docs/11_TASKS/TASKS-NN_{slug}.yaml`
+
+---
+
 ## Purpose
 
 {One paragraph describing what this plan addresses and why it's needed.}

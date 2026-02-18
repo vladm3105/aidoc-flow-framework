@@ -6,6 +6,24 @@
 
 ---
 
+## SDD Test Pyramid Model
+
+This project follows the SDD test pyramid model. See [`ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md`](../../ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md) for the authoritative guide.
+
+### Quick Reference
+
+| Test Type | Environment | When |
+|-----------|-------------|------|
+| UTEST, ITEST | CI Pipeline | Every PR |
+| STEST, FTEST, BDD | QA Staging | After staging deploy |
+
+### Key Principle
+
+**CI tests** (UTEST, ITEST) verify code correctness during development.
+**Staging tests** (STEST, FTEST, BDD) verify system behavior before production.
+
+---
+
 ## Testing Pyramid
 
 The project follows the standard testing pyramid with emphasis on fast, isolated unit tests at the base.

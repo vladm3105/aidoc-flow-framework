@@ -97,6 +97,18 @@ governance/
 
 ---
 
+## SDD Integration
+
+| Document | Description |
+|:---------|:------------|
+| [TASKS_IPLAN_BRIDGE.md](./TASKS_IPLAN_BRIDGE.md) | How TASKS (Layer 11) connects to IPLAN |
+| [CHG_GOVERNANCE_BRIDGE.md](./CHG_GOVERNANCE_BRIDGE.md) | 4-Gate CHG to governance phases |
+| [TSPEC_BDD_QA_BRIDGE.md](./TSPEC_BDD_QA_BRIDGE.md) | Test execution (TSPEC/BDD) to QA workflow |
+
+> **Full SDD Documentation**: See [`../ai_dev_ssd_flow/`](../ai_dev_ssd_flow/) for layer templates and specifications.
+
+---
+
 ## GitHub Documentation
 
 | Document | Description |

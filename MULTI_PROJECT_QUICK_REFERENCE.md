@@ -78,7 +78,7 @@ done
 │
 ├── .templates/
 │   ├── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
-│   └── governance/sdd/  → /opt/data/docs_flow_framework/governance/sdd/
+│   └── governance/  → /opt/data/docs_flow_framework/governance/
 │
 ├── scripts/
 │   ├── validate/            → /opt/data/docs_flow_framework/scripts/
@@ -165,7 +165,7 @@ ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 # 07_REQ/, 08_CTR/, 09_SPEC/, 10_TSPEC/, 11_TASKS/, AUTOPILOT/
 
 # View SDD governance templates (lightweight - small projects)
-ls /opt/data/docs_flow_framework/governance/sdd/
+ls /opt/data/docs_flow_framework/governance/
 
 # Key directories:
 # governance/ - PROJECT_PLAN, GOVERNANCE_RULES
@@ -242,7 +242,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
 
 # Edit SDD governance template in framework
-vim /opt/data/docs_flow_framework/governance/sdd/governance/PROJECT_PLAN.md
+vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
 
 # Changes immediately available to ALL projects
 ```
@@ -298,7 +298,7 @@ ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
 # Verify SDD governance templates
-ls -la /opt/data/project_name/.templates/governance/sdd/governance/
+ls -la /opt/data/project_name/.templates/governance/
 # Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
@@ -429,14 +429,14 @@ vim docs/BRD/BRD-001_my_requirements.md
 
 ```bash
 # 1. Access SDD governance template via symlink
-cat /opt/data/project_name/.templates/governance/sdd/governance/PROJECT_PLAN.md
+cat /opt/data/project_name/.templates/governance/PROJECT_PLAN.md
 
 # 2. Copy governance docs to project
-cp .templates/governance/sdd/governance/PROJECT_PLAN.md \
+cp .templates/governance/PROJECT_PLAN.md \
    docs/PROJECT_PLAN.md
 
 # 3. Copy GitHub workflows/templates
-cp -r .templates/governance/sdd/.github/* .github/
+cp -r .templates/governance/.github/* .github/
 
 # 4. Customize for project
 vim docs/PROJECT_PLAN.md
@@ -459,7 +459,7 @@ vim docs/PROJECT_PLAN.md
 | Framework | README | Key Docs |
 |-----------|--------|----------|
 | **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 12-layer SDD methodology |
-| **governance/sdd** | `governance/sdd/README.md` | Governance, CI/CD, Issues |
+| **governance** | `governance/README.md` | Governance, CI/CD, Issues |
 
 ---
 

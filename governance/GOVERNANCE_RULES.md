@@ -194,6 +194,21 @@ Distinct from issue-scoped `ai:ready`/`ai:in-progress`/`ai:review-requested`, th
 - Applied by both the automated CI workflow (`ai-review-reusable.yml`) and on-demand agent reviews.
 - A **conclusion comment** is also posted with a machine-readable JSON metadata block for downstream automation.
 
+### Issue Sources and TASKS Integration
+
+Issues may originate from SDD TASKS artifacts. When an issue has the `source:sdd` label:
+
+1. **Traceability tags** are present in the issue body (@brd, @prd, @spec, @tasks)
+2. **TASKS element ID** links to the source specification
+3. **IPLAN** must reference the TASKS element ID for traceability
+
+**TASKS to Issue Script**:
+```bash
+python ai_dev_ssd_flow/scripts/tasks_to_github.py --tasks-file <path> --repo <owner/repo>
+```
+
+See: [TASKS_IPLAN_BRIDGE.md](./TASKS_IPLAN_BRIDGE.md) for full workflow.
+
 ### Board Status Sync (Mandatory)
 
 **Rule**: Labels and board status are **two separate systems**. The `issue-label-sync.yml` workflow automatically syncs board status when labels change. AI agents should update labels via MCP; the workflow handles the corresponding board status update.
