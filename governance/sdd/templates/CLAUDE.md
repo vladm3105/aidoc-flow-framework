@@ -200,7 +200,7 @@ GH_HOST={GITHUB_HOST} gh label create "name" --color "hex"
 - [GOVERNANCE_RULES.md](governance/GOVERNANCE_RULES.md) - Operational rules and quick reference index
 - [DEFINITION_OF_DONE.md](governance/DEFINITION_OF_DONE.md) - Completion checklists
 - [GITHUB_TOOLS_SETUP.md](governance/GITHUB_TOOLS_SETUP.md) - GitHub MCP and CLI setup
-- [GITHUB_PROJECT_SETUP_AI_FIRST.md](governance/GITHUB_PROJECT_SETUP_AI_FIRST.md) - AI-optimized project workflow
+- [GITHUB_PROJECT_SETUP.md](governance/GITHUB_PROJECT_SETUP.md) - AI-optimized project workflow
 - [REPOSITORY_STRATEGY.md](governance/REPOSITORY_STRATEGY.md) - Monorepo architecture
 - [GITHUB_WORKFLOWS.md](governance/GITHUB_WORKFLOWS.md) - All GitHub Actions workflow documentation
 - [MANUAL_REVIEW_GUIDE.md](governance/AI_PR_Review/MANUAL_REVIEW_GUIDE.md) - Manual AI PR review using local assistants

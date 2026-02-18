@@ -475,7 +475,7 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 
 ## Related Documents
 
-- [GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP.md) - Project board configuration
+- [GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) - Project board configuration
 - [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) - MCP and CLI tool setup
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) - Task completion criteria
 - [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) - AI vs human time estimates

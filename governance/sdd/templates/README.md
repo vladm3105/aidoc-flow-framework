@@ -121,7 +121,7 @@ The platform is cloud-agnostic in monitoring but GCP-specific in deployment ([AD
 |-- governance/                    Project governance
 |   |-- PROJECT_PLAN.md            Full project plan (~75 tasks)
 |   |-- ROADMAP.md                 Phase timeline and dependencies
-|   |-- GITHUB_PROJECT_SETUP_AI_FIRST.md   AI workflow setup
+|   |-- GITHUB_PROJECT_SETUP.md       AI workflow setup
 |   |-- GITHUB_WORKFLOWS.md        Workflow documentation
 |   |-- REPOSITORY_STRATEGY.md     Monorepo architecture
 |   |-- HOME_REPO.md               Home repo guide

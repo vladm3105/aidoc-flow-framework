@@ -102,7 +102,7 @@ This is a **monorepo**. All documentation, governance, and component source code
     RELEASE_PROCESS.md            Versioning and releases
     ROLES_AND_TOOLS.md            Human vs AI responsibilities
     GITHUB_WORKFLOWS.md           Workflow documentation
-    GITHUB_PROJECT_SETUP_AI_FIRST.md  AI workflow setup
+    GITHUB_PROJECT_SETUP.md      AI workflow setup
     GITHUB_TOOLS_SETUP.md         CLI and MCP configuration
     plans/                        Implementation plans (IPLAN index)
 
