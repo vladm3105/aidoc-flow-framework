@@ -31,6 +31,12 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 | [Deploy to Staging](#deploy-to-staging-workflow) | `deploy-staging.yml` | Phase complete | Phase-gated staging deployment  |
 | [Deploy to Production](#deploy-to-production-workflow) | `deploy-prod.yml` | Manual dispatch | Gradual production rollout  |
 | [Rollback Production](#rollback-production-workflow) | `rollback-prod.yml` | Manual dispatch | Multi-step production rollback  |
+| [PR Issue Link](#pr-issue-link-workflow) | `pr-issue-link.yml` | PR opened | Auto-post PR link to linked issue |
+| [Verify Acceptance](#verify-acceptance-workflow) | `verify-acceptance.yml` | PR opened/synced | Verify acceptance criteria |
+| [Staging Sign-Off](#staging-signoff-workflow) | `staging-signoff.yml` | Manual dispatch | Evaluate staging readiness |
+| [Sync TASKS](#sync-tasks-workflow) | `sync-tasks.yml` | Manual dispatch | Sync TASKS files with GitHub issues |
+| [Validate Governance](#validate-governance-workflow) | `validate-governance.yml` | Push/schedule | Detect governance doc drift |
+| [Validate Config](#validate-config-workflow) | `validate-config.yml` | Manual/schedule | Validate project configuration |
 
 > **Note**: Per-PR deployments (`deploy-dev-pr.yml`) have been deprecated. The project now uses phase-gated deployments via `deploy-dev.yml` → `check-all-phases-dev.yml` → `deploy-staging.yml`.
 
@@ -1154,10 +1160,185 @@ Before first deployment, complete these steps:
 
 ---
 
+## PR Issue Link Workflow
+
+**File**: `.github/workflows/pr-issue-link.yml`
+
+### Trigger
+
+- `pull_request.opened`
+
+### Purpose
+
+Automatically posts a comment on the linked issue when a PR is created, providing visibility into implementation progress.
+
+### Behavior
+
+1. Extract linked issue from PR body (`Closes #N`, `Fixes #N`, `Resolves #N`)
+2. Check for existing PR link comment (idempotent)
+3. Post comment with PR number, branch name, and URL
+
+### Output
+
+Issue comment:
+```
+**PR Created**: #123 - Feature title
+**Branch**: `ai/123-feature-name`
+**URL**: https://github.com/org/repo/pull/123
+**Date**: 2026-02-18 10:30 EST
+```
+
+---
+
+## Verify Acceptance Workflow
+
+**File**: `.github/workflows/verify-acceptance.yml`
+
+### Trigger
+
+- `pull_request.opened`
+- `pull_request.synchronize`
+- `pull_request.ready_for_review`
+- `workflow_dispatch` (manual, specify PR number)
+
+### Purpose
+
+Verifies PR changes against acceptance criteria from the linked issue.
+
+### Behavior
+
+1. Extract linked issue from PR body
+2. Parse acceptance criteria (checkboxes)
+3. Verify each criterion against:
+   - Changed files matching mentioned patterns
+   - Test files modified
+   - CI status
+4. Post verification report to PR
+5. Optionally block merge if criteria unverified (`--blocking` flag)
+
+### Script
+
+`governance/scripts/workflows/verify_acceptance_criteria.py`
+
+---
+
+## Staging Sign-Off Workflow
+
+**File**: `.github/workflows/staging-signoff.yml`
+
+### Trigger
+
+- `workflow_dispatch` (manual)
+  - `phase`: Phase number to evaluate
+  - `tracking_issue`: Issue number for report posting
+
+### Purpose
+
+Evaluates staging readiness for production deployment.
+
+### Behavior
+
+1. Fetch all issues for the specified phase
+2. Check acceptance criteria completion
+3. Verify no open blockers
+4. Generate GO/NO-GO recommendation
+5. Post report to tracking issue and Teams
+
+### Script
+
+`governance/scripts/workflows/check_staging_ready.py`
+
+---
+
+## Sync TASKS Workflow
+
+**File**: `.github/workflows/sync-tasks.yml`
+
+### Trigger
+
+- `workflow_dispatch` (manual)
+  - `phase`: Phase number to sync
+  - `create_pr`: Whether to create PR with changes
+
+### Purpose
+
+Bidirectional sync between TASKS files and GitHub issues.
+
+### Behavior
+
+1. Fetch phase issues from GitHub
+2. Compare with existing TASKS file
+3. Detect changes (new, closed, status changed)
+4. Generate updated TASKS YAML
+5. Create PR with changes (if enabled)
+
+### Script
+
+`governance/scripts/workflows/sync_tasks_from_issues.py`
+
+---
+
+## Validate Governance Workflow
+
+**File**: `.github/workflows/validate-governance.yml`
+
+### Trigger
+
+- `push` to governance files
+- `pull_request` to governance files
+- `workflow_dispatch` (manual)
+- `schedule`: Weekly on Monday 8am UTC
+
+### Purpose
+
+Detects drift between governance documentation and reality.
+
+### Behavior
+
+1. Validate required governance files exist
+2. Check ROADMAP phase dates vs actual issues
+3. Verify PROJECT_PLAN gap analysis vs open issues
+4. Validate IPLAN references in issues
+5. Report drift as warnings
+
+### Script
+
+`governance/scripts/workflows/validate_governance.py`
+
+---
+
+## Validate Config Workflow
+
+**File**: `.github/workflows/validate-config.yml`
+
+### Trigger
+
+- `workflow_dispatch` (manual)
+- `schedule`: Daily at 6am UTC
+
+### Purpose
+
+Validates project has required configuration and secrets.
+
+### Behavior
+
+1. Check required secrets are referenced in workflows
+2. Verify branch protection on main
+3. Validate CLAUDE.md configuration
+4. Check .mcp.json structure
+5. Generate configuration report
+
+### Script
+
+`governance/scripts/workflows/validate_project_setup.py`
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 6.0 | {DATE} | Added governance automation workflows: pr-issue-link.yml, verify-acceptance.yml, staging-signoff.yml, sync-tasks.yml, validate-governance.yml, validate-config.yml. Added AI Agent Memory System integration. Updated agent-dispatch.yml with IPLAN-015 improvements (paginated GraphQL, conventional commits, anchored patterns). |
 | 5.0 | {DATE} | Phase-gated unified deployment model. Added `deploy-dev.yml` (phase-gated with smoke tests), `check-all-phases-dev.yml` (staging gate). Updated `deploy-staging.yml` to accept `image_tag` instead of `phase`. Deprecated `deploy-dev-pr.yml` and `cleanup-pr-env.yml` (per-PR deployments removed). Added `smoke_test.sh` and `update_staging_tracking.py` scripts. |
 | 4.8 | {DATE} | Environment field now mandatory: PRs inherit Environment from linked issues (parsed from Closes/Fixes/Resolves #X); defaults to Development if no linked issue; updated GraphQL Operations |
 | 4.7 | {DATE} | Added Environment field to auto-add-to-project.yml: new issues get Environment=Development by default; updated Behavior and GraphQL Operations sections |

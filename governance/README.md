@@ -43,9 +43,16 @@ governance/
 ├── AI_PR_Review/                  # AI PR review
 │   ├── README.md                  # Overview
 │   ├── AI_AGENT_REVIEW_WORKFLOW.md
+│   ├── IMPLEMENT_INSTRUCTIONS.md  # AI agent implementation guide
 │   ├── LOCAL_SETUP.md
 │   ├── MANUAL_REVIEW_GUIDE.md
 │   └── ONBOARDING.md
+│
+├── AI_AGENT_MEMORY.md             # AI Agent Memory System docs
+├── memory/                        # AI agent memory storage
+│   ├── GLOBAL_LEARNINGS.md        # Project-wide learnings
+│   ├── active/                    # Active issue memory files
+│   └── archive/                   # Completed issue memory files
 │
 ├── setup/                         # Setup guides
 │   ├── SETUP_GUIDE.md             # Step-by-step customization
@@ -76,7 +83,15 @@ governance/
     ├── project_setup/             # Project setup scripts
     │   └── cloud/                 # GCP/AWS/Azure scripts
     ├── ghes-runner/               # GHES runner setup + docs
-    ├── workflows/                 # CI/CD helper scripts
+    ├── workflows/                 # Governance automation scripts
+    │   ├── verify_acceptance_criteria.py
+    │   ├── generate_iplan_from_issue.py
+    │   ├── generate_deployment_plan.py
+    │   ├── check_staging_ready.py
+    │   ├── generate_phase_summary.py
+    │   ├── sync_tasks_from_issues.py
+    │   ├── validate_governance.py
+    │   └── validate_project_setup.py
     └── cicd/                      # CI/CD configuration
 ```
 
@@ -94,6 +109,22 @@ governance/
 | [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) | Monorepo architecture patterns |
 | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) | Human vs AI task split |
 | [HOME_REPO.md](./HOME_REPO.md) | Home repository structure |
+| [AI_AGENT_MEMORY.md](./AI_AGENT_MEMORY.md) | AI Agent Memory System for session persistence |
+
+---
+
+## Governance Automation
+
+| Script | Purpose |
+|:-------|:--------|
+| `scripts/workflows/verify_acceptance_criteria.py` | Verify PR against issue acceptance criteria |
+| `scripts/workflows/generate_iplan_from_issue.py` | Auto-generate IPLAN from GitHub issue |
+| `scripts/workflows/generate_deployment_plan.py` | Generate deployment plan from phase issues |
+| `scripts/workflows/check_staging_ready.py` | Evaluate staging readiness for production |
+| `scripts/workflows/generate_phase_summary.py` | Generate phase completion summary |
+| `scripts/workflows/sync_tasks_from_issues.py` | Bidirectional sync TASKS ↔ GitHub issues |
+| `scripts/workflows/validate_governance.py` | Detect governance documentation drift |
+| `scripts/workflows/validate_project_setup.py` | Validate project configuration and secrets |
 
 ---
 
@@ -158,6 +189,7 @@ governance/
 |:---------|:------------|
 | [templates/CLAUDE.md](./templates/CLAUDE.md) | Claude Code project instructions |
 | [templates/README_AIAGENT.md](./templates/README_AIAGENT.md) | Universal AI agent rules |
+| [templates/MEMORY.md](./templates/MEMORY.md) | AI Agent memory file template |
 | [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) | Contributing guidelines |
 | [templates/README.md](./templates/README.md) | Project README template |
 
