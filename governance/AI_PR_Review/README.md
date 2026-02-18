@@ -84,6 +84,8 @@ Caller workflow (~10 lines)
 | File | Purpose | Lines |
 |:-----|:--------|------:|
 | [`.github/workflows/ai-review.yml`](../../.github/workflows/ai-review.yml) | Unified workflow — {AI_TOOL_NAME} Code CLI (triggers locally + callable by component repos) | ~230 |
+| [`governance/AI_PR_Review/REVIEW_INSTRUCTIONS.md`](./REVIEW_INSTRUCTIONS.md) | 5-phase analysis methodology for AI code review | ~180 |
+| [`governance/AI_PR_Review/FIX_INSTRUCTIONS.md`](./FIX_INSTRUCTIONS.md) | Auto-fix instructions for AI-suggested fixes | ~45 |
 | [`governance/scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh`](../scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh) | GCP prerequisite automation (WIF setup) | ~479 |
 
 ### Component Repos (per-repo)
@@ -122,6 +124,20 @@ Claude skips non-code files and focuses only on substantive code changes:
 3. Optionally reads source files in the repo for additional context
 4. Builds a JSON review payload with inline comments and summary
 5. Posts the review via `gh api` (GHES REST API)
+
+### 5-Phase Analysis Methodology
+
+Claude follows a mandatory 5-phase analysis (see [REVIEW_INSTRUCTIONS.md](./REVIEW_INSTRUCTIONS.md)):
+
+| Phase | Description |
+|:------|:------------|
+| **1. Full-File Context** | Read complete source files, not just diffs |
+| **2. Systematic Path Tracing** | Trace happy/error/retry/concurrent paths |
+| **3. Symmetry Check** | Verify patterns applied consistently across analogous cases |
+| **4. Chain Analysis** | Follow caller/callee chains to identify missing handling |
+| **5. Design Tradeoff Recognition** | Don't flag documented limitations as bugs |
+
+This methodology prevents common false positives and ensures thorough review coverage.
 
 ### Review Events
 
@@ -169,6 +185,8 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 
 | Document | Purpose |
 |:---------|:--------|
+| [REVIEW_INSTRUCTIONS.md](./REVIEW_INSTRUCTIONS.md) | 5-phase analysis methodology with self-check requirements |
+| [FIX_INSTRUCTIONS.md](./FIX_INSTRUCTIONS.md) | Auto-fix capability instructions and scope constraints |
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale (Custom Workflow vs PR-Agent vs Bot vs Claude Action) |
 | [LOCAL_SETUP.md](./LOCAL_SETUP.md) | Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth, API key) |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
