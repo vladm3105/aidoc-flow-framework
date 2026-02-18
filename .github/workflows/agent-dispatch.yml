@@ -660,18 +660,17 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          CLAUDE_MODEL: ${{ inputs.model || 'sonnet' }}
+          CLAUDE_BUDGET: ${{ inputs.max-budget-usd || '5.00' }}
         run: |
           cd "${GITHUB_WORKSPACE}"
 
-          MODEL="${{ inputs.model || 'sonnet' }}"
-          BUDGET="${{ inputs.max-budget-usd || '5.00' }}"
-
           claude -p \
-            --model "${MODEL}" \
+            --model "${CLAUDE_MODEL}" \
             --tools "Read,Glob,Grep,Bash,Edit,Write" \
             --dangerously-skip-permissions \
             --no-session-persistence \
-            --max-budget-usd "${BUDGET}" \
+            --max-budget-usd "${CLAUDE_BUDGET}" \
             --append-system-prompt "$(cat /tmp/implement-instructions.txt)" \
             "Implement issue #${ISSUE_NUMBER}. Follow the methodology in IMPLEMENT_INSTRUCTIONS.md exactly. Read the issue context appended to this prompt, explore the codebase, implement the changes, and run tests. Do NOT commit, push, or post to GitHub."
 

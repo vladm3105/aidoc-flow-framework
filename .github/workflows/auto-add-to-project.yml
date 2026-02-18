@@ -71,16 +71,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
           GH_HOST: "{GITHUB_HOST}"
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          PR_NODE_ID: ${{ github.event.pull_request.node_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          REPO: ${{ github.repository }}
         run: |
           # Determine content node ID and target status
-          if [ "${{ github.event_name }}" = "issues" ]; then
-            CONTENT_ID="${{ github.event.issue.node_id }}"
+          if [ "$EVENT_NAME" = "issues" ]; then
+            CONTENT_ID="$ISSUE_NODE_ID"
             TARGET_STATUS="Todo"
-            ITEM_TYPE="Issue #${{ github.event.issue.number }}"
+            ITEM_TYPE="Issue #${ISSUE_NUMBER}"
           else
-            CONTENT_ID="${{ github.event.pull_request.node_id }}"
+            CONTENT_ID="$PR_NODE_ID"
             TARGET_STATUS="In Review"
-            ITEM_TYPE="PR #${{ github.event.pull_request.number }}"
+            ITEM_TYPE="PR #${PR_NUMBER}"
           fi
 
           # Get project ID
@@ -170,20 +177,18 @@ jobs:
           TARGET_ENV_ID="$ENV_DEVELOPMENT_ID"
           TARGET_ENV_NAME="Development"
 
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ]; then
             # For PRs: inherit Environment from linked issue
-            PR_BODY='${{ github.event.pull_request.body }}'
-
             # Extract linked issue number from PR body (Closes #X, Fixes #Y, Resolves #Z)
             LINKED_ISSUE=$(echo "$PR_BODY" | grep -oiE '(closes|fixes|resolves|close|fix|resolve)\s*#[0-9]+' | head -1 | grep -oE '[0-9]+')
 
             if [ -n "$LINKED_ISSUE" ]; then
               echo "Found linked issue: #${LINKED_ISSUE}"
 
-              # Get the linked issue's node_id
-              ISSUE_NODE_ID=$(gh api "/repos/${{ github.repository }}/issues/${LINKED_ISSUE}" --jq '.node_id' 2>/dev/null || echo "")
+              # Get the linked issue's node_id (use different var name to avoid conflict with env var)
+              LINKED_NODE_ID=$(gh api "/repos/${REPO}/issues/${LINKED_ISSUE}" --jq '.node_id' 2>/dev/null || echo "")
 
-              if [ -n "$ISSUE_NODE_ID" ] && [ "$ISSUE_NODE_ID" != "null" ]; then
+              if [ -n "$LINKED_NODE_ID" ] && [ "$LINKED_NODE_ID" != "null" ]; then
                 # Find the issue's project item and get its Environment value
                 ISSUE_ENV=$(gh api graphql -f query='
                   query($org: String!, $number: Int!, $nodeId: String!) {
@@ -202,8 +207,8 @@ jobs:
                         }
                       }
                     }
-                  }' -f org="${ORG}" -F number=${PROJECT_NUMBER} -f nodeId="$ISSUE_NODE_ID" \
-                  | jq -r --arg nid "$ISSUE_NODE_ID" \
+                  }' -f org="${ORG}" -F number=${PROJECT_NUMBER} -f nodeId="$LINKED_NODE_ID" \
+                  | jq -r --arg nid "$LINKED_NODE_ID" \
                     '.data.organization.projectV2.items.nodes[] | select(.content.id == $nid) | .fieldValueByName | "\(.optionId):\(.name)"' 2>/dev/null || echo "")
 
                 if [ -n "$ISSUE_ENV" ] && [ "$ISSUE_ENV" != ":" ] && [ "$ISSUE_ENV" != "null:null" ]; then

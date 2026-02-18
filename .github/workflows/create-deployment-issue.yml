@@ -31,11 +31,14 @@ jobs:
         id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            PR_NUMBER="${{ inputs.pr_number }}"
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            PR_NUMBER="$INPUT_PR_NUMBER"
           else
-            PR_NUMBER="${{ github.event.pull_request.number }}"
+            PR_NUMBER="$EVENT_PR_NUMBER"
           fi
           echo "number=${PR_NUMBER}" >> $GITHUB_OUTPUT
           PR_DATA=$(GH_HOST={GITHUB_HOST} gh pr view ${PR_NUMBER} --json title,body,mergedAt,headRefName)
@@ -60,8 +63,8 @@ jobs:
         id: dev
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
         run: |
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
           ISSUE_DATA=$(GH_HOST={GITHUB_HOST} gh issue view ${DEV_ISSUE} --json title,labels,body)
           ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')
           PHASE=$(echo "$ISSUE_DATA" | jq -r '.labels[].name' | grep -oE '^phase:[0-9]+$' | head -1)
@@ -81,8 +84,10 @@ jobs:
 
       - name: Skip if not a development issue
         if: steps.pr.outputs.dev_issue != '' && steps.dev.outputs.is_dev == '0'
+        env:
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
         run: |
-          echo "::notice::Issue #${{ steps.pr.outputs.dev_issue }} does not have ai:development label. Skipping."
+          echo "::notice::Issue #${DEV_ISSUE} does not have ai:development label. Skipping."
           exit 0
 
       - name: Extract deployment considerations from PR
@@ -90,8 +95,8 @@ jobs:
         id: extract
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
-          PR_NUMBER="${{ steps.pr.outputs.number }}"
           FILES=$(GH_HOST={GITHUB_HOST} gh pr view ${PR_NUMBER} --json files --jq '.files[].path' | head -20)
           HAS_MIGRATIONS=$(echo "$FILES" | grep -c 'migrations\|alembic' || echo "0")
           HAS_CONFIG=$(echo "$FILES" | grep -c '\.env\|config\|terraform\|\.yml\|\.yaml' || echo "0")
@@ -107,20 +112,19 @@ jobs:
         id: create
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.dev.outputs.phase }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
+          TASK_ID: ${{ steps.dev.outputs.task_id }}
+          FEATURE_NAME: ${{ steps.dev.outputs.feature_name }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_TITLE: ${{ steps.pr.outputs.title }}
+          MERGED_AT: ${{ steps.pr.outputs.merged_at }}
+          COMMITS: ${{ steps.extract.outputs.commits }}
+          HAS_MIGRATIONS: ${{ steps.extract.outputs.has_migrations }}
+          HAS_CONFIG: ${{ steps.extract.outputs.has_config }}
+          HAS_INFRA: ${{ steps.extract.outputs.has_infra }}
         run: |
-          PHASE="${{ steps.dev.outputs.phase }}"
-          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
-          TASK_ID="${{ steps.dev.outputs.task_id }}"
-          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          PR_NUMBER="${{ steps.pr.outputs.number }}"
-          PR_TITLE="${{ steps.pr.outputs.title }}"
-          MERGED_AT="${{ steps.pr.outputs.merged_at }}"
-          COMMITS="${{ steps.extract.outputs.commits }}"
-
-          HAS_MIGRATIONS="${{ steps.extract.outputs.has_migrations }}"
-          HAS_CONFIG="${{ steps.extract.outputs.has_config }}"
-          HAS_INFRA="${{ steps.extract.outputs.has_infra }}"
 
           MIGRATIONS_NOTE="None detected"
           if [ "$HAS_MIGRATIONS" -gt 0 ]; then
@@ -191,25 +195,28 @@ ${PR_TITLE}
         if: steps.create.outputs.number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          DEPLOY_ISSUE: ${{ steps.create.outputs.number }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
         run: |
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          DEPLOY_ISSUE="${{ steps.create.outputs.number }}"
           GH_HOST={GITHUB_HOST} gh issue comment ${DEV_ISSUE} \
             --body "Deployment issue created: #${DEPLOY_ISSUE}
 
-This development issue is complete. Deployment will occur when all Phase ${{ steps.dev.outputs.phase_num }} development issues are closed."
+This development issue is complete. Deployment will occur when all Phase ${PHASE_NUM} development issues are closed."
 
       - name: Post to Teams
         if: steps.create.outputs.number != ''
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          DEPLOY_ISSUE: ${{ steps.create.outputs.number }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
+          FEATURE_NAME: ${{ steps.dev.outputs.feature_name }}
+          SERVER_URL: ${{ github.server_url }}
+          REPO: ${{ github.repository }}
         run: |
-          DEPLOY_ISSUE="${{ steps.create.outputs.number }}"
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          PR_NUMBER="${{ steps.pr.outputs.number }}"
-          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
-          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
-          ISSUE_URL="${{ github.server_url }}/${{ github.repository }}/issues/${DEPLOY_ISSUE}"
+          ISSUE_URL="${SERVER_URL}/${REPO}/issues/${DEPLOY_ISSUE}"
           curl -H "Content-Type: application/json" -d '{
             "@type": "MessageCard",
             "themeColor": "0076D7",
@@ -231,8 +238,8 @@ This development issue is complete. Deployment will occur when all Phase ${{ ste
         id: phase_check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.dev.outputs.phase }}
         run: |
-          PHASE="${{ steps.dev.outputs.phase }}"
           OPEN_DEV=$(GH_HOST={GITHUB_HOST} gh issue list \
             --label "${PHASE}" \
             --label "ai:development" \
@@ -251,7 +258,7 @@ This development issue is complete. Deployment will occur when all Phase ${{ ste
         if: steps.phase_check.outputs.phase_complete == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
         run: |
-          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
           echo "Triggering deployment review for Phase ${PHASE_NUM}"
           GH_HOST={GITHUB_HOST} gh workflow run check-phase-completion.yml

@@ -24,6 +24,8 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_NODE_ID: ${{ github.event.pull_request.node_id }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          REPO: ${{ github.repository }}
         run: |
           PROJECT_DATA=$(gh api graphql -f query='
             query($org: String!, $number: Int!) {
@@ -121,10 +123,10 @@ jobs:
           echo "PR #${PR_NUMBER}:"
           set_done "$PR_NODE_ID" "PR"
 
-          if [ "${{ github.event.pull_request.merged }}" == "true" ]; then
+          if [ "$PR_MERGED" == "true" ]; then
             LINKED_ISSUES=$(echo "$PR_BODY" | grep -ioE '(closes|fixes|resolves)\s+#[0-9]+' | grep -oE '[0-9]+' || true)
             for ISSUE_NUM in $LINKED_ISSUES; do
-              ISSUE_NODE_ID=$(gh api "/repos/${{ github.repository }}/issues/${ISSUE_NUM}" --jq '.node_id' 2>/dev/null || true)
+              ISSUE_NODE_ID=$(gh api "/repos/${REPO}/issues/${ISSUE_NUM}" --jq '.node_id' 2>/dev/null || true)
               if [ -n "$ISSUE_NODE_ID" ] && [ "$ISSUE_NODE_ID" != "null" ]; then
                 echo "Linked issue #${ISSUE_NUM}:"
                 set_done "$ISSUE_NODE_ID" "Issue #${ISSUE_NUM}"

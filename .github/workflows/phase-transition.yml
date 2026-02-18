@@ -51,11 +51,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
           GH_HOST: "{GITHUB_HOST}"
-          PHASE_LABEL: "phase:${{ inputs.phase_number }}"
+          PHASE_NUMBER: ${{ inputs.phase_number }}
+          TARGET_STATUS: ${{ inputs.target_status }}
+          REPO: ${{ github.repository }}
         run: |
+          PHASE_LABEL="phase:${PHASE_NUMBER}"
           echo "=== Phase Transition ==="
-          echo "Phase: ${{ inputs.phase_number }}"
-          echo "Target Status: ${{ inputs.target_status }}"
+          echo "Phase: ${PHASE_NUMBER}"
+          echo "Target Status: ${TARGET_STATUS}"
           echo ""
 
           PROJECT_ID=$(gh api graphql -f query='
@@ -86,11 +89,10 @@ jobs:
             }' -f org="${ORG}" -F number=${PROJECT_NUMBER})
 
           STATUS_FIELD_ID=$(echo "$FIELD_DATA" | jq -r '.data.organization.projectV2.field.id')
-          TARGET_OPTION_ID=$(echo "$FIELD_DATA" | jq -r --arg status "${{ inputs.target_status }}" '.data.organization.projectV2.field.options[] | select(.name == $status) | .id')
+          TARGET_OPTION_ID=$(echo "$FIELD_DATA" | jq -r --arg status "$TARGET_STATUS" '.data.organization.projectV2.field.options[] | select(.name == $status) | .id')
           echo "Status Field ID: $STATUS_FIELD_ID"
           echo "Target Option ID: $TARGET_OPTION_ID"
 
-          REPO="${{ github.repository }}"
           ISSUES=$(gh issue list --repo "$REPO" --label "$PHASE_LABEL" --state open --json number,nodeId,title --limit 100)
           ISSUE_COUNT=$(echo "$ISSUES" | jq length)
           echo ""
@@ -102,7 +104,7 @@ jobs:
             exit 0
           fi
 
-          if [ "${{ inputs.target_status }}" = "Backlog" ]; then
+          if [ "$TARGET_STATUS" = "Backlog" ]; then
             SOURCE_STATUS="Todo"
           else
             SOURCE_STATUS="Backlog"
@@ -172,12 +174,12 @@ jobs:
                   }
                 }
               }' -f project="$PROJECT_ID" -f item="$ITEM_ID" -f field="$STATUS_FIELD_ID" -f value="$TARGET_OPTION_ID"
-            echo "  #${ISSUE_NUM}: $SOURCE_STATUS -> ${{ inputs.target_status }}"
+            echo "  #${ISSUE_NUM}: $SOURCE_STATUS -> ${TARGET_STATUS}"
             UPDATED=$((UPDATED + 1))
           done < <(echo "$ISSUES" | jq -c '.[]')
 
           echo ""
-          echo "=== Phase ${{ inputs.phase_number }} Transition Complete ==="
+          echo "=== Phase ${PHASE_NUMBER} Transition Complete ==="
           echo "Updated: $UPDATED | Skipped: $SKIPPED"
 
           # Export counts for notification step
@@ -189,6 +191,8 @@ jobs:
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
           GH_HOST: "{GITHUB_HOST}"
+          PHASE_NUMBER: ${{ inputs.phase_number }}
+          TARGET_STATUS: ${{ inputs.target_status }}
         run: |
           if [ -z "${TEAMS_WEBHOOK:-}" ]; then
             echo "Teams webhook not configured. Skipping notification."
@@ -200,10 +204,10 @@ jobs:
             "themeColor": "0076D7",
             "summary": "Phase Transition Complete",
             "sections": [{
-              "activityTitle": "Phase ${{ inputs.phase_number }} Transition",
+              "activityTitle": "Phase '"${PHASE_NUMBER}"' Transition",
               "facts": [
-                {"name": "Phase", "value": "${{ inputs.phase_number }}"},
-                {"name": "Target Status", "value": "${{ inputs.target_status }}"},
+                {"name": "Phase", "value": "'"${PHASE_NUMBER}"'"},
+                {"name": "Target Status", "value": "'"${TARGET_STATUS}"'"},
                 {"name": "Issues Updated", "value": "'"${UPDATED_COUNT}"'"},
                 {"name": "Issues Skipped", "value": "'"${SKIPPED_COUNT}"'"}
               ]

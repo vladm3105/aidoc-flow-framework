@@ -22,6 +22,7 @@ jobs:
         env:
           EVENT: ${{ github.event.action }}
           LABEL: ${{ github.event.label.name }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
         run: |
           TARGET_STATUS=""
           if [ "$EVENT" = "closed" ]; then
@@ -40,16 +41,14 @@ jobs:
           elif [ "$EVENT" = "unlabeled" ]; then
             case "$LABEL" in
               "ai:in-progress"|"status:in-progress")
-                LABELS='${{ toJSON(github.event.issue.labels.*.name) }}'
-                HAS_REVIEW=$(echo "$LABELS" | jq -r '.[] | select(. == "ai:review-requested" or . == "status:review")' | head -1)
+                HAS_REVIEW=$(echo "$ISSUE_LABELS" | jq -r '.[] | select(. == "ai:review-requested" or . == "status:review")' | head -1)
                 if [ -z "$HAS_REVIEW" ]; then
                   TARGET_STATUS="Backlog"
                 fi
                 ;;
             esac
           elif [ "$EVENT" = "assigned" ]; then
-            LABELS='${{ toJSON(github.event.issue.labels.*.name) }}'
-            HAS_AI_LABEL=$(echo "$LABELS" | jq -r '.[] | select(startswith("ai:"))' | head -1)
+            HAS_AI_LABEL=$(echo "$ISSUE_LABELS" | jq -r '.[] | select(startswith("ai:"))' | head -1)
             if [ -z "$HAS_AI_LABEL" ]; then
               TARGET_STATUS="In Progress"
             fi
@@ -67,9 +66,9 @@ jobs:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
           GH_HOST: "{GITHUB_HOST}"
           TARGET_STATUS: ${{ steps.target.outputs.target_status }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          ISSUE_NODE_ID="${{ github.event.issue.node_id }}"
-          ISSUE_NUMBER="${{ github.event.issue.number }}"
           PROJECT_DATA=$(gh api graphql -f query='
             query($org: String!, $number: Int!) {
               organization(login: $org) {
@@ -161,9 +160,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
           GH_HOST: "{GITHUB_HOST}"
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
         run: |
-          REPO="${{ github.repository }}"
-          ISSUE="${{ github.event.issue.number }}"
           STALE_LABELS="ai:ready ai:in-progress ai:review-requested status:planning"
           for LABEL in $STALE_LABELS; do
             ENCODED=$(echo "$LABEL" | sed 's/:/%3A/g')

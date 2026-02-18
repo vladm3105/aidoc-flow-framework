@@ -1334,10 +1334,81 @@ Validates project has required configuration and secrets.
 
 ---
 
+## Security Patterns
+
+### Shell Injection Prevention
+
+GitHub Actions workflows are vulnerable to shell injection when `${{ }}` expressions containing user-controlled data are used directly in `run:` blocks.
+
+**Risk Classification**
+
+| Risk Level | Data Source | Example |
+|:-----------|:------------|:--------|
+| **High** | User-controlled: issue titles, PR bodies, branch names, commit messages | `${{ github.event.issue.title }}` |
+| **Medium** | Workflow inputs | `${{ inputs.iteration }}` |
+| **Low** | System values (not user-controlled) | `${{ github.event_name }}`, `${{ github.repository }}` |
+
+**Safe Pattern (REQUIRED)**
+
+Move `${{ }}` expressions to `env:` block, then reference as shell variables:
+
+```yaml
+- name: Process issue
+  env:
+    ISSUE_TITLE: ${{ github.event.issue.title }}
+    ISSUE_NUMBER: ${{ github.event.issue.number }}
+  run: |
+    echo "Processing: ${ISSUE_TITLE}"
+    gh issue view "${ISSUE_NUMBER}"
+```
+
+**Unsafe Pattern (PROHIBITED)**
+
+```yaml
+# DANGEROUS - Shell injection vulnerability
+- name: Process issue
+  run: |
+    echo "Processing: ${{ github.event.issue.title }}"
+    gh issue view "${{ github.event.issue.number }}"
+```
+
+**Why This Matters**
+
+A malicious issue title like `"; rm -rf /; echo "` would execute arbitrary commands:
+
+```bash
+# What gets executed with unsafe pattern:
+echo "Processing: "; rm -rf /; echo ""
+```
+
+With the safe pattern, the title is stored in an environment variable and properly escaped by the shell.
+
+**Additional Guidelines**
+
+- Use `printf '%s'` instead of `echo` for multiline content
+- Validate/sanitize inputs before use in commands
+- Prefer `jq` with proper quoting for JSON processing
+
+---
+
+## Troubleshooting
+
+### Shell Injection / Syntax Errors
+
+| Symptom | Cause | Fix |
+|:--------|:------|:----|
+| `unexpected EOF` | Unescaped `${{ }}` with special chars | Move to `env:` block |
+| `bad substitution` | JSON in shell variable | Use `printf '%s' "$VAR"` |
+| Random command execution | Shell injection via user input | Move to `env:` block |
+| `syntax error near ')'` | Parentheses in issue title | Move to `env:` block |
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 6.1 | {DATE} | **Security Hardening**: Fixed shell injection vulnerabilities across 7 workflows by moving inline `${{ }}` expressions to `env:` blocks. Added Security Patterns section with risk classification, safe/unsafe code examples, and troubleshooting table. Updated: auto-add-to-project.yml, issue-label-sync.yml, create-bug-issue.yml, create-deployment-issue.yml, pr-merge-cleanup.yml, agent-dispatch.yml, phase-transition.yml. |
 | 6.0 | {DATE} | Added governance automation workflows: pr-issue-link.yml, verify-acceptance.yml, staging-signoff.yml, sync-tasks.yml, validate-governance.yml, validate-config.yml. Added AI Agent Memory System integration. Updated agent-dispatch.yml with IPLAN-015 improvements (paginated GraphQL, conventional commits, anchored patterns). |
 | 5.0 | {DATE} | Phase-gated unified deployment model. Added `deploy-dev.yml` (phase-gated with smoke tests), `check-all-phases-dev.yml` (staging gate). Updated `deploy-staging.yml` to accept `image_tag` instead of `phase`. Deprecated `deploy-dev-pr.yml` and `cleanup-pr-env.yml` (per-PR deployments removed). Added `smoke_test.sh` and `update_staging_tracking.py` scripts. |
 | 4.8 | {DATE} | Environment field now mandatory: PRs inherit Environment from linked issues (parsed from Closes/Fixes/Resolves #X); defaults to Development if no linked issue; updated GraphQL Operations |

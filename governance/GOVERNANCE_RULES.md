@@ -140,6 +140,43 @@ GHES v3.12.4 does not have reliable GitHub Connect to `github.com`. All workflow
     echo "CLOUDSDK_AUTH_ACCESS_TOKEN=${SA_TOKEN}" >> "$GITHUB_ENV"
 ```
 
+### 2b. No Inline ${{ }} in Shell (Mandatory)
+
+GitHub Actions `${{ }}` expressions **must not** be used inline in `run:` blocks. This prevents shell injection vulnerabilities when processing user-controlled data (issue titles, PR bodies, branch names).
+
+**Prohibited**:
+
+```yaml
+# DANGEROUS - Shell injection vulnerability
+- name: Process issue
+  run: |
+    echo "Title: ${{ github.event.issue.title }}"
+    gh issue view "${{ github.event.issue.number }}"
+```
+
+**Required**:
+
+```yaml
+# SAFE - Values passed through env block
+- name: Process issue
+  env:
+    ISSUE_TITLE: ${{ github.event.issue.title }}
+    ISSUE_NUMBER: ${{ github.event.issue.number }}
+  run: |
+    echo "Title: ${ISSUE_TITLE}"
+    gh issue view "${ISSUE_NUMBER}"
+```
+
+**Risk Classification**:
+
+| Risk | Data Source | Examples |
+|:-----|:------------|:---------|
+| High | User input | `github.event.issue.title`, `github.event.pull_request.body`, `github.head_ref` |
+| Medium | Workflow inputs | `inputs.iteration`, `inputs.phase_number` |
+| Low | System values | `github.event_name`, `github.repository`, `github.sha` |
+
+**Note**: Even low-risk values should use the `env:` pattern for consistency and future-proofing.
+
 ---
 
 ## 3. AI Workflow
@@ -740,6 +777,7 @@ See [docs/qa/06-security-testing.md](../docs/qa/06-security-testing.md) for full
 | 2.6 | {DATE} | Added mandatory Pre-Implementation Checklist — AI must transition `ai:ready` → `ai:in-progress` + board "In Progress" before writing any code |
 | 2.5 | {DATE} | Added PR Review Labels subsection (`ai:review-passed`/`ai:review-failed`); updated AI PR Review to {AI_TOOL_NAME} Code CLI + conclusion comments |
 | 2.4 | {DATE} | Added mandatory Post-PR Checklist — consolidated acceptance criteria sync, label transition, board status update, and PR link into a single atomic sequence that must execute immediately after PR creation |
+| 2.4 | {DATE} | Added §2b No Inline ${{ }} in Shell rule — prevent shell injection by moving expressions to `env:` blocks |
 | 2.3 | {DATE} | Added §2a No Marketplace Actions rule — all workflows must be self-contained, no `actions/*` or third-party marketplace actions due to unreliable GitHub Connect on GHES v3.12.4 |
 | 2.2 | {DATE} | Added GHES Runner Guide to Quick Reference |
 | 2.1 | {DATE} | Added mandatory Issue PR Link rule — AI agent must post PR number and URL on linked issue immediately after PR creation |

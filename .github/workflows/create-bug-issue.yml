@@ -48,16 +48,19 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
-          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
-          git checkout ${{ github.sha }}
+          git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
+          git checkout "$SHA"
 
       - name: Get QA issue details
         id: qa
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QA_ISSUE: ${{ inputs.qa_issue }}
         run: |
-          QA_ISSUE="${{ inputs.qa_issue }}"
           ISSUE_DATA=$(GH_HOST={GITHUB_HOST} gh issue view ${QA_ISSUE} --json title,body,labels)
           ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')
           ISSUE_BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
@@ -74,11 +77,12 @@ jobs:
         id: iteration
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.qa.outputs.phase }}
+          DEV_ISSUE: ${{ steps.qa.outputs.dev_issue }}
+          INPUT_ITERATION: ${{ inputs.iteration }}
         run: |
-          PHASE="${{ steps.qa.outputs.phase }}"
-          DEV_ISSUE="${{ steps.qa.outputs.dev_issue }}"
-          if [ -n "${{ inputs.iteration }}" ]; then
-            ITERATION="${{ inputs.iteration }}"
+          if [ -n "$INPUT_ITERATION" ]; then
+            ITERATION="$INPUT_ITERATION"
           else
             BUG_COUNT=$(GH_HOST={GITHUB_HOST} gh issue list \
               --label "${PHASE}" \
@@ -98,9 +102,11 @@ jobs:
 
       - name: Check iteration limit
         id: limit_check
+        env:
+          ITERATION: ${{ steps.iteration.outputs.number }}
         run: |
           python3 scripts/workflows/check_iteration_limit.py \
-            --iteration ${{ steps.iteration.outputs.number }} \
+            --iteration "$ITERATION" \
             --max-iterations ${MAX_QA_ITERATIONS} \
             --output-file /tmp/limit_check.json
           ACTION=$(jq -r '.action' /tmp/limit_check.json)
@@ -108,19 +114,24 @@ jobs:
 
       - name: Parse failure details
         id: failure
+        env:
+          FAILURE_DETAILS: ${{ inputs.failure_details }}
+          INPUT_TEST_FILE: ${{ inputs.test_file }}
+          INPUT_TEST_NAME: ${{ inputs.test_name }}
+          INPUT_ERROR_MESSAGE: ${{ inputs.error_message }}
         run: |
-          if [ -n "${{ inputs.failure_details }}" ]; then
-            echo '${{ inputs.failure_details }}' > /tmp/failure.json
+          if [ -n "$FAILURE_DETAILS" ]; then
+            printf '%s' "$FAILURE_DETAILS" > /tmp/failure.json
             TEST_FILE=$(jq -r '.test_file' /tmp/failure.json)
             TEST_NAME=$(jq -r '.test_name' /tmp/failure.json)
             ERROR_TYPE=$(jq -r '.error_type' /tmp/failure.json)
             ERROR_MESSAGE=$(jq -r '.error_message' /tmp/failure.json)
             STACK_TRACE=$(jq -r '.stack_trace' /tmp/failure.json)
           else
-            TEST_FILE="${{ inputs.test_file }}"
-            TEST_NAME="${{ inputs.test_name }}"
+            TEST_FILE="$INPUT_TEST_FILE"
+            TEST_NAME="$INPUT_TEST_NAME"
             ERROR_TYPE="TestFailure"
-            ERROR_MESSAGE="${{ inputs.error_message }}"
+            ERROR_MESSAGE="$INPUT_ERROR_MESSAGE"
             STACK_TRACE="Not available"
           fi
           echo "test_file=${TEST_FILE}" >> $GITHUB_OUTPUT
@@ -134,16 +145,16 @@ jobs:
         id: create_bug
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.qa.outputs.phase }}
+          PHASE_NUM: ${{ steps.qa.outputs.phase_num }}
+          TASK_ID: ${{ steps.qa.outputs.task_id }}
+          DEV_ISSUE: ${{ steps.qa.outputs.dev_issue }}
+          QA_ISSUE: ${{ inputs.qa_issue }}
+          ITERATION: ${{ steps.iteration.outputs.number }}
+          TEST_FILE: ${{ steps.failure.outputs.test_file }}
+          TEST_NAME: ${{ steps.failure.outputs.test_name }}
+          ERROR_TYPE: ${{ steps.failure.outputs.error_type }}
         run: |
-          PHASE="${{ steps.qa.outputs.phase }}"
-          PHASE_NUM="${{ steps.qa.outputs.phase_num }}"
-          TASK_ID="${{ steps.qa.outputs.task_id }}"
-          DEV_ISSUE="${{ steps.qa.outputs.dev_issue }}"
-          QA_ISSUE="${{ inputs.qa_issue }}"
-          ITERATION="${{ steps.iteration.outputs.number }}"
-          TEST_FILE="${{ steps.failure.outputs.test_file }}"
-          TEST_NAME="${{ steps.failure.outputs.test_name }}"
-          ERROR_TYPE="${{ steps.failure.outputs.error_type }}"
           ERROR_MESSAGE=$(cat /tmp/error_message.txt)
           STACK_TRACE=$(cat /tmp/stack_trace.txt)
           REMAINING=$((MAX_QA_ITERATIONS - ITERATION))
@@ -210,29 +221,33 @@ ${STACK_TRACE}
         if: steps.create_bug.outputs.number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QA_ISSUE: ${{ inputs.qa_issue }}
+          BUG_NUMBER: ${{ steps.create_bug.outputs.number }}
+          ITERATION: ${{ steps.iteration.outputs.number }}
         run: |
-          QA_ISSUE="${{ inputs.qa_issue }}"
-          CREATED_ISSUE="${{ steps.create_bug.outputs.number }}"
-          MESSAGE="Bug fix issue created: #${CREATED_ISSUE} (iteration ${{ steps.iteration.outputs.number }})"
+          MESSAGE="Bug fix issue created: #${BUG_NUMBER} (iteration ${ITERATION})"
           GH_HOST={GITHUB_HOST} gh issue comment ${QA_ISSUE} --body "${MESSAGE}"
 
       - name: Post to Teams
         if: always()
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          QA_ISSUE: ${{ inputs.qa_issue }}
+          ITERATION: ${{ steps.iteration.outputs.number }}
+          PHASE_NUM: ${{ steps.qa.outputs.phase_num }}
+          BUG_NUMBER: ${{ steps.create_bug.outputs.number }}
+          SERVER_URL: ${{ github.server_url }}
+          REPO: ${{ github.repository }}
         run: |
-          QA_ISSUE="${{ inputs.qa_issue }}"
-          ITERATION="${{ steps.iteration.outputs.number }}"
-          PHASE_NUM="${{ steps.qa.outputs.phase_num }}"
-          if [ -n "${{ steps.create_bug.outputs.number }}" ]; then
-            BUG_ISSUE="${{ steps.create_bug.outputs.number }}"
+          if [ -n "$BUG_NUMBER" ]; then
+            BUG_ISSUE="$BUG_NUMBER"
             COLOR="FFA500"
             TITLE="Bug Issue Created"
             STATUS="Iteration ${ITERATION}/${MAX_QA_ITERATIONS}"
           else
             exit 0
           fi
-          ISSUE_URL="${{ github.server_url }}/${{ github.repository }}/issues/${BUG_ISSUE}"
+          ISSUE_URL="${SERVER_URL}/${REPO}/issues/${BUG_ISSUE}"
           curl -H "Content-Type: application/json" -d '{
             "@type": "MessageCard",
             "themeColor": "'${COLOR}'",
