@@ -73,11 +73,16 @@ jobs:
           echo "{AI_TOOL_NAME} Code $(claude --version)"
 
       - name: Checkout PR branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
-          git clone "https://${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
             "${GITHUB_WORKSPACE}" --depth 1 \
             --branch "${GITHUB_HEAD_REF}"
+          cd "${GITHUB_WORKSPACE}"
+          git config user.name "ai-review-bot[bot]"
+          git config user.email "ai-review-bot@users.noreply.github.com"
 
       - name: Fetch PR diff and metadata
         env:
@@ -202,7 +207,7 @@ jobs:
 
       - name: Run {AI_TOOL_NAME} Code review
         if: env.SKIP_REVIEW != 'true'
-        timeout-minutes: 5
+        timeout-minutes: 8
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
