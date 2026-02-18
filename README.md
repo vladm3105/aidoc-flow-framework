@@ -1,9 +1,12 @@
 # Docs Flow Framework
 
-**Specification-Driven Development (SDD) with Scalable Depth**
+**AI-First Specification-Driven Development (SDD) with Scalable Depth**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+[![AI-First](https://img.shields.io/badge/AI--First-Framework-purple.svg)](./governance/README.md)
+
+> **AI-First Design**: This framework is designed for AI agents (Claude Code, Gemini CLI, GitHub Copilot) as the primary operators. Humans work *through* AI assistants, not directly with the framework. AI agents autonomously execute workflows, generate artifacts, and manage the development lifecycle.
 
 ## Repository Contents
 
@@ -191,14 +194,39 @@ template_profile: enterprise  # or "full" or "strict"
 - **Automated Validation**: Scripts for tag extraction, cumulative tagging validation, and matrix generation with CI/CD integration
 - **Regulatory Compliance**: Complete audit trails meet SEC, FINRA, FDA, ISO requirements
 
-## Agent Swarm Integration (.aidev)
+## AI-First Architecture
 
-The framework now includes a native **Agent Orchestration System** located in `.aidev/`. This system implements the **BMAD Methodology**, deploying a swarm of 16 specialized AI agents (using Claude Code, Gemini, and Codex) to autonomously generate and validate the documentation artifacts.
+This framework is designed for **AI agents as primary operators**. Humans interact through AI assistants rather than directly manipulating the framework.
 
-### Key Capabilities
-*   **16-Layer Swarm**: A dedicated agent role for every layer (e.g., `product-manager` for PRDs, `architect` for ADRs).
-*   **Adversarial Pair Architecture**: Every step is executed by one model (e.g., Gemini) and reviewed by another (e.g., Claude) to minimize hallucinations.
-*   **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`).
+### How It Works
+
+```
+Human Intent → AI Agent → Framework Execution → Production Code
+     ↑                          │
+     └──────── Feedback ────────┘
+```
+
+**AI Agent Responsibilities**:
+- Parse issues and generate implementation plans (IPLAN)
+- Execute SDD workflow (BRD → PRD → ... → Code)
+- Create branches, implement changes, submit PRs
+- Run automated reviews and respond to feedback
+- Manage memory across sessions (MEMORY.md files)
+
+**Human Responsibilities**:
+- Define business requirements and intent
+- Review and approve at quality gates (optional if score ≥90%)
+- Provide feedback when AI agents escalate
+
+### Agent Orchestration (.aidev)
+
+The framework includes a native **Agent Orchestration System** located in `.aidev/`. This system implements the **BMAD Methodology**, deploying a swarm of 16 specialized AI agents (using Claude Code, Gemini, and Codex) to autonomously generate and validate the documentation artifacts.
+
+**Key Capabilities**:
+- **16-Layer Swarm**: A dedicated agent role for every layer (e.g., `product-manager` for PRDs, `architect` for ADRs)
+- **Adversarial Pair Architecture**: Every step is executed by one model (e.g., Gemini) and reviewed by another (e.g., Claude) to minimize hallucinations
+- **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`)
+- **75+ Skills**: Comprehensive skill library for document generation, validation, and review
 
 **[Get Started with the Framework](./ai_dev_ssd_flow/README.md)**
 
@@ -1241,22 +1269,48 @@ A comprehensive suite of tools is included for building, testing, and debugging 
 
 ## SDD Governance
 
-**Project Governance, CI/CD, and Setup Automation**
+**AI-First Project Governance, CI/CD, and Setup Automation**
 
 ### Overview
 
-The `governance/` directory provides project governance that applies to all SDD depths. It includes operational rules, setup guides, CI/CD templates, and AI PR review workflows.
+The `governance/` directory provides AI-first project governance that applies to all SDD depths. AI agents autonomously manage the issue lifecycle, PR reviews, and deployment workflows with minimal human intervention.
+
+### Framework Components
+
+| Directory | Purpose |
+|:----------|:--------|
+| `governance/` | Project governance documentation, rules, templates, and helper scripts |
+| `.claude/skills/` | 75+ Claude Code skills for document generation, validation, and review |
+| `.github/workflows/` | 24+ GitHub Actions for CI/CD, AI review, and automation |
 
 ### Key Features
 
 | Feature | Description |
 |:--------|:------------|
+| **Agent Dispatch Workflow** | `agent-dispatch.yml` triggers Claude Code on `ai:ready` label |
 | **Phase-Gated Deployment** | dev → staging → prod with automated gates |
 | **AI Label Lifecycle** | `ai:ready` → `ai:in-progress` → `ai:review-requested` |
-| **AI PR Review** | Automated code review via Claude Code CLI |
+| **AI PR Review** | `ai-review.yml` runs automated code review via Claude Code CLI |
+| **Acceptance Criteria Verification** | `verify-acceptance.yml` validates PR against issue checkboxes |
+| **IPLAN Auto-Scaffolding** | Generate implementation plans from issues |
 | **Multi-Cloud Support** | Setup scripts for GCP, AWS, Azure |
-| **GitHub Actions** | 18 workflow templates |
 | **IPLAN Templates** | Session-scoped implementation plans |
+| **AI Agent Memory** | MEMORY.md files for session persistence |
+
+### Governance Automation (v2.0)
+
+| Workflow | Trigger | Description |
+|:---------|:--------|:------------|
+| `agent-dispatch.yml` | `ai:ready` label | Dispatch issue to Claude Code for implementation |
+| `pr-issue-link.yml` | PR opened | Post PR link to linked issue |
+| `ai-review.yml` | PR ready | AI code review + post summary to issue |
+| `verify-acceptance.yml` | PR ready | Validate against issue acceptance criteria |
+| `deploy-staging.yml` | Phase complete | Generate deployment notes |
+| `staging-signoff.yml` | Manual trigger | Evaluate production readiness |
+| `check-phase-completion.yml` | Issue closed | Generate phase completion report |
+| `sync-tasks.yml` | Manual trigger | Bidirectional TASKS ↔ GitHub sync |
+| `validate-governance.yml` | CI/pre-commit | Detect documentation drift |
+| `validate-config.yml` | Nightly/manual | Verify secrets and branch protection |
 
 ### Quick Start
 
@@ -1403,11 +1457,39 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.7
-**Last Updated**: 2026-02-18T12:00:00
+**Version**: 2.8
+**Last Updated**: 2026-02-18T18:00:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.8 (2026-02-18T18:00:00)
+- [PASS] **AI-First Framework Design**: Highlighted AI agents as primary operators throughout documentation
+  - Added AI-First badge and prominent design statement
+  - Added AI-First Architecture section explaining human/AI responsibilities
+  - Updated governance section to reflect autonomous agent dispatch
+- [PASS] **Governance Automation v2.0**: Implemented 15 automation items (P1-P3)
+  - **P1 Critical**: Acceptance criteria verification, IPLAN auto-scaffolding, PR-issue linking, review history posting
+  - **P2 High Value**: Deployment notes generation, staging sign-off, phase summary, TASKS sync, QA results in releases
+  - **P3 Operational**: Governance doc validation, auto-add phase labels, config validation, auto-transition backlog
+- [PASS] **New Workflow Files (6)**:
+  - `pr-issue-link.yml` - Auto-post PR link to linked issue
+  - `verify-acceptance.yml` - Verify PR against acceptance criteria
+  - `staging-signoff.yml` - Evaluate staging readiness
+  - `sync-tasks.yml` - TASKS ↔ GitHub bidirectional sync
+  - `validate-governance.yml` - Detect governance documentation drift
+  - `validate-config.yml` - Validate project configuration
+- [PASS] **New Python Scripts (8)**:
+  - `verify_acceptance_criteria.py` - Acceptance criteria verification
+  - `generate_iplan_from_issue.py` - IPLAN scaffolding from issues
+  - `generate_deployment_plan.py` - Deployment notes generation
+  - `check_staging_ready.py` - Staging readiness evaluation
+  - `generate_phase_summary.py` - Phase completion summary
+  - `sync_tasks_from_issues.py` - TASKS bidirectional sync
+  - `validate_governance.py` - Governance drift detection
+  - `validate_project_setup.py` - Project configuration validation
+- [PASS] **Enhanced Workflows**: Updated `agent-dispatch.yml`, `ai-review.yml`, `auto-add-to-project.yml`, `phase-transition.yml`, `release.yml`
+- [PASS] **Bug Fixes**: Added missing `regression` label, fixed deprecated GitHub Actions syntax
 
 ### Version 2.7 (2026-02-18T12:00:00)
 - [PASS] **Unified SDD Framework**: Consolidated governance around single SDD methodology with scalable depth
