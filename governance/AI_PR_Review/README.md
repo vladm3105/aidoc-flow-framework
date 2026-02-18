@@ -86,6 +86,8 @@ Caller workflow (~10 lines)
 | [`.github/workflows/ai-review.yml`](../../.github/workflows/ai-review.yml) | Unified workflow — {AI_TOOL_NAME} Code CLI (triggers locally + callable by component repos) | ~230 |
 | [`governance/AI_PR_Review/REVIEW_INSTRUCTIONS.md`](./REVIEW_INSTRUCTIONS.md) | 5-phase analysis methodology for AI code review | ~180 |
 | [`governance/AI_PR_Review/FIX_INSTRUCTIONS.md`](./FIX_INSTRUCTIONS.md) | Auto-fix instructions for AI-suggested fixes | ~45 |
+| [`governance/AI_PR_Review/IMPLEMENT_INSTRUCTIONS.md`](./IMPLEMENT_INSTRUCTIONS.md) | Implementation agent methodology for autonomous dispatch | ~96 |
+| [`.github/workflows/agent-dispatch.yml`](../../.github/workflows/agent-dispatch.yml) | Autonomous agent dispatch — Issue → Branch → Implement → Test → PR | ~570 |
 | [`governance/scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh`](../scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh) | GCP prerequisite automation (WIF setup) | ~479 |
 
 ### Component Repos (per-repo)
@@ -139,6 +141,128 @@ Claude follows a mandatory 5-phase analysis (see [REVIEW_INSTRUCTIONS.md](./REVI
 
 This methodology prevents common false positives and ensures thorough review coverage.
 
+---
+
+## Autonomous Agent Dispatch
+
+The `agent-dispatch.yml` workflow provides end-to-end automation: Issue → Branch → Implement → Test → PR → Review.
+
+### Workflow Trigger
+
+Add the `ai:ready` label to an issue to trigger autonomous implementation. The workflow:
+
+1. **Pre-flight checks**: Validates acceptance criteria exist, phase label present, dependencies closed
+2. **Implementation**: Creates branch, runs Claude Code CLI to implement the issue
+3. **Verification**: Runs tests, validates no sensitive files, commits changes
+4. **PR Creation**: Creates PR with `ELEVATED_PAT` to trigger `ai-review.yml`
+5. **Cleanup**: Updates labels, posts PR link to issue, notifies Teams
+
+### Skip/Guard Conditions
+
+| Condition | Behavior |
+|:----------|:---------|
+| `skip-ai-implement` label | Skip dispatch (intentional opt-out) |
+| `ai:in-progress` already set | Skip (prevent duplicate dispatch) |
+| No acceptance criteria (`- [ ]`) | Skip, post comment explaining requirement |
+| No `phase:*` label | Skip, post comment |
+| `needs-iplan` label | Skip (requires human IPLAN first) |
+| Open dependencies (`Depends on #X`) | Skip until dependencies closed |
+
+### Escalation Paths
+
+| Scenario | Action |
+|:---------|:-------|
+| No files modified | Label `needs-human`, post comment, notify Teams |
+| Tests fail | Label `needs-human`, post test output, notify Teams |
+| Sensitive files detected | Abort commit, label `needs-human`, notify Teams |
+
+### Required Secrets
+
+| Secret | Purpose |
+|:-------|:--------|
+| `ANTHROPIC_API_KEY` | Claude Code CLI authentication |
+| `ELEVATED_PAT` | Push + PR creation (triggers ai-review.yml) |
+| `TEAMS_WEBHOOK` | Teams notifications (optional) |
+
+### Reusable Interface
+
+Component repos can call the dispatch workflow:
+
+```yaml
+jobs:
+  dispatch:
+    uses: {ORG}/{HOME_REPO}/.github/workflows/agent-dispatch.yml@main
+    with:
+      issue_number: ${{ github.event.issue.number }}
+      model: sonnet
+      max-budget-usd: "5.00"
+      max-timeout-minutes: "20"
+    secrets: inherit
+```
+
+### Project Board Configuration
+
+The dispatch workflow updates GitHub Project board status via GraphQL. Configure these environment variables in your repository or workflow:
+
+| Variable | Purpose | How to Obtain |
+|:---------|:--------|:--------------|
+| `PROJECT_BOARD_NUMBER` | Project number (visible in URL) | `/orgs/{ORG}/projects/{NUMBER}` |
+| `PROJECT_ID` | Base64-encoded project ID | See query below |
+| `STATUS_FIELD_ID` | Status field ID | See query below |
+| `IN_PROGRESS_STATUS_ID` | "In Progress" option ID | See query below |
+| `IN_REVIEW_STATUS_ID` | "In Review" option ID | See query below |
+
+**Get Project IDs**:
+
+```bash
+# List your projects
+gh api graphql -f query='
+  query($org: String!) {
+    organization(login: $org) {
+      projectsV2(first: 10) {
+        nodes { id number title }
+      }
+    }
+  }
+' -f org="{YOUR_ORG}" --jq '.data.organization.projectsV2.nodes[]'
+
+# Get field and option IDs for a specific project
+gh api graphql -f query='
+  query($org: String!, $number: Int!) {
+    organization(login: $org) {
+      projectV2(number: $number) {
+        id
+        fields(first: 20) {
+          nodes {
+            ... on ProjectV2SingleSelectField {
+              id
+              name
+              options { id name }
+            }
+          }
+        }
+      }
+    }
+  }
+' -f org="{YOUR_ORG}" -F number={PROJECT_NUMBER}
+```
+
+**GHES Token Requirements**: For GitHub Enterprise Server, the `GITHUB_TOKEN` may require additional scopes for GraphQL project mutations. If board updates fail silently, create a PAT with `project` scope.
+
+### AI Agent Memory System
+
+The dispatch workflow creates and maintains memory files for session continuity:
+
+| File | Purpose |
+|:-----|:--------|
+| `governance/memory/active/MEMORY-{ISSUE}.md` | Active session memory |
+| `governance/memory/archive/` | Archived memories (post-completion) |
+| `governance/memory/GLOBAL_LEARNINGS.md` | Project-wide patterns and conventions |
+
+See [AI_AGENT_MEMORY.md](../AI_AGENT_MEMORY.md) for full documentation.
+
+---
+
 ### Review Events
 
 | Event | Condition | Branch Protection | Label Applied |
@@ -187,6 +311,7 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 |:---------|:--------|
 | [REVIEW_INSTRUCTIONS.md](./REVIEW_INSTRUCTIONS.md) | 5-phase analysis methodology with self-check requirements |
 | [FIX_INSTRUCTIONS.md](./FIX_INSTRUCTIONS.md) | Auto-fix capability instructions and scope constraints |
+| [IMPLEMENT_INSTRUCTIONS.md](./IMPLEMENT_INSTRUCTIONS.md) | Implementation agent methodology for autonomous dispatch |
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale (Custom Workflow vs PR-Agent vs Bot vs Claude Action) |
 | [LOCAL_SETUP.md](./LOCAL_SETUP.md) | Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth, API key) |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
@@ -201,6 +326,7 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 2.3 | {DATE} | Added autonomous agent dispatch (agent-dispatch.yml) with full Issue → PR automation |
 | 2.2 | {DATE} | Updated for consolidated workflow — single ai-review.yml replaces separate caller + reusable; added conclusion + label steps to architecture |
 | 2.1 | {DATE} | Added PR labels (`ai:review-passed`/`ai:review-failed`) to Key Properties, Review Policy rule 10, Review Events table |
 | 2.0 | {DATE} | Replaced Gemini 2.5 Flash + Python script with {AI_TOOL_NAME} Code CLI on self-hosted runner (ADR-009 v1.1) |

@@ -1,0 +1,91 @@
+# TASKS ↔ GitHub Bidirectional Sync
+#
+# Syncs TASKS files with GitHub issues.
+#
+# References:
+#   - work_plans/ai_governance_automation.md (Item #9)
+
+name: Sync TASKS
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "Phase number to sync"
+        required: true
+        type: number
+      create_pr:
+        description: "Create PR with changes"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  sync-tasks:
+    name: Sync TASKS from GitHub Issues
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        run: |
+          git clone --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            .
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync TASKS from issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PHASE="${{ inputs.phase }}"
+
+          python3 governance/scripts/workflows/sync_tasks_from_issues.py \
+            --phase "${PHASE}" \
+            --repo "${{ github.repository }}"
+
+      - name: Create PR with changes
+        if: inputs.create_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PHASE="${{ inputs.phase }}"
+          BRANCH_NAME="chore/sync-tasks-p${PHASE}-$(date +%Y%m%d)"
+
+          # Check for changes
+          if git diff --quiet; then
+            echo "No changes to TASKS file. Skipping PR."
+            exit 0
+          fi
+
+          # Create branch and commit
+          git checkout -b "${BRANCH_NAME}"
+          git add docs/TASKS/
+          git commit -m "chore: Sync TASKS-P${PHASE} from GitHub issues
+
+          Automated sync of TASKS file with current GitHub issue state.
+
+          Co-Authored-By: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+          git push -u origin "${BRANCH_NAME}"
+
+          # Create PR
+          gh pr create \
+            --title "chore: Sync TASKS-P${PHASE} from GitHub issues" \
+            --body "## Summary
+
+          Automated sync of TASKS file with GitHub issues for Phase ${PHASE}.
+
+          ## Changes
+
+          See diff for updated task statuses, new tasks, and removed tasks.
+
+          ---
+          Automated by TASKS Sync workflow" \
+            --base main \
+            --head "${BRANCH_NAME}"

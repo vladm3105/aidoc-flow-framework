@@ -1,0 +1,61 @@
+# Verify Acceptance Criteria for PRs
+#
+# Extracts acceptance criteria from linked issue and verifies each
+# criterion against PR changes. Posts a verification report.
+#
+# References:
+#   - work_plans/ai_governance_automation.md (Item #1)
+#   - governance/scripts/workflows/verify_acceptance_criteria.py
+
+name: Verify Acceptance Criteria
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to verify"
+        required: true
+        type: number
+      blocking:
+        description: "Fail check if criteria unverified"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  verify-criteria:
+    name: Verify Acceptance Criteria
+    runs-on: ubuntu-latest
+    if: "!github.event.pull_request.draft"
+
+    steps:
+      - name: Checkout repository
+        run: |
+          git clone --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            .
+
+      - name: Set up Python
+        run: |
+          python3 --version
+
+      - name: Verify acceptance criteria
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          BLOCKING="${{ inputs.blocking || 'true' }}"
+
+          python3 governance/scripts/workflows/verify_acceptance_criteria.py \
+            --pr-number "${PR_NUMBER}" \
+            --repo "${{ github.repository }}" \
+            --post-comment \
+            $( [ "${BLOCKING}" = "true" ] && echo "--blocking" )

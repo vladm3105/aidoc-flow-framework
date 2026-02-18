@@ -1,5 +1,11 @@
 name: Phase Transition
 
+# Automatically transitions issues between phases.
+# Can be triggered manually or on a schedule.
+#
+# References:
+#   - work_plans/ai_governance_automation.md (Item #14)
+
 on:
   workflow_dispatch:
     inputs:
@@ -24,6 +30,9 @@ on:
         options:
           - Todo
           - Backlog
+  # Item #14: Scheduled trigger for auto-transition
+  schedule:
+    - cron: '0 9 * * 1'  # Monday at 9am UTC (sprint start)
 
 permissions:
   issues: read
@@ -170,3 +179,34 @@ jobs:
           echo ""
           echo "=== Phase ${{ inputs.phase_number }} Transition Complete ==="
           echo "Updated: $UPDATED | Skipped: $SKIPPED"
+
+          # Export counts for notification step
+          echo "UPDATED_COUNT=${UPDATED}" >> "$GITHUB_ENV"
+          echo "SKIPPED_COUNT=${SKIPPED}" >> "$GITHUB_ENV"
+
+      # Item #14: Teams notification for phase transitions
+      - name: Notify Teams
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          GH_HOST: "{GITHUB_HOST}"
+        run: |
+          if [ -z "${TEAMS_WEBHOOK:-}" ]; then
+            echo "Teams webhook not configured. Skipping notification."
+            exit 0
+          fi
+
+          curl -sS -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "themeColor": "0076D7",
+            "summary": "Phase Transition Complete",
+            "sections": [{
+              "activityTitle": "Phase ${{ inputs.phase_number }} Transition",
+              "facts": [
+                {"name": "Phase", "value": "${{ inputs.phase_number }}"},
+                {"name": "Target Status", "value": "${{ inputs.target_status }}"},
+                {"name": "Issues Updated", "value": "'"${UPDATED_COUNT}"'"},
+                {"name": "Issues Skipped", "value": "'"${SKIPPED_COUNT}"'"}
+              ]
+            }]
+          }' "${TEAMS_WEBHOOK}" || true
+          echo "Teams notification sent"

@@ -1,8 +1,14 @@
 name: Auto Add to Project
 
+# Auto-adds issues/PRs to project board and applies phase labels
+# based on issue title patterns like [P1-...] or [P2-...].
+#
+# References:
+#   - work_plans/ai_governance_automation.md (Item #12)
+
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
   pull_request:
     types: [opened]
 
@@ -20,6 +26,47 @@ jobs:
     name: Add to Project Board
     runs-on: self-hosted
     steps:
+      # Item #12: Auto-add phase labels based on issue title
+      - name: Extract phase and apply label
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_HOST: "{GITHUB_HOST}"
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          # Extract phase from title: [P1-...], [P2-...], etc.
+          PHASE=$(echo "${ISSUE_TITLE}" | grep -oE '\[P([0-9]+)' | head -1 | grep -oE '[0-9]+' || echo "")
+
+          if [ -z "${PHASE}" ]; then
+            # Try alternative patterns: "Phase 1", "phase:1"
+            PHASE=$(echo "${ISSUE_TITLE}" | grep -oiE 'phase\s*:?\s*([0-9]+)' | head -1 | grep -oE '[0-9]+' || echo "")
+          fi
+
+          if [ -z "${PHASE}" ]; then
+            echo "No phase detected in issue title. Skipping phase label."
+          else
+            PHASE_LABEL="phase:${PHASE}"
+            echo "Detected phase: ${PHASE}, checking label: ${PHASE_LABEL}"
+
+            # Check if phase label already exists
+            EXISTING_LABELS=$(gh issue view "${ISSUE_NUMBER}" --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+
+            if echo "${EXISTING_LABELS}" | grep -q "^phase:"; then
+              echo "Phase label already exists. Skipping."
+            else
+              # Ensure label exists (create if needed)
+              gh label create "${PHASE_LABEL}" \
+                --color "0e8a16" \
+                --description "Phase ${PHASE} issue" \
+                --force 2>/dev/null || true
+
+              # Apply label
+              gh issue edit "${ISSUE_NUMBER}" --add-label "${PHASE_LABEL}"
+              echo "Applied label: ${PHASE_LABEL}"
+            fi
+          fi
+
       - name: Add item and set status
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}

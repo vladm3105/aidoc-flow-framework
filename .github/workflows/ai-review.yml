@@ -226,6 +226,56 @@ jobs:
             --append-system-prompt "$(cat /tmp/review-instructions.txt)" \
             "Review PR #${PR_NUMBER} in repo ${REPO_FULL}. The unified diff is at /tmp/pr-diff.txt and metadata at /tmp/pr-metadata.json. The commit SHA is ${COMMIT_SHA}. The repo source code is checked out in the current directory. Analyze the code changes and post a formal GitHub review."
 
+      # Post review summary to linked issue (Item #4 from ai_governance_automation.md)
+      - name: Post review summary to linked issue
+        if: env.SKIP_REVIEW != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Extract linked issue number from PR body
+          ISSUE_NUMBER=$(echo "${PR_BODY}" | grep -oE '(Closes|Fixes|Resolves|closes|fixes|resolves)\s*#([0-9]+)' | head -1 | grep -oE '[0-9]+' || echo "")
+
+          if [ -z "${ISSUE_NUMBER}" ]; then
+            echo "No linked issue found in PR body. Skipping review history posting."
+            exit 0
+          fi
+
+          echo "Posting review summary to linked issue #${ISSUE_NUMBER}"
+
+          # Determine review verdict from conclusion payload or labels
+          VERDICT="Unknown"
+          if [ -f /tmp/conclusion-payload.json ]; then
+            CONCLUSION_BODY=$(jq -r '.body // ""' /tmp/conclusion-payload.json 2>/dev/null || echo "")
+            if echo "${CONCLUSION_BODY}" | grep -qi "approved\|no issues"; then
+              VERDICT="Approved"
+            elif echo "${CONCLUSION_BODY}" | grep -qi "changes requested\|work needed"; then
+              VERDICT="Changes Requested"
+            fi
+          fi
+
+          # Check for review labels as fallback
+          PR_LABELS=$(gh pr view "${PR_NUMBER}" --json labels --jq '.labels[].name' 2>/dev/null || echo "")
+          if echo "${PR_LABELS}" | grep -q "ai:review-passed"; then
+            VERDICT="Approved"
+          elif echo "${PR_LABELS}" | grep -q "ai:review-failed"; then
+            VERDICT="Changes Requested"
+          fi
+
+          CURRENT_DATE=$(TZ="America/New_York" date '+%Y-%m-%d %H:%M EST' 2>/dev/null || date '+%Y-%m-%d %H:%M')
+
+          # Post summary to linked issue
+          gh issue comment "${ISSUE_NUMBER}" \
+            --body "**AI Review Completed** for PR #${PR_NUMBER}
+
+**Verdict**: ${VERDICT}
+**PR**: ${PR_URL}
+**Date**: ${CURRENT_DATE}
+
+See the PR for detailed review comments." || echo "::warning::Failed to post review summary to issue #${ISSUE_NUMBER}"
+
       - name: Cleanup
         if: always()
         run: rm -f /tmp/pr-diff.txt /tmp/pr-metadata.json /tmp/review-instructions.txt /tmp/review-payload.json /tmp/conclusion-payload.json /tmp/label-payload.json
