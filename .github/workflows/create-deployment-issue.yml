@@ -107,6 +107,16 @@ jobs:
           COMMITS=$(GH_HOST={GITHUB_HOST} gh pr view ${PR_NUMBER} --json commits --jq '.commits | length')
           echo "commits=${COMMITS}" >> $GITHUB_OUTPUT
 
+      - name: Checkout (for templates)
+        if: steps.pr.outputs.dev_issue != '' && steps.dev.outputs.is_dev != '0'
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
+          git checkout "$SHA"
+
       - name: Create deployment issue
         if: steps.pr.outputs.dev_issue != '' && steps.dev.outputs.is_dev != '0'
         id: create
@@ -139,52 +149,21 @@ jobs:
             INFRA_NOTE="**Yes** - Review infrastructure changes"
           fi
 
-          BODY="## Deployment Issue
-
-**Source**
-| Field | Value |
-|:------|:------|
-| Development Issue | #${DEV_ISSUE} |
-| Pull Request | #${PR_NUMBER} |
-| Merged | ${MERGED_AT} |
-| Commits | ${COMMITS} |
-
-**Depends on**: #${DEV_ISSUE} (development complete)
-
----
-
-## Changes Summary
-
-${PR_TITLE}
-
----
-
-## Deployment Considerations
-
-| Category | Status | Notes |
-|:---------|:-------|:------|
-| Database Migrations | ${MIGRATIONS_NOTE} | Review migrations/ or alembic/ |
-| Config Changes | ${CONFIG_NOTE} | Review .env, config/, Terraform |
-| Infrastructure | ${INFRA_NOTE} | Review Dockerfile, Cloud Run config |
-
----
-
-## Deployment Checklist
-
-- [ ] Review changes summary above
-- [ ] Verify all dependent deployments are ready
-- [ ] Check for breaking changes
-- [ ] Verify rollback procedure exists
-- [ ] Add specific deployment notes below if needed
-
----
-
-*Created automatically from PR #${PR_NUMBER} merge*"
+          # Build issue body from template
+          cp .github/templates/deployment-issue-body.md /tmp/issue_body.md
+          sed -i "s|__DEV_ISSUE__|${DEV_ISSUE}|g" /tmp/issue_body.md
+          sed -i "s|__PR_NUMBER__|${PR_NUMBER}|g" /tmp/issue_body.md
+          sed -i "s|__MERGED_AT__|${MERGED_AT}|g" /tmp/issue_body.md
+          sed -i "s|__COMMITS__|${COMMITS}|g" /tmp/issue_body.md
+          sed -i "s|__PR_TITLE__|${PR_TITLE}|g" /tmp/issue_body.md
+          sed -i "s|__MIGRATIONS_NOTE__|${MIGRATIONS_NOTE}|g" /tmp/issue_body.md
+          sed -i "s|__CONFIG_NOTE__|${CONFIG_NOTE}|g" /tmp/issue_body.md
+          sed -i "s|__INFRA_NOTE__|${INFRA_NOTE}|g" /tmp/issue_body.md
 
           DEPLOY_TITLE="[${TASK_ID}-Deploy] ${FEATURE_NAME}"
           DEPLOY_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue create \
             --title "${DEPLOY_TITLE}" \
-            --body "${BODY}" \
+            --body-file /tmp/issue_body.md \
             --label "${PHASE}" \
             --label "ai:deployment" \
             --json number --jq '.number')
@@ -199,10 +178,10 @@ ${PR_TITLE}
           DEPLOY_ISSUE: ${{ steps.create.outputs.number }}
           PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
         run: |
+          printf "Deployment issue created: #%s\n\nThis development issue is complete. Deployment will occur when all Phase %s development issues are closed." \
+            "${DEPLOY_ISSUE}" "${PHASE_NUM}" > /tmp/deploy_link_comment.md
           GH_HOST={GITHUB_HOST} gh issue comment ${DEV_ISSUE} \
-            --body "Deployment issue created: #${DEPLOY_ISSUE}
-
-This development issue is complete. Deployment will occur when all Phase ${PHASE_NUM} development issues are closed."
+            --body-file /tmp/deploy_link_comment.md
 
       - name: Post to Teams
         if: steps.create.outputs.number != ''

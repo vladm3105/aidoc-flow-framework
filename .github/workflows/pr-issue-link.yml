@@ -50,13 +50,9 @@ jobs:
           # Post PR link comment
           CURRENT_DATE=$(TZ="America/New_York" date '+%Y-%m-%d %H:%M EST' 2>/dev/null || date '+%Y-%m-%d %H:%M')
 
+          printf "**PR Created**: #%s - %s\n\n**Branch**: \`%s\`\n**URL**: %s\n**Date**: %s\n\nThis PR addresses the requirements in this issue." \
+            "${PR_NUMBER}" "${PR_TITLE}" "${BRANCH_NAME}" "${PR_URL}" "${CURRENT_DATE}" > /tmp/pr_link_comment.md
           gh issue comment "${ISSUE_NUMBER}" \
-            --body "**PR Created**: #${PR_NUMBER} - ${PR_TITLE}
-
-**Branch**: \`${BRANCH_NAME}\`
-**URL**: ${PR_URL}
-**Date**: ${CURRENT_DATE}
-
-This PR addresses the requirements in this issue."
+            --body-file /tmp/pr_link_comment.md
 
           echo "Posted PR link to issue #${ISSUE_NUMBER}"

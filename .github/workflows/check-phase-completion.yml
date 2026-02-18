@@ -25,18 +25,22 @@ jobs:
       phase_number: ${{ steps.check.outputs.phase_number }}
     steps:
       - name: Checkout
+        env:
+          ELEVATED_PAT: ${{ secrets.ELEVATED_PAT }}
+          REPO: ${{ github.repository }}
         run: |
           rm -rf ./* ./.??* 2>/dev/null || true
-          git clone "https://x-access-token:${{ secrets.ELEVATED_PAT }}@{GITHUB_HOST}/${{ github.repository }}.git" . --depth 1
+          git clone "https://x-access-token:${ELEVATED_PAT}@{GITHUB_HOST}/${REPO}.git" . --depth 1
 
       - name: Handle issue reopen
         if: github.event_name == 'issues' && github.event.action == 'reopened'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           python3 scripts/workflows/handle_issue_reopen.py \
             --tracking-file governance/cicd/phase-deployments.json \
-            --issue-number ${{ github.event.issue.number }}
+            --issue-number "$ISSUE_NUMBER"
 
       - name: Check phase completion
         id: check
@@ -64,13 +68,14 @@ jobs:
         if: steps.check.outputs.phase_completed == 'true'
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          PHASE_NUMBER: ${{ steps.check.outputs.phase_number }}
         run: |
           curl -H "Content-Type: application/json" -d '{
             "@type": "MessageCard",
             "themeColor": "good",
-            "summary": "Phase '${{ steps.check.outputs.phase_number }}' Complete",
+            "summary": "Phase '"${PHASE_NUMBER}"' Complete",
             "sections": [{
-              "activityTitle": "Phase '${{ steps.check.outputs.phase_number }}' Development Complete",
+              "activityTitle": "Phase '"${PHASE_NUMBER}"' Development Complete",
               "facts": [
                 {"name": "Status", "value": "All issues done"},
                 {"name": "Next Step", "value": "Dev deployment triggered"}
@@ -82,6 +87,7 @@ jobs:
         if: steps.check.outputs.phase_completed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE_NUMBER: ${{ steps.check.outputs.phase_number }}
         run: |
           GH_HOST={GITHUB_HOST} gh workflow run deploy-dev.yml \
-            -f phase=${{ steps.check.outputs.phase_number }}
+            -f phase="$PHASE_NUMBER"

@@ -52,6 +52,7 @@ jobs:
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
         run: |
+          rm -rf ./* ./.??* 2>/dev/null || true
           git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
           git checkout "$SHA"
 
@@ -155,59 +156,29 @@ jobs:
           TEST_NAME: ${{ steps.failure.outputs.test_name }}
           ERROR_TYPE: ${{ steps.failure.outputs.error_type }}
         run: |
-          ERROR_MESSAGE=$(cat /tmp/error_message.txt)
-          STACK_TRACE=$(cat /tmp/stack_trace.txt)
-          REMAINING=$((MAX_QA_ITERATIONS - ITERATION))
-
-          BODY="## Bug Fix Issue
-
-**Source**
-| Field | Value |
-|:------|:------|
-| QA Testing Issue | #${QA_ISSUE} |
-| Original Development Issue | #${DEV_ISSUE} |
-| Phase | ${PHASE_NUM} |
-| Iteration | ${ITERATION} |
-
----
-
-## Bug Description
-
-Test failure detected during QA testing.
-
-## Failure Details
-
-### Test That Failed
-- **Test file**: \`${TEST_FILE}\`
-- **Test name**: \`${TEST_NAME}\`
-- **Error type**: ${ERROR_TYPE}
-
-### Error Message
-\`\`\`
-${ERROR_MESSAGE}
-\`\`\`
-
-### Stack Trace
-\`\`\`
-${STACK_TRACE}
-\`\`\`
-
----
-
-## Acceptance Criteria
-
-- [ ] Fix the failing test
-- [ ] Ensure no regression in other tests
-- [ ] Add test case for edge case if applicable
-
----
-
-*Created automatically from QA failure in #${QA_ISSUE}*"
+          # Build issue body from template
+          cp .github/templates/bug-issue-body.md /tmp/issue_body.md
+          sed -i "s|__QA_ISSUE__|${QA_ISSUE}|g" /tmp/issue_body.md
+          sed -i "s|__DEV_ISSUE__|${DEV_ISSUE}|g" /tmp/issue_body.md
+          sed -i "s|__PHASE_NUM__|${PHASE_NUM}|g" /tmp/issue_body.md
+          sed -i "s|__ITERATION__|${ITERATION}|g" /tmp/issue_body.md
+          sed -i "s|__TEST_FILE__|${TEST_FILE}|g" /tmp/issue_body.md
+          sed -i "s|__TEST_NAME__|${TEST_NAME}|g" /tmp/issue_body.md
+          sed -i "s|__ERROR_TYPE__|${ERROR_TYPE}|g" /tmp/issue_body.md
+          # Use Python for multiline content replacement
+          python3 -c "
+          body = open('/tmp/issue_body.md').read()
+          err = open('/tmp/error_message.txt').read().strip()
+          trace = open('/tmp/stack_trace.txt').read().strip()
+          body = body.replace('__ERROR_MESSAGE__', err)
+          body = body.replace('__STACK_TRACE__', trace)
+          open('/tmp/issue_body.md', 'w').write(body)
+          "
 
           BUG_TITLE="[${TASK_ID}-Bug] Fix: ${TEST_NAME}"
           BUG_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue create \
             --title "${BUG_TITLE}" \
-            --body "${BODY}" \
+            --body-file /tmp/issue_body.md \
             --label "${PHASE}" \
             --label "ai:development" \
             --label "bug" \

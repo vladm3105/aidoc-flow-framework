@@ -130,46 +130,49 @@ jobs:
       - name: Load Validation Report
         id: load_report
         run: |
-          python3 -c "
-import json
-import sys
+          python3 << 'PYEOF'
+          import json
+          import sys
 
-try:
-    with open('ai_dev_flow/work_plans/validation_report.json') as f:
-        report = json.load(f)
-except FileNotFoundError:
-    print('No validation report found')
-    sys.exit(0)
+          try:
+              with open('ai_dev_flow/work_plans/validation_report.json') as f:
+                  report = json.load(f)
+          except FileNotFoundError:
+              print('No validation report found')
+              sys.exit(0)
 
-if report.get('layers'):
-    scores = [layer['score'] for layer in report['layers']]
-    avg_score = sum(scores) / len(scores)
-    print(f'average_score={int(avg_score)}')
-"
+          if report.get('layers'):
+              scores = [layer['score'] for layer in report['layers']]
+              avg_score = sum(scores) / len(scores)
+              print(f'average_score={int(avg_score)}')
+          PYEOF
       
       - name: Check Quality Gate
         id: check_quality
+        env:
+          AVG_SCORE: ${{ steps.load_report.outputs.average_score }}
         run: |
-          python3 -c "
-import sys
-import json
-import os
+          python3 << 'PYEOF'
+          import sys
+          import json
+          import os
 
-try:
-    with open('ai_dev_flow/work_plans/validation_report.json') as f:
-        report = json.load(f)
-        avg_score = float('\${{ steps.load_report.outputs.average_score }}')
-        print(f'average_score={avg_score}')
-        
-        threshold = 90
-        if avg_score >= threshold:
-            sys.exit(0)
-        else:
-            print(f'Quality gate failed: score {avg_score}% < threshold {threshold}%')
-            sys.exit(1)
-except FileNotFoundError:
-    print('No validation report found')
-    avg_score = 0
-    if avg_score < threshold:
-        sys.exit(1)
-"
+          try:
+              with open('ai_dev_flow/work_plans/validation_report.json') as f:
+                  report = json.load(f)
+                  avg_score = float(os.environ.get('AVG_SCORE', '0'))
+                  print(f'average_score={avg_score}')
+
+                  threshold = 90
+                  if avg_score >= threshold:
+                      sys.exit(0)
+                  else:
+                      print(f'Quality gate failed: score {avg_score}% < threshold {threshold}%')
+                      sys.exit(1)
+          except FileNotFoundError:
+              print('No validation report found')
+              threshold = 90
+              avg_score = 0
+              if avg_score < threshold:
+                  sys.exit(1)
+          PYEOF

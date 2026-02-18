@@ -167,7 +167,7 @@ jobs:
                 }
               }
             }' -f project="$PROJECT_ID" -f item="$ITEM_ID" \
-            -f field="$STATUS_FIELD_ID" -f value="$OPTION_ID"
+            -f field="$STATUS_FIELD_ID" -f value="$OPTION_ID" > /dev/null
 
           echo "Set ${ITEM_TYPE} status to: ${TARGET_STATUS}"
 
@@ -238,6 +238,6 @@ jobs:
                 }
               }
             }' -f project="$PROJECT_ID" -f item="$ITEM_ID" \
-            -f field="$ENV_FIELD_ID" -f value="$TARGET_ENV_ID"
+            -f field="$ENV_FIELD_ID" -f value="$TARGET_ENV_ID" > /dev/null
 
           echo "Set ${ITEM_TYPE} environment to: ${TARGET_ENV_NAME}"

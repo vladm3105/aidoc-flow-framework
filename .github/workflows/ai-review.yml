@@ -267,14 +267,10 @@ jobs:
           CURRENT_DATE=$(TZ="America/New_York" date '+%Y-%m-%d %H:%M EST' 2>/dev/null || date '+%Y-%m-%d %H:%M')
 
           # Post summary to linked issue
+          printf "**AI Review Completed** for PR #%s\n\n**Verdict**: %s\n**PR**: %s\n**Date**: %s\n\nSee the PR for detailed review comments." \
+            "${PR_NUMBER}" "${VERDICT}" "${PR_URL}" "${CURRENT_DATE}" > /tmp/review_summary.md
           gh issue comment "${ISSUE_NUMBER}" \
-            --body "**AI Review Completed** for PR #${PR_NUMBER}
-
-**Verdict**: ${VERDICT}
-**PR**: ${PR_URL}
-**Date**: ${CURRENT_DATE}
-
-See the PR for detailed review comments." || echo "::warning::Failed to post review summary to issue #${ISSUE_NUMBER}"
+            --body-file /tmp/review_summary.md || echo "::warning::Failed to post review summary to issue #${ISSUE_NUMBER}"
 
       - name: Cleanup
         if: always()

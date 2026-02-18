@@ -43,18 +43,22 @@ jobs:
 
       - name: Get target revision from history
         id: target
+        env:
+          STEPS_BACK: ${{ inputs.steps_back }}
         run: |
-          HISTORY=$(python3 -c "
-import json
-with open('governance/cicd/phase-deployments.json') as f:
-    data = json.load(f)
-history = data.get('production', {}).get('revision_history', '').split(',')
-steps = int('${{ inputs.steps_back }}')
-if steps <= len(history):
-    print(history[steps - 1])
-else:
-    print('')
-")
+          HISTORY=$(python3 << 'PYEOF'
+          import json
+          import os
+          with open('governance/cicd/phase-deployments.json') as f:
+              data = json.load(f)
+          history = data.get('production', {}).get('revision_history', '').split(',')
+          steps = int(os.environ.get('STEPS_BACK', '1'))
+          if steps <= len(history):
+              print(history[steps - 1])
+          else:
+              print('')
+          PYEOF
+          )
           if [ -z "$HISTORY" ]; then
             TARGET=$(gcloud run revisions list \
               --service ${SERVICE_NAME} \
@@ -97,22 +101,30 @@ else:
             --auth-token=${TOKEN}
 
       - name: Update tracking file
+        env:
+          TARGET_REVISION: ${{ steps.target.outputs.revision }}
+          CURRENT_REVISION: ${{ steps.current.outputs.revision }}
+          STEPS_BACK: ${{ inputs.steps_back }}
+          ACTOR: ${{ github.actor }}
         run: |
           python3 scripts/workflows/update_prod_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
-            --current-revision ${{ steps.target.outputs.revision }} \
-            --previous-revision ${{ steps.current.outputs.revision }} \
+            --current-revision "$TARGET_REVISION" \
+            --previous-revision "$CURRENT_REVISION" \
             --rollback
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add governance/cicd/phase-deployments.json
-          git commit -m "chore: production rollback to ${{ steps.target.outputs.revision }}
+          git commit -m "$(cat <<EOF
+          chore: production rollback to ${TARGET_REVISION}
 
-Rolled back from: ${{ steps.current.outputs.revision }}
-Steps back: ${{ inputs.steps_back }}
-Triggered by: ${{ github.actor }}
+          Rolled back from: ${CURRENT_REVISION}
+          Steps back: ${STEPS_BACK}
+          Triggered by: ${ACTOR}
 
-Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>"
+          Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>
+          EOF
+          )"
           git push origin main
 
       - name: Cleanup credentials

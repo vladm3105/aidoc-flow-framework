@@ -31,17 +31,23 @@ jobs:
       has_ready: ${{ steps.check.outputs.has_ready }}
     steps:
       - name: Checkout
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
-          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
-          git checkout ${{ github.sha }}
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
+          git checkout "$SHA"
 
       - name: Check for phases ready for QA
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PHASE: ${{ inputs.phase }}
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            READY_PHASES="${{ inputs.phase }}"
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            READY_PHASES="$INPUT_PHASE"
             echo "ready_phases=${READY_PHASES}" >> $GITHUB_OUTPUT
             echo "has_ready=true" >> $GITHUB_OUTPUT
             exit 0
@@ -90,9 +96,13 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
-          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
-          git checkout ${{ github.sha }}
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
+          git checkout "$SHA"
 
       - name: Setup Python
         run: |
@@ -104,8 +114,8 @@ jobs:
         id: qa_issues
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ matrix.phase }}
         run: |
-          PHASE="${{ matrix.phase }}"
           QA_ISSUES=$(GH_HOST={GITHUB_HOST} gh issue list \
             --label "phase:${PHASE}" \
             --label "ai:qa-testing" \
@@ -120,11 +130,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STAGING_URL: https://staging.{PROJECT_PREFIX}.{DOMAIN}
+          PHASE: ${{ matrix.phase }}
+          QA_ISSUES: ${{ steps.qa_issues.outputs.issues }}
         run: |
           source .venv/bin/activate
           python3 scripts/workflows/execute_qa_tests.py \
-            --phase ${{ matrix.phase }} \
-            --qa-issues "${{ steps.qa_issues.outputs.issues }}" \
+            --phase "$PHASE" \
+            --qa-issues "$QA_ISSUES" \
             --staging-url "${STAGING_URL}" \
             --timeout-minutes ${QA_TIMEOUT_MINUTES} \
             --output-file /tmp/qa_results.json
@@ -161,24 +173,29 @@ jobs:
               --remove-label "ai:in-progress" \
               --add-label "ai:qa-failed"
             FAILURES=$(jq -r ".issue_results[\"${ISSUE}\"].failures" /tmp/qa_results.json)
+            TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            # Build comment from template
+            cp .github/templates/qa-failed-comment.md /tmp/qa_comment.md
+            sed -i "s|__TIMESTAMP__|${TIMESTAMP}|g" /tmp/qa_comment.md
+            echo "$FAILURES" > /tmp/failures.txt
+            python3 -c "
+          body = open('/tmp/qa_comment.md').read()
+          failures = open('/tmp/failures.txt').read().strip()
+          body = body.replace('__FAILURES__', failures)
+          open('/tmp/qa_comment.md', 'w').write(body)
+          "
             GH_HOST={GITHUB_HOST} gh issue comment ${ISSUE} \
-              --body "## QA Testing Failed
-
-**Failed Tests**
-${FAILURES}
-
-Bug issues will be created for each failure.
-
-*Tested at $(date -u +%Y-%m-%dT%H:%M:%SZ)*"
+              --body-file /tmp/qa_comment.md
           done
 
       - name: Create bug issues for failures
         if: steps.tests.outputs.failed_count != '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ matrix.phase }}
         run: |
           python3 scripts/workflows/create_bug_issues.py \
-            --phase ${{ matrix.phase }} \
+            --phase "$PHASE" \
             --results-file /tmp/qa_results.json \
             --max-iterations ${MAX_QA_ITERATIONS}
 
@@ -186,11 +203,11 @@ Bug issues will be created for each failure.
         if: always()
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          PHASE: ${{ matrix.phase }}
+          ALL_PASSED: ${{ steps.tests.outputs.all_passed }}
+          PASSED_COUNT: ${{ steps.tests.outputs.passed_count }}
+          FAILED_COUNT: ${{ steps.tests.outputs.failed_count }}
         run: |
-          PHASE="${{ matrix.phase }}"
-          ALL_PASSED="${{ steps.tests.outputs.all_passed }}"
-          PASSED_COUNT="${{ steps.tests.outputs.passed_count }}"
-          FAILED_COUNT="${{ steps.tests.outputs.failed_count }}"
           if [ "$ALL_PASSED" == "true" ]; then
             COLOR="28A745"
             STATUS="PASSED"

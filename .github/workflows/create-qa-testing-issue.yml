@@ -28,19 +28,26 @@ jobs:
       (github.event.pull_request.merged == true)
     steps:
       - name: Checkout
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
-          git clone --depth 1 https://{GITHUB_HOST}/${{ github.repository }} .
-          git checkout ${{ github.sha }}
+          rm -rf ./* ./.??* 2>/dev/null || true
+          git clone --depth 1 "https://{GITHUB_HOST}/${REPO}" .
+          git checkout "$SHA"
 
       - name: Get PR info
         id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            PR_NUMBER="${{ inputs.pr_number }}"
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            PR_NUMBER="$INPUT_PR_NUMBER"
           else
-            PR_NUMBER="${{ github.event.pull_request.number }}"
+            PR_NUMBER="$EVENT_PR_NUMBER"
           fi
           echo "number=${PR_NUMBER}" >> $GITHUB_OUTPUT
           PR_DATA=$(GH_HOST={GITHUB_HOST} gh pr view ${PR_NUMBER} --json title,body,mergedAt,headRefName,files)
@@ -65,10 +72,12 @@ jobs:
         id: qa_check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_FILES: ${{ steps.pr.outputs.files }}
         run: |
           python3 scripts/workflows/check_qa_required.py \
-            --pr-number "${{ steps.pr.outputs.number }}" \
-            --files "${{ steps.pr.outputs.files }}" \
+            --pr-number "$PR_NUMBER" \
+            --files "$PR_FILES" \
             --output-file /tmp/qa_check.json
           QA_REQUIRED=$(jq -r '.qa_required' /tmp/qa_check.json)
           REASON=$(jq -r '.reason' /tmp/qa_check.json)
@@ -80,8 +89,10 @@ jobs:
 
       - name: Skip if QA not required
         if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'false'
+        env:
+          QA_REASON: ${{ steps.qa_check.outputs.reason }}
         run: |
-          echo "::notice::Skipping QA issue creation: ${{ steps.qa_check.outputs.reason }}"
+          echo "::notice::Skipping QA issue creation: ${QA_REASON}"
           exit 0
 
       - name: Get development issue details
@@ -89,8 +100,8 @@ jobs:
         id: dev
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
         run: |
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
           ISSUE_DATA=$(GH_HOST={GITHUB_HOST} gh issue view ${DEV_ISSUE} --json title,labels,body)
           ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')
           ISSUE_BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
@@ -112,8 +123,10 @@ jobs:
 
       - name: Skip if not a development issue
         if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev == '0'
+        env:
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
         run: |
-          echo "::notice::Issue #${{ steps.pr.outputs.dev_issue }} does not have ai:development label. Skipping."
+          echo "::notice::Issue #${DEV_ISSUE} does not have ai:development label. Skipping."
           exit 0
 
       - name: Extract test plan from development issue
@@ -133,11 +146,11 @@ jobs:
         id: deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.dev.outputs.phase }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
         run: |
-          PHASE="${{ steps.dev.outputs.phase }}"
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
           DEPLOY_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue list \
-            --label "${PHASE}" \
+            --label "$PHASE" \
             --label "ai:deployment" \
             --json number,body \
             --jq ".[] | select(.body | contains(\"#${DEV_ISSUE}\")) | .number" | head -1)
@@ -148,11 +161,11 @@ jobs:
         id: existing
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          PHASE: ${{ steps.dev.outputs.phase }}
         run: |
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          PHASE="${{ steps.dev.outputs.phase }}"
           EXISTING=$(GH_HOST={GITHUB_HOST} gh issue list \
-            --label "${PHASE}" \
+            --label "$PHASE" \
             --label "ai:qa-testing" \
             --json number,body \
             --jq ".[] | select(.body | contains(\"#${DEV_ISSUE}\")) | .number" | head -1)
@@ -173,68 +186,34 @@ jobs:
         id: create
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHASE: ${{ steps.dev.outputs.phase }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
+          TASK_ID: ${{ steps.dev.outputs.task_id }}
+          FEATURE_NAME: ${{ steps.dev.outputs.feature_name }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          DEPLOY_ISSUE: ${{ steps.deploy.outputs.number }}
+          TEST_PLAN: ${{ steps.test_plan.outputs.test_plan }}
         run: |
-          PHASE="${{ steps.dev.outputs.phase }}"
-          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
-          TASK_ID="${{ steps.dev.outputs.task_id }}"
-          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          PR_NUMBER="${{ steps.pr.outputs.number }}"
-          DEPLOY_ISSUE="${{ steps.deploy.outputs.number }}"
-          TEST_PLAN="${{ steps.test_plan.outputs.test_plan }}"
-
-          BODY="## QA Testing Issue
-
-**Source**
-| Field | Value |
-|:------|:------|
-| Development Issue | #${DEV_ISSUE} |
-| Pull Request | #${PR_NUMBER} |
-| Phase | ${PHASE_NUM} |
-| Iteration | 1 |
-
-**Blocked by**: Deployment Issue #${DEPLOY_ISSUE} (must deploy first)
-
----
-
-## Test Plan
-
-### Automated Tests
-- [ ] Unit tests pass (coverage >= 90%)
-- [ ] Integration tests pass (coverage >= 70%)
-- [ ] E2E tests pass
-
-### Feature-Specific Tests
-${TEST_PLAN}
-
----
-
-## Environment
-- **Target**: Staging
-- **Test window**: 06:00-08:00 EST (after deployment)
-
----
-
-## Results
-
-### Test Execution Summary
-| Category | Passed | Failed | Skipped |
-|:---------|-------:|-------:|--------:|
-| Unit | - | - | - |
-| Integration | - | - | - |
-| E2E | - | - | - |
-| Feature | - | - | - |
-
-### Failures (if any)
-
----
-
-*Created automatically from PR #${PR_NUMBER} merge*"
+          # Build issue body from template
+          cp .github/templates/qa-testing-issue-body.md /tmp/issue_body.md
+          sed -i "s|__DEV_ISSUE__|${DEV_ISSUE}|g" /tmp/issue_body.md
+          sed -i "s|__PR_NUMBER__|${PR_NUMBER}|g" /tmp/issue_body.md
+          sed -i "s|__PHASE_NUM__|${PHASE_NUM}|g" /tmp/issue_body.md
+          sed -i "s|__DEPLOY_ISSUE__|${DEPLOY_ISSUE}|g" /tmp/issue_body.md
+          # Use Python for multiline test plan replacement
+          python3 -c "
+          body = open('/tmp/issue_body.md').read()
+          import os
+          test_plan = os.environ.get('TEST_PLAN', '')
+          body = body.replace('__TEST_PLAN__', test_plan)
+          open('/tmp/issue_body.md', 'w').write(body)
+          "
 
           QA_TITLE="[${TASK_ID}-QA] ${FEATURE_NAME}"
           QA_ISSUE=$(GH_HOST={GITHUB_HOST} gh issue create \
             --title "${QA_TITLE}" \
-            --body "${BODY}" \
+            --body-file /tmp/issue_body.md \
             --label "${PHASE}" \
             --label "ai:qa-testing" \
             --json number --jq '.number')
@@ -245,25 +224,28 @@ ${TEST_PLAN}
         if: steps.create.outputs.number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          QA_ISSUE: ${{ steps.create.outputs.number }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
         run: |
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          QA_ISSUE="${{ steps.create.outputs.number }}"
+          printf "QA testing issue created: #%s\n\nThis QA issue will be activated after all Phase %s deployment issues are closed." \
+            "${QA_ISSUE}" "${PHASE_NUM}" > /tmp/link_comment.md
           GH_HOST={GITHUB_HOST} gh issue comment ${DEV_ISSUE} \
-            --body "QA testing issue created: #${QA_ISSUE}
-
-This QA issue will be activated after all Phase ${{ steps.dev.outputs.phase_num }} deployment issues are closed."
+            --body-file /tmp/link_comment.md
 
       - name: Post to Teams
         if: steps.create.outputs.number != ''
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+          QA_ISSUE: ${{ steps.create.outputs.number }}
+          DEV_ISSUE: ${{ steps.pr.outputs.dev_issue }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PHASE_NUM: ${{ steps.dev.outputs.phase_num }}
+          FEATURE_NAME: ${{ steps.dev.outputs.feature_name }}
+          SERVER_URL: ${{ github.server_url }}
+          REPO: ${{ github.repository }}
         run: |
-          QA_ISSUE="${{ steps.create.outputs.number }}"
-          DEV_ISSUE="${{ steps.pr.outputs.dev_issue }}"
-          PR_NUMBER="${{ steps.pr.outputs.number }}"
-          PHASE_NUM="${{ steps.dev.outputs.phase_num }}"
-          FEATURE_NAME="${{ steps.dev.outputs.feature_name }}"
-          ISSUE_URL="${{ github.server_url }}/${{ github.repository }}/issues/${QA_ISSUE}"
+          ISSUE_URL="${SERVER_URL}/${REPO}/issues/${QA_ISSUE}"
           curl -H "Content-Type: application/json" -d '{
             "@type": "MessageCard",
             "themeColor": "7B68EE",

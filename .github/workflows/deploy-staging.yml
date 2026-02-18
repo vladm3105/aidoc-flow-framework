@@ -166,9 +166,13 @@ jobs:
         if: steps.tests.outputs.test_failed == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STAGING_URL: ${{ steps.url.outputs.url }}
+          SERVER_URL: ${{ github.server_url }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          STAGING_URL="${{ steps.url.outputs.url }}"
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          RUN_URL="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
           DEPLOY_ISSUES=$(GH_HOST={GITHUB_HOST} gh issue list \
             --label "ai:deployment" \
             --state open \
@@ -176,16 +180,11 @@ jobs:
           CLOSED_COUNT=0
           for ISSUE in $DEPLOY_ISSUES; do
             echo "Closing deployment issue #${ISSUE}"
+            printf "## Deployed to Staging\n\n**Staging URL**: %s\n**Deployment Run**: %s\n**Image**: %s\n\nAll phases deployed to staging. Full acceptance tests passed.\nQA testing complete." \
+              "${STAGING_URL}" "${RUN_URL}" "${IMAGE_TAG}" > /tmp/deploy_comment.md
             GH_HOST={GITHUB_HOST} gh issue close ${ISSUE} \
               --reason completed \
-              --comment "## Deployed to Staging
-
-**Staging URL**: ${STAGING_URL}
-**Deployment Run**: ${RUN_URL}
-**Image**: ${{ inputs.image_tag }}
-
-All phases deployed to staging. Full acceptance tests passed.
-QA testing complete." || true
+              --comment "$(cat /tmp/deploy_comment.md)" || true
             CLOSED_COUNT=$((CLOSED_COUNT + 1))
           done
           echo "::notice::Closed ${CLOSED_COUNT} deployment issues"
