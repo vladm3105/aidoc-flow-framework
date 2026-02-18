@@ -313,9 +313,16 @@ def main():
 
     print(f"Created IPLAN: {filepath}")
 
-    # Output for workflow use
-    print(f"::set-output name=iplan-path::{filepath}")
-    print(f"::set-output name=iplan-filename::{filename}")
+    # Output for workflow use (GitHub Actions format)
+    github_output = os.environ.get("GITHUB_OUTPUT")
+    if github_output:
+        with open(github_output, "a") as f:
+            f.write(f"iplan-path={filepath}\n")
+            f.write(f"iplan-filename={filename}\n")
+    else:
+        # Fallback for local testing
+        print(f"iplan-path={filepath}")
+        print(f"iplan-filename={filename}")
 
 
 if __name__ == "__main__":
