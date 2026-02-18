@@ -20,7 +20,7 @@
 #   ./scripts/project_setup/gcp/setup-ai-review-gcp.sh --verify-only --project=my-gcp-project
 #
 # Reference:
-#   - Docs: governance/AI_PR_Review/GCP_SETUP.md
+#   - Docs: governance/AI_PR_Review/README.md
 #   - ADR-002: docs/adr/002-gcp-only-first.md (WIF auth, no SA keys)
 #   - ADR-009: docs/adr/009-ai-pr-review-custom-workflow.md
 

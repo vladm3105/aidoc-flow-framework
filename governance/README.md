@@ -52,13 +52,24 @@ governance/
 │   ├── CONFIG.md                  # 50+ placeholder variables
 │   └── CLOUD_GUIDE.md             # GCP/AWS/Azure setup
 │
+├── plans/                         # Implementation plans
+│   ├── README.md                  # IPLAN guide and index
+│   └── IPLAN-TEMPLATE.md          # Implementation plan template
+│
 ├── templates/                     # Project templates
 │   ├── CLAUDE.md                  # AI agent config
 │   ├── CONTRIBUTING.md            # Contributing guide
 │   ├── README.md                  # Project README
-│   ├── PROJECT_PLAN-TEMPLATE.md   # Project plan
-│   ├── IPLAN-TEMPLATE.md          # Implementation plan
-│   ├── deployment/                # Cloud deployment guides
+│   ├── README_AIAGENT.md          # Universal AI agent rules
+│   ├── PROJECT_PLAN-TEMPLATE.md   # Project plan template
+│   ├── PROJECT_KICKOFF_PLAN-TEMPLATE.md  # Kickoff plan template
+│   ├── ROADMAP-TEMPLATE.md        # Roadmap template
+│   ├── DEVELOPER_GUIDE.md         # Developer onboarding guide
+│   ├── HANDOFF.md                 # Project handoff template
+│   ├── PROJECT_DEFINITION.md      # Project definition template
+│   ├── GCP-DEPLOYMENT.md          # GCP deployment guide
+│   ├── AWS-DEPLOYMENT.md          # AWS deployment guide
+│   ├── AZURE-DEPLOYMENT.md        # Azure deployment guide
 │   └── qa/                        # QA documentation templates
 │
 └── scripts/                       # Automation scripts
@@ -118,16 +129,55 @@ governance/
 
 ---
 
+## Implementation Plans
+
+| Document | Description |
+|:---------|:------------|
+| [plans/README.md](./plans/README.md) | IPLAN guide, lifecycle, and index |
+| [plans/IPLAN-TEMPLATE.md](./plans/IPLAN-TEMPLATE.md) | Implementation plan template |
+
+---
+
 ## Templates
+
+### Core Templates
 
 | Template | Description |
 |:---------|:------------|
 | [templates/CLAUDE.md](./templates/CLAUDE.md) | Claude Code project instructions |
+| [templates/README_AIAGENT.md](./templates/README_AIAGENT.md) | Universal AI agent rules |
 | [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) | Contributing guidelines |
 | [templates/README.md](./templates/README.md) | Project README template |
+
+### Planning Templates
+
+| Template | Description |
+|:---------|:------------|
 | [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) | Full project plan with phases |
-| [templates/IPLAN-TEMPLATE.md](./templates/IPLAN-TEMPLATE.md) | Implementation plan template |
-| [templates/qa/](./templates/qa/) | QA documentation templates |
+| [templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md) | Sprint kickoff planning |
+| [templates/ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) | Project roadmap template |
+| [templates/PROJECT_DEFINITION.md](./templates/PROJECT_DEFINITION.md) | Project definition template |
+
+### Development Templates
+
+| Template | Description |
+|:---------|:------------|
+| [templates/DEVELOPER_GUIDE.md](./templates/DEVELOPER_GUIDE.md) | Developer onboarding guide |
+| [templates/HANDOFF.md](./templates/HANDOFF.md) | Project handoff documentation |
+
+### Deployment Templates
+
+| Template | Description |
+|:---------|:------------|
+| [templates/GCP-DEPLOYMENT.md](./templates/GCP-DEPLOYMENT.md) | GCP Cloud Run deployment guide |
+| [templates/AWS-DEPLOYMENT.md](./templates/AWS-DEPLOYMENT.md) | AWS ECS/Fargate deployment guide |
+| [templates/AZURE-DEPLOYMENT.md](./templates/AZURE-DEPLOYMENT.md) | Azure Container Apps deployment guide |
+
+### QA Templates
+
+| Template | Description |
+|:---------|:------------|
+| [templates/qa/](./templates/qa/) | Testing strategy, standards, CI/CD specs |
 
 ---
 

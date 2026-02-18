@@ -206,7 +206,6 @@ AI reviews are **advisory**. Human review is still required per branch protectio
 | [README.md](./README.md) | Automated review overview ({AI_TOOL_NAME} Code CLI via Actions) |
 | [AI_AGENT_REVIEW_WORKFLOW.md](./AI_AGENT_REVIEW_WORKFLOW.md) | Full agent protocol: state machine, API calls, severity levels, fix loop, edge cases |
 | [LOCAL_SETUP.md](./LOCAL_SETUP.md) | Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth, API key) |
-| [GCP_SETUP.md](./GCP_SETUP.md) | Deprecated — GCP prerequisites (no longer required) |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale for AI PR review approach |
 | [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) | AI PR review policy (§3), board sync rules |

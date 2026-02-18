@@ -171,9 +171,8 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 |:---------|:--------|
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale (Custom Workflow vs PR-Agent vs Bot vs Claude Action) |
 | [LOCAL_SETUP.md](./LOCAL_SETUP.md) | Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth, API key) |
-| [GCP_SETUP.md](./GCP_SETUP.md) | Deprecated — GCP prerequisites (Vertex AI, WIF, IAM, secrets) |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
-| [Implementation Plans](../plans/) | Implementation plans including AI PR review workflow |
+| [Implementation Plans](../plans/) | Implementation plans |
 | [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) | AI PR Review policy (section 3) |
 | [AI_AGENT_REVIEW_WORKFLOW.md](./AI_AGENT_REVIEW_WORKFLOW.md) | On-demand AI agent review with fix-and-verify loop |
 | [MANUAL_REVIEW_GUIDE.md](./MANUAL_REVIEW_GUIDE.md) | Human-facing guide for manual AI review using local assistants ({AI_TOOL_NAME} Code, Gemini CLI, Copilot) |

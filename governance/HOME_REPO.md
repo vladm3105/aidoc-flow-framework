@@ -77,27 +77,27 @@ The home repo serves as:
 
  governance/                  # Project governance (this directory)
     HOME_REPO.md             # This document
-    PROJECT_PLAN.md          # Full project plan (all phases, ~75 tasks)
-    ROADMAP.md               # Phase timeline and dependencies
+    PROJECT_PLAN.md          # Full project plan (from templates/PROJECT_PLAN-TEMPLATE.md)
+    ROADMAP.md               # Phase timeline (from templates/ROADMAP-TEMPLATE.md)
     REPOSITORY_STRATEGY.md   # Monorepo architecture
-    PROJECT_KICKOFF_PLAN.md  # Executive summary
+    PROJECT_KICKOFF_PLAN.md  # Executive summary (from templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md)
     BRANCHING_STRATEGY.md    # Git branching model
     GOVERNANCE_RULES.md      # Operational policies and conventions
     DEFINITION_OF_DONE.md    # Completion criteria (references rules)
     RELEASE_PROCESS.md       # Versioning and releases
-    GITHUB_WORKFLOWS.md      # All GitHub Actions documentation
-    GITHUB_PROJECT_SETUP.md  # AI workflow setup
-    GITHUB_TOOLS_SETUP.md    # CLI and MCP configuration
+    github/                  # GitHub documentation
+       GITHUB_PROJECT_SETUP.md  # AI workflow setup
+       GITHUB_TOOLS_SETUP.md    # CLI and MCP configuration
+       GITHUB_WORKFLOWS.md      # All GitHub Actions documentation
     AI_PR_Review/            # AI PR review operational docs
        README.md            # Overview, architecture, review policy
        LOCAL_SETUP.md       # Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth)
-       GCP_SETUP.md         # Deprecated — GCP prerequisites (Vertex AI, WIF, IAM)
        ONBOARDING.md        # Add AI review to new component repos
        AI_AGENT_REVIEW_WORKFLOW.md  # On-demand AI agent review + fix-verify loop
        MANUAL_REVIEW_GUIDE.md  # Human guide: use {AI_TOOL_NAME} Code CLI to review PRs
     plans/                   # Implementation plans (execution adjustments)
-        README.md            # Plan management guide and index
-        IPLAN-NNN_slug.md    # Individual plans (IPLAN-001, etc.)
+       README.md            # Plan management guide and index
+       IPLAN-NNN_slug.md    # Individual plans (IPLAN-001, etc.)
 
  docs/                        # Technical documentation
     adr/                     # 9 Architecture Decision Records
@@ -289,23 +289,24 @@ The home repo has **63 labels** organized by category:
 
 ## Related Documents
 
-### Planning & Execution
-- [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with all phases, tasks, and sprint planning
-- [ROADMAP.md](./ROADMAP.md) — Phase timeline and dependencies
+### Planning Templates
+- [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) — Full project plan template
+- [templates/ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) — Phase timeline template
+- [templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md) — Executive summary template
 
 ### Repository & Architecture
 - [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) — Monorepo architecture details
 - [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) — Git workflow
 
 ### Governance
-- [PROJECT_KICKOFF_PLAN.md](./PROJECT_KICKOFF_PLAN.md) — Executive summary
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
 - [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) — Versioning and releases
+- [plans/README.md](./plans/README.md) — Implementation plans guide
 
 ### GitHub Integration
-- [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation
-- [GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) — Project board setup
-- [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) — CLI and MCP configuration
+- [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation
+- [github/GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) — Project board setup
+- [github/GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) — CLI and MCP configuration
 
 ---
 

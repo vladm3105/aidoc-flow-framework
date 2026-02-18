@@ -248,11 +248,11 @@ All templates in `ai_dev_ssd_flow/` - see [ai_dev_ssd_flow/README.md](../ai_dev_
 
 | Governance Aspect | SDD-Lite | SDD-Standard | SDD-Full |
 |:------------------|:---------|:-------------|:---------|
-| **Branching** | [shared/BRANCHING_STRATEGY.md](shared/BRANCHING_STRATEGY.md) | Same | Same |
-| **PR Review** | [shared/AI_PR_Review/](shared/AI_PR_Review/) | Same | Same |
-| **Definition of Done** | [shared/DEFINITION_OF_DONE.md](shared/DEFINITION_OF_DONE.md) | Same | Same + gate approvals |
-| **Release Process** | [shared/RELEASE_PROCESS.md](shared/RELEASE_PROCESS.md) | Same | Same + CHG tracking |
-| **Issue Lifecycle** | [sdd/AI_ISSUE_LIFECYCLE.md](sdd/AI_ISSUE_LIFECYCLE.md) | Same | Same |
+| **Branching** | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) | Same | Same |
+| **PR Review** | [AI_PR_Review/](./AI_PR_Review/) | Same | Same |
+| **Definition of Done** | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Same | Same + gate approvals |
+| **Release Process** | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) | Same | Same + CHG tracking |
+| **Issue Lifecycle** | [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) | Same | Same |
 | **Change Management** | PR-based | PR + review | 4-Gate CHG |
 
 ---

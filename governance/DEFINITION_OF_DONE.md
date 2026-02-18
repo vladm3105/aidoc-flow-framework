@@ -4,8 +4,10 @@ This document defines when a task, sprint, or phase is considered **complete**.
 
 **Related Documents**:
 - [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md) — Operational policies and conventions (how we work)
-- [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with all phases and task specifications
-- [ROADMAP.md](./ROADMAP.md) — Phase timeline and dependencies
+- [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) — Project plan template
+- [templates/ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) — Roadmap template
+
+> **Note**: Create `PROJECT_PLAN.md` and `ROADMAP.md` in your project from the templates above.
 
 ## Task Level
 A task (Issue) is **Done** when:
@@ -60,7 +62,7 @@ A sprint is **Done** when:
 ## Phase Level
 A phase is **Done** when:
 - [ ] All sprints within the phase are complete
-- [ ] Phase **Exit Criteria** (defined in [ROADMAP.md](./ROADMAP.md)) are met
+- [ ] Phase **Exit Criteria** (defined in your project's `ROADMAP.md`) are met
 - [ ] Component is tagged with a release version (SemVer)
 - [ ] CHANGELOG.md is updated per [RELEASE_PROCESS.md](./RELEASE_PROCESS.md)
 - [ ] Governance document sync completed (see [GOVERNANCE_RULES.md §6](./GOVERNANCE_RULES.md#6-document-maintenance))

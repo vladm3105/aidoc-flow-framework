@@ -530,7 +530,7 @@ Every PR receives an automated AI code review via the `ai-review.yml` workflow (
 
 AI review is **advisory** — it supplements but does not replace human review. At least one human reviewer is still required per [PR Reviewer Assignment](#pr-reviewer-assignment-mandatory).
 
-Full documentation: [AI_PR_Review/](./AI_PR_Review/) | GCP setup: [GCP_SETUP.md](./AI_PR_Review/GCP_SETUP.md) | Add to new repo: [ONBOARDING.md](./AI_PR_Review/ONBOARDING.md)
+Full documentation: [AI_PR_Review/](./AI_PR_Review/) | Add to new repo: [ONBOARDING.md](./AI_PR_Review/ONBOARDING.md)
 
 ### AI Agent Review (On-Demand)
 
@@ -633,9 +633,11 @@ After every sprint completion **or** any significant/breaking change, review and
 
 | Document | What to Verify |
 |:---------|:---------------|
-| [ROADMAP.md](./ROADMAP.md) | Phase dates, statuses, dependencies reflect reality |
+| Your project's `ROADMAP.md` | Phase dates, statuses, dependencies reflect reality |
 | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) | Release workflow matches current tooling and conventions |
-| [PROJECT_PLAN.md](./PROJECT_PLAN.md) | Task statuses, schedule, gap analysis (Section 2) |
+| Your project's `PROJECT_PLAN.md` | Task statuses, schedule, gap analysis (Section 2) |
+
+> **Note**: Create `PROJECT_PLAN.md` and `ROADMAP.md` from [templates/](./templates/).
 
 ### Sync Triggers
 

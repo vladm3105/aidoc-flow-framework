@@ -215,7 +215,6 @@ ANTHROPIC_API_KEY: sk-ant-api03-...
 | [AI_AGENT_REVIEW_WORKFLOW.md](./AI_AGENT_REVIEW_WORKFLOW.md) | On-demand agent review with fix-and-verify loop |
 | [MANUAL_REVIEW_GUIDE.md](./MANUAL_REVIEW_GUIDE.md) | Human-facing guide for manual AI review |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
-| [GCP_SETUP.md](./GCP_SETUP.md) | Deprecated — GCP Vertex AI setup (no longer required) |
 | [GITHUB_TOOLS_SETUP.md](../github/GITHUB_TOOLS_SETUP.md) | gh CLI and MCP server configuration |
 
 ---
