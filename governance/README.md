@@ -13,15 +13,8 @@ This repository uses **Specification-Driven Development (SDD)** with scalable de
 | Depth | Layers | Best For | Timeline |
 |:------|:-------|:---------|:---------|
 | **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS-MVP | MVPs, prototypes, solo + AI | 1-3 months |
-| **SDD-Standard** | REF → BRD → PRD → EARS → ADR → SYS → REQ → TASKS | Production apps, small teams | 3-6 months |
-| **SDD-Full** | All 15 layers with 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
-
-### Quick Selection
-
-- **Start with SDD-Lite** for new projects, MVPs, or when speed matters
-- **Use SDD-Standard** for production applications with moderate traceability needs
-- **Use SDD-Full** for enterprise projects with regulatory/audit requirements
-- **Scale up** by adding layers as project complexity grows
+| **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams | 3-6 months |
+| **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
 
 ---
 
@@ -29,130 +22,133 @@ This repository uses **Specification-Driven Development (SDD)** with scalable de
 
 ```
 governance/
-├── SDD_DEPTH_GUIDE.md   # Lite vs Standard vs Full comparison
-├── shared/              # Applies to all SDD depths
-│   ├── AI_PR_Review/
-│   ├── BRANCHING_STRATEGY.md
-│   ├── DEFINITION_OF_DONE.md
-│   ├── RELEASE_PROCESS.md
-│   ├── github/
-│   └── (repository patterns)
-└── sdd/                 # SDD governance (all depths)
-    ├── GOVERNANCE_RULES.md
-    ├── AI_ISSUE_LIFECYCLE.md
-    ├── templates/
-    ├── scripts/
-    ├── plans/
-    └── (setup guides)
-
-ai_dev_ssd_flow/         # Layer documentation and templates
-├── BRD/                 # Layer 1 templates
-├── PRD/                 # Layer 2 templates
-├── EARS/                # Layer 3 templates
-├── ...                  # Layers 4-14
-└── README.md            # Full SDD methodology
+├── README.md                      # This index
+├── SDD_DEPTH_GUIDE.md             # Lite vs Standard vs Full
+│
+├── # === CORE DOCUMENTATION ===
+├── GOVERNANCE_RULES.md            # Operational policies
+├── AI_ISSUE_LIFECYCLE.md          # Issue workflow (4-stage loop)
+├── BRANCHING_STRATEGY.md          # Git workflow
+├── DEFINITION_OF_DONE.md          # Completion criteria
+├── RELEASE_PROCESS.md             # Versioning and releases
+├── REPOSITORY_STRATEGY.md         # Monorepo architecture
+├── ROLES_AND_TOOLS.md             # Human vs AI responsibilities
+├── HOME_REPO.md                   # Home repository structure
+│
+├── github/                        # GitHub documentation
+│   ├── GITHUB_PROJECT_SETUP.md    # Project board setup
+│   ├── GITHUB_TOOLS_SETUP.md      # gh CLI and MCP config
+│   └── GITHUB_WORKFLOWS.md        # GitHub Actions docs
+│
+├── AI_PR_Review/                  # AI PR review
+│   ├── README.md                  # Overview
+│   ├── AI_AGENT_REVIEW_WORKFLOW.md
+│   ├── LOCAL_SETUP.md
+│   ├── MANUAL_REVIEW_GUIDE.md
+│   └── ONBOARDING.md
+│
+├── setup/                         # Setup guides
+│   ├── SETUP_GUIDE.md             # Step-by-step customization
+│   ├── CONFIG.md                  # 50+ placeholder variables
+│   └── CLOUD_GUIDE.md             # GCP/AWS/Azure setup
+│
+├── templates/                     # Project templates
+│   ├── CLAUDE.md                  # AI agent config
+│   ├── CONTRIBUTING.md            # Contributing guide
+│   ├── README.md                  # Project README
+│   ├── PROJECT_PLAN-TEMPLATE.md   # Project plan
+│   ├── IPLAN-TEMPLATE.md          # Implementation plan
+│   ├── deployment/                # Cloud deployment guides
+│   └── qa/                        # QA documentation templates
+│
+└── scripts/                       # Automation scripts
+    ├── project_setup/             # Project setup scripts
+    │   └── cloud/                 # GCP/AWS/Azure scripts
+    ├── ghes-runner/               # GHES runner setup + docs
+    ├── workflows/                 # CI/CD helper scripts
+    └── cicd/                      # CI/CD configuration
 ```
 
 ---
 
-## Shared Governance (All SDD Depths)
-
-Documents that apply to **all** SDD depths (Lite, Standard, Full).
+## Core Documentation
 
 | Document | Description |
 |:---------|:------------|
-| [shared/AI_PR_Review/](./shared/AI_PR_Review/) | Automated PR review workflows (Claude Code CLI) |
-| [shared/BRANCHING_STRATEGY.md](./shared/BRANCHING_STRATEGY.md) | Git workflow and branch conventions |
-| [shared/DEFINITION_OF_DONE.md](./shared/DEFINITION_OF_DONE.md) | Completion criteria at task/sprint/phase levels |
-| [shared/RELEASE_PROCESS.md](./shared/RELEASE_PROCESS.md) | SemVer versioning and deployment |
-| [shared/github/GITHUB_WORKFLOWS.md](./shared/github/GITHUB_WORKFLOWS.md) | GitHub Actions workflow documentation |
-| [shared/github/GITHUB_TOOLS_SETUP.md](./shared/github/GITHUB_TOOLS_SETUP.md) | gh CLI and MCP server configuration |
-| [shared/github/ghes_runner/](./shared/github/ghes_runner/) | Self-hosted GHES runner setup |
-| [shared/HOME_REPO.md](./shared/HOME_REPO.md) | Home repository structure |
-| [shared/REPOSITORY_STRATEGY.md](./shared/REPOSITORY_STRATEGY.md) | Mono-repo architecture patterns |
-| [shared/ROLES_AND_TOOLS.md](./shared/ROLES_AND_TOOLS.md) | Human vs AI task split |
+| [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
+| [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
+| [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) | Git workflow and branch conventions |
+| [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Completion criteria at task/sprint/phase levels |
+| [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) | SemVer versioning and deployment |
+| [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) | Monorepo architecture patterns |
+| [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) | Human vs AI task split |
+| [HOME_REPO.md](./HOME_REPO.md) | Home repository structure |
 
 ---
 
-## SDD Governance
-
-Core governance documents for all SDD depths.
-
-### Core Workflow
+## GitHub Documentation
 
 | Document | Description |
 |:---------|:------------|
-| [sdd/GOVERNANCE_RULES.md](./sdd/GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
-| [sdd/AI_ISSUE_LIFECYCLE.md](./sdd/AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
-| [sdd/AI_TIME_ESTIMATION.md](./sdd/AI_TIME_ESTIMATION.md) | AI-assisted time estimation methodology |
+| [github/GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) | Project board, labels, fields setup |
+| [github/GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) | gh CLI and MCP server configuration |
+| [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) | GitHub Actions workflow documentation |
 
-### Framework Setup
+---
 
-| Document | Description |
-|:---------|:------------|
-| [sdd/SETUP_GUIDE.md](./sdd/SETUP_GUIDE.md) | Step-by-step framework customization |
-| [sdd/CONFIG.md](./sdd/CONFIG.md) | All 50 placeholder variables reference |
-| [sdd/CLOUD_GUIDE.md](./sdd/CLOUD_GUIDE.md) | Multi-cloud setup (GCP, AWS, Azure) |
-
-### Project Planning
+## AI PR Review
 
 | Document | Description |
 |:---------|:------------|
-| [sdd/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./sdd/PROJECT_KICKOFF_PLAN-TEMPLATE.md) | Project kickoff template |
-| [sdd/PROJECT_PLAN-TEMPLATE.md](./sdd/PROJECT_PLAN-TEMPLATE.md) | Full project plan with phases/sprints |
-| [sdd/ROADMAP-TEMPLATE.md](./sdd/ROADMAP-TEMPLATE.md) | Phase timeline with dependency graphs |
+| [AI_PR_Review/README.md](./AI_PR_Review/README.md) | Overview and architecture |
+| [AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) | On-demand AI review workflow |
+| [AI_PR_Review/LOCAL_SETUP.md](./AI_PR_Review/LOCAL_SETUP.md) | Local developer setup |
+| [AI_PR_Review/MANUAL_REVIEW_GUIDE.md](./AI_PR_Review/MANUAL_REVIEW_GUIDE.md) | Manual AI PR review guide |
+| [AI_PR_Review/ONBOARDING.md](./AI_PR_Review/ONBOARDING.md) | Add AI review to new repos |
 
-### Implementation Plans
+---
+
+## Setup Guides
 
 | Document | Description |
 |:---------|:------------|
-| [sdd/plans/README.md](./sdd/plans/README.md) | Plan management guide |
-| [sdd/plans/IPLAN-TEMPLATE.md](./sdd/plans/IPLAN-TEMPLATE.md) | Blank IPLAN template |
+| [setup/SETUP_GUIDE.md](./setup/SETUP_GUIDE.md) | Step-by-step framework customization |
+| [setup/CONFIG.md](./setup/CONFIG.md) | All 50+ placeholder variables reference |
+| [setup/CLOUD_GUIDE.md](./setup/CLOUD_GUIDE.md) | Multi-cloud setup (GCP, AWS, Azure) |
 
-### Project Templates
+---
+
+## Templates
 
 | Template | Description |
 |:---------|:------------|
-| [sdd/templates/README.md](./sdd/templates/README.md) | Project README template |
-| [sdd/templates/CONTRIBUTING.md](./sdd/templates/CONTRIBUTING.md) | Contributing guidelines |
-| [sdd/templates/CLAUDE.md](./sdd/templates/CLAUDE.md) | Claude Code settings template |
-| [sdd/templates/DEVELOPER_GUIDE.md](./sdd/templates/DEVELOPER_GUIDE.md) | Developer setup guide |
+| [templates/CLAUDE.md](./templates/CLAUDE.md) | Claude Code project instructions |
+| [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) | Contributing guidelines |
+| [templates/README.md](./templates/README.md) | Project README template |
+| [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) | Full project plan with phases |
+| [templates/IPLAN-TEMPLATE.md](./templates/IPLAN-TEMPLATE.md) | Implementation plan template |
+| [templates/qa/](./templates/qa/) | QA documentation templates |
 
-### Setup Scripts
+---
+
+## Scripts
 
 | Directory | Description |
 |:----------|:------------|
-| [sdd/scripts/project_setup/](./sdd/scripts/project_setup/) | Cloud setup (GCP, AWS, Azure) |
-| [sdd/scripts/workflows/](./sdd/scripts/workflows/) | GitHub Actions helper scripts |
-| [sdd/scripts/ghes-runner/](./sdd/scripts/ghes-runner/) | GHES runner setup |
+| [scripts/project_setup/](./scripts/project_setup/) | Cloud setup (GCP, AWS, Azure) |
+| [scripts/ghes-runner/](./scripts/ghes-runner/) | GHES runner setup and documentation |
+| [scripts/workflows/](./scripts/workflows/) | GitHub Actions helper scripts |
+| [scripts/cicd/](./scripts/cicd/) | CI/CD configuration files |
 
 ---
 
 ## Layer Documentation
 
-Full SDD layer documentation and templates are in [`ai_dev_ssd_flow/`](../ai_dev_ssd_flow/).
-
-| Layer | Artifact | Description |
-|:------|:---------|:------------|
-| 0 | REF | Strategy and reference documents |
-| 1 | BRD | Business requirements |
-| 2 | PRD | Product requirements |
-| 3 | EARS | Formal WHEN-THE-SHALL requirements |
-| 4 | BDD | Gherkin behavior tests |
-| 5 | ADR | Architecture Decision Records |
-| 6 | SYS | System requirements |
-| 7 | REQ | Atomic requirements |
-| 8 | CTR | API contracts (optional) |
-| 9 | SPEC | Technical specifications (YAML) |
-| 10 | TSPEC | Test specifications |
-| 11 | TASKS | Implementation task breakdown |
-| 12-14 | IMPL | Code, tests, validation |
+Full SDD layer documentation and templates are in [`../ai_dev_ssd_flow/`](../ai_dev_ssd_flow/).
 
 ---
 
 ## Issue Creation (All Depths)
-
-All SDD depths follow the same issue creation pattern:
 
 ```
 Human creates REF/ (Project Description)
@@ -165,8 +161,6 @@ AI Agent creates GitHub Issues from TASKS
     ↓
 AI Agent executes issues (ai:ready → ai:in-progress → PR)
 ```
-
-**More specification layers = more precise issues with better traceability.**
 
 ---
 

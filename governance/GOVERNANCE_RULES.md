@@ -3,9 +3,9 @@
 **Framework**: Specification-Driven Development (SDD)
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
 
-> **Depth Selection**: This document applies to all SDD depths (Lite, Standard, Full). Choose your depth based on project complexity - see [SDD_DEPTH_GUIDE.md](../SDD_DEPTH_GUIDE.md).
+> **Depth Selection**: This document applies to all SDD depths (Lite, Standard, Full). Choose your depth based on project complexity - see [SDD_DEPTH_GUIDE.md](./SDD_DEPTH_GUIDE.md).
 
-Operational policies and conventions that govern how this project is developed. These are **rules** (how we work), distinct from [DEFINITION_OF_DONE.md](../shared/DEFINITION_OF_DONE.md) (completion checklists).
+Operational policies and conventions that govern how this project is developed. These are **rules** (how we work), distinct from [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) (completion checklists).
 
 ## SDD Depth Variants
 
@@ -24,25 +24,25 @@ Operational policies and conventions that govern how this project is developed. 
 | I need to... | Read |
 |:-------------|:-----|
 | Process a GitHub issue as AI agent | [Issue Processing Workflow](#issue-processing-workflow-mandatory) (this doc §3) |
-| Check if my work is complete | [DEFINITION_OF_DONE.md](../shared/DEFINITION_OF_DONE.md) |
-| Know which branch to create | [BRANCHING_STRATEGY.md](../shared/BRANCHING_STRATEGY.md) |
-| Tag and release a component | [RELEASE_PROCESS.md](../shared/RELEASE_PROCESS.md) |
-| Understand human vs AI task split | [ROLES_AND_TOOLS.md](../shared/ROLES_AND_TOOLS.md) |
-| Set up gh CLI or MCP servers | [GITHUB_TOOLS_SETUP.md](../shared/github/GITHUB_TOOLS_SETUP.md) |
-| Configure GitHub Actions workflows | [GITHUB_WORKFLOWS.md](../shared/github/GITHUB_WORKFLOWS.md) |
-| Set up project board, labels, fields | [GITHUB_PROJECT_SETUP.md](../shared/github/GITHUB_PROJECT_SETUP.md) |
-| Understand the phase timeline | [ROADMAP-TEMPLATE.md](./ROADMAP-TEMPLATE.md) |
-| Find task specs and sprint schedules | [PROJECT_PLAN-TEMPLATE.md](./PROJECT_PLAN-TEMPLATE.md) |
+| Check if my work is complete | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) |
+| Know which branch to create | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) |
+| Tag and release a component | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) |
+| Understand human vs AI task split | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) |
+| Set up gh CLI or MCP servers | [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) |
+| Configure GitHub Actions workflows | [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) |
+| Set up project board, labels, fields | [GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) |
+| Understand the phase timeline | [ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) |
+| Find task specs and sprint schedules | [PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) |
 | Review AI time estimates | [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) |
-| See execution adjustments and corrections | [plans/](./plans/) (IPLAN index) |
-| Understand monorepo structure | [REPOSITORY_STRATEGY.md](../shared/REPOSITORY_STRATEGY.md) + [HOME_REPO.md](../shared/HOME_REPO.md) |
-| Read the project executive summary | [PROJECT_KICKOFF_PLAN-TEMPLATE.md](./PROJECT_KICKOFF_PLAN-TEMPLATE.md) |
+| See execution adjustments and corrections | [templates/IPLAN-TEMPLATE.md](./templates/IPLAN-TEMPLATE.md) |
+| Understand monorepo structure | [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) + [HOME_REPO.md](./HOME_REPO.md) |
+| Read the project executive summary | [PROJECT_KICKOFF_PLAN-TEMPLATE.md](./templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md) |
 | Read universal AI agent rules | [README_AIAGENT.md](./templates/README_AIAGENT.md) |
 | Find PR reviewers / CODEOWNERS | [CONTRIBUTING.md](./templates/CONTRIBUTING.md) |
-| Set up or troubleshoot AI PR review | [AI_PR_Review/](../shared/AI_PR_Review/) (overview, local setup, onboarding) |
-| Conduct on-demand AI agent PR review | [AI_AGENT_REVIEW_WORKFLOW.md](../shared/AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) |
-| Use local AI ({AI_TOOL_NAME} Code, Gemini CLI) to review a PR | [MANUAL_REVIEW_GUIDE.md](../shared/AI_PR_Review/MANUAL_REVIEW_GUIDE.md) |
-| Set up or manage GHES self-hosted runner | [GHES_RUNNER_GUIDE.md](../shared/github/ghes_runner/GHES_RUNNER_GUIDE.md) |
+| Set up or troubleshoot AI PR review | [AI_PR_Review/](./AI_PR_Review/) (overview, local setup, onboarding) |
+| Conduct on-demand AI agent PR review | [AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) |
+| Use local AI ({AI_TOOL_NAME} Code, Gemini CLI) to review a PR | [MANUAL_REVIEW_GUIDE.md](./AI_PR_Review/MANUAL_REVIEW_GUIDE.md) |
+| Set up or manage GHES self-hosted runner | [GHES_RUNNER_GUIDE.md](./scripts/ghes-runner/GHES_RUNNER_GUIDE.md) |
 
 > **Canonical file index**: [HOME_REPO.md](./HOME_REPO.md) (directory tree) | **Categorized links**: [PROJECT_KICKOFF_PLAN.md §9](./PROJECT_KICKOFF_PLAN.md)
 

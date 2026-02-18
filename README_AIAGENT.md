@@ -1,1 +1,1 @@
-governance/sdd/templates/README_AIAGENT.md
+governance/templates/README_AIAGENT.md

@@ -53,11 +53,11 @@ pytest tests/unit/test_models.py -v
 ## Related Documents
 
 - [GOVERNANCE_RULES.md](../../GOVERNANCE_RULES.md) — Operational rules
-- [DEFINITION_OF_DONE.md](../../../shared/DEFINITION_OF_DONE.md) — Testing checklist items
-- [GITHUB_WORKFLOWS.md](../../../shared/github/GITHUB_WORKFLOWS.md) — CI/CD workflow documentation
+- [DEFINITION_OF_DONE.md](../../DEFINITION_OF_DONE.md) — Testing checklist items
+- [GITHUB_WORKFLOWS.md](../../github/GITHUB_WORKFLOWS.md) — CI/CD workflow documentation
 
 ---
 
 ## Template Usage
 
-Replace `{PROJECT_NAME}` with your project name. See [CONFIG.md](../../CONFIG.md) for placeholder reference.
+Replace `{PROJECT_NAME}` with your project name. See [CONFIG.md](../../setup/CONFIG.md) for placeholder reference.
