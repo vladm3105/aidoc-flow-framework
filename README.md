@@ -1,44 +1,57 @@
 # Docs Flow Framework
 
-**Two Complementary Frameworks for AI-Assisted Software Development**
+**Specification-Driven Development (SDD) with Scalable Depth**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ## Repository Contents
 
-This repository contains **two distinct frameworks** for AI-assisted development:
+This repository provides a **unified SDD framework** with three depth variants to match project complexity:
 
-| Framework | Directory | Purpose | Best For |
-|-----------|-----------|---------|----------|
-| **AI Dev Flow** | `ai_dev_ssd_flow/` | Specification-Driven Development (SDD) | Large projects, regulatory compliance, formal traceability |
-| **AI Project Flow** | `ai_project_issues_flow/` | AI-First Project Governance | Small-medium projects, rapid iteration, phase-gated deployment |
+| Depth | Layers | Best For | Timeline |
+|:------|:-------|:---------|:---------|
+| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams | 3-6 months |
+| **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
+
+### Key Directories
+
+| Directory | Purpose |
+|:----------|:--------|
+| `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
+| `governance/sdd/` | Project governance, setup guides, scripts, CI/CD templates |
+| `governance/shared/` | Shared governance (PR review, branching, releases) |
 
 ### Quick Comparison
 
-| Aspect | AI Dev Flow (SDD) | AI Project Flow |
-|--------|-------------------|-----------------||
-| **Scope** | Enterprise/regulated projects | Small AI-first projects |
-| **Layers** | 15 formal layers (BRD→Production) | Agile phases/sprints |
-| **Documentation** | Full traceability matrices | PROJECT_PLAN + IPLANs |
-| **Deployment** | CI/CD integration | Phase-gated (dev→staging→prod) |
-| **Timeline** | Months to years | 1-6 months |
-| **Team** | Multiple roles | Solo/small team + AI |
-| **AI Integration** | AI generates artifacts | AI executes issues (ai:ready workflow) |
+| Aspect | SDD-Lite | SDD-Standard | SDD-Full |
+|:-------|:---------|:-------------|:---------|
+| **Layers** | 3-4 | 7-8 | 15 |
+| **Setup Time** | Hours | Days | Weeks |
+| **Documentation** | PROJECT_PLAN + IPLANs | + EARS, ADR, SYS, REQ | Full traceability matrices |
+| **Deployment** | Phase-gated | Phase-gated + review | 4-Gate CHG system |
+| **Timeline** | 1-3 months | 3-6 months | 6+ months |
+| **Team** | Solo/small + AI | Small team | Multiple teams |
 
-### Choosing a Framework
+### Choosing a Depth
 
-**Use AI Dev Flow when:**
+**Use SDD-Lite when:**
+- Building MVPs or prototypes
+- Working solo or with small team + AI
+- Need rapid iteration with phase-gated deployment
+- Quick setup with GitHub Actions automation
+
+**Use SDD-Standard when:**
+- Building production applications
+- Need moderate traceability (requirements chain)
+- Small team with defined architecture decisions
+
+**Use SDD-Full when:**
 - Building enterprise software with regulatory requirements (SEC, FINRA, FDA, ISO)
 - Need complete audit trails and bidirectional traceability
 - Multiple teams working on complex systems
 - Formal architecture decisions required (ADRs)
-
-**Use AI Project Flow when:**
-- Building MVPs or small-to-medium AI-first projects
-- Want phase-gated deployment with AI-powered code review
-- Working solo or with a small team + AI assistants
-- Need quick setup with GitHub Actions automation
 
 ---
 
@@ -1225,20 +1238,19 @@ A comprehensive suite of tools is included for building, testing, and debugging 
 **[View All Development Tools](dev_tools/README.md)**
 
 ---
----
 
-## Framework 2: AI Project Flow
+## SDD Governance
 
-**AI-First Project Governance Framework for Small-Medium Projects**
+**Project Governance, CI/CD, and Setup Automation**
 
 ### Overview
 
-AI Project Flow is a lightweight, reusable framework for AI-first projects that emphasizes rapid iteration with AI assistants. It provides project governance, CI/CD pipelines, and phase-gated deployment without the overhead of formal SDD traceability.
+The `governance/` directory provides project governance that applies to all SDD depths. It includes operational rules, setup guides, CI/CD templates, and AI PR review workflows.
 
 ### Key Features
 
 | Feature | Description |
-|---------|-------------|
+|:--------|:------------|
 | **Phase-Gated Deployment** | dev → staging → prod with automated gates |
 | **AI Label Lifecycle** | `ai:ready` → `ai:in-progress` → `ai:review-requested` |
 | **AI PR Review** | Automated code review via Claude Code CLI |
@@ -1249,45 +1261,42 @@ AI Project Flow is a lightweight, reusable framework for AI-first projects that 
 ### Quick Start
 
 ```bash
-# Copy framework to your project
-cp -r ai_project_issues_flow/ /path/to/your/project/
+# Copy governance to your project
+cp -r governance/sdd/ /path/to/your/project/governance/
+cp -r governance/shared/ /path/to/your/project/governance/
 
 # Configure placeholders
 cd /path/to/your/project
-./scripts/project_setup/validate_configuration.sh
+./governance/scripts/project_setup/validate_configuration.sh
 
 # Replace placeholders (see CONFIG.md for full list)
 find . -type f \( -name "*.md" -o -name "*.yml" \) \
   -exec sed -i 's|{PROJECT_PREFIX}|myproj|g' {} \;
 ```
 
-### Framework Structure
+### Governance Structure
 
 ```
-ai_project_issues_flow/
-├── README.md                    # Framework overview
-├── CONFIG.md                    # 47+ placeholder variables
-├── SETUP_GUIDE.md               # Step-by-step customization
-├── CLOUD_GUIDE.md               # GCP/AWS/Azure setup
-├── governance/                  # Project governance docs
-│   ├── PROJECT_PLAN.md
-│   ├── ROADMAP.md
-│   ├── GOVERNANCE_RULES.md
-│   ├── AI_PR_Review/            # AI code review docs
+governance/
+├── SDD_DEPTH_GUIDE.md           # Lite vs Standard vs Full
+├── sdd/                         # SDD governance (all depths)
+│   ├── GOVERNANCE_RULES.md      # Operational policies
+│   ├── CONFIG.md                # 50+ placeholder variables
+│   ├── SETUP_GUIDE.md           # Step-by-step customization
+│   ├── CLOUD_GUIDE.md           # GCP/AWS/Azure setup
+│   ├── AI_ISSUE_LIFECYCLE.md    # Issue workflow
+│   ├── templates/               # Project templates
+│   │   ├── CLAUDE.md
+│   │   ├── README_AIAGENT.md
+│   │   └── qa/                  # QA templates
+│   ├── scripts/                 # Setup automation
+│   │   └── project_setup/cloud/
 │   └── plans/                   # IPLAN templates
-├── .github/                     # GitHub automation
-│   ├── workflows/               # 18 workflow templates
-│   └── ISSUE_TEMPLATE/          # Issue templates
-├── templates/                   # Root doc templates
-│   ├── CLAUDE.md
-│   ├── README_AIAGENT.md
-│   └── .mcp.json
-├── scripts/                     # Setup automation
-│   └── project_setup/
-│       ├── cloud/gcp/
-│       ├── cloud/aws/
-│       └── cloud/azure/
-└── docs/                        # Technical docs
+└── shared/                      # Shared governance
+    ├── AI_PR_Review/            # AI code review docs
+    ├── BRANCHING_STRATEGY.md
+    ├── DEFINITION_OF_DONE.md
+    └── RELEASE_PROCESS.md
 ```
 
 ### Deployment Pipeline
@@ -1298,7 +1307,7 @@ Issue Closed (phase N)
        ▼
 deploy-dev.yml (phase N)
        │
-       ▼ (all 8 phases complete)
+       ▼ (all phases complete)
 check-all-phases-dev.yml
        │
        ▼
@@ -1310,10 +1319,11 @@ deploy-prod.yml (gradual rollout)
 
 ### Documentation
 
-- [README.md](./ai_project_issues_flow/README.md) - Framework overview
-- [CONFIG.md](./ai_project_issues_flow/CONFIG.md) - All placeholder variables
-- [SETUP_GUIDE.md](./ai_project_issues_flow/SETUP_GUIDE.md) - Customization guide
-- [CLOUD_GUIDE.md](./ai_project_issues_flow/CLOUD_GUIDE.md) - Cloud provider setup
+- [SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) - Choose Lite/Standard/Full
+- [GOVERNANCE_RULES.md](./governance/sdd/GOVERNANCE_RULES.md) - Operational policies
+- [CONFIG.md](./governance/sdd/CONFIG.md) - All placeholder variables
+- [SETUP_GUIDE.md](./governance/sdd/SETUP_GUIDE.md) - Customization guide
+- [CLOUD_GUIDE.md](./governance/sdd/CLOUD_GUIDE.md) - Cloud provider setup
 
 ---
 
@@ -1393,16 +1403,25 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.6
-**Last Updated**: 2026-02-17T12:00:00
+**Version**: 2.7
+**Last Updated**: 2026-02-18T12:00:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
 
+### Version 2.7 (2026-02-18T12:00:00)
+- [PASS] **Unified SDD Framework**: Consolidated governance around single SDD methodology with scalable depth
+  - Removed separate "Issues Flow" concept - now SDD-Lite/Standard/Full depth variants
+  - Renamed `governance/issues_flow/` → `governance/sdd/`
+  - Created `SDD_DEPTH_GUIDE.md` with layer mappings for each depth
+  - Removed `ai_project_issues_flow/` directory (integrated useful templates into `governance/sdd/templates/`)
+  - Added QA templates (`governance/sdd/templates/qa/`) and Claude settings template
+  - Updated all documentation to reflect unified approach
+
 ### Version 2.6 (2026-02-17T12:00:00)
-- [PASS] **Production Readiness**: Both frameworks cleaned and production-ready
+- [PASS] **Production Readiness**: Framework cleaned and production-ready
   - **ai_dev_ssd_flow**: Removed 10 backup directories (191 files), added 4 missing templates
-  - **ai_project_issues_flow**: Fixed error handling in 10 Python workflow scripts
+  - **governance/sdd**: Fixed error handling in 10 Python workflow scripts
   - Removed broken IPLAN references (IPLAN-004, 006, 008, 009, 010, 011) from 18 files
   - Standardized emoji decorations to text notation across 326 files
 - [PASS] **Error Handling Improvements**: Added try/except for FileNotFoundError, json.JSONDecodeError, subprocess.SubprocessError, ET.ParseError in deployment scripts

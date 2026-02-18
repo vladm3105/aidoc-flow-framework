@@ -4,12 +4,13 @@
 
 ---
 
-## Framework Options
+## SDD Depth Options
 
-| Framework | Use Case | Structure |
-|-----------|----------|-----------|
-| **ai_dev_ssd_flow** | Large projects, formal requirements | 12 layers: BRD→TASKS |
-| **ai_project_issues_flow** | Small-medium projects, agile | PROJECT_PLAN + IPLANs |
+| Depth | Use Case | Layers |
+|:------|:---------|:-------|
+| **SDD-Lite** | MVPs, prototypes, solo + AI | REF → BRD-MVP → PRD-MVP → TASKS |
+| **SDD-Standard** | Production apps, small teams | + EARS, ADR, SYS, REQ |
+| **SDD-Full** | Enterprise, regulated, multi-team | All 15 layers + 4-Gate CHG |
 
 ---
 
@@ -27,8 +28,8 @@
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD templates (12 layers)
-# ✓ Symlinks .templates/ai_project_issues_flow/ → Issues flow templates
+# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD layer templates (15 layers)
+# ✓ Symlinks .templates/governance/ → SDD governance templates
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
 #
@@ -77,7 +78,7 @@ done
 │
 ├── .templates/
 │   ├── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
-│   └── ai_project_issues_flow/  → /opt/data/docs_flow_framework/ai_project_issues_flow/
+│   └── governance/sdd/  → /opt/data/docs_flow_framework/governance/sdd/
 │
 ├── scripts/
 │   ├── validate/            → /opt/data/docs_flow_framework/scripts/
@@ -163,8 +164,8 @@ ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SYS/,
 # 07_REQ/, 08_CTR/, 09_SPEC/, 10_TSPEC/, 11_TASKS/, AUTOPILOT/
 
-# View Issues Flow templates (lightweight - small projects)
-ls /opt/data/docs_flow_framework/ai_project_issues_flow/
+# View SDD governance templates (lightweight - small projects)
+ls /opt/data/docs_flow_framework/governance/sdd/
 
 # Key directories:
 # governance/ - PROJECT_PLAN, GOVERNANCE_RULES
@@ -240,8 +241,8 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 # Edit SDD template in framework
 vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
 
-# Edit Issues Flow template in framework
-vim /opt/data/docs_flow_framework/ai_project_issues_flow/governance/PROJECT_PLAN.md
+# Edit SDD governance template in framework
+vim /opt/data/docs_flow_framework/governance/sdd/governance/PROJECT_PLAN.md
 
 # Changes immediately available to ALL projects
 ```
@@ -296,8 +297,8 @@ cd /opt/data/project_name
 ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
-# Verify Issues Flow templates
-ls -la /opt/data/project_name/.templates/ai_project_issues_flow/governance/
+# Verify SDD governance templates
+ls -la /opt/data/project_name/.templates/governance/sdd/governance/
 # Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
@@ -424,18 +425,18 @@ cp .templates/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md \
 vim docs/BRD/BRD-001_my_requirements.md
 ```
 
-### Pattern 4: Template Usage (Issues Flow)
+### Pattern 4: Template Usage (SDD governance)
 
 ```bash
-# 1. Access Issues Flow template via symlink
-cat /opt/data/project_name/.templates/ai_project_issues_flow/governance/PROJECT_PLAN.md
+# 1. Access SDD governance template via symlink
+cat /opt/data/project_name/.templates/governance/sdd/governance/PROJECT_PLAN.md
 
 # 2. Copy governance docs to project
-cp .templates/ai_project_issues_flow/governance/PROJECT_PLAN.md \
+cp .templates/governance/sdd/governance/PROJECT_PLAN.md \
    docs/PROJECT_PLAN.md
 
 # 3. Copy GitHub workflows/templates
-cp -r .templates/ai_project_issues_flow/.github/* .github/
+cp -r .templates/governance/sdd/.github/* .github/
 
 # 4. Customize for project
 vim docs/PROJECT_PLAN.md
@@ -458,7 +459,7 @@ vim docs/PROJECT_PLAN.md
 | Framework | README | Key Docs |
 |-----------|--------|----------|
 | **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 12-layer SDD methodology |
-| **ai_project_issues_flow** | `ai_project_issues_flow/README.md` | Governance, CI/CD, Issues |
+| **governance/sdd** | `governance/sdd/README.md` | Governance, CI/CD, Issues |
 
 ---
 

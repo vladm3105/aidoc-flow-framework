@@ -10,26 +10,25 @@
 
 ---
 
-## Framework Selection
+## SDD Depth Selection
 
-This repository contains **two complementary frameworks**:
+This repository provides a **unified SDD framework** with scalable depth:
 
-| Framework | Purpose | Best For |
-|-----------|---------|----------|
-| **ai_dev_ssd_flow** | Full Specification-Driven Development (SDD) | Large projects requiring formal requirements traceability |
-| **ai_project_issues_flow** | Lightweight AI-First Governance | Small-medium projects, solo/small teams, rapid iteration |
+| Depth | Layers | Best For |
+|:------|:-------|:---------|
+| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS | MVPs, prototypes, solo + AI, 1-3 months |
+| **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams, 3-6 months |
+| **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team, 6+ months |
 
-### Decision Matrix
+### Key Directories
 
-| Criteria | Use SDD (ai_dev_ssd_flow) | Use Issues Flow (ai_project_issues_flow) |
-|----------|---------------------------|------------------------------------------|
-| Project timeline | Months-years | 1-6 months |
-| Team size | Multiple roles | Solo/small team + AI |
-| Traceability | Full requirement→code tracing | Issue-based tracking |
-| Documentation | 12 formal layers (BRD→TASKS) | PROJECT_PLAN + IPLANs |
-| Change management | 4-gate CHG system | PR-based governance |
+| Directory | Purpose |
+|:----------|:--------|
+| `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
+| `governance/sdd/` | Project governance, setup guides, scripts, CI/CD templates |
+| `governance/shared/` | Shared governance (PR review, branching, releases) |
 
-**Hybrid Usage**: Projects can use both frameworks - SDD for requirements/specs and Issues Flow for CI/CD and governance.
+**See**: [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) for detailed layer mappings.
 
 ---
 
@@ -46,7 +45,7 @@ This repository contains **two complementary frameworks**:
 │   │   ├── ...                       # (layers 03-11)
 │   │   └── AUTOPILOT/                # Automation scripts
 │   │
-│   ├── ai_project_issues_flow/       # Issues Flow templates
+│   ├── governance/sdd/       # SDD governance templates
 │   │   ├── governance/               # PROJECT_PLAN, rules
 │   │   ├── templates/                # README, CLAUDE.md
 │   │   ├── .github/                  # Workflows, issue templates
@@ -64,7 +63,7 @@ This repository contains **two complementary frameworks**:
     │   ├── src/                      # Source code
     │   ├── .templates/
     │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD templates
-    │   │   └── ai_project_issues_flow/ # Symlink → Issues Flow
+    │   │   └── governance/sdd/ # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
     │       ├── commands/             # Symlink → shared commands
@@ -92,7 +91,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
 | **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
-| **Issues Templates** | `.templates/ai_project_issues_flow/` | N/A | Symlink only |
+| **Issues Templates** | `.templates/governance/sdd/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
 
@@ -165,9 +164,9 @@ ln -sf "$FRAMEWORK_DIR/.claude/agents" "$PROJECT_DIR/.claude/agents"
 # Setup template symlinks (BOTH frameworks)
 mkdir -p "$PROJECT_DIR/.templates"
 backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
-backup_if_needed "$PROJECT_DIR/.templates/ai_project_issues_flow"
+backup_if_needed "$PROJECT_DIR/.templates/governance/sdd"
 ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
-ln -sf "$FRAMEWORK_DIR/ai_project_issues_flow" "$PROJECT_DIR/.templates/ai_project_issues_flow"
+ln -sf "$FRAMEWORK_DIR/governance/sdd" "$PROJECT_DIR/.templates/governance/sdd"
 
 # Setup validation script symlinks
 mkdir -p "$PROJECT_DIR/scripts"
@@ -320,7 +319,7 @@ When using `--with-github`, the following resources are symlinked:
 │
 ├── .templates/
 │   ├── ai_dev_ssd_flow/             # Symlink → SDD templates (12 layers)
-│   └── ai_project_issues_flow/      # Symlink → Issues Flow templates
+│   └── governance/sdd/      # Symlink → SDD governance templates
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── BRD/
@@ -493,7 +492,7 @@ Add to each project's `.gitignore`:
 .claude/commands
 .claude/agents
 .templates/ai_dev_ssd_flow
-.templates/ai_project_issues_flow
+.templates/governance/sdd
 scripts/validate
 
 # Keep project-specific resources (commit these)
@@ -539,8 +538,8 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 # Edit SDD framework template
 vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
 
-# Edit Issues Flow framework template
-vim /opt/data/docs_flow_framework/ai_project_issues_flow/governance/PROJECT_PLAN.md
+# Edit SDD governance framework template
+vim /opt/data/docs_flow_framework/governance/sdd/governance/PROJECT_PLAN.md
 
 # Changes immediately available to all projects
 ```
@@ -591,8 +590,8 @@ cd ${PROJECT_PATH}
 ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
-# Verify Issues Flow template access
-ls -la ${PROJECT_PATH}/.templates/ai_project_issues_flow/governance/
+# Verify SDD governance template access
+ls -la ${PROJECT_PATH}/.templates/governance/sdd/governance/
 # Should list: PROJECT_PLAN.md, GOVERNANCE_RULES.md, etc.
 ```
 
@@ -734,7 +733,7 @@ mkdir -p src tests
 # Access templates: .templates/ai_dev_ssd_flow/
 ```
 
-### Use Case 1b: Greenfield Project (Issues Flow)
+### Use Case 1b: Greenfield Project (SDD governance)
 
 **Scenario**: Starting new small-medium project with lightweight governance
 
@@ -745,15 +744,15 @@ mkdir -p /opt/data/new_project
 # 2. Setup hybrid resources (symlinks to BOTH frameworks)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
-# 3. Copy Issues Flow structure
+# 3. Copy SDD governance structure
 cd /opt/data/new_project
-cp -r .templates/ai_project_issues_flow/.github .
-cp .templates/ai_project_issues_flow/governance/PROJECT_PLAN.md docs/
-cp .templates/ai_project_issues_flow/governance/GOVERNANCE_RULES.md docs/
+cp -r .templates/governance/sdd/.github .
+cp .templates/governance/sdd/governance/PROJECT_PLAN.md docs/
+cp .templates/governance/sdd/governance/GOVERNANCE_RULES.md docs/
 mkdir -p docs/adr docs/qa
 
 # 4. Result: Project with CI/CD and governance templates
-# Access templates: .templates/ai_project_issues_flow/
+# Access templates: .templates/governance/sdd/
 ```
 
 ### Use Case 2: Existing Project Migration
@@ -840,10 +839,10 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
 
-**Issues Flow Framework (ai_project_issues_flow)**:
-- [Issues Flow README](./ai_project_issues_flow/README.md) - Lightweight governance overview
-- [Setup Guide](./ai_project_issues_flow/SETUP_GUIDE.md) - Quick start
-- [Governance Rules](./ai_project_issues_flow/governance/GOVERNANCE_RULES.md) - Operational rules
+**SDD governance Framework (governance/sdd)**:
+- [SDD governance README](./governance/sdd/README.md) - Lightweight governance overview
+- [Setup Guide](./governance/sdd/SETUP_GUIDE.md) - Quick start
+- [Governance Rules](./governance/sdd/governance/GOVERNANCE_RULES.md) - Operational rules
 
 ### External Resources
 
@@ -857,10 +856,10 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 ### Version 2.1 (2026-02-17T00:00:00)
 
-- **Dual Framework Support**: Added `ai_project_issues_flow` alongside `ai_dev_ssd_flow`
+- **Dual Framework Support**: Added `governance/sdd` alongside `ai_dev_ssd_flow`
 - Updated setup script to symlink BOTH framework template directories
 - Added framework selection decision matrix
-- Added Use Case 1b for Issues Flow greenfield projects
+- Added Use Case 1b for SDD governance greenfield projects
 - Updated directory structure diagrams to show both templates
 - Updated .gitignore patterns for dual framework symlinks
 - Updated all template path references to use numbered layer directories
