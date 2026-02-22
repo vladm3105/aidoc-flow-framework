@@ -1,0 +1,445 @@
+# Fields to extract entities from, by document type
+# Each field path supports dot notation for nested keys
+# Updated for v2.5 skill templates with 3-regime case analysis (bull/base/bear)
+
+earnings-analysis:
+  extract_fields:
+    # Phase 1: Preparation
+    - "phase1_preparation.key_questions"
+    # Phase 2: Fundamentals
+    - "phase2_fundamentals.customer_demand.customers[].key_quote"
+    - "phase2_fundamentals.competitive_context.vs_competitors"
+    - "phase2_fundamentals.competitive_context.market_position"
+    - "phase2_fundamentals.business_performance.guidance_summary"
+    # Phase 3: Technicals
+    - "phase3_technicals.support_resistance"
+    # Phase 4: Trade Structure
+    - "phase4_trade_structure.thesis.detailed"
+    # Phase 5: Risk Management
+    - "phase5_risk_management.risks[].risk"
+    # v2.3: Historical Moves
+    - "historical_moves.pattern_summary"
+    - "historical_moves.expected_range"
+    # v2.3: News Age Check
+    - "news_age_check.concerns"
+    # v2.3: Expectations Assessment
+    - "expectations_assessment.bar_level"
+    - "expectations_assessment.reasoning"
+    # v2.4: Bull Case Analysis (steel-manned)
+    - "bull_case_analysis.summary"
+    - "bull_case_analysis.arguments[].argument"
+    - "bull_case_analysis.arguments[].evidence"
+    - "bull_case_analysis.strongest_argument"
+    - "bull_case_analysis.conditions_where_bull_wins"
+    # v2.5: Base Case Analysis (range-bound/flat)
+    - "base_case_analysis.summary"
+    - "base_case_analysis.arguments[].argument"
+    - "base_case_analysis.arguments[].evidence"
+    - "base_case_analysis.strongest_argument"
+    - "base_case_analysis.trading_implications"
+    # v2.3: Bear Case Analysis (steel-manned)
+    - "bear_case_analysis.summary"
+    - "bear_case_analysis.arguments[].argument"
+    - "bear_case_analysis.arguments[].evidence"
+    - "bear_case_analysis.strongest_argument"
+    - "bear_case_analysis.why_bull_wins"
+    # v2.3: Bias Check
+    - "bias_check.biases_detected[].bias"
+    - "bias_check.biases_detected[].manifestation"
+    - "bias_check.countermeasures_applied[].rule"
+    - "bias_check.countermeasures_applied[].mantra"
+    # v2.3: Falsification
+    - "falsification.conditions[].condition"
+    - "falsification.conditions[].current_status"
+    # v2.3: Meta Learning
+    - "meta_learning.patterns_applied[].pattern"
+    - "meta_learning.rules_tested[].rule"
+    - "meta_learning.new_learning"
+    # Steel Man Cases
+    - "steel_man.bear_case"
+    - "steel_man.bull_case"
+    # Recent Developments
+    - "recent_developments[].event"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+    - "ticker"
+    - "earnings_date"
+
+stock-analysis:
+  extract_fields:
+    # Phase 0.5: Data Quality
+    - "data_quality.concerns"
+    - "data_quality.recommendations"
+    # Phase 1: Catalyst
+    - "catalyst.description"
+    - "catalyst.type"
+    # Phase 1.5: News Age Check
+    - "news_age_check.concerns"
+    # Phase 2: Market Environment
+    - "market_environment.regime"
+    - "market_environment.sector"
+    # Phase 2.5: Post-Mortem
+    - "post_mortem.accuracy_summary"
+    - "post_mortem.lessons_learned"
+    # Phase 3: Technical Analysis
+    - "technical.patterns.pattern_identified"
+    # Phase 5: Sentiment
+    - "sentiment.analyst.recent_changes"
+    # Phase 5.5: Expectations Assessment
+    - "expectations_assessment.bar_level"
+    - "expectations_assessment.reasoning"
+    # v2.4: Bull Case Analysis (steel-manned)
+    - "bull_case_analysis.summary"
+    - "bull_case_analysis.arguments[].argument"
+    - "bull_case_analysis.arguments[].evidence"
+    - "bull_case_analysis.strongest_argument"
+    - "bull_case_analysis.conditions_where_bull_wins"
+    # v2.5: Base Case Analysis (range-bound/flat)
+    - "base_case_analysis.summary"
+    - "base_case_analysis.arguments[].argument"
+    - "base_case_analysis.arguments[].evidence"
+    - "base_case_analysis.strongest_argument"
+    - "base_case_analysis.trading_implications"
+    # v2.3: Bear Case Analysis (steel-manned)
+    - "bear_case_analysis.summary"
+    - "bear_case_analysis.arguments[].argument"
+    - "bear_case_analysis.arguments[].evidence"
+    - "bear_case_analysis.strongest_argument"
+    - "bear_case_analysis.why_bull_wins"
+    # v2.3: Threat Assessment
+    - "threat_assessment.structural_threats[].threat"
+    - "threat_assessment.structural_threats[].moat_erosion"
+    - "threat_assessment.cyclical_risks[].risk"
+    - "threat_assessment.summary"
+    # v2.3: Thesis Reversal
+    - "thesis_reversal.would_change_thesis"
+    - "thesis_reversal.reversal_triggers"
+    # Phase 6: Scenarios (4 scenarios)
+    - "scenarios.bull_case.description"
+    - "scenarios.bull_case.key_driver"
+    - "scenarios.base_case.description"
+    - "scenarios.base_case.key_driver"
+    - "scenarios.bear_case.description"
+    - "scenarios.bear_case.key_driver"
+    - "scenarios.disaster_case.description"
+    - "scenarios.disaster_case.key_driver"
+    # v2.3: Bias Check with countermeasures
+    - "bias_check.biases_detected[].bias"
+    - "bias_check.biases_detected[].manifestation"
+    - "bias_check.biases_detected[].countermeasure.rule"
+    - "bias_check.biases_detected[].countermeasure.mantra"
+    - "bias_check.pre_exit_gate.thesis_intact"
+    - "bias_check.pre_exit_gate.catalyst_pending"
+    - "bias_check.pre_exit_gate.gate_result"
+    - "bias_check.countermeasures_applied[].rule"
+    - "bias_check.countermeasures_applied[].result"
+    # v2.3: Do Nothing Gate
+    - "do_nothing_gate.pass"
+    - "do_nothing_gate.pass_reasoning"
+    - "do_nothing_gate.criteria.ev_positive"
+    - "do_nothing_gate.criteria.confidence_above_60"
+    - "do_nothing_gate.criteria.rr_above_2"
+    - "do_nothing_gate.criteria.edge_exists"
+    # v2.3: Falsification
+    - "falsification.conditions[].condition"
+    - "falsification.conditions[].threshold"
+    - "falsification.conditions[].current_status"
+    # v2.3: Alert Levels
+    - "alert_levels.warning_triggers"
+    - "alert_levels.exit_triggers"
+    # v2.3: Alternative Strategies
+    - "alternative_strategies[].strategy"
+    - "alternative_strategies[].why_not_chosen"
+    # v2.3: Trade Plan
+    - "trade_plan.entry_criteria"
+    - "trade_plan.exit_criteria"
+    - "trade_plan.position_sizing_rationale"
+    # v2.3: Summary
+    - "summary.thesis_summary"
+    - "summary.key_risk"
+    - "summary.action"
+    # v2.3: Meta Learning
+    - "meta_learning.patterns_applied[].pattern"
+    - "meta_learning.patterns_applied[].outcome"
+    - "meta_learning.rules_tested[].rule"
+    - "meta_learning.rules_tested[].validation_status"
+    - "meta_learning.new_learning.learning"
+    - "meta_learning.new_learning.validation_criteria"
+    # Legacy fields
+    - "rationale"
+    - "watchlist_trigger"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+    - "ticker"
+
+trade-journal:
+  extract_fields:
+    # v2.1: Pre-Trade Checklist
+    - "pre_trade_checklist.analysis_file"
+    - "pre_trade_checklist.do_nothing_gate_result"
+    - "pre_trade_checklist.biases_flagged"
+    # Thesis
+    - "thesis.summary"
+    - "thesis.edge"
+    - "thesis.catalyst"
+    # Execution
+    - "execution.entry_rationale"
+    - "execution.exit_rationale"
+    # v2.1: Psychological State
+    - "psychological_state.entry.overall_state"
+    - "psychological_state.entry.notes"
+    - "psychological_state.exit.overall_state"
+    - "psychological_state.exit.notes"
+    # v2.1: Decision Quality
+    - "decision_quality.entry.grade"
+    - "decision_quality.entry.what_would_make_A"
+    - "decision_quality.exit.grade"
+    - "decision_quality.overall_grade"
+    - "decision_quality.overall_reasoning"
+    # v2.1: Loss Aversion Check (pre-exit gate)
+    - "loss_aversion_check.thesis_intact"
+    - "loss_aversion_check.catalyst_pending"
+    - "loss_aversion_check.exit_reason"
+    - "loss_aversion_check.gate_result"
+    # v2.1: Real-time notes
+    - "during_trade.real_time_notes[].thought"
+    - "during_trade.real_time_notes[].action_taken"
+    # Review
+    - "review.what_worked[]"
+    - "review.what_failed[]"
+    - "review.lessons[]"
+    - "review.biases_detected[].bias"
+    - "review.biases_detected[].impact"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+post-trade-review:
+  extract_fields:
+    # Analysis
+    - "analysis.outcome_vs_thesis"
+    - "analysis.execution_quality"
+    # v2.1: Data Source Effectiveness
+    - "data_source_effectiveness[].source"
+    - "data_source_effectiveness[].actual_predictive"
+    - "data_source_effectiveness[].adjust"
+    - "data_source_effectiveness_summary"
+    # Bias Review with costs
+    - "bias_review[].bias"
+    - "bias_review[].manifestation"
+    - "bias_review[].estimated_cost"
+    # v2.1: Countermeasures Needed
+    - "countermeasures_needed[].bias_type"
+    - "countermeasures_needed[].rule"
+    - "countermeasures_needed[].implementation"
+    - "countermeasures_needed[].checklist_addition"
+    - "countermeasures_needed[].mantra"
+    # Lessons
+    - "lessons[].lesson"
+    - "lessons[].category"
+    - "lessons[].action"
+    # v2.1: Rule Validation
+    - "rule_validation.rule"
+    - "rule_validation.status"
+    - "rule_validation.validation_criteria"
+    - "rule_validation.occurrences_tested"
+    # v2.1: Comparison to Similar Trades
+    - "comparison_to_similar_trades[].past_trade"
+    - "comparison_to_similar_trades[].similarity"
+    - "comparison_to_similar_trades[].lesson_applied"
+    - "comparison_to_similar_trades_summary"
+    # Framework updates
+    - "framework_updates[].update"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+research-analysis:
+  extract_fields:
+    # Research question and thesis
+    - "research_question"
+    - "thesis.statement"
+    - "thesis.reasoning"
+    - "thesis.confidence_pct"
+    # Supporting arguments
+    - "supporting_arguments[].argument"
+    - "supporting_arguments[].evidence"
+    - "supporting_arguments[].source"
+    # v2.1: Counter-Thesis (steel-manned)
+    - "counter_thesis.statement"
+    - "counter_thesis.arguments[].argument"
+    - "counter_thesis.arguments[].evidence"
+    - "counter_thesis.strength"
+    - "counter_thesis.why_thesis_wins"
+    - "counter_thesis.conditions_where_counter_wins"
+    # v2.1: Bias Check
+    - "bias_check.confirmation_bias.checked"
+    - "bias_check.confirmation_bias.notes"
+    - "bias_check.recency_bias.checked"
+    - "bias_check.recency_bias.notes"
+    - "bias_check.overconfidence.checked"
+    - "bias_check.overconfidence.notes"
+    - "bias_check.anchoring.checked"
+    - "bias_check.anchoring.notes"
+    - "bias_check.summary"
+    # Sources
+    - "sources[].source"
+    - "sources[].key_finding"
+    - "sources[].reliability"
+    # Implications
+    - "implications.beneficiaries[].ticker"
+    - "implications.beneficiaries[].reason"
+    - "implications.losers[].ticker"
+    - "implications.losers[].reason"
+    # Legacy fields
+    - "key_finding"
+    - "thesis"
+    - "data_points[].quote"
+    - "data_points[].implication"
+    - "risks[].risk"
+    - "risks[].mitigation"
+    - "implications[].implication"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+watchlist:
+  extract_fields:
+    # v2.1: Thesis with reasoning
+    - "thesis.summary"
+    - "thesis.reasoning"
+    - "thesis.key_catalyst"
+    - "thesis.why_not_now"
+    # v2.1: Conviction
+    - "conviction.level"
+    - "conviction.score"
+    - "conviction.rationale"
+    - "conviction.conditions_to_increase[].condition"
+    - "conviction.conditions_to_decrease[].condition"
+    # v2.1: Analysis Quality Check
+    - "analysis_quality_check.do_nothing_gate_result"
+    - "analysis_quality_check.bear_case_considered"
+    - "analysis_quality_check.bias_check_completed"
+    - "analysis_quality_check.ev_estimate"
+    # Triggers
+    - "entry_trigger.primary"
+    - "entry_trigger.alternatives[].trigger"
+    - "entry_trigger.alternatives[].rationale"
+    # Invalidation
+    - "invalidation.price"
+    - "invalidation.condition"
+    - "invalidation.thesis_broken_if"
+    # Resolution
+    - "resolution.outcome"
+    - "resolution.lesson_learned"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+strategy:
+  extract_fields:
+    - "overview.description"
+    - "edge_source"
+    - "entry_rules[].rule"
+    - "exit_rules[].rule"
+    - "known_weaknesses[].weakness"
+    - "known_weaknesses[].countermeasure"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+learning:
+  extract_fields:
+    - "pattern.description"
+    - "pattern.behavior"
+    - "root_cause.analysis"
+    - "countermeasure.rule"
+    - "countermeasure.implementation"
+    - "countermeasure.checklist"
+    - "countermeasure.mantra"
+    - "evidence.observations[]"
+    # v2.1: Validation tracking
+    - "validation.status"
+    - "validation.criteria"
+    - "validation.occurrences"
+    - "validation.results"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"
+
+ticker-profile:
+  extract_fields:
+    # Company info
+    - "company.description"
+    - "company.business_model"
+    - "company.key_competitors"
+    # v2.1: Analysis Track Record
+    - "analysis_track_record.track_record_summary"
+    - "analysis_track_record.prediction_accuracy.direction.accuracy_pct"
+    - "analysis_track_record.prediction_accuracy.magnitude.accuracy_pct"
+    - "analysis_track_record.prediction_accuracy.catalyst.accuracy_pct"
+    - "analysis_track_record.recent_analyses[].recommendation"
+    - "analysis_track_record.recent_analyses[].outcome"
+    - "analysis_track_record.recent_analyses[].grade"
+    # Trading patterns
+    - "trading_patterns.tendencies"
+    - "trading_patterns.key_learnings"
+    # v2.1: Bias History
+    - "bias_history.common_biases[].bias"
+    - "bias_history.common_biases[].occurrences"
+    - "bias_history.common_biases[].total_cost"
+    - "bias_history.common_biases[].countermeasure"
+    - "bias_history.common_biases[].effective"
+    - "bias_history.most_costly_bias"
+    - "bias_history.most_frequent_bias"
+    - "bias_history.bias_summary"
+    # v2.1: Known Risks
+    - "known_risks.structural[].risk"
+    - "known_risks.structural[].description"
+    - "known_risks.structural[].moat_erosion"
+    - "known_risks.cyclical[].risk"
+    - "known_risks.cyclical[].cycle_phase"
+    - "known_risks.execution[].risk"
+    - "known_risks.risk_summary"
+    - "known_risks.abandon_thesis_if"
+    # v2.1: Learned Patterns
+    - "learned_patterns[].pattern"
+    - "learned_patterns[].description"
+    - "learned_patterns[].trigger_conditions"
+    - "learned_patterns[].expected_outcome"
+    - "learned_patterns[].success_rate_pct"
+    - "learned_patterns[].source_trades"
+    # Your edge
+    - "your_edge.understanding"
+    - "your_edge.reliable_signals[].signal"
+    - "your_edge.reliable_signals[].accuracy_pct"
+    - "your_edge.mistakes_to_avoid[].mistake"
+    - "your_edge.mistakes_to_avoid[].lesson"
+    # Legacy fields
+    - "what_works[]"
+    - "what_to_avoid[]"
+    - "watch_out_for[].risk"
+    - "notes[].note"
+  skip_fields:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "_indexing"

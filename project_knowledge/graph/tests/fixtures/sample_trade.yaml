@@ -1,0 +1,43 @@
+_meta:
+  id: TJ-NVDA-20251121-001
+  doc_type: trade-journal
+  ticker: NVDA
+  date: 2025-11-21
+
+ticker: NVDA
+trade_date: 2025-11-21
+
+thesis:
+  summary: Long NVDA into earnings on strong data center demand signals
+  edge: Hyperscaler CapEx beats indicate stronger-than-expected AI infrastructure spend
+  catalyst: Q4 earnings report with Blackwell guidance
+
+execution:
+  entry_date: 2025-11-18
+  entry_price: 145.50
+  entry_rationale: Technical support held, IV reasonable
+  position_size_pct: 3.0
+  structure: shares
+  exit_date: 2025-11-22
+  exit_price: 158.25
+  exit_rationale: Target reached post-earnings gap
+
+results:
+  pnl_pct: 8.76
+  pnl_dollars: 3825
+  holding_days: 4
+  outcome: win
+
+review:
+  what_worked:
+    - Customer demand analysis correctly predicted beat magnitude
+    - Entry timing near technical support
+    - Position sizing appropriate for event risk
+  what_failed:
+    - Could have held longer for full move
+  lessons:
+    - Hyperscaler CapEx is leading indicator for data center names
+    - Post-earnings continuation often exceeds initial gap
+  biases_detected:
+    - bias: disposition-effect
+      impact: Sold too early, left 5% on table

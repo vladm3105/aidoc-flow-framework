@@ -1,0 +1,159 @@
+# Sections to embed, by document type
+# Sections not listed are skipped
+
+earnings-analysis:
+  sections:
+    - path: "phase1_preparation"
+      label: "Preparation"
+    - path: "phase2_fundamentals.customer_demand"
+      label: "Customer Demand"
+    - path: "phase2_fundamentals.competitive_context"
+      label: "Competitive Context"
+    - path: "phase2_fundamentals.business_performance"
+      label: "Business Performance"
+    - path: "phase3_technicals"
+      label: "Technical Analysis"
+    - path: "phase4_trade_structure"
+      label: "Trade Structure"
+    - path: "phase5_risk_management"
+      label: "Risk Management"
+    - path: "thesis"
+      label: "Thesis"
+    - path: "steel_man"
+      label: "Steel Man Arguments"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "ticker"
+    - "earnings_date"
+
+stock-analysis:
+  sections:
+    - path: "thesis"
+      label: "Thesis"
+    - path: "catalysts"
+      label: "Catalysts"
+    - path: "risks"
+      label: "Risks"
+    - path: "technicals"
+      label: "Technical Analysis"
+    - path: "fundamentals"
+      label: "Fundamentals"
+    - path: "competitive_position"
+      label: "Competitive Position"
+    - path: "sentiment"
+      label: "Sentiment"
+    - path: "what_is_priced_in"
+      label: "What Is Priced In"
+    - path: "bias_checks"
+      label: "Bias Checks"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+    - "ticker"
+
+trade-journal:
+  sections:
+    - path: "thesis"
+      label: "Thesis"
+    - path: "execution"
+      label: "Execution"
+    - path: "results"
+      label: "Results"
+    - path: "review"
+      label: "Review"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+
+post-trade-review:
+  sections:
+    - path: "analysis"
+      label: "Analysis"
+    - path: "lessons"
+      label: "Lessons"
+    - path: "framework_updates"
+      label: "Framework Updates"
+    - path: "bias_review"
+      label: "Bias Review"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+
+research-analysis:
+  sections:
+    - path: "thesis"
+      label: "Thesis"
+    - path: "findings"
+      label: "Findings"
+    - path: "data_points"
+      label: "Data Points"
+    - path: "implications"
+      label: "Implications"
+    - path: "risks"
+      label: "Risks"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+
+strategy:
+  sections:
+    - path: "overview"
+      label: "Overview"
+    - path: "edge_source"
+      label: "Edge Source"
+    - path: "entry_rules"
+      label: "Entry Rules"
+    - path: "exit_rules"
+      label: "Exit Rules"
+    - path: "risk_management"
+      label: "Risk Management"
+    - path: "known_weaknesses"
+      label: "Known Weaknesses"
+    - path: "performance"
+      label: "Performance"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+
+learning:
+  sections:
+    - path: "pattern"
+      label: "Pattern"
+    - path: "root_cause"
+      label: "Root Cause"
+    - path: "countermeasure"
+      label: "Countermeasure"
+    - path: "evidence"
+      label: "Evidence"
+    - path: "application"
+      label: "Application"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"
+
+ticker-profile:
+  sections:
+    - path: "company"
+      label: "Company Overview"
+    - path: "what_works"
+      label: "What Works"
+    - path: "what_to_avoid"
+      label: "What to Avoid"
+    - path: "watch_out_for"
+      label: "Watch Out For"
+    - path: "trading_patterns"
+      label: "Trading Patterns"
+    - path: "notes"
+      label: "Notes"
+  skip:
+    - "_meta"
+    - "_graph"
+    - "_links"

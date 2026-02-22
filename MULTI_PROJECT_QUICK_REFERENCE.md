@@ -14,6 +14,47 @@
 
 ---
 
+## Project Knowledge Base (RAG + Graph)
+
+Use the standalone package in this framework:
+
+### Option A: File-only mode (no DB runtime)
+
+Use direct file workflows when retrieval/indexing is not required.
+
+```bash
+# Keep knowledge in docs/ (or project-specific folders)
+# Use regular file search/read workflows
+# No project_knowledge DB or MCP startup required
+```
+
+### Option B: Indexed mode (RAG + Graph + MCP)
+
+Use this mode when you need semantic retrieval, graph context, and reusable knowledge tools.
+
+Optional alternative: use `framework_rags` as a shared RAG runtime instead of built-in project RAG when needed (see `framework_rags/README.md`).
+
+```bash
+cd /opt/data/docs_flow_framework/project_knowledge
+
+# 1) Configure environment
+cp .env.example .env
+
+# 2) Start databases
+docker compose -f docker-compose.db.yml --env-file .env up -d
+
+# 3) Start MCP server
+python -m project_knowledge.mcp.server
+
+# 4) Ingest documents
+python project_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+
+# 5) Run pilot validation
+python project_knowledge/scripts/pilot_validate.py
+```
+
+---
+
 ## Setup New Project
 
 ```bash
@@ -495,4 +536,4 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ---
 
-**Quick Reference Version**: 2.1 (2026-02-17T00:00:00)
+**Quick Reference Version**: 2.2 (2026-02-22T00:00:00)

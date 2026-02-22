@@ -1,0 +1,39 @@
+_meta:
+  id: RA-DATACENTER-2025Q4
+  doc_type: research-analysis
+  date: 2025-11-15
+
+key_finding: Hyperscaler AI infrastructure spending accelerating into 2026
+
+thesis: Data center semiconductor demand will exceed consensus estimates through H1 2026
+
+data_points:
+  - source: Microsoft Q3 earnings call
+    quote: "AI infrastructure spend increasing 50% QoQ"
+    implication: Sustained demand for NVDA, AMD data center GPUs
+  - source: Meta infrastructure announcement
+    quote: "$40B committed to AI infrastructure buildout"
+    implication: Multi-year demand visibility for GPU suppliers
+  - source: Amazon AWS re:Invent preview
+    quote: "Custom AI chip capacity doubling by mid-2026"
+    implication: Both custom silicon and GPU demand growing in parallel
+
+risks:
+  - risk: Export controls expansion
+    probability: medium
+    mitigation: Diversification to non-China markets accelerating
+  - risk: AI spending pullback if ROI disappoints
+    probability: low
+    mitigation: Early productivity gains supporting continued investment
+
+implications:
+  - implication: NVDA likely to exceed FY2026 guidance
+    confidence: high
+    tickers:
+      - NVDA
+      - AMD
+  - implication: Server DRAM/NAND demand stronger than expected
+    confidence: medium
+    tickers:
+      - MU
+      - WDC

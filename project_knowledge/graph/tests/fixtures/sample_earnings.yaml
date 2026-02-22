@@ -1,0 +1,69 @@
+_meta:
+  id: EA-NVDA-Q4-2025
+  doc_type: earnings-analysis
+  ticker: NVDA
+  date: 2025-11-20
+  quarter: Q4-FY2025
+
+ticker: NVDA
+earnings_date: 2025-11-20
+earnings_time: AMC
+
+phase1_preparation:
+  key_questions:
+    - Can NVDA maintain data center growth above 100% YoY?
+    - What is the Blackwell ramp trajectory?
+    - Is gaming recovery sustainable?
+  beat_history:
+    quarters_beat: 8
+    average_surprise_pct: 12.5
+  current_estimates:
+    eps_consensus: 0.74
+    revenue_consensus: 32500000000
+
+phase2_fundamentals:
+  customer_demand:
+    customers:
+      - name: Microsoft
+        key_quote: "Azure AI infrastructure spending increased 50% QoQ"
+      - name: Meta
+        key_quote: "Committed to $40B AI infrastructure buildout"
+  competitive_context:
+    vs_competitors: "AMD gaining share but NVDA maintains 80%+ data center GPU market"
+    market_position: "Dominant in training, strong in inference"
+  business_performance:
+    guidance_summary: "Company guided Q4 revenue above street estimates"
+
+phase3_technicals:
+  support_resistance:
+    - price: 140
+      type: support
+      strength: strong
+    - price: 160
+      type: resistance
+      strength: moderate
+
+phase4_trade_structure:
+  thesis:
+    detailed: "Data center demand remains robust driven by hyperscaler AI buildout"
+
+phase5_risk_management:
+  risks:
+    - risk: Export controls to China could impact 10-15% of revenue
+      probability: medium
+      mitigation: Geographic diversification underway
+    - risk: Blackwell ramp delays
+      probability: low
+      mitigation: Strong Hopper demand provides buffer
+
+steel_man:
+  bear_case: "Valuation stretched at 35x forward P/E, AI spending could slow"
+  bull_case: "Blackwell cycle just beginning, inference TAM expanding rapidly"
+
+recent_developments:
+  - event: Microsoft Azure spending beat
+    date: 2025-10-25
+    impact: positive
+  - event: Meta AI infrastructure commitment
+    date: 2025-10-27
+    impact: positive
