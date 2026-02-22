@@ -4,7 +4,7 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-02-17T00:00:00
+**Last Updated**: 2026-02-22T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
@@ -27,6 +27,8 @@ This repository provides a **unified SDD framework** with scalable depth:
 | `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
+| `project_knowledge/` | Standalone RAG + Graph knowledge base package |
+| `framework_rags/` | Shared RAG tools and reference utilities |
 
 **See**: [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) for detailed layer mappings.
 
@@ -52,6 +54,8 @@ This repository provides a **unified SDD framework** with scalable depth:
 │   │   └── docs/                     # ADRs, QA docs
 │   │
 │   ├── scripts/                      # Validation and automation tools
+│   ├── project_knowledge/            # Standalone RAG + Graph + MCP package
+│   ├── framework_rags/               # Shared rag_tools and reference services
 │   └── .claude/
 │       ├── skills/                   # Shared skills (50+)
 │       ├── commands/                 # Shared slash commands
@@ -98,6 +102,44 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 ---
 
 ## Setup Procedures
+
+### 0. Project Knowledge Base Setup (Optional, Shared Runtime)
+
+Use when the project needs retrieval and graph-backed context:
+
+Choose one mode:
+
+- **File-only mode**
+    - Store and manage knowledge as files only.
+    - No database services, no MCP runtime required.
+    - Use this as the default for lightweight/MVP workflows.
+
+- **Indexed mode (RAG + Graph + MCP)**
+    - Ingest files into PostgreSQL (`pgvector`) and Neo4j.
+    - Enable semantic retrieval and graph relationship queries.
+    - Use when the project requires reusable knowledge context across runs.
+
+```bash
+cd /opt/data/docs_flow_framework/project_knowledge
+
+# Configure env
+cp .env.example .env
+
+# Start PostgreSQL+pgvector and Neo4j
+docker compose -f docker-compose.db.yml --env-file .env up -d
+
+# Start MCP server
+python -m project_knowledge.mcp.server
+
+# Optional: ingest docs
+python project_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+```
+
+Core docs:
+- `project_knowledge/README.md`
+- `project_knowledge/mcp/README.md`
+
+---
 
 ### 1. Framework Prerequisites
 

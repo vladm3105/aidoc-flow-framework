@@ -15,6 +15,14 @@ Before making any changes, read these files in order:
 3. **[PROJECT_PLAN.md](governance/PROJECT_PLAN.md) Section 2** — Current state: what is done, what is next
 4. **[governance/plans/README.md](governance/plans/README.md)** — Active implementation plans (IPLAN index)
 
+When tasks involve retrieval, MCP, or knowledge indexing, also read:
+
+5. **[project_knowledge/README.md](project_knowledge/README.md)** — Project Knowledge Base setup and operations
+
+Knowledge operation modes:
+- **File-only mode**: use direct file reads/search; no DB/MCP runtime.
+- **Indexed mode**: start `project_knowledge` DB + MCP for RAG/Graph retrieval.
+
 Do **NOT** invent process rules, naming conventions, or workflow patterns. If a rule is missing from governance docs, flag it to the human reviewer. Do not create ad-hoc rules.
 
 ---
@@ -262,6 +270,9 @@ Required frontmatter:
 | Read technical specs | [docs/core/](docs/core/) (8 specs) |
 | See execution corrections | [governance/plans/](governance/plans/) (IPLAN index) |
 | Understand Phase 1 | [GCP-COST-GUARD.md](docs/GCP-COST-GUARD.md) |
+| Run Project Knowledge Base | [project_knowledge/README.md](project_knowledge/README.md) |
+| Configure KB databases | [project_knowledge/docker-compose.db.yml](project_knowledge/docker-compose.db.yml) |
+| Use KB MCP tools | [project_knowledge/mcp/README.md](project_knowledge/mcp/README.md) |
 
 ---
 

@@ -2,6 +2,14 @@
 
 Dual-service RAG architecture for comprehensive documentation retrieval.
 
+## Optional Usage
+
+These services are optional for projects using this framework.
+
+- Use `framework_rags` when you want a shared, standalone RAG runtime managed by this framework.
+- Use your project's built-in RAG/graph stack when it already meets your needs.
+- You can choose `framework_rags` instead of built-in RAG if you need a separate runtime, different retrieval behavior, or centralized operations across projects.
+
 ## Services
 
 | Service | Port | Purpose |

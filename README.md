@@ -25,6 +25,8 @@ This repository provides a **unified SDD framework** with three depth variants t
 | `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
+| `project_knowledge/` | Standalone RAG + Graph knowledge base package for cross-project retrieval |
+| `framework_rags/` | Shared RAG tooling and reference implementations |
 
 ### Quick Comparison
 
@@ -55,6 +57,57 @@ This repository provides a **unified SDD framework** with three depth variants t
 - Need complete audit trails and bidirectional traceability
 - Multiple teams working on complex systems
 - Formal architecture decisions required (ADRs)
+
+---
+
+## Project Knowledge Base
+
+The framework includes a standalone knowledge base package at `project_knowledge/` with:
+
+- RAG module (PostgreSQL + pgvector)
+- Graph module (Neo4j entity/relationship layer)
+- Unified MCP server (`kb_*` tool contracts)
+- Ingestion, backfill, and pilot validation scripts
+
+### Operating Modes
+
+Use one of two modes depending on project needs:
+
+1. **File-only mode (no databases)**
+  - Keep documents in project folders and use direct file reads/search.
+  - Best for lightweight workflows and early-stage projects.
+  - No `project_knowledge` runtime services required.
+
+2. **Indexed mode (RAG + Graph + MCP)**
+  - Ingest files into PostgreSQL (`pgvector`) and Neo4j for semantic retrieval and relationship context.
+  - Best for cross-document retrieval, agent memory, and reusable knowledge queries.
+  - Requires `project_knowledge` databases and MCP server.
+
+Optional alternative: `framework_rags` provides an additional shared RAG runtime and may be used instead of built-in project RAG when needed. See `framework_rags/README.md`.
+
+### Database Setup (Docker)
+
+```bash
+cd /opt/data/docs_flow_framework/project_knowledge
+cp .env.example .env
+docker compose -f docker-compose.db.yml --env-file .env up -d
+```
+
+### Key Entrypoints
+
+```bash
+# MCP server
+python -m project_knowledge.mcp.server
+
+# Folder ingestion
+python project_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+
+# Legacy backfill
+python project_knowledge/scripts/backfill_legacy.py --source /path/to/legacy --dry-run
+
+# Pilot validation
+python project_knowledge/scripts/pilot_validate.py
+```
 
 ---
 
