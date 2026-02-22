@@ -1,0 +1,79 @@
+# Ticker aliases (map variations to canonical symbol)
+tickers:
+  GOOG: GOOGL
+  BRK.A: BRK-B
+  FB: META
+
+# Company name to ticker mappings
+companies:
+  "Alphabet": {ticker: GOOGL}
+  "Alphabet Inc": {ticker: GOOGL}
+  "Google": {ticker: GOOGL}
+  "Meta Platforms": {ticker: META}
+  "Meta": {ticker: META}
+  "Facebook": {ticker: META}
+  "NVIDIA": {ticker: NVDA}
+  "NVIDIA Corporation": {ticker: NVDA}
+  "Nvidia": {ticker: NVDA}
+  "Apple": {ticker: AAPL}
+  "Apple Inc": {ticker: AAPL}
+  "Microsoft": {ticker: MSFT}
+  "Microsoft Corporation": {ticker: MSFT}
+  "Amazon": {ticker: AMZN}
+  "Amazon.com": {ticker: AMZN}
+  "Tesla": {ticker: TSLA}
+  "Tesla Inc": {ticker: TSLA}
+  "Advanced Micro Devices": {ticker: AMD}
+  "AMD": {ticker: AMD}
+  "Netflix": {ticker: NFLX}
+  "Netflix Inc": {ticker: NFLX}
+  "Broadcom": {ticker: AVGO}
+  "Broadcom Inc": {ticker: AVGO}
+  "Intel": {ticker: INTC}
+  "Intel Corporation": {ticker: INTC}
+  "Qualcomm": {ticker: QCOM}
+  "Qualcomm Inc": {ticker: QCOM}
+  "Salesforce": {ticker: CRM}
+  "Salesforce Inc": {ticker: CRM}
+  "Adobe": {ticker: ADBE}
+  "Adobe Inc": {ticker: ADBE}
+  "Oracle": {ticker: ORCL}
+  "Oracle Corporation": {ticker: ORCL}
+  "Palantir": {ticker: PLTR}
+  "Palantir Technologies": {ticker: PLTR}
+
+# Pattern name canonicalization
+patterns:
+  "gap up": "gap-and-go"
+  "gap down": "gap-and-fade"
+  "earnings beat": "earnings-momentum"
+  "post-earnings drift": "earnings-drift"
+  "PEAD": "earnings-drift"
+  "breakout": "breakout"
+  "breakdown": "breakdown"
+  "mean reversion": "mean-reversion"
+  "oversold bounce": "mean-reversion"
+  "overbought pullback": "mean-reversion"
+
+# Bias name canonicalization
+biases:
+  "loss aversion": "loss-aversion"
+  "confirmation bias": "confirmation-bias"
+  "recency bias": "recency-bias"
+  "anchoring": "anchoring-bias"
+  "FOMO": "fear-of-missing-out"
+  "fear of missing out": "fear-of-missing-out"
+  "overconfidence": "overconfidence-bias"
+  "hindsight bias": "hindsight-bias"
+  "sunk cost": "sunk-cost-fallacy"
+  "disposition effect": "disposition-effect"
+
+# Strategy name canonicalization
+strategies:
+  "earnings play": "earnings-momentum"
+  "breakout trade": "breakout"
+  "mean reversion": "mean-reversion"
+  "swing trade": "swing"
+  "day trade": "intraday"
+  "momentum": "momentum"
+  "trend following": "trend-following"

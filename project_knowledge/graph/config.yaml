@@ -1,0 +1,52 @@
+schema_version: "1.0.0"
+extract_version: "1.0.0"
+
+neo4j:
+  uri: "${NEO4J_URI:-bolt://localhost:7688}"
+  user: "${NEO4J_USER:-neo4j}"
+  password: "${NEO4J_PASS}"
+  database: "${NEO4J_DATABASE:-neo4j}"
+
+extraction:
+  # EXTRACT_PROVIDER allows separate LLM for entity extraction (can be faster/better than local)
+  # Falls back to LLM_PROVIDER for backwards compatibility
+  default_extractor: "${EXTRACT_PROVIDER:-${LLM_PROVIDER:-ollama}}"
+  fallback_chain:
+    - ollama
+    - openrouter
+  timeout_seconds: "${EXTRACT_TIMEOUT_SECONDS:-60}"
+
+  # Confidence thresholds
+  commit_threshold: "${EXTRACT_COMMIT_THRESHOLD:-0.7}"
+  flag_threshold: "${EXTRACT_FLAG_THRESHOLD:-0.5}"
+  skip_threshold: "${EXTRACT_FLAG_THRESHOLD:-0.5}"
+
+  # Unified LLM config - provider selected by LLM_PROVIDER
+  ollama:
+    base_url: "${LLM_BASE_URL:-http://localhost:11434}"
+    model: "${LLM_MODEL:-qwen3:8b}"
+
+  # Generation options for LLM calls
+  generation:
+    temperature: "${LLM_TEMPERATURE:-0.1}"
+    num_predict: "${LLM_NUM_PREDICT:-2000}"
+    max_tokens: "${LLM_MAX_TOKENS:-2000}"
+    top_p: "${LLM_TOP_P:-0.9}"
+    top_k: "${LLM_TOP_K:-40}"
+
+  openrouter:
+    api_key: "${OPENROUTER_API_KEY:-${LLM_API_KEY}}"
+    model: "${LLM_MODEL:-anthropic/claude-3-5-sonnet}"
+    fallback_model: "anthropic/claude-3-haiku"
+
+  openai:
+    api_key: "${OPENAI_API_KEY:-${LLM_API_KEY}}"
+    model: "${LLM_MODEL:-gpt-4o-mini}"
+
+  claude_api:
+    api_key: "${LLM_API_KEY}"
+    model: "${LLM_MODEL:-claude-sonnet-4-20250514}"
+
+logging:
+  extraction_log: "logs/graph_extractions.jsonl"
+  pending_commits: "logs/pending_commits.jsonl"

@@ -8,9 +8,16 @@ Routes queries to project_knowledge contract types based on query intent:
 
 import argparse
 import re
+import sys
+from pathlib import Path
 from dataclasses import asdict
 from dataclasses import dataclass
 from enum import Enum
+
+if "project_knowledge" not in sys.modules:
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
 
 from project_knowledge.models.contracts import GraphContextRequest, SearchRequest
 
