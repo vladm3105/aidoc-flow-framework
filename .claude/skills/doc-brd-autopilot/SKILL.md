@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.5"
-  last_updated: "2026-02-10T22:30:00"
+  version: "2.8"
+  last_updated: "2026-02-25T11:50:00"
 ---
 
 # doc-brd-autopilot
@@ -64,7 +64,9 @@ BRD has no upstream document type. Smart detection works differently:
 
 | Input | Detected As | Action |
 |-------|-------------|--------|
-| `BRD-NN` | Self type | Review existing BRD document |
+| `BRD-NN` (exists) | Self type | Review & Fix existing BRD |
+| `BRD-NN` (missing) | Self type | Search refs → Generate BRD |
+| `BRD-NN BRD-MM ...` | Multiple BRDs | Process each (chunked by 3) |
 | `docs/00_REF/...` | Reference docs | Generate BRD from reference |
 | `REF/...` | Reference docs | Generate BRD from reference |
 | `--prompt "..."` | User prompt | Generate BRD from prompt |
@@ -72,16 +74,29 @@ BRD has no upstream document type. Smart detection works differently:
 ### Detection Algorithm
 
 ```
-1. Parse input: Determine input type
-2. Determine action:
-   - IF input matches "BRD-NN": Review Mode
-   - ELSE IF input is a reference path: Generate Mode
-   - ELSE IF input is --prompt: Generate Mode
-   - ELSE: Error (invalid input for this autopilot)
-3. For Review Mode:
-   - Check: Does BRD-{NN} exist in docs/01_BRD/?
-   - IF exists: Run doc-brd-reviewer on BRD-{NN}
-   - ELSE: Error (BRD not found)
+1. Parse input: Determine input type and count
+2. IF input is reference path or --prompt:
+   - Run Generate Mode (Phase 1-5)
+3. IF input matches "BRD-NN" pattern (single or multiple):
+   - Process in chunks of 3 (max parallel)
+   - For each BRD-NN:
+     a. Check: Does BRD-{NN} exist in docs/01_BRD/?
+     b. IF exists:
+        - Run Review & Fix Cycle (Phase 5):
+          1. Run doc-brd-reviewer → Generate report
+          2. IF score < 90%: Run doc-brd-fixer
+          3. Re-review until score >= 90% or max_iterations (3)
+          4. Generate final PRD-Ready report
+     c. IF not exists:
+        - Search for reference docs:
+          1. Check BRD-00_index.md for module mapping
+          2. Search docs/00_REF/ for matching specs
+          3. Match by module ID (F1-F10, D1-D7) or topic name
+        - IF reference found:
+          - Run Generate Mode (Phase 1-5)
+        - ELSE:
+          - Prompt user: "No reference found for BRD-NN. Provide path or --prompt"
+4. Generate summary report for all processed BRDs
 ```
 
 ### File Existence Check
@@ -94,10 +109,14 @@ ls docs/01_BRD/BRD-{NN}_*/
 ### Examples
 
 ```bash
-# Review mode (BRD input)
-/doc-brd-autopilot BRD-01            # Reviews existing BRD-01
+# Single BRD - Review & Fix (if exists) or Generate (if missing)
+/doc-brd-autopilot BRD-01            # Reviews existing BRD-01, runs fix cycle
+/doc-brd-autopilot BRD-99            # BRD-99 missing → searches refs → generates
 
-# Generate mode (reference input)
+# Multiple BRDs - processed in chunks of 3
+/doc-brd-autopilot BRD-46 BRD-47 BRD-48 BRD-49 BRD-50   # Chunk 1: 46-48, Chunk 2: 49-50
+
+# Generate mode (explicit reference input)
 /doc-brd-autopilot docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 /doc-brd-autopilot all               # Process all reference documents
 
@@ -111,12 +130,36 @@ ls docs/01_BRD/BRD-{NN}_*/
 Input: BRD-01
 ├── Detected Type: BRD (self)
 ├── BRD Exists: Yes → docs/01_BRD/BRD-01_f1_iam/
-└── Action: REVIEW MODE - Running doc-brd-reviewer on BRD-01
+├── Action: REVIEW & FIX CYCLE
+│   ├── Step 1: Run doc-brd-reviewer → Score: 85%
+│   ├── Step 2: Score < 90% → Run doc-brd-fixer
+│   ├── Step 3: Re-review → Score: 94%
+│   └── Step 4: PASS - PRD-Ready
+└── Output: BRD-01.R_review_report_v002.md, BRD-01.F_fix_report_v001.md
 
 Input: BRD-15
 ├── Detected Type: BRD (self)
 ├── BRD Exists: No
-└── Action: ERROR - BRD-15 not found. Use reference docs or --prompt to generate.
+├── Reference Search: Found docs/00_REF/domain/D5_Reporting_Technical_Specification.md
+├── Action: GENERATE MODE - Creating BRD-15 from reference
+│   ├── Phase 1-3: Generate BRD
+│   ├── Phase 4: Validate → PRD-Ready: 88%
+│   └── Phase 5: Review & Fix → Final: 92%
+└── Output: docs/01_BRD/BRD-15_reporting/
+
+Input: BRD-99
+├── Detected Type: BRD (self)
+├── BRD Exists: No
+├── Reference Search: No matching reference found
+└── Action: PROMPT USER - "Provide reference path or use --prompt for BRD-99"
+
+Input: BRD-46 BRD-47 BRD-48 BRD-49 BRD-50
+├── Detected Type: Multiple BRDs (5)
+├── Chunking: Chunk 1 (BRD-46, 47, 48), Chunk 2 (BRD-49, 50)
+└── Processing:
+    ├── Chunk 1: All exist → Review & Fix cycle (parallel)
+    ├── Chunk 1 Complete: Summary + pause
+    └── Chunk 2: All exist → Review & Fix cycle (parallel)
 
 Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 ├── Detected Type: Reference document
@@ -228,6 +271,50 @@ Analyze available input sources to extract business requirements.
 | 2 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
 | 3 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
 | 4 | User Prompts | Interactive | Business context, objectives, constraints |
+
+#### 1.0 Determine Upstream Mode (First Step)
+
+**Check for reference documents**:
+
+1. Scan for `docs/00_REF/` or `docs-v2.0/00_REF/` folder
+2. If found, list available subfolders:
+   ```bash
+   ls -la docs/00_REF/
+   # or
+   ls -la docs-v2.0/00_REF/
+   ```
+3. If user specifies source docs from REF folder:
+   - Set `upstream_mode: "ref"`
+   - Set `upstream_ref_path` to specified subfolder(s)
+4. If not found or user creating from scratch:
+   - Set `upstream_mode: "none"` (default)
+   - Set `upstream_ref_path: null`
+
+**Prompt user if REF folder exists**:
+
+```
+Reference documents found in docs/00_REF/:
+- source_docs/ (15 files)
+- foundation/ (10 files)
+- internal_ops/ (8 files)
+
+Is this BRD derived from reference documents?
+1. No - creating from scratch (default)
+2. Yes - select reference folder(s)
+```
+
+**YAML Generation Based on Mode**:
+
+```yaml
+# If generating from REF docs:
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"
+
+# If generating from user prompt only:
+custom_fields:
+  upstream_mode: "none"
+```
 
 **Analysis Process**:
 
@@ -701,9 +788,12 @@ Iterative review and fix cycle to ensure BRD quality before completion.
 flowchart TD
     A[Phase 5 Start] --> B[Run doc-brd-reviewer]
     B --> C[Generate Review Report]
-    C --> D{Review Score >= 90?}
+    C --> V{Verify .drift_cache.json}
+    V -->|Missing| W[Create drift cache]
+    W --> D
+    V -->|Exists| D{Review Score >= 90?}
 
-    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|Yes| E[PASS - Run Output Checklist]
     D -->|No| F{Iteration < Max?}
 
     F -->|Yes| G[Run doc-brd-fixer]
@@ -715,6 +805,9 @@ flowchart TD
     F -->|No| K[Flag for Manual Review]
     K --> L[Generate Final Report with Remaining Issues]
     L --> E
+
+    E --> X[Verify Phase 5 Output Checklist]
+    X --> Y[Proceed to Phase 6]
 ```
 
 #### 5.1 Initial Review
@@ -821,6 +914,88 @@ After passing the fix cycle:
      --brd docs/01_BRD/BRD-NN_{slug}.md \
      --matrix docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md
    ```
+
+#### 5.6 Drift Cache Verification (MANDATORY)
+
+**After EVERY review cycle**, verify the drift cache file exists and is updated.
+
+```
+VERIFICATION ALGORITHM:
+=======================
+1. Check: Does .drift_cache.json exist in BRD folder?
+   - Path: docs/01_BRD/BRD-NN_{slug}/.drift_cache.json
+
+2. IF not exists:
+   - CREATE drift cache with current review data
+   - Schema version: 1.1
+   - Include: document_id, last_reviewed, reviewer_version, review_history
+
+3. IF exists:
+   - UPDATE with new review entry in review_history array
+   - Update last_reviewed timestamp
+
+4. VERIFY cache contains:
+   - [ ] schema_version: "1.1"
+   - [ ] document_id matches folder (BRD-NN)
+   - [ ] last_reviewed is current timestamp
+   - [ ] review_history includes this review's score and report version
+```
+
+**Drift Cache Schema** (minimal required fields):
+
+```json
+{
+  "schema_version": "1.1",
+  "document_id": "BRD-NN",
+  "document_version": "1.0",
+  "upstream_mode": "none",
+  "drift_detection_skipped": true,
+  "skip_reason": "upstream_mode set to none (default)",
+  "last_reviewed": "YYYY-MM-DDTHH:MM:SS",
+  "reviewer_version": "2.8",
+  "upstream_documents": {},
+  "review_history": [
+    {
+      "date": "YYYY-MM-DDTHH:MM:SS",
+      "score": NN,
+      "drift_detected": false,
+      "report_version": "vNNN",
+      "status": "PASS|FAIL|NEEDS_ATTENTION"
+    }
+  ],
+  "fix_history": []
+}
+```
+
+#### 5.7 Phase 5 Output Checklist (MANDATORY)
+
+Before proceeding to Phase 6, verify ALL outputs exist:
+
+```
+PHASE 5 OUTPUT CHECKLIST
+========================
+BRD Folder: docs/01_BRD/BRD-NN_{slug}/
+
+Required Files:
+[ ] BRD-NN.R_review_report_v001.md    (initial review)
+[ ] BRD-NN.R_review_report_vNNN.md    (final review, if iterations > 1)
+[ ] BRD-NN.F_fix_report_vNNN.md       (if fixes applied)
+[ ] .drift_cache.json                  (MANDATORY - drift detection cache)
+
+Drift Cache Verification:
+[ ] File exists
+[ ] schema_version is "1.1"
+[ ] document_id matches "BRD-NN"
+[ ] last_reviewed is current timestamp
+[ ] review_history contains entry for this review
+
+Quality Gates:
+[ ] Final review score >= 90
+[ ] No critical errors remaining
+[ ] PRD-Ready status confirmed
+```
+
+**FAILURE MODE**: If `.drift_cache.json` is missing after review, the Phase 5 cycle is INCOMPLETE. Create the drift cache before proceeding.
 
 ---
 
@@ -1579,6 +1754,9 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.8 | 2026-02-25T11:50:00 | **Drift Cache Verification**: Added mandatory drift cache verification after every review cycle (Section 5.6); Added Phase 5 Output Checklist (Section 5.7) with explicit `.drift_cache.json` verification; Updated flowchart to include verification step; Added FAILURE MODE documentation for missing drift cache. |
+| 2.7 | 2026-02-25T08:30:00 | **Detection Algorithm Fix**: Fixed 3 critical gaps: (1) BRD not found now triggers reference search + generate instead of error; (2) Review Mode now includes full Review & Fix cycle (reviewer → fixer → re-review until score >= 90%); (3) Added multi-BRD input handling with chunking (max 3 parallel). Updated Input Type Recognition table, Examples, and Action Determination Output to reflect correct behavior. |
+| 2.6 | 2026-02-24T21:30:00 | **Upstream Mode Detection**: Added Phase 1.0 to detect and prompt for upstream_mode; Auto-detects REF folder and prompts user for path selection; Generates upstream_mode and upstream_ref_path fields; Defaults to upstream_mode: "none" when no REF folder or creating from scratch |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BRD-NN) triggers review mode; Reference docs and prompts trigger generation; Special handling for Layer 1 (no upstream documents) |
 | 2.4 | 2026-02-10 | **Source Directory Update**: Changed input sources from `strategy/`, `docs/inputs/` to `docs/00_REF/` (primary), `REF/` (alternative), user prompts (fallback); **BRD Index**: Added automatic creation/update of `BRD-00_index.md` master index with Document Registry, Module Categories, Statistics; Updated all examples and CI/CD configurations |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |

@@ -15,8 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: [PRD]
-  version: "2.1"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.2"
+  last_updated: "2026-02-24T21:30:00"
 ---
 
 # doc-brd-validator
@@ -191,6 +191,31 @@ Forbidden tag patterns:
 - `@supersedes-brd: BRD-NN`
 - `@depends-brd: BRD-NN`
 
+### 8. Upstream Source Configuration Validation
+
+**YAML Frontmatter Fields**:
+
+| Field | Required | Type | Valid Values |
+|-------|----------|------|--------------|
+| `custom_fields.upstream_mode` | No | string | `"ref"`, `"none"` |
+| `custom_fields.upstream_ref_path` | Conditional | string or array | Relative path(s) |
+
+**Validation Rules**:
+
+1. If `upstream_mode` not set: Valid (defaults to `"none"`)
+2. If `upstream_mode: "none"`: `upstream_ref_path` ignored
+3. If `upstream_mode: "ref"`: `upstream_ref_path` should be set
+4. If `upstream_ref_path` set: Validate path(s) exist
+
+**Path Validation**:
+- Resolve relative path from BRD file location
+- Check directory exists
+- Warn if directory empty
+
+**Default Behavior**:
+- BRDs without `upstream_mode` are treated as `upstream_mode: "none"`
+- Drift detection is automatically skipped for these BRDs
+
 ## Error Codes
 
 | Code | Severity | Description |
@@ -228,6 +253,11 @@ Forbidden tag patterns:
 | BRD-I001 | INFO | Consider adding regulatory compliance requirements |
 | BRD-I002 | INFO | Consider adding market analysis context |
 | BRD-I003 | INFO | Consider completing Pending ADR topics before PRD creation |
+| VAL-U001 | WARNING | Invalid upstream_mode value (must be "ref" or "none") |
+| VAL-U002 | WARNING | upstream_ref_path set but upstream_mode is "none" |
+| VAL-U003 | WARNING | upstream_mode is "ref" but upstream_ref_path not set |
+| VAL-U004 | ERROR | upstream_ref_path directory not found |
+| VAL-U005 | INFO | upstream_ref_path directory is empty |
 
 ## Validation Commands
 
@@ -263,11 +293,15 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/01_BRD/BRD
    - For Selected: Verify Alternatives Overview table, Cloud Provider Comparison table
    - For N/A: Verify explicit reason provided
    - Validate element ID format (BRD.NN.32.SS)
-9. Calculate PRD-Ready Score (includes ADR completeness)
-10. Verify file naming convention
-11. Check element ID format compliance (per doc-naming)
-12. Detect deprecated patterns
-13. Generate validation report
+9. Validate upstream source configuration:
+   - Check upstream_mode value (valid: "ref", "none", or not set)
+   - If upstream_mode: "ref": Verify upstream_ref_path is set and paths exist
+   - If upstream_mode: "none": Skip upstream_ref_path validation
+10. Calculate PRD-Ready Score (includes ADR completeness)
+11. Verify file naming convention
+12. Check element ID format compliance (per doc-naming)
+13. Detect deprecated patterns
+14. Generate validation report
 
 ## Auto-Fix Actions
 
@@ -318,6 +352,7 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-24 | Added upstream source configuration validation (Section 8); Added VAL-U001 through VAL-U005 error codes; Updated workflow to include upstream_mode validation |
 | 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
 | 2.0 | 2026-02-08 | Complete rewrite: Added YAML frontmatter, doc-naming integration (BRD-E019/E020/E021), updated section structure to 18 sections, fixed file paths with numbered prefixes, added PRD-Ready score validation |
 | 1.0 | 2025-01-06 | Initial version (outdated 12-section structure) |

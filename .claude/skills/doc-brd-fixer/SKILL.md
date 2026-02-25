@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BRD, Review Report]
   downstream_artifacts: [Fixed BRD, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11"
+  version: "2.2"
+  last_updated: "2026-02-24T21:30:00"
 ---
 
 # doc-brd-fixer
@@ -372,9 +372,79 @@ Ensures traceability and cross-references are correct.
 
 ---
 
-### Phase 6: Handle Upstream Drift (Auto-Merge)
+### Phase 6: Handle Upstream Configuration
+
+Fixes upstream configuration issues before handling drift.
+
+#### 6.0 Upstream Configuration Fixes
+
+**FIX-U001: Add Missing upstream_mode**
+
+**Trigger**: BRD has no `upstream_mode` in YAML frontmatter
+
+**Fix Action**: Add `upstream_mode: "none"` to `custom_fields`
+
+```yaml
+# Before
+custom_fields:
+  artifact_type: BRD
+
+# After
+custom_fields:
+  artifact_type: BRD
+  upstream_mode: "none"
+```
+
+**FIX-U002: Suggest upstream_ref_path**
+
+**Trigger**: BRD has `@ref:` tags pointing to `00_REF/` but `upstream_mode: "none"`
+
+**Detection**:
+1. Scan BRD content for `@ref:` tags
+2. Extract referenced paths
+3. Determine common parent directory in `00_REF/`
+
+**Fix Action**: Suggest updating to `upstream_mode: "ref"` with detected path
+
+```yaml
+# Suggested fix (requires confirmation)
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"
+```
+
+**FIX-U003: Remove Invalid upstream_ref_path**
+
+**Trigger**: `upstream_mode: "none"` but `upstream_ref_path` is set
+
+**Fix Action**: Remove `upstream_ref_path` field (it's ignored anyway)
+
+```yaml
+# Before
+custom_fields:
+  upstream_mode: "none"
+  upstream_ref_path: "../../00_REF/"  # Ignored
+
+# After
+custom_fields:
+  upstream_mode: "none"
+```
+
+**Fix Codes**:
+
+| Code | Description | Auto-Fix |
+|------|-------------|----------|
+| FIX-U001 | Add upstream_mode: "none" | Yes |
+| FIX-U002 | Suggest upstream_mode: "ref" with detected path | Prompt |
+| FIX-U003 | Remove unnecessary upstream_ref_path | Yes |
+
+---
+
+### Phase 6.1: Handle Upstream Drift (Auto-Merge)
 
 Automatically merges upstream changes into the document based on change percentage thresholds.
+
+**Note**: This phase only runs when `upstream_mode: "ref"`. When `upstream_mode: "none"` (default), drift detection is skipped.
 
 **Drift Detection Workflow**:
 
@@ -942,6 +1012,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-24T21:30:00 | **Upstream Configuration Fixes**: Added Phase 6.0 for upstream_mode fixes (FIX-U001, FIX-U002, FIX-U003); Detects @ref: tags and suggests upstream_mode: "ref"; Cleans up ignored upstream_ref_path when mode is "none" |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates; Tier 2 (5-15%): auto-merge with detailed changelog; Tier 3 (>15%): archive current version and trigger regeneration; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements; Archive manifest creation; Enhanced drift cache with merge history |
 | 1.1 | 2026-02-10T14:30:00 | Added Phase 6: Handle Upstream Drift - processes REV-D001-D005 issues from reviewer Check #9; drift marker insertion; drift cache management; acknowledgment workflow |

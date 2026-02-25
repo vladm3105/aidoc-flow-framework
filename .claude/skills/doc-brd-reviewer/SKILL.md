@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.5"
-  last_updated: "2026-02-11T18:00:00"
+  version: "1.6"
+  last_updated: "2026-02-24T21:30:00"
 ---
 
 # doc-brd-reviewer
@@ -270,21 +270,22 @@ Identifies incomplete content requiring replacement.
 
 ### 5. Traceability Tags
 
-Validates `@strategy:` and cross-reference tags.
+Validates cross-reference tags and element IDs.
 
 **Scope**:
-- `@strategy: DOC-XX` tags reference valid source documents
+- `@ref:` tags reference valid documents (if upstream_mode: "ref")
 - Element IDs properly formatted
 - Cross-references consistent
+- Traceability section completeness
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-TR001 | Error | Invalid strategy reference |
+| REV-TR001 | Error | Invalid document ID in metadata |
 | REV-TR002 | Warning | Missing element ID |
 | REV-TR003 | Info | Inconsistent cross-reference format |
-| REV-TR004 | Warning | Tag format malformed |
+| REV-TR004 | Warning | Malformed parent_doc reference |
 
 ---
 
@@ -366,18 +367,33 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection (Mandatory Cache)
+### 9. Upstream Drift Detection (Conditional)
 
-Detects when upstream source documents have been modified after the BRD was created or last updated. **The drift cache is mandatory** - the reviewer MUST create/update it after each review.
+Detects when upstream reference documents have been modified after the BRD was created. **This check is CONDITIONAL** based on `upstream_mode` setting.
 
-**Purpose**: Identifies stale BRD content that may not reflect current source documentation. When upstream documents (strategy specs, technical specifications, stakeholder inputs) change, the BRD may need updates to maintain alignment.
+#### 9.0 Mode Detection (First Step)
 
-**Scope**:
-- `@ref:` tag targets (technical specifications, strategy documents)
-- `@strategy:` tag references
+**Before running drift detection**:
+
+1. Read YAML frontmatter `custom_fields.upstream_mode`
+2. Apply behavior:
+
+| upstream_mode | Action | Score |
+|---------------|--------|-------|
+| `"none"` (default) | Skip Check #9 entirely | 5/5 automatic |
+| `"ref"` | Run drift detection on `upstream_ref_path` | Calculated |
+| *(not set)* | Treat as `"none"` | 5/5 automatic |
+
+**If skipping**:
+- Log: `INFO: Upstream drift detection skipped (upstream_mode: none)`
+- Award full 5/5 points
+- Create minimal drift cache entry
+
+**Scope** (when `upstream_mode: "ref"`):
+- Documents in paths specified by `upstream_ref_path`
+- `@ref:` tag targets within those paths
 - Traceability section upstream artifact links
 - GAP analysis document references
-- Any markdown links to `../00_REF/` or source documents
 
 ---
 
@@ -390,37 +406,58 @@ Detects when upstream source documents have been modified after the BRD was crea
 2. **Create** the cache if it doesn't exist
 3. **Update** the cache after every review with current hashes
 
-**Cache Schema**:
+**Cache Schema** (when `upstream_mode: "none"` or not set):
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "document_id": "BRD-01",
   "document_version": "1.0",
-  "last_reviewed": "2026-02-10T17:00:00",
-  "reviewer_version": "1.4",
+  "upstream_mode": "none",
+  "upstream_ref_path": null,
+  "drift_detection_skipped": true,
+  "skip_reason": "upstream_mode set to none (default)",
+  "last_reviewed": "2026-02-24T21:00:00",
+  "reviewer_version": "1.6",
+  "upstream_documents": {},
+  "review_history": [
+    {
+      "date": "2026-02-24T21:00:00",
+      "score": 97,
+      "drift_detected": false,
+      "report_version": "v001"
+    }
+  ]
+}
+```
+
+**Cache Schema** (when `upstream_mode: "ref"`):
+
+```json
+{
+  "schema_version": "1.1",
+  "document_id": "BRD-01",
+  "document_version": "1.0",
+  "upstream_mode": "ref",
+  "upstream_ref_path": ["../../00_REF/source_docs/"],
+  "drift_detection_skipped": false,
+  "last_reviewed": "2026-02-24T21:00:00",
+  "reviewer_version": "1.6",
   "upstream_documents": {
-    "../../00_REF/foundation/F1_IAM_Technical_Specification.md": {
-      "hash": "sha256:a1b2c3d4e5f6g7h8i9j0...",
-      "last_modified": "2026-02-10T15:34:26",
-      "file_size": 50781,
-      "version": "1.0",
-      "sections_tracked": ["#3-authentication", "#4-authorization", "#5-user-profile"]
-    },
-    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": {
-      "hash": "sha256:k1l2m3n4o5p6q7r8s9t0...",
-      "last_modified": "2026-02-10T15:34:21",
-      "file_size": 4730,
-      "version": "1.0",
-      "sections_tracked": ["#f1-iam-gaps"]
+    "../../00_REF/source_docs/BeeLocal_BRD_v2.1.md": {
+      "hash": "sha256:c9810281...",
+      "last_modified": "2024-12-25T00:00:06",
+      "file_size": 76908,
+      "version": "2.1",
+      "sections_tracked": []
     }
   },
   "review_history": [
     {
-      "date": "2026-02-10T16:30:00",
+      "date": "2026-02-24T21:00:00",
       "score": 97,
       "drift_detected": false,
-      "report_version": "v002"
+      "report_version": "v001"
     }
   ]
 }
@@ -532,6 +569,8 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 | REV-D004 | Info | New content added to upstream | file size increased >10% |
 | REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
 | REV-D006 | Info | Cache created (first review) | no prior cache existed |
+| REV-D007 | Info | Drift detection skipped | upstream_mode: "none" |
+| REV-D008 | Warning | upstream_ref_path not found | specified path doesn't exist |
 
 ---
 
@@ -596,7 +635,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 | Section Completeness | 12% | (complete_sections / total_sections) × 12 |
 | Strategic Alignment | 5% | (aligned_objectives / total_objectives) × 5 |
 | Naming Compliance | 8% | (valid_ids / total_ids) × 8 |
-| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
+| Upstream Drift | 5% | `upstream_mode == "none"` ? 5 : (fresh_refs / total_refs) × 5 |
 
 **Total**: Sum of all categories (max 100)
 
@@ -719,6 +758,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-24T21:30:00 | **Conditional drift detection**: Check #9 now skipped when `upstream_mode: "none"` (default); Removed @strategy: tag references; Updated drift cache schema to v1.1 with upstream_mode and drift_detection_skipped fields; Added REV-D007 (drift skipped) and REV-D008 (path not found) error codes; Updated scoring formula for conditional check |
 | 1.5 | 2026-02-11T18:00:00 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram with structure validation decision node; Added structure compliance to scoring (12% weight, blocking); Consistent with other reviewer skills |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10T14:30:00 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |

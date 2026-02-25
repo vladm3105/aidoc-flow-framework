@@ -14,8 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.1"
+  last_updated: "2026-02-24T21:30:00"
 ---
 
 # doc-brd
@@ -211,18 +211,56 @@ Use `doc-brd` when:
 - **3.6 Technology Stack Prerequisites** (MUST populate for Platform BRD)
 - **3.7 Mandatory Technology Conditions** (MUST populate for Platform BRD)
 
-### 3. Strategy References (MANDATORY)
+### 3. Upstream Source Configuration
 
-**ALWAYS START WITH STRATEGY**: Read relevant `{project_root}/strategy/` documents FIRST
+BRDs can be created with or without upstream reference documents.
 
-**Reading Order**:
-1. `{project_root}/strategy/README.md` - Performance targets, strategy goals
-2. `{project_root}/strategy/strategy_overview.md` - Strategic framework
-3. `{project_root}/strategy/core_algorithm.md` - Primary algorithm specifications
-4. `{project_root}/strategy/risk_management.md` - Risk management policies
-5. `{project_root}/strategy/selection_criteria/` - Entry criteria
+#### Default: No Upstream Sources
 
-**Every BRD MUST cite specific strategy document sections in Traceability section.**
+Most BRDs are created from stakeholder interviews, product ideas, or business
+requirements without formal source documents. Use the default configuration:
+
+```yaml
+custom_fields:
+  upstream_mode: "none"  # Default - no drift detection
+```
+
+#### With Reference Documents
+
+If BRD content is derived from documents in `docs/00_REF/`, configure tracking:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"  # Relative to BRD location
+```
+
+#### Multiple Reference Folders
+
+For nested or multiple reference folders:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path:
+    - "../../00_REF/source_docs/"
+    - "../../00_REF/foundation/"
+    - "../../00_REF/internal_ops/cloud_cost_monitoring/"
+```
+
+#### Path Resolution
+
+Paths are relative to the BRD file location:
+- BRD at: `docs/01_BRD/BRD-01_platform/BRD-01.0_index.md`
+- REF at: `docs/00_REF/source_docs/`
+- Path: `"../../00_REF/source_docs/"`
+
+#### Behavior Summary
+
+| upstream_mode | upstream_ref_path | Drift Detection |
+|---------------|-------------------|-----------------|
+| `"none"` (default) | ignored | Skipped |
+| `"ref"` | required | Tracks specified path(s) |
 
 ### 4. Architecture Decision Requirements Section (7.2) - MANDATORY
 
@@ -420,10 +458,11 @@ Examples:
 ## Upstream/Downstream Artifacts
 
 **Upstream Sources** (what drives BRD creation):
-- Strategy documents (`{project_root}/strategy/`)
-- Business owner requirements
+- Reference documents (`docs/00_REF/`) - if `upstream_mode: "ref"`
+- Business owner requirements (verbal/written)
+- Stakeholder interviews
 - Market analysis
-- Stakeholder inputs
+- Product ideas
 
 **Downstream Artifacts** (what BRD drives):
 - **PRD** (Layer 2) - Product requirements derived from BRD
@@ -492,9 +531,22 @@ Fill all 18 required sections following template structure.
 
 List topics needing architectural decisions (do NOT reference specific ADR numbers).
 
-### Step 9: Add Strategy References
+### Step 9: Configure Upstream Sources
 
-In Traceability section, link to specific `{project_root}/strategy/` sections.
+If BRD is derived from reference documents in `docs/00_REF/`:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"
+```
+
+If BRD created from scratch (stakeholder input, product ideas):
+
+```yaml
+custom_fields:
+  upstream_mode: "none"  # Default - drift detection skipped
+```
 
 ### Step 10: Create/Update Traceability Matrix
 
@@ -554,7 +606,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 1. **Referencing ADR numbers**: Don't write "See ADR-033" in Architecture Decision Requirements section (ADRs don't exist yet)
 2. **Wrong sections 3.6/3.7 treatment**: Platform BRD must populate, Feature BRD must reference Platform BRD
-3. **Missing strategy references**: Every BRD must cite `{project_root}/strategy/` sections
+3. **Wrong upstream_mode**: Set `upstream_mode: "ref"` only if deriving from `docs/00_REF/` documents
 4. **Document Control not first**: Must be at very top before all numbered sections
 5. **Skipping traceability matrix**: MANDATORY to create/update matrix
 
@@ -681,5 +733,6 @@ For supplementary documentation related to BRD artifacts:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-24 | Added upstream_mode and upstream_ref_path fields for optional drift detection; Removed mandatory @strategy: tags (not applicable universally); Updated Section 3 to Upstream Source Configuration |
 | 2.0 | 2026-02-08 | Added element code 32 (Architecture Topic); Added Section 7.2 (Architecture Decision Requirements) with 7 mandatory topic categories; Updated to 18-section structure; Integrated doc-naming skill for element ID validation; Added Alternatives Overview and Cloud Provider Comparison tables |
 | 1.0 | 2025-01-06 | Initial version |
