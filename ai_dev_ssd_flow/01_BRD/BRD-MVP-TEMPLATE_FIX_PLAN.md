@@ -17,6 +17,7 @@ Fix 13 identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/
 |------|------|----------|
 | `BRD-MVP-TEMPLATE.md` | MD Template (human workflow) | P1 |
 | `BRD-MVP-TEMPLATE.yaml` | YAML Template (autopilot) | P1 |
+| `README.md` | Layer Documentation | P2 |
 | `doc-brd*/SKILL.md` | Skills (6 files) | P2 |
 | `doc-brd_quickref.md` | Quick Reference | P2 |
 
@@ -609,6 +610,113 @@ Update in all skills:
 
 ---
 
+## Phase 7.5: Update README.md with 18-Section Structure
+
+**File**: `ai_dev_ssd_flow/01_BRD/README.md`
+
+Update the BRD layer README to document the complete 18-section structure.
+
+### 7.5.1 Replace "BRD Structure" Section (Lines ~247-316)
+
+Replace the current structure documentation with the complete 18-section reference:
+
+```markdown
+## BRD Document Structure (18 Sections)
+
+### Document Control (Section 0 - Top of Document)
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Project Name | Yes | Project identifier |
+| Document Version | Yes | Semantic version (X.Y) |
+| Date | Yes | ISO format (YYYY-MM-DD) |
+| Document Owner | Yes | Business executive responsible |
+| Prepared By | Yes | Business analyst author |
+| Status | Yes | Draft / In Review / Approved |
+| PRD-Ready Score | Yes | [Score]/100 (Target: ≥90/100) |
+| Revision History | Yes | Version table with changes |
+
+### 18 Numbered Sections
+
+| # | Section | Purpose | Key Subsections |
+|---|---------|---------|-----------------|
+| **1** | **Introduction** | Purpose, scope, audience | 1.1-1.4 |
+| **2** | **Business Objectives** | Goals, hypothesis, metrics | 2.1 Hypothesis, 2.2 Problem, 2.3 Goals, 2.4 Metrics, 2.5 Benefits |
+| **3** | **Project Scope** | Boundaries, workflows | 3.1-3.3 Scope, 3.4 Tech Stack, **3.5.4 Workflow**, **3.5.5 Exceptions** |
+| **4** | **Stakeholders** | Decision makers | 4.1 Decision Makers, 4.2 Contributors |
+| **5** | **User Stories** | High-level needs | 5.1 Primary, 5.2 Operational, 5.3 Summary |
+| **6** | **Functional Requirements** | Business capabilities | 6.1 Overview, 6.2+ Requirements (BRD.NN.01.SS) |
+| **7** | **Quality Attributes** | Performance, security, ADR | 7.1 Overview, **7.2 ADR Topics (7 mandatory)**, 7.3-7.5 |
+| **8** | **Constraints & Assumptions** | Limitations | 8.1 Constraints, 8.2 Assumptions |
+| **9** | **Acceptance Criteria** | Success measures | 9.1 Launch, 9.2 Post-Launch |
+| **10** | **Business Risk Management** | Risk register | Risk ID, Description, Likelihood, Impact, Mitigation |
+| **11** | **Implementation Approach** | Phases, rollout | 11.1 Phases, 11.2 Support Model |
+| **12** | **Support & Maintenance** | Support model | 12.1 Support, 12.2 Maintenance |
+| **13** | **Cost-Benefit Analysis** | ROI, costs | 13.1 Costs, 13.2 ROI |
+| **14** | **Project Governance** | Decision authority | **14.1 Structure**, **14.2 Matrix**, **14.3 Reporting**, **14.4 Change Control**, **14.5 Approval** |
+| **15** | **Quality Assurance** | QA standards | **15.1 Standards**, **15.2 Testing Strategy**, **15.3 Quality Gates** |
+| **16** | **Traceability** | Requirements matrix | **16.1 Matrix**, **16.2 Cross-BRD**, **16.3 Test Coverage**, **16.4 Health Score** |
+| **17** | **Glossary** | Terms, acronyms | **17.1 Business**, **17.2 Technical**, **17.3 Domain**, **17.4 Acronyms**, **17.5 Cross-Refs**, **17.6 Standards** |
+| **18** | **Appendices** | Supporting docs | A-D: Metrics, Roadmap, Migration, Guidelines |
+
+### Section 7.2: 7 Mandatory ADR Topic Categories
+
+| # | Category | Element ID | Purpose |
+|---|----------|------------|---------|
+| 1 | Infrastructure | BRD.NN.32.01 | Hosting & Deployment |
+| 2 | Data Architecture | BRD.NN.32.02 | Database & Storage |
+| 3 | Integration | BRD.NN.32.03 | External Systems |
+| 4 | Security | BRD.NN.32.04 | Auth & Data Protection |
+| 5 | Observability | BRD.NN.32.05 | Monitoring & Logging |
+| 6 | AI/ML | BRD.NN.32.06 | If Applicable |
+| 7 | Technology Selection | BRD.NN.32.07 | Core Stack |
+
+### Element ID Format
+
+Pattern: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}`
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | BRD.09.01.01 |
+| Quality Attribute | 02 | BRD.09.02.01 |
+| Constraint | 03 | BRD.09.03.01 |
+| Assumption | 04 | BRD.09.04.01 |
+| Acceptance Criteria | 06 | BRD.09.06.01 |
+| Risk | 07 | BRD.09.07.01 |
+| Business Objective | 23 | BRD.09.23.01 |
+| ADR Topic | 32 | BRD.09.32.01 |
+
+### Visual Structure
+
+```
+BRD-NN_{slug}.md
+├── YAML Frontmatter
+├── Document Control
+├── Sections 1-13: Core Business Content
+├── Sections 14-15: Governance & QA
+├── Sections 16-17: Traceability & Reference
+└── Section 18: Appendices
+```
+```
+
+### 7.5.2 Update Target Files Table
+
+Add README.md to the target files at the top of this plan:
+
+| File | Type | Priority |
+|------|------|----------|
+| `README.md` | Layer Documentation | P2 |
+
+### 7.5.3 Verification
+
+- [ ] 18-section table present in README
+- [ ] ADR topics table accurate
+- [ ] Element ID format documented
+- [ ] Visual structure diagram included
+- [ ] All section numbers match template
+
+---
+
 ## Phase 8: Testing & Validation
 
 ### 8.1 Template Validation
@@ -675,7 +783,8 @@ python3 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-09_*.md
 | 14 | 6 | Apply minor fixes | Step 13 |
 | 15 | 6 | Update version metadata | Step 14 |
 | 16 | 7 | Update all skills | Step 15 |
-| 17 | 8 | Run all tests | Step 16 |
+| 17 | 7.5 | Update README.md with 18-section structure | Step 16 |
+| 18 | 8 | Run all tests | Step 17 |
 
 ---
 
@@ -709,6 +818,13 @@ python3 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-09_*.md
 - [ ] doc-brd-autopilot/SKILL.md generation logic updated
 - [ ] doc-brd_quickref.md key sections table updated
 
+### README.md Verification
+- [ ] 18-section structure table present
+- [ ] ADR topics table (7 categories) included
+- [ ] Element ID format documented
+- [ ] Visual structure diagram added
+- [ ] Section numbers match updated template
+
 ### Test Verification
 - [ ] Validator passes on updated template
 - [ ] Sample BRD generates correctly
@@ -725,6 +841,7 @@ python3 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-09_*.md
 | MD Template lines modified | ~50 |
 | MD Template lines removed | ~30 |
 | YAML Template updates | ~50 lines |
+| README.md updates | ~100 lines |
 | Skill files to update | 6 |
 | Total sections after fix | 18 + Document Control |
 
