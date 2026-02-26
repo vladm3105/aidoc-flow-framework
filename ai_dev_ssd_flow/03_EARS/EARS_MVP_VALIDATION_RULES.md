@@ -19,19 +19,6 @@ custom_fields:
 # - Scope: Includes all rules from EARS_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "EARS Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: EARS
-  layer: 3
-  priority: shared
-  development_status: active
----
 
 > **Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
 > - Apply these rules after EARS creation or modification
@@ -249,12 +236,16 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Type**: Error (blocking)
 
-**Required Sections**:
-- Document Control
-- Purpose
-- Traceability
+**Required Sections (6-Section MVP Structure)**:
+- Document Control (unnumbered)
+- Section 1: Purpose and Context
+- Section 2: EARS in Development Workflow
+- Section 3: Requirements
+- Section 4: Quality Attributes
+- Section 5: Traceability
+- Section 6: References
 
-**Fix**: Add missing sections
+**Fix**: Add missing sections per EARS-MVP-TEMPLATE.md
 
 ---
 

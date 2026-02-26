@@ -295,7 +295,7 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    ```
 
 2. **Load EARS Template**:
-   - Primary: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+   - Primary: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
    - Section templates: For sectioned EARS (>300 lines)
 
 3. **Generate Document Control Section**:
@@ -1334,15 +1334,15 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **EARS Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- **EARS Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml`
-- **EARS Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-- **EARS Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+- **EARS Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+- **EARS Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
+- **EARS Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
+- **EARS Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
 
 ### Section Templates (for documents >300 lines)
 
-- Index template: `ai_dev_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
 
 ### Framework References
 

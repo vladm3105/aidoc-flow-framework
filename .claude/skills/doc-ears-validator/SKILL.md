@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [EARS]
   downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.2"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-ears-validator
@@ -28,7 +28,7 @@ Invoke when user requests validation of EARS documents or after creating/modifyi
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/EARS/EARS_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
 Layer: 3
 Artifact Type: EARS
 
@@ -106,18 +106,15 @@ Forbidden tag patterns:
 
 ### 2. Structure Validation
 
-**Required Sections:**
-- Title (H1): `# EARS-NNN: Title`
-- Document Control (Section 1)
-- Requirements Summary (Section 2)
-- Ubiquitous Requirements (Section 3)
-- Event-Driven Requirements (Section 4)
-- State-Driven Requirements (Section 5)
-- Unwanted Behavior Requirements (Section 6)
-- Optional Feature Requirements (Section 7)
-- Complex Requirements (Section 8)
-- Traceability (Section 9)
-- Change History (Section 10)
+**Required Sections (6-Section MVP Structure):**
+- Title (H1): `# EARS-NN: Title`
+- Document Control (unnumbered) - Metadata with BDD-Ready Score
+- Section 1: Purpose and Context - Business and technical objectives
+- Section 2: EARS in Development Workflow - SDD position and EARS role
+- Section 3: Requirements - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
+- Section 4: Quality Attributes - Performance, Security, Reliability
+- Section 5: Traceability - Upstream sources, downstream artifacts, tags
+- Section 6: References - Internal and external documentation
 
 **Document Control Required Fields:**
 - EARS ID
@@ -182,7 +179,7 @@ Pattern: `EARS-NNN_descriptive_name.md`
 | EARS-E008 | error | Section numbering not sequential |
 | EARS-E009 | error | Document Control missing required fields |
 | EARS-E010 | error | Invalid EARS pattern detected |
-| EARS-E011 | error | Missing Traceability (Section 9) |
+| EARS-E011 | error | Missing Traceability (Section 5) |
 | EARS-E012 | warning | File name does not match format |
 | EARS-W001 | warning | Requirement not using EARS syntax |
 | EARS-W002 | warning | Missing upstream @brd or @prd tag |
@@ -210,7 +207,7 @@ python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/ --verbose
 1. Parse YAML frontmatter
 2. Check required metadata fields
 3. Validate tag taxonomy
-4. Verify section structure (1-10)
+4. Verify section structure (6-section MVP)
 5. Validate Document Control table
 6. Check EARS pattern compliance
 7. Verify SHALL/SHOULD/MAY keywords

@@ -90,6 +90,23 @@ THE client SHALL normalize responses to the internal schema used by [EXTERNAL_SE
 THE client SHALL complete requests within 2 seconds p95 for supported endpoints.
 ```
 
+## MVP Template Structure (6 Sections)
+
+EARS documents follow a standardized 6-section structure:
+
+| Section | Title | Content |
+|---------|-------|---------|
+| (unnumbered) | Document Control | Metadata, BDD-Ready Score, Source Document |
+| 1 | Purpose and Context | Document Purpose, Scope, Intended Audience |
+| 2 | EARS in Development Workflow | Layer positioning diagram, SDD role |
+| 3 | Requirements | Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous |
+| 4 | Quality Attributes | Performance, Security, Reliability tables |
+| 5 | Traceability | Upstream Sources, Downstream Artifacts, Tags |
+| 6 | References | Internal Documentation, External Standards |
+
+**Template**: `EARS-MVP-TEMPLATE.md` (Version 1.1)
+**Schema**: `EARS_MVP_SCHEMA.yaml`
+
 ## File Structure
 
 ### Header with Traceability Tags

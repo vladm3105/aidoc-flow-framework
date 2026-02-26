@@ -50,10 +50,10 @@ Before creating EARS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
-4. **Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
-5. **Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 1.1, primary authority)
+4. **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation rules)
+5. **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
 
 ### Template Binding (CRITICAL)
 
@@ -85,7 +85,7 @@ Use `doc-ears` when:
 
 ## Document Structure (MANDATORY)
 
-Per EARS-TEMPLATE.md, EARS documents require these sections:
+Per EARS-MVP-TEMPLATE.md, EARS documents require these sections:
 
 | Section | Content |
 |---------|---------|
@@ -594,17 +594,17 @@ The BDD will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
-- **Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation)
-- **Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+- **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
+- **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation)
+- **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 - **Threshold Naming**: `ai_dev_flow/THRESHOLD_NAMING_RULES.md`
 
 **Section Templates** (for documents >300 lines):
-- Index template: `ai_dev_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
 
 ## Quick Reference
 

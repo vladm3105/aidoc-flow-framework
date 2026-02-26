@@ -18,19 +18,6 @@ custom_fields:
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "EARS MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: EARS
-  layer: 3
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
 > - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; standard template
@@ -99,15 +86,14 @@ custom_fields:
 
 EARS documents require specific structural elements for behavioral specification:
 
-#### Required sections:
-1. **Document Control** - Metadata with BDD-Ready Score
-2. **Purpose and Context** - Business and technical objectives
-3. **Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
-4. **Quality Attributes** - Performance, security, Reliability, etc.
-5. **Guidelines for Writing EARS Statements** - Precision and measurability rules
-6. **Quality Checklist** - Completeness validation
-7. **Traceability** - Upstream/downstream artifacts
-8. **References** - Internal/external documentation
+#### Required sections (6-section MVP structure):
+1. **Document Control** (unnumbered) - Metadata with BDD-Ready Score
+2. **Section 1: Purpose and Context** - Business and technical objectives
+3. **Section 2: EARS in Development Workflow** - SDD position and EARS role
+4. **Section 3: Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
+5. **Section 4: Quality Attributes** - Performance, Security, Reliability
+6. **Section 5: Traceability** - Upstream sources, downstream artifacts, tags
+7. **Section 6: References** - Internal and external documentation
 
 ---
 
