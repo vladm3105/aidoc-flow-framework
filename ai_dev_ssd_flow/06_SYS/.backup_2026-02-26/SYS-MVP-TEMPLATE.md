@@ -14,9 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "2.1"
-  last_updated: "2026-02-26"
-  total_sections: 15
+  schema_version: "2.0"
 ---
 > ** Dual-Format Note**: 
 > 
@@ -1190,19 +1188,3 @@ BDD scenarios and acceptance tests validating this system.
 **Template Version**: 1.0
 **Next Review Date**: YYYY-MM-DDTHH:MM:SS (Quarterly review recommended)
 **Technical Authority**: [Name/Role for technical clarification]
-
----
-
-**Document Version**: 1.0
-**Template Version**: 2.1 (MVP - 15 sections)
-**Last Updated**: 2026-02-26
-**Maintained By**: [Systems Architecture Team]
-
----
-
-> **MVP Template Notes**:
-> - This is the standard SYS template (15 sections: 1-15)
-> - Single file - no sectioning per user requirement
-> - Focus on system requirements + quality attributes
-> - Maintains ai_dev_flow framework compliance
-> - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full SYS" template)

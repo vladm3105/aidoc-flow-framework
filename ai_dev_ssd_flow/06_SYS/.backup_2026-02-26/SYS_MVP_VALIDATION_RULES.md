@@ -140,26 +140,6 @@ The SYS validation script ensures system requirements meet quality standards for
 **Purpose**: Ensure SYS requirements are implementable within ADR architectural boundaries
 **Type**: Error (blocking)
 
-**Required Sections (MVP Template - 15 Sections)**:
-
-| Section | Title | Required |
-|---------|-------|----------|
-| 1 | Document Control | MANDATORY |
-| 2 | Executive Summary | MANDATORY |
-| 3 | Scope | MANDATORY |
-| 4 | Functional Requirements | MANDATORY |
-| 5 | Quality Attributes | MANDATORY |
-| 6 | Interface Specifications | MANDATORY |
-| 7 | Data Management Requirements | MANDATORY |
-| 8 | Testing and Validation Requirements | MANDATORY |
-| 9 | Deployment and Operations Requirements | MANDATORY |
-| 10 | Compliance and Regulatory Requirements | MANDATORY |
-| 11 | Acceptance Criteria | MANDATORY |
-| 12 | Risk Assessment | MANDATORY |
-| 13 | Traceability | MANDATORY |
-| 14 | Implementation Notes | MANDATORY |
-| 15 | Change History | MANDATORY |
-
 **Requirements**:
 - Technology selections match ADR decisions
 - Architectural patterns align with ADR specifications

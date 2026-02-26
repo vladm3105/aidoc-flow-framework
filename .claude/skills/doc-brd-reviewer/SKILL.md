@@ -526,7 +526,7 @@ Detects when upstream reference documents have been modified after the BRD was c
   "review_history": [
     {
       "date": "2026-02-24T21:00:00",
-      "score": 97,
+    PRD-Ready Score = 100 - total_deductions
       "drift_detected": false,
       "report_version": "v001"
     }
@@ -693,29 +693,31 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 ## Review Score Calculation
 
-**Scoring Formula**:
+**Canonical Source of Truth**:
+- `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (deduction model)
+- `ai_dev_ssd_flow/01_BRD/README.md` (quality-gate interpretation)
 
-| Category | Weight | Calculation |
-|----------|--------|-------------|
-| **Structure Compliance** | **12%** | (nested_folder_valid ? 12 : 0) - **BLOCKING** |
-| Link Integrity | 8% | (valid_links / total_links) × 8 |
-| Requirement Completeness | 15% | (complete_reqs / total_reqs) × 15 |
-| ADR Topic Coverage | 15% | (covered_topics / required_topics) × 15 |
-| Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (count × 2)) |
-| Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
-| Section Completeness | 12% | ((18_sections_present + mvp_subsections_valid) / 28) × 12 |
-| Strategic Alignment | 5% | (aligned_objectives / total_objectives) × 5 |
-| Naming Compliance | 8% | (valid_ids / total_ids) × 8 |
-| Upstream Drift | 5% | `upstream_mode == "none"` ? 5 : (fresh_refs / total_refs) × 5 |
+**Scoring Formula (Deduction-Based)**:
 
-**Total**: Sum of all categories (max 100)
+`PRD-Ready Score = 100 - total_deductions`
 
-**Note**: Structure Compliance is a **blocking check**. If structure validation fails (REV-STR001), the review cannot pass regardless of other scores.
+| Deduction Category | Max Deduction | Rule Summary |
+|--------------------|---------------|--------------|
+| PRD-level content contamination | 50 | Code blocks and technical/UI implementation language in BRD business sections |
+| FR structure completeness | 30 | Missing required FR subsections and invalid cross-references |
+| Document structure and quality | 20 | Missing required sections, document control gaps, revision history issues |
+
+**Total**: `100 - total_deductions` (bounded to `0..100`)
+
+**Blocking Note**: Structure compliance check remains blocking. If structure validation fails (e.g., REV-STR001), the review cannot pass regardless of computed score.
 
 **Thresholds**:
 - **PASS**: ≥ 90 (configurable)
-- **WARNING**: 80-89
-- **FAIL**: < 80
+- **FAIL**: < 90
+
+**Workflow Gate Interpretation**:
+- `>=90`: PRD-ready gate satisfied
+- `<90`: not PRD-ready, must route to fix cycle/manual remediation
 
 ---
 

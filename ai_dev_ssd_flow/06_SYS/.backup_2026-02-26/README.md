@@ -26,8 +26,7 @@ System Requirements Specifications (SYS) capture comprehensive system-level requ
 
 ## Available Templates
 
-**SYS-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file (15 sections)
-- Comprehensive 15-section structure (Document Control through Change History)
+**SYS-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~350 lines)
 - Focused on 5-10 core system capabilities
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with focused system scope

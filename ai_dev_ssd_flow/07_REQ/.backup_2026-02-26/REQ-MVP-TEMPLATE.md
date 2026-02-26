@@ -479,11 +479,11 @@ Use cross-links to make dependencies and discoverability AI-friendly:
 
 ---
 
-### 11.4 MVP Lifecycle (MVP → PROD → NEW MVP)
+## 13. MVP Lifecycle (MVP → PROD → NEW MVP)
 
 > **Lifecycle Principle**: Each REQ represents requirements for ONE iteration cycle. New requirements require a NEW REQ document.
 
-#### 11.4.1 Lifecycle Phases
+### 13.1 Lifecycle Phases
 
 | Phase | Duration | Focus | REQ Output |
 |-------|----------|-------|------------|
@@ -491,14 +491,14 @@ Use cross-links to make dependencies and discoverability AI-friendly:
 | **PROD** | 30-90 days | Operate, validate requirements, collect feedback | Implementation outcomes |
 | **NEW MVP** | 1-2 weeks | Next requirement set | Create REQ-02, REQ-03, etc. |
 
-#### 11.4.2 When to Create a New REQ
+### 13.2 When to Create a New REQ
 
 - [ ] Current REQ requirements are implemented and validated
 - [ ] New atomic requirements identified for next iteration
 - [ ] Interface changes required for new features
 - [ ] Business case for new requirements approved
 
-#### 11.4.3 Cross-REQ Traceability
+### 13.3 Cross-REQ Traceability
 
 When creating the next REQ iteration:
 
@@ -513,15 +513,15 @@ When creating the next REQ iteration:
 
 **Document Version**: 0.1.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: 2026-02-26T00:00:00
+**Last Updated**: 2026-01-13T00:00:00
 
 ---
 
 > **MVP Template Notes**:
-> - 11 sections - this is the standard REQ MVP template structure
+> - 12 sections - this is the standard REQ template structure
 > - Single file - no document splitting required
 > - Focus on SPEC-ready, atomic requirements
 > - All 6 upstream traceability tags required (Layer 7)
-> - SPEC-Ready/CTR-Ready thresholds: ≥90%
+> - SPEC-Ready/CTR-Ready thresholds: ≥70%
 > - Uses `@threshold` tags for quantitative values
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full REQ" template)

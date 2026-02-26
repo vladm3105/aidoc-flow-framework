@@ -1,9 +1,10 @@
 # SYS-MVP-TEMPLATE Fix Plan
 
 **Created**: 2026-02-26
-**Status**: Pending
-**Version**: 1.0
+**Status**: Completed
+**Version**: 2.0
 **Last Updated**: 2026-02-26
+**Completion Date**: 2026-02-26
 **Target Files**:
 - `SYS-MVP-TEMPLATE.md` (primary)
 - `SYS-MVP-TEMPLATE.yaml` (autopilot)
@@ -28,7 +29,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/` d
 | `SYS-MVP-TEMPLATE.yaml` | YAML Template (autopilot) | P1 |
 | `SYS_MVP_QUALITY_GATE_VALIDATION.md` | Quality Gate Rules | P2 |
 | `README.md` | Layer Documentation | P2 |
-| `doc-sys*/SKILL.md` | Skills (5 files) | P2 |
+| `doc-sys*/SKILL.md` | Skills (6 files) | P2 |
 | `doc-sys_quickref.md` | Quick Reference | P2 |
 
 ## Reference Files
@@ -43,7 +44,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/` d
 
 | # | Gap | Severity | Location | Phase |
 |---|-----|----------|----------|-------|
-| 1 | YAML template extremely minimal (4 sections vs 15 in MD) | Critical | SYS-MVP-TEMPLATE.yaml | 4 |
+| 1 | YAML template structure mismatch (named sections vs array) | Critical | SYS-MVP-TEMPLATE.yaml | 4 |
 | 2 | YAML template lacks schema_version/total_sections metadata | High | SYS-MVP-TEMPLATE.yaml | 4 |
 | 3 | doc-sys_quickref.md has wrong path (`docs/SYS/` → `docs/06_SYS/`) | Medium | doc-sys_quickref.md:30 | 5 |
 | 4 | Validation Rules missing explicit section list in CHECK 2 | Medium | SYS_MVP_VALIDATION_RULES.md | 3 |
@@ -51,10 +52,16 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/` d
 | 6 | No YAML ↔ MD sync verification step defined | Medium | Fix Plan Phase 6 | 6 |
 | 7 | README doesn't explicitly state "15 sections" | Low | README.md | 3 |
 | 8 | Skills don't explicitly state "15 sections" count | Low | doc-sys/SKILL.md | 5 |
-| 9 | doc-sys-validator says "15 sections" but uses FR-NNN (legacy) | Medium | doc-sys-validator/SKILL.md:115 | 5 |
+| 9 | doc-sys-validator uses FR-NNN (legacy) format | Medium | doc-sys-validator/SKILL.md:115,143-146 | 5 |
 | 10 | Missing template footer with version info | Low | SYS-MVP-TEMPLATE.md | 1 |
 | 11 | Quality Gate validation CORPUS-10 has inconsistent thresholds | Low | SYS_MVP_QUALITY_GATE_VALIDATION.md:227-232 | 3 |
 | 12 | Creation Rules mentions "5-part structure" without section count | Medium | SYS_MVP_CREATION_RULES.md:75-96 | 3 |
+| 13 | **NEW**: YAML template uses SYS-FN-NNN format (legacy) | High | SYS-MVP-TEMPLATE.yaml:92-127 | 4 |
+| 14 | **NEW**: quickref uses SYS-NNN format (should be SYS-NN) | Medium | doc-sys_quickref.md:30 | 5 |
+| 15 | **NEW**: No validation script provided | Medium | Missing | 7 |
+| 16 | **NEW**: schema_version bump rationale undocumented | Low | Phase 1.1 | 0 |
+| 17 | **NEW**: CORPUS-10 threshold change rationale missing | Medium | Phase 3.3 | 0 |
+| 18 | **NEW**: No autopilot workflow integration test | Medium | Phase 6 | 6 |
 
 ---
 
@@ -85,9 +92,10 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
 | Existing SYS docs reference old section numbers | Low | Medium | Section numbers already correct (1-15) |
-| Autopilot fails with new YAML structure | Medium | High | Update YAML template comprehensively in Phase 4 |
+| Autopilot fails with new YAML structure | **High** | **High** | Document migration path, test autopilot in Phase 6 |
 | Skills produce invalid output | Low | Medium | Update all skills in Phase 5 |
 | Validation rules mismatch | Low | Medium | Verify CHECK numbers align |
+| YAML structural change breaks consumers | Medium | High | Add backward compatibility section, verify autopilot |
 
 ### 0.3 Rollback Plan
 
@@ -118,11 +126,12 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 | Downstream Artifact | Impact | Action Required |
 |--------------------|--------|-----------------|
 | Existing SYS documents | Section numbers unchanged (1-15 already correct) | No migration needed |
-| REQ templates | Reference SYS sections | Verify REQ-MVP-TEMPLATE references |
+| REQ templates | Reference SYS sections | Verify REQ-MVP-TEMPLATE Section 13.1 references |
 | Validation scripts | CHECK numbers reference sections | Verify SYS_MVP_VALIDATION_RULES.md |
-| Autopilot workflows | Generate from YAML template | Update YAML template (Phase 4) |
+| Autopilot workflows | Generate from YAML template | **Critical**: Test with new YAML structure |
 | doc-sys-reviewer | Check section completeness | Verify 15-section check |
 | doc-sys-fixer | Fix phases reference sections | Verify section creation logic |
+| doc-sys-autopilot | Consumes YAML template | **Critical**: Verify YAML parsing logic |
 | Quality Gate validation | Corpus-level checks | Verify SYS_MVP_QUALITY_GATE_VALIDATION.md |
 
 ### 0.5 Decision: Target Section Count
@@ -130,10 +139,10 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 **Analysis**:
 - Current MD template: 15 sections (Section 1: Document Control through Section 15: Change History)
 - YAML Schema: 15 sections (Title + 15 required sections) - **ALIGNED**
-- YAML Template: 4 sections only - **MISALIGNED** (needs expansion)
+- YAML Template: 4 named sections + document_control + traceability - **MISALIGNED** (needs expansion)
 - doc-sys-validator skill: 15 sections - **ALIGNED**
 
-**Current Template Structure** (verified from SYS-MVP-TEMPLATE.md):
+**Current MD Template Structure** (verified from SYS-MVP-TEMPLATE.md):
 ```
 ## 1. Document Control     (line 41)
 ## 2. Executive Summary    (line 56)
@@ -152,7 +161,17 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 ## 15. Change History      (line 1179)
 ```
 
-**Decision**: Keep current **15-section** structure. MD template is already correct. Align YAML template and skills TO the MD template.
+**Current YAML Template Structure** (from SYS-MVP-TEMPLATE.yaml):
+```yaml
+document_control:     # Maps to Section 1
+section_1_system_boundary:    # Different from MD Section 3 (Scope)
+section_2_functional_requirements:  # Maps to MD Section 4
+section_3_non_functional_requirements:  # Maps to MD Section 5
+section_4_technical_stack:    # Not in MD template
+traceability:         # Maps to Section 13
+```
+
+**Decision**: Keep current **15-section** structure. MD template is already correct. Align YAML template TO the MD template.
 
 | Section | Title |
 |---------|-------|
@@ -177,6 +196,63 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 - 15-section structure is comprehensive for system requirements
 - **No renumbering needed** - MD template already has correct 1-15 numbering
 - Update YAML template and skills to match MD template
+
+### 0.6 Schema Version Bump Rationale (Gap 16)
+
+**Current Version**: 2.0
+**Target Version**: 2.1
+
+**Changes Warranting Version Bump**:
+
+| Change | Impact | Justification |
+|--------|--------|---------------|
+| Add `total_sections: 15` metadata | Non-breaking | Explicit section count for validation |
+| Add `last_updated` field | Non-breaking | Audit trail |
+| YAML template structural overhaul | Breaking for autopilot | Major restructure |
+| Element ID format migration | Breaking for existing docs | SYS-FN-NNN → SYS.NN.01.SS |
+
+**Conclusion**: Minor version bump (2.0 → 2.1) is appropriate because:
+- No MD template section renumbering (backward compatible for existing SYS docs)
+- YAML template change is breaking but isolated to autopilot consumers
+- Element ID format change is additive (old format still parseable)
+
+### 0.7 CORPUS-10 Threshold Rationale (Gap 17)
+
+**Current Thresholds** (SYS_MVP_QUALITY_GATE_VALIDATION.md:227-231):
+```
+| Metric | Warning | Error |
+| Lines  | 500     | 1,000 |
+| Tokens | 50,000  | —     |
+```
+
+**Problem**: Inconsistent with CLAUDE.md token limits and other artifact thresholds.
+
+**CLAUDE.md Reference**:
+- Standard limit: 50,000 tokens (200KB)
+- Maximum limit: 100,000 tokens (400KB)
+
+**Cross-Artifact Analysis**:
+
+| Artifact | Warning Tokens | Error Tokens | Source |
+|----------|---------------|--------------|--------|
+| BRD | 15,000 | 20,000 | BRD_MVP_QUALITY_GATE_VALIDATION.md |
+| PRD | 15,000 | 20,000 | PRD_MVP_QUALITY_GATE_VALIDATION.md |
+| ADR | 10,000 | 15,000 | ADR_MVP_QUALITY_GATE_VALIDATION.md |
+| SYS (current) | 50,000 | — | Inconsistent |
+| SYS (proposed) | 15,000 | 20,000 | Align with PRD |
+
+**Decision**: Align SYS thresholds with PRD (both are comprehensive documents):
+
+```markdown
+| Metric | Warning | Error |
+| Lines  | 800     | 1,200 |
+| Tokens | 15,000  | 20,000 |
+```
+
+**Rationale**:
+- SYS documents should trigger split at same thresholds as PRD
+- 15K/20K aligns with CLAUDE.md "split at logical boundaries" guidance
+- Line thresholds adjusted proportionally (800/1200 vs 500/1000)
 
 ---
 
@@ -205,7 +281,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "2.1"          # Updated
+  schema_version: "2.1"          # Updated from 2.0
   last_updated: "2026-02-26"     # Added
   total_sections: 15             # Added (Sections 1-15)
 ---
@@ -324,12 +400,25 @@ SYS documents follow a comprehensive **15-section** MVP structure organized into
 
 Fix inconsistent thresholds in CORPUS-10 (lines 227-232):
 
+**Before**:
+```markdown
+**Thresholds**:
+| Metric | Warning | Error |
+|--------|---------|-------|
+| Lines | 500 | 1,000 |
+| Tokens | 50,000 | — |
+```
+
+**After**:
 ```markdown
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
 | Lines | 800 | 1,200 |
 | Tokens | 15,000 | 20,000 |
+
+**Rationale**: Aligned with PRD thresholds per CLAUDE.md token limits guidance.
+See Phase 0.7 in SYS-MVP-TEMPLATE_FIX_PLAN.md for detailed justification.
 ```
 
 ### 3.4 Update README.md Section Count
@@ -354,7 +443,50 @@ Update to explicitly state 15 sections (around line 29):
 
 **File**: `SYS-MVP-TEMPLATE.yaml`
 
-The YAML template currently has only 4 sections. Expand to match MD template's 15-section structure:
+### 4.0 YAML Structural Change Documentation (Gap 1, 13)
+
+**Current Structure** (named sections):
+```yaml
+section_1_system_boundary:
+  in_scope: [...]
+  out_of_scope: [...]
+  interfaces: [...]
+
+section_2_functional_requirements:
+  user_actors: [...]
+  system_functions:
+    - id: "SYS-FN-001"  # Legacy format
+      description: "..."
+```
+
+**Target Structure** (array-based):
+```yaml
+sections:
+  - number: 1
+    title: "Document Control"
+    required: true
+  - number: 2
+    title: "Executive Summary"
+    subsections: [...]
+```
+
+**Migration Impact**:
+
+| Consumer | Impact | Action |
+|----------|--------|--------|
+| doc-sys-autopilot | High - parsing logic change | Update SKILL.md to use `sections[N]` |
+| Manual YAML users | Medium - different structure | Document migration in README |
+| Validators | Low - schema unchanged | No action needed |
+
+**Element ID Format Migration** (Gap 13):
+
+| Current | Target | Example |
+|---------|--------|---------|
+| `SYS-FN-001` | `SYS.NN.01.SS` | `SYS.01.01.01` |
+
+Per ID_NAMING_STANDARDS.md:
+- SYS uses **Element Reference (Dot Notation)**: `TYPE.NN.TT.SS`
+- `TT` = Element type code (01=Functional Req, 02=Quality Attr, etc.)
 
 ### 4.1 Update YAML Template Structure
 
@@ -364,6 +496,7 @@ The YAML template currently has only 4 sections. Expand to match MD template's 1
 # - Purpose: AI-consumable template for automated SYS artifact generation
 # - Validation: Validated by SYS_MVP_SCHEMA.yaml (shared with MD template)
 # - Human Reference: See SYS-MVP-TEMPLATE.md for narrative explanations
+# - Migration: v2.0 → v2.1 changes section structure (see Phase 4.0)
 # =============================================================================
 
 # Template metadata
@@ -377,7 +510,7 @@ id: SYS-NN
 summary: "[Single-sentence description: System requirements defining boundaries, functionality, and non-functional requirements]"
 
 # =============================================================================
-# Document Control
+# Document Control (Section 1)
 # =============================================================================
 
 document_control:
@@ -394,7 +527,7 @@ document_control:
   source_document: "@prd: PRD.NN.EE.SS"
 
 # =============================================================================
-# Sections (15 total)
+# Sections (15 total) - Array-based structure for autopilot consumption
 # =============================================================================
 
 sections:
@@ -417,6 +550,13 @@ sections:
       - "3.1 System Boundaries"
       - "3.2 Acceptance Scope"
       - "3.3 Environmental Assumptions"
+    content:
+      in_scope:
+        - "[In-scope component 1: e.g., User authentication service]"
+        - "[In-scope component 2: e.g., Payment processing system]"
+      out_of_scope:
+        - "[Out-of-scope component 1: e.g., Legacy mainframe integration]"
+        - "[Out-of-scope component 2: e.g., Mobile app (separate project)]"
 
   - number: 4
     title: "Functional Requirements"
@@ -427,6 +567,19 @@ sections:
       - "4.3 Error Handling Requirements"
       - "4.4 Integration Requirements"
       - "4.5 External Dependencies"
+    content:
+      # Element ID format: SYS.NN.01.SS (unified 4-segment)
+      requirements:
+        - id: "SYS.NN.01.01"
+          description: "[Function description: e.g., User authentication]"
+          priority: "High"
+          triggered_by:
+            - "[Trigger 1: User login attempt]"
+        - id: "SYS.NN.01.02"
+          description: "[Function description: e.g., Data validation]"
+          priority: "High"
+          triggered_by:
+            - "[Trigger 1: User input submission]"
 
   - number: 5
     title: "Quality Attributes"
@@ -438,6 +591,23 @@ sections:
       - "5.4 Security Requirements"
       - "5.5 Observability Requirements"
       - "5.6 Maintainability Requirements"
+    content:
+      # Element ID format: SYS.NN.02.SS (02 = Quality Attribute type)
+      performance:
+        - id: "SYS.NN.02.01"
+          requirement: "[Performance requirement: e.g., API response time]"
+          metric: "p95 latency <= 200ms"
+          scope: "All REST API endpoints"
+      reliability:
+        - id: "SYS.NN.02.05"
+          requirement: "[Reliability requirement: e.g., Availability]"
+          metric: "99.9% uptime"
+          scope: "Production environment"
+      security:
+        - id: "SYS.NN.02.10"
+          requirement: "[Security requirement: e.g., Authentication]"
+          metric: "MFA for all admin accounts"
+          scope: "Administrative functions"
 
   - number: 6
     title: "Interface Specifications"
@@ -445,6 +615,12 @@ sections:
     subsections:
       - "6.1 External Interfaces"
       - "6.2 Internal Interfaces"
+    content:
+      interfaces:
+        - name: "[Interface 1: e.g., REST API]"
+          type: "REST API"
+          protocol: "HTTPS/1.1"
+          description: "[Interface description]"
 
   - number: 7
     title: "Data Management Requirements"
@@ -519,7 +695,7 @@ sections:
     description: "Version history table"
 
 # =============================================================================
-# Traceability
+# Traceability (Section 13 content)
 # =============================================================================
 
 traceability:
@@ -562,6 +738,7 @@ traceability:
 # - 15 sections: Document Control through Change History
 # - 5-part organization: Definition, Requirements, Specification, Operations, Validation
 # - Quality attributes cover performance, reliability, scalability, security, observability, maintainability
+# - Element IDs use unified 4-segment format: SYS.NN.TT.SS
 
 # =============================================================================
 ```
@@ -575,11 +752,11 @@ traceability:
 | Skill | File Path | Update Scope |
 |-------|-----------|--------------|
 | doc-sys | `.claude/skills/doc-sys/SKILL.md` | Add explicit "15 sections" statement |
-| doc-sys_quickref | `.claude/skills/doc-sys_quickref.md` | Fix path `docs/SYS/` → `docs/06_SYS/` |
+| doc-sys_quickref | `.claude/skills/doc-sys_quickref.md` | Fix path and ID format |
 | doc-sys-validator | `.claude/skills/doc-sys-validator/SKILL.md` | Fix FR-NNN to SYS.NN.01.SS |
 | doc-sys-reviewer | `.claude/skills/doc-sys-reviewer/SKILL.md` | Verify section references |
 | doc-sys-fixer | `.claude/skills/doc-sys-fixer/SKILL.md` | Verify fix patterns |
-| doc-sys-autopilot | `.claude/skills/doc-sys-autopilot/SKILL.md` | Verify generation logic |
+| doc-sys-autopilot | `.claude/skills/doc-sys-autopilot/SKILL.md` | Update YAML parsing for new structure |
 
 ### 5.2 doc-sys/SKILL.md Fixes
 
@@ -595,9 +772,9 @@ traceability:
 **MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
 ```
 
-### 5.3 doc-sys_quickref.md Fixes
+### 5.3 doc-sys_quickref.md Fixes (Gap 3, 14)
 
-**Path correction** (line 30):
+**Path and ID format correction** (line 30):
 ```markdown
 # Before:
 docs/SYS/SYS-NNN_{descriptive_name}.md
@@ -606,16 +783,14 @@ docs/SYS/SYS-NNN_{descriptive_name}.md
 docs/06_SYS/SYS-NN_{descriptive_name}/SYS-NN_{descriptive_name}.md
 ```
 
-**Template path correction** (line 76):
-```markdown
-# Before:
-ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md
+**Note**: `SYS-NNN` → `SYS-NN` per ID_NAMING_STANDARDS.md (2-digit document number).
 
-# After (no change needed - already correct):
+**Template path** (line 76) - no change needed, already correct:
+```markdown
 ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md
 ```
 
-### 5.4 doc-sys-validator/SKILL.md Fixes
+### 5.4 doc-sys-validator/SKILL.md Fixes (Gap 9)
 
 **Line 115**: Fix FR-NNN to unified format:
 ```markdown
@@ -637,6 +812,48 @@ ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md
 **Functional Requirement Format:**
 - Pattern: `SYS.NN.01.SS` (unified 4-segment format)
 - Table columns: SYS ID, Requirement, Priority, Source, Verification Method
+- Element type code: 01 = Functional Requirement
+```
+
+**Lines 148-151**: Verify QA format is correct:
+```markdown
+# Current (verify correct):
+**Quality Attribute Format (4-segment):**
+- Pattern: `SYS.NN.25.SS`
+- Example: `SYS.08.25.15`
+
+# Should be:
+**Quality Attribute Format (4-segment):**
+- Pattern: `SYS.NN.02.SS` (02 = Quality Attribute type)
+- Example: `SYS.08.02.15`
+```
+
+### 5.5 doc-sys-autopilot/SKILL.md Fixes (Gap 18)
+
+Update YAML parsing logic to handle new array-based structure:
+
+```markdown
+# Add to SKILL.md parsing section:
+
+## YAML Template Parsing (v2.1)
+
+**Section Access Pattern**:
+```yaml
+# Old format (v2.0):
+section_1_system_boundary.in_scope
+
+# New format (v2.1):
+sections[2].content.in_scope  # Section 3 = Scope
+```
+
+**Requirement ID Format**:
+```yaml
+# Old format:
+system_functions[0].id: "SYS-FN-001"
+
+# New format:
+sections[3].content.requirements[0].id: "SYS.NN.01.01"
+```
 ```
 
 ---
@@ -683,23 +900,342 @@ grep -c "pattern:" SYS_MVP_SCHEMA.yaml
 |-------|-------------|---------------|----------|
 | Total sections | Count `## N.` headers | Count `sections:` entries | 15 each |
 | Section titles | Extract from headers | Extract from `title:` | Match exactly |
-| Subsections | Count `### N.N` headers | Count `subsections:` | Match |
-| Schema version | `custom_fields.schema_version` | `schema_version:` | Match |
+| Subsections | Count `### N.N` headers | Count `subsections:` entries | Match per section |
+| Schema version | `custom_fields.schema_version` | `schema_version:` | Both "2.1" |
 
-**Verification Command**:
+**Verification Commands**:
 ```bash
+cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS
+
 # Count sections in MD template
 grep -c "^## [0-9]" SYS-MVP-TEMPLATE.md
 # Expected: 15
 
 # Count sections in YAML template
-grep -c "number:" SYS-MVP-TEMPLATE.yaml
+grep -c "^\s*- number:" SYS-MVP-TEMPLATE.yaml
 # Expected: 15
 
 # Verify section titles match
 diff <(grep "^## [0-9]" SYS-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
-     <(grep "title:" SYS-MVP-TEMPLATE.yaml | head -15 | sed 's/.*title: "//;s/"$//')
+     <(grep -A1 "^\s*- number:" SYS-MVP-TEMPLATE.yaml | grep "title:" | sed 's/.*title: "//;s/"$//')
 # Expected: No output (files match)
+
+# Count subsections per section (sample check for Section 13)
+grep -c "^### 13\." SYS-MVP-TEMPLATE.md
+# Expected: 10
+
+grep -A20 "number: 13" SYS-MVP-TEMPLATE.yaml | grep -c "13\."
+# Expected: 10
+```
+
+### 6.5 Autopilot Integration Test (Gap 18)
+
+**Purpose**: Verify doc-sys-autopilot can consume new YAML structure.
+
+**Test Procedure**:
+1. Create minimal ADR document for test input
+2. Invoke doc-sys-autopilot skill
+3. Verify generated SYS has:
+   - 15 sections
+   - Correct element ID format (SYS.NN.01.SS)
+   - Cumulative traceability tags
+
+**Test Script**:
+```bash
+# Create test ADR
+cat > /tmp/test_adr.md << 'EOF'
+# ADR-99: Test Architecture Decision
+
+## Status
+Accepted
+
+## Context
+Test context for autopilot verification.
+
+## Decision
+Implement test system.
+
+## Consequences
+- Test consequence 1
+EOF
+
+# Invoke autopilot (manual step - requires skill invocation)
+# skill: "doc-sys-autopilot" args: "/tmp/test_adr.md"
+
+# Verify output
+# Check for 15 sections, SYS.NN.01.SS format, @brd/@prd/@ears/@bdd/@adr tags
+```
+
+---
+
+## Phase 7: Validation Script (Gap 15)
+
+### 7.1 Create Validation Script
+
+**File**: `validate_sys_fixes.sh`
+
+```bash
+#!/bin/bash
+# =============================================================================
+# SYS-MVP-TEMPLATE Fix Validation Script
+# Version: 2.0
+# Purpose: Validate all fixes from SYS-MVP-TEMPLATE_FIX_PLAN.md v2.0
+# =============================================================================
+
+set -e
+
+SYS_DIR="/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS"
+SKILLS_DIR="/opt/data/docs_flow_framework/.claude/skills"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+PASS_COUNT=0
+FAIL_COUNT=0
+WARN_COUNT=0
+
+pass() {
+    echo -e "${GREEN}[PASS]${NC} $1"
+    ((PASS_COUNT++))
+}
+
+fail() {
+    echo -e "${RED}[FAIL]${NC} $1"
+    ((FAIL_COUNT++))
+}
+
+warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+    ((WARN_COUNT++))
+}
+
+echo "=============================================="
+echo "SYS-MVP-TEMPLATE Fix Validation"
+echo "=============================================="
+echo ""
+
+# -----------------------------------------------------------------------------
+# Phase 1: MD Template Checks
+# -----------------------------------------------------------------------------
+echo "--- Phase 1: MD Template ---"
+
+# Check schema_version
+if grep -q 'schema_version: "2.1"' "$SYS_DIR/SYS-MVP-TEMPLATE.md"; then
+    pass "MD template schema_version is 2.1"
+else
+    fail "MD template schema_version not updated to 2.1"
+fi
+
+# Check total_sections
+if grep -q 'total_sections: 15' "$SYS_DIR/SYS-MVP-TEMPLATE.md"; then
+    pass "MD template has total_sections: 15"
+else
+    fail "MD template missing total_sections: 15"
+fi
+
+# Check section count
+SECTION_COUNT=$(grep -c "^## [0-9]" "$SYS_DIR/SYS-MVP-TEMPLATE.md" || echo "0")
+if [ "$SECTION_COUNT" -eq 15 ]; then
+    pass "MD template has 15 sections"
+else
+    fail "MD template has $SECTION_COUNT sections (expected 15)"
+fi
+
+# Check template footer
+if grep -q "Template Version: 2.1 (MVP - 15 sections)" "$SYS_DIR/SYS-MVP-TEMPLATE.md"; then
+    pass "MD template has version footer"
+else
+    fail "MD template missing version footer"
+fi
+
+# -----------------------------------------------------------------------------
+# Phase 3: Supporting Documents
+# -----------------------------------------------------------------------------
+echo ""
+echo "--- Phase 3: Supporting Documents ---"
+
+# Check Quality Gate thresholds
+if grep -q "Tokens | 15,000 | 20,000" "$SYS_DIR/SYS_MVP_QUALITY_GATE_VALIDATION.md"; then
+    pass "Quality Gate has correct token thresholds (15K/20K)"
+else
+    fail "Quality Gate token thresholds not updated"
+fi
+
+# Check README section count
+if grep -q "15 sections" "$SYS_DIR/README.md"; then
+    pass "README mentions 15 sections"
+else
+    fail "README doesn't mention 15 sections"
+fi
+
+# -----------------------------------------------------------------------------
+# Phase 4: YAML Template
+# -----------------------------------------------------------------------------
+echo ""
+echo "--- Phase 4: YAML Template ---"
+
+# Check YAML syntax
+if python3 -c "import yaml; yaml.safe_load(open('$SYS_DIR/SYS-MVP-TEMPLATE.yaml').read())" 2>/dev/null; then
+    pass "YAML template syntax valid"
+else
+    fail "YAML template syntax invalid"
+fi
+
+# Check YAML schema_version
+if grep -q 'schema_version: "2.1"' "$SYS_DIR/SYS-MVP-TEMPLATE.yaml"; then
+    pass "YAML template schema_version is 2.1"
+else
+    fail "YAML template schema_version not updated"
+fi
+
+# Check YAML total_sections
+if grep -q 'total_sections: 15' "$SYS_DIR/SYS-MVP-TEMPLATE.yaml"; then
+    pass "YAML template has total_sections: 15"
+else
+    fail "YAML template missing total_sections"
+fi
+
+# Check YAML section count
+YAML_SECTIONS=$(grep -c "^\s*- number:" "$SYS_DIR/SYS-MVP-TEMPLATE.yaml" || echo "0")
+if [ "$YAML_SECTIONS" -eq 15 ]; then
+    pass "YAML template has 15 sections array entries"
+else
+    fail "YAML template has $YAML_SECTIONS sections (expected 15)"
+fi
+
+# Check for legacy SYS-FN format (should NOT exist)
+if grep -q "SYS-FN-" "$SYS_DIR/SYS-MVP-TEMPLATE.yaml"; then
+    fail "YAML template still contains legacy SYS-FN-NNN format"
+else
+    pass "YAML template uses unified SYS.NN.TT.SS format"
+fi
+
+# -----------------------------------------------------------------------------
+# Phase 5: Skills
+# -----------------------------------------------------------------------------
+echo ""
+echo "--- Phase 5: Skills ---"
+
+# Check doc-sys_quickref path
+if grep -q "docs/06_SYS/SYS-NN" "$SKILLS_DIR/doc-sys_quickref.md"; then
+    pass "doc-sys_quickref has correct path (docs/06_SYS/SYS-NN)"
+else
+    fail "doc-sys_quickref has wrong path"
+fi
+
+# Check doc-sys-validator format
+if grep -q "SYS.NN.01.SS" "$SKILLS_DIR/doc-sys-validator/SKILL.md"; then
+    pass "doc-sys-validator uses SYS.NN.01.SS format"
+else
+    fail "doc-sys-validator still uses FR-NNN format"
+fi
+
+# Check for legacy FR-NNN in validator (should NOT exist)
+if grep -q "FR-NNN" "$SKILLS_DIR/doc-sys-validator/SKILL.md"; then
+    fail "doc-sys-validator still contains FR-NNN references"
+else
+    pass "doc-sys-validator has no FR-NNN references"
+fi
+
+# -----------------------------------------------------------------------------
+# Phase 6: Sync Verification
+# -----------------------------------------------------------------------------
+echo ""
+echo "--- Phase 6: Sync Verification ---"
+
+# Compare section counts
+MD_SECTIONS=$(grep -c "^## [0-9]" "$SYS_DIR/SYS-MVP-TEMPLATE.md" || echo "0")
+YAML_SECTIONS=$(grep -c "^\s*- number:" "$SYS_DIR/SYS-MVP-TEMPLATE.yaml" || echo "0")
+
+if [ "$MD_SECTIONS" -eq "$YAML_SECTIONS" ]; then
+    pass "MD and YAML section counts match ($MD_SECTIONS)"
+else
+    fail "MD ($MD_SECTIONS) and YAML ($YAML_SECTIONS) section counts differ"
+fi
+
+# -----------------------------------------------------------------------------
+# Summary
+# -----------------------------------------------------------------------------
+echo ""
+echo "=============================================="
+echo "Validation Summary"
+echo "=============================================="
+echo -e "Passed: ${GREEN}$PASS_COUNT${NC}"
+echo -e "Failed: ${RED}$FAIL_COUNT${NC}"
+echo -e "Warnings: ${YELLOW}$WARN_COUNT${NC}"
+echo ""
+
+if [ $FAIL_COUNT -eq 0 ]; then
+    echo -e "${GREEN}All validations passed!${NC}"
+    exit 0
+else
+    echo -e "${RED}$FAIL_COUNT validation(s) failed. Review and fix before proceeding.${NC}"
+    exit 1
+fi
+```
+
+### 7.2 Make Script Executable
+
+```bash
+chmod +x /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/validate_sys_fixes.sh
+```
+
+---
+
+## Phase 8: Post-Implementation Documentation (Gap 8)
+
+### 8.1 Update Fix Plan Status
+
+After implementation, update this file:
+
+```markdown
+**Status**: ~~Pending~~ **Completed**
+**Version**: 2.0
+**Last Updated**: 2026-02-26
+**Completion Date**: YYYY-MM-DD
+```
+
+### 8.2 Create CHANGELOG Entry
+
+Add to project CHANGELOG or create one:
+
+```markdown
+## [2026-02-26] SYS-MVP-TEMPLATE v2.1
+
+### Changed
+- Schema version bumped from 2.0 to 2.1
+- YAML template restructured from named sections to array-based
+- Element ID format migrated from SYS-FN-NNN to SYS.NN.01.SS
+- Quality Gate CORPUS-10 thresholds aligned with PRD (15K/20K tokens)
+
+### Added
+- `total_sections: 15` metadata in MD and YAML templates
+- Template footer with version info
+- Validation script `validate_sys_fixes.sh`
+- Section count verification in skills
+
+### Fixed
+- doc-sys_quickref.md path: `docs/SYS/` → `docs/06_SYS/`
+- doc-sys-validator FR-NNN format → SYS.NN.01.SS
+- doc-sys_quickref ID format: SYS-NNN → SYS-NN
+
+### Deprecated
+- Legacy `section_N_*` YAML structure
+- `SYS-FN-NNN` element ID format
+- `FR-NNN` functional requirement format
+```
+
+### 8.3 Update REQ-MVP-TEMPLATE References
+
+**File**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+
+Verify Section 13.1 (Upstream Sources) references correct SYS format:
+
+```markdown
+# Verify this reference exists:
+| @sys | SYS.NN.EE.SS | Functional requirements |
 ```
 
 ---
@@ -708,20 +1244,29 @@ diff <(grep "^## [0-9]" SYS-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
 
 | Step | Phase | Action | Dependencies |
 |------|-------|--------|--------------|
-| 1 | 0 | Create backups | None |
-| 2 | 1 | Update MD template metadata | Backup complete |
-| 3 | 1 | Add template footer | Step 2 |
-| 4 | 2 | Verify schema (no changes expected) | Step 3 |
-| 5 | 3 | Update Validation Rules (15 sections list) | Step 4 |
-| 6 | 3 | Update Creation Rules (15 sections) | Step 5 |
-| 7 | 3 | Update Quality Gate thresholds | Step 6 |
-| 8 | 3 | Update README.md (15 sections) | Step 7 |
-| 9 | 4 | Expand YAML template (15 sections) | Step 8 |
-| 10 | 5 | Update doc-sys/SKILL.md | Step 9 |
-| 11 | 5 | Update doc-sys_quickref.md (paths) | Step 10 |
-| 12 | 5 | Update doc-sys-validator/SKILL.md | Step 11 |
-| 13 | 5 | Update remaining skills (3 files) | Step 12 |
-| 14 | 6 | Run all tests | Step 13 |
+| 1 | 0.1 | Create backups | None |
+| 2 | 0.6 | Document schema version rationale | None |
+| 3 | 0.7 | Document threshold rationale | None |
+| 4 | 1.1 | Update MD template metadata | Backup complete |
+| 5 | 1.2 | Add template footer | Step 4 |
+| 6 | 2.1 | Verify schema (no changes expected) | Step 5 |
+| 7 | 3.1 | Update Validation Rules (15 sections list) | Step 6 |
+| 8 | 3.2 | Update Creation Rules (15 sections) | Step 7 |
+| 9 | 3.3 | Update Quality Gate thresholds | Step 8 |
+| 10 | 3.4 | Update README.md (15 sections) | Step 9 |
+| 11 | 4.0 | Document YAML structural change | Step 10 |
+| 12 | 4.1 | Rewrite YAML template (15 sections, unified IDs) | Step 11 |
+| 13 | 5.2 | Update doc-sys/SKILL.md | Step 12 |
+| 14 | 5.3 | Update doc-sys_quickref.md (paths, IDs) | Step 13 |
+| 15 | 5.4 | Update doc-sys-validator/SKILL.md | Step 14 |
+| 16 | 5.5 | Update doc-sys-autopilot/SKILL.md | Step 15 |
+| 17 | 5.x | Update remaining skills (2 files) | Step 16 |
+| 18 | 7.1 | Create validation script | Step 17 |
+| 19 | 6.1-6.4 | Run template validations | Step 18 |
+| 20 | 6.5 | Run autopilot integration test | Step 19 |
+| 21 | 8.1 | Update fix plan status | Step 20 |
+| 22 | 8.2 | Create CHANGELOG entry | Step 21 |
+| 23 | 8.3 | Verify REQ-MVP-TEMPLATE references | Step 22 |
 
 **Note**: No MD template section renumbering needed - template already has correct 1-15 numbering.
 
@@ -755,26 +1300,40 @@ diff <(grep "^## [0-9]" SYS-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
 - [ ] Matches validation rules
 
 ### YAML Template Verification
-- [ ] Section structure matches MD template
+- [ ] Uses array-based `sections:` structure (not named sections)
 - [ ] All 15 sections defined with subsections
-- [ ] Metadata updated (total_sections: 15)
-- [ ] schema_version: 2.1
+- [ ] Metadata updated (total_sections: 15, schema_version: 2.1)
+- [ ] Element IDs use unified format (SYS.NN.TT.SS)
+- [ ] No legacy SYS-FN-NNN or FR-NNN formats
 
 ### Skill Files Verification
 - [ ] doc-sys/SKILL.md explicitly says "15 sections"
 - [ ] doc-sys_quickref.md path fixed (`docs/SYS/` → `docs/06_SYS/`)
+- [ ] doc-sys_quickref.md ID fixed (`SYS-NNN` → `SYS-NN`)
 - [ ] doc-sys-validator/SKILL.md FR-NNN fixed to SYS.NN.01.SS
+- [ ] doc-sys-validator/SKILL.md QA format corrected (SYS.NN.02.SS)
 - [ ] doc-sys-reviewer/SKILL.md section references updated
 - [ ] doc-sys-fixer/SKILL.md fix patterns updated
-- [ ] doc-sys-autopilot/SKILL.md generation logic verified
+- [ ] doc-sys-autopilot/SKILL.md YAML parsing updated for array structure
 
 ### README Verification
 - [ ] Section count updated to explicit "15 sections"
 - [ ] Section reference consistent
 
 ### Quality Gate Verification
-- [ ] CORPUS-10 thresholds consistent
+- [ ] CORPUS-10 thresholds updated (800/1200 lines, 15K/20K tokens)
+- [ ] Threshold rationale documented
 - [ ] All CORPUS checks reference correct sections
+
+### Validation Script Verification
+- [ ] Script created at `validate_sys_fixes.sh`
+- [ ] Script executable
+- [ ] All checks pass
+
+### Post-Implementation Verification
+- [ ] Fix plan status updated to Completed
+- [ ] CHANGELOG entry created
+- [ ] REQ-MVP-TEMPLATE references verified
 
 ---
 
@@ -783,12 +1342,13 @@ diff <(grep "^## [0-9]" SYS-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
 | Metric | Count |
 |--------|-------|
 | MD Template lines modified | ~30 (metadata + footer) |
-| YAML Template lines added | ~200 (expand from 4 to 15 sections) |
+| YAML Template lines rewritten | ~250 (complete restructure) |
 | Validation Rules fixes | ~30 lines added (section table) |
 | Creation Rules fixes | ~30 lines modified |
-| Quality Gate fixes | ~10 lines |
+| Quality Gate fixes | ~15 lines |
 | README updates | ~10 lines |
 | Skill files to update | 6 |
+| Validation script lines | ~150 |
 | Total sections after fix | 15 (Sections 1-15) |
 
 ---
@@ -800,12 +1360,22 @@ diff <(grep "^## [0-9]" SYS-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
 The MD template already uses correct 1-15 section numbering. Migration only needed if existing SYS documents:
 - Were created with non-standard section numbers
 - Are missing required sections
-- Use legacy element ID formats (FR-XXX, QA-XXX)
+- Use legacy element ID formats (FR-XXX, QA-XXX, SYS-FN-XXX)
+
+### Element ID Migration
+
+| Legacy Format | Unified Format | Example |
+|---------------|----------------|---------|
+| `FR-001` | `SYS.NN.01.SS` | `SYS.01.01.01` |
+| `QA-001` | `SYS.NN.02.SS` | `SYS.01.02.01` |
+| `SYS-FN-001` | `SYS.NN.01.SS` | `SYS.01.01.01` |
 
 ### Migration Steps (if needed)
 
 1. **Check section structure**: Verify Sections 1-15 exist with correct titles
-2. **Fix element IDs**: Replace legacy FR-XXX/QA-XXX with SYS.NN.01.SS/SYS.NN.02.SS
+2. **Fix element IDs**: Replace legacy formats with SYS.NN.TT.SS
+   - TT=01 for Functional Requirements
+   - TT=02 for Quality Attributes
 3. **Add missing sections**: Add any missing sections per template
 4. **Fix traceability**: Ensure Section 13 has cumulative @brd, @prd, @ears, @bdd, @adr tags
 5. **Validate**: Run `doc-sys-validator` on updated document
@@ -836,10 +1406,11 @@ The MD template already uses correct 1-15 section numbering. Migration only need
 
 After fixing the template and skills, verify these files:
 
-| File | Update Needed | Priority |
-|------|---------------|----------|
-| `REQ-MVP-TEMPLATE.md` | SYS section references | P3 |
-| Existing SYS documents | Migration to unified element IDs | P3 |
+| File | Update Needed | Priority | Specific Check |
+|------|---------------|----------|----------------|
+| `REQ-MVP-TEMPLATE.md` | SYS section references | P3 | Section 13.1 uses `@sys: SYS.NN.EE.SS` |
+| `SPEC-MVP-TEMPLATE.md` | SYS references | P3 | Traceability uses unified format |
+| Existing SYS documents | Element ID migration | P3 | FR-XXX → SYS.NN.01.SS |
 
 ---
 

@@ -72,27 +72,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 
 ## 2. Document Structure (Required sections)
 
-SYS documents follow a comprehensive **15-section** MVP structure organized into 5 parts:
-
-#### Required Sections (numbered 1-15):
-
-| # | Section | Part | Purpose |
-|---|---------|------|---------|
-| 1 | Document Control | 1 | Metadata with REQ-Ready Score |
-| 2 | Executive Summary | 1 | System overview and context |
-| 3 | Scope | 1 | System boundaries and inclusions/exclusions |
-| 4 | Functional Requirements | 2 | SYS.NN.01.SS format requirements |
-| 5 | Quality Attributes | 2 | Performance, reliability, security, etc. |
-| 6 | Interface Specifications | 3 | External and internal interfaces |
-| 7 | Data Management Requirements | 3 | Data model, storage, migration |
-| 8 | Testing and Validation Requirements | 3 | Test strategy, coverage targets |
-| 9 | Deployment and Operations Requirements | 4 | Infrastructure, scripts, Ansible, observability |
-| 10 | Compliance and Regulatory Requirements | 4 | Regulatory, security, audit |
-| 11 | Acceptance Criteria | 5 | Functional, performance, security criteria |
-| 12 | Risk Assessment | 5 | Technical risks, mitigation |
-| 13 | Traceability | 5 | Upstream sources, downstream artifacts |
-| 14 | Implementation Notes | 5 | Technical guidance, dependencies |
-| 15 | Change History | 5 | Version history table |
+SYS documents follow a comprehensive structure translating ADR decisions into system requirements:
 
 #### **Part 1: System Definition**
 - Document Control, Executive Summary, Scope

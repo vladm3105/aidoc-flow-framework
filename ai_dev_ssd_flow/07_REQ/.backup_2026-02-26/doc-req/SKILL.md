@@ -1,6 +1,6 @@
 ---
 name: doc-req
-description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ MVP format with 11 sections, SPEC-readiness scoring, and cumulative traceability
+description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections, SPEC-readiness scoring, and IMPL-readiness scoring
 tags:
   - sdd-workflow
   - layer-7-artifact
@@ -82,9 +82,9 @@ Use `doc-req` when:
 
 ## REQ-Specific Guidance
 
-### 1. REQ MVP Format (11 Required Sections)
+### 1. REQ v3.0 Format (12 Required Sections)
 
-**CRITICAL**: REQ MVP uses streamlined 11-section structure
+**CRITICAL**: REQ v3.0 expanded from 7 to 12 sections
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 

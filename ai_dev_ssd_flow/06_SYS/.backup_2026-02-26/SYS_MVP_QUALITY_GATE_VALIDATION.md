@@ -227,11 +227,8 @@ grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md | sort | uniq -d
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 800 | 1,200 |
-| Tokens | 15,000 | 20,000 |
-
-**Rationale**: Aligned with PRD thresholds per CLAUDE.md token limits guidance.
-See Phase 0.7 in SYS-MVP-TEMPLATE_FIX_PLAN.md for detailed justification.
+| Lines | 500 | 1,000 |
+| Tokens | 50,000 | — |
 
 ---
 

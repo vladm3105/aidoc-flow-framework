@@ -240,7 +240,7 @@ flowchart TD
         E2 -->|No| E3[Flag missing docs]
         E3 --> E4{Required doc?}
         E4 -->|Yes| E5[ABORT: Create missing doc first]
-        E4 -->|No| E6[Continue with warning]
+        E4 -->|No| E6[Continue with note]
         E2 -->|Yes| E6
     end
 
@@ -398,8 +398,8 @@ ls -la REF/
 |-------|--------|----------|
 | Reference documents exist | Verify files in `docs/00_REF/` or `REF/` | Error - blocks generation |
 | `@ref:` targets in source docs | Verify referenced files exist | Error - blocks generation |
-| Gap analysis documents | Verify `GAP_*.md` files if referenced | Warning - flag for creation |
-| Cross-reference documents | Verify upstream docs exist | Warning - document dependency |
+| Gap analysis documents | Verify `GAP_*.md` files if referenced | Note - flag for creation |
+| Cross-reference documents | Verify upstream docs exist | Note - document dependency |
 
 **Validation Process**:
 
@@ -410,7 +410,7 @@ grep -h "@ref:" docs/00_REF/**/*.md REF/**/*.md 2>/dev/null | \
   while read link; do
     file=$(echo "$link" | grep -oP '\(([^)]+)\)' | tr -d '()')
     if [ ! -f "$file" ]; then
-      echo "WARNING: Referenced file not found: $file"
+      echo "NOTE: Referenced file not found: $file"
     fi
   done
 ```
@@ -420,7 +420,7 @@ grep -h "@ref:" docs/00_REF/**/*.md REF/**/*.md 2>/dev/null | \
 | Scenario | Action |
 |----------|--------|
 | Required source doc missing | Abort with clear error message |
-| Optional reference missing | Log warning, continue with placeholder note |
+| Optional reference missing | Log note, continue with placeholder note |
 | Gap analysis doc missing | Prompt user: create doc or update references |
 
 **Example Output**:
@@ -823,7 +823,7 @@ python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbos
 LOOP (max 3 iterations):
   1. Run doc-brd-validator
   2. IF errors found: Apply auto-fixes
-  3. IF warnings found: Review and address if critical
+  3. IF non-blocking issues found: Review and address if critical
   4. IF PRD-Ready Score < 90%: Enhance sections
   5. IF clean: Mark VALIDATED, proceed
   6. IF max iterations: Log issues, flag for manual review
@@ -911,11 +911,11 @@ After fixes, automatically re-run reviewer.
 
 ```
 Iteration 1:
-  Review v001: Score 85 (2 errors, 4 warnings)
+  Review v001: Score 85 (2 errors, 4 non-blocking issues)
   Fix v001: Fixed 5 issues, created 2 files
 
 Iteration 2:
-  Review v002: Score 94 (0 errors, 2 warnings)
+  Review v002: Score 94 (0 errors, 2 non-blocking issues)
   Status: PASS (score >= 90)
 ```
 
@@ -941,18 +941,17 @@ After passing the fix cycle:
 
 4. **PRD-Ready Report**:
    ```
-   PRD-Ready Score Breakdown
-   =========================
-   Business Objectives:    15/15 (BRD.NN.23.SS format)
-   Requirements Complete:  20/20 (BRD.NN.01.SS format)
-   Success Metrics:        10/10 (quantifiable)
-   Constraints Defined:    10/10 (documented)
-   Stakeholder Analysis:   10/10 (complete)
-   Risk Assessment:        10/10 (identified)
-   Traceability:           10/10 (sources cited)
-   ADR Topics:             15/15 (all 7 categories)
-   ----------------------------
-   Total PRD-Ready Score:  100/100 (Target: >= 90)
+  PRD-Ready Score Calculation
+  ===========================
+  Formula: 100 - Total Deductions
+
+  Deductions by Category:
+  - PRD-level contamination (max 50):   -0
+  - FR completeness (max 30):           -0
+  - Structure/quality (max 20):         -0
+  ----------------------------
+  Total Deductions:        0
+  Total PRD-Ready Score:   100/100 (Target: >= 90)
    Status: READY FOR PRD GENERATION
    ```
 
@@ -1180,17 +1179,14 @@ flowchart TD
 - **Auto-Fixable**: 10
 - **Manual Review**: 4
 
-## Score Breakdown
-| Category | Score | Status |
-|----------|-------|--------|
-| Business Objectives | 14/15 | 🟡 |
-| Requirements Complete | 18/20 | 🟡 |
-| Success Metrics | 10/10 | ✅ |
-| Constraints Defined | 10/10 | ✅ |
-| Stakeholder Analysis | 10/10 | ✅ |
-| Risk Assessment | 8/10 | 🟡 |
-| Traceability | 10/10 | ✅ |
-| ADR Topics | 12/15 | 🟡 |
+## Score Calculation (Deduction-Based)
+| Category | Deduction | Max | Status |
+|----------|-----------|-----|--------|
+| PRD-level contamination | -6 | 50 | 🟡 |
+| FR completeness | -5 | 30 | 🟡 |
+| Structure/quality | -2 | 20 | 🟡 |
+| **Total Deductions** | **-13** | **100** | - |
+| **Final Score** | **87/100** | **Target >= 90** | 🟡 |
 
 ## Section 7.2 ADR Topics Check
 | Category | Status | Details |
@@ -1250,8 +1246,7 @@ review_mode:
     include_fix_suggestions: true
   thresholds:
     pass: 90
-    warning: 85
-    fail: 0
+    fail: 90
 ```
 
 ### Fix Mode (v2.1)
@@ -1316,7 +1311,7 @@ flowchart TD
     M --> N[Re-validate]
     N --> O{Score Improved?}
     O -->|Yes| P[Generate Fix Report]
-    O -->|No| Q[Log Warnings]
+    O -->|No| Q[Log Non-Blocking Issues]
     Q --> P
     P --> R[Output: Fixed BRD + Report]
 ```
@@ -1377,7 +1372,7 @@ flowchart TD
 | Missing `BRD-00_GLOSSARY.md` | Create from template | ✅ Yes |
 | Missing reference doc (GAP, REF) | Prompt user with options: (1) Create placeholder, (2) Update link, (3) Remove reference | ⚠️ Optional |
 | Wrong relative path | Recalculate path based on BRD location | ❌ No |
-| Cross-BRD reference to non-existent BRD | Log warning, suggest creating BRD | ❌ No |
+| Cross-BRD reference to non-existent BRD | Log note, suggest creating BRD | ❌ No |
 
 **Fix Report Structure**:
 
@@ -1411,13 +1406,13 @@ flowchart TD
 | 2 | Missing Observability tables | Section 7.2.5 | Architecture decision required |
 | ... | ... | ... | ... |
 
-## Score Breakdown Impact
+## Deduction Impact
 | Category | Before | After | Delta |
 |----------|--------|-------|-------|
-| Business Objectives | 14/15 | 15/15 | +1 |
-| Requirements Complete | 18/20 | 20/20 | +2 |
-| ADR Topics | 12/15 | 14/15 | +2 |
-| Traceability | 10/10 | 10/10 | 0 |
+| PRD-level contamination deduction | -12 | -6 | +6 |
+| FR completeness deduction | -8 | -5 | +3 |
+| Structure/quality deduction | -4 | -2 | +2 |
+| **Total deductions** | **-24** | **-13** | **+11** |
 
 ## Next Steps
 1. Review manually flagged items
@@ -1551,7 +1546,7 @@ Review reports are formal project documents and MUST comply with all project doc
      prd_ready_score_validated: {validated}
      validation_status: PASS|FAIL
      errors_count: {n}
-     warnings_count: {n}
+    non_blocking_count: {n}
      info_count: {n}
      auto_fixable_count: {n}
    ---
@@ -1569,9 +1564,9 @@ Review reports are formal project documents and MUST comply with all project doc
    | 0. Document Control | Report metadata, review date, tool version |
    | 1. Executive Summary | Score, status, issue counts |
    | 2. Document Overview | Reviewed document details, files reviewed |
-   | 3. Score Breakdown | Category scores with max values |
+  | 3. Score Calculation | Deduction-based formula, category deductions, final score |
    | 4-N. Validation Details | Section-specific validation results |
-   | N+1. Issues Summary | Errors, warnings, info categorized |
+  | N+1. Issues Summary | Errors, non-blocking issues, info categorized |
    | N+2. Recommendations | Priority-ordered fix recommendations |
    | N+3. Traceability | Parent document reference |
 
@@ -1781,7 +1776,7 @@ jobs:
 | PRD-Ready Score < 90% | Yes | Must enhance sections |
 | Invalid element ID format | Yes | Must convert to unified format |
 | Unresolved `manual-required` fix confidence | Yes | Must route to manual review before PASS |
-| Missing optional section | No | Log warning, continue |
+| Missing optional section | No | Log note, continue |
 | Style/formatting issues in generated reports | No | Auto-normalize markdown, continue |
 
 ---

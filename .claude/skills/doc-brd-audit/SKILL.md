@@ -99,15 +99,19 @@ Required sections:
 1. `## Summary`
    - BRD ID, timestamp (EST), overall status
    - Validator status, reviewer score
-2. `## Validator Findings`
+2. `## Score Calculation (Deduction-Based)`
+   - Formula: `100 - total_deductions`
+   - Deductions grouped by: contamination (max 50), FR completeness (max 30), structure/quality (max 20)
+   - Threshold comparison (`>=90` pass gate)
+3. `## Validator Findings`
    - List by severity/code
-3. `## Reviewer Findings`
+4. `## Reviewer Findings`
    - List by severity/code
-4. `## Fix Queue for doc-brd-fixer`
+5. `## Fix Queue for doc-brd-fixer`
    - `auto_fixable`
    - `manual_required`
    - `blocked`
-5. `## Recommended Next Step`
+6. `## Recommended Next Step`
    - `run doc-brd-fixer`
    - or `manual update required`
 

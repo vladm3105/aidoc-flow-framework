@@ -76,9 +76,9 @@ Use `doc-sys` when:
 
 ## SYS-Specific Guidance
 
-### 1. Five-Part SYS Document Structure
+### 1. SYS MVP Structure (15 Sections Total)
 
-**MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete structure.
+**MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
 
 **Part 1 - System Definition**:
 - Document Control, Executive Summary, Scope
