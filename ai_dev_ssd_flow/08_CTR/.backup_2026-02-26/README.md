@@ -2,7 +2,7 @@
 title: "API Contracts (CTR) - README"
 tags:
   - index-document
-  - layer-8-artifact
+  - layer-9-artifact
   - shared-architecture
 custom_fields:
   document_type: readme

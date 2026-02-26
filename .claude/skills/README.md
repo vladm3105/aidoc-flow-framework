@@ -1418,7 +1418,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 
 **Templates**:
 - [IMPL-TEMPLATE.md]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - Implementation plan template
-- [CTR-TEMPLATE.md]({project_root}/ai_dev_flow/CTR/CTR-TEMPLATE.md) - API contract template
+- [CTR-MVP-TEMPLATE.md]({project_root}/ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md) - Data contract template
 - [SPEC-TEMPLATE.yaml]({project_root}/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [TASKS-TEMPLATE.md]({project_root}/ai_dev_flow/TASKS/TASKS-TEMPLATE.md) - Code generation plan template
 

@@ -234,6 +234,22 @@ flowchart TD
 | [System 1] | [REST/gRPC/Async] | [What data flows] |
 | [System 2] | [REST/gRPC/Async] | [What data flows] |
 
+### 6.3 Required Decision Diagram Contract (MVP)
+
+For ADR, include:
+- `@diagram: c4-l3` for decision-level component scope.
+- Decision `sequenceDiagram` for chosen interaction pattern.
+- Conditional `@diagram: dfd-l2` when the decision materially changes data movement or data boundaries.
+
+Required declaration block:
+
+```markdown
+@diagram: c4-l3
+@diagram: sequence-async
+@diagram-condition: include dfd-l2 when data-impacting=true
+@diagram-lifecycle: mvp-prod-newmvp
+```
+
 ---
 
 ## 7. Implementation Assessment

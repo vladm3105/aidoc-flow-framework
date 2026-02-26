@@ -49,9 +49,9 @@ Before creating CTR, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (especially Section 3: Interface Specifications, Section 4: Data Schemas)
-3. **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` and `CTR-MVP-TEMPLATE.yaml`
-4. **Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
+4. **Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
 
 ## Reserved ID Exemption (CTR-00_*)
@@ -100,8 +100,8 @@ Use `doc-ctr` when:
 
 **Example**:
 ```
-ai_dev_ssd_flow/08_CTR/CTR-01_data_validation.md
-ai_dev_ssd_flow/08_CTR/CTR-01_data_validation.yaml
+ai_dev_flow/CTR/CTR-01_data_validation.md
+ai_dev_flow/CTR/CTR-01_data_validation.yaml
 ```
 
 ### 2. Document Control Fields (9 Required)
@@ -122,26 +122,14 @@ ai_dev_ssd_flow/08_CTR/CTR-01_data_validation.yaml
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 
-**Required Sections (12-Section MVP Structure)**:
-
-| # | Section | Purpose |
-|---|---------|---------|
-| 1 | Document Control | Metadata, SPEC-Ready Score |
-| 2 | Context | Problem statement, constraints, trade-offs |
-| 3 | Contract Definition | Interface overview, parties, pattern |
-| 4 | Requirements Satisfied | Upstream requirements linked |
-| 5 | Interface Definition | Schema reference, endpoints |
-| 6 | Error Handling | Error codes, failure modes |
-| 7 | Quality Attributes | Performance, security, reliability |
-| 8 | Versioning Strategy | Version policy, compatibility |
-| 9 | Examples | Request/response pairs |
-| 10 | Verification | Contract testing, BDD refs |
-| 11 | Traceability | Upstream/downstream, tags |
-| 12 | References | Internal/external links |
-
-**Optional Appendices**:
-- Appendix A: Alternatives Considered
-- Appendix B: Implementation Notes
+**Core Sections**:
+1. **Contract Overview**: Purpose, scope, version
+2. **Business Context**: Why this contract exists (link to REQ)
+3. **Contract Definition**: Reference to YAML file
+4. **Usage Examples**: Request/response examples
+5. **Validation Rules**: Schema validation, business rules
+6. **Error Handling**: Error codes and responses
+7. **Traceability**: Section 7 format with cumulative tags
 
 ### 4. Element ID Format (MANDATORY)
 
@@ -539,7 +527,7 @@ Focus on REQ Section 3 (Interface Specifications) and Section 4 (Data Schemas).
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_ssd_flow/08_CTR/` for next available ID number.
+Check `ai_dev_flow/CTR/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: CTR-01, CTR-99, CTR-102
@@ -606,16 +594,16 @@ Include all 7-8 upstream tags (@brd through @req/impl).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_ssd_flow/08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ai_dev_flow/CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate CTR
 
 ```bash
 # YAML schema validation
-yamllint ai_dev_ssd_flow/08_CTR/CTR-01_*.yaml
+yamllint ai_dev_flow/CTR/CTR-01_*.yaml
 
 # OpenAPI validation
-openapi-spec-validator ai_dev_ssd_flow/08_CTR/CTR-01_*.yaml
+openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact CTR-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl --strict
@@ -631,13 +619,13 @@ Commit both files (.md and .yaml) and traceability matrix.
 
 ```bash
 # Quality gates
-scripts/validate_quality_gates.sh ai_dev_ssd_flow/08_CTR/CTR-01_*.md
+scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-01_*.md
 
 # YAML validation
-yamllint ai_dev_ssd_flow/08_CTR/CTR-01_*.yaml
+yamllint ai_dev_flow/CTR/CTR-01_*.yaml
 
 # OpenAPI validation (if using OpenAPI)
-openapi-spec-validator ai_dev_ssd_flow/08_CTR/CTR-01_*.yaml
+openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
 
 # CTR-specific validation (includes dual-file check)
 ./ai_dev_flow/scripts/validate_ctr.sh CTR-01
@@ -760,19 +748,19 @@ For supplementary documentation related to CTR artifacts:
 
 ## Related Resources
 
-- **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` (primary authority)
-- **Schema Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
-- **CTR README**: `ai_dev_ssd_flow/08_CTR/README.md`
+- **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
+- **CTR Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
+- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
+- **CTR README**: `ai_dev_flow/08_CTR/README.md`
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **JSON Schema**: https://json-schema.org/
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
 
 **Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_ssd_flow/08_CTR/CTR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_ssd_flow/08_CTR/CTR-SECTION-TEMPLATE.md`
+- Index template: `ai_dev_flow/08_CTR/CTR-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/08_CTR/CTR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

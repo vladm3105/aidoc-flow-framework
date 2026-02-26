@@ -52,6 +52,20 @@ custom_fields:
 4. **Cross-Cycle Traceability**: Link iterations using `@depends: BRD-01` in Section 16.2
 5. **Focused Scope**: 5-15 features per BRD prevents scope creep and ensures shipping
 
+### Diagram Model by Layer (Required)
+
+Apply this model during each MVP cycle:
+
+| Layer | Required Diagram Model |
+|-------|------------------------|
+| BRD (L1) | C4 L1 + DFD L0 |
+| PRD (L2) | C4 L2 + DFD L1 + key sequence |
+| ADR (L5) | C4 L3 + decision sequence (+ DFD L2 when data-impacting) |
+| SYS (L6) | System Diagram Contract (bridge model, no mandatory C4 L4 diagrams) |
+| SPEC/Code/Test (L9+) | C4 L4 ownership |
+
+**Lifecycle rule**: carry diagram quality findings from PROD feedback into NEW MVP requirements and cross-link via `@depends`.
+
 ### When to Start a New MVP Cycle
 
 - [ ] Current MVP deployed to production and stable

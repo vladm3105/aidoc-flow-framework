@@ -2,7 +2,7 @@
 title: "CTR MVP Validation Rules"
 tags:
   - validation-rules
-  - layer-8-artifact
+  - layer-9-artifact
   - shared-architecture
 custom_fields:
   document_type: validation-rules
@@ -93,7 +93,7 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
 | title | string | Yes | Must match "CTR-NN: [Name]" |
-| tags | array | Yes | Must include layer-8-artifact |
+| tags | array | Yes | Must include layer-9-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "CTR" |
 | custom_fields.layer | integer | Yes | Must equal 9 |
 | custom_fields.contract_version | string | Yes | Semantic version format |

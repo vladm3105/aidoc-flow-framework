@@ -261,6 +261,24 @@ sequenceDiagram
     end
 ```
 
+#### 3.4.3 Required Diagram Contract (MVP)
+
+For BRD, include both:
+- `@diagram: c4-l1` (system context)
+- `@diagram: dfd-l0` (top-level data movement)
+
+Optional:
+- Key business `sequenceDiagram` for critical journey timing.
+
+Required declaration block:
+
+```markdown
+@diagram: c4-l1
+@diagram: dfd-l0
+@diagram-scope: business-boundary
+@diagram-lifecycle: mvp-prod-newmvp
+```
+
 ### 3.5 MVP Technology Stack
 
 **User-Facing Platforms**:

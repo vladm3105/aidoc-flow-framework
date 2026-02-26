@@ -272,6 +272,23 @@ AI_CONTEXT_END
 |----------------|-----------------|-----------------|
 | [Error type] | [What user sees] | [What system does] |
 
+### 9.4 Required Diagram Contract (MVP)
+
+For PRD, include:
+- `@diagram: c4-l2` (container-level product architecture)
+- `@diagram: dfd-l1` (product data-flow paths)
+- At least one key `sequenceDiagram` for primary user journey and one error path branch.
+
+Required declaration block:
+
+```markdown
+@diagram: c4-l2
+@diagram: dfd-l1
+@diagram: sequence-sync
+@diagram-scope: product-interaction
+@diagram-lifecycle: mvp-prod-newmvp
+```
+
 ---
 
 ## 10. Customer-Facing Content & Messaging (MANDATORY)

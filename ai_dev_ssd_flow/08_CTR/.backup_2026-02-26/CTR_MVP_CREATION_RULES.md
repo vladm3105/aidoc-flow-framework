@@ -2,7 +2,7 @@
 title: "CTR MVP Creation Rules"
 tags:
   - creation-rules
-  - layer-8-artifact
+  - layer-9-artifact
   - shared-architecture
 custom_fields:
   document_type: creation-rules
@@ -129,7 +129,7 @@ CTR-NN_{descriptive_slug}.yaml
 title: "CTR-NN: [Contract Name]"
 tags:
   - contract
-  - layer-8-artifact
+  - layer-9-artifact
   - api-contract
 custom_fields:
   document_type: contract

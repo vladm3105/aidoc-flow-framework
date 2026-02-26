@@ -255,7 +255,7 @@ Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
 - Element IDs use `CTR.NN.TT.SS` format
-- Element type codes valid for CTR (16, 17, 20)
+- Element type codes valid for CTR (28, 29)
 - Contract naming convention
 
 **Error Codes**:

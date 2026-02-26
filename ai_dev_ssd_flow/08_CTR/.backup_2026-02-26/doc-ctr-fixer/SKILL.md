@@ -317,35 +317,30 @@ Converts invalid element IDs to correct format.
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
 | `CTR.NN.XX.SS` | Invalid type code | Convert to valid CTR code |
-| `API-XXX` | Legacy pattern | `CTR.NN.16.SS` |
-| `INT-XXX` | Legacy pattern | `CTR.NN.16.SS` |
-| `MODEL-XXX` | Legacy pattern | `CTR.NN.17.SS` |
-| `SCHEMA-XXX` | Legacy pattern | `CTR.NN.17.SS` |
-| `CLAUSE-XXX` | Legacy pattern | `CTR.NN.20.SS` |
+| `API-XXX` | Legacy pattern | `CTR.NN.28.SS` |
+| `EVT-XXX` | Legacy pattern | `CTR.NN.29.SS` |
+| `SCHEMA-XXX` | Legacy pattern | `CTR.NN.28.SS` |
 
-**Type Code Mapping** (CTR-specific per ID_NAMING_STANDARDS.md):
+**Type Code Mapping** (CTR-specific):
 
 | Invalid Code | Valid Code | Element Type |
 |--------------|------------|--------------|
-| 01 | 16 | Interface |
-| 02 | 17 | Data Model |
-| 28 | 16 | Interface (legacy) |
-| 29 | 17 | Data Model (legacy) |
-| Any other | 16/17/20 | Map to interface, data model, or clause |
+| 01 | 28 | Contract Interface |
+| 02 | 29 | Contract Event |
+| Any other | 28/29 | Map to interface or event |
 
 **Valid CTR Type Codes**:
 
 | Code | Element Type | Description |
 |------|--------------|-------------|
-| 16 | Interface | API endpoints, service interfaces |
-| 17 | Data Model | Schemas, data structures |
-| 20 | Contract Clause | Contract terms, validation rules |
+| 28 | Contract Interface | API endpoints, service interfaces |
+| 29 | Contract Event | Event definitions, message contracts |
 
 **Regex Patterns**:
 
 ```python
 # Find element IDs with invalid type codes for CTR
-invalid_ctr_type = r'CTR\.(\d{2})\.(?!16|17|20)(\d{2})\.(\d{2})'
+invalid_ctr_type = r'CTR\.(\d{2})\.(?!28|29)(\d{2})\.(\d{2})'
 
 # Find legacy patterns
 legacy_api = r'###\s+API-(\d+):'
@@ -824,7 +819,7 @@ custom_fields:
 | # | Issue Code | Issue | Fix Applied | File |
 |---|------------|-------|-------------|------|
 | 1 | REV-L004 | Broken YAML ref | Updated schema path | CTR-01-API.yaml |
-| 2 | REV-N004 | Invalid element type | Converted to type 16 | CTR-01-API.md |
+| 2 | REV-N004 | Invalid element type | Converted to type 28 | CTR-01-API.md |
 | 3 | REV-Y001 | Invalid YAML syntax | Fixed indentation | CTR-01-API.yaml |
 
 ## Issues Requiring Manual Review
@@ -925,7 +920,6 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-02-26 | **Element Type Code Alignment**: Updated type codes from 28, 29 to 16, 17, 20 per ID_NAMING_STANDARDS.md; Fixed paths from ai_dev_flow/CTR/ to ai_dev_ssd_flow/08_CTR/ |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1/2/3 thresholds (<5%, 5-15%, >15%); Contract ID pattern CTR-NN-TYPE-SS; No deletion policy with [DEPRECATED] markers; Archive manifest for Tier 3; Enhanced drift cache with merge history; Support for both .md and .yaml contract files |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Dual-file (MD + YAML) synchronization; Element ID conversion (types 28, 29); YAML syntax repair; REQ drift handling; Integration with autopilot Review->Fix cycle |

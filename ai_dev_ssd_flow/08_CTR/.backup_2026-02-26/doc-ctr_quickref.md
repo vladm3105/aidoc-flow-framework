@@ -27,8 +27,8 @@ skill: "doc-ctr"
 ## Output Location (Dual-File Format)
 
 ```
-ai_dev_ssd_flow/08_CTR/CTR-NNN_{slug}.md    # Documentation
-ai_dev_ssd_flow/08_CTR/CTR-NNN_{slug}.yaml  # Contract definition
+ai_dev_flow/CTR/CTR-NNN_{slug}.md    # Documentation
+ai_dev_flow/CTR/CTR-NNN_{slug}.yaml  # Contract definition
 ```
 
 ## YAML Formats

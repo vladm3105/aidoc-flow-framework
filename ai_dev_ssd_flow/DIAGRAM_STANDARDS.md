@@ -62,6 +62,31 @@ Use appropriate Mermaid diagram type for the content:
 | Timelines | `timeline` | `mermaid-gen` |
 | Mind maps | `mindmap` | `mermaid-gen` |
 
+## C4 + DFD + Sequence Ownership Model
+
+Use the following model across the MVP → PROD → NEW MVP lifecycle.
+
+| Layer Artifact | Required Model | Purpose |
+|----------------|----------------|---------|
+| BRD (L1) | C4 L1 + DFD L0 | Business/system boundary and top-level data movement |
+| PRD (L2) | C4 L2 + DFD L1 + key sequence | Product container interactions, data movement, temporal user/system flow |
+| ADR (L5) | C4 L3 + decision sequence (+ DFD L2 when data-impacting) | Architecture decision implementation view |
+| SYS (L6) | System Diagram Contract (bridge) | Enforce container/interface/data-flow constraints and downstream ownership |
+| SPEC/Code/Test (L9+) | C4 L4 (Code) | Implementation-level code structure ownership |
+
+### SYS Bridge Rule
+
+- SYS MUST NOT require embedded C4 L4 code/class diagrams as mandatory content.
+- SYS MUST reference downstream SPEC location where C4 L4 ownership is implemented.
+
+### System Diagram Contract (SYS)
+
+Required fields in SYS diagram contract subsection:
+- `@diagram: c4-l2|c4-l3` references used by this system scope
+- `@diagram: dfd-l1|dfd-l2` boundary tags where applicable
+- Required sequence paths for critical integrations and error handling
+- Downstream SPEC path for C4 L4 ownership
+
 ### Interactive Diagrams (RECOMMENDED)
 
 For enhanced navigability, Mermaid diagrams MAY include click handlers to link nodes to related documents or sections. This is **optional but recommended** for traceability diagrams.

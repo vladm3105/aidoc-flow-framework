@@ -105,7 +105,7 @@ metadata:
   # Required tags
   required_tags:
     - ctr                 # Primary identifier (or ctr-template for templates)
-    - layer-8-artifact    # Layer identifier - REQUIRED
+    - layer-9-artifact    # Layer identifier - REQUIRED
 
   # Forbidden tag patterns (will fail validation)
   forbidden_tag_patterns:
@@ -366,7 +366,7 @@ validation_rules:
       severity: error
       fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
 
-    - rule: "tags must include 'ctr' (or 'ctr-template') and 'layer-8-artifact'"
+    - rule: "tags must include 'ctr' (or 'ctr-template') and 'layer-9-artifact'"
       severity: error
 
     - rule: "forbidden tag patterns must not appear"
@@ -489,7 +489,7 @@ traceability:
 
 error_messages:
   CTR-E001: "Missing required tag 'ctr'"
-  CTR-E002: "Missing required tag 'layer-8-artifact'"
+  CTR-E002: "Missing required tag 'layer-9-artifact'"
   CTR-E003: "Invalid document_type: must be 'ctr' or 'template'"
   CTR-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
   CTR-E005: "Forbidden tag pattern detected"
