@@ -622,7 +622,7 @@ done
 |------|-------------|-------|
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W009 | Priority distribution imbalance | CORPUS-09 |
 | CORPUS-W013 | Invalid domain subdirectory | CORPUS-13 |
 | CORPUS-W014 | SPEC-Ready Score below 90% | CORPUS-14 |

@@ -1247,7 +1247,7 @@ def test_validate_resource_limit_within_threshold():
   - Include error and edge cases
   - **SPEC-Ready Criteria**: REQs should contain 90%+ of information needed for automated SPEC generation
   - Use concrete examples instead of placeholders
-  - Target 400-500 lines per domain-focused REQ with complete technical specifications
+  - Target 800 lines per domain-focused REQ with complete technical specifications
   - Include Mermaid state machines for complex workflows
 
 #### What Makes a REQ SPEC-Ready?

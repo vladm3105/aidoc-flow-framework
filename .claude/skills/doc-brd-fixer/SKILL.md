@@ -16,8 +16,9 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BRD, Review Report]
   downstream_artifacts: [Fixed BRD, Fix Report]
-  version: "2.3"
-  last_updated: "2026-02-25"
+  version: "1.2"
+  last_updated: "2026-02-26"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-fixer
@@ -28,7 +29,7 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 **Layer**: 1 (BRD Quality Improvement)
 
-**Upstream**: BRD document, Review Report (`BRD-NN.R_review_report_vNNN.md`)
+**Upstream**: BRD document, Review Report (`BRD-NN.R_review_report_vNNN.md`) or Audit Report (`BRD-NN.A_audit_report_vNNN.md`)
 
 **Downstream**: Fixed BRD, Fix Report (`BRD-NN.F_fix_report_vNNN.md`)
 
@@ -54,9 +55,14 @@ Use `doc-brd-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
+| `doc-brd-audit` | Unified source report (validator + reviewer) | Preferred input |
 | `doc-brd-reviewer` | Source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-brd` | BRD creation rules | Create missing sections |
+
+**Input Preference Order**:
+1. Latest `BRD-NN.A_audit_report_vNNN.md`
+2. Latest `BRD-NN.R_review_report_vNNN.md` (legacy)
 
 ---
 
@@ -344,6 +350,12 @@ Addresses placeholders and incomplete content.
 | REV-P003 | Template date `YYYY-MM-DD` | Replace with current date |
 | REV-P004 | Template name `[Name]` | Replace with metadata author or flag |
 | REV-P005 | Empty section | Add minimum template content |
+| REV-MVP001 | Missing `2.1 MVP Hypothesis` | Add explicit subsection with hypothesis and measurable validation signals |
+| REV-MVP002 | Missing `3.2 MVP Core Features` | Add explicit subsection and checklist; preserve existing scope details |
+| REV-MVP003 | Missing `9.1 MVP Launch Criteria` | Add explicit go/no-go launch gate table |
+| REV-MVP004 | Missing `14.5 Approval and Sign-off` | Add stakeholder sign-off table |
+| REV-MVP008 | Missing test coverage traceability | Add explicit `16.3 Test Coverage Traceability` view |
+| REV-MVP010 | Missing glossary structure 17.1-17.6 | Add missing glossary subsections without deleting existing terms |
 
 **Auto-Replacements**:
 
@@ -355,6 +367,70 @@ replacements = {
     '[Current date]': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
 }
 ```
+
+#### 4.1 MVP Subsection Semantic Normalization (NEW in v2.4)
+
+Before adding new subsections, detect equivalent headings and normalize in place to avoid duplicate content.
+
+| Required Header | Acceptable Equivalent Patterns |
+|-----------------|-------------------------------|
+| `2.1 MVP Hypothesis` | `2.1 Background and Context`, `2.1 Hypothesis` |
+| `3.2 MVP Core Features` | `3.2 In-Scope Items`, `3.2 Scope Items` |
+| `9.1 MVP Launch Criteria` | `9.1 Business Acceptance Criteria`, `9.1 Launch Readiness` |
+
+**Normalization Rule**:
+1. If equivalent heading exists, rename heading to required canonical title.
+2. Preserve existing table/list content under that section.
+3. Insert template block only when section content is missing or below minimum structure.
+
+#### 4.2 Safe Subsection Renumbering (NEW in v2.4)
+
+When inserting missing required subsection numbers, perform deterministic renumbering for subsequent sibling subsections.
+
+```python
+def renumber_sibling_headings(content: str, section_prefix: str, insert_at: float) -> str:
+  """Shift sibling subsection numbers after insertion point.
+  Example: insert 9.1 -> existing 9.1 becomes 9.2, 9.2 becomes 9.3.
+  """
+  # 1) parse headings matching '^##\s+{section_prefix}\.\d+'
+  # 2) process from highest to lowest subsection number
+  # 3) increment only siblings >= insert_at
+  # 4) do not modify sub-subsection identifiers beyond parent prefix
+  return content
+```
+
+**Safety Constraints**:
+- Apply only within same section file.
+- Skip renumbering when explicit cross-reference anchors would break (flag manual review).
+- Log all renumber actions in fix report.
+
+#### 4.3 Template Compliance Contract (NEW in v2.5)
+
+All content fixes MUST align to the canonical template:
+
+- `docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- `docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+
+**Canonical Subsection Anchors (MVP)**:
+
+| Section | Required Anchors |
+|---------|------------------|
+| 1 | 1.1-1.4 |
+| 2 | 2.1-2.5 |
+| 3 | 3.1-3.5, **3.4.1**, **3.4.2** |
+| 5 | 5.1-5.2 |
+| 6 | 6.1-6.5 |
+| 8 | 8.1-8.2 |
+| 9 | 9.1-9.2 |
+| 11 | 11.1-11.2 |
+| 12 | 12.1-12.3 |
+| 14 | 14.1-14.5 |
+| 15 | 15.1-15.3 |
+| 16 | 16.1-16.4 |
+| 17 | 17.1-17.6 (17.5 Cross-References, 17.6 External Standards) |
+| 18 | 18.1-18.5 |
+
+If existing headings use legacy names, normalize to template-canonical labels before validation.
 
 ---
 
@@ -369,6 +445,35 @@ Ensures traceability and cross-references are correct.
 | Missing `@ref:` for created files | Add reference tag |
 | Incorrect cross-BRD path | Update to correct relative path |
 | Missing traceability entry | Add to traceability matrix |
+
+#### 5.1 Markdown Normalization for Generated Reports (NEW in v2.4)
+
+Normalize fixer-generated markdown artifacts to reduce lint friction.
+
+**Scope**:
+- Fix/Fix-validation report headings (`##` title under YAML frontmatter)
+- Table separator style normalization
+- Blank lines around lists and tables
+
+**Applies To**:
+- `BRD-NN.F_fix_report_vNNN.md`
+- Any fixer-generated supplemental notes
+
+---
+
+### Phase 5.5: Fix Confidence Classification (NEW in v2.4)
+
+Each fix action is tagged for downstream gating.
+
+| Confidence | Meaning | Typical Examples |
+|------------|---------|------------------|
+| `auto-safe` | Deterministic structural/text fix with low semantic risk | link path correction, section header normalization, ID conversion |
+| `auto-assisted` | Template insertion with partial semantic assumptions | generated launch criteria table, glossary subsection scaffolding |
+| `manual-required` | Domain-specific content cannot be reliably inferred | unresolved TODO/TBD, business strategy rationale gaps |
+
+**Fix Report Requirement**:
+- Add `confidence` column in `Fixes Applied` table.
+- Include summary counts by confidence level.
 
 ---
 
@@ -847,6 +952,7 @@ After processing drift, update `.drift_cache.json`:
 | `--create-missing` | true | Create missing reference files |
 | `--backup` | true | Backup BRD before fixing |
 | `--dry-run` | false | Preview fixes without applying |
+| `--normalize-markdown` | true | Normalize generated report markdown style |
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
 
@@ -1012,6 +1118,9 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |
+| 2.5 | 2026-02-26 | **Template contract enforcement**: Added explicit compliance anchors to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` + YAML variant; required subsection map now includes 3.4.1/3.4.2, 12.1-12.3, and 18.1-18.5 for fixer normalization and insertion logic. |
+| 2.4 | 2026-02-26 | **Fix quality upgrade**: Added semantic normalization for MVP subsection headers (REV-MVP001/002/003), safe sibling subsection renumbering, explicit auto-fixes for REV-MVP004/008/010, markdown normalization for generated fix artifacts, and confidence tagging (`auto-safe`, `auto-assisted`, `manual-required`) for each applied fix. |
 | 2.3 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Added fixes for missing section subsections |
 | 2.2 | 2026-02-24T21:30:00 | **Upstream Configuration Fixes**: Added Phase 6.0 for upstream_mode fixes (FIX-U001, FIX-U002, FIX-U003); Detects @ref: tags and suggests upstream_mode: "ref"; Cleans up ignored upstream_ref_path when mode is "none" |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |

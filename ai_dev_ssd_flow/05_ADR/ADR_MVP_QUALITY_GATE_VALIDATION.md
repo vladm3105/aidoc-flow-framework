@@ -461,7 +461,7 @@ grep -rn "SYS-Ready.*[0-9]\+%" "$ADR_DIR"/ADR-[0-9]*_*.md
 |------|-------------|-------|
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W009 | Invalid decision status | CORPUS-09 |
 | CORPUS-W013 | Potential decision conflict | CORPUS-13 |
 | CORPUS-W014 | SYS-Ready Score below 90% | CORPUS-14 |
@@ -489,26 +489,22 @@ Some projects may have legacy ADRs that don't follow current standards. Use this
 | Diagrams | ASCII art | Mermaid |
 | **Status** | **Requires full restructure** | **Template-compliant** |
 
-### 3.2 Required Document Structure (Per Template)
+### 3.2 Required Document Structure (Per Template - 11 Sections)
 
 | # | Section | Required |
 |---|---------|----------|
-| 1 | **YAML Frontmatter** | YES - title, tags, custom_fields |
-| 2 | **Document Control** | YES - Project, Version, Date, Owner, Status, SYS-Ready Score |
-| 3 | **Status** | YES - Current ADR status |
-| 4 | **Context** | YES - Problem statement and background |
-| 5 | **Decision** | YES - The architecture decision made |
-| 6 | **Consequences** | YES - Positive and negative outcomes |
-| 7 | **Alternatives Considered** | YES - Evaluated options |
-| 8 | **Architecture Flow** | Recommended - Mermaid diagrams |
-| 9 | **Implementation Details** | YES - Technical specifics |
-| 10 | **Dependencies** | YES - Related systems and components |
-| 11 | **Testing Strategy** | YES - Validation approach |
-| 12 | **Rollback Strategy** | YES - Recovery procedures |
-| 13 | **Success Metrics** | YES - Measurable criteria |
-| 14 | **Timeline** | Optional - Implementation phases |
-| 15 | **References** | YES - Related documents |
-| 16 | **Traceability** | YES - Cumulative upstream tags |
+| 0 | **YAML Frontmatter** | YES - title, tags, custom_fields |
+| 1 | **Section 1: Document Control** | YES - Project, Version, Date, Owner, Status, SYS-Ready Score |
+| 2 | **Section 2: Context** | YES - Problem statement and background |
+| 3 | **Section 3: Decision** | YES - The architecture decision made |
+| 4 | **Section 4: Alternatives Considered** | YES - Evaluated options |
+| 5 | **Section 5: Consequences** | YES - Positive and negative outcomes |
+| 6 | **Section 6: Architecture Flow** | YES - Mermaid diagrams |
+| 7 | **Section 7: Implementation Assessment** | YES - Phases, rollback, monitoring |
+| 8 | **Section 8: Verification** | YES - Success criteria, BDD refs |
+| 9 | **Section 9: Traceability** | YES - Cumulative upstream tags |
+| 10 | **Section 10: Related Decisions** | YES - Dependencies, supersessions |
+| 11 | **Section 11: MVP Lifecycle** | YES - Iteration guidance |
 
 ### 3.3 SYS-Ready Score Calculation
 
@@ -833,7 +829,7 @@ Use this template to track Quality Gate validation progress:
 | Warnings | - | 0 | 0 |
 | Missing Traceability | - | 0 | 0 |
 | Missing SYS-Ready Score | - | 0 | 0 |
-| Files >600 lines | - | 0 | 0 |
+| Files >1200 lines | - | 0 | 0 |
 | Files without Mermaid | - | 0 | - |
 
 **Baseline Command**:

@@ -43,6 +43,19 @@
 3. **Production is Always the Goal**: Every MVP cycle targets production deployment
 4. **Cross-Cycle Traceability**: Use `@depends: BRD-01` to link iterations
 
+### BRD Skills (Layer 1)
+
+Use these BRD skills as a focused quality workflow:
+
+- `doc-brd`: Create or update BRD content from template rules.
+- `doc-brd-autopilot`: Orchestrate BRD generation/review/fix workflow.
+- `doc-brd-validator`: Run structural and schema compliance checks.
+- `doc-brd-reviewer`: Run semantic and business-quality review checks.
+- `doc-brd-fixer`: Apply deterministic fixes from audit/review findings.
+- `doc-brd-audit`: Single wrapper that runs validator → reviewer and produces one combined report for fixer.
+
+Recommended default entrypoint: `/doc-brd-audit <BRD path>`.
+
 ### Why This Approach?
 
 - **Prevents scope creep**: Fixed-scope BRDs (5-15 features) ship faster

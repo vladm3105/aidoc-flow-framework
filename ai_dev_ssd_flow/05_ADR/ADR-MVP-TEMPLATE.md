@@ -14,7 +14,9 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "1.0"
+  schema_version: "1.1"
+  last_updated: "2026-02-26"
+  total_sections: 11
   complexity: 1 # 1-5 scale
 ---
 > ** Dual-Format Note**:
@@ -36,29 +38,6 @@ Constraints:
 - Maintain single-file structure (no document splitting in MVP).
 AI_CONTEXT_END
 -->
----
-title: "ADR-MVP-TEMPLATE: Architecture Decision Record (MVP Version)"
-tags:
-  - adr-template
-  - mvp-template
-  - layer-5-artifact
-custom_fields:
-  document_type: template
-  artifact_type: ADR
-  layer: 5
-  architecture_approaches: [ai-agent-based]
-  priority: shared
-  development_status: draft
-  template_variant: mvp
-  template_profile: mvp
-  template_source: "ADR-MVP-TEMPLATE.md"
-  schema_reference: "ADR_MVP_SCHEMA.yaml"
-  schema_version: "1.0"
-  schema_status: optional
-  creation_rules_reference: "ADR_MVP_CREATION_RULES.md"
-  validation_rules_reference: "ADR_MVP_VALIDATION_RULES.md"
-  traceability_matrix_template: "ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md"
----
 
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
 > Use this template for MVP architecture decisions with 2-3 alternatives.
@@ -383,14 +362,15 @@ When creating the next ADR iteration:
 ---
 
 **Document Version**: 1.0
-**Template Version**: 1.0 (MVP)
-**Last Updated**: YYYY-MM-DDTHH:MM:SS
+**Template Version**: 1.1 (MVP - 11 sections)
+**Last Updated**: 2026-02-26
+**Maintained By**: [Architecture Team]
 
 ---
 
 > **MVP Template Notes**:
-> - This is the standard ADR template (~250 lines)
-> - Single file - no sectioning
-> - Focus on decision + rationale + 2-3 alternatives
+> - This is the standard ADR template (11 sections: 1-11)
+> - Single file - no sectioning per user requirement
+> - Focus on decision + rationale + alternatives
 > - Maintains ai_dev_flow framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full ADR" template)

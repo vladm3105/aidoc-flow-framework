@@ -27,7 +27,7 @@ skill: "doc-bdd"
 ## Output Location
 
 ```text
-docs/BDD/BDD-NNN_{feature_name}.feature
+docs/04_BDD/BDD-NN_{slug}/BDD-NN.SS_{section_slug}.feature
 ```
 
 ## Gherkin Syntax
@@ -65,7 +65,7 @@ BRD, PRD, EARS → BDD → ADR, SYS
 ## Template Location
 
 ```text
-ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature
+ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature
 ```
 
 ## Related Skills

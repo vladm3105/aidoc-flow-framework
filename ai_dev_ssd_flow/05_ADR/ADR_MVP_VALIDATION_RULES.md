@@ -19,18 +19,6 @@ custom_fields:
 # - Scope: Includes all rules from ADR_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
-title: "ADR Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-5-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: ADR
-  layer: 5
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
 > - Apply these rules after ADR creation or modification
@@ -173,7 +161,21 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Type**: Error (blocking)
 
-**Required sections**: Status, Context, Decision, Consequences, Architecture Flow, Alternatives Considered
+**Required Sections (MVP Template - 11 Sections)**:
+
+| Section | Title | Required |
+|---------|-------|----------|
+| 1 | Document Control | MANDATORY |
+| 2 | Context | MANDATORY |
+| 3 | Decision | MANDATORY |
+| 4 | Alternatives Considered | MANDATORY |
+| 5 | Consequences | MANDATORY |
+| 6 | Architecture Flow | MANDATORY |
+| 7 | Implementation Assessment | MANDATORY |
+| 8 | Verification | MANDATORY |
+| 9 | Traceability | MANDATORY |
+| 10 | Related Decisions | MANDATORY |
+| 11 | MVP Lifecycle | MANDATORY |
 
 ### CHECK 3: SYS-Ready Score Validation  NEW
 

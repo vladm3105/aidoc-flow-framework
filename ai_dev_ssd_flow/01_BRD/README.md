@@ -55,6 +55,16 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 
 Use `doc-brd-autopilot` for automated BRD generation with validation and review cycles.
 
+### How to Run `doc-brd-audit`
+
+Use one command as the standard BRD quality gate:
+
+```bash
+/doc-brd-audit docs/01_BRD/BRD-01_platform/BRD-01_platform.md
+```
+
+This wrapper executes `doc-brd-validator` → `doc-brd-reviewer`, then writes a combined report (`BRD-NN.A_audit_report_vNNN.md`) for `doc-brd-fixer`.
+
 ### Input Sources (Priority Order)
 
 | Priority | Source | Location | Content Type |
@@ -92,7 +102,7 @@ The autopilot automatically creates/updates these files:
 2. **Phase 2**: BRD Type Determination - Platform vs Feature
 3. **Phase 3**: BRD Generation - Create content from template
 4. **Phase 4**: Validation - Run `doc-brd-validator`
-5. **Phase 5**: Review & Fix - Run `doc-brd-reviewer` → `doc-brd-fixer` cycle
+5. **Phase 5**: Audit & Fix - Run `doc-brd-audit` (validator → reviewer) → `doc-brd-fixer` cycle
 6. **Phase 6**: Summary - Update `BRD-00_index.md`, generate report
 
 See `.claude/skills/doc-brd-autopilot/SKILL.md` for complete documentation.

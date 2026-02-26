@@ -15,13 +15,16 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: [PRD]
-  version: "2.3"
-  last_updated: "2026-02-25"
+  version: "1.2"
+  last_updated: "2026-02-26"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-validator
 
 Validate Business Requirements Documents (BRD) against Layer 1 MVP schema standards.
+
+**Validation Scope Contract**: This skill is the **structural/schema gate** only. Deep semantic review (strategic alignment, content quality, unresolved placeholders, business consistency) is owned by `doc-brd-reviewer`.
 
 ## Purpose
 
@@ -48,12 +51,24 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| Schema | `ai_dev_flow/01_BRD/BRD_MVP_SCHEMA.yaml` |
-| Template | `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md` |
-| Validation Rules | `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md` |
+| Schema | `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` |
+| Template | `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` |
+| Creation Rules | `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md` |
+| Validation Rules | `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` |
 | Layer | 1 |
 | Artifact Type | BRD |
+
+## Non-Redundancy Boundary
+
+| Concern | `doc-brd-validator` | `doc-brd-reviewer` |
+|---------|----------------------|--------------------|
+| Template/schema compliance | ✅ Primary owner | ⚠️ Secondary check only |
+| Required section/subsection presence | ✅ Primary owner | ⚠️ Spot-check |
+| PRD-Ready numeric gate | ✅ Primary owner | ⚠️ Reports context |
+| Link integrity and content quality | ❌ Out of scope | ✅ Primary owner |
+| Manual business judgment calls | ❌ Out of scope | ✅ Primary owner |
+
+Autopilot sequence remains: **validator first**, then reviewer/fixer loop.
 
 ## Validation Checklist
 
@@ -146,11 +161,11 @@ Forbidden tag patterns:
 
 ### 4. Content Validation
 
-**Business Objectives Format** (Section 3):
+**Business Objectives Format** (Section 2):
 - Pattern: `BRD.NN.23.SS` (unified 4-segment format)
 - Required fields: ID, Objective, Priority, Success Criteria, Measurement Method
 
-**Business Requirements Format** (Section 4):
+**Business Requirements Format** (Section 6):
 - Pattern: `BRD.NN.01.SS` (unified 4-segment format)
 - Required fields: ID, Requirement, Type, Priority, Source, Rationale
 - Priority values: Critical (P1), High (P2), Medium (P3), Low (P4)

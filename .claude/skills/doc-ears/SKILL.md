@@ -355,11 +355,11 @@ Downstream: BDD, ADR, SYS, REQ, SPEC
 ## File Size Limits and Splitting
 
 **Limits**:
-- Target: 300-500 lines per file
-- Maximum: 600 lines per file (absolute)
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute)
 
 **When to Split**:
-- Document approaches 600 lines
+- Document approaches 1200 lines
 - Sections cover distinct capability areas
 
 **Splitting Process**:
@@ -542,7 +542,7 @@ Before ending session:
 - [ ] No numeric downstream references
 - [ ] Quality Attributes in tabular format
 - [ ] Thresholds documented in section 5.4
-- [ ] File size <600 lines
+- [ ] File size <1200 lines
 
 ## Common Pitfalls
 
@@ -602,7 +602,7 @@ The BDD will:
 - **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 - **Threshold Naming**: `ai_dev_flow/THRESHOLD_NAMING_RULES.md`
 
-**Section Templates** (for documents >300 lines):
+**Section Templates** (for documents >800 lines):
 - Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
 
@@ -617,7 +617,7 @@ The BDD will:
 | **Element ID Format** | `EARS.NN.25.SS` (4-segment unified format) |
 | **Source Document** | Single @prd: PRD.NN.EE.SS value |
 | **Downstream References** | Generic names only (no numeric IDs) |
-| **File Size Limit** | 600 lines maximum |
+| **File Size Limit** | 1200 lines maximum |
 | **Next Skill** | doc-bdd |
 
 ---

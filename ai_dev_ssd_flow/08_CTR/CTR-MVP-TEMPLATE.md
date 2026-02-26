@@ -627,6 +627,6 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 
 > **Template Guidance** (remove when creating actual contracts):
 >
-> - Target: 300–500 lines; Maximum: 600 lines (Markdown)
+> - Target: 800 lines; Maximum: 1200 lines (Markdown)
 > - Split large contracts by endpoint groups with matching `.md` + `.yaml` pairs
 > - See `CTR_MVP_CREATION_RULES.md` and `README.md` for detailed guidance

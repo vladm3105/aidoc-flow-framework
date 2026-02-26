@@ -498,7 +498,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Quality attribute not quantified | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W012 | Missing quality attribute coverage | CORPUS-12 |
 | CORPUS-W013 | NFR category not addressed | CORPUS-13 |
 | CORPUS-W014 | Interface definition incomplete | CORPUS-14 |

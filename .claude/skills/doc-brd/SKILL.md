@@ -14,8 +14,9 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.2"
-  last_updated: "2026-02-25"
+  version: "1.2"
+  last_updated: "2026-02-26"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd
@@ -67,10 +68,10 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 Before creating a BRD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-3. **Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
-5. **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
+2. **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md`
+4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md`
+5. **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
 
@@ -78,7 +79,7 @@ Before creating a BRD, read:
 
 Before creating ANY BRD section, confirm:
 
-1. ✅ Read `ai_dev_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
+1. ✅ Read `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
 2. ✅ Element ID format: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dots)
 
 **Common Element Types**:
@@ -162,7 +163,7 @@ Use `doc-brd` when:
 - **MUST mark** Section 3.6 as "N/A - See Platform BRD-NN Section 3.6" and reference specific items
 - **MUST mark** Section 3.7 as "N/A - See Platform BRD-NN Section 3.7" and reference specific conditions
 
-**Reference**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
+**Reference**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
 
 ## BRD-Specific Guidance
 
@@ -174,7 +175,7 @@ Use `doc-brd` when:
 - Use for: All business requirements documents
 - Sections: Complete 18-section structure
 - Best for: Complex projects, regulatory compliance needs
-- Location: `ai_dev_flow/01_BRD/BRD-TEMPLATE.md`
+- Location: `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.md`
 
 **Note**: Use the comprehensive template for all BRD documents. For simpler requirements, complete only the essential sections and mark others as "N/A - Not applicable for this scope".
 
@@ -190,16 +191,16 @@ Use `doc-brd` when:
 **Monolithic Structure** - for MVP/small documents:
 - **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` (INSIDE nested folder)
 - **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
-- **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 - **CRITICAL**: Even monolithic BRDs MUST be in a nested folder
 
 **Section-Based Structure** - for large/complex documents:
 - **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
 - **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
-- Index template: `ai_dev_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/01_BRD/BRD-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ### 2. Required Sections (18 Total)
 
@@ -425,7 +426,7 @@ Cost estimates                Evaluation criteria        Selected approach
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Reference**: See `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md` Section 9 for complete guidelines
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md` Section 9 for complete guidelines
 
 ### 5. Document Control Section Positioning
 
@@ -576,7 +577,7 @@ custom_fields:
 ### Step 10: Create/Update Traceability Matrix
 
 **MANDATORY**: Create or update `docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- Use template: `ai_dev_ssd_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - Add BRD entry with upstream sources and downstream artifacts
 - Update traceability matrix in same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
 
@@ -585,7 +586,7 @@ custom_fields:
 Run validation scripts:
 ```bash
 # BRD structure validation
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_*.md
+./ai_dev_ssd_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_*.md
 
 # Link integrity
 ./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
@@ -724,15 +725,15 @@ For supplementary documentation related to BRD artifacts:
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 
-**Reference**: See `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md` for validation details.
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 
-- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
-- **BRD Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
-- **BRD README**: `ai_dev_flow/01_BRD/README.md`
+- **Main Guide**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`

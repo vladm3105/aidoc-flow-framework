@@ -326,7 +326,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Section File Pattern**: `BDD-NN.S_{section_name}.feature`
 
-   **Subsection Pattern** (if >500 lines): `BDD-NN.S.SS_{subsection_name}.feature`
+   **Subsection Pattern** (if >800 lines): `BDD-NN.S.SS_{subsection_name}.feature`
 
 6. **Generate Scenarios by Category**:
 
@@ -489,7 +489,7 @@ python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
 | Tags Placement | Gherkin-native, not in comments | BDD-E041 |
 | Cumulative Tags | @brd, @prd, @ears present | BDD-W002 |
 | ADR-Ready Score | >= 90% | BDD-W003 |
-| File Size | < 500 lines per .feature file | CHECK 9.4 |
+| File Size | < 800 lines per .feature file | CHECK 9.4 |
 | Scenario Count | <= 12 per Feature block | CHECK 9.4 |
 | Scenario Type Tag | @scenario-type present on each scenario | BDD-E050 |
 | Priority Tag | @p0/@p1/@p2/@p3 present on each scenario | BDD-E051 |
@@ -1333,7 +1333,7 @@ bdd_autopilot:
 
   output:
     structure: sectioned  # always sectioned for BDD
-    size_threshold_lines: 500
+    size_threshold_lines: 800
     max_scenarios_per_feature: 12
     report_format: markdown
 
@@ -1622,7 +1622,7 @@ After autopilot completion:
 - [ ] Tags are Gherkin-native (not in comments)
 - [ ] Times include seconds (HH:MM:SS) with IANA timezone
 - [ ] All 8 scenario categories represented
-- [ ] No .feature file exceeds 500 lines
+- [ ] No .feature file exceeds 800 lines
 - [ ] No Feature block exceeds 12 scenarios
 - [ ] Element IDs use BDD.NN.14.SS (scenarios), BDD.NN.15.SS (steps) format
 - [ ] Index file (BDD-NN.0_index.md) exists with section file map
@@ -1670,14 +1670,12 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **BDD Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Section Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **BDD Schema**: `ai_dev_flow/04_BDD/BDD_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **BDD Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **BDD Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **BDD Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **BDD Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+- **BDD Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
+- **BDD Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 
 ### Framework References
 

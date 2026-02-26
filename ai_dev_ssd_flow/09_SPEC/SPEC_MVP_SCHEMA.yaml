@@ -878,7 +878,7 @@ validation_rules:
     - rule: "threshold_references section must be present with registry document and keys_used"
       severity: error
 
-    - rule: "Markdown file should not exceed 600 lines"
+    - rule: "Markdown file should not exceed 1200 lines"
       severity: warning
 
     - rule: "YAML file should not exceed 2000 lines"
@@ -1097,7 +1097,7 @@ error_messages:
   SPEC-I002: "Consider adding rate_limiting section"
   SPEC-I003: "Consider adding circuit_breaker section for resilience"
   SPEC-I004: "Consider adding operations runbook"
-  SPEC-W010: "Markdown file exceeds 600 lines (target: 300-500)"
+  SPEC-W010: "Markdown file exceeds 1200 lines (target: 800)"
   SPEC-W011: "YAML file exceeds 2000 lines"
 
   # REQ Implementations errors

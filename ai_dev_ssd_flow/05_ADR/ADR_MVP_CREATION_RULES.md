@@ -19,19 +19,6 @@ custom_fields:
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "ADR MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-5-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: ADR
-  layer: 5
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
 > - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; standard template
@@ -99,19 +86,23 @@ custom_fields:
 
 ## 2. Document Structure (Required sections)
 
-ADR documents follow a comprehensive 4-part structure:
+ADR documents follow a streamlined **11-section** MVP structure:
 
-#### **Part 1: Decision Context and Requirements**
-- Status, Context, Decision, Requirements Satisfied
+#### Required sections (numbered 1-11):
 
-#### **Part 2: Impact Analysis and Architecture**
-- Consequences, Architecture Flow, Implementation Assessment, Impact Analysis
-
-#### **Part 3: Implementation and Operations**
-- security, Related Decisions, Implementation Notes
-
-#### **Part 4: Traceability and Documentation**
-- Traceability, References
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | Document Control | Metadata with SYS-Ready Score |
+| 2 | Context | Problem Statement, Technical Context |
+| 3 | Decision | Chosen Solution, Key Components, Approach |
+| 4 | Alternatives Considered | Options with pros/cons |
+| 5 | Consequences | Positive/Negative Outcomes, Costs |
+| 6 | Architecture Flow | Mermaid diagrams, Integration Points |
+| 7 | Implementation Assessment | Phases, Rollback, Monitoring |
+| 8 | Verification | Success Criteria, BDD Scenarios |
+| 9 | Traceability | Upstream/Downstream, Tags, Cross-Links |
+| 10 | Related Decisions | Dependencies, Supersessions |
+| 11 | MVP Lifecycle | Iteration guidance |
 
 ---
 

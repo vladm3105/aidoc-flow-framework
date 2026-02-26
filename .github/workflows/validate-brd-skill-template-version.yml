@@ -1,0 +1,46 @@
+name: Validate BRD Skill Template Version
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md'
+      - 'ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml'
+      - '.claude/skills/doc-brd/SKILL.md'
+      - '.claude/skills/doc-brd-audit/SKILL.md'
+      - '.claude/skills/doc-brd-validator/SKILL.md'
+      - '.claude/skills/doc-brd-reviewer/SKILL.md'
+      - '.claude/skills/doc-brd-fixer/SKILL.md'
+      - '.claude/skills/doc-brd-autopilot/SKILL.md'
+      - 'scripts/validate_skill_template_versions.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md'
+      - 'ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml'
+      - '.claude/skills/doc-brd/SKILL.md'
+      - '.claude/skills/doc-brd-audit/SKILL.md'
+      - '.claude/skills/doc-brd-validator/SKILL.md'
+      - '.claude/skills/doc-brd-reviewer/SKILL.md'
+      - '.claude/skills/doc-brd-fixer/SKILL.md'
+      - '.claude/skills/doc-brd-autopilot/SKILL.md'
+      - 'scripts/validate_skill_template_versions.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-skill-template-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        run: |
+          git clone --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            .
+
+      - name: Run skill/template version drift check
+        run: |
+          python3 scripts/validate_skill_template_versions.py --repo-root .

@@ -24,7 +24,7 @@ Product Requirements Documents (PRDs) serve as the foundational business require
 
 ## Available Templates
 
-**PRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~500 lines)
+**PRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~800 lines)
 - Focused on core MVP features and rapid development
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 5-15 core features and short development cycles
@@ -421,8 +421,8 @@ PRDs serve as:
 - Archive superseded PRDs while maintaining links to replacements
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `PRD-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

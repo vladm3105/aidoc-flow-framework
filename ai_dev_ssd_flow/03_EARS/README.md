@@ -277,8 +277,8 @@ See `EARS-01_external_api_integration.md` for a complete example of a well-struc
 - Changes should maintain backward traceability links
 ## File Size Limits
 
-- Target: <15,000 tokens per file
-- Maximum: 600 lines per file (absolute)
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `EARS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

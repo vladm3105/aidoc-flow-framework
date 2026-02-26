@@ -296,7 +296,7 @@ Generate EARS statements from validated PRD with real-time quality feedback.
 
 2. **Load EARS Template**:
    - Primary: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-   - Section templates: For sectioned EARS (>300 lines)
+   - Section templates: For sectioned EARS (>800 lines)
 
 3. **Generate Document Control Section**:
 
@@ -1054,7 +1054,7 @@ ears_autopilot:
 
   output:
     structure: auto  # auto, monolithic, sectioned
-    size_threshold_lines: 300
+    size_threshold_lines: 800
     report_format: markdown
 
   validation:
@@ -1339,7 +1339,7 @@ After autopilot completion:
 - **EARS Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
 - **EARS Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
 
-### Section Templates (for documents >300 lines)
+### Section Templates (for documents >800 lines)
 
 - Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`

@@ -15,8 +15,9 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.9"
-  last_updated: "2026-02-25"
+  version: "1.2"
+  last_updated: "2026-02-26"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-autopilot
@@ -64,6 +65,7 @@ This autopilot orchestrates the following skills:
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-validator` | Validate BRD structure, content, PRD-Ready score | Phase 4: BRD Validation |
 | `doc-brd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-brd-audit` | Unified validator→reviewer wrapper with combined report output | Phase 5: Audit |
 | `doc-brd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
@@ -71,8 +73,24 @@ This autopilot orchestrates the following skills:
 - Real-time quality feedback → `quality-advisor` skill
 - BRD validation logic → `doc-brd-validator` skill
 - Content review and scoring → `doc-brd-reviewer` skill
+- Unified audit wrapper output → `doc-brd-audit` skill
 - Issue resolution and fixes → `doc-brd-fixer` skill
 - Element ID standards → `doc-naming` skill
+
+## BRD Template Compliance Contract
+
+All generation/review/fix orchestration MUST align to:
+
+- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` (human-readable source of truth)
+- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml` (autopilot template)
+- `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` (shared validation contract)
+
+**Mandatory Alignment Areas**:
+- 18-section structure and subsection numbering
+- MVP-critical anchors (`2.1`, `3.2`, `9.1`, `14.5`, `15.3`, `16.1-16.4`, `17.1-17.6`)
+- Template naming for glossary and appendices (`17.5 Cross-References`, `17.6 External Standards`, `18.1-18.5`)
+
+Any deviation found in reviewer/fixer outputs must trigger fix cycle before PASS.
 
 ---
 
@@ -105,10 +123,12 @@ BRD has no upstream document type. Smart detection works differently:
      a. Check: Does BRD-{NN} exist in docs/01_BRD/?
      b. IF exists:
         - Run Review & Fix Cycle (Phase 5):
-          1. Run doc-brd-reviewer → Generate report
-          2. IF score < 90%: Run doc-brd-fixer
-          3. Re-review until score >= 90% or max_iterations (3)
-          4. Generate final PRD-Ready report
+          1. Run doc-brd-audit (validator → reviewer) → Generate combined report
+          2. IF status FAIL: Run doc-brd-fixer
+          3. Re-run audit until status PASS or max_iterations (3)
+          4. Enforce confidence gate: no `manual-required` fixes unresolved
+          5. Normalize generated review/fix markdown artifacts
+          6. Generate final PRD-Ready report
      c. IF not exists:
         - Search for reference docs:
           1. Check BRD-00_index.md for module mapping
@@ -258,14 +278,21 @@ flowchart TD
         U -->|No| V[Auto-Fix BRD Issues]
         V --> W[Re-validate BRD]
         W --> U
-        U -->|Yes| X[Mark BRD Validated]
+      U -->|Yes| X[Run Template Conformance Check against BRD-MVP-TEMPLATE]
+      X --> X2{Template aligned?}
+      X2 -->|No| V
+      X2 -->|Yes| X3[Mark BRD Validated]
     end
 
     subgraph Phase5["Phase 5: Review & Fix Cycle"]
-        X --> Y[Run doc-brd-reviewer]
+      X3 --> Y[Run doc-brd-reviewer]
         Y --> Y2{Score >= 90?}
-        Y2 -->|No| Y3[Run doc-brd-fixer]
-        Y3 --> Y4{Iteration < Max?}
+      Y2 -->|No| Y3[Run doc-brd-fixer]
+      Y3 --> Y3a[Semantic MVP header normalization]
+      Y3a --> Y3b[Safe subsection renumbering]
+      Y3b --> Y3c[Apply fix confidence tags]
+      Y3c --> Y3d[Normalize generated markdown reports]
+      Y3d --> Y4{Iteration < Max?}
         Y4 -->|Yes| Y
         Y4 -->|No| Y5[Flag Manual Review]
         Y2 -->|Yes| Z[Verify Quality Checks]
@@ -957,7 +984,7 @@ VERIFICATION ALGORITHM:
    - Update last_reviewed timestamp
 
 4. VERIFY cache contains:
-   - [ ] schema_version: "1.1"
+  - [ ] schema_version: "1.2"
    - [ ] document_id matches folder (BRD-NN)
    - [ ] last_reviewed is current timestamp
    - [ ] review_history includes this review's score and report version
@@ -1743,8 +1770,8 @@ jobs:
 | Phase 1 | Input Gate | At least one reference document found in `docs/00_REF/` or `REF/`, or user prompts provided |
 | Phase 2 | Type Gate | BRD type determined (Platform/Feature) |
 | Phase 3 | Generation Gate | All 18 sections generated |
-| Phase 4 | Validation Gate | PRD-Ready Score >= 90% |
-| Phase 5 | Review Gate | No blocking issues remaining |
+| Phase 4 | Validation Gate | PRD-Ready Score >= 90% + template conformance pass |
+| Phase 5 | Review Gate | No blocking issues remaining + no unresolved `manual-required` fix items |
 
 ### Blocking vs Non-Blocking
 
@@ -1753,8 +1780,9 @@ jobs:
 | Missing required section | Yes | Must fix before proceeding |
 | PRD-Ready Score < 90% | Yes | Must enhance sections |
 | Invalid element ID format | Yes | Must convert to unified format |
+| Unresolved `manual-required` fix confidence | Yes | Must route to manual review before PASS |
 | Missing optional section | No | Log warning, continue |
-| Style/formatting issues | No | Auto-fix, continue |
+| Style/formatting issues in generated reports | No | Auto-normalize markdown, continue |
 
 ---
 
@@ -1776,6 +1804,9 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
+| 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |
+| 3.0 | 2026-02-26 | **Fix-loop hardening**: Enhanced Phase 5 orchestration to include semantic MVP heading normalization, safe subsection renumbering, fix confidence tagging, and markdown normalization for generated review/fix reports; Added gating rule requiring no unresolved `manual-required` fix items before PASS. |
 | 2.9 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Synced with BRD-MVP-TEMPLATE.md v1.1 |
 | 2.8 | 2026-02-25T11:50:00 | **Drift Cache Verification**: Added mandatory drift cache verification after every review cycle (Section 5.6); Added Phase 5 Output Checklist (Section 5.7) with explicit `.drift_cache.json` verification; Updated flowchart to include verification step; Added FAILURE MODE documentation for missing drift cache. |
 | 2.7 | 2026-02-25T08:30:00 | **Detection Algorithm Fix**: Fixed 3 critical gaps: (1) BRD not found now triggers reference search + generate instead of error; (2) Review Mode now includes full Review & Fix cycle (reviewer → fixer → re-review until score >= 90%); (3) Added multi-BRD input handling with chunking (max 3 parallel). Updated Input Type Recognition table, Examples, and Action Determination Output to reflect correct behavior. |

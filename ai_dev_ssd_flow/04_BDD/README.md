@@ -559,11 +559,12 @@ See `04_BDD/BDD-01_example_suite/BDD-01.1_external_api_integration.feature` for 
 
 - **Target**: 800 lines per `.feature` file
 - **Maximum**: 1200 lines per `.feature` file (absolute)
+- **Scenarios**: Maximum 12 scenarios per Feature block
 - If a section approaches/exceeds limits, split into subsections `BDD-NN.SS.mm_{slug}.feature` and add an aggregator `BDD-NN.SS.00_{slug}.feature` if many subsections.
 
 ## Document Splitting Standard
 
 Splitting BDD suites follows section/subsection rules:
-- Primary files: `BDD-NN.SS_{slug}.feature` (≤12 scenarios; target 300–500 lines)
+- Primary files: `BDD-NN.SS_{slug}.feature` (≤12 scenarios; target 800 lines)
 - If a section grows: create `BDD-NN.SS.mm_{slug}.feature` and add `.SS.00_{slug}.feature` with `@redirect` for many subsections
 - Update `BDD-NN.0_index.md` with section/subsection map and statuses

@@ -1017,7 +1017,7 @@ flowchart LR
 ### 18.4 Appendix D: File Size Guidelines
 
 - **BRD Target**: 200-400 lines per BRD (this template ~800 lines with instructions)
-- **If exceeding 500 lines**: Consider splitting scope across multiple BRD cycles
+- **If exceeding 800 lines**: Consider splitting scope across multiple BRD cycles
 - **Section splitting**: Use sectioned format (BRD-NN.1_*.md) only for very large BRDs (>25KB)
 - **Principle**: One focused MVP cycle per BRD; split features into multiple BRDs if scope grows
 

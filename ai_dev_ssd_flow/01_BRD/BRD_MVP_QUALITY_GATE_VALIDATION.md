@@ -215,9 +215,9 @@ The system uses an 8-state position lifecycle:
 ```
 
 **MVP BRD Thresholds**:
-- Target: 200-400 lines
-- Warning: 400 lines
-- Error: 600 lines (exceeds MVP scope - use full BRD template)
+- Target: 800 lines
+- Warning: 800 lines
+- Error: 1200 lines (exceeds MVP scope - use full BRD template)
 
 ---
 
@@ -495,23 +495,23 @@ Monthly cost: ~$175
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
 
 **General Thresholds**:
 | Metric | Warning | Error | Rationale |
 |--------|---------|-------|-----------|
-| Lines | 600 | 1,200 | Readability |
+| Lines | 800 | 1,200 | Readability |
 | Tokens | 50,000 | 100,000 | Tool limits |
 | File size | 200KB | 400KB | Processing limits |
 
 **Type-Specific Limits** (enhanced from BDD patterns):
 | File Type | Warning | Error | Max Items |
 |-----------|---------|-------|-----------|
-| BRD index file (`BRD-NN.0_*.md`) | 300 lines | 500 lines | N/A |
-| BRD section file (`BRD-NN.N_*.md`) | 400 lines | 600 lines | N/A |
-| BRD single file (`BRD-NN_*.md`) | 600 lines | 1,200 lines | N/A |
+| BRD index file (`BRD-NN.0_*.md`) | 600 lines | 800 lines | N/A |
+| BRD section file (`BRD-NN.N_*.md`) | 800 lines | 1,200 lines | N/A |
+| BRD single file (`BRD-NN_*.md`) | 800 lines | 1,200 lines | N/A |
 | Elements per section | 15 | 25 | 25 max |
-| MVP BRD files | 400 lines | 600 lines | Consider splitting or creating new BRD |
+| MVP BRD files | 800 lines | 1,200 lines | Consider splitting or creating new BRD |
 
 **Validation Logic**:
 ```bash
@@ -520,28 +520,28 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
   lines=$(wc -l < "$f")
   if [ "$lines" -gt 1200 ]; then
     echo "ERROR: $(basename $f) exceeds 1200 lines ($lines)"
-  elif [ "$lines" -gt 600 ]; then
-    echo "WARNING: $(basename $f) exceeds 600 lines ($lines)"
+  elif [ "$lines" -gt 800 ]; then
+    echo "WARNING: $(basename $f) exceeds 800 lines ($lines)"
   fi
 done
 
 # Check 2: Type-specific validation
 for f in "$BRD_DIR"/BRD-*_*/*0_*.md; do
   lines=$(wc -l < "$f" 2>/dev/null)
-  if [ "$lines" -gt 500 ]; then
-    echo "ERROR: Index file $(basename $f) exceeds 500 lines ($lines)"
-  elif [ "$lines" -gt 300 ]; then
-    echo "WARNING: Index file $(basename $f) exceeds 300 lines ($lines)"
+  if [ "$lines" -gt 800 ]; then
+    echo "ERROR: Index file $(basename $f) exceeds 800 lines ($lines)"
+  elif [ "$lines" -gt 600 ]; then
+    echo "WARNING: Index file $(basename $f) exceeds 600 lines ($lines)"
   fi
 done
 
 # Check 3: Section file validation
 for f in "$BRD_DIR"/BRD-*_*/BRD-*.[1-9]*.md; do
   lines=$(wc -l < "$f" 2>/dev/null)
-  if [ "$lines" -gt 600 ]; then
-    echo "ERROR: Section file $(basename $f) exceeds 600 lines ($lines)"
-  elif [ "$lines" -gt 400 ]; then
-    echo "WARNING: Section file $(basename $f) exceeds 400 lines ($lines)"
+  if [ "$lines" -gt 1200 ]; then
+    echo "ERROR: Section file $(basename $f) exceeds 1200 lines ($lines)"
+  elif [ "$lines" -gt 800 ]; then
+    echo "WARNING: Section file $(basename $f) exceeds 800 lines ($lines)"
   fi
 done
 ```
@@ -577,7 +577,7 @@ docs/01_BRD/BRD-07_ai_gateway/
 | ~~CORPUS-W002~~ | ~~Missing inter-BRD hyperlinks~~ | ~~CORPUS-05~~ (deprecated) |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Exact cost without range | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 
 ### Info Codes (Advisory)
 
@@ -719,11 +719,11 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
     fi
 
     if $is_mvp; then
-      if [ "$lines" -gt 600 ]; then
-        echo "  ERROR: MVP file $(basename $f) exceeds 600 lines ($lines)"
+      if [ "$lines" -gt 1200 ]; then
+        echo "  ERROR: MVP file $(basename $f) exceeds 1200 lines ($lines)"
         ERRORS=$((ERRORS + 1))
-      elif [ "$lines" -gt 400 ]; then
-        echo "  WARNING: MVP file $(basename $f) exceeds 400 lines ($lines)"
+      elif [ "$lines" -gt 800 ]; then
+        echo "  WARNING: MVP file $(basename $f) exceeds 800 lines ($lines)"
         WARNINGS=$((WARNINGS + 1))
       fi
     else
@@ -731,8 +731,8 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
       if [ "$lines" -gt 1200 ]; then
         echo "  ERROR: $(basename $f) exceeds 1200 lines ($lines)"
         ERRORS=$((ERRORS + 1))
-      elif [ "$lines" -gt 600 ]; then
-        echo "  WARNING: $(basename $f) exceeds 600 lines ($lines)"
+      elif [ "$lines" -gt 800 ]; then
+        echo "  WARNING: $(basename $f) exceeds 800 lines ($lines)"
         WARNINGS=$((WARNINGS + 1))
       fi
     fi

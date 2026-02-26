@@ -16,14 +16,15 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [Strategy, Stakeholder Input]
   downstream_artifacts: []
-  version: "1.7"
-  last_updated: "2026-02-25T11:00:00"
+  version: "1.2"
+  last_updated: "2026-02-26T12:45:00"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-reviewer
 
 ## Purpose
-
+| 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
 Comprehensive **content review and quality assurance** for Business Requirements Documents (BRD). This skill performs deep content analysis beyond structural validation, checking link integrity, requirement completeness, ADR topic coverage, strategic alignment, and identifying issues that require manual business review.
 
 **Layer**: 1 (BRD Quality Assurance)
@@ -304,24 +305,24 @@ Verifies all 18 required sections have substantive content per BRD-MVP-TEMPLATE.
 
 | # | Section | Min Words | Required Subsections |
 |---|---------|-----------|----------------------|
-| 1 | Introduction | 100 | 1.1-1.5 |
-| 2 | Business Objectives | 150 | **2.1 MVP Hypothesis** |
-| 3 | Project Scope | 200 | **3.2 MVP Core Features**, 3.5.4, 3.5.5 |
-| 4 | Stakeholders | 75 | 4.1-4.2 |
-| 5 | User Stories | 100 | 5.1-5.3 |
-| 6 | Functional Requirements | 200 | 6.1+ per FR |
-| 7 | Quality Attributes | 300 | **7.2 ADR Topics (7 categories)** |
-| 8 | Constraints & Assumptions | 100 | 8.1-8.2 |
-| 9 | Acceptance Criteria | 100 | **9.1 MVP Launch Criteria** |
-| 10 | Risk Management | 150 | Risk table required |
+| 1 | Introduction | 100 | 1.1-1.4 |
+| 2 | Business Objectives | 150 | **2.1 MVP Hypothesis**, 2.2-2.5 |
+| 3 | Project Scope | 200 | **3.2 MVP Core Features**, **3.4.1**, **3.4.2**, 3.5 |
+| 4 | Stakeholders | 75 | Decision Makers + Key Contributors blocks |
+| 5 | User Stories | 100 | 5.1-5.2 |
+| 6 | Functional Requirements | 200 | 6.1-6.5 |
+| 7 | Quality Attributes | 300 | **7.2 ADR Topics**, 7.3-7.5 |
+| 8 | Business Constraints and Assumptions | 100 | 8.1-8.2 |
+| 9 | Acceptance Criteria | 100 | **9.1 MVP Launch Criteria**, 9.2 |
+| 10 | Business Risk Management | 150 | Risk table required |
 | 11 | Implementation Approach | 100 | 11.1-11.2 |
-| 12 | Support & Maintenance | 75 | 12.1-12.2 |
-| 13 | Cost-Benefit Analysis | 100 | 13.1-13.2 |
-| 14 | Project Governance | 150 | **14.5 Approval and Sign-off** |
+| 12 | Support and Maintenance | 75 | 12.1-12.3 |
+| 13 | Cost-Benefit Analysis | 100 | ROI summary + qualitative impact |
+| 14 | Project Governance | 150 | 14.1-14.5 (**14.5 required**) |
 | 15 | Quality Assurance | 100 | **15.3 Quality Gates** |
 | 16 | Traceability | 150 | **16.1-16.4** (all required) |
-| 17 | Glossary | 50 | **17.1-17.6** (structure required) |
-| 18 | Appendices | 100 | Appendix A-D |
+| 17 | Glossary | 50 | **17.1-17.6** (including 17.5 Cross-References, 17.6 External Standards) |
+| 18 | Appendices | 100 | 18.1-18.5 |
 
 **MVP-Critical Subsections** (bold items above):
 
@@ -333,7 +334,7 @@ Verifies all 18 required sections have substantive content per BRD-MVP-TEMPLATE.
 | 14.5 Approval and Sign-off | Stakeholder sign-off table | REV-MVP004 |
 | 15.3 Quality Gates | Quality gate checklist | REV-MVP005 |
 | 16.1-16.4 | Traceability matrix subsections | REV-MVP006-009 |
-| 17.1-17.6 | Glossary structure | REV-MVP010 |
+| 17.1-17.6 | Glossary structure (17.5 Cross-References, 17.6 External Standards) | REV-MVP010 |
 
 **Error Codes**:
 
@@ -828,6 +829,8 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26T12:45:00 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version to avoid cross-skill version drift. |
+| 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
 | 1.7 | 2026-02-25T11:00:00 | **Template alignment**: Check #6 updated for 18-section structure validation; Added MVP-critical subsection validation (2.1, 3.2, 9.1, 14.5, 15.3, 16.1-16.4, 17.1-17.6); Added REV-MVP001-MVP010 error codes; Updated scoring formula (28-point validation: 18 sections + 10 MVP subsections) |
 | 1.6 | 2026-02-24T21:30:00 | **Conditional drift detection**: Check #9 now skipped when `upstream_mode: "none"` (default); Removed @strategy: tag references; Updated drift cache schema to v1.1 with upstream_mode and drift_detection_skipped fields; Added REV-D007 (drift skipped) and REV-D008 (path not found) error codes; Updated scoring formula for conditional check |
 | 1.5 | 2026-02-11T18:00:00 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram with structure validation decision node; Added structure compliance to scoring (12% weight, blocking); Consistent with other reviewer skills |

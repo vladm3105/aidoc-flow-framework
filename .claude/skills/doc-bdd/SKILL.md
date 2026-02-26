@@ -50,10 +50,9 @@ Before creating BDD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD, PRD, EARS**: Read artifacts that drive these test scenarios
-3. **Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-6. **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+3. **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+4. **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -92,7 +91,7 @@ docs/04_BDD/
 
 | Pattern | Example | Use When |
 |---------|---------|----------|
-| Section-Only | `BDD-02.14_query_result_filtering.feature` | Standard section (≤500 lines, ≤12 scenarios) |
+| Section-Only | `BDD-02.14_query_result_filtering.feature` | Standard section (≤800 lines, ≤12 scenarios) |
 | Subsection | `BDD-02.24.01_quality_performance.feature` | Section requires splitting |
 | Aggregator | `BDD-02.12.00_query_graph_traversal.feature` | Organizing multiple subsections (@redirect, 0 scenarios) |
 
@@ -108,7 +107,7 @@ docs/04_BDD/
 
 1. **All `.feature` files in suite folder** - No `features/` subdirectory
 2. **Index file mandatory**: `BDD-NN.0_index.md` for all suites
-3. **Max 500 lines** per `.feature` file (soft limit: 400)
+3. **Max 800 lines** per `.feature` file (soft limit: 600)
 4. **Max 12 scenarios** per Feature block
 5. **Section metadata tags required**: `@section`, `@parent_doc`, `@index`
 
@@ -431,19 +430,19 @@ mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
 ### Step 4: Create Index File
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
+cp ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
 ```
 
 ### Step 5: Design Section Split
 
 - Identify logical domains or EARS groupings
 - Estimate scenarios per section (target: 6-10)
-- Plan for subsections if needed (>500 lines)
+- Plan for subsections if needed (>800 lines)
 
 ### Step 6: Create Section Files
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
+cp ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
 ```
 
 ### Step 7: Add Section Metadata Tags
@@ -514,7 +513,7 @@ Commit suite folder and redirect stub together.
 - [ ] All `.feature` files in suite folder (no `features/` subdirectory)
 - [ ] Index file exists: `BDD-NN.0_index.md`
 - [ ] Redirect stub at `docs/BDD/BDD-NN_slug.feature` (0 scenarios)
-- [ ] No file exceeds 500 lines
+- [ ] No file exceeds 800 lines
 - [ ] No Feature block exceeds 12 scenarios
 
 **File Naming**:
@@ -551,7 +550,7 @@ Commit suite folder and redirect stub together.
 | Missing @ears tag | All 3 upstream tags are MANDATORY |
 | Only success scenarios | Include all 8 scenario categories |
 | `Status: Approved` (with <90% score) | Use `Status: In Review` or `Draft` |
-| File >500 lines | Split into subsections |
+| File >800 lines | Split into subsections |
 | `09:30` (no seconds) | Use `09:30:00` |
 | `EST` timezone | Use `America/New_York` |
 
@@ -603,13 +602,12 @@ The ADR will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Subsection Template**: `ai_dev_flow/04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
@@ -623,7 +621,7 @@ The ADR will:
 | **ADR-Ready Score** | ≥90% required for "Approved" status |
 | **Element ID Format** | `BDD.NN.14.SS` (scenarios), `BDD.NN.15.SS` (steps) |
 | **File Structure** | Nested suite folder: `docs/04_BDD/BDD-NN_{slug}/` |
-| **Max File Size** | 500 lines (soft: 400) |
+| **Max File Size** | 800 lines (soft: 600) |
 | **Max Scenarios** | 12 per Feature block |
 | **Time Format** | HH:MM:SS with IANA timezone |
 | **Quantitative Values** | Use `@threshold:PRD.NN.category.key` |

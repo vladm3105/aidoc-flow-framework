@@ -341,18 +341,18 @@ grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" | \
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
 
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 600 | 1,200 |
+| Lines | 800 | 1,200 |
 | Tokens | 50,000 | 100,000 |
 
 **MVP PRD Thresholds**:
-- Target: 300-500 lines
-- Warning: 500 lines
-- Error: 800 lines (exceeds MVP scope)
+- Target: 800 lines
+- Warning: 800 lines
+- Error: 1200 lines (exceeds MVP scope)
 
 ---
 
@@ -723,7 +723,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Exact cost without range | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W012 | BRD objective without PRD user story | CORPUS-12 |
 | CORPUS-W015 | MVP hypothesis format incorrect | CORPUS-15 |
 | CORPUS-W016 | Glossary path not standardized | CORPUS-16 |
