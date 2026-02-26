@@ -28,14 +28,22 @@ Before creating a PTEST document:
 - [ ] Baseline performance data available (if applicable)
 - [ ] Test environment constraints defined
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `PTEST-NN_[component_or_scenario].md`
+**Nested Folder Rule**: ALL PTEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/PTEST/PTEST-NN_{slug}/PTEST-NN_{slug}.md`
 
 **Examples**:
-- `PTEST-01_api_response_time.md`
-- `PTEST-02_database_throughput.md`
-- `PTEST-03_concurrent_user_load.md`
+```
+docs/10_TSPEC/PTEST/
+├── PTEST-01_api_response_time/
+│   └── PTEST-01_api_response_time.md
+├── PTEST-02_database_throughput/
+│   └── PTEST-02_database_throughput.md
+└── PTEST-03_concurrent_user_load/
+    └── PTEST-03_concurrent_user_load.md
+```
 
 ## Element ID Format
 
@@ -72,17 +80,31 @@ Use these category prefixes for all test cases:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### PTEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
-| `@sys` | Every test MUST trace to at least one SYS requirement |
+| `@sys` | Every test MUST trace to at least one SYS performance requirement |
 | `@spec` | Document MUST reference source SPEC |
 
 ### Tag Format
 
 ```markdown
-@sys: SYS.NN.SS
+@sys: SYS.NN.26.SS
 @spec: SPEC-NN
 ```
 
@@ -169,7 +191,11 @@ execution_profile:
 ## Validation Command
 
 ```bash
-python scripts/validate_ptest.py docs/10_TSPEC/PTEST/PTEST-01_*.md
+# Validate single PTEST (nested folder structure)
+python scripts/validate_ptest.py docs/10_TSPEC/PTEST/PTEST-01_api_response_time/PTEST-01_api_response_time.md
+
+# Validate all PTEST documents
+python scripts/validate_ptest.py docs/10_TSPEC/PTEST/
 ```
 
 ## See Also

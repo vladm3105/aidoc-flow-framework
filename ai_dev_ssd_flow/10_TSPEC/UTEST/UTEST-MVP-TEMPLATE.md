@@ -35,7 +35,8 @@ Objective: Create unit test specifications for TDD workflow.
 Constraints:
 - Define test cases for ONE component/module per document.
 - 6 sections required (aligned with MVP requirements).
-- Required traceability tags: @req, @spec.
+- Required cumulative tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec, @ctr (if exists).
+- Required UTEST-specific tags: @req (atomic requirement), @spec (specification).
 - TASKS-Ready threshold: ≥90%.
 - Use I/O tables for all test cases.
 - Include pseudocode for complex test logic.
@@ -258,15 +259,28 @@ AND state_changed event is emitted
 
 ## 6. Traceability
 
-### 6.1 Upstream References
+### 6.1 Cumulative Tags (Layer 1-9)
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
-| @req | REQ.NN.10.01 | [Requirement title] |
-| @req | REQ.NN.10.02 | [Requirement title] |
-| @spec | SPEC-NN | [Specification reference] |
+| @brd | BRD.NN.TT.SS | Business requirement |
+| @prd | PRD.NN.TT.SS | Product requirement |
+| @ears | EARS.NN.25.SS | EARS statement |
+| @bdd | BDD.NN.14.SS | BDD scenario |
+| @adr | ADR-NN | Architecture decision |
+| @sys | SYS.NN.26.SS | System requirement |
+| @req | REQ.NN.27.SS | Atomic requirement |
+| @spec | SPEC-NN | Technical specification |
+| @ctr | CTR-NN | Data contract (if exists) |
 
-### 6.2 Downstream References
+### 6.2 UTEST-Specific Tags
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @req | REQ.NN.10.01 | Atomic requirement for unit coverage |
+| @spec | SPEC-NN | Specification section reference |
+
+### 6.3 Downstream References
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|

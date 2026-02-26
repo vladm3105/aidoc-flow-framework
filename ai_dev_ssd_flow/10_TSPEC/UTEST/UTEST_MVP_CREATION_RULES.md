@@ -28,14 +28,22 @@ Before creating a UTEST document:
 - [ ] Component boundaries are defined
 - [ ] Dependencies are identified
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `UTEST-NN_[component_name].md`
+**Nested Folder Rule**: ALL UTEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md`
 
 **Examples**:
-- `UTEST-01_auth_service.md`
-- `UTEST-02_data_validator.md`
-- `UTEST-03_cache_manager.md`
+```
+docs/10_TSPEC/UTEST/
+├── UTEST-01_auth_service/
+│   └── UTEST-01_auth_service.md
+├── UTEST-02_data_validator/
+│   └── UTEST-02_data_validator.md
+└── UTEST-03_cache_manager/
+    └── UTEST-03_cache_manager.md
+```
 
 ## Element ID Format
 
@@ -72,7 +80,21 @@ Use these category prefixes for all test cases:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### UTEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
@@ -82,7 +104,7 @@ Use these category prefixes for all test cases:
 ### Tag Format
 
 ```markdown
-@req: REQ.NN.10.SS
+@req: REQ.NN.27.SS
 @spec: SPEC-NN
 ```
 
@@ -153,7 +175,11 @@ Each test case MUST document error conditions:
 ## Validation Command
 
 ```bash
-python scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-01_*.md
+# Validate single UTEST (nested folder structure)
+python scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-01_auth_service/UTEST-01_auth_service.md
+
+# Validate all UTEST documents
+python scripts/validate_utest.py docs/10_TSPEC/UTEST/
 ```
 
 ## See Also

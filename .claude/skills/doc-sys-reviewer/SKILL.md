@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SYS]
   downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+  version: "1.5"
+  last_updated: "2026-02-26T15:10:00"
 ---
 
 # doc-sys-reviewer
@@ -82,7 +82,8 @@ flowchart TD
         G --> H[2. ADR Alignment]
         H --> I[3. Quality Attribute Coverage]
         I --> J[4. Interface Definition Completeness]
-        J --> K[5. Constraint Validation]
+      J --> J2[4a. System Diagram Contract Compliance]
+      J2 --> K[5. Constraint Validation]
         K --> L[6. Placeholder Detection]
         L --> M[7. Naming Compliance]
         M --> N2[8. Upstream Drift Detection]
@@ -217,6 +218,25 @@ Validates system interfaces are well-defined.
 | REV-IF002 | Warning | Data format not specified |
 | REV-IF003 | Warning | Protocol not identified |
 | REV-IF004 | Info | Error handling not defined |
+
+### 4a. System Diagram Contract Compliance
+
+Validates SYS bridge requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and SYS quality-gate contracts.
+
+**Scope**:
+- Required `System Diagram Contract` subsection exists
+- Required fields present: `downstream_c4_l4_owner`, `required_sequence_paths`, `trust_boundaries`
+- Required tags present for bridge ownership: `@diagram: c4-l4-ownership`, `@diagram: sequence-l4`
+- SYS contract references remain consistent with downstream SPEC ownership location
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Error | Missing `System Diagram Contract` section |
+| REV-DC002 | Error | Missing required bridge fields (`downstream_c4_l4_owner`, `required_sequence_paths`, or `trust_boundaries`) |
+| REV-DC003 | Error | Missing required SYS bridge tags (`@diagram: c4-l4-ownership`, `@diagram: sequence-l4`) |
+| REV-DC004 | Warning | Downstream SPEC ownership reference appears incomplete or inconsistent |
 
 ---
 

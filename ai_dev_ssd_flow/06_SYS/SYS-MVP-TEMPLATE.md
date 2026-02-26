@@ -115,6 +115,38 @@ custom_fields:
 - [Maintenance windows and deployment schedules managed]
 - [Monitoring and alerting systems properly configured]
 
+### 3.4 System Diagram Contract (C4-DFD-Seq Bridge)
+[This subsection defines diagram ownership and cross-layer contract boundaries for this system.]
+
+#### Required Diagram Contract Tags
+- `@diagram: c4-l2|c4-l3` [Select applicable system scope references]
+- `@diagram: dfd-l1|dfd-l2` [Select applicable data-flow boundary references]
+- `@diagram: sequence-sync|sequence-async|sequence-error` [Select required interaction paths]
+
+#### Required Contract Fields
+- **Diagram Intent Header**:
+  - `diagram_type`: c4 | dfd | sequence
+  - `level`: l2 | l3 (SYS references), plus downstream l4 ownership reference
+  - `scope_boundary`: [System boundary statement]
+  - `upstream_refs`: [ADR/SYS IDs]
+  - `downstream_refs`: [SPEC IDs or paths]
+- **Trust Boundary Requirement**: [Define trust/data boundaries where data crosses subsystems]
+- **Sequence Path Constraints**: [List required success + failure/timeout/retry paths]
+- **Downstream Ownership Link**: [Required SPEC location implementing C4 L4 ownership]
+
+#### Example Contract Block
+```markdown
+@diagram: c4-l3
+@diagram: dfd-l2
+@diagram: sequence-error
+@diagram-scope: system-boundary
+@diagram-lifecycle: mvp-prod-newmvp
+
+downstream_c4_l4_owner: SPEC-XX / ai_dev_ssd_flow/09_SPEC/...
+required_sequence_paths: success, timeout, retry, fallback
+trust_boundaries: ingress-api, internal-service-mesh, data-store-edge
+```
+
 ## 4. Functional Requirements
 
 ### 4.1 Core System Behaviors

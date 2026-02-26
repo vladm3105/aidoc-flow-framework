@@ -14,8 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
   downstream_artifacts: [TASKS, Code]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-tspec
@@ -53,11 +53,11 @@ Before creating TSPEC, read:
 2. **Upstream SPEC**: Read technical specifications (PRIMARY SOURCE)
 3. **Upstream REQ**: Read atomic requirements
 4. **Template by Type**:
-   - UTEST: `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-   - ITEST: `ai_dev_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-   - STEST: `ai_dev_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-   - FTEST: `ai_dev_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-5. **TSPEC README**: `ai_dev_flow/10_TSPEC/README.md`
+   - UTEST: `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
+   - ITEST: `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+   - STEST: `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
+   - FTEST: `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
+5. **TSPEC README**: `ai_dev_ssd_flow/10_TSPEC/README.md`
 
 ## When to Use This Skill
 
@@ -93,6 +93,8 @@ Use `doc-tspec` when:
 | Integration Test Case | 41 | ITEST | TSPEC.01.41.01 |
 | Smoke Test Case | 42 | STEST | TSPEC.01.42.01 |
 | Functional Test Case | 43 | FTEST | TSPEC.01.43.01 |
+| Performance Test Case | 44 | PTEST | TSPEC.01.44.01 |
+| Security Test Case | 45 | SECTEST | TSPEC.01.45.01 |
 
 > **REMOVED PATTERNS** - Do NOT use legacy formats:
 > - `TC-XXX` - Use `TSPEC.NN.TT.SS` instead
@@ -111,6 +113,8 @@ Use `doc-tspec` when:
 | Integration Test | 41 | ITEST | Component interaction tests | CTR (L8), SYS (L6) |
 | Smoke Test | 42 | STEST | Post-deployment health checks | EARS (L3), BDD (L4) |
 | Functional Test | 43 | FTEST | System behavior validation | SYS (L6) |
+| Performance Test | 44 | PTEST | Load, stress, and response time testing | SYS (L6), SPEC (L9) |
+| Security Test | 45 | SECTEST | Vulnerability and threat testing | SYS (L6), ADR (L5) |
 
 **Note**: Acceptance tests remain in BDD (Layer 4), not duplicated in TSPEC.
 
@@ -430,13 +434,13 @@ Include all 8-9 upstream tags (@brd through @spec).
 
 ```bash
 # Type-specific validation
-python ai_dev_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-01_*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-01_*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-01_*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-01_*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-01_*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-01_*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-01_*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-01_*.md
 
 # Combined quality score
-bash ai_dev_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -455,13 +459,13 @@ Commit TSPEC file and traceability matrix.
 
 ```bash
 # All TSPEC types
-bash ai_dev_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
 
 # Type-specific validation
-python ai_dev_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/*.md
-python ai_dev_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/*.md
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/*.md
 
 # Cross-document validation
 python ai_dev_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-01_*.md
@@ -485,7 +489,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/U
 ### Diagram Standards
 
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 
@@ -578,13 +582,13 @@ For supplementary documentation needs, create:
 ## Related Resources
 
 - **Templates**:
-  - `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-  - `ai_dev_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-  - `ai_dev_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-  - `ai_dev_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-- **TSPEC README**: `ai_dev_flow/10_TSPEC/README.md`
-- **TSPEC Index**: `ai_dev_flow/10_TSPEC/TSPEC-00_index.md`
-- **Traceability Matrix Template**: `ai_dev_flow/10_TSPEC/TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+  - `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
+  - `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+  - `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
+  - `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
+- **TSPEC README**: `ai_dev_ssd_flow/10_TSPEC/README.md`
+- **TSPEC Index**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_index.md`
+- **Traceability Matrix Template**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **doc-naming skill**: `.claude/skills/doc-naming/SKILL.md` (element type codes)
 - **doc-spec skill**: `.claude/skills/doc-spec/SKILL.md` (upstream SPEC creation)
@@ -630,4 +634,5 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/ |
 | 1.0 | 2026-02-08 | Initial release with UTEST/ITEST/STEST/FTEST support (codes 40-43) |

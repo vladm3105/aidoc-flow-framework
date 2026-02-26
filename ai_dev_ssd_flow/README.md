@@ -1,12 +1,15 @@
 ---
 title: "AI Dev Flow - Universal Specification-Driven Development Framework"
 tags:
+
   - index-document
   - shared-architecture
+
 custom_fields:
   document_type: readme
   priority: shared
 ---
+<!-- markdownlint-disable MD025 MD001 -->
 
 # AI Dev Flow - Universal Specification-Driven Development Framework
 
@@ -22,18 +25,20 @@ custom_fields:
 
 **This iterative pattern is the foundation of all framework operations.**
 
-```
+```text
 MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-03) → ...
    1-2 weeks     30-90 days      1-2 weeks       30-90 days      1-2 weeks
+
 ```
 
 | Phase | Duration | Focus | Output |
-|:------|:---------|:------|:-------|
+| :------ | :--------- | :------ | :------- |
 | **MVP** | 1-2 weeks | Build 5-15 core features | BRD → PRD → ... → Production |
 | **PROD** | 30-90 days | Operate, measure, collect feedback | Validated insights |
 | **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set | Production v(N+1) |
 
 **Key Principles**:
+
 1. **Each BRD = One Iteration Cycle**: Never expand BRDs indefinitely - create new ones
 2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 are successive iterations
 3. **Production is Always the Goal**: Every MVP cycle targets production deployment
@@ -56,6 +61,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 ### Why AI Dev Flow?
 
 **Traditional Development Challenges**:
+
 - Requirements drift from implementation over time
 - Manual traceability is incomplete and outdated
 - Inconsistent documentation across teams
@@ -63,6 +69,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - Slow transition from idea to production MVP
 
 **AI Dev Flow Solutions**:
+
 - [PASS] **90%+ Automation**: 14 of 15 layers generate automatically with quality gates
 - [PASS] **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
 - [PASS] **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
@@ -77,12 +84,12 @@ This directory provides a structured, traceable framework for Specification-Driv
 - [PASS] **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
 - [PASS] **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
-** New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
+**New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
 ## Glossary
 
 | Acronym | Full Name | Description |
-|---------|-----------|-------------|
+| --------- | ----------- | ------------- |
 | SDD | Specification-Driven Development | Methodology for creating software through layered documentation artifacts |
 | BRD | Business Requirements Document | Layer 1 - Defines business needs, objectives, and constraints |
 | PRD | Product Requirements Document | Layer 2 - Defines product features and user needs |
@@ -107,6 +114,7 @@ The framework orchestrates three key participants to transform business ideas in
 **Philosophy**: Humans make strategic decisions, AI handles execution.
 
 **5 Critical Checkpoints** (only if quality score < 90%):
+
 - **BRD Approval** (Layer 1) - Business alignment and strategic direction
 - **PRD Approval** (Layer 2) - Product vision and feature validation
 - **ADR Approval** (Layer 5) - Architecture decisions and technical rationale
@@ -114,6 +122,7 @@ The framework orchestrates three key participants to transform business ideas in
 - **Production Deployment** (Layer 14) - Final gate before live release
 
 **Responsibilities**:
+
 - Provides business requirements and strategic direction
 - Selects project domain (financial, software, healthcare, etc.)
 - Can override AI recommendations at quality gates
@@ -132,7 +141,7 @@ The framework orchestrates three key participants to transform business ideas in
 **Key Capabilities**:
 
 | Capability | Description |
-|------------|-------------|
+| ------------ | ------------- |
 | **Layer-by-Layer Generation** | Creates all documentation artifacts (BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS) with traceability enforcement |
 | **Domain Configuration** | Loads domain-specific templates and applies placeholder replacements |
 | **Contract Decisions** | Runs contract questionnaire to determine if CTR layer is needed |
@@ -143,6 +152,7 @@ The framework orchestrates three key participants to transform business ideas in
 | **Traceability Management** | Generates bidirectional matrices from cumulative tags |
 
 **Critical Execution Order**:
+
 1. Domain Selection → Ask user for project domain
 2. Folder Structure Creation → Create all directories before any documents
 3. Domain Configuration → Load and apply domain-specific settings
@@ -162,7 +172,7 @@ The framework orchestrates three key participants to transform business ideas in
 **Performance Advantages**:
 
 | Operation | MD Template | YAML Template | Improvement |
-|-----------|-------------|---------------|-------------|
+| ----------- | ------------- | --------------- | ------------- |
 | Parse single doc | ~50ms | ~10ms | 5x faster |
 | Parse 100 docs | ~5s | ~1s | 5x faster |
 | Extract traceability | Regex (complex) | Key access (direct) | 3x faster |
@@ -177,19 +187,22 @@ The framework orchestrates three key participants to transform business ideas in
 - **CI/CD Ready**: Integrates with GitHub Actions, supports `--auto-fix` validation
 
 **Automated Workflow**:
-```
+
+```text
 Layer Transitions → Code Generation → Test Execution → Traceability Matrix Generation
+
 ```
 
 **Trigger Methods**:
 
 | Method | Command |
-|--------|---------|
+| -------- | --------- |
 | **Local CLI** | `python AUTOPILOT/scripts/mvp_autopilot.py --intent "My MVP" --slug my_mvp` |
 | **CI/CD** | GitHub Actions workflow `mvp-autopilot.yml` |
 | **GitHub CLI** | `make docs` (runs mvp-autopilot.yml workflow) |
 
 **YAML Template Authority**:
+
 - Autopilot loads ONLY `*-MVP-TEMPLATE.yaml` files (never markdown)
 - MD templates serve as human-readable reference documentation
 - Single schema validates both MD and YAML document formats
@@ -202,7 +215,7 @@ Layer Transitions → Code Generation → Test Execution → Traceability Matrix
 ```mermaid
 flowchart TD
     Input[Human Input<br/>Business Requirements] --> AI[AI Assistant / Autopilot]
-    
+
     subgraph "AI Assistant / Autopilot"
         AI --> Layer1[Generate BRD]
         Layer1 --> Layer2[Generate PRD]
@@ -215,18 +228,18 @@ flowchart TD
         Layer8 --> Layer9[Generate SPEC]
         Layer9 --> Layer10[Generate TASKS]
     end
-    
+
     Layer10 --> Code[Generate Code<br/>from SPEC+TASKS]
     Code --> Tests[Generate & Run Tests<br/>with Auto-Fix]
-    
+
     Tests --> Quality{Quality Score ≥ 90%?}
     Quality -->|Yes| Auto[Auto-Approve]
     Quality -->|No| Human[Human Review]
-    
+
     Auto --> Deploy[Production Deployment]
     Human --> Review[Review & Approve]
     Review --> Deploy
-    
+
     style Input fill:#e1f5fe
     style AI fill:#fff9c4
     style Code fill:#dcedc8
@@ -234,12 +247,13 @@ flowchart TD
     style Human fill:#ffccbc
     style Auto fill:#c8e6c9
     style Deploy fill:#c8e6c9
+
 ```
 
 **Key Differentiation**:
 
 | Aspect | Human | AI Assistant | Autopilot |
-|--------|-------|--------------|------------|
+| -------- | ------- | -------------- | ------------ |
 | **Scope** | Strategic decisions | Framework execution | Full workflow automation |
 | **Trigger** | Initial requirements | User prompts | CLI or CI/CD |
 | **Templates** | N/A | MD + YAML | YAML only |
@@ -250,8 +264,8 @@ flowchart TD
 
 ## Using This Repo
 
-- ** Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
-- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- **Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_ssd_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python 02_PRD/scripts/validate_prd.py`, `./07_REQ/scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
@@ -262,14 +276,16 @@ flowchart TD
 **MVP templates are the FRAMEWORK DEFAULT for all new document creation.** The framework automatically uses MVP templates unless explicitly configured otherwise.
 
 #### Why MVP is Default
+
 - **Faster iteration**: Streamlined templates for rapid development
 - **Reduced overhead**: Fewer required sections, relaxed validation
 - **Full traceability**: Complete traceability chain maintained
 - **Lifecycle approach**: MVP → PROD → NEW MVP (expansion through new iterations)
 
 #### Available MVP Templates (Layers 1-7)
+
 | Layer | Artifact | Default Template |
-|-------|----------|-----------------|
+| ------- | ---------- | ----------------- |
 | 1 | BRD | `BRD-MVP-TEMPLATE.md` |
 | 2 | PRD | `PRD-MVP-TEMPLATE.md` |
 | 3 | EARS | `EARS-MVP-TEMPLATE.md` |
@@ -281,6 +297,7 @@ flowchart TD
 Layers 8-15 use standard templates (no MVP prefix needed).
 
 #### MVP Template Profile (Default)
+
 - Default: `custom_fields.template_profile: mvp` (relaxed, MVP drafting)
 - Strict: omit the field or set `custom_fields.template_profile: enterprise` when a project explicitly requires strict validation.
 
@@ -311,7 +328,7 @@ Layers 8-15 use standard templates (no MVP prefix needed).
 This repository uses consistent **2-digit width** (`00`) for all index files across all artifact types.
 
 | Artifact Type | Index File Format | Width | Example |
-|---------------|-------------------|-------|---------|
+| --------------- | ------------------- | ------- | --------- |
 | BRD | BRD-00_index.md | 2-digit | `BRD-00_index.md` |
 | PRD | PRD-00_index.md | 2-digit | `PRD-00_index.md` |
 | EARS | EARS-00_index.md | 2-digit | `EARS-00_index.md` |
@@ -324,6 +341,7 @@ This repository uses consistent **2-digit width** (`00`) for all index files acr
 | TASKS | TASKS-00_index.md | 2-digit | `TASKS-00_index.md` |
 
 **Policy for New Repositories**:
+
 - Choose either 2-digit (`00`) or 3-digit (`000`) width consistently
 - Apply the same width across ALL artifact types in the project
 - Do NOT mix widths (e.g., BRD-00 with PRD-000)
@@ -342,13 +360,16 @@ AI Dev Flow uses **dual metadata approaches** to serve both human and machine au
 **Required in**: All templates, index files, and published documentation artifacts.
 
 **Example**:
+
 ```yaml
 ---
 title: "BRD-02: Partner Ecosystem Integration"
 tags:
+
   - platform-brd
   - shared-architecture
   - layer-1-artifact
+
 custom_fields:
   document_type: brd
   artifact_type: BRD
@@ -357,6 +378,7 @@ custom_fields:
   priority: shared
   development_status: active
 ---
+
 ```
 
 ### 2. Document Control Tables (Human-Readable)
@@ -368,17 +390,19 @@ custom_fields:
 **Required in**: All production documents (BRD through TASKS).
 
 **Example**:
+
 ```markdown
 ## Document Control
 
 | Item | Details |
-|------|---------|
+| ------ | --------- |
 | Document ID | BRD-02 |
 | Version | 1.2.0 |
 | Status | Approved |
 | Author | Product Team |
 | Last Updated | 2025-11-15T00:00:00 |
 | Approved By | Chief Product Officer |
+
 ```
 
 ### 3. Metadata vs. Traceability Tags
@@ -386,7 +410,7 @@ custom_fields:
 **IMPORTANT**: Metadata (YAML frontmatter) is DIFFERENT from traceability tags (`@artifact: ID`).
 
 | Aspect | YAML Frontmatter | Traceability Tags |
-|--------|------------------|-------------------|
+| -------- | ------------------ | ------------------- |
 | **Purpose** | Document classification, tooling | Audit trail, compliance |
 | **Location** | Top of file (lines 1-20) | section 7 (body) |
 | **Format** | YAML key-value pairs | `@artifact: ID (Description)` |
@@ -394,17 +418,20 @@ custom_fields:
 | **Changeability** | Can be updated | Immutable after approval |
 
 **Learn More**:
+
 - [METADATA_VS_TRACEABILITY.md](./METADATA_VS_TRACEABILITY.md) - Quick reference comparing both systems
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#metadata-management-approaches) - Detailed methodology
 - [scripts/validate_metadata.py](./scripts/validate_metadata.py) - YAML validation tool
 
 **Validation**:
+
 ```bash
 # Validate YAML frontmatter
 python3 scripts/validate_metadata.py .
 
 # Validate traceability tags locally
 # See `scripts/validate_tags_against_docs.py`, `scripts/validate_traceability_matrix.py`, and `scripts/validate_cross_document.py`
+
 ```
 
 ## Complete Development Workflow
@@ -428,6 +455,7 @@ flowchart LR
     TASKS --> Code[Code<br/>Layer 12]
     Code --> Tests[Tests<br/>Layer 13]
     Tests --> Val[Validation<br/>Layer 14]
+
 ```
 
 ### Splitting Rules
@@ -440,7 +468,7 @@ flowchart LR
 The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
 
 | Layer | Artifact | Purpose | Tags Required | Key Decision |
-|-------|----------|---------|---------------|--------------|
+| ------- | ---------- | --------- | --------------- | -------------- |
 | **0** | Strategy | External business strategy documents | 0 | Strategic direction |
 | **1** | BRD | Business objectives and market context | 0 (top level) | WHAT needs to be built |
 | **2** | PRD | Product features and user stories | @brd (1) | Product capabilities |
@@ -491,6 +519,7 @@ graph TB
 
     L0 --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
     L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13 --> L14
+
 ```
 
 #### Layer Numbering Explained
@@ -520,6 +549,7 @@ The 15-layer architecture uses the following structure:
   - Layer 14: Validation (test results, metrics)
 
 **Important Note on Layer Numbering:**
+
 - **Formal layer numbers (0-14)**: Used in cumulative tagging, templates, and specifications
 - **Mermaid diagram groupings**: May use simplified labels (L1-L10) for visual organization
 - **Always use formal layer numbers** when implementing cumulative tagging or referencing layers in documentation
@@ -530,7 +560,7 @@ The 15-layer architecture uses the following structure:
 #### Formal Layer Numbers (Use in Code/Tags/Documentation)
 
 | Layer | Artifact Type | Purpose |
-|-------|---------------|---------|
+| ------- | --------------- | --------- |
 | 0 | Strategy (STRAT) | Strategic business direction |
 | 1 | Business Requirements (BRD) | Business needs and goals |
 | 2 | Product Requirements (PRD) | Product features and specifications |
@@ -565,6 +595,7 @@ Diagrams use simplified labels for visual clarity:
 - **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
 
 **Important**: Always use formal layer numbers (0-14) in:
+
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
@@ -573,6 +604,7 @@ Diagrams use simplified labels for visual clarity:
 ### Critical Decision Point
 
 **After REQ (Requirements Layer)**:
+
 - **Interface requirement** (API, event schema, data model) → Create **CTR** (API Contract) → then **SPEC**
 - **No interface requirement** (internal logic, business rules) → Create **SPEC** directly
 
@@ -587,6 +619,7 @@ flowchart TD
     Decision -->|No| SPEC[SPEC - Technical Specs]
     CTR --> SPEC
     SPEC --> TASKS[TASKS - Task Breakdown]
+
 ```
 
 ## Template Directories
@@ -596,16 +629,19 @@ flowchart TD
 ### Business Layer
 
 **01_BRD/** - Business Requirements Documents
+
 - High-level business objectives and market context
 - Strategic goals and success criteria
 - **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (standard template)
 
 **02_PRD/** - Product Requirements Documents
+
 - User-facing features and product capabilities
 - Business requirements and acceptance criteria
 - **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md) (standard template)
 
 **03_EARS/** - Event-Action-Response-State (Engineering Requirements)
+
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
 - **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (standard template)
@@ -613,17 +649,20 @@ flowchart TD
 ### Testing Layer
 
 **04_BDD/** - Behavior-Driven Development Scenarios
+
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
 
 ### Architecture Layer
 
 **05_ADR/** - Architecture Decision Records
+
 - Architectural choices and rationale
 - Technology selections and trade-offs
 - **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (standard template)
 
 **06_SYS/** - System Requirements Specifications
+
 - System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
 - **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (standard template)
@@ -631,6 +670,7 @@ flowchart TD
 ### Requirements Layer
 
 **07_REQ/** - Atomic Requirements
+
 - Granular, testable requirements with acceptance criteria
 - Organization: Nested per-document folders (DEFAULT for all types)
   - Folder: `07_REQ/REQ-NN_{slug}/`
@@ -641,6 +681,7 @@ flowchart TD
 ### Interface Layer
 
 **08_CTR/** - API Contracts (CTR)
+
 - Formal interface specifications for component-to-component communication
 - **Dual-file format**:
   - `.md` file: Human-readable context, business rationale, traceability links
@@ -652,6 +693,7 @@ flowchart TD
 ### Technical Specs (SPEC)
 
 **09_SPEC/** - Technical Specifications
+
 - YAML: Monolithic per component (code generation source)
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
@@ -661,6 +703,7 @@ flowchart TD
 ### Code Generation Layer
 
 **11_TASKS/** - Code Generation Plans (TASKS)
+
 - Exact TODOs to implement SPEC in source code
 - Step-by-step guide for AI code generation from YAML specifications
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
@@ -672,11 +715,13 @@ flowchart TD
 
 **IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
 
-#### [PASS] Apply To (Documentation):
+#### [PASS] Apply To (Documentation)
+
 - Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 - BDD feature files (`.feature` format) in `tests/bdd/` directories
 
-#### [FAIL] Do NOT Apply To (Source Code):
+#### [FAIL] Do NOT Apply To (Source Code)
+
 - **Python files**: Follow PEP 8 conventions (`snake_case.py`, `PascalCase` classes)
 - **Test files**: Follow pytest conventions (`test_*.py`, `test_*()` functions)
 - **Other languages**: Follow language-specific style guides (Java, JavaScript, Go, etc.)
@@ -692,6 +737,7 @@ Note: `NN` denotes a variable-width 2+ digit number (e.g., 01, 12, 105, 1002).
 - **ext**: File extension (md, feature, yaml)
 
 Examples:
+
 - `PRD-01_external_api_integration.md`
 - `BDD-03.2_risk_limits_requirements.feature`
 - `CTR-01_data_validation.md` + `CTR-01_data_validation.yaml` (dual-file format)
@@ -710,7 +756,7 @@ General Utility Documents (`{DOC_TYPE}-00_*`): Use `{DOC_TYPE}-00_{slug}.{ext}` 
 Internal feature IDs within documents use 3-digit sequential numbering with unified format for globally unique traceability.
 
 | Context | Internal ID | Unified Format | Cross-Reference |
-|---------|-------------|----------------|-----------------|
+| --------- | ------------- | ---------------- | ----------------- |
 | PRD Features | `001`, `015`, `042` | `PRD.22.01.15` | `@prd: PRD.22.01.15` |
 | BRD Objectives | `030`, `006` | `BRD.01.01.30` | `@brd: BRD.01.01.30` |
 | EARS Statements | `003`, `007` | `EARS.06.24.03` | `@ears: EARS.06.24.03` |
@@ -720,24 +766,27 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 **Format**: `@type: TYPE.NN.TT.SS` (dot separator for all references)
 
 **Examples**:
+
 ```markdown
 @brd: BRD-NN
 @prd: PRD-NN
 @ears: EARS-NN
 @sys: SYS-NN
 @sys: SYS-NN  # Quality attributes may use unified sequential numbering
+
 ```
 
 **Global Uniqueness**: `TYPE.NN.TT.SS` format creates globally unique references (e.g., `PRD.22.01.15` is unique across all documents).
 
 Note on ADR references:
+
 - Use `ADR-NN` for document-level references (e.g., `@adr: ADR-NN`).
 - Use `ADR.NN.TT.SS` for decision/element-level anchors within ADR documents (e.g., `@adr: ADR.NN.TT.SS`).
 
 ## Schema File Reference
 
 | Artifact | Schema File | Layer | Notes |
-|----------|-------------|-------|-------|
+| ---------- | ------------- | ------- | ------- |
 | BRD | BRD_MVP_SCHEMA.yaml | 1 | Optional¹ - advisory validation only |
 | PRD | PRD_MVP_SCHEMA.yaml | 2 | |
 | EARS | EARS_MVP_SCHEMA.yaml | 3 | |
@@ -761,10 +810,12 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
 **Tag Format**:
+
 - Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
 - File-level artifacts (ADR, SPEC, CTR): `@type: TYPE-NN`
 
 **Example Progression**:
+
 ```markdown
 # Layer 2 (PRD)
 @brd: BRD-01:BRD.01.01.30
@@ -785,6 +836,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 # Layer 11 (Code)
 @brd: BRD-01:BRD.01.01.30
 ... [all upstream tags through @tasks]
+
 ```
 
 ### Benefits
@@ -809,6 +861,7 @@ python scripts/validate_tags_against_docs.py --validate-cumulative --strict
 
 # Generate traceability matrices
 python scripts/generate_traceability_matrix.py --auto
+
 ```
 
 See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) for complete guidelines.
@@ -819,25 +872,30 @@ Note on Validation layer (Layer 14): Validation consumes all upstream tags. Docu
 
 ### Quick Start Guide
 
-**Step 1: Choose Your Domain**
+#### Step 1: Choose Your Domain
+
 - Review [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md)
 - Identify domain-specific terminology and placeholders
 
-**Step 2: Copy Templates to Your Project**
+#### Step 2: Copy Templates to Your Project
+
 ```bash
 # Copy entire framework to your project
-cp -r ai_dev_flow/ <your_project>/docs/
+cp -r ai_dev_ssd_flow/ <your_project>/docs/
 
 # Or copy specific templates as needed
-cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
+cp ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
+
 ```
 
-**Step 3: Replace Placeholders**
+#### Step 3: Replace Placeholders
+
 - Search for `[PLACEHOLDERS]` in templates
 - Replace with domain-specific values
 - Update examples to match your use cases
 
-**Step 4: Create Your First Document**
+#### Step 4: Create Your First Document
+
 1. **Choose Document Type**: Select directory (01_BRD/, 02_PRD/, 07_REQ/, etc.)
 2. **Check Index**: Review `{TYPE}-00_index.{ext}` for next available ID
 3. **Copy Template**: Use template file from the directory
@@ -848,6 +906,7 @@ cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
 ### Template Structure
 
 Each directory contains:
+
 - **Index File**: `{TYPE}-00_index.{ext}` - Master list of all documents
 - **Template File**: `{TYPE}-TEMPLATE.{ext}` - Copy for new documents
 - **README.md**: Detailed usage guide and best practices
@@ -855,7 +914,7 @@ Each directory contains:
   - Generic examples with `[PLACEHOLDER]` format
   - Domain-specific examples from original project
 
-### Validation
+### Validation (Quick Start)
 
 The framework includes comprehensive validation tooling:
 
@@ -868,10 +927,10 @@ python scripts/generate_traceability_matrix.py --auto
 # Legacy validation (optional)
 python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
+
 ```
 
 **CI/CD Integration**: See [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) for pre-commit hooks and GitHub Actions workflows.
-
 
 ### Using Automated Validation Tooling
 
@@ -882,6 +941,7 @@ The framework provides three main validation scripts for enforcing cumulative ta
 **Purpose**: Scan codebase to extract all traceability tags from source code, documentation, and tests.
 
 **Usage**:
+
 ```bash
 # Extract tags from all sources
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
@@ -891,15 +951,18 @@ python scripts/extract_tags.py --validate-only
 
 # Extract from specific artifact type
 python scripts/extract_tags.py --type REQ --show-all-upstream
+
 ```
 
 **What It Does**:
+
 - Scans files for `@artifact-type: DOC-ID:REQ-ID` patterns
 - Validates tag format compliance
 - Generates JSON file with all discovered tags
 - Reports orphaned or malformed tags
 
   **Output Example**:
+
 ```json
 {
   "REQ-NN": {
@@ -911,6 +974,7 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
     "sys": ["SYS-NN"]
   }
 }
+
 ```
 
 #### 2. Cumulative Tag Validation (`validate_tags_against_docs.py`)
@@ -918,6 +982,7 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
 **Purpose**: Enforce cumulative tagging hierarchy - verify each artifact includes ALL required upstream tags.
 
 **Usage**:
+
 ```bash
 # Full validation with cumulative tagging check
 python scripts/validate_tags_against_docs.py \
@@ -936,9 +1001,11 @@ python scripts/validate_tags_against_docs.py \
 python scripts/validate_tags_against_docs.py \
   --tags docs/generated/tags.json \
   --strict
+
 ```
 
 **What It Checks**:
+
 1. **Layer Detection**: Automatically determines artifact layer from file path
 2. **Required Tags**: Ensures all required upstream tags are present (no gaps)
 3. **Tag Count**: Validates tag count matches layer requirements
@@ -948,30 +1015,35 @@ python scripts/validate_tags_against_docs.py \
 **Expected Tag Counts by Layer**:
 
 See [CUMULATIVE_TAG_REFERENCE.md](./CUMULATIVE_TAG_REFERENCE.md) for complete tag count formulas by layer, including:
+
 - Full reference table (Layers 1-13)
 - Handling of optional layers (CTR)
 - Validation formulas and Python implementation
 - Example scenarios for different project configurations
 
 **Quick Reference**:
+
 - Layers 1-8: Fixed count (layer number - 1)
 - Layers 9-13: Range based on optional layer (CTR)
 - Layer 14 (Validation): Advisory count (10-14 tags)
 
-
 **Output Example**:
-```
+
+```text
 [PASS] VALIDATION PASSED
 
 Statistics:
+
 - Total artifacts validated: 147
 - Total tags validated: 1,234
 - Cumulative tagging compliance: 100%
 - No gaps found in tag chains
+
 ```
 
 **Error Example**:
-```
+
+```text
 [FAIL] CUMULATIVE TAGGING ERRORS FOUND: 3
 
 MISSING_REQUIRED_TAGS: 1
@@ -982,6 +1054,7 @@ TAG_CHAIN_GAP: 2
     docs/09_SPEC/service.yaml
 
      [FAIL] Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
+
 ```
 
 #### 3. Traceability Matrix Generation (`generate_traceability_matrix.py`)
@@ -989,6 +1062,7 @@ TAG_CHAIN_GAP: 2
 **Purpose**: Auto-generate traceability matrices showing bidirectional relationships between artifacts.
 
 **Usage**:
+
 ```bash
 # Generate all matrices automatically
 python scripts/generate_traceability_matrix.py --auto
@@ -1002,9 +1076,11 @@ python scripts/generate_traceability_matrix.py \
 python scripts/generate_traceability_matrix.py \
   --type BDD \
   --show-coverage
+
 ```
 
 **What It Generates**:
+
 - Complete inventory of all artifacts by type
 - Upstream traceability (requirements → implementations)
 - Downstream traceability (implementations → tests)
@@ -1012,43 +1088,54 @@ python scripts/generate_traceability_matrix.py \
 - Bidirectional reference validation
 
 **Output Example** (REQ Matrix):
+
 ```markdown
 # Traceability Matrix: REQ-NN through REQ-NN
 
 ## Complete REQ Inventory
 | REQ ID | Title | Status | Upstream | Downstream |
-|--------|-------|--------|----------|------------|
+| -------- | ------- | -------- | ---------- | ------------ |
 | REQ-NN | Submit Request | Active | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN | SPEC-NN, TASKS-NN, Code |
 
 ## Coverage Metrics
+
 - Total Requirements: 150
 - With Complete Upstream: 148 (98.7%)
 - With Downstream Implementation: 145 (96.7%)
 - Orphaned Requirements: 2 (1.3%)
+
 ```
 
 #### 4. Complete Validation Workflow
 
-**Step 1: After Creating/Modifying Artifacts**
+#### Step 1: After Creating/Modifying Artifacts
+
 ```bash
 # Extract tags
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
 # Validate
 python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+
 ```
 
-**Step 2: Before Committing**
+#### Step 2: Before Committing
+
 ```bash
 # Complete validation workflow
 python scripts/generate_traceability_matrix.py --auto
+
 ```
 
 **Step 3: CI/CD Integration** (see [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md))
+
 ```yaml
 # .github/workflows/traceability.yml
+
 - name: Validate Cumulative Tagging
+
   run: python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+
 ```
 
 #### Validation Workflow Diagram
@@ -1062,15 +1149,19 @@ flowchart TD
     Check -->|No| Fix[Fix invalid tags]
     Fix --> Extract
     Generate --> Report[Validation Report]
+
 ```
 
 #### Common Issues and Fixes
 
 **Issue**: "Missing required upstream tags"
+
 ```bash
 # Fix: Add missing tags to artifact's section 7 Traceability
 # Example: REQ-NN missing @bdd tag
+
 ```
+
 ```markdown
 ## 7. Traceability
 
@@ -1081,31 +1172,40 @@ flowchart TD
 @bdd: BDD-NN  # ← Add this
 @adr: ADR-NN
 @sys: SYS-NN
+
 ```
 
 **Issue**: "Gap in cumulative tag chain"
+
 ```bash
 # Fix: Ensure no layers are skipped
 # If @adr exists, @brd, @prd, @ears, @bdd must all exist
+
 ```
 
 **Issue**: "Orphaned tag - referenced document not found"
+
 ```bash
 # Fix: Either create the referenced document or remove invalid tag
 # Verify: ls docs/01_BRD/BRD-NN*.md
+
 ```
 
 **Issue**: "Insufficient tag count"
+
 ```bash
 # Fix: Add all required upstream tags for the artifact's layer
 # REQ (Layer 7) needs exactly 6 tags: @brd through @sys
+
 ```
 
 #### Dependencies
 
 Install required Python packages:
+
 ```bash
 pip install pyyaml  # For YAML parsing (SPEC documents)
+
 ```
 
 #### Performance
@@ -1132,6 +1232,7 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 ## Schema Definitions
 
 Each artifact type has a corresponding YAML schema file (`{TYPE}_MVP_SCHEMA.yaml`) that defines:
+
 - **Metadata Requirements**: YAML frontmatter fields and validation rules
 - **Document Structure**: Required/optional sections and numbering patterns
 - **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NN, TASK-NN, etc.)
@@ -1139,10 +1240,10 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_MVP_SCHEMA.yaml
 - **Traceability Requirements**: Cumulative tagging hierarchy per layer
 - **Error Messages**: Standardized error codes (E001-E0XX, W001-W0XX, I001-I0XX)
 
-### Schema File Reference
+### Schema File Reference (By Layer)
 
 | Layer | Artifact | Schema File | Key Patterns |
-|-------|----------|-------------|--------------|
+| ------- | ---------- | ------------- | -------------- |
 | 1 | BRD | [BRD_MVP_SCHEMA.yaml](./01_BRD/BRD_MVP_SCHEMA.yaml) | Business objectives format |
 | 2 | PRD | [PRD_MVP_SCHEMA.yaml](./02_PRD/PRD_MVP_SCHEMA.yaml) | FR/QA format, template variants |
 | 3 | EARS | [EARS_MVP_SCHEMA.yaml](./03_EARS/EARS_MVP_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
@@ -1159,16 +1260,17 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_MVP_SCHEMA.yaml
 
 ```bash
 # Validate document against schema (planned)
-python scripts/validate_artifact.py --schema ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
+python scripts/validate_artifact.py --schema ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict
+
 ```
 
 ### Cumulative Tagging by Layer (from Schemas)
 
 | Layer | Artifact | Required Upstream Tags |
-|-------|----------|------------------------|
+| ------- | ---------- | ------------------------ |
 | 1 | BRD | None (top level) |
 | 2 | PRD | @brd |
 | 3 | EARS | @brd, @prd |
@@ -1188,7 +1290,7 @@ The framework implements a formal **4-Gate Change Management System** for valida
 ### 4-Gate System Overview
 
 | Gate | Layers | Purpose | Entry Point For |
-|------|--------|---------|-----------------|
+| ------ | -------- | --------- | ----------------- |
 | **GATE-01** | L1-L4 | Business/Product validation | Upstream changes |
 | **GATE-05** | L5-L8 | Architecture/Contract validation | Midstream/External changes |
 | **GATE-09** | L9-L11 | Design/Test validation (TDD) | Design changes |
@@ -1197,7 +1299,7 @@ The framework implements a formal **4-Gate Change Management System** for valida
 ### Change Levels
 
 | Level | Description | Process | Example |
-|-------|-------------|---------|---------|
+| ------- | ------------- | --------- | --------- |
 | **L1 Patch** | Bug fixes, typos | Edit in place | Fix null pointer |
 | **L2 Minor** | Feature adds, enhancements | Lightweight CHG | Add export feature |
 | **L3 Major** | Architecture pivots, breaking changes | Full CHG process | Switch to microservices |
@@ -1205,6 +1307,7 @@ The framework implements a formal **4-Gate Change Management System** for valida
 ### Emergency Bypass
 
 For P1 incidents or critical security (CVSS >= 9.0):
+
 - Hotfix deployment with post-incident documentation
 - Retroactive gate validation within 72 hours
 - Post-mortem with action items
@@ -1218,6 +1321,7 @@ For P1 incidents or critical security (CVSS >= 9.0):
 
 # Determine routing
 python CHG/scripts/validate_chg_routing.py <CHG_FILE>
+
 ```
 
 **Documentation**: See [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) for complete change management procedures.
@@ -1231,6 +1335,7 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE>
 The AI Dev Flow follows a structured progression through 15 layers:
 
 **Documentation Layers (0-10)**:
+
 1. **Strategy** (Layer 0) - External business strategy documents
 2. **BRD** (Layer 1) - Business objectives and market context
 3. **PRD** (Layer 2) - Product features and user stories
@@ -1245,11 +1350,13 @@ The AI Dev Flow follows a structured progression through 15 layers:
 12. **TASKS** (Layer 11) - Implementation task breakdown with execution commands
 
 **Execution Layers (12-14)**:
-13. **Code** (Layer 12) - Source code with cumulative tags
-14. **Tests** (Layer 13) - Test suite with cumulative tags
-15. **Validation** (Layer 14) - Production readiness verification
+
+- **Code** (Layer 12) - Source code with cumulative tags
+- **Tests** (Layer 13) - Test suite with cumulative tags
+- **Validation** (Layer 14) - Production readiness verification
 
 **Key Workflow Patterns**:
+
 - **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
 - **Complete Traceability**: Every document links upstream (requirements) and downstream (implementations)
 - **Regulatory Compliance**: Complete audit trail for regulatory, FDA, ISO requirements
@@ -1264,17 +1371,20 @@ Quick link: AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
 Templates are optimized for AI code generation:
 
 **Human-Readable**:
+
 - Clear business context and rationale
 - Traceability links to requirements and decisions
 - Acceptance criteria in natural language
 
 **Machine-Readable**:
+
 - Structured YAML specifications
 - Explicit interface definitions (OpenAPI/AsyncAPI)
 - Measurable constraints and validation rules
 - Complete behavioral specifications
 
 **AI Benefits**:
+
 - Deterministic code generation from YAML SPEC
 - Automatic traceability comment injection
 - Consistent implementation patterns
@@ -1327,7 +1437,7 @@ Templates are optimized for AI code generation:
 
 ```mermaid
 graph LR
-    subgraph ai_dev_flow["ai_dev_flow/"]
+  subgraph ai_dev_ssd_flow["ai_dev_ssd_flow/"]
         direction TB
 
         subgraph docs["Documentation Artifacts"]
@@ -1357,12 +1467,13 @@ graph LR
     end
 
     REQ --> REQ_sub["api/ auth/ data/ risk/"]
+
 ```
 
 **Artifact Directories**:
 
 | Directory | Purpose |
-|-----------|---------|
+| ----------- | --------- |
 | `01_BRD/` | Business Requirements Documents |
 | `02_PRD/` | Product Requirements Documents |
 | `03_EARS/` | EARS Requirements (Event-driven) |
@@ -1377,7 +1488,7 @@ graph LR
 **Tooling & Guides**:
 
 | Path | Purpose |
-|------|---------|
+| ------ | --------- |
 | `scripts/` | Validation and tooling scripts |
 | `work_plans/` | Implementation plans (/save-plan output) |
 | `index.md` | Detailed directory reference with Mermaid workflow |
@@ -1393,12 +1504,14 @@ graph LR
 **Last Updated**: 2026-02-07T00:00:00
 
 **Version 2.5 - Autopilot v6.0 Integration** (February 2026):
+
 - [PASS] **Autopilot v6.0**: Complete automation upgrade with TSPEC, TDD, and CHG modes
 - [PASS] **TDD Workflow Scripts**: 7 new scripts for test-driven development workflow
 - [PASS] **Autopilot Test Suite**: Unit, smoke, regression, and BDD tests for Autopilot scripts
 - [PASS] **Documentation Updates**: Updated multi-project setup guides and main README
 
 **Version 2.4 - 4-Gate Change Management System** (February 2026):
+
 - [PASS] **4-Gate CHG System**: Formal validation gates at layer boundaries (GATE-01, GATE-05, GATE-09, GATE-12)
 - [PASS] **Change Source Workflows**: 5 change sources (Upstream, Midstream, Downstream, External, Feedback)
 - [PASS] **Emergency Bypass**: P1 incident and critical security (CVSS >= 9.0) handling
@@ -1408,6 +1521,7 @@ graph LR
 - [PASS] **Post-Mortem Template**: Structured incident analysis for emergency bypasses
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
+
 - [PASS] **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
 - [PASS] **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - [PASS] **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
@@ -1418,6 +1532,7 @@ graph LR
 - [PASS] **Impact Analysis**: Instant identification of affected downstream artifacts
 
 **Version 1.0 Enhancements** (November 2025):
+
 - Added CTR (API Contracts) dual-file format for interface definitions
 - Created DOMAIN_ADAPTATION_GUIDE.md with 5 domain checklists
 - Introduced dual-file CTR format (.md + .yaml)
@@ -1425,6 +1540,7 @@ graph LR
 - Enhanced TASKS templates for AI code generation
 
 **Framework Evolution**:
+
 - 15-layer architecture with complete cumulative tagging
 - Automated traceability validation and matrix generation
 - Complete audit trail from business strategy to production code
@@ -1433,6 +1549,7 @@ graph LR
 ## Related Documentation
 
 **Within This Framework**:
+
 - [index.md](./index.md) - Complete directory reference with workflow diagram
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Detailed SDD methodology
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards and cumulative tagging hierarchy
@@ -1442,12 +1559,14 @@ graph LR
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 
 **Change Management**:
+
 - [CHG/CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Change management procedures
 - [CHG/CHANGE_CLASSIFICATION_GUIDE.md](./CHG/CHANGE_CLASSIFICATION_GUIDE.md) - L1/L2/L3 decision guide
 - [CHG/gates/](./CHG/gates/) - 4-Gate system documentation
 - [CHG/workflows/](./CHG/workflows/) - Change source workflow guides
 
 **Automation & Workflow**:
+
 - [AUTOPILOT/MVP_AUTOPILOT.md](./AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide for MVP workflow
 - [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Workflow patterns and execution steps
 - [MVP_AUTOMATION_DESIGN.md](./MVP_AUTOMATION_DESIGN.md) - Automation architecture and design patterns
@@ -1455,6 +1574,7 @@ graph LR
 - [AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
 
 **For Original Project Context** (example references - replace with your project path):
+
 - [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
 - [docs/09_SPEC/]({project_root}/docs/09_SPEC/) - Production specifications
 - [docs/src/]({project_root}/docs/src/) - Component implementations
@@ -1478,6 +1598,7 @@ Feature: Request validation
     Given a logged-in user
     When the user submits a valid request
     Then the system accepts the request
+
 ```
 
 ### Link-Style Tags (also supported)
@@ -1490,9 +1611,11 @@ Feature: Request validation
     Given a logged-in user
     When the user submits a valid request
     Then the system accepts the request
+
 ```
 
 Notes:
+
 - Both forms are extracted by `scripts/extract_tags.py`.
 - Link-style tags capture the document ID; inline tags are recommended for cumulative tagging checks.
 - Optional layers (e.g., 08_CTR) may be omitted when not applicable.
@@ -1501,7 +1624,7 @@ Notes:
 
 ### Adopting This Framework
 
-1. **Copy templates** to your project: `cp -r ai_dev_flow/ <your_project>/docs/`
+1. **Copy templates** to your project: `cp -r ai_dev_ssd_flow/ <your_project>/docs/`
 2. **Read domain guide**: Review [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md)
 3. **Replace placeholders**: Search for `[PLACEHOLDERS]` and customize
 4. **Create first document**: Follow Quick Start Guide above
@@ -1518,7 +1641,10 @@ Notes:
 ### Contributing to Framework
 
 If enhancing this framework:
+
 - Maintain `[PLACEHOLDER]` format for domain-agnostic templates
 - Update [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) with new domains
+
 <!-- Historical note removed: scripts/make_framework_generic.py is no longer part of this repo -->
+
 - Document version and last updated date in modified files

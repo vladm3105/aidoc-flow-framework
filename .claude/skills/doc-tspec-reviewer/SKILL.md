@@ -16,15 +16,15 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [TSPEC]
   downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+  version: "1.5"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-tspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Test Specification (TSPEC) documents. This skill performs deep content analysis beyond structural validation, checking test coverage across all 4 types (UTEST, ITEST, STEST, FTEST), SPEC alignment, test case completeness, and identifying issues that require manual review.
+Comprehensive **content review and quality assurance** for Test Specification (TSPEC) documents. This skill performs deep content analysis beyond structural validation, checking test coverage across all 6 types (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST), SPEC alignment, test case completeness, and identifying issues that require manual review.
 
 **Layer**: 10 (TSPEC Quality Assurance)
 
@@ -122,6 +122,8 @@ Validates TSPEC follows the mandatory nested folder rule.
 | ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
 | STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
 | FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+| PTEST | `docs/10_TSPEC/PTEST/PTEST-NN_{slug}/PTEST-NN_{slug}.md` |
+| SECTEST | `docs/10_TSPEC/SECTEST/SECTEST-NN_{slug}/SECTEST-NN_{slug}.md` |
 
 **Error Codes**:
 
@@ -284,7 +286,7 @@ Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
 - Element IDs use `TSPEC.NN.TT.SS` format
-- Element type codes valid for TSPEC (40, 41, 42, 43)
+- Element type codes valid for TSPEC (40, 41, 42, 43, 44, 45)
 - Test case naming convention
 
 **Error Codes**:
@@ -561,6 +563,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Updated test type count from 4 to 6; Added PTEST/SECTEST to nested folder table; Updated element type codes to 40-45 |
 | 1.4 | 2026-02-11 | **BLOCKING Structure Compliance check**: Added Check #0 as BLOCKING gate; Validates nested folder rule for all TSPEC types (UTEST/ITEST/STEST/FTEST); REV-STR001-STR004 error codes; TSPEC must pass structure validation before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required for all reviews; Three-phase detection algorithm; SHA-256 hash calculation with Python example; REV-D006 error code for missing cache; Cache schema v2.0 with section-level hashes; Report output with cache status and change percentages |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when SPEC documents modified after TSPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-tspec-fixer to related skills |

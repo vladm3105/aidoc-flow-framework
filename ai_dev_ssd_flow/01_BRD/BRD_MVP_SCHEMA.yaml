@@ -512,6 +512,10 @@ error_messages:
   BRD-W004: "architecture format: recommend 'architecture_approaches: [value]' array"
   BRD-W005: "Multiple H1 headings detected"
   BRD-W006: "Section numbering not sequential"
+  BRD-W011: "Missing BRD advisory diagram tag @diagram: c4-l1"
+  BRD-W012: "Missing BRD advisory diagram tag @diagram: dfd-l0"
+  BRD-W013: "Sequence diagram present without BRD sequence tag @diagram: sequence-*"
+  BRD-W014: "Diagram intent header missing required fields"
   BRD-I001: "PRD-Ready Score not found - recommended for tracking readiness"
   BRD-I002: "Business objectives lack measurable success criteria"
 

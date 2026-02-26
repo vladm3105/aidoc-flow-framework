@@ -36,7 +36,7 @@ BRD-01 (MVP) → Production v1 → User Feedback → BRD-02 (NEW MVP) → Produc
 - Index-only: maintain `BRD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: use `BRD-MVP-TEMPLATE.md` for all BRDs (MVP-first approach).
 - Inputs used for generation: `BRD-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 - New features = New BRD (don't expand existing BRDs indefinitely).
 
 Business Requirements Documents (BRDs) serve as the highest-level business requirements that establish the strategic foundation for all downstream development. BRDs capture business objectives, stakeholder needs, and success criteria before any product or technical considerations.

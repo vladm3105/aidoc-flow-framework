@@ -22,6 +22,7 @@ INFO=0
 # Configuration
 ADR_DIR="${1:-docs/ADR}"
 VERBOSE="${2:-}"
+ERRORS_ONLY=false
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -61,7 +62,7 @@ check_placeholder_text() {
   echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future ADR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
+  local patterns=("future ADR" "when created" "to be defined" "pending" "(TBD)" "[TBD]" "[TODO]")
 
   for pattern in "${patterns[@]}"; do
     while IFS= read -r line; do
@@ -76,7 +77,7 @@ check_placeholder_text() {
           fi
         fi
       fi
-    done < <(grep -rn "$pattern" "$ADR_DIR"/*.md 2>/dev/null || true)
+    done < <(grep -rnF "$pattern" "$ADR_DIR"/*.md 2>/dev/null || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -194,12 +195,36 @@ check_cross_linking() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+  echo "--- GATE-06: Diagram Contract Validation (ADR L3) ---"
   local syntax_errors=0
+  local contract_errors=0
 
   shopt -s nullglob
   for f in "$ADR_DIR"/ADR-[0-9]*_*.md "$ADR_DIR"/ADR-[0-9]*/ADR-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+    if is_adr_ref "$(basename "$f")"; then continue; fi
+
+    if ! grep -qi '@diagram:\s*c4-l3' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: c4-l3 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*sequence' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: sequence tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    local data_impact=0
+    if grep -qiE 'data flow|dataflow|database|payload|pii|retention|encryption|storage|schema|queue|stream|api response' "$f" 2>/dev/null; then
+      data_impact=1
+    fi
+    if [[ $data_impact -eq 1 ]] && ! grep -qi '@diagram:\s*dfd-l2' "$f" 2>/dev/null; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") appears data-impacting but missing @diagram: dfd-l2 tag${NC}"
+      ((WARNINGS++)) || true
+    fi
 
     # Check if file contains Mermaid diagrams
     if grep -q '```mermaid' "$f" 2>/dev/null; then
@@ -217,8 +242,8 @@ check_diagrams() {
   done
   shopt -u nullglob
 
-  if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+  if [[ $syntax_errors -eq 0 && $contract_errors -eq 0 ]]; then
+    echo -e "${GREEN}   ADR diagram contracts and Mermaid syntax checks passed${NC}"
   fi
   echo ""
 }
@@ -235,8 +260,12 @@ check_glossary() {
   local found=0
 
   # Check for Decision/decision inconsistency
-  local decision_upper=$(grep -roh "Decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l || echo 0)
-  local decision_lower=$(grep -roh "decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l || echo 0)
+  local decision_upper
+  decision_upper=$(grep -roh "Decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l | tr -d '[:space:]' || true)
+  decision_upper=${decision_upper:-0}
+  local decision_lower
+  decision_lower=$(grep -roh "decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l | tr -d '[:space:]' || true)
+  decision_lower=${decision_lower:-0}
 
   if [[ $decision_upper -gt 0 && $decision_lower -gt 5 ]]; then
     echo -e "${YELLOW}GATE-W003: Mixed 'Decision:' ($decision_upper) and 'decision:' ($decision_lower) usage${NC}"
@@ -545,7 +574,7 @@ main() {
   check_count_consistency
   check_index_sync
   check_cross_linking
-  check_visualization
+  check_diagrams
   check_glossary
   check_element_ids
   check_decision_status

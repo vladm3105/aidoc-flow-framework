@@ -220,11 +220,13 @@ properties:
   traceability:
     type: object
     required:
-      - upstream
+      - cumulative_tags
+      - type_specific
     properties:
-      upstream:
+      cumulative_tags:
         type: array
         minItems: 3
+        description: "Layer 1-9 upstream artifact references"
         items:
           type: object
           required:
@@ -233,7 +235,40 @@ properties:
           properties:
             tag:
               type: string
-              enum: ["@ctr", "@sys", "@spec", "@req", "@brd", "@prd"]
+              enum: ["@brd", "@prd", "@ears", "@bdd", "@adr", "@sys", "@req", "@spec", "@ctr"]
+            reference:
+              type: string
+            description:
+              type: string
+      type_specific:
+        type: array
+        minItems: 1
+        description: "ITEST-specific traceability tags"
+        items:
+          type: object
+          required:
+            - tag
+            - reference
+          properties:
+            tag:
+              type: string
+              enum: ["@ctr", "@sys"]
+            reference:
+              type: string
+            description:
+              type: string
+      downstream:
+        type: array
+        description: "Downstream artifact references"
+        items:
+          type: object
+          required:
+            - tag
+            - reference
+          properties:
+            tag:
+              type: string
+              enum: ["@tasks", "@code"]
             reference:
               type: string
             description:

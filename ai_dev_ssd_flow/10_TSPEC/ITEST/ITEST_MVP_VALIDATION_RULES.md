@@ -18,6 +18,22 @@ custom_fields:
 
 Validation criteria for integration test specification documents. Used by `validate_itest.py` script.
 
+## Folder Structure Validation (BLOCKING)
+
+**Nested Folder Rule**: ALL ITEST documents MUST be in nested folders.
+
+**Required Structure**: `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md`
+
+**Validation**:
+1. Check document is inside a nested folder
+2. Verify folder name matches ITEST ID pattern
+3. Verify file name matches folder name
+4. Parent path must be: `docs/10_TSPEC/ITEST/`
+
+**This check is BLOCKING** - ITEST must pass folder structure validation before other checks proceed.
+
+---
+
 ## Structural Validation
 
 ### Required Sections
@@ -70,7 +86,21 @@ TSPEC.NN.41.SS
 
 ## Traceability Validation
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Pattern | Required |
+|-----|---------|----------|
+| `@brd` | `BRD\.\d{2,}\.\d{2}\.\d{2,}` | Yes |
+| `@prd` | `PRD\.\d{2,}\.\d{2}\.\d{2,}` | Yes |
+| `@ears` | `EARS\.\d{2,}\.25\.\d{2,}` | Yes |
+| `@bdd` | `BDD\.\d{2,}\.14\.\d{2,}` | Yes |
+| `@adr` | `ADR-\d{2,}` | Yes |
+| `@sys` | `SYS\.\d{2,}\.\d{2}\.\d{2,}` | Yes |
+| `@req` | `REQ\.\d{2,}\.27\.\d{2,}` | Yes |
+| `@spec` | `SPEC-\d{2,}` | Yes |
+| `@ctr` | `CTR-\d{2,}` | If exists |
+
+### ITEST-Specific Tags
 
 | Tag | Pattern | Required |
 |-----|---------|----------|

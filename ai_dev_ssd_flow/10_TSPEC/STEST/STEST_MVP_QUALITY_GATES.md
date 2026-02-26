@@ -144,17 +144,23 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.25) + (G4 × 0.20)
 
 Before proceeding to TASKS generation:
 
+- [ ] Document in nested folder structure
 - [ ] Overall score = 100%
 - [ ] All P0 paths covered
 - [ ] Total timeout ≤ 300s
 - [ ] All tests have rollback
 - [ ] All tests have health checks
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] STEST-specific tags present (@ears, @bdd, @req)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-NN_*.md --quality-gates
+# Validate single STEST with quality gates (nested folder structure)
+python scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md --quality-gates
+
+# Validate all STEST documents
+python scripts/validate_stest.py docs/10_TSPEC/STEST/ --quality-gates
 ```
 
 ## See Also

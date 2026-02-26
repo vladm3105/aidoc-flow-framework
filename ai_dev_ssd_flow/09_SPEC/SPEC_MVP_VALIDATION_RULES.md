@@ -22,14 +22,14 @@ custom_fields:
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: 2025-11-30T00:00:00
-**Last Updated**: 2025-11-30T00:00:00
+**Last Updated**: 2026-02-26T00:00:00
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python 09_SPEC/scripts/validate_spec.py`
 **Primary Template**: `SPEC-MVP-TEMPLATE.yaml`
 **Framework**: AI Dev Flow SDD (100% compliant)
-**Changes**: v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
+**Changes**: v1.3: Removed duplicate error code line (SPEC-E025). v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
 
 ---
 
@@ -324,8 +324,6 @@ for section, subsection in required_subsections:
 - `[FAIL] SPEC-E022: Missing architecture.component_structure`
 - `[FAIL] SPEC-E023: Missing architecture.element_ids`
 - `[FAIL] SPEC-E024: Missing interfaces.external_apis`
-- `[FAIL] SPEC-E025: Missing interfaces.internal_apis`
-
 - `[FAIL] SPEC-E025: Missing interfaces.internal_apis`
 
 ---

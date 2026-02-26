@@ -38,7 +38,7 @@ Objective: Create complete technical specifications for component implementation
 Constraints:
 - One SPEC per component/module.
 - Define HOW to implement (not just WHAT).
-- 7 required sections.
+- 8 required sections (Sections 1-8) plus 2 optional appendices.
 - Required traceability tags: @req, @ctr, @adr.
 - TASKS-Ready threshold: >= 90%.
 - Include pseudocode for complex logic.

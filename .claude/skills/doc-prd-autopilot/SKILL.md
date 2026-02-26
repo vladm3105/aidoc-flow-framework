@@ -428,6 +428,16 @@ After PRD generation, validate EARS-Ready score.
 | Missing fallback documentation | PRD-W002 | Add Section 20.4 template |
 | Incomplete customer-facing content | PRD-E006 | Flag for manual review (Section 10) |
 
+**Blocking Diagram Contract Gate**:
+- Autopilot must fail Phase 4 when any of these codes are present:
+  - `PRD-E023` (missing `@diagram: c4-l2`)
+  - `PRD-E024` (missing `@diagram: dfd-l1`)
+  - `PRD-E025` (missing `@diagram: sequence-*`)
+  - `PRD-E026` (sequence diagram missing `alt/else` exception path)
+
+**Report Requirement**:
+- Include `Diagram Contract Compliance: PASS/FAIL` in phase summary output.
+
 ### Step 6: Review & Fix Cycle (v2.3)
 
 Iterative review and fix cycle to ensure PRD quality before completion.

@@ -2,8 +2,9 @@
 
 **Artifact**: SPEC (Technical Specifications)
 **Layer**: 9
-**Status**: PLANNED
+**Status**: IMPLEMENTED
 **Created**: 2026-02-26T12:00:00
+**Implemented**: 2026-02-26T15:00:00
 **Priority**: HIGH
 
 ---
@@ -58,6 +59,7 @@ cp ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md "$BACKUP_DIR/"
 
 # Backup skill files
 cp .claude/skills/doc-spec-validator/SKILL.md "$BACKUP_DIR/"
+cp .claude/skills/doc-spec-autopilot/SKILL.md "$BACKUP_DIR/"
 cp .claude/skills/doc-spec_quickref.md "$BACKUP_DIR/"
 ```
 
@@ -403,6 +405,14 @@ Add entry (if version history section exists):
 | 1.3 | 2026-02-26 | Fixed schema path to ai_dev_ssd_flow/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
 ```
 
+### 4.5 Update doc-spec-autopilot/SKILL.md Version History
+
+```markdown
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 2.4 | 2026-02-26 | Fixed template path from ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml to ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml | System |
+```
+
 ---
 
 ## Phase 5: Verification
@@ -450,7 +460,18 @@ grep -c "ai_dev_flow/SPEC" .claude/skills/doc-spec-validator/SKILL.md
 grep -E "@brd: BRD\.[0-9]{2}\.[0-9]{2}\.[0-9]{2}" .claude/skills/doc-spec-validator/SKILL.md
 ```
 
-### 5.5 Verify Quick Reference Fixes
+### 5.5 Verify Autopilot Skill Fixes
+
+```bash
+# Verify correct template path
+grep "ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
+
+# Verify no old paths remain
+grep -c "ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
+# Expected: 0
+```
+
+### 5.6 Verify Quick Reference Fixes
 
 ```bash
 # Verify layer 9
@@ -500,14 +521,14 @@ grep -rn "ai_dev_flow/.*SPEC" .claude/skills/doc-spec*/SKILL.md
 |-------|-------|-------------|-----------------|
 | 1 | Phase 0 | Pre-flight verification and backups | 0 (verification only) |
 | 2 | Phase 1 | Fix template and rules files (4 fixes) | 4 |
-| 3 | Phase 2 | Fix validator skill file (3 fixes) | 3 |
+| 3 | Phase 2 | Fix validator and autopilot skill files (4 fixes) | 4 |
 | 4 | Phase 3 | Fix quick reference file (5 fixes) | 5 |
-| 5 | Phase 4 | Update version histories (4 files) | 4 |
+| 5 | Phase 4 | Update version histories (5 files) | 5 |
 | 6 | Phase 5 | Verification commands | 0 (verification only) |
 | 7 | Phase 6 | Post-implementation checks | 0 (verification only) |
 
-**Total Files Modified**: 5
-**Total Edits**: ~16
+**Total Files Modified**: 6
+**Total Edits**: ~18
 
 ---
 
@@ -521,8 +542,11 @@ cp "$BACKUP_DIR/SPEC-MVP-TEMPLATE.md" ai_dev_ssd_flow/09_SPEC/
 cp "$BACKUP_DIR/SPEC_MVP_CREATION_RULES.md" ai_dev_ssd_flow/09_SPEC/
 cp "$BACKUP_DIR/SPEC_MVP_VALIDATION_RULES.md" ai_dev_ssd_flow/09_SPEC/
 cp "$BACKUP_DIR/SKILL.md" .claude/skills/doc-spec-validator/
+cp "$BACKUP_DIR/SKILL.md" .claude/skills/doc-spec-autopilot/
 cp "$BACKUP_DIR/doc-spec_quickref.md" .claude/skills/
 ```
+
+**Note**: The backup directory stores doc-spec-validator/SKILL.md and doc-spec-autopilot/SKILL.md separately. Adjust restore paths as needed.
 
 ---
 
@@ -530,4 +554,6 @@ cp "$BACKUP_DIR/doc-spec_quickref.md" .claude/skills/
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-26 | **IMPLEMENTED**: All 14 gaps fixed; verification passed | System |
+| 1.1 | 2026-02-26 | Added GAP-14 (autopilot wrong template path); Updated total files/edits count; Added template format clarification section; Corrected line numbers for GAP-01, GAP-03 | System |
 | 1.0 | 2026-02-26 | Initial fix plan creation | System |

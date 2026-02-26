@@ -14,18 +14,12 @@
 
 **This is the fundamental lifecycle that drives all framework operations.**
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    THE ITERATIVE PRODUCT LIFECYCLE                          │
-│                                                                             │
-│   ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐          │
-│   │  MVP    │ ───► │  PROD   │ ───► │ NEW MVP │ ───► │  PROD   │ ───► ... │
-│   │ BRD-01  │      │ v1.0    │      │ BRD-02  │      │ v2.0    │          │
-│   └─────────┘      └─────────┘      └─────────┘      └─────────┘          │
-│                                                                             │
-│   1-2 weeks         30-90 days       1-2 weeks        30-90 days           │
-│   Core features     Feedback         Next features    Feedback             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  MVP1[MVP BRD-01<br/>1-2 weeks<br/>5-15 core features] --> PROD1[PROD v1.0<br/>30-90 days<br/>Feedback cycle]
+  PROD1 --> MVP2[NEW MVP BRD-02<br/>1-2 weeks<br/>Next feature set]
+  MVP2 --> PROD2[PROD v2.0<br/>30-90 days<br/>Feedback cycle]
+  PROD2 --> NEXT[...]
 ```
 
 ### The Three Phases

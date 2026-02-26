@@ -29,14 +29,22 @@ Before creating an ITEST document:
 - [ ] Component boundaries are defined
 - [ ] Integration points identified
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `ITEST-NN_[integration_scope].md`
+**Nested Folder Rule**: ALL ITEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md`
 
 **Examples**:
-- `ITEST-01_auth_service.md`
-- `ITEST-02_data_pipeline.md`
-- `ITEST-03_payment_gateway.md`
+```
+docs/10_TSPEC/ITEST/
+├── ITEST-01_auth_service/
+│   └── ITEST-01_auth_service.md
+├── ITEST-02_data_pipeline/
+│   └── ITEST-02_data_pipeline.md
+└── ITEST-03_payment_gateway/
+    └── ITEST-03_payment_gateway.md
+```
 
 ## Element ID Format
 
@@ -62,7 +70,21 @@ Before creating an ITEST document:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### ITEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
@@ -74,7 +96,7 @@ Before creating an ITEST document:
 
 ```markdown
 @ctr: CTR-NN (endpoint /api/v1/path)
-@sys: SYS.NN.01.01
+@sys: SYS.NN.26.SS
 @spec: SPEC-NN
 ```
 
@@ -145,7 +167,11 @@ Each test MUST document observable side effects:
 ## Validation Command
 
 ```bash
-python scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-01_*.md
+# Validate single ITEST (nested folder structure)
+python scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-01_auth_service/ITEST-01_auth_service.md
+
+# Validate all ITEST documents
+python scripts/validate_itest.py docs/10_TSPEC/ITEST/
 ```
 
 ## See Also

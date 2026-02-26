@@ -205,25 +205,26 @@ grep -c "| ADR-[0-9]" "$ADR_DIR"/ADR-*_index.md
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex architecture decisions
+**Purpose**: Verify ADR diagram contract tags for C4/sequence and conditional DFD when data-impacting
 
 **Severity**: Info
 
-**Recommended Diagrams by ADR Type**:
+**Required Diagram Contract by ADR Type**:
 | ADR Type | Recommended Diagrams |
 |----------|---------------------|
-| Technology selection | Comparison matrix diagram |
-| Architecture pattern | Component diagram |
-| Integration decision | Sequence diagram |
-| Data model decision | ERD or data flow |
+| Technology selection | `@diagram: c4-l3` |
+| Architecture pattern | `@diagram: c4-l3` + sequence tag |
+| Integration decision | `@diagram: sequence-sync|sequence-async|sequence-error` |
+| Data-impacting decision | `@diagram: dfd-l2` (conditional) |
 
 **Validation Logic**:
 ```bash
-# Check 5: Mermaid diagram presence
+# Check 5: ADR C4 + sequence contract tags
 for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
-  diagram_count=$(grep -c "^```mermaid" "$f" 2>/dev/null || true)
-  if [ "$diagram_count" -eq 0 ]; then
-    echo "INFO: $(basename $f) has no Mermaid diagrams"
+  has_c4=$(grep -cE '@diagram:\s*c4-l3' "$f" 2>/dev/null || true)
+  has_seq=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" 2>/dev/null || true)
+  if [ "$has_c4" -eq 0 ] || [ "$has_seq" -eq 0 ]; then
+    echo "INFO: $(basename $f) missing ADR diagram contract tags (@diagram: c4-l3, @diagram: sequence-*)"
   fi
 done
 ```
@@ -470,7 +471,7 @@ grep -rn "SYS-Ready.*[0-9]\+%" "$ADR_DIR"/ADR-[0-9]*_*.md
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
+| CORPUS-I001 | Missing ADR diagram contract tags (@diagram: c4-l3, @diagram: sequence-*) | CORPUS-06 |
 
 ---
 
@@ -848,7 +849,7 @@ Use this template to track Quality Gate validation progress:
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Index synchronized with actual files
 - [x] **CORPUS-05**: ~~Inter-ADR cross-links present~~ (deprecated)
-- [ ] **CORPUS-06**: Diagrams present for complex decisions
+- [ ] **CORPUS-06**: ADR diagram contract tags validated (C4 L3 + sequence; conditional DFD L2)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate ADR references
 - [ ] **CORPUS-09**: All decision statuses are valid

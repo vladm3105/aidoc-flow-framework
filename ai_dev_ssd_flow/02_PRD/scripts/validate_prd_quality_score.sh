@@ -253,12 +253,32 @@ check_crosslinks() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+  echo "--- GATE-06: Diagram Contract Validation (PRD L2) ---"
   local syntax_errors=0
+  local contract_errors=0
 
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+
+    if ! grep -qi '@diagram:\s*c4-l2' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: c4-l2 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*dfd-l1' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: dfd-l1 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*sequence' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: sequence tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
 
     # Check if file contains Mermaid diagrams
     if grep -q '```mermaid' "$f" 2>/dev/null; then
@@ -276,8 +296,8 @@ check_diagrams() {
   done
   shopt -u nullglob
 
-  if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+  if [[ $syntax_errors -eq 0 && $contract_errors -eq 0 ]]; then
+    echo -e "${GREEN}   PRD diagram contracts and Mermaid syntax checks passed${NC}"
   fi
   echo ""
 }

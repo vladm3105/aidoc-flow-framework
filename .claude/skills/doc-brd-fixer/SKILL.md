@@ -1,24 +1,27 @@
 ---
 name: doc-brd-fixer
 description: Automated fix skill that reads review reports and applies fixes to BRD documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - brd-fix
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BRD, Review Report]
-  downstream_artifacts: [Fixed BRD, Fix Report]
-  version: "1.2"
-  last_updated: "2026-02-26"
+
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - brd-fix
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BRD, Review Report]
+    downstream_artifacts: [Fixed BRD, Fix Report]
+    version: "1.2"
+    last_updated: "2026-02-26"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+
 ---
 
 # doc-brd-fixer
@@ -1077,6 +1080,23 @@ flowchart LR
 | Phase 5b | Apply fixes if issues found | `doc-brd-fixer` |
 | Phase 5c | Re-run review | `doc-brd-reviewer` |
 | Phase 5d | Repeat until pass or max iterations | Loop |
+
+---
+
+## Diagram Contract Fix Rules
+
+Apply these fixes when reviewer/audit reports include diagram contract findings.
+
+| Issue Code | Fix Action |
+|------------|------------|
+| REV-DC001 | Insert missing mandatory BRD tags: `@diagram: c4-l1` and `@diagram: dfd-l0` |
+| REV-DC002 | If sequence diagram exists, insert one sequence contract tag: `@diagram: sequence-sync|sequence-async|sequence-error` |
+| REV-DC003 | Add missing intent header fields above mandatory diagram blocks: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs` |
+| REV-DC004 | Add trust-boundary annotation where data-boundary movement is described |
+
+**Safety Rule**:
+- Do not rewrite diagram logic unless syntax is invalid.
+- Prefer minimal edits to headers/tags and preserve existing narrative semantics.
 
 ---
 

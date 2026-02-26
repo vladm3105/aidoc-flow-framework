@@ -138,17 +138,17 @@ FAIL → Fix issues, re-run Quality Gate validation
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex system requirements
+**Purpose**: Verify System Diagram Contract fields and tags required for SYS→SPEC bridge
 
 **Severity**: Info
 
-**Recommended Diagrams by SYS Type**:
+**Required System Diagram Contract**:
 | SYS Type | Recommended Diagrams |
 |----------|---------------------|
-| Interface definitions | Component diagram |
-| Data flows | Data flow diagram |
-| State management | State machine diagram |
-| Integration points | Sequence diagram |
+| System scope | `@diagram: c4-l2|c4-l3` |
+| Data boundaries | `@diagram: dfd-l1|dfd-l2` |
+| Integration paths | `@diagram: sequence-sync|sequence-async|sequence-error` |
+| Ownership bridge | `downstream_c4_l4_owner`, `required_sequence_paths`, `trust_boundaries` |
 
 ---
 
@@ -511,7 +511,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
+| CORPUS-I001 | Missing System Diagram Contract tags/fields for SYS bridge | CORPUS-06 |
 
 ---
 
@@ -550,7 +550,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Index synchronized with actual files
 - [x] **CORPUS-05**: ~~Inter-SYS cross-links present~~ (deprecated)
-- [ ] **CORPUS-06**: Diagrams present for complex requirements
+- [ ] **CORPUS-06**: System Diagram Contract validated (C4/DFD/sequence tags + ownership fields)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate element IDs
 - [ ] **CORPUS-09**: Quality attributes are quantified
@@ -671,7 +671,7 @@ fi
 ### Priority 2: Quality (Recommended Before Approval)
 
 - Internal count mismatches (CORPUS-03)
-- Missing diagrams (CORPUS-06)
+- Missing System Diagram Contract tags/fields (CORPUS-06)
 - Terminology inconsistencies (CORPUS-07)
 - Unquantified quality attributes (CORPUS-09)
 - File size warnings (CORPUS-10)

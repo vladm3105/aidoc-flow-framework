@@ -15,8 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: [TASKS]
-  version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+  version: "1.2"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-tspec-validator
@@ -50,11 +50,11 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| TSPEC Index | `ai_dev_flow/10_TSPEC/TSPEC-00_index.md` |
-| UTEST Template | `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
-| ITEST Template | `ai_dev_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` |
-| STEST Template | `ai_dev_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` |
-| FTEST Template | `ai_dev_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md` |
+| TSPEC Index | `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_index.md` |
+| UTEST Template | `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
+| ITEST Template | `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` |
+| STEST Template | `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` |
+| FTEST Template | `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md` |
 | Layer | 10 |
 | Artifact Type | TSPEC |
 
@@ -72,6 +72,8 @@ Invoke when:
 | ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
 | STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
 | FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+| PTEST | `docs/10_TSPEC/PTEST/PTEST-NN_{slug}/PTEST-NN_{slug}.md` |
+| SECTEST | `docs/10_TSPEC/SECTEST/SECTEST-NN_{slug}/SECTEST-NN_{slug}.md` |
 
 **Validation**:
 
@@ -149,17 +151,18 @@ Forbidden tag patterns:
 
 ### 2. Structure Validation
 
-**Required Sections (All TSPEC Types)**:
+**Required Sections (Individual Test Type TSPECs - UTEST/ITEST/STEST/FTEST/PTEST/SECTEST)**:
 
 | Section | Title | Required |
 |---------|-------|----------|
 | 1 | Document Control | MANDATORY |
 | 2 | Test Scope | MANDATORY |
 | 3 | Test Case Index | MANDATORY |
-| 4 | Test Case Details | MANDATORY |
+| 4 | Test Case Details (includes Error Cases) | MANDATORY |
 | 5 | Coverage Matrix | MANDATORY |
 | 6 | Traceability | MANDATORY |
-| 7 | Error Cases | MANDATORY |
+
+**Note**: Error Cases are embedded within Section 4 (Test Case Details), not a separate section.
 
 **Section Format**: `## N. Title` (numbered H2 headings)
 
@@ -185,12 +188,14 @@ Forbidden tag patterns:
 | Integration Test | 41 | ITEST | >=90% |
 | Smoke Test | 42 | STEST | 100% |
 | Functional Test | 43 | FTEST | >=90% |
+| Performance Test | 44 | PTEST | >=85% |
+| Security Test | 45 | SECTEST | >=90% |
 
 ### 5. Element ID Format
 
 **Pattern**: `TSPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
 
-**Valid Element Type Codes**: 40, 41, 42, 43 only
+**Valid Element Type Codes**: 40, 41, 42, 43, 44, 45
 
 **Examples**:
 
@@ -200,7 +205,9 @@ Forbidden tag patterns:
 | `TSPEC.01.41.01` | Yes | Integration Test |
 | `TSPEC.01.42.01` | Yes | Smoke Test |
 | `TSPEC.01.43.01` | Yes | Functional Test |
-| `TSPEC.01.44.01` | No | Invalid code (44 not in 40-43) |
+| `TSPEC.01.44.01` | Yes | Performance Test |
+| `TSPEC.01.45.01` | Yes | Security Test |
+| `TSPEC.01.46.01` | No | Invalid code (46 not in 40-45) |
 | `TC-001` | No | Legacy pattern |
 | `UT-001` | No | Legacy pattern |
 
@@ -407,16 +414,16 @@ python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/UTEST/UTEST-01_exampl
 python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/
 
 # Validate by type
-python ai_dev_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/
-python ai_dev_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/
-python ai_dev_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/
-python ai_dev_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/
 
 # Validate all TSPEC types
-bash ai_dev_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
 
 # Quality score validation
-bash ai_dev_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
 
 # Validate with verbose output
 python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/ --verbose
@@ -439,7 +446,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 1. Parse YAML frontmatter
 2. Check required metadata fields (document_type, artifact_type, layer)
 3. Validate tag taxonomy (tspec/utest/itest/stest/ftest, layer-10-artifact)
-4. Verify section structure (7 required sections)
+4. Verify section structure (6 required sections)
 5. Validate Document Control table completeness
 6. Check SPEC Reference presence
 7. Validate element ID format (TSPEC.NN.TT.SS)
@@ -526,27 +533,28 @@ Info: 1
 - **TSPEC Skill**: `.claude/skills/doc-tspec/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, element type codes)
 - **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **TSPEC Index**: `ai_dev_flow/10_TSPEC/TSPEC-00_index.md`
-- **Traceability Matrix Template**: `ai_dev_flow/10_TSPEC/TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- **TSPEC Index**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_index.md`
+- **Traceability Matrix Template**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ### Templates
 
-- `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- `ai_dev_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-- `ai_dev_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-- `ai_dev_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
 
 ### Quality Gates
 
-- `ai_dev_flow/10_TSPEC/UTEST/UTEST_MVP_QUALITY_GATES.md`
-- `ai_dev_flow/10_TSPEC/ITEST/ITEST_MVP_QUALITY_GATES.md`
-- `ai_dev_flow/10_TSPEC/STEST/STEST_MVP_QUALITY_GATES.md`
-- `ai_dev_flow/10_TSPEC/FTEST/FTEST_MVP_QUALITY_GATES.md`
+- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_QUALITY_GATES.md`
+- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_QUALITY_GATES.md`
+- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_QUALITY_GATES.md`
+- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_QUALITY_GATES.md`
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) validation; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/; Updated section count from 7 to 6 (Error Cases in Section 4); Added PTEST/SECTEST to nested folder table |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TSPEC must be in `docs/10_TSPEC/{TYPE}/{TYPE}-NN_{slug}/` folders; Added error codes TSPEC-E030 through TSPEC-E033 |
 | 1.0 | 2026-02-08 | Initial release: Full TSPEC validation for UTEST/ITEST/STEST/FTEST (codes 40-43), cumulative tagging (8 required), type-specific requirements, doc-naming integration |

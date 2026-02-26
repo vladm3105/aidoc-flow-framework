@@ -8,12 +8,12 @@
 
 ## Lifecycle: MVP → PROD → NEW MVP
 
-```
+```text
 BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2 → ...
 ```
 
 | Principle | Rule |
-|-----------|------|
+| ----------- | ------ |
 | Each BRD = One Cycle | Don't expand BRDs indefinitely |
 | New Features = New BRD | Create BRD-02 for next iteration |
 | 5-15 Requirements | Keep focused per cycle |
@@ -29,7 +29,7 @@ skill: "doc-brd"
 - "Create a BRD for our new payment system"
 - "Document business requirements for feature X"
 - "Generate Layer 1 business requirements"
-```
+```text
 
 ## What This Skill Does
 
@@ -41,14 +41,14 @@ skill: "doc-brd"
 
 ## Output Location
 
-```
+```text
 docs/BRD/BRD-NNN_{descriptive_name}.md
 ```
 
 ## Key Sections (18-Section Structure)
 
 | Section | Purpose |
-|---------|---------|
+| --------- | --------- |
 | Document Control | Metadata and revision history |
 | 1. Introduction | Purpose, scope, audience |
 | 2. Business Objectives | Measurable goals (SMART) |
@@ -72,7 +72,7 @@ docs/BRD/BRD-NNN_{descriptive_name}.md
 ## 7 Mandatory ADR Topic Categories (Section 7.2)
 
 | # | Category | Element ID |
-|---|----------|------------|
+| --- | ---------- | ------------ |
 | 1 | Infrastructure | BRD.NN.32.01 |
 | 2 | Data Architecture | BRD.NN.32.02 |
 | 3 | Integration | BRD.NN.32.03 |
@@ -85,7 +85,7 @@ docs/BRD/BRD-NNN_{descriptive_name}.md
 
 ## Upstream/Downstream
 
-```
+```text
 [No upstream] → BRD → PRD, EARS, BDD
 ```
 
@@ -102,7 +102,7 @@ docs/BRD/BRD-NNN_{descriptive_name}.md
 
 ## Template Location
 
-```
+```text
 ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
 ```
 

@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC]
   downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-11T18:00:00"
+  version: "1.3"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-spec-validator
@@ -28,7 +28,7 @@ Invoke when user requests validation of SPEC documents or after creating/modifyi
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 Layer: 9
 Artifact Type: SPEC
 
@@ -186,14 +186,14 @@ Optional fields:
 ### 8. Traceability Validation
 
 **Layer 9 Cumulative Tags:**
-- @brd: BRD-NNN:XXX-NNN (required)
-- @prd: PRD-NNN:XXX-NNN (required)
-- @ears: EARS-NNN:NNN (required)
-- @bdd: BDD-NNN:scenario-name (required)
+- @brd: BRD.NN.EE.SS (required)
+- @prd: PRD.NN.EE.SS (required)
+- @ears: EARS.NN.24.SS (required)
+- @bdd: BDD.NN.13.SS (required)
 - @adr: ADR-NN (required)
-- @sys: SYS-NNN:XXX-NNN (required)
-- @req: REQ-NNN:feature-name (required)
-- @ctr: CTR-NNN (optional)
+- @sys: SYS.NN.25.SS (required)
+- @req: REQ.NN.26.SS (required)
+- @ctr: CTR-NN (optional)
 
 **Downstream Expected:**
 - TASKS documents
@@ -313,8 +313,8 @@ Info: N
 
 - **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **SPEC Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
-- **SPEC Schema**: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
+- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 
 ---
 
@@ -322,6 +322,7 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SPEC must be in `docs/09_SPEC/SPEC-NN_{slug}/` folders; Added error codes SPEC-E020, SPEC-E021, SPEC-E022 |
+| 1.3 | 2026-02-26 | Fixed schema path to ai_dev_ssd_flow/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
+| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SPEC must be in `docs/09_SPEC/SPEC-NN_{slug}/` folders; Added error codes SPEC-E020, SPEC-E021, SPEC-E022 | System |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
 | 1.0.0 | 2025-01-15 | Initial validator skill definition | System |

@@ -126,6 +126,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 > - **Structural Checks**: Verify required sections exist (CHECK 1-6)
 > - **Content Quality**: Warn on potential issues without blocking (CHECK 7-12, warnings)
 > - **PRD-Ready Scoring**: Quantify business-level content quality (CHECK 13-18)
+> - **Diagram Enforcement Mode**: BRD diagram coverage is advisory; blocking C4/DFD/sequence enforcement is applied at PRD layer
 > - **Human Review**: Final validation by business stakeholders, not automated tools
 >
 > **Script vs Schema Validation**:

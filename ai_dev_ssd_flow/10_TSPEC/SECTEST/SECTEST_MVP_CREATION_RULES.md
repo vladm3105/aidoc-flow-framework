@@ -29,14 +29,22 @@ Before creating a SECTEST document:
 - [ ] Isolated test environment available
 - [ ] Safety constraints defined
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `SECTEST-NN_[component_or_threat].md`
+**Nested Folder Rule**: ALL SECTEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/SECTEST/SECTEST-NN_{slug}/SECTEST-NN_{slug}.md`
 
 **Examples**:
-- `SECTEST-01_authentication.md`
-- `SECTEST-02_input_validation.md`
-- `SECTEST-03_api_security.md`
+```
+docs/10_TSPEC/SECTEST/
+├── SECTEST-01_authentication/
+│   └── SECTEST-01_authentication.md
+├── SECTEST-02_input_validation/
+│   └── SECTEST-02_input_validation.md
+└── SECTEST-03_api_security/
+    └── SECTEST-03_api_security.md
+```
 
 ## Element ID Format
 
@@ -75,7 +83,21 @@ Use these category prefixes for all test cases:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### SECTEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
@@ -89,7 +111,7 @@ Use these category prefixes for all test cases:
 ```markdown
 @sec: SEC.NN.SS
 @ctr: CTR-NN
-@sys: SYS.NN.SS
+@sys: SYS.NN.26.SS
 @spec: SPEC-NN
 ```
 
@@ -175,7 +197,11 @@ execution_profile:
 ## Validation Command
 
 ```bash
-python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/SECTEST-01_*.md
+# Validate single SECTEST (nested folder structure)
+python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/SECTEST-01_authentication/SECTEST-01_authentication.md
+
+# Validate all SECTEST documents
+python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/
 ```
 
 ## See Also

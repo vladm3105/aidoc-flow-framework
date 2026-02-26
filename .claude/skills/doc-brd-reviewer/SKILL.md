@@ -1,24 +1,25 @@
 ---
 name: doc-brd-reviewer
 description: Comprehensive content review and quality assurance for BRD documents - validates link integrity, requirement completeness, strategic alignment, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - brd-review
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [Strategy, Stakeholder Input]
-  downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-26T12:45:00"
-  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - brd-review
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [Strategy, Stakeholder Input]
+    downstream_artifacts: []
+    version: "1.3"
+    last_updated: "2026-02-26T15:10:00"
+    versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-reviewer
@@ -85,13 +86,14 @@ flowchart TD
     subgraph Review["Review Checks"]
         F --> G[1. Link Integrity]
         G --> H[2. Requirement Completeness]
-        H --> I[3. ADR Topic Coverage]
-        I --> J[4. Placeholder Detection]
-        J --> K[5. Traceability Tags]
-        K --> L[6. Section Completeness]
-        L --> M[7. Strategic Alignment]
-        M --> M2[8. Naming Compliance]
-        M2 --> M3[9. Upstream Drift Detection]
+      H --> H2[2a. Diagram Contract Compliance]
+      H2 --> I[3. ADR Topic Coverage]
+      I --> J[4. Placeholder Detection]
+      J --> K[5. Traceability Tags]
+      K --> L[6. Section Completeness]
+      L --> M[7. Strategic Alignment]
+      M --> M2[8. Naming Compliance]
+      M2 --> M3[9. Upstream Drift Detection]
     end
 
     M3 --> N{Issues Found?}
@@ -181,7 +183,7 @@ Validates all internal document links resolve correctly.
 
 **Scope**:
 - Navigation links (`[Previous: ...]`, `[Next: ...]`)
-- Section cross-references (`[See Section 7.2](...)`)
+- Section cross-references (for example, `See Section 7.2`)
 - Index to section links
 - External documentation links (warns if unreachable)
 
@@ -215,6 +217,25 @@ Validates all business requirements have complete specifications.
 | REV-R003 | Warning | Scope boundaries unclear |
 | REV-R004 | Warning | Missing priority assignment |
 | REV-R005 | Info | Dependency not documented |
+
+### 2a. Diagram Contract Compliance
+
+Validates BRD diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Scope**:
+- Required BRD tags: `@diagram: c4-l1`, `@diagram: dfd-l0`
+- Sequence tag presence when sequence diagram is used
+- Intent header fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+- Trust-boundary annotations when data boundary movement is documented
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Warning | Missing recommended BRD diagram tag (`@diagram: c4-l1` or `@diagram: dfd-l0`) |
+| REV-DC002 | Warning | Sequence diagram present without sequence contract tag |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
+| REV-DC004 | Warning | Trust boundary annotation missing where expected |
 
 ---
 

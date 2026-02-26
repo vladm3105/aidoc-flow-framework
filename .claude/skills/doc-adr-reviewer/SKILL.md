@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR]
   downstream_artifacts: []
-  version: "1.5"
-  last_updated: "2026-02-26"
+  version: "1.6"
+  last_updated: "2026-02-26T15:10:00"
 ---
 
 # doc-adr-reviewer
@@ -80,7 +80,8 @@ flowchart TD
     subgraph Review["Review Checks"]
         F --> G[1. Decision Completeness]
         G --> H[2. BRD Topic Alignment]
-        H --> I[3. Consequence Coverage]
+      H --> H2[2a. Diagram Contract Compliance]
+      H2 --> I[3. Consequence Coverage]
         I --> J[4. Alternative Evaluation]
         J --> K[5. Cross-Reference Integrity]
         K --> L[6. Placeholder Detection]
@@ -172,6 +173,23 @@ Validates ADR addresses BRD Section 7.2 topics.
 | REV-BA002 | Error | Topic category mismatch |
 | REV-BA003 | Warning | Decision doesn't fully address topic |
 | REV-BA004 | Info | BRD topic not yet addressed by ADR |
+
+### 2a. Diagram Contract Compliance
+
+Validates ADR diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Scope**:
+- Required ADR tags: `@diagram: c4-l3` and `@diagram: sequence-*`
+- Conditional `@diagram: dfd-l2` check for data-impacting decisions
+- Intent header fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Error | Missing required ADR diagram tag (`@diagram: c4-l3` or `@diagram: sequence-*`) |
+| REV-DC002 | Warning | Data-impacting ADR missing `@diagram: dfd-l2` |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
 
 ---
 

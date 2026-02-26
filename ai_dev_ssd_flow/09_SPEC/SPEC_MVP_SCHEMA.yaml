@@ -318,6 +318,18 @@ traceability_schema:
           description: "Relevant section references"
 
   optional_sections:
+    sys_c4_l4_owner_ref:
+      type: string
+      description: "SYS->SPEC C4 L4 ownership bridge reference"
+
+    required_sequence_paths:
+      type: array
+      description: "Required sequence paths inherited from SYS bridge contract"
+
+    trust_boundaries:
+      type: array
+      description: "Trust boundary declarations inherited from SYS bridge contract"
+
     system_requirements:
       type: object
 

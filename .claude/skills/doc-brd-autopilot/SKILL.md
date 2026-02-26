@@ -1,23 +1,26 @@
 ---
 name: doc-brd-autopilot
 description: Automated BRD generation pipeline from reference documents (docs/00_REF/ or REF/) or user prompts - analyzes sources, determines BRD type, generates content, validates readiness, creates BRD-00_index.md, and supports parallel execution
-tags:
-  - sdd-workflow
-  - layer-1-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: []
-  downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "1.2"
-  last_updated: "2026-02-26"
+
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-1-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR]
+    version: "1.2"
+    last_updated: "2026-02-26"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+
 ---
 
 # doc-brd-autopilot
@@ -503,8 +506,8 @@ Generate the BRD document with real-time quality feedback.
    ```
 
 2. **Load BRD Template**:
-   - Primary: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-   - Comprehensive: `ai_dev_flow/01_BRD/BRD-TEMPLATE.md`
+   - Primary: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+   - Comprehensive: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 
 3. **Generate Document Control Section**:
    | Field | Value |
@@ -647,7 +650,7 @@ Generate the BRD document with real-time quality feedback.
     ```markdown
     ## 14. Glossary
 
-    📚 **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](../BRD-00_GLOSSARY.md)
+    📚 **Master Glossary**: For common terminology, see `BRD-00_GLOSSARY.md`
 
     ### {BRD-NN}-Specific Terms
 
@@ -700,7 +703,7 @@ Generate the BRD document with real-time quality feedback.
 
     | BRD ID | Module | Type | Status | PRD-Ready | Location |
     |--------|--------|------|--------|-----------|----------|
-    | BRD-01 | F1 IAM | Foundation | Draft | 97% | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) |
+    | BRD-01 | F1 IAM | Foundation | Draft | 97% | `BRD-01` |
 
     ---
 
@@ -712,7 +715,7 @@ Generate the BRD document with real-time quality feedback.
 
     | ID | Module Name | BRD | Status |
     |----|-------------|-----|--------|
-    | F1 | Identity & Access Management | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) | Draft |
+    | F1 | Identity & Access Management | `BRD-01` | Draft |
     | F2 | Session Management | Pending | - |
     | F3 | Observability | Pending | - |
     | F4 | SecOps | Pending | - |
@@ -738,9 +741,9 @@ Generate the BRD document with real-time quality feedback.
 
     ## Quick Links
 
-    - **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
-    - **Reference Documents**: [00_REF](../00_REF/)
-    - **PRD Layer**: [02_PRD](../02_PRD/)
+    - **Glossary**: `BRD-00_GLOSSARY.md`
+    - **Reference Documents**: `00_REF/`
+    - **PRD Layer**: `02_PRD/`
 
     ---
 
@@ -771,7 +774,7 @@ Generate the BRD document with real-time quality feedback.
     **Entry Format**:
 
     ```markdown
-    | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | [BRD-NN](BRD-NN_{slug}/BRD-NN.0_index.md) |
+    | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | `BRD-NN` |
     ```
 
 12. **File Output** (ALWAYS use nested folder):
@@ -791,7 +794,7 @@ After BRD generation, validate structure and PRD-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbose
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -958,9 +961,7 @@ After passing the fix cycle:
 5. **Traceability Matrix Update**:
    ```bash
    # Update BRD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
-     --brd docs/01_BRD/BRD-NN_{slug}.md \
-     --matrix docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md
+   python ai_dev_ssd_flow/scripts/validate_all.py ai_dev_ssd_flow --layer BRD
    ```
 
 #### 5.6 Drift Cache Verification (MANDATORY)
@@ -1040,6 +1041,7 @@ Drift Cache Verification:
 Quality Gates:
 [ ] Final review score >= 90
 [ ] No critical errors remaining
+[ ] Diagram contract pass (`@diagram: c4-l1`, `@diagram: dfd-l0`; sequence tag if sequence diagram used)
 [ ] PRD-Ready status confirmed
 ```
 
@@ -1055,7 +1057,7 @@ Generate one BRD from input sources.
 
 ```bash
 # Example: Generate Platform BRD from reference documents
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref docs/00_REF/ \
   --type platform \
   --output docs/01_BRD/ \
@@ -1063,7 +1065,7 @@ python ai_dev_flow/scripts/brd_autopilot.py \
   --slug platform_architecture
 
 # Alternative: Generate from REF/ directory
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref REF/ \
   --type platform \
   --output docs/01_BRD/ \
@@ -1077,7 +1079,7 @@ Generate multiple BRDs in sequence with dependency awareness.
 
 ```bash
 # Example: Generate Platform BRD then Feature BRDs
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --batch config/brd_batch.yaml \
   --output docs/01_BRD/
 ```
@@ -1122,7 +1124,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref docs/00_REF/ \
   --output docs/01_BRD/ \
   --dry-run
@@ -1138,12 +1140,12 @@ Validate existing BRD documents and generate a quality report without modificati
 
 ```bash
 # Review single BRD
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode review
 
 # Review all BRDs
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/ \
   --mode review \
   --output-report tmp/brd_review_report.md
@@ -1155,17 +1157,18 @@ python ai_dev_flow/scripts/brd_autopilot.py \
 flowchart TD
     A[Input: Existing BRD] --> B[Load BRD Documents]
     B --> C[Run Validation Checks]
-    C --> D[Calculate PRD-Ready Score]
-    D --> E[Check Section 7.2 ADR Topics]
-    E --> F[Validate Platform vs Feature]
-    F --> G[Identify Issues]
-    G --> H{Generate Report}
-    H --> I[Fixable Issues List]
-    H --> J[Manual Review Items]
-    H --> K[Score Breakdown]
-    I --> L[Output: Review Report]
-    J --> L
-    K --> L
+    C --> D[Run Diagram Contract Checks]
+    D --> E[Calculate PRD-Ready Score]
+    E --> F[Check Section 7.2 ADR Topics]
+    F --> G[Validate Platform vs Feature]
+    G --> H[Identify Issues]
+    H --> I{Generate Report}
+    I --> J[Fixable Issues List]
+    I --> K[Manual Review Items]
+    I --> L[Score Breakdown]
+    J --> M[Output: Review Report]
+    K --> M
+    L --> M
 ```
 
 **Review Report Structure**:
@@ -1187,6 +1190,14 @@ flowchart TD
 | Structure/quality | -2 | 20 | 🟡 |
 | **Total Deductions** | **-13** | **100** | - |
 | **Final Score** | **87/100** | **Target >= 90** | 🟡 |
+
+## Diagram Contract Check
+| Check | Status | Details |
+|-------|--------|---------|
+| `@diagram: c4-l1` | ✅ | Present |
+| `@diagram: dfd-l0` | ✅ | Present |
+| Sequence contract tags | 🟡 | Required only when sequence diagram exists |
+| Diagram intent header fields | ✅ | Present for mandatory diagram blocks |
 
 ## Section 7.2 ADR Topics Check
 | Category | Status | Details |
@@ -1259,24 +1270,24 @@ Auto-repair existing BRD documents while preserving manual content.
 
 ```bash
 # Fix single BRD
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --fix-types "element_ids,sections,adr_topics"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --dry-run
@@ -1716,7 +1727,7 @@ fi
 
 # Example: Trigger PRD autopilot for validated BRD
 if [ "$BRD_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/prd_autopilot.py \
+  /doc-prd-autopilot \
     --brd "$BRD_PATH" \
     --output docs/02_PRD/
 fi
@@ -1742,7 +1753,7 @@ jobs:
 
       - name: Run BRD Autopilot
         run: |
-          python ai_dev_flow/scripts/brd_autopilot.py \
+          /doc-brd-autopilot \
             --ref docs/00_REF/ \
             --output docs/01_BRD/ \
             --validate
@@ -1787,9 +1798,9 @@ jobs:
 - **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **BRD Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- **BRD Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 - **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
 

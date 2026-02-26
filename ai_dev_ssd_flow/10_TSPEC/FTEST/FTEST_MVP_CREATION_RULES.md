@@ -29,14 +29,22 @@ Before creating an FTEST document:
 - [ ] Test environment available
 - [ ] Measurement tools configured
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `FTEST-NN_[system_scope].md`
+**Nested Folder Rule**: ALL FTEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md`
 
 **Examples**:
-- `FTEST-01_api_performance.md`
-- `FTEST-02_system_reliability.md`
-- `FTEST-03_security_validation.md`
+```
+docs/10_TSPEC/FTEST/
+├── FTEST-01_api_performance/
+│   └── FTEST-01_api_performance.md
+├── FTEST-02_system_reliability/
+│   └── FTEST-02_system_reliability.md
+└── FTEST-03_security_validation/
+    └── FTEST-03_security_validation.md
+```
 
 ## Element ID Format
 
@@ -73,7 +81,21 @@ Target these quality attributes:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### FTEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
@@ -149,7 +171,11 @@ assert results.metric < threshold
 ## Validation Command
 
 ```bash
-python scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-01_*.md
+# Validate single FTEST (nested folder structure)
+python scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-01_api_performance/FTEST-01_api_performance.md
+
+# Validate all FTEST documents
+python scripts/validate_ftest.py docs/10_TSPEC/FTEST/
 ```
 
 ## See Also

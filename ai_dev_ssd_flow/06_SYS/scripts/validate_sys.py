@@ -509,6 +509,43 @@ def validate_crosslinking_tags(content: str, result: ValidationResult):
         )
 
 
+def validate_diagram_contract(content: str, result: ValidationResult):
+    """Validate System Diagram Contract tags and required intent fields."""
+    has_c4 = bool(re.search(r"@diagram:\s*c4-l[23]", content))
+    has_dfd = bool(re.search(r"@diagram:\s*dfd-l[12]", content))
+    has_sequence = bool(re.search(r"@diagram:\s*sequence-(sync|async|error)", content))
+
+    if not has_c4:
+        result.add_warning("SYS-E006", "Missing required diagram tag: @diagram: c4-l2 or @diagram: c4-l3")
+    if not has_dfd:
+        result.add_warning("SYS-E006", "Missing required diagram tag: @diagram: dfd-l1 or @diagram: dfd-l2")
+    if not has_sequence:
+        result.add_warning("SYS-E006", "Missing required diagram tag: @diagram: sequence-sync|sequence-async|sequence-error")
+
+    required_fields = [
+        "diagram_type:",
+        "level:",
+        "scope_boundary:",
+        "upstream_refs:",
+        "downstream_refs:",
+    ]
+    missing_fields = [field for field in required_fields if field not in content]
+    if missing_fields:
+        result.add_warning(
+            "SYS-E006",
+            f"System Diagram Contract missing required fields: {', '.join(missing_fields)}"
+        )
+
+    if "downstream_c4_l4_owner:" not in content:
+        result.add_warning("SYS-E006", "Missing downstream C4 L4 ownership link: downstream_c4_l4_owner:")
+
+    if "required_sequence_paths:" not in content:
+        result.add_warning("SYS-E006", "Missing required sequence path declaration: required_sequence_paths:")
+
+    if "trust_boundaries:" not in content:
+        result.add_warning("SYS-E006", "Missing trust boundary declaration: trust_boundaries:")
+
+
 def validate_sys_file(file_path: Path) -> ValidationResult:
     """
     Validate a single SYS file.
@@ -564,6 +601,7 @@ def validate_sys_file(file_path: Path) -> ValidationResult:
     validate_interface_specs(content, result)
     validate_testing_requirements(content, result, profile)
     validate_traceability(content, result)
+    validate_diagram_contract(content, result)
     validate_crosslinking_tags(content, result)
 
     return result

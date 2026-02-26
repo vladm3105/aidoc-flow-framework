@@ -483,6 +483,40 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 2. Add planned downstream artifact tags (optional)
 3. Populate Traceability section (section 17)
 
+### CHECK 10A: Diagram Contract Validation
+
+**Purpose**: Enforce PRD-level C4/DFD/sequence diagram contract
+**Type**: Error (blocking for missing tags and missing exception path)
+
+**Required Tags**:
+- `@diagram: c4-l2`
+- `@diagram: dfd-l1`
+- `@diagram: sequence-sync|sequence-async|sequence-error`
+
+**Required Sequence Rule**:
+- If Mermaid `sequenceDiagram` is present, at least one explicit `alt` or `else` path must exist.
+
+**Required Intent Header Fields** (warning if missing):
+- `diagram_type`
+- `level`
+- `scope_boundary`
+- `upstream_refs`
+- `downstream_refs`
+
+**Error Messages**:
+```
+[FAIL] PRD-E023: Missing required PRD diagram tag @diagram: c4-l2
+[FAIL] PRD-E024: Missing required PRD diagram tag @diagram: dfd-l1
+[FAIL] PRD-E025: Missing required PRD diagram tag @diagram: sequence-*
+[FAIL] PRD-E026: Sequence diagram missing explicit exception/alternate path (alt/else)
+[WARN] PRD-W011: Diagram intent header missing required fields
+```
+
+**Resolution Steps**:
+1. Add all required PRD diagram declaration tags.
+2. Ensure sequence diagrams include explicit alternate/error branch via `alt/else`.
+3. Add missing intent header fields.
+
 ### Per-section Validation Criteria
 
 **section 1 - Document Control**:

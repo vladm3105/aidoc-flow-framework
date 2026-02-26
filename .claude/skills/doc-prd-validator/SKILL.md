@@ -227,11 +227,16 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E020 | ERROR | PRD not in nested folder structure (must be in `docs/02_PRD/PRD-NN_{slug}/`) |
 | PRD-E021 | ERROR | PRD folder name doesn't match PRD ID |
 | PRD-E022 | ERROR | Monolithic PRD not in nested folder (must be `PRD-NN_{slug}/PRD-NN_{slug}.md`) |
+| PRD-E023 | ERROR | Missing required PRD diagram tag `@diagram: c4-l2` |
+| PRD-E024 | ERROR | Missing required PRD diagram tag `@diagram: dfd-l1` |
+| PRD-E025 | ERROR | Missing required PRD diagram tag `@diagram: sequence-*` |
+| PRD-E026 | ERROR | Sequence diagram missing explicit exception/alternate path (`alt/else`) |
 | PRD-W001 | WARNING | File name does not match format PRD-NN_{slug}.md |
 | PRD-W002 | WARNING | Missing optional section (Glossary, Appendix) |
 | PRD-W003 | WARNING | Score below recommended threshold but above minimum |
 | PRD-W004 | WARNING | Missing Document Revision History table |
 | PRD-W005 | WARNING | Architecture Decision Requirements reference ADR numbers |
+| PRD-W011 | WARNING | Diagram intent header missing required fields |
 | PRD-I001 | INFO | Consider adding success metrics with quantified targets |
 | PRD-I002 | INFO | Consider adding competitive analysis |
 
@@ -269,8 +274,10 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 8. Validate upstream @brd reference format
 9. Check element ID format (PRD.NN.TT.SS)
 10. Detect deprecated patterns (US-NNN, FR-NNN)
-11. Verify file naming convention
-12. Generate validation report
+11. Validate diagram contract (C4-L2, DFD-L1, sequence tag, sequence exception path)
+12. Validate diagram intent header fields
+13. Verify file naming convention
+14. Generate validation report
 
 ### Structure Validation (Step 1)
 

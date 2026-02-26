@@ -401,7 +401,7 @@ This document contains:
 
 **All diagrams MUST use Mermaid syntax.** Text-based diagrams (ASCII art, box drawings) are prohibited.
 
-- **Authority Document**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+- **Authority Document**: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`
 - **Syntax Generation**: `mermaid-gen` skill
 - **File Management**: `charts-flow` skill (SVG conversion, embedding)
 

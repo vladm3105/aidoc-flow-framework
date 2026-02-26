@@ -1,24 +1,27 @@
 ---
 name: doc-brd-audit
 description: Unified BRD audit wrapper that runs validator then reviewer and produces a combined report for fixer consumption
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - brd-audit
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BRD]
-  downstream_artifacts: [Audit Report, Fix Cycle]
-  version: "1.2"
-  last_updated: "2026-02-26"
+
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - brd-audit
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BRD]
+    downstream_artifacts: [Audit Report, Fix Cycle]
+    version: "1.2"
+    last_updated: "2026-02-26"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+
 ---
 
 # doc-brd-audit
@@ -88,6 +91,13 @@ Do NOT use when:
 - `PASS`: Validator PASS AND Reviewer score >= threshold AND no blocking issues
 - `FAIL`: Validator FAIL OR Reviewer score < threshold OR blocking/manual-required issues present
 
+**Diagram Contract Gate (ADVISORY for BRD)**:
+- BRD diagram findings are recorded as non-blocking by default.
+- Recommended tags: `@diagram: c4-l1` and `@diagram: dfd-l0`
+- If sequence diagram exists, recommend one sequence tag (`@diagram: sequence-sync|sequence-async|sequence-error`)
+- Recommended intent fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+- Optional strict mode only when explicitly enabled (e.g., `audit_strict_diagrams: true`).
+
 ---
 
 ## Combined Report Format (for doc-brd-fixer)
@@ -107,11 +117,15 @@ Required sections:
    - List by severity/code
 4. `## Reviewer Findings`
    - List by severity/code
-5. `## Fix Queue for doc-brd-fixer`
+5. `## Diagram Contract Findings`
+   - Required BRD tags status (`c4-l1`, `dfd-l0`)
+   - Sequence contract status when sequence is present
+   - Intent header completeness status
+6. `## Fix Queue for doc-brd-fixer`
    - `auto_fixable`
    - `manual_required`
    - `blocked`
-6. `## Recommended Next Step`
+7. `## Recommended Next Step`
    - `run doc-brd-fixer`
    - or `manual update required`
 
@@ -156,4 +170,5 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-26 | Added mandatory BRD C4/DFD/sequence diagram contract gate and required `Diagram Contract Findings` section in combined audit reports |
 | 1.2 | 2026-02-26 | Initial audit wrapper; validator→reviewer orchestration; combined report contract for fixer |

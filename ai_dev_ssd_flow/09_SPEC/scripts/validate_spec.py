@@ -339,6 +339,64 @@ def validate_traceability(data: Dict, result: ValidationResult):
             )
 
 
+def _extract_spec_doc_id_from_filename(file_path: Path) -> Optional[str]:
+    """Extract SPEC document ID from filename, e.g., SPEC-01_component.yaml -> SPEC-01."""
+    match = re.match(r"(SPEC-\d{2,}(?:\.\d+)?)_", file_path.stem)
+    if match:
+        return match.group(1)
+    return None
+
+
+def validate_sys_ownership_contract(data: Dict, file_path: Path, result: ValidationResult):
+    """Validate SYS->SPEC C4 L4 ownership bridge fields (compatibility-window warning-first)."""
+    traceability = data.get("traceability")
+    if not isinstance(traceability, dict):
+        return
+
+    cumulative_tags = traceability.get("cumulative_tags")
+    has_sys_ref = isinstance(cumulative_tags, dict) and bool(cumulative_tags.get("sys"))
+
+    owner_ref = traceability.get("sys_c4_l4_owner_ref")
+    if not owner_ref:
+        if has_sys_ref:
+            result.add_warning(
+                "SPEC-W013",
+                "Missing SYS->SPEC ownership reference: traceability.sys_c4_l4_owner_ref"
+            )
+        return
+
+    if not isinstance(owner_ref, str):
+        result.add_error("SPEC-E016", "traceability.sys_c4_l4_owner_ref must be a string")
+        return
+
+    if "SPEC-" not in owner_ref and "/09_SPEC/" not in owner_ref:
+        result.add_warning(
+            "SPEC-W014",
+            "sys_c4_l4_owner_ref should include SPEC ID and/or Layer 9 path reference"
+        )
+
+    # Detect explicit conflicting mapping when owner_ref points to a different SPEC ID
+    this_spec_id = _extract_spec_doc_id_from_filename(file_path)
+    mapped_spec_match = re.search(r"SPEC-\d{2,}(?:\.\d+)?", owner_ref)
+    if this_spec_id and mapped_spec_match and mapped_spec_match.group(0) != this_spec_id:
+        result.add_error(
+            "SPEC-E017",
+            f"Ownership mapping conflict: file is {this_spec_id} but sys_c4_l4_owner_ref points to {mapped_spec_match.group(0)}"
+        )
+
+    if not traceability.get("required_sequence_paths"):
+        result.add_warning(
+            "SPEC-W015",
+            "Missing traceability.required_sequence_paths for SYS bridge parity"
+        )
+
+    if not traceability.get("trust_boundaries"):
+        result.add_warning(
+            "SPEC-W016",
+            "Missing traceability.trust_boundaries for SYS bridge parity"
+        )
+
+
 def validate_interfaces(data: Dict, result: ValidationResult):
     """Validate interfaces section."""
     interfaces = data.get("interfaces")
@@ -600,6 +658,7 @@ def validate_spec_file(file_path: Path) -> ValidationResult:
     validate_id_field(data, file_path, result)
     validate_metadata(data, result)
     validate_traceability(data, result)
+    validate_sys_ownership_contract(data, file_path, result)
     validate_interfaces(data, result)
     validate_performance(data, result)
     validate_security(data, result)

@@ -421,6 +421,52 @@ def validate_crosslinking_tags(content: str, result: ValidationResult):
         )
 
 
+def _resolve_diagram_enforcement_origin(metadata: Optional[Dict], result: ValidationResult) -> str:
+    """Resolve diagram enforcement origin from frontmatter with safe default."""
+    default_origin = "prd"
+
+    if not metadata or "custom_fields" not in metadata:
+        return default_origin
+
+    origin = str(metadata["custom_fields"].get("diagram_enforcement_origin", default_origin))
+    if origin in {"brd", "prd"}:
+        return origin
+
+    result.add_warning("BRD-W001", f"Invalid diagram_enforcement_origin '{origin}', defaulting to 'prd'")
+    return default_origin
+
+
+def validate_diagram_contract(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate BRD C4/DFD/Sequence contract tags and intent header fields."""
+    origin = _resolve_diagram_enforcement_origin(metadata, result)
+    is_legacy_mode = origin == "brd"
+
+    has_c4 = bool(re.search(r"@diagram:\s*c4-l1", content))
+    has_dfd = bool(re.search(r"@diagram:\s*dfd-l0", content))
+    has_seq_tag = bool(re.search(r"@diagram:\s*sequence-(sync|async|error)", content))
+    has_sequence_block = bool(re.search(r"\bsequenceDiagram\b", content))
+
+    if not has_c4:
+        result.add_warning("BRD-W011", "Missing BRD advisory diagram tag: @diagram: c4-l1")
+
+    if not has_dfd:
+        result.add_warning("BRD-W012", "Missing BRD advisory diagram tag: @diagram: dfd-l0")
+
+    if is_legacy_mode:
+        if not has_seq_tag:
+            result.add_warning("BRD-W013", "Missing BRD legacy sequence tag: @diagram: sequence-sync|sequence-async|sequence-error")
+    else:
+        if has_sequence_block and not has_seq_tag:
+            result.add_warning("BRD-W013", "Sequence diagram present without BRD advisory sequence tag")
+
+    required_fields = ["diagram_type:", "level:", "scope_boundary:", "upstream_refs:", "downstream_refs:"]
+    missing_fields = [field for field in required_fields if field not in content]
+
+    should_check_intent = is_legacy_mode or has_c4 or has_dfd or has_seq_tag or has_sequence_block
+    if should_check_intent and missing_fields:
+        result.add_warning("BRD-W014", f"Diagram intent header missing fields: {', '.join(missing_fields)}")
+
+
 def validate_brd_file(file_path: Path) -> ValidationResult:
     """
     Validate a single BRD file.
@@ -465,6 +511,7 @@ def validate_brd_file(file_path: Path) -> ValidationResult:
     validate_structure(content, sections, result, metadata)
     validate_document_control(content, result)
     validate_business_requirements(content, result, metadata)
+    validate_diagram_contract(content, result, metadata)
     validate_crosslinking_tags(content, result)
 
     return result

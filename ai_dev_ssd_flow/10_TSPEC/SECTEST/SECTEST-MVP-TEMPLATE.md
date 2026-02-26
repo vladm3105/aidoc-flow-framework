@@ -35,7 +35,8 @@ Objective: Create security test specifications for security workflow.
 Constraints:
 - Define security test scenarios for ONE component/threat per document.
 - 6 sections required (aligned with MVP requirements).
-- Required traceability tags: @sec, @spec.
+- Required cumulative tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec, @ctr (if exists).
+- Required SECTEST-specific tags: @sec, @spec.
 - TASKS-Ready threshold: ≥90%.
 - Document threat actors, attack vectors, and security controls.
 - Include execution_profile with safety constraints.
@@ -292,7 +293,21 @@ execution_profile:
 
 ## 6. Traceability
 
-### 6.1 Upstream References
+### 6.1 Cumulative Tags (Layer 1-9)
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @brd | BRD.NN.TT.SS | Business requirement |
+| @prd | PRD.NN.TT.SS | Product requirement |
+| @ears | EARS.NN.25.SS | EARS statement |
+| @bdd | BDD.NN.14.SS | BDD scenario |
+| @adr | ADR-NN | Architecture decision |
+| @sys | SYS.NN.26.SS | System requirement |
+| @req | REQ.NN.27.SS | Atomic requirement |
+| @spec | SPEC-NN | Technical specification |
+| @ctr | CTR-NN | Data contract (if exists) |
+
+### 6.2 SECTEST-Specific Tags
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
@@ -301,7 +316,7 @@ execution_profile:
 | @spec | SPEC-NN | [Specification reference] |
 | @ctr | CTR-NN | [Contract reference] |
 
-### 6.2 Downstream References
+### 6.3 Downstream References
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|

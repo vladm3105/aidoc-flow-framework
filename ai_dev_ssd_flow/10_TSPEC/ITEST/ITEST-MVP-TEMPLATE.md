@@ -35,7 +35,8 @@ Objective: Create integration test specifications for component interaction vali
 Constraints:
 - Define test cases for component interactions per document.
 - 6 sections required (aligned with MVP requirements).
-- Required traceability tags: @ctr, @sys, @spec.
+- Required cumulative tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec, @ctr (if exists).
+- Required ITEST-specific tags: @ctr (contract), @sys (integration requirement).
 - TASKS-Ready threshold: ≥90%.
 - Include sequence diagrams for complex interactions.
 - Document contract compliance verification.
@@ -250,15 +251,28 @@ sequenceDiagram
 
 ## 6. Traceability
 
-### 6.1 Upstream References
+### 6.1 Cumulative Tags (Layer 1-9)
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
-| @ctr | CTR-NN | API contract specification |
-| @sys | SYS.NN.01.01 | System requirement |
+| @brd | BRD.NN.TT.SS | Business requirement |
+| @prd | PRD.NN.TT.SS | Product requirement |
+| @ears | EARS.NN.25.SS | EARS statement |
+| @bdd | BDD.NN.14.SS | BDD scenario |
+| @adr | ADR-NN | Architecture decision |
+| @sys | SYS.NN.26.SS | System requirement |
+| @req | REQ.NN.27.SS | Atomic requirement |
 | @spec | SPEC-NN | Technical specification |
+| @ctr | CTR-NN | Data contract (if exists) |
 
-### 6.2 Downstream References
+### 6.2 ITEST-Specific Tags
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @ctr | CTR-NN | API contract for integration points |
+| @sys | SYS.NN.01.01 | System integration requirement |
+
+### 6.3 Downstream References
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|

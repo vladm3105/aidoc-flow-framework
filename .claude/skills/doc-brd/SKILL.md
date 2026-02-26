@@ -1,22 +1,23 @@
 ---
 name: doc-brd
 description: Create Business Requirements Documents (BRD) following SDD methodology - Layer 1 artifact defining business needs and objectives
-tags:
-  - sdd-workflow
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: []
-  downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "1.2"
-  last_updated: "2026-02-26"
-  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR]
+    version: "1.2"
+    last_updated: "2026-02-26"
+    versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd
@@ -69,8 +70,8 @@ Before creating a BRD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md`
+3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 5. **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
@@ -171,11 +172,11 @@ Use `doc-brd` when:
 
 **Primary Template**:
 
-**BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
+**BRD-MVP-TEMPLATE.md** - Comprehensive business requirements (general purpose)
 - Use for: All business requirements documents
 - Sections: Complete 18-section structure
 - Best for: Complex projects, regulatory compliance needs
-- Location: `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.md`
+- Location: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 
 **Note**: Use the comprehensive template for all BRD documents. For simpler requirements, complete only the essential sections and mark others as "N/A - Not applicable for this scope".
 
@@ -426,7 +427,7 @@ Cost estimates                Evaluation criteria        Selected approach
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md` Section 9 for complete guidelines
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md` Section 9 for complete guidelines
 
 ### 5. Document Control Section Positioning
 
@@ -586,10 +587,10 @@ custom_fields:
 Run validation scripts:
 ```bash
 # BRD structure validation
-./ai_dev_ssd_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_*.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_*.md
 
 # Link integrity
-./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
+python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
 ```
 
 ### Step 12: Commit Changes
@@ -602,7 +603,7 @@ Commit BRD file and traceability matrix together.
 
 **BRD-Specific Validation**:
 ```bash
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform.md
 ```
 
 **Quality Gates Validation**:
@@ -626,7 +627,12 @@ Commit BRD file and traceability matrix together.
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
+**BRD Diagram Contract (MANDATORY)**:
+- Include `@diagram: c4-l1` and `@diagram: dfd-l0`
+- If sequence diagram exists, include one sequence contract tag (`@diagram: sequence-sync|sequence-async|sequence-error`)
+- Add intent header fields above each required diagram block: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
 
 ## Common Pitfalls
 
@@ -655,10 +661,10 @@ LOOP:
 
 ```bash
 # BRD structure validation (primary)
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-NN_slug.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
 
 # Link integrity validation
-./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
+python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
 
 # Quality gates validation
 ./scripts/validate_quality_gates.sh docs/01_BRD/BRD-NN_slug.md
@@ -725,14 +731,14 @@ For supplementary documentation related to BRD artifacts:
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md` for validation details.
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 
 - **Main Guide**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
-- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 - **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`

@@ -1,23 +1,26 @@
 ---
 name: doc-brd-validator
 description: Validate Business Requirements Documents (BRD) against Layer 1 MVP schema standards
-tags:
-  - sdd-workflow
-  - layer-1-artifact
-  - validation
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: []
-  downstream_artifacts: [PRD]
-  version: "1.2"
-  last_updated: "2026-02-26"
+
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-1-artifact
+    - validation
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: []
+    downstream_artifacts: [PRD]
+    version: "1.2"
+    last_updated: "2026-02-26"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+
 ---
 
 # doc-brd-validator
@@ -37,6 +40,7 @@ Validates BRD documents for:
 - PRD-Ready scoring
 - File naming conventions
 - Architecture Decision Requirements completeness
+- Diagram contract structural compliance (`c4-l1`, `dfd-l0`, sequence tags, intent header fields)
 
 ## Activation
 
@@ -265,6 +269,31 @@ Forbidden tag patterns:
 - BRDs without `upstream_mode` are treated as `upstream_mode: "none"`
 - Drift detection is automatically skipped for these BRDs
 
+### 9. Diagram Contract Validation
+
+BRD diagram contract requirements follow `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Advisory BRD tags**:
+- `@diagram: c4-l1`
+- `@diagram: dfd-l0`
+
+**Conditional requirement**:
+- If any sequence diagram is present, at least one sequence contract tag should be present:
+  - `@diagram: sequence-sync`
+  - `@diagram: sequence-async`
+  - `@diagram: sequence-error`
+
+**Diagram intent header fields** (recommended for BRD diagram blocks):
+- `diagram_type`
+- `level`
+- `scope_boundary`
+- `upstream_refs`
+- `downstream_refs`
+
+**Transition policy**:
+- BRD diagram checks are non-blocking advisories.
+- Canonical blocking enforcement is in PRD validator (`PRD-E023..PRD-E026`).
+
 ## Error Codes
 
 | Code | Severity | Description |
@@ -290,6 +319,10 @@ Forbidden tag patterns:
 | BRD-E019 | ERROR | Invalid element ID format (not BRD.NN.TT.SS) |
 | BRD-E020 | ERROR | Element type code not valid for BRD (see doc-naming) |
 | BRD-E021 | ERROR | Deprecated ID pattern used (BO-XXX, FR-XXX, etc.) |
+| BRD-W011 | WARNING | Missing recommended BRD diagram tag `@diagram: c4-l1` |
+| BRD-W012 | WARNING | Missing recommended BRD diagram tag `@diagram: dfd-l0` |
+| BRD-W013 | WARNING | Sequence diagram present without sequence contract tag |
+| BRD-W014 | WARNING | Missing diagram intent header fields |
 | BRD-W001 | WARNING | Objectives not using BRD.NN.23.SS format |
 | BRD-W002 | WARNING | Requirements not using BRD.NN.01.SS format |
 | BRD-W003 | WARNING | Missing Success Metrics (Section 5) |
@@ -299,6 +332,7 @@ Forbidden tag patterns:
 | BRD-W007 | WARNING | ADR topic missing cost estimates in Alternatives Overview |
 | BRD-W008 | WARNING | ADR topic missing PRD Requirements field |
 | BRD-W009 | WARNING | Missing Document Revision History table |
+| BRD-W010 | WARNING | Trust boundary annotation missing where expected |
 | BRD-I001 | INFO | Consider adding regulatory compliance requirements |
 | BRD-I002 | INFO | Consider adding market analysis context |
 | BRD-I003 | INFO | Consider completing Pending ADR topics before PRD creation |
@@ -312,19 +346,19 @@ Forbidden tag patterns:
 
 ```bash
 # Validate single BRD document
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/BRD-01_example.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_example.md
 
 # Validate all BRD documents in directory
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/
 
 # Validate with verbose output
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/ --verbose
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/ --verbose
 
 # Validate with auto-fix
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/ --auto-fix
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/ --auto-fix
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/01_BRD/BRD-01.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/01_BRD/BRD-01.md --auto-fix
 ```
 
 ## Validation Workflow
@@ -346,11 +380,15 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/01_BRD/BRD
    - Check upstream_mode value (valid: "ref", "none", or not set)
    - If upstream_mode: "ref": Verify upstream_ref_path is set and paths exist
    - If upstream_mode: "none": Skip upstream_ref_path validation
-10. Calculate PRD-Ready Score (includes ADR completeness)
-11. Verify file naming convention
-12. Check element ID format compliance (per doc-naming)
-13. Detect deprecated patterns
-14. Generate validation report
+10. Validate diagram contract advisory compliance:
+  - Check recommended BRD tags `@diagram: c4-l1` and `@diagram: dfd-l0`
+  - If sequence diagram exists, check for sequence contract tag
+  - Check diagram intent header fields
+11. Calculate PRD-Ready Score (includes ADR completeness)
+12. Verify file naming convention
+13. Check element ID format compliance (per doc-naming)
+14. Detect deprecated patterns
+15. Generate validation report
 
 ## Auto-Fix Actions
 
@@ -391,16 +429,17 @@ Info: 1
 
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, element type codes)
 - **BRD Skill**: `.claude/skills/doc-brd/SKILL.md`
-- **BRD Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Schema**: `ai_dev_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- **BRD Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **BRD Schema**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-26 | Added Diagram Contract Validation section aligned to `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`; introduced BRD-E022/E023/E024 and BRD-W010; updated workflow with explicit C4/DFD/sequence checks |
 | 2.3 | 2026-02-25 | Updated section structure to match 18-section MVP template; Added validation for sections 12-18 with required subsections; Updated PRD-Ready score to show MVP (≥70) and Full (≥90) targets |
 | 2.2 | 2026-02-24 | Added upstream source configuration validation (Section 8); Added VAL-U001 through VAL-U005 error codes; Updated workflow to include upstream_mode validation |
 | 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |

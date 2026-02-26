@@ -134,15 +134,21 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.25) + (G4 × 0.20)
 
 ## TASKS-Ready Checklist
 
+- [ ] Document in nested folder structure
 - [ ] Overall score ≥85%
 - [ ] All SYS attributes covered
 - [ ] All thresholds referenced
 - [ ] Workflows documented
 - [ ] Measurement code present
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] FTEST-specific tags present (@sys, @threshold)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-NN_*.md --quality-gates
+# Validate single FTEST with quality gates (nested folder structure)
+python scripts/validate_ftest.py docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md --quality-gates
+
+# Validate all FTEST documents
+python scripts/validate_ftest.py docs/10_TSPEC/FTEST/ --quality-gates
 ```

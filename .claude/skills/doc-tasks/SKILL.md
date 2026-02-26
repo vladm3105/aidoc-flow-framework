@@ -199,7 +199,7 @@ Use `doc-tasks` when:
 
 ### 6. Dependencies Graph
 
-**Use Mermaid diagram ONLY** (text-based diagrams prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`):
+**Use Mermaid diagram ONLY** (text-based diagrams prohibited per `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`):
 
 ```markdown
 ## Dependencies Graph
@@ -541,7 +541,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 

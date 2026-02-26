@@ -261,16 +261,18 @@ sequenceDiagram
     end
 ```
 
-#### 3.4.3 Required Diagram Contract (MVP)
+#### 3.4.3 Optional Business Visualization (Transition Policy)
 
-For BRD, include both:
+For BRD, diagrams are advisory and non-blocking. Canonical design enforcement starts in PRD.
+
+Recommended BRD tags:
 - `@diagram: c4-l1` (system context)
 - `@diagram: dfd-l0` (top-level data movement)
 
 Optional:
 - Key business `sequenceDiagram` for critical journey timing.
 
-Required declaration block:
+Example declaration block (optional):
 
 ```markdown
 @diagram: c4-l1
