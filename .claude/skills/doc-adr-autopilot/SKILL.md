@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ]
-  version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.5"
+  last_updated: "2026-02-26"
 ---
 
 # doc-adr-autopilot
@@ -40,7 +40,7 @@ This autopilot orchestrates the following skills:
 | Skill | Purpose | Phase |
 |-------|---------|-------|
 | `doc-naming` | Element ID format (ADR.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
-| `doc-adr` | ADR creation rules, 17-section structure, lifecycle states | Phase 3: ADR Generation |
+| `doc-adr` | ADR creation rules, 11-section MVP structure, lifecycle states | Phase 3: ADR Generation |
 | `quality-advisor` | Real-time quality feedback during ADR generation | Phase 3: ADR Generation |
 | `doc-adr-validator` | Validate ADR structure, content, SYS-Ready score | Phase 4: ADR Validation |
 | `doc-adr-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
@@ -1489,6 +1489,7 @@ docs/05_ADR/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-26 | Updated skill dependency reference from 17-section to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (ADR-NN) triggers review mode; Multiple upstream-type inputs (BDD/EARS/PRD/BRD-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-adr-reviewer` and `doc-adr-fixer`; Added `doc-adr-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |

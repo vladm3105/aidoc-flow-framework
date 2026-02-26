@@ -3,212 +3,351 @@
 # - Purpose: AI-consumable template for automated ADR artifact generation
 # - Validation: Validated by ADR_MVP_SCHEMA.yaml (shared with MD template)
 # - Human Reference: See ADR-MVP-TEMPLATE.md for narrative explanations
+# - Structure: 11 sections aligned with ADR-MVP-TEMPLATE.md
 # =============================================================================
 
 id: ADR-NN
-title: "[Decision Title: e.g., Use PostgreSQL for Data Storage]"
-status: "Proposed"  # Proposed, Accepted, Rejected, Deprecated
+title: "[Architecture Decision Title]"
 
 # =============================================================================
-# Metadata
+# Section 1: Document Control
 # =============================================================================
 
-date: "YYYY-MM-DD"
-
-authors:
-  - name: "[Primary Author]"
-    email: "[author@company.com]"
-    role: "[Role: e.g., Technical Lead, Architect]"
-  
-  - name: "[Co-Author (optional)]"
-    email: "[coauthor@company.com]"
-    role: "[Role]"
+document_control:
+  status: "Proposed"  # Proposed, Accepted, Deprecated, Superseded
+  date: "YYYY-MM-DD"
+  decision_makers:
+    - "[Names/Roles]"
+  author: "[Architect/Lead Name]"
+  version: "1.0"
+  sys_ready_score: "[Score]/100 (Target: ≥90)"
 
 # =============================================================================
-# Context
+# Section 2: Context
 # =============================================================================
 
 context:
-  problem_statement: |
-    [Problem description: Clear statement of the problem or challenge
-    that this decision addresses. What issue are we trying to solve?
-    Example: "Current system experiences performance degradation with large datasets
-    due to MySQL query optimization limitations. We need a database that
-    handles complex analytical queries efficiently while maintaining data consistency."]
-  
-  constraints:
-    - "[Constraint 1: e.g., Must support ACID transactions]"
-    - "[Constraint 2: e.g., Must integrate with existing ETL pipelines]"
-    - "[Constraint 3: e.g., Must have horizontal scalability]"
-    - "[Constraint 4: e.g., Budget constraints prevent proprietary databases]"
-    - "[Constraint 5: e.g., Team expertise limited to SQL databases]"
-  
-  alternatives:
-    - name: "[Alternative 1: e.g., MySQL with query optimization]"
-      description: |
-        [Description of alternative approach.
-        How does this option address the problem?
-        What are its key features and implementation approach?]
-      
-      pros:
-        - "[Advantage 1: e.g., Minimal migration effort]"
-        - "[Advantage 2: e.g., Existing team expertise]"
-        - "[Advantage 3: e.g., No additional licensing costs]"
-      
-      cons:
-        - "[Disadvantage 1: e.g., Still has performance limitations]"
-        - "[Disadvantage 2: e.g., Limited analytical query support]"
-        - "[Disadvantage 3: e.g., Reaches scalability ceiling at 2TB]"
+  problem_statement:
+    originating_topic: "BRD.NN.32.SS - [Topic Name from BRD Section 7.2]"
+    description: |
+      [1-2 paragraph description of the architectural challenge or decision needed]
+    business_driver: "[Why this decision matters to the business - from BRD §7.2]"
 
-    - name: "[Alternative 2: e.g., MongoDB]"
-      description: |
-        [Description of alternative approach.
-        How does this option address the problem?
-        What are its key features and implementation approach?]
-      
-      pros:
-        - "[Advantage 1: e.g., Excellent horizontal scalability]"
-        - "[Advantage 2: e.g., Flexible schema for analytics]"
-        - "[Advantage 3: e.g., Good for large document storage]"
-      
-      cons:
-        - "[Disadvantage 1: e.g., Eventual consistency (not ACID)]"
-        - "[Disadvantage 2: e.g., Complex data modeling]"
-        - "[Disadvantage 3: e.g., Requires team training]"
-        - "[Disadvantage 4: e.g., Additional operational complexity]"
+  key_constraints:
+    - "[Constraint 1 - e.g., budget limit, regulatory requirement]"
+    - "[Constraint 2 - e.g., timeline, team expertise]"
+    - "[Constraint 3 - e.g., existing infrastructure, integration requirement]"
 
-    - name: "[Alternative 3: e.g., PostgreSQL]"
-      description: |
-        [Description of alternative approach.
-        How does this option address the problem?
-        What are its key features and implementation approach?]
-      
-      pros:
-        - "[Advantage 1: e.g., Strong analytical query performance]"
-        - "[Advantage 2: e.g., ACID compliance]"
-        - "[Advantage 3: e.g., Extensible with PL/pgSQL]"
-        - "[Advantage 4: e.g., Good community support]"
-        - "[Advantage 5: e.g., Open source, no licensing costs]"
-      
-      cons:
-        - "[Disadvantage 1: e.g., Migration requires data transformation]"
-        - "[Disadvantage 2: e.g., Slightly slower write performance than MySQL]"
-        - "[Disadvantage 3: e.g., Larger storage footprint]"
-        - "[Disadvantage 4: e.g., Requires team learning curve]"
+  technical_context:
+    description: "[Brief background on existing system state and technical environment]"
+    current_state:
+      - "[What exists today]"
+      - "[What's working/not working]"
+    mvp_requirements:
+      - "[Core requirement this decision must satisfy]"
+      - "[Quality attribute targets - e.g., p95 < 200ms]"
 
 # =============================================================================
-# Decision
+# Section 3: Decision
 # =============================================================================
 
 decision:
-  chosen_alternative: "[Chosen Alternative: e.g., PostgreSQL]"
-  
-  rationale:
-    - "[Rationale 1: Best performance for analytical queries based on benchmarks]"
-    - "[Rationale 2: ACID compliance required for financial data]"
-    - "[Rationale 3: Horizontal scaling meets future growth requirements]"
-    - "[Rationale 4: Extensibility with stored procedures reduces application code]"
-    - "[Rationale 5: Team has PostgreSQL expertise or can acquire quickly]"
-    - "[Rationale 6: Open source with strong community support]"
-    - "[Rationale 7: Meets all constraints: scalability, compliance, budget]"
+  id_format: "ADR.NN.10.SS"  # Decision element type
+
+  chosen_solution:
+    id: "ADR.NN.10.01"
+    solution: "[Selected option/technology/approach]"
+    because:
+      - "[Primary reason - aligned with business driver]"
+      - "[Secondary reason - technical fit]"
+      - "[Tertiary reason - cost/time advantage]"
+
+  key_components:
+    - component: "[Component 1]"
+      purpose: "[What it does]"
+      technology: "[Specific tech]"
+    - component: "[Component 2]"
+      purpose: "[What it does]"
+      technology: "[Specific tech]"
+    - component: "[Component 3]"
+      purpose: "[What it does]"
+      technology: "[Specific tech]"
+
+  implementation_approach:
+    description: "[2-3 sentences on how this will be implemented for MVP]"
+    mvp_scope: "[What's included in MVP implementation]"
+    next_cycle_scope: "[What's deferred to next MVP iteration]"
 
 # =============================================================================
-# Consequences
+# Section 4: Alternatives Considered
+# =============================================================================
+
+alternatives_considered:
+  id_format: "ADR.NN.12.SS"  # Alternative element type
+
+  options:
+    - id: "ADR.NN.12.01"
+      name: "[Selected Option Name]"
+      selected: true
+      description: "[Brief description of the chosen approach]"
+      pros:
+        - "[Advantage 1]"
+        - "[Advantage 2]"
+      cons:
+        - "[Trade-off 1]"
+        - "[Trade-off 2]"
+      estimated_cost: "$[X]/month"
+      fit: "Best"
+
+    - id: "ADR.NN.12.02"
+      name: "[Alternative Option Name]"
+      selected: false
+      description: "[Brief description]"
+      pros:
+        - "[Advantage 1]"
+        - "[Advantage 2]"
+      cons:
+        - "[Disadvantage 1 - why rejected]"
+        - "[Disadvantage 2]"
+      rejection_reason: "[Specific reason why not selected]"
+      estimated_cost: "$[X]/month"
+      fit: "Good"  # Good/Poor
+
+    - id: "ADR.NN.12.03"
+      name: "[Alternative Option Name] (Optional)"
+      selected: false
+      description: "[Brief description]"
+      pros:
+        - "[Advantage 1]"
+      cons:
+        - "[Disadvantage 1]"
+      rejection_reason: "[Specific reason]"
+      estimated_cost: "$[X]/month"
+      fit: "Poor"
+
+# =============================================================================
+# Section 5: Consequences
 # =============================================================================
 
 consequences:
-  positive:
-    - "[Positive consequence 1: Improved query performance 10x for analytics]"
-    - "[Positive consequence 2: Ability to handle 100x larger datasets]"
-    - "[Positive consequence 3: Better data integrity with ACID guarantees]"
-    - "[Positive consequence 4: Reduced operational overhead with unified database]"
-    - "[Positive consequence 5: Enables advanced features like stored procedures]"
-  
-  negative:
-    - "[Negative consequence 1: Migration effort 2-3 weeks]"
-    - "[Negative consequence 2: Temporary performance degradation during transition]"
-    - "[Negative consequence 3: Requires data transformation scripts]"
-    - "[Negative consequence 4: Storage footprint increases 20-30%]"
-    - "[Negative consequence 5: Team training required for PostgreSQL features]"
+  id_format: "ADR.NN.13.SS"  # Consequence element type
+
+  positive_outcomes:
+    id: "ADR.NN.13.01"
+    items:
+      - benefit: "[Benefit 1]"
+        impact: "[Quantifiable impact]"
+      - benefit: "[Benefit 2]"
+        impact: "[Quantifiable impact]"
+      - benefit: "[Benefit 3]"
+        impact: "[Qualitative benefit]"
+
+  tradeoffs_and_risks:
+    id: "ADR.NN.13.02"
+    items:
+      - item: "[Trade-off 1]"
+        impact: "H"  # H/M/L
+        mitigation: "[How we'll address it]"
+      - item: "[Trade-off 2]"
+        impact: "M"
+        mitigation: "[How we'll address it]"
+      - item: "[Risk 1]"
+        impact: "L"
+        mitigation: "[Mitigation strategy]"
+
+  cost_estimate:
+    mvp_phase:
+      development: "[X] person-weeks"
+      infrastructure: "$[X] one-time"
+      third_party_services: "$[X] setup"
+      total: "$[X]"
+    monthly_ongoing:
+      infrastructure: "$[X]/month"
+      third_party_services: "$[X]/month"
+      total: "$[X]/month"
 
 # =============================================================================
-# Implementation Notes
+# Section 6: Architecture Flow
 # =============================================================================
 
-implementation_notes:
-  migration_plan: |
-    [Migration strategy and timeline.
-    How will we transition from current state to chosen alternative?
-    Include phases, timelines, and rollback plans.
-    
-    Example: 
-    Phase 1: Set up PostgreSQL parallel environment (Week 1)
-    Phase 2: Migrate historical data (Week 2-3)
-    Phase 3: Update application database layer (Week 3-4)
-    Phase 4: Cut over to PostgreSQL (Week 4)
-    Phase 5: Decommission MySQL (Week 5)
-    
-    Rollback plan: Revert MySQL if issues detected within 48 hours]
-  
-  rollback_plan: |
-    [Rollback strategy: How to revert if chosen alternative fails or causes issues.
-    What triggers rollback? What are the rollback steps?
-    
-    Example:
-    Trigger: Critical data corruption or >10% performance degradation
-    Steps:
-    1. Stop writes to PostgreSQL
-    2. Switch DNS/read pool to MySQL
-    3. Verify data consistency
-    4. Resume application operations
-    Timeline: Complete rollback within 2 hours]
-  
-  dependencies:
-    - "[Dependency 1: Database schema migration tool: pgloader]"
-    - "[Dependency 2: Connection pool library: SQLAlchemy with psycopg2]"
-    - "[Dependency 3: Monitoring tools: pgAdmin, Prometheus exporter]"
-    - "[Dependency 4: Documentation: PostgreSQL 14 docs]"
-    - "[Dependency 5: Team training: PostgreSQL certification course]"
+architecture_flow:
+  high_level_flow:
+    diagram_type: "mermaid"
+    diagram: |
+      flowchart TD
+          A[Input/Trigger] --> B[Core Component]
+          B --> C{Decision Point}
+          C --> D[Success Path]
+          C --> E[Error Path]
+
+          subgraph "MVP Scope"
+              B
+              D
+          end
+
+          subgraph "External"
+              F[External Service]
+          end
+
+          B --> F
+
+  key_integration_points:
+    - system: "[System 1]"
+      integration_type: "[REST/gRPC/Async]"
+      purpose: "[What data flows]"
+    - system: "[System 2]"
+      integration_type: "[REST/gRPC/Async]"
+      purpose: "[What data flows]"
 
 # =============================================================================
-# Traceability
+# Section 7: Implementation Assessment
+# =============================================================================
+
+implementation_assessment:
+  mvp_development_phases:
+    - phase: 1
+      duration: "[X] weeks"
+      deliverables: "[Core implementation]"
+    - phase: 2
+      duration: "[X] weeks"
+      deliverables: "[Integration & testing]"
+
+  rollback_plan:
+    trigger: "[Conditions requiring reversion]"
+    steps:
+      - "[Step 1]"
+      - "[Step 2]"
+      - "[Step 3]"
+    estimated_rollback_time: "[X] minutes/hours"
+
+  monitoring_mvp_baseline:
+    - metric: "Error rate"
+      alert_threshold: "> [X]%"
+      action: "[Response]"
+    - metric: "Latency (p95)"
+      alert_threshold: "> [X]ms"
+      action: "[Response]"
+    - metric: "Availability"
+      alert_threshold: "< [X]%"
+      action: "[Response]"
+
+# =============================================================================
+# Section 8: Verification
+# =============================================================================
+
+verification:
+  success_criteria:
+    - "[Measurable technical outcome 1]"
+    - "[Measurable technical outcome 2]"
+    - "[Performance target met]"
+    - "[Integration working]"
+
+  bdd_scenarios:
+    references:
+      - feature: "[Feature name]"
+        path: "04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature"
+
+# =============================================================================
+# Section 9: Traceability
 # =============================================================================
 
 traceability:
   upstream_references:
-    brd: "@brd: BRD.NN.EE.SS"
-    prd: "@prd: PRD.NN.EE.SS"
-    sys: "@sys: SYS.NN.EE.SS"
-  
+    - source: "BRD"
+      document: "BRD.NN"
+      section: "§7.2 - Architecture Decision Requirements"
+    - source: "PRD"
+      document: "PRD.NN"
+      section: "§18 - Architecture Decision Topics"
+    - source: "EARS"
+      document: "EARS.NN"
+      section: "[Relevant requirements]"
+
   downstream_artifacts:
-    spec: "SPEC"
-    req: "REQ"
-    tasks: "TASKS"
-  
+    - artifact: "SYS-NN"
+      status: "TBD"
+      relationship: "System requirements derived from this ADR"
+    - artifact: "REQ-NN"
+      status: "TBD"
+      relationship: "Atomic requirements"
+    - artifact: "SPEC-NN"
+      status: "TBD"
+      relationship: "Technical specifications"
+
   tags:
-    - "@adr: ADR-NN"
-    - "@brd: BRD.NN.EE.SS"
+    - "@brd: BRD.NN.32.SS"
     - "@prd: PRD.NN.EE.SS"
+    - "@ears: EARS.NN.24.SS"
 
   cross_links:
     depends:
-      - "@depends: ADR-NN"   # Hard prerequisite ADRs
+      - "@depends: ADR-NN"
     discoverability:
       - "@discoverability: ADR-NN (short rationale)"
+
+# =============================================================================
+# Section 10: Related Decisions
+# =============================================================================
+
+related_decisions:
+  - relationship: "Depends On"
+    adr: "ADR-NN"
+    description: "[What this decision depends on]"
+  - relationship: "Related"
+    adr: "ADR-NN"
+    description: "[Related parallel decision]"
+  - relationship: "Supersedes"
+    adr: "ADR-NN"
+    description: "[Previous decision replaced]"
+
+# =============================================================================
+# Section 11: MVP Lifecycle
+# =============================================================================
+
+mvp_lifecycle:
+  lifecycle_principle: |
+    Each ADR represents decisions for ONE iteration cycle.
+    New architectural decisions require a NEW ADR.
+
+  phases:
+    - phase: "MVP"
+      duration: "1-2 weeks"
+      focus: "Core architecture decisions"
+      adr_output: "This ADR → SYS → Implementation"
+    - phase: "PROD"
+      duration: "30-90 days"
+      focus: "Operate, validate decisions, collect feedback"
+      adr_output: "Decision outcomes, lessons learned"
+    - phase: "NEW MVP"
+      duration: "1-2 weeks"
+      focus: "Next architecture decisions"
+      adr_output: "Create ADR-02, ADR-03, etc."
+
+  when_to_create_new_adr:
+    - "Current ADR decisions are validated in production"
+    - "New architectural decisions needed for next iteration"
+    - "Decision context has significantly changed"
+    - "Business case for new architecture approved"
+
+  cross_adr_traceability:
+    - "Link to previous cycle: Add @depends: ADR-01 in Related Decisions section"
+    - "Reference production outcomes: Include validation data from previous cycle"
+    - "Supersedes pattern: Use when replacing a previous decision entirely"
+    - "Update index: Add new ADR to ADR-00_index.md with cross-references"
 
 # =============================================================================
 # Template Metadata
 # =============================================================================
 
-# Template Reference: ADR-MVP-TEMPLATE.md (for narrative explanations)
-# Schema: ADR_MVP_SCHEMA.yaml (for validation rules)
-# Creation Rules: ADR_MVP_CREATION_RULES.md (for guidance)
-# Validation Rules: ADR_MVP_VALIDATION_RULES.md (for checklist)
-
-# MVP Profile Notes:
-# - Alternative-driven format with pros/cons analysis
-# - Decision rationale must be specific and data-driven
-# - Consequences must identify both positive and negative impacts
-# - Implementation notes include migration and rollback plans
-
-# =============================================================================
+template_metadata:
+  template_version: "1.1"
+  structure: "11 sections"
+  last_updated: "2026-02-26"
+  md_reference: "ADR-MVP-TEMPLATE.md"
+  schema: "ADR_MVP_SCHEMA.yaml"
+  creation_rules: "ADR_MVP_CREATION_RULES.md"
+  validation_rules: "ADR_MVP_VALIDATION_RULES.md"
+  notes:
+    - "YAML template aligned with MD template (11 sections)"
+    - "No separate 'full ADR' template - expansion via NEW ADRs"
+    - "Maintains ai_dev_flow framework compliance"

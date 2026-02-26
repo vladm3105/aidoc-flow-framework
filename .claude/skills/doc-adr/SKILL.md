@@ -14,8 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ, Code]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "1.1"
+  last_updated: "2026-02-26"
 ---
 
 # doc-adr
@@ -84,21 +84,23 @@ Use `doc-adr` when:
 
 ## ADR-Specific Guidance
 
-### 1. Four-Part ADR Structure (17 Sections Total)
+### 1. ADR Structure (11 Sections Total)
 
 **MVP Template**: See `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
 
-**Part 1 - Decision Context and Requirements** (Sections 1-6):
-- Document Control, Workflow Position, Status, Context, Decision, Requirements Satisfied
-
-**Part 2 - Impact Analysis and Architecture** (Sections 7-12):
-- Consequences, Architecture Flow, Implementation Assessment, Impact Analysis, Verification, Alternatives Considered
-
-**Part 3 - Implementation and Operations** (Sections 13-15):
-- Security, Related Decisions, Implementation Notes
-
-**Part 4 - Traceability and Documentation** (Sections 16-17):
-- Traceability, References
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | Document Control | Metadata with SYS-Ready Score |
+| 2 | Context | Problem Statement, Technical Context |
+| 3 | Decision | Chosen Solution, Key Components, Approach |
+| 4 | Alternatives Considered | Options with pros/cons |
+| 5 | Consequences | Positive/Negative Outcomes, Costs |
+| 6 | Architecture Flow | Mermaid diagrams, Integration Points |
+| 7 | Implementation Assessment | Phases, Rollback, Monitoring |
+| 8 | Verification | Success Criteria, BDD Scenarios |
+| 9 | Traceability | Upstream/Downstream, Tags, Cross-Links |
+| 10 | Related Decisions | Dependencies, Supersessions |
+| 11 | MVP Lifecycle | Iteration guidance |
 
 ### 2. ADR Lifecycle States
 
@@ -534,7 +536,7 @@ The SYS will:
 
 **Tags Required**: @brd, @prd, @ears, @bdd (4 tags)
 
-**Format**: Four-Part Structure (17 sections)
+**Format**: 11-section MVP structure
 
 **SYS-Ready Score**: ≥90% required for "Accepted" status
 
@@ -554,4 +556,5 @@ The SYS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-26 | Updated to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |
