@@ -41,7 +41,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27T00:00:00 |
 | **Last Updated** | 2026-01-15T00:00:00 |
 | **Status** | Active |
-| **Breaking Change** | TASKS v2.0: 11 sections (was 12), includes execution commands |
+| **Breaking Change** | TASKS v2.0: 13 sections, includes execution commands |
 
 ### Reserved ID Exemption (TASKS-00_*)
 
@@ -155,7 +155,7 @@ fi
 
 ## 4. Section Structure Validation (v2.0)
 
-### Required Sections (TASKS v2.0 - 11 sections)
+### Required Sections (TASKS v2.0 - 13 sections)
 
 | Section | Required | Validation |
 |---------|----------|------------|
@@ -168,8 +168,10 @@ fi
 | 7. Implementation Contracts | Yes | Contract integration documented (or "none") |
 | 8. Traceability | Yes | Upstream refs, tags, code locations |
 | 9. Risk & Mitigation | Yes | Risk table with mitigations |
-| 10. Session Log | Yes | Progress tracking table |
-| 11. Change History | Yes | Version history |
+| 10. Unit Test Results | Yes | Test suite results and coverage |
+| 11. Implementation Summary | Yes | Summary, accomplishments, issues, remaining work |
+| 12. Session Log | Yes | Progress tracking table |
+| 13. Change History | Yes | Version history |
 
 ### Validation Commands
 
@@ -184,8 +186,10 @@ required_sections=(
   "## 7. Implementation Contracts"
   "## 8. Traceability"
   "## 9. Risk"
-  "## 10. Session Log"
-  "## 11. Change History"
+  "## 10. Unit Test Results"
+  "## 11. Implementation Summary"
+  "## 12. Session Log"
+  "## 13. Change History"
 )
 
 for section in "${required_sections[@]}"; do
@@ -293,7 +297,7 @@ fi
 
 ## 8. Traceability Tag Validation
 
-### Required Tags (Layer 10)
+### Required Tags (Layer 11)
 
 | Tag | Required | Format |
 |-----|----------|--------|
@@ -305,6 +309,7 @@ fi
 | @sys | Yes | SYS.NN.EE.SS |
 | @req | Yes | REQ.NN.EE.SS |
 | @spec | Yes | SPEC-NN |
+| @tspec | Yes | TSPEC.NN.TT.SS |
 
 ### Optional Tags
 
@@ -315,7 +320,7 @@ fi
 ### Validation Commands
 
 ```bash
-required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec")
+required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec" "@tspec")
 
 for tag in "${required_tags[@]}"; do
   if ! grep -q "^$tag:" "$TASKS_FILE"; then
@@ -439,14 +444,14 @@ CHECK 2: Frontmatter
   [PASS] Required fields present
 
 CHECK 3: Required Sections (v2.0)
-  [PASS] All 11 required sections found
+  [PASS] All 13 required sections found
 
 CHECK 4: Section 7 Implementation Contracts (v2.0)
   [PASS] Section 7 exists
   [PASS] Proper subsections present
 
 CHECK 5: Traceability Tags
-  [PASS] All 8 required tags present
+  [PASS] All 9 required tags present (+ optional @ctr)
 
 CHECK 6: Cross-References
   [PASS] Parent SPEC exists
@@ -526,6 +531,6 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-**Document Version**: 2.0.0
-**Last Updated**: 2026-01-15T00:00:00
-**Schema Version**: TASKS v2.0 (11 sections)
+**Document Version**: 2.1.0
+**Last Updated**: 2026-02-26T00:00:00
+**Schema Version**: TASKS v2.0 (13 sections)

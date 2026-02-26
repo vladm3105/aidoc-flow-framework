@@ -285,25 +285,56 @@ section_7_implementation_contracts:
 # =============================================================================
 
 section_8_traceability:
-  upstream_references:
-    brd: "@brd: BRD.NN.EE.SS"
-    prd: "@prd: PRD.NN.EE.SS"
-    ears: "@ears: EARS.NN.EE.SS"
-    bdd: "@bdd: BDD.NN.EE.SS"
-    adr: "@adr: ADR-NN"
-    sys: "@sys: SYS.NN.EE.SS"
-    req: "@req: REQ.NN.EE.SS"
-    spec: "@spec: SPEC-NN"
-  
-  downstream_artifacts:
-    code: "src/module/implementation.py"
-    tests: "tests/unit/test_implementation.py"
-    documentation: "docs/api/implementation.md"
-  
-  tags:
-    - "@tasks: TASKS-NN"
-    - "@spec: SPEC-NN"
-    - "@req: REQ.NN.EE.SS"
+  cumulative_tags:
+    - tag: "@brd"
+      reference: "BRD.NN.TT.SS"
+      description: "Business requirement"
+    - tag: "@prd"
+      reference: "PRD.NN.TT.SS"
+      description: "Product requirement"
+    - tag: "@ears"
+      reference: "EARS.NN.25.SS"
+      description: "EARS statement"
+    - tag: "@bdd"
+      reference: "BDD.NN.14.SS"
+      description: "BDD scenario"
+    - tag: "@adr"
+      reference: "ADR-NN"
+      description: "Architecture decision"
+    - tag: "@sys"
+      reference: "SYS.NN.26.SS"
+      description: "System requirement"
+    - tag: "@req"
+      reference: "REQ.NN.27.SS"
+      description: "Atomic requirement"
+    - tag: "@ctr"
+      reference: "CTR-NN"
+      description: "Data contract (if exists)"
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "Technical specification"
+    - tag: "@tspec"
+      reference: "TSPEC.NN.TT.SS"
+      description: "Test specification"
+
+  type_specific:
+    - tag: "@spec"
+      reference: "SPEC-NN"
+      description: "Primary specification for task breakdown"
+    - tag: "@tspec"
+      reference: "TSPEC.NN.TT.SS"
+      description: "Test specification reference"
+
+  downstream:
+    - tag: "@impl"
+      reference: "src/module/implementation.py"
+      description: "Implementation code"
+    - tag: "@code"
+      reference: "src/[component]/"
+      description: "Source code location"
+    - tag: "@tests"
+      reference: "tests/unit/test_implementation.py"
+      description: "Test implementation"
 
   cross_links:
     depends:
@@ -424,9 +455,9 @@ section_13_change_history:
 # Validation Rules: TASKS_MVP_VALIDATION_RULES.md (for checklist)
 
 # MVP Profile Notes:
-# - 11 sections (1-11 numbered, plus Document Control and Development Plan Tracking)
+# - 13 sections (1-13 numbered, plus Document Control and Development Plan Tracking)
 # - Section 4: Execution Commands added in v2.0
-# - Implementation Contracts section supports parallel development
+# - Section 7: Implementation Contracts section supports parallel development
 # - Minimum Execution-Ready Score: 90%
 
 # =============================================================================

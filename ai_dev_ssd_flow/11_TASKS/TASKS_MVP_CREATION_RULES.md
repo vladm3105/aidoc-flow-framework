@@ -44,7 +44,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27T00:00:00 |
 | **Last Updated** | 2026-01-15T00:00:00 |
 | **Status** | Active |
-| **Breaking Change** | v2.0: 11 sections, execution commands in Section 4 |
+| **Breaking Change** | v2.0: 13 sections, execution commands in Section 4 |
 
 ---
 
@@ -247,7 +247,7 @@ custom_fields:
 | Parent SPEC | Yes | SPEC-NN reference |
 | Complexity | Yes | 1-5 scale |
 
-### 3.3 Mandatory Sections (v2.0 - 11 sections)
+### 3.3 Mandatory Sections (v2.0 - 13 sections)
 
 | Section | Purpose |
 |---------|---------|
@@ -260,10 +260,12 @@ custom_fields:
 | 7. Implementation Contracts | Embedded contract definitions (mandatory) |
 | 8. Traceability | Upstream refs, tags, code locations |
 | 9. Risk & Mitigation | Risk table with mitigations |
-| 10. Session Log | Progress tracking |
-| 11. Change History | Version history |
+| 10. Unit Test Results | Test suite results and coverage |
+| 11. Implementation Summary | Summary, accomplishments, issues, remaining work |
+| 12. Session Log | Progress tracking |
+| 13. Change History | Version history |
 
-> **Note**: v1.x had 8 mandatory sections. v2.0 has 11.
+> **Note**: v1.x had 8 mandatory sections. v2.0 has 13.
 
 ---
 
@@ -438,7 +440,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ## 9. Traceability Tag Requirements
 
-### Required Tags (Layer 10)
+### Required Tags (Layer 11)
 
 ```markdown
 ## Traceability Tags
@@ -451,6 +453,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 @sys: SYS.001.NN
 @req: REQ.NN.EE.SS
 @spec: SPEC-NN
+@tspec: TSPEC.NN.TT.SS
 ```
 
 ### Optional Tags
@@ -664,9 +667,9 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 ---
 
-**Document Version**: 2.0.0
-**Last Updated**: 2026-01-15T00:00:00
-**Schema Version**: TASKS v2.0 (11 sections)
+**Document Version**: 2.1.0
+**Last Updated**: 2026-02-26T00:00:00
+**Schema Version**: TASKS v2.0 (13 sections)
 
 ---
 
