@@ -24,7 +24,7 @@ custom_fields:
 |----------|------|-------------|
 | **Standard (MVP)** | `SYS-MVP-TEMPLATE.md` | All SYS documents (default and recommended) |
 
-**Note**: Previous framework versions included a separate full template. The current SYS-MVP-TEMPLATE.md is the primary standard and should be used for all SYS work.
+**Note**: SYS-MVP-TEMPLATE.md is the standard for all SYS work. Lifecycle: MVP → PROD → NEW MVP (expand through new iterations).
 
 ## Index-Only Generation Workflow
 

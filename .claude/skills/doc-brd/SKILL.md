@@ -14,8 +14,8 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.1"
-  last_updated: "2026-02-24T21:30:00"
+  version: "2.2"
+  last_updated: "2026-02-25"
 ---
 
 # doc-brd
@@ -27,6 +27,25 @@ Create **Business Requirements Documents (BRD)** - Layer 1 artifact in the SDD w
 **Layer**: 1 (Entry point - no upstream dependencies)
 
 **Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+
+## MVP → PROD → NEW MVP Lifecycle
+
+**Key Principle**: Each BRD represents ONE iteration cycle.
+
+```
+BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2 → ...
+```
+
+| Phase | BRD Action | Duration |
+|-------|------------|----------|
+| **MVP** | Create BRD with 5-15 core features | 1-2 weeks |
+| **PROD** | Operate, measure, collect feedback | 30-90 days |
+| **NEW MVP** | Create **NEW BRD** for next features | 1-2 weeks |
+
+**Rules**:
+- New features = New BRD (don't expand existing BRDs indefinitely)
+- Each BRD should have 5-15 focused requirements
+- Link cycles via Cross-BRD Dependencies (`@depends: BRD-01`)
 
 ## Prerequisites
 
@@ -193,18 +212,24 @@ Use `doc-brd` when:
 - Status (Draft, In Review, Approved, Superseded)
 - Document Revision History table
 
-**Core Sections**:
-1. Executive Summary
-2. Business Context
-3. Stakeholder Analysis
-4. Business Requirements
-5. Success Criteria
-6. Constraints and Assumptions
-7. **Architecture Decision Requirements** (topics needing ADRs, NOT specific ADR numbers)
-8. Risk Assessment
-9. Traceability (Section 7 format from SHARED_CONTENT.md)
-10-16. Additional content sections (see BRD-TEMPLATE.md for full structure)
-17. **Glossary** - Domain terms and definitions
+**Core Sections (18-Section Structure)**:
+1. Introduction - Purpose, scope, audience
+2. Business Objectives - Goals, hypothesis, metrics
+3. Project Scope - Boundaries, workflows
+4. Stakeholders - Decision makers
+5. User Stories - High-level needs
+6. Functional Requirements - Business capabilities
+7. **Quality Attributes** - Performance, security, **ADR Topics (Section 7.2)**
+8. Business Constraints and Assumptions - Limitations
+9. Acceptance Criteria - Success measures
+10. Business Risk Management - Risk register
+11. Implementation Approach - Phases, rollout
+12. Support and Maintenance - Support model
+13. Cost-Benefit Analysis - ROI, costs
+14. **Project Governance** - Decision authority, **approval (14.5)**
+15. **Quality Assurance** - QA standards, testing strategy
+16. **Traceability** - Requirements matrix, health score
+17. **Glossary** - Terms (6 subsections: 17.1-17.6)
 18. **Appendices** - Supporting materials and references
 
 **Platform BRD Additional Sections**:
@@ -733,6 +758,7 @@ For supplementary documentation related to BRD artifacts:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-25 | Updated 18-section structure with correct section names; Added sections 12 (Support), 14 (Governance with 14.5 Approval), 15 (QA), expanded 16 (Traceability with 16.1-16.4), expanded 17 (Glossary with 17.1-17.6) |
 | 2.1 | 2026-02-24 | Added upstream_mode and upstream_ref_path fields for optional drift detection; Removed mandatory @strategy: tags (not applicable universally); Updated Section 3 to Upstream Source Configuration |
 | 2.0 | 2026-02-08 | Added element code 32 (Architecture Topic); Added Section 7.2 (Architecture Decision Requirements) with 7 mandatory topic categories; Updated to 18-section structure; Integrated doc-naming skill for element ID validation; Added Alternatives Overview and Cloud Provider Comparison tables |
 | 1.0 | 2025-01-06 | Initial version |

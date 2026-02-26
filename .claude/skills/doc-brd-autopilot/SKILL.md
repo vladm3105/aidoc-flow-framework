@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: []
   downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.8"
-  last_updated: "2026-02-25T11:50:00"
+  version: "2.9"
+  last_updated: "2026-02-25"
 ---
 
 # doc-brd-autopilot
@@ -28,6 +28,28 @@ Automated **Business Requirements Document (BRD)** generation pipeline that proc
 **Layer**: 1 (Entry point - no upstream document dependencies)
 
 **Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+
+---
+
+## MVP → PROD → NEW MVP Lifecycle
+
+The autopilot supports the iterative **MVP → PROD → NEW MVP** lifecycle:
+
+```
+BRD-01 → Production v1 → Feedback → BRD-02 → Production v2 → BRD-03 → ...
+```
+
+| Phase | Autopilot Role |
+|-------|----------------|
+| **MVP** | Generate BRD-NN with 5-15 core features |
+| **PROD** | N/A (production operations) |
+| **NEW MVP** | Generate NEW BRD-NN+1 for next features |
+
+**Lifecycle Rules**:
+- Each invocation creates ONE BRD for ONE cycle
+- New features = invoke autopilot for NEW BRD
+- Link cycles via `@depends: BRD-NN` in Section 16.2
+- Don't modify existing production BRDs for new features
 
 ---
 
@@ -1754,6 +1776,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.9 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Synced with BRD-MVP-TEMPLATE.md v1.1 |
 | 2.8 | 2026-02-25T11:50:00 | **Drift Cache Verification**: Added mandatory drift cache verification after every review cycle (Section 5.6); Added Phase 5 Output Checklist (Section 5.7) with explicit `.drift_cache.json` verification; Updated flowchart to include verification step; Added FAILURE MODE documentation for missing drift cache. |
 | 2.7 | 2026-02-25T08:30:00 | **Detection Algorithm Fix**: Fixed 3 critical gaps: (1) BRD not found now triggers reference search + generate instead of error; (2) Review Mode now includes full Review & Fix cycle (reviewer → fixer → re-review until score >= 90%); (3) Added multi-BRD input handling with chunking (max 3 parallel). Updated Input Type Recognition table, Examples, and Action Determination Output to reflect correct behavior. |
 | 2.6 | 2026-02-24T21:30:00 | **Upstream Mode Detection**: Added Phase 1.0 to detect and prompt for upstream_mode; Auto-detects REF folder and prompts user for path selection; Generates upstream_mode and upstream_ref_path fields; Defaults to upstream_mode: "none" when no REF folder or creating from scratch |

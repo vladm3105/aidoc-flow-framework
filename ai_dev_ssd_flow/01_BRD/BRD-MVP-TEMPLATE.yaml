@@ -3,14 +3,197 @@
 # - Purpose: AI-consumable template for automated BRD artifact generation
 # - Validation: Validated by BRD_MVP_SCHEMA.yaml (shared with MD template)
 # - Human Reference: See BRD-MVP-TEMPLATE.md for narrative explanations
+# - Lifecycle: MVP → PROD → NEW MVP (each BRD = one iteration cycle)
 #
 # NOTE: This is a MINIMAL YAML template (structure only).
 # BRD is primarily human-facing. Humans should use BRD-MVP-TEMPLATE.md
 # for narrative content, business case, stakeholder analysis.
+#
+# LIFECYCLE PRINCIPLE: Each BRD represents ONE iteration cycle.
+# New features = create NEW BRD (BRD-02, BRD-03, etc.)
 # =============================================================================
 
 id: BRD-NN
 title: "[Business Requirements Title: e.g., E-Commerce Platform MVP]"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.2"
+  last_updated: "2026-02-25"
+  total_sections: 18
+  lifecycle: "mvp-prod-newmvp"
+  template_reference: "BRD-MVP-TEMPLATE.md"
+  schema_reference: "BRD_MVP_SCHEMA.yaml"
+  creation_rules: "BRD_MVP_CREATION_RULES.md"
+  validation_rules: "BRD_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# Lifecycle: MVP → PROD → NEW MVP
+# =============================================================================
+# - Each BRD represents ONE iteration cycle (5-15 features)
+# - After production deployment, create NEW BRD for next feature set
+# - Link cycles via cross_brd_dependencies in Section 16.2
+# - Example: BRD-01 → Production → BRD-02 → Production → BRD-03
+# =============================================================================
+
+# =============================================================================
+# Section Structure (18 Sections)
+# =============================================================================
+
+sections:
+  - number: 0
+    title: "Document Control"
+    required: true
+    subsections:
+      - "Executive Summary"
+      - "Revision History"
+
+  - number: 1
+    title: "Introduction"
+    required: true
+    subsections:
+      - "1.1 Purpose"
+      - "1.2 Document Scope"
+      - "1.3 Intended Audience"
+      - "1.4 Document Conventions"
+
+  - number: 2
+    title: "Business Objectives"
+    required: true
+    subsections:
+      - "2.1 MVP Hypothesis"
+      - "2.2 Business Problem Statement"
+      - "2.3 MVP Business Goals"
+      - "2.4 MVP Success Metrics"
+      - "2.5 Expected Benefits"
+
+  - number: 3
+    title: "Project Scope"
+    required: true
+    subsections:
+      - "3.1 MVP Scope Statement"
+      - "3.2 MVP Core Features"
+      - "3.3 Out-of-Scope"
+      - "3.4 MVP Workflow"
+      - "3.5 MVP Technology Stack"
+
+  - number: 4
+    title: "Stakeholders"
+    required: true
+
+  - number: 5
+    title: "User Stories"
+    required: true
+    subsections:
+      - "5.1 Primary User Stories"
+      - "5.2 User Story Summary"
+
+  - number: 6
+    title: "Functional Requirements"
+    required: true
+    subsections:
+      - "6.1 MVP Requirements Overview"
+      - "6.2 MVP Functional Requirements"
+      - "6.3-6.4 Feature Requirements"
+      - "6.5 Business Rules"
+
+  - number: 7
+    title: "Quality Attributes"
+    required: true
+    subsections:
+      - "7.1 MVP Quality Attributes Overview"
+      - "7.2 Architecture Decision Requirements"
+      - "7.3 Performance Requirements"
+      - "7.4 Security Requirements"
+      - "7.5 Reliability Requirements"
+
+  - number: 8
+    title: "Business Constraints and Assumptions"
+    required: true
+    subsections:
+      - "8.1 MVP Business Constraints"
+      - "8.2 MVP Assumptions"
+
+  - number: 9
+    title: "Acceptance Criteria"
+    required: true
+    subsections:
+      - "9.1 MVP Launch Criteria"
+      - "9.2 MVP Success Validation"
+
+  - number: 10
+    title: "Business Risk Management"
+    required: true
+
+  - number: 11
+    title: "Implementation Approach"
+    required: true
+    subsections:
+      - "11.1 MVP Development Phases"
+      - "11.2 MVP Support Model"
+
+  - number: 12
+    title: "Support and Maintenance"
+    required: true
+    subsections:
+      - "12.1 Support Model"
+      - "12.2 Maintenance Windows"
+      - "12.3 Service Level Targets"
+
+  - number: 13
+    title: "Cost-Benefit Analysis"
+    required: true
+
+  - number: 14
+    title: "Project Governance"
+    required: true
+    subsections:
+      - "14.1 Governance Structure"
+      - "14.2 Decision Authority Matrix"
+      - "14.3 Status Reporting"
+      - "14.4 Change Control"
+      - "14.5 Approval and Sign-off"
+
+  - number: 15
+    title: "Quality Assurance"
+    required: true
+    subsections:
+      - "15.1 Quality Standards"
+      - "15.2 Testing Strategy"
+      - "15.3 Quality Gates"
+
+  - number: 16
+    title: "Traceability"
+    required: true
+    subsections:
+      - "16.1 Requirements Traceability Matrix"
+      - "16.2 Cross-BRD Dependencies"
+      - "16.3 Test Coverage Traceability"
+      - "16.4 Traceability Summary"
+
+  - number: 17
+    title: "Glossary"
+    required: true
+    subsections:
+      - "17.1 Business Terms"
+      - "17.2 Technical Terms"
+      - "17.3 Domain-Specific Terms"
+      - "17.4 Acronyms"
+      - "17.5 Cross-References"
+      - "17.6 External Standards"
+
+  - number: 18
+    title: "Appendices"
+    required: true
+    subsections:
+      - "18.1 Appendix A: MVP Metrics Dashboard"
+      - "18.2 Appendix B: Future Roadmap"
+      - "18.3 Appendix C: MVP Lifecycle (MVP → PROD → NEW MVP)"
+      - "18.4 Appendix D: File Size Guidelines"
+      - "18.5 Document Control Notes"
 
 # =============================================================================
 # Document Control
@@ -22,6 +205,7 @@ document_control:
   date_created: "YYYY-MM-DDTHH:MM:SS"
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Primary Author]"
+  prd_ready_score: "[Score]/100 (MVP Target: >=90/100)"
 
 # =============================================================================
 # Executive Summary
@@ -31,133 +215,108 @@ executive_summary:
   business_objective: |
     [Business objective statement: Clear, concise statement of what this
     business requirement aims to achieve. Include business goals and
-    success criteria. Be specific and measurable where possible.
-    
-    Example: Launch MVP e-commerce platform within 4 months to validate
-    product-market fit, achieve $50,000 in first-quarter revenue,
-    and establish baseline customer acquisition metrics for Series A funding.]
-  
+    success criteria. Be specific and measurable where possible.]
+
   success_metrics:
-    - metric: "[Metric 1: e.g., Time to market]"
-      target_value: "[Target: e.g., 4 months]"
-      measurement: "[How measured: e.g., Calendar days from project start to MVP launch]"
-    
-    - metric: "[Metric 2: e.g., Revenue target]"
-      target_value: "[Target: e.g., $50,000]"
-      measurement: "[How measured: e.g., Total revenue in first 90 days]"
-    
-    - metric: "[Metric 3: e.g., User acquisition]"
-      target_value: "[Target: e.g., 10,000 active users]"
-      measurement: "[How measured: e.g., Unique user registrations with completed onboarding]"
-    
-    - metric: "[Metric 4: e.g., Customer satisfaction]"
-      target_value: "[Target: e.g., 4.5/5.0 NPS score]"
-      measurement: "[How measured: e.g., Net Promoter Score survey at 30 and 90 days]"
-  
+    - metric: "[Metric 1]"
+      target_value: "[Target]"
+      measurement: "[How measured]"
+
+    - metric: "[Metric 2]"
+      target_value: "[Target]"
+      measurement: "[How measured]"
+
   scope: |
     [High-level scope description: What is included and what is excluded
-    from this business requirement. Define boundaries of MVP/feature set.
-    Include major deliverables and key constraints.
-    
-    Example: 
-    In Scope:
-    - Core e-commerce functionality (product catalog, shopping cart, checkout)
-    - User account management and authentication
-    - Payment processing with credit cards
-    - Order tracking and order history
-    
-    Out of Scope:
-    - Mobile applications (separate project)
-    - Advanced features (recommendation engine, subscription management)
-    - International shipping (US only in MVP)
-    - B2B marketplace functionality]
+    from this business requirement. Define boundaries of MVP/feature set.]
 
 # =============================================================================
 # Business Requirements
 # =============================================================================
 
 business_requirements:
-  - id: "BRD-01.01"
+  - id: "BRD-NN.01.01"
     priority: "P1"  # P1 (Critical), P2 (High), P3 (Medium), P4 (Low)
     description: |
-      [Requirement description: Concise statement of business requirement.
-      Describe what the system must enable from a business perspective.
-      Focus on business value and user needs, not technical implementation.
-      
-      Example: Users must be able to browse products, add to cart,
-      and complete purchase with payment within 5 minutes on average.]
-    
-    acceptance_criteria:
-      - "[Acceptance criterion 1: Users can search products by category]"
-      - "[Acceptance criterion 2: Users can add products to cart]"
-      - "[Acceptance criterion 3: Users can complete checkout with card payment]"
-      - "[Acceptance criterion 4: Average checkout time <= 5 minutes]"
-    
-    success_metrics:
-      - metric: "[Metric: e.g., Conversion rate]"
-        target: "[Target: e.g., 3% of product views result in purchase]"
-        measurement: "[How measured: e.g., Purchases / Product views]"
-      
-      - metric: "[Metric: e.g., Cart abandonment rate]"
-        target: "[Target: e.g., <30% abandonment]"
-        measurement: "[How measured: e.g., Carts with items abandoned / Carts created]"
-    
-    stakeholders:
-      - "[Stakeholder 1: e.g., Product Manager]"
-      - "[Stakeholder 2: e.g., Marketing Team]"
-      - "[Stakeholder 3: e.g., Sales Operations]"
-    
-    dependencies:
-      - "[Dependency 1: e.g., Payment gateway integration]"
-      - "[Dependency 2: e.g., Inventory management system]"
-  
-  - id: "BRD-01.02"
-    priority: "P1"
-    description: |
-      [Requirement description: Business requirement statement.
-      Example: Users must be able to create accounts, manage profiles,
-      and authenticate securely using email/password or social login.]
-    
-    acceptance_criteria:
-      - "[Acceptance criterion 1: User registration completes in <2 minutes]"
-      - "[Acceptance criterion 2: Social login works with Google, Facebook, Apple]"
-      - "[Acceptance criterion 3: Password reset flow completes in <5 minutes]"
-    
-    success_metrics:
-      - metric: "[Metric]"
-        target: "[Target]"
-        measurement: "[How measured]"
-    
-    stakeholders:
-      - "[Stakeholder 1]"
-      - "[Stakeholder 2]"
-    
-    dependencies:
-      - "[Dependency 1]"
+      [Requirement description: Business requirement statement.]
 
-  - id: "BRD-01.03"
-    priority: "P2"
-    description: |
-      [Requirement description: Business requirement statement.
-      Example: System must support product browsing, filtering,
-      and search functionality to help users find products.]
-    
     acceptance_criteria:
       - "[Acceptance criterion 1]"
       - "[Acceptance criterion 2]"
-      - "[Acceptance criterion 3]"
-    
+
     success_metrics:
       - metric: "[Metric]"
         target: "[Target]"
         measurement: "[How measured]"
-    
+
     stakeholders:
       - "[Stakeholder 1]"
-      - "[Stakeholder 2]"
-    
+
     dependencies:
       - "[Dependency 1]"
+
+# =============================================================================
+# Architecture Decision Requirements (Section 7.2)
+# =============================================================================
+
+adr_topics:
+  - id: "BRD.NN.32.01"
+    category: "Infrastructure"
+    title: "Hosting & Deployment"
+    status: "Pending"  # Selected | Pending | N/A
+    business_driver: "[Why MVP needs this]"
+    budget_constraint: "$[X,XXX]/month"
+    recommended_selection: "[Option or Pending]"
+    prd_requirements: "[What PRD must detail]"
+
+  - id: "BRD.NN.32.02"
+    category: "Data Architecture"
+    title: "Database & Storage"
+    status: "Pending"
+    business_driver: "[Data requirements]"
+    budget_constraint: "$[X,XXX]/month"
+    recommended_selection: "[Option or Pending]"
+    prd_requirements: "[What PRD must detail]"
+
+  - id: "BRD.NN.32.03"
+    category: "Integration"
+    title: "External Systems"
+    status: "Pending"
+    business_driver: "[Integration needs]"
+    recommended_selection: "[Option or Pending]"
+    prd_requirements: "[What PRD must detail]"
+
+  - id: "BRD.NN.32.04"
+    category: "Security"
+    title: "Authentication & Data Protection"
+    status: "Pending"
+    business_driver: "[Security requirements]"
+    compliance_requirements: "[e.g., GDPR, PII encryption]"
+    recommended_selection: "[Option or Pending]"
+    prd_requirements: "[What PRD must detail]"
+
+  - id: "BRD.NN.32.05"
+    category: "Observability"
+    title: "Monitoring & Logging"
+    status: "Pending"
+    business_driver: "[Error tracking needs]"
+    recommended_selection: "[Option or Pending]"
+    prd_requirements: "[What PRD must detail]"
+
+  - id: "BRD.NN.32.06"
+    category: "AI/ML"
+    title: "If Applicable"
+    status: "N/A"
+    rationale: "[Why N/A or what's needed]"
+
+  - id: "BRD.NN.32.07"
+    category: "Technology Selection"
+    title: "Core Stack"
+    status: "Pending"
+    business_driver: "[Why technology choice matters]"
+    team_constraints: "[Existing skills]"
+    recommended_selection: "[Tech stack or Pending]"
+    prd_requirements: "[What PRD must detail]"
 
 # =============================================================================
 # Traceability
@@ -173,20 +332,32 @@ traceability:
     discoverability:
       - "@discoverability: BRD-NN (short rationale)"
 
+  traceability_matrix:
+    objectives_to_requirements:
+      - objective_id: "BRD.NN.23.01"
+        related_frs: ["BRD.NN.01.01", "BRD.NN.01.02"]
+        coverage_status: "Complete"
+
+    requirements_to_downstream:
+      - fr_id: "BRD.NN.01.01"
+        planned_spec: "SPEC-NN-01"
+        planned_tasks: "TASKS-NN-01"
+
+  health_score:
+    bo_fr_coverage: "[X]%"
+    fr_test_coverage: "[X]%"
+    target_score: ">=90/100"
+
 # =============================================================================
-# Template Metadata
+# MVP Profile Notes
 # =============================================================================
 
-# Template Reference: BRD-MVP-TEMPLATE.md (for narrative explanations)
-# Schema: BRD_MVP_SCHEMA.yaml (for validation rules)
-# Creation Rules: BRD_MVP_CREATION_RULES.md (for guidance)
-# Validation Rules: BRD_MVP_VALIDATION_RULES.md (for checklist)
-
-# MVP Profile Notes:
 # - MINIMAL YAML template (structure only, no narrative sections)
 # - BRD is human-facing - use BRD-MVP-TEMPLATE.md for full narrative
 # - Business requirements structured as array with priority and acceptance criteria
 # - Success metrics defined for measurable outcomes
-# - No hypothesis, business case, or stakeholder analysis (in MD template only)
+# - 18 sections aligned with MD template structure
+# - ADR topics section for Architecture Decision Requirements
+# - Traceability matrix with health scoring
 
 # =============================================================================

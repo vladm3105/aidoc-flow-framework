@@ -78,7 +78,7 @@ Use `doc-sys` when:
 
 ### 1. Five-Part SYS Document Structure
 
-**Full Template**: See `ai_dev_flow/SYS/SYS-TEMPLATE.md` for complete structure.
+**MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete structure.
 
 **Part 1 - System Definition**:
 - Document Control, Executive Summary, Scope

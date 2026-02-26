@@ -86,12 +86,12 @@ User is prompted with:
 "Is this a full enterprise project or a rapid Minimum Viable Product (MVP)?"
 
  Options:
-1. Standard Flow (Full templates, 15 layers, strict validation) - Recommended for Enterprise
-2. MVP Track (Streamlined templates, faster setup, "Good Enough" validation) - Recommended for Startups/Prototypes
+1. Enterprise Profile (15 layers, strict validation) - Recommended for Enterprise
+2. MVP Track (Standard templates, faster setup, iterative lifecycle) - Recommended for Startups/Prototypes
 ```
 
 **If MVP Track Selected**:
-- Use **MVP Templates** (`*-MVP-TEMPLATE.md`) instead of full templates.
+- Use **MVP Templates** (`*-MVP-TEMPLATE.md`) - the standard for all projects.
 - Follow schedule in [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md).
 - Skip to Step 2.
 
@@ -154,7 +154,7 @@ cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
 
 **Directory Purpose**:
-- `ai_dev_flow/` = Framework templates (MVP defaults: `*-MVP-TEMPLATE.*`; full templates archived)
+- `ai_dev_flow/` = Framework templates (standard: `*-MVP-TEMPLATE.*`; lifecycle: MVP → PROD → NEW MVP)
 - `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 **Action for MVP Track**:

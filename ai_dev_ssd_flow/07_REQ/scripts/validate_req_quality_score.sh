@@ -798,9 +798,9 @@ check_impl_ready() {
     local score
     score=$(grep -oE "IMPL-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
-    if [[ -n "$score" && $score -lt 85 ]]; then
+    if [[ -n "$score" && $score -lt 90 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}GATE-I015: $(basename $f) has IMPL-Ready Score $score% (recommended: ≥85%)${NC}"
+        echo -e "${BLUE}GATE-I015: $(basename $f) has IMPL-Ready Score $score% (recommended: ≥90%)${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true

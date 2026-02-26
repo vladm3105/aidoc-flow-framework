@@ -20,7 +20,7 @@ custom_fields:
 - Inputs used for generation: `EARS-00_index.md` + selected template profile; no skeletons are used.
 - Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
 
-Note: Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (EARS-02, EARS-03, etc.), not template changes.
 
 ## Overview
 

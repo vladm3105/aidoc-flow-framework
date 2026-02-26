@@ -36,7 +36,7 @@ Constraints:
 - Define performance test scenarios for ONE component/system per document.
 - 6 sections required (aligned with MVP requirements).
 - Required traceability tags: @sys, @spec.
-- TASKS-Ready threshold: ≥85%.
+- TASKS-Ready threshold: ≥90%.
 - Use Load Scenario tables for all test cases.
 - Include execution_profile for complex scenarios.
 - Categorize tests: [Load], [Stress], [Endurance], [Spike].
@@ -66,7 +66,7 @@ References: Schema `PTEST_MVP_SCHEMA.yaml` | Rules `PTEST_MVP_CREATION_RULES.md`
 | **Component** | [Component/system name] |
 | **SPEC Reference** | @spec: SPEC-NN |
 | **Coverage Target** | ≥85% |
-| **TASKS-Ready Score** | [XX]% (Target: ≥85%) |
+| **TASKS-Ready Score** | [XX]% (Target: ≥90%) |
 | **Template Version** | 1.0 |
 
 ---

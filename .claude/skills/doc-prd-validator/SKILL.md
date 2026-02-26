@@ -117,15 +117,15 @@ Forbidden tag patterns:
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
 | BRD Reference | `@brd: BRD.NN.TT.SS` format | MANDATORY |
-| SYS-Ready Score | `XX/100 (Target: ≥85 for MVP)` | MANDATORY |
-| EARS-Ready Score | `XX/100 (Target: ≥85 for MVP)` | MANDATORY |
+| SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+| EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 
 ### 4. Dual Scoring Requirements
 
-| Score | MVP Threshold | Full Template Threshold |
-|-------|---------------|------------------------|
-| SYS-Ready Score | ≥85% | ≥90% |
-| EARS-Ready Score | ≥85% | ≥90% |
+| Score | Threshold |
+|-------|-----------|
+| SYS-Ready Score | ≥90% |
+| EARS-Ready Score | ≥90% |
 
 Both scores must be present and meet thresholds for downstream artifact generation.
 
@@ -265,7 +265,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 4. Validate tag taxonomy (prd, layer-2-artifact)
 5. Verify section structure (1-17 for MVP)
 6. Validate Document Control table completeness
-7. Check dual scoring (SYS-Ready + EARS-Ready ≥85%)
+7. Check dual scoring (SYS-Ready + EARS-Ready ≥90%)
 8. Validate upstream @brd reference format
 9. Check element ID format (PRD.NN.TT.SS)
 10. Detect deprecated patterns (US-NNN, FR-NNN)
@@ -339,8 +339,8 @@ Document: PRD-01_user_authentication.md
 Status: PASS/FAIL
 
 Scores:
-  SYS-Ready:  92% (Target: ≥85%) ✓
-  EARS-Ready: 88% (Target: ≥85%) ✓
+  SYS-Ready:  92% (Target: ≥90%) ✓
+  EARS-Ready: 91% (Target: ≥90%) ✓
 
 Errors: 0
 Warnings: 2

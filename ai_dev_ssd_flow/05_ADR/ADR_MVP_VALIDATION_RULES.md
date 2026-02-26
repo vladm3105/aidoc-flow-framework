@@ -34,14 +34,14 @@ custom_fields:
 
 > ** Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
 > - Apply these rules after ADR creation or modification
-> - **Authority**: Validates compliance with `ADR-MVP-TEMPLATE.md` (primary standard; full template archived)
+> - **Authority**: Validates compliance with `ADR-MVP-TEMPLATE.md` (standard template)
 > - **Scope**: Use for quality gates before committing ADR changes
 
 # ADR Validation Rules Reference
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 
@@ -88,7 +88,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Last Updated**: 2025-12-12T00:00:00
 **Purpose**: Complete validation rules for ADR documents
 **Script**: `python 05_ADR/scripts/validate_adr.py`
-**Primary Template**: `ADR-MVP-TEMPLATE.md` (full template archived)
+**Primary Template**: `ADR-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
 

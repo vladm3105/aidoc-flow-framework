@@ -511,7 +511,7 @@ Monthly cost: ~$175
 | BRD section file (`BRD-NN.N_*.md`) | 400 lines | 600 lines | N/A |
 | BRD single file (`BRD-NN_*.md`) | 600 lines | 1,200 lines | N/A |
 | Elements per section | 15 | 25 | 25 max |
-| MVP BRD files | 400 lines | 600 lines | Use full template if exceeded |
+| MVP BRD files | 400 lines | 600 lines | Consider splitting or creating new BRD |
 
 **Validation Logic**:
 ```bash

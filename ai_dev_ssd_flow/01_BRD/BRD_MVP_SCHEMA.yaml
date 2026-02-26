@@ -18,11 +18,12 @@
 # Status: OPTIONAL - BRD is Layer1 entry point, human-authored
 # Usage: Optional reference by validate_brd.py for automated validation
 
-schema_version: "1.0"
+schema_version: "1.1"
 artifact_type: BRD
 layer: 1
-last_updated: "2026-01-20"
+last_updated: "2026-02-25"
 schema_status: optional  # BRD is human-authored, schema validation not required
+total_sections: 18
 
 references:
   md_template: "BRD-MVP-TEMPLATE.md"
@@ -149,27 +150,141 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (in order)
+  # Required sections (in order) - 18-section structure
   required_sections:
     - pattern: "^# BRD-\\d{2,}:|^# Business Requirements Document"
       name: "Title (H1)"
       description: "Single H1 with format BRD-NN: Title or generic title"
 
-    - pattern: "^## Document Control$"
+    - pattern: "^## 0\\. Document Control$"
       name: "Document Control"
+      section: 0
+      classification: MANDATORY
       description: "Document metadata table"
 
     - pattern: "^## 1\\. Executive Summary$"
       name: "Executive Summary"
+      section: 1
+      classification: MANDATORY
       description: "Section 1 with business overview"
 
     - pattern: "^## 2\\. Business Objectives$"
       name: "Business Objectives"
+      section: 2
+      classification: MANDATORY
       description: "Section 2 with goals and success metrics"
 
     - pattern: "^## 3\\. Scope$"
       name: "Scope"
+      section: 3
+      classification: MANDATORY
       description: "Section 3 with in-scope and out-of-scope items"
+
+    - pattern: "^## 4\\. Stakeholders$"
+      name: "Stakeholders"
+      section: 4
+      classification: MANDATORY
+      description: "Section 4 with stakeholder identification"
+
+    - pattern: "^## 5\\. User Stories$"
+      name: "User Stories"
+      section: 5
+      classification: MANDATORY
+      description: "Section 5 with user stories"
+
+    - pattern: "^## 6\\. Functional Requirements$"
+      name: "Functional Requirements"
+      section: 6
+      classification: MANDATORY
+      description: "Section 6 with functional requirements"
+
+    - pattern: "^## 7\\. Technical Requirements$"
+      name: "Technical Requirements"
+      section: 7
+      classification: MANDATORY
+      description: "Section 7 with technical requirements and ADR topics"
+
+    - pattern: "^## 8\\. Non-Functional Requirements$"
+      name: "Non-Functional Requirements"
+      section: 8
+      classification: MANDATORY
+      description: "Section 8 with NFRs"
+
+    - pattern: "^## 9\\. Constraints$"
+      name: "Constraints"
+      section: 9
+      classification: MANDATORY
+      description: "Section 9 with constraints"
+
+    - pattern: "^## 10\\. Risks$"
+      name: "Risks"
+      section: 10
+      classification: MANDATORY
+      description: "Section 10 with risk assessment"
+
+    - pattern: "^## 11\\. Timeline$"
+      name: "Timeline"
+      section: 11
+      classification: MANDATORY
+      description: "Section 11 with timeline"
+
+    - pattern: "^## 12\\. Support & Maintenance$"
+      name: "Support & Maintenance"
+      section: 12
+      classification: OPTIONAL
+      description: "Section 12 with support and maintenance plans"
+
+    - pattern: "^## 13\\. Budget$"
+      name: "Budget"
+      section: 13
+      classification: OPTIONAL
+      description: "Section 13 with budget estimates"
+
+    - pattern: "^## 14\\. Project Governance$"
+      name: "Project Governance"
+      section: 14
+      classification: MANDATORY
+      description: "Section 14 with governance and approval workflow"
+      subsections:
+        - "14.5 Approval and Sign-off"
+
+    - pattern: "^## 15\\. Quality Assurance$"
+      name: "Quality Assurance"
+      section: 15
+      classification: MANDATORY
+      description: "Section 15 with QA standards"
+      subsections:
+        - "15.3 Quality Gates"
+
+    - pattern: "^## 16\\. Traceability$"
+      name: "Traceability"
+      section: 16
+      classification: MANDATORY
+      description: "Section 16 with traceability matrix"
+      subsections:
+        - "16.1 Requirements Traceability Matrix"
+        - "16.2 Same-Type References"
+        - "16.3 Test Coverage Traceability"
+        - "16.4 Traceability Summary"
+
+    - pattern: "^## 17\\. Glossary$"
+      name: "Glossary"
+      section: 17
+      classification: MANDATORY
+      description: "Section 17 with glossary"
+      subsections:
+        - "17.1 Business Terms"
+        - "17.2 Technical Terms"
+        - "17.3 Acronyms and Abbreviations"
+        - "17.4 Domain-Specific Terms"
+        - "17.5 Document-Type Definitions"
+        - "17.6 Status and Classification Terms"
+
+    - pattern: "^## 18\\. Appendices$"
+      name: "Appendices"
+      section: 18
+      classification: OPTIONAL
+      description: "Section 18 with appendices"
 
   # Document Control table requirements
   document_control:
@@ -183,7 +298,9 @@ structure:
 
   # Section numbering rules
   section_numbering:
-    start: 1
+    start: 0  # Document Control is Section 0
+    end: 18   # Appendices is Section 18
+    total_sections: 18
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true

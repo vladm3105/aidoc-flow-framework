@@ -43,7 +43,7 @@ custom_fields:
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 

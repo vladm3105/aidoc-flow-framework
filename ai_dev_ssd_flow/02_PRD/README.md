@@ -29,7 +29,7 @@ Product Requirements Documents (PRDs) serve as the foundational business require
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 5-15 core features and short development cycles
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (PRD-02, PRD-03, etc.), not template changes.
 
 ## Purpose
 

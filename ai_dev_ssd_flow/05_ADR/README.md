@@ -29,7 +29,7 @@ Architecture Decision Records (ADRs) document significant architectural decision
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVP architecture decisions with quick turnaround
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (ADR-02, ADR-03, etc.), not template changes.
 
 ## Purpose
 

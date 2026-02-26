@@ -15,8 +15,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: [PRD]
-  version: "2.2"
-  last_updated: "2026-02-24T21:30:00"
+  version: "2.3"
+  last_updated: "2026-02-25"
 ---
 
 # doc-brd-validator
@@ -84,16 +84,50 @@ Forbidden tag patterns:
 | Section | Title | Required |
 |---------|-------|----------|
 | 0 | Document Control | MANDATORY |
-| 1 | Executive Summary | MANDATORY |
-| 2 | Business Context | MANDATORY |
-| 3 | Stakeholder Analysis | MANDATORY |
-| 4 | Business Requirements | MANDATORY |
-| 5 | Success Criteria | MANDATORY |
-| 6 | Constraints and Assumptions | MANDATORY |
-| 7 | Architecture Decision Requirements | MANDATORY |
-| 8 | Risk Assessment | MANDATORY |
-| 9 | Traceability | MANDATORY |
-| 10-18 | Additional sections | Per template |
+| 1 | Introduction | MANDATORY |
+| 2 | Business Objectives | MANDATORY |
+| 3 | Project Scope | MANDATORY |
+| 4 | Stakeholders | MANDATORY |
+| 5 | User Stories | MANDATORY |
+| 6 | Functional Requirements | MANDATORY |
+| 7 | Quality Attributes | MANDATORY |
+| 8 | Business Constraints and Assumptions | MANDATORY |
+| 9 | Acceptance Criteria | MANDATORY |
+| 10 | Business Risk Management | MANDATORY |
+| 11 | Implementation Approach | MANDATORY |
+| 12 | Support and Maintenance | MANDATORY |
+| 13 | Cost-Benefit Analysis | MANDATORY |
+| 14 | Project Governance | MANDATORY |
+| 15 | Quality Assurance | MANDATORY |
+| 16 | Traceability | MANDATORY |
+| 17 | Glossary | MANDATORY |
+| 18 | Appendices | MANDATORY |
+
+**Section 14 Required Subsections**:
+- 14.1 Governance Structure
+- 14.2 Decision Authority Matrix
+- 14.3 Status Reporting
+- 14.4 Change Control
+- 14.5 Approval and Sign-off
+
+**Section 15 Required Subsections**:
+- 15.1 Quality Standards
+- 15.2 Testing Strategy
+- 15.3 Quality Gates
+
+**Section 16 Required Subsections**:
+- 16.1 Requirements Traceability Matrix
+- 16.2 Cross-BRD Dependencies
+- 16.3 Test Coverage Traceability
+- 16.4 Traceability Summary
+
+**Section 17 Required Subsections** (6 total):
+- 17.1 Business Terms
+- 17.2 Technical Terms
+- 17.3 Domain-Specific Terms
+- 17.4 Acronyms
+- 17.5 Cross-References
+- 17.6 External Standards
 
 **Section Format**: `## N. Title` (numbered H2 headings)
 
@@ -108,7 +142,7 @@ Forbidden tag patterns:
 | Document Owner | Owner name | MANDATORY |
 | Prepared By | Author name | MANDATORY |
 | Status | Draft/In Review/Approved/Superseded | MANDATORY |
-| PRD-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+| PRD-Ready Score | `XX/100 (MVP Target: ≥90)` | MANDATORY |
 
 ### 4. Content Validation
 
@@ -352,6 +386,7 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-25 | Updated section structure to match 18-section MVP template; Added validation for sections 12-18 with required subsections; Updated PRD-Ready score to show MVP (≥70) and Full (≥90) targets |
 | 2.2 | 2026-02-24 | Added upstream source configuration validation (Section 8); Added VAL-U001 through VAL-U005 error codes; Updated workflow to include upstream_mode validation |
 | 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
 | 2.0 | 2026-02-08 | Complete rewrite: Added YAML frontmatter, doc-naming integration (BRD-E019/E020/E021), updated section structure to 18 sections, fixed file paths with numbered prefixes, added PRD-Ready score validation |

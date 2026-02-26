@@ -15,7 +15,7 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Guides creation of ADR-MVP-TEMPLATE.md (default)
-# - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure; full template is archived
+# - Authority: ADR-MVP-TEMPLATE.md is the standard for ADR structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
@@ -34,7 +34,7 @@ custom_fields:
 ---
 
 > ** Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
-> - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; full template archived
+> - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; standard template
 > - **Validation**: Use `ADR_MVP_VALIDATION_RULES.md` after ADR creation/changes
 
 # ADR Creation Rules
@@ -57,7 +57,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2025-11-30T00:00:00
-**Source**: Derived from ADR-MVP-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (full template archived)
+**Source**: Derived from ADR-MVP-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (standard template)
 **Purpose**: Complete reference for creating ADR documents according to AI Dev Flow SDD framework
 **Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
 

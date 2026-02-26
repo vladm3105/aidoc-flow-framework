@@ -43,21 +43,21 @@ custom_fields:
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.** Enterprise profile is used only when explicitly triggered.
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `BDD-MVP-TEMPLATE.feature` | All new projects unless full template is explicitly requested |
-| Full | `BDD-MVP-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
+| **MVP (DEFAULT)** | `BDD-MVP-TEMPLATE.feature` | All new projects unless enterprise profile is explicitly requested |
+| Enterprise | `BDD-MVP-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
 
-**Triggering Full Template**:
+**Triggering Enterprise Profile**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+- Prompt keywords: "use enterprise profile", "enterprise mode", "regulatory compliance"
 
 ## Index-Only Generation Workflow
 
 - Maintain `BDD-00_index.md` as the authoritative source of planned and active BDD files (mark planned items with Status: Planned).
-- Generators use: `BDD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+- Generators use: `BDD-00_index.md` + selected template profile (MVP by default; enterprise when explicitly requested in settings or prompt).
 
 **Version**: 1.3
 **Date**: 2025-11-19T00:00:00

@@ -123,7 +123,7 @@ The BDD-MVP-TEMPLATE.feature includes:
 4. [PASS] User story (As a / I want / So that)
 5. [PASS] Critical Path scenarios (@primary, @acceptance)
 6. [PASS] Error scenarios (@negative, @error)
-7. [PASS] Migration note for full template
+7. [PASS] Lifecycle note (MVP → PROD → NEW MVP)
 
 ---
 

@@ -42,7 +42,7 @@ Requirements (REQ) documents capture atomic, testable requirements that serve as
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 10-20 core requirements
 
-REQ full template is removed from the workflow (archived only).
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (REQ-02, REQ-03, etc.), not template changes.
 
 ## Purpose
 

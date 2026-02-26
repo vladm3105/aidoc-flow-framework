@@ -182,9 +182,9 @@ Forbidden tag patterns:
 | Test Type | Code | Abbreviation | TASKS-Ready Target |
 |-----------|------|--------------|-------------------|
 | Unit Test | 40 | UTEST | >=90% |
-| Integration Test | 41 | ITEST | >=85% |
+| Integration Test | 41 | ITEST | >=90% |
 | Smoke Test | 42 | STEST | 100% |
-| Functional Test | 43 | FTEST | >=85% |
+| Functional Test | 43 | FTEST | >=90% |
 
 ### 5. Element ID Format
 
@@ -333,7 +333,7 @@ AND no side effects occur
 
 | Requirement | Value |
 |-------------|-------|
-| TASKS-Ready Target | >=85% |
+| TASKS-Ready Target | >=90% |
 | Required Tags | @ctr, @sys, @spec |
 | Test Categories | [Integration], [Contract], [Sequence] |
 | Sequence Diagrams | Required for complex interactions |
@@ -353,7 +353,7 @@ AND no side effects occur
 
 | Requirement | Value |
 |-------------|-------|
-| TASKS-Ready Target | >=85% |
+| TASKS-Ready Target | >=90% |
 | Required Tags | @sys, @threshold |
 | Test Categories | [Functional], [Scenario], [End-to-End] |
 | SYS Coverage | Required |

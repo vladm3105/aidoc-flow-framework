@@ -36,7 +36,7 @@ Constraints:
 - Define test cases for system-level quality attributes.
 - 6 sections required (aligned with MVP requirements).
 - Required traceability tags: @sys, @threshold.
-- TASKS-Ready threshold: ≥85%.
+- TASKS-Ready threshold: ≥90%.
 - Focus on quality attributes: Performance, Reliability, Security, Scalability.
 - Use @threshold for all measurable criteria.
 - Include workflow validation and measurement methodology.
@@ -67,7 +67,7 @@ References: Schema `FTEST_MVP_SCHEMA.yaml` | Rules `FTEST_MVP_CREATION_RULES.md`
 | **SYS Reference** | SYS.NN.01.01 |
 | **Quality Attributes** | Performance, Reliability, Security |
 | **Coverage Target** | ≥85% |
-| **TASKS-Ready Score** | [XX]% (Target: ≥85%) |
+| **TASKS-Ready Score** | [XX]% (Target: ≥90%) |
 | **Template Version** | 1.0 |
 
 ---

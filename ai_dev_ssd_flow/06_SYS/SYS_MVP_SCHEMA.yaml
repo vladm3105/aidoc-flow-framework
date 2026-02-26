@@ -459,7 +459,7 @@ error_messages:
   SYS-W003: "Quality attributes section missing Performance category"
   SYS-W004: "Quality attributes section missing Security category"
   SYS-W005: "Missing upstream traceability tags (require 5: @brd, @prd, @ears, @bdd, @adr)"
-  SYS-W006: "REQ-Ready Score below threshold (MVP: 85%, Full: 90%)"
+  SYS-W006: "REQ-Ready Score below threshold (90%)"
   SYS-W007: "Testing Requirements missing coverage targets"
   SYS-I001: "Consider adding latency percentiles (p50/p95/p99) in Performance requirements"
   SYS-I002: "Consider adding MTBF/MTTR metrics in Reliability requirements"

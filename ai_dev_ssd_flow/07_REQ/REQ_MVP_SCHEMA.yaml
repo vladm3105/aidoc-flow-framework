@@ -165,7 +165,7 @@ metadata:
 
 structure:
   # MVP Template Section Patterns (streamlined structure)
-  # Used when profile=mvp; section names differ from legacy full template
+  # Standard template structure (MVP → PROD → NEW MVP lifecycle)
   mvp_sections:
     - pattern: "^# REQ-\\d{2,}:"
       name: "Title (H1)"

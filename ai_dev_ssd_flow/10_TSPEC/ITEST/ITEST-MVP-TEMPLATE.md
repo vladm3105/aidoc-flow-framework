@@ -36,7 +36,7 @@ Constraints:
 - Define test cases for component interactions per document.
 - 6 sections required (aligned with MVP requirements).
 - Required traceability tags: @ctr, @sys, @spec.
-- TASKS-Ready threshold: ≥85%.
+- TASKS-Ready threshold: ≥90%.
 - Include sequence diagrams for complex interactions.
 - Document contract compliance verification.
 - Focus on API contracts and data flows.
@@ -67,7 +67,7 @@ References: Schema `ITEST_MVP_SCHEMA.yaml` | Rules `ITEST_MVP_CREATION_RULES.md`
 | **CTR Reference** | CTR-NN |
 | **SYS Reference** | SYS.NN.01.01 |
 | **Coverage Target** | ≥85% |
-| **TASKS-Ready Score** | [XX]% (Target: ≥85%) |
+| **TASKS-Ready Score** | [XX]% (Target: ≥90%) |
 | **Template Version** | 1.0 |
 
 ---

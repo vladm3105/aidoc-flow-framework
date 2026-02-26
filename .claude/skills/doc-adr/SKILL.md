@@ -86,7 +86,7 @@ Use `doc-adr` when:
 
 ### 1. Four-Part ADR Structure (17 Sections Total)
 
-**Full Template**: See `ai_dev_flow/ADR/ADR-TEMPLATE.md` for complete 17-section structure.
+**MVP Template**: See `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
 
 **Part 1 - Decision Context and Requirements** (Sections 1-6):
 - Document Control, Workflow Position, Status, Context, Decision, Requirements Satisfied

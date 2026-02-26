@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [BRD, Review Report]
   downstream_artifacts: [Fixed BRD, Fix Report]
-  version: "2.2"
-  last_updated: "2026-02-24T21:30:00"
+  version: "2.3"
+  last_updated: "2026-02-25"
 ---
 
 # doc-brd-fixer
@@ -1012,6 +1012,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Added fixes for missing section subsections |
 | 2.2 | 2026-02-24T21:30:00 | **Upstream Configuration Fixes**: Added Phase 6.0 for upstream_mode fixes (FIX-U001, FIX-U002, FIX-U003); Detects @ref: tags and suggests upstream_mode: "ref"; Cleans up ignored upstream_ref_path when mode is "none" |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates; Tier 2 (5-15%): auto-merge with detailed changelog; Tier 3 (>15%): archive current version and trigger regeneration; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements; Archive manifest creation; Enhanced drift cache with merge history |

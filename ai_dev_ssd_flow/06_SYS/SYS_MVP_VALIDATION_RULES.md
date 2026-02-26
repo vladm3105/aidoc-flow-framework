@@ -14,7 +14,7 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Validates SYS-MVP-TEMPLATE.md (default)
-# - Authority: SYS-MVP-TEMPLATE.md is the primary standard for SYS structure; full template is archived
+# - Authority: SYS-MVP-TEMPLATE.md is the standard for SYS structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from SYS_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to SYS-MVP-TEMPLATE.md
@@ -22,14 +22,14 @@ custom_fields:
 
 ** Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
  Apply these rules after SYS creation or modification
- **Authority**: Validates compliance with `SYS-MVP-TEMPLATE.md` (primary standard; full template archived)
+ **Authority**: Validates compliance with `SYS-MVP-TEMPLATE.md` (standard template)
  **Scope**: Use for quality gates before committing SYS changes
 
 # SYS Validation Rules Reference
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 
@@ -78,7 +78,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 **Last Updated**: 2026-01-19T00:00:00
 **Purpose**: Complete validation rules for SYS documents
 **Script**: `python 06_SYS/scripts/validate_sys.py`
-**Primary Template**: `SYS-MVP-TEMPLATE.md` (full template archived)
+**Primary Template**: `SYS-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added deployment requirements validation (CHECK 10), architectural correction from REQ to SYS layer
 

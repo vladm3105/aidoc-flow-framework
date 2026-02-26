@@ -14,7 +14,7 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Guides creation of EARS-MVP-TEMPLATE.md (default)
-# - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
+# - Authority: EARS-MVP-TEMPLATE.md is the standard for EARS structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
@@ -33,7 +33,7 @@ custom_fields:
 ---
 
 > ** Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
-> - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
+> - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; standard template
 > - **Schema**: `EARS_MVP_SCHEMA.yaml` defines machine-readable validation rules
 > - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `03_EARS/scripts/validate_ears.py`
 
@@ -57,7 +57,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2025-11-30T00:00:00
-**Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (full template archived)
+**Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (standard template)
 **Purpose**: Complete reference for creating EARS files according to doc-flow SDD framework
 **Changes**: Merged EARS_STYLE_GUIDE.md content - added Status/BDD-Score mapping, code block formatting, traceability format details, and extended common mistakes table
 

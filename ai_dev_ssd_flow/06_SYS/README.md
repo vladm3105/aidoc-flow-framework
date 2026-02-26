@@ -31,7 +31,7 @@ System Requirements Specifications (SYS) capture comprehensive system-level requ
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with focused system scope
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (SYS-02, SYS-03, etc.), not template changes.
 
 ## Purpose
 
@@ -529,11 +529,11 @@ These examples demonstrate well-structured system requirements specifications in
 
 ## REQ-Ready Scoring System
 
-**Purpose**: REQ-Ready scoring measures SYS maturity and readiness for progression to REQ (Atomic Requirements) phase in SDD workflow. Minimum score varies by profile: MVP requires ≥85%, Full requires ≥90%.
+**Purpose**: REQ-Ready scoring measures SYS maturity and readiness for progression to REQ (Atomic Requirements) phase in SDD workflow. Minimum score: ≥90%.
 
 **Quality Gate Requirements**:
-- **REQ-Ready Score**: MVP ≥85%, Full ≥90% to pass validation and progress to REQ phase
-- **Format**: `[PASS] NN% (Target: ≥85% for MVP)` or `[PASS] NN% (Target: ≥90%)` in Document Control table
+- **REQ-Ready Score**: ≥90% to pass validation and progress to REQ phase
+- **Format**: `[PASS] NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
 - **Validation**: Enforced before commit via `python 06_SYS/scripts/validate_sys.py`
 
@@ -567,15 +567,15 @@ These examples demonstrate well-structured system requirements specifications in
 | **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 ```
 
-**MVP SYS Meeting Threshold (87%)**:
+**SYS Meeting Threshold (92%)**:
 ```markdown
-| **REQ-Ready Score** | [PASS] 87% (Target: ≥85% for MVP) |
+| **REQ-Ready Score** | [PASS] 92% (Target: ≥90%) |
 ```
 
 **Workflow Integration**:
 1. **SYS Creation**: Include REQ-Ready score in Document Control section
 2. **Quality Check**: Run `python 06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-01_name.md`
-3. **REQ Readiness**: Score ≥85% (MVP) or ≥90% (Full) enables progression to REQ artifact creation
+3. **REQ Readiness**: Score ≥90% enables progression to REQ artifact creation
 4. **Improvement**: Rescore and revalidate if below threshold before REQ phase
 
 **Scoring Calculation Process**:

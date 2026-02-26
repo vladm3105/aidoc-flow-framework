@@ -213,7 +213,7 @@ AND no side effects occur
 
 #### ITEST (Integration Tests - Code 41)
 
-**TASKS-Ready Score Target**: >=85%
+**TASKS-Ready Score Target**: >=90%
 
 **Required Tags**: `@ctr`, `@sys`, `@spec`
 
@@ -239,7 +239,7 @@ AND no side effects occur
 
 #### FTEST (Functional Tests - Code 43)
 
-**TASKS-Ready Score Target**: >=85%
+**TASKS-Ready Score Target**: >=90%
 
 **Required Tags**: `@sys`, `@threshold`
 

@@ -15,7 +15,7 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Guides creation of PRD-MVP-TEMPLATE.md (default)
-# - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
+# - Authority: PRD-MVP-TEMPLATE.md is the standard for PRD structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
@@ -51,21 +51,21 @@ custom_fields:
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `PRD-MVP-TEMPLATE.md` | All PRDs |
 
-**Triggering Full Template**:
+**Triggering Enterprise Profile**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+- Prompt keywords: "use enterprise profile", "enterprise mode", "regulatory compliance"
 
 ## Index-Only Generation Workflow
 
 - Maintain `PRD-00_index.md` as the authoritative source of planned and active PRD documents (mark planned items with Status: Planned).
-- Generators use: `PRD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+- Generators use: `PRD-00_index.md` + selected template profile (MVP by default; enterprise when explicitly requested in settings or prompt).
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 2.1
 **Date**: 2025-11-26T00:00:00
 **Last Updated**: 2025-11-30T00:00:00
-**Source**: Extracted from PRD-MVP-TEMPLATE.md (full template archived), PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
+**Source**: Extracted from PRD-MVP-TEMPLATE.md (standard template), PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
 **Changes**: Updated to 21-section structure (1-21) with Section 20 (EARS Enhancement Appendix) and Section 21 (Quality Assurance & Testing Strategy). Previous: 19-section structure (0-18)
 
@@ -207,7 +207,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 - All 21 sections are MANDATORY with explicit numbering (## 1. Title, ## 2. Title, etc.)
 - Section 10 (Customer-Facing Content) is blocking requirement - must contain substantive content
 - Section 8 (User Stories) must include layer separation scope note
-- Section 21 (QA & Testing Strategy) moved from BRD-MVP-TEMPLATE.md as technical QA belongs at product level (full template archived)
+- Section 21 (QA & Testing Strategy) moved from BRD-MVP-TEMPLATE.md as technical QA belongs at product level (standard template)
 
 ---
 
@@ -461,7 +461,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 ```
 
-**Reference**: See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` Section 18 for template (full template archived)
+**Reference**: See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` Section 18 for template (standard template)
 
 ---
 
@@ -817,8 +817,8 @@ PRDs vary in structure based on domain. Select the appropriate variant at PRD cr
 
 | Variant | Section Count | Primary Use Case | Key Differences |
 |---------|---------------|------------------|-----------------|
-| **Standard** | 21 sections (1-21) | Business features, core platform, user-facing products | Full template with comprehensive business analysis |
-| **MVP** | 17 sections | Rapid prototyping, hypothesis validation, short cycles | Streamlined, ≥85% scores, single-file |
+| **Standard** | 21 sections (1-21) | Business features, core platform, user-facing products | Standard template with comprehensive business analysis |
+| **MVP** | 17 sections | Rapid prototyping, hypothesis validation, short cycles | Streamlined, ≥90% scores, single-file |
 | **Agent-Based** | 12-15 sections | ML/AI agents, intelligent systems, autonomous processes | Extended ML metrics, state machine focus, A2A protocol |
 | **Automation-Focused** | 9-12 sections | n8n workflows, event processing, integrations | Webhook-focused, workflow states, trigger/action pairs |
 
@@ -851,7 +851,7 @@ Add template variant to Document Control:
 ### Variant-Specific Sections
 
 **Standard Template (21 sections)**:
-- Sections follow PRD-MVP-TEMPLATE.md (full template removed from workflow)
+- Sections follow PRD-MVP-TEMPLATE.md (standard template)
 - Full EARS Enhancement Appendix (Section 20)
 - Quality Assurance & Testing Strategy (Section 21)
 

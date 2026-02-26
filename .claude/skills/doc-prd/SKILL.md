@@ -70,7 +70,7 @@ Use `doc-prd` when:
 
 PRD documents follow the **MVP template structure** (17 sections). See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
 
-> **Note**: MVP template is the framework default. It uses ≥85% score thresholds (vs ≥90% for full template). Full template (21 sections) is available for enterprise/regulatory projects.
+> **Note**: MVP template is the framework standard. All readiness scores use ≥90% thresholds. Expansion happens through NEW MVP iterations (PRD-02, PRD-03), not template changes.
 
 **Section 1. Document Control** (MANDATORY - First section):
 - Status, Version, Date Created, Last Updated

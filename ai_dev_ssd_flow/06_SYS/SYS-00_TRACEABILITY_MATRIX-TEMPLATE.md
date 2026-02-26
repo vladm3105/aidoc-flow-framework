@@ -317,6 +317,6 @@ graph TD
 
 - **SYS Index**: [SYS-00_index.md](SYS-00_index.md)
 - **SYS MVP Template**: [SYS-MVP-TEMPLATE.md](SYS-MVP-TEMPLATE.md) (default)
-- **SYS Full Template**: (removed from workflow)
+- **Lifecycle**: MVP → PROD → NEW MVP (expand through new iterations)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Related Matrices**: [ADR](../05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)

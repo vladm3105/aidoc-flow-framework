@@ -349,9 +349,9 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-   - **MVP Template** (default): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥85% thresholds)
-   - **Full Template**: For enterprise/regulatory projects (21 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
+   - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
 3. **Section Mapping** (BRD → PRD):
 
@@ -416,7 +416,7 @@ After PRD generation, validate EARS-Ready score.
 | EARS Translation Readiness | 20% | User journeys, quality attributes quantified, timing profiles |
 | Strategic Alignment | 5% | Domain-specific business logic references |
 
-**Minimum Score**: 85% for MVP (90% for full template) - configurable
+**Minimum Score**: 90% (standard threshold for all readiness scores)
 
 **Auto-Fix Actions** (per `doc-prd-validator` error codes):
 

@@ -14,7 +14,33 @@ custom_fields:
 
 **Status**: Active framework with MVP templates, domain adaptation guidance, cumulative tagging, and validation tooling.
 
-**Version**: 2.5 | **Last Updated**: 2026-02-07T00:00:00
+**Version**: 2.6 | **Last Updated**: 2026-02-25T10:00:00
+
+---
+
+## Core Lifecycle: MVP → PROD → NEW MVP
+
+**This iterative pattern is the foundation of all framework operations.**
+
+```
+MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-03) → ...
+   1-2 weeks     30-90 days      1-2 weeks       30-90 days      1-2 weeks
+```
+
+| Phase | Duration | Focus | Output |
+|:------|:---------|:------|:-------|
+| **MVP** | 1-2 weeks | Build 5-15 core features | BRD → PRD → ... → Production |
+| **PROD** | 30-90 days | Operate, measure, collect feedback | Validated insights |
+| **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set | Production v(N+1) |
+
+**Key Principles**:
+1. **Each BRD = One Iteration Cycle**: Never expand BRDs indefinitely - create new ones
+2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 are successive iterations
+3. **Production is Always the Goal**: Every MVP cycle targets production deployment
+4. **Cross-Cycle Traceability**: Use `@depends: BRD-01` to link iterations
+5. **90%+ Automation**: Framework automates 14 of 15 layers per cycle
+
+---
 
 ## Overview
 
@@ -25,10 +51,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - **Blueprint**: Early layers (BRD, PRD, ADR, SYS) capture business objectives and architectural decisions.
 - **Instruction Set**: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
 - **Governance**: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
-- **Delivery Loop**: Continuous MVP iteration - Create MVP → Fix Defects → Production → Add Features as new MVP → Repeat
- - Enables rapid product evolution with 1-2 week cycles
-  - Automation accelerates each cycle (90%+ layers automated)
-  - Cumulative traceability preserves knowledge across iterations
+- **Lifecycle**: See [Core Lifecycle](#core-lifecycle-mvp--prod--new-mvp) above.
 
 ### Why AI Dev Flow?
 
@@ -241,8 +264,8 @@ flowchart TD
 #### Why MVP is Default
 - **Faster iteration**: Streamlined templates for rapid development
 - **Reduced overhead**: Fewer required sections, relaxed validation
-- **Full traceability**: Same traceability chain as full templates
-- **Easy upgrade path**: Migrate to full templates when needed
+- **Full traceability**: Complete traceability chain maintained
+- **Lifecycle approach**: MVP → PROD → NEW MVP (expansion through new iterations)
 
 #### Available MVP Templates (Layers 1-7)
 | Layer | Artifact | Default Template |
@@ -255,13 +278,13 @@ flowchart TD
 | 6 | SYS | `SYS-MVP-TEMPLATE.md` |
 | 7 | REQ | `REQ-MVP-TEMPLATE.md` |
 
-Layers 8-15 use full templates only (no MVP variants).
+Layers 8-15 use standard templates (no MVP prefix needed).
 
 #### MVP Template Profile (Default)
 - Default: `custom_fields.template_profile: mvp` (relaxed, MVP drafting)
 - Strict: omit the field or set `custom_fields.template_profile: enterprise` when a project explicitly requires strict validation.
 
-Full/archived templates are not used in the MVP-facing workflow.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (BRD-02, PRD-02, etc.), not template changes.
 
 ### Units & Conversions (KB vs tokens)
 
@@ -575,17 +598,17 @@ flowchart TD
 **01_BRD/** - Business Requirements Documents
 - High-level business objectives and market context
 - Strategic goals and success criteria
-- **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (default; full template archived)
+- **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (standard template)
 
 **02_PRD/** - Product Requirements Documents
 - User-facing features and product capabilities
 - Business requirements and acceptance criteria
-- **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md) (default; full template archived)
+- **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md) (standard template)
 
 **03_EARS/** - Event-Action-Response-State (Engineering Requirements)
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
-- **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (default; full template archived)
+- **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (standard template)
 
 ### Testing Layer
 
@@ -598,12 +621,12 @@ flowchart TD
 **05_ADR/** - Architecture Decision Records
 - Architectural choices and rationale
 - Technology selections and trade-offs
-- **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (default; full template archived)
+- **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (standard template)
 
 **06_SYS/** - System Requirements Specifications
 - System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
-- **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (default; full template archived)
+- **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (standard template)
 
 ### Requirements Layer
 
@@ -613,7 +636,7 @@ flowchart TD
   - Folder: `07_REQ/REQ-NN_{slug}/`
   - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
   - Split (optional when large): index + sections `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
-- Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (default; full template archived)
+- Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (standard template)
 
 ### Interface Layer
 

@@ -61,10 +61,12 @@ custom_fields:
   traceability_matrix_template: "PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
-> **MVP Template** — Single-file, streamlined PRD for rapid MVP development.
-> Use this template for MVPs with 5-15 core features and short development cycles.
+> **MVP-First Template** — Single-file PRD for the **MVP → PROD → NEW MVP** lifecycle.
+> Use this template for each iteration cycle with 5-15 core features.
 
-> **Validation Note**: MVP templates are intentionally streamlined (17 sections vs 21 standard) and use ≥85% score thresholds (vs ≥90% standard). These will show validation errors when run against full template validators. This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+> **Lifecycle**: Each PRD corresponds to ONE BRD cycle. After production deployment and feedback collection, create NEW PRD for next features (linked to NEW BRD).
+
+> **Validation Note**: MVP templates use ≥90% score thresholds. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
 > References: Schema `PRD_MVP_SCHEMA.yaml` | Rules `PRD_MVP_CREATION_RULES.md`, `PRD_MVP_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
@@ -93,8 +95,8 @@ custom_fields:
 | **Priority** | High |
 | **Target Release** | [MVP Launch Date] |
 | **Estimated Effort** | [X person-weeks] |
-| **SYS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
-| **EARS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
+| **SYS-Ready Score** | [Score]/100 (Target: ≥90) |
+| **EARS-Ready Score** | [Score]/100 (Target: ≥90) |
 
 ### 1.1 Document Revision History
 
@@ -211,10 +213,12 @@ custom_fields:
 - Business: [Org/process prerequisite] — owner, date
 - External: [Vendor/regulatory] — status, impact
 
-### 6.3 Out-of-Scope (Post-MVP)
-- [Feature]: Deferred to Phase 2 - [reason]
-- [Feature]: Deferred to Phase 2 - [reason]
-- [Integration]: Not included - [reason]
+### 6.3 Out-of-Scope (Next MVP Cycle)
+- [Feature]: Candidate for BRD-NN+1 - [reason]
+- [Feature]: Candidate for BRD-NN+1 - [reason]
+- [Integration]: Not included in this cycle - [reason]
+
+> **Lifecycle Note**: Out-of-scope items become candidates for the next BRD/PRD cycle.
 
 ### 6.4 Dependencies
 
@@ -513,7 +517,7 @@ Prefer these tags over legacy "See also …" strings.
 
 ---
 
-## 18. Appendix A: Future Roadmap (Post-MVP)
+## 18. Appendix A: Future Roadmap (Next MVP Cycle)
 
 ### 18.1 Phase 2 Features (If MVP Succeeds)
 
@@ -532,40 +536,43 @@ Prefer these tags over legacy "See also …" strings.
 
 ---
 
-## 19. Migration to Full PRD Template
+## 19. MVP Lifecycle (MVP → PROD → NEW MVP)
 
-### 19.1 When to Migrate
+> **Lifecycle Principle**: Each PRD represents ONE iteration cycle. New features require a NEW PRD.
 
-- [ ] MVP validation complete and proceeding to full product
-- [ ] Feature count exceeds 20
-- [ ] Need detailed user story matrices
-- [ ] Require comprehensive non-functional requirements
-- [ ] Enterprise stakeholder communication required
+### 19.1 Lifecycle Phases
 
-### 19.2 Migration Steps
+| Phase | Duration | Focus | PRD Output |
+|-------|----------|-------|------------|
+| **MVP** | 1-2 weeks | Core features (5-15) | This PRD → EARS → Implementation |
+| **PROD** | 30-90 days | Operate, measure, collect feedback | Production metrics, user feedback |
+| **NEW MVP** | 1-2 weeks | Next feature set | Create PRD-02, PRD-03, etc. |
 
-2. **Transfer core content**: Map MVP sections to full template (see table below)
-3. **Keep monolithic**: Maintain a single-file document; defer any sectioning to the full framework phase.
-4. **Add missing sections**: Product Vision, detailed User Stories, full NFRs
-5. **Update traceability**: Update downstream artifacts (EARS, BDD, etc.)
-6. **Archive MVP version**: Move to archive with "superseded by PRD-NN" note
-7. **Run validation**: Execute `python3 02_PRD/scripts/validate_prd.py` on new document
+### 19.2 When to Create a New PRD
 
-### 19.3 Section Mapping (MVP → Full)
+- [ ] Current PRD features are in production
+- [ ] New feature set identified (next 5-15 features)
+- [ ] Production feedback collected and analyzed
+- [ ] Business case for new iteration approved
 
-| MVP Section | Full Template Section |
-|-------------|-----------------------|
-| 1. Document Control | 1. Document Control |
-| 2. Executive Summary | 2. Executive Summary |
-| 3. Problem Statement | 3. Problem Statement |
-| 4. Target Users | 4. User Personas (expand) |
-| 5. Success Metrics | 5. Success Metrics |
-| 6. Scope | 6. Scope (expand) |
-| 7. User Stories | 7. User Stories (expand with matrices) |
-| 8. Functional Requirements | 8-9. Functional + Non-Functional (expand) |
-| 9. Quality Attributes | 10. Quality Attributes (expand) |
-| 10. Architecture Decisions | 11. Architecture Requirements |
-| 11-14. (various) | 12-17. (add full sections) |
+### 19.3 Cross-PRD Traceability
+
+When creating the next PRD iteration:
+
+1. **Link to previous cycle**: Add `@depends: PRD-01` in Section 16.2
+2. **Reference production metrics**: Include validation data from previous cycle
+3. **Carry forward learnings**: Document technical debt or deferred features
+4. **Update index**: Add new PRD to PRD-00_index.md with cross-references
+
+### 19.4 Iteration Cycle Example
+
+```
+PRD-01 (MVP) → Production → PRD-02 (New Features) → Production → PRD-03 ...
+     ↓                           ↓                         ↓
+   EARS-01                     EARS-02                   EARS-03
+```
+
+**Note**: There is no "full PRD" template. This MVP template IS the standard. Expansion happens through NEW PRDs, not template migration.
 
 ---
 
@@ -577,6 +584,7 @@ Prefer these tags over legacy "See also …" strings.
 ---
 
 > **MVP Template Notes**:
-> - This template is ~500 lines (vs 1,393 lines for full PRD)
+> - This is the standard PRD template (~500 lines)
 > - Single file - no sectioning per user requirement
 > - Maintains ai_dev_flow framework compliance
+> - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full PRD" template)

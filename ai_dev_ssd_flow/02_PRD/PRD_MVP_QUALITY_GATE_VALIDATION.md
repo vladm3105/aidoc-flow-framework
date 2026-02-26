@@ -433,7 +433,7 @@ done
 
 | Template | Sections | Score Threshold | Use Case |
 |----------|----------|-----------------|----------|
-| **MVP** | 17 (1-17) | ≥85% | Rapid prototyping, hypothesis validation |
+| **MVP** | 17 (1-17) | ≥90% | Rapid prototyping, hypothesis validation |
 | 9 | Functional Requirements | Yes |
 | 10 | Customer-Facing Content & Messaging | Yes |
 | 11 | Acceptance Criteria | Yes |
@@ -798,7 +798,7 @@ done
 - [ ] **CORPUS-11**: All PRDs have @brd tags (4-segment format)
 - [ ] **CORPUS-12**: BRD objectives have PRD user stories
 - [ ] **CORPUS-13**: Required template sections present (21 Standard / 17 MVP)
-- [ ] **CORPUS-14**: SYS-Ready score meets template threshold (≥90% Standard / ≥85% MVP)
+- [ ] **CORPUS-14**: SYS-Ready score meets template threshold (≥90%)
 - [ ] **CORPUS-15**: MVP hypothesis format validated
 - [ ] **CORPUS-16**: Glossary paths standardized
 - [ ] **CORPUS-17**: Token count within limits

@@ -18,14 +18,32 @@ custom_fields:
 
 **Framework Philosophy**: AI Dev Flow enables maximum velocity to production through 90%+ automation and strategic human oversight.
 
-**MVP-to-Production Loop**: Continuous product evolution through rapid MVP cycles:
-- Create MVP v1.0 → Fix Defects → Production Release
-- Add Features (MVP v2.0) ← Market Feedback → Fix Defects → Production
-- Iterate continuously with 1-2 week cycles
-- Automation accelerates each cycle (14 of 15 layers automated)
-- Strategic human checkpoints preserve quality (5 critical decision points, optional if quality score ≥90%)
+---
 
-**Automation Capabilities**:
+## Core Lifecycle: MVP → PROD → NEW MVP
+
+**This iterative pattern is the foundation of all framework operations:**
+
+```
+MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-03) → ...
+   1-2 weeks     30-90 days      1-2 weeks       30-90 days      1-2 weeks
+```
+
+| Phase | What Happens | Key Deliverable |
+|:------|:-------------|:----------------|
+| **MVP** | Build 5-15 core features (BRD → TASKS → Code) | Production deployment |
+| **PROD** | Operate, collect metrics, gather user feedback | Validated learning |
+| **NEW MVP** | Create NEW BRD for next feature set | Production v(N+1) |
+
+**Critical Principles**:
+1. **Each BRD = One Cycle**: Never expand BRDs indefinitely - create new ones
+2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 are successive iterations
+3. **Production is the Goal**: Every MVP cycle targets production deployment
+4. **Cross-Cycle Traceability**: Link iterations with `@depends: BRD-01`
+
+---
+
+**Automation Capabilities** (supports rapid iteration):
 - Document Generation: 90% automated (L1-L14, human review optional if score ≥90%)
 - Code Generation: Full automation from SPEC+TASKS to Python
 - Test Execution: Auto-retry with 3 max attempts, 80% coverage minimum

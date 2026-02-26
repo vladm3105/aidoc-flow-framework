@@ -7,19 +7,61 @@ custom_fields:
   document_type: guide
   priority: high
   development_status: active
+  lifecycle: mvp-prod-newmvp
 ---
 
 # MVP Development Workflow Guide
 
-**Version**: 2.0
-**Purpose**: Streamlined workflow for rapid Minimum Viable Product (MVP) development using AI Dev Flow.
-**Target Audience**: AI Assistants and small teams (2-10 people) building early-stage products.
+**Version**: 3.1
+**Purpose**: Iterative product development using the **MVP → PROD → NEW MVP** lifecycle.
+**Target Audience**: AI Assistants and teams of any size building production software.
 
-> ** MVP-ONLY FRAMEWORK**
->
-> As of v2.0, the framework uses MVP templates exclusively.
-> Full templates have been deprecated and archived in `archived/` subdirectories.
->
+---
+
+## Core Lifecycle: MVP → PROD → NEW MVP
+
+**This is the fundamental pattern for all project development.**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         THE ITERATIVE LIFECYCLE                             │
+│                                                                             │
+│    CYCLE 1           FEEDBACK          CYCLE 2           FEEDBACK          │
+│   ┌─────────┐       ┌─────────┐       ┌─────────┐       ┌─────────┐        │
+│   │  MVP    │       │  PROD   │       │ NEW MVP │       │  PROD   │        │
+│   │ BRD-01  │ ────► │  v1.0   │ ────► │ BRD-02  │ ────► │  v2.0   │ ────►  │
+│   │5-15 feat│       │30-90 day│       │5-15 feat│       │30-90 day│        │
+│   └─────────┘       └─────────┘       └─────────┘       └─────────┘        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Phase Details
+
+| Phase | Duration | Focus | Key Deliverable |
+|:------|:---------|:------|:----------------|
+| **MVP** | 1-2 weeks | Build 5-15 core features | BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → Production |
+| **PROD** | 30-90 days | Operate, measure metrics, collect user feedback | Validated insights & priorities |
+| **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set | Production v(N+1) |
+
+### Critical Principles
+
+1. **Each BRD = One Iteration Cycle**: Never expand BRDs indefinitely - create new ones
+2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 represent successive product versions
+3. **Production is Always the Goal**: Every MVP cycle targets production deployment
+4. **Cross-Cycle Traceability**: Link iterations using `@depends: BRD-01` in Section 16.2
+5. **Focused Scope**: 5-15 features per BRD prevents scope creep and ensures shipping
+
+### When to Start a New MVP Cycle
+
+- [ ] Current MVP deployed to production and stable
+- [ ] User feedback collected (30-90 days minimum)
+- [ ] New feature requirements identified and prioritized
+- [ ] Current BRD scope complete (no pending P1s)
+- [ ] Business approval for next iteration
+
+---
+
 > See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `template` field definitions.
 
 Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD`. For the automation-focused flow, see `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md`.
@@ -132,20 +174,68 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ---
 
-##  MVP-to-Production Loop: Continuous Delivery
+## MVP → PROD → NEW MVP: The Iterative Lifecycle
 
-The framework enables **continuous product evolution** through rapid MVP cycles:
+The framework enables **continuous product evolution** through the **MVP → PROD → NEW MVP** lifecycle:
 
-**The Delivery Loop**:
+```mermaid
+flowchart LR
+    subgraph Cycle1["Cycle 1"]
+        MVP1[BRD-01<br/>MVP Features] --> DEV1[Develop]
+        DEV1 --> PROD1[Production v1]
+    end
+
+    PROD1 --> FEEDBACK1[User Feedback<br/>30-90 days]
+
+    subgraph Cycle2["Cycle 2"]
+        FEEDBACK1 --> MVP2[BRD-02<br/>NEW MVP Features]
+        MVP2 --> DEV2[Develop]
+        DEV2 --> PROD2[Production v2]
+    end
+
+    PROD2 --> FEEDBACK2[User Feedback]
+
+    subgraph Cycle3["Cycle 3"]
+        FEEDBACK2 --> MVP3[BRD-03<br/>NEW MVP Features]
+        MVP3 --> DEV3[Develop]
+        DEV3 --> PROD3[Production v3]
+    end
 ```
-MVP v1.0 → Fix Defects → Production Release
-    ↓
-MVP v2.0 (Add Features) ← Market Feedback
-    ↓
-Fix Defects → Production
-    ↓
-MVP v3.0 (Add Features) ← Iterate...
-```
+
+### The Three Phases
+
+| Phase | Duration | Focus | Output |
+|-------|----------|-------|--------|
+| **MVP** | 1-2 weeks | Core features (5-15) | BRD → PRD → ... → Production |
+| **PROD** | 30-90 days | Operate, measure, collect feedback | Metrics, user feedback |
+| **NEW MVP** | 1-2 weeks | Next feature set | NEW BRD → repeat cycle |
+
+### Key Principles
+
+1. **Each BRD = One Cycle**: Don't expand BRDs indefinitely; create new ones
+2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 represent successive iterations
+3. **Traceability Links Cycles**: Cross-BRD dependencies show how iterations build
+4. **Production is the Goal**: Every MVP aims for production deployment
+
+### When to Start a New MVP Cycle
+
+- [ ] Current MVP deployed to production and stable
+- [ ] User feedback collected (30-90 days minimum)
+- [ ] New feature requirements identified and prioritized
+- [ ] Current BRD scope complete (no pending P1s)
+- [ ] Business approval for next iteration
+
+### Cycle Artifacts
+
+| Cycle | BRD | PRD | Downstream |
+|-------|-----|-----|------------|
+| 1 | BRD-01 | PRD-01 | EARS-01, ADR-01, ... |
+| 2 | BRD-02 | PRD-02 | EARS-02, ADR-02, ... |
+| 3 | BRD-03 | PRD-03 | EARS-03, ADR-03, ... |
+
+**Cross-Cycle References**:
+- `@depends: BRD-01` — BRD-02 builds on foundation from BRD-01
+- `@extends: BRD-01` — BRD-02 adds features to existing system
 
 **Key Benefits**:
 - **Rapid Iteration**: 1-2 week cycles from idea to production
@@ -338,7 +428,7 @@ When using the MVP track, run validation with awareness:
      - Cross-doc: `python3 ai_dev_flow/scripts/validate_cross_document.py --all --strict`
 
 2. **Ignore "Missing Section" Warnings**:
-   - MVP templates intentionally omit sections found in full templates.
+   - MVP templates are the standard; some validators may expect legacy sections.
    - If `validate_brd.py` complains about missing "Financial Analysis", **ignore it**.
    - **Green Flag**: As long as Traceability Links (@brd, @req) are valid, you are good.
 
@@ -391,13 +481,16 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE>
 
 ---
 
-##  Migration to Full Framework
+## MVP → PROD → NEW MVP: Lifecycle Approach
 
-See the "Migration" section at the bottom of every MVP template when you are ready to scale.
+See the "Lifecycle" section at the bottom of every MVP template for iteration guidance.
 
-1. **Trigger**: Product market fit achieved, team grows >10, or compliance audit needed.
-2. **Action**: Create new `BRD-02`, `PRD-02` using the **FULL templates**.
-3. **Traceability**: Link new full documents to original MVP ones as "Supersedes".
+1. **MVP Phase**: Develop core features (5-15 requirements) using MVP templates, deploy to production.
+2. **PROD Phase**: Operate 30-90 days, collect metrics, gather user feedback.
+3. **NEW MVP Phase**: Create new iteration (`BRD-02`, `PRD-02`, etc.) for next feature set.
+4. **Traceability**: Link new documents with `@depends: BRD-01` to maintain iteration history.
+
+> **Note**: There are no "full templates." MVP templates ARE the standard. Expansion happens through NEW iterations, not template migration.
 
 ---
 

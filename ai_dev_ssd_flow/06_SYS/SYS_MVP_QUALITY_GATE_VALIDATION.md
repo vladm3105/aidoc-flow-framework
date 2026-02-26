@@ -350,8 +350,8 @@ done
 **Thresholds**:
 | Template Profile | Threshold | Detection |
 |------------------|-----------|-----------|
-| MVP (default) | ≥85% | `template_profile: mvp` or no marker |
-| Full | ≥90% | `template_profile: full` |
+| MVP (default) | ≥90% | `template_profile: mvp` or no marker |
+| Enterprise | ≥90% | `template_profile: enterprise` |
 
 **Validation Logic**:
 ```bash
@@ -502,7 +502,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 | CORPUS-W012 | Missing quality attribute coverage | CORPUS-12 |
 | CORPUS-W013 | NFR category not addressed | CORPUS-13 |
 | CORPUS-W014 | Interface definition incomplete | CORPUS-14 |
-| CORPUS-W015 | REQ-Ready Score below threshold (MVP: 85%, Full: 90%) | CORPUS-15 |
+| CORPUS-W015 | REQ-Ready Score below threshold (≥90%) | CORPUS-15 |
 
 ### Info Codes (Advisory)
 
@@ -556,7 +556,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 - [ ] **CORPUS-12**: Quality attribute coverage complete
 - [ ] **CORPUS-13**: NFR categories addressed
 - [ ] **CORPUS-14**: Interface definitions complete
-- [ ] **CORPUS-15**: All SYS meet REQ-Ready Score threshold (MVP: ≥85%, Full: ≥90%)
+- [ ] **CORPUS-15**: All SYS meet REQ-Ready Score threshold (≥90%)
 - [ ] **CORPUS-16**: Template variant declared for specialized templates
 - [ ] **CORPUS-17**: Parent-child hierarchy tags present for subsystems
 - [ ] **CORPUS-18**: Tag notation consistent (dot vs dash)

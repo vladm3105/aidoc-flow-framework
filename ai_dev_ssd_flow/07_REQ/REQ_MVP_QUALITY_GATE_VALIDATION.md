@@ -420,7 +420,7 @@ done
 
 **Severity**: Info
 
-**Threshold**: CTR-Ready Score ≥85% recommended
+**Threshold**: CTR-Ready Score ≥90% recommended
 
 ---
 
@@ -634,7 +634,7 @@ done
 | Code | Description | Check |
 |------|-------------|-------|
 | CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
-| CORPUS-I015 | CTR-Ready Score below 85% | CORPUS-15 |
+| CORPUS-I015 | CTR-Ready Score below 90% | CORPUS-15 |
 
 ---
 
@@ -822,7 +822,7 @@ fi
 ### Priority 3: Continuous (Address During Maintenance)
 
 - SPEC-Ready Score below 90% (CORPUS-14)
-- CTR-Ready Score below 85% (CORPUS-15)
+- CTR-Ready Score below 90% (CORPUS-15)
 
 ---
 
@@ -830,6 +830,6 @@ fi
 ## References
 
 - [REQ_MVP_VALIDATION_RULES.md](./REQ_MVP_VALIDATION_RULES.md) - Individual file validation
-- [REQ-MVP-TEMPLATE.md](./REQ-MVP-TEMPLATE.md) - REQ document template (full template archived)
+- [REQ-MVP-TEMPLATE.md](./REQ-MVP-TEMPLATE.md) - REQ document template (standard template)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

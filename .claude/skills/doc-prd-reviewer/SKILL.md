@@ -929,8 +929,8 @@ docs/02_PRD/PRD-01_f1_iam/
 
 | Requirement | Reason | Note |
 |-------------|--------|------|
-| BRD.01.01.10 | Device Trust | Marked P3, post-MVP |
-| BRD.01.01.12 | Time-Based Access | Marked P3, post-MVP |
+| BRD.01.01.10 | Device Trust | Marked P3, next cycle |
+| BRD.01.01.12 | Time-Based Access | Marked P3, next cycle |
 
 ---
 
