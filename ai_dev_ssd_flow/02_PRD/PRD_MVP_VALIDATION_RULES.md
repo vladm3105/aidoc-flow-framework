@@ -19,19 +19,6 @@ custom_fields:
 # - Scope: Includes all rules from PRD_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "PRD Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: PRD
-  layer: 2
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
 > - Apply these rules after PRD creation or modification

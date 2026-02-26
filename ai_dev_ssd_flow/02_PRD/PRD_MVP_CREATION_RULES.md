@@ -19,19 +19,6 @@ custom_fields:
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "PRD MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: PRD
-  layer: 2
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is a **CREATION HELPER** for PRD-MVP-TEMPLATE.md (default).
 > - **Authority**: `PRD-MVP-TEMPLATE.md` is the primary standard for PRD structure

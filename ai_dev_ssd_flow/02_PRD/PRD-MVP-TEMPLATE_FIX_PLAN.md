@@ -1,8 +1,9 @@
 # PRD-MVP-TEMPLATE Fix Plan
 
 **Created**: 2026-02-25
-**Status**: Pending
-**Version**: 2.0 (Updated with gap remediation)
+**Status**: Completed
+**Completed**: 2026-02-26
+**Version**: 2.1 (Added gaps #25-27: doc-prd mixed refs, doc-prd-autopilot lines, YAML↔MD sync)
 **Target Files**:
 - `PRD-MVP-TEMPLATE.md` (primary)
 - `PRD-MVP-TEMPLATE.yaml` (autopilot)
@@ -65,6 +66,9 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/02_PRD/` d
 | 22 | **CHECK numbers mapping not defined** | Medium | PRD_MVP_VALIDATION_RULES.md | 5 |
 | 23 | **doc-prd-reviewer Check #6 may need update** | Low | doc-prd-reviewer/SKILL.md | 5 |
 | 24 | **doc-prd-fixer phases may need update** | Low | doc-prd-fixer/SKILL.md | 5 |
+| 25 | **doc-prd/SKILL.md has MIXED references (17 AND 21)** | High | doc-prd/SKILL.md:71,108,125,519 | 5 |
+| 26 | **doc-prd-autopilot/SKILL.md specific lines** | High | doc-prd-autopilot/SKILL.md:352,876 | 5 |
+| 27 | **No YAML ↔ MD sync verification step** | Medium | Fix Plan Phase 7 | 7 |
 
 ---
 
@@ -728,14 +732,27 @@ total_sections: 21
 
 | Skill | File Path | Update Scope |
 |-------|-----------|--------------|
-| doc-prd | `.claude/skills/doc-prd/SKILL.md` | Already correct (21 sections) |
-| doc-prd-validator | `.claude/skills/doc-prd-validator/SKILL.md` | Fix "17 sections" to "21 sections" |
+| doc-prd | `.claude/skills/doc-prd/SKILL.md` | **FIX MIXED REFS**: Line 71 says "17 sections", lines 108/125/519 say "21 sections" - align ALL to 21 |
+| doc-prd-validator | `.claude/skills/doc-prd-validator/SKILL.md` | Fix "17 sections" to "21 sections" (lines 31, 370) |
 | doc-prd-reviewer | `.claude/skills/doc-prd-reviewer/SKILL.md` | Review criteria update |
 | doc-prd-fixer | `.claude/skills/doc-prd-fixer/SKILL.md` | Fix patterns update |
-| doc-prd-autopilot | `.claude/skills/doc-prd-autopilot/SKILL.md` | Generation logic update |
+| doc-prd-autopilot | `.claude/skills/doc-prd-autopilot/SKILL.md` | Fix "17 sections" to "21 sections" (lines 352, 876) |
 | doc-prd_quickref | `.claude/skills/doc-prd_quickref.md` | Fix paths, section count |
 
-### 5.2 doc-prd-validator/SKILL.md Fixes
+### 5.2 doc-prd/SKILL.md Fixes
+
+**Line 71**: Change "17 sections" to "21 sections":
+```markdown
+# Before:
+PRD documents follow the **MVP template structure** (17 sections).
+
+# After:
+PRD documents follow the **MVP template structure** (21 sections).
+```
+
+Lines 108, 125, 519 already say "21 sections" - no changes needed.
+
+### 5.3 doc-prd-validator/SKILL.md Fixes
 
 **Line 31**: Change "17 sections for MVP template" to "21 sections for MVP template"
 
@@ -771,7 +788,27 @@ total_sections: 21
 | 21 | Quality Assurance & Testing Strategy | MANDATORY |
 ```
 
-### 5.3 doc-prd_quickref.md Fixes
+### 5.4 doc-prd-autopilot/SKILL.md Fixes
+
+**Line 352**: Change "17 sections" to "21 sections":
+```markdown
+# Before:
+   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
+
+# After:
+   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
+```
+
+**Line 876**: Change "17/21 sections" to "21 sections":
+```markdown
+# Before:
+    - structure_validation      # 17/21 sections
+
+# After:
+    - structure_validation      # 21 sections
+```
+
+### 5.5 doc-prd_quickref.md Fixes
 
 - Update path `docs/PRD/` to `docs/02_PRD/`
 - Update "19 files" to "21 sections"
@@ -858,6 +895,33 @@ grep -n "required_sections:" PRD_MVP_SCHEMA.yaml
 | doc-prd | Create test PRD | 21-section PRD generated |
 | doc-prd-validator | Validate test PRD | Pass all checks |
 | doc-prd-autopilot | Generate PRD from YAML | Valid 21-section output |
+
+### 7.4 YAML ↔ MD Template Sync Verification
+
+**Purpose**: Ensure MD template and YAML template are aligned after changes.
+
+| Check | MD Template | YAML Template | Expected |
+|-------|-------------|---------------|----------|
+| Total sections | Count `## N.` headers | Count `sections:` entries | 21 each |
+| Section titles | Extract from headers | Extract from `title:` | Match exactly |
+| Subsections | Count `### N.M` headers | Count `subsections:` | Match |
+| Schema version | `custom_fields.schema_version` | `schema_version:` | Match |
+
+**Verification Command**:
+```bash
+# Count sections in MD template
+grep -c "^## [0-9]" PRD-MVP-TEMPLATE.md
+# Expected: 21
+
+# Count sections in YAML template
+grep -c "number:" PRD-MVP-TEMPLATE.yaml
+# Expected: 21
+
+# Verify section titles match
+diff <(grep "^## [0-9]" PRD-MVP-TEMPLATE.md | sed 's/## [0-9]*\. //') \
+     <(grep "title:" PRD-MVP-TEMPLATE.yaml | sed 's/.*title: "//;s/"$//')
+# Expected: No output (files match)
+```
 
 ---
 

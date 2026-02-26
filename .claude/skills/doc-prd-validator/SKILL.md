@@ -28,7 +28,7 @@ Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standar
 Validates PRD documents for:
 
 - YAML frontmatter metadata compliance
-- Section structure (17 sections for MVP template)
+- Section structure (21 sections for MVP template)
 - Document Control completeness
 - Traceability tag format and presence
 - Dual scoring requirements (SYS-Ready + EARS-Ready)
@@ -367,5 +367,6 @@ Info: 1
 |---------|------|---------|
 | 2.2 | 2026-02-11 | **Structure Validation**: Added PRD-E020/E021/E022 for nested folder rule enforcement; Structure validation as Step 1 in workflow; Auto-fix for structure violations; Fixed paths `docs/PRD/` → `docs/02_PRD/` |
 | 2.1 | 2026-02-08 | Added doc-naming integration: PRD-E018 (threshold format), PRD-E019 (element type codes) |
-| 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template (17 sections), unified element IDs, correct paths |
+| 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
+| 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template, unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |

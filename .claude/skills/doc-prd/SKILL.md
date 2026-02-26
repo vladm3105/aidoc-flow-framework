@@ -68,7 +68,7 @@ Use `doc-prd` when:
 
 ### 1. Required Sections (21 Total)
 
-PRD documents follow the **MVP template structure** (17 sections). See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
+PRD documents follow the **MVP template structure** (21 sections). See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
 
 > **Note**: MVP template is the framework standard. All readiness scores use ≥90% thresholds. Expansion happens through NEW MVP iterations (PRD-02, PRD-03), not template changes.
 

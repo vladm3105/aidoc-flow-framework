@@ -349,7 +349,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
    - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
@@ -873,7 +873,7 @@ Validate existing PRD documents and generate a quality report without modificati
 review_mode:
   enabled: true
   checks:
-    - structure_validation      # 17/21 sections
+    - structure_validation      # 21 sections
     - element_id_compliance     # PRD.NN.TT.SS format
     - link_integrity            # Internal link check
     - threshold_consistency     # Cross-section consistency
