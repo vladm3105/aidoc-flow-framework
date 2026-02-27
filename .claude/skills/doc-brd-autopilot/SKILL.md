@@ -430,12 +430,10 @@ If any threshold is exceeded, route to standard reference processing mode.
 
 **Check for reference documents**:
 
-1. Scan for `docs/00_REF/` or `docs-v2.0/00_REF/` folder
+1. Scan for `docs/00_REF/`
 2. If found, list available subfolders:
    ```bash
-   ls -la docs/00_REF/
-   # or
-   ls -la docs-v2.0/00_REF/
+  ls -la docs/00_REF/
    ```
 3. If user specifies source docs from REF folder:
    - Set `upstream_mode: "ref"`
