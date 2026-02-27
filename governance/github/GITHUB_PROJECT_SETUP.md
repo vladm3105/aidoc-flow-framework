@@ -2,6 +2,8 @@
 
 Complete setup guide for GitHub Projects V2 optimized for AI-assisted development workflows.
 
+> Companion: use [GITHUB_PROJECT_SETUP_AI_FIRST.md](./GITHUB_PROJECT_SETUP_AI_FIRST.md) for AI-first migration checks and validation criteria.
+
 ---
 
 ## Quick Start Checklist

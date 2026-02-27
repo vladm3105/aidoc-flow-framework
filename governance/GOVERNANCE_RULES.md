@@ -25,12 +25,15 @@ Operational policies and conventions that govern how this project is developed. 
 |:-------------|:-----|
 | Process a GitHub issue as AI agent | [Issue Processing Workflow](#issue-processing-workflow-mandatory) (this doc §3) |
 | Check if my work is complete | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) |
+| Run security checks before commit/PR | [SECURITY_CHECKLIST.md](./SECURITY_CHECKLIST.md) |
+| Diagnose workflow or environment issues | [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) |
 | Know which branch to create | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) |
 | Tag and release a component | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) |
 | Understand human vs AI task split | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) |
 | Set up gh CLI or MCP servers | [GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) |
 | Configure GitHub Actions workflows | [GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) |
 | Set up project board, labels, fields | [GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) |
+| Apply AI-first setup companion checks | [GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP_AI_FIRST.md) |
 | Understand the phase timeline | [ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) |
 | Find task specs and sprint schedules | [PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) |
 | Review AI time estimates | [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) |

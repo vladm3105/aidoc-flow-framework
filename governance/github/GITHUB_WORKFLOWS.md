@@ -26,6 +26,7 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 | [Create Deployment Issue](#create-deployment-issue-workflow) | `create-deployment-issue.yml` | PR merged | Auto-create deployment issues  |
 | [Create QA Testing Issue](#create-qa-testing-issue-workflow) | `create-qa-testing-issue.yml` | PR merged | Auto-create QA issues for functional changes  |
 | [Check Phase Completion](#check-phase-completion-workflow) | `check-phase-completion.yml` | Schedule + manual | Hourly check for phase completion  |
+| [AI Deploy Dev](#ai-deploy-dev-workflow) | `ai-deploy-dev.yml` | Phase complete, manual | AI-driven automated DEV deployment (optional pattern) |
 | [Execute QA Testing](#execute-qa-testing-workflow) | `execute-qa-testing.yml` | Deployments complete + schedule | Run QA tests on staging  |
 | [Create Bug Issue](#create-bug-issue-workflow) | `create-bug-issue.yml` | QA failure | Create bug issues from test failures  |
 | [Deploy to Staging](#deploy-to-staging-workflow) | `deploy-staging.yml` | Phase complete | Phase-gated staging deployment  |
@@ -1016,6 +1017,51 @@ The following workflows implement the AI-first phase-gated deployment model with
 | Purpose | Detect when all development issues in a phase are closed |
 
 **Behavior**: Triggers staging deployment when phase is complete. Rate-limited to prevent duplicate triggers.
+
+---
+
+### AI Deploy Dev Workflow
+
+**File**: `.github/workflows/ai-deploy-dev.yml`
+
+Optional AI-driven deployment workflow for DEV environment.
+
+#### Triggers
+
+| Event | Inputs |
+|:------|:-------|
+| `workflow_call` | `phase` (optional) |
+| `workflow_dispatch` | `phase` (optional) |
+
+#### Deployment Flow
+
+```
+Phase Issues Closed
+  |
+  v
+check-phase-completion.yml
+  |
+  v
+ai-deploy-dev.yml
+  |
+  v
+ai-deploy-dev.sh (example script contract)
+  |
+  +-- pre-flight checks
+  +-- infra validation/apply
+  +-- service deploy
+  +-- smoke tests (retry)
+  +-- finalize + tracking
+  |
+  v
+DEV Deployment Complete
+```
+
+#### Notes
+
+- This is an optional migration pattern for teams that want AI-led dev deployment orchestration.
+- If both `deploy-dev.yml` and `ai-deploy-dev.yml` exist, document the canonical trigger path in repo-level deployment docs.
+- Keep credentials short-lived (OIDC/WIF) and align with governance security policy.
 
 ---
 

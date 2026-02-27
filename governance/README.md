@@ -30,6 +30,8 @@ governance/
 ├── AI_ISSUE_LIFECYCLE.md          # Issue workflow (4-stage loop)
 ├── BRANCHING_STRATEGY.md          # Git workflow
 ├── DEFINITION_OF_DONE.md          # Completion criteria
+├── SECURITY_CHECKLIST.md          # Security verification checklist
+├── TROUBLESHOOTING.md             # Operational troubleshooting guide
 ├── RELEASE_PROCESS.md             # Versioning and releases
 ├── REPOSITORY_STRATEGY.md         # Monorepo architecture
 ├── ROLES_AND_TOOLS.md             # Human vs AI responsibilities
@@ -37,6 +39,7 @@ governance/
 │
 ├── github/                        # GitHub documentation
 │   ├── GITHUB_PROJECT_SETUP.md    # Project board setup
+│   ├── GITHUB_PROJECT_SETUP_AI_FIRST.md  # AI-first setup companion
 │   ├── GITHUB_TOOLS_SETUP.md      # gh CLI and MCP config
 │   └── GITHUB_WORKFLOWS.md        # GitHub Actions docs
 │
@@ -46,6 +49,7 @@ governance/
 │   ├── IMPLEMENT_INSTRUCTIONS.md  # AI agent implementation guide
 │   ├── LOCAL_SETUP.md
 │   ├── MANUAL_REVIEW_GUIDE.md
+│   ├── CLOUD_SETUP.md             # Cloud/OIDC setup reference
 │   └── ONBOARDING.md
 │
 ├── AI_AGENT_MEMORY.md             # AI Agent Memory System docs
@@ -105,6 +109,8 @@ governance/
 | [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
 | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) | Git workflow and branch conventions |
 | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Completion criteria at task/sprint/phase levels |
+| [SECURITY_CHECKLIST.md](./SECURITY_CHECKLIST.md) | Security checks for commit/PR/deploy workflows |
+| [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) | Common operational issues and recovery steps |
 | [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) | SemVer versioning and deployment |
 | [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) | Monorepo architecture patterns |
 | [ROLES_AND_TOOLS.md](./ROLES_AND_TOOLS.md) | Human vs AI task split |
@@ -145,6 +151,7 @@ governance/
 | Document | Description |
 |:---------|:------------|
 | [github/GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) | Project board, labels, fields setup |
+| [github/GITHUB_PROJECT_SETUP_AI_FIRST.md](./github/GITHUB_PROJECT_SETUP_AI_FIRST.md) | AI-first setup companion and migration checks |
 | [github/GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) | gh CLI and MCP server configuration |
 | [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) | GitHub Actions workflow documentation |
 
@@ -157,6 +164,7 @@ governance/
 | [AI_PR_Review/README.md](./AI_PR_Review/README.md) | Overview and architecture |
 | [AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md) | On-demand AI review workflow |
 | [AI_PR_Review/LOCAL_SETUP.md](./AI_PR_Review/LOCAL_SETUP.md) | Local developer setup |
+| [AI_PR_Review/CLOUD_SETUP.md](./AI_PR_Review/CLOUD_SETUP.md) | Cloud/OIDC setup reference for workflow auth |
 | [AI_PR_Review/MANUAL_REVIEW_GUIDE.md](./AI_PR_Review/MANUAL_REVIEW_GUIDE.md) | Manual AI PR review guide |
 | [AI_PR_Review/ONBOARDING.md](./AI_PR_Review/ONBOARDING.md) | Add AI review to new repos |
 
@@ -192,6 +200,8 @@ governance/
 | [templates/MEMORY.md](./templates/MEMORY.md) | AI Agent memory file template |
 | [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) | Contributing guidelines |
 | [templates/README.md](./templates/README.md) | Project README template |
+| [templates/SECURITY_CHECKLIST-TEMPLATE.md](./templates/SECURITY_CHECKLIST-TEMPLATE.md) | Security checklist template |
+| [templates/TROUBLESHOOTING-TEMPLATE.md](./templates/TROUBLESHOOTING-TEMPLATE.md) | Troubleshooting guide template |
 
 ### Planning Templates
 

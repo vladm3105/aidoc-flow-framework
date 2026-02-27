@@ -87,6 +87,7 @@ Caller workflow (~10 lines)
 | [`governance/AI_PR_Review/REVIEW_INSTRUCTIONS.md`](./REVIEW_INSTRUCTIONS.md) | 5-phase analysis methodology for AI code review | ~180 |
 | [`governance/AI_PR_Review/FIX_INSTRUCTIONS.md`](./FIX_INSTRUCTIONS.md) | Auto-fix instructions for AI-suggested fixes | ~45 |
 | [`governance/AI_PR_Review/IMPLEMENT_INSTRUCTIONS.md`](./IMPLEMENT_INSTRUCTIONS.md) | Implementation agent methodology for autonomous dispatch | ~96 |
+| [`governance/AI_PR_Review/CLOUD_SETUP.md`](./CLOUD_SETUP.md) | Project-agnostic cloud/OIDC setup reference for auth-required workflows | ~70 |
 | [`.github/workflows/agent-dispatch.yml`](../../.github/workflows/agent-dispatch.yml) | Autonomous agent dispatch — Issue → Branch → Implement → Test → PR | ~570 |
 | [`governance/scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh`](../scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh) | GCP prerequisite automation (WIF setup) | ~479 |
 
@@ -314,6 +315,7 @@ Cost per review is capped by `--max-budget-usd` (default: $1.00). Actual cost de
 | [IMPLEMENT_INSTRUCTIONS.md](./IMPLEMENT_INSTRUCTIONS.md) | Implementation agent methodology for autonomous dispatch |
 | [ADR-009](../../docs/adr/009-ai-pr-review-custom-workflow.md) | Decision rationale (Custom Workflow vs PR-Agent vs Bot vs Claude Action) |
 | [LOCAL_SETUP.md](./LOCAL_SETUP.md) | Local developer setup ({AI_TOOL_NAME} Code CLI, gh auth, API key) |
+| [CLOUD_SETUP.md](./CLOUD_SETUP.md) | Cloud/OIDC setup reference for workflows requiring cloud auth |
 | [ONBOARDING.md](./ONBOARDING.md) | Add AI review to a new component repo |
 | [Implementation Plans](../plans/) | Implementation plans |
 | [GOVERNANCE_RULES.md](../GOVERNANCE_RULES.md) | AI PR Review policy (section 3) |
