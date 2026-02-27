@@ -1,21 +1,23 @@
 ---
 name: doc-req
 description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ MVP format with 11 sections, SPEC-readiness scoring, and cumulative traceability
-tags:
-  - sdd-workflow
-  - layer-7-artifact
-  - shared-architecture
-custom_fields:
-  layer: 7
-  artifact_type: REQ
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS]
-  downstream_artifacts: [IMPL,CTR,SPEC]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-7-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 7
+    artifact_type: REQ
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS]
+    downstream_artifacts: [IMPL,CTR,SPEC]
+    version: "1.1"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks REQ-MVP-TEMPLATE schema_version"
 ---
 
 # doc-req
@@ -51,10 +53,10 @@ Before creating REQ, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream SYS**: Read system requirements driving this REQ
-3. **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_req_template.sh`
+3. **Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
+6. **Validation Script**: `./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh`
 
 ## When to Use This Skill
 
@@ -100,7 +102,8 @@ Use `doc-req` when:
 9. **Acceptance Criteria**: >=15 measurable criteria covering functional/error/quality/data/integration
 10. **Verification Methods**: BDD scenarios + unit/integration/contract/performance tests
 11. **Traceability**: Section 7 format with cumulative tags (6 required)
-12. **Change History**: Version control table
+
+**Note**: Change History is intentionally omitted in REQ MVP.
 
 ### 2. Document Control Requirements (11 Mandatory Fields)
 
@@ -331,7 +334,7 @@ Especially focus on SYS (Layer 6) - system requirements to decompose.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/REQ/` for next available ID number.
+Check `docs/07_REQ/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: REQ-01, REQ-99, REQ-102
@@ -369,9 +372,9 @@ mkdir -p docs/07_REQ/{domain}/REQ-NN_{slug}/
 
 Complete metadata with all 11 required fields plus Document Revision History table.
 
-### Step 5: Complete All 12 Required Sections
+### Step 5: Complete All 11 Required Sections
 
-**Critical**: REQ v3.0 requires all 12 sections for >=90% SPEC-readiness
+**Critical**: REQ MVP requires all 11 sections for >=90% SPEC-readiness
 
 1. **Description**: Atomic requirement + SHALL/SHOULD/MAY language
 2. **Functional Requirements**: Core capabilities + business rules
@@ -384,7 +387,8 @@ Complete metadata with all 11 required fields plus Document Revision History tab
 9. **Acceptance Criteria**: >=15 measurable criteria
 10. **Verification Methods**: BDD scenarios, tests
 11. **Traceability**: Cumulative tags (6 tags)
-12. **Change History**: Version control table
+
+**Note**: Change History is intentionally omitted in REQ MVP.
 
 ### Step 6: Calculate Readiness Scores
 
@@ -398,14 +402,14 @@ Include all 6 upstream tags (@brd through @sys).
 
 ### Step 8: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ai_dev_ssd_flow/07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 9: Validate REQ
 
 ```bash
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-NN_*.md
+./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-NN_*/REQ-NN_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-NN --expected-layers brd,prd,ears,bdd,adr,sys --strict
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact REQ-NN --expected-layers brd,prd,ears,bdd,adr,sys --strict
 ```
 
 ### Step 10: Commit Changes
@@ -418,7 +422,7 @@ Commit REQ file and traceability matrix.
 
 | Check | Description | Type |
 |-------|-------------|------|
-| CHECK 1 | Required 12 sections | Error |
+| CHECK 1 | Required 11 sections | Error |
 | CHECK 2 | Document Control (11 fields) | Error |
 | CHECK 3 | Traceability structure | Error/Warning |
 | CHECK 4 | Legacy (deprecated) | Info |
@@ -451,13 +455,13 @@ Commit REQ file and traceability matrix.
 
 ```bash
 # Validate single file
-./scripts/validate_req_template.sh docs/REQ/REQ-NN_slug.md
+./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-NN_slug/REQ-NN_slug.md
 
 # Validate all REQ files
-find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
+find docs/07_REQ -name "REQ-*.md" -exec ./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh {} \;
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
   --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
@@ -466,7 +470,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 ### Manual Checklist
 
 - [ ] Document Control section at top with 11 required fields
-- [ ] All 12 required sections completed
+- [ ] All 11 required sections completed
 - [ ] SPEC-Ready Score >=90%
 - [ ] IMPL-Ready Score >=90%
 - [ ] Template Version = 3.0
@@ -487,7 +491,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 
-1. **Incomplete sections**: All 12 sections mandatory for SPEC-readiness
+1. **Incomplete sections**: All 11 sections mandatory for SPEC-readiness
 2. **Missing new sections**: Sections 3-7 are new in v3.0 - don't skip them
 3. **Low readiness scores**: Both SPEC-Ready and IMPL-Ready must achieve >=90%
 4. **Non-atomic requirements**: Each REQ must be single, testable unit
@@ -516,10 +520,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/REQ/REQ-NN_slug.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/07_REQ/REQ-NN_slug/REQ-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all REQ documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -577,16 +581,14 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
-- **REQ Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
-- **REQ README**: `ai_dev_flow/07_REQ/README.md`
+- **Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
+- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
+- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
+- **REQ README**: `ai_dev_ssd_flow/07_REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >50KB):
-- Index template: `ai_dev_flow/07_REQ/REQ-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/07_REQ/REQ-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- **Section Splitting Reference** (for documents >50KB):
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 
@@ -596,7 +598,7 @@ For supplementary documentation needs, create:
 
 **Tags Required**: @brd, @prd, @ears, @bdd, @adr, @sys (6 tags)
 
-**Format**: REQ v3.0 (12 sections)
+**Format**: REQ MVP (11 sections)
 
 **Quality Gate**: SPEC-Ready Score >=90% AND IMPL-Ready Score >=90%
 

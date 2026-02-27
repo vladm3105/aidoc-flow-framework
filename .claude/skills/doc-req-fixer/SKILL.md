@@ -1,23 +1,25 @@
 ---
 name: doc-req-fixer
 description: Automated fix skill that reads review reports and applies fixes to REQ documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - req-fix
-  - layer-7-artifact
-  - shared-architecture
-custom_fields:
-  layer: 7
-  artifact_type: REQ
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [REQ, Review Report, SYS]
-  downstream_artifacts: [Fixed REQ, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - req-fix
+    - layer-7-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 7
+    artifact_type: REQ
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [REQ, Review Report, SYS]
+    downstream_artifacts: [Fixed REQ, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks REQ-MVP-TEMPLATE schema_version"
 ---
 
 # doc-req-fixer
@@ -28,7 +30,7 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 **Layer**: 7 (REQ Quality Improvement)
 
-**Upstream**: REQ document, Review Report (`REQ-NN.R_fix_report_vNNN.md` or `REQ-NN-SSS.R_review_report_vNNN.md`), SYS (for system design alignment)
+**Upstream**: REQ document, Review Report (`REQ-NN.A_audit_report_vNNN.md` preferred, `REQ-NN.R_review_report_vNNN.md` legacy-compatible, or `REQ-NN-SSS.R_review_report_vNNN.md`), SYS (for system design alignment)
 
 **Downstream**: Fixed REQ, Fix Report (`REQ-NN.F_fix_report_vNNN.md` or `REQ-NN-SSS.F_fix_report_vNNN.md`)
 
@@ -933,7 +935,7 @@ After processing drift issues, update `.drift_cache.json`:
 
 **File Naming**: `REQ-NN.F_fix_report_vNNN.md` or `REQ-NN-SSS.F_fix_report_vNNN.md`
 
-**Location**: Inside the REQ nested folder: `docs/REQ/REQ-NN_{slug}/`
+**Location**: Inside the REQ nested folder: `docs/07_REQ/REQ-NN_{slug}/`
 
 **Structure**:
 

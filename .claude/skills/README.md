@@ -1137,8 +1137,8 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
 
-#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit
-**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), and SYS (Layer 6)
+#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), and REQ (Layer 7)
 **Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
 **Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
 
@@ -1242,7 +1242,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 **Use**: Define functional requirements and quality attributes
 
 #### 29. doc-req (Layer 7)
-**Purpose**: Create Atomic Requirements using REQ v3.0 format (12 sections)
+**Purpose**: Create Atomic Requirements using REQ MVP format (11 sections)
 **Quick Reference**: [doc-req_quickref.md](./doc-req_quickref.md)
 **Use**: Decompose SYS into implementation-ready atomic requirements
 

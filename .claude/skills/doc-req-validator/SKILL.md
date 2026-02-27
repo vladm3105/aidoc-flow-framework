@@ -1,21 +1,23 @@
 ---
 name: doc-req-validator
 description: Validate Atomic Requirements (REQ) documents against Layer 7 schema standards
-tags:
-  - sdd-workflow
-  - layer-7-artifact
-  - quality-assurance
-custom_fields:
-  layer: 7
-  artifact_type: REQ
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [REQ]
-  downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-7-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 7
+    artifact_type: REQ
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [REQ]
+    downstream_artifacts: []
+    version: "1.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks REQ_MVP_SCHEMA schema_version"
 ---
 
 # doc-req-validator
@@ -28,7 +30,7 @@ Invoke when user requests validation of REQ documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/REQ/REQ_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
 Layer: 7
 Artifact Type: REQ
 
@@ -197,7 +199,7 @@ Pattern: `REQ-NNN_descriptive_name.md`
 | REQ-E005 | error | Forbidden tag pattern detected |
 | REQ-E006 | error | Missing required section |
 | REQ-E007 | error | Multiple H1 headings detected |
-| REQ-E008 | error | Section numbering not sequential (1-12) |
+| REQ-E008 | error | Section numbering not sequential (1-11) |
 | REQ-E009 | error | Document Control missing required fields |
 | REQ-E010 | error | Missing Interface Specifications (Section 3) |
 | REQ-E011 | error | Missing Data Schemas (Section 4) |
@@ -222,13 +224,13 @@ Pattern: `REQ-NNN_descriptive_name.md`
 
 ```bash
 # Validate single REQ document
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-001_example.md
+./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-001_example/REQ-001_example.md
 
 # Validate all REQ documents
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/
+find docs/07_REQ -name "REQ-*.md" -exec ./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh {} \;
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/ --verbose
+python3 ai_dev_ssd_flow/07_REQ/scripts/validate_req_spec_readiness.py docs/07_REQ/REQ-001_example/REQ-001_example.md --verbose
 ```
 
 ## Validation Workflow
@@ -236,7 +238,7 @@ python ai_dev_flow/scripts/validate_req.py docs/07_REQ/ --verbose
 1. Parse YAML frontmatter
 2. Check required metadata fields
 3. Validate tag taxonomy
-4. Verify section structure (1-12)
+4. Verify section structure (1-11)
 5. Validate Document Control table
 6. Check Interface Specifications (Protocol/ABC)
 7. Check Data Schemas (JSON/Pydantic)

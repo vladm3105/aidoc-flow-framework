@@ -1,29 +1,31 @@
 ---
 name: doc-req-autopilot
 description: Automated REQ generation from SYS requirements - decomposes system requirements into atomic files with SPEC-Ready scoring
-tags:
-  - sdd-workflow
-  - layer-7-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 7
-  artifact_type: REQ
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
-  downstream_artifacts: [CTR, SPEC]
-  version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-7-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 7
+    artifact_type: REQ
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
+    downstream_artifacts: [CTR, SPEC]
+    version: "2.5"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks REQ-MVP-TEMPLATE schema_version"
 ---
 
 # doc-req-autopilot
 
 ## Purpose
 
-Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS documents and decomposes them into **multiple atomic REQ files** (one per capability), using REQ v3.0 format with 12 sections, dual readiness scoring (SPEC-Ready + IMPL-Ready), and cumulative traceability.
+Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS documents and decomposes them into **multiple atomic REQ files** (one per capability), using REQ MVP format with 11 sections, dual readiness scoring (SPEC-Ready + IMPL-Ready), and cumulative traceability.
 
 **Layer**: 7 (REQ Generation)
 
@@ -43,7 +45,7 @@ This autopilot orchestrates the following skills:
 |-------|---------|-------|
 | `doc-naming` | Element ID format (REQ.NN.TT.SS), type codes 01/05/06/27 | All Phases |
 | `doc-sys-validator` | Validate SYS SPEC-Ready score | Phase 2: SYS Readiness |
-| `doc-req` | REQ creation rules, REQ v3.0 12-section structure, template | Phase 3: REQ Generation |
+| `doc-req` | REQ creation rules, REQ MVP 11-section structure, template | Phase 3: REQ Generation |
 | `quality-advisor` | Real-time quality feedback during REQ generation | Phase 3: REQ Generation |
 | `doc-req-validator` | Validate REQ structure, content, SPEC-Ready score | Phase 4: REQ Validation |
 | `doc-req-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
@@ -135,7 +137,7 @@ Input: REQ-03
 - You want automated decomposition of system requirements into atomic units
 - You need REQ-Ready score validation before generation
 - You want automatic SPEC-Ready score validation after REQ creation
-- You need to generate REQ v3.0 documents with 12 sections
+- You need to generate REQ MVP documents with 11 sections
 
 **Do NOT use when**:
 - Creating a single REQ with extensive manual customization (use `doc-req` directly)
@@ -169,7 +171,7 @@ flowchart TD
 
     subgraph Phase3["Phase 3: REQ Generation"]
         L --> M[Decompose into Atomic Requirements]
-        M --> N[Generate 12 Required Sections]
+        M --> N[Generate 11 Required Sections]
         N --> O[Add Interface Specifications]
         O --> P[Add Data Schemas]
         P --> Q[Add Error Handling Specifications]
@@ -253,7 +255,7 @@ Decompose SYS functional requirements into separate atomic REQ files.
 **Decomposition Strategy**:
 
 1. **One REQ File Per Capability**: Each SYS.NN.MM.SS functional requirement maps to one REQ-NN.MM file
-2. **Self-Contained Files**: Each file is complete with all 12 sections
+2. **Self-Contained Files**: Each file is complete with all 11 sections
 3. **Cross-Linked**: Files reference siblings via `@discoverability` tags
 
 **Output Structure Example** (for F1 IAM module):
@@ -346,7 +348,7 @@ Validate that source SYS documents meet REQ-Ready requirements before generation
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_sys.py \
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py \
   --sys docs/06_SYS/SYS-NN_{slug}.md \
   --min-score 90 \
   --auto-fix
@@ -373,7 +375,7 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    ```
 
 2. **Load REQ Template**:
-   - Primary: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+  - Primary: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
    - Section templates: For sectioned REQ (>50KB)
 
 3. **Generate Document Control Section**:
@@ -404,7 +406,7 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    - **SPEC-Ready**: Contains ALL information for automated SPEC generation
    - **Modal Language**: SHALL (mandatory), SHOULD (preferred), MAY (optional)
 
-5. **Generate All 12 Required Sections**:
+5. **Generate All 11 Required Sections**:
 
    **Section 1: Description**
    - Atomic requirement statement with SHALL/SHOULD/MAY language
@@ -593,7 +595,8 @@ After REQ generation, validate structure and dual readiness scores.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-NN_{slug}.md --verbose
+./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md
+python3 ai_dev_ssd_flow/07_REQ/scripts/validate_req_spec_readiness.py docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -601,7 +604,7 @@ python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-NN_{slug}.md --verbos
 | Check                   | Requirement                        | Error Code             |
 |-------------------------|------------------------------------|-----------------------|
 | YAML Frontmatter        | Valid metadata fields              | REQ-E001 to REQ-E005  |
-| Section Structure       | All 12 sections present            | REQ-E006              |
+| Section Structure       | All 11 sections present            | REQ-E006              |
 | Document Control        | All 14 required fields             | REQ-E009              |
 | Interface Specifications| Protocol/ABC definition            | REQ-E010, REQ-E015    |
 | Data Schemas            | JSON Schema or Pydantic            | REQ-E011, REQ-E016    |
@@ -744,7 +747,7 @@ Iteration 2:
 After passing the fix cycle:
 
 1. **12-Section Completeness**:
-   - All 12 sections present and substantive
+  - All 11 sections present and substantive
    - No placeholder or stub content
    - Template Version = 3.0
 
@@ -801,16 +804,16 @@ After passing the fix cycle:
 
    ```bash
    # Update REQ-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
-     --req docs/07_REQ/REQ-NN_{slug}.md \
+   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
+     --req docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md \
      --matrix docs/07_REQ/REQ-00_TRACEABILITY_MATRIX.md
    ```
 
 ---
 
-## REQ v3.0 Section Reference
+## REQ MVP Section Reference
 
-### Required Sections (12 Total)
+### Required Sections (11 Total)
 
 | Section | Purpose | Required Elements |
 |---------|---------|-------------------|
@@ -826,7 +829,8 @@ After passing the fix cycle:
 | 9. Acceptance Criteria | Test conditions | >=15 criteria, 5 categories |
 | 10. Verification Methods | Testing | BDD, unit, integration, contract |
 | 11. Traceability | References | 6 cumulative tags |
-| 12. Change History | Version control | Revision table |
+
+**Note**: Change History is intentionally omitted in REQ MVP.
 
 ---
 
@@ -838,11 +842,7 @@ Generate REQ from one SYS document.
 
 ```bash
 # Example: Generate REQ from SYS-01
-python ai_dev_flow/scripts/req_autopilot.py \
-  --sys docs/06_SYS/SYS-01_order_management.md \
-  --output docs/07_REQ/ \
-  --id 01 \
-  --slug order_validation
+/doc-req-autopilot SYS-01 --output docs/07_REQ/
 ```
 
 ### Batch Mode
@@ -851,9 +851,7 @@ Generate REQ from multiple SYS documents in sequence.
 
 ```bash
 # Example: Generate REQ from all SYS
-python ai_dev_flow/scripts/req_autopilot.py \
-  --batch config/req_batch.yaml \
-  --output docs/07_REQ/
+/doc-req-autopilot all --auto
 ```
 
 **Batch Configuration** (`config/req_batch.yaml`):
@@ -888,9 +886,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/req_autopilot.py \
-  --sys docs/06_SYS/SYS-01_order_management.md \
-  --dry-run
+/doc-req-autopilot SYS-01 --dry-run
 ```
 
 ### Review Mode (v2.1)
@@ -903,14 +899,10 @@ Validate existing REQ documents and generate a quality report without modificati
 
 ```bash
 # Review single REQ folder
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/REQ-01_f1_iam/ \
-  --mode review
+/doc-req-autopilot REQ-01 --mode review
 
 # Review all REQ folders
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/ \
-  --mode review \
+/doc-req-autopilot all --mode review \
   --output-report tmp/req_review_report.md
 ```
 
@@ -919,7 +911,7 @@ python ai_dev_flow/scripts/req_autopilot.py \
 ```mermaid
 flowchart TD
     A[Input: Existing REQ] --> B[Load REQ Files]
-    B --> C[Validate 12-Section Structure]
+    B --> C[Validate 11-Section Structure]
     C --> D[Check Atomic Decomposition]
     D --> E[Validate Dual Scores]
     E --> F[Check Cross-Links]
@@ -1010,7 +1002,7 @@ flowchart TD
 review_mode:
   enabled: true
   checks:
-    - section_completeness     # All 12 sections
+    - section_completeness     # All 11 sections
     - atomic_decomposition     # File structure
     - element_id_compliance    # REQ.NN.TT.SS format
     - acceptance_criteria      # >= 15 count
@@ -1037,26 +1029,18 @@ Auto-repair existing REQ documents while preserving manual content.
 
 ```bash
 # Fix single REQ folder
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/REQ-01_f1_iam/ \
-  --mode fix
+/doc-req-autopilot REQ-01 --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/REQ-01_f1_iam/ \
-  --mode fix \
+/doc-req-autopilot REQ-01 --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/REQ-01_f1_iam/ \
-  --mode fix \
+/doc-req-autopilot REQ-01 --mode fix \
   --fix-types "element_ids,sections,cross_links"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/req_autopilot.py \
-  --req docs/07_REQ/REQ-01_f1_iam/ \
-  --mode fix \
+/doc-req-autopilot REQ-01 --mode fix \
   --dry-run
 ```
 
@@ -1399,9 +1383,7 @@ fi
 
 # Example: Trigger SPEC autopilot for validated REQ
 if [ "$REQ_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/spec_autopilot.py \
-    --req "$REQ_PATH" \
-    --output docs/SPEC/
+  /doc-spec-autopilot "$REQ_PATH" --output docs/09_SPEC/
 fi
 ```
 
@@ -1424,10 +1406,7 @@ jobs:
 
       - name: Run REQ Autopilot
         run: |
-          python ai_dev_flow/scripts/req_autopilot.py \
-            --sys docs/06_SYS/ \
-            --output docs/07_REQ/ \
-            --validate
+          /doc-req-autopilot all --auto --validate
 
       - name: Upload Validation Report
         uses: actions/upload-artifact@v4
@@ -1446,7 +1425,7 @@ jobs:
 |-------|------|----------|
 | Phase 1 | Input Gate | At least one SYS document found |
 | Phase 2 | Readiness Gate | SYS REQ-Ready Score >= 90% |
-| Phase 3 | Generation Gate | All 12 sections generated |
+| Phase 3 | Generation Gate | All 11 sections generated |
 | Phase 4 | Validation Gate | SPEC-Ready >= 90% AND IMPL-Ready >= 90% |
 | Phase 5 | Review Gate | No blocking issues remaining |
 
@@ -1521,7 +1500,7 @@ After autopilot completion:
 
 ### Skills (Delegated)
 
-- **REQ Skill**: `.claude/skills/doc-req/SKILL.md` - REQ creation rules and 12-section structure
+- **REQ Skill**: `.claude/skills/doc-req/SKILL.md` - REQ creation rules and 11-section structure
 - **REQ Validator Skill**: `.claude/skills/doc-req-validator/SKILL.md` - Validation rules and error codes
 - **SYS Validator Skill**: `.claude/skills/doc-sys-validator/SKILL.md` - SYS readiness validation
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md` - Real-time quality feedback
@@ -1529,21 +1508,19 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **REQ Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-- **REQ Schema**: `ai_dev_flow/07_REQ/REQ_SCHEMA.yaml`
-- **REQ Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
+- **REQ Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+- **REQ Schema**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
+- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
+- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
 
-### Section Templates (for documents >50KB)
+### Section Splitting Reference (for documents >50KB)
 
-- Index template: `ai_dev_flow/07_REQ/REQ-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/07_REQ/REQ-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md`
 - **SYS Autopilot Skill**: `.claude/skills/doc-sys-autopilot/SKILL.md` (if available)
 - **EARS Autopilot Skill**: `.claude/skills/doc-ears-autopilot/SKILL.md`
 
@@ -1558,7 +1535,7 @@ Review reports generated by this skill are formal project documents and MUST com
 **Key Requirements**:
 
 1. **Storage Location**: Same folder as the reviewed REQ document
-2. **File Naming**: `REQ-NN-SSS.R_review_report.md` (for atomic files) or `REQ-NN.R_review_report.md` (for module index)
+2. **File Naming**: preferred `REQ-NN.A_audit_report_vNNN.md`; legacy-compatible `REQ-NN-SSS.R_review_report_vNNN.md` or `REQ-NN.R_review_report_vNNN.md`
 3. **YAML Frontmatter**: Required with `artifact_type: REQ-REVIEW`, `layer: 7`
 4. **Score Fields**: `spec_ready_score_claimed/validated` and `impl_ready_score_claimed/validated`
 5. **Parent Reference**: Must link to parent REQ document
@@ -1570,7 +1547,7 @@ docs/07_REQ/REQ-03_f3_observability/
 ├── REQ-03.0_index.md
 ├── REQ-03-001_telemetry_collection.md
 ├── REQ-03-002_metrics_export.md
-└── REQ-03.R_review_report.md    # ← Review stored here
+└── REQ-03.A_audit_report_v001.md    # ← Preferred combined audit report
 ```
 
 ---

@@ -1,23 +1,25 @@
 ---
 name: doc-req-reviewer
 description: Comprehensive content review and quality assurance for REQ documents - validates atomic requirement completeness, SYS alignment, implementation paths, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - req-review
-  - layer-7-artifact
-  - shared-architecture
-custom_fields:
-  layer: 7
-  artifact_type: REQ
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [REQ]
-  downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T12:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - req-review
+    - layer-7-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 7
+    artifact_type: REQ
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [REQ]
+    downstream_artifacts: []
+    version: "1.5"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks REQ-MVP-TEMPLATE schema_version"
 ---
 
 # doc-req-reviewer
@@ -498,7 +500,9 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **File Naming**: `REQ-NN.R_review_report_vNNN.md` (module-level) or `REQ-NN-SSS.R_review_report_vNNN.md` (atomic-level)
 
-**Location**: Inside the REQ nested folder: `docs/REQ/REQ-NN_{slug}/`
+**Audit Wrapper Compatibility**: `doc-req-audit` may emit preferred `REQ-NN.A_audit_report_vNNN.md`; reviewer output remains valid legacy-compatible input for fixer.
+
+**Location**: Inside the REQ nested folder: `docs/07_REQ/REQ-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -511,7 +515,7 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/REQ/REQ-03_f3_observability/
+docs/07_REQ/REQ-03_f3_observability/
 ├── REQ-03-001_metrics_collection.md
 ├── REQ-03-001.R_review_report_v001.md    # First review
 ├── REQ-03-001.R_review_report_v002.md    # After fixes
