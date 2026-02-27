@@ -238,6 +238,8 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-W004 | WARNING | Missing Document Revision History table |
 | PRD-W005 | WARNING | Architecture Decision Requirements reference ADR numbers |
 | PRD-W011 | WARNING | Diagram intent header missing required fields |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 | PRD-I001 | INFO | Consider adding success metrics with quantified targets |
 | PRD-I002 | INFO | Consider adding competitive analysis |
 

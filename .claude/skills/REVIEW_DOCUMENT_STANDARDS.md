@@ -9,8 +9,8 @@ tags:
 custom_fields:
   document_type: standards
   applies_to: all-autopilot-skills
-  version: "2.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.1"
+  last_updated: "2026-02-27T15:45:00"
 ---
 
 # Review Document Standards for Autopilot Skills
@@ -331,7 +331,86 @@ Each autopilot skill MUST:
 
 ---
 
-## 8. Example Review Report
+## 8. Drift Cache Requirements (MANDATORY)
+
+Each review MUST create or update a `.drift_cache.json` file alongside the reviewed document.
+
+### 8.1 Storage Location
+
+| Document Structure | Drift Cache Location |
+|-------------------|----------------------|
+| Monolithic document | Same folder as the document |
+| Sectioned document | Inside the section folder |
+
+**Example**:
+```
+docs/01_BRD/BRD-01_platform/
+├── BRD-01_platform.md
+├── BRD-01.R_review_report.md
+└── .drift_cache.json              # ← Drift cache here
+```
+
+### 8.2 Hash Computation (MANDATORY BASH EXECUTION)
+
+**CRITICAL**: You MUST execute actual bash commands to compute hashes.
+
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
+
+Store result as: `"hash": "sha256:<64_hex_characters>"`
+
+### 8.3 Rejected Hash Values
+
+**INVALID** (triggers VAL-H002/REV-D009 errors):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- `pending_verification`
+- `sha256:TBD`
+- Any value where hex portion != 64 characters
+
+### 8.4 Upstream Tracking Requirements
+
+| Layer | Artifact | Upstream | Mode |
+|-------|----------|----------|------|
+| 1 | BRD | REF docs | **Optional** |
+| 2-11 | PRD to TASKS | Previous layer | **MANDATORY** |
+
+**BRD is the only Layer 1 artifact** that can skip upstream tracking (when created from prompt).
+
+### 8.5 Cache Schema
+
+```json
+{
+  "schema_version": "1.2",
+  "document_id": "ARTIFACT-NN",
+  "document_version": "1.0",
+  "upstream_mode": "ref",
+  "last_reviewed": "YYYY-MM-DDTHH:MM:SS",
+  "reviewer_version": "1.8",
+  "upstream_documents": {
+    "relative/path/to/upstream.md": {
+      "hash": "sha256:<64_hex_characters>",
+      "last_modified": "YYYY-MM-DDTHH:MM:SS",
+      "file_size": 12345,
+      "version": "1.0"
+    }
+  },
+  "review_history": [
+    {
+      "date": "YYYY-MM-DDTHH:MM:SS",
+      "score": 95,
+      "drift_detected": false,
+      "report_version": "v001",
+      "status": "PASS"
+    }
+  ]
+}
+```
+
+---
+
+## 9. Example Review Report
 
 See: `docs/01_BRD/BRD-03_f3_observability/BRD-03.R_review_report.md` for a complete example.
 
@@ -341,5 +420,6 @@ See: `docs/01_BRD/BRD-03_f3_observability/BRD-03.R_review_report.md` for a compl
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-27 | **Drift Cache Requirements**: Added Section 8 with mandatory bash sha256sum execution; Rejected placeholder values; Upstream tracking requirements by layer |
 | 2.0 | 2026-02-10 | Added review versioning (Section 2.1-2.4); Pattern changed to `_vNNN.md`; Added version tracking in frontmatter; Added delta reporting |
 | 1.0 | 2026-02-10 | Initial standards document; Defines storage location, file naming, YAML frontmatter, section structure, parent document references |

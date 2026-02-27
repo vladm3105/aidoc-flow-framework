@@ -269,6 +269,37 @@ Forbidden tag patterns:
 - BRDs without `upstream_mode` are treated as `upstream_mode: "none"`
 - Drift detection is automatically skipped for these BRDs
 
+### 8.1 Hash Format Validation
+
+When `upstream_mode: "ref"` and `.drift_cache.json` exists, validate hash integrity.
+
+**Validation Checks**:
+
+| Check | Requirement | Error Code |
+|-------|-------------|------------|
+| Hash exists | Each upstream doc in cache has `hash` field | VAL-H001 |
+| Hash format | Matches `^sha256:[0-9a-f]{64}$` | VAL-H002 |
+| No placeholders | Not `verified_no_drift`, `pending_verification`, etc. | VAL-H002 |
+
+**Validation Algorithm**:
+
+```bash
+# For each upstream document in drift cache:
+# 1. Check valid hash format
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
+
+# 2. Check for placeholder values (must return empty)
+grep -E '"hash":\s*"(sha256:)?(verified_no_drift|pending_verification|TBD)"' .drift_cache.json
+```
+
+**Validation Logic**:
+1. If `upstream_mode: "none"` → Skip hash validation
+2. If `.drift_cache.json` missing → Skip (reviewer will create it)
+3. If `upstream_documents` empty → Valid (no refs tracked)
+4. For each entry in `upstream_documents`:
+   - Check `hash` field exists → VAL-H001 if missing
+   - Check hash format is valid → VAL-H002 if invalid or placeholder
+
 ### 9. Diagram Contract Validation
 
 BRD diagram contract requirements follow `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
@@ -341,6 +372,8 @@ BRD diagram contract requirements follow `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
 | VAL-U003 | WARNING | upstream_mode is "ref" but upstream_ref_path not set |
 | VAL-U004 | ERROR | upstream_ref_path directory not found |
 | VAL-U005 | INFO | upstream_ref_path directory is empty |
+| VAL-H001 | WARNING | Missing hash field for upstream document in drift cache |
+| VAL-H002 | ERROR | Invalid hash format or placeholder value detected (verified_no_drift, pending_verification, etc.) |
 
 ## Validation Commands
 
@@ -439,6 +472,7 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-27 | **Hash Format Validation**: Added Section 8.1 for drift cache hash validation; Added VAL-H001 (missing hash), VAL-H002 (invalid format/placeholder) error codes; Validates hash format when upstream_mode: "ref" |
 | 2.4 | 2026-02-26 | Added Diagram Contract Validation section aligned to `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`; introduced BRD-E022/E023/E024 and BRD-W010; updated workflow with explicit C4/DFD/sequence checks |
 | 2.3 | 2026-02-25 | Updated section structure to match 18-section MVP template; Added validation for sections 12-18 with required subsections; Updated PRD-Ready score to show MVP (≥70) and Full (≥90) targets |
 | 2.2 | 2026-02-24 | Added upstream source configuration validation (Section 8); Added VAL-U001 through VAL-U005 error codes; Updated workflow to include upstream_mode validation |

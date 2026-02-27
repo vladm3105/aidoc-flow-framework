@@ -406,25 +406,33 @@ Location: `docs/06_SYS/.drift_cache.json`
 
 ---
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
 
-**Python SHA-256 Implementation**:
+**CRITICAL**: You MUST execute actual bash commands to compute hashes. DO NOT write placeholder values.
 
-```python
-import hashlib
-from pathlib import Path
+**Compute File Hash**:
 
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content."""
-    content = Path(file_path).read_bytes()
-    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
 
-def compute_section_hash(file_path: str, section_anchor: str) -> str:
-    """Compute SHA-256 hash of specific section."""
-    content = Path(file_path).read_text()
-    # Extract section from anchor to next heading
-    section = extract_section(content, section_anchor)
-    return f"sha256:{hashlib.sha256(section.encode()).hexdigest()}"
+Store result as: `"hash": "sha256:<64_hex_characters>"`
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Section Hash** (for anchor-specific tracking):
+
+```bash
+sed -n '/^## Section Name/,/^## /p' <file_path> | head -n -1 | sha256sum | cut -d' ' -f1
+```
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 ---
@@ -439,6 +447,7 @@ def compute_section_hash(file_path: str, section_anchor: str) -> str:
 | REV-D004 | Info | New content added to upstream ADR |
 | REV-D005 | Error | Critical ADR substantially modified (>20% change) |
 | REV-D006 | Error | Drift cache missing or corrupted - requires initialization |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 ---
 

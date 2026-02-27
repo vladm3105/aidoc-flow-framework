@@ -394,16 +394,25 @@ Phase 3: Update Cache (MANDATORY)
 4. Cache update is MANDATORY - never skip this step
 ```
 
-**Hash Calculation**:
+**Hash Calculation (MANDATORY BASH EXECUTION)**:
 
-```python
-import hashlib
+**CRITICAL**: Execute actual bash commands. DO NOT write placeholder values.
 
-def compute_upstream_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of upstream document content."""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
+
+Store as: `"hash": "sha256:<64_hex_characters>"`
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 **Error Codes**:
@@ -416,6 +425,7 @@ def compute_upstream_hash(file_path: str) -> str:
 | REV-D004 | Info | New content added to upstream SYS |
 | REV-D005 | Error | Critical SYS substantially modified (>20% change) |
 | REV-D006 | Info | Cache created - first review |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 **Report Output**:
 

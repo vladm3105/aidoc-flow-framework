@@ -81,6 +81,8 @@ docs/03_EARS/
 | EARS-E020 | ERROR | EARS not in nested folder (BLOCKING) |
 | EARS-E021 | ERROR | Folder name doesn't match EARS ID |
 | EARS-E022 | ERROR | File name doesn't match folder name |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 
 **This check is BLOCKING** - EARS must pass folder structure validation before other checks proceed.
 

@@ -1108,28 +1108,74 @@ pip install google-adk
 
 ---
 
-### SDD Reviewer Skills (v1.4)
+### SDD Reviewer Skills (v1.8)
 
 Reviewer skills perform comprehensive content review and quality assurance with mandatory drift detection:
 
+#### Hash Computation (MANDATORY BASH EXECUTION)
+
+**CRITICAL**: All reviewer skills MUST execute actual bash commands to compute hashes:
+
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
+
+Store result as: `"hash": "sha256:<64_hex_characters>"`
+
+**REJECTED VALUES** (triggers REV-D009 error):
+- `sha256:verified_no_drift` - INVALID
+- `sha256:pending_verification` - INVALID
+- `pending_verification` - INVALID
+- Any value where hex portion != 64 characters
+
 #### doc-brd-reviewer
 **Purpose**: Review BRD documents for quality, completeness, and upstream drift detection
-**Version**: 1.4
+**Version**: 1.9
 **Key Features**:
 - Mandatory `.drift_cache.json` usage with three-phase detection
-- SHA-256 hash comparison for upstream documents
+- SHA-256 hash computation via `sha256sum` bash command
+- Optional upstream mode (BRD is Layer 1 - can be created from prompt)
 - Link integrity validation
 - Strategic alignment verification
 - Review history tracking
 
 #### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-utest-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-ptest-reviewer, doc-sectest-reviewer, doc-stest-reviewer, doc-tasks-reviewer
-**Purpose**: Review respective artifact types with drift detection
-**Version**: 1.4 (all updated)
+**Purpose**: Review respective artifact types with MANDATORY upstream drift detection
+**Version**: 1.8 (all updated)
 **Common Features**:
 - Three-phase drift detection: Load Cache → Detect Drift → Update Cache
-- SHA-256 hash computation for content comparison
+- SHA-256 hash computation via mandatory `sha256sum` bash execution
+- Mandatory upstream tracking (Layers 2-11 MUST track upstream)
 - Mandatory cache update after every review
 - Complete review history in `.drift_cache.json`
+- REV-D009 error for invalid hash placeholders
+
+---
+
+### SDD Validator Skills (v2.5)
+
+Validator skills check schema compliance and structural validation:
+
+#### Hash Format Validation (VAL-H Codes)
+
+All validator skills include hash format validation:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
+
+**Valid hash format**: `sha256:<64 hex characters>` matching regex `^sha256:[0-9a-f]{64}$`
+
+#### doc-brd-validator, doc-prd-validator, doc-ears-validator, doc-bdd-validator, doc-adr-validator, doc-sys-validator, doc-req-validator, doc-ctr-validator, doc-spec-validator, doc-tspec-validator, doc-tasks-validator
+**Purpose**: Schema compliance and structural validation for respective artifacts
+**Version**: 2.5 (all updated)
+**Common Features**:
+- YAML frontmatter validation
+- Required section validation
+- Element ID format validation
+- Nested folder structure enforcement
+- Hash format validation (VAL-H001, VAL-H002)
 
 ---
 
@@ -1144,7 +1190,7 @@ Audit wrappers run validator + reviewer and emit combined reports for fixer work
 
 ---
 
-### SDD Fixer Skills (v2.0)
+### SDD Fixer Skills (v2.6)
 
 Fixer skills implement tiered auto-merge with no-deletion policy:
 
@@ -1156,11 +1202,28 @@ Fixer skills implement tiered auto-merge with no-deletion policy:
 | **Tier 2** | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
 | **Tier 3** | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
 
+#### Hash Validation Fixes (FIX-H Codes)
+
+All fixer skills include hash validation fixes:
+
+| Code | Description | Auto-Fix | Severity |
+|------|-------------|----------|----------|
+| FIX-H001 | Replace placeholder hash with actual SHA-256 | Yes | Error |
+| FIX-H002 | Add missing sha256: prefix | Yes | Warning |
+| FIX-H003 | Upstream file not found | Partial | Error |
+
+**Fix execution**:
+```bash
+sha256sum <upstream_file_path> | cut -d' ' -f1
+```
+Update cache with: `sha256:<64_hex_output>`
+
 #### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-utest-fixer, doc-itest-fixer, doc-ftest-fixer, doc-ptest-fixer, doc-sectest-fixer, doc-stest-fixer, doc-tasks-fixer
 **Purpose**: Fix issues identified by reviewer skills using tiered auto-merge
-**Version**: 2.0 (all updated)
+**Version**: 2.6 (all updated)
 **Common Features**:
 - Tiered auto-merge based on change percentage
+- Hash validation fixes (FIX-H001, FIX-H002, FIX-H003)
 - No deletion policy (mark as [DEPRECATED], [SUPERSEDED], [CANCELLED])
 - Archive manifest creation for Tier 3 changes
 - Document-specific ID patterns for new requirements

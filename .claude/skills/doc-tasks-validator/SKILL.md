@@ -79,6 +79,8 @@ docs/11_TASKS/
 | TASKS-E020 | ERROR | TASKS not in nested folder (BLOCKING) |
 | TASKS-E021 | ERROR | Folder name doesn't match TASKS ID |
 | TASKS-E022 | ERROR | File name doesn't match folder name |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 
 **This check is BLOCKING** - TASKS must pass folder structure validation before other checks proceed.
 

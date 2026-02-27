@@ -617,36 +617,72 @@ PHASE 3: Update Cache (MANDATORY)
 
 ---
 
-#### 9.3 Hash Calculation
+#### 9.3 Hash Calculation (MANDATORY BASH EXECUTION)
 
-```python
-import hashlib
-from pathlib import Path
+**CRITICAL**: You MUST execute actual bash commands to compute hashes. DO NOT write placeholder values like `verified_no_drift` or `pending_verification`.
 
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content."""
-    sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(8192), b''):
-            sha256.update(chunk)
-    return f"sha256:{sha256.hexdigest()}"
+##### 9.3.1 Compute File Hash
 
-def compute_section_hash(file_path: str, section_anchor: str) -> str:
-    """Compute hash of specific section (for anchor references)."""
-    content = Path(file_path).read_text()
-    # Extract section from anchor to next heading
-    section_pattern = f"#{section_anchor.lstrip('#')}"
-    # ... section extraction logic ...
-    section_content = extract_section(content, section_pattern)
-    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+Execute this bash command for each upstream document:
 
-def calculate_change_percentage(old_hash: str, new_content: str) -> float:
-    """Estimate change percentage using content diff."""
-    # Use difflib to calculate similarity ratio
-    import difflib
-    # ... comparison logic ...
-    return change_percentage
+```bash
+sha256sum <file_path> | cut -d' ' -f1
 ```
+
+**Example**:
+```bash
+sha256sum docs/00_REF/project_governance/engineering_standards.md | cut -d' ' -f1
+# Output: a9ca05f4e9b2379465526221271672954feff29e40c57f2a91fe8a050eb46105
+```
+
+Store result in drift cache as: `"hash": "sha256:<64_hex_characters>"`
+
+##### 9.3.2 Hash Format Validation
+
+Before writing to drift cache, validate the hash:
+
+| Check | Requirement | Action if Failed |
+|-------|-------------|------------------|
+| Prefix | Must be `sha256:` | Add prefix |
+| Length | Exactly 64 hex characters after prefix | Re-run sha256sum |
+| Characters | `[0-9a-f]` only | Re-run sha256sum |
+| Placeholders | Must NOT be placeholder | Re-run sha256sum |
+
+**REJECTED VALUES** (re-compute immediately if found):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- `pending_verification`
+- `sha256:TBD`
+- Any value where hex portion != 64 characters
+
+##### 9.3.3 Verification After Cache Write
+
+After updating `.drift_cache.json`, verify hashes are valid:
+
+```bash
+# Verify all hashes match valid format
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
+
+# Check for any placeholder values (must return empty)
+grep -E '"hash":\s*"(sha256:)?(verified_no_drift|pending_verification|TBD)"' .drift_cache.json
+```
+
+If verification fails, re-run sha256sum and update cache before proceeding.
+
+##### 9.3.4 Hash Comparison Algorithm
+
+When comparing hashes for drift detection:
+
+1. **Read stored hash** from `.drift_cache.json`
+2. **Validate stored hash** - if placeholder, flag REV-D009 and compute real hash
+3. **Compute current hash** via bash:
+   ```bash
+   CURRENT_HASH=$(sha256sum <upstream_file> | cut -d' ' -f1)
+   ```
+4. **Compare**:
+   - If `CURRENT_HASH != stored_hash` → Flag REV-D002 (CONTENT_DRIFT)
+   - If hashes match → No drift
+5. **Update cache** with current hash and timestamp
 
 ---
 
@@ -662,6 +698,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 | REV-D006 | Info | Cache created (first review) | no prior cache existed |
 | REV-D007 | Info | Drift detection skipped | upstream_mode: "none" |
 | REV-D008 | Warning | upstream_ref_path not found | specified path doesn't exist |
+| REV-D009 | Error | Invalid hash placeholder detected | hash is `verified_no_drift`, `pending_verification`, or invalid format |
 
 ---
 
@@ -851,6 +888,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9 | 2026-02-27T16:30:00 | **Fixed drift detection hash computation**: Section 9.3 now requires mandatory bash `sha256sum` execution; Added hash format validation (Section 9.3.2); Added placeholder rejection list; Added verification step (Section 9.3.3); Added comparison algorithm (Section 9.3.4); Added REV-D009 error code for invalid hash placeholders |
 | 1.2 | 2026-02-26T12:45:00 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version to avoid cross-skill version drift. |
 | 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
 | 1.7 | 2026-02-25T11:00:00 | **Template alignment**: Check #6 updated for 18-section structure validation; Added MVP-critical subsection validation (2.1, 3.2, 9.1, 14.5, 15.3, 16.1-16.4, 17.1-17.6); Added REV-MVP001-MVP010 error codes; Updated scoring formula (28-point validation: 18 sections + 10 MVP subsections) |

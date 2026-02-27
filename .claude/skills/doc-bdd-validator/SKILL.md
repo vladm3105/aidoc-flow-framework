@@ -84,6 +84,8 @@ docs/04_BDD/
 | BDD-E020 | ERROR | BDD not in nested folder (BLOCKING) |
 | BDD-E021 | ERROR | Folder name doesn't match BDD ID |
 | BDD-E022 | ERROR | File name doesn't match folder name |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 
 **This check is BLOCKING** - BDD must pass folder structure validation before other checks proceed.
 

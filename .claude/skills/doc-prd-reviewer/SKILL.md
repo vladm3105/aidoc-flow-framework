@@ -625,35 +625,50 @@ PHASE 3: Update Cache (MANDATORY)
 
 ---
 
-#### 10.3 Hash Calculation
+#### 10.3 Hash Calculation (MANDATORY BASH EXECUTION)
 
-```python
-import hashlib
-from pathlib import Path
+**CRITICAL**: You MUST execute actual bash commands to compute hashes. DO NOT write placeholder values like `verified_no_drift` or `pending_verification`.
 
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content."""
-    sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(8192), b''):
-            sha256.update(chunk)
-    return f"sha256:{sha256.hexdigest()}"
+##### 10.3.1 Compute File Hash
 
-def compute_section_hash(file_path: str, section_anchor: str) -> str:
-    """Compute hash of specific section (for anchor references)."""
-    content = Path(file_path).read_text()
-    # Extract section from anchor to next heading
-    section_pattern = f"#{section_anchor.lstrip('#')}"
-    # ... section extraction logic ...
-    section_content = extract_section(content, section_pattern)
-    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+Execute this bash command for each upstream document:
 
-def calculate_change_percentage(old_hash: str, new_content: str) -> float:
-    """Estimate change percentage using content diff."""
-    # Use difflib to calculate similarity ratio
-    import difflib
-    # ... comparison logic ...
-    return change_percentage
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
+
+Store result in drift cache as: `"hash": "sha256:<64_hex_characters>"`
+
+##### 10.3.2 Hash Format Validation
+
+| Check | Requirement |
+|-------|-------------|
+| Prefix | Must be `sha256:` |
+| Length | Exactly 64 hex characters after prefix |
+| Characters | `[0-9a-f]` only |
+
+**REJECTED VALUES** (re-compute immediately if found):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- `pending_verification`
+- `sha256:TBD`
+- Any value where hex portion != 64 characters
+
+##### 10.3.3 Verification After Cache Write
+
+```bash
+# Verify all hashes in cache are valid
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
+# Must return valid matches for all upstream docs
+```
+
+##### 10.3.4 Section Hash Computation
+
+For anchor-specific tracking, extract section content first then hash:
+
+```bash
+# Extract section and compute hash
+sed -n '/^## Section Name/,/^## /p' <file_path> | head -n -1 | sha256sum | cut -d' ' -f1
 ```
 
 ---
@@ -668,6 +683,7 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 | REV-D004 | Info | New content added to upstream | file size increased >10% |
 | REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
 | REV-D006 | Info | Cache created (first review) | no prior cache existed |
+| REV-D009 | Error | Invalid hash placeholder detected | hash is `verified_no_drift`, `pending_verification`, or invalid format |
 
 ---
 
@@ -1065,6 +1081,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8 | 2026-02-27 | **Hash Computation Fix**: Replaced Python pseudocode with mandatory bash `sha256sum` execution; Added hash validation (REV-D009); Reject placeholder values (`verified_no_drift`, `pending_verification`) |
 | 1.7 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented relationship with `doc-prd-audit` wrapper |
 | 1.6 | 2026-02-11 | **Numbering Fix**: Corrected Check #10 subsections from 9.1-9.6 to 10.1-10.6 (drift cache, detection algorithm, hash calculation, error codes, report output, configuration) |
 | 1.5 | 2026-02-11 | **Structure Compliance**: Added Check #9 for nested folder rule enforcement (REV-STR001-STR004); Shifted Upstream Drift to Check #10; Added structure compliance to scoring (12% weight, blocking); Updated workflow diagram to 10 checks |

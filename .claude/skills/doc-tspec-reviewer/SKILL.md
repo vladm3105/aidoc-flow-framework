@@ -387,26 +387,33 @@ AFTER successful review (score >= threshold):
     5. Report: "Cache updated for TSPEC-NN"
 ```
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
 
-**Content Hash** (SHA-256):
+**CRITICAL**: Execute actual bash commands. DO NOT write placeholder values.
 
-```python
-import hashlib
+**Full File Hash**:
 
-def compute_content_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content, normalized."""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Normalize: strip whitespace, lowercase for comparison
-    normalized = content.strip()
-    return f"sha256:{hashlib.sha256(normalized.encode()).hexdigest()[:16]}"
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
 
-def compute_section_hash(file_path: str, section_name: str) -> str:
-    """Compute hash of specific YAML section."""
-    # Extract section content between section_name: and next top-level key
-    # Apply same normalization and hash
-    pass
+Store as: `"hash": "sha256:<64_hex_characters>"`
+
+**Section Hash** (for YAML sections):
+
+```bash
+yq '.<section_name>' <file_path> | sha256sum | cut -d' ' -f1
+```
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 **Error Codes**:
@@ -419,6 +426,7 @@ def compute_section_hash(file_path: str, section_name: str) -> str:
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
 | REV-D006 | Error | Drift cache missing or corrupted - must initialize before review |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 **Report Output**:
 

@@ -339,26 +339,33 @@ Phase 3: Cache Update
   4. Report cache status in output
 ```
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
+
+**CRITICAL**: Execute actual bash commands. DO NOT write placeholder values.
 
 **Full File Hash**:
 
-```python
-import hashlib
-
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content."""
-    with open(file_path, 'rb') as f:
-        return hashlib.sha256(f.read()).hexdigest()
+```bash
+sha256sum <file_path> | cut -d' ' -f1
 ```
 
-**Section Hash**:
+Store as: `"hash": "sha256:<64_hex_characters>"`
 
-```python
-def compute_section_hash(file_path: str, section_anchor: str) -> str:
-    """Compute SHA-256 hash of specific section content."""
-    content = extract_section(file_path, section_anchor)
-    return hashlib.sha256(content.encode()).hexdigest()
+**Section Hash** (for anchor-specific tracking):
+
+```bash
+sed -n '/^## Section Name/,/^## /p' <file_path> | head -n -1 | sha256sum | cut -d' ' -f1
+```
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 **Error Codes**:
@@ -371,6 +378,7 @@ def compute_section_hash(file_path: str, section_anchor: str) -> str:
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
 | REV-D006 | Error | Drift cache missing or corrupted - regenerating |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 **Report Output**:
 

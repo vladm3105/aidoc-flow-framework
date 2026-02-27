@@ -403,6 +403,8 @@ AND no side effects occur
 | TSPEC-W008 | WARNING | Execution time exceeds 5 minutes (STEST only) |
 | TSPEC-W009 | WARNING | Missing @threshold tags (FTEST only) |
 | TSPEC-W010 | WARNING | Missing sequence diagrams for complex interactions (ITEST only) |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 | TSPEC-I001 | INFO | Consider adding performance targets for test execution |
 | TSPEC-I002 | INFO | Consider adding test data setup documentation |
 | TSPEC-I003 | INFO | Consider adding CI/CD integration notes |

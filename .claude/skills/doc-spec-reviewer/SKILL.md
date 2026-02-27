@@ -421,28 +421,34 @@ Location: `docs/09_SPEC/.drift_cache.json`
 
 ---
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
 
-**SHA-256 Implementation**:
+**CRITICAL**: Execute actual bash commands. DO NOT write placeholder values.
 
-```python
-import hashlib
+**Full File Hash**:
 
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of entire file."""
-    sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(8192), b''):
-            sha256.update(chunk)
-    return f"sha256:{sha256.hexdigest()}"
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
 
-def compute_section_hash(file_path: str, section_name: str) -> str:
-    """Compute SHA-256 hash of specific YAML section."""
-    import yaml
-    with open(file_path, 'r') as f:
-        doc = yaml.safe_load(f)
-    section_content = yaml.dump(doc.get(section_name, {}), sort_keys=True)
-    return f"sha256:{hashlib.sha256(section_content.encode()).hexdigest()}"
+Store as: `"hash": "sha256:<64_hex_characters>"`
+
+**Section Hash** (for YAML sections):
+
+```bash
+# Extract YAML section and hash
+yq '.<section_name>' <file_path> | sha256sum | cut -d' ' -f1
+```
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 ---
@@ -457,6 +463,7 @@ def compute_section_hash(file_path: str, section_name: str) -> str:
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
 | REV-D006 | Error | Drift cache missing or invalid - cache is mandatory |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 ---
 

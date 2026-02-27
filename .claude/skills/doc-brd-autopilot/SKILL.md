@@ -1016,6 +1016,69 @@ VERIFICATION ALGORITHM:
 }
 ```
 
+#### 5.6.1 Hash Computation Contract (MANDATORY)
+
+When creating or updating `.drift_cache.json`, the autopilot MUST compute actual SHA-256 hashes.
+
+##### At Initial BRD Generation (Phase 3-4)
+
+If `upstream_mode: "ref"` is set:
+
+1. **Compute hash immediately** for each upstream document using bash:
+   ```bash
+   sha256sum <upstream_file_path> | cut -d' ' -f1
+   ```
+
+2. **Store in drift cache** with format:
+   ```json
+   "upstream_documents": {
+     "<filename>": {
+       "path": "<relative_path>",
+       "hash": "sha256:<64_hex_characters>",
+       "last_modified": "<ISO_timestamp>",
+       "file_size": <bytes>
+     }
+   }
+   ```
+
+3. **Never use placeholders** - The following are INVALID and must not be written:
+   - `sha256:verified_no_drift`
+   - `sha256:pending_verification`
+   - `pending_verification`
+   - `sha256:TBD`
+
+##### At Review Time (Phase 5)
+
+1. **Re-compute hash** for each upstream document via bash
+2. **Compare** with stored hash
+3. **Update cache** with new hash
+4. **Flag drift** if hash differs
+
+##### Validation Requirements
+
+| Check | Requirement |
+|-------|-------------|
+| Format | Hash must match regex `^[0-9a-f]{64}$` |
+| Prefix | Store as `sha256:<hash>` |
+| Reject | Any placeholder values |
+
+##### Verification Step
+
+After writing drift cache, verify all hashes are valid:
+
+```bash
+# Count valid hashes
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json | wc -l
+# Must equal number of upstream documents tracked
+
+# Check for placeholder values (must return empty)
+grep -E 'pending_verification|verified_no_drift' .drift_cache.json
+```
+
+**FAILURE MODE**: If any hash fails validation, the Phase 5 cycle is INCOMPLETE. Re-run `sha256sum` and update cache before proceeding.
+
+---
+
 #### 5.7 Phase 5 Output Checklist (MANDATORY)
 
 Before proceeding to Phase 6, verify ALL outputs exist:
@@ -1810,6 +1873,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.2 | 2026-02-27 | **Hash Computation Contract**: Added Section 5.6.1 with mandatory bash `sha256sum` execution at generation and review; Hash format validation; Placeholder rejection (verified_no_drift, pending_verification); Verification step to confirm valid hashes in drift cache |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
 | 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |
 | 3.0 | 2026-02-26 | **Fix-loop hardening**: Enhanced Phase 5 orchestration to include semantic MVP heading normalization, safe subsection renumbering, fix confidence tagging, and markdown normalization for generated review/fix reports; Added gating rule requiring no unresolved `manual-required` fix items before PASS. |

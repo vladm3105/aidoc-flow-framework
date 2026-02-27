@@ -548,6 +548,91 @@ custom_fields:
 
 ---
 
+#### 6.0.1 Hash Validation Fixes
+
+Fixes invalid hash values in `.drift_cache.json` that prevent drift detection from working correctly.
+
+**FIX-H001: Invalid Hash Placeholder**
+
+| Field | Value |
+|-------|-------|
+| Trigger | Hash field contains placeholder instead of actual SHA-256 |
+| Detection | Hash matches: `verified_no_drift`, `pending_verification`, `TBD`, or length != 64 hex |
+| Severity | Error |
+| Auto-Fix | Yes |
+
+**Detection Algorithm**:
+```bash
+# Check for placeholder values in drift cache
+grep -E '"hash":\s*"(sha256:)?(verified_no_drift|pending_verification|TBD)"' .drift_cache.json
+```
+
+**Fix Action**:
+```bash
+# Compute actual hash for upstream file
+HASH=$(sha256sum <upstream_file_path> | cut -d' ' -f1)
+# Update cache with: "hash": "sha256:$HASH"
+```
+
+**Example**:
+```json
+// Before (INVALID)
+"hash": "sha256:pending_verification"
+
+// After (VALID)
+"hash": "sha256:a9ca05f4e9b2379465526221271672954feff29e40c57f2a91fe8a050eb46105"
+```
+
+---
+
+**FIX-H002: Missing Hash Prefix**
+
+| Field | Value |
+|-------|-------|
+| Trigger | Hash value is 64 hex chars but missing `sha256:` prefix |
+| Detection | Matches `^[0-9a-f]{64}$` without prefix |
+| Severity | Warning |
+| Auto-Fix | Yes |
+
+**Fix Action**: Prepend `sha256:` to existing hash value
+
+```json
+// Before
+"hash": "a9ca05f4e9b2379465526221271672954feff29e40c57f2a91fe8a050eb46105"
+
+// After
+"hash": "sha256:a9ca05f4e9b2379465526221271672954feff29e40c57f2a91fe8a050eb46105"
+```
+
+---
+
+**FIX-H003: Upstream File Not Found**
+
+| Field | Value |
+|-------|-------|
+| Trigger | Cannot compute hash because upstream file does not exist |
+| Detection | File at `upstream_ref_path` returns error from sha256sum |
+| Severity | Error |
+| Auto-Fix | Partial |
+
+**Fix Action**:
+1. Log warning: `Upstream file not found: <path>`
+2. Set `drift_detected: true` in cache
+3. Set hash to `sha256:FILE_NOT_FOUND`
+4. Add note to manual review queue
+
+---
+
+**Hash Fix Codes Summary**:
+
+| Code | Description | Auto-Fix | Severity |
+|------|-------------|----------|----------|
+| FIX-H001 | Replace placeholder hash with actual SHA-256 | Yes | Error |
+| FIX-H002 | Add missing sha256: prefix | Yes | Warning |
+| FIX-H003 | Upstream file not found | Partial | Error |
+
+---
+
 ### Phase 6.1: Handle Upstream Drift (Auto-Merge)
 
 Automatically merges upstream changes into the document based on change percentage thresholds.
@@ -1138,6 +1223,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.6 | 2026-02-27 | **Hash Validation Fixes**: Added Section 6.0.1 with FIX-H001 (placeholder replacement via sha256sum), FIX-H002 (missing prefix), FIX-H003 (file not found); Auto-fix invalid hash placeholders like `verified_no_drift` and `pending_verification` |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |
 | 2.5 | 2026-02-26 | **Template contract enforcement**: Added explicit compliance anchors to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` + YAML variant; required subsection map now includes 3.4.1/3.4.2, 12.1-12.3, and 18.1-18.5 for fixer normalization and insertion logic. |
 | 2.4 | 2026-02-26 | **Fix quality upgrade**: Added semantic normalization for MVP subsection headers (REV-MVP001/002/003), safe sibling subsection renumbering, explicit auto-fixes for REV-MVP004/008/010, markdown normalization for generated fix artifacts, and confidence tagging (`auto-safe`, `auto-assisted`, `manual-required`) for each applied fix. |

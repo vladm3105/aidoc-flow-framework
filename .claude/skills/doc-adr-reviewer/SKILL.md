@@ -381,20 +381,35 @@ PHASE 3: Drift Comparison
 
 ---
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
 
-**Algorithm**: SHA-256
+**CRITICAL**: You MUST execute actual bash commands to compute hashes. DO NOT write placeholder values.
 
-**Python Implementation**:
+**Compute File Hash**:
 
-```python
-import hashlib
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
 
-def compute_file_hash(file_path: str) -> str:
-    """Compute SHA-256 hash of file content."""
-    with open(file_path, 'rb') as f:
-        content = f.read()
-    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+Store result as: `"hash": "sha256:<64_hex_characters>"`
+
+**Hash Format Validation**:
+
+| Check | Requirement |
+|-------|-------------|
+| Prefix | Must be `sha256:` |
+| Length | Exactly 64 hex characters after prefix |
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- `pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification After Cache Write**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 **Hash Scope**:
@@ -413,6 +428,7 @@ def compute_file_hash(file_path: str) -> str:
 | REV-D004 | Info | New content added to upstream document |
 | REV-D005 | Error | Critical upstream document substantially modified (>20% change) |
 | REV-D006 | Error | Drift cache file cannot be created or accessed (mandatory) |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 ---
 

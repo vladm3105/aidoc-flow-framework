@@ -425,6 +425,38 @@ Ensures traceability and cross-references are correct.
 
 Addresses issues where upstream REQ documents have changed since CTR creation using a tiered auto-merge system.
 
+#### 6.0.1 Hash Validation Fixes
+
+**FIX-H001: Invalid Hash Placeholder**
+
+Trigger: Hash contains placeholder instead of SHA-256
+
+Fix:
+```bash
+sha256sum <upstream_file_path> | cut -d' ' -f1
+```
+Update cache with: `sha256:<64_hex_output>`
+
+**FIX-H002: Missing Hash Prefix**
+
+Trigger: 64 hex chars but missing `sha256:` prefix
+
+Fix: Prepend `sha256:` to value
+
+**FIX-H003: Upstream File Not Found**
+
+Trigger: Cannot compute hash (file missing)
+
+Fix: Set `drift_detected: true`, add to manual review
+
+| Code | Description | Auto-Fix | Severity |
+|------|-------------|----------|----------|
+| FIX-H001 | Replace placeholder hash with actual SHA-256 | Yes | Error |
+| FIX-H002 | Add missing sha256: prefix | Yes | Warning |
+| FIX-H003 | Upstream file not found | Partial | Error |
+
+---
+
 **Upstream**: REQ (Layer 7)
 **Downstream**: SPEC (Layer 9)
 

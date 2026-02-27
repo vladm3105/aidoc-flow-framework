@@ -81,6 +81,8 @@ docs/06_SYS/
 | SYS-E020 | ERROR | SYS not in nested folder (BLOCKING) |
 | SYS-E021 | ERROR | Folder name doesn't match SYS ID |
 | SYS-E022 | ERROR | File name doesn't match folder name |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
 
 **This check is BLOCKING** - SYS must pass folder structure validation before other checks proceed.
 

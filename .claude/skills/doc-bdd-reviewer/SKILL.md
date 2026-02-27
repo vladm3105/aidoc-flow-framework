@@ -345,16 +345,25 @@ Detects when upstream source documents have been modified after the BDD was crea
 4. Write cache file atomically
 5. Log cache update in review report
 
-#### Hash Calculation
+#### Hash Calculation (MANDATORY BASH EXECUTION)
 
-```python
-import hashlib
+**CRITICAL**: Execute actual bash commands. DO NOT write placeholder values.
 
-def calculate_content_hash(file_path: str) -> str:
-    """Calculate SHA-256 hash of file content."""
-    with open(file_path, 'rb') as f:
-        content = f.read()
-    return f"sha256:{hashlib.sha256(content).hexdigest()}"
+```bash
+sha256sum <file_path> | cut -d' ' -f1
+```
+
+Store as: `"hash": "sha256:<64_hex_characters>"`
+
+**REJECTED VALUES** (re-compute immediately):
+- `sha256:verified_no_drift`
+- `sha256:pending_verification`
+- Any value where hex portion != 64 characters
+
+**Verification**:
+
+```bash
+grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 ```
 
 **Detection Methods**:
@@ -375,6 +384,7 @@ def calculate_content_hash(file_path: str) -> str:
 | REV-D004 | Info | New content added to upstream |
 | REV-D005 | Error | Critical upstream modification (>20% change) |
 | REV-D006 | Info | Cache created (first review of this document) |
+| REV-D009 | Error | Invalid hash placeholder detected (`verified_no_drift`, `pending_verification`) |
 
 **Report Output**:
 

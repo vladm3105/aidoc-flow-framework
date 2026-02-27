@@ -113,6 +113,33 @@ ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
 - **USE** `null` only when artifact type is genuinely not applicable
 - **SKIP** functionality when required upstream artifacts are missing
 
+### Upstream Drift Detection (MANDATORY for Layers 2-11)
+
+All artifacts except BRD MUST track upstream document changes via `.drift_cache.json`:
+
+| Layer | Artifact | Upstream | Drift Detection |
+|-------|----------|----------|-----------------|
+| 1 | BRD | REF docs | **Optional** (can be created from prompt) |
+| 2 | PRD | BRD | **MANDATORY** |
+| 3 | EARS | PRD | **MANDATORY** |
+| 4 | BDD | EARS | **MANDATORY** |
+| 5 | ADR | BDD | **MANDATORY** |
+| 6 | SYS | ADR | **MANDATORY** |
+| 7 | REQ | SYS | **MANDATORY** |
+| 8 | CTR | REQ | **MANDATORY** |
+| 9 | SPEC | REQ/CTR | **MANDATORY** |
+| 10 | TSPEC | SPEC | **MANDATORY** |
+| 11 | TASKS | SPEC/TSPEC | **MANDATORY** |
+
+**Hash Computation**: Use `sha256sum <file_path> | cut -d' ' -f1` (mandatory bash execution)
+
+**Invalid Hash Values** (triggers errors):
+- `sha256:verified_no_drift` - INVALID
+- `sha256:pending_verification` - INVALID
+- Any value where hex portion != 64 characters - INVALID
+
+**Valid Hash Format**: `sha256:<64_hex_characters>` matching `^sha256:[0-9a-f]{64}$`
+
 ### Example: Correct vs Incorrect References
 
 **[FAIL] INCORRECT** (phantom references):
