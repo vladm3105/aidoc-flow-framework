@@ -1137,8 +1137,8 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
 
-#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-utest-audit, doc-itest-audit, doc-ftest-audit, doc-ptest-audit, doc-sectest-audit, doc-stest-audit
-**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), and UTEST/ITEST/FTEST/PTEST/SECTEST/STEST subtype workflows (Layer 10)
+#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-utest-audit, doc-itest-audit, doc-ftest-audit, doc-ptest-audit, doc-sectest-audit, doc-stest-audit, doc-tasks-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), UTEST/ITEST/FTEST/PTEST/SECTEST/STEST subtype workflows (Layer 10), and TASKS workflows (Layer 11)
 **Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
 **Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
 

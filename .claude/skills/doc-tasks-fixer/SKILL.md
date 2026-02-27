@@ -24,11 +24,11 @@ custom_fields:
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to TASKS (Implementation Tasks) documents. This skill bridges the gap between `doc-tasks-reviewer` (which identifies issues) and the corrected TASKS, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to TASKS (Implementation Tasks) documents. This skill bridges the gap between `doc-tasks-reviewer` / `doc-tasks-audit` findings and the corrected TASKS, enabling iterative improvement cycles.
 
 **Layer**: 11 (TASKS Quality Improvement)
 
-**Upstream**: SPEC documents, TSPEC documents, TASKS document, Review Report (`TASKS-NN.R_review_report_vNNN.md`)
+**Upstream**: SPEC documents, TSPEC documents, TASKS document, Audit/Review Report (`TASKS-NN.A_audit_report_vNNN.md` preferred; `TASKS-NN.R_review_report_vNNN.md` legacy-compatible)
 
 **Downstream**: Fixed TASKS, Fix Report (`TASKS-NN.F_fix_report_vNNN.md`)
 

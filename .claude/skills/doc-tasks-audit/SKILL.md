@@ -1,0 +1,90 @@
+---
+name: doc-tasks-audit
+description: Unified TASKS audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-11-artifact
+    - quality-assurance
+    - tasks-audit
+    - shared-architecture
+  custom_fields:
+    layer: 11
+    artifact_type: TASKS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [TASKS]
+    downstream_artifacts: [Audit Report, Fix Cycle]
+    version: "1.0"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks TASKS-MVP-TEMPLATE schema_version"
+---
+
+# doc-tasks-audit
+
+## Purpose
+
+Run a single TASKS audit workflow:
+1. `doc-tasks-validator`
+2. `doc-tasks-reviewer`
+
+Then emit a combined fixer-ready report.
+
+---
+
+## Output Contract
+
+Primary output:
+- `TASKS-NN.A_audit_report_vNNN.md`
+
+Fixer compatibility:
+- `doc-tasks-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
+
+---
+
+## Combined Status Rules
+
+- PASS: validator PASS AND reviewer score >= 90 AND no blocking/manual-required issues
+- FAIL: validator FAIL OR reviewer score < 90 OR blocking/manual-required issues present
+
+TASKS gate policy:
+- Missing structural compliance, missing implementation-contract essentials, broken traceability, or unresolved manual-required findings cannot auto-pass.
+
+---
+
+## Combined Report Sections
+
+1. Summary
+2. Score Calculation
+3. Validator Findings
+4. Reviewer Findings
+5. Coverage Findings
+6. TASKS Gate Findings
+7. Fix Queue (`auto_fixable`, `manual_required`, `blocked`)
+8. Recommended Next Step
+
+---
+
+## Handoff Rule
+
+If remediation needed:
+- Run `doc-tasks-fixer` with newest report.
+- On timestamp/version tie, prefer `.A_` over `.R_`.
+
+---
+
+## Example
+
+```bash
+/doc-tasks-audit docs/11_TASKS/TASKS-01_scope/TASKS-01_scope.md
+```
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-02-27 | Initial TASKS audit wrapper with validator->reviewer orchestration and combined `.A_` report contract for fixer handoff |
