@@ -1122,7 +1122,7 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 - Strategic alignment verification
 - Review history tracking
 
-#### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-tasks-reviewer
+#### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-ptest-reviewer, doc-tasks-reviewer
 **Purpose**: Review respective artifact types with drift detection
 **Version**: 1.4 (all updated)
 **Common Features**:
@@ -1137,8 +1137,8 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
 
-#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-itest-audit, doc-ftest-audit
-**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), and ITEST/FTEST subtype workflows (Layer 10)
+#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-itest-audit, doc-ftest-audit, doc-ptest-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), and ITEST/FTEST/PTEST subtype workflows (Layer 10)
 **Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
 **Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
 
@@ -1156,7 +1156,7 @@ Fixer skills implement tiered auto-merge with no-deletion policy:
 | **Tier 2** | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
 | **Tier 3** | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
 
-#### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-itest-fixer, doc-ftest-fixer, doc-tasks-fixer
+#### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-itest-fixer, doc-ftest-fixer, doc-ptest-fixer, doc-tasks-fixer
 **Purpose**: Fix issues identified by reviewer skills using tiered auto-merge
 **Version**: 2.0 (all updated)
 **Common Features**:
@@ -1205,6 +1205,7 @@ All other autopilots require upstream documents:
 - `doc-tspec-autopilot` - Requires SPEC
 - `doc-itest-autopilot` - Requires CTR+SYS+SPEC for ITEST subtype workflows
 - `doc-ftest-autopilot` - Requires SYS+SPEC for FTEST subtype workflows
+- `doc-ptest-autopilot` - Requires SYS+SPEC for PTEST subtype workflows
 - `doc-tasks-autopilot` - Requires SPEC+TSPEC
 
 ---
@@ -1284,7 +1285,15 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-ftest*` for FTEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 36. doc-tasks (Layer 11)
+#### 36. doc-ptest (Layer 10 Subtype)
+**Purpose**: Create Performance Test Specifications (PTEST) for load, stress, endurance, and spike validation
+**Use**: Use for PTEST-only workflows where `@sys` + `@spec` constraints and performance thresholds are primary
+
+**Routing Guidance**:
+- Use `doc-ptest*` for PTEST-only authoring, validation, review, and remediation.
+- Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
+
+#### 37. doc-tasks (Layer 11)
 **Purpose**: Create Task Breakdown decomposing SPEC into AI-structured TODOs
 **Quick Reference**: [doc-tasks_quickref.md](./doc-tasks_quickref.md)
 **Use**: Break SPEC into actionable tasks with dependencies and effort estimates
