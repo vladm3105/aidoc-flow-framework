@@ -52,7 +52,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 7 | REQ | `REQ-MVP-TEMPLATE.md` |
 | 8 | CTR | `CTR-MVP-TEMPLATE.md` |
 | 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
-| 10 | TSPEC | `UTEST/ITEST/STEST/FTEST-MVP-TEMPLATE.md` |
+| 10 | TSPEC | `UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-MVP-TEMPLATE.md` |
 | 11 | TASKS | `TASKS-TEMPLATE.md` |
 
 ## Validation Decision Framework
@@ -232,8 +232,10 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
      - [ITEST-MVP-TEMPLATE.md](./10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md) - Integration tests
      - [STEST-MVP-TEMPLATE.md](./10_TSPEC/STEST/STEST-MVP-TEMPLATE.md) - Smoke tests
      - [FTEST-MVP-TEMPLATE.md](./10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md) - Functional tests
+     - [PTEST-MVP-TEMPLATE.md](./10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md) - Performance tests
+     - [SECTEST-MVP-TEMPLATE.md](./10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md) - Security tests
    - Purpose: Formalize test specifications before implementation (TDD)
-   - Test types: UTEST (40), ITEST (41), STEST (42), FTEST (43)
+   - Test types: UTEST (40), ITEST (41), STEST (42), FTEST (43), PTEST (44), SECTEST (45)
 
 ### Code Generation Layer (Layer 11)
 

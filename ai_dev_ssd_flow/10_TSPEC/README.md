@@ -29,10 +29,10 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
 |------|------|--------------|-----------|------------------|---------|
 | 40 | Unit Test | UT | `UTEST/` | REQ (L7), SPEC (L9) | Individual function tests |
 | 41 | Integration Test | IT | `ITEST/` | CTR (L8), SYS (L6), SPEC (L9) | Component interaction |
-| 42 | Smoke Test | ST | `STEST/` | EARS (L3), BDD (L4), REQ (L7) | Post-deployment health |
-| 43 | Functional Test | FT | `FTEST/` | SYS (L6) | System behavior validation |
-| 44 | Performance Test | PT | `PTEST/` | SYS (L6) | Performance validation |
-| 45 | Security Test | ST | `SECTEST/` | SEC (L8), CTR (L8) | Security validation |
+| 42 | Smoke Test | ST | `STEST/` | EARS (L3), BDD (L4), REQ (L7), SPEC (L9 optional) | Post-deployment health |
+| 43 | Functional Test | FT | `FTEST/` | SYS (L6), SPEC (L9) | System behavior validation |
+| 44 | Performance Test | PT | `PTEST/` | SYS (L6), SPEC (L9) | Performance validation |
+| 45 | Security Test | SCT | `SECTEST/` | SYS (L6), SPEC (L9), CTR (L8 optional) | Security validation |
 
 **Note**: Acceptance tests remain in BDD (L4), not duplicated here.
 
@@ -98,6 +98,8 @@ TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable
     validate_itest.py
     validate_stest.py
     validate_ftest.py
+    validate_ptest.py
+    validate_sectest.py
     validate_tspec_quality_score.sh
     validate_all_tspec.sh
     run_tests.py                       # Unified test runner

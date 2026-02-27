@@ -10,7 +10,7 @@ custom_fields:
    layer: 11
   priority: shared
   schema_version: "2.0"
-  last_updated: "2026-01-15T00:00:00"
+   last_updated: "2026-02-27T00:00:00"
 ---
 
 # AI Tasks (TASKS): SPEC Implementation Plans and TODOs
@@ -87,6 +87,27 @@ Tasks create the **code generation roadmap** that:
 | **Tracking** | YAML block for DEVELOPMENT_PLAN.md integration |
 
 **Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
+
+## TASKS Audit Wrapper and Report Contract
+
+The TASKS quality flow supports both direct reviewer outputs and unified audit-wrapper outputs.
+
+### Preferred Audit-First Flow
+
+1. Run `doc-tasks-validator`
+2. Run `doc-tasks-reviewer`
+3. Use `doc-tasks-audit` to emit a combined report for fixer workflows
+4. If needed, run `doc-tasks-fixer`
+
+### Report Naming Compatibility
+
+- Preferred fixer input: `TASKS-NN.A_audit_report_vNNN.md`
+- Legacy-compatible reviewer input: `TASKS-NN.R_review_report_vNNN.md`
+- Fix report: `TASKS-NN.F_fix_report_vNNN.md`
+
+Selection precedence for fixer intake:
+1. Latest timestamp/version
+2. If tied, prefer `.A_audit_report_vNNN.md` over `.R_review_report_vNNN.md`
 
 ---
 

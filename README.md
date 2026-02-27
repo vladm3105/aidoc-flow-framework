@@ -1322,6 +1322,14 @@ Reviewer skills perform comprehensive content review with mandatory drift detect
 | TSPEC | `doc-tspec-reviewer` | `docs/10_TSPEC/{folder}/.drift_cache.json` |
 | TASKS | `doc-tasks-reviewer` | `docs/11_TASKS/{folder}/.drift_cache.json` |
 
+Layer 10 subtype reviewer coverage also includes:
+- `doc-utest-reviewer`
+- `doc-itest-reviewer`
+- `doc-ftest-reviewer`
+- `doc-ptest-reviewer`
+- `doc-sectest-reviewer`
+- `doc-stest-reviewer`
+
 **Mandatory Three-Phase Drift Detection**:
 1. **Load Cache**: Read existing `.drift_cache.json` or create new
 2. **Detect Drift**: Compare SHA-256 hashes of upstream documents
@@ -1362,6 +1370,14 @@ Fixer skills implement tiered auto-merge with no-deletion policy:
 - Markers: `[DEPRECATED]`, `[SUPERSEDED]`, `[CANCELLED]`, `@deprecated`
 - Archive manifest created for Tier 3 changes
 - Complete audit trail maintained
+
+### Audit Wrapper Compatibility
+
+Audit wrappers run validator + reviewer and produce combined reports for fixer workflows.
+
+- Preferred output contract: `*.A_audit_report_vNNN.md`
+- Legacy compatibility: fixers continue accepting `*.R_review_report_vNNN.md`
+- Included wrappers cover core artifacts, TSPEC subtype workflows, and TASKS (`doc-tasks-audit`)
 
 **Change Percentage Calculation**:
 ```python
