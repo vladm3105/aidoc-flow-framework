@@ -1,22 +1,23 @@
 ---
 name: doc-ears-autopilot
 description: Automated EARS generation pipeline from PRD documents - analyzes requirements, generates formal EARS statements, validates BDD-Ready score
-tags:
-  - sdd-workflow
-  - layer-3-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 3
-  artifact_type: EARS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD, PRD]
-  downstream_artifacts: [BDD, ADR, SYS]
-  version: "2.3"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-3-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 3
+    artifact_type: EARS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD, PRD]
+    downstream_artifacts: [BDD, ADR, SYS]
+    version: "2.4"
+    last_updated: "2026-02-26"
 ---
 
 # doc-ears-autopilot
@@ -45,7 +46,8 @@ This autopilot orchestrates the following skills:
 | `quality-advisor` | Real-time quality feedback during EARS generation | Phase 3: EARS Generation |
 | `doc-ears-validator` | Validate EARS structure, content, BDD-Ready score | Phase 4: EARS Validation |
 | `doc-ears-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
-| `doc-ears-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+| `doc-ears-audit` | Unified validator+reviewer audit report generation | Phase 5: Review |
+| `doc-ears-fixer` | Apply fixes from audit/review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - EARS structure/content rules -> `doc-ears` skill
@@ -268,10 +270,7 @@ Validate that source PRDs meet EARS-Ready requirements before generation.
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_ears_ready.py \
-  --prd docs/02_PRD/PRD-01_{slug}/ \
-  --min-score 90 \
-  --auto-fix
+/doc-prd-validator PRD-NN
 ```
 
 ### Phase 3: EARS Generation
@@ -435,7 +434,7 @@ After EARS generation, validate structure and BDD-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/EARS-NN_{slug}.md --verbose
+python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -500,13 +499,13 @@ flowchart TD
 
 #### 5.1 Initial Review
 
-Run `doc-ears-reviewer` to identify issues.
+Run `doc-ears-audit` to execute validator + reviewer and generate a combined report.
 
 ```bash
-/doc-ears-reviewer EARS-NN
+/doc-ears-audit EARS-NN
 ```
 
-**Output**: `EARS-NN.R_review_report_v001.md`
+**Output**: `EARS-NN.A_audit_report_v001.md` (legacy-compatible reviewer report may still exist)
 
 **Review Checks**:
 
@@ -557,10 +556,10 @@ If review score < 90%, invoke `doc-ears-fixer`.
 After fixes, automatically re-run reviewer.
 
 ```bash
-/doc-ears-reviewer EARS-NN
+/doc-ears-audit EARS-NN
 ```
 
-**Output**: `EARS-NN.R_review_report_v002.md`
+**Output**: `EARS-NN.A_audit_report_v002.md`
 
 #### 5.4 Iteration Control
 
@@ -618,7 +617,7 @@ After passing the fix cycle:
 
    ```bash
    # Update EARS-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
      --ears docs/03_EARS/EARS-NN_{slug}.md \
      --matrix docs/03_EARS/EARS-00_TRACEABILITY_MATRIX.md
    ```
@@ -715,11 +714,7 @@ Generate EARS from one PRD document.
 
 ```bash
 # Example: Generate EARS from PRD-01
-python ai_dev_flow/scripts/ears_autopilot.py \
-  --prd docs/02_PRD/PRD-01_f1_iam/ \
-  --output docs/03_EARS/ \
-  --id 01 \
-  --slug f1_iam_requirements
+/doc-ears-autopilot PRD-01
 ```
 
 ### Batch Mode
@@ -728,9 +723,7 @@ Generate EARS from multiple PRDs in sequence.
 
 ```bash
 # Example: Generate EARS from all PRDs
-python ai_dev_flow/scripts/ears_autopilot.py \
-  --batch config/ears_batch.yaml \
-  --output docs/03_EARS/
+/doc-ears-autopilot all --auto
 ```
 
 **Batch Configuration** (`config/ears_batch.yaml`):
@@ -762,9 +755,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/ears_autopilot.py \
-  --prd docs/02_PRD/PRD-01_f1_iam/ \
-  --dry-run
+/doc-ears-autopilot PRD-01 --dry-run
 ```
 
 ### Mode 4: Review Mode (v2.1)
@@ -1140,7 +1131,8 @@ Chunk N/M Complete:
 | EARS-NN_{slug}.md | Main EARS document (monolithic <20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
 | EARS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
 | EARS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/03_EARS/EARS-NN_{slug}/` |
-| EARS-NN.R_review_report_v{VVV}.md | Review report | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.A_audit_report_v{VVV}.md | Combined audit report (preferred) | `docs/03_EARS/EARS-NN_{slug}/` |
+| EARS-NN.R_review_report_v{VVV}.md | Reviewer report (legacy-compatible) | `docs/03_EARS/EARS-NN_{slug}/` |
 | EARS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/03_EARS/EARS-NN_{slug}/` |
 | .drift_cache.json | Drift detection cache | `docs/03_EARS/EARS-NN_{slug}/` |
 
@@ -1212,9 +1204,7 @@ fi
 
 # Example: Trigger BDD autopilot for validated EARS
 if [ "$EARS_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/bdd_autopilot.py \
-    --ears "$EARS_PATH" \
-    --output docs/04_BDD/
+  /doc-bdd-autopilot "$EARS_ID"
 fi
 ```
 
@@ -1237,10 +1227,7 @@ jobs:
 
       - name: Run EARS Autopilot
         run: |
-          python ai_dev_flow/scripts/ears_autopilot.py \
-            --prd docs/02_PRD/ \
-            --output docs/03_EARS/ \
-            --validate
+          /doc-ears-autopilot all --auto
 
       - name: Upload Validation Report
         uses: actions/upload-artifact@v4
@@ -1346,8 +1333,8 @@ After autopilot completion:
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
 - **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
 
@@ -1355,7 +1342,7 @@ After autopilot completion:
 
 ## Review Document Standards (v2.2)
 
-**IMPORTANT**: Review reports generated by this autopilot are formal project documents.
+**IMPORTANT**: Audit/review reports generated by this autopilot are formal project documents.
 
 See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
@@ -1364,7 +1351,7 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 | Requirement | Value |
 |-------------|-------|
 | Storage Location | Same folder as reviewed EARS |
-| File Name | `EARS-NN.R_review_report.md` |
+| File Name | `EARS-NN.A_audit_report_vNNN.md` (preferred), `EARS-NN.R_review_report_vNNN.md` (legacy) |
 | YAML Frontmatter | MANDATORY - see shared standards |
 | Parent Reference | MANDATORY - link to EARS document |
 
@@ -1373,7 +1360,8 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 ```
 docs/03_EARS/
 ├── EARS-03_f3_observability.md
-└── EARS-03.R_review_report.md    # ← Review report stored here
+├── EARS-03.A_audit_report_v001.md    # ← Preferred report stored here
+└── EARS-03.R_review_report_v001.md    # ← Legacy-compatible reviewer report
 ```
 
 ---
@@ -1382,6 +1370,7 @@ docs/03_EARS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-26 | Migrated frontmatter to `metadata`; switched active references to `ai_dev_ssd_flow`; integrated `doc-ears-audit` with `.A_audit_report` preferred and `.R_review_report` legacy compatibility |
 | 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (EARS-NN) triggers review mode; Upstream-type input (PRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-ears-reviewer` and `doc-ears-fixer`; Added `doc-ears-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (ER-XXX→EARS.NN.25.0XX, SR-XXX→EARS.NN.25.1XX, UB-XXX→EARS.NN.25.2XX, UQ-XXX→EARS.NN.25.4XX) |

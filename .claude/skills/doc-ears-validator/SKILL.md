@@ -1,21 +1,22 @@
 ---
 name: doc-ears-validator
 description: Validate EARS (Easy Approach to Requirements Syntax) documents against Layer 3 schema standards
-tags:
-  - sdd-workflow
-  - layer-3-artifact
-  - quality-assurance
-custom_fields:
-  layer: 3
-  artifact_type: EARS
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [EARS]
-  downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-3-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 3
+    artifact_type: EARS
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [EARS]
+    downstream_artifacts: []
+    version: "1.3"
+    last_updated: "2026-02-26"
 ---
 
 # doc-ears-validator
@@ -59,7 +60,8 @@ Artifact Type: EARS
 docs/03_EARS/
 ├── EARS-01_f1_iam/
 │   ├── EARS-01_f1_iam.md          ✓ Valid
-│   ├── EARS-01.R_review_report_v001.md
+│   ├── EARS-01.A_audit_report_v001.md
+│   ├── EARS-01.R_review_report_v001.md  (legacy)
 │   └── .drift_cache.json
 ├── EARS-02_f2_session/
 │   └── EARS-02_f2_session.md      ✓ Valid
@@ -193,13 +195,13 @@ Pattern: `EARS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single EARS document
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
+python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
 
 # Validate all EARS documents
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/
+python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/ --verbose
+python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/ --verbose
 ```
 
 ## Validation Workflow
@@ -262,5 +264,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.3 | 2026-02-26 | Migrated frontmatter to `metadata`; updated validator command paths to `ai_dev_ssd_flow/03_EARS/scripts`; aligned valid structure examples with audit-wrapper compatibility | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); EARS must be in `docs/03_EARS/EARS-NN_{slug}/` folders; Added error codes EARS-E020, EARS-E021, EARS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

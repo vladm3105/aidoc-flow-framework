@@ -1,21 +1,22 @@
 ---
 name: doc-ears
 description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
-tags:
-  - sdd-workflow
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  layer: 3
-  artifact_type: EARS
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD, PRD]
-  downstream_artifacts: [BDD, ADR, SYS]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-3-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 3
+    artifact_type: EARS
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD, PRD]
+    downstream_artifacts: [BDD, ADR, SYS]
+    version: "1.1"
+    last_updated: "2026-02-26"
 ---
 
 # doc-ears
@@ -467,7 +468,7 @@ Run validation scripts:
 python scripts/validate_ears.py --path docs/03_EARS/EARS-01_{slug}/EARS-01_{slug}.md
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
   --artifact EARS-01 \
   --expected-layers brd,prd \
   --strict
@@ -599,8 +600,8 @@ The BDD will:
 - **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
 - **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
-- **Threshold Naming**: `ai_dev_flow/THRESHOLD_NAMING_RULES.md`
+- **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
+- **Threshold Naming**: `ai_dev_ssd_flow/THRESHOLD_NAMING_RULES.md`
 
 **Section Templates** (for documents >800 lines):
 - Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
@@ -626,4 +627,5 @@ The BDD will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-26 | Migrated frontmatter to `metadata` schema; updated validation and standards references to `ai_dev_ssd_flow` paths | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

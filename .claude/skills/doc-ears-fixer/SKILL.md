@@ -1,34 +1,35 @@
 ---
 name: doc-ears-fixer
 description: Automated fix skill that reads review reports and applies fixes to EARS documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - ears-fix
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  layer: 3
-  artifact_type: EARS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [EARS, Review Report, PRD]
-  downstream_artifacts: [Fixed EARS, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - ears-fix
+    - layer-3-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 3
+    artifact_type: EARS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [EARS, Audit Report, Review Report, PRD]
+    downstream_artifacts: [Fixed EARS, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-26"
 ---
 
 # doc-ears-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to EARS (Easy Approach to Requirements Syntax) documents. This skill bridges the gap between `doc-ears-reviewer` (which identifies issues) and the corrected EARS, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to EARS (Easy Approach to Requirements Syntax) documents. This skill bridges the gap between `doc-ears-reviewer`/`doc-ears-audit` (which identify issues) and the corrected EARS, enabling iterative improvement cycles.
 
 **Layer**: 3 (EARS Quality Improvement)
 
-**Upstream**: EARS document, Review Report (`EARS-NN.R_review_report_vNNN.md`), PRD (source requirements)
+**Upstream**: EARS document, Audit/Review Report (`EARS-NN.A_audit_report_vNNN.md` preferred, `EARS-NN.R_review_report_vNNN.md` legacy), PRD (source requirements)
 
 **Downstream**: Fixed EARS, Fix Report (`EARS-NN.F_fix_report_vNNN.md`)
 
@@ -44,7 +45,7 @@ Use `doc-ears-fixer` when:
 - **Batch Fixes**: Apply fixes to multiple EARS based on review reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-ears-reviewer` first)
+- No audit/review report exists (run `doc-ears-audit` or `doc-ears-reviewer` first)
 - Creating new EARS (use `doc-ears` or `doc-ears-autopilot`)
 - Only need validation (use `doc-ears-validator`)
 
@@ -54,7 +55,8 @@ Use `doc-ears-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-ears-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-ears-audit` | Preferred source of normalized findings | Input (reads audit report) |
+| `doc-ears-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-ears` | EARS creation rules | Create missing sections |
 | `doc-prd-reviewer` | Upstream PRD validation | Check upstream alignment |
@@ -65,10 +67,10 @@ Use `doc-ears-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: EARS Path] --> B[Find Latest Review Report]
-    B --> C{Review Found?}
-    C -->|No| D[Run doc-ears-reviewer First]
-    C -->|Yes| E[Parse Review Report]
+  A[Input: EARS Path] --> B[Find Latest Audit/Review Report]
+  B --> C{Report Found?}
+  C -->|No| D[Run doc-ears-audit or doc-ears-reviewer First]
+  C -->|Yes| E[Parse Report]
 
     E --> F[Categorize Issues]
 
@@ -414,7 +416,7 @@ Ensures traceability and cross-references are correct.
 @trace: PRD-01.22.01 -> EARS-01.25.01
 
 <!-- Reference to upstream -->
-@ref: [PRD-01 Section 3](../02_PRD/PRD-01.md#3-feature-requirements)
+@ref: PRD-01 Section 3 (../02_PRD/PRD-01.md#3-feature-requirements)
 ```
 
 ---
@@ -852,8 +854,11 @@ def notify_downstream(ears_id: str, changes: list[dict]) -> None:
 # Fix EARS based on latest review
 /doc-ears-fixer EARS-01
 
-# Fix with explicit review report
+# Fix with explicit review report (legacy)
 /doc-ears-fixer EARS-01 --review-report EARS-01.R_review_report_v001.md
+
+# Fix with explicit audit report (preferred)
+/doc-ears-fixer EARS-01 --review-report EARS-01.A_audit_report_v001.md
 
 # Fix and re-run review
 /doc-ears-fixer EARS-01 --revalidate
@@ -866,7 +871,7 @@ def notify_downstream(ears_id: str, changes: list[dict]) -> None:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--review-report` | latest | Specific review report to use |
+| `--review-report` | latest | Specific audit/review report to use (`.A_audit_report` preferred) |
 | `--revalidate` | false | Run reviewer after fixes |
 | `--max-iterations` | 3 | Max fix-review cycles |
 | `--fix-types` | all | Specific fix types (comma-separated) |
@@ -879,6 +884,10 @@ def notify_downstream(ears_id: str, changes: list[dict]) -> None:
 | `--skip-archive` | false | Skip archiving for Tier 3 (regenerate in-place) |
 | `--notify-downstream` | true | Send notifications to downstream BDD documents |
 | `--preserve-deprecated` | true | Keep deprecated items (no-deletion policy) |
+
+**Report Selection Precedence**:
+1. Select latest report by timestamp.
+2. If timestamps are equal, prefer `EARS-NN.A_audit_report_vNNN.md` over `EARS-NN.R_review_report_vNNN.md`.
 
 ### Fix Types
 
@@ -920,7 +929,7 @@ custom_fields:
   artifact_type: EARS-FIX
   layer: 3
   parent_doc: EARS-NN
-  source_review: EARS-NN.R_review_report_v001.md
+  source_review: EARS-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-ears-fixer
   fix_version: "1.0"
@@ -932,7 +941,7 @@ custom_fields:
 
 | Metric | Value |
 |--------|-------|
-| Source Review | EARS-NN.R_review_report_v001.md |
+| Source Review | EARS-NN.A_audit_report_v001.md (or legacy `EARS-NN.R_review_report_v001.md`) |
 | Issues in Review | 12 |
 | Issues Fixed | 10 |
 | Issues Remaining | 2 (manual review required) |
@@ -1012,9 +1021,9 @@ flowchart LR
 
 | Error | Action |
 |-------|--------|
-| Review report not found | Prompt to run `doc-ears-reviewer` first |
+| Audit/review report not found | Prompt to run `doc-ears-audit` or `doc-ears-reviewer` first |
 | Cannot create file (permissions) | Log error, continue with other fixes |
-| Cannot parse review report | Abort with clear error message |
+| Cannot parse report | Abort with clear error message |
 | Max iterations exceeded | Generate report, flag for manual review |
 | PRD not found | Log warning, skip PRD-dependent fixes |
 
@@ -1033,6 +1042,7 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
+| `doc-ears-audit` | Preferred combined audit report input |
 | `doc-ears-reviewer` | Provides review report (input) |
 | `doc-ears-autopilot` | Orchestrates Review -> Fix cycle |
 | `doc-ears-validator` | Structural validation |
@@ -1046,6 +1056,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-26 | Migrated frontmatter to `metadata`; added compatibility for `EARS-NN.A_audit_report_vNNN.md` (preferred) with legacy `EARS-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.TT.SS pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary and pattern file creation; Element ID conversion for EARS codes (25, 26); Broken link fixes; PRD drift detection; EARS pattern syntax validation; Integration with autopilot Review->Fix cycle |

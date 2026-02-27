@@ -1,23 +1,24 @@
 ---
 name: doc-ears-reviewer
 description: Comprehensive content review and quality assurance for EARS documents - validates requirement syntax, PRD alignment, testability, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - ears-review
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  layer: 3
-  artifact_type: EARS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [EARS]
-  downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - ears-review
+    - layer-3-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 3
+    artifact_type: EARS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [EARS]
+    downstream_artifacts: []
+    version: "1.5"
+    last_updated: "2026-02-26"
 ---
 
 # doc-ears-reviewer
@@ -459,6 +460,8 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **Nested Folder Rule**: ALL EARS use nested folders (`EARS-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
 
+**Audit Wrapper Note**: `doc-ears-audit` combines this reviewer output with validator findings and writes `EARS-NN.A_audit_report_vNNN.md` (preferred for fixer). Reviewer-native report naming remains `EARS-NN.R_review_report_vNNN.md`.
+
 **File Naming**: `EARS-NN.R_review_report_vNNN.md`
 
 **Location**: Inside the EARS nested folder: `docs/03_EARS/EARS-NN_{slug}/`
@@ -508,6 +511,7 @@ flowchart LR
 |-------|--------------|
 | `doc-naming` | Naming standards for Check #7 |
 | `doc-ears-autopilot` | Invokes this skill in Phase 5 |
+| `doc-ears-audit` | Wrapper that combines reviewer findings with validator output |
 | `doc-ears-validator` | Structural validation (Phase 4) |
 | `doc-ears-fixer` | Applies fixes based on review findings |
 | `doc-ears` | EARS creation rules |
@@ -520,6 +524,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented audit-wrapper relationship and preferred `.A_audit_report` fixer handoff |
 | 1.4 | 2026-02-11 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram; Structure check is BLOCKING |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added cache schema and location (`docs/03_EARS/.drift_cache.json`); Three-phase detection algorithm; SHA-256 hash calculation; REV-D006 error code for cache creation; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when PRD documents modified after EARS creation; REV-D001-D005 error codes; drift configuration; Added doc-ears-fixer to related skills |
