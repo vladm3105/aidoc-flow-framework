@@ -1122,7 +1122,7 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 - Strategic alignment verification
 - Review history tracking
 
-#### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-ptest-reviewer, doc-sectest-reviewer, doc-stest-reviewer, doc-tasks-reviewer
+#### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-utest-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-ptest-reviewer, doc-sectest-reviewer, doc-stest-reviewer, doc-tasks-reviewer
 **Purpose**: Review respective artifact types with drift detection
 **Version**: 1.4 (all updated)
 **Common Features**:
@@ -1137,8 +1137,8 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
 
-#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-itest-audit, doc-ftest-audit, doc-ptest-audit, doc-sectest-audit, doc-stest-audit
-**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), and ITEST/FTEST/PTEST/SECTEST/STEST subtype workflows (Layer 10)
+#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit, doc-tspec-audit, doc-utest-audit, doc-itest-audit, doc-ftest-audit, doc-ptest-audit, doc-sectest-audit, doc-stest-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), SPEC (Layer 9), TSPEC (Layer 10), and UTEST/ITEST/FTEST/PTEST/SECTEST/STEST subtype workflows (Layer 10)
 **Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
 **Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
 
@@ -1156,7 +1156,7 @@ Fixer skills implement tiered auto-merge with no-deletion policy:
 | **Tier 2** | 5-15% | Auto-merge + detailed changelog | Minor (1.0→1.1) |
 | **Tier 3** | >15% | Archive + trigger regeneration | Major (1.x→2.0) |
 
-#### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-itest-fixer, doc-ftest-fixer, doc-ptest-fixer, doc-sectest-fixer, doc-stest-fixer, doc-tasks-fixer
+#### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-utest-fixer, doc-itest-fixer, doc-ftest-fixer, doc-ptest-fixer, doc-sectest-fixer, doc-stest-fixer, doc-tasks-fixer
 **Purpose**: Fix issues identified by reviewer skills using tiered auto-merge
 **Version**: 2.0 (all updated)
 **Common Features**:
@@ -1203,6 +1203,7 @@ All other autopilots require upstream documents:
 - `doc-ctr-autopilot` - Requires REQ
 - `doc-spec-autopilot` - Requires REQ+CTR
 - `doc-tspec-autopilot` - Requires SPEC
+- `doc-utest-autopilot` - Requires REQ+SPEC (+optional CTR) for UTEST subtype workflows
 - `doc-itest-autopilot` - Requires CTR+SYS+SPEC for ITEST subtype workflows
 - `doc-ftest-autopilot` - Requires SYS+SPEC for FTEST subtype workflows
 - `doc-ptest-autopilot` - Requires SYS+SPEC for PTEST subtype workflows
@@ -1271,7 +1272,15 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 **Quick Reference**: [doc-tspec_quickref.md](./doc-tspec_quickref.md)
 **Use**: Define implementation-ready test specifications before TASKS
 
-#### 34. doc-itest (Layer 10 Subtype)
+#### 34. doc-utest (Layer 10 Subtype)
+**Purpose**: Create Unit Test Specifications (UTEST) for component-level logic/state/validation/edge coverage
+**Use**: Use for UTEST-only workflows where `@req` + `@spec` constraints and >=90% coverage/quality gates are primary
+
+**Routing Guidance**:
+- Use `doc-utest*` for UTEST-only authoring, validation, review, and remediation.
+- Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
+
+#### 35. doc-itest (Layer 10 Subtype)
 **Purpose**: Create Integration Test Specifications (ITEST) for component interaction and contract validation
 **Use**: Use for ITEST-only workflows where `@ctr` + `@sys` constraints are primary
 
@@ -1279,7 +1288,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-itest*` for ITEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 35. doc-ftest (Layer 10 Subtype)
+#### 36. doc-ftest (Layer 10 Subtype)
 **Purpose**: Create Functional Test Specifications (FTEST) focused on quality-attribute validation
 **Use**: Use for FTEST-only workflows where `@sys` + `@threshold` constraints are primary
 
@@ -1287,7 +1296,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-ftest*` for FTEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 36. doc-ptest (Layer 10 Subtype)
+#### 37. doc-ptest (Layer 10 Subtype)
 **Purpose**: Create Performance Test Specifications (PTEST) for load, stress, endurance, and spike validation
 **Use**: Use for PTEST-only workflows where `@sys` + `@spec` constraints and performance thresholds are primary
 
@@ -1295,7 +1304,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-ptest*` for PTEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 37. doc-sectest (Layer 10 Subtype)
+#### 38. doc-sectest (Layer 10 Subtype)
 **Purpose**: Create Security Test Specifications (SECTEST) for threat/control validation with explicit safety constraints
 **Use**: Use for SECTEST-only workflows where `@sec` + `@spec` constraints and security safety framing are primary
 
@@ -1303,7 +1312,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-sectest*` for SECTEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 38. doc-stest (Layer 10 Subtype)
+#### 39. doc-stest (Layer 10 Subtype)
 **Purpose**: Create Smoke Test Specifications (STEST) for deployment critical-path validation with strict 100% gate
 **Use**: Use for STEST-only workflows where `@ears` + `@bdd` + `@req` constraints and fail-fast deployment checks are primary
 
@@ -1311,7 +1320,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 - Use `doc-stest*` for STEST-only authoring, validation, review, and remediation.
 - Use `doc-tspec*` for mixed subtype orchestration (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
 
-#### 39. doc-tasks (Layer 11)
+#### 40. doc-tasks (Layer 11)
 **Purpose**: Create Task Breakdown decomposing SPEC into AI-structured TODOs
 **Quick Reference**: [doc-tasks_quickref.md](./doc-tasks_quickref.md)
 **Use**: Break SPEC into actionable tasks with dependencies and effort estimates
