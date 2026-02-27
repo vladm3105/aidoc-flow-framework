@@ -1,34 +1,35 @@
 ---
 name: doc-prd-fixer
 description: Automated fix skill that reads review reports and applies fixes to PRD documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - prd-fix
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  layer: 2
-  artifact_type: PRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [PRD, Review Report, BRD]
-  downstream_artifacts: [Fixed PRD, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - prd-fix
+    - layer-2-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 2
+    artifact_type: PRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [PRD, Audit Report, Review Report, BRD]
+    downstream_artifacts: [Fixed PRD, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-26"
 ---
 
 # doc-prd-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to PRD documents. This skill bridges the gap between `doc-prd-reviewer` (which identifies issues) and the corrected PRD, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to PRD documents. This skill bridges the gap between `doc-prd-reviewer`/`doc-prd-audit` (which identify issues) and the corrected PRD, enabling iterative improvement cycles.
 
 **Layer**: 2 (PRD Quality Improvement)
 
-**Upstream**: PRD document, Review Report (`PRD-NN.R_review_report_vNNN.md`), BRD (source requirements)
+**Upstream**: PRD document, Audit/Review Report (`PRD-NN.A_audit_report_vNNN.md` preferred, `PRD-NN.R_review_report_vNNN.md` legacy), BRD (source requirements)
 
 **Downstream**: Fixed PRD, Fix Report (`PRD-NN.F_fix_report_vNNN.md`)
 
@@ -44,7 +45,7 @@ Use `doc-prd-fixer` when:
 - **Batch Fixes**: Apply fixes to multiple PRDs based on review reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-prd-reviewer` first)
+- No audit/review report exists (run `doc-prd-audit` or `doc-prd-reviewer` first)
 - Creating new PRD (use `doc-prd` or `doc-prd-autopilot`)
 - Only need validation (use `doc-prd-validator`)
 
@@ -54,7 +55,8 @@ Use `doc-prd-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-prd-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-prd-audit` | Preferred source of normalized findings | Input (reads audit report) |
+| `doc-prd-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-prd` | PRD creation rules | Create missing sections |
 | `doc-brd-reviewer` | Upstream BRD validation | Check upstream alignment |
@@ -65,10 +67,10 @@ Use `doc-prd-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: PRD Path] --> B[Find Latest Review Report]
-    B --> C{Review Found?}
-    C -->|No| D[Run doc-prd-reviewer First]
-    C -->|Yes| E[Parse Review Report]
+    A[Input: PRD Path] --> B[Find Latest Audit/Review Report]
+    B --> C{Report Found?}
+    C -->|No| D[Run doc-prd-audit or doc-prd-reviewer First]
+    C -->|Yes| E[Parse Report]
 
     E --> F[Categorize Issues]
 
@@ -798,8 +800,11 @@ After processing drift, update `.drift_cache.json`:
 # Fix PRD based on latest review
 /doc-prd-fixer PRD-01
 
-# Fix with explicit review report
+# Fix with explicit review report (legacy)
 /doc-prd-fixer PRD-01 --review-report PRD-01.R_review_report_v001.md
+
+# Fix with explicit audit report (preferred)
+/doc-prd-fixer PRD-01 --review-report PRD-01.A_audit_report_v001.md
 
 # Fix and re-run review
 /doc-prd-fixer PRD-01 --revalidate
@@ -812,7 +817,7 @@ After processing drift, update `.drift_cache.json`:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--review-report` | latest | Specific review report to use |
+| `--review-report` | latest | Specific audit/review report to use (`.A_audit_report` preferred) |
 | `--revalidate` | false | Run reviewer after fixes |
 | `--max-iterations` | 3 | Max fix-review cycles |
 | `--fix-types` | all | Specific fix types (comma-separated) |
@@ -952,9 +957,9 @@ flowchart LR
 
 | Error | Action |
 |-------|--------|
-| Review report not found | Prompt to run `doc-prd-reviewer` first |
+| Audit/review report not found | Prompt to run `doc-prd-audit` or `doc-prd-reviewer` first |
 | Cannot create file (permissions) | Log error, continue with other fixes |
-| Cannot parse review report | Abort with clear error message |
+| Cannot parse report | Abort with clear error message |
 | Max iterations exceeded | Generate report, flag for manual review |
 | BRD not found | Log warning, skip BRD-dependent fixes |
 
@@ -973,6 +978,7 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
+| `doc-prd-audit` | Preferred combined audit report input |
 | `doc-prd-reviewer` | Provides review report (input) |
 | `doc-prd-autopilot` | Orchestrates Review -> Fix cycle |
 | `doc-prd-validator` | Structural validation |
@@ -986,6 +992,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; added compatibility for `PRD-NN.A_audit_report_vNNN.md` (preferred) with legacy `PRD-NN.R_review_report_vNNN.md` support |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.TT.SS format); Archive manifest creation; Enhanced drift cache with merge history |
 | 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion for PRD codes (01-09, 11, 22, 24); Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |

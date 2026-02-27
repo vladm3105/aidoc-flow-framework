@@ -1133,6 +1133,17 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 ---
 
+### SDD Audit Wrapper Skills
+
+Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
+
+#### doc-brd-audit, doc-prd-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1) and PRD (Layer 2)
+**Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
+**Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
+
+---
+
 ### SDD Fixer Skills (v2.0)
 
 Fixer skills implement tiered auto-merge with no-deletion policy:

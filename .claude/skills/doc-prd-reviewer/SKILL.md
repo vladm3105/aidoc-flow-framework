@@ -1,23 +1,24 @@
 ---
 name: doc-prd-reviewer
 description: Comprehensive content review and quality assurance for PRD documents - validates link integrity, threshold consistency, BRD alignment, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - prd-review
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  layer: 2
-  artifact_type: PRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [PRD]
-  downstream_artifacts: []
-  version: "1.7"
-  last_updated: "2026-02-26T15:10:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - prd-review
+    - layer-2-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 2
+    artifact_type: PRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [PRD]
+    downstream_artifacts: []
+    version: "1.7"
+    last_updated: "2026-02-26"
 ---
 
 # doc-prd-reviewer
@@ -1053,6 +1054,7 @@ review:
 | `doc-prd-autopilot` | Invokes this skill in Phase 5 |
 | `doc-prd-validator` | Structural validation (Phase 4) |
 | `doc-prd-fixer` | Applies fixes based on review findings |
+| `doc-prd-audit` | Wrapper that combines this reviewer output with validator findings |
 | `doc-prd` | PRD creation rules |
 | `doc-brd-validator` | BRD source validation |
 | `doc-ears-autopilot` | Downstream consumer |
@@ -1063,6 +1065,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented relationship with `doc-prd-audit` wrapper |
 | 1.6 | 2026-02-11 | **Numbering Fix**: Corrected Check #10 subsections from 9.1-9.6 to 10.1-10.6 (drift cache, detection algorithm, hash calculation, error codes, report output, configuration) |
 | 1.5 | 2026-02-11 | **Structure Compliance**: Added Check #9 for nested folder rule enforcement (REV-STR001-STR004); Shifted Upstream Drift to Check #10; Added structure compliance to scoring (12% weight, blocking); Updated workflow diagram to 10 checks |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |

@@ -1,22 +1,24 @@
 ---
 name: doc-prd-autopilot
 description: Automated PRD generation pipeline from BRD documents - analyzes dependencies, validates readiness, generates PRDs, performs final review, and supports parallel execution
-tags:
-  - sdd-workflow
-  - automation
-  - prd-generation
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  layer: 2
-  artifact_type: PRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD]
-  downstream_artifacts: [EARS, BDD, ADR]
-  version: "2.5"
+metadata:
+  tags:
+    - sdd-workflow
+    - automation
+    - prd-generation
+    - layer-2-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 2
+    artifact_type: PRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD]
+    downstream_artifacts: [EARS, BDD, ADR]
+    version: "2.6"
+    last_updated: "2026-02-26"
 ---
 
 # doc-prd-autopilot
@@ -45,6 +47,7 @@ This autopilot orchestrates the following skills:
 | `quality-advisor` | Real-time quality feedback during PRD generation | Phase 3: PRD Generation |
 | `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
 | `doc-prd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-prd-audit` | Unified validator+reviewer audit report generation | Phase 5: Review |
 | `doc-prd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
@@ -325,7 +328,7 @@ Before generating a PRD, validate that the source BRD meets PRD-Ready requiremen
 
 **Validation Command** (internal):
 ```bash
-python ai_dev_flow/scripts/validate_prd_ready.py \
+python ai_dev_ssd_flow/scripts/validate_prd_ready.py \
   --brd docs/01_BRD/BRD-01_f1_iam/ \
   --min-score 90 \
   --auto-fix
@@ -349,7 +352,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
+  - **MVP Template** (standard): `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
    - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
@@ -444,8 +447,8 @@ Iterative review and fix cycle to ensure PRD quality before completion.
 
 ```mermaid
 flowchart TD
-    A[Phase 5 Start] --> B[Run doc-prd-reviewer]
-    B --> C[Generate Review Report]
+    A[Phase 5 Start] --> B[Run doc-prd-audit]
+    B --> C[Generate Combined Audit Report]
     C --> D{Review Score >= 90?}
 
     D -->|Yes| E[PASS - Proceed to Phase 6]
@@ -464,13 +467,13 @@ flowchart TD
 
 #### 5.1 Initial Review
 
-Run `doc-prd-reviewer` to identify issues.
+Run `doc-prd-audit` to execute validator + reviewer and generate a combined report.
 
 ```bash
-/doc-prd-reviewer PRD-NN
+/doc-prd-audit PRD-NN
 ```
 
-**Output**: `PRD-NN.R_review_report_v001.md`
+**Output**: `PRD-NN.A_audit_report_v001.md` (compatibility: reviewer report may still be produced)
 
 **Review Checklist**:
 
@@ -506,15 +509,19 @@ If review score < 90%, invoke `doc-prd-fixer`.
 
 **Output**: `PRD-NN.F_fix_report_v001.md`
 
+`doc-prd-fixer` input compatibility:
+- Preferred: `PRD-NN.A_audit_report_vNNN.md`
+- Legacy: `PRD-NN.R_review_report_vNNN.md`
+
 #### 5.3 Re-Review
 
 After fixes, automatically re-run reviewer.
 
 ```bash
-/doc-prd-reviewer PRD-NN
+/doc-prd-audit PRD-NN
 ```
 
-**Output**: `PRD-NN.R_review_report_v002.md`
+**Output**: `PRD-NN.A_audit_report_v002.md`
 
 #### 5.4 Iteration Control
 
@@ -583,7 +590,7 @@ After passing the fix cycle:
 5. **Traceability Matrix Update**:
    ```bash
    # Update PRD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+  python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
      --prd docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md \
      --matrix docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md
    ```
@@ -1124,7 +1131,7 @@ Generated after completion:
 | `BRDNotFoundError` | Specified BRD does not exist | Check path and BRD ID |
 | `PRDReadyScoreLow` | BRD score < 90% after auto-fix attempts | Manual BRD improvement required |
 | `EARSReadyScoreLow` | PRD score < 90% after auto-fix | Manual PRD improvement required |
-| `TemplateNotFoundError` | PRD template missing | Verify `ai_dev_flow/02_PRD/` exists |
+| `TemplateNotFoundError` | PRD template missing | Verify `ai_dev_ssd_flow/02_PRD/` exists |
 
 ### Recovery Actions
 
@@ -1169,7 +1176,7 @@ Generated after completion:
 Before using this skill, ensure:
 
 1. **BRD Documents Exist**: At least one BRD in `docs/01_BRD/`
-2. **Templates Available**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+2. **Templates Available**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
 3. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ### Pre-Flight Check
@@ -1179,7 +1186,7 @@ Before using this skill, ensure:
 ls docs/01_BRD/
 
 # Verify PRD template
-ls ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md
+ls ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md
 
 # Check for existing PRDs
 ls docs/02_PRD/ 2>/dev/null || echo "PRD directory will be created"
@@ -1243,15 +1250,15 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **PRD Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **PRD Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md`
 
 ---
 
@@ -1266,7 +1273,7 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 | Requirement | Value |
 |-------------|-------|
 | Storage Location | Same folder as reviewed PRD |
-| File Name | `PRD-NN.R_review_report.md` |
+| File Name | `PRD-NN.A_audit_report_vNNN.md` (preferred), `PRD-NN.R_review_report_vNNN.md` (legacy) |
 | YAML Frontmatter | MANDATORY - see shared standards |
 | Parent Reference | MANDATORY - link to PRD index |
 
@@ -1275,15 +1282,15 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 ```
 docs/02_PRD/PRD-03_f3_observability/        # Nested folder (REQUIRED)
 ├── PRD-03_f3_observability.md              # Monolithic PRD
-├── PRD-03.R_review_report_v001.md          # Review report v001
-├── PRD-03.R_review_report_v002.md          # Review report v002
+├── PRD-03.A_audit_report_v001.md           # Combined audit report v001
+├── PRD-03.A_audit_report_v002.md           # Combined audit report v002
 ├── PRD-03.F_fix_report_v001.md             # Fix report (if fixes applied)
 └── .drift_cache.json                        # Drift cache
 
 docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 ├── PRD-04.0_index.md                        # Index file
 ├── PRD-04.1_core.md
-├── PRD-04.R_review_report_v001.md          # Review report
+├── PRD-04.A_audit_report_v001.md           # Combined audit report
 └── .drift_cache.json                        # Drift cache
 ```
 
@@ -1293,6 +1300,7 @@ docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; switched PRD references to `ai_dev_ssd_flow`; integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (PRD-NN) triggers review mode; Upstream-type input (BRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.4 | 2026-02-11 | **Nested Folder Enforcement**: Fixed output structure examples to show ALL PRDs in nested folders regardless of size; Removed incorrect non-nested monolithic PRD example; Updated review report location examples |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Step 6) with iterative Review -> Fix cycle using `doc-prd-reviewer` and `doc-prd-fixer`; Added `doc-prd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score |
