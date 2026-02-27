@@ -1,23 +1,25 @@
 ---
 name: doc-spec-reviewer
 description: Comprehensive content review and quality assurance for SPEC documents - validates YAML structure, REQ coverage, interface definitions, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - spec-review
-  - layer-9-artifact
-  - shared-architecture
-custom_fields:
-  layer: 9
-  artifact_type: SPEC
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC]
-  downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - spec-review
+    - layer-9-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 9
+    artifact_type: SPEC
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC]
+    downstream_artifacts: []
+    version: "1.5"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-spec-reviewer
@@ -108,7 +110,7 @@ flowchart TD
 
 ## Review Checks
 
-### 0. Structure Compliance (12/12) - BLOCKING
+### 0. Structure Compliance (MVP) - BLOCKING
 
 Validates SPEC follows the mandatory nested folder rule.
 
@@ -547,6 +549,8 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **File Naming**: `SPEC-NN.R_review_report_vNNN.md`
 
+**Audit Wrapper Compatibility**: `doc-spec-audit` may emit preferred `SPEC-NN.A_audit_report_vNNN.md`; reviewer output remains valid legacy-compatible input for fixer.
+
 **Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
 
 ### Versioning Rules
@@ -608,6 +612,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-27 | Normalized metadata schema; aligned structure heading to MVP contract; added audit-wrapper compatibility for `.A_` reports |
 | 1.4 | 2026-02-11 | **Structure Compliance BLOCKING check**: Added Check #0 as BLOCKING prerequisite; Validates nested folder rule for SPEC documents; REV-STR001-STR003 error codes; Must pass before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required (REV-D006 error if missing); Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; Enhanced cache schema with section-level hashing; Cache status in report output |
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |

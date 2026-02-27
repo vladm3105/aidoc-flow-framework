@@ -1,21 +1,23 @@
 ---
 name: doc-spec-validator
 description: Validate Technical Specifications (SPEC) documents against Layer 9 schema standards
-tags:
-  - sdd-workflow
-  - layer-9-artifact
-  - quality-assurance
-custom_fields:
-  layer: 9
-  artifact_type: SPEC
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC]
-  downstream_artifacts: []
-  version: "1.3"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-9-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 9
+    artifact_type: SPEC
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC]
+    downstream_artifacts: []
+    version: "1.4"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SPEC_MVP_SCHEMA schema_version"
 ---
 
 # doc-spec-validator
@@ -59,7 +61,8 @@ Artifact Type: SPEC
 docs/09_SPEC/
 ├── SPEC-01_f1_iam/
 │   ├── SPEC-01_f1_iam.yaml        ✓ Valid
-│   ├── SPEC-01.R_review_report_v001.md
+│   ├── SPEC-01.A_audit_report_v001.md (preferred)
+│   ├── SPEC-01.R_review_report_v001.md (legacy-compatible)
 │   └── .drift_cache.json
 ├── SPEC-02_f2_session/
 │   └── SPEC-02_f2_session.yaml    ✓ Valid
@@ -241,13 +244,13 @@ Optional fields:
 
 ```bash
 # Validate single SPEC document
-python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/SPEC-001_example.yaml
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-001_example/SPEC-001_example.yaml
 
 # Validate all SPEC documents
-python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/
+find docs/09_SPEC -name "SPEC-*.yaml" -exec python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py {} \;
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_spec.py docs/09_SPEC/ --verbose
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-001_example/SPEC-001_example.yaml --verbose
 ```
 
 ## Validation Workflow
@@ -322,6 +325,7 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.4 | 2026-02-27 | Normalized metadata schema and command references to canonical `ai_dev_ssd_flow/09_SPEC/scripts` validators | System |
 | 1.3 | 2026-02-26 | Fixed schema path to ai_dev_ssd_flow/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
 | 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SPEC must be in `docs/09_SPEC/SPEC-NN_{slug}/` folders; Added error codes SPEC-E020, SPEC-E021, SPEC-E022 | System |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |

@@ -1,19 +1,23 @@
 ---
 name: doc-spec
 description: Create Technical Specifications (SPEC) - Layer 9 artifact using YAML format for implementation-ready specifications
-tags:
-  - sdd-workflow
-  - layer-9-artifact
-  - shared-architecture
-custom_fields:
-  layer: 9
-  artifact_type: SPEC
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR]
-  downstream_artifacts: [TSPEC, TASKS, Code]
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-9-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 9
+    artifact_type: SPEC
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR]
+    downstream_artifacts: [TSPEC, TASKS, Code]
+    version: "1.2.0"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-spec
@@ -50,10 +54,12 @@ Before creating SPEC, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (PRIMARY SOURCE)
 3. **Upstream CTR**: Read contracts if Layer 9 created
-4. **Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml`
-5. **Creation Rules**: `ai_dev_flow/09_SPEC/SPEC_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
-7. **Validation Script**: `./ai_dev_flow/scripts/validate_spec_template.sh` (under development - use template for manual validation until available)
+4. **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+5. **Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+7. **Validation Scripts**:
+  - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py`
+  - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py`
 
 ## Reserved ID Exemption (SPEC-00_*)
 
@@ -271,7 +277,7 @@ traceability:
 > - `DM-XXX` or `MODEL-XXX` - Use `SPEC.NN.17.SS` instead
 > - `VR-XXX` - Use `SPEC.NN.21.SS` instead
 
-**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ### 3. Required Top-Level Sections
 
@@ -528,7 +534,7 @@ Check `docs/09_SPEC/` for next available ID number (or create `docs/09_SPEC/` di
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
 
-**Note**: Templates and examples are in `ai_dev_flow/09_SPEC/` while project-specific SPECs go in `docs/09_SPEC/`.
+**Note**: Templates and examples are in `ai_dev_ssd_flow/09_SPEC/` while project-specific SPECs go in `docs/09_SPEC/`.
 
 **CRITICAL**: Never create SPEC files directly in `docs/09_SPEC/` without a nested folder structure.
 
@@ -582,22 +588,23 @@ Upstream sources and downstream artifacts.
 
 ### Step 16: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Create or update `docs/09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_ssd_flow/09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 17: Validate SPEC
 
 ```bash
 # YAML validation
-yamllint docs/SPEC/SPEC-01_*.yaml
+yamllint docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
 
-# Schema validation (use SPEC_SCHEMA.yaml as reference)
-# Manual: Compare against ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml structure
+# Schema + quality validation
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml --verbose
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SPEC-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts --strict
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact SPEC-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,contracts --strict
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-01_*.yaml
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
 ```
 
 ### Step 18: Commit Changes
@@ -610,19 +617,20 @@ Commit SPEC file and traceability matrix.
 
 ```bash
 # YAML validation
-yamllint docs/SPEC/SPEC-01_*.yaml
+yamllint docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
 
-# Schema validation (use SPEC_SCHEMA.yaml as reference)
-# Manual: Compare against ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml structure
+# Schema + quality validation
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
+python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml --verbose
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
   --artifact SPEC-01 \
-  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,contracts \
   --strict
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-01_*.yaml
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
 ```
 
 ### Manual Checklist
@@ -668,7 +676,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_ssd_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -679,10 +687,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-NN_slug.yaml --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-NN_slug/SPEC-NN_slug.yaml --auto-fix
 
 # Layer validation (Phase 2) - run when all SPEC documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -739,11 +747,11 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml` (primary authority)
-- **SPEC Creation Rules**: `ai_dev_flow/09_SPEC/SPEC_CREATION_RULES.md`
-- **SPEC Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
-- **SPEC Schema**: `ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml`
-- **SPEC README**: `ai_dev_flow/09_SPEC/README.md`
+- **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (primary authority)
+- **SPEC Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
+- **SPEC README**: `ai_dev_ssd_flow/09_SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
 
@@ -786,5 +794,6 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2.0 | 2026-02-27 | Normalized metadata schema; migrated canonical references to `ai_dev_ssd_flow/09_SPEC`; replaced stale `docs/SPEC` validation examples; aligned commands to existing SPEC validators | System |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; updated downstream artifacts (TSPEC Layer 10, TASKS Layer 11); removed IMPL from upstream; updated tag counts to 7-8 | System |
 | 1.0.0 | 2025-01-15 | Initial skill definition | System |

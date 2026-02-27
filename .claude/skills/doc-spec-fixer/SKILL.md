@@ -1,23 +1,25 @@
 ---
 name: doc-spec-fixer
 description: Automated fix skill that reads review reports and applies fixes to SPEC (Specification) documents - handles broken links, YAML structure issues, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - spec-fix
-  - layer-9-artifact
-  - shared-architecture
-custom_fields:
-  layer: 9
-  artifact_type: SPEC
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [REQ, CTR, SPEC, Review Report]
-  downstream_artifacts: [Fixed SPEC, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - spec-fix
+    - layer-9-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 9
+    artifact_type: SPEC
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [REQ, CTR, SPEC, Review Report]
+    downstream_artifacts: [Fixed SPEC, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-spec-fixer
@@ -28,7 +30,7 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 **Layer**: 9 (SPEC Quality Improvement)
 
-**Upstream**: REQ documents, CTR documents, SPEC document, Review Report (`SPEC-NN.R_review_report_vNNN.md`)
+**Upstream**: REQ documents, CTR documents, SPEC document, Review Report (`SPEC-NN.A_audit_report_vNNN.md` preferred; `SPEC-NN.R_review_report_vNNN.md` legacy-compatible)
 
 **Downstream**: Fixed SPEC, Fix Report (`SPEC-NN.F_fix_report_vNNN.md`)
 
@@ -56,6 +58,7 @@ Use `doc-spec-fixer` when:
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
 | `doc-spec-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-spec-audit` | Unified validator+reviewer wrapper | Preferred upstream report source |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-spec` | SPEC creation rules | Create missing sections |
 | `doc-req` | REQ traceability | Validate upstream links |
@@ -67,7 +70,7 @@ Use `doc-spec-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: SPEC Path] --> B[Find Latest Review Report]
+    A[Input: SPEC Path] --> B[Find Latest Audit/Review Report]
     B --> C{Review Found?}
     C -->|No| D[Run doc-spec-reviewer First]
     C -->|Yes| E[Parse Review Report]
@@ -784,6 +787,10 @@ def find_yaml_blocks(content: str) -> list:
 
 **File Naming**: `SPEC-NN.F_fix_report_vNNN.md`
 
+**Upstream Selection Precedence**:
+1. Select newest report timestamp.
+2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
+
 **Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
 
 **Structure**:
@@ -800,7 +807,7 @@ custom_fields:
   artifact_type: SPEC-FIX
   layer: 9
   parent_doc: SPEC-NN
-  source_review: SPEC-NN.R_review_report_v001.md
+  source_review: SPEC-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-spec-fixer
   fix_version: "1.0"
@@ -946,6 +953,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-27 | Normalized metadata schema; added `.A_audit_report` preferred upstream contract with deterministic `.A_` over `.R_` tie-break |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5%, Tier 2: 5-15%, Tier 3: >15%); Auto-generated SPEC IDs (SPEC-NN-COMPONENT-SS pattern); No-deletion policy with [DEPRECATED] marking; Archive manifest creation for Tier 3; Enhanced drift cache with merge history; YAML spec format handling with drift metadata; Change percentage calculation algorithm |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; YAML structure repair; Schema and config file generation; YAML path-based element IDs; REQ/CTR drift handling; Integration with autopilot Review->Fix cycle |

@@ -1137,8 +1137,8 @@ Reviewer skills perform comprehensive content review and quality assurance with 
 
 Audit wrappers run validator + reviewer and emit combined reports for fixer workflows.
 
-#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit
-**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), and REQ (Layer 7)
+#### doc-brd-audit, doc-prd-audit, doc-ears-audit, doc-bdd-audit, doc-adr-audit, doc-sys-audit, doc-req-audit, doc-spec-audit
+**Purpose**: Unified artifact audit wrappers for BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), and SPEC (Layer 9)
 **Combined Output**: `*.A_audit_report_vNNN.md` (preferred fixer input)
 **Compatibility**: Fixers continue to accept legacy `*.R_review_report_vNNN.md`
 
@@ -1256,7 +1256,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 **Quick Reference**: [doc-ctr_quickref.md](./doc-ctr_quickref.md)
 **Use**: Define API contracts and data schemas (OpenAPI/JSON Schema)
 
-#### 32. doc-spec (Layer 10)
+#### 32. doc-spec (Layer 9)
 **Purpose**: Create Technical Specifications in YAML format
 **Quick Reference**: [doc-spec_quickref.md](./doc-spec_quickref.md)
 **Use**: Define 100% implementation-ready specifications
