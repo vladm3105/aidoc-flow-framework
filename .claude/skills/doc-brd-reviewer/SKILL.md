@@ -422,6 +422,7 @@ Validates BRD aligns with business strategy and objectives.
 - Success metrics align with KPIs
 - Scope matches project charter
 - Stakeholder concerns addressed
+- Implementation-derived content is translated into business-language outcomes
 
 **Error Codes**:
 
@@ -431,6 +432,7 @@ Validates BRD aligns with business strategy and objectives.
 | REV-SA002 | Info | Success metric may not align with KPI |
 | REV-SA003 | Warning | Scope may exceed project charter |
 | REV-SA004 | Flag | Requires stakeholder review |
+| REV-SA005 | Warning | Implementation-heavy wording not abstracted to BRD business language |
 
 ---
 

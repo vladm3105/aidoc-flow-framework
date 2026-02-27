@@ -1,6 +1,6 @@
 ---
 name: doc-brd-autopilot
-description: Automated BRD generation pipeline from reference documents (docs/00_REF/ or REF/) or user prompts - analyzes sources, determines BRD type, generates content, validates readiness, creates BRD-00_index.md, and supports parallel execution
+description: Automated BRD generation pipeline from reference documents (docs/00_REF/ or REF/), user prompts, or implementation plans (IPLAN) - analyzes sources, determines BRD type, generates content, validates readiness, creates BRD-00_index.md, and supports parallel execution
 
 metadata:
   tags:
@@ -27,7 +27,7 @@ metadata:
 
 ## Purpose
 
-Automated **Business Requirements Document (BRD)** generation pipeline that processes reference documents (`docs/00_REF/` or `REF/`) or user prompts to generate comprehensive BRDs with type determination, readiness validation, master index management, and parallel execution support.
+Automated **Business Requirements Document (BRD)** generation pipeline that processes reference documents (`docs/00_REF/` or `REF/`), user prompts, or implementation plans (`IPLAN-*`) to generate comprehensive BRDs with type determination, readiness validation, master index management, and parallel execution support.
 
 **Layer**: 1 (Entry point - no upstream document dependencies)
 
@@ -97,6 +97,46 @@ Any deviation found in reviewer/fixer outputs must trigger fix cycle before PASS
 
 ---
 
+## Input Contract (Canonical + Backward-Compatible)
+
+Canonical invocation formats:
+
+```bash
+/doc-brd-autopilot --ref <path>
+/doc-brd-autopilot --prompt "<business objective and scope>"
+/doc-brd-autopilot --iplan <path|IPLAN-NNN>
+```
+
+Backward compatibility:
+
+- Positional invocation remains supported (`/doc-brd-autopilot BRD-01`, `/doc-brd-autopilot docs/00_REF/...`).
+- If flag-style input and positional input are both provided, **flag-style input is authoritative**.
+- Positional-only generation mode should emit a compatibility note recommending canonical flags.
+
+Input precedence (highest to lowest):
+
+1. `--iplan`
+2. `--ref`
+3. `--prompt`
+
+If multiple inputs are provided, the highest-precedence input becomes **primary source** and others are treated as **supplemental context**.
+
+Supplemental merge semantics:
+
+- Supplemental sources may fill missing context only.
+- Supplemental sources must not override primary source objectives/scope/constraints.
+- Conflicts in objectives/scope are blocking and require user clarification.
+
+IPLAN resolution order:
+
+1. If `--iplan` is an existing file path, use it.
+2. If `--iplan` value matches `IPLAN-NNN` (no path), resolve in order:
+  - `work_plans/IPLAN-NNN*.md`
+  - `governance/plans/IPLAN-NNN*.md`
+3. If multiple matches are found, fail with disambiguation output listing candidate files.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.
@@ -111,16 +151,32 @@ BRD has no upstream document type. Smart detection works differently:
 | `BRD-NN` (missing) | Self type | Search refs → Generate BRD |
 | `BRD-NN BRD-MM ...` | Multiple BRDs | Process each (chunked by 3) |
 | `docs/00_REF/...` | Reference docs | Generate BRD from reference |
+| `--ref <path>` | Reference docs | Generate BRD from reference |
 | `REF/...` | Reference docs | Generate BRD from reference |
 | `--prompt "..."` | User prompt | Generate BRD from prompt |
+| `--iplan <path|IPLAN-NNN>` | Implementation plan | Generate BRD from implementation plan |
 
 ### Detection Algorithm
 
 ```
-1. Parse input: Determine input type and count
-2. IF input is reference path or --prompt:
-   - Run Generate Mode (Phase 1-5)
-3. IF input matches "BRD-NN" pattern (single or multiple):
+1. Parse input into buckets: BRD IDs, ref paths, prompt, implementation plan
+2. Resolve canonical primary source using precedence:
+  - `--iplan` > `--ref` > `--prompt`
+3. IF primary source is `--iplan`:
+  - Resolve IPLAN path (direct path or `IPLAN-NNN` lookup)
+  - Validate required IPLAN fields: title, scope, phases/steps, constraints, dependencies, validation/testing approach
+  - Transform IPLAN content to BRD sections (1,2,3,8,9,10,11,12,15)
+  - Run Generate Mode (Phase 1-5)
+4. IF primary source is reference path (`--ref` or positional docs/00_REF|REF path):
+  - Detect small-ref mode (<=3 files and <=100KB total, markdown/text/reStructuredText only)
+  - Small-ref mode: run extraction table (objective, scope, constraints, assumptions, acceptance criteria)
+  - Standard-ref mode: run full source analysis pipeline
+  - Run Generate Mode (Phase 1-5)
+5. IF primary source is `--prompt`:
+  - Validate prompt quality (objective + scope + at least one constraint or success signal)
+  - If low-information prompt, request guided prompt enrichment
+  - Run Generate Mode (Phase 1-5)
+6. IF input matches "BRD-NN" pattern (single or multiple) and no generation source provided:
    - Process in chunks of 3 (max parallel)
    - For each BRD-NN:
      a. Check: Does BRD-{NN} exist in docs/01_BRD/?
@@ -140,8 +196,8 @@ BRD has no upstream document type. Smart detection works differently:
         - IF reference found:
           - Run Generate Mode (Phase 1-5)
         - ELSE:
-          - Prompt user: "No reference found for BRD-NN. Provide path or --prompt"
-4. Generate summary report for all processed BRDs
+          - Prompt user: "No reference found for BRD-NN. Provide --ref, --prompt, or --iplan"
+7. Generate summary report for all processed BRDs
 ```
 
 ### File Existence Check
@@ -167,6 +223,13 @@ ls docs/01_BRD/BRD-{NN}_*/
 
 # Generate mode (prompt input)
 /doc-brd-autopilot --prompt "Create a BRD for user authentication system"
+
+# Generate mode (implementation plan input)
+/doc-brd-autopilot --iplan work_plans/IPLAN-002_brd_skill_input_expansion.md
+/doc-brd-autopilot --iplan IPLAN-002
+
+# Mixed input (primary + supplemental)
+/doc-brd-autopilot --iplan IPLAN-002 --ref docs/00_REF/foundation/
 ```
 
 ### Action Determination Output
@@ -196,7 +259,7 @@ Input: BRD-99
 ├── Detected Type: BRD (self)
 ├── BRD Exists: No
 ├── Reference Search: No matching reference found
-└── Action: PROMPT USER - "Provide reference path or use --prompt for BRD-99"
+└── Action: PROMPT USER - "Provide --ref, --prompt, or --iplan for BRD-99"
 
 Input: BRD-46 BRD-47 BRD-48 BRD-49 BRD-50
 ├── Detected Type: Multiple BRDs (5)
@@ -209,6 +272,13 @@ Input: BRD-46 BRD-47 BRD-48 BRD-49 BRD-50
 Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 ├── Detected Type: Reference document
 └── Action: GENERATE MODE - Creating BRD from reference specification
+
+Input: --iplan IPLAN-002
+├── Detected Type: Implementation plan
+├── Resolved Path: work_plans/IPLAN-002_brd_skill_input_expansion.md
+├── Validation: Required fields present
+├── Action: GENERATE MODE - Creating BRD from implementation plan
+└── Mapping: IPLAN sections -> BRD sections (1,2,3,8,9,10,11,12,15)
 ```
 
 ---
@@ -217,7 +287,7 @@ Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 
 **Use `doc-brd-autopilot` when**:
 - Starting a new project and need to create the initial BRD
-- Converting business requirements or strategy documents to formal BRD format
+- Converting business requirements, strategy documents, or implementation plans to formal BRD format
 - Creating multiple BRDs for a project (platform + feature BRDs)
 - Automating BRD generation in CI/CD pipelines
 - Ensuring consistent BRD quality across team members
@@ -319,10 +389,42 @@ Analyze available input sources to extract business requirements.
 
 | Priority | Source | Location | Content Type |
 |----------|--------|----------|--------------|
-| 1 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
-| 2 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
-| 3 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
-| 4 | User Prompts | Interactive | Business context, objectives, constraints |
+| 1 | Implementation Plan | `work_plans/` or `governance/plans/` | Planned scope, constraints, dependencies, validation approach |
+| 2 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
+| 3 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
+| 4 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
+| 5 | User Prompts | Interactive | Business context, objectives, constraints |
+
+#### 0.1 Small Reference Mode (Deterministic)
+
+Use small-reference mode when all conditions are true:
+
+- Source set includes <=3 files
+- Total size <=100KB
+- All files are `.md`, `.txt`, or `.rst`
+
+Small-reference extraction table (mandatory):
+
+| Extraction Field | Output Target |
+|------------------|---------------|
+| objective | BRD sections 1-2 |
+| scope | BRD section 3 |
+| constraints | BRD section 8 |
+| assumptions | BRD section 8 |
+| acceptance criteria | BRD section 9 |
+
+If any threshold is exceeded, route to standard reference processing mode.
+
+#### 0.2 IPLAN Validation Severity Matrix
+
+| Check | Severity | Behavior |
+|------|----------|----------|
+| Missing IPLAN title | Error | Abort generation |
+| Missing IPLAN scope | Error | Abort generation |
+| Missing phases/steps | Error | Abort generation |
+| Missing constraints/dependencies | Warning | Continue with explicit BRD assumptions |
+| Missing validation/testing approach | Warning | Continue and flag BRD QA gap |
+| Ambiguous IPLAN identifier | Error | Abort and request disambiguation |
 
 #### 1.0 Determine Upstream Mode (First Step)
 
@@ -338,7 +440,10 @@ Analyze available input sources to extract business requirements.
 3. If user specifies source docs from REF folder:
    - Set `upstream_mode: "ref"`
    - Set `upstream_ref_path` to specified subfolder(s)
-4. If not found or user creating from scratch:
+4. If primary source is `--iplan` and no reference docs are primary:
+  - Set `upstream_mode: "none"`
+  - Optionally attach `upstream_ref_path` only when supplemental `--ref` context is used
+5. If not found or user creating from scratch:
    - Set `upstream_mode: "none"` (default)
    - Set `upstream_ref_path: null`
 
@@ -399,7 +504,7 @@ ls -la REF/
 
 | Check | Action | Severity |
 |-------|--------|----------|
-| Reference documents exist | Verify files in `docs/00_REF/` or `REF/` | Error - blocks generation |
+| Reference documents exist (ref mode only) | Verify files in `docs/00_REF/` or `REF/` | Error - blocks generation in ref mode |
 | `@ref:` targets in source docs | Verify referenced files exist | Error - blocks generation |
 | Gap analysis documents | Verify `GAP_*.md` files if referenced | Note - flag for creation |
 | Cross-reference documents | Verify upstream docs exist | Note - document dependency |
@@ -1775,8 +1880,13 @@ Proceeding to next chunk...
 ./hooks/pre_brd_generation.sh
 
 # Example: Validate input sources exist
-if [ ! -d "docs/00_REF/" ] && [ ! -d "REF/" ]; then
-  echo "ERROR: docs/00_REF/ or REF/ directory required"
+if [ -z "$BRD_INPUT_MODE" ]; then
+  echo "ERROR: one input mode required (--ref, --prompt, --iplan, or BRD-NN review mode)"
+  exit 1
+fi
+
+if [ "$BRD_INPUT_MODE" = "ref" ] && [ ! -d "docs/00_REF/" ] && [ ! -d "REF/" ]; then
+  echo "ERROR: docs/00_REF/ or REF/ directory required for ref mode"
   exit 1
 fi
 ```
@@ -1836,7 +1946,7 @@ jobs:
 
 | Phase | Gate | Criteria |
 |-------|------|----------|
-| Phase 1 | Input Gate | At least one reference document found in `docs/00_REF/` or `REF/`, or user prompts provided |
+| Phase 1 | Input Gate | Valid input provided via `--iplan`, `--ref`, `--prompt`, or BRD-ID review mode |
 | Phase 2 | Type Gate | BRD type determined (Platform/Feature) |
 | Phase 3 | Generation Gate | All 18 sections generated |
 | Phase 4 | Validation Gate | PRD-Ready Score >= 90% + template conformance pass |
@@ -1873,6 +1983,7 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.3 | 2026-02-27 | **Input Contract Expansion**: Added canonical grammar and compatibility (`--ref`, `--prompt`, `--iplan`); implemented deterministic precedence and supplemental merge semantics; added IPLAN resolution order and validation matrix; added small-reference mode thresholds/extraction table; updated input gate and examples for implementation-plan-driven generation while preserving BRD-ID review flow. |
 | 3.2 | 2026-02-27 | **Hash Computation Contract**: Added Section 5.6.1 with mandatory bash `sha256sum` execution at generation and review; Hash format validation; Placeholder rejection (verified_no_drift, pending_verification); Verification step to confirm valid hashes in drift cache |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
 | 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |

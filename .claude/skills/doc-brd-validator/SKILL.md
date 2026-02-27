@@ -269,6 +269,20 @@ Forbidden tag patterns:
 - BRDs without `upstream_mode` are treated as `upstream_mode: "none"`
 - Drift detection is automatically skipped for these BRDs
 
+### 8.2 Source Mode Awareness (Autopilot Contract)
+
+Autopilot may generate BRDs from any of these source modes:
+
+- `--ref <path>`
+- `--prompt "..."`
+- `--iplan <path|IPLAN-NNN>`
+
+Validator behavior remains frontmatter-based:
+
+- Validate only `upstream_mode` / `upstream_ref_path` values in BRD files.
+- Do not enforce source-mode flags at BRD file level.
+- For IPLAN-derived BRDs, `upstream_mode: "none"` is valid unless reference documents are explicitly tracked.
+
 ### 8.1 Hash Format Validation
 
 When `upstream_mode: "ref"` and `.drift_cache.json` exists, validate hash integrity.

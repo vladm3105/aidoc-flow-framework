@@ -100,6 +100,8 @@ Use `doc-brd` when:
 - Defining business requirements and objectives
 - Documenting strategic alignment and market context
 - Establishing success criteria and stakeholder needs
+- Translating implementation plans into business-language BRD sections
+- Refining BRDs generated from small reference documents or prompt-first workflows
 - You are at Layer 1 of the SDD workflow
 
 ## BRD Categorization: Platform vs Feature
@@ -262,6 +264,17 @@ custom_fields:
   upstream_ref_path: "../../00_REF/source_docs/"  # Relative to BRD location
 ```
 
+#### With Implementation Plans (`IPLAN-*`)
+
+If BRD content is primarily derived from an implementation plan, keep drift mode default unless reference documents are primary:
+
+```yaml
+custom_fields:
+  upstream_mode: "none"
+```
+
+When implementation plan input is supplemented by reference documents, set `upstream_mode: "ref"` and track only the reference path(s) in `upstream_ref_path`.
+
 #### Multiple Reference Folders
 
 For nested or multiple reference folders:
@@ -288,6 +301,14 @@ Paths are relative to the BRD file location:
 |---------------|-------------------|-----------------|
 | `"none"` (default) | ignored | Skipped |
 | `"ref"` | required | Tracks specified path(s) |
+
+#### Input Mode Authoring Guardrail
+
+For plan-derived BRDs:
+
+- Convert implementation-heavy details into business outcomes, risks, and acceptance criteria.
+- Keep low-level execution mechanics in the IPLAN, not in BRD functional requirements.
+- If objective/scope in source inputs conflict, resolve before writing BRD sections 1-3.
 
 ### 4. Architecture Decision Requirements Section (7.2) - MANDATORY
 
