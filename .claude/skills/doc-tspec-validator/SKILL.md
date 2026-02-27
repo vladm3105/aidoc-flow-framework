@@ -1,22 +1,24 @@
 ---
 name: doc-tspec-validator
 description: Validate Test Specification (TSPEC) documents against Layer 10 schema standards
-tags:
-  - sdd-workflow
-  - layer-10-artifact
-  - validation
-  - shared-architecture
-custom_fields:
-  layer: 10
-  artifact_type: TSPEC
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC]
-  downstream_artifacts: [TASKS]
-  version: "1.2"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-10-artifact
+    - validation
+    - shared-architecture
+  custom_fields:
+    layer: 10
+    artifact_type: TSPEC
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC]
+    downstream_artifacts: [TASKS]
+    version: "1.3"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks TSPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-tspec-validator
@@ -91,6 +93,7 @@ docs/10_TSPEC/
 ├── UTEST/
 │   ├── UTEST-01_auth_service/
 │   │   ├── UTEST-01_auth_service.md   ✓ Valid
+│   │   ├── UTEST-01.A_audit_report_v001.md
 │   │   ├── UTEST-01.R_review_report_v001.md
 │   │   └── .drift_cache.json
 │   └── UTEST-02_session_service/
@@ -407,17 +410,13 @@ AND no side effects occur
 ## Validation Commands
 
 ```bash
-# Validate single TSPEC document
-python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/UTEST/UTEST-01_example.md
-
-# Validate all TSPEC documents in directory
-python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/
-
 # Validate by type
 python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/
 python ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/
 python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/
 python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ptest.py docs/10_TSPEC/PTEST/
+python ai_dev_ssd_flow/10_TSPEC/scripts/validate_sectest.py docs/10_TSPEC/SECTEST/
 
 # Validate all TSPEC types
 bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
@@ -425,17 +424,11 @@ bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
 # Quality score validation
 bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
 
-# Validate with verbose output
-python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/ --verbose
-
-# Validate with auto-fix
-python ai_dev_flow/scripts/validate_tspec.py docs/10_TSPEC/ --auto-fix
-
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-01.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-01.md --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
   --artifact UTEST-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,spec \
   --strict
@@ -482,6 +475,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 ## Integration
 
 - **Invoked by**: doc-flow, doc-tspec (post-creation), quality-advisor
+- **Invoked by**: doc-flow, doc-tspec (post-creation), quality-advisor, doc-tspec-audit
 - **Feeds into**: trace-check (cross-document validation)
 - **Reports to**: quality-advisor
 - **Validates output from**: doc-tspec skill
@@ -555,6 +549,7 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-27 | Normalized frontmatter to `metadata` schema with `versioning_policy`; replaced legacy monolithic validator command examples with type-specific validators + `validate_all_tspec.sh`; aligned cross-document/tag validation references to `ai_dev_ssd_flow/scripts/*`; added audit-report example path compatibility |
 | 1.2 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) validation; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/; Updated section count from 7 to 6 (Error Cases in Section 4); Added PTEST/SECTEST to nested folder table |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TSPEC must be in `docs/10_TSPEC/{TYPE}/{TYPE}-NN_{slug}/` folders; Added error codes TSPEC-E030 through TSPEC-E033 |
 | 1.0 | 2026-02-08 | Initial release: Full TSPEC validation for UTEST/ITEST/STEST/FTEST (codes 40-43), cumulative tagging (8 required), type-specific requirements, doc-naming integration |

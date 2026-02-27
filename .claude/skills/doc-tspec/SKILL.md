@@ -1,21 +1,23 @@
 ---
 name: doc-tspec
 description: Create Test Specifications (TSPEC) - Layer 10 artifact for unit, integration, smoke, and functional test cases
-tags:
-  - sdd-workflow
-  - layer-10-artifact
-  - shared-architecture
-custom_fields:
-  layer: 10
-  artifact_type: TSPEC
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
-  downstream_artifacts: [TASKS, Code]
-  version: "1.1"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-10-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 10
+    artifact_type: TSPEC
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
+    downstream_artifacts: [TASKS, Code]
+    version: "1.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks TSPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-tspec
@@ -103,7 +105,7 @@ Use `doc-tspec` when:
 > - `ST-XXX` - Use `TSPEC.NN.42.SS` instead
 > - `FT-XXX` - Use `TSPEC.NN.43.SS` instead
 
-**Reference**: [doc-naming skill](../.claude/skills/doc-naming/SKILL.md) for complete element type codes.
+**Reference**: [doc-naming skill](../doc-naming/SKILL.md) for complete element type codes.
 
 ## TSPEC Types Overview
 
@@ -443,7 +445,7 @@ python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/FT
 bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
   --artifact UTEST-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,spec \
   --strict
@@ -468,7 +470,7 @@ python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/*.
 python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/*.md
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-01_*.md
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-01_*.md
 ```
 
 ### Manual Checklist
@@ -510,7 +512,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_ssd_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -521,10 +523,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-NN_slug.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all TSPEC documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer TSPEC --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer TSPEC --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -634,5 +636,6 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-27 | Normalized frontmatter to `metadata` schema with `versioning_policy`; aligned cross-document/tag validation command examples to canonical `ai_dev_ssd_flow/scripts/*` locations |
 | 1.1 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/ |
 | 1.0 | 2026-02-08 | Initial release with UTEST/ITEST/STEST/FTEST support (codes 40-43) |

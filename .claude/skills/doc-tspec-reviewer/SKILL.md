@@ -1,23 +1,25 @@
 ---
 name: doc-tspec-reviewer
 description: Comprehensive content review and quality assurance for TSPEC documents - validates test coverage, SPEC alignment, test completeness, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - tspec-review
-  - layer-10-artifact
-  - shared-architecture
-custom_fields:
-  layer: 10
-  artifact_type: TSPEC
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [TSPEC]
-  downstream_artifacts: []
-  version: "1.5"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - tspec-review
+    - layer-10-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 10
+    artifact_type: TSPEC
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [TSPEC]
+    downstream_artifacts: []
+    version: "1.6"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks TSPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-tspec-reviewer
@@ -108,7 +110,7 @@ flowchart TD
 
 ## Review Checks
 
-### 0. Structure Compliance (12/12) - BLOCKING
+### 0. Structure Compliance (MVP) - BLOCKING
 
 Validates TSPEC follows the mandatory nested folder rule.
 
@@ -505,6 +507,8 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **File Naming**: `TSPEC-NN.R_review_report_vNNN.md`
 
+**Audit Wrapper Compatibility**: `doc-tspec-audit` can emit `TSPEC-NN.A_audit_report_vNNN.md` as preferred fixer input while reviewer-native `.R_review_report_vNNN.md` remains supported.
+
 **Location**: Inside the TSPEC nested folder: `docs/10_TSPEC/TSPEC-NN_{slug}/`
 
 ### Versioning Rules
@@ -552,6 +556,7 @@ flowchart LR
 |-------|--------------|
 | `doc-naming` | Naming standards for Check #8 |
 | `doc-tspec-autopilot` | Invokes this skill in Phase 5 |
+| `doc-tspec-audit` | Wraps validator+reviewer into combined audit output |
 | `doc-tspec-validator` | Structural validation (Phase 4) |
 | `doc-tspec-fixer` | Applies fixes based on review findings |
 | `doc-tspec` | TSPEC creation rules |
@@ -563,6 +568,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-27 | Normalized frontmatter to `metadata` schema with `versioning_policy`; changed structure gate heading from fixed `12/12` wording to `MVP`; added explicit audit-wrapper compatibility guidance (`.A_` preferred, `.R_` reviewer-native) |
 | 1.5 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Updated test type count from 4 to 6; Added PTEST/SECTEST to nested folder table; Updated element type codes to 40-45 |
 | 1.4 | 2026-02-11 | **BLOCKING Structure Compliance check**: Added Check #0 as BLOCKING gate; Validates nested folder rule for all TSPEC types (UTEST/ITEST/STEST/FTEST); REV-STR001-STR004 error codes; TSPEC must pass structure validation before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required for all reviews; Three-phase detection algorithm; SHA-256 hash calculation with Python example; REV-D006 error code for missing cache; Cache schema v2.0 with section-level hashes; Report output with cache status and change percentages |

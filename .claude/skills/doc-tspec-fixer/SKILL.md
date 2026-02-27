@@ -1,23 +1,25 @@
 ---
 name: doc-tspec-fixer
 description: Automated fix skill that reads review reports and applies fixes to TSPEC (Test Specification) documents - handles broken links, element IDs, test case structure issues, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - tspec-fix
-  - layer-10-artifact
-  - shared-architecture
-custom_fields:
-  layer: 10
-  artifact_type: TSPEC
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC, TSPEC, Review Report]
-  downstream_artifacts: [Fixed TSPEC, Fix Report]
-  version: "2.2"
-  last_updated: "2026-02-26T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - tspec-fix
+    - layer-10-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 10
+    artifact_type: TSPEC
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC, TSPEC, Review Report]
+    downstream_artifacts: [Fixed TSPEC, Fix Report]
+    version: "2.3"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks TSPEC-MVP-TEMPLATE schema_version"
 ---
 
 # doc-tspec-fixer
@@ -28,7 +30,7 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 **Layer**: 10 (TSPEC Quality Improvement)
 
-**Upstream**: SPEC documents, TSPEC document, Review Report (`TSPEC-NN.R_review_report_vNNN.md`)
+**Upstream**: SPEC documents, TSPEC document, Review/Audit Report (`TSPEC-NN.A_audit_report_vNNN.md` preferred; `TSPEC-NN.R_review_report_vNNN.md` legacy-compatible)
 
 **Downstream**: Fixed TSPEC, Fix Report (`TSPEC-NN.F_fix_report_vNNN.md`)
 
@@ -49,12 +51,18 @@ Use `doc-tspec-fixer` when:
 - Creating new TSPEC (use `doc-tspec` or `doc-tspec-autopilot`)
 - Only need validation (use `doc-tspec-validator`)
 
+### Report Selection Precedence (Deterministic)
+
+1. Select report with latest timestamp/version.
+2. If timestamps/versions tie, prefer `.A_audit_report_vNNN.md` over `.R_review_report_vNNN.md`.
+
 ---
 
 ## Skill Dependencies
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
+| `doc-tspec-audit` | Unified validator+reviewer wrapper | Preferred upstream report source |
 | `doc-tspec-reviewer` | Source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-tspec` | TSPEC creation rules | Create missing sections |
@@ -66,7 +74,7 @@ Use `doc-tspec-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: TSPEC Path] --> B[Find Latest Review Report]
+  A[Input: TSPEC Path] --> B[Find Latest Audit/Review Report]
     B --> C{Review Found?}
     C -->|No| D[Run doc-tspec-reviewer First]
     C -->|Yes| E[Parse Review Report]
@@ -878,7 +886,10 @@ def find_test_cases(content: str) -> list:
 # Fix TSPEC based on latest review
 /doc-tspec-fixer TSPEC-01
 
-# Fix with explicit review report
+# Fix with explicit audit report (preferred)
+/doc-tspec-fixer TSPEC-01 --review-report TSPEC-01.A_audit_report_v001.md
+
+# Fix with explicit legacy review report (supported)
 /doc-tspec-fixer TSPEC-01 --review-report TSPEC-01.R_review_report_v001.md
 
 # Fix and re-run review
@@ -945,7 +956,7 @@ custom_fields:
   artifact_type: TSPEC-FIX
   layer: 10
   parent_doc: TSPEC-NN
-  source_review: TSPEC-NN.R_review_report_v001.md
+  source_review: TSPEC-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-tspec-fixer
   fix_version: "1.0"
@@ -957,7 +968,7 @@ custom_fields:
 
 | Metric | Value |
 |--------|-------|
-| Source Review | TSPEC-NN.R_review_report_v001.md |
+| Source Review | TSPEC-NN.A_audit_report_v001.md |
 | Issues in Review | 20 |
 | Issues Fixed | 17 |
 | Issues Remaining | 3 (manual review required) |
@@ -1089,6 +1100,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-27 | Normalized frontmatter to `metadata` schema with `versioning_policy`; updated upstream contract to audit-first (`.A_` preferred) with `.R_` compatibility; added deterministic report precedence rule; updated fixer command and report examples for audit-wrapper flow |
 | 2.2 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Updated type codes table to use correct test type names; Added PTEST/SECTEST to nested folder table |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge patch, Tier 2: 5-15% auto-merge minor with changelog, Tier 3: >15% archive and regenerate major); Added test ID patterns for TSPEC (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-NN-TC-SS format); Implemented no-deletion policy with [DEPRECATED] markers; Enhanced drift cache with merge history tracking; Added archive manifest creation for Tier 3; Auto-generated test ID support |
