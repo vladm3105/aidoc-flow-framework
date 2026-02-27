@@ -2,7 +2,7 @@
 title: "API Contracts (CTR) - README"
 tags:
   - index-document
-  - layer-9-artifact
+  - layer-8-artifact
   - shared-architecture
 custom_fields:
   document_type: readme
@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `CTR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `CTR-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
 ## 1. Purpose
 

@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `REQ-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `REQ-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
 ## Document Control
 
@@ -42,7 +42,7 @@ Requirements (REQ) documents capture atomic, testable requirements that serve as
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 10-20 core requirements
 
-REQ full template is removed from the workflow (archived only).
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (REQ-02, REQ-03, etc.), not template changes.
 
 ## Purpose
 

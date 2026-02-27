@@ -41,10 +41,11 @@ Role: AI Test Architect
 Objective: Create test specification overview aggregating all test types.
 Constraints:
 - One TSPEC aggregator per component/feature.
-- References all subtype TSPECs (UTEST, ITEST, etc.).
-- 5 required sections.
+- References all subtype TSPECs (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST).
+- 5 required sections (aggregator template) - individual test type templates have 6 sections.
 - Traceability to SPEC and REQ required.
 - Coverage targets must align with quality gates.
+- All documents use nested folder structure (TYPE-NN_{slug}/TYPE-NN_{slug}.md).
 AI_CONTEXT_END
 -->
 
@@ -229,19 +230,29 @@ References: Matrix `TSPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ## Appendix: Test Document Locations
 
+> **Nested Folder Rule**: ALL TSPEC documents MUST be in nested folders regardless of size.
+
 ```
 10_TSPEC/
- TSPEC-NN_{component}_overview.md  (this document)
+ TSPEC-NN_{component}/
+    TSPEC-NN_{component}.md         (this document - aggregator)
+    .drift_cache.json               (drift detection cache)
  UTEST/
-    UTEST-NN_{component}_unit_tests.md
+    UTEST-NN_{component}/
+       UTEST-NN_{component}.md      (unit tests)
  ITEST/
-    ITEST-NN_{component}_integration_tests.md
+    ITEST-NN_{component}/
+       ITEST-NN_{component}.md      (integration tests)
  STEST/
-    STEST-NN_{component}_system_tests.md
+    STEST-NN_{component}/
+       STEST-NN_{component}.md      (smoke tests)
  FTEST/
-    FTEST-NN_{component}_functional_tests.md
+    FTEST-NN_{component}/
+       FTEST-NN_{component}.md      (functional tests)
  PTEST/
-    PTEST-NN_{component}_performance_tests.md
+    PTEST-NN_{component}/
+       PTEST-NN_{component}.md      (performance tests)
  SECTEST/
-     SECTEST-NN_{component}_security_tests.md
+    SECTEST-NN_{component}/
+       SECTEST-NN_{component}.md    (security tests)
 ```

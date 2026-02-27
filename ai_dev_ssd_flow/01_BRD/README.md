@@ -13,12 +13,31 @@ custom_fields:
 
 # Business Requirements Documents (BRD)
 
+## MVP → PROD → NEW MVP Lifecycle
+
+**Key Principle**: Each BRD represents ONE iteration cycle. When current MVP reaches production and new features are needed, create a **new BRD** for the next cycle.
+
+```
+BRD-01 (MVP) → Production v1 → User Feedback → BRD-02 (NEW MVP) → Production v2 → ...
+```
+
+| Phase | BRD Role | Duration |
+|-------|----------|----------|
+| **MVP** | Define 5-15 core features | 1-2 weeks |
+| **PROD** | Operate, measure, collect feedback | 30-90 days |
+| **NEW MVP** | Create NEW BRD for next features | 1-2 weeks |
+
+**Cross-Cycle Traceability**:
+- `@depends: BRD-01` — BRD-02 builds on foundation
+- `@extends: BRD-01` — BRD-02 adds features to existing system
+
 ## Generation Rules
 
 - Index-only: maintain `BRD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
-- Templates: default to the MVP template; use the full (sectioned) template only when it is explicitly requested in project settings or clearly stated in the prompt.
+- Templates: use `BRD-MVP-TEMPLATE.md` for all BRDs (MVP-first approach).
 - Inputs used for generation: `BRD-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
+- New features = New BRD (don't expand existing BRDs indefinitely).
 
 Business Requirements Documents (BRDs) serve as the highest-level business requirements that establish the strategic foundation for all downstream development. BRDs capture business objectives, stakeholder needs, and success criteria before any product or technical considerations.
 
@@ -35,6 +54,16 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 ## Autopilot Generation
 
 Use `doc-brd-autopilot` for automated BRD generation with validation and review cycles.
+
+### How to Run `doc-brd-audit`
+
+Use one command as the standard BRD quality gate:
+
+```bash
+/doc-brd-audit docs/01_BRD/BRD-01_platform/BRD-01_platform.md
+```
+
+This wrapper executes `doc-brd-validator` → `doc-brd-reviewer`, then writes a combined report (`BRD-NN.A_audit_report_vNNN.md`) for `doc-brd-fixer`.
 
 ### Input Sources (Priority Order)
 
@@ -73,7 +102,7 @@ The autopilot automatically creates/updates these files:
 2. **Phase 2**: BRD Type Determination - Platform vs Feature
 3. **Phase 3**: BRD Generation - Create content from template
 4. **Phase 4**: Validation - Run `doc-brd-validator`
-5. **Phase 5**: Review & Fix - Run `doc-brd-reviewer` → `doc-brd-fixer` cycle
+5. **Phase 5**: Audit & Fix - Run `doc-brd-audit` (validator → reviewer) → `doc-brd-fixer` cycle
 6. **Phase 6**: Summary - Update `BRD-00_index.md`, generate report
 
 See `.claude/skills/doc-brd-autopilot/SKILL.md` for complete documentation.
@@ -244,82 +273,88 @@ Note: ADRs are authored after BDD in the SDD workflow; do not create ADRs before
 
 **See**: [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for complete guide
 
-## BRD Structure
+## BRD Document Structure (18 Sections)
 
-### Document Control
-Standard metadata including version, date, owner, status, revision history
+### Document Control (Section 0 - Top of Document)
 
-### Introduction
-- **Purpose**: Document objectives and intended use
-- **Scope**: What this BRD covers (business perspective: objectives, requirements, success criteria, Architecture Decision Requirements)
-- **Audience**: Executive sponsors, project managers, technical teams, stakeholders
-- **Conventions**: Requirements phrasing (shall), MoSCoW prioritization, ID scheme
-- **References**: Supporting business documents (strategy, policies, standards)
+| Field | Required | Description |
+|-------|----------|-------------|
+| Project Name | Yes | Project identifier |
+| Document Version | Yes | Semantic version (X.Y) |
+| Date | Yes | ISO format (YYYY-MM-DD) |
+| Document Owner | Yes | Business executive responsible |
+| Prepared By | Yes | Business analyst author |
+| Status | Yes | Draft / In Review / Approved |
+| PRD-Ready Score | Yes | [Score]/100 (Target: ≥90/100) |
+| Revision History | Yes | Version table with changes |
 
-### Business Objectives
-- **Background and Context**: Business environment, market conditions, organizational drivers
-- **Business Problem Statement**: Current state issues, impact, affected stakeholders
-- **Business Goals**: Strategic outcomes and objectives
-- **Business Objectives**: Measurable objectives with success metrics and target dates
-- **Strategic Alignment**: How this aligns with organizational strategy
-- **Expected Benefits**: Quantifiable and qualitative benefits
+### 18 Numbered Sections
 
-### Project Scope
-- **Scope Statement**: High-level deliverables summary
-- **In-Scope Items**: Included functionality and capabilities
-- **Out-of-Scope Items**: Explicitly excluded items with rationale
-- **Future Considerations**: Potential future enhancements
-- **Business Process Scope**: Current vs future state processes, impacted areas
+| # | Section | Purpose | Key Subsections |
+|---|---------|---------|-----------------|
+| **1** | **Introduction** | Purpose, scope, audience | 1.1-1.4 |
+| **2** | **Business Objectives** | Goals, hypothesis, metrics | 2.1 Hypothesis, 2.2 Problem, 2.3 Goals, 2.4 Metrics, 2.5 Benefits |
+| **3** | **Project Scope** | Boundaries, workflows | 3.1-3.3 Scope, 3.4 Workflow, 3.5 Tech Stack |
+| **4** | **Stakeholders** | Decision makers | 4.1 Decision Makers, 4.2 Contributors |
+| **5** | **User Stories** | High-level needs | 5.1 Primary, 5.2 Summary |
+| **6** | **Functional Requirements** | Business capabilities | 6.1 Overview, 6.2+ Requirements (BRD.NN.01.SS), 6.5 Business Rules |
+| **7** | **Quality Attributes** | Performance, security, ADR | 7.1 Overview, **7.2 ADR Topics (7 mandatory)**, 7.3-7.5 |
+| **8** | **Constraints & Assumptions** | Limitations | 8.1 Constraints, 8.2 Assumptions |
+| **9** | **Acceptance Criteria** | Success measures | 9.1 Launch, 9.2 Post-Launch |
+| **10** | **Business Risk Management** | Risk register | Risk ID, Description, Likelihood, Impact, Mitigation |
+| **11** | **Implementation Approach** | Phases, rollout | 11.1 Phases, 11.2 Support Model |
+| **12** | **Support & Maintenance** | Support model | 12.1 Support, 12.2 Maintenance, 12.3 SLTs |
+| **13** | **Cost-Benefit Analysis** | ROI, costs | Development costs, ROI hypothesis |
+| **14** | **Project Governance** | Decision authority | **14.1 Structure**, **14.2 Matrix**, **14.3 Reporting**, **14.4 Change Control**, **14.5 Approval** |
+| **15** | **Quality Assurance** | QA standards | **15.1 Standards**, **15.2 Testing Strategy**, **15.3 Quality Gates** |
+| **16** | **Traceability** | Requirements matrix | **16.1 Matrix**, **16.2 Cross-BRD**, **16.3 Test Coverage**, **16.4 Health Score** |
+| **17** | **Glossary** | Terms, acronyms | **17.1 Business**, **17.2 Technical**, **17.3 Domain**, **17.4 Acronyms**, **17.5 Cross-Refs**, **17.6 Standards** |
+| **18** | **Appendices** | Supporting docs | A-D: Metrics, Roadmap, Migration, Guidelines |
 
-### Functional Requirements
-- **Overview**: High-level functional capabilities
-- **Detailed Requirements**: Use internal heading IDs `BRD.NN.01.SS` with MoSCoW priority, risk level, acceptance criteria
-- **Business Rules**: Operational rules and constraints
-- **User Roles and Permissions**: Stakeholder roles and access levels
+### Section 7.2: 7 Mandatory ADR Topic Categories
 
-### Quality Attributes
-- **Overview**: Quality attributes (performance, security, availability)
-- **Detailed Requirements**: QA-XXX IDs with metrics, targets, priorities
-- **Architecture Decision Requirements**: Architectural topics needing decisions (section 7.2)
+| # | Category | Element ID | Purpose |
+|---|----------|------------|---------|
+| 1 | Infrastructure | BRD.NN.32.01 | Hosting & Deployment |
+| 2 | Data Architecture | BRD.NN.32.02 | Database & Storage |
+| 3 | Integration | BRD.NN.32.03 | External Systems |
+| 4 | Security | BRD.NN.32.04 | Auth & Data Protection |
+| 5 | Observability | BRD.NN.32.05 | Monitoring & Logging |
+| 6 | AI/ML | BRD.NN.32.06 | If Applicable |
+| 7 | Technology Selection | BRD.NN.32.07 | Core Stack |
 
-### Assumptions and Constraints
-- **Assumptions**: Assumed conditions with validation methods
-- **Budget Constraints**: Financial limitations and allocations
-- **Schedule Constraints**: Timeline restrictions and milestones
-- **Technical Constraints**: Technology limitations and dependencies
-- **Resource Constraints**: People, tools, infrastructure availability
-- **Regulatory Constraints**: Compliance and legal requirements
+### Element ID Format
 
-### Acceptance Criteria
-- **Business Acceptance**: High-level business validation criteria
-- **Functional Acceptance**: Functional requirement validation
-- **Success Metrics and KPIs**: Measurable performance indicators
+Pattern: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}`
 
-### Business Risk Management
-- **Identified Risks**: Risk ID, description, probability, impact, mitigation
-- **Risk Register**: Comprehensive risk tracking
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | BRD.09.01.01 |
+| Quality Attribute | 02 | BRD.09.02.01 |
+| Constraint | 03 | BRD.09.03.01 |
+| Assumption | 04 | BRD.09.04.01 |
+| Acceptance Criteria | 06 | BRD.09.06.01 |
+| Risk | 07 | BRD.09.07.01 |
+| Business Objective | 23 | BRD.09.23.01 |
+| ADR Topic | 32 | BRD.09.32.01 |
 
-### Implementation Approach
-- **Implementation Phases**: Phased delivery plan with milestones
-- **Rollout Plan**: Deployment strategy and user adoption plan
+### Visual Structure
 
-### Quality Assurance
-- **Quality Standards**: Target metrics and measurement methods
-- **Testing Strategy**: Test types, scope, automation level
-- **Quality Gates**: Criteria and ownership for release gates
+```
+BRD-NN_{slug}.md
+├── YAML Frontmatter
+├── Document Control (Section 0)
+├── Sections 1-13: Core Business Content
+├── Sections 14-15: Governance & QA
+├── Sections 16-17: Traceability & Reference
+└── Section 18: Appendices
+```
 
-> **Note**: Section 15 (Quality Assurance) is mandatory for all BRDs. It defines quality standards, testing strategy, and quality gates to ensure consistent delivery quality.
-
-### Traceability, Glossary and Appendices
-- **Traceability**: Requirements traceability matrix and cross-BRD dependencies
-- **Glossary**: Business term definitions (6 subsections)
-- **Appendices**: Detailed supporting information
-
-> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-MVP-TEMPLATE.md (full template archived).
+> **Note**: Section 14 (Project Governance) and Section 15 (Quality Assurance) are mandatory for all BRDs. They define decision authority, approval workflows, quality standards, and testing strategy.
 
 ## Available Templates
 
-This directory provides the MVP template for business requirements (full template archived):
+This directory provides the standard BRD template:
 
 > **Schema Policy: Optional BRD_MVP_SCHEMA.yaml**
 >
@@ -337,7 +372,7 @@ This directory provides the MVP template for business requirements (full templat
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for quick MVP launches and hypothesis validation
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (BRD-02, BRD-03, etc.), not template changes.
 
 ## Layer Scripts
 

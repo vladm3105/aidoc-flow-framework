@@ -191,18 +191,24 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.20) + (G4 × 0.15) + (G5 × 0.10)
 
 Before proceeding to TASKS generation:
 
+- [ ] Document in nested folder structure
 - [ ] Overall score ≥85%
 - [ ] No GATE at <70%
 - [ ] All CTR endpoints covered
 - [ ] Contract tables complete
 - [ ] Sequence diagrams for complex flows
 - [ ] Side effects documented
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] ITEST-specific tags present (@ctr, @sys, @spec)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-NN_*.md --quality-gates
+# Validate single ITEST with quality gates (nested folder structure)
+python scripts/validate_itest.py docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md --quality-gates
+
+# Validate all ITEST documents
+python scripts/validate_itest.py docs/10_TSPEC/ITEST/ --quality-gates
 ```
 
 ## See Also

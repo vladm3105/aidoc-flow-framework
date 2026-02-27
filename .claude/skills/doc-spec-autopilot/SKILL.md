@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
   downstream_artifacts: [TSPEC, TASKS]
-  version: "2.3"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.4"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-spec-autopilot
@@ -950,7 +950,7 @@ fix_mode:
 - **SPEC Validator**: `.claude/skills/doc-spec-validator/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md`
 - **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **SPEC Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml`
+- **SPEC Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
 
 ---
 
@@ -1022,6 +1022,7 @@ docs/09_SPEC/SPEC-01_f1_iam/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-02-26 | Fixed template path from ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml to ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml |
 | 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (SPEC-NN) triggers review mode; Multiple upstream-type inputs (REQ/CTR-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-spec-reviewer` and `doc-spec-fixer`; Added `doc-spec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (section completeness, three-level interface coverage, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
 | 2.1 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |

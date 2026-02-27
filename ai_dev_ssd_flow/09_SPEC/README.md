@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `SPEC-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template (`SPEC-MVP-TEMPLATE.yaml`); use the full profile only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `SPEC-00_index.md` + selected template profile (MVP by default); no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
@@ -130,10 +130,10 @@ This checklist prevents critical errors discovered in production (e.g., Trading 
 **Purpose**: Confirm latest framework rules are applied.
 
 **Required Actions**:
-- [ ] **Read creation rules**: `/opt/data/docs_flow_framework/ai_dev_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+- [ ] **Read creation rules**: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
 - [ ] **Check template version**: Verify `SPEC-MVP-TEMPLATE.yaml` is current
-- [ ] **Review validation rules**: `/opt/data/docs_flow_framework/ai_dev_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
-- [ ] **Verify ID naming standards**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
+- [ ] **Review validation rules**: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- [ ] **Verify ID naming standards**: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
 
 **Output**: Reference to framework documents in generation plan with version/date confirmation.
 

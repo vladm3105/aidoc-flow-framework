@@ -17,10 +17,11 @@
 # Purpose: Define valid metadata structure and validation rules for ADR documents
 # Usage: Reference by validate_adr.py for automated validation
 
-schema_version: "1.0"
+schema_version: "1.1"
 artifact_type: ADR
 layer: 5
-last_updated: "2026-01-20"
+last_updated: "2026-02-26"
+total_sections: 11
 
 references:
   md_template: "ADR-MVP-TEMPLATE.md"
@@ -121,18 +122,10 @@ metadata:
 # =============================================================================
 
 structure:
-  # Document organized in 4 parts with 14+ sections
-  parts:
-    - name: "PART 1: Decision Context and Requirements"
-      sections: [1, 2, 3, 4, 5, 6]
-    - name: "PART 2: Impact Analysis and Architecture"
-      sections: [7, 8, 9, 10]
-    - name: "PART 3: Implementation Strategy"
-      sections: [11, 12, 13]
-    - name: "PART 4: Traceability and Documentation"
-      sections: [14, 15]
+  # Document organized with 11 required sections (MVP structure aligned with template)
+  total_sections: 11
 
-  # Required sections
+  # Required sections (aligned with ADR-MVP-TEMPLATE.md)
   required_sections:
     - pattern: "^# ADR-\\d{2,}:"
       name: "Title (H1)"
@@ -140,65 +133,49 @@ structure:
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
-      description: "Section 1 with metadata table"
+      description: "Section 1 - Contains metadata table with SYS-Ready Score"
 
-    - pattern: "^## 2\\. Position in Development Workflow$"
-      name: "Position in Development Workflow"
-      description: "Section 2 with workflow context"
-
-    - pattern: "^## 3\\. Status$"
-      name: "Status"
-      description: "Section 3 with decision status"
-
-    - pattern: "^## 4\\. Context$"
+    - pattern: "^## 2\\. Context$"
       name: "Context"
-      description: "Section 4 with Problem Statement, Background, Driving Forces, Constraints"
+      description: "Section 2 with Problem Statement, Technical Context"
 
-    - pattern: "^## 5\\. Decision$"
+    - pattern: "^## 3\\. Decision$"
       name: "Decision"
-      description: "Section 5 with Chosen Solution, Key Components, Implementation Approach"
+      description: "Section 3 with Chosen Solution, Key Components, Implementation Approach"
 
-    - pattern: "^## 6\\. Requirements Satisfied$"
-      name: "Requirements Satisfied"
-      description: "Section 6 with Primary Requirements, Source Business Logic, Quality Attributes"
-
-    - pattern: "^## 7\\. Consequences$"
-      name: "Consequences"
-      description: "Section 7 with Positive and Negative Outcomes"
-
-    - pattern: "^## 8\\. Architecture Flow$"
-      name: "Architecture Flow"
-      description: "Section 8 with Mermaid diagram"
-
-    - pattern: "^## 9\\. Implementation Assessment$"
-      name: "Implementation Assessment"
-      description: "Section 9 with Complexity, Dependencies, Resources, Failure Modes"
-
-    - pattern: "^## 10\\. Impact Analysis$"
-      name: "Impact Analysis"
-      description: "Section 10 with Affected Components, Migration, Testing"
-
-  # Optional sections
-  optional_sections:
-    - pattern: "^## 11\\. Alternatives Considered$"
+    - pattern: "^## 4\\. Alternatives Considered$"
       name: "Alternatives Considered"
-      description: "Section 11 with rejected alternatives"
+      description: "Section 4 with Options A, B, C evaluation"
 
-    - pattern: "^## 12\\. Security Considerations$"
-      name: "Security Considerations"
-      description: "Section 12 with security impact"
+    - pattern: "^## 5\\. Consequences$"
+      name: "Consequences"
+      description: "Section 5 with Positive Outcomes, Trade-offs, Cost Estimate"
 
-    - pattern: "^## 13\\. Operational Considerations$"
-      name: "Operational Considerations"
-      description: "Section 13 with deployment, monitoring"
+    - pattern: "^## 6\\. Architecture Flow$"
+      name: "Architecture Flow"
+      description: "Section 6 with Mermaid diagram and Integration Points"
 
-    - pattern: "^## 14\\. Traceability$"
+    - pattern: "^## 7\\. Implementation Assessment$"
+      name: "Implementation Assessment"
+      description: "Section 7 with Phases, Rollback Plan, Monitoring"
+
+    - pattern: "^## 8\\. Verification$"
+      name: "Verification"
+      description: "Section 8 with Success Criteria, BDD Scenarios"
+
+    - pattern: "^## 9\\. Traceability$"
       name: "Traceability"
-      description: "Section 14 with upstream and downstream references"
+      description: "Section 9 with upstream/downstream refs, tags, cross-links"
 
-    - pattern: "^## 15\\. References$"
-      name: "References"
-      description: "Section 15 with internal and external links"
+    - pattern: "^## 10\\. Related Decisions$"
+      name: "Related Decisions"
+      description: "Section 10 with dependency and supersession references"
+
+    - pattern: "^## 11\\. MVP Lifecycle$"
+      name: "MVP Lifecycle"
+      description: "Section 11 with lifecycle phases and ADR iteration guidance"
+
+  # No optional sections in MVP template - all 11 sections are required
 
   # Document Control table requirements
   document_control:
@@ -344,7 +321,7 @@ validation_rules:
     - rule: "Single H1 heading only"
       severity: warning
 
-    - rule: "Sections 1-10 are required"
+    - rule: "Sections 1-11 are required (MVP template structure)"
       severity: error
 
     - rule: "Document Control must have minimum 6 fields"

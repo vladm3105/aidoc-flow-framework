@@ -340,94 +340,15 @@ error_messages:
   PRD-E006: "Related BRD missing @brd: prefix"
   PRD-E007: "Duplicate section number detected"
   PRD-E008: "Multiple H1 headings detected"
+  PRD-E023: "Missing required PRD diagram tag @diagram: c4-l2"
+  PRD-E024: "Missing required PRD diagram tag @diagram: dfd-l1"
+  PRD-E025: "Missing required PRD diagram tag @diagram: sequence-*"
+  PRD-E026: "Sequence diagram lacks explicit exception/alternate path"
   PRD-W001: "Feature ID not using simple 3-digit format (001, 015, 042)"
   PRD-W002: "Priority not using P0-P3 format"
   PRD-W003: "Section numbering not sequential"
-  required_sections:
-    - pattern: "^# PRD-\\d{2,}:"
-      name: "Title (H1)"
-      description: "Single H1 with format PRD-NN: Title"
-
-    - pattern: "^## 1\\. Document Control$"
-      name: "Document Control"
-      description: "Section 1 with metadata table"
-
-    - pattern: "^## 2\\. Executive Summary$"
-      name: "Executive Summary"
-      description: "Section 2 with business overview"
-
-    - pattern: "^## 3\\. Problem Statement$"
-      name: "Problem Statement"
-      description: "Section 3 with problem and impact"
-
-    - pattern: "^## 4\\. Target Audience & User Personas$"
-      name: "Target Audience & User Personas"
-      description: "Section 4 with users and stakeholders"
-
-    - pattern: "^## 5\\. Success Metrics \\(KPIs\\)$"
-      name: "Success Metrics (KPIs)"
-      description: "Section 5 with KPIs and criteria"
-
-    - pattern: "^## 6\\. Goals & Objectives$"
-      name: "Goals & Objectives"
-      description: "Section 6 with goals and objectives"
-
-    - pattern: "^## 7\\. Scope & Requirements$"
-      name: "Scope & Requirements"
-      description: "Section 7 with scope in/out and dependencies"
-
-    - pattern: "^## 8\\. User Stories & User Roles$"
-      name: "User Stories & User Roles"
-      description: "Section 8 with user stories (PRD-level)"
-
-    - pattern: "^## 9\\. Functional Requirements$"
-      name: "Functional Requirements"
-      description: "Section 9 with functional capabilities"
-
-    - pattern: "^## 10\\. Customer-Facing Content & Messaging \\(MANDATORY\\)$"
-      name: "Customer-Facing Content & Messaging (MANDATORY)"
-      description: "Section 10 with customer-visible content"
-
-    - pattern: "^## 11\\. Acceptance Criteria$"
-      name: "Acceptance Criteria"
-      description: "Section 11 with acceptance criteria"
-
-    - pattern: "^## 12\\. Constraints & Assumptions$"
-      name: "Constraints & Assumptions"
-      description: "Section 12 with constraints and assumptions"
-
-    - pattern: "^## 13\\. Risk Assessment$"
-      name: "Risk Assessment"
-      description: "Section 13 with risks"
-
-    - pattern: "^## 14\\. Success Definition$"
-      name: "Success Definition"
-      description: "Section 14 with go-live and validation"
-
-    - pattern: "^## 15\\. Stakeholders & Communication$"
-      name: "Stakeholders & Communication"
-      description: "Section 15 with teams and communications"
-
-    - pattern: "^## 16\\. Implementation Approach$"
-      name: "Implementation Approach"
-      description: "Section 16 with phases and testing strategy"
-
-    - pattern: "^## 17\\. Budget & Resources$"
-      name: "Budget & Resources"
-      description: "Section 17 with budget and resources"
-
-    - pattern: "^## 18\\. Traceability$"
-      name: "Traceability"
-      description: "Section 18 with upstream/downstream links"
-
-    - pattern: "^## 19\\. References$"
-      name: "References"
-      description: "Section 19 with references"
-
-    - pattern: "^## 20\\. EARS Enhancement Appendix$"
-      name: "EARS Enhancement Appendix"
-      description: "Section 20 with EARS appendix"
-
-    - pattern: "^## 21\\. Quality Assurance & Testing Strategy$"
-      name: "Quality Assurance & Testing Strategy"
-      description: "Section 21 with QA/testing strategy"
+  PRD-W011: "Diagram intent header missing required fields"
+  PRD-W012: "Missing PRD diagram tag @diagram: c4-l2 (legacy mode)"
+  PRD-W013: "Missing PRD diagram tag @diagram: dfd-l1 (legacy mode)"
+  PRD-W014: "Missing PRD diagram tag @diagram: sequence-* (legacy mode)"
+  PRD-W015: "Sequence diagram missing exception/alternate path (legacy mode)"

@@ -114,7 +114,7 @@ Aligned with the 15-Layer Architecture (TRACEABILITY.md §1.2.1):
 
 ### MVP Validator Profile
 
-- Validators support a relaxed MVP profile via document frontmatter: set `custom_fields.template_profile: mvp` in MVP templates to treat certain non-critical checks as warnings while drafting. Full templates use the default strict profile.
+- Validators support a relaxed MVP profile via document frontmatter: set `custom_fields.template_profile: mvp` to treat certain non-critical checks as warnings while drafting. Enterprise profile uses the default strict checks.
 
 ### Pre-Commit Hook Integration
 

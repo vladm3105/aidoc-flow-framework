@@ -459,7 +459,8 @@ Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanu
 ### CHECK 11: Change History
 
 **Purpose**: Verify change history table exists and matches version
-**Type**: Error + Warning
+**Type**: Warning (non-blocking for MVP - Change History intentionally omitted)
+**MVP Note**: This check is skipped for MVP template documents (11-section structure).
 
 **Requirements**:
 1. At least 1 entry in table

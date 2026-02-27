@@ -15,13 +15,29 @@ custom_fields:
 
 This directory provides comprehensive templates for the AI-Driven Specification-Driven Development (SDD) workflow. All artifacts follow numeric ID standards and use relative markdown links for traceability.
 
+---
+
+## Core Lifecycle: MVP → PROD → NEW MVP
+
+**Every project follows this iterative pattern:**
+
+| Phase | Duration | Focus | Artifacts |
+|:------|:---------|:------|:----------|
+| **MVP** | 1-2 weeks | Build 5-15 core features | BRD-NN → PRD-NN → ... → Production |
+| **PROD** | 30-90 days | Operate, measure, collect feedback | Metrics, user insights |
+| **NEW MVP** | 1-2 weeks | Next feature iteration | NEW BRD-(NN+1) → repeat cycle |
+
+**Key Rule**: Each BRD = One iteration cycle. New features require a new BRD (BRD-01 → BRD-02 → BRD-03).
+
+---
+
 > Units & Conversions (KB vs tokens): KB = 1,024 bytes; tokens ≈ 4 characters. Rough conversions: tokens ≈ (KB × 1024) ÷ 4 and KB ≈ (tokens × 4) ÷ 1024. Examples: 10 KB ≈ 2,500 tokens; 50 KB ≈ 12,500 tokens; 10,000 tokens ≈ 39 KB.
 
 > MVP Note: MVP templates default to single, flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` for MVP.
 
-## Template Selection (MVP-Only)
+## Template Selection (MVP Lifecycle)
 
-**The framework uses MVP templates exclusively.** Full templates have been deprecated and archived.
+**The framework uses MVP templates exclusively.** Lifecycle: MVP → PROD → NEW MVP. Expansion happens through new iterations (BRD-02, PRD-02, etc.), not template changes.
 
 ### Templates by Layer
 
@@ -58,10 +74,13 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - **Blueprint**: Early layers (BRD, PRD, ADR, SYS) capture business and architectural decisions.
 - **Instruction Set**: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
 - **Governance**: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
-- **Delivery Loop**: Continuous MVP iteration - Create MVP → Fix Defects → Production → Add Features as new MVP → Repeat
-  - Enables rapid product evolution with 1-2 week cycles
-  - Automation accelerates each cycle (90%+ layers automated)
-  - Cumulative traceability preserves knowledge across iterations
+- **Lifecycle**: **MVP → PROD → NEW MVP** (iterative)
+  - **MVP**: Create BRD with 5-15 features → develop → deploy to production
+  - **PROD**: Operate, gather feedback, measure success (30-90 days)
+  - **NEW MVP**: Create NEW BRD for next features → repeat cycle
+  - Each BRD represents ONE iteration; new features = new BRD
+  - 1-2 week cycles from idea to production
+  - Cross-BRD traceability preserves knowledge across cycles
 - **Automation Flow**: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 **Key Automation Benefits**:

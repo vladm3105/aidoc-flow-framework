@@ -517,7 +517,7 @@ Must include a table with at least the initial version entry:
 
 ## 8. Diagram Standards
 
-**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+**Central Authority**: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`
 
 All diagrams, charts, workflows, and visual representations in SDD artifacts MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 

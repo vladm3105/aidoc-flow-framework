@@ -1,29 +1,30 @@
 ---
 name: doc-brd-reviewer
 description: Comprehensive content review and quality assurance for BRD documents - validates link integrity, requirement completeness, strategic alignment, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - brd-review
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [Strategy, Stakeholder Input]
-  downstream_artifacts: []
-  version: "1.5"
-  last_updated: "2026-02-11T18:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - brd-review
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [Strategy, Stakeholder Input]
+    downstream_artifacts: []
+    version: "1.3"
+    last_updated: "2026-02-26T15:10:00"
+    versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd-reviewer
 
 ## Purpose
-
 Comprehensive **content review and quality assurance** for Business Requirements Documents (BRD). This skill performs deep content analysis beyond structural validation, checking link integrity, requirement completeness, ADR topic coverage, strategic alignment, and identifying issues that require manual business review.
 
 **Layer**: 1 (BRD Quality Assurance)
@@ -84,13 +85,14 @@ flowchart TD
     subgraph Review["Review Checks"]
         F --> G[1. Link Integrity]
         G --> H[2. Requirement Completeness]
-        H --> I[3. ADR Topic Coverage]
-        I --> J[4. Placeholder Detection]
-        J --> K[5. Traceability Tags]
-        K --> L[6. Section Completeness]
-        L --> M[7. Strategic Alignment]
-        M --> M2[8. Naming Compliance]
-        M2 --> M3[9. Upstream Drift Detection]
+      H --> H2[2a. Diagram Contract Compliance]
+      H2 --> I[3. ADR Topic Coverage]
+      I --> J[4. Placeholder Detection]
+      J --> K[5. Traceability Tags]
+      K --> L[6. Section Completeness]
+      L --> M[7. Strategic Alignment]
+      M --> M2[8. Naming Compliance]
+      M2 --> M3[9. Upstream Drift Detection]
     end
 
     M3 --> N{Issues Found?}
@@ -180,7 +182,7 @@ Validates all internal document links resolve correctly.
 
 **Scope**:
 - Navigation links (`[Previous: ...]`, `[Next: ...]`)
-- Section cross-references (`[See Section 7.2](...)`)
+- Section cross-references (for example, `See Section 7.2`)
 - Index to section links
 - External documentation links (warns if unreachable)
 
@@ -214,6 +216,25 @@ Validates all business requirements have complete specifications.
 | REV-R003 | Warning | Scope boundaries unclear |
 | REV-R004 | Warning | Missing priority assignment |
 | REV-R005 | Info | Dependency not documented |
+
+### 2a. Diagram Contract Compliance
+
+Validates BRD diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Scope**:
+- Required BRD tags: `@diagram: c4-l1`, `@diagram: dfd-l0`
+- Sequence tag presence when sequence diagram is used
+- Intent header fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+- Trust-boundary annotations when data boundary movement is documented
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Warning | Missing recommended BRD diagram tag (`@diagram: c4-l1` or `@diagram: dfd-l0`) |
+| REV-DC002 | Warning | Sequence diagram present without sequence contract tag |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
+| REV-DC004 | Warning | Trust boundary annotation missing where expected |
 
 ---
 
@@ -270,45 +291,70 @@ Identifies incomplete content requiring replacement.
 
 ### 5. Traceability Tags
 
-Validates `@strategy:` and cross-reference tags.
+Validates cross-reference tags and element IDs.
 
 **Scope**:
-- `@strategy: DOC-XX` tags reference valid source documents
+- `@ref:` tags reference valid documents (if upstream_mode: "ref")
 - Element IDs properly formatted
 - Cross-references consistent
+- Traceability section completeness
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-TR001 | Error | Invalid strategy reference |
+| REV-TR001 | Error | Invalid document ID in metadata |
 | REV-TR002 | Warning | Missing element ID |
 | REV-TR003 | Info | Inconsistent cross-reference format |
-| REV-TR004 | Warning | Tag format malformed |
+| REV-TR004 | Warning | Malformed parent_doc reference |
 
 ---
 
 ### 6. Section Completeness
 
-Verifies all required sections have substantive content.
+Verifies all 18 required sections have substantive content per BRD-MVP-TEMPLATE.
 
 **Scope**:
-- Minimum word count per section (configurable)
-- Section headers present
+- All 18 numbered sections present (plus Document Control)
+- Minimum word count per section
+- Required subsections for governance, traceability, glossary
 - Tables have data rows (not just headers)
 - Mermaid diagrams render properly
 
-**Minimum Word Counts** (configurable):
+**18-Section Structure Validation**:
 
-| Section | Minimum Words |
-|---------|---------------|
-| Executive Summary | 100 |
-| Problem Statement | 75 |
-| Business Objectives | 150 |
-| Functional Requirements | 200 |
-| Non-Functional Requirements | 150 |
-| ADR Topics | 300 |
-| Appendices | 100 |
+| # | Section | Min Words | Required Subsections |
+|---|---------|-----------|----------------------|
+| 1 | Introduction | 100 | 1.1-1.4 |
+| 2 | Business Objectives | 150 | **2.1 MVP Hypothesis**, 2.2-2.5 |
+| 3 | Project Scope | 200 | **3.2 MVP Core Features**, **3.4.1**, **3.4.2**, 3.5 |
+| 4 | Stakeholders | 75 | Decision Makers + Key Contributors blocks |
+| 5 | User Stories | 100 | 5.1-5.2 |
+| 6 | Functional Requirements | 200 | 6.1-6.5 |
+| 7 | Quality Attributes | 300 | **7.2 ADR Topics**, 7.3-7.5 |
+| 8 | Business Constraints and Assumptions | 100 | 8.1-8.2 |
+| 9 | Acceptance Criteria | 100 | **9.1 MVP Launch Criteria**, 9.2 |
+| 10 | Business Risk Management | 150 | Risk table required |
+| 11 | Implementation Approach | 100 | 11.1-11.2 |
+| 12 | Support and Maintenance | 75 | 12.1-12.3 |
+| 13 | Cost-Benefit Analysis | 100 | ROI summary + qualitative impact |
+| 14 | Project Governance | 150 | 14.1-14.5 (**14.5 required**) |
+| 15 | Quality Assurance | 100 | **15.3 Quality Gates** |
+| 16 | Traceability | 150 | **16.1-16.4** (all required) |
+| 17 | Glossary | 50 | **17.1-17.6** (including 17.5 Cross-References, 17.6 External Standards) |
+| 18 | Appendices | 100 | 18.1-18.5 |
+
+**MVP-Critical Subsections** (bold items above):
+
+| Subsection | Purpose | Error if Missing |
+|------------|---------|------------------|
+| 2.1 MVP Hypothesis | Validates core MVP assumption | REV-MVP001 |
+| 3.2 MVP Core Features | P1/P2 feature checklist | REV-MVP002 |
+| 9.1 MVP Launch Criteria | Go/no-go checklist | REV-MVP003 |
+| 14.5 Approval and Sign-off | Stakeholder sign-off table | REV-MVP004 |
+| 15.3 Quality Gates | Quality gate checklist | REV-MVP005 |
+| 16.1-16.4 | Traceability matrix subsections | REV-MVP006-009 |
+| 17.1-17.6 | Glossary structure (17.5 Cross-References, 17.6 External Standards) | REV-MVP010 |
 
 **Error Codes**:
 
@@ -318,6 +364,52 @@ Verifies all required sections have substantive content.
 | REV-S002 | Warning | Section below minimum word count |
 | REV-S003 | Warning | Table has no data rows |
 | REV-S004 | Error | Mermaid diagram syntax error |
+| REV-MVP001 | Error | Missing MVP Hypothesis (Section 2.1) |
+| REV-MVP002 | Warning | Missing MVP Core Features checklist (Section 3.2) |
+| REV-MVP003 | Error | Missing MVP Launch Criteria (Section 9.1) |
+| REV-MVP004 | Error | Missing Approval Sign-off Table (Section 14.5) |
+| REV-MVP005 | Error | Missing Quality Gates (Section 15.3) |
+| REV-MVP006 | Error | Missing Requirements Traceability Matrix (Section 16.1) |
+| REV-MVP007 | Warning | Missing Cross-BRD Dependencies (Section 16.2) |
+| REV-MVP008 | Warning | Missing Test Coverage Traceability (Section 16.3) |
+| REV-MVP009 | Warning | Missing Traceability Summary (Section 16.4) |
+| REV-MVP010 | Warning | Missing Glossary subsection structure (17.1-17.6) |
+
+#### 6.1 Subsection Validation Algorithm
+
+```
+FOR each section in 18_SECTION_LIST:
+  1. Verify section header exists: "## {N}. {Title}"
+  2. Count words in section content
+  3. IF section has required_subsections:
+     FOR each subsection in required_subsections:
+       - Search for header pattern: "### {N}.{M}" or "#### {N}.{M}.{X}"
+       - IF not found: Add appropriate error code
+       - IF found: Validate minimum content (>10 words)
+  4. IF section < minimum_words: Add REV-S002 warning
+```
+
+**Section Detection Patterns**:
+
+| Section Type | Pattern | Example |
+|--------------|---------|---------|
+| Main section | `## N. Title` | `## 14. Project Governance` |
+| Subsection | `### N.M Title` | `### 14.5 Approval and Sign-off` |
+| Sub-subsection | `#### N.M.X Title` | `#### 16.1.1 Business Objectives → FRs` |
+
+**Sectioned BRD Handling**:
+
+For sectioned BRDs (BRD-NN.N_*.md files):
+1. Map file to section number from filename pattern
+2. Validate section content within that file
+3. Cross-reference section numbering consistency
+
+| File Pattern | Section |
+|--------------|---------|
+| BRD-NN.14_*.md | Section 14 (Governance) |
+| BRD-NN.15_*.md | Section 15 (Quality Assurance) |
+| BRD-NN.16_*.md | Section 16 (Traceability) |
+| BRD-NN.17_*.md | Section 17 (Glossary) |
 
 ---
 
@@ -366,18 +458,33 @@ Validates element IDs follow `doc-naming` standards.
 
 ---
 
-### 9. Upstream Drift Detection (Mandatory Cache)
+### 9. Upstream Drift Detection (Conditional)
 
-Detects when upstream source documents have been modified after the BRD was created or last updated. **The drift cache is mandatory** - the reviewer MUST create/update it after each review.
+Detects when upstream reference documents have been modified after the BRD was created. **This check is CONDITIONAL** based on `upstream_mode` setting.
 
-**Purpose**: Identifies stale BRD content that may not reflect current source documentation. When upstream documents (strategy specs, technical specifications, stakeholder inputs) change, the BRD may need updates to maintain alignment.
+#### 9.0 Mode Detection (First Step)
 
-**Scope**:
-- `@ref:` tag targets (technical specifications, strategy documents)
-- `@strategy:` tag references
+**Before running drift detection**:
+
+1. Read YAML frontmatter `custom_fields.upstream_mode`
+2. Apply behavior:
+
+| upstream_mode | Action | Score |
+|---------------|--------|-------|
+| `"none"` (default) | Skip Check #9 entirely | 5/5 automatic |
+| `"ref"` | Run drift detection on `upstream_ref_path` | Calculated |
+| *(not set)* | Treat as `"none"` | 5/5 automatic |
+
+**If skipping**:
+- Log: `INFO: Upstream drift detection skipped (upstream_mode: none)`
+- Award full 5/5 points
+- Create minimal drift cache entry
+
+**Scope** (when `upstream_mode: "ref"`):
+- Documents in paths specified by `upstream_ref_path`
+- `@ref:` tag targets within those paths
 - Traceability section upstream artifact links
 - GAP analysis document references
-- Any markdown links to `../00_REF/` or source documents
 
 ---
 
@@ -390,37 +497,58 @@ Detects when upstream source documents have been modified after the BRD was crea
 2. **Create** the cache if it doesn't exist
 3. **Update** the cache after every review with current hashes
 
-**Cache Schema**:
+**Cache Schema** (when `upstream_mode: "none"` or not set):
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "document_id": "BRD-01",
   "document_version": "1.0",
-  "last_reviewed": "2026-02-10T17:00:00",
-  "reviewer_version": "1.4",
+  "upstream_mode": "none",
+  "upstream_ref_path": null,
+  "drift_detection_skipped": true,
+  "skip_reason": "upstream_mode set to none (default)",
+  "last_reviewed": "2026-02-24T21:00:00",
+  "reviewer_version": "1.6",
+  "upstream_documents": {},
+  "review_history": [
+    {
+      "date": "2026-02-24T21:00:00",
+      "score": 97,
+      "drift_detected": false,
+      "report_version": "v001"
+    }
+  ]
+}
+```
+
+**Cache Schema** (when `upstream_mode: "ref"`):
+
+```json
+{
+  "schema_version": "1.1",
+  "document_id": "BRD-01",
+  "document_version": "1.0",
+  "upstream_mode": "ref",
+  "upstream_ref_path": ["../../00_REF/source_docs/"],
+  "drift_detection_skipped": false,
+  "last_reviewed": "2026-02-24T21:00:00",
+  "reviewer_version": "1.6",
   "upstream_documents": {
-    "../../00_REF/foundation/F1_IAM_Technical_Specification.md": {
-      "hash": "sha256:a1b2c3d4e5f6g7h8i9j0...",
-      "last_modified": "2026-02-10T15:34:26",
-      "file_size": 50781,
-      "version": "1.0",
-      "sections_tracked": ["#3-authentication", "#4-authorization", "#5-user-profile"]
-    },
-    "../../00_REF/foundation/GAP_Foundation_Module_Gap_Analysis.md": {
-      "hash": "sha256:k1l2m3n4o5p6q7r8s9t0...",
-      "last_modified": "2026-02-10T15:34:21",
-      "file_size": 4730,
-      "version": "1.0",
-      "sections_tracked": ["#f1-iam-gaps"]
+    "../../00_REF/source_docs/BeeLocal_BRD_v2.1.md": {
+      "hash": "sha256:c9810281...",
+      "last_modified": "2024-12-25T00:00:06",
+      "file_size": 76908,
+      "version": "2.1",
+      "sections_tracked": []
     }
   },
   "review_history": [
     {
-      "date": "2026-02-10T16:30:00",
-      "score": 97,
+      "date": "2026-02-24T21:00:00",
+    PRD-Ready Score = 100 - total_deductions
       "drift_detected": false,
-      "report_version": "v002"
+      "report_version": "v001"
     }
   ]
 }
@@ -532,6 +660,8 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 | REV-D004 | Info | New content added to upstream | file size increased >10% |
 | REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
 | REV-D006 | Info | Cache created (first review) | no prior cache existed |
+| REV-D007 | Info | Drift detection skipped | upstream_mode: "none" |
+| REV-D008 | Warning | upstream_ref_path not found | specified path doesn't exist |
 
 ---
 
@@ -583,29 +713,31 @@ def calculate_change_percentage(old_hash: str, new_content: str) -> float:
 
 ## Review Score Calculation
 
-**Scoring Formula**:
+**Canonical Source of Truth**:
+- `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (deduction model)
+- `ai_dev_ssd_flow/01_BRD/README.md` (quality-gate interpretation)
 
-| Category | Weight | Calculation |
-|----------|--------|-------------|
-| **Structure Compliance** | **12%** | (nested_folder_valid ? 12 : 0) - **BLOCKING** |
-| Link Integrity | 8% | (valid_links / total_links) × 8 |
-| Requirement Completeness | 15% | (complete_reqs / total_reqs) × 15 |
-| ADR Topic Coverage | 15% | (covered_topics / required_topics) × 15 |
-| Placeholder Detection | 10% | (no_placeholders ? 10 : 10 - (count × 2)) |
-| Traceability Tags | 10% | (valid_tags / total_tags) × 10 |
-| Section Completeness | 12% | (complete_sections / total_sections) × 12 |
-| Strategic Alignment | 5% | (aligned_objectives / total_objectives) × 5 |
-| Naming Compliance | 8% | (valid_ids / total_ids) × 8 |
-| Upstream Drift | 5% | (fresh_refs / total_refs) × 5 |
+**Scoring Formula (Deduction-Based)**:
 
-**Total**: Sum of all categories (max 100)
+`PRD-Ready Score = 100 - total_deductions`
 
-**Note**: Structure Compliance is a **blocking check**. If structure validation fails (REV-STR001), the review cannot pass regardless of other scores.
+| Deduction Category | Max Deduction | Rule Summary |
+|--------------------|---------------|--------------|
+| PRD-level content contamination | 50 | Code blocks and technical/UI implementation language in BRD business sections |
+| FR structure completeness | 30 | Missing required FR subsections and invalid cross-references |
+| Document structure and quality | 20 | Missing required sections, document control gaps, revision history issues |
+
+**Total**: `100 - total_deductions` (bounded to `0..100`)
+
+**Blocking Note**: Structure compliance check remains blocking. If structure validation fails (e.g., REV-STR001), the review cannot pass regardless of computed score.
 
 **Thresholds**:
 - **PASS**: ≥ 90 (configurable)
-- **WARNING**: 80-89
-- **FAIL**: < 80
+- **FAIL**: < 90
+
+**Workflow Gate Interpretation**:
+- `>=90`: PRD-ready gate satisfied
+- `<90`: not PRD-ready, must route to fix cycle/manual remediation
 
 ---
 
@@ -719,6 +851,10 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26T12:45:00 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version to avoid cross-skill version drift. |
+| 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
+| 1.7 | 2026-02-25T11:00:00 | **Template alignment**: Check #6 updated for 18-section structure validation; Added MVP-critical subsection validation (2.1, 3.2, 9.1, 14.5, 15.3, 16.1-16.4, 17.1-17.6); Added REV-MVP001-MVP010 error codes; Updated scoring formula (28-point validation: 18 sections + 10 MVP subsections) |
+| 1.6 | 2026-02-24T21:30:00 | **Conditional drift detection**: Check #9 now skipped when `upstream_mode: "none"` (default); Removed @strategy: tag references; Updated drift cache schema to v1.1 with upstream_mode and drift_detection_skipped fields; Added REV-D007 (drift skipped) and REV-D008 (path not found) error codes; Updated scoring formula for conditional check |
 | 1.5 | 2026-02-11T18:00:00 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram with structure validation decision node; Added structure compliance to scoring (12% weight, blocking); Consistent with other reviewer skills |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10T14:30:00 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |

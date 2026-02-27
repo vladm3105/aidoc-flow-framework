@@ -313,14 +313,14 @@ grep -rohE "BDD\.[0-9]+\.[0-9]+\.[0-9]+" "$BDD_DIR" | \
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
 
 **Thresholds**:
 | File Type | Warning | Error | Max Items |
 |-----------|---------|-------|-----------|
-| Feature file (`.feature`) | 300 lines | 600 lines | 12 scenarios max |
-| Index file (`*0_*.md`) | 300 lines | 500 lines | N/A |
-| General BDD markdown | 600 lines | 1,200 lines | N/A |
+| Feature file (`.feature`) | 600 lines | 800 lines | 12 scenarios max |
+| Index file (`*0_*.md`) | 600 lines | 800 lines | N/A |
+| General BDD markdown | 800 lines | 1,200 lines | N/A |
 
 **Validation Logic**:
 ```bash
@@ -328,8 +328,8 @@ grep -rohE "BDD\.[0-9]+\.[0-9]+\.[0-9]+" "$BDD_DIR" | \
 for f in "$BDD_DIR"/BDD-*_*/*.feature; do
   if [ -f "$f" ]; then
     lines=$(wc -l < "$f")
-    if [ $lines -gt 300 ]; then
-      echo "WARNING: $(basename $f) has $lines lines (>300)"
+    if [ $lines -gt 600 ]; then
+      echo "WARNING: $(basename $f) has $lines lines (>600)"
     fi
   fi
 done
@@ -338,8 +338,8 @@ done
 for f in "$BDD_DIR"/BDD-*_*/*0_*.md; do
   if [ -f "$f" ]; then
     lines=$(wc -l < "$f")
-    if [ $lines -gt 500 ]; then
-      echo "ERROR: $(basename $f) exceeds 500 lines ($lines)"
+    if [ $lines -gt 800 ]; then
+      echo "ERROR: $(basename $f) exceeds 800 lines ($lines)"
     fi
   fi
 done
@@ -545,7 +545,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Timing constraint not measurable | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W013 | Split-file missing index | CORPUS-13 |
 | CORPUS-W015 | ADR-Ready Score below 90% | CORPUS-15 |
 

@@ -349,9 +349,9 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-   - **MVP Template** (default): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥85% thresholds)
-   - **Full Template**: For enterprise/regulatory projects (21 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
+   - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
 3. **Section Mapping** (BRD → PRD):
 
@@ -416,7 +416,7 @@ After PRD generation, validate EARS-Ready score.
 | EARS Translation Readiness | 20% | User journeys, quality attributes quantified, timing profiles |
 | Strategic Alignment | 5% | Domain-specific business logic references |
 
-**Minimum Score**: 85% for MVP (90% for full template) - configurable
+**Minimum Score**: 90% (standard threshold for all readiness scores)
 
 **Auto-Fix Actions** (per `doc-prd-validator` error codes):
 
@@ -427,6 +427,16 @@ After PRD generation, validate EARS-Ready score.
 | Missing state transition diagram | PRD-W002 | Add Section 20.3 Mermaid template |
 | Missing fallback documentation | PRD-W002 | Add Section 20.4 template |
 | Incomplete customer-facing content | PRD-E006 | Flag for manual review (Section 10) |
+
+**Blocking Diagram Contract Gate**:
+- Autopilot must fail Phase 4 when any of these codes are present:
+  - `PRD-E023` (missing `@diagram: c4-l2`)
+  - `PRD-E024` (missing `@diagram: dfd-l1`)
+  - `PRD-E025` (missing `@diagram: sequence-*`)
+  - `PRD-E026` (sequence diagram missing `alt/else` exception path)
+
+**Report Requirement**:
+- Include `Diagram Contract Compliance: PASS/FAIL` in phase summary output.
 
 ### Step 6: Review & Fix Cycle (v2.3)
 
@@ -873,7 +883,7 @@ Validate existing PRD documents and generate a quality report without modificati
 review_mode:
   enabled: true
   checks:
-    - structure_validation      # 17/21 sections
+    - structure_validation      # 21 sections
     - element_id_compliance     # PRD.NN.TT.SS format
     - link_integrity            # Internal link check
     - threshold_consistency     # Cross-section consistency

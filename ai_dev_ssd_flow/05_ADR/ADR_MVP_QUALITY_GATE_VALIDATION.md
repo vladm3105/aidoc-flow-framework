@@ -80,7 +80,7 @@ This section documents errors discovered during Quality Gate validation. Copy an
 | # | Warning Type | ADRs Affected | Description | Recommendation |
 |---|--------------|---------------|-------------|----------------|
 | W01 | **ASCII Diagrams** | - | Text-based diagrams instead of Mermaid | Convert all ASCII diagrams to Mermaid per DIAGRAM_STANDARDS.md |
-| W02 | **Custom Fields Inconsistency** | - | YAML custom_fields differ from template | Standardize YAML frontmatter per ADR-MVP-TEMPLATE.md (full template archived) |
+| W02 | **Custom Fields Inconsistency** | - | YAML custom_fields differ from template | Standardize YAML frontmatter per ADR-MVP-TEMPLATE.md (standard template) |
 | W03 | **Index Title Format** | - | Title uses `ADR-000` instead of `ADR-00` | Change to 2-digit format for consistency |
 
 ### 0.3 Issues Fixed (Reference)
@@ -205,25 +205,26 @@ grep -c "| ADR-[0-9]" "$ADR_DIR"/ADR-*_index.md
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex architecture decisions
+**Purpose**: Verify ADR diagram contract tags for C4/sequence and conditional DFD when data-impacting
 
 **Severity**: Info
 
-**Recommended Diagrams by ADR Type**:
+**Required Diagram Contract by ADR Type**:
 | ADR Type | Recommended Diagrams |
 |----------|---------------------|
-| Technology selection | Comparison matrix diagram |
-| Architecture pattern | Component diagram |
-| Integration decision | Sequence diagram |
-| Data model decision | ERD or data flow |
+| Technology selection | `@diagram: c4-l3` |
+| Architecture pattern | `@diagram: c4-l3` + sequence tag |
+| Integration decision | `@diagram: sequence-sync|sequence-async|sequence-error` |
+| Data-impacting decision | `@diagram: dfd-l2` (conditional) |
 
 **Validation Logic**:
 ```bash
-# Check 5: Mermaid diagram presence
+# Check 5: ADR C4 + sequence contract tags
 for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
-  diagram_count=$(grep -c "^```mermaid" "$f" 2>/dev/null || true)
-  if [ "$diagram_count" -eq 0 ]; then
-    echo "INFO: $(basename $f) has no Mermaid diagrams"
+  has_c4=$(grep -cE '@diagram:\s*c4-l3' "$f" 2>/dev/null || true)
+  has_seq=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" 2>/dev/null || true)
+  if [ "$has_c4" -eq 0 ] || [ "$has_seq" -eq 0 ]; then
+    echo "INFO: $(basename $f) missing ADR diagram contract tags (@diagram: c4-l3, @diagram: sequence-*)"
   fi
 done
 ```
@@ -461,7 +462,7 @@ grep -rn "SYS-Ready.*[0-9]\+%" "$ADR_DIR"/ADR-[0-9]*_*.md
 |------|-------------|-------|
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W009 | Invalid decision status | CORPUS-09 |
 | CORPUS-W013 | Potential decision conflict | CORPUS-13 |
 | CORPUS-W014 | SYS-Ready Score below 90% | CORPUS-14 |
@@ -470,7 +471,7 @@ grep -rn "SYS-Ready.*[0-9]\+%" "$ADR_DIR"/ADR-[0-9]*_*.md
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
+| CORPUS-I001 | Missing ADR diagram contract tags (@diagram: c4-l3, @diagram: sequence-*) | CORPUS-06 |
 
 ---
 
@@ -489,26 +490,22 @@ Some projects may have legacy ADRs that don't follow current standards. Use this
 | Diagrams | ASCII art | Mermaid |
 | **Status** | **Requires full restructure** | **Template-compliant** |
 
-### 3.2 Required Document Structure (Per Template)
+### 3.2 Required Document Structure (Per Template - 11 Sections)
 
 | # | Section | Required |
 |---|---------|----------|
-| 1 | **YAML Frontmatter** | YES - title, tags, custom_fields |
-| 2 | **Document Control** | YES - Project, Version, Date, Owner, Status, SYS-Ready Score |
-| 3 | **Status** | YES - Current ADR status |
-| 4 | **Context** | YES - Problem statement and background |
-| 5 | **Decision** | YES - The architecture decision made |
-| 6 | **Consequences** | YES - Positive and negative outcomes |
-| 7 | **Alternatives Considered** | YES - Evaluated options |
-| 8 | **Architecture Flow** | Recommended - Mermaid diagrams |
-| 9 | **Implementation Details** | YES - Technical specifics |
-| 10 | **Dependencies** | YES - Related systems and components |
-| 11 | **Testing Strategy** | YES - Validation approach |
-| 12 | **Rollback Strategy** | YES - Recovery procedures |
-| 13 | **Success Metrics** | YES - Measurable criteria |
-| 14 | **Timeline** | Optional - Implementation phases |
-| 15 | **References** | YES - Related documents |
-| 16 | **Traceability** | YES - Cumulative upstream tags |
+| 0 | **YAML Frontmatter** | YES - title, tags, custom_fields |
+| 1 | **Section 1: Document Control** | YES - Project, Version, Date, Owner, Status, SYS-Ready Score |
+| 2 | **Section 2: Context** | YES - Problem statement and background |
+| 3 | **Section 3: Decision** | YES - The architecture decision made |
+| 4 | **Section 4: Alternatives Considered** | YES - Evaluated options |
+| 5 | **Section 5: Consequences** | YES - Positive and negative outcomes |
+| 6 | **Section 6: Architecture Flow** | YES - Mermaid diagrams |
+| 7 | **Section 7: Implementation Assessment** | YES - Phases, rollback, monitoring |
+| 8 | **Section 8: Verification** | YES - Success criteria, BDD refs |
+| 9 | **Section 9: Traceability** | YES - Cumulative upstream tags |
+| 10 | **Section 10: Related Decisions** | YES - Dependencies, supersessions |
+| 11 | **Section 11: MVP Lifecycle** | YES - Iteration guidance |
 
 ### 3.3 SYS-Ready Score Calculation
 
@@ -778,7 +775,7 @@ fi
 |-------|-------------------|
 | **E01: Title Numbering** | 1. Open YAML frontmatter<br>2. Change `title: "ADR-001:` to `title: "ADR-01:`<br>3. Search/replace `ADR-00X` with `ADR-0X` in body |
 | **E02: Header Level** | 1. Find all `### Context`, `### Decision`, etc.<br>2. Change `###` to `##` for major sections<br>3. Verify H1 for main title, H2 for sections, H3 for subsections |
-| **E03: Missing Document Control** | 1. Insert after YAML frontmatter, before Section 1<br>2. Use template from ADR-MVP-TEMPLATE.md (full template archived)<br>3. Include all required fields |
+| **E03: Missing Document Control** | 1. Insert after YAML frontmatter, before Section 1<br>2. Use template from ADR-MVP-TEMPLATE.md (standard template)<br>3. Include all required fields |
 | **E04: Missing Traceability** | 1. Add Section 16 before References<br>2. Include all 4 upstream tags (@brd, @prd, @ears, @bdd)<br>3. Use TYPE.NN.TT.SS format for element references |
 | **E05: Missing SYS-Ready Score** | 1. Add to Document Control table<br>2. Calculate score using criteria in Section 3.3<br>3. Format: `SYS-Ready NN% (Target: ≥90%)` |
 | **E06: H1 Title** | 1. Change `## ADR-NN:` to `# ADR-NN:`<br>2. Ensure only one H1 per document |
@@ -788,7 +785,7 @@ fi
 | Warning | Remediation Steps |
 |---------|-------------------|
 | **W01: ASCII Diagrams** | 1. Identify all ASCII art (boxes, arrows, lines)<br>2. Convert to Mermaid syntax<br>3. Use `mermaid-gen` skill for assistance<br>4. Reference: DIAGRAM_STANDARDS.md |
-| **W02: Custom Fields** | 1. Compare YAML to ADR-MVP-TEMPLATE.md (full template archived)<br>2. Standardize custom_fields structure<br>3. Required: artifact_type, layer, priority |
+| **W02: Custom Fields** | 1. Compare YAML to ADR-MVP-TEMPLATE.md (standard template)<br>2. Standardize custom_fields structure<br>3. Required: artifact_type, layer, priority |
 | **W03: Index Title** | 1. Change `ADR-000` to `ADR-00` in YAML<br>2. Update header if present |
 
 ---
@@ -833,7 +830,7 @@ Use this template to track Quality Gate validation progress:
 | Warnings | - | 0 | 0 |
 | Missing Traceability | - | 0 | 0 |
 | Missing SYS-Ready Score | - | 0 | 0 |
-| Files >600 lines | - | 0 | 0 |
+| Files >1200 lines | - | 0 | 0 |
 | Files without Mermaid | - | 0 | - |
 
 **Baseline Command**:
@@ -852,7 +849,7 @@ Use this template to track Quality Gate validation progress:
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Index synchronized with actual files
 - [x] **CORPUS-05**: ~~Inter-ADR cross-links present~~ (deprecated)
-- [ ] **CORPUS-06**: Diagrams present for complex decisions
+- [ ] **CORPUS-06**: ADR diagram contract tags validated (C4 L3 + sequence; conditional DFD L2)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate ADR references
 - [ ] **CORPUS-09**: All decision statuses are valid
@@ -965,6 +962,6 @@ fi
 ## References
 
 - [ADR_MVP_VALIDATION_RULES.md](./ADR_MVP_VALIDATION_RULES.md) - Individual file validation
-- [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) - ADR document template (full template archived)
+- [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) - ADR document template (standard template)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

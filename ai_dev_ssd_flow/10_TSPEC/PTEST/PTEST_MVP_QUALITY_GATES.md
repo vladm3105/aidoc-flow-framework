@@ -254,6 +254,7 @@ Total = (G1 × 0.25) + (G2 × 0.25) + (G3 × 0.20) + (G4 × 0.15) + (G5 × 0.15)
 
 Before proceeding to TASKS generation:
 
+- [ ] Document in nested folder structure
 - [ ] Overall score ≥85%
 - [ ] No GATE at <75%
 - [ ] All performance requirements covered
@@ -261,12 +262,17 @@ Before proceeding to TASKS generation:
 - [ ] Thresholds defined with units
 - [ ] Execution profile documented
 - [ ] Measurement strategy specified
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] PTEST-specific tags present (@sys, @spec)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_ptest.py docs/10_TSPEC/PTEST/PTEST-NN_*.md --quality-gates
+# Validate single PTEST with quality gates (nested folder structure)
+python scripts/validate_ptest.py docs/10_TSPEC/PTEST/PTEST-NN_{slug}/PTEST-NN_{slug}.md --quality-gates
+
+# Validate all PTEST documents
+python scripts/validate_ptest.py docs/10_TSPEC/PTEST/ --quality-gates
 ```
 
 ## See Also

@@ -32,7 +32,7 @@ custom_fields:
 | **Author** | Technical Architecture Team |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
-| **REQ-Ready Score** | [PASS] 95% (Target: ≥85% for MVP) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 
 ---
 
@@ -63,7 +63,7 @@ The Order Management System (OMS) provides core order processing capabilities fo
 - Order lifecycle tracking
 - Basic error handling and recovery
 
-**Excluded Capabilities (Post-MVP)**:
+**Excluded Capabilities (Next MVP Cycle)**:
 - International order routing - Reason: Complex tax/customs requirements
 - B2B order handling - Reason: Different workflow requirements
 - Subscription orders - Reason: Recurring billing complexity
@@ -388,7 +388,7 @@ flowchart LR
 > - This example demonstrates SYS-MVP-TEMPLATE.md structure
 > - Focus on core order management capabilities
 > - Uses unified 4-segment ID format (SYS.NN.TT.SS)
-> - REQ-Ready Score threshold: >=85% for MVP
+> - REQ-Ready Score threshold: >=90%
 
 ---
 

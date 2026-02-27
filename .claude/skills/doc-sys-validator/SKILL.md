@@ -112,7 +112,7 @@ Forbidden tag patterns:
 - Section 1: Document Control
 - Section 2: Executive Summary
 - Section 3: Scope (Boundaries, Inclusions, Exclusions)
-- Section 4: Functional Requirements (FR-NNN format)
+- Section 4: Functional Requirements (SYS.NN.01.SS format)
 - Section 5: Quality Attributes (Performance, Reliability, Security)
 - Section 6: Interface Specifications
 - Section 7: Data Management
@@ -141,13 +141,14 @@ Pattern: `SYS-NNN_descriptive_name.md`
 ### 3. Content Validation
 
 **Functional Requirement Format:**
-- Pattern: `FR-NNN`
-- Table columns: FR-ID, Requirement, Priority, Source, Verification Method
+- Pattern: `SYS.NN.01.SS` (unified 4-segment format)
+- Table columns: SYS ID, Requirement, Priority, Source, Verification Method
+- Element type code: 01 = Functional Requirement
 - Priority values: Must Have, Should Have, Could Have, Won't Have
 
 **Quality Attribute Format (4-segment):**
-- Pattern: `SYS.NN.25.SS`
-- Example: `SYS.08.25.15`
+- Pattern: `SYS.NN.02.SS` (02 = Quality Attribute type)
+- Example: `SYS.08.02.15`
 - Categories: Performance, Reliability, Scalability, Security, Observability, Maintainability
 
 **Quality Attribute Metrics:**
@@ -200,7 +201,7 @@ Pattern: `SYS-NNN_descriptive_name.md`
 | SYS-E011 | error | Missing Quality Attributes (Section 5) |
 | SYS-E012 | error | Missing Traceability (Section 13) |
 | SYS-E013 | warning | File name does not match format |
-| SYS-W001 | warning | Functional requirements not using FR-NNN |
+| SYS-W001 | warning | Functional requirements not using SYS.NN.01.SS |
 | SYS-W002 | warning | Quality attributes not using 4-segment format |
 | SYS-W003 | warning | Missing Performance category |
 | SYS-W004 | warning | Missing Security category |

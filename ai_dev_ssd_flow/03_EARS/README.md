@@ -18,9 +18,9 @@ custom_fields:
 - Index-only: maintain `EARS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use a full/sectioned template only if explicitly required.
 - Inputs used for generation: `EARS-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
-Note: Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (EARS-02, EARS-03, etc.), not template changes.
 
 ## Overview
 
@@ -89,6 +89,23 @@ THE client SHALL normalize responses to the internal schema used by [EXTERNAL_SE
 
 THE client SHALL complete requests within 2 seconds p95 for supported endpoints.
 ```
+
+## MVP Template Structure (6 Sections)
+
+EARS documents follow a standardized 6-section structure:
+
+| Section | Title | Content |
+|---------|-------|---------|
+| (unnumbered) | Document Control | Metadata, BDD-Ready Score, Source Document |
+| 1 | Purpose and Context | Document Purpose, Scope, Intended Audience |
+| 2 | EARS in Development Workflow | Layer positioning diagram, SDD role |
+| 3 | Requirements | Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous |
+| 4 | Quality Attributes | Performance, Security, Reliability tables |
+| 5 | Traceability | Upstream Sources, Downstream Artifacts, Tags |
+| 6 | References | Internal Documentation, External Standards |
+
+**Template**: `EARS-MVP-TEMPLATE.md` (Version 1.1)
+**Schema**: `EARS_MVP_SCHEMA.yaml`
 
 ## File Structure
 
@@ -260,8 +277,8 @@ See `EARS-01_external_api_integration.md` for a complete example of a well-struc
 - Changes should maintain backward traceability links
 ## File Size Limits
 
-- Target: <15,000 tokens per file
-- Maximum: 600 lines per file (absolute)
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `EARS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

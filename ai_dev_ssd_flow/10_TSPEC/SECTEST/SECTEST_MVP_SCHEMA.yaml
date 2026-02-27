@@ -357,11 +357,13 @@ properties:
   traceability:
     type: object
     required:
-      - upstream
+      - cumulative_tags
+      - type_specific
     properties:
-      upstream:
+      cumulative_tags:
         type: array
-        minItems: 1
+        minItems: 3
+        description: "Layer 1-9 upstream artifact references"
         items:
           type: object
           required:
@@ -370,13 +372,31 @@ properties:
           properties:
             tag:
               type: string
-              enum: ["@sec", "@ctr", "@sys", "@spec", "@brd", "@prd", "@ears", "@bdd", "@adr", "@req"]
+              enum: ["@brd", "@prd", "@ears", "@bdd", "@adr", "@sys", "@req", "@spec", "@ctr"]
+            reference:
+              type: string
+            description:
+              type: string
+      type_specific:
+        type: array
+        minItems: 1
+        description: "SECTEST-specific traceability tags"
+        items:
+          type: object
+          required:
+            - tag
+            - reference
+          properties:
+            tag:
+              type: string
+              enum: ["@sec", "@spec", "@ctr"]
             reference:
               type: string
             description:
               type: string
       downstream:
         type: array
+        description: "Downstream artifact references"
         items:
           type: object
           required:
@@ -394,11 +414,11 @@ properties:
 # Custom validation rules (implemented in validator script)
 x-validation-rules:
   sec_tag_required:
-    description: "At least one @sec tag must be present in upstream traceability"
-    check: "upstream contains tag='@sec'"
+    description: "At least one @sec tag must be present in type_specific traceability"
+    check: "type_specific contains tag='@sec'"
   spec_tag_required:
-    description: "At least one @spec tag must be present in upstream traceability"
-    check: "upstream contains tag='@spec'"
+    description: "At least one @spec tag must be present in type_specific traceability"
+    check: "type_specific contains tag='@spec'"
   threat_scenario_complete:
     description: "Each test must have complete threat scenario"
     check: "threat_scenario has all required fields"

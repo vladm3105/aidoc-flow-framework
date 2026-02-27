@@ -215,9 +215,9 @@ The system uses an 8-state position lifecycle:
 ```
 
 **MVP BRD Thresholds**:
-- Target: 200-400 lines
-- Warning: 400 lines
-- Error: 600 lines (exceeds MVP scope - use full BRD template)
+- Target: 800 lines
+- Warning: 800 lines
+- Error: 1200 lines (exceeds MVP scope - use full BRD template)
 
 ---
 
@@ -301,42 +301,50 @@ See [BRD-07: AI Gateway](./BRD-07_ai_gateway_architecture.md) for routing detail
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex concepts
+**Purpose**: Verify BRD diagram contract tags for C4/DFD model and sequence tagging when used
 
 **Severity**: Info
 
-**Recommended Diagrams by BRD Type**:
+**Enforcement Mode**: Advisory (non-blocking). Blocking diagram enforcement is evaluated at PRD Layer 2.
+
+**Required Diagram Contract by BRD Type**:
 | BRD Type | Recommended Diagrams |
 |----------|---------------------|
-| Architecture | Component diagram, deployment diagram |
-| Data | Data flow diagram, ERD |
-| Integration | Sequence diagram, integration map |
-| Workflow | State diagram, flowchart |
-| Agent | Agent hierarchy, communication flow |
+| Architecture | `@diagram: c4-l1` |
+| Data | `@diagram: dfd-l0` |
+| Integration | `@diagram: sequence-sync|sequence-async|sequence-error` (when sequence diagram present) |
+| Workflow | Mermaid-only diagrams (per DIAGRAM_STANDARDS) |
+| Agent | Mermaid-only diagrams (per DIAGRAM_STANDARDS) |
 
 **Validation Logic**:
 ```bash
-# Check 8: Find files without Mermaid diagrams
+# Check 8: BRD C4/DFD contract tags
 for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" || true)
-  if [ "$diagram_count" -eq 0 ]; then
-    echo "INFO: $(basename $f) has no Mermaid diagrams"
+  has_c4=$(grep -cE '@diagram:\s*c4-l1' "$f" || true)
+  has_dfd=$(grep -cE '@diagram:\s*dfd-l0' "$f" || true)
+  if [ "$has_c4" -eq 0 ] || [ "$has_dfd" -eq 0 ]; then
+    echo "INFO: $(basename $f) missing BRD diagram contract tags (@diagram: c4-l1, @diagram: dfd-l0)"
   fi
 done
 
-# Check 9: Count diagrams per file
-echo "=== Diagram Coverage ==="
+# Check 9: Sequence tag presence when sequence diagram is used
+echo "=== Diagram Contract Coverage ==="
 for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
-  echo "$(basename $f): $count diagrams"
+  seq_blocks=$(grep -c 'sequenceDiagram' "$f" 2>/dev/null || true)
+  seq_tags=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" 2>/dev/null || true)
+  echo "$(basename $f): sequence_blocks=$seq_blocks, sequence_tags=$seq_tags"
 done
 ```
 
-**Recommendation**: Add diagrams for:
-- Architecture decisions (flowchart or C4)
-- Data flows (sequence or flowchart)
-- State machines (stateDiagram-v2)
-- Agent hierarchies (graph TD)
+**Recommendation**: Add contract tags and intent headers for:
+- `@diagram: c4-l1`
+- `@diagram: dfd-l0`
+- Sequence tags when sequence diagrams are present
+- Diagram intent header fields (`diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`)
+
+**Transition Note**:
+- BRD diagram findings must not block BRD PASS/FAIL status.
+- Blocking checks are enforced in PRD via `PRD-E023`, `PRD-E024`, `PRD-E025`, `PRD-E026`.
 
 ---
 
@@ -495,23 +503,23 @@ Monthly cost: ~$175
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
 
 **General Thresholds**:
 | Metric | Warning | Error | Rationale |
 |--------|---------|-------|-----------|
-| Lines | 600 | 1,200 | Readability |
+| Lines | 800 | 1,200 | Readability |
 | Tokens | 50,000 | 100,000 | Tool limits |
 | File size | 200KB | 400KB | Processing limits |
 
 **Type-Specific Limits** (enhanced from BDD patterns):
 | File Type | Warning | Error | Max Items |
 |-----------|---------|-------|-----------|
-| BRD index file (`BRD-NN.0_*.md`) | 300 lines | 500 lines | N/A |
-| BRD section file (`BRD-NN.N_*.md`) | 400 lines | 600 lines | N/A |
-| BRD single file (`BRD-NN_*.md`) | 600 lines | 1,200 lines | N/A |
+| BRD index file (`BRD-NN.0_*.md`) | 600 lines | 800 lines | N/A |
+| BRD section file (`BRD-NN.N_*.md`) | 800 lines | 1,200 lines | N/A |
+| BRD single file (`BRD-NN_*.md`) | 800 lines | 1,200 lines | N/A |
 | Elements per section | 15 | 25 | 25 max |
-| MVP BRD files | 400 lines | 600 lines | Use full template if exceeded |
+| MVP BRD files | 800 lines | 1,200 lines | Consider splitting or creating new BRD |
 
 **Validation Logic**:
 ```bash
@@ -520,28 +528,28 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
   lines=$(wc -l < "$f")
   if [ "$lines" -gt 1200 ]; then
     echo "ERROR: $(basename $f) exceeds 1200 lines ($lines)"
-  elif [ "$lines" -gt 600 ]; then
-    echo "WARNING: $(basename $f) exceeds 600 lines ($lines)"
+  elif [ "$lines" -gt 800 ]; then
+    echo "WARNING: $(basename $f) exceeds 800 lines ($lines)"
   fi
 done
 
 # Check 2: Type-specific validation
 for f in "$BRD_DIR"/BRD-*_*/*0_*.md; do
   lines=$(wc -l < "$f" 2>/dev/null)
-  if [ "$lines" -gt 500 ]; then
-    echo "ERROR: Index file $(basename $f) exceeds 500 lines ($lines)"
-  elif [ "$lines" -gt 300 ]; then
-    echo "WARNING: Index file $(basename $f) exceeds 300 lines ($lines)"
+  if [ "$lines" -gt 800 ]; then
+    echo "ERROR: Index file $(basename $f) exceeds 800 lines ($lines)"
+  elif [ "$lines" -gt 600 ]; then
+    echo "WARNING: Index file $(basename $f) exceeds 600 lines ($lines)"
   fi
 done
 
 # Check 3: Section file validation
 for f in "$BRD_DIR"/BRD-*_*/BRD-*.[1-9]*.md; do
   lines=$(wc -l < "$f" 2>/dev/null)
-  if [ "$lines" -gt 600 ]; then
-    echo "ERROR: Section file $(basename $f) exceeds 600 lines ($lines)"
-  elif [ "$lines" -gt 400 ]; then
-    echo "WARNING: Section file $(basename $f) exceeds 400 lines ($lines)"
+  if [ "$lines" -gt 1200 ]; then
+    echo "ERROR: Section file $(basename $f) exceeds 1200 lines ($lines)"
+  elif [ "$lines" -gt 800 ]; then
+    echo "WARNING: Section file $(basename $f) exceeds 800 lines ($lines)"
   fi
 done
 ```
@@ -577,14 +585,14 @@ docs/01_BRD/BRD-07_ai_gateway/
 | ~~CORPUS-W002~~ | ~~Missing inter-BRD hyperlinks~~ | ~~CORPUS-05~~ (deprecated) |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Exact cost without range | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 
 ### Info Codes (Advisory)
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
-| CORPUS-I002 | Consider adding data flow diagram | CORPUS-06 |
+| CORPUS-I001 | Missing BRD diagram contract tags (@diagram: c4-l1, @diagram: dfd-l0) | CORPUS-06 |
+| CORPUS-I002 | Sequence diagram present without sequence contract tag | CORPUS-06 |
 
 ---
 
@@ -719,11 +727,11 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
     fi
 
     if $is_mvp; then
-      if [ "$lines" -gt 600 ]; then
-        echo "  ERROR: MVP file $(basename $f) exceeds 600 lines ($lines)"
+      if [ "$lines" -gt 1200 ]; then
+        echo "  ERROR: MVP file $(basename $f) exceeds 1200 lines ($lines)"
         ERRORS=$((ERRORS + 1))
-      elif [ "$lines" -gt 400 ]; then
-        echo "  WARNING: MVP file $(basename $f) exceeds 400 lines ($lines)"
+      elif [ "$lines" -gt 800 ]; then
+        echo "  WARNING: MVP file $(basename $f) exceeds 800 lines ($lines)"
         WARNINGS=$((WARNINGS + 1))
       fi
     else
@@ -731,8 +739,8 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
       if [ "$lines" -gt 1200 ]; then
         echo "  ERROR: $(basename $f) exceeds 1200 lines ($lines)"
         ERRORS=$((ERRORS + 1))
-      elif [ "$lines" -gt 600 ]; then
-        echo "  WARNING: $(basename $f) exceeds 600 lines ($lines)"
+      elif [ "$lines" -gt 800 ]; then
+        echo "  WARNING: $(basename $f) exceeds 800 lines ($lines)"
         WARNINGS=$((WARNINGS + 1))
       fi
     fi
@@ -887,7 +895,7 @@ ls docs/01_BRD/BRD-07_*.md && \
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Index synchronized with actual files
 - [x] **CORPUS-05**: ~~Inter-BRD cross-links present~~ (deprecated - document IDs are sufficient)
-- [ ] **CORPUS-06**: Diagrams present for complex concepts
+- [ ] **CORPUS-06**: BRD diagram contract tags validated (C4/DFD + sequence tagging when used)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate element IDs
 - [ ] **CORPUS-09**: Cost estimates use ranges

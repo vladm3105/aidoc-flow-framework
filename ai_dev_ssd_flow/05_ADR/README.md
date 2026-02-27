@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `ADR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `ADR-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.
 
@@ -29,7 +29,7 @@ Architecture Decision Records (ADRs) document significant architectural decision
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVP architecture decisions with quick turnaround
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (ADR-02, ADR-03, etc.), not template changes.
 
 ## Purpose
 
@@ -224,49 +224,44 @@ All ADRs include mandatory traceability linking to upstream and downstream artif
 @spec:[spec-name.yaml](../09_SPEC/compute/spec-name.yaml)
 ```
 
-### Four-Part Structure
+### 11-Section MVP Structure
 
-ADRs follow a comprehensive four-part structure:
+ADRs follow a streamlined **11-section** MVP structure (aligned with ADR-MVP-TEMPLATE.md):
 
-#### PART 1: Decision Context and Requirements
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | Document Control | Metadata with SYS-Ready Score |
+| 2 | Context | Problem Statement, Technical Context |
+| 3 | Decision | Chosen Solution, Key Components, Approach |
+| 4 | Alternatives Considered | Options with pros/cons |
+| 5 | Consequences | Positive/Negative Outcomes, Costs |
+| 6 | Architecture Flow | Mermaid diagrams, Integration Points |
+| 7 | Implementation Assessment | Phases, Rollback, Monitoring |
+| 8 | Verification | Success Criteria, BDD Scenarios |
+| 9 | Traceability | Upstream/Downstream, Tags, Cross-Links |
+| 10 | Related Decisions | Dependencies, Supersessions |
+| 11 | MVP Lifecycle | Iteration guidance |
 
-Establishes the problem, requirements, and decision made:
+#### Section Details
 
-- **Status**: Proposed/Accepted/Deprecated/Superseded
-- **Context**: Problem statement, background, driving forces, constraints
+**Sections 1-3: Decision Context and Requirements**
+- **Document Control**: Status, date, authors, SYS-Ready Score
+- **Context**: Problem statement, constraints, technical background
 - **Decision**: Chosen solution with key components and implementation approach
-- **Requirements Satisfied**: Traceability table showing how ADR addresses each requirement
 
-#### PART 2: Impact Analysis and Architecture
+**Sections 4-6: Impact Analysis and Architecture**
+- **Alternatives Considered**: Options evaluated with pros/cons and rejection reasons
+- **Consequences**: Positive outcomes, trade-offs, risks, costs
+- **Architecture Flow**: Mermaid diagrams showing component interactions
 
-Analyzes consequences and provides architectural details:
+**Sections 7-8: Implementation and Verification**
+- **Implementation Assessment**: Development phases, rollback plan, monitoring
+- **Verification**: Success criteria, BDD scenario references
 
-- **Consequences**: Positive outcomes, negative outcomes, trade-offs, risks, costs
-- **Architecture Flow**: Detailed flow diagrams showing how components interact
-- **Implementation Assessment**: Complexity, dependencies, resources, failure modes, rollback plans
-- **Compatibility**: Backward/forward compatibility, breaking changes, deprecation strategy
-- **Monitoring & Observability**: Success metrics, error tracking, performance baselines
-- **Alternatives Considered**: Other approaches evaluated with pros/cons and rejection reasons
-
-#### PART 3: Implementation and Operations
-
-Provides detailed operational guidance:
-
-- **security**: Input validation, authentication, authorization, data protection, compliance
+**Sections 9-11: Traceability and Lifecycle**
+- **Traceability**: Upstream/downstream references, tags, cross-links
 - **Related Decisions**: Dependencies, superseded decisions, related ADRs
-- **Implementation Notes**: Development phases, code locations, configuration management
-- **Rollback Procedures**: Triggers, steps, impact, feature flags
-- **Performance Considerations**: Optimization strategies, caching, data consistency
-- **Scalability Considerations**: Horizontal scaling, connection pooling, load balancing
-
-#### PART 4: Traceability and Documentation
-
-Maintains comprehensive traceability:
-
-- **Upstream Sources**: Links to PRD, EARS, BDD that justified the decision
-- **Downstream Artifacts**: Links to SYS, REQ, SPEC, implementation code
-- **Validation Artifacts**: Test results, security assessments, performance benchmarks
-- **References**: Internal links, external documentation, research materials
+- **MVP Lifecycle**: Iteration phases and ADR evolution guidance
 
 ## Layer Scripts
 
@@ -1097,9 +1092,9 @@ See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive 
 
 ---
 
-**README Version**: 1.0
-**Last Updated**: 2025-10-28T00:00:00
-**Template Version**: ADR-MVP-TEMPLATE.md v1.0
+**README Version**: 1.1
+**Last Updated**: 2026-02-26
+**Template Version**: ADR-MVP-TEMPLATE.md v1.1 (11 sections)
 
 **Related Documentation:**
 

@@ -28,7 +28,7 @@ Invoke when user requests validation of BDD documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/BDD/BDD_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
 Layer: 4
 Artifact Type: BDD
 

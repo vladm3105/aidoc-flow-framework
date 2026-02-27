@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR, Review Report, BDD, BRD]
   downstream_artifacts: [Fixed ADR, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+  version: "2.2"
+  last_updated: "2026-02-26"
 ---
 
 # doc-adr-fixer
@@ -921,6 +921,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Three-tier thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); No deletion policy - superseded decisions preserved; Archive manifest for Tier 3; Enhanced drift cache with merge history; Auto-generated ADR IDs (ADR-NN-SS pattern); Downstream SYS notification; Change percentage calculation |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; ADR Index and Architecture file creation; Element ID conversion (types 13, 14, 15, 16); Broken link fixes; BDD/BRD upstream drift handling; Integration with autopilot Review->Fix cycle |

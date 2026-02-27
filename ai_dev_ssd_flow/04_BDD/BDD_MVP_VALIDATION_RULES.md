@@ -19,19 +19,6 @@ custom_fields:
 # - Scope: Includes all rules from BDD_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
----
-title: "BDD Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-4-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: BDD
-  layer: 4
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: VALIDATION CHECKLIST for BDD documents (DERIVATIVE).
 > - **Authority**: Validates compliance with `BDD-MVP-TEMPLATE.feature` (PRIMARY STANDARD)
@@ -43,7 +30,7 @@ custom_fields:
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 
@@ -290,12 +277,12 @@ grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 1. **Section-Only Format** (Primary)
    - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
    - Example: `BDD-02.14_query_result_filtering.feature`
-   - Use When: Standard section file (≤500 lines, ≤12 scenarios)
+   - Use When: Standard section file (≤800 lines, ≤12 scenarios)
 
-2. **Subsection Format** (When Section >500 Lines)
+2. **Subsection Format** (When Section >800 Lines)
    - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
    - Example: `BDD-02.24.01_quality_performance.feature`
-   - Use When: Section requires splitting (each subsection ≤500 lines)
+   - Use When: Section requires splitting (each subsection ≤800 lines)
 
 3. **Aggregator Format** (Optional Redirect Stub)
    - Pattern: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
@@ -575,7 +562,7 @@ grep -n "^# [^@]" docs/04_BDD/BDD-*/BDD-*.feature && echo "[FAIL] Non-Gherkin Ma
 - [PASS] Optional companion docs live with the suite: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
 
 **Feature File Quality** (ALL REQUIRED):
-- [PASS] No .feature exceeds 500 lines
+- [PASS] No .feature exceeds 800 lines
 - [PASS] No Feature block exceeds 12 scenarios
 - [PASS] No non-Gherkin Markdown in .feature files
 - [PASS] All quantitative values use `@threshold:` keys
@@ -689,7 +676,7 @@ done
 | **CHECK 9.1** | Create missing companion files (README.md, TRACEABILITY.md, GLOSSARY.md) |
 | **CHECK 9.2** | Move .feature files from suite root to features/ subdirectory |
 | **CHECK 9.3** | Create redirect stub with @redirect/@meta tag and 0 scenarios |
-| **CHECK 9.4** | Split files exceeding 500 lines into smaller domain-focused files |
+| **CHECK 9.4** | Split files exceeding 800 lines into smaller domain-focused files |
 | **CHECK 9.5** | Add required sections to companion files |
 | **CHECK 9.6** | Move Markdown tables/content from .feature to companion files |
 
@@ -793,7 +780,7 @@ docs/04_BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (MISSIN
 [PASS] Redirect/aggregator stub inside suite folder
 docs/04_BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (redirect stub with 0 scenarios)
 
-[FAIL] File exceeds 500 lines
+[FAIL] File exceeds 800 lines
 BDD-06.1_health_monitor.feature: 625 lines (SPLIT NEEDED)
 
 [PASS] Files within size limits

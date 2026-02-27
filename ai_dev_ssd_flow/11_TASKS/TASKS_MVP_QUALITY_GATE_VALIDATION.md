@@ -2,12 +2,12 @@
 title: "TASKS Quality Gate Validation"
 tags:
   - quality-gate-validation
-  - layer-10-artifact
+  - layer-11-artifact
   - shared-architecture
 custom_fields:
   document_type: quality-gate-validation
   artifact_type: TASKS
-  layer: 10
+  layer: 11
   priority: shared
   development_status: active
 ---
@@ -24,7 +24,7 @@ custom_fields:
 | Purpose | Quality gate for complete TASKS corpus |
 | Trigger | Run after ALL TASKS files are complete |
 | Scope | Entire TASKS Quality Gate validation |
-| Layer | Layer 10 → Code Implementation transition gate |
+| Layer | Layer 11 → Code Implementation transition gate |
 
 ## Overview
 
@@ -292,7 +292,7 @@ done
 
 **Severity**: Error
 
-**Required Upstream Tags** (8 cumulative):
+**Required Upstream Tags** (9 cumulative + optional @ctr):
 | Tag | Layer | Description |
 |-----|-------|-------------|
 | `@brd` | 1 | Business Requirements |
@@ -303,6 +303,7 @@ done
 | `@sys` | 6 | System Requirements |
 | `@req` | 7 | Atomic Requirements |
 | `@spec` | 9 | Technical Specifications |
+| `@tspec` | 10 | Test Specifications |
 
 **Note**: Optional layer (CTR@8) included if present
 
@@ -426,7 +427,7 @@ done
 - [ ] **CORPUS-12**: All SPECs have TASKS coverage
 - [ ] **CORPUS-13**: Implementation contracts referenced
 - [ ] **CORPUS-14**: Task status fields present
-- [ ] **CORPUS-15**: Cumulative traceability complete (8 tags)
+- [ ] **CORPUS-15**: Cumulative traceability complete (9 tags + optional @ctr)
 - [ ] **CORPUS-16**: Effort estimates present
 - [ ] **CORPUS-17**: Unit Test Results section present (Section 10)
 - [ ] **CORPUS-18**: Implementation Summary section present (Section 11)

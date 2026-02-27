@@ -9,13 +9,16 @@ custom_fields:
   document_type: template
   artifact_type: CTR
   layer: 8
+  template_variant: mvp
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   complexity: 1 # 1-5 scale
   template_for: contract-specification
   schema_reference: "CTR_MVP_SCHEMA.yaml"
-  schema_version: "1.0"
+  schema_version: "1.1"
+  last_updated: "2026-02-26"
+  total_sections: 12
 ---
 > ** Dual-Format Note**: 
 > 
@@ -61,8 +64,6 @@ custom_fields:
 > **[WARN] UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags: (1) Check existing artifacts in `docs/`, (2) Reference only existing documents with actual IDs, (3) Use `null` only when upstream artifact type doesn't exist for this feature, (4) Do NOT create phantom references to non-existent documents, (5) Do NOT create missing upstream artifacts - skip that functionality.
 
 ---
-
-## 2. PART 1: Contract Context and Requirements
 
 ## 2. Context
 
@@ -170,8 +171,6 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 
 ---
 
-## 5. PART 2: Interface Specification and Schema
-
 ## 5. Interface Definition
 
 ### 5.1 Schema Reference
@@ -234,8 +233,6 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**: Open after 5 failures within 60s, enter half-open state after 60s cooldown
 
 ---
-
-## 7. PART 3: Quality Attributes and Operations
 
 ## 7. Quality Attributes
 
@@ -350,8 +347,6 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 ```
 
 ---
-
-## 10. PART 4: Testing and Traceability
 
 ## 10. Verification
 
@@ -556,7 +551,7 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 
 ---
 
-## 13. Appendix A: Alternatives Considered
+## Appendix A: Alternatives Considered
 
 ### 13.1 A.1 Alternative A: In-Process Validation (Library)
 
@@ -587,7 +582,7 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 
 ---
 
-## 14. Appendix B: Implementation Notes
+## Appendix B: Implementation Notes
 
 ### 14.1 B.1 Development Phases
 
@@ -619,14 +614,15 @@ Prefer these over legacy "See also …" strings to improve cross-document analys
 
 ---
 
-**Template Version**: 1.0
-**Last Reviewed**: YYYY-MM-DDTHH:MM:SS
-**Next Review**: YYYY-MM-DDTHH:MM:SS (recommend quarterly for active contracts)
+**Document Version**: 1.0
+**Template Version**: 1.1 (MVP - 12 sections + 2 appendices)
+**Last Updated**: 2026-02-26
+**Maintained By**: [Architecture Team]
 
 ---
 
 > **Template Guidance** (remove when creating actual contracts):
 >
-> - Target: 300–500 lines; Maximum: 600 lines (Markdown)
+> - Target: 800 lines; Maximum: 1200 lines (Markdown)
 > - Split large contracts by endpoint groups with matching `.md` + `.yaml` pairs
 > - See `CTR_MVP_CREATION_RULES.md` and `README.md` for detailed guidance

@@ -251,6 +251,7 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.20) + (G4 × 0.15) + (G5 × 0.10)
 
 Before proceeding to TASKS generation:
 
+- [ ] Document in nested folder structure
 - [ ] Overall score ≥90%
 - [ ] No GATE at <80%
 - [ ] All security requirements covered
@@ -258,12 +259,17 @@ Before proceeding to TASKS generation:
 - [ ] Security controls defined
 - [ ] Execution profile includes safety constraints
 - [ ] Compliance mappings provided
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] SECTEST-specific tags present (@sec, @ctr, @sys, @spec)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/SECTEST-NN_*.md --quality-gates
+# Validate single SECTEST with quality gates (nested folder structure)
+python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/SECTEST-NN_{slug}/SECTEST-NN_{slug}.md --quality-gates
+
+# Validate all SECTEST documents
+python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/ --quality-gates
 ```
 
 ## See Also

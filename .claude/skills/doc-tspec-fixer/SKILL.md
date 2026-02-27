@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [SPEC, TSPEC, Review Report]
   downstream_artifacts: [Fixed TSPEC, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+  version: "2.2"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-tspec-fixer
@@ -118,6 +118,8 @@ Fixes TSPEC documents that are not in nested folders. This phase runs FIRST beca
 | ITEST | `docs/10_TSPEC/ITEST/ITEST-NN_{slug}/ITEST-NN_{slug}.md` |
 | STEST | `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md` |
 | FTEST | `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md` |
+| PTEST | `docs/10_TSPEC/PTEST/PTEST-NN_{slug}/PTEST-NN_{slug}.md` |
+| SECTEST | `docs/10_TSPEC/SECTEST/SECTEST-NN_{slug}/SECTEST-NN_{slug}.md` |
 
 **Fix Actions**:
 
@@ -375,10 +377,12 @@ Converts invalid element IDs to correct format.
 
 | Code | Element Type | Description |
 |------|--------------|-------------|
-| 40 | Test Case | Individual test case specification |
-| 41 | Test Suite | Collection of related test cases |
-| 42 | Test Data | Test data definition |
-| 43 | Test Fixture | Test fixture/setup definition |
+| 40 | UTEST | Unit test case specification |
+| 41 | ITEST | Integration test case specification |
+| 42 | STEST | Smoke test case specification |
+| 43 | FTEST | Functional test case specification |
+| 44 | PTEST | Performance test case specification |
+| 45 | SECTEST | Security test case specification |
 
 **Regex Patterns**:
 
@@ -1085,6 +1089,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Updated type codes table to use correct test type names; Added PTEST/SECTEST to nested folder table |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge patch, Tier 2: 5-15% auto-merge minor with changelog, Tier 3: >15% archive and regenerate major); Added test ID patterns for TSPEC (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-NN-TC-SS format); Implemented no-deletion policy with [DEPRECATED] markers; Enhanced drift cache with merge history tracking; Added archive manifest creation for Tier 3; Auto-generated test ID support |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Test case structure repair; Test data and fixture file generation; Element ID conversion (types 40-43); SPEC drift handling; Integration with autopilot Review->Fix cycle |

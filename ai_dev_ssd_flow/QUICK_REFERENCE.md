@@ -237,7 +237,7 @@ python scripts/validate_links.py
 # Generate traceability matrix
 python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 
-# Lint file sizes (target 300–500, max 600)
+# Lint file sizes (target 800, max 1200)
 ./scripts/lint_file_sizes.sh
 ```
 
@@ -423,15 +423,15 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 ## File Size Limits (All Documents)
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute) for Markdown and feature files
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute) for Markdown and feature files
 - YAML Exception: YAML specs are monolithic; warnings start at ~1000 lines and errors at ~2000 lines in the linter. Prefer readability and coherent grouping over splitting.
 - If a file approaches/exceeds limits, split into sections/subsections per the type’s templates (except YAML where monolithic files are preferred)
 
 ## Document Splitting Standard (All Types)
 
 - Triggers:
-  - Approaches or exceeds size limits (MD/feature > 500 target or > 600 max; YAML > ~2000 only if readability suffers)
+  - Approaches or exceeds size limits (MD/feature > 800 target or > 1200 max; YAML > ~2000 only if readability suffers)
   - Logical boundaries emerge (distinct topics, modules, or lifecycle phases)
   - Navigation or maintenance suffers (anchors hard to find, very long TOC)
 - General Steps:
@@ -459,14 +459,14 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 ```
 Pattern: BDD-NN.SS_{slug}.feature
 Example: BDD-02.14_query_result_filtering.feature
-Use When: Standard section file (≤500 lines, ≤12 scenarios)
+Use When: Standard section file (≤800 lines, ≤12 scenarios)
 ```
 
-#### 2. Subsection Format (When Section >500 Lines)
+#### 2. Subsection Format (When Section >800 Lines)
 ```
 Pattern: BDD-NN.SS.mm_{slug}.feature
 Example: BDD-02.24.01_quality_performance.feature
-Use When: Section requires splitting (each subsection ≤500 lines)
+Use When: Section requires splitting (each subsection ≤800 lines)
 ```
 
 #### 3. Aggregator Format (Optional Redirect Stub)

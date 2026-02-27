@@ -20,20 +20,20 @@
 schema_version: "1.1"
 artifact_type: BDD
 layer: 4
-last_updated: "2026-01-20"
+last_updated: "2026-02-26"
 
 references:
   md_template: "BDD-MVP-TEMPLATE.feature"
   yaml_template: "N/A (BDD is .feature-only, no YAML version)"
-  creation_rules: "BDD_CREATION_RULES.md"
-  validation_rules: "BDD_VALIDATION_RULES.md"
+  creation_rules: "BDD_MVP_CREATION_RULES.md"
+  validation_rules: "BDD_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)
 # =============================================================================
 
 profiles:
-  default: full
+  default: mvp
   allowed: [full, mvp]
   mvp:
     enforcement_level: optional
@@ -192,13 +192,13 @@ structure:
         pattern: "^BDD-\\d{2,}\\.\\d+_[a-z0-9_]+\\.feature$"
         description: "Section-only format (primary)"
         example: "BDD-02.14_query_result_filtering.feature"
-        use_when: "Standard section file (≤500 lines, ≤12 scenarios)"
+        use_when: "Standard section file (≤800 lines, ≤12 scenarios)"
 
       subsection:
         pattern: "^BDD-\\d{2,}\\.\\d+\\.\\d{2}_[a-z0-9_]+\\.feature$"
-        description: "Subsection format (when section >500 lines)"
+        description: "Subsection format (when section >800 lines)"
         example: "BDD-02.24.01_quality_performance.feature"
-        use_when: "Section requires splitting (each subsection ≤500 lines)"
+        use_when: "Section requires splitting (each subsection ≤800 lines)"
 
       aggregator:
         pattern: "^BDD-\\d{2,}\\.\\d+\\.00_[a-z0-9_]+\\.feature$"
@@ -246,7 +246,7 @@ structure:
 
       subsections:
         format: "BDD-NN.SS.mm_{slug}.feature"
-        description: "Subsections when section >500 lines (mm = 01, 02, ...)"
+        description: "Subsections when section >800 lines (mm = 01, 02, ...)"
         example: "BDD-02.3.01_learning_path.feature"
         numbering: "Sequential from 01 within each section"
 
@@ -258,10 +258,10 @@ structure:
 
     # Hard/soft limits
     hard_limits:
-      max_file_lines: 600   # Absolute maximum
+      max_file_lines: 1200   # Absolute maximum
       soft_file_tokens: 15000  # Soft limit; target range is <15k tokens
       max_scenarios_per_feature: 12
-      split_strategy: "When section exceeds 500 lines, create subsections (.SS.mm format)"
+      split_strategy: "When section exceeds 800 lines, create subsections (.SS.mm format)"
       aggregator_strategy: "When many subsections, add aggregator (.SS.00 format)"
 
     # File organization

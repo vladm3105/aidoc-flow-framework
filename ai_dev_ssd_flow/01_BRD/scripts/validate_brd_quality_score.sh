@@ -80,7 +80,9 @@ for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
 done
 shopt -u nullglob
 
+set +u
 echo "Found ${#EXISTING_BRDS[@]} BRD documents"
+set -u
 echo ""
 
 # =============================================================================
@@ -272,12 +274,26 @@ check_crosslinks() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+  echo "--- GATE-06: Diagram Contract Validation (BRD L1) ---"
   local syntax_errors=0
+  local contract_errors=0
 
   shopt -s nullglob
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+
+    if ! grep -qi '@diagram:\s*c4-l1' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: c4-l1 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*dfd-l0' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: dfd-l0 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
 
     # Check if file contains Mermaid diagrams
     if grep -q '```mermaid' "$f" 2>/dev/null; then
@@ -291,12 +307,20 @@ check_diagrams() {
         ((ERRORS++)) || true
         ((syntax_errors++)) || true
       fi
+
+      if grep -qiE 'sequenceDiagram|@diagram:\s*sequence' "$f" 2>/dev/null; then
+        if ! grep -qi '@diagram:\s*sequence' "$f" 2>/dev/null; then
+          echo -e "${RED}GATE-E006: $(basename "$f") contains sequence diagram but missing @diagram: sequence tag${NC}"
+          ((ERRORS++)) || true
+          ((contract_errors++)) || true
+        fi
+      fi
     fi
   done
   shopt -u nullglob
 
-  if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+  if [[ $syntax_errors -eq 0 && $contract_errors -eq 0 ]]; then
+    echo -e "${GREEN}   BRD diagram contracts and Mermaid syntax checks passed${NC}"
   fi
   echo ""
 }

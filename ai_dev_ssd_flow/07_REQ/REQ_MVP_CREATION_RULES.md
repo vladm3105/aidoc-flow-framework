@@ -55,7 +55,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (12 Required sections)](#2-document-structure-12-required-sections)
+2. [Document Structure (11 Required sections — MVP)](#2-document-structure-11-required-sections--mvp)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Atomic Requirement Principles](#5-atomic-requirement-principles)

@@ -329,6 +329,7 @@ done
 | CORPUS-E012 | Missing paired .md file | CORPUS-11 |
 | CORPUS-E013 | Version mismatch between files | CORPUS-11 |
 | CORPUS-E014 | Invalid YAML syntax | CORPUS-12 |
+| CORPUS-E015 | Section structure not 1-12 | NEW |
 
 ### Warning Codes (Recommended)
 

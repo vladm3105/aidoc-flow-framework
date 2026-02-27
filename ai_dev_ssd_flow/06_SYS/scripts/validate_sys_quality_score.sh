@@ -22,6 +22,7 @@ INFO=0
 # Configuration
 SYS_DIR="${1:-docs/SYS}"
 VERBOSE="${2:-}"
+ERRORS_ONLY=false
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -195,12 +196,50 @@ check_cross_linking() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+  echo "--- GATE-06: System Diagram Contract Validation (SYS bridge) ---"
   local syntax_errors=0
+  local contract_errors=0
 
   shopt -s nullglob
   for f in "$SYS_DIR"/SYS-[0-9]*_*.md "$SYS_DIR"/SYS-[0-9]*/SYS-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+
+    if ! grep -qi '^##\s*System Diagram Contract' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required 'System Diagram Contract' section${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi 'downstream_c4_l4_owner' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required bridge field: downstream_c4_l4_owner${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi 'required_sequence_paths' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required bridge field: required_sequence_paths${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi 'trust_boundaries' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required bridge field: trust_boundaries${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*c4-l4-ownership' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: c4-l4-ownership tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
+
+    if ! grep -qi '@diagram:\s*sequence-l4' "$f" 2>/dev/null; then
+      echo -e "${RED}GATE-E006: $(basename "$f") missing required @diagram: sequence-l4 tag${NC}"
+      ((ERRORS++)) || true
+      ((contract_errors++)) || true
+    fi
 
     # Check if file contains Mermaid diagrams
     if grep -q '```mermaid' "$f" 2>/dev/null; then
@@ -218,8 +257,8 @@ check_diagrams() {
   done
   shopt -u nullglob
 
-  if [[ $syntax_errors -eq 0 ]]; then
-    echo -e "${GREEN}   Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+  if [[ $syntax_errors -eq 0 && $contract_errors -eq 0 ]]; then
+    echo -e "${GREEN}   SYS bridge contract and Mermaid syntax checks passed${NC}"
   fi
   echo ""
 }
@@ -236,8 +275,12 @@ check_glossary() {
   local found=0
 
   # Check for term inconsistency (e.g., system vs System)
-  local system_lower=$(grep -roh "the system " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l || echo 0)
-  local system_upper=$(grep -roh "the System " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l || echo 0)
+  local system_lower
+  system_lower=$(grep -roh "the system " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l | tr -d '[:space:]' || true)
+  system_lower=${system_lower:-0}
+  local system_upper
+  system_upper=$(grep -roh "the System " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l | tr -d '[:space:]' || true)
+  system_upper=${system_upper:-0}
 
   if [[ $system_lower -gt 5 && $system_upper -gt 5 ]]; then
     echo -e "${YELLOW}GATE-W003: Mixed 'system' ($system_lower) and 'System' ($system_upper) usage${NC}"
@@ -569,7 +612,7 @@ main() {
   check_count_consistency
   check_index_sync
   check_cross_linking
-  check_visualization
+  check_diagrams
   check_glossary
   check_element_ids
   check_quality_quantification

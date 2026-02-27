@@ -1413,18 +1413,18 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 ## Related Documentation
 
 **SDD Workflow**:
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
-- [index.md]({project_root}/ai_dev_flow/index.md) - Traceability flow diagram
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
+- [index.md]({project_root}/ai_dev_ssd_flow/index.md) - Traceability flow diagram
 
 **Templates**:
-- [IMPL-TEMPLATE.md]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - Implementation plan template
-- [CTR-TEMPLATE.md]({project_root}/ai_dev_flow/CTR/CTR-TEMPLATE.md) - API contract template
-- [SPEC-TEMPLATE.yaml]({project_root}/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
-- [TASKS-TEMPLATE.md]({project_root}/ai_dev_flow/TASKS/TASKS-TEMPLATE.md) - Code generation plan template
+- [IMPL-TEMPLATE.md]({project_root}/ai_dev_ssd_flow/IMPL/IMPL-TEMPLATE.md) - Implementation plan template
+- [CTR-MVP-TEMPLATE.md]({project_root}/ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md) - Data contract template
+- [SPEC-MVP-TEMPLATE.yaml]({project_root}/ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
+- [TASKS-MVP-TEMPLATE.md]({project_root}/ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.md) - Code generation plan template
 
 **Decision Guides**:
-- [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
-- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
+- [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_ssd_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
+- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
 
 ---
 

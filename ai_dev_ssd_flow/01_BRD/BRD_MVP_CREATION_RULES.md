@@ -14,7 +14,7 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Guides creation of BRD-MVP-TEMPLATE.md (default)
-# - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
+# - Authority: BRD-MVP-TEMPLATE.md is the standard for BRD structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
@@ -38,17 +38,48 @@ custom_fields:
 
 # BRD Creation Rules
 
-## Template Selection (MVP Default)
+## MVP → PROD → NEW MVP Lifecycle
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**Key Principle**: Each BRD represents ONE iteration cycle. The lifecycle is:
+
+```
+BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2 → ...
+```
+
+| Phase | Action | Duration |
+|-------|--------|----------|
+| **MVP** | Create BRD with 5-15 core features | 1-2 weeks |
+| **PROD** | Operate, measure, collect feedback | 30-90 days |
+| **NEW MVP** | Create **NEW BRD** for next features | 1-2 weeks |
+
+**Lifecycle Rules**:
+- **New features = New BRD** — Don't expand existing BRDs indefinitely
+- **Each BRD = 5-15 requirements** — Keep focused on current cycle
+- **Link via dependencies** — Use `@depends: BRD-01` in Section 16.2
+
+**When to Create NEW BRD vs Update Existing**:
+
+| Scenario | Action |
+|----------|--------|
+| Bug fixes, minor clarifications | Update current BRD (patch version) |
+| New P1/P2 features | Create NEW BRD |
+| Entirely new product area | Create NEW BRD |
+| Major scope expansion | Create NEW BRD |
+
+---
+
+## Template Selection (MVP-First)
+
+**MVP templates are the framework standard.** There is no separate "full" template.
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `BRD-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
+| **MVP-First (STANDARD)** | `BRD-MVP-TEMPLATE.md` | All BRDs - every iteration cycle |
 
-**Triggering Full Template**:
-- Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+**Template Philosophy**:
+- One template for all projects (MVP-first approach)
+- Each BRD represents one iteration cycle
+- New features = new BRD, not expanded template
 
 ## Index-Only Generation Workflow
 

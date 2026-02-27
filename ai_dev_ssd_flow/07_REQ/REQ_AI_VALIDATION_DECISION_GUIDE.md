@@ -70,15 +70,15 @@ When a REQ validation fails, you must decide:
 | **Content Missing** | Required section absent, no data schemas | Fix Document |
 | **Content Incomplete** | Placeholder text, empty Protocol | Fix Document |
 | **Format Issue** | Bold headers, spacing differences | Fix Validator |
-| **Template Variation** | MVP vs Full template sections | Fix Validator |
+| **Template Variation** | MVP vs Enterprise profile sections | Fix Validator |
 | **Style Preference** | "Expected 3+ functions" with 2 complete ones | Evaluate Case-by-Case |
 | **False Positive** | Validator pattern doesn't match valid content | Fix Validator |
 
 ### Step 2: Check Against Template
 
 **Action**: Compare the document against the official template:
-- MVP Template: [`REQ-MVP-TEMPLATE.md`](./REQ-MVP-TEMPLATE.md)
-- Full Template: [`REQ-TEMPLATE.md`](./REQ-TEMPLATE.md) (if exists)
+- Standard Template: [`REQ-MVP-TEMPLATE.md`](./REQ-MVP-TEMPLATE.md)
+- Enterprise Profile: Use `template_profile: enterprise` for stricter validation
 
 **Questions**:
 1. Does the document follow the template structure?
@@ -355,7 +355,7 @@ PLACEHOLDER_PATTERNS = [
 
 #### 1. Section Presence (ERRORS)
 
-| Check ID | Section | MVP Template | Full Template | Scoring |
+| Check ID | Section | Standard Template | Enterprise Profile | Scoring |
 |----------|---------|--------------|---------------|---------|
 | `section_interfaces` | 3 | "Functional Specification" | "Interface Specifications" | 10 pts |
 | `section_data_schemas` | 4 | "Interface Definition" | "Data Schemas" | 10 pts |
@@ -407,8 +407,8 @@ passed = total_score >= min_score  # Default: 90%
 ```
 
 **Maximum Scores**:
-- MVP Template: 100 points (10 checks × 10 points)
-- Full Template: 110 points (11 checks × 10 points)
+- Standard Template: 100 points (10 checks × 10 points)
+- Enterprise Profile: 110 points (11 checks × 10 points)
 
 ---
 
@@ -723,7 +723,7 @@ These are genuinely standalone and should NOT have forced cross-references:
 
 **What it checks**: Whether REQ files are organized in correct subfolders per domain (e.g., trading requirements in `REQ-08_trading_intelligence`).
 
-**Status**: Required for full template. May be informational for MVP in early development.
+**Status**: Required for enterprise profile. May be informational for MVP in early development.
 
 **Common Issues**:
 

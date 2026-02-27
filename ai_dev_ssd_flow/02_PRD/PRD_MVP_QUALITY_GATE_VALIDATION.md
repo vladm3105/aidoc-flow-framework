@@ -237,28 +237,42 @@ done
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex concepts
+**Purpose**: Verify PRD diagram contract tags for C4/DFD and required sequence path coverage
 
-**Severity**: Info
+**Severity**: Error (blocking)
 
-**Recommended Diagrams by PRD Type**:
+**Blocking Failure Codes**:
+- `PRD-E023`: Missing `@diagram: c4-l2`
+- `PRD-E024`: Missing `@diagram: dfd-l1`
+- `PRD-E025`: Missing `@diagram: sequence-*`
+- `PRD-E026`: Sequence diagram missing explicit `alt/else` exception/alternate path
+
+**Required Diagram Contract by PRD Type**:
 | PRD Type | Recommended Diagrams |
 |----------|---------------------|
-| Product Overview | User journey, feature map |
-| Feature Set | Feature interaction diagram |
-| User Stories | User flow diagram |
-| Metrics | Dashboard mockup, KPI hierarchy |
+| Product Overview | `@diagram: c4-l2` |
+| Feature Set | `@diagram: dfd-l1` |
+| User Stories | `@diagram: sequence-sync|sequence-async|sequence-error` |
+| Metrics | Mermaid-only diagrams (per DIAGRAM_STANDARDS) |
 
 **Validation Logic**:
 ```bash
-# Check for Mermaid code blocks
+# Check required PRD diagram contract tags
 for f in "$PRD_DIR"/PRD-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" || true)
-  if [ "$diagram_count" -eq 0 ]; then
-    echo "INFO: $(basename $f) has no Mermaid diagrams"
+  has_c4=$(grep -cE '@diagram:\s*c4-l2' "$f" || true)
+  has_dfd=$(grep -cE '@diagram:\s*dfd-l1' "$f" || true)
+  has_seq=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" || true)
+  if [ "$has_c4" -eq 0 ] || [ "$has_dfd" -eq 0 ] || [ "$has_seq" -eq 0 ]; then
+    echo "INFO: $(basename $f) missing PRD diagram contract tags (@diagram: c4-l2, @diagram: dfd-l1, @diagram: sequence-*)"
   fi
 done
 ```
+
+**Pass Criteria**:
+- `@diagram: c4-l2` present
+- `@diagram: dfd-l1` present
+- `@diagram: sequence-sync|sequence-async|sequence-error` present
+- At least one Mermaid `sequenceDiagram` includes explicit `alt` or `else` branch
 
 ---
 
@@ -341,18 +355,18 @@ grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" | \
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
 
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 600 | 1,200 |
+| Lines | 800 | 1,200 |
 | Tokens | 50,000 | 100,000 |
 
 **MVP PRD Thresholds**:
-- Target: 300-500 lines
-- Warning: 500 lines
-- Error: 800 lines (exceeds MVP scope)
+- Target: 800 lines
+- Warning: 800 lines
+- Error: 1200 lines (exceeds MVP scope)
 
 ---
 
@@ -433,7 +447,7 @@ done
 
 | Template | Sections | Score Threshold | Use Case |
 |----------|----------|-----------------|----------|
-| **MVP** | 17 (1-17) | ≥85% | Rapid prototyping, hypothesis validation |
+| **MVP** | 17 (1-17) | ≥90% | Rapid prototyping, hypothesis validation |
 | 9 | Functional Requirements | Yes |
 | 10 | Customer-Facing Content & Messaging | Yes |
 | 11 | Acceptance Criteria | Yes |
@@ -723,7 +737,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Exact cost without range | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W012 | BRD objective without PRD user story | CORPUS-12 |
 | CORPUS-W015 | MVP hypothesis format incorrect | CORPUS-15 |
 | CORPUS-W016 | Glossary path not standardized | CORPUS-16 |
@@ -735,7 +749,7 @@ done
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
+| CORPUS-I001 | Missing PRD diagram contract tags (@diagram: c4-l2, @diagram: dfd-l1, @diagram: sequence-*) | CORPUS-06 |
 
 ### Error Reference: Remediation
 
@@ -790,7 +804,7 @@ done
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Bidirectional index completeness verified
 - [x] **CORPUS-05**: ~~Inter-PRD cross-links present~~ (deprecated)
-- [ ] **CORPUS-06**: Diagrams present for complex concepts
+- [ ] **CORPUS-06**: PRD diagram contract tags validated (C4/DFD + required sequence)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate element IDs
 - [ ] **CORPUS-09**: Cost estimates use ranges
@@ -798,7 +812,7 @@ done
 - [ ] **CORPUS-11**: All PRDs have @brd tags (4-segment format)
 - [ ] **CORPUS-12**: BRD objectives have PRD user stories
 - [ ] **CORPUS-13**: Required template sections present (21 Standard / 17 MVP)
-- [ ] **CORPUS-14**: SYS-Ready score meets template threshold (≥90% Standard / ≥85% MVP)
+- [ ] **CORPUS-14**: SYS-Ready score meets template threshold (≥90%)
 - [ ] **CORPUS-15**: MVP hypothesis format validated
 - [ ] **CORPUS-16**: Glossary paths standardized
 - [ ] **CORPUS-17**: Token count within limits

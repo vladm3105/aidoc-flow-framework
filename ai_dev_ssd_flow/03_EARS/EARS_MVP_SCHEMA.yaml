@@ -13,14 +13,15 @@
 #
 # Schema is DERIVATIVE of both templates (dual-authority)
 #
-# EARS Schema Definition v1.0
+# EARS Schema Definition v1.1
 # Purpose: Define valid metadata structure and validation rules for EARS documents
 # Usage: Reference by validate_ears.py for automated validation
 #
-schema_version: "1.0"
+schema_version: "1.1"
 artifact_type: EARS
 layer: 3
-last_updated: "2026-01-20"
+last_updated: "2026-02-26"
+total_sections: 6
 
 references:
   md_template: "EARS-MVP-TEMPLATE.md"
@@ -33,7 +34,7 @@ references:
 # =============================================================================
 
 profiles:
-  default: full
+  default: mvp
   allowed: [full, mvp]
   mvp:
     enforcement_level: optional
@@ -121,7 +122,7 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (in order)
+  # Required sections (in order) - 6-section MVP structure
   required_sections:
     - pattern: "^# EARS-\\d{2,}:"
       name: "Title (H1)"
@@ -129,7 +130,7 @@ structure:
 
     - pattern: "^## Document Control$"
       name: "Document Control"
-      description: "Contains metadata table with Source Document"
+      description: "Contains metadata table with Source Document (unnumbered)"
 
     - pattern: "^## 1\\. Purpose and Context$"
       name: "Purpose and Context"
@@ -141,7 +142,19 @@ structure:
 
     - pattern: "^## 3\\. Requirements$"
       name: "Requirements"
-      description: "Section 3 with EARS statements (Event-Driven, State-Driven, etc.)"
+      description: "Section 3 with Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous"
+
+    - pattern: "^## 4\\. Quality Attributes$"
+      name: "Quality Attributes"
+      description: "Section 4 with Performance, Security, Reliability"
+
+    - pattern: "^## 5\\. Traceability$"
+      name: "Traceability"
+      description: "Section 5 with upstream sources, downstream artifacts, tags"
+
+    - pattern: "^## 6\\. References$"
+      name: "References"
+      description: "Section 6 with internal and external documentation"
 
   # Document Control table requirements
   document_control:

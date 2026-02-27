@@ -8,6 +8,60 @@
 
 > **AI-First Design**: This framework is designed for AI agents (Claude Code, Gemini CLI, GitHub Copilot) as the primary operators. Humans work *through* AI assistants, not directly with the framework. AI agents autonomously execute workflows, generate artifacts, and manage the development lifecycle.
 
+---
+
+## Core Philosophy: MVP → PROD → NEW MVP
+
+**This is the fundamental lifecycle that drives all framework operations.**
+
+```mermaid
+flowchart LR
+  MVP1[MVP BRD-01<br/>1-2 weeks<br/>5-15 core features] --> PROD1[PROD v1.0<br/>30-90 days<br/>Feedback cycle]
+  PROD1 --> MVP2[NEW MVP BRD-02<br/>1-2 weeks<br/>Next feature set]
+  MVP2 --> PROD2[PROD v2.0<br/>30-90 days<br/>Feedback cycle]
+  PROD2 --> NEXT[...]
+```
+
+### The Three Phases
+
+| Phase | Duration | What Happens | Output |
+|:------|:---------|:-------------|:-------|
+| **MVP** | 1-2 weeks | Build 5-15 core features using BRD → PRD → ... → TASKS | Production deployment |
+| **PROD** | 30-90 days | Operate, measure metrics, collect user feedback | Insights & priorities |
+| **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set, repeat cycle | Production v2.0 |
+
+### Key Principles
+
+1. **Each BRD = One Iteration Cycle**: Never expand BRDs indefinitely - create new ones
+2. **New Features = New BRD**: BRD-01 → BRD-02 → BRD-03 represent successive iterations
+3. **Production is Always the Goal**: Every MVP cycle targets production deployment
+4. **Cross-Cycle Traceability**: Use `@depends: BRD-01` to link iterations
+
+### BRD Skills (Layer 1)
+
+Use these BRD skills as a focused quality workflow:
+
+- `doc-brd`: Create or update BRD content from template rules.
+- `doc-brd-autopilot`: Orchestrate BRD generation/review/fix workflow.
+- `doc-brd-validator`: Run structural and schema compliance checks.
+- `doc-brd-reviewer`: Run semantic and business-quality review checks.
+- `doc-brd-fixer`: Apply deterministic fixes from audit/review findings.
+- `doc-brd-audit`: Single wrapper that runs validator → reviewer and produces one combined report for fixer.
+
+Recommended default entrypoint: `/doc-brd-audit <BRD path>`.
+
+### Why This Approach?
+
+- **Prevents scope creep**: Fixed-scope BRDs (5-15 features) ship faster
+- **Enables learning**: 30-90 day PROD phase validates assumptions before next iteration
+- **Maintains velocity**: 1-2 week MVP cycles keep momentum high
+- **Preserves knowledge**: Cross-BRD traceability builds on previous work
+- **90%+ automation**: Framework automates 14 of 15 layers per cycle
+
+> **See Also**: [MVP_WORKFLOW_GUIDE.md](./ai_dev_ssd_flow/MVP_WORKFLOW_GUIDE.md) for detailed workflow steps
+
+---
+
 ## Repository Contents
 
 This repository provides a **unified SDD framework** with three depth variants to match project complexity:
@@ -152,50 +206,74 @@ AI Dev Flow eliminates manual bottlenecks through intelligent automation and str
 
 **Result**: Dramatically reduced manual effort while maintaining quality through strategic oversight.
 
-## MVP Delivery Loop: Iterative Product Development
+## MVP → PROD → NEW MVP: Detailed Reference
 
-AI Dev Flow supports **continuous product evolution** through iterative MVP cycles:
+> **See [Core Philosophy](#core-philosophy-mvp--prod--new-mvp) above for the quick overview.**
 
-**The Delivery Loop**:
+This section provides detailed guidance on implementing the iterative lifecycle:
+
+```mermaid
+flowchart LR
+    subgraph Cycle1["Cycle 1"]
+        BRD1[BRD-01] --> DEV1[Develop] --> PROD1[Production v1]
+    end
+    PROD1 --> FB1[Feedback<br/>30-90 days]
+    subgraph Cycle2["Cycle 2"]
+        FB1 --> BRD2[BRD-02<br/>NEW MVP] --> DEV2[Develop] --> PROD2[Production v2]
+    end
+    PROD2 --> FB2[Feedback]
+    subgraph Cycle3["Cycle 3"]
+        FB2 --> BRD3[BRD-03<br/>NEW MVP] --> DEV3[Develop] --> PROD3[Production v3]
+    end
 ```
-┌─────────────────────────────────────────────────┐
-│ MVP v1.0 → Defect Fixes → Production Release   │
-│     ↓                                           │
-│ MVP v2.0 (Add Features) ← Market Feedback       │
-│     ↓                                           │
-│ Defect Fixes → Production                       │
-│     ↓                                           │
-│ MVP v3.0 (Add Features) ← ...                   │
-└─────────────────────────────────────────────────┘
-```
 
-**Key Benefits**:
-- **Rapid Iteration**: Complete L1-L13 pipeline with 90% automation
-- **Incremental Features**: Add features as new MVPs, preserve working product
-- **Production Focus**: Every MVP targets production deployment
-- **Cumulative Traceability**: Each MVP inherits and extends previous version's artifacts
+### The Three Phases
 
-**How Automation Enables the Loop**:
+| Phase | Duration | Focus | Output |
+|-------|----------|-------|--------|
+| **MVP** | 1-2 weeks | Core features (5-15) | BRD → PRD → ... → Production |
+| **PROD** | 30-90 days | Operate, measure, collect feedback | Metrics, user insights |
+| **NEW MVP** | 1-2 weeks | Next feature set | NEW BRD → repeat cycle |
+
+### Key Principles
+
+1. **Each BRD = One Cycle**: Don't expand BRDs indefinitely; create new ones
+2. **New Features = New BRD**: BRD-01, BRD-02, BRD-03 represent successive iterations
+3. **Production is the Goal**: Every MVP aims for production deployment
+4. **Cross-Cycle Traceability**: Link via `@depends: BRD-01` in Section 16.2
+
+### When to Start a New MVP Cycle
+
+- [ ] Current MVP deployed to production and stable
+- [ ] User feedback collected (30-90 days minimum)
+- [ ] New feature requirements identified and prioritized
+- [ ] Current BRD scope complete (no pending P1s)
+
+### Automation Across Cycles
 
 | Stage | Automation Support |
 |-------|-------------------|
-| **Build MVP v1.0** | Full L1-L13 automation (90% automated) |
+| **Create MVP** | Full L1-L13 automation (90% automated) |
 | **Fix Defects** | Auto-retry testing (3x), auto-fix capabilities |
 | **Deploy to Production** | Automated build, validation, security scans |
-| **Add Features (MVP v2.0)** | Reuse or create new BRD/PRD/ADR, auto-generate new REQ→CODE |
-| **Iterate** | Cumulative tags enable impact analysis |
+| **Create NEW MVP** | Create new BRD-NN+1, auto-generate REQ→CODE |
+| **Cross-Cycle Links** | Cumulative tags enable impact analysis |
 
-**MVP Evolution Example**:
-- **MVP 1.0**: User authentication → Production
-- **Defect Fixes**: Password reset bugs → Production
-- **MVP 2.0**: Add social login (Google, GitHub) → Production
-- **MVP 3.0**: Add 2FA and session management → Production
+### Lifecycle Example
 
-Each cycle leverages automation to maintain velocity while ensuring quality through human checkpoints.
+| Cycle | BRD | Features | Result |
+|-------|-----|----------|--------|
+| 1 | BRD-01 | User authentication | Production v1 |
+| 2 | BRD-02 | Social login (Google, GitHub) | Production v2 |
+| 3 | BRD-03 | 2FA, session management | Production v3 |
 
-## Default Template Selection (MVP is Default)
+Each cycle creates a NEW BRD with focused scope, maintaining velocity through automation and quality through human checkpoints.
 
-**MVP templates are the framework default** for all new document creation. Full templates are available for enterprise/regulatory projects.
+## Template Selection (MVP-First Approach)
+
+**MVP templates are the framework standard** for all BRDs. The "MVP-first" approach means every project uses the same template and follows the iterative lifecycle.
+
+> **Note**: There is no separate "full" BRD template. The MVP-first approach encourages focused BRDs (5-15 requirements) with new features addressed in subsequent BRD cycles.
 
 ### Available MVP Templates (Layers 1-7)
 | Layer | Artifact | Default Template |
@@ -1510,11 +1588,20 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.8
-**Last Updated**: 2026-02-18T18:00:00
+**Version**: 2.9
+**Last Updated**: 2026-02-25T10:00:00
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.9 (2026-02-25T10:00:00)
+- [PASS] **MVP → PROD → NEW MVP Lifecycle Prominence**: Made iterative lifecycle the central philosophy
+  - Added "Core Philosophy" section immediately after AI-First Design in README
+  - Added prominent lifecycle section to `ai_dev_ssd_flow/index.md`
+  - Updated `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` with lifecycle section at top
+  - Updated `MVP_WORKFLOW_GUIDE.md` (v3.1) with comprehensive lifecycle diagram
+  - Added cross-references between core philosophy and detailed reference sections
+  - Consistent messaging across all key documentation files
 
 ### Version 2.8 (2026-02-18T18:00:00)
 - [PASS] **AI-First Framework Design**: Highlighted AI agents as primary operators throughout documentation

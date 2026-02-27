@@ -1,22 +1,26 @@
 ---
 name: doc-brd-autopilot
 description: Automated BRD generation pipeline from reference documents (docs/00_REF/ or REF/) or user prompts - analyzes sources, determines BRD type, generates content, validates readiness, creates BRD-00_index.md, and supports parallel execution
-tags:
-  - sdd-workflow
-  - layer-1-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: []
-  downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.5"
-  last_updated: "2026-02-10T22:30:00"
+
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-1-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR]
+    version: "1.2"
+    last_updated: "2026-02-26"
+  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+
 ---
 
 # doc-brd-autopilot
@@ -31,6 +35,28 @@ Automated **Business Requirements Document (BRD)** generation pipeline that proc
 
 ---
 
+## MVP → PROD → NEW MVP Lifecycle
+
+The autopilot supports the iterative **MVP → PROD → NEW MVP** lifecycle:
+
+```
+BRD-01 → Production v1 → Feedback → BRD-02 → Production v2 → BRD-03 → ...
+```
+
+| Phase | Autopilot Role |
+|-------|----------------|
+| **MVP** | Generate BRD-NN with 5-15 core features |
+| **PROD** | N/A (production operations) |
+| **NEW MVP** | Generate NEW BRD-NN+1 for next features |
+
+**Lifecycle Rules**:
+- Each invocation creates ONE BRD for ONE cycle
+- New features = invoke autopilot for NEW BRD
+- Link cycles via `@depends: BRD-NN` in Section 16.2
+- Don't modify existing production BRDs for new features
+
+---
+
 ## Skill Dependencies
 
 This autopilot orchestrates the following skills:
@@ -42,6 +68,7 @@ This autopilot orchestrates the following skills:
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-validator` | Validate BRD structure, content, PRD-Ready score | Phase 4: BRD Validation |
 | `doc-brd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
+| `doc-brd-audit` | Unified validator→reviewer wrapper with combined report output | Phase 5: Audit |
 | `doc-brd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
@@ -49,8 +76,24 @@ This autopilot orchestrates the following skills:
 - Real-time quality feedback → `quality-advisor` skill
 - BRD validation logic → `doc-brd-validator` skill
 - Content review and scoring → `doc-brd-reviewer` skill
+- Unified audit wrapper output → `doc-brd-audit` skill
 - Issue resolution and fixes → `doc-brd-fixer` skill
 - Element ID standards → `doc-naming` skill
+
+## BRD Template Compliance Contract
+
+All generation/review/fix orchestration MUST align to:
+
+- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` (human-readable source of truth)
+- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml` (autopilot template)
+- `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` (shared validation contract)
+
+**Mandatory Alignment Areas**:
+- 18-section structure and subsection numbering
+- MVP-critical anchors (`2.1`, `3.2`, `9.1`, `14.5`, `15.3`, `16.1-16.4`, `17.1-17.6`)
+- Template naming for glossary and appendices (`17.5 Cross-References`, `17.6 External Standards`, `18.1-18.5`)
+
+Any deviation found in reviewer/fixer outputs must trigger fix cycle before PASS.
 
 ---
 
@@ -64,7 +107,9 @@ BRD has no upstream document type. Smart detection works differently:
 
 | Input | Detected As | Action |
 |-------|-------------|--------|
-| `BRD-NN` | Self type | Review existing BRD document |
+| `BRD-NN` (exists) | Self type | Review & Fix existing BRD |
+| `BRD-NN` (missing) | Self type | Search refs → Generate BRD |
+| `BRD-NN BRD-MM ...` | Multiple BRDs | Process each (chunked by 3) |
 | `docs/00_REF/...` | Reference docs | Generate BRD from reference |
 | `REF/...` | Reference docs | Generate BRD from reference |
 | `--prompt "..."` | User prompt | Generate BRD from prompt |
@@ -72,16 +117,31 @@ BRD has no upstream document type. Smart detection works differently:
 ### Detection Algorithm
 
 ```
-1. Parse input: Determine input type
-2. Determine action:
-   - IF input matches "BRD-NN": Review Mode
-   - ELSE IF input is a reference path: Generate Mode
-   - ELSE IF input is --prompt: Generate Mode
-   - ELSE: Error (invalid input for this autopilot)
-3. For Review Mode:
-   - Check: Does BRD-{NN} exist in docs/01_BRD/?
-   - IF exists: Run doc-brd-reviewer on BRD-{NN}
-   - ELSE: Error (BRD not found)
+1. Parse input: Determine input type and count
+2. IF input is reference path or --prompt:
+   - Run Generate Mode (Phase 1-5)
+3. IF input matches "BRD-NN" pattern (single or multiple):
+   - Process in chunks of 3 (max parallel)
+   - For each BRD-NN:
+     a. Check: Does BRD-{NN} exist in docs/01_BRD/?
+     b. IF exists:
+        - Run Review & Fix Cycle (Phase 5):
+          1. Run doc-brd-audit (validator → reviewer) → Generate combined report
+          2. IF status FAIL: Run doc-brd-fixer
+          3. Re-run audit until status PASS or max_iterations (3)
+          4. Enforce confidence gate: no `manual-required` fixes unresolved
+          5. Normalize generated review/fix markdown artifacts
+          6. Generate final PRD-Ready report
+     c. IF not exists:
+        - Search for reference docs:
+          1. Check BRD-00_index.md for module mapping
+          2. Search docs/00_REF/ for matching specs
+          3. Match by module ID (F1-F10, D1-D7) or topic name
+        - IF reference found:
+          - Run Generate Mode (Phase 1-5)
+        - ELSE:
+          - Prompt user: "No reference found for BRD-NN. Provide path or --prompt"
+4. Generate summary report for all processed BRDs
 ```
 
 ### File Existence Check
@@ -94,10 +154,14 @@ ls docs/01_BRD/BRD-{NN}_*/
 ### Examples
 
 ```bash
-# Review mode (BRD input)
-/doc-brd-autopilot BRD-01            # Reviews existing BRD-01
+# Single BRD - Review & Fix (if exists) or Generate (if missing)
+/doc-brd-autopilot BRD-01            # Reviews existing BRD-01, runs fix cycle
+/doc-brd-autopilot BRD-99            # BRD-99 missing → searches refs → generates
 
-# Generate mode (reference input)
+# Multiple BRDs - processed in chunks of 3
+/doc-brd-autopilot BRD-46 BRD-47 BRD-48 BRD-49 BRD-50   # Chunk 1: 46-48, Chunk 2: 49-50
+
+# Generate mode (explicit reference input)
 /doc-brd-autopilot docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 /doc-brd-autopilot all               # Process all reference documents
 
@@ -111,12 +175,36 @@ ls docs/01_BRD/BRD-{NN}_*/
 Input: BRD-01
 ├── Detected Type: BRD (self)
 ├── BRD Exists: Yes → docs/01_BRD/BRD-01_f1_iam/
-└── Action: REVIEW MODE - Running doc-brd-reviewer on BRD-01
+├── Action: REVIEW & FIX CYCLE
+│   ├── Step 1: Run doc-brd-reviewer → Score: 85%
+│   ├── Step 2: Score < 90% → Run doc-brd-fixer
+│   ├── Step 3: Re-review → Score: 94%
+│   └── Step 4: PASS - PRD-Ready
+└── Output: BRD-01.R_review_report_v002.md, BRD-01.F_fix_report_v001.md
 
 Input: BRD-15
 ├── Detected Type: BRD (self)
 ├── BRD Exists: No
-└── Action: ERROR - BRD-15 not found. Use reference docs or --prompt to generate.
+├── Reference Search: Found docs/00_REF/domain/D5_Reporting_Technical_Specification.md
+├── Action: GENERATE MODE - Creating BRD-15 from reference
+│   ├── Phase 1-3: Generate BRD
+│   ├── Phase 4: Validate → PRD-Ready: 88%
+│   └── Phase 5: Review & Fix → Final: 92%
+└── Output: docs/01_BRD/BRD-15_reporting/
+
+Input: BRD-99
+├── Detected Type: BRD (self)
+├── BRD Exists: No
+├── Reference Search: No matching reference found
+└── Action: PROMPT USER - "Provide reference path or use --prompt for BRD-99"
+
+Input: BRD-46 BRD-47 BRD-48 BRD-49 BRD-50
+├── Detected Type: Multiple BRDs (5)
+├── Chunking: Chunk 1 (BRD-46, 47, 48), Chunk 2 (BRD-49, 50)
+└── Processing:
+    ├── Chunk 1: All exist → Review & Fix cycle (parallel)
+    ├── Chunk 1 Complete: Summary + pause
+    └── Chunk 2: All exist → Review & Fix cycle (parallel)
 
 Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 ├── Detected Type: Reference document
@@ -155,7 +243,7 @@ flowchart TD
         E2 -->|No| E3[Flag missing docs]
         E3 --> E4{Required doc?}
         E4 -->|Yes| E5[ABORT: Create missing doc first]
-        E4 -->|No| E6[Continue with warning]
+        E4 -->|No| E6[Continue with note]
         E2 -->|Yes| E6
     end
 
@@ -193,14 +281,21 @@ flowchart TD
         U -->|No| V[Auto-Fix BRD Issues]
         V --> W[Re-validate BRD]
         W --> U
-        U -->|Yes| X[Mark BRD Validated]
+      U -->|Yes| X[Run Template Conformance Check against BRD-MVP-TEMPLATE]
+      X --> X2{Template aligned?}
+      X2 -->|No| V
+      X2 -->|Yes| X3[Mark BRD Validated]
     end
 
     subgraph Phase5["Phase 5: Review & Fix Cycle"]
-        X --> Y[Run doc-brd-reviewer]
+      X3 --> Y[Run doc-brd-reviewer]
         Y --> Y2{Score >= 90?}
-        Y2 -->|No| Y3[Run doc-brd-fixer]
-        Y3 --> Y4{Iteration < Max?}
+      Y2 -->|No| Y3[Run doc-brd-fixer]
+      Y3 --> Y3a[Semantic MVP header normalization]
+      Y3a --> Y3b[Safe subsection renumbering]
+      Y3b --> Y3c[Apply fix confidence tags]
+      Y3c --> Y3d[Normalize generated markdown reports]
+      Y3d --> Y4{Iteration < Max?}
         Y4 -->|Yes| Y
         Y4 -->|No| Y5[Flag Manual Review]
         Y2 -->|Yes| Z[Verify Quality Checks]
@@ -228,6 +323,50 @@ Analyze available input sources to extract business requirements.
 | 2 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
 | 3 | Existing Documentation | `docs/` or `README.md` | Project context, scope |
 | 4 | User Prompts | Interactive | Business context, objectives, constraints |
+
+#### 1.0 Determine Upstream Mode (First Step)
+
+**Check for reference documents**:
+
+1. Scan for `docs/00_REF/` or `docs-v2.0/00_REF/` folder
+2. If found, list available subfolders:
+   ```bash
+   ls -la docs/00_REF/
+   # or
+   ls -la docs-v2.0/00_REF/
+   ```
+3. If user specifies source docs from REF folder:
+   - Set `upstream_mode: "ref"`
+   - Set `upstream_ref_path` to specified subfolder(s)
+4. If not found or user creating from scratch:
+   - Set `upstream_mode: "none"` (default)
+   - Set `upstream_ref_path: null`
+
+**Prompt user if REF folder exists**:
+
+```
+Reference documents found in docs/00_REF/:
+- source_docs/ (15 files)
+- foundation/ (10 files)
+- internal_ops/ (8 files)
+
+Is this BRD derived from reference documents?
+1. No - creating from scratch (default)
+2. Yes - select reference folder(s)
+```
+
+**YAML Generation Based on Mode**:
+
+```yaml
+# If generating from REF docs:
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"
+
+# If generating from user prompt only:
+custom_fields:
+  upstream_mode: "none"
+```
 
 **Analysis Process**:
 
@@ -262,8 +401,8 @@ ls -la REF/
 |-------|--------|----------|
 | Reference documents exist | Verify files in `docs/00_REF/` or `REF/` | Error - blocks generation |
 | `@ref:` targets in source docs | Verify referenced files exist | Error - blocks generation |
-| Gap analysis documents | Verify `GAP_*.md` files if referenced | Warning - flag for creation |
-| Cross-reference documents | Verify upstream docs exist | Warning - document dependency |
+| Gap analysis documents | Verify `GAP_*.md` files if referenced | Note - flag for creation |
+| Cross-reference documents | Verify upstream docs exist | Note - document dependency |
 
 **Validation Process**:
 
@@ -274,7 +413,7 @@ grep -h "@ref:" docs/00_REF/**/*.md REF/**/*.md 2>/dev/null | \
   while read link; do
     file=$(echo "$link" | grep -oP '\(([^)]+)\)' | tr -d '()')
     if [ ! -f "$file" ]; then
-      echo "WARNING: Referenced file not found: $file"
+      echo "NOTE: Referenced file not found: $file"
     fi
   done
 ```
@@ -284,7 +423,7 @@ grep -h "@ref:" docs/00_REF/**/*.md REF/**/*.md 2>/dev/null | \
 | Scenario | Action |
 |----------|--------|
 | Required source doc missing | Abort with clear error message |
-| Optional reference missing | Log warning, continue with placeholder note |
+| Optional reference missing | Log note, continue with placeholder note |
 | Gap analysis doc missing | Prompt user: create doc or update references |
 
 **Example Output**:
@@ -367,8 +506,8 @@ Generate the BRD document with real-time quality feedback.
    ```
 
 2. **Load BRD Template**:
-   - Primary: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-   - Comprehensive: `ai_dev_flow/01_BRD/BRD-TEMPLATE.md`
+   - Primary: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+   - Comprehensive: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 
 3. **Generate Document Control Section**:
    | Field | Value |
@@ -511,7 +650,7 @@ Generate the BRD document with real-time quality feedback.
     ```markdown
     ## 14. Glossary
 
-    📚 **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](../BRD-00_GLOSSARY.md)
+    📚 **Master Glossary**: For common terminology, see `BRD-00_GLOSSARY.md`
 
     ### {BRD-NN}-Specific Terms
 
@@ -564,7 +703,7 @@ Generate the BRD document with real-time quality feedback.
 
     | BRD ID | Module | Type | Status | PRD-Ready | Location |
     |--------|--------|------|--------|-----------|----------|
-    | BRD-01 | F1 IAM | Foundation | Draft | 97% | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) |
+    | BRD-01 | F1 IAM | Foundation | Draft | 97% | `BRD-01` |
 
     ---
 
@@ -576,7 +715,7 @@ Generate the BRD document with real-time quality feedback.
 
     | ID | Module Name | BRD | Status |
     |----|-------------|-----|--------|
-    | F1 | Identity & Access Management | [BRD-01](BRD-01_f1_iam/BRD-01.0_index.md) | Draft |
+    | F1 | Identity & Access Management | `BRD-01` | Draft |
     | F2 | Session Management | Pending | - |
     | F3 | Observability | Pending | - |
     | F4 | SecOps | Pending | - |
@@ -602,9 +741,9 @@ Generate the BRD document with real-time quality feedback.
 
     ## Quick Links
 
-    - **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
-    - **Reference Documents**: [00_REF](../00_REF/)
-    - **PRD Layer**: [02_PRD](../02_PRD/)
+    - **Glossary**: `BRD-00_GLOSSARY.md`
+    - **Reference Documents**: `00_REF/`
+    - **PRD Layer**: `02_PRD/`
 
     ---
 
@@ -635,7 +774,7 @@ Generate the BRD document with real-time quality feedback.
     **Entry Format**:
 
     ```markdown
-    | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | [BRD-NN](BRD-NN_{slug}/BRD-NN.0_index.md) |
+    | BRD-NN | {Module Name} | {Foundation/Domain} | {Status} | {Score}% | `BRD-NN` |
     ```
 
 12. **File Output** (ALWAYS use nested folder):
@@ -655,7 +794,7 @@ After BRD generation, validate structure and PRD-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbose
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -687,7 +826,7 @@ python ai_dev_flow/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbos
 LOOP (max 3 iterations):
   1. Run doc-brd-validator
   2. IF errors found: Apply auto-fixes
-  3. IF warnings found: Review and address if critical
+  3. IF non-blocking issues found: Review and address if critical
   4. IF PRD-Ready Score < 90%: Enhance sections
   5. IF clean: Mark VALIDATED, proceed
   6. IF max iterations: Log issues, flag for manual review
@@ -701,9 +840,12 @@ Iterative review and fix cycle to ensure BRD quality before completion.
 flowchart TD
     A[Phase 5 Start] --> B[Run doc-brd-reviewer]
     B --> C[Generate Review Report]
-    C --> D{Review Score >= 90?}
+    C --> V{Verify .drift_cache.json}
+    V -->|Missing| W[Create drift cache]
+    W --> D
+    V -->|Exists| D{Review Score >= 90?}
 
-    D -->|Yes| E[PASS - Proceed to Phase 6]
+    D -->|Yes| E[PASS - Run Output Checklist]
     D -->|No| F{Iteration < Max?}
 
     F -->|Yes| G[Run doc-brd-fixer]
@@ -715,6 +857,9 @@ flowchart TD
     F -->|No| K[Flag for Manual Review]
     K --> L[Generate Final Report with Remaining Issues]
     L --> E
+
+    E --> X[Verify Phase 5 Output Checklist]
+    X --> Y[Proceed to Phase 6]
 ```
 
 #### 5.1 Initial Review
@@ -769,11 +914,11 @@ After fixes, automatically re-run reviewer.
 
 ```
 Iteration 1:
-  Review v001: Score 85 (2 errors, 4 warnings)
+  Review v001: Score 85 (2 errors, 4 non-blocking issues)
   Fix v001: Fixed 5 issues, created 2 files
 
 Iteration 2:
-  Review v002: Score 94 (0 errors, 2 warnings)
+  Review v002: Score 94 (0 errors, 2 non-blocking issues)
   Status: PASS (score >= 90)
 ```
 
@@ -799,28 +944,108 @@ After passing the fix cycle:
 
 4. **PRD-Ready Report**:
    ```
-   PRD-Ready Score Breakdown
-   =========================
-   Business Objectives:    15/15 (BRD.NN.23.SS format)
-   Requirements Complete:  20/20 (BRD.NN.01.SS format)
-   Success Metrics:        10/10 (quantifiable)
-   Constraints Defined:    10/10 (documented)
-   Stakeholder Analysis:   10/10 (complete)
-   Risk Assessment:        10/10 (identified)
-   Traceability:           10/10 (sources cited)
-   ADR Topics:             15/15 (all 7 categories)
-   ----------------------------
-   Total PRD-Ready Score:  100/100 (Target: >= 90)
+  PRD-Ready Score Calculation
+  ===========================
+  Formula: 100 - Total Deductions
+
+  Deductions by Category:
+  - PRD-level contamination (max 50):   -0
+  - FR completeness (max 30):           -0
+  - Structure/quality (max 20):         -0
+  ----------------------------
+  Total Deductions:        0
+  Total PRD-Ready Score:   100/100 (Target: >= 90)
    Status: READY FOR PRD GENERATION
    ```
 
 5. **Traceability Matrix Update**:
    ```bash
    # Update BRD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
-     --brd docs/01_BRD/BRD-NN_{slug}.md \
-     --matrix docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md
+   python ai_dev_ssd_flow/scripts/validate_all.py ai_dev_ssd_flow --layer BRD
    ```
+
+#### 5.6 Drift Cache Verification (MANDATORY)
+
+**After EVERY review cycle**, verify the drift cache file exists and is updated.
+
+```
+VERIFICATION ALGORITHM:
+=======================
+1. Check: Does .drift_cache.json exist in BRD folder?
+   - Path: docs/01_BRD/BRD-NN_{slug}/.drift_cache.json
+
+2. IF not exists:
+   - CREATE drift cache with current review data
+   - Schema version: 1.1
+   - Include: document_id, last_reviewed, reviewer_version, review_history
+
+3. IF exists:
+   - UPDATE with new review entry in review_history array
+   - Update last_reviewed timestamp
+
+4. VERIFY cache contains:
+  - [ ] schema_version: "1.2"
+   - [ ] document_id matches folder (BRD-NN)
+   - [ ] last_reviewed is current timestamp
+   - [ ] review_history includes this review's score and report version
+```
+
+**Drift Cache Schema** (minimal required fields):
+
+```json
+{
+  "schema_version": "1.1",
+  "document_id": "BRD-NN",
+  "document_version": "1.0",
+  "upstream_mode": "none",
+  "drift_detection_skipped": true,
+  "skip_reason": "upstream_mode set to none (default)",
+  "last_reviewed": "YYYY-MM-DDTHH:MM:SS",
+  "reviewer_version": "2.8",
+  "upstream_documents": {},
+  "review_history": [
+    {
+      "date": "YYYY-MM-DDTHH:MM:SS",
+      "score": NN,
+      "drift_detected": false,
+      "report_version": "vNNN",
+      "status": "PASS|FAIL|NEEDS_ATTENTION"
+    }
+  ],
+  "fix_history": []
+}
+```
+
+#### 5.7 Phase 5 Output Checklist (MANDATORY)
+
+Before proceeding to Phase 6, verify ALL outputs exist:
+
+```
+PHASE 5 OUTPUT CHECKLIST
+========================
+BRD Folder: docs/01_BRD/BRD-NN_{slug}/
+
+Required Files:
+[ ] BRD-NN.R_review_report_v001.md    (initial review)
+[ ] BRD-NN.R_review_report_vNNN.md    (final review, if iterations > 1)
+[ ] BRD-NN.F_fix_report_vNNN.md       (if fixes applied)
+[ ] .drift_cache.json                  (MANDATORY - drift detection cache)
+
+Drift Cache Verification:
+[ ] File exists
+[ ] schema_version is "1.1"
+[ ] document_id matches "BRD-NN"
+[ ] last_reviewed is current timestamp
+[ ] review_history contains entry for this review
+
+Quality Gates:
+[ ] Final review score >= 90
+[ ] No critical errors remaining
+[ ] Diagram contract pass (`@diagram: c4-l1`, `@diagram: dfd-l0`; sequence tag if sequence diagram used)
+[ ] PRD-Ready status confirmed
+```
+
+**FAILURE MODE**: If `.drift_cache.json` is missing after review, the Phase 5 cycle is INCOMPLETE. Create the drift cache before proceeding.
 
 ---
 
@@ -832,7 +1057,7 @@ Generate one BRD from input sources.
 
 ```bash
 # Example: Generate Platform BRD from reference documents
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref docs/00_REF/ \
   --type platform \
   --output docs/01_BRD/ \
@@ -840,7 +1065,7 @@ python ai_dev_flow/scripts/brd_autopilot.py \
   --slug platform_architecture
 
 # Alternative: Generate from REF/ directory
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref REF/ \
   --type platform \
   --output docs/01_BRD/ \
@@ -854,7 +1079,7 @@ Generate multiple BRDs in sequence with dependency awareness.
 
 ```bash
 # Example: Generate Platform BRD then Feature BRDs
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --batch config/brd_batch.yaml \
   --output docs/01_BRD/
 ```
@@ -899,7 +1124,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --ref docs/00_REF/ \
   --output docs/01_BRD/ \
   --dry-run
@@ -915,12 +1140,12 @@ Validate existing BRD documents and generate a quality report without modificati
 
 ```bash
 # Review single BRD
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode review
 
 # Review all BRDs
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/ \
   --mode review \
   --output-report tmp/brd_review_report.md
@@ -932,17 +1157,18 @@ python ai_dev_flow/scripts/brd_autopilot.py \
 flowchart TD
     A[Input: Existing BRD] --> B[Load BRD Documents]
     B --> C[Run Validation Checks]
-    C --> D[Calculate PRD-Ready Score]
-    D --> E[Check Section 7.2 ADR Topics]
-    E --> F[Validate Platform vs Feature]
-    F --> G[Identify Issues]
-    G --> H{Generate Report}
-    H --> I[Fixable Issues List]
-    H --> J[Manual Review Items]
-    H --> K[Score Breakdown]
-    I --> L[Output: Review Report]
-    J --> L
-    K --> L
+    C --> D[Run Diagram Contract Checks]
+    D --> E[Calculate PRD-Ready Score]
+    E --> F[Check Section 7.2 ADR Topics]
+    F --> G[Validate Platform vs Feature]
+    G --> H[Identify Issues]
+    H --> I{Generate Report}
+    I --> J[Fixable Issues List]
+    I --> K[Manual Review Items]
+    I --> L[Score Breakdown]
+    J --> M[Output: Review Report]
+    K --> M
+    L --> M
 ```
 
 **Review Report Structure**:
@@ -956,17 +1182,22 @@ flowchart TD
 - **Auto-Fixable**: 10
 - **Manual Review**: 4
 
-## Score Breakdown
-| Category | Score | Status |
-|----------|-------|--------|
-| Business Objectives | 14/15 | 🟡 |
-| Requirements Complete | 18/20 | 🟡 |
-| Success Metrics | 10/10 | ✅ |
-| Constraints Defined | 10/10 | ✅ |
-| Stakeholder Analysis | 10/10 | ✅ |
-| Risk Assessment | 8/10 | 🟡 |
-| Traceability | 10/10 | ✅ |
-| ADR Topics | 12/15 | 🟡 |
+## Score Calculation (Deduction-Based)
+| Category | Deduction | Max | Status |
+|----------|-----------|-----|--------|
+| PRD-level contamination | -6 | 50 | 🟡 |
+| FR completeness | -5 | 30 | 🟡 |
+| Structure/quality | -2 | 20 | 🟡 |
+| **Total Deductions** | **-13** | **100** | - |
+| **Final Score** | **87/100** | **Target >= 90** | 🟡 |
+
+## Diagram Contract Check
+| Check | Status | Details |
+|-------|--------|---------|
+| `@diagram: c4-l1` | ✅ | Present |
+| `@diagram: dfd-l0` | ✅ | Present |
+| Sequence contract tags | 🟡 | Required only when sequence diagram exists |
+| Diagram intent header fields | ✅ | Present for mandatory diagram blocks |
 
 ## Section 7.2 ADR Topics Check
 | Category | Status | Details |
@@ -1026,8 +1257,7 @@ review_mode:
     include_fix_suggestions: true
   thresholds:
     pass: 90
-    warning: 85
-    fail: 0
+    fail: 90
 ```
 
 ### Fix Mode (v2.1)
@@ -1040,24 +1270,24 @@ Auto-repair existing BRD documents while preserving manual content.
 
 ```bash
 # Fix single BRD
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --fix-types "element_ids,sections,adr_topics"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/brd_autopilot.py \
+/doc-brd-autopilot \
   --brd docs/01_BRD/BRD-01_platform.md \
   --mode fix \
   --dry-run
@@ -1092,7 +1322,7 @@ flowchart TD
     M --> N[Re-validate]
     N --> O{Score Improved?}
     O -->|Yes| P[Generate Fix Report]
-    O -->|No| Q[Log Warnings]
+    O -->|No| Q[Log Non-Blocking Issues]
     Q --> P
     P --> R[Output: Fixed BRD + Report]
 ```
@@ -1153,7 +1383,7 @@ flowchart TD
 | Missing `BRD-00_GLOSSARY.md` | Create from template | ✅ Yes |
 | Missing reference doc (GAP, REF) | Prompt user with options: (1) Create placeholder, (2) Update link, (3) Remove reference | ⚠️ Optional |
 | Wrong relative path | Recalculate path based on BRD location | ❌ No |
-| Cross-BRD reference to non-existent BRD | Log warning, suggest creating BRD | ❌ No |
+| Cross-BRD reference to non-existent BRD | Log note, suggest creating BRD | ❌ No |
 
 **Fix Report Structure**:
 
@@ -1187,13 +1417,13 @@ flowchart TD
 | 2 | Missing Observability tables | Section 7.2.5 | Architecture decision required |
 | ... | ... | ... | ... |
 
-## Score Breakdown Impact
+## Deduction Impact
 | Category | Before | After | Delta |
 |----------|--------|-------|-------|
-| Business Objectives | 14/15 | 15/15 | +1 |
-| Requirements Complete | 18/20 | 20/20 | +2 |
-| ADR Topics | 12/15 | 14/15 | +2 |
-| Traceability | 10/10 | 10/10 | 0 |
+| PRD-level contamination deduction | -12 | -6 | +6 |
+| FR completeness deduction | -8 | -5 | +3 |
+| Structure/quality deduction | -4 | -2 | +2 |
+| **Total deductions** | **-24** | **-13** | **+11** |
 
 ## Next Steps
 1. Review manually flagged items
@@ -1327,7 +1557,7 @@ Review reports are formal project documents and MUST comply with all project doc
      prd_ready_score_validated: {validated}
      validation_status: PASS|FAIL
      errors_count: {n}
-     warnings_count: {n}
+    non_blocking_count: {n}
      info_count: {n}
      auto_fixable_count: {n}
    ---
@@ -1345,9 +1575,9 @@ Review reports are formal project documents and MUST comply with all project doc
    | 0. Document Control | Report metadata, review date, tool version |
    | 1. Executive Summary | Score, status, issue counts |
    | 2. Document Overview | Reviewed document details, files reviewed |
-   | 3. Score Breakdown | Category scores with max values |
+  | 3. Score Calculation | Deduction-based formula, category deductions, final score |
    | 4-N. Validation Details | Section-specific validation results |
-   | N+1. Issues Summary | Errors, warnings, info categorized |
+  | N+1. Issues Summary | Errors, non-blocking issues, info categorized |
    | N+2. Recommendations | Priority-ordered fix recommendations |
    | N+3. Traceability | Parent document reference |
 
@@ -1497,7 +1727,7 @@ fi
 
 # Example: Trigger PRD autopilot for validated BRD
 if [ "$BRD_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/prd_autopilot.py \
+  /doc-prd-autopilot \
     --brd "$BRD_PATH" \
     --output docs/02_PRD/
 fi
@@ -1523,7 +1753,7 @@ jobs:
 
       - name: Run BRD Autopilot
         run: |
-          python ai_dev_flow/scripts/brd_autopilot.py \
+          /doc-brd-autopilot \
             --ref docs/00_REF/ \
             --output docs/01_BRD/ \
             --validate
@@ -1546,8 +1776,8 @@ jobs:
 | Phase 1 | Input Gate | At least one reference document found in `docs/00_REF/` or `REF/`, or user prompts provided |
 | Phase 2 | Type Gate | BRD type determined (Platform/Feature) |
 | Phase 3 | Generation Gate | All 18 sections generated |
-| Phase 4 | Validation Gate | PRD-Ready Score >= 90% |
-| Phase 5 | Review Gate | No blocking issues remaining |
+| Phase 4 | Validation Gate | PRD-Ready Score >= 90% + template conformance pass |
+| Phase 5 | Review Gate | No blocking issues remaining + no unresolved `manual-required` fix items |
 
 ### Blocking vs Non-Blocking
 
@@ -1556,8 +1786,9 @@ jobs:
 | Missing required section | Yes | Must fix before proceeding |
 | PRD-Ready Score < 90% | Yes | Must enhance sections |
 | Invalid element ID format | Yes | Must convert to unified format |
-| Missing optional section | No | Log warning, continue |
-| Style/formatting issues | No | Auto-fix, continue |
+| Unresolved `manual-required` fix confidence | Yes | Must route to manual review before PASS |
+| Missing optional section | No | Log note, continue |
+| Style/formatting issues in generated reports | No | Auto-normalize markdown, continue |
 
 ---
 
@@ -1567,9 +1798,9 @@ jobs:
 - **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **BRD Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- **BRD Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 - **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
 
@@ -1579,6 +1810,13 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
+| 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |
+| 3.0 | 2026-02-26 | **Fix-loop hardening**: Enhanced Phase 5 orchestration to include semantic MVP heading normalization, safe subsection renumbering, fix confidence tagging, and markdown normalization for generated review/fix reports; Added gating rule requiring no unresolved `manual-required` fix items before PASS. |
+| 2.9 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Synced with BRD-MVP-TEMPLATE.md v1.1 |
+| 2.8 | 2026-02-25T11:50:00 | **Drift Cache Verification**: Added mandatory drift cache verification after every review cycle (Section 5.6); Added Phase 5 Output Checklist (Section 5.7) with explicit `.drift_cache.json` verification; Updated flowchart to include verification step; Added FAILURE MODE documentation for missing drift cache. |
+| 2.7 | 2026-02-25T08:30:00 | **Detection Algorithm Fix**: Fixed 3 critical gaps: (1) BRD not found now triggers reference search + generate instead of error; (2) Review Mode now includes full Review & Fix cycle (reviewer → fixer → re-review until score >= 90%); (3) Added multi-BRD input handling with chunking (max 3 parallel). Updated Input Type Recognition table, Examples, and Action Determination Output to reflect correct behavior. |
+| 2.6 | 2026-02-24T21:30:00 | **Upstream Mode Detection**: Added Phase 1.0 to detect and prompt for upstream_mode; Auto-detects REF folder and prompts user for path selection; Generates upstream_mode and upstream_ref_path fields; Defaults to upstream_mode: "none" when no REF folder or creating from scratch |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BRD-NN) triggers review mode; Reference docs and prompts trigger generation; Special handling for Layer 1 (no upstream documents) |
 | 2.4 | 2026-02-10 | **Source Directory Update**: Changed input sources from `strategy/`, `docs/inputs/` to `docs/00_REF/` (primary), `REF/` (alternative), user prompts (fallback); **BRD Index**: Added automatic creation/update of `BRD-00_index.md` master index with Document Registry, Module Categories, Statistics; Updated all examples and CI/CD configurations |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |

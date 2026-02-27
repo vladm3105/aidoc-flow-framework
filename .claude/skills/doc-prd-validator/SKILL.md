@@ -1,22 +1,23 @@
 ---
 name: doc-prd-validator
 description: Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standards
-tags:
-  - sdd-workflow
-  - layer-2-artifact
-  - validation
-  - shared-architecture
-custom_fields:
-  layer: 2
-  artifact_type: PRD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BRD]
-  downstream_artifacts: [EARS, BDD, ADR]
-  version: "2.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-2-artifact
+    - validation
+    - shared-architecture
+  custom_fields:
+    layer: 2
+    artifact_type: PRD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BRD]
+    downstream_artifacts: [EARS, BDD, ADR]
+    version: "2.0"
+    last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-prd-validator
@@ -28,7 +29,7 @@ Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standar
 Validates PRD documents for:
 
 - YAML frontmatter metadata compliance
-- Section structure (17 sections for MVP template)
+- Section structure (21 sections for MVP template)
 - Document Control completeness
 - Traceability tag format and presence
 - Dual scoring requirements (SYS-Ready + EARS-Ready)
@@ -47,10 +48,10 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| Schema | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
-| Template | `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
-| Validation Rules | `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
+| Schema | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
+| Template | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
+| Creation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
+| Validation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
 | Layer | 2 |
 | Artifact Type | PRD |
 
@@ -117,15 +118,15 @@ Forbidden tag patterns:
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
 | BRD Reference | `@brd: BRD.NN.TT.SS` format | MANDATORY |
-| SYS-Ready Score | `XX/100 (Target: ≥85 for MVP)` | MANDATORY |
-| EARS-Ready Score | `XX/100 (Target: ≥85 for MVP)` | MANDATORY |
+| SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+| EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 
 ### 4. Dual Scoring Requirements
 
-| Score | MVP Threshold | Full Template Threshold |
-|-------|---------------|------------------------|
-| SYS-Ready Score | ≥85% | ≥90% |
-| EARS-Ready Score | ≥85% | ≥90% |
+| Score | Threshold |
+|-------|-----------|
+| SYS-Ready Score | ≥90% |
+| EARS-Ready Score | ≥90% |
 
 Both scores must be present and meet thresholds for downstream artifact generation.
 
@@ -227,11 +228,16 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E020 | ERROR | PRD not in nested folder structure (must be in `docs/02_PRD/PRD-NN_{slug}/`) |
 | PRD-E021 | ERROR | PRD folder name doesn't match PRD ID |
 | PRD-E022 | ERROR | Monolithic PRD not in nested folder (must be `PRD-NN_{slug}/PRD-NN_{slug}.md`) |
+| PRD-E023 | ERROR | Missing required PRD diagram tag `@diagram: c4-l2` |
+| PRD-E024 | ERROR | Missing required PRD diagram tag `@diagram: dfd-l1` |
+| PRD-E025 | ERROR | Missing required PRD diagram tag `@diagram: sequence-*` |
+| PRD-E026 | ERROR | Sequence diagram missing explicit exception/alternate path (`alt/else`) |
 | PRD-W001 | WARNING | File name does not match format PRD-NN_{slug}.md |
 | PRD-W002 | WARNING | Missing optional section (Glossary, Appendix) |
 | PRD-W003 | WARNING | Score below recommended threshold but above minimum |
 | PRD-W004 | WARNING | Missing Document Revision History table |
 | PRD-W005 | WARNING | Architecture Decision Requirements reference ADR numbers |
+| PRD-W011 | WARNING | Diagram intent header missing required fields |
 | PRD-I001 | INFO | Consider adding success metrics with quantified targets |
 | PRD-I002 | INFO | Consider adding competitive analysis |
 
@@ -239,22 +245,22 @@ Both scores must be present and meet thresholds for downstream artifact generati
 
 ```bash
 # Validate single PRD document (must be in nested folder)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
 
 # Validate all PRD documents in directory
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/
 
 # Validate with verbose output
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --verbose
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --verbose
 
 # Validate with auto-fix (includes structure fixes)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --auto-fix
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --auto-fix
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
 
 # Layer-wide validation
-python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 ```
 
 ## Validation Workflow
@@ -265,12 +271,14 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 4. Validate tag taxonomy (prd, layer-2-artifact)
 5. Verify section structure (1-17 for MVP)
 6. Validate Document Control table completeness
-7. Check dual scoring (SYS-Ready + EARS-Ready ≥85%)
+7. Check dual scoring (SYS-Ready + EARS-Ready ≥90%)
 8. Validate upstream @brd reference format
 9. Check element ID format (PRD.NN.TT.SS)
 10. Detect deprecated patterns (US-NNN, FR-NNN)
-11. Verify file naming convention
-12. Generate validation report
+11. Validate diagram contract (C4-L2, DFD-L1, sequence tag, sequence exception path)
+12. Validate diagram intent header fields
+13. Verify file naming convention
+14. Generate validation report
 
 ### Structure Validation (Step 1)
 
@@ -339,8 +347,8 @@ Document: PRD-01_user_authentication.md
 Status: PASS/FAIL
 
 Scores:
-  SYS-Ready:  92% (Target: ≥85%) ✓
-  EARS-Ready: 88% (Target: ≥85%) ✓
+  SYS-Ready:  92% (Target: ≥90%) ✓
+  EARS-Ready: 91% (Target: ≥90%) ✓
 
 Errors: 0
 Warnings: 2
@@ -355,10 +363,10 @@ Info: 1
 
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, threshold tags)
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Version History
@@ -367,5 +375,6 @@ Info: 1
 |---------|------|---------|
 | 2.2 | 2026-02-11 | **Structure Validation**: Added PRD-E020/E021/E022 for nested folder rule enforcement; Structure validation as Step 1 in workflow; Auto-fix for structure violations; Fixed paths `docs/PRD/` → `docs/02_PRD/` |
 | 2.1 | 2026-02-08 | Added doc-naming integration: PRD-E018 (threshold format), PRD-E019 (element type codes) |
-| 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template (17 sections), unified element IDs, correct paths |
+| 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
+| 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template, unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |

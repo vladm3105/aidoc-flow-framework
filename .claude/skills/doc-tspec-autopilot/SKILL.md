@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
   downstream_artifacts: [TASKS]
-  version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.5"
+  last_updated: "2026-02-26T00:00:00"
 ---
 
 # doc-tspec-autopilot
@@ -186,6 +186,8 @@ flowchart TD
 | **ITEST** | 41 | Integration tests | Component interactions |
 | **STEST** | 42 | Smoke tests | Critical path verification |
 | **FTEST** | 43 | Functional tests | End-to-end workflows |
+| **PTEST** | 44 | Performance tests | Load and stress testing |
+| **SECTEST** | 45 | Security tests | Vulnerability and threat testing |
 
 ---
 
@@ -226,6 +228,8 @@ docs/10_TSPEC/
 | ITEST | 41 | TSPEC.NN.41.SS | TSPEC.01.41.01 |
 | STEST | 42 | TSPEC.NN.42.SS | TSPEC.01.42.01 |
 | FTEST | 43 | TSPEC.NN.43.SS | TSPEC.01.43.01 |
+| PTEST | 44 | TSPEC.NN.44.SS | TSPEC.01.44.01 |
+| SECTEST | 45 | TSPEC.NN.45.SS | TSPEC.01.45.01 |
 
 ---
 
@@ -368,7 +372,7 @@ After passing the fix cycle:
 @adr: ADR-NN
 @sys: SYS.NN.TT.SS
 @req: REQ.NN.TT.SS
-@spec: SPEC.NN.TT.SS
+@spec: SPEC-NN
 @ctr: CTR.NN.TT.SS  # Optional
 ```
 
@@ -756,7 +760,7 @@ Proceeding to next chunk...
 - **TSPEC Validator**: `.claude/skills/doc-tspec-validator/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md`
 - **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **TSPEC Template**: `ai_dev_flow/10_TSPEC/TSPEC-TEMPLATE.md`
+- **TSPEC Template**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md`
 
 ---
 
@@ -792,6 +796,7 @@ docs/10_TSPEC/TSPEC-03_f3_observability/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support in test types and element ID tables; Fixed template path to ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md; Fixed @spec tag format to use dash notation (SPEC-NN) |
 | 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (TSPEC-NN) triggers review mode; Upstream-type input (SPEC-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-tspec-reviewer` and `doc-tspec-fixer`; Added `doc-tspec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (test type completeness, coverage matrix accuracy, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
 | 2.2 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |

@@ -13,10 +13,11 @@ custom_fields:
 ---
 
 # =============================================================================
-#  Document Role: Validates BRD-MVP-TEMPLATE.md (default)
-# - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
-# - Purpose: AI checklist after document creation (derived from MVP template)
+#  Document Role: Validates BRD-MVP-TEMPLATE.md (standard template)
+# - Authority: BRD-MVP-TEMPLATE.md is the standard for BRD structure
+# - Purpose: AI checklist after document creation (derived from MVP-first template)
 # - Scope: Includes all rules from BRD_MVP_CREATION_RULES.md plus validation extensions
+# - Lifecycle: MVP → PROD → NEW MVP (each BRD = one iteration cycle)
 # - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
@@ -35,14 +36,30 @@ custom_fields:
 
 > ** Document Role**: This is the **POST-CREATION VALIDATOR** for BRD documents.
 > - Apply these rules after BRD creation or modification
-> - **Authority**: Validates compliance with `BRD-MVP-TEMPLATE.md` (primary standard; full template archived)
+> - **Authority**: Validates compliance with `BRD-MVP-TEMPLATE.md` (standard template)
 > - **Scope**: Use for quality gates before committing BRD changes
+> - **Lifecycle**: MVP → PROD → NEW MVP (each BRD = one iteration cycle)
 
 # BRD Validation Rules Reference
 
-## MVP Validation Profile (DEFAULT)
+## MVP → PROD → NEW MVP Lifecycle
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+Each BRD represents ONE iteration cycle. Validation ensures each BRD is focused and production-ready.
+
+| Phase | Validation Focus |
+|-------|-----------------|
+| **MVP** | Core features (5-15), PRD-Ready ≥90/100 |
+| **PROD** | N/A (operational) |
+| **NEW MVP** | New BRD for next features, cross-BRD links |
+
+**Lifecycle Validation Rules**:
+- CHECK-LIFE-001: BRD should have 5-15 functional requirements (Warning if >20)
+- CHECK-LIFE-002: Cross-BRD dependencies documented in Section 16.2 if `@depends:` exists
+- CHECK-LIFE-003: New features should result in NEW BRD, not expanding existing BRD
+
+## MVP-First Validation Profile (DEFAULT)
+
+**MVP-first validation is the framework standard.** This profile validates focused, production-ready BRDs.
 
 ### MVP Detection
 
@@ -90,7 +107,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Last Updated**: 2025-12-19T00:00:00
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `01_BRD/scripts/validate_brd.py`
-**Primary Template**: `BRD-MVP-TEMPLATE.md` (full template archived)
+**Primary Template**: `BRD-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
@@ -109,6 +126,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 > - **Structural Checks**: Verify required sections exist (CHECK 1-6)
 > - **Content Quality**: Warn on potential issues without blocking (CHECK 7-12, warnings)
 > - **PRD-Ready Scoring**: Quantify business-level content quality (CHECK 13-18)
+> - **Diagram Enforcement Mode**: BRD diagram coverage is advisory; blocking C4/DFD/sequence enforcement is applied at PRD layer
 > - **Human Review**: Final validation by business stakeholders, not automated tools
 >
 > **Script vs Schema Validation**:
@@ -136,7 +154,7 @@ Note: Some examples in this guide show a portable `docs/` root. In this reposito
 
 The BRD validation script (`validate_brd_template.sh`) performs **24 validation checks** to ensure compliance with:
 
-- **BRD-MVP-TEMPLATE.md**: Complete business requirements structure (full template archived)
+- **BRD-MVP-TEMPLATE.md**: Complete business requirements structure (standard template)
 - **AI Dev Flow SDD Framework**: Business-driven SDD methodology
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
@@ -769,7 +787,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Required sections** (CHECK 1):
 - **Deduction**: -1 point per missing section (max -10 points)
-- **Required**: All 18 mandatory sections from BRD-MVP-TEMPLATE.md (full template archived)
+- **Required**: All 18 mandatory sections from BRD-MVP-TEMPLATE.md (standard template)
 
 **Revision History** (CHECK 3):
 - **Deduction**: -3 points if Document Revision History table missing or empty
@@ -834,7 +852,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Fix**:
 1. Run automated validation script: `./01_BRD/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-XXX.md`
 2. Review detailed deduction report
-3. Address violations using BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines; full template archived)
+3. Address violations using BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines)
 4. Re-run validation until score ≥90/100
 5. Update Document Control with final score
 
@@ -887,10 +905,10 @@ Code blocks are PRD-level content and must be removed from BRDs.
 
 **Fix**:
 1. Remove code block entirely
-2. Replace with business-level description (see BRD-MVP-TEMPLATE.md Appendix B; full template archived)
+2. Replace with business-level description (see BRD-MVP-TEMPLATE.md Appendix B)
 3. Reference technical implementation in Related Requirements (e.g., "Fee calculation algorithm defined in PRD-XXX")
 
-**Reference**: BRD-MVP-TEMPLATE.md Appendix B, Edge Case 4 (Code Blocks; full template archived)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B, Edge Case 4 (Code Blocks)
 
 ---
 
@@ -925,7 +943,7 @@ Suggested business-level rewrites:
 - Line X: "Customer initiates cross-border transaction"
 - Line Y: "System validates recipient is active and eligible"
 
-See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template archived).
+See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (standard template).
 ```
 
 **Fix**:
@@ -933,7 +951,7 @@ See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template arc
 2. Rewrite in business-level language (what business capability, not how technically implemented)
 3. Defer technical implementation to PRD Related Requirements
 
-**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP Rules; full template archived), BRD_MVP_CREATION_RULES.md section 6.5 (Edge Cases)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP Rules), BRD_MVP_CREATION_RULES.md section 6.5 (Edge Cases)
 
 ---
 
@@ -975,7 +993,7 @@ UI implementation details should be deferred to PRD.
 2. Rewrite focusing on business action/outcome (what customer accomplishes, not which UI element they interact with)
 3. Defer UI/UX design to PRD Related Requirements
 
-**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE Category: UI Flows and Screens; full template archived)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE Category: UI Flows and Screens)
 
 ---
 
@@ -1032,15 +1050,15 @@ Found structure:
 [FAIL] Business Capability
 [FAIL] Complexity
 
-Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full template archived)
+Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (standard template)
 ```
 
 **Fix**:
 1. Verify each FR has all 6 subsections in correct order
-2. Add missing subsections using BRD-MVP-TEMPLATE.md section 7.2 as reference (full template archived)
+2. Add missing subsections using BRD-MVP-TEMPLATE.md section 7.2 as reference (standard template)
 3. Ensure subsection headers match exactly (case-sensitive)
 
-**Reference**: BRD-MVP-TEMPLATE.md section 7.2 (full template archived), BRD_MVP_CREATION_RULES.md section 5.5 (Complexity Rating)
+**Reference**: BRD-MVP-TEMPLATE.md section 7.2 (standard template), BRD_MVP_CREATION_RULES.md section 5.5 (Complexity Rating)
 
 ---
 
@@ -1082,7 +1100,7 @@ Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 3. Correct invalid ID formats (BRD-2 → BRD-02, BRD-99 → BRD-099)
 4. Remove references to non-existent BRDs or create placeholder BRD if needed
 
-**Reference**: BRD-MVP-TEMPLATE.md Appendix C (FR Examples with cross-references; full template archived)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix C (FR Examples with cross-references)
 
 ---
 
@@ -1135,7 +1153,7 @@ Missing elements:
 - Investment required (no budget range or cost estimate)
 
 Recommendation: Add quantitative data for better stakeholder impact assessment
-Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full template archived)
+Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (standard template)
 ```
 
 **Fix**:
@@ -1145,7 +1163,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 4. Mention implementation timeline (phases, quarters, duration)
 5. Reference investment level if known at BRD stage
 
-**Reference**: BRD-MVP-TEMPLATE.md section 1.1 (full template archived), BRD_MVP_CREATION_RULES.md section 2.2
+**Reference**: BRD-MVP-TEMPLATE.md section 1.1 (standard template), BRD_MVP_CREATION_RULES.md section 2.2
 
 ---
 
@@ -1194,7 +1212,7 @@ Add section with high-level summary:
 - Aggregate counts (Primary, Operational, Total)
 - Reference link to PRD for complete details
 
-Reference: BRD-MVP-TEMPLATE.md section 5 (lines 453-488; full template archived)
+Reference: BRD-MVP-TEMPLATE.md section 5 (lines 453-488)
 ```
 
 **Warning Message** (quality issues):
@@ -1266,7 +1284,7 @@ Missing sections:
 - section 3.5.5 (Exception Handling) not found
 
 Recommendation: Add Mermaid sequence diagrams to visualize business processes
-Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
+Reference: BRD-MVP-TEMPLATE.md lines 173-254 (standard template)
 ```
 
 **Quality Checks**:
@@ -1281,29 +1299,29 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 4. Add section 3.5.5 for exception handling workflows
 5. Ensure participants and actions are business-level (no technical implementation)
 
-**Reference**: BRD-MVP-TEMPLATE.md sections 3.5.4-3.5.5 (full template archived), BRD_MVP_CREATION_RULES.md section 2.3
+**Reference**: BRD-MVP-TEMPLATE.md sections 3.5.4-3.5.5 (standard template), BRD_MVP_CREATION_RULES.md section 2.3
 
 ---
 
 ### CHECK 22: Traceability Matrix  NEW
 
-**Purpose**: Verify section 15 (Traceability) contains complete bidirectional requirements mapping
+**Purpose**: Verify section 16 (Traceability) contains complete bidirectional requirements mapping
 **Type**: Error (blocking) - Traceability mandatory in BRD v1.1
 
-**Location**: section 15 (Traceability)
+**Location**: section 16 (Traceability)
 
 **Required Subsections**:
-- [ ] 15.1 Requirements Traceability Matrix
-  - [ ] 15.1.1 Business Objectives → Functional Requirements
-  - [ ] 15.1.2 Functional Requirements → SPEC (Layer 9)
-  - [ ] 15.1.3 Quality Attributes → SPEC (Layer 9)
-- [ ] 15.2 Cross-BRD Dependencies
-- [ ] 15.3 Test Coverage Traceability
-- [ ] 15.4 Traceability Summary (with Health Score)
+- [ ] 16.1 Requirements Traceability Matrix
+  - [ ] 16.1.1 Business Objectives → Functional Requirements
+  - [ ] 16.1.2 Functional Requirements → SPEC (Layer 9)
+  - [ ] 16.1.3 Quality Attributes → SPEC (Layer 9)
+- [ ] 16.2 Cross-BRD Dependencies
+- [ ] 16.3 Test Coverage Traceability
+- [ ] 16.4 Traceability Summary (with Health Score)
 
 **Validation Checks**:
-- [ ] section 15 header exists
-- [ ] All 4 subsections present (15.1-15.4)
+- [ ] section 16 header exists
+- [ ] All 4 subsections present (16.1-16.4)
 - [ ] Business Objectives table includes Coverage Status column
 - [ ] Functional Requirements table includes downstream 09_SPEC and 11_TASKS references
 - [ ] Downstream layer numbering aligns with CTR=8, SPEC=9, TASKS=10
@@ -1313,19 +1331,19 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 
 **Error Message**:
 ```
-[FAIL] MISSING: section 15 (Traceability)
+[FAIL] MISSING: section 16 (Traceability)
 Required in BRD v1.1 template
 
 Add section with structure:
-- 15.1 Requirements Traceability Matrix
-  - 15.1.1 Business Objectives → FRs
-  - 15.1.2 FRs → SPEC (Layer 9)
-  - 15.1.3 QAs → SPEC (Layer 9)
-- 15.2 Cross-BRD Dependencies
-- 15.3 Test Coverage Traceability
-- 15.4 Traceability Summary (Health Score)
+- 16.1 Requirements Traceability Matrix
+  - 16.1.1 Business Objectives → FRs
+  - 16.1.2 FRs → SPEC (Layer 9)
+  - 16.1.3 QAs → SPEC (Layer 9)
+- 16.2 Cross-BRD Dependencies
+- 16.3 Test Coverage Traceability
+- 16.4 Traceability Summary (Health Score)
 
-Reference: BRD-MVP-TEMPLATE.md section 15 (full template archived)
+Reference: BRD-MVP-TEMPLATE.md section 16 (standard template)
 ```
 
 **Warning Message** (orphan detection):
@@ -1348,7 +1366,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 - [ ] All BRD.NN.EE.SS requirements have planned downstream 09_SPEC and 11_TASKS references
 
 **Fix**:
-1. Add section 15 with all 4 subsections
+1. Add section 16 with all 4 subsections
 2. Create Business Objectives → FRs table listing all BOs from section 2.4
 3. Create FRs → SPEC (Layer 9) and TASKS (Layer 11) table with planned SPEC-XXX-NN and TASKS-XXX-NN references
 4. Document Cross-BRD Dependencies if any exist
@@ -1356,7 +1374,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 6. Calculate Traceability Health Score: Average of all coverage percentages
 7. Ensure score ≥90% by eliminating orphans
 
-**Reference**: BRD-MVP-TEMPLATE.md section 15 (full template archived)
+**Reference**: BRD-MVP-TEMPLATE.md section 16 (standard template)
 , BRD_MVP_CREATION_RULES.md section 8
 
 ---
@@ -1390,7 +1408,7 @@ Add subsection within section 14 (Project Governance):
 - 14.5.2 Approval Criteria (conditions for approval)
 - 14.5.3 Change Control Process (version management)
 
-Reference: BRD-MVP-TEMPLATE.md section 14.5 (full template archived)
+Reference: BRD-MVP-TEMPLATE.md section 14.5 (standard template)
 ```
 
 **Required Approval Table Structure**:
@@ -1420,7 +1438,7 @@ Issues found:
 - Approval Criteria lists only 3 conditions (minimum 5 required)
 - Change Control missing version impact definitions
 
-Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (full template archived)
+Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (standard template)
 ```
 
 **Fix**:
@@ -1435,7 +1453,7 @@ Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (ful
 4. Define Change Control Process table with version impact rules
 5. Use semantic versioning: major.minor.patch
 
-**Reference**: BRD-MVP-TEMPLATE.md section 14.5 (full template archived), BRD_MVP_CREATION_RULES.md section 11.5
+**Reference**: BRD-MVP-TEMPLATE.md section 14.5 (standard template), BRD_MVP_CREATION_RULES.md section 11.5
 
 ---
 
@@ -1474,7 +1492,7 @@ Missing subsections:
 - 17.6 External Standards not found
 
 Recommendation: Add all 6 subsections for comprehensive terminology coverage
-Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
+Reference: BRD-MVP-TEMPLATE.md section 17 (standard template)
 ```
 
 **Required Structure**:
@@ -1529,7 +1547,7 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 7. List Cross-References to related BRDs and documents
 8. Document External Standards referenced (regulatory, industry, technical)
 
-**Reference**: BRD-MVP-TEMPLATE.md section 17 (full template archived), BRD_MVP_CREATION_RULES.md section 2 (line 76)
+**Reference**: BRD-MVP-TEMPLATE.md section 17 (standard template), BRD_MVP_CREATION_RULES.md section 2 (line 76)
 
 ---
 
@@ -1590,7 +1608,7 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 | **CHECK 19** | Add quantitative elements to Executive Summary (market data, outcomes, segments, timeline, investment) |
 | **CHECK 20** | Add section 5 (User Stories) with standard format and FR traceability |
 | **CHECK 21** | Add sections 3.5.4-3.5.5 with Mermaid workflow diagrams and summary tables |
-| **CHECK 22** | Add section 16 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
+| **CHECK 22** | Add section 16 (Traceability) with subsections 16.1-16.4 and Health Score ≥90% |
 | **CHECK 23** | Add section 14.5 (Approval and Sign-off) with approval table, criteria, and change control process |
 | **CHECK 24** | Add section 17 subsections 17.1-17.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
 | **CHECK 25** | Replace legacy element IDs (AC-XXX, FR-XXX, BC-XXX, BO-XXX, QA-XXX) with unified format `BRD.NN.TT.SS` |
@@ -1772,11 +1790,12 @@ BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | 2025-11-19T00:00:00 | Initial validation rules for BRD documents | System Architect |
+| 1.4.0 | 2026-02-25 | Updated section references for 18-section structure (Traceability → Section 16, Glossary → Section 17); Aligned with BRD-MVP-TEMPLATE.md v1.1 | Claude Code |
 | 1.3.0 | 2025-12-12T00:00:00 | Added BRD-REF as third document category with reduced validation; Updated CHECK 4 and CHECK 5 for reference documents | Claude Code |
+| 1.0.0 | 2025-11-19T00:00:00 | Initial validation rules for BRD documents | System Architect |
 
 ---
 
 **Maintained By**: Business Analyst Team, Quality Assurance Team
 **Review Frequency**: Updated with BRD template enhancements
-**Support**: See [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md) for comprehensive template guidance (full template archived)
+**Support**: See [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md) for comprehensive template guidance (standard template)

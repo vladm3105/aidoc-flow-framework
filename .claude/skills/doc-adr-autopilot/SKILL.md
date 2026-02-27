@@ -15,8 +15,8 @@ custom_fields:
   skill_category: automation-workflow
   upstream_artifacts: [BRD, PRD, EARS, BDD]
   downstream_artifacts: [SYS, REQ]
-  version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.5"
+  last_updated: "2026-02-26"
 ---
 
 # doc-adr-autopilot
@@ -40,7 +40,7 @@ This autopilot orchestrates the following skills:
 | Skill | Purpose | Phase |
 |-------|---------|-------|
 | `doc-naming` | Element ID format (ADR.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
-| `doc-adr` | ADR creation rules, 17-section structure, lifecycle states | Phase 3: ADR Generation |
+| `doc-adr` | ADR creation rules, 11-section MVP structure, lifecycle states | Phase 3: ADR Generation |
 | `quality-advisor` | Real-time quality feedback during ADR generation | Phase 3: ADR Generation |
 | `doc-adr-validator` | Validate ADR structure, content, SYS-Ready score | Phase 4: ADR Validation |
 | `doc-adr-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
@@ -450,7 +450,7 @@ Generate ADR documents with Context-Decision-Consequences format.
 
 9. **Generate Remaining Sections**:
    - Section 6: Requirements Satisfied (link to BRD/PRD)
-   - **Section 7: MVP/Post-MVP Scope** (NEW in v2.0)
+   - **Section 7: MVP/Next Cycle Scope** (NEW in v2.0)
    - Section 8: Architecture Flow (Mermaid diagram REQUIRED)
    - Section 9: Implementation Assessment (complexity, dependencies)
    - Section 10: Impact Analysis
@@ -463,7 +463,7 @@ Generate ADR documents with Context-Decision-Consequences format.
    - Section 17: Traceability
    - Section 18: References
 
-10. **Generate MVP/Post-MVP Scope Section** (Section 7 - NEW in v2.0):
+10. **Generate MVP/Next Cycle Scope Section** (Section 7 - NEW in v2.0):
 
     ```markdown
     ### 7.1 MVP Scope (Phase 1)
@@ -472,7 +472,7 @@ Generate ADR documents with Context-Decision-Consequences format.
     - Risk Agent with position size circuit breaker
     - Execution Agent with IB order submission
 
-    ### 7.2 Post-MVP Scope (Phase 2+)
+    ### 7.2 Next Cycle Scope
 
     - Full multi-agent orchestration
     - All 7 circuit breakers active
@@ -885,7 +885,7 @@ flowchart TD
 | Visual Score Indicator | ❌ | Missing emoji indicator |
 | Risk Thresholds Table | ❌ | Section 11 missing quantified parameters |
 | Circuit Breaker Recovery | 🟡 | CB mentioned but no recovery table |
-| MVP/Post-MVP Scope | ✅ | Section 7 present |
+| MVP/Next Cycle Scope | ✅ | Section 7 present |
 | Traceability Format | 🟡 | 2 tags missing hierarchical format |
 | Index File | ✅ | ADR-01.00_index.md present |
 
@@ -1489,9 +1489,10 @@ docs/05_ADR/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-26 | Updated skill dependency reference from 17-section to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (ADR-NN) triggers review mode; Multiple upstream-type inputs (BDD/EARS/PRD/BRD-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-adr-reviewer` and `doc-adr-fixer`; Added `doc-adr-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing ADR documents without modification; Added Fix Mode for auto-repairing ADR documents while preserving manual content; Added fix categories (element_ids, structure, v2_sections, traceability, visual_indicators); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with score breakdown impact; Added element ID migration support (DEC_XXX, ALT_XXX, CON_XXX to unified format) |
-| 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Post-MVP Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
+| 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Next Cycle Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-adr, doc-adr-validator, quality-advisor skills; Added BRD Section 7.2 to ADR mapping; Context-Decision-Consequences generation |

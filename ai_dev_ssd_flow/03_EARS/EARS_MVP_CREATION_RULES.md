@@ -14,26 +14,13 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Guides creation of EARS-MVP-TEMPLATE.md (default)
-# - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
+# - Authority: EARS-MVP-TEMPLATE.md is the standard for EARS structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI guidance for document creation (derived from MVP template)
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "EARS MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: EARS
-  layer: 3
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
-> - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
+> - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; standard template
 > - **Schema**: `EARS_MVP_SCHEMA.yaml` defines machine-readable validation rules
 > - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `03_EARS/scripts/validate_ears.py`
 
@@ -57,7 +44,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2025-11-30T00:00:00
-**Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (full template archived)
+**Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (standard template)
 **Purpose**: Complete reference for creating EARS files according to doc-flow SDD framework
 **Changes**: Merged EARS_STYLE_GUIDE.md content - added Status/BDD-Score mapping, code block formatting, traceability format details, and extended common mistakes table
 
@@ -99,15 +86,14 @@ custom_fields:
 
 EARS documents require specific structural elements for behavioral specification:
 
-#### Required sections:
-1. **Document Control** - Metadata with BDD-Ready Score
-2. **Purpose and Context** - Business and technical objectives
-3. **Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
-4. **Quality Attributes** - Performance, security, Reliability, etc.
-5. **Guidelines for Writing EARS Statements** - Precision and measurability rules
-6. **Quality Checklist** - Completeness validation
-7. **Traceability** - Upstream/downstream artifacts
-8. **References** - Internal/external documentation
+#### Required sections (6-section MVP structure):
+1. **Document Control** (unnumbered) - Metadata with BDD-Ready Score
+2. **Section 1: Purpose and Context** - Business and technical objectives
+3. **Section 2: EARS in Development Workflow** - SDD position and EARS role
+4. **Section 3: Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
+5. **Section 4: Quality Attributes** - Performance, Security, Reliability
+6. **Section 5: Traceability** - Upstream sources, downstream artifacts, tags
+7. **Section 6: References** - Internal and external documentation
 
 ---
 

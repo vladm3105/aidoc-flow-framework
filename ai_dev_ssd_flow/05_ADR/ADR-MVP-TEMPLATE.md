@@ -14,7 +14,9 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "1.0"
+  schema_version: "1.1"
+  last_updated: "2026-02-26"
+  total_sections: 11
   complexity: 1 # 1-5 scale
 ---
 > ** Dual-Format Note**:
@@ -36,34 +38,11 @@ Constraints:
 - Maintain single-file structure (no document splitting in MVP).
 AI_CONTEXT_END
 -->
----
-title: "ADR-MVP-TEMPLATE: Architecture Decision Record (MVP Version)"
-tags:
-  - adr-template
-  - mvp-template
-  - layer-5-artifact
-custom_fields:
-  document_type: template
-  artifact_type: ADR
-  layer: 5
-  architecture_approaches: [ai-agent-based]
-  priority: shared
-  development_status: draft
-  template_variant: mvp
-  template_profile: mvp
-  template_source: "ADR-MVP-TEMPLATE.md"
-  schema_reference: "ADR_MVP_SCHEMA.yaml"
-  schema_version: "1.0"
-  schema_status: optional
-  creation_rules_reference: "ADR_MVP_CREATION_RULES.md"
-  validation_rules_reference: "ADR_MVP_VALIDATION_RULES.md"
-  traceability_matrix_template: "ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md"
----
 
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
 > Use this template for MVP architecture decisions with 2-3 alternatives.
 
-> **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_adr.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+> **Validation Note**: This is the standard ADR template. Some legacy validators may report warnings - this is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
 > References: Schema `ADR_MVP_SCHEMA.yaml` | Rules `ADR_MVP_CREATION_RULES.md`, `ADR_MVP_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
@@ -78,7 +57,7 @@ custom_fields:
 | **Decision Makers** | [Names/Roles] |
 | **Author** | [Architect/Lead Name] |
 | **Version** | 1.0 |
-| **SYS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
+| **SYS-Ready Score** | [Score]/100 (Target: ≥90) |
 
 ---
 
@@ -138,7 +117,7 @@ custom_fields:
 
 **MVP Scope**: [What's included in MVP implementation]
 
-**Post-MVP Scope**: [What's deferred to later phases]
+**Next Cycle Scope**: [What's deferred to next MVP iteration]
 
 ---
 
@@ -255,6 +234,22 @@ flowchart TD
 | [System 1] | [REST/gRPC/Async] | [What data flows] |
 | [System 2] | [REST/gRPC/Async] | [What data flows] |
 
+### 6.3 Required Decision Diagram Contract (MVP)
+
+For ADR, include:
+- `@diagram: c4-l3` for decision-level component scope.
+- Decision `sequenceDiagram` for chosen interaction pattern.
+- Conditional `@diagram: dfd-l2` when the decision materially changes data movement or data boundaries.
+
+Required declaration block:
+
+```markdown
+@diagram: c4-l3
+@diagram: sequence-async
+@diagram-condition: include dfd-l2 when data-impacting=true
+@diagram-lifecycle: mvp-prod-newmvp
+```
+
 ---
 
 ## 7. Implementation Assessment
@@ -350,54 +345,48 @@ Prefer these tags over legacy "See also …" strings.
 
 ---
 
-## 11. Migration to Full ADR Template
+## 11. MVP Lifecycle (MVP → PROD → NEW MVP)
 
-### 11.1 When to Migrate
+> **Lifecycle Principle**: Each ADR represents decisions for ONE iteration cycle. New architectural decisions require a NEW ADR.
 
-- [ ] Decision requires 4+ alternatives analysis
-- [ ] Complex trade-off evaluation needed
-- [ ] Regulatory/compliance documentation required
-- [ ] Decision impacts multiple systems/teams
-- [ ] Detailed implementation assessment required
+### 11.1 Lifecycle Phases
 
-### 11.2 Migration Steps
+| Phase | Duration | Focus | ADR Output |
+|-------|----------|-------|------------|
+| **MVP** | 1-2 weeks | Core architecture decisions | This ADR → SYS → Implementation |
+| **PROD** | 30-90 days | Operate, validate decisions, collect feedback | Decision outcomes, lessons learned |
+| **NEW MVP** | 1-2 weeks | Next architecture decisions | Create ADR-02, ADR-03, etc. |
 
-2. **Transfer core content**: Map MVP sections to full template
-3. **Add detailed analysis**: Expand alternatives, add scoring matrices
-4. **Add missing sections**: 
-   - Detailed context and background
-   - Complete stakeholder impact
-   - Full implementation assessment
-   - Status change history
-5. **Update traceability**: Link to SYS, REQ documents with cumulative tags
-6. **Archive MVP version**: Move to archive with "superseded" note
-7. **Run validation**: Execute `python3 05_ADR/scripts/validate_adr.py` on new document
+### 11.2 When to Create a New ADR
 
-### 11.3 Section Mapping (MVP → Full)
+- [ ] Current ADR decisions are validated in production
+- [ ] New architectural decisions needed for next iteration
+- [ ] Decision context has significantly changed
+- [ ] Business case for new architecture approved
 
-| MVP Section | Full Template Section |
-|-------------|-----------------------|
-| 1. Document Control | 1. Document Control |
-| 2. Context | 4. Context (expand subsections) |
-| 3. Decision | 5. Decision (expand with full analysis) |
-| 4. Alternatives | 6. Alternatives Considered (expand) |
-| 5. Consequences | 7. Consequences (expand) |
-| 6. Architecture Overview | 8. Architecture Flow (expand) |
-| 7. Implementation Notes | 9. Implementation Assessment (expand) |
-| 8. Validation | 10. Validation & Success Criteria |
-| 9. Traceability | 11. Traceability |
-| 10. Related Decisions | 12. Related Decisions |
+### 11.3 Cross-ADR Traceability
+
+When creating the next ADR iteration:
+
+1. **Link to previous cycle**: Add `@depends: ADR-01` in Related Decisions section
+2. **Reference production outcomes**: Include validation data from previous cycle
+3. **Supersedes pattern**: Use when replacing a previous decision entirely
+4. **Update index**: Add new ADR to ADR-00_index.md with cross-references
+
+**Note**: There is no "full ADR" template. This MVP template IS the standard. Expansion happens through NEW ADRs, not template migration.
 
 ---
 
 **Document Version**: 1.0
-**Template Version**: 1.0 (MVP)
-**Last Updated**: YYYY-MM-DDTHH:MM:SS
+**Template Version**: 1.1 (MVP - 11 sections)
+**Last Updated**: 2026-02-26
+**Maintained By**: [Architecture Team]
 
 ---
 
 > **MVP Template Notes**:
-> - This template is ~250 lines (vs 699 lines for full ADR)
-> - Single file - no sectioning
-> - Focus on decision + rationale + 2-3 alternatives
+> - This is the standard ADR template (11 sections: 1-11)
+> - Single file - no sectioning per user requirement
+> - Focus on decision + rationale + alternatives
 > - Maintains ai_dev_flow framework compliance
+> - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full ADR" template)

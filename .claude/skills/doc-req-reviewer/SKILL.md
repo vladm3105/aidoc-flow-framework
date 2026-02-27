@@ -56,7 +56,7 @@ Use `doc-req-reviewer` when:
 | Aspect | `doc-req-validator` | `doc-req-reviewer` |
 |--------|---------------------|-------------------|
 | **Focus** | Schema compliance, SPEC-Ready score | Content quality, implementation readiness |
-| **Checks** | Required sections, 12-section format | Atomicity, implementation paths, test coverage |
+| **Checks** | Required sections, 11-section format (MVP) | Atomicity, implementation paths, test coverage |
 | **Auto-Fix** | Structural issues only | Content issues (links, formatting) |
 | **Output** | SPEC-Ready + IMPL-Ready scores | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
@@ -108,7 +108,7 @@ flowchart TD
 
 ## Review Checks
 
-### 0. Structure Compliance (12/12) - BLOCKING
+### 0. Structure Compliance (11 sections - MVP) - BLOCKING
 
 Validates REQ follows the mandatory nested folder rule.
 

@@ -176,6 +176,18 @@ traceability:
       path: "../08_CTR/CTR-NN_{slug}.md"
       sections: ["§A API Contracts"]
 
+  # SYS -> SPEC ownership bridge (C4 L4 handoff)
+  # Compatibility-window policy: warning-first if omitted during migration.
+  sys_c4_l4_owner_ref: "SPEC-NN / ai_dev_ssd_flow/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml"
+  required_sequence_paths:
+    - success
+    - timeout
+    - retry
+  trust_boundaries:
+    - ingress-api
+    - internal-service-mesh
+    - data-store-edge
+
   downstream_artifacts:
     # NOTE: REQs are now UPSTREAM (inputs to SPEC), not downstream
     # See upstream_sources.atomic_requirements for REQ references

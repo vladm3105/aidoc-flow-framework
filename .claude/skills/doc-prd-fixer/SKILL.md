@@ -359,6 +359,9 @@ Addresses placeholders and incomplete content.
 | REV-P004 | Template name `[Name]` | Replace with metadata author or flag |
 | REV-P005 | Empty section | Add minimum template content |
 | REV-P006 | Missing user story format | Flag for manual review |
+| REV-DC001 | Missing PRD diagram tag (`c4-l2`, `dfd-l1`, `sequence-*`) | Add missing diagram declaration tags |
+| REV-DC002 | Sequence diagram missing explicit exception/alternate path | Add `alt/else` branch to Mermaid `sequenceDiagram` |
+| REV-DC003 | Diagram intent header missing required fields | Add `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs` |
 
 **Auto-Replacements**:
 
@@ -371,6 +374,10 @@ replacements = {
     '[Product Name]': extract_product_name_from_metadata(),
 }
 ```
+
+**Diagram Fix Safety Rule**:
+- For `REV-DC*` issues, apply minimal edits only to diagram declaration blocks and Mermaid sequence sections.
+- Do not modify non-diagram requirement content while resolving diagram contract findings.
 
 ---
 

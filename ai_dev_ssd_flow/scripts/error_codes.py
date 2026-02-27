@@ -100,6 +100,10 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "BRD-W006": ("File name does not match format", "Use BRD-NNN_descriptive_name.md format"),
     "BRD-W007": ("ADR topic missing cost estimates", "Add Est. Monthly Cost in Alternatives Overview"),
     "BRD-W008": ("ADR topic missing PRD Requirements field", "Add PRD Requirements for each topic"),
+    "BRD-W011": ("Missing BRD advisory diagram tag @diagram: c4-l1", "Add C4-L1 tag or accept advisory warning"),
+    "BRD-W012": ("Missing BRD advisory diagram tag @diagram: dfd-l0", "Add DFD-L0 tag or accept advisory warning"),
+    "BRD-W013": ("Sequence diagram present without BRD sequence tag", "Add @diagram: sequence-sync|sequence-async|sequence-error"),
+    "BRD-W014": ("Diagram intent header missing required fields", "Add diagram_type, level, scope_boundary, upstream_refs, downstream_refs"),
     "BRD-I001": ("Consider adding regulatory compliance requirements", "Review regulatory needs"),
     "BRD-I002": ("Consider adding market analysis context", "Add market context if applicable"),
     "BRD-I003": ("Pending ADR topics should be completed before PRD", "Complete Pending ADR topics"),
@@ -113,7 +117,16 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "PRD-E004": ("Missing required tag 'layer-2-artifact'", "Add layer tag"),
     "PRD-E005": ("Missing cumulative tag @brd:", "Add BRD traceability"),
     "PRD-E006": ("Missing Product Overview section", "Add Section 1"),
+    "PRD-E023": ("Missing required PRD diagram tag @diagram: c4-l2", "Add C4-L2 diagram tag in PRD"),
+    "PRD-E024": ("Missing required PRD diagram tag @diagram: dfd-l1", "Add DFD-L1 diagram tag in PRD"),
+    "PRD-E025": ("Missing required PRD diagram tag @diagram: sequence-*", "Add sequence diagram contract tag"),
+    "PRD-E026": ("Sequence diagram lacks exception/alternate path", "Add alt/else branch to sequenceDiagram"),
     "PRD-W001": ("Feature ID not 3-digit format", "Use NNN format for feature IDs"),
+    "PRD-W011": ("Diagram intent header missing required fields", "Add diagram_type, level, scope_boundary, upstream_refs, downstream_refs"),
+    "PRD-W012": ("Missing PRD diagram tag @diagram: c4-l2 (legacy mode)", "Add C4-L2 diagram tag"),
+    "PRD-W013": ("Missing PRD diagram tag @diagram: dfd-l1 (legacy mode)", "Add DFD-L1 diagram tag"),
+    "PRD-W014": ("Missing PRD diagram tag @diagram: sequence-* (legacy mode)", "Add sequence diagram contract tag"),
+    "PRD-W015": ("Sequence diagram missing exception/alternate path (legacy mode)", "Add alt/else branch to sequenceDiagram"),
 
     # -------------------------------------------------------------------------
     # EARS (Layer 3) - Event-Action-Response-State (Engineering Requirements)

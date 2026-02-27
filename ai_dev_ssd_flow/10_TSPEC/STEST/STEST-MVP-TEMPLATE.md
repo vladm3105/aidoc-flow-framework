@@ -35,7 +35,8 @@ Objective: Create smoke test specifications for post-deployment validation.
 Constraints:
 - Define critical path tests for deployment verification.
 - 6 sections required (aligned with MVP requirements).
-- Required traceability tags: @ears, @bdd, @req.
+- Required cumulative tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec, @ctr (if exists).
+- Required STEST-specific tags: @ears, @bdd, @req.
 - Total suite timeout: <5 minutes.
 - 100% quality gate required (critical for deployment).
 - Every test must have rollback procedure.
@@ -313,7 +314,21 @@ kubectl rollout history deployment/[service] -n [namespace]
 
 ## 6. Traceability
 
-### 6.1 Upstream References
+### 6.1 Cumulative Tags (Layer 1-9)
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @brd | BRD.NN.TT.SS | Business requirement |
+| @prd | PRD.NN.TT.SS | Product requirement |
+| @ears | EARS.NN.25.SS | EARS statement |
+| @bdd | BDD.NN.14.SS | BDD scenario |
+| @adr | ADR-NN | Architecture decision |
+| @sys | SYS.NN.26.SS | System requirement |
+| @req | REQ.NN.27.SS | Atomic requirement |
+| @spec | SPEC-NN | Technical specification |
+| @ctr | CTR-NN | Data contract (if exists) |
+
+### 6.2 STEST-Specific Tags
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
@@ -321,7 +336,7 @@ kubectl rollout history deployment/[service] -n [namespace]
 | @bdd | BDD.NN.01.01 | Feature scenario |
 | @req | REQ.NN.10.01 | Functional requirement |
 
-### 6.2 Downstream References
+### 6.3 Downstream References
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|

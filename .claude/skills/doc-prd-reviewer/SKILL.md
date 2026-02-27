@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [PRD]
   downstream_artifacts: []
-  version: "1.6"
-  last_updated: "2026-02-11"
+  version: "1.7"
+  last_updated: "2026-02-26T15:10:00"
 ---
 
 # doc-prd-reviewer
@@ -80,7 +80,8 @@ flowchart TD
     subgraph Review["Review Checks"]
         F --> G[1. Link Integrity]
         G --> H[2. Threshold Consistency]
-        H --> I[3. BRD Alignment]
+      H --> H2[2a. Diagram Contract Compliance]
+      H2 --> I[3. BRD Alignment]
         I --> J[4. Placeholder Detection]
         J --> K[5. Traceability Tags]
         K --> L[6. Section Completeness]
@@ -182,6 +183,22 @@ Comparing thresholds across sections...
 | REV-T002 | Error | Threshold differs from BRD source |
 | REV-T003 | Warning | Threshold unit inconsistency (ms vs s) |
 | REV-T004 | Info | Threshold stricter than BRD (acceptable) |
+
+### 2a. Diagram Contract Compliance
+
+Validates PRD diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Scope**:
+- Required PRD tags: `@diagram: c4-l2`, `@diagram: dfd-l1`, `@diagram: sequence-*`
+- Required sequence error/alternate path coverage for critical journeys
+- Intent header fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Error | Missing required PRD diagram tag (`c4-l2`, `dfd-l1`, or `sequence-*`) |
+| REV-DC002 | Error | Required sequence flow missing explicit exception path |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
 
 ---
 
@@ -929,8 +946,8 @@ docs/02_PRD/PRD-01_f1_iam/
 
 | Requirement | Reason | Note |
 |-------------|--------|------|
-| BRD.01.01.10 | Device Trust | Marked P3, post-MVP |
-| BRD.01.01.12 | Time-Based Access | Marked P3, post-MVP |
+| BRD.01.01.10 | Device Trust | Marked P3, next cycle |
+| BRD.01.01.12 | Time-Based Access | Marked P3, next cycle |
 
 ---
 

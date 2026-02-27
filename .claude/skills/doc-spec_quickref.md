@@ -1,7 +1,7 @@
 # doc-spec - Quick Reference
 
 **Skill ID:** doc-spec
-**Layer:** 10 (Technical Specifications)
+**Layer:** 9 (Technical Specifications)
 **Purpose:** Create implementation-ready specifications in YAML format
 
 ## Quick Start
@@ -13,7 +13,7 @@ skill: "doc-spec"
 # Common requests
 - "Create technical specification from REQ-001"
 - "Generate implementation-ready SPEC"
-- "Document Layer 10 specification for validation service"
+- "Document Layer 9 specification for validation service"
 ```
 
 ## What This Skill Does
@@ -24,10 +24,10 @@ skill: "doc-spec"
 4. Document error handling and configuration
 5. Define testing, deployment, and monitoring requirements
 
-## Output Location
+## Output Location (Nested Folder - MANDATORY)
 
 ```
-ai_dev_flow/SPEC/SPEC-NNN_{slug}.yaml
+docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
 ```
 
 ## Format: Pure YAML (NOT Markdown)
@@ -61,11 +61,11 @@ implementation:
         - "Step 2: Process logic"
 ```
 
-## Required Sections (12)
+## Required Sections (MVP - 8 Numbered + 2 Appendices)
 
-1. metadata, 2. cumulative_tags, 3. overview, 4. architecture
-5. interfaces, 6. implementation, 7. error_handling, 8. configuration
-9. testing, 10. deployment, 11. monitoring, 12. traceability
+1. Document Control, 2. Traceability, 3. Component Overview, 4. Technical Design
+5. Implementation Logic, 6. Configuration, 7. Non-Functional Requirements, 8. Quality Gates
+Appendix A: Glossary, Appendix B: References
 
 ## Upstream/Downstream
 
@@ -79,13 +79,24 @@ BRD through REQ/IMPL/CTR → SPEC → TASKS → Code
 - [ ] cumulative_tags section with 7-9 upstream tags
 - [ ] All modules have file paths
 - [ ] All functions have signatures and algorithms
-- [ ] contract_ref links to CTR (if Layer 9 created)
+- [ ] contract_ref links to CTR (if Layer 8 created)
 - [ ] 100% implementation-ready (no ambiguity)
+
+## Nested Folder Rule (MANDATORY)
+
+ALL SPEC documents MUST use nested folders:
+```
+docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
+```
+
+Invalid: `docs/09_SPEC/SPEC-01_api.yaml` (not in nested folder)
+Valid: `docs/09_SPEC/SPEC-01_api/SPEC-01_api.yaml`
 
 ## Template Location
 
 ```
-ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml
+ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md    # Human workflow
+ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml  # Autopilot workflow
 ```
 
 ## Related Skills

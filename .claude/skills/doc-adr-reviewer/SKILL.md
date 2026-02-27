@@ -16,8 +16,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR]
   downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+  version: "1.6"
+  last_updated: "2026-02-26T15:10:00"
 ---
 
 # doc-adr-reviewer
@@ -80,7 +80,8 @@ flowchart TD
     subgraph Review["Review Checks"]
         F --> G[1. Decision Completeness]
         G --> H[2. BRD Topic Alignment]
-        H --> I[3. Consequence Coverage]
+      H --> H2[2a. Diagram Contract Compliance]
+      H2 --> I[3. Consequence Coverage]
         I --> J[4. Alternative Evaluation]
         J --> K[5. Cross-Reference Integrity]
         K --> L[6. Placeholder Detection]
@@ -172,6 +173,23 @@ Validates ADR addresses BRD Section 7.2 topics.
 | REV-BA002 | Error | Topic category mismatch |
 | REV-BA003 | Warning | Decision doesn't fully address topic |
 | REV-BA004 | Info | BRD topic not yet addressed by ADR |
+
+### 2a. Diagram Contract Compliance
+
+Validates ADR diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+
+**Scope**:
+- Required ADR tags: `@diagram: c4-l3` and `@diagram: sequence-*`
+- Conditional `@diagram: dfd-l2` check for data-impacting decisions
+- Intent header fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
+
+**Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Error | Missing required ADR diagram tag (`@diagram: c4-l3` or `@diagram: sequence-*`) |
+| REV-DC002 | Warning | Data-impacting ADR missing `@diagram: dfd-l2` |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
 
 ---
 
@@ -546,6 +564,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates ADR follows mandatory nested folder rule; Added REV-STR001-003 error codes; Structure check blocks other checks if failed |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for cache access failures; Three-phase detection algorithm; SHA-256 hash calculation with Python example; Updated cache schema with document-level tracking; Focused upstream on BDD documents only; Added cache status to report output |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when BDD/BRD documents modified after ADR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-adr-fixer to Related Skills |

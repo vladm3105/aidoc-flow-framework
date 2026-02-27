@@ -14,8 +14,8 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: [ADR]
   downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+  version: "1.2"
+  last_updated: "2026-02-26"
 ---
 
 # doc-adr-validator
@@ -107,31 +107,23 @@ Forbidden tag patterns:
 
 ### 2. Structure Validation
 
-**Document Parts:**
-- PART 1: Decision Context and Requirements (Sections 1-6)
-- PART 2: Impact Analysis and Architecture (Sections 7-10)
-- PART 3: Implementation Strategy (Sections 11-13)
-- PART 4: Traceability and Documentation (Sections 14-15)
+**MVP Template Structure (11 Sections):**
 
-**Required Sections:**
-- Title (H1): `# ADR-NNN: Title`
-- Section 1: Document Control
-- Section 2: Position in Development Workflow
-- Section 3: Status
-- Section 4: Context (Problem Statement, Background, Driving Forces, Constraints)
-- Section 5: Decision (Chosen Solution, Key Components, Implementation Approach)
-- Section 6: Requirements Satisfied
-- Section 7: Consequences (Positive, Negative Outcomes)
-- Section 8: Architecture Flow (Mermaid diagram)
-- Section 9: Implementation Assessment (Complexity, Dependencies)
-- Section 10: Impact Analysis
+| # | Section | Required | Purpose |
+|---|---------|----------|---------|
+| 1 | Document Control | MANDATORY | Metadata with SYS-Ready Score |
+| 2 | Context | MANDATORY | Problem Statement, Technical Context |
+| 3 | Decision | MANDATORY | Chosen Solution, Key Components, Approach |
+| 4 | Alternatives Considered | MANDATORY | Options with pros/cons |
+| 5 | Consequences | MANDATORY | Positive/Negative Outcomes, Costs |
+| 6 | Architecture Flow | MANDATORY | Mermaid diagrams, Integration Points |
+| 7 | Implementation Assessment | MANDATORY | Phases, Rollback, Monitoring |
+| 8 | Verification | MANDATORY | Success Criteria, BDD Scenarios |
+| 9 | Traceability | MANDATORY | Upstream/Downstream, Tags, Cross-Links |
+| 10 | Related Decisions | MANDATORY | Dependencies, Supersessions |
+| 11 | MVP Lifecycle | MANDATORY | Iteration guidance |
 
-**Optional Sections:**
-- Section 11: Alternatives Considered
-- Section 12: Security Considerations
-- Section 13: Operational Considerations
-- Section 14: Traceability
-- Section 15: References
+**Title (H1):** `# ADR-NN: Title`
 
 **Document Control Required Fields:**
 - Project Name
@@ -283,5 +275,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-26 | Updated structure validation to 11-section MVP template (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); ADR must be in `docs/05_ADR/ADR-NN_{slug}/` folders; Added error codes ADR-E020, ADR-E021, ADR-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

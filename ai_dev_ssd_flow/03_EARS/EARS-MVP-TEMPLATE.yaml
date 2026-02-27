@@ -45,7 +45,7 @@ section_1_purpose_and_context:
 # =============================================================================
 
 section_2_development_workflow:
-  workflow: "BRD → PRD → EARS → BDD → REQ → SPEC → TASKS"
+  workflow: "BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS"
   
   role: |
     [Role description: Map PRD features to formal EARS statements.
@@ -58,129 +58,163 @@ section_2_development_workflow:
 
 section_3_requirements:
   event_driven:
-    - id: "EARS-03.ED.01"
+    - id: "EARS.NN.25.001"
       statement: "WHEN {trigger_event}, THE Platform SHALL {action_performed} WITHIN {timing_specification}."
-      
+
       trigger: |
         [Trigger description: Event or condition that initiates requirement execution.
         Example: "User clicks login button" or "File upload completes"]
-      
+
       action: |
         [Action description: What the system shall do when trigger occurs.
         Example: "Authenticate user credentials" or "Process and validate file"]
-      
+
       timing: |
         [Timing specification: Maximum time within which action must complete.
         Use format: "p50 latency within X ms" or "p99 within Y seconds"]
-      
-      traceability_tag: "@prd: PRD.NN.EE.SS"
-      
+
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
+
       timing_specification: |
         [Detailed timing specification: Include latency percentiles (p50/p95/p99)
         and target thresholds. Example: "p99 latency within 500ms at 95% confidence"]
-    
-    - id: "EARS-03.ED.02"
+
+    - id: "EARS.NN.25.002"
       statement: "WHEN {trigger_event}, THE Platform SHALL {action_performed} WITHIN {timing_specification}."
-      
+
       trigger: "[Trigger description]"
       action: "[Action description]"
       timing: "[Timing specification]"
-      traceability_tag: "@prd: PRD.NN.EE.SS"
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
       timing_specification: "[Detailed timing specification]"
-  
+
   state_driven:
-    - id: "EARS-03.SD.01"
+    - id: "EARS.NN.25.101"
       statement: "WHILE {condition_state}, THE Platform SHALL {behavior_performed} WITHIN {timing_constraint}."
-      
+
       condition: |
         [Condition description: State or condition that must be true for requirement to apply.
         Example: "User session is active" or "System in maintenance mode"]
-      
+
       behavior: |
         [Behavior description: What the system shall do while condition is true.
         Example: "Allow read-only access" or "Display maintenance banner"]
-      
+
       timing: |
         [Timing specification: Maximum time for behavior check or response.
         Example: "p50 response within 100ms"]
-      
-      traceability_tag: "@prd: PRD.NN.EE.SS"
-      
+
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
+
       timing_constraint: "[Detailed timing constraint]"
-    
-    - id: "EARS-03.SD.02"
+
+    - id: "EARS.NN.25.102"
       statement: "WHILE {condition_state}, THE Platform SHALL {behavior_performed} WITHIN {timing_constraint}."
-      
+
       condition: "[Condition description]"
       behavior: "[Behavior description]"
       timing: "[Timing specification]"
-      traceability_tag: "@prd: PRD.NN.EE.SS"
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
       timing_constraint: "[Detailed timing constraint]"
-  
+
   unwanted_behavior:
-    - id: "EARS-03.UB.01"
+    - id: "EARS.NN.25.201"
       statement: "IF {unwanted_condition}, THE Platform SHALL {prevention_action} WITHIN {timing_response}."
-      
+
       unwanted_condition: |
         [Unwanted condition description: Error condition or invalid state to prevent.
         Example: "Invalid user credentials provided" or "Database connection fails"]
-      
+
       prevention: |
         [Prevention description: What the system shall do to prevent or handle unwanted condition.
         Example: "Return authentication error" or "Retry with exponential backoff"]
-      
+
       timing: |
         [Timing specification: Maximum time to detect and prevent unwanted condition.
         Example: "p95 detection within 200ms"]
-      
-      traceability_tag: "@prd: PRD.NN.EE.SS"
-      
+
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
+
       timing_response: "[Detailed timing response specification]"
-    
-    - id: "EARS-03.UB.02"
+
+    - id: "EARS.NN.25.202"
       statement: "IF {unwanted_condition}, THE Platform SHALL {prevention_action} WITHIN {timing_response}."
-      
+
       unwanted_condition: "[Unwanted condition description]"
       prevention: "[Prevention description]"
       timing: "[Timing specification]"
-      traceability_tag: "@prd: PRD.NN.EE.SS"
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
       timing_response: "[Detailed timing response specification]"
-  
+
   ubiquitous:
-    - id: "EARS-03.UQ.01"
+    - id: "EARS.NN.25.401"
       statement: "THE Platform SHALL {always_behavior} WITHIN {operational_scope}."
-      
+
       always_behavior: |
         [Always behavior description: What the system shall always do,
         regardless of state or events.
         Example: "Log all API requests" or "Validate all user inputs"]
-      
+
       scope: |
         [Operational scope: Where or when this always behavior applies.
         Example: "Across all user interactions" or "For all database transactions"]
-      
+
       timing: |
         [Timing specification: Maximum latency or throughput requirements.
         Example: "p95 log write within 10ms"]
-      
-      traceability_tag: "@prd: PRD.NN.EE.SS"
-      
+
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
+
       operational_scope: "[Detailed operational scope specification]"
-    
-    - id: "EARS-03.UQ.02"
+
+    - id: "EARS.NN.25.402"
       statement: "THE Platform SHALL {always_behavior} WITHIN {operational_scope}."
-      
+
       always_behavior: "[Always behavior description]"
       scope: "[Operational scope]"
       timing: "[Timing specification]"
-      traceability_tag: "@prd: PRD.NN.EE.SS"
+      traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS"
       operational_scope: "[Detailed operational scope specification]"
 
 # =============================================================================
-# Section 4: Traceability
+# Section 4: Quality Attributes
 # =============================================================================
 
-section_4_traceability:
+section_4_quality_attributes:
+  performance:
+    - id: "EARS.NN.02.01"
+      statement: "THE [component] SHALL complete [operation]"
+      metric: "Latency"
+      target: "p95 < NNms"
+      priority: "High"
+      measurement_method: "Load test"
+
+    - id: "EARS.NN.02.02"
+      statement: "THE [component] SHALL process [workload]"
+      metric: "Throughput"
+      target: "NN/s"
+      priority: "Medium"
+      measurement_method: "Performance test"
+
+  security:
+    - id: "EARS.NN.03.01"
+      statement: "THE [component] SHALL authenticate using [method]"
+      control: "Authentication"
+      compliance: "[standard]"
+      priority: "High"
+
+  reliability:
+    - id: "EARS.NN.04.01"
+      statement: "THE [component] SHALL maintain availability"
+      metric: "Uptime"
+      target: "99.9%"
+      priority: "High"
+
+# =============================================================================
+# Section 5: Traceability
+# =============================================================================
+
+section_5_traceability:
   upstream_references:
     brd: "@brd: BRD.NN.EE.SS"
     prd: "@prd: PRD.NN.EE.SS"
@@ -193,16 +227,43 @@ section_4_traceability:
     sys: "SYS"
   
   tags:
-    - "@ears: EARS.NN.EE.SS"
     - "@brd: BRD.NN.EE.SS"
     - "@prd: PRD.NN.EE.SS"
-    - "@threshold: PRD-NN"
+    - "@threshold: PRD.NN.category.key"
 
   cross_links:
     depends:
       - "@depends: EARS-NN"   # Hard prerequisite EARS
     discoverability:
       - "@discoverability: EARS-NN (short rationale)"
+
+# =============================================================================
+# Section 6: References
+# =============================================================================
+
+section_6_references:
+  internal_documentation:
+    - document: "BRD-NN"
+      location: "../01_BRD/BRD-NN_*.md"
+      purpose: "Business requirements source"
+
+    - document: "PRD-NN"
+      location: "../02_PRD/PRD-NN_*.md"
+      purpose: "Product requirements source"
+
+  external_standards:
+    - standard: "EARS Syntax"
+      organization: "Alistair Mavin et al."
+      relevance: "Requirement specification format"
+
+  framework_references:
+    - reference: "ID_NAMING_STANDARDS.md"
+      type: "Framework Guide"
+      notes: "Element ID format"
+
+    - reference: "THRESHOLD_NAMING_RULES.md"
+      type: "Framework Guide"
+      notes: "@threshold tag format"
 
 # =============================================================================
 # Template Metadata
@@ -214,9 +275,13 @@ section_4_traceability:
 # Validation Rules: EARS_MVP_VALIDATION_RULES.md (for checklist)
 
 # MVP Profile Notes:
+# - 6-section structure: Purpose, Workflow, Requirements, Quality, Traceability, References
 # - 4 EARS pattern types: event_driven, state_driven, unwanted_behavior, ubiquitous
 # - Each statement requires traceability_tag: @prd: PRD.NN.EE.SS
 # - Timing specifications required for all EARS statements
 # - Use WHEN-THE-SHALL-WITHIN format with explicit triggers and actions
+# - schema_version: 1.1
+# - last_updated: 2026-02-26
+# - total_sections: 6
 
 # =============================================================================

@@ -2,12 +2,12 @@
 title: "AI Tasks (TASKS): SPEC Implementation Plans and TODOs"
 tags:
   - index-document
-  - layer-10-artifact
+   - layer-11-artifact
   - shared-architecture
 custom_fields:
   document_type: readme
   artifact_type: TASKS
-  layer: 10
+   layer: 11
   priority: shared
   schema_version: "2.0"
   last_updated: "2026-01-15T00:00:00"
@@ -20,10 +20,10 @@ custom_fields:
 - Index-only: maintain `TASKS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `TASKS-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 - **Development Plan Tracking**: Use `DEVELOPMENT_PLAN_TEMPLATE.md` in this directory to organize TASKS into phases with dependencies and status tracking.
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ---
 
@@ -316,16 +316,20 @@ Verification Methods:
 
 ## Task Quality Gates
 
-**Every TASKS must (TASKS v2.0 - 11 sections):**
+**Every TASKS must (TASKS v2.0 - 13 sections):**
 - Clearly define implementation scope with specific deliverables (Section 1-2)
 - Include phased implementation steps with execution commands (Section 3-4)
 - Specify constraints and limitations for implementation (Section 5)
 - Provide measurable acceptance criteria for verification (Section 6)
 - Document implementation contracts if parallel development needed (Section 7)
 - Maintain traceability to all related development artifacts (Section 8)
-- Include risk assessment and session logging (Sections 9-10)
+- Include risk assessment (Section 9)
+- Document unit test results (Section 10)
+- Provide implementation summary (Section 11)
+- Track session progress (Section 12)
+- Maintain change history (Section 13)
 
-**Task validation checklist (v2.0):**
+**Task validation checklist (v2.0 - 13 sections):**
 - [PASS] Objective and deliverables clearly defined (Section 1)
 - [PASS] Scope has inclusions, exclusions, and prerequisites (Section 2)
 - [PASS] Implementation plan with phased steps and durations (Section 3)
@@ -335,8 +339,10 @@ Verification Methods:
 - [PASS] Implementation contracts documented if applicable (Section 7)
 - [PASS] Traceability tags and code locations defined (Section 8)
 - [PASS] Risk assessment with mitigation strategies (Section 9)
-- [PASS] Session log for tracking progress (Section 10)
-- [PASS] Change history maintained (Section 11)
+- [PASS] Unit test results documented (Section 10)
+- [PASS] Implementation summary provided (Section 11)
+- [PASS] Session log for tracking progress (Section 12)
+- [PASS] Change history maintained (Section 13)
 
 ## Common Task Patterns
 
@@ -617,12 +623,14 @@ grep -A5 "typing.Protocol" docs/11_TASKS/*.md | head -20
 - Basic verification and testing plans
 - Minimal traceability to specifications
 
-### Level 3 - Comprehensive Tasks (v2.0)
+### Level 3 - Comprehensive Tasks (v2.0 - 13 sections)
 - Detailed implementation plans with execution commands (Sections 3-4)
 - Complete constraints and operational requirements (Section 5)
 - Automated verification and quality gates (Section 4.3-4.4)
 - Full traceability to all development artifacts (Section 8)
 - Implementation contracts defined and integrated (Section 7)
+- Unit test results and implementation summary (Sections 10-11)
+- Session logging and change history (Sections 12-13)
 - YAML tracking block for DEVELOPMENT_PLAN.md integration
 
 ### Level 4 - AI-Driven Tasks

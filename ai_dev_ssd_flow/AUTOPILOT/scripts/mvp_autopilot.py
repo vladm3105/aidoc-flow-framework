@@ -13,7 +13,7 @@ Usage:
     --auto-fix
 
 Notes:
-  - Generation uses the repository's MVP/full templates under `ai_dev_flow/*`.
+  - Generation uses the repository's MVP templates under `ai_dev_flow/*`.
   - No network calls or LLMs are used; content is copied from templates with
     light substitutions from `--intent` and IDs.
   - Validators are invoked via the existing validate_all.py registry.

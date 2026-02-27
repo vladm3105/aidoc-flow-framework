@@ -35,11 +35,13 @@ Objective: Create functional test specifications for system behavior validation.
 Constraints:
 - Define test cases for system-level quality attributes.
 - 6 sections required (aligned with MVP requirements).
-- Required traceability tags: @sys, @threshold.
-- TASKS-Ready threshold: ≥85%.
+- Cumulative traceability tags required (8-9 tags: @brd through @spec).
+- Type-specific required tags: @sys, @threshold.
+- TASKS-Ready threshold: ≥90%.
 - Focus on quality attributes: Performance, Reliability, Security, Scalability.
 - Use @threshold for all measurable criteria.
 - Include workflow validation and measurement methodology.
+- MANDATORY: Use nested folder structure (FTEST-NN_{slug}/FTEST-NN_{slug}.md).
 AI_CONTEXT_END
 -->
 
@@ -67,7 +69,7 @@ References: Schema `FTEST_MVP_SCHEMA.yaml` | Rules `FTEST_MVP_CREATION_RULES.md`
 | **SYS Reference** | SYS.NN.01.01 |
 | **Quality Attributes** | Performance, Reliability, Security |
 | **Coverage Target** | ≥85% |
-| **TASKS-Ready Score** | [XX]% (Target: ≥85%) |
+| **TASKS-Ready Score** | [XX]% (Target: ≥90%) |
 | **Template Version** | 1.0 |
 
 ---
@@ -311,15 +313,30 @@ assert results.error_rate < 1, f"Error rate {results.error_rate}% too high"
 
 ## 6. Traceability
 
-### 6.1 Upstream References
+### 6.1 Cumulative Tags (Required)
+
+**Layer 10 requires 8-9 cumulative tags:**
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
-| @sys | SYS.NN.01.01 | System requirement |
-| @threshold | TH-PERF-001 | Performance threshold |
+| @brd | BRD.NN.TT.SS | Business requirement |
+| @prd | PRD.NN.TT.SS | Product requirement |
+| @ears | EARS.NN.25.SS | EARS statement |
+| @bdd | BDD.NN.14.SS | BDD scenario |
+| @adr | ADR-NN | Architecture decision |
+| @sys | SYS.NN.26.SS | System requirement |
+| @req | REQ.NN.27.SS | Atomic requirement |
 | @spec | SPEC-NN | Technical specification |
+| @ctr | CTR-NN | Data contract (if exists) |
 
-### 6.2 Downstream References
+### 6.2 Type-Specific Tags (Required for FTEST)
+
+| Tag | Reference | Description |
+|-----|-----------|-------------|
+| @sys | SYS.NN.01.01 | System requirement (quality attribute) |
+| @threshold | TH-PERF-001 | Performance threshold |
+
+### 6.3 Downstream References
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|

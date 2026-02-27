@@ -62,6 +62,62 @@ Use appropriate Mermaid diagram type for the content:
 | Timelines | `timeline` | `mermaid-gen` |
 | Mind maps | `mindmap` | `mermaid-gen` |
 
+## C4 + DFD + Sequence Ownership Model
+
+Use the following model across the MVP → PROD → NEW MVP lifecycle.
+
+| Layer Artifact | Required Model | Purpose |
+|----------------|----------------|---------|
+| BRD (L1) | C4 L1 + DFD L0 | Business/system boundary and top-level data movement |
+| PRD (L2) | C4 L2 + DFD L1 + key sequence | Product container interactions, data movement, temporal user/system flow |
+| ADR (L5) | C4 L3 + decision sequence (+ DFD L2 when data-impacting) | Architecture decision implementation view |
+| SYS (L6) | System Diagram Contract (bridge) | Enforce container/interface/data-flow constraints and downstream ownership |
+| SPEC/Code/Test (L9+) | C4 L4 (Code) | Implementation-level code structure ownership |
+
+### Diagram Intent Header (Mandatory)
+
+Each required diagram block MUST include an intent header immediately above the Mermaid block.
+
+Required fields:
+- `diagram_type`: `c4` | `dfd` | `sequence`
+- `level`: `l0` | `l1` | `l2` | `l3` | `l4` (as applicable)
+- `scope_boundary`: short boundary definition
+- `upstream_refs`: source requirement/decision references
+- `downstream_refs`: implementation or validation references
+
+Required machine tags adjacent to diagram blocks:
+- `@diagram: c4-l1 | c4-l2 | c4-l3`
+- `@diagram: dfd-l0 | dfd-l1 | dfd-l2`
+- `@diagram: sequence-sync | sequence-async | sequence-error`
+
+Validation severity defaults:
+- Error: missing mandatory diagram type for the layer/section
+- Warning: missing trust-boundary annotation or missing sequence exception-path branch
+- Info: optional enrichment gaps
+
+### SYS Bridge Rule
+
+- SYS MUST NOT require embedded C4 L4 code/class diagrams as mandatory content.
+- SYS MUST reference downstream SPEC location where C4 L4 ownership is implemented.
+
+### System Diagram Contract (SYS)
+
+Required fields in SYS diagram contract subsection:
+- `@diagram: c4-l2|c4-l3` references used by this system scope
+- `@diagram: dfd-l1|dfd-l2` boundary tags where applicable
+- Required sequence paths for critical integrations and error handling
+- Downstream SPEC path for C4 L4 ownership
+
+### Layer Enforcement Summary
+
+| Layer | Mandatory Checks |
+|---|---|
+| BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l0`; sequence optional for critical journeys |
+| PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l1`, required sequence with explicit error path |
+| ADR (L5) | `@diagram: c4-l3`, required decision sequence; conditional `@diagram: dfd-l2` when data-impacting |
+| SYS (L6) | Required System Diagram Contract subsection, C4 L2/L3 refs, DFD boundary tags, sequence-path constraints, downstream SPEC ownership link |
+| SPEC/Code/Test (L9+) | C4 L4 ownership declarations aligned with SYS references |
+
 ### Interactive Diagrams (RECOMMENDED)
 
 For enhanced navigability, Mermaid diagrams MAY include click handlers to link nodes to related documents or sections. This is **optional but recommended** for traceability diagrams.
@@ -145,4 +201,4 @@ This standard applies to all SDD artifacts across Layers 1-15.
 **Cross-references**:
 - `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`
 - `charts-flow` skill: `.claude/skills/charts-flow/SKILL.md`
-- Framework guide: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Framework guide: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

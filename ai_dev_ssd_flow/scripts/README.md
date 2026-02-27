@@ -82,7 +82,7 @@ Checks documentation files against size limits (target: 800 lines, max: 1200 lin
 ./lint_file_sizes.sh
 
 # Check specific directory
-./lint_file_sizes.sh ai_dev_flow/
+./lint_file_sizes.sh ai_dev_ssd_flow/
 ```
 
 ## Layer-Specific Validation

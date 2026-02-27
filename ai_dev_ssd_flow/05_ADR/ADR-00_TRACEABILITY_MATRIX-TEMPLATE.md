@@ -447,7 +447,7 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 
 ### 13.1 Internal Documentation
 - **ADR Index**: [ADR-00_index.md](ADR-00_index.md)
-- **ADR Template**: [ADR-MVP-TEMPLATE.md](ADR-MVP-TEMPLATE.md) (default; full template archived)
+- **ADR Template**: [ADR-MVP-TEMPLATE.md](ADR-MVP-TEMPLATE.md) (standard template)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 

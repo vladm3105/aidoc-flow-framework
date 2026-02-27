@@ -14,35 +14,22 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Validates EARS-MVP-TEMPLATE.md (default)
-# - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
+# - Authority: EARS-MVP-TEMPLATE.md is the standard for EARS structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from EARS_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "EARS Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: EARS
-  layer: 3
-  priority: shared
-  development_status: active
----
 
 > **Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
 > - Apply these rules after EARS creation or modification
-> - **Authority**: Validates compliance with `EARS-MVP-TEMPLATE.md` (primary standard; full template archived)
+> - **Authority**: Validates compliance with `EARS-MVP-TEMPLATE.md` (standard template)
 > - **Scope**: Use for quality gates before committing EARS changes
 
 # EARS Validation Rules Reference
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 
@@ -91,7 +78,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Last Updated**: 2025-11-29T00:00:00
 **Purpose**: Complete validation rules for EARS documents
 **Script**: `03_EARS/scripts/validate_ears.py`
-**Primary Template**: `EARS-MVP-TEMPLATE.md` (full template archived)
+**Primary Template**: `EARS-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
 
@@ -249,12 +236,16 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Type**: Error (blocking)
 
-**Required Sections**:
-- Document Control
-- Purpose
-- Traceability
+**Required Sections (6-Section MVP Structure)**:
+- Document Control (unnumbered)
+- Section 1: Purpose and Context
+- Section 2: EARS in Development Workflow
+- Section 3: Requirements
+- Section 4: Quality Attributes
+- Section 5: Traceability
+- Section 6: References
 
-**Fix**: Add missing sections
+**Fix**: Add missing sections per EARS-MVP-TEMPLATE.md
 
 ---
 

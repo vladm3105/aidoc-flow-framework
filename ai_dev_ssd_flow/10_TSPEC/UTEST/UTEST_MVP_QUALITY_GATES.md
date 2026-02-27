@@ -254,18 +254,24 @@ Total = (G1 × 0.30) + (G2 × 0.25) + (G3 × 0.15) + (G4 × 0.15) + (G5 × 0.15)
 
 Before proceeding to TASKS generation:
 
+- [ ] Document in nested folder structure
 - [ ] Overall score ≥90%
 - [ ] No GATE at <80%
 - [ ] All REQs covered
 - [ ] I/O tables complete
 - [ ] Pseudocode reviewed
 - [ ] Error cases documented
-- [ ] Traceability tags present
+- [ ] Cumulative tags present (8-9 tags)
+- [ ] UTEST-specific tags present (@req, @spec)
 
 ## Validation Command
 
 ```bash
-python scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-NN_*.md --quality-gates
+# Validate single UTEST with quality gates (nested folder structure)
+python scripts/validate_utest.py docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md --quality-gates
+
+# Validate all UTEST documents
+python scripts/validate_utest.py docs/10_TSPEC/UTEST/ --quality-gates
 ```
 
 ## See Also

@@ -29,14 +29,22 @@ Before creating an STEST document:
 - [ ] Deployment pipeline defined
 - [ ] Rollback procedures documented
 
-## Document Naming
+## Document Naming and Location
 
-**Format**: `STEST-NN_[deployment_target].md`
+**Nested Folder Rule**: ALL STEST documents MUST be in nested folders.
+
+**Structure**: `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md`
 
 **Examples**:
-- `STEST-01_production_api.md`
-- `STEST-02_staging_services.md`
-- `STEST-03_canary_deployment.md`
+```
+docs/10_TSPEC/STEST/
+├── STEST-01_production_api/
+│   └── STEST-01_production_api.md
+├── STEST-02_staging_services/
+│   └── STEST-02_staging_services.md
+└── STEST-03_canary_deployment/
+    └── STEST-03_canary_deployment.md
+```
 
 ## Element ID Format
 
@@ -79,7 +87,21 @@ Every test MUST have binary pass/fail outcomes:
 
 ## Traceability Rules
 
-### Required Tags
+### Cumulative Tags (Layer 10 - 8-9 Required)
+
+| Tag | Reference Format | Required |
+|-----|------------------|----------|
+| `@brd` | BRD.NN.TT.SS | Yes |
+| `@prd` | PRD.NN.TT.SS | Yes |
+| `@ears` | EARS.NN.25.SS | Yes |
+| `@bdd` | BDD.NN.14.SS | Yes |
+| `@adr` | ADR-NN | Yes |
+| `@sys` | SYS.NN.26.SS | Yes |
+| `@req` | REQ.NN.27.SS | Yes |
+| `@spec` | SPEC-NN | Yes |
+| `@ctr` | CTR-NN | If exists |
+
+### STEST-Specific Required Tags
 
 | Tag | Requirement |
 |-----|-------------|
@@ -91,8 +113,8 @@ Every test MUST have binary pass/fail outcomes:
 
 ```markdown
 @ears: EARS.NN.25.SS
-@bdd: BDD.NN.01.SS
-@req: REQ.NN.10.SS
+@bdd: BDD.NN.14.SS
+@req: REQ.NN.27.SS
 ```
 
 ## Rollback Procedure Requirements
@@ -148,7 +170,11 @@ curl -f https://api.example.com/health --max-time 10
 ## Validation Command
 
 ```bash
-python scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-01_*.md
+# Validate single STEST (nested folder structure)
+python scripts/validate_stest.py docs/10_TSPEC/STEST/STEST-01_production_api/STEST-01_production_api.md
+
+# Validate all STEST documents
+python scripts/validate_stest.py docs/10_TSPEC/STEST/
 ```
 
 ## See Also

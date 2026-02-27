@@ -18,18 +18,18 @@ custom_fields:
 - Index-only: maintain `PRD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `PRD-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
 
 Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.
 
 ## Available Templates
 
-**PRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~500 lines)
+**PRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~800 lines)
 - Focused on core MVP features and rapid development
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 5-15 core features and short development cycles
 
-Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (PRD-02, PRD-03, etc.), not template changes.
 
 ## Purpose
 
@@ -421,8 +421,8 @@ PRDs serve as:
 - Archive superseded PRDs while maintaining links to replacements
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- Target: 800 lines per file
+- Maximum: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `PRD-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

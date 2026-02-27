@@ -227,14 +227,14 @@ Tests are cataloged in the TSPEC layer registry:
 
 ```bash
 # List registered tests
-python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --list
+python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --list
 
 # Register new test
-python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --add \
+python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --add \
   UTEST-001 UTEST "Test description" "tests/unit/test_file.py::test_func"
 
 # Sync from filesystem
-python ai_dev_flow/10_TSPEC/scripts/manage_test_registry.py --sync
+python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --sync
 ```
 
 ## CI/CD Integration
@@ -256,7 +256,7 @@ GitHub Actions workflow (`.github/workflows/test-pipeline.yml`) runs:
 Test module for authentication.
 
 Test ID: UTEST-001
-Reference: ai_dev_flow/10_TSPEC/UTEST/
+Reference: ai_dev_ssd_flow/10_TSPEC/UTEST/
 """
 
 import pytest
@@ -280,7 +280,7 @@ class TestAuthentication:
 Integration tests for database operations.
 
 Test ID: ITEST-001
-Reference: ai_dev_flow/10_TSPEC/ITEST/
+Reference: ai_dev_ssd_flow/10_TSPEC/ITEST/
 """
 
 import pytest

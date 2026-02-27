@@ -138,17 +138,17 @@ FAIL → Fix issues, re-run Quality Gate validation
 
 ### CORPUS-06: Visualization Coverage
 
-**Purpose**: Verify diagrams exist for complex system requirements
+**Purpose**: Verify System Diagram Contract fields and tags required for SYS→SPEC bridge
 
 **Severity**: Info
 
-**Recommended Diagrams by SYS Type**:
+**Required System Diagram Contract**:
 | SYS Type | Recommended Diagrams |
 |----------|---------------------|
-| Interface definitions | Component diagram |
-| Data flows | Data flow diagram |
-| State management | State machine diagram |
-| Integration points | Sequence diagram |
+| System scope | `@diagram: c4-l2|c4-l3` |
+| Data boundaries | `@diagram: dfd-l1|dfd-l2` |
+| Integration paths | `@diagram: sequence-sync|sequence-async|sequence-error` |
+| Ownership bridge | `downstream_c4_l4_owner`, `required_sequence_paths`, `trust_boundaries` |
 
 ---
 
@@ -227,8 +227,11 @@ grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md | sort | uniq -d
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 500 | 1,000 |
-| Tokens | 50,000 | — |
+| Lines | 800 | 1,200 |
+| Tokens | 15,000 | 20,000 |
+
+**Rationale**: Aligned with PRD thresholds per CLAUDE.md token limits guidance.
+See Phase 0.7 in SYS-MVP-TEMPLATE_FIX_PLAN.md for detailed justification.
 
 ---
 
@@ -350,8 +353,8 @@ done
 **Thresholds**:
 | Template Profile | Threshold | Detection |
 |------------------|-----------|-----------|
-| MVP (default) | ≥85% | `template_profile: mvp` or no marker |
-| Full | ≥90% | `template_profile: full` |
+| MVP (default) | ≥90% | `template_profile: mvp` or no marker |
+| Enterprise | ≥90% | `template_profile: enterprise` |
 
 **Validation Logic**:
 ```bash
@@ -498,17 +501,17 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Quality attribute not quantified | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W012 | Missing quality attribute coverage | CORPUS-12 |
 | CORPUS-W013 | NFR category not addressed | CORPUS-13 |
 | CORPUS-W014 | Interface definition incomplete | CORPUS-14 |
-| CORPUS-W015 | REQ-Ready Score below threshold (MVP: 85%, Full: 90%) | CORPUS-15 |
+| CORPUS-W015 | REQ-Ready Score below threshold (≥90%) | CORPUS-15 |
 
 ### Info Codes (Advisory)
 
 | Code | Description | Check |
 |------|-------------|-------|
-| CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
+| CORPUS-I001 | Missing System Diagram Contract tags/fields for SYS bridge | CORPUS-06 |
 
 ---
 
@@ -547,7 +550,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 - [ ] **CORPUS-03**: Internal counts match actual items
 - [ ] **CORPUS-04**: Index synchronized with actual files
 - [x] **CORPUS-05**: ~~Inter-SYS cross-links present~~ (deprecated)
-- [ ] **CORPUS-06**: Diagrams present for complex requirements
+- [ ] **CORPUS-06**: System Diagram Contract validated (C4/DFD/sequence tags + ownership fields)
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate element IDs
 - [ ] **CORPUS-09**: Quality attributes are quantified
@@ -556,7 +559,7 @@ grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid da
 - [ ] **CORPUS-12**: Quality attribute coverage complete
 - [ ] **CORPUS-13**: NFR categories addressed
 - [ ] **CORPUS-14**: Interface definitions complete
-- [ ] **CORPUS-15**: All SYS meet REQ-Ready Score threshold (MVP: ≥85%, Full: ≥90%)
+- [ ] **CORPUS-15**: All SYS meet REQ-Ready Score threshold (≥90%)
 - [ ] **CORPUS-16**: Template variant declared for specialized templates
 - [ ] **CORPUS-17**: Parent-child hierarchy tags present for subsystems
 - [ ] **CORPUS-18**: Tag notation consistent (dot vs dash)
@@ -668,7 +671,7 @@ fi
 ### Priority 2: Quality (Recommended Before Approval)
 
 - Internal count mismatches (CORPUS-03)
-- Missing diagrams (CORPUS-06)
+- Missing System Diagram Contract tags/fields (CORPUS-06)
 - Terminology inconsistencies (CORPUS-07)
 - Unquantified quality attributes (CORPUS-09)
 - File size warnings (CORPUS-10)

@@ -1040,7 +1040,7 @@ fix_mode:
 - **CTR Validator**: `.claude/skills/doc-ctr-validator/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md`
 - **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **CTR Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md`
+- **CTR Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md`
 
 ---
 

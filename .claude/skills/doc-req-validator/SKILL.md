@@ -108,20 +108,21 @@ Forbidden tag patterns:
 
 ### 2. Structure Validation
 
-**Required Sections (12 sections):**
-- Title (H1): `# REQ-NNN: Title`
+**Required Sections (11 sections - MVP):**
+- Title (H1): `# REQ-NN: [RESOURCE_TYPE] Title`
 - Section 1: Document Control
-- Section 2: Functional Requirements
-- Section 3: Interface Specifications (Protocol/ABC, DTOs, REST API)
-- Section 4: Data Schemas (JSON Schema, Pydantic, Database)
-- Section 5: Error Handling Specifications (Exception Catalog, Error Response, State Machine)
-- Section 6: Configuration Specifications (YAML schema, Environment Variables)
-- Section 7: Quality Attributes (Performance, Reliability, Security, Scalability)
-- Section 8: Implementation Guidance (Architecture Patterns, Concurrency, DI)
-- Section 9: Acceptance Criteria (≥15 criteria across 5 categories)
-- Section 10: Verification Methods
-- Section 11: Traceability
-- Section 12: Change History
+- Section 2: Requirement Description
+- Section 3: Functional Specification
+- Section 4: Interface Definition
+- Section 5: Error Handling
+- Section 6: Quality Attributes
+- Section 7: Configuration
+- Section 8: Testing Requirements
+- Section 9: Acceptance Criteria (≥3 measurable criteria)
+- Section 10: Traceability
+- Section 11: Implementation Notes
+
+**Note**: MVP template intentionally omits Change History to maintain 11-section structure.
 
 **Document Control Required Fields:**
 - Status

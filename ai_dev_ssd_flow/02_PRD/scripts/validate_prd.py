@@ -122,12 +122,16 @@ class ValidationResult:
         self.file_path = file_path
         self.errors: List[Tuple[str, str]] = []  # (code, message)
         self.warnings: List[Tuple[str, str]] = []
+        self.info: List[Tuple[str, str]] = []
 
     def add_error(self, code: str, message: str):
         self.errors.append((code, message))
 
     def add_warning(self, code: str, message: str):
         self.warnings.append((code, message))
+
+    def add_info(self, code: str, message: str):
+        self.info.append((code, message))
 
     @property
     def is_valid(self) -> bool:
@@ -144,6 +148,9 @@ class ValidationResult:
 
         for code, msg in self.warnings:
             print(f"[WARNING] {code}: {self.file_path} - {msg}")
+
+        for code, msg in self.info:
+            print(f"[INFO] {code}: {self.file_path} - {msg}")
 
 
 # =============================================================================
@@ -419,6 +426,71 @@ def validate_crosslinking_tags(content: str, result: ValidationResult):
         )
 
 
+def _resolve_diagram_enforcement_origin(metadata: Optional[Dict], result: ValidationResult) -> str:
+    """Resolve diagram enforcement origin from frontmatter with safe default."""
+    default_origin = "prd"
+
+    if not metadata or "custom_fields" not in metadata:
+        return default_origin
+
+    origin = str(metadata["custom_fields"].get("diagram_enforcement_origin", default_origin))
+    if origin in {"brd", "prd"}:
+        return origin
+
+    result.add_warning("PRD-W001", f"Invalid diagram_enforcement_origin '{origin}', defaulting to 'prd'")
+    return default_origin
+
+
+def _extract_mermaid_sequence_blocks(content: str) -> List[str]:
+    """Extract Mermaid blocks that contain sequence diagrams."""
+    mermaid_blocks = re.findall(r"```mermaid\s*(.*?)```", content, re.DOTALL)
+    return [block for block in mermaid_blocks if re.search(r"\bsequenceDiagram\b", block)]
+
+
+def validate_diagram_contract(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate PRD C4/DFD/Sequence contract tags and intent header fields."""
+    origin = _resolve_diagram_enforcement_origin(metadata, result)
+    is_legacy_mode = origin == "brd"
+
+    has_c4 = bool(re.search(r"@diagram:\s*c4-l2", content))
+    has_dfd = bool(re.search(r"@diagram:\s*dfd-l1", content))
+    has_seq_tag = bool(re.search(r"@diagram:\s*sequence-(sync|async|error)", content))
+
+    sequence_blocks = _extract_mermaid_sequence_blocks(content)
+    has_sequence_block = len(sequence_blocks) > 0
+    has_sequence_exception_path = any(re.search(r"^\s*(alt|else)\b", block, re.MULTILINE) for block in sequence_blocks)
+
+    if not has_c4:
+        if is_legacy_mode:
+            result.add_warning("PRD-W012", "Missing PRD diagram tag: @diagram: c4-l2")
+        else:
+            result.add_error("PRD-E023", "Missing required PRD diagram tag: @diagram: c4-l2")
+
+    if not has_dfd:
+        if is_legacy_mode:
+            result.add_warning("PRD-W013", "Missing PRD diagram tag: @diagram: dfd-l1")
+        else:
+            result.add_error("PRD-E024", "Missing required PRD diagram tag: @diagram: dfd-l1")
+
+    if not has_seq_tag:
+        if is_legacy_mode:
+            result.add_warning("PRD-W014", "Missing PRD diagram tag: @diagram: sequence-sync|sequence-async|sequence-error")
+        else:
+            result.add_error("PRD-E025", "Missing required PRD diagram tag: @diagram: sequence-sync|sequence-async|sequence-error")
+
+    if has_sequence_block and not has_sequence_exception_path:
+        if is_legacy_mode:
+            result.add_warning("PRD-W015", "Sequence diagram missing explicit exception/alternate path (alt/else)")
+        else:
+            result.add_error("PRD-E026", "Sequence diagram missing explicit exception/alternate path (alt/else)")
+
+    required_fields = ["diagram_type:", "level:", "scope_boundary:", "upstream_refs:", "downstream_refs:"]
+    missing_fields = [field for field in required_fields if field not in content]
+    should_check_intent = has_c4 or has_dfd or has_seq_tag or has_sequence_block
+    if should_check_intent and missing_fields:
+        result.add_warning("PRD-W011", f"Diagram intent header missing fields: {', '.join(missing_fields)}")
+
+
 def validate_prd_file(file_path: Path) -> ValidationResult:
     """
     Validate a single PRD file.
@@ -460,6 +532,7 @@ def validate_prd_file(file_path: Path) -> ValidationResult:
     validate_structure(content, sections, result, metadata)
     validate_traceability(content, result)
     validate_feature_ids(content, result)
+    validate_diagram_contract(content, result, metadata)
     validate_crosslinking_tags(content, result)
 
     return result

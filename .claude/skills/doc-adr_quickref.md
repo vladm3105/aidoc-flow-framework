@@ -27,30 +27,24 @@ skill: "doc-adr"
 ## Output Location
 
 ```
-docs/ADR/ADR-NNN_{descriptive_name}.md
+docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md
 ```
 
-## ADR Format
+## ADR Format (11 Sections)
 
-```markdown
-# ADR-NNN: Decision Title
-
-## Status
-Proposed | Accepted | Deprecated | Superseded by ADR-XXX
-
-## Context
-What issue are we addressing? What factors are in play?
-
-## Decision
-What change are we proposing or implementing?
-
-## Consequences
-### Positive Consequences
-### Negative Consequences
-### Risks
-
-## Alternatives Considered
-```
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | Document Control | Metadata with SYS-Ready Score |
+| 2 | Context | Problem Statement, Technical Context |
+| 3 | Decision | Chosen Solution, Key Components, Approach |
+| 4 | Alternatives Considered | Options with pros/cons |
+| 5 | Consequences | Positive/Negative Outcomes, Costs |
+| 6 | Architecture Flow | Mermaid diagrams, Integration Points |
+| 7 | Implementation Assessment | Phases, Rollback, Monitoring |
+| 8 | Verification | Success Criteria, BDD Scenarios |
+| 9 | Traceability | Upstream/Downstream, Tags, Cross-Links |
+| 10 | Related Decisions | Dependencies, Supersessions |
+| 11 | MVP Lifecycle | Iteration guidance |
 
 ## Key Considerations
 

@@ -473,6 +473,21 @@ def validate_architecture_section(content: str, result: ValidationResult, metada
     if "```mermaid" not in arch_content:
         result.add_warning("ADR-E005", f"Architecture section missing Mermaid diagram")
 
+    # Check required diagram contract tags for ADR
+    if not re.search(r"@diagram:\s*c4-l3", arch_content):
+        result.add_warning("ADR-E005", "Architecture section missing required tag: @diagram: c4-l3")
+
+    if not re.search(r"@diagram:\s*dfd-l2", arch_content):
+        result.add_warning("ADR-E005", "Architecture section missing required tag: @diagram: dfd-l2")
+
+    if not re.search(r"@diagram:\s*sequence-(sync|async|error)", arch_content):
+        result.add_warning("ADR-E005", "Architecture section missing required sequence tag")
+
+    required_fields = ["diagram_type:", "level:", "scope_boundary:", "upstream_refs:", "downstream_refs:"]
+    missing_fields = [field for field in required_fields if field not in arch_content]
+    if missing_fields:
+        result.add_warning("ADR-E005", f"Architecture section missing diagram intent fields: {', '.join(missing_fields)}")
+
 
 def validate_status(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate Status section has valid status value."""

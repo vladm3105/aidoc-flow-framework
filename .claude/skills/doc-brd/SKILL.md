@@ -1,21 +1,23 @@
 ---
 name: doc-brd
 description: Create Business Requirements Documents (BRD) following SDD methodology - Layer 1 artifact defining business needs and objectives
-tags:
-  - sdd-workflow
-  - layer-1-artifact
-  - shared-architecture
-custom_fields:
-  layer: 1
-  artifact_type: BRD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: []
-  downstream_artifacts: [PRD, EARS, BDD, ADR]
-  version: "2.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-1-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 1
+    artifact_type: BRD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR]
+    version: "1.2"
+    last_updated: "2026-02-26"
+    versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-brd
@@ -27,6 +29,25 @@ Create **Business Requirements Documents (BRD)** - Layer 1 artifact in the SDD w
 **Layer**: 1 (Entry point - no upstream dependencies)
 
 **Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+
+## MVP → PROD → NEW MVP Lifecycle
+
+**Key Principle**: Each BRD represents ONE iteration cycle.
+
+```
+BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2 → ...
+```
+
+| Phase | BRD Action | Duration |
+|-------|------------|----------|
+| **MVP** | Create BRD with 5-15 core features | 1-2 weeks |
+| **PROD** | Operate, measure, collect feedback | 30-90 days |
+| **NEW MVP** | Create **NEW BRD** for next features | 1-2 weeks |
+
+**Rules**:
+- New features = New BRD (don't expand existing BRDs indefinitely)
+- Each BRD should have 5-15 focused requirements
+- Link cycles via Cross-BRD Dependencies (`@depends: BRD-01`)
 
 ## Prerequisites
 
@@ -48,10 +69,10 @@ Create **Business Requirements Documents (BRD)** - Layer 1 artifact in the SDD w
 Before creating a BRD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-3. **Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
-5. **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
+2. **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+5. **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
 
@@ -59,7 +80,7 @@ Before creating a BRD, read:
 
 Before creating ANY BRD section, confirm:
 
-1. ✅ Read `ai_dev_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
+1. ✅ Read `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
 2. ✅ Element ID format: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dots)
 
 **Common Element Types**:
@@ -143,7 +164,7 @@ Use `doc-brd` when:
 - **MUST mark** Section 3.6 as "N/A - See Platform BRD-NN Section 3.6" and reference specific items
 - **MUST mark** Section 3.7 as "N/A - See Platform BRD-NN Section 3.7" and reference specific conditions
 
-**Reference**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
+**Reference**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
 
 ## BRD-Specific Guidance
 
@@ -151,11 +172,11 @@ Use `doc-brd` when:
 
 **Primary Template**:
 
-**BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
+**BRD-MVP-TEMPLATE.md** - Comprehensive business requirements (general purpose)
 - Use for: All business requirements documents
 - Sections: Complete 18-section structure
 - Best for: Complex projects, regulatory compliance needs
-- Location: `ai_dev_flow/01_BRD/BRD-TEMPLATE.md`
+- Location: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 
 **Note**: Use the comprehensive template for all BRD documents. For simpler requirements, complete only the essential sections and mark others as "N/A - Not applicable for this scope".
 
@@ -171,16 +192,16 @@ Use `doc-brd` when:
 **Monolithic Structure** - for MVP/small documents:
 - **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` (INSIDE nested folder)
 - **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
-- **Template**: `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 - **CRITICAL**: Even monolithic BRDs MUST be in a nested folder
 
 **Section-Based Structure** - for large/complex documents:
 - **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
 - **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
-- Index template: `ai_dev_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/01_BRD/BRD-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ### 2. Required Sections (18 Total)
 
@@ -193,36 +214,80 @@ Use `doc-brd` when:
 - Status (Draft, In Review, Approved, Superseded)
 - Document Revision History table
 
-**Core Sections**:
-1. Executive Summary
-2. Business Context
-3. Stakeholder Analysis
-4. Business Requirements
-5. Success Criteria
-6. Constraints and Assumptions
-7. **Architecture Decision Requirements** (topics needing ADRs, NOT specific ADR numbers)
-8. Risk Assessment
-9. Traceability (Section 7 format from SHARED_CONTENT.md)
-10-16. Additional content sections (see BRD-TEMPLATE.md for full structure)
-17. **Glossary** - Domain terms and definitions
+**Core Sections (18-Section Structure)**:
+1. Introduction - Purpose, scope, audience
+2. Business Objectives - Goals, hypothesis, metrics
+3. Project Scope - Boundaries, workflows
+4. Stakeholders - Decision makers
+5. User Stories - High-level needs
+6. Functional Requirements - Business capabilities
+7. **Quality Attributes** - Performance, security, **ADR Topics (Section 7.2)**
+8. Business Constraints and Assumptions - Limitations
+9. Acceptance Criteria - Success measures
+10. Business Risk Management - Risk register
+11. Implementation Approach - Phases, rollout
+12. Support and Maintenance - Support model
+13. Cost-Benefit Analysis - ROI, costs
+14. **Project Governance** - Decision authority, **approval (14.5)**
+15. **Quality Assurance** - QA standards, testing strategy
+16. **Traceability** - Requirements matrix, health score
+17. **Glossary** - Terms (6 subsections: 17.1-17.6)
 18. **Appendices** - Supporting materials and references
 
 **Platform BRD Additional Sections**:
 - **3.6 Technology Stack Prerequisites** (MUST populate for Platform BRD)
 - **3.7 Mandatory Technology Conditions** (MUST populate for Platform BRD)
 
-### 3. Strategy References (MANDATORY)
+### 3. Upstream Source Configuration
 
-**ALWAYS START WITH STRATEGY**: Read relevant `{project_root}/strategy/` documents FIRST
+BRDs can be created with or without upstream reference documents.
 
-**Reading Order**:
-1. `{project_root}/strategy/README.md` - Performance targets, strategy goals
-2. `{project_root}/strategy/strategy_overview.md` - Strategic framework
-3. `{project_root}/strategy/core_algorithm.md` - Primary algorithm specifications
-4. `{project_root}/strategy/risk_management.md` - Risk management policies
-5. `{project_root}/strategy/selection_criteria/` - Entry criteria
+#### Default: No Upstream Sources
 
-**Every BRD MUST cite specific strategy document sections in Traceability section.**
+Most BRDs are created from stakeholder interviews, product ideas, or business
+requirements without formal source documents. Use the default configuration:
+
+```yaml
+custom_fields:
+  upstream_mode: "none"  # Default - no drift detection
+```
+
+#### With Reference Documents
+
+If BRD content is derived from documents in `docs/00_REF/`, configure tracking:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"  # Relative to BRD location
+```
+
+#### Multiple Reference Folders
+
+For nested or multiple reference folders:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path:
+    - "../../00_REF/source_docs/"
+    - "../../00_REF/foundation/"
+    - "../../00_REF/internal_ops/cloud_cost_monitoring/"
+```
+
+#### Path Resolution
+
+Paths are relative to the BRD file location:
+- BRD at: `docs/01_BRD/BRD-01_platform/BRD-01.0_index.md`
+- REF at: `docs/00_REF/source_docs/`
+- Path: `"../../00_REF/source_docs/"`
+
+#### Behavior Summary
+
+| upstream_mode | upstream_ref_path | Drift Detection |
+|---------------|-------------------|-----------------|
+| `"none"` (default) | ignored | Skipped |
+| `"ref"` | required | Tracks specified path(s) |
 
 ### 4. Architecture Decision Requirements Section (7.2) - MANDATORY
 
@@ -362,7 +427,7 @@ Cost estimates                Evaluation criteria        Selected approach
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Reference**: See `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md` Section 9 for complete guidelines
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md` Section 9 for complete guidelines
 
 ### 5. Document Control Section Positioning
 
@@ -420,10 +485,11 @@ Examples:
 ## Upstream/Downstream Artifacts
 
 **Upstream Sources** (what drives BRD creation):
-- Strategy documents (`{project_root}/strategy/`)
-- Business owner requirements
+- Reference documents (`docs/00_REF/`) - if `upstream_mode: "ref"`
+- Business owner requirements (verbal/written)
+- Stakeholder interviews
 - Market analysis
-- Stakeholder inputs
+- Product ideas
 
 **Downstream Artifacts** (what BRD drives):
 - **PRD** (Layer 2) - Product requirements derived from BRD
@@ -492,14 +558,27 @@ Fill all 18 required sections following template structure.
 
 List topics needing architectural decisions (do NOT reference specific ADR numbers).
 
-### Step 9: Add Strategy References
+### Step 9: Configure Upstream Sources
 
-In Traceability section, link to specific `{project_root}/strategy/` sections.
+If BRD is derived from reference documents in `docs/00_REF/`:
+
+```yaml
+custom_fields:
+  upstream_mode: "ref"
+  upstream_ref_path: "../../00_REF/source_docs/"
+```
+
+If BRD created from scratch (stakeholder input, product ideas):
+
+```yaml
+custom_fields:
+  upstream_mode: "none"  # Default - drift detection skipped
+```
 
 ### Step 10: Create/Update Traceability Matrix
 
 **MANDATORY**: Create or update `docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- Use template: `ai_dev_ssd_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - Add BRD entry with upstream sources and downstream artifacts
 - Update traceability matrix in same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
 
@@ -508,10 +587,10 @@ In Traceability section, link to specific `{project_root}/strategy/` sections.
 Run validation scripts:
 ```bash
 # BRD structure validation
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_*.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_*.md
 
 # Link integrity
-./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
+python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
 ```
 
 ### Step 12: Commit Changes
@@ -524,7 +603,7 @@ Commit BRD file and traceability matrix together.
 
 **BRD-Specific Validation**:
 ```bash
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform.md
 ```
 
 **Quality Gates Validation**:
@@ -548,13 +627,18 @@ Commit BRD file and traceability matrix together.
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
+**BRD Diagram Contract (MANDATORY)**:
+- Include `@diagram: c4-l1` and `@diagram: dfd-l0`
+- If sequence diagram exists, include one sequence contract tag (`@diagram: sequence-sync|sequence-async|sequence-error`)
+- Add intent header fields above each required diagram block: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
 
 ## Common Pitfalls
 
 1. **Referencing ADR numbers**: Don't write "See ADR-033" in Architecture Decision Requirements section (ADRs don't exist yet)
 2. **Wrong sections 3.6/3.7 treatment**: Platform BRD must populate, Feature BRD must reference Platform BRD
-3. **Missing strategy references**: Every BRD must cite `{project_root}/strategy/` sections
+3. **Wrong upstream_mode**: Set `upstream_mode: "ref"` only if deriving from `docs/00_REF/` documents
 4. **Document Control not first**: Must be at very top before all numbered sections
 5. **Skipping traceability matrix**: MANDATORY to create/update matrix
 
@@ -577,10 +661,10 @@ LOOP:
 
 ```bash
 # BRD structure validation (primary)
-./ai_dev_flow/scripts/validate_brd_template.sh docs/01_BRD/BRD-NN_slug.md
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
 
 # Link integrity validation
-./ai_dev_flow/scripts/validate_links.py --path docs/01_BRD/
+python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
 
 # Quality gates validation
 ./scripts/validate_quality_gates.sh docs/01_BRD/BRD-NN_slug.md
@@ -647,15 +731,15 @@ For supplementary documentation related to BRD artifacts:
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 
-**Reference**: See `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md` for validation details.
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 
-- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **Platform vs Feature Guide**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md`
-- **BRD Creation Rules**: `ai_dev_flow/01_BRD/BRD_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
-- **BRD README**: `ai_dev_flow/01_BRD/README.md`
+- **Main Guide**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
@@ -681,5 +765,7 @@ For supplementary documentation related to BRD artifacts:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-25 | Updated 18-section structure with correct section names; Added sections 12 (Support), 14 (Governance with 14.5 Approval), 15 (QA), expanded 16 (Traceability with 16.1-16.4), expanded 17 (Glossary with 17.1-17.6) |
+| 2.1 | 2026-02-24 | Added upstream_mode and upstream_ref_path fields for optional drift detection; Removed mandatory @strategy: tags (not applicable universally); Updated Section 3 to Upstream Source Configuration |
 | 2.0 | 2026-02-08 | Added element code 32 (Architecture Topic); Added Section 7.2 (Architecture Decision Requirements) with 7 mandatory topic categories; Updated to 18-section structure; Integrated doc-naming skill for element ID validation; Added Alternatives Overview and Cloud Provider Comparison tables |
 | 1.0 | 2025-01-06 | Initial version |

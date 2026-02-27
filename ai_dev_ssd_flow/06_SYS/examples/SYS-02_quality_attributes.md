@@ -32,7 +32,7 @@ custom_fields:
 | **Author** | Platform Architecture Team |
 | **Owner** | Platform Engineering Team |
 | **Priority** | High |
-| **REQ-Ready Score** | [PASS] 95% (Target: ≥85% for MVP) |
+| **REQ-Ready Score** | [PASS] 95% (Target: ≥90%) |
 
 ---
 
@@ -62,9 +62,9 @@ This document defines quality attribute requirements for the e-commerce platform
 - Security baseline (authentication, encryption)
 - Observability fundamentals (logging, metrics, alerting)
 
-**Excluded Capabilities (Post-MVP)**:
+**Excluded Capabilities (Next MVP Cycle)**:
 - Advanced scalability patterns - Reason: Not needed at MVP scale
-- Compliance certifications (SOC2, PCI-DSS) - Reason: Post-MVP priority
+- Compliance certifications (SOC2, PCI-DSS) - Reason: Next cycle priority
 - Multi-region disaster recovery - Reason: Single region for MVP
 
 ### 3.2 External Dependencies
@@ -431,7 +431,7 @@ flowchart LR
 > - This example demonstrates quality attributes using SYS-MVP-TEMPLATE.md structure
 > - Focus on MVP-essential performance, reliability, security, and observability
 > - Uses unified 4-segment ID format (SYS.NN.TT.SS)
-> - REQ-Ready Score threshold: >=85% for MVP
+> - REQ-Ready Score threshold: >=90%
 
 ---
 

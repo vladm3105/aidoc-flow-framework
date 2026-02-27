@@ -101,7 +101,7 @@ Choose split criteria (in priority order):
 
 - [ ] Identify 3-8 logical sections (not too many, not too few)
 - [ ] Estimate scenarios per section (target: 6-12 scenarios)
-- [ ] Estimate lines per section (target: 300-400 lines, max 500)
+- [ ] Estimate lines per section (target: 600-700 lines, max 800)
 - [ ] Map EARS requirements to sections
 - [ ] Assign section numbers sequentially (1, 2, 3, 4...)
 - [ ] Define section slugs (lowercase, underscores)
@@ -161,9 +161,9 @@ For each section file:
 
 ## Phase 4: Handle Oversized Sections (If Needed)
 
-### When Section Exceeds 500 Lines
+### When Section Exceeds 800 Lines
 
-If a section file exceeds 500 lines or 12 scenarios:
+If a section file exceeds 800 lines or 12 scenarios:
 
 **Option A: Create Subsections**
 
@@ -175,7 +175,7 @@ If a section file exceeds 500 lines or 12 scenarios:
   @parent_doc: BDD-NN
   @index: BDD-NN.0_index.md
   ```
-- [ ] Each subsection ≤500 lines, ≤12 scenarios
+- [ ] Each subsection ≤800 lines, ≤12 scenarios
 
 **Option B: Create Aggregator (5+ Subsections)**
 
@@ -260,7 +260,7 @@ python ai_dev_flow/04_BDD/scripts/validate_bdd_suite.py \
 - [ ] NO `BDD-NN_{slug}/` directory structure
 
 **Section File Quality**:
-- [ ] No `.feature` exceeds 500 lines
+- [ ] No `.feature` exceeds 800 lines
 - [ ] No Feature block exceeds 12 scenarios
 - [ ] No non-Gherkin Markdown in `.feature` files
 - [ ] All quantitative values use `@threshold:` keys
@@ -347,7 +347,7 @@ git commit -m "feat(bdd): add BDD-NN [Suite Title] section-based suite
 - Index file: BDD-NN.0_index.md
 - Section files: BDD-NN.1 through BDD-NN.[N]
 - Implemented threshold registry integration
-- All validation checks passed (500-line limit, 12-scenario limit)
+- All validation checks passed (800-line limit, 12-scenario limit)
 - EARS coverage: [X] requirements across [Y] scenarios
 
  Generated with [Claude Code](https://claude.com/claude-code)
@@ -377,7 +377,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 **Fix**: Create index file from `BDD-SECTION-0-TEMPLATE.md`
 
-### Issue: "Section file exceeds 500 lines"
+### Issue: "Section file exceeds 800 lines"
 
 **Fix**: Split into subsections using `BDD-NN.SS.mm_{slug}.feature` format
 

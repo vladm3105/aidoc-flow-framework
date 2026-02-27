@@ -28,7 +28,7 @@ Invoke when user requests validation of CTR documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/08_CTR/CTR_SCHEMA.yaml`
 Layer: 8
 Artifact Type: CTR
 
@@ -93,7 +93,7 @@ docs/08_CTR/
 Required custom_fields:
   - document_type: ["ctr", "template"]
   - artifact_type: "CTR"
-  - layer: 9
+  - layer: 8
   - architecture_approaches: [array format]
   - priority: ["primary", "shared", "fallback"]
   - development_status: ["active", "draft", "deprecated", "reference"]
@@ -116,38 +116,29 @@ Forbidden tag patterns:
 - Schema: `.yaml` file
 - Pattern: `CTR-NNN_descriptive_name.md` + `CTR-NNN_descriptive_name.yaml`
 
-**Required Sections (20 sections in 5 Parts):**
+**Required Sections (12 Sections + 2 Optional Appendices):**
 
-Part 1: Contract Context and Requirements
-- Title (H1): `# CTR-NNN: Title`
-- Section 1: Document Control
-- Section 2: Status
-- Section 3: Context (Problem Statement, Background, Driving Forces, Constraints)
-- Section 4: Contract Definition (Interface Overview, Parties, Communication Pattern)
-- Section 5: Requirements Satisfied
+| Section | Title | Required |
+|---------|-------|----------|
+| Title | `# CTR-NN: Title` (H1) | MANDATORY |
+| 1 | Document Control | MANDATORY |
+| 2 | Context | MANDATORY |
+| 3 | Contract Definition | MANDATORY |
+| 4 | Requirements Satisfied | MANDATORY |
+| 5 | Interface Definition | MANDATORY |
+| 6 | Error Handling | MANDATORY |
+| 7 | Quality Attributes | MANDATORY |
+| 8 | Versioning Strategy | MANDATORY |
+| 9 | Examples | MANDATORY |
+| 10 | Verification | MANDATORY |
+| 11 | Traceability | MANDATORY |
+| 12 | References | MANDATORY |
 
-Part 2: Interface Specification and Schema
-- Section 6: Schema Reference (YAML file link)
-- Section 7: Interface Definition (Endpoints/Functions/Messages)
-- Section 8: Error Handling (Error Codes, Failure Modes)
-- Section 9: Consequences (Positive/Negative Outcomes)
-
-Part 3: Quality Attributes and Operations
-- Section 10: Quality Attributes (Performance, Reliability, Security)
-- Section 11: Versioning Strategy (Version Policy, Compatibility, Deprecation)
-- Section 12: Examples (Request/Response)
-- Section 13: Monitoring & Observability
-- Section 14: Alternatives Considered
-
-Part 4: Testing and Implementation
-- Section 15: Verification (Contract Testing, BDD Scenarios)
-- Section 16: Impact Analysis (Affected Components, Migration, Security)
-- Section 17: Related Contracts
-- Section 18: Implementation Notes
-
-Part 5: Traceability and Documentation
-- Section 19: Traceability
-- Section 20: References
+**Optional Appendices**:
+| Section | Title | Required |
+|---------|-------|----------|
+| Appendix A | Alternatives Considered | OPTIONAL |
+| Appendix B | Implementation Notes | OPTIONAL |
 
 **Document Control Required Fields:**
 - Project Name
@@ -213,7 +204,7 @@ Part 5: Traceability and Documentation
 | CTR-E005 | error | Forbidden tag pattern detected |
 | CTR-E006 | error | Missing required section |
 | CTR-E007 | error | Multiple H1 headings detected |
-| CTR-E008 | error | Section numbering not sequential (1-20) |
+| CTR-E008 | error | Section numbering not sequential (1-12) |
 | CTR-E009 | error | Document Control missing required fields |
 | CTR-E010 | error | Missing companion YAML schema file |
 | CTR-E011 | error | YAML schema is not valid OpenAPI 3.x or JSON Schema |
@@ -250,7 +241,7 @@ python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/ --verbose
 1. Parse YAML frontmatter
 2. Check required metadata fields
 3. Validate tag taxonomy
-4. Verify section structure (1-20)
+4. Verify section structure (1-12)
 5. Validate Document Control table
 6. Check companion YAML schema file exists
 7. Validate YAML schema (OpenAPI 3.x or JSON Schema)
@@ -302,8 +293,8 @@ Info: N
 
 - **CTR Skill**: `.claude/skills/doc-ctr/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
-- **CTR Schema**: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
+- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+- **CTR Schema**: `ai_dev_ssd_flow/08_CTR/CTR_SCHEMA.yaml`
 
 ---
 

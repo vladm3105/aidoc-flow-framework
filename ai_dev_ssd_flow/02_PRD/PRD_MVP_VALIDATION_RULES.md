@@ -14,35 +14,22 @@ custom_fields:
 
 # =============================================================================
 #  Document Role: Validates PRD-MVP-TEMPLATE.md (default)
-# - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
+# - Authority: PRD-MVP-TEMPLATE.md is the standard for PRD structure (MVP → PROD → NEW MVP lifecycle)
 # - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from PRD_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "PRD Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-2-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: PRD
-  layer: 2
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
 > - Apply these rules after PRD creation or modification
-> - **Authority**: Validates compliance with `PRD-MVP-TEMPLATE.md` (primary standard; full template archived)
+> - **Authority**: Validates compliance with `PRD-MVP-TEMPLATE.md` (standard template)
 > - **Scope**: Use for quality gates before committing PRD changes
 
 # PRD Validation Rules Reference
 
 ## MVP Validation Profile (DEFAULT)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using enterprise profile.
 
 ### MVP Detection
 
@@ -92,7 +79,7 @@ Validation handling: Recognized as info-level (non-blocking). Reported for visib
 **Last Updated**: 2025-11-26T00:00:00
 **Purpose**: Complete validation rules for PRD documents
 **Script**: `python 02_PRD/scripts/validate_prd.py`
-**Primary Template**: `PRD-MVP-TEMPLATE.md` (full template archived)
+**Primary Template**: `PRD-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
 
 ---
@@ -334,7 +321,7 @@ All PRD requirements must include:
 **Resolution Steps**:
 1. Add missing section with correct header format
 2. Populate with substantive content (not "TBD" or "TODO")
-3. Follow section-specific requirements from PRD-MVP-TEMPLATE.md (full template archived)
+3. Follow section-specific requirements from PRD-MVP-TEMPLATE.md (standard template)
 
 ### CHECK 6: section Title Consistency
 
@@ -342,7 +329,7 @@ All PRD requirements must include:
 **Type**: Warning (recommended fix)
 
 **Title Matching Rules**:
-- section titles must match PRD-MVP-TEMPLATE.md character-for-character (full template archived)
+- section titles must match PRD-MVP-TEMPLATE.md character-for-character (standard template)
 - Capitalization must be identical
 - Special markers like (MANDATORY) must be included where specified
 
@@ -390,7 +377,7 @@ All PRD requirements must include:
 ```
 
 **Resolution Steps**:
-1. Add scope note from PRD-MVP-TEMPLATE.md (full template archived)
+1. Add scope note from PRD-MVP-TEMPLATE.md (standard template)
 2. Move EARS-level content to placeholder for future EARS document
 3. Move BDD-level content to placeholder for future BDD tests
 4. Keep only PRD-level role definitions and story summaries
@@ -495,6 +482,40 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 1. Add @brd tag referencing source BRD requirement
 2. Add planned downstream artifact tags (optional)
 3. Populate Traceability section (section 17)
+
+### CHECK 10A: Diagram Contract Validation
+
+**Purpose**: Enforce PRD-level C4/DFD/sequence diagram contract
+**Type**: Error (blocking for missing tags and missing exception path)
+
+**Required Tags**:
+- `@diagram: c4-l2`
+- `@diagram: dfd-l1`
+- `@diagram: sequence-sync|sequence-async|sequence-error`
+
+**Required Sequence Rule**:
+- If Mermaid `sequenceDiagram` is present, at least one explicit `alt` or `else` path must exist.
+
+**Required Intent Header Fields** (warning if missing):
+- `diagram_type`
+- `level`
+- `scope_boundary`
+- `upstream_refs`
+- `downstream_refs`
+
+**Error Messages**:
+```
+[FAIL] PRD-E023: Missing required PRD diagram tag @diagram: c4-l2
+[FAIL] PRD-E024: Missing required PRD diagram tag @diagram: dfd-l1
+[FAIL] PRD-E025: Missing required PRD diagram tag @diagram: sequence-*
+[FAIL] PRD-E026: Sequence diagram missing explicit exception/alternate path (alt/else)
+[WARN] PRD-W011: Diagram intent header missing required fields
+```
+
+**Resolution Steps**:
+1. Add all required PRD diagram declaration tags.
+2. Ensure sequence diagrams include explicit alternate/error branch via `alt/else`.
+3. Add missing intent header fields.
 
 ### Per-section Validation Criteria
 
@@ -693,7 +714,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
    ```
 2. Verify sequential numbering 1-21 with no gaps
 3. Check for duplicate section numbers
-4. Compare with PRD-MVP-TEMPLATE.md for correct sequence (full template archived)
+4. Compare with PRD-MVP-TEMPLATE.md for correct sequence (standard template)
 
 ### Issue 3: User Stories Scope Violations
 
@@ -706,7 +727,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 **Root Cause**: Mixing PRD-level requirements with 03_EARS/BDD-level technical details
 
 **Fix**:
-1. Add scope note from PRD-MVP-TEMPLATE.md to section 8 (full template archived)
+1. Add scope note from PRD-MVP-TEMPLATE.md to section 8 (standard template)
 2. Keep only PRD-level content:
    - User role definitions (who they are)
    - Story titles and summaries (what they need)

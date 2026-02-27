@@ -14,7 +14,9 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "2.0"
+  schema_version: "2.1"
+  last_updated: "2026-02-26"
+  total_sections: 15
 ---
 > ** Dual-Format Note**: 
 > 
@@ -112,6 +114,38 @@ custom_fields:
 - [Human staffing levels and expertise available]
 - [Maintenance windows and deployment schedules managed]
 - [Monitoring and alerting systems properly configured]
+
+### 3.4 System Diagram Contract (C4-DFD-Seq Bridge)
+[This subsection defines diagram ownership and cross-layer contract boundaries for this system.]
+
+#### Required Diagram Contract Tags
+- `@diagram: c4-l2|c4-l3` [Select applicable system scope references]
+- `@diagram: dfd-l1|dfd-l2` [Select applicable data-flow boundary references]
+- `@diagram: sequence-sync|sequence-async|sequence-error` [Select required interaction paths]
+
+#### Required Contract Fields
+- **Diagram Intent Header**:
+  - `diagram_type`: c4 | dfd | sequence
+  - `level`: l2 | l3 (SYS references), plus downstream l4 ownership reference
+  - `scope_boundary`: [System boundary statement]
+  - `upstream_refs`: [ADR/SYS IDs]
+  - `downstream_refs`: [SPEC IDs or paths]
+- **Trust Boundary Requirement**: [Define trust/data boundaries where data crosses subsystems]
+- **Sequence Path Constraints**: [List required success + failure/timeout/retry paths]
+- **Downstream Ownership Link**: [Required SPEC location implementing C4 L4 ownership]
+
+#### Example Contract Block
+```markdown
+@diagram: c4-l3
+@diagram: dfd-l2
+@diagram: sequence-error
+@diagram-scope: system-boundary
+@diagram-lifecycle: mvp-prod-newmvp
+
+downstream_c4_l4_owner: SPEC-XX / ai_dev_ssd_flow/09_SPEC/...
+required_sequence_paths: success, timeout, retry, fallback
+trust_boundaries: ingress-api, internal-service-mesh, data-store-edge
+```
 
 ## 4. Functional Requirements
 
@@ -996,7 +1030,7 @@ BDD scenarios and acceptance tests validating this system.
 
 **Document Metadata**:
 - Document format: Markdown (.md)
-- Schema version: 1.0 (MVP profile; full template archived)
+- Schema version: 1.0 (standard template)
 - Line count: [Auto-generated on save]
 - Last modified: [Auto-generated on save]
 - Git hash: [Commit SHA when checked in]
@@ -1188,3 +1222,19 @@ BDD scenarios and acceptance tests validating this system.
 **Template Version**: 1.0
 **Next Review Date**: YYYY-MM-DDTHH:MM:SS (Quarterly review recommended)
 **Technical Authority**: [Name/Role for technical clarification]
+
+---
+
+**Document Version**: 1.0
+**Template Version**: 2.1 (MVP - 15 sections)
+**Last Updated**: 2026-02-26
+**Maintained By**: [Systems Architecture Team]
+
+---
+
+> **MVP Template Notes**:
+> - This is the standard SYS template (15 sections: 1-15)
+> - Single file - no sectioning per user requirement
+> - Focus on system requirements + quality attributes
+> - Maintains ai_dev_flow framework compliance
+> - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full SYS" template)

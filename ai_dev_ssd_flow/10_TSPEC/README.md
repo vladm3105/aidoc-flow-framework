@@ -21,6 +21,8 @@ custom_fields:
 
 TSPEC formalizes test specifications between SPEC (L9) and TASKS (L11) to enable Test-Driven Development (TDD) workflow. This layer defines test cases, coverage matrices, and quality gates before implementation begins.
 
+**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (TSPEC-02, TSPEC-03, etc.), not template changes.
+
 ## Test Type Categories
 
 | Code | Type | Abbreviation | Directory | Source Artifacts | Purpose |

@@ -37,8 +37,8 @@ custom_fields:
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 | **Verification Method** | BDD + Integration Test |
 | **Assigned Team** | DevOps Team |
-| **SPEC-Ready Score** | [PASS] 85% (Target: ≥70%) |
-| **CTR-Ready Score** | [PASS] 75% (Target: ≥70%) |
+| **SPEC-Ready Score** | [PASS] 92% (Target: ≥90%) |
+| **CTR-Ready Score** | [PASS] 91% (Target: ≥90%) |
 | **Template Version** | 1.0 |
 
 ---

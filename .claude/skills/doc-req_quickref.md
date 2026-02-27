@@ -2,7 +2,7 @@
 
 **Skill ID:** doc-req
 **Layer:** 7 (Atomic Requirements)
-**Purpose:** Create atomic, implementation-ready requirements using REQ v3.0 format
+**Purpose:** Create atomic, implementation-ready requirements using REQ MVP format
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ skill: "doc-req"
 ## What This Skill Does
 
 1. Decompose SYS into atomic requirements
-2. Apply REQ v3.0 format (12 required sections)
+2. Apply REQ MVP format (11 required sections)
 3. Calculate SPEC-readiness score (≥90% required)
 4. Define interface specifications and data schemas
 5. Document error handling and configuration
@@ -27,43 +27,44 @@ skill: "doc-req"
 ## Output Location
 
 ```
-docs/REQ/REQ-{domain}-{subdomain}-NNN_{slug}.md
+docs/07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md
 ```
 
-## REQ v3.0 Format (12 Sections)
+## REQ MVP Format (11 Sections)
 
-1. Requirement Overview
-2. Acceptance Criteria
-3. **Interface Specifications** (NEW)
-4. **Data Schemas** (NEW)
-5. **Error Handling Specifications** (NEW)
-6. **Configuration Specifications** (NEW)
-7. **Quality Attributes** (NEW)
-8. Dependencies
-9. Implementation Guidance
-10. Testing Strategy
-11. Verification Methods
-12. Traceability
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | Document Control | Metadata, SPEC-Ready Score |
+| 2 | Requirement Description | Atomic requirement + context + scenario |
+| 3 | Functional Specification | Core capabilities + business rules + I/O |
+| 4 | Interface Definition | API contract + schemas/DTOs |
+| 5 | Error Handling | Exception catalog + recovery strategies |
+| 6 | Quality Attributes | Performance/security/reliability targets |
+| 7 | Configuration | Parameters, feature flags, validation |
+| 8 | Testing Requirements | Unit, Integration, BDD scenarios |
+| 9 | Acceptance Criteria | ≥3 measurable criteria (MVP) |
+| 10 | Traceability | Upstream chain, downstream artifacts, tags |
+| 11 | Implementation Notes | Technical approach, code locations, dependencies |
 
 ## SPEC-Ready Score
 
 ```markdown
-**Current Score**: 11/12 sections = 91.7% ✓
-**Quality Gate**: ≥90% (11/12 sections minimum)
+**Current Score**: 10/11 sections = 91% ✓
+**Quality Gate**: ≥90% (10/11 sections minimum)
 ```
 
 ## Upstream/Downstream
 
 ```
-BRD, PRD, EARS, BDD, ADR, SYS → REQ → IMPL, CTR, SPEC
+BRD, PRD, EARS, BDD, ADR, SYS → REQ → CTR, SPEC, TASKS
 ```
 
 ## Quick Validation
 
-- [ ] All 12 required sections completed
+- [ ] All 11 required sections completed
 - [ ] SPEC-Ready Score ≥90%
-- [ ] Domain/subdomain organization in ID
-- [ ] Interface specifications detailed (Section 3)
+- [ ] Nested folder structure (REQ-NN_{slug}/)
+- [ ] Interface specifications detailed (Section 4)
 - [ ] Data schemas with validation rules (Section 4)
 - [ ] Atomic (single responsibility per REQ)
 - [ ] Cumulative tags: @brd through @sys (6 tags)
@@ -77,5 +78,5 @@ ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md
 ## Related Skills
 
 - `doc-sys` - System requirements (upstream)
-- `doc-impl` - Implementation approach (downstream, optional)
+- `doc-ctr` - Data contracts (downstream, optional)
 - `doc-spec` - Technical specifications (downstream)

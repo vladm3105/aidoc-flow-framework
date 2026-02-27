@@ -1,5 +1,5 @@
 ---
-title: "BRD-MVP-TEMPLATE: Business Requirements Document (MVP)"
+title: "BRD-MVP-TEMPLATE: Business Requirements Document (MVP-First)"
 tags:
   - brd-template
   - mvp-template
@@ -10,11 +10,14 @@ custom_fields:
   document_type: template
   artifact_type: BRD
   layer: 1
-  template_variant: mvp
+  template_variant: mvp-first
+  lifecycle: mvp-prod-newmvp
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_version: "1.0"
+  schema_version: "1.2"
+  last_updated: "2026-02-25"
+  total_sections: 18
 ---
 
 > ** Dual-Format Note**:
@@ -25,55 +28,42 @@ custom_fields:
 > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
 > ---
 
-# BRD-MVP-TEMPLATE: Business Requirements Document (MVP)
+# BRD-MVP-TEMPLATE: Business Requirements Document (MVP-First)
 
 <!--
 AI_CONTEXT_START
 Role: AI Product Owner / Business Analyst
-Objective: Create a streamlined MVP Business Requirements Document.
+Objective: Create a Business Requirements Document for one MVP cycle.
 Constraints:
-- Focus strictly on MVP scope (5-15 core requirements).
-  - Keep descriptions concise and avoiding generic filler.
-  - Maintain single-file structure.
-  - Prioritize P1 (Must Have) features.
-  template_variant: mvp
----
-title: "BRD-MVP-TEMPLATE: Streamlined Business Requirements Document for MVP"
-tags:
-  - brd-template
-  - mvp-template
-  - layer-1-artifact
-  - document-template
-custom_fields:
-  document_type: brd
-  artifact_type: BRD
-  layer: 1
-  architecture_approaches: [ai-agent-based]
-  priority: shared
-  development_status: draft
-  template_for: mvp-business-requirements-document
-  descriptive_slug: null
-  schema_reference: "BRD_MVP_SCHEMA.yaml"
-  schema_version: "1.0"
-  schema_status: optional
-  template_profile: mvp
-  template_source: "BRD-MVP-TEMPLATE.md"
-  creation_rules_reference: "BRD_MVP_CREATION_RULES.md"
-  validation_rules_reference: "BRD_MVP_VALIDATION_RULES.md"
-  traceability_matrix_template: "BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
----
+- Focus on MVP scope (5-15 core requirements per cycle)
+- Keep descriptions concise, avoid generic filler
+- Maintain single-file structure (monolithic)
+- Prioritize P1 (Must Have) features
+- Lifecycle: MVP → PROD → NEW MVP (iterative)
+- New features = new BRD, not indefinite expansion
+  template_variant: standard
+  lifecycle: mvp-prod-newmvp
+AI_CONTEXT_END
+-->
 
-> **Purpose**: This is a **streamlined BRD template** for Minimum Viable Product (MVP) projects. It maintains framework compliance while reducing documentation overhead for projects focused on delivering core functionality quickly.
+> **Purpose**: This is the **standard BRD template** for all projects. The MVP-first approach enables rapid delivery with iterative enhancement.
+>
+> **Lifecycle**: **MVP → PROD → NEW MVP**
+> 1. **MVP**: Start with core features (5-15 requirements), deploy to production
+> 2. **PROD**: Operate, gather feedback, measure success
+> 3. **NEW MVP**: Create a new BRD for next feature set, repeat cycle
 >
 > **Use this template when**:
-> - Building an MVP with 5-15 core features
-> - Fast iteration is prioritized over comprehensive planning
-> - You need working product for real users, not just technical validation
-> - Team size is small (2-10 people)
+> - Starting any new project or feature set
+> - Building core functionality for production deployment
+> - Fast iteration with real user feedback
+> - Any team size (scales from 2 to 50+ people)
+>
+> **Key Principle**: Each BRD represents ONE iteration cycle. When the current MVP reaches production and you need new features, create a **new BRD** for the next MVP cycle rather than expanding the existing BRD indefinitely.
 
-> **Section Mapping Note**: MVP template uses condensed section numbering tailored for MVP scope.
+> **Section Structure**: 18 sections provide complete coverage. Sections can be expanded as the product matures within the current MVP cycle.
 
-> **Validation Note**: MVP templates are intentionally streamlined; some full-template checks will report expected differences (e.g., reduced sections). See `scripts/README.md` → "MVP Template Validation" for guidance.
+> **Validation**: All BRDs validated against `BRD_MVP_SCHEMA.yaml`. See `scripts/README.md` for validation guidance.
 
 > References: Schema `BRD_MVP_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
@@ -90,7 +80,7 @@ custom_fields:
 | **Prepared By** | [Business Analyst name] |
 | **Status** | [Draft / In Review / Approved] |
 | **MVP Target Launch** | [Target date] |
-| **PRD-Ready Score** | [Score]/100 (Target: ≥90/100) |
+| **PRD-Ready Score** | [Score]/100 (MVP Target: ≥90/100) |
 
 ### Executive Summary (MVP)
 [One-paragraph elevator pitch of the MVP: target users, core value, and expected impact.]
@@ -134,7 +124,7 @@ This document covers:
 ### 1.4 Document Conventions
 - **Must/Shall:** MVP critical requirements (P1)
 - **Should:** Important for MVP (P2)
-- **Future:** Post-MVP enhancements (documented but deferred)
+- **Future:** Next MVP cycle enhancements (documented but deferred)
 
 ---
 
@@ -203,7 +193,7 @@ This document covers:
 
 ### 3.3 Explicitly Out-of-Scope for MVP
 
-**Future Enhancements (Post-MVP)**:
+**Future Enhancements (Next MVP Cycle)**:
 1. [Feature deferred - e.g., "Multiple payment corridors"]
 2. [Feature deferred - e.g., "Cash pickup options"]
 3. [Feature deferred - e.g., "Mobile apps (web-only for MVP)"]
@@ -212,6 +202,8 @@ This document covers:
 **Rationale**: MVP focuses on proving core value proposition; additional features added based on user feedback.
 
 ### 3.4 MVP Workflow (High-Level)
+
+#### 3.4.1 End-to-End Workflow Diagram
 
 **End-to-End User Journey**:
 
@@ -238,6 +230,56 @@ sequenceDiagram
 3. [Step 3 - User action and business outcome]
 4. [Step 4 - User action and business outcome]
 5. [Step 5 - User action and business outcome]
+
+#### 3.4.2 Exception Handling Workflow
+
+**Exception Categories**:
+
+| Category | Trigger | Business Response | Recovery Path |
+|----------|---------|-------------------|---------------|
+| Validation Failure | Invalid input | Clear error message | Retry with corrections |
+| Partner Error | External system failure | Queued retry | Manual escalation after 3 retries |
+| Timeout | Processing delay | Status notification | Automatic retry |
+| Payment Decline | Insufficient funds, card error | Notify user | Alternative payment method |
+
+**Exception Handling Diagram**:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant Partner
+
+    User->>App: Initiate action
+    alt Success
+        App->>User: Confirmation
+    else Validation Error
+        App->>User: Error with guidance
+    else Partner Unavailable
+        App->>User: Temporary unavailable
+        App->>Support: Alert triggered
+    end
+```
+
+#### 3.4.3 Optional Business Visualization (Transition Policy)
+
+For BRD, diagrams are advisory and non-blocking. Canonical design enforcement starts in PRD.
+
+Recommended BRD tags:
+- `@diagram: c4-l1` (system context)
+- `@diagram: dfd-l0` (top-level data movement)
+
+Optional:
+- Key business `sequenceDiagram` for critical journey timing.
+
+Example declaration block (optional):
+
+```markdown
+@diagram: c4-l1
+@diagram: dfd-l0
+@diagram-scope: business-boundary
+@diagram-lifecycle: mvp-prod-newmvp
+```
 
 ### 3.5 MVP Technology Stack
 
@@ -266,7 +308,7 @@ sequenceDiagram
 - **Compliance/Legal**: [Department] - Regulatory guidance (if applicable)
 - **Early Users/Beta Testers**: [Description] - Feedback loop
 
-> **Full stakeholder matrix**: Deferred to full product phase. MVP focuses on minimal approval chain.
+> **Extended stakeholder matrix**: Expand in subsequent MVP cycles as organization grows. Each cycle focuses on minimal approval chain.
 
 ---
 
@@ -274,9 +316,9 @@ sequenceDiagram
 
 > **Complete user stories**: Detailed user story tables belong in PRD. This section provides high-level summaries for MVP.
 
-> **MVP vs Full BRD**: These user story tables are simplified for MVP scope (5-10 stories).
-> Full BRD Section 5 would contain only category summaries with detailed stories in PRD.
-> For MVP, consolidated tables are acceptable to reduce document count.
+> **MVP Scope**: These user story tables are simplified for MVP scope (5-10 stories).
+> Additional stories go in PRD. Consolidated tables reduce document count.
+> New user stories for next features go in the next BRD iteration (BRD-02, etc.).
 
 **ID Format**: `BRD.NN.09.SS` (User Story)
 
@@ -302,7 +344,7 @@ sequenceDiagram
 ### 5.2 User Story Summary
 
 - **Total MVP User Stories**: [X] (P1: [Y], P2: [Z])
-- **Future Phase Stories**: [XX] (logged for post-MVP roadmap)
+- **Future Phase Stories**: [XX] (logged for next MVP cycle)
 
 ---
 
@@ -315,7 +357,7 @@ sequenceDiagram
 **Priority Definitions**:
 - **P1 (Must Have)**: Essential for MVP launch; blocks go-live if missing
 - **P2 (Should Have)**: Important but workarounds exist for MVP
-- **Future**: Post-MVP enhancements based on user feedback
+- **Future**: Next MVP cycle enhancements based on user feedback
 
 ### 6.2 MVP Functional Requirements
 
@@ -361,7 +403,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-### 6.3 Business Rules (Core Only)
+### 6.5 Business Rules (Core Only)
 
 [Document critical business rules for MVP - 5-10 rules maximum]
 
@@ -381,6 +423,16 @@ Quick Core MVP Requirements Checklist:
 ### 7.2 Architecture Decision Requirements (Streamlined for MVP)
 
 > **Framework Compliance**: All BRDs must address 7 mandatory ADR topic categories. MVP template uses streamlined format.
+
+| Topic Area | Decision Needed | Business Driver | Key Considerations |
+|------------|-----------------|-----------------|-------------------|
+| Infrastructure | Hosting & Deployment | Rapid MVP deployment | Cloud Run, App Engine, GKE |
+| Data Architecture | Database & Storage | Data persistence needs | PostgreSQL, Firestore, Cloud SQL |
+| Integration | External Systems | Partner connectivity | REST APIs, Webhooks |
+| Security | Auth & Data Protection | User trust, compliance | Firebase Auth, IAM |
+| Observability | Monitoring & Logging | Error tracking for MVP | Cloud Logging, Error Reporting |
+| AI/ML | If Applicable | Intelligent features | Vertex AI, custom models |
+| Technology Selection | Core Stack | Team expertise | React, Node.js, Python |
 
 #### 7.2.1 Mandatory ADR Topics (MVP Streamlined Format)
 
@@ -507,7 +559,7 @@ Quick Core MVP Requirements Checklist:
 | BRD.NN.02.25 | Backup frequency | Daily | P1 |
 | BRD.NN.02.26 | Recovery time (RTO) | <4 hours | P2 |
 
-> **Note**: Full product will target 99.9% uptime. MVP focuses on functionality validation.
+> **Note**: Production targets increase over time. MVP cycle focuses on functionality validation; subsequent cycles enhance reliability.
 
 ---
 
@@ -561,8 +613,9 @@ Quick Core MVP Requirements Checklist:
 - [ ] User satisfaction score ≥[rating]
 
 **90-Day Decision Gate**:
-- Proceed to full product if [criteria met]
+- Start next MVP cycle if [criteria met, new features identified]
 - Pivot if [criteria indicate different direction]
+- Maintain current state if [no new features needed]
 - Shutdown if [validation fails]
 
 ---
@@ -617,11 +670,52 @@ Quick Core MVP Requirements Checklist:
 - Limited language support ([English only, etc.])
 - Basic self-service help content only
 
-> **Full support operations**: Defined post-MVP based on user volume and feedback.
+> **Enhanced support operations**: Defined in subsequent MVP cycles based on user volume and feedback.
 
 ---
 
-## 12. Cost-Benefit Analysis
+## 12. Support and Maintenance
+
+### 12.1 Support Model (MVP)
+
+**Support Tiers**:
+
+| Tier | Scope | Response Time | Channel |
+|------|-------|---------------|---------|
+| Tier 1 | User inquiries, FAQs | [X] business hours | Email |
+| Tier 2 | Technical issues | [Y] business hours | Email, escalation |
+| Tier 3 | Critical system issues | [Z] hours | Direct contact |
+
+**Support Channels** (MVP):
+- Primary: Email support at [support@example.com]
+- Secondary: In-app help documentation
+- Future: Live chat (next MVP cycle)
+
+### 12.2 Maintenance Windows
+
+**Planned Maintenance**:
+- Frequency: [Weekly/Monthly]
+- Window: [Day] [Time range] [Timezone]
+- Notification: [X] hours advance notice
+
+**Emergency Maintenance**:
+- Criteria: Security patches, critical fixes
+- Process: Immediate deployment with retrospective notice
+
+### 12.3 Service Level Targets (MVP)
+
+| Metric | MVP Target | Next Cycle Target |
+|--------|------------|-----------------|
+| System Uptime | 95% | 99.9% |
+| Email Response | 24 business hours | 4 business hours |
+| Issue Resolution | 72 hours | 24 hours |
+| Backup Frequency | Daily | Hourly |
+
+> **Note**: Support model starts simple and scales with each MVP cycle. Enhanced support operations defined in subsequent BRDs based on user volume and feedback patterns.
+
+---
+
+## 13. Cost-Benefit Analysis
 
 **Development Costs**:
 - Team: [X] people × [Y] weeks = $[ZZZ,ZZZ]
@@ -632,13 +726,142 @@ Quick Core MVP Requirements Checklist:
 
 **ROI Hypothesis**: [Expected return or validation metric]
 
-> **Detailed cost-benefit analysis**: Deferred until MVP validates market demand.
+> **Detailed cost-benefit analysis**: Expand in subsequent MVP cycles as investment grows.
 
 ---
 
-## 13. Traceability
+## 14. Project Governance
 
-### 13.1 Upstream Dependencies
+### 14.1 Governance Structure (MVP)
+
+**Decision Authority**:
+- **Executive Sponsor**: Final approval authority for scope and budget
+- **Product Owner**: Day-to-day feature prioritization decisions
+- **Technical Lead**: Architecture and technology decisions
+
+### 14.2 Decision Authority Matrix
+
+| Decision Type | Authority | Escalation Path |
+|--------------|-----------|-----------------|
+| Scope changes | Product Owner | Executive Sponsor |
+| Architecture | Technical Lead | Product Owner |
+| Budget | Executive Sponsor | Board/Leadership |
+| Timeline | Product Owner | Executive Sponsor |
+| Resource allocation | Product Owner | Executive Sponsor |
+
+### 14.3 Status Reporting
+
+- **Frequency**: Weekly for MVP phase
+- **Format**: Status dashboard with blockers highlighted
+- **Distribution**: Executive Sponsor, Product Owner, Technical Lead
+- **Metrics Tracked**: Feature completion, bug count, user feedback
+
+### 14.4 Change Control (MVP Simplified)
+
+| Change Type | Approval | Process |
+|-------------|----------|---------|
+| Minor (clarifications) | Product Owner | Direct update, notify stakeholders |
+| Moderate (feature adjustments) | Product Owner + Technical Lead | Impact review, document decision |
+| Major (scope changes) | Executive Sponsor | Full impact assessment, formal approval |
+
+### 14.5 Approval and Sign-off
+
+#### 14.5.1 Document Approval Table
+
+| Role | Name | Title | Approval Date | Signature |
+|------|------|-------|---------------|-----------|
+| Executive Sponsor | [TBD] | [Title] | [Pending] | |
+| Product Owner | [TBD] | [Title] | [Pending] | |
+| Business Lead | [TBD] | [Title] | [Pending] | |
+| Technology Lead | [TBD] | [Title] | [Pending] | |
+
+#### 14.5.2 Approval Criteria
+
+1. All P1 requirements defined and validated
+2. Critical business risks identified with mitigation
+3. Budget estimate approved
+4. Technical feasibility confirmed
+5. Stakeholder alignment achieved
+
+#### 14.5.3 Change Control Process
+
+| Change Type | Approval Required | Version Impact |
+|-------------|------------------|----------------|
+| Minor (clarifications) | Product Owner | Patch (1.2.1) |
+| Moderate (new requirements) | PO + Tech Lead | Minor (1.3) |
+| Major (scope changes) | All stakeholders | Major (2.0) |
+
+---
+
+## 15. Quality Assurance
+
+### 15.1 Quality Standards (MVP)
+
+**Code Quality**:
+- Code review required for all changes
+- Linting and formatting enforced via CI/CD
+- No critical static analysis warnings
+
+**Testing Coverage**:
+- Unit test coverage: ≥60%
+- Integration test coverage: ≥40%
+- Critical paths: 100% covered
+
+**Security Baseline**:
+- OWASP Top 10 compliance
+- No critical/high vulnerabilities in dependencies
+- Security review before launch
+
+### 15.2 Testing Strategy (MVP)
+
+| Test Type | Scope | Automation | Priority |
+|-----------|-------|------------|----------|
+| Unit | Core business logic | Required | P1 |
+| Integration | API endpoints, database | Required | P1 |
+| E2E | Critical user paths only | Manual acceptable | P2 |
+| Security | Authentication, data protection | Required | P1 |
+| Performance | Baseline metrics | Manual acceptable | P2 |
+
+### 15.3 Quality Gates
+
+**Pre-Launch Gates**:
+- [ ] All P1 functional requirements tested
+- [ ] Security baseline validated
+- [ ] Performance baseline met (<3s page load)
+- [ ] No critical/high severity bugs open
+- [ ] User acceptance testing complete
+- [ ] Documentation reviewed
+
+**Post-Launch Gates**:
+- [ ] Error rate <1% within first 24 hours
+- [ ] No data integrity issues
+- [ ] User feedback collection active
+
+> **Note**: Detailed QA standards, defect management, and comprehensive testing protocols defined in PRD.
+
+---
+
+## 16. Traceability
+
+### 16.1 Requirements Traceability Matrix
+
+#### 16.1.1 Business Objectives → Functional Requirements
+
+| Objective ID | Objective | Related FRs | Coverage Status |
+|--------------|-----------|-------------|-----------------|
+| BRD.NN.23.01 | [Objective] | BRD.NN.01.01, BRD.NN.01.02 | [Complete/Partial/Planned] |
+| BRD.NN.23.02 | [Objective] | BRD.NN.01.03 | [Complete/Partial/Planned] |
+
+#### 16.1.2 Functional Requirements → Downstream (SPEC/TASKS)
+
+| FR ID | Requirement | Planned SPEC | Planned TASKS |
+|-------|-------------|--------------|---------------|
+| BRD.NN.01.01 | [Requirement] | SPEC-NN-01 | TASKS-NN-01 |
+| BRD.NN.01.02 | [Requirement] | SPEC-NN-01 | TASKS-NN-01 |
+
+> **Note**: Do NOT create numeric downstream references until artifacts exist. Use placeholders.
+
+#### 16.1.3 Upstream Dependencies
 
 **ID Format**: `@upstream: [artifact-type]: [ID]`
 
@@ -649,17 +872,15 @@ Quick Core MVP Requirements Checklist:
 
 > **Note**: Use `null` if no upstream artifacts exist.
 
-### 13.2 Downstream Artifacts (Expected)
+#### 16.1.4 Downstream Artifacts (Expected)
 
 **ID Format**: `@downstream: [artifact-type]: [placeholder]`
 
 - **PRD**: Product Requirements Document (Layer 2) - Detailed technical specifications
-- **03_EARS/BDD**: Test specifications (Layer 7) - Acceptance test scenarios
+- **EARS/BDD**: Test specifications (Layer 3/4) - Acceptance test scenarios
 - **ADR**: Architecture Decision Records (Layer 5) - Technology selections from Section 7
 
-> **Note**: Do NOT create numeric downstream references (PRD-#, ADR-#) until artifacts exist.
-
-### 13.3 Cross-BRD References
+### 16.2 Cross-BRD Dependencies
 
 [If this MVP depends on platform BRDs]
 
@@ -667,115 +888,174 @@ Quick Core MVP Requirements Checklist:
 |-------------|----------------|-----------|
 | Platform BRD (e.g., BRD-01) | Foundation | [Infrastructure/services required] |
 
-### 13.4 Cross-Links (Same-Layer)
+**Cross-Links** (machine-parseable tags):
+- `@depends: BRD-NN` — hard prerequisite BRD(s) that must be satisfied first
+- `@discoverability: BRD-NN (short rationale)` — related BRDs for AI search and ranking
 
-Use machine-parseable tags to document relationships between BRDs:
-- `@depends: BRD-NN` — hard prerequisite BRD(s) that must be satisfied first.
-- `@discoverability: BRD-NN (short rationale); BRD-NN (short rationale)` — related BRDs with brief reasons to aid AI search and ranking.
+### 16.3 Test Coverage Traceability
 
-Prefer these over legacy "See also …" strings to improve cross-document analysis and tooling.
+| FR ID | Unit Test | Integration Test | E2E Test |
+|-------|-----------|------------------|----------|
+| BRD.NN.01.01 | TEST-NN-UNIT-01 | TEST-NN-INT-01 | TEST-NN-E2E-01 |
+| BRD.NN.01.02 | TEST-NN-UNIT-02 | TEST-NN-INT-02 | — |
+
+> **Note**: Test IDs are placeholders. Update as tests are created in downstream artifacts.
+
+### 16.4 Traceability Summary
+
+| Metric | Value | Target |
+|--------|-------|--------|
+| BO→FR Coverage | [X]% | ≥90% |
+| FR→Test Coverage | [X]% | ≥80% |
+| Cross-BRD Links Validated | [X]% | 100% |
+| **Traceability Health Score** | [X]/100 | ≥90/100 |
 
 ---
 
-## 14. Glossary
+## 17. Glossary
 
- **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
+> **Master Glossary**: See [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
 
-### 14.1 MVP-Specific Terms
+### 17.1 Business Terms
 
 | Term | Definition | Context |
 |------|------------|---------|
-| [MVP Term 1] | [Definition] | [Where used in this BRD] |
-| [MVP Term 2] | [Definition] | [Where used in this BRD] |
+| [Term] | [Definition] | [Section reference] |
 
-> **MVP Simplification**: Full BRD requires 6 glossary subsections (17.1-17.6). MVP consolidates to:
-> - Master Glossary reference (links to shared terms)
-> - MVP-Specific Terms (project-unique terminology)
->
-> Expand to full structure during Migration to Full BRD (Section 16).
+### 17.2 Technical Terms
+
+| Term | Definition | Context |
+|------|------------|---------|
+| [Term] | [Definition] | [Section reference] |
+
+### 17.3 Domain-Specific Terms
+
+| Term | Definition | Context |
+|------|------------|---------|
+| [Term] | [Definition] | [Section reference] |
+
+### 17.4 Acronyms
+
+| Acronym | Full Form | First Use |
+|---------|-----------|-----------|
+| MVP | Minimum Viable Product | Section 1 |
+| BRD | Business Requirements Document | Section 0 |
+| PRD | Product Requirements Document | Section 16 |
+
+### 17.5 Cross-References
+
+| Term | Referenced Document | Section |
+|------|---------------------|---------|
+| [Term] | [Document] | [Section] |
+
+### 17.6 External Standards
+
+| Standard | Organization | Relevance |
+|----------|--------------|-----------|
+| [Standard] | [Org] | [How used] |
+
+> **MVP Approach**: Populate terms specific to this project. The 6-subsection structure ensures consistency. Expand content as needed during this MVP cycle or carry forward to next cycle (see Appendix C).
 
 ---
 
-## 15. Appendices
+## 18. Appendices
 
-### 15.1 Appendix A: MVP Metrics Dashboard
+### 18.1 Appendix A: MVP Metrics Dashboard
 
 | Metric | Target | Data Source | Review Frequency |
 |--------|--------|-------------|------------------|
 | [Metric 1] | [Target] | [System] | Daily |
 | [Metric 2] | [Target] | [System] | Weekly |
 
-### 15.2 Appendix B: Future Roadmap (Post-MVP)
+### 18.2 Appendix B: Next MVP Cycle Roadmap
 
-**If MVP Succeeds**:
-- Phase 2 features: [List]
-- Platform scaling: [Considerations]
-- Market expansion: [Plans]
+**After This MVP Reaches Production**:
+- Next MVP features (BRD-XX): [List candidates for next cycle]
+- Platform scaling: [Considerations for future BRDs]
+- Market expansion: [Plans for future BRDs]
 
-**Transition Criteria**:
-- MVP → Full Product requires: [Criteria]
+**Next Cycle Trigger Criteria**:
+- [ ] Current MVP stable in production (30+ days)
+- [ ] User feedback collected and analyzed
+- [ ] New features prioritized and approved
+- [ ] Resources allocated for next cycle
 
----
+### 18.3 Appendix C: MVP Lifecycle (MVP → PROD → NEW MVP)
 
-## 16. Migration to Full BRD Template
+#### C.1 The Iterative Approach
 
-### 16.1 When to Migrate
+```mermaid
+flowchart LR
+    MVP1[MVP BRD-01] --> PROD1[Production v1]
+    PROD1 --> FEEDBACK1[User Feedback]
+    FEEDBACK1 --> MVP2[NEW MVP BRD-02]
+    MVP2 --> PROD2[Production v2]
+    PROD2 --> FEEDBACK2[User Feedback]
+    FEEDBACK2 --> MVP3[NEW MVP BRD-03]
+    MVP3 --> PROD3[Production v3]
+```
 
-- [ ] MVP validation complete (30-90 day metrics achieved)
-- [ ] Product scope expanding beyond MVP features
-- [ ] Regulatory or compliance requirements demand comprehensive documentation
-- [ ] Stakeholder matrix requires formal communication plan
-- [ ] Partner integrations require detailed SLAs
+**Key Principles**:
+1. **Each MVP is a complete cycle** - BRD defines scope, development delivers, production validates
+2. **New features = New BRD** - Don't expand existing BRDs indefinitely; create new ones
+3. **BRDs are versioned iterations** - BRD-01, BRD-02, BRD-03 represent successive feature sets
+4. **Traceability links cycles** - Cross-BRD dependencies show how iterations build on each other
 
-### 16.2 Migration Steps
+#### C.2 When to Start a New MVP Cycle
 
-2. **Transfer core content**: Copy sections 1-7 from MVP to corresponding full template sections
-3. **Expand sections**: Add missing sections from full template:
-   - Extended stakeholder analysis (Section 4 in full)
-   - Detailed cost-benefit analysis (Section 8 in full)
-   - Comprehensive risk register (Section 9 in full)
-   - Full support and operations plan (Section 10 in full)
-   - Complete appendices
-4. **Update traceability**: Ensure all downstream references point to new document ID
-5. **Archive MVP version**: Move MVP BRD to archive with "superseded by BRD-NN" note
-6. **Run validation**: Execute `python3 01_BRD/01_BRD/scripts/validate_brd.py` on new document
+- [ ] Current MVP deployed to production and stable
+- [ ] User feedback collected (30-90 days)
+- [ ] New feature requirements identified
+- [ ] Current BRD scope is complete (no pending P1s)
+- [ ] Business justification for next iteration approved
 
-### 16.3 Section Mapping (MVP → Full)
+#### C.3 New MVP BRD Creation Steps
 
-| MVP Section | Full Template Section |
-|-------------|-----------------------|
-| 1. Introduction | 1. Introduction |
-| 2. Business Objectives | 2. Business Objectives |
-| 3. MVP Scope | 3. Project Scope (expand) |
-| 4. Stakeholders (Simplified) | 4. Stakeholder Analysis (expand) |
-| 5. User Stories | 5. User Stories & Personas (expand) |
-| 6. Functional Requirements | 6. Functional Requirements (expand) |
-| 7. Quality Attributes | 7. Quality Attributes (expand) |
-| 8. Constraints & Assumptions | 8. Business Constraints (expand) |
-| 9. Acceptance Criteria | 9. Risk Management (expand) |
-| 10-15 (various) | 10-17 (add full sections) |
+1. **Create new BRD**: Use this template with new BRD ID (e.g., BRD-02, BRD-03)
+2. **Reference predecessor**: Link to previous BRD in Section 16 (Cross-BRD Dependencies)
+3. **Inherit decisions**: Reference ADRs from previous cycle that still apply
+4. **Define new scope**: Focus on NEW features, not re-documenting existing functionality
+5. **Update master index**: Add new BRD to `BRD-00_index.md`
 
----
+#### C.4 Cross-Cycle Traceability
 
-## Document Control Notes
+| Current BRD | Relationship | Related BRD | Purpose |
+|-------------|--------------|-------------|---------|
+| BRD-02 | `@depends: BRD-01` | BRD-01 | Foundation platform |
+| BRD-02 | `@extends: BRD-01` | BRD-01 | Adds features to existing |
+| BRD-03 | `@depends: BRD-01, BRD-02` | Both | Builds on both cycles |
 
-**MVP Iteration Philosophy**:
-- This BRD is intentionally lean for rapid iteration
-- Detailed requirements will be evolved based on user feedback
-- Expect frequent updates during MVP phase
+#### C.5 When to Expand vs Create New
+
+| Scenario | Action | Rationale |
+|----------|--------|-----------|
+| Bug fixes, minor enhancements | Update current BRD (patch version) | Same scope, refinement |
+| New P1/P2 features in same domain | Create NEW BRD | New scope = new cycle |
+| Entirely new product area | Create NEW BRD | Separate domain |
+| Regulatory/compliance additions | Update current BRD OR new BRD | Depends on scope impact |
+
+### 18.4 Appendix D: File Size Guidelines
+
+- **BRD Target**: 200-400 lines per BRD (this template ~800 lines with instructions)
+- **If exceeding 800 lines**: Consider splitting scope across multiple BRD cycles
+- **Section splitting**: Use sectioned format (BRD-NN.1_*.md) only for very large BRDs (>25KB)
+- **Principle**: One focused MVP cycle per BRD; split features into multiple BRDs if scope grows
+
+### 18.5 Document Control Notes
+
+**MVP-First Philosophy**:
+- Each BRD represents one complete iteration cycle (MVP → PROD)
+- New features = new BRD for next cycle, not indefinite expansion
+- Keep BRDs focused: 5-15 core requirements per cycle
+- Detailed requirements evolve based on production feedback
 
 **Version Management**:
 - Track all changes in revision history
-- MVP BRD may have faster release cadence than full BRD
 - Lock requirements 1 week before launch
+- After production deployment, create new BRD for next feature cycle
+- Reference previous BRDs via Cross-BRD Dependencies (Section 16.2)
 
----
-
-## 17. File Size Guidelines
-
-- **MVP BRD Target**: 200-400 lines (this template ~600 lines with instructions)
-- **If exceeding 500 lines**: Consider whether this is truly an MVP scope or needs full BRD
-- **Section splitting**: Generally not needed for MVP, use monolithic template
+**Lifecycle**: MVP → PROD → NEW MVP (repeat)
 
 ---
 

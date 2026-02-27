@@ -470,7 +470,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Timing constraint not measurable | CORPUS-09 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W013 | BDD-Ready Score below 90% | CORPUS-13 |
 | CORPUS-W014 | Compound requirement detected | CORPUS-13 |
 
@@ -681,6 +681,6 @@ Projects may document intentional framework deviations. Use this template:
 ## References
 
 - [EARS_MVP_VALIDATION_RULES.md](./EARS_MVP_VALIDATION_RULES.md) - Individual file validation
-- [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) - EARS document template (full template archived)
+- [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) - EARS document template (standard template)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

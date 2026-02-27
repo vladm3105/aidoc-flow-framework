@@ -409,7 +409,7 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 
 ### Example 2: Comprehensive BRD (60KB)
 
-**File**: BRD-MVP-TEMPLATE.md (default; full template archived) (60KB, ~15,000 tokens)
+**File**: BRD-MVP-TEMPLATE.md (standard template) (60KB, ~15,000 tokens)
 
 **Tool Usage:**
 - **Claude Code**: [PASS] Optimal (uses 7.5% of context, can load 10+ files simultaneously)

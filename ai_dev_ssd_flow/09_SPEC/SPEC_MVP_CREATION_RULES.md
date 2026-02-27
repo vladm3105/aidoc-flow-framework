@@ -25,12 +25,12 @@ custom_fields:
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.3
+**Version**: 1.4
 **Date**: 2025-11-19T00:00:00
-**Last Updated**: 2025-11-30T00:00:00
+**Last Updated**: 2026-02-26T00:00:00
 **Source**: Derived from SPEC-MVP-TEMPLATE.yaml and technical specification patterns
 **Purpose**: Complete reference for creating SPEC YAML files according to AI Dev Flow SDD framework
-**Changes**: v1.3: Added file size limits as warning, removed document splitting requirement. v1.2: Added Threshold Registry Integration section. v1.1: Status/Score mapping, common mistakes section
+**Changes**: v1.4: Removed duplicate upstream_links section; removed specific section count from YAML structure header. v1.3: Added file size limits as warning, removed document splitting requirement. v1.2: Added Threshold Registry Integration section. v1.1: Status/Score mapping, common mistakes section
 
 ---
 
@@ -68,7 +68,7 @@ custom_fields:
 
 ## 2. Document Structure (YAML Specification)
 
-**Complete YAML structure with 7 major sections (kept in a single YAML file):**
+**Complete YAML structure with major sections (kept in a single YAML file):**
 
 ```yaml
 # Header section with required metadata
@@ -86,15 +86,6 @@ traceability:
   upstream_sources: [...] 
   downstream_artifacts: [...]
   cumulative_tags: [...]  # Include @threshold registry tag and use null only when an upstream type truly does not exist
-  
-  # Upstream links (REQUIRED) - Quick reference to source documents
-  upstream_links:
-    - artifact: "BRD-01"
-      path: "../01_BRD/BRD-NN_{slug}.md"
-      sections: ["§X Business Requirements"]
-    - artifact: "PRD-01"
-      path: "../02_PRD/PRD-NN_{slug}.md"
-      sections: ["§Y Functional Requirements"]
   
   # Upstream links (REQUIRED) - Quick reference to source documents
   upstream_links:

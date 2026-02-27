@@ -388,7 +388,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Index out of sync | CORPUS-04 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 1200 lines | CORPUS-10 |
 | CORPUS-W006 | Naming convention violation (PascalCase classes, snake_case methods - dunder methods allowed) | - |
 | CORPUS-W008 | ID formatting issue | - |
 

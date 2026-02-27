@@ -295,11 +295,11 @@ Document ID Standards (ai_dev_flow)
      - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
      - Use when: Standard section file (< 15,000 tokens)
 
-  2. **Subsection Format** (when section >500 lines):
+  2. **Subsection Format** (when section >800 lines):
      - Filename: `04_BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
      - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.24.01_quality_performance.feature`
-     - Use when: Section requires splitting (each subsection ≤500 lines)
+     - Use when: Section requires splitting (each subsection ≤800 lines)
 
   3. **Aggregator Format** (optional redirect stub):
      - Filename: `04_BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`

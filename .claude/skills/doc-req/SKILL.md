@@ -1,6 +1,6 @@
 ---
 name: doc-req
-description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections, SPEC-readiness scoring, and IMPL-readiness scoring
+description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ MVP format with 11 sections, SPEC-readiness scoring, and cumulative traceability
 tags:
   - sdd-workflow
   - layer-7-artifact
@@ -82,9 +82,9 @@ Use `doc-req` when:
 
 ## REQ-Specific Guidance
 
-### 1. REQ v3.0 Format (12 Required Sections)
+### 1. REQ MVP Format (11 Required Sections)
 
-**CRITICAL**: REQ v3.0 expanded from 7 to 12 sections
+**CRITICAL**: REQ MVP uses streamlined 11-section structure
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 
@@ -483,7 +483,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 

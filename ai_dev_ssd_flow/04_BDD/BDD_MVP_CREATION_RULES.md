@@ -18,19 +18,6 @@ custom_fields:
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
----
-title: "BDD MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-4-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: BDD
-  layer: 4
-  priority: shared
-  development_status: active
----
 
 > ** Document Role**: CREATION GUIDANCE for BDD documents (DERIVATIVE).
 > - **Authority**: `BDD-MVP-TEMPLATE.feature` is the PRIMARY STANDARD (single source of truth)
@@ -43,21 +30,21 @@ custom_fields:
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.** Enterprise profile is used only when explicitly triggered.
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `BDD-MVP-TEMPLATE.feature` | All new projects unless full template is explicitly requested |
-| Full | `BDD-MVP-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
+| **MVP (DEFAULT)** | `BDD-MVP-TEMPLATE.feature` | All new projects unless enterprise profile is explicitly requested |
+| Enterprise | `BDD-MVP-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
 
-**Triggering Full Template**:
+**Triggering Enterprise Profile**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+- Prompt keywords: "use enterprise profile", "enterprise mode", "regulatory compliance"
 
 ## Index-Only Generation Workflow
 
 - Maintain `BDD-00_index.md` as the authoritative source of planned and active BDD files (mark planned items with Status: Planned).
-- Generators use: `BDD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+- Generators use: `BDD-00_index.md` + selected template profile (MVP by default; enterprise when explicitly requested in settings or prompt).
 
 **Version**: 1.3
 **Date**: 2025-11-19T00:00:00
@@ -95,13 +82,13 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 ### 1.0 Structure Selection Criteria
 
 **Single-File Structure** (use when):
-- Feature file < 500 lines
+- Feature file < 800 lines
 - <25 scenarios total
 - Single domain/feature scope
 - Simple requirement coverage
 
 **Split-File Structure** (use when):
-- Feature file would exceed 500 lines
+- Feature file would exceed 800 lines
 - ≥25 scenarios
 - Multiple domains/modules
 - Complex requirement coverage (see Section 1.2)
@@ -246,7 +233,7 @@ Unify BDD naming with 02_PRD/BRD section-based standards. All BDD files use sect
 
 **When to Use Section-Based Organization**:
 - ALL new BDD suites (required structure)
-- BDD suite would exceed 500 lines in single file
+- BDD suite would exceed 800 lines in single file
 - ≥25 scenarios total
 - Multiple domains/modules/agents
 - Complex requirement coverage across multiple EARS sections
@@ -259,7 +246,7 @@ All BDD files must match one of these three patterns:
 #### 1. Section-Only Format (Primary)
 **Pattern**: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
 **Example**: `BDD-02.14_query_result_filtering.feature`
-**Use When**: Standard section file (≤500 lines, ≤12 scenarios)
+**Use When**: Standard section file (≤800 lines, ≤12 scenarios)
 
 ```gherkin
 # File: BDD-02.14_query_result_filtering.feature
@@ -276,10 +263,10 @@ Feature: BDD-02.14: Query Result Filtering
   So that I can find precisely relevant information
 ```
 
-#### 2. Subsection Format (When Section >500 Lines)
+#### 2. Subsection Format (When Section >800 Lines)
 **Pattern**: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
 **Example**: `BDD-02.24.01_quality_performance.feature`
-**Use When**: Section requires splitting (each subsection ≤500 lines)
+**Use When**: Section requires splitting (each subsection ≤800 lines)
 
 ```gherkin
 # File: BDD-02.24.01_quality_performance.feature
@@ -441,9 +428,9 @@ BDD-02.26_quality_reliability.feature
 ### 1.2.6 File Size & Scenario Limits
 
 #### File Size Limits
-- **Target**: 300–500 lines per `.feature` file
-- **Maximum**: 600 lines (absolute)
-- **Action**: If section exceeds 600 lines or approaches the upper target → Split into subsections (`.SS.mm` format)
+- **Target**: 800 lines per `.feature` file
+- **Maximum**: 1200 lines (absolute)
+- **Action**: If section exceeds 1200 lines or approaches the upper target → Split into subsections (`.SS.mm` format)
 
 #### Scenario Limits
 - **Maximum**: 12 scenarios per Feature block
@@ -452,7 +439,7 @@ BDD-02.26_quality_reliability.feature
 
 #### Splitting Decision Tree
 ```
-Is section >500 lines?
+Is section >800 lines?
  NO  → Keep as section-only format (BDD-NN.SS_{slug}.feature)
  YES → Create subsections
      2-4 subsections?
@@ -527,7 +514,7 @@ cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02.0_index.md
 **Step 2**: Design section split (3-8 sections recommended)
 - Identify logical domains or EARS groupings
 - Estimate scenarios per section (target: 6-10)
-- Plan for subsections if needed (>500 lines)
+- Plan for subsections if needed (>800 lines)
 
 **Step 3**: Create section files from template
 ```bash
@@ -594,7 +581,7 @@ See `BDD-02.0_index.md` for complete section map.
 **File Structure**:
 - [PASS] All `.feature` files live inside suite folders: `docs/04_BDD/BDD-NN_{slug}/`
 - [PASS] Index file exists inside each suite folder: `BDD-NN.0_index.md`
-- [PASS] No `.feature` file exceeds 500 lines
+- [PASS] No `.feature` file exceeds 800 lines
 - [PASS] No Feature block exceeds 12 scenarios
 
 **File Naming**:

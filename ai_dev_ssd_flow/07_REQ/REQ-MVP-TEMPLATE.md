@@ -47,7 +47,7 @@ AI_CONTEXT_END
 **MVP Template** — Single-file, streamlined REQ for rapid MVP development.
  Use this template for MVP atomic requirements (10-20 core requirements).
 
-**Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+**Validation Note**: This is the standard REQ template. Some legacy validators may report warnings - this is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
   References: Schema `REQ_MVP_SCHEMA.yaml` | Rules `REQ_MVP_CREATION_RULES.md`, `REQ_MVP_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
@@ -479,58 +479,49 @@ Use cross-links to make dependencies and discoverability AI-friendly:
 
 ---
 
-## 13. Migration to Full REQ Template
+### 11.4 MVP Lifecycle (MVP → PROD → NEW MVP)
 
-### 13.1 When to Migrate
+> **Lifecycle Principle**: Each REQ represents requirements for ONE iteration cycle. New requirements require a NEW REQ document.
 
-- [ ] Requirement complexity requires 12-section format
-- [ ] Need comprehensive interface protocols (Python)
-- [ ] Full error catalog with state machines required
-- [ ] SPEC generation requires maximum detail
-- [ ] Compliance requires comprehensive test coverage
+#### 11.4.1 Lifecycle Phases
 
-### 13.2 Migration Steps
+| Phase | Duration | Focus | REQ Output |
+|-------|----------|-------|------------|
+| **MVP** | 1-2 weeks | Atomic requirements (5-15) | This REQ → SPEC → Implementation |
+| **PROD** | 30-90 days | Operate, validate requirements, collect feedback | Implementation outcomes |
+| **NEW MVP** | 1-2 weeks | Next requirement set | Create REQ-02, REQ-03, etc. |
 
-2. **Transfer core content**: Map MVP sections to full template
-3. **Expand detailed sections**:
-   - Full interface protocols (Python classes)
-   - Complete data schemas (JSON, Pydantic, SQLAlchemy)
-   - Comprehensive error catalogs with circuit breakers
-   - Detailed configuration specifications
-4. **Add missing sections**: EARS statements, verification matrix
-5. **Update traceability**: Ensure SPEC documents reference new REQ
-6. **Archive MVP version**: Move to archive with "superseded" note
-7. **Run validation**: Execute `./07_REQ/scripts/validate_req_template.sh` on new document
+#### 11.4.2 When to Create a New REQ
 
-### 13.3 Section Mapping (MVP → Full)
+- [ ] Current REQ requirements are implemented and validated
+- [ ] New atomic requirements identified for next iteration
+- [ ] Interface changes required for new features
+- [ ] Business case for new requirements approved
 
-| MVP Section | Full Template Section | Migration Notes |
-|-------------|----------------------|-----------------|
-| 1. Document Control | 1. Document Control | Add all 12 required fields |
-| 2. Requirement Description | 1. Description | Expand EARS statements |
-| 3. Functional Specification | 2. Functional Requirements | Add business rules |
-| 4. Interface Definition | 3. Interface Specifications | Full Protocol/ABC classes |
-| 5. Error Handling | 5. Error Handling Specifications | Full catalog + state machine |
-| 6. Quality Attributes | 7. Quality Attributes | Add p50/p99 metrics |
-| 7. Configuration | 6. Configuration Specifications | Full YAML schema |
-| 8. Testing Requirements | 10. Verification Methods | Full test matrix |
-| 9. Acceptance Criteria | 9. Acceptance Criteria | Expand to ≥15 criteria |
-| 10. Traceability | 11. Traceability | Add matrix if complex |
-| 11. Implementation Notes | 8. Implementation Guidance | Add patterns/DI |
-| 12. Change History | 12. Change History | — |
+#### 11.4.3 Cross-REQ Traceability
+
+When creating the next REQ iteration:
+
+1. **Link to previous cycle**: Add `@depends: REQ-01` in Traceability section
+2. **Reference implementation outcomes**: Include validation data from previous cycle
+3. **Supersedes pattern**: Use when replacing a previous requirement entirely
+4. **Update index**: Add new REQ to REQ-00_index.md with cross-references
+
+**Note**: There is no "full REQ" template. This MVP template IS the standard. Expansion happens through NEW REQs, not template migration.
 
 ---
 
 **Document Version**: 0.1.0
 **Template Version**: 1.0 (MVP)
-**Last Updated**: 2026-01-13T00:00:00
+**Last Updated**: 2026-02-26T00:00:00
 
 ---
 
 > **MVP Template Notes**:
-> - 12 sections aligned with full REQ template structure
+> - 11 sections - this is the standard REQ MVP template structure
 > - Single file - no document splitting required
 > - Focus on SPEC-ready, atomic requirements
 > - All 6 upstream traceability tags required (Layer 7)
-> - SPEC-Ready/CTR-Ready thresholds: ≥70% (vs ≥90% for full template)
+> - SPEC-Ready/CTR-Ready thresholds: ≥90%
 > - Uses `@threshold` tags for quantitative values
+> - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full REQ" template)

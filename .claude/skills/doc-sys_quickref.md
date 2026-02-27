@@ -27,7 +27,7 @@ skill: "doc-sys"
 ## Output Location
 
 ```
-docs/SYS/SYS-NNN_{descriptive_name}.md
+docs/06_SYS/SYS-NN_{descriptive_name}/SYS-NN_{descriptive_name}.md
 ```
 
 ## Requirement Formats

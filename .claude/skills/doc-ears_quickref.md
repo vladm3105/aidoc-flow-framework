@@ -27,7 +27,7 @@ skill: "doc-ears"
 ## Output Location
 
 ```
-docs/EARS/EARS-NNN_{descriptive_name}.md
+docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md
 ```
 
 ## EARS Syntax Pattern
@@ -65,8 +65,18 @@ BRD, PRD → EARS → BDD, ADR
 ## Template Location
 
 ```
-ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md
+ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md
 ```
+
+## Structure (6-Section MVP)
+
+1. Document Control (unnumbered)
+2. Purpose and Context
+3. EARS in Development Workflow
+4. Requirements (Event, State, Unwanted, Ubiquitous)
+5. Quality Attributes
+6. Traceability
+7. References
 
 ## Related Skills
 
