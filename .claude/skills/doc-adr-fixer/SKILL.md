@@ -1,34 +1,36 @@
 ---
 name: doc-adr-fixer
-description: Automated fix skill that reads review reports and applies fixes to ADR documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - adr-fix
-  - layer-5-artifact
-  - shared-architecture
-custom_fields:
-  layer: 5
-  artifact_type: ADR
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [ADR, Review Report, BDD, BRD]
-  downstream_artifacts: [Fixed ADR, Fix Report]
-  version: "2.2"
-  last_updated: "2026-02-26"
+description: Automated fix skill that reads audit/review reports and applies fixes to ADR documents - handles broken links, element IDs, missing files, and iterative improvement
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - adr-fix
+    - layer-5-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 5
+    artifact_type: ADR
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [ADR, Audit Report, Review Report, BDD, BRD]
+    downstream_artifacts: [Fixed ADR, Fix Report]
+    version: "2.3"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
 ---
 
 # doc-adr-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to ADR (Architecture Decision Record) documents. This skill bridges the gap between `doc-adr-reviewer` (which identifies issues) and the corrected ADR, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to ADR (Architecture Decision Record) documents. This skill bridges the gap between `doc-adr-reviewer`/`doc-adr-audit` (which identify issues) and the corrected ADR, enabling iterative improvement cycles.
 
 **Layer**: 5 (ADR Quality Improvement)
 
-**Upstream**: ADR document, Review Report (`ADR-NN.R_review_report_vNNN.md`), BDD (for behavior alignment), BRD (for topic alignment)
+**Upstream**: ADR document, Audit/Review Report (`ADR-NN.A_audit_report_vNNN.md` preferred, `ADR-NN.R_review_report_vNNN.md` legacy), BDD (for behavior alignment), BRD (for topic alignment)
 
 **Downstream**: Fixed ADR, Fix Report (`ADR-NN.F_fix_report_vNNN.md`)
 
@@ -44,7 +46,7 @@ Use `doc-adr-fixer` when:
 - **Batch Fixes**: Apply fixes to multiple ADRs based on review reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-adr-reviewer` first)
+- No audit/review report exists (run `doc-adr-audit` or `doc-adr-reviewer` first)
 - Creating new ADR (use `doc-adr` or `doc-adr-autopilot`)
 - Only need validation (use `doc-adr-validator`)
 
@@ -54,7 +56,8 @@ Use `doc-adr-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-adr-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-adr-audit` | Preferred source of normalized findings | Input (reads audit report) |
+| `doc-adr-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-adr` | ADR creation rules | Create missing sections |
 | `doc-bdd` | BDD alignment reference | Verify behavior traceability |
@@ -65,10 +68,10 @@ Use `doc-adr-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: ADR Path] --> B[Find Latest Review Report]
-    B --> C{Review Found?}
-    C -->|No| D[Run doc-adr-reviewer First]
-    C -->|Yes| E[Parse Review Report]
+  A[Input: ADR Path] --> B[Find Latest Audit/Review Report]
+  B --> C{Report Found?}
+  C -->|No| D[Run doc-adr-audit or doc-adr-reviewer First]
+  C -->|Yes| E[Parse Report]
 
     E --> F[Categorize Issues]
 
@@ -732,8 +735,11 @@ When ADR changes (any tier), notify downstream SYS documents:
 # Fix ADR based on latest review
 /doc-adr-fixer ADR-01
 
-# Fix with explicit review report
+# Fix with explicit review report (legacy)
 /doc-adr-fixer ADR-01 --review-report ADR-01.R_review_report_v001.md
+
+# Fix with explicit audit report (preferred)
+/doc-adr-fixer ADR-01 --review-report ADR-01.A_audit_report_v001.md
 
 # Fix and re-run review
 /doc-adr-fixer ADR-01 --revalidate
@@ -746,7 +752,7 @@ When ADR changes (any tier), notify downstream SYS documents:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--review-report` | latest | Specific review report to use |
+| `--review-report` | latest | Specific audit/review report to use (`.A_audit_report` preferred) |
 | `--revalidate` | false | Run reviewer after fixes |
 | `--max-iterations` | 3 | Max fix-review cycles |
 | `--fix-types` | all | Specific fix types (comma-separated) |
@@ -755,6 +761,10 @@ When ADR changes (any tier), notify downstream SYS documents:
 | `--dry-run` | false | Preview fixes without applying |
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
+
+**Report Selection Precedence**:
+1. Select latest report by timestamp.
+2. If timestamps are equal, prefer `ADR-NN.A_audit_report_vNNN.md` over `ADR-NN.R_review_report_vNNN.md`.
 
 ### Fix Types
 
@@ -778,7 +788,7 @@ When ADR changes (any tier), notify downstream SYS documents:
 
 **File Naming**: `ADR-NN.F_fix_report_vNNN.md`
 
-**Location**: Inside the ADR nested folder: `docs/ADR/ADR-NN_{slug}/`
+**Location**: Inside the ADR nested folder: `docs/05_ADR/ADR-NN_{slug}/`
 
 **Structure**:
 
@@ -794,7 +804,7 @@ custom_fields:
   artifact_type: ADR-FIX
   layer: 5
   parent_doc: ADR-NN
-  source_review: ADR-NN.R_review_report_v001.md
+  source_review: ADR-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-adr-fixer
   fix_version: "1.0"
@@ -806,7 +816,7 @@ custom_fields:
 
 | Metric | Value |
 |--------|-------|
-| Source Review | ADR-NN.R_review_report_v001.md |
+| Source Review | ADR-NN.A_audit_report_v001.md (or legacy `ADR-NN.R_review_report_v001.md`) |
 | Issues in Review | 12 |
 | Issues Fixed | 10 |
 | Issues Remaining | 2 (manual review required) |
@@ -887,9 +897,9 @@ flowchart LR
 
 | Error | Action |
 |-------|--------|
-| Review report not found | Prompt to run `doc-adr-reviewer` first |
+| Audit/review report not found | Prompt to run `doc-adr-audit` or `doc-adr-reviewer` first |
 | Cannot create file (permissions) | Log error, continue with other fixes |
-| Cannot parse review report | Abort with clear error message |
+| Cannot parse audit/review report | Abort with clear error message |
 | Max iterations exceeded | Generate report, flag for manual review |
 
 ### Backup Strategy
@@ -907,6 +917,7 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
+| `doc-adr-audit` | Preferred combined audit source (input) |
 | `doc-adr-reviewer` | Provides review report (input) |
 | `doc-adr-autopilot` | Orchestrates Review -> Fix cycle |
 | `doc-adr-validator` | Structural validation |
@@ -921,6 +932,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-27 | Migrated frontmatter to `metadata`; added compatibility for `ADR-NN.A_audit_report_vNNN.md` (preferred) with legacy `ADR-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties); corrected nested-folder report path examples to `docs/05_ADR` |
 | 2.2 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Three-tier thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); No deletion policy - superseded decisions preserved; Archive manifest for Tier 3; Enhanced drift cache with merge history; Auto-generated ADR IDs (ADR-NN-SS pattern); Downstream SYS notification; Change percentage calculation |

@@ -1,21 +1,23 @@
 ---
 name: doc-adr-validator
 description: Validate Architecture Decision Records (ADR) against Layer 5 schema standards
-tags:
-  - sdd-workflow
-  - layer-5-artifact
-  - quality-assurance
-custom_fields:
-  layer: 5
-  artifact_type: ADR
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [ADR]
-  downstream_artifacts: []
-  version: "1.2"
-  last_updated: "2026-02-26"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-5-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 5
+    artifact_type: ADR
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [ADR]
+    downstream_artifacts: []
+    version: "1.3"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
 ---
 
 # doc-adr-validator
@@ -28,7 +30,7 @@ Invoke when user requests validation of ADR documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/ADR/ADR_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
 Layer: 5
 Artifact Type: ADR
 
@@ -59,7 +61,8 @@ Artifact Type: ADR
 docs/05_ADR/
 ├── ADR-01_f1_iam/
 │   ├── ADR-01_f1_iam.md           ✓ Valid
-│   ├── ADR-01.R_review_report_v001.md
+│   ├── ADR-01.A_audit_report_v001.md
+│   ├── ADR-01.R_review_report_v001.md  (legacy)
 │   └── .drift_cache.json
 ├── ADR-02_f2_session/
 │   └── ADR-02_f2_session.md       ✓ Valid
@@ -217,13 +220,13 @@ Pattern: `ADR-NNN_descriptive_name.md`
 
 ```bash
 # Validate single ADR document
-python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ADR-001_example.md
+python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-001_example.md
 
 # Validate all ADR documents
-python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/
+python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ --verbose
+python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ --verbose
 ```
 
 ## Validation Workflow
@@ -275,6 +278,7 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.3 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized schema/command references to `ai_dev_ssd_flow/05_ADR`; updated valid structure example for preferred `ADR-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility | System |
 | 1.2 | 2026-02-26 | Updated structure validation to 11-section MVP template (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); ADR must be in `docs/05_ADR/ADR-NN_{slug}/` folders; Added error codes ADR-E020, ADR-E021, ADR-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

@@ -1,23 +1,25 @@
 ---
 name: doc-adr-reviewer
 description: Comprehensive content review and quality assurance for ADR documents - validates decision completeness, BRD alignment, consequence coverage, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - adr-review
-  - layer-5-artifact
-  - shared-architecture
-custom_fields:
-  layer: 5
-  artifact_type: ADR
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [ADR]
-  downstream_artifacts: []
-  version: "1.6"
-  last_updated: "2026-02-26T15:10:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - adr-review
+    - layer-5-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 5
+    artifact_type: ADR
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [ADR]
+    downstream_artifacts: []
+    version: "1.6"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
 ---
 
 # doc-adr-reviewer
@@ -503,9 +505,11 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **Nested Folder Rule**: ALL ADRs use nested folders (`ADR-NN_{slug}/`) regardless of size. This ensures review reports, fix reports, and drift cache files are organized with their parent document.
 
+**Audit Wrapper Note**: `doc-adr-audit` combines this reviewer output with validator findings and writes `ADR-NN.A_audit_report_vNNN.md` (preferred for fixer). Reviewer-native report naming remains `ADR-NN.R_review_report_vNNN.md`.
+
 **File Naming**: `ADR-NN.R_review_report_vNNN.md`
 
-**Location**: Inside the ADR nested folder: `docs/ADR/ADR-NN_{slug}/`
+**Location**: Inside the ADR nested folder: `docs/05_ADR/ADR-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -518,7 +522,7 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/ADR/ADR-01_authentication_strategy/
+docs/05_ADR/ADR-01_authentication_strategy/
 ├── ADR-01_authentication_strategy.md
 ├── ADR-01.R_review_report_v001.md    # First review
 ├── ADR-01.R_review_report_v002.md    # After fixes
@@ -564,6 +568,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected nested-folder report paths to `docs/05_ADR`; documented audit-wrapper contract with preferred `ADR-NN.A_audit_report_vNNN.md` output and legacy reviewer compatibility |
 | 1.5 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates ADR follows mandatory nested folder rule; Added REV-STR001-003 error codes; Structure check blocks other checks if failed |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added REV-D006 error code for cache access failures; Three-phase detection algorithm; SHA-256 hash calculation with Python example; Updated cache schema with document-level tracking; Focused upstream on BDD documents only; Added cache status to report output |

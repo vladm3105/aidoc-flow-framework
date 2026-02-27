@@ -1,34 +1,36 @@
 ---
 name: doc-sys-fixer
 description: Automated fix skill that reads review reports and applies fixes to SYS documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - sys-fix
-  - layer-6-artifact
-  - shared-architecture
-custom_fields:
-  layer: 6
-  artifact_type: SYS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SYS, Review Report, ADR]
-  downstream_artifacts: [Fixed SYS, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - sys-fix
+    - layer-6-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 6
+    artifact_type: SYS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SYS, Audit Report, Review Report, ADR]
+    downstream_artifacts: [Fixed SYS, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SYS-MVP-TEMPLATE schema_version"
 ---
 
 # doc-sys-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to SYS (System Design Specification) documents. This skill bridges the gap between `doc-sys-reviewer` (which identifies issues) and the corrected SYS, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to SYS (System Design Specification) documents. This skill bridges the gap between `doc-sys-reviewer`/`doc-sys-audit` (which identify issues) and the corrected SYS, enabling iterative improvement cycles.
 
 **Layer**: 6 (SYS Quality Improvement)
 
-**Upstream**: SYS document, Review Report (`SYS-NN.F_fix_report_vNNN.md`), ADR (for architecture alignment)
+**Upstream**: SYS document, Audit/Review Report (`SYS-NN.A_audit_report_vNNN.md` preferred, `SYS-NN.R_review_report_vNNN.md` legacy), ADR (for architecture alignment)
 
 **Downstream**: Fixed SYS, Fix Report (`SYS-NN.F_fix_report_vNNN.md`)
 
@@ -44,7 +46,7 @@ Use `doc-sys-fixer` when:
 - **Batch Fixes**: Apply fixes to multiple SYS documents based on review reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-sys-reviewer` first)
+- No audit/review report exists (run `doc-sys-audit` or `doc-sys-reviewer` first)
 - Creating new SYS (use `doc-sys` or `doc-sys-autopilot`)
 - Only need validation (use `doc-sys-validator`)
 
@@ -54,7 +56,8 @@ Use `doc-sys-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-sys-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-sys-audit` | Preferred source of normalized findings | Input (reads audit report) |
+| `doc-sys-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-sys` | SYS creation rules | Create missing sections |
 | `doc-adr` | ADR alignment reference | Verify architecture traceability |
@@ -67,7 +70,7 @@ Use `doc-sys-fixer` when:
 flowchart TD
     A[Input: SYS Path] --> B[Find Latest Review Report]
     B --> C{Review Found?}
-    C -->|No| D[Run doc-sys-reviewer First]
+  C -->|No| D[Run doc-sys-audit or doc-sys-reviewer First]
     C -->|Yes| E[Parse Review Report]
 
     E --> F[Categorize Issues]
@@ -849,7 +852,7 @@ flowchart TD
 
 **File Naming**: `SYS-NN.F_fix_report_vNNN.md`
 
-**Location**: Inside the SYS nested folder: `docs/SYS/SYS-NN_{slug}/`
+**Location**: Inside the SYS nested folder: `docs/06_SYS/SYS-NN_{slug}/`
 
 **Structure**:
 
@@ -982,6 +985,7 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
+| `doc-sys-audit` | Provides preferred combined audit report input |
 | `doc-sys-reviewer` | Provides review report (input) |
 | `doc-sys-autopilot` | Orchestrates Review -> Fix cycle |
 | `doc-sys-validator` | Structural validation |
@@ -996,6 +1000,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected upstream report contract to use audit/review reports (`.A_` preferred, `.R_` legacy); normalized report location path to `docs/06_SYS` |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.TT.SS pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; SYS Index, Component, and Interface file creation; Element ID conversion (types 01, 05, 17, 18, 19, 20, 21); Broken link fixes; ADR upstream drift handling; Integration with autopilot Review->Fix cycle |

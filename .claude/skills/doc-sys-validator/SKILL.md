@@ -1,21 +1,23 @@
 ---
 name: doc-sys-validator
 description: Validate System Requirements (SYS) documents against Layer 6 schema standards
-tags:
-  - sdd-workflow
-  - layer-6-artifact
-  - quality-assurance
-custom_fields:
-  layer: 6
-  artifact_type: SYS
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SYS]
-  downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-6-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 6
+    artifact_type: SYS
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SYS]
+    downstream_artifacts: []
+    version: "1.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SYS-MVP_SCHEMA schema_version"
 ---
 
 # doc-sys-validator
@@ -28,7 +30,7 @@ Invoke when user requests validation of SYS documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/SYS/SYS_SCHEMA.yaml`
+Schema: `ai_dev_ssd_flow/06_SYS/SYS_MVP_SCHEMA.yaml`
 Layer: 6
 Artifact Type: SYS
 
@@ -215,13 +217,13 @@ Pattern: `SYS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single SYS document
-python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/SYS-001_example.md
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-01_example/SYS-01_example.md
 
 # Validate all SYS documents
-python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/ --verbose
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/ --verbose
 ```
 
 ## Validation Workflow
@@ -273,5 +275,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; aligned schema to `SYS_MVP_SCHEMA.yaml`; normalized validation commands to `ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py` | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SYS must be in `docs/06_SYS/SYS-NN_{slug}/` folders; Added error codes SYS-E020, SYS-E021, SYS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

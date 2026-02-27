@@ -1,22 +1,24 @@
 ---
 name: doc-sys-autopilot
 description: Automated SYS generation from ADR decisions - generates system requirements with REQ-Ready scoring
-tags:
-  - sdd-workflow
-  - layer-6-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 6
-  artifact_type: SYS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
-  downstream_artifacts: [REQ]
-  version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-6-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 6
+    artifact_type: SYS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [REQ]
+    version: "2.5"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SYS-MVP-TEMPLATE schema_version"
 ---
 
 # doc-sys-autopilot
@@ -323,8 +325,8 @@ Generate SYS documents with functional requirements and quality attributes.
    ```
 
 2. **Load SYS Template**:
-   - Primary: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-   - Comprehensive: `ai_dev_flow/06_SYS/SYS-TEMPLATE.md`
+  - Primary: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+  - Rules: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
 
 3. **Generate Document Control Section**:
 
@@ -601,7 +603,7 @@ After SYS generation, validate structure and REQ-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}.md --verbose
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md --verbose
 ```
 
 **Validation Checks** (14 Total for v2.0):
@@ -658,14 +660,14 @@ LOOP (max 3 iterations):
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Review & Fix Cycle (v2.1)
+### Phase 5: Audit & Fix Cycle (v2.1)
 
 Iterative review and fix cycle to ensure SYS quality before completion.
 
 ```mermaid
 flowchart TD
-    A[Phase 5 Start] --> B[Run doc-sys-reviewer]
-    B --> C[Generate Review Report]
+  A[Phase 5 Start] --> B[Run doc-sys-audit]
+  B --> C[Generate Combined Audit Report]
     C --> D{Review Score >= 90?}
 
     D -->|Yes| E[PASS - Proceed to Final Checks]
@@ -682,15 +684,15 @@ flowchart TD
     L --> E
 ```
 
-#### 5.1 Initial Review
+#### 5.1 Initial Audit
 
-Run `doc-sys-reviewer` to identify issues.
+Run `doc-sys-audit` to identify issues.
 
 ```bash
-/doc-sys-reviewer SYS-NN
+/doc-sys-audit SYS-NN
 ```
 
-**Output**: `SYS-NN.R_review_report_v001.md`
+**Output**: `SYS-NN.A_audit_report_v001.md` (legacy-compatible reviewer report may still exist)
 
 #### 5.2 Fix Cycle
 
@@ -713,15 +715,15 @@ If review score < 90%, invoke `doc-sys-fixer`.
 
 **Output**: `SYS-NN.F_fix_report_v001.md`
 
-#### 5.3 Re-Review
+#### 5.3 Re-Audit
 
-After fixes, automatically re-run reviewer.
+After fixes, automatically re-run audit.
 
 ```bash
-/doc-sys-reviewer SYS-NN
+/doc-sys-audit SYS-NN
 ```
 
-**Output**: `SYS-NN.R_review_report_v002.md`
+**Output**: `SYS-NN.A_audit_report_v002.md`
 
 #### 5.4 Iteration Control
 
@@ -762,7 +764,7 @@ After passing the fix cycle:
 3. **Traceability Matrix Update**:
    ```bash
    # Update SYS-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+  python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
      --type SYS \
      --matrix docs/06_SYS/SYS-00_TRACEABILITY_MATRIX.md
    ```
@@ -886,15 +888,10 @@ Validate existing SYS documents and generate a quality report without modificati
 
 ```bash
 # Review single SYS document
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/SYS-01_f1_iam.md \
-  --mode review
+/doc-sys-audit SYS-01
 
-# Review all SYS documents
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/ \
-  --mode review \
-  --output-report tmp/sys_review_report.md
+# Review all SYS documents (run per document in docs/06_SYS/)
+/doc-sys-audit SYS-NN
 ```
 
 **Review Process**:
@@ -1009,27 +1006,16 @@ Auto-repair existing SYS documents while preserving manual content.
 
 ```bash
 # Fix single SYS document
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/SYS-01_f1_iam.md \
-  --mode fix
+/doc-sys-fixer SYS-01
 
-# Fix with backup
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/SYS-01_f1_iam.md \
-  --mode fix \
-  --backup
+# Fix with revalidation
+/doc-sys-fixer SYS-01 --revalidate
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/SYS-01_f1_iam.md \
-  --mode fix \
-  --fix-types "element_ids,thresholds,dependencies"
+/doc-sys-fixer SYS-01 --fix-types "element_ids,references,content"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/sys_autopilot.py \
-  --sys docs/06_SYS/SYS-01_f1_iam.md \
-  --mode fix \
-  --dry-run
+/doc-sys-fixer SYS-01 --dry-run
 ```
 
 **Fix Process**:
@@ -1205,6 +1191,7 @@ fix_mode:
 | SYS-NN_{slug}.md | Main SYS document (monolithic <20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
 | SYS-NN.0_index.md | Section index (sectioned ≥20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
 | SYS-NN.S_{section}.md | Section files (sectioned ≥20k tokens) | `docs/06_SYS/SYS-NN_{slug}/` |
+| SYS-NN.A_audit_report_v{VVV}.md | Combined audit report (preferred) | `docs/06_SYS/SYS-NN_{slug}/` |
 | SYS-NN.R_review_report_v{VVV}.md | Review report | `docs/06_SYS/SYS-NN_{slug}/` |
 | SYS-NN.F_fix_report_v{VVV}.md | Fix report | `docs/06_SYS/SYS-NN_{slug}/` |
 | .drift_cache.json | Drift detection cache | `docs/06_SYS/SYS-NN_{slug}/` |
@@ -1416,9 +1403,7 @@ done
 
 # Example: Trigger REQ autopilot for validated SYS
 if [ "$ALL_SYS_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/req_autopilot.py \
-    --sys-dir docs/06_SYS/ \
-    --output docs/07_REQ/
+  /doc-req-autopilot all
 fi
 ```
 
@@ -1441,10 +1426,7 @@ jobs:
 
       - name: Run SYS Autopilot
         run: |
-          python ai_dev_flow/scripts/sys_autopilot.py \
-            --adr docs/05_ADR/ \
-            --output docs/06_SYS/ \
-            --validate
+          /doc-sys-autopilot all
 
       - name: Upload Validation Report
         uses: actions/upload-artifact@v4
@@ -1488,9 +1470,10 @@ jobs:
 - **SYS Validator Skill**: `.claude/skills/doc-sys-validator/SKILL.md`
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **SYS Template**: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-- **SYS Creation Rules**: `ai_dev_flow/06_SYS/SYS_CREATION_RULES.md`
-- **SYS Validation Rules**: `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md`
+- **SYS Audit Skill**: `.claude/skills/doc-sys-audit/SKILL.md`
+- **SYS Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
 - **ADR Autopilot Skill**: `.claude/skills/doc-adr-autopilot/SKILL.md`
 
 ---
@@ -1564,7 +1547,7 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 | Requirement | Value |
 |-------------|-------|
 | Storage Location | Same folder as reviewed SYS |
-| File Name | `SYS-NN.R_review_report.md` |
+| File Name | `SYS-NN.A_audit_report_vNNN.md` (preferred), `SYS-NN.R_review_report_vNNN.md` (legacy) |
 | YAML Frontmatter | MANDATORY - see shared standards |
 | Parent Reference | MANDATORY - link to SYS document |
 
@@ -1572,8 +1555,10 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
 ```
 docs/06_SYS/
-├── SYS-03_f3_observability.md
-└── SYS-03.R_review_report.md    # ← Review report stored here
+├── SYS-03_f3_observability/
+│   ├── SYS-03_f3_observability.md
+│   ├── SYS-03.A_audit_report_v001.md    # ← Preferred report stored here
+│   └── SYS-03.R_review_report_v001.md   # ← Legacy-compatible reviewer report
 ```
 
 ---
@@ -1582,6 +1567,7 @@ docs/06_SYS/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.5 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized SYS MVP references to `ai_dev_ssd_flow`; replaced non-existent direct script examples with skill invocation flow; aligned report contracts to prefer `SYS-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility |
 | 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (SYS-NN) triggers review mode; Upstream-type input (ADR-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-sys-reviewer` and `doc-sys-fixer`; Added `doc-sys-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |

@@ -1,23 +1,25 @@
 ---
 name: doc-sys-reviewer
 description: Comprehensive content review and quality assurance for SYS documents - validates system requirement completeness, ADR alignment, quality attribute coverage, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - sys-review
-  - layer-6-artifact
-  - shared-architecture
-custom_fields:
-  layer: 6
-  artifact_type: SYS
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SYS]
-  downstream_artifacts: []
-  version: "1.5"
-  last_updated: "2026-02-26T15:10:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - sys-review
+    - layer-6-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 6
+    artifact_type: SYS
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SYS]
+    downstream_artifacts: []
+    version: "1.6"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SYS-MVP-TEMPLATE schema_version"
 ---
 
 # doc-sys-reviewer
@@ -532,7 +534,7 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **File Naming**: `SYS-NN.R_review_report_vNNN.md`
 
-**Location**: Inside the SYS nested folder: `docs/SYS/SYS-NN_{slug}/`
+**Location**: Inside the SYS nested folder: `docs/06_SYS/SYS-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -545,7 +547,7 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/SYS/SYS-01_f1_iam/
+docs/06_SYS/SYS-01_f1_iam/
 ├── SYS-01_f1_iam.md
 ├── SYS-01.R_review_report_v001.md    # First review
 ├── SYS-01.R_review_report_v002.md    # After fixes
@@ -578,6 +580,7 @@ flowchart LR
 | Skill | Relationship |
 |-------|--------------|
 | `doc-naming` | Naming standards for Check #7 |
+| `doc-sys-audit` | Wraps validator + reviewer into combined audit report |
 | `doc-sys-autopilot` | Invokes this skill in Phase 5 |
 | `doc-sys-validator` | Structural validation (Phase 4) |
 | `doc-sys-fixer` | Applies fixes based on review findings |
@@ -591,6 +594,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized SYS report location paths to `docs/06_SYS`; documented relationship with `doc-sys-audit` wrapper |
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates SYS in nested folders; REV-STR001-STR003 error codes; Must pass before other checks proceed |
 | 1.3 | 2026-02-10 | **Mandatory Drift Cache**: Cache now required for all drift detection; Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; REV-D006 error code for missing/corrupted cache; Enhanced report output with cache status; cache_enabled=true is mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when ADR documents modified after SYS creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; Added doc-sys-fixer to Related Skills |

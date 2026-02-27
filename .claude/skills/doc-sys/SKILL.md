@@ -1,21 +1,23 @@
 ---
 name: doc-sys
 description: Create System Requirements (SYS) - Layer 6 artifact defining functional requirements and quality attributes
-tags:
-  - sdd-workflow
-  - layer-6-artifact
-  - shared-architecture
-custom_fields:
-  layer: 6
-  artifact_type: SYS
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
-  downstream_artifacts: [REQ]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-6-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 6
+    artifact_type: SYS
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [REQ]
+    version: "1.1"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks SYS-MVP-TEMPLATE schema_version"
 ---
 
 # doc-sys
@@ -51,9 +53,9 @@ Before creating SYS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream ADR**: Read architecture decisions constraining system
-3. **Template**: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/06_SYS/SYS_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -78,7 +80,7 @@ Use `doc-sys` when:
 
 ### 1. SYS MVP Structure (15 Sections Total)
 
-**MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
+**MVP Template**: See `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
 
 **Part 1 - System Definition**:
 - Document Control, Executive Summary, Scope
@@ -149,7 +151,7 @@ Use `doc-sys` when:
 - ❌ `UC-XXX` → Use `SYS.NN.11.SS`
 - ❌ `SR-XXX` → Use `SYS.NN.26.SS`
 
-**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md)
+**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md)
 
 ### 5. System Component Categorization
 
@@ -254,7 +256,7 @@ Especially focus on ADR (Layer 5) - architecture decisions constrain system requ
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/SYS/` for next available ID number.
+Check `docs/06_SYS/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: SYS-01, SYS-99, SYS-102
@@ -304,7 +306,7 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
 ### Step 9: Create/Update Traceability Matrix
 
-**MANDATORY**: Update traceability matrix (`ai_dev_flow/SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Update traceability matrix (`docs/06_SYS/SYS-00_TRACEABILITY_MATRIX.md`)
 
 ### Step 10: Validate SYS
 
@@ -341,13 +343,13 @@ Commit SYS file and traceability matrix.
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NN_slug.md --auto-fix
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}/SYS-NN_{slug}.md --verbose
 
 # Layer validation (Phase 2) - run when all SYS documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
+python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/ --verbose
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --expected-layers brd,prd,ears,bdd,adr --strict
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --expected-layers brd,prd,ears,bdd,adr --strict
 ```
 
 ### Manual Checklist
@@ -373,7 +375,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --exp
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py {doc_path} --verbose
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -466,16 +468,15 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` (primary authority)
-- **SYS Creation Rules**: `ai_dev_flow/06_SYS/SYS_CREATION_RULES.md`
-- **SYS Validation Rules**: `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md`
-- **SYS README**: `ai_dev_flow/06_SYS/README.md`
+- **Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md` (primary authority)
+- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
+- **SYS README**: `ai_dev_ssd_flow/06_SYS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/06_SYS/SYS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/06_SYS/SYS-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+**Sectioning Guidance** (for documents >25K tokens):
+- Follow split rules in `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 
@@ -504,4 +505,5 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized SYS canonical references to `ai_dev_ssd_flow`; removed non-existent section-template references; aligned validation commands to `validate_sys.py` | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

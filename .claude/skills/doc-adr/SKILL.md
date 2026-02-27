@@ -1,21 +1,23 @@
 ---
 name: doc-adr
 description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
-tags:
-  - sdd-workflow
-  - layer-5-artifact
-  - shared-architecture
-custom_fields:
-  layer: 5
-  artifact_type: ADR
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD]
-  downstream_artifacts: [SYS, REQ, Code]
-  version: "1.1"
-  last_updated: "2026-02-26"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-5-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 5
+    artifact_type: ADR
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD]
+    downstream_artifacts: [SYS, REQ, Code]
+    version: "1.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
 ---
 
 # doc-adr
@@ -52,9 +54,9 @@ Before creating ADR, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
-4. **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-5. **Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
+4. **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
+5. **Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -86,7 +88,7 @@ Use `doc-adr` when:
 
 ### 1. ADR Structure (11 Sections Total)
 
-**MVP Template**: See `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
+**MVP Template**: See `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
 
 | # | Section | Purpose |
 |---|---------|---------|
@@ -164,7 +166,7 @@ Use `doc-adr` when:
 - ❌ `ALT-XXX` → Use `ADR.NN.12.SS`
 - ❌ `CON-XXX` → Use `ADR.NN.13.SS`
 
-**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md)
+**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md)
 
 ### 5. Threshold Management
 
@@ -389,13 +391,13 @@ Commit ADR and traceability matrix.
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
+python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
 ```
 
 ### Manual Checklist
@@ -423,7 +425,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --exp
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_ssd_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -513,19 +515,17 @@ The SYS will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
-- **Schema**: `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` (machine-readable validation)
+- **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
+- **Schema**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml` (machine-readable validation)
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
-- **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
-- **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
-- **ADR README**: `ai_dev_flow/05_ADR/README.md`
+- **ADR Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_CREATION_RULES.md`
+- **ADR Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`
+- **ADR README**: `ai_dev_ssd_flow/05_ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all ADR documents):
 - **Structure**: `docs/05_ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
-- Index template: `ai_dev_flow/05_ADR/ADR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/05_ADR/ADR-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 - **Note**: Monolithic format allowed for small documents (≤25KB), but MUST still be in nested folder
 
 ## Quick Reference
@@ -556,5 +556,6 @@ The SYS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized ADR references to `ai_dev_ssd_flow/05_ADR` MVP artifacts and existing validation scripts | System |
 | 1.1 | 2026-02-26 | Updated to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |
