@@ -1,22 +1,24 @@
 ---
 name: doc-bdd-autopilot
 description: Automated BDD scenario generation from EARS requirements - generates Gherkin Given-When-Then scenarios with ADR-Ready scoring
-tags:
-  - sdd-workflow
-  - layer-4-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 4
-  artifact_type: BDD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD, PRD, EARS]
-  downstream_artifacts: [ADR, SYS, REQ]
-  version: "2.2"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-4-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 4
+    artifact_type: BDD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD, PRD, EARS]
+    downstream_artifacts: [ADR, SYS, REQ]
+    version: "2.3"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-bdd-autopilot
@@ -45,7 +47,7 @@ This autopilot orchestrates the following skills:
 | `quality-advisor` | Real-time quality feedback during BDD generation | Phase 3: BDD Generation |
 | `doc-bdd-validator` | Validate BDD structure, content, ADR-Ready score | Phase 4: BDD Validation |
 | `doc-bdd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
-| `doc-bdd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+| `doc-bdd-fixer` | Apply fixes from audit/review report, create missing files | Phase 5: Fix |
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - BDD structure/content rules -> `doc-bdd` skill
@@ -268,7 +270,7 @@ Validate that source EARS meet BDD-Ready requirements before generation.
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_bdd_ready.py \
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd_ready.py \
   --ears docs/03_EARS/EARS-01_{slug}/ \
   --min-score 90 \
   --auto-fix
@@ -475,7 +477,7 @@ After BDD generation, validate structure and ADR-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
 ```
 
 **Validation Checks**:
@@ -553,7 +555,7 @@ Run `doc-bdd-reviewer` to identify issues.
 /doc-bdd-reviewer BDD-NN
 ```
 
-**Output**: `BDD-NN.R_review_report_v001.md`
+**Output**: `BDD-NN.A_audit_report_v001.md` (legacy-compatible reviewer report may still exist)
 
 **Review Checks**:
 
@@ -611,7 +613,7 @@ After fixes, automatically re-run reviewer.
 /doc-bdd-reviewer BDD-NN
 ```
 
-**Output**: `BDD-NN.R_review_report_v002.md`
+**Output**: `BDD-NN.A_audit_report_v002.md`
 
 #### 5.4 Iteration Control
 
@@ -680,7 +682,7 @@ After passing the fix cycle:
 
    ```bash
    # Update BDD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
      --bdd docs/04_BDD/BDD-NN_{slug}/ \
      --matrix docs/04_BDD/BDD-00_TRACEABILITY_MATRIX.md
    ```
@@ -968,7 +970,7 @@ Generate BDD from one EARS document.
 
 ```bash
 # Example: Generate BDD from EARS-01
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --ears docs/03_EARS/EARS-01_f1_iam/ \
   --output docs/04_BDD/ \
   --id 01 \
@@ -981,7 +983,7 @@ Generate BDD from multiple EARS in sequence.
 
 ```bash
 # Example: Generate BDD from all EARS
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --batch config/bdd_batch.yaml \
   --output docs/04_BDD/
 ```
@@ -1015,7 +1017,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --ears docs/03_EARS/EARS-01_f1_iam/ \
   --dry-run
 ```
@@ -1029,12 +1031,12 @@ Validate existing BDD documents and generate a quality report without modificati
 **Command**:
 ```bash
 # Review single BDD suite
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode review
 
 # Review all BDD suites
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/ \
   --mode review \
   --output-report tmp/bdd_review_report.md
@@ -1138,24 +1140,24 @@ Auto-repair existing BDD documents while preserving manual content.
 **Command**:
 ```bash
 # Fix single BDD suite
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --fix-types "tags,thresholds,syntax"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --dry-run
@@ -1463,7 +1465,8 @@ Chunk N/M Complete:
 | BDD-NN.0_index.md | Suite index | `docs/04_BDD/BDD-NN_{slug}/` |
 | BDD-NN.S_{section}.feature | Section files | `docs/04_BDD/BDD-NN_{slug}/` |
 | BDD-NN_{slug}.feature | Redirect stub | `docs/04_BDD/` |
-| BDD-NN.R_review_report_v{VVV}.md | Review report | `docs/04_BDD/BDD-NN_{slug}/` |
+| BDD-NN.A_audit_report_v{VVV}.md | Combined audit report (preferred) | `docs/04_BDD/BDD-NN_{slug}/` |
+| BDD-NN.R_review_report_v{VVV}.md | Reviewer report (legacy-compatible) | `docs/04_BDD/BDD-NN_{slug}/` |
 | BDD-NN.F_fix_report_v{VVV}.md | Fix report | `docs/04_BDD/BDD-NN_{slug}/` |
 | .drift_cache.json | Drift detection cache | `docs/04_BDD/BDD-NN_{slug}/` |
 
@@ -1543,7 +1546,7 @@ fi
 
 # Example: Trigger ADR autopilot for validated BDD
 if [ "$BDD_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/adr_autopilot.py \
+  python ai_dev_ssd_flow/05_ADR/scripts/adr_autopilot.py \
     --bdd "$BDD_PATH" \
     --output docs/05_ADR/
 fi
@@ -1568,7 +1571,7 @@ jobs:
 
       - name: Run BDD Autopilot
         run: |
-          python ai_dev_flow/scripts/bdd_autopilot.py \
+          python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
             --ears docs/03_EARS/ \
             --output docs/04_BDD/ \
             --validate
@@ -1679,8 +1682,8 @@ After autopilot completion:
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ai_dev_ssd_flow/AI_ASSISTANT_PLAYBOOK.md`
+- **MVP Autopilot**: `ai_dev_ssd_flow/MVP_AUTOPILOT.md`
 - **EARS Autopilot Skill**: `.claude/skills/doc-ears-autopilot/SKILL.md`
 - **ADR Autopilot Skill**: `.claude/skills/doc-adr-autopilot/SKILL.md`
 
@@ -1697,7 +1700,7 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 | Requirement | Value |
 |-------------|-------|
 | Storage Location | Same folder as reviewed BDD |
-| File Name | `BDD-NN.R_review_report.md` |
+| File Name | `BDD-NN.A_audit_report_vNNN.md` (preferred), `BDD-NN.R_review_report_vNNN.md` (legacy) |
 | YAML Frontmatter | MANDATORY - see shared standards |
 | Parent Reference | MANDATORY - link to BDD feature file |
 
@@ -1706,7 +1709,8 @@ See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 ```
 docs/04_BDD/
 ├── BDD-03_f3_observability.feature
-└── BDD-03.R_review_report.md    # ← Review report stored here
+├── BDD-03.A_audit_report_v001.md    # ← Preferred report stored here
+└── BDD-03.R_review_report_v001.md    # ← Legacy-compatible reviewer report
 ```
 
 ---
@@ -1715,6 +1719,7 @@ docs/04_BDD/
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-02-27 | Migrated frontmatter to `metadata`; switched command examples to `ai_dev_ssd_flow`; aligned output/report contracts to prefer `BDD-NN.A_audit_report_vNNN.md` with legacy `BDD-NN.R_review_report_vNNN.md` compatibility |
 | 2.2 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BDD-NN) triggers review mode; Upstream-type input (EARS-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.1 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-bdd-reviewer` and `doc-bdd-fixer`; Added `doc-bdd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators; Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section; Added Review Mode for validating existing BDD documents; Added Fix Mode for auto-repairing BDD documents |

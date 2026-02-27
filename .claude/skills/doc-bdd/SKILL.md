@@ -1,21 +1,23 @@
 ---
 name: doc-bdd
 description: Layer 4 artifact for Behavior-Driven Development test scenarios using Gherkin Given-When-Then format
-tags:
-  - sdd-workflow
-  - layer-4-artifact
-  - shared-architecture
-custom_fields:
-  layer: 4
-  artifact_type: BDD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD, PRD, EARS]
-  downstream_artifacts: [ADR, SYS, REQ]
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-4-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 4
+    artifact_type: BDD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD, PRD, EARS]
+    downstream_artifacts: [ADR, SYS, REQ]
+    version: "1.1"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-bdd
@@ -609,7 +611,7 @@ The ADR will:
 - **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
 - **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+- **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
 
 ## Quick Reference
 
@@ -633,4 +635,5 @@ The ADR will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.1 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected framework reference path to `ai_dev_ssd_flow` | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

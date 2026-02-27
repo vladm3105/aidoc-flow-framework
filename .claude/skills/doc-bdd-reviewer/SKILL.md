@@ -1,23 +1,25 @@
 ---
 name: doc-bdd-reviewer
 description: Comprehensive content review and quality assurance for BDD documents - validates Gherkin syntax, scenario completeness, EARS alignment, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - bdd-review
-  - layer-4-artifact
-  - shared-architecture
-custom_fields:
-  layer: 4
-  artifact_type: BDD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BDD]
-  downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-02-11T10:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - bdd-review
+    - layer-4-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 4
+    artifact_type: BDD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BDD]
+    downstream_artifacts: []
+    version: "1.5"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-bdd-reviewer
@@ -446,6 +448,8 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **Nested Folder Rule**: ALL BDD suites use nested folders (`BDD-NN_{slug}/`). This ensures review reports, fix reports, and drift cache files are organized with their parent document.
 
+**Audit Wrapper Note**: `doc-bdd-audit` combines this reviewer output with validator findings and writes `BDD-NN.A_audit_report_vNNN.md` (preferred for fixer). Reviewer-native report naming remains `BDD-NN.R_review_report_vNNN.md`.
+
 **File Naming**: `BDD-NN.R_review_report_vNNN.md`
 
 **Location**: Inside the BDD nested folder: `docs/04_BDD/BDD-NN_{slug}/`
@@ -509,6 +513,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5 | 2026-02-27 | Migrated frontmatter to `metadata`; documented audit-wrapper contract with preferred `BDD-NN.A_audit_report_vNNN.md` output and legacy reviewer report compatibility | 
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance as BLOCKING check - validates BDD follows mandatory nested folder rule; REV-STR001-STR003 error codes; Updated workflow diagram with structure validation gate |
 | 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache at `docs/04_BDD/.drift_cache.json`; Three-phase detection algorithm (Load Cache, Detect Drift, Update Cache); SHA-256 hash calculation; REV-D006 error code (Cache created); Report output with cache status; `cache_enabled: true` mandatory |
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when EARS documents modified after BDD creation; REV-D001-D005 error codes; drift configuration; Added doc-bdd-fixer to related skills |

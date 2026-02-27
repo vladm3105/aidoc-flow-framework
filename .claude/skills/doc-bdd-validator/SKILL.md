@@ -1,21 +1,23 @@
 ---
 name: doc-bdd-validator
 description: Validate Behavior-Driven Development (BDD) documents against Layer 4 schema standards
-tags:
-  - sdd-workflow
-  - layer-4-artifact
-  - quality-assurance
-custom_fields:
-  layer: 4
-  artifact_type: BDD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BDD]
-  downstream_artifacts: []
-  version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-4-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 4
+    artifact_type: BDD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BDD]
+    downstream_artifacts: []
+    version: "1.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-bdd-validator
@@ -61,7 +63,8 @@ docs/04_BDD/
 ├── BDD-01_f1_iam/
 │   ├── BDD-01_f1_iam.md           ✓ Valid
 │   ├── BDD-01_f1_iam.feature      ✓ Valid (optional companion)
-│   ├── BDD-01.R_review_report_v001.md
+│   ├── BDD-01.A_audit_report_v001.md
+│   ├── BDD-01.R_review_report_v001.md  (legacy)
 │   └── .drift_cache.json
 ├── BDD-02_f2_session/
 │   └── BDD-02_f2_session.md       ✓ Valid
@@ -215,16 +218,16 @@ Scenario Outline: [Description]
 
 ```bash
 # Validate single BDD document
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
 
 # Validate all BDD documents
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/
 
 # Validate .feature files
-python ai_dev_flow/scripts/validate_bdd.py tests/bdd/features/
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py tests/bdd/features/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/ --verbose
+python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/ --verbose
 ```
 
 ## Validation Workflow
@@ -292,5 +295,6 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; updated valid structure example for preferred `BDD-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility; corrected validator command paths to `ai_dev_ssd_flow/04_BDD/scripts` | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); BDD must be in `docs/04_BDD/BDD-NN_{slug}/` folders; Added error codes BDD-E020, BDD-E021, BDD-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

@@ -1,34 +1,36 @@
 ---
 name: doc-bdd-fixer
-description: Automated fix skill that reads review reports and applies fixes to BDD documents - handles broken links, element IDs, missing files, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - bdd-fix
-  - layer-4-artifact
-  - shared-architecture
-custom_fields:
-  layer: 4
-  artifact_type: BDD
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BDD, Review Report, EARS]
-  downstream_artifacts: [Fixed BDD, Fix Report]
-  version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+description: Automated fix skill that reads audit/review reports and applies fixes to BDD documents - handles broken links, element IDs, missing files, and iterative improvement
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - bdd-fix
+    - layer-4-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 4
+    artifact_type: BDD
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BDD, Audit Report, Review Report, EARS]
+    downstream_artifacts: [Fixed BDD, Fix Report]
+    version: "2.2"
+    last_updated: "2026-02-27"
+  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
 ---
 
 # doc-bdd-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to BDD (Behavior-Driven Development) documents. This skill bridges the gap between `doc-bdd-reviewer` (which identifies issues) and the corrected BDD, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit/review report and applies fixes to BDD (Behavior-Driven Development) documents. This skill bridges the gap between `doc-bdd-reviewer`/`doc-bdd-audit` (which identify issues) and the corrected BDD, enabling iterative improvement cycles.
 
 **Layer**: 4 (BDD Quality Improvement)
 
-**Upstream**: BDD document, Review Report (`BDD-NN.R_review_report_vNNN.md`), EARS (source requirements)
+**Upstream**: BDD document, Audit/Review Report (`BDD-NN.A_audit_report_vNNN.md` preferred, `BDD-NN.R_review_report_vNNN.md` legacy), EARS (source requirements)
 
 **Downstream**: Fixed BDD, Fix Report (`BDD-NN.F_fix_report_vNNN.md`)
 
@@ -44,7 +46,7 @@ Use `doc-bdd-fixer` when:
 - **Batch Fixes**: Apply fixes to multiple BDD based on review reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-bdd-reviewer` first)
+- No audit/review report exists (run `doc-bdd-audit` or `doc-bdd-reviewer` first)
 - Creating new BDD (use `doc-bdd` or `doc-bdd-autopilot`)
 - Only need validation (use `doc-bdd-validator`)
 
@@ -54,7 +56,8 @@ Use `doc-bdd-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-bdd-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-bdd-audit` | Preferred source of normalized findings | Input (reads audit report) |
+| `doc-bdd-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-bdd` | BDD creation rules | Create missing sections |
 | `doc-ears-reviewer` | Upstream EARS validation | Check upstream alignment |
@@ -65,10 +68,10 @@ Use `doc-bdd-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: BDD Path] --> B[Find Latest Review Report]
-    B --> C{Review Found?}
-    C -->|No| D[Run doc-bdd-reviewer First]
-    C -->|Yes| E[Parse Review Report]
+  A[Input: BDD Path] --> B[Find Latest Audit/Review Report]
+  B --> C{Report Found?}
+  C -->|No| D[Run doc-bdd-audit or doc-bdd-reviewer First]
+  C -->|Yes| E[Parse Report]
 
     E --> F[Categorize Issues]
 
@@ -850,8 +853,11 @@ When drift is flagged but no BDD update is needed:
 # Fix BDD based on latest review
 /doc-bdd-fixer BDD-01
 
-# Fix with explicit review report
+# Fix with explicit review report (legacy)
 /doc-bdd-fixer BDD-01 --review-report BDD-01.R_review_report_v001.md
+
+# Fix with explicit audit report (preferred)
+/doc-bdd-fixer BDD-01 --review-report BDD-01.A_audit_report_v001.md
 
 # Fix and re-run review
 /doc-bdd-fixer BDD-01 --revalidate
@@ -864,7 +870,7 @@ When drift is flagged but no BDD update is needed:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--review-report` | latest | Specific review report to use |
+| `--review-report` | latest | Specific audit/review report to use (`.A_audit_report` preferred) |
 | `--revalidate` | false | Run reviewer after fixes |
 | `--max-iterations` | 3 | Max fix-review cycles |
 | `--fix-types` | all | Specific fix types (comma-separated) |
@@ -874,6 +880,10 @@ When drift is flagged but no BDD update is needed:
 | `--acknowledge-drift` | false | Interactive drift acknowledgment mode |
 | `--update-drift-cache` | true | Update .drift_cache.json after fixes |
 | `--fix-features` | true | Also fix linked .feature files |
+
+**Report Selection Precedence**:
+1. Select latest report by timestamp.
+2. If timestamps are equal, prefer `BDD-NN.A_audit_report_vNNN.md` over `BDD-NN.R_review_report_vNNN.md`.
 
 ### Fix Types
 
@@ -914,7 +924,7 @@ custom_fields:
   artifact_type: BDD-FIX
   layer: 4
   parent_doc: BDD-NN
-  source_review: BDD-NN.R_review_report_v001.md
+  source_review: BDD-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
   fix_tool: doc-bdd-fixer
   fix_version: "1.0"
@@ -926,7 +936,7 @@ custom_fields:
 
 | Metric | Value |
 |--------|-------|
-| Source Review | BDD-NN.R_review_report_v001.md |
+| Source Review | BDD-NN.A_audit_report_v001.md (or legacy `BDD-NN.R_review_report_v001.md`) |
 | Issues in Review | 12 |
 | Issues Fixed | 10 |
 | Issues Remaining | 2 (manual review required) |
@@ -1016,9 +1026,9 @@ flowchart LR
 
 | Error | Action |
 |-------|--------|
-| Review report not found | Prompt to run `doc-bdd-reviewer` first |
+| Audit/review report not found | Prompt to run `doc-bdd-audit` or `doc-bdd-reviewer` first |
 | Cannot create file (permissions) | Log error, continue with other fixes |
-| Cannot parse review report | Abort with clear error message |
+| Cannot parse audit/review report | Abort with clear error message |
 | Max iterations exceeded | Generate report, flag for manual review |
 | EARS not found | Log warning, skip EARS-dependent fixes |
 | Feature file parse error | Log error, skip Gherkin fixes for that file |
@@ -1038,6 +1048,7 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
+| `doc-bdd-audit` | Preferred combined audit source (input) |
 | `doc-bdd-reviewer` | Provides review report (input) |
 | `doc-bdd-autopilot` | Orchestrates Review -> Fix cycle |
 | `doc-bdd-validator` | Structural validation |
@@ -1051,6 +1062,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-27 | Migrated frontmatter to `metadata`; added compatibility for `BDD-NN.A_audit_report_vNNN.md` (preferred) with legacy `BDD-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1 (< 5%) auto-merge with patch version; Added Tier 2 (5-15%) auto-merge with detailed changelog and minor version; Added Tier 3 (> 15%) archive and regeneration with major version; Implemented no-deletion policy with @deprecated markers; Added archive manifest creation; Enhanced drift cache with merge history; Added scenario tag pattern @BDD-NN-SC-SS; Defined EARS as upstream, ADR as downstream |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary, step definitions, and feature file creation; Element ID conversion for BDD codes (35, 36, 37); Broken link fixes including feature files; EARS drift detection; Gherkin syntax validation; Integration with autopilot Review->Fix cycle |
