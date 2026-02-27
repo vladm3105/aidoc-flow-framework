@@ -25,7 +25,6 @@ metadata:
 # doc-brd-reviewer
 
 ## Purpose
-| 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
 Comprehensive **content review and quality assurance** for Business Requirements Documents (BRD). This skill performs deep content analysis beyond structural validation, checking link integrity, requirement completeness, ADR topic coverage, strategic alignment, and identifying issues that require manual business review.
 
 **Layer**: 1 (BRD Quality Assurance)

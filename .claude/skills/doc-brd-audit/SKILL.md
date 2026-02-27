@@ -170,5 +170,5 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.3 | 2026-02-26 | Added mandatory BRD C4/DFD/sequence diagram contract gate and required `Diagram Contract Findings` section in combined audit reports |
+| 1.3 | 2026-02-26 | Added advisory BRD C4/DFD/sequence diagram contract checks and required `Diagram Contract Findings` section in combined audit reports; strict mode optional |
 | 1.2 | 2026-02-26 | Initial audit wrapper; validator→reviewer orchestration; combined report contract for fixer |

@@ -1,22 +1,23 @@
 ---
 name: doc-prd-validator
 description: Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standards
-tags:
-  - sdd-workflow
-  - layer-2-artifact
-  - validation
-  - shared-architecture
-custom_fields:
-  layer: 2
-  artifact_type: PRD
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BRD]
-  downstream_artifacts: [EARS, BDD, ADR]
-  version: "2.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-2-artifact
+    - validation
+    - shared-architecture
+  custom_fields:
+    layer: 2
+    artifact_type: PRD
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BRD]
+    downstream_artifacts: [EARS, BDD, ADR]
+    version: "2.0"
+    last_updated: "2026-02-10T15:00:00"
 ---
 
 # doc-prd-validator
@@ -47,10 +48,10 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| Schema | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
-| Template | `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
-| Validation Rules | `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
+| Schema | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
+| Template | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
+| Creation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
+| Validation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
 | Layer | 2 |
 | Artifact Type | PRD |
 
@@ -244,22 +245,22 @@ Both scores must be present and meet thresholds for downstream artifact generati
 
 ```bash
 # Validate single PRD document (must be in nested folder)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
 
 # Validate all PRD documents in directory
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/
 
 # Validate with verbose output
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --verbose
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --verbose
 
 # Validate with auto-fix (includes structure fixes)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --auto-fix
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --auto-fix
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
 
 # Layer-wide validation
-python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 ```
 
 ## Validation Workflow
@@ -362,10 +363,10 @@ Info: 1
 
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, threshold tags)
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Version History
