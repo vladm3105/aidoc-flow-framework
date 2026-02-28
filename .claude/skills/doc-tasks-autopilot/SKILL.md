@@ -16,7 +16,7 @@ custom_fields:
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC]
   downstream_artifacts: [Code]
   version: "2.4"
-  last_updated: "2026-02-10T15:00:00"
+  last_updated: "2026-02-10"
 ---
 
 # doc-tasks-autopilot
@@ -30,6 +30,40 @@ Automated **Task Breakdown (TASKS)** generation pipeline that processes SPEC and
 **Upstream**: SPEC (Layer 9), TSPEC (Layer 10)
 
 **Downstream**: Code (Layer 12 - execution layer)
+
+---
+
+## Input Contract (IPLAN-004 Standard)
+
+- Supported modes:
+  - `--ref <path>`
+  - `--prompt "<text>"`
+  - `--iplan <path|IPLAN-NNN>`
+- Precedence: `--iplan > --ref > --prompt`
+- IPLAN resolution order:
+  1. Use explicit file path when it exists
+  2. Resolve `work_plans/IPLAN-NNN*.md`
+  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  4. If multiple matches exist, fail with disambiguation request
+- Merge conflict rule:
+  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
+
+---
+
+## Input Contract (IPLAN-004 Standard)
+
+- Supported modes:
+  - `--ref <path>`
+  - `--prompt "<text>"`
+  - `--iplan <path|IPLAN-NNN>`
+- Precedence: `--iplan > --ref > --prompt`
+- IPLAN resolution order:
+  1. Use explicit file path when it exists
+  2. Resolve `work_plans/IPLAN-NNN*.md`
+  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  4. If multiple matches exist, fail with disambiguation request
+- Merge conflict rule:
+  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
 
 ---
 

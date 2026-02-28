@@ -35,6 +35,40 @@ Automated **Architecture Decision Record (ADR)** generation pipeline that proces
 
 ---
 
+## Input Contract (IPLAN-004 Standard)
+
+- Supported modes:
+  - `--ref <path>`
+  - `--prompt "<text>"`
+  - `--iplan <path|IPLAN-NNN>`
+- Precedence: `--iplan > --ref > --prompt`
+- IPLAN resolution order:
+  1. Use explicit file path when it exists
+  2. Resolve `work_plans/IPLAN-NNN*.md`
+  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  4. If multiple matches exist, fail with disambiguation request
+- Merge conflict rule:
+  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
+
+---
+
+## Input Contract (IPLAN-004 Standard)
+
+- Supported modes:
+  - `--ref <path>`
+  - `--prompt "<text>"`
+  - `--iplan <path|IPLAN-NNN>`
+- Precedence: `--iplan > --ref > --prompt`
+- IPLAN resolution order:
+  1. Use explicit file path when it exists
+  2. Resolve `work_plans/IPLAN-NNN*.md`
+  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  4. If multiple matches exist, fail with disambiguation request
+- Merge conflict rule:
+  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
+
+---
+
 ## Skill Dependencies
 
 This autopilot orchestrates the following skills:
