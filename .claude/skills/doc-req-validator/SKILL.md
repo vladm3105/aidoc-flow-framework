@@ -292,3 +292,11 @@ Info: N
 |---------|------|---------|--------|
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); REQ must be in `docs/07_REQ/REQ-NN_{slug}/` folders; Added error codes REQ-E020, REQ-E021, REQ-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

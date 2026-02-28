@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [REQ, CTR, Review Report]
   downstream_artifacts: [Fixed CTR, Fix Report]
   version: "2.1"
-  last_updated: "2026-02-11T10:00:00"
+  last_updated: "2026-02-11"
 ---
 
 # doc-ctr-fixer
@@ -961,3 +961,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1/2/3 thresholds (<5%, 5-15%, >15%); Contract ID pattern CTR-NN-TYPE-SS; No deletion policy with [DEPRECATED] markers; Archive manifest for Tier 3; Enhanced drift cache with merge history; Support for both .md and .yaml contract files |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Dual-file (MD + YAML) synchronization; Element ID conversion (types 28, 29); YAML syntax repair; REQ drift handling; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

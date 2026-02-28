@@ -1119,3 +1119,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | **Enhanced Phase 6 Auto-Merge System**: Tiered auto-merge thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); Change percentage calculation algorithm; Auto-generated IDs for new requirements (REQ.NN.TT.SS pattern); No deletion policy - mark as [DEPRECATED] instead; Archive manifest creation for Tier 3; Enhanced drift cache with merge history and downstream notifications; New options: --auto-merge, --force-tier, --show-merge-history, --restore-archive, --notify-downstream; New fix types: drift_merge, drift_archive, deprecate; Semantic versioning (patch/minor/major) based on change tier |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; REQ Index, Glossary, and Use Case file creation; Element ID conversion (types 01, 05, 06, 27); Broken link fixes; SYS upstream drift handling; Support for sectioned REQ naming (REQ-NN-SSS); Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

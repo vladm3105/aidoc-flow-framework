@@ -555,3 +555,11 @@ Info: 1
 | 1.2 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) validation; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/; Updated section count from 7 to 6 (Error Cases in Section 4); Added PTEST/SECTEST to nested folder table |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TSPEC must be in `docs/10_TSPEC/{TYPE}/{TYPE}-NN_{slug}/` folders; Added error codes TSPEC-E030 through TSPEC-E033 |
 | 1.0 | 2026-02-08 | Initial release: Full TSPEC validation for UTEST/ITEST/STEST/FTEST (codes 40-43), cumulative tagging (8 required), type-specific requirements, doc-naming integration |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

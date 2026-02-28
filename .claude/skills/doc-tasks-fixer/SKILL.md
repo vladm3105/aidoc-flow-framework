@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [SPEC, TSPEC, TASKS, Review Report]
   downstream_artifacts: [Fixed TASKS, Fix Report]
   version: "2.1"
-  last_updated: "2026-02-11T12:00:00"
+  last_updated: "2026-02-11"
 ---
 
 # doc-tasks-fixer
@@ -1392,3 +1392,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%) auto-merge with patch version; Tier 2 (5-15%) auto-merge with changelog and minor version; Tier 3 (> 15%) archive and regenerate with major version; Task ID pattern TASK-NN-SSS; No deletion policy (mark as [CANCELLED]); Archive manifest creation for Tier 3; Enhanced drift cache with merge history and task registry; Task dependency propagation; Implementation contract update handling; New drift issue codes (REV-D001 through REV-D008) |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Implementation contract repair (Protocol, Exception, State Machine, Data Model); Contract stub and dependency file generation; Element ID conversion (types 18, 30); SPEC/TSPEC drift handling; Optional mypy type checking; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

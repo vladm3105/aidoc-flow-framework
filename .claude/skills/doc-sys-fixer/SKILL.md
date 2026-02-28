@@ -1036,3 +1036,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.TT.SS pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; SYS Index, Component, and Interface file creation; Element ID conversion (types 01, 05, 17, 18, 19, 20, 21); Broken link fixes; ADR upstream drift handling; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

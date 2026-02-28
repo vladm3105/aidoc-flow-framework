@@ -75,3 +75,11 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact SECTEST-
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-02-27 | Initial SECTEST validator with schema/structure/tag/security checks, safety constraints, and canonical script references |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

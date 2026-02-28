@@ -15,7 +15,7 @@ custom_fields:
   upstream_artifacts: [CTR]
   downstream_artifacts: []
   version: "1.2"
-  last_updated: "2026-02-11T18:00:00"
+  last_updated: "2026-02-11"
 ---
 
 # doc-ctr-validator
@@ -307,3 +307,11 @@ Info: N
 | 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); CTR must be in `docs/08_CTR/CTR-NN_{slug}/` folders; Added error codes CTR-E020, CTR-E021, CTR-E022 |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 9 to 8 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
 | 1.0.0 | 2025-01-15 | Initial validator skill definition | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

@@ -280,3 +280,11 @@ Info: N
 | 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; aligned schema to `SYS_MVP_SCHEMA.yaml`; normalized validation commands to `ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py` | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SYS must be in `docs/06_SYS/SYS-NN_{slug}/` folders; Added error codes SYS-E020, SYS-E021, SYS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

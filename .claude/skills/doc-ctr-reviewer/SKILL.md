@@ -17,7 +17,7 @@ custom_fields:
   upstream_artifacts: [CTR]
   downstream_artifacts: []
   version: "1.4"
-  last_updated: "2026-02-11T12:00:00"
+  last_updated: "2026-02-11"
 ---
 
 # doc-ctr-reviewer
@@ -530,3 +530,11 @@ flowchart LR
 | 1.2 | 2026-02-10 | Added Check #8: Upstream Drift Detection - detects when REQ documents modified after CTR creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-ctr-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 7 review checks; Dual-file consistency; OpenAPI compliance; Security definition |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

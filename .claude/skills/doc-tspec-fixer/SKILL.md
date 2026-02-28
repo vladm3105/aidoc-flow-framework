@@ -1137,3 +1137,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge patch, Tier 2: 5-15% auto-merge minor with changelog, Tier 3: >15% archive and regenerate major); Added test ID patterns for TSPEC (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-NN-TC-SS format); Implemented no-deletion policy with [DEPRECATED] markers; Enhanced drift cache with merge history tracking; Added archive manifest creation for Tier 3; Auto-generated test ID support |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Test case structure repair; Test data and fixture file generation; Element ID conversion (types 40-43); SPEC drift handling; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

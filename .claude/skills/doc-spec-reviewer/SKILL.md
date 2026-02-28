@@ -625,3 +625,11 @@ flowchart LR
 | 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; YAML structure validation; REQ coverage; Interface completeness; Threshold compliance |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

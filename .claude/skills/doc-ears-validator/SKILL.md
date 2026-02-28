@@ -269,3 +269,11 @@ Info: N
 | 1.3 | 2026-02-26 | Migrated frontmatter to `metadata`; updated validator command paths to `ai_dev_ssd_flow/03_EARS/scripts`; aligned valid structure examples with audit-wrapper compatibility | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); EARS must be in `docs/03_EARS/EARS-NN_{slug}/` folders; Added error codes EARS-E020, EARS-E021, EARS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

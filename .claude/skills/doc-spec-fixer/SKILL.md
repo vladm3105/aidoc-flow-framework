@@ -989,3 +989,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5%, Tier 2: 5-15%, Tier 3: >15%); Auto-generated SPEC IDs (SPEC-NN-COMPONENT-SS pattern); No-deletion policy with [DEPRECATED] marking; Archive manifest creation for Tier 3; Enhanced drift cache with merge history; YAML spec format handling with drift metadata; Change percentage calculation algorithm |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; YAML structure repair; Schema and config file generation; YAML path-based element IDs; REQ/CTR drift handling; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

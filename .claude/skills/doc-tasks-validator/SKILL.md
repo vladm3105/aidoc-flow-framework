@@ -15,7 +15,7 @@ custom_fields:
   upstream_artifacts: [TASKS]
   downstream_artifacts: []
   version: "1.1"
-  last_updated: "2026-02-11T18:00:00"
+  last_updated: "2026-02-11"
 ---
 
 # doc-tasks-validator
@@ -300,3 +300,11 @@ Info: N
 |---------|------|---------|--------|
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); TASKS must be in `docs/11_TASKS/TASKS-NN_{slug}/` folders; Added error codes TASKS-E020, TASKS-E021, TASKS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

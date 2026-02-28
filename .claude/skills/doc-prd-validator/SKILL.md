@@ -17,7 +17,7 @@ metadata:
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
     version: "2.0"
-    last_updated: "2026-02-10T15:00:00"
+    last_updated: "2026-02-10"
 ---
 
 # doc-prd-validator
@@ -380,3 +380,11 @@ Info: 1
 | 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
 | 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template, unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

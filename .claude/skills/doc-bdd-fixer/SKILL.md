@@ -1098,3 +1098,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Added Tier 1 (< 5%) auto-merge with patch version; Added Tier 2 (5-15%) auto-merge with detailed changelog and minor version; Added Tier 3 (> 15%) archive and regeneration with major version; Implemented no-deletion policy with @deprecated markers; Added archive manifest creation; Enhanced drift cache with merge history; Added scenario tag pattern @BDD-NN-SC-SS; Defined EARS as upstream, ADR as downstream |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary, step definitions, and feature file creation; Element ID conversion for BDD codes (35, 36, 37); Broken link fixes including feature files; EARS drift detection; Gherkin syntax validation; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

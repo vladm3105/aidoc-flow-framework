@@ -284,3 +284,11 @@ Info: N
 | 1.2 | 2026-02-26 | Updated structure validation to 11-section MVP template (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); ADR must be in `docs/05_ADR/ADR-NN_{slug}/` folders; Added error codes ADR-E020, ADR-E021, ADR-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+

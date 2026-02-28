@@ -1028,3 +1028,11 @@ Before applying any fixes:
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.TT.SS format); Archive manifest creation; Enhanced drift cache with merge history |
 | 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion for PRD codes (01-09, 11, 22, 24); Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |
+
+## Implementation Plan Consistency (IPLAN-004)
+
+- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
+- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+
