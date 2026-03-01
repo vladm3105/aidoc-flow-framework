@@ -83,6 +83,31 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating SPEC document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "spec-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: spec-document    # NOT "template"
+     artifact_type: SPEC
+     layer: 9
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: spec-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: spec-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `spec-document`.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.

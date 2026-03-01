@@ -16,10 +16,10 @@ metadata:
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BRD, Review Report]
+    upstream_artifacts: [BRD, Audit Report]
     downstream_artifacts: [Fixed BRD, Fix Report]
-    version: "2.7"
-    last_updated: "2026-02-28"
+    version: "2.9"
+    last_updated: "2026-03-01"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -28,13 +28,15 @@ metadata:
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to BRD documents. This skill bridges the gap between `doc-brd-reviewer` (which identifies issues) and the corrected BRD, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest audit report and applies fixes to BRD documents. This skill bridges the gap between `doc-brd-audit` (which identifies issues) and the corrected BRD, enabling iterative improvement cycles.
 
 **Layer**: 1 (BRD Quality Improvement)
 
-**Upstream**: BRD document, Review Report (`BRD-NN.R_review_report_vNNN.md`) or Audit Report (`BRD-NN.A_audit_report_vNNN.md`)
+**Upstream**: BRD document, Audit Report (`BRD-NN.A_audit_report_vNNN.md`)
 
 **Downstream**: Fixed BRD, Fix Report (`BRD-NN.F_fix_report_vNNN.md`)
+
+**2-Skill Model**: Only `doc-brd-audit` and `doc-brd-fixer` exist. The deprecated `doc-brd-validator` and `doc-brd-reviewer` are merged into `doc-brd-audit`.
 
 ---
 
@@ -42,15 +44,15 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 Use `doc-brd-fixer` when:
 
-- **After Review**: Run after `doc-brd-reviewer` identifies issues
-- **Iterative Improvement**: Part of Review → Fix → Review cycle
+- **After Audit**: Run after `doc-brd-audit` identifies issues (FAIL status)
+- **Iterative Improvement**: Part of Audit → Fix → Audit cycle
 - **Automated Pipeline**: CI/CD integration for quality gates
-- **Batch Fixes**: Apply fixes to multiple BRDs based on review reports
+- **Batch Fixes**: Apply fixes to multiple BRDs based on audit reports
 
 **Do NOT use when**:
-- No review report exists (run `doc-brd-reviewer` first)
+- No audit report exists (run `doc-brd-audit` first)
 - Creating new BRD (use `doc-brd` or `doc-brd-autopilot`)
-- Only need validation (use `doc-brd-validator`)
+- BRD already passes audit (score >= 90)
 
 ---
 
@@ -58,14 +60,19 @@ Use `doc-brd-fixer` when:
 
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
-| `doc-brd-audit` | Unified source report (validator + reviewer) | Preferred input |
-| `doc-brd-reviewer` | Source of issues to fix | Input (reads review report) |
+| `doc-brd-audit` | Source of issues to fix (REQUIRED) | Input (reads audit report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-brd` | BRD creation rules | Create missing sections |
 
-**Input Preference Order**:
-1. Latest `BRD-NN.A_audit_report_vNNN.md`
-2. Latest `BRD-NN.R_review_report_vNNN.md` (legacy)
+**2-Skill Model**:
+| Skill | Purpose |
+|-------|---------|
+| `doc-brd-audit` | All validation + scoring (runs FROM SCRATCH) |
+| `doc-brd-fixer` | Apply fixes from audit report (this skill) |
+
+**Deprecated**: `doc-brd-validator` and `doc-brd-reviewer` are merged into `doc-brd-audit`.
+
+**Input**: Latest `BRD-NN.A_audit_report_vNNN.md`
 
 ---
 
@@ -73,10 +80,10 @@ Use `doc-brd-fixer` when:
 
 ```mermaid
 flowchart TD
-    A[Input: BRD Path] --> B[Find Latest Review Report]
-    B --> C{Review Found?}
-    C -->|No| D[Run doc-brd-reviewer First]
-    C -->|Yes| E[Parse Review Report]
+    A[Input: BRD Path] --> B[Find Latest Audit Report]
+    B --> C{Audit Found?}
+    C -->|No| D[Run doc-brd-audit First]
+    C -->|Yes| E[Parse Audit Report]
 
     E --> F[Categorize Issues]
 
@@ -92,8 +99,8 @@ flowchart TD
 
     K2 --> L[Write Fixed BRD]
     L --> M[Generate Fix Report]
-    M --> N{Re-run Review?}
-    N -->|Yes| O[Invoke doc-brd-reviewer]
+    M --> N{Re-run Audit?}
+    N -->|Yes| O[Invoke doc-brd-audit FROM SCRATCH]
     O --> P{Score >= Threshold?}
     P -->|No, iterations < max| F
     P -->|Yes| Q[COMPLETE]
@@ -1139,19 +1146,19 @@ custom_fields:
   `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
 2. Complete GAP_Foundation_Module_Gap_Analysis.md placeholder
 3. Address remaining [TODO] placeholders
-4. Run `/doc-brd-reviewer BRD-01` to verify fixes
+4. Run `/doc-brd-audit BRD-01` to verify fixes
 ```
 
 ---
 
 ## Integration with Autopilot
 
-This skill is invoked by `doc-brd-autopilot` in the Review → Fix cycle:
+This skill is invoked by `doc-brd-autopilot` in the Audit → Fix cycle:
 
 ```mermaid
 flowchart LR
-    subgraph Phase5["Phase 5: Review & Fix Cycle"]
-        A[doc-brd-reviewer] --> B{Score >= 90?}
+    subgraph Phase5["Phase 5: Audit & Fix Cycle"]
+        A[doc-brd-audit] --> B{Score >= 90?}
         B -->|No| C[doc-brd-fixer]
         C --> D{Iteration < Max?}
         D -->|Yes| A
@@ -1164,10 +1171,10 @@ flowchart LR
 
 | Phase | Action | Skill |
 |-------|--------|-------|
-| Phase 5a | Run initial review | `doc-brd-reviewer` |
+| Phase 5a | Run initial audit | `doc-brd-audit` |
 | Phase 5b | Apply fixes if issues found | `doc-brd-fixer` |
 | Phase 5c | Re-run unified core validation wrapper | `validate_brd_wrapper.sh` |
-| Phase 5d | Re-run review | `doc-brd-reviewer` |
+| Phase 5d | Re-run audit | `doc-brd-audit` |
 | Phase 5e | Repeat until pass or max iterations | Loop |
 
 ---
@@ -1195,7 +1202,7 @@ Apply these fixes when reviewer/audit reports include diagram contract findings.
 
 | Error | Action |
 |-------|--------|
-| Review report not found | Prompt to run `doc-brd-reviewer` first |
+| Audit report not found | Prompt to run `doc-brd-audit` first |
 | Cannot create file (permissions) | Log error, continue with other fixes |
 | Cannot parse review report | Abort with clear error message |
 | Max iterations exceeded | Generate report, flag for manual review |
@@ -1215,11 +1222,12 @@ Before applying any fixes:
 
 | Skill | Relationship |
 |-------|--------------|
-| `doc-brd-reviewer` | Provides review report (input) |
-| `doc-brd-autopilot` | Orchestrates Review → Fix cycle |
-| `doc-brd-validator` | Structural validation |
+| `doc-brd-audit` | Provides audit report (input) - unified validation + scoring |
+| `doc-brd-autopilot` | Orchestrates Audit → Fix cycle |
 | `doc-naming` | Element ID standards |
 | `doc-brd` | BRD creation rules |
+
+**2-Skill Model**: Only `doc-brd-audit` and `doc-brd-fixer` are active. The deprecated `doc-brd-validator` and `doc-brd-reviewer` are merged into `doc-brd-audit`.
 
 ---
 
@@ -1227,6 +1235,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.9 | 2026-03-01 | **2-Skill Model**: Updated Related Skills to reference `doc-brd-audit` only; deprecated `doc-brd-validator` and `doc-brd-reviewer` merged into unified audit |
 | 2.7 | 2026-02-28 | **Standardized validator parity**: Removed `25→33` auto-conversion guidance; code `25` in BRD now requires manual context-based remapping to valid BRD codes, aligned with `validate_standardized_element_codes.py`. |
 | 2.6 | 2026-02-27 | **Hash Validation Fixes**: Added Section 6.0.1 with FIX-H001 (placeholder replacement via sha256sum), FIX-H002 (missing prefix), FIX-H003 (file not found); Auto-fix invalid hash placeholders like `verified_no_drift` and `pending_verification` |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |

@@ -8,6 +8,7 @@ tags:
   - document-template
 custom_fields:
   document_type: template
+  instance_document_type: tspec-document
   artifact_type: TSPEC
   layer: 10
   architecture_approaches: [ai-agent-based, traditional-8layer]

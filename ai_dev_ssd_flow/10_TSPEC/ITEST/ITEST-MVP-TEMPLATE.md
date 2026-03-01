@@ -8,6 +8,7 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: itest-document
   artifact_type: ITEST
   layer: 10
   test_type_code: 41

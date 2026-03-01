@@ -51,8 +51,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["ears"]
-      description: "Must be 'ears' - no variations allowed"
+      allowed_values: ["ears", "ears-document", "template"]
+      description: "Use 'ears-document' for instances, 'template' for templates, 'ears' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["ears-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - inherited from PRD or set explicitly"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

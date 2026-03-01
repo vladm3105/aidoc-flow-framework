@@ -12,9 +12,9 @@ custom_fields:
   artifact_type: BRD
   layer: 1
   priority: shared
-  version: "1.0.0"
+  version: "1.2.0"
   created_date: "2026-02-28"
-  last_updated: "2026-02-28"
+  last_updated: "2026-03-01"
 ---
 
 # BRD Quality Gate Workflow
@@ -254,34 +254,50 @@ In this repository, equivalent paths are under `ai_dev_ssd_flow/01_BRD/`.
 
 ---
 
-## Alternative Workflows
+## Primary Workflow (2-Skill Model)
 
-### Unified Audit Workflow (Recommended for Automation)
+### Unified Audit Workflow (RECOMMENDED)
 
-For CI/CD or automated pipelines, use the combined audit approach:
+The 2-skill model is the **primary approach** for BRD quality validation:
 
 ```
-BRD Created
-    → doc-brd-audit (Validator + Reviewer combined)
-        → IF FAIL: doc-brd-fixer → doc-brd-audit (loop until PASS)
+BRD Created/Exists
+    → doc-brd-audit (FROM SCRATCH - Fresh Audit Policy)
+        → IF FAIL: doc-brd-fixer → doc-brd-audit (FROM SCRATCH, loop until PASS)
     → PRD Generation
 ```
 
-**Skill**: `doc-brd-audit`
+**Skills**:
+| Skill | Purpose |
+|-------|---------|
+| `doc-brd-audit` | All validation + scoring (ALWAYS runs from scratch) |
+| `doc-brd-fixer` | Apply fixes from audit report |
+
+**Deprecated**: `doc-brd-validator` and `doc-brd-reviewer` are merged into `doc-brd-audit`.
+
+**Fresh Audit Policy (MANDATORY)**:
+- ALWAYS run validation scripts fresh every time
+- Do NOT reference previous audit reports for scoring
+- Do NOT skip steps based on drift cache history
+- Re-compute PRD-ready score independently each time
 
 **Output**: Combined report (`BRD-NN.A_audit_report_vNNN.md`)
 
 | Advantage | Description |
 |-----------|-------------|
-| Single command | One invocation for both gates |
+| Single command | One invocation for all validation |
 | Combined report | Unified issue list for fixer |
-| Efficient | Reduces context switching |
+| Fresh results | No stale cache dependencies |
 | CI/CD friendly | Single pass/fail status |
 
 **Usage**:
 ```bash
-/doc-brd-audit docs/01_BRD/BRD-01_platform/BRD-01_platform.md
+/doc-brd-audit BRD-01
 ```
+
+---
+
+## Legacy Workflows (Deprecated)
 
 ---
 
@@ -318,10 +334,10 @@ Each stage produces reports stored alongside the BRD:
 
 | Report Type | Pattern | Producer |
 |-------------|---------|----------|
-| Validation | `BRD-NN.V_validation_report_vNNN.md` | doc-brd-validator |
-| Review | `BRD-NN.R_review_report_vNNN.md` | doc-brd-reviewer |
 | Audit | `BRD-NN.A_audit_report_vNNN.md` | doc-brd-audit |
 | Fix | `BRD-NN.F_fix_report_vNNN.md` | doc-brd-fixer |
+| Validation (legacy) | `BRD-NN.V_validation_report_vNNN.md` | doc-brd-validator (DEPRECATED) |
+| Review (legacy) | `BRD-NN.R_review_report_vNNN.md` | doc-brd-reviewer (DEPRECATED) |
 
 **Location**: `docs/01_BRD/BRD-NN_{slug}/`
 
@@ -340,7 +356,7 @@ The reviewer maintains a drift cache for upstream document tracking:
 - Detect content drift between reviews
 - Maintain review history
 
-**Updated by**: doc-brd-reviewer (mandatory after each review)
+**Updated by**: doc-brd-audit (mandatory after each audit)
 
 ---
 
@@ -362,11 +378,16 @@ Standardized element type code checks are enforced in local and CI workflows.
 
 | Execution Point | Command | Purpose |
 |-----------------|---------|---------|
-| Local pre-commit | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory` | Block commits using canonical BRD core checks |
-| CI validation | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory` | Enforce same canonical BRD core checks in pull requests |
+| Local pre-commit | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Block commits using canonical BRD core checks |
+| CI validation | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Enforce same canonical BRD core checks in pull requests |
 | Full orchestration | `python3 ai_dev_ssd_flow/scripts/validate_all.py ai_dev_ssd_flow --all` | Include cross-validator execution in aggregate validation |
 
 Validation source of truth: `ID_NAMING_STANDARDS.md` (Standardized Element Type Codes) plus BRD section-element mapping rules.
+
+Wrapper behavior notes:
+- Section-based BRD roots are auto-detected and monolithic structural validation is skipped for that mode.
+- BRD quality-gate corpus checks exclude companion report artifacts (`A_audit_report`, `R_review_report`, `F_fix_report`, `V_validation_report`).
+- Diagram contract checks in BRD quality gate are skipped when section-based BRD layout is detected.
 
 ---
 
@@ -421,15 +442,22 @@ ADR (Layer 5)
 
 ## Related Skills
 
+### Active Skills (2-Skill Model)
+
 | Skill | Purpose |
 |-------|---------|
 | `doc-brd` | Manual BRD creation |
-| `doc-brd-autopilot` | Automated BRD generation |
-| `doc-brd-validator` | Gate 1: Schema validation |
-| `doc-brd-reviewer` | Gate 2: Content review |
-| `doc-brd-fixer` | Fix issues from reports |
-| `doc-brd-audit` | Combined validator + reviewer |
+| `doc-brd-autopilot` | Automated BRD generation + audit cycle |
+| `doc-brd-audit` | All validation + scoring (runs FROM SCRATCH) |
+| `doc-brd-fixer` | Apply fixes from audit report |
 | `doc-prd-autopilot` | Downstream PRD generation |
+
+### Deprecated Skills
+
+| Skill | Status | Replacement |
+|-------|--------|-------------|
+| `doc-brd-validator` | DEPRECATED | Merged into `doc-brd-audit` |
+| `doc-brd-reviewer` | DEPRECATED | Merged into `doc-brd-audit` |
 
 ---
 
@@ -437,6 +465,7 @@ ADR (Layer 5)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2026-03-01 | **2-Skill Model Primary**: Made unified audit workflow primary; Added Fresh Audit Policy; Deprecated doc-brd-validator and doc-brd-reviewer; Updated Related Skills section |
 | 1.1.0 | 2026-02-28 | Added Gate 3 corpus quality gate; aligned fixer input precedence with audit-first contract; expanded naming/error ranges (BRD-E022, REV-N007); clarified advisory diagram semantics; documented pre-commit/CI element type code validation integration |
 | 1.0.0 | 2026-02-28 | Initial workflow documentation |
 

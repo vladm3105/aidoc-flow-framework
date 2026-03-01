@@ -17,8 +17,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
-    version: "2.6"
-    last_updated: "2026-02-26"
+    version: "2.7"
+    last_updated: "2026-03-01"
 ---
 
 # doc-prd-autopilot
@@ -76,7 +76,7 @@ This autopilot orchestrates the following skills:
 | Skill | Purpose | Phase |
 |-------|---------|-------|
 | `doc-naming` | Element ID format, threshold tags, legacy pattern detection | All Phases |
-| `doc-brd-validator` | Validate BRD PRD-Ready score | Phase 2: BRD Readiness |
+| `doc-brd-audit` | Validate BRD PRD-Ready score (unified audit) | Phase 2: BRD Readiness |
 | `doc-prd` | PRD creation rules, template, section structure | Phase 3: PRD Generation |
 | `quality-advisor` | Real-time quality feedback during PRD generation | Phase 3: PRD Generation |
 | `doc-prd-validator` | Validate PRD structure, content, EARS-Ready score | Phase 4: PRD Validation |
@@ -88,9 +88,34 @@ This autopilot orchestrates the following skills:
 - PRD structure/content rules → `doc-prd` skill
 - Real-time quality feedback → `quality-advisor` skill
 - PRD validation logic → `doc-prd-validator` skill
-- BRD validation logic → `doc-brd-validator` skill
+- BRD validation logic → `doc-brd-audit` skill (unified BRD quality gate)
 - Content review and scoring → `doc-prd-reviewer` skill
 - Issue resolution and fixes → `doc-prd-fixer` skill
+
+---
+
+## Document Type Contract (MANDATORY)
+
+When generating PRD document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "prd-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: prd-document    # NOT "template"
+     artifact_type: PRD
+     layer: 2
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: prd-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: prd-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `prd-document`.
 
 ---
 
@@ -337,8 +362,8 @@ Dependency Analysis Complete:
 
 Before generating a PRD, validate that the source BRD meets PRD-Ready requirements.
 
-> **Skill Delegation**: This phase uses validation rules from `doc-brd-validator` skill.
-> See: `.claude/skills/doc-brd-validator/SKILL.md` for complete BRD validation rules.
+> **Skill Delegation**: This phase uses validation rules from `doc-brd-audit` skill (unified BRD quality gate).
+> See: `.claude/skills/doc-brd-audit/SKILL.md` for complete BRD validation rules.
 
 **PRD-Ready Scoring Criteria (100%)**:
 
@@ -1280,7 +1305,7 @@ After autopilot completion:
 
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md` - PRD creation rules and structure
 - **PRD Validator Skill**: `.claude/skills/doc-prd-validator/SKILL.md` - Validation rules and error codes
-- **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md` - BRD readiness validation
+- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` - Unified BRD quality gate (replaces deprecated doc-brd-validator)
 
 ### Templates and Rules
 
@@ -1334,6 +1359,7 @@ docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.7 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
 | 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; switched PRD references to `ai_dev_ssd_flow`; integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (PRD-NN) triggers review mode; Upstream-type input (BRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.4 | 2026-02-11 | **Nested Folder Enforcement**: Fixed output structure examples to show ALL PRDs in nested folders regardless of size; Removed incorrect non-nested monolithic PRD example; Updated review report location examples |

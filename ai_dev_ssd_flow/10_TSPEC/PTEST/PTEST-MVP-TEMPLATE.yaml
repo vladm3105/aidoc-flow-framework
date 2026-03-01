@@ -5,6 +5,7 @@
 metadata:
   document_id: "PTEST-NN"
   title: "[Component/System] Performance Test Specification"
+  instance_document_type: "ptest-document"
   artifact_type: "PTEST"
   layer: 10
   test_type_code: 44

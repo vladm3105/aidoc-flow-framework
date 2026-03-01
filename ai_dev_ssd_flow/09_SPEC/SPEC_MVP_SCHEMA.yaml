@@ -18,10 +18,57 @@
 # Usage: Reference by validate_spec.py for automated validation
 # Supports both full and MVP template profiles
 #
-schema_version: "1.0"
+schema_version: "2.0"
 artifact_type: SPEC
 layer: 9
-last_updated: "2026-01-20"
+last_updated: "2026-03-01"
+orchestrator: true  # SPEC parent is orchestrator that routes to subtypes
+
+# =============================================================================
+# SPEC Subtypes Routing (Layer 9)
+# =============================================================================
+# SPEC serves as an orchestrator routing to subtypes based on deliverable_type.
+# The deliverable_type field propagates from BRD through REQ.
+
+routing:
+  description: "Routes to SPEC subtype based on REQ.deliverable_type"
+  default_subtype: CSPEC  # Default when deliverable_type not specified or 'code'
+  subtypes:
+    - type: CSPEC
+      trigger: "deliverable_type == 'code'"
+      layer: 9
+      subtype_code: 50
+      description: "Code implementation specifications"
+      downstream: "TASKS → Source code"
+      ctr_required: true
+    - type: DSPEC
+      trigger: "deliverable_type == 'document'"
+      layer: 9
+      subtype_code: 51
+      description: "Documentation specifications"
+      downstream: "TASKS → Documentation artifacts"
+      ctr_required: false
+    - type: UXSPEC
+      trigger: "deliverable_type == 'ux'"
+      layer: 9
+      subtype_code: 52
+      description: "UX/Design specifications"
+      downstream: "TASKS → Wireframes, mockups, workflows"
+      ctr_required: false
+    - type: RISKSPEC
+      trigger: "deliverable_type == 'risk'"
+      layer: 9
+      subtype_code: 53
+      description: "Risk analysis specifications"
+      downstream: "TASKS → Risk matrices, assessments"
+      ctr_required: false
+    - type: PROCSPEC
+      trigger: "deliverable_type == 'process'"
+      layer: 9
+      subtype_code: 54
+      description: "Process/Procedure specifications"
+      downstream: "TASKS → SOPs, runbooks, procedures"
+      ctr_required: false
 
 references:
   md_template: "N/A (SPEC is YAML-only)"
@@ -69,10 +116,30 @@ top_level:
       max_length: 200
       description: "Single-sentence description of component purpose"
 
+    deliverable_type:
+      type: string
+      required: true
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: "REQ.deliverable_type"
+      description: "Deliverable type - determines SPEC subtype routing"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
+
     metadata:
       type: object
       required: true
       description: "Document control and versioning information"
+      fields:
+        instance_document_type:
+          type: string
+          required: false
+          allowed_values: ["spec-document", "cspec-document", "dspec-document", "uxspec-document", "riskspec-document", "procspec-document"]
+          description: "Used by templates to specify document type for generated instances"
 
     traceability:
       type: object

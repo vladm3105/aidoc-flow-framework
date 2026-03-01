@@ -8,15 +8,18 @@ tags:
   - document-template
 custom_fields:
   document_type: template
+  instance_document_type: spec-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - determines subtype routing
   artifact_type: SPEC
   layer: 9
+  orchestrator: true  # SPEC parent routes to subtypes based on deliverable_type
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   complexity: 2
   template_for: technical-specification
   schema_reference: "SPEC_MVP_SCHEMA.yaml"
-  schema_version: "1.0"
+  schema_version: "2.0"
 ---
 
 > **Dual-Format Note**:
@@ -25,6 +28,24 @@ custom_fields:
 > - **For Autopilot**: See `SPEC-MVP-TEMPLATE.yaml` (YAML template)
 > - **Shared Validation**: Both formats are validated by `SPEC_MVP_SCHEMA.yaml`
 > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md)
+
+---
+
+> **SPEC Subtypes - Deliverable Type Routing**:
+>
+> SPEC serves as an **orchestrator** that routes to subtypes based on `deliverable_type`:
+>
+> | `deliverable_type` | Subtype | Code | Output | CTR Required |
+> |-------------------|---------|------|--------|--------------|
+> | `code` (default)  | [CSPEC](./CSPEC/) | 50 | Source code | Yes |
+> | `document`        | [DSPEC](./DSPEC/) | 51 | Documentation artifacts | Optional |
+> | `ux`              | [UXSPEC](./UXSPEC/) | 52 | Wireframes, mockups | Optional |
+> | `risk`            | [RISKSPEC](./RISKSPEC/) | 53 | Risk matrices | No |
+> | `process`         | [PROCSPEC](./PROCSPEC/) | 54 | SOPs, runbooks | Optional |
+>
+> - **Default**: If `deliverable_type` is not specified, defaults to `code` → CSPEC
+> - **Propagation**: `deliverable_type` propagates from BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC
+> - **Templates**: Use subtype-specific templates for non-code deliverables
 
 ---
 

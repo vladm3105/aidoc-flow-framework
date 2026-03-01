@@ -74,8 +74,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["brd"]
-      description: "Must be 'brd' - no variations allowed"
+      allowed_values: ["brd", "brd-document", "template"]
+      description: "Use 'brd-document' for instances, 'template' for templates, 'brd' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["brd-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: null  # BRD is origin layer
+      description: "Deliverable type - determines downstream SPEC subtype routing"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

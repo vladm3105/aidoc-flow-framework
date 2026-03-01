@@ -94,6 +94,27 @@ This autopilot orchestrates the following skills:
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating BDD document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+   - Field: N/A (Gherkin files use header comments)
+
+2. **Set** `document_type` in generated document:
+   - BDD uses Gherkin `.feature` format without YAML frontmatter
+   - Add header comment: `# document_type: bdd-document`
+   - Schema validates via BDD_MVP_SCHEMA.yaml
+
+3. **Validation**: Generated documents MUST indicate `document_type: bdd-document`
+   - Templates have header comment `# document_type: template`
+   - Instances have header comment `# document_type: bdd-document`
+
+**Error Handling**: If header comment is missing from template, add `# document_type: bdd-document`.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.

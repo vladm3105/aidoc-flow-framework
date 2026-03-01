@@ -7,8 +7,8 @@ tags:
 custom_fields:
   document_type: validation-rules
   applies_to: [doc-brd-audit, doc-brd-fixer, pre-commit]
-  version: "2.0"
-  last_updated: "2026-02-28"
+  version: "2.1"
+  last_updated: "2026-03-01"
 ---
 
 # BRD Validation Rules - Single Source of Truth
@@ -59,6 +59,22 @@ This document defines validation rules for BRD documents. Both **Claude skills**
 ---
 
 ## 4. Execution Contract for doc-brd-audit
+
+### 4.0 Fresh Audit Policy (MANDATORY)
+
+**ALWAYS run the audit from scratch.** Do NOT:
+- Reference previous audit reports for scoring decisions
+- Skip validation steps based on drift cache history
+- Assume compliance from prior fix history
+- Use cached results from previous runs
+
+**ALWAYS**:
+- Run all validation scripts fresh every time
+- Re-check all structure/schema compliance
+- Re-compute PRD-ready score independently
+- Generate a new audit report with incremented version
+
+This ensures audit integrity and catches any regressions or new issues.
 
 ### 4.1 Two Execution Modes
 
@@ -226,5 +242,6 @@ The same scripts are used by pre-commit hooks:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-03-01 | Added Fresh Audit Policy (Section 4.0); audits must always run from scratch |
 | 2.0 | 2026-02-28 | Simplified to 2-skill model (doc-brd-audit + doc-brd-fixer); deprecated validator/reviewer |
 | 1.0 | 2026-02-28 | Initial unified rules; script execution contract; skill integration |

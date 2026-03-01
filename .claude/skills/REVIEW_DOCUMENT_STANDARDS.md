@@ -191,7 +191,7 @@ custom_fields:
   module_name: {module_name}          # e.g., Observability, Agent Orchestration
   review_date: "YYYY-MM-DD"           # ISO date format
   review_time: "HH:MM:SS"             # ISO time format (for same-day tracking)
-  review_tool: doc-{type}-reviewer    # e.g., doc-brd-reviewer
+  review_tool: doc-{type}-audit       # e.g., doc-brd-audit (or doc-{type}-reviewer for other types)
   tool_version: "{version}"           # Tool version (e.g., 1.0)
   review_version: "vNNN"              # Review version (e.g., v001, v002)
   review_sequence: {n}                # Numeric sequence (1, 2, 3, ...)

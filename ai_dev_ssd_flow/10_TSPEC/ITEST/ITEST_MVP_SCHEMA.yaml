@@ -42,6 +42,10 @@ properties:
       test_type_code:
         type: integer
         const: 41
+      instance_document_type:
+        type: string
+        enum: ["itest-document"]
+        description: "Used by templates to specify document type for generated instances"
 
   document_control:
     type: object

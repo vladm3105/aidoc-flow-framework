@@ -5,6 +5,7 @@
 metadata:
   document_id: "STEST-NN"
   title: "[Deployment Target] Smoke Test Specification"
+  instance_document_type: "stest-document"
   artifact_type: "STEST"
   layer: 10
   test_type_code: 42

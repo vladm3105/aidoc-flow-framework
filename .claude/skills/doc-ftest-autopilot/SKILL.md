@@ -88,6 +88,32 @@ All reports are stored beside parent FTEST in nested folder.
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating FTEST document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "ftest-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: ftest-document    # NOT "template"
+     artifact_type: FTEST
+     layer: 10
+     test_type_code: 43
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: ftest-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: ftest-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `ftest-document`.
+
+---
+
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`

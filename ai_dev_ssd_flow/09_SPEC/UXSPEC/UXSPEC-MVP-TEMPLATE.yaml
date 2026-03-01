@@ -1,0 +1,331 @@
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated UXSPEC artifact generation
+# - Validation: Validated by UXSPEC_MVP_SCHEMA.yaml
+# - Human Reference: See UXSPEC-MVP-TEMPLATE.md for narrative explanations
+# - Parent: SPEC (orchestrator) - routes here when deliverable_type == 'ux'
+# =============================================================================
+
+id: feature_name
+summary: "Single-sentence description of UX/design feature purpose, scope, and primary user value."
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  instance_document_type: "uxspec-document"
+  deliverable_type: "ux"  # Fixed for UXSPEC - inherited from REQ
+
+document_control:
+  status: "draft"  # draft, review, approved, implemented, deprecated
+  version: "1.0.0"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  design_ready_score: "[PASS] 90% (Target: >=85%)"
+  ctr_required: false  # CTR is optional for UX specifications
+
+custom_fields:
+  document_type: template
+  instance_document_type: uxspec-document
+  artifact_type: UXSPEC
+  layer: 9
+  subtype_code: 52
+  parent_type: SPEC
+  deliverable_output: ux
+  readiness_score: DESIGN-Ready
+  ctr_required: false
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.EE.SS"
+    bdd: "@bdd: BDD.NN.EE.SS"
+    adr: "@adr: ADR-NN"
+    sys: "@sys: SYS.NN.EE.SS"
+    req: "@req: REQ.NN.EE.SS"
+    ctr: "@ctr: CTR-NN"  # Optional for UXSPEC
+
+  downstream_artifacts:
+    wireframes: "wireframes/"
+    mockups: "mockups/"
+    prototypes: "prototypes/"
+
+  tags:
+    - "@uxspec: UXSPEC.NN.60.SS"
+    - "@req: REQ.NN.EE.SS"
+
+  cross_links:
+    depends:
+      - "@depends: UXSPEC-NN"
+    discoverability:
+      - "@discoverability: UXSPEC-NN (short rationale)"
+
+# =============================================================================
+# UX Specification
+# =============================================================================
+
+ux_specification:
+  artifact_type: "wireframe"  # wireframe, mockup, prototype, workflow, user_journey
+  fidelity: "medium"  # low, medium, high
+  tool: "figma"  # figma, sketch, miro, lucidchart
+
+  user_flows:
+    - id: "UXSPEC.NN.60.01"
+      name: "[Flow Name]"
+      entry_point: "[Where user starts]"
+      exit_point: "[Where user ends]"
+      steps:
+        - step: 1
+          action: "[User action]"
+          system_response: "[System response]"
+          screen_id: "UXSPEC.NN.61.01"
+        - step: 2
+          action: "[User action]"
+          system_response: "[System response]"
+          screen_id: "UXSPEC.NN.61.02"
+
+  screens:
+    - id: "UXSPEC.NN.61.01"
+      name: "[Screen Name]"
+      purpose: "[Screen purpose]"
+      entry_points: ["[Entry point 1]"]
+      exit_points: ["[Exit point 1]"]
+      components:
+        - "UXSPEC.NN.62.01"
+        - "UXSPEC.NN.62.02"
+      layout:
+        type: "single-column"  # single-column, multi-column, grid, flex
+        regions:
+          - name: "header"
+            components: []
+          - name: "main"
+            components: ["UXSPEC.NN.62.01"]
+          - name: "footer"
+            components: []
+
+  components:
+    - id: "UXSPEC.NN.62.01"
+      name: "[Component Name]"
+      type: "button"  # button, input, card, modal, list, form, etc.
+      states:
+        - "default"
+        - "hover"
+        - "active"
+        - "disabled"
+        - "error"
+        - "loading"
+      variants: []
+      props:
+        - name: "[prop_name]"
+          type: "string"
+          required: true
+
+  interactions:
+    - id: "UXSPEC.NN.63.01"
+      name: "[Interaction Name]"
+      trigger: "click"  # click, hover, focus, scroll, gesture
+      action: "[What happens]"
+      response: "[Visual response]"
+      animation:
+        type: "fade"  # fade, slide, scale, none
+        duration_ms: 200
+        easing: "ease-in-out"  # ease-in, ease-out, ease-in-out, linear
+
+# =============================================================================
+# Accessibility Requirements
+# =============================================================================
+
+accessibility:
+  wcag_level: "AA"  # A, AA, AAA
+  target_compliance_percent: 100
+
+  aria_requirements:
+    - pattern: "[ARIA Pattern]"
+      usage: "[Usage context]"
+      elements: ["[Element 1]", "[Element 2]"]
+
+  checklist:
+    color_contrast: true  # 4.5:1 for normal text
+    keyboard_accessible: true
+    focus_indicators: true
+    screen_reader_compatible: true
+    touch_targets_44px: true
+    form_labels: true
+    error_association: true
+    no_color_only_info: true
+
+# =============================================================================
+# Visual Requirements
+# =============================================================================
+
+visual_requirements:
+  style_guide_reference: "[Design system name/link]"
+  theme: "light"  # light, dark, system
+
+  typography:
+    - element: "h1"
+      font: "[Font family]"
+      size: "[Size]"
+      weight: "[Weight]"
+      line_height: "[Line height]"
+    - element: "body"
+      font: "[Font family]"
+      size: "[Size]"
+      weight: "[Weight]"
+      line_height: "[Line height]"
+
+  color_palette:
+    - name: "primary"
+      hex: "#[hex]"
+      usage: "[Usage]"
+    - name: "secondary"
+      hex: "#[hex]"
+      usage: "[Usage]"
+    - name: "error"
+      hex: "#[hex]"
+      usage: "[Usage]"
+    - name: "success"
+      hex: "#[hex]"
+      usage: "[Usage]"
+
+  spacing:
+    - token: "xs"
+      value: "4px"
+    - token: "sm"
+      value: "8px"
+    - token: "md"
+      value: "16px"
+    - token: "lg"
+      value: "24px"
+
+# =============================================================================
+# Responsive Behavior
+# =============================================================================
+
+responsive:
+  breakpoints:
+    - name: "mobile"
+      min_width: "0"
+      max_width: "767px"
+      layout_changes: "[Changes for mobile]"
+    - name: "tablet"
+      min_width: "768px"
+      max_width: "1023px"
+      layout_changes: "[Changes for tablet]"
+    - name: "desktop"
+      min_width: "1024px"
+      max_width: null
+      layout_changes: "[Changes for desktop]"
+
+  adaptive_components:
+    - component: "navigation"
+      mobile: "hamburger_menu"
+      tablet: "hamburger_menu"
+      desktop: "full_nav_bar"
+    - component: "grid"
+      mobile: "1_column"
+      tablet: "2_columns"
+      desktop: "3_columns"
+
+# =============================================================================
+# Error States
+# =============================================================================
+
+error_states:
+  error_messages:
+    - type: "validation"
+      message: "[Validation error message]"
+      display_location: "[inline / toast / modal]"
+      recovery_action: "[Recovery action]"
+    - type: "network"
+      message: "[Network error message]"
+      display_location: "[toast / modal]"
+      recovery_action: "[Retry / Refresh]"
+
+  empty_states:
+    - context: "no_data"
+      message: "[Empty state message]"
+      action: "[CTA button text]"
+      action_target: "[Action destination]"
+
+# =============================================================================
+# Loading States
+# =============================================================================
+
+loading_states:
+  - context: "page_load"
+    type: "skeleton"
+    duration_threshold_ms: 300
+  - context: "action"
+    type: "spinner"
+    duration_threshold_ms: 200
+  - context: "form_submit"
+    type: "button_loading"
+    duration_threshold_ms: 0
+
+# =============================================================================
+# Verification
+# =============================================================================
+
+verification:
+  bdd_scenarios:
+    - "04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-name"
+
+  usability_testing:
+    - test_type: "task_completion"
+      participants: 5
+      success_criteria_percent: 90
+    - test_type: "time_on_task"
+      participants: 5
+      target_duration_seconds: 60
+
+  accessibility_testing:
+    - tool: "axe"
+      automated: true
+    - tool: "screen_reader"
+      automated: false
+      testers: ["NVDA", "VoiceOver"]
+
+# =============================================================================
+# Design Assets
+# =============================================================================
+
+design_assets:
+  - type: "wireframes"
+    location: "[Path/URL]"
+    format: "figma"
+  - type: "mockups"
+    location: "[Path/URL]"
+    format: "figma"
+  - type: "prototypes"
+    location: "[Path/URL]"
+    format: "figma"
+  - type: "icons"
+    location: "[Path/URL]"
+    format: "svg"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: UXSPEC-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: UXSPEC_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: UXSPEC_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: UXSPEC_MVP_VALIDATION_RULES.md (for checklist)
+
+# UXSPEC Notes:
+# - Inherits from SPEC parent (Layer 9)
+# - subtype_code: 52 (UX specification)
+# - CTR required: No (optional for UX)
+# - Readiness score: DESIGN-Ready >= 85%
+# - Element IDs: UXSPEC.NN.60.SS (flow), UXSPEC.NN.61.SS (screen), etc.
+
+# =============================================================================

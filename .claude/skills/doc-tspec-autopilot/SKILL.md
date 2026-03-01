@@ -84,6 +84,31 @@ Automated **Test Specifications (TSPEC)** generation pipeline that processes SPE
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating TSPEC document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "tspec-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: tspec-document    # NOT "template"
+     artifact_type: TSPEC
+     layer: 10
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: tspec-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: tspec-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `tspec-document`.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.

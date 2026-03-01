@@ -188,9 +188,9 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 
 **Type**: Error (blocking)
 
-**Required**: `document_type: ears`
+**Required**: `document_type: ears-document` (preferred) or `document_type: ears` (legacy compatibility)
 
-**Fix**: Set correct value in custom_fields
+**Fix**: Set `document_type: ears-document` in custom_fields for generated instances
 
 ---
 

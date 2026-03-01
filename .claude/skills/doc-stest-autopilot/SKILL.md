@@ -89,6 +89,32 @@ All reports are stored beside parent STEST in nested folder.
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating STEST document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "stest-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: stest-document    # NOT "template"
+     artifact_type: STEST
+     layer: 10
+     test_type_code: 42
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: stest-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: stest-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `stest-document`.
+
+---
+
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`

@@ -11,20 +11,28 @@ This guide defines the minimum command flow for BRD quality operations.
 - Downstream projects should reference these via symlinks only.
 - Keep framework as single source of truth for skill content.
 
-## Core Model
+## Core Model (2-Skill Quality Pipeline)
 
 - `doc-brd` is the **root/shared BRD contract skill** (rules, structure, template semantics).
 - `doc-brd-autopilot` is the **primary execution/orchestration skill**.
-- `doc-brd-audit`, `doc-brd-validator`, `doc-brd-reviewer`, and `doc-brd-fixer` are quality pipeline skills.
+- `doc-brd-audit` is the **unified quality gate** (all validation + scoring, runs FROM SCRATCH).
+- `doc-brd-fixer` is the **issue remediation skill** (applies fixes from audit report).
 
 ## Skills
 
-- `doc-brd`: Root/shared BRD creation contract used by other `doc-brd*` skills.
-- `doc-brd-validator`: Structural/schema checks.
-- `doc-brd-reviewer`: PRD-ready score evaluation using deduction-based model.
-- `doc-brd-audit`: Wrapper that runs validator + reviewer and writes combined audit report.
-- `doc-brd-fixer`: Applies auto-fixable items from latest audit/review report.
-- `doc-brd-autopilot`: Orchestrates review/fix loop for a BRD target.
+| Skill | Purpose |
+|-------|---------|
+| `doc-brd` | Root/shared BRD creation contract used by other `doc-brd*` skills |
+| `doc-brd-autopilot` | Orchestrates audit/fix loop for a BRD target |
+| `doc-brd-audit` | All validation + scoring (runs FROM SCRATCH per Fresh Audit Policy) |
+| `doc-brd-fixer` | Applies auto-fixable items from latest audit report |
+
+## Deprecated Skills
+
+| Skill | Status | Replacement |
+|-------|--------|-------------|
+| `doc-brd-validator` | DEPRECATED | Merged into `doc-brd-audit` |
+| `doc-brd-reviewer` | DEPRECATED | Merged into `doc-brd-audit` |
 
 ## Binary Score Gate
 
@@ -33,19 +41,30 @@ This guide defines the minimum command flow for BRD quality operations.
 
 No score warning band is used.
 
+## Fresh Audit Policy (MANDATORY)
+
+**ALWAYS run audits from scratch:**
+- Do NOT reference previous audit reports for scoring decisions
+- Do NOT skip validation steps based on drift cache history
+- Re-compute PRD-ready score independently each time
+- Generate a new audit report with incremented version
+
 ## Default Execution Order
 
-1. Run `doc-brd-audit`.
+1. Run `doc-brd-audit` (FROM SCRATCH).
 2. If FAIL, run `doc-brd-fixer`.
-3. Run `doc-brd-audit` again.
+3. Run `doc-brd-audit` again (FROM SCRATCH).
 4. Repeat until PASS or manual-only items remain.
 
 ## Standard Outputs
 
 - Audit: `BRD-NN.A_audit_report_vNNN.md`
-- Review: `BRD-NN.R_review_report_vNNN.md`
 - Fix: `BRD-NN.F_fix_report_vNNN.md`
 - Drift cache: `.drift_cache.json`
+
+**Legacy (historical only):**
+- Review: `BRD-NN.R_review_report_vNNN.md` (doc-brd-reviewer - deprecated)
+- Validation: `BRD-NN.V_validation_report_vNNN.md` (doc-brd-validator - deprecated)
 
 ## Fast Start
 
@@ -56,7 +75,7 @@ No score warning band is used.
 
 ## Decision Rules
 
-- If validator fails, status is FAIL regardless of score.
+- If structural validation fails, status is FAIL regardless of score.
 - If score < 90, status is FAIL.
 - If manual-required items remain, route to manual update.
 
@@ -64,3 +83,7 @@ No score warning band is used.
 
 - Template structure: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
 - Scoring policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+
+---
+
+*Version: 2.2 | Updated: 2026-03-01*

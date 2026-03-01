@@ -53,6 +53,8 @@ The following rules govern traceability in the SDD workflow:
 
 **Critical Rule**: `*_MVP_SCHEMA.yaml` files are the single source of truth for their respective artifact types. When conflicts exist between style guides and schemas, **the schema is authoritative**.
 
+**Element Code Authority Exception**: Element type code semantics and per-artifact code allowance are governed by `ID_NAMING_STANDARDS.md` (standardized element type table). Validators and hooks MUST enforce schema structure and element code policy together.
+
 | Artifact | Schema File | Layer |
 |----------|-------------|-------|
 | PRD | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` | 2 |

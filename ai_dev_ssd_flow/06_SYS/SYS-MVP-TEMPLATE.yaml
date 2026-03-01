@@ -8,6 +8,8 @@
 
 # Template metadata
 schema_version: "2.1"
+instance_document_type: "sys-document"
+deliverable_type: "code"  # Options: code, document, ux, risk, process - inherited from ADR
 artifact_type: SYS
 layer: 6
 total_sections: 15

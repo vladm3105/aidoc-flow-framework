@@ -8,6 +8,7 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: stest-document
   artifact_type: STEST
   layer: 10
   test_type_code: 42

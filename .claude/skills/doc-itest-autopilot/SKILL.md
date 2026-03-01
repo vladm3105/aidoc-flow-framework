@@ -88,6 +88,32 @@ All reports are stored beside parent ITEST in nested folder.
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating ITEST document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "itest-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: itest-document    # NOT "template"
+     artifact_type: ITEST
+     layer: 10
+     test_type_code: 41
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: itest-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: itest-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `itest-document`.
+
+---
+
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`

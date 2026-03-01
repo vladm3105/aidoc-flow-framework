@@ -8,6 +8,7 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: utest-document
   artifact_type: UTEST
   layer: 10
   test_type_code: 40

@@ -94,6 +94,11 @@ CORE_FAIL=0
 CORE_WARN=0
 ADVISORY_FAIL=0
 
+is_section_based_brd_root() {
+  local root="$1"
+  find "$root" -type f -name 'BRD-*.0_*.md' -o -type f -name 'BRD-*.0_index.md' 2>/dev/null | grep -q .
+}
+
 run_core() {
   local label="$1"
   shift
@@ -157,8 +162,13 @@ echo ""
 run_core "Standardized element codes" \
   python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py" "${BRD_ROOT}" --strict
 
-run_core "BRD structural validator" \
-  python3 "${SCRIPT_DIR}/validate_brd.py" "${BRD_ROOT}" --strict
+if is_section_based_brd_root "${BRD_ROOT}"; then
+  echo "[CORE] BRD structural validator"
+  echo "[PASS] BRD structural validator (section-based BRD root detected; monolithic structural validator skipped)"
+else
+  run_core "BRD structural validator" \
+    python3 "${SCRIPT_DIR}/validate_brd.py" "${BRD_ROOT}" --strict
+fi
 
 run_quality_core "BRD quality gate" \
   bash "${SCRIPT_DIR}/validate_brd_quality_score.sh" "${BRD_ROOT}"

@@ -18,8 +18,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "2.1"
+    last_updated: "2026-03-01"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -28,12 +28,15 @@ metadata:
 
 ## Purpose
 
-Run a **single BRD audit workflow** that executes:
+Run a **unified BRD audit workflow** that combines structural validation and content quality checks into a single pass, producing one **combined report** optimized for `doc-brd-fixer` input.
 
-1. `doc-brd-validator` (structural/schema gate)
-2. `doc-brd-reviewer` (semantic/content quality gate)
+**2-Skill Model**: This skill replaces the separate `doc-brd-validator` and `doc-brd-reviewer` skills (now deprecated). All validation and review logic is consolidated here.
 
-Then emit one **combined report** optimized for `doc-brd-fixer` input.
+**Deprecated Skills**:
+| Skill | Status | Replacement |
+|-------|--------|-------------|
+| `doc-brd-validator` | DEPRECATED | Merged into `doc-brd-audit` |
+| `doc-brd-reviewer` | DEPRECATED | Merged into `doc-brd-audit` |
 
 **Layer**: 1 (BRD Quality Gate Wrapper)
 
@@ -47,13 +50,28 @@ Then emit one **combined report** optimized for `doc-brd-fixer` input.
 
 ## Why This Skill Exists
 
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
+The 2-skill model (`doc-brd-audit` + `doc-brd-fixer`) simplifies the BRD quality workflow.
 
 | Concern | Owner Skill |
 |---------|-------------|
-| Schema/template compliance | `doc-brd-validator` |
-| Content quality and business alignment | `doc-brd-reviewer` |
-| Single user-facing audit command | `doc-brd-audit` |
+| All validation + scoring | `doc-brd-audit` (this skill) |
+| Apply fixes from audit report | `doc-brd-fixer` |
+
+---
+
+## Fresh Audit Policy (MANDATORY)
+
+**ALWAYS run the audit from scratch.** Do NOT:
+- Reference previous audit reports for scoring decisions
+- Skip validation steps based on drift cache history
+- Assume compliance from prior fix history
+- Use cached results from previous runs
+
+**ALWAYS**:
+- Run all validation scripts fresh every time
+- Re-check all structure/schema compliance
+- Re-compute PRD-ready score independently
+- Generate a new audit report with incremented version
 
 ---
 
@@ -170,5 +188,6 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-03-01 | **2-Skill Model**: Deprecated `doc-brd-validator` and `doc-brd-reviewer`; Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill |
 | 1.3 | 2026-02-26 | Added advisory BRD C4/DFD/sequence diagram contract checks and required `Diagram Contract Findings` section in combined audit reports; strict mode optional |
 | 1.2 | 2026-02-26 | Initial audit wrapper; validator→reviewer orchestration; combined report contract for fixer |

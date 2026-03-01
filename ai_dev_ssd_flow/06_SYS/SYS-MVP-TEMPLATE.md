@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: sys-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - inherited from ADR
   artifact_type: SYS
   layer: 6
   template_variant: mvp

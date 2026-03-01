@@ -22,7 +22,9 @@ title: "[Business Requirements Title: e.g., E-Commerce Platform MVP]"
 
 metadata:
   schema_version: "1.2"
-  last_updated: "2026-02-25"
+  instance_document_type: "brd-document"
+  deliverable_type: "code"  # Options: code, document, ux, risk, process
+  last_updated: "2026-03-01"
   total_sections: 18
   lifecycle: "mvp-prod-newmvp"
   template_reference: "BRD-MVP-TEMPLATE.md"

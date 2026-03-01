@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: prd-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - inherited from BRD
   artifact_type: PRD
   layer: 2
   template_variant: mvp

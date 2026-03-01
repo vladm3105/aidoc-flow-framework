@@ -75,6 +75,10 @@ class REQSpecReadinessValidator:
 
     # Performance target patterns
     PERFORMANCE_PATTERN = r"(p\d+|latency|throughput|availability).*\d+"
+    REPORT_FILE_PATTERN = re.compile(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        re.IGNORECASE,
+    )
 
     def __init__(self, min_score: int = 90):
         """Initialize validator with minimum passing score."""
@@ -295,6 +299,8 @@ class REQSpecReadinessValidator:
         results = []
 
         for req_file in directory.rglob("REQ-*.md"):
+            if self.REPORT_FILE_PATTERN.search(req_file.name):
+                continue
             # Skip archived files
             if "archived" in str(req_file).lower():
                 continue

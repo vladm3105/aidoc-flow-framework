@@ -59,8 +59,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["req", "template"]
-      description: "Must be 'req' for documents, 'template' for templates"
+      allowed_values: ["req", "req-document", "template"]
+      description: "Use 'req-document' for instances, 'template' for templates, 'req' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["req-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: true
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - determines SPEC subtype routing (CSPEC, DSPEC, UXSPEC, RISKSPEC, PROCSPEC)"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

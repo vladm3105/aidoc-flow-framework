@@ -12,6 +12,11 @@ summary: "[Single-sentence description: Formal requirements mapping from PRD fea
 # Document Control
 # =============================================================================
 
+metadata:
+  schema_version: "1.1"
+  instance_document_type: "ears-document"
+  deliverable_type: "code"  # Options: code, document, ux, risk, process - inherited from PRD
+
 document_control:
   status: "Draft"  # Draft, Review, Approved, Implemented, Deprecated
   version: "1.0"

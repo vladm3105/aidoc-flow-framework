@@ -32,11 +32,13 @@ Master index of all Business Requirements Documents for the project.
 /doc-brd-autopilot
 ```
 
-### Review Existing BRD
+### Audit Existing BRD (Fresh Audit Policy)
 
 ```bash
-/doc-brd-reviewer BRD-01
+/doc-brd-audit BRD-01
 ```
+
+**Note**: Always runs from scratch, ignoring previous results.
 
 ### Validate BRD (Unified)
 

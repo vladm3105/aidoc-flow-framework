@@ -17,7 +17,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "3.5"
+    version: "3.6"
     last_updated: "2026-02-28"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
@@ -66,17 +66,15 @@ This autopilot orchestrates the following skills:
 | `doc-naming` | Element ID format (BRD.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
 | `doc-brd` | BRD creation rules, template, section structure, Platform vs Feature guidance | Phase 3: BRD Generation |
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
-| `doc-brd-validator` | Validate BRD structure, content, PRD-Ready score | Phase 4: BRD Validation |
-| `doc-brd-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
-| `doc-brd-audit` | Unified validator→reviewer wrapper with combined report output | Phase 5: Audit |
-| `doc-brd-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
+| `doc-brd-audit` | **Unified quality gate**: structure validation + content review + PRD-Ready scoring | Phase 4-5: Audit |
+| `doc-brd-fixer` | Apply fixes from audit report, create missing files | Phase 5: Fix |
+
+**2-Skill Model**: `doc-brd-validator` and `doc-brd-reviewer` are DEPRECATED and merged into `doc-brd-audit`.
 
 **Delegation Principle**: The autopilot orchestrates workflow but delegates:
 - BRD structure/content rules → `doc-brd` skill
 - Real-time quality feedback → `quality-advisor` skill
-- BRD validation logic → `doc-brd-validator` skill
-- Content review and scoring → `doc-brd-reviewer` skill
-- Unified audit wrapper output → `doc-brd-audit` skill
+- All validation and review → `doc-brd-audit` skill (unified quality gate)
 - Issue resolution and fixes → `doc-brd-fixer` skill
 - Element ID standards → `doc-naming` skill
 
@@ -94,6 +92,31 @@ All generation/review/fix orchestration MUST align to:
 - Template naming for glossary and appendices (`17.5 Cross-References`, `17.6 External Standards`, `18.1-18.5`)
 
 Any deviation found in reviewer/fixer outputs must trigger fix cycle before PASS.
+
+---
+
+## Document Type Contract (MANDATORY)
+
+When generating BRD document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "brd-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: brd-document    # NOT "template"
+     artifact_type: BRD
+     layer: 1
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: brd-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: brd-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `brd-document`.
 
 ---
 
@@ -250,12 +273,12 @@ ls docs/01_BRD/BRD-{NN}_*/
 Input: BRD-01
 ├── Detected Type: BRD (self)
 ├── BRD Exists: Yes → docs/01_BRD/BRD-01_f1_iam/
-├── Action: REVIEW & FIX CYCLE
-│   ├── Step 1: Run doc-brd-reviewer → Score: 85%
+├── Action: AUDIT & FIX CYCLE
+│   ├── Step 1: Run doc-brd-audit → Score: 85%
 │   ├── Step 2: Score < 90% → Run doc-brd-fixer
-│   ├── Step 3: Re-review → Score: 94%
+│   ├── Step 3: Re-audit → Score: 94%
 │   └── Step 4: PASS - PRD-Ready
-└── Output: BRD-01.R_review_report_v002.md, BRD-01.F_fix_report_v001.md
+└── Output: BRD-01.A_audit_report_v002.md, BRD-01.F_fix_report_v001.md
 
 Input: BRD-15
 ├── Detected Type: BRD (self)
@@ -305,7 +328,7 @@ Input: --iplan IPLAN-002
 - Ensuring consistent BRD quality across team members
 
 **Do NOT use when**:
-- Manually reviewing an existing BRD (use `doc-brd-validator`)
+- Manually reviewing an existing BRD (use `doc-brd-audit`)
 - Creating a simple single-section BRD (use `doc-brd` directly)
 - Editing specific BRD sections (use `doc-brd` for guidance)
 
@@ -357,11 +380,11 @@ flowchart TD
         R --> S[Write BRD Files]
     end
 
-    subgraph Phase4["Phase 4: BRD Validation"]
-        S --> T[Run doc-brd-validator]
+    subgraph Phase4["Phase 4-5: Audit & Fix Cycle"]
+        S --> T[Run doc-brd-audit]
         T --> U{PRD-Ready >= 90?}
-        U -->|No| V[Auto-Fix BRD Issues]
-        V --> W[Re-validate BRD]
+        U -->|No| V[Run doc-brd-fixer]
+        V --> W[Re-run doc-brd-audit]
         W --> U
       U -->|Yes| X[Run Template Conformance Check against BRD-MVP-TEMPLATE]
       X --> X2{Template aligned?}
@@ -369,10 +392,10 @@ flowchart TD
       X2 -->|Yes| X3[Mark BRD Validated]
     end
 
-    subgraph Phase5["Phase 5: Review & Fix Cycle"]
-      X3 --> Y[Run doc-brd-reviewer]
-        Y --> Y2{Score >= 90?}
-      Y2 -->|No| Y3[Run doc-brd-fixer]
+    subgraph Phase6["Phase 6: Final Review"]
+      X3 --> Y[Verify Quality Checks]
+        Y --> Y2{All checks pass?}
+      Y2 -->|No| Y3[Flag Manual Review]
       Y3 --> Y3a[Semantic MVP header normalization]
       Y3a --> Y3b[Safe subsection renumbering]
       Y3b --> Y3c[Apply fix confidence tags]
@@ -903,8 +926,8 @@ Generate the BRD document with real-time quality feedback.
 
 After BRD generation, validate structure and PRD-Ready score.
 
-> **Skill Delegation**: This phase uses validation rules from `doc-brd-validator` skill.
-> See: `.claude/skills/doc-brd-validator/SKILL.md` for complete validation rules.
+> **Skill Delegation**: This phase uses validation rules from `doc-brd-audit` skill (unified quality gate).
+> See: `.claude/skills/doc-brd-audit/SKILL.md` for complete validation and review rules.
 
 **Validation Command**:
 
@@ -943,26 +966,28 @@ bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 
 ```
 LOOP (max 3 iterations):
-  1. Run doc-brd-validator
-  2. IF errors found: Apply auto-fixes
+  1. Run doc-brd-audit (unified quality gate)
+  2. IF errors found: Apply auto-fixes via doc-brd-fixer
   3. IF non-blocking issues found: Review and address if critical
   4. IF PRD-Ready Score < 90%: Enhance sections
   5. IF clean: Mark VALIDATED, proceed
   6. IF max iterations: Log issues, flag for manual review
 ```
 
-### Phase 5: Review & Fix Cycle (v2.3)
+### Phase 5: Audit & Fix Cycle (v2.4 - 2-Skill Model)
 
-Iterative review and fix cycle to ensure BRD quality before completion.
+Iterative audit and fix cycle to ensure BRD quality before completion.
+
+**Note**: This phase uses `doc-brd-audit` (unified quality gate) and `doc-brd-fixer`. The deprecated `doc-brd-validator` and `doc-brd-reviewer` skills are merged into `doc-brd-audit`.
 
 ```mermaid
 flowchart TD
-    A[Phase 5 Start] --> B[Run doc-brd-reviewer]
-    B --> C[Generate Review Report]
+    A[Phase 5 Start] --> B[Run doc-brd-audit]
+    B --> C[Generate Audit Report]
     C --> V{Verify .drift_cache.json}
     V -->|Missing| W[Create drift cache]
     W --> D
-    V -->|Exists| D{Review Score >= 90?}
+    V -->|Exists| D{PRD-Ready Score >= 90?}
 
     D -->|Yes| E[PASS - Run Output Checklist]
     D -->|No| F{Iteration < Max?}
@@ -981,15 +1006,15 @@ flowchart TD
     X --> Y[Proceed to Phase 6]
 ```
 
-#### 5.1 Initial Review
+#### 5.1 Initial Audit
 
-Run `doc-brd-reviewer` to identify issues.
+Run `doc-brd-audit` to identify issues (unified quality gate).
 
 ```bash
-/doc-brd-reviewer BRD-NN
+/doc-brd-audit BRD-NN
 ```
 
-**Output**: `BRD-NN.R_review_report_v001.md`
+**Output**: `BRD-NN.A_audit_report_v001.md`
 
 #### 5.2 Fix Cycle
 
@@ -1011,15 +1036,15 @@ If review score < 90%, invoke `doc-brd-fixer`.
 
 **Output**: `BRD-NN.F_fix_report_v001.md`
 
-#### 5.3 Re-Review
+#### 5.3 Re-Audit
 
-After fixes, automatically re-run reviewer.
+After fixes, automatically re-run audit (FROM SCRATCH per Fresh Audit Policy).
 
 ```bash
-/doc-brd-reviewer BRD-NN
+/doc-brd-audit BRD-NN
 ```
 
-**Output**: `BRD-NN.R_review_report_v002.md`
+**Output**: `BRD-NN.A_audit_report_v002.md`
 
 #### 5.4 Iteration Control
 
@@ -1982,7 +2007,7 @@ jobs:
 ## Related Resources
 
 - **BRD Creation Skill**: `.claude/skills/doc-brd/SKILL.md`
-- **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
+- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` (unified quality gate)
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
 - **BRD Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
@@ -2002,6 +2027,7 @@ jobs:
 | 3.3 | 2026-02-27 | **Input Contract Expansion**: Added canonical grammar and compatibility (`--ref`, `--prompt`, `--iplan`); implemented deterministic precedence and supplemental merge semantics; added IPLAN resolution order and validation matrix; added small-reference mode thresholds/extraction table; updated input gate and examples for implementation-plan-driven generation while preserving BRD-ID review flow. |
 | 3.2 | 2026-02-27 | **Hash Computation Contract**: Added Section 5.6.1 with mandatory bash `sha256sum` execution at generation and review; Hash format validation; Placeholder rejection (verified_no_drift, pending_verification); Verification step to confirm valid hashes in drift cache |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
+| 3.6 | 2026-03-01 | **2-Skill Model**: Migrated from deprecated `doc-brd-validator`/`doc-brd-reviewer` to unified `doc-brd-audit`; Updated Skill Dependencies, flowcharts, Phase 5 → Audit & Fix Cycle; All references now use `doc-brd-audit` as the single quality gate |
 | 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |
 | 3.0 | 2026-02-26 | **Fix-loop hardening**: Enhanced Phase 5 orchestration to include semantic MVP heading normalization, safe subsection renumbering, fix confidence tagging, and markdown normalization for generated review/fix reports; Added gating rule requiring no unresolved `manual-required` fix items before PASS. |
 | 2.9 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Synced with BRD-MVP-TEMPLATE.md v1.1 |

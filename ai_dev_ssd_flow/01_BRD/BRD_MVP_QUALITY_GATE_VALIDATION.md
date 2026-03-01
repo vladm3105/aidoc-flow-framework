@@ -318,22 +318,31 @@ See [BRD-07: AI Gateway](./BRD-07_ai_gateway_architecture.md) for routing detail
 
 **Validation Logic**:
 ```bash
-# Check 8: BRD C4/DFD contract tags
-for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  has_c4=$(grep -cE '@diagram:\s*c4-l1' "$f" || true)
-  has_dfd=$(grep -cE '@diagram:\s*dfd-l0' "$f" || true)
-  if [ "$has_c4" -eq 0 ] || [ "$has_dfd" -eq 0 ]; then
-    echo "INFO: $(basename $f) missing BRD diagram contract tags (@diagram: c4-l1, @diagram: dfd-l0)"
-  fi
-done
+# Build source BRD corpus excluding companion reports
+SOURCE_BRD_FILES=$(find "$BRD_DIR" -type f -name 'BRD-*.md' \
+  | grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md$')
 
-# Check 9: Sequence tag presence when sequence diagram is used
-echo "=== Diagram Contract Coverage ==="
-for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  seq_blocks=$(grep -c 'sequenceDiagram' "$f" 2>/dev/null || true)
-  seq_tags=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" 2>/dev/null || true)
-  echo "$(basename $f): sequence_blocks=$seq_blocks, sequence_tags=$seq_tags"
-done
+# Skip BRD-layer diagram contract checks for section-based layout
+if find "$BRD_DIR" -type f -name 'BRD-*.0_*.md' | grep -q .; then
+  echo "INFO: Diagram contract checks skipped for section-based BRD layout"
+else
+  # Check 8: BRD C4/DFD contract tags
+  for f in $SOURCE_BRD_FILES; do
+    has_c4=$(grep -cE '@diagram:\s*c4-l1' "$f" || true)
+    has_dfd=$(grep -cE '@diagram:\s*dfd-l0' "$f" || true)
+    if [ "$has_c4" -eq 0 ] || [ "$has_dfd" -eq 0 ]; then
+      echo "INFO: $(basename "$f") missing BRD diagram contract tags (@diagram: c4-l1, @diagram: dfd-l0)"
+    fi
+  done
+
+  # Check 9: Sequence tag presence when sequence diagram is used
+  echo "=== Diagram Contract Coverage ==="
+  for f in $SOURCE_BRD_FILES; do
+    seq_blocks=$(grep -c 'sequenceDiagram' "$f" 2>/dev/null || true)
+    seq_tags=$(grep -cE '@diagram:\s*sequence-(sync|async|error)' "$f" 2>/dev/null || true)
+    echo "$(basename "$f"): sequence_blocks=$seq_blocks, sequence_tags=$seq_tags"
+  done
+fi
 ```
 
 **Recommendation**: Add contract tags and intent headers for:
@@ -345,6 +354,7 @@ done
 **Transition Note**:
 - BRD diagram findings must not block BRD PASS/FAIL status.
 - Blocking checks are enforced in PRD via `PRD-E023`, `PRD-E024`, `PRD-E025`, `PRD-E026`.
+- For section-based BRD document layout, BRD-layer diagram contract checks are skipped by the quality gate implementation.
 
 ---
 

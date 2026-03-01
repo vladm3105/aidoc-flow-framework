@@ -1,0 +1,332 @@
+# =============================================================================
+#  Document Role: DERIVATIVE of UXSPEC-MVP-TEMPLATE.yaml
+# - Authority: UXSPEC-MVP-TEMPLATE.yaml is PRIMARY
+# - Purpose: Machine-readable validation rules for UXSPEC YAML documents
+# - On conflict: Defer to UXSPEC-MVP-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "1.0"
+artifact_type: UXSPEC
+layer: 9
+subtype_code: 52
+parent_type: SPEC
+last_updated: "2026-03-01"
+deliverable_type: ux
+
+references:
+  md_template: "UXSPEC-MVP-TEMPLATE.md"
+  yaml_template: "UXSPEC-MVP-TEMPLATE.yaml"
+  parent_schema: "../SPEC_MVP_SCHEMA.yaml"
+  creation_rules: "UXSPEC_MVP_CREATION_RULES.md"
+  validation_rules: "UXSPEC_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# UXSPEC-Specific Metadata
+# =============================================================================
+
+uxspec_metadata:
+  description: "UX/Design Specification - Specifications for wireframes, mockups, workflows, and user journeys"
+  deliverable_output: "Wireframes, mockups, workflows, user journeys"
+  ctr_required: false
+  readiness_score: "DESIGN-Ready"
+  readiness_target: 85
+
+# =============================================================================
+# File Format Requirements
+# =============================================================================
+
+file_format:
+  extension: ".yaml"
+  naming_pattern: "^UXSPEC-\\d{2,}_[a-z0-9_]+\\.yaml$"
+  description: "Format: UXSPEC-NN_descriptive_name.yaml"
+  encoding: "UTF-8"
+  yaml_version: "1.2"
+
+# =============================================================================
+# Required Fields (inherits from SPEC with UXSPEC-specific additions)
+# =============================================================================
+
+top_level:
+  required_fields:
+    id:
+      type: string
+      pattern: "^[a-z][a-z0-9_]*$"
+      description: "Feature identifier (snake_case)"
+
+    summary:
+      type: string
+      min_length: 10
+      max_length: 200
+      description: "Single-sentence description of UX feature purpose"
+
+    metadata:
+      type: object
+      required: true
+      fields:
+        schema_version:
+          type: string
+          required: true
+        instance_document_type:
+          type: string
+          required: true
+          allowed_values: ["uxspec-document"]
+        deliverable_type:
+          type: string
+          required: true
+          allowed_values: ["ux"]
+
+    document_control:
+      type: object
+      required: true
+      fields:
+        ctr_required:
+          type: boolean
+          required: false
+          default: false
+          description: "CTR is optional for UX specifications"
+
+    traceability:
+      type: object
+      required: true
+      description: "Must include REQ upstream reference"
+
+    ux_specification:
+      type: object
+      required: true
+      description: "UX-specific content (flows, screens, components, interactions)"
+
+    accessibility:
+      type: object
+      required: true
+      description: "WCAG compliance and ARIA requirements"
+
+    visual_requirements:
+      type: object
+      required: true
+      description: "Style guide, typography, colors, spacing"
+
+    responsive:
+      type: object
+      required: true
+      description: "Breakpoints and adaptive behavior"
+
+    verification:
+      type: object
+      required: true
+      description: "BDD scenarios and usability testing"
+
+# =============================================================================
+# Element Type Codes (UXSPEC-specific)
+# =============================================================================
+
+element_type_codes:
+  60: "flow"
+  61: "screen"
+  62: "component"
+  63: "interaction"
+
+element_id_format: "UXSPEC.{DOC}.{TYPE}.{SEQ}"
+element_id_example: "UXSPEC.01.60.01"
+
+# =============================================================================
+# UX Specification Section
+# =============================================================================
+
+ux_specification_section:
+  artifact_type:
+    type: string
+    required: true
+    allowed_values: ["wireframe", "mockup", "prototype", "workflow", "user_journey"]
+
+  fidelity:
+    type: string
+    required: true
+    allowed_values: ["low", "medium", "high"]
+
+  tool:
+    type: string
+    required: true
+    allowed_values: ["figma", "sketch", "miro", "lucidchart", "adobe_xd", "invision"]
+
+  user_flows:
+    type: array
+    required: true
+    min_items: 1
+    item_schema:
+      id:
+        type: string
+        pattern: "^UXSPEC\\.\\d{2}\\.60\\.\\d{2}$"
+      name:
+        type: string
+        required: true
+      entry_point:
+        type: string
+        required: true
+      exit_point:
+        type: string
+        required: true
+      steps:
+        type: array
+        required: true
+        min_items: 1
+
+  screens:
+    type: array
+    required: true
+    min_items: 1
+    item_schema:
+      id:
+        type: string
+        pattern: "^UXSPEC\\.\\d{2}\\.61\\.\\d{2}$"
+      name:
+        type: string
+        required: true
+      purpose:
+        type: string
+        required: true
+      components:
+        type: array
+        required: false
+
+  components:
+    type: array
+    required: false
+    item_schema:
+      id:
+        type: string
+        pattern: "^UXSPEC\\.\\d{2}\\.62\\.\\d{2}$"
+      name:
+        type: string
+        required: true
+      type:
+        type: string
+        required: true
+      states:
+        type: array
+        required: true
+
+  interactions:
+    type: array
+    required: false
+    item_schema:
+      id:
+        type: string
+        pattern: "^UXSPEC\\.\\d{2}\\.63\\.\\d{2}$"
+      trigger:
+        type: string
+        required: true
+        allowed_values: ["click", "hover", "focus", "scroll", "gesture", "tap", "swipe"]
+
+# =============================================================================
+# Accessibility Section
+# =============================================================================
+
+accessibility_section:
+  wcag_level:
+    type: string
+    required: true
+    allowed_values: ["A", "AA", "AAA"]
+
+  aria_requirements:
+    type: array
+    required: false
+
+  checklist:
+    type: object
+    required: true
+    fields:
+      color_contrast:
+        type: boolean
+      keyboard_accessible:
+        type: boolean
+      focus_indicators:
+        type: boolean
+      screen_reader_compatible:
+        type: boolean
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  structure:
+    - rule: "File must be valid YAML"
+      severity: error
+    - rule: "All required top-level fields must be present"
+      severity: error
+    - rule: "File name must match UXSPEC-NN_name.yaml format"
+      severity: warning
+    - rule: "deliverable_type must be 'ux'"
+      severity: error
+
+  traceability:
+    - rule: "upstream_references must include REQ"
+      severity: error
+    - rule: "cumulative_tags must include upstream tags through REQ"
+      severity: warning
+
+  ux_specification:
+    - rule: "At least one user_flow must be defined"
+      severity: error
+    - rule: "At least one screen must be defined"
+      severity: error
+    - rule: "Each flow must have entry_point and exit_point"
+      severity: error
+    - rule: "Each flow must have at least one step"
+      severity: error
+
+  accessibility:
+    - rule: "wcag_level must be specified"
+      severity: error
+    - rule: "accessibility checklist must be completed"
+      severity: warning
+
+  visual_requirements:
+    - rule: "style_guide_reference must be specified"
+      severity: warning
+    - rule: "typography must define at least body element"
+      severity: warning
+
+# =============================================================================
+# Scoring Criteria (DESIGN-Ready)
+# =============================================================================
+
+scoring:
+  name: "DESIGN-Ready"
+  target: 85
+  criteria:
+    user_flow_completeness:
+      weight: 25
+      description: "All user flows documented with entry/exit points"
+    interaction_patterns:
+      weight: 20
+      description: "All interactions, animations, transitions defined"
+    accessibility_requirements:
+      weight: 20
+      description: "WCAG compliance, ARIA patterns documented"
+    visual_requirements:
+      weight: 15
+      description: "Style guide, typography, color references"
+    traceability:
+      weight: 20
+      description: "All upstream/downstream links complete"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  UXSPEC-E001: "File is not valid YAML"
+  UXSPEC-E002: "Missing required top-level field"
+  UXSPEC-E003: "deliverable_type must be 'ux'"
+  UXSPEC-E004: "Missing REQ reference in traceability"
+  UXSPEC-E005: "No user flows defined"
+  UXSPEC-E006: "No screens defined"
+  UXSPEC-E007: "Flow missing entry_point or exit_point"
+  UXSPEC-E008: "WCAG level not specified"
+  UXSPEC-W001: "Missing style guide reference"
+  UXSPEC-W002: "Missing typography specifications"
+  UXSPEC-W003: "Missing BDD scenario references"
+  UXSPEC-W004: "CTR reference not provided (optional)"
+
+# =============================================================================

@@ -32,7 +32,7 @@ quality_gates:
     name: "Business Requirements Gate"
     layers: [1, 2, 3, 4]
     validators:
-      - "doc-brd-validator"
+      - "doc-brd-audit"  # Unified BRD validator (replaces deprecated doc-brd-validator)
       - "doc-prd-validator"
       - "doc-ears-validator"
       - "doc-bdd-validator"

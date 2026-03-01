@@ -48,6 +48,10 @@ properties:
         enum: ["mvp", "full"]
       schema_version:
         type: string
+      instance_document_type:
+        type: string
+        enum: ["sectest-document"]
+        description: "Used by templates to specify document type for generated instances"
 
   document_control:
     type: object

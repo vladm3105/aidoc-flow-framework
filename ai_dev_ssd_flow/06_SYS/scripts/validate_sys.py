@@ -123,6 +123,15 @@ FILE_NAME_PATTERN_MONOLITHIC = r"^SYS-\d{2,}_[A-Za-z0-9_]+\.md$"
 FILE_NAME_PATTERN_DECIMAL = r"^SYS-\d{2,}\.\d+_[A-Za-z0-9_]+\.md$"
 
 
+def is_companion_report_file(file_path: Path) -> bool:
+    """Return True for audit/review/fix/validation companion artifacts."""
+    return bool(re.search(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        file_path.name,
+        re.IGNORECASE,
+    ))
+
+
 # =============================================================================
 # VALIDATION RESULT TYPES
 # =============================================================================
@@ -630,6 +639,7 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN', '_SCHEMA', '_VALIDATION', '_QUALITY', '_RULES', 'TRACEABILITY_MATRIX']
     
     # Also exclude framework infrastructure files (TYPE-00_*)
+    sys_files = [f for f in sys_files if not is_companion_report_file(f)]
     sys_files = [f for f in sys_files if not any(excl in f.name.upper() for excl in excluded_patterns)]
     sys_files = [f for f in sys_files if not re.match(r'^SYS-00[_.]', f.name)]
 

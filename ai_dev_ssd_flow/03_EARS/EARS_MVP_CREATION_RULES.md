@@ -442,7 +442,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 **Before starting batch creation:**
 1. Read `EARS_MVP_SCHEMA.yaml` to understand current metadata requirements
 2. Verify tag standards: `ears` (not `ears-requirements`, `ears-formal-requirements`, etc.)
-3. Verify document_type: `ears` (not `engineering-requirements`)
+3. Verify document_type: `ears-document` (legacy `ears` accepted; not `engineering-requirements`)
 4. Verify architecture format: `architecture_approaches: [value]` (array, not singular)
 
 ### Every 5-Document Checkpoint
@@ -451,7 +451,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 1. Run validation: `python 03_EARS/scripts/validate_ears.py --path docs/EARS`
 2. Check for:
    - Tag consistency (all use `ears`)
-   - document_type consistency (all use `ears`)
+  - document_type consistency (prefer `ears-document`; allow legacy `ears`)
    - Source Document format (`@prd: PRD.NN.EE.SS`)
    - Section numbering (sequential)
 3. Fix any errors before continuing
@@ -471,7 +471,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 | `ears-requirements` | `ears` |
 | `ears-formal-requirements` | `ears` |
 | `ears-NN` | `ears` |
-| `document_type: engineering-requirements` | `document_type: ears` |
+| `document_type: engineering-requirements` | `document_type: ears-document` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
 | `Source Document: PRD-NN` | `Source Document: @prd: PRD.NN.EE.SS` |
 | `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |

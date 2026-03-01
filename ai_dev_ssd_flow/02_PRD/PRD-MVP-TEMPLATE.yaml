@@ -16,6 +16,11 @@ title: "[Product Requirements Title: e.g., E-Commerce Platform MVP - Core Featur
 # Document Control
 # =============================================================================
 
+metadata:
+  schema_version: "1.0"
+  instance_document_type: "prd-document"
+  deliverable_type: "code"  # Options: code, document, ux, risk, process - inherited from BRD
+
 document_control:
   product_name: "[Product Name]"
   version: "1.0"

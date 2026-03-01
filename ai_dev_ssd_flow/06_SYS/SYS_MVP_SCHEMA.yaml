@@ -50,8 +50,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["sys", "template"]
-      description: "Must be 'sys' for documents, 'template' for templates"
+      allowed_values: ["sys", "sys-document", "template"]
+      description: "Use 'sys-document' for instances, 'template' for templates, 'sys' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["sys-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - inherited from ADR or set explicitly"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

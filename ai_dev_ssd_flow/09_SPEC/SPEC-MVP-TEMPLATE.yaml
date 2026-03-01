@@ -9,7 +9,24 @@
 # =============================================================================
 #
 # SCHEMA_REFERENCE: SPEC_MVP_SCHEMA.yaml
-# SCHEMA_VERSION: 1.0
+# SCHEMA_VERSION: 2.0
+
+# =============================================================================
+# SPEC Orchestrator - Routes to Subtypes Based on deliverable_type
+# =============================================================================
+# SPEC serves as an orchestrator routing to subtypes based on REQ.deliverable_type:
+#
+# | deliverable_type | Subtype  | Code | Output |
+# |------------------|----------|------|--------|
+# | code (default)   | CSPEC    | 50   | Source code |
+# | document         | DSPEC    | 51   | Documentation artifacts |
+# | ux               | UXSPEC   | 52   | Wireframes, mockups |
+# | risk             | RISKSPEC | 53   | Risk matrices |
+# | process          | PROCSPEC | 54   | SOPs, runbooks |
+#
+# For code deliverables (default), use this template or CSPEC-MVP-TEMPLATE.yaml
+# For other deliverable types, use the appropriate subtype template.
+# =============================================================================
 
 # ===================
 # SPEC-NN: [Component Name]
@@ -63,6 +80,10 @@ metadata:
   # 2. Mapper Pattern: Map REQ items to specific code logic/exceptions.
   # 3. Explicit State Machines: Define transitions and side effects.
   # ===================
+  schema_version: "2.0"
+  instance_document_type: "spec-document"  # For instances: spec-document, cspec-document, etc.
+  orchestrator: true  # This template routes to subtypes based on deliverable_type
+  deliverable_type: "code"  # Options: code, document, ux, risk, process - inherited from REQ
   version: "1.0.0"
   status: "draft"  # draft, review, approved, implemented, deprecated
   # [WARN] REQUIRED: Ensure these dates are valid YYYY-MM-DD

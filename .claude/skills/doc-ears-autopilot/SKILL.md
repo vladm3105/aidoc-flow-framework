@@ -94,6 +94,31 @@ This autopilot orchestrates the following skills:
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating EARS document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "ears-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: ears-document    # NOT "template"
+     artifact_type: EARS
+     layer: 3
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: ears-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: ears-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `ears-document`.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.

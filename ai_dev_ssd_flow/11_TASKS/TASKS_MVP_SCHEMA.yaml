@@ -49,8 +49,22 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["tasks", "template"]
-      description: "Must be 'tasks' for documents, 'template' for templates"
+      allowed_values: ["tasks", "tasks-document", "template"]
+      description: "Use 'tasks-document' for instances, 'template' for templates, 'tasks' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["tasks-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: spec  # TASKS inherits from upstream SPEC
+      description: "Deliverable type - inherited from SPEC, determines task focus"
 
     artifact_type:
       type: string

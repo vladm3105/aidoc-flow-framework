@@ -51,7 +51,8 @@ class EarsValidator:
         r"^ears-\d{3}$",
     ]
     REQUIRED_CUSTOM_FIELDS = ["document_type", "artifact_type", "layer", "priority", "development_status"]
-    REQUIRED_DOCUMENT_TYPE = "ears"
+    REQUIRED_DOCUMENT_TYPE = "ears-document"
+    LEGACY_DOCUMENT_TYPE = "ears"
     REQUIRED_ARTIFACT_TYPE = "EARS"
     REQUIRED_LAYER = 3
 
@@ -102,6 +103,11 @@ class EarsValidator:
     # Updated to support PRD-NN, PRD.NN and deep IDs
     SOURCE_DOC_PATTERN = r"@prd:\s*PRD[-.][\w.-]+"
     TRACEABILITY_TAG_PATTERN = r"@(prd|brd|ears|threshold|entity):\s*\S+"
+
+    REPORT_FILE_PATTERN = re.compile(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        re.IGNORECASE,
+    )
 
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
@@ -238,13 +244,28 @@ class EarsValidator:
 
         # Check document_type
         doc_type = custom_fields.get("document_type")
-        if doc_type != self.REQUIRED_DOCUMENT_TYPE:
+        if doc_type not in {self.REQUIRED_DOCUMENT_TYPE, self.LEGACY_DOCUMENT_TYPE}:
             self.results.append(ValidationResult(
                 file=str(file_path),
                 rule="E005",
                 severity="error",
-                message=f"Invalid document_type: '{doc_type}' (expected: 'ears')",
-                fix_suggestion="Set document_type: ears"
+                message=(
+                    f"Invalid document_type: '{doc_type}' "
+                    f"(expected: '{self.REQUIRED_DOCUMENT_TYPE}'"
+                    f" or legacy '{self.LEGACY_DOCUMENT_TYPE}')"
+                ),
+                fix_suggestion=f"Set document_type: {self.REQUIRED_DOCUMENT_TYPE}"
+            ))
+        elif doc_type == self.LEGACY_DOCUMENT_TYPE:
+            self.results.append(ValidationResult(
+                file=str(file_path),
+                rule="W005",
+                severity="warning",
+                message=(
+                    f"Legacy document_type '{self.LEGACY_DOCUMENT_TYPE}' detected; "
+                    f"prefer '{self.REQUIRED_DOCUMENT_TYPE}' for new instances"
+                ),
+                fix_suggestion=f"Migrate document_type to: {self.REQUIRED_DOCUMENT_TYPE}"
             ))
 
         # Check artifact_type
@@ -690,6 +711,8 @@ class EarsValidator:
         all_results = []
 
         for md_file in sorted(dir_path.glob("EARS-*.md")):
+            if self.REPORT_FILE_PATTERN.search(md_file.name):
+                continue
             if md_file.name == "EARS-00_index.md":
                 continue  # Skip index file
             results = self.validate_file(md_file)

@@ -56,6 +56,9 @@ frontmatter:
     - change_source    # "upstream", "midstream", "downstream", "external", "feedback"
     - development_status  # "draft", "in-progress", "completed", "cancelled", "superseded"
 
+  custom_fields_optional:
+    - instance_document_type  # "chg-document" - Used by templates for generated instances
+
   optional:
     - related_chg
     - supersedes

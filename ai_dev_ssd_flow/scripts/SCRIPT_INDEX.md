@@ -43,8 +43,9 @@ This index lists all scripts available in the framework, categorized by logical 
 Each layer has dedicated validators located in `0X_LAYER/scripts/`.
 
 ### Layer 1: Business Requirements (BRD)
-- `01_BRD/scripts/validate_brd_quality_score.sh`: **Primary Quality Gate**. Checks file sizes, formatting, and placeholder text.
-- `01_BRD/scripts/validate_brd.py`: Python-based structural validation (called by quality score script).
+- `01_BRD/scripts/validate_brd_wrapper.sh`: **Canonical BRD validator**. Runs core blocking checks with optional advisory tier.
+- `01_BRD/scripts/validate_brd_quality_score.sh`: **Primary BRD quality gate component**. Runs placeholder/downstream/index/diagram/glossary/duplicate/cost/size checks, excludes companion report artifacts, and applies section-based BRD handling.
+- `01_BRD/scripts/validate_brd.py`: Python-based structural validator (used by wrapper for non-section-based layouts).
 
 ### Layer 2: Product Requirements (PRD)
 - `02_PRD/scripts/validate_prd_quality_score.sh`: **Primary Quality Gate**.
@@ -84,3 +85,9 @@ Located in `AUTOPILOT/scripts/`:
 - `mvp_autopilot.py`: Automated pipeline runner.
 - `validate_quality_gates.sh`: CI/CD gate checker.
 - `validate_metadata.py`: strict metadata validation.
+
+## Pre-Commit Matrix Hooks
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh` | Orchestrates all-layer validation in full or `--changed-only` mode; defaults to `docs` root and enforces project-artifact scope (rejects `ai_dev_ssd_flow` as `DOCS_ROOT`). |

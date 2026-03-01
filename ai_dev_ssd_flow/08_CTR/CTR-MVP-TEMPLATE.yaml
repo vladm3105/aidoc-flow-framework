@@ -12,6 +12,10 @@ title: "[Contract Title: e.g., User Service API Contract]"
 # Document Control
 # =============================================================================
 
+metadata:
+  schema_version: "1.0"
+  instance_document_type: "ctr-document"
+
 document_control:
   project_name: "[Project Name]"
   version: "1.0"

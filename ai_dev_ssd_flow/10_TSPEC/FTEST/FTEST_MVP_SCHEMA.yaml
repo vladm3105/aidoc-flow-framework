@@ -39,6 +39,10 @@ properties:
       test_type_code:
         type: integer
         const: 43
+      instance_document_type:
+        type: string
+        enum: ["ftest-document"]
+        description: "Used by templates to specify document type for generated instances"
 
   document_control:
     type: object

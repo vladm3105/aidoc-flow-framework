@@ -1,0 +1,346 @@
+# =============================================================================
+#  Document Role: DERIVATIVE of PROCSPEC-MVP-TEMPLATE.yaml
+# - Authority: PROCSPEC-MVP-TEMPLATE.yaml is PRIMARY
+# - Purpose: Machine-readable validation rules for PROCSPEC YAML documents
+# - On conflict: Defer to PROCSPEC-MVP-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "1.0"
+artifact_type: PROCSPEC
+layer: 9
+subtype_code: 54
+parent_type: SPEC
+last_updated: "2026-03-01"
+deliverable_type: process
+
+references:
+  md_template: "PROCSPEC-MVP-TEMPLATE.md"
+  yaml_template: "PROCSPEC-MVP-TEMPLATE.yaml"
+  parent_schema: "../SPEC_MVP_SCHEMA.yaml"
+  creation_rules: "PROCSPEC_MVP_CREATION_RULES.md"
+  validation_rules: "PROCSPEC_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# PROCSPEC-Specific Metadata
+# =============================================================================
+
+procspec_metadata:
+  description: "Process Specification - Specifications for SOPs, runbooks, playbooks, checklists, workflows"
+  deliverable_output: "SOPs, runbooks, playbooks, checklists"
+  ctr_required: false
+  readiness_score: "PROC-Ready"
+  readiness_target: 85
+
+# =============================================================================
+# File Format Requirements
+# =============================================================================
+
+file_format:
+  extension: ".yaml"
+  naming_pattern: "^PROCSPEC-\\d{2,}_[a-z0-9_]+\\.yaml$"
+  description: "Format: PROCSPEC-NN_descriptive_name.yaml"
+  encoding: "UTF-8"
+  yaml_version: "1.2"
+
+# =============================================================================
+# Required Fields (inherits from SPEC with PROCSPEC-specific additions)
+# =============================================================================
+
+top_level:
+  required_fields:
+    id:
+      type: string
+      pattern: "^[a-z][a-z0-9_]*$"
+      description: "Process identifier (snake_case)"
+
+    summary:
+      type: string
+      min_length: 10
+      max_length: 200
+      description: "Single-sentence description of process purpose"
+
+    metadata:
+      type: object
+      required: true
+      fields:
+        schema_version:
+          type: string
+          required: true
+        instance_document_type:
+          type: string
+          required: true
+          allowed_values: ["procspec-document"]
+        deliverable_type:
+          type: string
+          required: true
+          allowed_values: ["process"]
+
+    document_control:
+      type: object
+      required: true
+      fields:
+        ctr_required:
+          type: boolean
+          required: true
+          default: false
+          description: "CTR is optional for process specifications"
+
+    traceability:
+      type: object
+      required: true
+      description: "Must include REQ upstream reference"
+
+    process_overview:
+      type: object
+      required: true
+      description: "Process type, context, and roles"
+      fields:
+        process_type:
+          type: string
+          required: true
+          allowed_values: ["sop", "runbook", "playbook", "checklist", "workflow"]
+        execution_context:
+          type: string
+          required: true
+          allowed_values: ["manual", "automated", "hybrid"]
+
+    process_steps:
+      type: array
+      required: true
+      min_items: 1
+      description: "List of process steps"
+
+    decision_points:
+      type: array
+      required: false
+      description: "Decision points in the process"
+
+    escalation_procedures:
+      type: array
+      required: false
+      description: "Escalation procedures"
+
+    rollback_procedures:
+      type: array
+      required: false
+      description: "Rollback procedures"
+
+    verification:
+      type: object
+      required: true
+      description: "Verification checklist and BDD scenarios"
+
+    implementation:
+      type: object
+      required: true
+      description: "Output type, path, and automation"
+
+# =============================================================================
+# Element Type Codes (PROCSPEC-specific)
+# =============================================================================
+
+element_type_codes:
+  70: "step"
+  71: "decision"
+  72: "escalation"
+  73: "rollback"
+
+element_id_format: "PROCSPEC.{DOC}.{TYPE}.{SEQ}"
+element_id_example: "PROCSPEC.01.70.01"
+
+# =============================================================================
+# Process Step Schema
+# =============================================================================
+
+process_step_schema:
+  required_fields:
+    - id
+    - name
+    - description
+    - responsible
+  optional_fields:
+    - prerequisites
+    - inputs
+    - outputs
+    - actions
+    - success_criteria
+    - estimated_duration
+    - next_step
+
+# =============================================================================
+# Decision Point Schema
+# =============================================================================
+
+decision_point_schema:
+  required_fields:
+    - id
+    - question
+    - options
+  optional_fields:
+    - trigger
+    - decision_maker
+  option_schema:
+    required_fields:
+      - option
+      - next_step
+    optional_fields:
+      - condition
+
+# =============================================================================
+# Escalation Procedure Schema
+# =============================================================================
+
+escalation_procedure_schema:
+  required_fields:
+    - id
+    - trigger
+    - escalation_path
+  optional_fields:
+    - name
+    - information_required
+    - escalation_steps
+  escalation_level_schema:
+    required_fields:
+      - level
+      - contact
+      - sla
+    optional_fields:
+      - method
+
+# =============================================================================
+# Rollback Procedure Schema
+# =============================================================================
+
+rollback_procedure_schema:
+  required_fields:
+    - id
+    - trigger
+    - rollback_steps
+  optional_fields:
+    - name
+    - rollback_owner
+    - max_rollback_time
+    - verification
+    - post_rollback_actions
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  structure:
+    - rule: "File must be valid YAML"
+      severity: error
+    - rule: "All required top-level fields must be present"
+      severity: error
+    - rule: "File name must match PROCSPEC-NN_name.yaml format"
+      severity: warning
+    - rule: "deliverable_type must be 'process'"
+      severity: error
+
+  traceability:
+    - rule: "upstream_references must include REQ"
+      severity: error
+    - rule: "cumulative_tags must include all upstream tags through REQ"
+      severity: warning
+
+  process_steps:
+    - rule: "At least one process step must be defined"
+      severity: error
+    - rule: "Each step must have an ID, name, description, and responsible"
+      severity: error
+    - rule: "Step IDs must use PROCSPEC.NN.70.SS format"
+      severity: warning
+
+  decision_points:
+    - rule: "Each decision must have options with next_step"
+      severity: error
+    - rule: "Decision IDs must use PROCSPEC.NN.71.SS format"
+      severity: warning
+
+  escalation_procedures:
+    - rule: "Each escalation must have trigger and escalation_path"
+      severity: error
+    - rule: "Escalation IDs must use PROCSPEC.NN.72.SS format"
+      severity: warning
+    - rule: "Each escalation level must have SLA"
+      severity: warning
+
+  rollback_procedures:
+    - rule: "Each rollback must have trigger and rollback_steps"
+      severity: error
+    - rule: "Rollback IDs must use PROCSPEC.NN.73.SS format"
+      severity: warning
+
+  implementation:
+    - rule: "output_type must be specified"
+      severity: error
+    - rule: "output_path must be specified"
+      severity: error
+
+# =============================================================================
+# Scoring Criteria (PROC-Ready)
+# =============================================================================
+
+scoring:
+  name: "PROC-Ready"
+  target: 85
+  criteria:
+    step_completeness:
+      weight: 25
+      description: "All steps with prerequisites, inputs, outputs, success criteria"
+      checks:
+        - "All steps have ID, name, description, responsible"
+        - "Steps have defined inputs and outputs"
+        - "Steps have success criteria"
+    decision_points:
+      weight: 20
+      description: "All decision points with options and next steps"
+      checks:
+        - "Decision points have clear questions"
+        - "All options lead to valid next steps"
+        - "Default options defined where appropriate"
+    escalation_procedures:
+      weight: 20
+      description: "Triggers, paths, SLAs defined"
+      checks:
+        - "Escalation triggers clearly defined"
+        - "Multi-level escalation paths documented"
+        - "SLAs specified for each level"
+    rollback_procedures:
+      weight: 15
+      description: "Rollback triggers and steps documented"
+      checks:
+        - "Rollback triggers clearly defined"
+        - "Rollback steps are actionable"
+        - "Verification checks defined"
+    traceability:
+      weight: 20
+      description: "All upstream/downstream links complete"
+      checks:
+        - "REQ reference present"
+        - "Element IDs properly formatted"
+        - "Downstream artifacts specified"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  PROCSPEC-E001: "File is not valid YAML"
+  PROCSPEC-E002: "Missing required top-level field"
+  PROCSPEC-E003: "deliverable_type must be 'process'"
+  PROCSPEC-E004: "Missing REQ reference in traceability"
+  PROCSPEC-E005: "No process steps defined"
+  PROCSPEC-E006: "Process step missing required field (id, name, description, responsible)"
+  PROCSPEC-E007: "Decision point missing required field (id, question, options)"
+  PROCSPEC-E008: "Escalation procedure missing required field (id, trigger, escalation_path)"
+  PROCSPEC-E009: "Rollback procedure missing required field (id, trigger, rollback_steps)"
+  PROCSPEC-E010: "No output_type specified in implementation"
+  PROCSPEC-W001: "Element ID does not match PROCSPEC.NN.TT.SS format"
+  PROCSPEC-W002: "Missing SLA in escalation level"
+  PROCSPEC-W003: "Missing BDD scenario references"
+  PROCSPEC-W004: "Missing success criteria in process step"
+  PROCSPEC-W005: "CTR reference missing (optional but recommended if external APIs used)"
+
+# =============================================================================

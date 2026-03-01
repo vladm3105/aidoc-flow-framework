@@ -1166,16 +1166,21 @@ Store result as: `"hash": "sha256:<64_hex_characters>"`
 - `pending_verification` - INVALID
 - Any value where hex portion != 64 characters
 
-#### doc-brd-reviewer
-**Purpose**: Review BRD documents for quality, completeness, and upstream drift detection
-**Version**: 1.9
+#### doc-brd-audit (Unified Quality Gate)
+**Purpose**: Unified BRD audit combining structural validation and content quality into a single pass
+**Version**: 2.1
 **Key Features**:
+- **2-Skill Model**: Replaces deprecated `doc-brd-validator` and `doc-brd-reviewer`
+- Fresh Audit Policy (MANDATORY - always run from scratch)
 - Mandatory `.drift_cache.json` usage with three-phase detection
 - SHA-256 hash computation via `sha256sum` bash command
 - Optional upstream mode (BRD is Layer 1 - can be created from prompt)
-- Link integrity validation
-- Strategic alignment verification
+- Combined structural + content quality scoring
 - Review history tracking
+
+**Deprecated Skills** (merged into `doc-brd-audit`):
+- `doc-brd-validator` - DEPRECATED
+- `doc-brd-reviewer` - DEPRECATED
 
 #### doc-prd-reviewer, doc-ears-reviewer, doc-bdd-reviewer, doc-adr-reviewer, doc-sys-reviewer, doc-req-reviewer, doc-ctr-reviewer, doc-spec-reviewer, doc-tspec-reviewer, doc-utest-reviewer, doc-itest-reviewer, doc-ftest-reviewer, doc-ptest-reviewer, doc-sectest-reviewer, doc-stest-reviewer, doc-tasks-reviewer
 **Purpose**: Review respective artifact types with MANDATORY upstream drift detection
@@ -1205,7 +1210,9 @@ All validator skills include hash format validation:
 
 **Valid hash format**: `sha256:<64 hex characters>` matching regex `^sha256:[0-9a-f]{64}$`
 
-#### doc-brd-validator, doc-prd-validator, doc-ears-validator, doc-bdd-validator, doc-adr-validator, doc-sys-validator, doc-req-validator, doc-ctr-validator, doc-spec-validator, doc-tspec-validator, doc-tasks-validator
+#### doc-prd-validator, doc-ears-validator, doc-bdd-validator, doc-adr-validator, doc-sys-validator, doc-req-validator, doc-ctr-validator, doc-spec-validator, doc-tspec-validator, doc-tasks-validator
+
+**Note**: `doc-brd-validator` is DEPRECATED - merged into `doc-brd-audit`.
 **Purpose**: Schema compliance and structural validation for respective artifacts
 **Version**: 2.5 (all updated)
 **Common Features**:
@@ -1257,8 +1264,8 @@ sha256sum <upstream_file_path> | cut -d' ' -f1
 Update cache with: `sha256:<64_hex_output>`
 
 #### doc-brd-fixer, doc-prd-fixer, doc-ears-fixer, doc-bdd-fixer, doc-adr-fixer, doc-sys-fixer, doc-req-fixer, doc-ctr-fixer, doc-spec-fixer, doc-tspec-fixer, doc-utest-fixer, doc-itest-fixer, doc-ftest-fixer, doc-ptest-fixer, doc-sectest-fixer, doc-stest-fixer, doc-tasks-fixer
-**Purpose**: Fix issues identified by reviewer skills using tiered auto-merge
-**Version**: 2.6 (all updated)
+**Purpose**: Fix issues identified by audit/reviewer skills using tiered auto-merge
+**Version**: 2.9 (doc-brd-fixer), 2.6 (others)
 **Common Features**:
 - Tiered auto-merge based on change percentage
 - Hash validation fixes (FIX-H001, FIX-H002, FIX-H003)
@@ -1289,8 +1296,8 @@ Autopilot skills automate artifact generation with validation and review cycles.
 1. Input Analysis - Scan reference documents
 2. BRD Type Determination - Platform vs Feature
 3. BRD Generation - Create from template
-4. Validation - Run `doc-brd-validator`
-5. Review & Fix Cycle - `doc-brd-reviewer` → `doc-brd-fixer`
+4. Audit - Run `doc-brd-audit` (unified quality gate)
+5. Fix Cycle - `doc-brd-fixer` (if issues found)
 6. Summary - Update index, generate report
 
 #### Other Autopilot Skills

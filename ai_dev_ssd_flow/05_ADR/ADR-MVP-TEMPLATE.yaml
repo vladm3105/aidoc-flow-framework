@@ -10,6 +10,15 @@ id: ADR-NN
 title: "[Architecture Decision Title]"
 
 # =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.1"
+  instance_document_type: "adr-document"
+  deliverable_type: "code"  # Options: code, document, ux, risk, process - inherited from BDD
+
+# =============================================================================
 # Section 1: Document Control
 # =============================================================================
 
@@ -341,6 +350,7 @@ mvp_lifecycle:
 
 template_metadata:
   template_version: "1.1"
+  instance_document_type: "adr-document"
   structure: "11 sections"
   last_updated: "2026-02-26"
   md_reference: "ADR-MVP-TEMPLATE.md"

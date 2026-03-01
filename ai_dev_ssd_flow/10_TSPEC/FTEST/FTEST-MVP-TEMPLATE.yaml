@@ -5,6 +5,7 @@
 metadata:
   document_id: "FTEST-NN"
   title: "[System Scope] Functional Test Specification"
+  instance_document_type: "ftest-document"
   artifact_type: "FTEST"
   layer: 10
   test_type_code: 43

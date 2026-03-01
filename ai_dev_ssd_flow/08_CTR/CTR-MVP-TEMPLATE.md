@@ -7,6 +7,7 @@ tags:
   - document-template
 custom_fields:
   document_type: template
+  instance_document_type: ctr-document
   artifact_type: CTR
   layer: 8
   template_variant: mvp

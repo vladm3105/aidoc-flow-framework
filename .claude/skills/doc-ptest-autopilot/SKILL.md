@@ -88,6 +88,32 @@ All reports are stored beside parent PTEST in nested folder.
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating PTEST document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "ptest-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: ptest-document    # NOT "template"
+     artifact_type: PTEST
+     layer: 10
+     test_type_code: 44
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: ptest-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: ptest-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `ptest-document`.
+
+---
+
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md`

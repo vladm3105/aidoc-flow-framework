@@ -2,13 +2,14 @@
 title: "SPEC-000: SPEC Index"
 tags:
   - index-document
-  - layer-10-artifact
+  - layer-9-artifact
   - shared-architecture
 custom_fields:
   document_type: index
   artifact_type: SPEC
-  layer: 10
+  layer: 9
   priority: shared
+  orchestrator: true  # SPEC parent routes to subtypes
 ---
 
 # SPEC-000: Technical Specifications Master Index
@@ -42,6 +43,50 @@ flowchart LR
 **Layer**: 9 (Implementation Specification Layer)
 **Upstream**: BRD→REQ, CTR (optional)
 **Downstream**: TASKS, Code, Tests
+
+---
+
+## SPEC Subtypes (Deliverable Type Routing)
+
+SPEC serves as an **orchestrator** that routes to subtypes based on `deliverable_type` (propagated from BRD through REQ):
+
+| Subtype | Code | deliverable_type | Output | Template | CTR Required |
+|---------|------|------------------|--------|----------|--------------|
+| **[CSPEC](./CSPEC/)** | 50 | `code` (default) | Source code | `CSPEC-MVP-TEMPLATE.yaml` | Yes |
+| **[DSPEC](./DSPEC/)** | 51 | `document` | Documentation artifacts | `DSPEC-MVP-TEMPLATE.yaml` | Optional |
+| **[UXSPEC](./UXSPEC/)** | 52 | `ux` | Wireframes, mockups | `UXSPEC-MVP-TEMPLATE.yaml` | Optional |
+| **[RISKSPEC](./RISKSPEC/)** | 53 | `risk` | Risk matrices | `RISKSPEC-MVP-TEMPLATE.yaml` | No |
+| **[PROCSPEC](./PROCSPEC/)** | 54 | `process` | SOPs, runbooks | `PROCSPEC-MVP-TEMPLATE.yaml` | Optional |
+
+### Routing Logic
+
+```mermaid
+flowchart TD
+    REQ[REQ with deliverable_type] --> SPEC[SPEC Orchestrator]
+    SPEC --> |"code"| CSPEC[CSPEC]
+    SPEC --> |"document"| DSPEC[DSPEC]
+    SPEC --> |"ux"| UXSPEC[UXSPEC]
+    SPEC --> |"risk"| RISKSPEC[RISKSPEC]
+    SPEC --> |"process"| PROCSPEC[PROCSPEC]
+
+    CSPEC --> TASKS_C[TASKS → Code]
+    DSPEC --> TASKS_D[TASKS → Documentation]
+    UXSPEC --> TASKS_U[TASKS → Design Artifacts]
+    RISKSPEC --> TASKS_R[TASKS → Risk Matrix]
+    PROCSPEC --> TASKS_P[TASKS → Procedures]
+
+    style SPEC fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    style CSPEC fill:#c8e6c9,stroke:#388e3c
+    style DSPEC fill:#fff3e0,stroke:#f57c00
+    style UXSPEC fill:#f3e5f5,stroke:#7b1fa2
+    style RISKSPEC fill:#ffebee,stroke:#c62828
+    style PROCSPEC fill:#e0f7fa,stroke:#00838f
+```
+
+### Default Behavior
+
+- If `deliverable_type` is not specified, defaults to `code` → CSPEC
+- Existing SPEC documents without `deliverable_type` are treated as CSPEC (backward compatible)
 
 ## Technical Specifications Index
 

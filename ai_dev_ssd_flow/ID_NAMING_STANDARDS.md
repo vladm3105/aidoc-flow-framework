@@ -1269,9 +1269,10 @@ Consistent across ALL document types:
 | 26 | System Requirement | SYS |
 | 27 | Atomic Requirement | REQ |
 | 28 | Specification Element | SPEC |
+| 29 | Task Breakdown | TASKS |
 | 30 | Task Item | TASKS |
 | 31 | Plan Step | TASKS (Section 4) |
-| 32 | Architecture Topic | BRD |
+| 32 | Architecture Topic (Legacy Compatibility) | BRD |
 | 33-39 | Reserved for future use | - |
 | 40 | Unit Test | TSPEC (UTEST) |
 | 41 | Integration Test | TSPEC (ITEST) |
@@ -1290,9 +1291,27 @@ Consistent across ALL document types:
 | `PRD.02.07.42` | 12 | PRD #2, User Story #42 |
 | `ADR.01.10.01` | 12 | ADR #1, Decision #1 |
 | `TASKS.01.17.128` | 15 | TASKS #1, Task #128 |
+| `TASKS.01.29.03` | 14 | TASKS #1, Task Breakdown #3 |
 | `BRD.99.01.9999` | 15 | BRD #99, Functional Requirement #9999 |
 | `SPEC.01.15.03` | 13 | SPEC #1, Interface #3 |
-| `BRD.01.32.01` | 12 | BRD #1, Architecture Topic #1 (Infrastructure) |
+| `BRD.01.32.01` | 12 | BRD #1, Architecture Topic #1 (Legacy compatibility) |
+
+### Canonical Source-of-Truth and Compatibility Policy
+
+**Canonical authority for element type codes**: This table in `ID_NAMING_STANDARDS.md` is the authoritative source for:
+- Valid element type codes per artifact type
+- Element type semantics (`05=Dependency`, `07=Risk`, `10=Decision`)
+- Per-artifact usage restrictions (for example, `23` is BRD-only)
+
+**Conflict resolution order**:
+1. `ID_NAMING_STANDARDS.md` element type table (this section) for code semantics and per-type allowance
+2. Artifact schema files for document structure and required sections
+3. Validator scripts and pre-commit hooks (must implement rules 1 and 2)
+
+**Compatibility policy (transitional)**:
+- `BRD.NN.10.SS` is canonical for BRD Section 7.2 architecture decision topics.
+- `BRD.NN.32.SS` remains accepted for legacy documents and migration continuity.
+- `PRD.NN.23.SS` (Business Objective) is non-canonical and MUST be migrated to BRD ownership over time.
 
 ### Growth Pattern
 
@@ -1395,6 +1414,10 @@ The following patterns are **REMOVED** and MUST NOT be used:
 **Purpose**: Document Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These use the standard 4-segment format with element type code `10` (Decision).
 
 **Subsection ID Pattern**: `{DOC_TYPE}.NN.10.SS` (using Decision element type)
+
+**Compatibility Note**:
+- Canonical: `BRD.NN.10.SS` for Section 7.2 architecture decision topics.
+- Backward-compatible legacy: `BRD.NN.32.SS` is still valid for existing content, but new content SHOULD use `.10`.
 
 | Component | Description | Example |
 |-----------|-------------|---------|

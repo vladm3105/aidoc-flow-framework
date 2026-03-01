@@ -1,0 +1,295 @@
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated PROCSPEC artifact generation
+# - Validation: Validated by PROCSPEC_MVP_SCHEMA.yaml
+# - Human Reference: See PROCSPEC-MVP-TEMPLATE.md for narrative explanations
+# - Parent: SPEC (orchestrator) - routes here when deliverable_type == 'process'
+# =============================================================================
+
+id: process_name
+summary: "Single-sentence description of process/procedure purpose, scope, and primary value proposition."
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  instance_document_type: "procspec-document"
+  deliverable_type: "process"  # Fixed for PROCSPEC - inherited from REQ
+
+document_control:
+  status: "draft"  # draft, review, approved, implemented, deprecated
+  version: "1.0.0"
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  proc_ready_score: "[PASS] 85% (Target: >=85%)"
+  ctr_required: false  # CTR is optional for process specifications
+
+custom_fields:
+  document_type: template
+  instance_document_type: procspec-document
+  artifact_type: PROCSPEC
+  layer: 9
+  subtype_code: 54
+  parent_type: SPEC
+  deliverable_output: "SOPs, runbooks, playbooks, checklists"
+  readiness_score: PROC-Ready
+  ctr_required: false
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.EE.SS"
+    bdd: "@bdd: BDD.NN.EE.SS"
+    adr: "@adr: ADR-NN"
+    sys: "@sys: SYS.NN.EE.SS"
+    req: "@req: REQ.NN.EE.SS"
+    ctr: "@ctr: CTR-NN"  # Optional for PROCSPEC
+
+  downstream_artifacts:
+    tasks: "TASKS"
+    sop: "docs/sops/"
+    runbook: "docs/runbooks/"
+    playbook: "docs/playbooks/"
+    checklist: "docs/checklists/"
+
+  tags:
+    - "@procspec: PROCSPEC.NN.70.SS"
+    - "@req: REQ.NN.EE.SS"
+
+  cross_links:
+    depends:
+      - "@depends: PROCSPEC-NN"
+    discoverability:
+      - "@discoverability: PROCSPEC-NN (short rationale)"
+
+# =============================================================================
+# Process Overview
+# =============================================================================
+
+process_overview:
+  process_type: "sop"  # sop, runbook, playbook, checklist, workflow
+  execution_context: "manual"  # manual, automated, hybrid
+  frequency: "on-demand"  # on-demand, scheduled, event-triggered
+  estimated_duration: "[Duration]"
+  criticality: "medium"  # low, medium, high, critical
+
+  description: |
+    [High-level process description including purpose, scope, and outcomes.
+    Describe what the process accomplishes and when it should be executed.]
+
+  roles_and_responsibilities:
+    - role: "[Role Name]"
+      responsibilities: "[What they do]"
+      raci: "R"  # R=Responsible, A=Accountable, C=Consulted, I=Informed
+    - role: "[Role Name 2]"
+      responsibilities: "[What they do]"
+      raci: "A"
+
+  element_ids:
+    - id: "PROCSPEC.NN.70.01"
+      type: "step"
+      name: "[Step name]"
+      description: "[Step description]"
+    - id: "PROCSPEC.NN.71.01"
+      type: "decision"
+      name: "[Decision name]"
+      description: "[Decision description]"
+    - id: "PROCSPEC.NN.72.01"
+      type: "escalation"
+      name: "[Escalation name]"
+      description: "[Escalation description]"
+    - id: "PROCSPEC.NN.73.01"
+      type: "rollback"
+      name: "[Rollback name]"
+      description: "[Rollback description]"
+
+# =============================================================================
+# Process Steps
+# =============================================================================
+
+process_steps:
+  - id: "PROCSPEC.NN.70.01"
+    name: "[Step Name]"
+    description: "[What to do]"
+    responsible: "[Role/Team]"
+    prerequisites: "[What must be true before]"
+    inputs:
+      - name: "[Input 1]"
+        source: "[Where it comes from]"
+        required: true
+    outputs:
+      - name: "[Output 1]"
+        destination: "[Where it goes]"
+    actions:
+      - "[Action 1]"
+      - "[Action 2]"
+      - "[Action 3]"
+    success_criteria:
+      - "[Criterion 1]"
+      - "[Criterion 2]"
+    estimated_duration: "[Time]"
+    next_step: "PROCSPEC.NN.70.02"
+
+  - id: "PROCSPEC.NN.70.02"
+    name: "[Step Name]"
+    description: "[What to do]"
+    responsible: "[Role/Team]"
+    prerequisites: "[What must be true before]"
+    inputs:
+      - name: "[Input 1]"
+        source: "[Where it comes from]"
+        required: true
+    outputs:
+      - name: "[Output 1]"
+        destination: "[Where it goes]"
+    actions:
+      - "[Action 1]"
+      - "[Action 2]"
+    success_criteria:
+      - "[Criterion 1]"
+    estimated_duration: "[Time]"
+    next_step: "END"
+
+# =============================================================================
+# Decision Points
+# =============================================================================
+
+decision_points:
+  - id: "PROCSPEC.NN.71.01"
+    question: "[Decision question]"
+    trigger: "[When this decision is needed]"
+    decision_maker: "[Role/Team]"
+    options:
+      - option: "[Option A]"
+        condition: "[When to choose A]"
+        next_step: "PROCSPEC.NN.70.XX"
+      - option: "[Option B]"
+        condition: "[When to choose B]"
+        next_step: "PROCSPEC.NN.70.YY"
+      - option: "Default"
+        condition: "[Fallback condition]"
+        next_step: "PROCSPEC.NN.70.ZZ"
+
+# =============================================================================
+# Escalation Procedures
+# =============================================================================
+
+escalation_procedures:
+  - id: "PROCSPEC.NN.72.01"
+    name: "[Escalation Name]"
+    trigger: "[When to escalate]"
+    escalation_path:
+      - level: 1
+        contact: "[Who to contact first]"
+        method: "[Slack/Email/Phone]"
+        sla: "[Response time]"
+      - level: 2
+        contact: "[Who to contact next]"
+        method: "[Slack/Email/Phone/PagerDuty]"
+        sla: "[Response time]"
+    information_required:
+      - "[Info item 1]"
+      - "[Info item 2]"
+    escalation_steps:
+      - "[Step 1]"
+      - "[Step 2]"
+
+# =============================================================================
+# Rollback Procedures
+# =============================================================================
+
+rollback_procedures:
+  - id: "PROCSPEC.NN.73.01"
+    name: "[Rollback Name]"
+    trigger: "[When to rollback]"
+    rollback_owner: "[Role/Team]"
+    max_rollback_time: "[Time limit]"
+    rollback_steps:
+      - "[Step 1]"
+      - "[Step 2]"
+      - "[Step 3]"
+    verification:
+      - "[Verification check 1]"
+      - "[Verification check 2]"
+    post_rollback_actions:
+      - "[Action 1]"
+      - "[Action 2]"
+
+# =============================================================================
+# Prerequisites and Dependencies
+# =============================================================================
+
+prerequisites:
+  - name: "[Prerequisite 1]"
+    description: "[Description]"
+    verification: "[How to verify]"
+    required: true
+
+dependencies:
+  internal:
+    - name: "[Internal system/service]"
+      required: true
+      fallback_strategy: "[Fallback]"
+  external:
+    - name: "[External service]"
+      required: false
+      fallback_strategy: "[Fallback]"
+
+# =============================================================================
+# Verification
+# =============================================================================
+
+verification:
+  bdd_scenarios:
+    - "04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-name"
+
+  verification_checklist:
+    - check: "[Check description]"
+      frequency: "per_execution"  # per_execution, daily, weekly
+      owner: "[Role]"
+    - check: "[Check description]"
+      frequency: "daily"
+      owner: "[Role]"
+
+# =============================================================================
+# Implementation
+# =============================================================================
+
+implementation:
+  output_type: "sop"  # sop, runbook, playbook, checklist
+  output_path: "docs/[type]/[process_name]/"
+  format: "markdown"  # markdown, wiki, confluence
+
+  automation:
+    level: "partial"  # none, partial, full
+    components:
+      - name: "[Automated component]"
+        tool: "[Tool name]"
+        script_path: "scripts/[path]"
+        trigger: "[When it runs]"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: PROCSPEC-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: PROCSPEC_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: PROCSPEC_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: PROCSPEC_MVP_VALIDATION_RULES.md (for checklist)
+
+# PROCSPEC Notes:
+# - Inherits from SPEC parent (Layer 9)
+# - subtype_code: 54 (process specification)
+# - CTR required: No (optional - only if external APIs involved)
+# - Readiness score: PROC-Ready >= 85%
+# - Element IDs: PROCSPEC.NN.70.SS (step), PROCSPEC.NN.71.SS (decision), etc.
+
+# =============================================================================

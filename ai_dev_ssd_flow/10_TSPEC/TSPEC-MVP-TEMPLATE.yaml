@@ -34,6 +34,7 @@ summary: Test specification aggregator for [Component Name]
 # =============================================================================
 
 metadata:
+  instance_document_type: "tspec-document"
   version: "1.0.0"
   status: "draft"  # draft, review, approved
   created_date: "YYYY-MM-DD"

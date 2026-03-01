@@ -5,6 +5,7 @@
 metadata:
   document_id: "ITEST-NN"
   title: "[Integration Scope] Integration Test Specification"
+  instance_document_type: "itest-document"
   artifact_type: "ITEST"
   layer: 10
   test_type_code: 41

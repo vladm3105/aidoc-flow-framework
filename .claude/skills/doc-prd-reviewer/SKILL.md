@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD]
     downstream_artifacts: []
-    version: "1.7"
-    last_updated: "2026-02-26"
+    version: "1.9"
+    last_updated: "2026-03-01"
 ---
 
 # doc-prd-reviewer
@@ -1072,7 +1072,7 @@ review:
 | `doc-prd-fixer` | Applies fixes based on review findings |
 | `doc-prd-audit` | Wrapper that combines this reviewer output with validator findings |
 | `doc-prd` | PRD creation rules |
-| `doc-brd-validator` | BRD source validation |
+| `doc-brd-audit` | BRD source validation (unified quality gate) |
 | `doc-ears-autopilot` | Downstream consumer |
 
 ---
@@ -1081,6 +1081,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
 | 1.8 | 2026-02-27 | **Hash Computation Fix**: Replaced Python pseudocode with mandatory bash `sha256sum` execution; Added hash validation (REV-D009); Reject placeholder values (`verified_no_drift`, `pending_verification`) |
 | 1.7 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented relationship with `doc-prd-audit` wrapper |
 | 1.6 | 2026-02-11 | **Numbering Fix**: Corrected Check #10 subsections from 9.1-9.6 to 10.1-10.6 (drift cache, detection algorithm, hash calculation, error codes, report output, configuration) |

@@ -35,9 +35,12 @@ VALID_PRD_CODES = {
     "09",  # User Story
     "10",  # Decision
     "22",  # Feature Item
-    "23",  # Business Objective
     "24",  # Stakeholder Need
     "32",  # Architecture Topic
+}
+
+LEGACY_PRD_CODES = {
+    "23": "Business Objective has BRD ownership; migrate to BRD.*.23.* references.",
 }
 
 SECTION_CODE_MAP = {
@@ -60,6 +63,11 @@ class Issue:
 
     def to_output(self) -> str:
         return f"[ERROR] {self.code}: {self.file_path}:{self.line} {self.message}"
+
+
+class WarningIssue(Issue):
+    def to_output(self) -> str:
+        return f"[WARN] {self.code}: {self.file_path}:{self.line} {self.message}"
 
 
 def resolve_scan_root(path_arg: Path) -> Path:
@@ -110,8 +118,9 @@ def find_section_key(current_section: Optional[str]) -> Optional[str]:
     return None
 
 
-def validate_file(file_path: Path) -> List[Issue]:
+def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
     issues: List[Issue] = []
+    warnings: List[WarningIssue] = []
     current_section: Optional[str] = None
     in_code_block = False
 
@@ -131,6 +140,20 @@ def validate_file(file_path: Path) -> List[Issue]:
 
         for match in ELEMENT_ID_PATTERN.finditer(line):
             element_type_code = match.group(2)
+
+            if element_type_code in LEGACY_PRD_CODES:
+                warnings.append(
+                    WarningIssue(
+                        code="PRD-W023",
+                        message=(
+                            f"Element type code '{element_type_code}' is legacy in PRD. "
+                            f"{LEGACY_PRD_CODES[element_type_code]}"
+                        ),
+                        file_path=file_path,
+                        line=line_no,
+                    )
+                )
+                continue
 
             if element_type_code not in VALID_PRD_CODES:
                 issues.append(
@@ -162,7 +185,7 @@ def validate_file(file_path: Path) -> List[Issue]:
                         )
                     )
 
-    return issues
+    return issues, warnings
 
 
 def main() -> int:
@@ -202,8 +225,14 @@ def main() -> int:
         print(f"[INFO] Scanning {len(target_files)} PRD files under {root}")
 
     all_issues: List[Issue] = []
+    all_warnings: List[WarningIssue] = []
     for file_path in sorted(target_files):
-        all_issues.extend(validate_file(file_path))
+        file_issues, file_warnings = validate_file(file_path)
+        all_issues.extend(file_issues)
+        all_warnings.extend(file_warnings)
+
+    for warning in all_warnings:
+        print(warning.to_output())
 
     if all_issues:
         for issue in all_issues:

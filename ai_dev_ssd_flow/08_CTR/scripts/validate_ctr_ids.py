@@ -37,6 +37,10 @@ class CTRIDValidator:
 
     CTR_ID_PATTERN = r"^CTR-(\d{2,})$"
     FILENAME_PATTERN = r"^CTR-(\d{2,})_[a-z0-9_]+\.(md|yaml)$"
+    REPORT_FILE_PATTERN = re.compile(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        re.IGNORECASE,
+    )
 
     def __init__(self):
         self.seen_ids: Dict[str, List[Path]] = defaultdict(list)
@@ -110,6 +114,8 @@ class CTRIDValidator:
     def validate_directory(self, directory: Path) -> List[ValidationResult]:
         results: List[ValidationResult] = []
         for f in directory.rglob("CTR-*_*.md"):
+            if self.REPORT_FILE_PATTERN.search(f.name):
+                continue
             if "_index" in f.name or "TEMPLATE" in f.name:
                 continue
             results.append(self.validate_file(f))

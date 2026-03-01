@@ -13,6 +13,11 @@ summary: "[Single-sentence description of requirement purpose, scope, and primar
 # Document Control
 # =============================================================================
 
+metadata:
+  schema_version: "1.0"
+  instance_document_type: "req-document"
+  deliverable_type: "code"  # Options: code, document, ux, risk, process - determines SPEC subtype
+
 document_control:
   status: "Draft"  # Draft, Review, Approved, Implemented, Verified, Retired
   version: "1.0.0"

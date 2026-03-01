@@ -7,6 +7,7 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: change-record
+  instance_document_type: chg-document
   artifact_type: CHG
   change_level: L2
   change_source: null

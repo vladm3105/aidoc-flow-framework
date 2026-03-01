@@ -50,8 +50,14 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["ctr", "template"]
-      description: "Must be 'ctr' for documents, 'template' for templates"
+      allowed_values: ["ctr", "ctr-document", "template"]
+      description: "Use 'ctr-document' for instances, 'template' for templates, 'ctr' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["ctr-document"]
+      description: "Used by templates to specify document type for generated instances"
 
     artifact_type:
       type: string

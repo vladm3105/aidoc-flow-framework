@@ -114,6 +114,16 @@ ELEMENT_ID_PATTERN = re.compile(r'^([A-Z]{2,5})\.(\d{2,9})\.(\d{2,9})\.(\d{2,9})
 DOC_ID_PATTERN = re.compile(r'([A-Z]{2,5})(?:-(\d{2,})(?:\.(\d+))?|\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}))')
 TRACEABILITY_SECTION_PATTERN = re.compile(r'^##\s+(?:\d+\.\s+)?Traceability', re.MULTILINE | re.IGNORECASE)
 
+COMPANION_REPORT_PATTERN = re.compile(
+    r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+    re.IGNORECASE,
+)
+
+
+def is_companion_report_artifact(doc_path: Path) -> bool:
+    """Return True for audit/review/fix/validation report companion artifacts."""
+    return bool(COMPANION_REPORT_PATTERN.search(doc_path.name))
+
 
 class RequirementIndex:
     """Index of all requirements across all document types"""
@@ -146,6 +156,8 @@ class RequirementIndex:
             for ext in config["extensions"]:
                 # Recursive glob to support subdirectory-based organization (e.g., BRD-01/, PRD-07/)
                 for doc_path in type_dir.glob(f"**/*{ext}"):
+                    if is_companion_report_artifact(doc_path):
+                        continue
                     self._index_document(doc_path, doc_type)
 
     def _index_document(self, doc_path: Path, doc_type: str) -> None:
@@ -357,6 +369,8 @@ class CrossDocumentValidator:
 
         for ext in extensions:
             for doc_path in docs_dir.glob(f"*{ext}"):
+                if is_companion_report_artifact(doc_path):
+                    continue
                 self.issues.extend(self.validate_document(doc_path))
 
         # Check for orphan requirements (no downstream references)

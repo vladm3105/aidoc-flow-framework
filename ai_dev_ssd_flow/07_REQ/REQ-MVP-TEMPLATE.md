@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: req-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - determines SPEC subtype
   artifact_type: REQ
   layer: 7
   template_profile: mvp

@@ -125,6 +125,26 @@ Reusable BRD hook wrappers for projects that consume framework validation rules.
 Framework template config:
 - `governance/templates/pre-commit-config.framework-library.yaml`
 
+### 7a. All-Layer Matrix Hook (`pre_commit_hooks/`)
+
+The all-layer matrix hook is the canonical project pre-commit orchestration entrypoint:
+
+- `ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs`
+- `ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs --changed-only`
+
+Behavior notes:
+- Defaults `DOCS_ROOT` to `docs` when omitted.
+- Enforces project-artifact scope and rejects `ai_dev_ssd_flow` as `DOCS_ROOT`.
+- In `--changed-only` mode, targets only touched layers/modules/files.
+
+### 7b. BRD Section-Based Handling
+
+Current BRD wrapper/gate behavior for section-based BRD modules:
+
+- Wrapper auto-detects section-based BRD roots (for example `BRD-01.0_index.md`) and skips monolithic structural validation in that mode.
+- BRD quality gate excludes companion report artifacts (`*.A_audit_report*`, `*.R_review_report*`, `*.F_fix_report*`, `*.V_validation_report*`).
+- Diagram contract checks are skipped for section-based BRD layout in BRD Layer 1 quality gate mode.
+
 ### 8. PRD Wrapper Entry Script (`02_PRD/scripts/`)
 
 Canonical PRD validation entrypoint for local hooks, automation, and orchestration.

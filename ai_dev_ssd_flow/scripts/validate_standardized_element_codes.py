@@ -28,9 +28,9 @@ VALID_BRD_CODES = {
     "02",  # Quality Attribute
     "03",  # Constraint
     "04",  # Assumption
-    "05",  # Risk
+    "05",  # Dependency
     "06",  # Acceptance Criteria
-    "07",  # Dependency
+    "07",  # Risk
     "08",  # Metric
     "09",  # User Story
     "10",  # Decision
@@ -47,11 +47,16 @@ SECTION_CODE_MAP: Dict[str, Union[str, Set[str]]] = {
     "5": "09",           # User Stories
     "6": "01",           # Functional Requirements
     "7.1": "02",         # Quality Attributes
-    "7.2": "32",         # ADR Topics / Architecture Topics
+    "7.2": {"10", "32"},  # ADR Topics / Architecture Topics (10 canonical, 32 legacy)
     "8.1": "03",         # Constraints
     "8.2": "04",         # Assumptions
     "9": "06",           # Acceptance Criteria
-    "10": {"05", "07"},  # Risk Management: accepts Risk (05) or Dependency (07)
+    "10": {"05", "07"},  # Risk Management: 07 canonical, 05 tolerated for legacy docs
+}
+
+PREFERRED_SECTION_CODES: Dict[str, str] = {
+    "7.2": "10",
+    "10": "07",
 }
 
 
@@ -64,6 +69,17 @@ class Issue:
 
     def to_output(self) -> str:
         return f"[ERROR] {self.code}: {self.file_path}:{self.line} {self.message}"
+
+
+@dataclass
+class WarningIssue:
+    code: str
+    message: str
+    file_path: Path
+    line: int
+
+    def to_output(self) -> str:
+        return f"[WARN] {self.code}: {self.file_path}:{self.line} {self.message}"
 
 
 def resolve_scan_root(path_arg: Path) -> Path:
@@ -112,8 +128,9 @@ def find_section_key(current_section: Optional[str]) -> Optional[str]:
     return None
 
 
-def validate_file(file_path: Path) -> List[Issue]:
+def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
     issues: List[Issue] = []
+    warnings: List[WarningIssue] = []
     current_section: Optional[str] = None
     in_code_block = False
 
@@ -167,7 +184,21 @@ def validate_file(file_path: Path) -> List[Issue]:
                         )
                     )
 
-    return issues
+                preferred_code = PREFERRED_SECTION_CODES.get(section_key)
+                if preferred_code and element_type_code in valid_codes and element_type_code != preferred_code:
+                    warnings.append(
+                        WarningIssue(
+                            code="BRD-W023",
+                            message=(
+                                f"Section '{section_key}' prefers element type code '{preferred_code}'; "
+                                f"found legacy-compatible '{element_type_code}'."
+                            ),
+                            file_path=file_path,
+                            line=line_no,
+                        )
+                    )
+
+    return issues, warnings
 
 
 def main() -> int:
@@ -207,8 +238,14 @@ def main() -> int:
         print(f"[INFO] Scanning {len(target_files)} BRD files under {root}")
 
     all_issues: List[Issue] = []
+    all_warnings: List[WarningIssue] = []
     for file_path in sorted(target_files):
-        all_issues.extend(validate_file(file_path))
+        file_issues, file_warnings = validate_file(file_path)
+        all_issues.extend(file_issues)
+        all_warnings.extend(file_warnings)
+
+    for warning in all_warnings:
+        print(warning.to_output())
 
     if all_issues:
         for issue in all_issues:

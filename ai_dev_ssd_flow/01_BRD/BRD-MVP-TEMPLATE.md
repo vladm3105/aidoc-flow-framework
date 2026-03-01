@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: brd-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - determines SPEC subtype
   artifact_type: BRD
   layer: 1
   template_variant: mvp-first

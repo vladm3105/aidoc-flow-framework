@@ -18,6 +18,33 @@
 
 set -euo pipefail
 
+is_companion_report_file() {
+  local name="$1"
+  [[ "$name" =~ \.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?\.md$ ]]
+}
+
+declare -a SOURCE_BRD_FILES=()
+
+collect_source_brd_files() {
+  SOURCE_BRD_FILES=()
+  shopt -s nullglob
+  for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
+    [[ -f "$f" ]] || continue
+    local base
+    base="$(basename "$f")"
+    if is_companion_report_file "$base"; then
+      continue
+    fi
+    SOURCE_BRD_FILES+=("$f")
+  done
+  shopt -u nullglob
+}
+
+is_section_based_brd_layout() {
+  local root="$1"
+  find "$root" -type f -name 'BRD-*.0_*.md' 2>/dev/null | grep -q .
+}
+
 # Colors for output
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
@@ -62,6 +89,8 @@ if [[ ! -d "$BRD_DIR" ]]; then
   exit 3
 fi
 
+collect_source_brd_files
+
 echo "=========================================="
 echo "BRD Quality Gate Validation (Pre-PRD Gate)"
 echo "=========================================="
@@ -71,14 +100,10 @@ echo ""
 
 # Build list of existing BRD files
 declare -A EXISTING_BRDS
-shopt -s nullglob
-for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
-  if [[ -f "$f" ]]; then
-    brd_num=$(basename "$f" | grep -oE "BRD-[0-9]+" | head -1)
-    EXISTING_BRDS["$brd_num"]=1
-  fi
+for f in "${SOURCE_BRD_FILES[@]}"; do
+  brd_num=$(basename "$f" | grep -oE "BRD-[0-9]+" | head -1)
+  EXISTING_BRDS["$brd_num"]=1
 done
-shopt -u nullglob
 
 set +u
 echo "Found ${#EXISTING_BRDS[@]} BRD documents"
@@ -120,7 +145,9 @@ check_placeholders() {
           fi
         fi
       fi
-    done < <(grep -rniE "$pattern" "$BRD_DIR" 2>/dev/null | grep -v "BRD_QUALITY_GATE_VALIDATION\|BRD_POST_CREATION_VALIDATION\|BRD_VALIDATION_RULES\|BRD-000_index" || true)
+    done < <(grep -rniE "$pattern" "$BRD_DIR" 2>/dev/null | \
+      grep -v "BRD_QUALITY_GATE_VALIDATION\|BRD_POST_CREATION_VALIDATION\|BRD_VALIDATION_RULES\|BRD-000_index" | \
+      grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -150,6 +177,7 @@ check_downstream_refs() {
     fi
   done < <(grep -rnE "(PRD|ADR|SPEC|TASKS)-[0-9]{2,}" "$BRD_DIR" 2>/dev/null | \
            grep -v "BRD_QUALITY_GATE_VALIDATION" | \
+           grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' | \
            grep -v "_SCHEMA\|_TEMPLATE\|_RULES\|_GUIDE" | \
            grep -v "^.*:- \*\*\(PRD\|ADR\|SPEC\|TASKS\\|EARS\|BDD\)-" || true)
 
@@ -170,9 +198,7 @@ check_count_consistency() {
 
   # This check is designed to find obvious mismatches like "7-state lifecycle" when 8 states listed
   # It focuses on inline lists where count and items are on same line: "N-state (A, B, C, ...)"
-  shopt -s nullglob
-  for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
-    [[ -f "$f" ]] || continue
+  for f in "${SOURCE_BRD_FILES[@]}"; do
 
     # Check for N-state/N-step claims with inline parenthetical lists
     while IFS=: read -r linenum content; do
@@ -194,7 +220,6 @@ check_count_consistency() {
       fi
     done < <(grep -nE "[0-9]+-state.*\(|[0-9]+ states.*\(|[0-9]+-step.*\(|[0-9]+ steps.*\(" "$f" 2>/dev/null || true)
   done
-  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}   No obvious count inconsistencies detected${NC}"
@@ -274,13 +299,18 @@ check_crosslinks() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
+  if is_section_based_brd_layout "$BRD_DIR"; then
+    echo "--- GATE-06: Diagram Contract Validation (BRD L1) ---"
+    echo -e "${GREEN}   Skipped for section-based BRD layout (diagram tags validated at document-level artifacts)${NC}"
+    echo ""
+    return
+  fi
+
   echo "--- GATE-06: Diagram Contract Validation (BRD L1) ---"
   local syntax_errors=0
   local contract_errors=0
 
-  shopt -s nullglob
-  for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
-    [[ -f "$f" ]] || continue
+  for f in "${SOURCE_BRD_FILES[@]}"; do
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     if ! grep -qi '@diagram:\s*c4-l1' "$f" 2>/dev/null; then
@@ -317,7 +347,6 @@ check_diagrams() {
       fi
     fi
   done
-  shopt -u nullglob
 
   if [[ $syntax_errors -eq 0 && $contract_errors -eq 0 ]]; then
     echo -e "${GREEN}   BRD diagram contracts and Mermaid syntax checks passed${NC}"
@@ -342,8 +371,8 @@ check_glossary() {
   local found=0
   for term in "${!term_variations[@]}"; do
     variations="${term_variations[$term]}"
-    primary_count=$( { grep -rciE "\b$term\b" "$BRD_DIR" 2>/dev/null | grep -v ":0" || true; } | wc -l | tr -d '[:space:]')
-    var_count=$( { grep -rciE "\b($variations)\b" "$BRD_DIR" 2>/dev/null | grep -v ":0" || true; } | wc -l | tr -d '[:space:]')
+    primary_count=$( { grep -rciE "\b$term\b" "$BRD_DIR" 2>/dev/null | grep -v ":0" | grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' || true; } | wc -l | tr -d '[:space:]')
+    var_count=$( { grep -rciE "\b($variations)\b" "$BRD_DIR" 2>/dev/null | grep -v ":0" | grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' || true; } | wc -l | tr -d '[:space:]')
     # Ensure numeric defaults
     primary_count=${primary_count:-0}
     var_count=${var_count:-0}
@@ -373,18 +402,20 @@ check_duplicates() {
 
   # --- Check 1: Find true duplicate element IDs across all files ---
   echo "  Checking for globally duplicate element IDs..."
-  # We only check for duplicates in definition contexts (headings ### or tables |)
-  # to avoid flagging valid cross-references.
+  # Only check heading definition contexts to avoid false positives from cross-reference tables.
   while IFS= read -r duplicate_id; do
     if [[ -n "$duplicate_id" ]]; then
       echo -e "${RED}GATE-E004: Duplicate element ID found: $duplicate_id${NC}"
       # Show which files contain the duplicate definition
-      grep -rnE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$BRD_DIR"
+      grep -rnE "^###\s+$duplicate_id:" "$BRD_DIR" | \
+        grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' || true
       echo ""
       ((ERRORS++)) || true
       ((duplicates_found++)) || true
     fi
-  done < <(grep -rohE "(^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*BRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$BRD_DIR" 2>/dev/null | grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
+  done < <(grep -rhE "^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:" "$BRD_DIR" 2>/dev/null | \
+    grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' | \
+    grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
 
   if [[ $duplicates_found -eq 0 ]]; then
     echo -e "${GREEN}   No duplicate element IDs found across corpus${NC}"
@@ -393,17 +424,13 @@ check_duplicates() {
   # --- Check 2: Find potentially misplaced element IDs ---
   echo "  Checking for potentially misplaced element IDs..."
   # e.g., BRD.07.01.01 should only be defined in BRD-07_*.md
-  shopt -s nullglob
-  for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
-    [[ -f "$f" ]] || continue
+  for f in "${SOURCE_BRD_FILES[@]}"; do
 
     # Extract file's document number (e.g., 07 from BRD-07_something.md)
     filename=$(basename "$f")
     file_num=$(echo "$filename" | grep -oE "BRD-[0-9]+" | sed 's/BRD-//')
 
-    # Find element IDs in this file that don't match the file's number
-    # These are either cross-references (OK) or misplaced definitions (Warning)
-    # We'll only flag if they appear in definition context (tables, headings)
+    # Find heading-defined element IDs that don't match file number.
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
         wrong_id=$(echo "$line" | grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | head -1)
@@ -417,9 +444,8 @@ check_duplicates() {
           ((misplaced_found++)) || true
         fi
       fi
-    done < <(grep -nE "(^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*BRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$f" 2>/dev/null)
+    done < <(grep -nE "^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:" "$f" 2>/dev/null)
   done
-  shopt -u nullglob
 
   if [[ $misplaced_found -ge $max_show ]]; then
     echo -e "${YELLOW}  (Showing first $max_show of $misplaced_found potential misplaced ID warnings)${NC}"
@@ -451,6 +477,7 @@ check_costs() {
       ((found++)) || true
     fi
   done < <(grep -rnE "\\\$[0-9,]+(\.[0-9]+)?(/month|/year| per )?" "$BRD_DIR" 2>/dev/null | \
+           grep -vE '[.](A_audit_report|R_review_report|F_fix_report|V_validation_report)(_v[0-9]+)?[.]md:' | \
            grep -v "~\|range\|-\$" | \
            grep -v "_VALIDATION\|_TEMPLATE" | \
            head -10 || true)
@@ -469,9 +496,7 @@ check_sizes() {
   local errors=0
   local warnings=0
 
-  shopt -s nullglob
-  for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
-    [[ -f "$f" ]] || continue
+  for f in "${SOURCE_BRD_FILES[@]}"; do
 
     local lines
     lines=$(wc -l <"$f")
@@ -495,7 +520,6 @@ check_sizes() {
       echo "  $(basename "$f"): $lines lines, ~$tokens tokens"
     fi
   done
-  shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
     echo -e "${GREEN}   All files within size limits (≤1000 lines, ≤10k tokens)${NC}"

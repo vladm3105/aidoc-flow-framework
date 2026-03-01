@@ -5,6 +5,7 @@
 metadata:
   document_id: "SECTEST-NN"
   title: "[Component/Threat] Security Test Specification"
+  instance_document_type: "sectest-document"
   artifact_type: "SECTEST"
   layer: 10
   test_type_code: 45

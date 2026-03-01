@@ -54,8 +54,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["adr", "template"]
-      description: "Must be 'adr' for documents, 'template' for templates"
+      allowed_values: ["adr", "adr-document", "template"]
+      description: "Use 'adr-document' for instances, 'template' for templates, 'adr' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["adr-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - inherited from BDD or set explicitly"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

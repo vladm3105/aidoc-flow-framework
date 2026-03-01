@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: tasks-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - inherited from SPEC
   artifact_type: TASKS
   layer: 11
   template_profile: mvp

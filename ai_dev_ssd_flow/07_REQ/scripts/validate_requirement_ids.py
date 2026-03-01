@@ -72,6 +72,11 @@ class ValidationResult:
 class RequirementIDValidator:
     """Validator for REQ document IDs and structure."""
 
+    REPORT_FILE_PATTERN = re.compile(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        re.IGNORECASE,
+    )
+
     # ID patterns
     REQ_ID_PATTERN = r"^REQ-(\d{2,})(\.\d{2,})*$"
     FILENAME_PATTERN = r"^REQ-(\d{2,})(\.\d{2,})*_[a-z0-9_]+\.md$"
@@ -568,6 +573,8 @@ class RequirementIDValidator:
         results = []
 
         for req_file in directory.rglob("REQ-*.md"):
+            if self.REPORT_FILE_PATTERN.search(req_file.name):
+                continue
             # Skip archived files
             if "archived" in str(req_file).lower():
                 continue

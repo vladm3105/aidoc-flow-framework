@@ -83,6 +83,31 @@ Automated **Task Breakdown (TASKS)** generation pipeline that processes SPEC and
 
 ---
 
+## Document Type Contract (MANDATORY)
+
+When generating TASKS document instances, the autopilot MUST:
+
+1. **Read** `instance_document_type` from template:
+   - Source: `ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml`
+   - Field: `metadata.instance_document_type: "tasks-document"`
+
+2. **Set** `document_type` in generated document frontmatter:
+   ```yaml
+   custom_fields:
+     document_type: tasks-document    # NOT "template"
+     artifact_type: TASKS
+     layer: 11
+   ```
+
+3. **Validation**: Generated documents MUST have `document_type: tasks-document`
+   - Templates have `document_type: template`
+   - Instances have `document_type: tasks-document`
+   - Schema validates both values
+
+**Error Handling**: If `instance_document_type` is missing from template, default to `tasks-document`.
+
+---
+
 ## Smart Document Detection
 
 The autopilot automatically determines the action based on the input document type.

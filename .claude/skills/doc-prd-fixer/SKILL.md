@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD, Audit Report, Review Report, BRD]
     downstream_artifacts: [Fixed PRD, Fix Report]
-    version: "2.2"
-    last_updated: "2026-02-26"
+    version: "2.3"
+    last_updated: "2026-03-01"
 ---
 
 # doc-prd-fixer
@@ -59,7 +59,7 @@ Use `doc-prd-fixer` when:
 | `doc-prd-reviewer` | Legacy/alternate source of issues to fix | Input (reads review report) |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-prd` | PRD creation rules | Create missing sections |
-| `doc-brd-reviewer` | Upstream BRD validation | Check upstream alignment |
+| `doc-brd-audit` | Upstream BRD validation (unified quality gate) | Check upstream alignment |
 
 ---
 
@@ -1016,7 +1016,7 @@ Before applying any fixes:
 | `doc-prd-validator` | Structural validation |
 | `doc-naming` | Element ID standards |
 | `doc-prd` | PRD creation rules |
-| `doc-brd-reviewer` | Upstream BRD validation |
+| `doc-brd-audit` | Upstream BRD validation (unified quality gate) |
 
 ---
 
@@ -1024,6 +1024,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-reviewer` to `doc-brd-audit` (unified quality gate) |
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; added compatibility for `PRD-NN.A_audit_report_vNNN.md` (preferred) with legacy `PRD-NN.R_review_report_vNNN.md` support |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.TT.SS format); Archive manifest creation; Enhanced drift cache with merge history |

@@ -59,6 +59,7 @@ REQUIRED_TOP_LEVEL = [
     "observability",
     "verification",
     "implementation",
+    "threshold_references",
 ]
 
 # Optional top-level fields

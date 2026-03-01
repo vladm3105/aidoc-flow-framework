@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: prd-core-wrapper
         name: Validate PRD core checks (wrapper, framework library)
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+        entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh ai_dev_ssd_flow/02_PRD --skip-advisory
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -24,7 +24,7 @@ repos:
 
       - id: prd-quality-gate
         name: "DEPRECATED alias: Validate PRD core checks (wrapper)"
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_quality_gate_hook.sh ai_dev_ssd_flow/02_PRD
+        entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh ai_dev_ssd_flow/02_PRD --skip-advisory
         language: system
         pass_filenames: false
         stages: [manual]
@@ -46,6 +46,20 @@ repos:
       - id: brd-legacy-patterns
         name: Detect BRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh ai_dev_ssd_flow/01_BRD
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: sdd-layer-quality-matrix
+        name: Run all-layer SDD quality matrix (Phase A, manual full)
+        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh ai_dev_ssd_flow
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: sdd-layer-quality-matrix-blocking
+        name: Run all-layer SDD quality matrix (Phase B, blocking changed layers)
+        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh ai_dev_ssd_flow --changed-only
         language: system
         pass_filenames: false
         stages: [pre-commit]

@@ -111,6 +111,15 @@ FILE_NAME_PATTERN_SECTION_SHORT = r"^PRD-\d{2,}\.\d+_[A-Za-z_]+\.md$"
 FILE_NAME_PATTERN_SECTION_FULL = r"^PRD-\d{2,}\.\d+_[A-Za-z0-9_]+_[A-Za-z_]+\.md$"
 
 
+def is_companion_report_file(file_path: Path) -> bool:
+    """Return True for audit/review/fix/validation companion artifacts."""
+    return bool(re.search(
+        r"\.(A_audit_report|R_review_report|F_fix_report|V_validation_report)(?:_v\d+)?\.md$",
+        file_path.name,
+        re.IGNORECASE,
+    ))
+
+
 # =============================================================================
 # VALIDATION RESULT TYPES
 # =============================================================================
@@ -562,6 +571,8 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN', '_SCHEMA']
     
     for f in raw_files:
+        if is_companion_report_file(f):
+            continue
         # Check exclusion patterns in filename
         if any(excl in f.name.upper() for excl in excluded_patterns):
             continue

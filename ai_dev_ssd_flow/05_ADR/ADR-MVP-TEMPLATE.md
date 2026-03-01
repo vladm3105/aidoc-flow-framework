@@ -8,6 +8,8 @@ tags:
   - shared-architecture
 custom_fields:
   document_type: template
+  instance_document_type: adr-document
+  deliverable_type: code  # Options: code, document, ux, risk, process - inherited from BDD
   artifact_type: ADR
   layer: 5
   template_variant: mvp

@@ -53,8 +53,28 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["prd"]
-      description: "Must be 'prd' - no variations allowed"
+      allowed_values: ["prd", "prd-document", "template"]
+      description: "Use 'prd-document' for instances, 'template' for templates, 'prd' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["prd-document"]
+      description: "Used by templates to specify document type for generated instances"
+
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - inherited from BRD or set explicitly"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
 
     artifact_type:
       type: string

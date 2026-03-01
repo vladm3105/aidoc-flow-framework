@@ -73,6 +73,20 @@ metadata:
       allowed_values: ["bdd-document"]
       description: "Used by templates to specify document type for generated instances"
 
+    deliverable_type:
+      type: string
+      required: false
+      enum: [code, document, ux, risk, process]
+      default: code
+      inherit_from: upstream
+      description: "Deliverable type - inherited from EARS or set via @deliverable-type tag"
+      routing:
+        code: CSPEC
+        document: DSPEC
+        ux: UXSPEC
+        risk: RISKSPEC
+        process: PROCSPEC
+
     artifact_type:
       type: string
       required: true

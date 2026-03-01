@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "2.3"
+    last_updated: "2026-03-01"
     versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
@@ -762,7 +762,7 @@ For supplementary documentation related to BRD artifacts:
 - **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 - **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **BRD Validator Skill**: `.claude/skills/doc-brd-validator/SKILL.md`
+- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` (unified; deprecated: doc-brd-validator, doc-brd-reviewer)
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
 
 ## Quick Reference
@@ -786,6 +786,7 @@ For supplementary documentation related to BRD artifacts:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-03-01 | Updated reference to doc-brd-audit (unified 2-skill model); deprecated doc-brd-validator and doc-brd-reviewer |
 | 2.2 | 2026-02-25 | Updated 18-section structure with correct section names; Added sections 12 (Support), 14 (Governance with 14.5 Approval), 15 (QA), expanded 16 (Traceability with 16.1-16.4), expanded 17 (Glossary with 17.1-17.6) |
 | 2.1 | 2026-02-24 | Added upstream_mode and upstream_ref_path fields for optional drift detection; Removed mandatory @strategy: tags (not applicable universally); Updated Section 3 to Upstream Source Configuration |
 | 2.0 | 2026-02-08 | Added element code 32 (Architecture Topic); Added Section 7.2 (Architecture Decision Requirements) with 7 mandatory topic categories; Updated to 18-section structure; Integrated doc-naming skill for element ID validation; Added Alternatives Overview and Cloud Provider Comparison tables |

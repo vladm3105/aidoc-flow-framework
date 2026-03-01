@@ -1,0 +1,247 @@
+# =============================================================================
+#  Document Role: DERIVATIVE of DSPEC-MVP-TEMPLATE.yaml
+# - Authority: DSPEC-MVP-TEMPLATE.yaml is PRIMARY
+# - Purpose: Machine-readable validation rules for DSPEC YAML documents
+# - On conflict: Defer to DSPEC-MVP-TEMPLATE.yaml
+# =============================================================================
+
+schema_version: "1.0"
+artifact_type: DSPEC
+layer: 9
+subtype_code: 51
+parent_type: SPEC
+last_updated: "2026-03-01"
+deliverable_type: document
+
+references:
+  md_template: "DSPEC-MVP-TEMPLATE.md"
+  yaml_template: "DSPEC-MVP-TEMPLATE.yaml"
+  parent_schema: "../SPEC_MVP_SCHEMA.yaml"
+  creation_rules: "DSPEC_MVP_CREATION_RULES.md"
+  validation_rules: "DSPEC_MVP_VALIDATION_RULES.md"
+
+# =============================================================================
+# DSPEC-Specific Metadata
+# =============================================================================
+
+dspec_metadata:
+  description: "Document Specification - Specifications for documentation artifacts"
+  deliverable_output: "User guides, API docs, compliance docs, training materials"
+  ctr_required: false
+  readiness_score: "DOC-Ready"
+  readiness_target: 85
+
+# =============================================================================
+# File Format Requirements
+# =============================================================================
+
+file_format:
+  extension: ".yaml"
+  naming_pattern: "^DSPEC-\\d{2,}_[a-z0-9_]+\\.yaml$"
+  description: "Format: DSPEC-NN_descriptive_name.yaml"
+  encoding: "UTF-8"
+  yaml_version: "1.2"
+
+# =============================================================================
+# Required Fields (inherits from SPEC with DSPEC-specific additions)
+# =============================================================================
+
+top_level:
+  required_fields:
+    id:
+      type: string
+      pattern: "^[a-z][a-z0-9_]*$"
+      description: "Document identifier (snake_case)"
+
+    summary:
+      type: string
+      min_length: 10
+      max_length: 200
+      description: "Single-sentence description of documentation artifact purpose"
+
+    metadata:
+      type: object
+      required: true
+      fields:
+        schema_version:
+          type: string
+          required: true
+        instance_document_type:
+          type: string
+          required: true
+          allowed_values: ["dspec-document"]
+        deliverable_type:
+          type: string
+          required: true
+          allowed_values: ["document"]
+
+    document_control:
+      type: object
+      required: true
+      fields:
+        ctr_required:
+          type: boolean
+          required: true
+          default: false
+          description: "CTR is optional for document specifications"
+
+    traceability:
+      type: object
+      required: true
+      description: "Must include REQ upstream reference"
+
+    document_specification:
+      type: object
+      required: true
+      description: "Document type, format, audience, and content outline"
+      fields:
+        document_type:
+          type: string
+          required: true
+          allowed_values: ["user_guide", "api_doc", "compliance_doc", "training_material", "reference"]
+        format:
+          type: string
+          required: true
+          allowed_values: ["markdown", "pdf", "html", "docx"]
+        audience:
+          type: string
+          required: true
+          allowed_values: ["end_users", "developers", "auditors", "operators"]
+        content_outline:
+          type: array
+          required: true
+          min_items: 1
+
+    style_requirements:
+      type: object
+      required: true
+      description: "Tone, voice, reading level specifications"
+
+    review_criteria:
+      type: object
+      required: true
+      description: "Accuracy, completeness, clarity standards"
+
+    dependencies:
+      type: object
+      required: false
+      description: "Source materials and subject matter experts"
+
+    verification:
+      type: object
+      required: true
+      description: "Review workflow and testing requirements"
+
+    implementation:
+      type: object
+      required: true
+      description: "Output location, file naming, publication channel"
+
+# =============================================================================
+# Element Type Codes (DSPEC-specific)
+# =============================================================================
+
+element_type_codes:
+  55: "section"
+  56: "topic"
+  57: "example"
+  58: "reference"
+
+element_id_format: "DSPEC.{DOC}.{TYPE}.{SEQ}"
+element_id_example: "DSPEC.01.55.01"
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  structure:
+    - rule: "File must be valid YAML"
+      severity: error
+    - rule: "All required top-level fields must be present"
+      severity: error
+    - rule: "File name must match DSPEC-NN_name.yaml format"
+      severity: warning
+    - rule: "deliverable_type must be 'document'"
+      severity: error
+
+  traceability:
+    - rule: "upstream_references must include REQ"
+      severity: error
+    - rule: "upstream_references CTR is optional"
+      severity: info
+    - rule: "cumulative_tags must include all upstream tags through REQ"
+      severity: warning
+
+  document_specification:
+    - rule: "document_type must be specified"
+      severity: error
+    - rule: "format must be specified"
+      severity: error
+    - rule: "audience must be specified"
+      severity: error
+    - rule: "content_outline must have at least one section"
+      severity: error
+
+  style_requirements:
+    - rule: "tone must be specified"
+      severity: error
+    - rule: "reading_level must be specified"
+      severity: warning
+
+  review_criteria:
+    - rule: "accuracy criteria must be defined"
+      severity: error
+    - rule: "completeness criteria must be defined"
+      severity: error
+    - rule: "clarity criteria must be defined"
+      severity: warning
+
+  implementation:
+    - rule: "output_location must be specified"
+      severity: error
+    - rule: "publication_channel must be specified"
+      severity: warning
+
+# =============================================================================
+# Scoring Criteria (DOC-Ready)
+# =============================================================================
+
+scoring:
+  name: "DOC-Ready"
+  target: 85
+  criteria:
+    content_outline_completeness:
+      weight: 25
+      description: "All sections defined with purpose and content requirements"
+    audience_clarity:
+      weight: 20
+      description: "Target audience clearly identified with appropriate level"
+    format_specification:
+      weight: 15
+      description: "Output format, style, and tone defined"
+    review_criteria:
+      weight: 20
+      description: "Accuracy, completeness, clarity standards specified"
+    traceability:
+      weight: 20
+      description: "All upstream/downstream links complete"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  DSPEC-E001: "File is not valid YAML"
+  DSPEC-E002: "Missing required top-level field"
+  DSPEC-E003: "deliverable_type must be 'document'"
+  DSPEC-E004: "Missing REQ reference in traceability"
+  DSPEC-E005: "Missing document_type specification"
+  DSPEC-E006: "Missing content_outline"
+  DSPEC-E007: "Missing output_location in implementation"
+  DSPEC-W001: "Missing reading_level specification"
+  DSPEC-W002: "Missing clarity criteria"
+  DSPEC-W003: "Missing publication_channel"
+  DSPEC-I001: "CTR reference not required for DSPEC"
+
+# =============================================================================
