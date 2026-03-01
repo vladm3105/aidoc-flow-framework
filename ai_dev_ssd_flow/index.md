@@ -222,6 +222,12 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Examples:
     - Flat (small): [SPEC-01](./09_SPEC/SPEC-01_api_client_example.yaml)
     - Nested (recommended): [SPEC-02 nested example](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
+  - **SPEC Subtypes** (routes based on `deliverable_type` from upstream BRD/REQ):
+    - [CSPEC](./09_SPEC/CSPEC/) (50): `code` → Source code (default, CTR required)
+    - [DSPEC](./09_SPEC/DSPEC/) (51): `document` → User guides, API docs
+    - [UXSPEC](./09_SPEC/UXSPEC/) (52): `ux` → Wireframes, mockups
+    - [RISKSPEC](./09_SPEC/RISKSPEC/) (53): `risk` → Risk matrices
+    - [PROCSPEC](./09_SPEC/PROCSPEC/) (54): `process` → SOPs, runbooks
 
 ### Test Specifications Layer (Layer 10)
 

@@ -668,6 +668,12 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Operational requirements (caching, rate limiting, observability)
   - Performance specifications (latency, throughput, resource limits)
   - Verification mapping (BDD scenarios, load tests, integration tests)
+- **SPEC Subtypes**: Routes based on `deliverable_type` (propagated from BRD through REQ):
+  - CSPEC (50): `code` → Source code (default)
+  - DSPEC (51): `document` → User guides, API documentation
+  - UXSPEC (52): `ux` → Wireframes, mockups, prototypes
+  - RISKSPEC (53): `risk` → Risk matrices, impact assessments
+  - PROCSPEC (54): `process` → SOPs, runbooks, playbooks
 - **resource**: YAML implementation specifications translated into executable code
 
 ### AI Tasks (TASKS)

@@ -700,6 +700,16 @@ flowchart TD
 - **Files**: [SPEC-00_index.md](./09_SPEC/SPEC-00_index.md) | [Template](./09_SPEC/SPEC-MVP-TEMPLATE.yaml)
 - **Examples**: [SPEC-01_api_client_example.yaml](./09_SPEC/SPEC-01_api_client_example.yaml)
 
+**SPEC Subtypes** - Routes based on `deliverable_type` (propagated from BRD through REQ):
+
+| Subtype | Code | deliverable_type | Output | CTR Required |
+|---------|------|------------------|--------|--------------|
+| [CSPEC](./09_SPEC/CSPEC/) | 50 | `code` (default) | Source code | Yes |
+| [DSPEC](./09_SPEC/DSPEC/) | 51 | `document` | User guides, API docs | Optional |
+| [UXSPEC](./09_SPEC/UXSPEC/) | 52 | `ux` | Wireframes, mockups | Optional |
+| [RISKSPEC](./09_SPEC/RISKSPEC/) | 53 | `risk` | Risk matrices | No |
+| [PROCSPEC](./09_SPEC/PROCSPEC/) | 54 | `process` | SOPs, runbooks | Optional |
+
 ### Code Generation Layer
 
 **11_TASKS/** - Code Generation Plans (TASKS)

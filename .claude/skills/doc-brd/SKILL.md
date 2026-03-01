@@ -15,7 +15,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "2.3"
+    version: "1.2"
     last_updated: "2026-03-01"
     versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---

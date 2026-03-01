@@ -129,6 +129,16 @@ Examples:
 - Flat: `09_SPEC/SPEC-01_api_client_example.yaml`
 - Nested: `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
 
+### SPEC Subtypes (deliverable_type routing)
+
+| Subtype | Code | deliverable_type | Output |
+|---------|------|------------------|--------|
+| CSPEC | 50 | `code` (default) | Source code |
+| DSPEC | 51 | `document` | User guides, API docs |
+| UXSPEC | 52 | `ux` | Wireframes, mockups |
+| RISKSPEC | 53 | `risk` | Risk matrices |
+| PROCSPEC | 54 | `process` | SOPs, runbooks |
+
 ---
 
 ## Traceability Link Format

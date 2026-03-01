@@ -13,6 +13,20 @@ custom_fields:
 
 # Specifications (SPEC)
 
+## SPEC Subtypes (Deliverable Type Routing)
+
+SPEC serves as an **orchestrator** that routes to subtypes based on `deliverable_type` (propagated from BRD through REQ):
+
+| Subtype | Code | deliverable_type | Output | CTR Required |
+|---------|------|------------------|--------|--------------|
+| [CSPEC](./CSPEC/) | 50 | `code` (default) | Source code | Yes |
+| [DSPEC](./DSPEC/) | 51 | `document` | User guides, API docs | Optional |
+| [UXSPEC](./UXSPEC/) | 52 | `ux` | Wireframes, mockups | Optional |
+| [RISKSPEC](./RISKSPEC/) | 53 | `risk` | Risk matrices | No |
+| [PROCSPEC](./PROCSPEC/) | 54 | `process` | SOPs, runbooks | Optional |
+
+**Routing Logic**: If `deliverable_type` is not specified, defaults to `code` → CSPEC.
+
 ## Generation Rules
 
 - Index-only: maintain `SPEC-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).

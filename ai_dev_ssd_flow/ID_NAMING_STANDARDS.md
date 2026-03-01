@@ -1280,7 +1280,17 @@ Consistent across ALL document types:
 | 43 | Functional Test | TSPEC (FTEST) |
 | 44 | Performance Test | TSPEC (PTEST) - Reserved |
 | 45 | Security Test | TSPEC (SECTEST) - Reserved |
-| 46-99 | Reserved for future use | - |
+| 46-49 | Reserved for future use | - |
+| 50 | Code Specification | SPEC (CSPEC) - code deliverables |
+| 51 | Documentation Specification | SPEC (DSPEC) - document deliverables |
+| 52 | UX Specification | SPEC (UXSPEC) - ux deliverables |
+| 53 | Risk Specification | SPEC (RISKSPEC) - risk deliverables |
+| 54 | Process Specification | SPEC (PROCSPEC) - process deliverables |
+| 55-58 | DSPEC Element Types | DSPEC internal elements |
+| 60-63 | UXSPEC Element Types | UXSPEC internal elements |
+| 65-68 | RISKSPEC Element Types | RISKSPEC internal elements |
+| 70-73 | PROCSPEC Element Types | PROCSPEC internal elements |
+| 74-99 | Reserved for future use | - |
 
 ### Examples
 

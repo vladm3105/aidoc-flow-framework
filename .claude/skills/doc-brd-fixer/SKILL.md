@@ -18,7 +18,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, Audit Report]
     downstream_artifacts: [Fixed BRD, Fix Report]
-    version: "2.9"
+    version: "1.2"
     last_updated: "2026-03-01"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
