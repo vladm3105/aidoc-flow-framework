@@ -3,14 +3,14 @@
 # - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Machine-readable validation rules derived from the template
 # - On conflict: Defer to BDD-TEMPLATE.feature
-# - Note: BDD uses .feature files (Gherkin syntax) only - no YAML template
+# - Note: BDD uses dual-file format (.feature + .yaml companion for metadata)
 # =============================================================================
 #
 # Authority Hierarchy:
 # Human Workflow:  Gherkin Feature → BDD Schema (validates .feature) → Validators
-# Autopilot:    N/A (BDD not in autopilot workflow)
+# Autopilot:    BDD-MVP-TEMPLATE.yaml -> BDD Schema (validates) -> Instance
 #
-# Schema is DERIVATIVE of Gherkin template (BDD is .feature-only)
+# Schema validates both .feature (Gherkin) and .yaml (metadata) files
 #
 # BDD Schema Definition v1.1
 # Purpose: Define valid metadata structure for BDD feature files
@@ -20,11 +20,11 @@
 schema_version: "1.1"
 artifact_type: BDD
 layer: 4
-last_updated: "2026-02-26"
+last_updated: "2026-03-01"
 
 references:
   md_template: "BDD-MVP-TEMPLATE.feature"
-  yaml_template: "N/A (BDD is .feature-only, no YAML version)"
+  yaml_template: "BDD-MVP-TEMPLATE.yaml"
   creation_rules: "BDD_MVP_CREATION_RULES.md"
   validation_rules: "BDD_MVP_VALIDATION_RULES.md"
 
@@ -64,8 +64,14 @@ metadata:
     document_type:
       type: string
       required: true
-      allowed_values: ["bdd"]
-      description: "Must be 'bdd' - no variations allowed"
+      allowed_values: ["bdd", "bdd-document", "template"]
+      description: "Use 'bdd-document' for instances, 'template' for templates, 'bdd' for legacy"
+
+    instance_document_type:
+      type: string
+      required: false
+      allowed_values: ["bdd-document"]
+      description: "Used by templates to specify document type for generated instances"
 
     artifact_type:
       type: string

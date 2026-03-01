@@ -1,0 +1,259 @@
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated BDD artifact generation
+# - Validation: Validated by BDD_MVP_SCHEMA.yaml (shared with .feature template)
+# - Human Reference: See BDD-MVP-TEMPLATE.feature for Gherkin syntax
+# =============================================================================
+#
+# EXECUTION ENVIRONMENT: QA STAGING ONLY
+# - BDD tests run AFTER staging deployment
+# - Tests validate user acceptance criteria
+# - Part of QA workflow (ai:qa-testing)
+#
+# DO NOT run in CI pipeline - use UTEST/ITEST for CI
+# =============================================================================
+
+id: BDD-NN
+summary: "[Single-sentence description: Behavior-driven test scenarios validating EARS requirements through Gherkin Given-When-Then format]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+metadata:
+  schema_version: "2.0"
+  instance_document_type: "bdd-document"
+
+document_control:
+  status: "Draft"  # Draft, Review, Approved, Implemented, Deprecated
+  version: "1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  priority: "Critical (P1)"  # Critical (P1), High (P2), Medium (P3), Low (P4)
+  source_document: "@ears: EARS.NN.EE.SS"
+  adr_ready_score: "[PASS] NN% (Target: >=90%)"
+
+# =============================================================================
+# Section 1: Purpose and Context
+# =============================================================================
+
+section_1_purpose_and_context:
+  purpose: |
+    [Purpose statement: Define behavior-driven test scenarios that validate
+    EARS requirements through Gherkin Given-When-Then format. Provide
+    executable acceptance criteria for user story validation.]
+
+  scope: |
+    [Scope description: Define the boundaries of these BDD scenarios.
+    Include which EARS requirements are validated and which are out of scope.
+    Specify the features and user journeys covered.]
+
+  audience: |
+    [Target audience: QA engineers, product owners, developers,
+    and business analysts who need executable acceptance criteria.]
+
+# =============================================================================
+# Section 2: Development Workflow
+# =============================================================================
+
+section_2_development_workflow:
+  workflow: "BRD -> PRD -> EARS -> BDD -> ADR -> SYS -> REQ -> SPEC -> TASKS"
+
+  role: |
+    [Role description: Map EARS requirements to executable BDD scenarios.
+    Ensure traceability from EARS to BDD using @ears tags.
+    Provide clear Given-When-Then patterns for QA validation.]
+
+# =============================================================================
+# Section 3: Scenarios
+# =============================================================================
+
+section_3_scenarios:
+  feature:
+    id: "BDD-NN.SS"
+    name: "[Feature Name]"
+    user_story:
+      as_a: "[User Role]"
+      i_want: "[Capability]"
+      so_that: "[Benefit]"
+    traceability: "@brd: BRD.NN.EE.SS | @prd: PRD.NN.EE.SS | @ears: EARS.NN.EE.SS"
+
+  success_scenarios:
+    - id: "BDD.NN.14.01"
+      type: "success"
+      priority: "@p0-critical"
+      name: "[Primary success path description]"
+      given: "[Precondition from EARS WHEN clause]"
+      when: "[Action from EARS trigger]"
+      then: "The system SHALL [outcome from EARS SHALL clause]"
+      threshold: "@threshold: PRD.NN.perf.api.p95_latency"
+      traceability: "@ears: EARS.NN.25.SS"
+
+    - id: "BDD.NN.14.02"
+      type: "success"
+      priority: "@p0-critical"
+      name: "[Secondary success path description]"
+      given: "[Precondition]"
+      when: "[Action]"
+      then: "The system SHALL [expected result]"
+      traceability: "@ears: EARS.NN.25.SS"
+
+  error_scenarios:
+    - id: "BDD.NN.14.10"
+      type: "error"
+      priority: "@p1-high"
+      name: "[Error condition] results in [expected behavior]"
+      given: "[Error precondition from EARS IF clause]"
+      when: "[Action that triggers error]"
+      then: "The system SHALL NOT [prevented behavior]"
+      error_code: "[ERROR_CODE]"
+      threshold: "@threshold: PRD.NN.timeout.error.response"
+      traceability: "@ears: EARS.NN.25.SS"
+
+  recovery_scenarios:
+    - id: "BDD.NN.14.20"
+      type: "recovery"
+      priority: "@p1-high"
+      name: "System recovers from [failure type]"
+      given: "[Failure condition - e.g., external service unavailable]"
+      when: "[Recovery trigger - e.g., service becomes available]"
+      then: "The system SHALL recover"
+      threshold: "@threshold: PRD.NN.recovery.max_time"
+      circuit_breaker_state: "half-open"
+      traceability: "@ears: EARS.NN.25.SS"
+
+  parameterized_scenarios:
+    - id: "BDD.NN.14.30"
+      type: "parameterized"
+      priority: "@p2-medium"
+      name: "[Parameterized test description]"
+      given: "[Context with <variable>]"
+      when: "[Action with <input>]"
+      then: "The system SHALL return <expected>"
+      examples:
+        - variable: "value1"
+          input: "input1"
+          expected: "result1"
+        - variable: "value2"
+          input: "input2"
+          expected: "result2"
+      traceability: "@ears: EARS.NN.25.SS"
+
+  optional_scenarios:
+    - id: "BDD.NN.14.40"
+      type: "optional"
+      priority: "@p2-medium"
+      name: "[Alternative path with optional parameter]"
+      given: "[Optional context - e.g., optional flag is set]"
+      when: "[Alternative action]"
+      then: "The system SHALL [alternative outcome]"
+      traceability: "@ears: EARS.NN.25.SS"
+
+# =============================================================================
+# Section 4: Quality Attributes
+# =============================================================================
+
+section_4_quality_attributes:
+  coverage_matrix:
+    success:
+      min_scenarios: "1 per EARS"
+      priority_distribution: "100% @p0-critical or @p1-high"
+    error:
+      min_scenarios: "1 per unwanted"
+      priority_distribution: "80% @p1-high, 20% @p2-medium"
+    recovery:
+      min_scenarios: "1 per circuit breaker"
+      priority_distribution: "100% @p1-high"
+    parameterized:
+      min_scenarios: "1 per multi-value"
+      priority_distribution: "50% @p1-high, 50% @p2-medium"
+    optional:
+      min_scenarios: "1 per optional"
+      priority_distribution: "100% @p2-medium or @p3-low"
+
+  execution_environment:
+    target: "QA Staging"
+    not_for: "CI Pipeline"
+    workflow: "ai:qa-testing"
+
+# =============================================================================
+# Section 5: Traceability
+# =============================================================================
+
+section_5_traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.25.SS"
+
+  downstream_artifacts:
+    adr: "ADR"
+    sys: "SYS"
+    req: "REQ"
+    spec: "SPEC"
+
+  cumulative_tags:
+    layer: 4
+    required:
+      - "@brd"
+      - "@prd"
+      - "@ears"
+    description: "Layer 4 requires @brd, @prd, @ears tags for full traceability"
+
+# =============================================================================
+# Section 6: References
+# =============================================================================
+
+section_6_references:
+  internal_documentation:
+    - document: "BRD-NN"
+      location: "../01_BRD/BRD-NN_*.md"
+      purpose: "Business requirements source"
+
+    - document: "PRD-NN"
+      location: "../02_PRD/PRD-NN_*.md"
+      purpose: "Product requirements source"
+
+    - document: "EARS-NN"
+      location: "../03_EARS/EARS-NN_*.md"
+      purpose: "Formal requirements source"
+
+  external_standards:
+    - standard: "Gherkin Syntax"
+      organization: "Cucumber"
+      relevance: "BDD scenario format"
+
+  framework_references:
+    - reference: "ID_NAMING_STANDARDS.md"
+      type: "Framework Guide"
+      notes: "Element ID format (BDD.NN.14.SS)"
+
+    - reference: "THRESHOLD_NAMING_RULES.md"
+      type: "Framework Guide"
+      notes: "@threshold tag format"
+
+    - reference: "TEST_PYRAMID_GUIDE.md"
+      type: "Framework Guide"
+      notes: "BDD execution environment guidance"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: BDD-MVP-TEMPLATE.feature (for Gherkin syntax)
+# Schema: BDD_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: BDD_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: BDD_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - 6-section structure: Purpose, Workflow, Scenarios, Quality, Traceability, References
+# - 5 scenario types: success, error, recovery, parameterized, optional
+# - Each scenario requires traceability_tag: @ears: EARS.NN.EE.SS
+# - Cumulative tagging: @brd, @prd, @ears required (Layer 4)
+# - ADR-Ready score target: >=90%
+# - schema_version: 2.0
+# - last_updated: 2026-03-01
+# - total_sections: 6
+
+# =============================================================================
