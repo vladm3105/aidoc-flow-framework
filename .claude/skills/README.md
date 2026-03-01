@@ -2,6 +2,44 @@
 
 **Purpose**: Catalog of reusable Claude skills for the Options Trading System project
 
+## Skill Location Policy
+
+- This framework is the shared skill library for multiple projects.
+- Canonical source for all skills and skill docs: `docs_flow_framework/.claude/skills/`.
+- Downstream project repositories must consume skills via symlinks only.
+- Do not maintain duplicated skill content in project-local copies.
+
+## Multi-Project Symlink Pattern
+
+Use this standard layout so each project references framework-managed skills without copying files.
+
+```text
+docs_flow_framework/
+  .claude/
+    skills/                       # Canonical source
+
+project-a/
+  .claude/
+    skills -> ../../docs_flow_framework/.claude/skills
+
+project-b/
+  .claude/
+    skills -> ../../docs_flow_framework/.claude/skills
+```
+
+Setup pattern (run from each project root):
+
+```bash
+mkdir -p .claude
+ln -sfn ../../docs_flow_framework/.claude/skills .claude/skills
+```
+
+Verification:
+
+```bash
+ls -l .claude/skills
+```
+
 ## Available Skills
 
 ### 1. generate_implementation_plan
@@ -1283,6 +1321,7 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 #### 23. doc-brd (Layer 1)
 **Purpose**: Create Business Requirements Documents (BRD) - Layer 1 artifact
 **Quick Reference**: [doc-brd_quickref.md](./doc-brd_quickref.md)
+**BRD Skill Family README**: [doc-brd-skills-readme.md](./doc-brd-skills-readme.md)
 **Use**: Starting point for new features/projects with business context
 
 #### 24. doc-prd (Layer 2)

@@ -1,117 +1,56 @@
-# doc-brd - Quick Reference
+# doc-brd* Skills Quick Reference
 
-**Skill ID:** doc-brd
-**Layer:** 1 (Business Requirements)
-**Purpose:** Create Business Requirements Documents (BRD)
-**Template Version:** 1.2 (18 Sections)
-**Lifecycle:** MVP → PROD → NEW MVP
+## Core Positioning
 
-## Lifecycle: MVP → PROD → NEW MVP
+- `doc-brd` = **root/shared BRD contract** (authoring rules, section semantics, template compliance)
+- `doc-brd-autopilot` = **primary execution pipeline** (generation + validation/review/fix orchestration)
+- `doc-brd-audit` = unified quality gate (`validator` + `reviewer`)
+- `doc-brd-fixer` = issue remediation from audit/review reports
+- `doc-brd-validator` = structural/schema gate
+- `doc-brd-reviewer` = semantic/content quality gate
 
-```text
-BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2 → ...
-```
+## Location Policy
 
-| Principle | Rule |
-| ----------- | ------ |
-| Each BRD = One Cycle | Don't expand BRDs indefinitely |
-| New Features = New BRD | Create BRD-02 for next iteration |
-| 5-15 Requirements | Keep focused per cycle |
-| Cross-Cycle Links | Use `@depends: BRD-01` |
+- This framework BRD skill family is intended for many downstream projects.
+- Canonical skill/docs home: `docs_flow_framework/.claude/skills/`
+- Project repositories consume `doc-brd*` skills via symlinks only.
 
-## Quick Start
+## When to Use Which Skill
+
+| Goal | Skill |
+| --- | --- |
+| Manual BRD authoring / root guidance | `doc-brd` |
+| End-to-end automated BRD processing | `doc-brd-autopilot` |
+| One-command quality assessment | `doc-brd-audit` |
+| Structural conformance only | `doc-brd-validator` |
+| Content quality only | `doc-brd-reviewer` |
+| Apply fixable findings | `doc-brd-fixer` |
+
+## Standard Validation Loop
+
+1. Run `/doc-brd-audit BRD-NN`.
+2. If FAIL, run `/doc-brd-fixer BRD-NN --revalidate`.
+3. Re-run `/doc-brd-audit BRD-NN`.
+4. Stop on PASS or manual-only findings.
+
+## Fast Commands
 
 ```bash
-# Invoke skill
-skill: "doc-brd"
-
-# Common requests
-- "Create a BRD for our new payment system"
-- "Document business requirements for feature X"
-- "Generate Layer 1 business requirements"
-```text
-
-## What This Skill Does
-
-1. Analyze business context and stakeholder needs
-2. Define strategic objectives and success criteria
-3. Identify business constraints and assumptions
-4. Document scope and out-of-scope items
-5. Create traceability to downstream artifacts (PRD, EARS, BDD)
-
-## Output Location
-
-```text
-docs/BRD/BRD-NNN_{descriptive_name}.md
+/doc-brd
+/doc-brd-autopilot BRD-04
+/doc-brd-audit BRD-04
+/doc-brd-fixer BRD-04 --revalidate
+/doc-brd-validator BRD-04
+/doc-brd-reviewer BRD-04
 ```
 
-## Key Sections (18-Section Structure)
+## Pass/Fail Gate
 
-| Section | Purpose |
-| --------- | --------- |
-| Document Control | Metadata and revision history |
-| 1. Introduction | Purpose, scope, audience |
-| 2. Business Objectives | Measurable goals (SMART) |
-| 3. Project Scope | What's in/out |
-| 4. Stakeholders | Who is impacted |
-| 5. User Stories | High-level user needs |
-| 6. Functional Requirements | Business capabilities |
-| **7. Quality Attributes** | **Performance, security, ADR topics** |
-| 8. Constraints & Assumptions | Business limitations |
-| 9. Acceptance Criteria | Success measures |
-| 10. Risk Management | Risk register |
-| 11. Implementation Approach | Phases, rollout |
-| 12. Support & Maintenance | Support model |
-| 13. Cost-Benefit Analysis | ROI, costs |
-| **14. Project Governance** | **Decision authority, approval** |
-| **15. Quality Assurance** | **QA standards, testing strategy** |
-| **16. Traceability** | **Requirements matrix, health score** |
-| **17. Glossary** | **Terms (6 subsections)** |
-| 18. Appendices | Supporting documents |
+- PASS: score >= 90 and no blocking structural errors
+- FAIL: score < 90 or structural gate fails
 
-## 7 Mandatory ADR Topic Categories (Section 7.2)
+## Source of Truth
 
-| # | Category | Element ID |
-| --- | ---------- | ------------ |
-| 1 | Infrastructure | BRD.NN.32.01 |
-| 2 | Data Architecture | BRD.NN.32.02 |
-| 3 | Integration | BRD.NN.32.03 |
-| 4 | Security | BRD.NN.32.04 |
-| 5 | Observability | BRD.NN.32.05 |
-| 6 | AI/ML | BRD.NN.32.06 |
-| 7 | Technology Selection | BRD.NN.32.07 |
-
-**Required per topic**: Status, Business Driver, Business Constraints, Alternatives Overview table, Cloud Provider Comparison table, Recommended Selection, PRD Requirements
-
-## Upstream/Downstream
-
-```text
-[No upstream] → BRD → PRD, EARS, BDD
-```
-
-## Quick Validation
-
-- [ ] 18 numbered sections present
-- [ ] Section 7.2 has ADR summary table
-- [ ] Section 14.5 Approval and Sign-off exists
-- [ ] Section 15 Quality Assurance exists
-- [ ] Section 16.1-16.4 Traceability subsections exist
-- [ ] Section 17.1-17.6 Glossary subsections exist
-- [ ] PRD-Ready Score in Document Control
-- [ ] No duplicate section numbers
-
-## Template Location
-
-```text
-ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
-```
-
-## Related Skills
-
-- `doc-prd` - Create product requirements (downstream)
-- `doc-ears` - Formalize requirements (downstream)
-- `project-init` - Initialize project structure
-- `doc-brd-validator` - Validate BRD structure
-- `doc-brd-reviewer` - Review BRD content
-- `doc-brd-fixer` - Fix BRD issues
-- `doc-brd-autopilot` - Automated BRD generation
+- Template: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- Validation policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- Wrapper/quality workflow: `ai_dev_ssd_flow/01_BRD/BRD_QUALITY_GATE_WORKFLOW.md`

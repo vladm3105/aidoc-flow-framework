@@ -18,8 +18,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, Review Report]
     downstream_artifacts: [Fixed BRD, Fix Report]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "2.7"
+    last_updated: "2026-02-28"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -312,7 +312,7 @@ Converts invalid element IDs to correct format.
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `BRD.NN.25.SS` | Code 25 invalid for BRD | `BRD.NN.33.SS` (Benefit Statement) |
+| `BRD.NN.25.SS` | Code 25 invalid for BRD | Manual remap to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) |
 | `BO-XXX` | Legacy pattern | `BRD.NN.23.SS` |
 | `FR-XXX` | Legacy pattern | `BRD.NN.01.SS` |
 | `AC-XXX` | Legacy pattern | `BRD.NN.06.SS` |
@@ -322,16 +322,17 @@ Converts invalid element IDs to correct format.
 
 | Invalid Code | Valid Code | Element Type |
 |--------------|------------|--------------|
-| 25 | 33 | Benefit Statement |
 | 19 | 22 | Feature Item (deprecated 19) |
 | 31 | 32 | Architecture Topic (deprecated 31) |
+
+For code `25` in BRD context, do not auto-convert to a fixed code; classify by section semantics and remap manually.
 
 **Regex Patterns**:
 
 ```python
 # Find element IDs with invalid type codes for BRD
 invalid_brd_type_25 = r'BRD\.(\d{2})\.25\.(\d{2})'
-replacement = r'BRD.\1.33.\2'
+# No fixed replacement for BRD type 25; requires section-aware remapping
 
 # Find legacy patterns
 legacy_bo = r'###\s+BO-(\d+):'
@@ -1114,7 +1115,7 @@ custom_fields:
 |---|------------|-------|-------------|------|
 | 1 | REV-L001 | Broken glossary link | Created BRD-00_GLOSSARY.md | BRD-01.3_quality_ops.md |
 | 2 | REV-L001 | Broken GAP link | Created placeholder GAP file | BRD-01.1_core.md |
-| 3 | REV-N004 | Element type 25 invalid | Converted to type 33 | BRD-01.1_core.md |
+| 3 | REV-N004 | Element type 25 invalid | Manual remap using section context | BRD-01.1_core.md |
 | 4 | REV-L003 | Absolute path used | Converted to relative | BRD-01.2_requirements.md |
 
 ## Issues Requiring Manual Review
@@ -1134,9 +1135,11 @@ custom_fields:
 
 ## Next Steps
 
-1. Complete GAP_Foundation_Module_Gap_Analysis.md placeholder
-2. Address remaining [TODO] placeholders
-3. Run `/doc-brd-reviewer BRD-01` to verify fixes
+1. Run unified BRD core validation wrapper:
+  `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+2. Complete GAP_Foundation_Module_Gap_Analysis.md placeholder
+3. Address remaining [TODO] placeholders
+4. Run `/doc-brd-reviewer BRD-01` to verify fixes
 ```
 
 ---
@@ -1163,8 +1166,9 @@ flowchart LR
 |-------|--------|-------|
 | Phase 5a | Run initial review | `doc-brd-reviewer` |
 | Phase 5b | Apply fixes if issues found | `doc-brd-fixer` |
-| Phase 5c | Re-run review | `doc-brd-reviewer` |
-| Phase 5d | Repeat until pass or max iterations | Loop |
+| Phase 5c | Re-run unified core validation wrapper | `validate_brd_wrapper.sh` |
+| Phase 5d | Re-run review | `doc-brd-reviewer` |
+| Phase 5e | Repeat until pass or max iterations | Loop |
 
 ---
 
@@ -1223,6 +1227,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.7 | 2026-02-28 | **Standardized validator parity**: Removed `25→33` auto-conversion guidance; code `25` in BRD now requires manual context-based remapping to valid BRD codes, aligned with `validate_standardized_element_codes.py`. |
 | 2.6 | 2026-02-27 | **Hash Validation Fixes**: Added Section 6.0.1 with FIX-H001 (placeholder replacement via sha256sum), FIX-H002 (missing prefix), FIX-H003 (file not found); Auto-fix invalid hash placeholders like `verified_no_drift` and `pending_verification` |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |
 | 2.5 | 2026-02-26 | **Template contract enforcement**: Added explicit compliance anchors to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` + YAML variant; required subsection map now includes 3.4.1/3.4.2, 12.1-12.3, and 18.1-18.5 for fixer normalization and insertion logic. |

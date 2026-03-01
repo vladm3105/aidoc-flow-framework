@@ -605,13 +605,13 @@ custom_fields:
 
 ### Step 11: Validate BRD
 
-Run validation scripts:
+Run unified BRD validation wrapper (primary gate):
 ```bash
-# BRD structure validation
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_*.md
+# Core blocking checks (used by pre-commit and CI)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
-# Link integrity
-python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
+# Optional full tiered run (includes advisory checks)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 ```
 
 ### Step 12: Commit Changes
@@ -624,7 +624,7 @@ Commit BRD file and traceability matrix together.
 
 **BRD-Specific Validation**:
 ```bash
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform.md
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 ```
 
 **Quality Gates Validation**:
@@ -681,14 +681,14 @@ LOOP:
 ### Validation Command
 
 ```bash
-# BRD structure validation (primary)
+# Unified BRD core validation (primary)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+
+# Unified BRD full tiered validation (optional)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+
+# Component-level diagnostics (secondary, optional)
 python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
-
-# Link integrity validation
-python ai_dev_ssd_flow/scripts/validate_links.py --path docs/01_BRD/
-
-# Quality gates validation
-./scripts/validate_quality_gates.sh docs/01_BRD/BRD-NN_slug.md
 ```
 
 ### Layer-Specific Upstream Requirements

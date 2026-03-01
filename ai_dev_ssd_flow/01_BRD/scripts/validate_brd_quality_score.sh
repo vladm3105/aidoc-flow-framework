@@ -3,7 +3,7 @@
 # BRD Quality Gate Validation Script (Pre-PRD Quality Gate)
 # =============================================================================
 # Purpose: Validate entire BRD corpus before PRD creation begins
-# Usage:   ./scripts/validate_brd_corpus.sh [BRD_DIR] [OPTIONS]
+# Usage:   ./validate_brd_quality_score.sh [BRD_DIR] [OPTIONS]
 # Options:
 #   --verbose       Show detailed output
 #   --check=NAME    Run specific check only (placeholders|downstream|counts|
@@ -31,7 +31,7 @@ WARNINGS=0
 INFOS=0
 
 # Default values
-BRD_DIR="${1:-docs/BRD}"
+BRD_DIR="${1:-docs/01_BRD}"
 VERBOSE=false
 SPECIFIC_CHECK=""
 ERRORS_ONLY=false

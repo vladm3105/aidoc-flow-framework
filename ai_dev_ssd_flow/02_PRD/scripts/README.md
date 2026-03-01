@@ -2,10 +2,13 @@
 
 Tools for validating PRD documents. Current scripts:
 
+- [prd_standardized_element_codes_hook.sh](./prd_standardized_element_codes_hook.sh) — strict PRD standardized element type code checks.
+- [prd_legacy_pattern_hook.sh](./prd_legacy_pattern_hook.sh) — legacy PRD element ID pattern detection.
+- [prd_core_wrapper_hook.sh](./prd_core_wrapper_hook.sh) — pre-commit/automation canonical core wrapper entrypoint.
+- [prd_quality_gate_hook.sh](./prd_quality_gate_hook.sh) — manual/deprecated alias to core wrapper path.
+- [validate_prd_wrapper.sh](./validate_prd_wrapper.sh) — single entrypoint with tiered checks (core blocking, advisory non-blocking).
 - [validate_prd_quality_score.sh](./validate_prd_quality_score.sh) — quality gates (see [../PRD_MVP_QUALITY_GATE_VALIDATION.md](../PRD_MVP_QUALITY_GATE_VALIDATION.md)).
 - [validate_prd.py](./validate_prd.py) — main validator (run with `--help` for modes).
-
-Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validators per the framework pattern described in [../PRD_VALIDATION_STRATEGY.md](../PRD_VALIDATION_STRATEGY.md) and [../../VALIDATION_TEMPLATE_GUIDE.md](../../VALIDATION_TEMPLATE_GUIDE.md).
 
 ## Quick Start
 
@@ -16,6 +19,16 @@ chmod +x *.sh
 # Quality gates (directory)
 bash validate_prd_quality_score.sh docs/02_PRD/<folder>
 
+# Canonical wrapper (core + advisory)
+bash validate_prd_wrapper.sh docs/02_PRD
+
+# Automation core mode (pre-commit/CI parity)
+bash prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+
+# Direct strict ID checks (optional diagnostics)
+bash prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
+bash prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
+
 # Inspect validator options
 python3 validate_prd.py --help
 ```
@@ -23,7 +36,7 @@ python3 validate_prd.py --help
 ## Troubleshooting
 
 | Issue | Fix |
-|-------|-----|
+| ----- | --- |
 | Permission denied | `chmod +x *.sh` |
 | Python not found | Use `python3` explicitly |
 | File not found | Use absolute paths when running from CI |

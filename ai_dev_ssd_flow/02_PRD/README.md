@@ -11,6 +11,8 @@ custom_fields:
   priority: shared
 ---
 
+<!-- markdownlint-disable MD009 MD022 MD025 MD031 MD032 MD040 -->
+
 # Product Requirements Documents (PRD)
 
 ## Generation Rules
@@ -195,7 +197,7 @@ PRDs inherit categorization context from their source BRDs:
 - **SYS-Ready Score**: Must be ≥90% to pass validation and progress to SYS phase
 - **Format**: `[PASS] NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
-- **Validation**: Enforced before commit via `python 02_PRD/scripts/validate_prd.py`
+- **Validation**: Enforced before commit via `bash 02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory`
 
 **Scoring Criteria**:
 
@@ -234,7 +236,7 @@ PRDs inherit categorization context from their source BRDs:
 
 **Workflow Integration**:
 1. **PRD Creation**: Include SYS-ready and EARS-ready scores in Document Control section
-2. **Quality Check**: Run `python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_name.md`
+2. **Quality Check**: Run `bash 02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory`
 3. **EARS Readiness**: EARS-ready score ≥90% enables progression to EARS artifact creation
 4. **SYS Readiness**: SYS-ready score ≥90% enables progression to SYS artifact creation
 
@@ -254,7 +256,7 @@ PRDs inherit categorization context from their source BRDs:
 This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
 
 - **Location**: `02_PRD/scripts/`
-- **Primary Validator**: `validate_prd_quality_score.sh`
+- **Primary Validator**: `validate_prd_wrapper.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
 ## File Naming Convention

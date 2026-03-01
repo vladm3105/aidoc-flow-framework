@@ -28,8 +28,9 @@ custom_fields:
 
 - Current scripts live in [scripts](./scripts).
 - Present validators:
-  - [scripts/validate_brd_quality_score.sh](scripts/validate_brd_quality_score.sh) — quality gates (see [BRD_MVP_QUALITY_GATE_VALIDATION.md](./BRD_MVP_QUALITY_GATE_VALIDATION.md)).
-  - [scripts/validate_brd.py](scripts/validate_brd.py) — main validator; run with `--help` to view supported modes.
+  - [scripts/validate_brd_wrapper.sh](scripts/validate_brd_wrapper.sh) — canonical BRD validator (core blocking + optional advisory tiers).
+  - [scripts/validate_brd_quality_score.sh](scripts/validate_brd_quality_score.sh) — quality gate component invoked by wrapper core.
+  - [scripts/validate_brd.py](scripts/validate_brd.py) — structural component validator (secondary diagnostics).
 - Planned alignment with the framework pattern (see [../VALIDATION_TEMPLATE_GUIDE.md](../VALIDATION_TEMPLATE_GUIDE.md)):
   - Add `validate_all.sh` orchestrator for file/directory flows.
   - Split checks into template, readiness, IDs, and cross-link validators following the REQ reference implementation.
@@ -47,9 +48,11 @@ custom_fields:
 
 ## Quick Usage (current tooling)
 
-- Quality gates (directory):
-  - `bash scripts/validate_brd_quality_score.sh <directory>`
-- Main validator (check `--help` for modes):
+- Core blocking checks (recommended):
+  - `bash scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+- Full tiered validation:
+  - `bash scripts/validate_brd_wrapper.sh docs/01_BRD`
+- Component-level diagnostics:
   - `python3 scripts/validate_brd.py --help`
 
 ---

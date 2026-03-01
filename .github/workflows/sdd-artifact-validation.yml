@@ -52,12 +52,23 @@ jobs:
             FILES=$(git diff --name-only HEAD~1 2>/dev/null | grep -E '^docs/.*\.(md|yaml|feature)$' | tr '\n' ' ' || true)
           fi
           echo "files=$FILES" >> $GITHUB_OUTPUT
+          if echo "$FILES" | tr ' ' '\n' | grep -q '^docs/01_BRD/'; then
+            echo "brd_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "brd_changed=false" >> $GITHUB_OUTPUT
+          fi
           echo "Changed files: $FILES"
 
       - name: Setup Python
         run: |
           python3 --version
           pip3 install --quiet pyyaml
+
+      - name: BRD tiered validation wrapper (core)
+        if: steps.changed.outputs.brd_changed == 'true'
+        run: |
+          echo "=== BRD Tiered Validation Wrapper ==="
+          bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
       - name: Validate SDD artifacts
         if: steps.changed.outputs.files != ''

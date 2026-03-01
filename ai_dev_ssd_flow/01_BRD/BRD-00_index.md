@@ -38,6 +38,16 @@ Master index of all Business Requirements Documents for the project.
 /doc-brd-reviewer BRD-01
 ```
 
+### Validate BRD (Unified)
+
+```bash
+# Canonical BRD core validation (pre-commit/CI parity)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+
+# Optional full tiered validation
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+```
+
 ### Fix BRD Issues
 
 ```bash
@@ -104,7 +114,7 @@ BRD autopilot uses these source directories (in priority order):
 - **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
 - **Reference Documents**: [00_REF](../00_REF/)
 - **PRD Layer**: [02_PRD](../02_PRD/)
-- **Templates**: [BRD-MVP-TEMPLATE.md](../../ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md)
+- **Templates**: [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md)
 
 ---
 

@@ -56,18 +56,18 @@ class ValidatorConfig:
 
 VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
     "BRD": ValidatorConfig(
-        script="../01_BRD/scripts/validate_brd_quality_score.sh",
+        script="../01_BRD/scripts/validate_brd_wrapper.sh",
         script_type="shell",
         implemented=True,
         layer=1,
-        description="Business Requirements Document validator"
+        description="Business Requirements Document core validator wrapper"
     ),
     "PRD": ValidatorConfig(
-        script="../02_PRD/scripts/validate_prd_quality_score.sh",
+        script="../02_PRD/scripts/validate_prd_wrapper.sh",
         script_type="shell",
         implemented=True,
         layer=2,
-        description="Product Requirements Document validator"
+        description="Product Requirements Document core validator wrapper"
     ),
     "EARS": ValidatorConfig(
         script="../03_EARS/scripts/validate_ears_quality_score.sh",
@@ -178,6 +178,13 @@ CROSS_VALIDATORS = {
         implemented=True,
         layer=0,
         description="Forward reference prevention validator"
+    ),
+    "ELEMCODE": ValidatorConfig(
+        script="validate_standardized_element_codes.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="BRD standardized element type code validator"
     ),
 }
 
@@ -356,7 +363,21 @@ def run_validator(
             cmd.append(str(docs_dir))
     else:
         # Shell scripts usually take DIR as first arg
-        cmd = ["bash", str(script_path), str(docs_dir)]
+        shell_target = docs_dir
+        if script_path.name in {"validate_brd_wrapper.sh", "validate_prd_wrapper.sh"}:
+            layer_dir_map = {
+                "validate_brd_wrapper.sh": "01_BRD",
+                "validate_prd_wrapper.sh": "02_PRD",
+            }
+            layer_dir = layer_dir_map[script_path.name]
+            layer_candidate = docs_dir / layer_dir
+            if layer_candidate.exists():
+                shell_target = layer_candidate
+            elif docs_dir.name == layer_dir:
+                shell_target = docs_dir
+            cmd = ["bash", str(script_path), str(shell_target), "--skip-advisory"]
+        else:
+            cmd = ["bash", str(script_path), str(shell_target)]
         if target_files:
             cmd.extend([str(f) for f in target_files])
 

@@ -63,6 +63,13 @@ cd {REPO_NAME}
 # Follow DEVELOPER_GUIDE.md for detailed setup
 ```
 
+**Pre-commit setup (required for BRD naming checks):**
+```bash
+python3 -m pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
 ---
 
 ## Code Standards

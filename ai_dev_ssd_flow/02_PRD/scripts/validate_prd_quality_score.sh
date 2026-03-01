@@ -33,7 +33,7 @@ WARNINGS=0
 INFOS=0
 
 # Default values
-PRD_DIR="${1:-docs/PRD}"
+PRD_DIR="${1:-docs/02_PRD}"
 VERBOSE=false
 SPECIFIC_CHECK=""
 ERRORS_ONLY=false

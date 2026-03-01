@@ -24,9 +24,11 @@ custom_fields:
 
 ## Current Validators
 
-- Quality gates (directory):
-  - `bash scripts/validate_brd_quality_score.sh <directory>`
-- Main validator (check supported flags with `--help`):
+- Unified BRD validator (core checks; used by pre-commit/CI):
+  - `bash scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+- Unified BRD validator (full tiered run):
+  - `bash scripts/validate_brd_wrapper.sh docs/01_BRD`
+- Component-level diagnostics (secondary):
   - `python3 scripts/validate_brd.py --help`
 
 ---
@@ -34,7 +36,7 @@ custom_fields:
 ## Workflows (current state)
 
 - **Single folder quality sweep:**
-  - `bash scripts/validate_brd_quality_score.sh docs/01_BRD/<folder>`
+  - `bash scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
 - **Inspect validator options:**
   - `python3 scripts/validate_brd.py --help`
 

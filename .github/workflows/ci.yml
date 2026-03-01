@@ -18,6 +18,27 @@ env:
   COVERAGE_THRESHOLD: 80
 
 jobs:
+  validate-brd-element-codes:
+    name: Validate BRD Element Codes
+    runs-on: self-hosted
+    if: >-
+      !(github.event_name == 'push' &&
+        contains(github.event.head_commit.message, '[skip ci]'))
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf "${GITHUB_WORKSPACE}"/* "${GITHUB_WORKSPACE}"/.[!.]* 2>/dev/null || true
+          CLONE_BRANCH="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
+
+      - name: Validate BRD core checks (wrapper)
+        run: |
+          cd "${GITHUB_WORKSPACE}"
+          bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory
+
   lint:
     name: Lint
     runs-on: self-hosted

@@ -111,7 +111,7 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 > - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
 > - **Sufficient Guidance**: This document (`BRD_MVP_CREATION_RULES.md`) and `BRD_MVP_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
 >
-> **Validation Approach**: Use `01_BRD/scripts/validate_brd.py` for structural validation while allowing content flexibility. Use the optional schema only for advisory checks.
+> **Validation Approach**: Use `01_BRD/scripts/validate_brd_wrapper.sh` as the canonical BRD validator (core blocking checks for automation); use component validators for secondary diagnostics.
 >
 > **Comparison with Other Layers**:
 > | Layer | Artifact | Schema File | Rationale |
@@ -1952,7 +1952,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 ## 11. Quality Gates (Pre-Commit Validation)
 
-- **12 Validation Checks**: Run `./01_BRD/scripts/validate_brd.py filename.md`
+- **Unified Core Validation**: Run `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
 - **Blockers**: Missing sections, invalid formats, broken traceability
 - **Warnings**: Missing references, incomplete criteria, unverified assumptions
 - **Platform Feature Validation**: Different requirements for Platform vs Feature BRDs
@@ -2075,11 +2075,14 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 **Pre-Commit Validation**:
 ```bash
-# Validate single file
-./01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_architecture.md
+# Canonical BRD core validation (pre-commit/CI parity)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
-# Validate all BRD files
-find docs/BRD -name "BRD-*.md" -exec ./01_BRD/scripts/validate_brd.py {} \;
+# Optional full tiered validation
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+
+# Component-level structural diagnostics (secondary)
+python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
 ```
 
 **Template Location**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)

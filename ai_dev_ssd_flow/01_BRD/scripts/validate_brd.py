@@ -6,8 +6,8 @@ Validates BRD documents against BRD_MVP_SCHEMA.yaml requirements.
 
 Usage:
     python validate_brd.py <file_or_directory>
-    python validate_brd.py /path/to/docs/BRD
-    python validate_brd.py /path/to/docs/BRD/BRD-01_example.md
+    python validate_brd.py /path/to/docs/01_BRD
+    python validate_brd.py /path/to/docs/01_BRD/BRD-01_example.md
 
 Exit Codes:
     0 = Pass (no errors, no warnings)
@@ -571,7 +571,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python validate_brd.py /path/to/docs/BRD
+    python validate_brd.py /path/to/docs/01_BRD
   python validate_brd.py /path/to/BRD-01_example.md
   python validate_brd.py . --verbose
         """

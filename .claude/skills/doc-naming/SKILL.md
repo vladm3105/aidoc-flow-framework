@@ -15,7 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
-  version: "1.6"
+  version: "1.7"
 ---
 
 # doc-naming Skill
@@ -559,13 +559,41 @@ Run this checklist BEFORE creating any SDD document:
 Use grep to find legacy patterns:
 
 ```bash
-# Find all legacy patterns in a file
-grep -E "(AC|FR|BC|BA|QA|BO|RISK|METRIC)-[0-9]+" file.md
+# Find all legacy patterns in a file (COMPREHENSIVE - run ALL commands)
+
+# 1. Simple legacy patterns (e.g., FR-001, AC-002)
+grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)-[0-9]+" file.md
+
+# 2. Compound/domain-prefixed patterns (e.g., FR-CICD-001, NFR-PERF-002)
+#    CRITICAL: These patterns have additional components between prefix and number
+grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.md
+
+# 3. Other legacy patterns
 grep -E "(Event|State|TASK|Phase|IP|IF|DM|CC)-[0-9]+" file.md
 grep -E "(DEC|ALT|CON)-[0-9]+" file.md
 grep -E "Feature F-[0-9]+" file.md
 grep -E "T-[0-9]+" file.md
+
+# 4. Combined single-command detection (recommended for automation)
+grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
 ```
+
+**Pattern Explanation**:
+
+| Pattern Component | Matches | Example |
+|-------------------|---------|---------|
+| `(FR\|AC\|...)` | Legacy prefix | `FR`, `AC`, `NFR` |
+| `(-[A-Za-z0-9]+)*` | Optional domain components | `-CICD`, `-AUTH-V2` |
+| `-[0-9]+` | Numeric ID | `-001`, `-42` |
+
+**Examples Caught**:
+
+| Legacy Pattern | Detected By | Migration Target |
+|----------------|-------------|------------------|
+| `FR-001` | Simple pattern | `BRD.NN.01.01` |
+| `FR-CICD-001` | Compound pattern | `BRD.NN.01.01` |
+| `NFR-PERF-002` | Compound pattern | `BRD.NN.02.02` |
+| `AC-AUTH-V2-003` | Compound pattern | `BRD.NN.06.03` |
 
 ### Migration Procedure
 
@@ -590,8 +618,10 @@ grep -E "T-[0-9]+" file.md
 
 5. **Validate the result**
    ```bash
-   # Verify no legacy patterns remain
-   grep -E "(AC|FR|BC|BA|DEC|ALT|CON)-[0-9]+" file.md
+   # Verify no legacy patterns remain (COMPREHENSIVE check)
+   # Must return empty for all commands
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR|DEC|ALT|CON)-[0-9]+" file.md
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.md
    ```
 
 ### Common Migration Errors
@@ -651,6 +681,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7 | 2026-02-27 | **Compound legacy pattern detection**: Enhanced Section 11 grep patterns to catch compound/domain-prefixed legacy IDs (e.g., `FR-CICD-001`, `NFR-PERF-002`); Added regex `(-[A-Za-z0-9]+)*` to match optional domain components; Added pattern explanation table and examples; Updated validation step to run comprehensive checks |
 | 1.6 | 2026-02-10 | Added Section 8: ISO 8601 Datetime Format Standard - all date fields now require `YYYY-MM-DDTHH:MM:SS` format for precise drift detection; Deprecated date-only format |
 | 1.5 | 2026-02-10 | Added element code 33 (Benefit Statement) for BRD Section 2.5; Updated BRD Quick Lookup to include code 33; Added BRD examples for code 33 |
 | 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |

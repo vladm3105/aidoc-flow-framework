@@ -403,7 +403,7 @@ Ensures traceability and cross-references are correct.
 @trace: BRD-01.22.01 -> PRD-01.22.01
 
 <!-- Reference to upstream -->
-@ref: [BRD-01 Section 3](../01_BRD/BRD-01.md#3-business-requirements)
+@ref: [BRD-01](../../../ai_dev_ssd_flow/PROJECT/fixtures/budget_alert/BRD-01.md)
 ```
 
 ---
@@ -978,7 +978,7 @@ flowchart LR
 |-------|--------|-------|
 | Phase 5a | Run initial review | `doc-prd-reviewer` |
 | Phase 5b | Apply fixes if issues found | `doc-prd-fixer` |
-| Phase 5c | Re-run review | `doc-prd-reviewer` |
+| Phase 5c | Re-run unified core validation wrapper | `prd_core_wrapper_hook.sh` |
 | Phase 5d | Repeat until pass or max iterations | Loop |
 
 ---

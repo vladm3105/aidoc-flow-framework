@@ -246,6 +246,16 @@ Both scores must be present and meet thresholds for downstream artifact generati
 ## Validation Commands
 
 ```bash
+# Canonical wrapper (core only; pre-commit/CI parity)
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+
+# Strict PRD ID checks (same quality class as BRD ID checks)
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
+
+# Canonical wrapper (core + advisory)
+bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD
+
 # Validate single PRD document (must be in nested folder)
 python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
 

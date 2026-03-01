@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [Strategy, Stakeholder Input]
     downstream_artifacts: []
-    version: "1.3"
-    last_updated: "2026-02-26T15:10:00"
+    version: "2.2"
+    last_updated: "2026-02-28T10:05:00"
     versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 ---
 
@@ -442,11 +442,69 @@ Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
 - Element IDs use `BRD.NN.TT.SS` format
-- Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33)
-- No legacy patterns (BO-NNN, FR-NNN, etc.)
+- Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
+- **Element type codes match section context** (semantic validation)
+- No legacy patterns (simple OR compound)
+
+**Section-Element Type Mapping (MANDATORY)**:
+
+Element type codes MUST match the section where they appear:
+
+| Section | Section Title | Required Code | Code Meaning |
+|---------|---------------|---------------|--------------|
+| 2 | Business Objectives | 23 | Business Objective |
+| 5 | User Stories | 09 | User Story |
+| 6 | Functional Requirements | 01 | Functional Requirement |
+| 7.1 | Quality Attributes | 02 | Quality Attribute |
+| 7.2 | ADR Topics | 32 | Architecture Topic |
+| 8.1 | Constraints | 03 | Constraint |
+| 8.2 | Assumptions | 04 | Assumption |
+| 9 | Acceptance Criteria | 06 | Acceptance Criteria |
+| 10 | Risk Management | 07 | Risk |
+
+**Semantic Validation Algorithm**:
+
+```
+FOR each section containing element IDs:
+  1. Identify section number from heading (## N. Title)
+  2. Extract all element IDs matching BRD.NN.TT.SS pattern
+  3. FOR each element ID:
+     a. Extract TT (element type code)
+     b. Look up expected code for current section
+     c. IF TT != expected_code:
+        - Flag REV-N007: Section-element type mismatch
+        - Report expected vs actual code
+```
+
+**Example Violations**:
+
+| Found ID | Section | Expected | Actual | Violation |
+|----------|---------|----------|--------|-----------|
+| BRD.64.05.01 | 5. User Stories | 09 (User Story) | 05 (Dependency) | REV-N007 |
+| BRD.64.01.01 | 2. Business Objectives | 23 (Business Objective) | 01 (Functional Req) | REV-N007 |
+
+**Legacy Pattern Detection** (MANDATORY):
+
+Detect BOTH simple and compound legacy patterns:
+
+| Pattern Type | Regex | Examples |
+|--------------|-------|----------|
+| Simple legacy | `(FR|AC|BO|NFR|QA|BC|BA|RISK|METRIC)-[0-9]+` | `FR-001`, `AC-002` |
+| Compound legacy | `(FR|AC|BO|NFR|QA|BC)(-[A-Za-z0-9]+)+-[0-9]+` | `FR-CICD-001`, `NFR-PERF-002` |
+| Domain-prefixed | `(FR|NFR)-[A-Z]+-[0-9]+` | `FR-AUTH-001`, `NFR-SEC-001` |
+
+**Detection Algorithm**:
+
+```bash
+# Comprehensive legacy pattern detection (MUST run all)
+grep -E "(FR|AC|BO|NFR|QA|BC|BA)-[0-9]+" file.md                    # Simple patterns
+grep -E "(FR|AC|BO|NFR|QA|BC)(-[A-Za-z0-9]+)+-[0-9]+" file.md       # Compound patterns
+grep -E "(RISK|METRIC|Event|State|TASK)-[0-9]+" file.md             # Other legacy patterns
+```
 
 **Auto-Fix**:
 - Convert legacy patterns to unified format
+- Handle compound patterns: `FR-CICD-001` → `BRD.NN.01.01`
 - Suggest correct element type codes
 
 **Error Codes**:
@@ -455,8 +513,11 @@ Validates element IDs follow `doc-naming` standards.
 |------|----------|-------------|
 | REV-N001 | Error | Invalid element ID format |
 | REV-N002 | Error | Element type code not valid for BRD |
-| REV-N003 | Error | Legacy pattern detected |
+| REV-N003 | Error | Simple legacy pattern detected (e.g., `FR-001`) |
 | REV-N004 | Warning | Inconsistent ID sequencing |
+| REV-N005 | Error | Compound legacy pattern detected (e.g., `FR-CICD-001`) |
+| REV-N006 | Error | Domain-prefixed legacy pattern detected (e.g., `NFR-PERF-001`) |
+| REV-N007 | Error | Section-element type mismatch (e.g., User Stories using code 05 instead of 09) |
 
 ---
 
@@ -890,6 +951,9 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-28T10:05:00 | **Validator parity alignment**: Removed code `33` from BRD valid element code set to match `ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py`; retained `REV-N007` semantic mismatch checks. |
+| 2.1 | 2026-02-28T09:30:00 | **Section-element type semantic validation**: Added mandatory check that element type codes match section context (e.g., Section 5 User Stories must use code 09, not 05); Added section-element type mapping table; Added REV-N007 error code; Added semantic validation algorithm |
+| 2.0 | 2026-02-27T22:00:00 | **Comprehensive legacy pattern detection**: Enhanced Check #8 (Naming Compliance) to detect compound/domain-prefixed legacy patterns (e.g., `FR-CICD-001`, `NFR-PERF-002`); Added regex patterns for simple, compound, and domain-prefixed patterns; Added REV-N005 and REV-N006 error codes; Added detection algorithm with bash commands; Updated auto-fix to handle compound patterns |
 | 1.9 | 2026-02-27T16:30:00 | **Fixed drift detection hash computation**: Section 9.3 now requires mandatory bash `sha256sum` execution; Added hash format validation (Section 9.3.2); Added placeholder rejection list; Added verification step (Section 9.3.3); Added comparison algorithm (Section 9.3.4); Added REV-D009 error code for invalid hash placeholders |
 | 1.2 | 2026-02-26T12:45:00 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version to avoid cross-skill version drift. |
 | 1.8 | 2026-02-26T12:30:00 | **Template compliance correction**: Aligned Check #6 subsection contract to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` v1.2; corrected mismatched requirements (1.1-1.4, 3.4.1/3.4.2, 5.1-5.2, 12.1-12.3, 18.1-18.5) and clarified glossary requirements as 17.5 Cross-References + 17.6 External Standards. |
@@ -898,6 +962,6 @@ flowchart LR
 | 1.5 | 2026-02-11T18:00:00 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram with structure validation decision node; Added structure compliance to scoring (12% weight, blocking); Consistent with other reviewer skills |
 | 1.4 | 2026-02-10T17:00:00 | **Mandatory drift cache**: Reviewer MUST create/update `.drift_cache.json` after every review; Three-phase detection algorithm; SHA-256 hash computation; Hash comparison mode when cache exists; REV-D006 code for cache creation; Cache schema with review_history tracking |
 | 1.3 | 2026-02-10T14:30:00 | Added Check #9: Upstream Drift Detection - detects when source documents modified after BRD creation; REV-D001-D005 error codes; drift cache support; configurable thresholds |
-| 1.2 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
+| 1.2 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per then-current guidance (**superseded in 2.2**) |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
 | 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; ADR topic coverage validation; Strategic alignment check |

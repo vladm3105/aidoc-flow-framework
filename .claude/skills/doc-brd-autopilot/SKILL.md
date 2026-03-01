@@ -17,8 +17,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "3.5"
+    last_updated: "2026-02-28"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -166,6 +166,18 @@ BRD has no upstream document type. Smart detection works differently:
   - Resolve IPLAN path (direct path or `IPLAN-NNN` lookup)
   - Validate required IPLAN fields: title, scope, phases/steps, constraints, dependencies, validation/testing approach
   - Transform IPLAN content to BRD sections (1,2,3,8,9,10,11,12,15)
+  - **MANDATORY ID TRANSFORMATION** (per `doc-naming` skill):
+    a. Detect ALL legacy/source ID patterns in IPLAN content:
+       - Simple patterns: `FR-XXX`, `AC-XXX`, `BO-XXX`, `NFR-XXX`
+       - Compound patterns: `FR-{DOMAIN}-XXX` (e.g., `FR-CICD-001`, `FR-AUTH-002`)
+       - Any pattern matching: `(FR|AC|BO|NFR|QA|BC)(-[A-Za-z0-9]+)*-[0-9]+`
+    b. Convert ALL detected IDs to BRD.NN.TT.SS format:
+       - `FR-*` → `BRD.NN.01.SS` (Functional Requirement)
+       - `NFR-*` → `BRD.NN.02.SS` (Quality Attribute)
+       - `AC-*` → `BRD.NN.06.SS` (Acceptance Criteria)
+       - `BO-*` → `BRD.NN.23.SS` (Business Objective)
+    c. Validate ALL element IDs against `doc-naming` patterns BEFORE writing
+    d. BLOCK generation if any legacy patterns remain after transformation
   - Run Generate Mode (Phase 1-5)
 4. IF primary source is reference path (`--ref` or positional docs/00_REF|REF path):
   - Detect small-ref mode (<=3 files and <=100KB total, markdown/text/reStructuredText only)
@@ -897,7 +909,11 @@ After BRD generation, validate structure and PRD-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_{slug}.md --verbose
+# Unified BRD core validation (primary)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+
+# Optional full tiered validation (includes advisory checks)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 ```
 
 **Validation Checks**:
@@ -1042,7 +1058,7 @@ After passing the fix cycle:
 
 3. **Element ID Compliance** (per `doc-naming` skill):
    - All IDs use BRD.NN.TT.SS format
-   - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33)
+  - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
    - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
 
 4. **PRD-Ready Report**:
@@ -1500,8 +1516,8 @@ flowchart TD
 | **Element IDs** | Legacy BO-XXX format | Convert to BRD.NN.23.SS | ✅ |
 | **Element IDs** | Legacy FR-XXX format | Convert to BRD.NN.01.SS | ✅ |
 | **Element IDs** | Legacy AC-XXX format | Convert to BRD.NN.06.SS | ✅ |
-| **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.09.SS | ✅ |
-| **Element IDs** | Invalid type code for BRD | Suggest correct code (e.g., 25→33 for Benefits) | ✅ |
+| **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.03.SS | ✅ |
+| **Element IDs** | Invalid type code for BRD | Suggest context-appropriate valid BRD code (manual classification if ambiguous) | ✅ |
 | **Sections** | Missing Document Control fields | Add from template | ✅ |
 | **Sections** | Missing traceability section | Insert from template | ✅ |
 | **Sections** | Missing PRD-Ready score | Calculate and insert | ✅ |
@@ -1531,16 +1547,16 @@ flowchart TD
 | `BO-XXX` | `BRD.NN.23.SS` | BO-001 → BRD.01.23.01 |
 | `FR-XXX` | `BRD.NN.01.SS` | FR-001 → BRD.01.01.01 |
 | `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.06.01 |
-| `BC-XXX` | `BRD.NN.09.SS` | BC-001 → BRD.01.09.01 |
+| `BC-XXX` | `BRD.NN.03.SS` | BC-001 → BRD.01.03.01 |
 | `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.32.01 |
 
 **Element Type Code Migration** (v2.3):
 
-| Invalid Code | Correct Code | Context | Example |
-|--------------|--------------|---------|---------|
-| 25 in BRD | 33 | Benefits section | BRD.01.25.01 → BRD.01.33.01 |
+| Invalid Code | Correct Action | Context | Example |
+|--------------|----------------|---------|---------|
+| 25 in BRD | Manual reclassification to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) | Business content section | BRD.01.25.01 → BRD.01.23.01 (if business objective) |
 
-**Note**: Code 25 is valid only for EARS documents (EARS Statement). For BRD Benefits, use code 33 (Benefit Statement).
+**Note**: Code 25 is valid only for EARS documents (EARS Statement). In BRD, code 33 is not accepted by the standardized BRD validator; use a context-appropriate valid BRD code.
 
 **Broken Link Fixes** (v2.3):
 
@@ -1629,7 +1645,7 @@ fix_mode:
     BO_XXX_to_BRD_NN_23_SS: true   # BO-001 → BRD.01.23.01
     FR_XXX_to_BRD_NN_01_SS: true   # FR-001 → BRD.01.01.01
     AC_XXX_to_BRD_NN_06_SS: true   # AC-001 → BRD.01.06.01
-    BC_XXX_to_BRD_NN_09_SS: true   # BC-001 → BRD.01.09.01
+    BC_XXX_to_BRD_NN_03_SS: true   # BC-001 → BRD.01.03.01
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1981,6 +1997,8 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.5 | 2026-02-28 | **Standardized validator parity**: Removed BRD code `33` from valid code lists and replaced legacy `25→33` guidance with manual context-based remapping to valid BRD codes, aligned to `validate_standardized_element_codes.py`. |
+| 3.4 | 2026-02-27 | **Mandatory IPLAN ID Transformation**: Added explicit ID transformation step for IPLAN-sourced generation; Detects simple patterns (`FR-XXX`) AND compound patterns (`FR-CICD-XXX`, `NFR-PERF-XXX`); Blocks generation if legacy patterns remain after transformation; Enforces `doc-naming` compliance before writing BRD files |
 | 3.3 | 2026-02-27 | **Input Contract Expansion**: Added canonical grammar and compatibility (`--ref`, `--prompt`, `--iplan`); implemented deterministic precedence and supplemental merge semantics; added IPLAN resolution order and validation matrix; added small-reference mode thresholds/extraction table; updated input gate and examples for implementation-plan-driven generation while preserving BRD-ID review flow. |
 | 3.2 | 2026-02-27 | **Hash Computation Contract**: Added Section 5.6.1 with mandatory bash `sha256sum` execution at generation and review; Hash format validation; Placeholder rejection (verified_no_drift, pending_verification); Verification step to confirm valid hashes in drift cache |
 | 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
@@ -1992,7 +2010,7 @@ jobs:
 | 2.6 | 2026-02-24T21:30:00 | **Upstream Mode Detection**: Added Phase 1.0 to detect and prompt for upstream_mode; Auto-detects REF folder and prompts user for path selection; Generates upstream_mode and upstream_ref_path fields; Defaults to upstream_mode: "none" when no REF folder or creating from scratch |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BRD-NN) triggers review mode; Reference docs and prompts trigger generation; Special handling for Layer 1 (no upstream documents) |
 | 2.4 | 2026-02-10 | **Source Directory Update**: Changed input sources from `strategy/`, `docs/inputs/` to `docs/00_REF/` (primary), `REF/` (alternative), user prompts (fallback); **BRD Index**: Added automatic creation/update of `BRD-00_index.md` master index with Document Registry, Module Categories, Statistics; Updated all examples and CI/CD configurations |
-| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code migration (25→33) and broken link fix categories |
+| 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review → Fix cycle using `doc-brd-reviewer` and `doc-brd-fixer`; Added `doc-brd-fixer` skill dependency; **Link Validation**: Added Phase 1.1 Source Document Link Validation to verify `@ref:` targets exist before generation; **Glossary Handling**: Added Phase 3 Step 10 Master Glossary Handling with automatic creation/path resolution; **Element ID Fixes**: Added type code remediation and broken link fix categories (legacy `25→33` guidance superseded in 3.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents (not in tmp/); review reports require YAML frontmatter, parent document references, and structured sections; file naming convention `{ARTIFACT}-NN.R_review_report.md` |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing BRD documents without modification; Added Fix Mode for auto-repairing BRD documents while preserving manual content; Added fix categories (element_ids, sections, adr_topics, traceability, score); Added content preservation rules; Added backup functionality; Added element ID migration (BO_XXX, FR_XXX, AC_XXX, BC_XXX to unified format) |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-brd, doc-brd-validator, quality-advisor skills; Added Platform vs Feature BRD handling; Added Section 7.2 ADR Topics generation |

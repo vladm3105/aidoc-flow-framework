@@ -24,21 +24,23 @@ custom_fields:
 
 ## Current Validators
 
-- Quality gates (directory):
-  - `bash scripts/validate_prd_quality_score.sh <directory>`
-- Main validator (check supported flags with `--help`):
+- Canonical wrapper (core + advisory):
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD`
+- Canonical wrapper (core only; automation mode):
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory`
+- Component validator options (secondary diagnostics):
   - `python3 scripts/validate_prd.py --help`
 
 ---
 
 ## Workflows (current state)
 
-- **Single folder quality sweep:**
-  - `bash scripts/validate_prd_quality_score.sh docs/02_PRD/<folder>`
-- **Inspect validator options:**
+- **Local pre-commit parity (core blocking):**
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory`
+- **Manual full sweep (includes advisory tier):**
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD`
+- **Inspect component validator options:**
   - `python3 scripts/validate_prd.py --help`
-
-> Planned: add `validate_all.sh` orchestrator once the PRD validators are split per the framework pattern.
 
 ---
 

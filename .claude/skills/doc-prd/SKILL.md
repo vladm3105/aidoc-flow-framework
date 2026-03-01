@@ -304,7 +304,7 @@ Business constraints           Evaluation criteria         Trade-off analysis
 - BRD.01.01.10 - Success criteria from business case
 
 **Upstream Sources**:
-- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Parent business requirements
+- [BRD-01](../../../ai_dev_ssd_flow/PROJECT/fixtures/budget_alert/BRD-01.md) - Parent business requirements
 
 **Downstream Artifacts**:
 - EARS-NN (to be created) - Formal requirements
@@ -412,7 +412,7 @@ Quality standards and testing strategy (moved from BRD).
 2. Locate the `## Traceability` section
 3. Add this PRD to `Downstream Artifacts`:
    ```markdown
-   - Downstream Artifacts: [PRD-01](../../02_PRD/PRD-01_user_authentication/PRD-01_user_authentication.md#PRD-01)
+  - Downstream Artifacts: [PRD-01](../../../ai_dev_ssd_flow/PROJECT/fixtures/budget_alert/PRD-01.md)
    ```
 4. Commit BRD update with PRD creation (single commit)
 
@@ -426,8 +426,15 @@ Quality standards and testing strategy (moved from BRD).
 ### Step 12: Validate PRD
 
 ```bash
-# PRD validation (must be in nested folder)
-python ai_dev_ssd_flow/scripts/validate_prd.py docs/02_PRD/PRD-NN_{slug}/
+# Unified PRD core validation (canonical; pre-commit/CI parity)
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+# Includes standardized PRD element type checks + legacy pattern detection
+
+# Full PRD validation (includes advisory checks)
+bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD
+
+# Component validator (secondary diagnostics)
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-NN_{slug}/
 
 # Link integrity
 python ai_dev_ssd_flow/scripts/validate_links.py --path docs/02_PRD/

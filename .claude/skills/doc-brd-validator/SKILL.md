@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "2.7"
+    last_updated: "2026-02-28"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -218,8 +218,43 @@ Forbidden tag patterns:
 
 **Element ID Validation**:
 - Format: `BRD.NN.TT.SS` (4-segment unified format)
-- Valid element type codes for BRD: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33
+- Valid element type codes for BRD: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32
 - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
+
+**Section-Element Type Mapping (MANDATORY)**:
+
+Element type codes MUST match the section context where they appear:
+
+| Section | Section Title | Required Element Type Code | Code Meaning |
+|---------|---------------|---------------------------|--------------|
+| 2 | Business Objectives | 23 | Business Objective |
+| 5 | User Stories | 09 | User Story |
+| 6 | Functional Requirements | 01 | Functional Requirement |
+| 7.1 | Quality Attributes (NFRs) | 02 | Quality Attribute |
+| 7.2 | ADR Topics | 32 | Architecture Topic |
+| 8.1 | Constraints | 03 | Constraint |
+| 8.2 | Assumptions | 04 | Assumption |
+| 9 | Acceptance Criteria | 06 | Acceptance Criteria |
+| 10 | Risk Management | 07 | Risk |
+
+**Validation Algorithm**:
+
+```
+FOR each element ID found in document:
+  1. Extract section number from surrounding context (## N. or ### N.M)
+  2. Extract element type code (TT) from ID pattern BRD.NN.TT.SS
+  3. Look up expected code for section in mapping table
+  4. IF TT != expected_code:
+     - Flag BRD-E022: Element type code mismatch
+     - Report: "Section {N} requires code {expected}, found {TT}"
+```
+
+**Example Violations**:
+
+| Found ID | Section | Expected Code | Actual Code | Error |
+|----------|---------|---------------|-------------|-------|
+| BRD.64.05.01 | 5. User Stories | 09 | 05 | BRD-E022 |
+| BRD.64.01.01 | 2. Business Objectives | 23 | 01 | BRD-E022 |
 
 **File Naming Convention**:
 - Pattern: `BRD-NN_{descriptive_slug}.md`
@@ -364,6 +399,7 @@ BRD diagram contract requirements follow `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
 | BRD-E019 | ERROR | Invalid element ID format (not BRD.NN.TT.SS) |
 | BRD-E020 | ERROR | Element type code not valid for BRD (see doc-naming) |
 | BRD-E021 | ERROR | Deprecated ID pattern used (BO-XXX, FR-XXX, etc.) |
+| BRD-E022 | ERROR | Element type code does not match section context (e.g., User Stories using code 05 instead of 09) |
 | BRD-W011 | WARNING | Missing recommended BRD diagram tag `@diagram: c4-l1` |
 | BRD-W012 | WARNING | Missing recommended BRD diagram tag `@diagram: dfd-l0` |
 | BRD-W013 | WARNING | Sequence diagram present without sequence contract tag |
@@ -392,17 +428,14 @@ BRD diagram contract requirements follow `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
 ## Validation Commands
 
 ```bash
-# Validate single BRD document
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_example.md
+# Canonical BRD validation entrypoint (used by pre-commit and CI)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
-# Validate all BRD documents in directory
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/
+# Full tiered validation (includes advisory checks)
+bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 
-# Validate with verbose output
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/ --verbose
-
-# Validate with auto-fix
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/ --auto-fix
+# Component-level structural diagnostics (secondary)
+python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_example.md --verbose
 
 # Cross-document validation
 python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/01_BRD/BRD-01.md --auto-fix
@@ -434,8 +467,9 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/01_BRD
 11. Calculate PRD-Ready Score (includes ADR completeness)
 12. Verify file naming convention
 13. Check element ID format compliance (per doc-naming)
-14. Detect deprecated patterns
-15. Generate validation report
+14. Validate section-element type mapping (BRD-E022)
+15. Detect deprecated patterns
+16. Generate validation report
 
 ## Auto-Fix Actions
 
@@ -486,10 +520,12 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.7 | 2026-02-28 | **Validator parity alignment**: Removed code `33` from BRD valid element code set to match `ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py`; clarified error-code continuity for section-element mapping checks. |
+| 2.6 | 2026-02-28 | **Section-Element Type Mapping**: Added mandatory validation that element type codes match section context (e.g., User Stories must use code 09, not 05); Added BRD-E022 error code; Updated validation workflow step 14 |
 | 2.5 | 2026-02-27 | **Hash Format Validation**: Added Section 8.1 for drift cache hash validation; Added VAL-H001 (missing hash), VAL-H002 (invalid format/placeholder) error codes; Validates hash format when upstream_mode: "ref" |
-| 2.4 | 2026-02-26 | Added Diagram Contract Validation section aligned to `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`; introduced BRD-E022/E023/E024 and BRD-W010; updated workflow with explicit C4/DFD/sequence checks |
+| 2.4 | 2026-02-26 | Added Diagram Contract Validation section aligned to `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`; introduced advisory BRD diagram checks and BRD-W010; updated workflow with explicit C4/DFD/sequence checks |
 | 2.3 | 2026-02-25 | Updated section structure to match 18-section MVP template; Added validation for sections 12-18 with required subsections; Updated PRD-Ready score to show MVP (≥70) and Full (≥90) targets |
 | 2.2 | 2026-02-24 | Added upstream source configuration validation (Section 8); Added VAL-U001 through VAL-U005 error codes; Updated workflow to include upstream_mode validation |
-| 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per doc-naming v1.5 |
+| 2.1 | 2026-02-10 | Added element type code 33 (Benefit Statement) to valid BRD codes per then-current guidance (**superseded in 2.7**) |
 | 2.0 | 2026-02-08 | Complete rewrite: Added YAML frontmatter, doc-naming integration (BRD-E019/E020/E021), updated section structure to 18 sections, fixed file paths with numbered prefixes, added PRD-Ready score validation |
 | 1.0 | 2025-01-06 | Initial version (outdated 12-section structure) |

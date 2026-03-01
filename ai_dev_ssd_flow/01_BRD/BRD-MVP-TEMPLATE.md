@@ -24,7 +24,7 @@ custom_fields:
 >
 > This MD template is the **primary source** for human workflow.
 > - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)
-> - **Shared Validation**: Both formats are validated by `BRD_MVP_SCHEMA.yaml`
+> - **Shared Validation Source**: BRD wrapper checks enforce template/rule compliance; optional schema checks (`BRD_MVP_SCHEMA.yaml`) remain advisory.
 > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
 > ---
 
@@ -63,7 +63,7 @@ AI_CONTEXT_END
 
 > **Section Structure**: 18 sections provide complete coverage. Sections can be expanded as the product matures within the current MVP cycle.
 
-> **Validation**: All BRDs validated against `BRD_MVP_SCHEMA.yaml`. See `scripts/README.md` for validation guidance.
+> **Validation**: Use `scripts/validate_brd_wrapper.sh` as the canonical BRD validation entrypoint (`--skip-advisory` for automation). Schema checks via `BRD_MVP_SCHEMA.yaml` are advisory.
 
 > References: Schema `BRD_MVP_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 

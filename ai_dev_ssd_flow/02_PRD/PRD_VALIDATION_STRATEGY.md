@@ -28,11 +28,9 @@ custom_fields:
 
 - Current scripts live in [scripts](./scripts).
 - Present validators:
+  - [scripts/validate_prd_wrapper.sh](scripts/validate_prd_wrapper.sh) — canonical PRD validator (core blocking + optional advisory tiers).
   - [scripts/validate_prd_quality_score.sh](scripts/validate_prd_quality_score.sh) — quality gates (see [PRD_MVP_QUALITY_GATE_VALIDATION.md](./PRD_MVP_QUALITY_GATE_VALIDATION.md)).
   - [scripts/validate_prd.py](scripts/validate_prd.py) — main validator; run with `--help` to view supported modes.
-- Planned alignment with the framework pattern (see [../VALIDATION_TEMPLATE_GUIDE.md](../VALIDATION_TEMPLATE_GUIDE.md)):
-  - Add `validate_all.sh` orchestrator for file/directory flows.
-  - Split checks into template, readiness, IDs, and cross-link validators following the REQ reference implementation.
 
 ---
 
@@ -47,9 +45,11 @@ custom_fields:
 
 ## Quick Usage (current tooling)
 
-- Quality gates (directory):
-  - `bash scripts/validate_prd_quality_score.sh <directory>`
-- Main validator (check `--help` for modes):
+- Canonical wrapper (core only; pre-commit/CI parity):
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory`
+- Canonical wrapper (core + advisory):
+  - `bash scripts/validate_prd_wrapper.sh docs/02_PRD`
+- Main validator (secondary diagnostics; check `--help` for modes):
   - `python3 scripts/validate_prd.py --help`
 
 ---

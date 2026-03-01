@@ -4,8 +4,22 @@
 
 This guide defines the minimum command flow for BRD quality operations.
 
+## Location Policy
+
+- This framework BRD skill set is designed for reuse across multiple projects.
+- Canonical location for `doc-brd*` skills and docs: `docs_flow_framework/.claude/skills/`
+- Downstream projects should reference these via symlinks only.
+- Keep framework as single source of truth for skill content.
+
+## Core Model
+
+- `doc-brd` is the **root/shared BRD contract skill** (rules, structure, template semantics).
+- `doc-brd-autopilot` is the **primary execution/orchestration skill**.
+- `doc-brd-audit`, `doc-brd-validator`, `doc-brd-reviewer`, and `doc-brd-fixer` are quality pipeline skills.
+
 ## Skills
 
+- `doc-brd`: Root/shared BRD creation contract used by other `doc-brd*` skills.
 - `doc-brd-validator`: Structural/schema checks.
 - `doc-brd-reviewer`: PRD-ready score evaluation using deduction-based model.
 - `doc-brd-audit`: Wrapper that runs validator + reviewer and writes combined audit report.
@@ -35,6 +49,7 @@ No score warning band is used.
 
 ## Fast Start
 
+- Root rules/manual authoring: `/doc-brd`
 - Single BRD audit: `/doc-brd-audit BRD-04`
 - Fix + re-audit cycle: `/doc-brd-fixer BRD-04` then `/doc-brd-audit BRD-04`
 - Full orchestration: `/doc-brd-autopilot BRD-04`
