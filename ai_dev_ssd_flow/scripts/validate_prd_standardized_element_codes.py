@@ -43,14 +43,15 @@ LEGACY_PRD_CODES = {
     "23": "Business Objective has BRD ownership; migrate to BRD.*.23.* references.",
 }
 
+# Section-to-element type code mapping for 21-section PRD-MVP-TEMPLATE
+# Reference: ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md
 SECTION_CODE_MAP = {
-    "5": "08",   # Success Metrics
-    "7": "09",   # User Stories
-    "8": "01",   # Functional Requirements
-    "9": "02",   # Quality Attributes
-    "10": "32",  # Architecture Requirements
-    "12": "07",  # Risk Assessment
-    "14": "06",  # Acceptance Criteria
+    "5": "08",   # Section 5: Success Metrics (KPIs) → Metric/KPI
+    "8": "09",   # Section 8: User Stories & User Roles → User Story
+    "9": "01",   # Section 9: Functional Requirements → Functional Requirement
+    "11": "06",  # Section 11: Acceptance Criteria → Acceptance Criteria
+    "12": "03",  # Section 12: Constraints & Assumptions → Constraint (03), Assumptions use simple numbers
+    "13": "07",  # Section 13: Risk Assessment → Risk
 }
 
 
