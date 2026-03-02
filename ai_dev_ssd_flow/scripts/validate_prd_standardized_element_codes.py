@@ -33,11 +33,14 @@ VALID_PRD_CODES = {
     "07",  # Risk
     "08",  # Metric/KPI
     "09",  # User Story
-    "10",  # Decision
+    "11",  # Use Case
     "22",  # Feature Item
     "24",  # Stakeholder Need
-    "32",  # Architecture Topic
 }
+# NOTE: Codes NOT valid for PRD (per ID_NAMING_STANDARDS.md):
+# - 10 (Decision) = ADR, BRD only
+# - 23 (Business Objective) = BRD only (in LEGACY_PRD_CODES)
+# - 32 (Architecture Topic) = BRD only
 
 LEGACY_PRD_CODES = {
     "23": "Business Objective has BRD ownership; migrate to BRD.*.23.* references.",
