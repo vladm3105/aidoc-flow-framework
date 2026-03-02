@@ -265,7 +265,7 @@ mkdir -p scripts
 Use a framework-maintained hook profile and symlink project-level `.pre-commit-config.yaml` to avoid manual mirroring across repositories.
 
 **Framework library location (current profile):**
-- `docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.b-local.yaml`
+- `docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
 **Project symlink example (`b-local-docs`):**
 
@@ -274,7 +274,7 @@ cd /opt/data/b-local/b-local-docs
 
 # Replace local config with symlink to shared library profile
 rm -f .pre-commit-config.yaml
-ln -s ../../docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.b-local.yaml .pre-commit-config.yaml
+ln -s ../../docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml .pre-commit-config.yaml
 
 # Verify target
 ls -l .pre-commit-config.yaml
