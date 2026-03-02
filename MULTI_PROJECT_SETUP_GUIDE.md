@@ -98,6 +98,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
+| **Git Hooks Config** | `.pre-commit-config.yaml` (symlink to framework library profile) | N/A | Symlink per project profile |
 
 ---
 
@@ -257,6 +258,45 @@ mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p work_plans
 mkdir -p scripts
+```
+
+### 3. Shared Git Hook Library (Symlinked `.pre-commit-config.yaml`)
+
+Use a framework-maintained hook profile and symlink project-level `.pre-commit-config.yaml` to avoid manual mirroring across repositories.
+
+**Framework library location (current profile):**
+- `docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.b-local.yaml`
+
+**Project symlink example (`b-local-docs`):**
+
+```bash
+cd /opt/data/b-local/b-local-docs
+
+# Replace local config with symlink to shared library profile
+rm -f .pre-commit-config.yaml
+ln -s ../../docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.b-local.yaml .pre-commit-config.yaml
+
+# Verify target
+ls -l .pre-commit-config.yaml
+```
+
+**Operational constraints:**
+- Symlink target is path-dependent; it requires sibling repo layout under `/opt/data/`.
+- If the framework repo path changes, recreate the symlink with the updated relative or absolute target.
+- For CI/clones without this shared filesystem layout, use copied config or generate the symlink during bootstrap.
+
+**Validation:**
+
+```bash
+cd /opt/data/b-local/b-local-docs
+python3 - <<'PY'
+import yaml
+from pathlib import Path
+p = Path('.pre-commit-config.yaml')
+print('resolved_to:', p.resolve())
+yaml.safe_load(p.read_text())
+print('yaml_ok')
+PY
 ```
 
 ### 3. Setup Script vs Project-Init Skill
