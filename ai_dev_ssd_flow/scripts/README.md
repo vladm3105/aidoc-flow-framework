@@ -188,6 +188,16 @@ Reusable BDD hook wrappers for projects that consume framework validation rules.
 | `../04_BDD/scripts/bdd_quality_gate_hook.sh` | Run BDD corpus quality gate checks before Layer 4 → Layer 5 transition |
 | `../04_BDD/scripts/bdd_adr_ready_score_hook.sh` | Validate template-versioned BDD ADR-ready score thresholds |
 
+### 12. ADR Hook Entry Scripts (`05_ADR/scripts/`)
+
+Reusable ADR hook wrappers for projects that consume framework validation rules.
+
+| Script | Purpose |
+|--------|---------|
+| `../05_ADR/scripts/adr_core_validator_hook.sh` | Run canonical ADR validator over a target ADR root |
+| `../05_ADR/scripts/adr_quality_gate_hook.sh` | Run ADR corpus quality gate checks before Layer 5 → Layer 6 transition |
+| `../05_ADR/scripts/adr_sys_ready_score_hook.sh` | Validate template-versioned ADR SYS-ready score thresholds |
+
 ## Layer-Specific Validation
 
 To run validation for a specific layer manually, use the scripts in that layer's folder. 

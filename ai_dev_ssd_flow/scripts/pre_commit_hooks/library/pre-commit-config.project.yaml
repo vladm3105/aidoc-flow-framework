@@ -66,6 +66,28 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      - id: adr-core-validator
+        name: Validate ADR documents via core validator
+        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh docs/05_ADR
+        language: system
+        files: ^docs/05_ADR/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      - id: adr-quality-gate
+        name: Run ADR quality gate (template-driven)
+        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh docs/05_ADR
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: adr-sys-ready-score
+        name: Validate ADR SYS-ready score (template v1.1)
+        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh docs/05_ADR
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory
