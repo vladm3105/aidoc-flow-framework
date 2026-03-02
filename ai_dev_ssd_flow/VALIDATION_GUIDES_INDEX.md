@@ -33,6 +33,7 @@ This index shows where to find validation guidance for each SDD document type.
 | [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md) | Error codes & standards | Exit codes, validation severity levels |
 | [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) | CLI reference | Commands for all document types |
 | [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) | Architecture & patterns | Master orchestrator model, gate coverage |
+| [VALIDATION_STRATEGY_GUIDE.md#cross-layer-validation-pattern-brdprdearsbdd](./VALIDATION_STRATEGY_GUIDE.md#cross-layer-validation-pattern-brdprdearsbdd) | BRD/PRD/EARS/BDD pattern matrix | Cross-layer hook and score pattern |
 | [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) | Decision framework | AI assistant guidance for validation decisions |
 
 **When to use:** Universal guidance applicable across all SDD layers.
@@ -307,10 +308,10 @@ User Reviews Results & Consults Guides:
 
 | Type | Framework | Guides | Scripts | Status |
 |------|-----------|--------|---------|--------|
-| BRD (01) | [PASS] |  Planned |  Planned | Foundation ready |
-| PRD (02) | [PASS] |  Planned |  Planned | Foundation ready |
-| EARS (03) | [PASS] |  Planned |  Planned | Foundation ready |
-| BDD (04) | [PASS] |  Planned |  Planned | Foundation ready |
+| BRD (01) | [PASS] | [PASS] Available | [PASS] Available | Core-wrapper pattern active |
+| PRD (02) | [PASS] | [PASS] Available | [PASS] Available | Core-wrapper pattern active |
+| EARS (03) | [PASS] | [PASS] Available | [PASS] Available | Strict score-gated model active |
+| BDD (04) | [PASS] | [PASS] Available | [PASS] Available | Template-v2 alignment in progress |
 | ADR (05) | [PASS] |  Planned |  Planned | Foundation ready |
 | SYS (06) | [PASS] |  Planned |  Planned | Foundation ready |
 | REQ (07) | [PASS] | [PASS] Complete | [PASS] Complete | Template |
@@ -330,7 +331,7 @@ User Reviews Results & Consults Guides:
 ### Immediate (Foundation Complete)
 1. [PASS] Framework-level docs created
 2. [PASS] REQ guides complete (template)
-3.  Update framework docs with type-specific references
+3. [PASS] BRD/PRD/EARS/BDD cross-layer pattern documented in framework strategy guide
 
 ### Short Term (Scale to Other Types)
 1.  Create BRD guides (copy REQ template, adapt)
@@ -344,7 +345,7 @@ User Reviews Results & Consults Guides:
 
 ---
 
-**Last Updated:** 2026-01-24T00:00:00  
+**Last Updated:** 2026-03-02T00:00:00-05:00  
 **Status:** Framework foundation complete, scaling in progress  
 **Audience:** All SDD users, framework maintainers, CI/CD operators  
 **Scope:** Validation guidance index across all document types

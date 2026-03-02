@@ -20,6 +20,7 @@ custom_fields:
 **Audience:** Framework architects, DevOps, validator maintainers, advanced users.
 
 **Quick Navigation:**
+- [Cross-Layer Validation Pattern (BRD/PRD/EARS/BDD)](#cross-layer-validation-pattern-brdprdearsbdd)
 - [REQ Validation Architecture](#req-validation-architecture)
 - [Validation Gate Coverage](#validation-gate-coverage)
 - [Usage Patterns](#usage-patterns)
@@ -30,7 +31,39 @@ custom_fields:
 - [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) - Decision framework
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Universal rules
 
-**Last Updated:** 2026-01-24T00:00:00
+**Last Updated:** 2026-03-02T00:00:00-05:00
+
+---
+
+## Cross-Layer Validation Pattern (BRD/PRD/EARS/BDD)
+
+BRD, PRD, EARS, and BDD use one framework pattern with layer-specific implementations:
+
+1. **Core validation entrypoint** checks template and structural correctness.
+2. **Quality-gate entrypoint** runs corpus-level policy and consistency checks.
+3. **Readiness/score entrypoint** enforces threshold policy for downstream readiness.
+4. **Shared pre-commit hook IDs** provide a stable interface for local checks and AI skill orchestration.
+
+### Pattern Matrix
+
+| Layer | Core Validator | Quality Gate | Readiness/Score | Shared Hook IDs | Current Maturity |
+|------|-----------------|--------------|------------------|-----------------|------------------|
+| BRD (01) | `validate_brd_wrapper.sh` + `validate_brd.py` | `validate_brd_quality_score.sh` | Wrapper-integrated scoring policy | `brd-core-wrapper`, `brd-quality-gate` | Mature core-wrapper pattern |
+| PRD (02) | `validate_prd_wrapper.sh` + `validate_prd.py` | `validate_prd_quality_score.sh` | Wrapper-integrated scoring policy | `prd-core-wrapper`, `prd-quality-gate` | Mature core-wrapper pattern |
+| EARS (03) | `validate_ears.py` / `ears_core_validator_hook.sh` | `validate_ears_quality_score.sh` / `ears_quality_gate_hook.sh` | `calculate_ears_ready_score.py` + `ears_ready_score_hook.sh` (Template v2.0) | `ears-core-validator`, `ears-quality-gate`, `ears-ready-score` | Strict score-gated model |
+| BDD (04) | `validate_bdd.py` / `bdd_core_validator_hook.sh` | `validate_bdd_quality_score.sh` / `bdd_quality_gate_hook.sh` | `calculate_bdd_adr_ready_score.py` + `bdd_adr_ready_score_hook.sh` (Template v2.0) | `bdd-core-validator`, `bdd-quality-gate`, `bdd-adr-ready-score` | Template-v2 alignment in progress |
+
+### Shared Pre-Commit Integration
+
+- Library profile: `scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`.
+- Layer-specific hooks run in `manual` stage for targeted execution and migration control.
+- Blocking path is provided by matrix hook `sdd-layer-quality-matrix-blocking` in `pre-commit` stage.
+
+### Operational Convention
+
+- Use layer hook IDs for focused troubleshooting and skill-level orchestration.
+- Use matrix hook for commit-time enforcement on changed layers.
+- Keep formula scripts template-versioned when a layer has an explicit readiness score contract.
 
 ---
 
@@ -405,7 +438,7 @@ ai_dev_flow/07_REQ/
 
 ---
 
-**Last Updated:** 2026-01-24T00:00:00  
+**Last Updated:** 2026-03-02T00:00:00-05:00  
 **Status:** Architecture documentation for validation framework  
 **Scope:** REQ validation (with framework-wide applicability)  
 **Audience:** Framework architects, validator maintainers, advanced users
