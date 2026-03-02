@@ -49,16 +49,18 @@ custom_fields:
 | Document Control fields | Error | Error |
 | Extended quality attributes | **Warning** | Error |
 | BDD-Ready Score threshold | 70/100 | 90/100 |
+| BDD-Ready score presence/format | Error (blocking) | Error (blocking) |
 | Timing constraints (WITHIN) | **Warning** | Error |
 
 ### Usage
 
 ```bash
-# MVP validation (default)
-python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile mvp
+# MVP validation (default profile)
+python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS
 
-# Full validation (explicit)
-python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile full
+# Full profile (set in document frontmatter)
+# custom_fields:
+#   template_profile: full
 ```
 
 ### Cross-Linking Tags (AI-Friendly)
@@ -105,6 +107,8 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 | **Tier 1** | Errors (E###) | 1 | Blocking issues - must fix before commit |
 | **Tier 2** | Warnings (W###) | 0 | Quality issues - recommended to fix |
 
+Note: `W020` and `W021` are enforced as blocking in the validator for unified layer-gate behavior.
+
 ### Reserved ID Exemption (EARS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
@@ -131,7 +135,7 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 | Requirement IDs | E030 | EARS-XXX-NN format |
 | Traceability | E040-E041 | @prd: prefix, pipe separators |
 | EARS Syntax | W010-W012 | SHALL patterns, atomicity |
-| BDD-Ready | W020-W021 | Score format |
+| BDD-Ready | W020-W021, E052, E053 | Score format, status alignment, threshold gating |
 | Misc | W001 | Multiple H1 |
 
 ---
@@ -537,7 +541,7 @@ Downstream: BDD, ADR, SYS
 
 ### W020: BDD-Ready Score Missing
 
-**Type**: Warning
+**Type**: Error (blocking)
 
 **Check**: Document Control contains BDD-Ready Score
 
@@ -545,9 +549,21 @@ Downstream: BDD, ADR, SYS
 
 ### W021: BDD-Ready Score Format
 
-**Type**: Warning
+**Type**: Error (blocking)
 
 **Required Format**: `[PASS] NN% (Target: ≥90%)`
+
+---
+
+### E053: BDD-Ready Score Below Profile Threshold
+
+**Type**: Error (blocking)
+
+**Check**: Score must meet profile threshold
+
+**Thresholds**:
+- `mvp`: ≥70%
+- `standard`/`full`/`enterprise`: ≥90%
 
 ---
 

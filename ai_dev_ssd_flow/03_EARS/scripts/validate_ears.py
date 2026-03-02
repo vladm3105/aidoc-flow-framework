@@ -76,6 +76,13 @@ class EarsValidator:
         "mvp": REQUIRED_SECTIONS_MVP
     }
 
+    BDD_READY_MIN_SCORE_BY_PROFILE = {
+        "mvp": 70,
+        "standard": 90,
+        "full": 90,
+        "enterprise": 90,
+    }
+
     # === EARS SYNTAX PATTERNS ===
     EARS_PATTERNS = {
         "event_driven": r"WHEN\s+.+?\s+THE\s+.+?\s+SHALL\s+",
@@ -147,12 +154,14 @@ class EarsValidator:
             ))
             return self.results
 
+        profile = self._get_profile(frontmatter)
+
         # === METADATA VALIDATIONS ===
         self._validate_tags(file_path, frontmatter)
         self._validate_custom_fields(file_path, frontmatter)
 
         # === STRUCTURE VALIDATIONS ===
-        self._validate_required_sections(file_path, clean_content, frontmatter)
+        self._validate_required_sections(file_path, clean_content, profile)
         self._validate_section_numbering(file_path, clean_content)
         self._validate_document_control(file_path, clean_content)
         self._validate_single_h1(file_path, clean_content)
@@ -175,7 +184,7 @@ class EarsValidator:
         self._validate_brd_tag_presence(file_path, clean_content)
 
         # === BDD-READY SCORE ===
-        self._validate_bdd_ready_score(file_path, clean_content)
+        self._validate_bdd_ready_score(file_path, clean_content, profile)
 
         # === STATUS vs BDD-READY SCORE CONSISTENCY ===
         self._validate_status_bdd_consistency(file_path, clean_content)
@@ -363,13 +372,15 @@ class EarsValidator:
 
     # === STRUCTURE VALIDATORS ===
 
-    def _validate_required_sections(self, file_path: Path, content: str, frontmatter: dict) -> None:
-        """Validate required sections exist."""
-        # Determine profile
-        profile = "standard"
+    def _get_profile(self, frontmatter: dict) -> str:
+        """Resolve validation profile from frontmatter; defaults to mvp."""
+        profile = "mvp"
         if "custom_fields" in frontmatter:
-            profile = frontmatter["custom_fields"].get("template_profile", "standard")
-            
+            profile = str(frontmatter["custom_fields"].get("template_profile", "mvp")).strip().lower()
+        return profile
+
+    def _validate_required_sections(self, file_path: Path, content: str, profile: str) -> None:
+        """Validate required sections exist."""
         required_sections = self.SECTION_MAP.get(profile, self.SECTION_MAP["standard"])
 
         for section in required_sections:
@@ -656,8 +667,8 @@ class EarsValidator:
 
     # === BDD-READY SCORE VALIDATOR ===
 
-    def _validate_bdd_ready_score(self, file_path: Path, content: str) -> None:
-        """Validate BDD-Ready Score format."""
+    def _validate_bdd_ready_score(self, file_path: Path, content: str, profile: str) -> None:
+        """Validate BDD-Ready Score format and enforce profile threshold."""
         # Skip for reserved documents (N/A is acceptable)
         if re.search(r"BDD-Ready Score.*?N/A", content, re.IGNORECASE):
             return  # Reserved documents don't need numeric BDD score
@@ -670,20 +681,32 @@ class EarsValidator:
             self.results.append(ValidationResult(
                 file=str(file_path),
                 rule="W020",
-                severity="warning",
+                severity="error",
                 message="Missing BDD-Ready Score in Document Control",
                 fix_suggestion="Add: | **BDD-Ready Score** | [PASS] NN% (Target: ≥90%) |"
             ))
         else:
+            score = int(match.group(1).replace("%", ""))
+
             # Check format includes emoji and target
             full_pattern = r"[PASS]\s*\d+%\s*\(Target:\s*≥\d+%\)"
             if not re.search(full_pattern, content):
                 self.results.append(ValidationResult(
                     file=str(file_path),
                     rule="W021",
-                    severity="warning",
+                    severity="error",
                     message="BDD-Ready Score format incomplete (missing [PASS] or target)",
                     fix_suggestion="Use format: [PASS] NN% (Target: ≥90%)"
+                ))
+
+            min_score = self.BDD_READY_MIN_SCORE_BY_PROFILE.get(profile, 90)
+            if score < min_score:
+                self.results.append(ValidationResult(
+                    file=str(file_path),
+                    rule="E053",
+                    severity="error",
+                    message=f"BDD-Ready score {score}% below required {min_score}% for {profile} profile",
+                    fix_suggestion=f"Raise BDD-Ready Score to >= {min_score}% or adjust template_profile"
                 ))
 
     # === STATUS vs BDD-READY CONSISTENCY ===
@@ -717,7 +740,7 @@ class EarsValidator:
             self.results.append(ValidationResult(
                 file=str(file_path),
                 rule="E052",
-                severity="warning",
+                severity="error",
                 message=f"Status '{status}' inconsistent with BDD-Ready score {bdd_score}% (expected: '{expected}')",
                 fix_suggestion=f"Change status to: {expected}"
             ))
@@ -891,7 +914,8 @@ def main():
     print("  E020: Table Syntax          E030: Requirement IDs")
     print("  E040-E041: Traceability     E042: ID Uniqueness")
     print("  E043/W: @brd Tag Presence   W010-W012: EARS Syntax")
-    print("  W020-W021: BDD-Ready Score  W001: Multiple H1")
+    print("  W020-W021: BDD-Ready Score (blocking), E053: Profile threshold")
+    print("  W001: Multiple H1")
     print("  E050: Block Quote Tags      E051: Author Standard")
     print("  E052: Status-BDD Mismatch")
     print(f"{'='*70}")

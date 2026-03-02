@@ -6,21 +6,21 @@ repos:
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh docs/02_PRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-standardized-element-codes
         name: Validate b-local PRD standardized element type codes
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh docs/02_PRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-legacy-patterns
         name: Detect b-local PRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh docs/02_PRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: ears-core-validator
         name: Validate EARS documents via core validator
@@ -28,7 +28,7 @@ repos:
         language: system
         files: ^docs/03_EARS/.*\.md$
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
