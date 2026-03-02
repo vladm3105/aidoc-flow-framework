@@ -38,8 +38,9 @@ from error_codes import Severity, calculate_exit_code, format_error
 # =============================================================================
 
 # Required metadata custom_fields
+# Allowed values aligned with PRD_MVP_SCHEMA.yaml
 REQUIRED_CUSTOM_FIELDS = {
-    "document_type": {"allowed": ["prd", "template"]},
+    "document_type": {"allowed": ["prd", "prd-document", "template"]},  # prd-document for instances, template for templates, prd for legacy
     "artifact_type": {"allowed": ["PRD"]},
     "layer": {"allowed": [2]},
     "architecture_approaches": {"type": "array"},
@@ -71,25 +72,30 @@ REQUIRED_SECTIONS_STANDARD = [
     (r"^## 3\. Functional Requirements", "Section 3: Functional Requirements"),
 ]
 
+# 21-section PRD-MVP-TEMPLATE structure (aligned with ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md)
 REQUIRED_SECTIONS_MVP = [
     (r"^# PRD-\d{2,}:", "Title (H1 with PRD-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
     (r"^## 3\. Problem Statement", "Section 3: Problem Statement"),
     (r"^## 4\. Target Audience & User Personas", "Section 4: Target Audience & User Personas"),
-    (r"^## 5\. Success Metrics", "Section 5: Success Metrics"),
-    (r"^## 6\. Scope & Requirements", "Section 6: Scope & Requirements"),
-    (r"^## 7\. User Stories & User Roles", "Section 7: User Stories & User Roles"),
-    (r"^## 8\. Functional Requirements", "Section 8: Functional Requirements"),
-    (r"^## 9\. Quality Attributes", "Section 9: Quality Attributes"),
-    (r"^## 10\. Architecture Requirements", "Section 10: Architecture Requirements"),
-    (r"^## 11\. Constraints & Assumptions", "Section 11: Constraints & Assumptions"),
-    (r"^## 12\. Risk Assessment", "Section 12: Risk Assessment"),
-    (r"^## 13\. Implementation Approach", "Section 13: Implementation Approach"),
-    (r"^## 14\. Acceptance Criteria", "Section 14: Acceptance Criteria"),
-    (r"^## 15\. Budget & Resources", "Section 15: Budget & Resources"),
-    (r"^## 16\. Traceability", "Section 16: Traceability"),
-    (r"^## 17\. Glossary", "Section 17: Glossary"),
+    (r"^## 5\. Success Metrics", "Section 5: Success Metrics (KPIs)"),
+    (r"^## 6\. Goals & Objectives", "Section 6: Goals & Objectives"),
+    (r"^## 7\. Scope & Requirements", "Section 7: Scope & Requirements"),
+    (r"^## 8\. User Stories & User Roles", "Section 8: User Stories & User Roles"),
+    (r"^## 9\. Functional Requirements", "Section 9: Functional Requirements"),
+    (r"^## 10\. Customer-Facing Content", "Section 10: Customer-Facing Content & Messaging (MANDATORY)"),
+    (r"^## 11\. Acceptance Criteria", "Section 11: Acceptance Criteria"),
+    (r"^## 12\. Constraints & Assumptions", "Section 12: Constraints & Assumptions"),
+    (r"^## 13\. Risk Assessment", "Section 13: Risk Assessment"),
+    (r"^## 14\. Success Definition", "Section 14: Success Definition"),
+    (r"^## 15\. Stakeholders & Communication", "Section 15: Stakeholders & Communication"),
+    (r"^## 16\. Implementation Approach", "Section 16: Implementation Approach"),
+    (r"^## 17\. Budget & Resources", "Section 17: Budget & Resources"),
+    (r"^## 18\. Traceability", "Section 18: Traceability"),
+    (r"^## 19\. References", "Section 19: References"),
+    (r"^## 20\. EARS Enhancement Appendix", "Section 20: EARS Enhancement Appendix"),
+    (r"^## 21\. Quality Assurance & Testing Strategy", "Section 21: Quality Assurance & Testing Strategy"),
 ]
 
 # Map profiles to section lists
@@ -337,12 +343,27 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
     profile = "standard"
     if metadata and "custom_fields" in metadata:
         profile = metadata["custom_fields"].get("template_profile", "standard")
-    
+
     # Check template_variant as fallback
     if profile == "standard" and metadata and "custom_fields" in metadata:
          if "template_variant" in metadata["custom_fields"]:
              profile = metadata["custom_fields"]["template_variant"]
-    
+
+    # Auto-detect MVP profile based on total_sections: 21 or section structure
+    if profile == "standard" and metadata and "custom_fields" in metadata:
+        total_sections = metadata["custom_fields"].get("total_sections")
+        if total_sections == 21:
+            profile = "mvp"
+
+    # Auto-detect MVP profile from section structure (1-indexed vs 0-indexed)
+    if profile == "standard":
+        section_headers = [s[0] for s in sections]
+        # MVP uses "## 1. Document Control", standard uses "## 0. Document Control"
+        has_mvp_doc_control = any(re.match(r"^## 1\. Document Control", h) for h in section_headers)
+        has_standard_doc_control = any(re.match(r"^## 0\. Document Control", h) for h in section_headers)
+        if has_mvp_doc_control and not has_standard_doc_control:
+            profile = "mvp"
+
     # Handle unknown profile (default to standard)
     if profile not in SECTION_MAP:
         result.add_warning("PRD-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")

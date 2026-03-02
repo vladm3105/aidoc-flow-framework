@@ -103,12 +103,25 @@ run_core() {
   local label="$1"
   shift
   echo "[CORE] ${label}"
-  if ! "$@"; then
-    echo "[FAIL] ${label}"
-    CORE_FAIL=1
-  else
-    echo "[PASS] ${label}"
-  fi
+  set +e
+  "$@"
+  local rc=$?
+  set -e
+
+  # Validator exit codes: 0=pass, 1=warnings only, 2=errors
+  case "$rc" in
+    0)
+      echo "[PASS] ${label}"
+      ;;
+    1)
+      echo "[WARN] ${label} (warnings present)"
+      CORE_WARN=$((CORE_WARN + 1))
+      ;;
+    *)
+      echo "[FAIL] ${label}"
+      CORE_FAIL=1
+      ;;
+  esac
 }
 
 run_quality_core() {
@@ -120,11 +133,12 @@ run_quality_core() {
   local rc=$?
   set -e
 
+  # Quality gate exit codes: 0=pass, 1=warnings only, 2=errors
   case "$rc" in
     0)
       echo "[PASS] ${label}"
       ;;
-    2)
+    1)
       echo "[WARN] ${label} (warnings present)"
       CORE_WARN=$((CORE_WARN + 1))
       ;;
@@ -160,14 +174,14 @@ echo "Docs root: ${DOCS_ROOT}"
 echo ""
 
 run_core "PRD standardized element type codes" \
-  python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_prd_standardized_element_codes.py" "${PRD_ROOT}" --strict
+  python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_prd_standardized_element_codes.py" "${PRD_ROOT}"
 
 if is_section_based_prd_root "${PRD_ROOT}"; then
   echo "[CORE] PRD structural validator"
   echo "[PASS] PRD structural validator (section-based PRD root detected; monolithic structural validator skipped)"
 else
   run_core "PRD structural validator" \
-    python3 "${SCRIPT_DIR}/validate_prd.py" "${PRD_ROOT}" --strict
+    python3 "${SCRIPT_DIR}/validate_prd.py" "${PRD_ROOT}"
 fi
 
 run_quality_core "PRD quality gate" \

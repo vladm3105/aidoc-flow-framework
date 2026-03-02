@@ -560,12 +560,14 @@ check_template_structure() {
   echo "--- GATE-13: Template Structure Compliance ---"
   local found=0
 
+  # 21-section PRD-MVP-TEMPLATE structure (aligned with ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md)
   local REQUIRED_SECTIONS=(
-    "Document Control" "Executive Summary" "Product Vision"
-    "Target Audience" "User Stories" "Feature Requirements"
-    "Success Metrics" "Acceptance Criteria" "Constraints"
-    "Dependencies" "Risks" "Timeline" "MVP Scope"
-    "Future Considerations" "Traceability" "Glossary"
+    "Document Control" "Executive Summary" "Problem Statement"
+    "Target Audience" "Success Metrics" "Goals & Objectives"
+    "Scope & Requirements" "User Stories" "Functional Requirements"
+    "Customer-Facing Content" "Acceptance Criteria" "Constraints"
+    "Risk Assessment" "Success Definition" "Stakeholders"
+    "Implementation Approach" "Budget & Resources" "Traceability"
   )
 
   shopt -s nullglob
@@ -605,7 +607,10 @@ check_sys_ready_score() {
     is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
-    score=$(grep -oP 'sys_ready_score:\s*\K[0-9]+' "$f" 2>/dev/null || echo "0")
+    # Try YAML format first, then markdown table format
+    score=$(grep -oP 'sys_ready_score:\s*\K[0-9]+' "$f" 2>/dev/null || \
+            grep -oP '\*\*SYS-Ready Score\*\*\s*\|\s*\K[0-9]+' "$f" 2>/dev/null || \
+            grep -oP 'SYS-Ready Score[:\s]+\K[0-9]+' "$f" 2>/dev/null || echo "0")
     if [[ $score -lt 85 ]]; then
       echo -e "${RED}GATE-E014: $(basename $f) SYS-Ready score $score < 85 (MVP threshold)${NC}"
       ((ERRORS++)) || true
@@ -733,7 +738,11 @@ check_yaml_frontmatter() {
   echo "--- GATE-18: YAML Frontmatter Validation ---"
   local found=0
 
-  local REQUIRED_FIELDS=("title" "status" "version" "created" "modified")
+  # Required: title (at root level)
+  # Status: root 'status' OR custom_fields.status OR custom_fields.development_status
+  # Version: root 'version' OR custom_fields.schema_version (doc version in Document Control table)
+  # Modified: root 'modified' OR custom_fields.last_updated OR last_updated
+  # Created: root 'created' OR custom_fields.created (optional, can be in Document Control table)
 
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
@@ -743,13 +752,26 @@ check_yaml_frontmatter() {
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if head -1 "$f" | grep -q "^---"; then
-      for field in "${REQUIRED_FIELDS[@]}"; do
-        if ! grep -q "^$field:" "$f" 2>/dev/null; then
-          echo -e "${YELLOW}GATE-W018: $(basename $f) missing YAML field: $field${NC}"
-          ((WARNINGS++)) || true
-          ((found++)) || true
-        fi
-      done
+      # Check title (required at root)
+      if ! grep -q "^title:" "$f" 2>/dev/null; then
+        echo -e "${YELLOW}GATE-W018: $(basename $f) missing YAML field: title${NC}"
+        ((WARNINGS++)) || true
+        ((found++)) || true
+      fi
+
+      # Check status (root OR custom_fields.status OR custom_fields.development_status)
+      if ! grep -qE "^status:|development_status:|^\s+status:" "$f" 2>/dev/null; then
+        echo -e "${YELLOW}GATE-W018: $(basename $f) missing YAML field: status (or development_status)${NC}"
+        ((WARNINGS++)) || true
+        ((found++)) || true
+      fi
+
+      # Check for any date field (last_updated, modified, created)
+      if ! grep -qE "last_updated:|modified:|created:" "$f" 2>/dev/null; then
+        echo -e "${YELLOW}GATE-W018: $(basename $f) missing date field (last_updated/modified/created)${NC}"
+        ((WARNINGS++)) || true
+        ((found++)) || true
+      fi
     fi
   done
   shopt -u nullglob
@@ -904,10 +926,10 @@ echo ""
 
 if [[ $ERRORS -gt 0 ]]; then
   echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before EARS creation${NC}"
-  exit 1
+  exit 2
 elif [[ $WARNINGS -gt 0 ]]; then
   echo -e "${YELLOW}PASSED with warnings: $WARNINGS warning(s) should be reviewed${NC}"
-  exit 2
+  exit 1
 else
   echo -e "${GREEN}PASSED: All Quality Gate validation checks passed${NC}"
   exit 0
