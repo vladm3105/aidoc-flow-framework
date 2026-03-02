@@ -17,7 +17,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
-    version: "2.8"
+    version: "2.9"
     last_updated: "2026-03-02"
 ---
 
@@ -172,7 +172,7 @@ Input: BRD-01
 ├── Detected Type: BRD (upstream)
 ├── Expected PRD: PRD-01
 ├── PRD Exists: Yes → docs/02_PRD/PRD-01_f1_iam/
-└── Action: REVIEW MODE - Running doc-prd-reviewer on PRD-01
+└── Action: REVIEW MODE - Running doc-prd-audit on PRD-01
 
 Input: BRD-05
 ├── Detected Type: BRD (upstream)
@@ -182,8 +182,18 @@ Input: BRD-05
 
 Input: PRD-03
 ├── Detected Type: PRD (self)
-└── Action: REVIEW MODE - Running doc-prd-reviewer on PRD-03
+└── Action: REVIEW MODE - Running doc-prd-audit on PRD-03
 ```
+
+### Review Mode Mandatory Steps (CRITICAL)
+
+When entering REVIEW MODE (either via PRD-NN input or BRD-NN with existing PRD), the autopilot **MUST**:
+
+1. **Run `doc-prd-audit`** (not just read existing reports)
+2. **Create/Update `.drift_cache.json`** in the PRD folder
+3. **Generate fresh audit report** (`PRD-NN.A_audit_report_vNNN.md`)
+
+**NEVER** skip audit execution by only reading existing reports. Each autopilot invocation must produce fresh validation results and update drift tracking.
 
 ---
 
@@ -888,7 +898,7 @@ Preview execution plan without generating files.
 # No files will be created in dry-run mode.
 ```
 
-### Mode 4: Review Mode (v2.1)
+### Mode 4: Review Mode (v2.2)
 
 Validate existing PRD documents and generate a quality report without modification.
 
@@ -903,6 +913,14 @@ Validate existing PRD documents and generate a quality report without modificati
 # Review all PRDs
 /doc-prd-autopilot all --mode review --output-report tmp/prd_review_report.md
 ```
+
+**MANDATORY Actions in Review Mode**:
+
+1. **Run `doc-prd-audit`** - Execute full audit (NOT just read existing reports)
+2. **Create/Update `.drift_cache.json`** - Track upstream BRD changes
+3. **Generate audit report** - Write `PRD-NN.A_audit_report_vNNN.md`
+
+> **WARNING**: Reading existing audit reports without running fresh audits is a skill violation. Each review invocation MUST produce fresh validation and update drift tracking.
 
 **Review Report Structure**:
 
@@ -1275,6 +1293,7 @@ After autopilot completion:
 - [ ] No placeholder text remaining (verified by Final Review)
 - [ ] Thresholds consistent across sections (verified by Final Review)
 - [ ] BRD alignment verified (all PRD requirements trace to BRD source)
+- [ ] **Drift cache created** (`.drift_cache.json` in each PRD folder)
 
 ---
 
@@ -1366,6 +1385,7 @@ docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.9 | 2026-03-02 | **Drift Cache Creation Enforcement (MANDATORY)**: Added "Review Mode Mandatory Steps" section; Updated Action Determination Output to use `doc-prd-audit` instead of `doc-prd-reviewer`; Added drift cache to validation checklist; Updated Mode 4: Review Mode (v2.2) with mandatory audit execution and drift cache creation warnings |
 | 2.8 | 2026-03-02 | **Element Code Contract Gate (BLOCKING)**: Added element type code validation as blocking gate in Phase 4; PRD-E020/PRD-E022 now fail autopilot; Added section-element mapping enforcement; Report must include Element Code Compliance status |
 | 2.7 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
 | 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; switched PRD references to `ai_dev_ssd_flow`; integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
