@@ -7,7 +7,7 @@ tags:
 custom_fields:
   document_type: quick-reference
   priority: shared
-  development_status: active
+  status: production
   version: "1.0"
 ---
 
@@ -53,9 +53,9 @@ tags:
   - ai-agent-primary
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-XXX
   fallback_reference: DOC-YYY
 ---
@@ -84,9 +84,9 @@ tags:
   - traditional-fallback
   - reference-implementation
 custom_fields:
-  architecture_approach: traditional-8layer
+  architecture_approaches: [traditional-8layer]
   priority: fallback
-  development_status: reference
+  status: reference
   primary_alternative: DOC-YYY_name
 ---
 ```
@@ -228,9 +228,9 @@ When you add metadata tags, AI assistants automatically:
 title: "DOC-XXX: Document Title"
 tags: [array of classification tags]
 custom_fields:
-  architecture_approach: ai-agent-based  # or traditional-8layer
+  architecture_approaches: [ai-agent-based]  # or [traditional-8layer]
   priority: primary                      # or fallback, shared, deprecated
-  development_status: active             # or reference, planned, deprecated
+  status: development                    # or production, reference, planned, deprecated, draft
 ```
 
 **Optional Fields** (context-dependent):
@@ -275,7 +275,7 @@ When instructing AI assistants to create or update documents, use these prompt p
 Create BRD-NN for Payment Routing Agent using AI-agent metadata:
 - priority: primary
 - agent_id: AGENT-009
-- architecture_approach: ai-agent-based
+- architecture_approaches: [ai-agent-based]
 - category: transaction-processing
 ```
 
@@ -289,7 +289,7 @@ AI assistants understand abbreviated instructions:
 | "Traditional fallback" | `traditional-fallback` tag, `priority: fallback`, `reference-implementation` tag |
 | "Shared platform" | `shared-architecture` tag, `priority: shared`, applies to both architectures |
 | "AGENT-XXX" | `agent_id: AGENT-XXX`, validates uniqueness |
-| "Active development" | `development_status: active` |
+| "Active development" | `status: development` |
 
 **Example:**
 ```
@@ -303,9 +303,9 @@ tags:
   - ai-agent-primary
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-XXX
 ```
 
@@ -321,7 +321,7 @@ tags:
   - ai-agent-primary
   - transaction-processing
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
   agent_id: AGENT-XXX
 ---
@@ -427,13 +427,13 @@ grep -l "primary_alternative: BRD-NN" docs/01_BRD/*.md  # Should find BRD-NN
 
 **AI Agent BRDs (BRD-NN range):**
 - `priority: primary`
-- `architecture_approach: ai-agent-based`
+- `architecture_approaches: [ai-agent-based]`
 - `agent_id: AGENT-001` through `AGENT-008`
 - `fallback_reference:` (if traditional equivalent exists)
 
 **Traditional BRDs (BRD-NN examples):**
 - `priority: fallback`
-- `architecture_approach: traditional-8layer`
+- `architecture_approaches: [traditional-8layer]`
 - `primary_alternative:` (link to AI Agent equivalent)
 
 **Shared BRDs (BRD-NN range):**
@@ -445,7 +445,7 @@ grep -l "primary_alternative: BRD-NN" docs/01_BRD/*.md  # Should find BRD-NN
 **Primary Architecture ADR:**
 - `priority: primary`
 - `decision_status: recommended`
-- `architecture_approach: ai-agent-based`
+- `architecture_approaches: [ai-agent-based]`
 
 **Fallback Architecture ADR:**
 - `priority: fallback`
@@ -476,9 +476,9 @@ tags:
   - fraud-detection
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-XXX
   fallback_reference: BRD-NN
 ---

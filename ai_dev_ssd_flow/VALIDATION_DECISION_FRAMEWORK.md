@@ -8,13 +8,15 @@ custom_fields:
   document_type: guide
   artifact_type: REF
   priority: shared
-  development_status: active
+  status: production
   version: "1.0"
 ---
 
 # Validation Decision Framework
 
 Purpose: Give AI assistants a consistent, framework-wide process to decide whether to fix documents, adjust validators, or accept warnings.
+
+Canonical metadata contract reference: [METADATA_CORE_MATRIX.md](./METADATA_CORE_MATRIX.md).
 
 ## When You See a Validation Finding
 

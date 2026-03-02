@@ -7,7 +7,8 @@ tags:
 custom_fields:
   document_type: reference-guide
   artifact_type: framework-support
-  priority: high
+  priority: shared
+  status: production
   version: "1.0"
   scope: all-document-types
 ---
@@ -15,6 +16,8 @@ custom_fields:
 # Validation Commands Reference
 
 Complete CLI reference for validators across all SDD document types (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS).
+
+Scope policy: pre-commit blocking checks run for instance documents with `custom_fields.status` in `development|production` and skip templates/drafts.
 
 **Quick Navigation:**
 - [REQ Validation](#req-validation) - Requirements documents

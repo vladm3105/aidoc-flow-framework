@@ -8,7 +8,7 @@ tags:
 custom_fields:
   document_type: validation-standards
   priority: shared
-  development_status: active
+  status: production
   applies_to: [all-artifacts, documentation]
   version: "1.0"
 ---
@@ -16,6 +16,8 @@ custom_fields:
 # SDD Validation Standards
 
 Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
+Canonical metadata contract reference: [METADATA_CORE_MATRIX.md](./METADATA_CORE_MATRIX.md).
 
 This document defines the complete error code registry, validation rules, and exit code conventions for the Specification-Driven Development (SDD) framework validation system.
 

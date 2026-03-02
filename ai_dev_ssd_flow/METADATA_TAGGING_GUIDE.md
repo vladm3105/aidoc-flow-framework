@@ -7,7 +7,7 @@ tags:
 custom_fields:
   document_type: guide
   priority: shared
-  development_status: active
+  status: production
   version: "1.0"
 ---
 
@@ -63,6 +63,8 @@ Do NOT use when:
 
 ## 2. Metadata Structure Standards
 
+Canonical source: [METADATA_CORE_MATRIX.md](./METADATA_CORE_MATRIX.md).
+
 ### 2.1 YAML Frontmatter Format
 
 All metadata must be placed at the start of the document in YAML frontmatter format:
@@ -86,9 +88,13 @@ custom_fields:
 - `tags`: Array of categorization tags
 
 **Architecture-Specific Documents:**
-- `custom_fields.architecture_approach`: Defines which architecture this document belongs to
+- `custom_fields.architecture_approaches`: Defines which architecture set this document belongs to
 - `custom_fields.priority`: Indicates recommendation level
-- `custom_fields.development_status`: Current implementation status
+- `custom_fields.status`: Current lifecycle status (canonical)
+
+Compatibility window:
+- `custom_fields.development_status` is accepted as legacy metadata.
+- When both fields exist, `custom_fields.status` is authoritative.
 
 ### 2.3 Optional Fields
 
@@ -177,7 +183,7 @@ AI assistants automatically validate:
 
 | Check | Requirement | Error if Violated |
 |-------|-------------|-------------------|
-| Required Fields | `title`, `tags`, `priority`, `architecture_approach` present | [FAIL] Missing required field |
+| Required Fields | `title`, `tags`, `priority`, `architecture_approaches` present | [FAIL] Missing required field |
 | Valid Priorities | Only `primary`, `fallback`, `shared`, `deprecated` | [FAIL] Invalid priority value |
 | Tag Taxonomy | Tags follow standard categories | [WARN] Non-standard tag (warning) |
 | Bidirectional Refs | Primary ↔ fallback links exist | [FAIL] Orphan reference |
@@ -196,9 +202,9 @@ tags:
   - transaction-processing
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-009
 ---
 ```
@@ -249,9 +255,9 @@ tags:
   - [feature-category]
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-XXX
   fallback_reference: BRD-YYY
 ---
@@ -273,9 +279,9 @@ tags:
   - [feature-category]
   - reference-implementation
 custom_fields:
-  architecture_approach: traditional-8layer
+  architecture_approaches: [traditional-8layer]
   priority: fallback
-  development_status: reference
+  status: reference
   primary_alternative: BRD-YYY_descriptive_slug
 ---
 ```
@@ -316,9 +322,9 @@ tags:
   - ai-agent-primary
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   decision_status: recommended
 ---
 ```
@@ -332,9 +338,9 @@ tags:
   - traditional-fallback
   - reference-implementation
 custom_fields:
-  architecture_approach: traditional-8layer
+  architecture_approaches: [traditional-8layer]
   priority: fallback
-  development_status: reference
+  status: reference
   decision_status: fallback
   primary_alternative: ADR-YYY
 ---
@@ -366,9 +372,9 @@ tags:
   - [architecture-tag]
   - [feature-category]
 custom_fields:
-  architecture_approach: [approach-name]
+  architecture_approaches: [[approach-name]]
   priority: [primary|fallback|shared]
-  development_status: [active|reference|planned]
+  status: [development|production|reference|planned|draft]
   source_brd: BRD-XXX
 ---
 ```
@@ -383,9 +389,9 @@ tags:
   - [architecture-tag]
   - [component-category]
 custom_fields:
-  architecture_approach: [approach-name]
+  architecture_approaches: [[approach-name]]
   priority: [primary|fallback|shared]
-  development_status: [active|reference]
+  status: [development|production|reference]
   source_req: REQ-XXX
   source_adr: ADR-XXX
 ---
@@ -410,7 +416,7 @@ tags:
 custom_fields:
   total_sections: 7
   section_type: content
-  architecture_approach: [approach-name]
+  architecture_approaches: [[approach-name]]
   priority: [primary|fallback|shared]
 ---
 ```
@@ -429,9 +435,9 @@ tags:
   - [document-type-tag]
 custom_fields:
   section_type: index
-  architecture_approach: [approach-name]
+  architecture_approaches: [[approach-name]]
   priority: [primary|fallback|shared]
-  development_status: [active|reference]
+  status: [development|production|reference]
 ---
 ```
 
@@ -932,9 +938,9 @@ tags:
   - fraud-detection
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-001
   fallback_reference: BRD-16
 ---
@@ -971,9 +977,9 @@ tags:
   - fraud-detection
   - reference-implementation
 custom_fields:
-  architecture_approach: traditional-8layer
+  architecture_approaches: [traditional-8layer]
   priority: fallback
-  development_status: reference
+  status: reference
   primary_alternative: BRD-22_fraud_detection_agent_ml_based_risk
 ---
 
@@ -1037,9 +1043,9 @@ Explicitly specify metadata fields:
 Create BRD-30: Payment Routing Agent using AI-agent metadata:
 - priority: primary
 - agent_id: AGENT-009
-- architecture_approach: ai-agent-based
+- architecture_approaches: [ai-agent-based]
 - category: transaction-processing
-- development_status: active
+- status: development
 - No traditional fallback exists
 ```
 
@@ -1053,9 +1059,9 @@ tags:
   - transaction-processing
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-009
   fallback_reference: null
 ---
@@ -1067,13 +1073,13 @@ AI assistants understand abbreviated instructions:
 
 | Shorthand Phrase | AI Assistant Interprets As |
 |------------------|----------------------------|
-| "AI-agent primary" | `tags: [ai-agent-primary, recommended-approach]`<br>`priority: primary`<br>`architecture_approach: ai-agent-based` |
-| "Traditional fallback" | `tags: [traditional-fallback, reference-implementation]`<br>`priority: fallback`<br>`architecture_approach: traditional-8layer` |
+| "AI-agent primary" | `tags: [ai-agent-primary, recommended-approach]`<br>`priority: primary`<br>`architecture_approaches: [ai-agent-based]` |
+| "Traditional fallback" | `tags: [traditional-fallback, reference-implementation]`<br>`priority: fallback`<br>`architecture_approaches: [traditional-8layer]` |
 | "Shared platform" | `tags: [shared-architecture, required-both-approaches]`<br>`priority: shared`<br>`architecture_approaches: [ai-agent-based, traditional-8layer]` |
 | "AGENT-009" | `agent_id: AGENT-009`<br>Validates uniqueness across documents |
-| "Active development" | `development_status: active` |
-| "Reference status" | `development_status: reference` |
-| "Planned" | `development_status: planned` |
+| "Active development" | `status: development` |
+| "Reference status" | `status: reference` |
+| "Planned" | `status: planned` |
 
 **Example Shorthand Prompt:**
 ```
@@ -1087,9 +1093,9 @@ tags:
   - ai-agent-primary
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-010
 ```
 
@@ -1108,9 +1114,9 @@ tags:
   - transaction-processing
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-009
   fallback_reference: null
 ---
@@ -1179,7 +1185,7 @@ For modifying existing documents:
 
 ```
 Update BRD-25 metadata:
-- Change development_status from "planned" to "active"
+- Change status from "planned" to "development"
 - Add fallback_reference: BRD-20
 - Update the recommended admonition to reflect active status
 ```
@@ -1194,7 +1200,7 @@ AI assistants automatically apply specific behaviors when they detect certain ke
 - [PASS] Add `ai-agent-primary` tag
 - [PASS] Add `recommended-approach` tag
 - [PASS] Set `priority: primary`
-- [PASS] Set `architecture_approach: ai-agent-based`
+- [PASS] Set `architecture_approaches: [ai-agent-based]`
 - [PASS] Use ML/AI terminology throughout document
 - [PASS] Reference A2A Protocol for agent communication
 - [PASS] Include ML-specific requirements (training data, model endpoints)
@@ -1207,7 +1213,7 @@ AI assistants automatically apply specific behaviors when they detect certain ke
 - [PASS] Add `traditional-fallback` tag
 - [PASS] Add `reference-implementation` tag
 - [PASS] Set `priority: fallback`
-- [PASS] Set `architecture_approach: traditional-8layer`
+- [PASS] Set `architecture_approaches: [traditional-8layer]`
 - [PASS] Use traditional software architecture patterns
 - [PASS] Reference proven implementation approaches
 - [PASS] Add `:::fallback` admonition
@@ -1252,9 +1258,9 @@ tags:
   - fraud-detection
   - recommended-approach
 custom_fields:
-  architecture_approach: ai-agent-based
+  architecture_approaches: [ai-agent-based]
   priority: primary
-  development_status: active
+  status: development
   agent_id: AGENT-011
   fallback_reference: null
 ```
@@ -1274,9 +1280,9 @@ tags:
   - transaction-processing
   - reference-implementation
 custom_fields:
-  architecture_approach: traditional-8layer
+  architecture_approaches: [traditional-8layer]
   priority: fallback
-  development_status: reference
+  status: reference
   primary_alternative: BRD-30_payment_routing_agent
 ```
 
@@ -1299,7 +1305,7 @@ custom_fields:
   priority: shared
   implementation_differs: false
   primary_implementation: ai-agent-based
-  development_status: active
+  status: development
 ```
 
 #### Pattern 4: Update Existing Document
@@ -1307,7 +1313,7 @@ custom_fields:
 **Prompt:**
 ```
 Update BRD-25:
-- Change development_status to "active"
+- Change status to "development"
 - Add fallback_reference: BRD-20
 - Update admonition to reflect active development
 ```
@@ -1316,11 +1322,11 @@ Update BRD-25:
 ```yaml
 # Before
 custom_fields:
-  development_status: planned
+  status: planned
 
 # After
 custom_fields:
-  development_status: active
+  status: development
   fallback_reference: BRD-20
 ```
 
@@ -1456,7 +1462,7 @@ Establish bidirectional cross-references between them.
 **Prompt:**
 ```
 Update all BRDs from BRD-22 to BRD-29:
-- Change development_status from "planned" to "active"
+- Change status from "planned" to "development"
 - Ensure all have recommended admonitions
 - Validate all agent IDs are unique
 ```
@@ -1505,8 +1511,8 @@ Update all BRDs from BRD-22 to BRD-29:
         "priority": {
           "enum": ["primary", "fallback", "shared", "deprecated"]
         },
-        "development_status": {
-          "enum": ["active", "reference", "planned", "deprecated"]
+        "status": {
+          "enum": ["development", "production", "reference", "planned", "deprecated", "draft"]
         }
       }
     }

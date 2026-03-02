@@ -8,6 +8,7 @@ tags:
 custom_fields:
   document_type: readme
   priority: shared
+  status: production
 ---
 <!-- markdownlint-disable MD025 MD001 -->
 
@@ -85,6 +86,8 @@ This directory provides a structured, traceable framework for Specification-Driv
 - [PASS] **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
 **New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
+
+**Metadata contract**: See [METADATA_CORE_MATRIX.md](./METADATA_CORE_MATRIX.md) for canonical required fields and compatibility policy.
 
 ## Glossary
 
@@ -376,7 +379,7 @@ custom_fields:
   layer: 1
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
-  development_status: active
+  status: development
 ---
 
 ```
