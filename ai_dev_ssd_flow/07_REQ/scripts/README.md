@@ -17,6 +17,12 @@ Collection of tools for validating REQ documents and generating cross-links.
 
 ## Quick Start
 
+### Hook Wrappers (Pattern Alignment)
+
+- [req_core_validator_hook.sh](./req_core_validator_hook.sh) — canonical core-validator entrypoint for pre-commit/skills.
+- [req_quality_gate_hook.sh](./req_quality_gate_hook.sh) — corpus quality-gate entrypoint for pre-commit/skills.
+- [req_spec_ready_score_hook.sh](./req_spec_ready_score_hook.sh) — SPEC-ready score gate wrapper.
+
 ### Installation
 
 ```bash
@@ -50,6 +56,20 @@ bash validate_all.sh --directory docs/07_REQ/REQ-06_f6_infrastructure --min-scor
 **Skip specific validators (quick check):**
 ```bash
 bash validate_all.sh --directory . --skip-quality --skip-template
+```
+
+**Hook wrapper entrypoints (skill-friendly):**
+```bash
+bash req_core_validator_hook.sh docs/07_REQ
+bash req_quality_gate_hook.sh docs/07_REQ
+bash req_spec_ready_score_hook.sh docs/07_REQ
+```
+
+**Pre-commit hook IDs (manual stage):**
+```bash
+pre-commit run req-core-validator --all-files --hook-stage manual
+pre-commit run req-quality-gate --all-files --hook-stage manual
+pre-commit run req-spec-ready-score --all-files --hook-stage manual
 ```
 
 ---

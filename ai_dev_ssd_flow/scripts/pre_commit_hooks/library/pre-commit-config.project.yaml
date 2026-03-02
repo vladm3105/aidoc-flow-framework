@@ -110,6 +110,28 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      - id: req-core-validator
+        name: Validate REQ documents via core validator
+        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_core_validator_hook.sh docs/07_REQ
+        language: system
+        files: ^docs/07_REQ/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      - id: req-quality-gate
+        name: Run REQ quality gate (template-driven)
+        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_quality_gate_hook.sh docs/07_REQ
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: req-spec-ready-score
+        name: Validate REQ SPEC-ready score (validator threshold)
+        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_spec_ready_score_hook.sh docs/07_REQ
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory

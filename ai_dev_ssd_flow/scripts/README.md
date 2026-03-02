@@ -208,6 +208,16 @@ Reusable SYS hook wrappers for projects that consume framework validation rules.
 | `../06_SYS/scripts/sys_quality_gate_hook.sh` | Run SYS corpus quality gate checks before Layer 6 → Layer 7 transition |
 | `../06_SYS/scripts/sys_req_ready_score_hook.sh` | Validate template-versioned SYS REQ-ready score thresholds |
 
+### 14. REQ Hook Entry Scripts (`07_REQ/scripts/`)
+
+Reusable REQ hook wrappers for projects that consume framework validation rules.
+
+| Script | Purpose |
+|--------|---------|
+| `../07_REQ/scripts/req_core_validator_hook.sh` | Run canonical REQ core checks (template + ID validation across REQ corpus) |
+| `../07_REQ/scripts/req_quality_gate_hook.sh` | Run REQ corpus quality gate checks |
+| `../07_REQ/scripts/req_spec_ready_score_hook.sh` | Validate REQ SPEC-ready score thresholds |
+
 ## Layer-Specific Validation
 
 To run validation for a specific layer manually, use the scripts in that layer's folder. 
