@@ -101,14 +101,20 @@ metadata:
       allowed_values: ["primary", "shared", "fallback"]
       description: "Classification tier based on architecture"
 
-    development_status:
+    status:
       type: string
       required: true
-      allowed_values: ["active", "draft", "deprecated", "reference"]
-      description: "Current development status"
+      allowed_values: ["development", "production", "active", "draft", "deprecated", "reference", "planned"]
+      description: "Lifecycle status (canonical)"
 
   # Optional custom_fields
   optional_custom_fields:
+    development_status:
+      type: string
+      required: false
+      allowed_values: ["active", "draft", "deprecated", "reference", "planned"]
+      description: "Legacy compatibility field; use status for new/updated documents"
+
     agent_id:
       type: string
       pattern: "^AGENT-\\d{2,}$"

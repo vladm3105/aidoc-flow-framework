@@ -44,8 +44,10 @@ REQUIRED_CUSTOM_FIELDS = {
     "layer": {"allowed": [5]},
     "architecture_approaches": {"type": "array"},
     "priority": {"allowed": ["primary", "shared", "fallback"]},
-    "development_status": {"allowed": ["active", "draft", "deprecated", "reference"]},
+    "status": {"allowed": ["development", "production", "active", "draft", "deprecated", "reference", "planned"]},
 }
+
+LEGACY_STATUS_VALUES = ["active", "draft", "deprecated", "reference", "planned"]
 
 # Required tags
 REQUIRED_TAGS = ["adr", "layer-5-artifact"]
@@ -277,6 +279,17 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult, is_tem
     if not custom_fields:
         result.add_error("ADR-E002", "Missing custom_fields in frontmatter")
         return
+
+    status = custom_fields.get("status")
+    legacy_status = custom_fields.get("development_status")
+    if status is None and legacy_status is not None:
+        if legacy_status in LEGACY_STATUS_VALUES:
+            custom_fields["status"] = legacy_status
+            result.add_warning("ADR-W005", "Legacy custom_fields.development_status detected; migrate to custom_fields.status")
+        else:
+            result.add_error("ADR-E002", f"Invalid legacy development_status: '{legacy_status}'")
+    elif legacy_status is not None:
+        result.add_warning("ADR-W005", "Both status and legacy development_status detected; status is authoritative")
 
     # Validate required custom fields
     for field, rules in REQUIRED_CUSTOM_FIELDS.items():

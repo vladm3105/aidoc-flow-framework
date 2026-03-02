@@ -50,7 +50,7 @@ class EarsValidator:
         r"^ears-document$",
         r"^ears-\d{3}$",
     ]
-    REQUIRED_CUSTOM_FIELDS = ["document_type", "artifact_type", "layer", "priority", "development_status"]
+    REQUIRED_CUSTOM_FIELDS = ["document_type", "artifact_type", "layer", "priority", "status"]
     REQUIRED_DOCUMENT_TYPE = "ears-document"
     LEGACY_DOCUMENT_TYPE = "ears"
     REQUIRED_ARTIFACT_TYPE = "EARS"
@@ -238,7 +238,7 @@ class EarsValidator:
                 rule="E004",
                 severity="error",
                 message="Missing custom_fields section in frontmatter",
-                fix_suggestion="Add custom_fields with document_type, artifact_type, layer, priority, development_status"
+                fix_suggestion="Add custom_fields with document_type, artifact_type, layer, priority, status"
             ))
             return
 
@@ -288,6 +288,57 @@ class EarsValidator:
                 severity="error",
                 message=f"Missing or invalid layer: '{layer}' (expected: 3)",
                 fix_suggestion="Set layer: 3"
+            ))
+
+        priority = custom_fields.get("priority")
+        if priority not in {"primary", "shared", "fallback"}:
+            self.results.append(ValidationResult(
+                file=str(file_path),
+                rule="E009",
+                severity="error",
+                message=f"Missing or invalid priority: '{priority}' (expected one of: primary, shared, fallback)",
+                fix_suggestion="Set priority to one of: primary, shared, fallback"
+            ))
+
+        status = custom_fields.get("status")
+        legacy_status = custom_fields.get("development_status")
+        allowed_status = {"development", "production", "active", "draft", "deprecated", "reference", "planned"}
+        legacy_allowed = {"active", "draft", "deprecated", "reference", "planned"}
+
+        if status is None and legacy_status is not None:
+            if legacy_status in legacy_allowed:
+                status = legacy_status
+                self.results.append(ValidationResult(
+                    file=str(file_path),
+                    rule="W009",
+                    severity="warning",
+                    message="Legacy custom_fields.development_status detected; migrate to custom_fields.status",
+                    fix_suggestion="Replace development_status with status"
+                ))
+            else:
+                self.results.append(ValidationResult(
+                    file=str(file_path),
+                    rule="E009",
+                    severity="error",
+                    message=f"Invalid legacy development_status: '{legacy_status}'",
+                    fix_suggestion="Use status: development|production|active|draft|deprecated|reference|planned"
+                ))
+        elif legacy_status is not None:
+            self.results.append(ValidationResult(
+                file=str(file_path),
+                rule="W009",
+                severity="warning",
+                message="Both status and legacy development_status detected; status is authoritative",
+                fix_suggestion="Remove development_status"
+            ))
+
+        if status not in allowed_status:
+            self.results.append(ValidationResult(
+                file=str(file_path),
+                rule="E009",
+                severity="error",
+                message=f"Missing or invalid status: '{status}'",
+                fix_suggestion="Set status: development|production|active|draft|deprecated|reference|planned"
             ))
 
         # Check architecture_approaches format (must be array)
