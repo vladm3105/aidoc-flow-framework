@@ -47,6 +47,7 @@ LEGACY_PRD_CODES = {
 # Reference: ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md
 SECTION_CODE_MAP = {
     "5": "08",   # Section 5: Success Metrics (KPIs) → Metric/KPI
+    "6": "23",   # Section 6: Goals & Objectives → Business Objective (legacy but allowed here)
     "8": "09",   # Section 8: User Stories & User Roles → User Story
     "9": "01",   # Section 9: Functional Requirements → Functional Requirement
     "11": "06",  # Section 11: Acceptance Criteria → Acceptance Criteria
@@ -141,8 +142,10 @@ def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
 
         for match in ELEMENT_ID_PATTERN.finditer(line):
             element_type_code = match.group(2)
+            is_legacy = element_type_code in LEGACY_PRD_CODES
 
-            if element_type_code in LEGACY_PRD_CODES:
+            # Check if legacy code (warn but continue to section check)
+            if is_legacy:
                 warnings.append(
                     WarningIssue(
                         code="PRD-W023",
@@ -154,9 +157,10 @@ def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
                         line=line_no,
                     )
                 )
-                continue
+                # Don't continue - still need to check section mapping
 
-            if element_type_code not in VALID_PRD_CODES:
+            # Check if invalid code (not valid AND not legacy)
+            if element_type_code not in VALID_PRD_CODES and not is_legacy:
                 issues.append(
                     Issue(
                         code="PRD-E020",
@@ -170,6 +174,7 @@ def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
                 )
                 continue
 
+            # Check SECTION_CODE_MAP (applies to both valid and legacy codes)
             section_key = find_section_key(current_section)
             if section_key and section_key in SECTION_CODE_MAP:
                 expected_code = SECTION_CODE_MAP[section_key]
@@ -178,7 +183,7 @@ def validate_file(file_path: Path) -> tuple[List[Issue], List[WarningIssue]]:
                         Issue(
                             code="PRD-E022",
                             message=(
-                                f"Section '{section_key}' typically requires element type code "
+                                f"Section '{section_key}' requires element type code "
                                 f"'{expected_code}', found '{element_type_code}'."
                             ),
                             file_path=file_path,
