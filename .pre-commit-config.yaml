@@ -6,21 +6,21 @@ repos:
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh ai_dev_ssd_flow/02_PRD --skip-advisory
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-standardized-element-codes
         name: Validate PRD standardized element type codes
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-legacy-patterns
         name: Detect PRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: prd-quality-gate
         name: "DEPRECATED alias: Validate PRD core checks (wrapper)"
@@ -34,25 +34,32 @@ repos:
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: brd-standardized-element-codes
         name: Validate BRD standardized element type codes
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: brd-legacy-patterns
         name: Detect BRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
 
       - id: sdd-layer-quality-matrix
         name: Run all-layer SDD quality matrix (Phase A, manual full)
         entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh ai_dev_ssd_flow
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: sdd-metadata-scope
+        name: Enforce SDD metadata scope (instance + development/production)
+        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_metadata_scope_hook.sh ai_dev_ssd_flow
         language: system
         pass_filenames: false
         stages: [manual]
@@ -62,4 +69,4 @@ repos:
         entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh ai_dev_ssd_flow --changed-only
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]

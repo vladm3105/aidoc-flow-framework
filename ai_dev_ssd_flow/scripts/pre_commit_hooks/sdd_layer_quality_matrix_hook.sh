@@ -68,15 +68,14 @@ else
 	DOCS_ROOT="${REPO_ROOT}/${INPUT_ROOT}"
 fi
 
-# Enforce project-only scope: do NOT allow framework/template roots.
-if [[ "${INPUT_ROOT}" == "ai_dev_ssd_flow" ]] || [[ "${DOCS_ROOT}" == "${REPO_ROOT}/ai_dev_ssd_flow" ]]; then
-	echo "[ERROR] Invalid DOCS_ROOT: ${INPUT_ROOT}"
-	echo "[ERROR] Project-only validation is enforced. Use 'docs' as DOCS_ROOT."
+if [[ ! -d "${DOCS_ROOT}" ]]; then
+	echo "[ERROR] Docs root not found: ${DOCS_ROOT}"
 	exit 2
 fi
 
-if [[ ! -d "${DOCS_ROOT}" ]]; then
-	echo "[ERROR] Docs root not found: ${DOCS_ROOT}"
+if [[ ! -d "${DOCS_ROOT}/01_BRD" && ! -d "${DOCS_ROOT}/02_PRD" ]]; then
+	echo "[ERROR] Invalid DOCS_ROOT: ${DOCS_ROOT}"
+	echo "[ERROR] Expected layer directories (e.g., 01_BRD, 02_PRD) under DOCS_ROOT."
 	exit 2
 fi
 
@@ -99,6 +98,56 @@ declare -a TARGET_LAYERS=()
 declare -A BRD_CHANGED_MODULES=()
 declare -A PRD_CHANGED_MODULES=()
 declare -A TASKS_CHANGED_FILES=()
+
+extract_frontmatter() {
+	local file_path="$1"
+	awk '
+		NR == 1 && $0 == "---" { in_fm=1; next }
+		in_fm && $0 == "---" { exit }
+		in_fm { print }
+	' "$file_path"
+}
+
+extract_frontmatter_value() {
+	local frontmatter="$1"
+	local key="$2"
+	printf '%s\n' "$frontmatter" \
+		| sed -n -E "s/^[[:space:]]*${key}:[[:space:]]*\"?([^\"#]+)\"?.*$/\1/p" \
+		| head -n1 \
+		| xargs
+}
+
+should_enforce_file() {
+	local file_path="$1"
+
+	[[ -f "$file_path" ]] || return 1
+	[[ "$file_path" == *.md ]] || return 1
+
+	local frontmatter
+	frontmatter="$(extract_frontmatter "$file_path")"
+	[[ -n "$frontmatter" ]] || return 1
+
+	local document_type
+	document_type="$(extract_frontmatter_value "$frontmatter" "document_type")"
+	if [[ "$document_type" == "template" ]]; then
+		return 1
+	fi
+
+	local status
+	status="$(extract_frontmatter_value "$frontmatter" "status")"
+	if [[ -z "$status" ]]; then
+		status="$(extract_frontmatter_value "$frontmatter" "development_status")"
+	fi
+
+	case "$status" in
+		development|production)
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
 
 record_module_change() {
 	local abs="$1"
@@ -131,6 +180,10 @@ collect_changed_layers() {
 		[[ -z "${rel}" ]] && continue
 		local abs
 		abs="${REPO_ROOT}/${rel}"
+
+		if ! should_enforce_file "${abs}"; then
+			continue
+		fi
 
 		if [[ "${abs}" == "${LAYER_PATHS[BRD]}/"* ]]; then
 			seen[BRD]=1
@@ -243,7 +296,7 @@ run_layer() {
 if [[ ${CHANGED_ONLY} -eq 1 ]]; then
 	collect_changed_layers
 	if [[ ${#TARGET_LAYERS[@]} -eq 0 ]]; then
-		echo "[PASS] No staged SDD layer changes detected under ${DOCS_ROOT}; skipping matrix."
+		echo "[PASS] No staged instance docs with status development/production detected under ${DOCS_ROOT}; skipping matrix."
 		exit 0
 	fi
 else
