@@ -30,6 +30,42 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      - id: ears-quality-gate
+        name: Run EARS quality gate (template-driven)
+        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_quality_gate_hook.sh docs/03_EARS
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: ears-ready-score
+        name: Validate EARS readiness score (template v2.0)
+        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_ready_score_hook.sh docs/03_EARS
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: bdd-core-validator
+        name: Validate BDD feature files via core validator
+        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_core_validator_hook.sh docs/04_BDD
+        language: system
+        files: ^docs/04_BDD/.*\.feature$
+        pass_filenames: false
+        stages: [manual]
+
+      - id: bdd-quality-gate
+        name: Run BDD quality gate (template-driven)
+        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_quality_gate_hook.sh docs/04_BDD
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: bdd-adr-ready-score
+        name: Validate BDD ADR-ready score (template v2.0)
+        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_adr_ready_score_hook.sh docs/04_BDD
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory

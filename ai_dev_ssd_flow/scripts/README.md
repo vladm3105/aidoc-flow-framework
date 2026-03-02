@@ -175,6 +175,18 @@ Reusable EARS hook wrappers for projects that consume framework validation rules
 | Script | Purpose |
 |--------|---------|
 | `../03_EARS/scripts/ears_core_validator_hook.sh` | Run canonical EARS validator over a target EARS root |
+| `../03_EARS/scripts/ears_quality_gate_hook.sh` | Run EARS corpus quality gate checks for Layer 3 → Layer 4 transition |
+| `../03_EARS/scripts/ears_ready_score_hook.sh` | Validate template-versioned EARS readiness score thresholds |
+
+### 11. BDD Hook Entry Scripts (`04_BDD/scripts/`)
+
+Reusable BDD hook wrappers for projects that consume framework validation rules.
+
+| Script | Purpose |
+|--------|---------|
+| `../04_BDD/scripts/bdd_core_validator_hook.sh` | Run canonical BDD validator over a target BDD root |
+| `../04_BDD/scripts/bdd_quality_gate_hook.sh` | Run BDD corpus quality gate checks before Layer 4 → Layer 5 transition |
+| `../04_BDD/scripts/bdd_adr_ready_score_hook.sh` | Validate template-versioned BDD ADR-ready score thresholds |
 
 ## Layer-Specific Validation
 

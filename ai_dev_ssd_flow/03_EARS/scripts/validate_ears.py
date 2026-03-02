@@ -785,6 +785,8 @@ class EarsValidator:
         all_results = []
 
         for md_file in sorted(dir_path.glob("EARS-*.md")):
+            if not re.match(r"^EARS-\d{2,}[_\.-].*\.md$", md_file.name):
+                continue
             if self.REPORT_FILE_PATTERN.search(md_file.name):
                 continue
             if md_file.name == "EARS-00_index.md":

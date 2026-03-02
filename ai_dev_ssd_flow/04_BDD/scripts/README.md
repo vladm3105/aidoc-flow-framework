@@ -2,6 +2,10 @@
 
 Tools for validating BDD artifacts. Current scripts:
 
+- [bdd_core_validator_hook.sh](./bdd_core_validator_hook.sh) — canonical core-validator entrypoint for pre-commit/skills.
+- [bdd_quality_gate_hook.sh](./bdd_quality_gate_hook.sh) — corpus quality-gate entrypoint for pre-commit/skills.
+- [bdd_adr_ready_score_hook.sh](./bdd_adr_ready_score_hook.sh) — ADR-ready score gate wrapper (Template v2.0).
+- [calculate_bdd_adr_ready_score.py](./calculate_bdd_adr_ready_score.py) — template-versioned BDD ADR-ready score formula script.
 - [validate_bdd_quality_score.sh](./validate_bdd_quality_score.sh) — quality gates (see [../BDD_MVP_QUALITY_GATE_VALIDATION.md](../BDD_MVP_QUALITY_GATE_VALIDATION.md)).
 - [validate_bdd.py](./validate_bdd.py) — main validator (run with `--help` for modes).
 - [validate_bdd_suite.py](./validate_bdd_suite.py) — suite-level validation helper.
@@ -17,6 +21,16 @@ chmod +x *.sh
 
 # Quality gates (directory)
 bash validate_bdd_quality_score.sh docs/04_BDD/<folder>
+
+# Hook wrapper entrypoints (skill-friendly)
+bash bdd_core_validator_hook.sh docs/04_BDD
+bash bdd_quality_gate_hook.sh docs/04_BDD
+bash bdd_adr_ready_score_hook.sh docs/04_BDD
+
+# Pre-commit hook IDs (manual stage)
+pre-commit run bdd-core-validator --all-files --hook-stage manual
+pre-commit run bdd-quality-gate --all-files --hook-stage manual
+pre-commit run bdd-adr-ready-score --all-files --hook-stage manual
 
 # Suite validation
 python3 validate_bdd_suite.py --help

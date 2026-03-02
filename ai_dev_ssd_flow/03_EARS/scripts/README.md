@@ -2,6 +2,10 @@
 
 Tools for validating EARS documents. Current scripts:
 
+- [ears_core_validator_hook.sh](./ears_core_validator_hook.sh) — canonical core-validator entrypoint for pre-commit/skills.
+- [ears_quality_gate_hook.sh](./ears_quality_gate_hook.sh) — corpus quality-gate entrypoint for pre-commit/skills.
+- [ears_ready_score_hook.sh](./ears_ready_score_hook.sh) — readiness-score gate wrapper (Template v2.0).
+- [calculate_ears_ready_score.py](./calculate_ears_ready_score.py) — template-versioned EARS BDD-ready score formula script.
 - [validate_ears_quality_score.sh](./validate_ears_quality_score.sh) — quality gates (see [../EARS_MVP_QUALITY_GATE_VALIDATION.md](../EARS_MVP_QUALITY_GATE_VALIDATION.md)).
 - [validate_ears_consistency.sh](./validate_ears_consistency.sh) — consistency checks.
 - [validate_ears_duplicates.sh](./validate_ears_duplicates.sh) — duplicate detection.
@@ -17,6 +21,16 @@ chmod +x *.sh
 
 # Quality gates (directory)
 bash validate_ears_quality_score.sh docs/03_EARS/<folder>
+
+# Hook wrapper entrypoints (skill-friendly)
+bash ears_core_validator_hook.sh docs/03_EARS
+bash ears_quality_gate_hook.sh docs/03_EARS
+bash ears_ready_score_hook.sh docs/03_EARS
+
+# Pre-commit hook IDs (manual stage)
+pre-commit run ears-core-validator --all-files --hook-stage manual
+pre-commit run ears-quality-gate --all-files --hook-stage manual
+pre-commit run ears-ready-score --all-files --hook-stage manual
 
 # Consistency and duplicates
 bash validate_ears_consistency.sh docs/03_EARS/<folder>

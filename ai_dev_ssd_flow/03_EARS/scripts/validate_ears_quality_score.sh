@@ -22,6 +22,8 @@ INFO=0
 # Configuration
 EARS_DIR="${1:-docs/EARS}"
 VERBOSE="${2:-}"
+ERRORS_ONLY=false
+ERRORS_ONLY=false
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -502,7 +504,7 @@ main() {
   check_count_consistency
   check_index_sync
   check_cross_linking
-  check_visualization
+  check_diagrams
   check_glossary
   check_element_ids
   check_timing_format

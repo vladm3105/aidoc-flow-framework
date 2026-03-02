@@ -62,15 +62,11 @@ USER_STORY_PATTERNS = [
 # Required traceability tags (Layer 4)
 REQUIRED_TRACE_TAGS = ["@brd", "@prd", "@ears"]
 
-# Valid scenario tags
-VALID_TAG_PREFIXES = [
-    "@primary", "@negative", "@functional", "@quality_attribute",
-    "@acceptance", "@integration", "@edge_case", "@boundary",
-    "@performance", "@security", "@robustness", "@error_handling",
-    "@data_driven", "@failure_recovery", "@reliability", "@alternative",
-    "@end_to_end", "@data_flow", "@latency", "@resilience",
-    "@data_integrity", "@monitoring", "@recovery",
-]
+# BDD v2 required scenario tag contracts
+VALID_SCENARIO_TYPES = {"success", "optional", "recovery", "parameterized", "error"}
+VALID_PRIORITY_TAGS = {"@p0-critical", "@p1-high", "@p2-medium", "@p3-low"}
+SCENARIO_TYPE_PATTERN = re.compile(r"^@scenario-type:(success|optional|recovery|parameterized|error)$")
+SCENARIO_ID_PATTERN = re.compile(r"^@scenario-id:BDD\.\d{2,9}\.14\.\d{2,9}$")
 
 
 # =============================================================================
@@ -376,17 +372,77 @@ def validate_traceability_tags(parsed: Dict, result: ValidationResult):
 
 
 def validate_scenario_categories(parsed: Dict, result: ValidationResult):
-    """Check for recommended scenario categories."""
+    """Check for template v2 scenario-type category coverage."""
     scenarios = parsed["scenarios"]
 
-    has_primary = any("@primary" in s.get("tags", []) for s in scenarios)
-    has_negative = any("@negative" in s.get("tags", []) or "@error_handling" in s.get("tags", []) for s in scenarios)
+    types_present = set()
+    for scenario in scenarios:
+        for tag in scenario.get("tags", []):
+            match = SCENARIO_TYPE_PATTERN.match(tag)
+            if match:
+                types_present.add(match.group(1))
 
-    if not has_primary:
-        result.add_warning("BDD-W001", "No success path scenarios (@primary) detected")
+    if "success" not in types_present:
+        result.add_warning("BDD-W001", "No success scenarios detected (@scenario-type:success)")
 
-    if not has_negative:
-        result.add_info("BDD-I001", "Consider adding error path scenarios (@negative)")
+    if "error" not in types_present:
+        result.add_info("BDD-I001", "Consider adding error scenarios (@scenario-type:error)")
+
+
+def validate_required_scenario_tags(parsed: Dict, result: ValidationResult):
+    """Validate required v2 scenario tags on every Scenario/Scenario Outline."""
+    for scenario in parsed["scenarios"]:
+        tags = scenario.get("tags", [])
+        name = scenario["name"]
+        line = scenario["line"]
+
+        scenario_type_matches = [tag for tag in tags if SCENARIO_TYPE_PATTERN.match(tag)]
+        priority_matches = [tag for tag in tags if tag in VALID_PRIORITY_TAGS]
+        scenario_id_matches = [tag for tag in tags if SCENARIO_ID_PATTERN.match(tag)]
+
+        if not scenario_type_matches:
+            result.add_error("BDD-E006", f"Scenario missing @scenario-type tag at line {line}: {name[:60]}")
+        elif len(scenario_type_matches) > 1:
+            result.add_error("BDD-E006", f"Scenario has multiple @scenario-type tags at line {line}: {name[:60]}")
+
+        if not priority_matches:
+            result.add_error("BDD-E006", f"Scenario missing priority tag (@p0..@p3) at line {line}: {name[:60]}")
+        elif len(priority_matches) > 1:
+            result.add_error("BDD-E006", f"Scenario has multiple priority tags at line {line}: {name[:60]}")
+
+        if not scenario_id_matches:
+            result.add_error("BDD-E006", f"Scenario missing @scenario-id tag at line {line}: {name[:60]}")
+        elif len(scenario_id_matches) > 1:
+            result.add_error("BDD-E006", f"Scenario has multiple @scenario-id tags at line {line}: {name[:60]}")
+
+        if scenario_type_matches:
+            scenario_type = scenario_type_matches[0].split(":", 1)[1]
+            if scenario["is_outline"] and scenario_type != "parameterized":
+                result.add_warning(
+                    "BDD-W002",
+                    f"Scenario Outline should typically use @scenario-type:parameterized at line {line}: {name[:60]}"
+                )
+            if (not scenario["is_outline"]) and scenario_type == "parameterized":
+                result.add_warning(
+                    "BDD-W002",
+                    f"@scenario-type:parameterized is typically used with Scenario Outline at line {line}: {name[:60]}"
+                )
+
+
+def validate_scenario_id_uniqueness(parsed: Dict, result: ValidationResult):
+    """Validate scenario-id uniqueness within a feature file."""
+    seen = {}
+
+    for scenario in parsed["scenarios"]:
+        for tag in scenario.get("tags", []):
+            if SCENARIO_ID_PATTERN.match(tag):
+                if tag in seen:
+                    result.add_error(
+                        "BDD-E006",
+                        f"Duplicate scenario-id tag {tag} at line {scenario['line']} (first seen at line {seen[tag]})"
+                    )
+                else:
+                    seen[tag] = scenario["line"]
 
 
 def validate_scenario_names(parsed: Dict, result: ValidationResult):
@@ -471,6 +527,8 @@ def validate_bdd_file(file_path: Path) -> ValidationResult:
     validate_scenarios(parsed, result)
     validate_step_order(parsed, result)
     validate_traceability_tags(parsed, result)
+    validate_required_scenario_tags(parsed, result)
+    validate_scenario_id_uniqueness(parsed, result)
     validate_scenario_categories(parsed, result)
     validate_scenario_names(parsed, result)
     validate_crosslinking_tags(content, result)
