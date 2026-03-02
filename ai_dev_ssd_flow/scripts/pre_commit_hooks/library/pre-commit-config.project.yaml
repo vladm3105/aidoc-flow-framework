@@ -22,6 +22,14 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
+      - id: ears-core-validator
+        name: Validate EARS documents via core validator
+        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_core_validator_hook.sh docs/03_EARS
+        language: system
+        files: ^docs/03_EARS/.*\.md$
+        pass_filenames: false
+        stages: [pre-commit]
+
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory

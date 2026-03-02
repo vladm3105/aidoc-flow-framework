@@ -168,6 +168,14 @@ Reusable PRD hook wrappers for projects that consume framework validation rules.
 | `../02_PRD/scripts/prd_standardized_element_codes_hook.sh` | Run strict PRD standardized element type code checks |
 | `../02_PRD/scripts/prd_legacy_pattern_hook.sh` | Detect legacy PRD element ID patterns in target PRD root |
 
+### 10. EARS Hook Entry Scripts (`03_EARS/scripts/`)
+
+Reusable EARS hook wrappers for projects that consume framework validation rules.
+
+| Script | Purpose |
+|--------|---------|
+| `../03_EARS/scripts/ears_core_validator_hook.sh` | Run canonical EARS validator over a target EARS root |
+
 ## Layer-Specific Validation
 
 To run validation for a specific layer manually, use the scripts in that layer's folder. 
