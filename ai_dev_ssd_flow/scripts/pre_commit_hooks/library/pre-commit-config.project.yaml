@@ -88,6 +88,28 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      - id: sys-core-validator
+        name: Validate SYS documents via core validator
+        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_core_validator_hook.sh docs/06_SYS
+        language: system
+        files: ^docs/06_SYS/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      - id: sys-quality-gate
+        name: Run SYS quality gate (template-driven)
+        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_quality_gate_hook.sh docs/06_SYS
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: sys-req-ready-score
+        name: Validate SYS REQ-ready score (template v2.1)
+        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_req_ready_score_hook.sh docs/06_SYS
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
       - id: prd-quality-gate
         name: PRD legacy quality-gate alias (manual)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory

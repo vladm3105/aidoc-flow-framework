@@ -198,6 +198,16 @@ Reusable ADR hook wrappers for projects that consume framework validation rules.
 | `../05_ADR/scripts/adr_quality_gate_hook.sh` | Run ADR corpus quality gate checks before Layer 5 → Layer 6 transition |
 | `../05_ADR/scripts/adr_sys_ready_score_hook.sh` | Validate template-versioned ADR SYS-ready score thresholds |
 
+### 13. SYS Hook Entry Scripts (`06_SYS/scripts/`)
+
+Reusable SYS hook wrappers for projects that consume framework validation rules.
+
+| Script | Purpose |
+|--------|---------|
+| `../06_SYS/scripts/sys_core_validator_hook.sh` | Run canonical SYS validator over a target SYS root |
+| `../06_SYS/scripts/sys_quality_gate_hook.sh` | Run SYS corpus quality gate checks before Layer 6 → Layer 7 transition |
+| `../06_SYS/scripts/sys_req_ready_score_hook.sh` | Validate template-versioned SYS REQ-ready score thresholds |
+
 ## Layer-Specific Validation
 
 To run validation for a specific layer manually, use the scripts in that layer's folder. 
