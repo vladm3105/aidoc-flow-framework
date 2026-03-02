@@ -18,8 +18,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-26"
+    version: "2.1"
+    last_updated: "2026-03-02"
   versioning_policy: "tracks PRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -28,12 +28,15 @@ metadata:
 
 ## Purpose
 
-Run a **single PRD audit workflow** that executes:
+Run a **unified PRD audit workflow** that combines structural validation and content quality checks into a single pass, producing one **combined report** optimized for `doc-prd-fixer` input.
 
-1. `doc-prd-validator` (structural/schema gate)
-2. `doc-prd-reviewer` (semantic/content quality gate)
+**2-Skill Model**: This skill replaces the separate `doc-prd-validator` and `doc-prd-reviewer` skills (now deprecated). All validation and review logic is consolidated here.
 
-Then emit one **combined report** optimized for `doc-prd-fixer` input.
+**Deprecated Skills**:
+| Skill | Status | Replacement |
+|-------|--------|-------------|
+| `doc-prd-validator` | DEPRECATED | Merged into `doc-prd-audit` |
+| `doc-prd-reviewer` | DEPRECATED | Merged into `doc-prd-audit` |
 
 **Layer**: 2 (PRD Quality Gate Wrapper)
 
@@ -47,13 +50,28 @@ Then emit one **combined report** optimized for `doc-prd-fixer` input.
 
 ## Why This Skill Exists
 
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
+The 2-skill model (`doc-prd-audit` + `doc-prd-fixer`) simplifies the PRD quality workflow.
 
 | Concern | Owner Skill |
 |---------|-------------|
-| Schema/template compliance | `doc-prd-validator` |
-| Content quality and product alignment | `doc-prd-reviewer` |
-| Single user-facing audit command | `doc-prd-audit` |
+| All validation + scoring | `doc-prd-audit` (this skill) |
+| Apply fixes from audit report | `doc-prd-fixer` |
+
+---
+
+## Fresh Audit Policy (MANDATORY)
+
+**ALWAYS run the audit from scratch.** Do NOT:
+- Reference previous audit reports for scoring decisions
+- Skip validation steps based on drift cache history
+- Assume compliance from prior fix history
+- Use cached results from previous runs
+
+**ALWAYS**:
+- Run all validation scripts fresh every time
+- Re-check all structure/schema compliance
+- Re-compute EARS-Ready and SYS-Ready scores independently
+- Generate a new audit report with incremented version
 
 ---
 
@@ -62,7 +80,7 @@ Use this wrapper to avoid user confusion between validator and reviewer while pr
 Use `doc-prd-audit` when:
 - You want one command for PRD quality checks
 - You need a combined report for `doc-prd-fixer`
-- You are running QA before EARS generation
+- You are running CI/manual QA before EARS generation
 
 Do NOT use when:
 - PRD does not exist (use `doc-prd` / `doc-prd-autopilot` generation first)
@@ -79,8 +97,8 @@ Do NOT use when:
 ### Sequence (Mandatory)
 
 ```text
-1) Run doc-prd-validator
-2) Run doc-prd-reviewer
+1) Run doc-prd-validator (internal)
+2) Run doc-prd-reviewer (internal)
 3) Normalize and merge findings
 4) Write PRD-NN.A_audit_report_vNNN.md
 5) If auto-fixable findings exist, hand off to doc-prd-fixer
@@ -104,6 +122,276 @@ Also include warning diagnostics when present:
 
 ---
 
+## Validation Checks (from deprecated doc-prd-validator)
+
+### 1. Metadata Validation
+
+```yaml
+Required custom_fields:
+  document_type: ["prd", "template"]
+  artifact_type: "PRD"
+  layer: 2
+  architecture_approaches: [array format]
+  priority: ["primary", "shared", "fallback"]
+  development_status: ["active", "draft", "deprecated", "reference"]
+
+Required tags:
+  - prd (or prd-template)
+  - layer-2-artifact
+
+Forbidden tag patterns:
+  - "^product-requirements$"
+  - "^product-prd$"
+  - "^feature-prd$"
+```
+
+### 2. Structure Validation (MVP Template - 17 Sections)
+
+**Required Sections (MVP Template)**:
+
+| Section | Title | Required |
+|---------|-------|----------|
+| 1 | Document Control | MANDATORY |
+| 2 | Executive Summary | MANDATORY |
+| 3 | Problem Statement | MANDATORY |
+| 4 | Target Audience & User Personas | MANDATORY |
+| 5 | Success Metrics (KPIs) | MANDATORY |
+| 6 | Scope & Requirements | MANDATORY |
+| 7 | User Stories & User Roles | MANDATORY |
+| 8 | Functional Requirements | MANDATORY |
+| 9 | Quality Attributes | MANDATORY |
+| 10 | Architecture Requirements | MANDATORY |
+| 11 | Constraints & Assumptions | MANDATORY |
+| 12 | Risk Assessment | MANDATORY |
+| 13 | Implementation Approach | MANDATORY |
+| 14 | Acceptance Criteria | MANDATORY |
+| 15 | Budget & Resources | MANDATORY |
+| 16 | Traceability | MANDATORY |
+| 17 | Glossary | Optional |
+| 18 | Appendix A: Future Roadmap | Optional |
+| 19 | Migration to Full PRD Template | Optional |
+
+### 3. Document Control Required Fields
+
+| Field | Description | Required |
+|-------|-------------|----------|
+| Status | Draft/Review/Approved/Implemented | MANDATORY |
+| Version | Semantic versioning (X.Y.Z) | MANDATORY |
+| Date Created | YYYY-MM-DD format | MANDATORY |
+| Last Updated | YYYY-MM-DD format | MANDATORY |
+| Author | Product Manager/Owner Name | MANDATORY |
+| Reviewer | Technical reviewer name | MANDATORY |
+| Approver | Final approver name | MANDATORY |
+| BRD Reference | `@brd: BRD.NN.TT.SS` format | MANDATORY |
+| SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+| EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+
+### 4. Dual Scoring Requirements
+
+| Score | Threshold |
+|-------|-----------|
+| SYS-Ready Score | ≥90% |
+| EARS-Ready Score | ≥90% |
+
+Both scores must be present and meet thresholds for downstream artifact generation.
+
+### 5. File Naming Convention
+
+**Pattern**: `PRD-NN_{descriptive_slug}.md`
+
+- `NN`: 2+ digit number (01, 02, ... 99, 100)
+- `descriptive_slug`: lowercase with underscores
+
+### 6. Traceability Validation
+
+**Layer 2 Cumulative Tags (Required)**:
+
+```markdown
+@brd: BRD.NN.TT.SS
+```
+
+**Unified Element ID Format**: `PRD.NN.TT.SS`
+
+### 7. Structure Compliance (Nested Folder Rule)
+
+**ALL PRDs MUST use nested folders regardless of size.**
+
+| PRD Type | Required Location |
+|----------|-------------------|
+| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md` |
+| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_*.md`, etc. |
+
+---
+
+## Review Checks (from deprecated doc-prd-reviewer)
+
+### 1. Link Integrity
+
+Validates all internal document links resolve correctly.
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-L001 | Error | Broken internal link |
+| REV-L002 | Warning | External link unreachable |
+| REV-L003 | Info | Link path uses absolute instead of relative |
+
+### 2. Threshold Consistency
+
+Verifies performance metrics match across all sections.
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-T001 | Error | Threshold mismatch across PRD sections |
+| REV-T002 | Error | Threshold differs from BRD source |
+| REV-T003 | Warning | Threshold unit inconsistency (ms vs s) |
+| REV-T004 | Info | Threshold stricter than BRD (acceptable) |
+
+### 3. Diagram Contract Compliance
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-DC001 | Error | Missing required PRD diagram tag (`c4-l2`, `dfd-l1`, or `sequence-*`) |
+| REV-DC002 | Error | Required sequence flow missing explicit exception path |
+| REV-DC003 | Warning | Diagram intent header missing required fields |
+
+### 4. BRD Alignment
+
+Validates PRD requirements accurately reflect BRD source.
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-A001 | Error | PRD requirement without BRD source |
+| REV-A002 | Warning | BRD requirement without PRD mapping |
+| REV-A003 | Error | Scope mismatch (PRD vs BRD) |
+| REV-A004 | Info | Requirement correctly marked as deferred |
+
+### 5. Placeholder Detection
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-P001 | Error | [TODO] placeholder found |
+| REV-P002 | Error | [TBD] placeholder found |
+| REV-P003 | Warning | Template date not replaced |
+| REV-P004 | Warning | Template name not replaced |
+| REV-P005 | Warning | Empty section content |
+
+### 6. Traceability Tags
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-TR001 | Error | @brd tag references non-existent BRD ID |
+| REV-TR002 | Warning | @depends references non-existent PRD |
+| REV-TR003 | Info | @discoverability is forward reference |
+| REV-TR004 | Warning | Tag format malformed |
+
+### 7. Section Completeness
+
+**Minimum Word Counts** (configurable):
+| Section | Minimum Words |
+|---------|---------------|
+| Executive Summary | 100 |
+| Problem Statement | 75 |
+| Functional Requirements | 200 |
+| Quality Attributes | 100 |
+| Customer Content | 100 |
+| Risk Assessment | 75 |
+| Appendices | 200 |
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-S001 | Error | Required section missing entirely |
+| REV-S002 | Warning | Section below minimum word count |
+| REV-S003 | Warning | Table has no data rows |
+| REV-S004 | Error | Mermaid diagram syntax error |
+
+### 8. Customer Content Review
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-C001 | Error | Section 10 missing |
+| REV-C002 | Warning | Section 10 is placeholder content |
+| REV-C003 | Info | Technical jargon in customer content |
+| REV-C004 | Flag | Requires marketing/business review |
+
+### 9. Naming Compliance
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-N001 | Error | Invalid element ID format |
+| REV-N002 | Error | Element type code not valid for PRD |
+| REV-N003 | Error | Legacy pattern detected (US-NNN, FR-NNN, etc.) |
+| REV-N004 | Error | Threshold tag missing document reference |
+| REV-N005 | Warning | Threshold key format non-standard |
+
+### 10. Upstream Drift Detection
+
+**Cache File**: `docs/02_PRD/{PRD_folder}/.drift_cache.json`
+
+**Error Codes**:
+| Code | Severity | Description | Trigger |
+|------|----------|-------------|---------|
+| REV-D001 | Warning | Upstream document modified after PRD creation | mtime > PRD date (no cache) |
+| REV-D002 | Warning | Referenced content has changed | hash mismatch (with cache) |
+| REV-D003 | Info | Upstream document version incremented | version field changed |
+| REV-D004 | Info | New content added to upstream | file size increased >10% |
+| REV-D005 | Error | Critical modification (>20% change) | hash diff >20% |
+| REV-D006 | Info | Cache created (first review) | no prior cache existed |
+| REV-D009 | Error | Invalid hash placeholder detected | hash is invalid format |
+
+---
+
+## Validator Error Codes
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| PRD-E001 | ERROR | Missing required tag 'prd' |
+| PRD-E002 | ERROR | Missing required tag 'layer-2-artifact' |
+| PRD-E003 | ERROR | Invalid document_type value |
+| PRD-E004 | ERROR | Invalid architecture_approaches format (must be array) |
+| PRD-E005 | ERROR | Forbidden tag pattern detected |
+| PRD-E006 | ERROR | Missing required section |
+| PRD-E007 | ERROR | Multiple H1 headings detected |
+| PRD-E008 | ERROR | Section numbering not sequential |
+| PRD-E009 | ERROR | Document Control missing required fields |
+| PRD-E010 | ERROR | Missing User Stories (Section 7) |
+| PRD-E011 | ERROR | Missing Functional Requirements (Section 8) |
+| PRD-E012 | ERROR | Missing Traceability (Section 16) |
+| PRD-E013 | ERROR | Missing upstream @brd tag |
+| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.TT.SS) |
+| PRD-E015 | ERROR | SYS-Ready Score missing or below threshold |
+| PRD-E016 | ERROR | EARS-Ready Score missing or below threshold |
+| PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |
+| PRD-E018 | ERROR | Invalid threshold tag format (must be @threshold: PRD.NN.key) |
+| PRD-E019 | ERROR | Element type code not valid for PRD (see doc-naming) |
+| PRD-E020 | ERROR | PRD not in nested folder structure (must be in `docs/02_PRD/PRD-NN_{slug}/`) |
+| PRD-E021 | ERROR | PRD folder name doesn't match PRD ID |
+| PRD-E022 | ERROR | Monolithic PRD not in nested folder (must be `PRD-NN_{slug}/PRD-NN_{slug}.md`) |
+| PRD-E023 | ERROR | Missing required PRD diagram tag `@diagram: c4-l2` |
+| PRD-E024 | ERROR | Missing required PRD diagram tag `@diagram: dfd-l1` |
+| PRD-E025 | ERROR | Missing required PRD diagram tag `@diagram: sequence-*` |
+| PRD-E026 | ERROR | Sequence diagram missing explicit exception/alternate path (`alt/else`) |
+| PRD-W001 | WARNING | File name does not match format PRD-NN_{slug}.md |
+| PRD-W002 | WARNING | Missing optional section (Glossary, Appendix) |
+| PRD-W003 | WARNING | Score below recommended threshold but above minimum |
+| PRD-W004 | WARNING | Missing Document Revision History table |
+| PRD-W005 | WARNING | Architecture Decision Requirements reference ADR numbers |
+| PRD-W011 | WARNING | Diagram intent header missing required fields |
+| VAL-H001 | ERROR | Drift cache missing hash for upstream document |
+| VAL-H002 | ERROR | Invalid hash format (must be sha256:<64 hex chars>) |
+| PRD-I001 | INFO | Consider adding success metrics with quantified targets |
+| PRD-I002 | INFO | Consider adding competitive analysis |
+
+---
+
 ## Combined Report Format (for doc-prd-fixer)
 
 Output file: `PRD-NN.A_audit_report_vNNN.md`
@@ -115,6 +403,7 @@ Required sections:
    - Validator status, reviewer score
 2. `## Score Calculation (Deduction-Based)`
    - Formula: `100 - total_deductions`
+   - Deductions grouped by: contamination (max 50), FR completeness (max 30), structure/quality (max 20)
    - Threshold comparison (`>=90` pass gate)
 3. `## Validator Findings`
    - List by severity/code
@@ -155,6 +444,40 @@ If both exist, fixer should prefer latest timestamp.
 
 ---
 
+## Validation Commands
+
+```bash
+# Canonical wrapper (core only; pre-commit/CI parity)
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+
+# Strict PRD ID checks (same quality class as BRD ID checks)
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
+
+# Canonical wrapper (core + advisory)
+bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD
+
+# Validate single PRD document (must be in nested folder)
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
+
+# Validate all PRD documents in directory
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/
+
+# Validate with verbose output
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --verbose
+
+# Validate with auto-fix (includes structure fixes)
+python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --auto-fix
+
+# Cross-document validation
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
+
+# Layer-wide validation
+python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
+```
+
+---
+
 ## Example Invocation
 
 ```bash
@@ -162,10 +485,25 @@ If both exist, fixer should prefer latest timestamp.
 ```
 
 Expected outcome:
-1. validator runs
-2. reviewer runs
+1. validator runs (internal)
+2. reviewer runs (internal)
 3. combined audit report generated
 4. fixer can execute directly from combined report
+
+---
+
+## Related Skills
+
+| Skill | Relationship |
+|-------|--------------|
+| `doc-naming` | Naming standards for element IDs and threshold tags |
+| `doc-prd-autopilot` | Invokes this skill in Phase 5 |
+| `doc-prd-validator` | **DEPRECATED** - merged into this skill |
+| `doc-prd-reviewer` | **DEPRECATED** - merged into this skill |
+| `doc-prd-fixer` | Applies fixes based on audit findings |
+| `doc-prd` | PRD creation rules |
+| `doc-brd-audit` | BRD source validation (unified quality gate) |
+| `doc-ears-autopilot` | Downstream consumer |
 
 ---
 
@@ -173,6 +511,7 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-03-02 | **2-Skill Model**: Deprecated `doc-prd-validator` and `doc-prd-reviewer`; Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill; Aligned with `doc-brd-audit` v2.1 architecture |
 | 1.0 | 2026-02-26 | Initial PRD audit wrapper; validator→reviewer orchestration; blocking PRD diagram contract gate; combined report contract for fixer |
 
 ## Implementation Plan Consistency (IPLAN-004)

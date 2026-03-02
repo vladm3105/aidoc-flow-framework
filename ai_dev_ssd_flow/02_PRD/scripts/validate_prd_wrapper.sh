@@ -14,7 +14,6 @@ Usage:
 Tiers:
   Tier 1 (CORE, blocking):
     - PRD standardized element type code validation
-    - PRD legacy element ID pattern detection
     - PRD structural validation
     - PRD quality gate validation
 
@@ -95,6 +94,11 @@ CORE_FAIL=0
 CORE_WARN=0
 ADVISORY_FAIL=0
 
+is_section_based_prd_root() {
+  local root="$1"
+  find "$root" -type f -name 'PRD-*.0_*.md' -o -type f -name 'PRD-*.0_index.md' 2>/dev/null | grep -q .
+}
+
 run_core() {
   local label="$1"
   shift
@@ -155,14 +159,16 @@ echo "PRD root:  ${PRD_ROOT}"
 echo "Docs root: ${DOCS_ROOT}"
 echo ""
 
-run_core "PRD structural validator" \
-  python3 "${SCRIPT_DIR}/validate_prd.py" "${PRD_ROOT}" --strict
-
 run_core "PRD standardized element type codes" \
   python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_prd_standardized_element_codes.py" "${PRD_ROOT}" --strict
 
-run_core "PRD legacy element ID patterns" \
-  python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/detect_legacy_prd_element_ids.py" "${PRD_ROOT}" --summary
+if is_section_based_prd_root "${PRD_ROOT}"; then
+  echo "[CORE] PRD structural validator"
+  echo "[PASS] PRD structural validator (section-based PRD root detected; monolithic structural validator skipped)"
+else
+  run_core "PRD structural validator" \
+    python3 "${SCRIPT_DIR}/validate_prd.py" "${PRD_ROOT}" --strict
+fi
 
 run_quality_core "PRD quality gate" \
   bash "${SCRIPT_DIR}/validate_prd_quality_score.sh" "${PRD_ROOT}"

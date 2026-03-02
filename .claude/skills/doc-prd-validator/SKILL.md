@@ -1,26 +1,39 @@
 ---
 name: doc-prd-validator
-description: Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standards
+description: "[DEPRECATED] Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standards - USE doc-prd-audit INSTEAD"
 metadata:
   tags:
     - sdd-workflow
     - layer-2-artifact
     - validation
     - shared-architecture
+    - deprecated
   custom_fields:
     layer: 2
     artifact_type: PRD
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
-    development_status: active
+    development_status: deprecated
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
-    version: "2.0"
-    last_updated: "2026-02-10"
+    version: "3.0"
+    last_updated: "2026-03-02"
+    deprecated_date: "2026-03-02"
+    replacement_skill: "doc-prd-audit"
 ---
 
 # doc-prd-validator
+
+> **DEPRECATED (2026-03-02)**: This skill has been merged into `doc-prd-audit` as part of the 2-skill model standardization. Use `doc-prd-audit` for all PRD validation needs. This file is retained for reference only.
+>
+> **Replacement**: `/doc-prd-audit`
+>
+> **Migration**: No action required. Simply use `doc-prd-audit` instead of this skill.
+
+---
+
+## Legacy Documentation (Reference Only)
 
 Validate Product Requirements Documents (PRD) against Layer 2 MVP schema standards.
 
@@ -385,9 +398,10 @@ Info: 1
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.0 | 2026-03-02 | **DEPRECATED**: Merged into `doc-prd-audit` as part of 2-skill model standardization. Use `doc-prd-audit` instead. |
+| 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
 | 2.2 | 2026-02-11 | **Structure Validation**: Added PRD-E020/E021/E022 for nested folder rule enforcement; Structure validation as Step 1 in workflow; Auto-fix for structure violations; Fixed paths `docs/PRD/` → `docs/02_PRD/` |
 | 2.1 | 2026-02-08 | Added doc-naming integration: PRD-E018 (threshold format), PRD-E019 (element type codes) |
-| 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
 | 2.0 | 2026-02-08 | Complete rewrite: Updated to MVP template, unified element IDs, correct paths |
 | 1.0 | 2025-01-06 | Initial version (outdated 13-section structure) |
 

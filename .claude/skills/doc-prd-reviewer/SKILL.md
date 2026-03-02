@@ -1,6 +1,6 @@
 ---
 name: doc-prd-reviewer
-description: Comprehensive content review and quality assurance for PRD documents - validates link integrity, threshold consistency, BRD alignment, and identifies issues requiring manual attention
+description: "[DEPRECATED] Comprehensive content review and quality assurance for PRD documents - USE doc-prd-audit INSTEAD"
 metadata:
   tags:
     - sdd-workflow
@@ -8,22 +8,35 @@ metadata:
     - prd-review
     - layer-2-artifact
     - shared-architecture
+    - deprecated
   custom_fields:
     layer: 2
     artifact_type: PRD
     architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
+    priority: shared
+    development_status: deprecated
     skill_category: quality-assurance
     upstream_artifacts: [PRD]
     downstream_artifacts: []
-    version: "1.9"
-    last_updated: "2026-03-01"
+    version: "2.0"
+    last_updated: "2026-03-02"
+    deprecated_date: "2026-03-02"
+    replacement_skill: "doc-prd-audit"
 ---
 
 # doc-prd-reviewer
 
-## Purpose
+> **DEPRECATED (2026-03-02)**: This skill has been merged into `doc-prd-audit` as part of the 2-skill model standardization. Use `doc-prd-audit` for all PRD review needs. This file is retained for reference only.
+>
+> **Replacement**: `/doc-prd-audit`
+>
+> **Migration**: No action required. Simply use `doc-prd-audit` instead of this skill.
+
+---
+
+## Legacy Documentation (Reference Only)
+
+### Purpose
 
 Comprehensive **content review and quality assurance** for Product Requirements Documents (PRD). This skill performs deep content analysis beyond structural validation, checking link integrity, threshold consistency, BRD alignment, and identifying issues that require manual business review.
 
@@ -1081,6 +1094,7 @@ review:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-03-02 | **DEPRECATED**: Merged into `doc-prd-audit` as part of 2-skill model standardization. Use `doc-prd-audit` instead. |
 | 1.9 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
 | 1.8 | 2026-02-27 | **Hash Computation Fix**: Replaced Python pseudocode with mandatory bash `sha256sum` execution; Added hash validation (REV-D009); Reject placeholder values (`verified_no_drift`, `pending_verification`) |
 | 1.7 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented relationship with `doc-prd-audit` wrapper |
