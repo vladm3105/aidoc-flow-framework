@@ -98,7 +98,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
-| **Git Hooks Config** | `.pre-commit-config.yaml` (symlink to framework library profile) | N/A | Symlink per project profile |
+| **Git Hooks Config** | `.pre-commit-config.yaml` (symlink to `pre-commit-config.project.yaml`) | N/A | Symlink per project profile |
 
 ---
 
@@ -267,10 +267,10 @@ Use a framework-maintained hook profile and symlink project-level `.pre-commit-c
 **Framework library location (current profile):**
 - `docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
-**Project symlink example (`b-local-docs`):**
+**Project symlink example (any project):**
 
 ```bash
-cd /opt/data/b-local/b-local-docs
+cd /opt/data/<project-repo>
 
 # Replace local config with symlink to shared library profile
 rm -f .pre-commit-config.yaml
@@ -285,10 +285,12 @@ ls -l .pre-commit-config.yaml
 - If the framework repo path changes, recreate the symlink with the updated relative or absolute target.
 - For CI/clones without this shared filesystem layout, use copied config or generate the symlink during bootstrap.
 
+For current `b-local-docs`, `<project-repo>` is `b-local/b-local-docs`.
+
 **Validation:**
 
 ```bash
-cd /opt/data/b-local/b-local-docs
+cd /opt/data/<project-repo>
 python3 - <<'PY'
 import yaml
 from pathlib import Path
