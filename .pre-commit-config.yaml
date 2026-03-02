@@ -29,6 +29,13 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      - id: brd-quality-gate
+        name: "DEPRECATED alias: Validate BRD core checks (wrapper)"
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
       - id: brd-core-wrapper
         name: Validate BRD core checks (wrapper, framework library)
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh ai_dev_ssd_flow/01_BRD
@@ -48,6 +55,22 @@ repos:
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
+        stages: [manual]
+
+      - id: brd-claude-skill-audit
+        name: Run Claude BRD skill audit (optional)
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/claude_brd_skill_audit_hook.sh
+        language: system
+        files: ^ai_dev_ssd_flow/01_BRD/.*\.md$
+        pass_filenames: true
+        stages: [manual]
+
+      - id: prd-claude-skill-audit
+        name: Run Claude PRD skill audit (optional)
+        entry: bash ai_dev_ssd_flow/02_PRD/scripts/claude_prd_skill_audit_hook.sh
+        language: system
+        files: ^ai_dev_ssd_flow/02_PRD/.*\.md$
+        pass_filenames: true
         stages: [manual]
 
       - id: sdd-layer-quality-matrix
