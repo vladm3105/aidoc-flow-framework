@@ -228,10 +228,10 @@ Use these validation checks to ensure Section 9.5 is complete:
 
 ## Related Documents
 
-- [REQ-MVP-TEMPLATE.md](../REQ-MVP-TEMPLATE.md) - Updated REQ template with Section 9.5
-- [REQ_MVP_SCHEMA.yaml](../REQ_MVP_SCHEMA.yaml) - Schema including Section 9.5 validation rules
-- [REQ_MVP_VALIDATION_RULES.md](../REQ_MVP_VALIDATION_RULES.md) - Validation rules including Section 9.5 checks
-- [README.md](../README.md) - REQ layer documentation and usage guide
+- [REQ-MVP-TEMPLATE.md](../../REQ-MVP-TEMPLATE.md) - Updated REQ template with Section 9.5
+- [REQ_MVP_SCHEMA.yaml](../../REQ_MVP_SCHEMA.yaml) - Schema including Section 9.5 validation rules
+- [REQ_MVP_VALIDATION_RULES.md](../../REQ_MVP_VALIDATION_RULES.md) - Validation rules including Section 9.5 checks
+- [README.md](../../README.md) - REQ layer documentation and usage guide
 
 ---
 

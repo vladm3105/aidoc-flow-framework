@@ -337,5 +337,5 @@ Need AI assistant to follow dependency chains?
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - See `scripts/validate_metadata.py` and `scripts/validate_tags_against_docs.py` for local validation tooling.
 <!-- VALIDATOR:IGNORE-LINKS-END -->
-- [scripts/validate_metadata.py](../scripts/validate_metadata.py) - YAML validation tool
+- [scripts/validate_metadata.py](./scripts/validate_metadata.py) - YAML validation tool
 - Local validation: `scripts/validate_tags_against_docs.py` for cumulative tag compliance and bidirectional checks

@@ -111,4 +111,4 @@ curl -X POST http://localhost:1416/query \
 
 - [BRD Index](../01_BRD/BRD-00_index.md) - Business Requirements (Layer 1)
 - [ID Naming Standards](../ID_NAMING_STANDARDS.md) - Naming conventions
-- [Traceability Guide](../TRACEABILITY_CONVENTIONS.md) - Cross-references
+- [Traceability Guide](../TRACEABILITY.md) - Cross-references

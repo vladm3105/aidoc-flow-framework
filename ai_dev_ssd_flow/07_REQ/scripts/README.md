@@ -178,8 +178,8 @@ bash $(pwd)/validate_all.sh --directory /absolute/path/to/REQ
 
 ## More Information
 
-For usage patterns, gate details, assessment, and integration architecture, see [VALIDATION_STRATEGY_GUIDE.md](../VALIDATION_STRATEGY_GUIDE.md).
+For usage patterns, gate details, assessment, and integration architecture, see [VALIDATION_STRATEGY_GUIDE.md](../../VALIDATION_STRATEGY_GUIDE.md).
 
-For CLI command reference, see [VALIDATION_COMMANDS.md](../VALIDATION_COMMANDS.md).
+For CLI command reference, see [VALIDATION_COMMANDS.md](../../VALIDATION_COMMANDS.md).
 
-For decision-making framework, see [AI_VALIDATION_DECISION_GUIDE.md](../AI_VALIDATION_DECISION_GUIDE.md).
+For decision-making framework, see [AI_VALIDATION_DECISION_GUIDE.md](../REQ_AI_VALIDATION_DECISION_GUIDE.md).

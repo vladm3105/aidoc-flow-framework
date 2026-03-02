@@ -32,7 +32,7 @@ custom_fields:
 | **Priority** | High (P2) |
 | **Category** | API |
 | **Infrastructure Type** | None |
-| **Source Document** | [SYS-01 section 3.2](../06_SYS/SYS-01_integration_layer.md#sys0132) |
+| **Source Document** | [SYS-01 section 3.2](../../../06_SYS/SYS-01_integration_layer.md#sys0132) |
 | **Verification Method** | BDD + Contract Test + Integration Test |
 | **Assigned Team** | Backend Team |
 | **SPEC-Ready Score** | [PASS] 92% (Target: ≥90%) |

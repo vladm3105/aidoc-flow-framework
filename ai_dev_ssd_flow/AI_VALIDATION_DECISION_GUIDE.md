@@ -25,7 +25,7 @@ custom_fields:
 - [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI reference
 
 **Document-Specific Guides:**
-- [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
+- [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
 
 **Last Updated:** 2026-01-24T00:00:00
 
@@ -341,7 +341,7 @@ To add a new validator:
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Core universal rules
 - [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - Architecture and gate details
 - [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI command reference
-- [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
+- [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
 
 ---
 

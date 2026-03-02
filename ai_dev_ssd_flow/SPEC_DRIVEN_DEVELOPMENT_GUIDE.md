@@ -703,7 +703,7 @@ Reference documents provide supplementary context that supports workflow artifac
   - `ADR-REF-NN_{slug}.md` - Architecture reference documents
 - **File Format**: `{TYPE}-REF-NN_{slug}.md` where `{TYPE}` is BRD or ADR
 - **Numbering**: Independent sequence per parent TYPE (BRD-REF-01, ADR-REF-01, etc.)
-- **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./REF-TEMPLATE.md)
+- **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./00_REF/REF-TEMPLATE.md)
 - **Skill**: Use `doc-ref` skill for creation
 - **Required Sections**:
   - Document Control table

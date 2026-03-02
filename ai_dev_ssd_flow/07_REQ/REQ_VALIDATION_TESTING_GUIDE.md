@@ -170,5 +170,5 @@ fi
 
 **Related Documentation**:
 - [GATE-05 Enhancement](GATE-05_CROSS_LINKING_ENHANCEMENT.md)
-- [Validation Quality Score](validate_req_quality_score.sh)
+- [Validation Quality Score](scripts/validate_req_quality_score.sh)
 - [REQ Validation Suite](README.md)
