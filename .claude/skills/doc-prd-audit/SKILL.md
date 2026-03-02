@@ -18,7 +18,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "2.2"
+    version: "2.3"
     last_updated: "2026-03-02"
   versioning_policy: "tracks PRD-MVP-TEMPLATE schema_version"
 
@@ -101,8 +101,70 @@ Do NOT use when:
 2) Run doc-prd-reviewer (internal)
 3) Normalize and merge findings
 4) Write PRD-NN.A_audit_report_vNNN.md
-5) If auto-fixable findings exist, hand off to doc-prd-fixer
+5) Create/Update .drift_cache.json (MANDATORY)
+6) If auto-fixable findings exist, hand off to doc-prd-fixer
 ```
+
+### Drift Cache Creation (MANDATORY)
+
+After every audit, the skill MUST create or update `.drift_cache.json` in the PRD folder.
+
+**Location**: `docs/02_PRD/{PRD_folder}/.drift_cache.json`
+
+**Schema** (v1.2):
+```json
+{
+  "schema_version": "1.2",
+  "document_id": "PRD-NN",
+  "document_version": "X.Y",
+  "upstream_mode": "brd",
+  "upstream_ref_path": "../../01_BRD/BRD-NN_{slug}/",
+  "drift_detection_skipped": false,
+  "last_reviewed": "YYYY-MM-DDTHH:MM:SS",
+  "last_fixed": "YYYY-MM-DDTHH:MM:SS",
+  "reviewer_version": "2.2",
+  "fixer_version": null,
+  "autopilot_version": null,
+  "upstream_documents": {
+    "../../01_BRD/BRD-NN_{slug}/BRD-NN.0_index.md": {
+      "hash": "sha256:<64-hex-chars>",
+      "last_modified": "YYYY-MM-DDTHH:MM:SS",
+      "file_size": 12345,
+      "version": "X.Y"
+    }
+  },
+  "review_history": [
+    {
+      "date": "YYYY-MM-DDTHH:MM:SS",
+      "score": 100,
+      "drift_detected": false,
+      "report_version": "vNNN",
+      "review_type": "audit",
+      "status": "PASS"
+    }
+  ],
+  "fix_history": []
+}
+```
+
+**Required Actions**:
+1. **Create** if `.drift_cache.json` does not exist
+2. **Update** `last_reviewed` timestamp
+3. **Append** to `review_history` array with current audit results
+4. **Compute** SHA-256 hashes for all tracked upstream BRD documents
+5. **Set** `drift_detected: true` if any upstream hash changed since last review
+
+**Hash Computation**:
+```bash
+sha256sum <upstream_file> | cut -d' ' -f1
+```
+
+**Error Codes**:
+| Code | Severity | Description |
+|------|----------|-------------|
+| REV-D006 | Info | Cache created (first review) |
+| VAL-H001 | Error | Drift cache missing hash for upstream document |
+| VAL-H002 | Error | Invalid hash format (must be sha256:<64 hex chars>) |
 
 ### Combined Status Rules
 
@@ -535,6 +597,7 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-03-02 | **Drift Cache Creation (MANDATORY)**: Added automatic `.drift_cache.json` creation/update after every audit; Schema v1.2 with upstream BRD hash tracking; Aligned with doc-brd-audit drift cache implementation |
 | 2.2 | 2026-03-02 | **Element Code Contract Gate (BLOCKING)**: Added element type code validation as blocking gate; `PRD-E020` and `PRD-E022` now fail audit; Added section-element type mapping enforcement; Integrated with `prd_standardized_element_codes_hook.sh` |
 | 2.1 | 2026-03-02 | **2-Skill Model**: Deprecated `doc-prd-validator` and `doc-prd-reviewer`; Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill; Aligned with `doc-brd-audit` v2.1 architecture |
 | 1.0 | 2026-02-26 | Initial PRD audit wrapper; validator→reviewer orchestration; blocking PRD diagram contract gate; combined report contract for fixer |

@@ -40,6 +40,9 @@ python3 validate_prd.py --help
 | Permission denied | `chmod +x *.sh` |
 | Python not found | Use `python3` explicitly |
 | File not found | Use absolute paths when running from CI |
+| False positives from audit/review reports | Companion files (`*.A_*.md`, `*.R_*.md`, `*.F_*.md`) are auto-excluded in v1.1+ |
+| GATE-03 count mismatch errors | Script handles edge cases with `|| true` for grep pipelines |
+| GATE-08 duplicate ID errors in same file | Only cross-file duplicates are flagged (v1.1+) |
 
 ## Related Docs
 

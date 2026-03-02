@@ -19,8 +19,9 @@ custom_fields:
 | Field | Value |
 |-------|-------|
 | Document ID | PRD_QUALITY_GATE_VALIDATION |
-| Version | 1.0 |
+| Version | 1.1 |
 | Created | 2026-01-04T00:00:00 |
+| Updated | 2026-03-02T12:00:00 |
 | Purpose | Quality gate for complete PRD corpus |
 | Trigger | Run after ALL PRDs are complete |
 | Scope | Entire PRD Quality Gate validation |
@@ -312,7 +313,7 @@ done
 
 ### CORPUS-08: Element ID Uniqueness
 
-**Purpose**: No duplicate element IDs across the PRD corpus
+**Purpose**: No duplicate element IDs across the PRD corpus (multi-file detection only)
 
 **Severity**: Error
 
@@ -321,13 +322,20 @@ done
 - TT = Element type code
 - SS = Sequence number
 
+**Multi-File Detection Rule** (v1.1):
+- Duplicate IDs are only flagged when the **same ID appears in multiple different PRD files**
+- Same ID appearing multiple times within the **same file** is NOT flagged (e.g., traceability matrix references to IDs defined earlier in the document are valid)
+- Companion files (audit reports, review reports, fix reports) are excluded from duplicate detection
+
 **Validation Logic**:
 ```bash
-# Extract all element IDs and find duplicates
-grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" | \
-  sort | uniq -d | while read dup; do
-    echo "ERROR: Duplicate element ID: $dup"
-  done
+# Extract all element IDs and check for cross-file duplicates
+for id in $(grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" --include="*.md" --exclude="*.[ARF]_*.md" | sort -u); do
+  file_count=$(grep -rlE "$id" "$PRD_DIR" --include="*.md" --exclude="*.[ARF]_*.md" 2>/dev/null | wc -l)
+  if [[ "$file_count" -gt 1 ]]; then
+    echo "ERROR: Duplicate element ID across files: $id (found in $file_count files)"
+  fi
+done
 ```
 
 ---
@@ -899,6 +907,61 @@ if git diff --cached --name-only | grep -q "docs/02_PRD/"; then
   fi
 fi
 ```
+
+---
+
+## 6. Companion File Exclusion
+
+### Overview
+
+Validation scripts automatically exclude **companion files** from quality gate checks to prevent false positives. Companion files are supplementary documents generated alongside main PRD files.
+
+### Companion File Patterns
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| `PRD-NN.A_*.md` | Audit reports | `PRD-01.A_audit_report_v001.md` |
+| `PRD-NN.R_*.md` | Review reports (legacy) | `PRD-01.R_review_report_v001.md` |
+| `PRD-NN.F_*.md` | Fix reports | `PRD-01.F_fix_report_v001.md` |
+
+### Exclusion Behavior
+
+The `validate_prd_quality_score.sh` script:
+
+1. **Filters companion files** from PRD enumeration using pattern matching: `*.[ARF]_*.md`
+2. **Excludes from all GATE checks** (GATE-01 through GATE-20)
+3. **Excludes from duplicate ID detection** to prevent audit report element references from being flagged
+
+### Detection Function
+
+```bash
+# Helper function used in validate_prd_quality_score.sh
+is_companion_file() {
+  local filename="$1"
+  # Match patterns: PRD-NN.A_*, PRD-NN.R_*, PRD-NN.F_* (audit, review, fix reports)
+  if [[ "$filename" =~ \.[ARF]_ ]]; then
+    return 0  # true - is companion file
+  fi
+  return 1  # false - is main PRD file
+}
+```
+
+### Why Exclusion Matters
+
+| Without Exclusion | With Exclusion |
+|-------------------|----------------|
+| Audit reports flagged for "placeholders" | Only main PRD files validated |
+| Review comments trigger false positives | Clean validation output |
+| Duplicate ID errors from report references | Accurate duplicate detection |
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2026-03-02 | Added companion file exclusion (Section 6); Updated CORPUS-08 for multi-file duplicate detection; Fixed GATE-03 pipefail crash; Fixed GATE-08 false positives |
+| 1.0 | 2026-01-04 | Initial quality gate validation rules |
 
 ---
 

@@ -33,6 +33,18 @@ ERRORS=0
 WARNINGS=0
 INFOS=0
 
+# =============================================================================
+# Helper: Check if file is a companion file (audit/review/fix report)
+# =============================================================================
+is_companion_file() {
+  local filename="$1"
+  # Match patterns: PRD-NN.A_*, PRD-NN.R_*, PRD-NN.F_* (audit, review, fix reports)
+  if [[ "$filename" =~ \.[ARF]_ ]]; then
+    return 0  # true - is companion file
+  fi
+  return 1  # false - is main PRD file
+}
+
 # Default values
 PRD_DIR="${1:-docs/02_PRD}"
 VERBOSE=false
@@ -72,11 +84,13 @@ echo "Directory: $PRD_DIR"
 echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S EST')"
 echo ""
 
-# Build list of existing PRD files
+# Build list of existing PRD files (excluding companion files)
 declare -A EXISTING_PRDS
 shopt -s nullglob
 for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
   if [[ -f "$f" ]]; then
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     prd_num=$(basename "$f" | grep -oE "PRD-[0-9]+" | head -1)
     EXISTING_PRDS["$prd_num"]=1
   fi
@@ -164,11 +178,13 @@ check_count_consistency() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
 
     while IFS=: read -r linenum content; do
       if [[ -n "$content" ]]; then
-        claimed=$(echo "$content" | grep -oE "^[^(]*[0-9]+" | grep -oE "[0-9]+" | head -1)
-        paren_content=$(echo "$content" | grep -oE "\([^)]+\)" | head -1)
+        claimed=$(echo "$content" | grep -oE "^[^(]*[0-9]+" | grep -oE "[0-9]+" | head -1 || true)
+        paren_content=$(echo "$content" | grep -oE "\([^)]+\)" | head -1 || true)
         if [[ -n "$claimed" && -n "$paren_content" && "$claimed" -gt 2 && "$claimed" -lt 20 ]]; then
           actual=$(echo "$paren_content" | tr ',' '\n' | wc -l)
           if [[ "$actual" -gt 0 && "$actual" -ne "$claimed" ]]; then
@@ -261,6 +277,8 @@ check_diagrams() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports), index, templates
+    is_companion_file "$(basename "$f")" && continue
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     if ! grep -qi '@diagram:\s*c4-l2' "$f" 2>/dev/null; then
@@ -347,20 +365,27 @@ check_duplicates() {
   local duplicates_found=0
   local max_show=10
 
-  # --- Check 1: Find true duplicate element IDs across all files ---
+  # --- Check 1: Find true duplicate element IDs across DIFFERENT files ---
   echo "  Checking for globally duplicate element IDs..."
   # We only check for duplicates in definition contexts (headings ### or tables |)
   # to avoid flagging valid cross-references.
+  # Exclude companion files (audit/review/fix reports) from duplicate detection
+  # NOTE: Multiple references to the same ID within ONE file is expected (e.g., traceability matrix)
+  #       We only flag when the same ID is DEFINED in MULTIPLE different files.
   while IFS= read -r duplicate_id; do
     if [[ -n "$duplicate_id" ]]; then
-      echo -e "${RED}GATE-E004: Duplicate element ID found: $duplicate_id${NC}"
-      # Show which files contain the duplicate definition
-      grep -rnE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$PRD_DIR"
-      echo ""
-      ((ERRORS++)) || true
-      ((duplicates_found++)) || true
+      # Count how many DIFFERENT files contain this ID
+      file_count=$(grep -rlE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$PRD_DIR" --include="*.md" --exclude="*.[ARF]_*.md" 2>/dev/null | wc -l || echo 0)
+      if [[ "$file_count" -gt 1 ]]; then
+        echo -e "${RED}GATE-E004: Duplicate element ID found in $file_count files: $duplicate_id${NC}"
+        # Show which files contain the duplicate definition (excluding companion files)
+        grep -rlE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$PRD_DIR" --include="*.md" --exclude="*.[ARF]_*.md"
+        echo ""
+        ((ERRORS++)) || true
+        ((duplicates_found++)) || true
+      fi
     fi
-  done < <(grep -rohE "(^###\s+PRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*PRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$PRD_DIR" 2>/dev/null | grep -oE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
+  done < <(grep -rohE "(^###\s+PRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*PRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$PRD_DIR" --include="*.md" --exclude="*.[ARF]_*.md" 2>/dev/null | grep -oE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
 
   if [[ $duplicates_found -eq 0 ]]; then
     echo -e "${GREEN}   No duplicate element IDs found across corpus${NC}"
@@ -372,6 +397,8 @@ check_duplicates() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
 
     # Extract file's document number (e.g., 07 from PRD-07_something.md)
     filename=$(basename "$f")
@@ -446,6 +473,8 @@ check_sizes() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
 
     local lines
     lines=$(wc -l <"$f")
@@ -487,6 +516,8 @@ check_traceability() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
 
     # Skip index files
     if [[ "$(basename $f)" =~ _index ]]; then
@@ -540,6 +571,8 @@ check_template_structure() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     for section in "${REQUIRED_SECTIONS[@]}"; do
@@ -568,6 +601,8 @@ check_sys_ready_score() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     score=$(grep -oP 'sys_ready_score:\s*\K[0-9]+' "$f" 2>/dev/null || echo "0")
@@ -599,6 +634,8 @@ check_mvp_hypothesis() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if ! grep -qiE 'We believe that.*will.*if we' "$f" 2>/dev/null; then
@@ -627,6 +664,8 @@ check_glossary_path() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if grep -q "Glossary" "$f" 2>/dev/null; then
@@ -656,6 +695,8 @@ check_token_count() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     words=$(wc -w < "$f")
@@ -697,6 +738,8 @@ check_yaml_frontmatter() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if head -1 "$f" | grep -q "^---"; then
@@ -729,6 +772,8 @@ check_date_format() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
+    # Skip companion files (audit/review/fix reports)
+    is_companion_file "$(basename "$f")" && continue
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     bad_dates=$(grep -oE '[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}|[A-Za-z]{3} [0-9]{1,2},? [0-9]{4}' "$f" 2>/dev/null | head -3 || true)
