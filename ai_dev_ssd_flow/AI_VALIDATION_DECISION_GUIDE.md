@@ -78,7 +78,7 @@ When a validation fails, you must decide:
 
 ### REQ Validation Decisions
 
-**See:** [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md) for comprehensive REQ-specific patterns, gate details, and resolution workflows.
+**See:** [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) for comprehensive REQ-specific patterns, gate details, and resolution workflows.
 
 **Key REQ Gates:**
 - **GATE-01**: Placeholder detection → Fix document (remove TBD, TODO, FIXME)
