@@ -18,7 +18,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "2.1"
+    version: "2.2"
     last_updated: "2026-03-02"
   versioning_policy: "tracks PRD-MVP-TEMPLATE schema_version"
 
@@ -119,6 +119,30 @@ Audit MUST fail when any blocking diagram code is present:
 
 Also include warning diagnostics when present:
 - `PRD-W011` diagram intent metadata incomplete
+
+### Element Code Contract Gate (BLOCKING for PRD)
+
+Audit MUST fail when element type codes violate naming standards:
+- `PRD-E020` Element type code not valid for PRD (must be in VALID_PRD_CODES set)
+- `PRD-E022` Section-element type code mismatch (e.g., Section 5 metrics must use type `08`)
+
+**Valid PRD Type Codes**: `01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 24, 32`
+
+**Section-Element Mapping (Enforced)**:
+| Section | Expected Type Code | Element Type |
+|---------|-------------------|--------------|
+| 5 | 08 | Metric/KPI |
+| 7 | 09 | User Story |
+| 8 | 01 | Functional Requirement |
+| 9 | 02 | Quality Attribute |
+| 10 | 32 | Architecture Topic |
+| 12 | 07 | Risk |
+| 14 | 06 | Acceptance Criteria |
+
+**Validation Command**:
+```bash
+bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh <path>
+```
 
 ---
 
@@ -511,6 +535,7 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-03-02 | **Element Code Contract Gate (BLOCKING)**: Added element type code validation as blocking gate; `PRD-E020` and `PRD-E022` now fail audit; Added section-element type mapping enforcement; Integrated with `prd_standardized_element_codes_hook.sh` |
 | 2.1 | 2026-03-02 | **2-Skill Model**: Deprecated `doc-prd-validator` and `doc-prd-reviewer`; Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill; Aligned with `doc-brd-audit` v2.1 architecture |
 | 1.0 | 2026-02-26 | Initial PRD audit wrapper; validator→reviewer orchestration; blocking PRD diagram contract gate; combined report contract for fixer |
 

@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [PRD, Audit Report, Review Report, BRD]
     downstream_artifacts: [Fixed PRD, Fix Report]
-    version: "2.3"
-    last_updated: "2026-03-01"
+    version: "2.4"
+    last_updated: "2026-03-02"
 ---
 
 # doc-prd-fixer
@@ -305,9 +305,9 @@ def fix_link_path(prd_location: str, target_path: str) -> str:
 
 ---
 
-### Phase 3: Fix Element IDs
+### Phase 3: Fix Element IDs (BLOCKING)
 
-Converts invalid element IDs to correct format.
+Converts invalid element IDs to correct format. **Element code violations are now BLOCKING** - the PRD audit will fail until these are fixed.
 
 **Conversion Rules**:
 
@@ -319,7 +319,7 @@ Converts invalid element IDs to correct format.
 | `US-XXX` | Legacy pattern | `PRD.NN.05.SS` |
 | `AC-XXX` | Legacy pattern | `PRD.NN.06.SS` |
 
-**Type Code Mapping** (PRD-specific valid codes: 01-09, 11, 22, 24):
+**Type Code Mapping** (PRD-specific valid codes: 01-10, 22, 24, 32):
 
 | Invalid Code | Valid Code | Element Type |
 |--------------|------------|--------------|
@@ -328,6 +328,30 @@ Converts invalid element IDs to correct format.
 | 35 | 06 | Acceptance Criterion |
 | 10 | 09 | Business Rule |
 | 12 | 11 | Interface Requirement |
+
+**Section-Element Type Code Mapping (BLOCKING Enforcement)**:
+
+Elements MUST use the correct type code based on their section:
+
+| Section | Expected Type Code | Element Type |
+|---------|-------------------|--------------|
+| 5 | 08 | Metric/KPI |
+| 7 | 09 | User Story |
+| 8 | 01 | Functional Requirement |
+| 9 | 02 | Quality Attribute |
+| 10 | 32 | Architecture Topic |
+| 12 | 07 | Risk |
+| 14 | 06 | Acceptance Criteria |
+
+**Fix Action for Section Mismatch (PRD-E022)**:
+
+When `PRD.NN.05.*` IDs appear in Section 5 (Success Metrics), convert to `PRD.NN.08.*`:
+
+```python
+# Section 5 metrics must use type code 08, not 05
+old_id = "PRD.01.05.01"  # Wrong: uses section number as type code
+new_id = "PRD.01.08.01"  # Correct: uses Metric type code 08
+```
 
 **Regex Patterns**:
 
@@ -1024,6 +1048,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.4 | 2026-03-02 | **Element Code Fixes (BLOCKING)**: Phase 3 element ID fixes now BLOCKING; Added section-element type code mapping enforcement; PRD-E020/PRD-E022 violations require fix before audit can pass |
 | 2.3 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-reviewer` to `doc-brd-audit` (unified quality gate) |
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; added compatibility for `PRD-NN.A_audit_report_vNNN.md` (preferred) with legacy `PRD-NN.R_review_report_vNNN.md` support |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |

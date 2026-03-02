@@ -9,7 +9,8 @@
 #   --check=NAME    Run specific check only:
 #                   placeholders|downstream|counts|index|crosslinks|diagrams|
 #                   glossary|duplicates|costs|sizes|traceability|coverage|
-#                   structure|sys_ready|hypothesis|glossary_path|tokens|yaml|dates
+#                   structure|sys_ready|hypothesis|glossary_path|tokens|yaml|dates|
+#                   element_codes
 #   --errors-only   Only report errors, skip warnings and info
 # Exit Codes:
 #   0 = All checks passed
@@ -747,6 +748,53 @@ check_date_format() {
 }
 
 # =============================================================================
+# GATE-20: Standardized Element Type Codes (BLOCKING)
+# =============================================================================
+check_element_codes() {
+  echo "--- GATE-20: Standardized Element Type Codes (BLOCKING) ---"
+  local found=0
+
+  # Get the script directory to find the Python validator
+  local SCRIPT_DIR
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local REPO_ROOT
+  REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+  local VALIDATOR="${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_prd_standardized_element_codes.py"
+
+  if [[ ! -f "$VALIDATOR" ]]; then
+    echo -e "${RED}GATE-E020: Element code validator not found: $VALIDATOR${NC}"
+    ((ERRORS++)) || true
+    echo ""
+    return
+  fi
+
+  # Run the Python validator
+  local output
+  output=$(python3 "$VALIDATOR" "$PRD_DIR" --strict 2>&1) || true
+  local exit_code=$?
+
+  if [[ $exit_code -eq 2 ]]; then
+    # Parse errors from output
+    while IFS= read -r line; do
+      if [[ "$line" =~ ^\[ERROR\] ]]; then
+        echo -e "${RED}$line${NC}"
+        ((ERRORS++)) || true
+        ((found++)) || true
+      elif [[ "$line" =~ ^\[WARN\] ]]; then
+        echo -e "${YELLOW}$line${NC}"
+        ((WARNINGS++)) || true
+      fi
+    done <<< "$output"
+  elif [[ $exit_code -eq 0 ]]; then
+    echo -e "${GREEN}   All PRD element type codes are valid${NC}"
+  else
+    echo -e "${RED}GATE-E020: Element code validation failed with exit code $exit_code${NC}"
+    ((ERRORS++)) || true
+  fi
+  echo ""
+}
+
+# =============================================================================
 # Run Checks
 # =============================================================================
 
@@ -771,6 +819,7 @@ if [[ -n "$SPECIFIC_CHECK" ]]; then
     tokens) check_token_count ;;
     yaml) check_yaml_frontmatter ;;
     dates) check_date_format ;;
+    element_codes) check_element_codes ;;
     *) echo "Unknown check: $SPECIFIC_CHECK"; exit 3 ;;
   esac
 else
@@ -793,6 +842,7 @@ else
   check_token_count
   check_yaml_frontmatter
   check_date_format
+  check_element_codes
 fi
 
 # =============================================================================

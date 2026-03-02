@@ -17,8 +17,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
-    version: "2.7"
-    last_updated: "2026-03-01"
+    version: "2.8"
+    last_updated: "2026-03-02"
 ---
 
 # doc-prd-autopilot
@@ -497,8 +497,15 @@ After PRD generation, validate EARS-Ready score.
   - `PRD-E025` (missing `@diagram: sequence-*`)
   - `PRD-E026` (sequence diagram missing `alt/else` exception path)
 
+**Blocking Element Code Contract Gate**:
+- Autopilot must fail Phase 4 when element type codes violate naming standards:
+  - `PRD-E020` (element type code not valid for PRD)
+  - `PRD-E022` (section-element type code mismatch)
+- Section-element mapping enforcement (e.g., Section 5 metrics must use type `08`)
+
 **Report Requirement**:
 - Include `Diagram Contract Compliance: PASS/FAIL` in phase summary output.
+- Include `Element Code Compliance: PASS/FAIL` in phase summary output.
 
 ### Step 6: Review & Fix Cycle (v2.3)
 
@@ -1359,6 +1366,7 @@ docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.8 | 2026-03-02 | **Element Code Contract Gate (BLOCKING)**: Added element type code validation as blocking gate in Phase 4; PRD-E020/PRD-E022 now fail autopilot; Added section-element mapping enforcement; Report must include Element Code Compliance status |
 | 2.7 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
 | 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; switched PRD references to `ai_dev_ssd_flow`; integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (PRD-NN) triggers review mode; Upstream-type input (BRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
