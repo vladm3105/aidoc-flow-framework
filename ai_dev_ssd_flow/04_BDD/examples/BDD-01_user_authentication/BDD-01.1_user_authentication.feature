@@ -27,7 +27,7 @@
 
 @brd: BRD.01.01.10
 @prd: PRD.01.07.01
-@ears: EARS.01.24.01
+@ears: EARS.01.25.01
 @requirement: REQ-01
 @adr: ADR-01
 @bdd: BDD-01.1:scenarios

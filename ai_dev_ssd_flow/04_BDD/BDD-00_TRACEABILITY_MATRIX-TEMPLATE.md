@@ -123,8 +123,8 @@ Feature: Feature Name
 @brd: BRD.09.01.15
 @brd: BRD.09.01.06
 @prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@ears: EARS.12.24.01
+@ears: EARS.12.25.02
+@ears: EARS.12.25.01
 Feature: Place Limit Order
   As a trader
   I want to place limit orders with specified price and quantity
@@ -147,8 +147,8 @@ Feature: Place Limit Order
 - `@brd: BRD.09.01.15` - Business requirement for request submission
 - `@brd: BRD.09.01.06` - Quality attribute (performance)
 - `@prd: PRD.16.01.03` - Product feature specification
-- `@ears: EARS.12.24.02` - EARS "WHEN trader submits order" event
-- `@ears: EARS.12.24.01` - EARS "THE system SHALL validate order" state
+- `@ears: EARS.12.25.02` - EARS "WHEN trader submits order" event
+- `@ears: EARS.12.25.01` - EARS "THE system SHALL validate order" state
 
 ### 2.4 Example: BDD Documentation with Upstream Tags
 
@@ -163,7 +163,7 @@ Feature: Place Limit Order
 ```markdown
 @brd: BRD.09.01.15, BRD.09.01.06
 @prd: PRD.16.01.03
-@ears: EARS.12.24.02, EARS.12.24.01
+@ears: EARS.12.25.02, EARS.12.25.01
 ```
 
 ### 8.2 Downstream Artifacts

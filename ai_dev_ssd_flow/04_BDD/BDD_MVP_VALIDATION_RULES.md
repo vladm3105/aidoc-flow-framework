@@ -164,7 +164,7 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 ```gherkin
 @brd: BRD.NN.EE.SS    # REQUIRED - business requirements
 @prd: PRD.NN.EE.SS    # REQUIRED - product requirements
-@ears: EARS.NN.EE.SS  # REQUIRED - engineering requirements
+@ears: EARS.NN.TT.SS  # REQUIRED - engineering requirements (TT in {25,02,03,04})
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NN`) is REQUIRED.
@@ -187,7 +187,7 @@ Feature: My Feature
 ```gherkin
 @brd:BRD.01.01.01
 @prd:PRD.01.01.01
-@ears:EARS.01.24.01
+@ears:EARS.01.25.01
 Feature: My Feature
 ```
 
@@ -255,6 +255,16 @@ grep -n "^#.*@ears:" docs/04_BDD/BDD-*/BDD-*.feature
 |--------------|------|---------|
 | Test Scenario | 14 | BDD.02.14.01 |
 | Step | 15 | BDD.02.15.01 |
+
+**Section-to-Element-Type Mapping**:
+
+| BDD Section / Content Block | Required Code(s) | ID Pattern |
+|-----------------------------|------------------|------------|
+| `@scenario-id` tags on `Scenario` / `Scenario Outline` | 14 | `BDD.NN.14.SS` |
+| Step-level ID references (when explicitly annotated) | 15 | `BDD.NN.15.SS` |
+| Upstream `@brd` references | BRD TT allowlist | `BRD.NN.TT.SS` |
+| Upstream `@prd` references | PRD TT allowlist | `PRD.NN.TT.SS` |
+| Upstream `@ears` references | 25, 02, 03, 04 | `EARS.NN.TT.SS` |
 
 **Fix**: Replace `Scenario: TS-01` with `Scenario: BDD.02.14.01`
 
@@ -447,7 +457,7 @@ done
 @index: BDD-02.0_index.md
 @brd:BRD.02.03.14
 @prd:PRD.02.05.14
-@ears:EARS.02.14.01
+@ears:EARS.02.25.01
 
 # Subsection file (BDD-02.24.01_performance.feature)
 @section: 2.24.01
@@ -456,7 +466,7 @@ done
 @index: BDD-02.0_index.md
 @brd:BRD.02.03.24
 @prd:PRD.02.05.24
-@ears:EARS.02.24.01
+@ears:EARS.02.25.01
 
 # Aggregator file (BDD-02.12.00_query.feature)
 @redirect
@@ -733,7 +743,7 @@ find docs/BDD -name "BDD-*.feature" -exec python 04_BDD/scripts/validate_bdd.py 
 [FAIL] Missing @brd tag        (ALL three tags are MANDATORY)
 [PASS] @brd: BRD.01.01.30
    @prd: PRD.01.01.02
-   @ears: EARS.01.24.03
+  @ears: EARS.01.25.03
 ```
 
 ### Mistake #2: Subjective Language

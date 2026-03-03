@@ -67,6 +67,9 @@ VALID_SCENARIO_TYPES = {"success", "optional", "recovery", "parameterized", "err
 VALID_PRIORITY_TAGS = {"@p0-critical", "@p1-high", "@p2-medium", "@p3-low"}
 SCENARIO_TYPE_PATTERN = re.compile(r"^@scenario-type:(success|optional|recovery|parameterized|error)$")
 SCENARIO_ID_PATTERN = re.compile(r"^@scenario-id:BDD\.\d{2,9}\.14\.\d{2,9}$")
+BRD_TAG_PATTERN = re.compile(r"^\s*@brd:\s*BRD\.\d{2,9}\.\d{2,9}\.\d{2,9}\s*$", re.IGNORECASE)
+PRD_TAG_PATTERN = re.compile(r"^\s*@prd:\s*PRD\.\d{2,9}\.\d{2,9}\.\d{2,9}\s*$", re.IGNORECASE)
+EARS_TAG_PATTERN = re.compile(r"^\s*@ears:\s*EARS\.\d{2,9}\.(25|02|03|04)\.\d{2,9}\s*$", re.IGNORECASE)
 
 
 # =============================================================================
@@ -346,10 +349,21 @@ def validate_step_order(parsed: Dict, result: ValidationResult):
             last_type = current_type
 
 
-def validate_traceability_tags(parsed: Dict, result: ValidationResult):
-    """Validate cumulative traceability tags (Layer 4 requires @brd, @prd, @ears)."""
+def validate_traceability_tags(parsed: Dict, content: str, result: ValidationResult):
+    """Validate cumulative traceability tags (Layer 4 requires @brd, @prd, @ears) and strict ID formats."""
     all_tags = parsed["tags"]
     header = "\n".join(parsed["header_comments"])
+
+    content_lines = content.split("\n")
+
+    # Blocking: traceability tags in comments are invalid for Gherkin-native parsing
+    for idx, line in enumerate(content_lines, 1):
+        stripped = line.strip()
+        if stripped.startswith("#") and ("@brd:" in stripped or "@prd:" in stripped or "@ears:" in stripped):
+            result.add_error(
+                "BDD-E005",
+                f"Traceability tag found in comment at line {idx}. Use Gherkin-native tags before Feature:"
+            )
 
     # Check for required tags
     has_brd = any("@brd" in tag or "@brd:" in header for tag in all_tags) or "@brd:" in header
@@ -369,6 +383,26 @@ def validate_traceability_tags(parsed: Dict, result: ValidationResult):
             "BDD-E005",
             f"Missing cumulative traceability tags (Layer 4 requires): {', '.join(missing)}"
         )
+
+    # Strict tag format checks (including EARS TT allowlist)
+    brd_lines = [line for line in content_lines if line.strip().lower().startswith("@brd:")]
+    prd_lines = [line for line in content_lines if line.strip().lower().startswith("@prd:")]
+    ears_lines = [line for line in content_lines if line.strip().lower().startswith("@ears:")]
+
+    for line in brd_lines:
+        if not BRD_TAG_PATTERN.match(line):
+            result.add_error("BDD-E005", f"Invalid @brd format: '{line.strip()}'. Use @brd:BRD.NN.TT.SS")
+
+    for line in prd_lines:
+        if not PRD_TAG_PATTERN.match(line):
+            result.add_error("BDD-E005", f"Invalid @prd format: '{line.strip()}'. Use @prd:PRD.NN.TT.SS")
+
+    for line in ears_lines:
+        if not EARS_TAG_PATTERN.match(line):
+            result.add_error(
+                "BDD-E005",
+                f"Invalid @ears format: '{line.strip()}'. Use @ears:EARS.NN.TT.SS with TT in {{25,02,03,04}}"
+            )
 
 
 def validate_scenario_categories(parsed: Dict, result: ValidationResult):
@@ -526,7 +560,7 @@ def validate_bdd_file(file_path: Path) -> ValidationResult:
     validate_user_story(parsed, result)
     validate_scenarios(parsed, result)
     validate_step_order(parsed, result)
-    validate_traceability_tags(parsed, result)
+    validate_traceability_tags(parsed, content, result)
     validate_required_scenario_tags(parsed, result)
     validate_scenario_id_uniqueness(parsed, result)
     validate_scenario_categories(parsed, result)

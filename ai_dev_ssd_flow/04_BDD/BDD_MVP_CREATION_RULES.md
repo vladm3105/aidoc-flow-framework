@@ -677,7 +677,7 @@ docs/04_BDD/
 ## Document Control | metadata table |
 @brd: BRD.NN.EE.SS
 @prd: PRD.NN.EE.SS
-@ears: EARS.NN.EE.SS
+@ears: EARS.NN.TT.SS
 
 Feature: [Business Capability Title]
   As a [stakeholder role]
@@ -747,7 +747,7 @@ Feature: [Business Capability Title]
 **Required Tags**:
 - `@brd: BRD.NN.EE.SS` - Business requirements upstream (sub-ID dot notation)
 - `@prd: PRD.NN.EE.SS` - Product requirements upstream (sub-ID dot notation)
-- `@ears: EARS.NN.EE.SS` - Engineering requirements upstream (sub-ID dot notation)
+- `@ears: EARS.NN.TT.SS` - Engineering requirements upstream (TT in {25,02,03,04})
 
 ### 4.1 Element ID Format (MANDATORY)
 
@@ -757,6 +757,16 @@ Feature: [Business Capability Title]
 |--------------|------|---------|
 | Test Scenario | 14 | BDD.02.14.01 |
 | Step | 15 | BDD.02.15.01 |
+
+**Section-to-Element-Type Mapping**:
+
+| BDD Section / Content Block | Required Code(s) | ID Pattern |
+|-----------------------------|------------------|------------|
+| `@scenario-id` tags on `Scenario` / `Scenario Outline` | 14 | `BDD.NN.14.SS` |
+| Step-level ID references (when explicitly annotated) | 15 | `BDD.NN.15.SS` |
+| Upstream `@brd` references | BRD TT allowlist | `BRD.NN.TT.SS` |
+| Upstream `@prd` references | PRD TT allowlist | `PRD.NN.TT.SS` |
+| Upstream `@ears` references | 25, 02, 03, 04 | `EARS.NN.TT.SS` |
 
 > [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `SCENARIO-XXX` → Use `BDD.NN.14.SS`
@@ -878,7 +888,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 ```gherkin
 @brd: BRD.NN.EE.SS    # MANDATORY - business requirements
 @prd: PRD.NN.EE.SS    # MANDATORY - product requirements
-@ears: EARS.NN.EE.SS  # MANDATORY - engineering requirements
+@ears: EARS.NN.TT.SS  # MANDATORY - engineering requirements (TT in {25,02,03,04})
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NN`) is REQUIRED.
@@ -961,7 +971,7 @@ Feature: BDD-03: Core Behaviors
 | Mistake | Correct |
 |---------|---------|
 | `Status: Approved` (with <90% ADR-Ready score) | `Status: In Review` or `Status: Draft` |
-| Missing @ears traceability tag | `@ears: EARS.NN.EE.SS` |
+| Missing @ears traceability tag | `@ears: EARS.NN.TT.SS` |
 | Scenario without tags | Add `@primary`, `@negative`, `@boundary` tags |
 | `Given-When-Then` without concrete values | Use specific data in steps |
 | Vague outcomes like "should work" | Observable verification: "response status code is 200" |
@@ -978,7 +988,7 @@ Feature: BDD-03: Core Behaviors
 ```gherkin
 # @brd: BRD.01.01.01
 # @prd: PRD.01.01.01
-# @ears: EARS.01.24.01
+# @ears: EARS.01.25.01
 Feature: My Feature
 ```
 
@@ -986,7 +996,7 @@ Feature: My Feature
 ```gherkin
 @brd:BRD.01.01.01
 @prd:PRD.01.01.01
-@ears:EARS.01.24.01
+@ears:EARS.01.25.01
 Feature: My Feature
 ```
 
