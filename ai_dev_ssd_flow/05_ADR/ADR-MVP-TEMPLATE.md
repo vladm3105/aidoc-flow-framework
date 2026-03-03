@@ -96,6 +96,18 @@ AI_CONTEXT_END
 
 **ID Format**: `ADR.NN.10.SS` (Decision)
 
+### 3.0 Element ID Mapping
+
+| Section / Content Block | Required Code(s) | ID Pattern |
+|-------------------------|------------------|------------|
+| Section 3 Decision entries | 10 | `ADR.NN.10.SS` |
+| Section 4 Alternatives | 12 | `ADR.NN.12.SS` |
+| Section 5 Consequences | 13 | `ADR.NN.13.SS` |
+| Upstream `@brd` tags | BRD TT allowlist | `BRD.NN.TT.SS` |
+| Upstream `@prd` tags | PRD TT allowlist | `PRD.NN.TT.SS` |
+| Upstream `@ears` tags | 25, 02, 03, 04 | `EARS.NN.TT.SS` |
+| Upstream `@bdd` tags | 14, 15 | `BDD.NN.TT.SS` |
+
 ### 3.1 Chosen Solution (ADR.NN.10.01)
 
 **We will use**: [Selected option/technology/approach]
@@ -323,8 +335,8 @@ Required declaration block:
 
 ```markdown
 @brd: BRD.NN.32.SS
-@prd: PRD.NN.EE.SS
-@ears: EARS.NN.24.SS
+@prd: PRD.NN.TT.SS
+@ears: EARS.NN.25.SS
 ```
 
 ### 9.4 Cross-Links (Same-Layer)

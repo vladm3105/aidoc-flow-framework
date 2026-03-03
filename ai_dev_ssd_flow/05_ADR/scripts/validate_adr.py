@@ -89,6 +89,7 @@ REQUIRED_SECTIONS_MVP = [
     (r"^## 8\. Verification", "Section 8: Verification"),
     (r"^## 9\. Traceability", "Section 9: Traceability"),
     (r"^## 10\. Related Decisions", "Section 10: Related Decisions"),
+    (r"^## 11\. MVP Lifecycle", "Section 11: MVP Lifecycle"),
 ]
 
 # Map profiles to section lists
@@ -128,6 +129,11 @@ FILE_NAME_PATTERN_DECIMAL = r"^ADR-\d{2,}\.\d+_[A-Za-z0-9_]+\.md$"
 FILE_NAME_PATTERN_SECTION_SHORT = r"^ADR-\d{2,}\.\d+_[A-Za-z_]+\.md$"
 # Section (full): ADR-NN+.S_slug_section_type.md (backward compatible)
 FILE_NAME_PATTERN_SECTION_FULL = r"^ADR-\d{2,}\.\d+_[A-Za-z0-9_]+_[A-Za-z_]+\.md$"
+
+BRD_TAG_PATTERN = re.compile(r"^\s*@brd:\s*BRD\.\d{2,9}\.\d{2,9}\.\d{2,9}(?:\s*,\s*BRD\.\d{2,9}\.\d{2,9}\.\d{2,9})*\s*$", re.IGNORECASE)
+PRD_TAG_PATTERN = re.compile(r"^\s*@prd:\s*PRD\.\d{2,9}\.\d{2,9}\.\d{2,9}(?:\s*,\s*PRD\.\d{2,9}\.\d{2,9}\.\d{2,9})*\s*$", re.IGNORECASE)
+EARS_TAG_PATTERN = re.compile(r"^\s*@ears:\s*EARS\.\d{2,9}\.(25|02|03|04)\.\d{2,9}(?:\s*,\s*EARS\.\d{2,9}\.(25|02|03|04)\.\d{2,9})*\s*$", re.IGNORECASE)
+BDD_TAG_PATTERN = re.compile(r"^\s*@bdd:\s*BDD\.\d{2,9}\.(14|15)\.\d{2,9}(?:\s*,\s*BDD\.\d{2,9}\.(14|15)\.\d{2,9})*\s*$", re.IGNORECASE)
 
 
 def is_companion_report_file(file_path: Path) -> bool:
@@ -481,7 +487,7 @@ def validate_architecture_section(content: str, result: ValidationResult, metada
         profile = metadata["custom_fields"].get("template_profile", "standard")
     
     if profile == "mvp":
-        section_pattern = r"## 6\. Architecture Overview"
+        section_pattern = r"## 6\. Architecture Flow"
     else:
         section_pattern = r"## 8\. Architecture Flow"
 
@@ -543,29 +549,69 @@ def validate_status(content: str, result: ValidationResult, metadata: Optional[D
         )
 
 
-def validate_traceability(content: str, result: ValidationResult):
-    """Validate upstream traceability tags."""
-    # Look for cumulative tags
-    has_brd = bool(re.search(r"@brd:", content))
-    has_prd = bool(re.search(r"@prd:", content))
-    has_ears = bool(re.search(r"@ears:", content))
-    has_bdd = bool(re.search(r"@bdd:", content))
+def validate_traceability(content: str, result: ValidationResult, is_adr_ref: bool = False):
+    """Validate upstream traceability tags and strict ID formats."""
+    if is_adr_ref:
+        result.add_info("ADR-I005", "ADR-REF detected: traceability tag chain validation skipped")
+        return
+
+    lines = content.split("\n")
+    brd_lines = [line for line in lines if line.strip().lower().startswith("@brd:")]
+    prd_lines = [line for line in lines if line.strip().lower().startswith("@prd:")]
+    ears_lines = [line for line in lines if line.strip().lower().startswith("@ears:")]
+    bdd_lines = [line for line in lines if line.strip().lower().startswith("@bdd:")]
 
     missing = []
-    if not has_brd:
+    if not brd_lines:
         missing.append("@brd")
-    if not has_prd:
+    if not prd_lines:
         missing.append("@prd")
-    if not has_ears:
+    if not ears_lines:
         missing.append("@ears")
-    if not has_bdd:
+    if not bdd_lines:
         missing.append("@bdd")
 
     if missing:
-        result.add_warning(
-            "ADR-W001",
+        result.add_error(
+            "ADR-E008",
             f"Missing upstream traceability tags: {', '.join(missing)}"
         )
+
+    for line in brd_lines:
+        if not BRD_TAG_PATTERN.match(line):
+            result.add_error("ADR-E008", f"Invalid @brd format: '{line.strip()}'. Use @brd: BRD.NN.TT.SS")
+
+    for line in prd_lines:
+        if not PRD_TAG_PATTERN.match(line):
+            result.add_error("ADR-E008", f"Invalid @prd format: '{line.strip()}'. Use @prd: PRD.NN.TT.SS")
+
+    for line in ears_lines:
+        if not EARS_TAG_PATTERN.match(line):
+            result.add_error("ADR-E008", f"Invalid @ears format: '{line.strip()}'. Use @ears: EARS.NN.TT.SS with TT in {{25,02,03,04}}")
+
+    for line in bdd_lines:
+        if not BDD_TAG_PATTERN.match(line):
+            result.add_error("ADR-E008", f"Invalid @bdd format: '{line.strip()}'. Use @bdd: BDD.NN.TT.SS with TT in {{14,15}}")
+
+
+def validate_element_id_mapping(content: str, result: ValidationResult, is_adr_ref: bool = False):
+    """Validate ADR element IDs and reject legacy DEC/ALT/CON patterns."""
+    if is_adr_ref:
+        return
+
+    if re.search(r"\bDEC-\d+\b", content):
+        result.add_error("ADR-E009", "Legacy DEC-XXX pattern found. Use ADR.NN.10.SS")
+    if re.search(r"\bALT-\d+\b", content):
+        result.add_error("ADR-E009", "Legacy ALT-XXX pattern found. Use ADR.NN.12.SS")
+    if re.search(r"\bCON-\d+\b", content):
+        result.add_error("ADR-E009", "Legacy CON-XXX pattern found. Use ADR.NN.13.SS")
+
+    if not re.search(r"ADR\.\d{2,9}\.10\.\d{2,9}", content):
+        result.add_error("ADR-E009", "Missing Decision element ID (ADR.NN.10.SS)")
+    if not re.search(r"ADR\.\d{2,9}\.12\.\d{2,9}", content):
+        result.add_error("ADR-E009", "Missing Alternative element ID (ADR.NN.12.SS)")
+    if not re.search(r"ADR\.\d{2,9}\.13\.\d{2,9}", content):
+        result.add_error("ADR-E009", "Missing Consequence element ID (ADR.NN.13.SS)")
 
 
 def validate_optional_sections(content: str, result: ValidationResult):
@@ -632,6 +678,7 @@ def validate_adr_file(file_path: Path) -> ValidationResult:
 
     # Determine if template
     is_template = "TEMPLATE" in file_path.name.upper()
+    is_adr_ref = file_path.name.upper().startswith("ADR-REF-")
 
     # Parse frontmatter
     metadata, body = parse_frontmatter(content)
@@ -642,13 +689,13 @@ def validate_adr_file(file_path: Path) -> ValidationResult:
     # Run validations
     validate_metadata(metadata, result, is_template)
     validate_structure(content, sections, result, metadata)
-    validate_structure(content, sections, result, metadata)
     validate_context_section(content, result, metadata)
     validate_decision_section(content, result, metadata)
     validate_consequences_section(content, result, metadata)
     validate_architecture_section(content, result, metadata)
     validate_status(content, result, metadata)
-    validate_traceability(content, result)
+    validate_traceability(content, result, is_adr_ref)
+    validate_element_id_mapping(content, result, is_adr_ref)
     validate_optional_sections(content, result)
     validate_crosslinking_tags(content, result)
 

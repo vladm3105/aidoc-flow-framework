@@ -72,21 +72,21 @@ repos:
         language: system
         files: ^docs/05_ADR/.*\.md$
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: adr-quality-gate
         name: Run ADR quality gate (template-driven)
         entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh docs/05_ADR
         language: system
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: adr-sys-ready-score
         name: Validate ADR SYS-ready score (template v1.1)
         entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh docs/05_ADR
         language: system
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: sys-core-validator
         name: Validate SYS documents via core validator

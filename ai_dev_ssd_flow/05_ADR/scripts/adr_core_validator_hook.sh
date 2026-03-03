@@ -11,4 +11,4 @@ else
 	ADR_ROOT="${REPO_ROOT}/${INPUT_ROOT}"
 fi
 
-python3 "${SCRIPT_DIR}/validate_adr.py" "${ADR_ROOT}"
+python3 "${SCRIPT_DIR}/validate_adr.py" "${ADR_ROOT}" --strict

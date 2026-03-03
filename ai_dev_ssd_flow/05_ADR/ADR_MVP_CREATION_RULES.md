@@ -151,6 +151,18 @@ ADR documents follow a streamlined **11-section** MVP structure:
 | Alternative | 12 | ADR.02.12.01 |
 | Consequence | 13 | ADR.02.13.01 |
 
+**Section-to-Element-Type Mapping**:
+
+| ADR Section / Content Block | Required Code(s) | ID Pattern |
+|-----------------------------|------------------|------------|
+| Section 3 Decision entries | 10 | `ADR.NN.10.SS` |
+| Section 4 Alternatives | 12 | `ADR.NN.12.SS` |
+| Section 5 Consequences | 13 | `ADR.NN.13.SS` |
+| Upstream `@brd` tags | BRD TT allowlist | `BRD.NN.TT.SS` |
+| Upstream `@prd` tags | PRD TT allowlist | `PRD.NN.TT.SS` |
+| Upstream `@ears` tags | 25, 02, 03, 04 | `EARS.NN.TT.SS` |
+| Upstream `@bdd` tags | 14, 15 | `BDD.NN.TT.SS` |
+
 > [WARN] **REMOVED PATTERNS** - Do NOT use legacy formats like `DEC-XXX`, `ALT-XXX`.
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
@@ -232,10 +244,10 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD.NN.EE.SS
-@prd: PRD.NN.EE.SS
-@ears: EARS.NN.EE.SS
-@bdd: BDD.NN.EE.SS
+@brd: BRD.NN.TT.SS
+@prd: PRD.NN.TT.SS
+@ears: EARS.NN.TT.SS
+@bdd: BDD.NN.TT.SS
 ```
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts
