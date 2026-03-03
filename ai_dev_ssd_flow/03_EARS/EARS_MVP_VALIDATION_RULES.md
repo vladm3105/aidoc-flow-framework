@@ -341,6 +341,18 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 | Element Type | Code | Example |
 |--------------|------|---------|
 | EARS Statement | 25 | EARS.06.25.01 |
+| Performance Quality Attribute | 02 | EARS.06.02.01 |
+| Security Quality Attribute | 03 | EARS.06.03.01 |
+| Reliability Quality Attribute | 04 | EARS.06.04.01 |
+
+**Section-to-Element-Type Mapping**:
+
+| Section | Required Code | ID Pattern |
+|---------|---------------|------------|
+| Section 3 (Requirements) | 25 | `EARS.NN.25.SS` |
+| Section 4.1 (Performance) | 02 | `EARS.NN.02.SS` |
+| Section 4.2 (Security) | 03 | `EARS.NN.03.SS` |
+| Section 4.3 (Reliability) | 04 | `EARS.NN.04.SS` |
 
 > [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - `Event-XXX` → Use `EARS.NN.25.SS`
@@ -361,7 +373,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 #### EARS.06.25.02: Pending Status
 ```
 
-**Fix**: Replace `#### Event-001: L1 Verification Submission` with `#### EARS.06.25.01: L1 Verification Submission`
+**Fix**: Replace non-standard formats (e.g., `Event-001`, `EARS-06-001`) with `#### EARS.06.25.01: ...`
 
 ---
 

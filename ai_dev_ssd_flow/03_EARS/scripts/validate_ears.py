@@ -92,14 +92,15 @@ class EarsValidator:
     }
 
     # === REQUIREMENT ID PATTERN ===
-    # Correct: #### EARS.30.24.01: Title (4-segment element ID format)
-    # Incorrect: #### Event-001: Title, #### State-001: Title
+    # Correct: #### EARS.30.25.01: Title (4-segment element ID format)
+    # Incorrect: #### Event-001: Title, #### State-001: Title, #### EARS-30-001: Title
     CORRECT_REQ_ID_PATTERN = r"^####\s+EARS\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}):\s+.+"
     INCORRECT_REQ_ID_PATTERNS = [
         r"^####\s+Event-\d+:\s+",
         r"^####\s+State-\d+:\s+",
         r"^####\s+Unwanted-\d+:\s+",
         r"^####\s+Ubiquitous-\d+:\s+",
+        r"^####\s+EARS-\d{2,9}-\d{2,9}:\s+",
     ]
 
     # === TABLE SYNTAX ===
@@ -140,7 +141,7 @@ class EarsValidator:
         lines = clean_content.split("\n")
 
         # Extract document ID from filename
-        doc_id_match = re.search(r"EARS-(\d{3})", file_path.name)
+        doc_id_match = re.search(r"EARS-(\d{2,9})(?:\.\d{2,9})?", file_path.name)
         doc_id = doc_id_match.group(1) if doc_id_match else None
 
         # Extract frontmatter (use original content to preserve YAML structure)
@@ -468,7 +469,7 @@ class EarsValidator:
     # === REQUIREMENT ID VALIDATORS ===
 
     def _validate_requirement_ids(self, file_path: Path, lines: list[str], doc_id: str) -> None:
-        """Validate requirement ID format matches EARS-{DocID}-{Num}: Title pattern."""
+        """Validate requirement ID format matches EARS.DocID.Type.Seq: Title pattern."""
         incorrect_count = 0
         correct_count = 0
         found_ids = []
@@ -485,14 +486,14 @@ class EarsValidator:
                             severity="error",
                             message=f"Non-standard requirement ID format at line {i}: '{line.strip()[:50]}...'",
                             line=i,
-                            fix_suggestion=f"Change to: #### EARS-{doc_id}-NNN: Title"
+                            fix_suggestion=f"Change to: #### EARS.{doc_id or 'NN'}.25.SS: Title"
                         ))
 
             # Count correct patterns and collect IDs for uniqueness check
             match = re.match(self.CORRECT_REQ_ID_PATTERN, line)
             if match:
                 correct_count += 1
-                req_id = f"EARS-{match.group(1)}-{match.group(2)}-{match.group(3)}"
+                req_id = f"EARS.{match.group(1)}.{match.group(2)}.{match.group(3)}"
                 found_ids.append((req_id, i))
 
         # Summary if many incorrect
@@ -502,7 +503,7 @@ class EarsValidator:
                 rule="E030",
                 severity="error",
                 message=f"Total {incorrect_count} requirement IDs using non-standard format (Event-N, State-N)",
-                fix_suggestion=f"Convert all to: #### EARS-{doc_id}-NNN: Title"
+                fix_suggestion=f"Convert all to: #### EARS.{doc_id or 'NN'}.25.SS: Title"
             ))
 
         # E042: Check for duplicate IDs

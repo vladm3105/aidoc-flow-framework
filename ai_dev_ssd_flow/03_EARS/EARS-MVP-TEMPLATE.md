@@ -109,9 +109,18 @@ and behavioral test specifications (BDD). Each EARS statement must be:
 
 ## 3. Requirements
 
+### 3.0 Element ID Mapping
+
+| Section | ID Pattern | Element Type Code | Notes |
+|---------|------------|-------------------|-------|
+| 3.x Requirements | `EARS.NN.25.SS` | 25 | EARS statement IDs, sequential within document |
+| 4.1 Performance QA | `EARS.NN.02.SS` | 02 | Performance quality attributes |
+| 4.2 Security QA | `EARS.NN.03.SS` | 03 | Security quality attributes |
+| 4.3 Reliability QA | `EARS.NN.04.SS` | 04 | Reliability quality attributes |
+
 ### 3.1 Event-Driven Requirements (WHEN-THE-SHALL-WITHIN)
 
-**EARS.NN.25.001: [Requirement Name]**
+**EARS.NN.25.01: [Requirement Name]**
 ```
 WHEN [trigger condition],
 THE [system component] SHALL [response action]
@@ -121,7 +130,7 @@ WITHIN [timing constraint] (@threshold: PRD.NN.category.key).
 
 ### 3.2 State-Driven Requirements (WHILE-THE-SHALL-WITHIN)
 
-**EARS.NN.25.101: [State Behavior]**
+**EARS.NN.25.02: [State Behavior]**
 ```
 WHILE [state condition],
 THE [system component] SHALL [continuous behavior]
@@ -131,7 +140,7 @@ WITHIN [operational context].
 
 ### 3.3 Unwanted Behavior Requirements (IF-THE-SHALL-WITHIN)
 
-**EARS.NN.25.201: [Error Scenario]**
+**EARS.NN.25.03: [Error Scenario]**
 ```
 IF [error condition],
 THE [system component] SHALL [recovery action]
@@ -141,7 +150,7 @@ WITHIN [timing constraint].
 
 ### 3.4 Ubiquitous Requirements (THE-SHALL)
 
-**EARS.NN.25.401: [System-Wide Requirement]**
+**EARS.NN.25.04: [System-Wide Requirement]**
 ```
 THE [system component] SHALL [universal behavior]
 for [scope/context].

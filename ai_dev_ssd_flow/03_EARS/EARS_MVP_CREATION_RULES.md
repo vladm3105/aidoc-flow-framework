@@ -142,10 +142,25 @@ EARS documents require specific structural elements for behavioral specification
 | Element Type | Code | Example |
 |--------------|------|---------|
 | EARS Statement | 25 | EARS.02.25.01 |
+| Performance Quality Attribute | 02 | EARS.02.02.01 |
+| Security Quality Attribute | 03 | EARS.02.03.01 |
+| Reliability Quality Attribute | 04 | EARS.02.04.01 |
+
+### 4.2 Section-to-Element-Type Mapping (MANDATORY)
+
+| EARS Section | Element Type Code | ID Pattern | Guidance |
+|--------------|-------------------|------------|----------|
+| Section 3 (Requirements) | 25 | `EARS.NN.25.SS` | Use for Event/State/Unwanted/Ubiquitous requirement statements |
+| Section 4.1 (Performance) | 02 | `EARS.NN.02.SS` | Use for measurable performance quality attributes |
+| Section 4.2 (Security) | 03 | `EARS.NN.03.SS` | Use for security and compliance quality attributes |
+| Section 4.3 (Reliability) | 04 | `EARS.NN.04.SS` | Use for availability/reliability quality attributes |
+
+**Sequencing rule**: `SS` is sequential within each element type code for a document.
 
 > [WARN] **REMOVED PATTERNS** - Do NOT use:
 > - Category prefixes: `E-XXX`, `S-XXX`, `U-XXX`, `UB-XXX`, `EVENT-XXX`, `STATE-XXX`, `UNWANTED-XXX`, `UBIQ-XXX`
 > - 3-segment format: `EARS.NN.EE`
+> - Dash requirement format: `EARS-NN-XXX`
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
