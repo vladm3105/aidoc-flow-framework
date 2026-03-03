@@ -34,6 +34,7 @@ This index shows where to find validation guidance for each SDD document type.
 | [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) | CLI reference | Commands for all document types |
 | [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) | Architecture & patterns | Master orchestrator model, gate coverage |
 | [VALIDATION_STRATEGY_GUIDE.md#cross-layer-validation-pattern-brdprdearsbdd](./VALIDATION_STRATEGY_GUIDE.md#cross-layer-validation-pattern-brdprdearsbdd) | BRD/PRD/EARS/BDD pattern matrix | Cross-layer hook and score pattern |
+| [VALIDATION_TEMPLATE_GUIDE.md#mandatory-section-to-id-mapping-matrix-all-mvp-templates](./VALIDATION_TEMPLATE_GUIDE.md#mandatory-section-to-id-mapping-matrix-all-mvp-templates) | Section-to-ID mapping matrix | Per-template section/content to `TYPE.NN.TT.SS` mapping |
 | [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md) | Decision framework | AI assistant guidance for validation decisions |
 
 **When to use:** Universal guidance applicable across all SDD layers.

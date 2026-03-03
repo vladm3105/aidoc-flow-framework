@@ -41,6 +41,56 @@ Every document type (BRD, PRD, REQ, SPEC, etc.) needs:
 
 ---
 
+## Mandatory Section-to-ID Mapping Matrix (All MVP Templates)
+
+Use this matrix to keep template sections, validation rules, and ID naming enforcement aligned for every document type.
+
+**Authority order:**
+1. `ID_NAMING_STANDARDS.md` (canonical TT code semantics)
+2. `{TYPE}_MVP_VALIDATION_RULES.md` (type-specific allowed/required codes)
+3. `{TYPE}-MVP-TEMPLATE.md` (section-level placement of ID-bearing elements)
+
+**Required notation for element IDs:** `TYPE.NN.TT.SS`
+
+| Type | ID-bearing Template Sections / Content Blocks | Required TT Codes | Required Pattern |
+|------|-----------------------------------------------|-------------------|------------------|
+| BRD | Business objectives, functional requirements, quality attributes, constraints, assumptions, dependencies, acceptance criteria, risks | `01, 02, 03, 04, 05, 06, 07, 23` | `BRD.NN.TT.SS` |
+| PRD | Functional requirements, quality attributes, acceptance criteria, user stories, use cases, feature items | `01, 02, 06, 09, 11, 22` | `PRD.NN.TT.SS` |
+| EARS | Section 3 requirements, Section 4.1 performance, Section 4.2 security, Section 4.3 reliability | `25, 02, 03, 04` | `EARS.NN.TT.SS` |
+| BDD | Scenario IDs and step-level references in scenario content | `14, 15` | `BDD.NN.TT.SS` |
+| ADR | Decision statements, alternatives, consequences | `10, 12, 13` | `ADR.NN.TT.SS` |
+| SYS | Functional requirements, quality attributes, risks, use cases, system requirements | `01, 02, 07, 11, 26` | `SYS.NN.TT.SS` |
+| REQ | Functional requirements, dependencies, acceptance criteria, atomic requirements | `01, 05, 06, 27` | `REQ.NN.TT.SS` |
+| CTR | Interface definitions, data model definitions, contract clauses | `16, 17, 20` | `CTR.NN.TT.SS` |
+| SPEC | Step definitions, interface definitions, data models, validation rules, specification elements | `15, 16, 17, 21, 28` | `SPEC.NN.TT.SS` |
+| TASKS | Tasks and task items in implementation breakdown sections | `18, 30` | `TASKS.NN.TT.SS` |
+
+### Template Authoring Contract (Mandatory)
+
+For each `{TYPE}-MVP-TEMPLATE.md`, include an explicit "Element ID Mapping" subsection that maps template sections to TT codes used by that type.
+
+Minimum structure:
+
+```markdown
+### Element ID Mapping
+
+| Section / Content Block | TT Code | ID Pattern |
+|-------------------------|---------|------------|
+| Functional Requirements | 01 | TYPE.NN.01.SS |
+| ...                     | ... | ... |
+```
+
+### Validation Contract (Mandatory)
+
+For each `{TYPE}_MVP_VALIDATION_RULES.md`:
+
+- Include a `Common Element Types for {TYPE}` table.
+- Include all removed legacy patterns and their dot-notation replacements.
+- Enforce regex pattern: `^###?\s+TYPE\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$` (or stricter type-specific equivalent).
+- Ensure all examples and fix guidance use current TT mappings from this matrix.
+
+---
+
 ## File Templates
 
 ### 1. {TYPE}_VALIDATION_STRATEGY.md
@@ -259,6 +309,7 @@ Use this checklist to implement validation guides for a new document type:
   - [ ] Update gate table with type-specific gates
   - [ ] Update architecture description
   - [ ] Customize workflows
+  - [ ] Add/verify section-to-TT mapping table matches framework matrix
 
 - [ ] Create `{TYPE}_VALIDATION_COMMANDS.md`
   - [ ] List type-specific validators
@@ -269,6 +320,7 @@ Use this checklist to implement validation guides for a new document type:
   - [ ] Document type-specific decision patterns
   - [ ] Add edge cases
   - [ ] Include workarounds
+  - [ ] Include migration rules from legacy IDs to `TYPE.NN.TT.SS`
 
 ### Phase 2: Scripts (Master Orchestrator)
 
@@ -294,6 +346,7 @@ Use this checklist to implement validation guides for a new document type:
   - [ ] Check required sections
   - [ ] Validate structure
   - [ ] Metadata validation
+  - [ ] Enforce section-specific TT code usage where applicable
 
 - [ ] Create `scripts/validate_{type}_spec_readiness.py`
   - [ ] Scoring logic (0-100%)
@@ -304,6 +357,7 @@ Use this checklist to implement validation guides for a new document type:
   - [ ] ID format validation
   - [ ] Uniqueness check
   - [ ] Hierarchy validation
+  - [ ] TT code allowlist enforcement based on doc-type matrix
 
 - [ ] Create `scripts/add_crosslinks_{type}.py` (if needed)
   - [ ] Cross-link generation
