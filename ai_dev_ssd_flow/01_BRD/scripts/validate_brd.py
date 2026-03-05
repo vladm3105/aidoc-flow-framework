@@ -84,10 +84,13 @@ REQUIRED_SECTIONS_MVP = [
     (r"^## 9\. Acceptance Criteria", "Section 9: Acceptance Criteria"),
     (r"^## 10\. Business Risk Management", "Section 10: Business Risk Management"),
     (r"^## 11\. Implementation Approach", "Section 11: Implementation Approach"),
-    (r"^## 12\. Cost-Benefit Analysis", "Section 12: Cost-Benefit Analysis"),
-    (r"^## 13\. Traceability", "Section 13: Traceability"),
-    (r"^## 14\. Glossary", "Section 14: Glossary"),
-    (r"^## 15\. Appendices", "Section 15: Appendices"),
+    (r"^## 12\. Support and Maintenance", "Section 12: Support and Maintenance"),
+    (r"^## 13\. Cost-Benefit Analysis", "Section 13: Cost-Benefit Analysis"),
+    (r"^## 14\. Project Governance", "Section 14: Project Governance"),
+    (r"^## 15\. Quality Assurance", "Section 15: Quality Assurance"),
+    (r"^## 16\. Traceability", "Section 16: Traceability"),
+    (r"^## 17\. Glossary", "Section 17: Glossary"),
+    (r"^## 18\. Appendices", "Section 18: Appendices"),
 ]
 
 # Map profiles to section lists
@@ -306,6 +309,32 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult, is_tem
         for pattern in FORBIDDEN_TAG_PATTERNS:
             if re.match(pattern, str(tag)):
                 result.add_error("BRD-E003", f"Forbidden tag pattern: '{tag}'")
+
+
+def validate_depends_tags(content: str, metadata: Optional[Dict], result: ValidationResult):
+    """
+    Validate @depends tags for platform BRDs.
+
+    Platform BRDs (BRD-02 to BRD-35) should have @depends tags.
+    """
+    # Extract BRD number from file path
+    file_name = result.file_path
+    match = re.search(r'BRD-(\d{2,})', file_name)
+    if not match:
+        return
+
+    brd_num = int(match.group(1))
+
+    # Platform BRDs (02-35) should have @depends tags
+    if 2 <= brd_num <= 35:
+        depends_count = content.count('@depends:')
+        if depends_count == 0:
+            result.add_warning(
+                "BRD-W010",
+                "Platform BRD should have @depends tags in Section 5 (Dependencies) "
+                "to document upstream BRD dependencies. "
+                "Example: @depends: BRD-01, BRD-40"
+            )
 
 
 def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult, metadata: Optional[Dict] = None):
@@ -530,6 +559,7 @@ def validate_brd_file(file_path: Path) -> ValidationResult:
     # Run validations
     validate_file_name(file_path, result)
     validate_metadata(metadata, result, is_template)
+    validate_depends_tags(content, metadata, result)
     validate_structure(content, sections, result, metadata)
     validate_document_control(content, result)
     validate_business_requirements(content, result, metadata)

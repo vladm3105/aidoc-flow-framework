@@ -13,6 +13,14 @@ custom_fields:
 
 # Business Requirements Documents (BRD)
 
+## Recent Changes
+
+**2026-03-05**: BRD Framework Updates
+- Updated `validate_brd.py` to check 19 sections (§0-18) - was 16 sections
+- Re-enabled pre-commit hooks (were disabled since 2026-02-25)
+- Added @depends validation (warning level) for platform BRDs (BRD-02 to BRD-35)
+- Fixed template-validator section mismatch (Root Cause #1)
+
 ## MVP → PROD → NEW MVP Lifecycle
 
 **Key Principle**: Each BRD represents ONE iteration cycle. When current MVP reaches production and new features are needed, create a **new BRD** for the next cycle.

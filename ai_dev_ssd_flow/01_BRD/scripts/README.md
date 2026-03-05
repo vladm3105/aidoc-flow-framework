@@ -1,5 +1,24 @@
 # BRD Validation Scripts
 
+## Validator Updates (2026-03-05)
+
+### validate_brd.py v2.0
+
+**Breaking Changes**:
+- Section count: 16 → 19 (added §12-15)
+- New validation: @depends tags (warning level)
+- Pre-commit hooks: Re-enabled after 10-day disable
+
+**Migration**:
+- All BRDs must have 19 sections to pass validation
+- Platform BRDs (BRD-02 to BRD-35) should have @depends tags
+- Pre-commit hooks now block incomplete BRDs
+
+**Rollback**:
+- See IPLAN-001 Section 10.1 for rollback procedure
+
+## Scripts
+
 Tools for validating BRD documents. Current scripts:
 
 - [validate_brd_wrapper.sh](./validate_brd_wrapper.sh) — single entrypoint with tiered checks (core blocking, advisory non-blocking).

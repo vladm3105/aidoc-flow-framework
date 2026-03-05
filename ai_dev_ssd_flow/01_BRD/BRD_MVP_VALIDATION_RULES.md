@@ -112,7 +112,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Script**: `01_BRD/scripts/validate_brd_wrapper.sh` (canonical) + `01_BRD/scripts/validate_brd.py` (component)
 **Primary Template**: `BRD-MVP-TEMPLATE.md` (standard template)
 **Framework**: AI Dev Flow SDD (100% compliant)
-**Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
+**Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 19 total sections (fixed validator to match template)
 
 ---
 
@@ -1614,6 +1614,32 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (standard template)
 | **CHECK 23** | Add section 14.5 (Approval and Sign-off) with approval table, criteria, and change control process |
 | **CHECK 24** | Add section 17 subsections 17.1-17.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
 | **CHECK 25** | Replace legacy element IDs (AC-XXX, FR-XXX, BC-XXX, BO-XXX, QA-XXX) with unified format `BRD.NN.TT.SS` |
+
+---
+
+### @depends Tag Validation (NEW)
+
+**Rule**: Platform BRDs (BRD-02 to BRD-35) should have @depends tags.
+
+| BRD Range | @depends Requirement | Validation Level |
+|-----------|---------------------|------------------|
+| BRD-02 to BRD-35 | SHOULD have ≥1 tag | Warning |
+| BRD-36+ (Feature) | MAY have tags | Info |
+| BRD-01 (Foundation) | N/A (no upstream) | Skip |
+
+**Format**:
+```markdown
+## 5. Dependencies
+
+**Upstream Dependencies**:
+- @depends: BRD-01, BRD-40
+
+[Explanation of why this BRD depends on BRD-01 and BRD-40]
+```
+
+**Validation Code**: BRD-W010
+**Severity**: Warning (non-blocking)
+**Fix**: Add @depends tags in Section 5 for platform BRDs
 
 ---
 

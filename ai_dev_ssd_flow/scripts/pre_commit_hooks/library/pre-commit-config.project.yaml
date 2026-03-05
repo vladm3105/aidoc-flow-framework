@@ -151,21 +151,21 @@ repos:
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]  # Temporarily set to manual (was pre-commit)
+        stages: [pre-commit]  # ✅ Re-enabled after validator fix
 
       - id: brd-standardized-element-codes
         name: Validate b-local BRD standardized element type codes
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]  # Temporarily set to manual (was pre-commit)
+        stages: [pre-commit]  # ✅ Re-enabled after validator fix
 
       - id: brd-legacy-patterns
         name: Detect b-local BRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]  # Temporarily set to manual (was pre-commit)
+        stages: [pre-commit]  # ✅ Re-enabled after validator fix
 
       - id: brd-claude-skill-audit
         name: Run Claude BRD skill audit (optional)
