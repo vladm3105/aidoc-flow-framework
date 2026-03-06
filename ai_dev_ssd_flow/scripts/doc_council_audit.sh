@@ -71,14 +71,14 @@ TEMPLATE_FILE="$FRAMEWORK_ROOT/AI_EXPERTS/COUNCIL-MVP-TEMPLATE.md"
 info "Target Document: $TARGET_BASENAME (ID: $doc_id, v$version)"
 info "Generating audit reports via Claude CLI..."
 
-# Internal Temp Files for the 6 persona responses
+# Internal Temp Files for the 7 persona responses
 mkdir -p "/tmp/council_audit_$$"
 TMP_DIR="/tmp/council_audit_$$"
 
 # This is a simplified sequential execution loop for the bash script using Claude CLI
 # In a highly advanced setup, this would be parallelized, but sequential ensures stability for the prototype.
 
-PERSONAS=("architect" "auditor" "domain_specialist" "strategist" "qa_lead" "operator")
+PERSONAS=("architect" "auditor" "domain_specialist" "strategist" "qa_lead" "operator" "integration_expert")
 
 echo "--- Commencing Phase 2 Blind Audit ---"
 
@@ -100,6 +100,22 @@ Output your findings in EXACTLY three sections:
 - 2. Unhandled Edge Cases
 - 3. Alternative Approach
 
+EOF
+
+    # If the persona is integration_expert, append the integration matrix for context
+    if [ "$persona" = "integration_expert" ]; then
+        MATRIX_FILE="$PROJECT_ROOT/docs/01_BRD/BRD-00_INTEGRATION_MATRIX.md"
+        if [ -f "$MATRIX_FILE" ]; then
+            echo "=== SYSTEM INTEGRATION MATRIX ===" >> "$TMP_DIR/prompt_$persona.txt"
+            cat "$MATRIX_FILE" >> "$TMP_DIR/prompt_$persona.txt"
+            echo "=== END SYSTEM INTEGRATION MATRIX ===" >> "$TMP_DIR/prompt_$persona.txt"
+            echo "" >> "$TMP_DIR/prompt_$persona.txt"
+        else
+            warn "Integration matrix not found for integration_expert ($MATRIX_FILE). The expert will audit without it."
+        fi
+    fi
+
+    cat << EOF >> "$TMP_DIR/prompt_$persona.txt"
 === TARGET DOCUMENT START ===
 $(cat "$TARGET_FILE")
 === TARGET DOCUMENT END ===
@@ -119,7 +135,7 @@ cat << EOF > "$TMP_DIR/prompt_chairperson.txt"
 You are $C_NAME. 
 $C_BIAS
 
-Read the following 6 conflicting expert reports regarding document $doc_id.
+Read the following 7 conflicting expert reports regarding document $doc_id.
 Adjudicate and synthesize them into the final markdown structure provided in the template. Do not include the YAML block, just the markdown body starting from the H1 header.
 
 === EXPERT REPORTS ===

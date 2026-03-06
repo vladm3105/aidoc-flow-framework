@@ -262,7 +262,7 @@ mkdir -p scripts
 # Setup AI Expert Board (COUNCIL)
 mkdir -p docs/AI_EXPERTS
 cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml docs/AI_EXPERTS/project_experts.yaml
-# Edit docs/AI_EXPERTS/project_experts.yaml to configure the 6 personas for your specific domain.
+# Edit docs/AI_EXPERTS/project_experts.yaml to configure the 7 personas for your specific domain.
 # Note: The AI Experts team should be created during a new project initialization, or manually on demand later.
 ```
 

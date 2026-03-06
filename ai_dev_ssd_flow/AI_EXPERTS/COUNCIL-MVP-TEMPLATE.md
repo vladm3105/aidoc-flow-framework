@@ -28,7 +28,7 @@ custom_fields:
 
 ## 1. Executive Summary
 *   **Consensus Recommendation**: (Proceed / Remediation Required / Fundamental Redesign)
-*   *Chairperson's Synthesis*: [Brief paragraph summarizing the overarching sentiment of the 6-persona board regarding the target document's viability.]
+*   *Chairperson's Synthesis*: [Brief paragraph summarizing the overarching sentiment of the 7-persona board regarding the target document's viability.]
 
 ## 2. Critical Findings & Edge Cases (The Devil's Advocate / Security)
 *   **Vulnerability / Risk**: [Description]

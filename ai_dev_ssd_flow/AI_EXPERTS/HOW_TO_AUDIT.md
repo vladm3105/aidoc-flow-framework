@@ -8,9 +8,9 @@ Use this phase *before* you write any formal technical documentation (BRD, PRD, 
 
 1.  **Define the Problem**: Write a clear, raw problem statement.
     *   *Example*: "We need to build a system that orchestrates 5 different AI agents using the Claude SDK to handle customer support tickets concurrently without hallucinating."
-2.  **Initialize the Board**: Load your 6 project-specific personas into your AI environment.
+2.  **Initialize the Board**: Load your 7 project-specific personas into your AI environment.
 3.  **Prompt the Board**: Present the problem statement and ask the board to debate the best architectural approach.
-    *   *Tip*: In a chat interface, you can pass the problem statement and say: *"Act as the 6-persona Expert Board. Debate this problem. Provide a synthesized recommendation."*
+    *   *Tip*: In a chat interface, you can pass the problem statement and say: *"Act as the 7-persona Expert Board. Debate this problem. Provide a synthesized recommendation."*
 4.  **Synthesize**: Take the board's recommendations, warnings, and proposed architecture, and use them to draft your formal project documentation.
 
 ## Phase 2: Automated Post-Creation Audit (The "Zero-Bias" Review)
@@ -18,7 +18,7 @@ Use this phase *before* you write any formal technical documentation (BRD, PRD, 
 Use this phase to audit completed documents (BRDs, PRDs, ADRs) using the framework automation scripting. This forces the document through a mandatory quality gate.
 
 1.  **Prepare your Project Configuration**: Copy `project_experts.template.yaml` to `docs/AI_EXPERTS/project_experts.yaml`. Fill it out with your project's specific personas and anti-bias directives.
-2.  **Run the Automation Script**: Use the unified council audit script provided by the framework to execute all 6 personas plus the synthesis Chairperson in parallel.
+2.  **Run the Automation Script**: Use the unified council audit script provided by the framework to execute all 7 personas plus the synthesis Chairperson in parallel.
     ```bash
     bash /opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/doc_council_audit.sh path/to/PRD-50_octo_agent.md
     ```

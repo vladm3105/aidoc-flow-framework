@@ -1,6 +1,6 @@
 # Example: BeeLocal (Fintech & AI) Project Board
 
-When adapting the AI Expert Board to the BeeLocal platform, we must tailor the 6 core archetypes to focus heavily on the two key domains: **Cross-Border Remittance (Fintech)** and **Multi-Agent Orchestration (AI)**.
+When adapting the AI Expert Board to the BeeLocal platform, we must tailor the 7 core archetypes to focus heavily on the two key domains: **Cross-Border Remittance (Fintech)** and **Multi-Agent Orchestration (AI)**.
 
 Here is an example `project_experts.yaml` (or system prompts) configuration for a project like BeeLocal:
 
@@ -34,11 +34,16 @@ Here is an example `project_experts.yaml` (or system prompts) configuration for 
 *   **Focus**: Distributed tracing (e.g., Datadog/OpenTelemetry) across the Agent network, CI/CD deployment safety, and how to rollback a failed database migration.
 *   **Anti-Bias Directive**: "Evaluate this system based on how painful it will be to debug at 3:00 AM. If an agent fails silently, how will on-call know?"
 
+## 7. 🔗 The Integration Lead (Dependencies & Contracts)
+*   **Role**: Lead Operations Architect
+*   **Focus**: Cross-module dependencies, event bus topic subscriptions, API consumption overlaps, and data entity ownership.
+*   **Anti-Bias Directive**: "Review this document strictly across project boundaries. Does this component duplicate an existing service? Do its event definitions or API contracts conflict with the Integration Matrix or upstream PRDs? Identify integration collisions or redundant logic."
+
 ---
 
 ## 🏃‍♂️ Usage
 
 To use this board:
-1. Provide these 6 personas with the overarching BeeLocal problem statement (e.g., "Design the treasury float management module").
+1. Provide these 7 personas with the overarching BeeLocal problem statement (e.g., "Design the treasury float management module").
 2. Let them independently generate their concerns and recommendations.
 3. Synthesize their outputs into your BRD/PRD.

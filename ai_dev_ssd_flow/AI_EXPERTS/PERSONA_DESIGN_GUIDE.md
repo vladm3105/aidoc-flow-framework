@@ -2,9 +2,9 @@
 
 To prevent the Expert Board from becoming a rubber-stamp committee, you must design distinct, adversarial personas tailored to your project. This guide shows you how to construct the `docs/AI_EXPERTS/project_experts.yaml` (or system prompts) effectively.
 
-## 1. The 6 Required Archetypes
+## 1. The 7 Required Archetypes
 
-Every board must contain these 6 foundational archetypes, regardless of the project domain. When you start a new project, adapt the *Focus* to match your industry.
+Every board must contain these 7 foundational archetypes, regardless of the project domain. When you start a new project, adapt the *Focus* to match your industry.
 
 ### 🏛️ Archetype 1: The Architect (Integration & Scalability)
 *   **Role**: Evaluates system boundaries, decoupling, state management, and scalability.
@@ -37,6 +37,12 @@ Every board must contain these 6 foundational archetypes, regardless of the proj
 ### 🔧 Archetype 6: The Operator (DevOps/SRE)
 *   **Role**: Evaluates observability, deployment safety, rollback mechanisms, and SLI/SLOs.
 *   **Project Modification**: Focuses on the specific CI/CD and hosting ecosystem (e.g., Kubernetes vs Serverless vs On-Prem).
+
+### 🔗 Archetype 7: The Integration Lead (Dependencies & Contracts)
+*   **Role**: Evaluates cross-module dependencies, event publishing, API consumption overlapping, and data entity ownership to prevent collisions.
+*   **Project Modification**:
+    *   *Microservices Apps*: Focuses on event bus schemas, API gateway routing, and synchronized databases.
+    *   *Complex Monoliths*: Focuses on namespace collisions and tight coupling between internal modules.
 
 ---
 
