@@ -47,8 +47,10 @@ custom_fields:
 
 ## 5. Required Remediations
 *(List immediate tasks required before this document can pass the validation gate)*
-1. [Required Action 1]
-2. [Required Action 2]
+
+| Risk ID | Priority | Action Type | Target File | Target Section | Description | Source Expert |
+|---------|----------|-------------|-------------|----------------|-------------|---------------|
+| R1 | P0 | section_add | `example.md` | `X.X` | [Description] | architect |
 
 ## 6. Alternative Solutions (If Applicable)
 *(How the board would redesign the component if the current approach is deemed fundamentally flawed)*

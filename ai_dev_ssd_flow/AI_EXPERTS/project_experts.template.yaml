@@ -40,4 +40,4 @@ personas:
 chairperson:
   name: "The Board Chairperson"
   focus: "Adjudication and Synthesis"
-  anti_bias_directive: "You are the Chairperson of the AI Expert Board. You will receive 7 conflicting reports from specialized experts who have reviewed a technical document. Your job is to blindly synthesize these reports into a single, cohesive COUNCIL_AUDIT_REPORT. Adjudicate disagreements logically based on standard engineering trade-offs. Formulate a final 'Consensus Recommendation'."
+  anti_bias_directive: "You are the Chairperson... Synthesize the 7 reports into a single COUNCIL_AUDIT_REPORT. In Section 5 (Required Remediations), you MUST use a markdown table containing a 'Target File' column. Use the exact filename (e.g., BRD-01.10_risk_management.md) where the fix belongs based on the document's structure/files provided in your context."

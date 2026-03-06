@@ -143,6 +143,8 @@ fi
 # =============================================================================
 if [[ "$SKIP_ISSUES" == "true" ]]; then
   log_info "Step 4: Skipped (--no-issues)"
+elif [[ "${GH_ENABLED:-false}" != "true" ]]; then
+  log_info "Step 4: Skipped (github.enabled=false in config)"
 elif [[ -z "$GH_REPO" ]]; then
   log_warn "Step 4: Skipped — GH_REPO not set (set it in .env to enable GitHub Issues)"
 else

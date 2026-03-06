@@ -139,6 +139,10 @@ def create_issue(action: dict, report_file: str, doc_id: str) -> str | None:
         "--label", ",".join(labels),
     ]
 
+    if DRY_RUN:
+        print(f"  [{action_id}] [DRY-RUN] Would run: {' '.join(cmd)}")
+        return "https://github.com/dryrun/issues/999"
+
     print(f"  [{action_id}] Creating issue: {title[:70]}...")
     rc, stdout = run(cmd, capture=True)
     if rc != 0:

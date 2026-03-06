@@ -72,6 +72,7 @@ export AUTO_APPLY_ENABLED="${AUTO_APPLY_ENABLED:-$(_yaml_get 'auto_apply.enabled
 export AUTO_APPLY_COMMIT="${AUTO_APPLY_COMMIT:-$(_yaml_get 'auto_apply.commit' 'true')}"
 
 # GitHub integration
+export GH_ENABLED="${GH_ENABLED:-$(_yaml_get 'github.enabled' 'false')}"
 export GH_REPO="${GH_REPO:-$(_yaml_get 'github.repo' '')}"
 export GH_PROJECT="${GH_PROJECT:-$(_yaml_get 'github.project' '')}"
 export GH_LABEL_REMEDIATION="${GH_LABEL_REMEDIATION:-council:remediation}"

@@ -53,6 +53,7 @@ while IFS= read -r action; do
   TARGET_SECTION=$(json_get "$action" '.target_section' 'unknown')
   SOURCE_EXPERT=$(json_get "$action" '.source_expert' 'unknown')
   ACTION_TARGET_DOC=$(json_get "$action" '.target_document' '')
+  ACTION_TARGET_FILE=$(json_get "$action" '.target_file' '')
 
   # Only process actions that target this document
   # Match loosely: "BRD-01" matches folders/files containing "BRD-01"
@@ -71,6 +72,18 @@ while IFS= read -r action; do
 
   log_info "[$ACTION_ID] Applying: [$PRIORITY/$ACTION_TYPE] $ACTION_TEXT"
 
+  # Resolve target file dynamically (support multi-file architectures)
+  ACTUAL_TARGET="$TARGET_DOC"
+  if [[ -n "$ACTION_TARGET_FILE" && "$ACTION_TARGET_FILE" != "null" ]]; then
+    POTENTIAL_TARGET="$(dirname "$TARGET_DOC")/$ACTION_TARGET_FILE"
+    if [[ -f "$POTENTIAL_TARGET" ]]; then
+      ACTUAL_TARGET="$POTENTIAL_TARGET"
+      log_info "[$ACTION_ID] Routing patch specifically to: $ACTION_TARGET_FILE"
+    else
+      log_warn "[$ACTION_ID] Target file '$ACTION_TARGET_FILE' not found. Falling back to targeted root $TARGET_DOC"
+    fi
+  fi
+
   # Build prompt from template, substituting placeholders
   PROMPT_TMP=$(tmp_file "council_apply_prompt_${ACTION_ID}")
   cleanup_on_exit "$PROMPT_TMP"
@@ -85,10 +98,10 @@ while IFS= read -r action; do
 
   # Append the current document content
   echo "" >> "$PROMPT_TMP"
-  cat "$TARGET_DOC" >> "$PROMPT_TMP"
+  cat "$ACTUAL_TARGET" >> "$PROMPT_TMP"
 
   if [[ "${DRY_RUN:-false}" == "true" ]]; then
-    log_dry "[$ACTION_ID] Would apply fix to: $TARGET_DOC"
+    log_dry "[$ACTION_ID] Would apply fix to: $ACTUAL_TARGET"
     log_dry "[$ACTION_ID] Prompt: $(wc -l < "$PROMPT_TMP") lines"
     ((APPLIED++)) || true
     continue
@@ -114,13 +127,13 @@ while IFS= read -r action; do
   fi
 
   # Apply the patch
-  cp "$PATCHED_TMP" "$TARGET_DOC"
-  log_ok "[$ACTION_ID] Fix applied to: $TARGET_DOC"
+  cp "$PATCHED_TMP" "$ACTUAL_TARGET"
+  log_ok "[$ACTION_ID] Fix applied to: $ACTUAL_TARGET"
 
   # Commit if enabled
   if [[ "${AUTO_APPLY_COMMIT:-true}" == "true" ]]; then
     COMMIT_MSG="auto-fix($ACTION_TARGET_DOC): [$PRIORITY] $ACTION_ID — $ACTION_TYPE by $SOURCE_EXPERT"
-    git_commit_if_changes "$COMMIT_MSG" "$TARGET_DOC"
+    git_commit_if_changes "$COMMIT_MSG" "$ACTUAL_TARGET"
   fi
 
   ((APPLIED++)) || true

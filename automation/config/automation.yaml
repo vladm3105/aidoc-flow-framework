@@ -16,7 +16,11 @@ ai_timeout: 120           # seconds before ai_exec.sh times out
 dry_run: false            # set to true to print actions without executing
 
 auto_apply:
-  enabled: true           # whether to auto-apply structural P0 fixes to source docs
+  # DISABLED BY DEFAULT: Auto-apply works for monolithic (single-file) documents,
+  # but fails on section-based documents where content is split across multiple files 
+  # (e.g. BRD-01.10_*.md), causing the AI to hallucinate conversational text over the index file.
+  # Enable this manually via --auto-apply flag or set to true for PRDs/ADRs.
+  enabled: false          # whether to auto-apply structural P0 fixes to source docs
   commit: true            # whether to git commit auto-applied fixes
   types:                  # action types that are safe to auto-apply
     - frontmatter_tag
@@ -29,6 +33,7 @@ auto_apply:
 # GitHub Integration
 # =============================================================================
 github:
+  enabled: false          # set to true to enable automated GitHub Issue creation
   repo: ""                # e.g. "owner/repo-name" — set in project .env
   project: ""             # GitHub Project board number (optional)
   labels:

@@ -147,11 +147,26 @@ EOF
         fi
     fi
 
+    # Dynamically locate structural template rules in parent directory
+    CREATION_RULES=$(find "$(dirname "$TARGET_DIR")" -maxdepth 1 -name "*_CREATION_RULES.md" -o -name "*_TEMPLATE.md" -print -quit 2>/dev/null || true)
+    if [[ -n "$CREATION_RULES" && -f "$CREATION_RULES" ]]; then
+        echo "=== DOCUMENT CREATION RULES / TEMPLATE START ===" >> "$PROMPT_FILE"
+        cat "$CREATION_RULES" >> "$PROMPT_FILE"
+        echo "=== DOCUMENT CREATION RULES / TEMPLATE END ===" >> "$PROMPT_FILE"
+        echo "" >> "$PROMPT_FILE"
+    fi
+
     cat << EOF >> "$PROMPT_FILE"
 === TARGET DOCUMENT START ===
-$(cat "$TARGET_FILE")
-=== TARGET DOCUMENT END ===
 EOF
+    # Append all markdown files in the target directory (except audit reports)
+    # This handles both monolithic (1 file) and section-based (N files) structures natively
+    find "$TARGET_DIR" -maxdepth 1 -type f -name "*.md" ! -name "*_COUNCIL_AUDIT_REPORT*.md" | sort | while read -r doc_file; do
+        echo "--- FILE: $(basename "$doc_file") ---" >> "$PROMPT_FILE"
+        cat "$doc_file" >> "$PROMPT_FILE"
+        echo "" >> "$PROMPT_FILE"
+    done
+    echo "=== TARGET DOCUMENT END ===" >> "$PROMPT_FILE"
 
     # Run AI Agent
     if [[ "${DRY_RUN:-false}" == "true" ]]; then

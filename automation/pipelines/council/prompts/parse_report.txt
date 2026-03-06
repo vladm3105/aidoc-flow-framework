@@ -25,6 +25,7 @@ OUTPUT JSON SCHEMA (array of objects):
     "type": "section_add",
     "action": "Add Section 6.5 SAGA transaction coordination specification with compensating transaction strategy",
     "target_section": "6.5",
+    "target_file": "BRD-01.6_architecture.md",
     "source_expert": "qa_lead",
     "target_document": "BRD-01",
     "acceptance_criteria": "Section 6.5 exists and defines SAGA coordinator, compensating transactions, and idempotency guarantees"
@@ -37,6 +38,7 @@ FIELD RULES:
 - type: must be one of the allowed types above
 - action: verbatim or near-verbatim from the report finding
 - target_section: section number or "frontmatter" or "integration_matrix" or "new"
+- target_file: specific filename where the fix belongs (e.g. BRD-01.10_risk_management.md)
 - source_expert: persona key (architect, auditor, domain_specialist, strategist, qa_lead, operator, integration_expert)
 - target_document: doc ID (e.g. BRD-01, PRD-45) — extract from report context
 - acceptance_criteria: one-sentence testable criterion for "done"

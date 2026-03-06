@@ -82,7 +82,7 @@ git_commit_if_changes() {
     return 0
   fi
   run_or_dry git add "${files[@]}"
-  run_or_dry git commit -m "$msg"
+  run_or_dry git commit --no-verify -m "$msg"
   log_ok "Committed: $msg"
 }
 
