@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [REQ]
-    version: "1.1"
-    last_updated: "2026-02-27"
+    version: "1.2"
+    last_updated: "2026-03-06"
   versioning_policy: "tracks SYS-MVP-TEMPLATE schema_version"
 ---
 
@@ -56,6 +56,7 @@ Before creating SYS, read:
 3. **Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
+6. **Quality Gate Validation**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_QUALITY_GATE_VALIDATION.md`
 
 ## When to Use This Skill
 
@@ -339,6 +340,45 @@ Commit SYS file and traceability matrix.
 | Tier 2 | Warning | 0 | Recommended to fix |
 | Tier 3 | Info | 0 | No action required |
 
+### Pre-Commit Hooks
+
+SYS validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+- id: sys-core-validator
+  name: Validate SYS core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_core_validator_hook.sh
+  stages: [pre-commit]
+
+- id: sys-quality-gate
+  name: Validate SYS quality gates
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_quality_gate_hook.sh
+  stages: [pre-commit]
+
+- id: sys-req-ready-score
+  name: Validate SYS REQ-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_req_ready_score_hook.sh
+  stages: [pre-commit]
+```
+
+**Manual execution** (for testing without committing):
+```bash
+pre-commit run sys-core-validator --all-files
+pre-commit run sys-quality-gate --all-files
+pre-commit run sys-req-ready-score --all-files
+```
+
+**Quality Gates Enforced**:
+- ✅ SYS structure compliance (15 sections MVP)
+- ✅ REQ-Ready score ≥90% for Approved status
+- ✅ Metadata and tags (sys, layer-6-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd, @adr)
+- ✅ Element ID format (SYS.NN.TT.SS)
+- ✅ No placeholder text in approved documents
+- ✅ System diagrams (Mermaid required)
+- ✅ Measurable requirements with @threshold tags
+- ✅ Functional requirements and quality attributes coverage
+
 ### Automated Validation
 
 ```bash
@@ -505,5 +545,6 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-03-06 | Added quality gate validation reference and pre-commit hooks section | System |
 | 1.1 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized SYS canonical references to `ai_dev_ssd_flow`; removed non-existent section-template references; aligned validation commands to `validate_sys.py` | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

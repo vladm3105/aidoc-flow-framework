@@ -50,6 +50,16 @@ Automated PRD generation pipeline from BRD documents.
 | PRD-Ready | 90% | BRD completeness before PRD generation |
 | EARS-Ready | 90% | PRD completeness after generation |
 
+## BRD Input Handling
+
+**Sectioned BRDs**: If BRD is split into 19 section files (0-18):
+- Autopilot reads ALL section files as ONE logical document
+- No BRD section → PRD section mapping exists
+- Information extracted holistically across all sections
+- Discovery pattern: `BRD-NN.0_index.md` through `BRD-NN.18_appendices.md`
+
+**Reference**: See `PRD_MVP_CREATION_RULES.md` Section 22 for complete sectioned BRD handling rules.
+
 ## Output Structure
 
 **Monolithic** (<25KB):

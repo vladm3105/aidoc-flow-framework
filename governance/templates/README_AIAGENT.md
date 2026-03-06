@@ -231,6 +231,17 @@ After completing a sprint or any significant/breaking change, review and update:
 
 ---
 
+## 8.1 AI Expert Board (COUNCIL)
+
+The framework includes a project-specific 6-member AI Expert Board (a "Red Team" / Internal Audit council) to validate architectural documentation natively.
+
+- **Initialization**: The board should be created during a new project initialization, or manually on demand later by copying `ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml` to the project root as `project_experts.yaml`.
+- **Phase 1 (Ideation)**: Using the board to brainstorm solutions *before* a BRD/PRD is written.
+- **Phase 2 (Audit)**: Using `/opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/doc_council_audit.sh` to blindly critique a completed document and generate a mandatory `COUNCIL_AUDIT_REPORT.md` quality gate.
+- **Reference**: See `ai_dev_ssd_flow/AI_EXPERTS/README.md` for persona design and usage.
+
+---
+
 ## 9. Implementation Plans (IPLAN)
 
 When making cross-cutting changes, dependency reorders, or sprint corrections, create an implementation plan:
@@ -273,6 +284,7 @@ Required frontmatter:
 | Run Project Knowledge Base | [project_knowledge/README.md](project_knowledge/README.md) |
 | Configure KB databases | [project_knowledge/docker-compose.db.yml](project_knowledge/docker-compose.db.yml) |
 | Use KB MCP tools | [project_knowledge/mcp/README.md](project_knowledge/mcp/README.md) |
+| Run AI Expert Board (COUNCIL) | [ai_dev_ssd_flow/AI_EXPERTS/README.md](ai_dev_ssd_flow/AI_EXPERTS/README.md) |
 
 ---
 

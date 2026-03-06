@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SYS, REQ, Code]
-    version: "1.2"
-    last_updated: "2026-02-27"
+    version: "1.3"
+    last_updated: "2026-03-06"
   versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
 ---
 
@@ -57,6 +57,7 @@ Before creating ADR, read:
 4. **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
 5. **Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_CREATION_RULES.md`
 6. **Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`
+7. **Quality Gate Validation**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_QUALITY_GATE_VALIDATION.md`
 
 ## When to Use This Skill
 
@@ -253,6 +254,28 @@ caching:
 - `@related-adr: ADR-NN` - ADRs sharing architectural context
 - `@depends-adr: ADR-NN` - ADR that must be decided first
 
+### Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across ADR documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: ADR-NN` — Hard prerequisite; this ADR cannot proceed without the referenced ADR
+- `@discoverability: ADR-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `ADR-01`, `ADR-02`).
+
+**Placement**: Add tags to the Traceability section or inline with decision descriptions.
+
+**Example**:
+```markdown
+@depends: ADR-01 (Technology Stack)
+@discoverability: ADR-02 (Database Strategy - related architecture decision)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for ADR approval; they are purely informational.
+
 ## Creation Process
 
 ### Step 1: Identify Decision Topic
@@ -386,6 +409,44 @@ Commit ADR and traceability matrix.
 | Tier 1 | Error | 1 | Must fix before commit |
 | Tier 2 | Warning | 0 | Recommended to fix |
 | Tier 3 | Info | 0 | No action required |
+
+### Pre-Commit Hooks
+
+ADR validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+- id: adr-core-validator
+  name: Validate ADR core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh
+  stages: [pre-commit]
+
+- id: adr-quality-gate
+  name: Validate ADR quality gates
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh
+  stages: [pre-commit]
+
+- id: adr-sys-ready-score
+  name: Validate ADR SYS-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh
+  stages: [pre-commit]
+```
+
+**Manual execution** (for testing without committing):
+```bash
+pre-commit run adr-core-validator --all-files
+pre-commit run adr-quality-gate --all-files
+pre-commit run adr-sys-ready-score --all-files
+```
+
+**Quality Gates Enforced**:
+- ✅ ADR structure compliance (11 sections MVP)
+- ✅ SYS-Ready score ≥90% for Accepted status
+- ✅ Metadata and tags (adr, layer-5-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd)
+- ✅ Element ID format (ADR.NN.TT.SS)
+- ✅ No placeholder text in approved documents
+- ✅ Architecture diagrams (Mermaid required)
+- ✅ Decision quality and alternatives analysis
 
 ### Automated Validation
 
@@ -556,6 +617,7 @@ The SYS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.3 | 2026-03-06 | Added cross-linking tags documentation, quality gate validation reference, and pre-commit hooks section | System |
 | 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized ADR references to `ai_dev_ssd_flow/05_ADR` MVP artifacts and existing validation scripts | System |
 | 1.1 | 2026-02-26 | Updated to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

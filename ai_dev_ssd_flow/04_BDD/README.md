@@ -263,6 +263,45 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_bdd_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+BDD validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: bdd-core-validator
+  name: Validate BDD core checks (validator, framework library)
+  stages: [pre-commit]  # Runs automatically on git commit
+
+- id: bdd-quality-gate
+  name: Validate BDD quality gates
+  stages: [pre-commit]
+
+- id: bdd-adr-ready-score
+  name: Validate BDD ADR-Ready score (≥90%)
+  stages: [pre-commit]
+```
+
+**Manual Execution**:
+```bash
+# Run all BDD pre-commit hooks
+pre-commit run bdd-core-validator --all-files
+pre-commit run bdd-quality-gate --all-files
+pre-commit run bdd-adr-ready-score --all-files
+
+# Or run specific validation
+python3 ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py ai_dev_ssd_flow/04_BDD
+bash ai_dev_ssd_flow/04_BDD/scripts/validate_bdd_quality_score.sh ai_dev_ssd_flow/04_BDD
+```
+
+**Quality Gates Enforced**:
+- ✅ Gherkin syntax compliance (Given-When-Then)
+- ✅ Scenario tagging (@scenario-id, @scenario-type, @p0..@p3)
+- ✅ Step order validation (Given → When → Then)
+- ✅ ADR-Ready score ≥90%
+- ✅ Suite structure compliance
+- ✅ No placeholder text in approved scenarios
+
 ## File Naming Convention (Section-Based, Nested Suite Folder)
 
 Location: `04_BDD/BDD-NN_{suite_slug}/`

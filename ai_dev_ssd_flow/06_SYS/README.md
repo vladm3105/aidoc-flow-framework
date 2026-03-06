@@ -181,6 +181,51 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_sys_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+SYS validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+- id: sys-core-validator
+  name: Validate SYS core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_core_validator_hook.sh ai_dev_ssd_flow/06_SYS
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: sys-quality-gate
+  name: Validate SYS quality gates
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_quality_gate_hook.sh ai_dev_ssd_flow/06_SYS
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: sys-req-ready-score
+  name: Validate SYS REQ-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_req_ready_score_hook.sh ai_dev_ssd_flow/06_SYS
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Manual execution** (for testing without committing):
+```bash
+pre-commit run sys-core-validator --all-files
+pre-commit run sys-quality-gate --all-files
+pre-commit run sys-req-ready-score --all-files
+```
+
+**Quality Gates Enforced**:
+- ✅ SYS structure compliance (15 sections MVP)
+- ✅ REQ-Ready score ≥90% for Approved status
+- ✅ Metadata and tags (sys, layer-6-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd, @adr)
+- ✅ Element ID format (SYS.NN.TT.SS)
+- ✅ No placeholder text in approved documents
+- ✅ System diagrams (Mermaid required)
+- ✅ Measurable requirements with @threshold tags
+- ✅ Functional requirements and quality attributes coverage
+
 ## SYS File Organization
 
 ### Naming Convention

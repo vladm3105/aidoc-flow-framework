@@ -258,6 +258,11 @@ mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p work_plans
 mkdir -p scripts
+
+# Setup AI Expert Board (COUNCIL)
+cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml project_experts.yaml
+# Edit project_experts.yaml to configure the 6 personas for your specific domain.
+# Note: The AI Experts team should be created during a new project initialization, or manually on demand later.
 ```
 
 ### 3. Shared Git Hook Library (Symlinked `.pre-commit-config.yaml`)

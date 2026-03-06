@@ -797,6 +797,53 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_spec_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+SPEC validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: spec-core-validator
+  name: Validate SPEC core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_core_validator_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: spec-quality-gate
+  name: Validate SPEC quality gates
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_quality_gate_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: spec-implementation-ready
+  name: Validate SPEC Implementation-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_implementation_ready_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Quality Gates Enforced**:
+- ✅ YAML syntax validation (parseable structure)
+- ✅ Implementation-Ready score ≥90% for implementation
+- ✅ Required metadata fields (version, status, tasks_ready_score)
+- ✅ TASKS-Ready score format (✅ emoji + percentage)
+- ✅ Complete traceability chain (8 cumulative tags: @brd through @ctr)
+- ✅ Element ID format (SPEC.NN.TT.SS for components)
+- ✅ Interface specifications (CTR contract references)
+- ✅ Code generation compatibility
+- ✅ Threshold registry integration (@threshold references)
+- ✅ Performance benchmarks defined
+- ✅ REQ implementations section (per-REQ mapping)
+- ✅ Concrete examples (pseudocode, API samples, Pydantic models)
+
+**Hook Scripts**:
+- `spec_core_validator_hook.sh` - Core SPEC structure and YAML validation
+- `spec_quality_gate_hook.sh` - Quality gate checks for completeness
+- `spec_implementation_ready_hook.sh` - Implementation-Ready score calculation (≥90% required)
+
 ## File Organization Hierarchy
 
 ```

@@ -97,6 +97,53 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_ctr_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+CTR validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: ctr-core-validator
+  name: Validate CTR core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_core_validator_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: ctr-quality-gate
+  name: Validate CTR quality gates
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_quality_gate_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: ctr-spec-ready-score
+  name: Validate CTR SPEC-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_spec_ready_score_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Quality Gates Enforced**:
+- ✅ Dual-file format (.md + .yaml paired files)
+- ✅ SPEC-Ready score ≥90% for Active status
+- ✅ OpenAPI 3.0 or JSON Schema validation
+- ✅ Document Control fields (9 required fields)
+- ✅ Cumulative tagging (@brd through @req - 7 tags)
+- ✅ Element ID format (CTR.NN.TT.SS for interfaces/models/clauses)
+- ✅ Usage examples (request/response pairs)
+- ✅ Error handling specifications
+- ✅ Versioning policy (semantic versioning)
+- ✅ Validation rules documented
+- ✅ Consumer/Provider identification
+- ✅ Quality attributes (performance, security, reliability)
+
+**Hook Scripts**:
+- `ctr_core_validator_hook.sh` - Core CTR structure and dual-file validation
+- `ctr_quality_gate_hook.sh` - Quality gate checks for completeness
+- `ctr_spec_ready_score_hook.sh` - SPEC-Ready score calculation (≥90% required)
+
 ## 4. File Naming Convention
 
 ### 4.1 Format

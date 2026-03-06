@@ -81,6 +81,10 @@ python project_knowledge/scripts/pilot_validate.py
 # To complete project setup (create docs/, work_plans/, etc.):
 # → Use: /skill project-init (recommended)
 # → OR manually: mkdir -p docs/{BRD,PRD,...} work_plans scripts
+#
+# Initialize AI Expert Board (COUNCIL):
+# → Copy ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml to project root as project_experts.yaml
+# → This team should be created during new project initialization or manually on demand later.
 ```
 
 ---

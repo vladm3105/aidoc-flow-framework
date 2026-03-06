@@ -1,6 +1,8 @@
 ---
 name: doc-ctr
 description: Create Data Contracts (CTR) - Optional Layer 8 artifact using dual-file format (.md + .yaml) for API/data contracts
+version: "1.2"
+last_updated: "2026-03-06"
 tags:
   - sdd-workflow
   - layer-8-artifact
@@ -531,6 +533,53 @@ Examples:
 | CHECK 11 | Directory Organization (subdirectories for 30+ contracts) |
 | CHECK 12 | Consumer/Provider identified |
 
+### Pre-Commit Hooks
+
+CTR validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: ctr-core-validator
+  name: Validate CTR core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_core_validator_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: ctr-quality-gate
+  name: Validate CTR quality gates
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_quality_gate_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: ctr-spec-ready-score
+  name: Validate CTR SPEC-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_spec_ready_score_hook.sh ai_dev_ssd_flow/08_CTR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Quality Gates Enforced**:
+- ✅ Dual-file format (.md + .yaml paired files)
+- ✅ SPEC-Ready score ≥90% for Active status
+- ✅ OpenAPI 3.0 or JSON Schema validation
+- ✅ Document Control fields (9 required fields)
+- ✅ Cumulative tagging (@brd through @req - 7 tags)
+- ✅ Element ID format (CTR.NN.TT.SS for interfaces/models/clauses)
+- ✅ Usage examples (request/response pairs)
+- ✅ Error handling specifications
+- ✅ Versioning policy (semantic versioning)
+- ✅ Validation rules documented
+- ✅ Consumer/Provider identification
+- ✅ Quality attributes (performance, security, reliability)
+
+**Hook Scripts**:
+- `ctr_core_validator_hook.sh` - Core CTR structure and dual-file validation
+- `ctr_quality_gate_hook.sh` - Quality gate checks for completeness
+- `ctr_spec_ready_score_hook.sh` - SPEC-Ready score calculation (≥90% required)
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts
@@ -821,5 +870,6 @@ For supplementary documentation related to CTR artifacts:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-03-06 | Added Pre-Commit Hooks subsection with 12 quality gates; added hook scripts descriptions and YAML configuration; updated version metadata | System |
 | 1.1.0 | 2026-02-08 | Updated layer assignment from 9 to 8 per LAYER_REGISTRY v1.6; updated downstream artifacts (SPEC Layer 9, TSPEC Layer 10, TASKS Layer 11); removed IMPL from upstream | System |
 | 1.0.0 | 2025-01-15 | Initial skill definition | System |

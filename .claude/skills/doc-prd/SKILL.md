@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR]
-    version: "1.2"
-    last_updated: "2026-02-26"
+    version: "1.3"
+    last_updated: "2026-03-05"
 ---
 
 # doc-prd
@@ -223,6 +223,28 @@ Business constraints           Evaluation criteria         Trade-off analysis
 
 **CRITICAL**: Do NOT reference specific ADR numbers (ADR-01, ADR-033, etc.) - ADRs don't exist yet!
 
+### 6.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across PRD documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: PRD-NN` — Hard prerequisite; this PRD cannot proceed without the referenced PRD
+- `@discoverability: PRD-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `PRD-01`, `PRD-02`).
+
+**Placement**: Add tags to Traceability section (Section 18) or inline with dependency descriptions.
+
+**Example**:
+```markdown
+@depends: PRD-01 (Core Platform)
+@discoverability: PRD-02 (Feature Enhancements - shared architecture)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for PRD approval; they are purely informational.
+
 ### 7. EARS Enhancement Appendix (Section 20)
 
 **Purpose**: Provides structured requirements for EARS transformation.
@@ -282,6 +304,52 @@ Business constraints           Evaluation criteria         Trade-off analysis
 - `FR-XXX` -> Use `PRD.NN.01.SS`
 - `F-XXX` -> Use `PRD.NN.09.SS`
 - `US-XXX` -> Use `PRD.NN.09.SS`
+
+### Feature ID Format (Simple Numeric)
+
+**Purpose**: Establish consistent Feature ID naming convention for traceability and cross-PRD references.
+
+**Pattern**: `NN` (variable-length sequential number, minimum 2 digits)
+
+| Component | Format | Description |
+|-----------|--------|-------------|
+| Feature ID | `NN` | 2+ digit sequential (01-99, then 100-999, 1000+) |
+| Document Context | `PRD-NN` | PRD number provides namespace |
+
+**Rationale**: Document context (PRD-01) already provides namespace. Embedding PRD number in feature ID is redundant. Feature IDs match document ID numbering convention.
+
+**Examples**:
+- `01`: First feature (in any PRD)
+- `15`: 15th feature
+- `99`: 99th feature
+- `100`: 100th feature (auto-expands)
+- `1000`: 1000th feature
+
+**Validation Regex**: `^\d{2,}$`
+
+**Cross-PRD Reference Format**:
+When referencing features from other PRDs, use the cross-reference format:
+
+```markdown
+@prd: PRD.22.01.15
+```
+
+**Components**:
+- `@prd:` - Tag prefix
+- `PRD-NN` - Document ID (NN in element ID)
+- `.01` - Element type (01 = Functional Requirement)
+- `.15` - Sequence ID within document
+
+**Uniqueness**: `PRD.22.01.15` is globally unique (PRD-022, Feature 015)
+
+**Invalid Formats** (Do NOT Use):
+| Invalid Format | Issue | Correct Format |
+|----------------|-------|----------------|
+| `Feature-022-001` | Deprecated format | `PRD.22.01.01` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
+| `Feature 3.1` | Text format | `PRD.25.01.03` |
+| `PRD.1.1` | Not zero-padded | `PRD.01.01.01` |
+| `F-01` | Deprecated F- format | `PRD.NN.01.01` |
 
 ## Cumulative Tagging Requirements
 
@@ -580,6 +648,7 @@ The EARS will:
 - **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
 - **PRD Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
 - **PRD Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **Quality Gate Validation**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_QUALITY_GATE_VALIDATION.md`
 - **PRD README**: `ai_dev_ssd_flow/02_PRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
@@ -612,6 +681,7 @@ The EARS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.3 | 2026-03-05 | Added cross-linking tags documentation (Section 6.1); Added quality gate validation reference; Added Feature ID format documentation; Verified Section 20.1 naming compliance | System |
 | 1.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; updated PRD template/rules references to `ai_dev_ssd_flow` and MVP rule filenames | System |
 | 1.1 | 2026-02-11 | **Nested Folder Enforcement**: Fixed all paths from `docs/PRD/` to `docs/02_PRD/` and `docs/BRD/` to `docs/01_BRD/`; Removed OPTIONAL monolithic path outside nested folder; All PRDs must now be in nested folders regardless of size | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

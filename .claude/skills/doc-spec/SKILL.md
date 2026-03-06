@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR]
     downstream_artifacts: [TSPEC, TASKS, Code]
-    version: "1.2.0"
-    last_updated: "2026-02-27"
+    version: "1.3.0"
+    last_updated: "2026-03-06"
   versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
 ---
 
@@ -488,6 +488,53 @@ Examples:
 |-------|-------------|
 | CHECK 9 | Threshold Registry Integration (@threshold references) |
 | CHECK 10 | Performance benchmarks defined |
+
+### Pre-Commit Hooks
+
+SPEC validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: spec-core-validator
+  name: Validate SPEC core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_core_validator_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: spec-quality-gate
+  name: Validate SPEC quality gates
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_quality_gate_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: spec-implementation-ready
+  name: Validate SPEC Implementation-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_implementation_ready_hook.sh ai_dev_ssd_flow/09_SPEC
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Quality Gates Enforced**:
+- ✅ YAML syntax validation (parseable structure)
+- ✅ Implementation-Ready score ≥90% for implementation
+- ✅ Required metadata fields (version, status, tasks_ready_score)
+- ✅ TASKS-Ready score format (✅ emoji + percentage)
+- ✅ Complete traceability chain (8 cumulative tags: @brd through @ctr)
+- ✅ Element ID format (SPEC.NN.TT.SS for components)
+- ✅ Interface specifications (CTR contract references)
+- ✅ Code generation compatibility
+- ✅ Threshold registry integration (@threshold references)
+- ✅ Performance benchmarks defined
+- ✅ REQ implementations section (per-REQ mapping)
+- ✅ Concrete examples (pseudocode, API samples, Pydantic models)
+
+**Hook Scripts**:
+- `spec_core_validator_hook.sh` - Core SPEC structure and YAML validation
+- `spec_quality_gate_hook.sh` - Quality gate checks for completeness
+- `spec_implementation_ready_hook.sh` - Implementation-Ready score calculation (≥90% required)
 
 ## Upstream/Downstream Artifacts
 

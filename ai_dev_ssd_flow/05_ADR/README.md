@@ -271,6 +271,50 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_adr_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+ADR validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+- id: adr-core-validator
+  name: Validate ADR core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh ai_dev_ssd_flow/05_ADR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: adr-quality-gate
+  name: Validate ADR quality gates
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh ai_dev_ssd_flow/05_ADR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: adr-sys-ready-score
+  name: Validate ADR SYS-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh ai_dev_ssd_flow/05_ADR
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Manual execution** (for testing without committing):
+```bash
+pre-commit run adr-core-validator --all-files
+pre-commit run adr-quality-gate --all-files
+pre-commit run adr-sys-ready-score --all-files
+```
+
+**Quality Gates Enforced**:
+- ✅ ADR structure compliance (11 sections MVP)
+- ✅ SYS-Ready score ≥90% for Accepted status
+- ✅ Metadata and tags (adr, layer-5-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd)
+- ✅ Element ID format (ADR.NN.TT.SS)
+- ✅ No placeholder text in approved documents
+- ✅ Architecture diagrams (Mermaid required)
+- ✅ Decision quality and alternatives analysis
+
 ## File Naming Convention
 
 ```markdown

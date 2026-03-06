@@ -259,6 +259,43 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_prd_wrapper.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+PRD validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: prd-core-wrapper
+  name: Validate PRD core checks (wrapper, framework library)
+  stages: [pre-commit]  # Runs automatically on git commit
+
+- id: prd-standardized-element-codes
+  name: Validate PRD standardized element type codes
+  stages: [pre-commit]
+
+- id: prd-legacy-patterns
+  name: Detect PRD legacy element ID patterns
+  stages: [pre-commit]
+```
+
+**Manual Execution**:
+```bash
+# Run all PRD pre-commit hooks
+pre-commit run prd-core-wrapper --all-files
+pre-commit run prd-standardized-element-codes --all-files
+pre-commit run prd-legacy-patterns --all-files
+
+# Or run specific validation
+bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh ai_dev_ssd_flow/02_PRD
+```
+
+**Quality Gates Enforced**:
+- ✅ PRD structure compliance (21 sections)
+- ✅ Standardized element type codes (PRD.NN.TT.SS format)
+- ✅ No legacy patterns (AC-XXX, FR-XXX, F-XXX, US-XXX)
+- ✅ SYS-Ready score ≥90%
+- ✅ EARS-Ready score ≥90%
+
 ## File Naming Convention
 
 ```

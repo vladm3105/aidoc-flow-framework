@@ -166,6 +166,45 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_ears_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+EARS validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: ears-core-validator
+  name: Validate EARS core checks (validator, framework library)
+  stages: [pre-commit]  # Runs automatically on git commit
+
+- id: ears-quality-gate
+  name: Validate EARS quality gates
+  stages: [pre-commit]
+
+- id: ears-ready-score
+  name: Validate EARS BDD-Ready score (≥90%)
+  stages: [pre-commit]
+```
+
+**Manual Execution**:
+```bash
+# Run all EARS pre-commit hooks
+pre-commit run ears-core-validator --all-files
+pre-commit run ears-quality-gate --all-files
+pre-commit run ears-ready-score --all-files
+
+# Or run specific validation
+python3 ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py ai_dev_ssd_flow/03_EARS
+bash ai_dev_ssd_flow/03_EARS/scripts/validate_ears_quality_score.sh ai_dev_ssd_flow/03_EARS
+```
+
+**Quality Gates Enforced**:
+- ✅ EARS structure compliance (6 sections MVP)
+- ✅ WHEN-THE-SHALL-WITHIN syntax validation
+- ✅ Metadata and tags (ears, layer-3-artifact)
+- ✅ BDD-Ready score ≥90%
+- ✅ Statement ID format (EARS.NN.25.SS)
+- ✅ No placeholder text in approved documents
+
 ## File Naming Convention
 
 ```

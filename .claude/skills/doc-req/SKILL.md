@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS]
     downstream_artifacts: [IMPL,CTR,SPEC]
-    version: "1.1"
-    last_updated: "2026-02-27"
+    version: "1.2"
+    last_updated: "2026-03-06"
   versioning_policy: "tracks REQ-MVP-TEMPLATE schema_version"
 ---
 
@@ -56,7 +56,8 @@ Before creating REQ, read:
 3. **Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh`
+6. **Quality Gate Validation**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_QUALITY_GATE_VALIDATION.md`
+7. **Validation Script**: `./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh`
 
 ## When to Use This Skill
 
@@ -451,6 +452,49 @@ Commit REQ file and traceability matrix.
 | Tier 2 | Warnings | 0 | Quality issues - recommended to fix |
 | Tier 3 | Info | 0 | Informational - no action required |
 
+### Pre-Commit Hooks
+
+REQ validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+- id: req-core-validator
+  name: Validate REQ core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_core_validator_hook.sh
+  stages: [pre-commit]
+
+- id: req-quality-gate
+  name: Validate REQ quality gates
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_quality_gate_hook.sh
+  stages: [pre-commit]
+
+- id: req-spec-ready-score
+  name: Validate REQ SPEC-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_spec_ready_score_hook.sh
+  stages: [pre-commit]
+```
+
+**Manual execution** (for testing without committing):
+```bash
+pre-commit run req-core-validator --all-files
+pre-commit run req-quality-gate --all-files
+pre-commit run req-spec-ready-score --all-files
+```
+
+**Quality Gates Enforced**:
+- ✅ REQ structure compliance (11 sections MVP)
+- ✅ SPEC-Ready score ≥90% for Approved status
+- ✅ Metadata and tags (req, layer-7-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd, @adr, @sys - 6 tags)
+- ✅ No placeholder text in approved documents
+- ✅ Atomic requirements (single responsibility)
+- ✅ Measurable acceptance criteria (≥15 criteria)
+- ✅ Interface specifications with Protocol/ABC classes
+- ✅ Data schemas (Pydantic/JSON Schema)
+- ✅ Error handling specifications
+- ✅ Configuration specifications (YAML schema)
+- ✅ Quality attributes with @threshold tags
+- ✅ Cross-linking between related REQs
+
 ### Automated Validation
 
 ```bash
@@ -624,4 +668,6 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.2 | 2026-03-06 | Added quality gate validation reference and pre-commit hooks section | System |
+| 1.1 | 2026-02-27 | Updated to REQ v3.0 format (11 sections, SPEC-readiness scoring) | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

@@ -130,6 +130,54 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_req_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Pre-Commit Hooks
+
+REQ validation is **automatically enforced** via pre-commit hooks:
+
+```yaml
+# .pre-commit-config.yaml
+- id: req-core-validator
+  name: Validate REQ core checks (validator, framework library)
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_core_validator_hook.sh ai_dev_ssd_flow/07_REQ
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: req-quality-gate
+  name: Validate REQ quality gates
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_quality_gate_hook.sh ai_dev_ssd_flow/07_REQ
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+
+- id: req-spec-ready-score
+  name: Validate REQ SPEC-Ready score (≥90%)
+  entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_spec_ready_score_hook.sh ai_dev_ssd_flow/07_REQ
+  language: system
+  pass_filenames: false
+  stages: [pre-commit]
+```
+
+**Quality Gates Enforced**:
+- ✅ REQ structure compliance (11 sections MVP)
+- ✅ SPEC-Ready score ≥90% for Approved status
+- ✅ Metadata and tags (req, layer-7-artifact)
+- ✅ Upstream traceability (@brd, @prd, @ears, @bdd, @adr, @sys - 6 tags)
+- ✅ No placeholder text in approved documents
+- ✅ Atomic requirements (single responsibility)
+- ✅ Measurable acceptance criteria (≥15 criteria)
+- ✅ Interface specifications with Protocol/ABC classes
+- ✅ Data schemas (Pydantic/JSON Schema)
+- ✅ Error handling specifications
+- ✅ Configuration specifications (YAML schema)
+- ✅ Quality attributes with @threshold tags
+- ✅ Cross-linking between related REQs
+
+**Hook Scripts**:
+- `req_core_validator_hook.sh` - Core REQ structure and element ID validation
+- `req_quality_gate_hook.sh` - Quality gate checks for completeness
+- `req_spec_ready_score_hook.sh` - SPEC-Ready score calculation (≥90% required)
+
 ### Cross-Linking Tags
 
 To document relationships between REQs in a structured, machine-parseable way:
