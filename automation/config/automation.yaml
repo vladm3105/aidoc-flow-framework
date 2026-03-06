@@ -1,0 +1,59 @@
+---
+# automation.yaml — Default Configuration for the Automation Framework
+# Override any value via environment variable or project .env file.
+# Precedence: env vars > project .env > this file
+
+# =============================================================================
+# AI Agent
+# =============================================================================
+ai_agent: claude          # claude | opencode | codex | cline | ollama | openai-api | gemini
+ai_model: ""              # leave blank to use agent default (e.g. claude-sonnet-4)
+ai_timeout: 120           # seconds before ai_exec.sh times out
+
+# =============================================================================
+# Pipeline Behaviour
+# =============================================================================
+dry_run: false            # set to true to print actions without executing
+
+auto_apply:
+  enabled: true           # whether to auto-apply structural P0 fixes to source docs
+  commit: true            # whether to git commit auto-applied fixes
+  types:                  # action types that are safe to auto-apply
+    - frontmatter_tag
+    - section_add
+    - matrix_row
+    - tag_correction
+    - dependency_add
+
+# =============================================================================
+# GitHub Integration
+# =============================================================================
+github:
+  repo: ""                # e.g. "owner/repo-name" — set in project .env
+  project: ""             # GitHub Project board number (optional)
+  labels:
+    remediation: "council:remediation"
+    source: "source:council"
+    p0: "priority:P0"
+    p1: "priority:P1"
+    p2: "priority:P2"
+    p3: "priority:P3"
+    ai_ready: "ai:ready"
+    ai_backlog: "ai:backlog"
+
+# =============================================================================
+# Knowledge Base Integration (graceful degradation if not running)
+# =============================================================================
+knowledge_base:
+  enabled: false          # set to true when KB services are running
+  rag: false              # enable RAG (pgvector) indexing on ingest
+  graph: false            # enable Graph (Neo4j) extraction on ingest
+
+# =============================================================================
+# Council Pipeline Specific
+# =============================================================================
+council:
+  report_filename_pattern: "*COUNCIL_AUDIT_REPORT*.md"
+  p0_blocks_merge: true   # P0 findings block PR merge (for GitHub Actions usage)
+  create_iplan: true      # auto-call generate_iplan_from_issue.py after issue creation
+  post_pr_comments: true  # post findings as PR review comments (GitHub Actions mode)
