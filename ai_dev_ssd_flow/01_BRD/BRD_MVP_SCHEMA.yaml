@@ -18,10 +18,10 @@
 # Status: OPTIONAL - BRD is Layer1 entry point, human-authored
 # Usage: Optional reference by validate_brd.py for automated validation
 
-schema_version: "1.1"
+schema_version: "1.2"
 artifact_type: BRD
 layer: 1
-last_updated: "2026-02-25"
+last_updated: "2026-03-05"
 schema_status: optional  # BRD is human-authored, schema validation not required
 total_sections: 18
 
@@ -30,14 +30,6 @@ references:
   yaml_template: "BRD-MVP-TEMPLATE.yaml"
   creation_rules: "BRD_MVP_CREATION_RULES.md"
   validation_rules: "BRD_MVP_VALIDATION_RULES.md"
----
-> ** Dual-Format Note**:
-> 
-> This MD template is a **primary source** for human workflow.
-> - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)
-> - **Shared Validation**: Both formats are validated by `BRD_MVP_SCHEMA.yaml`
-> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
->
 
 # =============================================================================
 # Profiles (Full vs MVP)

@@ -17,8 +17,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "3.6"
-    last_updated: "2026-02-28"
+    version: "3.8"
+    last_updated: "2026-03-05"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -95,28 +95,96 @@ Any deviation found in reviewer/fixer outputs must trigger fix cycle before PASS
 
 ---
 
-## Document Type Contract (MANDATORY)
+## Document Metadata Contract (MANDATORY)
 
 When generating BRD document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "brd-document"`
+### 1. Document Type
 
-2. **Set** `document_type` in generated document frontmatter:
-   ```yaml
-   custom_fields:
-     document_type: brd-document    # NOT "template"
-     artifact_type: BRD
-     layer: 1
-   ```
+**Read** `instance_document_type` from template:
+- Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+- Field: `metadata.instance_document_type: "brd-document"`
 
-3. **Validation**: Generated documents MUST have `document_type: brd-document`
-   - Templates have `document_type: template`
-   - Instances have `document_type: brd-document`
-   - Schema validates both values
+**Set** `document_type` in generated document frontmatter:
+```yaml
+custom_fields:
+  document_type: brd-document    # NOT "template"
+  artifact_type: BRD
+  layer: 1
+```
+
+**Validation**: Generated documents MUST have `document_type: brd-document`
+- Templates have `document_type: template`
+- Instances have `document_type: brd-document`
+- Schema validates both values
 
 **Error Handling**: If `instance_document_type` is missing from template, default to `brd-document`.
+
+---
+
+### 2. Deliverable Type
+
+**Read** `deliverable_type` from template:
+- Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- Field: `custom_fields.deliverable_type: "code"`
+- Valid values: `code`, `document`, `ux`, `risk`, `process`
+
+**Set** `deliverable_type` in generated document frontmatter:
+```yaml
+custom_fields:
+  document_type: brd-document
+  artifact_type: BRD
+  layer: 1
+  deliverable_type: code    # From template or input analysis
+```
+
+**Auto-Detection** (if not in template):
+
+When `deliverable_type` is missing from template or input sources, auto-detect from BRD content:
+
+```python
+def detect_deliverable_type(brd_content: str, input_sources: dict) -> str:
+    """Auto-detect deliverable_type from BRD content and input."""
+    content_lower = brd_content.lower()
+
+    # Check UX indicators
+    if any(kw in content_lower for kw in [
+        'wireframe', 'mockup', 'user interface', 'ui/ux',
+        'design system', 'user experience', 'prototype'
+    ]):
+        return 'ux'
+
+    # Check documentation indicators
+    if any(kw in content_lower for kw in [
+        'user guide', 'api documentation', 'technical manual',
+        'help content', 'documentation', 'knowledge base'
+    ]):
+        return 'document'
+
+    # Check risk/compliance indicators
+    if any(kw in content_lower for kw in [
+        'risk assessment', 'compliance framework', 'audit trail',
+        'security audit', 'risk management', 'compliance'
+    ]):
+        return 'risk'
+
+    # Check process indicators
+    if any(kw in content_lower for kw in [
+        'workflow automation', 'process improvement',
+        'business process', 'operational procedure', 'workflow'
+    ]):
+        return 'process'
+
+    # Default to code
+    return 'code'
+```
+
+**Validation**: Generated documents MUST have a valid `deliverable_type`
+- Values: `code`, `document`, `ux`, `risk`, `process`
+- Default: `code`
+- Determines downstream SPEC subtype generation
+
+**Error Handling**: If `deliverable_type` is invalid, default to `code` and log warning.
 
 ---
 
@@ -658,6 +726,21 @@ Generate the BRD document with real-time quality feedback.
    | Prepared By | AI Assistant |
    | Status | Draft |
    | PRD-Ready Score | Calculated after generation |
+
+3a. **Set Metadata Fields**:
+   ```yaml
+   custom_fields:
+     document_type: brd-document      # From instance_document_type
+     artifact_type: BRD
+     layer: 1
+     deliverable_type: code           # From template or auto-detected
+   ```
+
+   **deliverable_type Selection Process**:
+   1. Check template (`BRD-MVP-TEMPLATE.md`) for `deliverable_type` field
+   2. If missing, run auto-detection on generated content
+   3. If still unclear, default to `code`
+   4. Log the selection reason for audit trail
 
 4. **Generate Core Sections (1-9)**:
    - Section 1: Executive Summary
@@ -1727,11 +1810,67 @@ flowchart LR
 
 | Report Type | File Name | Location |
 |-------------|-----------|----------|
-| BRD Review Report | `BRD-NN.R_review_report_v{VVV}.md` | `docs/01_BRD/BRD-NN_{slug}/` |
+| BRD Audit Report | `BRD-NN.A_audit_report_v{VVV}.md` | `docs/01_BRD/BRD-NN_{slug}/` |
 | BRD Fix Report | `BRD-NN.F_fix_report_v{VVV}.md` | `docs/01_BRD/BRD-NN_{slug}/` |
 | Drift Cache | `.drift_cache.json` | `docs/01_BRD/BRD-NN_{slug}/` |
 
 **Note**: ALL BRDs (both monolithic and sectioned) use nested folders, so all companion files go in the same location.
+
+### Report Cleanup Policy (MANDATORY)
+
+**After generating a new report, delete all previous versions of that report type.** This policy applies to both audit and fix reports. Old reports serve no purpose since:
+- Fresh Audit Policy means old audit reports are never reused
+- Each fix cycle produces a complete new report
+- Only the latest report reflects current document state
+- Multiple old reports clutter the BRD folder
+
+**Cleanup Rules**:
+
+| File Pattern | Action | Reason |
+|--------------|--------|--------|
+| `BRD-NN.A_audit_report_v*.md` (older) | **DELETE** | Superseded by new audit |
+| `BRD-NN.R_review_report_v*.md` (legacy) | **DELETE** | Deprecated format |
+| `BRD-NN.F_fix_report_v*.md` (older) | **DELETE** | Superseded by new fix report |
+| `.drift_cache.json` | **KEEP** | Tracks review/fix history metadata |
+
+**Cleanup Execution** (after each report generation):
+
+```bash
+# In the BRD folder
+BRD_FOLDER="$1"
+NEW_REPORT="$2"
+
+# Determine report type and clean up old versions
+if [[ "$NEW_REPORT" == *".A_audit_report_"* ]]; then
+    # Delete old audit reports (keep only new)
+    find "${BRD_FOLDER}" -name "BRD-*.A_audit_report_v*.md" ! -name "$(basename ${NEW_REPORT})" -delete
+    # Delete legacy review reports (deprecated)
+    find "${BRD_FOLDER}" -name "BRD-*.R_review_report_v*.md" -delete
+elif [[ "$NEW_REPORT" == *".F_fix_report_"* ]]; then
+    # Delete old fix reports (keep only new)
+    find "${BRD_FOLDER}" -name "BRD-*.F_fix_report_v*.md" ! -name "$(basename ${NEW_REPORT})" -delete
+fi
+```
+
+**After Cleanup, BRD Folder Contains**:
+
+```
+docs/01_BRD/BRD-NN_{slug}/
+├── BRD-NN_{slug}.md              # Main BRD document
+├── BRD-NN.A_audit_report_vNNN.md # Latest audit report (ONLY ONE)
+├── BRD-NN.F_fix_report_vNNN.md   # Latest fix report (ONLY ONE)
+└── .drift_cache.json             # Drift detection cache
+```
+
+**Cleanup Summary in Reports**:
+
+Each report should include a cleanup summary section:
+
+```markdown
+## Cleanup Summary
+- Deleted: 3 old audit reports (v009, v010, v011)
+- Deleted: 4 legacy review reports
+```
 
 **Review Document Requirements**:
 
@@ -2022,12 +2161,13 @@ jobs:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.8 | 2026-03-05 | **Deliverable Type Implementation**: Added deliverable_type metadata handling; Reads from template, auto-detects from content, or defaults to 'code'; Valid values: code, document, ux, risk, process; Determines downstream SPEC subtype; Updated Document Type Contract → Document Metadata Contract with 2 subsections; Added Phase 3 step 3a for metadata field generation |
+| 3.7 | 2026-03-05 | **Report Cleanup Policy**: Added mandatory cleanup of old audit/fix reports after generating new ones; Deletes previous `BRD-NN.A_audit_report_v*.md`, `BRD-NN.R_review_report_v*.md` (legacy), and `BRD-NN.F_fix_report_v*.md` files; Keeps only latest report of each type; Added cleanup summary section to reports |
+| 3.6 | 2026-03-01 | **2-Skill Model**: Migrated from deprecated `doc-brd-validator`/`doc-brd-reviewer` to unified `doc-brd-audit`; Updated Skill Dependencies, flowcharts, Phase 5 → Audit & Fix Cycle; All references now use `doc-brd-audit` as the single quality gate |
 | 3.5 | 2026-02-28 | **Standardized validator parity**: Removed BRD code `33` from valid code lists and replaced legacy `25→33` guidance with manual context-based remapping to valid BRD codes, aligned to `validate_standardized_element_codes.py`. |
 | 3.4 | 2026-02-27 | **Mandatory IPLAN ID Transformation**: Added explicit ID transformation step for IPLAN-sourced generation; Detects simple patterns (`FR-XXX`) AND compound patterns (`FR-CICD-XXX`, `NFR-PERF-XXX`); Blocks generation if legacy patterns remain after transformation; Enforces `doc-naming` compliance before writing BRD files |
 | 3.3 | 2026-02-27 | **Input Contract Expansion**: Added canonical grammar and compatibility (`--ref`, `--prompt`, `--iplan`); implemented deterministic precedence and supplemental merge semantics; added IPLAN resolution order and validation matrix; added small-reference mode thresholds/extraction table; updated input gate and examples for implementation-plan-driven generation while preserving BRD-ID review flow. |
 | 3.2 | 2026-02-27 | **Hash Computation Contract**: Added Section 5.6.1 with mandatory bash `sha256sum` execution at generation and review; Hash format validation; Placeholder rejection (verified_no_drift, pending_verification); Verification step to confirm valid hashes in drift cache |
-| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now follows `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for consistent orchestration semantics across reviewer/fixer/autopilot. |
-| 3.6 | 2026-03-01 | **2-Skill Model**: Migrated from deprecated `doc-brd-validator`/`doc-brd-reviewer` to unified `doc-brd-audit`; Updated Skill Dependencies, flowcharts, Phase 5 → Audit & Fix Cycle; All references now use `doc-brd-audit` as the single quality gate |
 | 3.1 | 2026-02-26 | **Template compliance enforcement**: Added explicit BRD template contract to `BRD-MVP-TEMPLATE.md/.yaml` and schema; inserted Phase 4 template conformance gate before validation pass; required review/fix loop closure now includes template naming and subsection alignment checks. |
 | 3.0 | 2026-02-26 | **Fix-loop hardening**: Enhanced Phase 5 orchestration to include semantic MVP heading normalization, safe subsection renumbering, fix confidence tagging, and markdown normalization for generated review/fix reports; Added gating rule requiring no unresolved `manual-required` fix items before PASS. |
 | 2.9 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Synced with BRD-MVP-TEMPLATE.md v1.1 |

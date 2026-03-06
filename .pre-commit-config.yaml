@@ -41,24 +41,24 @@ repos:
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: brd-standardized-element-codes
         name: Validate BRD standardized element type codes
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: brd-legacy-patterns
         name: Detect BRD legacy element ID patterns
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh ai_dev_ssd_flow/01_BRD
         language: system
         pass_filenames: false
-        stages: [manual]
+        stages: [pre-commit]
 
       - id: brd-claude-skill-audit
-        name: Run Claude BRD skill audit (optional)
+        name: Run Claude BRD skill audit (manual only)
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/claude_brd_skill_audit_hook.sh
         language: system
         files: ^ai_dev_ssd_flow/01_BRD/.*\.md$

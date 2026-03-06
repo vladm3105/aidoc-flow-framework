@@ -45,7 +45,7 @@ VALID_BRD_CODES = {
 SECTION_CODE_MAP: Dict[str, Union[str, Set[str]]] = {
     "2": "23",           # Business Objectives
     "5": "09",           # User Stories
-    "6": "01",           # Functional Requirements
+    "6": {"01", "06"},   # Functional Requirements (01) + embedded Acceptance Criteria tables (06)
     "7.1": "02",         # Quality Attributes
     "7.2": {"10", "32"},  # ADR Topics / Architecture Topics (10 canonical, 32 legacy)
     "8.1": "03",         # Constraints
@@ -55,6 +55,7 @@ SECTION_CODE_MAP: Dict[str, Union[str, Set[str]]] = {
 }
 
 PREFERRED_SECTION_CODES: Dict[str, str] = {
+    "6": "01",   # Functional Requirements primary; Acceptance Criteria embedded
     "7.2": "10",
     "10": "07",
 }

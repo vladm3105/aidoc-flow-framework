@@ -4,10 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
-if [[ "${ENABLE_CLAUDE_SKILL_HOOK:-0}" != "1" ]]; then
-  echo "[SKIP] Claude skill hook disabled. Set ENABLE_CLAUDE_SKILL_HOOK=1 to enable manual skill audit."
-  exit 0
-fi
+# Manual-only hook for Claude skill audit (not used in pre-commit)
+# Pre-commit uses shell scripts directly: brd-core-wrapper, brd-standardized-element-codes, brd-legacy-patterns
 
 if ! command -v claude >/dev/null 2>&1; then
   echo "[ERROR] Claude CLI not found in PATH; cannot run skill audit hook."

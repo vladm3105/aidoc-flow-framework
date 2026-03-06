@@ -18,8 +18,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, Audit Report]
     downstream_artifacts: [Fixed BRD, Fix Report]
-    version: "1.2"
-    last_updated: "2026-03-01"
+    version: "3.1"
+    last_updated: "2026-03-05"
   versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
 
 ---
@@ -492,7 +492,87 @@ Each fix action is tagged for downstream gating.
 
 Fixes upstream configuration issues before handling drift.
 
-#### 6.0 Upstream Configuration Fixes
+#### 6.0 Metadata Fixes
+
+**FIX-M001: Add Missing deliverable_type**
+
+**Trigger**: BRD has no `deliverable_type` in YAML frontmatter
+
+**Fix Action**: Add `deliverable_type: code` (default) to `custom_fields`
+
+```yaml
+# Before
+custom_fields:
+  document_type: brd-document
+  artifact_type: BRD
+
+# After
+custom_fields:
+  document_type: brd-document
+  artifact_type: BRD
+  deliverable_type: code
+```
+
+**FIX-M002: Fix Invalid deliverable_type**
+
+**Trigger**: `deliverable_type` value is not one of: `code`, `document`, `ux`, `risk`, `process`
+
+**Fix Action**: Suggest correct value based on BRD content analysis or reset to `code` (default)
+
+```yaml
+# Before
+custom_fields:
+  deliverable_type: software  # Invalid
+
+# After (auto-detect or default)
+custom_fields:
+  deliverable_type: code
+```
+
+**Content-Based Detection Logic**:
+
+```python
+def detect_deliverable_type(brd_content: str) -> str:
+    """Detect appropriate deliverable_type from BRD content."""
+    # Check for UX indicators
+    if any(kw in brd_content.lower() for kw in ['wireframe', 'mockup', 'user interface', 'ui/ux', 'design system']):
+        return 'ux'
+
+    # Check for documentation indicators
+    if any(kw in brd_content.lower() for kw in ['user guide', 'api documentation', 'technical manual', 'help content']):
+        return 'document'
+
+    # Check for risk/compliance indicators
+    if any(kw in brd_content.lower() for kw in ['risk assessment', 'compliance framework', 'audit trail', 'security audit']):
+        return 'risk'
+
+    # Check for process indicators
+    if any(kw in brd_content.lower() for kw in ['workflow automation', 'process improvement', 'business process', 'operational procedure']):
+        return 'process'
+
+    # Default to code
+    return 'code'
+```
+
+**FIX-M003: Fix document_type for Instance**
+
+**Trigger**: BRD instance has `document_type: template` instead of `document_type: brd-document`
+
+**Fix Action**: Change to `brd-document`
+
+```yaml
+# Before
+custom_fields:
+  document_type: template  # Wrong for instance
+
+# After
+custom_fields:
+  document_type: brd-document
+```
+
+---
+
+#### 6.1 Upstream Configuration Fixes
 
 **FIX-U001: Add Missing upstream_mode**
 
@@ -546,7 +626,15 @@ custom_fields:
   upstream_mode: "none"
 ```
 
-**Fix Codes**:
+**Metadata Fix Codes**:
+
+| Code | Description | Auto-Fix |
+|------|-------------|----------|
+| FIX-M001 | Add deliverable_type: code | Yes |
+| FIX-M002 | Fix invalid deliverable_type | Auto-detect or prompt |
+| FIX-M003 | Fix document_type to brd-document | Yes |
+
+**Upstream Configuration Fix Codes**:
 
 | Code | Description | Auto-Fix |
 |------|-------------|----------|
@@ -556,7 +644,7 @@ custom_fields:
 
 ---
 
-#### 6.0.1 Hash Validation Fixes
+#### 6.2 Hash Validation Fixes
 
 Fixes invalid hash values in `.drift_cache.json` that prevent drift detection from working correctly.
 
@@ -641,7 +729,7 @@ HASH=$(sha256sum <upstream_file_path> | cut -d' ' -f1)
 
 ---
 
-### Phase 6.1: Handle Upstream Drift (Auto-Merge)
+### Phase 6.3: Handle Upstream Drift (Auto-Merge)
 
 Automatically merges upstream changes into the document based on change percentage thresholds.
 
@@ -682,7 +770,7 @@ flowchart TD
 
 ---
 
-#### 6.1 Change Percentage Calculation
+#### 6.3.1 Change Percentage Calculation
 
 ```python
 def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
@@ -722,7 +810,7 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 
 ---
 
-#### 6.2 Tier 1: Auto-Merge (< 5% Change)
+#### 6.3.2 Tier 1: Auto-Merge (< 5% Change)
 
 **Trigger**: Total change percentage < 5%
 
@@ -785,7 +873,7 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 
 ---
 
-#### 6.3 Tier 2: Auto-Merge with Detailed Log (5-15% Change)
+#### 6.3.3 Tier 2: Auto-Merge with Detailed Log (5-15% Change)
 
 **Trigger**: Total change percentage between 5% and 15%
 
@@ -830,7 +918,7 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 
 ---
 
-#### 6.4 Tier 3: Archive and Regenerate (> 15% Change)
+#### 6.3.4 Tier 3: Archive and Regenerate (> 15% Change)
 
 **Trigger**: Total change percentage > 15%
 
@@ -916,7 +1004,7 @@ Documents requiring update after regeneration:
 
 ---
 
-#### 6.5 Drift Cache Update
+#### 6.3.5 Drift Cache Update
 
 After processing drift, update `.drift_cache.json`:
 
@@ -965,7 +1053,7 @@ After processing drift, update `.drift_cache.json`:
 
 ---
 
-#### 6.6 Fix Report: Drift Section
+#### 6.3.6 Fix Report: Drift Section
 
 **Drift Summary in Fix Report**:
 
@@ -1063,6 +1151,45 @@ After processing drift, update `.drift_cache.json`:
 | `references` | Update traceability and cross-references |
 | `drift` | Handle upstream drift detection issues |
 | `all` | All fix types (default) |
+
+---
+
+## Report Cleanup Policy (MANDATORY)
+
+**After generating a new fix report, delete all previous fix reports.** Old reports serve no purpose since:
+- Each fix cycle produces a complete new report
+- Only the latest report reflects current document state
+- Multiple old reports clutter the BRD folder
+
+### Cleanup Rules
+
+| File Pattern | Action | Reason |
+|--------------|--------|--------|
+| `BRD-NN.F_fix_report_v*.md` (older versions) | **DELETE** | Superseded by new fix report |
+| `BRD-NN.A_audit_report_v*.md` | **KEEP** | Managed by `doc-brd-audit` |
+| `.drift_cache.json` | **KEEP** | Tracks review/fix history metadata |
+
+### Cleanup Execution
+
+After writing the new fix report, run:
+
+```bash
+# In the BRD folder (e.g., docs/01_BRD/BRD-50_octo_agent_orchestration/)
+BRD_FOLDER="$1"
+NEW_REPORT="$2"  # e.g., BRD-50.F_fix_report_v003.md
+
+# Delete old fix reports (keep only the new one)
+find "${BRD_FOLDER}" -name "BRD-*.F_fix_report_v*.md" ! -name "$(basename ${NEW_REPORT})" -delete
+```
+
+### Cleanup Confirmation
+
+The fix report should include a cleanup summary:
+
+```markdown
+## Cleanup Summary
+- Deleted: 2 old fix reports (v001, v002)
+```
 
 ---
 
@@ -1235,6 +1362,8 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.1 | 2026-03-05 | **Metadata Fixes**: Added Phase 6.0 for deliverable_type validation fixes (FIX-M001, FIX-M002, FIX-M003); Auto-detects deliverable_type from content (`code`, `document`, `ux`, `risk`, `process`); Fixes document_type for instances; Renumbered Phase 6 subsections (6.1→6.1, 6.0.1→6.2, 6.1→6.3) |
+| 3.0 | 2026-03-05 | **Report Cleanup Policy**: Added mandatory cleanup of old fix reports after generating new one; Deletes previous `BRD-NN.F_fix_report_v*.md` files; Added cleanup summary section to fix report |
 | 2.9 | 2026-03-01 | **2-Skill Model**: Updated Related Skills to reference `doc-brd-audit` only; deprecated `doc-brd-validator` and `doc-brd-reviewer` merged into unified audit |
 | 2.7 | 2026-02-28 | **Standardized validator parity**: Removed `25→33` auto-conversion guidance; code `25` in BRD now requires manual context-based remapping to valid BRD codes, aligned with `validate_standardized_element_codes.py`. |
 | 2.6 | 2026-02-27 | **Hash Validation Fixes**: Added Section 6.0.1 with FIX-H001 (placeholder replacement via sha256sum), FIX-H002 (missing prefix), FIX-H003 (file not found); Auto-fix invalid hash placeholders like `verified_no_drift` and `pending_verification` |
