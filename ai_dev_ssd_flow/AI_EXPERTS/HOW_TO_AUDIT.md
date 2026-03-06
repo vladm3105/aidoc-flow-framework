@@ -17,7 +17,7 @@ Use this phase *before* you write any formal technical documentation (BRD, PRD, 
 
 Use this phase to audit completed documents (BRDs, PRDs, ADRs) using the framework automation scripting. This forces the document through a mandatory quality gate.
 
-1.  **Prepare your Project Configuration**: Copy `project_experts.template.yaml` to the root of your project directory as `project_experts.yaml`. Fill it out with your project's specific personas and anti-bias directives.
+1.  **Prepare your Project Configuration**: Copy `project_experts.template.yaml` to `docs/AI_EXPERTS/project_experts.yaml`. Fill it out with your project's specific personas and anti-bias directives.
 2.  **Run the Automation Script**: Use the unified council audit script provided by the framework to execute all 6 personas plus the synthesis Chairperson in parallel.
     ```bash
     bash /opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/doc_council_audit.sh path/to/PRD-50_octo_agent.md
@@ -28,10 +28,11 @@ Use this phase to audit completed documents (BRDs, PRDs, ADRs) using the framewo
 
 Your aggregated audit report will formally adhere to the `COUNCIL` document template structure, utilizing the metadata layout required for framework gating. A document that fails this review cannot progress to the next SDD layer.
 
-Your aggregated audit report should roughly follow this structure to clearly present the findings:
-
-```markdown
 # Expert Board Audit Report: [Document Name]
+
+> **Target Document**: [Document Name] (Version X.Y)
+> **Audit Date**: YYYY-MM-DD
+> **Board Configuration**: docs/AI_EXPERTS/project_experts.yaml
 
 ## 1. Executive Summary
 *   **Consensus Recommendation**: (Proceed, Remediation Required, Fundamental Redesign)

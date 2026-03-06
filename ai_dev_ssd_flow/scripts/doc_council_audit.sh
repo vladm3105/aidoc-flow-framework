@@ -39,12 +39,14 @@ TARGET_DIR=$(dirname "$TARGET_FILE")
 TARGET_FILENAME=$(basename "$TARGET_FILE")
 TARGET_BASENAME="${TARGET_FILENAME%.*}" # e.g., PRD-50_octo_agent
 
-# Locate project_experts.yaml (Look in target dir, then root dir, then fallback to template)
+# Locate project_experts.yaml (Look in TARGET_DIR, then docs/AI_EXPERTS, then fallback to template)
 EXPERTS_YAML=""
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+
 if [ -f "$TARGET_DIR/project_experts.yaml" ]; then
     EXPERTS_YAML="$TARGET_DIR/project_experts.yaml"
-elif [ -f "$(git rev-parse --show-toplevel 2>/dev/null)/project_experts.yaml" ]; then
-    EXPERTS_YAML="$(git rev-parse --show-toplevel 2>/dev/null)/project_experts.yaml"
+elif [ -n "$PROJECT_ROOT" ] && [ -f "$PROJECT_ROOT/docs/AI_EXPERTS/project_experts.yaml" ]; then
+    EXPERTS_YAML="$PROJECT_ROOT/docs/AI_EXPERTS/project_experts.yaml"
 else
     warn "No custom project_experts.yaml found. Falling back to framework template."
     EXPERTS_YAML="$FRAMEWORK_ROOT/AI_EXPERTS/project_experts.template.yaml"

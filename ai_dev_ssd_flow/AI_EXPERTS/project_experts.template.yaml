@@ -1,5 +1,5 @@
 # Project-Specific AI Expert Board Configuration
-# Copy this file to `project_experts.yaml` in your project root and customize explicitly for your domain.
+# Copy this file to `docs/AI_EXPERTS/project_experts.yaml` in your project and customize explicitly for your domain.
 
 personas:
   architect:

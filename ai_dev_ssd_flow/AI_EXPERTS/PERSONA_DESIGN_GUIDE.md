@@ -1,6 +1,6 @@
 # Persona Design Guide
 
-To prevent the Expert Board from becoming a rubber-stamp committee, you must design distinct, adversarial personas tailored to your project. This guide shows you how to construct the `project_experts.yaml` (or system prompts) effectively.
+To prevent the Expert Board from becoming a rubber-stamp committee, you must design distinct, adversarial personas tailored to your project. This guide shows you how to construct the `docs/AI_EXPERTS/project_experts.yaml` (or system prompts) effectively.
 
 ## 1. The 6 Required Archetypes
 
