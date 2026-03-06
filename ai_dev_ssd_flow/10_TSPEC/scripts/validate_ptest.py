@@ -18,6 +18,12 @@ try:
     HAS_JSONSCHEMA = True
 except ImportError:
     HAS_JSONSCHEMA = False
+try:
+    from error_code_helpers import format_error, format_warning, calculate_exit_code
+    HAS_ERROR_CODES = True
+except ImportError:
+    HAS_ERROR_CODES = False
+
 
 
 @dataclass
@@ -273,46 +279,77 @@ class PTESTValidator:
         }
 
     def _collect_issues(self, gate_scores: dict) -> list:
-        """Collect validation issues."""
+        """Collect validation issues with error codes."""
         issues = []
 
-        # Check for missing SPEC reference
+        # Traceability checks
         if not self.spec_ref:
-            issues.append("Missing @spec reference in document")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @spec reference"))
+            else:
+                issues.append("Missing @spec reference in document")
 
-        # Check for missing SYS references
         if not self.sys_refs:
-            issues.append("No @sys references found in document")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @sys references"))
+            else:
+                issues.append("No @sys references found in document")
 
-        # Check for missing execution profile
+        # Execution profile check
         if not self.has_execution_profile:
-            issues.append("Missing execution_profile section")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("PTEST-E001", "missing execution_profile section"))
+            else:
+                issues.append("Missing execution_profile section")
 
-        # Check individual test cases
+        # Test case checks
         for tc in self.test_cases:
             if not tc.sys_ref:
-                issues.append(f"{tc.id}: Missing @sys reference")
-            if not tc.has_load_scenarios:
-                issues.append(f"{tc.id}: Missing load scenarios table")
-            if tc.category not in self.VALID_CATEGORIES:
-                issues.append(f"{tc.id}: Invalid or missing category prefix")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E007", f"{tc.id} - missing @sys reference"))
+                else:
+                    issues.append(f"{tc.id}: Missing @sys reference")
 
-        # Check gate thresholds
+            if not tc.has_load_scenarios:
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("PTEST-E001", f"{tc.id} - missing load scenarios"))
+                else:
+                    issues.append(f"{tc.id}: Missing load scenarios table")
+
+            if tc.category not in self.VALID_CATEGORIES:
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("PTEST-E003", f"{tc.id} - invalid category"))
+                else:
+                    issues.append(f"{tc.id}: Invalid or missing category prefix")
+
+        # Quality gate checks
+        overall_score = sum(gate_scores.values()) / len(gate_scores) if gate_scores else 0
+        if overall_score < 85:
+            if HAS_ERROR_CODES:
+                issues.append(format_error("PTEST-W001", f"overall score {overall_score:.1f}% < 85%"))
+
         for gate, score in gate_scores.items():
             if score < self.WARN_THRESHOLD:
-                issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{gate} {score:.1f}% < 75%"))
+                else:
+                    issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
 
         return issues
 
     def _collect_warnings(self, gate_scores: dict) -> list:
-        """Collect validation warnings."""
+        """Collect validation warnings with error codes."""
         warnings = []
 
         for tc in self.test_cases:
             if not tc.has_thresholds:
                 warnings.append(f"{tc.id}: Missing performance thresholds")
+
             if not tc.has_measurement_strategy:
-                warnings.append(f"{tc.id}: Missing measurement strategy")
+                if HAS_ERROR_CODES:
+                    warnings.append(format_warning("PTEST-W001", f"{tc.id} - missing measurement strategy"))
+                else:
+                    warnings.append(f"{tc.id}: Missing measurement strategy")
 
         return warnings
 
@@ -383,9 +420,19 @@ def main():
     # Summary
     passed = sum(1 for r in results if r.passed)
     total = len(results)
-    print(f"Summary: {passed}/{total} documents passed validation")
+    print(f"Summary: {passed}/{total} documents passed validation")    # Calculate exit code based on errors and warnings
+    if HAS_ERROR_CODES:
+        # Collect all issues and warnings from results
+        all_issues = []
+        all_warnings = []
+        for r in results:
+            all_issues.extend(r.issues)
+            all_warnings.extend(r.warnings)
+        exit_code = calculate_exit_code(all_issues, all_warnings)
+        sys.exit(exit_code)
+    else:
+        sys.exit(0 if all_passed else 1)
 
-    sys.exit(0 if all_passed else 1)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,12 @@ try:
     HAS_JSONSCHEMA = True
 except ImportError:
     HAS_JSONSCHEMA = False
+try:
+    from error_code_helpers import format_error, format_warning, calculate_exit_code
+    HAS_ERROR_CODES = True
+except ImportError:
+    HAS_ERROR_CODES = False
+
 
 
 @dataclass
@@ -279,37 +285,75 @@ class FTESTValidator:
         }
 
     def _collect_issues(self, gate_scores: dict) -> list:
-        """Collect validation issues."""
+        """Collect validation issues with error codes."""
         issues = []
 
+        # Traceability checks
         if not self.has_sys_tag:
-            issues.append("Missing @sys traceability tag")
-        if not self.has_threshold_tag:
-            issues.append("Missing @threshold traceability tag")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @sys traceability tag"))
+            else:
+                issues.append("Missing @sys traceability tag")
 
+        if not self.has_threshold_tag:
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @threshold traceability tag"))
+            else:
+                issues.append("Missing @threshold traceability tag")
+
+        # Test case checks
         for tc in self.test_cases:
             if not tc.sys_ref:
-                issues.append(f"{tc.id}: Missing @sys reference")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("FTEST-E001", f"{tc.id} - missing @sys reference"))
+                else:
+                    issues.append(f"{tc.id}: Missing @sys reference")
+
             if not tc.threshold_ref:
-                issues.append(f"{tc.id}: Missing @threshold reference")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("FTEST-E002", tc.id))
+                else:
+                    issues.append(f"{tc.id}: Missing @threshold reference")
+
             if not tc.has_threshold_table:
-                issues.append(f"{tc.id}: Missing threshold validation table")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{tc.id} - missing threshold validation table"))
+                else:
+                    issues.append(f"{tc.id}: Missing threshold validation table")
+
             if not tc.has_workflow:
-                issues.append(f"{tc.id}: Missing workflow steps")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("FTEST-W001", f"{tc.id} - missing workflow steps"))
+                else:
+                    issues.append(f"{tc.id}: Missing workflow steps")
+
+        # Quality gate checks
+        if gate_scores.get("sys_coverage", 0) < 90:
+            if HAS_ERROR_CODES:
+                score = gate_scores.get("sys_coverage", 0)
+                issues.append(format_error("FTEST-E001", f"SYS coverage {score:.1f}% < 90%"))
+            else:
+                issues.append(f"GATE sys_coverage: Score {gate_scores.get('sys_coverage', 0):.1f}% below threshold")
 
         for gate, score in gate_scores.items():
-            if score < self.WARN_THRESHOLD:
-                issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
+            if gate != "sys_coverage" and score < self.WARN_THRESHOLD:
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{gate} {score:.1f}% < 75%"))
+                else:
+                    issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
 
         return issues
 
     def _collect_warnings(self) -> list:
-        """Collect validation warnings."""
+        """Collect validation warnings with error codes."""
         warnings = []
 
         for tc in self.test_cases:
             if not tc.has_measurement:
-                warnings.append(f"{tc.id}: Missing measurement methodology (recommended)")
+                if HAS_ERROR_CODES:
+                    warnings.append(format_warning("FTEST-W001", f"{tc.id} - missing measurement"))
+                else:
+                    warnings.append(f"{tc.id}: Missing measurement methodology (recommended)")
 
         return warnings
 
@@ -369,9 +413,19 @@ def main():
 
     passed = sum(1 for r in results if r.passed)
     total = len(results)
-    print(f"Summary: {passed}/{total} documents passed validation")
+    print(f"Summary: {passed}/{total} documents passed validation")    # Calculate exit code based on errors and warnings
+    if HAS_ERROR_CODES:
+        # Collect all issues and warnings from results
+        all_issues = []
+        all_warnings = []
+        for r in results:
+            all_issues.extend(r.issues)
+            all_warnings.extend(r.warnings)
+        exit_code = calculate_exit_code(all_issues, all_warnings)
+        sys.exit(exit_code)
+    else:
+        sys.exit(0 if all_passed else 1)
 
-    sys.exit(0 if all_passed else 1)
 
 
 if __name__ == "__main__":

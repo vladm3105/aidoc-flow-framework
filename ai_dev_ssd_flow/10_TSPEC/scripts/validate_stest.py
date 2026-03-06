@@ -19,6 +19,12 @@ try:
     HAS_JSONSCHEMA = True
 except ImportError:
     HAS_JSONSCHEMA = False
+try:
+    from error_code_helpers import format_error, format_warning, calculate_exit_code
+    HAS_ERROR_CODES = True
+except ImportError:
+    HAS_ERROR_CODES = False
+
 
 
 @dataclass
@@ -280,39 +286,74 @@ class STESTValidator:
         }
 
     def _collect_issues(self, gate_scores: dict) -> list:
-        """Collect validation issues."""
+        """Collect validation issues with error codes."""
         issues = []
 
         # Traceability issues
         if not self.has_ears_tag:
-            issues.append("Missing @ears traceability tag (required)")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @ears traceability tag"))
+            else:
+                issues.append("Missing @ears traceability tag (required)")
+
         if not self.has_bdd_tag:
-            issues.append("Missing @bdd traceability tag (required)")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @bdd traceability tag"))
+            else:
+                issues.append("Missing @bdd traceability tag (required)")
+
         if not self.has_req_tag:
-            issues.append("Missing @req traceability tag (required)")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @req traceability tag"))
+            else:
+                issues.append("Missing @req traceability tag (required)")
 
         # Timeout issues
         sum_timeouts = sum(tc.timeout for tc in self.test_cases)
         if sum_timeouts > self.MAX_TOTAL_TIMEOUT:
-            issues.append(
-                f"Total timeout {sum_timeouts}s exceeds max {self.MAX_TOTAL_TIMEOUT}s"
-            )
+            if HAS_ERROR_CODES:
+                issues.append(format_error("STEST-E002", f"{sum_timeouts}s > {self.MAX_TOTAL_TIMEOUT}s"))
+            else:
+                issues.append(f"Total timeout {sum_timeouts}s exceeds max {self.MAX_TOTAL_TIMEOUT}s")
 
         # Per-test issues
         for tc in self.test_cases:
             if tc.timeout > self.MAX_TEST_TIMEOUT:
-                issues.append(f"{tc.id}: Timeout {tc.timeout}s exceeds max 60s")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("STEST-E002", f"{tc.id} - {tc.timeout}s > 60s"))
+                else:
+                    issues.append(f"{tc.id}: Timeout {tc.timeout}s exceeds max 60s")
+
             if not tc.has_pass_fail:
-                issues.append(f"{tc.id}: Missing pass/fail criteria")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{tc.id} - missing pass/fail criteria"))
+                else:
+                    issues.append(f"{tc.id}: Missing pass/fail criteria")
+
             if not tc.has_health_check:
-                issues.append(f"{tc.id}: Missing health check command")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{tc.id} - missing health check"))
+                else:
+                    issues.append(f"{tc.id}: Missing health check command")
+
             if not tc.has_rollback:
-                issues.append(f"{tc.id}: Missing rollback procedure")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("STEST-E003", tc.id))
+                else:
+                    issues.append(f"{tc.id}: Missing rollback procedure")
+
+        # STEST must achieve 100%
+        if gate_scores.get("critical_paths", 0) < 100 or \
+           gate_scores.get("timeout_budget", 0) < 100 or \
+           gate_scores.get("rollback_defined", 0) < 100 or \
+           gate_scores.get("health_checks", 0) < 100:
+            if HAS_ERROR_CODES:
+                issues.append(format_error("STEST-E004", "one or more gates < 100%"))
 
         return issues
 
     def _collect_warnings(self) -> list:
-        """Collect validation warnings."""
+        """Collect validation warnings with error codes."""
         warnings = []
 
         # Calculate buffer
@@ -378,9 +419,19 @@ def main():
     passed = sum(1 for r in results if r.passed)
     total = len(results)
     print(f"Summary: {passed}/{total} documents passed validation")
-    print("Note: STEST requires 100% compliance - no partial passes allowed")
+    print("Note: STEST requires 100% compliance - no partial passes allowed")    # Calculate exit code based on errors and warnings
+    if HAS_ERROR_CODES:
+        # Collect all issues and warnings from results
+        all_issues = []
+        all_warnings = []
+        for r in results:
+            all_issues.extend(r.issues)
+            all_warnings.extend(r.warnings)
+        exit_code = calculate_exit_code(all_issues, all_warnings)
+        sys.exit(exit_code)
+    else:
+        sys.exit(0 if all_passed else 1)
 
-    sys.exit(0 if all_passed else 1)
 
 
 if __name__ == "__main__":

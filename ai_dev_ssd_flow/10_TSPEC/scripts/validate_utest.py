@@ -19,6 +19,12 @@ try:
 except ImportError:
     HAS_JSONSCHEMA = False
 
+try:
+    from error_code_helpers import format_error, format_warning, calculate_exit_code
+    HAS_ERROR_CODES = True
+except ImportError:
+    HAS_ERROR_CODES = False
+
 
 @dataclass
 class ValidationResult:
@@ -295,42 +301,66 @@ class UTESTValidator:
         }
 
     def _collect_issues(self, gate_scores: dict) -> list:
-        """Collect validation issues."""
+        """Collect validation issues with error codes."""
         issues = []
 
         # Check for missing SPEC reference
         if not self.spec_ref:
-            issues.append("Missing @spec reference in document")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("TSPEC-E007", "missing @spec reference"))
+            else:
+                issues.append("Missing @spec reference in document")
 
         # Check for missing REQ references
         if not self.req_refs:
-            issues.append("No @req references found in document")
+            if HAS_ERROR_CODES:
+                issues.append(format_error("UTEST-E001", "no @req references found"))
+            else:
+                issues.append("No @req references found in document")
 
         # Check individual test cases
         for tc in self.test_cases:
             if not tc.req_ref:
-                issues.append(f"{tc.id}: Missing @req reference")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("UTEST-W002", f"{tc.id}"))
+                else:
+                    issues.append(f"{tc.id}: Missing @req reference")
             if not tc.has_io_table:
-                issues.append(f"{tc.id}: Missing I/O table")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("UTEST-E002", f"{tc.id}"))
+                else:
+                    issues.append(f"{tc.id}: Missing I/O table")
             if tc.category not in self.VALID_CATEGORIES:
-                issues.append(f"{tc.id}: Invalid or missing category prefix")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("UTEST-E005", f"{tc.id}"))
+                else:
+                    issues.append(f"{tc.id}: Invalid or missing category prefix")
 
         # Check gate thresholds
         for gate, score in gate_scores.items():
             if score < self.WARN_THRESHOLD:
-                issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
+                if HAS_ERROR_CODES:
+                    issues.append(format_error("TSPEC-E009", f"{gate}: {score:.1f}%"))
+                else:
+                    issues.append(f"GATE {gate}: Score {score:.1f}% below threshold")
 
         return issues
 
     def _collect_warnings(self, gate_scores: dict) -> list:
-        """Collect validation warnings."""
+        """Collect validation warnings with error codes."""
         warnings = []
 
         for tc in self.test_cases:
             if not tc.has_pseudocode:
-                warnings.append(f"{tc.id}: Missing pseudocode (recommended)")
+                if HAS_ERROR_CODES:
+                    warnings.append(format_warning("UTEST-W001", f"{tc.id}"))
+                else:
+                    warnings.append(f"{tc.id}: Missing pseudocode (recommended)")
             if not tc.has_error_cases:
-                warnings.append(f"{tc.id}: Missing error cases (recommended)")
+                if HAS_ERROR_CODES:
+                    warnings.append(format_warning("UTEST-E004", f"{tc.id}"))
+                else:
+                    warnings.append(f"{tc.id}: Missing error cases (recommended)")
 
         return warnings
 
@@ -403,7 +433,18 @@ def main():
     total = len(results)
     print(f"Summary: {passed}/{total} documents passed validation")
 
-    sys.exit(0 if all_passed else 1)
+    # Calculate exit code based on errors and warnings
+    if HAS_ERROR_CODES:
+        # Collect all issues and warnings from results
+        all_issues = []
+        all_warnings = []
+        for r in results:
+            all_issues.extend(r.issues)
+            all_warnings.extend(r.warnings)
+        exit_code = calculate_exit_code(all_issues, all_warnings)
+        sys.exit(exit_code)
+    else:
+        sys.exit(0 if all_passed else 1)
 
 
 if __name__ == "__main__":

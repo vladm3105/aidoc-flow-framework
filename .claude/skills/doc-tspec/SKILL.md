@@ -15,8 +15,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
     downstream_artifacts: [TASKS, Code]
-    version: "1.2"
-    last_updated: "2026-02-27"
+    version: "2.0"
+    last_updated: "2026-03-06"
   versioning_policy: "tracks TSPEC-MVP-TEMPLATE schema_version"
 ---
 
@@ -555,6 +555,201 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer TSPEC --auto-f
 | XDOC-007 | Gap in cumulative tag chain | ERROR |
 | XDOC-009 | Missing traceability section | ERROR |
 
+## TSPEC v2.0 Validation Infrastructure (2026-03-06)
+
+### Overview
+
+TSPEC validation infrastructure provides automated quality gates, pre-commit hooks, and type-specific validators for all 6 test types (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST).
+
+**Features**:
+- Pre-commit hooks for automatic validation
+- Standardized error codes (38 TSPEC-specific codes)
+- Schema validation with flexible path resolution
+- JSON output for automation
+- Enhanced batch validator with CLI options
+- Type-specific quality gates and thresholds
+
+### Type-Specific Validators
+
+| Test Type | Validator | Threshold | Description |
+|-----------|-----------|-----------|-------------|
+| UTEST | `validate_utest.py` | ≥90% | Unit test coverage of REQ elements |
+| ITEST | `validate_itest.py` | ≥90% | Contract coverage and sequence diagrams |
+| STEST | `validate_stest.py` | 100% | Critical path smoke tests (strict) |
+| FTEST | `validate_ftest.py` | ≥90% | SYS requirement coverage |
+| PTEST | `validate_ptest.py` | ≥85% | Performance scenario coverage |
+| SECTEST | `validate_sectest.py` | ≥90% | Security threat and control coverage |
+
+### Pre-Commit Hooks
+
+**Automatic validation on every commit**:
+
+```yaml
+# .pre-commit-config.yaml (auto-configured)
+
+- id: tspec-core-validator
+  name: Validate TSPEC core checks
+  entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_core_validator_hook.sh
+
+- id: tspec-quality-gate
+  name: Validate TSPEC quality gates
+  entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_quality_gate_hook.sh
+
+- id: tspec-tasks-ready
+  name: Validate TSPEC TASKS-Ready scores
+  entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_tasks_ready_hook.sh
+```
+
+**Exit codes**:
+- `0` = PASS (all checks passed)
+- `1` = WARN (warnings only, commit allowed)
+- `2` = FAIL (errors present, commit blocked)
+
+### Error Code Format
+
+**Pattern**: `[CODE] Message (context)`
+
+**Examples**:
+```
+[UTEST-E002] Missing I/O table (TC-001)
+[TSPEC-E007] Missing Traceability section (missing @spec reference)
+[ITEST-E001] CTR coverage 75.0% < 90%
+```
+
+**Error Code Categories**:
+
+| Prefix | Category | Count | Examples |
+|--------|----------|-------|----------|
+| TSPEC-E | Generic errors | 10 | Missing sections, invalid format |
+| UTEST-E/W | Unit test issues | 7 | Low REQ coverage, missing pseudocode |
+| ITEST-E/W | Integration issues | 4 | Missing sequence diagrams, weak coverage |
+| STEST-E | Smoke test issues | 4 | Timeout exceeded, missing rollback |
+| FTEST-E/W | Functional issues | 3 | Low SYS coverage, missing thresholds |
+| PTEST-E/W | Performance issues | 4 | Missing load scenarios, invalid metrics |
+| SECTEST-E/W | Security issues | 4 | Missing threat scenarios, weak controls |
+
+### Batch Validation
+
+**Enhanced validator** with 6 CLI options:
+
+```bash
+# Basic validation
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec_enhanced.sh docs/10_TSPEC
+
+# Verbose output with quality gates
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec_enhanced.sh --verbose docs/10_TSPEC
+
+# JSON output for automation
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec_enhanced.sh --json docs/10_TSPEC
+
+# Force color output
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec_enhanced.sh --color docs/10_TSPEC
+```
+
+**Options**:
+- `--verbose`: Show detailed quality gate breakdown
+- `--quality-gates`: Show quality scores per gate
+- `--json`: Machine-readable JSON output
+- `--color`: Force color output
+- `--no-color`: Disable color output
+- `--help`: Show usage information
+
+### Individual Type Validation
+
+**Validate specific test type**:
+
+```bash
+# Unit tests
+python3 ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/*.md
+
+# Integration tests
+python3 ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py docs/10_TSPEC/ITEST/*.md -v
+
+# With quality gates
+python3 ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py --quality-gates docs/10_TSPEC/FTEST/*.md
+```
+
+### Schema Validation
+
+**Flexible path resolution** (4+ strategies):
+
+1. Sibling to TSPEC file: `UTEST/UTEST_MVP_SCHEMA.yaml`
+2. Parent directory: `10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
+3. Search upward to `TSPEC` or `10_TSPEC` directory
+4. Graceful degradation if schema not found
+
+**YAML frontmatter validation**:
+- Required fields: `id`, `title`, `version`, `cumulative_tags`, `test_type`
+- Type-specific fields validated per test type
+- Schema errors block document creation
+
+### Quality Score Calculation
+
+**Combined score across all 6 test types**:
+
+```bash
+# Calculate quality score
+bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC
+```
+
+**Output**:
+```
+UTEST:   92.5%
+ITEST:   88.0%
+STEST:   100.0%
+FTEST:   91.2%
+PTEST:   86.0%
+SECTEST: 90.5%
+
+Combined: 91.4%
+Status: [PASS] Quality score ≥85%
+```
+
+### Test Fixtures
+
+**42 test fixtures** for regression testing:
+
+```bash
+# Create test fixtures (if needed)
+bash ai_dev_ssd_flow/10_TSPEC/scripts/create_test_fixtures.sh
+```
+
+**Categories**:
+- Valid documents (6 types × 3 variants = 18 fixtures)
+- Missing sections (6 types = 6 fixtures)
+- Invalid traceability (6 types = 6 fixtures)
+- Schema violations (6 types = 6 fixtures)
+- Edge cases (6 additional fixtures)
+
+### File Exclusion Patterns
+
+**Auto-excluded from validation**:
+
+| Pattern | Purpose | Example |
+|---------|---------|---------|
+| `*-00_*` | Reserved IDs | `UTEST-00_template.md` |
+| `*TEMPLATE*` | Template files | `UTEST-MVP-TEMPLATE.md` |
+| `*FIX_PLAN*` | Fix plans | `UTEST-01_FIX_PLAN.md` |
+| `*.A_audit_report*` | Audit reports | `UTEST-01.A_audit_report.md` |
+| `*.R_review_report*` | Review reports | `UTEST-01.R_review_report.md` |
+| `*.F_fix_report*` | Fix reports | `UTEST-01.F_fix_report.md` |
+| `*.V_validation_report*` | Validation reports | `UTEST-01.V_validation_report.md` |
+
+### Integration with /doc-tspec-audit
+
+**Unified audit workflow** (recommended):
+
+```bash
+# Run complete audit (validator + reviewer)
+/doc-tspec-audit
+
+# Produces: TSPEC-NN.A_audit_report.md with:
+# - Schema validation results
+# - Quality gate scores
+# - Error code details
+# - Recommended fixes
+```
+
 ### Quality Gate
 
 **Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
@@ -636,6 +831,7 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-03-06 | **MAJOR**: Added v2.0 validation infrastructure with pre-commit hooks (3 hooks), error codes (38 TSPEC-specific codes), schema validation, enhanced batch validator (6 CLI options), error code integration in all 6 validators (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST), 42 test fixtures, JSON output, quality score calculation, and comprehensive validation documentation |
 | 1.2 | 2026-02-27 | Normalized frontmatter to `metadata` schema with `versioning_policy`; aligned cross-document/tag validation command examples to canonical `ai_dev_ssd_flow/scripts/*` locations |
 | 1.1 | 2026-02-26 | Added PTEST (code 44) and SECTEST (code 45) support; Fixed template paths to ai_dev_ssd_flow/10_TSPEC/ |
 | 1.0 | 2026-02-08 | Initial release with UTEST/ITEST/STEST/FTEST support (codes 40-43) |
