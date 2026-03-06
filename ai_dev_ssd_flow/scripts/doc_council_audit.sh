@@ -104,14 +104,32 @@ EOF
 
     # If the persona is integration_expert, append the integration matrix for context
     if [ "$persona" = "integration_expert" ]; then
-        MATRIX_FILE="$PROJECT_ROOT/docs/01_BRD/BRD-00_INTEGRATION_MATRIX.md"
-        if [ -f "$MATRIX_FILE" ]; then
+        # Check for a global or local integration matrix
+        MATRIX_FILE=$(find "$PROJECT_ROOT/docs" -name "*INTEGRATION_MATRIX*.md" -print -quit 2>/dev/null || true)
+        
+        if [ -n "$MATRIX_FILE" ] && [ -f "$MATRIX_FILE" ]; then
             echo "=== SYSTEM INTEGRATION MATRIX ===" >> "$TMP_DIR/prompt_$persona.txt"
             cat "$MATRIX_FILE" >> "$TMP_DIR/prompt_$persona.txt"
             echo "=== END SYSTEM INTEGRATION MATRIX ===" >> "$TMP_DIR/prompt_$persona.txt"
             echo "" >> "$TMP_DIR/prompt_$persona.txt"
         else
-            warn "Integration matrix not found for integration_expert ($MATRIX_FILE). The expert will audit without it."
+            LAYER_DIR=$(echo "$TARGET_FILE" | grep -o '.*/docs/[^/]*' || echo "$TARGET_DIR")
+            warn "Integration matrix not found. Falling back to Layer Context scanning in $LAYER_DIR."
+            echo "=== LAYER CONTEXT (Fallback) ===" >> "$TMP_DIR/prompt_$persona.txt"
+            echo "The formal integration matrix is missing. Here is the metadata of other documents currently in the same layer to help you identify overlap or dependencies:" >> "$TMP_DIR/prompt_$persona.txt"
+            
+            # Extract doc_id and title from all other md files in the layer
+            find "$LAYER_DIR" -name "*.md" -type f ! -name "*_COUNCIL_AUDIT_REPORT.md" 2>/dev/null | while read -r other_doc; do
+                if [ "$other_doc" != "$TARGET_FILE" ]; then
+                    other_title=$(grep -m 1 "^# " "$other_doc" || echo "# Unknown Title")
+                    other_id=$(grep -m 1 "^doc_id:" "$other_doc" | awk '{print $2}' || echo "UNKNOWN_ID")
+                    if [ "$other_id" != "UNKNOWN_ID" ]; then
+                        echo "- Document: $other_id | Title: ${other_title### }" >> "$TMP_DIR/prompt_$persona.txt"
+                    fi
+                fi
+            done
+            echo "=== END LAYER CONTEXT ===" >> "$TMP_DIR/prompt_$persona.txt"
+            echo "" >> "$TMP_DIR/prompt_$persona.txt"
         fi
     fi
 

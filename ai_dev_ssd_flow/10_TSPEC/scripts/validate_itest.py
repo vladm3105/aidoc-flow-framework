@@ -8,9 +8,16 @@ Validates ITEST documents against MVP quality gates.
 import argparse
 import re
 import sys
+import yaml
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
+
+try:
+    from jsonschema import validate as jsonschema_validate, ValidationError, SchemaError
+    HAS_JSONSCHEMA = True
+except ImportError:
+    HAS_JSONSCHEMA = False
 
 
 @dataclass
@@ -63,6 +70,68 @@ class ITESTValidator:
         self.has_sys_tag: bool = False
         self.has_spec_tag: bool = False
 
+    def _validate_against_schema(self, file_path: Path, content: str) -> list:
+        """Validate TSPEC document against MVP schema with flexible path resolution."""
+        errors = []
+        if not HAS_JSONSCHEMA:
+            return errors
+
+        filename = file_path.name
+        type_match = re.match(r'^(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)-', filename)
+        if not type_match:
+            errors.append(f"Cannot determine test type from filename: {filename}")
+            return errors
+
+        type_name = type_match.group(1)
+        schema_candidates = [
+            file_path.parents[1] / f"{type_name}_MVP_SCHEMA.yaml",
+            file_path.parent / f"{type_name}_MVP_SCHEMA.yaml",
+            file_path.parents[2] / type_name / f"{type_name}_MVP_SCHEMA.yaml" if len(file_path.parents) > 2 else None,
+        ]
+
+        current = file_path.parent
+        search_depth = 0
+        while current.name and current.name not in ['TSPEC', '10_TSPEC', '/'] and search_depth < 5:
+            schema_candidates.append(current / type_name / f"{type_name}_MVP_SCHEMA.yaml")
+            current = current.parent
+            search_depth += 1
+            if current == current.parent:
+                break
+
+        schema_file = None
+        for candidate in schema_candidates:
+            if candidate and candidate.exists():
+                schema_file = candidate
+                break
+
+        if not schema_file:
+            if self.verbose:
+                print(f"  Note: Schema file not found for {type_name}")
+            return errors
+
+        try:
+            with open(schema_file, 'r', encoding='utf-8') as f:
+                schema = yaml.safe_load(f)
+
+            frontmatter_match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+            if not frontmatter_match:
+                errors.append("No YAML frontmatter found")
+                return errors
+
+            frontmatter = yaml.safe_load(frontmatter_match.group(1))
+            jsonschema_validate(instance=frontmatter, schema=schema)
+
+        except yaml.YAMLError as e:
+            errors.append(f"YAML parsing error: {e}")
+        except ValidationError as e:
+            errors.append(f"Schema validation failed: {e.message}")
+        except SchemaError as e:
+            errors.append(f"Invalid schema: {e}")
+        except Exception as e:
+            errors.append(f"Unexpected error during schema validation: {e}")
+
+        return errors
+
     def validate_file(self, file_path: Path) -> ValidationResult:
         """Validate a single ITEST document."""
         if not file_path.exists():
@@ -74,6 +143,17 @@ class ITESTValidator:
             )
 
         content = file_path.read_text(encoding="utf-8")
+
+        # Schema validation (before other checks)
+        schema_errors = self._validate_against_schema(file_path, content)
+        if schema_errors:
+            return ValidationResult(
+                file_path=str(file_path),
+                passed=False,
+                overall_score=0,
+                issues=schema_errors,
+            )
+
         self._reset_state()
         self._parse_document(content)
 
