@@ -225,6 +225,62 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "TASKS-W002": ("Missing acceptance criteria", "Add task completion criteria"),
 
     # -------------------------------------------------------------------------
+    # TSPEC (Layer 10) - Test Specifications
+    # -------------------------------------------------------------------------
+    "TSPEC-E001": ("Invalid test type", "Use UTEST/ITEST/STEST/FTEST/PTEST/SECTEST"),
+    "TSPEC-E002": ("Missing Document Control section", "Add Section 1"),
+    "TSPEC-E003": ("Missing Test Scope section", "Add Section 2"),
+    "TSPEC-E004": ("Missing Test Case Index", "Add Section 3"),
+    "TSPEC-E005": ("Missing Test Case Details", "Add Section 4"),
+    "TSPEC-E006": ("Missing Coverage Matrix", "Add Section 5"),
+    "TSPEC-E007": ("Missing Traceability section", "Add Section 6"),
+    "TSPEC-E008": ("Invalid element ID format", "Use TSPEC.NN.TT.SS format"),
+    "TSPEC-E009": ("TASKS-Ready score below threshold", "Increase test coverage"),
+    "TSPEC-E010": ("Missing required cumulative tag", "Add all 9 cumulative tags"),
+    "TSPEC-E030": ("TSPEC not in nested folder", "Move to TYPE-NN_{slug}/ folder"),
+    "TSPEC-E031": ("Folder name doesn't match ID", "Rename folder to match TSPEC ID"),
+    "TSPEC-E032": ("File name doesn't match folder", "Rename file to match folder"),
+    "TSPEC-E033": ("TSPEC not in correct type subdirectory", "Move to correct TYPE/ folder"),
+
+    # UTEST-specific
+    "UTEST-E001": ("REQ coverage below 90%", "Add tests for uncovered REQs"),
+    "UTEST-E002": ("Missing I/O table", "Add Input/Output table to test case"),
+    "UTEST-E003": ("Missing pseudocode", "Add GIVEN/WHEN/THEN pseudocode"),
+    "UTEST-E004": ("Missing error cases", "Add error condition table"),
+    "UTEST-E005": ("Invalid test category", "Use [Logic], [State], [Validation], [Edge]"),
+    "UTEST-W001": ("Low pseudocode coverage", "Add pseudocode to complex tests"),
+    "UTEST-W002": ("Missing @req reference", "Add @req tag to test case"),
+
+    # ITEST-specific
+    "ITEST-E001": ("CTR coverage below 90%", "Add tests for uncovered contracts"),
+    "ITEST-E002": ("Missing sequence diagram", "Add sequence diagram for complex flows"),
+    "ITEST-E003": ("Missing @ctr reference", "Add @ctr tag to integration test"),
+    "ITEST-W001": ("Weak integration coverage", "Add more component interaction tests"),
+
+    # STEST-specific
+    "STEST-E001": ("Critical path not covered", "Add smoke test for critical path"),
+    "STEST-E002": ("Timeout exceeds 5 minutes", "Optimize smoke test execution time"),
+    "STEST-E003": ("Missing rollback test", "Add deployment rollback test"),
+    "STEST-E004": ("STEST score not 100%", "STEST must achieve 100% coverage"),
+
+    # FTEST-specific
+    "FTEST-E001": ("SYS coverage below 90%", "Add tests for uncovered system requirements"),
+    "FTEST-E002": ("Missing threshold reference", "Add @threshold tag for quantitative test"),
+    "FTEST-W001": ("Incomplete functional coverage", "Add end-to-end scenario tests"),
+
+    # PTEST-specific
+    "PTEST-E001": ("Missing load scenario", "Add load test scenario"),
+    "PTEST-E002": ("Missing performance threshold", "Add @threshold tag with target metrics"),
+    "PTEST-E003": ("Invalid performance metric", "Use standard metrics (latency, throughput, etc.)"),
+    "PTEST-W001": ("Below 85% TASKS-Ready", "Complete performance test specification"),
+
+    # SECTEST-specific
+    "SECTEST-E001": ("Missing threat scenario", "Add security threat scenario"),
+    "SECTEST-E002": ("Missing control validation", "Add security control test"),
+    "SECTEST-E003": ("Below 90% TASKS-Ready", "Complete security test specification"),
+    "SECTEST-W001": ("Incomplete OWASP coverage", "Add tests for OWASP Top 10"),
+
+    # -------------------------------------------------------------------------
     # Section File Validation (SEC) - Section count and structure validation
     # -------------------------------------------------------------------------
     "SEC-E001": ("Section count mismatch", "Update total_sections to match actual section files"),

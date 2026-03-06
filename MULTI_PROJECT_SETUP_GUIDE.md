@@ -264,6 +264,9 @@ mkdir -p docs/AI_EXPERTS
 cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml docs/AI_EXPERTS/project_experts.yaml
 # Edit docs/AI_EXPERTS/project_experts.yaml to configure the 7 personas for your specific domain.
 # Note: The AI Experts team should be created during a new project initialization, or manually on demand later.
+# INTEGRATION LEAD (Persona 7): Requires an INTEGRATION_MATRIX.md to work optimally.
+#   If missing, the audit script falls back to scanning sibling documents in the same layer
+#   for context. This ensures the expert is useful from Day 1 of a project.
 ```
 
 ### 3. Shared Git Hook Library (Symlinked `.pre-commit-config.yaml`)

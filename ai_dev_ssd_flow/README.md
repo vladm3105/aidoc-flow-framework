@@ -48,6 +48,36 @@ MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-0
 
 ---
 
+## Core Governance Principle: Documentation as Code
+
+> **Every document is treated exactly like source code.**
+> It lives in Git, is reviewed via Pull Requests, gated by AI Expert review pipelines,
+> and ingested into the Knowledge Base only after approval.
+
+| Code Practice | Documentation Equivalent |
+|--------------|--------------------------|
+| Feature branches | `feature/BRD-01-update` branch per document change |
+| Pull Requests | Every document change submitted as a PR |
+| CI/CD pipelines | AI Expert Council (7-persona) triggered on PR |
+| Merge gates | PR blocked until council audit clears P0 findings |
+| Single source of truth | `main` branch = approved, KB-indexed corpus |
+| Dependency locking | `@depends:` tags enforce upstream doc references |
+
+**Knowledge Base as Context Engine**: With 74+ BRDs × multiple layers = 4,000+ documents,
+no AI agent can hold the full corpus in context. The RAG + Graph Knowledge Base provides
+targeted 300-500 token context per query instead of flooding context windows.
+
+```
+Document authored → PR opened → AI Council reviews → P0 resolved → Merge
+                                                                        │
+                                                              KB ingested on merge
+                                                          (rag_embed + graph_extract)
+```
+
+> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./DOC_GOVERNANCE_CORE.md)
+
+---
+
 ## Overview
 
 This directory provides a structured, traceable framework for Specification-Driven Development (SDD), enabling AI-assisted delivery using MVP templates by default.

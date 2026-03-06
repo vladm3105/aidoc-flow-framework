@@ -18,6 +18,31 @@ custom_fields:
 
 ---
 
+## Core Governance Principle: Documentation as Code
+
+> **Every document is treated exactly like source code.**
+> It lives in a dedicated Git repository, is reviewed via Pull Request with AI Expert Board review,
+> and is ingested into the Knowledge Base only after merge to `main`.
+
+**Repository pattern for every new project:**
+
+```
+{project_name}               ← code repository (application source)
+{project_name}_documentation ← documentation repository (SDD layers 1-11)
+```
+
+**Mandatory infrastructure before authoring any document:**
+
+1. Create `{project_name}_documentation` GitHub repo with branch protection on `main`
+2. Configure AI Expert Council review workflow (`.github/workflows/doc-council-review.yml`)
+3. Configure KB ingestion on-merge workflow (`.github/workflows/kb-ingest.yml`)
+4. Start Knowledge Base services — see `project_knowledge/SETUP.md`
+5. Add governance labels: `council:remediation`, `priority:P0/P1/P2`, `source:council`
+
+> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./DOC_GOVERNANCE_CORE.md)
+
+---
+
 ## Quick Start Overview
 
 This guide walks AI Assistants through initializing a brand new project using the AI Dev Flow framework. Follow these steps in order.

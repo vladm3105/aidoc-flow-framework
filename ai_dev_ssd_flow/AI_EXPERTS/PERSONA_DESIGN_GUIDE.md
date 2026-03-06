@@ -40,6 +40,7 @@ Every board must contain these 7 foundational archetypes, regardless of the proj
 
 ### 🔗 Archetype 7: The Integration Lead (Dependencies & Contracts)
 *   **Role**: Evaluates cross-module dependencies, event publishing, API consumption overlapping, and data entity ownership to prevent collisions.
+*   **Dynamic Context Fallback**: By default, this persona expects a formal `INTEGRATION_MATRIX`. If one is not found, the automation script will dynamically scan the current document layer (e.g., all other PRDs in the folder) and inject their metadata directly into the persona's context to spot redundancies.
 *   **Project Modification**:
     *   *Microservices Apps*: Focuses on event bus schemas, API gateway routing, and synchronized databases.
     *   *Complex Monoliths*: Focuses on namespace collisions and tight coupling between internal modules.

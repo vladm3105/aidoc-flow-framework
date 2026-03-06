@@ -14,6 +14,32 @@ custom_fields:
 
 # SDD Automation Workflow Plan (Extended)
 
+## Core Governance: Documentation as Code
+
+> **Every document is treated exactly like source code.**
+> It lives in Git, reviewed via Pull Request, gated by AI Expert review pipelines,
+> and ingested into the Knowledge Base only after merge to `main`.
+
+The full document lifecycle:
+
+```
+Author (Human/AI/Pipeline)
+  → feature branch + PR
+      → AI Expert Council review (GitHub Actions on PR open)
+          → P0 blockers must be resolved before merge
+              → Merge to main
+                  → KB ingested automatically (rag_embed + graph_extract)
+```
+
+**Knowledge Base as Context Engine**: With 4,000+ documents across 15 SDD layers,
+no AI agent can hold the full corpus in context. RAG + Graph provides 300-500 token
+targeted context per query. All AI Expert personas query the KB — they never read
+full file trees.
+
+> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./DOC_GOVERNANCE_CORE.md)
+
+---
+
 ## Summary
 
 Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.

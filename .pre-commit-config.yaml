@@ -248,6 +248,34 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
+      # ======================
+      # TSPEC Validation Hooks
+      # ======================
+
+      - id: tspec-core-validator
+        name: Validate TSPEC core checks (all 6 test types)
+        entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_core_validator_hook.sh ai_dev_ssd_flow/10_TSPEC
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        files: ^(docs|ai_dev_ssd_flow)/10_TSPEC/(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)/.*\.md$
+
+      - id: tspec-quality-gate
+        name: Validate TSPEC quality gates
+        entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_quality_gate_hook.sh ai_dev_ssd_flow/10_TSPEC
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        files: ^(docs|ai_dev_ssd_flow)/10_TSPEC/(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)/.*\.md$
+
+      - id: tspec-tasks-ready
+        name: Validate TSPEC TASKS-Ready scores (type-specific thresholds)
+        entry: bash ai_dev_ssd_flow/10_TSPEC/scripts/tspec_tasks_ready_hook.sh ai_dev_ssd_flow/10_TSPEC
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        files: ^(docs|ai_dev_ssd_flow)/10_TSPEC/(UTEST|ITEST|STEST|FTEST|PTEST|SECTEST)/.*\.md$
+
       - id: sdd-layer-quality-matrix
         name: Run all-layer SDD quality matrix (Phase A, manual full)
         entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh ai_dev_ssd_flow

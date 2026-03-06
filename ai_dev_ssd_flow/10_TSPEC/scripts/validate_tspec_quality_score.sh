@@ -24,8 +24,18 @@ ftest_score=0
 
 # Validate UTEST files
 echo "--- UTEST Validation ---"
-if ls "$DOCS_PATH/UTEST/UTEST-"*.md &>/dev/null; then
-    result=$(python3 "$SCRIPT_DIR/validate_utest.py" "$DOCS_PATH/UTEST/UTEST-"*.md 2>&1 || true)
+# Find files excluding templates, reserved IDs, and report files
+utest_files=$(find "$DOCS_PATH/UTEST" -type f -name "UTEST-[0-9]*_*.md" \
+    ! -name "UTEST-00_*" \
+    ! -name "*TEMPLATE*" \
+    ! -name "*FIX_PLAN*" \
+    ! -name "*.A_audit_report*" \
+    ! -name "*.R_review_report*" \
+    ! -name "*.F_fix_report*" \
+    ! -name "*.V_validation_report*" \
+    2>/dev/null || true)
+if [ -n "$utest_files" ]; then
+    result=$(python3 "$SCRIPT_DIR/validate_utest.py" $utest_files 2>&1 || true)
     echo "$result"
     utest_score=$(echo "$result" | grep -oP '\d+(\.\d+)?(?=%)' | head -1 || echo "0")
     ((total_count++)) || true
@@ -36,8 +46,18 @@ echo ""
 
 # Validate ITEST files
 echo "--- ITEST Validation ---"
-if ls "$DOCS_PATH/ITEST/ITEST-"*.md &>/dev/null; then
-    result=$(python3 "$SCRIPT_DIR/validate_itest.py" "$DOCS_PATH/ITEST/ITEST-"*.md 2>&1 || true)
+# Find files excluding templates, reserved IDs, and report files
+itest_files=$(find "$DOCS_PATH/ITEST" -type f -name "ITEST-[0-9]*_*.md" \
+    ! -name "ITEST-00_*" \
+    ! -name "*TEMPLATE*" \
+    ! -name "*FIX_PLAN*" \
+    ! -name "*.A_audit_report*" \
+    ! -name "*.R_review_report*" \
+    ! -name "*.F_fix_report*" \
+    ! -name "*.V_validation_report*" \
+    2>/dev/null || true)
+if [ -n "$itest_files" ]; then
+    result=$(python3 "$SCRIPT_DIR/validate_itest.py" $itest_files 2>&1 || true)
     echo "$result"
     itest_score=$(echo "$result" | grep -oP '\d+(\.\d+)?(?=%)' | head -1 || echo "0")
     ((total_count++)) || true

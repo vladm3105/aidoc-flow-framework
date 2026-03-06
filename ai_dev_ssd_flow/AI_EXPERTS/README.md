@@ -35,6 +35,21 @@ After you have drafted a document (BRD, PRD, BDD, ADR), the board is called in t
 
 ---
 
+## 🔗 The Integration Lead: Addressing Cross-Document Conflicts
+
+The 7th persona — **The Integration & Dependencies Lead** — is unique because it is the only expert that reviews the target document *against the rest of the project*, not just independently.
+
+The automation script handles context injection automatically in two tiers:
+
+| Scenario | Behavior |
+|----------|----------|
+| **Integration Matrix exists** (`*INTEGRATION_MATRIX*.md` found in `docs/`) | The full matrix is injected into the persona's prompt, giving cross-module event, API, and entity ownership data |
+| **Matrix is missing** (early-stage project) | The script scans the **target document's sibling layer** (e.g., all other `*.md` files in `docs/01_BRD/`) and injects a list of their `doc_id` and headings as fallback context |
+
+This means the Integration Lead is useful from **Day 1 of a project**, even before a formal matrix is written.
+
+---
+
 ## 📚 Documentation Reference
 Follow these guides to set up and run your board:
 

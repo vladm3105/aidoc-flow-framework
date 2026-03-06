@@ -115,6 +115,50 @@ This repository provides a **unified SDD framework** with three depth variants t
 
 ---
 
+## Core Governance Principle: Documentation as Code
+
+> **The most important design principle of this framework.**
+
+Every document in this framework is governed exactly like source code:
+
+| Code Practice | Documentation Equivalent |
+|--------------|--------------------------|
+| Feature branches | `feature/BRD-01-update` per document change |
+| Pull Requests | Every document change goes through a PR |
+| CI/CD pipeline | AI Expert Council (7-persona board) runs on every PR |
+| Merge gates | PRs blocked until all P0 council findings resolved |
+| Automated tests | Quality gate scripts + structural validation |
+| Single source of truth | `main` branch = approved, KB-indexed corpus only |
+| Dependency management | `@depends:` tags enforce upstream document references |
+
+**Repository pattern for all projects:**
+
+```
+{project_name}               ← application code
+{project_name}_documentation ← documentation (this framework, SDD layers 1-11)
+```
+
+**Document lifecycle (mandatory for all projects):**
+
+```
+Author writes/updates doc → PR on feature branch
+    → AI Expert Council review (GitHub Actions, 7 personas)
+        → P0 blockers resolved (PR is gated)
+            → Human approves → Merge to main
+                → KB auto-ingested (rag_embed + graph_extract)
+```
+
+**Why a Knowledge Base is required, not optional:**
+
+> 74 BRDs × 18 sections + all downstream layers = **4,000+ documents**.
+> No AI agent can hold even 10% of this in context.
+> RAG + Graph provides targeted 300-500 token context per AI query —
+> agents query the KB rather than reading full file trees.
+
+> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./ai_dev_ssd_flow/DOC_GOVERNANCE_CORE.md)
+
+---
+
 ## Project Knowledge Base
 
 The framework includes a standalone knowledge base package at `project_knowledge/` with:

@@ -22,6 +22,7 @@ Use this phase to audit completed documents (BRDs, PRDs, ADRs) using the framewo
     ```bash
     bash /opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/doc_council_audit.sh path/to/PRD-50_octo_agent.md
     ```
+    *   *Note on Context Injection*: If the `integration_expert` persona is defined, the script will automatically search for an `*INTEGRATION_MATRIX*.md` and inject its contents. If missing, it will dynamically scan the target document's current layer directory and append the metadata of sibling documents as fallback context.
 3.  **Review the Output**: The script will automatically parse the parent document's metadata and generate an official `{DOCUMENT_ID}_COUNCIL_AUDIT_REPORT.md` in the *exact same directory* as the target document.
 
 ## The Output Format: `COUNCIL_AUDIT_REPORT.md`
