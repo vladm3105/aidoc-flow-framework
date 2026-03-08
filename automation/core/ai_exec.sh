@@ -5,8 +5,20 @@
 # Purpose: Single entry point for calling any AI agent from pipeline scripts.
 #          All pipelines call this instead of claude/opencode/codex directly.
 #
-# Usage:   ai_exec.sh <prompt_file> [--model <model>] [--timeout <seconds>]
-# Env:     AI_AGENT   = claude (default) | opencode | codex | cline | ollama | openai-api
+# Usage:   ai_exec.sh <prompt_file> [options]
+#
+# Options:
+#   --cmd "<shell command>"  Execute a raw CLI command (prompt piped via stdin)
+#                            Example: --cmd "claude -p --model claude-3-7-sonnet"
+#   --model <model>          Override model name (for API engines)
+#   --timeout <seconds>      Execution timeout
+#   --temperature <float>    Sampling temperature (API engines only)
+#   --top-k <int>            Top-K sampling (API engines only)
+#   --max-tokens <int>       Max output tokens (API engines only)
+#   --api-base <url>         Base URL for OpenAI-compatible APIs
+#   --api-key-env <name>     Name of env var holding the API key
+#
+# Env:     AI_AGENT   = claude (default) | opencode | codex | cline | ollama | openai-api | litellm
 #          AI_MODEL   = model name within the agent (e.g. claude-sonnet-4)
 #          AI_TIMEOUT = max seconds to wait (default: 120)
 # Output:  stdout (raw LLM response text)
@@ -19,12 +31,25 @@ PROMPT_FILE="${1:-}"
 shift || true
 
 # Parse optional flags
+OVERRIDE_CMD=""
 OVERRIDE_MODEL=""
 OVERRIDE_TIMEOUT=""
+OVERRIDE_TEMPERATURE=""
+OVERRIDE_TOP_K=""
+OVERRIDE_MAX_TOKENS=""
+OVERRIDE_API_BASE=""
+OVERRIDE_API_KEY_ENV=""
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --model)    OVERRIDE_MODEL="$2";   shift 2 ;;
-    --timeout)  OVERRIDE_TIMEOUT="$2"; shift 2 ;;
+    --cmd)         OVERRIDE_CMD="$2";         shift 2 ;;
+    --model)       OVERRIDE_MODEL="$2";       shift 2 ;;
+    --timeout)     OVERRIDE_TIMEOUT="$2";     shift 2 ;;
+    --temperature) OVERRIDE_TEMPERATURE="$2"; shift 2 ;;
+    --top-k)       OVERRIDE_TOP_K="$2";       shift 2 ;;
+    --max-tokens)  OVERRIDE_MAX_TOKENS="$2";  shift 2 ;;
+    --api-base)    OVERRIDE_API_BASE="$2";    shift 2 ;;
+    --api-key-env) OVERRIDE_API_KEY_ENV="$2"; shift 2 ;;
     *) echo "[ai_exec] Unknown flag: $1" >&2; exit 2 ;;
   esac
 done
@@ -56,6 +81,17 @@ AI_TIMEOUT="${OVERRIDE_TIMEOUT:-${AI_TIMEOUT:-120}}"
 # =============================================================================
 run_agent() {
   local prompt_file="$1"
+
+  # ---------------------------------------------------------------------------
+  # Raw CLI command dispatch (highest priority)
+  # If --cmd is provided, execute it directly with prompt piped to stdin.
+  # This bypasses the engine table entirely for maximum CLI flexibility.
+  # Example YAML: cmd: "claude -p --model claude-3-7-sonnet"
+  # ---------------------------------------------------------------------------
+  if [[ -n "$OVERRIDE_CMD" ]]; then
+    bash -c "$OVERRIDE_CMD" < "$prompt_file"
+    return $?
+  fi
 
   case "$AI_AGENT" in
 
@@ -111,23 +147,45 @@ run_agent() {
     # -------------------------------------------------------------------------
     # OpenAI-compatible REST API (fallback for any OpenAI-compatible endpoint)
     # -------------------------------------------------------------------------
-    openai-api)
+    openai-api|litellm)
       local model="${AI_MODEL:-gpt-4o}"
-      local base_url="${OPENAI_BASE_URL:-https://api.openai.com/v1}"
-      local api_key="${OPENAI_API_KEY:-}"
+      local base_url="${OVERRIDE_API_BASE:-${OPENAI_BASE_URL:-https://api.openai.com/v1}}"
+      
+      # Securely resolve API key from requested .env variable name, falling back to OPENAI_API_KEY
+      local target_env_var="${OVERRIDE_API_KEY_ENV:-OPENAI_API_KEY}"
+      local api_key="${!target_env_var:-}"
+      
       if [[ -z "$api_key" ]]; then
-        echo "[ai_exec] ERROR: OPENAI_API_KEY not set for openai-api agent" >&2
+        echo "[ai_exec] ERROR: Environment variable '$target_env_var' is not set for openai-api/litellm agent" >&2
         exit 2
       fi
+      
       local prompt_content
       prompt_content=$(cat "$prompt_file")
+      
+      # Optional JSON Parameters
+      local temperature="${OVERRIDE_TEMPERATURE:-0.3}"
+      
+      # Construct curl JSON payload dynamically using jq
+      local jq_script='{model: $model, messages: [{role:"user", content: $content}], temperature: ($temp | tonumber)}'
+      if [[ -n "$OVERRIDE_MAX_TOKENS" && -n "$OVERRIDE_TOP_K" ]]; then
+        jq_script='{model: $model, messages: [{role:"user", content: $content}], temperature: ($temp | tonumber), max_tokens: ($max_tokens | tonumber), top_k: ($top_k | tonumber)}'
+      elif [[ -n "$OVERRIDE_MAX_TOKENS" ]]; then
+        jq_script='{model: $model, messages: [{role:"user", content: $content}], temperature: ($temp | tonumber), max_tokens: ($max_tokens | tonumber)}'
+      elif [[ -n "$OVERRIDE_TOP_K" ]]; then
+        jq_script='{model: $model, messages: [{role:"user", content: $content}], temperature: ($temp | tonumber), top_k: ($top_k | tonumber)}'
+      fi
+
       curl -s -f -X POST "${base_url}/chat/completions" \
         -H "Authorization: Bearer ${api_key}" \
         -H "Content-Type: application/json" \
         -d "$(jq -n \
           --arg model "$model" \
           --arg content "$prompt_content" \
-          '{model: $model, messages: [{role:"user", content: $content}], temperature: 0.3}')" \
+          --arg temp "$temperature" \
+          --arg max_tokens "${OVERRIDE_MAX_TOKENS:-""}" \
+          --arg top_k "${OVERRIDE_TOP_K:-""}" \
+          "$jq_script")" \
         | jq -r '.choices[0].message.content'
       ;;
 

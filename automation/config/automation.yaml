@@ -6,9 +6,12 @@
 # =============================================================================
 # AI Agent
 # =============================================================================
-ai_agent: claude          # claude | opencode | codex | cline | ollama | openai-api | gemini
+ai_agent: claude          # claude | opencode | codex | cline | ollama | openai-api | litellm
 ai_model: ""              # leave blank to use agent default (e.g. claude-sonnet-4)
-ai_timeout: 120           # seconds before ai_exec.sh times out
+ai_temperature: 0.3       # default sampling temperature (0.0 = deterministic, 1.0 = creative)
+ai_top_k: ""              # leave blank for model default (e.g. 40)
+ai_max_tokens: ""         # leave blank for model default limit
+ai_timeout: 600           # seconds before ai_exec.sh times out
 
 # =============================================================================
 # Pipeline Behaviour
@@ -37,8 +40,8 @@ github:
   repo: ""                # e.g. "owner/repo-name" — set in project .env
   project: ""             # GitHub Project board number (optional)
   labels:
-    remediation: "council:remediation"
-    source: "source:council"
+    remediation: "experts:remediation"
+    source: "source:experts"
     p0: "priority:P0"
     p1: "priority:P1"
     p2: "priority:P2"
@@ -55,10 +58,10 @@ knowledge_base:
   graph: false            # enable Graph (Neo4j) extraction on ingest
 
 # =============================================================================
-# Council Pipeline Specific
+# Doc Review Pipeline Specific
 # =============================================================================
-council:
-  report_filename_pattern: "*COUNCIL_AUDIT_REPORT*.md"
+doc_review:
+  report_filename_pattern: "*PERSONA_REVIEW_REPORT*.md"
   p0_blocks_merge: true   # P0 findings block PR merge (for GitHub Actions usage)
   create_iplan: true      # auto-call generate_iplan_from_issue.py after issue creation
   post_pr_comments: true  # post findings as PR review comments (GitHub Actions mode)

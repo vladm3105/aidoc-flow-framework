@@ -58,8 +58,8 @@ MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-0
 |--------------|--------------------------|
 | Feature branches | `feature/BRD-01-update` branch per document change |
 | Pull Requests | Every document change submitted as a PR |
-| CI/CD pipelines | AI Expert Council (7-persona) triggered on PR |
-| Merge gates | PR blocked until council audit clears P0 findings |
+| CI/CD pipelines | AI Expert Board (7-persona) triggered on PR |
+| Merge gates | PR blocked until persona review clears P0 findings |
 | Single source of truth | `main` branch = approved, KB-indexed corpus |
 | Dependency locking | `@depends:` tags enforce upstream doc references |
 
@@ -68,7 +68,7 @@ no AI agent can hold the full corpus in context. The RAG + Graph Knowledge Base 
 targeted 300-500 token context per query instead of flooding context windows.
 
 ```
-Document authored → PR opened → AI Council reviews → P0 resolved → Merge
+Document authored → PR opened → AI Expert Board reviews → P0 resolved → Merge
                                                                         │
                                                               KB ingested on merge
                                                           (rag_embed + graph_extract)
@@ -238,8 +238,8 @@ Layer Transitions → Code Generation → Test Execution → Traceability Matrix
 
 - Autopilot loads ONLY `*-MVP-TEMPLATE.yaml` files (never markdown)
 - MD templates serve as human-readable reference documentation
+*   **`PERSONA_REVIEW-MVP-TEMPLATE.md`**: The strict markdown structure for the final synthesized review report.
 - Single schema validates both MD and YAML document formats
-- See [AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md](./AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md) for complete usage
 
 ---
 

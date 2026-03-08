@@ -25,7 +25,7 @@ The full document lifecycle:
 ```
 Author (Human/AI/Pipeline)
   → feature branch + PR
-      → AI Expert Council review (GitHub Actions on PR open)
+      → AI Expert Board review (GitHub Actions on PR open)
           → P0 blockers must be resolved before merge
               → Merge to main
                   → KB ingested automatically (rag_embed + graph_extract)

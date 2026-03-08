@@ -2,9 +2,9 @@
 
 To prevent the Expert Board from becoming a rubber-stamp committee, you must design distinct, adversarial personas tailored to your project. This guide shows you how to construct the `docs/AI_EXPERTS/project_experts.yaml` (or system prompts) effectively.
 
-## 1. The 7 Required Archetypes
+## 1. The 8 Required Archetypes
 
-Every board must contain these 7 foundational archetypes, regardless of the project domain. When you start a new project, adapt the *Focus* to match your industry.
+Every board must contain these 8 foundational archetypes, regardless of the project domain. When you start a new project, adapt the *Prompt* strictly to match your industry.
 
 ### 🏛️ Archetype 1: The Architect (Integration & Scalability)
 *   **Role**: Evaluates system boundaries, decoupling, state management, and scalability.
@@ -18,11 +18,17 @@ Every board must contain these 7 foundational archetypes, regardless of the proj
     *   *Fintech*: Focuses on PCI-DSS, SOC2, ledger immutability, and AML bounds.
     *   *Healthcare*: Focuses on HIPAA, PHI masking, and BAA compliance.
 
-### 🧠 Archetype 3: The System Specialist (Domain Expert)
+### 🧠 Archetype 3: The Tech Lead
 *   **Role**: The deep technical expert for the project's defining technology.
 *   **Project Modification**:
     *   *AI Agent Platform*: Focuses on LLM orchestration, prompt drift, and token limits.
     *   *Blockchain App*: Focuses on smart contract gas fees, reentrancy attacks, and consensus logic.
+
+### 📈 Archetype 8: The Product Owner
+*   **Role**: Evaluates the business value, user alignment, go-to-market speed, and ROI of the document.
+*   **Project Modification**:
+    *   *Startups*: Focuses entirely on shipping speed and cutting scope creep to ensure a faster MVP.
+    *   *Enterprise*: Focuses on mapping technical deliverables directly back to stated OKRs and user pain points.
 
 ### 👔 Archetype 4: The Strategist (Value & Economics)
 *   **Role**: Evaluates operational costs, cloud economics, time-to-market trade-offs, and user friction.
@@ -47,24 +53,36 @@ Every board must contain these 7 foundational archetypes, regardless of the proj
 
 ---
 
-## 2. Setting the "Anti-Bias Directives"
+## 2. Setting the "Prompt" for Auditing (Phase 3)
 
-The most important part of persona design is the **Anti-Bias Directive**. AI models are natural people-pleasers; if you don't force them to be critical, they will just agree with whatever document you feed them.
+When designing a persona for **Auditing** (`project_experts.<type>.yaml`), the most important part is the explicit **Anti-Bias constraint**. AI models are natural people-pleasers; if you don't force them to be critical, they will just agree with whatever document you feed them.
 
-Every persona prompt MUST include strict constraints.
+Every auditing persona `prompt:` block MUST be adversarial.
 
-### Examples of Strong Directives:
+### Examples of Strong Auditing Directives:
 
 **Good (Adversarial)**:
-> *"You are reviewing this document from scratch. Do not assume the authors followed any prior advice. You do not care if the 'happy path' works. Evaluate ONLY what is written in the text. Your job is exclusively to find race conditions and edge cases that will break the system. Be deeply critical. Do not compliment the design."*
+> *"You are reviewing this document from scratch. Do not assume the authors followed any prior advice. Evaluate ONLY what is written in the text. Your job is exclusively to find race conditions and edge cases that will break the system. Be deeply critical. Do not compliment the design."*
 
 **Bad (Biased/Passive)**:
 > *"Please review this document and provide your thoughts from a QA perspective. Point out what we did well and what we can improve."*
 
-## 3. Assembling the Prompts
+## 3. Setting the "Prompt" for Generation (Phase 2)
 
-When configuring your board, structure each persona prompt as follows:
-1.  **Identity Statement**: "You are the [Title/Archetype]."
-2.  **Explicit Focus**: "Your sole operational focus for this project is [Key Domain Elements]."
-3.  **Anti-Bias Directive**: "You will review this architecture blindly..."
-4.  **Expected Output Format**: "Output your findings in exactly three bullet points: Major Risks, Unhandled Edge Cases, Alternative Approach."
+When designing a persona for **Document Generation** (`generate.<type>.yaml`), the adversarial nature is swapped for strict **Boundary and Output Enforcement**. The prompt must map the persona's framework expertise directly into drafting specific sections, explicitly instructing them NOT to write the rest of the document.
+
+### Examples of Strong Generation Directives:
+
+**Good (Strict Drafting Boundaries)**:
+> *"You are the Tech Lead generating a PRD. Your role is strictly to Draft Constraints & Assumptions, and Implementation Approach. Rely on the upstream BRD context. Output ONLY your drafted sections in markdown format."*
+
+**Bad (Unbounded Drafting)**:
+> *"You are a Tech Lead. Please write the PRD for this project based on the BRD provided."* (The AI will attempt to write the entire 21-section document poorly, overlapping with other experts).
+
+## 4. Assembling the Prompts
+
+When configuring your board, structure each persona prompt inside `project_experts.yaml` as follows:
+1.  **Identity/Focus Statement**: Set the immediate context.
+2.  **Explicit Focus**: Detail exactly what domains to look for.
+3.  **Anti-Bias Directive**: Include adversarial phrasing ("Be deeply skeptical... Do not sugarcoat").
+4.  **Expected Output Format**: "Output your findings in EXACTLY three sections: Major Risks, Unhandled Edge Cases, Alternative Approach."

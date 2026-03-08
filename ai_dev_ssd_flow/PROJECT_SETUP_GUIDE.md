@@ -34,10 +34,10 @@ custom_fields:
 **Mandatory infrastructure before authoring any document:**
 
 1. Create `{project_name}_documentation` GitHub repo with branch protection on `main`
-2. Configure AI Expert Council review workflow (`.github/workflows/doc-council-review.yml`)
+2. Configure AI Expert Board review workflow (`.github/workflows/doc-expert-review.yml`)
 3. Configure KB ingestion on-merge workflow (`.github/workflows/kb-ingest.yml`)
 4. Start Knowledge Base services — see `project_knowledge/SETUP.md`
-5. Add governance labels: `council:remediation`, `priority:P0/P1/P2`, `source:council`
+5. Add governance labels: `experts:remediation`, `priority:P0/P1/P2`, `source:experts`
 
 > **Full specification**: See [DOC_GOVERNANCE_CORE.md](./DOC_GOVERNANCE_CORE.md)
 

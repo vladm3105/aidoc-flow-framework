@@ -85,7 +85,7 @@ while IFS= read -r action; do
   fi
 
   # Build prompt from template, substituting placeholders
-  PROMPT_TMP=$(tmp_file "council_apply_prompt_${ACTION_ID}")
+  PROMPT_TMP=$(tmp_file "doc_review_apply_prompt_${ACTION_ID}")
   cleanup_on_exit "$PROMPT_TMP"
 
   sed \
@@ -108,7 +108,7 @@ while IFS= read -r action; do
   fi
 
   # Call AI agent to apply the fix
-  PATCHED_TMP=$(tmp_file "council_patched_${ACTION_ID}")
+  PATCHED_TMP=$(tmp_file "doc_review_patched_${ACTION_ID}")
   cleanup_on_exit "$PATCHED_TMP"
 
   if ! "$AI_EXEC_SH" "$PROMPT_TMP" > "$PATCHED_TMP" 2>/tmp/ai_exec_err.txt; then

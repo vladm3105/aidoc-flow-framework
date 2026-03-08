@@ -2,7 +2,7 @@
 # =============================================================================
 # 02_index.sh — Step 2: Index Audit Report into Knowledge Base
 # =============================================================================
-# Usage: 02_index.sh <COUNCIL_AUDIT_REPORT.md>
+# Usage: 02_index.sh <PERSONA_REVIEW_REPORT.md>
 # Indexes the report into RAG (pgvector) and Graph (Neo4j).
 # GRACEFULLY SKIPS if KB_ENABLED=false or databases are not running.
 # =============================================================================
@@ -74,9 +74,9 @@ fi
 if [[ "${KB_GRAPH_ENABLED:-false}" == "true" ]]; then
   log_info "Graph: Extracting RemediationTask nodes..."
   if [[ "${DRY_RUN:-false}" == "true" ]]; then
-    log_dry "Would run: python3 $PK_ORCHESTRATOR graph_extract $REPORT_FILE --type council_audit"
+    log_dry "Would run: python3 $PK_ORCHESTRATOR graph_extract $REPORT_FILE --type persona_review"
   else
-    if python3 "$PK_ORCHESTRATOR" graph_extract "$REPORT_FILE" --type council_audit 2>/dev/null; then
+    if python3 "$PK_ORCHESTRATOR" graph_extract "$REPORT_FILE" --type persona_review 2>/dev/null; then
       log_ok "Graph: RemediationTask nodes created in Neo4j"
     else
       log_warn "Graph extraction failed (non-fatal) — Neo4j may be unavailable"

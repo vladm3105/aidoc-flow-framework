@@ -1,6 +1,6 @@
 # How to Run an Expert Audit Workflow
 
-The AI Expert Board operates in two distinct phases. Follow this Standard Operating Procedure (SOP) to get the most out of your multi-persona council.
+The AI Expert Board operates in two distinct phases. Follow this Standard Operating Procedure (SOP) to get the most out of your multi-persona board.
 
 ## Phase 1: Pre-Creation Ideation (The "Blind" Solutioning)
 
@@ -18,16 +18,16 @@ Use this phase *before* you write any formal technical documentation (BRD, PRD, 
 Use this phase to audit completed documents (BRDs, PRDs, ADRs) using the framework automation scripting. This forces the document through a mandatory quality gate.
 
 1.  **Prepare your Project Configuration**: Copy `project_experts.template.yaml` to `docs/AI_EXPERTS/project_experts.yaml`. Fill it out with your project's specific personas and anti-bias directives.
-2.  **Run the Automation Script**: Use the unified council audit script provided by the framework to execute all 7 personas plus the synthesis Chairperson in parallel.
+2.  **Run the Automation Script**: Use the unified persona review script provided by the framework to execute all 7 personas plus the synthesis Chairperson in parallel.
     ```bash
-    bash /opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/doc_council_audit.sh path/to/PRD-50_octo_agent.md
+    bash /opt/data/docs_flow_framework/automation/pipelines/doc_review/run_review.sh path/to/PRD-50_octo_agent.md
     ```
     *   *Note on Context Injection*: If the `integration_expert` persona is defined, the script will automatically search for an `*INTEGRATION_MATRIX*.md` and inject its contents. If missing, it will dynamically scan the target document's current layer directory and append the metadata of sibling documents as fallback context.
-3.  **Review the Output**: The script will automatically parse the parent document's metadata and generate an official `{DOCUMENT_ID}_COUNCIL_AUDIT_REPORT.md` in the *exact same directory* as the target document.
+3.  **Review the Output**: The script will automatically parse the parent document's metadata and generate an official `{DOCUMENT_ID}_PERSONA_REVIEW_REPORT.md` in the *exact same directory* as the target document.
 
-## The Output Format: `COUNCIL_AUDIT_REPORT.md`
+## The Output Format: `PERSONA_REVIEW_REPORT.md`
 
-Your aggregated audit report will formally adhere to the `COUNCIL` document template structure, utilizing the metadata layout required for framework gating. A document that fails this review cannot progress to the next SDD layer.
+Your aggregated audit report will formally adhere to the `EXPERTS` document template structure, utilizing the metadata layout required for framework gating. A document that fails this review cannot progress to the next SDD layer.
 
 # Expert Board Audit Report: [Document Name]
 

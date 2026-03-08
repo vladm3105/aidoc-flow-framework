@@ -75,8 +75,8 @@ export AUTO_APPLY_COMMIT="${AUTO_APPLY_COMMIT:-$(_yaml_get 'auto_apply.commit' '
 export GH_ENABLED="${GH_ENABLED:-$(_yaml_get 'github.enabled' 'false')}"
 export GH_REPO="${GH_REPO:-$(_yaml_get 'github.repo' '')}"
 export GH_PROJECT="${GH_PROJECT:-$(_yaml_get 'github.project' '')}"
-export GH_LABEL_REMEDIATION="${GH_LABEL_REMEDIATION:-council:remediation}"
-export GH_LABEL_SOURCE="${GH_LABEL_SOURCE:-source:council}"
+export GH_LABEL_REMEDIATION="${GH_LABEL_REMEDIATION:-experts:remediation}"
+export GH_LABEL_SOURCE="${GH_LABEL_SOURCE:-source:experts}"
 
 # Knowledge Base (graceful if not running)
 export KB_ENABLED="${KB_ENABLED:-$(_yaml_get 'knowledge_base.enabled' 'false')}"

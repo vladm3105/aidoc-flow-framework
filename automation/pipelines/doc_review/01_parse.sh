@@ -2,7 +2,7 @@
 # =============================================================================
 # 01_parse.sh — Step 1: Parse Council Audit Report into JSON
 # =============================================================================
-# Usage: 01_parse.sh <COUNCIL_AUDIT_REPORT.md> <output.json>
+# Usage: 01_parse.sh <PERSONA_REVIEW_REPORT.md> <output.json>
 # Reads the audit report, sends it to the configured AI agent with the
 # parse_report.txt prompt, and writes the resulting JSON array to output.json.
 # =============================================================================
@@ -24,7 +24,7 @@ OUTPUT_JSON="${2:-}"
 [[ -z "$OUTPUT_JSON" ]] && die "Usage: 01_parse.sh <REPORT.md> <output.json>"
 require_file "$REPORT_FILE"
 
-log_step "Step 1: Parsing council audit report → JSON"
+log_step "Step 1: Parsing expert review report → JSON"
 log_info "Report:  $REPORT_FILE"
 log_info "Output:  $OUTPUT_JSON"
 log_info "Agent:   $AI_AGENT"
@@ -33,7 +33,7 @@ log_info "Agent:   $AI_AGENT"
 PROMPT_TEMPLATE="$SCRIPT_DIR/prompts/parse_report.txt"
 require_file "$PROMPT_TEMPLATE"
 
-PROMPT_TMP=$(tmp_file "council_parse_prompt")
+PROMPT_TMP=$(tmp_file "doc_review_parse_prompt")
 cleanup_on_exit "$PROMPT_TMP"
 
 cat "$PROMPT_TEMPLATE" > "$PROMPT_TMP"
@@ -43,7 +43,7 @@ cat "$REPORT_FILE" >> "$PROMPT_TMP"
 log_info "Sending to AI agent (AI_AGENT=$AI_AGENT)..."
 
 # Call the AI agent
-RESPONSE_TMP=$(tmp_file "council_parse_response")
+RESPONSE_TMP=$(tmp_file "doc_review_parse_response")
 cleanup_on_exit "$RESPONSE_TMP"
 
 if [[ "${DRY_RUN:-false}" == "true" ]]; then

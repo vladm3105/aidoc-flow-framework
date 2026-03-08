@@ -259,7 +259,7 @@ mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,
 mkdir -p work_plans
 mkdir -p scripts
 
-# Setup AI Expert Board (COUNCIL)
+# Setup AI Expert Board
 mkdir -p docs/AI_EXPERTS
 cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml docs/AI_EXPERTS/project_experts.yaml
 # Edit docs/AI_EXPERTS/project_experts.yaml to configure the 7 personas for your specific domain.

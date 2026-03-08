@@ -23,7 +23,9 @@ automation/
 │   ├── config.sh            # Loader script for env and yaml config
 │   └── utils.sh             # Common bash functions (logging, JSON, guardrails)
 └── pipelines/               # The actual automation workflows
-    └── council/             # The AI Expert Council Audit & Remediation Pipeline
+    ├── doc_review/          # Final audit/review pipeline (The AI Experts Board)
+    │   ├── run_review.sh    # Executes post-creation document audits against framework standards
+    └── doc_generate/            # Multi-Agent Document Generation Pipeline
 ```
 
 ---
@@ -43,12 +45,18 @@ automation/
 
 ## Existing Pipelines
 
-### Council Pipeline (`pipelines/council/`)
+### Doc Review Pipeline (`pipelines/doc_review/`)
 Automates the mandatory review and remediation process for the "Documentation as Code" governance cycle.
 - **Review**: `run_review.sh` summons 7 AI expert personas to blindly audit a document and synthesizes a master audit report.
 - **Remediate**: `run_remediate.sh` parses the audit report, auto-applies structural P0 fixes with git commits, and generates GitHub Issues for deeper architectural flaws.
 
-See [pipelines/council/README.md](pipelines/council/README.md) for detailed usage.
+See [pipelines/doc_review/README.md](pipelines/doc_review/README.md) for detailed usage.
+
+### Doc Generate Pipeline (`pipelines/doc_generate/`)
+Automates writing perfectly compliant framework documents using a multi-agent authoring board.
+- **Generate**: `run_generate.sh` coordinates an Assembler, multiple domain Drafters, an LLM Judge, and a Final Editor to produce strict SDD-compliant markdown templates from scratch.
+
+See [pipelines/doc_generate/README.md](pipelines/doc_generate/README.md) for detailed usage.
 
 ---
 

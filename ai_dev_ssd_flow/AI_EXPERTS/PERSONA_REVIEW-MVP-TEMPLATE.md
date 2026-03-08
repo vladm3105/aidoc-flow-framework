@@ -1,14 +1,14 @@
 ---
-title: "COUNCIL-{NN}: AI Expert Board Audit Report"
-doc_id: COUNCIL-{NN}
+title: "EXPERTS-{NN}: AI Expert Board Audit Report"
+doc_id: EXPERTS-{NN}
 version: 1.0.0
 tags:
-  - council
+  - experts
   - layer-validation
   - audit-report
   - pre-flight
 custom_fields:
-  document_type: council
+  document_type: experts
   artifact_type: AUDIT_REPORT
   layer: 99
   target_artifact_id: {TARGET_DOC_ID}
@@ -17,10 +17,10 @@ custom_fields:
   revision_history:
     - version: 1.0.0
       date: {CURRENT_DATE}
-      changes: Initial Council Audit of {TARGET_DOC_ID}
+      changes: Initial Persona Review of {TARGET_DOC_ID}
 ---
 
-# Expert Board Audit Report: {TARGET_DOC_ID}
+# PERSONA REVIEW REPORT: [Target Document Name/ID]
 
 > **Target Document**: {TARGET_DOC_ID} (Version {TARGET_DOC_VERSION})
 > **Audit Date**: {CURRENT_DATE}
@@ -28,22 +28,22 @@ custom_fields:
 
 ## 1. Executive Summary
 *   **Consensus Recommendation**: (Proceed / Remediation Required / Fundamental Redesign)
-*   *Chairperson's Synthesis*: [Brief paragraph summarizing the overarching sentiment of the 7-persona board regarding the target document's viability.]
+*   *Chairperson's Synthesis*: [Brief paragraph summarizing the overarching sentiment of the Expert Board regarding the target document's viability.]
 
-## 2. Critical Findings & Edge Cases (The Devil's Advocate / Security)
+## 2. Critical Findings & Edge Cases (Security, QA, Tech Lead)
 *   **Vulnerability / Risk**: [Description]
 *   **Race Condition Risk**: [Description]
 *   **Unhandled Pathway**: [Description]
 
-## 3. Structural & Architectural Debts (The Architect / SRE)
-*   **Scalability Bottleneck**: [Description]
-*   **Observability Gap**: [Description]
+## 3. Structural & Architectural Debts (Architect, Operator, Integration)
+*   **Scalability / Performance Bottleneck**: [Description]
+*   **Observability / Ops Gap**: [Description]
 *   **Deployment / Rollback Risk**: [Description]
 
-## 4. Business & Domain Impacts (The Strategist / Specialist)
-*   **Friction Points**: [Description]
+## 4. Business & Domain Impacts (Product Owner, Strategist, Auditor)
+*   **Business Value / ROI Friction**: [Description]
 *   **Domain-Specific Risks**: [Description]
-*   **Cost / Economic Concerns**: [Description]
+*   **Cost / Compliance Concerns**: [Description]
 
 ## 5. Required Remediations
 *(List immediate tasks required before this document can pass the validation gate)*

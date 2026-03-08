@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run.sh — Council Pipeline Main Orchestrator
+# run.sh — Doc Review Pipeline Main Orchestrator
 # =============================================================================
 # The standard pipeline entrypoint. Runs all 4 steps in sequence.
 #
 # Usage:
-#   run.sh <COUNCIL_AUDIT_REPORT.md> [options]
+#   run.sh <PERSONA_REVIEW_REPORT.md> [options]
 #
 # Options:
 #   --target-doc <path>   Path to the document being remediated (for auto-apply)
@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -z "$REPORT_FILE" ]] && die "Usage: run.sh <COUNCIL_AUDIT_REPORT.md> [options]"
+[[ -z "$REPORT_FILE" ]] && die "Usage: run.sh <PERSONA_REVIEW_REPORT.md> [options]"
 require_file "$REPORT_FILE"
 
 # =============================================================================
@@ -72,7 +72,7 @@ fi
 # =============================================================================
 # Setup: working directory for this run
 # =============================================================================
-RUN_DIR=$(mktemp -d "/tmp/council_run_XXXXXX")
+RUN_DIR=$(mktemp -d "/tmp/doc_review_run_XXXXXX")
 trap "rm -rf $RUN_DIR" EXIT
 
 ACTIONS_JSON="$RUN_DIR/actions.json"
@@ -83,7 +83,7 @@ SUMMARY_FILE="$RUN_DIR/summary.txt"
 # =============================================================================
 echo ""
 echo "════════════════════════════════════════════════════════════"
-echo "  COUNCIL PIPELINE — Automated Remediation"
+echo "  DOC REVIEW PIPELINE — Automated Remediation"
 echo "════════════════════════════════════════════════════════════"
 echo "  Report:     $REPORT_FILE"
 echo "  Document:   $DOC_ID"
@@ -109,8 +109,8 @@ log_ok "Parsed: $TOTAL actions (P0=$P0_COUNT P1=$P1_COUNT P2=$P2_COUNT)"
 
 if [[ "$PARSE_ONLY" == "true" ]]; then
   log_info "Parse-only mode — writing actions to: actions.json"
-  cp "$ACTIONS_JSON" "$(dirname "$REPORT_FILE")/council_actions.json"
-  log_ok "Done (parse-only). Actions saved to: $(dirname "$REPORT_FILE")/council_actions.json"
+  cp "$ACTIONS_JSON" "$(dirname "$REPORT_FILE")/experts_actions.json"
+  log_ok "Done (parse-only). Actions saved to: $(dirname "$REPORT_FILE")/experts_actions.json"
   exit 0
 fi
 
@@ -161,13 +161,13 @@ fi
 # =============================================================================
 echo ""
 echo "════════════════════════════════════════════════════════════"
-echo "  COUNCIL PIPELINE — Complete"
+echo "  DOC REVIEW PIPELINE — Complete"
 echo "════════════════════════════════════════════════════════════"
 echo "  Report:   $REPORT_FILE"
 echo "  Actions:  $TOTAL total (P0=$P0_COUNT, P1=$P1_COUNT, P2=$P2_COUNT)"
 echo ""
 echo "  Next steps:"
 echo "  1. Review auto-applied commits: git log --oneline -10"
-echo "  2. Review GitHub Issues: gh issue list --repo $GH_REPO --label council:remediation"
+echo "  2. Review GitHub Issues: gh issue list --repo $GH_REPO --label experts:remediation"
 echo "  3. Address P0 issues before PR merge"
 echo "════════════════════════════════════════════════════════════"

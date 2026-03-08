@@ -35,7 +35,7 @@ GH_PROJECT         = os.environ.get("GH_PROJECT", "")
 DRY_RUN            = os.environ.get("DRY_RUN", "false").lower() == "true"
 CREATE_IPLAN       = os.environ.get("CREATE_IPLAN", "true").lower() == "true"
 
-LABEL_REMEDIATION  = os.environ.get("GH_LABEL_REMEDIATION", "council:remediation")
+LABEL_REMEDIATION  = os.environ.get("GH_LABEL_REMEDIATION", "doc_review:remediation")
 LABEL_SOURCE       = os.environ.get("GH_LABEL_SOURCE", "source:council")
 
 LABEL_BY_PRIORITY  = {
@@ -104,9 +104,9 @@ def build_issue_body(action: dict, report_file: str, doc_id: str) -> str:
 ## Traceability
 
 ```
-@council: {action['id']}
+@doc_review: {action['id']}
 @brd: {doc_id}
-@source: council:remediation
+@source: doc_review:remediation
 ```
 
 ---
