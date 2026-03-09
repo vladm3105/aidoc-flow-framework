@@ -1,0 +1,58 @@
+{# Generic UCR Review Template - used when doc-type specific not available #}
+{% extends "ucr/base.md.j2" %}
+
+{% block review_criteria %}
+## Review Criteria for {{ doc_type | upper }}
+
+### P0 - Critical (Blocking)
+- Missing required sections per {{ doc_type | upper }} schema
+- Invalid {{ doc_type | upper }}.XX.YY ID patterns
+- Broken or missing traceability links
+- Ambiguous or contradictory statements
+- Untestable or unmeasurable requirements
+- Security or compliance violations
+
+### P1 - Major (Should Fix)
+- Incomplete section content
+- Weak or missing acceptance criteria
+- Inconsistent terminology usage
+- Missing cross-references
+- Insufficient detail for implementation
+- Priority misalignment
+
+### P2 - Minor (Nice to Fix)
+- Formatting inconsistencies
+- Typos and grammatical errors
+- Style guide violations
+- Missing optional fields
+- Documentation clarity issues
+{% endblock %}
+
+{% block instructions %}
+## {{ doc_type | upper }} Review Instructions
+
+1. **Schema Compliance**
+   - Verify required sections present
+   - Check {{ doc_type | upper }}.XX.YY ID patterns
+   - Validate YAML/Markdown structure
+
+2. **Content Analysis**
+   - Each requirement atomic and testable
+   - Language clear and unambiguous
+   - Acceptance criteria measurable
+
+3. **Traceability Verification**
+   - Upstream references valid
+   - Forward references accurate
+   - No orphaned requirements
+
+4. **Quality Assessment**
+   - Completeness of coverage
+   - Consistency of terminology
+   - Precision of statements
+
+5. **Finding Documentation**
+   - Assign P0/P1/P2 priority
+   - Include exact location
+   - Provide actionable fix
+{% endblock %}

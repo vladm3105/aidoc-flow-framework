@@ -1,0 +1,65 @@
+{# Generic UCRem Fix Template - used for all document types #}
+{% extends "ucrem/base.md.j2" %}
+
+{% block fix_guidelines %}
+## {{ doc_type | upper }} Fix Guidelines
+
+### Auto-Safe Fixes (HIGH Confidence)
+- Formatting corrections (whitespace, indentation)
+- ID pattern fixes ({{ doc_type | upper }}.XX.YY format)
+- Missing required fields with obvious values
+- Broken reference repairs
+- Typo corrections
+
+### Manual Review Fixes (MEDIUM Confidence)
+- Content additions to incomplete sections
+- Restructuring of requirement statements
+- Acceptance criteria improvements
+- Traceability additions
+
+### Expert Review Fixes (LOW Confidence)
+- Semantic requirement changes
+- Priority reassignments
+- Scope modifications
+- Architectural changes
+
+### {{ doc_type | upper }}-Specific Rules
+1. Preserve existing {{ doc_type | upper }}.XX.YY IDs when possible
+2. Maintain traceability chain integrity
+3. Keep requirement atomicity
+4. Ensure testability preserved
+{% endblock %}
+
+{% block instructions %}
+## {{ doc_type | upper }} Remediation Instructions
+
+### Phase 1: Critical Fixes (P0)
+1. Address all P0 findings first
+2. Each fix must resolve one finding
+3. Validate no regression introduced
+
+### Phase 2: Major Fixes (P1)
+1. Address P1 findings by impact
+2. Consider cumulative changes
+3. Check for fix conflicts
+
+### Phase 3: Minor Fixes (P2)
+1. Apply formatting fixes
+2. Correct documentation issues
+3. Polish and consistency
+
+### Quality Checks
+- [ ] All P0 findings addressed
+- [ ] Traceability preserved
+- [ ] ID patterns valid
+- [ ] No orphaned requirements
+- [ ] Schema compliance maintained
+
+### Iteration {{ iteration }}/{{ max_iterations }}
+{% if iteration > 1 %}
+Previous iteration made progress. Focus on remaining findings.
+{% endif %}
+{% if iteration == max_iterations %}
+**Final iteration**: Prioritize P0 fixes only. Document any unresolved P1/P2 for manual review.
+{% endif %}
+{% endblock %}

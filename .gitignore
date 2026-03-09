@@ -28,5 +28,6 @@ tests/results/archive/
 coverage.xml
 *.cover
 .hypothesis/
+.venv/
 
 

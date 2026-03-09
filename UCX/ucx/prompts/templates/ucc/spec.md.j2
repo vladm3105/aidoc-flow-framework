@@ -1,0 +1,95 @@
+{# UCC Template for SPEC (Technical Specification) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## SPEC-Specific Requirements
+
+### Structure Requirements
+1. Specification Overview
+2. Data Models (SPEC.DM.XX)
+3. API Definitions (SPEC.API.XX)
+4. Component Design (SPEC.CMP.XX)
+5. Sequence Diagrams (SPEC.SEQ.XX)
+6. Error Handling (SPEC.ERR.XX)
+7. Configuration (SPEC.CFG.XX)
+
+### Specification Categories
+- **Data Models (DM)**: Entity definitions, relationships
+- **API (API)**: Endpoint specs, payloads
+- **Component (CMP)**: Module designs
+- **Sequence (SEQ)**: Interaction flows
+- **Error (ERR)**: Error codes, handling
+- **Config (CFG)**: Configuration schemas
+
+### Content Quality
+- Implementation-ready detail
+- Code examples included
+- Edge cases documented
+- Error scenarios covered
+- Performance considerations
+
+### ID Pattern
+- Format: `SPEC.{TYPE}.XX` where TYPE is category
+- Example: `SPEC.API.05` (API specification, fifth endpoint)
+
+### Specification Format
+```yaml
+SPEC.API.XX:
+  name: [API Name]
+  method: GET|POST|PUT|DELETE
+  path: /api/v1/resource
+  description: |
+    [Endpoint purpose]
+  request:
+    headers:
+      Authorization: Bearer {token}
+    query:
+      page:
+        type: integer
+        default: 1
+    body:
+      schema: $ref CTR.SCH.XX
+  response:
+    200:
+      schema: $ref CTR.SCH.YY
+    400:
+      schema: $ref SPEC.ERR.01
+  trace:
+    upstream: REQ.XX.YY
+    contract: CTR.API.ZZ
+```
+
+### Traceability
+- @trace: REQ.XX.YY (atomic requirements)
+- @trace: CTR.XX (data contracts)
+- Forward references to TSPEC
+{% endblock %}
+
+{% block instructions %}
+## SPEC Creation Instructions
+
+1. **Design Components**
+   - Module boundaries
+   - Interface contracts
+   - Dependency injection
+
+2. **Define Data Models**
+   - Entity attributes
+   - Relationships
+   - Validation rules
+
+3. **Specify APIs**
+   - REST endpoints
+   - Request/response schemas
+   - Authentication
+
+4. **Document Flows**
+   - Sequence diagrams
+   - State transitions
+   - Error paths
+
+5. **Plan Configuration**
+   - Environment variables
+   - Feature flags
+   - Secrets management
+{% endblock %}

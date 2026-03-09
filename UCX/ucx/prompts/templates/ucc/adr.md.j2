@@ -1,0 +1,95 @@
+{# UCC Template for ADR (Architecture Decision Record) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## ADR-Specific Requirements
+
+### Structure Requirements
+1. Title and ADR Number (ADR.XX)
+2. Status (Proposed/Accepted/Deprecated/Superseded)
+3. Context and Problem Statement
+4. Decision Drivers
+5. Considered Options (ADR.XX.OPT.YY)
+6. Decision Outcome
+7. Consequences (Positive/Negative/Risks)
+8. Links and References
+
+### ADR Format
+```markdown
+# ADR-XXX: [Decision Title]
+
+## Status
+[Proposed | Accepted | Deprecated | Superseded by ADR-YYY]
+
+## Context
+[Problem statement and background]
+
+## Decision Drivers
+- [Driver 1]
+- [Driver 2]
+
+## Considered Options
+1. [Option 1]
+2. [Option 2]
+3. [Option 3]
+
+## Decision Outcome
+Chosen option: "[Option N]" because [rationale]
+
+### Consequences
+#### Positive
+- [Pro 1]
+
+#### Negative
+- [Con 1]
+
+#### Risks
+- [Risk 1] - Mitigation: [Strategy]
+```
+
+### Content Quality
+- Clear problem definition
+- Multiple options considered
+- Objective comparison
+- Explicit rationale
+- Documented trade-offs
+
+### ID Pattern
+- Format: `ADR.XX` where XX is decision number
+- Options: `ADR.XX.OPT.YY`
+- Example: `ADR.05.OPT.02` (Fifth ADR, second option)
+
+### Traceability
+- @trace: BRD.XX.YY (business drivers)
+- Forward references to SYS/SPEC
+- Links to related ADRs
+{% endblock %}
+
+{% block instructions %}
+## ADR Creation Instructions
+
+1. **Identify Decision Point**
+   - Define the architectural question
+   - Explain why decision is needed
+   - State the constraints
+
+2. **Research Options**
+   - List viable alternatives
+   - Document pros and cons
+   - Consider trade-offs
+
+3. **Analyze Decision Drivers**
+   - Business requirements
+   - Technical constraints
+   - Quality attributes
+
+4. **Document Decision**
+   - State chosen option
+   - Explain rationale
+   - Note assumptions
+
+5. **Assess Consequences**
+   - Positive outcomes
+   - Negative impacts
+   - Risks and mitigations
+{% endblock %}

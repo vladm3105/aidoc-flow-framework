@@ -1,0 +1,77 @@
+{# UCC Template for REQ (Atomic Requirements) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## REQ-Specific Requirements
+
+### Structure Requirements
+1. Requirement Header
+2. Atomic Requirements (REQ.XX.YY)
+3. Acceptance Criteria
+4. Dependencies
+5. Verification Matrix
+
+### Requirement Format
+```yaml
+REQ.XX.YY:
+  title: [Short title]
+  description: |
+    [Detailed requirement statement]
+  priority: P0|P1|P2
+  category: functional|performance|security|data|interface
+  acceptance_criteria:
+    - [Criterion 1]
+    - [Criterion 2]
+  verification:
+    method: test|inspection|analysis|demonstration
+    test_ref: TSPEC.XX.YY
+  trace:
+    upstream: SYS.XX.YY
+    downstream: SPEC.XX.YY
+  status: draft|approved|implemented|verified
+```
+
+### Content Quality
+- Single atomic requirement
+- Clear acceptance criteria
+- Testable statements
+- Complete traceability
+- Status tracking
+
+### ID Pattern
+- Format: `REQ.XX.YY` where XX is category, YY is item
+- Example: `REQ.03.07` (Third category, seventh requirement)
+
+### Traceability
+- @trace: SYS.XX.YY (upstream system requirements)
+- Forward references to SPEC/CTR
+- Test coverage mapping
+{% endblock %}
+
+{% block instructions %}
+## REQ Creation Instructions
+
+1. **Decompose System Requirements**
+   - Break SYS into atomic units
+   - One behavior per requirement
+   - Clear boundaries
+
+2. **Define Acceptance Criteria**
+   - Measurable conditions
+   - Pass/fail determinable
+   - Edge cases covered
+
+3. **Assign Verification**
+   - Test: Automated/manual testing
+   - Inspection: Code review
+   - Analysis: Design review
+   - Demonstration: User acceptance
+
+4. **Establish Dependencies**
+   - Prerequisite requirements
+   - Parallel requirements
+   - Blocking relationships
+
+5. **Track Status**
+   - Draft → Approved → Implemented → Verified
+{% endblock %}

@@ -1,0 +1,88 @@
+{# UCC Template for BDD (Behavior-Driven Development) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## BDD-Specific Requirements
+
+### Structure Requirements
+1. Feature Header with Description
+2. Background (shared context)
+3. Scenario Definitions (BDD.XX.YY)
+4. Scenario Outline with Examples
+5. Tags for categorization
+
+### Gherkin Syntax
+```gherkin
+Feature: [Feature Name]
+  As a [role]
+  I want [goal]
+  So that [benefit]
+
+  Background:
+    Given [shared precondition]
+
+  @tag1 @tag2
+  Scenario: [Scenario Name]
+    Given [precondition]
+    And [additional precondition]
+    When [action]
+    And [additional action]
+    Then [expected result]
+    And [additional result]
+
+  Scenario Outline: [Parameterized Scenario]
+    Given [precondition with <parameter>]
+    When [action with <parameter>]
+    Then [result with <parameter>]
+
+    Examples:
+      | parameter | expected |
+      | value1    | result1  |
+      | value2    | result2  |
+```
+
+### Content Quality
+- Clear Given/When/Then structure
+- Declarative, not imperative
+- Business language, not technical
+- Independent scenarios
+- Comprehensive edge cases
+
+### ID Pattern
+- Format: `BDD.XX.YY` where XX is feature, YY is scenario
+- Example: `BDD.03.02` (Third feature, second scenario)
+
+### Traceability
+- @trace: EARS.XX.YY (upstream EARS requirements)
+- Tags link to related requirements
+{% endblock %}
+
+{% block instructions %}
+## BDD Creation Instructions
+
+1. **Extract Behaviors from EARS**
+   - Map EARS requirements to features
+   - Identify user-facing behaviors
+   - Define acceptance criteria
+
+2. **Structure Features**
+   - One behavior per feature
+   - Clear user role definition
+   - Business value statement
+
+3. **Write Scenarios**
+   - Given: Establish context
+   - When: Describe action
+   - Then: Define outcome
+   - Use And/But for extensions
+
+4. **Add Test Data**
+   - Use Scenario Outlines for variations
+   - Include Examples tables
+   - Cover edge cases
+
+5. **Apply Tags**
+   - @trace: link to requirements
+   - @priority: P0/P1/P2
+   - @category: functional/integration
+{% endblock %}

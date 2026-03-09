@@ -1,0 +1,62 @@
+{# UCC Template for PRD (Product Requirements Document) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## PRD-Specific Requirements
+
+### Structure Requirements
+1. Product Vision and Goals (PRD.01.XX)
+2. User Personas and Stories (PRD.02.XX)
+3. Feature Requirements (PRD.03.XX)
+4. Non-Functional Requirements (PRD.04.XX)
+5. User Interface Guidelines (PRD.05.XX)
+6. Technical Constraints (PRD.06.XX)
+7. Release Criteria (PRD.07.XX)
+8. Dependencies and Integrations
+
+### Content Quality
+- Product vision clearly stated
+- User personas well-defined
+- Features mapped to user needs
+- Acceptance criteria included
+- Priority assignments justified
+- NFRs quantified
+
+### ID Pattern
+- Format: `PRD.XX.YY` where XX is section, YY is item
+- Example: `PRD.03.07` (Feature section, seventh feature)
+
+### Traceability
+- @trace: BRD.XX.YY (upstream BRD requirements)
+- Forward references to EARS/SYS
+- User story to feature mapping
+{% endblock %}
+
+{% block instructions %}
+## PRD Creation Instructions
+
+1. **Transform Business Requirements**
+   - Map BRD goals to product features
+   - Define user-facing functionality
+   - Prioritize by business value
+
+2. **Define User Experience**
+   - Create user personas
+   - Write user stories
+   - Define acceptance criteria
+
+3. **Specify Features**
+   - Functional requirements
+   - Non-functional requirements
+   - Integration requirements
+
+4. **Establish Quality Attributes**
+   - Performance targets
+   - Scalability requirements
+   - Security requirements
+
+5. **Document Dependencies**
+   - Technical constraints
+   - Third-party integrations
+   - Release dependencies
+{% endblock %}

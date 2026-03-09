@@ -1,0 +1,67 @@
+{# UCC Template for EARS (Easy Approach to Requirements Syntax) #}
+{% extends "ucc/base.md.j2" %}
+
+{% block requirements %}
+## EARS-Specific Requirements
+
+### Structure Requirements
+1. Document Header and Scope
+2. Ubiquitous Requirements (EARS.01.XX)
+3. State-Driven Requirements (EARS.02.XX)
+4. Event-Driven Requirements (EARS.03.XX)
+5. Unwanted Behavior Requirements (EARS.04.XX)
+6. Optional Feature Requirements (EARS.05.XX)
+7. Complex Requirements (EARS.06.XX)
+
+### EARS Template Patterns
+- **Ubiquitous**: The [system] shall [action]
+- **State-Driven**: While [state], the [system] shall [action]
+- **Event-Driven**: When [event], the [system] shall [action]
+- **Unwanted**: If [condition], then the [system] shall [action]
+- **Optional**: Where [feature], the [system] shall [action]
+- **Complex**: While [state], when [event], the [system] shall [action]
+
+### Content Quality
+- Use Shall for mandatory requirements
+- Use Should for recommended
+- Use May for optional
+- Single requirement per statement
+- Testable and verifiable
+- Unambiguous language
+
+### ID Pattern
+- Format: `EARS.XX.YY` where XX is template type, YY is item
+- Example: `EARS.02.05` (State-driven, fifth requirement)
+
+### Traceability
+- @trace: PRD.XX.YY (upstream PRD requirements)
+- Forward references to BDD scenarios
+{% endblock %}
+
+{% block instructions %}
+## EARS Creation Instructions
+
+1. **Analyze PRD Requirements**
+   - Identify system behaviors
+   - Classify by EARS template type
+   - Extract preconditions and triggers
+
+2. **Apply EARS Templates**
+   - Select appropriate template pattern
+   - Use correct keywords (Shall/Should/May)
+   - Ensure single behavior per requirement
+
+3. **Structure Requirements**
+   - Group by template type
+   - Assign EARS.XX.YY IDs
+   - Maintain logical ordering
+
+4. **Validate Testability**
+   - Each requirement must be testable
+   - Define verification method
+   - Ensure measurable criteria
+
+5. **Establish Traceability**
+   - Link to PRD requirements
+   - Prepare BDD forward references
+{% endblock %}

@@ -1,0 +1,147 @@
+{# Base UCRem (Unified Context Remediation) Template #}
+{# All document-specific remediation templates extend this base #}
+
+# Document Remediation Context
+
+## Task
+Generate fixes for the {{ doc_type | upper }} document based on review findings.
+
+## Document Information
+- **Document Type**: {{ doc_type | upper }}
+- **Document Path**: {{ document_path }}
+- **Current Score**: {{ review_score }}/100
+- **Iteration**: {{ iteration }}/{{ max_iterations }}
+
+## Model Configuration
+- **Model**: {{ model }}
+
+{% block review_summary %}
+## Review Findings Summary
+
+### P0 - Critical ({{ findings_p0 | length }} issues)
+{% if findings_p0 %}
+{% for finding in findings_p0 %}
+- {{ finding }}
+{% endfor %}
+{% else %}
+No critical issues.
+{% endif %}
+
+### P1 - Major ({{ findings_p1 | length }} issues)
+{% if findings_p1 %}
+{% for finding in findings_p1 %}
+- {{ finding }}
+{% endfor %}
+{% else %}
+No major issues.
+{% endif %}
+
+### P2 - Minor ({{ findings_p2 | length }} issues)
+{% if findings_p2 %}
+{% for finding in findings_p2 %}
+- {{ finding }}
+{% endfor %}
+{% else %}
+No minor issues.
+{% endif %}
+{% endblock %}
+
+{% block review_report %}
+## Full Review Report
+
+```markdown
+{{ review_report | truncate(30000) }}
+```
+{% endblock %}
+
+{% block document_content %}
+## Current Document Content
+
+```markdown
+{{ document_content | truncate(60000) }}
+```
+{% endblock %}
+
+{% block fix_guidelines %}
+## Fix Guidelines
+
+### Fix Confidence Levels
+- **HIGH**: Direct text replacements, formatting fixes
+- **MEDIUM**: Content additions, structure changes
+- **LOW**: Semantic changes, requirement rewrites
+
+### Auto-Safe Criteria
+Fixes can be auto-applied if:
+1. Confidence is HIGH
+2. Change is localized (single section)
+3. No semantic ambiguity
+4. Reversible without data loss
+
+### Fix Priority
+1. P0 findings first (blocking)
+2. P1 findings next (quality)
+3. P2 findings last (polish)
+{% endblock %}
+
+{% block instructions %}
+## Remediation Instructions
+
+1. **Analyze Findings**
+   - Review each P0/P1/P2 issue
+   - Understand root cause
+   - Determine fix approach
+
+2. **Generate Fixes**
+   - Create YAML fix blocks
+   - Include old_text and new_text
+   - Assign confidence level
+
+3. **Validate Fixes**
+   - Check for conflicts
+   - Verify traceability preserved
+   - Ensure no regressions
+
+4. **Document Changes**
+   - Explain fix rationale
+   - Note any manual steps
+   - Flag potential risks
+{% endblock %}
+
+{% block output_format %}
+## Output Format
+
+Generate fixes in this YAML format:
+
+```yaml
+fix_id: FIX-001
+finding_ref: P0-001
+priority: P0
+confidence: HIGH|MEDIUM|LOW
+fix_type: replace|insert|delete|restructure
+description: |
+  Brief description of the fix
+location:
+  section: "Section Name"
+  line_start: 42
+  line_end: 45
+old_text: |
+  The exact text to be replaced
+  (multiline if needed)
+new_text: |
+  The corrected text
+  (multiline if needed)
+rationale: |
+  Why this fix addresses the finding
+auto_safe: true|false
+manual_steps:
+  - "Optional manual verification step"
+```
+
+### Fix Categories
+- **replace**: Direct text substitution
+- **insert**: Add new content
+- **delete**: Remove content
+- **restructure**: Reorganize sections
+
+Generate one fix block per finding. Start with P0 fixes:
+{% endblock %}
