@@ -1,5 +1,23 @@
 # Multi-Agent Document Generation Pipeline
 
+> ## ⚠️ DEPRECATED
+>
+> **This pipeline is deprecated as of 2026-03-09.**
+>
+> Replaced by: **UCC (Unified Context Creation)**
+> ```
+> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/creation/run_ucc.sh
+> ```
+>
+> UCC provides:
+> - Multi-persona authoring with skill injection
+> - Simpler single-pass architecture
+> - Integrated with UCR/UCRem workflow
+>
+> See `../../DEPRECATED.md` for migration guide.
+
+---
+
 ## Overview
 The `run_generate.sh` pipeline is a 5-step orchestration script that uses an AI Expert Board to collaboratively author SDD-compliant framework documents (BRD, PRD, ADR, BDD, etc.).
 

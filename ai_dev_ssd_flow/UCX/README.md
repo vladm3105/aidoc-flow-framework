@@ -1,12 +1,15 @@
-# AI Expert Board - Unified Context Review (UCR) & Remediation (UCRem)
+# UCX - Unified Context Framework
 
 ## Overview
 
-The **AI Expert Board** is an advanced QA and validation methodology built into `docs_flow_framework/ai_dev_ssd_flow`. It uses a **Unified Context Review (UCR)** approach where multiple expert personas review documents within a single context window, maintaining full document coherence.
+The **UCX Framework** (Unified Context) is an advanced document lifecycle management system built into `docs_flow_framework/ai_dev_ssd_flow`. It uses a **Unified Context** approach where multiple expert personas collaborate within a single context window, maintaining full document coherence.
 
-The system consists of two phases:
-1. **UCR (Validation)** - Multi-persona document review identifying gaps and issues
-2. **UCRem (Remediation)** - Multi-persona fix proposal generation with executable fixes
+The system consists of three phases:
+1. **UCC (Creation)** - Multi-persona document authoring with skill injection
+2. **UCR (Review)** - Multi-persona document validation identifying gaps and issues
+3. **UCRem (Remediation)** - Multi-persona fix proposal generation with executable fixes
+
+**Plus**: A full **Autopilot** mode that orchestrates all phases automatically.
 
 ### Core Philosophy
 
@@ -30,13 +33,78 @@ The system consists of two phases:
 
 ---
 
-## Quick Start (Runner Scripts)
+## Quick Start: Autopilot (Recommended)
 
-### Step 1: Run UCR Validation
+The autopilot orchestrates the complete UCC → UCR → UCRem cycle with:
+- **Smart Document Detection**: Auto-selects create vs review based on document existence
+- **Drift Monitoring**: Tracks upstream changes via `.drift_cache.json`
+- **Iterative Fix Cycles**: Max 3 iterations until score >= 90%
+- **Batch Processing**: Handles multiple documents in chunks of 3
+
+```bash
+# Generate new BRD from reference docs
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
+
+# Review existing BRD (auto-detected)
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01
+
+# Generate from upstream artifact
+./run_ucx_autopilot.sh prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+
+# Generate from IPLAN
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-02 --from-iplan IPLAN-001
+
+# Batch process multiple documents
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01 docs/01_BRD/BRD-02 --batch
+
+# Dry run (show what would happen)
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01 --dry-run
+```
+
+### Autopilot Options
+
+| Option | Description |
+|--------|-------------|
+| `--from-ref <dir>` | Generate from reference documents |
+| `--from-upstream <file>` | Generate from upstream artifact |
+| `--from-iplan <file>` | Generate from implementation plan |
+| `--batch` | Process multiple targets |
+| `--max-iterations <n>` | Max review/fix cycles (default: 3) |
+| `--min-score <n>` | Minimum PRD-Ready score (default: 90) |
+| `--skip-drift` | Skip drift monitoring |
+| `--dry-run` | Show actions without executing |
+
+### Autopilot Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `UCX_MODEL` | `opus` | Claude model for all phases |
+| `UCX_MAX_ITER` | `3` | Maximum iteration cycles |
+| `UCX_MIN_SCORE` | `90` | Minimum passing score |
+| `UCX_SKIP_DRIFT` | `false` | Skip drift cache generation |
+
+---
+
+## Manual Runner Scripts
+
+For granular control, you can run each phase independently:
+
+### Step 1: Run UCC Creation
+
+```bash
+# Generate a new document
+./creation/run_ucc.sh <doc_type> <output_path> [options]
+
+# Examples
+./creation/run_ucc.sh brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
+./creation/run_ucc.sh prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01
+```
+
+### Step 2: Run UCR Validation
 
 ```bash
 # Run UCR review on a document
-./run_ucr.sh <doc_type> <document_path> [output_file]
+./review/run_ucr.sh <doc_type> <document_path> [output_file]
 
 # Examples
 ./run_ucr.sh brd docs/01_BRD/BRD-01_platform_architecture
@@ -223,26 +291,30 @@ Before claiming an item is PRESENT, verify it meets ALL criteria:
 ## File Structure
 
 ```
-AI_EXPERTS/
+UCX/
 ├── README.md                      # This file
+├── run_ucx_autopilot.sh           # Full autopilot (UCC→UCR→UCRem)
 │
-├── run_ucr.sh                     # UCR runner with dynamic skill loading
-├── run_ucrem.sh                   # UCRem runner with fixer skill loading
+├── creation/
+│   ├── run_ucc.sh                 # UCC runner with skill injection
+│   ├── UCC_PROMPT_*.md            # Creation prompts (per layer)
+│   ├── UCC_PERSONAS.md            # Author persona definitions
+│   └── UCC_OUTPUT_SCHEMA.md       # Output format specification
 │
-├── UCR Prompts (Validation)
-│   ├── UCR_PROMPT_BRD.md          # Layer 1: Business Requirements
-│   ├── UCR_PROMPT_PRD.md          # Layer 2: Product Requirements
-│   ├── UCR_PROMPT_EARS.md         # Layer 3: EARS Requirements
-│   ├── UCR_PROMPT_BDD.md          # Layer 4: BDD Scenarios
-│   ├── UCR_PROMPT_ADR.md          # Layer 5: Architecture Decisions
-│   ├── UCR_PROMPT_SYS.md          # Layer 6: System Requirements
-│   ├── UCR_PROMPT_REQ.md          # Layer 7: Atomic Requirements
-│   ├── UCR_PROMPT_CTR.md          # Layer 8: Data Contracts
-│   ├── UCR_PROMPT_SPEC.md         # Layer 9: Specifications
-│   └── UCR_PROMPT_TSPEC.md        # Layer 10: Test Specifications
+├── review/
+│   ├── run_ucr.sh                 # UCR runner with dynamic skill loading
+│   ├── UCR_PROMPT_*.md            # Review prompts (per layer)
+│   ├── UCR_OUTPUT_*.md            # Output templates
+│   └── validators/                # Schema validators
+│       ├── validate_common.sh
+│       ├── validate_brd.sh
+│       ├── validate_prd.sh
+│       └── validate_generic.sh
 │
-├── UCRem Files (Remediation)
-│   ├── UCRem_PROMPT_BRD.md        # BRD remediation prompt
+├── remediation/
+│   ├── run_ucrem.sh               # UCRem runner with fixer skill loading
+│
+│   ├── UCRem_PROMPT_*.md          # Remediation prompts (per layer)
 │   ├── UCRem_REPORT_SCHEMA.md     # Fix entry schema reference
 │   ├── UCRem_REPORT_TEMPLATE.md   # Output template
 │   └── UCRem_PERSONAS.md          # 5 fixer persona definitions
@@ -261,11 +333,15 @@ AI_EXPERTS/
 │   ├── requirements_specialist.md
 │   └── ux_strategist.md
 │
-├── Documentation
-│   ├── UNIFIED_CONTEXT_REVIEW.md  # UCR method guide
-│   ├── PERSONA_DESIGN_GUIDE.md    # 12 persona archetypes
-│   ├── HOW_TO_AUDIT.md            # Step-by-step audit instructions
-│   └── PERSONA_REVIEW-MVP-TEMPLATE.md  # UCR output template
+├── docs/
+│   ├── UNIFIED_CONTEXT_FRAMEWORK.md  # Framework overview
+│   ├── UNIFIED_CONTEXT_REVIEW.md     # UCR method guide
+│   ├── UCX_VS_SKILLS_COMPARISON.md   # Feature comparison with Claude Skills
+│   ├── PERSONA_DESIGN_GUIDE.md       # 12 persona archetypes
+│   └── HOW_TO_USE.md                 # Usage guide
+│
+├── SKILL_INDEX.md                 # Maps Claude Skills to UCX phases
+├── init_ucx.sh                    # Project initialization script
 │
 └── examples/
     └── beelocal_fintech_board.md  # Fintech domain example
@@ -453,10 +529,78 @@ UCR/UCRem performs best with models that:
 
 ---
 
+## Drift Monitoring
+
+The autopilot tracks upstream changes using `.drift_cache.json` files.
+
+### How It Works
+
+1. **Initial Generation**: When generating from `--from-ref`, computes SHA-256 hashes of all upstream files
+2. **Cache Storage**: Stores hashes in `.drift_cache.json` in the document folder
+3. **Review Detection**: On subsequent reviews, compares current hashes to cached values
+4. **Drift Alert**: If hashes differ, alerts that upstream has changed since generation
+
+### Cache Schema
+
+```json
+{
+  "schema_version": "1.1",
+  "document_id": "BRD-01",
+  "document_version": "1.0",
+  "upstream_mode": "ref",
+  "last_reviewed": "2026-03-09T10:30:00-05:00",
+  "reviewer_version": "UCX-1.0",
+  "upstream_documents": {
+    "spec.md": {
+      "hash": "sha256:abc123...",
+      "last_checked": "2026-03-09T10:30:00-05:00"
+    }
+  },
+  "review_history": [
+    {
+      "date": "2026-03-09T10:30:00-05:00",
+      "score": 92,
+      "drift_detected": false,
+      "status": "PASS"
+    }
+  ]
+}
+```
+
+### Disabling Drift Monitoring
+
+```bash
+./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01 --skip-drift
+# Or via environment variable
+UCX_SKIP_DRIFT=true ./run_ucx_autopilot.sh brd docs/01_BRD/BRD-01
+```
+
+---
+
+## Feature Parity with Claude Skills
+
+UCX provides feature parity with Claude Skills (`doc-brd-autopilot`, etc.):
+
+| Feature | Claude Skills | UCX |
+|---------|--------------|-----|
+| Document Creation | `doc-brd`, etc. | `run_ucc.sh` |
+| Document Review | `doc-brd-audit` | `run_ucr.sh` |
+| Document Remediation | `doc-brd-fixer` | `run_ucrem.sh` |
+| Smart Detection | Auto-detect action | `run_ucx_autopilot.sh` |
+| Drift Monitoring | `.drift_cache.json` | `.drift_cache.json` |
+| Full Autopilot | UCC→UCR→UCRem | `run_ucx_autopilot.sh` |
+| IPLAN Input | `--iplan` | `--from-iplan` |
+| Batch Processing | Chunked by 3 | `--batch` |
+
+See [UCX_VS_SKILLS_COMPARISON.md](docs/UCX_VS_SKILLS_COMPARISON.md) for detailed comparison.
+
+---
+
 ## Version History
 
 | Date | Change |
 |------|--------|
+| 2026-03-09 | **v1.1**: Added full autopilot with drift monitoring, smart detection, IPLAN support |
 | 2026-03-09 | Added UCRem (remediation) system with 5 fixer personas |
 | 2026-03-09 | Implemented dynamic skill loading in runner scripts |
 | 2026-03-09 | Added project customization with symlinks pattern |

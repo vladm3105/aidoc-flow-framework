@@ -1,5 +1,19 @@
 # AI Expert Board (Red Team Auditing)
 
+> ## ⚠️ DEPRECATED
+>
+> **This directory is deprecated as of 2026-03-09.**
+>
+> Replaced by: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/`
+>
+> - Personas → `UCX/skills/`
+> - Review prompts → `UCX/review/UCR_PROMPT_*.md`
+> - Documentation → `UCX/docs/`
+>
+> See `../DEPRECATED.md` for migration guide.
+
+---
+
 ## Overview
 The **AI Expert Board** is an advanced QA and ideation methodology built into `docs_flow_framework/ai_dev_ssd_flow`. 
 

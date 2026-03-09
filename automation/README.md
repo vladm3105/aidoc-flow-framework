@@ -1,5 +1,20 @@
 # Agent-Agnostic Automation Sub-Framework
 
+> ## ⚠️ DEPRECATED
+>
+> **This directory is deprecated as of 2026-03-09.**
+>
+> All functionality has been superseded by the **UCx (Unified Context) Framework**:
+> ```
+> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/
+> ```
+>
+> See `DEPRECATED.md` for migration guide.
+>
+> **Planned removal: 2026-06-09**
+
+---
+
 The `automation/` directory acts as the centralized engine for all AI-driven workflows and pipelines within the documentation flow framework.
 
 ---

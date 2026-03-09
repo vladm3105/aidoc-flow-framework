@@ -1,5 +1,23 @@
 # Automation Pipeline: Doc Review (`run_review.sh`)
 
+> ## ⚠️ DEPRECATED
+>
+> **This pipeline is deprecated as of 2026-03-09.**
+>
+> Replaced by: **UCR (Unified Context Review)**
+> ```
+> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/review/run_ucr.sh
+> ```
+>
+> UCR provides:
+> - 100% accuracy (vs 93% for this multi-model pipeline)
+> - Integrated validation + content review
+> - Simpler single-pass architecture
+>
+> See `../../DEPRECATED.md` for migration guide.
+
+---
+
 The **Doc Review Pipeline** is the core testing logic for the 15-layer `docs_flow_framework`. Rather than relying on human eyesight to catch missing cross-references, architectural single-points-of-failure, or poor REST boundaries, this pipeline summons an adversarial board of 7 specialized AI personas.
 
 It is located at: `/opt/data/docs_flow_framework/automation/pipelines/doc_review/run_review.sh`

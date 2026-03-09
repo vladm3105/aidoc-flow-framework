@@ -3,7 +3,13 @@
 # run_ucr.sh — UCR (Unified Context Review) Runner
 # =============================================================================
 # Framework-level script for running UCR reviews on any document type.
-# Now includes dynamic skill loading for enhanced persona knowledge.
+# Now includes integrated validation and dynamic skill loading.
+#
+# ENHANCED FLOW (v2.0):
+#   1. Run schema validator (if exists)
+#   2. Run structure validator
+#   3. Run content review (multi-persona UCR)
+#   4. Combine results into unified report
 #
 # Usage:
 #   ./run_ucr.sh <doc_type> <document_path> [output_file]
@@ -18,9 +24,10 @@
 #   output_file   - (Optional) Custom output path
 #
 # Environment:
-#   UCR_PROMPT_DIR  - Directory containing UCR prompts (default: script directory)
-#   UCR_MODEL       - Claude model to use (default: opus)
-#   UCR_LOAD_SKILLS - Load skill files into prompt (default: true)
+#   UCR_PROMPT_DIR     - Directory containing UCR prompts (default: script directory)
+#   UCR_MODEL          - Claude model to use (default: opus)
+#   UCR_LOAD_SKILLS    - Load skill files into prompt (default: true)
+#   UCR_SKIP_VALIDATE  - Skip validation step (default: false)
 #
 # =============================================================================
 
@@ -34,7 +41,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UCR_PROMPT_DIR="${UCR_PROMPT_DIR:-$SCRIPT_DIR}"
 UCR_MODEL="${UCR_MODEL:-opus}"
 UCR_LOAD_SKILLS="${UCR_LOAD_SKILLS:-true}"
+UCR_SKIP_VALIDATE="${UCR_SKIP_VALIDATE:-false}"
 SKILL_DIR="$SCRIPT_DIR/../skills"
+VALIDATOR_DIR="$SCRIPT_DIR/validators"
 
 # =============================================================================
 # Layer-to-Skills Mapping
@@ -69,7 +78,8 @@ if [[ -z "$DOC_TYPE" || -z "$DOC_PATH" ]]; then
     echo "  ./run_ucr.sh prd docs/02_PRD/*.md"
     echo ""
     echo "Environment variables:"
-    echo "  UCR_LOAD_SKILLS=false  # Disable skill loading (smaller prompt)"
+    echo "  UCR_LOAD_SKILLS=false   # Disable skill loading (smaller prompt)"
+    echo "  UCR_SKIP_VALIDATE=true  # Skip validation step"
     echo ""
     exit 1
 fi
@@ -123,17 +133,91 @@ if [[ -z "$OUTPUT_FILE" ]]; then
 fi
 
 # =============================================================================
-# Build combined input with skills
+# PHASE 1: Validation (if enabled)
+# =============================================================================
+VALIDATION_OUTPUT=""
+VALIDATION_STATUS="SKIPPED"
+
+if [[ "$UCR_SKIP_VALIDATE" != "true" && -d "$VALIDATOR_DIR" ]]; then
+    echo ""
+    echo "════════════════════════════════════════════════════════════"
+    echo "  Phase 1: Validation"
+    echo "════════════════════════════════════════════════════════════"
+
+    # Check for type-specific validator
+    TYPE_VALIDATOR="$VALIDATOR_DIR/validate_${DOC_TYPE}.sh"
+    GENERIC_VALIDATOR="$VALIDATOR_DIR/validate_generic.sh"
+
+    TMP_VALIDATION=$(mktemp /tmp/ucr_validation_XXXXXX.txt)
+
+    if [[ -f "$TYPE_VALIDATOR" && -x "$TYPE_VALIDATOR" ]]; then
+        echo "Running validator: validate_${DOC_TYPE}.sh"
+        if "$TYPE_VALIDATOR" "$DOC_PATH" > "$TMP_VALIDATION" 2>&1; then
+            VALIDATION_STATUS="PASSED"
+        else
+            VALIDATION_STATUS="FAILED"
+        fi
+        VALIDATION_OUTPUT=$(cat "$TMP_VALIDATION")
+    elif [[ -f "$GENERIC_VALIDATOR" && -x "$GENERIC_VALIDATOR" ]]; then
+        echo "Running validator: validate_generic.sh"
+        if "$GENERIC_VALIDATOR" "$DOC_TYPE" "$DOC_PATH" > "$TMP_VALIDATION" 2>&1; then
+            VALIDATION_STATUS="PASSED"
+        else
+            VALIDATION_STATUS="FAILED"
+        fi
+        VALIDATION_OUTPUT=$(cat "$TMP_VALIDATION")
+    else
+        echo "No validator found for $DOC_TYPE, skipping validation"
+        VALIDATION_STATUS="NO_VALIDATOR"
+    fi
+
+    rm -f "$TMP_VALIDATION"
+
+    if [[ -n "$VALIDATION_OUTPUT" ]]; then
+        echo "$VALIDATION_OUTPUT"
+    fi
+    echo ""
+    echo "Validation Status: $VALIDATION_STATUS"
+else
+    echo ""
+    echo "Validation: SKIPPED (UCR_SKIP_VALIDATE=$UCR_SKIP_VALIDATE)"
+fi
+
+# =============================================================================
+# PHASE 2: Build combined input with skills
 # =============================================================================
 TMP_INPUT=$(mktemp /tmp/ucr_input_XXXXXX.md)
 trap "rm -f $TMP_INPUT" EXIT
 
-echo "Building UCR input..."
+echo ""
+echo "════════════════════════════════════════════════════════════"
+echo "  Phase 2: Building UCR Input"
+echo "════════════════════════════════════════════════════════════"
 echo "  Prompt: $PROMPT_FILE"
 echo "  Document: $DOC_PATH"
 
 # Start with prompt
 cat "$PROMPT_FILE" > "$TMP_INPUT"
+
+# =============================================================================
+# Add Validation Results (if available)
+# =============================================================================
+if [[ -n "$VALIDATION_OUTPUT" && "$VALIDATION_STATUS" != "SKIPPED" && "$VALIDATION_STATUS" != "NO_VALIDATOR" ]]; then
+    echo "" >> "$TMP_INPUT"
+    echo "---" >> "$TMP_INPUT"
+    echo "" >> "$TMP_INPUT"
+    echo "## PRE-VALIDATION RESULTS" >> "$TMP_INPUT"
+    echo "" >> "$TMP_INPUT"
+    echo "The following automated validation was performed before content review:" >> "$TMP_INPUT"
+    echo "" >> "$TMP_INPUT"
+    echo "**Status**: $VALIDATION_STATUS" >> "$TMP_INPUT"
+    echo "" >> "$TMP_INPUT"
+    echo '```' >> "$TMP_INPUT"
+    echo "$VALIDATION_OUTPUT" >> "$TMP_INPUT"
+    echo '```' >> "$TMP_INPUT"
+    echo "" >> "$TMP_INPUT"
+    echo "> **Note**: These validation results should inform your review. Address any validation failures as P0 findings." >> "$TMP_INPUT"
+fi
 
 # =============================================================================
 # Load Skills (if enabled)
@@ -199,20 +283,21 @@ else
 fi
 
 # =============================================================================
-# Run UCR
+# PHASE 3: Run UCR
 # =============================================================================
 INPUT_SIZE=$(wc -c < "$TMP_INPUT")
 INPUT_LINES=$(wc -l < "$TMP_INPUT")
 
 echo ""
 echo "════════════════════════════════════════════════════════════"
-echo "  UCR (Unified Context Review)"
+echo "  Phase 3: UCR Content Review"
 echo "════════════════════════════════════════════════════════════"
 echo "  Document Type: ${DOC_TYPE^^}"
 echo "  Input Size:    $INPUT_SIZE bytes ($INPUT_LINES lines)"
 echo "  Output:        $OUTPUT_FILE"
 echo "  Model:         $UCR_MODEL"
 echo "  Skills:        $([[ "$UCR_LOAD_SKILLS" == "true" ]] && echo "enabled" || echo "disabled")"
+echo "  Validation:    $VALIDATION_STATUS"
 echo "════════════════════════════════════════════════════════════"
 echo ""
 echo "Running UCR review..."
@@ -230,22 +315,23 @@ else
 fi
 
 # =============================================================================
-# Summary
+# PHASE 4: Summary
 # =============================================================================
 OUTPUT_SIZE=$(wc -c < "$OUTPUT_FILE")
 
 # Extract finding counts if possible
-P0_COUNT=$(grep -c "P0-" "$OUTPUT_FILE" 2>/dev/null || echo "?")
-P1_COUNT=$(grep -c "P1-" "$OUTPUT_FILE" 2>/dev/null || echo "?")
-P2_COUNT=$(grep -c "P2-" "$OUTPUT_FILE" 2>/dev/null || echo "?")
+P0_COUNT=$(grep -c "P0-" "$OUTPUT_FILE" 2>/dev/null || echo "0")
+P1_COUNT=$(grep -c "P1-" "$OUTPUT_FILE" 2>/dev/null || echo "0")
+P2_COUNT=$(grep -c "P2-" "$OUTPUT_FILE" 2>/dev/null || echo "0")
 
 echo ""
 echo "════════════════════════════════════════════════════════════"
 echo "  UCR Complete"
 echo "════════════════════════════════════════════════════════════"
-echo "  Output:   $OUTPUT_FILE"
-echo "  Size:     $OUTPUT_SIZE bytes"
-echo "  Findings: P0=$P0_COUNT, P1=$P1_COUNT, P2=$P2_COUNT"
+echo "  Output:      $OUTPUT_FILE"
+echo "  Size:        $OUTPUT_SIZE bytes"
+echo "  Validation:  $VALIDATION_STATUS"
+echo "  Findings:    P0=$P0_COUNT, P1=$P1_COUNT, P2=$P2_COUNT"
 echo ""
 echo "  Next steps:"
 echo "  1. Review findings in the UCR report"
