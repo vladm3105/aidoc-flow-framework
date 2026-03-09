@@ -1,0 +1,1 @@
+../../ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md

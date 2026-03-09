@@ -1,0 +1,1 @@
+../../ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md

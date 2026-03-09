@@ -28,7 +28,33 @@
 
 ## Quick Start
 
-### Basic Usage
+### Using Runner Scripts (Recommended)
+
+The runner scripts handle prompt selection, skill loading, and output formatting automatically:
+
+```bash
+# Run UCR validation
+./run_ucr.sh <doc_type> <document_path> [output_file]
+
+# Examples
+./run_ucr.sh brd docs/01_BRD/BRD-01_platform_architecture
+./run_ucr.sh prd docs/02_PRD/PRD-01.md
+./run_ucr.sh ears docs/03_EARS/*.md
+```
+
+Runner script features:
+- **Auto-selects prompt** based on document type
+- **Loads persona skills** dynamically from `skills/` directory
+- **Detects project overrides** (`*_PROJECT.md`, `*_BEELOCAL.md`)
+- **Outputs to standard location** (`{DOC_TYPE}_UCR_REVIEW.md`)
+
+Environment variables:
+- `UCR_LOAD_SKILLS=false` - Disable skill loading (smaller prompt)
+- `UCR_MODEL=sonnet` - Use faster model
+
+### Manual Method
+
+For direct control without runner scripts:
 
 ```bash
 # Copy the appropriate prompt file for your document type
@@ -43,6 +69,8 @@ claude -p --model opus < /tmp/review_prompt.md > audit_report.md
 # Alternative: Pipe method
 cat AI_EXPERTS/UCR_PROMPT_BRD.md docs/01_BRD/*.md | claude -p --model opus > audit_report.md
 ```
+
+**Note**: Manual method does NOT include dynamic skill loading.
 
 ### Layer Selection Guide
 
@@ -281,9 +309,64 @@ Recommended models (as of 2026):
 
 ---
 
+---
+
+## UCRem (Remediation) Integration
+
+After UCR validation, use **UCRem (Unified Context Remediation)** to generate executable fix proposals.
+
+### UCRem Workflow
+
+```bash
+# Step 1: Run UCR validation (produces review report)
+./run_ucr.sh brd docs/01_BRD/BRD-01
+
+# Step 2: Run UCRem remediation (produces fix proposals)
+./run_ucrem.sh docs/01_BRD/BRD-01/BRD_UCR_REVIEW.md docs/01_BRD/BRD-01
+
+# Step 3: Apply fixes
+/doc-brd-fixer BRD-01 --from-ucrem BRD_UCRem_REPORT.md
+
+# Step 4: Re-validate
+./run_ucr.sh brd docs/01_BRD/BRD-01
+```
+
+### UCRem Confidence Levels
+
+| Level | Criteria | Execution |
+|-------|----------|-----------|
+| **auto-safe** | Deterministic text, 2+ personas approve | Apply automatically |
+| **auto-assisted** | Template with [TODO] placeholders | Apply, complete placeholders |
+| **manual-required** | Architectural/regulatory decision needed | Create task for expert |
+
+See `UCRem_PROMPT_BRD.md` and `UCRem_REPORT_SCHEMA.md` for full documentation.
+
+---
+
+## Dynamic Skill Loading
+
+UCR uses persona skill files from `skills/` directory to provide domain knowledge. Skills are loaded automatically by runner scripts based on document type.
+
+### Layer-to-Skills Mapping
+
+| Layer | Skills Loaded |
+|-------|---------------|
+| BRD | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert, product_owner, business_analyst |
+| PRD | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert, product_owner, qa_lead, ux_strategist |
+| EARS | tech_lead, devils_advocate, integration_expert, qa_lead, requirements_specialist |
+| BDD | auditor, tech_lead, devils_advocate, operator, integration_expert, qa_lead |
+| ADR | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert |
+
+To disable skill loading: `UCR_LOAD_SKILLS=false ./run_ucr.sh brd docs/01_BRD/BRD-01`
+
+---
+
 ## Reference
 
+- **Runner scripts**: `AI_EXPERTS/run_ucr.sh`, `AI_EXPERTS/run_ucrem.sh`
 - **Skill definitions**: `AI_EXPERTS/skills/`
 - **Output template**: `AI_EXPERTS/PERSONA_REVIEW-MVP-TEMPLATE.md`
 - **Layer prompts**: `AI_EXPERTS/UCR_PROMPT_*.md`
+- **UCRem prompts**: `AI_EXPERTS/UCRem_PROMPT_*.md`
+- **UCRem schema**: `AI_EXPERTS/UCRem_REPORT_SCHEMA.md`
 - **Domain examples**: `AI_EXPERTS/examples/`

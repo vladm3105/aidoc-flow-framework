@@ -21,7 +21,33 @@ The AI Expert Board operates using **Unified Context Review (UCR)** as the prima
 
 UCR is the recommended approach for all document validation. It applies multiple expert personas in a single context window with zero false negatives.
 
-### Step 1: Select the Layer-Specific Prompt
+### Using Runner Scripts (Recommended)
+
+The runner scripts handle prompt selection, skill loading, and output formatting:
+
+```bash
+# Run UCR validation
+./run_ucr.sh <doc_type> <document_path> [output_file]
+
+# Examples
+./run_ucr.sh brd docs/01_BRD/BRD-01_platform_architecture
+./run_ucr.sh prd docs/02_PRD/PRD-01.md
+./run_ucr.sh ears docs/03_EARS/*.md
+./run_ucr.sh bdd docs/04_BDD/*.feature
+./run_ucr.sh adr docs/05_ADR/*.md
+```
+
+Runner script features:
+- **Auto-selects prompt** based on document type
+- **Loads persona skills** dynamically from `skills/` directory
+- **Detects project overrides** (`*_PROJECT.md`, `*_BEELOCAL.md`)
+- **Outputs to standard location** (`{DOC_TYPE}_UCR_REVIEW.md`)
+
+Environment variables:
+- `UCR_LOAD_SKILLS=false` - Disable skill loading (smaller prompt)
+- `UCR_MODEL=sonnet` - Use faster model
+
+### Layer-Specific Prompt Reference
 
 | Document Type | Prompt File | Personas |
 |---------------|-------------|----------|
@@ -36,18 +62,16 @@ UCR is the recommended approach for all document validation. It applies multiple
 | SPEC (L9) | `UCR_PROMPT_SPEC.md` | 5 |
 | TSPEC (L10) | `UCR_PROMPT_TSPEC.md` | 5 |
 
-### Step 2: Combine Prompt and Document
+### Manual Method (Without Skill Loading)
+
+For direct control without runner scripts:
 
 ```bash
 # Create combined review input
 cat AI_EXPERTS/UCR_PROMPT_BRD.md > /tmp/review_input.md
 echo "" >> /tmp/review_input.md
 cat docs/01_BRD/BRD-01_platform_architecture/*.md >> /tmp/review_input.md
-```
 
-### Step 3: Run the Review
-
-```bash
 # Using Claude CLI (recommended: Opus 4.5)
 claude -p --model opus < /tmp/review_input.md > docs/01_BRD/BRD-01_PERSONA_REVIEW_REPORT.md
 
@@ -55,24 +79,7 @@ claude -p --model opus < /tmp/review_input.md > docs/01_BRD/BRD-01_PERSONA_REVIE
 cat AI_EXPERTS/UCR_PROMPT_BRD.md docs/01_BRD/*.md | claude -p --model opus > review_report.md
 ```
 
-### UCR CLI Examples by Layer
-
-```bash
-# BRD Review
-cat AI_EXPERTS/UCR_PROMPT_BRD.md docs/01_BRD/*.md | claude -p --model opus > brd_review.md
-
-# PRD Review
-cat AI_EXPERTS/UCR_PROMPT_PRD.md docs/02_PRD/*.md | claude -p --model opus > prd_review.md
-
-# EARS Review
-cat AI_EXPERTS/UCR_PROMPT_EARS.md docs/03_EARS/*.md | claude -p --model opus > ears_review.md
-
-# BDD Review
-cat AI_EXPERTS/UCR_PROMPT_BDD.md docs/04_BDD/*.feature | claude -p --model opus > bdd_review.md
-
-# ADR Review
-cat AI_EXPERTS/UCR_PROMPT_ADR.md docs/05_ADR/*.md | claude -p --model opus > adr_review.md
-```
+**Note**: Manual method does NOT include dynamic skill loading. Use runner scripts for full persona knowledge.
 
 ---
 
@@ -216,11 +223,84 @@ After running a UCR review, verify:
 
 ---
 
+## UCRem (Remediation) Workflow
+
+After UCR validation, use **UCRem (Unified Context Remediation)** to generate executable fix proposals.
+
+### Step 1: Run UCR Validation
+
+```bash
+./run_ucr.sh brd docs/01_BRD/BRD-01_platform_architecture
+# Output: docs/01_BRD/BRD-01_platform_architecture/BRD_UCR_REVIEW.md
+```
+
+### Step 2: Run UCRem Remediation
+
+```bash
+./run_ucrem.sh docs/01_BRD/BRD-01/BRD_UCR_REVIEW.md docs/01_BRD/BRD-01
+# Output: docs/01_BRD/BRD-01/BRD_UCRem_REPORT.md
+```
+
+### Step 3: Apply Fixes
+
+```bash
+# Apply auto-safe and auto-assisted fixes
+/doc-brd-fixer BRD-01 --from-ucrem BRD_UCRem_REPORT.md
+```
+
+### Step 4: Re-Validate
+
+```bash
+./run_ucr.sh brd docs/01_BRD/BRD-01_platform_architecture
+# Verify P0/P1 counts reduced
+```
+
+### UCRem Confidence Levels
+
+| Level | Criteria | Execution |
+|-------|----------|-----------|
+| **auto-safe** | Deterministic text, 2+ personas approve, no objections | Apply automatically |
+| **auto-assisted** | Template with [TODO] placeholders, 1+ persona approves | Apply template, complete placeholders |
+| **manual-required** | Architectural/regulatory decision, Devil's Advocate objection | Create task for domain expert |
+
+### UCRem Environment Variables
+
+- `UCREM_LOAD_SKILLS=false` - Disable fixer skill loading
+- `UCREM_MODEL=sonnet` - Use faster model
+
+---
+
 ## Domain Customization
 
-For project-specific reviews, create domain-specific UCR prompts:
+### Project Setup with Symlinks
 
-1. Copy base prompt: `cp UCR_PROMPT_BRD.md UCR_PROMPT_BRD_MYPROJECT.md`
+Projects use symlinks to framework files and add project-specific prompts:
+
+```bash
+cd /your/project/docs/AI_EXPERTS
+
+# Create symlinks to framework
+ln -s /path/to/framework/AI_EXPERTS/run_ucr.sh run_ucr.sh
+ln -s /path/to/framework/AI_EXPERTS/run_ucrem.sh run_ucrem.sh
+ln -s /path/to/framework/AI_EXPERTS/UCR_PROMPT_BRD.md UCR_PROMPT_BRD.md
+ln -s /path/to/framework/AI_EXPERTS/UCRem_PROMPT_BRD.md UCRem_PROMPT_BRD.md
+ln -s /path/to/framework/AI_EXPERTS/skills skills
+
+# Create project-specific prompts (NOT symlinked)
+touch UCR_PROMPT_BRD_PROJECT.md
+touch UCRem_PROMPT_BRD_PROJECT.md
+```
+
+### Prompt Selection Priority
+
+Runner scripts search for prompts in this order:
+1. `UCR_PROMPT_{TYPE}_PROJECT.md` - Project-specific override
+2. `UCR_PROMPT_{TYPE}_BEELOCAL.md` - BeeLocal-specific (legacy)
+3. `UCR_PROMPT_{TYPE}.md` - Framework default
+
+### Creating Project-Specific Prompts
+
+1. Copy base prompt: `cp UCR_PROMPT_BRD.md UCR_PROMPT_BRD_PROJECT.md`
 2. Add domain-specific verification items
 3. Add domain-specific P0 defaults
 4. Add domain-specific terminology and partners
