@@ -84,7 +84,7 @@ python project_knowledge/scripts/pilot_validate.py
 #
 # Initialize AI Expert Board:
 # → mkdir -p docs/AI_EXPERTS
-# → Copy ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml to docs/AI_EXPERTS/project_experts.yaml
+# → Copy ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml to docs/AI_EXPERTS/review.yaml
 # → This team should be created during new project initialization or manually on demand later.
 ```
 

@@ -54,28 +54,29 @@ if [[ -z "$doc_id" || "$doc_id" == "UNKNOWN" ]]; then
     doc_id="$TARGET_BASENAME"
 fi
 
-# Locate project_experts.yaml (Preferring layer-specific configs based on artifact_type)
+# Locate review.yaml (Preferring layer-specific configs based on artifact_type)
 GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
 EXPERTS_YAML=""
 
 # 1. Target dir layer-specific config
-if [[ -n "$artifact_type" && -f "$TARGET_DIR/project_experts.${artifact_type}.yaml" ]]; then
-    EXPERTS_YAML="$TARGET_DIR/project_experts.${artifact_type}.yaml"
+if [[ -n "$artifact_type" && -f "$TARGET_DIR/review.${artifact_type}.yaml" ]]; then
+    EXPERTS_YAML="$TARGET_DIR/review.${artifact_type}.yaml"
 # 2. Global AI_EXPERTS layer-specific config
-elif [[ -n "$artifact_type" && -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/project_experts.${artifact_type}.yaml" ]]; then
-    EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/project_experts.${artifact_type}.yaml"
+elif [[ -n "$artifact_type" && -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/review.${artifact_type}.yaml" ]]; then
+    EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/review.${artifact_type}.yaml"
 # 3. Target dir generic config
-elif [[ -f "$TARGET_DIR/project_experts.yaml" ]]; then
-    EXPERTS_YAML="$TARGET_DIR/project_experts.yaml"
+elif [[ -f "$TARGET_DIR/review.yaml" ]]; then
+    EXPERTS_YAML="$TARGET_DIR/review.yaml"
 # 4. Global AI_EXPERTS generic config
-elif [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/project_experts.yaml" ]]; then
-    EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/project_experts.yaml"
+elif [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/review.yaml" ]]; then
+    EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/review.yaml"
 # 5. Framework fallback
 else
-    log_warn "No project_experts.yaml found. Falling back to framework template."
-    EXPERTS_YAML="$(dirname "$AUTOMATION_ROOT")/ai_dev_ssd_flow/AI_EXPERTS/project_experts.template.yaml"
+    log_warn "No review.yaml found. Falling back to framework template."
+    EXPERTS_YAML="$(dirname "$AUTOMATION_ROOT")/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml"
 fi
 require_file "$EXPERTS_YAML"
+log_info "Using experts config: $EXPERTS_YAML"
 
 # Set output path
 OUTPUT_FILE="$TARGET_DIR/${doc_id}_PERSONA_REVIEW_REPORT.md"
@@ -101,7 +102,18 @@ mkdir -p "$RUN_DIR"
 rm -f "$RUN_DIR"/prompt_*.txt "$RUN_DIR"/response_*.txt "$RUN_DIR"/shared_context.txt "$RUN_DIR"/final_body.md 2>/dev/null || true
 log_info "DEBUG: Workspace memory is $RUN_DIR"
 
-PERSONAS=("architect" "auditor" "tech_lead" "product_owner" "strategist" "qa_lead" "operator" "integration_expert")
+# Dynamically extract personas from YAML file
+PERSONAS=()
+while IFS= read -r persona; do
+    PERSONAS+=("$persona")
+done < <(python3 -c "
+import yaml
+with open('$EXPERTS_YAML', 'r') as f:
+    d = yaml.safe_load(f)
+for p in d.get('personas', {}).keys():
+    print(p)
+")
+log_info "Loaded ${#PERSONAS[@]} personas from YAML: ${PERSONAS[*]}"
 
 # =============================================================================
 # Build Shared Document Context (For API Prompt Caching)
@@ -176,12 +188,12 @@ print(f\"P_API_KEY_ENV={shlex.quote(str(agent.get('api_key_env') or ''))}\")
 " "$EXPERTS_YAML" "$persona")"
 
     
-    # Build Prompt
+    # Build Prompt (persona-specific only - shared context passed separately for caching)
     PROMPT_FILE="$RUN_DIR/prompt_$persona.txt"
     RESPONSE_FILE="$RUN_DIR/response_$persona.txt"
-    
-    # 1. Start with the identical shared context to trigger AI API Prefix Caching (e.g. Claude)
-    cp "$SHARED_CONTEXT_FILE" "$PROMPT_FILE"
+
+    # 1. Create empty persona prompt file (shared context passed via --system-prompt-file for API caching)
+    > "$PROMPT_FILE"
 
     # 1a. Inject Domain Knowledge (Skill File) if present
     SKILL_FILE="$P_SKILL"
@@ -262,6 +274,10 @@ EOF
 
     # Prepare ai_exec arguments dynamically based on YAML config
     AI_PARAMS=("$PROMPT_FILE")
+    # Add shared context as system prompt for API caching (reduces tokens by ~80%)
+    AI_PARAMS+=("--system-prompt-file" "$SHARED_CONTEXT_FILE")
+    # Add explicit engine flag if specified in YAML
+    [[ -n "$P_ENGINE" ]] && AI_PARAMS+=("--engine" "$P_ENGINE")
     if [[ -n "$P_CMD" ]]; then
         # CLI mode: pass the raw command directly — all flags embedded in the cmd string
         AI_PARAMS+=("--cmd" "$P_CMD")
@@ -280,18 +296,18 @@ EOF
         if [[ -n "$P_CMD" ]]; then
             log_dry "Would call: bash -c \"$P_CMD\" (P_MODEL=$P_MODEL P_MAX_TOKENS=$P_MAX_TOKENS P_TEMP=$P_TEMP)"
         else
-            log_dry "Would call: AI_AGENT=$P_ENGINE ai_exec.sh ${AI_PARAMS[*]}"
+            log_dry "Would call: ai_exec.sh ${AI_PARAMS[*]}"
         fi
         echo "Dry run output for $persona: [Mocked response]" > "$RESPONSE_FILE"
     else
         # Export P_MODEL / P_TEMP / P_MAX_TOKENS so they are visible inside bash -c expansion of cmd:
         P_MODEL="$P_MODEL" P_TEMP="$P_TEMP" P_TOP_K="$P_TOP_K" P_MAX_TOKENS="$P_MAX_TOKENS" \
-          AI_AGENT="${P_ENGINE:-claude}" bash "$AI_EXEC_SH" "${AI_PARAMS[@]}" > "$RESPONSE_FILE"
+          bash "$AI_EXEC_SH" "${AI_PARAMS[@]}" > "$RESPONSE_FILE"
         log_ok "$persona completed review."
     fi
 done
 
-log_step "Step 2 / 3 — Summarizing via Chairperson"
+log_step "Step 2 / 5 — Summarizing via Chairperson"
 
 # Extract Chairperson details using inline Python YAML
 eval "$(python3 -c "
@@ -316,7 +332,8 @@ print(f\"C_API_KEY_ENV={shlex.quote(str(agent.get('api_key_env') or ''))}\")
 PROMPT_FILE="$RUN_DIR/prompt_chairperson.txt"
 RESPONSE_FILE="$RUN_DIR/final_body.md"
 
-cat "$SHARED_CONTEXT_FILE" > "$PROMPT_FILE"
+# Create empty prompt file (shared context passed via --system-prompt-file for API caching)
+> "$PROMPT_FILE"
 
 # Inject Chairperson Domain Knowledge (Skill File)
 SKILL_FILE="$C_SKILL"
@@ -358,7 +375,7 @@ $(cat "$TEMPLATE_FILE")
 
 > **Target Document**: $doc_id (Version $version)
 > **Audit Date**: $current_date
-> **Board Configuration**: project_experts.yaml
+> **Board Configuration**: review.yaml
 
 ## 1. Executive Summary
 *   **Consensus Recommendation**: (Proceed / Remediation Required / Fundamental Redesign)
@@ -371,14 +388,18 @@ if [[ "${DRY_RUN:-false}" == "true" ]]; then
     if [[ -n "$C_CMD" ]]; then
         log_dry "Would call: bash -c \"$C_CMD\" < $PROMPT_FILE"
     else
-        log_dry "Would call: AI_AGENT=$C_ENGINE ai_exec.sh $PROMPT_FILE"
+        log_dry "Would call: ai_exec.sh --engine $C_ENGINE $PROMPT_FILE"
     fi
     echo "# Expert Board Audit Report: $doc_id" > "$RESPONSE_FILE"
     echo "Dry run output for Chairperson: [Mocked synthesis]" >> "$RESPONSE_FILE"
 else
     log_info "Summoning chairperson..."
-    
+
     C_PARAMS=("$PROMPT_FILE")
+    # Add shared context as system prompt for API caching
+    C_PARAMS+=("--system-prompt-file" "$SHARED_CONTEXT_FILE")
+    # Add explicit engine flag if specified in YAML
+    [[ -n "$C_ENGINE" ]] && C_PARAMS+=("--engine" "$C_ENGINE")
     if [[ -n "$C_CMD" ]]; then
         C_PARAMS+=("--cmd" "$C_CMD")
     else
@@ -392,11 +413,156 @@ else
 
     # Export C_ vars so they are visible for bash -c expansion in cmd:
     P_MODEL="$C_MODEL" P_TEMP="$C_TEMP" P_TOP_K="$C_TOP_K" P_MAX_TOKENS="$C_MAX_TOKENS" \
-      AI_AGENT="${C_ENGINE:-claude}" bash "$AI_EXEC_SH" "${C_PARAMS[@]}" > "$RESPONSE_FILE"
+      bash "$AI_EXEC_SH" "${C_PARAMS[@]}" > "$RESPONSE_FILE"
     log_ok "Chairperson synthesis complete."
 fi
 
-log_step "Step 3 / 3 — Assembling final audit report"
+log_step "Step 3 / 5 — Judge validation of synthesis"
+
+# Extract Judge details using inline Python YAML
+eval "$(python3 -c "
+import yaml, sys, shlex
+with open(sys.argv[1], 'r') as f:
+    d = yaml.safe_load(f)
+j = d.get('judge', {})
+print(f\"J_NAME={shlex.quote(str(j.get('name', '')))}\")
+print(f\"J_PROMPT={shlex.quote(str(j.get('prompt', '')))}\")
+agent = j.get('agent', {})
+print(f\"J_CMD={shlex.quote(str(agent.get('cmd') or ''))}\")
+print(f\"J_ENGINE={shlex.quote(str(agent.get('engine') or ''))}\")
+print(f\"J_MODEL={shlex.quote(str(agent.get('model') or ''))}\")
+print(f\"J_TEMP={shlex.quote(str(agent.get('temperature') or ''))}\")
+print(f\"J_TOP_K={shlex.quote(str(agent.get('top_k') or ''))}\")
+print(f\"J_MAX_TOKENS={shlex.quote(str(agent.get('max_tokens') or ''))}\")
+print(f\"J_API_BASE={shlex.quote(str(agent.get('api_base') or ''))}\")
+print(f\"J_API_KEY_ENV={shlex.quote(str(agent.get('api_key_env') or ''))}\")
+" "$EXPERTS_YAML")"
+
+JUDGE_PROMPT_FILE="$RUN_DIR/prompt_judge.txt"
+JUDGE_RESPONSE_FILE="$RUN_DIR/response_judge.txt"
+
+# Only run Judge if configured in YAML
+if [[ -n "$J_NAME" ]]; then
+    cat << EOF > "$JUDGE_PROMPT_FILE"
+$J_PROMPT
+
+=== RAW EXPERT REPORTS ===
+$(for p in "${PERSONAS[@]}"; do echo "--- Report from $p ---"; cat "$RUN_DIR/response_$p.txt" 2>/dev/null || echo "[No response]"; echo ""; done)
+=== END RAW EXPERT REPORTS ===
+
+=== CHAIRPERSON'S SYNTHESIS ===
+$(cat "$RESPONSE_FILE")
+=== END CHAIRPERSON'S SYNTHESIS ===
+
+Validate the synthesis against the raw expert reports and provide your verdict.
+EOF
+
+    if [[ "${DRY_RUN:-false}" == "true" ]]; then
+        log_dry "Would call Judge to validate synthesis"
+        echo "Verdict: PASS (dry run)" > "$JUDGE_RESPONSE_FILE"
+    else
+        log_info "Summoning judge..."
+
+        J_PARAMS=("$JUDGE_PROMPT_FILE")
+        # Add shared context so Judge can verify claims against the actual document
+        J_PARAMS+=("--system-prompt-file" "$SHARED_CONTEXT_FILE")
+        # Add explicit engine flag if specified in YAML
+        [[ -n "$J_ENGINE" ]] && J_PARAMS+=("--engine" "$J_ENGINE")
+        if [[ -n "$J_CMD" ]]; then
+            J_PARAMS+=("--cmd" "$J_CMD")
+        else
+            [[ -n "$J_MODEL" ]]       && J_PARAMS+=("--model"       "$J_MODEL")
+            [[ -n "$J_TEMP" ]]        && J_PARAMS+=("--temperature" "$J_TEMP")
+            [[ -n "$J_TOP_K" ]]       && J_PARAMS+=("--top-k"       "$J_TOP_K")
+            [[ -n "$J_MAX_TOKENS" ]]  && J_PARAMS+=("--max-tokens"  "$J_MAX_TOKENS")
+            [[ -n "$J_API_BASE" ]]    && J_PARAMS+=("--api-base"    "$J_API_BASE")
+            [[ -n "$J_API_KEY_ENV" ]] && J_PARAMS+=("--api-key-env" "$J_API_KEY_ENV")
+        fi
+
+        P_MODEL="$J_MODEL" P_TEMP="$J_TEMP" P_TOP_K="$J_TOP_K" P_MAX_TOKENS="$J_MAX_TOKENS" \
+          bash "$AI_EXEC_SH" "${J_PARAMS[@]}" > "$JUDGE_RESPONSE_FILE"
+        log_ok "Judge validation complete."
+    fi
+
+    # Check if revision is required
+    if grep -qi "REVISION_REQUIRED" "$JUDGE_RESPONSE_FILE"; then
+        log_step "Step 4 / 5 — Editor applying fixes from Judge"
+
+        # Extract Editor details using inline Python YAML
+        eval "$(python3 -c "
+import yaml, sys, shlex
+with open(sys.argv[1], 'r') as f:
+    d = yaml.safe_load(f)
+e = d.get('editor', {})
+print(f\"E_NAME={shlex.quote(str(e.get('name', '')))}\")
+print(f\"E_PROMPT={shlex.quote(str(e.get('prompt', '')))}\")
+agent = e.get('agent', {})
+print(f\"E_CMD={shlex.quote(str(agent.get('cmd') or ''))}\")
+print(f\"E_ENGINE={shlex.quote(str(agent.get('engine') or ''))}\")
+print(f\"E_MODEL={shlex.quote(str(agent.get('model') or ''))}\")
+print(f\"E_TEMP={shlex.quote(str(agent.get('temperature') or ''))}\")
+print(f\"E_TOP_K={shlex.quote(str(agent.get('top_k') or ''))}\")
+print(f\"E_MAX_TOKENS={shlex.quote(str(agent.get('max_tokens') or ''))}\")
+print(f\"E_API_BASE={shlex.quote(str(agent.get('api_base') or ''))}\")
+print(f\"E_API_KEY_ENV={shlex.quote(str(agent.get('api_key_env') or ''))}\")
+" "$EXPERTS_YAML")"
+
+        EDITOR_PROMPT_FILE="$RUN_DIR/prompt_editor.txt"
+        EDITOR_RESPONSE_FILE="$RUN_DIR/response_editor.txt"
+
+        cat << EOF > "$EDITOR_PROMPT_FILE"
+$E_PROMPT
+
+=== ORIGINAL CHAIRPERSON SYNTHESIS ===
+$(cat "$RESPONSE_FILE")
+=== END ORIGINAL SYNTHESIS ===
+
+=== JUDGE'S CRITIQUE ===
+$(cat "$JUDGE_RESPONSE_FILE")
+=== END JUDGE'S CRITIQUE ===
+
+=== RAW EXPERT REPORTS (for reference) ===
+$(for p in "${PERSONAS[@]}"; do echo "--- Report from $p ---"; cat "$RUN_DIR/response_$p.txt" 2>/dev/null || echo "[No response]"; echo ""; done)
+=== END RAW EXPERT REPORTS ===
+
+Apply all fixes and output the COMPLETE corrected PERSONA_REVIEW_REPORT.
+EOF
+
+        if [[ "${DRY_RUN:-false}" == "true" ]]; then
+            log_dry "Would call Editor to apply fixes"
+            cp "$RESPONSE_FILE" "$EDITOR_RESPONSE_FILE"
+        else
+            log_info "Summoning editor..."
+
+            E_PARAMS=("$EDITOR_PROMPT_FILE")
+            # Add explicit engine flag if specified in YAML
+            [[ -n "$E_ENGINE" ]] && E_PARAMS+=("--engine" "$E_ENGINE")
+            if [[ -n "$E_CMD" ]]; then
+                E_PARAMS+=("--cmd" "$E_CMD")
+            else
+                [[ -n "$E_MODEL" ]]       && E_PARAMS+=("--model"       "$E_MODEL")
+                [[ -n "$E_TEMP" ]]        && E_PARAMS+=("--temperature" "$E_TEMP")
+                [[ -n "$E_TOP_K" ]]       && E_PARAMS+=("--top-k"       "$E_TOP_K")
+                [[ -n "$E_MAX_TOKENS" ]]  && E_PARAMS+=("--max-tokens"  "$E_MAX_TOKENS")
+                [[ -n "$E_API_BASE" ]]    && E_PARAMS+=("--api-base"    "$E_API_BASE")
+                [[ -n "$E_API_KEY_ENV" ]] && E_PARAMS+=("--api-key-env" "$E_API_KEY_ENV")
+            fi
+
+            P_MODEL="$E_MODEL" P_TEMP="$E_TEMP" P_TOP_K="$E_TOP_K" P_MAX_TOKENS="$E_MAX_TOKENS" \
+              bash "$AI_EXEC_SH" "${E_PARAMS[@]}" > "$EDITOR_RESPONSE_FILE"
+            log_ok "Editor fixes applied."
+        fi
+
+        # Use editor's output as final body
+        RESPONSE_FILE="$EDITOR_RESPONSE_FILE"
+    else
+        log_ok "Judge verdict: PASS — no revision needed."
+    fi
+else
+    log_warn "No judge configured in YAML — skipping validation step."
+fi
+
+log_step "Step 5 / 5 — Assembling final audit report"
 
 if [[ "${DRY_RUN:-false}" == "true" ]]; then
     log_dry "Would assemble $OUTPUT_FILE from template and chairperson response."

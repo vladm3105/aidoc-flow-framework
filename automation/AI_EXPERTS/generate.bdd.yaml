@@ -1,11 +1,23 @@
 # Expert Generation Board: Behavior-Driven Development (BDD) — Layer 4
+# Team: QA Lead (lead), Tech Lead, Product Owner
+# Focus: Complete BDD/Gherkin specification generation with multi-persona drafting
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
+#
+# IMPORTANT: Judge and Chairperson/Editor MUST use different models to ensure
+# impartial evaluation. The Judge cannot evaluate work from the same model.
+
 personas:
   qa_lead:
     name: "The QA Lead"
     skill_file: "qa_lead.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.3
       max_tokens: 5000
     prompt: |-
@@ -18,10 +30,12 @@ personas:
     name: "The Tech Lead"
     skill_file: "tech_lead.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "litellm"
+      model: "gemini-2.5-pro"
       temperature: 0.2
       max_tokens: 4000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are the Tech Lead generating a BDD specification.
       Your role: Draft the edge cases, negative test scenarios, and technical constraint validation.
@@ -31,8 +45,9 @@ personas:
     name: "The Product Owner"
     skill_file: "product_owner.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 3000
     prompt: |-
@@ -43,12 +58,15 @@ personas:
 chairperson:
   name: "The Board Chairperson (BDD Assembler)"
   agent:
-    engine: "claude"
-    model: "claude-3-7-sonnet"
+    # Chairperson uses GPT-4o - Judge MUST use different model (Claude)
+    engine: "litellm"
+    model: "gpt-4o"
     temperature: 0.2
     max_tokens: 6000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
-    You are the Chairperson of the BDD Generation Board. 
+    You are the Chairperson of the BDD Generation Board.
     Your role is to act as the Assembler.
     Take the drafted scenarios from the expert personas and seamlessly assemble them into a COMPLETE Version 1 Markdown document using the strict Gherkin/BDD framework template.
     You MUST perfectly adhere to the exact section structure rules in the Shared Context.
@@ -56,8 +74,10 @@ chairperson:
 judge:
   name: "The Framework Judge"
   agent:
-    engine: "litellm"
-    model: "gpt-4o"
+    # Judge uses Claude - different from Chairperson (GPT-4o) for impartial evaluation
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
     temperature: 0.1
     max_tokens: 3000
   prompt: |-
@@ -69,10 +89,13 @@ judge:
 editor:
   name: "The Board Chairperson (BDD Editor)"
   agent:
-    engine: "claude"
-    model: "claude-3-7-sonnet"
+    # Editor uses GPT-4o (same as Chairperson) - applies fixes from Judge's critique
+    engine: "litellm"
+    model: "gpt-4o"
     temperature: 0.2
     max_tokens: 6000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
     You are the Chairperson of the BDD Generation Board acting as the Final Editor.
     You previously created a V1 Draft of a BDD document. Our LLM Judge has reviewed your draft and provided a critique.

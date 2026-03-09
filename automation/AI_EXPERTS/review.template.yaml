@@ -1,12 +1,18 @@
 # Project-Specific AI Expert Board Configuration
-# Copy this file to `docs/AI_EXPERTS/project_experts.yaml` in your project and customize explicitly for your domain.
+# Copy this file to `docs/AI_EXPERTS/review.yaml` in your project and customize explicitly for your domain.
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
 
 personas:
   business_analyst:
     name: "The Business Analyst"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.4
       max_tokens: 4000
     prompt: |-
@@ -20,8 +26,9 @@ personas:
 
   architect:
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.1
       max_tokens: 4000
     prompt: |-
@@ -36,12 +43,11 @@ personas:
   auditor:
     name: "The Compliance & Security Auditor"
     agent:
-      engine: "litellm"
-      model: "gpt-4o"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.1
       max_tokens: 4000
-      api_key_env: "LITELLM_MASTER_KEY"
-      api_base: "http://0.0.0.0:4000/v1"
     prompt: |-
       Review the following technical document strictly from a compliance and security perspective.
       Focus heavily on vulnerabilities, regulatory breaches, data privacy risks, and RBAC (e.g., SOC2, HIPAA, PCI-DSS compliance).
@@ -54,12 +60,11 @@ personas:
   tech_lead:
     name: "The Tech Lead"
     agent:
-      engine: "litellm"
-      model: "gemini-2.5-pro"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 4000
-      api_base: "http://0.0.0.0:4000/v1"
-      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       Review the following technical document strictly from a deep technical implementation perspective.
       Focus heavily on the project's defining core technology (e.g., AI Agent orchestration, Blockchain smart contracts, IoT telemetry).
@@ -72,12 +77,11 @@ personas:
   product_owner:
     name: "The Product Owner"
     agent:
-      engine: "litellm"
-      model: "claude-3-5-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.5
       max_tokens: 4000
-      api_base: "http://0.0.0.0:4000/v1"
-      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       Review the following technical document strictly from a product and business ROI perspective.
       Focus heavily on user value, feature scope creep, go-to-market speed, and direct alignment with stated business goals.
@@ -90,8 +94,9 @@ personas:
   strategist:
     name: "The Product Strategist"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.3
       max_tokens: 4000
     prompt: |-
@@ -106,8 +111,9 @@ personas:
   qa_lead:
     name: "The Devil's Advocate (Edge-Cases)"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 4000
     prompt: |-
@@ -122,8 +128,9 @@ personas:
   operator:
     name: "The DevOps/SRE Lead"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.1
       max_tokens: 4000
     prompt: |-
@@ -138,8 +145,9 @@ personas:
   integration_expert:
     name: "The Integration & Dependencies Lead"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.1
       max_tokens: 4000
     prompt: |-
@@ -154,8 +162,9 @@ personas:
 chairperson:
   name: "The Board Chairperson"
   agent:
-    cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-    model: "claude-3-7-sonnet"
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
     temperature: 0.3
     max_tokens: 8000
   prompt: |-

@@ -1,11 +1,23 @@
 # Expert Generation Board: Business Requirements Document (BRD) — Layer 1
+# Team: Business Analyst (lead), Product Owner, Architect, QA Lead
+# Focus: Complete BRD generation with multi-persona drafting and assembly
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
+#
+# IMPORTANT: Judge and Chairperson/Editor MUST use different models to ensure
+# impartial evaluation. The Judge cannot evaluate work from the same model.
+
 personas:
   business_analyst:
     name: "The Business Analyst"
     skill_file: "business_analyst.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.3
       max_tokens: 5000
     prompt: |-
@@ -18,10 +30,12 @@ personas:
     name: "The Product Owner"
     skill_file: "product_owner.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "litellm"
+      model: "gpt-4o"
       temperature: 0.5
       max_tokens: 4000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are the Product Owner generating a BRD.
       Your role: Draft the Target Audience & User Personas, User Stories, and Success Metrics (KPIs).
@@ -32,8 +46,9 @@ personas:
     name: "The Platform Architect"
     skill_file: "architect.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 3000
     prompt: |-
@@ -45,8 +60,9 @@ personas:
     name: "The QA Lead"
     skill_file: "qa_lead.md"
     agent:
-      engine: "claude"
-      model: "claude-3-7-sonnet"
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 3000
     prompt: |-
@@ -57,12 +73,14 @@ personas:
 chairperson:
   name: "The Board Chairperson (BRD Assembler)"
   agent:
-    engine: "claude"
-    model: "claude-3-7-sonnet"
+    # Chairperson uses Claude - Judge MUST use different model (GPT-4o)
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
     temperature: 0.2
     max_tokens: 8000
   prompt: |-
-    You are the Chairperson of the BRD Generation Board. 
+    You are the Chairperson of the BRD Generation Board.
     Your role is to act as the Assembler.
     Take the drafted sections from the expert personas and seamlessly assemble them into a COMPLETE Version 1 Markdown document.
     You MUST perfectly adhere to the exact 18-section template structure and naming conventions specified in the Shared Context.
@@ -70,10 +88,13 @@ chairperson:
 judge:
   name: "The Framework Judge"
   agent:
+    # Judge uses GPT-4o - different from Chairperson (Claude) for impartial evaluation
     engine: "litellm"
     model: "gpt-4o"
     temperature: 0.1
     max_tokens: 4000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
     You are an impartial Judge evaluating a V1 Draft of a BRD.
     Your sole focus is strict framework compliance. Check the document against the VALIDATION_STANDARDS and the doc-brd SKILL rules.
@@ -83,8 +104,10 @@ judge:
 editor:
   name: "The Board Chairperson (BRD Editor)"
   agent:
-    engine: "claude"
-    model: "claude-3-7-sonnet"
+    # Editor uses Claude (same as Chairperson) - applies fixes from Judge's critique
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
     temperature: 0.2
     max_tokens: 8000
   prompt: |-

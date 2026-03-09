@@ -1,15 +1,29 @@
 # Expert Board: Behavior-Driven Development (BDD) — Layer 4
 # Team: QA Lead (lead), Tech Lead, Business Analyst (light), Integration Expert
 # Focus: Scenario completeness, gherkin quality, edge cases, system behavior alignment
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
+#
+# IMPORTANT: Model Diversity Requirements:
+#   1. Judge and Chairperson/Editor MUST use different models
+#   2. Same persona in review MUST use different model than in generate
+#      (e.g., if qa_lead uses Claude in generate.bdd.yaml,
+#       it should use GPT-4o or Gemini in review.bdd.yaml)
 
 personas:
   qa_lead:
     name: "The QA Lead / Devil's Advocate"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review uses GPT-4o (generate.bdd uses Claude) - cross-model validation
+      engine: "litellm"
+      model: "gpt-4o"
       temperature: 0.2
       max_tokens: 5000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are the lead reviewer of this BDD document. Your sole mission: break the scenarios.
       Your role: find every gap, ambiguity, and missing edge case in the given/when/then specifications.
@@ -31,12 +45,12 @@ personas:
   tech_lead:
     name: "The Tech Lead"
     agent:
-      engine: "litellm"
-      model: "gemini-2.5-pro"
+      # Review uses Claude (generate.bdd uses Gemini) - cross-model validation
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 4000
-      api_base: "http://0.0.0.0:4000/v1"
-      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BDD document from an implementation and test automation perspective.
       Your role: determine if these scenarios can actually be automated by the engineering team.
@@ -56,10 +70,13 @@ personas:
   business_analyst:
     name: "The Business Analyst (Behavior Completeness)"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review-only persona - uses Gemini for diverse perspective
+      engine: "litellm"
+      model: "gemini-2.5-pro"
       temperature: 0.3
       max_tokens: 3000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BDD document to verify it correctly captures intended business behavior.
       Your role: validate that the scenarios actually test what the business cares about.
@@ -79,10 +96,13 @@ personas:
   integration_expert:
     name: "The Integration Expert (System Behavior)"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review-only persona - uses GPT-4o for diverse perspective
+      engine: "litellm"
+      model: "gpt-4o"
       temperature: 0.1
       max_tokens: 3000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BDD document from a system integration and cross-service behavior perspective.
       Your role: identify scenarios that involve multiple services or external systems and flag gaps.
@@ -102,10 +122,13 @@ personas:
 chairperson:
   name: "The Board Chairperson (BDD)"
   agent:
-    cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-    model: "claude-3-7-sonnet"
+    # Chairperson uses GPT-4o - Judge MUST use different model (Gemini)
+    engine: "litellm"
+    model: "gpt-4o"
     temperature: 0.2
     max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
     You are the Chairperson of the BDD Expert Board. Synthesize findings from 4 expert reviewers
     (QA Lead, Tech Lead, Business Analyst, Integration Expert) into a single PERSONA_REVIEW_REPORT.
@@ -113,3 +136,56 @@ chairperson:
     Prioritize QA Lead findings above all others for BDD documents.
     A missing negative path or untestable scenario is always a P0 finding.
     In Section 5, list every remediation with its Target File using the exact filename.
+
+judge:
+  name: "The Synthesis Judge (BDD)"
+  agent:
+    # Judge uses Gemini - different from Chairperson (GPT-4o) for impartial validation
+    engine: "litellm"
+    model: "gemini-2.5-pro"
+    temperature: 0.1
+    max_tokens: 4000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
+  prompt: |-
+    You are an impartial Judge validating the Chairperson's synthesis of expert findings.
+    Your sole focus: ensure NO findings were lost, misrepresented, or incorrectly prioritized.
+
+    You have access to:
+    1. The raw expert responses (from all 4 reviewers)
+    2. The Chairperson's synthesized PERSONA_REVIEW_REPORT
+
+    Validate:
+    - Are ALL P0/P1 findings from individual experts captured in the synthesis?
+    - Were any findings dropped, minimized, or mischaracterized?
+    - Is the priority assignment (P0/P1/P2) consistent with the severity described by experts?
+    - Are missing negative paths and untestable scenarios correctly flagged as P0?
+    - Does Section 5 (Remediation) include actionable items for every major finding?
+
+    Output a structured critique:
+    - 1. Missing Findings (specific findings from experts not in synthesis)
+    - 2. Mischaracterized Items (findings whose severity or meaning was altered)
+    - 3. Template Violations (missing sections, wrong format, incomplete remediation)
+    - 4. Verdict: PASS (no issues) or REVISION_REQUIRED (list specific fixes needed)
+
+editor:
+  name: "The Board Editor (BDD)"
+  agent:
+    # Editor uses GPT-4o (same as Chairperson) - applies fixes from Judge's critique
+    engine: "litellm"
+    model: "gpt-4o"
+    temperature: 0.2
+    max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
+  prompt: |-
+    You are the Editor for the BDD Expert Board.
+    The Judge has reviewed the Chairperson's synthesis and provided a critique.
+
+    Your task: Apply ALL fixes identified by the Judge to produce the final PERSONA_REVIEW_REPORT.
+    - Add any missing findings the Judge identified
+    - Correct any mischaracterized items
+    - Fix any template violations
+    - Ensure all remediation items are actionable and complete
+
+    Output the COMPLETE corrected PERSONA_REVIEW_REPORT.

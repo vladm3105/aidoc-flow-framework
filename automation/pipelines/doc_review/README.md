@@ -4,6 +4,35 @@ The **Doc Review Pipeline** is the core testing logic for the 15-layer `docs_flo
 
 It is located at: `/opt/data/docs_flow_framework/automation/pipelines/doc_review/run_review.sh`
 
+## Prerequisites
+
+### Environment Variables
+
+The pipeline requires API keys for the AI agents. These are typically stored in a `.env` file in your project root.
+
+**Required variables** (depending on your `review.*.yaml` configuration):
+
+| Variable | Used By | Description |
+|----------|---------|-------------|
+| `OPENAI_API_KEY` | LiteLLM proxy | OpenAI API key for GPT-4o models |
+| `LITELLM_MASTER_KEY` | LiteLLM proxy | Master key for LiteLLM proxy server |
+
+**IMPORTANT**: The script does NOT automatically load `.env` files. You must source them before running:
+
+```bash
+# Source .env before running the pipeline
+source .env && bash automation/pipelines/doc_review/run_review.sh <path/to/document.md>
+
+# Or use set -a to export all variables
+set -a && source .env && set +a && bash automation/pipelines/doc_review/run_review.sh <path/to/document.md>
+```
+
+**Tip**: Add this to your shell profile (`.bashrc` or `.zshrc`) for automatic loading:
+```bash
+# Auto-load .env when entering project directories
+cd() { builtin cd "$@" && [[ -f .env ]] && set -a && source .env && set +a; }
+```
+
 ## 1. Review (`run_review.sh`)
 
 Summons the complete 7-persona AI Expert Board to blindly audit a system design document, score it, and synthesize a formal Audit Report.
@@ -18,7 +47,7 @@ bash automation/pipelines/doc_review/run_review.sh docs/01_BRD/BRD-01_platform_a
 ```
 
 ### What it does:
-1. Loads the expert definitions from `project_experts.yaml`.
+1. Loads the expert definitions from `review.yaml`.
 2. Asks each of the 7 personas (Architect, QA Lead, Strategist, etc.) to review the document in isolation.
 3. Passes all 7 conflicting reports to the AI Chairperson.
 4. The Chairperson synthesizes a final `*_PERSONA_REVIEW_REPORT.md` saved in the same directory as the target document.

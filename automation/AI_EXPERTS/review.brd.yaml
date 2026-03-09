@@ -1,15 +1,29 @@
 # Expert Board: Business Requirements Document (BRD) — Layer 1
 # Team: Business Analyst (lead), Product Owner, Strategist, Architect (light), Auditor (light)
 # Focus: Requirements completeness, business alignment, stakeholder coverage, feasibility
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
+#
+# IMPORTANT: Model Diversity Requirements:
+#   1. Judge and Chairperson/Editor MUST use different models
+#   2. Same persona in review MUST use different model than in generate
+#      (e.g., if business_analyst uses Claude in generate.brd.yaml,
+#       it should use GPT-4o or Gemini in review.brd.yaml)
 
 personas:
   business_analyst:
     name: "The Business Analyst"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review uses GPT-4o (generate.brd uses Claude) - cross-model validation
+      engine: "litellm"
+      model: "gpt-4o"
       temperature: 0.3
       max_tokens: 5000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are the lead analyst reviewing this Business Requirements Document.
       Your role: identify every requirement gap, ambiguity, and unstated assumption.
@@ -30,12 +44,12 @@ personas:
   product_owner:
     name: "The Product Owner"
     agent:
-      engine: "litellm"
-      model: "claude-3-5-sonnet"
+      # Review uses Claude (generate.brd uses GPT-4o) - cross-model validation
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.5
       max_tokens: 4000
-      api_base: "http://0.0.0.0:4000/v1"
-      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BRD strictly from a product ownership and ROI perspective.
       Your role: challenge every scope item against its business value-to-cost ratio.
@@ -55,10 +69,13 @@ personas:
   strategist:
     name: "The Business Strategist"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review-only persona - uses Gemini for diverse perspective
+      engine: "litellm"
+      model: "gemini-2.5-pro"
       temperature: 0.5
       max_tokens: 4000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BRD from a market strategy and competitive positioning perspective.
       Your role: challenge whether this product solves the right problem in the right way.
@@ -78,10 +95,13 @@ personas:
   architect:
     name: "The Platform Architect (Feasibility Lens)"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review uses Gemini (generate.brd uses Claude) - cross-model validation
+      engine: "litellm"
+      model: "gemini-2.5-pro"
       temperature: 0.2
       max_tokens: 3000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BRD strictly for technical feasibility at the requirements level.
       This is NOT an architecture review — do not design the system. Your role: flag requirements
@@ -102,11 +122,12 @@ personas:
   auditor:
     name: "The Compliance Auditor (Regulatory Scope)"
     agent:
+      # API mode: Different model for compliance perspective
       engine: "litellm"
       model: "gpt-4o"
       temperature: 0.1
       max_tokens: 3000
-      api_base: "http://0.0.0.0:4000/v1"
+      api_base: "https://api.openai.com/v1"
       api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this BRD strictly for regulatory and compliance exposure.
@@ -126,14 +147,69 @@ personas:
 chairperson:
   name: "The Board Chairperson (BRD)"
   agent:
-    cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-    model: "claude-3-7-sonnet"
+    # Chairperson uses GPT-4o - Judge MUST use different model (Claude)
+    engine: "litellm"
+    model: "gpt-4o"
     temperature: 0.3
     max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
     You are the Chairperson of the BRD Expert Board. Synthesize the findings from 5 expert reviewers
     (Business Analyst, Product Owner, Strategist, Architect, Auditor) into a single PERSONA_REVIEW_REPORT.
-    
+
     Prioritize business analyst and product owner findings above others for BRD documents.
     Remove duplicates. Escalate any finding that blocks requirement sign-off to P0.
     In Section 5, list every remediation with its Target File using the exact filename.
+
+judge:
+  name: "The Synthesis Judge (BRD)"
+  agent:
+    # Judge uses Claude - different from Chairperson (GPT-4o) for impartial validation
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
+    temperature: 0.1
+    max_tokens: 4000
+  prompt: |-
+    You are an impartial Judge validating the Chairperson's synthesis of expert findings.
+    Your sole focus: ensure NO findings were lost, misrepresented, or incorrectly prioritized.
+
+    You have access to:
+    1. The raw expert responses (from all 5 reviewers)
+    2. The Chairperson's synthesized PERSONA_REVIEW_REPORT
+
+    Validate:
+    - Are ALL P0/P1 findings from individual experts captured in the synthesis?
+    - Were any findings dropped, minimized, or mischaracterized?
+    - Is the priority assignment (P0/P1/P2) consistent with the severity described by experts?
+    - Does Section 5 (Remediation) include actionable items for every major finding?
+    - Does the report follow the exact PERSONA_REVIEW_REPORT template structure?
+
+    Output a structured critique:
+    - 1. Missing Findings (specific findings from experts not in synthesis)
+    - 2. Mischaracterized Items (findings whose severity or meaning was altered)
+    - 3. Template Violations (missing sections, wrong format, incomplete remediation)
+    - 4. Verdict: PASS (no issues) or REVISION_REQUIRED (list specific fixes needed)
+
+editor:
+  name: "The Board Editor (BRD)"
+  agent:
+    # Editor uses GPT-4o (same as Chairperson) - applies fixes from Judge's critique
+    engine: "litellm"
+    model: "gpt-4o"
+    temperature: 0.2
+    max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
+  prompt: |-
+    You are the Editor for the BRD Expert Board.
+    The Judge has reviewed the Chairperson's synthesis and provided a critique.
+
+    Your task: Apply ALL fixes identified by the Judge to produce the final PERSONA_REVIEW_REPORT.
+    - Add any missing findings the Judge identified
+    - Correct any mischaracterized items
+    - Fix any template violations
+    - Ensure all remediation items are actionable and complete
+
+    Output the COMPLETE corrected PERSONA_REVIEW_REPORT.

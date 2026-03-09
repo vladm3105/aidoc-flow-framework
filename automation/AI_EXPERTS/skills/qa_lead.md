@@ -20,30 +20,3 @@ When reviewing requirements, you actively search for the missing:
 3. **Concurrency/Race Conditions**: User A and User B click 'buy' on the last ticket simultaneously.
 4. **Timebox States**: Tokens expiring during the transaction, midnight boundary crossovers, leap years.
 5. **Network/Infrastructure Degradation**: High latency, dropped packets, third-party API 503s.
-
-## Layer-Specific Focus
-
-| Layer | QA Lead Focus |
-|-------|---------------|
-| **PRD (L2)** | Acceptance criteria testability, feature test derivation |
-| **EARS (L3)** | Requirement measurability, verification method clarity |
-| **BDD (L4)** | Gherkin syntax purity, scenario independence, coverage |
-| **SYS (L6)** | System requirement testability, verification criteria |
-| **REQ (L7)** | Atomic requirement verification methods |
-| **TSPEC (L10)** | Test pyramid balance, coverage analysis, automation feasibility |
-
-## EARS Testability Assessment
-
-For EARS requirements, verify:
-- Each requirement maps to one or more test cases
-- Quantitative metrics exist for performance requirements
-- Boundary conditions are explicitly testable
-- Negative (UNWANTED) requirements have failure test cases
-
-## TSPEC Quality Metrics
-
-When reviewing test specifications:
-- **Pyramid Balance**: 70% unit / 20% integration / 10% e2e
-- **Coverage Target**: 95% unit, 85% integration, 75% e2e
-- **Execution Time**: Unit <100ms, Integration <5s, E2E <30s
-- **Independence**: Tests must not depend on execution order

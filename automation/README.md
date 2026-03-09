@@ -2,6 +2,71 @@
 
 The `automation/` directory acts as the centralized engine for all AI-driven workflows and pipelines within the documentation flow framework.
 
+---
+
+## Document Validation Methods
+
+### Primary Method: Single-Pass Claude Opus 4.5
+
+**Status**: PREFERRED for all document validation/verification
+
+The Single-Pass Claude Opus 4.5 method is the recommended approach for validating SDD artifacts including **BRD, PRD, EARS, and ADR** documents.
+
+| Metric | Value |
+|--------|-------|
+| **Accuracy** | 100% (0 false positives) |
+| **Verification Quality** | Full document context maintained |
+| **Cost Efficiency** | 1 API call per review |
+| **Weighted Quality Score** | 87.5/100 |
+
+**How to Use**:
+```bash
+# Using Claude Code CLI with persona-based review
+claude -p "Review this BRD using 8 expert personas (Architect, Auditor, Tech Lead,
+Strategist, Devil's Advocate, Operator, Integration Lead, Product Owner).
+Check Section 18 (Appendices) before claiming any requirement is missing."
+```
+
+**Advantages**:
+- Zero false positives due to maintained context coherence
+- Better cross-reference verification (reads all sections sequentially)
+- More cost-effective (single model invocation)
+- Thorough Section 18 verification prevents false "missing" claims
+
+### Alternative Method: Multi-Model Pipeline (Backup)
+
+**Status**: BACKUP - Use when maximum adversarial coverage required
+
+The multi-model pipeline (`pipelines/doc_review/`) uses 8 specialized AI personas with a Fact-Checker, Chairperson, Judge, and Editor for synthesis.
+
+| Metric | Value |
+|--------|-------|
+| **Accuracy** | 93% (1 false positive risk) |
+| **Coverage** | Higher (more findings) |
+| **Cost** | 10+ API calls per review |
+| **Weighted Quality Score** | 84.0/100 |
+
+**When to Use Multi-Model**:
+- Pre-audit maximum coverage needed
+- Fact-Checker upgraded to Claude Opus (not GPT-4o-mini)
+- Alternative solutions section required in report
+
+**Known Limitation**: Context fragmentation between experts may cause false positives (e.g., claiming circuit breaker missing when defined in Section 5.6/10.2.1).
+
+### Method Comparison Summary
+
+| Factor | Single-Pass Opus | Multi-Model Pipeline |
+|--------|------------------|---------------------|
+| **Precision** | 100% | 93% |
+| **Coverage** | Good (11 findings) | Better (14 findings) |
+| **False Positives** | 0 | 1+ |
+| **Cost** | Low (1 call) | High (10+ calls) |
+| **Recommendation** | **PRIMARY** | Backup |
+
+> **Reference**: See `docs/01_BRD/BRD-01_platform_architecture/BRD-01_METHOD_COMPARISON_ANALYSIS.md` for detailed analysis.
+
+---
+
 ## Core Design Principles
 
 1. **Agent-Agnostic Interface**: Pipelines should never hardcode calls to `claude`, `opencode`, etc. Instead, they use `core/ai_exec.sh` which dynamically routes the text prompt to the agent specified in configuration.
@@ -45,10 +110,14 @@ automation/
 
 ## Existing Pipelines
 
-### Doc Review Pipeline (`pipelines/doc_review/`)
-Automates the mandatory review and remediation process for the "Documentation as Code" governance cycle.
-- **Review**: `run_review.sh` summons 7 AI expert personas to blindly audit a document and synthesizes a master audit report.
+### Doc Review Pipeline (`pipelines/doc_review/`) - BACKUP METHOD
+> **Note**: This multi-model pipeline is the **backup method**. For production use, prefer Single-Pass Claude Opus 4.5 (see Document Validation Methods above).
+
+Automates the mandatory review and remediation process for the "Documentation as Code" governance cycle using 8 specialized AI personas.
+- **Review**: `run_review.sh` summons 8 AI expert personas to blindly audit a document and synthesizes a master audit report.
 - **Remediate**: `run_remediate.sh` parses the audit report, auto-applies structural P0 fixes with git commits, and generates GitHub Issues for deeper architectural flaws.
+
+**Accuracy**: 93% (risk of false positives due to context fragmentation between experts)
 
 See [pipelines/doc_review/README.md](pipelines/doc_review/README.md) for detailed usage.
 

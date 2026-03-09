@@ -1,16 +1,28 @@
 # Expert Board: Product Requirements Document (PRD) — Layer 2
 # Team: Product Owner (lead), Business Analyst, UX Strategist, Tech Lead (light), Auditor (light)
 # Focus: User value, feature completeness, UX quality, technical feasibility, legal compliance
+#
+# Configuration Options (engine key required for all agents):
+#   - engine: "cmd"     - Direct CLI command via cmd key (e.g., "claude -p --model $P_MODEL")
+#   - engine: "litellm" - LiteLLM/OpenAI-compatible API with api_base and api_key_env
+# Reference: /opt/data/docs_flow_framework/automation/core/ai_exec.sh
+#
+# IMPORTANT: Model Diversity Requirements:
+#   1. Judge and Chairperson/Editor MUST use different models
+#   2. Same persona in review MUST use different model than in generate
+#      (e.g., if product_owner uses Claude in generate.prd.yaml,
+#       it should use GPT-4o or Gemini in review.prd.yaml)
 
 personas:
   product_owner:
     name: "The Product Owner"
     agent:
+      # Review uses GPT-4o (generate.prd uses Claude) - cross-model validation
       engine: "litellm"
-      model: "claude-3-5-sonnet"
+      model: "gpt-4o"
       temperature: 0.4
       max_tokens: 5000
-      api_base: "http://0.0.0.0:4000/v1"
+      api_base: "https://api.openai.com/v1"
       api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are the lead reviewer of this Product Requirements Document.
@@ -25,17 +37,20 @@ personas:
 
       You are the most important voice on this PRD board. Be very specific about what is missing.
       Output your findings in EXACTLY three sections:
-      - 1. Major Risks (unclearacceptance criteria, unprioritized features, missing user journeys)
+      - 1. Major Risks (unclear acceptance criteria, unprioritized features, missing user journeys)
       - 2. Unhandled Edge Cases (power users, error states, empty states, offline scenarios)
       - 3. Recommended Additions (specific user stories, metrics, or acceptance criteria to add)
 
   business_analyst:
     name: "The Business Analyst"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review uses Gemini (generate.prd uses Claude) - cross-model validation
+      engine: "litellm"
+      model: "gemini-2.5-pro"
       temperature: 0.3
       max_tokens: 4000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this PRD to ensure it correctly bridges business goals to product requirements.
       Your role: validate that the requirements in this PRD directly serve the stated business objectives.
@@ -55,10 +70,13 @@ personas:
   ux_strategist:
     name: "The UX Strategist"
     agent:
-      cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-      model: "claude-3-7-sonnet"
+      # Review-only persona - uses GPT-4o for diverse perspective
+      engine: "litellm"
+      model: "gpt-4o"
       temperature: 0.5
       max_tokens: 4000
+      api_base: "https://api.openai.com/v1"
+      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this PRD strictly from a user experience and product design perspective.
       Your role: identify where users will fail, get confused, or abandon the product.
@@ -79,12 +97,12 @@ personas:
   tech_lead:
     name: "The Tech Lead (Feasibility Lens)"
     agent:
-      engine: "litellm"
-      model: "gemini-2.5-pro"
+      # Review uses Claude (generate.prd uses Gemini) - cross-model validation
+      engine: "cmd"
+      cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+      model: "claude-sonnet-4-20250514"
       temperature: 0.2
       max_tokens: 3000
-      api_base: "http://0.0.0.0:4000/v1"
-      api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this PRD strictly for technical feasibility and implementation risk.
       Do NOT design the system — just flag requirements that are technically unsafe or impossible.
@@ -108,7 +126,7 @@ personas:
       model: "gpt-4o"
       temperature: 0.1
       max_tokens: 3000
-      api_base: "http://0.0.0.0:4000/v1"
+      api_base: "https://api.openai.com/v1"
       api_key_env: "LITELLM_MASTER_KEY"
     prompt: |-
       You are reviewing this PRD from a data privacy, legal compliance, and user rights perspective.
@@ -129,10 +147,13 @@ personas:
 chairperson:
   name: "The Board Chairperson (PRD)"
   agent:
-    cmd: "claude -p --model $P_MODEL --max-tokens $P_MAX_TOKENS"
-    model: "claude-3-7-sonnet"
+    # Chairperson uses Gemini - Judge MUST use different model (Claude)
+    engine: "litellm"
+    model: "gemini-2.5-pro"
     temperature: 0.3
     max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
   prompt: |-
     You are the Chairperson of the PRD Expert Board. Synthesize findings from 5 expert reviewers
     (Product Owner, Business Analyst, UX Strategist, Tech Lead, Compliance Auditor) into a PERSONA_REVIEW_REPORT.
@@ -140,3 +161,55 @@ chairperson:
     Prioritize Product Owner and UX Strategist findings above others for PRD documents.
     Any P0 acceptance criteria issues must be escalated immediately — they block the sprint.
     In Section 5, list every remediation with its Target File using the exact filename.
+
+judge:
+  name: "The Synthesis Judge (PRD)"
+  agent:
+    # Judge uses Claude - different from Chairperson (Gemini) for impartial validation
+    engine: "cmd"
+    cmd: "claude -p --model $P_MODEL --max-budget-usd 0.5"
+    model: "claude-sonnet-4-20250514"
+    temperature: 0.1
+    max_tokens: 4000
+  prompt: |-
+    You are an impartial Judge validating the Chairperson's synthesis of expert findings.
+    Your sole focus: ensure NO findings were lost, misrepresented, or incorrectly prioritized.
+
+    You have access to:
+    1. The raw expert responses (from all 5 reviewers)
+    2. The Chairperson's synthesized PERSONA_REVIEW_REPORT
+
+    Validate:
+    - Are ALL P0/P1 findings from individual experts captured in the synthesis?
+    - Were any findings dropped, minimized, or mischaracterized?
+    - Is the priority assignment (P0/P1/P2) consistent with the severity described by experts?
+    - Does Section 5 (Remediation) include actionable items for every major finding?
+    - Does the report follow the exact PERSONA_REVIEW_REPORT template structure?
+
+    Output a structured critique:
+    - 1. Missing Findings (specific findings from experts not in synthesis)
+    - 2. Mischaracterized Items (findings whose severity or meaning was altered)
+    - 3. Template Violations (missing sections, wrong format, incomplete remediation)
+    - 4. Verdict: PASS (no issues) or REVISION_REQUIRED (list specific fixes needed)
+
+editor:
+  name: "The Board Editor (PRD)"
+  agent:
+    # Editor uses Gemini (same as Chairperson) - applies fixes from Judge's critique
+    engine: "litellm"
+    model: "gemini-2.5-pro"
+    temperature: 0.2
+    max_tokens: 8000
+    api_base: "https://api.openai.com/v1"
+    api_key_env: "LITELLM_MASTER_KEY"
+  prompt: |-
+    You are the Editor for the PRD Expert Board.
+    The Judge has reviewed the Chairperson's synthesis and provided a critique.
+
+    Your task: Apply ALL fixes identified by the Judge to produce the final PERSONA_REVIEW_REPORT.
+    - Add any missing findings the Judge identified
+    - Correct any mischaracterized items
+    - Fix any template violations
+    - Ensure all remediation items are actionable and complete
+
+    Output the COMPLETE corrected PERSONA_REVIEW_REPORT.

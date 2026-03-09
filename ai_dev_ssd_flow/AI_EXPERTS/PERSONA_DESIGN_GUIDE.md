@@ -1,88 +1,289 @@
-# Persona Design Guide
+# Persona Design Guide: The 12 Archetypes
 
-To prevent the Expert Board from becoming a rubber-stamp committee, you must design distinct, adversarial personas tailored to your project. This guide shows you how to construct the `docs/AI_EXPERTS/project_experts.yaml` (or system prompts) effectively.
-
-## 1. The 8 Required Archetypes
-
-Every board must contain these 8 foundational archetypes, regardless of the project domain. When you start a new project, adapt the *Prompt* strictly to match your industry.
-
-### 🏛️ Archetype 1: The Architect (Integration & Scalability)
-*   **Role**: Evaluates system boundaries, decoupling, state management, and scalability.
-*   **Project Modification**: 
-    *   *SaaS Web App*: Focuses on microservices, database sharding, and GraphQL vs REST.
-    *   *Embedded Systems*: Focuses on memory constraints, RTOS task scheduling, and power management.
-
-### ⚖️ Archetype 2: The Auditor (Compliance & Risk)
-*   **Role**: Exclusively hunts for vulnerabilities, regulatory breaches, and data privacy risks.
-*   **Project Modification**:
-    *   *Fintech*: Focuses on PCI-DSS, SOC2, ledger immutability, and AML bounds.
-    *   *Healthcare*: Focuses on HIPAA, PHI masking, and BAA compliance.
-
-### 🧠 Archetype 3: The Tech Lead
-*   **Role**: The deep technical expert for the project's defining technology.
-*   **Project Modification**:
-    *   *AI Agent Platform*: Focuses on LLM orchestration, prompt drift, and token limits.
-    *   *Blockchain App*: Focuses on smart contract gas fees, reentrancy attacks, and consensus logic.
-
-### 📈 Archetype 8: The Product Owner
-*   **Role**: Evaluates the business value, user alignment, go-to-market speed, and ROI of the document.
-*   **Project Modification**:
-    *   *Startups*: Focuses entirely on shipping speed and cutting scope creep to ensure a faster MVP.
-    *   *Enterprise*: Focuses on mapping technical deliverables directly back to stated OKRs and user pain points.
-
-### 👔 Archetype 4: The Strategist (Value & Economics)
-*   **Role**: Evaluates operational costs, cloud economics, time-to-market trade-offs, and user friction.
-*   **Project Modification**: (Generally universally applicable, but tweak the cost focuses—e.g., AWS compute vs API ingestion costs).
-
-### 🕵️ Archetype 5: The Devil's Advocate (Edge-Cases)
-*   **Role**: Tries to break the system. Only looks at negative paths, race conditions, and unhandled errors.
-*   **Project Modification**:
-    *   *E-commerce*: Focuses on inventory race conditions during checkout and payment gateway timeouts.
-    *   *IoT Data Pipeline*: Focuses on intermittent connectivity, packet loss, and sensor drift.
-
-### 🔧 Archetype 6: The Operator (DevOps/SRE)
-*   **Role**: Evaluates observability, deployment safety, rollback mechanisms, and SLI/SLOs.
-*   **Project Modification**: Focuses on the specific CI/CD and hosting ecosystem (e.g., Kubernetes vs Serverless vs On-Prem).
-
-### 🔗 Archetype 7: The Integration Lead (Dependencies & Contracts)
-*   **Role**: Evaluates cross-module dependencies, event publishing, API consumption overlapping, and data entity ownership to prevent collisions.
-*   **Dynamic Context Fallback**: By default, this persona expects a formal `INTEGRATION_MATRIX`. If one is not found, the automation script will dynamically scan the current document layer (e.g., all other PRDs in the folder) and inject their metadata directly into the persona's context to spot redundancies.
-*   **Project Modification**:
-    *   *Microservices Apps*: Focuses on event bus schemas, API gateway routing, and synchronized databases.
-    *   *Complex Monoliths*: Focuses on namespace collisions and tight coupling between internal modules.
+The AI Expert Board uses 12 foundational archetypes, each providing a distinct perspective during document reviews. This guide explains each archetype and how to customize them for your project domain.
 
 ---
 
-## 2. Setting the "Prompt" for Auditing (Phase 3)
+## Layer-Specific Persona Selection
 
-When designing a persona for **Auditing** (`project_experts.<type>.yaml`), the most important part is the explicit **Anti-Bias constraint**. AI models are natural people-pleasers; if you don't force them to be critical, they will just agree with whatever document you feed them.
+Not all personas apply to all document types. Use this matrix to select the appropriate personas:
 
-Every auditing persona `prompt:` block MUST be adversarial.
+| Persona | BRD | PRD | EARS | BDD | ADR | SYS | REQ | CTR | SPEC | TSPEC |
+|---------|:---:|:---:|:----:|:---:|:---:|:---:|:---:|:---:|:----:|:-----:|
+| Architect | ✓ | ✓ | - | - | ✓ | ✓ | - | ✓ | ✓ | - |
+| Auditor | ✓ | ✓ | - | ✓* | ✓ | - | - | ✓ | - | - |
+| Tech Lead | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Strategist | ✓ | ✓ | - | - | ✓ | - | - | - | - | - |
+| Devil's Advocate | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Operator | ✓ | ✓ | - | ✓ | ✓ | ✓ | - | - | ✓ | ✓ |
+| Integration Lead | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Product Owner | ✓ | ✓ | - | - | - | - | - | - | - | - |
+| Business Analyst | ✓ | - | - | - | - | - | - | - | - | - |
+| QA Lead | - | ✓ | ✓ | ✓ | - | ✓ | ✓ | - | - | ✓ |
+| Requirements Specialist | - | - | ✓ | - | - | - | ✓ | - | - | - |
+| UX Strategist | - | ✓ | - | - | - | - | - | - | - | - |
 
-### Examples of Strong Auditing Directives:
+*Auditor for BDD only when compliance scenarios exist
+
+---
+
+## The 12 Archetypes
+
+### 🏛️ Archetype 1: The Architect (Integration & Scalability)
+
+**Role**: Evaluates system boundaries, decoupling, state management, and scalability.
+
+**Layers**: BRD, PRD, ADR, SYS, CTR, SPEC
+
+**Project Customization**:
+- *SaaS Web App*: Focuses on microservices, database sharding, GraphQL vs REST
+- *Embedded Systems*: Focuses on memory constraints, RTOS scheduling, power management
+- *Fintech*: Focuses on ledger immutability, transaction atomicity, multi-AZ deployment
+
+**Key Questions**:
+1. Are system boundaries clearly defined?
+2. Is the architecture scalable to 10x current load?
+3. Are there any single points of failure?
+
+---
+
+### ⚖️ Archetype 2: The Auditor (Compliance & Risk)
+
+**Role**: Hunts for vulnerabilities, regulatory breaches, and data privacy risks.
+
+**Layers**: BRD, PRD, BDD*, ADR, CTR
+
+**Project Customization**:
+- *Fintech*: PCI-DSS, SOC2, AML, ledger immutability
+- *Healthcare*: HIPAA, PHI masking, BAA compliance
+- *General*: GDPR, data residency, consent management
+
+**Key Questions**:
+1. Are all applicable regulations identified?
+2. Is data retention/deletion policy explicit?
+3. Are security incident response timelines defined?
+
+---
+
+### 🧠 Archetype 3: The Tech Lead
+
+**Role**: Universal technical expert evaluating implementation feasibility across ALL layers.
+
+**Layers**: ALL (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC)
+
+**Project Customization**:
+- *AI Agent Platform*: LLM orchestration, prompt drift, token limits
+- *Blockchain*: Smart contract gas fees, reentrancy attacks
+- *Traditional*: Database design, API patterns, caching strategies
+
+**Key Questions**:
+1. Can my team build this predictably?
+2. What is the implementation complexity (1-5)?
+3. What technical debt does this create?
+
+---
+
+### 👔 Archetype 4: The Strategist (Value & Economics)
+
+**Role**: Evaluates operational costs, time-to-market trade-offs, and economic viability.
+
+**Layers**: BRD, PRD, ADR
+
+**Project Customization**:
+- *Startup*: Focus on burn rate, MVP scope, speed-to-market
+- *Enterprise*: Focus on TCO, vendor lock-in, resource allocation
+
+**Key Questions**:
+1. Is the cost-benefit ratio justified?
+2. Are build vs. buy decisions documented?
+3. What are the economic consequences of failure?
+
+---
+
+### 🕵️ Archetype 5: The Devil's Advocate (Edge-Cases)
+
+**Role**: Tries to break the system. Focuses on negative paths, race conditions, failures.
+
+**Layers**: ALL (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC)
+
+**Project Customization**:
+- *E-commerce*: Inventory race conditions, payment timeouts
+- *IoT*: Intermittent connectivity, sensor drift
+- *Fintech*: Double-spend, partial transaction failures
+
+**Key Questions**:
+1. What if this happens twice in the same millisecond?
+2. What if the third-party API returns garbage?
+3. What is the worst-case scenario?
+
+---
+
+### 🔧 Archetype 6: The Operator (DevOps/SRE)
+
+**Role**: Evaluates observability, deployment safety, rollback mechanisms, SLIs/SLOs.
+
+**Layers**: BRD, PRD, BDD, ADR, SYS, SPEC, TSPEC
+
+**Project Customization**:
+- *Kubernetes*: Pod scheduling, resource limits, HPA
+- *Serverless*: Cold starts, timeout limits, concurrent execution
+- *On-Prem*: Hardware maintenance, disaster recovery
+
+**Key Questions**:
+1. Can we observe what's happening in production?
+2. How do we rollback a failed deployment?
+3. What are the MTTD/MTTR targets?
+
+---
+
+### 🔗 Archetype 7: The Integration Lead (Dependencies & Contracts)
+
+**Role**: Evaluates cross-module dependencies, API contracts, data ownership.
+
+**Layers**: ALL (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC)
+
+**Project Customization**:
+- *Microservices*: Event bus schemas, API gateway, schema registry
+- *Monolith*: Namespace collisions, tight coupling
+- *External APIs*: Version pinning, deprecation handling
+
+**Key Questions**:
+1. Who are the downstream consumers?
+2. Is the API version pinned or floating?
+3. What is the fallback if integration fails?
+
+---
+
+### 📈 Archetype 8: The Product Owner
+
+**Role**: Evaluates business value, user alignment, scope discipline, MVP boundaries.
+
+**Layers**: BRD, PRD
+
+**Project Customization**:
+- *Startup*: Shipping speed, scope cutting for MVP
+- *Enterprise*: OKR alignment, user pain point mapping
+
+**Key Questions**:
+1. Does each feature map to a business goal?
+2. Is MVP scope clearly bounded?
+3. What can we cut without losing value?
+
+---
+
+### 📋 Archetype 9: The Business Analyst
+
+**Role**: Evaluates requirements completeness, stakeholder coverage, acceptance criteria.
+
+**Layers**: BRD
+
+**Focus Areas**:
+- Are ALL business needs explicitly stated?
+- Are stakeholders identified with roles and authority?
+- Is each requirement testable and measurable?
+- Are implicit requirements formalized?
+
+**Key Questions**:
+1. Would two readers interpret this requirement the same way?
+2. Are acceptance criteria precise enough for "done" agreement?
+3. Are there hidden requirements in the prose?
+
+---
+
+### 🧪 Archetype 10: The QA Lead
+
+**Role**: Evaluates testability, BDD/Gherkin syntax, test coverage, automation feasibility.
+
+**Layers**: PRD, EARS, BDD, SYS, REQ, TSPEC
+
+**Focus Areas**:
+- Gherkin syntax purity (Given/When/Then)
+- Scenario independence and reusability
+- Test pyramid balance (70/20/10)
+- Edge case test coverage
+
+**Key Questions**:
+1. Can I write a test for this requirement?
+2. Is the acceptance criteria measurable?
+3. What's the automation feasibility?
+
+---
+
+### 📐 Archetype 11: The Requirements Specialist
+
+**Role**: EARS and INCOSE formal requirements expert.
+
+**Layers**: EARS, REQ
+
+**Focus Areas**:
+- EARS pattern compliance (WHEN/WHILE/WHERE/IF-THEN)
+- Atomic structure (one capability per statement)
+- Measurable/verifiable criteria
+- Traceability completeness
+
+**Anti-Patterns to Flag**:
+- Compound requirements ("shall X and shall Y")
+- Vague qualifiers ("quickly", "efficiently")
+- Implementation details in requirements
+
+**Key Questions**:
+1. Is this requirement atomic?
+2. What is the verification method (test/inspection/analysis)?
+3. Does this trace to a parent requirement?
+
+---
+
+### 🎨 Archetype 12: The UX Strategist
+
+**Role**: Evaluates user journey, accessibility, cognitive load, friction points.
+
+**Layers**: PRD
+
+**Focus Areas**:
+- Nielsen's Heuristics compliance
+- WCAG 2.1 accessibility
+- Error state handling in user flows
+- Empty state design
+
+**Anti-Patterns to Flag**:
+- Missing empty states
+- Vague error messages
+- Dark patterns
+- Excessive cognitive load
+
+**Key Questions**:
+1. How many clicks for the primary action?
+2. Can users easily undo mistakes?
+3. What happens in error states?
+
+---
+
+## Adversarial Prompt Design
+
+When designing persona prompts, enforce adversarial behavior:
 
 **Good (Adversarial)**:
-> *"You are reviewing this document from scratch. Do not assume the authors followed any prior advice. Evaluate ONLY what is written in the text. Your job is exclusively to find race conditions and edge cases that will break the system. Be deeply critical. Do not compliment the design."*
+> "You are reviewing this document from scratch. Do not assume the authors followed any prior advice. Your job is exclusively to find gaps, risks, and edge cases. Be deeply critical. Do not compliment the design."
 
 **Bad (Biased/Passive)**:
-> *"Please review this document and provide your thoughts from a QA perspective. Point out what we did well and what we can improve."*
+> "Please review this document and provide your thoughts. Point out what we did well and what we can improve."
 
-## 3. Setting the "Prompt" for Generation (Phase 2)
+## Output Format
 
-When designing a persona for **Document Generation** (`generate.<type>.yaml`), the adversarial nature is swapped for strict **Boundary and Output Enforcement**. The prompt must map the persona's framework expertise directly into drafting specific sections, explicitly instructing them NOT to write the rest of the document.
+Every persona should output findings in a consistent format:
 
-### Examples of Strong Generation Directives:
+```markdown
+## [Persona Name] Findings
 
-**Good (Strict Drafting Boundaries)**:
-> *"You are the Tech Lead generating a PRD. Your role is strictly to Draft Constraints & Assumptions, and Implementation Approach. Rely on the upstream BRD context. Output ONLY your drafted sections in markdown format."*
+### Verified Present
+- Items checked and confirmed in document
 
-**Bad (Unbounded Drafting)**:
-> *"You are a Tech Lead. Please write the PRD for this project based on the BRD provided."* (The AI will attempt to write the entire 21-section document poorly, overlapping with other experts).
+### P0 Risks (Critical)
+- Items blocking sign-off
 
-## 4. Assembling the Prompts
+### P1 Gaps (High)
+- Items requiring attention before MVP
 
-When configuring your board, structure each persona prompt inside `project_experts.yaml` as follows:
-1.  **Identity/Focus Statement**: Set the immediate context.
-2.  **Explicit Focus**: Detail exactly what domains to look for.
-3.  **Anti-Bias Directive**: Include adversarial phrasing ("Be deeply skeptical... Do not sugarcoat").
-4.  **Expected Output Format**: "Output your findings in EXACTLY three sections: Major Risks, Unhandled Edge Cases, Alternative Approach."
+### P2 Enhancements
+- Nice-to-have improvements
+```
