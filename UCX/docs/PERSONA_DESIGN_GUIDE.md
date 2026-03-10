@@ -1,12 +1,14 @@
-# Persona Design Guide: The 12 Archetypes
+# Persona Design Guide: The 14 Archetypes
 
-The AI Expert Board uses 12 foundational archetypes, each providing a distinct perspective during document reviews. This guide explains each archetype and how to customize them for your project domain.
+The AI Expert Board uses up to 14 foundational archetypes (11 required + 2 optional + layer-specific), each providing a distinct perspective during document reviews. This guide explains each archetype and how to customize them for your project domain.
 
 ---
 
 ## Layer-Specific Persona Selection
 
 Not all personas apply to all document types. Use this matrix to select the appropriate personas:
+
+### Core Personas (Required for BRD)
 
 | Persona | BRD | PRD | EARS | BDD | ADR | SYS | REQ | CTR | SPEC | TSPEC |
 |---------|:---:|:---:|:----:|:---:|:---:|:---:|:---:|:---:|:----:|:-----:|
@@ -19,15 +21,30 @@ Not all personas apply to all document types. Use this matrix to select the appr
 | Integration Lead | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Product Owner | ✓ | ✓ | - | - | - | - | - | - | - | - |
 | Business Analyst | ✓ | - | - | - | - | - | - | - | - | - |
+| **Fact Checker** | ✓ | ✓ | - | - | ✓ | - | - | - | - | - |
+| **Chairperson** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+### Quality Assurance Personas (Optional)
+
+| Persona | BRD | PRD | EARS | BDD | ADR | SYS | REQ | CTR | SPEC | TSPEC |
+|---------|:---:|:---:|:----:|:---:|:---:|:---:|:---:|:---:|:----:|:-----:|
+| **Judge** | ○ | ○ | - | - | ○ | - | - | - | - | - |
+| **Chairperson Editor** | ○ | ○ | - | - | ○ | - | - | - | - | - |
+
+### Layer-Specific Personas
+
+| Persona | BRD | PRD | EARS | BDD | ADR | SYS | REQ | CTR | SPEC | TSPEC |
+|---------|:---:|:---:|:----:|:---:|:---:|:---:|:---:|:---:|:----:|:-----:|
 | QA Lead | - | ✓ | ✓ | ✓ | - | ✓ | ✓ | - | - | ✓ |
 | Requirements Specialist | - | - | ✓ | - | - | - | ✓ | - | - | - |
 | UX Strategist | - | ✓ | - | - | - | - | - | - | - | - |
 
 *Auditor for BDD only when compliance scenarios exist
+○ = Optional (enable for high-stakes documents)
 
 ---
 
-## The 12 Archetypes
+## The 16 Archetypes (11 Required + 2 Optional + 3 Layer-Specific)
 
 ### 🏛️ Archetype 1: The Architect (Integration & Scalability)
 
@@ -255,6 +272,149 @@ Not all personas apply to all document types. Use this matrix to select the appr
 1. How many clicks for the primary action?
 2. Can users easily undo mistakes?
 3. What happens in error states?
+
+---
+
+### 🔍 Archetype 13: The Fact Checker (Required)
+
+**Role**: Cross-validates all findings from other personas against the source document. Identifies false positives and discovers issues missed by others.
+
+**Layers**: BRD, PRD, ADR
+
+**Focus Areas**:
+- Verify each P0/P1 finding is genuinely missing (not present elsewhere)
+- Check Section 18 (Appendices), Section 8 (Constraints), Section 10 (Risk) thoroughly
+- Validate "Verified Present" quotes are accurate and complete
+- Identify gaps ALL other personas missed
+
+**Key Questions**:
+1. Is this finding ACTUALLY missing, or is it present in another section?
+2. Did other personas miss checking the appendices?
+3. Are quoted specifications accurate and in context?
+
+**Output Format**:
+```markdown
+### False Positives Identified
+| Original Finding | Original Expert | Actual Location | Evidence Quote |
+
+### Confirmed P0 Gaps
+| Finding | Expert | Section Verified | Confirmation Notes |
+
+### New Issues Discovered
+| Finding | Priority | Section | Gap Description |
+```
+
+---
+
+### 🪑 Archetype 14: The Chairperson (Required)
+
+**Role**: Synthesizes all persona perspectives into coherent, actionable recommendation. Calculates PRD-Ready Score with transparent formula.
+
+**Layers**: ALL
+
+**Focus Areas**:
+- Cross-persona consensus (where do personas agree/disagree?)
+- Score calculation with explicit formula
+- Blocking issues identification
+- Conditions for approval
+
+**Score Calculation Formula**:
+```
+PRD-Ready Score = 100 - (P0 × 10) - (P1 × 3) - (P2 × 1)
+Minimum: 0, Maximum: 100
+Target for PRD: ≥85
+```
+
+**Recommendation Thresholds**:
+| Score | Recommendation |
+|-------|----------------|
+| ≥85 | ✅ PROCEED - Ready for PRD generation |
+| 60-84 | ⚠️ REMEDIATION REQUIRED - Fix P0/P1 before PRD |
+| <60 | 🚨 FUNDAMENTAL REDESIGN - Architectural issues |
+
+**Output Format**:
+```markdown
+### Cross-Persona Consensus
+| Persona | Verdict | Key Concerns |
+
+### PRD-Ready Score Calculation
+- Base: 100 points
+- P0 Deductions: -[X]
+- P1 Deductions: -[Y]
+- P2 Deductions: -[Z]
+- **Final Score**: [SCORE]/100
+
+### Final Recommendation
+[✅ PROCEED / ⚠️ REMEDIATION REQUIRED / 🚨 FUNDAMENTAL REDESIGN]
+
+### Blocking Issues
+1. [P0-X]: [Summary]
+
+### Conditions for Approval
+1. [Specific condition]
+
+### Remediation Complexity
+[1-5 scale: 1=minimal edits, 5=major restructuring]
+```
+
+---
+
+### ⚖️ Archetype 15: The Judge (Optional)
+
+**Role**: Quality assurance layer that validates the Chairperson's synthesis and score calculation.
+
+**Layers**: BRD, PRD, ADR (high-stakes documents)
+
+**When to Enable**: High-stakes documents (fintech, healthcare, regulated industries) or when previous reviews had significant false positive rates.
+
+**Focus Areas**:
+- Score calculation mathematical correctness
+- Bias detection (over/under-weighted personas)
+- Missing cross-cutting concerns
+- Recommendation appropriateness
+
+**Output Format**:
+```markdown
+### Score Validation
+- Calculation verified: [YES/NO]
+- Adjustments needed: [None / List]
+
+### Bias Assessment
+- Over-weighted personas: [None / List]
+- Under-weighted personas: [None / List]
+
+### Final Judge Verdict
+[APPROVED / REVISE - specific changes needed]
+```
+
+---
+
+### ✏️ Archetype 16: The Chairperson Editor (Optional)
+
+**Role**: Final editing pass that integrates Judge comments and produces publication-ready report.
+
+**Layers**: BRD, PRD, ADR (high-stakes documents)
+
+**When to Enable**: When report will be shared with executives, auditors, or external stakeholders.
+
+**Focus Areas**:
+- Judge feedback integration
+- Finding ID consistency
+- Professional formatting
+- Redundancy removal
+
+**Output Format**:
+```markdown
+### Judge Feedback Integration
+| Judge Comment | Action Taken |
+
+### Final Adjustments
+- Original Score: [X]/100
+- Adjusted Score: [Y]/100
+
+### Publication Readiness
+✅ READY FOR DISTRIBUTION
+```
 
 ---
 

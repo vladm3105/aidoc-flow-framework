@@ -9,6 +9,7 @@ from rich.table import Table
 
 from ucx.version import __version__
 from ucx.config.settings import UCXConfig
+from ucx.utils.logging import setup_logging, get_logger
 
 console = Console()
 
@@ -20,19 +21,109 @@ console = Console()
     type=click.Path(exists=True, path_type=Path),
     help="Configuration file path",
 )
-@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
-@click.option("--quiet", "-q", is_flag=True, help="Minimal output")
+@click.option(
+    "--mode", "-m",
+    type=click.Choice(["cli", "api"]),
+    default="cli",
+    help="AI client mode: 'cli' for CLI agents, 'api' for LiteLLM API calls",
+)
+@click.option(
+    "--cli-tool",
+    type=click.Choice(["claude", "gemini", "ollama", "aider"]),
+    default="claude",
+    help="CLI tool to use in cli mode",
+)
+@click.option(
+    "--model",
+    default=None,
+    help="Model for API mode (opus, sonnet, openai/gpt-4o, etc.)",
+)
+@click.option(
+    "--project-prompts", "-p",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+    help="Project-specific prompts directory (e.g., docs/UCX/)",
+)
+@click.option(
+    "--log-level", "-l",
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"]),
+    default=None,
+    help="Log level (default: INFO, or UCX_LOG_LEVEL env var)",
+)
+@click.option(
+    "--log-format",
+    type=click.Choice(["console", "verbose", "json"]),
+    default="console",
+    help="Log format",
+)
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output (sets log level to DEBUG)")
+@click.option("--quiet", "-q", is_flag=True, help="Minimal output (sets log level to WARNING)")
 @click.pass_context
-def cli(ctx, config: Optional[Path], verbose: bool, quiet: bool):
-    """UCX - Unified Context Framework for AI-driven document lifecycle management."""
+def cli(
+    ctx,
+    config: Optional[Path],
+    mode: str,
+    cli_tool: str,
+    model: Optional[str],
+    project_prompts: Optional[Path],
+    log_level: Optional[str],
+    log_format: str,
+    verbose: bool,
+    quiet: bool,
+):
+    """UCX - Unified Context Framework for AI-driven document lifecycle management.
+
+    \b
+    Two modes of operation:
+      cli  - Execute CLI agents (claude, gemini, ollama) via shell commands
+      api  - Direct API calls via LiteLLM (requires API key)
+
+    \b
+    Examples:
+      ucx --mode cli --cli-tool claude review brd docs/01_BRD/BRD-01/
+      ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
+      ucx -p docs/UCX/ review brd docs/01_BRD/BRD-01/  # Use project prompts
+    """
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
     ctx.obj["quiet"] = quiet
 
-    if config:
-        ctx.obj["config"] = UCXConfig.from_yaml(config)
+    # Determine log level
+    if verbose:
+        effective_log_level = "DEBUG"
+    elif quiet:
+        effective_log_level = "WARNING"
+    elif log_level:
+        effective_log_level = log_level
     else:
-        ctx.obj["config"] = UCXConfig()
+        effective_log_level = "INFO"
+
+    # Initialize logging
+    setup_logging(level=effective_log_level, format=log_format)
+    logger = get_logger("ucx.cli")
+
+    logger.debug(f"UCX v{__version__} starting")
+    logger.debug(f"Log level: {effective_log_level}, format: {log_format}")
+
+    if config:
+        base_config = UCXConfig.from_yaml(config)
+        logger.debug(f"Loaded config from {config}")
+    else:
+        base_config = UCXConfig()
+
+    # Override with CLI options
+    config_overrides = {"ai_mode": mode, "cli_tool": cli_tool}
+    if model:
+        config_overrides["model"] = model
+    if project_prompts:
+        config_overrides["project_prompt_dir"] = project_prompts
+        logger.info(f"Using project prompts from: {project_prompts}")
+
+    ctx.obj["config"] = base_config.model_copy(update=config_overrides)
+
+    logger.debug(
+        f"Config: ai_mode={mode} cli_tool={cli_tool} model={model or base_config.model}"
+    )
 
 
 @cli.command()
@@ -122,20 +213,131 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path))
 @click.option("--skip-validation", is_flag=True)
+@click.option("--multi-turn", "-m", is_flag=True, help="Use multi-turn persona review with memory")
+@click.option("--no-resume", is_flag=True, help="Start fresh (don't resume from previous session)")
+@click.option("--session-ttl", type=int, default=24, help="Session TTL in hours (default: 24)")
+@click.option("--clean-memory", is_flag=True, help="Clean up stale session memory and exit")
+@click.option("--clean-reports", is_flag=True, help="Clean up old review reports, keep only latest (or --keep-versions)")
+@click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
+@click.option("--clean-all", is_flag=True, help="Clean up both session memory and old reports")
+@click.option("--model", default=None, help="Model to use (opus, sonnet, haiku for CLI; or full model name for API)")
+@click.option("--force-single", is_flag=True, help="Force single-turn mode (bypass auto multi-turn for large docs)")
 @click.pass_context
-def review(ctx, doc_type, doc_path, output, skip_validation):
+def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resume, session_ttl, clean_memory, clean_reports, keep_versions, clean_all, model, force_single):
     """
     Review a document (UCR phase).
 
     \b
     Examples:
       ucx review brd docs/01_BRD/BRD-01
+      ucx review brd docs/01_BRD/BRD-01 --multi-turn
+      ucx review brd docs/01_BRD/BRD-01 --multi-turn --session-ttl 48
       ucx review prd docs/02_PRD/PRD-01.md -o review_report.md
+      ucx review brd docs/01_BRD/BRD-01 --clean-memory
+      ucx review brd docs/01_BRD/BRD-01 --clean-reports
+      ucx review brd docs/01_BRD/BRD-01 --clean-all
     """
+    import shutil
+    import os
     from ucx import UCRPhase
 
-    ucr = UCRPhase(ctx.obj["config"])
-    result = ucr.review(doc_type, doc_path, output_path=output, skip_validation=skip_validation)
+    doc_path = Path(doc_path)
+
+    # Handle --clean-all flag (combines --clean-memory and --clean-reports)
+    if clean_all:
+        clean_memory = True
+        clean_reports = True
+
+    # Handle --clean-memory flag
+    if clean_memory:
+        memory_dir = doc_path / ".doc_review_memory"
+        if memory_dir.exists() and memory_dir.is_dir():
+            file_count = len(list(memory_dir.iterdir()))
+            total_size = sum(f.stat().st_size for f in memory_dir.iterdir() if f.is_file())
+            shutil.rmtree(memory_dir)
+            console.print(f"[green]Cleaned up session memory:[/green] {memory_dir}")
+            console.print(f"  Removed: {file_count} files ({total_size / 1024:.1f} KB)")
+        else:
+            console.print(f"[yellow]No session memory found:[/yellow] {memory_dir}")
+
+    # Handle --clean-reports flag
+    if clean_reports:
+        # Find all UCR/UCRem report files
+        report_patterns = ["*.UCR_review_report_v*.md", "*_UCR_REVIEW*.md", "*UCR_REVIEW*.md", "*_UCRem_*.md", "*PERSONA_REVIEW*.md"]
+        all_reports = []
+
+        for pattern in report_patterns:
+            all_reports.extend(doc_path.glob(pattern))
+
+        # Remove duplicates and sort by modification time (newest first)
+        all_reports = list(set(all_reports))
+        all_reports.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+
+        if len(all_reports) > keep_versions:
+            # Keep N latest versions, remove the rest
+            to_keep = all_reports[:keep_versions]
+            to_remove = all_reports[keep_versions:]
+
+            removed_count = 0
+            removed_size = 0
+            for report in to_remove:
+                removed_size += report.stat().st_size
+                report.unlink()
+                removed_count += 1
+                console.print(f"  [dim]Removed:[/dim] {report.name}")
+
+            console.print(f"[green]Cleaned up old reports:[/green] {doc_path}")
+            for kept in to_keep:
+                console.print(f"  [green]Kept:[/green] {kept.name}")
+            console.print(f"  Removed: {removed_count} files ({removed_size / 1024:.1f} KB)")
+        elif len(all_reports) >= 1:
+            console.print(f"[yellow]Found {len(all_reports)} report(s), keeping all (--keep-versions={keep_versions})[/yellow]")
+            for report in all_reports:
+                console.print(f"  {report.name}")
+        else:
+            console.print(f"[yellow]No review reports found in:[/yellow] {doc_path}")
+
+        if clean_memory or clean_all:
+            return  # Exit after cleanup
+        if clean_reports and not clean_all:
+            return  # Exit after cleanup
+
+    # Override model if specified on command line
+    config = ctx.obj["config"]
+    if model:
+        config.model = model
+
+    ucr = UCRPhase(config)
+
+    # Auto-detect large documents and recommend multi-turn (unless --force-single)
+    if not multi_turn and not force_single:
+        # Calculate document size
+        total_chars = 0
+        if doc_path.is_dir():
+            for f in doc_path.glob("*.md"):
+                if "REVIEW" not in f.name and "REPORT" not in f.name:
+                    total_chars += f.stat().st_size
+        else:
+            total_chars = doc_path.stat().st_size
+
+        # Large documents (>100K chars / ~25K tokens) should use multi-turn
+        if total_chars > 100000:
+            console.print(
+                f"[yellow]Large document detected ({total_chars // 1000}K chars). "
+                f"Auto-enabling multi-turn mode for better quality.[/yellow]"
+            )
+            multi_turn = True
+
+    if multi_turn:
+        result = ucr.review_multi_turn(
+            doc_type, doc_path,
+            output_path=output,
+            skip_validation=skip_validation,
+            resume=not no_resume,
+            session_ttl_hours=session_ttl,
+        )
+    else:
+        result = ucr.review(doc_type, doc_path, output_path=output, skip_validation=skip_validation)
 
     console.print(f"Score: {result.score}")
     console.print(f"Findings: P0={result.findings['P0']}, P1={result.findings['P1']}, P2={result.findings['P2']}")
@@ -154,8 +356,8 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 
     \b
     Examples:
-      ucx remediate BRD_UCR_REVIEW.md docs/01_BRD/BRD-01
-      ucx remediate BRD_UCR_REVIEW.md docs/01_BRD/BRD-01 --apply-auto-safe
+      ucx remediate BRD-01.UCR_review_report_v001.md docs/01_BRD/BRD-01
+      ucx remediate BRD-01.UCR_review_report_v001.md docs/01_BRD/BRD-01 --apply-auto-safe
     """
     from ucx import UCRemPhase
     from ucx.models.enums import Confidence

@@ -22,7 +22,7 @@ class UCRemPhase:
         >>>
         >>> ucrem = UCRemPhase()
         >>> fixes = ucrem.generate_fixes(
-        ...     review_report="docs/BRD_UCR_REVIEW.md",
+        ...     review_report="docs/BRD-01.UCR_review_report_v001.md",
         ...     doc_path="docs/01_BRD/BRD-01"
         ... )
         >>> for fix in fixes:
@@ -42,10 +42,9 @@ class UCRemPhase:
 
     @property
     def ai_client(self):
-        """Get AI client instance."""
+        """Get AI client instance based on config (CLI or API mode)."""
         if self._ai_client is None:
-            from ucx.ai.claude import ClaudeClient
-            self._ai_client = ClaudeClient(model=self.config.model)
+            self._ai_client = self.config.get_ai_client()
         return self._ai_client
 
     def generate_fixes(

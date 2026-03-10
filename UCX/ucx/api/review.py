@@ -1,5 +1,8 @@
 """UCX Review (UCR) Phase API."""
 
+import re
+import time
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Union
 
@@ -8,6 +11,19 @@ from ucx.config.layer_skills import get_skills_for_phase
 from ucx.models.enums import DocType, ValidationStatus
 from ucx.models.review import ReviewResult, ValidationResult
 from ucx.exceptions import PromptError
+from ucx.core.review_memory import ReviewMemory
+from ucx.core.persona_prompts import (
+    get_personas_for_doc_type,
+    build_persona_prompt,
+    get_persona_title,
+)
+from ucx.utils.logging import (
+    get_logger,
+    log_phase_start,
+    log_phase_end,
+    log_review_result,
+    log_timing,
+)
 
 
 class UCRPhase:
@@ -34,14 +50,133 @@ class UCRPhase:
         self.config = config or UCXConfig()
         self._ai_client = None
         self._validators: dict[DocType, "BaseValidator"] = {}
+        self.logger = get_logger("ucx.api.review")
+
+        self.logger.debug(
+            f"Initialized UCRPhase: ai_mode={self.config.ai_mode} "
+            f"skip_validation={self.config.skip_validation}"
+        )
 
     @property
     def ai_client(self):
-        """Get AI client instance."""
+        """Get AI client instance based on config (CLI or API mode)."""
         if self._ai_client is None:
-            from ucx.ai.claude import ClaudeClient
-            self._ai_client = ClaudeClient(model=self.config.model)
+            self._ai_client = self.config.get_ai_client()
+            self.logger.debug(f"Created AI client: {type(self._ai_client).__name__}")
         return self._ai_client
+
+    def _get_next_report_version(self, doc_path: Path, doc_type: DocType) -> int:
+        """
+        Get the next version number for a review report.
+
+        Scans existing reports and returns the next available version.
+
+        Args:
+            doc_path: Path to document directory
+            doc_type: Document type
+
+        Returns:
+            Next version number (1 if no existing reports)
+        """
+        # Extract doc_id from path (e.g., "BRD-01" from "BRD-01_platform_architecture")
+        doc_id = self._extract_doc_id(doc_path, doc_type)
+
+        # Pattern to match versioned reports: BRD-01.UCR_review_report_v001.md
+        pattern = re.compile(
+            rf"{re.escape(doc_id)}\.UCR_review_report_v(\d{{3}})\.md$"
+        )
+
+        max_version = 0
+        search_dir = doc_path if doc_path.is_dir() else doc_path.parent
+
+        for file in search_dir.glob(f"{doc_id}.UCR_review_report_v*.md"):
+            match = pattern.match(file.name)
+            if match:
+                version = int(match.group(1))
+                max_version = max(max_version, version)
+
+        return max_version + 1
+
+    def _extract_doc_id(self, doc_path: Path, doc_type: DocType) -> str:
+        """
+        Extract document ID from path.
+
+        Examples:
+            BRD-01_platform_architecture -> BRD-01
+            PRD-02_user_features -> PRD-02
+
+        Args:
+            doc_path: Path to document
+            doc_type: Document type
+
+        Returns:
+            Document ID string (e.g., "BRD-01")
+        """
+        doc_id_match = re.search(
+            rf"({doc_type.value.upper()}-\d+)",
+            str(doc_path),
+            re.IGNORECASE
+        )
+        if doc_id_match:
+            return doc_id_match.group(1).upper()
+        return f"{doc_type.value.upper()}-XX"
+
+    def _generate_review_id(self, doc_path: Path, doc_type: DocType, version: int) -> str:
+        """
+        Generate a unique review ID.
+
+        Format: UCR-{DOC_ID}-v{NNN}
+        Example: UCR-BRD-01-v001
+
+        Args:
+            doc_path: Path to document
+            doc_type: Document type
+            version: Version number
+
+        Returns:
+            Unique review ID string
+        """
+        doc_id = self._extract_doc_id(doc_path, doc_type)
+        return f"UCR-{doc_id}-v{version:03d}"
+
+    def _get_versioned_output_path(
+        self,
+        doc_path: Path,
+        doc_type: DocType,
+        output_path: Optional[Path] = None,
+    ) -> tuple[Path, int, str]:
+        """
+        Get versioned output path for review report.
+
+        Args:
+            doc_path: Path to document
+            doc_type: Document type
+            output_path: Custom output path (if provided, version not added)
+
+        Returns:
+            Tuple of (output_path, version, review_id)
+        """
+        if output_path is not None:
+            # Custom path provided - use version 1
+            version = 1
+            review_id = self._generate_review_id(doc_path, doc_type, version)
+            return output_path, version, review_id
+
+        # Generate versioned path
+        version = self._get_next_report_version(doc_path, doc_type)
+        review_id = self._generate_review_id(doc_path, doc_type, version)
+        doc_id = self._extract_doc_id(doc_path, doc_type)
+
+        # New naming format: {DOC_ID}.UCR_review_report_v{NNN}.md
+        # Example: BRD-01.UCR_review_report_v001.md
+        filename = f"{doc_id}.UCR_review_report_v{version:03d}.md"
+
+        if doc_path.is_dir():
+            versioned_path = doc_path / filename
+        else:
+            versioned_path = doc_path.parent / filename
+
+        return versioned_path, version, review_id
 
     def review(
         self,
@@ -67,42 +202,98 @@ class UCRPhase:
             FileNotFoundError: If document not found
             PromptError: If prompt not found
         """
+        start_time = time.perf_counter()
+
         # Normalize inputs
         if isinstance(doc_type, str):
             doc_type = DocType.from_string(doc_type)
         doc_path = Path(doc_path)
 
+        # Log phase start
+        log_phase_start("UCR", doc_type.value, str(doc_path))
+        self.logger.info(f"Starting review: doc_type={doc_type.value} path={doc_path}")
+
         if not doc_path.exists():
+            self.logger.error(f"Document not found: {doc_path}")
             raise FileNotFoundError(f"Document not found: {doc_path}")
 
-        # Set default output path
-        if output_path is None:
-            if doc_path.is_dir():
-                output_path = doc_path / f"{doc_type.value.upper()}_UCR_REVIEW.md"
-            else:
-                output_path = doc_path.parent / f"{doc_type.value.upper()}_UCR_REVIEW.md"
+        # Get versioned output path with review ID
+        output_path, version, review_id = self._get_versioned_output_path(
+            doc_path, doc_type, output_path
+        )
+
+        self.logger.debug(f"Output path: {output_path}")
+        self.logger.info(f"Review ID: {review_id} (version {version})")
 
         # Phase 1: Validation
         validation_result = ValidationResult(status=ValidationStatus.SKIPPED)
         if not skip_validation and not self.config.skip_validation:
-            validation_result = self.validate(doc_type, doc_path)
+            self.logger.info("Running validation phase")
+            with log_timing("Validation phase"):
+                validation_result = self.validate(doc_type, doc_path)
+            self.logger.info(
+                f"Validation complete: status={validation_result.status.value} "
+                f"errors={len(validation_result.errors)} warnings={len(validation_result.warnings)}"
+            )
+        else:
+            self.logger.debug("Validation phase skipped")
 
         # Phase 2: Build prompt
-        prompt = self._build_review_prompt(
-            doc_type=doc_type,
-            doc_path=doc_path,
-            validation_result=validation_result,
-        )
+        self.logger.debug("Building review prompt")
+        with log_timing("Build prompt"):
+            prompt = self._build_review_prompt(
+                doc_type=doc_type,
+                doc_path=doc_path,
+                validation_result=validation_result,
+                review_id=review_id,
+                version=version,
+            )
+        prompt_len = len(prompt)
+        self.logger.info(f"Prompt built: {prompt_len} chars (~{prompt_len // 4} tokens)")
 
         # Phase 3: Run AI review
-        review_content = self.ai_client.generate(prompt)
+        self.logger.info("Starting AI review")
+
+        # System prompt to ensure complete structured output
+        system_prompt = (
+            "You are conducting a formal document review. "
+            "Generate the COMPLETE structured report as specified in the prompt. "
+            "Do NOT summarize or abbreviate. Follow the exact output format with all sections, "
+            "tables, and findings. The output should be 5000+ words with detailed per-persona analysis."
+        )
+
+        with log_timing("AI review"):
+            review_content = self.ai_client.generate(prompt, system_prompt=system_prompt)
+        self.logger.info(f"AI review complete: {len(review_content)} chars")
 
         # Write review report
+        self.logger.debug(f"Writing review report to {output_path}")
         output_path.write_text(review_content, encoding="utf-8")
 
         # Parse results
+        self.logger.debug("Parsing review results")
         result = ReviewResult.from_report(output_path, doc_path)
         result.validation_status = validation_result.status
+
+        # Calculate duration
+        duration_s = time.perf_counter() - start_time
+
+        # Log review result
+        log_review_result(
+            doc_type=doc_type.value,
+            doc_path=str(doc_path),
+            score=result.score,
+            p0_count=result.findings.get("P0", 0),
+            p1_count=result.findings.get("P1", 0),
+            p2_count=result.findings.get("P2", 0),
+        )
+
+        # Log phase end
+        log_phase_end("UCR", doc_type.value, success=True, duration_s=duration_s)
+        self.logger.info(
+            f"Review complete: score={result.score} findings={len(result.findings)} "
+            f"duration={duration_s:.1f}s report={output_path}"
+        )
 
         return result
 
@@ -125,14 +316,24 @@ class UCRPhase:
             doc_type = DocType.from_string(doc_type)
         doc_path = Path(doc_path)
 
+        self.logger.debug(f"Validating: doc_type={doc_type.value} path={doc_path}")
+
         validator = self._get_validator(doc_type)
-        return validator.validate(doc_path)
+        result = validator.validate(doc_path)
+
+        self.logger.debug(
+            f"Validation result: status={result.status.value} "
+            f"errors={len(result.errors)} warnings={len(result.warnings)}"
+        )
+
+        return result
 
     def _get_validator(self, doc_type: DocType) -> "BaseValidator":
         """Get or create validator for document type."""
         if doc_type not in self._validators:
             from ucx.validators.registry import get_validator
             self._validators[doc_type] = get_validator(doc_type)
+            self.logger.debug(f"Created validator for {doc_type.value}")
         return self._validators[doc_type]
 
     def _build_review_prompt(
@@ -140,13 +341,26 @@ class UCRPhase:
         doc_type: DocType,
         doc_path: Path,
         validation_result: ValidationResult,
+        review_id: Optional[str] = None,
+        version: Optional[int] = None,
     ) -> str:
         """Build complete review prompt."""
         parts = []
 
         # Load base prompt
+        self.logger.debug("Loading base prompt")
         base_prompt = self._load_prompt(doc_type)
+
+        # Inject review_id and version into prompt if provided
+        if review_id and version:
+            base_prompt = base_prompt.replace(
+                "[REVIEW_ID]", review_id
+            ).replace(
+                "[VERSION]", f"v{version:03d}"
+            )
+
         parts.append(base_prompt)
+        self.logger.debug(f"Base prompt loaded: {len(base_prompt)} chars")
 
         # Add validation results
         if validation_result.status != ValidationStatus.SKIPPED:
@@ -170,30 +384,63 @@ class UCRPhase:
         # Add skills
         if self.config.load_skills:
             skills = get_skills_for_phase(doc_type, "ucr")
+            self.logger.debug(f"Loading {len(skills)} skills: {skills}")
             skills_content = self._load_skills(skills)
             if skills_content:
                 parts.append("\n---\n\n## PERSONA SKILL DEFINITIONS\n\n")
                 parts.append(skills_content)
+                self.logger.debug(f"Skills content: {len(skills_content)} chars")
 
         # Add document content
         parts.append("\n---\n\n# DOCUMENT CONTENT\n\n")
-        parts.append(self._load_document_content(doc_path))
+        doc_content = self._load_document_content(doc_path)
+        parts.append(doc_content)
+        self.logger.debug(f"Document content: {len(doc_content)} chars")
 
         return "".join(parts)
 
     def _load_prompt(self, doc_type: DocType) -> str:
-        """Load UCR prompt for document type."""
-        prompt_dir = self.config.get_prompt_dir() / "ucr"
+        """
+        Load UCR prompt for document type.
 
-        candidates = [
-            prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
-            prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
-        ]
+        Search order:
+        1. Project-specific prompt dir (if configured)
+        2. Framework prompt dir with _PROJECT suffix
+        3. Framework prompt dir base template
+
+        This allows projects to customize prompts while falling back to framework defaults.
+        """
+        candidates = []
+
+        # 1. Check project-specific prompt directory first
+        project_prompt_dir = self.config.get_project_prompt_dir()
+        if project_prompt_dir:
+            # Project prompts can use various naming patterns
+            candidates.extend([
+                project_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
+                project_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
+            ])
+            # Also check subdirectory structure (e.g., docs/UCX/review/)
+            review_subdir = project_prompt_dir / "review"
+            if review_subdir.exists():
+                candidates.extend([
+                    review_subdir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
+                    review_subdir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
+                ])
+
+        # 2. Check framework prompt directory
+        framework_prompt_dir = self.config.get_prompt_dir() / "ucr"
+        candidates.extend([
+            framework_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
+            framework_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
+        ])
 
         for path in candidates:
             if path.exists():
+                self.logger.info(f"Using prompt: {path}")
                 return path.read_text(encoding="utf-8")
 
+        self.logger.error(f"No UCR prompt found for {doc_type.value}")
         raise PromptError(
             f"No UCR prompt found for {doc_type.value}",
             prompt_name=f"UCR_PROMPT_{doc_type.value.upper()}.md",
@@ -203,6 +450,7 @@ class UCRPhase:
         """Load skill content for personas."""
         skill_dir = self.config.get_skill_dir()
         parts = []
+        loaded = []
 
         for name in skill_names:
             skill_path = skill_dir / f"{name}.md"
@@ -211,23 +459,239 @@ class UCRPhase:
                 parts.append(f"### Skill: {title}\n\n")
                 parts.append(skill_path.read_text(encoding="utf-8"))
                 parts.append("\n\n")
+                loaded.append(name)
 
+        self.logger.debug(f"Loaded skills: {loaded}")
         return "".join(parts)
 
     def _load_document_content(self, doc_path: Path) -> str:
         """Load document content for review."""
         parts = []
+        files_loaded = []
 
         if doc_path.is_dir():
             for f in sorted(doc_path.glob("*.md")):
                 # Exclude review/report files
                 if "REVIEW" not in f.name and "REPORT" not in f.name:
                     parts.append(f"## File: {f.name}\n\n")
-                    parts.append(f.read_text(encoding="utf-8"))
+                    content = f.read_text(encoding="utf-8")
+                    parts.append(content)
                     parts.append("\n\n")
+                    files_loaded.append(f.name)
         else:
             parts.append(f"## File: {doc_path.name}\n\n")
             parts.append(doc_path.read_text(encoding="utf-8"))
             parts.append("\n\n")
+            files_loaded.append(doc_path.name)
 
+        self.logger.debug(f"Loaded {len(files_loaded)} files: {files_loaded[:5]}{'...' if len(files_loaded) > 5 else ''}")
+        return "".join(parts)
+
+    def review_multi_turn(
+        self,
+        doc_type: Union[str, DocType],
+        doc_path: Union[str, Path],
+        *,
+        output_path: Optional[Path] = None,
+        skip_validation: bool = False,
+        personas: Optional[list[str]] = None,
+        resume: bool = True,
+        session_ttl_hours: int = 24,
+    ) -> ReviewResult:
+        """
+        Review a document using multi-turn persona reviews with memory.
+
+        This approach breaks the review into smaller per-persona calls,
+        storing prompts and responses in .doc_review_memory/ for:
+        - Resume capability (skip completed personas)
+        - Debugging (inspect prompts/responses)
+        - Caching (reuse if document unchanged)
+        - Better output quality (no summarization)
+
+        Args:
+            doc_type: Document type (brd, prd, ears, etc.)
+            doc_path: Path to document file or directory
+            output_path: Custom output path for review report
+            skip_validation: Skip validation phase
+            personas: Custom persona list (uses default for doc_type if None)
+            resume: Resume from previous incomplete session
+            session_ttl_hours: Session time-to-live in hours (default: 24)
+
+        Returns:
+            ReviewResult with score, findings, and report path
+        """
+        start_time = time.perf_counter()
+
+        # Normalize inputs
+        if isinstance(doc_type, str):
+            doc_type = DocType.from_string(doc_type)
+        doc_path = Path(doc_path)
+
+        # Log phase start
+        log_phase_start("UCR-MultiTurn", doc_type.value, str(doc_path))
+        self.logger.info(f"Starting multi-turn review: doc_type={doc_type.value} path={doc_path}")
+
+        if not doc_path.exists():
+            self.logger.error(f"Document not found: {doc_path}")
+            raise FileNotFoundError(f"Document not found: {doc_path}")
+
+        # Get versioned output path with review ID
+        output_path, version, review_id = self._get_versioned_output_path(
+            doc_path, doc_type, output_path
+        )
+
+        self.logger.debug(f"Output path: {output_path}")
+        self.logger.info(f"Review ID: {review_id} (version {version})")
+
+        # Get personas for this doc type
+        if personas is None:
+            personas = get_personas_for_doc_type(doc_type.value)
+
+        self.logger.info(f"Using {len(personas)} personas: {personas}")
+
+        # Phase 1: Validation
+        validation_result = ValidationResult(status=ValidationStatus.SKIPPED)
+        if not skip_validation and not self.config.skip_validation:
+            self.logger.info("Running validation phase")
+            with log_timing("Validation phase"):
+                validation_result = self.validate(doc_type, doc_path)
+            self.logger.info(
+                f"Validation complete: status={validation_result.status.value} "
+                f"errors={len(validation_result.errors)} warnings={len(validation_result.warnings)}"
+            )
+
+        # Phase 2: Initialize memory
+        memory = ReviewMemory(doc_path, doc_type.value)
+
+        # Load document content
+        doc_content = self._load_document_content(doc_path)
+        content_hash = ReviewMemory.compute_content_hash(doc_content)
+
+        # Initialize or resume session (clear memory if not resuming)
+        is_resuming = memory.initialize(
+            personas, content_hash,
+            clear=not resume,
+            session_ttl_hours=session_ttl_hours,
+        )
+        if is_resuming:
+            completed = memory.get_completed_personas()
+            self.logger.info(f"Resuming: {len(completed)}/{len(personas)} personas already complete")
+
+        # Save shared context
+        memory.save_shared_context(doc_content)
+
+        # Add validation results to context if present
+        validation_context = ""
+        if validation_result.status != ValidationStatus.SKIPPED:
+            validation_context = self._format_validation_context(validation_result)
+
+        # Phase 3: Run each persona
+        previous_responses = {}
+
+        for i, persona in enumerate(personas):
+            # Check if already complete (resume)
+            if memory.is_persona_complete(persona):
+                self.logger.info(f"[{i+1}/{len(personas)}] {persona}: Already complete (cached)")
+                response = memory.get_response(persona)
+                if response:
+                    previous_responses[persona] = response
+                continue
+
+            self.logger.info(f"[{i+1}/{len(personas)}] {persona}: Starting review")
+
+            # Build persona-specific prompt
+            prompt = build_persona_prompt(
+                persona=persona,
+                shared_context=validation_context + doc_content,
+                previous_responses=previous_responses if i > 0 else None,
+                doc_type=doc_type.value,
+            )
+
+            # Save prompt for debugging
+            memory.save_prompt(persona, prompt)
+            prompt_tokens = len(prompt) // 4
+            self.logger.debug(f"Prompt for {persona}: {len(prompt)} chars (~{prompt_tokens} tokens)")
+
+            # Call AI
+            persona_start = time.perf_counter()
+            try:
+                with log_timing(f"AI review: {persona}"):
+                    response = self.ai_client.generate(prompt)
+
+                duration_ms = (time.perf_counter() - persona_start) * 1000
+
+                # Save response
+                memory.save_response(persona, response, duration_ms=duration_ms)
+                previous_responses[persona] = response
+
+                self.logger.info(
+                    f"[{i+1}/{len(personas)}] {persona}: Complete "
+                    f"({len(response)} chars, {duration_ms/1000:.1f}s)"
+                )
+
+            except Exception as e:
+                self.logger.error(f"[{i+1}/{len(personas)}] {persona}: Failed - {e}")
+                memory.mark_failed(str(e))
+                raise
+
+        # Phase 4: Assemble final report
+        self.logger.info("Assembling final report")
+        review_content = memory.assemble_report(
+            include_header=True,
+            review_id=review_id,
+            version=version,
+        )
+        memory.mark_complete()
+
+        # Write to output path
+        output_path.write_text(review_content, encoding="utf-8")
+        self.logger.info(f"Final report written to {output_path}")
+
+        # Parse results
+        result = ReviewResult.from_report(output_path, doc_path)
+        result.validation_status = validation_result.status
+
+        # Calculate duration
+        duration_s = time.perf_counter() - start_time
+
+        # Log review result
+        log_review_result(
+            doc_type=doc_type.value,
+            doc_path=str(doc_path),
+            score=result.score,
+            p0_count=result.findings.get("P0", 0),
+            p1_count=result.findings.get("P1", 0),
+            p2_count=result.findings.get("P2", 0),
+        )
+
+        log_phase_end("UCR-MultiTurn", doc_type.value, success=True, duration_s=duration_s)
+        self.logger.info(
+            f"Multi-turn review complete: score={result.score} "
+            f"personas={len(personas)} duration={duration_s:.1f}s"
+        )
+
+        return result
+
+    def _format_validation_context(self, validation_result: ValidationResult) -> str:
+        """Format validation results for inclusion in prompts."""
+        parts = ["\n## PRE-VALIDATION RESULTS\n\n"]
+        parts.append(f"**Status**: {validation_result.status.value}\n\n")
+
+        if validation_result.errors:
+            parts.append("**Errors**:\n")
+            for error in validation_result.errors[:20]:  # Limit to avoid prompt bloat
+                parts.append(f"- {error}\n")
+            if len(validation_result.errors) > 20:
+                parts.append(f"- ... and {len(validation_result.errors) - 20} more errors\n")
+            parts.append("\n")
+
+        if validation_result.warnings:
+            parts.append("**Warnings**:\n")
+            for warning in validation_result.warnings[:20]:
+                parts.append(f"- {warning}\n")
+            if len(validation_result.warnings) > 20:
+                parts.append(f"- ... and {len(validation_result.warnings) - 20} more warnings\n")
+            parts.append("\n")
+
+        parts.append("> **Note**: Address validation failures as P0 findings.\n\n")
         return "".join(parts)

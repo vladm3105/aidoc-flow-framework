@@ -145,7 +145,7 @@ class UCREngine:
             )
 
             # Save report
-            report_path = self._save_report(doc_path, response["content"])
+            report_path = self._save_report(doc_path, doc_type, response["content"])
             review_result.report_path = report_path
 
             # Record metrics
@@ -279,9 +279,26 @@ class UCREngine:
 
         return findings
 
-    def _save_report(self, doc_path: Path, content: str) -> Path:
-        """Save review report."""
-        report_name = f"{doc_path.stem}_UCR_REVIEW.md"
-        report_path = doc_path.parent / report_name
+    def _save_report(self, doc_path: Path, doc_type: DocType, content: str) -> Path:
+        """Save review report with versioned naming."""
+        # Extract doc_id from path (e.g., BRD-01 from BRD-01_platform_architecture)
+        doc_id_match = re.search(
+            rf"({doc_type.value.upper()}-\d+)",
+            str(doc_path),
+            re.IGNORECASE
+        )
+        doc_id = doc_id_match.group(1).upper() if doc_id_match else f"{doc_type.value.upper()}-XX"
+
+        # Find next version number
+        search_dir = doc_path if doc_path.is_dir() else doc_path.parent
+        version = 1
+        for file in search_dir.glob(f"{doc_id}.UCR_review_report_v*.md"):
+            match = re.search(r"_v(\d{3})\.md$", file.name)
+            if match:
+                version = max(version, int(match.group(1)) + 1)
+
+        # New naming format: {DOC_ID}.UCR_review_report_v{NNN}.md
+        report_name = f"{doc_id}.UCR_review_report_v{version:03d}.md"
+        report_path = search_dir / report_name
         report_path.write_text(content, encoding="utf-8")
         return report_path

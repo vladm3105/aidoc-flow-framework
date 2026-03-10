@@ -88,7 +88,7 @@ UCX_MODEL="ollama/llama3" UCX_API_BASE="http://localhost:11434" ucx review brd d
 
 | Document Type | Prompt File | Personas |
 |---------------|-------------|----------|
-| BRD (L1) | `UCR_PROMPT_BRD.md` | 9 personas |
+| BRD (L1) | `UCR_PROMPT_BRD.md` | 11 required + 2 optional |
 | PRD (L2) | `UCR_PROMPT_PRD.md` | 10 personas |
 | EARS (L3) | `UCR_PROMPT_EARS.md` | 5 personas |
 | BDD (L4) | `UCR_PROMPT_BDD.md` | 6 personas |
@@ -144,6 +144,34 @@ Sections to Cross-Reference:
 | **P1** | Integration contracts, operational gaps, architectural | Flag if specification is incomplete |
 | **P2** | Enhancements, optimizations, nice-to-haves | Only for truly optional items |
 
+### Layer-Appropriate Finding Classification (v1.5.5+)
+
+UCR now distinguishes between **BRD requirements** and **SPEC implementation details**:
+
+| Finding Type | BRD Priority | Notes |
+|--------------|--------------|-------|
+| Regulatory compliance gaps | P0 | FinCEN, OFAC, PCI-DSS mandates |
+| Security control requirements | P0 | Session timeout *requirement*, not exact values |
+| Money movement safety | P0 | Saga pattern *requirement*, not algorithm details |
+| Per-partner webhook algorithms | P1 (Defer to SPEC) | Implementation detail |
+| Connection pool configurations | P1 (Defer to SPEC) | Implementation detail |
+| State machine state names | P1 (Defer to SPEC) | Define *need* for FSM, defer states to SPEC |
+| Circuit breaker thresholds | P1 (Defer to SPEC) | Implementation detail |
+
+**Rule**: If the finding is about "what algorithm/config/threshold to use" rather than "what capability is required", mark as P1 with note "Defer to SPEC layer".
+
+### Pre-Validation vs Content Findings (v1.5.5+)
+
+Pre-validation errors (YAML schema, missing fields) are **infrastructure** issues, not **content** issues:
+
+| Error Category | Classification | Report Section |
+|----------------|----------------|----------------|
+| YAML frontmatter missing fields | Pre-validation | Section 8 (Pre-Validation Summary) |
+| Schema compliance failures | Pre-validation | Section 8 (Pre-Validation Summary) |
+| Content gaps (missing requirements) | P0/P1/P2 | Section 2/3/5 (Findings) |
+
+**Rule**: Pre-validation errors do not count toward P0/P1/P2 content findings. They are reported separately.
+
 ### Domain-Specific P0 Defaults
 
 For **Fintech/Compliance** documents:
@@ -160,6 +188,8 @@ For **Fintech/Compliance** documents:
 
 Each persona operates with a **skeptical stance**:
 
+**Core Personas (Required - 11)**:
+
 | Persona | Skeptical Stance |
 |---------|------------------|
 | **Architect** | Assume architectural gaps exist until proven otherwise |
@@ -170,10 +200,24 @@ Each persona operates with a **skeptical stance**:
 | **Operator** | If it can't be observed and rolled back, not production-ready |
 | **Integration Lead** | Integration failures cascade - every dependency is a risk |
 | **Product Owner** | Scope creep kills projects - MVP must be ruthlessly bounded |
-| **QA Lead** | Untestable requirements are unimplementable |
-| **Requirements Specialist** | Syntax violations are P0 - no exceptions |
 | **Business Analyst** | Ambiguous requirements cause implementation disputes |
-| **UX Strategist** | UX gaps cause user churn - accessibility is non-negotiable |
+| **Fact Checker** | Trust but verify - cross-reference all findings against source |
+| **Chairperson** | Synthesize consensus - calculate score with transparent formula |
+
+**Quality Assurance Personas (Optional - 2)**:
+
+| Persona | Purpose |
+|---------|---------|
+| **Judge** | Validate Chairperson's analysis for bias, accuracy, and completeness |
+| **Chairperson Editor** | Final polish, consistency check, Judge feedback integration |
+
+**Layer-Specific Personas**:
+
+| Persona | Skeptical Stance | Layers |
+|---------|------------------|--------|
+| **QA Lead** | Untestable requirements are unimplementable | PRD, EARS, BDD, TSPEC |
+| **Requirements Specialist** | Syntax violations are P0 - no exceptions | EARS, REQ |
+| **UX Strategist** | UX gaps cause user churn - accessibility is non-negotiable | PRD |
 
 ### Layer-Specific Personas
 
@@ -334,10 +378,10 @@ After UCR validation, use **UCRem (Unified Context Remediation)** to generate ex
 ucx review brd docs/01_BRD/BRD-01/
 
 # Step 2: Run UCRem remediation (produces fix proposals)
-ucx remediate brd docs/01_BRD/BRD-01/ --review-report docs/01_BRD/BRD-01/BRD_UCR_REVIEW.md
+ucx remediate brd docs/01_BRD/BRD-01/ --review-report docs/01_BRD/BRD-01/BRD-01.UCR_review_report_v001.md
 
 # Step 3: Apply fixes (via Claude skill)
-/doc-brd-fixer BRD-01 --from-ucrem BRD_UCRem_REPORT.md
+/doc-brd-fixer BRD-01 --from-ucrem BRD-01_UCRem_REPORT.md
 
 # Step 4: Re-validate
 ucx review brd docs/01_BRD/BRD-01/
