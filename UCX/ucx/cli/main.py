@@ -36,13 +36,21 @@ console = Console()
 @click.option(
     "--model",
     default=None,
-    help="Model for API mode (opus, sonnet, openai/gpt-4o, etc.)",
+    help="AI model: opus/sonnet/haiku for Claude CLI (default: opus), or provider/model for API mode",
+)
+@click.option(
+    "--project-dir", "-P",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+    envvar="UCX_PROJECT_DIR",
+    help="Project root directory containing docs/UCX/ (REQUIRED for analysis)",
 )
 @click.option(
     "--project-prompts", "-p",
     type=click.Path(exists=True, path_type=Path),
     default=None,
-    help="Project-specific prompts directory (e.g., docs/UCX/)",
+    hidden=True,  # Deprecated
+    help="DEPRECATED: use --project-dir instead",
 )
 @click.option(
     "--log-level", "-l",
@@ -65,6 +73,7 @@ def cli(
     mode: str,
     cli_tool: str,
     model: Optional[str],
+    project_dir: Optional[Path],
     project_prompts: Optional[Path],
     log_level: Optional[str],
     log_format: str,
@@ -115,11 +124,28 @@ def cli(
     config_overrides = {"ai_mode": mode, "cli_tool": cli_tool}
     if model:
         config_overrides["model"] = model
-    if project_prompts:
-        config_overrides["project_prompt_dir"] = project_prompts
-        logger.info(f"Using project prompts from: {project_prompts}")
+
+    # Handle project directory (REQUIRED for analysis operations)
+    effective_project_dir = project_dir
+    if effective_project_dir is None and project_prompts:
+        # Legacy: infer from project_prompts
+        logger.warning("--project-prompts is deprecated, use --project-dir instead")
+        # Try to infer project root from project_prompts path
+        p = project_prompts
+        while p.parent != p:
+            if (p / "docs" / "UCX").exists():
+                effective_project_dir = p
+                break
+            p = p.parent
+
+    if effective_project_dir:
+        config_overrides["project_dir"] = effective_project_dir
+        logger.info(f"Using project directory: {effective_project_dir}")
+    else:
+        logger.debug("No project directory set. Use --project-dir or UCX_PROJECT_DIR for analysis.")
 
     ctx.obj["config"] = base_config.model_copy(update=config_overrides)
+    ctx.obj["project_dir"] = effective_project_dir  # For subcommands to use
 
     logger.debug(
         f"Config: ai_mode={mode} cli_tool={cli_tool} model={model or base_config.model}"
@@ -305,7 +331,32 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
     # Override model if specified on command line
     config = ctx.obj["config"]
     if model:
-        config.model = model
+        config = config.model_copy(update={"model": model})
+
+    # Auto-detect project directory from doc_path if not set
+    if config.get_project_dir() is None:
+        # Try to find project root by looking for docs/UCX/
+        search_path = doc_path if doc_path.is_dir() else doc_path.parent
+        project_dir = None
+        while search_path.parent != search_path:
+            if (search_path / "docs" / "UCX").exists():
+                project_dir = search_path
+                break
+            search_path = search_path.parent
+
+        if project_dir:
+            config = config.model_copy(update={"project_dir": project_dir})
+            console.print(f"[dim]Auto-detected project directory: {project_dir}[/dim]")
+        else:
+            console.print(
+                "[red]Error: Project directory not found.[/red]\n"
+                "Project-specific prompts are REQUIRED for review.\n"
+                "Either:\n"
+                "  1. Set UCX_PROJECT_DIR environment variable\n"
+                "  2. Use --project-dir flag\n"
+                "  3. Ensure docs/UCX/ exists in project root\n"
+            )
+            raise click.Abort()
 
     ucr = UCRPhase(config)
 

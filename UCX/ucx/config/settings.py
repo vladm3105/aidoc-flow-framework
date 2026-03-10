@@ -140,18 +140,32 @@ class UCXConfig(BaseSettings):
         extra="ignore",
     )
 
-    # AI Model Settings
+    # AI Client Settings
+    ai_mode: str = Field(
+        default="cli",
+        description="AI client mode: 'cli' for CLI agents, 'api' for LiteLLM API calls",
+    )
+    cli_tool: str = Field(
+        default="claude",
+        description="CLI tool to use in cli mode (claude, gemini, ollama, aider)",
+    )
+    cli_timeout: int = Field(
+        default=600,
+        description="CLI command timeout in seconds",
+        ge=30,
+        le=1800,
+    )
     model: str = Field(
         default="opus",
-        description="AI model (opus, sonnet, haiku) or LiteLLM format (provider/model)",
+        description="AI model: opus/sonnet/haiku for Claude CLI, or LiteLLM format (provider/model) for API mode",
     )
     api_base: Optional[str] = Field(
         default=None,
-        description="Custom API base URL (for proxies, Ollama, Azure, etc.)",
+        description="Custom API base URL (API mode only - for proxies, Ollama, Azure, etc.)",
     )
     api_key: Optional[str] = Field(
         default=None,
-        description="API key (defaults to provider-specific env var)",
+        description="API key (API mode only - defaults to provider-specific env var)",
     )
 
     # Autopilot Settings
@@ -195,10 +209,20 @@ class UCXConfig(BaseSettings):
         description="Custom skill definitions directory",
     )
 
+    # Project Directory (REQUIRED for analysis)
+    project_dir: Optional[Path] = Field(
+        default=None,
+        description="Project root directory containing docs/UCX/. REQUIRED for review/fix/remediation.",
+    )
+
     # Prompts
     prompt_dir: Optional[Path] = Field(
         default=None,
-        description="Custom prompt templates directory",
+        description="Framework prompt templates directory (reference only, not for analysis)",
+    )
+    project_prompt_dir: Optional[Path] = Field(
+        default=None,
+        description="DEPRECATED - use project_dir instead",
     )
     template_dir: Optional[Path] = Field(
         default=None,
@@ -290,11 +314,44 @@ class UCXConfig(BaseSettings):
         return Path(__file__).parent.parent / "skills" / "personas"
 
     def get_prompt_dir(self) -> Path:
-        """Get prompt directory, using default if not set."""
+        """Get framework prompt directory, using default if not set."""
         if self.prompt_dir:
             return self.prompt_dir
         # Default to package prompts directory
         return Path(__file__).parent.parent / "prompts" / "templates"
+
+    def get_project_dir(self) -> Optional[Path]:
+        """
+        Get project root directory.
+
+        CRITICAL: This is REQUIRED for review/fix/remediation operations.
+        The project directory must contain docs/UCX/ with
+        project-specific prompts and personas.
+
+        Returns:
+            Project root path, or None if not configured
+        """
+        if self.project_dir:
+            return self.project_dir
+
+        # Legacy: check project_prompt_dir and infer project root
+        if self.project_prompt_dir:
+            # project_prompt_dir might be docs/UCX/review
+            # Try to infer project root
+            path = self.project_prompt_dir
+            for _ in range(4):  # Check up to 4 levels up
+                if (path / "docs" / "UCX").exists():
+                    return path
+                path = path.parent
+
+        return None
+
+    def get_project_prompt_dir(self) -> Optional[Path]:
+        """DEPRECATED: Use get_project_dir() instead."""
+        project_dir = self.get_project_dir()
+        if project_dir:
+            return project_dir / "docs" / "UCX" / "review"
+        return self.project_prompt_dir
 
     def get_template_dir(self) -> Path:
         """Get template directory, using default if not set."""
@@ -302,3 +359,28 @@ class UCXConfig(BaseSettings):
             return self.template_dir
         # Default to framework templates
         return Path(__file__).parent.parent.parent / "templates"
+
+    def get_ai_client(self):
+        """
+        Get AI client based on configuration.
+
+        Returns:
+            AI client instance (CLIClient or LiteLLMClient)
+
+        Example:
+            >>> config = UCXConfig(ai_mode="cli", cli_tool="claude")
+            >>> client = config.get_ai_client()
+
+            >>> config = UCXConfig(ai_mode="api", model="openai/gpt-4o")
+            >>> client = config.get_ai_client()
+        """
+        from ucx.ai import get_client
+
+        return get_client(
+            mode=self.ai_mode,
+            cli_tool=self.cli_tool,
+            timeout=self.cli_timeout,
+            model=self.model,
+            api_key=self.api_key,
+            api_base=self.api_base,
+        )
