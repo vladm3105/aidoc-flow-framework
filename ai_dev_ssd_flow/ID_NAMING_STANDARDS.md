@@ -1436,6 +1436,17 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 **Purpose**: Define which element type codes are valid for each BRD section. This mapping enables validators to enforce semantic consistency between section content and element IDs.
 
+**Scope**: This mapping is **BRD-specific**. Each document type has a unique section structure requiring its own Section-to-Code mapping:
+
+| Document Type | Section Structure | Mapping Status |
+|---------------|-------------------|----------------|
+| **BRD** | 18 sections (Introduction, Business Objectives, Stakeholders, etc.) | Defined below |
+| **PRD** | Product-focused sections (Features, User Stories, Metrics) | Future: PRD validator |
+| **ADR** | Decision records (Context, Decision, Consequences) | Uses codes 10, 32 |
+| **EARS** | EARS template sections (Requirement categories) | Future: EARS validator |
+
+> **Note**: Element type codes (01-99) are **universal** across all document types. Only the section-to-code enforcement logic is document-specific.
+
 | BRD Section | Section Title | Valid Codes | Canonical Code | Notes |
 |-------------|---------------|-------------|----------------|-------|
 | 2 | Business Objectives | 23 | 23 | Business Objective |
@@ -1627,5 +1638,5 @@ python3 scripts/validate_all.py . --all
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance=91, Reliability=92, Scalability=94, Security=96, Observability=98, Maintainability=99); Added BRD Section-to-Element-Code Mapping table; Updated reserved range from 74-99 to 74-90 |
+| 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance=91, Reliability=92, Scalability=94, Security=96, Observability=98, Maintainability=99); Added BRD Section-to-Element-Code Mapping table with scope clarification (BRD-specific, other document types need own mappings); Updated reserved range from 74-99 to 74-90 |
 | 2.1 | 2026-02-28 | Initial published version with unified element ID format |
