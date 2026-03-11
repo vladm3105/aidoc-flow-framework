@@ -4,7 +4,14 @@ Provides comprehensive BRD validation with tiered checks:
 - Tier 1 (Core, blocking): Structure, metadata, element codes, quality gates
 - Tier 2 (Advisory, non-blocking): Links, references, diagrams
 
-Usage:
+Version: 1.9.2 (introduced in 1.9.0)
+
+CLI Usage:
+    ucx validate brd docs/01_BRD/BRD-01/
+    ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+    ucx validate brd docs/01_BRD/BRD-01/ --strict --format json
+
+Python Usage:
     from ucx.validators.brd import UnifiedBRDValidator
 
     validator = UnifiedBRDValidator()
@@ -12,6 +19,17 @@ Usage:
 
     # For pre-commit (fast, blocking checks only)
     result = validator.validate(Path("docs/01_BRD/BRD-01/"), tier1_only=True)
+
+    # Check results
+    if result.has_tier1_errors:
+        print(f"Failed: {len(result.tier1_errors)} errors")
+    else:
+        print(f"Passed: {result.status}")
+
+Exit Codes:
+    0 = All checks passed
+    1 = Warnings only (Tier 2)
+    2 = Errors present (Tier 1)
 """
 
 import re

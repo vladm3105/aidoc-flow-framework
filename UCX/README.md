@@ -707,7 +707,23 @@ UCX/
 │   │   └── drift_cache.py      # Drift cache
 │   │
 │   ├── validators/             # Document validators
-│   │   ├── brd.py, prd.py      # Layer validators
+│   │   ├── common/             # Shared validation utilities (v1.9.0+)
+│   │   │   ├── error_codes.py  # Severity, ErrorCode, ERROR_REGISTRY
+│   │   │   ├── file_utils.py   # File collection, companion detection
+│   │   │   ├── frontmatter.py  # YAML frontmatter parsing
+│   │   │   ├── result.py       # ValidationIssue, UnifiedValidationResult
+│   │   │   ├── links.py        # Link validation (Tier 2)
+│   │   │   ├── references.py   # Forward reference validation (Tier 2)
+│   │   │   └── diagrams.py     # Diagram consistency (Tier 2)
+│   │   ├── brd/                # UnifiedBRDValidator (v1.9.0+)
+│   │   │   ├── __init__.py     # UnifiedBRDValidator class
+│   │   │   ├── schema.py       # BRD constants, sections, codes
+│   │   │   ├── element_codes.py # BRD.NN.TT.SS validation
+│   │   │   ├── structure.py    # Document structure validation
+│   │   │   ├── metadata.py     # YAML frontmatter validation
+│   │   │   └── quality_gate.py # 10 GATE quality checks
+│   │   ├── brd_validator.py    # Registry-compatible BRD validator
+│   │   ├── prd.py, ears.py     # Other layer validators (legacy)
 │   │   └── registry.py         # Validator registry
 │   │
 │   ├── prompts/                # Prompt management
@@ -919,6 +935,9 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.2 | 2026-03-11 | **Registry integration**: `BRDValidator` (registry) now delegates to `UnifiedBRDValidator`. `ucx review brd` and `ucx validate brd` use same validation logic. Renamed `brd.py` to `brd_validator.py` to avoid package conflict. Pre-commit hooks migrated to UCX unified validation. |
+| 1.9.1 | 2026-03-11 | **Tier 2 advisory validators**: New `common/links.py` for markdown link validation. New `common/references.py` for SDD forward reference validation. New `common/diagrams.py` for Mermaid/SVG diagram consistency. Error codes: LINK-*, FWDREF-*, DIAG-*. |
+| 1.9.0 | 2026-03-11 | **Unified BRD Validation**: New `ucx/validators/common/` module with shared validation utilities. New `ucx/validators/brd/` module with `UnifiedBRDValidator`. Tiered validation: Tier 1 (core, blocking) and Tier 2 (advisory). CLI: `ucx validate brd <path>` with `--tier1-only`, `--strict`, `--format`. Quality gates: 10 GATE checks (GATE-01 to GATE-10). Element code validation: BRD.NN.TT.SS format with section mapping. Deprecated: `ai_dev_ssd_flow/01_BRD/scripts/` validators (removal in v2.0.0). |
 | 1.8.0 | 2026-03-10 | **Project-specific skills support**: Skills now load from `{project}/docs/UCX/skills/` first, falling back to framework skills. Prompts remain project-specific only (no fallback). `SkillLoader` accepts `project_dir` parameter. `UnifiedPromptLoader` injects project skills into persona prompts. UCR/UCC/UCRem engines pass `project_dir` to skill loading. |
 | 1.7.2 | 2026-03-10 | **Skill consolidation**: Merged `/UCX/ucx/skills/personas/` (lightweight) into `/UCX/skills/` (detailed). Single source of truth for persona skills with both domain knowledge AND review metadata (scoring weights, tags, checklists). SkillLoader now defaults to `/UCX/skills/`. |
 | 1.7.1 | 2026-03-10 | **Skill file integration**: Domain knowledge now loaded from `/UCX/skills/*.md` files instead of hardcoded templates. Enables easier customization of persona expertise. Added `fact_checker.md` skill. Falls back to embedded templates if skill file not found. |

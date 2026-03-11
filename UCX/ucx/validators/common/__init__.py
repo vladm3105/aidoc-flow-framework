@@ -1,11 +1,30 @@
 """Common validation utilities for UCX validators.
 
 This module provides shared infrastructure for all document type validators:
-- Error codes and severity handling
-- File utilities (companion detection, source file collection)
-- Shared regex patterns
-- YAML frontmatter parsing
-- Tiered validation result classes
+
+Tier 1 (Core, blocking):
+- Error codes and severity handling (error_codes.py)
+- File utilities: companion detection, source file collection (file_utils.py)
+- Shared regex patterns (patterns.py)
+- YAML frontmatter parsing (frontmatter.py)
+- Tiered validation result classes (result.py)
+
+Tier 2 (Advisory, non-blocking):
+- Markdown link validation (links.py)
+- SDD forward reference validation (references.py)
+- Mermaid/SVG diagram consistency (diagrams.py)
+
+Version: 1.9.2 (introduced in 1.9.0)
+
+Usage:
+    from ucx.validators.common import (
+        UnifiedValidationResult,
+        ValidationIssue,
+        ValidationTier,
+        validate_links,
+        validate_forward_references,
+        validate_diagrams,
+    )
 """
 
 from ucx.validators.common.error_codes import (
