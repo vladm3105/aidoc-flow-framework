@@ -280,6 +280,7 @@ All traceability tags require 2+ digit document numbers per ID_NAMING_STANDARDS.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.5 | 2026-03-11 | Added `--clean-reports` and `--keep-versions` to `ucx validate` for report cleanup |
 | 1.9.4 | 2026-03-11 | Added QA subcategory codes 91-99; Section 3/4 mappings; Updated tag patterns to require 2+ digits |
 | 1.9.2 | 2026-03-11 | Registry integration with UnifiedBRDValidator |
 | 1.9.0 | 2026-03-11 | Initial unified validation architecture |

@@ -44,6 +44,12 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validat
 
 # JSON report to file
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
+
+# Clean up old validation reports, keep only latest (v1.9.5+)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
+
+# Keep 3 most recent validation reports
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
 
 **Validation Report Structure (when using `-o`):**
