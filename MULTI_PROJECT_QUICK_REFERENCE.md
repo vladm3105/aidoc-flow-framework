@@ -101,10 +101,61 @@ done
 
 ---
 
+## UCX Framework (Development Mode)
+
+UCX is the unified CLI for document creation, review, and remediation. Use PYTHONPATH instead of pip install during development.
+
+### Quick Setup with direnv
+
+```bash
+# Create .envrc in your project
+cat > /opt/data/project_name/.envrc << 'EOF'
+export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
+export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
+source "$FRAMEWORK_ROOT/.venv/bin/activate"
+export UCX_PROJECT_ROOT="$PWD"
+EOF
+
+# Enable direnv
+cd /opt/data/project_name
+direnv allow
+```
+
+### UCX Commands
+
+```bash
+# Validate BRD (non-AI, fast)
+ucx validate brd docs/01_BRD/ --tier1-only
+
+# AI-powered review
+ucx review brd docs/01_BRD/BRD-01/
+
+# AI-powered remediation
+ucx remediate docs/01_BRD/BRD-01/
+
+# Check version
+ucx --version
+```
+
+### Pre-commit with UCX
+
+```yaml
+# .pre-commit-config.yaml
+- id: ucx-brd-validate
+  name: UCX BRD Validation
+  entry: /opt/data/docs_flow_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
+  language: system
+  files: ^docs/01_BRD/.*\.md$
+```
+
+---
+
 ## Directory Structure After Setup
 
 ```
 /opt/data/project_name/
+├── .envrc                   ✓ UCX environment (direnv)
 ├── .claude/
 │   ├── skills/              → /opt/data/docs_flow_framework/.claude/skills/
 │   ├── commands/            → /opt/data/docs_flow_framework/.claude/commands/
@@ -541,4 +592,4 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ---
 
-**Quick Reference Version**: 2.2 (2026-02-22T00:00:00)
+**Quick Reference Version**: 2.3 (2026-03-11)
