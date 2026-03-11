@@ -225,18 +225,19 @@ class UnifiedBRDValidator:
         elif "template_variant" in custom_fields:
             profile = custom_fields["template_variant"]
 
-        # Run Tier 1 checks
-        # For section-based layouts, only validate structure/metadata on index file
-        # Section files (non-index) only get element code validation
-        if not is_section_layout or is_index_file:
-            validate_metadata(
-                content=content,
-                frontmatter=fm_result,
-                file_path=file_path,
-                result=result,
-                is_template=is_template,
-            )
+        # Run Tier 1 checks on ALL files (index and section files)
+        # Section files use relaxed requirements (fewer required fields)
+        validate_metadata(
+            content=content,
+            frontmatter=fm_result,
+            file_path=file_path,
+            result=result,
+            is_template=is_template,
+            is_section_file=is_section_layout and not is_index_file,
+        )
 
+        # Structure validation only on index files (sections have different structure)
+        if not is_section_layout or is_index_file:
             validate_structure(
                 content=content,
                 file_path=file_path,

@@ -36,6 +36,7 @@ def validate_metadata(
     file_path: Path,
     result: UnifiedValidationResult,
     is_template: bool = False,
+    is_section_file: bool = False,
 ) -> None:
     """
     Validate BRD metadata.
@@ -46,27 +47,35 @@ def validate_metadata(
         file_path: Path to file
         result: Result to populate
         is_template: Whether file is a template
+        is_section_file: Whether this is a section file (not index)
     """
     # Validate custom_fields
-    _validate_custom_fields(frontmatter, file_path, result)
+    _validate_custom_fields(frontmatter, file_path, result, is_section_file)
 
     # Validate tags (skip for templates)
     if not is_template:
-        _validate_tags(frontmatter, file_path, result)
+        _validate_tags(frontmatter, file_path, result, is_section_file)
 
     # Check for legacy status values
     _check_legacy_status(frontmatter, file_path, result)
 
-    # Check for @depends tags on platform BRDs
-    _check_depends_tags(content, file_path, result)
+    # Check for @depends tags on platform BRDs (index files only)
+    if not is_section_file:
+        _check_depends_tags(content, file_path, result)
 
 
 def _validate_custom_fields(
     frontmatter: FrontmatterResult,
     file_path: Path,
     result: UnifiedValidationResult,
+    is_section_file: bool = False,
 ) -> None:
-    """Validate required custom_fields."""
+    """Validate required custom_fields.
+
+    Args:
+        is_section_file: If True, uses relaxed requirements (section files
+            don't need architecture_approaches, priority, status)
+    """
     custom_fields = frontmatter.data.get("custom_fields", {})
 
     if not custom_fields:
@@ -116,8 +125,15 @@ def _validate_custom_fields(
             tier=ValidationTier.TIER2,
         )
 
+    # Fields only required for index files (not section files)
+    index_only_fields = {"architecture_approaches", "priority", "status"}
+
     # Validate each required field
     for field_name, rules in REQUIRED_CUSTOM_FIELDS.items():
+        # Skip index-only fields for section files
+        if is_section_file and field_name in index_only_fields:
+            continue
+
         value = custom_fields.get(field_name)
 
         if value is None:
@@ -156,8 +172,14 @@ def _validate_tags(
     frontmatter: FrontmatterResult,
     file_path: Path,
     result: UnifiedValidationResult,
+    is_section_file: bool = False,
 ) -> None:
-    """Validate required and forbidden tags."""
+    """Validate required and forbidden tags.
+
+    Args:
+        is_section_file: If True, 'brd' tag is not required (section files
+            may use 'brd-section' instead)
+    """
     tags = frontmatter.data.get("tags", [])
 
     if not isinstance(tags, list):
@@ -175,6 +197,9 @@ def _validate_tags(
     for required_tag in REQUIRED_TAGS:
         if required_tag not in tags_set:
             if required_tag == "brd":
+                # Section files can use 'brd-section' instead of 'brd'
+                if is_section_file and "brd-section" in tags_set:
+                    continue  # Accept brd-section as valid for section files
                 result.add_issue(
                     "BRD-E003",
                     file_path=file_path,
