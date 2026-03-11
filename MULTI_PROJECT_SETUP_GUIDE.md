@@ -4,7 +4,7 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-02-22T00:00:00
+**Last Updated**: 2026-03-11T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
@@ -41,21 +41,33 @@ This repository provides a **unified SDD framework** with scalable depth:
 ```
 /opt/data/
 ├── docs_flow_framework/              # Central framework repository
+│   ├── UCX/                          # Unified CLI (Python package)
+│   │   ├── ucx/                      # Source code
+│   │   │   ├── cli/                  # CLI commands
+│   │   │   ├── validators/           # Document validators
+│   │   │   │   ├── brd/              # BRD validator (complete)
+│   │   │   │   └── common/           # Shared validation utilities
+│   │   │   └── api/                  # Review/remediation API
+│   │   ├── bin/                      # CLI entry points
+│   │   └── docs/                     # UCX documentation
+│   │
 │   ├── ai_dev_ssd_flow/              # SDD templates (12 layers)
 │   │   ├── 01_BRD/                   # Business Requirements
 │   │   ├── 02_PRD/                   # Product Requirements
 │   │   ├── ...                       # (layers 03-11)
 │   │   └── AUTOPILOT/                # Automation scripts
 │   │
-│   ├── governance/       # SDD governance templates
+│   ├── governance/                   # SDD governance templates
 │   │   ├── governance/               # PROJECT_PLAN, rules
 │   │   ├── templates/                # README, CLAUDE.md
 │   │   ├── .github/                  # Workflows, issue templates
 │   │   └── docs/                     # ADRs, QA docs
 │   │
 │   ├── scripts/                      # Validation and automation tools
+│   │   └── ucx-validate.sh           # UCX wrapper for all layers
 │   ├── project_knowledge/            # Standalone RAG + Graph + MCP package
 │   ├── framework_rags/               # Shared rag_tools and reference services
+│   ├── .venv/                        # Shared Python virtual environment
 │   └── .claude/
 │       ├── skills/                   # Shared skills (50+)
 │       ├── commands/                 # Shared slash commands
@@ -63,11 +75,13 @@ This repository provides a **unified SDD framework** with scalable depth:
 │
 └── projects/
     ├── project_a/                    # Individual projects
+    │   ├── .envrc                    # direnv: PYTHONPATH, venv activation
     │   ├── docs/                     # Project artifacts (BRD, ADR, etc.)
     │   ├── src/                      # Source code
+    │   ├── ai_dev_flow/              # Symlink → SDD templates (optional)
     │   ├── .templates/
     │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD templates
-    │   │   └── governance/ # Symlink → SDD governance
+    │   │   └── governance/           # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
     │       ├── commands/             # Symlink → shared commands
@@ -77,6 +91,146 @@ This repository provides a **unified SDD framework** with scalable depth:
     │
     └── project_b/
         └── [same structure]
+```
+
+---
+
+## UCX Framework Integration (Development Mode)
+
+UCX is the unified CLI for document creation, review, and remediation. During active development, use **PYTHONPATH** instead of pip install to always have the latest version.
+
+### Integration Options
+
+| Approach | Up-to-date | Version Control | Best For |
+|----------|------------|-----------------|----------|
+| **PYTHONPATH + direnv** | ✅ Always | ❌ No pinning | Active development (recommended) |
+| **Pip Editable Install** | ✅ Always | ❌ No pinning | Stable development |
+| **Pip Install (release)** | ⚠️ On update | ✅ Semver | Production use |
+
+### Option 1: direnv (Recommended for Development)
+
+Create `.envrc` in your project root:
+
+```bash
+# /opt/data/your_project/.envrc
+
+# Framework root
+export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+
+# Add UCX to Python path (no pip install needed)
+export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
+
+# Add UCX bin to PATH for CLI commands
+export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
+
+# Use framework's shared virtual environment
+source "$FRAMEWORK_ROOT/.venv/bin/activate"
+
+# UCX project root (for config discovery)
+export UCX_PROJECT_ROOT="$PWD"
+```
+
+Enable for your project:
+
+```bash
+cd /opt/data/your_project
+direnv allow
+```
+
+**Verification**:
+
+```bash
+# Test UCX import (no install required)
+python -c "from ucx.cli import main; print('UCX available')"
+
+# Test UCX CLI
+ucx --version
+
+# Test UCX validate
+ucx validate brd docs/01_BRD/ --tier1-only
+```
+
+### Option 2: Shell Profile (Global)
+
+Add to `~/.bashrc` or `~/.zshrc`:
+
+```bash
+# Framework paths (global availability)
+export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
+export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
+
+# Alias to activate framework venv
+alias fw='source $FRAMEWORK_ROOT/.venv/bin/activate'
+```
+
+### Option 3: Project Wrapper Script
+
+Create a project-local UCX wrapper:
+
+```bash
+#!/bin/bash
+# /opt/data/your_project/bin/ucx
+
+FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH" \
+  "$FRAMEWORK_ROOT/.venv/bin/python" -m ucx.cli "$@"
+```
+
+Make executable:
+
+```bash
+chmod +x /opt/data/your_project/bin/ucx
+```
+
+### UCX Commands Available
+
+Once configured, all UCX commands work without installation:
+
+```bash
+# Document validation (non-AI)
+ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+
+# AI-powered review
+ucx review brd docs/01_BRD/BRD-01/
+
+# AI-powered remediation
+ucx remediate docs/01_BRD/BRD-01/
+
+# List available validators
+ucx validate --help
+```
+
+### Pre-commit with UCX (No Install)
+
+Configure pre-commit to use framework UCX:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: ucx-brd-validate
+        name: UCX BRD Validation (Tier 1)
+        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && PYTHONPATH=/opt/data/docs_flow_framework/UCX:$PYTHONPATH ucx validate brd docs/01_BRD --tier1-only'
+        language: system
+        files: ^docs/01_BRD/.*\.md$
+        stages: [pre-commit]
+```
+
+Or use the framework wrapper script:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: ucx-brd-validate
+        name: UCX BRD Validation (Tier 1)
+        entry: /opt/data/docs_flow_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
+        language: system
+        files: ^docs/01_BRD/.*\.md$
+        stages: [pre-commit]
 ```
 
 ---
@@ -232,6 +386,32 @@ if [ -f "$GITIGNORE" ]; then
     grep -q "^!.claude/settings.local.json$" "$GITIGNORE" || echo "!.claude/settings.local.json" >> "$GITIGNORE"
 fi
 
+# Create .envrc for direnv (UCX without pip install)
+if [ ! -f "$PROJECT_DIR/.envrc" ]; then
+    cat > "$PROJECT_DIR/.envrc" << 'ENVRC'
+# Framework root
+export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+
+# Add UCX to Python path (no pip install needed)
+export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
+
+# Add UCX bin to PATH
+export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
+
+# Use framework's shared virtual environment
+source "$FRAMEWORK_ROOT/.venv/bin/activate"
+
+# UCX project root (for config discovery)
+export UCX_PROJECT_ROOT="$PWD"
+ENVRC
+    echo "Created .envrc for UCX integration"
+fi
+
+# Add .envrc to .gitignore if not present
+if [ -f "$GITIGNORE" ]; then
+    grep -q "^.envrc$" "$GITIGNORE" || echo ".envrc" >> "$GITIGNORE"
+fi
+
 # Verify setup
 echo ""
 echo "✓ Setup complete. Verifying structure..."
@@ -244,6 +424,13 @@ ls -la "$PROJECT_DIR/.claude/" | grep "^d" | grep custom
 echo ""
 echo "Template access:"
 ls -la "$PROJECT_DIR/.templates/"
+echo ""
+echo "UCX integration (.envrc):"
+if [ -f "$PROJECT_DIR/.envrc" ]; then
+    echo "  ✓ .envrc created - run 'direnv allow' to activate"
+else
+    echo "  ⚠ .envrc not created"
+fi
 ```
 
 **Note**: This script creates symlinks for shared resources only. To complete the project setup with documentation folders (`docs/`) and implementation plans folder (`work_plans/`), use:
@@ -388,6 +575,7 @@ When using `--with-github`, the following resources are symlinked:
 
 ```
 /opt/data/project_name/
+├── .envrc                           # direnv config (UCX PYTHONPATH, venv)
 ├── .claude/
 │   ├── skills/                      # Symlink → framework shared skills
 │   ├── commands/                    # Symlink → framework shared commands
@@ -412,13 +600,15 @@ When using `--with-github`, the following resources are symlinked:
 │
 ├── .templates/
 │   ├── ai_dev_ssd_flow/             # Symlink → SDD templates (12 layers)
-│   └── governance/      # Symlink → SDD governance templates
+│   └── governance/                  # Symlink → SDD governance templates
+│
+├── ai_dev_flow/                     # Optional: Symlink → SDD templates (convenience)
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
-│   ├── BRD/
-│   ├── PRD/
-│   ├── ADR/
-│   ├── REQ/
+│   ├── 01_BRD/
+│   ├── 02_PRD/
+│   ├── 05_ADR/
+│   ├── 07_REQ/
 │   └── generated/
 │       └── matrices/
 │
@@ -580,12 +770,16 @@ Test service connection and report status with diagnostics
 Add to each project's `.gitignore`:
 
 ```gitignore
+# Environment configuration (machine-specific paths)
+.envrc
+
 # Shared framework resources (symlinks - do not commit)
 .claude/skills
 .claude/commands
 .claude/agents
 .templates/ai_dev_ssd_flow
 .templates/governance
+ai_dev_flow
 scripts/validate
 
 # Keep project-specific resources (commit these)
@@ -946,6 +1140,18 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ---
 
 ## Changelog
+
+### Version 2.2 (2026-03-11)
+
+- **UCX Framework Integration**: Added comprehensive section for UCX development mode
+  - PYTHONPATH-based integration (no pip install required)
+  - direnv `.envrc` configuration for automatic environment setup
+  - Pre-commit hook configuration with UCX
+  - Three integration options: direnv, shell profile, wrapper script
+- Updated architecture diagram to include UCX package structure
+- Updated setup script to auto-generate `.envrc` file
+- Updated project layout to include `.envrc` and `ai_dev_flow/` symlink
+- Added UCX CLI commands documentation
 
 ### Version 2.1 (2026-02-17T00:00:00)
 
