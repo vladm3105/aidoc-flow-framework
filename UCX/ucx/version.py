@@ -5,6 +5,7 @@ __version_info__ = tuple(int(x) for x in __version__.split("."))
 
 # v1.9.6 - Auto-Fix for Structural Issues
 # - Added --fix flag to `ucx validate` command for deterministic fixes
+# - Added --report flag to auto-generate report after fixing (use with --fix)
 # - New ucx/validators/brd/fixer.py module with BRDFixer class
 # - Fixable issues: BRD-E002 (metadata), BRD-E003/E004 (tags), BRD-E009 (Doc Control),
 #   BRD-W005 (legacy status field), VAL-W002 (legacy status value)
