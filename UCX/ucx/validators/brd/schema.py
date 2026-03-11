@@ -195,8 +195,14 @@ SECTION_CODE_MAP: Dict[str, Union[str, Set[str]]] = {
 
 # Preferred codes when multiple are valid
 PREFERRED_SECTION_CODES: Dict[str, str] = {
-    "6": "01",  # Functional Requirements primary; Acceptance Criteria embedded
-    "7.2": "10",  # Decision (canonical) over Architecture Topic (legacy)
+    "6": "01",   # Functional Requirements primary; Acceptance Criteria embedded
+    "7.2": "10", # Decision (canonical) over Architecture Topic (legacy)
+    "7.3": "91", # Performance (canonical)
+    "7.4": "92", # Reliability (canonical)
+    "7.5": "94", # Scalability (canonical)
+    "7.6": "96", # Security (canonical)
+    "7.7": "98", # Observability (canonical)
+    "7.8": "99", # Maintainability (canonical)
     "10": "07",  # Risk (canonical) over Dependency (legacy)
 }
 
