@@ -483,6 +483,7 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
       ucx validate brd docs/01_BRD/BRD-01 -o validation_report.md
       ucx validate brd docs/01_BRD/BRD-01 --fix
       ucx validate brd docs/01_BRD/BRD-01 --fix --report
+      ucx validate brd docs/01_BRD/BRD-01 --fix --report --clean-reports
       ucx validate brd docs/01_BRD/BRD-01 --fix --tier1-only
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
@@ -492,43 +493,44 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
 
     doc_path = Path(doc_path)
 
-    # Handle --clean-reports flag
-    if clean_reports:
-        # Find all validation report files (*.V_validation_report_v*.md)
+    def _clean_old_reports(target_path: Path, keep: int) -> None:
+        """Clean up old validation reports, keeping N most recent."""
         report_patterns = ["*.V_validation_report_v*.md", "*_validation_report_v*.md"]
         all_reports = []
 
         for pattern in report_patterns:
-            all_reports.extend(doc_path.glob(pattern))
+            all_reports.extend(target_path.glob(pattern))
 
         # Remove duplicates and sort by modification time (newest first)
         all_reports = list(set(all_reports))
         all_reports.sort(key=lambda f: f.stat().st_mtime, reverse=True)
 
-        if len(all_reports) > keep_versions:
-            # Keep N latest versions, remove the rest
-            to_keep = all_reports[:keep_versions]
-            to_remove = all_reports[keep_versions:]
+        if len(all_reports) > keep:
+            to_keep = all_reports[:keep]
+            to_remove = all_reports[keep:]
 
             removed_count = 0
             removed_size = 0
-            for report in to_remove:
-                removed_size += report.stat().st_size
-                report.unlink()
+            for rpt in to_remove:
+                removed_size += rpt.stat().st_size
+                rpt.unlink()
                 removed_count += 1
-                console.print(f"  [dim]Removed:[/dim] {report.name}")
+                console.print(f"  [dim]Removed:[/dim] {rpt.name}")
 
-            console.print(f"[green]Cleaned up old validation reports:[/green] {doc_path}")
+            console.print(f"[green]Cleaned up old validation reports:[/green] {target_path}")
             for kept in to_keep:
                 console.print(f"  [green]Kept:[/green] {kept.name}")
             console.print(f"  Removed: {removed_count} files ({removed_size / 1024:.1f} KB)")
         elif len(all_reports) >= 1:
-            console.print(f"[yellow]Found {len(all_reports)} validation report(s), keeping all (--keep-versions={keep_versions})[/yellow]")
-            for report in all_reports:
-                console.print(f"  {report.name}")
+            console.print(f"[yellow]Found {len(all_reports)} validation report(s), keeping all (--keep-versions={keep})[/yellow]")
+            for rpt in all_reports:
+                console.print(f"  {rpt.name}")
         else:
-            console.print(f"[yellow]No validation reports found in:[/yellow] {doc_path}")
+            console.print(f"[yellow]No validation reports found in:[/yellow] {target_path}")
 
+    # Handle --clean-reports flag (standalone mode - cleanup only)
+    if clean_reports and not fix:
+        _clean_old_reports(doc_path, keep_versions)
         return  # Exit after cleanup
 
     doc_type_lower = doc_type.lower()
@@ -614,6 +616,11 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
 
             output_path.write_text(output_content)
             console.print(f"[green]Validation report written to:[/green] {output_path}")
+
+            # Clean up old reports if --clean-reports was used with --fix
+            if clean_reports:
+                console.print()  # Blank line before cleanup output
+                _clean_old_reports(doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent, keep_versions)
         else:
             # Console output uses simple text format
             if output_format == "json":
