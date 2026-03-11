@@ -453,8 +453,10 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 @click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
+@click.option("--clean-reports", is_flag=True, help="Clean up old validation reports, keep only latest (or --keep-versions)")
+@click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.pass_context
-def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format):
+def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, clean_reports, keep_versions):
     """
     Validate a document (no AI review).
 
@@ -469,9 +471,52 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format)
       ucx validate brd docs/01_BRD/BRD-01 --tier1-only
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
       ucx validate brd docs/01_BRD/BRD-01 -o validation_report.md
+      ucx validate brd docs/01_BRD/BRD-01 --clean-reports
+      ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
     """
     import json
     import sys
+
+    doc_path = Path(doc_path)
+
+    # Handle --clean-reports flag
+    if clean_reports:
+        # Find all validation report files (*.V_validation_report_v*.md)
+        report_patterns = ["*.V_validation_report_v*.md", "*_validation_report_v*.md"]
+        all_reports = []
+
+        for pattern in report_patterns:
+            all_reports.extend(doc_path.glob(pattern))
+
+        # Remove duplicates and sort by modification time (newest first)
+        all_reports = list(set(all_reports))
+        all_reports.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+
+        if len(all_reports) > keep_versions:
+            # Keep N latest versions, remove the rest
+            to_keep = all_reports[:keep_versions]
+            to_remove = all_reports[keep_versions:]
+
+            removed_count = 0
+            removed_size = 0
+            for report in to_remove:
+                removed_size += report.stat().st_size
+                report.unlink()
+                removed_count += 1
+                console.print(f"  [dim]Removed:[/dim] {report.name}")
+
+            console.print(f"[green]Cleaned up old validation reports:[/green] {doc_path}")
+            for kept in to_keep:
+                console.print(f"  [green]Kept:[/green] {kept.name}")
+            console.print(f"  Removed: {removed_count} files ({removed_size / 1024:.1f} KB)")
+        elif len(all_reports) >= 1:
+            console.print(f"[yellow]Found {len(all_reports)} validation report(s), keeping all (--keep-versions={keep_versions})[/yellow]")
+            for report in all_reports:
+                console.print(f"  {report.name}")
+        else:
+            console.print(f"[yellow]No validation reports found in:[/yellow] {doc_path}")
+
+        return  # Exit after cleanup
 
     doc_type_lower = doc_type.lower()
 

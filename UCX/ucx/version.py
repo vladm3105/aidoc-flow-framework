@@ -1,7 +1,13 @@
 """Version information for UCX."""
 
-__version__ = "1.9.4"
+__version__ = "1.9.5"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.5 - Validation Report Cleanup
+# - Added --clean-reports flag to `ucx validate` command
+# - Added --keep-versions option (default: 1) to control retention
+# - Cleans up old *.V_validation_report_v*.md files
+# - Matches cleanup functionality in `ucx review` command
 
 # v1.9.4 - QA Subcategory Codes and Pattern Compliance
 # - Added QA subcategory codes 91-99 to VALID_BRD_CODES:
