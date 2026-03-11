@@ -110,9 +110,11 @@ DOCUMENT_CONTROL_FIELDS = [
 # =============================================================================
 
 # Valid BRD element type codes
+# Source: ID_NAMING_STANDARDS.md (Canonical authority for element type codes)
+# Codes 74-90 are reserved for future use
 VALID_BRD_CODES: Set[str] = {
     "01",  # Functional Requirement
-    "02",  # Quality Attribute
+    "02",  # Quality Attribute (generic)
     "03",  # Constraint
     "04",  # Assumption
     "05",  # Dependency
@@ -124,10 +126,21 @@ VALID_BRD_CODES: Set[str] = {
     "22",  # Feature Item
     "23",  # Business Objective
     "24",  # Stakeholder Need
-    "32",  # Architecture Topic
+    "32",  # Architecture Topic (Legacy compatibility)
+    # Quality Attribute Subcategories (91-99 series) - Section 7.x
+    "91",  # Performance Requirement (Section 7.3)
+    "92",  # Reliability Requirement (Section 7.4)
+    "93",  # Availability Requirement (reserved)
+    "94",  # Scalability Requirement (Section 7.5)
+    "95",  # Usability Requirement (reserved)
+    "96",  # Security Requirement (Section 7.6)
+    "97",  # Compatibility Requirement (reserved)
+    "98",  # Observability Requirement (Section 7.7)
+    "99",  # Maintainability Requirement (Section 7.8)
 }
 
 # Element type code descriptions
+# Source: ID_NAMING_STANDARDS.md (Canonical authority for element type codes)
 ELEMENT_CODE_DESCRIPTIONS: Dict[str, str] = {
     "01": "Functional Requirement",
     "02": "Quality Attribute",
@@ -143,16 +156,37 @@ ELEMENT_CODE_DESCRIPTIONS: Dict[str, str] = {
     "23": "Business Objective",
     "24": "Stakeholder Need",
     "32": "Architecture Topic",
+    # Quality Attribute Subcategories (91-99 series)
+    "91": "Performance Requirement",
+    "92": "Reliability Requirement",
+    "93": "Availability Requirement",
+    "94": "Scalability Requirement",
+    "95": "Usability Requirement",
+    "96": "Security Requirement",
+    "97": "Compatibility Requirement",
+    "98": "Observability Requirement",
+    "99": "Maintainability Requirement",
 }
 
 # Section to valid element type code(s) mapping
 # Values can be a single code string or a set of valid codes
+# Source: ID_NAMING_STANDARDS.md - QA Subcategories use hierarchical codes 91-99
 SECTION_CODE_MAP: Dict[str, Union[str, Set[str]]] = {
     "2": "23",  # Business Objectives
+    "3": "22",  # Project Scope / Feature Items
+    "4": "24",  # Stakeholders / Stakeholder Needs
     "5": "09",  # User Stories
     "6": {"01", "06"},  # Functional Requirements (01) + Acceptance Criteria tables (06)
-    "7.1": "02",  # Quality Attributes
+    "7.1": "02",  # Quality Attributes (generic overview)
     "7.2": {"10", "32"},  # ADR Topics / Architecture Topics (10 canonical, 32 legacy)
+    # Quality Attribute Subcategory Sections - hierarchical codes 91-99
+    # Code 02/05 tolerated for legacy; specific 9x codes are canonical
+    "7.3": {"02", "05", "91"},  # Performance Requirements (91 canonical)
+    "7.4": {"02", "05", "92"},  # Reliability Requirements (92 canonical)
+    "7.5": {"02", "05", "94"},  # Scalability Requirements (94 canonical)
+    "7.6": {"02", "05", "96"},  # Security Requirements (96 canonical)
+    "7.7": {"02", "05", "98"},  # Observability Requirements (98 canonical)
+    "7.8": {"02", "05", "99"},  # Maintainability Requirements (99 canonical)
     "8.1": "03",  # Constraints
     "8.2": "04",  # Assumptions
     "9": "06",  # Acceptance Criteria

@@ -21,10 +21,18 @@ from ucx.validators.common.result import (
 # Mermaid code block pattern
 MERMAID_BLOCK_PATTERN = re.compile(r'```mermaid\s*\n(.*?)```', re.DOTALL)
 
-# Architecture section headers
+# Architecture section headers (for visual system architecture diagrams)
+# Excludes Architecture Decision Topics (ADT), Architecture Decision Records (ADR)
+# which describe decisions, not visual system architecture
 ARCH_SECTION_PATTERN = re.compile(
     r'^##\s+.*(?:Architecture|System Design|Infrastructure|Deployment).*$',
     re.MULTILINE | re.IGNORECASE
+)
+
+# Exclusion patterns for architecture decision sections (not visual architecture)
+ARCH_DECISION_EXCLUSION_PATTERN = re.compile(
+    r'(?:Decision|ADT|ADR|Topic|Record|Overview)',
+    re.IGNORECASE
 )
 
 # SVG reference patterns
@@ -191,7 +199,14 @@ def validate_diagrams(
     # Check for architecture sections without diagrams
     arch_sections = ARCH_SECTION_PATTERN.findall(content)
 
-    if arch_sections and not mermaid_blocks:
+    # Filter out architecture decision sections (ADT, ADR, Topic, etc.)
+    # These describe decisions, not visual system architecture
+    visual_arch_sections = [
+        section for section in arch_sections
+        if not ARCH_DECISION_EXCLUSION_PATTERN.search(section)
+    ]
+
+    if visual_arch_sections and not mermaid_blocks:
         # Check if SVG diagrams are present instead
         svg_refs = extract_svg_references(content)
         if not svg_refs:
@@ -199,7 +214,7 @@ def validate_diagrams(
                 "DIAG-E001",
                 file_path=file_path,
                 context="Architecture section found but no diagram (Mermaid or SVG)",
-                tier=ValidationTier.TIER2,
+                tier=ValidationTier.TIER1,  # E001 = Error, must be Tier 1
             )
 
     # Validate SVG references exist

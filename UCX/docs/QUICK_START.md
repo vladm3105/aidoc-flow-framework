@@ -15,7 +15,7 @@ source /opt/data/docs_flow_framework/.venv/bin/activate
 
 # Verify installation
 ucx --version
-# Expected: ucx, version 1.9.2+
+# Expected: ucx, version 1.9.3+
 ```
 
 ## Basic Commands
@@ -23,17 +23,38 @@ ucx --version
 ### Validate a BRD Document
 
 ```bash
-# Full validation (Tier 1 + Tier 2)
+# Full validation (Tier 1 + Tier 2) - console output
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/
 
 # Pre-commit validation (Tier 1 only, fast)
-ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --tier1-only
 
 # Strict mode (warnings treated as errors)
-ucx validate brd docs/01_BRD/BRD-01/ --strict
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --strict
 
 # JSON output for CI/CD
-ucx validate brd docs/01_BRD/BRD-01/ --format json
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json
+
+# Write SDD-compliant validation report to document directory (auto-versioned)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o docs/01_BRD/BRD-01_platform_architecture/
+# → Creates: BRD-01.V_validation_report_v001.md
+
+# Write validation report to specific file
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validation.md
+
+# JSON report to file
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
+```
+
+**Validation Report Structure (when using `-o`):**
+```
+## 0. Document Control (YAML frontmatter + table)
+## 1. Executive Summary
+## 2. Validation Score Breakdown
+## 3. Tier 1 Findings (Core Checks)
+## 4. Tier 2 Findings (Advisory Checks)
+## 5. Checks Performed
+## 6. Recommended Next Steps
 ```
 
 ### Review a BRD Document
@@ -77,17 +98,33 @@ ucx --project-dir . remediate brd docs/01_BRD/BRD-01_platform_architecture/
 
 Before AI review, UCX runs UnifiedBRDValidator with tiered checks:
 
-**Tier 1 (Core, blocking):**
-- Element codes (BRD.NN.TT.SS format)
-- Structure (sections, H1, file naming)
-- Metadata (frontmatter, custom_fields, tags)
-- Quality gates (placeholders, downstream refs, duplicates)
+**Tier 1 (Core, blocking)** - Must pass before proceeding:
 
-**Tier 2 (Advisory, non-blocking):**
-- Links validation (traceability section)
-- Forward references (SDD layer compliance)
-- Diagram consistency (Mermaid/SVG vs prose)
-- Quality gates (glossary, counts, cost format)
+| Check | Description | Error Codes |
+|-------|-------------|-------------|
+| Element codes | `BRD.NN.TT.SS` format, uniqueness | `GATE-E008`, `BRD-E001` |
+| Structure | Required sections, H1 headings, file naming | `BRD-E006`, `BRD-E002` |
+| Metadata | YAML frontmatter, `custom_fields`, tags | `BRD-E002`, `BRD-E003` |
+| Quality gates | Placeholders, downstream refs, file size | `GATE-E001`, `GATE-E002`, `GATE-E010` |
+
+**Tier 2 (Advisory, non-blocking)** - Recommendations for quality:
+
+| Check | Description | Warning Codes |
+|-------|-------------|---------------|
+| Links | Markdown link validation | `LINK-W*` |
+| Forward references | SDD layer compliance | `FWDREF-W*` |
+| Diagrams | Mermaid/SVG vs prose consistency | `DIAG-W001` |
+| Quality gates | Glossary, counts, cost format | `GATE-W003`, `GATE-W007`, `GATE-W009` |
+
+**Exit Codes:**
+
+| Code | Meaning | `--tier1-only` | `--strict` |
+|------|---------|----------------|------------|
+| `0` | All passed | ✅ | ✅ |
+| `1` | Tier 2 warnings only | N/A (skipped) | ❌ Fails |
+| `2` | Tier 1 errors | ❌ Fails | ❌ Fails |
+
+> **Note**: Exit code 2 indicates validation completed successfully but found blocking errors - this is expected behavior, not a command failure. The validation report is still generated. These exit codes enable CI/CD integration where pipelines can distinguish between warnings (1) and errors (2).
 
 Use `ucx validate brd <path>` for standalone validation or `ucx review brd <path>` for full AI review pipeline.
 
@@ -235,6 +272,7 @@ ucx --project-dir . --model sonnet review prd docs/02_PRD/PRD-01/
 
 | Version | Changes |
 |---------|---------|
+| 1.9.3 | SDD-compliant validation reports with YAML frontmatter, auto-versioning, report naming `{DOC-ID}.V_validation_report_v{NNN}.md` |
 | 1.9.2 | Unified validator registry integration - `ucx review` uses UnifiedBRDValidator |
 | 1.9.1 | Tier 2 advisory validators (links, references, diagrams) |
 | 1.9.0 | Unified BRD Validation with tiered checks and quality gates |

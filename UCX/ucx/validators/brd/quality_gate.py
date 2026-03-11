@@ -6,7 +6,7 @@ Implements 10 GATE checks:
 - GATE-03: Internal count consistency (Tier 2)
 - GATE-04: Index synchronization (Tier 1)
 - GATE-05: DEPRECATED (Inter-BRD cross-linking)
-- GATE-06: Diagram contract validation (Tier 2, advisory)
+- GATE-06: Diagram contract validation (Tier 1)
 - GATE-07: Glossary consistency (Tier 2)
 - GATE-08: Element ID uniqueness (Tier 1 for duplicates, Tier 2 for misplaced)
 - GATE-09: Cost estimate format (Tier 2)

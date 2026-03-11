@@ -180,7 +180,7 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     ),
     "BRD-E020": (
         "Invalid element type code",
-        "Use valid BRD type code (01-32)",
+        "Use valid BRD type code (01-32, 91-99 for QA subcategories)",
     ),
     "BRD-W023": (
         "Legacy-compatible type code used",

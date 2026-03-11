@@ -295,7 +295,7 @@ class UnifiedValidationResult:
 
     def format_text(self, verbose: bool = False) -> str:
         """
-        Format result as text output.
+        Format result as text output (legacy format).
 
         Args:
             verbose: Include all passes
@@ -351,5 +351,223 @@ class UnifiedValidationResult:
             lines.append("Passes:")
             for p in self.passes:
                 lines.append(f"  [PASS] {p}")
+
+        return "\n".join(lines)
+
+    def format_report(self, doc_id: str, doc_type: str = "BRD", version: int = 1) -> str:
+        """
+        Format result as SDD-compliant validation report with YAML frontmatter.
+
+        Args:
+            doc_id: Document ID (e.g., 'BRD-01')
+            doc_type: Document type (e.g., 'BRD', 'PRD')
+            version: Report version number
+
+        Returns:
+            SDD-compliant markdown report
+        """
+        from datetime import datetime
+
+        from ucx.version import __version__
+
+        now = datetime.now()
+        validation_date = now.strftime("%Y-%m-%dT%H:%M:%S")
+        report_id = f"VAL-{doc_type.upper()}-{doc_id.split('-')[-1]}-v{version:03d}"
+
+        # Calculate validation score (100 - penalty)
+        # Each Tier 1 error = -2 points, Tier 1 warning = -1, Tier 2 warning = -0.5
+        score = 100.0
+        score -= len(self.tier1_errors) * 2
+        score -= len(self.tier1_warnings) * 1
+        score -= len(self.tier2_warnings) * 0.5
+        score = max(0, score)  # Don't go negative
+
+        status_emoji = "✅" if self.is_valid else "❌"
+        status_text = "PASS" if self.is_valid else "FAIL"
+
+        lines = []
+
+        # YAML Frontmatter
+        lines.append("---")
+        lines.append(f"doc_id: {doc_id}.V")
+        lines.append(f'title: "{doc_id} Validation Report - Structural Quality Check"')
+        lines.append(f"report_version: v{version:03d}")
+        lines.append(f"validation_date: {validation_date}")
+        lines.append(f"validator: UCX Framework v{__version__}")
+        lines.append("tags:")
+        lines.append("  - validation-report")
+        lines.append(f"  - {doc_type.lower()}-quality")
+        lines.append("  - structural-validation")
+        lines.append("  - quality-assurance")
+        lines.append("custom_fields:")
+        lines.append("  artifact_type: VALIDATION")
+        lines.append(f"  validated_document: {doc_id}")
+        lines.append(f"  validation_score: {score:.1f}")
+        lines.append(f"  status: {status_text}")
+        lines.append(f"  tier1_errors: {len(self.tier1_errors)}")
+        lines.append(f"  tier1_warnings: {len(self.tier1_warnings)}")
+        lines.append(f"  tier2_warnings: {len(self.tier2_warnings)}")
+        lines.append(f"  checks_run: {len(self.checks_run)}")
+        lines.append("---")
+        lines.append("")
+
+        # Document Title
+        lines.append(f"# {doc_id} Validation Report v{version:03d}")
+        lines.append("")
+
+        # Document Control
+        lines.append("## 0. Document Control")
+        lines.append("")
+        lines.append("| Item | Details |")
+        lines.append("|------|---------|")
+        lines.append(f"| **Source Document** | {doc_id} |")
+        lines.append(f"| **Report ID** | {report_id} |")
+        lines.append(f"| **Validation Date** | {validation_date} |")
+        lines.append(f"| **Validation Method** | UCX Unified Validator (Tier 1 + Tier 2) |")
+        lines.append(f"| **Validator Version** | UCX Framework v{__version__} |")
+        lines.append(f"| **Checks Run** | {len(self.checks_run)} |")
+        lines.append(f"| **Status** | {status_text} {status_emoji} |")
+        lines.append(f"| **Validation Score** | {score:.1f}/100 |")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Executive Summary
+        lines.append("## 1. Executive Summary")
+        lines.append("")
+        lines.append(f"**Document**: {doc_id}")
+        lines.append(f"**Path**: `{self.doc_path}`")
+        lines.append(f"**Validation Date**: {validation_date}")
+        lines.append(f"**Overall Score**: **{score:.1f}/100** {status_emoji} {status_text}")
+        lines.append("")
+
+        if self.is_valid:
+            lines.append("The document passes all Tier 1 (blocking) structural checks.")
+        else:
+            lines.append(f"The document has **{len(self.tier1_errors)} Tier 1 errors** that must be resolved before proceeding.")
+
+        if self.tier2_warnings:
+            lines.append(f"There are also **{len(self.tier2_warnings)} Tier 2 advisory warnings** for consideration.")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Score Breakdown
+        lines.append("## 2. Validation Score Breakdown")
+        lines.append("")
+        lines.append("| Category | Count | Penalty | Notes |")
+        lines.append("|----------|-------|---------|-------|")
+        lines.append(f"| Tier 1 Errors | {len(self.tier1_errors)} | -{len(self.tier1_errors) * 2} pts | Blocking issues |")
+        lines.append(f"| Tier 1 Warnings | {len(self.tier1_warnings)} | -{len(self.tier1_warnings) * 1} pts | Core check warnings |")
+        lines.append(f"| Tier 2 Warnings | {len(self.tier2_warnings)} | -{len(self.tier2_warnings) * 0.5:.1f} pts | Advisory issues |")
+        lines.append(f"| **Total Score** | | **{score:.1f}/100** | {status_text} |")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Tier 1 Findings
+        lines.append("## 3. Tier 1 Findings (Core Checks)")
+        lines.append("")
+        lines.append("Tier 1 checks are **blocking** and must be resolved before downstream processing.")
+        lines.append("")
+
+        if self.tier1_errors:
+            lines.append("### 3.1 Errors")
+            lines.append("")
+            lines.append("| # | Code | File | Line | Issue | Remediation |")
+            lines.append("|---|------|------|------|-------|-------------|")
+            for i, issue in enumerate(self.tier1_errors, 1):
+                file_str = str(issue.file_path.name) if issue.file_path else "-"
+                line_str = str(issue.line) if issue.line else "-"
+                error = get_error(issue.code)
+                remediation = error.remediation if error else "See documentation"
+                context = (issue.context[:80] + "..." if len(issue.context) > 80 else issue.context).replace("|", "\\|")
+                lines.append(f"| {i} | `{issue.code}` | `{file_str}` | {line_str} | {context} | {remediation} |")
+            lines.append("")
+        else:
+            lines.append("### 3.1 Errors")
+            lines.append("")
+            lines.append("✅ No Tier 1 errors found.")
+            lines.append("")
+
+        if self.tier1_warnings:
+            lines.append("### 3.2 Warnings")
+            lines.append("")
+            lines.append("| # | Code | File | Line | Issue | Remediation |")
+            lines.append("|---|------|------|------|-------|-------------|")
+            for i, issue in enumerate(self.tier1_warnings, 1):
+                file_str = str(issue.file_path.name) if issue.file_path else "-"
+                line_str = str(issue.line) if issue.line else "-"
+                error = get_error(issue.code)
+                remediation = error.remediation if error else "See documentation"
+                context = (issue.context[:80] + "..." if len(issue.context) > 80 else issue.context).replace("|", "\\|")
+                lines.append(f"| {i} | `{issue.code}` | `{file_str}` | {line_str} | {context} | {remediation} |")
+            lines.append("")
+        else:
+            lines.append("### 3.2 Warnings")
+            lines.append("")
+            lines.append("✅ No Tier 1 warnings found.")
+            lines.append("")
+
+        lines.append("---")
+        lines.append("")
+
+        # Tier 2 Findings
+        lines.append("## 4. Tier 2 Findings (Advisory Checks)")
+        lines.append("")
+        lines.append("Tier 2 checks are **advisory** and represent best practices or minor improvements.")
+        lines.append("")
+
+        if self.tier2_warnings:
+            lines.append("### 4.1 Warnings")
+            lines.append("")
+            lines.append("| # | Code | File | Line | Issue | Remediation |")
+            lines.append("|---|------|------|------|-------|-------------|")
+            for i, issue in enumerate(self.tier2_warnings, 1):
+                file_str = str(issue.file_path.name) if issue.file_path else "-"
+                line_str = str(issue.line) if issue.line else "-"
+                error = get_error(issue.code)
+                remediation = error.remediation if error else "See documentation"
+                context = (issue.context[:80] + "..." if len(issue.context) > 80 else issue.context).replace("|", "\\|")
+                lines.append(f"| {i} | `{issue.code}` | `{file_str}` | {line_str} | {context} | {remediation} |")
+            lines.append("")
+        else:
+            lines.append("✅ No Tier 2 warnings found.")
+            lines.append("")
+
+        lines.append("---")
+        lines.append("")
+
+        # Checks Run
+        lines.append("## 5. Checks Performed")
+        lines.append("")
+        lines.append("| # | Check | Status |")
+        lines.append("|---|-------|--------|")
+        for i, check in enumerate(self.checks_run, 1):
+            lines.append(f"| {i} | {check} | ✅ Completed |")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Next Steps
+        lines.append("## 6. Recommended Next Steps")
+        lines.append("")
+        if self.tier1_errors:
+            lines.append("1. **Resolve Tier 1 Errors** - These are blocking issues that prevent downstream processing")
+            lines.append("2. **Re-run Validation** - Use `ucx validate` to verify fixes")
+            lines.append("3. **Address Tier 2 Warnings** - Optional but recommended for quality")
+        elif self.tier2_warnings:
+            lines.append("1. **Review Tier 2 Warnings** - Consider addressing advisory issues")
+            lines.append("2. **Proceed to AI Review** - Use `ucx review` for content analysis")
+        else:
+            lines.append("1. **Proceed to AI Review** - Use `ucx review` for comprehensive content analysis")
+            lines.append("2. **Generate Downstream Artifacts** - Document is ready for PRD generation")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Footer
+        lines.append("*Generated by UCX Framework v" + __version__ + "*")
+        lines.append("")
 
         return "\n".join(lines)

@@ -626,7 +626,7 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 1. **Dash notation** (`TYPE-NN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
 
-2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. Format: DOC_NUM.ELEM_TYPE.SEQ where EE is element type code (BRD=01, PRD=07, EARS=24, BDD=13, SYS=25, REQ=26).
+2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. Format: DOC_NUM.ELEM_TYPE.SEQ where TT is element type code (e.g., 01=Functional Req, 02=Quality Attribute, 09=User Story, 14=Test Scenario). See `ID_NAMING_STANDARDS.md` for complete element type code table.
 
 ---
 

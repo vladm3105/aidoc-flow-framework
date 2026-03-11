@@ -424,6 +424,9 @@ Quick Core MVP Requirements Checklist:
 
 ### 7.2 Architecture Decision Requirements (Streamlined for MVP)
 
+**ID Format**: `BRD.NN.10.SS` (Decision - canonical)
+> **Note**: Code 10 is canonical for Architecture Decision requirements. Code 32 accepted for legacy compatibility.
+
 > **Framework Compliance**: All BRDs must address 7 mandatory ADR topic categories. MVP template uses streamlined format.
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
@@ -440,7 +443,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.01: Infrastructure - [Hosting & Deployment]
+#### BRD.NN.10.01: Infrastructure - [Hosting & Deployment]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -456,7 +459,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.02: Data Architecture - [Database & Storage]
+#### BRD.NN.10.02: Data Architecture - [Database & Storage]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -472,7 +475,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.03: Integration - [External Systems]
+#### BRD.NN.10.03: Integration - [External Systems]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A - [No external integrations for MVP]
 
@@ -484,7 +487,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.04: Security - [Authentication & Data Protection]
+#### BRD.NN.10.04: Security - [Authentication & Data Protection]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -498,7 +501,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.05: Observability - [Monitoring & Logging]
+#### BRD.NN.10.05: Observability - [Monitoring & Logging]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A - [Basic logging only for MVP]
 
@@ -510,7 +513,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.06: AI/ML - [If Applicable]
+#### BRD.NN.10.06: AI/ML - [If Applicable]
 
 **Status**: [ ] Selected | [ ] Pending | [X] N/A - [No AI/ML in MVP scope]
 
@@ -518,7 +521,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.07: Technology Selection - [Core Stack]
+#### BRD.NN.10.07: Technology Selection - [Core Stack]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -536,32 +539,74 @@ Quick Core MVP Requirements Checklist:
 
 ### 7.3 Performance Requirements (MVP Baseline)
 
-**ID Format**: `BRD.NN.02.SS` (Quality Attribute)
+**ID Format**: `BRD.NN.91.SS` (Performance Requirement - canonical)
+> **Note**: Code 91 is canonical for Performance requirements. Code 02 accepted for legacy compatibility.
 
 | Req ID | Requirement | Metric | MVP Target | Priority |
 |--------|-------------|--------|------------|----------|
-| BRD.NN.02.01 | Page load time | Load time | <3 seconds | P1 |
-| BRD.NN.02.02 | Transaction processing | Response time | <10 seconds | P1 |
-| BRD.NN.02.03 | Concurrent users | User capacity | 100 users | P2 |
+| BRD.NN.91.01 | Page load time | Load time | <3 seconds | P1 |
+| BRD.NN.91.02 | Transaction processing | Response time | <10 seconds | P1 |
+| BRD.NN.91.03 | Concurrent users | User capacity | 100 users | P2 |
 
-### 7.4 Security Requirements (MVP Essential)
+### 7.4 Reliability Requirements (MVP Baseline)
 
-| Req ID | Requirement | Standard | Priority | Validation |
-|--------|-------------|----------|----------|------------|
-| BRD.NN.02.10 | User authentication | Email + password (min) | P1 | Login testing |
-| BRD.NN.02.11 | Data encryption at rest | AES-256 | P1 | Security audit |
-| BRD.NN.02.12 | HTTPS/TLS | TLS 1.2+ | P1 | Certificate check |
-| BRD.NN.02.13 | PII protection | Field-level encryption | P1 | Compliance review |
-
-### 7.5 Reliability Requirements (MVP Baseline)
+**ID Format**: `BRD.NN.92.SS` (Reliability Requirement - canonical)
+> **Note**: Code 92 is canonical for Reliability requirements. Code 02 accepted for legacy compatibility.
 
 | Req ID | Requirement | MVP Target | Priority |
 |--------|-------------|------------|----------|
-| BRD.NN.02.20 | System uptime | 95% (MVP acceptable) | P2 |
-| BRD.NN.02.25 | Backup frequency | Daily | P1 |
-| BRD.NN.02.26 | Recovery time (RTO) | <4 hours | P2 |
+| BRD.NN.92.01 | System uptime | 95% (MVP acceptable) | P2 |
+| BRD.NN.92.02 | Backup frequency | Daily | P1 |
+| BRD.NN.92.03 | Recovery time (RTO) | <4 hours | P2 |
 
-> **Note**: Production targets increase over time. MVP cycle focuses on functionality validation; subsequent cycles enhance reliability.
+### 7.5 Scalability Requirements (MVP Baseline)
+
+**ID Format**: `BRD.NN.94.SS` (Scalability Requirement - canonical)
+> **Note**: Code 94 is canonical for Scalability requirements. Code 02 accepted for legacy compatibility.
+
+| Req ID | Requirement | MVP Target | Growth Target | Priority |
+|--------|-------------|------------|---------------|----------|
+| BRD.NN.94.01 | Horizontal scaling | Manual scaling | Auto-scale | P2 |
+| BRD.NN.94.02 | Data volume growth | 10GB | 100GB | P2 |
+| BRD.NN.94.03 | User base growth | 100 users | 10,000 users | P2 |
+
+### 7.6 Security Requirements (MVP Essential)
+
+**ID Format**: `BRD.NN.96.SS` (Security Requirement - canonical)
+> **Note**: Code 96 is canonical for Security requirements. Code 02 accepted for legacy compatibility.
+
+| Req ID | Requirement | Standard | Priority | Validation |
+|--------|-------------|----------|----------|------------|
+| BRD.NN.96.01 | User authentication | Email + password (min) | P1 | Login testing |
+| BRD.NN.96.02 | Data encryption at rest | AES-256 | P1 | Security audit |
+| BRD.NN.96.03 | HTTPS/TLS | TLS 1.2+ | P1 | Certificate check |
+| BRD.NN.96.04 | PII protection | Field-level encryption | P1 | Compliance review |
+
+### 7.7 Observability Requirements (MVP Baseline)
+
+**ID Format**: `BRD.NN.98.SS` (Observability Requirement - canonical)
+> **Note**: Code 98 is canonical for Observability requirements. Code 02 accepted for legacy compatibility.
+
+| Req ID | Requirement | MVP Implementation | Priority |
+|--------|-------------|-------------------|----------|
+| BRD.NN.98.01 | Application logging | Structured logs to Cloud Logging | P1 |
+| BRD.NN.98.02 | Error tracking | Error Reporting integration | P1 |
+| BRD.NN.98.03 | Health endpoints | /health, /ready endpoints | P2 |
+| BRD.NN.98.04 | Metrics collection | Basic latency/throughput metrics | P2 |
+
+### 7.8 Maintainability Requirements (MVP Baseline)
+
+**ID Format**: `BRD.NN.99.SS` (Maintainability Requirement - canonical)
+> **Note**: Code 99 is canonical for Maintainability requirements. Code 02 accepted for legacy compatibility.
+
+| Req ID | Requirement | MVP Standard | Priority |
+|--------|-------------|--------------|----------|
+| BRD.NN.99.01 | Code documentation | Inline comments for complex logic | P2 |
+| BRD.NN.99.02 | API documentation | OpenAPI/Swagger for endpoints | P2 |
+| BRD.NN.99.03 | Configuration management | Environment-based config | P1 |
+| BRD.NN.99.04 | Dependency management | Pinned versions, security updates | P1 |
+
+> **Note**: Production targets increase over time. MVP cycle focuses on functionality validation; subsequent cycles enhance quality attributes.
 
 ---
 

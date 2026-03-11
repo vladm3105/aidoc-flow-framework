@@ -348,23 +348,82 @@ Multi-turn reviews now prevent redundant findings across personas:
 ...
 ```
 
-### Document Validation (v1.9.0)
+### Document Validation (v1.9.0+)
 
 Fast, non-AI validation for pre-commit hooks and CI/CD pipelines:
 
 ```bash
-# Basic validation
-ucx validate brd docs/01_BRD/BRD-01/
+# Basic validation (console output)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/
 
 # Tier 1 only (fast, blocking checks for pre-commit)
-ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --tier1-only
 
 # Strict mode (warnings as errors)
-ucx validate brd docs/01_BRD/BRD-01/ --strict
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --strict
 
 # JSON output for CI/CD
-ucx validate brd docs/01_BRD/BRD-01/ --format json
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json
+
+# Write SDD-compliant validation report to document directory (auto-versioned)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o docs/01_BRD/BRD-01_platform_architecture/
+# → Creates: docs/01_BRD/BRD-01_platform_architecture/BRD-01.V_validation_report_v001.md
+
+# Write validation report to specific file
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validation.md
+
+# JSON report to file
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
 ```
+
+**Validation Report Format (v1.9.3+):**
+
+When writing to a file (`-o`), validation reports follow SDD framework standards:
+
+```yaml
+---
+doc_id: BRD-01.V
+title: "BRD-01 Validation Report - Structural Quality Check"
+report_version: v001
+validation_date: 2026-03-11T16:21:51
+validator: UCX Framework v1.9.3
+tags:
+  - validation-report
+  - brd-quality
+  - structural-validation
+custom_fields:
+  artifact_type: VALIDATION
+  validated_document: BRD-01
+  validation_score: 85.5
+  status: PASS
+  tier1_errors: 0
+  tier2_warnings: 5
+---
+
+# BRD-01 Validation Report v001
+
+## 0. Document Control
+| Item | Details |
+|------|---------|
+| **Source Document** | BRD-01 |
+| **Report ID** | VAL-BRD-01-v001 |
+| **Status** | PASS ✅ |
+
+## 1. Executive Summary
+## 2. Validation Score Breakdown
+## 3. Tier 1 Findings (Core Checks)
+## 4. Tier 2 Findings (Advisory Checks)
+## 5. Checks Performed
+## 6. Recommended Next Steps
+```
+
+**Report Naming Convention:**
+
+| Output Type | Filename Pattern | Example |
+|-------------|------------------|---------|
+| Validation | `{DOC-ID}.V_validation_report_v{NNN}.md` | `BRD-01.V_validation_report_v001.md` |
+| Review | `{DOC-ID}.R_review_report_v{NNN}.md` | `BRD-01.R_review_report_v001.md` |
+| Remediation | `{DOC-ID}.F_fix_report_v{NNN}.md` | `BRD-01.F_fix_report_v001.md` |
 
 **Tiered Validation:**
 
@@ -373,19 +432,49 @@ ucx validate brd docs/01_BRD/BRD-01/ --format json
 | **Tier 1** | Core | Yes | Element codes, structure, metadata, quality gates (errors) |
 | **Tier 2** | Advisory | No | Links, references, diagrams, glossary |
 
+**Tier 1: Core Checks (Blocking)**
+
+These are critical checks that **must pass** before proceeding. If any Tier 1 errors exist, the document is considered invalid and blocks pre-commit/CI.
+
+| Check | Description | Error Codes |
+|-------|-------------|-------------|
+| **Element Codes** | Validates `BRD.NN.TT.SS` format, uniqueness, section mapping | `GATE-E008` (duplicates), `BRD-E001` (invalid format) |
+| **Structure** | Required sections present, H1 headings, file naming conventions | `BRD-E006` (missing sections), `BRD-E002` (missing Document Control) |
+| **Metadata** | YAML frontmatter validity, `custom_fields.document_type`, required tags | `BRD-E002`, `BRD-E003` (missing tags) |
+| **Quality Gates** | Placeholder detection (TODO/TBD), downstream refs, file size limits | `GATE-E001`, `GATE-E002`, `GATE-E010` |
+
+**Valid Element Type Codes (TT):**
+- Core: `01-10` (FR, QA, Constraint, Assumption, Dependency, AC, Risk, Metric, User Story, Decision)
+- Extended: `22-24, 32` (Feature Item, Business Objective, Stakeholder Need, Architecture Topic)
+- **QA Subcategories (91-99)**: Performance (91), Reliability (92), Scalability (94), Security (96), Observability (98), Maintainability (99)
+
+> See `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` for complete element type code reference.
+
+**Tier 2: Advisory Checks (Non-Blocking)**
+
+These are recommendations for quality improvement. Tier 2 warnings don't block commits but should be addressed.
+
+| Check | Description | Warning Codes |
+|-------|-------------|---------------|
+| **Links** | Markdown link validation, broken internal references | `LINK-W*` |
+| **Forward References** | SDD layer compliance (no refs to unwritten downstream artifacts) | `FWDREF-W*` |
+| **Diagrams** | Mermaid/SVG consistency with prose, node count mismatches | `DIAG-W001` |
+| **Quality Gates** | Glossary consistency, stated vs actual counts, cost format | `GATE-W003`, `GATE-W007`, `GATE-W009` |
+| **Advisory Tags** | Missing diagram tags (`@diagram: c4-l1`, `@diagram: dfd-l0`) | `BRD-W011`, `BRD-W012` |
+
 **Quality Gates (10 GATE Checks):**
 
-| GATE | Check | Tier |
-|------|-------|------|
-| GATE-01 | Placeholder text detection | 1 |
-| GATE-02 | Premature downstream references | 1 |
-| GATE-03 | Internal count consistency | 2 |
-| GATE-04 | Index synchronization | 1 |
-| GATE-06 | Diagram contract validation | 1 |
-| GATE-07 | Glossary consistency | 2 |
-| GATE-08 | Element ID uniqueness | 1 |
-| GATE-09 | Cost estimate format | 2 |
-| GATE-10 | File size compliance (>20K tokens) | 1 |
+| GATE | Check | Tier | Description |
+|------|-------|------|-------------|
+| GATE-01 | Placeholder text detection | 1 | Detects TODO, TBD, FIXME, [placeholder] |
+| GATE-02 | Premature downstream references | 1 | References to PRD/ADR before they exist |
+| GATE-03 | Internal count consistency | 2 | Stated counts vs actual item counts |
+| GATE-04 | Index synchronization | 1 | Index file matches section files |
+| GATE-06 | Diagram contract validation | 1 | Diagrams match documented contracts |
+| GATE-07 | Glossary consistency | 2 | Terms used vs glossary definitions |
+| GATE-08 | Element ID uniqueness | 1 | No duplicate BRD.NN.TT.SS IDs |
+| GATE-09 | Cost estimate format | 2 | Proper currency/range formatting |
+| GATE-10 | File size compliance | 1 | Files under 20K token limit |
 
 **Pre-commit Integration:**
 
@@ -409,6 +498,8 @@ repos:
 | 0 | All checks passed | ✅ Pass |
 | 1 | Warnings only | ✅ Pass (unless --strict) |
 | 2 | Errors present | ❌ Fail |
+
+> **Note**: Exit code 2 indicates validation completed successfully but found blocking errors - this is expected behavior, not a command failure. The validation report is still generated. These exit codes enable CI/CD integration where pipelines can distinguish between warnings (1) and errors (2).
 
 ### SDD-Compliant Output Format
 
@@ -935,6 +1026,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.4 | 2026-03-11 | **QA subcategory codes 91-99**: Added Performance (91), Reliability (92), Scalability (94), Security (96), Observability (98), Maintainability (99) to valid element codes. Added Section 3/4 mappings (Feature Item=22, Stakeholder Need=24). Updated traceability tag patterns to require 2+ digits. Fixed ADR filename pattern. |
+| 1.9.3 | 2026-03-11 | **SDD-compliant validation reports**: Added `--output` (`-o`) option to `ucx validate`. Reports include YAML frontmatter, Document Control section, score breakdown, and structured findings tables. Auto-versioning when writing to document directory. Report naming: `{DOC-ID}.V_validation_report_v{NNN}.md`. |
 | 1.9.2 | 2026-03-11 | **Registry integration**: `BRDValidator` (registry) now delegates to `UnifiedBRDValidator`. `ucx review brd` and `ucx validate brd` use same validation logic. Renamed `brd.py` to `brd_validator.py` to avoid package conflict. Pre-commit hooks migrated to UCX unified validation. |
 | 1.9.1 | 2026-03-11 | **Tier 2 advisory validators**: New `common/links.py` for markdown link validation. New `common/references.py` for SDD forward reference validation. New `common/diagrams.py` for Mermaid/SVG diagram consistency. Error codes: LINK-*, FWDREF-*, DIAG-*. |
 | 1.9.0 | 2026-03-11 | **Unified BRD Validation**: New `ucx/validators/common/` module with shared validation utilities. New `ucx/validators/brd/` module with `UnifiedBRDValidator`. Tiered validation: Tier 1 (core, blocking) and Tier 2 (advisory). CLI: `ucx validate brd <path>` with `--tier1-only`, `--strict`, `--format`. Quality gates: 10 GATE checks (GATE-01 to GATE-10). Element code validation: BRD.NN.TT.SS format with section mapping. Deprecated: `ai_dev_ssd_flow/01_BRD/scripts/` validators (removal in v2.0.0). |

@@ -4,7 +4,7 @@
 
 The validators module provides non-AI document validation for UCX. It validates document structure, metadata, element codes, and quality gates without requiring AI API calls.
 
-**Version**: 1.9.2
+**Version**: 1.9.4
 
 ## Architecture
 
@@ -41,6 +41,58 @@ validators/
 ├── tspec.py                # TSPEC validator (legacy)
 └── generic.py              # Generic fallback validator
 ```
+
+## Element Type Codes
+
+Valid BRD element type codes (used in `BRD.NN.TT.SS` format):
+
+| Code | Element Type | Section |
+|------|--------------|---------|
+| 01 | Functional Requirement | 6.x |
+| 02 | Quality Attribute (generic) | 7.1 |
+| 03 | Constraint | 8.1 |
+| 04 | Assumption | 8.2 |
+| 05 | Dependency | 10.x (legacy) |
+| 06 | Acceptance Criteria | 9.x |
+| 07 | Risk | 10.x |
+| 08 | Metric | - |
+| 09 | User Story | 5.x |
+| 10 | Decision | 7.2 |
+| 22 | Feature Item | 3.x |
+| 23 | Business Objective | 2.x |
+| 24 | Stakeholder Need | 4.x |
+| 32 | Architecture Topic | 7.2 (legacy) |
+| **91** | **Performance Requirement** | **7.3** |
+| **92** | **Reliability Requirement** | **7.4** |
+| **94** | **Scalability Requirement** | **7.5** |
+| **96** | **Security Requirement** | **7.6** |
+| **98** | **Observability Requirement** | **7.7** |
+| **99** | **Maintainability Requirement** | **7.8** |
+
+> **Note**: Codes 91-99 are canonical for Quality Attribute subcategories. Code 02 accepted for legacy/overview sections.
+> See `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` for complete reference.
+
+## Section-to-Code Mapping
+
+| Section | Valid Codes | Canonical |
+|---------|-------------|-----------|
+| 2 (Business Objectives) | 23 | 23 |
+| 3 (Project Scope) | 22 | 22 |
+| 4 (Stakeholders) | 24 | 24 |
+| 5 (User Stories) | 09 | 09 |
+| 6 (Functional Requirements) | 01, 06 | 01 |
+| 7.1 (QA Overview) | 02 | 02 |
+| 7.2 (Architecture Decisions) | 10, 32 | 10 |
+| 7.3 (Performance) | 02, 05, 91 | 91 |
+| 7.4 (Reliability) | 02, 05, 92 | 92 |
+| 7.5 (Scalability) | 02, 05, 94 | 94 |
+| 7.6 (Security) | 02, 05, 96 | 96 |
+| 7.7 (Observability) | 02, 05, 98 | 98 |
+| 7.8 (Maintainability) | 02, 05, 99 | 99 |
+| 8.1 (Constraints) | 03 | 03 |
+| 8.2 (Assumptions) | 04 | 04 |
+| 9 (Acceptance Criteria) | 06 | 06 |
+| 10 (Risk Management) | 05, 07 | 07 |
 
 ## Tiered Validation
 
@@ -206,3 +258,28 @@ To add validation for a new layer (e.g., PRD):
 6. Register with `@register_validator(DocType.PRD)`
 
 See PLAN-001 for the migration roadmap (v1.10.0: PRD/EARS, v1.11.0: BDD/ADR/SYS, etc.).
+
+## Traceability Tag Patterns
+
+All traceability tags require 2+ digit document numbers per ID_NAMING_STANDARDS.md:
+
+| Tag | Pattern | Example |
+|-----|---------|---------|
+| `@brd:` | `BRD-\d{2,}` | `@brd: BRD-01` |
+| `@prd:` | `PRD-\d{2,}` | `@prd: PRD-01` |
+| `@ears:` | `EARS-\d{2,}` | `@ears: EARS-01` |
+| `@bdd:` | `BDD-\d{2,}` | `@bdd: BDD-01` |
+| `@adr:` | `ADR-\d{2,}` | `@adr: ADR-01` |
+| `@sys:` | `SYS-\d{2,}` | `@sys: SYS-01` |
+| `@req:` | `REQ.\d{2,}.\d{2}.\d{2,}` | `@req: REQ.01.01.01` |
+| `@ctr:` | `CTR-\d{2,}` | `@ctr: CTR-01` |
+| `@spec:` | `SPEC-\d{2,}` | `@spec: SPEC-01` |
+| `@tasks:` | `TASKS-\d{2,}` | `@tasks: TASKS-01` |
+
+## Changelog
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.9.4 | 2026-03-11 | Added QA subcategory codes 91-99; Section 3/4 mappings; Updated tag patterns to require 2+ digits |
+| 1.9.2 | 2026-03-11 | Registry integration with UnifiedBRDValidator |
+| 1.9.0 | 2026-03-11 | Initial unified validation architecture |

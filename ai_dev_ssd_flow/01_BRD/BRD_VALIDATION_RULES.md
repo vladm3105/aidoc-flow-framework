@@ -153,29 +153,54 @@ Pre-commit hooks wrap these scripts. Skills call them directly for single-BRD va
 
 ### 5.2 Element Type Code Mapping
 
-| Code | Element Type | BRD Section |
-|------|--------------|-------------|
-| 01 | Functional Requirement | 6.x |
-| 02 | Quality Attribute | 7.x |
-| 03 | Constraint | 8.1 |
-| 04 | Assumption | 8.2 |
-| 05 | Risk | 10.x |
-| 06 | Acceptance Criteria | 9.x |
-| 07 | Dependency | - |
-| 09 | User Story | 5.x |
-| 23 | Business Objective | 2.x |
-| 32 | Architecture Topic | 7.1 |
+| Code | Element Type | BRD Section | Notes |
+|------|--------------|-------------|-------|
+| 01 | Functional Requirement | 6.x | |
+| 02 | Quality Attribute (Generic) | 7.1 | Overview section only |
+| 03 | Constraint | 8.1 | |
+| 04 | Assumption | 8.2 | |
+| 05 | Risk/Dependency | 10.x | Legacy; use 07 for Risk |
+| 06 | Acceptance Criteria | 9.x | |
+| 07 | Risk | 10.x | Canonical for risks |
+| 09 | User Story | 5.x | |
+| 10 | Decision | 7.2 | Canonical for ADR topics |
+| 23 | Business Objective | 2.x | |
+| 32 | Architecture Topic | 7.2 | Legacy; use 10 |
+| **91** | **Performance Requirement** | **7.3** | QA subcategory |
+| **92** | **Reliability Requirement** | **7.4** | QA subcategory |
+| **94** | **Scalability Requirement** | **7.5** | QA subcategory |
+| **96** | **Security Requirement** | **7.6** | QA subcategory |
+| **98** | **Observability Requirement** | **7.7** | QA subcategory |
+| **99** | **Maintainability Requirement** | **7.8** | QA subcategory |
+
+> **Note**: Codes 91-99 are canonical for QA subcategories. Code 02 accepted for legacy/overview sections.
+> See `ID_NAMING_STANDARDS.md` for complete element type code reference.
 
 ---
 
 ## 6. Section-Code Semantic Rules
 
-Section 6 (Functional Requirements) MUST use code `01`.
-Section 7.1 (Architecture Topics) MUST use code `32`.
-Section 5 (User Stories) MUST use code `09`.
-Section 10 (Risk Management) MUST use code `05` or `07`.
+| Section | Valid Codes | Canonical | Notes |
+|---------|-------------|-----------|-------|
+| Section 2 (Business Objectives) | 23 | 23 | |
+| Section 3 (Project Scope) | 22 | 22 | Feature Item |
+| Section 4 (Stakeholders) | 24 | 24 | Stakeholder Need |
+| Section 5 (User Stories) | 09 | 09 | |
+| Section 6 (Functional Requirements) | 01, 06 | 01 | 06 for embedded AC tables |
+| Section 7.1 (Quality Attributes Overview) | 02 | 02 | Generic QA |
+| Section 7.2 (Architecture Decisions) | 10, 32 | 10 | 32 is legacy |
+| Section 7.3 (Performance) | 02, 91 | 91 | |
+| Section 7.4 (Reliability) | 02, 92 | 92 | |
+| Section 7.5 (Scalability) | 02, 94 | 94 | |
+| Section 7.6 (Security) | 02, 96 | 96 | |
+| Section 7.7 (Observability) | 02, 98 | 98 | |
+| Section 7.8 (Maintainability) | 02, 99 | 99 | |
+| Section 8.1 (Constraints) | 03 | 03 | |
+| Section 8.2 (Assumptions) | 04 | 04 | |
+| Section 9 (Acceptance Criteria) | 06 | 06 | |
+| Section 10 (Risk Management) | 05, 07 | 07 | 05 is legacy |
 
-Violations produce `BRD-E022` errors.
+Violations produce `BRD-E022` errors (non-canonical code) or `GATE-W008` warnings (misplaced code).
 
 ---
 
@@ -242,6 +267,7 @@ The same scripts are used by pre-commit hooks:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance, Reliability, Scalability, Security, Observability, Maintainability); Added Section 3/4 mappings (Feature Item=22, Stakeholder Need=24); Updated Section-Code Semantic Rules table |
 | 2.1 | 2026-03-01 | Added Fresh Audit Policy (Section 4.0); audits must always run from scratch |
 | 2.0 | 2026-02-28 | Simplified to 2-skill model (doc-brd-audit + doc-brd-fixer); deprecated validator/reviewer |
 | 1.0 | 2026-02-28 | Initial unified rules; script execution contract; skill integration |

@@ -280,7 +280,7 @@ grep -rci "system" "$BDD_DIR" | grep -v "the system" | grep -v ":0" | wc -l
 
 **Element ID Format**: `BDD.NN.TT.SS`
 - NN = Document number
-- TT = Element type code (24 = BDD scenario)
+- TT = Element type code (14 = Test Scenario, 15 = Step)
 - SS = Sequence number
 
 **Validation Logic**:

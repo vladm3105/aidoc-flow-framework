@@ -1570,16 +1570,28 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (standard template)
 **Regex**: `^###\s+BRD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
 
 **Common Element Types for BRD**:
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Functional Requirement | 01 | BRD.02.01.01 |
-| Quality Attribute | 02 | BRD.02.02.01 |
-| Constraint | 03 | BRD.02.03.01 |
-| Assumption | 04 | BRD.02.04.01 |
-| Dependency | 05 | BRD.02.05.01 |
-| Acceptance Criteria | 06 | BRD.02.06.01 |
-| Risk | 07 | BRD.02.07.01 |
-| Business Objective | 23 | BRD.02.23.01 |
+| Element Type | Code | Section | Example |
+|--------------|------|---------|---------|
+| Functional Requirement | 01 | 6.x | BRD.02.01.01 |
+| Quality Attribute (generic) | 02 | 7.1 | BRD.02.02.01 |
+| Constraint | 03 | 8.1 | BRD.02.03.01 |
+| Assumption | 04 | 8.2 | BRD.02.04.01 |
+| Dependency | 05 | 10.x (legacy) | BRD.02.05.01 |
+| Acceptance Criteria | 06 | 9.x | BRD.02.06.01 |
+| Risk | 07 | 10.x | BRD.02.07.01 |
+| User Story | 09 | 5.x | BRD.02.09.01 |
+| Decision | 10 | 7.2 | BRD.02.10.01 |
+| Feature Item | 22 | 3.x | BRD.02.22.01 |
+| Business Objective | 23 | 2.x | BRD.02.23.01 |
+| Stakeholder Need | 24 | 4.x | BRD.02.24.01 |
+| **Performance Req** | **91** | **7.3** | BRD.02.91.01 |
+| **Reliability Req** | **92** | **7.4** | BRD.02.92.01 |
+| **Scalability Req** | **94** | **7.5** | BRD.02.94.01 |
+| **Security Req** | **96** | **7.6** | BRD.02.96.01 |
+| **Observability Req** | **98** | **7.7** | BRD.02.98.01 |
+| **Maintainability Req** | **99** | **7.8** | BRD.02.99.01 |
+
+> **Note**: Codes 91-99 are canonical for QA subcategories. Code 02 accepted for legacy/overview sections.
 
 **Fix**: Replace `### AC-01: Criterion` with `### BRD.02.06.01: Criterion`
 
@@ -1818,6 +1830,7 @@ BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 1.5.0 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance, Reliability, Scalability, Security, Observability, Maintainability); Added Section 3/4/5 mappings (Feature Item=22, Stakeholder Need=24, User Story=09); Updated CHECK 25 element type table | Claude Code |
 | 1.4.0 | 2026-02-25 | Updated section references for 18-section structure (Traceability → Section 16, Glossary → Section 17); Aligned with BRD-MVP-TEMPLATE.md v1.1 | Claude Code |
 | 1.3.0 | 2025-12-12T00:00:00 | Added BRD-REF as third document category with reduced validation; Updated CHECK 4 and CHECK 5 for reference documents | Claude Code |
 | 1.0.0 | 2025-11-19T00:00:00 | Initial validation rules for BRD documents | System Architect |

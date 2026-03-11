@@ -1,7 +1,32 @@
 """Version information for UCX."""
 
-__version__ = "1.9.2"
+__version__ = "1.9.4"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.4 - QA Subcategory Codes and Pattern Compliance
+# - Added QA subcategory codes 91-99 to VALID_BRD_CODES:
+#   - 91: Performance Requirement (Section 7.3)
+#   - 92: Reliability Requirement (Section 7.4)
+#   - 94: Scalability Requirement (Section 7.5)
+#   - 96: Security Requirement (Section 7.6)
+#   - 98: Observability Requirement (Section 7.7)
+#   - 99: Maintainability Requirement (Section 7.8)
+# - Added Section 3 (Feature Item=22) and Section 4 (Stakeholder Need=24) to SECTION_CODE_MAP
+# - Updated TAG_PATTERNS to require 2+ digit document numbers (\d{2,})
+# - Fixed ADR filename pattern from \d{3,} to \d{2,}
+# - Updated REQ tag pattern to full element ID format (REQ.\d{2,}.\d{2}.\d{2,})
+# - Added PREFERRED_SECTION_CODES for QA sections (7.3-7.8)
+# - Fixed GATE-06 tier classification in docstring
+# - All validators now compliant with ID_NAMING_STANDARDS.md v2.2
+
+# v1.9.3 - SDD-Compliant Validation Reports
+# - Added --output (-o) option to `ucx validate` command
+# - Validation reports follow SDD format with YAML frontmatter
+# - Report sections: Document Control, Executive Summary, Score Breakdown,
+#   Tier 1/2 Findings, Checks Performed, Recommended Next Steps
+# - Auto-versioning when writing to document directory
+# - Report naming: {DOC-ID}.V_validation_report_v{NNN}.md
+# - New format_report() method in UnifiedValidationResult
 
 # v1.9.2 - Unified Validator Registry Integration
 # - BRDValidator (registry) now delegates to UnifiedBRDValidator

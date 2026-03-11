@@ -492,8 +492,10 @@ architecture_decision_requirements:
       description: "What PRD must elaborate for this topic"
 
   # Element type code for architecture topics
-  element_type_code: 32
-  element_format: "BRD.NN.32.SS"
+  # Code 10 is canonical for Decision/Architecture topics
+  # Code 32 accepted for legacy compatibility
+  element_type_code: 10
+  element_format: "BRD.NN.10.SS"
 
 # =============================================================================
 # Cross-Reference Requirements (OPTIONAL VALIDATION)

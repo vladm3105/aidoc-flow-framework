@@ -449,11 +449,12 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 @cli.command()
 @click.argument("doc_type")
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Write validation report to file")
 @click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
 @click.pass_context
-def validate(ctx, doc_type, doc_path, tier1_only, strict, output_format):
+def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format):
     """
     Validate a document (no AI review).
 
@@ -467,6 +468,7 @@ def validate(ctx, doc_type, doc_path, tier1_only, strict, output_format):
       ucx validate brd docs/01_BRD/BRD-01
       ucx validate brd docs/01_BRD/BRD-01 --tier1-only
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
+      ucx validate brd docs/01_BRD/BRD-01 -o validation_report.md
     """
     import json
     import sys
@@ -475,15 +477,51 @@ def validate(ctx, doc_type, doc_path, tier1_only, strict, output_format):
 
     # Use unified validator for BRD
     if doc_type_lower == "brd":
+        import re
         from ucx.validators.brd import UnifiedBRDValidator
 
         validator = UnifiedBRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
         result = validator.validate(Path(doc_path), tier1_only=tier1_only)
 
-        if output_format == "json":
-            console.print_json(data=result.to_dict())
+        # Extract doc_id from path (e.g., BRD-01 from BRD-01_platform_architecture)
+        doc_path_obj = Path(doc_path)
+        folder_name = doc_path_obj.name if doc_path_obj.is_dir() else doc_path_obj.parent.name
+        doc_id_match = re.match(r"(BRD-\d+)", folder_name)
+        doc_id = doc_id_match.group(1) if doc_id_match else folder_name.split("_")[0]
+
+        # Write to file if output specified
+        if output:
+            output_path = Path(output)
+
+            # If output path is a directory or ends with /, auto-generate filename
+            if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
+                output_path.mkdir(parents=True, exist_ok=True)
+                # Find next version number
+                existing = list(output_path.glob(f"{doc_id}.V_validation_report_v*.md"))
+                version = len(existing) + 1
+                output_path = output_path / f"{doc_id}.V_validation_report_v{version:03d}.md"
+            else:
+                # Output to specified file
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                # Extract version from filename if present, else use 1
+                version_match = re.search(r"v(\d+)", str(output_path))
+                version = int(version_match.group(1)) if version_match else 1
+
+            if output_format == "json":
+                import json as json_module
+                output_content = json_module.dumps(result.to_dict(), indent=2)
+            else:
+                # Use SDD-compliant report format for file output
+                output_content = result.format_report(doc_id=doc_id, doc_type="BRD", version=version)
+
+            output_path.write_text(output_content)
+            console.print(f"[green]Validation report written to:[/green] {output_path}")
         else:
-            console.print(result.format_text(verbose=ctx.obj.get("verbose", False)))
+            # Console output uses simple text format
+            if output_format == "json":
+                console.print_json(data=result.to_dict())
+            else:
+                console.print(result.format_text(verbose=ctx.obj.get("verbose", False)))
 
         # Exit with appropriate code
         sys.exit(result.exit_code(strict=strict))

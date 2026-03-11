@@ -242,6 +242,7 @@ class UnifiedBRDValidator:
                 file_path=file_path,
                 result=result,
                 profile=profile,
+                is_section_layout=is_section_layout,
             )
 
         # Element codes validation runs on all files

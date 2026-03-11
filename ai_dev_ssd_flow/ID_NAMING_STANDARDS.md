@@ -1290,7 +1290,18 @@ Consistent across ALL document types:
 | 60-63 | UXSPEC Element Types | UXSPEC internal elements |
 | 65-68 | RISKSPEC Element Types | RISKSPEC internal elements |
 | 70-73 | PROCSPEC Element Types | PROCSPEC internal elements |
-| 74-99 | Reserved for future use | - |
+| 74-90 | Reserved for future use | - |
+| 91 | Performance Requirement | BRD (Section 7.3), PRD, SYS |
+| 92 | Reliability Requirement | BRD (Section 7.4), PRD, SYS |
+| 93 | Availability Requirement | BRD, PRD, SYS (reserved) |
+| 94 | Scalability Requirement | BRD (Section 7.5), PRD, SYS |
+| 95 | Usability Requirement | BRD, PRD, SYS (reserved) |
+| 96 | Security Requirement | BRD (Section 7.6), PRD, SYS |
+| 97 | Compatibility Requirement | BRD, PRD, SYS (reserved) |
+| 98 | Observability Requirement | BRD (Section 7.7), PRD, SYS |
+| 99 | Maintainability Requirement | BRD (Section 7.8), PRD, SYS |
+
+**Note**: Codes 91-99 are Quality Attribute (QA) subcategories that provide self-documenting element IDs for traceability. Code 02 (generic Quality Attribute) remains valid for legacy documents and overview sections.
 
 ### Examples
 
@@ -1298,6 +1309,8 @@ Consistent across ALL document types:
 |----|--------|---------|
 | `BRD.01.01.01` | 12 | BRD #1, Functional Requirement #1 |
 | `BRD.01.03.05` | 12 | BRD #1, Constraint #5 |
+| `BRD.02.96.03` | 12 | BRD #2, Security Requirement #3 |
+| `BRD.02.91.01` | 12 | BRD #2, Performance Requirement #1 |
 | `PRD.02.07.42` | 12 | PRD #2, User Story #42 |
 | `ADR.01.10.01` | 12 | ADR #1, Decision #1 |
 | `TASKS.01.17.128` | 15 | TASKS #1, Task #128 |
@@ -1416,6 +1429,40 @@ The following patterns are **REMOVED** and MUST NOT be used:
 |------------------|-------------------|
 | `### BRD.017.001: Feature` | `### BRD.17.01.01: Feature` |
 | `### Feature F-01: User Dashboard` | `### PRD.01.07.01: User Dashboard` |
+
+---
+
+## BRD Section-to-Element-Code Mapping
+
+**Purpose**: Define which element type codes are valid for each BRD section. This mapping enables validators to enforce semantic consistency between section content and element IDs.
+
+| BRD Section | Section Title | Valid Codes | Canonical Code | Notes |
+|-------------|---------------|-------------|----------------|-------|
+| 2 | Business Objectives | 23 | 23 | Business Objective |
+| 3 | Project Scope | 22 | 22 | Feature Item |
+| 4 | Stakeholders | 24 | 24 | Stakeholder Need |
+| 5 | User Stories | 09 | 09 | User Story |
+| 6 | Functional Requirements | 01, 06 | 01 | FR + embedded Acceptance Criteria |
+| 7.1 | Quality Attributes (Overview) | 02 | 02 | Generic QA |
+| 7.2 | Architecture Decision Requirements | 10, 32 | 10 | Decision (32 legacy) |
+| 7.3 | Performance Requirements | 02, 05, 91 | 91 | Performance |
+| 7.4 | Reliability Requirements | 02, 05, 92 | 92 | Reliability |
+| 7.5 | Scalability Requirements | 02, 05, 94 | 94 | Scalability |
+| 7.6 | Security Requirements | 02, 05, 96 | 96 | Security |
+| 7.7 | Observability Requirements | 02, 05, 98 | 98 | Observability |
+| 7.8 | Maintainability Requirements | 02, 05, 99 | 99 | Maintainability |
+| 8.1 | Constraints | 03 | 03 | Constraint |
+| 8.2 | Assumptions | 04 | 04 | Assumption |
+| 9 | Acceptance Criteria | 06 | 06 | Acceptance Criteria |
+| 10 | Business Risk Management | 05, 07 | 07 | Risk (05 legacy) |
+
+**Validation Rules**:
+- Elements MUST use a code from the "Valid Codes" column for their section
+- New documents SHOULD use the "Canonical Code" where available
+- Legacy codes (02, 05, 32) are tolerated for backward compatibility but should not be used in new documents
+- Validators enforce `GATE-W008` warnings for non-canonical code usage
+
+**Traceability Benefit**: Using hierarchical codes 91-99 enables pattern-based search across documents (e.g., `grep -r "\.96\."` finds all Security requirements).
 
 ---
 
@@ -1573,3 +1620,12 @@ python3 scripts/validate_all.py . --all
 - For large documents (>50KB), use Section Files (`TYPE-DOC_NUM.S_{slug}.md`) with appropriate `split_type` metadata.
 - Internal element IDs use unified 4-segment format: `TYPE.DOC_NUM.TT.SS`.
 - Run `python 07_REQ/scripts/validate_requirement_ids.py` and fix any violations before committing.
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance=91, Reliability=92, Scalability=94, Security=96, Observability=98, Maintainability=99); Added BRD Section-to-Element-Code Mapping table; Updated reserved range from 74-99 to 74-90 |
+| 2.1 | 2026-02-28 | Initial published version with unified element ID format |

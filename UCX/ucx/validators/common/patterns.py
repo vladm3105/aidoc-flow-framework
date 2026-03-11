@@ -76,17 +76,17 @@ SECTION_NUMBER_PATTERN = re.compile(r"^(\d+(?:\.\d+)*)")
 # =============================================================================
 
 TAG_PATTERNS: Dict[str, re.Pattern] = {
-    "brd": re.compile(r"@brd:\s*BRD-\d+", re.IGNORECASE),
-    "prd": re.compile(r"@prd:\s*PRD-\d+", re.IGNORECASE),
-    "ears": re.compile(r"@ears:\s*EARS-\d+", re.IGNORECASE),
-    "bdd": re.compile(r"@bdd:\s*BDD-\d+", re.IGNORECASE),
-    "adr": re.compile(r"@adr:\s*ADR-\d+", re.IGNORECASE),
-    "sys": re.compile(r"@sys:\s*SYS-\d+", re.IGNORECASE),
-    "req": re.compile(r"@req:\s*REQ\.\d+\.\d+\.\d+", re.IGNORECASE),
-    "ctr": re.compile(r"@ctr:\s*CTR-\d+", re.IGNORECASE),
-    "spec": re.compile(r"@spec:\s*SPEC-\d+", re.IGNORECASE),
-    "tasks": re.compile(r"@tasks:\s*TASKS-\d+", re.IGNORECASE),
-    "ref": re.compile(r"@ref:\s*[A-Z]+-\d+", re.IGNORECASE),
+    "brd": re.compile(r"@brd:\s*BRD-\d{2,}", re.IGNORECASE),
+    "prd": re.compile(r"@prd:\s*PRD-\d{2,}", re.IGNORECASE),
+    "ears": re.compile(r"@ears:\s*EARS-\d{2,}", re.IGNORECASE),
+    "bdd": re.compile(r"@bdd:\s*BDD-\d{2,}", re.IGNORECASE),
+    "adr": re.compile(r"@adr:\s*ADR-\d{2,}", re.IGNORECASE),
+    "sys": re.compile(r"@sys:\s*SYS-\d{2,}", re.IGNORECASE),
+    "req": re.compile(r"@req:\s*REQ\.\d{2,}\.\d{2}\.\d{2,}", re.IGNORECASE),
+    "ctr": re.compile(r"@ctr:\s*CTR-\d{2,}", re.IGNORECASE),
+    "spec": re.compile(r"@spec:\s*SPEC-\d{2,}", re.IGNORECASE),
+    "tasks": re.compile(r"@tasks:\s*TASKS-\d{2,}", re.IGNORECASE),
+    "ref": re.compile(r"@ref:\s*[A-Z]+-\d{2,}", re.IGNORECASE),
     "diagram": re.compile(r"@diagram:\s*\S+", re.IGNORECASE),
 }
 
@@ -134,7 +134,7 @@ FILE_NAME_PATTERNS: Dict[str, re.Pattern] = {
     "prd": re.compile(r"^PRD-\d{2,}_[\w-]+\.md$"),
     "ears": re.compile(r"^EARS-\d{2,}_[\w-]+\.md$"),
     "bdd": re.compile(r"^[\w-]+\.feature$"),
-    "adr": re.compile(r"^ADR-\d{3,}_[\w-]+\.md$"),
+    "adr": re.compile(r"^ADR-\d{2,}_[\w-]+\.md$"),
     "sys": re.compile(r"^SYS-\d{2,}_[\w-]+\.md$"),
     "req": re.compile(r"^REQ-\d{2,}_[\w-]+\.md$"),
     "ctr": re.compile(r"^CTR-\d{2,}_[\w-]+\.(md|yaml)$"),

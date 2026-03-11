@@ -63,6 +63,7 @@ def validate_structure(
     file_path: Path,
     result: UnifiedValidationResult,
     profile: str = "standard",
+    is_section_layout: bool = False,
 ) -> None:
     """
     Validate BRD document structure.
@@ -72,6 +73,7 @@ def validate_structure(
         file_path: Path to file
         result: Result to populate
         profile: Template profile (standard/mvp)
+        is_section_layout: True if document uses section-based layout (multiple files)
     """
     # Validate file name
     _validate_file_name(file_path, result)
@@ -79,20 +81,23 @@ def validate_structure(
     # Extract sections
     sections = extract_sections(content)
 
-    # Validate H1 title
-    _validate_h1_title(sections, file_path, result)
+    # Validate H1 title (for index files in section layout, allow "Section N:" format)
+    _validate_h1_title(sections, file_path, result, is_section_layout)
 
-    # Validate required sections
-    _validate_required_sections(sections, file_path, result, profile)
+    # For section-based layouts, skip required section validation
+    # Sections are distributed across multiple files, not all in one document
+    if not is_section_layout:
+        # Validate required sections (monolithic only)
+        _validate_required_sections(sections, file_path, result, profile)
 
-    # Validate section numbering
-    _validate_section_numbering(sections, file_path, result)
+        # Validate section numbering (monolithic only)
+        _validate_section_numbering(sections, file_path, result)
 
-    # Validate Document Control
-    _validate_document_control(content, file_path, result)
+        # Validate business requirements structure (monolithic only)
+        _validate_business_requirements(content, file_path, result, profile)
 
-    # Validate business requirements structure
-    _validate_business_requirements(content, file_path, result, profile)
+    # Validate Document Control (both layouts, but with relaxed pattern for section layout)
+    _validate_document_control(content, file_path, result, is_section_layout)
 
 
 def _validate_file_name(
@@ -124,6 +129,7 @@ def _validate_h1_title(
     sections: List[Tuple[str, int]],
     file_path: Path,
     result: UnifiedValidationResult,
+    is_section_layout: bool = False,
 ) -> None:
     """Validate H1 title format."""
     h1_sections = [s for s in sections if s[0].startswith("# ") and not s[0].startswith("## ")]
@@ -148,7 +154,18 @@ def _validate_h1_title(
 
         # Skip strict validation for templates
         if "TEMPLATE" not in str(file_path).upper():
-            if not H1_TITLE_PATTERN.match(h1_text):
+            # For section-based layout, allow "# Section N:" or "# BRD-NN:" format
+            if is_section_layout:
+                section_h1_pattern = re.compile(r"^# (BRD-\d{2,}:|Section \d+:)")
+                if not section_h1_pattern.match(h1_text):
+                    result.add_issue(
+                        "BRD-E001",
+                        file_path=file_path,
+                        line=h1_line,
+                        context=f"Invalid H1 format. Expected '# BRD-NN: Title' or '# Section N:', got '{h1_text[:50]}'",
+                        tier=ValidationTier.TIER1,
+                    )
+            elif not H1_TITLE_PATTERN.match(h1_text):
                 result.add_issue(
                     "BRD-E001",
                     file_path=file_path,
@@ -241,13 +258,22 @@ def _validate_document_control(
     content: str,
     file_path: Path,
     result: UnifiedValidationResult,
+    is_section_layout: bool = False,
 ) -> None:
     """Validate Document Control section."""
-    doc_control_match = re.search(
-        r"## 0\. Document Control.*?(?=## \d+\.|\Z)",
-        content,
-        re.DOTALL,
-    )
+    # For section-based layout, accept either "## Document Control" or "## 0. Document Control"
+    if is_section_layout:
+        doc_control_match = re.search(
+            r"## (?:0\. )?Document Control.*?(?=## \d+\.|\Z|---)",
+            content,
+            re.DOTALL,
+        )
+    else:
+        doc_control_match = re.search(
+            r"## 0\. Document Control.*?(?=## \d+\.|\Z)",
+            content,
+            re.DOTALL,
+        )
 
     if not doc_control_match:
         result.add_issue(
