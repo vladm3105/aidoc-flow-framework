@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This module is deprecated as of UCX v1.9.0.
+
+Migration: Use `ucx.validators.common.error_codes` instead.
+Removal: This module will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 Standardized Error Code Registry for SDD Document Validation
 
 Pattern: {TYPE}-{SEVERITY}{NNN}
@@ -12,6 +21,14 @@ Exit Codes:
 - 1: Warnings only
 - 2: Errors present
 """
+
+import warnings
+warnings.warn(
+    "This module is deprecated. Use 'ucx.validators.common.error_codes' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 from dataclasses import dataclass
 from enum import Enum

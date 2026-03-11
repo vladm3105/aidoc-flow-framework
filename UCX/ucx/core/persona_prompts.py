@@ -4,8 +4,115 @@ from pathlib import Path
 from typing import Optional
 
 from ucx.observability.logging import get_logger
+from ucx.skills.loader import DEFAULT_SKILLS_DIR
 
 logger = get_logger("ucx.core.persona_prompts")
+
+
+# Re-export for backwards compatibility
+FRAMEWORK_SKILLS_DIR = DEFAULT_SKILLS_DIR
+
+
+def get_project_skills_dir(project_dir: Path) -> Path:
+    """
+    Get the project-specific skills directory.
+
+    Args:
+        project_dir: Project root directory
+
+    Returns:
+        Path to project skills directory ({project_dir}/docs/UCX/skills/)
+    """
+    return project_dir / "docs" / "UCX" / "skills"
+
+
+def _load_skill_from_dir(persona: str, skill_dir: Path) -> Optional[str]:
+    """
+    Load skill content from a specific directory.
+
+    Args:
+        persona: Persona name (e.g., "architect", "auditor")
+        skill_dir: Directory to search for skill file
+
+    Returns:
+        Skill content or None if not found
+    """
+    if not skill_dir.exists():
+        return None
+
+    # Try exact match first
+    skill_path = skill_dir / f"{persona}.md"
+    if skill_path.exists():
+        content = skill_path.read_text(encoding="utf-8")
+        logger.debug(f"Loaded skill from file: {skill_path} ({len(content)} chars)")
+        return content
+
+    # Try with name normalization
+    normalized = persona.replace("-", "_").replace(" ", "_").lower()
+    skill_path = skill_dir / f"{normalized}.md"
+    if skill_path.exists():
+        content = skill_path.read_text(encoding="utf-8")
+        logger.debug(f"Loaded skill from file: {skill_path} ({len(content)} chars)")
+        return content
+
+    # Try common alternative names
+    alternatives = {
+        "integration_lead": "integration_expert",
+        "devils_advocate": "devils_advocate",
+    }
+    if persona in alternatives:
+        alt_path = skill_dir / f"{alternatives[persona]}.md"
+        if alt_path.exists():
+            content = alt_path.read_text(encoding="utf-8")
+            logger.debug(f"Loaded skill from file: {alt_path} ({len(content)} chars)")
+            return content
+
+    return None
+
+
+def _load_skill_content(
+    persona: str,
+    skill_dir: Optional[Path] = None,
+    project_dir: Optional[Path] = None,
+) -> Optional[str]:
+    """
+    Load domain knowledge from skill file.
+
+    Priority order:
+    1. Project-specific skills ({project_dir}/docs/UCX/skills/)
+    2. Explicit skill_dir if provided
+    3. Framework skills (fallback)
+
+    Args:
+        persona: Persona name (e.g., "architect", "auditor")
+        skill_dir: Optional explicit skill directory
+        project_dir: Optional project root for project-specific skills
+
+    Returns:
+        Skill content or None if not found
+    """
+    # Priority 1: Project-specific skills
+    if project_dir is not None:
+        project_skills = get_project_skills_dir(project_dir)
+        content = _load_skill_from_dir(persona, project_skills)
+        if content:
+            logger.info(f"Loaded project-specific skill: {persona} from {project_skills}")
+            return content
+
+    # Priority 2: Explicit skill_dir
+    if skill_dir is not None:
+        content = _load_skill_from_dir(persona, skill_dir)
+        if content:
+            return content
+
+    # Priority 3: Framework skills (fallback)
+    content = _load_skill_from_dir(persona, FRAMEWORK_SKILLS_DIR)
+    if content:
+        logger.debug(f"Loaded framework skill (fallback): {persona}")
+        return content
+
+    logger.debug(f"No skill file found for persona: {persona}")
+    return None
 
 
 # Default personas for each document type
@@ -556,16 +663,20 @@ def build_persona_prompt(
     shared_context: str,
     previous_responses: dict[str, str] = None,
     doc_type: str = "brd",
+    skill_dir: Optional[Path] = None,
+    project_dir: Optional[Path] = None,
 ) -> str:
     """
     Build a complete prompt for a persona.
-    
+
     Args:
         persona: Persona name
         shared_context: Document content
         previous_responses: Dict of persona -> response from previous personas
         doc_type: Document type
-    
+        skill_dir: Optional custom skill directory for domain knowledge
+        project_dir: Optional project root for project-specific skills
+
     Returns:
         Complete prompt string
     """
@@ -573,13 +684,17 @@ def build_persona_prompt(
     if not template:
         logger.warning(f"No template for persona: {persona}")
         return f"Review the following document:\n\n{shared_context}"
-    
+
     parts = []
-    
-    # Domain knowledge
-    parts.append("=== YOUR DOMAIN KNOWLEDGE ===")
-    parts.append(template["domain_knowledge"])
-    parts.append("=== END DOMAIN KNOWLEDGE ===\n")
+
+    # Domain knowledge - try project skills first, then skill_dir, then hardcoded
+    skill_content = _load_skill_content(persona, skill_dir, project_dir)
+    domain_knowledge = skill_content if skill_content else template.get("domain_knowledge", "")
+
+    if domain_knowledge:
+        parts.append("=== YOUR DOMAIN KNOWLEDGE ===")
+        parts.append(domain_knowledge)
+        parts.append("=== END DOMAIN KNOWLEDGE ===\n")
     
     # Expert instructions
     parts.append("==============")
@@ -727,13 +842,15 @@ class UnifiedPromptLoader:
         self._project_dir = project_dir
         self._doc_type = doc_type.lower()
         self._review_dir = project_dir / "docs" / "UCX" / "review"
+        self._skills_dir = get_project_skills_dir(project_dir)
         self._prompt_file = self._find_prompt_file()
         self._full_content: Optional[str] = None
         self._parsed_personas: dict[str, dict] = {}
         self._shared_context: Optional[str] = None
 
         logger.debug(
-            f"UnifiedPromptLoader initialized: project={project_dir} doc_type={doc_type} prompt_file={self._prompt_file}"
+            f"UnifiedPromptLoader initialized: project={project_dir} doc_type={doc_type} "
+            f"prompt_file={self._prompt_file} skills_dir={self._skills_dir}"
         )
 
     def _find_prompt_file(self) -> Optional[Path]:
@@ -925,6 +1042,26 @@ class UnifiedPromptLoader:
         # Return sorted by section number
         return sorted(personas.keys(), key=lambda p: personas[p].get("section_number", 99))
 
+    def has_project_skills(self) -> bool:
+        """Check if project-specific skills directory exists and has files."""
+        if not self._skills_dir.exists():
+            return False
+        return any(self._skills_dir.glob("*.md"))
+
+    def get_skill_content(self, persona: str) -> Optional[str]:
+        """
+        Load skill content for a persona.
+
+        Priority: project skills > framework skills
+
+        Args:
+            persona: Persona name
+
+        Returns:
+            Skill content or None
+        """
+        return _load_skill_content(persona, project_dir=self._project_dir)
+
     def build_persona_prompt(
         self,
         persona: str,
@@ -954,6 +1091,14 @@ class UnifiedPromptLoader:
         shared = self.get_shared_context()
 
         parts = []
+
+        # Load project-specific skill content (domain knowledge)
+        skill_content = self.get_skill_content(persona)
+        if skill_content:
+            parts.append("=== YOUR DOMAIN KNOWLEDGE ===")
+            parts.append(skill_content)
+            parts.append("=== END DOMAIN KNOWLEDGE ===\n")
+            logger.debug(f"Injected skill content for {persona} ({len(skill_content)} chars)")
 
         # Include relevant shared context (instructions, verification protocol, etc.)
         # But exclude the full document placeholder

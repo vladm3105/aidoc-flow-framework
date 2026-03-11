@@ -2,13 +2,20 @@
 
 import hashlib
 import json
+import re
 import time
+from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
 from ucx.utils.logging import get_logger
+from ucx.version import __version__
+
+
+# Finding similarity threshold (0.0-1.0)
+FINDING_SIMILARITY_THRESHOLD = 0.6
 
 
 # Default session TTL in hours
@@ -380,12 +387,23 @@ class ReviewMemory:
             parts.append(f"| **Review Date** | {review_date} |\n")
             parts.append("| **Review Method** | UCR (Unified Context Review) - Multi-Turn |\n")
             parts.append(f"| **Personas Applied** | {persona_count} |\n")
-            parts.append(f"| **Reviewer** | UCX Framework v1.5.3 |\n")
+            parts.append(f"| **Reviewer** | UCX Framework v{__version__} |\n")
             parts.append("| **Status** | Draft |\n\n")
             parts.append("---\n\n")
 
         # Add each persona's response
         responses = self.get_all_responses()
+
+        # Extract and deduplicate findings
+        findings = self._extract_findings(responses)
+        dedup_result = self._deduplicate_findings(findings)
+
+        # Add consolidated findings section first (if we have findings)
+        if dedup_result["stats"].get("total_findings", 0) > 0:
+            parts.append(self._format_consolidated_findings(dedup_result))
+            parts.append("---\n\n")
+
+        # Add individual persona reviews
         for i, persona in enumerate(self._session.personas if self._session else []):
             if persona in responses:
                 title = persona.replace("_", " ").title()
@@ -457,3 +475,198 @@ class ReviewMemory:
     def compute_content_hash(content: str) -> str:
         """Compute hash of content for cache validation."""
         return hashlib.sha256(content.encode("utf-8")).hexdigest()[:16]
+
+    def _extract_findings(self, responses: dict[str, str]) -> list[dict]:
+        """
+        Extract findings from all persona responses.
+
+        Returns list of dicts with keys: persona, priority, id, title, text
+        """
+        findings = []
+        # Pattern: **[P0-X]** or **[P1-X]** or similar
+        pattern = re.compile(
+            r'\*\*\[([Pp][0-2])-(\d+)\]\*\*\s*([^\n]+?)(?:\n|$)(.*?)(?=\*\*\[[Pp][0-2]-|\Z)',
+            re.DOTALL
+        )
+
+        for persona, response in responses.items():
+            for match in pattern.finditer(response):
+                priority = match.group(1).upper()
+                finding_num = match.group(2)
+                title = match.group(3).strip().rstrip(':').strip()
+                text = match.group(4).strip()
+
+                findings.append({
+                    "persona": persona,
+                    "priority": priority,
+                    "id": f"{priority}-{finding_num}",
+                    "title": title,
+                    "text": text[:500],  # Truncate for comparison
+                    "full_text": text,
+                })
+
+        return findings
+
+    def _compute_similarity(self, text1: str, text2: str) -> float:
+        """
+        Compute Jaccard similarity between two texts.
+
+        Returns value between 0.0 (no overlap) and 1.0 (identical).
+        """
+        # Normalize: lowercase, remove punctuation, split into words
+        def normalize(text: str) -> set[str]:
+            text = re.sub(r'[^\w\s]', ' ', text.lower())
+            words = set(text.split())
+            # Filter out common stop words
+            stop_words = {'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been',
+                          'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will',
+                          'would', 'could', 'should', 'may', 'might', 'must', 'shall',
+                          'can', 'need', 'to', 'of', 'in', 'for', 'on', 'with', 'at',
+                          'by', 'from', 'as', 'into', 'through', 'during', 'before',
+                          'after', 'above', 'below', 'between', 'under', 'again',
+                          'further', 'then', 'once', 'here', 'there', 'when', 'where',
+                          'why', 'how', 'all', 'each', 'few', 'more', 'most', 'other',
+                          'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same',
+                          'so', 'than', 'too', 'very', 'just', 'and', 'but', 'if',
+                          'or', 'because', 'until', 'while', 'this', 'that', 'these',
+                          'those', 'it', 'its'}
+            return words - stop_words
+
+        words1 = normalize(text1)
+        words2 = normalize(text2)
+
+        if not words1 or not words2:
+            return 0.0
+
+        intersection = len(words1 & words2)
+        union = len(words1 | words2)
+
+        return intersection / union if union > 0 else 0.0
+
+    def _deduplicate_findings(self, findings: list[dict]) -> dict:
+        """
+        Deduplicate findings across personas.
+
+        Returns dict with:
+          - unique: list of unique findings
+          - duplicates: list of duplicate groups (findings that overlap)
+          - stats: deduplication statistics
+        """
+        if not findings:
+            return {"unique": [], "duplicates": [], "stats": {}}
+
+        # Group findings by priority first
+        by_priority = defaultdict(list)
+        for f in findings:
+            by_priority[f["priority"]].append(f)
+
+        unique_findings = []
+        duplicate_groups = []
+        processed = set()
+
+        for priority in ["P0", "P1", "P2"]:
+            priority_findings = by_priority.get(priority, [])
+
+            for i, finding in enumerate(priority_findings):
+                key = (finding["persona"], finding["id"])
+                if key in processed:
+                    continue
+
+                # Find similar findings from OTHER personas
+                similar = [finding]
+                for j, other in enumerate(priority_findings):
+                    if i == j:
+                        continue
+                    other_key = (other["persona"], other["id"])
+                    if other_key in processed:
+                        continue
+
+                    # Skip if same persona (they shouldn't duplicate themselves)
+                    if other["persona"] == finding["persona"]:
+                        continue
+
+                    # Check title + text similarity
+                    title_sim = self._compute_similarity(finding["title"], other["title"])
+                    text_sim = self._compute_similarity(finding["text"], other["text"])
+
+                    # Weighted average (title matters more)
+                    combined_sim = 0.6 * title_sim + 0.4 * text_sim
+
+                    if combined_sim >= FINDING_SIMILARITY_THRESHOLD:
+                        similar.append(other)
+                        processed.add(other_key)
+
+                processed.add(key)
+
+                if len(similar) > 1:
+                    # Multiple personas found same issue - record as duplicate
+                    duplicate_groups.append({
+                        "primary": finding,
+                        "similar": similar[1:],
+                        "personas": [f["persona"] for f in similar],
+                    })
+                else:
+                    unique_findings.append(finding)
+
+        # Compute stats
+        total = len(findings)
+        unique_count = len(unique_findings) + len(duplicate_groups)
+        duplicate_count = sum(len(g["similar"]) for g in duplicate_groups)
+
+        stats = {
+            "total_findings": total,
+            "unique_findings": unique_count,
+            "duplicates_removed": duplicate_count,
+            "dedup_ratio": (duplicate_count / total * 100) if total > 0 else 0,
+        }
+
+        return {
+            "unique": unique_findings,
+            "duplicates": duplicate_groups,
+            "stats": stats,
+        }
+
+    def _format_consolidated_findings(self, dedup_result: dict) -> str:
+        """Format deduplicated findings into a consolidated section."""
+        parts = []
+        parts.append("## Consolidated Findings Summary\n\n")
+
+        stats = dedup_result["stats"]
+        parts.append(f"**Deduplication Stats**: {stats['total_findings']} total findings → "
+                     f"{stats['unique_findings']} unique ({stats['dedup_ratio']:.0f}% duplicates removed)\n\n")
+
+        # P0 Critical first
+        p0_findings = [f for f in dedup_result["unique"] if f["priority"] == "P0"]
+        p0_dupes = [g for g in dedup_result["duplicates"] if g["primary"]["priority"] == "P0"]
+
+        if p0_findings or p0_dupes:
+            parts.append("### P0 Critical Findings\n\n")
+            for f in p0_findings:
+                parts.append(f"- **[{f['id']}]** {f['title']} *(from {f['persona']})*\n")
+            for g in p0_dupes:
+                personas = ", ".join(g["personas"])
+                parts.append(f"- **[{g['primary']['id']}]** {g['primary']['title']} "
+                             f"*(confirmed by {len(g['personas'])} personas: {personas})*\n")
+            parts.append("\n")
+
+        # P1 High
+        p1_findings = [f for f in dedup_result["unique"] if f["priority"] == "P1"]
+        p1_dupes = [g for g in dedup_result["duplicates"] if g["primary"]["priority"] == "P1"]
+
+        if p1_findings or p1_dupes:
+            parts.append("### P1 High Priority Findings\n\n")
+            for f in p1_findings:
+                parts.append(f"- **[{f['id']}]** {f['title']} *(from {f['persona']})*\n")
+            for g in p1_dupes:
+                personas = ", ".join(g["personas"])
+                parts.append(f"- **[{g['primary']['id']}]** {g['primary']['title']} "
+                             f"*(confirmed by {len(g['personas'])} personas: {personas})*\n")
+            parts.append("\n")
+
+        # P2 Medium (brief summary)
+        p2_count = len([f for f in dedup_result["unique"] if f["priority"] == "P2"])
+        p2_count += len([g for g in dedup_result["duplicates"] if g["primary"]["priority"] == "P2"])
+        if p2_count > 0:
+            parts.append(f"### P2 Medium Priority: {p2_count} findings (see individual reviews)\n\n")
+
+        return "".join(parts)

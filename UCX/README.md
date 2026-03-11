@@ -156,6 +156,10 @@ ucx --project-prompts /path/to/project/docs/UCX/ review brd docs/01_BRD/BRD-01/
 **Project prompt directory structure**:
 ```
 docs/UCX/
+├── skills/                         # Project-specific persona skills (v1.8.0+)
+│   ├── architect.md                # Domain-tuned architect knowledge
+│   ├── auditor.md                  # Domain-tuned compliance focus
+│   └── ...
 ├── review/
 │   ├── UCR_PROMPT_BRD_PROJECT.md   # Project-specific BRD review prompt
 │   ├── UCR_PROMPT_PRD_PROJECT.md   # Project-specific PRD review prompt
@@ -166,11 +170,13 @@ docs/UCX/
     └── UCRem_PROMPT_BRD_PROJECT.md
 ```
 
-**Prompt search order**:
-1. Project prompt dir: `{project_prompts}/review/UCR_PROMPT_BRD_PROJECT.md`
-2. Project prompt dir: `{project_prompts}/review/UCR_PROMPT_BRD.md`
-3. Framework fallback: `UCR_PROMPT_BRD_PROJECT.md`
-4. Framework base: `UCR_PROMPT_BRD.md`
+**Prompt search order** (project-specific ONLY - no fallback):
+1. Project prompt dir: `{project}/docs/UCX/review/UCR_PROMPT_BRD_PROJECT.md`
+2. Project prompt dir: `{project}/docs/UCX/review/UCR_PROMPT_BRD.md`
+
+**Skill search order** (project first, framework fallback):
+1. Project skills: `{project}/docs/UCX/skills/{persona}.md`
+2. Framework skills: `/UCX/skills/{persona}.md`
 
 **Benefits of project-specific prompts**:
 - Domain-specific personas (e.g., compliance focus for fintech)
@@ -179,6 +185,51 @@ docs/UCX/
 - Additional personas (Fact Checker, Chairperson)
 
 See `docs/UCX/review/UCR_PROMPT_BRD_BEELOCAL.md` for an example 11-persona fintech prompt.
+
+### Project-Specific Skills (v1.8.0+)
+
+Skills provide domain knowledge that gets injected into persona prompts. Create project-tuned skills for better reviews:
+
+```bash
+# Project skills directory
+mkdir -p docs/UCX/skills/
+
+# Create domain-tuned skill (example: BeeLocal fintech)
+cat > docs/UCX/skills/auditor.md << 'EOF'
+# BeeLocal Auditor Domain Knowledge
+
+## Role
+Compliance Auditor for cross-border remittance (US→Uzbekistan).
+
+## Regulatory Focus
+- **FinCEN**: MTL sponsorship, SAR filing, 5-year records
+- **OFAC**: Real-time SDN screening
+- **KYC Tiers**: Level 1 ($300/day), Level 2 ($3K/day), Level 3 ($10K/day)
+- **PCI-DSS**: Scope for Nuvei card processing
+
+## Review Questions
+1. Is MTL sponsorship model specified?
+2. Are OFAC screening requirements explicit?
+3. Are KYC tier limits documented?
+EOF
+```
+
+**Skill Loading Priority:**
+
+| Priority | Location | Behavior |
+|----------|----------|----------|
+| 1 | `{project}/docs/UCX/skills/` | Project-tuned skills (preferred) |
+| 2 | `/UCX/skills/` | Framework defaults (fallback) |
+
+**Verify skills are loaded:**
+```bash
+UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
+# Look for: "Loaded project-specific skill: auditor from .../docs/UCX/skills"
+```
+
+**Key difference from prompts:**
+- **Prompts**: Project-specific ONLY (no fallback)
+- **Skills**: Project first, framework fallback if not found
 
 ### Multi-Turn Review Mode
 
@@ -200,6 +251,8 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
 - **Resume capability** - Skip completed personas if interrupted
 - **Debug/audit** - Inspect prompts and responses in `.doc_review_memory/`
 - **Better quality** - Each persona generates detailed output (8-10K chars)
+- **Anti-repetition** - Later personas see prior findings summary, preventing redundant analysis
+- **Deduplication** - Report assembly consolidates duplicate findings across personas
 
 **Session Management:**
 
@@ -254,6 +307,108 @@ ucx review brd docs/01_BRD/BRD-01/ --clean-reports --keep-versions 3
 # Clean both memory and old reports
 ucx review brd docs/01_BRD/BRD-01/ --clean-all
 ```
+
+### Anti-Repetition & Deduplication (v1.7.0)
+
+Multi-turn reviews now prevent redundant findings across personas:
+
+**Anti-Repetition Rules:**
+- Each persona receives a summary of prior findings (P0/P1 only)
+- Prompts include explicit rules: "DO NOT REPEAT findings already identified"
+- Personas focus ONLY on their specialty domain
+- Cross-persona confirmations noted as "Confirmed: [P0-X from Architect]"
+
+**Report Deduplication:**
+- Report assembly extracts findings using P0/P1 patterns
+- Jaccard similarity (60% threshold) identifies duplicates
+- Consolidated findings section shows:
+  - Unique findings (from single persona)
+  - Confirmed findings (same issue from multiple personas)
+  - Deduplication stats (e.g., "45 total → 22 unique, 51% duplicates removed")
+
+**Report Structure:**
+```markdown
+## Consolidated Findings Summary
+
+**Deduplication Stats**: 45 total findings → 22 unique (51% duplicates removed)
+
+### P0 Critical Findings
+- **[P0-1]** Missing state machine *(confirmed by 3 personas: architect, tech_lead, operator)*
+- **[P0-2]** No API version pinning *(from integration_lead)*
+
+### P1 High Priority Findings
+...
+
+---
+
+## 1. Architect Review
+[Full persona response]
+
+## 2. Auditor Review
+...
+```
+
+### Document Validation (v1.9.0)
+
+Fast, non-AI validation for pre-commit hooks and CI/CD pipelines:
+
+```bash
+# Basic validation
+ucx validate brd docs/01_BRD/BRD-01/
+
+# Tier 1 only (fast, blocking checks for pre-commit)
+ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+
+# Strict mode (warnings as errors)
+ucx validate brd docs/01_BRD/BRD-01/ --strict
+
+# JSON output for CI/CD
+ucx validate brd docs/01_BRD/BRD-01/ --format json
+```
+
+**Tiered Validation:**
+
+| Tier | Type | Blocking | Checks |
+|------|------|----------|--------|
+| **Tier 1** | Core | Yes | Element codes, structure, metadata, quality gates (errors) |
+| **Tier 2** | Advisory | No | Links, references, diagrams, glossary |
+
+**Quality Gates (10 GATE Checks):**
+
+| GATE | Check | Tier |
+|------|-------|------|
+| GATE-01 | Placeholder text detection | 1 |
+| GATE-02 | Premature downstream references | 1 |
+| GATE-03 | Internal count consistency | 2 |
+| GATE-04 | Index synchronization | 1 |
+| GATE-06 | Diagram contract validation | 1 |
+| GATE-07 | Glossary consistency | 2 |
+| GATE-08 | Element ID uniqueness | 1 |
+| GATE-09 | Cost estimate format | 2 |
+| GATE-10 | File size compliance (>20K tokens) | 1 |
+
+**Pre-commit Integration:**
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: ucx-brd-validate
+        name: UCX BRD Validation (Tier 1)
+        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && ucx validate brd docs/01_BRD --tier1-only'
+        language: system
+        files: ^docs/01_BRD/.*\.md$
+        stages: [pre-commit]
+```
+
+**Exit Codes:**
+
+| Code | Meaning | Pre-commit |
+|------|---------|------------|
+| 0 | All checks passed | ✅ Pass |
+| 1 | Warnings only | ✅ Pass (unless --strict) |
+| 2 | Errors present | ❌ Fail |
 
 ### SDD-Compliant Output Format
 
@@ -510,6 +665,13 @@ UCX/
 ├── pyproject.toml              # Package configuration
 ├── README.md                   # This file
 │
+├── skills/                     # Framework persona skills (fallback)
+│   ├── architect.md            # Architect domain knowledge
+│   ├── auditor.md              # Auditor domain knowledge
+│   ├── tech_lead.md            # Tech Lead domain knowledge
+│   ├── ...                     # 14 persona skill files
+│   └── chairperson.md
+│
 ├── ucx/                        # Python package
 │   ├── __init__.py             # Public API exports
 │   ├── api/                    # Public API classes
@@ -520,7 +682,7 @@ UCX/
 │   │
 │   ├── core/                   # Core orchestration
 │   │   ├── review_memory.py    # ReviewMemory for multi-turn
-│   │   └── persona_prompts.py  # Persona prompt templates
+│   │   └── persona_prompts.py  # Persona prompt templates + skill loading
 │   │
 │   ├── cli/                    # CLI commands
 │   │   └── main.py             # Click CLI
@@ -535,7 +697,7 @@ UCX/
 │   │   └── tokens.py           # Token management
 │   │
 │   ├── config/                 # Configuration
-│   │   ├── settings.py         # Pydantic settings
+│   │   ├── settings.py         # Pydantic settings (project_dir)
 │   │   └── layer_skills.py     # Layer-to-skill mapping
 │   │
 │   ├── models/                 # Data models
@@ -556,9 +718,9 @@ UCX/
 │   │       └── ucr/            # Review templates (UCR_PROMPT_*.md)
 │   │
 │   ├── skills/                 # Skill/persona management
-│   │   ├── loader.py           # Skill loading
+│   │   ├── loader.py           # SkillLoader (project_dir support)
 │   │   ├── injector.py         # Prompt injection
-│   │   └── personas/           # 12 persona definitions
+│   │   └── personas/           # DEPRECATED - use /skills/
 │   │
 │   └── utils/                  # Utilities
 │       ├── file_ops.py
@@ -566,6 +728,20 @@ UCX/
 │       └── logging.py
 │
 └── tests/                      # Test suite
+
+Project Structure (recommended):
+project/
+├── docs/
+│   └── UCX/
+│       ├── skills/             # Project-specific skills (priority 1)
+│       │   ├── architect.md    # Domain-tuned architect
+│       │   ├── auditor.md      # Domain-tuned auditor
+│       │   └── ...
+│       ├── review/             # Project-specific prompts (required)
+│       │   └── UCR_PROMPT_BRD_PROJECT.md
+│       ├── creation/
+│       └── remediation/
+└── ...
 ```
 
 ---
@@ -743,6 +919,10 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8.0 | 2026-03-10 | **Project-specific skills support**: Skills now load from `{project}/docs/UCX/skills/` first, falling back to framework skills. Prompts remain project-specific only (no fallback). `SkillLoader` accepts `project_dir` parameter. `UnifiedPromptLoader` injects project skills into persona prompts. UCR/UCC/UCRem engines pass `project_dir` to skill loading. |
+| 1.7.2 | 2026-03-10 | **Skill consolidation**: Merged `/UCX/ucx/skills/personas/` (lightweight) into `/UCX/skills/` (detailed). Single source of truth for persona skills with both domain knowledge AND review metadata (scoring weights, tags, checklists). SkillLoader now defaults to `/UCX/skills/`. |
+| 1.7.1 | 2026-03-10 | **Skill file integration**: Domain knowledge now loaded from `/UCX/skills/*.md` files instead of hardcoded templates. Enables easier customization of persona expertise. Added `fact_checker.md` skill. Falls back to embedded templates if skill file not found. |
+| 1.7.0 | 2026-03-10 | **Anti-repetition and deduplication**: Multi-turn reviews now prevent persona repetition via anti-repetition rules in prompts. Report assembly includes automated finding deduplication with Jaccard similarity (60% threshold). Consolidated findings section shows unique vs. confirmed-by-multiple-personas findings. Dynamic version in report headers. |
 | 1.6.0 | 2026-03-10 | **Web search support**: Added `--enable-web-search` (`-W`) flag for internet-enabled analysis. Fact-checking regulatory references, verifying best practices, finding solutions. CLI mode with Claude only. |
 | 1.5.5 | 2026-03-10 | **Report naming standardization**: Changed from `{TYPE}_UCR_REVIEW_v{NNN}.md` to `{DOC_ID}.UCR_review_report_v{NNN}.md`. **Layer-appropriate finding classification**: BRD reviews now distinguish requirements (P0) from implementation details (defer to SPEC). **Pre-validation separation**: YAML/schema errors reported separately from content P0 findings. **Complexity scale**: Replaced time estimates with 1-5 complexity scale. |
 | 1.5.4 | 2026-03-10 | Added Fact Checker and Chairperson as required personas. Added Judge and Chairperson Editor as optional personas. |
@@ -755,6 +935,19 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 | 1.2.0 | 2026-03-09 | Dual-mode architecture: CLI mode (default) + API mode. Extended logging. |
 | 1.1.0 | 2026-03-09 | LiteLLM integration for multi-provider LLM support. |
 | 1.0.0 | 2026-03-09 | Python migration complete. API, CLI, full test suite. |
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [QUICK_START.md](docs/QUICK_START.md) | Quick start guide with review process explanation |
+| [HOW_TO_USE.md](docs/HOW_TO_USE.md) | Detailed usage instructions |
+| [HOW_TO_AUDIT.md](docs/HOW_TO_AUDIT.md) | Running document audits |
+| [PERSONA_DESIGN_GUIDE.md](docs/PERSONA_DESIGN_GUIDE.md) | Creating custom personas |
+| [UNIFIED_CONTEXT_FRAMEWORK.md](docs/UNIFIED_CONTEXT_FRAMEWORK.md) | Framework architecture |
+| [Skills README](skills/README.md) | Framework persona skills reference |
 
 ---
 

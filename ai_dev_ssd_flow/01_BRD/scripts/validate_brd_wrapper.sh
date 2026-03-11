@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
+# =============================================================================
+# DEPRECATED: This script is deprecated as of UCX v1.9.0.
+#
+# Migration: Use `ucx validate brd <path> --tier1-only` instead.
+# Removal: This script will be removed in UCX v2.0.0.
+#
+# See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+# =============================================================================
+
+echo "WARNING: This script is deprecated. Use 'ucx validate brd <path>' instead." >&2
+echo "         Will be removed in UCX v2.0.0." >&2
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

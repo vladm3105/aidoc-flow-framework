@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This script is deprecated as of UCX v1.9.0.
+
+Migration: Use `ucx validate brd <path>` instead.
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 BRD (Business Requirements Document) Validator - Layer 1
 
 Validates BRD documents against BRD_MVP_SCHEMA.yaml requirements.
@@ -14,6 +23,14 @@ Exit Codes:
     1 = Warnings only
     2 = Errors present
 """
+
+import warnings
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 import argparse
 import re

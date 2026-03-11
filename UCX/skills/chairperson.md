@@ -1,5 +1,8 @@
 # Board Chairperson Domain Knowledge
 
+## Role
+Board Chairperson responsible for synthesis, prioritization, and conflict resolution across all expert reviews.
+
 ## Synthesis Principles
 1. **De-Duplication**: Multiple experts might flag the same issue (e.g., Architect and Operator both complaining about a single point of failure). Combine them into one cohesive finding.
 2. **Priority Escalation**: Certain findings override others based on document type (e.g. UX findings are P0 for PRDs, Security findings are P0 for ADRs).

@@ -449,33 +449,74 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 @cli.command()
 @click.argument("doc_type")
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+@click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
+@click.option("--strict", is_flag=True, help="Treat warnings as errors")
+@click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
 @click.pass_context
-def validate(ctx, doc_type, doc_path):
+def validate(ctx, doc_type, doc_path, tier1_only, strict, output_format):
     """
     Validate a document (no AI review).
 
     \b
+    Tiered validation:
+      Tier 1 (Core, blocking): Element codes, structure, metadata, quality gates
+      Tier 2 (Advisory): Links, references, diagrams, glossary
+
+    \b
     Examples:
       ucx validate brd docs/01_BRD/BRD-01
+      ucx validate brd docs/01_BRD/BRD-01 --tier1-only
+      ucx validate brd docs/01_BRD/BRD-01 --strict --format json
     """
-    from ucx import UCRPhase
+    import json
+    import sys
 
-    ucr = UCRPhase(ctx.obj["config"])
-    result = ucr.validate(doc_type, Path(doc_path))
+    doc_type_lower = doc_type.lower()
 
-    console.print(f"Status: {result.status.value}")
-    console.print(f"Errors: {result.error_count}")
-    console.print(f"Warnings: {result.warning_count}")
+    # Use unified validator for BRD
+    if doc_type_lower == "brd":
+        from ucx.validators.brd import UnifiedBRDValidator
 
-    if result.errors:
-        console.print("\n[red]Errors:[/red]")
-        for error in result.errors:
-            console.print(f"  - {error}")
+        validator = UnifiedBRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
+        result = validator.validate(Path(doc_path), tier1_only=tier1_only)
 
-    if result.warnings:
-        console.print("\n[yellow]Warnings:[/yellow]")
-        for warning in result.warnings:
-            console.print(f"  - {warning}")
+        if output_format == "json":
+            console.print_json(data=result.to_dict())
+        else:
+            console.print(result.format_text(verbose=ctx.obj.get("verbose", False)))
+
+        # Exit with appropriate code
+        sys.exit(result.exit_code(strict=strict))
+    else:
+        # Fallback to legacy validator for other types
+        from ucx import UCRPhase
+
+        ucr = UCRPhase(ctx.obj["config"])
+        result = ucr.validate(doc_type, Path(doc_path))
+
+        console.print(f"Status: {result.status.value}")
+        console.print(f"Errors: {result.error_count}")
+        console.print(f"Warnings: {result.warning_count}")
+
+        if result.errors:
+            console.print("\n[red]Errors:[/red]")
+            for error in result.errors:
+                console.print(f"  - {error}")
+
+        if result.warnings:
+            console.print("\n[yellow]Warnings:[/yellow]")
+            for warning in result.warnings:
+                console.print(f"  - {warning}")
+
+        # Exit with appropriate code
+        if result.errors:
+            sys.exit(2)
+        elif result.warnings and strict:
+            sys.exit(2)
+        elif result.warnings:
+            sys.exit(1)
+        else:
+            sys.exit(0)
 
 
 @cli.command()

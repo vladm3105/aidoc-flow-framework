@@ -98,6 +98,11 @@ UCX/
 ├── pyproject.toml              # Package configuration
 ├── README.md                   # Package overview
 │
+├── skills/                     # Framework persona skills (v1.8.0+)
+│   ├── architect.md            # Default architect domain knowledge
+│   ├── auditor.md              # Default auditor domain knowledge
+│   └── ...                     # 14 persona skill files
+│
 ├── ucx/                        # Python package
 │   ├── __init__.py             # Public API exports
 │   ├── api/                    # Public API classes
@@ -105,6 +110,10 @@ UCX/
 │   │   ├── creation.py         # UCCPhase
 │   │   ├── review.py           # UCRPhase
 │   │   └── remediation.py      # UCRemPhase
+│   │
+│   ├── core/                   # Core orchestration
+│   │   ├── review_memory.py    # ReviewMemory for multi-turn
+│   │   └── persona_prompts.py  # Persona prompts + skill loading
 │   │
 │   ├── ai/                     # AI clients (dual-mode)
 │   │   ├── __init__.py         # get_client() factory
@@ -117,7 +126,7 @@ UCX/
 │   │   └── main.py             # Click CLI
 │   │
 │   ├── config/                 # Configuration
-│   │   └── settings.py         # UCXConfig (Pydantic)
+│   │   └── settings.py         # UCXConfig (project_dir support)
 │   │
 │   ├── validators/             # Document validators
 │   │   └── *.py                # Per-layer validators
@@ -125,12 +134,39 @@ UCX/
 │   ├── prompts/                # Prompt management
 │   │   └── templates/          # UCR_PROMPT_*.md files
 │   │
-│   └── skills/                 # Persona definitions
-│       └── personas/           # 12 expert personas
+│   └── skills/                 # Skill loading (v1.8.0)
+│       ├── loader.py           # SkillLoader (project_dir support)
+│       └── personas/           # DEPRECATED - use /skills/
 │
 ├── docs/                       # Documentation
 └── tests/                      # Test suite
+
+Project Structure (recommended):
+{project}/
+├── docs/
+│   └── UCX/
+│       ├── skills/             # Project-specific skills (priority 1)
+│       │   ├── auditor.md      # Domain-tuned auditor
+│       │   └── ...
+│       ├── review/             # Project-specific prompts (required)
+│       │   └── UCR_PROMPT_BRD_PROJECT.md
+│       ├── creation/
+│       └── remediation/
+└── ...
 ```
+
+### Skill Loading (v1.8.0+)
+
+Skills provide domain knowledge injected into persona prompts:
+
+| Priority | Location | Description |
+|----------|----------|-------------|
+| 1 | `{project}/docs/UCX/skills/` | Project-specific (preferred) |
+| 2 | `/UCX/skills/` | Framework defaults (fallback) |
+
+**Key difference from prompts:**
+- **Prompts**: Project-specific ONLY (no fallback)
+- **Skills**: Project first, framework fallback if not found
 
 ---
 

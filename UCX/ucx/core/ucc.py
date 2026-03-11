@@ -56,7 +56,10 @@ class UCCEngine:
         self._client = ai_client or ClaudeClient(model=config.model)
         self._prompt_loader = PromptLoader(config.get_prompt_dir())
         self._renderer = PromptRenderer()
-        self._skill_loader = SkillLoader(config.get_skill_dir())
+        self._skill_loader = SkillLoader(
+            skill_dir=config.get_skill_dir(),
+            project_dir=config.get_project_dir(),
+        )
         self._skill_injector = SkillInjector()
         self._instrumentation = LLMInstrumentation(
             capture_content=config.otel.llm_capture_content

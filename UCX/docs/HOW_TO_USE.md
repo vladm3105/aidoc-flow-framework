@@ -59,9 +59,9 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
 ```
 
-### Project-Specific Prompts
+### Project-Specific Prompts & Skills
 
-For best quality, create project-specific prompts with domain expertise:
+For best quality, create project-specific prompts AND skills with domain expertise:
 
 ```bash
 # Use project prompts (recommended)
@@ -71,25 +71,46 @@ ucx -p docs/UCX/ review brd docs/01_BRD/BRD-01/
 ucx -p docs/UCX/ --model sonnet review brd docs/01_BRD/BRD-01/
 ```
 
-**Create project prompt directory**:
-```
+**Create project directories**:
+```bash
+# Create prompt directory
 mkdir -p docs/UCX/review
 cp /opt/data/docs_flow_framework/UCX/ucx/prompts/templates/ucr/UCR_PROMPT_BRD.md \
    docs/UCX/review/UCR_PROMPT_BRD_PROJECT.md
+
+# Create skills directory (v1.8.0+)
+mkdir -p docs/UCX/skills
+cp /opt/data/docs_flow_framework/UCX/skills/auditor.md \
+   docs/UCX/skills/auditor.md
 # Then customize for your domain
 ```
 
 **Prompt naming convention**:
 | Pattern | Description |
 |---------|-------------|
-| `UCR_PROMPT_BRD_PROJECT.md` | Project-specific BRD review |
-| `UCR_PROMPT_BRD_MYPROJECT.md` | Named variant (not auto-loaded) |
-| `UCR_PROMPT_BRD.md` | Framework fallback |
+| `UCR_PROMPT_BRD_PROJECT.md` | Project-specific BRD review (required) |
+| `UCR_PROMPT_BRD.md` | Fallback (not recommended) |
+
+**Skill loading (v1.8.0+)**:
+| Priority | Location | Behavior |
+|----------|----------|----------|
+| 1 | `{project}/docs/UCX/skills/` | Project-tuned skills (preferred) |
+| 2 | `/UCX/skills/` | Framework defaults (fallback) |
+
+**Key difference**:
+- **Prompts**: Project-specific ONLY (no fallback to framework)
+- **Skills**: Project first, framework fallback if not found
 
 **Recommended personas for fintech/compliance**:
 1-9: Standard personas (Architect, Auditor, Tech Lead, etc.)
 10: **Fact Checker** - Cross-verifies all P0/P1 findings
 11: **Chairperson** - Synthesizes verdicts, calculates PRD-Ready score
+
+**Verify skill loading**:
+```bash
+UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
+# Look for: "Loaded project-specific skill: auditor from .../docs/UCX/skills"
+```
 
 ---
 

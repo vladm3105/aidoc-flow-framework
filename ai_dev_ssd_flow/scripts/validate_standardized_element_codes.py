@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Validate BRD element type codes against standardized naming contracts.
+"""
+DEPRECATED: This script is deprecated as of UCX v1.9.0.
+
+Migration: Use `ucx validate brd <path>` instead.
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
+Validate BRD element type codes against standardized naming contracts.
 
 Checks:
 - BRD element IDs follow BRD.NN.TT.SS pattern when present
@@ -10,6 +20,14 @@ Exit codes:
 - 0: pass
 - 2: validation errors present
 """
+
+import warnings
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 from __future__ import annotations
 
