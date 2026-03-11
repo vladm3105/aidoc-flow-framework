@@ -48,6 +48,12 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o repo
 # Auto-fix structural issues (v1.9.6+)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix
 
+# Auto-fix and generate report
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --report
+
+# Auto-fix, generate report, and cleanup old reports (recommended)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --report --clean-reports
+
 # Clean up old validation reports, keep only latest (v1.9.5+)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 
