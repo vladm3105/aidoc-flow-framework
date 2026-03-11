@@ -216,28 +216,28 @@ repos:
       # BRD Legacy (deprecated - use ucx-brd-validate)
       - id: brd-core-wrapper
         name: "[DEPRECATED] BRD Core Wrapper - Use ucx-brd-validate"
-        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD'
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-standardized-element-codes
         name: "[DEPRECATED] BRD Element Codes - Use ucx-brd-validate"
-        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD'
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-legacy-patterns
         name: "[DEPRECATED] BRD Legacy Patterns - Use ucx-brd-validate"
-        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD'
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-quality-gate
         name: "[DEPRECATED] BRD Quality Gate - Use ucx-brd-validate-full"
-        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate-full instead" && bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory'
+        entry: bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
         language: system
         pass_filenames: false
         stages: [manual]
