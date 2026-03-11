@@ -375,12 +375,31 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validat
 # JSON report to file
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
 
+# Auto-fix structural issues (v1.9.6+)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix
+
+# Auto-fix with Tier 1 only (fast)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --tier1-only
+
 # Clean up old validation reports, keep only latest (v1.9.5+)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 
 # Keep N most recent validation report versions (default: 1)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
+
+**Auto-Fix (v1.9.6+):**
+
+The `--fix` flag automatically fixes structural issues without AI:
+
+| Error Code | Issue | Auto-Fix |
+|------------|-------|----------|
+| `BRD-E002` | Missing custom_fields | Adds document_type, artifact_type, layer |
+| `BRD-E003` | Missing 'brd' tag | Adds to tags array |
+| `BRD-E004` | Missing 'layer-1-artifact' tag | Adds to tags array |
+| `BRD-E009` | Missing Document Control | Adds section (if none exists) |
+| `BRD-W005` | Legacy development_status | Renames to status |
+| `VAL-W002` | Legacy status value | Updates (active→production, draft→development) |
 
 **Validation Report Format (v1.9.3+):**
 
@@ -1032,6 +1051,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.6 | 2026-03-11 | **Auto-fix structural issues**: Added `--fix` flag to `ucx validate`. New `BRDFixer` module auto-fixes: missing metadata (custom_fields), missing tags (brd, layer-1-artifact), legacy status fields/values. Re-validates after fixes. Fixed Document Control regex bug. |
 | 1.9.5 | 2026-03-11 | **Validation report cleanup**: Added `--clean-reports` flag to `ucx validate` command. Added `--keep-versions` option (default: 1) to control retention. Cleans up old `*.V_validation_report_v*.md` files by modification time, keeping N most recent. |
 | 1.9.4 | 2026-03-11 | **QA subcategory codes 91-99**: Added Performance (91), Reliability (92), Scalability (94), Security (96), Observability (98), Maintainability (99) to valid element codes. Added Section 3/4 mappings (Feature Item=22, Stakeholder Need=24). Updated traceability tag patterns to require 2+ digits. Fixed ADR filename pattern. |
 | 1.9.3 | 2026-03-11 | **SDD-compliant validation reports**: Added `--output` (`-o`) option to `ucx validate`. Reports include YAML frontmatter, Document Control section, score breakdown, and structured findings tables. Auto-versioning when writing to document directory. Report naming: `{DOC-ID}.V_validation_report_v{NNN}.md`. |

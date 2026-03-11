@@ -45,6 +45,9 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validat
 # JSON report to file
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
 
+# Auto-fix structural issues (v1.9.6+)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix
+
 # Clean up old validation reports, keep only latest (v1.9.5+)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 
