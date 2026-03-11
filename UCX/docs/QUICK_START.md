@@ -15,10 +15,26 @@ source /opt/data/docs_flow_framework/.venv/bin/activate
 
 # Verify installation
 ucx --version
-# Expected: ucx, version 1.8.0+
+# Expected: ucx, version 1.9.2+
 ```
 
 ## Basic Commands
+
+### Validate a BRD Document
+
+```bash
+# Full validation (Tier 1 + Tier 2)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/
+
+# Pre-commit validation (Tier 1 only, fast)
+ucx validate brd docs/01_BRD/BRD-01/ --tier1-only
+
+# Strict mode (warnings treated as errors)
+ucx validate brd docs/01_BRD/BRD-01/ --strict
+
+# JSON output for CI/CD
+ucx validate brd docs/01_BRD/BRD-01/ --format json
+```
 
 ### Review a BRD Document
 
@@ -57,13 +73,23 @@ ucx --project-dir . remediate brd docs/01_BRD/BRD-01_platform_architecture/
 
 ## Review Process Architecture
 
-### Phase 1: Schema Validation (Non-AI)
+### Phase 1: Unified Validation (Non-AI)
 
-Before AI review, UCX validates:
-- YAML frontmatter (title, doc_id, version, status)
-- Element ID format (e.g., `BRD.1.2.3`)
-- Required sections present
-- Traceability tags (`@ref:`, `@prd:`, `@sys:`)
+Before AI review, UCX runs UnifiedBRDValidator with tiered checks:
+
+**Tier 1 (Core, blocking):**
+- Element codes (BRD.NN.TT.SS format)
+- Structure (sections, H1, file naming)
+- Metadata (frontmatter, custom_fields, tags)
+- Quality gates (placeholders, downstream refs, duplicates)
+
+**Tier 2 (Advisory, non-blocking):**
+- Links validation (traceability section)
+- Forward references (SDD layer compliance)
+- Diagram consistency (Mermaid/SVG vs prose)
+- Quality gates (glossary, counts, cost format)
+
+Use `ucx validate brd <path>` for standalone validation or `ucx review brd <path>` for full AI review pipeline.
 
 ### Phase 2: AI Multi-Persona Review
 
@@ -209,6 +235,9 @@ ucx --project-dir . --model sonnet review prd docs/02_PRD/PRD-01/
 
 | Version | Changes |
 |---------|---------|
+| 1.9.2 | Unified validator registry integration - `ucx review` uses UnifiedBRDValidator |
+| 1.9.1 | Tier 2 advisory validators (links, references, diagrams) |
+| 1.9.0 | Unified BRD Validation with tiered checks and quality gates |
 | 1.8.0 | Project-specific skills support with fallback |
 | 1.7.0 | Multi-turn persona review mode |
 | 1.6.0 | Web search integration |

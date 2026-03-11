@@ -37,7 +37,7 @@ def get_validator(doc_type: DocType) -> BaseValidator:
     """
     # Import validators to trigger registration
     from ucx.validators import (  # noqa: F401
-        brd,
+        brd_validator,  # Renamed to avoid conflict with brd/ package
         prd,
         ears,
         bdd,

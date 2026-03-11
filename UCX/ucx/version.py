@@ -1,7 +1,12 @@
 """Version information for UCX."""
 
-__version__ = "1.9.1"
+__version__ = "1.9.2"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.2 - Unified Validator Registry Integration
+# - BRDValidator (registry) now delegates to UnifiedBRDValidator
+# - `ucx review brd` and `ucx validate brd` use same validation logic
+# - Full Tier 1 + Tier 2 checks available through registry
 
 # v1.9.1 - Tier 2 Advisory Validators
 # - New ucx/validators/common/links.py: Markdown link validation

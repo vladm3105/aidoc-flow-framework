@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This script is deprecated as of UCX v1.9.1.
+
+Migration: Use `ucx validate brd <path>` instead (includes count validation).
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 Count Validation for SDD Documents
 
 Validates that stated counts match itemized totals in documents.
@@ -9,6 +18,15 @@ Error Codes:
 - COUNT-E001: Count mismatch
 - COUNT-W001: Missing count verification
 """
+
+import warnings
+
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 import argparse
 import os

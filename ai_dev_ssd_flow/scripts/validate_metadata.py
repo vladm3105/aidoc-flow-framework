@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This script is deprecated as of UCX v1.9.0.
+
+Migration: Use `ucx validate brd <path>` instead (includes metadata validation).
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 Lightweight YAML frontmatter validator for markdown files.
 
 Checks (non-strict by default):
@@ -19,6 +28,15 @@ BRD-specific checks (strict mode only):
 Usage:
   python3 scripts/validate_metadata.py [base_dir] [--strict]
 """
+
+import warnings
+
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 import argparse
 import sys

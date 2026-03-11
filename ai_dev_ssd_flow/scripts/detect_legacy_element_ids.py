@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Detect legacy element ID patterns in BRD documents.
+"""
+DEPRECATED: This script is deprecated as of UCX v1.9.0.
+
+Migration: Use `ucx validate brd <path>` instead (includes legacy detection).
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
+Detect legacy element ID patterns in BRD documents.
 
 This script complements validate_standardized_element_codes.py by detecting
 legacy patterns that should be converted to the unified BRD.NN.TT.SS format.
@@ -13,6 +23,15 @@ Exit codes:
 - 0: No legacy patterns found
 - 2: Legacy patterns detected (blocking)
 """
+
+import warnings
+
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 from __future__ import annotations
 
