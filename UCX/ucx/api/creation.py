@@ -40,10 +40,9 @@ class UCCPhase:
 
     @property
     def ai_client(self):
-        """Get AI client instance."""
+        """Get AI client instance based on config (CLI or API mode)."""
         if self._ai_client is None:
-            from ucx.ai.claude import ClaudeClient
-            self._ai_client = ClaudeClient(model=self.config.model)
+            self._ai_client = self.config.get_ai_client()
         return self._ai_client
 
     def create(

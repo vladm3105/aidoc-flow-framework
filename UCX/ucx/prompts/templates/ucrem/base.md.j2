@@ -110,7 +110,66 @@ Fixes can be auto-applied if:
 {% block output_format %}
 ## Output Format
 
-Generate fixes in this YAML format:
+Generate the fix report with **SDD-compliant format**:
+
+```markdown
+---
+title: "UCRem Fix Report: {{ doc_type | upper }}-[ID]"
+tags:
+  - ucrem-fix-report
+  - {{ doc_type }}-remediation
+  - layer-[N]-artifact
+  - quality-assurance
+custom_fields:
+  document_type: ucrem-fix-report
+  source_artifact_type: {{ doc_type | upper }}
+  source_artifact_id: "[DOC-ID]"
+  source_review_id: "[UCR-REVIEW-ID]"
+  layer: [N]
+  iteration: {{ iteration }}
+  max_iterations: {{ max_iterations }}
+  schema_version: "1.0"
+  last_updated: "[YYYY-MM-DDTHH:MM:SS]"
+  original_score: {{ review_score }}
+  fixes_auto_safe: [COUNT]
+  fixes_auto_assisted: [COUNT]
+  fixes_manual_required: [COUNT]
+---
+
+# UCRem Fix Report: {{ doc_type | upper }}-[ID]
+
+## 0. Document Control
+
+| Item | Details |
+|------|---------|
+| **Source Document** | [DOC-ID] (Version X.X) |
+| **Source Review** | [UCR-REVIEW-ID] |
+| **Remediation Date** | [YYYY-MM-DDTHH:MM:SS] |
+| **Iteration** | {{ iteration }}/{{ max_iterations }} |
+| **Original Score** | {{ review_score }}/100 |
+| **Remediator** | UCX Framework v1.4.x |
+| **Status** | [Draft / Applied / Verified] |
+
+### Fix Summary
+
+| Metric | Value |
+|--------|-------|
+| **Total Fixes Generated** | [COUNT] |
+| **Auto-Safe (HIGH)** | [COUNT] |
+| **Auto-Assisted (MEDIUM)** | [COUNT] |
+| **Manual Required (LOW)** | [COUNT] |
+| **P0 Fixes** | [COUNT] |
+| **P1 Fixes** | [COUNT] |
+| **P2 Fixes** | [COUNT] |
+
+---
+
+## 1. Fix Proposals
+
+[Generate fixes in YAML format below]
+```
+
+### YAML Fix Block Format
 
 ```yaml
 fix_id: FIX-001
@@ -121,6 +180,7 @@ fix_type: replace|insert|delete|restructure
 description: |
   Brief description of the fix
 location:
+  file: "exact_filename.md"
   section: "Section Name"
   line_start: 42
   line_end: 45

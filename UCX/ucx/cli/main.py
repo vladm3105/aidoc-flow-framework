@@ -66,6 +66,12 @@ console = Console()
 )
 @click.option("--verbose", "-v", is_flag=True, help="Verbose output (sets log level to DEBUG)")
 @click.option("--quiet", "-q", is_flag=True, help="Minimal output (sets log level to WARNING)")
+@click.option(
+    "--enable-web-search", "-W",
+    is_flag=True,
+    envvar="UCX_ENABLE_WEB_SEARCH",
+    help="Enable web search for deeper analysis (fact-checking, best practices, solutions)",
+)
 @click.pass_context
 def cli(
     ctx,
@@ -79,6 +85,7 @@ def cli(
     log_format: str,
     verbose: bool,
     quiet: bool,
+    enable_web_search: bool,
 ):
     """UCX - Unified Context Framework for AI-driven document lifecycle management.
 
@@ -88,10 +95,19 @@ def cli(
       api  - Direct API calls via LiteLLM (requires API key)
 
     \b
+    Web Search:
+      Use --enable-web-search (-W) to enable internet search for:
+      - Fact-checking regulatory references (FinCEN, OFAC, PCI-DSS)
+      - Verifying technology best practices and patterns
+      - Finding solutions to identified issues
+      - Validating partner API documentation
+
+    \b
     Examples:
       ucx --mode cli --cli-tool claude review brd docs/01_BRD/BRD-01/
       ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
       ucx -p docs/UCX/ review brd docs/01_BRD/BRD-01/  # Use project prompts
+      ucx -W review brd docs/01_BRD/BRD-01/  # With web search enabled
     """
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
@@ -124,6 +140,9 @@ def cli(
     config_overrides = {"ai_mode": mode, "cli_tool": cli_tool}
     if model:
         config_overrides["model"] = model
+    if enable_web_search:
+        config_overrides["enable_web_search"] = True
+        logger.info("Web search enabled for deeper analysis")
 
     # Handle project directory (REQUIRED for analysis operations)
     effective_project_dir = project_dir
@@ -518,6 +537,7 @@ def config_cmd(ctx, show):
         table.add_row("Skip Drift", str(config.skip_drift))
         table.add_row("Load Skills", str(config.load_skills))
         table.add_row("Log Level", config.log_level)
+        table.add_row("Web Search", str(config.enable_web_search))
 
         console.print(table)
 

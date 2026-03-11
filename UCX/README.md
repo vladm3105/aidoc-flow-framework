@@ -38,12 +38,36 @@ ucx --mode cli --cli-tool gemini review brd docs/01_BRD/BRD-01/
 ```
 
 Supported CLI tools:
-- `claude` - Claude Code CLI (default) - supports `--model opus/sonnet/haiku`
+- `claude` - Claude Code CLI (default) - supports `--model opus/sonnet/haiku` and `--enable-web-search`
 - `gemini` - Google Gemini CLI
 - `ollama` - Ollama local LLM CLI
 - `aider` - Aider AI coding assistant
 
 **Note**: For Claude CLI, UCX automatically adds `--dangerously-skip-permissions` to prevent interactive permission prompts that would truncate output in subprocess mode.
+
+### Web Search Mode
+
+Enable internet search for deeper analysis with `--enable-web-search` (`-W`):
+
+```bash
+# Enable web search for fact-checking, best practices, solutions
+ucx -W review brd docs/01_BRD/BRD-01/
+ucx --enable-web-search review brd docs/01_BRD/BRD-01/
+
+# Via environment variable
+UCX_ENABLE_WEB_SEARCH=true ucx review brd docs/01_BRD/BRD-01/
+
+# Full autopilot with web search
+ucx -W autopilot brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
+```
+
+Web search is useful for:
+- **Fact-checking**: Regulatory references (FinCEN, OFAC, PCI-DSS)
+- **Best practices**: Technology patterns, security recommendations
+- **Solutions**: Finding fixes for identified issues
+- **Documentation**: Verifying partner API specifications
+
+**Note**: Web search is only supported in CLI mode with Claude CLI (uses `--allowedTools WebSearch`).
 
 ### API Mode
 
@@ -366,6 +390,7 @@ api_client = LiteLLMClient(model="opus", api_key="sk-ant-...")
 | `UCX_MAX_ITER` | `3` | Maximum review/fix cycles |
 | `UCX_MIN_SCORE` | `90` | Minimum passing score |
 | `UCX_SKIP_DRIFT` | `false` | Skip drift monitoring |
+| `UCX_ENABLE_WEB_SEARCH` | `false` | Enable internet search for deeper analysis |
 | `UCX_LOG_LEVEL` | `INFO` | Logging level |
 
 ### API Mode: Provider Configuration
@@ -416,6 +441,9 @@ cli_tool: claude       # for cli mode
 cli_timeout: 600       # for cli mode
 model: opus            # for api mode
 
+# Web Search (CLI mode with Claude only)
+enable_web_search: false  # Enable for deeper analysis
+
 # Autopilot
 max_iterations: 3
 min_score: 90
@@ -449,6 +477,13 @@ config = UCXConfig(
     cli_tool="claude",
     cli_timeout=600,
     max_iterations=3,
+)
+
+# CLI mode with web search enabled
+config = UCXConfig(
+    ai_mode="cli",
+    cli_tool="claude",
+    enable_web_search=True,  # Enable internet search
 )
 
 # API mode config
@@ -677,6 +712,9 @@ from ucx.ai import get_client
 # CLI mode
 client = get_client(mode="cli", cli_tool="claude", timeout=600)
 
+# CLI mode with web search
+client = get_client(mode="cli", cli_tool="claude", enable_web_search=True)
+
 # API mode
 client = get_client(mode="api", model="opus", api_key="...")
 
@@ -705,6 +743,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6.0 | 2026-03-10 | **Web search support**: Added `--enable-web-search` (`-W`) flag for internet-enabled analysis. Fact-checking regulatory references, verifying best practices, finding solutions. CLI mode with Claude only. |
 | 1.5.5 | 2026-03-10 | **Report naming standardization**: Changed from `{TYPE}_UCR_REVIEW_v{NNN}.md` to `{DOC_ID}.UCR_review_report_v{NNN}.md`. **Layer-appropriate finding classification**: BRD reviews now distinguish requirements (P0) from implementation details (defer to SPEC). **Pre-validation separation**: YAML/schema errors reported separately from content P0 findings. **Complexity scale**: Replaced time estimates with 1-5 complexity scale. |
 | 1.5.4 | 2026-03-10 | Added Fact Checker and Chairperson as required personas. Added Judge and Chairperson Editor as optional personas. |
 | 1.5.1 | 2026-03-10 | Added `--clean-reports` and `--clean-all` flags to clean old review reports while keeping latest. |

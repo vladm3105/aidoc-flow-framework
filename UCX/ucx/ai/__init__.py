@@ -42,6 +42,8 @@ def get_client(
     # API mode only options
     api_key: str = None,
     api_base: str = None,
+    # Web search (CLI mode only, currently)
+    enable_web_search: bool = False,
     **kwargs,
 ) -> BaseAIClient:
     """
@@ -54,6 +56,7 @@ def get_client(
         model: Model name - opus/sonnet/haiku for CLI mode, provider/model for API mode
         api_key: API key - API mode only
         api_base: Custom API base URL - API mode only
+        enable_web_search: Enable web search for deeper analysis (Claude CLI only)
         **kwargs: Additional client-specific arguments
 
     Returns:
@@ -65,6 +68,9 @@ def get_client(
 
         >>> # Use Claude CLI with sonnet model
         >>> client = get_client(mode="cli", cli_tool="claude", model="sonnet")
+
+        >>> # Use Claude CLI with web search enabled
+        >>> client = get_client(mode="cli", cli_tool="claude", enable_web_search=True)
 
         >>> # Use OpenAI API via LiteLLM
         >>> client = get_client(mode="api", model="openai/gpt-4o")
@@ -89,8 +95,15 @@ def get_client(
             timeout=timeout,
             working_dir=kwargs.get("working_dir"),
             env_vars=kwargs.get("env_vars"),
+            enable_web_search=enable_web_search,
         )
     elif mode == "api":
+        # Note: Web search not yet supported in API mode
+        if enable_web_search:
+            import logging
+            logging.getLogger("ucx.ai").warning(
+                "Web search is only supported in CLI mode with Claude. Ignoring enable_web_search."
+            )
         return LiteLLMClient(
             model=model,
             api_key=api_key,

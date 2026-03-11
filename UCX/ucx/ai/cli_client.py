@@ -1,0 +1,490 @@
+"""CLI-based AI client that wraps shell commands for CLI agents."""
+
+import os
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+from typing import Optional
+
+from ucx.ai.base import BaseAIClient
+from ucx.exceptions import AIClientError
+from ucx.utils.logging import (
+    get_logger,
+    log_cli_command,
+    log_cli_result,
+    log_ai_request,
+    log_ai_response,
+)
+
+
+class CLIClient(BaseAIClient):
+    """
+    AI client that invokes CLI agents via shell commands.
+
+    Supports Claude CLI, Gemini CLI, and other command-line AI tools.
+    Handles long prompts via file-based input for reliability.
+
+    Example:
+        >>> client = CLIClient(cli_tool="claude")
+        >>> response = client.generate("Analyze this document...")
+
+        >>> # Or use Gemini CLI
+        >>> client = CLIClient(cli_tool="gemini")
+    """
+
+    # Supported CLI tools and their command patterns
+    CLI_TOOLS = {
+        "claude": {
+            "command": "claude",
+            "base_args": ["-p", "--dangerously-skip-permissions"],  # -p for print mode, skip permission prompts
+            "system_prompt_flag": "--system-prompt",
+            "model_flag": "--model",
+            "allowed_tools_flag": "--allowedTools",  # For enabling web search
+            "input_method": "stdin",  # stdin for reliability with long prompts
+            "supports_files": True,
+            "supports_web_search": True,  # Claude CLI supports web search via --allowedTools
+            "timeout_default": 600,  # Claude CLI can take time for complex prompts
+        },
+        "gemini": {
+            "command": "gemini",
+            "base_args": [],
+            "system_prompt_flag": None,
+            "model_flag": None,
+            "input_method": "stdin",
+            "supports_files": False,
+            "timeout_default": 300,
+        },
+        "ollama": {
+            "command": "ollama",
+            "base_args": ["run"],
+            "system_prompt_flag": None,
+            "model_flag": None,  # Model is part of command for ollama
+            "input_method": "stdin",
+            "supports_files": False,
+            "timeout_default": 300,
+        },
+        "aider": {
+            "command": "aider",
+            "base_args": ["--message"],
+            "system_prompt_flag": None,
+            "model_flag": "--model",
+            "input_method": "arg",
+            "supports_files": True,
+            "timeout_default": 300,
+        },
+    }
+
+    # Model aliases for Claude CLI
+    MODEL_ALIASES = {
+        "opus": "opus",
+        "sonnet": "sonnet",
+        "haiku": "haiku",
+    }
+
+    # Threshold for using file-based input (characters)
+    LONG_PROMPT_THRESHOLD = 10000
+
+    def __init__(
+        self,
+        cli_tool: str = "claude",
+        model: Optional[str] = None,
+        timeout: Optional[int] = None,
+        working_dir: Optional[Path] = None,
+        env_vars: Optional[dict] = None,
+        enable_web_search: bool = False,
+    ):
+        """
+        Initialize CLI client.
+
+        Args:
+            cli_tool: CLI tool to use (claude, gemini, ollama, aider)
+            model: Model override (opus, sonnet, haiku for Claude; model name for Ollama)
+            timeout: Command timeout in seconds (uses tool default if not set)
+            working_dir: Working directory for command execution
+            env_vars: Additional environment variables
+            enable_web_search: Enable web search for deeper analysis (Claude CLI only)
+        """
+        super().__init__(model=model or cli_tool)
+        self.cli_tool = cli_tool.lower()
+        self.working_dir = working_dir
+        self.env_vars = env_vars or {}
+        self.enable_web_search = enable_web_search
+        self.logger = get_logger("ucx.ai.cli")
+
+        if self.cli_tool not in self.CLI_TOOLS:
+            raise AIClientError(
+                f"Unsupported CLI tool: {cli_tool}. "
+                f"Supported: {list(self.CLI_TOOLS.keys())}"
+            )
+
+        self.tool_config = self.CLI_TOOLS[self.cli_tool]
+        self.timeout = timeout or self.tool_config["timeout_default"]
+
+        # Resolve model alias
+        if model and model.lower() in self.MODEL_ALIASES:
+            self._resolved_model = self.MODEL_ALIASES[model.lower()]
+        else:
+            self._resolved_model = model
+
+        # Validate web search support
+        if enable_web_search and not self.tool_config.get("supports_web_search"):
+            self.logger.warning(
+                f"Web search requested but {cli_tool} does not support it. Ignoring."
+            )
+            self.enable_web_search = False
+
+        self.logger.debug(
+            f"Initialized CLIClient: tool={self.cli_tool} model={self._resolved_model} "
+            f"timeout={self.timeout}s web_search={self.enable_web_search}"
+        )
+
+    def generate(
+        self,
+        prompt: str,
+        *,
+        system_prompt: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
+        **kwargs,
+    ) -> str:
+        """
+        Generate response using CLI tool.
+
+        Handles long prompts via file-based input for reliability.
+
+        Args:
+            prompt: The prompt to send to the CLI tool
+            system_prompt: Optional system prompt (passed via flag if supported)
+            max_tokens: Ignored for CLI tools
+            temperature: Ignored for CLI tools
+            **kwargs: Additional arguments passed to subprocess
+
+        Returns:
+            Generated text response
+
+        Raises:
+            AIClientError: If CLI execution fails
+        """
+        prompt_len = len(prompt)
+        prompt_tokens = self.count_tokens(prompt)
+
+        self.logger.info(
+            f"Generate request: tool={self.cli_tool} prompt_chars={prompt_len} "
+            f"prompt_tokens={prompt_tokens} has_system_prompt={system_prompt is not None}"
+        )
+
+        # Log AI request
+        log_ai_request(
+            provider=f"cli:{self.cli_tool}",
+            model=self._resolved_model or self.cli_tool,
+            prompt_tokens=prompt_tokens,
+            operation="generate",
+        )
+
+        start_time = time.perf_counter()
+
+        try:
+            # For long prompts, use file-based input
+            if prompt_len > self.LONG_PROMPT_THRESHOLD:
+                self.logger.debug(
+                    f"Using file-based input for long prompt ({prompt_len} chars > {self.LONG_PROMPT_THRESHOLD})"
+                )
+                result = self._execute_with_file_input(prompt, system_prompt, **kwargs)
+            else:
+                result = self._execute_cli(prompt, system_prompt, **kwargs)
+
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            response_tokens = self.count_tokens(result)
+
+            # Log AI response
+            log_ai_response(
+                provider=f"cli:{self.cli_tool}",
+                model=self._resolved_model or self.cli_tool,
+                response_tokens=response_tokens,
+                duration_ms=duration_ms,
+                success=True,
+            )
+
+            self.logger.info(
+                f"Generate complete: response_chars={len(result)} "
+                f"response_tokens={response_tokens} duration_ms={duration_ms:.0f}"
+            )
+
+            return result
+
+        except subprocess.TimeoutExpired:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            log_ai_response(
+                provider=f"cli:{self.cli_tool}",
+                model=self._resolved_model or self.cli_tool,
+                response_tokens=0,
+                duration_ms=duration_ms,
+                success=False,
+            )
+            self.logger.error(f"CLI command timed out after {self.timeout}s")
+            raise AIClientError(
+                f"CLI command timed out after {self.timeout}s. "
+                f"Consider increasing timeout for long documents.",
+                model=self.cli_tool,
+            )
+        except subprocess.CalledProcessError as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            log_ai_response(
+                provider=f"cli:{self.cli_tool}",
+                model=self._resolved_model or self.cli_tool,
+                response_tokens=0,
+                duration_ms=duration_ms,
+                success=False,
+            )
+            error_msg = e.stderr[:500] if e.stderr else "No error output"
+            self.logger.error(f"CLI command failed: exit_code={e.returncode} error={error_msg}")
+            raise AIClientError(
+                f"CLI command failed with exit code {e.returncode}: {error_msg}",
+                model=self.cli_tool,
+            )
+        except FileNotFoundError:
+            self.logger.error(f"CLI tool not found: {self.tool_config['command']}")
+            raise AIClientError(
+                f"CLI tool not found: {self.tool_config['command']}. "
+                f"Make sure {self.cli_tool} is installed and in PATH.",
+                model=self.cli_tool,
+            )
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            self.logger.exception(f"CLI execution error: {e}")
+            raise AIClientError(
+                f"CLI execution error: {str(e)}",
+                model=self.cli_tool,
+            )
+
+    def _execute_cli(
+        self,
+        prompt: str,
+        system_prompt: Optional[str] = None,
+        **kwargs,
+    ) -> str:
+        """Execute CLI command with stdin input."""
+        command = self._build_command(system_prompt=system_prompt)
+
+        # Log command
+        log_cli_command(command, self.timeout)
+        self.logger.debug(f"Executing command: {' '.join(command)}")
+
+        # Prepare environment
+        env = os.environ.copy()
+        env.update(self.env_vars)
+
+        start_time = time.perf_counter()
+
+        # Execute command with prompt via stdin
+        result = subprocess.run(
+            command,
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=self.timeout,
+            cwd=self.working_dir,
+            env=env,
+        )
+
+        duration_s = time.perf_counter() - start_time
+
+        # Log result
+        log_cli_result(
+            command=command[0],
+            returncode=result.returncode,
+            duration_s=duration_s,
+            output_len=len(result.stdout),
+        )
+
+        if result.returncode != 0:
+            self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
+            raise subprocess.CalledProcessError(
+                result.returncode,
+                command,
+                output=result.stdout,
+                stderr=result.stderr,
+            )
+
+        return result.stdout.strip()
+
+    def _execute_with_file_input(
+        self,
+        prompt: str,
+        system_prompt: Optional[str] = None,
+        **kwargs,
+    ) -> str:
+        """Execute CLI command with file-based input for long prompts."""
+        # Create temp file with prompt content
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".md",
+            delete=False,
+            encoding="utf-8",
+        ) as f:
+            f.write(prompt)
+            temp_path = Path(f.name)
+
+        self.logger.debug(f"Created temp file for prompt: {temp_path}")
+
+        try:
+            command = self._build_command(system_prompt=system_prompt)
+
+            # Log command
+            log_cli_command(command, self.timeout)
+            self.logger.debug(f"Executing command with file input: {' '.join(command)}")
+
+            env = os.environ.copy()
+            env.update(self.env_vars)
+
+            start_time = time.perf_counter()
+
+            # Read file content and pass via stdin
+            with open(temp_path, "r", encoding="utf-8") as f:
+                result = subprocess.run(
+                    command,
+                    input=f.read(),
+                    capture_output=True,
+                    text=True,
+                    timeout=self.timeout,
+                    cwd=self.working_dir,
+                    env=env,
+                )
+
+            duration_s = time.perf_counter() - start_time
+
+            # Log result
+            log_cli_result(
+                command=command[0],
+                returncode=result.returncode,
+                duration_s=duration_s,
+                output_len=len(result.stdout),
+            )
+
+            if result.returncode != 0:
+                self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
+                raise subprocess.CalledProcessError(
+                    result.returncode,
+                    command,
+                    output=result.stdout,
+                    stderr=result.stderr,
+                )
+
+            return result.stdout.strip()
+
+        finally:
+            # Clean up temp file
+            temp_path.unlink(missing_ok=True)
+            self.logger.debug(f"Cleaned up temp file: {temp_path}")
+
+    def _build_command(
+        self,
+        system_prompt: Optional[str] = None,
+    ) -> list[str]:
+        """Build command list for subprocess."""
+        command = [self.tool_config["command"]]
+        command.extend(self.tool_config["base_args"])
+
+        # Handle model specification
+        if self._resolved_model:
+            if self.cli_tool == "claude" and self.tool_config["model_flag"]:
+                # Only add model flag if it's a recognized alias (opus, sonnet, haiku)
+                if self._resolved_model in self.MODEL_ALIASES.values():
+                    command.extend([self.tool_config["model_flag"], self._resolved_model])
+            elif self.cli_tool == "ollama":
+                # For ollama, model is part of command: ollama run <model>
+                command = ["ollama", "run", self._resolved_model]
+            elif self.tool_config["model_flag"]:
+                command.extend([self.tool_config["model_flag"], self._resolved_model])
+
+        # Add system prompt if supported
+        if system_prompt and self.tool_config["system_prompt_flag"]:
+            command.extend([self.tool_config["system_prompt_flag"], system_prompt])
+
+        # Add web search capability if enabled (Claude CLI only)
+        if self.enable_web_search and self.tool_config.get("allowed_tools_flag"):
+            command.extend([self.tool_config["allowed_tools_flag"], "WebSearch"])
+            self.logger.debug("Web search enabled via --allowedTools WebSearch")
+
+        return command
+
+    def generate_with_context(
+        self,
+        prompt: str,
+        context_files: list[Path],
+        *,
+        system_prompt: Optional[str] = None,
+        **kwargs,
+    ) -> str:
+        """
+        Generate response with file context.
+
+        Embeds file contents into the prompt for CLI tools.
+
+        Args:
+            prompt: The prompt to send
+            context_files: Paths to files to include as context
+            system_prompt: Optional system prompt
+            **kwargs: Additional arguments
+
+        Returns:
+            Generated text response
+        """
+        self.logger.info(f"Generate with context: {len(context_files)} files")
+
+        # Build combined prompt with file contents
+        parts = [prompt, "\n\n---\n\n# Context Files\n"]
+
+        for file_path in context_files:
+            if file_path.exists():
+                content = file_path.read_text(encoding="utf-8")
+                parts.append(f"\n## File: {file_path.name}\n\n```\n{content}\n```\n")
+                self.logger.debug(f"Added context file: {file_path.name} ({len(content)} chars)")
+
+        full_prompt = "".join(parts)
+
+        return self.generate(
+            full_prompt,
+            system_prompt=system_prompt,
+            **kwargs,
+        )
+
+    @classmethod
+    def is_available(cls, cli_tool: str) -> bool:
+        """Check if a CLI tool is available in PATH."""
+        if cli_tool.lower() not in cls.CLI_TOOLS:
+            return False
+
+        command = cls.CLI_TOOLS[cli_tool.lower()]["command"]
+
+        try:
+            result = subprocess.run(
+                ["which", command],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    @classmethod
+    def available_tools(cls) -> list[str]:
+        """Return list of available CLI tools."""
+        return [tool for tool in cls.CLI_TOOLS if cls.is_available(tool)]
+
+    def count_tokens(self, text: str) -> int:
+        """
+        Estimate token count for CLI tools.
+
+        Uses a simple approximation since CLI tools don't expose tokenizers.
+        Approximation: ~4 characters per token (conservative estimate).
+
+        Args:
+            text: Text to count
+
+        Returns:
+            Estimated number of tokens
+        """
+        return len(text) // 4 + 1

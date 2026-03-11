@@ -19,6 +19,52 @@ The Unified Context (UCX) Framework provides a multi-persona approach to documen
 
 ---
 
+## Two Modes of AI Interaction
+
+UCX supports two modes for executing AI workloads:
+
+| Mode | Client | Description |
+|------|--------|-------------|
+| **CLI** (default) | `CLIClient` | Execute CLI agents via shell (Claude CLI, Gemini CLI, Ollama) |
+| **API** | `LiteLLMClient` | Direct HTTP API calls via LiteLLM |
+
+### CLI Mode
+
+Executes AI CLI tools via subprocess. Uses existing CLI authentication.
+
+```bash
+# Default: uses Claude CLI
+ucx review brd docs/01_BRD/BRD-01/
+
+# Specify tool
+ucx --mode cli --cli-tool gemini review brd docs/01_BRD/BRD-01/
+```
+
+Supported CLI tools:
+- `claude` - Claude Code CLI (default)
+- `gemini` - Google Gemini CLI
+- `ollama` - Ollama local LLM
+- `aider` - Aider AI coding assistant
+
+### API Mode
+
+Direct API calls via LiteLLM. Requires provider API keys.
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
+```
+
+Supported providers via LiteLLM:
+- Anthropic (Claude)
+- OpenAI
+- Azure OpenAI
+- Google Gemini
+- Ollama (local)
+- OpenRouter
+
+---
+
 ## Philosophy
 
 ### Why Multi-Persona?
@@ -51,7 +97,6 @@ Different stakeholders have different concerns:
 UCX/
 ├── pyproject.toml              # Package configuration
 ├── README.md                   # Package overview
-├── SKILL_INDEX.md              # Claude skill mapping
 │
 ├── ucx/                        # Python package
 │   ├── __init__.py             # Public API exports
@@ -61,9 +106,12 @@ UCX/
 │   │   ├── review.py           # UCRPhase
 │   │   └── remediation.py      # UCRemPhase
 │   │
-│   ├── ai/                     # AI clients
-│   │   ├── litellm_client.py   # LiteLLM multi-provider client
-│   │   └── claude.py           # Claude-only client (legacy)
+│   ├── ai/                     # AI clients (dual-mode)
+│   │   ├── __init__.py         # get_client() factory
+│   │   ├── base.py             # BaseAIClient ABC
+│   │   ├── cli_client.py       # CLIClient (shell subprocess)
+│   │   ├── litellm_client.py   # LiteLLMClient (HTTP API)
+│   │   └── claude.py           # ClaudeClient (legacy)
 │   │
 │   ├── cli/                    # CLI commands
 │   │   └── main.py             # Click CLI
@@ -75,16 +123,12 @@ UCX/
 │   │   └── *.py                # Per-layer validators
 │   │
 │   ├── prompts/                # Prompt management
-│   │   └── templates/          # Jinja2 templates
+│   │   └── templates/          # UCR_PROMPT_*.md files
 │   │
 │   └── skills/                 # Persona definitions
 │       └── personas/           # 12 expert personas
 │
 ├── docs/                       # Documentation
-│   ├── UNIFIED_CONTEXT_FRAMEWORK.md
-│   ├── HOW_TO_USE.md
-│   └── PERSONA_DESIGN_GUIDE.md
-│
 └── tests/                      # Test suite
 ```
 
@@ -125,49 +169,6 @@ UCX handles dependencies with:
 
 ---
 
-## LiteLLM Multi-Provider Support
-
-UCX uses **LiteLLM** for unified access to multiple LLM providers:
-
-### Supported Providers
-
-| Provider | Model Format | API Key Env |
-|----------|-------------|-------------|
-| Anthropic | `opus`, `sonnet`, `haiku` | `ANTHROPIC_API_KEY` |
-| OpenAI | `openai/gpt-4o` | `OPENAI_API_KEY` |
-| Azure | `azure/gpt-4` | `AZURE_API_KEY` |
-| Gemini | `gemini/gemini-pro` | `GEMINI_API_KEY` |
-| OpenRouter | `openrouter/openai/gpt-4o` | `OPENROUTER_API_KEY` |
-| Ollama | `ollama/llama3` | - (local) |
-
-### Configuration
-
-```bash
-# Environment variables
-export UCX_MODEL=opus
-export UCX_API_BASE=           # Optional: custom endpoint
-export ANTHROPIC_API_KEY=sk-ant-...
-
-# Or in ucx.yaml
-model: opus
-api_base: null
-```
-
-### Usage Examples
-
-```bash
-# Default (Anthropic Claude)
-ucx review brd docs/01_BRD/BRD-01.md
-
-# OpenAI
-UCX_MODEL="openai/gpt-4o" ucx review brd docs/01_BRD/BRD-01.md
-
-# Local Ollama
-UCX_MODEL="ollama/llama3" UCX_API_BASE="http://localhost:11434" ucx review brd docs/01_BRD/BRD-01.md
-```
-
----
-
 ## Quick Start
 
 ### 1. Activate Environment
@@ -176,22 +177,24 @@ UCX_MODEL="ollama/llama3" UCX_API_BASE="http://localhost:11434" ucx review brd d
 source /opt/data/docs_flow_framework/.venv/bin/activate
 ```
 
-### 2. Set API Key
+### 2. Review Document (CLI Mode - Default)
+
+```bash
+# Uses Claude CLI
+ucx review brd docs/01_BRD/BRD-01/
+```
+
+### 3. Review Document (API Mode)
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
+ucx --mode api review brd docs/01_BRD/BRD-01/
 ```
 
-### 3. Create Document
+### 4. Create Document
 
 ```bash
 ucx create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
-```
-
-### 4. Review Document
-
-```bash
-ucx review brd docs/01_BRD/BRD-01.md
 ```
 
 ### 5. Generate Fixes (if needed)
@@ -212,11 +215,15 @@ ucx autopilot brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/ --max-iterations 3
 
 ```python
 from ucx import UCXAutopilot, UCXConfig, UCCPhase, UCRPhase, UCRemPhase
+from ucx.ai import get_client
 from pathlib import Path
 
 # Configuration
 config = UCXConfig(
-    model="opus",           # or "openai/gpt-4o", "ollama/llama3"
+    ai_mode="cli",           # or "api"
+    cli_tool="claude",       # for cli mode
+    cli_timeout=600,         # for cli mode
+    model="opus",            # for api mode
     max_iterations=3,
     min_score=90,
 )
@@ -233,6 +240,10 @@ result = pilot.run(
 ucc = UCCPhase(config)
 ucr = UCRPhase(config)
 ucrem = UCRemPhase(config)
+
+# Direct AI client usage
+client = get_client(mode="cli", cli_tool="claude")
+response = client.generate("Analyze this requirement...")
 ```
 
 ---
@@ -254,27 +265,27 @@ See `SKILL_INDEX.md` for complete mapping.
 
 ## Tradegent Integration
 
-UCX shares the LiteLLM gateway pattern with [TradegentSwarm](/opt/data/tradegent_swarm/). Both systems can use the same provider credentials:
+UCX shares patterns with [TradegentSwarm](/opt/data/tradegent_swarm/):
+
+- Both support CLI mode (agent CLIs) and API mode (LiteLLM)
+- Shared provider credentials work for both systems
 
 ```bash
 # Shared provider keys
 export OPENAI_API_KEY="sk-..."
 export ANTHROPIC_API_KEY="sk-ant-..."
 
-# Tradegent: role-based routing
-export LITELLM_ROUTE_REASONING_STANDARD=openrouter/openai/gpt-4o-mini
-
-# UCX: model aliases
-export UCX_MODEL=opus
+# UCX: dual mode
+ucx --mode cli review brd docs/01_BRD/BRD-01/
+ucx --mode api review brd docs/01_BRD/BRD-01/
 ```
-
-See [Tradegent LiteLLM Integration](/opt/data/tradegent_swarm/docs/architecture/litellm-integration.md) for details.
 
 ---
 
 ## See Also
 
 - [HOW_TO_USE.md](HOW_TO_USE.md) - Detailed usage guide
-- [PERSONA_DESIGN_GUIDE.md](PERSONA_DESIGN_GUIDE.md) - Creating custom personas
+- [HOW_TO_AUDIT.md](HOW_TO_AUDIT.md) - Audit workflow guide
+- [UNIFIED_CONTEXT_REVIEW.md](UNIFIED_CONTEXT_REVIEW.md) - UCR method details
 - [SKILL_INDEX.md](../SKILL_INDEX.md) - Claude skill integration
 - [README.md](../README.md) - Package overview

@@ -251,6 +251,20 @@ class UCXConfig(BaseSettings):
         description="Skip validation phase in UCR",
     )
 
+    # Web Search
+    enable_web_search: bool = Field(
+        default=False,
+        description="Enable web search for deeper analysis (fact-checking, best practices, solutions)",
+    )
+    web_search_domains: Optional[list[str]] = Field(
+        default=None,
+        description="Allowed domains for web search (None = all domains)",
+    )
+    web_search_blocked_domains: Optional[list[str]] = Field(
+        default=None,
+        description="Blocked domains for web search",
+    )
+
     # Nested Configuration
     retry: RetryConfig = Field(
         default_factory=RetryConfig,
@@ -373,6 +387,10 @@ class UCXConfig(BaseSettings):
 
             >>> config = UCXConfig(ai_mode="api", model="openai/gpt-4o")
             >>> client = config.get_ai_client()
+
+            >>> # With web search enabled
+            >>> config = UCXConfig(ai_mode="cli", enable_web_search=True)
+            >>> client = config.get_ai_client()
         """
         from ucx.ai import get_client
 
@@ -383,4 +401,5 @@ class UCXConfig(BaseSettings):
             model=self.model,
             api_key=self.api_key,
             api_base=self.api_base,
+            enable_web_search=self.enable_web_search,
         )

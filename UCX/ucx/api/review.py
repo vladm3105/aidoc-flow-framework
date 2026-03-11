@@ -16,7 +16,12 @@ from ucx.core.persona_prompts import (
     get_personas_for_doc_type,
     build_persona_prompt,
     get_persona_title,
+    UnifiedPromptLoader,
+    ProjectPromptNotFoundError,
+    require_unified_prompt,
+    generate_unified_prompt_template,
 )
+from ucx.prompts.loader import ProjectPromptNotFoundError as LoaderPromptNotFoundError
 from ucx.utils.logging import (
     get_logger,
     log_phase_start,
@@ -403,47 +408,78 @@ class UCRPhase:
         """
         Load UCR prompt for document type.
 
-        Search order:
-        1. Project-specific prompt dir (if configured)
-        2. Framework prompt dir with _PROJECT suffix
-        3. Framework prompt dir base template
+        CRITICAL: Project-specific prompts are REQUIRED.
+        Framework prompts are NEVER used for analysis.
 
-        This allows projects to customize prompts while falling back to framework defaults.
+        Search order (project-specific only):
+        1. {project_dir}/docs/UCX/review/UCR_PROMPT_{TYPE}_PROJECT.md
+        2. {project_dir}/docs/UCX/review/UCR_PROMPT_{TYPE}_{PROJECT_NAME}.md
+
+        Raises:
+            ProjectPromptNotFoundError: If no project-specific prompt found
         """
         candidates = []
 
-        # 1. Check project-specific prompt directory first
-        project_prompt_dir = self.config.get_project_prompt_dir()
-        if project_prompt_dir:
-            # Project prompts can use various naming patterns
-            candidates.extend([
-                project_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
-                project_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
-            ])
-            # Also check subdirectory structure (e.g., docs/UCX/review/)
-            review_subdir = project_prompt_dir / "review"
-            if review_subdir.exists():
-                candidates.extend([
-                    review_subdir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
-                    review_subdir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
-                ])
+        # Get project directory from config
+        project_dir = self.config.get_project_dir()
 
-        # 2. Check framework prompt directory
-        framework_prompt_dir = self.config.get_prompt_dir() / "ucr"
-        candidates.extend([
-            framework_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md",
-            framework_prompt_dir / f"UCR_PROMPT_{doc_type.value.upper()}.md",
-        ])
+        if project_dir is None:
+            self.logger.error(
+                "Project directory not configured. "
+                "Set UCX_PROJECT_DIR or use --project-dir flag."
+            )
+            raise ProjectPromptNotFoundError(
+                "ucr",
+                doc_type.value,
+                Path.cwd()
+            )
 
-        for path in candidates:
-            if path.exists():
-                self.logger.info(f"Using prompt: {path}")
-                return path.read_text(encoding="utf-8")
+        # Project-specific prompt directory
+        project_prompt_dir = project_dir / "docs" / "UCX" / "review"
 
-        self.logger.error(f"No UCR prompt found for {doc_type.value}")
-        raise PromptError(
-            f"No UCR prompt found for {doc_type.value}",
-            prompt_name=f"UCR_PROMPT_{doc_type.value.upper()}.md",
+        if not project_prompt_dir.exists():
+            self.logger.error(
+                f"Project UCX/review directory not found: {project_prompt_dir}. "
+                f"Create project-specific prompts before running review."
+            )
+            raise ProjectPromptNotFoundError(
+                "ucr",
+                doc_type.value,
+                project_dir
+            )
+
+        # Search patterns for project-specific prompts (non-symlinks only)
+        doc_type_upper = doc_type.value.upper()
+        patterns = [
+            f"UCR_PROMPT_{doc_type_upper}_PROJECT.md",
+            f"UCR_PROMPT_{doc_type_upper}_*.md",
+        ]
+
+        for pattern in patterns:
+            if "*" not in pattern:
+                # Exact match
+                path = project_prompt_dir / pattern
+                if path.exists() and not path.is_symlink():
+                    self.logger.info(f"Using project-specific prompt: {path}")
+                    return path.read_text(encoding="utf-8")
+            else:
+                # Glob pattern - find non-symlink files, exclude framework base name
+                base_name = f"UCR_PROMPT_{doc_type_upper}.md"
+                for path in project_prompt_dir.glob(pattern):
+                    if not path.is_symlink() and path.name != base_name:
+                        self.logger.info(f"Using project-specific prompt: {path}")
+                        return path.read_text(encoding="utf-8")
+
+        # No project-specific prompt found - FAIL (no framework fallback)
+        self.logger.error(
+            f"Project-specific UCR prompt not found for {doc_type.value}. "
+            f"Expected: {project_prompt_dir}/UCR_PROMPT_{doc_type_upper}_PROJECT.md "
+            f"Framework prompts cannot be used for analysis."
+        )
+        raise ProjectPromptNotFoundError(
+            "ucr",
+            doc_type.value,
+            project_dir
         )
 
     def _load_skills(self, skill_names: list[str]) -> str:
@@ -549,6 +585,53 @@ class UCRPhase:
 
         self.logger.info(f"Using {len(personas)} personas: {personas}")
 
+        # Initialize project-specific persona loader
+        project_dir = self.config.get_project_dir()
+        if project_dir is None:
+            self.logger.error(
+                "Project directory not configured for multi-turn review. "
+                "Set UCX_PROJECT_DIR or use --project-dir flag."
+            )
+            raise ProjectPromptNotFoundError(
+                "ucr",
+                f"{doc_type.value}/personas",
+                Path.cwd()
+            )
+
+        # Use unified prompt loader (single source of truth)
+        unified_loader = UnifiedPromptLoader(project_dir, doc_type.value)
+
+        # Check if project has unified prompt configured
+        if not unified_loader.has_unified_prompt():
+            self.logger.warning(
+                f"No project-specific unified prompt found. "
+                f"Expected: {project_dir}/docs/UCX/review/UCR_PROMPT_{doc_type.value.upper()}_PROJECT.md"
+            )
+            template_path = generate_unified_prompt_template(project_dir, doc_type.value)
+            self.logger.info(
+                f"Generated unified prompt template: {template_path}\n"
+                f"Please customize it for your project domain, then re-run the review."
+            )
+            raise ProjectPromptNotFoundError(
+                "review",
+                doc_type.value,
+                project_dir
+            )
+
+        # Parse personas from unified prompt
+        try:
+            available_personas = unified_loader.list_personas()
+            if not available_personas:
+                raise ProjectPromptNotFoundError(
+                    "review",
+                    f"{doc_type.value} (no personas found in prompt)",
+                    project_dir
+                )
+            self.logger.info(f"Found {len(available_personas)} personas in unified prompt: {available_personas}")
+        except Exception as e:
+            self.logger.error(f"Failed to parse personas from unified prompt: {e}")
+            raise
+
         # Phase 1: Validation
         validation_result = ValidationResult(status=ValidationStatus.SKIPPED)
         if not skip_validation and not self.config.skip_validation:
@@ -599,13 +682,19 @@ class UCRPhase:
 
             self.logger.info(f"[{i+1}/{len(personas)}] {persona}: Starting review")
 
-            # Build persona-specific prompt
-            prompt = build_persona_prompt(
-                persona=persona,
-                shared_context=validation_context + doc_content,
-                previous_responses=previous_responses if i > 0 else None,
-                doc_type=doc_type.value,
-            )
+            # Build persona-specific prompt from unified prompt
+            try:
+                prompt = unified_loader.build_persona_prompt(
+                    persona=persona,
+                    document_content=validation_context + doc_content,
+                    previous_responses=previous_responses if i > 0 else None,
+                )
+            except ProjectPromptNotFoundError as e:
+                self.logger.error(
+                    f"Persona '{persona}' not found in unified prompt. "
+                    f"Add section: ### N. THE {persona.upper().replace('_', ' ')}"
+                )
+                raise
 
             # Save prompt for debugging
             memory.save_prompt(persona, prompt)
