@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This script is deprecated as of UCX v1.9.1.
+
+Migration: Use `ucx validate brd <path>` (full validation includes links).
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 Validate all markdown links in Traceability sections (e.g. Section 7 or 11).
 Check that:
 1. Relative paths resolve to actual files
 2. Anchors exist in target files
 3. No broken references
 """
+
+import warnings
+
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 import re
 from pathlib import Path

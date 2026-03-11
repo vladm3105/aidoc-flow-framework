@@ -352,6 +352,43 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "GATE-W007": ("Glossary term not defined", "Add term to glossary section"),
     "GATE-W008": ("Element ID in wrong section", "Move element to correct section"),
     "GATE-W009": ("Cost estimate format invalid", "Use standard currency format"),
+    # -------------------------------------------------------------------------
+    # Link Validation (LINK) - Markdown link validation
+    # -------------------------------------------------------------------------
+    "LINK-E001": ("Broken file link", "Fix or remove link to non-existent file"),
+    "LINK-E002": ("Broken anchor link", "Fix anchor reference in target file"),
+    "LINK-W001": ("Placeholder link detected", "Replace placeholder with actual link"),
+    # -------------------------------------------------------------------------
+    # Forward Reference Validation (FWDREF) - SDD layer hierarchy
+    # -------------------------------------------------------------------------
+    "FWDREF-E001": (
+        "Forward reference to non-existent document",
+        "Remove reference to downstream document that doesn't exist",
+    ),
+    "FWDREF-W001": (
+        "Far downstream reference",
+        "Consider removing reference to document 3+ layers ahead",
+    ),
+    "FWDREF-W002": (
+        "Count claim about downstream documents",
+        "Avoid claiming specific counts for documents not yet created",
+    ),
+    # -------------------------------------------------------------------------
+    # Diagram Validation (DIAG) - Mermaid and SVG consistency
+    # -------------------------------------------------------------------------
+    "DIAG-E001": (
+        "Missing diagram for architecture section",
+        "Add Mermaid or SVG diagram to architecture section",
+    ),
+    "DIAG-W001": (
+        "Diagram node count mismatch",
+        "Update prose count to match diagram nodes",
+    ),
+    "DIAG-W002": (
+        "Diagram node not referenced in text",
+        "Add reference to diagram node in surrounding text",
+    ),
+    "DIAG-W003": ("SVG file not found", "Create SVG file or fix reference path"),
 }
 
 

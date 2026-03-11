@@ -1,7 +1,14 @@
 """Version information for UCX."""
 
-__version__ = "1.9.0"
+__version__ = "1.9.1"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.1 - Tier 2 Advisory Validators
+# - New ucx/validators/common/links.py: Markdown link validation
+# - New ucx/validators/common/references.py: SDD forward reference validation
+# - New ucx/validators/common/diagrams.py: Mermaid/SVG diagram consistency
+# - New error codes: LINK-*, FWDREF-*, DIAG-*
+# - BRD validator now includes full Tier 2 checks when --tier1-only not used
 
 # v1.9.0 - Unified BRD Validation
 # - New ucx/validators/common/ module with shared validation utilities

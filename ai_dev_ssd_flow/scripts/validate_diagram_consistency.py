@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+DEPRECATED: This script is deprecated as of UCX v1.9.1.
+
+Migration: Use `ucx validate brd <path>` (full validation includes diagrams).
+Removal: This script will be removed in UCX v2.0.0.
+
+See: /opt/data/docs_flow_framework/UCX/docs/QUICK_START.md
+
+--- Original docstring below ---
+
 Diagram Consistency Validator for SDD Documents
 
 Validates that Mermaid diagrams match prose claims about components.
@@ -10,6 +19,15 @@ Error Codes:
 - DIAG-W001: Diagram count differs from text claim
 - DIAG-W002: Node label not referenced in text
 """
+
+import warnings
+
+warnings.warn(
+    "This script is deprecated. Use 'ucx validate brd <path>' instead. "
+    "Will be removed in UCX v2.0.0.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 import argparse
 import os

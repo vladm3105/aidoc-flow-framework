@@ -37,6 +37,21 @@ from ucx.validators.common.result import (
     UnifiedValidationResult,
     ValidationTier,
 )
+from ucx.validators.common.links import (
+    validate_links,
+    extract_markdown_links,
+)
+from ucx.validators.common.references import (
+    validate_forward_references,
+    get_document_type_from_path,
+    get_document_layer,
+    LAYER_MAP,
+)
+from ucx.validators.common.diagrams import (
+    validate_diagrams,
+    extract_mermaid_blocks,
+    parse_mermaid_nodes,
+)
 
 __all__ = [
     # Error codes
@@ -63,4 +78,16 @@ __all__ = [
     "ValidationIssue",
     "UnifiedValidationResult",
     "ValidationTier",
+    # Tier 2: Links
+    "validate_links",
+    "extract_markdown_links",
+    # Tier 2: Forward References
+    "validate_forward_references",
+    "get_document_type_from_path",
+    "get_document_layer",
+    "LAYER_MAP",
+    # Tier 2: Diagrams
+    "validate_diagrams",
+    "extract_mermaid_blocks",
+    "parse_mermaid_nodes",
 ]

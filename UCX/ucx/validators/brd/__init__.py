@@ -45,6 +45,10 @@ from ucx.validators.brd.element_codes import validate_element_codes
 from ucx.validators.brd.structure import validate_structure
 from ucx.validators.brd.metadata import validate_metadata
 from ucx.validators.brd.quality_gate import validate_quality_gates
+# Tier 2 validators (shared)
+from ucx.validators.common.links import validate_links
+from ucx.validators.common.references import validate_forward_references
+from ucx.validators.common.diagrams import validate_diagrams
 
 
 class UnifiedBRDValidator:
@@ -237,6 +241,31 @@ class UnifiedBRDValidator:
             tier1_only=tier1_only,
             frontmatter=fm_result,
         )
+
+        # Tier 2 checks (skip if tier1_only)
+        if not tier1_only:
+            # Link validation (traceability section focus)
+            validate_links(
+                content=content,
+                file_path=file_path,
+                result=result,
+                traceability_only=True,  # Focus on traceability section links
+            )
+
+            # Forward reference validation
+            validate_forward_references(
+                content=content,
+                file_path=file_path,
+                result=result,
+                search_paths=[file_path.parent, file_path.parent.parent],
+            )
+
+            # Diagram consistency validation
+            validate_diagrams(
+                content=content,
+                file_path=file_path,
+                result=result,
+            )
 
         # Add pass for valid file
         if not result.has_tier1_errors:
