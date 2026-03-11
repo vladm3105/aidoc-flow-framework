@@ -1,174 +1,182 @@
+# =============================================================================
+# Pre-commit Configuration for b-local-docs
+#
+# UCX Unified Validation (v1.9.2+)
+# - BRD: UCX implemented (ucx validate brd)
+# - Other layers: Legacy fallback (migration planned for UCX v1.10.0+)
+#
+# Hook Stages:
+# - pre-commit: Tier 1 (blocking) checks only
+# - manual: Full validation (Tier 1 + Tier 2)
+#
+# Usage:
+#   pre-commit run --all-files          # Run pre-commit hooks
+#   pre-commit run --hook-stage manual  # Run manual hooks
+#   pre-commit run ucx-brd-validate     # Run specific hook
+# =============================================================================
+
 repos:
   - repo: local
     hooks:
-      - id: prd-core-wrapper
-        name: Validate PRD core checks via unified wrapper
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh docs/02_PRD
+      # =========================================================================
+      # UCX UNIFIED VALIDATION (Tier 1 - Pre-commit)
+      # =========================================================================
+
+      # -------------------------------------------------------------------------
+      # BRD - Business Requirements Document (L1) - UCX IMPLEMENTED
+      # -------------------------------------------------------------------------
+      - id: ucx-brd-validate
+        name: UCX BRD Validation (Tier 1)
+        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && ucx validate brd docs/01_BRD --tier1-only'
         language: system
+        files: ^docs/01_BRD/.*\.md$
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # -------------------------------------------------------------------------
+      # PRD - Product Requirements Document (L2) - LEGACY FALLBACK
+      # Migration: UCX v1.10.0 (PLAN-001 Phase 2)
+      # -------------------------------------------------------------------------
+      - id: ucx-prd-validate
+        name: UCX PRD Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh prd docs/02_PRD --tier1-only
+        language: system
+        files: ^docs/02_PRD/.*\.md$
         pass_filenames: false
         stages: [manual]
 
-      - id: prd-standardized-element-codes
-        name: Validate b-local PRD standardized element type codes
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh docs/02_PRD
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: prd-legacy-patterns
-        name: Detect b-local PRD legacy element ID patterns
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh docs/02_PRD
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: ears-core-validator
-        name: Validate EARS documents via core validator
-        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_core_validator_hook.sh docs/03_EARS
+      # -------------------------------------------------------------------------
+      # EARS - Easy Approach to Requirements Syntax (L3) - LEGACY FALLBACK
+      # Migration: UCX v1.10.0 (PLAN-001 Phase 2)
+      # -------------------------------------------------------------------------
+      - id: ucx-ears-validate
+        name: UCX EARS Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh ears docs/03_EARS --tier1-only
         language: system
         files: ^docs/03_EARS/.*\.md$
         pass_filenames: false
         stages: [manual]
 
-      - id: ears-quality-gate
-        name: Run EARS quality gate (template-driven)
-        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_quality_gate_hook.sh docs/03_EARS
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: ears-ready-score
-        name: Validate EARS readiness score (template v2.0)
-        entry: bash ai_dev_ssd_flow/03_EARS/scripts/ears_ready_score_hook.sh docs/03_EARS
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: bdd-core-validator
-        name: Validate BDD feature files via core validator
-        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_core_validator_hook.sh docs/04_BDD
+      # -------------------------------------------------------------------------
+      # BDD - Behavior-Driven Development (L4) - LEGACY FALLBACK
+      # Migration: UCX v1.11.0 (PLAN-001 Phase 3)
+      # -------------------------------------------------------------------------
+      - id: ucx-bdd-validate
+        name: UCX BDD Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh bdd docs/04_BDD --tier1-only
         language: system
         files: ^docs/04_BDD/.*\.feature$
         pass_filenames: false
         stages: [manual]
 
-      - id: bdd-quality-gate
-        name: Run BDD quality gate (template-driven)
-        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_quality_gate_hook.sh docs/04_BDD
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: bdd-adr-ready-score
-        name: Validate BDD ADR-ready score (template v2.0)
-        entry: bash ai_dev_ssd_flow/04_BDD/scripts/bdd_adr_ready_score_hook.sh docs/04_BDD
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: adr-core-validator
-        name: Validate ADR documents via core validator
-        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh docs/05_ADR
+      # -------------------------------------------------------------------------
+      # ADR - Architecture Decision Records (L5) - LEGACY FALLBACK
+      # Migration: UCX v1.11.0 (PLAN-001 Phase 3)
+      # -------------------------------------------------------------------------
+      - id: ucx-adr-validate
+        name: UCX ADR Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh adr docs/05_ADR --tier1-only
         language: system
         files: ^docs/05_ADR/.*\.md$
         pass_filenames: false
         stages: [pre-commit]
 
-      - id: adr-quality-gate
-        name: Run ADR quality gate (template-driven)
-        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh docs/05_ADR
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-
-      - id: adr-sys-ready-score
-        name: Validate ADR SYS-ready score (template v1.1)
-        entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh docs/05_ADR
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-
-      - id: sys-core-validator
-        name: Validate SYS documents via core validator
-        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_core_validator_hook.sh docs/06_SYS
+      # -------------------------------------------------------------------------
+      # SYS - System Requirements (L6) - LEGACY FALLBACK
+      # Migration: UCX v1.11.0 (PLAN-001 Phase 3)
+      # -------------------------------------------------------------------------
+      - id: ucx-sys-validate
+        name: UCX SYS Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh sys docs/06_SYS --tier1-only
         language: system
         files: ^docs/06_SYS/.*\.md$
         pass_filenames: false
         stages: [manual]
 
-      - id: sys-quality-gate
-        name: Run SYS quality gate (template-driven)
-        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_quality_gate_hook.sh docs/06_SYS
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: sys-req-ready-score
-        name: Validate SYS REQ-ready score (template v2.1)
-        entry: bash ai_dev_ssd_flow/06_SYS/scripts/sys_req_ready_score_hook.sh docs/06_SYS
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: req-core-validator
-        name: Validate REQ documents via core validator
-        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_core_validator_hook.sh docs/07_REQ
+      # -------------------------------------------------------------------------
+      # REQ - Atomic Requirements (L7) - LEGACY FALLBACK
+      # Migration: UCX v1.12.0 (PLAN-001 Phase 4)
+      # -------------------------------------------------------------------------
+      - id: ucx-req-validate
+        name: UCX REQ Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh req docs/07_REQ --tier1-only
         language: system
         files: ^docs/07_REQ/.*\.md$
         pass_filenames: false
         stages: [manual]
 
-      - id: req-quality-gate
-        name: Run REQ quality gate (template-driven)
-        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_quality_gate_hook.sh docs/07_REQ
+      # -------------------------------------------------------------------------
+      # CTR - Data Contracts (L8) - LEGACY FALLBACK
+      # Migration: UCX v1.12.0 (PLAN-001 Phase 4)
+      # -------------------------------------------------------------------------
+      - id: ucx-ctr-validate
+        name: UCX CTR Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh ctr docs/08_CTR --tier1-only
+        language: system
+        files: ^docs/08_CTR/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      # -------------------------------------------------------------------------
+      # SPEC - Technical Specifications (L9) - LEGACY FALLBACK
+      # Migration: UCX v1.12.0 (PLAN-001 Phase 4)
+      # -------------------------------------------------------------------------
+      - id: ucx-spec-validate
+        name: UCX SPEC Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh spec docs/09_SPEC --tier1-only
+        language: system
+        files: ^docs/09_SPEC/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      # -------------------------------------------------------------------------
+      # TSPEC - Test Specifications (L10) - LEGACY FALLBACK
+      # Migration: UCX v1.13.0 (PLAN-001 Phase 5)
+      # -------------------------------------------------------------------------
+      - id: ucx-tspec-validate
+        name: UCX TSPEC Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh tspec docs/10_TSPEC --tier1-only
+        language: system
+        files: ^docs/10_TSPEC/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      # -------------------------------------------------------------------------
+      # TASKS - Task Breakdown (L11) - LEGACY FALLBACK
+      # Migration: UCX v1.13.0 (PLAN-001 Phase 5)
+      # -------------------------------------------------------------------------
+      - id: ucx-tasks-validate
+        name: UCX TASKS Validation (Tier 1) [Legacy]
+        entry: bash scripts/ucx-validate.sh tasks docs/11_TASKS --tier1-only
+        language: system
+        files: ^docs/11_TASKS/.*\.md$
+        pass_filenames: false
+        stages: [manual]
+
+      # =========================================================================
+      # UCX FULL VALIDATION (Tier 1 + Tier 2 - Manual)
+      # =========================================================================
+
+      - id: ucx-brd-validate-full
+        name: UCX BRD Full Validation (Tier 1 + Tier 2)
+        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && ucx validate brd docs/01_BRD'
         language: system
         pass_filenames: false
         stages: [manual]
 
-      - id: req-spec-ready-score
-        name: Validate REQ SPEC-ready score (validator threshold)
-        entry: bash ai_dev_ssd_flow/07_REQ/scripts/req_spec_ready_score_hook.sh docs/07_REQ
+      - id: ucx-all-validate
+        name: UCX All Layers Validation (Tier 1)
+        entry: bash scripts/ucx-validate.sh all docs/ --tier1-only
         language: system
         pass_filenames: false
         stages: [manual]
 
-      - id: prd-quality-gate
-        name: PRD legacy quality-gate alias (manual)
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: brd-quality-gate
-        name: BRD legacy quality-gate alias (manual)
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-        language: system
-        pass_filenames: false
-        stages: [manual]
-
-      - id: brd-core-wrapper
-        name: Validate b-local BRD core checks via unified wrapper
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]  # ✅ Re-enabled after validator fix
-
-      - id: brd-standardized-element-codes
-        name: Validate b-local BRD standardized element type codes
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]  # ✅ Re-enabled after validator fix
-
-      - id: brd-legacy-patterns
-        name: Detect b-local BRD legacy element ID patterns
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]  # ✅ Re-enabled after validator fix
+      # =========================================================================
+      # CLAUDE AI SKILL AUDITS (Manual - Not Validation)
+      # =========================================================================
 
       - id: brd-claude-skill-audit
-        name: Run Claude BRD skill audit (optional)
+        name: Claude BRD Skill Audit (AI Review)
         entry: bash ai_dev_ssd_flow/01_BRD/scripts/claude_brd_skill_audit_hook.sh
         language: system
         files: ^docs/01_BRD/.*\.md$
@@ -176,30 +184,75 @@ repos:
         stages: [manual]
 
       - id: prd-claude-skill-audit
-        name: Run Claude PRD skill audit (optional)
+        name: Claude PRD Skill Audit (AI Review)
         entry: bash ai_dev_ssd_flow/02_PRD/scripts/claude_prd_skill_audit_hook.sh
         language: system
         files: ^docs/02_PRD/.*\.md$
         pass_filenames: true
         stages: [manual]
 
+      # =========================================================================
+      # SDD CROSS-LAYER VALIDATION (Manual)
+      # =========================================================================
+
       - id: sdd-layer-quality-matrix
-        name: Run all-layer SDD quality matrix (Phase A, manual full)
+        name: SDD Quality Matrix (All Layers - Full)
         entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: sdd-metadata-scope
-        name: Enforce SDD metadata scope (instance + development/production)
+        name: SDD Metadata Scope Enforcement
         entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_metadata_scope_hook.sh ai_dev_ssd_flow
         language: system
         pass_filenames: false
         stages: [pre-commit]
 
-      - id: sdd-layer-quality-matrix-blocking
-        name: Run all-layer SDD quality matrix (Phase B, blocking changed layers)
-        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs --changed-only
+      # =========================================================================
+      # DEPRECATED HOOKS (Kept for backward compatibility - Remove in v2.0.0)
+      # =========================================================================
+
+      # BRD Legacy (deprecated - use ucx-brd-validate)
+      - id: brd-core-wrapper
+        name: "[DEPRECATED] BRD Core Wrapper - Use ucx-brd-validate"
+        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD'
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [manual]
+
+      - id: brd-standardized-element-codes
+        name: "[DEPRECATED] BRD Element Codes - Use ucx-brd-validate"
+        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: brd-legacy-patterns
+        name: "[DEPRECATED] BRD Legacy Patterns - Use ucx-brd-validate"
+        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate instead" && bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: brd-quality-gate
+        name: "[DEPRECATED] BRD Quality Gate - Use ucx-brd-validate-full"
+        entry: bash -c 'echo "DEPRECATED: Use ucx-brd-validate-full instead" && bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      # PRD Legacy (will migrate to UCX in v1.10.0)
+      - id: prd-core-wrapper
+        name: PRD Core Wrapper (Legacy)
+        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh docs/02_PRD
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: prd-quality-gate
+        name: PRD Quality Gate (Legacy)
+        entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory
+        language: system
+        pass_filenames: false
+        stages: [manual]
