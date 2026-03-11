@@ -1,5 +1,28 @@
 # BRD Validation Scripts
 
+> **DEPRECATED**: These scripts are deprecated as of UCX v1.9.0. Use `ucx validate brd` instead.
+> See [UCX Validators README](/opt/data/docs_flow_framework/UCX/ucx/validators/README.md) for the replacement.
+
+## UCX Replacement (v1.9.7)
+
+```bash
+# Recommended: UCX unified validation
+ucx validate brd docs/01_BRD/BRD-01/ --tier1-only     # Fast pre-commit
+ucx validate brd docs/01_BRD/BRD-01/                   # Full validation
+ucx validate brd docs/01_BRD/BRD-01/ --fix            # Auto-fix issues
+ucx validate brd docs/01_BRD/BRD-01/ --fix --report --clean-reports  # Complete workflow
+```
+
+**UCX v1.9.7 Features**:
+- Tiered validation (Tier 1 blocking, Tier 2 advisory)
+- Auto-fix for structural issues (`--fix`)
+- Auto-fix for count mismatches (GATE-W003, DIAG-W001)
+- Report generation and cleanup
+
+---
+
+## Legacy Scripts (Deprecated)
+
 ## Validator Updates (2026-03-05)
 
 ### validate_brd.py v2.0

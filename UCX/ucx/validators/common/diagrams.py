@@ -111,9 +111,16 @@ def extract_count_claims(content: str) -> List[Tuple[int, str, int]]:
 
     Returns:
         List of (count, item_type, line_number)
+
+    Note: Uses negative lookbehind to avoid matching:
+    - Ranges like "3-10 nodes" (would incorrectly extract "10")
+    - Section numbers like "## 5.2 components"
+    - Version numbers like "v1.2 services"
     """
     claims = []
-    pattern = r'\b(\d+)\s+(' + '|'.join(COUNTABLE_ITEMS) + r')\b'
+    # Use negative lookbehind to avoid matching after ., -, or digits
+    safe_prefix = r'(?<![.\d-])'
+    pattern = safe_prefix + r'\b(\d+)\s+(' + '|'.join(COUNTABLE_ITEMS) + r')\b'
 
     lines = content.splitlines()
     for line_no, line in enumerate(lines, start=1):

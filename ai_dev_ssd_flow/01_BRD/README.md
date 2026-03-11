@@ -15,6 +15,16 @@ custom_fields:
 
 ## Recent Changes
 
+**2026-03-11**: UCX v1.9.7 - Tier 2 Auto-Fix
+- Extended `--fix` for count mismatches: GATE-W003, DIAG-W001
+- Prose counts auto-corrected to match actual elements/diagram nodes
+- Use `ucx validate brd <path> --fix --report --clean-reports`
+
+**2026-03-11**: UCX v1.9.6 - Structural Auto-Fix
+- Added `--fix` flag for deterministic structural fixes
+- Added `--report` for auto-report generation after fixing
+- Combined workflow: `--fix --report --clean-reports`
+
 **2026-03-05**: BRD Framework Updates
 - Updated `validate_brd.py` to check 19 sections (§0-18) - was 16 sections
 - Re-enabled pre-commit hooks (were disabled since 2026-02-25)

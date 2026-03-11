@@ -287,6 +287,10 @@ ucx --project-dir . --model sonnet review prd docs/02_PRD/PRD-01/
 
 | Version | Changes |
 |---------|---------|
+| 1.9.7 | Extended `--fix` for Tier 2 count mismatches: GATE-W003 (stated vs actual), DIAG-W001 (diagram nodes) |
+| 1.9.6 | Auto-fix structural issues (`--fix`), auto-report (`--report`), combined workflow (`--fix --report --clean-reports`) |
+| 1.9.5 | Validation report cleanup (`--clean-reports`, `--keep-versions`) |
+| 1.9.4 | QA subcategory codes 91-99, section mappings for 3/4, tag pattern updates |
 | 1.9.3 | SDD-compliant validation reports with YAML frontmatter, auto-versioning, report naming `{DOC-ID}.V_validation_report_v{NNN}.md` |
 | 1.9.2 | Unified validator registry integration - `ucx review` uses UnifiedBRDValidator |
 | 1.9.1 | Tier 2 advisory validators (links, references, diagrams) |

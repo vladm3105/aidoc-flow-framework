@@ -1,7 +1,14 @@
 """Version information for UCX."""
 
-__version__ = "1.9.6"
+__version__ = "1.9.7"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.7 - Tier 2 Count Mismatch Auto-Fix
+# - Extended --fix to handle GATE-W003 (count mismatch: stated vs actual)
+# - Extended --fix to handle DIAG-W001 (diagram node count mismatch)
+# - Deterministic fixes for prose count discrepancies
+# - Updates "N requirements" to match actual element counts
+# - Updates "N nodes" to match actual Mermaid diagram nodes
 
 # v1.9.6 - Auto-Fix for Structural Issues
 # - Added --fix flag to `ucx validate` command for deterministic fixes

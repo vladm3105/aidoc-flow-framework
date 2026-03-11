@@ -246,10 +246,15 @@ def _check_gate03_counts(
 ) -> None:
     """GATE-03: Check internal count consistency."""
     # Look for stated counts like "5 requirements" and verify against actual items
+    # Use negative lookbehind to avoid matching:
+    # - Section numbers like "## 16.1 Requirements" (the "1" after ".")
+    # - Ranges like "3-10 items" (the "10" after "-")
+    # - Version numbers like "v1.2 requirements"
+    safe_prefix = r"(?<![.\d#-])"
     count_patterns = [
-        (r"(\d+)\s+(?:functional\s+)?requirements?", r"BRD\.\d+\.01\.\d+"),
-        (r"(\d+)\s+user\s+stor(?:y|ies)", r"BRD\.\d+\.09\.\d+"),
-        (r"(\d+)\s+(?:quality\s+)?attributes?", r"BRD\.\d+\.02\.\d+"),
+        (safe_prefix + r"(\d+)\s+(?:functional\s+)?requirements?", r"BRD\.\d+\.01\.\d+"),
+        (safe_prefix + r"(\d+)\s+user\s+stor(?:y|ies)", r"BRD\.\d+\.09\.\d+"),
+        (safe_prefix + r"(\d+)\s+(?:quality\s+)?attributes?", r"BRD\.\d+\.02\.\d+"),
     ]
 
     for stated_pattern, element_pattern in count_patterns:

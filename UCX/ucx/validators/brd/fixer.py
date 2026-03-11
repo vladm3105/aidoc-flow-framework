@@ -64,12 +64,16 @@ class FixSummary:
 
 # Error codes that can be auto-fixed
 FIXABLE_CODES: Set[str] = {
+    # Tier 1 structural fixes
     "BRD-E002",  # Missing custom_fields.document_type
     "BRD-E003",  # Missing tag 'brd'
     "BRD-E004",  # Missing tag 'layer-1-artifact'
     "BRD-E009",  # Missing Document Control fields
     "BRD-W005",  # Legacy development_status
     "VAL-W002",  # Legacy status value
+    # Tier 2 count mismatch fixes
+    "GATE-W003",  # Count mismatch (stated vs actual)
+    "DIAG-W001",  # Diagram node count mismatch
 }
 
 
@@ -485,4 +489,136 @@ class BRDFixer:
             file_path=file_path,
             fixed=False,
             message="No legacy status value found"
+        )
+
+    def _fix_gate_w003(self, issue: ValidationIssue) -> FixResult:
+        """Fix count mismatch (stated vs actual count).
+
+        Parses the issue context to extract stated and actual counts,
+        then updates the prose to match the actual count.
+
+        IMPORTANT: Uses negative lookbehind to avoid matching:
+        - Section numbers like "## 16.1" or "### 5.2"
+        - Numbers in ranges like "3-10"
+        - Numbers that are part of version numbers like "v1.2"
+        """
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+
+        # Parse context: "Count mismatch: stated X, found Y"
+        context = issue.context or ""
+        match = re.search(r"stated (\d+), found (\d+)", context)
+        if not match:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Cannot parse count mismatch from context"
+            )
+
+        stated_count = int(match.group(1))
+        actual_count = int(match.group(2))
+
+        # Find and replace count patterns in content
+        # Pattern: "N requirements", "N user stories", etc.
+        # Use negative lookbehind (?<![.\d#-]) to avoid matching:
+        # - After "." (section numbers like 16.1)
+        # - After digits (part of larger numbers)
+        # - After "#" (markdown headings like ## 5)
+        # - After "-" (ranges like 3-10)
+        safe_prefix = r"(?<![.\d#-])"
+        count_patterns = [
+            (safe_prefix + r"(\b{}\b)(\s+(?:functional\s+)?requirements?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+user\s+stor(?:y|ies)\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+(?:quality\s+)?attributes?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+(?:business\s+)?objectives?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+(?:acceptance\s+)?criteria\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+constraints?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+assumptions?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+risks?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+dependencies?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+stakeholders?\b)".format(stated_count), r"{}\2".format(actual_count)),
+            (safe_prefix + r"(\b{}\b)(\s+items?\b)".format(stated_count), r"{}\2".format(actual_count)),
+        ]
+
+        new_content = content
+        changes = []
+
+        for pattern, replacement in count_patterns:
+            new_content_candidate = re.sub(pattern, replacement, new_content, flags=re.IGNORECASE)
+            if new_content_candidate != new_content:
+                new_content = new_content_candidate
+                changes.append(f"Updated count: {stated_count} → {actual_count}")
+                break  # Only fix first match
+
+        if changes:
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message=f"Fixed count mismatch: {stated_count} → {actual_count}",
+                changes=changes
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message=f"Could not find count pattern for '{stated_count}' to replace"
+        )
+
+    def _fix_diag_w001(self, issue: ValidationIssue) -> FixResult:
+        """Fix diagram node count mismatch in prose.
+
+        Parses the issue context to extract claimed count and actual node count,
+        then updates the prose to match the diagram.
+
+        IMPORTANT: Uses negative lookbehind to avoid matching:
+        - Numbers in ranges like "3-10 nodes"
+        - Section numbers like "## 10.1"
+        - Version numbers like "v10.2"
+        """
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+
+        # Parse context: "Text claims X nodes, diagram (line Y) has Z nodes"
+        context = issue.context or ""
+        match = re.search(r"claims (\d+) (\w+).*has (\d+) nodes", context)
+        if not match:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Cannot parse diagram count mismatch from context"
+            )
+
+        claimed_count = int(match.group(1))
+        item_type = match.group(2)
+        actual_count = int(match.group(3))
+
+        # Build replacement pattern
+        # Match: "10 nodes", "10 components", "10 services", etc.
+        # Use negative lookbehind to avoid matching after ., -, #, or digits
+        safe_prefix = r"(?<![.\d#-])"
+        pattern = safe_prefix + r"(\b{}\b)(\s+{}\b)".format(claimed_count, item_type)
+        replacement = r"{}\2".format(actual_count)
+
+        new_content = re.sub(pattern, replacement, content, flags=re.IGNORECASE)
+
+        if new_content != content:
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message=f"Fixed diagram count: {claimed_count} → {actual_count} {item_type}",
+                changes=[f"Updated prose: {claimed_count} {item_type} → {actual_count} {item_type}"]
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message=f"Could not find '{claimed_count} {item_type}' pattern to replace"
         )
