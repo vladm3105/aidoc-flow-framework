@@ -262,15 +262,16 @@ def _validate_document_control(
 ) -> None:
     """Validate Document Control section."""
     # For section-based layout, accept either "## Document Control" or "## 0. Document Control"
+    # Note: Use \n--- (newline before ---) to avoid matching |--- in table rows
     if is_section_layout:
         doc_control_match = re.search(
-            r"## (?:0\. )?Document Control.*?(?=## \d+\.|\Z|---)",
+            r"## (?:0\. )?Document Control.*?(?=## \d+\.|\Z|\n---)",
             content,
             re.DOTALL,
         )
     else:
         doc_control_match = re.search(
-            r"## 0\. Document Control.*?(?=## \d+\.|\Z)",
+            r"## 0\. Document Control.*?(?=## \d+\.|\Z|\n---)",
             content,
             re.DOTALL,
         )

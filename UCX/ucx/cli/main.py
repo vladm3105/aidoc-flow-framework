@@ -453,10 +453,11 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 @click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
+@click.option("--fix", is_flag=True, help="Auto-fix structural issues (metadata, tags, Document Control)")
 @click.option("--clean-reports", is_flag=True, help="Clean up old validation reports, keep only latest (or --keep-versions)")
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.pass_context
-def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, clean_reports, keep_versions):
+def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, fix, clean_reports, keep_versions):
     """
     Validate a document (no AI review).
 
@@ -466,11 +467,21 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
       Tier 2 (Advisory): Links, references, diagrams, glossary
 
     \b
+    Auto-fix (--fix):
+      Fixes structural issues deterministically (no AI):
+      - Missing metadata fields (custom_fields.document_type, artifact_type, layer)
+      - Missing tags (brd, layer-1-artifact)
+      - Missing Document Control fields
+      - Legacy status values
+
+    \b
     Examples:
       ucx validate brd docs/01_BRD/BRD-01
       ucx validate brd docs/01_BRD/BRD-01 --tier1-only
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
       ucx validate brd docs/01_BRD/BRD-01 -o validation_report.md
+      ucx validate brd docs/01_BRD/BRD-01 --fix
+      ucx validate brd docs/01_BRD/BRD-01 --fix --tier1-only
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
     """
@@ -527,6 +538,41 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
 
         validator = UnifiedBRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
         result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+
+        # Handle --fix flag: auto-fix structural issues
+        if fix:
+            from ucx.validators.brd.fixer import BRDFixer, FIXABLE_CODES
+
+            # Collect all fixable issues
+            all_issues = result.tier1_issues + result.tier2_issues
+            fixable_issues = [i for i in all_issues if i.code in FIXABLE_CODES]
+
+            if fixable_issues:
+                console.print(f"\n[cyan]Auto-fixing {len(fixable_issues)} structural issue(s)...[/cyan]")
+
+                fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
+                fix_summary = fixer.fix_all(fixable_issues)
+
+                # Display fix results
+                for fix_result in fix_summary.results:
+                    if fix_result.fixed:
+                        console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
+                        for change in fix_result.changes:
+                            console.print(f"    [dim]→ {change}[/dim]")
+                    else:
+                        console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
+
+                console.print(f"\n[green]Fixed: {fix_summary.fixed_count}[/green] | "
+                            f"[yellow]Skipped: {fix_summary.skipped_count}[/yellow] | "
+                            f"[red]Failed: {fix_summary.failed_count}[/red]")
+
+                # Re-run validation to show updated results
+                if fix_summary.fixed_count > 0:
+                    console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
+                    result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+            else:
+                console.print("[yellow]No auto-fixable issues found.[/yellow]")
+                console.print("[dim]Fixable codes: " + ", ".join(sorted(FIXABLE_CODES)) + "[/dim]\n")
 
         # Extract doc_id from path (e.g., BRD-01 from BRD-01_platform_architecture)
         doc_path_obj = Path(doc_path)

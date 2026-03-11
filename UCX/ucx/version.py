@@ -1,7 +1,15 @@
 """Version information for UCX."""
 
-__version__ = "1.9.5"
+__version__ = "1.9.6"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.6 - Auto-Fix for Structural Issues
+# - Added --fix flag to `ucx validate` command for deterministic fixes
+# - New ucx/validators/brd/fixer.py module with BRDFixer class
+# - Fixable issues: BRD-E002 (metadata), BRD-E003/E004 (tags), BRD-E009 (Doc Control),
+#   BRD-W005 (legacy status field), VAL-W002 (legacy status value)
+# - Auto re-validates after applying fixes to show updated results
+# - No AI required - pure script-based structural fixes
 
 # v1.9.5 - Validation Report Cleanup
 # - Added --clean-reports flag to `ucx validate` command
