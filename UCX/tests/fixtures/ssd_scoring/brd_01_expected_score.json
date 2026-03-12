@@ -1,0 +1,85 @@
+{
+  "description": "Expected scoring results for BRD-01 fixture",
+  "version": "1.12.0",
+  "doc_type": "brd",
+  "findings_summary": {
+    "total": 7,
+    "P0": 4,
+    "P1": 2,
+    "P2": 1
+  },
+  "category_breakdown": {
+    "compliance": {
+      "P0": 2,
+      "P1": 0,
+      "P2": 0,
+      "weight": 0.20,
+      "max_deduction": 20,
+      "raw_deduction": 20,
+      "capped_deduction": 20,
+      "weighted_deduction": 4.0
+    },
+    "functional": {
+      "P0": 1,
+      "P1": 0,
+      "P2": 0,
+      "weight": 0.25,
+      "max_deduction": 25,
+      "raw_deduction": 10,
+      "capped_deduction": 10,
+      "weighted_deduction": 2.5
+    },
+    "risk": {
+      "P0": 1,
+      "P1": 0,
+      "P2": 0,
+      "weight": 0.05,
+      "max_deduction": 5,
+      "raw_deduction": 10,
+      "capped_deduction": 5,
+      "weighted_deduction": 0.25
+    },
+    "architecture": {
+      "P0": 0,
+      "P1": 1,
+      "P2": 0,
+      "weight": 0.05,
+      "max_deduction": 5,
+      "raw_deduction": 3,
+      "capped_deduction": 3,
+      "weighted_deduction": 0.15
+    },
+    "integration": {
+      "P0": 0,
+      "P1": 1,
+      "P2": 0,
+      "weight": 0.10,
+      "max_deduction": 10,
+      "raw_deduction": 3,
+      "capped_deduction": 3,
+      "weighted_deduction": 0.30
+    },
+    "acceptance": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 1,
+      "weight": 0.10,
+      "max_deduction": 10,
+      "raw_deduction": 1,
+      "capped_deduction": 1,
+      "weighted_deduction": 0.10
+    }
+  },
+  "scoring": {
+    "total_weighted_deduction": 7.30,
+    "weighted_score": 92.7,
+    "legacy_score": 53,
+    "pass_status": "PASS",
+    "legacy_pass_status": "FAIL"
+  },
+  "notes": [
+    "Weighted score significantly higher than legacy due to category caps",
+    "Risk category raw deduction (10) capped at max (5)",
+    "Categories with no findings contribute 0 to deduction"
+  ]
+}
