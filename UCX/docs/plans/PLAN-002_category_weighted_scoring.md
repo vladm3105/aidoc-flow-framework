@@ -136,8 +136,8 @@ def calculate_weighted_score(findings: dict) -> float:
 - Include ALL document types (BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC, CTR, TASKS, TSPEC)
 
 **Task 1.3: Unit tests**
-- File: `tests/scoring/test_categories.py`
-- File: `tests/scoring/test_calculator.py`
+- File: `tests/ssd_scoring/test_categories.py`
+- File: `tests/ssd_scoring/test_calculator.py`
 - Test edge cases: zero findings, max findings, category caps
 
 **Task 1.4: Weight validation (GAP FIX)**
@@ -416,7 +416,7 @@ categories:
 ### Phase 7: Integration Testing (UCX 1.12.0) - GAP FIX
 
 **Task 7.1: End-to-end scoring tests**
-- File: `tests/integration/test_scoring_e2e.py`
+- File: `tests/integration/test_ssd_scoring_e2e.py`
 - Test full flow: review → scan → score calculation
 - Test with real documents (BRD-01, BRD-02 fixtures)
 - Verify category assignment accuracy
@@ -549,15 +549,15 @@ UCX/
 │   ├── fact_checker.md
 │   └── chairperson.md             # Category manifest output
 └── tests/
-    ├── scoring/                   # Unit tests
+    ├── ssd_scoring/               # SDD scoring unit tests
     │   ├── test_categories.py
     │   ├── test_calculator.py
     │   ├── test_weights.py        # Weight validation tests (NEW)
     │   └── test_conflicts.py      # Conflict resolution tests (NEW)
     ├── integration/               # Integration tests (NEW)
-    │   └── test_scoring_e2e.py
+    │   └── test_ssd_scoring_e2e.py
     └── fixtures/                  # Test fixtures (NEW)
-        └── scoring/
+        └── ssd_scoring/
             ├── brd_01_expected_categories.json
             ├── brd_01_expected_score.json
             └── legacy_report_no_categories.md
