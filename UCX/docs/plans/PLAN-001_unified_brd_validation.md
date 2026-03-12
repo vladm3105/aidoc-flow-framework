@@ -832,7 +832,7 @@ tests/integration/
 | 2.4 | Port PRD element codes validation | High |
 | 2.5 | Deprecate `ai_dev_ssd_flow/02_PRD/scripts/`, `03_EARS/scripts/` | High |
 
-**Deliverable**: UCX 1.10.0
+**Deliverable**: UCX 1.11.0
 
 ### Phase 3: BDD + ADR + SYS
 
@@ -844,7 +844,7 @@ tests/integration/
 | 3.4 | CLI: `ucx validate bdd`, `ucx validate adr`, `ucx validate sys` | Medium |
 | 3.5 | Deprecate `ai_dev_ssd_flow/04_BDD/`, `05_ADR/`, `06_SYS/` scripts | Medium |
 
-**Deliverable**: UCX 1.11.0
+**Deliverable**: UCX 1.12.0
 
 ### Phase 4: REQ + CTR + SPEC
 
@@ -856,7 +856,7 @@ tests/integration/
 | 4.4 | CLI: `ucx validate req`, `ucx validate ctr`, `ucx validate spec` | Medium |
 | 4.5 | Deprecate `ai_dev_ssd_flow/07_REQ/`, `08_CTR/`, `09_SPEC/` scripts | Medium |
 
-**Deliverable**: UCX 1.12.0
+**Deliverable**: UCX 1.13.0
 
 ### Phase 5: TSPEC + TASKS + CHG
 
@@ -869,7 +869,7 @@ tests/integration/
 | 5.5 | CLI: `ucx validate all` (orchestrator) | Medium |
 | 5.6 | Deprecate remaining `ai_dev_ssd_flow/` scripts | Medium |
 
-**Deliverable**: UCX 1.13.0
+**Deliverable**: UCX 1.14.0
 
 ### Phase 6: Cleanup + Documentation
 
@@ -1048,7 +1048,7 @@ During transition:
 1. Keep `ucx/validators/brd.py` (existing) working
 2. Add `ucx/validators/brd/` (new unified module)
 3. Registry returns UnifiedBRDValidator for DocType.BRD
-4. Mark old `brd.py` for removal in v1.10.0
+4. Mark old `brd.py` for removal in v2.0.0
 
 ### Gap 10: Version Bump
 
@@ -1431,7 +1431,7 @@ Enable with `UCX_LOG_LEVEL=DEBUG`.
 |------|-------------|--------|------------|
 | Script logic differs from Python port | Medium | High | Comprehensive testing with same fixtures |
 | Pre-commit too slow | Low | Medium | Tier 1 only + wrapper script |
-| Breaking existing UCX review | Low | High | Keep old validator until v1.10.0 |
+| Breaking existing UCX review | Low | High | Keep old validator until v2.0.0 |
 | Missing edge cases | Medium | Medium | Port existing test cases |
 | BeeLocal sync issues | Low | Low | Update BeeLocal hooks after framework |
 
@@ -1463,4 +1463,4 @@ Enable with `UCX_LOG_LEVEL=DEBUG`.
 
 ## Next Steps
 
-Phase 2 (PRD + EARS) is planned for UCX 1.10.0. See Migration Roadmap above.
+Phase 2 (PRD + EARS) is planned for UCX 1.11.0. See Migration Roadmap above.

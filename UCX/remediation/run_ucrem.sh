@@ -39,8 +39,11 @@ SKILL_DIR="$SCRIPT_DIR/../skills"
 # =============================================================================
 # UCRem Fixer Skills (same for all layers)
 # =============================================================================
-# The 5 fixer personas and their corresponding skill files
-FIXER_SKILLS="architect auditor qa_lead integration_lead devils_advocate"
+# The 6 fixer personas and their corresponding skill files
+# Domain Fixers (loaded adaptively via Python API): architect, auditor, qa_lead, integration_lead
+# Mandatory Fixers (always loaded): devils_advocate, chairperson
+# Note: For adaptive loading based on UCR findings, use `ucx remediate` command instead
+FIXER_SKILLS="architect auditor qa_lead integration_lead devils_advocate chairperson"
 
 # =============================================================================
 # Parse arguments

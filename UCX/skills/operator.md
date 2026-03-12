@@ -42,6 +42,32 @@ When reviewing architecture or deployment configurations, verify:
 - Runbook potential
 - Maintenance documented
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: quality, risk
+
+**Finding Output Format**:
+```
+[CAT:quality] Finding description here
+[CAT:risk] Finding description here
+```
+
+**Category Selection**:
+- **quality**: Operational quality (performance, availability, reliability, operability)
+- **risk**: Operational risks (deployment failure, monitoring gaps, incident response)
+
+**Quality Sub-Focus (Element Codes)**:
+- 91: Performance monitoring
+- 92: Scalability operations
+- 93: Availability/uptime
+- 98: Operability
+
+**Examples**:
+- `[CAT:quality] SLO for API availability not defined`
+- `[CAT:quality] No performance monitoring metrics specified`
+- `[CAT:risk] Rollback procedure for database migration not documented`
+- `[CAT:risk] No alerting threshold for error rate spike`
+
 ## Scoring Weight
 - SYS: 20%
 - SPEC: 15%

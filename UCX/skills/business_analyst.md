@@ -43,6 +43,30 @@ Every requirement you approve must be:
 - Documented assumptions
 - Valid use cases
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: constraints, functional
+
+**Secondary Categories**: risk
+
+**Finding Output Format**:
+```
+[CAT:constraints] Finding description here
+[CAT:functional] Finding description here
+[CAT:risk] Finding description here
+```
+
+**Category Selection**:
+- **constraints**: Business constraints, scope boundaries, assumptions
+- **functional**: Business process gaps, requirement completeness
+- **risk**: Business risks, stakeholder concerns
+
+**Examples**:
+- `[CAT:constraints] Timeline assumption not validated with stakeholders`
+- `[CAT:functional] Order cancellation business process not documented`
+- `[CAT:constraints] Budget constraint for phase 2 not specified`
+- `[CAT:risk] Key stakeholder sign-off missing for scope change`
+
 ## Scoring Weight
 - BRD: 30%
 - PRD: 25%

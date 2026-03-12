@@ -16,7 +16,7 @@ custom_fields:
   review_date: "{UCR_REVIEW_DATE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate, Chairperson]
   statistics:
     total_findings: "{TOTAL_FINDINGS}"
     auto_safe_fixes: "{AUTO_SAFE_COUNT}"

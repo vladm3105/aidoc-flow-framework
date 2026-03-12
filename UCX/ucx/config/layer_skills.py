@@ -62,26 +62,40 @@ UCR_LAYER_SKILLS: dict[DocType, list[str]] = {
     ],
 }
 
-# Skills to load for REMEDIATION (UCRem) - same for all layers
-FIXER_SKILLS: list[str] = [
+# Domain-specific fixer skills (adaptive loading based on pre-screening)
+DOMAIN_FIXER_SKILLS: list[str] = [
     "architect",
     "auditor",
     "qa_lead",
-    "integration_lead",  # Changed from integration_expert for consistency
-    "devils_advocate",
+    "integration_lead",  # Maps from integration_expert in reviews
 ]
+
+# Mandatory fixer skills (always loaded regardless of findings)
+MANDATORY_FIXER_SKILLS: list[str] = [
+    "devils_advocate",  # Safety: root cause vs symptom validation
+    "chairperson",      # Synthesis: de-dupe, conflict resolution, final conclusion
+]
+
+# Full fixer skills list (for backward compatibility)
+FIXER_SKILLS: list[str] = DOMAIN_FIXER_SKILLS + MANDATORY_FIXER_SKILLS
 
 # Alias for backward compatibility
 LAYER_SKILLS = UCR_LAYER_SKILLS
 
 
-def get_skills_for_phase(doc_type: DocType, phase: str) -> list[str]:
+def get_skills_for_phase(
+    doc_type: DocType,
+    phase: str,
+    adaptive_fixers: list[str] | None = None,
+) -> list[str]:
     """
     Get skill list for a document type and phase.
 
     Args:
         doc_type: Document type
         phase: Phase name (ucc, ucr, ucrem)
+        adaptive_fixers: For ucrem phase, optional list of fixers from pre-screening.
+                        If provided, only these domain fixers are loaded plus mandatory.
 
     Returns:
         List of skill names to load
@@ -91,6 +105,41 @@ def get_skills_for_phase(doc_type: DocType, phase: str) -> list[str]:
     elif phase == "ucr":
         return UCR_LAYER_SKILLS.get(doc_type, [])
     elif phase == "ucrem":
+        if adaptive_fixers is not None:
+            # Use pre-screened fixers, ensure mandatory are included
+            result = list(adaptive_fixers)
+            for mandatory in MANDATORY_FIXER_SKILLS:
+                if mandatory not in result:
+                    result.append(mandatory)
+            return result
         return FIXER_SKILLS
     else:
         return []
+
+
+def get_adaptive_fixers(required_domain_fixers: list[str]) -> list[str]:
+    """
+    Build adaptive fixer list from required domain fixers.
+
+    Args:
+        required_domain_fixers: Domain fixers identified by pre-screening
+
+    Returns:
+        Complete fixer list with mandatory fixers appended
+    """
+    # Filter to valid domain fixers only
+    valid_domain = [f for f in required_domain_fixers if f in DOMAIN_FIXER_SKILLS]
+
+    # Always include mandatory fixers
+    result = valid_domain + MANDATORY_FIXER_SKILLS
+
+    # Sort in execution order
+    order = {
+        "architect": 1,
+        "auditor": 2,
+        "integration_lead": 3,
+        "qa_lead": 4,
+        "devils_advocate": 10,
+        "chairperson": 20,
+    }
+    return sorted(result, key=lambda x: order.get(x, 99))

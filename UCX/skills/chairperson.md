@@ -66,3 +66,65 @@ chairperson_synthesis:
     P1 findings either fixed or appropriately deferred.
     Document ready for downstream processing after fix application.
 ```
+
+---
+
+## Category-Weighted Scoring (UCX v1.12.0)
+
+When operating in review mode, the Chairperson must include category scoring in the manifest.
+
+### Category Summary Table
+
+Include this table in the Chairperson Manifest:
+
+```markdown
+## Chairperson Manifest
+
+### Category Summary
+| Category | P0 | P1 | P2 | Raw Deduction | Capped | Weighted |
+|----------|----|----|----|--------------:|-------:|---------:|
+| functional | 2 | 3 | 1 | -29 | -25 | -6.25 |
+| quality | 1 | 2 | 0 | -16 | -15 | -2.25 |
+| compliance | 3 | 2 | 0 | -36 | -20 | -4.00 |
+| constraints | 0 | 1 | 2 | -5 | -5 | -0.50 |
+| integration | 1 | 1 | 0 | -13 | -10 | -1.00 |
+| acceptance | 0 | 2 | 1 | -7 | -7 | -0.70 |
+| risk | 1 | 0 | 0 | -10 | -5 | -0.25 |
+| architecture | 1 | 1 | 0 | -13 | -5 | -0.25 |
+| **Total** | **9** | **12** | **4** | | | **-15.20** |
+
+### Weighted Score: 84.8/100
+### PRD-Ready Status: WARN (threshold: >=85)
+```
+
+### Category Assignment
+
+When de-duplicating findings, verify each has a category tag:
+
+```
+[CAT:compliance] KYC verification timeline missing
+[CAT:functional] Order cancellation flow incomplete
+[CAT:integration] Partner API retry policy undefined
+```
+
+### Uncategorized Findings
+
+If any finding lacks a category tag:
+1. Assign based on element code in finding ID
+2. Fall back to keyword matching
+3. Fall back to persona's primary category
+4. Track uncategorized count in manifest
+
+```markdown
+### Uncategorized Findings: 2
+- Finding without clear category assignment (assigned to: other)
+```
+
+### Score Formula Reference
+
+Per-category deduction:
+- Raw = (P0 x 10) + (P1 x 3) + (P2 x 1)
+- Capped = min(Raw, category_max_deduction)
+- Weighted = Capped x category_weight
+
+Final Score = 100 - sum(all weighted deductions)

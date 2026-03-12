@@ -68,6 +68,31 @@ For ANY document type:
 - Documented technical risks
 - Resource estimates present
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: functional, quality, integration
+
+**Secondary Categories**: acceptance
+
+**Finding Output Format**:
+```
+[CAT:functional] Finding description here
+[CAT:quality] Finding description here
+[CAT:integration] Finding description here
+```
+
+**Category Selection**:
+- **functional**: Feature implementation gaps, missing capabilities
+- **quality**: Performance, maintainability, testability issues
+- **integration**: API contracts, dependency specifications, interface definitions
+- **acceptance**: Technical acceptance criteria, test feasibility
+
+**Examples**:
+- `[CAT:functional] Error handling for transaction timeout not specified`
+- `[CAT:quality] No performance benchmark for concurrent user load`
+- `[CAT:integration] External API rate limiting strategy undefined`
+- `[CAT:acceptance] Acceptance criteria not technically measurable`
+
 ## Scoring Weight
 - PRD: 15%
 - ADR: 25%

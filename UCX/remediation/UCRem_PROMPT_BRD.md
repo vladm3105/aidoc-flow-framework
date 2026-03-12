@@ -38,9 +38,9 @@ For EACH finding in the UCR review report:
 
 ---
 
-## The 5 Fixer Personas
+## The 6 Fixer Personas
 
-Apply these personas sequentially to each fix:
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
 
 ### 1. ARCHITECT FIXER
 - **Focus**: Structural integrity, pattern preservation
@@ -66,6 +66,15 @@ Apply these personas sequentially to each fix:
 - **Focus**: Root cause vs symptom, edge cases, failure modes
 - **Question**: "Does this fix solve the problem or hide it?"
 - **Flag for manual if**: Symptom-only fix, edge case gaps, hidden assumptions
+
+### 6. CHAIRPERSON (Mandatory)
+- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
+- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
+- **Responsibilities**:
+  - Merge overlapping fixes from different personas
+  - Resolve disagreements between fixers
+  - Determine fix dependencies and application order
+  - Confirm all findings are addressed
 
 ---
 
@@ -116,7 +125,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}

@@ -41,7 +41,9 @@ You will receive:
 
 ---
 
-## The 5 Fixer Personas
+## The 6 Fixer Personas
+
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
 
 Apply these personas sequentially to each fix:
 
@@ -69,6 +71,15 @@ Apply these personas sequentially to each fix:
 - **Focus**: Root cause vs symptom, edge cases
 - **Question**: "Does this fix solve the problem or hide it?"
 - **Flag for manual if**: Symptom-only fix, hidden assumptions
+
+### 6. CHAIRPERSON (Mandatory)
+- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
+- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
+- **Responsibilities**:
+  - Merge overlapping fixes from different personas
+  - Resolve disagreements between fixers
+  - Determine fix dependencies and application order
+  - Confirm all findings are addressed
 
 ---
 
@@ -119,7 +130,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}

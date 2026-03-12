@@ -273,11 +273,38 @@ print(f"Findings: {len(result.findings)}")
 
 ## Phase 3: UCRem (Remediation)
 
+### Pre-Screening (v1.10.0+)
+
+Before remediation, UCX automatically analyzes the review report to determine which fixer personas are needed:
+
+```bash
+# Pre-screen a review report (standalone command)
+ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
+
+# Output:
+# ┌─────────────────────────┬──────────────────────────────────────┐
+# │ Metric                  │ Value                                │
+# ├─────────────────────────┼──────────────────────────────────────┤
+# │ Total findings          │ 103                                  │
+# │ Actionable (P0/P1 open) │ 17                                   │
+# │ Domain fixers needed    │ qa_lead                              │
+# │ Mandatory fixers        │ devils_advocate, chairperson         │
+# │ Excluded fixers         │ architect, auditor, integration_lead │
+# └─────────────────────────┴──────────────────────────────────────┘
+# → Remediation will load 3 fixers (saved 3 from loading)
+
+# Save screening results to JSON
+ucx prescreen BRD-01.UCR_review_report_v003.md -o screening.json
+```
+
 ### CLI Usage
 
 ```bash
-# Generate fix proposals from review
-ucx remediate brd docs/01_BRD/BRD-01.md --review-report docs/01_BRD/BRD_UCR_REVIEW.md
+# Generate fix proposals from review (pre-screening runs automatically)
+ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/
+
+# Apply auto-safe fixes automatically
+ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/ --apply-auto-safe
 ```
 
 ### Python API
@@ -289,14 +316,31 @@ from pathlib import Path
 config = UCXConfig(ai_mode="cli", cli_tool="claude")
 ucrem = UCRemPhase(config)
 
-fixes = ucrem.generate_fixes(
-    review_report=Path("docs/01_BRD/BRD_UCR_REVIEW.md"),
-    doc_path=Path("docs/01_BRD/BRD-01.md"),
+fixes, report_path = ucrem.generate_fixes(
+    review_report=Path("docs/01_BRD/BRD-01.UCR_review_report_v003.md"),
+    doc_path=Path("docs/01_BRD/BRD-01/"),
 )
+
+# Check pre-screening results
+print(f"Domain fixers loaded: {ucrem.last_screening.domain_fixers_needed}")
+print(f"Excluded fixers: {ucrem.last_screening.excluded_fixers}")
+print(f"Token savings: {len(ucrem.last_screening.excluded_fixers)} personas excluded")
 
 for fix in fixes:
     print(f"{fix.fix_id}: {fix.confidence} - {fix.target_section}")
 ```
+
+### Adaptive Fixer Loading
+
+| Category | Personas | Loading Rule |
+|----------|----------|--------------|
+| **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Only loaded if they have findings |
+| **Mandatory** | devils_advocate, chairperson | Always loaded |
+
+**Benefits:**
+- **Token savings**: 30-60% reduction in prompt size
+- **Focused AI attention**: Only relevant domains analyzed
+- **Quality synthesis**: Chairperson provides de-duplication and final conclusion
 
 ### Fix Confidence Levels
 

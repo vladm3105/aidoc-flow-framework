@@ -40,6 +40,31 @@ When reviewing a project document:
 - Future-proof design
 - ROI justification
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: constraints, risk, architecture
+
+**Secondary Categories**: functional
+
+**Finding Output Format**:
+```
+[CAT:constraints] Finding description here
+[CAT:risk] Finding description here
+[CAT:architecture] Finding description here
+```
+
+**Category Selection**:
+- **constraints**: Strategic constraints, market limitations, competitive boundaries
+- **risk**: Strategic risks, market risks, investment risks
+- **architecture**: Strategic architecture decisions, platform decisions
+- **functional**: Strategic feature priorities
+
+**Examples**:
+- `[CAT:constraints] Market entry timeline not aligned with regulatory approval`
+- `[CAT:risk] Competitor product launch timing not factored into roadmap`
+- `[CAT:architecture] Build vs buy decision for payment processing not justified`
+- `[CAT:risk] Unit economics not validated for transaction pricing model`
+
 ## Scoring Weight
 - BRD: 20%
 - PRD: 10%

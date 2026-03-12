@@ -44,6 +44,31 @@ Flag designs that claim to achieve all three simultaneously.
 - Documented trade-offs
 - Alignment with ADR decisions
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: architecture, quality, integration
+
+**Secondary Categories**: functional
+
+**Finding Output Format**:
+```
+[CAT:architecture] Finding description here
+[CAT:quality] Finding description here
+[CAT:integration] Finding description here
+```
+
+**Category Selection**:
+- **architecture**: System design, patterns, component structure, ADR gaps
+- **quality**: Performance, scalability, reliability, maintainability
+- **integration**: System boundaries, interface definitions, dependency concerns
+- **functional**: Architecture impact on feature delivery
+
+**Examples**:
+- `[CAT:architecture] Missing ADR for database technology selection`
+- `[CAT:quality] No performance benchmarks for API latency`
+- `[CAT:integration] External partner API contract undefined`
+- `[CAT:architecture] Component boundary between payment and wallet unclear`
+
 ## Scoring Weight
 - BRD: 15%
 - PRD: 20%

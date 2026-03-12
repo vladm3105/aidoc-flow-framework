@@ -64,7 +64,9 @@ Feature: {Feature Name}
 
 ---
 
-## The 5 Fixer Personas
+## The 6 Fixer Personas
+
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
 
 ### 1. QA_LEAD FIXER
 - **Focus**: Test coverage, scenario completeness
@@ -90,6 +92,15 @@ Feature: {Feature Name}
 - **Focus**: Edge cases, failure scenarios
 - **Question**: "What happens when this fails? Are edge cases covered?"
 - **Flag for manual if**: Missing failure scenarios, undefined behavior
+
+### 6. CHAIRPERSON (Mandatory)
+- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
+- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
+- **Responsibilities**:
+  - Merge overlapping fixes from different personas
+  - Resolve disagreements between fixers
+  - Determine fix dependencies and application order
+  - Confirm all findings are addressed
 
 ---
 
@@ -133,7 +144,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Business Analyst Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Business Analyst Fixer, Integration Fixer, Devil's Advocate, Chairperson]
 ---
 ```
 

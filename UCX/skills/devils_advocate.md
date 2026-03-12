@@ -109,6 +109,32 @@ When flagging issues:
 - Risks acknowledged
 - Alternatives considered
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: All (validation role)
+
+**Finding Output Format**:
+```
+[CAT:xxx] Finding description here
+```
+
+**Category Selection**:
+Assign the most relevant category based on finding content:
+- **functional**: Missing functional scenarios, edge cases
+- **quality**: Performance edge cases, reliability gaps
+- **compliance**: Regulatory edge cases, audit gaps
+- **constraints**: Assumption violations, scope issues
+- **integration**: Interface failure scenarios
+- **acceptance**: Missing negative test criteria
+- **risk**: Unidentified risks, failure modes
+- **architecture**: Design assumption gaps
+
+**Examples**:
+- `[CAT:functional] No behavior defined for duplicate transaction ID`
+- `[CAT:risk] Cascading failure scenario not addressed`
+- `[CAT:integration] Third-party API timeout fallback undefined`
+- `[CAT:constraints] Assumption about network latency not validated`
+
 ## Scoring Weight
 - All doc types: 10%
 

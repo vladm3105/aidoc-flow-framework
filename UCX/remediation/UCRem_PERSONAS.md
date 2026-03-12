@@ -2,24 +2,56 @@
 
 ## Overview
 
-UCRem uses 5 specialized **Fixer Personas** that work together to:
-1. Propose fixes for each UCR finding
-2. Cross-validate each other's proposed fixes
-3. Flag conflicts and manual-review items
+UCRem uses **6 specialized Fixer Personas** organized into two categories:
+
+### Domain Fixers (Adaptive Loading)
+Loaded only when findings exist in their domain:
+- **Architect Fixer** - Structural integrity, patterns
+- **Auditor Fixer** - Compliance, security controls
+- **QA Fixer** - Testability, verification
+- **Integration Fixer** - Cross-references, traceability
+
+### Mandatory Fixers (Always Loaded)
+Always loaded to ensure quality and synthesis:
+- **Devil's Advocate** - Root cause validation, edge cases
+- **Chairperson** - De-duplication, conflict resolution, final synthesis
 
 **Core Principle**: Same as UCR - **UNDER-FIXING IS UNACCEPTABLE**. A partial fix that claims resolution is worse than flagging for manual review.
 
 ---
 
+## Adaptive Loading (v1.10.0+)
+
+Before remediation, UCX automatically pre-screens the UCR review report to determine which domain fixers are needed:
+
+```bash
+# Pre-screen shows which fixers will be loaded
+ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
+
+# Output:
+# Domain fixers needed: qa_lead
+# Mandatory fixers: devils_advocate, chairperson
+# Excluded fixers: architect, auditor, integration_lead
+# → Token savings: 3 personas excluded
+```
+
+**Benefits:**
+- 30-60% token reduction by excluding unnecessary personas
+- Focused AI attention on relevant domains
+- Chairperson provides consistent synthesis regardless of which domain fixers ran
+
+---
+
 ## Persona Matrix by Layer
 
-| Persona | L1 BRD | L2 PRD | L3 EARS | L4 BDD | L5 ADR |
-|---------|:------:|:------:|:-------:|:------:|:------:|
-| Architect Fixer | ✓ | ✓ | - | - | ✓ |
-| Auditor Fixer | ✓ | ✓ | - | ✓* | ✓ |
-| QA Fixer | ✓ | ✓ | ✓ | ✓ | - |
-| Integration Fixer | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Devil's Advocate | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Persona | L1 BRD | L2 PRD | L3 EARS | L4 BDD | L5 ADR | Category |
+|---------|:------:|:------:|:-------:|:------:|:------:|----------|
+| Architect Fixer | ✓ | ✓ | - | - | ✓ | Domain |
+| Auditor Fixer | ✓ | ✓ | - | ✓* | ✓ | Domain |
+| QA Fixer | ✓ | ✓ | ✓ | ✓ | - | Domain |
+| Integration Fixer | ✓ | ✓ | ✓ | ✓ | ✓ | Domain |
+| Devil's Advocate | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
+| Chairperson | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
 
 *Auditor Fixer for BDD only when compliance scenarios involved
 
@@ -396,8 +428,65 @@ def final_confidence(assessments: list[str]) -> str:
 
 ---
 
+## 6. CHAIRPERSON (Mandatory)
+
+### Identity
+
+**Role**: Synthesizes all fixer proposals, resolves conflicts, and provides final conclusion.
+
+**Skeptical Stance**: "Are all fixes coherent? Are there duplicates or conflicts?"
+
+### Responsibilities
+
+| Phase | Responsibility |
+|-------|---------------|
+| **De-Duplication** | Identify and merge overlapping fixes from different personas |
+| **Conflict Resolution** | Resolve disagreements between fixers |
+| **Execution Order** | Determine fix dependencies and application order |
+| **Final Synthesis** | Confirm all findings addressed, provide overall assessment |
+
+### Synthesis Rules
+
+1. **De-Duplication**: Merge fixes that address the same finding
+2. **Conflict Resolution**: When fixers disagree, document trade-off and recommend resolution
+3. **Execution Ordering**: Order fixes to prevent application conflicts
+4. **Completeness Check**: Verify all actionable findings have corresponding fixes
+
+### Output Format
+
+```yaml
+chairperson_synthesis:
+  total_findings_addressed: N
+  fixes_proposed: N
+  deduplication_actions:
+    - merged: [FIX-P0-01, FIX-P0-02]
+      into: FIX-P0-01
+      rationale: "Both addressed same requirement"
+  conflicts_resolved:
+    - conflict_id: CV-01
+      resolution: "Adopted architect approach"
+      rationale: "Structural coherence priority"
+  deferred_findings:
+    - finding_id: P1-7
+      reason: "Implementation detail for SPEC layer"
+  final_assessment: |
+    All P0 findings addressed with auto-safe fixes.
+    Document ready for downstream processing.
+```
+
+### Why Mandatory
+
+The Chairperson is **always loaded** because:
+1. Provides consistent synthesis regardless of which domain fixers ran
+2. Ensures de-duplication even with single domain fixer
+3. Generates coherent execution order for fix application
+4. Validates completeness of remediation coverage
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1.0 | 2026-03-12 | Added Chairperson as mandatory fixer. Adaptive loading for domain fixers. Pre-screening phase. |
 | 1.0.0 | 2026-03-09 | Initial persona definitions |

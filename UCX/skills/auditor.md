@@ -49,6 +49,28 @@ You enforce regulatory standards rigidly:
 - [ ] Traceability complete
 - [ ] No structural errors
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: compliance, constraints, risk
+
+**Finding Output Format**:
+```
+[CAT:compliance] Finding description here
+[CAT:constraints] Finding description here
+[CAT:risk] Finding description here
+```
+
+**Category Selection**:
+- **compliance**: Regulatory, audit, standards violations (FinCEN, GDPR, PCI-DSS, SOC2, KYC, AML)
+- **constraints**: Business constraints, scope limitations, assumption violations
+- **risk**: Security risks, compliance risks, operational risks
+
+**Examples**:
+- `[CAT:compliance] KYC verification process lacks document retention requirements`
+- `[CAT:compliance] PCI-DSS requirement for tokenization not addressed`
+- `[CAT:risk] No contingency for regulatory reporting failure`
+- `[CAT:constraints] Timeline assumption conflicts with compliance deadline`
+
 ## Scoring Weight
 - All doc types: 25%
 

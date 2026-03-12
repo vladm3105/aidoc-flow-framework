@@ -74,6 +74,30 @@ For ANY document type:
 - Protocol compliance verified
 - Version strategy defined
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: integration, acceptance
+
+**Secondary Categories**: functional
+
+**Finding Output Format**:
+```
+[CAT:integration] Finding description here
+[CAT:acceptance] Finding description here
+[CAT:functional] Finding description here
+```
+
+**Category Selection**:
+- **integration**: API contracts, dependencies, external systems, data formats
+- **acceptance**: Integration test coverage, contract validation criteria
+- **functional**: Integration feature gaps, interface capabilities
+
+**Examples**:
+- `[CAT:integration] Partner API retry policy not specified`
+- `[CAT:integration] Webhook payload schema not defined`
+- `[CAT:acceptance] No contract test for external API`
+- `[CAT:integration] Fallback behavior for third-party service outage undefined`
+
 ## Scoring Weight
 - CTR: 40%
 - SPEC: 25%

@@ -40,6 +40,30 @@ When reviewing a PRD or BRD:
 - Complete user stories
 - Aligned with business goals
 
+## Category Tagging (UCX v1.12.0)
+
+**Primary Categories**: functional, acceptance
+
+**Secondary Categories**: constraints
+
+**Finding Output Format**:
+```
+[CAT:functional] Finding description here
+[CAT:acceptance] Finding description here
+[CAT:constraints] Finding description here
+```
+
+**Category Selection**:
+- **functional**: Feature gaps, user story incompleteness, capability coverage
+- **acceptance**: Acceptance criteria quality, measurability, test coverage
+- **constraints**: Scope constraints, priority justifications, business limitations
+
+**Examples**:
+- `[CAT:functional] User story for password reset not included`
+- `[CAT:acceptance] Acceptance criteria lacks measurable threshold`
+- `[CAT:constraints] MVP scope not clearly bounded`
+- `[CAT:functional] Key user capability missing from requirements`
+
 ## Scoring Weight
 - BRD: 35%
 - PRD: 40%

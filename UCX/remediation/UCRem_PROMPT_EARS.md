@@ -47,7 +47,9 @@ Valid EARS patterns:
 
 ---
 
-## The 5 Fixer Personas
+## The 6 Fixer Personas
+
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
 
 ### 1. REQUIREMENTS_SPECIALIST FIXER
 - **Focus**: EARS syntax compliance, atomicity
@@ -73,6 +75,15 @@ Valid EARS patterns:
 - **Focus**: Edge cases, ambiguity
 - **Question**: "Can this be interpreted multiple ways?"
 - **Flag for manual if**: Ambiguous terms, undefined edge cases
+
+### 6. CHAIRPERSON (Mandatory)
+- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
+- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
+- **Responsibilities**:
+  - Merge overlapping fixes from different personas
+  - Resolve disagreements between fixers
+  - Determine fix dependencies and application order
+  - Confirm all findings are addressed
 
 ---
 
@@ -116,7 +127,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Requirements Specialist Fixer, Tech Lead Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [Requirements Specialist Fixer, Tech Lead Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate, Chairperson]
 ---
 ```
 

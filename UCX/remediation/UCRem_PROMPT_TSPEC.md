@@ -43,7 +43,9 @@ Common TSPEC issues to remediate:
 
 ---
 
-## The 5 Fixer Personas
+## The 6 Fixer Personas
+
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
 
 ### 1. QA_LEAD FIXER
 - **Focus**: Test strategy, coverage completeness
@@ -69,6 +71,15 @@ Common TSPEC issues to remediate:
 - **Focus**: Test reliability, false positives/negatives
 - **Question**: "Can this test give false confidence?"
 - **Flag for manual if**: Flaky test risk, hidden dependencies
+
+### 6. CHAIRPERSON (Mandatory)
+- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
+- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
+- **Responsibilities**:
+  - Merge overlapping fixes from different personas
+  - Resolve disagreements between fixers
+  - Determine fix dependencies and application order
+  - Confirm all findings are addressed
 
 ---
 
@@ -112,7 +123,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Devil's Advocate]
+  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Devil's Advocate, Chairperson]
 ---
 ```
 
