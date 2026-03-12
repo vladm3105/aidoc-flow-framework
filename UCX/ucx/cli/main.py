@@ -419,6 +419,229 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
 
 @cli.command()
 @click.argument("review_report", type=click.Path(exists=True, path_type=Path))
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Output JSON path")
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed findings")
+def prescreen(review_report, output, verbose):
+    """
+    Pre-screen UCR report for adaptive remediation.
+
+    Analyzes the review report to identify which fixer personas are needed
+    based on actual P0/P1 findings. Run this before remediation to preview
+    which fixers will be loaded.
+
+    \b
+    Examples:
+      ucx prescreen BRD-01.UCR_review_report_v003.md
+      ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
+      ucx prescreen BRD-01.UCR_review_report_v003.md -o screening.json
+    """
+    from ucx.prescreening import analyze_ucr_report
+    import json
+
+    result = analyze_ucr_report(Path(review_report))
+
+    # Summary table (unique findings only - deduplicated across personas)
+    table = Table(title="Pre-Screening Results")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", style="green")
+
+    unique_actionable = len(result.get_unique_actionable_ids())
+    table.add_row("Unique findings", str(result.unique_findings))
+    table.add_row("  ✅ Resolved", f"[green]{result.resolved_findings}[/green]")
+    table.add_row("  ⏳ Open", f"[yellow]{result.open_findings}[/yellow]")
+    if result.deferred_findings > 0:
+        table.add_row("  ⏸️  Deferred", f"[blue]{result.deferred_findings}[/blue]")
+    table.add_row("Actionable (P0/P1 open)", f"[bold]{unique_actionable}[/bold]")
+
+    console.print(table)
+
+    # Priority breakdown (unique findings)
+    by_priority = result.get_unique_findings_by_priority()
+    if by_priority:
+        priority_table = Table(title="Findings by Priority")
+        priority_table.add_column("Priority", style="cyan")
+        priority_table.add_column("Open", style="yellow")
+        priority_table.add_column("Deferred", style="blue")
+        priority_table.add_column("Resolved", style="green")
+        priority_table.add_column("Total", style="dim")
+
+        for priority in ["P0", "P1", "P2"]:
+            if priority in by_priority:
+                stats = by_priority[priority]
+                open_count = stats.get("OPEN", 0)
+                deferred_count = stats.get("DEFERRED", 0)
+                resolved_count = stats.get("RESOLVED", 0)
+                total = sum(stats.values())
+                priority_table.add_row(
+                    priority,
+                    str(open_count) if open_count else "-",
+                    str(deferred_count) if deferred_count else "-",
+                    str(resolved_count) if resolved_count else "-",
+                    str(total)
+                )
+        console.print(priority_table)
+
+    # Fixer loading table
+    fixer_table = Table(title="Fixer Loading")
+    fixer_table.add_column("Category", style="cyan")
+    fixer_table.add_column("Fixers", style="green")
+
+    fixer_table.add_row("Domain (loaded)", ", ".join(result.domain_fixers_needed) or "[dim]None[/dim]")
+    fixer_table.add_row("Mandatory (always)", "devils_advocate, chairperson")
+    fixer_table.add_row("Excluded (no findings)", ", ".join(result.excluded_fixers) or "[dim]None[/dim]")
+
+    console.print(fixer_table)
+
+    if verbose and result.findings_by_fixer:
+        console.print("\n[bold]Open Findings by Domain Fixer:[/bold]")
+        for fixer, findings in result.findings_by_fixer.items():
+            console.print(f"  [cyan]{fixer}[/cyan] ({len(findings)}): {', '.join(findings[:10])}"
+                         f"{'...' if len(findings) > 10 else ''}")
+
+    if not result.has_actionable_findings:
+        console.print("\n[green]✓ No actionable findings - remediation would be skipped[/green]")
+    else:
+        console.print(f"\n[yellow]→ Remediation will load {len(result.required_fixers)} fixers "
+                     f"(saved {len(result.excluded_fixers)} from loading)[/yellow]")
+
+    if output:
+        Path(output).write_text(json.dumps(result.to_dict(), indent=2))
+        console.print(f"\n[dim]Screening results saved to: {output}[/dim]")
+
+
+@cli.command()
+@click.argument("review_report", type=click.Path(exists=True, path_type=Path))
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Output JSON path")
+@click.option("--format", "-f", "output_format", type=click.Choice(["table", "json"]), default="table")
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed findings")
+def scan(review_report, output, output_format, verbose):
+    """
+    Unified UCR report scanner (v1.11.0+).
+
+    Analyzes UCR review reports using two extraction methods:
+    1. Manifest extraction: Parses Chairperson's Remediation Findings Manifest (authoritative)
+    2. Persona extraction: Extracts from individual persona sections (fixer routing)
+
+    The Chairperson manifest (if present) is the authoritative source for
+    finding counts and PRD-Ready score.
+
+    \b
+    Examples:
+      ucx scan BRD-01.UCR_review_report_v001.md
+      ucx scan BRD-01.UCR_review_report_v001.md --verbose
+      ucx scan BRD-01.UCR_review_report_v001.md -f json -o scan_results.json
+    """
+    from ucx.prescreening import scan_ucr_report
+    import json
+
+    result = scan_ucr_report(Path(review_report))
+
+    if output_format == "json":
+        json_output = json.dumps(result.to_dict(), indent=2)
+        if output:
+            Path(output).write_text(json_output)
+            console.print(f"[dim]Scan results saved to: {output}[/dim]")
+        else:
+            console.print(json_output)
+        return
+
+    # Header with manifest status
+    if result.has_manifest:
+        console.print("[green]✓ Chairperson Manifest detected (authoritative)[/green]\n")
+    else:
+        console.print("[yellow]⚠ No manifest found - using persona extraction[/yellow]\n")
+
+    counts = result.authoritative_counts
+
+    # Summary table (authoritative counts)
+    table = Table(title="UCX Scan Results" + (" [green](Manifest)[/green]" if result.has_manifest else " [yellow](Persona)[/yellow]"))
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", style="green")
+
+    table.add_row("Total findings", str(counts["total"]))
+    table.add_row("  P0 (Critical)", f"[red]{counts['p0']}[/red]" if counts["p0"] else "-")
+    table.add_row("  P1 (High)", f"[yellow]{counts['p1']}[/yellow]" if counts["p1"] else "-")
+    table.add_row("  P2 (Medium)", str(counts["p2"]) if counts["p2"] else "-")
+    table.add_row("  ✅ Resolved", f"[green]{counts['resolved']}[/green]" if counts["resolved"] else "-")
+    table.add_row("  ⏸️  Deferred", f"[blue]{counts['deferred']}[/blue]" if counts["deferred"] else "-")
+    table.add_row("Actionable", f"[bold]{counts['actionable']}[/bold]")
+
+    if result.prd_ready_score is not None:
+        score = result.prd_ready_score
+        if score >= 85:
+            score_style = "green"
+        elif score >= 60:
+            score_style = "yellow"
+        else:
+            score_style = "red"
+        table.add_row("PRD-Ready Score", f"[{score_style}]{score}/100[/{score_style}]")
+
+    console.print(table)
+
+    # Fixer loading table
+    fixer_table = Table(title="Fixer Routing")
+    fixer_table.add_column("Category", style="cyan")
+    fixer_table.add_column("Fixers", style="green")
+
+    required = result.required_fixers
+    domain_fixers = [f for f in required if f not in ["devils_advocate", "chairperson"]]
+    excluded = [f for f in ["architect", "auditor", "integration_lead", "qa_lead"] if f not in domain_fixers]
+
+    fixer_table.add_row("Domain (loaded)", ", ".join(domain_fixers) or "[dim]None[/dim]")
+    fixer_table.add_row("Mandatory (always)", "devils_advocate, chairperson")
+    fixer_table.add_row("Excluded (no findings)", ", ".join(excluded) or "[dim]None[/dim]")
+
+    console.print(fixer_table)
+
+    # Verbose: Show findings by fixer
+    if verbose:
+        if result.has_manifest and result.manifest.findings_by_fixer:
+            console.print("\n[bold]Findings by Fixer (from Manifest):[/bold]")
+            for fixer, findings in result.manifest.findings_by_fixer.items():
+                console.print(f"  [cyan]{fixer}[/cyan] ({len(findings)}): {', '.join(findings[:10])}"
+                             f"{'...' if len(findings) > 10 else ''}")
+        elif result.persona_extraction.findings_by_fixer:
+            console.print("\n[bold]Findings by Fixer (from Persona Extraction):[/bold]")
+            for fixer, findings in result.persona_extraction.findings_by_fixer.items():
+                console.print(f"  [cyan]{fixer}[/cyan] ({len(findings)}): {', '.join(findings[:10])}"
+                             f"{'...' if len(findings) > 10 else ''}")
+
+        # Show manifest findings if present
+        if result.has_manifest and result.manifest.findings:
+            console.print("\n[bold]Manifest Findings (first 10):[/bold]")
+            for i, f in enumerate(result.manifest.findings[:10]):
+                status_color = {"OPEN": "yellow", "RESOLVED": "green", "DEFERRED": "blue"}.get(f.status, "white")
+                console.print(f"  {f.id}: [{status_color}]{f.status}[/{status_color}] → {f.fixer or '-'} | {f.description[:60]}...")
+            if len(result.manifest.findings) > 10:
+                console.print(f"  ... and {len(result.manifest.findings) - 10} more")
+
+    # Comparison if both methods available
+    if result.has_manifest and verbose:
+        console.print("\n[dim]─── Extraction Comparison ───[/dim]")
+        persona_counts = result.persona_extraction.get_unique_findings_by_priority()
+        p0_persona = sum(persona_counts.get("P0", {}).values())
+        p1_persona = sum(persona_counts.get("P1", {}).values())
+        p2_persona = sum(persona_counts.get("P2", {}).values())
+
+        console.print(f"  Manifest:  P0={counts['p0']}, P1={counts['p1']}, P2={counts['p2']}")
+        console.print(f"  Persona:   P0={p0_persona}, P1={p1_persona}, P2={p2_persona}")
+
+        if counts["p0"] != p0_persona or counts["p1"] != p1_persona:
+            console.print("  [green]→ Manifest provides deduplicated authoritative counts[/green]")
+
+    # Summary
+    if counts["actionable"] == 0:
+        console.print("\n[green]✓ No actionable findings - remediation would be skipped[/green]")
+    else:
+        console.print(f"\n[yellow]→ Remediation will load {len(required)} fixers[/yellow]")
+
+    if output:
+        Path(output).write_text(json.dumps(result.to_dict(), indent=2))
+        console.print(f"[dim]Scan results saved to: {output}[/dim]")
+
+
+@cli.command()
+@click.argument("review_report", type=click.Path(exists=True, path_type=Path))
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path))
 @click.option("--apply-auto-safe", is_flag=True, help="Apply auto-safe fixes")
@@ -426,6 +649,9 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
 def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
     """
     Generate fixes from review report (UCRem phase).
+
+    Automatically runs pre-screening to load only the fixer personas
+    needed based on actual findings in the review report.
 
     \b
     Examples:
@@ -468,11 +694,23 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
     ucrem = UCRemPhase(config)
     fixes, report_path = ucrem.generate_fixes(review_report, doc_path, output_path=output)
 
+    # Display pre-screening results
+    if ucrem.last_screening:
+        screening = ucrem.last_screening
+        console.print("\n[bold]Pre-Screening:[/bold]")
+        console.print(f"  Findings: {screening.total_findings} total, {screening.actionable_findings} actionable")
+        if screening.domain_fixers_needed:
+            console.print(f"  Domain fixers: [green]{', '.join(screening.domain_fixers_needed)}[/green]")
+        else:
+            console.print(f"  Domain fixers: [dim]None needed[/dim]")
+        if screening.excluded_fixers:
+            console.print(f"  Excluded: [dim]{', '.join(screening.excluded_fixers)}[/dim]")
+
     auto_safe = [f for f in fixes if f.confidence == Confidence.AUTO_SAFE]
     auto_assisted = [f for f in fixes if f.confidence == Confidence.AUTO_ASSISTED]
     manual = [f for f in fixes if f.confidence == Confidence.MANUAL_REQUIRED]
 
-    console.print(f"Remediation report written to: {report_path}")
+    console.print(f"\n[bold]Remediation report:[/bold] {report_path}")
     console.print(f"Fixes: auto-safe={len(auto_safe)}, auto-assisted={len(auto_assisted)}, manual={len(manual)}")
 
     if apply_auto_safe and auto_safe:

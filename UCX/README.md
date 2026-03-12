@@ -826,7 +826,11 @@ UCX/
 │   │
 │   ├── config/                 # Configuration
 │   │   ├── settings.py         # Pydantic settings (project_dir)
-│   │   └── layer_skills.py     # Layer-to-skill mapping
+│   │   └── layer_skills.py     # Layer-to-skill mapping (DOMAIN/MANDATORY)
+│   │
+│   ├── prescreening/           # UCX Scanner (v1.11.0+, renamed from pre-screening)
+│   │   ├── __init__.py         # Public exports
+│   │   └── ucr_analyzer.py     # ScanResult, scan_ucr_report(), ManifestResult
 │   │
 │   ├── models/                 # Data models
 │   │   ├── enums.py            # DocType, Status enums
@@ -998,10 +1002,92 @@ result = ucr.review_multi_turn(
     session_ttl_hours=24,  # Expire old sessions (default: 24)
 )
 
-# Remediation
+# Remediation (with automatic pre-screening)
 ucrem = UCRemPhase(config)
-fixes = ucrem.generate_fixes(review_report=report_path, doc_path=path)
+fixes, report_path = ucrem.generate_fixes(review_report=report_path, doc_path=path)
+
+# Check which fixers were loaded
+print(f"Domain fixers: {ucrem.last_screening.domain_fixers_needed}")
+print(f"Excluded: {ucrem.last_screening.excluded_fixers}")
 ```
+
+### Unified UCX Scanner (v1.11.0+)
+
+The `ucx scan` command provides unified report analysis with two extraction methods:
+
+```bash
+# Scan a review report (uses manifest if present, else persona extraction)
+ucx scan BRD-01.UCR_review_report_v001.md
+
+# Output (when manifest present):
+# ✓ Chairperson Manifest detected (authoritative)
+# Total findings: 16 | P0: 5 | P1: 8 | P2: 3
+# PRD-Ready Score: 82/100
+# → Remediation will load 4 fixers
+
+# Verbose mode shows comparison
+ucx scan BRD-01.UCR_review_report_v001.md --verbose
+
+# JSON output for automation
+ucx scan BRD-01.UCR_review_report_v001.md -f json -o scan_results.json
+```
+
+**Two-Layer Extraction:**
+
+| Layer | Source | Purpose |
+|-------|--------|---------|
+| **Manifest** (authoritative) | Chairperson's `<!-- UCX-MANIFEST-START -->` section | Unique counts, score, fixer assignments |
+| **Persona** (fallback) | Individual persona sections | Backward compat, fixer routing for pre-manifest reports |
+
+**Chairperson Manifest Format:**
+
+Reports generated with UCX v1.11.0+ include a structured manifest:
+
+```markdown
+<!-- UCX-MANIFEST-START -->
+### Manifest Summary
+| Metric | Count |
+|--------|-------|
+| Total Unique Findings | 16 |
+| P0 (Critical) | 5 |
+| P1 (High) | 8 |
+
+### Findings Table
+| ID | Priority | Status | Fixer | Target File | Description |
+|----|----------|--------|-------|-------------|-------------|
+| REM-P0-001 | P0 | OPEN | architect | BRD-01.6.md | Missing state machine |
+<!-- UCX-MANIFEST-END -->
+```
+
+**Benefits:**
+- **Eliminates discrepancy**: CLI counts match Chairperson synthesis
+- **Authoritative source**: PRD-Ready score from Chairperson
+- **Skip pre-screening**: Remediation reads manifest directly
+- **Backward compatible**: Falls back to persona extraction for older reports
+
+### Adaptive Remediation (v1.10.0+)
+
+Remediation uses **pre-screening** to load only the fixer personas needed:
+
+```bash
+# Legacy pre-screen command (still works)
+ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
+
+# Run remediation (uses manifest or pre-screening automatically)
+ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/
+```
+
+**Fixer Classification:**
+
+| Category | Personas | Loading Rule |
+|----------|----------|--------------|
+| **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Adaptive (only if findings exist) |
+| **Mandatory** | devils_advocate, chairperson | Always loaded |
+
+**Benefits:**
+- **Token savings**: 30-60% reduction in prompt size
+- **Focused attention**: AI focuses on relevant domains only
+- **Quality synthesis**: Chairperson provides de-duplication and final conclusion
 
 ### Review Memory API
 
@@ -1063,6 +1149,9 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.11.0 | 2026-03-12 | **Unified UCX Scanner with Chairperson Manifest**: New `ucx scan` command replaces `prescreen` as unified report scanner. Chairperson now outputs structured Remediation Findings Manifest with authoritative counts, fixer assignments, and PRD-Ready score. Scanner extracts from manifest when present (authoritative) or falls back to persona extraction (backward compat). Eliminates discrepancy between CLI counts and Chairperson synthesis. Remediation can skip pre-screening when manifest present. |
+| 1.10.3 | 2026-03-12 | **Pre-Screening Accuracy Improvements**: Fixed duplicate counting (unique vs total findings). Fixed summary row extraction (excludes range expressions). Fixed false DEFERRED/RESOLVED detection (word boundary matching, context-aware). |
+| 1.10.0 | 2026-03-12 | **Adaptive Remediation with Pre-Screening**: Pre-screening phase automatically analyzes UCR reports before remediation. New `ucx prescreen` command for standalone analysis. Adaptive fixer loading - only domain fixers with findings are loaded. Mandatory fixers: devils_advocate (safety) + chairperson (synthesis). Token savings of 30-60% by excluding unnecessary personas. Chairperson skill updated with remediation synthesis responsibilities. |
 | 1.9.9 | 2026-03-12 | **UCRem project path resolution & Prior Review Reconciliation**: Fixed UCRem prompt path to check project-specific paths first. Fixed project directory auto-detection bug. UCRem report writes to document folder (`{DOC-ID}.UCRem_report.md`). **New**: Prior Review Reconciliation - Fact Checker verifies resolution status of prior findings, Chairperson only counts UNRESOLVED findings in score, Auditor adds verification status table. |
 | 1.9.8 | 2026-03-11 | **Tier 2 diagram advisory auto-fix**: Added auto-fix for BRD-W011/W012 (adds @diagram-request for ADR layer), BRD-W013 (auto-detects sequence type), BRD-W014 (adds diagram intent). New @diagram-request pattern for honest traceability. Fixed version numbering bug (max+1 instead of len+1). Fixed FIXER_SKILLS (integration_expert → integration_lead). |
 | 1.9.7 | 2026-03-11 | **Tier 2 count mismatch auto-fix**: Extended `--fix` to handle GATE-W003 (count mismatch) and DIAG-W001 (diagram node count). Updates prose counts to match actual element or diagram node counts. |
@@ -1102,6 +1191,9 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 | [PERSONA_DESIGN_GUIDE.md](docs/PERSONA_DESIGN_GUIDE.md) | Creating custom personas |
 | [UNIFIED_CONTEXT_FRAMEWORK.md](docs/UNIFIED_CONTEXT_FRAMEWORK.md) | Framework architecture |
 | [Skills README](skills/README.md) | Framework persona skills reference |
+| [UCRem Personas](remediation/UCRem_PERSONAS.md) | Fixer personas and adaptive loading |
+| [CHANGELOG v1.10.0](docs/CHANGELOG_v1.10.0.md) | Adaptive remediation release notes |
+| [CHANGELOG v1.11.0](docs/CHANGELOG_v1.11.0.md) | Unified scanner and manifest release notes |
 
 ---
 
