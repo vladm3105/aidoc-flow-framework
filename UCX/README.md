@@ -1178,10 +1178,23 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 ---
 
+## Roadmap
+
+See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
+
+**Next Release**: v1.12.0 - Category-Weighted Scoring
+- Consistent scoring with per-category caps
+- Persona → Category mapping
+- Alignment with ID_NAMING_STANDARDS.md element codes
+- See [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md)
+
+---
+
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
+| [ROADMAP.md](docs/ROADMAP.md) | Release roadmap and planned features |
 | [QUICK_START.md](docs/QUICK_START.md) | Quick start guide with review process explanation |
 | [HOW_TO_USE.md](docs/HOW_TO_USE.md) | Detailed usage instructions |
 | [HOW_TO_AUDIT.md](docs/HOW_TO_AUDIT.md) | Running document audits |
@@ -1191,6 +1204,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 | [UCRem Personas](remediation/UCRem_PERSONAS.md) | Fixer personas and adaptive loading |
 | [CHANGELOG v1.10.0](docs/CHANGELOG_v1.10.0.md) | Adaptive remediation release notes |
 | [CHANGELOG v1.11.0](docs/CHANGELOG_v1.11.0.md) | Unified scanner and manifest release notes |
+| [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 
 ---
 
