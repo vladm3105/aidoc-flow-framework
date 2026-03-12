@@ -348,13 +348,18 @@ Multi-turn reviews now prevent redundant findings across personas:
 ...
 ```
 
-### Document Validation (v1.9.0+)
+### Document Validation (v1.9.0+, report-by-default v1.11.1+)
 
-Fast, non-AI validation for pre-commit hooks and CI/CD pipelines:
+Fast, non-AI validation for pre-commit hooks and CI/CD pipelines.
+**v1.11.1+**: Generates validation report to document directory by default (like review).
 
 ```bash
-# Basic validation (console output)
+# Basic validation (generates report by default)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/
+# → Creates: docs/01_BRD/BRD-01_platform_architecture/BRD-01.V_validation_report_v001.md
+
+# Console-only output (no report)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --no-report
 
 # Tier 1 only (fast, blocking checks for pre-commit)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --tier1-only
@@ -362,27 +367,17 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --tier1-only
 # Strict mode (warnings as errors)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --strict
 
-# JSON output for CI/CD
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json
-
-# Write SDD-compliant validation report to document directory (auto-versioned)
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o docs/01_BRD/BRD-01_platform_architecture/
-# → Creates: docs/01_BRD/BRD-01_platform_architecture/BRD-01.V_validation_report_v001.md
+# JSON output for CI/CD (console only)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json --no-report
 
 # Write validation report to specific file
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validation.md
 
-# JSON report to file
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json -o report.json
-
-# Auto-fix structural issues (v1.9.6+)
+# Auto-fix structural issues (v1.9.6+) - includes report by default
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix
 
-# Auto-fix and generate report to document directory
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --report
-
-# Auto-fix, generate report, and clean up old reports (keep only latest)
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --report --clean-reports
+# Auto-fix and clean up old reports (keep only latest)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --clean-reports
 
 # Auto-fix with Tier 1 only (fast)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --tier1-only
@@ -1011,25 +1006,26 @@ print(f"Domain fixers: {ucrem.last_screening.domain_fixers_needed}")
 print(f"Excluded: {ucrem.last_screening.excluded_fixers}")
 ```
 
-### Unified UCX Scanner (v1.11.0+)
+### Unified UCX Scanner (v1.11.0+) - VALIDATED
 
-The `ucx scan` command provides unified report analysis with two extraction methods:
+The `ucx scan` command provides unified report analysis with two extraction methods.
+**Validated** with BRD-02 review (2026-03-12): Raw P0=115 → Manifest P0=10 (91% reduction).
 
 ```bash
 # Scan a review report (uses manifest if present, else persona extraction)
-ucx scan BRD-01.UCR_review_report_v001.md
+ucx scan BRD-02.UCR_review_report_v001.md
 
-# Output (when manifest present):
+# Actual output (BRD-02 validation):
 # ✓ Chairperson Manifest detected (authoritative)
-# Total findings: 16 | P0: 5 | P1: 8 | P2: 3
-# PRD-Ready Score: 82/100
-# → Remediation will load 4 fixers
+# Total findings: 33 | P0: 10 | P1: 14 | P2: 9
+# PRD-Ready Score: 62/100
+# → Remediation will load 6 fixers
 
 # Verbose mode shows comparison
-ucx scan BRD-01.UCR_review_report_v001.md --verbose
+ucx scan BRD-02.UCR_review_report_v001.md --verbose
 
 # JSON output for automation
-ucx scan BRD-01.UCR_review_report_v001.md -f json -o scan_results.json
+ucx scan BRD-02.UCR_review_report_v001.md -f json -o scan_results.json
 ```
 
 **Two-Layer Extraction:**
@@ -1149,7 +1145,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.11.0 | 2026-03-12 | **Unified UCX Scanner with Chairperson Manifest**: New `ucx scan` command replaces `prescreen` as unified report scanner. Chairperson now outputs structured Remediation Findings Manifest with authoritative counts, fixer assignments, and PRD-Ready score. Scanner extracts from manifest when present (authoritative) or falls back to persona extraction (backward compat). Eliminates discrepancy between CLI counts and Chairperson synthesis. Remediation can skip pre-screening when manifest present. |
+| 1.11.1 | 2026-03-12 | **Validate: Report Generation by Default**: `ucx validate` now generates report to document directory by default (like review). Use `--no-report` for console-only output. Aligns validate behavior with review command. |
+| 1.11.0 | 2026-03-12 | **Unified UCX Scanner with Chairperson Manifest** (VALIDATED): New `ucx scan` command replaces `prescreen` as unified report scanner. Chairperson now outputs structured Remediation Findings Manifest with authoritative counts, fixer assignments, and PRD-Ready score. Scanner extracts from manifest when present (authoritative) or falls back to persona extraction (backward compat). Eliminates discrepancy between CLI counts and Chairperson synthesis. Remediation can skip pre-screening when manifest present. **Validated**: BRD-02 review confirmed 91% reduction (Raw P0=115 → Manifest P0=10). |
 | 1.10.3 | 2026-03-12 | **Pre-Screening Accuracy Improvements**: Fixed duplicate counting (unique vs total findings). Fixed summary row extraction (excludes range expressions). Fixed false DEFERRED/RESOLVED detection (word boundary matching, context-aware). |
 | 1.10.0 | 2026-03-12 | **Adaptive Remediation with Pre-Screening**: Pre-screening phase automatically analyzes UCR reports before remediation. New `ucx prescreen` command for standalone analysis. Adaptive fixer loading - only domain fixers with findings are loaded. Mandatory fixers: devils_advocate (safety) + chairperson (synthesis). Token savings of 30-60% by excluding unnecessary personas. Chairperson skill updated with remediation synthesis responsibilities. |
 | 1.9.9 | 2026-03-12 | **UCRem project path resolution & Prior Review Reconciliation**: Fixed UCRem prompt path to check project-specific paths first. Fixed project directory auto-detection bug. UCRem report writes to document folder (`{DOC-ID}.UCRem_report.md`). **New**: Prior Review Reconciliation - Fact Checker verifies resolution status of prior findings, Chairperson only counts UNRESOLVED findings in score, Auditor adds verification status table. |

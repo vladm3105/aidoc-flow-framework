@@ -1,9 +1,18 @@
 """Version information for UCX."""
 
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
 
-# v1.11.0 - Unified UCX Scanner with Chairperson Manifest
+# v1.11.1 - Validate Command: Report Generation by Default
+# - CHANGED: `ucx validate` now generates report to document directory by default
+#   Previously: required `--report` flag to generate report
+#   Now: generates report automatically, use `--no-report` to skip
+# - Aligns validate behavior with review command (both write reports by default)
+# - Examples:
+#   `ucx validate brd docs/01_BRD/BRD-01/` → generates BRD-01.V_validation_report_v001.md
+#   `ucx validate brd docs/01_BRD/BRD-01/ --no-report` → console output only
+
+# v1.11.0 - Unified UCX Scanner with Chairperson Manifest (VALIDATED)
 # - NEW: `ucx scan` command - unified report scanner (replaces prescreen)
 # - NEW: Chairperson Remediation Findings Manifest - authoritative findings source
 #   Chairperson now outputs structured manifest between UCX-MANIFEST-START/END markers
@@ -19,6 +28,11 @@ __version_info__ = tuple(int(x) for x in __version__.split("."))
 #   Previously: CLI showed P0=116 (raw), Chairperson showed P0=5 (deduplicated)
 #   Now: ucx scan shows authoritative counts from manifest when present
 # - BENEFIT: Remediation can skip pre-screening - manifest includes all routing info
+# - VALIDATED: BRD-02 review (2026-03-12) confirmed manifest generation
+#   - Raw CLI: P0=115 → Manifest: P0=10 (91% reduction through synthesis)
+#   - PRD-Ready Score: 62/100 extracted correctly
+#   - Fixer assignments: 6 fixers with 33 findings total
+#   - Target files/sections: Full traceability for remediation
 
 # v1.10.3 - Pre-Screening Accuracy Improvements
 # - FIXED: Duplicate counting - now reports unique finding IDs (72 vs 103)

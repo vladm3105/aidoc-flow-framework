@@ -726,13 +726,17 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
 @click.option("--fix", is_flag=True, help="Auto-fix structural issues (metadata, tags, Document Control)")
-@click.option("--report", is_flag=True, help="With --fix: auto-generate report to document directory after fixing")
+@click.option("--report/--no-report", default=True, help="Generate validation report to document directory (default: enabled)")
 @click.option("--clean-reports", is_flag=True, help="Clean up old validation reports, keep only latest (or --keep-versions)")
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.pass_context
 def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, fix, report, clean_reports, keep_versions):
     """
     Validate a document (no AI review).
+
+    \b
+    By default, writes validation report to document directory (like review).
+    Use --no-report for console-only output.
 
     \b
     Tiered validation:
@@ -749,15 +753,13 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
 
     \b
     Examples:
-      ucx validate brd docs/01_BRD/BRD-01
-      ucx validate brd docs/01_BRD/BRD-01 --tier1-only
+      ucx validate brd docs/01_BRD/BRD-01                    # Generates report by default
+      ucx validate brd docs/01_BRD/BRD-01 --no-report       # Console output only
+      ucx validate brd docs/01_BRD/BRD-01 --tier1-only      # Tier 1 + report
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
-      ucx validate brd docs/01_BRD/BRD-01 -o validation_report.md
-      ucx validate brd docs/01_BRD/BRD-01 --fix
-      ucx validate brd docs/01_BRD/BRD-01 --fix --report
-      ucx validate brd docs/01_BRD/BRD-01 --fix --report --clean-reports
-      ucx validate brd docs/01_BRD/BRD-01 --fix --tier1-only
-      ucx validate brd docs/01_BRD/BRD-01 --clean-reports
+      ucx validate brd docs/01_BRD/BRD-01 -o custom_report.md
+      ucx validate brd docs/01_BRD/BRD-01 --fix             # Fix + report
+      ucx validate brd docs/01_BRD/BRD-01 --fix --clean-reports
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
     """
     import json
