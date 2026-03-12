@@ -267,8 +267,9 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.option("--clean-all", is_flag=True, help="Clean up both session memory and old reports")
 @click.option("--model", default=None, help="Model to use (opus, sonnet, haiku for CLI; or full model name for API)")
 @click.option("--force-single", is_flag=True, help="Force single-turn mode (bypass auto multi-turn for large docs)")
+@click.option("--scoring", type=click.Choice(["weighted", "legacy"]), default="weighted", help="Scoring method: weighted (default, v1.12.0+) or legacy")
 @click.pass_context
-def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resume, session_ttl, clean_memory, clean_reports, keep_versions, clean_all, model, force_single):
+def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resume, session_ttl, clean_memory, clean_reports, keep_versions, clean_all, model, force_single, scoring):
     """
     Review a document (UCR phase).
 
@@ -381,6 +382,17 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
             raise click.Abort()
 
     ucr = UCRPhase(config)
+
+    # Handle scoring method
+    if scoring == "legacy":
+        console.print(
+            "[yellow]WARNING: Legacy scoring is deprecated and will be removed in UCX v2.0.0.[/yellow]\n"
+            "[yellow]         Use --scoring weighted (default) for category-weighted scoring.[/yellow]"
+        )
+        # Store scoring method in config for downstream use
+        config.scoring_method = "legacy"
+    else:
+        config.scoring_method = "weighted"
 
     # Auto-detect large documents and recommend multi-turn (unless --force-single)
     if not multi_turn and not force_single:
@@ -1036,6 +1048,11 @@ def _display_result(result):
     console.print(f"\nReview Report: {result.review_report}")
     if result.fix_report:
         console.print(f"Fix Report: {result.fix_report}")
+
+
+# Register scoring command group
+from ucx.cli.scoring import scoring
+cli.add_command(scoring)
 
 
 if __name__ == "__main__":
