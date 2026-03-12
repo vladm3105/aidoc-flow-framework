@@ -14,6 +14,7 @@ from .categories import (
     categorize_by_element_code,
     categorize_by_keyword,
     extract_element_code,
+    get_category_by_name,
     get_persona_primary_category,
 )
 from .weights import (
@@ -22,6 +23,14 @@ from .weights import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Priority deduction multipliers (matches scoring_weights.yaml)
+P0_MULTIPLIER = 10  # Critical findings
+P1_MULTIPLIER = 3   # Major findings
+P2_MULTIPLIER = 1   # Minor findings
+
+# Valid priority values
+VALID_PRIORITIES = frozenset(("P0", "P1", "P2"))
 
 
 @dataclass
@@ -97,7 +106,7 @@ class ScoringResult:
 
         lines.append(
             f"| **Total** | {self.total_p0} | {self.total_p1} | {self.total_p2} | "
-            f"| | **-{total_weighted:.2f}** |"
+            f"- | - | **-{total_weighted:.2f}** |"
         )
 
         return "\n".join(lines)
@@ -148,7 +157,6 @@ class ScoringCalculator:
         """
         # 1. Check for explicit category tag
         if finding.raw_category_tag:
-            from .categories import get_category_by_name
             explicit_cat = get_category_by_name(finding.raw_category_tag)
             if explicit_cat:
                 return explicit_cat
@@ -227,8 +235,12 @@ class ScoringCalculator:
                 max_deduction=0,
             )
 
-        # Calculate raw deduction
-        raw_deduction = (p0_count * 10) + (p1_count * 3) + (p2_count * 1)
+        # Calculate raw deduction using priority multipliers
+        raw_deduction = (
+            (p0_count * P0_MULTIPLIER) +
+            (p1_count * P1_MULTIPLIER) +
+            (p2_count * P2_MULTIPLIER)
+        )
 
         # Cap at category maximum
         max_deduction = cat_config.max_deduction
@@ -274,10 +286,16 @@ class ScoringCalculator:
             if finding.category is None:
                 finding.category = self.categorize_finding(finding)
 
-            # Count by priority
+            # Count by priority (with validation)
             priority = finding.priority.upper()
-            if priority in ("P0", "P1", "P2"):
+            if priority in VALID_PRIORITIES:
                 category_findings[finding.category][priority] += 1
+            else:
+                logger.warning(
+                    f"Invalid priority '{finding.priority}' for finding {finding.id}, "
+                    "treating as P2"
+                )
+                category_findings[finding.category]["P2"] += 1
 
         # Calculate per-category scores
         category_scores: dict[Category, CategoryScore] = {}
@@ -367,4 +385,4 @@ def calculate_legacy_score(
     Returns:
         Score (can be negative).
     """
-    return 100 - (p0_count * 10) - (p1_count * 3) - (p2_count * 1)
+    return 100 - (p0_count * P0_MULTIPLIER) - (p1_count * P1_MULTIPLIER) - (p2_count * P2_MULTIPLIER)

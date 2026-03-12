@@ -29,8 +29,8 @@ class CategoryWeight:
 
     weight: float  # 0.0 to 1.0
     max_deduction: int  # Maximum points that can be deducted
-    element_codes: list[int]
-    keywords: list[str]
+    element_codes: tuple[int, ...]  # Immutable tuple for configuration data
+    keywords: tuple[str, ...]  # Immutable tuple for configuration data
     description: str
 
     @property
@@ -223,7 +223,7 @@ def _build_category_weight(
     """Build a CategoryWeight from defaults and optional overrides."""
     max_deduction = DEFAULT_MAX_DEDUCTIONS.get(category, 10)
     element_codes = list(DEFAULT_ELEMENT_CODES.get(category, []))
-    keywords = []
+    keywords: list[str] = []
     description = f"{category.title()} requirements"
 
     if category == "compliance":
@@ -244,8 +244,8 @@ def _build_category_weight(
     return CategoryWeight(
         weight=weight,
         max_deduction=max_deduction,
-        element_codes=element_codes,
-        keywords=keywords,
+        element_codes=tuple(element_codes),  # Convert to immutable tuple
+        keywords=tuple(keywords),  # Convert to immutable tuple
         description=description,
     )
 

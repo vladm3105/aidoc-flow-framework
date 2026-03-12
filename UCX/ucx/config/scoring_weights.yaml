@@ -205,22 +205,6 @@ document_types:
       integration:
         weight: 0.20  # Highest - contract boundaries
 
-  # Layer 11: Task Breakdown
-  tasks:
-    categories:
-      functional:
-        weight: 0.30  # High for task coverage
-      quality:
-        weight: 0.10
-      compliance:
-        weight: 0.05
-      integration:
-        weight: 0.15
-      acceptance:
-        weight: 0.15
-      risk:
-        weight: 0.10  # Higher for task risks
-
   # Layer 10: Test Specifications
   tspec:
     categories:
@@ -240,6 +224,22 @@ document_types:
         weight: 0.025
       architecture:
         weight: 0.025
+
+  # Layer 11: Task Breakdown
+  tasks:
+    categories:
+      functional:
+        weight: 0.30  # High for task coverage
+      quality:
+        weight: 0.10
+      compliance:
+        weight: 0.05
+      integration:
+        weight: 0.15
+      acceptance:
+        weight: 0.15
+      risk:
+        weight: 0.10  # Higher for task risks
 
 # Scoring method configuration
 scoring:

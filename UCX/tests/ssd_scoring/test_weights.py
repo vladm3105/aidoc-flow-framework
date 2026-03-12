@@ -4,6 +4,7 @@ Unit tests for UCX scoring weights module.
 Tests weight loading, validation, and configuration merging.
 """
 
+import os
 import tempfile
 from pathlib import Path
 
@@ -121,10 +122,13 @@ class TestConfigFileValidation:
 
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(config, f)
-            f.flush()
-            errors = validate_config_file(Path(f.name))
+            temp_path = f.name
 
-        assert len(errors) == 0
+        try:
+            errors = validate_config_file(Path(temp_path))
+            assert len(errors) == 0
+        finally:
+            os.unlink(temp_path)
 
     def test_validate_invalid_weight_range(self):
         """Invalid weight values are caught."""
@@ -140,21 +144,27 @@ class TestConfigFileValidation:
 
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(config, f)
-            f.flush()
-            errors = validate_config_file(Path(f.name))
+            temp_path = f.name
 
-        assert len(errors) > 0
-        assert "brd.functional" in errors[0]
+        try:
+            errors = validate_config_file(Path(temp_path))
+            assert len(errors) > 0
+            assert "brd.functional" in errors[0]
+        finally:
+            os.unlink(temp_path)
 
     def test_validate_malformed_yaml(self):
         """Malformed YAML is caught."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write("invalid: yaml: content: [")
-            f.flush()
-            errors = validate_config_file(Path(f.name))
+            temp_path = f.name
 
-        assert len(errors) > 0
-        assert "YAML" in errors[0]
+        try:
+            errors = validate_config_file(Path(temp_path))
+            assert len(errors) > 0
+            assert "YAML" in errors[0]
+        finally:
+            os.unlink(temp_path)
 
 
 class TestGetAllDocumentTypes:
@@ -189,15 +199,18 @@ class TestWeightOverrides:
 
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(override_config, f)
-            f.flush()
+            temp_path = f.name
 
-            weights = load_weights("brd", project_config_path=Path(f.name))
+        try:
+            weights = load_weights("brd", project_config_path=Path(temp_path))
 
-        # Should have override values
-        assert weights.categories["functional"].weight == 0.30
-        assert weights.categories["compliance"].weight == 0.15
-        # Other categories should have defaults
-        assert weights.categories["quality"].weight == 0.15
+            # Should have override values
+            assert weights.categories["functional"].weight == 0.30
+            assert weights.categories["compliance"].weight == 0.15
+            # Other categories should have defaults
+            assert weights.categories["quality"].weight == 0.15
+        finally:
+            os.unlink(temp_path)
 
     def test_keyword_append(self):
         """Keywords can be appended to defaults."""
@@ -213,13 +226,16 @@ class TestWeightOverrides:
 
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             yaml.dump(override_config, f)
-            f.flush()
+            temp_path = f.name
 
-            weights = load_weights("brd", project_config_path=Path(f.name))
+        try:
+            weights = load_weights("brd", project_config_path=Path(temp_path))
 
-        # Should include both default and appended keywords
-        keywords = weights.categories["compliance"].keywords
-        assert "CustomTerm1" in keywords
-        assert "CustomTerm2" in keywords
-        # And still have defaults
-        assert len(keywords) > 2  # More than just appended
+            # Should include both default and appended keywords
+            keywords = weights.categories["compliance"].keywords
+            assert "CustomTerm1" in keywords
+            assert "CustomTerm2" in keywords
+            # And still have defaults
+            assert len(keywords) > 2  # More than just appended
+        finally:
+            os.unlink(temp_path)

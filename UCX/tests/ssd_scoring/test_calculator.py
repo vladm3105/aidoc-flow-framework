@@ -265,6 +265,50 @@ class TestLegacyScore:
         assert score == -85
 
 
+class TestInvalidPriorityHandling:
+    """Tests for invalid priority validation (P1-001 fix)."""
+
+    @pytest.fixture
+    def calculator(self):
+        return ScoringCalculator("brd")
+
+    def test_invalid_priority_treated_as_p2(self, calculator):
+        """Invalid priority values are treated as P2 with warning."""
+        findings = [
+            Finding("AUD-P3-001", "P3", "Invalid priority", "auditor"),  # Invalid
+            Finding("AUD-CRIT-001", "Critical", "Invalid format", "auditor"),  # Invalid
+            Finding("AUD-P0-001", "P0", "Valid P0", "auditor"),  # Valid
+        ]
+        result = calculator.calculate(findings)
+
+        # Total findings should include all 3
+        assert result.total_findings == 3
+        # 1 valid P0 + 2 invalid treated as P2
+        assert result.total_p0 == 1
+        assert result.total_p2 == 2
+
+    def test_empty_priority_treated_as_p2(self, calculator):
+        """Empty priority is treated as P2."""
+        findings = [
+            Finding("AUD-001", "", "Empty priority", "auditor"),
+        ]
+        result = calculator.calculate(findings)
+
+        assert result.total_findings == 1
+        assert result.total_p2 == 1
+
+    def test_lowercase_priority_normalized(self, calculator):
+        """Lowercase priorities are normalized correctly."""
+        findings = [
+            Finding("AUD-001", "p0", "Lowercase p0", "auditor"),
+            Finding("AUD-002", "p1", "Lowercase p1", "auditor"),
+        ]
+        result = calculator.calculate(findings)
+
+        assert result.total_p0 == 1
+        assert result.total_p1 == 1
+
+
 class TestConvenienceFunction:
     """Tests for calculate_weighted_score convenience function."""
 

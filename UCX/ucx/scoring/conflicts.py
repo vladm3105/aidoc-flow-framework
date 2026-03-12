@@ -6,6 +6,7 @@ through different detection methods (element code, keyword, persona).
 """
 
 import logging
+import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
@@ -15,6 +16,7 @@ from .categories import (
     categorize_by_element_code,
     categorize_by_keyword,
     extract_element_code,
+    get_category_by_name,
     get_persona_primary_category,
 )
 
@@ -67,6 +69,7 @@ class CategoryConflictResolver:
         self._resolution_stats: dict[ResolutionMethod, int] = {
             method: 0 for method in ResolutionMethod
         }
+        self._stats_cache: Optional[dict[ResolutionMethod, int]] = None
 
     def resolve(
         self,
@@ -93,7 +96,6 @@ class CategoryConflictResolver:
 
         # 1. Check explicit tag
         if explicit_tag:
-            from .categories import get_category_by_name
             tag_cat = get_category_by_name(explicit_tag)
             if tag_cat:
                 resolved_category = tag_cat
@@ -133,8 +135,9 @@ class CategoryConflictResolver:
             resolved_category = Category.OTHER
             resolution_method = ResolutionMethod.FALLBACK
 
-        # Track statistics
+        # Track statistics (invalidate cache)
         self._resolution_stats[resolution_method] += 1
+        self._stats_cache = None
 
         # Determine if there was a conflict
         had_conflict = len(alternatives) > 0
@@ -161,13 +164,16 @@ class CategoryConflictResolver:
 
     @property
     def resolution_stats(self) -> dict[ResolutionMethod, int]:
-        """Statistics on resolution methods used."""
-        return dict(self._resolution_stats)
+        """Statistics on resolution methods used (cached copy)."""
+        if self._stats_cache is None:
+            self._stats_cache = dict(self._resolution_stats)
+        return self._stats_cache
 
     def reset_stats(self) -> None:
         """Reset conflict and resolution statistics."""
         self._conflict_count = 0
         self._resolution_stats = {method: 0 for method in ResolutionMethod}
+        self._stats_cache = None
 
     def get_stats_summary(self) -> str:
         """Generate summary of resolution statistics."""
@@ -197,7 +203,6 @@ def parse_category_tag(text: str) -> Optional[str]:
     Returns:
         Category name (lowercase), or None if no tag found.
     """
-    import re
     match = re.search(r"\[CAT:(\w+)\]", text, re.IGNORECASE)
     if match:
         return match.group(1).lower()
@@ -214,5 +219,4 @@ def strip_category_tag(text: str) -> str:
     Returns:
         Text with tag removed.
     """
-    import re
     return re.sub(r"\s*\[CAT:\w+\]", "", text, flags=re.IGNORECASE).strip()
