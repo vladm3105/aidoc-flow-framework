@@ -355,12 +355,15 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
     # Auto-detect project directory from doc_path if not set
     if config.get_project_dir() is None:
         # Try to find project root by looking for docs/UCX/
-        search_path = doc_path if doc_path.is_dir() else doc_path.parent
+        # Resolve to absolute path to handle relative paths correctly
+        search_path = (doc_path if doc_path.is_dir() else doc_path.parent).resolve()
         project_dir = None
-        while search_path.parent != search_path:
+        while True:
             if (search_path / "docs" / "UCX").exists():
                 project_dir = search_path
                 break
+            if search_path.parent == search_path:
+                break  # Reached filesystem root
             search_path = search_path.parent
 
         if project_dir:
@@ -432,13 +435,44 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
     from ucx import UCRemPhase
     from ucx.models.enums import Confidence
 
-    ucrem = UCRemPhase(ctx.obj["config"])
-    fixes = ucrem.generate_fixes(review_report, doc_path, output_path=output)
+    config = ctx.obj["config"]
+
+    # Auto-detect project directory from doc_path if not set
+    if config.get_project_dir() is None:
+        # Try to find project root by looking for docs/UCX/
+        # Resolve to absolute path to handle relative paths correctly
+        search_path = (doc_path if doc_path.is_dir() else doc_path.parent).resolve()
+        project_dir = None
+        while True:
+            if (search_path / "docs" / "UCX").exists():
+                project_dir = search_path
+                break
+            if search_path.parent == search_path:
+                break  # Reached filesystem root
+            search_path = search_path.parent
+
+        if project_dir:
+            config = config.model_copy(update={"project_dir": project_dir})
+            console.print(f"[dim]Auto-detected project directory: {project_dir}[/dim]")
+        else:
+            console.print(
+                "[red]Error: Project directory not found.[/red]\n"
+                "Project-specific prompts are REQUIRED for remediation.\n"
+                "Either:\n"
+                "  1. Set UCX_PROJECT_DIR environment variable\n"
+                "  2. Use --project-dir flag\n"
+                "  3. Ensure docs/UCX/ exists in project root\n"
+            )
+            raise click.Abort()
+
+    ucrem = UCRemPhase(config)
+    fixes, report_path = ucrem.generate_fixes(review_report, doc_path, output_path=output)
 
     auto_safe = [f for f in fixes if f.confidence == Confidence.AUTO_SAFE]
     auto_assisted = [f for f in fixes if f.confidence == Confidence.AUTO_ASSISTED]
     manual = [f for f in fixes if f.confidence == Confidence.MANUAL_REQUIRED]
 
+    console.print(f"Remediation report written to: {report_path}")
     console.print(f"Fixes: auto-safe={len(auto_safe)}, auto-assisted={len(auto_assisted)}, manual={len(manual)}")
 
     if apply_auto_safe and auto_safe:
@@ -596,9 +630,18 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             # If output path is a directory or ends with /, auto-generate filename
             if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
                 output_path.mkdir(parents=True, exist_ok=True)
-                # Find next version number
+                # Find next version number by extracting max version from existing files
                 existing = list(output_path.glob(f"{doc_id}.V_validation_report_v*.md"))
-                version = len(existing) + 1
+                if existing:
+                    # Extract version numbers and find max
+                    versions = []
+                    for f in existing:
+                        match = re.search(r"_v(\d+)\.md$", f.name)
+                        if match:
+                            versions.append(int(match.group(1)))
+                    version = max(versions) + 1 if versions else 1
+                else:
+                    version = 1
                 output_path = output_path / f"{doc_id}.V_validation_report_v{version:03d}.md"
             else:
                 # Output to specified file

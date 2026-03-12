@@ -40,7 +40,7 @@ SKILL_DIR="$SCRIPT_DIR/../skills"
 # UCRem Fixer Skills (same for all layers)
 # =============================================================================
 # The 5 fixer personas and their corresponding skill files
-FIXER_SKILLS="architect auditor qa_lead integration_expert devils_advocate"
+FIXER_SKILLS="architect auditor qa_lead integration_lead devils_advocate"
 
 # =============================================================================
 # Parse arguments

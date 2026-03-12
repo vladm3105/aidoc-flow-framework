@@ -67,7 +67,7 @@ FIXER_SKILLS: list[str] = [
     "architect",
     "auditor",
     "qa_lead",
-    "integration_expert",
+    "integration_lead",  # Changed from integration_expert for consistency
     "devils_advocate",
 ]
 

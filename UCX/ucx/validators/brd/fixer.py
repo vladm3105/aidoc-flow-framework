@@ -74,6 +74,11 @@ FIXABLE_CODES: Set[str] = {
     # Tier 2 count mismatch fixes
     "GATE-W003",  # Count mismatch (stated vs actual)
     "DIAG-W001",  # Diagram node count mismatch
+    # Tier 2 diagram advisory fixes
+    "BRD-W011",  # Missing C4-L1 diagram - add request notice for ADR
+    "BRD-W012",  # Missing DFD-L0 diagram - add request notice for ADR
+    "BRD-W013",  # Sequence diagram without tag - auto-classify
+    "BRD-W014",  # Missing diagram intent header - add template
 }
 
 
@@ -621,4 +626,284 @@ class BRDFixer:
             file_path=file_path,
             fixed=False,
             message=f"Could not find '{claimed_count} {item_type}' pattern to replace"
+        )
+
+    # =========================================================================
+    # TIER 2 DIAGRAM ADVISORY FIXES
+    # =========================================================================
+
+    def _fix_brd_w011(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix missing C4-L1 architecture diagram.
+
+        Instead of adding a false @diagram: c4-l1 tag (which would claim a
+        diagram exists when it doesn't), this adds a @diagram-request notice
+        that signals to downstream ADR layer that a C4 Level 1 context diagram
+        should be created.
+
+        The ADR layer agent can then decide whether to create the diagram
+        based on architecture complexity.
+        """
+        return self._add_diagram_request(
+            issue=issue,
+            diagram_type="c4-l1",
+            target_layer="ADR",
+            rationale="BRD architecture requires C4 Level 1 context diagram for visualization",
+            priority="recommended"
+        )
+
+    def _fix_brd_w012(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix missing DFD-L0 data flow diagram.
+
+        Adds a @diagram-request notice for downstream ADR layer to create
+        a DFD Level 0 diagram showing high-level data flows.
+        """
+        return self._add_diagram_request(
+            issue=issue,
+            diagram_type="dfd-l0",
+            target_layer="ADR",
+            rationale="BRD data flows require DFD Level 0 diagram for visualization",
+            priority="recommended"
+        )
+
+    def _add_diagram_request(
+        self,
+        issue: ValidationIssue,
+        diagram_type: str,
+        target_layer: str,
+        rationale: str,
+        priority: str = "recommended"
+    ) -> FixResult:
+        """
+        Add a diagram request notice to signal downstream layers.
+
+        This creates honest traceability - the BRD signals that a diagram
+        is needed, and downstream layers (PRD/ADR) decide whether to create it.
+
+        Args:
+            issue: The validation issue being fixed
+            diagram_type: Type of diagram requested (c4-l1, dfd-l0, etc.)
+            target_layer: Which layer should create the diagram (ADR, PRD)
+            rationale: Why this diagram is recommended
+            priority: Request priority (required, recommended, optional)
+
+        Returns:
+            FixResult indicating success or failure
+        """
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+
+        # Check if request already exists
+        if f"@diagram-request: {diagram_type}" in content:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message=f"Diagram request for {diagram_type} already exists"
+            )
+
+        # Build the diagram request notice
+        request_notice = f"""
+<!-- DIAGRAM REQUEST -->
+<!-- @diagram-request: {diagram_type} -->
+<!-- target_layer: {target_layer} -->
+<!-- priority: {priority} -->
+<!-- rationale: {rationale} -->
+<!-- status: pending -->
+"""
+
+        # Find the best insertion point
+        # Prefer: after frontmatter, before first heading
+        fm, fm_str, body = self._parse_frontmatter(content)
+
+        if fm is not None:
+            # Insert after frontmatter
+            new_body = request_notice + body
+            new_content = self._rebuild_content(fm, new_body)
+        else:
+            # No frontmatter - insert at top
+            new_content = request_notice + content
+
+        self._set_file_content(file_path, new_content)
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=True,
+            message=f"Added @diagram-request: {diagram_type} for {target_layer} layer",
+            changes=[
+                f"Added diagram request notice for {diagram_type}",
+                f"Target layer: {target_layer}",
+                f"Priority: {priority}"
+            ]
+        )
+
+    def _fix_brd_w013(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix sequence diagram without classification tag.
+
+        Detects the sequence diagram type (sync, async, error) by analyzing
+        the Mermaid content and adds the appropriate @diagram: tag.
+        """
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+
+        # Check if tag already exists
+        if re.search(r"@diagram:\s*sequence-", content):
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Sequence diagram tag already exists"
+            )
+
+        # Detect sequence diagram type from content
+        seq_type = self._detect_sequence_type(content)
+
+        # Add the tag before the sequenceDiagram block
+        tag_comment = f"<!-- @diagram: sequence-{seq_type} -->\n"
+
+        # Find sequenceDiagram and insert tag before it
+        new_content = re.sub(
+            r"(```mermaid\s*\n\s*sequenceDiagram)",
+            tag_comment + r"\1",
+            content,
+            count=1
+        )
+
+        if new_content != content:
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message=f"Added @diagram: sequence-{seq_type} tag",
+                changes=[f"Detected sequence type: {seq_type}", "Added classification tag"]
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message="Could not find sequenceDiagram block to tag"
+        )
+
+    def _detect_sequence_type(self, content: str) -> str:
+        """
+        Analyze sequence diagram content to determine type.
+
+        Returns:
+            "error" - if diagram contains error/failure handling
+            "async" - if diagram contains async messaging patterns
+            "sync" - default for synchronous request-response
+        """
+        content_lower = content.lower()
+
+        # Check for error handling patterns
+        error_indicators = [
+            "error", "fail", "exception", "reject", "rollback",
+            "compensat", "cancel", "timeout", "retry"
+        ]
+        if any(indicator in content_lower for indicator in error_indicators):
+            return "error"
+
+        # Check for async patterns
+        async_indicators = [
+            "async", "-->>" in content,  # Mermaid async arrow
+            "event", "publish", "subscribe", "queue", "webhook",
+            "callback", "notify", "broadcast"
+        ]
+        if any(
+            indicator in content_lower if isinstance(indicator, str) else indicator
+            for indicator in async_indicators
+        ):
+            return "async"
+
+        # Default to sync
+        return "sync"
+
+    def _fix_brd_w014(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix missing diagram intent header.
+
+        Adds a template diagram intent header with required fields that
+        can be customized by the document author.
+        """
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+
+        # Check what fields are already present
+        required_fields = [
+            "diagram_type:",
+            "level:",
+            "scope_boundary:",
+            "upstream_refs:",
+            "downstream_refs:"
+        ]
+
+        existing_fields = [f for f in required_fields if f in content]
+        missing_fields = [f for f in required_fields if f not in content]
+
+        if not missing_fields:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="All diagram intent fields already present"
+            )
+
+        # Determine diagram type from content
+        if "sequenceDiagram" in content:
+            diagram_type = "sequence"
+            level = "component"
+        elif "flowchart" in content or "graph " in content:
+            diagram_type = "flowchart"
+            level = "process"
+        elif "C4" in content or "Container" in content:
+            diagram_type = "c4"
+            level = "context"
+        else:
+            diagram_type = "architecture"
+            level = "system"
+
+        # Extract doc_id from file path for refs
+        doc_id = file_path.stem.split("_")[0] if "_" in file_path.stem else file_path.stem
+
+        # Build intent header
+        intent_header = f"""<!-- DIAGRAM INTENT -->
+<!-- diagram_type: {diagram_type} -->
+<!-- level: {level} -->
+<!-- scope_boundary: {doc_id}-boundary -->
+<!-- upstream_refs: {doc_id} -->
+<!-- downstream_refs: PRD, EARS, ADR -->
+"""
+
+        # Find first mermaid block and insert header before it
+        new_content = re.sub(
+            r"(```mermaid)",
+            intent_header + r"\1",
+            content,
+            count=1
+        )
+
+        if new_content != content:
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message="Added diagram intent header",
+                changes=[
+                    f"Added fields: {', '.join(missing_fields)}",
+                    f"Detected diagram type: {diagram_type}",
+                    f"Set level: {level}"
+                ]
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message="Could not find Mermaid block for intent header"
         )

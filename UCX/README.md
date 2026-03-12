@@ -394,18 +394,24 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
 
-**Auto-Fix (v1.9.6+):**
+**Auto-Fix (v1.9.8+):**
 
 The `--fix` flag automatically fixes structural issues without AI:
 
-| Error Code | Issue | Auto-Fix |
-|------------|-------|----------|
-| `BRD-E002` | Missing custom_fields | Adds document_type, artifact_type, layer |
-| `BRD-E003` | Missing 'brd' tag | Adds to tags array |
-| `BRD-E004` | Missing 'layer-1-artifact' tag | Adds to tags array |
-| `BRD-E009` | Missing Document Control | Adds section (if none exists) |
-| `BRD-W005` | Legacy development_status | Renames to status |
-| `VAL-W002` | Legacy status value | Updates (active→production, draft→development) |
+| Error Code | Tier | Issue | Auto-Fix |
+|------------|------|-------|----------|
+| `BRD-E002` | 1 | Missing custom_fields | Adds document_type, artifact_type, layer |
+| `BRD-E003` | 1 | Missing 'brd' tag | Adds to tags array |
+| `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
+| `BRD-E009` | 1 | Missing Document Control | Adds section (if none exists) |
+| `BRD-W005` | 1 | Legacy development_status | Renames to status |
+| `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
+| `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |
+| `DIAG-W001` | 2 | Diagram node count | Updates prose to match diagram |
+| `BRD-W011` | 2 | Missing C4-L1 diagram | Adds @diagram-request for ADR layer |
+| `BRD-W012` | 2 | Missing DFD-L0 diagram | Adds @diagram-request for ADR layer |
+| `BRD-W013` | 2 | Sequence diagram unclassified | Auto-detects sync/async/error type |
+| `BRD-W014` | 2 | Missing diagram intent | Adds diagram metadata fields |
 
 **Validation Report Format (v1.9.3+):**
 
@@ -1057,6 +1063,9 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.9 | 2026-03-12 | **UCRem project path resolution & Prior Review Reconciliation**: Fixed UCRem prompt path to check project-specific paths first. Fixed project directory auto-detection bug. UCRem report writes to document folder (`{DOC-ID}.UCRem_report.md`). **New**: Prior Review Reconciliation - Fact Checker verifies resolution status of prior findings, Chairperson only counts UNRESOLVED findings in score, Auditor adds verification status table. |
+| 1.9.8 | 2026-03-11 | **Tier 2 diagram advisory auto-fix**: Added auto-fix for BRD-W011/W012 (adds @diagram-request for ADR layer), BRD-W013 (auto-detects sequence type), BRD-W014 (adds diagram intent). New @diagram-request pattern for honest traceability. Fixed version numbering bug (max+1 instead of len+1). Fixed FIXER_SKILLS (integration_expert → integration_lead). |
+| 1.9.7 | 2026-03-11 | **Tier 2 count mismatch auto-fix**: Extended `--fix` to handle GATE-W003 (count mismatch) and DIAG-W001 (diagram node count). Updates prose counts to match actual element or diagram node counts. |
 | 1.9.6 | 2026-03-11 | **Auto-fix structural issues**: Added `--fix` flag to `ucx validate`. Added `--report` flag to auto-generate report after fixing. Combined `--fix --report --clean-reports` to fix, report, and cleanup in one command. New `BRDFixer` module auto-fixes: missing metadata, missing tags, legacy status. Fixed Document Control regex bug. |
 | 1.9.5 | 2026-03-11 | **Validation report cleanup**: Added `--clean-reports` flag to `ucx validate` command. Added `--keep-versions` option (default: 1) to control retention. Cleans up old `*.V_validation_report_v*.md` files by modification time, keeping N most recent. |
 | 1.9.4 | 2026-03-11 | **QA subcategory codes 91-99**: Added Performance (91), Reliability (92), Scalability (94), Security (96), Observability (98), Maintainability (99) to valid element codes. Added Section 3/4 mappings (Feature Item=22, Stakeholder Need=24). Updated traceability tag patterns to require 2+ digits. Fixed ADR filename pattern. |

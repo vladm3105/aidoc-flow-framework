@@ -53,7 +53,7 @@ class UCRemPhase:
         doc_path: Union[str, Path],
         *,
         output_path: Optional[Path] = None,
-    ) -> list[FixProposal]:
+    ) -> tuple[list[FixProposal], Path]:
         """
         Generate fix proposals from review report.
 
@@ -63,7 +63,7 @@ class UCRemPhase:
             output_path: Custom output path for fix report
 
         Returns:
-            List of FixProposal instances
+            Tuple of (list of FixProposal instances, output path where report was written)
 
         Raises:
             FileNotFoundError: If inputs not found
@@ -80,9 +80,14 @@ class UCRemPhase:
         # Detect document type from report name
         doc_type = self._detect_doc_type(review_report)
 
-        # Set default output path
+        # Set default output path - write to document folder, not review report folder
         if output_path is None:
-            output_path = review_report.parent / f"{doc_type.value.upper()}_UCRem_REPORT.md"
+            # Extract doc_id from doc_path (e.g., BRD-01 from BRD-01_platform_architecture)
+            doc_id = self._extract_doc_id(doc_path, doc_type)
+            if doc_path.is_dir():
+                output_path = doc_path / f"{doc_id}.UCRem_report.md"
+            else:
+                output_path = doc_path.parent / f"{doc_id}.UCRem_report.md"
 
         # Build prompt
         prompt = self._build_remediation_prompt(doc_type, review_report, doc_path)
@@ -93,8 +98,9 @@ class UCRemPhase:
         # Write fix report
         output_path.write_text(fix_content, encoding="utf-8")
 
-        # Parse fix proposals
-        return self._parse_fixes(fix_content, doc_path)
+        # Parse fix proposals and return with output path
+        fixes = self._parse_fixes(fix_content, doc_path)
+        return fixes, output_path
 
     def apply_fix(
         self,
@@ -160,6 +166,30 @@ class UCRemPhase:
 
         return DocType.BRD  # Default
 
+    def _extract_doc_id(self, doc_path: Path, doc_type: DocType) -> str:
+        """Extract document ID from path.
+
+        Examples:
+            BRD-01_platform_architecture -> BRD-01
+            PRD-02.md -> PRD-02
+            docs/01_BRD/BRD-01/ -> BRD-01
+        """
+        # Get the relevant name (directory name or file stem)
+        name = doc_path.name if doc_path.is_dir() else doc_path.stem
+
+        # Try to extract doc_id pattern (e.g., BRD-01, PRD-02)
+        doc_type_upper = doc_type.value.upper()
+        pattern = rf"({doc_type_upper}-\d+)"
+        match = re.search(pattern, name, re.IGNORECASE)
+        if match:
+            return match.group(1).upper()
+
+        # Fallback: use directory/file name up to first underscore
+        if "_" in name:
+            return name.split("_")[0].upper()
+
+        return name.upper()
+
     def _build_remediation_prompt(
         self,
         doc_type: DocType,
@@ -191,43 +221,76 @@ class UCRemPhase:
         return "".join(parts)
 
     def _load_prompt(self, doc_type: DocType) -> str:
-        """Load UCRem prompt for document type."""
-        prompt_dir = self.config.get_prompt_dir() / "ucrem"
+        """Load UCRem prompt for document type.
 
-        candidates = [
-            prompt_dir / f"UCRem_PROMPT_{doc_type.value.upper()}_PROJECT.md",
-            prompt_dir / f"UCRem_PROMPT_{doc_type.value.upper()}.md",
-        ]
+        Search order:
+        1. Project-specific: {project_dir}/docs/UCX/remediation/UCRem_PROMPT_{TYPE}_PROJECT.md
+        2. Project BEELOCAL: {project_dir}/docs/UCX/remediation/UCRem_PROMPT_{TYPE}_BEELOCAL.md
+        3. Framework: {prompt_dir}/ucrem/UCRem_PROMPT_{TYPE}.md
+        """
+        candidates = []
+        doc_type_upper = doc_type.value.upper()
+
+        # Check project-specific prompts first
+        project_dir = self.config.get_project_dir()
+        if project_dir:
+            remediation_dir = project_dir / "docs" / "UCX" / "remediation"
+            candidates.extend([
+                remediation_dir / f"UCRem_PROMPT_{doc_type_upper}_PROJECT.md",
+                remediation_dir / f"UCRem_PROMPT_{doc_type_upper}_BEELOCAL.md",
+                remediation_dir / f"UCRem_PROMPT_{doc_type_upper}.md",
+            ])
+
+        # Framework prompts as fallback
+        prompt_dir = self.config.get_prompt_dir() / "ucrem"
+        candidates.extend([
+            prompt_dir / f"UCRem_PROMPT_{doc_type_upper}_PROJECT.md",
+            prompt_dir / f"UCRem_PROMPT_{doc_type_upper}.md",
+        ])
 
         for path in candidates:
             if path.exists():
                 return path.read_text(encoding="utf-8")
 
+        # Build helpful error message
+        searched_paths = "\n  - ".join(str(p) for p in candidates)
         raise PromptError(
-            f"No UCRem prompt found for {doc_type.value}",
-            prompt_name=f"UCRem_PROMPT_{doc_type.value.upper()}.md",
+            f"No UCRem prompt found for {doc_type.value}\n\nSearched:\n  - {searched_paths}",
+            prompt_name=f"UCRem_PROMPT_{doc_type_upper}.md",
         )
 
     def _load_fixer_skills(self) -> str:
-        """Load fixer persona skills."""
-        skill_dir = self.config.get_skill_dir()
+        """Load fixer persona skills.
+
+        Checks project-specific skills first, then framework skills.
+        """
         parts = []
 
         fixer_names = {
             "architect": "Architect Fixer",
             "auditor": "Auditor Fixer",
             "qa_lead": "QA Fixer",
-            "integration_expert": "Integration Fixer",
+            "integration_lead": "Integration Fixer",
             "devils_advocate": "Devil's Advocate",
         }
 
+        # Skill directories to check (project-specific first)
+        skill_dirs = []
+        project_dir = self.config.get_project_dir()
+        if project_dir:
+            skill_dirs.append(project_dir / "docs" / "UCX" / "skills")
+        skill_dirs.append(self.config.get_skill_dir())
+
         for skill in FIXER_SKILLS:
-            skill_path = skill_dir / f"{skill}.md"
-            if skill_path.exists():
-                title = fixer_names.get(skill, skill.replace("_", " ").title())
-                parts.append(f"### Skill: {title}\n\n")
-                parts.append(skill_path.read_text(encoding="utf-8"))
-                parts.append("\n\n")
+            # Find skill in first available directory
+            for skill_dir in skill_dirs:
+                skill_path = skill_dir / f"{skill}.md"
+                if skill_path.exists():
+                    title = fixer_names.get(skill, skill.replace("_", " ").title())
+                    parts.append(f"### Skill: {title}\n\n")
+                    parts.append(skill_path.read_text(encoding="utf-8"))
+                    parts.append("\n\n")
+                    break  # Found, move to next skill
 
         return "".join(parts)
 

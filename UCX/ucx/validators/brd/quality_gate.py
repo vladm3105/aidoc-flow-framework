@@ -166,14 +166,20 @@ def _check_gate06_diagrams(
 
     is_legacy_mode = origin == "brd"
 
-    # Check for diagram tags
+    # Check for diagram tags (actual diagrams)
     has_c4 = bool(DIAGRAM_TAG_PATTERNS["c4-l1"].search(content))
     has_dfd = bool(DIAGRAM_TAG_PATTERNS["dfd-l0"].search(content))
     has_seq_tag = bool(DIAGRAM_TAG_PATTERNS["sequence"].search(content))
     has_sequence_block = "sequenceDiagram" in content
 
+    # Check for diagram-request tags (deferred to ADR layer)
+    # These indicate the BRD has acknowledged the diagram need and deferred it
+    has_c4_request = "@diagram-request: c4-l1" in content
+    has_dfd_request = "@diagram-request: dfd-l0" in content
+
     # C4-L1 and DFD-L0 are advisory warnings
-    if not has_c4:
+    # Resolved by either: (1) actual diagram tag, or (2) diagram-request for ADR
+    if not has_c4 and not has_c4_request:
         result.add_issue(
             "BRD-W011",
             file_path=file_path,
@@ -181,7 +187,7 @@ def _check_gate06_diagrams(
             tier=ValidationTier.TIER2,
         )
 
-    if not has_dfd:
+    if not has_dfd and not has_dfd_request:
         result.add_issue(
             "BRD-W012",
             file_path=file_path,

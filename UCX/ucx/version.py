@@ -1,7 +1,29 @@
 """Version information for UCX."""
 
-__version__ = "1.9.7"
+__version__ = "1.9.9"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.9.9 - UCRem Project Path Resolution & Prior Review Reconciliation
+# - Fixed UCRem prompt path: now checks project-specific paths first
+#   ({project_dir}/docs/UCX/remediation/UCRem_PROMPT_{TYPE}_PROJECT.md)
+# - Fixed _load_fixer_skills mapping: integration_expert → integration_lead
+# - Fixed project directory auto-detection bug in review/remediate commands:
+#   resolves to absolute path before searching, prevents skipping current directory
+# - UCRem now loads skills from project-specific paths before framework paths
+# - UCRem report now writes to document folder by default (not review report folder)
+# - Report naming: {DOC-ID}.UCRem_report.md (e.g., BRD-01.UCRem_report.md)
+# - UCR Prior Review Reconciliation: Fact Checker now verifies prior findings resolution
+# - Chairperson only counts UNRESOLVED findings in score calculation
+# - Auditor adds "Prior Review Findings - Verification Status" table
+
+# v1.9.8 - Tier 2 Diagram Advisory Auto-Fix & Bug Fixes
+# - Added auto-fix for BRD-W011 (C4-L1): Adds @diagram-request notice for ADR layer
+# - Added auto-fix for BRD-W012 (DFD-L0): Adds @diagram-request notice for ADR layer
+# - Added auto-fix for BRD-W013 (Sequence): Auto-detects sync/async/error type
+# - Added auto-fix for BRD-W014 (Intent Header): Adds diagram metadata fields
+# - New @diagram-request pattern: honest traceability without false claims
+# - Fixed version numbering bug: now uses max(version) + 1 instead of len(files) + 1
+# - Fixed FIXER_SKILLS: changed integration_expert to integration_lead for consistency
 
 # v1.9.7 - Tier 2 Count Mismatch Auto-Fix
 # - Extended --fix to handle GATE-W003 (count mismatch: stated vs actual)

@@ -147,20 +147,20 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
         "Add PRD Requirements for each topic",
     ),
     "BRD-W011": (
-        "Missing BRD advisory diagram tag @diagram: c4-l1",
-        "Add C4-L1 tag or accept advisory warning",
+        "C4-L1 architecture diagram not present - recommended for architecture visualization",
+        "Auto-fix adds @diagram-request notice for ADR layer to create C4 context diagram",
     ),
     "BRD-W012": (
-        "Missing BRD advisory diagram tag @diagram: dfd-l0",
-        "Add DFD-L0 tag or accept advisory warning",
+        "DFD-L0 data flow diagram not present - recommended for data flow visualization",
+        "Auto-fix adds @diagram-request notice for ADR layer to create DFD level 0 diagram",
     ),
     "BRD-W013": (
-        "Sequence diagram present without BRD sequence tag",
-        "Add @diagram: sequence-sync|sequence-async|sequence-error",
+        "Sequence diagram present without classification tag",
+        "Auto-fix detects diagram type and adds @diagram: sequence-sync|async|error tag",
     ),
     "BRD-W014": (
         "Diagram intent header missing required fields",
-        "Add diagram_type, level, scope_boundary, upstream_refs, downstream_refs",
+        "Auto-fix adds diagram_type, level, scope_boundary, upstream_refs, downstream_refs",
     ),
     "BRD-I001": (
         "Consider adding regulatory compliance requirements",
