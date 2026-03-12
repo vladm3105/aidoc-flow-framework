@@ -4,12 +4,25 @@ tags:
   - quality-gate-validation
   - layer-1-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: quality-gate-validation
   artifact_type: BRD
   layer: 1
   priority: shared
-  development_status: active
+  development_status: deprecated
+  deprecated_version: "1.12.0"
+  replacement: "UCX/docs/scoring/SCORING_GUIDE.md"
+---
+
+> **DEPRECATED as of UCX v1.12.0**
+>
+> This document is superseded by UCX centralized scoring.
+>
+> **Migration**: See [UCX Scoring Guide](/opt/data/docs_flow_framework/UCX/docs/scoring/SCORING_GUIDE.md)
+>
+> **Removal**: Scheduled for UCX v2.0.0
+
 ---
 
 # BRD Quality Gate Validation Rules

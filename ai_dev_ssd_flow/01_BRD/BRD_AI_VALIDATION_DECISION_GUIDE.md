@@ -5,12 +5,26 @@ tags:
   - validation-framework
   - decision-tree
   - best-practices
+  - deprecated
 custom_fields:
   document_type: ai-guide
   artifact_type: BRD
   priority: high
   version: "0.1"
   scope: validation-and-quality
+  development_status: deprecated
+  deprecated_version: "1.12.0"
+  replacement: "UCX/docs/scoring/SCORING_TROUBLESHOOTING.md"
+---
+
+> **DEPRECATED as of UCX v1.12.0**
+>
+> This document is superseded by UCX centralized scoring troubleshooting.
+>
+> **Migration**: See [UCX Scoring Troubleshooting](/opt/data/docs_flow_framework/UCX/docs/scoring/SCORING_TROUBLESHOOTING.md)
+>
+> **Removal**: Scheduled for UCX v2.0.0
+
 ---
 
 # AI Assistant Guide: BRD Validation Decision-Making

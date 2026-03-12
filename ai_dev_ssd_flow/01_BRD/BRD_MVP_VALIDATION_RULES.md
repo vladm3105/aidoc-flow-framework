@@ -676,6 +676,20 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 ---
 
+## Scoring Sections (CHECK 13-18) - Partial Deprecation
+
+> **SCORING SECTIONS DEPRECATED as of UCX v1.12.0**
+>
+> CHECK 13-18 (PRD-Ready scoring and FR validation) are superseded by UCX category-weighted scoring.
+>
+> **Still Valid**: CHECK 01-12 (structural validation) remain active
+>
+> **Migration**: See [UCX Weight Matrix](/opt/data/docs_flow_framework/UCX/docs/scoring/WEIGHT_MATRIX.md)
+>
+> **Removal**: Scoring sections scheduled for removal in UCX v2.0.0
+
+---
+
 ### CHECK 13: PRD-Ready Score Validation  NEW
 
 **Purpose**: Validate PRD-Ready Score format and threshold (BRD v1.1 enhancement)

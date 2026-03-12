@@ -1206,6 +1206,18 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.11.0](docs/CHANGELOG_v1.11.0.md) | Unified scanner and manifest release notes |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 
+### Scoring Documentation (v1.12.0)
+
+| Document | Description |
+|----------|-------------|
+| [SCORING_GUIDE.md](docs/scoring/SCORING_GUIDE.md) | Primary scoring user guide |
+| [WEIGHT_MATRIX.md](docs/scoring/WEIGHT_MATRIX.md) | Per-document-type weight matrices |
+| [CATEGORY_REFERENCE.md](docs/scoring/CATEGORY_REFERENCE.md) | Category definitions and element codes |
+| [PERSONA_CATEGORY_MAPPING.md](docs/scoring/PERSONA_CATEGORY_MAPPING.md) | Persona to category assignment rules |
+| [SCORING_TROUBLESHOOTING.md](docs/scoring/SCORING_TROUBLESHOOTING.md) | Common issues and solutions |
+| [SCORING_CUSTOMIZATION.md](docs/scoring/SCORING_CUSTOMIZATION.md) | Project-specific overrides guide |
+| [MIGRATION_FROM_BRD_SCORING.md](docs/scoring/MIGRATION_FROM_BRD_SCORING.md) | Migration from deprecated BRD scoring |
+
 ---
 
 ## Legacy Shell Scripts
