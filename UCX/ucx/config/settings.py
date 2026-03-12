@@ -301,6 +301,12 @@ class UCXConfig(BaseSettings):
         description="Directory for checkpoint files",
     )
 
+    # Scoring (v1.12.0+)
+    scoring_method: str = Field(
+        default="weighted",
+        description="Scoring method: 'weighted' (category-weighted with caps) or 'legacy' (simple deduction)",
+    )
+
     @classmethod
     def from_yaml(cls, path: Path) -> "UCXConfig":
         """
