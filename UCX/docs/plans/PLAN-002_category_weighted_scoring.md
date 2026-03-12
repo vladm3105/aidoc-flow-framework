@@ -178,18 +178,89 @@ Different document types may have adjusted category weights:
 - Route by category instead of persona prefix
 - Support category-based fixer selection
 
-### Phase 4: Documentation (UCX 1.12.0)
+### Phase 4: Comprehensive Scoring Documentation (UCX 1.12.0)
 
-**Task 4.1: Update docs**
-- `docs/HOW_TO_USE.md` - Add scoring section
+**Task 4.1: Create UCX Scoring Documentation Suite**
+
+Create centralized scoring documentation in `UCX/docs/scoring/`:
+
+| Document | Purpose |
+|----------|---------|
+| `SCORING_GUIDE.md` | Primary user guide for understanding and using UCX scoring |
+| `CATEGORY_REFERENCE.md` | Complete category definitions, element codes, keywords |
+| `WEIGHT_MATRIX.md` | Per-document-type weight matrices with rationale |
+| `PERSONA_CATEGORY_MAPPING.md` | Persona → Category assignment rules |
+| `SCORING_TROUBLESHOOTING.md` | Common issues, score discrepancies, calibration |
+| `SCORING_CUSTOMIZATION.md` | Project-specific weight overrides guide |
+
+**Task 4.2: SCORING_GUIDE.md Structure**
+
+```markdown
+# UCX Scoring Guide
+
+## 1. Overview
+- What is category-weighted scoring?
+- Why it replaces raw P0/P1/P2 counting
+- Score interpretation (0-100 scale)
+
+## 2. Categories
+- 8 category definitions
+- Element code mappings
+- Cross-cutting keyword detection
+
+## 3. Weights
+- Default weight table
+- Document-type variations
+- Per-category deduction caps
+
+## 4. Score Calculation
+- Formula with examples
+- Step-by-step walkthrough
+- Edge cases (zero findings, max findings)
+
+## 5. Thresholds
+- Pass (≥85), Warn (70-84), Fail (<70)
+- Per-document-type variations
+
+## 6. Customization
+- Project weight overrides
+- Adding custom categories
+- Compliance keyword lists
+
+## 7. Troubleshooting
+- Score variance between runs
+- Category mapping issues
+- Backward compatibility
+```
+
+**Task 4.3: WEIGHT_MATRIX.md Structure**
+
+```markdown
+# UCX Weight Matrix Reference
+
+## Default Weights (All Document Types)
+| Category | Weight | Max Deduction | Element Codes |
+|----------|--------|---------------|---------------|
+| functional | 25% | -25 | 01, 22, 24 |
+| ... | ... | ... | ... |
+
+## BRD Weights (Layer 1)
+[Matrix with BRD-specific adjustments]
+
+## PRD Weights (Layer 2)
+[Matrix with PRD-specific adjustments]
+
+## EARS Weights (Layer 3)
+...
+
+## Weight Rationale
+[Why each document type has specific weight distribution]
+```
+
+**Task 4.4: Update existing docs**
+- `docs/HOW_TO_USE.md` - Add scoring section, link to SCORING_GUIDE.md
 - `docs/QUICK_START.md` - Update score interpretation
-- `README.md` - Add scoring overview
-
-**Task 4.2: Create scoring guide**
-- File: `docs/SCORING_GUIDE.md`
-- Category definitions and rationale
-- Weight customization instructions
-- Troubleshooting score discrepancies
+- `README.md` - Add scoring overview, link to docs/scoring/
 
 ### Phase 5: Project Prompt Migration (Post-1.12.0)
 
@@ -199,6 +270,65 @@ Different document types may have adjusted category weights:
 
 **Task 5.2: Add project scoring config**
 - `docs/UCX/scoring_weights.yaml` (optional overrides)
+
+### Phase 6: Documentation Consolidation & Deprecation (UCX 1.12.0)
+
+**Task 6.1: Deprecate BRD-specific validation docs**
+
+The following documents become **DEPRECATED** and superseded by UCX centralized scoring:
+
+| Deprecated Document | Replacement | Action |
+|---------------------|-------------|--------|
+| `ai_dev_ssd_flow/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | `UCX/docs/scoring/SCORING_GUIDE.md` | Add deprecation notice |
+| `ai_dev_ssd_flow/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` | Add deprecation notice |
+| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18 scoring) | `UCX/docs/scoring/WEIGHT_MATRIX.md` | Partial deprecation (scoring sections only) |
+
+**Task 6.2: Add deprecation notices**
+
+Add to each deprecated file:
+
+```markdown
+---
+# DEPRECATED NOTICE
+> **⚠️ DEPRECATED as of UCX v1.12.0**
+>
+> This document is superseded by UCX centralized scoring.
+>
+> **Migration**: See [UCX Scoring Guide](/opt/data/docs_flow_framework/UCX/docs/scoring/SCORING_GUIDE.md)
+>
+> **Removal**: Scheduled for UCX v2.0.0
+---
+```
+
+**Task 6.3: Update cross-references**
+
+Update all documents that reference deprecated files:
+- `BRD_QUALITY_GATE_WORKFLOW.md` → Link to UCX scoring
+- `BRD_VALIDATION_STRATEGY.md` → Link to UCX scoring
+- Pre-commit hook documentation → Reference `ucx validate`
+
+**Task 6.4: Create migration guide**
+
+File: `UCX/docs/scoring/MIGRATION_FROM_BRD_SCORING.md`
+
+```markdown
+# Migration from BRD-Specific Scoring to UCX
+
+## What Changed
+- BRD_MVP_VALIDATION_RULES.md CHECK 13-18 → UCX category-weighted scoring
+- BRD_MVP_QUALITY_GATE_VALIDATION.md → UCX quality gates
+- Per-BRD decision guides → UCX SCORING_TROUBLESHOOTING.md
+
+## Migration Steps
+1. Remove references to deprecated scoring docs
+2. Update prompts to use category-weighted output
+3. Configure project-specific weights if needed
+4. Validate with `ucx scan` to verify category mapping
+
+## Backward Compatibility
+- Old reports without categories remain parseable
+- Legacy scoring formula available via `--legacy-scoring` flag (temporary)
+```
 
 ---
 
@@ -215,13 +345,26 @@ UCX/
 │   └── config/
 │       └── scoring_weights.yaml  # Default weight configuration
 ├── docs/
-│   ├── SCORING_GUIDE.md       # User documentation
+│   ├── scoring/                   # NEW: Comprehensive scoring documentation
+│   │   ├── SCORING_GUIDE.md       # Primary user guide
+│   │   ├── CATEGORY_REFERENCE.md  # Category definitions, codes, keywords
+│   │   ├── WEIGHT_MATRIX.md       # Per-doc-type weight matrices
+│   │   ├── PERSONA_CATEGORY_MAPPING.md  # Persona → Category rules
+│   │   ├── SCORING_TROUBLESHOOTING.md   # Issues, calibration
+│   │   ├── SCORING_CUSTOMIZATION.md     # Project overrides guide
+│   │   └── MIGRATION_FROM_BRD_SCORING.md # Migration from deprecated docs
 │   └── plans/
 │       └── PLAN-002_category_weighted_scoring.md  # This file
 └── tests/
     └── scoring/
         ├── test_categories.py
         └── test_calculator.py
+
+# Deprecated files (to be marked in Phase 6):
+ai_dev_ssd_flow/01_BRD/
+├── BRD_MVP_QUALITY_GATE_VALIDATION.md  # → UCX scoring
+├── BRD_AI_VALIDATION_DECISION_GUIDE.md # → UCX troubleshooting
+└── BRD_MVP_VALIDATION_RULES.md         # Scoring sections → UCX
 ```
 
 ---
@@ -351,6 +494,19 @@ document_types:
 - [ ] Graceful fallback to persona-based extraction
 - [ ] Warning when using legacy scoring
 
+### AC-7: Documentation Completeness
+- [ ] All 7 scoring docs created in `UCX/docs/scoring/`
+- [ ] SCORING_GUIDE.md covers all categories and weights
+- [ ] WEIGHT_MATRIX.md includes all document types
+- [ ] Migration guide covers deprecated files
+- [ ] Deprecated files have deprecation notices
+
+### AC-8: Deprecation
+- [ ] BRD_MVP_QUALITY_GATE_VALIDATION.md marked deprecated
+- [ ] BRD_AI_VALIDATION_DECISION_GUIDE.md marked deprecated
+- [ ] Cross-references updated to UCX scoring docs
+- [ ] No broken links to deprecated content
+
 ---
 
 ## Risks and Mitigations
@@ -370,10 +526,18 @@ document_types:
 | Dependency | Type | Notes |
 |------------|------|-------|
 | ID_NAMING_STANDARDS.md | Reference | Element type code definitions |
-| BRD_MVP_VALIDATION_RULES.md | Reference | Existing scoring methodology alignment |
+| BRD_MVP_VALIDATION_RULES.md | Reference | Existing scoring methodology (to deprecate scoring sections) |
 | UCX v1.11.0 | Baseline | Chairperson manifest format |
 | Python 3.12+ | Runtime | Type hints, match statements |
 | PyYAML | Library | Config loading |
+
+### Files to Deprecate
+
+| File | Current Purpose | Replacement |
+|------|-----------------|-------------|
+| `ai_dev_ssd_flow/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | Corpus-level quality gates | `UCX/docs/scoring/SCORING_GUIDE.md` |
+| `ai_dev_ssd_flow/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | AI decision-making guide | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` |
+| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18) | PRD-Ready scoring formula | `UCX/docs/scoring/WEIGHT_MATRIX.md` |
 
 ---
 
@@ -384,7 +548,9 @@ document_types:
 | Score variance between runs | ≤5 points | Run same review 3x, measure std dev |
 | Category coverage | 100% | All findings have category assignment |
 | Backward compatibility | 100% | Old reports parse without error |
-| Documentation completeness | 100% | SCORING_GUIDE covers all categories |
+| Documentation completeness | 100% | All 7 scoring docs created and cross-linked |
+| Deprecated docs migrated | 100% | All references updated, notices added |
+| Weight matrix coverage | 100% | All 10+ document types have weight definitions |
 
 ---
 
@@ -392,11 +558,12 @@ document_types:
 
 | Phase | Target | Deliverables |
 |-------|--------|--------------|
-| Phase 1 | UCX 1.12.0 | Scoring module, tests |
-| Phase 2 | UCX 1.12.0 | Chairperson prompt updates |
-| Phase 3 | UCX 1.12.0 | Scanner integration |
-| Phase 4 | UCX 1.12.0 | Documentation |
-| Phase 5 | UCX 1.12.1 | Project prompt migration |
+| Phase 1 | UCX 1.12.0 | Scoring module (`ucx/scoring/`), tests |
+| Phase 2 | UCX 1.12.0 | Chairperson prompt updates (category manifest) |
+| Phase 3 | UCX 1.12.0 | Scanner integration (category extraction) |
+| Phase 4 | UCX 1.12.0 | Scoring documentation suite (7 docs in `docs/scoring/`) |
+| Phase 5 | UCX 1.12.1 | Project prompt migration (BeeLocal) |
+| Phase 6 | UCX 1.12.0 | Documentation consolidation, deprecation notices |
 
 ---
 
