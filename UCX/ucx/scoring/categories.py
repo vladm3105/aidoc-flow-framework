@@ -14,6 +14,7 @@ Categories:
     CAT-08: architecture - Architecture decisions
 """
 
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
@@ -184,7 +185,6 @@ def extract_element_code(finding_id: str) -> Optional[int]:
             pass
 
     # Try to extract from bracket notation (e.g., [01])
-    import re
     match = re.search(r"\[(\d{2})\]", finding_id)
     if match:
         return int(match.group(1))
