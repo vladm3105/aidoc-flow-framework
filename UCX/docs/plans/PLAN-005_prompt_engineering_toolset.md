@@ -1,9 +1,9 @@
 # PLAN-005: UCX Prompt Inspection Toolset
 
-**Status**: Complete (Implemented in v1.14.0)
+**Status**: Complete (v1.14.0, v1.14.1, v1.14.2)
 **Created**: 2026-03-13
 **Updated**: 2026-03-13
-**Released**: v1.14.0 (2026-03-13)
+**Released**: v1.14.0 (Inspection), v1.14.1 (Preprocessing), v1.14.2 (Enhanced Extraction)
 **Dependencies**: v1.13.1 (Context Engineering)
 
 ## Problem Statement
@@ -1457,13 +1457,90 @@ grep -c "Anti-Patterns" docs/01_BRD/BRD-01_platform_architecture/.doc_review_mem
 
 ---
 
+## v1.14.2 Enhanced Skill Extraction (Complete)
+
+**Status**: Complete
+**Released**: 2026-03-13
+
+### Issue Identified
+
+Quality evaluation of generated prompts revealed incomplete skill extraction:
+
+| Skill Section | Before v1.14.2 | After v1.14.2 |
+|---------------|----------------|---------------|
+| Role | ✓ Extracted | ✓ Extracted |
+| Review Focus | ✓ Extracted | ✓ Extracted |
+| Anti-Patterns | ✓ Extracted | ✓ Extracted |
+| Business Processes | ✗ Missing | ✓ Extracted |
+| Stakeholders | ✗ Missing | ✓ Extracted |
+| Domain Requirements | ✗ Missing | ✓ Extracted |
+| Review Questions | ✗ Missing | ✓ Extracted |
+| Analysis Checklist | ✗ Missing | ✓ Extracted |
+| Quality Framework (5 C's) | ✗ Missing | ✓ Extracted |
+
+**Impact**: ~60% of skill content was not being used in generated prompts.
+
+### Before/After Metrics (Business Analyst)
+
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| Total tokens | 18,099 | 18,633 | +534 tokens |
+| Instruction tokens | 372 | 906 | +143% |
+| Instruction ratio | 2.1% | 4.9% | +133% |
+
+### Implementation
+
+Added 6 new extraction patterns to `_load_system_instructions()` in `ucx/prompts/api.py`:
+
+```python
+# Business Processes (domain-specific workflows)
+r'^##\s+.*Business Process.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
+
+# Stakeholders (domain context)
+r'^##\s+.*Stakeholders.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
+
+# Corridor/Domain-Specific Requirements
+r'^##\s+.*(?:Corridor|Domain).*?Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
+
+# Review Questions (actionable checklist)
+r'^##\s+Review Questions.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
+
+# Analysis Checklist
+r'^##\s+Analysis Checklist.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
+
+# The 5 'C's or similar frameworks
+r"^##\s+The 5\s*['"]?C['"]?s.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)"
+```
+
+### Verification
+
+```bash
+# Generate prompt and check instruction ratio
+cd /opt/data/b-local/b-local-docs
+source .envrc
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p business_analyst
+
+# Check token distribution
+cat docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_business_analyst.meta.json | jq '.tokens'
+# Expected: {"total": 18633, "document": 17727, "instructions": 906}
+
+# Verify new sections present
+grep -c "Business Processes\|Review Questions\|Analysis Checklist\|Quality Framework" \
+  docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_business_analyst.txt
+# Expected: 4
+```
+
+---
+
 ## References
 
 - [PLAN-003: Persona Prompt Restructuring](PLAN-003_persona_prompt_restructuring.md)
 - [CONTEXT_ENGINEERING.md](../CONTEXT_ENGINEERING.md)
 - [CHANGELOG_v1.14.0](../CHANGELOG_v1.14.0.md)
+- [CHANGELOG_v1.14.1](../CHANGELOG_v1.14.1.md)
+- [CHANGELOG_v1.14.2](../CHANGELOG_v1.14.2.md)
 - Existing script: [scripts/generate_prompts.py](../../scripts/generate_prompts.py)
 
 ---
 
-*Last Updated: 2026-03-13 (v1.14.1 quality improvements complete)*
+*Last Updated: 2026-03-13 (v1.14.2 enhanced skill extraction complete)*

@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.1
+**Current Version**: 1.14.2
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,13 +12,14 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.0 ──► v1.13.1 ──► v1.14.0 ──► v1.14.1 (Current) ──► v1.15.0 ──► v2.0.0
-   │           │            │            │                    │           │
-   │           │            │            │                    │           └─► Breaking changes
-   │           │            │            │                    └─► Multi-document validation
-   │           │            │            └─► Prompt Inspection Toolset
-   │           │            └─► Advanced Context Engineering
-   │           └─► Context Engineering + Finding ID
+v1.12.0 ──► v1.13.x ──► v1.14.0 ──► v1.14.1 ──► v1.14.2 (Current) ──► v1.15.0 ──► v2.0.0
+   │           │            │            │             │                  │           │
+   │           │            │            │             │                  │           └─► Breaking changes
+   │           │            │            │             │                  └─► Multi-document validation
+   │           │            │            │             └─► Enhanced skill extraction
+   │           │            │            └─► Content preprocessing
+   │           │            └─► Prompt Inspection Toolset
+   │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
 
@@ -91,7 +92,20 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 ──► v1.14.0 ──► v1.14.1 
 
 ## Completed Releases
 
-### v1.14.1 (2026-03-13) - Current
+### v1.14.2 (2026-03-13) - Current
+
+**Features**:
+- **Enhanced Skill Extraction**: Extract 6 additional sections from skill manifests
+- **Business Processes**: Domain-specific workflow extraction
+- **Stakeholders**: Key actor and concern extraction
+- **Review Questions**: Actionable review prompt extraction
+- **Analysis Checklist**: Verification item extraction
+- **Quality Framework**: 5 C's framework extraction
+- **Instruction Ratio**: Improved from ~2% to ~5% for richer guidance
+
+See [CHANGELOG_v1.14.2](CHANGELOG_v1.14.2.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
+
+### v1.14.1 (2026-03-13)
 
 **Features**:
 - **Prompt Quality Improvements**: Content preprocessing for cleaner prompts
@@ -99,7 +113,7 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 ──► v1.14.0 ──► v1.14.1 
 - **System Instructions**: Load persona skills from skill manifests with project-specific overrides
 - **Section Sorting**: Numeric ordering (BRD-01.1, BRD-01.5, BRD-01.11) instead of alphabetical
 - **Anti-Pattern Extraction**: Fixed regex for extracting skill sections into prompts
-- **Project Templates**: Support for `.ucx/skills/` project-specific persona customization
+- **Project Templates**: Support for `docs/UCX/skills/` project-specific persona customization
 - **Token Optimization**: ~455 tokens saved per prompt through metadata stripping
 
 See [CHANGELOG_v1.14.1](CHANGELOG_v1.14.1.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
@@ -195,6 +209,7 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Advanced Context Engineering | High | ✅ Complete (v1.13.1) | PLAN-004 |
 | Prompt Inspection Toolset | High | ✅ Complete (v1.14.0) | PLAN-005 |
 | Prompt Quality Improvements | High | ✅ Complete (v1.14.1) | PLAN-005 |
+| Enhanced Skill Extraction | High | ✅ Complete (v1.14.2) | PLAN-005 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
@@ -224,6 +239,7 @@ To propose new features or changes:
 - [CHANGELOG_v1.13.1.md](CHANGELOG_v1.13.1.md) - Advanced context engineering
 - [CHANGELOG_v1.14.0.md](CHANGELOG_v1.14.0.md) - Prompt inspection toolset
 - [CHANGELOG_v1.14.1.md](CHANGELOG_v1.14.1.md) - Prompt quality improvements
+- [CHANGELOG_v1.14.2.md](CHANGELOG_v1.14.2.md) - Enhanced skill extraction
 
 ---
 

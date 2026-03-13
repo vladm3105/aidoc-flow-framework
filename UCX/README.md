@@ -1286,6 +1286,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.2 | 2026-03-13 | **Enhanced Skill Extraction**: Extracts 6 additional sections from skill manifests (Business Processes, Stakeholders, Domain Requirements, Review Questions, Analysis Checklist, Quality Framework 5 C's). Instruction ratio improved from ~2% to ~5% for richer guidance. See [CHANGELOG_v1.14.2.md](docs/CHANGELOG_v1.14.2.md). |
 | 1.14.1 | 2026-03-13 | **Prompt Quality Improvements**: Content preprocessing strips YAML frontmatter, HTML comments, navigation breadcrumbs, document metadata from prompts. System instructions loaded from skill manifests with project-specific overrides (`docs/UCX/skills/`). Numeric section ordering (BRD-01.5 before BRD-01.11). Fixed anti-pattern regex extraction. Token optimization: ~455 tokens saved per prompt (~5,000 across 11 personas). See [CHANGELOG_v1.14.1.md](docs/CHANGELOG_v1.14.1.md). |
 | 1.14.0 | 2026-03-13 | **Prompt Inspection Toolset**: Pre-LLM analysis of generated prompts. New CLI commands: `ucx prompt tokens/sections/inspect/check/generate`. `UCPromptPhase` API class. Token analysis per persona with budget tracking. Section inclusion matrix. Prompt structure analysis with attention steering detection. Metadata files (`.meta.json`) alongside generated prompts. See [CHANGELOG_v1.14.0.md](docs/CHANGELOG_v1.14.0.md) and [PLAN-005](docs/plans/PLAN-005_prompt_engineering_toolset.md). |
 | 1.13.1 | 2026-03-13 | **Advanced Context Engineering**: Completes deferred features from v1.13.0. Hybrid keyword scan (`RelevantSnippet`, `_scan_other_sections_for_keywords()`) discovers relevant content in non-mapped sections. Appendix-on-demand (`AppendixInfo`, lightweight index ~500 tokens vs 20-50K). Dynamic section mapping (`SECTION_CATEGORIES`, `DynamicSectionMapper`) for semantic filtering across document types. VERIFY tag pattern `[VERIFY: appendix-id]` with `AppendixVerifier` for post-processing verification. See [CHANGELOG_v1.13.1.md](docs/CHANGELOG_v1.13.1.md) and [PLAN-004](docs/plans/PLAN-004_advanced_context_engineering.md). |
@@ -1328,15 +1329,14 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.1 - Prompt Quality Improvements
-- Content preprocessing: strips YAML frontmatter, HTML comments, navigation, document metadata
-- System instructions loaded from skill manifests with project-specific overrides
-- Numeric section ordering, anti-pattern extraction fixes
-- See [CHANGELOG_v1.14.1](docs/CHANGELOG_v1.14.1.md) for details
+**Latest Release**: v1.14.2 - Enhanced Skill Extraction
+- Extracts 6 additional sections from skill manifests (Business Processes, Stakeholders, Domain Requirements, Review Questions, Analysis Checklist, Quality Framework 5 C's)
+- Instruction ratio improved from ~2% to ~5% for richer guidance
+- See [CHANGELOG_v1.14.2](docs/CHANGELOG_v1.14.2.md) for details
 
-**Previous Release**: v1.14.0 - Prompt Inspection Toolset
-- Pre-LLM analysis of generated prompts (`ucx prompt tokens/sections/inspect/check/generate`)
-- See [CHANGELOG_v1.14.0](docs/CHANGELOG_v1.14.0.md) for details
+**Previous Release**: v1.14.1 - Prompt Quality Improvements
+- Content preprocessing, system instructions from skill manifests, anti-pattern extraction fixes
+- See [CHANGELOG_v1.14.1](docs/CHANGELOG_v1.14.1.md) for details
 
 **Next Release**: v1.15.0 - Multi-Document Validation
 - Corpus-wide validation (`ucx validate --all`)
@@ -1365,6 +1365,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.13.0](docs/CHANGELOG_v1.13.0.md) | Context engineering & Finding ID |
 | [CHANGELOG v1.14.0](docs/CHANGELOG_v1.14.0.md) | Prompt inspection toolset |
 | [CHANGELOG v1.14.1](docs/CHANGELOG_v1.14.1.md) | Prompt quality improvements |
+| [CHANGELOG v1.14.2](docs/CHANGELOG_v1.14.2.md) | Enhanced skill extraction |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

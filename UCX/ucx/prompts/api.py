@@ -830,6 +830,36 @@ class UCPromptPhase:
         if antipattern_match:
             instructions_parts.append(f"\n**Anti-Patterns to Flag**:\n{antipattern_match.group(1).strip()}")
 
+        # Extract Business Processes (domain-specific workflows)
+        process_match = re.search(r'^##\s+.*Business Process.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if process_match:
+            instructions_parts.append(f"\n**Business Processes**:\n{process_match.group(1).strip()}")
+
+        # Extract Stakeholders (domain context)
+        stakeholder_match = re.search(r'^##\s+.*Stakeholders.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if stakeholder_match:
+            instructions_parts.append(f"\n**Key Stakeholders**:\n{stakeholder_match.group(1).strip()}")
+
+        # Extract Corridor/Domain-Specific Requirements
+        corridor_match = re.search(r'^##\s+.*(?:Corridor|Domain).*?Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if corridor_match:
+            instructions_parts.append(f"\n**Domain Requirements**:\n{corridor_match.group(1).strip()}")
+
+        # Extract Review Questions (actionable checklist)
+        questions_match = re.search(r'^##\s+Review Questions.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if questions_match:
+            instructions_parts.append(f"\n**Review Questions**:\n{questions_match.group(1).strip()}")
+
+        # Extract Analysis Checklist
+        checklist_match = re.search(r'^##\s+Analysis Checklist.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if checklist_match:
+            instructions_parts.append(f"\n**Analysis Checklist**:\n{checklist_match.group(1).strip()}")
+
+        # Extract The 5 'C's or similar frameworks
+        framework_match = re.search(r"^##\s+The 5\s*['\"]?C['\"]?s.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)", skill_content, re.MULTILINE)
+        if framework_match:
+            instructions_parts.append(f"\n**Quality Framework (5 C's)**:\n{framework_match.group(1).strip()}")
+
         if instructions_parts:
             return "\n".join(instructions_parts)
 
