@@ -654,6 +654,55 @@ api_client = LiteLLMClient(model="opus", api_key="sk-ant-...")
 
 ---
 
+## CLI Arguments Reference
+
+### Global Options
+
+| Option | Env Var | Default | Description |
+|--------|---------|---------|-------------|
+| `--model` | `UCX_MODEL` | `opus` | AI model selection (see below) |
+| `--mode` | `UCX_AI_MODE` | `cli` | `cli` for CLI agents, `api` for LiteLLM |
+| `--cli-tool` | `UCX_CLI_TOOL` | `claude` | CLI tool: claude, gemini, ollama, aider |
+| `-P, --project-dir` | `UCX_PROJECT_DIR` | auto | Project root with docs/UCX/ |
+| `-W, --enable-web-search` | `UCX_ENABLE_WEB_SEARCH` | false | Enable internet search |
+| `-l, --log-level` | `UCX_LOG_LEVEL` | `INFO` | DEBUG, INFO, WARNING, ERROR |
+| `-v, --verbose` | - | false | Sets log level to DEBUG |
+| `-q, --quiet` | - | false | Sets log level to WARNING |
+
+### Model Selection
+
+| Model | Quality | Speed | Cost | Best For |
+|-------|---------|-------|------|----------|
+| `opus` | Highest | Slow | $$$ | Complex reviews, critical documents |
+| `sonnet` | High | Medium | $$ | Most tasks (recommended default) |
+| `haiku` | Good | Fast | $ | Quick validation, simple reviews |
+
+```bash
+# Using --model flag
+ucx --model sonnet review brd docs/01_BRD/BRD-01/
+ucx --model haiku validate brd docs/01_BRD/BRD-01/
+
+# Using environment variable
+export UCX_MODEL=sonnet
+ucx review brd docs/01_BRD/BRD-01/
+
+# One-time override
+UCX_MODEL=opus ucx review brd docs/01_BRD/BRD-01/
+```
+
+### Commands Quick Reference
+
+| Command | Purpose | Key Options |
+|---------|---------|-------------|
+| `review` | AI-powered document review | `--multi-turn`, `--model`, `--clean-reports` |
+| `validate` | Fast structural validation (no AI) | `--fix`, `--tier1-only`, `--strict` |
+| `remediate` | Generate fixes from review | `--model` |
+| `create` | Create new document | `--from-ref`, `--from-upstream` |
+| `autopilot` | Full cycle (create→review→fix) | `--max-iterations` |
+| `scan` | Analyze review report | `--verbose`, `--format json` |
+
+---
+
 ## Configuration
 
 ### Environment Variables
@@ -663,7 +712,7 @@ api_client = LiteLLMClient(model="opus", api_key="sk-ant-...")
 | `UCX_AI_MODE` | `cli` | AI client mode: `cli` or `api` |
 | `UCX_CLI_TOOL` | `claude` | CLI tool for cli mode |
 | `UCX_CLI_TIMEOUT` | `300` | CLI command timeout in seconds |
-| `UCX_MODEL` | `opus` | Model for API mode |
+| `UCX_MODEL` | `opus` | Model: opus (best), sonnet (balanced), haiku (fast) |
 | `UCX_API_BASE` | - | Custom API base URL |
 | `UCX_MAX_ITER` | `3` | Maximum review/fix cycles |
 | `UCX_MIN_SCORE` | `90` | Minimum passing score |
@@ -804,8 +853,9 @@ UCX/
 │   │   └── remediation.py      # UCRemPhase
 │   │
 │   ├── core/                   # Core orchestration
-│   │   ├── review_memory.py    # ReviewMemory for multi-turn
-│   │   └── persona_prompts.py  # Persona prompt templates + skill loading
+│   │   ├── review_memory.py    # ReviewMemory for multi-turn + finding extraction
+│   │   ├── persona_prompts.py  # Persona prompt templates + skill loading
+│   │   └── context_engine.py   # Context engineering (v1.13.0+)
 │   │
 │   ├── cli/                    # CLI commands
 │   │   └── main.py             # Click CLI
@@ -1061,6 +1111,43 @@ Reports generated with UCX v1.11.0+ include a structured manifest:
 - **Skip pre-screening**: Remediation reads manifest directly
 - **Backward compatible**: Falls back to persona extraction for older reports
 
+### Finding ID Format Standard (v1.13.0+)
+
+All persona findings use the canonical format: `PREFIX-P{0-2}-NNN`
+
+| Component | Rule | Example |
+|-----------|------|---------|
+| PREFIX | 2-4 char persona abbreviation | ARCH, AUD, TL, OP |
+| PRIORITY | P0 (critical), P1 (high), P2 (medium) | P0 |
+| NNN | 3-digit sequence (001-999) | 001 |
+
+**Persona Prefixes:**
+
+| Persona | Prefix | Example |
+|---------|--------|---------|
+| Architect | ARCH | `ARCH-P0-001` |
+| Auditor | AUD | `AUD-P0-001` |
+| Tech Lead | TL | `TL-P1-001` |
+| Strategist | STR | `STR-P1-001` |
+| Devil's Advocate | DA | `DA-P0-001` |
+| Operator | OP | `OP-P0-001` |
+| Integration Lead | IL | `IL-P0-001` |
+| Product Owner | PO | `PO-P1-001` |
+| Business Analyst | BA | `BA-P1-001` |
+| Fact Checker | FC | `FC-P0-001` |
+| Chairperson (manifest) | REM | `REM-P0-001` |
+
+**Context Engineering (v1.13.0+):**
+
+UCX uses context engineering to optimize prompt size and improve LLM output quality:
+
+| Technique | Description | Impact |
+|-----------|-------------|--------|
+| Hierarchical Context | 3-level document filtering (Overview/Relevant/Reference) | 30-50% prompt reduction |
+| Prior Findings Summary | Summarizes prior persona findings | 90% reduction (50K → 5K tokens) |
+| Attention Steering | Format instructions at END of prompt | Better format adherence |
+| Persona Section Mapping | Each persona gets only relevant sections | Focused analysis |
+
 ### Adaptive Remediation (v1.10.0+)
 
 Remediation uses **pre-screening** to load only the fixer personas needed:
@@ -1145,6 +1232,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.13.0 | 2026-03-13 | **Context Engineering & Finding ID Standardization**: Canonical Finding ID format (`PREFIX-P0-NNN` e.g., `ARCH-P0-001`). Context engineering reduces prompts from 170KB to ~60-80KB. Attention steering places format instructions at prompt END. Prior findings summarization (90% token reduction). Hierarchical document context (4-level structure). Chairperson manifest validation. Updated UCR prompts (BRD/PRD) with Finding ID format. See [CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md) and [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md). |
+| 1.12.0 | 2026-03-12 | **Category-Weighted Scoring**: New scoring system with 8 categories (functional, quality, compliance, constraints, integration, acceptance, risk, architecture). Per-category weights and deduction caps prevent runaway scores. Categories align with ID_NAMING_STANDARDS element codes. Legacy `--scoring legacy` CLI option removed. Manifest includes category summary table with weighted score. See [SCORING_GUIDE.md](docs/scoring/SCORING_GUIDE.md). |
 | 1.11.1 | 2026-03-12 | **Validate: Report Generation by Default**: `ucx validate` now generates report to document directory by default (like review). Use `--no-report` for console-only output. Aligns validate behavior with review command. |
 | 1.11.0 | 2026-03-12 | **Unified UCX Scanner with Chairperson Manifest** (VALIDATED): New `ucx scan` command replaces `prescreen` as unified report scanner. Chairperson now outputs structured Remediation Findings Manifest with authoritative counts, fixer assignments, and PRD-Ready score. Scanner extracts from manifest when present (authoritative) or falls back to persona extraction (backward compat). Eliminates discrepancy between CLI counts and Chairperson synthesis. Remediation can skip pre-screening when manifest present. **Validated**: BRD-02 review confirmed 91% reduction (Raw P0=115 → Manifest P0=10). |
 | 1.10.3 | 2026-03-12 | **Pre-Screening Accuracy Improvements**: Fixed duplicate counting (unique vs total findings). Fixed summary row extraction (excludes range expressions). Fixed false DEFERRED/RESOLVED detection (word boundary matching, context-aware). |
@@ -1182,11 +1271,15 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Next Release**: v1.12.0 - Category-Weighted Scoring
-- Consistent scoring with per-category caps
-- Persona → Category mapping
-- Alignment with ID_NAMING_STANDARDS.md element codes
-- See [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md)
+**Latest Release**: v1.12.0 - Category-Weighted Scoring
+- See [CHANGELOG_v1.12.0](docs/CHANGELOG_v1.12.0.md) for details
+
+**Next Release**: v1.13.0 - Context Engineering & Finding ID Standardization
+- Canonical Finding ID format: `PREFIX-P0-NNN` (e.g., `ARCH-P0-001`)
+- Context engineering: 170KB → 60-80KB prompts, 90% prior findings reduction
+- Attention steering: Format instructions at END of prompt
+- Chairperson manifest validation
+- See [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md)
 
 ---
 
@@ -1200,11 +1293,15 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [HOW_TO_AUDIT.md](docs/HOW_TO_AUDIT.md) | Running document audits |
 | [PERSONA_DESIGN_GUIDE.md](docs/PERSONA_DESIGN_GUIDE.md) | Creating custom personas |
 | [UNIFIED_CONTEXT_FRAMEWORK.md](docs/UNIFIED_CONTEXT_FRAMEWORK.md) | Framework architecture |
+| [CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md) | Context engineering guide (v1.13.0+) |
 | [Skills README](skills/README.md) | Framework persona skills reference |
 | [UCRem Personas](remediation/UCRem_PERSONAS.md) | Fixer personas and adaptive loading |
 | [CHANGELOG v1.10.0](docs/CHANGELOG_v1.10.0.md) | Adaptive remediation release notes |
 | [CHANGELOG v1.11.0](docs/CHANGELOG_v1.11.0.md) | Unified scanner and manifest release notes |
+| [CHANGELOG v1.12.0](docs/CHANGELOG_v1.12.0.md) | Category-weighted scoring release notes |
+| [CHANGELOG v1.13.0](docs/CHANGELOG_v1.13.0.md) | Context engineering & Finding ID (upcoming) |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
+| [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 
 ### Scoring Documentation (v1.12.0)
 

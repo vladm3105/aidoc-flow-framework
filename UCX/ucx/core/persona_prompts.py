@@ -5,6 +5,12 @@ from typing import Optional
 
 from ucx.observability.logging import get_logger
 from ucx.skills.loader import DEFAULT_SKILLS_DIR
+from ucx.core.context_engine import (
+    PERSONA_PREFIX_MAP,
+    PriorFindingsSummarizer,
+    build_attention_steering_format,
+    build_chairperson_manifest_format,
+)
 
 logger = get_logger("ucx.core.persona_prompts")
 
@@ -665,9 +671,19 @@ def build_persona_prompt(
     doc_type: str = "brd",
     skill_dir: Optional[Path] = None,
     project_dir: Optional[Path] = None,
+    use_context_engineering: bool = True,
 ) -> str:
     """
     Build a complete prompt for a persona.
+
+    Structure (with context engineering enabled):
+    1. Domain Knowledge (from skill file)
+    2. Expert Instructions (core only, output format at END)
+    3. Verification Protocol
+    4. Layer Classification
+    5. Prior Findings Summary (context-optimized, 90% reduction)
+    6. Document Content
+    7. OUTPUT FORMAT AT END (attention steering)
 
     Args:
         persona: Persona name
@@ -676,6 +692,7 @@ def build_persona_prompt(
         doc_type: Document type
         skill_dir: Optional custom skill directory for domain knowledge
         project_dir: Optional project root for project-specific skills
+        use_context_engineering: Enable context optimization (default: True)
 
     Returns:
         Complete prompt string
@@ -695,14 +712,19 @@ def build_persona_prompt(
         parts.append("=== YOUR DOMAIN KNOWLEDGE ===")
         parts.append(domain_knowledge)
         parts.append("=== END DOMAIN KNOWLEDGE ===\n")
-    
-    # Expert instructions
+
+    # Expert instructions (WITHOUT output format - that comes at END)
     parts.append("==============")
     parts.append("EXPERT INSTRUCTIONS:")
     parts.append(f"You are {template['title']}.")
-    parts.append(template["instructions"])
+
+    # Strip output format from instructions if context engineering enabled
+    instructions = template["instructions"]
+    if use_context_engineering and "## Output Format" in instructions:
+        instructions = instructions.split("## Output Format")[0]
+    parts.append(instructions)
     parts.append("\n==============\n")
-    
+
     # Verification protocol
     parts.append("## CRITICAL Verification Protocol")
     parts.append("Before claiming ANY requirement is missing, you MUST:")
@@ -717,25 +739,46 @@ def build_persona_prompt(
         parts.append("- **P0 at BRD**: Regulatory mandates, security REQUIREMENTS, transaction safety NEEDS")
         parts.append("- **P1 (Defer to SPEC)**: Specific algorithms, config values, exact thresholds")
         parts.append("Example: 'Need idempotency mechanism' = BRD P0; 'Use UUID v4 with 24hr TTL' = SPEC detail\n")
-    
-    # Previous findings (for later personas)
+
+    # Previous findings (context-optimized if enabled)
     if previous_responses:
-        parts.append("=== PREVIOUS EXPERT FINDINGS ===")
-        for prev_persona, response in previous_responses.items():
-            prev_title = PERSONA_TEMPLATES.get(prev_persona, {}).get("title", prev_persona)
-            parts.append(f"\n### {prev_title} Findings:\n")
-            # Truncate if too long
-            if len(response) > 5000:
-                parts.append(response[:5000] + "\n[... truncated ...]")
-            else:
-                parts.append(response)
-        parts.append("\n=== END PREVIOUS FINDINGS ===\n")
-    
+        if use_context_engineering:
+            # Use summarized findings (90% reduction)
+            summarizer = PriorFindingsSummarizer()
+            summary = summarizer.summarize_all(previous_responses, persona)
+            parts.append(summary)
+        else:
+            # Legacy: raw truncated responses
+            parts.append("=== PREVIOUS EXPERT FINDINGS ===")
+            for prev_persona, response in previous_responses.items():
+                prev_title = PERSONA_TEMPLATES.get(prev_persona, {}).get("title", prev_persona)
+                parts.append(f"\n### {prev_title} Findings:\n")
+                # Truncate if too long
+                if len(response) > 5000:
+                    parts.append(response[:5000] + "\n[... truncated ...]")
+                else:
+                    parts.append(response)
+            parts.append("\n=== END PREVIOUS FINDINGS ===\n")
+
     # Document content
     parts.append("=== DOCUMENT TO REVIEW ===")
     parts.append(shared_context)
     parts.append("=== END DOCUMENT ===")
-    
+
+    # OUTPUT FORMAT AT END (Attention Steering) - critical for LLM adherence
+    if use_context_engineering:
+        prefix = PERSONA_PREFIX_MAP.get(persona, persona[:2].upper())
+
+        if persona == "chairperson":
+            parts.append(build_chairperson_manifest_format())
+        else:
+            parts.append(build_attention_steering_format(persona, prefix))
+
+        logger.debug(
+            f"Built prompt for {persona} with context engineering: "
+            f"{len(''.join(parts))} chars, format at END"
+        )
+
     return "\n".join(parts)
 
 
@@ -933,6 +976,17 @@ class UnifiedPromptLoader:
         """Parse the unified prompt content into sections."""
         import re
 
+        # Find all code block ranges to exclude from section matching
+        code_block_pattern = r"```[^\n]*\n.*?```"
+        code_block_ranges = [
+            (m.start(), m.end())
+            for m in re.finditer(code_block_pattern, content, flags=re.DOTALL)
+        ]
+
+        def is_inside_code_block(pos: int) -> bool:
+            """Check if a position is inside any code block."""
+            return any(start <= pos < end for start, end in code_block_ranges)
+
         # Extract shared context (everything before persona sections)
         # Look for "## Persona Reviews" or first "### N. THE"
         persona_start_patterns = [
@@ -943,16 +997,19 @@ class UnifiedPromptLoader:
         shared_end = len(content)
         for pattern in persona_start_patterns:
             match = re.search(pattern, content, re.IGNORECASE)
-            if match:
+            if match and not is_inside_code_block(match.start()):
                 shared_end = min(shared_end, match.start())
 
         self._shared_context = content[:shared_end].strip()
 
         # Parse persona sections: ### N. THE PERSONA_NAME (Description)
         # Pattern matches: ### 1. THE ARCHITECT (Integration & Scalability)
+        # Skip any matches that are inside code blocks
         persona_pattern = r"###\s*(\d+)\.\s*(THE\s+)?([A-Z][A-Z\s']+?)(?:\s*\([^)]+\))?\s*\n"
 
-        sections = list(re.finditer(persona_pattern, content, re.IGNORECASE))
+        all_matches = list(re.finditer(persona_pattern, content, re.IGNORECASE))
+        # Filter out matches inside code blocks
+        sections = [m for m in all_matches if not is_inside_code_block(m.start())]
 
         for i, match in enumerate(sections):
             section_num = int(match.group(1))
@@ -1123,7 +1180,30 @@ class UnifiedPromptLoader:
         if persona_data["stance"]:
             parts.append(f"\n**Your stance**: {persona_data['stance']}\n")
 
-        parts.append(persona_data["content"])
+        # Strip the output format example and stance from content
+        # (stance is already added above, output format is added below)
+        persona_content = persona_data["content"]
+        import re
+
+        # Strip stance (already added above)
+        if persona_data["stance"]:
+            stance_pattern = r"\*\*Your stance\*\*:\s*" + re.escape(persona_data["stance"]) + r"\s*"
+            persona_content = re.sub(stance_pattern, "", persona_content, count=1)
+
+        # Strip output format example (contains empty tables that confuse the AI)
+        output_format_pattern = r"\*\*Output format\*\*:?\s*\n```[^\n]*\n.*?```"
+        persona_content = re.sub(output_format_pattern, "", persona_content, flags=re.DOTALL)
+
+        # Also strip any trailing separators after removing output format
+        persona_content = persona_content.rstrip("-\n ").strip()
+
+        parts.append(persona_content)
+
+        # Add the output format as instruction (not as empty tables)
+        if persona_data.get("output_format"):
+            parts.append("\n\n**Required Output Format**: Use the following structure for your findings:")
+            parts.append(f"\n```\n{persona_data['output_format']}\n```")
+
         parts.append("\n---\n")
 
         # Previous findings (for multi-turn context) with ANTI-REPETITION instructions
@@ -1155,6 +1235,15 @@ If there are no new findings in your domain, state: "No additional findings in [
         # Document to review
         parts.append("## DOCUMENT TO REVIEW\n")
         parts.append(document_content)
+
+        # OUTPUT FORMAT AT END (Attention Steering) - critical for LLM adherence
+        # Format instructions placed AFTER document content combat "lost in the middle"
+        prefix = PERSONA_PREFIX_MAP.get(persona, persona[:2].upper())
+
+        if persona == "chairperson":
+            parts.append(build_chairperson_manifest_format())
+        else:
+            parts.append(build_attention_steering_format(persona, prefix))
 
         return "\n".join(parts)
 

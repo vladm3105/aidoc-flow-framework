@@ -98,6 +98,24 @@ UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 # "Loaded framework skill (fallback): auditor"
 ```
 
+## Finding ID Format (v1.13.0+)
+
+All persona findings must use the canonical format: `PREFIX-P0-NNN`
+
+| Persona | Prefix | Example |
+|---------|--------|---------|
+| Architect | ARCH | `ARCH-P0-001` |
+| Auditor | AUD | `AUD-P0-001` |
+| Tech Lead | TL | `TL-P1-001` |
+| Chairperson | REM | `REM-P0-001` |
+
+**Format rules**:
+- `PREFIX`: 2-4 character persona abbreviation
+- `P0/P1/P2`: Priority level
+- `NNN`: 3-digit sequence (001-999)
+
+See `chairperson.md` and `operator.md` for examples with explicit Finding ID tables.
+
 ## Version
 
-Part of UCX Framework v1.8.0+
+Part of UCX Framework v1.13.0+

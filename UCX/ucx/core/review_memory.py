@@ -13,9 +13,43 @@ from typing import Optional
 from ucx.utils.logging import get_logger
 from ucx.version import __version__
 
+# Scoring imports (Phase 8 integration)
+from ucx.scoring.calculator import Finding, ScoringCalculator, ScoringResult
+from ucx.scoring.categories import get_category_by_name
+from ucx.scoring.conflicts import CategoryConflictResolver
+
 
 # Finding similarity threshold (0.0-1.0)
 FINDING_SIMILARITY_THRESHOLD = 0.6
+
+
+# Canonical Finding ID pattern: PREFIX-P0-NNN (e.g., ARCH-P0-001, TL-P1-002)
+# This is the ONLY supported format - no legacy patterns needed
+FINDING_ID_PATTERN = re.compile(
+    r'(?:'
+    r'\|\s*\*?\*?([A-Z]{2,4}-P[012]-\d{1,3})\*?\*?\s*\|'  # Table: | ARCH-P0-001 |
+    r'|'
+    r'\*\*([A-Z]{2,4}-P[012]-\d{1,3})\*\*'  # Bold: **TL-P0-001**
+    r'|'
+    r'(?:^|\n)\s*([A-Z]{2,4}-P[012]-\d{1,3})[:\s]'  # Line start: AUD-P0-001:
+    r')',
+    re.MULTILINE
+)
+
+
+def _parse_finding_id(raw_id: str) -> tuple[str, str, str]:
+    """Parse finding ID into (prefix, priority, number).
+
+    Args:
+        raw_id: Finding ID string like "ARCH-P0-001"
+
+    Returns:
+        Tuple of (prefix, priority, number) e.g. ("ARCH", "P0", "001")
+    """
+    parts = raw_id.split('-')
+    if len(parts) >= 3:
+        return (parts[0], parts[1], parts[2])
+    return (raw_id, "P0", "000")  # Fallback for malformed IDs
 
 
 # Default session TTL in hours
@@ -273,29 +307,56 @@ class ReviewMemory:
     ) -> Path:
         """
         Save response for a persona and mark as complete.
-        
+
         Args:
             persona: Persona name
             response: Response content
             duration_ms: Time taken in milliseconds
             tokens: Response token count
-        
+
         Returns:
             Path to saved response file
         """
         path = self.get_response_path(persona)
         path.write_text(response, encoding="utf-8")
 
+        # Validate chairperson response format
+        self._validate_chairperson_response(persona, response)
+
         # Update session
         if self._session and persona not in self._session.completed_personas:
             self._session.completed_personas.append(persona)
             self._session.last_updated_at = datetime.now().isoformat()
             self._save_session()
-        
+
         self.logger.debug(
             f"Saved response for {persona}: {len(response)} chars, {duration_ms:.0f}ms"
         )
         return path
+
+    def _validate_chairperson_response(self, persona: str, response: str) -> None:
+        """Validate Chairperson output contains required manifest markers.
+
+        Args:
+            persona: Persona name
+            response: Response content
+
+        Logs warning if manifest markers are missing.
+        """
+        if persona != "chairperson":
+            return
+
+        if "<!-- UCX-MANIFEST-START -->" not in response:
+            self.logger.warning(
+                "Chairperson response missing UCX-MANIFEST-START marker. "
+                "Automated remediation routing will use persona extraction fallback."
+            )
+
+        if "<!-- UCX-MANIFEST-END -->" not in response:
+            self.logger.warning(
+                "Chairperson response missing UCX-MANIFEST-END marker. "
+                "Manifest parsing may be incomplete."
+            )
     
     def get_response(self, persona: str) -> Optional[str]:
         """Get cached response for a persona if exists."""
@@ -351,6 +412,14 @@ class ReviewMemory:
         """
         parts = []
 
+        # Get all responses first
+        responses = self.get_all_responses()
+
+        # Extract findings and calculate scoring BEFORE generating frontmatter
+        findings = self._extract_findings(responses)
+        dedup_result = self._deduplicate_findings(findings)
+        scoring_result = self.calculate_weighted_score(findings)
+
         if include_header and self._session:
             # SDD-compliant YAML frontmatter
             review_date = self._session.started_at[:19]
@@ -358,6 +427,9 @@ class ReviewMemory:
             layer = self._get_layer_for_doc_type()
             downstream = self._get_downstream_for_doc_type()
             persona_count = len(self._session.completed_personas)
+
+            # Use actual weighted score in frontmatter
+            weighted_score = scoring_result.weighted_score
 
             parts.append("---\n")
             parts.append(f'title: "UCR Review Report: {doc_type_upper}"\n')
@@ -372,8 +444,12 @@ class ReviewMemory:
             parts.append(f'  review_id: "{review_id or f"UCR-{doc_type_upper}-v{version:03d}"}"\n')
             parts.append(f"  layer: {layer}\n")
             parts.append("  review_method: unified-context-review\n")
+            parts.append("  scoring_method: category-weighted-v1.12.0\n")
             parts.append(f"  personas_applied: {persona_count}\n")
-            parts.append(f'  {downstream}_ready_score: "[PENDING]"\n')
+            parts.append(f"  weighted_score: {weighted_score:.1f}\n")
+            parts.append(f"  p0_findings: {scoring_result.total_p0}\n")
+            parts.append(f"  p1_findings: {scoring_result.total_p1}\n")
+            parts.append(f"  p2_findings: {scoring_result.total_p2}\n")
             parts.append(f'  last_updated: "{review_date}"\n')
             parts.append("---\n\n")
 
@@ -386,19 +462,17 @@ class ReviewMemory:
             parts.append(f'| **Review ID** | {review_id or f"UCR-{doc_type_upper}-v{version:03d}"} |\n')
             parts.append(f"| **Review Date** | {review_date} |\n")
             parts.append("| **Review Method** | UCR (Unified Context Review) - Multi-Turn |\n")
+            parts.append(f"| **Weighted Score** | {weighted_score:.1f}/100 |\n")
             parts.append(f"| **Personas Applied** | {persona_count} |\n")
             parts.append(f"| **Reviewer** | UCX Framework v{__version__} |\n")
             parts.append("| **Status** | Draft |\n\n")
             parts.append("---\n\n")
 
-        # Add each persona's response
-        responses = self.get_all_responses()
+        # Add scoring summary section first
+        parts.append(self._format_scoring_summary(scoring_result, dedup_result["stats"]))
+        parts.append("---\n\n")
 
-        # Extract and deduplicate findings
-        findings = self._extract_findings(responses)
-        dedup_result = self._deduplicate_findings(findings)
-
-        # Add consolidated findings section first (if we have findings)
+        # Add consolidated findings section (if we have findings)
         if dedup_result["stats"].get("total_findings", 0) > 0:
             parts.append(self._format_consolidated_findings(dedup_result))
             parts.append("---\n\n")
@@ -480,32 +554,118 @@ class ReviewMemory:
         """
         Extract findings from all persona responses.
 
-        Returns list of dicts with keys: persona, priority, id, title, text
+        Returns list of dicts with keys: persona, priority, id, prefix, title, text, category
+        Category is extracted from [CAT:xxx] tag or assigned via CategoryAssigner fallback.
+
+        Supports canonical Finding ID format: PREFIX-P0-NNN (e.g., ARCH-P0-001)
         """
         findings = []
-        # Pattern: **[P0-X]** or **[P1-X]** or similar
-        pattern = re.compile(
-            r'\*\*\[([Pp][0-2])-(\d+)\]\*\*\s*([^\n]+?)(?:\n|$)(.*?)(?=\*\*\[[Pp][0-2]-|\Z)',
-            re.DOTALL
-        )
+        seen_ids = set()  # Deduplication
+
+        # Pattern to extract category tag: [CAT:xxx]
+        category_pattern = re.compile(r'\[CAT:(\w+)\]', re.IGNORECASE)
+
+        # Initialize category conflict resolver for fallback
+        resolver = CategoryConflictResolver()
 
         for persona, response in responses.items():
-            for match in pattern.finditer(response):
-                priority = match.group(1).upper()
-                finding_num = match.group(2)
-                title = match.group(3).strip().rstrip(':').strip()
-                text = match.group(4).strip()
+            for match in FINDING_ID_PATTERN.finditer(response):
+                # Extract finding ID from whichever group matched
+                raw_id = match.group(1) or match.group(2) or match.group(3)
+                if not raw_id or raw_id in seen_ids:
+                    continue
+
+                seen_ids.add(raw_id)
+                prefix, priority, num = _parse_finding_id(raw_id)
+
+                # Extract context around the finding (200 chars before, 500 after)
+                start = max(0, match.start() - 200)
+                end = min(len(response), match.end() + 500)
+                context = response[start:end]
+
+                # Try to extract explicit category tag
+                cat_match = category_pattern.search(context)
+                explicit_tag = cat_match.group(1).lower() if cat_match else None
+
+                # Use CategoryConflictResolver for category assignment
+                resolution = resolver.resolve(
+                    finding_id=raw_id,
+                    finding_text=context,
+                    persona=persona,
+                    explicit_tag=explicit_tag,
+                )
+                category = resolution.resolved_category.value
+
+                # Extract title from context
+                title = self._extract_title(context, raw_id)
 
                 findings.append({
                     "persona": persona,
                     "priority": priority,
-                    "id": f"{priority}-{finding_num}",
+                    "id": raw_id,
+                    "prefix": prefix,
                     "title": title,
-                    "text": text[:500],  # Truncate for comparison
-                    "full_text": text,
+                    "text": context[:500],  # Truncate for comparison
+                    "full_text": context,
+                    "category": category,
                 })
 
         return findings
+
+    def _extract_title(self, context: str, finding_id: str) -> str:
+        """Extract finding title from context around finding ID.
+
+        Args:
+            context: Text around the finding ID
+            finding_id: The finding ID (e.g., ARCH-P0-001)
+
+        Returns:
+            Extracted title string (max 100 chars)
+        """
+        # Try table format: | FINDING_ID | Title |
+        table_pattern = rf'\|\s*\*?\*?{re.escape(finding_id)}\*?\*?\s*\|\s*([^|]+)'
+        match = re.search(table_pattern, context)
+        if match:
+            return match.group(1).strip()[:100]
+
+        # Try inline format: FINDING_ID: Title or FINDING_ID - Title
+        inline_pattern = rf'{re.escape(finding_id)}[:\s-]+([^\n|]+)'
+        match = re.search(inline_pattern, context)
+        if match:
+            return match.group(1).strip()[:100]
+
+        return "Untitled finding"
+
+    def calculate_weighted_score(
+        self,
+        findings: list[dict],
+    ) -> ScoringResult:
+        """
+        Calculate weighted score from extracted findings.
+
+        Args:
+            findings: List of finding dicts from _extract_findings()
+
+        Returns:
+            ScoringResult with weighted score and category breakdown
+        """
+        # Convert finding dicts to Finding objects
+        # Category strings are converted to Category enums
+        finding_objects = []
+        for f in findings:
+            cat_str = f.get("category")
+            cat_enum = get_category_by_name(cat_str) if cat_str else None
+            finding_objects.append(Finding(
+                id=f["id"],
+                priority=f["priority"],
+                text=f["title"],
+                persona=f["persona"],
+                category=cat_enum,
+            ))
+
+        # Calculate weighted score
+        calculator = ScoringCalculator(doc_type=self.doc_type)
+        return calculator.calculate(finding_objects)
 
     def _compute_similarity(self, text1: str, text2: str) -> float:
         """
@@ -668,5 +828,72 @@ class ReviewMemory:
         p2_count += len([g for g in dedup_result["duplicates"] if g["primary"]["priority"] == "P2"])
         if p2_count > 0:
             parts.append(f"### P2 Medium Priority: {p2_count} findings (see individual reviews)\n\n")
+
+        return "".join(parts)
+
+    def _format_scoring_summary(
+        self,
+        scoring_result: ScoringResult,
+        dedup_stats: dict,
+    ) -> str:
+        """
+        Format weighted scoring summary section.
+
+        Args:
+            scoring_result: Result from calculate_weighted_score()
+            dedup_stats: Deduplication statistics
+
+        Returns:
+            Formatted markdown section with scoring breakdown
+        """
+        parts = []
+        parts.append("## Scoring Summary\n\n")
+
+        # Overall score and status
+        score = scoring_result.weighted_score
+        status = "PASS" if score >= 85 else ("WARN" if score >= 70 else "FAIL")
+        status_icon = {"PASS": "✅", "WARN": "⚠️", "FAIL": "❌"}[status]
+
+        parts.append(f"**Weighted Score**: {score:.1f}/100 {status_icon} ({status})\n\n")
+        parts.append(f"**Total Findings**: P0={scoring_result.total_p0}, "
+                     f"P1={scoring_result.total_p1}, P2={scoring_result.total_p2}\n\n")
+
+        # Category breakdown table
+        parts.append("### Category Breakdown\n\n")
+        parts.append("| Category | P0 | P1 | P2 | Raw | Capped | Weighted |\n")
+        parts.append("|----------|----:|----:|----:|-----:|-------:|--------:|\n")
+
+        for cat_enum, cat_score in sorted(
+            scoring_result.category_scores.items(),
+            key=lambda x: x[0].value  # Sort by category name
+        ):
+            cat_name = cat_enum.value
+            raw = cat_score.raw_deduction
+            capped = cat_score.capped_deduction
+            weighted = cat_score.weighted_deduction
+            parts.append(
+                f"| {cat_name} | {cat_score.p0_count} | {cat_score.p1_count} | "
+                f"{cat_score.p2_count} | -{raw} | -{capped} | -{weighted:.2f} |\n"
+            )
+
+        # Total row
+        total_raw = sum(cs.raw_deduction for cs in scoring_result.category_scores.values())
+        total_capped = sum(cs.capped_deduction for cs in scoring_result.category_scores.values())
+        total_weighted = 100.0 - score
+        parts.append(
+            f"| **Total** | **{scoring_result.total_p0}** | **{scoring_result.total_p1}** | "
+            f"**{scoring_result.total_p2}** | **-{total_raw}** | **-{total_capped}** | "
+            f"**-{total_weighted:.2f}** |\n"
+        )
+        parts.append("\n")
+
+        # Downstream readiness
+        downstream = self._get_downstream_for_doc_type().upper()
+        ready_status = "Ready" if score >= 85 and scoring_result.total_p0 == 0 else "Not Ready"
+        parts.append(f"**{downstream}-Ready Status**: {ready_status}\n\n")
+
+        # Scoring method note
+        parts.append(f"> *Scoring Method*: Category-Weighted v1.12.0 "
+                     f"(weights per {self.doc_type.upper()} document type)\n\n")
 
         return "".join(parts)

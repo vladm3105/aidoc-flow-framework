@@ -1,7 +1,28 @@
 """Version information for UCX."""
 
-__version__ = "1.11.1"
+__version__ = "1.12.0"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.12.0 - Category-Weighted Scoring
+# - NEW: Category-weighted scoring replaces legacy formula
+#   Formula: raw_deduction = (P0×10) + (P1×3) + (P2×1)
+#   Per-category: capped_deduction = min(raw_deduction, max_deduction)
+#   Final: weighted_score = 100 - sum(capped_deduction × category_weight)
+# - NEW: 8 scoring categories: functional, quality, compliance, constraints,
+#   integration, acceptance, risk, architecture
+# - NEW: Category detection priority: explicit [CAT:xxx] tag > element code >
+#   keyword match > persona default > fallback to OTHER
+# - NEW: ScoringCalculator class with per-category scoring
+# - NEW: CategoryConflictResolver for multi-source category resolution
+# - NEW: Manifest includes Category Summary table with weighted deductions
+# - UPDATED: ReviewResult model with weighted_score field
+# - UPDATED: Chairperson skill with category summary output format
+# - REMOVED: --scoring legacy CLI option (legacy scoring deprecated)
+# - DEPRECATED: calculate_legacy_score() emits DeprecationWarning
+# - Weights align with ID_NAMING_STANDARDS element type codes
+# - Per-category caps prevent runaway negative scores
+# - Backward compatible: old reports use persona-based category fallback
+# - See: docs/scoring/SCORING_GUIDE.md, docs/CHANGELOG_v1.12.0.md
 
 # v1.11.1 - Validate Command: Report Generation by Default
 # - CHANGED: `ucx validate` now generates report to document directory by default

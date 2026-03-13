@@ -128,3 +128,86 @@ Per-category deduction:
 - Weighted = Capped x category_weight
 
 Final Score = 100 - sum(all weighted deductions)
+
+---
+
+======================================================================
+======================================================================
+##  CRITICAL: REMEDIATION FINDINGS MANIFEST - REQUIRED OUTPUT
+======================================================================
+======================================================================
+
+**⚠️ WARNING: FAILURE TO INCLUDE THIS MANIFEST WILL CAUSE PROCESSING FAILURE ⚠️**
+
+**READ THIS SECTION LAST - IT DEFINES YOUR EXACT OUTPUT FORMAT**
+
+### Finding ID Format: REM-P{0-2}-NNN
+
+Examples:
+- `REM-P0-001` (Critical finding #1)
+- `REM-P1-001` (High priority finding #1)
+
+### Manifest Structure (REQUIRED)
+
+You MUST produce this EXACT structure within markers:
+
+```markdown
+<!-- UCX-MANIFEST-START -->
+
+### Manifest Summary
+| Metric | Count |
+|--------|-------|
+| Total Unique Findings | [N] |
+| P0 (Critical) | [N] |
+| P1 (High) | [N] |
+| P2 (Medium) | [N] |
+| Weighted Score | [N]/100 |
+
+### Category Summary (v1.12.0)
+| Category | P0 | P1 | P2 | Raw | Capped | Weighted |
+|----------|----|----|----|----|--------|----------|
+| functional | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| compliance | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| integration | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| quality | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| acceptance | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| risk | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| architecture | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| constraints | [N] | [N] | [N] | -[N] | -[N] | -[N.NN] |
+| **Total** | **[N]** | **[N]** | **[N]** | | | **-[N.NN]** |
+
+### Fixer Assignment
+| Fixer | Count | Finding IDs |
+|-------|-------|-------------|
+| architect | [N] | REM-P0-001, ... |
+| auditor | [N] | REM-P0-002, ... |
+| integration_lead | [N] | REM-P1-001, ... |
+| qa_lead | [N] | REM-P1-002, ... |
+| operator | [N] | REM-P2-001, ... |
+
+### Findings Table
+| ID | Priority | Category | Status | Fixer | Target File | Description |
+|----|----------|----------|--------|-------|-------------|-------------|
+| REM-P0-001 | P0 | [CAT:compliance] | OPEN | auditor | doc-01.X.md | [description] |
+| REM-P0-002 | P0 | [CAT:integration] | OPEN | integration_lead | doc-01.X.md | [description] |
+| REM-P1-001 | P1 | [CAT:functional] | OPEN | architect | doc-01.X.md | [description] |
+
+<!-- UCX-MANIFEST-END -->
+```
+
+### Fixer Assignment Rules
+| Finding Category | Assigned Fixer |
+|------------------|----------------|
+| Architecture, state machines, patterns | architect |
+| Compliance, regulatory, audit trails | auditor |
+| Partner APIs, webhooks, integrations | integration_lead |
+| Testing, validation, quality gates | qa_lead |
+| Operations, monitoring, deployment | operator |
+
+### Manifest Rules
+1. **Finding ID**: MUST use `REM-P{N}-{NNN}` format (e.g., REM-P0-001)
+2. **Category Tag**: MUST include `[CAT:xxx]` for weighted scoring
+3. **Deduplication**: Same issue from multiple personas = ONE entry
+4. **Markers**: MUST include `<!-- UCX-MANIFEST-START -->` and `<!-- UCX-MANIFEST-END -->`
+
+======================================================================

@@ -42,14 +42,39 @@ When reviewing architecture or deployment configurations, verify:
 - Runbook potential
 - Maintenance documented
 
+## Finding Format (UCX v1.13.0)
+
+### Finding ID Format: OP-P{0-2}-NNN
+
+All findings MUST use this canonical ID format:
+
+| Component | Rule | Example |
+|-----------|------|---------|
+| Prefix | OP (Operator) | OP |
+| Priority | P0, P1, or P2 | P1 |
+| Number | 3-digit sequence | 001 |
+
+**Examples**:
+- `OP-P1-001` (High priority operational gap)
+- `OP-P2-001` (Enhancement suggestion)
+
+### Output Table Format
+
+```markdown
+| ID (OP-P1-NNN) | Finding | Section | Gap | Remediation |
+|----------------|---------|---------|-----|-------------|
+| OP-P1-001 | [finding] | [X.X] | [gap] | [fix] |
+| OP-P2-001 | [finding] | [X.X] | [gap] | [fix] |
+```
+
 ## Category Tagging (UCX v1.12.0)
 
 **Primary Categories**: quality, risk
 
-**Finding Output Format**:
+**Finding Output Format** (with ID and Category):
 ```
-[CAT:quality] Finding description here
-[CAT:risk] Finding description here
+| OP-P1-001 | [CAT:quality] SLO for API availability not defined | 7.2 | Missing | Add SLO |
+| OP-P1-002 | [CAT:risk] Rollback procedure not documented | 8.1 | Missing | Add procedure |
 ```
 
 **Category Selection**:
@@ -62,11 +87,11 @@ When reviewing architecture or deployment configurations, verify:
 - 93: Availability/uptime
 - 98: Operability
 
-**Examples**:
-- `[CAT:quality] SLO for API availability not defined`
-- `[CAT:quality] No performance monitoring metrics specified`
-- `[CAT:risk] Rollback procedure for database migration not documented`
-- `[CAT:risk] No alerting threshold for error rate spike`
+**Examples with IDs**:
+- `OP-P1-001` | `[CAT:quality]` SLO for API availability not defined
+- `OP-P1-002` | `[CAT:quality]` No performance monitoring metrics specified
+- `OP-P1-003` | `[CAT:risk]` Rollback procedure for database migration not documented
+- `OP-P2-001` | `[CAT:risk]` No alerting threshold for error rate spike
 
 ## Scoring Weight
 - SYS: 20%
