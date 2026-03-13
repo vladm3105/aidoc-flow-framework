@@ -52,6 +52,16 @@ def _parse_finding_id(raw_id: str) -> tuple[str, str, str]:
     return (raw_id, "P0", "000")  # Fallback for malformed IDs
 
 
+# Phase 6.9: VERIFY tag pattern for appendix on-demand verification
+VERIFY_TAG_PATTERN = re.compile(r'\[VERIFY:\s*([A-Za-z0-9\-_.]+)\]')
+
+# Patterns indicating claim of missing content (for VERIFY tag enforcement)
+MISSING_CLAIM_PATTERNS = re.compile(
+    r'(missing|absent|not specified|not defined|lacks|no .* specified|undefined)',
+    re.IGNORECASE
+)
+
+
 # Default session TTL in hours
 DEFAULT_SESSION_TTL_HOURS = 24
 
@@ -127,6 +137,174 @@ class ReviewSession:
                 return f"{age.seconds // 60}m ago"
         except (ValueError, TypeError):
             return "unknown"
+
+
+# ============================================================================
+# Phase 6.9: Appendix Verifier
+# ============================================================================
+
+@dataclass
+class VerificationResult:
+    """Result of verifying a finding against appendix content."""
+    finding_id: str
+    appendix_id: str
+    verification_status: str  # "FOUND", "NOT_FOUND", "PARTIAL"
+    matched_content: str = ""  # Snippet of matching content
+    confidence: float = 0.0
+
+
+class AppendixVerifier:
+    """Verify findings against appendix content (Phase 6.9).
+
+    Post-processing phase that validates findings with [VERIFY: appendix-id] tags
+    against actual appendix content.
+    """
+
+    def __init__(self, doc_sections: dict[str, str]):
+        self._sections = doc_sections
+        self._logger = get_logger(__name__)
+
+    def verify_findings(
+        self,
+        findings: list[dict],
+        warn_on_missing_tag: bool = True,
+    ) -> list[dict]:
+        """Verify findings and update with verification status.
+
+        Args:
+            findings: List of finding dicts with 'id', 'description', etc.
+            warn_on_missing_tag: Log warning if "missing" claim lacks VERIFY tag
+
+        Returns:
+            Findings with added 'verification_status' and 'verification_note' fields
+        """
+        verified_findings = []
+
+        for finding in findings:
+            finding_copy = finding.copy()
+            description = finding.get("description", "") + finding.get("gap", "")
+
+            # Check for VERIFY tags
+            verify_matches = VERIFY_TAG_PATTERN.findall(description)
+
+            if verify_matches:
+                # Verify against appendix
+                for appendix_id in verify_matches:
+                    result = self._verify_against_appendix(
+                        finding_id=finding.get("id", ""),
+                        description=description,
+                        appendix_id=appendix_id,
+                    )
+                    finding_copy["verification_status"] = result.verification_status
+                    finding_copy["verification_note"] = result.matched_content[:200] if result.matched_content else ""
+                    finding_copy["verified_appendix"] = appendix_id
+
+            elif warn_on_missing_tag:
+                # Check if finding claims something is "missing" without VERIFY tag
+                if MISSING_CLAIM_PATTERNS.search(description):
+                    self._logger.warning(
+                        f"Finding {finding.get('id', 'N/A')} claims content is missing "
+                        f"but lacks [VERIFY: appendix-id] tag. Consider adding verification."
+                    )
+                    finding_copy["verification_note"] = "WARN: Missing content claim without VERIFY tag"
+
+            verified_findings.append(finding_copy)
+
+        return verified_findings
+
+    def _verify_against_appendix(
+        self,
+        finding_id: str,
+        description: str,
+        appendix_id: str,
+    ) -> VerificationResult:
+        """Verify a finding against specific appendix content."""
+        if appendix_id not in self._sections:
+            return VerificationResult(
+                finding_id=finding_id,
+                appendix_id=appendix_id,
+                verification_status="NOT_FOUND",
+                matched_content=f"Appendix {appendix_id} not found in document",
+            )
+
+        appendix_content = self._sections[appendix_id].lower()
+
+        # Extract key terms from finding description
+        key_terms = self._extract_key_terms(description)
+
+        # Check how many key terms appear in appendix
+        matches = sum(1 for term in key_terms if term in appendix_content)
+        match_ratio = matches / len(key_terms) if key_terms else 0
+
+        if match_ratio >= 0.6:
+            status = "FOUND"
+            # Extract matching snippet
+            matched = self._extract_matching_snippet(
+                self._sections[appendix_id], key_terms
+            )
+        elif match_ratio >= 0.3:
+            status = "PARTIAL"
+            matched = f"Partial match ({matches}/{len(key_terms)} terms found)"
+        else:
+            status = "NOT_FOUND"
+            matched = f"Content not found in {appendix_id}"
+
+        return VerificationResult(
+            finding_id=finding_id,
+            appendix_id=appendix_id,
+            verification_status=status,
+            matched_content=matched,
+            confidence=match_ratio,
+        )
+
+    def _extract_key_terms(self, text: str, max_terms: int = 10) -> list[str]:
+        """Extract key terms from finding description for verification."""
+        # Remove common words and extract meaningful terms
+        stop_words = {
+            "the", "a", "an", "is", "are", "was", "were", "be", "been",
+            "being", "have", "has", "had", "do", "does", "did", "will",
+            "would", "could", "should", "may", "might", "must", "shall",
+            "can", "need", "to", "of", "in", "for", "on", "with", "at",
+            "by", "from", "or", "and", "not", "no", "but", "if", "then",
+            "this", "that", "these", "those", "it", "its", "as", "such",
+        }
+
+        words = re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
+        key_terms = [w for w in words if w not in stop_words]
+
+        # Deduplicate and limit
+        seen = set()
+        unique = []
+        for term in key_terms:
+            if term not in seen:
+                seen.add(term)
+                unique.append(term)
+
+        return unique[:max_terms]
+
+    def _extract_matching_snippet(
+        self,
+        content: str,
+        key_terms: list[str],
+        snippet_size: int = 200,
+    ) -> str:
+        """Extract snippet from content containing key terms."""
+        content_lower = content.lower()
+
+        # Find first matching term
+        for term in key_terms:
+            pos = content_lower.find(term)
+            if pos >= 0:
+                start = max(0, pos - snippet_size // 2)
+                end = min(len(content), pos + snippet_size // 2)
+                snippet = content[start:end]
+                if start > 0:
+                    snippet = "..." + snippet
+                if end < len(content):
+                    snippet = snippet + "..."
+                return snippet
+
+        return ""
 
 
 class ReviewMemory:

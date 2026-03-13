@@ -14,9 +14,9 @@
 | Attention Steering | ✅ Complete | Format at prompt END |
 | Documentation | ✅ Complete | README, ROADMAP, CONTEXT_ENGINEERING.md |
 | Integration Testing | ✅ Complete | 33 canonical findings, 0 legacy, manifest present |
-| Hybrid Keyword Scan | ⏸️ Deferred | `RelevantSnippet`, `_scan_other_sections_for_keywords()` |
-| Appendix-on-Demand | ⏸️ Deferred | `AppendixInfo`, dynamic detection |
-| Dynamic Section Map | ⏸️ Deferred | `SECTION_CATEGORIES`, `DynamicSectionMapper` |
+| Hybrid Keyword Scan | ✅ v1.13.1 | `RelevantSnippet`, `_scan_other_sections_for_keywords()` |
+| Appendix-on-Demand | ✅ v1.13.1 | `AppendixInfo`, dynamic detection |
+| Dynamic Section Map | ✅ v1.13.1 | `SECTION_CATEGORIES`, `DynamicSectionMapper` |
 
 ## Summary
 
