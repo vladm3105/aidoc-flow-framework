@@ -4,71 +4,26 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.12.0
-**Next Major**: 1.13.0 (Context Engineering & Finding ID Standardization)
+**Current Version**: 1.13.1
+**Next Major**: 1.14.0 (Multi-Document Validation)
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 (Current) ──► v1.13.0 ──► v1.14.0 ──► v2.0.0
-     │                   │           │           │
-     │                   │           │           └─► Breaking changes
-     │                   │           └─► Multi-document validation
-     │                   └─► Context Engineering + Finding ID
-     └─► Category-Weighted Scoring
+v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──► v2.0.0
+   │           │            │                    │           │
+   │           │            │                    │           └─► Breaking changes
+   │           │            │                    └─► Multi-document validation
+   │           │            └─► Advanced Context Engineering
+   │           └─► Context Engineering + Finding ID
+   └─► Category-Weighted Scoring
 ```
 
 ---
 
 ## Planned Releases
-
-### v1.13.0 - Context Engineering & Finding ID Standardization (Next)
-
-**Status**: In Progress (Core Complete)
-**ETA**: Q1 2026
-**Plan**: [PLAN-003](/opt/data/docs_flow_framework/UCX/docs/plans/PLAN-003_persona_prompt_restructuring.md)
-
-**Problem**: UCX review outputs are unreliable due to:
-- Finding extraction regex mismatch (shows 0 findings when 30+ exist)
-- Prompt size explosion (170KB+) causing LLM to ignore format instructions
-- Inconsistent Finding ID formats across personas
-- Missing Chairperson manifest markers
-
-**Solution**: Context engineering with canonical Finding ID format:
-- **Unified Finding ID Format**: `PREFIX-P0-NNN` (e.g., `ARCH-P0-001`)
-- **Attention Steering**: Format instructions at END of prompt
-- **Hierarchical Context**: 3-level document filtering (Overview/Relevant/Reference)
-- **Prior Findings Summarization**: 90% reduction in prior context size
-
-**Key Features**:
-| Feature | Description |
-|---------|-------------|
-| `context_engine.py` | Hierarchical document context and prior findings summarization |
-| `FINDING_ID_PATTERN` | Canonical regex for `PREFIX-P0-NNN` extraction |
-| `PriorFindingsSummarizer` | Reduces 50K → 5K tokens (90% reduction) |
-| `build_attention_steering_format()` | Format instructions at prompt END |
-| Chairperson Manifest | `<!-- UCX-MANIFEST-START -->` markers guaranteed |
-
-**Deliverables**:
-- [x] `ucx/core/context_engine.py` module
-- [x] Updated `_extract_findings()` with canonical pattern
-- [x] Chairperson validation in `save_response()`
-- [x] `build_persona_prompt()` with context engineering
-- [x] Unit tests for finding extraction and context engine
-- [x] UCR prompt updates (BRD/PRD) with Finding ID format
-- [x] Skill file updates (chairperson.md, operator.md)
-- [x] README documentation (v1.13.0 features)
-- [ ] Integration testing with BRD-01 re-review
-
-**Advanced Features** (Deferred to v1.13.1):
-- [ ] `RelevantSnippet` dataclass for hybrid context
-- [ ] `_scan_other_sections_for_keywords()` method
-- [ ] `AppendixInfo` with on-demand loading
-- [ ] `DynamicSectionMapper` for semantic category mapping
-
----
 
 ### v1.14.0 - Multi-Document Validation
 
@@ -135,7 +90,30 @@ v1.12.0 (Current) ──► v1.13.0 ──► v1.14.0 ──► v2.0.0
 
 ## Completed Releases
 
-### v1.12.0 (2026-03-12) - Current
+### v1.13.1 (2026-03-13) - Current
+
+**Features**:
+- **Advanced Context Engineering**: Completes deferred features from v1.13.0
+- **Hybrid Keyword Scan**: `RelevantSnippet`, `_scan_other_sections_for_keywords()` for discovering relevant content in non-mapped sections
+- **Appendix-on-Demand**: `AppendixInfo`, `_build_appendix_index()` for lightweight appendix metadata (~500 tokens vs 20-50K)
+- **Dynamic Section Mapping**: `SECTION_CATEGORIES`, `DynamicSectionMapper` for semantic category-based filtering across document types
+- **VERIFY Tag Pattern**: `[VERIFY: appendix-id]` for post-processing verification
+- **AppendixVerifier**: Validates findings against actual appendix content
+- See [CHANGELOG_v1.13.1](CHANGELOG_v1.13.1.md) and [PLAN-004](plans/PLAN-004_advanced_context_engineering.md)
+
+### v1.13.0 (2026-03-13)
+
+**Features**:
+- **Context Engineering & Finding ID Standardization**: Core context engineering system
+- Canonical Finding ID format: `PREFIX-P0-NNN` (e.g., `ARCH-P0-001`)
+- Context engineering reduces prompts from 170KB to ~60-80KB
+- Attention steering places format instructions at prompt END
+- Prior findings summarization (90% token reduction)
+- Hierarchical document context (4-level structure)
+- Chairperson manifest validation
+- See [CHANGELOG_v1.13.0](CHANGELOG_v1.13.0.md) and [PLAN-003](plans/PLAN-003_persona_prompt_restructuring.md)
+
+### v1.12.0 (2026-03-12)
 
 **Features**:
 - **Category-Weighted Scoring**: 8 scoring categories with per-category weights and caps
@@ -183,8 +161,9 @@ v1.12.0 (Current) ──► v1.13.0 ──► v1.14.0 ──► v2.0.0
 
 | Request | Priority | Status | Notes |
 |---------|----------|--------|-------|
-| Context Engineering | High | In Progress (v1.13.0) | PLAN-003 |
-| Finding ID Standardization | High | In Progress (v1.13.0) | PLAN-003 |
+| Context Engineering | High | ✅ Complete (v1.13.0) | PLAN-003 |
+| Finding ID Standardization | High | ✅ Complete (v1.13.0) | PLAN-003 |
+| Advanced Context Engineering | High | ✅ Complete (v1.13.1) | PLAN-004 |
 | PRD validation parity | Medium | Planned (v1.15.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
@@ -206,9 +185,11 @@ To propose new features or changes:
 
 - [PLAN-001: Unified BRD Validation](plans/PLAN-001_unified_brd_validation.md) - Complete
 - [PLAN-002: Category-Weighted Scoring](plans/PLAN-002_category_weighted_scoring.md) - Complete
-- [PLAN-003: Persona Prompt Restructuring](plans/PLAN-003_persona_prompt_restructuring.md) - In Progress
+- [PLAN-003: Persona Prompt Restructuring](plans/PLAN-003_persona_prompt_restructuring.md) - Complete
+- [PLAN-004: Advanced Context Engineering](plans/PLAN-004_advanced_context_engineering.md) - Complete
 - [CHANGELOG_v1.12.0.md](CHANGELOG_v1.12.0.md) - Category-weighted scoring
-- [CHANGELOG_v1.13.0.md](CHANGELOG_v1.13.0.md) - Context engineering (upcoming)
+- [CHANGELOG_v1.13.0.md](CHANGELOG_v1.13.0.md) - Context engineering & Finding ID
+- [CHANGELOG_v1.13.1.md](CHANGELOG_v1.13.1.md) - Advanced context engineering
 
 ---
 

@@ -1,25 +1,25 @@
 # UCX Context Engineering Guide
 
-**Version**: 1.0
+**Version**: 1.1
 **Created**: 2026-03-13
 **Updated**: 2026-03-13
-**Reference**: PLAN-003_persona_prompt_restructuring.md
-**Status**: Core Complete
+**Reference**: PLAN-003_persona_prompt_restructuring.md, PLAN-004_advanced_context_engineering.md
+**Status**: Complete (v1.13.1)
 
 ## Implementation Status
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Finding ID Format (`PREFIX-P0-NNN`) | ✅ Implemented | `PERSONA_PREFIX_MAP` in context_engine.py |
-| Hierarchical Context (Level 1/2) | ✅ Implemented | `HierarchicalContext`, `ContextEngine` |
-| Prior Findings Summarization | ✅ Implemented | `PriorFindingsSummarizer` |
-| Attention Steering | ✅ Implemented | `build_attention_steering_format()` |
-| Chairperson Manifest Format | ✅ Implemented | `build_chairperson_manifest_format()` |
-| Persona Section Mapping | ✅ Implemented | `PERSONA_SECTION_MAP` (static) |
-| Hybrid Keyword Scan (Level 4) | ⏸️ Deferred | `RelevantSnippet`, `_scan_other_sections_for_keywords()` |
-| Appendix-on-Demand | ⏸️ Deferred | `AppendixInfo`, `_build_appendix_index()` |
-| Dynamic Section Mapping | ⏸️ Deferred | `SECTION_CATEGORIES`, `DynamicSectionMapper` |
-| Verification Phase | ⏸️ Deferred | `AppendixVerifier`, `[VERIFY:]` tags |
+| Feature | Status | Version | Notes |
+|---------|--------|---------|-------|
+| Finding ID Format (`PREFIX-P0-NNN`) | ✅ Implemented | v1.13.0 | `PERSONA_PREFIX_MAP` in context_engine.py |
+| Hierarchical Context (Level 1/2) | ✅ Implemented | v1.13.0 | `HierarchicalContext`, `ContextEngine` |
+| Prior Findings Summarization | ✅ Implemented | v1.13.0 | `PriorFindingsSummarizer` |
+| Attention Steering | ✅ Implemented | v1.13.0 | `build_attention_steering_format()` |
+| Chairperson Manifest Format | ✅ Implemented | v1.13.0 | `build_chairperson_manifest_format()` |
+| Persona Section Mapping | ✅ Implemented | v1.13.0 | `PERSONA_SECTION_MAP` (static) |
+| Hybrid Keyword Scan (Level 4) | ✅ Implemented | v1.13.1 | `RelevantSnippet`, `_scan_other_sections_for_keywords()` |
+| Appendix-on-Demand | ✅ Implemented | v1.13.1 | `AppendixInfo`, `_build_appendix_index()` |
+| Dynamic Section Mapping | ✅ Implemented | v1.13.1 | `SECTION_CATEGORIES`, `DynamicSectionMapper` |
+| Verification Phase | ✅ Implemented | v1.13.1 | `AppendixVerifier`, `[VERIFY:]` tags |
 
 ---
 
@@ -907,7 +907,9 @@ PERSONA_PREFIX_MAP = {
 ## Related Documentation
 
 - [PLAN-003: Persona Prompt Restructuring](plans/PLAN-003_persona_prompt_restructuring.md)
+- [PLAN-004: Advanced Context Engineering](plans/PLAN-004_advanced_context_engineering.md)
 - [CHANGELOG_v1.13.0](CHANGELOG_v1.13.0.md)
+- [CHANGELOG_v1.13.1](CHANGELOG_v1.13.1.md)
 - [UCX README](../README.md)
 
 ---
