@@ -756,8 +756,9 @@ class UCPromptPhase:
         """Load system instructions from skill manifest.
 
         Looks for skill files in order:
-        1. {project_dir}/.ucx/skills/{persona}.md (project-specific)
-        2. UCX/skills/{persona}.md (framework default)
+        1. {project_dir}/.ucx/skills/{persona}.md (hidden config)
+        2. {project_dir}/docs/UCX/skills/{persona}.md (standard project docs)
+        3. UCX/skills/{persona}.md (framework default)
 
         Args:
             persona: Persona name
@@ -772,9 +773,10 @@ class UCPromptPhase:
         # Default locations to check
         skill_paths = []
 
-        # Project-specific first
+        # Project-specific locations (check both .ucx/ and docs/UCX/)
         if project_dir:
             skill_paths.append(project_dir / ".ucx" / "skills" / f"{persona}.md")
+            skill_paths.append(project_dir / "docs" / "UCX" / "skills" / f"{persona}.md")
 
         # Framework default
         ucx_root = Path(__file__).parent.parent.parent  # UCX root
@@ -823,7 +825,8 @@ class UCPromptPhase:
             instructions_parts.append(f"\n**Finding Categories**:\n{category_match.group(1).strip()}")
 
         # Extract Anti-Patterns (if exists) - matches various naming patterns
-        antipattern_match = re.search(r'^##\s+.*Anti-Patterns.*?\n([\s\S]*?)(?=\n##|\Z)', skill_content, re.MULTILINE)
+        # Use (?=\n## [^#]|\Z) to stop at next H2 but not H3/H4 subsections
+        antipattern_match = re.search(r'^##\s+.*Anti-Patterns.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if antipattern_match:
             instructions_parts.append(f"\n**Anti-Patterns to Flag**:\n{antipattern_match.group(1).strip()}")
 
