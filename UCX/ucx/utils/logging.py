@@ -294,13 +294,21 @@ def log_review_result(
     p0_count: int,
     p1_count: int,
     p2_count: int,
+    weighted_score: float = None,
 ):
-    """Log review result summary."""
+    """Log review result summary with weighted score support (v1.12.0+)."""
     logger = get_logger()
-    logger.info(
-        f"Review Result: doc_type={doc_type} path={doc_path} "
-        f"score={score} P0={p0_count} P1={p1_count} P2={p2_count}"
-    )
+    if weighted_score is not None:
+        logger.info(
+            f"Review Result: doc_type={doc_type} path={doc_path} "
+            f"weighted_score={weighted_score:.1f} P0={p0_count} P1={p1_count} P2={p2_count}"
+        )
+    else:
+        # Legacy format fallback
+        logger.info(
+            f"Review Result: doc_type={doc_type} path={doc_path} "
+            f"score={score} P0={p0_count} P1={p1_count} P2={p2_count}"
+        )
 
 
 def log_phase_start(phase: str, doc_type: str, target: str):

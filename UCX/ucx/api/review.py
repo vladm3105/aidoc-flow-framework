@@ -8,6 +8,7 @@ from typing import Optional, Union
 
 from ucx.config.settings import UCXConfig
 from ucx.config.layer_skills import get_skills_for_phase
+from ucx.validators.common.file_utils import is_companion_report, sort_section_files
 from ucx.models.enums import DocType, ValidationStatus
 from ucx.models.review import ReviewResult, ValidationResult
 from ucx.exceptions import PromptError
@@ -275,7 +276,7 @@ class UCRPhase:
         self.logger.debug(f"Writing review report to {output_path}")
         output_path.write_text(review_content, encoding="utf-8")
 
-        # Parse results
+        # Parse results (includes weighted_score from frontmatter)
         self.logger.debug("Parsing review results")
         result = ReviewResult.from_report(output_path, doc_path)
         result.validation_status = validation_result.status
@@ -283,7 +284,7 @@ class UCRPhase:
         # Calculate duration
         duration_s = time.perf_counter() - start_time
 
-        # Log review result
+        # Log review result with weighted score (v1.12.0+)
         log_review_result(
             doc_type=doc_type.value,
             doc_path=str(doc_path),
@@ -291,13 +292,14 @@ class UCRPhase:
             p0_count=result.findings.get("P0", 0),
             p1_count=result.findings.get("P1", 0),
             p2_count=result.findings.get("P2", 0),
+            weighted_score=result.weighted_score if result.weighted_score > 0 else None,
         )
 
         # Log phase end
         log_phase_end("UCR", doc_type.value, success=True, duration_s=duration_s)
         self.logger.info(
-            f"Review complete: score={result.score} findings={len(result.findings)} "
-            f"duration={duration_s:.1f}s report={output_path}"
+            f"Review complete: weighted_score={result.weighted_score:.1f} "
+            f"findings={len(result.findings)} duration={duration_s:.1f}s report={output_path}"
         )
 
         return result
@@ -501,26 +503,49 @@ class UCRPhase:
         return "".join(parts)
 
     def _load_document_content(self, doc_path: Path) -> str:
-        """Load document content for review."""
+        """Load document content for review.
+
+        Excludes companion reports (audit, review, validation, remediation reports)
+        using the is_companion_report() utility from file_utils.
+
+        Section files (e.g., BRD-01.0_index.md, BRD-01.10_risk_management.md) are
+        sorted numerically by section number to ensure proper document flow.
+        """
         parts = []
         files_loaded = []
+        files_skipped = []
 
         if doc_path.is_dir():
-            for f in sorted(doc_path.glob("*.md")):
-                # Exclude review/report files
-                if "REVIEW" not in f.name and "REPORT" not in f.name:
-                    parts.append(f"## File: {f.name}\n\n")
-                    content = f.read_text(encoding="utf-8")
-                    parts.append(content)
-                    parts.append("\n\n")
-                    files_loaded.append(f.name)
+            # Sort section files numerically (0, 1, 2, ... 10, 11, ...)
+            # instead of lexicographically (0, 10, 11, ..., 1, 2, ...)
+            all_files = list(doc_path.glob("*.md"))
+            sorted_files = sort_section_files(all_files)
+
+            for f in sorted_files:
+                # Skip hidden files
+                if f.name.startswith("."):
+                    files_skipped.append(f.name)
+                    continue
+
+                # Exclude companion reports (UCR, validation, audit, remediation)
+                if is_companion_report(f):
+                    files_skipped.append(f.name)
+                    continue
+
+                parts.append(f"## File: {f.name}\n\n")
+                content = f.read_text(encoding="utf-8")
+                parts.append(content)
+                parts.append("\n\n")
+                files_loaded.append(f.name)
         else:
             parts.append(f"## File: {doc_path.name}\n\n")
             parts.append(doc_path.read_text(encoding="utf-8"))
             parts.append("\n\n")
             files_loaded.append(doc_path.name)
 
-        self.logger.debug(f"Loaded {len(files_loaded)} files: {files_loaded[:5]}{'...' if len(files_loaded) > 5 else ''}")
+        self.logger.debug(f"Loaded {len(files_loaded)} document files: {files_loaded[:5]}{'...' if len(files_loaded) > 5 else ''}")
+        if files_skipped:
+            self.logger.debug(f"Skipped {len(files_skipped)} non-document files: {files_skipped}")
         return "".join(parts)
 
     def review_multi_turn(
@@ -736,14 +761,14 @@ class UCRPhase:
         output_path.write_text(review_content, encoding="utf-8")
         self.logger.info(f"Final report written to {output_path}")
 
-        # Parse results
+        # Parse results (includes weighted_score from frontmatter)
         result = ReviewResult.from_report(output_path, doc_path)
         result.validation_status = validation_result.status
 
         # Calculate duration
         duration_s = time.perf_counter() - start_time
 
-        # Log review result
+        # Log review result with weighted score (v1.12.0+)
         log_review_result(
             doc_type=doc_type.value,
             doc_path=str(doc_path),
@@ -751,11 +776,12 @@ class UCRPhase:
             p0_count=result.findings.get("P0", 0),
             p1_count=result.findings.get("P1", 0),
             p2_count=result.findings.get("P2", 0),
+            weighted_score=result.weighted_score if result.weighted_score > 0 else None,
         )
 
         log_phase_end("UCR-MultiTurn", doc_type.value, success=True, duration_s=duration_s)
         self.logger.info(
-            f"Multi-turn review complete: score={result.score} "
+            f"Multi-turn review complete: weighted_score={result.weighted_score:.1f} "
             f"personas={len(personas)} duration={duration_s:.1f}s"
         )
 

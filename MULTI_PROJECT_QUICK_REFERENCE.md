@@ -134,9 +134,48 @@ ucx review brd docs/01_BRD/BRD-01/
 # AI-powered remediation
 ucx remediate docs/01_BRD/BRD-01/
 
+# Scan review report (v1.11.0+)
+ucx scan docs/01_BRD/BRD-01.UCR_review_report_v001.md
+
 # Check version
 ucx --version
 ```
+
+### UCX v1.12.0 Category-Weighted Scoring
+
+| Category | Weight | Max Deduction |
+|----------|--------|---------------|
+| functional | 25% | -25 |
+| compliance | 20% | -20 |
+| quality | 15% | -15 |
+| constraints | 10% | -10 |
+| integration | 10% | -10 |
+| acceptance | 10% | -10 |
+| risk | 5% | -5 |
+| architecture | 5% | -5 |
+
+**Thresholds**: PASS (≥85), WARN (70-84), FAIL (<70)
+
+**Category Tags**: Chairperson assigns `[CAT:xxx]` to each finding
+
+### Project-Specific UCX Setup (v1.12.0)
+
+```bash
+# Create project UCX structure
+mkdir -p docs/UCX/{skills,review,creation,remediation}
+
+# Required for domain-specific reviews:
+# docs/UCX/skills/*.md        # Persona skills (architect, auditor, etc.)
+# docs/UCX/review/*.md        # UCR review prompts
+# docs/UCX/README.md          # Project config (version, commands)
+
+# Key v1.12.0 requirements:
+# - Chairperson assigns [CAT:xxx] tags to findings
+# - Category Summary table in manifest
+# - Use category-weighted scoring formula
+```
+
+**Reference**: `/opt/data/b-local/b-local-docs/docs/UCX/`
 
 ### Pre-commit with UCX
 
@@ -592,4 +631,4 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ---
 
-**Quick Reference Version**: 2.3 (2026-03-11)
+**Quick Reference Version**: 2.4 (2026-03-12)

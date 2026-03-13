@@ -374,6 +374,10 @@ def calculate_legacy_score(
     """
     Calculate legacy (pre-v1.12.0) score.
 
+    .. deprecated:: 1.12.0
+        Legacy scoring is deprecated. Use `calculate_weighted_score()` instead.
+        This function is kept for backward compatibility testing only.
+
     Formula: 100 - (P0 * 10) - (P1 * 3) - (P2 * 1)
     No category weighting or caps.
 
@@ -385,4 +389,10 @@ def calculate_legacy_score(
     Returns:
         Score (can be negative).
     """
+    import warnings
+    warnings.warn(
+        "calculate_legacy_score is deprecated since v1.12.0. Use calculate_weighted_score instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return 100 - (p0_count * P0_MULTIPLIER) - (p1_count * P1_MULTIPLIER) - (p2_count * P2_MULTIPLIER)

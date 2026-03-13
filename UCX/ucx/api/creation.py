@@ -8,6 +8,7 @@ from ucx.config.layer_skills import get_skills_for_phase
 from ucx.models.document import Document
 from ucx.models.enums import DocType
 from ucx.exceptions import UCXError, PromptError
+from ucx.validators.common.file_utils import sort_section_files
 
 
 class UCCPhase:
@@ -238,11 +239,15 @@ class UCCPhase:
         return "".join(parts)
 
     def _load_upstream_content(self, upstream_path: Path) -> str:
-        """Load upstream artifact content."""
+        """Load upstream artifact content.
+
+        Section files (e.g., BRD-01.0_index.md) are sorted numerically.
+        """
         parts = ["\n---\n\n# UPSTREAM ARTIFACT\n\n"]
 
         if upstream_path.is_dir():
-            for f in sorted(upstream_path.glob("*.md")):
+            all_files = list(upstream_path.glob("*.md"))
+            for f in sort_section_files(all_files):
                 parts.append(f"## File: {f.name}\n\n")
                 parts.append(f.read_text(encoding="utf-8"))
                 parts.append("\n\n")

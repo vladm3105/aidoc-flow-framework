@@ -4,18 +4,19 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.13.1
-**Next Major**: 1.14.0 (Multi-Document Validation)
+**Current Version**: 1.14.1
+**Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──► v2.0.0
-   │           │            │                    │           │
-   │           │            │                    │           └─► Breaking changes
-   │           │            │                    └─► Multi-document validation
+v1.12.0 ──► v1.13.0 ──► v1.13.1 ──► v1.14.0 ──► v1.14.1 (Current) ──► v1.15.0 ──► v2.0.0
+   │           │            │            │                    │           │
+   │           │            │            │                    │           └─► Breaking changes
+   │           │            │            │                    └─► Multi-document validation
+   │           │            │            └─► Prompt Inspection Toolset
    │           │            └─► Advanced Context Engineering
    │           └─► Context Engineering + Finding ID
    └─► Category-Weighted Scoring
@@ -25,7 +26,7 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──�
 
 ## Planned Releases
 
-### v1.14.0 - Multi-Document Validation
+### v1.15.0 - Multi-Document Validation
 
 **Status**: Planned
 **ETA**: Q2 2026
@@ -46,10 +47,10 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──�
 
 ---
 
-### v1.15.0 - PRD/EARS Validation Parity
+### v1.16.0 - PRD/EARS Validation Parity
 
 **Status**: Planned
-**ETA**: Q2 2026
+**ETA**: Q3 2026
 
 **Features**:
 | Feature | Description |
@@ -90,7 +91,35 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──�
 
 ## Completed Releases
 
-### v1.13.1 (2026-03-13) - Current
+### v1.14.1 (2026-03-13) - Current
+
+**Features**:
+- **Prompt Quality Improvements**: Content preprocessing for cleaner prompts
+- **Content Preprocessing**: Strip YAML frontmatter, HTML comments, navigation breadcrumbs, document metadata
+- **System Instructions**: Load persona skills from skill manifests with project-specific overrides
+- **Section Sorting**: Numeric ordering (BRD-01.1, BRD-01.5, BRD-01.11) instead of alphabetical
+- **Anti-Pattern Extraction**: Fixed regex for extracting skill sections into prompts
+- **Project Templates**: Support for `.ucx/skills/` project-specific persona customization
+- **Token Optimization**: ~455 tokens saved per prompt through metadata stripping
+
+See [CHANGELOG_v1.14.1](CHANGELOG_v1.14.1.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
+
+### v1.14.0 (2026-03-13)
+
+**Features**:
+- **Prompt Inspection Toolset**: Pre-LLM analysis of generated prompts
+- **CLI Commands**: `ucx prompt tokens/sections/inspect/check/generate`
+- **UCPromptPhase API**: Programmatic access to all inspection features
+- **Token Analysis**: Per-persona token breakdown with budget tracking
+- **Section Matrix**: Visual matrix of section inclusion per persona
+- **Prompt Inspector**: Structure analysis with attention steering detection
+- **Metadata Files**: `.meta.json` files alongside generated prompts
+
+**Code Review**: Passed (P0=0, P1=4 fixed, P2=3 fixed, 5 deferred)
+
+See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
+
+### v1.13.1 (2026-03-13)
 
 **Features**:
 - **Advanced Context Engineering**: Completes deferred features from v1.13.0
@@ -164,7 +193,9 @@ v1.12.0 ──► v1.13.0 ──► v1.13.1 (Current) ──► v1.14.0 ──�
 | Context Engineering | High | ✅ Complete (v1.13.0) | PLAN-003 |
 | Finding ID Standardization | High | ✅ Complete (v1.13.0) | PLAN-003 |
 | Advanced Context Engineering | High | ✅ Complete (v1.13.1) | PLAN-004 |
-| PRD validation parity | Medium | Planned (v1.15.0) | After multi-doc |
+| Prompt Inspection Toolset | High | ✅ Complete (v1.14.0) | PLAN-005 |
+| Prompt Quality Improvements | High | ✅ Complete (v1.14.1) | PLAN-005 |
+| PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
 | Real-time streaming | Low | Future | Requires API mode changes |
@@ -187,9 +218,12 @@ To propose new features or changes:
 - [PLAN-002: Category-Weighted Scoring](plans/PLAN-002_category_weighted_scoring.md) - Complete
 - [PLAN-003: Persona Prompt Restructuring](plans/PLAN-003_persona_prompt_restructuring.md) - Complete
 - [PLAN-004: Advanced Context Engineering](plans/PLAN-004_advanced_context_engineering.md) - Complete
+- [PLAN-005: Prompt Inspection Toolset](plans/PLAN-005_prompt_engineering_toolset.md) - Complete
 - [CHANGELOG_v1.12.0.md](CHANGELOG_v1.12.0.md) - Category-weighted scoring
 - [CHANGELOG_v1.13.0.md](CHANGELOG_v1.13.0.md) - Context engineering & Finding ID
 - [CHANGELOG_v1.13.1.md](CHANGELOG_v1.13.1.md) - Advanced context engineering
+- [CHANGELOG_v1.14.0.md](CHANGELOG_v1.14.0.md) - Prompt inspection toolset
+- [CHANGELOG_v1.14.1.md](CHANGELOG_v1.14.1.md) - Prompt quality improvements
 
 ---
 

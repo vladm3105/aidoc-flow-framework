@@ -145,11 +145,7 @@ Category-weighted scoring falls back to persona-based extraction for old reports
 
 ### Legacy Scoring Mode
 
-Use `--scoring legacy` to see old-style score (deprecated):
-
-```bash
-ucx review brd docs/01_BRD/BRD-01/ --scoring legacy
-```
+**Note**: Legacy scoring (`--scoring legacy`) was removed in v1.12.0. All reviews now use category-weighted scoring exclusively. The `calculate_legacy_score()` function remains available for backward compatibility testing but emits a deprecation warning.
 
 ---
 

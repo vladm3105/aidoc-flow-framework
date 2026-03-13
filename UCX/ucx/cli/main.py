@@ -36,7 +36,8 @@ console = Console()
 @click.option(
     "--model",
     default=None,
-    help="AI model: opus/sonnet/haiku for Claude CLI (default: opus), or provider/model for API mode",
+    envvar="UCX_MODEL",
+    help="AI model: opus (best quality), sonnet (balanced), haiku (fast/cheap). Default: opus. Env: UCX_MODEL",
 )
 @click.option(
     "--project-dir", "-P",
@@ -90,24 +91,37 @@ def cli(
     """UCX - Unified Context Framework for AI-driven document lifecycle management.
 
     \b
-    Two modes of operation:
-      cli  - Execute CLI agents (claude, gemini, ollama) via shell commands
-      api  - Direct API calls via LiteLLM (requires API key)
+    MODES:
+      --mode cli   Execute CLI agents (claude, gemini, ollama) via shell [default]
+      --mode api   Direct API calls via LiteLLM (requires API key)
 
     \b
-    Web Search:
-      Use --enable-web-search (-W) to enable internet search for:
-      - Fact-checking regulatory references (FinCEN, OFAC, PCI-DSS)
-      - Verifying technology best practices and patterns
-      - Finding solutions to identified issues
-      - Validating partner API documentation
+    MODELS (--model or UCX_MODEL env var):
+      opus    - Best quality, highest cost, 200K context (default)
+      sonnet  - Balanced quality/cost, 200K context (recommended for most tasks)
+      haiku   - Fastest, lowest cost, 200K context (good for validation)
 
     \b
-    Examples:
-      ucx --mode cli --cli-tool claude review brd docs/01_BRD/BRD-01/
-      ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
-      ucx -p docs/UCX/ review brd docs/01_BRD/BRD-01/  # Use project prompts
-      ucx -W review brd docs/01_BRD/BRD-01/  # With web search enabled
+    KEY OPTIONS:
+      -P, --project-dir   Project root with docs/UCX/ for custom prompts/skills
+      -W, --enable-web-search   Enable internet search for fact-checking
+      -v, --verbose       Debug output
+      -q, --quiet         Minimal output
+
+    \b
+    ENVIRONMENT VARIABLES:
+      UCX_MODEL              Default model (opus/sonnet/haiku)
+      UCX_PROJECT_DIR        Project root directory
+      UCX_LOG_LEVEL          Log level (DEBUG/INFO/WARNING/ERROR)
+      UCX_ENABLE_WEB_SEARCH  Enable web search (true/false)
+
+    \b
+    EXAMPLES:
+      ucx review brd docs/01_BRD/BRD-01/                    # Review with opus
+      ucx --model sonnet review brd docs/01_BRD/BRD-01/    # Use sonnet model
+      ucx -W review brd docs/01_BRD/BRD-01/                # With web search
+      ucx validate brd docs/01_BRD/BRD-01/ --fix           # Validate and fix
+      UCX_MODEL=sonnet ucx review brd docs/01_BRD/BRD-01/  # Via env var
     """
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
@@ -265,9 +279,9 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.option("--clean-reports", is_flag=True, help="Clean up old review reports, keep only latest (or --keep-versions)")
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.option("--clean-all", is_flag=True, help="Clean up both session memory and old reports")
-@click.option("--model", default=None, help="Model to use (opus, sonnet, haiku for CLI; or full model name for API)")
+@click.option("--model", default=None, envvar="UCX_MODEL", help="Model: opus (best), sonnet (balanced), haiku (fast). Env: UCX_MODEL")
 @click.option("--force-single", is_flag=True, help="Force single-turn mode (bypass auto multi-turn for large docs)")
-@click.option("--scoring", type=click.Choice(["weighted", "legacy"]), default="weighted", help="Scoring method: weighted (default, v1.12.0+) or legacy")
+@click.option("--scoring", type=click.Choice(["weighted"]), default="weighted", hidden=True, help="Scoring method (deprecated flag, only weighted supported)")
 @click.pass_context
 def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resume, session_ttl, clean_memory, clean_reports, keep_versions, clean_all, model, force_single, scoring):
     """
@@ -383,16 +397,9 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
 
     ucr = UCRPhase(config)
 
-    # Handle scoring method
-    if scoring == "legacy":
-        console.print(
-            "[yellow]WARNING: Legacy scoring is deprecated and will be removed in UCX v2.0.0.[/yellow]\n"
-            "[yellow]         Use --scoring weighted (default) for category-weighted scoring.[/yellow]"
-        )
-        # Store scoring method in config for downstream use
-        config.scoring_method = "legacy"
-    else:
-        config.scoring_method = "weighted"
+    # Scoring method: only weighted supported (v1.12.0+)
+    # Legacy scoring removed - all reviews use category-weighted scoring
+    config.scoring_method = "weighted"
 
     # Auto-detect large documents and recommend multi-turn (unless --force-single)
     if not multi_turn and not force_single:
@@ -1053,6 +1060,10 @@ def _display_result(result):
 # Register scoring command group
 from ucx.cli.scoring import scoring
 cli.add_command(scoring)
+
+# Register prompt command group (v1.14.0)
+from ucx.cli.prompts import prompt
+cli.add_command(prompt)
 
 
 if __name__ == "__main__":

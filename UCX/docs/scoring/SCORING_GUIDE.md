@@ -60,6 +60,69 @@ Findings are categorized using this priority order:
 
 ---
 
+## Manifest Format
+
+The Chairperson generates a findings manifest marked with `<!-- UCX-MANIFEST-START -->` and `<!-- UCX-MANIFEST-END -->` comments. This manifest includes category scoring information.
+
+### Manifest Structure
+
+```markdown
+<!-- UCX-MANIFEST-START -->
+
+### Manifest Summary
+
+| Metric | Count |
+|--------|-------|
+| Total Unique Findings | 25 |
+| P0 (Critical) | 5 |
+| P1 (High) | 12 |
+| P2 (Medium) | 8 |
+
+### Fixer Assignment
+
+| Fixer | Finding Count | Finding IDs |
+|-------|---------------|-------------|
+| architect | 8 | REM-P0-001, REM-P0-010, REM-P1-006, ... |
+| auditor | 11 | REM-P0-002, REM-P0-003, REM-P1-001, ... |
+| integration_lead | 5 | REM-P0-025, REM-P1-015, ... |
+
+### Category Summary
+
+| Category | P0 | P1 | P2 | Raw Deduction | Capped | Weighted |
+|----------|----|----|----|--------------:|-------:|---------:|
+| functional | 2 | 3 | 1 | -29 | -25 | -6.25 |
+| quality | 1 | 2 | 0 | -16 | -15 | -2.25 |
+| compliance | 1 | 2 | 2 | -18 | -18 | -3.60 |
+| ... | ... | ... | ... | ... | ... | ... |
+| **Total** | **5** | **12** | **8** | | | **-15.20** |
+
+### Weighted Score: 84.8/100
+### PRD-Ready Status: WARN
+
+### Findings Table
+
+| ID | Priority | Category | Status | Fixer | Description |
+|----|----------|----------|--------|-------|-------------|
+| REM-P0-001 | P0 | [CAT:compliance] | OPEN | auditor | Missing SAR filing requirement |
+| REM-P1-001 | P1 | [CAT:functional] | OPEN | tech_lead | Transaction FSM states undefined |
+
+<!-- UCX-MANIFEST-END -->
+```
+
+The **Fixer Assignment** table enables adaptive remediation - UCX loads only the fixer personas that have findings assigned to them.
+
+### Category Tags in Findings
+
+Each finding should include a `[CAT:xxx]` tag in the description:
+
+```
+| REM-P0-001 | P0 | OPEN | auditor | [CAT:compliance] Missing regulatory requirement |
+```
+
+If no explicit tag is present, the category is inferred using the detection priority order above.
+
+---
+
 ## Weights
 
 ### Default Weights (BRD)
@@ -219,12 +282,7 @@ If findings are miscategorized:
 
 Old reports without category tags remain parseable. The system falls back to persona-based extraction when manifest categories are unavailable.
 
-Use `--scoring legacy` flag (deprecated) to see legacy score for comparison:
-
-```bash
-ucx review brd docs/01_BRD/BRD-01/ --scoring legacy
-# WARNING: Legacy scoring is deprecated
-```
+**Note**: Legacy scoring (`100 - (P0×10) - (P1×3) - (P2×1)`) was removed in v1.12.0. All reviews now use category-weighted scoring exclusively.
 
 ---
 
@@ -233,11 +291,8 @@ ucx review brd docs/01_BRD/BRD-01/ --scoring legacy
 ### Review with Scoring
 
 ```bash
-# Default weighted scoring
+# Category-weighted scoring (default since v1.12.0)
 ucx review brd docs/01_BRD/BRD-01/
-
-# Legacy scoring (deprecated)
-ucx review brd docs/01_BRD/BRD-01/ --scoring legacy
 ```
 
 ### Inspect Scoring Configuration

@@ -615,6 +615,60 @@ ucx review brd docs/01_BRD/BRD-01/
 ucx review brd docs/01_BRD/BRD-01/ --clean-reports --keep-versions 2
 ```
 
+### Prompt Inspection (v1.14.0+)
+
+Pre-LLM analysis of generated prompts. Large documents (150K+ chars) merged into 40-50K token prompts are impossible to review manually. The prompt inspection toolset lets you analyze prompts **before** running expensive LLM reviews.
+
+```bash
+# Analyze token usage per persona
+ucx prompt tokens brd docs/01_BRD/BRD-01/
+
+# Show section inclusion matrix
+ucx prompt sections brd docs/01_BRD/BRD-01/
+
+# Inspect a generated prompt
+ucx prompt inspect tmp/prompts/prompt_architect.txt
+
+# Validate document for prompt generation
+ucx prompt check brd docs/01_BRD/BRD-01/ --strict
+
+# Generate prompts with metadata
+ucx prompt generate brd docs/01_BRD/BRD-01/ -o tmp/prompts/
+```
+
+**Commands:**
+
+| Command | Purpose |
+|---------|---------|
+| `ucx prompt tokens` | Per-persona token breakdown with budget tracking |
+| `ucx prompt sections` | Section inclusion matrix (FULL/OPT/IDX/-) |
+| `ucx prompt inspect` | Analyze prompt structure and detect issues |
+| `ucx prompt check` | Validate document readiness for prompt generation |
+| `ucx prompt generate` | Generate prompts with `.meta.json` metadata |
+
+**Sample tokens output:**
+```
+Per-Persona Breakdown:
+------------------------------------------------------------
+Persona              Sections      Doc  Instr    Total   Budget
+------------------------------------------------------------
+architect                   7   12,903  3,500   16,403   70,000
+auditor                    12   33,939  4,000   37,939   60,000
+
+Context Engineering Savings:
+  Without CE: 80,614 tokens
+  With CE: 54,342 tokens
+  Savings: 26,272 tokens (33%)
+```
+
+**Use cases:**
+- Debug token budget issues before LLM execution
+- Verify section inclusion for specific personas
+- Check format instruction positioning (should be at END)
+- Validate document structure before expensive API calls
+
+See [CHANGELOG_v1.14.0](docs/CHANGELOG_v1.14.0.md) for full documentation.
+
 ### Python API
 
 ```python
@@ -1232,6 +1286,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.1 | 2026-03-13 | **Prompt Quality Improvements**: Content preprocessing strips YAML frontmatter, HTML comments, navigation breadcrumbs, document metadata from prompts. System instructions loaded from skill manifests with project-specific overrides (`.ucx/skills/`). Numeric section ordering (BRD-01.5 before BRD-01.11). Fixed anti-pattern regex extraction. Token optimization: ~455 tokens saved per prompt (~5,000 across 11 personas). See [CHANGELOG_v1.14.1.md](docs/CHANGELOG_v1.14.1.md). |
+| 1.14.0 | 2026-03-13 | **Prompt Inspection Toolset**: Pre-LLM analysis of generated prompts. New CLI commands: `ucx prompt tokens/sections/inspect/check/generate`. `UCPromptPhase` API class. Token analysis per persona with budget tracking. Section inclusion matrix. Prompt structure analysis with attention steering detection. Metadata files (`.meta.json`) alongside generated prompts. See [CHANGELOG_v1.14.0.md](docs/CHANGELOG_v1.14.0.md) and [PLAN-005](docs/plans/PLAN-005_prompt_engineering_toolset.md). |
 | 1.13.1 | 2026-03-13 | **Advanced Context Engineering**: Completes deferred features from v1.13.0. Hybrid keyword scan (`RelevantSnippet`, `_scan_other_sections_for_keywords()`) discovers relevant content in non-mapped sections. Appendix-on-demand (`AppendixInfo`, lightweight index ~500 tokens vs 20-50K). Dynamic section mapping (`SECTION_CATEGORIES`, `DynamicSectionMapper`) for semantic filtering across document types. VERIFY tag pattern `[VERIFY: appendix-id]` with `AppendixVerifier` for post-processing verification. See [CHANGELOG_v1.13.1.md](docs/CHANGELOG_v1.13.1.md) and [PLAN-004](docs/plans/PLAN-004_advanced_context_engineering.md). |
 | 1.13.0 | 2026-03-13 | **Context Engineering & Finding ID Standardization**: Canonical Finding ID format (`PREFIX-P0-NNN` e.g., `ARCH-P0-001`). Context engineering reduces prompts from 170KB to ~60-80KB. Attention steering places format instructions at prompt END. Prior findings summarization (90% token reduction). Hierarchical document context (4-level structure). Chairperson manifest validation. Updated UCR prompts (BRD/PRD) with Finding ID format. See [CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md) and [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md). |
 | 1.12.0 | 2026-03-12 | **Category-Weighted Scoring**: New scoring system with 8 categories (functional, quality, compliance, constraints, integration, acceptance, risk, architecture). Per-category weights and deduction caps prevent runaway scores. Categories align with ID_NAMING_STANDARDS element codes. Legacy `--scoring legacy` CLI option removed. Manifest includes category summary table with weighted score. See [SCORING_GUIDE.md](docs/scoring/SCORING_GUIDE.md). |
@@ -1272,15 +1328,17 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.13.1 - Advanced Context Engineering
-- Completes context engineering system with hybrid keyword scan, appendix-on-demand, and dynamic section mapping
-- See [CHANGELOG_v1.13.1](docs/CHANGELOG_v1.13.1.md) for details
+**Latest Release**: v1.14.1 - Prompt Quality Improvements
+- Content preprocessing: strips YAML frontmatter, HTML comments, navigation, document metadata
+- System instructions loaded from skill manifests with project-specific overrides
+- Numeric section ordering, anti-pattern extraction fixes
+- See [CHANGELOG_v1.14.1](docs/CHANGELOG_v1.14.1.md) for details
 
-**Previous Major Release**: v1.13.0 - Context Engineering & Finding ID Standardization
-- Canonical Finding ID format, attention steering, prior findings summarization
-- See [CHANGELOG_v1.13.0](docs/CHANGELOG_v1.13.0.md) for details
+**Previous Release**: v1.14.0 - Prompt Inspection Toolset
+- Pre-LLM analysis of generated prompts (`ucx prompt tokens/sections/inspect/check/generate`)
+- See [CHANGELOG_v1.14.0](docs/CHANGELOG_v1.14.0.md) for details
 
-**Next Release**: v1.14.0 - Multi-Document Validation
+**Next Release**: v1.15.0 - Multi-Document Validation
 - Corpus-wide validation (`ucx validate --all`)
 - Cross-document traceability validation
 - Dependency graph visualization
@@ -1304,7 +1362,9 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.10.0](docs/CHANGELOG_v1.10.0.md) | Adaptive remediation release notes |
 | [CHANGELOG v1.11.0](docs/CHANGELOG_v1.11.0.md) | Unified scanner and manifest release notes |
 | [CHANGELOG v1.12.0](docs/CHANGELOG_v1.12.0.md) | Category-weighted scoring release notes |
-| [CHANGELOG v1.13.0](docs/CHANGELOG_v1.13.0.md) | Context engineering & Finding ID (upcoming) |
+| [CHANGELOG v1.13.0](docs/CHANGELOG_v1.13.0.md) | Context engineering & Finding ID |
+| [CHANGELOG v1.14.0](docs/CHANGELOG_v1.14.0.md) | Prompt inspection toolset |
+| [CHANGELOG v1.14.1](docs/CHANGELOG_v1.14.1.md) | Prompt quality improvements |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

@@ -9,6 +9,7 @@ from typing import Optional, Union
 import re
 
 from ucx.config.settings import UCXConfig
+from ucx.validators.common.file_utils import is_companion_report, sort_section_files
 from ucx.config.layer_skills import (
     FIXER_SKILLS,
     DOMAIN_FIXER_SKILLS,
@@ -498,15 +499,26 @@ The document is ready for downstream processing. No remediation required.
         return "".join(parts)
 
     def _load_document_content(self, doc_path: Path) -> str:
-        """Load document content."""
+        """Load document content.
+
+        Excludes companion reports (audit, review, validation, remediation reports)
+        using the is_companion_report() utility from file_utils.
+
+        Section files (e.g., BRD-01.0_index.md) are sorted numerically.
+        """
         parts = []
 
         if doc_path.is_dir():
-            for f in sorted(doc_path.glob("*.md")):
-                if "REVIEW" not in f.name and "REPORT" not in f.name:
-                    parts.append(f"## File: {f.name}\n\n")
-                    parts.append(f.read_text(encoding="utf-8"))
-                    parts.append("\n\n")
+            all_files = list(doc_path.glob("*.md"))
+            for f in sort_section_files(all_files):
+                # Skip hidden files and companion reports
+                if f.name.startswith("."):
+                    continue
+                if is_companion_report(f):
+                    continue
+                parts.append(f"## File: {f.name}\n\n")
+                parts.append(f.read_text(encoding="utf-8"))
+                parts.append("\n\n")
         else:
             parts.append(f"## File: {doc_path.name}\n\n")
             parts.append(doc_path.read_text(encoding="utf-8"))

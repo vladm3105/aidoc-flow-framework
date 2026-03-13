@@ -4,7 +4,7 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-03-11T00:00:00
+**Last Updated**: 2026-03-12T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
@@ -197,9 +197,86 @@ ucx review brd docs/01_BRD/BRD-01/
 # AI-powered remediation
 ucx remediate docs/01_BRD/BRD-01/
 
+# Scan review report (v1.11.0+)
+ucx scan docs/01_BRD/BRD-01.UCR_review_report_v001.md
+
 # List available validators
 ucx validate --help
 ```
+
+### UCX v1.12.0 Category-Weighted Scoring
+
+UCX v1.12.0 introduces category-weighted scoring for more accurate document quality assessment.
+
+**Scoring Categories**:
+| Category | ID | Weight | Max Deduction |
+|----------|-----|--------|---------------|
+| functional | CAT-01 | 25% | -25 |
+| quality | CAT-02 | 15% | -15 |
+| compliance | CAT-03 | 20% | -20 |
+| constraints | CAT-04 | 10% | -10 |
+| integration | CAT-05 | 10% | -10 |
+| acceptance | CAT-06 | 10% | -10 |
+| risk | CAT-07 | 5% | -5 |
+| architecture | CAT-08 | 5% | -5 |
+
+**Formula**:
+```
+raw_deduction = (P0 × 10) + (P1 × 3) + (P2 × 1)
+capped_deduction = min(raw_deduction, max_deduction)
+weighted_deduction = capped_deduction × category_weight
+final_score = 100 - sum(weighted_deduction for each category)
+```
+
+**Thresholds**:
+| Score | Status | Action |
+|-------|--------|--------|
+| ≥85 | PASS | PRD-Ready |
+| 70-84 | WARN | Needs review |
+| <70 | FAIL | Not ready |
+
+**See**: `/opt/data/docs_flow_framework/UCX/docs/scoring/SCORING_GUIDE.md` for complete documentation.
+
+### Project-Specific UCX Configuration (v1.12.0+)
+
+For domain-specific reviews, create project UCX files:
+
+```bash
+# Create UCX directory structure
+mkdir -p /opt/data/project_name/docs/UCX/{skills,review,creation,remediation}
+
+# Required files for BRD review:
+# docs/UCX/skills/           # Domain-specific persona skills
+# docs/UCX/review/           # UCR review prompts
+# docs/UCX/README.md         # Project UCX configuration
+```
+
+**Project UCX Structure** (example from b-local):
+```
+docs/UCX/
+├── README.md                     # Project UCX config (version, commands)
+├── skills/                       # Domain-specific persona skills
+│   ├── architect.md              # Architecture focus areas
+│   ├── auditor.md                # Compliance requirements
+│   ├── chairperson.md            # Score calculation, manifest format
+│   ├── integration_lead.md       # Partner integrations
+│   └── ...                       # Other personas
+├── review/
+│   ├── UCR_PROMPT_BRD_PROJECT.md # BRD review prompt (all personas)
+│   └── UCR_PROMPT_PRD_PROJECT.md # PRD review prompt (all personas)
+├── creation/
+│   └── UCC_PROMPT_BRD_PROJECT.md # BRD creation prompt
+└── remediation/
+    └── UCRem_PROMPT_BRD_PROJECT.md # BRD remediation prompt
+```
+
+**Key v1.12.0 Requirements**:
+1. **Category Tagging**: Chairperson must assign `[CAT:xxx]` tags to findings
+2. **Category Summary Table**: Manifest includes per-category scoring breakdown
+3. **Weighted Score**: Use category-weighted formula (not legacy 100-P0×10-P1×3-P2×1)
+4. **Version Reference**: Set `Requires UCX Framework v1.12.0+` in README.md
+
+**Reference Implementation**: `/opt/data/b-local/b-local-docs/docs/UCX/`
 
 ### Pre-commit with UCX (No Install)
 
@@ -1140,6 +1217,19 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ---
 
 ## Changelog
+
+### Version 2.3 (2026-03-12)
+
+- **UCX v1.12.0 Category-Weighted Scoring**: Added documentation for new scoring system
+  - 8 scoring categories with per-category weights and caps
+  - Category tagging with `[CAT:xxx]` format
+  - Per-category deduction caps to prevent runaway scores
+  - Updated thresholds: PASS (≥85), WARN (70-84), FAIL (<70)
+- **Project-Specific UCX Configuration**: Added section for setting up project UCX files
+  - Directory structure for skills, prompts, and remediation
+  - Key v1.12.0 requirements for category tagging
+  - Reference to b-local implementation example
+- Added `ucx scan` command to UCX commands documentation
 
 ### Version 2.2 (2026-03-11)
 

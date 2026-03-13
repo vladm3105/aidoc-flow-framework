@@ -184,3 +184,37 @@ def count_tokens_estimate(content: str) -> int:
         Estimated token count
     """
     return len(content) // 4
+
+
+def sort_section_files(files: List[Path]) -> List[Path]:
+    """
+    Sort section files numerically by section number.
+
+    Handles patterns like:
+    - BRD-01.0_index.md (section 0)
+    - BRD-01.1_introduction.md (section 1)
+    - BRD-01.10_risk_management.md (section 10)
+
+    Standard lexicographic sort produces: 0, 10, 11, ..., 18, 1, 2, ...
+    This function sorts numerically: 0, 1, 2, ..., 10, 11, ..., 18
+
+    Non-section files (e.g., review reports) are placed at the end.
+
+    Args:
+        files: List of Path objects to sort
+
+    Returns:
+        Sorted list with section files in numerical order
+    """
+    def extract_section_number(path: Path) -> tuple:
+        """Extract section number for sorting, fallback to name."""
+        name = path.name
+        # Pattern: {DOC_ID}.{SECTION_NUM}_{description}.md
+        # Examples: BRD-01.0_index.md, BRD-01.10_risk_management.md
+        match = re.match(r'^[A-Z]+-\d+\.(\d+)_', name)
+        if match:
+            return (int(match.group(1)), name)
+        # Fallback: sort by filename (for non-section files)
+        return (999999, name)
+
+    return sorted(files, key=extract_section_number)

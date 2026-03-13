@@ -159,24 +159,20 @@ Reports created before v1.12.0 remain compatible:
 
 - Manifest without categories → Uses persona-based extraction
 - Old finding format → Parsed normally
-- Legacy scores → Can be compared with `--scoring legacy`
+- Legacy scores → No longer supported (removed in v1.12.0)
 
 ### Legacy Scoring Mode
 
-For comparison, use `--scoring legacy` (temporary, deprecated):
-
-```bash
-ucx review brd docs/01_BRD/BRD-01/ --scoring legacy
-# WARNING: Legacy scoring is deprecated and will be removed in UCX v2.0.0
-```
+**Note**: The `--scoring legacy` CLI option was removed in v1.12.0. All reviews now use category-weighted scoring exclusively.
 
 ### API Compatibility
 
-`calculate_legacy_score()` function available for programmatic access:
+The `calculate_legacy_score()` function remains available for backward compatibility testing but emits a deprecation warning:
 
 ```python
-from ucx.scoring import calculate_legacy_score
+from ucx.scoring.calculator import calculate_legacy_score
 
+# Emits DeprecationWarning
 old_score = calculate_legacy_score(p0_count=5, p1_count=10, p2_count=3)
 # Returns: 100 - (5*10) - (10*3) - (3*1) = 100 - 50 - 30 - 3 = 17
 ```
@@ -187,9 +183,8 @@ old_score = calculate_legacy_score(p0_count=5, p1_count=10, p2_count=3)
 
 | Version | Status |
 |---------|--------|
-| v1.12.0 | Deprecated notices added |
-| v1.13.0 | Warning on deprecated doc access |
-| v2.0.0 | Deprecated documents removed |
+| v1.12.0 | Legacy scoring CLI option removed; deprecation warning added to `calculate_legacy_score()` |
+| v2.0.0 | `calculate_legacy_score()` function will be removed entirely |
 
 ---
 
@@ -205,7 +200,7 @@ Yes. Old reports are backward compatible with the new scanner.
 
 ### Q: What if I prefer the old scoring?
 
-Use `--scoring legacy` temporarily. Plan to migrate before v2.0.0.
+Legacy scoring was removed in v1.12.0. Category-weighted scoring is now the only option. The new scoring provides better consistency and per-category caps that prevent extreme negative scores.
 
 ### Q: Are BRD validation rules still valid?
 

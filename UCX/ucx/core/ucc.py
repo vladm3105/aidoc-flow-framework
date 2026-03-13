@@ -9,6 +9,7 @@ from typing import Optional
 from ucx.config.settings import UCXConfig
 from ucx.models.enums import DocType
 from ucx.models.document import Document
+from ucx.validators.common.file_utils import sort_section_files
 from ucx.ai.base import BaseAIClient
 from ucx.ai.claude import ClaudeClient
 from ucx.prompts.loader import PromptLoader
@@ -186,10 +187,14 @@ class UCCEngine:
         return context
 
     def _load_directory_content(self, directory: Path) -> str:
-        """Load content from all markdown files in a directory."""
-        content_parts = []
+        """Load content from all markdown files in a directory.
 
-        for md_file in sorted(directory.glob("*.md")):
+        Section files (e.g., BRD-01.0_index.md) are sorted numerically.
+        """
+        content_parts = []
+        all_files = list(directory.glob("*.md"))
+
+        for md_file in sort_section_files(all_files):
             content = md_file.read_text(encoding="utf-8")
             content_parts.append(f"## {md_file.name}\n\n{content}")
 

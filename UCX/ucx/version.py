@@ -1,7 +1,30 @@
 """Version information for UCX."""
 
-__version__ = "1.13.1"
+__version__ = "1.14.0"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.14.0 - Prompt Inspection Toolset
+# - NEW: `ucx prompt` command group with 5 subcommands
+#   - `ucx prompt tokens` - Analyze token usage per persona
+#   - `ucx prompt sections` - Show section inclusion matrix
+#   - `ucx prompt inspect` - Inspect generated prompt files
+#   - `ucx prompt check` - Validate document for prompt generation
+#   - `ucx prompt generate` - Generate prompts for personas
+# - NEW: ucx/prompts/ package with inspection toolset modules:
+#   - models.py: PromptSection, InspectionResult, PersonaTokens, TokenAnalysis,
+#     SectionMatrix, CheckResult, GeneratedPrompt, GenerationResult, PromptMetadata
+#   - exceptions.py: Custom exception hierarchy for prompt inspection
+#   - document.py: DocumentLoader for multi-file and single-file documents
+#   - inspector.py: PromptInspector for analyzing prompt structure
+#   - analyzer.py: TokenAnalyzer for token budget analysis
+#   - mapper.py: SectionMapper for section inclusion matrix
+#   - api.py: UCPromptPhase main API class
+# - NEW: .meta.json metadata files alongside generated prompts
+# - NEW: Heuristic structure detection using regex patterns
+# - NEW: Dynamic section mapping via semantic categories
+# - PURPOSE: Pre-LLM inspection to review prompts before expensive API calls
+# - BENEFIT: Debug token budgets, section inclusion, format positioning
+# - See: docs/CHANGELOG_v1.14.0.md, docs/plans/PLAN-005_prompt_engineering_toolset.md
 
 # v1.12.0 - Category-Weighted Scoring
 # - NEW: Category-weighted scoring replaces legacy formula

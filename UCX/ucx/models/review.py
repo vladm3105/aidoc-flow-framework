@@ -45,6 +45,8 @@ class ReviewResult:
     findings: dict[str, int] = field(default_factory=lambda: {"P0": 0, "P1": 0, "P2": 0})
     raw_content: str = ""
     elapsed_time: float = 0.0
+    weighted_score: float = 0.0  # Category-weighted score (v1.12.0+)
+    category_scores: dict[str, any] = field(default_factory=dict)  # Per-category breakdown
 
     @property
     def has_critical(self) -> bool:
@@ -75,24 +77,45 @@ class ReviewResult:
         """
         content = report_path.read_text(encoding="utf-8")
 
-        # Extract score
+        # Extract weighted score from frontmatter (v1.12.0+ format)
+        weighted_match = re.search(r"weighted_score:\s*([\d.]+)", content)
+        weighted_score = float(weighted_match.group(1)) if weighted_match else 0.0
+
+        # Fallback: Extract legacy score from content
         score_match = re.search(r"(?:Score|PRD-Ready)[:\s]+(\d+)", content, re.IGNORECASE)
-        score = int(score_match.group(1)) if score_match else 0
+        legacy_score = int(score_match.group(1)) if score_match else 0
 
-        # Count findings
-        findings = {
-            "P0": len(re.findall(r"P0-\d+", content)),
-            "P1": len(re.findall(r"P1-\d+", content)),
-            "P2": len(re.findall(r"P2-\d+", content)),
-        }
+        # Use weighted score if available, else legacy
+        score = int(weighted_score) if weighted_score > 0 else legacy_score
 
-        # Determine status
-        if score >= 90 and findings["P0"] == 0:
+        # Extract finding counts from frontmatter (v1.12.0+ format)
+        p0_match = re.search(r"p0_findings:\s*(\d+)", content)
+        p1_match = re.search(r"p1_findings:\s*(\d+)", content)
+        p2_match = re.search(r"p2_findings:\s*(\d+)", content)
+
+        if p0_match and p1_match and p2_match:
+            findings = {
+                "P0": int(p0_match.group(1)),
+                "P1": int(p1_match.group(1)),
+                "P2": int(p2_match.group(1)),
+            }
+        else:
+            # Fallback: Count findings in content
+            findings = {
+                "P0": len(re.findall(r"P0-\d+", content)),
+                "P1": len(re.findall(r"P1-\d+", content)),
+                "P2": len(re.findall(r"P2-\d+", content)),
+            }
+
+        # Determine status based on weighted score (v1.12.0 thresholds)
+        if weighted_score >= 85 and findings["P0"] == 0:
             status = Status.PASS
+        elif weighted_score >= 70:
+            status = Status.NEEDS_MANUAL  # Warning range
         elif findings["P0"] > 0:
             status = Status.FAIL
         else:
-            status = Status.NEEDS_MANUAL
+            status = Status.FAIL
 
         return cls(
             doc_path=doc_path,
@@ -102,6 +125,7 @@ class ReviewResult:
             validation_status=ValidationStatus.PASSED,  # Default, updated by caller
             findings=findings,
             raw_content=content,
+            weighted_score=weighted_score,
         )
 
     def get_findings_by_priority(self, priority: Priority) -> list[str]:
