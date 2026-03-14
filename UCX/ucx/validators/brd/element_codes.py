@@ -159,6 +159,27 @@ def _is_reference_context(
     if re.match(r'^[-*]\s+BRD\.\d{2,}\.\d{2}\.\d{2,}', stripped_line):
         return True
 
+    # Category reference lists (ID followed by description in parentheses)
+    # e.g., "- Compliance BRDs: BRD.03.01.01 (Audit Trail...)"
+    # e.g., "- Quality Attributes: BRD.03.02.01 (Performance...)"
+    if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}\s*\([^)]+\)', line):
+        return True
+
+    # Multiple IDs on same line (likely a reference list)
+    # e.g., "BRD.03.01.01, BRD.03.01.07, BRD.03.01.09"
+    ids_in_line = ELEMENT_ID_PATTERN.findall(line)
+    if len(ids_in_line) > 1:
+        return True
+
+    # Range notation for element IDs
+    # e.g., "BRD.03.32.01-11" or "BRD.03.01.01-05"
+    if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}-\d+', line):
+        return True
+
+    # Review report files are references, not definitions
+    if "_review_report" in str(file_path).lower():
+        return True
+
     return False
 
 

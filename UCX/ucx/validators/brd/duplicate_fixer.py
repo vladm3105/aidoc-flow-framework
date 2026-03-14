@@ -139,8 +139,14 @@ class DuplicateElementFixer:
         """Collect all element ID occurrences across all markdown files."""
         locations = []
 
-        # Find all markdown files
-        md_files = list(self.brd_path.glob("**/*.md"))
+        # Find all markdown files, excluding generated/session directories
+        md_files = [
+            f for f in self.brd_path.glob("**/*.md")
+            if not any(
+                skip in f.parts
+                for skip in [".ucx_review_session", ".doc_review_memory", ".backup", "__pycache__"]
+            )
+        ]
 
         for file_path in md_files:
             try:
@@ -253,6 +259,27 @@ class DuplicateElementFixer:
         # "Related Requirements" section references
         # e.g., "- BRD.02.01.01-05 (All Partners): Webhook event sources"
         if re.match(r'^[-*]\s+BRD\.\d{2,}\.\d{2}\.\d{2,}', stripped_line):
+            return True
+
+        # Category reference lists (ID followed by description in parentheses)
+        # e.g., "- Compliance BRDs: BRD.03.01.01 (Audit Trail...)"
+        # e.g., "- Quality Attributes: BRD.03.02.01 (Performance...)"
+        if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}\s*\([^)]+\)', line):
+            return True
+
+        # Multiple IDs on same line (likely a reference list)
+        # e.g., "BRD.03.01.01, BRD.03.01.07, BRD.03.01.09"
+        ids_in_line = ELEMENT_ID_PATTERN.findall(line)
+        if len(ids_in_line) > 1:
+            return True
+
+        # Range notation for element IDs
+        # e.g., "BRD.03.32.01-11" or "BRD.03.01.01-05"
+        if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}-\d+', line):
+            return True
+
+        # Review report files are references, not definitions
+        if "_review_report" in str(file_path).lower():
             return True
 
         return False
