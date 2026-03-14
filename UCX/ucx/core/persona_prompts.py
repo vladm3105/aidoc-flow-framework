@@ -61,18 +61,7 @@ def _load_skill_from_dir(persona: str, skill_dir: Path) -> Optional[str]:
         logger.debug(f"Loaded skill from file: {skill_path} ({len(content)} chars)")
         return content
 
-    # Try common alternative names
-    alternatives = {
-        "integration_lead": "integration_expert",
-        "chaos_engineer": "chaos_engineer",
-    }
-    if persona in alternatives:
-        alt_path = skill_dir / f"{alternatives[persona]}.md"
-        if alt_path.exists():
-            content = alt_path.read_text(encoding="utf-8")
-            logger.debug(f"Loaded skill from file: {alt_path} ({len(content)} chars)")
-            return content
-
+    # No alternative names needed - personas should match skill filenames exactly
     return None
 
 

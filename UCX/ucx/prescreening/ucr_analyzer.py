@@ -32,10 +32,10 @@ PERSONA_TO_FIXER: dict[str, Optional[str]] = {
     "chaos_engineer": "chaos_engineer",
     "devil's advocate": "chaos_engineer",
     "devils advocate": "chaos_engineer",
-    "integration_expert": "integration_lead",
-    "integration expert": "integration_lead",
-    "integration_lead": "integration_lead",  # Direct mapping
+    "integration_lead": "integration_lead",
     "integration lead": "integration_lead",
+    "integration_expert": "integration_lead",  # Legacy alias
+    "integration expert": "integration_lead",  # Legacy alias
     # Indirect mappings
     "tech_lead": "qa_lead",
     "tech lead": "qa_lead",

@@ -9,10 +9,10 @@ UCC_LAYER_SKILLS: dict[DocType, list[str]] = {
     DocType.EARS: ["requirements_specialist", "tech_lead", "qa_lead", "chaos_engineer"],
     DocType.BDD: ["qa_lead", "tech_lead", "chaos_engineer", "operator"],
     DocType.ADR: ["architect", "tech_lead", "strategist", "chaos_engineer", "operator"],
-    DocType.SYS: ["architect", "tech_lead", "operator", "integration_expert"],
-    DocType.REQ: ["requirements_specialist", "tech_lead", "integration_expert"],
-    DocType.CTR: ["architect", "tech_lead", "integration_expert"],
-    DocType.SPEC: ["tech_lead", "architect", "operator", "integration_expert"],
+    DocType.SYS: ["architect", "tech_lead", "operator", "integration_lead"],
+    DocType.REQ: ["requirements_specialist", "tech_lead", "integration_lead"],
+    DocType.CTR: ["architect", "tech_lead", "integration_lead"],
+    DocType.SPEC: ["tech_lead", "architect", "operator", "integration_lead"],
     DocType.TSPEC: ["qa_lead", "tech_lead", "operator"],
 }
 
@@ -20,45 +20,45 @@ UCC_LAYER_SKILLS: dict[DocType, list[str]] = {
 UCR_LAYER_SKILLS: dict[DocType, list[str]] = {
     DocType.BRD: [
         "architect", "auditor", "tech_lead", "strategist",
-        "chaos_engineer", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_lead",
         "product_owner", "business_analyst",
     ],
     DocType.PRD: [
         "architect", "auditor", "tech_lead", "strategist",
-        "chaos_engineer", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_lead",
         "product_owner", "qa_lead", "ux_strategist",
     ],
     DocType.EARS: [
-        "tech_lead", "chaos_engineer", "integration_expert",
+        "tech_lead", "chaos_engineer", "integration_lead",
         "qa_lead", "requirements_specialist",
     ],
     DocType.BDD: [
         "auditor", "tech_lead", "chaos_engineer",
-        "operator", "integration_expert", "qa_lead",
+        "operator", "integration_lead", "qa_lead",
     ],
     DocType.ADR: [
         "architect", "auditor", "tech_lead", "strategist",
-        "chaos_engineer", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_lead",
     ],
     DocType.SYS: [
         "architect", "tech_lead", "chaos_engineer",
-        "operator", "integration_expert", "qa_lead",
+        "operator", "integration_lead", "qa_lead",
     ],
     DocType.REQ: [
-        "tech_lead", "chaos_engineer", "integration_expert",
+        "tech_lead", "chaos_engineer", "integration_lead",
         "qa_lead", "requirements_specialist",
     ],
     DocType.CTR: [
         "architect", "auditor", "tech_lead",
-        "chaos_engineer", "integration_expert",
+        "chaos_engineer", "integration_lead",
     ],
     DocType.SPEC: [
         "architect", "tech_lead", "chaos_engineer",
-        "operator", "integration_expert",
+        "operator", "integration_lead",
     ],
     DocType.TSPEC: [
         "tech_lead", "chaos_engineer", "operator",
-        "integration_expert", "qa_lead",
+        "integration_lead", "qa_lead",
     ],
 }
 
@@ -67,7 +67,7 @@ DOMAIN_FIXER_SKILLS: list[str] = [
     "architect",
     "auditor",
     "qa_lead",
-    "integration_lead",  # Maps from integration_expert in reviews
+    "integration_lead",
 ]
 
 # Mandatory fixer skills (always loaded regardless of findings)
