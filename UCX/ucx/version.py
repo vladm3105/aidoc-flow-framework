@@ -1,7 +1,18 @@
 """Version information for UCX."""
 
-__version__ = "1.15.1"
+__version__ = "1.15.2"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.2 - Extended Auto-Fix Suite (21 fixable codes)
+# - NEW: GATE-E001 fixer - converts [TBD]/TODO/FIXME to DEFERRED comments
+# - NEW: DIAG-E001 fixer - adds DIAGRAM-REQUIRED placeholder for architecture
+# - NEW: FWDREF-E001 fixer - converts forward refs to FWDREF-DEFERRED comments
+# - TOTAL: 21 auto-fixable error codes (was 18)
+# - IMPACT: Reduces Tier 1 blocking errors significantly
+#   - GATE-E001: ~25 placeholder errors converted to deferred
+#   - DIAG-E001: ~23 missing diagram errors get placeholders
+#   - FWDREF-E001: ~476 forward references converted to deferred
+# - See: docs/CHANGELOG_v1.15.2.md
 
 # v1.15.1 - BRD-E020 Invalid Type Code Auto-Fixer
 # - NEW: BRD-E020 fixer - remaps invalid type codes to valid BRD codes

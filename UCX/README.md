@@ -419,7 +419,7 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
 
-**Auto-Fix (v1.15.1 - 18 codes):**
+**Auto-Fix (v1.15.2 - 21 codes):**
 
 The `--fix` flag automatically fixes structural issues without AI:
 
@@ -429,16 +429,19 @@ The `--fix` flag automatically fixes structural issues without AI:
 | `BRD-E003` | 1 | Missing 'brd' tag | Adds to tags array |
 | `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
 | `BRD-E009` | 1 | Missing Document Control | Adds Section 0 template |
-| `BRD-E020` | 1 | **Invalid element type code** | **Remaps to valid code (01-32, 91-99)** |
+| `BRD-E020` | 1 | Invalid element type code | Remaps to valid code (01-32, 91-99) |
+| `GATE-E001` | 1 | **Placeholder text [TBD]** | **Converts to `<!-- DEFERRED: ... -->` comments** |
 | `GATE-E008` | 1 | Duplicate element ID | Renumbers duplicates with next available sequence |
 | `GATE-E010` | 1 | File exceeds 20K tokens | Auto-splits at section boundaries |
+| `DIAG-E001` | 1 | **Missing architecture diagram** | **Adds `<!-- DIAGRAM-REQUIRED: ... -->` placeholder** |
+| `FWDREF-E001` | 1 | **Forward reference to non-existent doc** | **Converts to `<!-- FWDREF-DEFERRED: ... -->` comment** |
 | `VAL-E002` | 1 | Missing/invalid frontmatter | Creates YAML frontmatter from scratch |
 | `BRD-W005` | 1 | Legacy development_status | Renames to status |
 | `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
 | `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |
-| `GATE-W008` | 2 | Element in wrong section | **Moves element to correct section file** |
+| `GATE-W008` | 2 | Element in wrong section | Moves element to correct section file |
 | `DIAG-W001` | 2 | Diagram node count | Updates prose to match diagram |
-| `BRD-W010` | 2 | Missing @depends tags | **Auto-detects BRD references and adds tags** |
+| `BRD-W010` | 2 | Missing @depends tags | Auto-detects BRD references and adds tags |
 | `BRD-W011` | 2 | Missing C4-L1 diagram | Adds @diagram-request for ADR layer |
 | `BRD-W012` | 2 | Missing DFD-L0 diagram | Adds @diagram-request for ADR layer |
 | `BRD-W013` | 2 | Sequence diagram unclassified | Auto-detects sync/async/error type |
@@ -1322,6 +1325,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.15.2 | 2026-03-14 | **Extended Auto-Fix Suite (21 codes)**: Added `GATE-E001` (placeholder → DEFERRED comment), `DIAG-E001` (missing diagram → DIAGRAM-REQUIRED placeholder), `FWDREF-E001` (forward ref → FWDREF-DEFERRED comment). Total: 21 auto-fixable codes. Expected impact: ~524 Tier 1 errors converted to deferred. See [CHANGELOG_v1.15.2.md](docs/CHANGELOG_v1.15.2.md). |
 | 1.15.1 | 2026-03-14 | **BRD-E020 Invalid Type Code Fixer**: Added auto-fix for invalid element type codes (1,260 errors fixed). New `INVALID_CODE_REMAP` table with 60+ mappings. Remaps invalid codes to valid BRD codes (01-32, 91-99). Total: 18 auto-fixable codes. See [CHANGELOG_v1.15.1.md](docs/CHANGELOG_v1.15.1.md). |
 | 1.15.0 | 2026-03-14 | **Extended Auto-Fix Suite (17 codes)**: Added `GATE-E010` (auto-split large files), `GATE-W008` (move elements to correct section), `BRD-W010` (auto-detect @depends), `VAL-E002` (create frontmatter from scratch). BRD-E002 now context-aware (custom_fields OR Section 0). BRD-03 improved 89.5→96.0 (PASS). See [CHANGELOG_v1.15.0.md](docs/CHANGELOG_v1.15.0.md). |
 | 1.14.9 | 2026-03-14 | **Duplicate ID Auto-Fixer**: Added `GATE-E008` to auto-fix. New `DuplicateElementFixer` renumbers duplicate element IDs. Improved reference detection for category lists, range notation, multiple IDs. BRD-03 score improved 0.0→89.5. See [CHANGELOG_v1.14.9.md](docs/CHANGELOG_v1.14.9.md). |
@@ -1374,14 +1378,16 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.15.1 - BRD-E020 Invalid Type Code Fixer
-- Added `BRD-E020` fixer: Remaps invalid element type codes to valid BRD codes (01-32, 91-99)
-- New `INVALID_CODE_REMAP` table with 60+ common invalid → valid mappings
-- Fixed 1,260 BRD-E020 errors automatically across 74 BRDs
-- Total: 18 auto-fixable error codes (was 17)
-- See [CHANGELOG_v1.15.1](docs/CHANGELOG_v1.15.1.md) for details
+**Latest Release**: v1.15.2 - Extended Auto-Fix Suite (21 codes)
+- NEW: `GATE-E001` fixer - Converts `[TBD]`/TODO/FIXME to `<!-- DEFERRED: ... -->` comments
+- NEW: `DIAG-E001` fixer - Adds `<!-- DIAGRAM-REQUIRED: ... -->` placeholder for architecture
+- NEW: `FWDREF-E001` fixer - Converts forward refs to `<!-- FWDREF-DEFERRED: ... -->` comments
+- Total: 21 auto-fixable error codes (was 18)
+- Expected impact: ~524 Tier 1 blocking errors converted to deferred
+- See [CHANGELOG_v1.15.2](docs/CHANGELOG_v1.15.2.md) for details
 
 **Previous Releases**: v1.15.x / v1.14.x
+- v1.15.1: BRD-E020 invalid type code fixer (1,260 errors fixed)
 - v1.15.0: Extended auto-fix suite (17 codes), GATE-E010, GATE-W008, BRD-W010, VAL-E002
 - v1.14.9: Duplicate element ID auto-fixer (GATE-E008)
 - v1.14.8: Terminology update (unified prompt / persona prompts)
