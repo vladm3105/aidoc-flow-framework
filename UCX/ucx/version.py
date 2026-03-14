@@ -1,7 +1,15 @@
 """Version information for UCX."""
 
-__version__ = "1.15.0"
+__version__ = "1.15.1"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.1 - BRD-E020 Invalid Type Code Auto-Fixer
+# - NEW: BRD-E020 fixer - remaps invalid type codes to valid BRD codes
+# - NEW: INVALID_CODE_REMAP table with 60+ common invalid → valid mappings
+# - STRATEGY: Uses remap table, section context, or fallback to "01"
+# - IMPACT: Fixes ~1,260 BRD-E020 errors automatically
+# - TOTAL: 18 auto-fixable error codes (was 17)
+# - See: docs/CHANGELOG_v1.15.1.md
 
 # v1.15.0 - Extended Auto-Fix Suite (17 fixable codes)
 # - NEW: BRD-W010 fixer - auto-detects BRD references and adds @depends tags

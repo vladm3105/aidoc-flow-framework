@@ -419,7 +419,7 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
 
-**Auto-Fix (v1.15.0 - 17 codes):**
+**Auto-Fix (v1.15.1 - 18 codes):**
 
 The `--fix` flag automatically fixes structural issues without AI:
 
@@ -429,9 +429,10 @@ The `--fix` flag automatically fixes structural issues without AI:
 | `BRD-E003` | 1 | Missing 'brd' tag | Adds to tags array |
 | `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
 | `BRD-E009` | 1 | Missing Document Control | Adds Section 0 template |
+| `BRD-E020` | 1 | **Invalid element type code** | **Remaps to valid code (01-32, 91-99)** |
 | `GATE-E008` | 1 | Duplicate element ID | Renumbers duplicates with next available sequence |
-| `GATE-E010` | 1 | File exceeds 20K tokens | **Auto-splits at section boundaries** |
-| `VAL-E002` | 1 | Missing/invalid frontmatter | **Creates YAML frontmatter from scratch** |
+| `GATE-E010` | 1 | File exceeds 20K tokens | Auto-splits at section boundaries |
+| `VAL-E002` | 1 | Missing/invalid frontmatter | Creates YAML frontmatter from scratch |
 | `BRD-W005` | 1 | Legacy development_status | Renames to status |
 | `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
 | `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |
@@ -1321,6 +1322,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.15.1 | 2026-03-14 | **BRD-E020 Invalid Type Code Fixer**: Added auto-fix for invalid element type codes (1,260 errors fixed). New `INVALID_CODE_REMAP` table with 60+ mappings. Remaps invalid codes to valid BRD codes (01-32, 91-99). Total: 18 auto-fixable codes. See [CHANGELOG_v1.15.1.md](docs/CHANGELOG_v1.15.1.md). |
 | 1.15.0 | 2026-03-14 | **Extended Auto-Fix Suite (17 codes)**: Added `GATE-E010` (auto-split large files), `GATE-W008` (move elements to correct section), `BRD-W010` (auto-detect @depends), `VAL-E002` (create frontmatter from scratch). BRD-E002 now context-aware (custom_fields OR Section 0). BRD-03 improved 89.5→96.0 (PASS). See [CHANGELOG_v1.15.0.md](docs/CHANGELOG_v1.15.0.md). |
 | 1.14.9 | 2026-03-14 | **Duplicate ID Auto-Fixer**: Added `GATE-E008` to auto-fix. New `DuplicateElementFixer` renumbers duplicate element IDs. Improved reference detection for category lists, range notation, multiple IDs. BRD-03 score improved 0.0→89.5. See [CHANGELOG_v1.14.9.md](docs/CHANGELOG_v1.14.9.md). |
 | 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. CLI flags: `--multi-turn` → `--persona` (`-p`), `--force-single` → `--unified` (`-u`). Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
@@ -1372,16 +1374,15 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.15.0 - Extended Auto-Fix Suite (17 codes)
-- Added `GATE-E010` fixer: Auto-splits files exceeding 20K tokens at section boundaries
-- Added `GATE-W008` fixer: Moves elements to correct section files based on type code
-- Added `BRD-W010` fixer: Auto-detects BRD references and adds @depends tags
-- Added `VAL-E002` fixer: Creates YAML frontmatter from scratch for files without it
-- Fixed `BRD-E002`: Now context-aware, handles both custom_fields AND Section 0
-- BRD-03 validation improved: 89.5 → 96.0 (PASS)
-- See [CHANGELOG_v1.14.9](docs/CHANGELOG_v1.14.9.md) for details
+**Latest Release**: v1.15.1 - BRD-E020 Invalid Type Code Fixer
+- Added `BRD-E020` fixer: Remaps invalid element type codes to valid BRD codes (01-32, 91-99)
+- New `INVALID_CODE_REMAP` table with 60+ common invalid → valid mappings
+- Fixed 1,260 BRD-E020 errors automatically across 74 BRDs
+- Total: 18 auto-fixable error codes (was 17)
+- See [CHANGELOG_v1.15.1](docs/CHANGELOG_v1.15.1.md) for details
 
-**Previous Releases**: v1.14.x - Prompt Engineering Toolset
+**Previous Releases**: v1.15.x / v1.14.x
+- v1.15.0: Extended auto-fix suite (17 codes), GATE-E010, GATE-W008, BRD-W010, VAL-E002
 - v1.14.9: Duplicate element ID auto-fixer (GATE-E008)
 - v1.14.8: Terminology update (unified prompt / persona prompts)
 - v1.14.7: Attention steering fix (format instructions at END)
@@ -1428,6 +1429,8 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.7](docs/CHANGELOG_v1.14.7.md) | Attention steering fix (format instructions at END) |
 | [CHANGELOG v1.14.8](docs/CHANGELOG_v1.14.8.md) | Terminology update (unified prompt / persona prompts) |
 | [CHANGELOG v1.14.9](docs/CHANGELOG_v1.14.9.md) | Duplicate element ID auto-fixer (GATE-E008) |
+| [CHANGELOG v1.15.0](docs/CHANGELOG_v1.15.0.md) | Extended auto-fix suite (17 codes) |
+| [CHANGELOG v1.15.1](docs/CHANGELOG_v1.15.1.md) | BRD-E020 invalid type code fixer |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

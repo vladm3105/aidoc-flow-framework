@@ -75,6 +75,7 @@ FIXABLE_CODES: Set[str] = {
     "VAL-E002",  # Missing/invalid YAML frontmatter - add from scratch
     # Tier 1 element ID fixes
     "GATE-E008",  # Duplicate element ID - renumber automatically
+    "BRD-E020",  # Invalid element type code - remap to valid code
     # Tier 1 file size fixes
     "GATE-E010",  # File exceeds 20K tokens - auto-split at section boundaries
     # Tier 2 count mismatch fixes
@@ -88,6 +89,89 @@ FIXABLE_CODES: Set[str] = {
     # Tier 2 dependency and section fixes
     "BRD-W010",  # Missing @depends tags - add with auto-detected BRD refs
     "GATE-W008",  # Element in wrong section - move to correct section file
+}
+
+# Invalid type code remapping table
+# Maps invalid codes to valid BRD type codes based on likely intent
+INVALID_CODE_REMAP: Dict[str, str] = {
+    # Common invalid codes → most likely valid code
+    "00": "01",  # Likely meant Functional Requirement
+    "11": "01",  # Functional Requirement
+    "12": "01",  # Functional Requirement
+    "13": "01",  # Functional Requirement
+    "14": "01",  # Functional Requirement
+    "15": "01",  # Functional Requirement
+    "16": "01",  # Functional Requirement
+    "17": "01",  # Functional Requirement
+    "18": "01",  # Functional Requirement
+    "19": "01",  # Functional Requirement
+    "20": "02",  # Quality Attribute
+    "21": "01",  # Functional Requirement
+    "25": "05",  # Dependency
+    "26": "06",  # Acceptance Criteria
+    "27": "07",  # Risk
+    "28": "08",  # Metric
+    "29": "09",  # User Story
+    "30": "03",  # Constraint
+    "31": "03",  # Constraint
+    "33": "03",  # Constraint
+    "34": "04",  # Assumption
+    "35": "05",  # Dependency
+    "36": "06",  # Acceptance Criteria
+    "37": "07",  # Risk
+    "38": "08",  # Metric
+    "39": "09",  # User Story
+    "40": "04",  # Assumption
+    "41": "01",  # Functional Requirement
+    "42": "02",  # Quality Attribute
+    "43": "03",  # Constraint
+    "44": "04",  # Assumption
+    "45": "05",  # Dependency
+    "46": "06",  # Acceptance Criteria
+    "47": "07",  # Risk
+    "48": "08",  # Metric
+    "49": "09",  # User Story
+    "50": "05",  # Dependency
+    "51": "01",  # Functional Requirement
+    "52": "02",  # Quality Attribute
+    "53": "03",  # Constraint
+    "54": "04",  # Assumption
+    "55": "05",  # Dependency
+    "56": "06",  # Acceptance Criteria
+    "57": "07",  # Risk
+    "58": "08",  # Metric
+    "59": "09",  # User Story
+    "60": "06",  # Acceptance Criteria
+    "61": "01",  # Functional Requirement
+    "62": "02",  # Quality Attribute
+    "63": "03",  # Constraint
+    "64": "04",  # Assumption
+    "65": "05",  # Dependency
+    "66": "06",  # Acceptance Criteria
+    "67": "07",  # Risk
+    "68": "08",  # Metric
+    "69": "09",  # User Story
+    "70": "07",  # Risk
+    "71": "01",  # Functional Requirement
+    "72": "02",  # Quality Attribute
+    "73": "03",  # Constraint
+    "74": "04",  # Assumption
+    "75": "05",  # Dependency
+    "76": "06",  # Acceptance Criteria
+    "77": "07",  # Risk
+    "78": "08",  # Metric
+    "79": "09",  # User Story
+    "80": "08",  # Metric
+    "81": "01",  # Functional Requirement
+    "82": "02",  # Quality Attribute
+    "83": "03",  # Constraint
+    "84": "04",  # Assumption
+    "85": "05",  # Dependency
+    "86": "06",  # Acceptance Criteria
+    "87": "07",  # Risk
+    "88": "08",  # Metric
+    "89": "09",  # User Story
+    "90": "91",  # Performance Requirement (closest QA code)
 }
 
 
@@ -1478,4 +1562,119 @@ This document has been split into section-based files for maintainability.
             ] + [f"  → {f}" for f in created_files[:5]] + (
                 [f"  ... and {len(created_files) - 5} more"] if len(created_files) > 5 else []
             )
+        )
+
+    # =========================================================================
+    # TIER 1 ELEMENT TYPE CODE FIX
+    # =========================================================================
+
+    def _fix_brd_e020(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix invalid element type code by remapping to a valid code.
+
+        Parses the issue context to extract the invalid type code,
+        then remaps it to the most likely valid code based on:
+        1. The INVALID_CODE_REMAP table
+        2. Section context (if available)
+        3. Default fallback to "01" (Functional Requirement)
+
+        This fix updates all occurrences of the invalid element ID
+        in the file to use the new valid type code.
+        """
+        file_path = issue.file_path
+        if not file_path:
+            return FixResult(
+                code=issue.code,
+                file_path=self.doc_path,
+                fixed=False,
+                message="No file path specified"
+            )
+
+        content = self._get_file_content(file_path)
+
+        # Parse context: "Invalid type code 'XX' in BRD.NN.XX.SS"
+        context = issue.context or ""
+        match = re.search(r"Invalid type code '(\d{2})' in (BRD\.\d{2,}\.\d{2}\.\d{2,})", context)
+        if not match:
+            # Try alternate format
+            match = re.search(r"type code '(\d{2})'.*?(BRD\.\d{2,}\.\d{2}\.\d{2,})", context)
+
+        if not match:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Cannot parse invalid type code from context"
+            )
+
+        invalid_code = match.group(1)
+        element_id = match.group(2)
+
+        # Determine the new valid code
+        new_code = INVALID_CODE_REMAP.get(invalid_code)
+
+        if not new_code:
+            # Try to infer from section context
+            section_match = re.search(r"section (\d+)", context.lower())
+            if section_match:
+                section = section_match.group(1)
+                # Section to preferred code mapping
+                SECTION_TO_CODE = {
+                    "2": "23",  # Business Objectives
+                    "3": "22",  # Feature Items
+                    "4": "24",  # Stakeholder Needs
+                    "5": "09",  # User Stories
+                    "6": "01",  # Functional Requirements
+                    "7": "02",  # Quality Attributes
+                    "8": "03",  # Constraints
+                    "9": "06",  # Acceptance Criteria
+                    "10": "07", # Risks
+                    "11": "05", # Dependencies
+                }
+                new_code = SECTION_TO_CODE.get(section, "01")
+            else:
+                # Default to Functional Requirement
+                new_code = "01"
+
+        # Build the new element ID
+        parts = element_id.split(".")
+        if len(parts) >= 4:
+            # BRD.NN.TT.SS format
+            new_element_id = f"{parts[0]}.{parts[1]}.{new_code}.{parts[3]}"
+        else:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message=f"Cannot parse element ID format: {element_id}"
+            )
+
+        # Replace all occurrences of the old element ID with the new one
+        old_pattern = re.escape(element_id)
+        new_content = re.sub(old_pattern, new_element_id, content)
+
+        if new_content == content:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message=f"Element ID {element_id} not found in file"
+            )
+
+        # Count replacements
+        replacement_count = len(re.findall(old_pattern, content))
+
+        self._set_file_content(file_path, new_content)
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=True,
+            message=f"Remapped type code: {invalid_code} → {new_code}",
+            changes=[
+                f"Old ID: {element_id}",
+                f"New ID: {new_element_id}",
+                f"Replaced {replacement_count} occurrence(s)",
+                f"Type: {invalid_code} → {new_code}"
+            ]
         )
