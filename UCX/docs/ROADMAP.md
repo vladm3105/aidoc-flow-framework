@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.4
+**Current Version**: 1.14.5
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,12 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.4 (Current) ──► v1.15.0 ──► v2.0.0
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.5 (Current) ──► v1.15.0 ──► v2.0.0
    │           │            │              │                  │           │
    │           │            │              │                  │           └─► Breaking changes
    │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► Extraction fixes + 15 new patterns
-   │           │            └─► Prompt Inspection (v1.14.0-3), qa_lead, chaos_engineer
+   │           │            │              └─► One-turn feature parity + naming standardization
+   │           │            └─► Prompt Inspection (v1.14.0-4), qa_lead, chaos_engineer
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -91,7 +91,28 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.4 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.4 (2026-03-14) - Current
+### v1.14.5 (2026-03-14) - Current
+
+**Features**:
+- **One-Turn Review Feature Parity**: One-turn review now has full feature parity with multi-turn
+- **Project-First Skill Loading**: `_load_skills()` now prioritizes project-specific skills over framework skills
+- **Persona Naming Standardization**: Renamed `integration_expert` → `integration_lead` for consistency
+- **Category Tagging**: Added `[CAT:xxx]` tagging to auditor, fact_checker, product_owner personas
+- **Settings Fix**: Fixed `get_skill_dir()` to use correct `/UCX/skills/` path
+
+**Changes**:
+| Change | Description |
+|--------|-------------|
+| `_load_skills()` | Project skills (`docs/UCX/skills/`) take priority over framework skills |
+| `integration_expert` → `integration_lead` | Consistent persona/skill naming across codebase |
+| `get_skill_dir()` | Returns `/UCX/skills/` instead of deprecated `ucx/skills/personas/` |
+| Category Tagging | 3 personas updated with `[CAT:xxx]` tags for weighted scoring |
+
+**Naming Audit**: Verified all 14 personas match their skill filenames exactly.
+
+See [CHANGELOG_v1.14.5](CHANGELOG_v1.14.5.md)
+
+### v1.14.4 (2026-03-14)
 
 **Features**:
 - **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers
@@ -256,6 +277,10 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Enhanced Skill Extraction | High | ✅ Complete (v1.14.2) | PLAN-005 |
 | QA Lead Persona | High | ✅ Complete (v1.14.3) | PLAN-005 |
 | Chaos Engineer Rename | High | ✅ Complete (v1.14.3) | PLAN-005 |
+| Extraction Pattern Fixes | High | ✅ Complete (v1.14.4) | PLAN-005 |
+| One-Turn Feature Parity | High | ✅ Complete (v1.14.5) | PLAN-005 |
+| Persona Naming Standardization | High | ✅ Complete (v1.14.5) | PLAN-005 |
+| Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
@@ -287,6 +312,8 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.1.md](CHANGELOG_v1.14.1.md) - Prompt quality improvements
 - [CHANGELOG_v1.14.2.md](CHANGELOG_v1.14.2.md) - Enhanced skill extraction
 - [CHANGELOG_v1.14.3.md](CHANGELOG_v1.14.3.md) - QA Lead persona, Chaos Engineer rename
+- [CHANGELOG_v1.14.4.md](CHANGELOG_v1.14.4.md) - Extraction pattern fixes, 15 new patterns
+- [CHANGELOG_v1.14.5.md](CHANGELOG_v1.14.5.md) - One-turn feature parity, persona naming standardization
 
 ---
 
