@@ -16,7 +16,7 @@ custom_fields:
   review_date: "{UCR_REVIEW_DATE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: "{TOTAL_FINDINGS}"
     auto_safe_fixes: "{AUTO_SAFE_COUNT}"
@@ -31,7 +31,7 @@ custom_fields:
 > **Source Review**: {UCR_REVIEW_FILE}
 > **Remediation Date**: {CURRENT_DATE}
 > **Method**: UCRem (Unified Context Remediation)
-> **Personas Applied**: 5 (Architect, Auditor, QA, Integration, Devil's Advocate)
+> **Personas Applied**: 5 (Architect, Auditor, QA, Integration, Chaos Engineer)
 
 ---
 
@@ -168,7 +168,7 @@ manual_review_reason: |
   What decisions need to be made?
   What domain knowledge is needed?}
 devil_advocate_note: |
-  {If Devil's Advocate flagged this, explain the concern.
+  {If Chaos Engineer flagged this, explain the concern.
   What root cause issue needs architectural/business decision?}
 prerequisite_decisions:
   - "{Decision 1 needed before fix can be completed}"
@@ -200,7 +200,7 @@ cross_validation:
 
 ### 5.2 Persona Validation Summary
 
-| Fix ID | Architect | Auditor | QA | Integration | Devil's Advocate | Final |
+| Fix ID | Architect | Auditor | QA | Integration | Chaos Engineer | Final |
 |--------|-----------|---------|-----|-------------|------------------|-------|
 | FIX-P0-01 | PASS | PASS | PASS | PASS | PASS | auto-safe |
 | FIX-P0-02 | PASS | PASS | FLAG | PASS | PASS | auto-assisted |

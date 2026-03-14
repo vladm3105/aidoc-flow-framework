@@ -40,7 +40,7 @@ For EACH finding in the UCR review report:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. ARCHITECT FIXER
 - **Focus**: Structural integrity, pattern preservation
@@ -85,7 +85,7 @@ ALL of these must be true:
 - Deterministic text (no placeholders like [TODO])
 - Single unambiguous location
 - At least 2 personas approve without concerns
-- Devil's Advocate has no objections
+- Chaos Engineer has no objections
 
 ### auto-assisted
 - Template structure provided
@@ -97,7 +97,7 @@ ALL of these must be true:
 ANY of these trigger manual:
 - Architectural decision required
 - Business/domain logic needed
-- Devil's Advocate raises objection
+- Chaos Engineer raises objection
 - Cross-validation conflict unresolved
 - Regulatory interpretation needed
 
@@ -125,7 +125,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}
@@ -362,7 +362,7 @@ Before finalizing each fix:
 2. **Check anchor text exists** - Verify `anchor` text is present in target file
 3. **Validate section numbers** - Ensure target section exists or specify where to create
 4. **Cross-check references** - If fix adds @brd: or @prd: tags, verify targets exist
-5. **Apply Devil's Advocate check** - Does this fix the root cause or just the symptom?
+5. **Apply Chaos Engineer check** - Does this fix the root cause or just the symptom?
 
 ---
 
@@ -396,7 +396,7 @@ For each finding (P0, P1, P2):
 - Fixes must be EXACT TEXT, not vague instructions
 - Include `anchor` text that EXISTS in the document
 - When uncertain, classify as `manual-required`
-- Devil's Advocate must review EVERY fix
+- Chaos Engineer must review EVERY fix
 
 ---
 

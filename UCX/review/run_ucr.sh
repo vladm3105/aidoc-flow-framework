@@ -50,16 +50,16 @@ VALIDATOR_DIR="$SCRIPT_DIR/validators"
 # =============================================================================
 # Which skills to load for each document layer
 declare -A LAYER_SKILLS
-LAYER_SKILLS[brd]="architect auditor tech_lead strategist devils_advocate operator integration_expert product_owner business_analyst"
-LAYER_SKILLS[prd]="architect auditor tech_lead strategist devils_advocate operator integration_expert product_owner qa_lead ux_strategist"
-LAYER_SKILLS[ears]="tech_lead devils_advocate integration_expert qa_lead requirements_specialist"
-LAYER_SKILLS[bdd]="auditor tech_lead devils_advocate operator integration_expert qa_lead"
-LAYER_SKILLS[adr]="architect auditor tech_lead strategist devils_advocate operator integration_expert"
-LAYER_SKILLS[sys]="architect tech_lead devils_advocate operator integration_expert qa_lead"
-LAYER_SKILLS[req]="tech_lead devils_advocate integration_expert qa_lead requirements_specialist"
-LAYER_SKILLS[ctr]="architect auditor tech_lead devils_advocate integration_expert"
-LAYER_SKILLS[spec]="architect tech_lead devils_advocate operator integration_expert"
-LAYER_SKILLS[tspec]="tech_lead devils_advocate operator integration_expert qa_lead"
+LAYER_SKILLS[brd]="architect auditor tech_lead strategist chaos_engineer operator integration_expert product_owner business_analyst"
+LAYER_SKILLS[prd]="architect auditor tech_lead strategist chaos_engineer operator integration_expert product_owner qa_lead ux_strategist"
+LAYER_SKILLS[ears]="tech_lead chaos_engineer integration_expert qa_lead requirements_specialist"
+LAYER_SKILLS[bdd]="auditor tech_lead chaos_engineer operator integration_expert qa_lead"
+LAYER_SKILLS[adr]="architect auditor tech_lead strategist chaos_engineer operator integration_expert"
+LAYER_SKILLS[sys]="architect tech_lead chaos_engineer operator integration_expert qa_lead"
+LAYER_SKILLS[req]="tech_lead chaos_engineer integration_expert qa_lead requirements_specialist"
+LAYER_SKILLS[ctr]="architect auditor tech_lead chaos_engineer integration_expert"
+LAYER_SKILLS[spec]="architect tech_lead chaos_engineer operator integration_expert"
+LAYER_SKILLS[tspec]="tech_lead chaos_engineer operator integration_expert qa_lead"
 
 # =============================================================================
 # Parse arguments

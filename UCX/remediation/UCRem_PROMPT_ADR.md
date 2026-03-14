@@ -70,7 +70,7 @@ Common ADR issues to remediate:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. ARCHITECT FIXER
 - **Focus**: Architectural coherence, pattern consistency
@@ -114,7 +114,7 @@ Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude 
 - Documentation-only fix (typos, formatting)
 - Missing section with clear content
 - Traceability addition with valid references
-- Devil's Advocate has no objections
+- Chaos Engineer has no objections
 
 ### auto-assisted
 - Template structure provided
@@ -148,7 +148,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Architect Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -289,7 +289,7 @@ Generate a complete UCRem Report following the format above.
 - ADR fixes often have high impact - be conservative
 - Flag architectural changes as manual-required
 - Ensure alternatives analysis is complete
-- Devil's Advocate must verify hidden assumptions
+- Chaos Engineer must verify hidden assumptions
 
 ---
 

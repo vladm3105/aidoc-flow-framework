@@ -506,7 +506,7 @@ def prescreen(review_report, output, verbose):
     fixer_table.add_column("Fixers", style="green")
 
     fixer_table.add_row("Domain (loaded)", ", ".join(result.domain_fixers_needed) or "[dim]None[/dim]")
-    fixer_table.add_row("Mandatory (always)", "devils_advocate, chairperson")
+    fixer_table.add_row("Mandatory (always)", "chaos_engineer, chairperson")
     fixer_table.add_row("Excluded (no findings)", ", ".join(result.excluded_fixers) or "[dim]None[/dim]")
 
     console.print(fixer_table)
@@ -603,11 +603,11 @@ def scan(review_report, output, output_format, verbose):
     fixer_table.add_column("Fixers", style="green")
 
     required = result.required_fixers
-    domain_fixers = [f for f in required if f not in ["devils_advocate", "chairperson"]]
+    domain_fixers = [f for f in required if f not in ["chaos_engineer", "chairperson"]]
     excluded = [f for f in ["architect", "auditor", "integration_lead", "qa_lead"] if f not in domain_fixers]
 
     fixer_table.add_row("Domain (loaded)", ", ".join(domain_fixers) or "[dim]None[/dim]")
-    fixer_table.add_row("Mandatory (always)", "devils_advocate, chairperson")
+    fixer_table.add_row("Mandatory (always)", "chaos_engineer, chairperson")
     fixer_table.add_row("Excluded (no findings)", ", ".join(excluded) or "[dim]None[/dim]")
 
     console.print(fixer_table)

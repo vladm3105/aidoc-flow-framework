@@ -80,7 +80,7 @@ Based on `ID_NAMING_STANDARDS.md` standardized element type codes (01-99):
 | Auditor | CAT-03, CAT-04, CAT-07 | - | `AUD-` |
 | Tech Lead | CAT-01, CAT-02, CAT-05 | CAT-06 | `TL-` |
 | Strategist | CAT-04, CAT-07, CAT-08 | CAT-01 | `STRAT-` |
-| Devil's Advocate | All (validation) | - | `DA-` |
+| Chaos Engineer | All (validation) | - | `DA-` |
 | Operator | CAT-02 (91,92,93,98), CAT-07 | - | `OPS-` |
 | Integration Lead | CAT-05, CAT-06 | CAT-01 | `INT-` |
 | Product Owner | CAT-01, CAT-06 | CAT-04 | `PO-` |
@@ -218,7 +218,7 @@ Each non-Chairperson persona prompt must include category tagging instructions:
 | Auditor | compliance, constraints, risk | Tag findings with `[CAT:compliance]` or `[CAT:risk]` |
 | Tech Lead | functional, quality, integration | Tag findings with `[CAT:functional]` or `[CAT:integration]` |
 | Strategist | constraints, risk, architecture | Tag findings with `[CAT:constraints]` or `[CAT:risk]` |
-| Devil's Advocate | (all - validation) | Tag with most relevant category |
+| Chaos Engineer | (all - validation) | Tag with most relevant category |
 | Operator | quality, risk | Tag findings with `[CAT:quality]` (ops-focused) |
 | Integration Lead | integration, acceptance | Tag findings with `[CAT:integration]` |
 | Product Owner | functional, acceptance | Tag findings with `[CAT:functional]` or `[CAT:acceptance]` |
@@ -652,7 +652,7 @@ UCX/
 │   ├── auditor.md
 │   ├── tech_lead.md
 │   ├── strategist.md
-│   ├── devils_advocate.md
+│   ├── chaos_engineer.md
 │   ├── operator.md
 │   ├── integration_lead.md
 │   ├── product_owner.md

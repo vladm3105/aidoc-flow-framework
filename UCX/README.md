@@ -1035,7 +1035,7 @@ UCX uses up to 13 expert personas for document review (11 required + 2 optional)
 | Auditor | Compliance, security |
 | Tech Lead | Implementation feasibility |
 | Strategist | Economics, trade-offs |
-| Devil's Advocate | Edge cases, failure modes |
+| Chaos Engineer | Edge cases, failure modes |
 | Operator | Observability, deployment |
 | Integration Lead | Dependencies, contracts |
 | Product Owner | Business value, scope |
@@ -1183,7 +1183,7 @@ All persona findings use the canonical format: `PREFIX-P{0-2}-NNN`
 | Auditor | AUD | `AUD-P0-001` |
 | Tech Lead | TL | `TL-P1-001` |
 | Strategist | STR | `STR-P1-001` |
-| Devil's Advocate | DA | `DA-P0-001` |
+| Chaos Engineer | DA | `DA-P0-001` |
 | Operator | OP | `OP-P0-001` |
 | Integration Lead | IL | `IL-P0-001` |
 | Product Owner | PO | `PO-P1-001` |

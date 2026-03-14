@@ -77,7 +77,7 @@ Different stakeholders have different concerns:
 | Auditor | Compliance, security | Regulatory gaps |
 | Tech Lead | Implementation | Technical issues |
 | QA Lead | Testability | Verification gaps |
-| Devil's Advocate | Edge cases | Hidden assumptions |
+| Chaos Engineer | Edge cases | Hidden assumptions |
 
 **A single reviewer misses what another catches.** UCX applies all relevant personas to every document.
 

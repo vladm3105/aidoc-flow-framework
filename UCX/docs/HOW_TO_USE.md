@@ -288,7 +288,7 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 # │ Total findings          │ 103                                  │
 # │ Actionable (P0/P1 open) │ 17                                   │
 # │ Domain fixers needed    │ qa_lead                              │
-# │ Mandatory fixers        │ devils_advocate, chairperson         │
+# │ Mandatory fixers        │ chaos_engineer, chairperson         │
 # │ Excluded fixers         │ architect, auditor, integration_lead │
 # └─────────────────────────┴──────────────────────────────────────┘
 # → Remediation will load 3 fixers (saved 3 from loading)
@@ -335,7 +335,7 @@ for fix in fixes:
 | Category | Personas | Loading Rule |
 |----------|----------|--------------|
 | **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Only loaded if they have findings |
-| **Mandatory** | devils_advocate, chairperson | Always loaded |
+| **Mandatory** | chaos_engineer, chairperson | Always loaded |
 
 **Benefits:**
 - **Token savings**: 30-60% reduction in prompt size

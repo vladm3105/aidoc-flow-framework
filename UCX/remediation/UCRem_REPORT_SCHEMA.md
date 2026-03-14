@@ -55,7 +55,7 @@ custom_fields:
   review_date: "{UCR_REVIEW_DATE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}
@@ -228,7 +228,7 @@ rationale: |
   Template provided as scaffold; domain expert must complete [MANUAL] sections.
 validated_by:
   - Architect Fixer
-  - Devil's Advocate
+  - Chaos Engineer
 devil_advocate_note: |
   This fix provides structure but does NOT solve the root problem. The actual
   saga pattern requires architectural decision. Recommend ADR before completing
@@ -315,7 +315,7 @@ execution_order:
 - Deterministic text (no placeholders)
 - Single location (no ambiguity)
 - At least 2 persona validations
-- No Devil's Advocate objections
+- No Chaos Engineer objections
 
 **auto-assisted** requires ALL of:
 - Template structure provided
@@ -325,7 +325,7 @@ execution_order:
 **manual-required** when ANY of:
 - Architectural decision required
 - Business logic needed
-- Devil's Advocate raises objection
+- Chaos Engineer raises objection
 - Cross-validation conflict unresolved
 - Domain knowledge required
 

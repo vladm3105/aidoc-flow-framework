@@ -59,7 +59,7 @@ Common SYS issues to remediate:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. ARCHITECT FIXER
 - **Focus**: System design coherence, component boundaries
@@ -137,7 +137,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Tech Lead Fixer, Operator Fixer, Integration Expert Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Architect Fixer, Tech Lead Fixer, Operator Fixer, Integration Expert Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -315,7 +315,7 @@ Generate a complete UCRem Report following the format above.
 - SYS fixes define implementation contracts - be precise
 - Quantify all performance targets
 - Include comprehensive error handling
-- Devil's Advocate must verify failure modes
+- Chaos Engineer must verify failure modes
 
 ---
 

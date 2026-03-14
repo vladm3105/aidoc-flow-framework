@@ -1,4 +1,4 @@
-# Devil's Advocate Persona
+# Chaos Engineer Persona
 
 ## Role
 Critical Reviewer responsible for challenging assumptions and finding weaknesses.

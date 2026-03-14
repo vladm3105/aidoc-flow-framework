@@ -49,7 +49,7 @@ Valid EARS patterns:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. REQUIREMENTS_SPECIALIST FIXER
 - **Focus**: EARS syntax compliance, atomicity
@@ -93,7 +93,7 @@ Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude 
 - Deterministic EARS syntax
 - Clear pattern match
 - Single interpretation possible
-- Devil's Advocate has no objections
+- Chaos Engineer has no objections
 
 ### auto-assisted
 - Template with [TODO] placeholders
@@ -127,7 +127,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Requirements Specialist Fixer, Tech Lead Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Requirements Specialist Fixer, Tech Lead Fixer, QA Lead Fixer, Integration Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -236,7 +236,7 @@ Generate a complete UCRem Report following the format above.
 - Fixes must use valid EARS syntax
 - Each statement must be atomic
 - Include PRD trace for all requirements
-- Devil's Advocate must check for ambiguity
+- Chaos Engineer must check for ambiguity
 
 ---
 

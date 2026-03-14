@@ -13,7 +13,7 @@ Loaded only when findings exist in their domain:
 
 ### Mandatory Fixers (Always Loaded)
 Always loaded to ensure quality and synthesis:
-- **Devil's Advocate** - Root cause validation, edge cases
+- **Chaos Engineer** - Root cause validation, edge cases
 - **Chairperson** - De-duplication, conflict resolution, final synthesis
 
 **Core Principle**: Same as UCR - **UNDER-FIXING IS UNACCEPTABLE**. A partial fix that claims resolution is worse than flagging for manual review.
@@ -30,7 +30,7 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 
 # Output:
 # Domain fixers needed: qa_lead
-# Mandatory fixers: devils_advocate, chairperson
+# Mandatory fixers: chaos_engineer, chairperson
 # Excluded fixers: architect, auditor, integration_lead
 # → Token savings: 3 personas excluded
 ```
@@ -50,7 +50,7 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 | Auditor Fixer | ✓ | ✓ | - | ✓* | ✓ | Domain |
 | QA Fixer | ✓ | ✓ | ✓ | ✓ | - | Domain |
 | Integration Fixer | ✓ | ✓ | ✓ | ✓ | ✓ | Domain |
-| Devil's Advocate | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
+| Chaos Engineer | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
 | Chairperson | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
 
 *Auditor Fixer for BDD only when compliance scenarios involved
@@ -329,10 +329,10 @@ integration_fixer_assessment:
 3. **Failure Mode Awareness**: What happens if this fix fails?
 4. **Hidden Assumptions**: Surface implicit assumptions in fixes
 
-### Devil's Advocate Template
+### Chaos Engineer Template
 
 ```yaml
-devils_advocate_challenge:
+chaos_engineer_challenge:
   root_cause_addressed: true|false|partial
   symptom_only: true|false
   edge_cases_covered:
@@ -348,7 +348,7 @@ devils_advocate_challenge:
 
 ### Confidence Impact
 
-The Devil's Advocate can **downgrade** any fix's confidence:
+The Chaos Engineer can **downgrade** any fix's confidence:
 
 | Original | After DA Challenge | Reason |
 |----------|-------------------|--------|
@@ -359,7 +359,7 @@ The Devil's Advocate can **downgrade** any fix's confidence:
 ### Output Format
 
 ```yaml
-devils_advocate_assessment:
+chaos_engineer_assessment:
   root_cause: addressed|partial|symptom_only
   edge_cases: covered|gaps_identified|not_analyzed
   failure_mode: documented|missing|catastrophic
@@ -398,7 +398,7 @@ Each persona reviews OTHER personas' fixes:
 | Auditor | Compliance completeness |
 | QA | Testability |
 | Integration | Reference integrity |
-| Devil's Advocate | Root cause |
+| Chaos Engineer | Root cause |
 
 ### Step 3: Conflict Resolution
 

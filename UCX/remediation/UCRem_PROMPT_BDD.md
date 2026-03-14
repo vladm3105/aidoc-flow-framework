@@ -66,7 +66,7 @@ Feature: {Feature Name}
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. QA_LEAD FIXER
 - **Focus**: Test coverage, scenario completeness
@@ -110,7 +110,7 @@ Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude 
 - Valid Gherkin syntax
 - Clear Given/When/Then structure
 - EARS traceability present
-- Devil's Advocate approves
+- Chaos Engineer approves
 
 ### auto-assisted
 - Template with [TODO] placeholders
@@ -144,7 +144,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Business Analyst Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Business Analyst Fixer, Integration Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -173,7 +173,7 @@ rationale: |
   Added scenario with EARS traceability tag.
 validated_by:
   - QA Lead Fixer
-  - Devil's Advocate
+  - Chaos Engineer
 verification: |
   Scenario exists with @edge-case tag.
   EARS trace tag present.
@@ -276,7 +276,7 @@ Generate a complete UCRem Report following the format above.
 - Fixes must use valid Gherkin syntax
 - Include EARS traceability tags
 - Ensure edge cases are covered
-- Devil's Advocate must verify failure scenarios
+- Chaos Engineer must verify failure scenarios
 
 ---
 

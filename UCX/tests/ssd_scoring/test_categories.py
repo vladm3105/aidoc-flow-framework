@@ -218,7 +218,7 @@ class TestPersonaCategoryMapping:
         """All expected personas have mappings."""
         expected_personas = [
             "architect", "auditor", "tech_lead", "strategist",
-            "devils_advocate", "operator", "integration_lead",
+            "chaos_engineer", "operator", "integration_lead",
             "product_owner", "business_analyst", "fact_checker", "chairperson"
         ]
         for persona in expected_personas:

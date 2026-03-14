@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Test Specification Document (TSPEC). Apply all 5 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead
+**Personas Applied**: QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead
 
 ---
 
@@ -229,7 +229,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 5 (QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead) |
+| **Personas Applied** | 5 (QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead) |
 | **Reviewer** | UCX Framework v1.5.x |
 | **Status** | [Draft / Final] |
 | **Code-Ready Score** | [SCORE]/100 |
@@ -280,7 +280,7 @@ custom_fields:
 
 ## 7. Per-Persona Detailed Analysis
 [Include detailed output from EACH persona defined in this prompt.
-Personas: QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead]
+Personas: QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead]
 ```
 
 ---

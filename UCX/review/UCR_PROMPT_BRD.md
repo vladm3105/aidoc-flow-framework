@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Business Requirements Document (BRD). Apply all personas sequentially, maintaining full context throughout.
 
-**Core Personas (Required)**: Architect, Auditor, Tech Lead, Strategist, Devil's Advocate, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson
+**Core Personas (Required)**: Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson
 
 **Quality Assurance Personas (Optional)**: Judge, Chairperson Editor
 
@@ -627,7 +627,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 11 Core (Architect, Auditor, Tech Lead, Strategist, Devil's Advocate, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson) + [0/2] Optional (Judge, Editor) |
+| **Personas Applied** | 11 Core (Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson) + [0/2] Optional (Judge, Editor) |
 | **Reviewer** | UCX Framework v1.5.x |
 | **Status** | [Draft / Final] |
 | **PRD-Ready Score** | [SCORE]/100 |
@@ -726,7 +726,7 @@ custom_fields:
 [Include detailed output from EACH persona defined in this prompt.
 
 **Required Personas (1-11)**:
-1. Architect, 2. Auditor, 3. Tech Lead, 4. Strategist, 5. Devil's Advocate,
+1. Architect, 2. Auditor, 3. Tech Lead, 4. Strategist, 5. Chaos Engineer,
 6. Operator, 7. Integration Lead, 8. Product Owner, 9. Business Analyst,
 10. Fact Checker, 11. Chairperson
 

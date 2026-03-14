@@ -206,7 +206,7 @@ The document is ready for downstream processing. No remediation required.
 | Total findings scanned | {self.last_screening.total_findings} |
 | Actionable (P0/P1 open) | {self.last_screening.actionable_findings} |
 | Domain fixers loaded | {', '.join(self.last_screening.domain_fixers_needed) or 'None'} |
-| Mandatory fixers | devils_advocate, chairperson |
+| Mandatory fixers | chaos_engineer, chairperson |
 | Excluded fixers | {', '.join(self.last_screening.excluded_fixers) or 'None'} |
 
 ### Findings by Fixer
@@ -356,7 +356,7 @@ The document is ready for downstream processing. No remediation required.
             parts.append(
                 "Pre-screening identified the following fixers as relevant:\n"
                 f"- **Domain fixers**: {', '.join(self.last_screening.domain_fixers_needed) or 'None'}\n"
-                f"- **Mandatory fixers**: devils_advocate, chairperson\n"
+                f"- **Mandatory fixers**: chaos_engineer, chairperson\n"
                 f"- **Excluded (no findings)**: {', '.join(self.last_screening.excluded_fixers) or 'None'}\n\n"
                 "Focus remediation efforts on the domains with identified findings.\n"
             )
@@ -438,7 +438,7 @@ The document is ready for downstream processing. No remediation required.
             "auditor": "Auditor Fixer",
             "qa_lead": "QA Fixer",
             "integration_lead": "Integration Fixer",
-            "devils_advocate": "Devil's Advocate",
+            "chaos_engineer": "Chaos Engineer",
             "chairperson": "Board Chairperson",
         }
 
@@ -459,7 +459,7 @@ The document is ready for downstream processing. No remediation required.
             "auditor": 2,
             "integration_lead": 3,
             "qa_lead": 4,
-            "devils_advocate": 10,
+            "chaos_engineer": 10,
             "chairperson": 20,
         }
         skills_to_load = sorted(skills_to_load, key=lambda x: order.get(x, 99))

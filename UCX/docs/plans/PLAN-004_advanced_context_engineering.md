@@ -163,7 +163,7 @@ PERSONA_CATEGORY_MAP = {
         "optional": ["functional"],
         "skip": ["technical", "appendix", "metadata"],
     },
-    "devils_advocate": {
+    "chaos_engineer": {
         "required": ["functional", "risk", "technical", "integration"],
         "optional": ["quality"],
         "skip": ["metadata", "business"],

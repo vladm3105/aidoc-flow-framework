@@ -196,7 +196,7 @@ Each persona operates with a **skeptical stance**:
 | **Auditor** | Assume non-compliant until explicitly proven compliant |
 | **Tech Lead** | Implementation details matter - vague specs cause bugs |
 | **Strategist** | Financial assumptions must be validated |
-| **Devil's Advocate** | If failure mode isn't documented, it WILL happen |
+| **Chaos Engineer** | If failure mode isn't documented, it WILL happen |
 | **Operator** | If it can't be observed and rolled back, not production-ready |
 | **Integration Lead** | Integration failures cascade - every dependency is a risk |
 | **Product Owner** | Scope creep kills projects - MVP must be ruthlessly bounded |
@@ -407,11 +407,11 @@ UCR uses persona skill files from `skills/` directory to provide domain knowledg
 
 | Layer | Skills Loaded |
 |-------|---------------|
-| BRD | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert, product_owner, business_analyst |
-| PRD | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert, product_owner, qa_lead, ux_strategist |
-| EARS | tech_lead, devils_advocate, integration_expert, qa_lead, requirements_specialist |
-| BDD | auditor, tech_lead, devils_advocate, operator, integration_expert, qa_lead |
-| ADR | architect, auditor, tech_lead, strategist, devils_advocate, operator, integration_expert |
+| BRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert, product_owner, business_analyst |
+| PRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert, product_owner, qa_lead, ux_strategist |
+| EARS | tech_lead, chaos_engineer, integration_expert, qa_lead, requirements_specialist |
+| BDD | auditor, tech_lead, chaos_engineer, operator, integration_expert, qa_lead |
+| ADR | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert |
 
 To disable skill loading in Python:
 ```python

@@ -6,9 +6,9 @@ from ucx.models.enums import DocType
 UCC_LAYER_SKILLS: dict[DocType, list[str]] = {
     DocType.BRD: ["architect", "product_owner", "business_analyst", "strategist", "tech_lead"],
     DocType.PRD: ["product_owner", "ux_strategist", "tech_lead", "qa_lead", "architect"],
-    DocType.EARS: ["requirements_specialist", "tech_lead", "qa_lead", "devils_advocate"],
-    DocType.BDD: ["qa_lead", "tech_lead", "devils_advocate", "operator"],
-    DocType.ADR: ["architect", "tech_lead", "strategist", "devils_advocate", "operator"],
+    DocType.EARS: ["requirements_specialist", "tech_lead", "qa_lead", "chaos_engineer"],
+    DocType.BDD: ["qa_lead", "tech_lead", "chaos_engineer", "operator"],
+    DocType.ADR: ["architect", "tech_lead", "strategist", "chaos_engineer", "operator"],
     DocType.SYS: ["architect", "tech_lead", "operator", "integration_expert"],
     DocType.REQ: ["requirements_specialist", "tech_lead", "integration_expert"],
     DocType.CTR: ["architect", "tech_lead", "integration_expert"],
@@ -20,44 +20,44 @@ UCC_LAYER_SKILLS: dict[DocType, list[str]] = {
 UCR_LAYER_SKILLS: dict[DocType, list[str]] = {
     DocType.BRD: [
         "architect", "auditor", "tech_lead", "strategist",
-        "devils_advocate", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_expert",
         "product_owner", "business_analyst",
     ],
     DocType.PRD: [
         "architect", "auditor", "tech_lead", "strategist",
-        "devils_advocate", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_expert",
         "product_owner", "qa_lead", "ux_strategist",
     ],
     DocType.EARS: [
-        "tech_lead", "devils_advocate", "integration_expert",
+        "tech_lead", "chaos_engineer", "integration_expert",
         "qa_lead", "requirements_specialist",
     ],
     DocType.BDD: [
-        "auditor", "tech_lead", "devils_advocate",
+        "auditor", "tech_lead", "chaos_engineer",
         "operator", "integration_expert", "qa_lead",
     ],
     DocType.ADR: [
         "architect", "auditor", "tech_lead", "strategist",
-        "devils_advocate", "operator", "integration_expert",
+        "chaos_engineer", "operator", "integration_expert",
     ],
     DocType.SYS: [
-        "architect", "tech_lead", "devils_advocate",
+        "architect", "tech_lead", "chaos_engineer",
         "operator", "integration_expert", "qa_lead",
     ],
     DocType.REQ: [
-        "tech_lead", "devils_advocate", "integration_expert",
+        "tech_lead", "chaos_engineer", "integration_expert",
         "qa_lead", "requirements_specialist",
     ],
     DocType.CTR: [
         "architect", "auditor", "tech_lead",
-        "devils_advocate", "integration_expert",
+        "chaos_engineer", "integration_expert",
     ],
     DocType.SPEC: [
-        "architect", "tech_lead", "devils_advocate",
+        "architect", "tech_lead", "chaos_engineer",
         "operator", "integration_expert",
     ],
     DocType.TSPEC: [
-        "tech_lead", "devils_advocate", "operator",
+        "tech_lead", "chaos_engineer", "operator",
         "integration_expert", "qa_lead",
     ],
 }
@@ -72,7 +72,7 @@ DOMAIN_FIXER_SKILLS: list[str] = [
 
 # Mandatory fixer skills (always loaded regardless of findings)
 MANDATORY_FIXER_SKILLS: list[str] = [
-    "devils_advocate",  # Safety: root cause vs symptom validation
+    "chaos_engineer",  # Safety: root cause vs symptom validation
     "chairperson",      # Synthesis: de-dupe, conflict resolution, final conclusion
 ]
 
@@ -139,7 +139,7 @@ def get_adaptive_fixers(required_domain_fixers: list[str]) -> list[str]:
         "auditor": 2,
         "integration_lead": 3,
         "qa_lead": 4,
-        "devils_advocate": 10,
+        "chaos_engineer": 10,
         "chairperson": 20,
     }
     return sorted(result, key=lambda x: order.get(x, 99))

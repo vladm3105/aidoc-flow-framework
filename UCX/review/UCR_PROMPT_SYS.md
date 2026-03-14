@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a System Requirements Document (SYS). Apply all 6 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Architect, Tech Lead, QA Lead, Devil's Advocate, Integration Lead, Operator
+**Personas Applied**: Architect, Tech Lead, QA Lead, Chaos Engineer, Integration Lead, Operator
 
 ---
 
@@ -202,7 +202,7 @@ After all persona reviews, synthesize findings into the **PERSONA_REVIEW_REPORT*
 > **Target Document**: [SYS-NNN] (Version X.X)
 > **Review Date**: [DATE]
 > **Method**: UCR (Unified Context Review)
-> **Personas Applied**: 6 (Architect, Tech Lead, QA Lead, Devil's Advocate, Integration Lead, Operator)
+> **Personas Applied**: 6 (Architect, Tech Lead, QA Lead, Chaos Engineer, Integration Lead, Operator)
 
 ## 1. Executive Summary
 - **Consensus Recommendation**: (Proceed / Remediation Required / Requirements Incomplete)

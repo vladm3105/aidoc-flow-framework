@@ -82,7 +82,7 @@ custom_fields:
 | Architect | Structure, patterns | P0: 1, P1: 2 |
 | Auditor | Compliance | P0: 2, P1: 1 |
 | Tech Lead | Implementation | P0: 0, P1: 3 |
-| Devil's Advocate | Edge cases | P0: 1, P1: 2 |
+| Chaos Engineer | Edge cases | P0: 1, P1: 2 |
 | ... | ... | ... |
 
 ### Findings by Priority

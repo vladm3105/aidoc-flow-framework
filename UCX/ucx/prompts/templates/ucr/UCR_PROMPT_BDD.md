@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a BDD (Behavior-Driven Development) document with Gherkin scenarios. Apply all 6 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead, Auditor*
+**Personas Applied**: QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead, Auditor*
 
 *Auditor applies only when compliance scenarios exist (financial, security, privacy features)
 
@@ -259,7 +259,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 6 (QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead, Auditor) |
+| **Personas Applied** | 6 (QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead, Auditor) |
 | **Reviewer** | UCX Framework v1.5.x |
 | **Status** | [Draft / Final] |
 | **ADR-Ready Score** | [SCORE]/100 |
@@ -310,7 +310,7 @@ custom_fields:
 
 ## 7. Per-Persona Detailed Analysis
 [Include detailed output from EACH persona defined in this prompt.
-Personas: QA Lead, Tech Lead, Devil's Advocate, Operator, Integration Lead, Auditor]
+Personas: QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead, Auditor]
 ```
 
 ---

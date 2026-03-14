@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Product Requirements Document (PRD). Apply all 10 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Architect, Auditor, Tech Lead, Strategist, Devil's Advocate, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist
+**Personas Applied**: Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist
 
 ---
 
@@ -412,7 +412,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 10 (Architect, Auditor, Tech Lead, Strategist, Devil's Advocate, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist) |
+| **Personas Applied** | 10 (Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist) |
 | **Reviewer** | UCX Framework v1.4.x |
 | **Status** | [Draft / Final] |
 | **EARS-Ready Score** | [SCORE]/100 |
@@ -436,7 +436,7 @@ custom_fields:
 ---
 
 ## 2. Critical Findings & Edge Cases
-[Consolidated from QA Lead, Tech Lead, Devil's Advocate findings]
+[Consolidated from QA Lead, Tech Lead, Chaos Engineer findings]
 
 ---
 

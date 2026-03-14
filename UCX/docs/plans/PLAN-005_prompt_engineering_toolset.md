@@ -280,7 +280,7 @@ Per-Persona Breakdown:
 │ auditor          │ 7        │ 28,400  │ 3,100   │ 31,500  │
 │ tech_lead        │ 6        │ 26,200  │ 2,900   │ 29,100  │
 │ strategist       │ 5        │ 18,500  │ 2,800   │ 21,300  │
-│ devils_advocate  │ 8        │ 30,200  │ 3,000   │ 33,200  │
+│ chaos_engineer  │ 8        │ 30,200  │ 3,000   │ 33,200  │
 │ operator         │ 6        │ 24,100  │ 2,900   │ 27,000  │
 │ integration_lead │ 7        │ 28,800  │ 3,100   │ 31,900  │
 │ product_owner    │ 6        │ 22,400  │ 2,900   │ 25,300  │
@@ -1473,7 +1473,7 @@ Quality evaluation of generated prompts revealed incomplete skill extraction. On
 | Persona | Before | After | Improvement | Final Ratio |
 |---------|--------|-------|-------------|-------------|
 | chairperson | 318 | 1,945 | +512% | 5.6% |
-| devils_advocate | 398 | 1,133 | +185% | 7.8% |
+| chaos_engineer | 398 | 1,133 | +185% | 7.8% |
 | business_analyst | 372 | 906 | +143% | 4.9% |
 | strategist | 316 | 745 | +136% | 5.4% |
 | integration_lead | 436 | 991 | +127% | 8.0% |
@@ -1494,7 +1494,7 @@ Added 27 extraction patterns to `_load_system_instructions()` in `ucx/prompts/ap
 | Business Domain | business_analyst | Business Processes, Stakeholders, Domain Requirements |
 | Quality Framework | business_analyst, auditor | Review Questions, Analysis Checklist, 5 C's |
 | Leadership | chairperson | Core Mission, Prioritization Weights, Score Calculation, Synthesis Process, Output Requirements, CRITICAL |
-| Adversarial | devils_advocate | Failure Scenarios, Edge Case Framework, Critical Rule |
+| Adversarial | chaos_engineer | Failure Scenarios, Edge Case Framework, Critical Rule |
 | Verification | fact_checker | Verification Areas, Verification Process |
 | Integration | integration_lead | Partner Ecosystem, Integration Requirements, Assessment Template |
 | Operations | operator | Operational Requirements, Operational Checklist |
@@ -1559,8 +1559,8 @@ ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p qa_lead
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p chaos_engineer
 
 # Old name should error
-ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p devils_advocate
-# Error: Unknown persona: devils_advocate
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p chaos_engineer
+# Error: Unknown persona: chaos_engineer
 ```
 
 ---

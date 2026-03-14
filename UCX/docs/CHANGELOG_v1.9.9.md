@@ -102,7 +102,7 @@ fixer_names = {
     "auditor": "Auditor Fixer",
     "qa_lead": "QA Fixer",
     "integration_lead": "Integration Fixer",  # Fixed from integration_expert
-    "devils_advocate": "Devil's Advocate",
+    "chaos_engineer": "Chaos Engineer",
 }
 ```
 

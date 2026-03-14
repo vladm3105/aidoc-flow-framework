@@ -258,7 +258,7 @@ ucx review brd docs/01_BRD/BRD-01_platform_architecture/
 |-------|----------|-----------|
 | **auto-safe** | Deterministic text, 2+ personas approve, no objections | Apply automatically |
 | **auto-assisted** | Template with [TODO] placeholders, 1+ persona approves | Apply template, complete placeholders |
-| **manual-required** | Architectural/regulatory decision, Devil's Advocate objection | Create task for domain expert |
+| **manual-required** | Architectural/regulatory decision, Chaos Engineer objection | Create task for domain expert |
 
 ---
 

@@ -889,7 +889,7 @@ PERSONA_PREFIX_MAP = {
     "auditor": "AUD",
     "tech_lead": "TL",
     "strategist": "STR",
-    "devils_advocate": "DA",
+    "chaos_engineer": "DA",
     "operator": "OP",
     "integration_lead": "IL",
     "product_owner": "PO",

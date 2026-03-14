@@ -155,7 +155,7 @@ UCX loads the project-specific review prompt and executes 11 persona reviews seq
 | 2 | Auditor | Compliance, regulatory, security |
 | 3 | Tech Lead | Core technology, implementation |
 | 4 | Integration Lead | External APIs, partner dependencies |
-| 5 | Devil's Advocate | Edge cases, failure modes |
+| 5 | Chaos Engineer | Edge cases, failure modes |
 | 6 | Operator | DevOps, SRE, monitoring |
 | 7 | Strategist | Business economics, ROI |
 | 8 | Product Owner | Feature scope, MVP boundaries |
@@ -171,7 +171,7 @@ UCX loads the project-specific review prompt and executes 11 persona reviews seq
 | 2 | Auditor | Compliance alignment |
 | 3 | Tech Lead | Implementation complexity |
 | 4 | Integration Lead | API dependencies |
-| 5 | Devil's Advocate | Requirement gaps |
+| 5 | Chaos Engineer | Requirement gaps |
 | 6 | UX Strategist | User journeys, accessibility |
 | 7 | QA Lead | Testability, BDD scenarios |
 | 8 | Product Owner | Scope validation |

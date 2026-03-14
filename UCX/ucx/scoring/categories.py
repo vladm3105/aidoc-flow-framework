@@ -258,7 +258,7 @@ PERSONA_CATEGORY_MAP: dict[str, tuple[list[Category], list[Category]]] = {
         [Category.CONSTRAINTS, Category.RISK, Category.ARCHITECTURE],
         [Category.FUNCTIONAL],
     ),
-    "devils_advocate": (
+    "chaos_engineer": (
         # All categories (validation role)
         list(Category),
         [],

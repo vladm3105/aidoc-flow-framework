@@ -234,9 +234,9 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 |-------|----------|-----------------|
 | L1 | BRD | architect, product_owner, business_analyst, strategist, tech_lead |
 | L2 | PRD | product_owner, ux_strategist, tech_lead, qa_lead, architect |
-| L3 | EARS | requirements_specialist, tech_lead, qa_lead, devils_advocate |
-| L4 | BDD | qa_lead, tech_lead, devils_advocate, operator |
-| L5 | ADR | architect, tech_lead, strategist, devils_advocate, operator |
+| L3 | EARS | requirements_specialist, tech_lead, qa_lead, chaos_engineer |
+| L4 | BDD | qa_lead, tech_lead, chaos_engineer, operator |
+| L5 | ADR | architect, tech_lead, strategist, chaos_engineer, operator |
 | L6 | SYS | architect, tech_lead, operator, integration_expert |
 | L7 | REQ | requirements_specialist, tech_lead, integration_expert |
 | L8 | CTR | architect, tech_lead, integration_expert |
@@ -251,7 +251,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 
 1. **Lead Persona First**: The primary persona for the layer initiates content
 2. **Expert Review**: Each persona reviews sections in their domain
-3. **Cross-Validation**: Devil's Advocate challenges all assumptions
+3. **Cross-Validation**: Chaos Engineer challenges all assumptions
 4. **Integration Check**: Integration Expert validates cross-references
 5. **Final Synthesis**: All personas approve final content
 
@@ -260,5 +260,5 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 Each section must pass:
 - [ ] Primary persona approval
 - [ ] Domain expert review
-- [ ] Devil's Advocate challenge
+- [ ] Chaos Engineer challenge
 - [ ] Cross-reference validation

@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of an EARS (Easy Approach to Requirements Syntax) document. Apply all 5 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Requirements Specialist, Tech Lead, QA Lead, Devil's Advocate, Integration Lead
+**Personas Applied**: Requirements Specialist, Tech Lead, QA Lead, Chaos Engineer, Integration Lead
 
 ---
 
@@ -290,7 +290,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 5 (Requirements Specialist, Tech Lead, QA Lead, Devil's Advocate, Integration Lead) |
+| **Personas Applied** | 5 (Requirements Specialist, Tech Lead, QA Lead, Chaos Engineer, Integration Lead) |
 | **Reviewer** | UCX Framework v1.4.x |
 | **Status** | [Draft / Final] |
 | **BDD-Ready Score** | [SCORE]/100 |

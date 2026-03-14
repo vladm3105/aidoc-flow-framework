@@ -16,7 +16,7 @@ Skill files contain rich domain knowledge, but only a subset was being extracted
 | Business | Business Processes, Stakeholders, Domain Requirements | business_analyst |
 | Quality | Review Questions, Analysis Checklist, Quality Framework (5 C's) | business_analyst, auditor |
 | Leadership | Core Mission, Prioritization Weights, Score Calculation, Synthesis Process | chairperson |
-| Adversarial | Failure Scenarios, Edge Case Framework, Critical Rule | devils_advocate |
+| Adversarial | Failure Scenarios, Edge Case Framework, Critical Rule | chaos_engineer |
 | Verification | Verification Areas, Verification Process | fact_checker |
 | Integration | Partner Ecosystem, Integration Requirements, Assessment Template | integration_lead |
 | Operations | Operational Requirements, Operational Checklist | operator |
@@ -55,7 +55,7 @@ Enhanced `_load_system_instructions()` in `ucx/prompts/api.py` with 27 extractio
 - ^##\s+Output Requirements.*?\n
 - ^##\s+.*CRITICAL.*?\n
 
-# Devil's Advocate
+# Chaos Engineer
 - ^##\s+.*Failure.*?Scenarios.*?\n
 - ^##\s+.*Edge Case.*?\n
 - ^##\s+Critical Rule.*?\n
@@ -96,7 +96,7 @@ Enhanced `_load_system_instructions()` in `ucx/prompts/api.py` with 27 extractio
 |---------|--------|-------|-------------|-------------|
 | business_analyst | 372 | 906 | +143% | 4.9% |
 | chairperson | 318 | 1,945 | +512% | 5.6% |
-| devils_advocate | 398 | 1,133 | +185% | 7.8% |
+| chaos_engineer | 398 | 1,133 | +185% | 7.8% |
 | fact_checker | 423 | 855 | +102% | 2.6% |
 | integration_lead | 436 | 991 | +127% | 8.0% |
 | operator | 436 | 812 | +86% | 8.2% |
@@ -170,7 +170,7 @@ To maximize extraction, skill files should use these section headers:
 | Synthesis Process | `## Synthesis Process` | Step-by-step process |
 | Output Requirements | `## Output Requirements` | Format specs |
 | CRITICAL | `## ... CRITICAL...` | Manifest requirements |
-| **Devil's Advocate** | | |
+| **Chaos Engineer** | | |
 | Failure Scenarios | `## ... Failure ... Scenarios...` | Domain failures |
 | Edge Case Framework | `## ... Edge Case...` | Boundary conditions |
 | Critical Rule | `## Critical Rule` | Essential constraints |
@@ -205,7 +205,7 @@ source .envrc
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 
 # Check instruction ratios for all personas
-for persona in business_analyst chairperson devils_advocate fact_checker integration_lead operator product_owner strategist tech_lead; do
+for persona in business_analyst chairperson chaos_engineer fact_checker integration_lead operator product_owner strategist tech_lead; do
   ratio=$(jq -r '"'"'.tokens | "\(.instructions)/\(.total) = \((.instructions/.total*100)|floor)%"'"'" \
     docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${persona}.meta.json 2>/dev/null)
   echo "$persona: $ratio"
@@ -214,7 +214,7 @@ done
 # Expected output (all in 3-8% range):
 # business_analyst: 906/18633 = 4%
 # chairperson: 1945/34551 = 5%
-# devils_advocate: 1133/14529 = 7%
+# chaos_engineer: 1133/14529 = 7%
 # ...
 ```
 

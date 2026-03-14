@@ -45,7 +45,7 @@ Common TSPEC issues to remediate:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. QA_LEAD FIXER
 - **Focus**: Test strategy, coverage completeness
@@ -123,7 +123,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [QA Lead Fixer, Tech Lead Fixer, Operator Fixer, Integration Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -158,7 +158,7 @@ rationale: |
   Added test covering validation error path.
 validated_by:
   - QA Lead Fixer
-  - Devil's Advocate
+  - Chaos Engineer
 verification: |
   Test UT-005 exists in unit tests.
   Traces REQ.01.FN.03.
@@ -408,7 +408,7 @@ Generate a complete UCRem Report following the format above.
 - Every requirement must have at least one test
 - Include edge case tests
 - Define test data completely
-- Devil's Advocate must check for flaky test risks
+- Chaos Engineer must check for flaky test risks
 
 ---
 

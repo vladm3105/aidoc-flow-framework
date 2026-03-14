@@ -37,7 +37,7 @@ cat AI_EXPERTS/UCR_PROMPT_ADR.md docs/05_ADR/ADR-*.md | claude -p > ADR_PERSONA_
 - **Focus**: B2C/B2B onboarding friction, API partner costs (Nuvei vs Bridge), treasury float management, UX conversion
 - **BeeLocal Specifics**: 2-3% fee target, $20k float requirement, 50k MAU projections
 
-### 🕵️ Devil's Advocate (Edge-Cases)
+### 🕵️ Chaos Engineer (Edge-Cases)
 - **Focus**: FX rate change mid-flight, gateway timeout after balance deduction but before credit
 - **BeeLocal Specifics**: Transaction saga compensation, double-spend prevention, quote TTL expiration
 

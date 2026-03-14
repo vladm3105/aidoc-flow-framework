@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of an Architecture Decision Record (ADR). Apply all 7 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Architect, Tech Lead, Operator, Auditor, Strategist, Devil's Advocate, Integration Lead
+**Personas Applied**: Architect, Tech Lead, Operator, Auditor, Strategist, Chaos Engineer, Integration Lead
 
 ---
 
@@ -322,7 +322,7 @@ After all persona reviews, synthesize findings into the **PERSONA_REVIEW_REPORT*
 > **Target Document**: [ADR-NNN] (Version X.X)
 > **Review Date**: [DATE]
 > **Method**: UCR (Unified Context Review)
-> **Personas Applied**: 7 (Architect, Tech Lead, Operator, Auditor, Strategist, Devil's Advocate, Integration Lead)
+> **Personas Applied**: 7 (Architect, Tech Lead, Operator, Auditor, Strategist, Chaos Engineer, Integration Lead)
 
 ## 1. Executive Summary
 - **Consensus Recommendation**: (Accept / Revise / Reject)

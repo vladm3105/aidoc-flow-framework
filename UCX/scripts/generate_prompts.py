@@ -36,7 +36,7 @@ DEFAULT_PERSONAS = [
     "auditor",
     "tech_lead",
     "strategist",
-    "devils_advocate",
+    "chaos_engineer",
     "operator",
     "integration_lead",
     "product_owner",

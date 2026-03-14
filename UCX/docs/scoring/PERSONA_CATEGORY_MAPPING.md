@@ -18,7 +18,7 @@ Each UCX review persona has primary and secondary category assignments. When a f
 | Auditor | compliance, constraints, risk | - | `AUD-` |
 | Tech Lead | functional, quality, integration | acceptance | `TL-` |
 | Strategist | constraints, risk, architecture | functional | `STRAT-` |
-| Devil's Advocate | (all - validation role) | - | `DA-` |
+| Chaos Engineer | (all - validation role) | - | `DA-` |
 | Operator | quality (ops-focused), risk | - | `OPS-` |
 | Integration Lead | integration, acceptance | functional | `INT-` |
 | Product Owner | functional, acceptance | constraints | `PO-` |
@@ -101,7 +101,7 @@ Each UCX review persona has primary and secondary category assignments. When a f
 
 ---
 
-### Devil's Advocate
+### Chaos Engineer
 
 **Role**: Challenge assumptions, stress test requirements
 

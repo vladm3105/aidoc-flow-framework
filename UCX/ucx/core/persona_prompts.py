@@ -64,7 +64,7 @@ def _load_skill_from_dir(persona: str, skill_dir: Path) -> Optional[str]:
     # Try common alternative names
     alternatives = {
         "integration_lead": "integration_expert",
-        "devils_advocate": "devils_advocate",
+        "chaos_engineer": "chaos_engineer",
     }
     if persona in alternatives:
         alt_path = skill_dir / f"{alternatives[persona]}.md"
@@ -128,7 +128,7 @@ DEFAULT_PERSONAS = {
         "auditor", 
         "tech_lead",
         "strategist",
-        "devils_advocate",
+        "chaos_engineer",
         "operator",
         "integration_lead",
         "product_owner",
@@ -142,14 +142,14 @@ DEFAULT_PERSONAS = {
         "ux_strategist",
         "business_analyst",
         "qa_lead",
-        "devils_advocate",
+        "chaos_engineer",
         "chairperson",
     ],
     "ears": [
         "requirements_specialist",
         "tech_lead",
         "qa_lead",
-        "devils_advocate",
+        "chaos_engineer",
         "chairperson",
     ],
 }
@@ -336,9 +336,9 @@ For BRD reviews, focus on REQUIREMENTS not implementation algorithms:
 | Finding | Value Add |""",
     },
     
-    "devils_advocate": {
-        "title": "The Devil's Advocate",
-        "domain_knowledge": """# Devil's Advocate Domain Knowledge
+    "chaos_engineer": {
+        "title": "The Chaos Engineer",
+        "domain_knowledge": """# Chaos Engineer Domain Knowledge
 
 ## Failure Mode Analysis
 If a failure mode isn't documented, it WILL happen in production.
@@ -862,7 +862,7 @@ class UnifiedPromptLoader:
         "auditor": ["auditor", "the auditor", "compliance"],
         "tech_lead": ["tech lead", "the tech lead", "technical lead"],
         "strategist": ["strategist", "the strategist"],
-        "devils_advocate": ["devil's advocate", "the devil's advocate", "devils advocate"],
+        "chaos_engineer": ["devil's advocate", "the devil's advocate", "devils advocate"],
         "operator": ["operator", "the operator", "devops", "sre"],
         "integration_lead": ["integration lead", "the integration lead", "integration"],
         "product_owner": ["product owner", "the product owner", "po"],

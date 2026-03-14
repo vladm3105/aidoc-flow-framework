@@ -25,7 +25,7 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 # │ Total findings          │ 103                                  │
 # │ Actionable (P0/P1 open) │ 17                                   │
 # │ Domain fixers needed    │ qa_lead                              │
-# │ Mandatory fixers        │ devils_advocate, chairperson         │
+# │ Mandatory fixers        │ chaos_engineer, chairperson         │
 # │ Excluded fixers         │ architect, auditor, integration_lead │
 # └─────────────────────────┴──────────────────────────────────────┘
 # → Remediation will load 3 fixers (saved 3 from loading)
@@ -41,7 +41,7 @@ Fixers are now classified into two categories:
 | Category | Personas | Loading Rule |
 |----------|----------|--------------|
 | **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Only loaded if findings exist |
-| **Mandatory** | devils_advocate, chairperson | Always loaded |
+| **Mandatory** | chaos_engineer, chairperson | Always loaded |
 
 ### Chairperson as Mandatory Fixer
 
@@ -84,7 +84,7 @@ result = analyze_ucr_report(Path("BRD-01.UCR_review_report_v003.md"))
 # Access results
 print(result.total_findings)           # 103
 print(result.actionable_findings)      # 17
-print(result.required_fixers)          # ['qa_lead', 'devils_advocate', 'chairperson']
+print(result.required_fixers)          # ['qa_lead', 'chaos_engineer', 'chairperson']
 print(result.domain_fixers_needed)     # ['qa_lead']
 print(result.excluded_fixers)          # ['architect', 'auditor', 'integration_lead']
 print(result.findings_by_fixer)        # {'qa_lead': ['P1-1', 'P1-7', 'P1-8']}
@@ -115,7 +115,7 @@ New constants:
 ```python
 from ucx.config.layer_skills import (
     DOMAIN_FIXER_SKILLS,    # ['architect', 'auditor', 'qa_lead', 'integration_lead']
-    MANDATORY_FIXER_SKILLS, # ['devils_advocate', 'chairperson']
+    MANDATORY_FIXER_SKILLS, # ['chaos_engineer', 'chairperson']
     FIXER_SKILLS,           # All 6 (backward compatible)
 )
 ```
@@ -175,7 +175,7 @@ UCR review personas are mapped to fixer personas:
 | Auditor | auditor |
 | Tech Lead | qa_lead |
 | QA Lead | qa_lead |
-| Devil's Advocate | devils_advocate |
+| Chaos Engineer | chaos_engineer |
 | Integration Expert | integration_lead |
 | Operator | integration_lead |
 | Strategist | *skip* (business-level) |

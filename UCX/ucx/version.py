@@ -114,7 +114,7 @@ __version_info__ = tuple(int(x) for x in __version__.split("."))
 # - NEW: Pre-screening phase automatically runs before remediation
 # - NEW: `ucx prescreen` command for standalone screening analysis
 # - Adaptive fixer loading: only domain fixers with findings are loaded
-# - Added mandatory fixers: devils_advocate (safety) + chairperson (synthesis)
+# - Added mandatory fixers: chaos_engineer (safety) + chairperson (synthesis)
 # - Domain fixers: architect, auditor, qa_lead, integration_lead (adaptive)
 # - Chairperson skill updated with remediation synthesis responsibilities
 # - New prescreening module: ucx/prescreening/ucr_analyzer.py

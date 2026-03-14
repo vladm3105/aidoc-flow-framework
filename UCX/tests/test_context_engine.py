@@ -237,7 +237,7 @@ class TestPersonaSectionMap:
         """All expected personas should have a section mapping."""
         expected_personas = [
             "architect", "auditor", "tech_lead", "strategist",
-            "devils_advocate", "operator", "integration_lead",
+            "chaos_engineer", "operator", "integration_lead",
             "product_owner", "business_analyst", "fact_checker", "chairperson"
         ]
 
@@ -259,7 +259,7 @@ class TestPersonaPrefixMap:
         """All personas should have a prefix defined."""
         expected_personas = [
             "architect", "auditor", "tech_lead", "strategist",
-            "devils_advocate", "operator", "integration_lead",
+            "chaos_engineer", "operator", "integration_lead",
             "product_owner", "business_analyst", "fact_checker",
             "chairperson", "qa_lead", "ux_strategist", "requirements_specialist"
         ]
@@ -457,7 +457,7 @@ class TestPersonaCategoryMap:
         """All personas should have category mapping."""
         expected = [
             "architect", "auditor", "tech_lead", "strategist",
-            "devils_advocate", "operator", "integration_lead",
+            "chaos_engineer", "operator", "integration_lead",
             "product_owner", "business_analyst", "fact_checker", "chairperson"
         ]
         for persona in expected:

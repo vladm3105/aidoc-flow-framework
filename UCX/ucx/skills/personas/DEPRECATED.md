@@ -17,7 +17,7 @@ All persona skills are now in:
 ├── auditor.md
 ├── business_analyst.md
 ├── chairperson.md
-├── devils_advocate.md
+├── chaos_engineer.md
 ├── fact_checker.md
 ├── integration_expert.md
 ├── operator.md

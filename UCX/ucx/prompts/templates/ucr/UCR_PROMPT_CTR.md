@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Data Contracts Document (CTR). Apply all 5 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Integration Lead, Tech Lead, Architect, Devil's Advocate, Auditor
+**Personas Applied**: Integration Lead, Tech Lead, Architect, Chaos Engineer, Auditor
 
 ---
 
@@ -221,7 +221,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 5 (Integration Lead, Tech Lead, Architect, Devil's Advocate, Auditor) |
+| **Personas Applied** | 5 (Integration Lead, Tech Lead, Architect, Chaos Engineer, Auditor) |
 | **Reviewer** | UCX Framework v1.5.x |
 | **Status** | [Draft / Final] |
 | **SPEC-Ready Score** | [SCORE]/100 |
@@ -272,7 +272,7 @@ custom_fields:
 
 ## 7. Per-Persona Detailed Analysis
 [Include detailed output from EACH persona defined in this prompt.
-Personas: Integration Lead, Tech Lead, Architect, Devil's Advocate, Auditor]
+Personas: Integration Lead, Tech Lead, Architect, Chaos Engineer, Auditor]
 ```
 
 ---

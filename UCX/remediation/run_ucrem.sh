@@ -41,9 +41,9 @@ SKILL_DIR="$SCRIPT_DIR/../skills"
 # =============================================================================
 # The 6 fixer personas and their corresponding skill files
 # Domain Fixers (loaded adaptively via Python API): architect, auditor, qa_lead, integration_lead
-# Mandatory Fixers (always loaded): devils_advocate, chairperson
+# Mandatory Fixers (always loaded): chaos_engineer, chairperson
 # Note: For adaptive loading based on UCR findings, use `ucx remediate` command instead
-FIXER_SKILLS="architect auditor qa_lead integration_lead devils_advocate chairperson"
+FIXER_SKILLS="architect auditor qa_lead integration_lead chaos_engineer chairperson"
 
 # =============================================================================
 # Parse arguments
@@ -176,7 +176,7 @@ if [[ "$UCREM_LOAD_SKILLS" == "true" && -d "$SKILL_DIR" ]]; then
                 auditor) FIXER_NAME="Auditor Fixer" ;;
                 qa_lead) FIXER_NAME="QA Fixer" ;;
                 integration_expert) FIXER_NAME="Integration Fixer" ;;
-                devils_advocate) FIXER_NAME="Devil's Advocate" ;;
+                chaos_engineer) FIXER_NAME="Devil's Advocate" ;;
                 *) FIXER_NAME="$skill" ;;
             esac
 

@@ -29,9 +29,9 @@ PERSONA_TO_FIXER: dict[str, Optional[str]] = {
     "auditor": "auditor",
     "qa_lead": "qa_lead",
     "qa lead": "qa_lead",
-    "devils_advocate": "devils_advocate",
-    "devil's advocate": "devils_advocate",
-    "devils advocate": "devils_advocate",
+    "chaos_engineer": "chaos_engineer",
+    "devil's advocate": "chaos_engineer",
+    "devils advocate": "chaos_engineer",
     "integration_expert": "integration_lead",
     "integration expert": "integration_lead",
     "integration_lead": "integration_lead",  # Direct mapping
@@ -65,7 +65,7 @@ DOMAIN_FIXER_SKILLS: list[str] = [
 
 # Mandatory fixers (always loaded regardless of findings)
 MANDATORY_FIXER_SKILLS: list[str] = [
-    "devils_advocate",  # Safety: root cause vs symptom validation
+    "chaos_engineer",  # Safety: root cause vs symptom validation
     "chairperson",      # Synthesis: de-dupe, conflict resolution, final conclusion
 ]
 
@@ -201,7 +201,7 @@ def analyze_ucr_report(report_path: Path) -> ScreeningResult:
     Analyze UCR report and determine required fixer personas.
 
     Pre-screens the review report to identify which domain-specific fixers
-    are needed based on actual P0/P1 findings. Mandatory fixers (devils_advocate,
+    are needed based on actual P0/P1 findings. Mandatory fixers (chaos_engineer,
     chairperson) are always included.
 
     Args:
@@ -213,7 +213,7 @@ def analyze_ucr_report(report_path: Path) -> ScreeningResult:
     Example:
         >>> result = analyze_ucr_report(Path("BRD-01.UCR_review_report_v003.md"))
         >>> print(result.required_fixers)
-        ['auditor', 'devils_advocate', 'chairperson']
+        ['auditor', 'chaos_engineer', 'chairperson']
         >>> print(result.excluded_fixers)
         ['architect', 'integration_lead', 'qa_lead']
     """
@@ -497,7 +497,7 @@ def _sort_fixers(fixers: list[str]) -> list[str]:
     """
     Sort fixers in execution order.
 
-    Order: Domain fixers first (alphabetical), then devils_advocate, then chairperson last.
+    Order: Domain fixers first (alphabetical), then chaos_engineer, then chairperson last.
     """
     order = {
         # Domain fixers (alphabetical)
@@ -506,7 +506,7 @@ def _sort_fixers(fixers: list[str]) -> list[str]:
         "integration_lead": 3,
         "qa_lead": 4,
         # Mandatory fixers (safety check, then synthesis)
-        "devils_advocate": 10,  # Validates all fixes
+        "chaos_engineer": 10,  # Validates all fixes
         "chairperson": 20,       # Final synthesis (must be last)
     }
     return sorted(fixers, key=lambda x: order.get(x, 99))

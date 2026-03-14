@@ -77,7 +77,7 @@ This plan addresses critical bugs in UCX that prevent correct finding extraction
 |---------|---------------|----------|-------|
 | architect | 1,244 chars | ~8K | Summary only, no tables |
 | auditor | 895 chars | ~8K | Summary only, no tables |
-| devils_advocate | 736 chars | ~6K | Summary only, no tables |
+| chaos_engineer | 736 chars | ~6K | Summary only, no tables |
 | integration_lead | 906 chars | ~6K | Summary only, no tables |
 | business_analyst | 638 chars | ~5K | Summary only, no tables |
 | chairperson | 1,253 chars | ~10K | Summary only, no manifest |
@@ -131,7 +131,7 @@ This plan addresses critical bugs in UCX that prevent correct finding extraction
 | Auditor | AUD | `AUD-P0-001` |
 | Tech Lead | TL | `TL-P1-001` |
 | Strategist | STR | `STR-P1-001` |
-| Devil's Advocate | DA | `DA-P0-001` |
+| Chaos Engineer | DA | `DA-P0-001` |
 | Operator | OP | `OP-P0-001` |
 | Integration Lead | IL | `IL-P0-001` |
 | Product Owner | PO | `PO-P1-001` |
@@ -296,7 +296,7 @@ All personas MUST use this ID format: `{PREFIX}-P{PRIORITY}-{NNN}`
 | Auditor | 192-212 | `\| ID (AUD-P0-NNN) \| Regulation \|` |
 | Tech Lead | 245-257 | `\| ID (TL-P0-NNN) \| Finding \|` |
 | Strategist | 280-289 | `\| ID (STR-P1-NNN) \| Finding \|` |
-| Devil's Advocate | 327-337 | `\| ID (DA-P0-NNN) \| Failure Scenario \|` |
+| Chaos Engineer | 327-337 | `\| ID (DA-P0-NNN) \| Failure Scenario \|` |
 | Operator | 359-368 | `\| ID (OP-P0-NNN) \| Finding \|` |
 | Integration Lead | 403-422 | `\| ID (IL-P0-NNN) \| Integration \|` |
 | Product Owner | 446-455 | `\| ID (PO-P1-NNN) \| Finding \|` |
@@ -599,7 +599,7 @@ PERSONA_SECTION_MAP = {
         "optional": ["BRD-01.3"],
         "skip": ["BRD-01.6", "BRD-01.7", "BRD-01.18", "BRD-01.14", "BRD-01.15", "BRD-01.16"],
     },
-    "devils_advocate": {
+    "chaos_engineer": {
         "required": ["BRD-01.6", "BRD-01.10", "BRD-01.18"],
         "optional": ["BRD-01.7"],
         "skip": ["BRD-01.2", "BRD-01.13", "BRD-01.14", "BRD-01.15", "BRD-01.16"],
@@ -651,7 +651,7 @@ PERSONA_KEYWORDS = {
     "auditor": ["compliance", "regulatory", "FinCEN", "OFAC", "PCI", "KYC", "AML", "SAR", "audit", "security", "encryption", "session"],
     "tech_lead": ["implementation", "state machine", "idempotency", "transaction", "saga", "retry", "error", "exception", "concurrency"],
     "strategist": ["business", "cost", "revenue", "ROI", "market", "competitor", "pricing", "float", "economics"],
-    "devils_advocate": ["failure", "edge case", "timeout", "rollback", "compensation", "partial", "concurrent", "race condition"],
+    "chaos_engineer": ["failure", "edge case", "timeout", "rollback", "compensation", "partial", "concurrent", "race condition"],
     "operator": ["deployment", "monitoring", "alerting", "SLI", "SLO", "runbook", "DR", "failover", "observability", "logging"],
     "integration_lead": ["partner", "API", "webhook", "integration", "contract", "schema", "versioning", "circuit breaker"],
 }
@@ -1223,7 +1223,7 @@ PERSONA_PREFIX_MAP = {
     "auditor": "AUD",
     "tech_lead": "TL",
     "strategist": "STR",
-    "devils_advocate": "DA",
+    "chaos_engineer": "DA",
     "operator": "OP",
     "integration_lead": "IL",
     "product_owner": "PO",
@@ -2345,7 +2345,7 @@ PERSONA_CATEGORY_MAP = {
         "optional": ["functional"],
         "skip": ["technical", "appendix", "metadata"],
     },
-    "devils_advocate": {
+    "chaos_engineer": {
         "required": ["functional", "risk", "technical", "integration"],
         "optional": ["quality"],
         "skip": ["metadata", "business"],
@@ -2961,7 +2961,7 @@ class TestDynamicSectionMapping:
 
 ### Issue Pattern 1: Summary-Only Responses
 - **Symptom**: 600-1200 char responses instead of 5-10K structured tables
-- **Affected Personas**: architect, auditor, devils_advocate, integration_lead, business_analyst, chairperson
+- **Affected Personas**: architect, auditor, chaos_engineer, integration_lead, business_analyst, chairperson
 - **Root Cause**: Output format instructions lost in 170KB+ prompt
 - **Fix**: Place format instructions at END of prompt, not middle
 

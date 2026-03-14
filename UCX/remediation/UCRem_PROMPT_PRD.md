@@ -43,7 +43,7 @@ You will receive:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 Apply these personas sequentially to each fix:
 
@@ -90,7 +90,7 @@ ALL of these must be true:
 - Deterministic text (no placeholders like [TODO])
 - Single unambiguous location
 - At least 2 personas approve without concerns
-- Devil's Advocate has no objections
+- Chaos Engineer has no objections
 
 ### auto-assisted
 - Template structure provided
@@ -102,7 +102,7 @@ ALL of these must be true:
 ANY of these trigger manual:
 - User research needed
 - Business/product decision needed
-- Devil's Advocate raises objection
+- Chaos Engineer raises objection
 - BRD update required
 - Scope change implications
 
@@ -130,7 +130,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Integration Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Integration Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}
@@ -246,7 +246,7 @@ Generate a complete UCRem Report following the format above.
 - Fixes must be EXACT TEXT, not vague instructions
 - Include `anchor` text that EXISTS in the document
 - Ensure BRD traceability in all new requirements
-- Devil's Advocate must review EVERY fix
+- Chaos Engineer must review EVERY fix
 
 ---
 

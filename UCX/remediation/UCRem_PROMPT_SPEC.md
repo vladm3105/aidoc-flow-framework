@@ -42,7 +42,7 @@ Common SPEC issues to remediate:
 
 ## The 6 Fixer Personas
 
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Devil's Advocate and Chairperson are always loaded.
+Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
 
 ### 1. TECH_LEAD FIXER
 - **Focus**: Algorithm clarity, implementation details
@@ -120,7 +120,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Expert Fixer, Devil's Advocate, Chairperson]
+  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Expert Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -371,7 +371,7 @@ Generate a complete UCRem Report following the format above.
 - SPEC defines implementation contracts - be precise
 - Algorithms must be unambiguous
 - Include comprehensive error handling
-- Devil's Advocate must verify edge cases
+- Chaos Engineer must verify edge cases
 
 ---
 

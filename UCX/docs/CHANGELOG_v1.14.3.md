@@ -60,7 +60,7 @@ Renamed the adversarial persona to better reflect its purpose:
 | `ucx/prompts/exceptions.py` | Updated PersonaNotFoundError.VALID_PERSONAS |
 | `ucx/core/context_engine.py` | Updated PERSONA_PREFIX_MAP, PERSONA_SECTION_MAP, PERSONA_KEYWORDS, PERSONA_CATEGORY_MAP |
 | `ucx/prompts/api.py` | Added 9 qa_lead extraction patterns |
-| `skills/devils_advocate.md` | Renamed to `chaos_engineer.md` |
+| `skills/chaos_engineer.md` | Renamed from `devils_advocate.md` |
 | `skills/README.md` | Updated persona table |
 
 ## Persona Summary (v1.14.3)
@@ -129,8 +129,8 @@ ucx prompt generate brd docs/01_BRD/BRD-01/ -p architect,auditor,tech_lead
 ## Backward Compatibility
 
 - `devils_advocate` persona name is **deprecated** (will error)
-- Old skill file names no longer work (must rename)
-- Framework skill fallback uses new name
+- Old skill file names (`devils_advocate.md`) no longer work (must rename to `chaos_engineer.md`)
+- Framework skill fallback uses new name (`chaos_engineer`)
 
 ## References
 
