@@ -1074,6 +1074,40 @@ class UCPromptPhase:
         if mvp_scope_match:
             instructions_parts.append(f"\n**MVP Scope**:\n{mvp_scope_match.group(1).strip()}")
 
+        # ============================================================
+        # v1.14.4b: Additional high-value extraction patterns
+        # ============================================================
+
+        # Extract Critical Compliance Gaps (auditor priority findings)
+        critical_compliance_match = re.search(r'^##\s+Critical Compliance.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if critical_compliance_match:
+            instructions_parts.append(f"\n**Critical Compliance Gaps**:\n{critical_compliance_match.group(1).strip()}")
+
+        # Extract Corridor-Specific Requirements (auditor multi-jurisdiction)
+        corridor_req_match = re.search(r'^##\s+Corridor-Specific Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if corridor_req_match:
+            instructions_parts.append(f"\n**Corridor-Specific Requirements**:\n{corridor_req_match.group(1).strip()}")
+
+        # Extract Critical MVP Boundaries (product_owner scope clarity)
+        mvp_boundaries_match = re.search(r'^##\s+Critical MVP Boundaries.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if mvp_boundaries_match:
+            instructions_parts.append(f"\n**Critical MVP Boundaries**:\n{mvp_boundaries_match.group(1).strip()}")
+
+        # Extract User Journey Checkpoints (product_owner touchpoints)
+        journey_match = re.search(r'^##\s+User Journey.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if journey_match:
+            instructions_parts.append(f"\n**User Journey Checkpoints**:\n{journey_match.group(1).strip()}")
+
+        # Extract High False Positive Categories (fact_checker common errors)
+        false_pos_categories_match = re.search(r'^##\s+High False Positive.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if false_pos_categories_match:
+            instructions_parts.append(f"\n**High False Positive Categories**:\n{false_pos_categories_match.group(1).strip()}")
+
+        # Extract Verification Verdicts (fact_checker decision framework)
+        verdicts_match = re.search(r'^##\s+Verification Verdicts.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if verdicts_match:
+            instructions_parts.append(f"\n**Verification Verdicts**:\n{verdicts_match.group(1).strip()}")
+
         if instructions_parts:
             return "\n".join(instructions_parts)
 

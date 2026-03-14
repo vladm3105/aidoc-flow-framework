@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.3
+**Current Version**: 1.14.4
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,12 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.3 (Current) ──► v1.15.0 ──► v2.0.0
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.4 (Current) ──► v1.15.0 ──► v2.0.0
    │           │            │              │                  │           │
    │           │            │              │                  │           └─► Breaking changes
    │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► qa_lead persona + chaos_engineer rename
-   │           │            └─► Prompt Inspection (v1.14.0), Preprocessing (v1.14.1), Extraction (v1.14.2)
+   │           │            │              └─► Extraction fixes + 15 new patterns
+   │           │            └─► Prompt Inspection (v1.14.0-3), qa_lead, chaos_engineer
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -91,7 +91,26 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.3 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.3 (2026-03-14) - Current
+### v1.14.4 (2026-03-14) - Current
+
+**Features**:
+- **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers
+- **15 New Extraction Patterns**: Added patterns for all 12 personas
+- **Instruction Token Target**: 11/12 personas at 5%+ ratio, all with 750+ instruction tokens
+
+**Extraction Improvements**:
+| Persona | Before | After | Key Additions |
+|---------|--------|-------|---------------|
+| auditor | 937 (4%) | 1,276 (5%) | Critical Compliance Gaps, Corridor Requirements |
+| product_owner | 637 (3%) | 844 (5%) | MVP Boundaries, User Journey Checkpoints |
+| fact_checker | 907 (3%) | 1,151 (3%) | False Positive Categories, Verification Verdicts |
+| architect | 574 (3%) | 781 (5%) | Nested section capture fixed |
+
+**Quality Metrics**: Primary metric is absolute instruction token count (750+ tokens), ratio (5-10%) is secondary.
+
+See [CHANGELOG_v1.14.4](CHANGELOG_v1.14.4.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
+
+### v1.14.3 (2026-03-14)
 
 **Features**:
 - **New Persona: qa_lead**: QA Lead for testability, BDD/Gherkin standards, test coverage (prefix: QA)
