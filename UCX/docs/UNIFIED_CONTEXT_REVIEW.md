@@ -101,11 +101,202 @@ UCX_MODEL="ollama/llama3" UCX_API_BASE="http://localhost:11434" ucx review brd d
 
 ---
 
+## Review Modes: One-Turn vs Multi-Turn
+
+UCX supports two review modes with different trade-offs. Understanding when to use each mode is critical for optimal review quality.
+
+### Quick Comparison
+
+| Aspect | One-Turn | Multi-Turn |
+|--------|----------|------------|
+| **API Calls** | 1 | 12 (one per persona) |
+| **Document Context** | Full document to all personas | Filtered per persona |
+| **Prior Findings** | N/A | Summarized to prevent repetition |
+| **Context Engineering** | None | Hierarchical 4-level |
+| **Attention Steering** | No | Yes (format at END) |
+| **Resume Support** | No | Yes |
+| **Cost** | Lower | Higher |
+| **Best For** | Small/medium docs (<50K tokens) | Large docs (>50K tokens) |
+
+### One-Turn Review
+
+```bash
+ucx review brd docs/01_BRD/BRD-01/
+```
+
+**How it works:**
+- Single LLM API call
+- All 12 personas review simultaneously in one prompt
+- All findings returned in one response
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   SINGLE PROMPT                      │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐            │
+│  │ architect│ │ auditor  │ │tech_lead │  ... x12   │
+│  └──────────┘ └──────────┘ └──────────┘            │
+│                                                      │
+│  Document Content + All Persona Instructions         │
+└─────────────────────────────────────────────────────┘
+                         │
+                         ▼
+              ┌─────────────────┐
+              │  Single Response │
+              │  All Findings    │
+              └─────────────────┘
+```
+
+**Advantages:**
+- **Full document visibility**: Every persona sees the ENTIRE document
+- **Cross-domain detection**: Architect might catch compliance issue, auditor might catch architecture issue
+- **No filtering risk**: No chance of relevant content being filtered out
+- **Speed**: Single API call, faster completion
+- **Cost**: Lower token usage overall
+
+**Disadvantages:**
+- **Attention dilution**: 12 personas compete for LLM attention
+- **Large document risk**: May truncate if document exceeds context limit
+- **No resume**: Must restart from beginning if interrupted
+
+### Multi-Turn Review
+
+```bash
+ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+```
+
+**How it works:**
+- Sequential API calls (one per persona)
+- Each persona reviews with full attention
+- Prior findings summarized for later personas (anti-repetition)
+
+```
+┌────────────┐     ┌────────────┐     ┌────────────┐
+│  Turn 1    │     │  Turn 2    │     │  Turn 3    │
+│ architect  │ ──► │  auditor   │ ──► │ tech_lead  │  ... x12
+│            │     │ + prior    │     │ + prior    │
+│            │     │  summary   │     │  summaries │
+└────────────┘     └────────────┘     └────────────┘
+      │                  │                  │
+      ▼                  ▼                  ▼
+┌──────────┐       ┌──────────┐       ┌──────────┐
+│ Findings │       │ Findings │       │ Findings │
+│   ARCH-  │       │   AUD-   │       │   TL-    │
+└──────────┘       └──────────┘       └──────────┘
+```
+
+**Advantages:**
+- **Full attention per persona**: No competition with other personas
+- **Persona-specific context**: Filtered to domain-relevant sections
+- **Prior findings deduplication**: Prevents same issue reported multiple times
+- **Attention steering**: Format instructions at END improve compliance
+- **Large document handling**: Auto-splits documents >100K chars
+- **Resume capability**: Can continue from last completed persona
+
+**Disadvantages:**
+- **Filtering risk**: Persona may miss issue in filtered-out section
+- **Higher cost**: 12 API calls vs 1
+- **Slower**: Sequential processing
+
+### Prompt Structure Differences
+
+**One-Turn Prompt:**
+```
+[System Instructions]
+[Document Content - FULL]
+[Persona 1 Skill: architect]
+[Persona 2 Skill: auditor]
+[Persona 3 Skill: tech_lead]
+... x12 personas
+[Output Format Instructions]
+```
+
+**Multi-Turn Prompt (per persona):**
+```
+[System Instructions]
+[Hierarchical Context]
+  ├── Level 1: Overview (executive summary)
+  ├── Level 2: Relevant sections (persona-specific)
+  ├── Level 3: Reference sections
+  └── Level 4: Discovered snippets (keyword scan)
+[Prior Findings Summary]  ← "Don't repeat these"
+[Persona Skill: architect]
+[Output Format Instructions]  ← Attention steering (at END)
+```
+
+### Context Filtering in Multi-Turn
+
+Multi-turn uses `DynamicSectionMapper` to filter document sections per persona:
+
+| Persona | Categories Included |
+|---------|---------------------|
+| architect | functional, quality, technical, integration, scope |
+| auditor | functional, quality, compliance, risk |
+| operator | functional, quality, technical, scope |
+| integration_lead | functional, integration, technical |
+
+**Example for BRD-01:**
+
+| Persona | Sections Included |
+|---------|-------------------|
+| architect | BRD-01.3 (Architecture), BRD-01.5 (NFRs), BRD-01.6 (Integration) |
+| auditor | BRD-01.4 (Compliance), BRD-01.7 (Risk), BRD-01.5 (NFRs) |
+| operator | BRD-01.8 (Operations), BRD-01.5 (NFRs), BRD-01.9 (SLAs) |
+
+### Token Usage Comparison
+
+For a 170KB BRD document:
+
+| Mode | Document Context | Skill Instructions | Total per Call |
+|------|------------------|-------------------|----------------|
+| One-Turn | 170KB (full) | ~15KB (all 12) | ~185KB × 1 call |
+| Multi-Turn | ~60KB (filtered) | ~1.5KB (1 persona) | ~62KB × 12 calls |
+
+### When to Use Each Mode
+
+**Use One-Turn when:**
+- Document is < 30K tokens
+- Quick review needed
+- Cost is a concern
+- Cross-domain issues are suspected
+- Document structure is simple
+
+**Use Multi-Turn when:**
+- Document is > 50K tokens
+- Deep per-persona analysis needed
+- Finding deduplication is important
+- Session persistence/resume required
+- Reviewing complex multi-section BRDs
+
+**For critical reviews**: Run both modes and compare. Multi-turn catches depth, one-turn catches breadth.
+
+### Feature Parity (v1.14.5+)
+
+As of v1.14.5, both modes have feature parity for:
+
+| Feature | One-Turn | Multi-Turn |
+|---------|----------|------------|
+| Project-specific skills | YES | YES |
+| Category Tagging (`[CAT:xxx]`) | YES | YES |
+| Finding ID format (`PREFIX-P#-NNN`) | YES | YES |
+| Domain-specific checklists | YES | YES |
+| Skill loading priority (project first) | YES | YES |
+
+Features unique to Multi-Turn (by design):
+
+| Feature | Reason |
+|---------|--------|
+| Prior Findings Summarization | No previous responses in one-turn |
+| Anti-Repetition Instructions | Single call with all personas |
+| Context Engineering (hierarchical) | Multi-turn optimization |
+| Session Resume | Single call completes atomically |
+
+---
+
 ## How UCR Works
 
-### Single-Pass Architecture
+### Single-Pass Architecture (One-Turn)
 
-Unlike multi-model pipelines that fragment context across multiple API calls, UCR:
+Unlike multi-model pipelines that fragment context across multiple API calls, UCR one-turn:
 
 1. **Loads full document** into a single conversation context
 2. **Applies all personas sequentially** within that context
@@ -407,11 +598,11 @@ UCR uses persona skill files from `skills/` directory to provide domain knowledg
 
 | Layer | Skills Loaded |
 |-------|---------------|
-| BRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert, product_owner, business_analyst |
-| PRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert, product_owner, qa_lead, ux_strategist |
-| EARS | tech_lead, chaos_engineer, integration_expert, qa_lead, requirements_specialist |
-| BDD | auditor, tech_lead, chaos_engineer, operator, integration_expert, qa_lead |
-| ADR | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_expert |
+| BRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_lead, product_owner, business_analyst |
+| PRD | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_lead, product_owner, qa_lead, ux_strategist |
+| EARS | tech_lead, chaos_engineer, integration_lead, qa_lead, requirements_specialist |
+| BDD | auditor, tech_lead, chaos_engineer, operator, integration_lead, qa_lead |
+| ADR | architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_lead |
 
 To disable skill loading in Python:
 ```python

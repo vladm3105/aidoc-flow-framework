@@ -231,6 +231,36 @@ UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 - **Prompts**: Project-specific ONLY (no fallback)
 - **Skills**: Project first, framework fallback if not found
 
+### Review Modes: One-Turn vs Multi-Turn
+
+UCX supports two review modes with different trade-offs:
+
+| Aspect | One-Turn (Default) | Multi-Turn (`--multi-turn`) |
+|--------|-------------------|----------------------------|
+| **API Calls** | 1 | 12 (one per persona) |
+| **Document Context** | Full document to all personas | Filtered per persona |
+| **Prior Findings** | N/A | Summarized (anti-repetition) |
+| **Context Engineering** | None | Hierarchical 4-level |
+| **Resume Support** | No | Yes |
+| **Cost** | Lower | Higher |
+| **Best For** | Small/medium docs (<50K tokens) | Large docs (>50K tokens) |
+
+**When to Use Each:**
+
+| Document Size | Recommendation |
+|---------------|----------------|
+| < 30K tokens | One-turn |
+| 30K - 80K tokens | Either (preference) |
+| > 80K tokens | Multi-turn |
+
+**Trade-offs:**
+- **One-turn advantages**: All personas see full document (cross-domain detection), no filtering risk, faster/cheaper
+- **Multi-turn advantages**: Full attention per persona, no truncation risk, finding deduplication, resume capability
+
+**For critical reviews**: Run both and compare. Multi-turn catches depth, one-turn catches breadth.
+
+See [UNIFIED_CONTEXT_REVIEW.md](docs/UNIFIED_CONTEXT_REVIEW.md) for detailed comparison.
+
 ### Multi-Turn Review Mode
 
 For large documents, use `--multi-turn` to break the review into per-persona calls:
@@ -1286,6 +1316,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.5 | 2026-03-14 | **One-Turn Feature Parity & Naming Standardization**: One-turn review now has full feature parity with multi-turn (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
+| 1.14.4 | 2026-03-14 | **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers. 15 new extraction patterns for all 12 personas. 11/12 personas at 5%+ instruction ratio. See [CHANGELOG_v1.14.4.md](docs/CHANGELOG_v1.14.4.md). |
 | 1.14.3 | 2026-03-14 | **QA Lead Persona & Chaos Engineer Rename**: Added `qa_lead` as core persona (12 total). Renamed `devils_advocate` → `chaos_engineer` for industry alignment. 9 new qa_lead extraction patterns (BDD, test coverage, testability). See [CHANGELOG_v1.14.3.md](docs/CHANGELOG_v1.14.3.md). |
 | 1.14.2 | 2026-03-14 | **Enhanced Skill Extraction**: 27 extraction patterns covering all personas. Instruction ratio improved to 5-10% target. See [CHANGELOG_v1.14.2.md](docs/CHANGELOG_v1.14.2.md). |
 | 1.14.1 | 2026-03-13 | **Prompt Quality Improvements**: Content preprocessing strips YAML frontmatter, HTML comments, navigation breadcrumbs, document metadata from prompts. System instructions loaded from skill manifests with project-specific overrides (`docs/UCX/skills/`). Numeric section ordering (BRD-01.5 before BRD-01.11). Fixed anti-pattern regex extraction. Token optimization: ~455 tokens saved per prompt (~5,000 across 11 personas). See [CHANGELOG_v1.14.1.md](docs/CHANGELOG_v1.14.1.md). |
@@ -1330,17 +1362,19 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.3 - QA Lead Persona & Chaos Engineer Rename
-- Added `qa_lead` as core persona (12 total personas)
-- Renamed `devils_advocate` → `chaos_engineer` for industry alignment
-- 9 new qa_lead extraction patterns (BDD, test coverage, testability)
-- See [CHANGELOG_v1.14.3](docs/CHANGELOG_v1.14.3.md) for details
+**Latest Release**: v1.14.5 - One-Turn Feature Parity & Naming Standardization
+- One-turn review now has full feature parity with multi-turn (project-first skill loading)
+- Renamed `integration_expert` → `integration_lead` for consistent naming
+- Added Category Tagging to auditor, fact_checker, product_owner
+- Fixed `get_skill_dir()` path resolution
+- See [CHANGELOG_v1.14.5](docs/CHANGELOG_v1.14.5.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.4: Extraction pattern fixes, 15 new patterns
+- v1.14.3: QA Lead persona, Chaos Engineer rename
 - v1.14.2: 27 extraction patterns, instruction ratio 5-10%
 - v1.14.1: Content preprocessing, skill system
 - v1.14.0: Prompt inspection commands
-- See [CHANGELOG_v1.14.2](docs/CHANGELOG_v1.14.2.md) for details
 
 **Next Release**: v1.15.0 - Multi-Document Validation
 - Corpus-wide validation (`ucx validate --all`)
@@ -1371,6 +1405,8 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.1](docs/CHANGELOG_v1.14.1.md) | Prompt quality improvements |
 | [CHANGELOG v1.14.2](docs/CHANGELOG_v1.14.2.md) | Enhanced skill extraction |
 | [CHANGELOG v1.14.3](docs/CHANGELOG_v1.14.3.md) | QA Lead persona, Chaos Engineer rename |
+| [CHANGELOG v1.14.4](docs/CHANGELOG_v1.14.4.md) | Extraction pattern fixes, 15 new patterns |
+| [CHANGELOG v1.14.5](docs/CHANGELOG_v1.14.5.md) | One-turn feature parity, naming standardization |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 
