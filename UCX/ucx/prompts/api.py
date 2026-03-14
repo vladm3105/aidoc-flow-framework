@@ -799,28 +799,28 @@ class UCPromptPhase:
         # Extract relevant sections from skill file
         instructions_parts = []
 
-        # Extract Role section
-        role_match = re.search(r'^## Role\n(.*?)(?=\n##|\Z)', skill_content, re.MULTILINE | re.DOTALL)
+        # Extract Role section (v1.14.4: fixed to include nested ### sections)
+        role_match = re.search(r'^## Role\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if role_match:
             instructions_parts.append(f"**Role**: {role_match.group(1).strip()}")
 
-        # Extract Core Principles (if exists)
-        principles_match = re.search(r'^## Core.*?Principles\n(.*?)(?=\n##|\Z)', skill_content, re.MULTILINE | re.DOTALL)
+        # Extract Core Principles (if exists) - includes nested ### sections like CAP Theorem, Scalability
+        principles_match = re.search(r'^## Core.*?Principles\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if principles_match:
             instructions_parts.append(f"\n**Principles**:\n{principles_match.group(1).strip()}")
 
-        # Extract Review Focus
-        focus_match = re.search(r'^## Review Focus\n(.*?)(?=\n##|\Z)', skill_content, re.MULTILINE | re.DOTALL)
+        # Extract Review Focus (v1.14.4: fixed pattern)
+        focus_match = re.search(r'^## Review Focus\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if focus_match:
             instructions_parts.append(f"\n**Review Focus**:\n{focus_match.group(1).strip()}")
 
-        # Extract Quality Criteria
-        quality_match = re.search(r'^## Quality Criteria\n(.*?)(?=\n##|\Z)', skill_content, re.MULTILINE | re.DOTALL)
+        # Extract Quality Criteria (v1.14.4: fixed pattern)
+        quality_match = re.search(r'^## Quality Criteria\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if quality_match:
             instructions_parts.append(f"\n**Quality Criteria**:\n{quality_match.group(1).strip()}")
 
         # Extract Category Tagging
-        category_match = re.search(r'^## Category Tagging.*?\n(.*?)(?=\n## Scoring|\Z)', skill_content, re.MULTILINE | re.DOTALL)
+        category_match = re.search(r'^## Category Tagging.*?\n([\s\S]*?)(?=\n## Scoring|\Z)', skill_content, re.MULTILINE)
         if category_match:
             instructions_parts.append(f"\n**Finding Categories**:\n{category_match.group(1).strip()}")
 
@@ -1024,6 +1024,55 @@ class UCPromptPhase:
         tspec_metrics_match = re.search(r'^##\s+TSPEC Quality Metrics.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
         if tspec_metrics_match:
             instructions_parts.append(f"\n**TSPEC Quality Metrics**:\n{tspec_metrics_match.group(1).strip()}")
+
+        # ============================================================
+        # v1.14.4: Below-target persona extraction patterns
+        # ============================================================
+
+        # Extract Regulatory Framework Coverage (auditor compliance details)
+        regulatory_match = re.search(r'^##\s+Regulatory Framework.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if regulatory_match:
+            instructions_parts.append(f"\n**Regulatory Framework**:\n{regulatory_match.group(1).strip()}")
+
+        # Extract Validation Checks (auditor explicit checklist)
+        validation_checks_match = re.search(r'^##\s+Validation Checks.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if validation_checks_match:
+            instructions_parts.append(f"\n**Validation Checks**:\n{validation_checks_match.group(1).strip()}")
+
+        # Extract Common False Positive Patterns (fact_checker verification)
+        false_positive_match = re.search(r'^##\s+Common False Positive.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if false_positive_match:
+            instructions_parts.append(f"\n**Common False Positive Patterns**:\n{false_positive_match.group(1).strip()}")
+
+        # Extract Synonym Mapping (fact_checker term lookup)
+        synonym_match = re.search(r'^##\s+Synonym Mapping.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if synonym_match:
+            instructions_parts.append(f"\n**Synonym Mapping**:\n{synonym_match.group(1).strip()}")
+
+        # Extract Target Users (product_owner personas)
+        target_users_match = re.search(r'^##\s+Target Users.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if target_users_match:
+            instructions_parts.append(f"\n**Target Users**:\n{target_users_match.group(1).strip()}")
+
+        # Extract Out of Scope (product_owner boundaries)
+        out_of_scope_match = re.search(r'^##\s+.*(?:Out of Scope|Explicitly Out).*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if out_of_scope_match:
+            instructions_parts.append(f"\n**Out of Scope**:\n{out_of_scope_match.group(1).strip()}")
+
+        # Extract Core Mission (fact_checker, chairperson primary directive)
+        core_mission_match = re.search(r'^##\s+Core Mission.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if core_mission_match:
+            instructions_parts.append(f"\n**Core Mission**:\n{core_mission_match.group(1).strip()}")
+
+        # Extract Where to Look (fact_checker reference locations)
+        where_to_look_match = re.search(r'^##\s+Where to Look.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if where_to_look_match:
+            instructions_parts.append(f"\n**Where to Look**:\n{where_to_look_match.group(1).strip()}")
+
+        # Extract MVP Scope (product_owner corridor and features)
+        mvp_scope_match = re.search(r'^##\s+MVP Scope.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if mvp_scope_match:
+            instructions_parts.append(f"\n**MVP Scope**:\n{mvp_scope_match.group(1).strip()}")
 
         if instructions_parts:
             return "\n".join(instructions_parts)
