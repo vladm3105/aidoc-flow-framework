@@ -235,8 +235,8 @@ UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 
 UCX supports two review modes with different trade-offs:
 
-| Aspect | One-Turn (Default) | Multi-Turn (`--multi-turn`) |
-|--------|-------------------|----------------------------|
+| Aspect | Unified Prompt (Default) | Persona Prompts (`--multi-turn`) |
+|--------|--------------------------|----------------------------------|
 | **API Calls** | 1 | 12 (one per persona) |
 | **Document Context** | Full document to all personas | Filtered per persona |
 | **Prior Findings** | N/A | Summarized (anti-repetition) |
@@ -249,19 +249,19 @@ UCX supports two review modes with different trade-offs:
 
 | Document Size | Recommendation |
 |---------------|----------------|
-| < 30K tokens | One-turn |
+| < 30K tokens | Unified prompt |
 | 30K - 80K tokens | Either (preference) |
-| > 80K tokens | Multi-turn |
+| > 80K tokens | Persona prompts |
 
 **Trade-offs:**
-- **One-turn advantages**: All personas see full document (cross-domain detection), no filtering risk, faster/cheaper
-- **Multi-turn advantages**: Full attention per persona, no truncation risk, finding deduplication, resume capability
+- **Unified prompt advantages**: All personas see full document (cross-domain detection), no filtering risk, faster/cheaper
+- **Persona prompts advantages**: Full attention per persona, no truncation risk, finding deduplication, resume capability
 
-**For critical reviews**: Run both and compare. Multi-turn catches depth, one-turn catches breadth.
+**For critical reviews**: Run both and compare. Persona prompts catch depth, unified prompt catches breadth.
 
 See [UNIFIED_CONTEXT_REVIEW.md](docs/UNIFIED_CONTEXT_REVIEW.md) for detailed comparison.
 
-### Multi-Turn Review Mode
+### Persona Prompts Mode
 
 For large documents, use `--multi-turn` to break the review into per-persona calls:
 
@@ -1123,7 +1123,7 @@ doc = ucc.create(doc_type="brd", output_path=path, from_ref=ref_dir)
 ucr = UCRPhase(config)
 result = ucr.review(doc_type="brd", doc_path=path)
 
-# Review (multi-turn - recommended for large docs)
+# Review (persona prompts mode - recommended for large docs)
 result = ucr.review_multi_turn(
     doc_type="brd",
     doc_path=path,
@@ -1316,9 +1316,10 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
 | 1.14.7 | 2026-03-14 | **Attention Steering Fix**: Format instructions now placed at END of prompt for better LLM attention. Added `_load_format_instructions()` method and `UCR_FORMAT_{TYPE}_PROJECT.md` file pattern. See [CHANGELOG_v1.14.7.md](docs/CHANGELOG_v1.14.7.md). |
 | 1.14.6 | 2026-03-14 | **Session Directory Rename & Review Mode Docs**: Renamed `.doc_review_memory/` → `.ucx_review_session/` and `final_body.md` → `assembled_report.md` for clarity. Added comprehensive One-Turn vs Multi-Turn review mode documentation. See [CHANGELOG_v1.14.6.md](docs/CHANGELOG_v1.14.6.md). |
-| 1.14.5 | 2026-03-14 | **One-Turn Feature Parity & Naming Standardization**: One-turn review now has full feature parity with multi-turn (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
+| 1.14.5 | 2026-03-14 | **Unified Prompt Feature Parity & Naming Standardization**: Unified prompt review now has full feature parity with persona prompts (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
 | 1.14.4 | 2026-03-14 | **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers. 15 new extraction patterns for all 12 personas. 11/12 personas at 5%+ instruction ratio. See [CHANGELOG_v1.14.4.md](docs/CHANGELOG_v1.14.4.md). |
 | 1.14.3 | 2026-03-14 | **QA Lead Persona & Chaos Engineer Rename**: Added `qa_lead` as core persona (12 total). Renamed `devils_advocate` → `chaos_engineer` for industry alignment. 9 new qa_lead extraction patterns (BDD, test coverage, testability). See [CHANGELOG_v1.14.3.md](docs/CHANGELOG_v1.14.3.md). |
 | 1.14.2 | 2026-03-14 | **Enhanced Skill Extraction**: 27 extraction patterns covering all personas. Instruction ratio improved to 5-10% target. See [CHANGELOG_v1.14.2.md](docs/CHANGELOG_v1.14.2.md). |
@@ -1364,16 +1365,17 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.7 - Attention Steering Fix (Format Instructions at END)
+**Latest Release**: v1.14.8 - Terminology Update (Unified Prompt / Persona Prompts)
 - Renamed `.doc_review_memory/` → `.ucx_review_session/` for clarity
 - Renamed `final_body.md` → `assembled_report.md` for clarity
 - Added comprehensive One-Turn vs Multi-Turn review mode documentation
-- See [CHANGELOG_v1.14.7](docs/CHANGELOG_v1.14.7.md) for details
+- See [CHANGELOG_v1.14.8](docs/CHANGELOG_v1.14.8.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.8: Terminology update (unified prompt / persona prompts)
 - v1.14.7: Attention steering fix (format instructions at END)
 - v1.14.6: Session directory rename, review mode documentation
-- v1.14.5: One-turn feature parity, persona naming standardization
+- v1.14.5: Unified prompt feature parity, persona naming standardization
 - v1.14.4: Extraction pattern fixes, 15 new patterns
 - v1.14.3: QA Lead persona, Chaos Engineer rename
 - v1.14.2: 27 extraction patterns, instruction ratio 5-10%
@@ -1413,6 +1415,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.5](docs/CHANGELOG_v1.14.5.md) | One-turn feature parity, naming standardization |
 | [CHANGELOG v1.14.6](docs/CHANGELOG_v1.14.6.md) | Session directory rename, review mode documentation |
 | [CHANGELOG v1.14.7](docs/CHANGELOG_v1.14.7.md) | Attention steering fix (format instructions at END) |
+| [CHANGELOG v1.14.8](docs/CHANGELOG_v1.14.8.md) | Terminology update (unified prompt / persona prompts) |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

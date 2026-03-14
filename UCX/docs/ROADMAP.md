@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.7
+**Current Version**: 1.14.8
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,12 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.7 (Current) ──► v1.15.0 ──► v2.0.0
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──► v1.15.0 ──► v2.0.0
    │           │            │              │                  │           │
    │           │            │              │                  │           └─► Breaking changes
    │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► Attention steering fix (v1.14.7)
-   │           │            └─► Prompt Inspection (v1.14.0-5), session rename (v1.14.6)
+   │           │            │              └─► Terminology update (v1.14.8)
+   │           │            └─► Prompt Inspection, attention steering (v1.14.0-7)
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -91,7 +91,23 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.7 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.7 (2026-03-14) - Current
+### v1.14.8 (2026-03-14) - Current
+
+**Features**:
+- **Terminology Update**: Renamed review modes for clarity
+  - "One-turn" → "Unified Prompt"
+  - "Multi-turn" → "Persona Prompts"
+- Updated documentation, code comments, and file naming
+
+**Terminology Reference**:
+| Old Term | New Term | Description |
+|----------|----------|-------------|
+| One-turn | Unified Prompt | Single prompt with all 12 personas |
+| Multi-turn | Persona Prompts | Per-persona filtered prompts |
+
+See [CHANGELOG_v1.14.8](CHANGELOG_v1.14.8.md)
+
+### v1.14.7 (2026-03-14)
 
 **Features**:
 - **Attention Steering Fix**: Format instructions now placed at END of prompt (was at START)
@@ -317,6 +333,7 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Session Directory Rename | Medium | ✅ Complete (v1.14.6) | Clarity improvement |
 | Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | One-turn vs multi-turn |
 | Attention Steering Fix | High | ✅ Complete (v1.14.7) | Format instructions at END |
+| Terminology Update | Medium | ✅ Complete (v1.14.8) | Unified prompt / Persona prompts |
 | Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
@@ -353,6 +370,7 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.5.md](CHANGELOG_v1.14.5.md) - One-turn feature parity, persona naming standardization
 - [CHANGELOG_v1.14.6.md](CHANGELOG_v1.14.6.md) - Session directory rename, review mode documentation
 - [CHANGELOG_v1.14.7.md](CHANGELOG_v1.14.7.md) - Attention steering fix (format instructions at END)
+- [CHANGELOG_v1.14.8.md](CHANGELOG_v1.14.8.md) - Terminology update (unified prompt / persona prompts)
 
 ---
 

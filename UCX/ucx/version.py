@@ -1,9 +1,16 @@
 """Version information for UCX."""
 
-__version__ = "1.14.7"
+__version__ = "1.14.8"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
 
-# v1.14.7 - One-Turn Attention Steering Fix
+# v1.14.8 - Terminology Update: Unified Prompt / Persona Prompts
+# - RENAMED: "one-turn" → "unified prompt" (single prompt with all personas)
+# - RENAMED: "multi-turn" → "persona prompts" (per-persona filtered prompts)
+# - UPDATED: Documentation, code comments, and file naming
+# - BENEFIT: Clearer terminology that describes what each mode does
+# - See: docs/CHANGELOG_v1.14.8.md
+
+# v1.14.7 - Unified Prompt Attention Steering Fix
 # - FIXED: Format instructions now placed at END of prompt (was at START)
 #   Previously: Format instructions before document content
 #   Now: Format instructions after document content (better LLM attention)
@@ -16,15 +23,15 @@ __version_info__ = tuple(int(x) for x in __version__.split("."))
 # v1.14.6 - Session Directory Rename & Review Mode Documentation
 # - BREAKING: .doc_review_memory/ → .ucx_review_session/
 # - BREAKING: final_body.md → assembled_report.md
-# - NEW: Comprehensive one-turn vs multi-turn documentation
+# - NEW: Comprehensive unified prompt vs persona prompts documentation
 # - See: docs/CHANGELOG_v1.14.6.md
 
-# v1.14.5 - One-Turn Review Feature Parity
-# - FIXED: One-turn review now loads project-specific skills first
-#   Previously: one-turn used framework skills, multi-turn used project skills
+# v1.14.5 - Unified Prompt Feature Parity
+# - FIXED: Unified prompt review now loads project-specific skills first
+#   Previously: unified used framework skills, persona prompts used project skills
 #   Now: both modes use project-specific skills ({project_dir}/docs/UCX/skills/)
-# - BENEFIT: One-turn reviews now include Category Tagging guidance from project skills
-# - BENEFIT: Consistent review quality between one-turn and multi-turn modes
+# - BENEFIT: Unified prompt reviews include Category Tagging guidance from project skills
+# - BENEFIT: Consistent review quality between unified and persona prompts modes
 # - Updated: UCRPhase._load_skills() with project-first priority
 # - See: docs/CHANGELOG_v1.14.5.md
 

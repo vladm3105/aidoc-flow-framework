@@ -260,43 +260,43 @@ For a 170KB BRD document:
 - Cross-domain issues are suspected
 - Document structure is simple
 
-**Use Multi-Turn when:**
+**Use Persona Prompts when:**
 - Document is > 50K tokens
 - Deep per-persona analysis needed
 - Finding deduplication is important
 - Session persistence/resume required
 - Reviewing complex multi-section BRDs
 
-**For critical reviews**: Run both modes and compare. Multi-turn catches depth, one-turn catches breadth.
+**For critical reviews**: Run both modes and compare. Persona prompts catch depth, unified prompt catches breadth.
 
 ### Feature Parity (v1.14.5+)
 
 As of v1.14.5, both modes have feature parity for:
 
-| Feature | One-Turn | Multi-Turn |
-|---------|----------|------------|
+| Feature | Unified Prompt | Persona Prompts |
+|---------|----------------|-----------------|
 | Project-specific skills | YES | YES |
 | Category Tagging (`[CAT:xxx]`) | YES | YES |
 | Finding ID format (`PREFIX-P#-NNN`) | YES | YES |
 | Domain-specific checklists | YES | YES |
 | Skill loading priority (project first) | YES | YES |
 
-Features unique to Multi-Turn (by design):
+Features unique to Persona Prompts (by design):
 
 | Feature | Reason |
 |---------|--------|
-| Prior Findings Summarization | No previous responses in one-turn |
+| Prior Findings Summarization | No previous responses in unified mode |
 | Anti-Repetition Instructions | Single call with all personas |
-| Context Engineering (hierarchical) | Multi-turn optimization |
+| Context Engineering (hierarchical) | Persona prompts optimization |
 | Session Resume | Single call completes atomically |
 
 ---
 
 ## How UCR Works
 
-### Single-Pass Architecture (One-Turn)
+### Single-Pass Architecture (Unified Prompt)
 
-Unlike multi-model pipelines that fragment context across multiple API calls, UCR one-turn:
+Unlike multi-model pipelines that fragment context across multiple API calls, unified prompt:
 
 1. **Loads full document** into a single conversation context
 2. **Applies all personas sequentially** within that context

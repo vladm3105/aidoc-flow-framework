@@ -272,7 +272,7 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path))
 @click.option("--skip-validation", is_flag=True)
-@click.option("--multi-turn", "-m", is_flag=True, help="Use multi-turn persona review with memory")
+@click.option("--multi-turn", "-m", is_flag=True, help="Use persona prompts mode (per-persona filtered prompts with memory)")
 @click.option("--no-resume", is_flag=True, help="Start fresh (don't resume from previous session)")
 @click.option("--session-ttl", type=int, default=24, help="Session TTL in hours (default: 24)")
 @click.option("--clean-memory", is_flag=True, help="Clean up stale session memory and exit")
@@ -280,7 +280,7 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.option("--clean-all", is_flag=True, help="Clean up both session memory and old reports")
 @click.option("--model", default=None, envvar="UCX_MODEL", help="Model: opus (best), sonnet (balanced), haiku (fast). Env: UCX_MODEL")
-@click.option("--force-single", is_flag=True, help="Force single-turn mode (bypass auto multi-turn for large docs)")
+@click.option("--force-single", is_flag=True, help="Force unified prompt mode (bypass auto persona prompts for large docs)")
 @click.option("--scoring", type=click.Choice(["weighted"]), default="weighted", hidden=True, help="Scoring method (deprecated flag, only weighted supported)")
 @click.pass_context
 def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resume, session_ttl, clean_memory, clean_reports, keep_versions, clean_all, model, force_single, scoring):
@@ -401,7 +401,7 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
     # Legacy scoring removed - all reviews use category-weighted scoring
     config.scoring_method = "weighted"
 
-    # Auto-detect large documents and recommend multi-turn (unless --force-single)
+    # Auto-detect large documents and recommend persona prompts (unless --force-single)
     if not multi_turn and not force_single:
         # Calculate document size
         total_chars = 0
@@ -412,11 +412,11 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
         else:
             total_chars = doc_path.stat().st_size
 
-        # Large documents (>100K chars / ~25K tokens) should use multi-turn
+        # Large documents (>100K chars / ~25K tokens) should use persona prompts
         if total_chars > 100000:
             console.print(
                 f"[yellow]Large document detected ({total_chars // 1000}K chars). "
-                f"Auto-enabling multi-turn mode for better quality.[/yellow]"
+                f"Auto-enabling persona prompts mode for better quality.[/yellow]"
             )
             multi_turn = True
 

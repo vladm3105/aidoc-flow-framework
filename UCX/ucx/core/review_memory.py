@@ -1,4 +1,4 @@
-"""Review memory management for multi-turn persona reviews."""
+"""Review memory management for persona prompts mode (per-persona reviews)."""
 
 import hashlib
 import json

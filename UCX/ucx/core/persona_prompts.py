@@ -1,4 +1,4 @@
-"""Persona prompt templates for multi-turn reviews."""
+"""Persona prompt templates for persona prompts mode (per-persona reviews)."""
 
 from pathlib import Path
 from typing import Optional

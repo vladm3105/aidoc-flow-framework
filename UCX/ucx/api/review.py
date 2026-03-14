@@ -540,8 +540,8 @@ class UCRPhase:
         1. Project-specific skills ({project_dir}/docs/UCX/skills/)
         2. Framework skills (fallback)
 
-        This ensures one-turn review uses the same project-specific
-        skills as multi-turn review, including Category Tagging sections.
+        This ensures unified prompt review uses the same project-specific
+        skills as persona prompts review, including Category Tagging sections.
         """
         parts = []
         loaded = []
@@ -646,7 +646,7 @@ class UCRPhase:
         session_ttl_hours: int = 24,
     ) -> ReviewResult:
         """
-        Review a document using multi-turn persona reviews with memory.
+        Review a document using persona prompts mode (per-persona filtered prompts).
 
         This approach breaks the review into smaller per-persona calls,
         storing prompts and responses in .ucx_review_session/ for:
