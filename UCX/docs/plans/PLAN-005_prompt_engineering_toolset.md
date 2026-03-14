@@ -1170,10 +1170,10 @@ ucx prompts check brd docs/01_BRD/BRD-01/
 ### ROADMAP.md Updates
 
 ```markdown
-## v1.14.0 - Prompt Inspection Toolset
+## v1.14.0 - Prompt Inspection Toolset (Complete)
 
-**Status**: In Development
-**Target**: 2026-Q2
+**Status**: Complete
+**Released**: 2026-03-13
 
 ### Features
 - [x] `ucx prompts generate` - Generate prompts with metadata
