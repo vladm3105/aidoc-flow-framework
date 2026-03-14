@@ -97,6 +97,9 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──�
 - **Terminology Update**: Renamed review modes for clarity
   - "One-turn" → "Unified Prompt"
   - "Multi-turn" → "Persona Prompts"
+- **CLI Flag Changes**: Updated flags to match new terminology
+  - `--multi-turn` / `-m` → `--persona` / `-p`
+  - `--force-single` → `--unified` / `-u`
 - Updated documentation, code comments, and file naming
 
 **Terminology Reference**:
@@ -104,6 +107,12 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──�
 |----------|----------|-------------|
 | One-turn | Unified Prompt | Single prompt with all 12 personas |
 | Multi-turn | Persona Prompts | Per-persona filtered prompts |
+
+**CLI Reference**:
+| Old Flag | New Flag | Description |
+|----------|----------|-------------|
+| `--multi-turn` / `-m` | `--persona` / `-p` | Use persona prompts mode |
+| `--force-single` | `--unified` / `-u` | Force unified prompt mode |
 
 See [CHANGELOG_v1.14.8](CHANGELOG_v1.14.8.md)
 
@@ -136,7 +145,7 @@ See [CHANGELOG_v1.14.7](CHANGELOG_v1.14.7.md)
 | `final_body.md` | `assembled_report.md` | Automatic on next review |
 
 **Documentation Updates**:
-- `UNIFIED_CONTEXT_REVIEW.md`: Added "Review Modes: One-Turn vs Multi-Turn" section
+- `UNIFIED_CONTEXT_REVIEW.md`: Added "Review Modes: Unified vs Persona" section
 - `README.md`: Added review mode comparison table and recommendations
 
 See [CHANGELOG_v1.14.6](CHANGELOG_v1.14.6.md)
@@ -144,7 +153,7 @@ See [CHANGELOG_v1.14.6](CHANGELOG_v1.14.6.md)
 ### v1.14.5 (2026-03-14)
 
 **Features**:
-- **One-Turn Review Feature Parity**: One-turn review now has full feature parity with multi-turn
+- **Unified Prompt Feature Parity**: Unified prompt review now has full feature parity with persona prompts
 - **Project-First Skill Loading**: `_load_skills()` now prioritizes project-specific skills over framework skills
 - **Persona Naming Standardization**: Renamed `integration_expert` → `integration_lead` for consistency
 - **Category Tagging**: Added `[CAT:xxx]` tagging to auditor, fact_checker, product_owner personas
@@ -299,7 +308,7 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 ### v1.10.0 (2026-03-12)
 
 **Features**:
-- Multi-turn review mode (`--multi-turn`)
+- Persona prompts review mode (`--persona`)
 - Session persistence and resume (`--resume`)
 - Large document handling (auto-splits >100K chars)
 - Review memory in `.ucx_review_session/`
@@ -328,10 +337,10 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | QA Lead Persona | High | ✅ Complete (v1.14.3) | PLAN-005 |
 | Chaos Engineer Rename | High | ✅ Complete (v1.14.3) | PLAN-005 |
 | Extraction Pattern Fixes | High | ✅ Complete (v1.14.4) | PLAN-005 |
-| One-Turn Feature Parity | High | ✅ Complete (v1.14.5) | PLAN-005 |
+| Unified Prompt Feature Parity | High | ✅ Complete (v1.14.5) | PLAN-005 |
 | Persona Naming Standardization | High | ✅ Complete (v1.14.5) | PLAN-005 |
 | Session Directory Rename | Medium | ✅ Complete (v1.14.6) | Clarity improvement |
-| Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | One-turn vs multi-turn |
+| Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | Unified vs persona prompts |
 | Attention Steering Fix | High | ✅ Complete (v1.14.7) | Format instructions at END |
 | Terminology Update | Medium | ✅ Complete (v1.14.8) | Unified prompt / Persona prompts |
 | Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |

@@ -22,7 +22,7 @@ Same document produces different scores across reviews (e.g., 72 vs 64).
 | Use category caps | Limits variance impact |
 | Review Chairperson manifest | Consistent category distribution |
 | Run `ucx scan` | Pre-analysis of findings |
-| Enable `--multi-turn` | More consistent review |
+| Enable `--persona` | More consistent review |
 
 ### Expected Variance
 

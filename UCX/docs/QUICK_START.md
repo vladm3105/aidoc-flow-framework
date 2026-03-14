@@ -103,7 +103,8 @@ ucx --project-dir . remediate brd docs/01_BRD/BRD-01_platform_architecture/
 |--------|-------------|
 | `--project-dir PATH` | Project root for loading project-specific prompts and skills |
 | `--model MODEL` | AI model: `opus` (default), `sonnet`, `haiku` |
-| `--multi-turn` | Force multi-turn persona review mode |
+| `--persona` / `-p` | Use persona prompts mode (per-persona filtered prompts) |
+| `--unified` / `-u` | Force unified prompt mode (skip auto-detect for large docs) |
 | `--skip-validation` | Skip schema validation (for drafts) |
 | `-W` | Enable web search for fact-checking |
 
@@ -188,14 +189,19 @@ Review report written to document directory:
 
 ## Review Mode Selection
 
-| Document Size | Mode | Behavior |
-|---------------|------|----------|
-| < 100K chars | Single-turn | All personas in one API request |
-| >= 100K chars | Multi-turn | 11 sequential API calls with memory |
+| Document Size | Mode | CLI Flag | Behavior |
+|---------------|------|----------|----------|
+| < 100K chars | Unified Prompt | (default) | All personas in one API request |
+| >= 100K chars | Persona Prompts | `--persona` / `-p` | 12 sequential API calls with memory |
 
-Force multi-turn for thorough reviews:
+Force persona prompts for thorough reviews:
 ```bash
-ucx --project-dir . review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx review brd docs/01_BRD/BRD-01/ --persona
+```
+
+Force unified prompt for large docs (skip auto-detect):
+```bash
+ucx review brd docs/01_BRD/BRD-01/ --unified
 ```
 
 ## Project-Specific Configuration
@@ -262,7 +268,7 @@ Loaded project-specific skill: auditor from .../docs/UCX/skills
 | "No prompt found" | Missing project prompt | Create `UCR_PROMPT_{TYPE}_PROJECT.md` |
 | "Skill not loaded" | Missing skill file | Create skill or rely on framework fallback |
 | "Validation failed" | Schema errors | Fix YAML frontmatter, element IDs |
-| "API timeout" | Large document | Use `--multi-turn` mode |
+| "API timeout" | Large document | Use `--persona` mode |
 
 ## Example: BeeLocal Project
 

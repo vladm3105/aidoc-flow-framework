@@ -174,14 +174,14 @@ doc = ucc.create(
 # Review a document folder (CLI mode - default)
 ucx review brd docs/01_BRD/BRD-01_platform/
 
-# Multi-turn review (recommended for large documents)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+# Persona prompts mode (recommended for large documents)
+ucx review brd docs/01_BRD/BRD-01/ --persona
 
-# Multi-turn with fresh start (clear previous session)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --no-resume
+# Persona prompts with fresh start (clear previous session)
+ucx review brd docs/01_BRD/BRD-01/ --persona --no-resume
 
-# Multi-turn with custom session TTL
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
+# Persona prompts with custom session TTL
+ucx review brd docs/01_BRD/BRD-01/ -p --session-ttl 48
 
 # Review with specific CLI tool
 ucx --mode cli --cli-tool claude review brd docs/01_BRD/BRD-01/
@@ -196,13 +196,14 @@ ucx review prd docs/02_PRD/PRD-01.md
 ucx validate brd docs/01_BRD/BRD-01.md
 ```
 
-### Multi-Turn Review Mode
+### Persona Prompts Mode
 
-For large documents (>50K tokens), use `--multi-turn` to break the review into per-persona calls:
+For large documents (>50K tokens), use `--persona` to break the review into per-persona calls:
 
 | Option | Behavior |
 |--------|----------|
-| `--multi-turn` | Resume from previous session if valid |
+| `--persona` / `-p` | Use persona prompts mode (resumes from previous session if valid) |
+| `--unified` / `-u` | Force unified prompt mode (skip auto-detect for large docs) |
 | `--no-resume` | Clear memory and start fresh |
 | `--session-ttl N` | Expire sessions older than N hours (default: 24) |
 | `--clean-memory` | Remove `.ucx_review_session/` and exit (no review) |
@@ -503,7 +504,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 
 **Option 1**: Use multi-turn mode (recommended):
 ```bash
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx review brd docs/01_BRD/BRD-01/ --persona
 ```
 
 **Option 2**: Increase timeout:
@@ -515,7 +516,7 @@ config = UCXConfig(ai_mode="cli", cli_timeout=900)  # 15 minutes
 
 Sessions expire after 24 hours by default. To use a longer TTL:
 ```bash
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
+ucx review brd docs/01_BRD/BRD-01/ --persona --session-ttl 48
 ```
 
 ### Resume interrupted review
@@ -523,12 +524,12 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
 Multi-turn reviews automatically resume from the last completed persona:
 ```bash
 # This will skip completed personas and continue
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx review brd docs/01_BRD/BRD-01/ --persona
 ```
 
 To start fresh:
 ```bash
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --no-resume
+ucx review brd docs/01_BRD/BRD-01/ --persona --no-resume
 ```
 
 ### Truncated output (CLI mode)
@@ -547,10 +548,10 @@ pip install -e .
 To use a specific model with Claude CLI:
 ```bash
 # Use sonnet model
-ucx --mode cli --cli-tool claude --model sonnet review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx --mode cli --cli-tool claude --model sonnet review brd docs/01_BRD/BRD-01/ --persona
 
 # Use haiku for faster reviews
-ucx --mode cli --cli-tool claude --model haiku review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx --mode cli --cli-tool claude --model haiku review brd docs/01_BRD/BRD-01/ --persona
 ```
 
 ---
@@ -666,9 +667,9 @@ ucx review brd docs/01_BRD/BRD-01/ --clean-reports --keep-versions 2
 
 ### 1. Use Multi-Turn Mode for Large Documents
 
-For documents >50K tokens, always use `--multi-turn`:
+For documents >50K tokens, always use `--persona`:
 ```bash
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx review brd docs/01_BRD/BRD-01/ --persona
 ```
 
 ### 2. Use CLI Mode When Possible

@@ -112,7 +112,7 @@ UCX/
 │   │   └── remediation.py      # UCRemPhase
 │   │
 │   ├── core/                   # Core orchestration
-│   │   ├── review_memory.py    # ReviewMemory for multi-turn
+│   │   ├── review_memory.py    # ReviewMemory for persona prompts
 │   │   └── persona_prompts.py  # Persona prompts + skill loading
 │   │
 │   ├── ai/                     # AI clients (dual-mode)

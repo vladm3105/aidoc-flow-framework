@@ -463,7 +463,7 @@ You MUST produce:
 
 - [x] **5.2** Clear memory and re-run review:
   - **Result**: v008 report generated successfully
-  - **Model**: Sonnet (multi-turn mode)
+  - **Model**: Sonnet (persona prompts mode)
 
 - [x] **5.3** Verify manifest present:
   - **Result**: UCX-MANIFEST-START/END markers present in chairperson response and report

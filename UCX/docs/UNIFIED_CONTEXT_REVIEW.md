@@ -101,27 +101,29 @@ UCX_MODEL="ollama/llama3" UCX_API_BASE="http://localhost:11434" ucx review brd d
 
 ---
 
-## Review Modes: One-Turn vs Multi-Turn
+## Review Modes: Unified vs Persona
 
 UCX supports two review modes with different trade-offs. Understanding when to use each mode is critical for optimal review quality.
 
 ### Quick Comparison
 
-| Aspect | One-Turn | Multi-Turn |
-|--------|----------|------------|
+| Aspect | Unified Prompt | Persona Prompts |
+|--------|----------------|-----------------|
+| **CLI Flag** | (default) or `--unified` | `--persona` / `-p` |
 | **API Calls** | 1 | 12 (one per persona) |
 | **Document Context** | Full document to all personas | Filtered per persona |
 | **Prior Findings** | N/A | Summarized to prevent repetition |
 | **Context Engineering** | None | Hierarchical 4-level |
-| **Attention Steering** | No | Yes (format at END) |
+| **Attention Steering** | Yes (v1.14.7+) | Yes (format at END) |
 | **Resume Support** | No | Yes |
 | **Cost** | Lower | Higher |
 | **Best For** | Small/medium docs (<50K tokens) | Large docs (>50K tokens) |
 
-### One-Turn Review
+### Unified Prompt Review
 
 ```bash
-ucx review brd docs/01_BRD/BRD-01/
+ucx review brd docs/01_BRD/BRD-01/              # Default mode
+ucx review brd docs/01_BRD/BRD-01/ --unified   # Force unified (skip auto-detect)
 ```
 
 **How it works:**
@@ -158,10 +160,11 @@ ucx review brd docs/01_BRD/BRD-01/
 - **Large document risk**: May truncate if document exceeds context limit
 - **No resume**: Must restart from beginning if interrupted
 
-### Multi-Turn Review
+### Persona Prompts Review
 
 ```bash
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+ucx review brd docs/01_BRD/BRD-01/ --persona    # Enable persona prompts
+ucx review brd docs/01_BRD/BRD-01/ -p           # Shorthand
 ```
 
 **How it works:**
@@ -171,7 +174,7 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn
 
 ```
 ┌────────────┐     ┌────────────┐     ┌────────────┐
-│  Turn 1    │     │  Turn 2    │     │  Turn 3    │
+│  Call 1    │     │  Call 2    │     │  Call 3    │
 │ architect  │ ──► │  auditor   │ ──► │ tech_lead  │  ... x12
 │            │     │ + prior    │     │ + prior    │
 │            │     │  summary   │     │  summaries │
@@ -199,7 +202,7 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn
 
 ### Prompt Structure Differences
 
-**One-Turn Prompt:**
+**Unified Prompt:**
 ```
 [System Instructions]
 [Document Content - FULL]
@@ -207,10 +210,10 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn
 [Persona 2 Skill: auditor]
 [Persona 3 Skill: tech_lead]
 ... x12 personas
-[Output Format Instructions]
+[Output Format Instructions]  ← Attention steering (at END, v1.14.7+)
 ```
 
-**Multi-Turn Prompt (per persona):**
+**Persona Prompt (per persona):**
 ```
 [System Instructions]
 [Hierarchical Context]
@@ -223,9 +226,9 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn
 [Output Format Instructions]  ← Attention steering (at END)
 ```
 
-### Context Filtering in Multi-Turn
+### Context Filtering in Persona Prompts
 
-Multi-turn uses `DynamicSectionMapper` to filter document sections per persona:
+Persona prompts mode uses `DynamicSectionMapper` to filter document sections per persona:
 
 | Persona | Categories Included |
 |---------|---------------------|
@@ -253,14 +256,14 @@ For a 170KB BRD document:
 
 ### When to Use Each Mode
 
-**Use One-Turn when:**
+**Use Unified Prompt when:**
 - Document is < 30K tokens
 - Quick review needed
 - Cost is a concern
 - Cross-domain issues are suspected
 - Document structure is simple
 
-**Use Persona Prompts when:**
+**Use Persona Prompts (`--persona`) when:**
 - Document is > 50K tokens
 - Deep per-persona analysis needed
 - Finding deduplication is important
@@ -268,6 +271,25 @@ For a 170KB BRD document:
 - Reviewing complex multi-section BRDs
 
 **For critical reviews**: Run both modes and compare. Persona prompts catch depth, unified prompt catches breadth.
+
+### CLI Reference
+
+```bash
+# Unified prompt (default)
+ucx review brd docs/01_BRD/BRD-01/
+
+# Force unified (skip auto-detection for large docs)
+ucx review brd docs/01_BRD/BRD-01/ --unified
+ucx review brd docs/01_BRD/BRD-01/ -u
+
+# Persona prompts mode
+ucx review brd docs/01_BRD/BRD-01/ --persona
+ucx review brd docs/01_BRD/BRD-01/ -p
+
+# Persona prompts with options
+ucx review brd docs/01_BRD/BRD-01/ -p --no-resume        # Fresh start
+ucx review brd docs/01_BRD/BRD-01/ -p --session-ttl 48   # Custom TTL
+```
 
 ### Feature Parity (v1.14.5+)
 
@@ -285,7 +307,7 @@ Features unique to Persona Prompts (by design):
 
 | Feature | Reason |
 |---------|--------|
-| Prior Findings Summarization | No previous responses in unified mode |
+| Prior Findings Summarization | No previous responses in unified prompt |
 | Anti-Repetition Instructions | Single call with all personas |
 | Context Engineering (hierarchical) | Persona prompts optimization |
 | Session Resume | Single call completes atomically |
