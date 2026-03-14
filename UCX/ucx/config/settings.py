@@ -330,8 +330,9 @@ class UCXConfig(BaseSettings):
         """Get skill directory, using default if not set."""
         if self.skill_dir:
             return self.skill_dir
-        # Default to package skills directory
-        return Path(__file__).parent.parent / "skills" / "personas"
+        # Default to framework skills directory (/UCX/skills/)
+        # Note: ucx/skills/personas/ is deprecated as of v1.7.2
+        return Path(__file__).parent.parent.parent / "skills"
 
     def get_prompt_dir(self) -> Path:
         """Get framework prompt directory, using default if not set."""

@@ -19,7 +19,7 @@ All persona skills are now in:
 ├── chairperson.md
 ├── chaos_engineer.md
 ├── fact_checker.md
-├── integration_expert.md
+├── integration_lead.md
 ├── operator.md
 ├── product_owner.md
 ├── qa_lead.md
