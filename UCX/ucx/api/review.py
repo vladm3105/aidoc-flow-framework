@@ -370,20 +370,32 @@ class UCRPhase:
         self.logger.debug(f"Base prompt loaded: {len(base_prompt)} chars")
 
         # Add validation results
-        if validation_result.status != ValidationStatus.SKIPPED:
-            parts.append("\n---\n\n## PRE-VALIDATION RESULTS\n\n")
-            parts.append(f"**Status**: {validation_result.status.value}\n\n")
+        # Handle both ValidationStatus enum and plain string status
+        status = validation_result.status
+        status_str = status.value if hasattr(status, 'value') else str(status)
+        is_skipped = (status == ValidationStatus.SKIPPED) if isinstance(status, ValidationStatus) else (status_str == "SKIPPED")
 
-            if validation_result.errors:
+        if not is_skipped:
+            parts.append("\n---\n\n## PRE-VALIDATION RESULTS\n\n")
+            parts.append(f"**Status**: {status_str}\n\n")
+
+            # Handle both old-style (.errors/.warnings) and new UnifiedValidationResult (.all_errors/.all_warnings)
+            errors = getattr(validation_result, 'errors', None) or getattr(validation_result, 'all_errors', [])
+            warnings = getattr(validation_result, 'warnings', None) or getattr(validation_result, 'all_warnings', [])
+
+            if errors:
                 parts.append("**Errors**:\n")
-                for error in validation_result.errors:
-                    parts.append(f"- {error}\n")
+                for error in errors:
+                    # Handle both string and ValidationIssue objects
+                    error_str = error.format() if hasattr(error, 'format') else str(error)
+                    parts.append(f"- {error_str}\n")
                 parts.append("\n")
 
-            if validation_result.warnings:
+            if warnings:
                 parts.append("**Warnings**:\n")
-                for warning in validation_result.warnings:
-                    parts.append(f"- {warning}\n")
+                for warning in warnings:
+                    warning_str = warning.format() if hasattr(warning, 'format') else str(warning)
+                    parts.append(f"- {warning_str}\n")
                 parts.append("\n")
 
             parts.append("> **Note**: Address validation failures as P0 findings.\n")
