@@ -1317,6 +1317,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.9 | 2026-03-14 | **Duplicate ID Auto-Fixer**: Added `GATE-E008` to auto-fix. New `DuplicateElementFixer` renumbers duplicate element IDs. Improved reference detection for category lists, range notation, multiple IDs. BRD-03 score improved 0.0→89.5. See [CHANGELOG_v1.14.9.md](docs/CHANGELOG_v1.14.9.md). |
 | 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. CLI flags: `--multi-turn` → `--persona` (`-p`), `--force-single` → `--unified` (`-u`). Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
 | 1.14.7 | 2026-03-14 | **Attention Steering Fix**: Format instructions now placed at END of prompt for better LLM attention. Added `_load_format_instructions()` method and `UCR_FORMAT_{TYPE}_PROJECT.md` file pattern. See [CHANGELOG_v1.14.7.md](docs/CHANGELOG_v1.14.7.md). |
 | 1.14.6 | 2026-03-14 | **Session Directory Rename & Review Mode Docs**: Renamed `.doc_review_memory/` → `.ucx_review_session/` and `final_body.md` → `assembled_report.md` for clarity. Added comprehensive One-Turn vs Multi-Turn review mode documentation. See [CHANGELOG_v1.14.6.md](docs/CHANGELOG_v1.14.6.md). |
@@ -1366,13 +1367,14 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.8 - Terminology Update (Unified Prompt / Persona Prompts)
+**Latest Release**: v1.14.9 - Duplicate Element ID Auto-Fixer (GATE-E008)
 - Renamed `.doc_review_memory/` → `.ucx_review_session/` for clarity
 - Renamed `final_body.md` → `assembled_report.md` for clarity
 - Added comprehensive One-Turn vs Multi-Turn review mode documentation
-- See [CHANGELOG_v1.14.8](docs/CHANGELOG_v1.14.8.md) for details
+- See [CHANGELOG_v1.14.9](docs/CHANGELOG_v1.14.9.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.9: Duplicate element ID auto-fixer (GATE-E008)
 - v1.14.8: Terminology update (unified prompt / persona prompts)
 - v1.14.7: Attention steering fix (format instructions at END)
 - v1.14.6: Session directory rename, review mode documentation
@@ -1417,6 +1419,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.6](docs/CHANGELOG_v1.14.6.md) | Session directory rename, review mode documentation |
 | [CHANGELOG v1.14.7](docs/CHANGELOG_v1.14.7.md) | Attention steering fix (format instructions at END) |
 | [CHANGELOG v1.14.8](docs/CHANGELOG_v1.14.8.md) | Terminology update (unified prompt / persona prompts) |
+| [CHANGELOG v1.14.9](docs/CHANGELOG_v1.14.9.md) | Duplicate element ID auto-fixer (GATE-E008) |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

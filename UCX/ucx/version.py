@@ -1,7 +1,16 @@
 """Version information for UCX."""
 
-__version__ = "1.14.8"
+__version__ = "1.14.9"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.14.9 - Duplicate Element ID Auto-Fixer (GATE-E008)
+# - NEW: DuplicateElementFixer class for automatic ID renumbering
+# - NEW: fix_duplicate_ids.py CLI script for standalone use
+# - FIXED: Improved reference context detection eliminates false positives
+# - NEW: Patterns for category lists, range notation, multiple IDs per line
+# - IMPACT: BRD-03 score improved from 0.0 to 89.5/100
+# - Fixable codes: GATE-E008 added to FIXABLE_CODES in fixer.py
+# - See: docs/CHANGELOG_v1.14.9.md
 
 # v1.14.8 - Terminology Update: Unified Prompt / Persona Prompts
 # - RENAMED: "one-turn" → "unified prompt" (single prompt with all personas)
