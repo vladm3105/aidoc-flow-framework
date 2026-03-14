@@ -2,8 +2,8 @@
 
 **Status**: Complete (v1.14.0, v1.14.1, v1.14.2)
 **Created**: 2026-03-13
-**Updated**: 2026-03-13
-**Released**: v1.14.0 (Inspection), v1.14.1 (Preprocessing), v1.14.2 (Enhanced Extraction)
+**Updated**: 2026-03-14
+**Released**: v1.14.0 (Inspection), v1.14.1 (Preprocessing), v1.14.2 (27 Extraction Patterns)
 **Dependencies**: v1.13.1 (Context Engineering)
 
 ## Problem Statement
@@ -1460,74 +1460,62 @@ grep -c "Anti-Patterns" docs/01_BRD/BRD-01_platform_architecture/.doc_review_mem
 ## v1.14.2 Enhanced Skill Extraction (Complete)
 
 **Status**: Complete
-**Released**: 2026-03-13
+**Released**: 2026-03-14
 
 ### Issue Identified
 
-Quality evaluation of generated prompts revealed incomplete skill extraction:
-
-| Skill Section | Before v1.14.2 | After v1.14.2 |
-|---------------|----------------|---------------|
-| Role | ✓ Extracted | ✓ Extracted |
-| Review Focus | ✓ Extracted | ✓ Extracted |
-| Anti-Patterns | ✓ Extracted | ✓ Extracted |
-| Business Processes | ✗ Missing | ✓ Extracted |
-| Stakeholders | ✗ Missing | ✓ Extracted |
-| Domain Requirements | ✗ Missing | ✓ Extracted |
-| Review Questions | ✗ Missing | ✓ Extracted |
-| Analysis Checklist | ✗ Missing | ✓ Extracted |
-| Quality Framework (5 C's) | ✗ Missing | ✓ Extracted |
+Quality evaluation of generated prompts revealed incomplete skill extraction. Only 3-4 sections were being extracted while skill files contain 8-15+ sections of domain knowledge.
 
 **Impact**: ~60% of skill content was not being used in generated prompts.
 
-### Before/After Metrics (Business Analyst)
+### Improvements by Persona
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Total tokens | 18,099 | 18,633 | +534 tokens |
-| Instruction tokens | 372 | 906 | +143% |
-| Instruction ratio | 2.1% | 4.9% | +133% |
+| Persona | Before | After | Improvement | Final Ratio |
+|---------|--------|-------|-------------|-------------|
+| chairperson | 318 | 1,945 | +512% | 5.6% |
+| devils_advocate | 398 | 1,133 | +185% | 7.8% |
+| business_analyst | 372 | 906 | +143% | 4.9% |
+| strategist | 316 | 745 | +136% | 5.4% |
+| integration_lead | 436 | 991 | +127% | 8.0% |
+| fact_checker | 423 | 855 | +102% | 2.6% |
+| product_owner | 324 | 631 | +95% | 3.4% |
+| operator | 436 | 812 | +86% | 8.2% |
+| tech_lead | 538 | 851 | +58% | 6.9% |
+
+**Target ratio**: 5-10% instruction tokens
 
 ### Implementation
 
-Added 6 new extraction patterns to `_load_system_instructions()` in `ucx/prompts/api.py`:
+Added 27 extraction patterns to `_load_system_instructions()` in `ucx/prompts/api.py` (~lines 833-976):
 
-```python
-# Business Processes (domain-specific workflows)
-r'^##\s+.*Business Process.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
-
-# Stakeholders (domain context)
-r'^##\s+.*Stakeholders.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
-
-# Corridor/Domain-Specific Requirements
-r'^##\s+.*(?:Corridor|Domain).*?Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
-
-# Review Questions (actionable checklist)
-r'^##\s+Review Questions.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
-
-# Analysis Checklist
-r'^##\s+Analysis Checklist.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)'
-
-# The 5 'C's or similar frameworks
-r"^##\s+The 5\s*['"]?C['"]?s.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)"
-```
+| Category | Persona | Patterns Added |
+|----------|---------|----------------|
+| Core | All | Role, Review Focus, Anti-Patterns |
+| Business Domain | business_analyst | Business Processes, Stakeholders, Domain Requirements |
+| Quality Framework | business_analyst, auditor | Review Questions, Analysis Checklist, 5 C's |
+| Leadership | chairperson | Core Mission, Prioritization Weights, Score Calculation, Synthesis Process, Output Requirements, CRITICAL |
+| Adversarial | devils_advocate | Failure Scenarios, Edge Case Framework, Critical Rule |
+| Verification | fact_checker | Verification Areas, Verification Process |
+| Integration | integration_lead | Partner Ecosystem, Integration Requirements, Assessment Template |
+| Operations | operator | Operational Requirements, Operational Checklist |
+| Product | product_owner | MVP Definition, Acceptance Criteria Format |
+| Strategy | strategist | Business Model, Competitive Landscape, Financial Projections, Scoring Weight |
+| Technical | tech_lead | Technology Stack, Technical Assessment |
 
 ### Verification
 
 ```bash
-# Generate prompt and check instruction ratio
+# Generate all prompts and check instruction ratios
 cd /opt/data/b-local/b-local-docs
 source .envrc
-ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p business_analyst
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 
-# Check token distribution
-cat docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_business_analyst.meta.json | jq '.tokens'
-# Expected: {"total": 18633, "document": 17727, "instructions": 906}
-
-# Verify new sections present
-grep -c "Business Processes\|Review Questions\|Analysis Checklist\|Quality Framework" \
-  docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_business_analyst.txt
-# Expected: 4
+# Check token distribution for all personas
+for persona in business_analyst chairperson devils_advocate fact_checker integration_lead operator product_owner strategist tech_lead; do
+  tokens=$(jq -r '.tokens | "\(.instructions)/\(.total)"' \
+    docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${persona}.meta.json 2>/dev/null)
+  echo "$persona: $tokens"
+done
 ```
 
 ---
@@ -1543,4 +1531,4 @@ grep -c "Business Processes\|Review Questions\|Analysis Checklist\|Quality Frame
 
 ---
 
-*Last Updated: 2026-03-13 (v1.14.2 enhanced skill extraction complete)*
+*Last Updated: 2026-03-14 (v1.14.2 complete - 27 extraction patterns for all 11 personas)*

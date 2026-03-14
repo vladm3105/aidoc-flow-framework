@@ -92,16 +92,25 @@ v1.12.0 ──► v1.13.x ──► v1.14.0 ──► v1.14.1 ──► v1.14.2 
 
 ## Completed Releases
 
-### v1.14.2 (2026-03-13) - Current
+### v1.14.2 (2026-03-14) - Current
 
 **Features**:
-- **Enhanced Skill Extraction**: Extract 6 additional sections from skill manifests
-- **Business Processes**: Domain-specific workflow extraction
-- **Stakeholders**: Key actor and concern extraction
-- **Review Questions**: Actionable review prompt extraction
-- **Analysis Checklist**: Verification item extraction
-- **Quality Framework**: 5 C's framework extraction
-- **Instruction Ratio**: Improved from ~2% to ~5% for richer guidance
+- **Enhanced Skill Extraction**: 27 extraction patterns covering all 11 personas
+- **Persona-Specific Patterns**: Domain knowledge extraction per persona role
+- **Instruction Ratio**: Improved across all personas (target 5-10% achieved)
+
+**Improvements by Persona**:
+| Persona | Ratio | Improvement | Key Sections Extracted |
+|---------|-------|-------------|------------------------|
+| chairperson | 5.6% | +512% | Core Mission, Score Calculation, Synthesis Process |
+| devils_advocate | 7.8% | +185% | Failure Scenarios, Edge Cases, Critical Rules |
+| business_analyst | 4.9% | +143% | Business Processes, Stakeholders, 5 C's Framework |
+| strategist | 5.4% | +136% | Business Model, Competitive Landscape, Financials |
+| integration_lead | 8.0% | +127% | Partner Ecosystem, Integration Requirements |
+| fact_checker | 2.6% | +102% | Verification Areas, Verification Process |
+| product_owner | 3.4% | +95% | MVP Definition, Acceptance Criteria |
+| operator | 8.2% | +86% | Operational Requirements, Operational Checklist |
+| tech_lead | 6.9% | +58% | Technology Stack, Technical Assessment |
 
 See [CHANGELOG_v1.14.2](CHANGELOG_v1.14.2.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
 
@@ -243,4 +252,4 @@ To propose new features or changes:
 
 ---
 
-*Last Updated: 2026-03-13*
+*Last Updated: 2026-03-14*

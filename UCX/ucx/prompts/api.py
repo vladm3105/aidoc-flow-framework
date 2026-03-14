@@ -860,6 +860,126 @@ class UCPromptPhase:
         if framework_match:
             instructions_parts.append(f"\n**Quality Framework (5 C's)**:\n{framework_match.group(1).strip()}")
 
+        # Extract Core Mission (chairperson synthesis goal)
+        mission_match = re.search(r'^##\s+Core Mission.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if mission_match:
+            instructions_parts.append(f"\n**Core Mission**:\n{mission_match.group(1).strip()}")
+
+        # Extract Prioritization Weights (severity/priority rules)
+        weights_match = re.search(r'^##\s+.*Prioritization.*?Weights.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if weights_match:
+            instructions_parts.append(f"\n**Prioritization Weights**:\n{weights_match.group(1).strip()}")
+
+        # Extract Score Calculation (scoring formula and rules)
+        scoring_match = re.search(r'^##\s+Score Calculation.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if scoring_match:
+            instructions_parts.append(f"\n**Score Calculation**:\n{scoring_match.group(1).strip()}")
+
+        # Extract Synthesis Process (step-by-step process)
+        synthesis_match = re.search(r'^##\s+Synthesis Process.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if synthesis_match:
+            instructions_parts.append(f"\n**Synthesis Process**:\n{synthesis_match.group(1).strip()}")
+
+        # Extract Output Requirements (format specifications)
+        output_match = re.search(r'^##\s+Output Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if output_match:
+            instructions_parts.append(f"\n**Output Requirements**:\n{output_match.group(1).strip()}")
+
+        # Extract CRITICAL sections (manifest requirements, etc.)
+        critical_match = re.search(r'^##\s+.*CRITICAL.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if critical_match:
+            instructions_parts.append(f"\n**CRITICAL REQUIREMENTS**:\n{critical_match.group(1).strip()}")
+
+        # Extract Failure Scenarios (devil's advocate domain-specific failures)
+        failure_match = re.search(r'^##\s+.*Failure.*?Scenarios.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if failure_match:
+            instructions_parts.append(f"\n**Failure Scenarios**:\n{failure_match.group(1).strip()}")
+
+        # Extract Edge Case Framework (boundary conditions, temporal issues)
+        edge_match = re.search(r'^##\s+.*Edge Case.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if edge_match:
+            instructions_parts.append(f"\n**Edge Case Framework**:\n{edge_match.group(1).strip()}")
+
+        # Extract Critical Rule (essential constraints)
+        rule_match = re.search(r'^##\s+Critical Rule.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if rule_match:
+            instructions_parts.append(f"\n**Critical Rule**:\n{rule_match.group(1).strip()}")
+
+        # Extract Verification Areas (fact checker domain-specific)
+        verify_areas_match = re.search(r'^##\s+.*Verification.*?Areas.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if verify_areas_match:
+            instructions_parts.append(f"\n**Verification Areas**:\n{verify_areas_match.group(1).strip()}")
+
+        # Extract Verification Process (fact checker step-by-step)
+        verify_process_match = re.search(r'^##\s+Verification Process.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if verify_process_match:
+            instructions_parts.append(f"\n**Verification Process**:\n{verify_process_match.group(1).strip()}")
+
+        # Extract Partner Ecosystem (integration lead partner details)
+        partner_match = re.search(r'^##\s+Partner Ecosystem.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if partner_match:
+            instructions_parts.append(f"\n**Partner Ecosystem**:\n{partner_match.group(1).strip()}")
+
+        # Extract Integration Requirements Checklist
+        integ_checklist_match = re.search(r'^##\s+Integration.*?(?:Requirements|Checklist).*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if integ_checklist_match:
+            instructions_parts.append(f"\n**Integration Requirements Checklist**:\n{integ_checklist_match.group(1).strip()}")
+
+        # Extract Assessment Templates (partner assessment, compliance assessment)
+        template_match = re.search(r'^##\s+.*Assessment.*?Template.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if template_match:
+            instructions_parts.append(f"\n**Assessment Template**:\n{template_match.group(1).strip()}")
+
+        # Extract Operational Requirements (SLIs, infrastructure, DR targets)
+        ops_req_match = re.search(r'^##\s+Operational Requirements.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if ops_req_match:
+            instructions_parts.append(f"\n**Operational Requirements**:\n{ops_req_match.group(1).strip()}")
+
+        # Extract Operational Checklist (deployment, observability, alerting, runbooks)
+        ops_checklist_match = re.search(r'^##\s+Operational Checklist.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if ops_checklist_match:
+            instructions_parts.append(f"\n**Operational Checklist**:\n{ops_checklist_match.group(1).strip()}")
+
+        # Extract MVP Definition (product owner scope, features, out-of-scope)
+        mvp_match = re.search(r'^##\s+.*MVP.*?Definition.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if mvp_match:
+            instructions_parts.append(f"\n**MVP Definition**:\n{mvp_match.group(1).strip()}")
+
+        # Extract Acceptance Criteria Format (user story template, Given/When/Then)
+        acceptance_match = re.search(r'^##\s+Acceptance Criteria.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if acceptance_match:
+            instructions_parts.append(f"\n**Acceptance Criteria Format**:\n{acceptance_match.group(1).strip()}")
+
+        # Extract Business Model (strategist corridor economics, unit economics)
+        business_model_match = re.search(r'^##\s+.*Business Model.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if business_model_match:
+            instructions_parts.append(f"\n**Business Model**:\n{business_model_match.group(1).strip()}")
+
+        # Extract Competitive Landscape (direct competitors, differentiators)
+        competitive_match = re.search(r'^##\s+Competitive Landscape.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if competitive_match:
+            instructions_parts.append(f"\n**Competitive Landscape**:\n{competitive_match.group(1).strip()}")
+
+        # Extract Financial Projections (key assumptions, break-even)
+        financial_match = re.search(r'^##\s+Financial Projections.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if financial_match:
+            instructions_parts.append(f"\n**Financial Projections**:\n{financial_match.group(1).strip()}")
+
+        # Extract Scoring Weight (persona weight per doc type)
+        scoring_weight_match = re.search(r'^##\s+Scoring Weight.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if scoring_weight_match:
+            instructions_parts.append(f"\n**Scoring Weight**:\n{scoring_weight_match.group(1).strip()}")
+
+        # Extract Technology Stack (tech lead core stack and domain-specific concerns)
+        tech_stack_match = re.search(r'^##\s+Technology Stack.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if tech_stack_match:
+            instructions_parts.append(f"\n**Technology Stack**:\n{tech_stack_match.group(1).strip()}")
+
+        # Extract Technical Assessment (checklist for technical review)
+        tech_assessment_match = re.search(r'^##\s+Technical Assessment.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if tech_assessment_match:
+            instructions_parts.append(f"\n**Technical Assessment Checklist**:\n{tech_assessment_match.group(1).strip()}")
+
         if instructions_parts:
             return "\n".join(instructions_parts)
 
