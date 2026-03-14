@@ -429,6 +429,7 @@ The `--fix` flag automatically fixes structural issues without AI:
 | `BRD-E003` | 1 | Missing 'brd' tag | Adds to tags array |
 | `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
 | `BRD-E009` | 1 | Missing Document Control | Adds section (if none exists) |
+| `GATE-E008` | 1 | Duplicate element ID | Renumbers duplicates with next available sequence |
 | `BRD-W005` | 1 | Legacy development_status | Renames to status |
 | `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
 | `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |

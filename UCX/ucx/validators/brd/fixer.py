@@ -22,6 +22,7 @@ from typing import Dict, List, Optional, Set, Tuple
 import yaml
 
 from ucx.validators.common.result import ValidationIssue
+from ucx.validators.brd.duplicate_fixer import DuplicateElementFixer
 
 
 @dataclass
@@ -71,6 +72,8 @@ FIXABLE_CODES: Set[str] = {
     "BRD-E009",  # Missing Document Control fields
     "BRD-W005",  # Legacy development_status
     "VAL-W002",  # Legacy status value
+    # Tier 1 element ID fixes
+    "GATE-E008",  # Duplicate element ID - renumber automatically
     # Tier 2 count mismatch fixes
     "GATE-W003",  # Count mismatch (stated vs actual)
     "DIAG-W001",  # Diagram node count mismatch
@@ -572,6 +575,85 @@ class BRDFixer:
             fixed=False,
             message=f"Could not find count pattern for '{stated_count}' to replace"
         )
+
+    def _fix_gate_e008(self, issue: ValidationIssue) -> FixResult:
+        """Fix duplicate element ID by renumbering.
+
+        Uses the DuplicateElementFixer to:
+        1. Identify all element IDs across the BRD
+        2. Find duplicates (second occurrence of same ID)
+        3. Renumber duplicates with next available sequence number
+        4. Update all references to renamed IDs
+
+        Note: This fix operates on the entire BRD directory, not just one file.
+        Multiple GATE-E008 issues in the same validation run will be consolidated
+        into a single fix operation.
+        """
+        file_path = issue.file_path
+        if not file_path:
+            return FixResult(
+                code=issue.code,
+                file_path=self.doc_path,
+                fixed=False,
+                message="No file path specified"
+            )
+
+        # Determine the BRD directory (parent of the file)
+        brd_dir = file_path.parent
+        if brd_dir.name.endswith(".md"):
+            brd_dir = brd_dir.parent
+
+        # Check if we've already processed this directory in this run
+        cache_key = f"_duplicate_fix_done_{brd_dir}"
+        if hasattr(self, cache_key):
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message="Already processed in batch operation",
+                changes=["Duplicate fix applied in earlier batch"]
+            )
+
+        # Run duplicate fixer on the entire directory
+        try:
+            fixer = DuplicateElementFixer(brd_dir, verbose=self.verbose)
+            result = fixer.fix_duplicates()
+
+            # Mark directory as processed
+            setattr(self, cache_key, True)
+
+            if result.renames:
+                changes = [
+                    f"Renamed {len(result.renames)} duplicate IDs",
+                    f"Updated {result.references_updated} references",
+                ]
+                for rename in result.renames[:5]:  # Show first 5 renames
+                    changes.append(f"  {rename.old_id} → {rename.new_id}")
+                if len(result.renames) > 5:
+                    changes.append(f"  ... and {len(result.renames) - 5} more")
+
+                return FixResult(
+                    code=issue.code,
+                    file_path=file_path,
+                    fixed=True,
+                    message=f"Renumbered {len(result.renames)} duplicate element IDs",
+                    changes=changes
+                )
+            else:
+                return FixResult(
+                    code=issue.code,
+                    file_path=file_path,
+                    fixed=False,
+                    message="No duplicates found to fix (may have been fixed already)"
+                )
+
+        except Exception as e:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message=f"Error fixing duplicates: {str(e)}"
+            )
 
     def _fix_diag_w001(self, issue: ValidationIssue) -> FixResult:
         """Fix diagram node count mismatch in prose.
