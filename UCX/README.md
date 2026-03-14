@@ -1316,6 +1316,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.7 | 2026-03-14 | **Attention Steering Fix**: Format instructions now placed at END of prompt for better LLM attention. Added `_load_format_instructions()` method and `UCR_FORMAT_{TYPE}_PROJECT.md` file pattern. See [CHANGELOG_v1.14.7.md](docs/CHANGELOG_v1.14.7.md). |
 | 1.14.6 | 2026-03-14 | **Session Directory Rename & Review Mode Docs**: Renamed `.doc_review_memory/` → `.ucx_review_session/` and `final_body.md` → `assembled_report.md` for clarity. Added comprehensive One-Turn vs Multi-Turn review mode documentation. See [CHANGELOG_v1.14.6.md](docs/CHANGELOG_v1.14.6.md). |
 | 1.14.5 | 2026-03-14 | **One-Turn Feature Parity & Naming Standardization**: One-turn review now has full feature parity with multi-turn (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
 | 1.14.4 | 2026-03-14 | **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers. 15 new extraction patterns for all 12 personas. 11/12 personas at 5%+ instruction ratio. See [CHANGELOG_v1.14.4.md](docs/CHANGELOG_v1.14.4.md). |
@@ -1363,13 +1364,15 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.6 - Session Directory Rename & Review Mode Documentation
+**Latest Release**: v1.14.7 - Attention Steering Fix (Format Instructions at END)
 - Renamed `.doc_review_memory/` → `.ucx_review_session/` for clarity
 - Renamed `final_body.md` → `assembled_report.md` for clarity
 - Added comprehensive One-Turn vs Multi-Turn review mode documentation
-- See [CHANGELOG_v1.14.6](docs/CHANGELOG_v1.14.6.md) for details
+- See [CHANGELOG_v1.14.7](docs/CHANGELOG_v1.14.7.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.7: Attention steering fix (format instructions at END)
+- v1.14.6: Session directory rename, review mode documentation
 - v1.14.5: One-turn feature parity, persona naming standardization
 - v1.14.4: Extraction pattern fixes, 15 new patterns
 - v1.14.3: QA Lead persona, Chaos Engineer rename
@@ -1409,6 +1412,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.4](docs/CHANGELOG_v1.14.4.md) | Extraction pattern fixes, 15 new patterns |
 | [CHANGELOG v1.14.5](docs/CHANGELOG_v1.14.5.md) | One-turn feature parity, naming standardization |
 | [CHANGELOG v1.14.6](docs/CHANGELOG_v1.14.6.md) | Session directory rename, review mode documentation |
+| [CHANGELOG v1.14.7](docs/CHANGELOG_v1.14.7.md) | Attention steering fix (format instructions at END) |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

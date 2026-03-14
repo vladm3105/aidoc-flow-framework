@@ -1,7 +1,23 @@
 """Version information for UCX."""
 
-__version__ = "1.14.5"
+__version__ = "1.14.7"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.14.7 - One-Turn Attention Steering Fix
+# - FIXED: Format instructions now placed at END of prompt (was at START)
+#   Previously: Format instructions before document content
+#   Now: Format instructions after document content (better LLM attention)
+# - NEW: _load_format_instructions() method in UCRPhase
+# - NEW: UCR_FORMAT_{TYPE}_PROJECT.md files for format instructions
+# - BENEFIT: LLMs pay more attention to output requirements
+# - BENEFIT: Better compliance with finding ID format and category tags
+# - See: docs/CHANGELOG_v1.14.7.md
+
+# v1.14.6 - Session Directory Rename & Review Mode Documentation
+# - BREAKING: .doc_review_memory/ → .ucx_review_session/
+# - BREAKING: final_body.md → assembled_report.md
+# - NEW: Comprehensive one-turn vs multi-turn documentation
+# - See: docs/CHANGELOG_v1.14.6.md
 
 # v1.14.5 - One-Turn Review Feature Parity
 # - FIXED: One-turn review now loads project-specific skills first

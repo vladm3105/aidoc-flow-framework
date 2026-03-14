@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.6
+**Current Version**: 1.14.7
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,12 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.6 (Current) ──► v1.15.0 ──► v2.0.0
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.7 (Current) ──► v1.15.0 ──► v2.0.0
    │           │            │              │                  │           │
    │           │            │              │                  │           └─► Breaking changes
    │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► Session directory rename + review mode docs
-   │           │            └─► Prompt Inspection (v1.14.0-5), qa_lead, chaos_engineer
+   │           │            │              └─► Attention steering fix (v1.14.7)
+   │           │            └─► Prompt Inspection (v1.14.0-5), session rename (v1.14.6)
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -91,7 +91,22 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.6 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.6 (2026-03-14) - Current
+### v1.14.7 (2026-03-14) - Current
+
+**Features**:
+- **Attention Steering Fix**: Format instructions now placed at END of prompt (was at START)
+- **New API Method**: `_load_format_instructions()` in UCRPhase
+- **New File Pattern**: `UCR_FORMAT_{TYPE}_PROJECT.md` for format instructions
+
+**Prompt Structure Change**:
+| Position | Before | After |
+|----------|--------|-------|
+| Format Instructions | START (before document) | END (after document) |
+| Inspection Result | ⚠ at START | ✓ at END |
+
+See [CHANGELOG_v1.14.7](CHANGELOG_v1.14.7.md)
+
+### v1.14.6 (2026-03-14)
 
 **Features**:
 - **Session Directory Rename**: `.doc_review_memory/` → `.ucx_review_session/` for clarity
@@ -301,6 +316,7 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Persona Naming Standardization | High | ✅ Complete (v1.14.5) | PLAN-005 |
 | Session Directory Rename | Medium | ✅ Complete (v1.14.6) | Clarity improvement |
 | Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | One-turn vs multi-turn |
+| Attention Steering Fix | High | ✅ Complete (v1.14.7) | Format instructions at END |
 | Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
@@ -336,6 +352,7 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.4.md](CHANGELOG_v1.14.4.md) - Extraction pattern fixes, 15 new patterns
 - [CHANGELOG_v1.14.5.md](CHANGELOG_v1.14.5.md) - One-turn feature parity, persona naming standardization
 - [CHANGELOG_v1.14.6.md](CHANGELOG_v1.14.6.md) - Session directory rename, review mode documentation
+- [CHANGELOG_v1.14.7.md](CHANGELOG_v1.14.7.md) - Attention steering fix (format instructions at END)
 
 ---
 

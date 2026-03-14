@@ -404,6 +404,13 @@ class UCRPhase:
         parts.append(doc_content)
         self.logger.debug(f"Document content: {len(doc_content)} chars")
 
+        # Add format instructions at END (attention steering - v1.14.7)
+        format_instructions = self._load_format_instructions(doc_type)
+        if format_instructions:
+            parts.append("\n---\n\n")
+            parts.append(format_instructions)
+            self.logger.debug(f"Format instructions: {len(format_instructions)} chars")
+
         return "".join(parts)
 
     def _load_prompt(self, doc_type: DocType) -> str:
@@ -483,6 +490,48 @@ class UCRPhase:
             doc_type.value,
             project_dir
         )
+
+    def _load_format_instructions(self, doc_type: DocType) -> str:
+        """
+        Load format instructions for document type (v1.14.7).
+
+        Format instructions are appended AFTER the document content for
+        better attention steering - LLMs pay more attention to content
+        at the end of prompts.
+
+        Search order (project-specific only):
+        1. {project_dir}/docs/UCX/review/UCR_FORMAT_{TYPE}_PROJECT.md
+        2. {project_dir}/docs/UCX/review/UCR_FORMAT_{TYPE}.md
+
+        Returns:
+            Format instructions content, or empty string if not found
+        """
+        project_dir = self.config.get_project_dir()
+        if project_dir is None:
+            return ""
+
+        project_prompt_dir = project_dir / "docs" / "UCX" / "review"
+        if not project_prompt_dir.exists():
+            return ""
+
+        doc_type_upper = doc_type.value.upper()
+        patterns = [
+            f"UCR_FORMAT_{doc_type_upper}_PROJECT.md",
+            f"UCR_FORMAT_{doc_type_upper}.md",
+        ]
+
+        for pattern in patterns:
+            path = project_prompt_dir / pattern
+            if path.exists() and not path.is_symlink():
+                self.logger.info(f"Using format instructions: {path}")
+                return path.read_text(encoding="utf-8")
+
+        # No format file found - this is OK, not all projects use attention steering
+        self.logger.debug(
+            f"No format instructions file found for {doc_type.value}. "
+            f"Format instructions may be embedded in main prompt."
+        )
+        return ""
 
     def _load_skills(self, skill_names: list[str]) -> str:
         """Load skill content for personas.
