@@ -252,7 +252,7 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 - Multi-turn review mode (`--multi-turn`)
 - Session persistence and resume (`--resume`)
 - Large document handling (auto-splits >100K chars)
-- Review memory in `.doc_review_memory/`
+- Review memory in `.ucx_review_session/`
 
 ### v1.9.x (2026-03-09 to 2026-03-11)
 

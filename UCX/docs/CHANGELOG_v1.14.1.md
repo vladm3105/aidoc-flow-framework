@@ -148,11 +148,11 @@ No CLI changes. Preprocessing is automatic when using `ucx prompt generate`:
 ucx prompt generate brd docs/01_BRD/BRD-01/ -p architect
 
 # Verify preprocessing worked
-grep -c "^---$" .doc_review_memory/prompt_architect.txt
+grep -c "^---$" .ucx_review_session/prompt_architect.txt
 # Expected: 0 (no YAML frontmatter)
 
 # Verify skill sections present
-grep "Anti-Patterns" .doc_review_memory/prompt_architect.txt
+grep "Anti-Patterns" .ucx_review_session/prompt_architect.txt
 # Expected: BeeLocal-Specific Anti-Patterns section
 ```
 
@@ -218,7 +218,7 @@ cd /opt/data/b-local/b-local-docs
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p architect
 
 # Check tokens and sections
-cat docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_architect.meta.json | jq '.tokens'
+cat docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_architect.meta.json | jq '.tokens'
 # {
 #   "total": 16872,
 #   "document": 16033,
@@ -226,7 +226,7 @@ cat docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_architect
 # }
 
 # Verify skill content present (BeeLocal-specific terms)
-grep -c "8-Layer" .doc_review_memory/prompt_architect.txt
+grep -c "8-Layer" .ucx_review_session/prompt_architect.txt
 # Expected: 1+
 ```
 

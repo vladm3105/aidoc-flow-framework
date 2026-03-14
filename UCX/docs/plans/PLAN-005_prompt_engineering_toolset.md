@@ -69,7 +69,7 @@ ucx prompts generate brd docs/01_BRD/BRD-01/ -o tmp/prompts/
 |--------|------|---------|-------------|
 | `doc_type` | ARG | required | Document type (brd, prd, ears, etc.) |
 | `doc_path` | ARG | required | Path to document directory or file |
-| `-o, --output` | PATH | `.doc_review_memory/` | Output directory (consistent with review sessions) |
+| `-o, --output` | PATH | `.ucx_review_session/` | Output directory (consistent with review sessions) |
 | `-p, --persona` | TEXT | all | Single persona to generate |
 | `--personas` | TEXT | all | Comma-separated persona list |
 | `-P, --project-dir` | PATH | auto | Project directory |
@@ -1424,7 +1424,7 @@ SECTION_NUMBER_PATTERN = re.compile(r'BRD-\d+\.(\d+)')
 
 ### Updated Default Output Directory
 
-Changed from `.prompt_cache` to `.doc_review_memory` for consistency with UCX review session storage.
+Changed from `.prompt_cache` to `.ucx_review_session` for consistency with UCX review session storage.
 
 ### Implementation Summary
 
@@ -1444,14 +1444,14 @@ cd /opt/data/b-local/b-local-docs
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p architect
 
 # Check metadata shows sections included/skipped
-cat docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_architect.meta.json
+cat docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_architect.meta.json
 
 # Verify no YAML frontmatter in prompt
-grep -c "^---$" docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_architect.txt
+grep -c "^---$" docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_architect.txt
 # Expected: 0 (no YAML frontmatter)
 
 # Verify skill sections present
-grep -c "Anti-Patterns" docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_architect.txt
+grep -c "Anti-Patterns" docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_architect.txt
 # Expected: 1+ (skill anti-patterns section)
 ```
 
@@ -1513,7 +1513,7 @@ ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 # Check token distribution for all personas (v1.14.3: includes qa_lead, chaos_engineer)
 for persona in architect auditor business_analyst chairperson chaos_engineer fact_checker integration_lead operator product_owner qa_lead strategist tech_lead; do
   tokens=$(jq -r '.tokens | "\(.instructions)/\(.total)"' \
-    docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${persona}.meta.json 2>/dev/null)
+    docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_${persona}.meta.json 2>/dev/null)
   echo "$persona: $tokens"
 done
 ```
@@ -1778,7 +1778,7 @@ ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 # Check instruction tokens
 for p in architect auditor product_owner fact_checker; do
   jq -r '.tokens | "Instructions: \(.instructions)"' \
-    docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${p}.meta.json
+    docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_${p}.meta.json
 done
 # Expected: 600-900+ tokens per persona
 ```

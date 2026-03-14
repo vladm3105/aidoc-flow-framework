@@ -279,7 +279,7 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
 **Benefits:**
 - **No timeouts** - Each persona call is smaller (~45K tokens vs 200K+)
 - **Resume capability** - Skip completed personas if interrupted
-- **Debug/audit** - Inspect prompts and responses in `.doc_review_memory/`
+- **Debug/audit** - Inspect prompts and responses in `.ucx_review_session/`
 - **Better quality** - Each persona generates detailed output (8-10K chars)
 - **Anti-repetition** - Later personas see prior findings summary, preventing redundant analysis
 - **Deduplication** - Report assembly consolidates duplicate findings across personas
@@ -299,14 +299,14 @@ Sessions auto-invalidate when:
 
 **Memory Directory Structure:**
 ```
-docs/01_BRD/BRD-01/.doc_review_memory/
+docs/01_BRD/BRD-01/.ucx_review_session/
 ├── session.json           # Session state with TTL tracking
 ├── shared_context.txt     # Document content
 ├── prompt_architect.txt   # Prompt sent to architect persona
 ├── response_architect.txt # Response from architect
 ├── prompt_auditor.txt     # ...
 ├── response_auditor.txt   # ...
-└── final_body.md          # Assembled report
+└── assembled_report.md          # Assembled report
 ```
 
 **Session JSON Structure:**
@@ -325,7 +325,7 @@ docs/01_BRD/BRD-01/.doc_review_memory/
 
 **Cleanup Options:**
 ```bash
-# Remove stale session memory (.doc_review_memory/)
+# Remove stale session memory (.ucx_review_session/)
 ucx review brd docs/01_BRD/BRD-01/ --clean-memory
 
 # Remove old review reports, keep only latest version
@@ -1351,7 +1351,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 | 1.4.1 | 2026-03-10 | Added `--clean-memory` flag to remove stale session memory. |
 | 1.4.0 | 2026-03-10 | Project-specific prompts support with `-p/--project-prompts` flag. One-prompt with Fact Checker/Chairperson personas. |
 | 1.3.1 | 2026-03-10 | CLI mode fix: Added `--dangerously-skip-permissions` flag to prevent truncated output from permission prompts. |
-| 1.3.0 | 2026-03-09 | Multi-turn review mode with doc_review_memory for large documents. |
+| 1.3.0 | 2026-03-09 | Multi-turn review mode with session memory for large documents. |
 | 1.2.0 | 2026-03-09 | Dual-mode architecture: CLI mode (default) + API mode. Extended logging. |
 | 1.1.0 | 2026-03-09 | LiteLLM integration for multi-provider LLM support. |
 | 1.0.0 | 2026-03-09 | Python migration complete. API, CLI, full test suite. |

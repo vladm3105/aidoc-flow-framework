@@ -207,7 +207,7 @@ ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 # Check instruction ratios for all personas
 for persona in business_analyst chairperson chaos_engineer fact_checker integration_lead operator product_owner strategist tech_lead; do
   ratio=$(jq -r '"'"'.tokens | "\(.instructions)/\(.total) = \((.instructions/.total*100)|floor)%"'"'" \
-    docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${persona}.meta.json 2>/dev/null)
+    docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_${persona}.meta.json 2>/dev/null)
   echo "$persona: $ratio"
 done
 

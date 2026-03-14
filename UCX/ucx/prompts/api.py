@@ -357,7 +357,7 @@ class UCPromptPhase:
             doc_path: Path to document file or directory
             doc_type: Document type (brd, prd, etc.)
             personas: List of personas (default: all)
-            output_dir: Output directory (default: doc_path/.doc_review_memory)
+            output_dir: Output directory (default: doc_path/.ucx_review_session)
             include_metadata: Generate .meta.json alongside prompts
 
         Returns:
@@ -375,11 +375,11 @@ class UCPromptPhase:
         if output_dir:
             output_dir = Path(output_dir)
         else:
-            # Default to .doc_review_memory (consistent with UCX review session storage)
+            # Default to .ucx_review_session (consistent with UCX review session storage)
             if doc_path.is_dir():
-                output_dir = doc_path / ".doc_review_memory"
+                output_dir = doc_path / ".ucx_review_session"
             else:
-                output_dir = doc_path.parent / ".doc_review_memory"
+                output_dir = doc_path.parent / ".ucx_review_session"
 
         output_dir.mkdir(parents=True, exist_ok=True)
 

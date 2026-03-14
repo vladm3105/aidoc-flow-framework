@@ -487,7 +487,7 @@ for f in findings[:10]:
 
 - [ ] **5.2** Clear memory and re-run review:
 ```bash
-rm -rf docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/
+rm -rf docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/
 ucx --model opus review brd docs/01_BRD/BRD-01_platform_architecture/
 ```
 

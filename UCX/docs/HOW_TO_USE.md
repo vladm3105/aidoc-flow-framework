@@ -205,14 +205,14 @@ For large documents (>50K tokens), use `--multi-turn` to break the review into p
 | `--multi-turn` | Resume from previous session if valid |
 | `--no-resume` | Clear memory and start fresh |
 | `--session-ttl N` | Expire sessions older than N hours (default: 24) |
-| `--clean-memory` | Remove `.doc_review_memory/` and exit (no review) |
+| `--clean-memory` | Remove `.ucx_review_session/` and exit (no review) |
 | `--clean-reports` | Remove old review reports, keep only latest |
 | `--clean-all` | Clean both session memory and old reports |
 
 **Benefits:**
 - **No timeouts** - Each persona call is ~45K tokens instead of 200K+
 - **Resume** - Automatically skip completed personas if interrupted
-- **Debug** - Inspect prompts/responses in `.doc_review_memory/`
+- **Debug** - Inspect prompts/responses in `.ucx_review_session/`
 - **Quality** - Each persona generates detailed output (8-10K chars)
 
 **Cleanup options:**

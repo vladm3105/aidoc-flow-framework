@@ -152,7 +152,7 @@ ucx prompt generate brd docs/01_BRD/BRD-01/ --no-metadata
 - `prompt_{persona}.txt` - Prompt content
 - `prompt_{persona}.meta.json` - Metadata for inspection
 
-**Default output directory:** `.doc_review_memory/` (consistent with UCX review session storage)
+**Default output directory:** `.ucx_review_session/` (consistent with UCX review session storage)
 
 ## New API
 

@@ -60,7 +60,7 @@ def load_document_content(doc_path: Path) -> str:
     content_parts = []
     for md_file in sorted(doc_path.glob("*.md")):
         # Skip review reports and memory files
-        if any(x in md_file.name for x in [".UCR_", ".V_", ".doc_review_memory"]):
+        if any(x in md_file.name for x in [".UCR_", ".V_", ".ucx_review_session"]):
             continue
         content_parts.append(f"# File: {md_file.name}\n\n")
         content_parts.append(md_file.read_text(encoding="utf-8"))

@@ -310,8 +310,8 @@ class AppendixVerifier:
 class ReviewMemory:
     """
     Manages review memory for multi-turn persona reviews.
-    
-    Stores prompts, responses, and session state in .doc_review_memory/
+
+    Stores prompts, responses, and session state in .ucx_review_session/
     directory within the document folder.
     
     Features:
@@ -334,7 +334,7 @@ class ReviewMemory:
         >>> final_report = memory.assemble_report()
     """
     
-    MEMORY_DIR_NAME = ".doc_review_memory"
+    MEMORY_DIR_NAME = ".ucx_review_session"
     
     def __init__(self, doc_path: Path, doc_type: str = "brd"):
         """
@@ -356,7 +356,7 @@ class ReviewMemory:
         
         self.session_file = self.memory_dir / "session.json"
         self.shared_context_file = self.memory_dir / "shared_context.txt"
-        self.final_body_file = self.memory_dir / "final_body.md"
+        self.assembled_report_file = self.memory_dir / "assembled_report.md"
         
         self._session: Optional[ReviewSession] = None
         
@@ -665,8 +665,8 @@ class ReviewMemory:
 
         content = "".join(parts)
 
-        # Save to final_body.md
-        self.final_body_file.write_text(content, encoding="utf-8")
+        # Save to assembled_report.md
+        self.assembled_report_file.write_text(content, encoding="utf-8")
         self.logger.info(f"Assembled report: {len(content)} chars from {len(responses)} personas")
 
         return content

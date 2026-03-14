@@ -331,7 +331,7 @@ def check(
 @click.option(
     "--output", "-o",
     type=click.Path(path_type=Path),
-    help="Output directory (default: doc_path/.doc_review_memory)",
+    help="Output directory (default: doc_path/.ucx_review_session)",
 )
 @click.option(
     "--personas", "-p",

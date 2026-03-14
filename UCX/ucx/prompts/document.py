@@ -113,7 +113,7 @@ class DocumentLoader:
     SKIP_PATTERNS = [
         r"\.UCR_",  # Review reports
         r"\.V_",  # Validation reports
-        r"\.doc_review_memory",  # Review memory
+        r"\.ucx_review_session",  # Review memory
         r"^\.prompt_cache",  # Generated prompts
         r"^\.",  # Hidden files
     ]

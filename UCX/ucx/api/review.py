@@ -600,7 +600,7 @@ class UCRPhase:
         Review a document using multi-turn persona reviews with memory.
 
         This approach breaks the review into smaller per-persona calls,
-        storing prompts and responses in .doc_review_memory/ for:
+        storing prompts and responses in .ucx_review_session/ for:
         - Resume capability (skip completed personas)
         - Debugging (inspect prompts/responses)
         - Caching (reuse if document unchanged)

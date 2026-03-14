@@ -310,7 +310,7 @@ def review(ctx, doc_type, doc_path, output, skip_validation, multi_turn, no_resu
 
     # Handle --clean-memory flag
     if clean_memory:
-        memory_dir = doc_path / ".doc_review_memory"
+        memory_dir = doc_path / ".ucx_review_session"
         if memory_dir.exists() and memory_dir.is_dir():
             file_count = len(list(memory_dir.iterdir()))
             total_size = sum(f.stat().st_size for f in memory_dir.iterdir() if f.is_file())

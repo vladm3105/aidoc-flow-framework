@@ -93,7 +93,7 @@ ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 # Check instruction tokens (all should be 750+)
 for p in architect auditor product_owner fact_checker; do
   jq -r '.tokens | "Instructions: \(.instructions), Ratio: \((.instructions/.total*100)|round)%"' \
-    docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${p}.meta.json
+    docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_${p}.meta.json
 done
 ```
 

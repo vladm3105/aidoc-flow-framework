@@ -88,7 +88,7 @@ source .envrc
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 
 # Verify qa_lead prompt exists
-ls docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_qa_lead.*
+ls docs/01_BRD/BRD-01_platform_architecture/.ucx_review_session/prompt_qa_lead.*
 
 # Verify chaos_engineer (not devils_advocate)
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p chaos_engineer
