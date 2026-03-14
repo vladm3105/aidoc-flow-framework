@@ -1,7 +1,23 @@
 """Version information for UCX."""
 
-__version__ = "1.14.0"
+__version__ = "1.14.5"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.14.5 - One-Turn Review Feature Parity
+# - FIXED: One-turn review now loads project-specific skills first
+#   Previously: one-turn used framework skills, multi-turn used project skills
+#   Now: both modes use project-specific skills ({project_dir}/docs/UCX/skills/)
+# - BENEFIT: One-turn reviews now include Category Tagging guidance from project skills
+# - BENEFIT: Consistent review quality between one-turn and multi-turn modes
+# - Updated: UCRPhase._load_skills() with project-first priority
+# - See: docs/CHANGELOG_v1.14.5.md
+
+# v1.14.4 - Extraction Pattern Fixes & Enhancements
+# - FIXED: Extraction patterns stopped at ### headers, truncating content
+# - ADDED: 15 new extraction patterns for auditor, fact_checker, product_owner
+# - All 12 personas now meet 750+ instruction token target
+# - 11/12 personas meet 5-10% instruction ratio target
+# - See: docs/CHANGELOG_v1.14.4.md
 
 # v1.14.0 - Prompt Inspection Toolset
 # - NEW: `ucx prompt` command group with 5 subcommands
