@@ -16,7 +16,7 @@ Not all personas apply to all document types. Use this matrix to select the appr
 | Auditor | ✓ | ✓ | - | ✓* | ✓ | - | - | ✓ | - | - |
 | Tech Lead | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Strategist | ✓ | ✓ | - | - | ✓ | - | - | - | - | - |
-| Devil's Advocate | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Chaos Engineer | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Operator | ✓ | ✓ | - | ✓ | ✓ | ✓ | - | - | ✓ | ✓ |
 | Integration Lead | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Product Owner | ✓ | ✓ | - | - | - | - | - | - | - | - |
@@ -35,7 +35,7 @@ Not all personas apply to all document types. Use this matrix to select the appr
 
 | Persona | BRD | PRD | EARS | BDD | ADR | SYS | REQ | CTR | SPEC | TSPEC |
 |---------|:---:|:---:|:----:|:---:|:---:|:---:|:---:|:---:|:----:|:-----:|
-| QA Lead | - | ✓ | ✓ | ✓ | - | ✓ | ✓ | - | - | ✓ |
+| QA Lead | ✓ | ✓ | ✓ | ✓ | - | ✓ | ✓ | - | - | ✓ |
 | Requirements Specialist | - | - | ✓ | - | - | - | ✓ | - | - | - |
 | UX Strategist | - | ✓ | - | - | - | - | - | - | - | - |
 
@@ -117,9 +117,9 @@ Not all personas apply to all document types. Use this matrix to select the appr
 
 ---
 
-### 🕵️ Archetype 5: The Devil's Advocate (Edge-Cases)
+### 🕵️ Archetype 5: The Chaos Engineer (Edge-Cases)
 
-**Role**: Tries to break the system. Focuses on negative paths, race conditions, failures.
+**Role**: Tries to break the system through systematic fault injection. Focuses on negative paths, race conditions, failures.
 
 **Layers**: ALL (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC)
 
