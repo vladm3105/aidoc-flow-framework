@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.2
+**Current Version**: 1.14.3
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,13 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.0 ──► v1.14.1 ──► v1.14.2 (Current) ──► v1.15.0 ──► v2.0.0
-   │           │            │            │             │                  │           │
-   │           │            │            │             │                  │           └─► Breaking changes
-   │           │            │            │             │                  └─► Multi-document validation
-   │           │            │            │             └─► Enhanced skill extraction
-   │           │            │            └─► Content preprocessing
-   │           │            └─► Prompt Inspection Toolset
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.3 (Current) ──► v1.15.0 ──► v2.0.0
+   │           │            │              │                  │           │
+   │           │            │              │                  │           └─► Breaking changes
+   │           │            │              │                  └─► Multi-document validation
+   │           │            │              └─► qa_lead persona + chaos_engineer rename
+   │           │            └─► Prompt Inspection (v1.14.0), Preprocessing (v1.14.1), Extraction (v1.14.2)
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -92,7 +91,24 @@ v1.12.0 ──► v1.13.x ──► v1.14.0 ──► v1.14.1 ──► v1.14.2 
 
 ## Completed Releases
 
-### v1.14.2 (2026-03-14) - Current
+### v1.14.3 (2026-03-14) - Current
+
+**Features**:
+- **New Persona: qa_lead**: QA Lead for testability, BDD/Gherkin standards, test coverage (prefix: QA)
+- **Renamed Persona**: `devils_advocate` → `chaos_engineer` (prefix: CE) for industry alignment
+- **9 New Extraction Patterns**: BDD Standards, Test Coverage, Testability Checklist, Quality Metrics
+
+**Persona Changes**:
+| Change | Old | New |
+|--------|-----|-----|
+| Added | - | `qa_lead` (QA) |
+| Renamed | `devils_advocate` (DA) | `chaos_engineer` (CE) |
+
+**Total Personas**: 12 (was 11)
+
+See [CHANGELOG_v1.14.3](CHANGELOG_v1.14.3.md) and [PLAN-005](plans/PLAN-005_prompt_engineering_toolset.md)
+
+### v1.14.2 (2026-03-14)
 
 **Features**:
 - **Enhanced Skill Extraction**: 27 extraction patterns covering all 11 personas
@@ -103,7 +119,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.0 ──► v1.14.1 ──► v1.14.2 
 | Persona | Ratio | Improvement | Key Sections Extracted |
 |---------|-------|-------------|------------------------|
 | chairperson | 5.6% | +512% | Core Mission, Score Calculation, Synthesis Process |
-| devils_advocate | 7.8% | +185% | Failure Scenarios, Edge Cases, Critical Rules |
+| chaos_engineer | 7.8% | +185% | Failure Scenarios, Edge Cases, Critical Rules |
 | business_analyst | 4.9% | +143% | Business Processes, Stakeholders, 5 C's Framework |
 | strategist | 5.4% | +136% | Business Model, Competitive Landscape, Financials |
 | integration_lead | 8.0% | +127% | Partner Ecosystem, Integration Requirements |
@@ -219,6 +235,8 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Prompt Inspection Toolset | High | ✅ Complete (v1.14.0) | PLAN-005 |
 | Prompt Quality Improvements | High | ✅ Complete (v1.14.1) | PLAN-005 |
 | Enhanced Skill Extraction | High | ✅ Complete (v1.14.2) | PLAN-005 |
+| QA Lead Persona | High | ✅ Complete (v1.14.3) | PLAN-005 |
+| Chaos Engineer Rename | High | ✅ Complete (v1.14.3) | PLAN-005 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
@@ -249,6 +267,7 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.0.md](CHANGELOG_v1.14.0.md) - Prompt inspection toolset
 - [CHANGELOG_v1.14.1.md](CHANGELOG_v1.14.1.md) - Prompt quality improvements
 - [CHANGELOG_v1.14.2.md](CHANGELOG_v1.14.2.md) - Enhanced skill extraction
+- [CHANGELOG_v1.14.3.md](CHANGELOG_v1.14.3.md) - QA Lead persona, Chaos Engineer rename
 
 ---
 

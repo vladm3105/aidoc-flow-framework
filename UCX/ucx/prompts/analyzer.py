@@ -36,7 +36,8 @@ PERSONA_BUDGET_OVERRIDES = {
     "chairperson": 100000,    # Needs ALL sections
     "architect": 70000,       # Complex technical analysis
     "tech_lead": 70000,       # Complex technical analysis
-    "devils_advocate": 80000, # Edge case exploration
+    "chaos_engineer": 80000,  # Edge case exploration (renamed from devils_advocate v1.14.3)
+    "qa_lead": 70000,         # Test coverage analysis (added v1.14.3)
 }
 
 # Estimated instruction tokens per persona (system prompt + format)
@@ -45,13 +46,14 @@ PERSONA_INSTRUCTION_TOKENS = {
     "auditor": 4000,
     "tech_lead": 3000,
     "strategist": 3000,
-    "devils_advocate": 3500,
+    "chaos_engineer": 3500,   # Renamed from devils_advocate (v1.14.3)
     "operator": 3500,
     "integration_lead": 3500,
     "product_owner": 3000,
     "business_analyst": 3000,
     "fact_checker": 4000,
     "chairperson": 5000,
+    "qa_lead": 3500,          # Added v1.14.3
 }
 
 # All valid personas

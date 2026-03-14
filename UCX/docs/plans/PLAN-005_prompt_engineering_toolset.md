@@ -1,9 +1,9 @@
 # PLAN-005: UCX Prompt Inspection Toolset
 
-**Status**: Complete (v1.14.0, v1.14.1, v1.14.2)
+**Status**: Complete (v1.14.0, v1.14.1, v1.14.2, v1.14.3)
 **Created**: 2026-03-13
 **Updated**: 2026-03-14
-**Released**: v1.14.0 (Inspection), v1.14.1 (Preprocessing), v1.14.2 (27 Extraction Patterns)
+**Released**: v1.14.0 (Inspection), v1.14.1 (Preprocessing), v1.14.2 (Extraction), v1.14.3 (QA Lead)
 **Dependencies**: v1.13.1 (Context Engineering)
 
 ## Problem Statement
@@ -1510,12 +1510,57 @@ cd /opt/data/b-local/b-local-docs
 source .envrc
 ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/
 
-# Check token distribution for all personas
-for persona in business_analyst chairperson devils_advocate fact_checker integration_lead operator product_owner strategist tech_lead; do
+# Check token distribution for all personas (v1.14.3: includes qa_lead, chaos_engineer)
+for persona in architect auditor business_analyst chairperson chaos_engineer fact_checker integration_lead operator product_owner qa_lead strategist tech_lead; do
   tokens=$(jq -r '.tokens | "\(.instructions)/\(.total)"' \
     docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/prompt_${persona}.meta.json 2>/dev/null)
   echo "$persona: $tokens"
 done
+```
+
+---
+
+## v1.14.3 QA Lead Persona & Chaos Engineer Rename (Complete)
+
+**Status**: Complete
+**Released**: 2026-03-14
+
+### Changes
+
+1. **New Persona: qa_lead**
+   - Added to VALID_PERSONAS
+   - Finding prefix: QA
+   - Focus: Testability, BDD/Gherkin standards, test coverage
+
+2. **Renamed: devils_advocate → chaos_engineer**
+   - Industry-aligned naming
+   - Finding prefix: CE (was DA)
+   - Focus unchanged: Failure modes, edge cases, fault injection
+
+### Extraction Patterns Added (9)
+
+| Pattern | Purpose |
+|---------|---------|
+| BDD & Gherkin Standards | Syntax rules |
+| Test Coverage Requirements | Pyramid targets |
+| Critical Test Scenarios | Priority scenarios |
+| Layer-Specific Focus | Document focus |
+| Testability Checklist | Verification items |
+| Quality Metrics | SLIs and targets |
+| Scenario Anti-Patterns | BDD anti-patterns |
+| EARS Testability Assessment | Requirements verification |
+| TSPEC Quality Metrics | Test spec standards |
+
+### Verification
+
+```bash
+# Verify qa_lead and chaos_engineer work
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p qa_lead
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p chaos_engineer
+
+# Old name should error
+ucx prompt generate brd docs/01_BRD/BRD-01_platform_architecture/ -p devils_advocate
+# Error: Unknown persona: devils_advocate
 ```
 
 ---
@@ -1527,8 +1572,9 @@ done
 - [CHANGELOG_v1.14.0](../CHANGELOG_v1.14.0.md)
 - [CHANGELOG_v1.14.1](../CHANGELOG_v1.14.1.md)
 - [CHANGELOG_v1.14.2](../CHANGELOG_v1.14.2.md)
+- [CHANGELOG_v1.14.3](../CHANGELOG_v1.14.3.md)
 - Existing script: [scripts/generate_prompts.py](../../scripts/generate_prompts.py)
 
 ---
 
-*Last Updated: 2026-03-14 (v1.14.2 complete - 27 extraction patterns for all 11 personas)*
+*Last Updated: 2026-03-14 (v1.14.3 complete - 12 personas, qa_lead added, chaos_engineer renamed)*

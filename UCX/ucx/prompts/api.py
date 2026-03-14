@@ -980,6 +980,51 @@ class UCPromptPhase:
         if tech_assessment_match:
             instructions_parts.append(f"\n**Technical Assessment Checklist**:\n{tech_assessment_match.group(1).strip()}")
 
+        # Extract BDD & Gherkin Standards (qa_lead syntax rules)
+        bdd_match = re.search(r'^##\s+BDD.*?(?:Gherkin|Standards).*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if bdd_match:
+            instructions_parts.append(f"\n**BDD & Gherkin Standards**:\n{bdd_match.group(1).strip()}")
+
+        # Extract Test Coverage Requirements (qa_lead pyramid targets)
+        coverage_match = re.search(r'^##\s+Test Coverage.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if coverage_match:
+            instructions_parts.append(f"\n**Test Coverage Requirements**:\n{coverage_match.group(1).strip()}")
+
+        # Extract Critical Test Scenarios (qa_lead priority scenarios)
+        scenarios_match = re.search(r'^##\s+.*(?:Critical|Test).*?Scenarios.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if scenarios_match:
+            instructions_parts.append(f"\n**Critical Test Scenarios**:\n{scenarios_match.group(1).strip()}")
+
+        # Extract Layer-Specific Focus (qa_lead document focus)
+        layer_focus_match = re.search(r'^##\s+Layer-Specific Focus.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if layer_focus_match:
+            instructions_parts.append(f"\n**Layer-Specific Focus**:\n{layer_focus_match.group(1).strip()}")
+
+        # Extract Testability Checklist (qa_lead verification items)
+        testability_match = re.search(r'^##\s+Testability Checklist.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if testability_match:
+            instructions_parts.append(f"\n**Testability Checklist**:\n{testability_match.group(1).strip()}")
+
+        # Extract Quality Metrics (qa_lead SLIs and targets)
+        quality_metrics_match = re.search(r'^##\s+Quality Metrics.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if quality_metrics_match:
+            instructions_parts.append(f"\n**Quality Metrics**:\n{quality_metrics_match.group(1).strip()}")
+
+        # Extract Scenario Anti-Patterns (qa_lead BDD anti-patterns)
+        scenario_antipattern_match = re.search(r'^##\s+Scenario Anti-Patterns.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if scenario_antipattern_match:
+            instructions_parts.append(f"\n**Scenario Anti-Patterns**:\n{scenario_antipattern_match.group(1).strip()}")
+
+        # Extract EARS Testability Assessment (qa_lead requirements verification)
+        ears_testability_match = re.search(r'^##\s+EARS Testability.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if ears_testability_match:
+            instructions_parts.append(f"\n**EARS Testability Assessment**:\n{ears_testability_match.group(1).strip()}")
+
+        # Extract TSPEC Quality Metrics (qa_lead test spec standards)
+        tspec_metrics_match = re.search(r'^##\s+TSPEC Quality Metrics.*?\n([\s\S]*?)(?=\n## [A-Z]|\Z)', skill_content, re.MULTILINE)
+        if tspec_metrics_match:
+            instructions_parts.append(f"\n**TSPEC Quality Metrics**:\n{tspec_metrics_match.group(1).strip()}")
+
         if instructions_parts:
             return "\n".join(instructions_parts)
 

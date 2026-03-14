@@ -1219,7 +1219,7 @@ ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/
 | Category | Personas | Loading Rule |
 |----------|----------|--------------|
 | **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Adaptive (only if findings exist) |
-| **Mandatory** | devils_advocate, chairperson | Always loaded |
+| **Mandatory** | chaos_engineer, chairperson | Always loaded (v1.14.3+) |
 
 **Benefits:**
 - **Token savings**: 30-60% reduction in prompt size
@@ -1286,7 +1286,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.14.2 | 2026-03-13 | **Enhanced Skill Extraction**: Extracts 6 additional sections from skill manifests (Business Processes, Stakeholders, Domain Requirements, Review Questions, Analysis Checklist, Quality Framework 5 C's). Instruction ratio improved from ~2% to ~5% for richer guidance. See [CHANGELOG_v1.14.2.md](docs/CHANGELOG_v1.14.2.md). |
+| 1.14.3 | 2026-03-14 | **QA Lead Persona & Chaos Engineer Rename**: Added `qa_lead` as core persona (12 total). Renamed `devils_advocate` → `chaos_engineer` for industry alignment. 9 new qa_lead extraction patterns (BDD, test coverage, testability). See [CHANGELOG_v1.14.3.md](docs/CHANGELOG_v1.14.3.md). |
+| 1.14.2 | 2026-03-14 | **Enhanced Skill Extraction**: 27 extraction patterns covering all personas. Instruction ratio improved to 5-10% target. See [CHANGELOG_v1.14.2.md](docs/CHANGELOG_v1.14.2.md). |
 | 1.14.1 | 2026-03-13 | **Prompt Quality Improvements**: Content preprocessing strips YAML frontmatter, HTML comments, navigation breadcrumbs, document metadata from prompts. System instructions loaded from skill manifests with project-specific overrides (`docs/UCX/skills/`). Numeric section ordering (BRD-01.5 before BRD-01.11). Fixed anti-pattern regex extraction. Token optimization: ~455 tokens saved per prompt (~5,000 across 11 personas). See [CHANGELOG_v1.14.1.md](docs/CHANGELOG_v1.14.1.md). |
 | 1.14.0 | 2026-03-13 | **Prompt Inspection Toolset**: Pre-LLM analysis of generated prompts. New CLI commands: `ucx prompt tokens/sections/inspect/check/generate`. `UCPromptPhase` API class. Token analysis per persona with budget tracking. Section inclusion matrix. Prompt structure analysis with attention steering detection. Metadata files (`.meta.json`) alongside generated prompts. See [CHANGELOG_v1.14.0.md](docs/CHANGELOG_v1.14.0.md) and [PLAN-005](docs/plans/PLAN-005_prompt_engineering_toolset.md). |
 | 1.13.1 | 2026-03-13 | **Advanced Context Engineering**: Completes deferred features from v1.13.0. Hybrid keyword scan (`RelevantSnippet`, `_scan_other_sections_for_keywords()`) discovers relevant content in non-mapped sections. Appendix-on-demand (`AppendixInfo`, lightweight index ~500 tokens vs 20-50K). Dynamic section mapping (`SECTION_CATEGORIES`, `DynamicSectionMapper`) for semantic filtering across document types. VERIFY tag pattern `[VERIFY: appendix-id]` with `AppendixVerifier` for post-processing verification. See [CHANGELOG_v1.13.1.md](docs/CHANGELOG_v1.13.1.md) and [PLAN-004](docs/plans/PLAN-004_advanced_context_engineering.md). |
@@ -1295,7 +1296,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 | 1.11.1 | 2026-03-12 | **Validate: Report Generation by Default**: `ucx validate` now generates report to document directory by default (like review). Use `--no-report` for console-only output. Aligns validate behavior with review command. |
 | 1.11.0 | 2026-03-12 | **Unified UCX Scanner with Chairperson Manifest** (VALIDATED): New `ucx scan` command replaces `prescreen` as unified report scanner. Chairperson now outputs structured Remediation Findings Manifest with authoritative counts, fixer assignments, and PRD-Ready score. Scanner extracts from manifest when present (authoritative) or falls back to persona extraction (backward compat). Eliminates discrepancy between CLI counts and Chairperson synthesis. Remediation can skip pre-screening when manifest present. **Validated**: BRD-02 review confirmed 91% reduction (Raw P0=115 → Manifest P0=10). |
 | 1.10.3 | 2026-03-12 | **Pre-Screening Accuracy Improvements**: Fixed duplicate counting (unique vs total findings). Fixed summary row extraction (excludes range expressions). Fixed false DEFERRED/RESOLVED detection (word boundary matching, context-aware). |
-| 1.10.0 | 2026-03-12 | **Adaptive Remediation with Pre-Screening**: Pre-screening phase automatically analyzes UCR reports before remediation. New `ucx prescreen` command for standalone analysis. Adaptive fixer loading - only domain fixers with findings are loaded. Mandatory fixers: devils_advocate (safety) + chairperson (synthesis). Token savings of 30-60% by excluding unnecessary personas. Chairperson skill updated with remediation synthesis responsibilities. |
+| 1.10.0 | 2026-03-12 | **Adaptive Remediation with Pre-Screening**: Pre-screening phase automatically analyzes UCR reports before remediation. New `ucx prescreen` command for standalone analysis. Adaptive fixer loading - only domain fixers with findings are loaded. Mandatory fixers: chaos_engineer (safety) + chairperson (synthesis). Token savings of 30-60% by excluding unnecessary personas. Chairperson skill updated with remediation synthesis responsibilities. |
 | 1.9.9 | 2026-03-12 | **UCRem project path resolution & Prior Review Reconciliation**: Fixed UCRem prompt path to check project-specific paths first. Fixed project directory auto-detection bug. UCRem report writes to document folder (`{DOC-ID}.UCRem_report.md`). **New**: Prior Review Reconciliation - Fact Checker verifies resolution status of prior findings, Chairperson only counts UNRESOLVED findings in score, Auditor adds verification status table. |
 | 1.9.8 | 2026-03-11 | **Tier 2 diagram advisory auto-fix**: Added auto-fix for BRD-W011/W012 (adds @diagram-request for ADR layer), BRD-W013 (auto-detects sequence type), BRD-W014 (adds diagram intent). New @diagram-request pattern for honest traceability. Fixed version numbering bug (max+1 instead of len+1). Fixed FIXER_SKILLS (integration_expert → integration_lead). |
 | 1.9.7 | 2026-03-11 | **Tier 2 count mismatch auto-fix**: Extended `--fix` to handle GATE-W003 (count mismatch) and DIAG-W001 (diagram node count). Updates prose counts to match actual element or diagram node counts. |
@@ -1329,14 +1330,17 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.2 - Enhanced Skill Extraction
-- Extracts 6 additional sections from skill manifests (Business Processes, Stakeholders, Domain Requirements, Review Questions, Analysis Checklist, Quality Framework 5 C's)
-- Instruction ratio improved from ~2% to ~5% for richer guidance
-- See [CHANGELOG_v1.14.2](docs/CHANGELOG_v1.14.2.md) for details
+**Latest Release**: v1.14.3 - QA Lead Persona & Chaos Engineer Rename
+- Added `qa_lead` as core persona (12 total personas)
+- Renamed `devils_advocate` → `chaos_engineer` for industry alignment
+- 9 new qa_lead extraction patterns (BDD, test coverage, testability)
+- See [CHANGELOG_v1.14.3](docs/CHANGELOG_v1.14.3.md) for details
 
-**Previous Release**: v1.14.1 - Prompt Quality Improvements
-- Content preprocessing, system instructions from skill manifests, anti-pattern extraction fixes
-- See [CHANGELOG_v1.14.1](docs/CHANGELOG_v1.14.1.md) for details
+**Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.2: 27 extraction patterns, instruction ratio 5-10%
+- v1.14.1: Content preprocessing, skill system
+- v1.14.0: Prompt inspection commands
+- See [CHANGELOG_v1.14.2](docs/CHANGELOG_v1.14.2.md) for details
 
 **Next Release**: v1.15.0 - Multi-Document Validation
 - Corpus-wide validation (`ucx validate --all`)
@@ -1366,6 +1370,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.0](docs/CHANGELOG_v1.14.0.md) | Prompt inspection toolset |
 | [CHANGELOG v1.14.1](docs/CHANGELOG_v1.14.1.md) | Prompt quality improvements |
 | [CHANGELOG v1.14.2](docs/CHANGELOG_v1.14.2.md) | Enhanced skill extraction |
+| [CHANGELOG v1.14.3](docs/CHANGELOG_v1.14.3.md) | QA Lead persona, Chaos Engineer rename |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

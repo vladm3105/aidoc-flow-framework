@@ -37,7 +37,7 @@ PERSONA_PREFIX_MAP = {
     "auditor": "AUD",
     "tech_lead": "TL",
     "strategist": "STR",
-    "devils_advocate": "DA",
+    "chaos_engineer": "CE",  # Renamed from devils_advocate (v1.14.3)
     "operator": "OP",
     "integration_lead": "IL",
     "product_owner": "PO",
@@ -72,7 +72,7 @@ PERSONA_SECTION_MAP = {
         "optional": ["BRD-01.3"],
         "skip": ["BRD-01.6", "BRD-01.7", "BRD-01.18", "BRD-01.14", "BRD-01.15", "BRD-01.16"],
     },
-    "devils_advocate": {
+    "chaos_engineer": {  # Renamed from devils_advocate (v1.14.3)
         "required": ["BRD-01.6", "BRD-01.10", "BRD-01.18"],
         "optional": ["BRD-01.7"],
         "skip": ["BRD-01.2", "BRD-01.13", "BRD-01.14", "BRD-01.15", "BRD-01.16"],
@@ -107,6 +107,11 @@ PERSONA_SECTION_MAP = {
         "optional": [],
         "skip": ["BRD-01.14", "BRD-01.15", "BRD-01.16"],
     },
+    "qa_lead": {  # Added v1.14.3
+        "required": ["BRD-01.4", "BRD-01.5", "BRD-01.6", "BRD-01.8"],
+        "optional": ["BRD-01.7", "BRD-01.10"],
+        "skip": ["BRD-01.18", "BRD-01.13", "BRD-01.14", "BRD-01.15", "BRD-01.16"],
+    },
 }
 
 
@@ -126,12 +131,13 @@ PERSONA_KEYWORDS = {
     "auditor": ["compliance", "regulatory", "FinCEN", "OFAC", "PCI", "KYC", "AML", "SAR", "audit", "security", "encryption", "session"],
     "tech_lead": ["implementation", "state machine", "idempotency", "transaction", "saga", "retry", "error", "exception", "concurrency"],
     "strategist": ["business", "cost", "revenue", "ROI", "market", "competitor", "pricing", "float", "economics"],
-    "devils_advocate": ["failure", "edge case", "timeout", "rollback", "compensation", "partial", "concurrent", "race condition"],
+    "chaos_engineer": ["failure", "edge case", "timeout", "rollback", "compensation", "partial", "concurrent", "race condition", "chaos", "fault injection"],
     "operator": ["deployment", "monitoring", "alerting", "SLI", "SLO", "runbook", "DR", "failover", "observability", "logging"],
     "integration_lead": ["partner", "API", "webhook", "integration", "contract", "schema", "versioning", "circuit breaker"],
     "product_owner": ["stakeholder", "user story", "acceptance", "feature", "priority", "roadmap", "mvp", "backlog"],
     "business_analyst": ["process", "workflow", "requirement", "use case", "actor", "scenario", "constraint"],
     "fact_checker": ["consistency", "reference", "cross-check", "verify", "validate", "accuracy"],
+    "qa_lead": ["test", "testability", "coverage", "BDD", "Gherkin", "acceptance criteria", "quality", "verification", "validation", "edge case"],
 }
 
 
@@ -206,7 +212,7 @@ PERSONA_CATEGORY_MAP = {
         "optional": ["functional"],
         "skip": ["technical", "appendix", "metadata"],
     },
-    "devils_advocate": {
+    "chaos_engineer": {  # Renamed from devils_advocate (v1.14.3)
         "required": ["functional", "risk", "technical", "integration"],
         "optional": ["quality"],
         "skip": ["metadata", "business"],
@@ -240,6 +246,11 @@ PERSONA_CATEGORY_MAP = {
         "required": ["*"],  # All categories for synthesis
         "optional": [],
         "skip": ["metadata"],
+    },
+    "qa_lead": {  # Added v1.14.3
+        "required": ["functional", "quality", "scope"],
+        "optional": ["technical", "risk"],
+        "skip": ["metadata", "appendix", "business"],
     },
 }
 

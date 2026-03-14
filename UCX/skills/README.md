@@ -16,22 +16,26 @@ Skills are loaded with the following priority:
 - If not found, `/UCX/skills/auditor.md` (this file) is used as fallback
 - Prompts are project-specific ONLY (no fallback)
 
-## Available Skills
+## Available Skills (12 Core Personas)
 
+| Skill | Role | Focus | Finding Prefix |
+|-------|------|-------|----------------|
+| `architect.md` | System Architect | Scalability, CAP theorem, SPOF | ARCH |
+| `auditor.md` | Compliance Auditor | Regulatory, security, compliance | AUD |
+| `tech_lead.md` | Tech Lead | Implementation, state machines, idempotency | TL |
+| `strategist.md` | Business Strategist | Economics, unit economics, float | STR |
+| `chaos_engineer.md` | Chaos Engineer | Failure modes, edge cases, fault injection | CE |
+| `operator.md` | DevOps/SRE | Observability, deployment, runbooks | OP |
+| `integration_lead.md` | Integration Lead | API versions, webhooks, circuit breakers | IL |
+| `product_owner.md` | Product Owner | MVP scope, user personas | PO |
+| `business_analyst.md` | Business Analyst | Requirements quality, traceability | BA |
+| `fact_checker.md` | Fact Checker | Cross-validation, false positives | FC |
+| `chairperson.md` | Chairperson | Synthesis, scoring, final verdict | REM |
+| `qa_lead.md` | QA Lead | Testability, BDD syntax, test coverage | QA |
+
+**Extended Personas** (not in VALID_PERSONAS, available as templates):
 | Skill | Role | Focus |
 |-------|------|-------|
-| `architect.md` | System Architect | Scalability, CAP theorem, SPOF |
-| `auditor.md` | Compliance Auditor | Regulatory, security, compliance |
-| `tech_lead.md` | Tech Lead | Implementation, state machines, idempotency |
-| `strategist.md` | Business Strategist | Economics, unit economics, float |
-| `devils_advocate.md` | Devil's Advocate | Edge cases, failure modes |
-| `operator.md` | DevOps/SRE | Observability, deployment, runbooks |
-| `integration_expert.md` | Integration Lead | API versions, webhooks, circuit breakers |
-| `product_owner.md` | Product Owner | MVP scope, user personas |
-| `business_analyst.md` | Business Analyst | Requirements quality, traceability |
-| `fact_checker.md` | Fact Checker | Cross-validation, false positives |
-| `chairperson.md` | Chairperson | Synthesis, scoring, final verdict |
-| `qa_lead.md` | QA Lead | Testability, BDD syntax |
 | `requirements_specialist.md` | Requirements Specialist | EARS/INCOSE syntax |
 | `ux_strategist.md` | UX Strategist | User journeys, accessibility |
 
@@ -107,6 +111,8 @@ All persona findings must use the canonical format: `PREFIX-P0-NNN`
 | Architect | ARCH | `ARCH-P0-001` |
 | Auditor | AUD | `AUD-P0-001` |
 | Tech Lead | TL | `TL-P1-001` |
+| Chaos Engineer | CE | `CE-P0-001` |
+| QA Lead | QA | `QA-P1-001` |
 | Chairperson | REM | `REM-P0-001` |
 
 **Format rules**:
@@ -116,6 +122,9 @@ All persona findings must use the canonical format: `PREFIX-P0-NNN`
 
 See `chairperson.md` and `operator.md` for examples with explicit Finding ID tables.
 
-## Version
+## Version History
 
-Part of UCX Framework v1.13.0+
+- **v1.14.3**: Added `qa_lead` persona, renamed `devils_advocate` to `chaos_engineer`
+- **v1.13.0**: Finding ID format, context engineering
+
+Part of UCX Framework v1.14.3+

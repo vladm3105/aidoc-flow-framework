@@ -71,13 +71,14 @@ class PersonaNotFoundError(PromptInspectionError):
         "auditor",
         "tech_lead",
         "strategist",
-        "devils_advocate",
+        "chaos_engineer",  # Renamed from devils_advocate (v1.14.3)
         "operator",
         "integration_lead",
         "product_owner",
         "business_analyst",
         "fact_checker",
         "chairperson",
+        "qa_lead",  # Added v1.14.3
     }
 
     def __init__(self, persona: str, valid_personas: Optional[list[str]] = None):
