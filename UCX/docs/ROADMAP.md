@@ -4,7 +4,7 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.5
+**Current Version**: 1.14.6
 **Next Major**: 1.15.0 (Multi-Document Validation)
 
 ---
@@ -12,12 +12,12 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.5 (Current) ──► v1.15.0 ──► v2.0.0
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.6 (Current) ──► v1.15.0 ──► v2.0.0
    │           │            │              │                  │           │
    │           │            │              │                  │           └─► Breaking changes
    │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► One-turn feature parity + naming standardization
-   │           │            └─► Prompt Inspection (v1.14.0-4), qa_lead, chaos_engineer
+   │           │            │              └─► Session directory rename + review mode docs
+   │           │            └─► Prompt Inspection (v1.14.0-5), qa_lead, chaos_engineer
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -91,7 +91,26 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.5 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.5 (2026-03-14) - Current
+### v1.14.6 (2026-03-14) - Current
+
+**Features**:
+- **Session Directory Rename**: `.doc_review_memory/` → `.ucx_review_session/` for clarity
+- **Assembled Report Rename**: `final_body.md` → `assembled_report.md` for clarity
+- **Review Mode Documentation**: Added comprehensive One-Turn vs Multi-Turn comparison
+
+**Breaking Changes**:
+| Old | New | Migration |
+|-----|-----|-----------|
+| `.doc_review_memory/` | `.ucx_review_session/` | Rename or delete existing directories |
+| `final_body.md` | `assembled_report.md` | Automatic on next review |
+
+**Documentation Updates**:
+- `UNIFIED_CONTEXT_REVIEW.md`: Added "Review Modes: One-Turn vs Multi-Turn" section
+- `README.md`: Added review mode comparison table and recommendations
+
+See [CHANGELOG_v1.14.6](CHANGELOG_v1.14.6.md)
+
+### v1.14.5 (2026-03-14)
 
 **Features**:
 - **One-Turn Review Feature Parity**: One-turn review now has full feature parity with multi-turn
@@ -280,6 +299,8 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Extraction Pattern Fixes | High | ✅ Complete (v1.14.4) | PLAN-005 |
 | One-Turn Feature Parity | High | ✅ Complete (v1.14.5) | PLAN-005 |
 | Persona Naming Standardization | High | ✅ Complete (v1.14.5) | PLAN-005 |
+| Session Directory Rename | Medium | ✅ Complete (v1.14.6) | Clarity improvement |
+| Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | One-turn vs multi-turn |
 | Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |
 | PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
@@ -314,6 +335,7 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.3.md](CHANGELOG_v1.14.3.md) - QA Lead persona, Chaos Engineer rename
 - [CHANGELOG_v1.14.4.md](CHANGELOG_v1.14.4.md) - Extraction pattern fixes, 15 new patterns
 - [CHANGELOG_v1.14.5.md](CHANGELOG_v1.14.5.md) - One-turn feature parity, persona naming standardization
+- [CHANGELOG_v1.14.6.md](CHANGELOG_v1.14.6.md) - Session directory rename, review mode documentation
 
 ---
 

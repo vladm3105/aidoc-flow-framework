@@ -1316,6 +1316,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.14.6 | 2026-03-14 | **Session Directory Rename & Review Mode Docs**: Renamed `.doc_review_memory/` → `.ucx_review_session/` and `final_body.md` → `assembled_report.md` for clarity. Added comprehensive One-Turn vs Multi-Turn review mode documentation. See [CHANGELOG_v1.14.6.md](docs/CHANGELOG_v1.14.6.md). |
 | 1.14.5 | 2026-03-14 | **One-Turn Feature Parity & Naming Standardization**: One-turn review now has full feature parity with multi-turn (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
 | 1.14.4 | 2026-03-14 | **Extraction Pattern Fixes**: Fixed 5 old patterns that truncated at `###` headers. 15 new extraction patterns for all 12 personas. 11/12 personas at 5%+ instruction ratio. See [CHANGELOG_v1.14.4.md](docs/CHANGELOG_v1.14.4.md). |
 | 1.14.3 | 2026-03-14 | **QA Lead Persona & Chaos Engineer Rename**: Added `qa_lead` as core persona (12 total). Renamed `devils_advocate` → `chaos_engineer` for industry alignment. 9 new qa_lead extraction patterns (BDD, test coverage, testability). See [CHANGELOG_v1.14.3.md](docs/CHANGELOG_v1.14.3.md). |
@@ -1362,14 +1363,14 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.5 - One-Turn Feature Parity & Naming Standardization
-- One-turn review now has full feature parity with multi-turn (project-first skill loading)
-- Renamed `integration_expert` → `integration_lead` for consistent naming
-- Added Category Tagging to auditor, fact_checker, product_owner
-- Fixed `get_skill_dir()` path resolution
-- See [CHANGELOG_v1.14.5](docs/CHANGELOG_v1.14.5.md) for details
+**Latest Release**: v1.14.6 - Session Directory Rename & Review Mode Documentation
+- Renamed `.doc_review_memory/` → `.ucx_review_session/` for clarity
+- Renamed `final_body.md` → `assembled_report.md` for clarity
+- Added comprehensive One-Turn vs Multi-Turn review mode documentation
+- See [CHANGELOG_v1.14.6](docs/CHANGELOG_v1.14.6.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset
+- v1.14.5: One-turn feature parity, persona naming standardization
 - v1.14.4: Extraction pattern fixes, 15 new patterns
 - v1.14.3: QA Lead persona, Chaos Engineer rename
 - v1.14.2: 27 extraction patterns, instruction ratio 5-10%
@@ -1407,6 +1408,7 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.3](docs/CHANGELOG_v1.14.3.md) | QA Lead persona, Chaos Engineer rename |
 | [CHANGELOG v1.14.4](docs/CHANGELOG_v1.14.4.md) | Extraction pattern fixes, 15 new patterns |
 | [CHANGELOG v1.14.5](docs/CHANGELOG_v1.14.5.md) | One-turn feature parity, naming standardization |
+| [CHANGELOG v1.14.6](docs/CHANGELOG_v1.14.6.md) | Session directory rename, review mode documentation |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 
