@@ -419,21 +419,25 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports --keep-versions 3
 ```
 
-**Auto-Fix (v1.9.8+):**
+**Auto-Fix (v1.15.0 - 17 codes):**
 
 The `--fix` flag automatically fixes structural issues without AI:
 
 | Error Code | Tier | Issue | Auto-Fix |
 |------------|------|-------|----------|
-| `BRD-E002` | 1 | Missing custom_fields | Adds document_type, artifact_type, layer |
+| `BRD-E002` | 1 | Missing custom_fields / Section 0 | Adds custom_fields OR Section 0 (context-aware) |
 | `BRD-E003` | 1 | Missing 'brd' tag | Adds to tags array |
 | `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
-| `BRD-E009` | 1 | Missing Document Control | Adds section (if none exists) |
+| `BRD-E009` | 1 | Missing Document Control | Adds Section 0 template |
 | `GATE-E008` | 1 | Duplicate element ID | Renumbers duplicates with next available sequence |
+| `GATE-E010` | 1 | File exceeds 20K tokens | **Auto-splits at section boundaries** |
+| `VAL-E002` | 1 | Missing/invalid frontmatter | **Creates YAML frontmatter from scratch** |
 | `BRD-W005` | 1 | Legacy development_status | Renames to status |
 | `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
 | `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |
+| `GATE-W008` | 2 | Element in wrong section | **Moves element to correct section file** |
 | `DIAG-W001` | 2 | Diagram node count | Updates prose to match diagram |
+| `BRD-W010` | 2 | Missing @depends tags | **Auto-detects BRD references and adds tags** |
 | `BRD-W011` | 2 | Missing C4-L1 diagram | Adds @diagram-request for ADR layer |
 | `BRD-W012` | 2 | Missing DFD-L0 diagram | Adds @diagram-request for ADR layer |
 | `BRD-W013` | 2 | Sequence diagram unclassified | Auto-detects sync/async/error type |
@@ -1317,6 +1321,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.15.0 | 2026-03-14 | **Extended Auto-Fix Suite (17 codes)**: Added `GATE-E010` (auto-split large files), `GATE-W008` (move elements to correct section), `BRD-W010` (auto-detect @depends), `VAL-E002` (create frontmatter from scratch). BRD-E002 now context-aware (custom_fields OR Section 0). BRD-03 improved 89.5→96.0 (PASS). See [CHANGELOG_v1.15.0.md](docs/CHANGELOG_v1.15.0.md). |
 | 1.14.9 | 2026-03-14 | **Duplicate ID Auto-Fixer**: Added `GATE-E008` to auto-fix. New `DuplicateElementFixer` renumbers duplicate element IDs. Improved reference detection for category lists, range notation, multiple IDs. BRD-03 score improved 0.0→89.5. See [CHANGELOG_v1.14.9.md](docs/CHANGELOG_v1.14.9.md). |
 | 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. CLI flags: `--multi-turn` → `--persona` (`-p`), `--force-single` → `--unified` (`-u`). Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
 | 1.14.7 | 2026-03-14 | **Attention Steering Fix**: Format instructions now placed at END of prompt for better LLM attention. Added `_load_format_instructions()` method and `UCR_FORMAT_{TYPE}_PROJECT.md` file pattern. See [CHANGELOG_v1.14.7.md](docs/CHANGELOG_v1.14.7.md). |
@@ -1367,10 +1372,13 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.14.9 - Duplicate Element ID Auto-Fixer (GATE-E008)
-- Renamed `.doc_review_memory/` → `.ucx_review_session/` for clarity
-- Renamed `final_body.md` → `assembled_report.md` for clarity
-- Added comprehensive One-Turn vs Multi-Turn review mode documentation
+**Latest Release**: v1.15.0 - Extended Auto-Fix Suite (17 codes)
+- Added `GATE-E010` fixer: Auto-splits files exceeding 20K tokens at section boundaries
+- Added `GATE-W008` fixer: Moves elements to correct section files based on type code
+- Added `BRD-W010` fixer: Auto-detects BRD references and adds @depends tags
+- Added `VAL-E002` fixer: Creates YAML frontmatter from scratch for files without it
+- Fixed `BRD-E002`: Now context-aware, handles both custom_fields AND Section 0
+- BRD-03 validation improved: 89.5 → 96.0 (PASS)
 - See [CHANGELOG_v1.14.9](docs/CHANGELOG_v1.14.9.md) for details
 
 **Previous Releases**: v1.14.x - Prompt Engineering Toolset

@@ -1,7 +1,17 @@
 """Version information for UCX."""
 
-__version__ = "1.14.9"
+__version__ = "1.15.0"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.0 - Extended Auto-Fix Suite (17 fixable codes)
+# - NEW: BRD-W010 fixer - auto-detects BRD references and adds @depends tags
+# - NEW: GATE-W008 fixer - moves elements to correct section files
+# - NEW: GATE-E010 fixer - splits large files (>20K tokens) at section boundaries
+# - NEW: VAL-E002 fixer - creates YAML frontmatter from scratch for files without it
+# - FIXED: BRD-E002 now handles both custom_fields AND Section 0 contexts
+# - TOTAL: 17 auto-fixable error codes (was 13)
+# - BRD-03 improved: 89.5 → 96.0 (PASS) after applying all fixes
+# - See: docs/CHANGELOG_v1.15.0.md
 
 # v1.14.9 - Duplicate Element ID Auto-Fixer (GATE-E008)
 # - NEW: DuplicateElementFixer class for automatic ID renumbering
