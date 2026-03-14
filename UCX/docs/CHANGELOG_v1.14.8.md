@@ -47,21 +47,26 @@ The new terminology better describes what each mode does:
 | `prompt_one_turn.txt` | `prompt_unified.txt` |
 | `prompt_one_turn.meta.json` | `prompt_unified.meta.json` |
 
-### CLI (Backwards Compatible)
+### CLI Flags
 
-The `--multi-turn` flag is preserved for backwards compatibility:
+| Old Flag | New Flag | Description |
+|----------|----------|-------------|
+| `--multi-turn` / `-m` | `--persona` / `-p` | Use persona prompts mode |
+| `--force-single` | `--unified` / `-u` | Force unified prompt mode |
 
 ```bash
-# These are equivalent:
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn  # Legacy
-ucx review brd docs/01_BRD/BRD-01/ --persona     # New (alias)
+# Examples:
+ucx review brd docs/01_BRD/BRD-01/              # Unified prompt (default)
+ucx review brd docs/01_BRD/BRD-01/ --persona   # Persona prompts mode
+ucx review brd docs/01_BRD/BRD-01/ -p          # Shorthand
+ucx review brd docs/01_BRD/BRD-01/ --unified   # Force unified (skip auto-detect)
 ```
 
 ## Terminology Reference
 
 | Context | Unified Prompt | Persona Prompts |
 |---------|----------------|-----------------|
-| **CLI flag** | (default) | `--multi-turn` / `--persona` |
+| **CLI flag** | `--unified` / `-u` | `--persona` / `-p` |
 | **API method** | `review()` | `review_multi_turn()` |
 | **Prompt file** | `prompt_unified.txt` | `prompt_{persona}.txt` |
 | **Session dir** | `.ucx_review_session/` | `.ucx_review_session/` |

@@ -122,8 +122,8 @@ source /opt/data/docs_flow_framework/.venv/bin/activate
 # Review with Claude CLI (default mode)
 ucx review brd docs/01_BRD/BRD-01/
 
-# Multi-turn review (recommended for large documents)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+# Persona prompts mode (recommended for large documents)
+ucx review brd docs/01_BRD/BRD-01/ --persona
 
 # Review with API mode (requires API key)
 ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
@@ -231,12 +231,12 @@ UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 - **Prompts**: Project-specific ONLY (no fallback)
 - **Skills**: Project first, framework fallback if not found
 
-### Review Modes: One-Turn vs Multi-Turn
+### Review Modes: Unified vs Persona
 
 UCX supports two review modes with different trade-offs:
 
-| Aspect | Unified Prompt (Default) | Persona Prompts (`--multi-turn`) |
-|--------|--------------------------|----------------------------------|
+| Aspect | Unified Prompt (Default) | Persona Prompts (`--persona`) |
+|--------|--------------------------|-------------------------------|
 | **API Calls** | 1 | 12 (one per persona) |
 | **Document Context** | Full document to all personas | Filtered per persona |
 | **Prior Findings** | N/A | Summarized (anti-repetition) |
@@ -263,17 +263,17 @@ See [UNIFIED_CONTEXT_REVIEW.md](docs/UNIFIED_CONTEXT_REVIEW.md) for detailed com
 
 ### Persona Prompts Mode
 
-For large documents, use `--multi-turn` to break the review into per-persona calls:
+For large documents, use `--persona` to break the review into per-persona calls:
 
 ```bash
-# Multi-turn with memory (auto-resumes if interrupted)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn
+# Persona prompts with memory (auto-resumes if interrupted)
+ucx review brd docs/01_BRD/BRD-01/ --persona
 
 # Fresh start (clear previous memory)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --no-resume
+ucx review brd docs/01_BRD/BRD-01/ --persona --no-resume
 
 # Custom session TTL (default: 24 hours)
-ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
+ucx review brd docs/01_BRD/BRD-01/ -p --session-ttl 48
 ```
 
 **Benefits:**
@@ -288,7 +288,7 @@ ucx review brd docs/01_BRD/BRD-01/ --multi-turn --session-ttl 48
 
 | Option | Behavior |
 |--------|----------|
-| `--multi-turn` | Resume from last session (if valid) |
+| `--persona` / `-p` | Resume from last session (if valid) |
 | `--no-resume` | Clear memory and start fresh |
 | `--session-ttl N` | Expire sessions older than N hours (default: 24) |
 
@@ -778,7 +778,7 @@ UCX_MODEL=opus ucx review brd docs/01_BRD/BRD-01/
 
 | Command | Purpose | Key Options |
 |---------|---------|-------------|
-| `review` | AI-powered document review | `--multi-turn`, `--model`, `--clean-reports` |
+| `review` | AI-powered document review | `--persona`, `--unified`, `--model`, `--clean-reports` |
 | `validate` | Fast structural validation (no AI) | `--fix`, `--tier1-only`, `--strict` |
 | `remediate` | Generate fixes from review | `--model` |
 | `create` | Create new document | `--from-ref`, `--from-upstream` |
@@ -937,7 +937,7 @@ UCX/
 │   │   └── remediation.py      # UCRemPhase
 │   │
 │   ├── core/                   # Core orchestration
-│   │   ├── review_memory.py    # ReviewMemory for multi-turn + finding extraction
+│   │   ├── review_memory.py    # ReviewMemory for persona prompts + finding extraction
 │   │   ├── persona_prompts.py  # Persona prompt templates + skill loading
 │   │   └── context_engine.py   # Context engineering (v1.13.0+)
 │   │
@@ -1316,7 +1316,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
+| 1.14.8 | 2026-03-14 | **Terminology Update**: Renamed "one-turn" → "unified prompt" and "multi-turn" → "persona prompts" for clarity. CLI flags: `--multi-turn` → `--persona` (`-p`), `--force-single` → `--unified` (`-u`). Updated documentation, comments, and file naming. See [CHANGELOG_v1.14.8.md](docs/CHANGELOG_v1.14.8.md). |
 | 1.14.7 | 2026-03-14 | **Attention Steering Fix**: Format instructions now placed at END of prompt for better LLM attention. Added `_load_format_instructions()` method and `UCR_FORMAT_{TYPE}_PROJECT.md` file pattern. See [CHANGELOG_v1.14.7.md](docs/CHANGELOG_v1.14.7.md). |
 | 1.14.6 | 2026-03-14 | **Session Directory Rename & Review Mode Docs**: Renamed `.doc_review_memory/` → `.ucx_review_session/` and `final_body.md` → `assembled_report.md` for clarity. Added comprehensive One-Turn vs Multi-Turn review mode documentation. See [CHANGELOG_v1.14.6.md](docs/CHANGELOG_v1.14.6.md). |
 | 1.14.5 | 2026-03-14 | **Unified Prompt Feature Parity & Naming Standardization**: Unified prompt review now has full feature parity with persona prompts (project-first skill loading). Renamed `integration_expert` → `integration_lead` for consistent persona/skill naming. Added Category Tagging to auditor, fact_checker, product_owner. Fixed `get_skill_dir()` path. See [CHANGELOG_v1.14.5.md](docs/CHANGELOG_v1.14.5.md). |
