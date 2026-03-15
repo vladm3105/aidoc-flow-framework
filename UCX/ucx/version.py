@@ -1,7 +1,18 @@
 """Version information for UCX."""
 
-__version__ = "1.16.0"
+__version__ = "1.16.1"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.16.1 - Single-File Validation Reports
+# - CHANGED: Validation reports now use single-file approach with meaningful name
+#   Previously: {doc_id}.V_validation_report_v{NNN}.md (versioned, accumulated)
+#   Now: precommit_validation_report.md (single file, overwrites each run)
+# - BENEFIT: Cleaner repo history, no accumulation of versioned reports
+# - BENEFIT: Meaningful filename for pre-commit hook validation output
+# - UPDATED: `--clean-reports` flag now cleans legacy versioned reports only
+# - UPDATED: NON_BRD_FILE_PATTERNS includes new filename pattern
+# - UPDATED: COMPANION_REPORT_PATTERN recognizes new validation filename
+# - See: docs/CHANGELOG_v1.16.1.md
 
 # v1.16.0 - Auto-Detection of Latest Review Report
 # - NEW: `ucx remediate` now auto-detects latest UCR review report

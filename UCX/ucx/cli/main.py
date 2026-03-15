@@ -800,39 +800,34 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
     doc_path = Path(doc_path)
 
     def _clean_old_reports(target_path: Path, keep: int) -> None:
-        """Clean up old validation reports, keeping N most recent."""
-        report_patterns = ["*.V_validation_report_v*.md", "*_validation_report_v*.md"]
+        """Clean up legacy versioned validation reports.
+
+        Note: As of UCX v1.16.1, validation uses a single 'precommit_validation_report.md'
+        file that overwrites on each run. This function cleans up legacy versioned reports.
+        """
+        # Legacy patterns (pre-v1.16.1) - versioned validation reports
+        legacy_patterns = ["*.V_validation_report_v*.md", "*_validation_report_v*.md"]
         all_reports = []
 
-        for pattern in report_patterns:
+        for pattern in legacy_patterns:
             all_reports.extend(target_path.glob(pattern))
 
-        # Remove duplicates and sort by modification time (newest first)
+        # Remove duplicates
         all_reports = list(set(all_reports))
-        all_reports.sort(key=lambda f: f.stat().st_mtime, reverse=True)
 
-        if len(all_reports) > keep:
-            to_keep = all_reports[:keep]
-            to_remove = all_reports[keep:]
-
+        if all_reports:
             removed_count = 0
             removed_size = 0
-            for rpt in to_remove:
+            for rpt in all_reports:
                 removed_size += rpt.stat().st_size
                 rpt.unlink()
                 removed_count += 1
-                console.print(f"  [dim]Removed:[/dim] {rpt.name}")
+                console.print(f"  [dim]Removed legacy report:[/dim] {rpt.name}")
 
-            console.print(f"[green]Cleaned up old validation reports:[/green] {target_path}")
-            for kept in to_keep:
-                console.print(f"  [green]Kept:[/green] {kept.name}")
+            console.print(f"[green]Cleaned up legacy validation reports:[/green] {target_path}")
             console.print(f"  Removed: {removed_count} files ({removed_size / 1024:.1f} KB)")
-        elif len(all_reports) >= 1:
-            console.print(f"[yellow]Found {len(all_reports)} validation report(s), keeping all (--keep-versions={keep})[/yellow]")
-            for rpt in all_reports:
-                console.print(f"  {rpt.name}")
         else:
-            console.print(f"[yellow]No validation reports found in:[/yellow] {target_path}")
+            console.print(f"[yellow]No legacy validation reports found in:[/yellow] {target_path}")
 
     # Handle --clean-reports flag (standalone mode - cleanup only)
     if clean_reports and not fix:
@@ -902,19 +897,9 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             # If output path is a directory or ends with /, auto-generate filename
             if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
                 output_path.mkdir(parents=True, exist_ok=True)
-                # Find next version number by extracting max version from existing files
-                existing = list(output_path.glob(f"{doc_id}.V_validation_report_v*.md"))
-                if existing:
-                    # Extract version numbers and find max
-                    versions = []
-                    for f in existing:
-                        match = re.search(r"_v(\d+)\.md$", f.name)
-                        if match:
-                            versions.append(int(match.group(1)))
-                    version = max(versions) + 1 if versions else 1
-                else:
-                    version = 1
-                output_path = output_path / f"{doc_id}.V_validation_report_v{version:03d}.md"
+                # Single file with meaningful name - overwrites on each run
+                output_path = output_path / "precommit_validation_report.md"
+                version = 1  # Report format uses version 1 (single file)
             else:
                 # Output to specified file
                 output_path.parent.mkdir(parents=True, exist_ok=True)
