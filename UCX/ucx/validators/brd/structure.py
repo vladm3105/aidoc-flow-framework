@@ -25,6 +25,7 @@ from ucx.validators.brd.schema import (
     SECTION_NUMBER_PATTERN,
     SECTION_PROFILES,
     DOCUMENT_CONTROL_FIELDS,
+    DOCUMENT_CONTROL_ALIASES,
 )
 
 
@@ -287,10 +288,17 @@ def _validate_document_control(
 
     doc_control = doc_control_match.group(0)
 
-    # Check for required fields
+    # Check for required fields (including aliases)
     missing_fields = []
     for field in DOCUMENT_CONTROL_FIELDS:
-        if field not in doc_control:
+        # Check if field or any of its aliases are present
+        field_found = field in doc_control
+        if not field_found and field in DOCUMENT_CONTROL_ALIASES:
+            for alias in DOCUMENT_CONTROL_ALIASES[field]:
+                if alias in doc_control:
+                    field_found = True
+                    break
+        if not field_found:
             missing_fields.append(field)
 
     if missing_fields:

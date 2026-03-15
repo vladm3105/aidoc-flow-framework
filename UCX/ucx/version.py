@@ -1,7 +1,52 @@
 """Version information for UCX."""
 
-__version__ = "1.15.2"
+__version__ = "1.15.4"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.4 - BRD-E002 Invalid Value Fixer & GATE-E001 Recursion Fix
+# - FIXED: BRD-E002 now fixes INVALID values (not just missing fields):
+#   - status: 'Draft' → 'development'
+#   - document_type: 'brd-document' → 'brd'
+#   - document_type: 'guide' → 'brd'
+#   - artifact_type: 'VALIDATION_SUMMARY' → 'BRD'
+# - FIXED: BRD-E002 default status changed from 'draft' to 'development'
+# - FIXED: GATE-E001 no longer causes recursive nesting of DEFERRED comments
+#   Previously: TODO inside DEFERRED got re-converted, causing infinite nesting
+#   Now: Existing DEFERRED comments are protected before pattern matching
+# - FIXED: GATE-E001 now handles [Pending] and [placeholder] patterns
+# - FIXED: BRD-E003 forbidden tag remover (business-requirements → removed)
+# - NEW: NON_BRD_FILE_PATTERNS exclusion list for non-BRD files in BRD folders:
+#   - BRD_VALIDATION_REPORT.md, EXECUTIVE_SUMMARY.md, GCP_DIAGRAM_GUIDE.md
+#   - README.md, CHANGELOG*.md, *.V_validation_report*.md
+# - FIXED: GATE-W008 TYPE_TO_SECTION mapping - added missing codes:
+#   - 07 (Risk) → Section 10, 08 (Metric) → Section 8
+#   - 09 (User Story) → Section 5, 10 (Decision) → Section 7
+#   - 23 (Business Objective) → Section 2, 32 (Arch Topic) → Section 7
+# - CHANGED: GATE-W008 fixer now adds MOVE-TO-SECTION markers instead of
+#   actually moving elements (prevents file corruption from stale line numbers)
+# - Impact: Fixed 50 Tier 1 errors (187 → 137), reduced GATE-W008 by 12
+# - See: docs/CHANGELOG_v1.15.4.md
+
+# v1.15.3 - BRD-E002, BRD-E009, and GATE-E008 Auto-Fix Improvements
+# - FIXED: BRD-E002 now adds `status: draft` field to custom_fields
+# - FIXED: BRD-E009 now adds missing fields to EXISTING Document Control tables
+#   Previously: Only created new section if none existed, skipped existing tables
+#   Now: Parses existing table and adds missing rows with defaults:
+#     - Project Name: "BeeLocal Cross-Border Remittance Platform"
+#     - Document Version: "1.0"
+#     - Date: current date (YYYY-MM-DD)
+#     - Document Owner: "BeeLocal Team"
+#     - Status: "Draft"
+# - FIXED: GATE-E008 now detects additional reference patterns:
+#   - Parenthetical refs with suffix: (BRD.14.23.01.02 target)
+#   - Checkbox items: - [ ] P1 BRD.40.01.01 — Auth0
+#   - Priority-prefixed items: - P1 BRD.40.01.01: Description
+#   - Em-dash separated items: BRD.40.01.01 — Auth0
+#   - 4-part element IDs: BRD.14.23.01.02
+#   - @brd: cross-references: per @brd: BRD.03.01.04
+# - SYNCED: element_codes.py and duplicate_fixer.py share same patterns
+# - Impact: Fixes 45 BRD-E002 errors, ~18 BRD-E009 errors, ~32 GATE-E008 errors
+# - See: docs/CHANGELOG_v1.15.3.md
 
 # v1.15.2 - Extended Auto-Fix Suite (21 fixable codes)
 # - NEW: GATE-E001 fixer - converts [TBD]/TODO/FIXME to DEFERRED comments

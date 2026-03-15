@@ -40,6 +40,18 @@ from typing import List, Optional
 # These are glossary, index, integration matrix files - not actual BRD documents
 SUPPLEMENTARY_FILE_PATTERN = re.compile(r"^BRD-00[_.]")
 
+# Non-BRD files that should be excluded from BRD validation
+# These are reference documents, guides, or reports that live in BRD folders
+# but are not actual BRD artifacts
+NON_BRD_FILE_PATTERNS = [
+    re.compile(r"^BRD_VALIDATION_REPORT\.md$"),  # Validation summary report
+    re.compile(r"^EXECUTIVE_SUMMARY\.md$"),  # Executive summary document
+    re.compile(r"^GCP_DIAGRAM_GUIDE\.md$"),  # GCP diagramming guide
+    re.compile(r"^README\.md$"),  # README files
+    re.compile(r"^CHANGELOG.*\.md$"),  # Changelog files
+    re.compile(r"^\d+\.V_validation_report.*\.md$"),  # Directory validation reports (01.V_*)
+]
+
 from ucx.validators.common.result import (
     UnifiedValidationResult,
     ValidationIssue,
@@ -189,6 +201,11 @@ class UnifiedBRDValidator:
         # Skip supplementary files (BRD-00_GLOSSARY, BRD-00_INTEGRATION_MATRIX, etc.)
         if SUPPLEMENTARY_FILE_PATTERN.match(file_path.name):
             return
+
+        # Skip non-BRD files (validation reports, guides, README, etc.)
+        for pattern in NON_BRD_FILE_PATTERNS:
+            if pattern.match(file_path.name):
+                return
 
         # Read content
         try:

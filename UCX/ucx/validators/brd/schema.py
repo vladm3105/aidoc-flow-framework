@@ -105,6 +105,15 @@ DOCUMENT_CONTROL_FIELDS = [
     "Status",
 ]
 
+# Field aliases - alternative names that satisfy the same requirement
+DOCUMENT_CONTROL_ALIASES = {
+    "Date": ["Created", "Last Updated", "Creation Date", "Updated", "Last Modified"],
+    "Document Version": ["Version", "Doc Version"],
+    "Document Owner": ["Owner", "Author", "Prepared By"],
+    "Project Name": ["Project", "Title"],
+    "Status": ["State", "Doc Status"],
+}
+
 # =============================================================================
 # ELEMENT ID CONSTANTS
 # =============================================================================
@@ -225,8 +234,10 @@ H1_TITLE_PATTERN = re.compile(r"^# BRD-\d{2,}:")
 # Section number pattern
 SECTION_NUMBER_PATTERN = re.compile(r"^## (\d+)\.")
 
-# Element ID pattern
-ELEMENT_ID_PATTERN = re.compile(r"\bBRD\.(\d{2,})\.(\d{2})\.(\d{2,})\b")
+# Element ID pattern (supports 3 or 4 part IDs)
+# 3-part: BRD.NN.TT.SS (doc.type.seq)
+# 4-part: BRD.NN.TT.SS.XX (doc.type.group.seq) - used in some BRDs
+ELEMENT_ID_PATTERN = re.compile(r"\bBRD\.(\d{2,})\.(\d{2})\.(\d{2,})(?:\.(\d{2,}))?\b")
 
 # Section heading pattern (for current section detection)
 SECTION_HEADING_PATTERN = re.compile(r"^#{2,3}\s+(\d+(?:\.\d+)*)\.")

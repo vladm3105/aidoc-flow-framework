@@ -127,9 +127,10 @@ def _is_reference_context(
     if stripped_line.startswith("|"):
         return True
 
-    # Check for inline reference patterns (parenthetical mentions)
+    # Check for inline reference patterns (parenthetical mentions, supports 3 or 4 part IDs)
     # e.g., "requires intelligent orchestration (BRD.01.23.01)"
-    if re.search(r'\(BRD\.\d{2,}\.\d{2}\.\d{2,}\)', line):
+    # e.g., "supports target objective (BRD.14.23.01.02)"
+    if re.search(r'\(BRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?\)', line):
         return True
 
     # Check for "Related Requirements" style references
@@ -159,10 +160,37 @@ def _is_reference_context(
     if re.match(r'^[-*]\s+BRD\.\d{2,}\.\d{2}\.\d{2,}', stripped_line):
         return True
 
+    # Checkbox/task list items are references (summary lists)
+    # e.g., "- [ ] P1 BRD.40.01.01 — Auth0 Authentication"
+    # e.g., "- [x] BRD.05.01.01 — Completed item"
+    if re.match(r'^[-*]\s+\[[ xX]\]', stripped_line):
+        return True
+
+    # Priority-prefixed items (P0/P1/P2 lists)
+    # e.g., "- P1 BRD.40.01.01: Description"
+    if re.match(r'^[-*]\s+P[0-3]\s+BRD\.\d{2,}\.\d{2}\.\d{2,}', stripped_line):
+        return True
+
+    # Em-dash separated items (common in summary lists)
+    # e.g., "- BRD.40.01.01 — Auth0 Authentication"
+    if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}\s+[—–-]\s+\w', line):
+        return True
+
     # Category reference lists (ID followed by description in parentheses)
     # e.g., "- Compliance BRDs: BRD.03.01.01 (Audit Trail...)"
     # e.g., "- Quality Attributes: BRD.03.02.01 (Performance...)"
     if re.search(r'BRD\.\d{2,}\.\d{2}\.\d{2,}\s*\([^)]+\)', line):
+        return True
+
+    # Parenthetical references with target/constraint suffix (supports 3 or 4 part IDs)
+    # e.g., "- Target operational float: ~$20k (BRD.14.23.01.02 target)"
+    # e.g., "- Maximum timeout: 30s (BRD.14.09.01 constraint)"
+    if re.search(r'\(BRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?\s+\w+\)', line):
+        return True
+
+    # @brd: cross-reference annotations
+    # e.g., "per @brd: BRD.03.01.04 Section 4.1"
+    if re.search(r'@brd:\s*BRD\.\d{2,}\.\d{2}\.\d{2,}', line):
         return True
 
     # Multiple IDs on same line (likely a reference list)

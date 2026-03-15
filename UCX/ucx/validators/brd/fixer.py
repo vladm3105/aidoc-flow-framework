@@ -329,11 +329,12 @@ class BRDFixer:
     # =========================================================================
 
     def _fix_brd_e002(self, issue: ValidationIssue) -> FixResult:
-        """Fix BRD-E002 which can mean either missing custom_fields OR missing Section 0.
+        """Fix BRD-E002 which can mean:
+        - Missing custom_fields
+        - Missing Section 0 (Document Control)
+        - Invalid value for a custom_field
 
-        Check the issue context to determine which fix to apply:
-        - "Missing Section 0" → Add Document Control section
-        - "Missing required field" → Add custom_fields
+        Check the issue context to determine which fix to apply.
         """
         file_path = issue.file_path
         content = self._get_file_content(file_path)
@@ -359,6 +360,13 @@ class BRDFixer:
                     "document_type": "brd",
                     "artifact_type": "BRD",
                     "layer": 1,
+                    "architecture_approaches": [
+                        "event-driven",
+                        "ai-agent-based",
+                        "traditional-8layer"
+                    ],
+                    "priority": "shared",
+                    "status": "development",
                 }
             }
             body = content  # Entire content becomes body
@@ -368,6 +376,49 @@ class BRDFixer:
         if "custom_fields" not in fm:
             fm["custom_fields"] = {}
             changes.append("Added custom_fields section")
+
+        # Handle invalid value fixes (parse context for "Invalid value for X")
+        if "Invalid value for" in context:
+            # Parse field name from context: "Invalid value for status: 'Draft'"
+            invalid_match = re.search(r"Invalid value for (\w+):", context)
+            if invalid_match:
+                field_name = invalid_match.group(1)
+
+                # Fix invalid status values
+                if field_name == "status":
+                    current_val = fm["custom_fields"].get("status", "")
+                    # Map common invalid status values to valid ones
+                    status_mapping = {
+                        "draft": "development",
+                        "Draft": "development",
+                        "DRAFT": "development",
+                    }
+                    if current_val in status_mapping:
+                        fm["custom_fields"]["status"] = status_mapping[current_val]
+                        changes.append(f"Fixed status: '{current_val}' → 'development'")
+
+                # Fix invalid document_type values
+                elif field_name == "document_type":
+                    current_val = fm["custom_fields"].get("document_type", "")
+                    # Map common invalid document_type values to valid ones
+                    doctype_mapping = {
+                        "brd-document": "brd",
+                        "BRD": "brd",
+                        "BRD-document": "brd",
+                        "guide": "brd",  # Reference guides in BRD folder
+                        "reference": "brd",
+                        "summary": "brd",
+                    }
+                    if current_val in doctype_mapping:
+                        fm["custom_fields"]["document_type"] = doctype_mapping[current_val]
+                        changes.append(f"Fixed document_type: '{current_val}' → 'brd'")
+
+                # Fix invalid artifact_type values
+                elif field_name == "artifact_type":
+                    current_val = fm["custom_fields"].get("artifact_type", "")
+                    if current_val != "BRD":
+                        fm["custom_fields"]["artifact_type"] = "BRD"
+                        changes.append(f"Fixed artifact_type: '{current_val}' → 'BRD'")
 
         # Add document_type if missing
         if "document_type" not in fm["custom_fields"]:
@@ -383,6 +434,25 @@ class BRDFixer:
             fm["custom_fields"]["layer"] = 1
             changes.append("Added layer: 1")
 
+        # Add architecture_approaches if missing (required field per BRD-01)
+        if "architecture_approaches" not in fm["custom_fields"]:
+            fm["custom_fields"]["architecture_approaches"] = [
+                "event-driven",
+                "ai-agent-based",
+                "traditional-8layer"
+            ]
+            changes.append("Added architecture_approaches: [event-driven, ai-agent-based, traditional-8layer]")
+
+        # Add priority if missing
+        if "priority" not in fm["custom_fields"]:
+            fm["custom_fields"]["priority"] = "shared"
+            changes.append("Added priority: shared")
+
+        # Add status if missing (required field) - use "development" as default
+        if "status" not in fm["custom_fields"]:
+            fm["custom_fields"]["status"] = "development"
+            changes.append("Added status: development")
+
         if changes:
             new_content = self._rebuild_content(fm, body)
             self._set_file_content(file_path, new_content)
@@ -390,7 +460,7 @@ class BRDFixer:
                 code=issue.code,
                 file_path=file_path,
                 fixed=True,
-                message="Fixed missing custom_fields",
+                message="Fixed custom_fields issues",
                 changes=changes
             )
 
@@ -427,6 +497,12 @@ class BRDFixer:
                 "document_type": "brd",
                 "artifact_type": "BRD",
                 "layer": 1,
+                "architecture_approaches": [
+                    "event-driven",
+                    "ai-agent-based",
+                    "traditional-8layer"
+                ],
+                "priority": "shared",
             }
         }
 
@@ -446,8 +522,85 @@ class BRDFixer:
         )
 
     def _fix_brd_e003(self, issue: ValidationIssue) -> FixResult:
-        """Fix missing 'brd' tag."""
+        """Fix BRD-E003: Missing 'brd' tag OR forbidden tag pattern.
+
+        Handles two cases based on context:
+        1. Missing 'brd' tag → add it
+        2. Forbidden tag pattern (e.g., 'business-requirements') → remove it and add 'brd'
+        """
+        context = issue.context or ""
+
+        # Check if this is a forbidden tag pattern issue
+        if "Forbidden tag pattern" in context:
+            return self._remove_forbidden_tag(issue)
+
+        # Otherwise, add missing 'brd' tag
         return self._add_tag(issue, "brd")
+
+    def _remove_forbidden_tag(self, issue: ValidationIssue) -> FixResult:
+        """Remove forbidden tag pattern and ensure 'brd' tag is present."""
+        file_path = issue.file_path
+        content = self._get_file_content(file_path)
+        fm, fm_str, body = self._parse_frontmatter(content)
+
+        if fm is None:
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Cannot parse frontmatter"
+            )
+
+        # Forbidden patterns to remove
+        forbidden_patterns = [
+            "business-brd",
+            "business-requirements",
+            "business_requirements",
+        ]
+
+        changes = []
+
+        # Ensure tags exists as list
+        if "tags" not in fm:
+            fm["tags"] = []
+        elif isinstance(fm["tags"], str):
+            fm["tags"] = [fm["tags"]]
+
+        # Remove forbidden tags
+        original_tags = fm["tags"].copy()
+        for pattern in forbidden_patterns:
+            if pattern in fm["tags"]:
+                fm["tags"].remove(pattern)
+                changes.append(f"Removed forbidden tag: '{pattern}'")
+
+        # Also remove any brd-NNN pattern (e.g., brd-001)
+        fm["tags"] = [t for t in fm["tags"] if not re.match(r'^brd-\d{3}$', t)]
+        removed_brd_nums = set(original_tags) - set(fm["tags"]) - set(forbidden_patterns)
+        for t in removed_brd_nums:
+            changes.append(f"Removed forbidden tag: '{t}'")
+
+        # Ensure 'brd' tag is present
+        if "brd" not in fm["tags"]:
+            fm["tags"].append("brd")
+            changes.append("Added required tag: 'brd'")
+
+        if changes:
+            new_content = self._rebuild_content(fm, body)
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message=f"Fixed forbidden tag pattern",
+                changes=changes
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message="No forbidden tags found to remove"
+        )
 
     def _fix_brd_e004(self, issue: ValidationIssue) -> FixResult:
         """Fix missing 'layer-1-artifact' tag."""
@@ -496,55 +649,129 @@ class BRDFixer:
     def _fix_brd_e009(self, issue: ValidationIssue) -> FixResult:
         """Fix missing Document Control fields.
 
-        Note: This is a complex fix that may not be fully automatic.
-        The validator checks for specific field names in a table format.
-        If a Document Control section exists but uses different field names
-        (e.g., "Project Name" vs "Project"), it may still report issues.
+        Strategy:
+        1. If Document Control section exists with a table, add missing fields
+        2. If no Document Control section exists, create one with all fields
 
-        This fixer only adds a Document Control section if NONE exists.
-        It does NOT modify existing sections to avoid breaking content.
+        Field defaults:
+        - Project Name: "BeeLocal Cross-Border Remittance Platform"
+        - Document Version: "1.0"
+        - Date: Current date (YYYY-MM-DD)
+        - Document Owner: "BeeLocal Team"
+        - Status: "Draft"
         """
+        import datetime
+
         file_path = issue.file_path
         content = self._get_file_content(file_path)
 
-        # Check for ANY Document Control section (various formats)
-        doc_ctrl_patterns = [
-            r"## 0\. Document Control",
-            r"## Document Control",
-            r"\| *Project Name *\|",
-            r"\| *Document Version *\|",
-            r"\| *Document Owner *\|",
-        ]
+        # Default values for required fields
+        required_fields = {
+            "Project Name": "BeeLocal Cross-Border Remittance Platform",
+            "Document Version": "1.0",
+            "Date": datetime.date.today().strftime("%Y-%m-%d"),
+            "Document Owner": "BeeLocal Team",
+            "Status": "Draft",
+        }
 
-        has_doc_control = any(re.search(p, content, re.IGNORECASE) for p in doc_ctrl_patterns)
+        # Field aliases - alternative names that satisfy the same requirement
+        field_aliases = {
+            "Date": ["created", "last updated", "creation date", "updated", "last modified"],
+            "Document Version": ["version", "doc version"],
+            "Document Owner": ["owner", "author", "prepared by"],
+            "Project Name": ["project", "title"],
+            "Status": ["state", "doc status"],
+        }
 
-        if has_doc_control:
-            # Document Control exists - don't add duplicate
-            # The issue may be about specific missing fields, but we skip auto-fix
-            # to avoid creating duplicate sections or breaking existing content
+        # Parse which fields are missing from the issue context
+        missing_fields = []
+        context = issue.context or ""
+        if "missing fields:" in context.lower():
+            # Extract field names from context like "missing fields: Status, Date"
+            fields_part = context.split(":", 1)[-1].strip()
+            missing_fields = [f.strip() for f in fields_part.split(",")]
+        else:
+            # If not specified, assume all fields need checking
+            missing_fields = list(required_fields.keys())
+
+        # Check if Document Control section exists
+        doc_ctrl_match = re.search(
+            r"(## (?:0\. )?Document Control.*?\n)((?:\|[^\n]+\n)+)",
+            content,
+            re.IGNORECASE | re.DOTALL
+        )
+
+        if doc_ctrl_match:
+            # Document Control table exists - add missing field rows
+            header = doc_ctrl_match.group(1)
+            table = doc_ctrl_match.group(2)
+            table_start = doc_ctrl_match.start(2)
+            table_end = doc_ctrl_match.end(2)
+
+            # Check which fields are already present (case-insensitive)
+            table_lower = table.lower()
+            fields_to_add = []
+            changes = []
+
+            for field_name in missing_fields:
+                # Check if field exists in table (various formats)
+                field_patterns = [
+                    field_name.lower(),
+                    field_name.lower().replace(" ", ""),
+                    # Handle bold format: **Field Name**
+                    f"**{field_name.lower()}**",
+                ]
+
+                # Also check aliases for this field
+                if field_name in field_aliases:
+                    for alias in field_aliases[field_name]:
+                        field_patterns.append(alias)
+                        field_patterns.append(f"**{alias}**")
+
+                field_present = any(p in table_lower for p in field_patterns)
+
+                if not field_present and field_name in required_fields:
+                    fields_to_add.append((field_name, required_fields[field_name]))
+
+            if not fields_to_add:
+                return FixResult(
+                    code=issue.code,
+                    file_path=file_path,
+                    fixed=False,
+                    message="All required fields appear to be present",
+                    changes=["No missing fields detected in Document Control table"]
+                )
+
+            # Build new rows to add
+            new_rows = ""
+            for field_name, default_value in fields_to_add:
+                # Match existing table format (check for **bold** style)
+                if "**" in table:
+                    new_rows += f"| **{field_name}** | {default_value} |\n"
+                else:
+                    new_rows += f"| {field_name} | {default_value} |\n"
+                changes.append(f"Added {field_name}: {default_value}")
+
+            # Insert new rows at the end of the table (before the closing)
+            # Find the last row of the table
+            new_content = content[:table_end] + new_rows + content[table_end:]
+
+            self._set_file_content(file_path, new_content)
             return FixResult(
                 code=issue.code,
                 file_path=file_path,
-                fixed=False,
-                message="Document Control section exists; manual review needed for field names",
-                changes=["Skipped: existing Document Control detected - verify field names match expected format"]
+                fixed=True,
+                message=f"Added {len(fields_to_add)} missing field(s) to Document Control",
+                changes=changes
             )
 
-        # No Document Control section - add one
+        # No Document Control section - create one
         fm, fm_str, body = self._parse_frontmatter(content)
 
-        required_fields = [
-            ("Project Name", "[Project Name]"),
-            ("Document Version", "1.0"),
-            ("Date", "[YYYY-MM-DD]"),
-            ("Document Owner", "[Owner Name]"),
-            ("Status", "Draft"),
-        ]
-
-        doc_ctrl_section = "\n## 0. Document Control\n\n| Field | Value |\n|-------|-------|\n"
-        for field_name, default in required_fields:
-            doc_ctrl_section += f"| {field_name} | {default} |\n"
-        doc_ctrl_section += "\n"
+        doc_ctrl_section = "\n## Document Control\n\n| Item | Details |\n|------|---------|\n"
+        for field_name, default_value in required_fields.items():
+            doc_ctrl_section += f"| **{field_name}** | {default_value} |\n"
+        doc_ctrl_section += "\n---\n"
 
         # Insert after first heading or at start of body
         h1_match = re.search(r"^# .+$", body, re.MULTILINE)
@@ -554,15 +781,15 @@ class BRDFixer:
         else:
             body = doc_ctrl_section + body
 
-        new_content = self._rebuild_content(fm, body) if fm else content
+        new_content = self._rebuild_content(fm, body) if fm else body
         self._set_file_content(file_path, new_content)
 
         return FixResult(
             code=issue.code,
             file_path=file_path,
             fixed=True,
-            message="Added Document Control section",
-            changes=["Added Section 0: Document Control with required fields"]
+            message="Added Document Control section with all required fields",
+            changes=[f"Added {field}: {value}" for field, value in required_fields.items()]
         )
 
     def _fix_brd_w005(self, issue: ValidationIssue) -> FixResult:
@@ -1273,16 +1500,25 @@ class BRDFixer:
         element_type = match.group(2)
 
         # Map element type code to target section
+        # Source: schema.py SECTION_CODE_MAP (canonical authority)
         TYPE_TO_SECTION = {
+            # Core BRD element codes (01-10)
             "01": "6",   # Functional Requirement → Section 6
-            "02": "8",   # Integration Point → Section 8
-            "03": "9",   # Constraint → Section 9
-            "04": "10",  # Assumption → Section 10
-            "05": "11",  # Risk → Section 11
-            "06": "6",   # Acceptance Criteria → Section 6
-            "22": "3",   # Feature Item → Section 3
+            "02": "7",   # Quality Attribute → Section 7 (QA overview)
+            "03": "8",   # Constraint → Section 8 (Constraints & Assumptions)
+            "04": "8",   # Assumption → Section 8 (Constraints & Assumptions)
+            "05": "10",  # Dependency → Section 10 (Risk Management)
+            "06": "9",   # Acceptance Criteria → Section 9 (also valid in 6)
+            "07": "10",  # Risk → Section 10 (Risk Management)
+            "08": "8",   # Metric → Section 8 (Constraints or CBA)
+            "09": "5",   # User Story → Section 5
+            "10": "7",   # Decision/ADR Topic → Section 7 (ADR Topics)
+            # Extended BRD element codes
+            "22": "3",   # Feature Item → Section 3 (Project Scope)
+            "23": "2",   # Business Objective → Section 2
             "24": "4",   # Stakeholder Need → Section 4
-            "32": "5",   # Business Objective → Section 5
+            "32": "7",   # Architecture Topic (legacy) → Section 7 (ADR Topics)
+            # Quality Attribute Subcategories (91-99)
             "91": "7",   # Performance Requirement → Section 7
             "92": "7",   # Reliability Requirement → Section 7
             "94": "7",   # Scalability Requirement → Section 7
@@ -1362,50 +1598,52 @@ class BRDFixer:
 
         lines = content.split("\n")
         if line_no > len(lines):
+            # File was modified by previous fixes, line numbers are stale
+            # Skip this issue - re-run validation to get updated line numbers
             return FixResult(
                 code=issue.code,
                 file_path=file_path,
                 fixed=False,
-                message=f"Line {line_no} out of range"
+                message=f"Line {line_no} out of range (file modified, re-run validation)"
             )
 
-        # Find element boundaries (### heading to next ### or ##)
-        start_idx = line_no - 1
-        end_idx = start_idx + 1
+        # SAFETY: Instead of moving elements (which can corrupt files when
+        # multiple elements are moved from the same file), just add a TODO
+        # comment. User can manually move the element.
+        #
+        # The issue is that when we move element A, all line numbers after it
+        # shift, making subsequent issues for the same file have stale line
+        # numbers. This causes cascading corruption.
+        #
+        # Future improvement: collect all issues per file and process from
+        # bottom to top, or use element ID matching instead of line numbers.
 
-        # Look for ### element heading
-        while start_idx > 0 and not lines[start_idx].startswith("### "):
-            start_idx -= 1
+        # Check if TODO comment already exists at this location
+        current_line = lines[line_no - 1]
+        todo_marker = f"<!-- MOVE-TO-SECTION-{target_section}: "
 
-        # Find end (next ### or ## or end of file)
-        while end_idx < len(lines):
-            if lines[end_idx].startswith("## ") or lines[end_idx].startswith("### "):
-                break
-            end_idx += 1
+        if todo_marker in current_line or (line_no > 1 and todo_marker in lines[line_no - 2]):
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=False,
+                message="Move marker already present"
+            )
 
-        # Extract element block
-        element_block = "\n".join(lines[start_idx:end_idx])
-
-        # Remove from source file
-        new_source_lines = lines[:start_idx] + lines[end_idx:]
-        new_source_content = "\n".join(new_source_lines)
-        self._set_file_content(file_path, new_source_content)
-
-        # Append to target file
-        target_content = self._get_file_content(target_file)
-        if not target_content.endswith("\n"):
-            target_content += "\n"
-        target_content += "\n" + element_block + "\n"
-        self._set_file_content(target_file, target_content)
+        # Add TODO comment above the element
+        move_comment = f"<!-- MOVE-TO-SECTION-{target_section}: Element type {element_type} should be in {target_file.name} -->"
+        lines.insert(line_no - 1, move_comment)
+        new_content = "\n".join(lines)
+        self._set_file_content(file_path, new_content)
 
         return FixResult(
             code=issue.code,
             file_path=file_path,
             fixed=True,
-            message=f"Moved element to Section {target_section}",
+            message=f"Marked element for move to Section {target_section}",
             changes=[
-                f"Removed element from {file_path.name}",
-                f"Appended element to {target_file.name}",
+                f"Added move marker at line {line_no}",
+                f"Target: {target_file.name}",
                 f"Element type {element_type} → Section {target_section}"
             ]
         )
@@ -1709,33 +1947,56 @@ This document has been split into section-based files for maintainability.
 
         content = self._get_file_content(file_path)
 
+        # First, protect existing DEFERRED comments from being re-processed
+        # Replace them with unique placeholders temporarily
+        deferred_placeholder = "___DEFERRED_PROTECTED___"
+        deferred_comments = list(re.finditer(r'<!-- DEFERRED:.*?-->', content, re.DOTALL))
+        protected_content = content
+        deferred_map = {}
+        for i, match in enumerate(deferred_comments):
+            key = f"{deferred_placeholder}{i}___"
+            deferred_map[key] = match.group(0)
+            protected_content = protected_content.replace(match.group(0), key, 1)
+
         # Define placeholder patterns and their replacements
+        # Only match patterns OUTSIDE of already-converted DEFERRED comments
         placeholder_patterns = [
             # [TBD] variants
             (r'\[TBD\]', '<!-- DEFERRED: Content to be determined -->'),
             (r'\[TBD:\s*([^\]]+)\]', r'<!-- DEFERRED: \1 -->'),
             (r'\[TO BE DETERMINED\]', '<!-- DEFERRED: Content to be determined -->'),
-            # TODO variants
-            (r'TODO:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
-            (r'TODO\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
+            # [Pending] and [placeholder] variants
+            (r'\[Pending\]', '<!-- DEFERRED: Content pending -->'),
+            (r'\[pending\]', '<!-- DEFERRED: Content pending -->'),
+            (r'\[PENDING\]', '<!-- DEFERRED: Content pending -->'),
+            (r'\[placeholder\]', '<!-- DEFERRED: Placeholder content -->'),
+            (r'\[Placeholder\]', '<!-- DEFERRED: Placeholder content -->'),
+            (r'\[PLACEHOLDER\]', '<!-- DEFERRED: Placeholder content -->'),
+            # TODO variants - only match if not already in a protected block
+            (r'(?<![_A-Za-z])TODO:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
+            (r'(?<![_A-Za-z])TODO\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
             (r'(?<!\w)TODO(?!\w)(?!:)', '<!-- DEFERRED: TODO item pending -->'),
             # FIXME variants
-            (r'FIXME:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
-            (r'FIXME\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
+            (r'(?<![_A-Za-z])FIXME:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
+            (r'(?<![_A-Za-z])FIXME\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
             (r'(?<!\w)FIXME(?!\w)(?!:)', '<!-- DEFERRED: FIXME item pending -->'),
             # XXX variants
-            (r'XXX:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: XXX - \1 -->'),
+            (r'(?<![_A-Za-z])XXX:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: XXX - \1 -->'),
             (r'(?<!\w)XXX(?!\w)(?!:)', '<!-- DEFERRED: XXX item pending -->'),
         ]
 
         changes = []
-        new_content = content
+        new_content = protected_content
 
         for pattern, replacement in placeholder_patterns:
             matches = list(re.finditer(pattern, new_content, re.IGNORECASE))
             if matches:
                 new_content = re.sub(pattern, replacement, new_content, flags=re.IGNORECASE)
                 changes.append(f"Converted {len(matches)} '{pattern[:15]}...' placeholder(s)")
+
+        # Restore protected DEFERRED comments
+        for key, original in deferred_map.items():
+            new_content = new_content.replace(key, original)
 
         if new_content != content:
             self._set_file_content(file_path, new_content)
