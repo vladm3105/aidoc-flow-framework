@@ -272,7 +272,7 @@ def create(ctx, doc_type, output_path, **kwargs):
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path))
 @click.option("--skip-validation", is_flag=True)
-@click.option("--persona", "-p", is_flag=True, help="Use persona prompts mode (per-persona filtered prompts with memory)")
+@click.option("--persona", "-p", is_flag=True, help="Use persona prompts mode (now default, flag kept for compatibility)")
 @click.option("--no-resume", is_flag=True, help="Start fresh (don't resume from previous session)")
 @click.option("--session-ttl", type=int, default=24, help="Session TTL in hours (default: 24)")
 @click.option("--clean-memory", is_flag=True, help="Clean up stale session memory and exit")
@@ -289,15 +289,15 @@ def review(ctx, doc_type, doc_path, output, skip_validation, persona, no_resume,
 
     \b
     MODES:
-      Default:   Unified prompt (single API call, all personas, ~60K tokens)
-      --persona: Persona prompts (sequential API calls, filtered context, ~290K tokens)
+      Default:   Persona prompts (sequential API calls, filtered context, ~290K tokens)
+      --unified: Unified prompt (single API call, all personas, ~60K tokens)
 
     \b
     Examples:
-      ucx review brd docs/01_BRD/BRD-01              # Unified prompt (default)
-      ucx review brd docs/01_BRD/BRD-01 --persona    # Persona prompts mode
-      ucx review brd docs/01_BRD/BRD-01 -p --session-ttl 48
-      ucx review brd docs/01_BRD/BRD-01 --unified    # Force unified (skip auto-detect)
+      ucx review brd docs/01_BRD/BRD-01              # Persona prompts (default)
+      ucx review brd docs/01_BRD/BRD-01 --unified    # Force unified prompt mode
+      ucx review brd docs/01_BRD/BRD-01 -u           # Short form for --unified
+      ucx review brd docs/01_BRD/BRD-01 --session-ttl 48
       ucx review prd docs/02_PRD/PRD-01.md -o review_report.md
       ucx review brd docs/01_BRD/BRD-01 --clean-memory
       ucx review brd docs/01_BRD/BRD-01 --clean-all
@@ -406,26 +406,14 @@ def review(ctx, doc_type, doc_path, output, skip_validation, persona, no_resume,
     # Legacy scoring removed - all reviews use category-weighted scoring
     config.scoring_method = "weighted"
 
-    # Auto-detect large documents and recommend persona prompts (unless --unified)
-    if not persona and not unified:
-        # Calculate document size
-        total_chars = 0
-        if doc_path.is_dir():
-            for f in doc_path.glob("*.md"):
-                if "REVIEW" not in f.name and "REPORT" not in f.name:
-                    total_chars += f.stat().st_size
-        else:
-            total_chars = doc_path.stat().st_size
+    # Default to persona prompts mode (v1.15.5+) unless --unified is specified
+    # Persona prompts provide better quality for all document sizes
+    use_persona = not unified  # Default: persona mode; --unified overrides to unified mode
 
-        # Large documents (>100K chars / ~25K tokens) should use persona prompts
-        if total_chars > 100000:
-            console.print(
-                f"[yellow]Large document detected ({total_chars // 1000}K chars). "
-                f"Auto-enabling persona prompts mode for better quality.[/yellow]"
-            )
-            persona = True
+    if unified:
+        console.print("[dim]Using unified prompt mode (single API call).[/dim]")
 
-    if persona:
+    if use_persona:
         result = ucr.review_multi_turn(
             doc_type, doc_path,
             output_path=output,

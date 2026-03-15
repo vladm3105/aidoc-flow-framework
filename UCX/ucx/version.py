@@ -1,7 +1,17 @@
 """Version information for UCX."""
 
-__version__ = "1.15.4"
+__version__ = "1.15.5"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.5 - Persona Prompts as Default Review Mode
+# - CHANGED: `ucx review` now uses persona prompts mode by default
+#   Previously: unified prompt (single API call) was default
+#   Now: persona prompts (sequential per-persona calls) is default
+# - BENEFIT: Better review quality for all document sizes
+# - BENEFIT: No more "large document detected" auto-switching messages
+# - USE `--unified` or `-u` flag to force unified prompt mode
+# - The `--persona` flag is kept for backwards compatibility (no-op)
+# - See: docs/CHANGELOG_v1.15.5.md
 
 # v1.15.4 - BRD-E002 Invalid Value Fixer & GATE-E001 Recursion Fix
 # - FIXED: BRD-E002 now fixes INVALID values (not just missing fields):
