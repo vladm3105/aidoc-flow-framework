@@ -492,9 +492,11 @@ custom_fields:
 
 | Output Type | Filename Pattern | Example |
 |-------------|------------------|---------|
-| Validation | `{DOC-ID}.V_validation_report_v{NNN}.md` | `BRD-01.V_validation_report_v001.md` |
-| Review | `{DOC-ID}.R_review_report_v{NNN}.md` | `BRD-01.R_review_report_v001.md` |
-| Remediation | `{DOC-ID}.F_fix_report_v{NNN}.md` | `BRD-01.F_fix_report_v001.md` |
+| Validation | `precommit_validation_report.md` | `precommit_validation_report.md` |
+| Review | `{DOC-ID}.UCR_review_report_v{NNN}.md` | `BRD-01.UCR_review_report_v001.md` |
+| Remediation | `{DOC-ID}.UCRem_remediation_report.md` | `BRD-01.UCRem_remediation_report.md` |
+
+> **Note (v1.16.1)**: Validation reports now use a single file that overwrites on each run. Review reports retain versioning for history tracking.
 
 **Tiered Validation:**
 
@@ -1328,6 +1330,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.16.1 | 2026-03-15 | **Single-File Validation Reports**: Changed validation report from versioned format (`{doc_id}.V_validation_report_v{NNN}.md`) to single file (`precommit_validation_report.md`) that overwrites on each run. Cleaner repos, no accumulation. See [CHANGELOG_v1.16.1.md](docs/CHANGELOG_v1.16.1.md). |
+| 1.16.0 | 2026-03-15 | **Auto-Detection of Latest Review Report**: `ucx remediate` now auto-detects latest UCR review report. No need to specify exact report version. New `--report` / `-r` flag for explicit override. See [CHANGELOG_v1.16.0.md](docs/CHANGELOG_v1.16.0.md). |
 | 1.15.2 | 2026-03-14 | **Extended Auto-Fix Suite (21 codes)**: Added `GATE-E001` (placeholder → DEFERRED comment), `DIAG-E001` (missing diagram → DIAGRAM-REQUIRED placeholder), `FWDREF-E001` (forward ref → FWDREF-DEFERRED comment). Total: 21 auto-fixable codes. Expected impact: ~524 Tier 1 errors converted to deferred. See [CHANGELOG_v1.15.2.md](docs/CHANGELOG_v1.15.2.md). |
 | 1.15.1 | 2026-03-14 | **BRD-E020 Invalid Type Code Fixer**: Added auto-fix for invalid element type codes (1,260 errors fixed). New `INVALID_CODE_REMAP` table with 60+ mappings. Remaps invalid codes to valid BRD codes (01-32, 91-99). Total: 18 auto-fixable codes. See [CHANGELOG_v1.15.1.md](docs/CHANGELOG_v1.15.1.md). |
 | 1.15.0 | 2026-03-14 | **Extended Auto-Fix Suite (17 codes)**: Added `GATE-E010` (auto-split large files), `GATE-W008` (move elements to correct section), `BRD-W010` (auto-detect @depends), `VAL-E002` (create frontmatter from scratch). BRD-E002 now context-aware (custom_fields OR Section 0). BRD-03 improved 89.5→96.0 (PASS). See [CHANGELOG_v1.15.0.md](docs/CHANGELOG_v1.15.0.md). |
@@ -1381,15 +1385,14 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.15.2 - Extended Auto-Fix Suite (21 codes)
-- NEW: `GATE-E001` fixer - Converts `[TBD]`/TODO/FIXME to `<!-- DEFERRED: ... -->` comments
-- NEW: `DIAG-E001` fixer - Adds `<!-- DIAGRAM-REQUIRED: ... -->` placeholder for architecture
-- NEW: `FWDREF-E001` fixer - Converts forward refs to `<!-- FWDREF-DEFERRED: ... -->` comments
-- Total: 21 auto-fixable error codes (was 18)
-- Expected impact: ~524 Tier 1 blocking errors converted to deferred
-- See [CHANGELOG_v1.15.2](docs/CHANGELOG_v1.15.2.md) for details
+**Latest Release**: v1.16.1 - Single-File Validation Reports
+- CHANGED: Validation reports use single file `precommit_validation_report.md`
+- CHANGED: Overwrites on each run (no versioned accumulation)
+- BENEFIT: Cleaner repos, reduced clutter, CI/CD friendly
+- See [CHANGELOG_v1.16.1](docs/CHANGELOG_v1.16.1.md) for details
 
-**Previous Releases**: v1.15.x / v1.14.x
+**Previous Releases**: v1.16.0 / v1.15.x / v1.14.x
+- v1.16.0: Auto-detection of latest review report for remediation
 - v1.15.1: BRD-E020 invalid type code fixer (1,260 errors fixed)
 - v1.15.0: Extended auto-fix suite (17 codes), GATE-E010, GATE-W008, BRD-W010, VAL-E002
 - v1.14.9: Duplicate element ID auto-fixer (GATE-E008)
@@ -1440,6 +1443,8 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.14.9](docs/CHANGELOG_v1.14.9.md) | Duplicate element ID auto-fixer (GATE-E008) |
 | [CHANGELOG v1.15.0](docs/CHANGELOG_v1.15.0.md) | Extended auto-fix suite (17 codes) |
 | [CHANGELOG v1.15.1](docs/CHANGELOG_v1.15.1.md) | BRD-E020 invalid type code fixer |
+| [CHANGELOG v1.16.0](docs/CHANGELOG_v1.16.0.md) | Auto-detection of latest review report |
+| [CHANGELOG v1.16.1](docs/CHANGELOG_v1.16.1.md) | Single-file validation reports |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 

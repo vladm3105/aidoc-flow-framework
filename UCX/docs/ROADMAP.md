@@ -4,20 +4,21 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.14.8
-**Next Major**: 1.15.0 (Multi-Document Validation)
+**Current Version**: 1.16.1
+**Next Major**: 1.17.0 (Multi-Document Validation)
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──► v1.15.0 ──► v2.0.0
-   │           │            │              │                  │           │
-   │           │            │              │                  │           └─► Breaking changes
-   │           │            │              │                  └─► Multi-document validation
-   │           │            │              └─► Terminology update (v1.14.8)
-   │           │            └─► Prompt Inspection, attention steering (v1.14.0-7)
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.1 (Current) ──► v1.17.0 ──► v2.0.0
+   │           │            │            │              │                  │           │
+   │           │            │            │              │                  │           └─► Breaking changes
+   │           │            │            │              │                  └─► Multi-document validation
+   │           │            │            │              └─► Single-file validation (v1.16.1)
+   │           │            │            └─► Extended auto-fix (21 codes)
+   │           │            └─► Prompt Inspection, attention steering (v1.14.0-8)
    │           └─► Context Engineering (v1.13.0, v1.13.1)
    └─► Category-Weighted Scoring
 ```
@@ -26,7 +27,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──�
 
 ## Planned Releases
 
-### v1.15.0 - Multi-Document Validation
+### v1.17.0 - Multi-Document Validation
 
 **Status**: Planned
 **ETA**: Q2 2026
@@ -47,7 +48,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──�
 
 ---
 
-### v1.16.0 - PRD/EARS Validation Parity
+### v1.18.0 - PRD/EARS Validation Parity
 
 **Status**: Planned
 **ETA**: Q3 2026
@@ -91,7 +92,41 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.14.8 (Current) ──�
 
 ## Completed Releases
 
-### v1.14.8 (2026-03-14) - Current
+### v1.16.1 (2026-03-15) - Current
+
+**Features**:
+- **Single-File Validation Reports**: Changed from versioned to single-file approach
+  - Old: `{doc_id}.V_validation_report_v{NNN}.md`
+  - New: `precommit_validation_report.md`
+- Single file overwrites on each run (no version accumulation)
+- `--clean-reports` flag cleans legacy versioned reports
+- Updated patterns in validators to recognize new filename
+
+See [CHANGELOG_v1.16.1](CHANGELOG_v1.16.1.md)
+
+### v1.16.0 (2026-03-15)
+
+**Features**:
+- **Auto-Detection of Latest Review Report**: `ucx remediate` auto-detects latest UCR report
+- No need to specify exact report version
+- New `--report` / `-r` flag for explicit override
+- New utilities: `find_latest_review_report()`, `find_latest_remediation_report()`
+- API change: `UCRemPhase.generate_fixes(doc_path, review_report=None)`
+
+See [CHANGELOG_v1.16.0](CHANGELOG_v1.16.0.md)
+
+### v1.15.x (2026-03-14)
+
+**Features**:
+- v1.15.6: Chairperson findings extraction fix
+- v1.15.5: Persona prompts as default review mode
+- v1.15.4: BRD-E002 invalid value fixer, GATE-E001 recursion fix
+- v1.15.3: BRD-E002, BRD-E009, GATE-E008 auto-fix improvements
+- v1.15.2: Extended auto-fix suite (21 codes)
+- v1.15.1: BRD-E020 invalid type code fixer
+- v1.15.0: Extended auto-fix suite (17 codes)
+
+### v1.14.8 (2026-03-14)
 
 **Features**:
 - **Terminology Update**: Renamed review modes for clarity
@@ -343,8 +378,11 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Review Mode Documentation | Medium | ✅ Complete (v1.14.6) | Unified vs persona prompts |
 | Attention Steering Fix | High | ✅ Complete (v1.14.7) | Format instructions at END |
 | Terminology Update | Medium | ✅ Complete (v1.14.8) | Unified prompt / Persona prompts |
-| Multi-Document Validation | High | Planned (v1.15.0) | PLAN-006 |
-| PRD validation parity | Medium | Planned (v1.16.0) | After multi-doc |
+| Extended Auto-Fix Suite | High | ✅ Complete (v1.15.x) | 21 auto-fixable error codes |
+| Auto-Detect Review Report | High | ✅ Complete (v1.16.0) | Remediation workflow improvement |
+| Single-File Validation | Medium | ✅ Complete (v1.16.1) | Cleaner validation reports |
+| Multi-Document Validation | High | Planned (v1.17.0) | PLAN-006 |
+| PRD validation parity | Medium | Planned (v1.18.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
 | Real-time streaming | Low | Future | Requires API mode changes |
@@ -380,7 +418,9 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.6.md](CHANGELOG_v1.14.6.md) - Session directory rename, review mode documentation
 - [CHANGELOG_v1.14.7.md](CHANGELOG_v1.14.7.md) - Attention steering fix (format instructions at END)
 - [CHANGELOG_v1.14.8.md](CHANGELOG_v1.14.8.md) - Terminology update (unified prompt / persona prompts)
+- [CHANGELOG_v1.16.0.md](CHANGELOG_v1.16.0.md) - Auto-detection of latest review report
+- [CHANGELOG_v1.16.1.md](CHANGELOG_v1.16.1.md) - Single-file validation reports
 
 ---
 
-*Last Updated: 2026-03-14*
+*Last Updated: 2026-03-15*
