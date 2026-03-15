@@ -800,11 +800,40 @@ class ReviewMemory:
         Returns:
             Extracted title string (max 100 chars)
         """
-        # Try table format: | FINDING_ID | Title |
-        table_pattern = rf'\|\s*\*?\*?{re.escape(finding_id)}\*?\*?\s*\|\s*([^|]+)'
+        # For REM-* IDs (Chairperson manifest), extract from multi-column table
+        # Format: | ID | Priority | Category | Status | Fixer | Target File | Target Section | Description |
+        if finding_id.startswith("REM-"):
+            # Extract the entire row and get the last non-empty column (Description)
+            row_pattern = rf'\|\s*{re.escape(finding_id)}\s*\|([^\n]+)'
+            row_match = re.search(row_pattern, context)
+            if row_match:
+                row_content = row_match.group(1)
+                columns = [col.strip() for col in row_content.split('|') if col.strip()]
+                # Description is typically the last column (index -1)
+                if columns:
+                    description = columns[-1]
+                    # Skip if it looks like a table header or empty
+                    if description and description.lower() not in ('description', '-', ''):
+                        return description[:100]
+
+        # Try standard table format: | FINDING_ID | Title | (for persona findings)
+        # For multi-column tables, try to get a meaningful column (skip Priority, Status, etc.)
+        table_pattern = rf'\|\s*\*?\*?{re.escape(finding_id)}\*?\*?\s*\|([^\n]+)'
         match = re.search(table_pattern, context)
         if match:
-            return match.group(1).strip()[:100]
+            row_content = match.group(1)
+            columns = [col.strip() for col in row_content.split('|') if col.strip()]
+
+            # For persona tables like: | ID | Finding | Section | Evidence | Remediation |
+            # The Finding/Description is usually the first substantial text column
+            for col in columns:
+                # Skip short columns that are likely Priority, Status, etc.
+                if len(col) > 20 and not col.startswith('[CAT:'):
+                    return col[:100]
+
+            # Fallback to first column if no long column found
+            if columns:
+                return columns[0][:100]
 
         # Try inline format: FINDING_ID: Title or FINDING_ID - Title
         inline_pattern = rf'{re.escape(finding_id)}[:\s-]+([^\n|]+)'

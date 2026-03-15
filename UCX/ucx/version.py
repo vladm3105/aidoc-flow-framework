@@ -1,7 +1,17 @@
 """Version information for UCX."""
 
-__version__ = "1.15.5"
+__version__ = "1.15.6"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.15.6 - Chairperson Findings Extraction Fix
+# - FIXED: Chairperson REM-* findings now extract Description column correctly
+#   Previously: Extracted "P1" (Priority column) instead of actual description
+#   Now: Extracts last column (Description) from multi-column manifest table
+# - IMPROVED: Table extraction handles multi-column formats for all personas
+#   - Skips short columns (Priority, Status, etc.)
+#   - Finds first column with >20 chars as title
+# - BUG: Affected REM-P0-001 through REM-P2-NNN findings in review reports
+# - See: docs/CHANGELOG_v1.15.6.md
 
 # v1.15.5 - Persona Prompts as Default Review Mode
 # - CHANGED: `ucx review` now uses persona prompts mode by default
