@@ -13,7 +13,7 @@ UCX v1.16.1 changes the validation report format from versioned files to a singl
 
 | Aspect | Before (v1.16.0) | After (v1.16.1) |
 |--------|------------------|-----------------|
-| **Filename** | `{doc_id}.V_validation_report_v{NNN}.md` | `precommit_validation_report.md` |
+| **Filename** | `{doc_id}.V_validation_report_v{NNN}.md` | `.precommit_validation_report.md` |
 | **Versioning** | Auto-incrementing (v001, v002, ...) | Single file, overwrites |
 | **Accumulation** | Creates new file each run | Replaces existing file |
 | **Typical Count** | 25+ files over time | 1 file always |
@@ -30,7 +30,7 @@ ls docs/01_BRD/
 
 # After (v1.16.1)
 ls docs/01_BRD/
-# precommit_validation_report.md  (1 file)
+# .precommit_validation_report.md  (1 file)
 ```
 
 ### CLI Behavior
@@ -38,11 +38,11 @@ ls docs/01_BRD/
 ```bash
 # Run validation (creates/overwrites single report)
 ucx validate brd docs/01_BRD --tier1-only
-# → Creates: docs/01_BRD/precommit_validation_report.md
+# → Creates: docs/01_BRD/.precommit_validation_report.md
 
 # Run again (overwrites same file)
 ucx validate brd docs/01_BRD --tier1-only
-# → Overwrites: docs/01_BRD/precommit_validation_report.md
+# → Overwrites: docs/01_BRD/.precommit_validation_report.md
 ```
 
 ### Clean Reports Flag
@@ -60,8 +60,8 @@ ucx validate brd docs/01_BRD --clean-reports
 
 | File | Changes |
 |------|---------|
-| `ucx/cli/main.py` | Changed report filename to `precommit_validation_report.md`, removed versioning logic |
-| `ucx/validators/brd/__init__.py` | Added `precommit_validation_report.md` to `NON_BRD_FILE_PATTERNS` |
+| `ucx/cli/main.py` | Changed report filename to `.precommit_validation_report.md`, removed versioning logic |
+| `ucx/validators/brd/__init__.py` | Added `.precommit_validation_report.md` to `NON_BRD_FILE_PATTERNS` |
 | `ucx/validators/common/file_utils.py` | Updated `COMPANION_REPORT_PATTERN` to recognize new filename |
 | `ucx/version.py` | Updated to 1.16.1 |
 
@@ -101,7 +101,7 @@ No changes needed. The pre-commit hook continues to work:
 
 1. **Cleaner Repository**: No accumulation of versioned validation reports
 2. **Smaller History**: Fewer files to track in git
-3. **Meaningful Name**: `precommit_validation_report.md` clearly indicates purpose
+3. **Meaningful Name**: `.precommit_validation_report.md` clearly indicates purpose
 4. **CI/CD Friendly**: Single file path for artifact collection
 5. **Reduced Clutter**: Document directories stay clean
 

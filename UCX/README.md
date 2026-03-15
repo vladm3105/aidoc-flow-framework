@@ -492,7 +492,7 @@ custom_fields:
 
 | Output Type | Filename Pattern | Example |
 |-------------|------------------|---------|
-| Validation | `precommit_validation_report.md` | `precommit_validation_report.md` |
+| Validation | `.precommit_validation_report.md` | `.precommit_validation_report.md` |
 | Review | `{DOC-ID}.UCR_review_report_v{NNN}.md` | `BRD-01.UCR_review_report_v001.md` |
 | Remediation | `{DOC-ID}.UCRem_remediation_report.md` | `BRD-01.UCRem_remediation_report.md` |
 
@@ -1330,7 +1330,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.16.1 | 2026-03-15 | **Single-File Validation Reports**: Changed validation report from versioned format (`{doc_id}.V_validation_report_v{NNN}.md`) to single file (`precommit_validation_report.md`) that overwrites on each run. Cleaner repos, no accumulation. See [CHANGELOG_v1.16.1.md](docs/CHANGELOG_v1.16.1.md). |
+| 1.16.1 | 2026-03-15 | **Single-File Validation Reports**: Changed validation report from versioned format (`{doc_id}.V_validation_report_v{NNN}.md`) to single file (`.precommit_validation_report.md`) that overwrites on each run. Cleaner repos, no accumulation. See [CHANGELOG_v1.16.1.md](docs/CHANGELOG_v1.16.1.md). |
 | 1.16.0 | 2026-03-15 | **Auto-Detection of Latest Review Report**: `ucx remediate` now auto-detects latest UCR review report. No need to specify exact report version. New `--report` / `-r` flag for explicit override. See [CHANGELOG_v1.16.0.md](docs/CHANGELOG_v1.16.0.md). |
 | 1.15.2 | 2026-03-14 | **Extended Auto-Fix Suite (21 codes)**: Added `GATE-E001` (placeholder → DEFERRED comment), `DIAG-E001` (missing diagram → DIAGRAM-REQUIRED placeholder), `FWDREF-E001` (forward ref → FWDREF-DEFERRED comment). Total: 21 auto-fixable codes. Expected impact: ~524 Tier 1 errors converted to deferred. See [CHANGELOG_v1.15.2.md](docs/CHANGELOG_v1.15.2.md). |
 | 1.15.1 | 2026-03-14 | **BRD-E020 Invalid Type Code Fixer**: Added auto-fix for invalid element type codes (1,260 errors fixed). New `INVALID_CODE_REMAP` table with 60+ mappings. Remaps invalid codes to valid BRD codes (01-32, 91-99). Total: 18 auto-fixable codes. See [CHANGELOG_v1.15.1.md](docs/CHANGELOG_v1.15.1.md). |
@@ -1386,7 +1386,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
 **Latest Release**: v1.16.1 - Single-File Validation Reports
-- CHANGED: Validation reports use single file `precommit_validation_report.md`
+- CHANGED: Validation reports use single file `.precommit_validation_report.md`
 - CHANGED: Overwrites on each run (no versioned accumulation)
 - BENEFIT: Cleaner repos, reduced clutter, CI/CD friendly
 - See [CHANGELOG_v1.16.1](docs/CHANGELOG_v1.16.1.md) for details

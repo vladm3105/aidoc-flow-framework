@@ -897,8 +897,8 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             # If output path is a directory or ends with /, auto-generate filename
             if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
                 output_path.mkdir(parents=True, exist_ok=True)
-                # Single file with meaningful name - overwrites on each run
-                output_path = output_path / "precommit_validation_report.md"
+                # Single hidden file - overwrites on each run (dot-prefix = hidden)
+                output_path = output_path / ".precommit_validation_report.md"
                 version = 1  # Report format uses version 1 (single file)
             else:
                 # Output to specified file

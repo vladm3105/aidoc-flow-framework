@@ -50,7 +50,7 @@ NON_BRD_FILE_PATTERNS = [
     re.compile(r"^README\.md$"),  # README files
     re.compile(r"^CHANGELOG.*\.md$"),  # Changelog files
     re.compile(r"^\d+\.V_validation_report.*\.md$"),  # Legacy versioned reports (01.V_*)
-    re.compile(r"^precommit_validation_report\.md$"),  # Current validation report
+    re.compile(r"^\.precommit_validation_report\.md$"),  # Current validation report (hidden)
 ]
 
 from ucx.validators.common.result import (

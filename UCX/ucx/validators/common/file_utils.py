@@ -15,12 +15,12 @@ from typing import List, Optional
 # - BRD-01.A_audit_report.md, BRD-01.R_review_report_v003.md
 # - BRD-01.UCA_audit_report.md, BRD-01.UCR_review_report_v003.md
 # - BRD-01.UCRem_fix_report.md
-# - precommit_validation_report.md (current validation format)
+# - .precommit_validation_report.md (current validation format, hidden file)
 COMPANION_REPORT_PATTERN = re.compile(
     r"(\.(A_audit_report|R_review_report|F_fix_report|V_validation_report|"
     r"UCA_audit_report|UCR_review_report|UCRem_fix_report|"
     r"UCRem_remediation_report)"
-    r"(_v[0-9]+)?\.md$|^precommit_validation_report\.md$)"
+    r"(_v[0-9]+)?\.md$|^\.precommit_validation_report\.md$)"
 )
 
 # Pattern for section-based BRD layout (e.g., BRD-01.0_index.md)
