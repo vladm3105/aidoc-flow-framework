@@ -590,11 +590,14 @@ After UCR validation, use **UCRem (Unified Context Remediation)** to generate ex
 # Step 1: Run UCR validation (produces review report)
 ucx review brd docs/01_BRD/BRD-01/
 
-# Step 2: Run UCRem remediation (produces fix proposals)
-ucx remediate brd docs/01_BRD/BRD-01/ --review-report docs/01_BRD/BRD-01/BRD-01.UCR_review_report_v001.md
+# Step 2: Run UCRem remediation (auto-detects latest report, v1.16.0+)
+ucx remediate docs/01_BRD/BRD-01/
+
+# Or specify explicit report:
+# ucx remediate docs/01_BRD/BRD-01/ -r BRD-01.UCR_review_report_v001.md
 
 # Step 3: Apply fixes (via Claude skill)
-/doc-brd-fixer BRD-01 --from-ucrem BRD-01_UCRem_REPORT.md
+/doc-brd-fixer BRD-01 --from-ucrem BRD-01.UCRem_report.md
 
 # Step 4: Re-validate
 ucx review brd docs/01_BRD/BRD-01/

@@ -42,6 +42,49 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 
 ---
 
+## Auto-Detection of Latest Report (v1.16.0+)
+
+UCX automatically detects the latest UCR review report when remediation is invoked:
+
+```bash
+# Auto-detect latest review report (recommended)
+ucx remediate docs/01_BRD/BRD-01
+
+# Output:
+# Using latest review report: BRD-01.UCR_review_report_v003.md
+# ...
+
+# Explicit report (override auto-detection)
+ucx remediate docs/01_BRD/BRD-01 -r BRD-01.UCR_review_report_v001.md
+```
+
+**Report Selection Logic:**
+1. Finds all `*.UCR_review_report_v*.md` files in document directory
+2. Extracts version numbers (e.g., v001, v003)
+3. Returns report with highest version number
+4. Falls back to modification time if versions match
+
+**API Usage:**
+```python
+from ucx import UCRemPhase
+
+ucrem = UCRemPhase()
+
+# Auto-detect latest report
+fixes, report_path = ucrem.generate_fixes(
+    doc_path="docs/01_BRD/BRD-01"  # No review_report needed
+)
+print(f"Used report: {ucrem.last_review_report}")
+
+# Explicit report
+fixes, report_path = ucrem.generate_fixes(
+    doc_path="docs/01_BRD/BRD-01",
+    review_report="BRD-01.UCR_review_report_v003.md"
+)
+```
+
+---
+
 ## Persona Matrix by Layer
 
 | Persona | L1 BRD | L2 PRD | L3 EARS | L4 BDD | L5 ADR | Category |

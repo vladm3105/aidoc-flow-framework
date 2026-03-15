@@ -1,7 +1,23 @@
 """Version information for UCX."""
 
-__version__ = "1.15.6"
+__version__ = "1.16.0"
 __version_info__ = tuple(int(x) for x in __version__.split("."))
+
+# v1.16.0 - Auto-Detection of Latest Review Report
+# - NEW: `ucx remediate` now auto-detects latest UCR review report
+#   Previously: Required explicit review_report path as first argument
+#   Now: `ucx remediate docs/01_BRD/BRD-01` finds latest *.UCR_review_report_v*.md
+# - NEW: `--report` / `-r` option to specify explicit report (override auto-detect)
+# - NEW: find_latest_review_report() utility in ucx/utils/file_ops.py
+# - NEW: find_latest_remediation_report() utility for UCRem reports
+# - CHANGED: UCRemPhase.generate_fixes() argument order changed:
+#   Previously: (review_report, doc_path)
+#   Now: (doc_path, review_report=None) - review_report is optional
+# - NEW: UCRemPhase.last_review_report attribute tracks which report was used
+# - UPDATED: Documentation in HOW_TO_USE.md, UCRem_PERSONAS.md
+# - BENEFIT: Simpler CLI usage - no need to specify exact report version
+# - BENEFIT: API parity - programmatic usage mirrors CLI behavior
+# - See: docs/CHANGELOG_v1.16.0.md
 
 # v1.15.6 - Chairperson Findings Extraction Fix
 # - FIXED: Chairperson REM-* findings now extract Description column correctly

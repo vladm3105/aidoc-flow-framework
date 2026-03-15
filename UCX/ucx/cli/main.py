@@ -653,25 +653,28 @@ def scan(review_report, output, output_format, verbose):
 
 
 @cli.command()
-@click.argument("review_report", type=click.Path(exists=True, path_type=Path))
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+@click.option("--report", "-r", type=click.Path(exists=True, path_type=Path), help="Specific review report (auto-detects latest if not provided)")
 @click.option("--output", "-o", type=click.Path(path_type=Path))
 @click.option("--apply-auto-safe", is_flag=True, help="Apply auto-safe fixes")
 @click.pass_context
-def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
+def remediate(ctx, doc_path, report, output, apply_auto_safe):
     """
     Generate fixes from review report (UCRem phase).
 
-    Automatically runs pre-screening to load only the fixer personas
-    needed based on actual findings in the review report.
+    Automatically finds the latest UCR review report if not specified.
+    Runs pre-screening to load only the fixer personas needed based on
+    actual findings in the review report.
 
     \b
     Examples:
-      ucx remediate BRD-01.UCR_review_report_v001.md docs/01_BRD/BRD-01
-      ucx remediate BRD-01.UCR_review_report_v001.md docs/01_BRD/BRD-01 --apply-auto-safe
+      ucx remediate docs/01_BRD/BRD-01                    # Auto-detect latest report
+      ucx remediate docs/01_BRD/BRD-01 --apply-auto-safe  # Auto-detect + apply fixes
+      ucx remediate docs/01_BRD/BRD-01 -r BRD-01.UCR_review_report_v003.md  # Specific report
     """
     from ucx import UCRemPhase
     from ucx.models.enums import Confidence
+    from ucx.utils.file_ops import find_latest_review_report
 
     config = ctx.obj["config"]
 
@@ -703,8 +706,25 @@ def remediate(ctx, review_report, doc_path, output, apply_auto_safe):
             )
             raise click.Abort()
 
+    # Auto-detect latest review report if not specified
+    review_report = report
+    if review_report is None:
+        review_report = find_latest_review_report(doc_path)
+        if review_report is None:
+            console.print(
+                "[red]Error: No review report found.[/red]\n"
+                f"No UCR review reports found in: {doc_path}\n\n"
+                "Either:\n"
+                "  1. Run 'ucx review' first to generate a report\n"
+                "  2. Use --report to specify a specific report path\n"
+            )
+            raise click.Abort()
+        console.print(f"[green]Using latest review report:[/green] {review_report.name}")
+    else:
+        console.print(f"[dim]Using specified review report: {review_report.name}[/dim]")
+
     ucrem = UCRemPhase(config)
-    fixes, report_path = ucrem.generate_fixes(review_report, doc_path, output_path=output)
+    fixes, report_path = ucrem.generate_fixes(doc_path, review_report=review_report, output_path=output)
 
     # Display pre-screening results
     if ucrem.last_screening:

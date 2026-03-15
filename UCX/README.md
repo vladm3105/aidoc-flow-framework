@@ -1246,11 +1246,14 @@ UCX uses context engineering to optimize prompt size and improve LLM output qual
 Remediation uses **pre-screening** to load only the fixer personas needed:
 
 ```bash
-# Legacy pre-screen command (still works)
-ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
+# Auto-detect latest review report (v1.16.0+, recommended)
+ucx remediate docs/01_BRD/BRD-01/
 
-# Run remediation (uses manifest or pre-screening automatically)
-ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/
+# Explicit report path (override auto-detection)
+ucx remediate docs/01_BRD/BRD-01/ -r BRD-01.UCR_review_report_v003.md
+
+# Pre-screen command for analysis (standalone)
+ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 ```
 
 **Fixer Classification:**

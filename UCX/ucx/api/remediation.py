@@ -2,6 +2,11 @@
 
 Implements adaptive remediation with pre-screening to load only
 the fixer personas needed based on actual UCR findings.
+
+Features (v1.16.0+):
+- Auto-detection of latest review report
+- Adaptive fixer persona loading based on pre-screening
+- Session data saved to .ucx_remediate_session/ folder
 """
 
 from pathlib import Path
@@ -19,6 +24,7 @@ from ucx.models.enums import DocType, Confidence
 from ucx.models.fix import FixProposal
 from ucx.exceptions import PromptError
 from ucx.prescreening import analyze_ucr_report, ScreeningResult
+from ucx.utils.file_ops import find_latest_review_report
 
 
 class UCRemPhase:
@@ -28,17 +34,26 @@ class UCRemPhase:
     Multi-persona fix proposal generation with confidence levels.
     Uses adaptive pre-screening to load only required fixer personas.
 
-    Example:
+    Features:
+        - Auto-detection of latest review report (v1.16.0+)
+        - Adaptive fixer loading based on pre-screening
+        - Saves session data to .ucx_remediate_session/ folder
+
+    Example (auto-detect latest report):
         >>> from ucx import UCRemPhase
         >>>
         >>> ucrem = UCRemPhase()
-        >>> fixes = ucrem.generate_fixes(
-        ...     review_report="docs/BRD-01.UCR_review_report_v001.md",
+        >>> fixes, report_path = ucrem.generate_fixes(
+        ...     doc_path="docs/01_BRD/BRD-01"  # Auto-detects latest review report
+        ... )
+        >>> print(f"Used report: {ucrem.last_review_report}")
+        >>> print(f"Loaded fixers: {ucrem.last_screening.required_fixers}")
+
+    Example (explicit report):
+        >>> fixes, report_path = ucrem.generate_fixes(
+        ...     review_report="docs/BRD-01.UCR_review_report_v003.md",
         ...     doc_path="docs/01_BRD/BRD-01"
         ... )
-        >>> # Check screening results
-        >>> print(f"Loaded fixers: {ucrem.last_screening.required_fixers}")
-        >>> print(f"Excluded: {ucrem.last_screening.excluded_fixers}")
         >>>
         >>> for fix in fixes:
         ...     if fix.confidence == Confidence.AUTO_SAFE:
@@ -55,6 +70,7 @@ class UCRemPhase:
         self.config = config or UCXConfig()
         self._ai_client = None
         self.last_screening: Optional[ScreeningResult] = None
+        self.last_review_report: Optional[Path] = None  # Track which report was used
 
     @property
     def ai_client(self):
@@ -65,40 +81,55 @@ class UCRemPhase:
 
     def generate_fixes(
         self,
-        review_report: Union[str, Path],
         doc_path: Union[str, Path],
+        review_report: Optional[Union[str, Path]] = None,
         *,
         output_path: Optional[Path] = None,
     ) -> tuple[list[FixProposal], Path]:
         """
         Generate fix proposals from review report.
 
+        Auto-detects the latest review report if not specified (v1.16.0+).
         Always runs pre-screening first to determine which fixer personas
         are needed based on actual findings in the UCR report.
 
         Args:
-            review_report: Path to UCR review report
             doc_path: Path to original document
+            review_report: Path to UCR review report (optional - auto-detects latest if None)
             output_path: Custom output path for fix report
 
         Returns:
             Tuple of (list of FixProposal instances, output path where report was written)
 
         Raises:
-            FileNotFoundError: If inputs not found
+            FileNotFoundError: If inputs not found or no review report found
             PromptError: If prompt not found
 
         Note:
-            After calling this method, check `self.last_screening` for details
-            about which fixers were loaded and which were excluded.
+            After calling this method, check:
+            - `self.last_review_report` - which report was used
+            - `self.last_screening` - which fixers were loaded/excluded
         """
-        review_report = Path(review_report)
         doc_path = Path(doc_path)
 
-        if not review_report.exists():
-            raise FileNotFoundError(f"Review report not found: {review_report}")
         if not doc_path.exists():
             raise FileNotFoundError(f"Document not found: {doc_path}")
+
+        # Auto-detect latest review report if not specified
+        if review_report is None:
+            review_report = find_latest_review_report(doc_path)
+            if review_report is None:
+                raise FileNotFoundError(
+                    f"No review report found in: {doc_path}\n"
+                    "Run 'ucx review' first or specify --report path."
+                )
+        else:
+            review_report = Path(review_report)
+            if not review_report.exists():
+                raise FileNotFoundError(f"Review report not found: {review_report}")
+
+        # Track which report was used
+        self.last_review_report = review_report
 
         # === PRE-SCREENING PHASE ===
         # Always run pre-screening to determine required fixers

@@ -112,3 +112,89 @@ def get_document_files(doc_path: Path) -> List[Path]:
         return [doc_path]
 
     return []
+
+
+def find_latest_review_report(doc_path: Path) -> Optional[Path]:
+    """
+    Find the latest UCR review report for a document.
+
+    Searches for files matching the pattern:
+    - {DOC_ID}.UCR_review_report_v{NNN}.md
+    - {DOC_ID}_UCR_REVIEW_v{NNN}.md (legacy)
+
+    Returns the report with the highest version number.
+
+    Args:
+        doc_path: Document file or directory
+
+    Returns:
+        Path to latest review report, or None if not found
+
+    Examples:
+        >>> find_latest_review_report(Path("docs/01_BRD/BRD-01_platform_architecture"))
+        PosixPath('docs/01_BRD/BRD-01_platform_architecture/BRD-01.UCR_review_report_v003.md')
+    """
+    import re
+
+    search_dir = doc_path if doc_path.is_dir() else doc_path.parent
+
+    # Find all UCR review reports
+    patterns = [
+        "*.UCR_review_report_v*.md",  # Current format
+        "*_UCR_REVIEW_v*.md",         # Legacy format
+        "*UCR_REVIEW*.md",            # Older legacy
+    ]
+
+    all_reports: List[Path] = []
+    for pattern in patterns:
+        all_reports.extend(search_dir.glob(pattern))
+
+    if not all_reports:
+        return None
+
+    # Extract version numbers and sort
+    def extract_version(path: Path) -> int:
+        """Extract version number from filename."""
+        # Match patterns like _v001, _v1, v003
+        match = re.search(r"_v(\d+)\.md$", path.name, re.IGNORECASE)
+        if match:
+            return int(match.group(1))
+        # Fallback: use modification time
+        return 0
+
+    # Sort by version (highest first), then by mtime as tiebreaker
+    all_reports.sort(key=lambda p: (extract_version(p), p.stat().st_mtime), reverse=True)
+
+    return all_reports[0] if all_reports else None
+
+
+def find_latest_remediation_report(doc_path: Path) -> Optional[Path]:
+    """
+    Find the latest UCRem remediation report for a document.
+
+    Args:
+        doc_path: Document file or directory
+
+    Returns:
+        Path to latest remediation report, or None if not found
+    """
+    import re
+
+    search_dir = doc_path if doc_path.is_dir() else doc_path.parent
+
+    patterns = [
+        "*.UCRem_report*.md",
+        "*_UCRem_REPORT*.md",
+    ]
+
+    all_reports: List[Path] = []
+    for pattern in patterns:
+        all_reports.extend(search_dir.glob(pattern))
+
+    if not all_reports:
+        return None
+
+    # Sort by modification time (newest first)
+    all_reports.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+
+    return all_reports[0] if all_reports else None

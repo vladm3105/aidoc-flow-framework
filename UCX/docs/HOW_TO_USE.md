@@ -301,12 +301,19 @@ ucx prescreen BRD-01.UCR_review_report_v003.md -o screening.json
 ### CLI Usage
 
 ```bash
-# Generate fix proposals from review (pre-screening runs automatically)
-ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/
+# Auto-detect latest review report (recommended - v1.16.0+)
+ucx remediate docs/01_BRD/BRD-01/
 
 # Apply auto-safe fixes automatically
-ucx remediate BRD-01.UCR_review_report_v003.md docs/01_BRD/BRD-01/ --apply-auto-safe
+ucx remediate docs/01_BRD/BRD-01/ --apply-auto-safe
+
+# Use specific report (override auto-detection)
+ucx remediate docs/01_BRD/BRD-01/ -r BRD-01.UCR_review_report_v001.md
 ```
+
+**Auto-detection** finds the latest `*.UCR_review_report_v*.md` by version number:
+- `BRD-01.UCR_review_report_v003.md` selected over `v001.md` or `v002.md`
+- Falls back to modification time if versions match
 
 ### Python API
 
@@ -317,9 +324,16 @@ from pathlib import Path
 config = UCXConfig(ai_mode="cli", cli_tool="claude")
 ucrem = UCRemPhase(config)
 
+# Auto-detect latest review report (v1.16.0+)
 fixes, report_path = ucrem.generate_fixes(
-    review_report=Path("docs/01_BRD/BRD-01.UCR_review_report_v003.md"),
     doc_path=Path("docs/01_BRD/BRD-01/"),
+)
+print(f"Used report: {ucrem.last_review_report}")
+
+# Or specify explicit report
+fixes, report_path = ucrem.generate_fixes(
+    doc_path=Path("docs/01_BRD/BRD-01/"),
+    review_report=Path("docs/01_BRD/BRD-01.UCR_review_report_v003.md"),
 )
 
 # Check pre-screening results
