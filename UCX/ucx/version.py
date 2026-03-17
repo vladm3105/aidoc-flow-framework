@@ -1,7 +1,65 @@
 """Version information for UCX."""
 
-__version__ = "1.16.1"
-__version_info__ = tuple(int(x) for x in __version__.split("."))
+__version__ = "1.18.0"
+__version_info__ = tuple(int(x) for x in __version__.split(".")[:3])
+
+# v1.18.0 - Layer Action Handoff System
+# - NEW: ACTION handoff system for BRD review
+#   - Captures out-of-scope items as ACTIONS instead of P0/P1/P2 findings
+#   - Actions do NOT affect BRD score (0 score impact)
+#   - Target layers: PRD (L2), EARS (L3), BDD (L4), ADR (L5), CTR (L8)
+# - NEW: Action format with UCX-ACTION-START/END markers
+#   - Fields: ACTION_ID, TYPE, TARGET, PRIORITY, SOURCE, PERSONA, CONTEXT, REQUIREMENT
+#   - ACTION_ID format: ACT-{8-char-hex} (e.g., ACT-7f3a2b1c)
+#   - TYPE: HANDOFF (v1.18.0), future: INFORM, REVIEW, DEFER
+# - NEW: extract_actions.py script
+#   - Extract actions from UCR review reports
+#   - Filter by target, type, priority
+#   - Output formats: json, md, csv, summary
+# - NEW: validate_actions.py script
+#   - Validate action format in review reports
+#   - Strict mode: warnings treated as errors
+# - UPDATED: All 11 core review personas can create actions
+# - UPDATED: Chairperson output includes Actions Manifest
+# - UPDATED: UCR report output includes Section 12 (Downstream Layer Actions)
+# - BENEFIT: BRD scores no longer penalized for items belonging in downstream layers
+# - See: docs/CHANGELOG_v1.18.0.md, docs/plans/PLAN-007_layer_notice_handoff.md
+
+# v1.17.0 - Fixer-to-LLM Hand-off System
+# - NEW: Validation now ALWAYS fixes by default (no --fix flag needed)
+#   - Use --no-fix to skip fixing (e.g., for pre-commit hooks)
+#   - --fix flag deprecated with warning for backwards compatibility
+# - NEW: FixerContext dataclass for fixer session tracking
+#   - Records fixed, partial, and skipped issues
+#   - Identifies LLM_COMPLETION (partial fix, LLM completes) and LLM_ONLY codes
+# - NEW: Validation Report Section 7 "Fixer Session Summary"
+#   - Embedded JSON with FIXER_CONTEXT_START/END markers
+#   - Human-readable tables for partial fixes, LLM-only, protected changes
+# - NEW: LLM_COMPLETION markers in documents
+#   - <!-- LLM_COMPLETION: CODE --> with Script and Task comments
+#   - Inserted at safe locations (avoiding YAML frontmatter)
+#   - Deduplicated to prevent accumulation
+# - NEW: `ucx clean-markers` command to remove LLM markers after remediation
+# - NEW: UCRem integration reads fixer context from validation report
+#   - _load_fixer_context() parses Section 7 JSON
+#   - _format_fixer_handoff_section() injects into remediation prompts
+# - UPDATED: All 6 fixer personas with "Fixer Hand-off Protocol" section
+#   - architect, auditor, qa_lead, integration_lead, chaos_engineer, chairperson
+# - BENEFIT: Smooth hand-off between script-based fixer and LLM remediation
+# - BENEFIT: LLM knows what was fixed, what needs completion, what to protect
+# - See: docs/CHANGELOG_v1.17.0.md, docs/plans/PLAN-006_fixer_to_llm_handoff.md
+
+# v1.16.2 - Duplicate Fixer Guardrails & Reference Detection Sync
+# - FIXED: Circular rename prevention in GATE-E008 duplicate fixer
+#   Previously: Fixer could rename ID A→B, then later rename something to A
+#   Now: IDs being renamed FROM are excluded from the target ID pool
+# - FIXED: Backtick-wrapped element IDs now detected as references in fixer
+#   Previously: Only element_codes.py detected `BRD.XX.XX.XX` as references
+#   Now: duplicate_fixer.py also skips backtick-wrapped IDs
+# - SYNCED: _is_reference_context() logic between element_codes.py and duplicate_fixer.py
+# - NEW: Guardrail logging when circular rename is prevented (verbose mode)
+# - BENEFIT: Prevents infinite fix loops where fixer creates new duplicates
+# - See: docs/CHANGELOG_v1.16.2.md
 
 # v1.16.1 - Single-File Validation Reports
 # - CHANGED: Validation reports now use single-file approach with meaningful name

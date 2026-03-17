@@ -757,14 +757,19 @@ def remediate(ctx, doc_path, report, output, apply_auto_safe):
 @click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
-@click.option("--fix", is_flag=True, help="Auto-fix structural issues (metadata, tags, Document Control)")
+@click.option("--fix", is_flag=True, hidden=True, help="DEPRECATED: Validation now always fixes. Use --no-fix to skip.")
+@click.option("--no-fix", is_flag=True, help="Skip auto-fixing (validation always fixes by default)")
 @click.option("--report/--no-report", default=True, help="Generate validation report to document directory (default: enabled)")
 @click.option("--clean-reports", is_flag=True, help="Clean up old validation reports, keep only latest (or --keep-versions)")
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.pass_context
-def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, fix, report, clean_reports, keep_versions):
+def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, fix, no_fix, report, clean_reports, keep_versions):
     """
     Validate a document (no AI review).
+
+    \b
+    As of v1.17.0, validation ALWAYS fixes structural issues automatically.
+    Use --no-fix to skip fixing (e.g., for pre-commit hooks).
 
     \b
     By default, writes validation report to document directory (like review).
@@ -776,28 +781,35 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
       Tier 2 (Advisory): Links, references, diagrams, glossary
 
     \b
-    Auto-fix (--fix):
+    Auto-fix (default behavior):
       Fixes structural issues deterministically (no AI):
       - Missing metadata fields (custom_fields.document_type, artifact_type, layer)
       - Missing tags (brd, layer-1-artifact)
       - Missing Document Control fields
       - Legacy status values
+      - Inserts LLM_COMPLETION markers for partial fixes
 
     \b
     Examples:
-      ucx validate brd docs/01_BRD/BRD-01                    # Generates report by default
-      ucx validate brd docs/01_BRD/BRD-01 --no-report       # Console output only
-      ucx validate brd docs/01_BRD/BRD-01 --tier1-only      # Tier 1 + report
+      ucx validate brd docs/01_BRD/BRD-01                    # Validate + fix + report (default)
+      ucx validate brd docs/01_BRD/BRD-01 --no-fix          # Skip fixing (validate only)
+      ucx validate brd docs/01_BRD/BRD-01 --no-report       # Fix but no report file
+      ucx validate brd docs/01_BRD/BRD-01 --tier1-only      # Tier 1 + fix + report
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
       ucx validate brd docs/01_BRD/BRD-01 -o custom_report.md
-      ucx validate brd docs/01_BRD/BRD-01 --fix             # Fix + report
-      ucx validate brd docs/01_BRD/BRD-01 --fix --clean-reports
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
     """
     import json
     import sys
 
     doc_path = Path(doc_path)
+
+    # Handle deprecated --fix flag (v1.17.0+)
+    if fix:
+        console.print(
+            "[yellow]⚠ --fix is deprecated. Validation now always fixes by default. "
+            "Use --no-fix to skip fixing.[/yellow]\n"
+        )
 
     def _clean_old_reports(target_path: Path, keep: int) -> None:
         """Clean up legacy versioned validation reports.
@@ -844,8 +856,11 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
         validator = UnifiedBRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
         result = validator.validate(Path(doc_path), tier1_only=tier1_only)
 
-        # Handle --fix flag: auto-fix structural issues
-        if fix:
+        # Auto-fix structural issues (v1.17.0: always fix unless --no-fix)
+        fix_summary = None
+        fixer_error = None
+
+        if not no_fix:
             from ucx.validators.brd.fixer import BRDFixer, FIXABLE_CODES
 
             # Collect all fixable issues
@@ -855,29 +870,63 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             if fixable_issues:
                 console.print(f"\n[cyan]Auto-fixing {len(fixable_issues)} structural issue(s)...[/cyan]")
 
-                fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
-                fix_summary = fixer.fix_all(fixable_issues)
+                try:
+                    fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
+                    fix_summary = fixer.fix_all(fixable_issues)
 
-                # Display fix results
-                for fix_result in fix_summary.results:
-                    if fix_result.fixed:
-                        console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
-                        for change in fix_result.changes:
-                            console.print(f"    [dim]→ {change}[/dim]")
-                    else:
-                        console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
+                    # Display fix results with partial fix indicators (v1.17.0+)
+                    for fix_result in fix_summary.results:
+                        if fix_result.fixed:
+                            if fix_result.partial_fix:
+                                console.print(f"  [cyan]◐[/cyan] {fix_result.code}: {fix_result.message}")
+                                console.print(f"    [dim]LLM Task: {fix_result.llm_task}[/dim]")
+                            else:
+                                console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
+                            for change in fix_result.changes:
+                                console.print(f"    [dim]→ {change}[/dim]")
+                        else:
+                            console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
 
-                console.print(f"\n[green]Fixed: {fix_summary.fixed_count}[/green] | "
-                            f"[yellow]Skipped: {fix_summary.skipped_count}[/yellow] | "
-                            f"[red]Failed: {fix_summary.failed_count}[/red]")
+                    # Summary with partial fix count (v1.17.0+)
+                    console.print(
+                        f"\n[green]Fixed: {fix_summary.fully_fixed_count}[/green] | "
+                        f"[cyan]Partial: {fix_summary.partial_fix_count}[/cyan] | "
+                        f"[yellow]Skipped: {fix_summary.skipped_count}[/yellow] | "
+                        f"[red]Failed: {fix_summary.failed_count}[/red]"
+                    )
 
-                # Re-run validation to show updated results
-                if fix_summary.fixed_count > 0:
-                    console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
-                    result = validator.validate(Path(doc_path), tier1_only=tier1_only)
-            else:
-                console.print("[yellow]No auto-fixable issues found.[/yellow]")
-                console.print("[dim]Fixable codes: " + ", ".join(sorted(FIXABLE_CODES)) + "[/dim]\n")
+                    if fix_summary.partial_fix_count > 0:
+                        console.print(f"\n[cyan]LLM Completion Required: {fix_summary.partial_fix_count}[/cyan]")
+                        console.print("[dim]Run `ucx remediate` to complete partial fixes with AI.[/dim]")
+
+                    # Re-run validation to show updated results
+                    if fix_summary.fixed_count > 0:
+                        console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
+                        result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+
+                except Exception as e:
+                    fixer_error = str(e)
+                    console.print(f"[red]Fixer error: {e}[/red]")
+                    import logging
+                    logging.getLogger(__name__).exception("Fixer failed")
+                    # Continue with validation - don't block on fixer failure
+
+        # Attach fixer context to result (v1.17.0+)
+        if fix_summary:
+            result.fixer_context = fix_summary.to_fixer_context(doc_path)
+        elif fixer_error:
+            # Create error context so remediation knows fixer attempted but failed
+            from datetime import datetime, timezone
+            from ucx.validators.common.result import FixerContext
+            result.fixer_context = FixerContext(
+                session_id="error",
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                llm_only=[{
+                    "code": "FIXER-ERROR",
+                    "file": str(doc_path),
+                    "reason": f"Fixer failed: {fixer_error}. Manual fixes required."
+                }]
+            )
 
         # Extract doc_id from path (e.g., BRD-01 from BRD-01_platform_architecture)
         doc_path_obj = Path(doc_path)
@@ -960,6 +1009,61 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             sys.exit(1)
         else:
             sys.exit(0)
+
+
+@cli.command("clean-markers")
+@click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+def clean_markers(doc_path):
+    """
+    Remove LLM_COMPLETION markers from documents (v1.17.0+).
+
+    After remediation completes semantic fixes, run this command
+    to clean up the temporary markers inserted by the fixer.
+
+    \b
+    Examples:
+      ucx clean-markers docs/01_BRD/BRD-01
+      ucx clean-markers docs/01_BRD/
+    """
+    import re
+
+    doc_path = Path(doc_path)
+
+    # Handle file vs directory
+    if doc_path.is_file():
+        doc_path = doc_path.parent
+
+    # Pattern to match marker blocks (all three lines)
+    marker_pattern = re.compile(
+        r'<!-- LLM_COMPLETION:[^>]+-->\n?'
+        r'(?:<!-- Script:[^>]+-->\n?)?'
+        r'(?:<!-- Task:[^>]+-->\n?)?',
+        re.MULTILINE
+    )
+
+    cleaned_count = 0
+    for md_file in doc_path.glob("**/*.md"):
+        # Skip hidden directories and review reports
+        if any(part.startswith('.') for part in md_file.parts):
+            continue
+        if "_review_report" in md_file.name.lower():
+            continue
+
+        try:
+            content = md_file.read_text(encoding="utf-8")
+            new_content = marker_pattern.sub('', content)
+
+            if content != new_content:
+                md_file.write_text(new_content, encoding="utf-8")
+                cleaned_count += 1
+                console.print(f"  [green]✓[/green] Cleaned: {md_file.name}")
+        except Exception as e:
+            console.print(f"  [red]✗[/red] Error in {md_file.name}: {e}")
+
+    if cleaned_count > 0:
+        console.print(f"\n[green]Cleaned markers from {cleaned_count} file(s)[/green]")
+    else:
+        console.print("[yellow]No markers found to clean[/yellow]")
 
 
 @cli.command()

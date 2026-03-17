@@ -118,6 +118,12 @@ def _is_reference_context(
     if current_section and current_section.startswith("16"):
         return True
 
+    # Check for backtick-wrapped element IDs (code-formatted references)
+    # e.g., "per constraint `BRD.17.04.22`" or "(`BRD.11.03.01`: FinCEN)"
+    # Backtick-wrapped IDs are always cross-references, never definitions
+    if re.search(r'`BRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?`', line):
+        return True
+
     # Check if this line contains a definition (if so, NOT a reference context)
     if _is_definition_context(line):
         return False

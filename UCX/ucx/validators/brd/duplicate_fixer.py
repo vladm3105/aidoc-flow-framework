@@ -9,12 +9,22 @@ Algorithm:
 4. Renumber duplicates by incrementing sequence number
 5. Update references to renamed IDs across all files
 
+Guardrails (v1.16.2):
+- Circular rename prevention: IDs being renamed FROM are excluded from target pool
+- Backtick-wrapped element IDs are treated as references (never renamed as duplicates)
+- Reference context detection synced with element_codes.py
+
 Usage:
     from ucx.validators.brd.duplicate_fixer import DuplicateElementFixer
 
     fixer = DuplicateElementFixer(brd_path)
     result = fixer.fix_duplicates()
     print(f"Renamed {len(result.renames)} duplicate IDs")
+
+Note:
+    The _is_reference_context() method should stay in sync with
+    ucx.validators.brd.element_codes._is_reference_context().
+    TODO: Consider refactoring to share this logic via a common module.
 """
 
 import re
@@ -221,6 +231,12 @@ class DuplicateElementFixer:
         if current_section and current_section.startswith("16"):
             return True
 
+        # Check for backtick-wrapped element IDs (code-formatted references)
+        # e.g., "per constraint `BRD.17.04.22`" or "(`BRD.11.03.01`: FinCEN)"
+        # Backtick-wrapped IDs are always cross-references, never definitions
+        if re.search(r'`BRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?`', line):
+            return True
+
         # Check if this line contains a definition
         if self._is_definition_context(line):
             return False
@@ -351,22 +367,39 @@ class DuplicateElementFixer:
         duplicates: List[ElementLocation],
         all_definitions: List[ElementLocation],
     ) -> List[RenameOperation]:
-        """Generate rename operations for duplicates."""
+        """Generate rename operations for duplicates.
+
+        Includes guardrails to prevent circular renames:
+        1. Tracks all IDs being renamed FROM to prevent renaming TO those IDs
+        2. Validates that new IDs don't conflict with pending renames
+        """
         renames = []
 
         # Track all existing IDs and which have been used
         existing_ids: Set[str] = {loc.full_id for loc in all_definitions}
         pending_new_ids: Set[str] = set()
 
+        # GUARDRAIL: Track IDs being renamed FROM to prevent circular renames
+        # If we rename A->B, we must not later rename something TO A
+        ids_being_renamed_from: Set[str] = {dup.full_id for dup in duplicates}
+
         for dup in duplicates:
             # Find next available sequence number
+            # GUARDRAIL: Also exclude IDs that are sources of other renames
+            excluded_ids = existing_ids | pending_new_ids | ids_being_renamed_from
             new_id = self._find_next_available_id(
                 dup.doc_num,
                 dup.type_code,
-                existing_ids | pending_new_ids,
+                excluded_ids,
             )
 
             if new_id:
+                # GUARDRAIL: Double-check we're not creating a circular rename
+                if new_id in ids_being_renamed_from:
+                    if self.verbose:
+                        print(f"  GUARDRAIL: Skipping rename {dup.full_id} → {new_id} (would create circular rename)")
+                    continue
+
                 pending_new_ids.add(new_id)
                 renames.append(RenameOperation(
                     old_id=dup.full_id,
@@ -418,7 +451,15 @@ class DuplicateElementFixer:
             self._set_file_content(rename.file_path, new_content)
 
     def _update_references(self, renames: List[RenameOperation]) -> int:
-        """Update references to renamed IDs across all files."""
+        """Update references to renamed IDs across all files.
+
+        Note: Excludes historical/generated files to preserve audit trails:
+        - .ucx_review_session/ (review session files)
+        - .doc_review_memory/ (legacy session files)
+        - *_review_report*.md (historical review reports)
+        - *_audit_report*.md (historical audit reports)
+        - *UCRem*.md (remediation reports)
+        """
         if not renames:
             return 0
 
@@ -426,23 +467,36 @@ class DuplicateElementFixer:
         rename_map = {r.old_id: r.new_id for r in renames}
         updated_count = 0
 
-        # Get all markdown files
-        md_files = list(self.brd_path.glob("**/*.md"))
+        # Get all markdown files, excluding generated/historical files
+        # GUARDRAIL: Don't modify historical reports (preserve audit trail)
+        md_files = [
+            f for f in self.brd_path.glob("**/*.md")
+            if not any(skip in f.parts for skip in [
+                ".ucx_review_session", ".doc_review_memory", ".backup", "__pycache__"
+            ])
+            and "_review_report" not in f.name.lower()
+            and "_audit_report" not in f.name.lower()
+            and "ucrem" not in f.name.lower()
+            and "_validation_report" not in f.name.lower()
+        ]
 
         for file_path in md_files:
-            content = self._get_file_content(file_path)
-            new_content = content
+            original_content = self._get_file_content(file_path)
+            new_content = original_content
             file_updated = False
 
             for old_id, new_id in rename_map.items():
                 # Replace all occurrences (word boundary to avoid partial matches)
                 pattern = rf"\b{re.escape(old_id)}\b"
-                if re.search(pattern, new_content):
+                # Count in ORIGINAL content (before any modifications in this loop)
+                # This ensures accurate counting even if renames overlap
+                match_count = len(re.findall(pattern, original_content))
+                if match_count > 0:
                     new_content = re.sub(pattern, new_id, new_content)
                     file_updated = True
-                    updated_count += len(re.findall(pattern, content))
+                    updated_count += match_count
 
-            if file_updated and new_content != content:
+            if file_updated and new_content != original_content:
                 self._set_file_content(file_path, new_content)
 
         return updated_count

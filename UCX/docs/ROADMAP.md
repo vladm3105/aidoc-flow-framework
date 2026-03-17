@@ -4,19 +4,21 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.16.1
-**Next Major**: 1.17.0 (Multi-Document Validation)
+**Current Version**: 1.18.0
+**Next Major**: 1.19.0 (Multi-Document Validation)
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.1 (Current) ──► v1.17.0 ──► v2.0.0
-   │           │            │            │              │                  │           │
-   │           │            │            │              │                  │           └─► Breaking changes
-   │           │            │            │              │                  └─► Multi-document validation
-   │           │            │            │              └─► Single-file validation (v1.16.1)
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 (Current) ──► v1.19.0 ──► v2.0.0
+   │           │            │            │           │            │           │                     │           │
+   │           │            │            │           │            │           │                     │           └─► Breaking changes
+   │           │            │            │           │            │           │                     └─► Multi-document validation
+   │           │            │            │           │            │           └─► Layer Action Handoff System
+   │           │            │            │           │            └─► Fixer-to-LLM hand-off
+   │           │            │            │           └─► Duplicate fixer guardrails (v1.16.2)
    │           │            │            └─► Extended auto-fix (21 codes)
    │           │            └─► Prompt Inspection, attention steering (v1.14.0-8)
    │           └─► Context Engineering (v1.13.0, v1.13.1)
@@ -27,7 +29,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.1 
 
 ## Planned Releases
 
-### v1.17.0 - Multi-Document Validation
+### v1.19.0 - Multi-Document Validation
 
 **Status**: Planned
 **ETA**: Q2 2026
@@ -48,7 +50,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.1 
 
 ---
 
-### v1.18.0 - PRD/EARS Validation Parity
+### v1.20.0 - PRD/EARS Validation Parity
 
 **Status**: Planned
 **ETA**: Q3 2026
@@ -92,12 +94,74 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.1 
 
 ## Completed Releases
 
-### v1.16.1 (2026-03-15) - Current
+### v1.18.0 (2026-03-17) - Current
+
+**Features**:
+- **Layer Action Handoff System**: Capture out-of-scope items as ACTIONS that handoff to downstream layers (PRD, EARS, BDD, ADR, CTR) without penalizing BRD score
+- New scripts: `extract_actions.py` and `validate_actions.py` for action processing
+- ACTION format with fields: ACTION_ID, TYPE, TARGET, PRIORITY, SOURCE, PERSONA, CONTEXT, REQUIREMENT
+- Actions Manifest section in Chairperson output
+- Support for future action types (INFORM, REVIEW, DEFER) - currently only HANDOFF implemented
+- Updated all 11 review personas to create ACTIONS for out-of-scope items instead of P0/P1/P2 findings
+- Score calculation explicitly excludes ACTIONS (0 score impact)
+
+**Bug Fixes**:
+- BRD scores no longer penalized for technical/product details that belong in downstream layers
+
+See [CHANGELOG_v1.18.0](CHANGELOG_v1.18.0.md) and [PLAN-007](plans/PLAN-007_layer_notice_handoff.md)
+
+---
+
+### v1.17.0 (2026-03-15)
+
+**Features**:
+- **Fixer-to-LLM Hand-off System**: Seamless hand-off between script-based fixer and LLM remediation
+- **Always-Fix Validation**: Validation now ALWAYS fixes by default (no `--fix` flag needed)
+- **New `--no-fix` Flag**: Opt out of automatic fixing
+- **FixerContext Dataclass**: Tracks fixed/partial/skipped issues with session metadata
+- **Section 7 "Fixer Session Summary"**: New validation report section with embedded JSON context
+- **LLM_COMPLETION Markers**: HTML comments inserted for partial fixes needing LLM completion
+- **New `ucx clean-markers` Command**: Remove markers after remediation is complete
+- **UCRem Integration**: Reads fixer context and injects "FIXER HAND-OFF CONTEXT" into prompts
+- **Persona Updates**: All 6 fixer personas updated with hand-off protocol
+
+**Breaking Changes**:
+| Change | Migration Path |
+|--------|----------------|
+| `--fix` now default | Remove `--fix` from scripts and CI/CD pipelines |
+| Pre-commit hooks | Add `--no-fix` to pre-commit validation (staging conflicts) |
+
+**Code Classifications**:
+| Category | Codes | Behavior |
+|----------|-------|----------|
+| LLM_COMPLETION | GATE-E010, BRD-W011/12, DIAG-E001, FWDREF-E001 | Script does partial fix, LLM completes |
+| LLM_ONLY | CONTENT-E001, LOGIC-E001, TRACE-E001 | Only LLM can handle (semantic issues) |
+
+See [CHANGELOG_v1.17.0](CHANGELOG_v1.17.0.md) and [PLAN-006](plans/PLAN-006_fixer_to_llm_handoff.md)
+
+---
+
+### v1.16.2 (2026-03-15)
+
+**Features**:
+- **Duplicate Fixer Guardrails**: Prevents circular renames in GATE-E008 fixer
+- **Backtick Reference Detection**: `BRD.XX.XX.XX` now detected as references
+- **Historical Report Protection**: Fixer no longer modifies audit/review reports
+- **Reference Logic Sync**: `element_codes.py` and `duplicate_fixer.py` synchronized
+
+**Bug Fixes**:
+- Fixed: Circular rename loops when running `ucx validate --fix`
+- Fixed: Backtick-wrapped IDs incorrectly treated as definitions
+- Fixed: Historical reports corrupted by reference updates
+
+---
+
+### v1.16.1 (2026-03-15)
 
 **Features**:
 - **Single-File Validation Reports**: Changed from versioned to single-file approach
   - Old: `{doc_id}.V_validation_report_v{NNN}.md`
-  - New: `precommit_validation_report.md`
+  - New: `.precommit_validation_report.md`
 - Single file overwrites on each run (no version accumulation)
 - `--clean-reports` flag cleans legacy versioned reports
 - Updated patterns in validators to recognize new filename
@@ -381,8 +445,10 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Extended Auto-Fix Suite | High | ✅ Complete (v1.15.x) | 21 auto-fixable error codes |
 | Auto-Detect Review Report | High | ✅ Complete (v1.16.0) | Remediation workflow improvement |
 | Single-File Validation | Medium | ✅ Complete (v1.16.1) | Cleaner validation reports |
-| Multi-Document Validation | High | Planned (v1.17.0) | PLAN-006 |
-| PRD validation parity | Medium | Planned (v1.18.0) | After multi-doc |
+| Fixer-to-LLM Hand-off | High | ✅ Complete (v1.17.0) | PLAN-006 |
+| Layer Action Handoff | High | ✅ Complete (v1.18.0) | PLAN-007 |
+| Multi-Document Validation | High | Planned (v1.19.0) | After action handoff |
+| PRD validation parity | Medium | Planned (v1.20.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
 | Real-time streaming | Low | Future | Requires API mode changes |
@@ -420,7 +486,11 @@ To propose new features or changes:
 - [CHANGELOG_v1.14.8.md](CHANGELOG_v1.14.8.md) - Terminology update (unified prompt / persona prompts)
 - [CHANGELOG_v1.16.0.md](CHANGELOG_v1.16.0.md) - Auto-detection of latest review report
 - [CHANGELOG_v1.16.1.md](CHANGELOG_v1.16.1.md) - Single-file validation reports
+- [CHANGELOG_v1.17.0.md](CHANGELOG_v1.17.0.md) - Fixer-to-LLM hand-off system
+- [PLAN-006: Fixer-to-LLM Hand-off](plans/PLAN-006_fixer_to_llm_handoff.md) - Complete
+- [CHANGELOG_v1.18.0.md](CHANGELOG_v1.18.0.md) - Layer Action Handoff System
+- [PLAN-007: Layer Action Handoff](plans/PLAN-007_layer_notice_handoff.md) - Complete
 
 ---
 
-*Last Updated: 2026-03-15*
+*Last Updated: 2026-03-17*

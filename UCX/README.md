@@ -134,8 +134,14 @@ ucx autopilot brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
 # Create new document
 ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
 
-# Validate document structure
+# Validate document structure (always fixes by default v1.17.0+)
 ucx validate brd docs/01_BRD/BRD-01.md
+
+# Skip fixing (validation only)
+ucx validate brd docs/01_BRD/BRD-01.md --no-fix
+
+# Remove LLM_COMPLETION markers after remediation
+ucx clean-markers docs/01_BRD/BRD-01.md
 
 # Show help
 ucx --help
@@ -403,14 +409,17 @@ ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --format json --no-re
 # Write validation report to specific file
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ -o tmp/BRD-01_validation.md
 
-# Auto-fix structural issues (v1.9.6+) - includes report by default
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix
+# Validation ALWAYS fixes by default (v1.17.0+)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/
 
-# Auto-fix and clean up old reports (keep only latest)
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --clean-reports
+# Skip fixing (validation only) - add --no-fix
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --no-fix
 
-# Auto-fix with Tier 1 only (fast)
-ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --fix --tier1-only
+# Clean up old reports (keep only latest)
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
+
+# Tier 1 only (fast) - still fixes by default
+ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --tier1-only
 
 # Clean up old validation reports, keep only latest (v1.9.5+)
 ucx validate brd docs/01_BRD/BRD-01_platform_architecture/ --clean-reports
@@ -710,6 +719,59 @@ Context Engineering Savings:
 
 See [CHANGELOG_v1.14.0](docs/CHANGELOG_v1.14.0.md) for full documentation.
 
+### Layer Action Handoff (v1.18.0+)
+
+UCX review automatically identifies items that belong in downstream layers and creates structured ACTIONS for handoff instead of penalizing BRD scores.
+
+**Target Layers:**
+
+| Target | Layer | Purpose |
+|--------|-------|---------|
+| PRD | L2 | Feature details, user stories |
+| EARS | L3 | Formal requirement syntax |
+| BDD | L4 | Test scenarios |
+| ADR | L5 | Architecture decisions |
+| CTR | L8 | API contracts |
+
+**Actions do NOT affect BRD score** - they are handoffs, not findings.
+
+**Action Format:**
+```
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-7f3a2b1c
+TYPE: HANDOFF
+TARGET: ADR
+PRIORITY: P0
+SOURCE: BRD-01 Section 10.2
+PERSONA: ARCHITECT
+CONTEXT: BRD states "platform must survive partner outage"
+REQUIREMENT: Document failover architecture decision
+<!-- UCX-ACTION-END -->
+```
+
+**Extract actions:**
+```bash
+# Get summary of all actions
+python scripts/extract_actions.py report.md --format summary
+
+# Extract ADR-targeted actions as markdown
+python scripts/extract_actions.py report.md --target ADR --format md
+
+# Extract as JSON for processing
+python scripts/extract_actions.py report.md --format json -o actions.json
+```
+
+**Validate actions:**
+```bash
+# Basic validation
+python scripts/validate_actions.py report.md
+
+# Strict mode (warnings = errors)
+python scripts/validate_actions.py report.md --strict
+```
+
+See [CHANGELOG_v1.18.0](docs/CHANGELOG_v1.18.0.md) for full documentation.
+
 ### Python API
 
 ```python
@@ -790,7 +852,8 @@ UCX_MODEL=opus ucx review brd docs/01_BRD/BRD-01/
 | Command | Purpose | Key Options |
 |---------|---------|-------------|
 | `review` | AI-powered document review | `--persona`, `--unified`, `--model`, `--clean-reports` |
-| `validate` | Fast structural validation (no AI) | `--fix`, `--tier1-only`, `--strict` |
+| `validate` | Fast structural validation (no AI) | `--no-fix`, `--tier1-only`, `--strict` |
+| `clean-markers` | Remove LLM_COMPLETION markers (v1.17.0+) | - |
 | `remediate` | Generate fixes from review | `--model` |
 | `create` | Create new document | `--from-ref`, `--from-upstream` |
 | `autopilot` | Full cycle (create→review→fix) | `--max-iterations` |
@@ -1330,6 +1393,9 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.18.0 | 2026-03-17 | **Layer Action Handoff System**: Capture out-of-scope items as ACTIONS that handoff to downstream layers (PRD, EARS, BDD, ADR, CTR) without penalizing BRD score. New scripts: `extract_actions.py` and `validate_actions.py`. ACTION format with fields: ACTION_ID, TYPE, TARGET, PRIORITY, SOURCE, PERSONA, CONTEXT, REQUIREMENT. Actions Manifest in Chairperson output. See [CHANGELOG_v1.18.0.md](docs/CHANGELOG_v1.18.0.md). |
+| 1.17.0 | 2026-03-15 | **Fixer-to-LLM Hand-off System**: Validation now ALWAYS fixes by default (no `--fix` flag needed). Added `--no-fix` flag to opt out. New FixerContext tracks fixed/partial/skipped issues. Section 7 "Fixer Session Summary" added to validation reports with embedded JSON. LLM_COMPLETION markers inserted for partial fixes. New `ucx clean-markers` command. UCRem reads fixer context and injects into prompts. All 6 fixer personas updated with hand-off protocol. See [CHANGELOG_v1.17.0.md](docs/CHANGELOG_v1.17.0.md). |
+| 1.16.2 | 2026-03-15 | **Duplicate Fixer Guardrails & Reference Detection Sync**: Fixed circular rename bug in GATE-E008 fixer (could cause infinite loops). Added backtick reference detection. Synced reference logic between validator and fixer. Protected historical reports from fixer modifications. See [CHANGELOG_v1.16.2.md](docs/CHANGELOG_v1.16.2.md). |
 | 1.16.1 | 2026-03-15 | **Single-File Validation Reports**: Changed validation report from versioned format (`{doc_id}.V_validation_report_v{NNN}.md`) to single file (`.precommit_validation_report.md`) that overwrites on each run. Cleaner repos, no accumulation. See [CHANGELOG_v1.16.1.md](docs/CHANGELOG_v1.16.1.md). |
 | 1.16.0 | 2026-03-15 | **Auto-Detection of Latest Review Report**: `ucx remediate` now auto-detects latest UCR review report. No need to specify exact report version. New `--report` / `-r` flag for explicit override. See [CHANGELOG_v1.16.0.md](docs/CHANGELOG_v1.16.0.md). |
 | 1.15.2 | 2026-03-14 | **Extended Auto-Fix Suite (21 codes)**: Added `GATE-E001` (placeholder → DEFERRED comment), `DIAG-E001` (missing diagram → DIAGRAM-REQUIRED placeholder), `FWDREF-E001` (forward ref → FWDREF-DEFERRED comment). Total: 21 auto-fixable codes. Expected impact: ~524 Tier 1 errors converted to deferred. See [CHANGELOG_v1.15.2.md](docs/CHANGELOG_v1.15.2.md). |
@@ -1385,28 +1451,29 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.16.1 - Single-File Validation Reports
-- CHANGED: Validation reports use single file `.precommit_validation_report.md`
-- CHANGED: Overwrites on each run (no versioned accumulation)
-- BENEFIT: Cleaner repos, reduced clutter, CI/CD friendly
-- See [CHANGELOG_v1.16.1](docs/CHANGELOG_v1.16.1.md) for details
+**Latest Release**: v1.18.0 - Layer Action Handoff System
+- NEW: ACTION handoff system captures out-of-scope items without score penalty
+- NEW: Target layers: PRD (L2), EARS (L3), BDD (L4), ADR (L5), CTR (L8)
+- NEW: `extract_actions.py` script with filter by target/type/priority
+- NEW: `validate_actions.py` script with strict mode
+- NEW: Actions Manifest in Chairperson output
+- NEW: Section 12 "Downstream Layer Actions" in UCR reports
+- See [CHANGELOG_v1.18.0](docs/CHANGELOG_v1.18.0.md) for details
 
-**Previous Releases**: v1.16.0 / v1.15.x / v1.14.x
+**Previous Releases**: v1.17.x / v1.16.x / v1.15.x / v1.14.x
+- v1.17.0: Fixer-to-LLM hand-off system
+- v1.16.2: Duplicate fixer guardrails & reference detection sync
+- v1.16.1: Single-file validation reports (`.precommit_validation_report.md`)
 - v1.16.0: Auto-detection of latest review report for remediation
+- v1.15.2: Extended auto-fix suite (21 codes)
 - v1.15.1: BRD-E020 invalid type code fixer (1,260 errors fixed)
 - v1.15.0: Extended auto-fix suite (17 codes), GATE-E010, GATE-W008, BRD-W010, VAL-E002
 - v1.14.9: Duplicate element ID auto-fixer (GATE-E008)
 - v1.14.8: Terminology update (unified prompt / persona prompts)
 - v1.14.7: Attention steering fix (format instructions at END)
-- v1.14.6: Session directory rename, review mode documentation
-- v1.14.5: Unified prompt feature parity, persona naming standardization
-- v1.14.4: Extraction pattern fixes, 15 new patterns
-- v1.14.3: QA Lead persona, Chaos Engineer rename
-- v1.14.2: 27 extraction patterns, instruction ratio 5-10%
-- v1.14.1: Content preprocessing, skill system
 - v1.14.0: Prompt inspection commands
 
-**Next Release**: v1.15.0 - Multi-Document Validation
+**Next Release**: v1.19.0 - Multi-Document Validation
 - Corpus-wide validation (`ucx validate --all`)
 - Cross-document traceability validation
 - Dependency graph visualization
@@ -1445,8 +1512,13 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.15.1](docs/CHANGELOG_v1.15.1.md) | BRD-E020 invalid type code fixer |
 | [CHANGELOG v1.16.0](docs/CHANGELOG_v1.16.0.md) | Auto-detection of latest review report |
 | [CHANGELOG v1.16.1](docs/CHANGELOG_v1.16.1.md) | Single-file validation reports |
+| [CHANGELOG v1.16.2](docs/CHANGELOG_v1.16.2.md) | Duplicate fixer guardrails & reference detection sync |
+| [CHANGELOG v1.17.0](docs/CHANGELOG_v1.17.0.md) | Fixer-to-LLM hand-off system |
+| [CHANGELOG v1.18.0](docs/CHANGELOG_v1.18.0.md) | Layer Action Handoff System |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
+| [PLAN-006](docs/plans/PLAN-006_fixer_to_llm_handoff.md) | Fixer-to-LLM hand-off implementation |
+| [PLAN-007](docs/plans/PLAN-007_layer_notice_handoff.md) | Layer Action Handoff implementation |
 
 ### Scoring Documentation (v1.12.0)
 

@@ -5,6 +5,11 @@ Provides deterministic fixes for common BRD validation errors:
 - Missing Document Control fields
 - Legacy status values
 
+Features (v1.17.0+):
+- Fixer-to-LLM hand-off via FixerContext
+- LLM completion markers for partial fixes
+- Protected changes tracking
+
 Usage:
     from ucx.validators.brd.fixer import BRDFixer
 
@@ -15,14 +20,19 @@ Usage:
 """
 
 import re
+import uuid
+import logging
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 import yaml
 
-from ucx.validators.common.result import ValidationIssue
+from ucx.validators.common.result import ValidationIssue, FixerContext
 from ucx.validators.brd.duplicate_fixer import DuplicateElementFixer
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -34,6 +44,20 @@ class FixResult:
     fixed: bool
     message: str
     changes: List[str] = field(default_factory=list)
+    partial_fix: bool = False  # Script did partial work, LLM completes
+    llm_task: str = ""  # What LLM should complete
+
+    def to_dict(self) -> Dict:
+        """Convert to dictionary for serialization."""
+        return {
+            "code": self.code,
+            "file": str(self.file_path) if self.file_path else "",
+            "fixed": self.fixed,
+            "message": self.message,
+            "changes": self.changes,
+            "partial_fix": self.partial_fix,
+            "llm_task": self.llm_task,
+        }
 
 
 @dataclass
@@ -42,6 +66,7 @@ class FixSummary:
 
     total_issues: int = 0
     fixed_count: int = 0
+    partial_fix_count: int = 0  # Partial fixes needing LLM completion
     skipped_count: int = 0
     failed_count: int = 0
     results: List[FixResult] = field(default_factory=list)
@@ -51,16 +76,70 @@ class FixSummary:
         """Check if all issues were fixed."""
         return self.fixed_count == self.total_issues
 
+    @property
+    def fully_fixed_count(self) -> int:
+        """Count of completely fixed issues (no LLM needed)."""
+        return self.fixed_count - self.partial_fix_count
+
     def add(self, result: FixResult):
         """Add a fix result."""
         self.total_issues += 1
         self.results.append(result)
         if result.fixed:
             self.fixed_count += 1
+            if result.partial_fix:
+                self.partial_fix_count += 1
         elif "skip" in result.message.lower():
             self.skipped_count += 1
         else:
             self.failed_count += 1
+
+    def to_fixer_context(self, doc_path: Path) -> FixerContext:
+        """Convert to FixerContext for validation report (v1.17.0+).
+
+        Args:
+            doc_path: Document path for context
+
+        Returns:
+            FixerContext instance with categorized results
+        """
+        ctx = FixerContext(
+            session_id=uuid.uuid4().hex[:8],
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            fixed_count=self.fully_fixed_count,
+            partial_fix_count=self.partial_fix_count,
+            skipped_count=self.skipped_count,
+        )
+
+        for result in self.results:
+            file_name = result.file_path.name if result.file_path else ""
+            item = {
+                "code": result.code,
+                "file": file_name,
+                "message": result.message,
+                "changes": result.changes,
+            }
+
+            if result.partial_fix and result.code in LLM_COMPLETION_CODES:
+                # Partial fix - script did mechanical work, LLM completes
+                ctx.llm_completion.append({
+                    **item,
+                    "script_action": LLM_COMPLETION_CODES[result.code]["script_action"],
+                    "llm_task": result.llm_task or LLM_COMPLETION_CODES[result.code]["llm_task"],
+                })
+                # Also track as fixer-applied to protect from undo
+                ctx.fixer_applied.append(item)
+            elif result.fixed:
+                # Fully fixed - protect from remediation undo
+                ctx.fixer_applied.append(item)
+            elif result.code in LLM_ONLY_CODES:
+                # LLM-only issue - no script fix possible
+                ctx.llm_only.append({
+                    **item,
+                    "reason": LLM_ONLY_CODES[result.code],
+                })
+
+        return ctx
 
 
 # Error codes that can be auto-fixed
@@ -94,6 +173,41 @@ FIXABLE_CODES: Set[str] = {
     "BRD-W010",  # Missing @depends tags - add with auto-detected BRD refs
     "GATE-W008",  # Element in wrong section - move to correct section file
 }
+
+# Codes where script provides PARTIAL fix and LLM completes semantic work
+# These are ALSO in FIXABLE_CODES - script does mechanical work, LLM completes
+LLM_COMPLETION_CODES: Dict[str, Dict[str, str]] = {
+    "GATE-E010": {
+        "script_action": "Splits file at section boundaries",
+        "llm_task": "Review split points for semantic coherence",
+    },
+    "BRD-W011": {
+        "script_action": "Adds @diagram-request placeholder for C4-L1",
+        "llm_task": "Define system context with components and boundaries",
+    },
+    "BRD-W012": {
+        "script_action": "Adds @diagram-request placeholder for sequence",
+        "llm_task": "Define interaction flow with participants and messages",
+    },
+    "DIAG-E001": {
+        "script_action": "Adds DIAGRAM-REQUIRED placeholder",
+        "llm_task": "Create Mermaid diagram with domain-specific content",
+    },
+    "FWDREF-E001": {
+        "script_action": "Converts to FWDREF-DEFERRED comment",
+        "llm_task": "Verify cross-document references when target docs exist",
+    },
+}
+
+# Codes that are NOT in FIXABLE_CODES - only LLM can handle
+LLM_ONLY_CODES: Dict[str, str] = {
+    "CONTENT-E001": "Content quality requires semantic review",
+    "LOGIC-E001": "Logical consistency requires domain understanding",
+    "TRACE-E001": "Traceability gaps require cross-document analysis",
+}
+
+# Pattern to detect existing LLM markers (for deduplication)
+LLM_MARKER_PATTERN = re.compile(r'<!-- LLM_COMPLETION: (\S+) -->')
 
 # Invalid type code remapping table
 # Maps invalid codes to valid BRD type codes based on likely intent
@@ -235,8 +349,17 @@ class BRDFixer:
             issue: Validation issue to fix
 
         Returns:
-            FixResult with outcome
+            FixResult with outcome (may be partial fix for LLM completion)
         """
+        # Check for LLM-only codes (v1.17.0+)
+        if issue.code in LLM_ONLY_CODES:
+            return FixResult(
+                code=issue.code,
+                file_path=issue.file_path or self.doc_path,
+                fixed=False,
+                message=f"LLM_ONLY: {LLM_ONLY_CODES[issue.code]}"
+            )
+
         if issue.code not in FIXABLE_CODES:
             return FixResult(
                 code=issue.code,
@@ -256,7 +379,9 @@ class BRDFixer:
         # Dispatch to specific fixer
         fix_method = getattr(self, f"_fix_{issue.code.replace('-', '_').lower()}", None)
         if fix_method:
-            return fix_method(issue)
+            result = fix_method(issue)
+            # Mark as partial fix if LLM completion needed (v1.17.0+)
+            return self._mark_partial_fix(result, issue)
 
         return FixResult(
             code=issue.code,
@@ -323,6 +448,87 @@ class BRDFixer:
             width=120
         )
         return f"---\n{fm_str}---\n{body}"
+
+    def _find_safe_insertion_point(self, content: str, target_line: int) -> int:
+        """Find safe insertion point avoiding YAML frontmatter (v1.17.0+).
+
+        Args:
+            content: File content
+            target_line: Desired line number (1-indexed)
+
+        Returns:
+            Safe 0-indexed line position for insertion
+        """
+        lines = content.split("\n")
+
+        # Detect YAML frontmatter boundaries
+        frontmatter_end = 0
+        if lines and lines[0].strip() == "---":
+            for i, line in enumerate(lines[1:], 1):
+                if line.strip() == "---":
+                    frontmatter_end = i + 1
+                    break
+
+        # If target is in frontmatter, insert after it
+        if target_line <= frontmatter_end:
+            return frontmatter_end
+
+        # Bounds check
+        if target_line < 1:
+            return frontmatter_end if frontmatter_end > 0 else 0
+        if target_line > len(lines):
+            return len(lines)
+
+        return target_line - 1
+
+    def _insert_llm_marker(self, file_path: Path, issue: ValidationIssue) -> None:
+        """Insert LLM_COMPLETION marker at safe location with deduplication (v1.17.0+).
+
+        Args:
+            file_path: Path to the file
+            issue: Validation issue that received partial fix
+        """
+        if issue.code not in LLM_COMPLETION_CODES:
+            return
+
+        content = self._get_file_content(file_path)
+
+        # Check for existing marker (deduplication)
+        existing_markers = LLM_MARKER_PATTERN.findall(content)
+        if issue.code in existing_markers:
+            logger.debug(f"Marker for {issue.code} already exists in {file_path}")
+            return
+
+        lines = content.split("\n")
+        info = LLM_COMPLETION_CODES[issue.code]
+
+        marker = f"<!-- LLM_COMPLETION: {issue.code} -->\n"
+        marker += f"<!-- Script: {info['script_action']} -->\n"
+        marker += f"<!-- Task: {info['llm_task']} -->"
+
+        insert_at = self._find_safe_insertion_point(content, issue.line or 1)
+        lines.insert(insert_at, marker)
+
+        self._set_file_content(file_path, "\n".join(lines))
+        logger.debug(f"Inserted LLM_COMPLETION marker for {issue.code} at line {insert_at + 1}")
+
+    def _mark_partial_fix(self, result: FixResult, issue: ValidationIssue) -> FixResult:
+        """Mark a fix result as partial and insert LLM marker (v1.17.0+).
+
+        Args:
+            result: The fix result to mark
+            issue: The original validation issue
+
+        Returns:
+            Updated FixResult with partial_fix=True
+        """
+        if result.fixed and issue.code in LLM_COMPLETION_CODES:
+            result.partial_fix = True
+            result.llm_task = LLM_COMPLETION_CODES[issue.code]["llm_task"]
+            # Insert marker in document
+            if issue.file_path:
+                self._insert_llm_marker(issue.file_path, issue)
+        return result
 
     # =========================================================================
     # SPECIFIC FIXERS

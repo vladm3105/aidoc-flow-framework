@@ -7,13 +7,28 @@ Features (v1.16.0+):
 - Auto-detection of latest review report
 - Adaptive fixer persona loading based on pre-screening
 - Session data saved to .ucx_remediate_session/ folder
+
+Features (v1.17.0+):
+- Fixer-to-LLM hand-off via FixerContext
+- Reads fixer context from validation report Section 7
+- Injects fixer hand-off section into remediation prompts
 """
 
 from pathlib import Path
 from typing import Optional, Union
+import json
+import logging
 import re
 
 from ucx.config.settings import UCXConfig
+
+logger = logging.getLogger(__name__)
+
+# Pattern to extract fixer context JSON from validation report
+FIXER_CONTEXT_PATTERN = re.compile(
+    r'<!-- FIXER_CONTEXT_START\n(.*?)\nFIXER_CONTEXT_END -->',
+    re.DOTALL
+)
 from ucx.validators.common.file_utils import is_companion_report, sort_section_files
 from ucx.config.layer_skills import (
     FIXER_SKILLS,
@@ -71,6 +86,7 @@ class UCRemPhase:
         self._ai_client = None
         self.last_screening: Optional[ScreeningResult] = None
         self.last_review_report: Optional[Path] = None  # Track which report was used
+        self.fixer_context: Optional[dict] = None  # Fixer hand-off context (v1.17.0+)
 
     @property
     def ai_client(self):
@@ -130,6 +146,9 @@ class UCRemPhase:
 
         # Track which report was used
         self.last_review_report = review_report
+
+        # Load fixer context from validation report (v1.17.0+)
+        self.fixer_context = self._load_fixer_context(doc_path)
 
         # === PRE-SCREENING PHASE ===
         # Always run pre-screening to determine required fixers
@@ -223,6 +242,144 @@ resolved, verified, or appropriately deferred.
 
 The document is ready for downstream processing. No remediation required.
 """
+
+    def _load_fixer_context(self, doc_path: Path) -> Optional[dict]:
+        """Load fixer context from validation report (v1.17.0+).
+
+        Args:
+            doc_path: Document path (file or directory)
+
+        Returns:
+            Fixer context dict or None if not found/invalid
+        """
+        doc_path = Path(doc_path)
+
+        # Normalize: if file, look for report in parent
+        if doc_path.is_file():
+            report_path = doc_path.parent / ".precommit_validation_report.md"
+        else:
+            report_path = doc_path / ".precommit_validation_report.md"
+
+        if not report_path.exists():
+            logger.debug(f"No validation report found at {report_path}")
+            return None
+
+        try:
+            content = report_path.read_text(encoding="utf-8")
+        except IOError as e:
+            logger.warning(f"Failed to read validation report: {e}")
+            return None
+
+        match = FIXER_CONTEXT_PATTERN.search(content)
+        if not match:
+            logger.debug("No fixer context found in validation report")
+            return None
+
+        try:
+            context = json.loads(match.group(1))
+
+            # Schema validation
+            if context.get("schema_version", "0") < "1.0":
+                logger.warning("Outdated fixer context schema")
+
+            required = ["session_id", "timestamp"]
+            if not all(f in context for f in required):
+                logger.warning("Fixer context missing required fields")
+                return None
+
+            logger.info(
+                f"Loaded fixer context: session={context.get('session_id')}, "
+                f"partial_fixes={len(context.get('llm_completion', []))}"
+            )
+            return context
+
+        except json.JSONDecodeError as e:
+            logger.warning(f"Failed to parse fixer context JSON: {e}")
+            return None
+
+    def _format_fixer_handoff_section(self) -> str:
+        """Format fixer hand-off section for remediation prompt (v1.17.0+).
+
+        Returns:
+            Markdown string with fixer context, or empty string if no context
+        """
+        lines = ["\n## FIXER HAND-OFF CONTEXT\n"]
+
+        if not self.fixer_context:
+            lines.extend([
+                "No fixer context found in validation report.",
+                "",
+                "**Recommendation**: Run `ucx validate` before remediation",
+                "to apply automatic fixes and identify items needing LLM attention.",
+                "",
+            ])
+            return "\n".join(lines)
+
+        # Session info
+        lines.extend([
+            f"**Fixer Session**: `{self.fixer_context.get('session_id', 'N/A')}`",
+            f"**Timestamp**: {self.fixer_context.get('timestamp', 'N/A')}",
+            "",
+        ])
+
+        # LLM Completion items (highest priority)
+        llm_completion = self.fixer_context.get("llm_completion", [])
+        if llm_completion:
+            lines.extend([
+                "### Partial Fixes - COMPLETE THESE FIRST",
+                "",
+                "Script applied partial fixes. Your task is to complete them:",
+                "",
+                "| Code | File | Script Action | Your Task |",
+                "|------|------|---------------|-----------|",
+            ])
+            for item in llm_completion:
+                lines.append(
+                    f"| `{item.get('code', '')}` | `{item.get('file', '')}` | "
+                    f"{item.get('script_action', '')} | **{item.get('llm_task', '')}** |"
+                )
+            lines.extend([
+                "",
+                "Look for `<!-- LLM_COMPLETION: CODE -->` markers in documents.",
+                "After completing each task, remove the marker.",
+                "",
+            ])
+
+        # LLM-only items
+        llm_only = self.fixer_context.get("llm_only", [])
+        if llm_only:
+            lines.extend([
+                "### LLM-Only Issues",
+                "",
+                "These require semantic understanding (no script fix possible):",
+                "",
+                "| Code | File | Reason |",
+                "|------|------|--------|",
+            ])
+            for item in llm_only:
+                lines.append(f"| `{item.get('code', '')}` | `{item.get('file', '')}` | {item.get('reason', '')} |")
+            lines.append("")
+
+        # Protected changes (DO NOT UNDO)
+        fixer_applied = self.fixer_context.get("fixer_applied", [])
+        if fixer_applied:
+            lines.extend([
+                "### PROTECTED - Do Not Undo These Fixes",
+                "",
+                "Script successfully applied these fixes. **DO NOT modify or undo**:",
+                "",
+            ])
+            for item in fixer_applied[:10]:
+                lines.append(f"- `{item.get('code', '')}` in `{item.get('file', '')}`")
+            if len(fixer_applied) > 10:
+                lines.append(f"- ... and {len(fixer_applied) - 10} more")
+            lines.extend([
+                "",
+                "If you believe a fix is incorrect, note it but do not change it.",
+                "",
+            ])
+
+        return "\n".join(lines)
 
     def _inject_screening_metadata(self, content: str) -> str:
         """Inject pre-screening metadata into the report."""
@@ -391,6 +548,12 @@ The document is ready for downstream processing. No remediation required.
                 f"- **Excluded (no findings)**: {', '.join(self.last_screening.excluded_fixers) or 'None'}\n\n"
                 "Focus remediation efforts on the domains with identified findings.\n"
             )
+
+        # Add fixer hand-off context (v1.17.0+)
+        fixer_handoff = self._format_fixer_handoff_section()
+        if fixer_handoff:
+            parts.append("\n---\n")
+            parts.append(fixer_handoff)
 
         # Add fixer skills (adaptive or full)
         if self.config.load_skills:
