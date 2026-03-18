@@ -27,6 +27,7 @@ governance/
 │
 ├── # === CORE DOCUMENTATION ===
 ├── GOVERNANCE_RULES.md            # Operational policies
+├── DEVELOPMENT_WORKFLOW_GUIDE.md  # GitHub Issue development workflow
 ├── AI_ISSUE_LIFECYCLE.md          # Issue workflow (4-stage loop)
 ├── BRANCHING_STRATEGY.md          # Git workflow
 ├── DEFINITION_OF_DONE.md          # Completion criteria
@@ -106,6 +107,7 @@ governance/
 | Document | Description |
 |:---------|:------------|
 | [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md) | Operational policies and mandatory rules |
+| [DEVELOPMENT_WORKFLOW_GUIDE.md](./DEVELOPMENT_WORKFLOW_GUIDE.md) | Step-by-step guide for GitHub Issue development |
 | [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) | 4-stage iterative loop (Dev → Deploy → QA → Bug Fix) |
 | [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) | Git workflow and branch conventions |
 | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Completion criteria at task/sprint/phase levels |

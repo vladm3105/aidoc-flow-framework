@@ -1,8 +1,8 @@
 # UCX Context Engineering Guide
 
-**Version**: 1.1
+**Version**: 1.2
 **Created**: 2026-03-13
-**Updated**: 2026-03-13
+**Updated**: 2026-03-18
 **Reference**: PLAN-003_persona_prompt_restructuring.md, PLAN-004_advanced_context_engineering.md
 **Status**: Complete (v1.13.1)
 
@@ -28,15 +28,16 @@
 1. [Overview](#overview)
 2. [Problem Statement](#problem-statement)
 3. [Architecture](#architecture)
-4. [Prompt Flow](#prompt-flow)
-5. [Hierarchical Document Context](#hierarchical-document-context)
-6. [Dynamic Section Mapping](#dynamic-section-mapping)
-7. [Prior Findings Summarization](#prior-findings-summarization)
-8. [Attention Steering](#attention-steering)
-9. [Appendix-on-Demand](#appendix-on-demand)
-10. [Verification Phase](#verification-phase)
-11. [Configuration](#configuration)
-12. [API Reference](#api-reference)
+4. [Skills vs System Instructions](#skills-vs-system-instructions)
+5. [Prompt Flow](#prompt-flow)
+6. [Hierarchical Document Context](#hierarchical-document-context)
+7. [Dynamic Section Mapping](#dynamic-section-mapping)
+8. [Prior Findings Summarization](#prior-findings-summarization)
+9. [Attention Steering](#attention-steering)
+10. [Appendix-on-Demand](#appendix-on-demand)
+11. [Verification Phase](#verification-phase)
+12. [Configuration](#configuration)
+13. [API Reference](#api-reference)
 
 ---
 
@@ -171,6 +172,199 @@ def load_skill(persona: str, project_dir: Path) -> str:
 
     return ""
 ```
+
+---
+
+## Skills vs System Instructions
+
+### Standard LLM API Structure
+
+Most LLM APIs support two message roles:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      LLM API Request                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │  SYSTEM PROMPT (system role)                        │   │
+│  │                                                     │   │
+│  │  "You are a helpful assistant that..."              │   │
+│  │  - Sets persistent persona/behavior                 │   │
+│  │  - Defines rules and constraints                    │   │
+│  │  - Establishes output format                        │   │
+│  │  - Higher priority in model attention               │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │  USER PROMPT (user role)                            │   │
+│  │                                                     │   │
+│  │  "Review this document and find issues..."          │   │
+│  │  - The actual task                                  │   │
+│  │  - Context/content to analyze                       │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Where Can Skills Go?
+
+Skills (domain knowledge) can be injected into **either** location:
+
+```
+Option A: Skills in SYSTEM prompt
+─────────────────────────────────
+┌─────────────────────────────────┐
+│ SYSTEM:                         │
+│                                 │
+│ You are an Architect.           │  ← Base persona
+│                                 │
+│ ## Domain Knowledge             │  ← SKILL HERE
+│ - CAP theorem principles        │
+│ - Anti-patterns to detect       │
+│ - Review questions              │
+│                                 │
+│ ## Output Format                │
+│ Use [P0-001] format...          │
+└─────────────────────────────────┘
+┌─────────────────────────────────┐
+│ USER:                           │
+│                                 │
+│ Review this BRD document:       │
+│ [document content]              │
+└─────────────────────────────────┘
+
+
+Option B: Skills in USER prompt (UCX approach)
+──────────────────────────────────────────────
+┌─────────────────────────────────┐
+│ SYSTEM:                         │
+│                                 │
+│ (minimal or none)               │
+└─────────────────────────────────┘
+┌─────────────────────────────────┐
+│ USER:                           │
+│                                 │
+│ ## Your Role: Architect         │  ← SKILL HERE
+│ - CAP theorem principles        │
+│ - Anti-patterns to detect       │
+│                                 │
+│ ## Document to Review           │
+│ [document content]              │
+│                                 │
+│ ## Instructions                 │
+│ Find issues, use [P0-001]...    │
+└─────────────────────────────────┘
+```
+
+### Why UCX Uses User Prompt (Option B)
+
+| Factor | System Prompt | User Prompt (UCX) |
+|--------|---------------|-------------------|
+| **CLI Compatibility** | Claude CLI doesn't support separate system prompt | Works with all backends |
+| **API Compatibility** | Some APIs have system prompt limits | No limits |
+| **Flexibility** | Fixed per conversation | Can vary per call |
+| **Backend Portability** | Requires API-specific handling | Single prompt works everywhere |
+
+**UCX Design Decision**: Since UCX supports multiple backends (Claude CLI, Gemini CLI, Ollama, LiteLLM APIs), using user prompt ensures consistency.
+
+### CLI Mode Reality
+
+When using Claude Code CLI, there's no "system" vs "user" - it's all one prompt:
+
+```bash
+# UCX runs this:
+echo "$FULL_PROMPT" | claude -p --model opus
+
+# Where $FULL_PROMPT contains:
+# 1. Skill content (domain knowledge)
+# 2. Document content
+# 3. Task instructions
+```
+
+### API Mode (Could Use System, But Doesn't)
+
+```python
+# What UCX actually does (consistency with CLI mode):
+response = litellm.completion(
+    model="anthropic/claude-opus-4-5-20251101",
+    messages=[
+        {"role": "user", "content": full_prompt_with_skills}
+    ]
+)
+
+# What it COULD do (but doesn't for portability):
+response = litellm.completion(
+    model="anthropic/claude-opus-4-5-20251101",
+    messages=[
+        {"role": "system", "content": skill_content},
+        {"role": "user", "content": document_and_instructions}
+    ]
+)
+```
+
+### Terminology Clarification
+
+| Term | Definition | Where It Lives |
+|------|------------|----------------|
+| **System Instruction** | Persistent behavior rules for the LLM | `system` role in API |
+| **Skill** | Domain knowledge that shapes reasoning | Injected into prompt text |
+| **Tool** | External capability LLM can invoke | Tool definitions in API |
+| **User Instruction** | Task-specific directions | `user` role in API |
+
+### Skills Are Just Text
+
+Skills are **NOT** a special LLM feature. They are text that becomes part of the prompt:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     PROMPT STRUCTURE                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ SKILL: "Who you are and what you know"                │ │
+│  │                                                       │ │
+│  │ # Platform Architect Domain Knowledge                 │ │
+│  │                                                       │ │
+│  │ ## Role                                               │ │
+│  │ You evaluate systems for scalability and design.      │ │
+│  │                                                       │ │
+│  │ ## Core Principles                                    │ │
+│  │ 1. Separation of Concerns                             │ │
+│  │ 2. Single Point of Failure elimination                │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                           ↓                                 │
+│                    SHAPES HOW LLM                           │
+│                    APPROACHES THE TASK                      │
+│                           ↓                                 │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ CONTENT: "What to analyze"                            │ │
+│  │                                                       │ │
+│  │ [50-150KB of BRD document]                            │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                           ↓                                 │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ INSTRUCTIONS: "What to do" (at END for attention)     │ │
+│  │                                                       │ │
+│  │ Output findings using format: [ARCH-P0-001]           │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Comparison: Different Agent Frameworks
+
+| Framework | Where Skills/Instructions Go | Notes |
+|-----------|------------------------------|-------|
+| **UCX** | User prompt | Single prompt for CLI/API portability |
+| **Claude Code** | System prompt | Uses `CLAUDE.md` as persistent context |
+| **LangChain** | System prompt | Tools in system, task in user |
+| **OpenAI Assistants** | Instructions field | Separate from conversation |
+| **AutoGPT** | System prompt | Goals and constraints in system |
+
+### Key Takeaway
+
+> **Skills are domain knowledge injected as text into prompts.** They shape how the LLM reasons about the task, but they are not a special API feature. UCX places them in the user prompt for maximum backend compatibility.
 
 ---
 
@@ -914,4 +1108,4 @@ PERSONA_PREFIX_MAP = {
 
 ---
 
-*Last Updated: 2026-03-13*
+*Last Updated: 2026-03-18*

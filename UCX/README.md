@@ -88,6 +88,109 @@ ucx --mode api --model ollama/llama3 review brd docs/01_BRD/BRD-01/
 
 ---
 
+## AI Backends & Providers Reference
+
+UCX supports multiple AI backends through a provider-agnostic architecture.
+
+### CLI Mode Agents
+
+| CLI Tool | Provider | Command | Features | Status |
+|----------|----------|---------|----------|--------|
+| **claude** | Anthropic | `--cli-tool claude` | Web search, opus/sonnet/haiku models | Default |
+| **gemini** | Google | `--cli-tool gemini` | stdin input | Supported |
+| **ollama** | Local | `--cli-tool ollama` | Any ollama model | Supported |
+| **aider** | Aider AI | `--cli-tool aider` | Code-focused analysis | Supported |
+
+### API Mode Providers (via LiteLLM)
+
+| Provider | Model Format | Auth Variable | Features |
+|----------|--------------|---------------|----------|
+| **Anthropic** | `anthropic/claude-opus-4-5-20251101` | `ANTHROPIC_API_KEY` | 200K context |
+| **OpenAI** | `openai/gpt-4o` | `OPENAI_API_KEY` | Full model family |
+| **Azure OpenAI** | `azure/gpt-4` | `AZURE_*` env vars | Azure endpoints |
+| **Google Gemini** | `gemini/gemini-pro` | `GEMINI_API_KEY` | Native API |
+| **Mistral** | `mistral/mistral-large` | `MISTRAL_API_KEY` | Mistral family |
+| **Ollama** | `ollama/llama3` | localhost:11434 | Local inference |
+| **Custom APIs** | `provider/model` | Custom `--api-base` | Proxy support |
+
+### Architecture
+
+UCX uses a factory pattern with clean abstraction:
+
+```
+┌─────────────────────────────────────────┐
+│     UCX Core (review, remediate, etc)   │
+└──────────────┬──────────────────────────┘
+               │ uses
+        ┌──────▼───────┐
+        │ get_client() │  Factory
+        └──────┬───────┘
+        ┌──────┴────────────────┐
+        │                       │
+    ┌───▼────┐            ┌────▼──────┐
+    │ CLI    │            │ API       │
+    │ Mode   │            │ Mode      │
+    └───┬────┘            └────┬──────┘
+        │                      │
+  ┌─────▼──────┐         ┌────▼────────┐
+  │ CLIClient  │         │LiteLLMClient│
+  │            │         │             │
+  │ • claude   │         │ • Anthropic │
+  │ • gemini   │         │ • OpenAI    │
+  │ • ollama   │         │ • Azure     │
+  │ • aider    │         │ • Gemini    │
+  └────────────┘         │ • 20+ more  │
+                         └─────────────┘
+```
+
+**Key Files:**
+- `ucx/ai/__init__.py` - `get_client()` factory function
+- `ucx/ai/base.py` - `BaseAIClient` abstract class
+- `ucx/ai/cli_client.py` - `CLIClient` for shell-based agents
+- `ucx/ai/litellm_client.py` - `LiteLLMClient` for HTTP APIs
+
+### Quick Examples
+
+```bash
+# CLI Mode - Claude (default)
+ucx review brd docs/01_BRD/BRD-01/
+
+# CLI Mode - Gemini
+ucx --cli-tool gemini review brd docs/01_BRD/BRD-01/
+
+# CLI Mode - Local Ollama
+ucx --cli-tool ollama review brd docs/01_BRD/BRD-01/
+
+# API Mode - OpenAI
+export OPENAI_API_KEY="sk-..."
+ucx --mode api --model openai/gpt-4o review brd docs/01_BRD/BRD-01/
+
+# API Mode - Azure
+export AZURE_API_KEY="..."
+export AZURE_API_BASE="https://your-resource.openai.azure.com"
+ucx --mode api --model azure/gpt-4 review brd docs/01_BRD/BRD-01/
+
+# API Mode - Custom endpoint
+ucx --mode api --model provider/model --api-base https://proxy.example.com review brd ...
+```
+
+### Configuration Priority
+
+1. **CLI arguments** (highest)
+2. **Environment variables** (`UCX_*` prefix)
+3. **Configuration file** (YAML)
+4. **Hardcoded defaults** (lowest)
+
+### Model Aliases
+
+| Alias | CLI Mode | API Mode (LiteLLM) |
+|-------|----------|-------------------|
+| `opus` | `opus` | `anthropic/claude-opus-4-5-20251101` |
+| `sonnet` | `sonnet` | `anthropic/claude-sonnet-4-20250514` |
+| `haiku` | `haiku` | `anthropic/claude-3-5-haiku-20241022` |
+
+---
+
 ## Installation
 
 ### Using the shared venv (recommended)
@@ -190,7 +293,7 @@ docs/UCX/
 - Project-specific sections to cross-reference
 - Additional personas (Fact Checker, Chairperson)
 
-See `docs/UCX/review/UCR_PROMPT_BRD_BEELOCAL.md` for an example 11-persona fintech prompt.
+See `docs/UCX/review/` for example project-specific prompts.
 
 ### Project-Specific Skills (v1.8.0+)
 
@@ -200,23 +303,22 @@ Skills provide domain knowledge that gets injected into persona prompts. Create 
 # Project skills directory
 mkdir -p docs/UCX/skills/
 
-# Create domain-tuned skill (example: BeeLocal fintech)
+# Create domain-tuned skill (example: fintech compliance)
 cat > docs/UCX/skills/auditor.md << 'EOF'
-# BeeLocal Auditor Domain Knowledge
+# Project Auditor Domain Knowledge
 
 ## Role
-Compliance Auditor for cross-border remittance (US→Uzbekistan).
+Compliance Auditor for [your domain - e.g., payments, healthcare, e-commerce].
 
 ## Regulatory Focus
-- **FinCEN**: MTL sponsorship, SAR filing, 5-year records
-- **OFAC**: Real-time SDN screening
-- **KYC Tiers**: Level 1 ($300/day), Level 2 ($3K/day), Level 3 ($10K/day)
-- **PCI-DSS**: Scope for Nuvei card processing
+- **Primary Regulations**: [e.g., PCI-DSS, HIPAA, GDPR, SOC2]
+- **Industry Standards**: [e.g., ISO 27001, NIST]
+- **Compliance Tiers**: [e.g., transaction limits, data classification]
 
 ## Review Questions
-1. Is MTL sponsorship model specified?
-2. Are OFAC screening requirements explicit?
-3. Are KYC tier limits documented?
+1. Are compliance requirements explicitly documented?
+2. Are audit trail requirements specified?
+3. Are data retention policies defined?
 EOF
 ```
 
@@ -236,6 +338,209 @@ UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 **Key difference from prompts:**
 - **Prompts**: Project-specific ONLY (no fallback)
 - **Skills**: Project first, framework fallback if not found
+
+---
+
+## Skills System Architecture
+
+Skills are domain knowledge files that provide expertise to UCX personas during document review, creation, and remediation.
+
+### Framework Personas (13 Built-in)
+
+| Persona | Focus Area | Used In |
+|---------|------------|---------|
+| `architect` | System design, scalability, integration patterns | All phases |
+| `auditor` | Compliance, security, standards | All phases |
+| `tech_lead` | Implementation feasibility, technical debt | All phases |
+| `strategist` | Economics, trade-offs, long-term vision | UCC, UCR |
+| `chaos_engineer` | Edge cases, failure modes, safety | All phases |
+| `operator` | Observability, deployment, runbooks | All phases |
+| `integration_lead` | Dependencies, contracts, boundaries | All phases |
+| `product_owner` | Business value, scope, prioritization | UCC, UCR |
+| `business_analyst` | Requirements clarity, business logic | UCC, UCR |
+| `qa_lead` | Testing strategy, BDD syntax, quality metrics | UCR, UCRem |
+| `requirements_specialist` | EARS/INCOSE syntax, traceability | EARS, REQ |
+| `fact_checker` | Verification, accuracy, cross-validation | UCR |
+| `chairperson` | Synthesis, de-duplication, scoring | UCR, UCRem |
+
+### Skill File Format
+
+Skills are markdown files with domain knowledge and metadata:
+
+```markdown
+# Platform Architect Domain Knowledge
+
+## Role
+Software/System Architect responsible for technical decisions and system design.
+
+## Core Principles
+1. Separation of Concerns (SoC)
+2. Single Point of Failure (SPOF) elimination
+3. Statelessness where possible
+4. Asynchronous Decoupling
+
+## Review Focus
+- System structure and modularity
+- Integration patterns and boundaries
+- Scalability and performance implications
+- Technical debt and maintainability
+
+## Common Anti-Patterns to Flag
+- Distributed Monolith
+- Premature Optimization
+- Tight Coupling
+- Ignoring Data Gravity
+
+## Review Questions
+1. Does the architecture support stated requirements?
+2. Are component boundaries well-defined?
+3. Are failure modes documented?
+
+## Category Tagging (v1.12.0)
+**Primary Categories**: architecture, quality, integration
+
+**Finding Output Format**:
+[CAT:architecture] Finding description here
+
+## Scoring Weight
+- BRD: 15%
+- ADR: 40%
+- SPEC: 35%
+
+## Tags
+- phase: ucr
+- doc_types: [brd, prd, adr, sys, spec]
+```
+
+### Phase-Specific Skill Selection
+
+UCX loads different personas based on the operation phase:
+
+| Phase | Purpose | Personas Loaded |
+|-------|---------|-----------------|
+| **UCC** (Create) | Document authoring | 5 focused personas |
+| **UCR** (Review) | Comprehensive review | 8-9 reviewer personas |
+| **UCRem** (Fix) | Targeted remediation | Domain fixers + mandatory |
+
+**Remediation Fixer Categories:**
+
+| Category | Personas | Loading Rule |
+|----------|----------|--------------|
+| **Domain Fixers** | architect, auditor, qa_lead, integration_lead | Adaptive (only if findings exist) |
+| **Mandatory** | chaos_engineer, chairperson | Always loaded |
+
+### Project Customization Examples
+
+Override framework skills with domain-specific knowledge:
+
+**E-Commerce Project** (`docs/UCX/skills/architect.md`):
+```markdown
+# E-Commerce Platform Architect
+
+## Domain-Specific Architecture
+- **Cart Service**: Stateless with Redis session store
+- **Inventory**: Event-sourced with CQRS pattern
+- **Payments**: PCI-DSS compliant isolated subnet
+- **Search**: Elasticsearch with async indexing
+
+## Scalability Targets
+- MVP: 10K daily orders
+- Scale: 100K daily orders
+- Peak: 5x during sales events
+
+## Anti-Patterns to Flag
+- Cart state in application memory
+- Synchronous inventory checks at checkout
+- Payment credentials in application logs
+```
+
+**Healthcare Project** (`docs/UCX/skills/auditor.md`):
+```markdown
+# Healthcare Compliance Auditor
+
+## Regulatory Focus
+- **HIPAA**: PHI handling, BAA requirements, breach notification
+- **HITECH**: EHR incentives, meaningful use
+- **FDA 21 CFR Part 11**: Electronic signatures, audit trails
+
+## Data Classification
+- PHI: Protected Health Information (highest protection)
+- PII: Personally Identifiable Information
+- De-identified: Safe for analytics
+
+## Review Questions
+1. Is PHI encrypted at rest and in transit?
+2. Are access controls role-based with audit logging?
+3. Is data retention policy HIPAA-compliant (6 years)?
+```
+
+**IoT/Embedded Project** (`docs/UCX/skills/operator.md`):
+```markdown
+# IoT Operations Specialist
+
+## Operational Focus
+- **Fleet Management**: OTA updates, device provisioning
+- **Connectivity**: Offline-first, intermittent network handling
+- **Monitoring**: Edge telemetry aggregation, anomaly detection
+
+## Failure Modes
+- Network partition between edge and cloud
+- Firmware rollback scenarios
+- Battery/power failure recovery
+
+## SLA Targets
+- Device heartbeat: 5-minute intervals
+- OTA deployment: 24-hour fleet rollout
+- Incident response: 15-minute acknowledgment
+```
+
+### Skill Injection Strategies
+
+Skills are injected into prompts using configurable strategies:
+
+| Strategy | Description | Use Case |
+|----------|-------------|----------|
+| `prepend` | Add skills before main prompt | Default, most common |
+| `append` | Add skills after main prompt | When context comes first |
+| `section` | Insert at `<!-- SKILLS_START -->` marker | Precise placement |
+| `replace` | Replace `{{ skills }}` placeholder | Template-based |
+
+### Key Implementation Files
+
+| File | Purpose |
+|------|---------|
+| `ucx/skills/loader.py` | `SkillLoader` - two-tier priority loading with caching |
+| `ucx/skills/injector.py` | `SkillInjector` - prompt injection strategies |
+| `ucx/config/layer_skills.py` | Phase-to-skill mapping configuration |
+| `/UCX/skills/*.md` | 13 framework persona definitions |
+
+### Python API Usage
+
+```python
+from ucx.skills.loader import SkillLoader
+from ucx.skills.injector import SkillInjector
+from pathlib import Path
+
+# Initialize with project directory for customization
+loader = SkillLoader(
+    project_dir=Path("/path/to/your/project")
+)
+
+# Load skills for review phase
+skills = loader.load_for_phase("ucr", "brd")
+# Returns: {"architect": "...", "auditor": "...", ...}
+
+# Load single skill
+architect_skill = loader.load("architect")
+
+# List available skills
+available = loader.list_skills()
+# Returns: ["architect", "auditor", "business_analyst", ...]
+
+# Inject into prompt
+injector = SkillInjector(strategy="prepend")
+final_prompt = injector.inject(base_prompt, skills)
+```
 
 ### Review Modes: Unified vs Persona
 
@@ -1486,11 +1791,13 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | Document | Description |
 |----------|-------------|
 | [ROADMAP.md](docs/ROADMAP.md) | Release roadmap and planned features |
+| [DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) | Development process: plans, changelogs, versioning |
 | [QUICK_START.md](docs/QUICK_START.md) | Quick start guide with review process explanation |
 | [HOW_TO_USE.md](docs/HOW_TO_USE.md) | Detailed usage instructions |
 | [HOW_TO_AUDIT.md](docs/HOW_TO_AUDIT.md) | Running document audits |
 | [PERSONA_DESIGN_GUIDE.md](docs/PERSONA_DESIGN_GUIDE.md) | Creating custom personas |
 | [UNIFIED_CONTEXT_FRAMEWORK.md](docs/UNIFIED_CONTEXT_FRAMEWORK.md) | Framework architecture |
+| [WORKFLOW_ARCHITECTURE.md](docs/WORKFLOW_ARCHITECTURE.md) | How UCX orchestrates AI calls (skills, personas, prompts) |
 | [CONTEXT_ENGINEERING.md](docs/CONTEXT_ENGINEERING.md) | Context engineering guide (v1.13.0+) |
 | [Skills README](skills/README.md) | Framework persona skills reference |
 | [UCRem Personas](remediation/UCRem_PERSONAS.md) | Fixer personas and adaptive loading |

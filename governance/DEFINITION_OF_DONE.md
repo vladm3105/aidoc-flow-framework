@@ -9,6 +9,35 @@ This document defines when a task, sprint, or phase is considered **complete**.
 
 > **Note**: Create `PROJECT_PLAN.md` and `ROADMAP.md` in your project from the templates above.
 
+---
+
+## Plan/IPLAN Review Level
+
+Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
+
+**Practical Implementation Review**:
+- [ ] Solution addresses the stated problem directly
+- [ ] Implementation approach is practical and feasible
+- [ ] No over-engineering or unnecessary complexity
+- [ ] Scope is well-defined and achievable
+- [ ] Dependencies are identified and available
+- [ ] Resource requirements are reasonable
+
+**Technical Review**:
+- [ ] Edge cases and error handling considered
+- [ ] Testability verified (can be unit/integration tested)
+- [ ] Maintainability assessed (long-term code health)
+- [ ] Security implications reviewed
+- [ ] Performance impact evaluated (if applicable)
+
+**Approval**:
+- [ ] Plan reviewed by at least one other person (or self-review for solo projects)
+- [ ] Plan status updated to "Approved" before implementation starts
+
+> **Reference**: See [plans/README.md](./plans/README.md) for IPLAN lifecycle and templates.
+
+---
+
 ## Task Level
 A task (Issue) is **Done** when:
 - [ ] Code is written and follows project conventions
@@ -33,16 +62,37 @@ A UI task is **Done** when (in addition to Task Level criteria):
 
 ## AI-Implemented Task Level
 An AI-implemented task is **Done** when (in addition to Task Level criteria):
+
+**Workflow & Labels**:
 - [ ] AI label workflow completed: `ai:ready` → `ai:in-progress` → `ai:review-requested` → (PR merge)
 - [ ] Project Board #{PROJECT_BOARD_NUMBER} status updated at each label transition (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#3-ai-workflow))
-- [ ] Issue acceptance criteria **verified** (not blind-checked) and marked (`- [x]`) before requesting review (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#3-ai-workflow))
+- [ ] Issue acceptance criteria **verified** (not blind-checked) and marked (`- [x]`) before requesting review
+
+**AI Agent Test/Code Review** (performed before PR):
+- [ ] All identified bugs fixed
+- [ ] Unit tests written for new functions/classes (≥80% coverage on new code)
+- [ ] Regression tests pass (existing functionality verified)
+- [ ] Code comments updated for non-obvious logic
+- [ ] Function/method docstrings complete:
+  - Purpose description
+  - Parameters with types
+  - Return value with type
+  - Exceptions raised (if any)
+- [ ] Type hints added where applicable
+- [ ] Module-level docstrings updated (if new module)
+
+**PR & Review**:
 - [ ] PR number and URL posted as comment on linked issue (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#issue-pr-link-mandatory))
 - [ ] PR has at least one reviewer assigned (CODEOWNERS auto-assign or manual from [CONTRIBUTING.md roster](../CONTRIBUTING.md#reviewer-roster))
 - [ ] If AI agent performed on-demand review with fix loop: all critical/medium findings resolved and re-review APPROVE posted ([AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md))
 - [ ] If on-demand AI review performed: conclusion comment posted and `ai:review-passed` or `ai:review-failed` label applied to PR
 - [ ] Review history posted to linked issue after each review/re-review (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#issue-review-history-mandatory))
+
+**Human Validation**:
 - [ ] Human reviewer has validated AI-generated code
 - [ ] No security vulnerabilities introduced (verified by human)
+
+**Commit & Cleanup**:
 - [ ] Commit includes AI co-author attribution:
   ```
   Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>
@@ -127,10 +177,64 @@ A component repo is **Release-Ready** when:
 
 ---
 
+## Commit Strategy
+
+### When to Commit
+
+| Scenario | Commit Timing |
+|:---------|:--------------|
+| **Feature development** | After each logical unit of work (function, module, phase) |
+| **Bug fix** | After fix is verified working |
+| **Documentation** | After significant updates |
+| **Refactoring** | After each safe transformation |
+
+### Commit Frequency Checkpoints
+
+**During feature development**, commit when:
+- [ ] A logical unit of work is complete
+- [ ] Tests pass for the new code
+- [ ] Code compiles/runs without errors
+- [ ] You're about to start a different task
+- [ ] End of work session
+
+**After bug fix**, commit when:
+- [ ] Fix is implemented
+- [ ] Fix is tested locally
+- [ ] No regressions introduced
+
+**After documentation**, commit when:
+- [ ] Document is complete and reviewed
+- [ ] Links and references are valid
+
+### Commit Message Format
+
+Follow **[Conventional Commits](https://www.conventionalcommits.org/)**:
+
+```
+<type>(<scope>): <short summary>
+
+<body> (optional - explains why, not what)
+
+<footer> (optional - references issues)
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+**Best Practices**:
+- Atomic commits: Each commit represents one logical change
+- Passing state: Never commit broken code to shared branches
+- Reference issues: Include `Fixes #NNN` or `Closes #NNN` for bug fixes
+- Reference plans: Include `IPLAN-NNN` in commit body for planned work
+
+> **Reference**: See [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) for branch naming and [templates/CONTRIBUTING.md](./templates/CONTRIBUTING.md) for detailed commit examples.
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 2.1 | 2026-03-18 | Added Plan/IPLAN Review Level (practical implementation review). Expanded AI-Implemented Task Level with AI Agent Test/Code Review responsibilities (unit tests, docstrings, comments). Added Commit Strategy section with frequency checkpoints. |
 | 2.0 | {DATE} | Added Phase-Gated Deployment section: Development Issue Complete, Phase Development Complete, Staging Deployment Complete, QA Testing Complete, Bug Fix Iteration Complete, Production Ready checklists |
 | 1.9 | {DATE} | Added PR label criterion (`ai:review-passed`/`ai:review-failed`) to AI-Implemented Task checklist |
 | 1.8 | {DATE} | Added PR link posted to linked issue as AI-Implemented Task checklist item |

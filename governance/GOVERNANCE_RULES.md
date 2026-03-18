@@ -23,6 +23,7 @@ Operational policies and conventions that govern how this project is developed. 
 
 | I need to... | Read |
 |:-------------|:-----|
+| Work on a GitHub issue step-by-step | [DEVELOPMENT_WORKFLOW_GUIDE.md](./DEVELOPMENT_WORKFLOW_GUIDE.md) |
 | Process a GitHub issue as AI agent | [Issue Processing Workflow](#issue-processing-workflow-mandatory) (this doc §3) |
 | Check if my work is complete | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) |
 | Run security checks before commit/PR | [SECURITY_CHECKLIST.md](./SECURITY_CHECKLIST.md) |

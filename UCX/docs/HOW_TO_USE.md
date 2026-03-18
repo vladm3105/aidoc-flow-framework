@@ -710,8 +710,84 @@ Generic prompts miss domain-specific requirements.
 
 ---
 
+## Working with Actions (v1.18.0)
+
+### What are Actions?
+
+Actions are structured handoffs from BRD review to downstream layers. When a reviewer identifies something outside BRD scope (e.g., technical implementation detail), they create an ACTION instead of a P0/P1/P2 finding.
+
+**Key points:**
+- Actions do NOT affect BRD score
+- Actions target specific downstream documents (PRD, EARS, BDD, ADR, CTR)
+- Actions have suggested priority for the target layer
+
+### Action Format
+
+```
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-7f3a2b1c
+TYPE: HANDOFF
+TARGET: ADR
+PRIORITY: P0
+SOURCE: BRD-01 Section 10.2
+PERSONA: ARCHITECT
+CONTEXT: BRD states "platform must survive partner outage"
+REQUIREMENT: Document failover architecture decision
+<!-- UCX-ACTION-END -->
+```
+
+### Target Layers
+
+| Target | Layer | Handoff Purpose |
+|--------|-------|-----------------|
+| PRD | L2 | Feature details, user stories, acceptance criteria |
+| EARS | L3 | Formal requirement syntax |
+| BDD | L4 | Behavior specifications, Gherkin scenarios |
+| ADR | L5 | Architecture decisions, technical trade-offs |
+| CTR | L8 | API contracts, interface definitions |
+
+**NOT in BRD Handoff**: SPEC (L9) receives from ADR/CTR, not directly from BRD.
+
+### Extracting Actions
+
+```bash
+# Get summary of all actions
+python scripts/extract_actions.py report.md --format summary
+
+# Extract ADR-targeted actions as markdown
+python scripts/extract_actions.py report.md --target ADR --format md
+
+# Extract as JSON for processing
+python scripts/extract_actions.py report.md --target PRD --format json -o prd_actions.json
+
+# Filter by priority
+python scripts/extract_actions.py report.md --priority P0 --format md
+```
+
+### Validating Actions
+
+```bash
+# Basic validation
+python scripts/validate_actions.py report.md
+
+# Strict mode (warnings = errors)
+python scripts/validate_actions.py report.md --strict
+```
+
+### Action Types
+
+| Type | Status | Purpose |
+|------|--------|---------|
+| `HANDOFF` | Implemented | Transfer requirement to downstream layer |
+| `INFORM` | Reserved | Context sharing, no action required |
+| `REVIEW` | Reserved | Needs human review before processing |
+| `DEFER` | Reserved | Out of current scope, future consideration |
+
+---
+
 ## See Also
 
 - [README.md](../README.md) - Package overview
 - [UNIFIED_CONTEXT_FRAMEWORK.md](UNIFIED_CONTEXT_FRAMEWORK.md) - Framework overview
 - [HOW_TO_AUDIT.md](HOW_TO_AUDIT.md) - Audit workflows
+- [CHANGELOG_v1.18.0.md](CHANGELOG_v1.18.0.md) - Layer Action Handoff release notes
