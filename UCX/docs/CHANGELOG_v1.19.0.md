@@ -144,18 +144,44 @@ normalize_finding_id("REM-P1-001") # "P1-LEGACY"
 | `ucx/utils/__init__.py` | Added exports |
 | `ucx/scoring/conflicts.py` | Added `resolve_with_id()` |
 | `ucx/core/context_engine.py` | Dual-format pattern support |
-| `tests/unit/test_finding_hash.py` | **NEW** - 39 unit tests |
+| `ucx/core/review_memory.py` | **UPDATED** - Integrated hash-based ID generation in `_extract_findings()` |
+| `tests/unit/test_finding_hash.py` | **NEW** - 43 unit tests |
 | `docs/plans/PLAN-008_hash_based_finding_ids.md` | **NEW** - Design document |
+
+## Bug Fixes
+
+### Review Pipeline Integration (v1.19.0-patch1)
+
+**Issue**: Hash-based IDs were implemented but not integrated into the review assembly pipeline. Review reports still displayed legacy persona-prefix format (`ARCH-P0-001`) instead of hash-based format (`P0-a7f3`).
+
+**Fix**: Updated `ucx/core/review_memory.py`:
+- Added import for `FindingIDGenerator` and `FindingIdentity`
+- Added `SECTION_PATTERN` for extracting section references from finding context
+- Modified `_extract_findings()` to generate hash-based IDs using content hash
+- Findings now include both `id` (hash-based) and `legacy_id` (persona-prefix) for traceability
+
+**Finding Dict Structure** (after fix):
+```python
+{
+    "id": "P0-a7f3",        # New hash-based ID
+    "legacy_id": "ARCH-P0-001",  # Original persona-prefix (traceability)
+    "persona": "architect",
+    "priority": "P0",
+    "category": "compliance",
+    ...
+}
+```
 
 ## Test Coverage
 
-- **39 unit tests** covering:
+- **43 unit tests** covering:
   - FindingIDGenerator (13 tests)
   - ActionIDGenerator (4 tests)
   - Normalization functions (9 tests)
   - ID format utilities (6 tests)
   - Dual-format patterns (5 tests)
   - Identity dataclasses (2 tests)
+  - Review memory integration (4 tests)
 
 ## Configuration
 

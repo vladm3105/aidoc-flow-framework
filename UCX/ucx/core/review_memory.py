@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Optional
 
 from ucx.utils.logging import get_logger
+from ucx.utils.finding_hash import FindingIDGenerator, FindingIdentity
 from ucx.version import __version__
 
 # Scoring imports (Phase 8 integration)
@@ -23,8 +24,9 @@ from ucx.scoring.conflicts import CategoryConflictResolver
 FINDING_SIMILARITY_THRESHOLD = 0.6
 
 
-# Canonical Finding ID pattern: PREFIX-P0-NNN (e.g., ARCH-P0-001, TL-P1-002)
-# This is the ONLY supported format - no legacy patterns needed
+# Finding ID pattern for extraction from AI persona responses
+# AI generates PREFIX-P0-NNN format (e.g., ARCH-P0-001, TL-P1-002)
+# These are converted to hash-based IDs (P0-a7f3) during assembly (v1.19.0+)
 FINDING_ID_PATTERN = re.compile(
     r'(?:'
     r'\|\s*\*?\*?([A-Z]{2,4}-P[012]-\d{1,3})\*?\*?\s*\|'  # Table: | ARCH-P0-001 |
@@ -34,6 +36,12 @@ FINDING_ID_PATTERN = re.compile(
     r'(?:^|\n)\s*([A-Z]{2,4}-P[012]-\d{1,3})[:\s]'  # Line start: AUD-P0-001:
     r')',
     re.MULTILINE
+)
+
+# Pattern to extract section references from finding context
+SECTION_PATTERN = re.compile(
+    r'(?:Section\s+|§\s*)(\d+(?:\.\d+)*)',
+    re.IGNORECASE
 )
 
 
@@ -732,19 +740,27 @@ class ReviewMemory:
         """
         Extract findings from all persona responses.
 
-        Returns list of dicts with keys: persona, priority, id, prefix, title, text, category
+        Returns list of dicts with keys: persona, priority, id, legacy_id, prefix, title, text, category
         Category is extracted from [CAT:xxx] tag or assigned via CategoryAssigner fallback.
 
-        Supports canonical Finding ID format: PREFIX-P0-NNN (e.g., ARCH-P0-001)
+        AI personas generate PREFIX-P0-NNN format (e.g., ARCH-P0-001).
+        These are converted to hash-based IDs (P0-a7f3) during assembly (v1.19.0+).
         """
         findings = []
-        seen_ids = set()  # Deduplication
+        seen_ids = set()  # Deduplication by legacy ID (persona-prefix)
 
         # Pattern to extract category tag: [CAT:xxx]
         category_pattern = re.compile(r'\[CAT:(\w+)\]', re.IGNORECASE)
 
         # Initialize category conflict resolver for fallback
         resolver = CategoryConflictResolver()
+
+        # Initialize hash-based ID generator (v1.19.0+)
+        # Generator handles collision resolution internally
+        id_generator = FindingIDGenerator()
+
+        # Get target file from session
+        target_file = self.doc_path.name if hasattr(self, 'doc_path') else "unknown"
 
         for persona, response in responses.items():
             for match in FINDING_ID_PATTERN.finditer(response):
@@ -777,10 +793,26 @@ class ReviewMemory:
                 # Extract title from context
                 title = self._extract_title(context, raw_id)
 
+                # Extract section reference from context (for hash-based ID)
+                section_match = SECTION_PATTERN.search(context)
+                target_section = f"Section {section_match.group(1)}" if section_match else "N/A"
+
+                # Generate hash-based ID (v1.19.0+)
+                # Generator handles collision resolution internally by extending hash length
+                identity = FindingIdentity(
+                    priority=priority,
+                    target_file=target_file,
+                    target_section=target_section,
+                    category=category,
+                    description=title[:100] if title else context[:100],
+                )
+                hash_id = id_generator.generate(identity)
+
                 findings.append({
                     "persona": persona,
                     "priority": priority,
-                    "id": raw_id,
+                    "id": hash_id,  # New hash-based ID (P0-a7f3)
+                    "legacy_id": raw_id,  # Original persona-prefix ID (ARCH-P0-001)
                     "prefix": prefix,
                     "title": title,
                     "text": context[:500],  # Truncate for comparison

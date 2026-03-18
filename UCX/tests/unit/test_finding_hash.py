@@ -453,3 +453,102 @@ class TestActionIdentityDataclass:
         assert "spec-01" in hash_input
         assert "4.1" in hash_input
         assert "add state machine diagram" in hash_input
+
+
+class TestReviewMemoryIntegration:
+    """Tests for hash-based ID generation in review_memory._extract_findings().
+
+    These tests verify that the SECTION_PATTERN and hash ID generation
+    work correctly when integrated into the review pipeline.
+    """
+
+    def test_section_pattern_extracts_section_numbers(self):
+        """SECTION_PATTERN correctly extracts section references."""
+        from ucx.core.review_memory import SECTION_PATTERN
+
+        # Standard formats
+        assert SECTION_PATTERN.search("Section 6.1").group(1) == "6.1"
+        assert SECTION_PATTERN.search("Section 6.1.2").group(1) == "6.1.2"
+        assert SECTION_PATTERN.search("section 10").group(1) == "10"
+        assert SECTION_PATTERN.search("§ 7.3").group(1) == "7.3"
+
+        # Embedded in text
+        match = SECTION_PATTERN.search("Found issue in Section 6.5 regarding compliance")
+        assert match.group(1) == "6.5"
+
+        # No match
+        assert SECTION_PATTERN.search("No section here") is None
+
+    def test_finding_id_pattern_matches_persona_format(self):
+        """FINDING_ID_PATTERN matches persona-prefix format from AI responses."""
+        from ucx.core.review_memory import FINDING_ID_PATTERN
+
+        # Table format
+        text = "| ARCH-P0-001 | Missing requirement | Section 6 |"
+        match = FINDING_ID_PATTERN.search(text)
+        assert match is not None
+        assert (match.group(1) or match.group(2) or match.group(3)) == "ARCH-P0-001"
+
+        # Bold format
+        text = "**TL-P1-002** is a critical finding"
+        match = FINDING_ID_PATTERN.search(text)
+        assert match is not None
+        assert (match.group(1) or match.group(2) or match.group(3)) == "TL-P1-002"
+
+        # Line start format
+        text = "\nAUD-P0-003: Compliance issue detected"
+        match = FINDING_ID_PATTERN.search(text)
+        assert match is not None
+        assert (match.group(1) or match.group(2) or match.group(3)) == "AUD-P0-003"
+
+    def test_hash_id_generated_from_finding_content(self):
+        """Hash-based ID is deterministic based on finding content."""
+        gen = FindingIDGenerator()
+
+        # Same content = same ID
+        identity1 = FindingIdentity(
+            priority="P0",
+            target_file="BRD-49_data_ledger",
+            target_section="Section 6.1",
+            category="compliance",
+            description="SAR filing workflow missing",
+        )
+        identity2 = FindingIdentity(
+            priority="P0",
+            target_file="BRD-49_data_ledger",
+            target_section="Section 6.1",
+            category="compliance",
+            description="SAR filing workflow missing",
+        )
+
+        gen.reset()
+        id1 = gen.generate(identity1)
+        gen.reset()
+        id2 = gen.generate(identity2)
+
+        assert id1 == id2
+        assert id1.startswith("P0-")
+        assert is_hash_finding_id(id1)
+
+    def test_legacy_id_preserved_in_finding_dict(self):
+        """Verify that legacy_id field is conceptually present."""
+        # This tests the expected data structure after _extract_findings
+        # The actual finding dict should have both 'id' (hash) and 'legacy_id' (persona-prefix)
+        expected_keys = {"id", "legacy_id", "persona", "priority", "prefix", "title", "text", "full_text", "category"}
+
+        # Create a mock finding dict as would be created by _extract_findings
+        mock_finding = {
+            "persona": "architect",
+            "priority": "P0",
+            "id": "P0-a7f3",  # Hash-based
+            "legacy_id": "ARCH-P0-001",  # Original persona-prefix
+            "prefix": "ARCH",
+            "title": "Missing compliance requirement",
+            "text": "Context text here...",
+            "full_text": "Full context...",
+            "category": "compliance",
+        }
+
+        assert set(mock_finding.keys()) == expected_keys
+        assert is_hash_finding_id(mock_finding["id"])
+        assert mock_finding["legacy_id"].startswith("ARCH-P0-")

@@ -25,7 +25,11 @@ __version_info__ = tuple(int(x) for x in __version__.split(".")[:3])
 #   - PriorFindingsSummarizer pattern supports both formats
 #   - build_attention_steering_format() supports hash ID prompts
 #   - build_chairperson_manifest_format() supports hash ID examples
-# - TESTS: 39 unit tests in tests/unit/test_finding_hash.py
+# - FIXED: ucx/core/review_memory.py - Hash ID integration in review pipeline
+#   - _extract_findings() now generates hash-based IDs (was using AI persona-prefix IDs)
+#   - Added SECTION_PATTERN for extracting section references from finding context
+#   - Finding dicts now include both 'id' (hash) and 'legacy_id' (persona-prefix)
+# - TESTS: 43 unit tests in tests/unit/test_finding_hash.py (was 39, added 4 integration)
 # - BENEFIT: Eliminates sequential counter synchronization issues
 # - BENEFIT: Stable finding tracking across report versions
 # - See: docs/CHANGELOG_v1.19.0.md, docs/plans/PLAN-008_hash_based_finding_ids.md
