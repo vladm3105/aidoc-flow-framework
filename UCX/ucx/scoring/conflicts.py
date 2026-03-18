@@ -3,6 +3,8 @@ UCX Category Conflict Resolution.
 
 Handles cases where a finding may match multiple categories
 through different detection methods (element code, keyword, persona).
+
+v1.19.0: Added hash-based ID generation integration via resolve_with_id().
 """
 
 import logging
@@ -19,6 +21,7 @@ from .categories import (
     get_category_by_name,
     get_persona_primary_category,
 )
+from ucx.utils.finding_hash import FindingIDGenerator, FindingIdentity
 
 logger = logging.getLogger(__name__)
 
@@ -62,14 +65,23 @@ class CategoryConflictResolver:
 
     When multiple methods match, the higher priority wins.
     Conflicts are logged for analysis.
+
+    v1.19.0: Integrated hash-based ID generation via resolve_with_id().
     """
 
-    def __init__(self):
+    def __init__(self, hash_length: int = 4):
+        """
+        Initialize the conflict resolver.
+
+        Args:
+            hash_length: Minimum hash length for generated finding IDs (default: 4).
+        """
         self._conflict_count = 0
         self._resolution_stats: dict[ResolutionMethod, int] = {
             method: 0 for method in ResolutionMethod
         }
         self._stats_cache: Optional[dict[ResolutionMethod, int]] = None
+        self._id_generator = FindingIDGenerator(hash_length=hash_length)
 
     def resolve(
         self,
@@ -174,6 +186,72 @@ class CategoryConflictResolver:
         self._conflict_count = 0
         self._resolution_stats = {method: 0 for method in ResolutionMethod}
         self._stats_cache = None
+
+    def reset_id_generator(self) -> None:
+        """Reset the finding ID generator (call between documents)."""
+        self._id_generator.reset()
+
+    def reset_all(self) -> None:
+        """Reset both statistics and ID generator."""
+        self.reset_stats()
+        self.reset_id_generator()
+
+    def resolve_with_id(
+        self,
+        finding_text: str,
+        target_file: str,
+        target_section: str,
+        persona: str,
+        priority: str,
+        explicit_tag: Optional[str] = None,
+    ) -> tuple[ConflictResolution, str]:
+        """
+        Resolve category and generate stable hash-based finding ID.
+
+        This method combines category resolution with hash-based ID generation
+        (v1.19.0+). Use this for new findings instead of separate resolve() + manual ID.
+
+        Args:
+            finding_text: Finding description text.
+            target_file: Target file path (e.g., "BRD-02.6_functional.md").
+            target_section: Section identifier (e.g., "Section 6.1").
+            persona: Persona that generated the finding.
+            priority: Priority level (P0, P1, P2).
+            explicit_tag: Optional [CAT:xxx] tag from prompt.
+
+        Returns:
+            Tuple of (ConflictResolution, finding_id) where finding_id is
+            in new hash format: P{0-2}-{xxxx}
+        """
+        # Resolve category using existing method
+        resolution = self.resolve(
+            finding_id="",  # ID will be generated, not used for resolution
+            finding_text=finding_text,
+            persona=persona,
+            explicit_tag=explicit_tag,
+        )
+
+        # Generate hash-based finding ID
+        identity = FindingIdentity(
+            priority=priority.upper(),
+            target_file=target_file,
+            target_section=target_section,
+            category=resolution.resolved_category.name,
+            description=finding_text[:100],
+        )
+
+        finding_id = self._id_generator.generate(identity)
+
+        # Update the resolution with the generated ID
+        updated_resolution = ConflictResolution(
+            finding_id=finding_id,
+            resolved_category=resolution.resolved_category,
+            method=resolution.method,
+            alternatives=resolution.alternatives,
+            had_conflict=resolution.had_conflict,
+        )
+
+        return updated_resolution, finding_id
 
     def get_stats_summary(self) -> str:
         """Generate summary of resolution statistics."""

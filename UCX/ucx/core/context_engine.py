@@ -11,6 +11,8 @@ Key components:
 - Attention steering functions: Place format instructions at END of prompt
 
 Reference: PLAN-003_persona_prompt_restructuring.md
+
+v1.19.0: Updated to support hash-based finding IDs (PLAN-008).
 """
 
 import re
@@ -20,6 +22,11 @@ from pathlib import Path
 from typing import Optional
 
 from ucx.utils.logging import get_logger
+from ucx.utils.finding_hash import (
+    DUAL_FORMAT_FINDING_PATTERN,
+    is_legacy_finding_id,
+    is_hash_finding_id,
+)
 
 logger = get_logger(__name__)
 
@@ -1026,10 +1033,20 @@ class ContextEngine:
 
 
 class PriorFindingsSummarizer:
-    """Summarize prior persona findings to reduce context size."""
+    """Summarize prior persona findings to reduce context size.
+
+    v1.19.0: Updated to support both legacy (REM-P1-001) and
+    hash-based (P1-a7f3) finding ID formats.
+    """
 
     def __init__(self):
-        self._finding_pattern = re.compile(r'([A-Z]{2,4}-P[012]-\d{1,3})')
+        # Dual-format pattern supports both legacy and hash IDs
+        # Legacy: ARCH-P0-001, REM-P1-002, etc.
+        # Hash: P0-a7f3, P1-b2c1, etc.
+        self._finding_pattern = re.compile(
+            r'((?:[A-Z]{2,4}-)?P[012]-(?:[a-f0-9]{4,8}|\d{1,3}))',
+            re.IGNORECASE,
+        )
 
     def summarize_all(
         self,
@@ -1144,10 +1161,37 @@ class PriorFindingsSummarizer:
         return "\n".join(parts)
 
 
-def build_attention_steering_format(persona: str, prefix: str) -> str:
-    """Build attention-steering format section for prompt END."""
+def build_attention_steering_format(persona: str, prefix: str, use_hash_ids: bool = True) -> str:
+    """Build attention-steering format section for prompt END.
 
+    Args:
+        persona: Persona name
+        prefix: Finding ID prefix (e.g., "ARCH", "AUD")
+        use_hash_ids: If True, use new hash-based ID format (v1.19.0+).
+                      If False, use legacy sequential format.
+    """
     delimiter = "=" * 70
+
+    if use_hash_ids:
+        # New hash-based format (v1.19.0+)
+        id_format = "P{0-2}-AUTO"
+        id_note = "NOTE: Use P{N}-AUTO placeholder. System auto-generates hash IDs."
+        examples = f"""- P0-AUTO (Critical finding - hash auto-generated)
+- P1-AUTO (High priority finding - hash auto-generated)"""
+        table_header = f"| ID (P0-xxxx) | Finding | Section | Gap | Remediation |"
+        table_row1 = "| P0-AUTO | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |"
+        table_row2 = "| P1-AUTO | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |"
+        rule1 = "1. Use P{N}-AUTO for IDs (system generates hash IDs like P1-a7f3)"
+    else:
+        # Legacy sequential format
+        id_format = f"{prefix}-P{{0-2}}-NNN"
+        id_note = ""
+        examples = f"""- {prefix}-P0-001 (Critical finding #1)
+- {prefix}-P1-002 (High priority finding #2)"""
+        table_header = f"| ID ({prefix}-P0-NNN) | Finding | Section | Gap | Remediation |"
+        table_row1 = f"| {prefix}-P0-001 | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |"
+        table_row2 = f"| {prefix}-P1-001 | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |"
+        rule1 = f"1. Each finding MUST have unique ID: {prefix}-P{{N}}-{{NNN}}"
 
     return f"""
 
@@ -1159,24 +1203,25 @@ def build_attention_steering_format(persona: str, prefix: str) -> str:
 
 WARNING: FAILURE TO USE THIS EXACT FORMAT WILL CAUSE PROCESSING FAILURE
 
-### Finding ID Format: {prefix}-P{{0-2}}-NNN
+### Finding ID Format: {id_format}
+
+{id_note}
 
 Examples:
-- {prefix}-P0-001 (Critical finding #1)
-- {prefix}-P1-002 (High priority finding #2)
+{examples}
 
 ### Required Output Table
 
 You MUST produce findings in this EXACT table format:
 
-| ID ({prefix}-P0-NNN) | Finding | Section | Gap | Remediation |
+{table_header}
 |{'-' * 20}|---------|---------|-----|-------------|
-| {prefix}-P0-001 | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |
-| {prefix}-P1-001 | [Specific finding] | [X.X] | [What's missing] | [Exact fix text] |
+{table_row1}
+{table_row2}
 
 ### Rules
 
-1. Each finding MUST have unique ID: {prefix}-P{{N}}-{{NNN}}
+{rule1}
 2. Section MUST reference exact section number (e.g., 6.1.2)
 3. Remediation MUST include specific text to add
 4. Do NOT produce summaries - produce COMPLETE TABLES
@@ -1186,10 +1231,34 @@ You MUST produce findings in this EXACT table format:
 """
 
 
-def build_chairperson_manifest_format() -> str:
-    """Build chairperson manifest format section."""
+def build_chairperson_manifest_format(use_hash_ids: bool = True) -> str:
+    """Build chairperson manifest format section.
 
+    Args:
+        use_hash_ids: If True, use new hash-based ID format (v1.19.0+).
+    """
     delimiter = "=" * 70
+
+    if use_hash_ids:
+        # New hash-based format (v1.19.0+)
+        id_examples = """| P0-a7f3 | P0 | [CAT:compliance] | OPEN | auditor | BRD-01.6.md | [description] |
+| P0-b2c1 | P0 | [CAT:integration] | OPEN | integration_lead | BRD-01.6.md | [description] |
+| P1-8d4e | P1 | [CAT:functional] | OPEN | tech_lead | BRD-01.6.md | [description] |"""
+        id_note = """### Finding ID Format (v1.19.0+)
+
+Use hash-based IDs: P{0-2}-{4-char-hex}
+- P0-xxxx for Critical findings
+- P1-xxxx for High priority findings
+- P2-xxxx for Medium priority findings
+
+NOTE: Use P{N}-AUTO placeholder. System auto-generates hash IDs during assembly.
+"""
+    else:
+        # Legacy sequential format
+        id_examples = """| REM-P0-001 | P0 | [CAT:compliance] | OPEN | auditor | BRD-01.6.md | [description] |
+| REM-P0-002 | P0 | [CAT:integration] | OPEN | integration_lead | BRD-01.6.md | [description] |
+| REM-P1-001 | P1 | [CAT:functional] | OPEN | tech_lead | BRD-01.6.md | [description] |"""
+        id_note = ""
 
     return f"""
 
@@ -1200,6 +1269,8 @@ def build_chairperson_manifest_format() -> str:
 {delimiter}
 
 You MUST include these EXACT markers for automated processing:
+
+{id_note}
 
 <!-- UCX-MANIFEST-START -->
 
@@ -1226,9 +1297,7 @@ You MUST include these EXACT markers for automated processing:
 
 | ID | Priority | Category | Status | Fixer | Target File | Description |
 |----|----------|----------|--------|-------|-------------|-------------|
-| REM-P0-001 | P0 | [CAT:compliance] | OPEN | auditor | BRD-01.6.md | [description] |
-| REM-P0-002 | P0 | [CAT:integration] | OPEN | integration_lead | BRD-01.6.md | [description] |
-| REM-P1-001 | P1 | [CAT:functional] | OPEN | tech_lead | BRD-01.6.md | [description] |
+{id_examples}
 
 <!-- UCX-MANIFEST-END -->
 
