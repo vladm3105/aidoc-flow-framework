@@ -82,9 +82,11 @@ The Chairperson generates a findings manifest marked with `<!-- UCX-MANIFEST-STA
 
 | Fixer | Finding Count | Finding IDs |
 |-------|---------------|-------------|
-| architect | 8 | REM-P0-001, REM-P0-010, REM-P1-006, ... |
-| auditor | 11 | REM-P0-002, REM-P0-003, REM-P1-001, ... |
-| integration_lead | 5 | REM-P0-025, REM-P1-015, ... |
+| architect | 8 | P0-a7f3, P0-b2c1, P1-8d4e, ... |
+| auditor | 11 | P0-c3d4, P0-e5f6, P1-9a1b, ... |
+| integration_lead | 5 | P0-f7g8, P1-2c3d, ... |
+
+> **Note (v1.19.0+)**: Finding IDs use hash-based format (`P1-a7f3`) instead of legacy sequential format (`REM-P1-001`). Both formats are supported during the transition period.
 
 ### Category Summary
 
@@ -103,20 +105,36 @@ The Chairperson generates a findings manifest marked with `<!-- UCX-MANIFEST-STA
 
 | ID | Priority | Category | Status | Fixer | Description |
 |----|----------|----------|--------|-------|-------------|
-| REM-P0-001 | P0 | [CAT:compliance] | OPEN | auditor | Missing SAR filing requirement |
-| REM-P1-001 | P1 | [CAT:functional] | OPEN | tech_lead | Transaction FSM states undefined |
+| P0-a7f3 | P0 | [CAT:compliance] | OPEN | auditor | Missing SAR filing requirement |
+| P1-b2c1 | P1 | [CAT:functional] | OPEN | tech_lead | Transaction FSM states undefined |
 
 <!-- UCX-MANIFEST-END -->
 ```
 
 The **Fixer Assignment** table enables adaptive remediation - UCX loads only the fixer personas that have findings assigned to them.
 
+### Finding ID Format (v1.19.0+)
+
+UCX v1.19.0 introduced hash-based finding IDs:
+
+| Format | Example | Status |
+|--------|---------|--------|
+| Hash (v1.19+) | `P1-a7f3` | **Current** |
+| Legacy | `REM-P1-001` | Deprecated |
+
+Hash IDs are generated from content: `sha256({file}:{section}:{category}:{description})[:4]`
+
+Benefits:
+- Deterministic: same content = same ID across runs
+- Stateless: no counter synchronization needed
+- Natural deduplication: identical findings = identical hashes
+
 ### Category Tags in Findings
 
 Each finding should include a `[CAT:xxx]` tag in the description:
 
 ```
-| REM-P0-001 | P0 | OPEN | auditor | [CAT:compliance] Missing regulatory requirement |
+| P0-a7f3 | P0 | OPEN | auditor | [CAT:compliance] Missing regulatory requirement |
 ```
 
 If no explicit tag is present, the category is inferred using the detection priority order above.

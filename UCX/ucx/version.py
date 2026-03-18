@@ -1,7 +1,34 @@
 """Version information for UCX."""
 
-__version__ = "1.18.0"
+__version__ = "1.19.0"
 __version_info__ = tuple(int(x) for x in __version__.split(".")[:3])
+
+# v1.19.0 - Hash-Based Finding and Action ID Generation
+# - NEW: FindingIDGenerator class for content-addressable finding IDs
+#   - Format: P{0-2}-{xxxx} (e.g., P1-a7f3) replaces REM-P1-001
+#   - Stateless: no counter synchronization needed across 11+ personas
+#   - Deterministic: same content always produces same ID
+#   - Natural deduplication: identical findings = identical hashes
+# - NEW: ActionIDGenerator class for content-addressable action IDs
+#   - Format: ACT-{xxxx} (e.g., ACT-b2c1) replaces ACT-001
+# - NEW: FindingIdentity and ActionIdentity dataclasses
+#   - Encapsulate hash input components (file, section, category, description)
+# - NEW: CategoryConflictResolver.resolve_with_id() method
+#   - Combined category resolution and hash-based ID generation
+# - NEW: Dual-format pattern support (transition period)
+#   - Accepts both legacy (REM-P1-001) and hash (P1-a7f3) formats
+#   - is_legacy_finding_id(), is_hash_finding_id() utilities
+# - NEW: ucx/utils/finding_hash.py module
+#   - Core hash generation with collision handling (4-8 char auto-extend)
+#   - Normalization functions for path, section, description
+# - UPDATED: ucx/core/context_engine.py
+#   - PriorFindingsSummarizer pattern supports both formats
+#   - build_attention_steering_format() supports hash ID prompts
+#   - build_chairperson_manifest_format() supports hash ID examples
+# - TESTS: 39 unit tests in tests/unit/test_finding_hash.py
+# - BENEFIT: Eliminates sequential counter synchronization issues
+# - BENEFIT: Stable finding tracking across report versions
+# - See: docs/CHANGELOG_v1.19.0.md, docs/plans/PLAN-008_hash_based_finding_ids.md
 
 # v1.18.0 - Layer Action Handoff System
 # - NEW: ACTION handoff system for BRD review

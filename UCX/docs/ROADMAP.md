@@ -4,18 +4,19 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.18.0
-**Next Major**: 1.19.0 (Multi-Document Validation)
+**Current Version**: 1.19.0
+**Next Major**: 1.20.0 (PRD/EARS Validation Parity)
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 (Current) ──► v1.19.0 ──► v2.0.0
-   │           │            │            │           │            │           │                     │           │
-   │           │            │            │           │            │           │                     │           └─► Breaking changes
-   │           │            │            │           │            │           │                     └─► Multi-document validation
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 ──► v1.19.0 (Current) ──► v1.20.0 ──► v2.0.0
+   │           │            │            │           │            │           │            │                      │           │
+   │           │            │            │           │            │           │            │                      │           └─► Breaking changes
+   │           │            │            │           │            │           │            │                      └─► PRD/EARS validation parity
+   │           │            │            │           │            │           │            └─► Hash-based Finding IDs (PLAN-008)
    │           │            │            │           │            │           └─► Layer Action Handoff System
    │           │            │            │           │            └─► Fixer-to-LLM hand-off
    │           │            │            │           └─► Duplicate fixer guardrails (v1.16.2)
@@ -28,27 +29,6 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 ---
 
 ## Planned Releases
-
-### v1.19.0 - Multi-Document Validation
-
-**Status**: Planned
-**ETA**: Q2 2026
-
-**Features**:
-| Feature | Description |
-|---------|-------------|
-| Corpus Validation | Validate entire `docs/` directory in one command |
-| Cross-Document Traceability | Validate @ref: tags across document types |
-| Dependency Graph | Build and validate document dependency tree |
-| Batch Review | Review multiple documents with shared context |
-
-**Deliverables**:
-- [ ] `ucx validate --all` command
-- [ ] Cross-document traceability validator
-- [ ] Dependency graph visualization
-- [ ] Batch review mode
-
----
 
 ### v1.20.0 - PRD/EARS Validation Parity
 
@@ -94,7 +74,29 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 
 ## Completed Releases
 
-### v1.18.0 (2026-03-17) - Current
+### v1.19.0 (2026-03-18) - Current
+
+**Features**:
+- **Hash-Based Finding IDs**: Content-addressable finding IDs (`P1-a7f3` format) replacing sequential IDs (`REM-P1-001`)
+- **Hash-Based Action IDs**: Content-addressable action IDs (`ACT-a7f3` format) replacing sequential IDs (`ACT-001`)
+- New `FindingIDGenerator` and `ActionIDGenerator` classes in `ucx/utils/finding_hash.py`
+- `CategoryConflictResolver.resolve_with_id()` method for combined category resolution and ID generation
+- Dual-format pattern support for backward compatibility
+- 39 new unit tests for hash module
+
+**Benefits**:
+| Benefit | Description |
+|---------|-------------|
+| Stateless | No counter synchronization across 11+ personas |
+| Deterministic | Same content always produces same ID |
+| Deduplication | Identical findings = identical hashes |
+| Stable Tracking | Same finding tracks across report versions |
+
+See [CHANGELOG_v1.19.0](CHANGELOG_v1.19.0.md) and [PLAN-008](plans/PLAN-008_hash_based_finding_ids.md)
+
+---
+
+### v1.18.0 (2026-03-17)
 
 **Features**:
 - **Layer Action Handoff System**: Capture out-of-scope items as ACTIONS that handoff to downstream layers (PRD, EARS, BDD, ADR, CTR) without penalizing BRD score
@@ -447,8 +449,9 @@ See [CHANGELOG_v1.14.0](CHANGELOG_v1.14.0.md) and [PLAN-005](plans/PLAN-005_prom
 | Single-File Validation | Medium | ✅ Complete (v1.16.1) | Cleaner validation reports |
 | Fixer-to-LLM Hand-off | High | ✅ Complete (v1.17.0) | PLAN-006 |
 | Layer Action Handoff | High | ✅ Complete (v1.18.0) | PLAN-007 |
-| Multi-Document Validation | High | Planned (v1.19.0) | After action handoff |
-| PRD validation parity | Medium | Planned (v1.20.0) | After multi-doc |
+| Hash-Based Finding IDs | High | ✅ Complete (v1.19.0) | PLAN-008 |
+| Multi-Document Validation | High | Planned (v1.20.0) | After hash IDs |
+| PRD validation parity | Medium | Planned (v1.21.0) | After multi-doc |
 | Interactive fix mode | Medium | Future (v2.0.0) | Requires TUI |
 | VS Code extension | Low | Future | Post-v2.0.0 |
 | Real-time streaming | Low | Future | Requires API mode changes |
@@ -490,7 +493,9 @@ To propose new features or changes:
 - [PLAN-006: Fixer-to-LLM Hand-off](plans/PLAN-006_fixer_to_llm_handoff.md) - Complete
 - [CHANGELOG_v1.18.0.md](CHANGELOG_v1.18.0.md) - Layer Action Handoff System
 - [PLAN-007: Layer Action Handoff](plans/PLAN-007_layer_notice_handoff.md) - Complete
+- [CHANGELOG_v1.19.0.md](CHANGELOG_v1.19.0.md) - Hash-Based Finding IDs
+- [PLAN-008: Hash-Based Finding IDs](plans/PLAN-008_hash_based_finding_ids.md) - Complete
 
 ---
 
-*Last Updated: 2026-03-17*
+*Last Updated: 2026-03-18*
