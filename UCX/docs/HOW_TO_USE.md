@@ -59,6 +59,48 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
 ```
 
+### Validate a PRD Document
+
+```bash
+# Full validation (Tier 1 + Tier 2)
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/
+
+# Tier 1 only (fast, pre-commit mode)
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --tier1-only
+
+# With auto-fix and report
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --fix --report
+
+# JSON output
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --format json
+```
+
+### Review a PRD Document
+
+```bash
+# Multi-persona AI review (10 personas)
+ucx review prd docs/02_PRD/PRD-01_user_onboarding/
+
+# One-turn unified review (faster)
+ucx review prd docs/02_PRD/PRD-01_user_onboarding/ --one-turn
+
+# With project-specific prompts
+ucx -p docs/UCX/ review prd docs/02_PRD/PRD-01_user_onboarding/
+```
+
+### Create a New PRD
+
+```bash
+# Create PRD from upstream BRD
+ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/
+
+# Create with validation
+ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/ --validate
+
+# Create with strict validation (fail on any issue)
+ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/ --strict
+```
+
 ### Project-Specific Prompts & Skills
 
 For best quality, create project-specific prompts AND skills with domain expertise:
@@ -69,6 +111,9 @@ ucx -p docs/UCX/ review brd docs/01_BRD/BRD-01/
 
 # With model selection
 ucx -p docs/UCX/ --model sonnet review brd docs/01_BRD/BRD-01/
+
+# Review PRD with project context
+ucx -p docs/UCX/ review prd docs/02_PRD/PRD-01/
 ```
 
 **Create project directories**:

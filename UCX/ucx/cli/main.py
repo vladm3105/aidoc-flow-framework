@@ -250,21 +250,57 @@ def autopilot(ctx, doc_type, target, **kwargs):
 @click.option("--from-iplan", type=click.Path(path_type=Path))
 @click.option("--template", type=click.Path(exists=True, path_type=Path))
 @click.option("--multi-file", is_flag=True)
+@click.option("--validate/--no-validate", default=True, help="Run validation after creation (default: enabled)")
+@click.option("--strict", is_flag=True, help="Fail on any validation issue")
 @click.pass_context
-def create(ctx, doc_type, output_path, **kwargs):
+def create(ctx, doc_type, output_path, validate, strict, **kwargs):
     """
-    Create a new document (UCC phase).
+    Create a new document (UCC phase) with optional validation.
+
+    \b
+    Post-creation validation (PRD only, v1.20.0+):
+      - Runs Tier 1 validation automatically
+      - Computes SYS-Ready and EARS-Ready scores
+      - Injects scores into Document Control section
 
     \b
     Examples:
       ucx create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
       ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01
+      ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01 --no-validate
+      ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01 --strict
     """
     from ucx import UCCPhase
 
     ucc = UCCPhase(ctx.obj["config"])
-    doc = ucc.create(doc_type, output_path, **kwargs)
+    doc = ucc.create(doc_type, output_path, validate_after=validate, **kwargs)
     console.print(f"[green]Created:[/green] {doc.path}")
+
+    # Display readiness scores if computed (PRD only, requires PLAN-010 scoring module)
+    if "sys_ready_score" in doc.metadata:
+        sys_score = doc.metadata["sys_ready_score"]
+        ears_score = doc.metadata["ears_ready_score"]
+        status = doc.metadata.get("readiness_status", "Draft")
+        profile = doc.metadata.get("template_profile", "mvp")
+        threshold = 85 if profile == "mvp" else 90
+
+        # Color-code based on threshold
+        sys_color = "green" if sys_score >= threshold else "yellow" if sys_score >= 70 else "red"
+        ears_color = "green" if ears_score >= threshold else "yellow" if ears_score >= 70 else "red"
+
+        console.print(f"\n[bold]Readiness Scores ({profile.upper()} profile, threshold={threshold}%):[/bold]")
+        console.print(f"  SYS-Ready:  [{sys_color}]{sys_score:.1f}%[/{sys_color}]")
+        console.print(f"  EARS-Ready: [{ears_color}]{ears_score:.1f}%[/{ears_color}]")
+        console.print(f"  Status:     {status}")
+
+    # Display validation status
+    if doc.metadata.get("validation_status") == "needs_review":
+        console.print(f"\n[yellow]Warning:[/yellow] {doc.metadata.get('tier1_errors', 0)} Tier 1 issues found")
+        console.print(f"Run: ucx validate prd {doc.path}")
+        if strict:
+            raise click.exceptions.Exit(code=1)
+    elif doc.metadata.get("validation_status") == "passed":
+        console.print("[green]Validation:[/green] Passed Tier 1 checks")
 
 
 @cli.command()

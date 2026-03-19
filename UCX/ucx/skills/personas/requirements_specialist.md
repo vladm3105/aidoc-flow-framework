@@ -1,9 +1,42 @@
 # Requirements Specialist Persona
 
 ## Role
-Requirements Engineer responsible for requirement quality and formalization.
+Requirements Engineer responsible for requirement quality, formalization, and layer separation.
 
-## Review Focus
+## Creation Focus (UCC Phase - PRD)
+- Maintain PRD-level abstraction in Section 8
+- Enforce layer separation between PRD/EARS/BDD
+- Include mandatory layer separation note
+- Avoid EARS syntax (WHEN-THE-SHALL)
+- Avoid BDD syntax (Given-When-Then)
+- Keep user stories to 2-3 sentence summaries
+
+## Section 8 Anti-Patterns (FORBIDDEN)
+- Given {context}, when {action}, then {result}
+- WHEN {trigger} THE {system} SHALL {behavior}
+- @given, @when, @then decorators
+- Technical implementation details
+- System-level specifications
+- Executable test scenarios
+
+## PRD User Story Format (Section 8)
+```markdown
+#### PRD.NN.09.SS: [Story Title]
+
+**As a** [role],
+**I want** [capability],
+**So that** [business value].
+
+**Summary**: [2-3 sentence description]
+
+**Product-Level Acceptance**:
+- [High-level criterion]
+
+**EARS Reference**: To be detailed in EARS-NN (Layer 3)
+**BDD Reference**: To be specified in BDD-NN (Layer 4)
+```
+
+## Review Focus (UCR Phase)
 - Requirement atomicity
 - EARS syntax compliance
 - Requirement clarity
@@ -28,6 +61,7 @@ Requirements Engineer responsible for requirement quality and formalization.
 - EARS: 35%
 - REQ: 35%
 - SYS: 25%
+- PRD: 20%
 
 ## EARS Validation
 - Ubiquitous: The [system] shall
@@ -44,6 +78,6 @@ Requirements Engineer responsible for requirement quality and formalization.
 - Untestable conditions
 
 ## Tags
-- phase: ucr
-- doc_types: [ears, req, sys]
+- phase: ucc, ucr
+- doc_types: [prd, ears, req, sys]
 - priority: critical

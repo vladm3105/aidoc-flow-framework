@@ -79,10 +79,41 @@ cd /path/to/project
 ucx --project-dir . review brd docs/01_BRD/BRD-01_platform_architecture/
 ```
 
+### Validate a PRD Document
+
+```bash
+# Full validation with report
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --fix --report
+
+# Tier 1 only (pre-commit)
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --tier1-only
+
+# View readiness scores
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/
+# Output shows: SYS-Ready score, EARS-Ready score, recommendations
+```
+
 ### Review a PRD Document
 
 ```bash
-ucx --project-dir . review prd docs/02_PRD/PRD-01_user_onboarding/
+# Full multi-persona review
+ucx review prd docs/02_PRD/PRD-01_user_onboarding/
+
+# One-turn review (faster)
+ucx review prd docs/02_PRD/PRD-01_user_onboarding/ --one-turn
+```
+
+### Create a New PRD from BRD
+
+```bash
+# Create PRD from upstream BRD (scaffolds 21-section structure)
+ucx create prd --output docs/02_PRD/PRD-01_user_onboarding/ \
+  --from-upstream docs/01_BRD/BRD-01_platform_architecture/
+
+# Create with immediate validation
+ucx create prd --output docs/02_PRD/PRD-01_user_onboarding/ \
+  --from-upstream docs/01_BRD/BRD-01_platform_architecture/ \
+  --validate
 ```
 
 ### Create a New BRD

@@ -56,9 +56,10 @@ class UCCPhase:
         from_iplan: Optional[Path] = None,
         template: Optional[Path] = None,
         multi_file: bool = False,
+        validate_after: bool = True,
     ) -> Document:
         """
-        Create a new document.
+        Create a new document with optional post-creation validation.
 
         Args:
             doc_type: Document type (brd, prd, ears, etc.)
@@ -68,6 +69,7 @@ class UCCPhase:
             from_iplan: Implementation plan path
             template: Custom template path
             multi_file: Generate multi-file output
+            validate_after: Run post-creation validation (default: True)
 
         Returns:
             Created Document instance
@@ -114,8 +116,74 @@ class UCCPhase:
 
         # Write output
         actual_output.write_text(content, encoding="utf-8")
+        document = Document.from_path(actual_output)
 
-        return Document.from_path(actual_output)
+        # Post-creation validation and scoring for PRD
+        if validate_after and doc_type == DocType.PRD:
+            self._validate_and_score_prd(document)
+
+        return document
+
+    def _validate_and_score_prd(self, document: Document) -> None:
+        """Run Tier 1 validation and compute readiness scores on created PRD.
+
+        Scoring module imported from ucx/validators/prd/scoring.py (PLAN-010).
+        Gracefully handles missing modules during transition period.
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+
+        # Step 1: Run Tier 1 validation
+        try:
+            from ucx.validators.prd import UnifiedPRDValidator
+
+            validator = UnifiedPRDValidator()
+            result = validator.validate(document.path, tier1_only=True)
+
+            if result.has_errors:
+                logger.warning(
+                    f"Created PRD has {len(result.errors)} Tier 1 issues. "
+                    f"Run 'ucx validate prd {document.path}' for details."
+                )
+                document.metadata["validation_status"] = "needs_review"
+                document.metadata["tier1_errors"] = len(result.errors)
+            else:
+                document.metadata["validation_status"] = "passed"
+
+        except ImportError:
+            # PRD validator not yet implemented (PLAN-010 dependency)
+            logger.debug("PRD validator not available, skipping validation")
+        except Exception as e:
+            logger.warning(f"Validation failed: {e}")
+
+        # Step 2: Compute and inject readiness scores
+        try:
+            from ucx.validators.prd.scoring import PRDScorer
+
+            scorer = PRDScorer()
+            content = document.path.read_text(encoding="utf-8")
+            scores = scorer.calculate(content)
+
+            # Update Document Control section with computed scores
+            scorer.update_document_control(document.path, scores)
+
+            # Store in metadata for CLI output
+            document.metadata["sys_ready_score"] = scores.sys_ready
+            document.metadata["ears_ready_score"] = scores.ears_ready
+            document.metadata["readiness_status"] = scores.status
+            document.metadata["template_profile"] = scores.profile
+
+            logger.info(
+                f"PRD scores computed: SYS-Ready={scores.sys_ready:.1f}%, "
+                f"EARS-Ready={scores.ears_ready:.1f}%, Status={scores.status}"
+            )
+
+        except ImportError:
+            # Scoring module not yet implemented (PLAN-010 Phase 7 dependency)
+            logger.debug("PRD scorer not available, skipping score computation")
+        except Exception as e:
+            # Don't fail creation on scoring errors
+            logger.warning(f"Score computation failed: {e}")
 
     def get_prompt(
         self,

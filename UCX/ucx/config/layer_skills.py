@@ -5,7 +5,15 @@ from ucx.models.enums import DocType
 # Skills to load for each document type during CREATION (UCC)
 UCC_LAYER_SKILLS: dict[DocType, list[str]] = {
     DocType.BRD: ["architect", "product_owner", "business_analyst", "strategist", "tech_lead"],
-    DocType.PRD: ["product_owner", "ux_strategist", "tech_lead", "qa_lead", "architect"],
+    DocType.PRD: [
+        "product_owner",
+        "ux_strategist",
+        "content_strategist",      # Section 10 customer-facing content
+        "tech_lead",
+        "qa_lead",
+        "architect",
+        "requirements_specialist",  # Section 8 layer separation
+    ],
     DocType.EARS: ["requirements_specialist", "tech_lead", "qa_lead", "chaos_engineer"],
     DocType.BDD: ["qa_lead", "tech_lead", "chaos_engineer", "operator"],
     DocType.ADR: ["architect", "tech_lead", "strategist", "chaos_engineer", "operator"],

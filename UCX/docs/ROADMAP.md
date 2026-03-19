@@ -32,21 +32,25 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 
 ### v1.20.0 - PRD/EARS Validation Parity
 
-**Status**: Planned
+**Status**: In Progress (v1.20.0 PRD Complete)
 **ETA**: Q3 2026
 
 **Features**:
-| Feature | Description |
-|---------|-------------|
-| PRD Validators | Full PRD validation parity with BRD |
-| EARS Validators | EARS syntax and requirement validation |
-| Unified Quality Gates | Consistent gates across Layer 1-3 |
+| Feature | Description | Status |
+|---------|-------------|--------|
+| PRD Validators | Full PRD validation parity with BRD | ✅ Complete (PLAN-010) |
+| PRD Creation | Enhanced PRD generation with 21-section template | ✅ Complete (PLAN-009) |
+| EARS Validators | EARS syntax and requirement validation | Planned |
+| Unified Quality Gates | Consistent gates across Layer 1-3 | Planned |
 
 **Deliverables**:
-- [ ] `ucx/validators/prd/` module
+- [x] `ucx/validators/prd/` module (10 files)
+- [x] `ucx/creation/UCC_PROMPT_PRD.md` (full rewrite)
+- [x] `ucx/review/UCR_PROMPT_PRD.md` (updated for dual scoring)
+- [x] PRD/EARS quality gate scripts
+- [x] Pre-commit hooks for PRD (in projects)
 - [ ] `ucx/validators/ears/` module
-- [ ] PRD/EARS quality gate scripts
-- [ ] Pre-commit hooks for PRD/EARS
+- [ ] EARS quality gate scripts
 
 ---
 

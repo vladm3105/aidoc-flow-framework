@@ -13,6 +13,13 @@ The system consists of three phases:
 
 **Plus**: Full **Autopilot** mode that orchestrates all phases automatically.
 
+**Document Type Support (v1.20.0)**:
+- **BRD (Layer 1)** - Mature, fully validated
+- **PRD (Layer 2)** - Full validation/creation parity achieved (v1.20.0)
+- **EARS (Layer 3)** - Validators in progress
+- **BDD (Layer 4)** - Full validation support
+- **ADR through TSPEC (Layers 5-10)** - Validators available
+
 ---
 
 ## Two Modes of Operation
@@ -188,6 +195,141 @@ ucx --mode api --model provider/model --api-base https://proxy.example.com revie
 | `opus` | `opus` | `anthropic/claude-opus-4-5-20251101` |
 | `sonnet` | `sonnet` | `anthropic/claude-sonnet-4-20250514` |
 | `haiku` | `haiku` | `anthropic/claude-3-5-haiku-20241022` |
+
+---
+
+## Validators & Core Modules
+
+### Document Type Validators
+
+UCX provides comprehensive validators for each layer of the SDD framework. Each validator enforces structure, metadata, and quality gate compliance.
+
+| Module | Document | Sections | Element Codes | Quality Gates | Status |
+|--------|----------|----------|---------------|---------------|--------|
+| **brd** | BRD (Layer 1) | 10 required | 13 valid codes | 10 gates | ✅ Mature |
+| **prd** | PRD (Layer 2) | 21 required | 13 valid codes | 20 gates | ✅ v1.20.0 (NEW) |
+| **ears** | EARS (Layer 3) | 5 required | 10 valid codes | 8 gates | 🟡 In Progress |
+| **bdd** | BDD (Layer 4) | 3 required | 3 valid codes | 4 gates | ✅ Complete |
+| **adr** | ADR (Layer 5) | 4 required | 7 valid codes | 6 gates | ✅ Complete |
+| **sys** | SYS (Layer 6) | 6 required | 11 valid codes | 8 gates | ✅ Complete |
+| **req** | REQ (Layer 7) | 7 required | 10 valid codes | 7 gates | ✅ Complete |
+| **ctr** | CTR (Layer 8) | 4+yaml | 5 valid codes | 6 gates | ✅ Complete |
+| **spec** | SPEC (Layer 9) | yaml format | 12 valid codes | 8 gates | ✅ Complete |
+| **tspec** | TSPEC (Layer 10) | 6 required | 5 valid codes | 7 gates | ✅ Complete |
+
+### Key Files & Directories
+
+```
+UCX/
+├── ucx/
+│   ├── validators/
+│   │   ├── __init__.py            # Validator registry & factory
+│   │   ├── brd/                   # BRD Layer 1 validator (7 files)
+│   │   │   ├── __init__.py        # UnifiedBRDValidator entry point
+│   │   │   ├── schema.py          # Constants, element codes, sections
+│   │   │   ├── structure.py       # Section/heading validation
+│   │   │   ├── element_codes.py   # BRD.NN.TT.SS format validation
+│   │   │   ├── quality_gate.py    # 10 file-level quality gate checks
+│   │   │   ├── corpus_gate.py     # Corpus-level cross-document checks
+│   │   │   ├── scoring.py         # BRD-Ready score calculation
+│   │   │   ├── fixer.py           # Auto-fixer with UCX-ACTION output
+│   │   │   └── duplicate_fixer.py # Duplicate ID handling
+│   │   ├── prd/                   # PRD Layer 2 validator (10 files) - v1.20.0
+│   │   │   ├── __init__.py        # UnifiedPRDValidator entry point
+│   │   │   ├── schema.py          # 13 element codes, 21 sections
+│   │   │   ├── structure.py       # Section/heading validation
+│   │   │   ├── metadata.py        # Frontmatter, tags, required fields
+│   │   │   ├── element_codes.py   # PRD.NN.TT.SS format validation
+│   │   │   ├── quality_gate.py    # 20 file-level GATE checks
+│   │   │   ├── corpus_gate.py     # 19 corpus-level cross-doc checks
+│   │   │   ├── scoring.py         # AUTHORITATIVE dual readiness (SYS-Ready + EARS-Ready)
+│   │   │   ├── fixer.py           # Auto-fixer for PRD issues
+│   │   │   └── duplicate_fixer.py # Duplicate element handling
+│   │   ├── ears/                  # EARS Layer 3 validator (in progress)
+│   │   └── ... (other layer validators)
+│   ├── creation/
+│   │   ├── UCC_PROMPT_BRD.md      # BRD creation prompt (framework)
+│   │   ├── UCC_PROMPT_PRD.md      # PRD creation prompt (framework) - v1.20.0 rewritten
+│   │   └── ... (layer creation prompts)
+│   ├── review/
+│   │   ├── UCR_PROMPT_BRD.md      # BRD review prompt (framework)
+│   │   ├── UCR_PROMPT_PRD.md      # PRD review prompt (framework) - v1.20.0
+│   │   └── ... (layer review prompts)
+│   ├── remediation/
+│   │   ├── UCRem_PROMPT_BRD.md    # BRD remediation prompt
+│   │   ├── UCRem_PROMPT_PRD.md    # PRD remediation prompt - v1.20.0
+│   │   └── ... (layer remediation prompts)
+│   ├── skills/                    # 13 persona skills
+│   │   ├── architect.md
+│   │   ├── auditor.md
+│   │   ├── requirements_specialist.md  # v1.20.0 ENHANCED for PRD
+│   │   ├── content_strategist.md       # v1.20.0 NEW persona
+│   │   └── ... (11 more personas)
+│   ├── config/
+│   │   └── layer_skills.py        # v1.20.0 updated: persona mapping by phase
+│   └── ai/
+│       ├── cli_client.py          # CLI mode (Claude CLI, Gemini, etc.)
+│       └── litellm_client.py      # API mode (direct HTTP calls)
+├── docs/
+│   ├── ROADMAP.md                 # Release roadmap (v1.20.0 PRD complete)
+│   ├── HOW_TO_USE.md              # Usage guide (v1.20.0 PRD sections added)
+│   ├── QUICK_START.md             # Quick examples (v1.20.0 PRD examples added)
+│   ├── CHANGELOG_v1.20.0.md       # NEW comprehensive changelog
+│   ├── UNIFIED_CONTEXT_REVIEW.md  # UCR methodology guide
+│   ├── HOW_TO_AUDIT.md            # Audit workflow guide
+│   └── README.md                  # Main documentation (this file)
+└── tests/
+    ├── validators/
+    │   ├── test_brd_validator.py   # BRD validation tests
+    │   ├── test_prd_validator.py   # PRD validation tests (v1.20.0)
+    │   └── ... (layer test files)
+    └── creation/
+        ├── test_brd_creation.py
+        ├── test_prd_creation.py    # PRD creation tests (v1.20.0)
+        └── ... (layer test files)
+```
+
+### Validator Entry Points
+
+Each validator module exports a unified interface:
+
+```python
+from ucx.validators import get_validator
+
+# Get BRD validator
+brd_validator = get_validator("brd")
+
+# Validate a document
+report = brd_validator.validate(doc_path="docs/01_BRD/BRD-01.md")
+
+# Check readiness score
+if report.downstream_ready_score >= 85:
+    print("Ready to proceed to PRD")
+
+# Auto-fix issues
+fixed_doc = brd_validator.fix(doc_path)
+
+# Get scoring details
+print(report.detailed_scoring)
+```
+
+### PRD Validator (v1.20.0+) - New in This Release
+
+The PRD validator (10 files, ~2,500 lines) achieves feature parity with BRD validation:
+
+**Key Features:**
+- **21-Section Structure**: MVP format with blocking Section 10 (Customer-Facing Content)
+- **Dual Readiness Scoring**: 
+  - SYS-Ready: Product completeness (40%), technical readiness (30%), business alignment (20%), traceability (10%)
+  - EARS-Ready: Timing profiles (25%), boundary values (25%), state machine (25%), fallback paths (15%), thresholds (10%)
+- **20 Quality Gates**: File and corpus-level validation
+- **Dual-Persona Review Prompts**: UCR_PROMPT_PRD (unified) and persona-specific
+- **Automatic Scoring Injection**: PRD creation includes readiness scores
+- **Pre-commit Integration**: Fast Tier 1 validation for CI/CD pipelines
+
+**New Personas (v1.20.0):**
+- `content_strategist`: NEW - Focus on customer messaging, user language
+- `requirements_specialist`: ENHANCED - Now specializes in PRD feature/acceptance criteria clarity
 
 ---
 
@@ -888,6 +1030,127 @@ repos:
 | 2 | Errors present | ❌ Fail |
 
 > **Note**: Exit code 2 indicates validation completed successfully but found blocking errors - this is expected behavior, not a command failure. The validation report is still generated. These exit codes enable CI/CD integration where pipelines can distinguish between warnings (1) and errors (2).
+
+### PRD Document Validation (v1.20.0+)
+
+Unified PRD validation with dual readiness scoring and 21-section structure enforcement.
+
+```bash
+# Basic validation (generates report by default)
+ucx validate prd docs/02_PRD/PRD-01/
+# → Creates: docs/02_PRD/PRD-01/PRD-01.V_validation_report_v001.md
+
+# Tier 1 only (fast, blocking checks for pre-commit)
+ucx validate prd docs/02_PRD/PRD-01/ --tier1-only
+
+# Strict mode (warnings as errors)
+ucx validate prd docs/02_PRD/PRD-01/ --strict
+
+# MVP profile (85% threshold) vs Standard profile (90% threshold)
+ucx validate prd docs/02_PRD/PRD-01/ --profile mvp
+ucx validate prd docs/02_PRD/PRD-01/ --profile standard
+```
+
+**Dual Readiness Scoring:**
+
+PRD validation calculates two readiness scores that must meet threshold:
+
+| Score | Components | Weight | Description |
+|-------|------------|--------|-------------|
+| **SYS-Ready** | Product Completeness | 40% | Sections, elements, acceptance criteria |
+| | Technical Readiness | 30% | Constraints, dependencies, risks, FRs |
+| | Business Alignment | 20% | Goals, metrics, stakeholders, user stories |
+| | Traceability | 10% | BRD references, cross-refs, Doc Control |
+| **EARS-Ready** | Timing Profiles | 25% | Sequence, priority, phases, timeline |
+| | Boundary Values | 25% | Numeric ranges, min/max, units |
+| | State Machine | 25% | States, transitions, conditions |
+| | Fallback Paths | 15% | Error handling, edge cases, alternatives |
+| | Threshold Registry | 10% | KPIs, targets, SLAs |
+
+**Score Thresholds:**
+
+| Profile | SYS-Ready | EARS-Ready | Use Case |
+|---------|-----------|------------|----------|
+| MVP | ≥85% | ≥85% | Early-stage development |
+| Standard | ≥90% | ≥90% | Production-ready |
+
+**PRD Quality Gates (20 GATE Checks):**
+
+| GATE | Check | Tier | Description |
+|------|-------|------|-------------|
+| GATE-01 | Placeholder detection | 1 | TODO, TBD, FIXME, WIP markers |
+| GATE-02 | Downstream reference blocking | 1 | Cannot reference Layer 5+ (ADR/SYS/REQ/SPEC/TASKS) |
+| GATE-03 | Upstream BRD traceability | 2 | @brd: references required |
+| GATE-04 | Section completeness | 1 | 21-section MVP structure |
+| GATE-05 | Element ID format | 1 | PRD.NN.TT.SS validation |
+| GATE-06 | Diagram contracts | 2 | C4/DFD diagram recommendations |
+| GATE-07 | Cross-reference validity | 2 | Internal PRD references |
+| GATE-08 | Element uniqueness | 1 | No duplicate element IDs |
+| GATE-09 | Acceptance criteria | 2 | AC elements in Section 11 |
+| GATE-10 | File size compliance | 1 | Under 20K tokens |
+| GATE-11 | Feature hierarchy | 2 | Features in Section 7 |
+| GATE-12 | User story format | 2 | "As a... I want..." in Section 8 |
+| GATE-13 | Priority consistency | 2 | P0-P4 or MoSCoW, not mixed |
+| GATE-14 | Dependency mapping | 2 | Dependencies documented |
+| GATE-15 | SYS-Ready score | 1 | ≥85% (MVP) or ≥90% (Standard) |
+| GATE-16 | EARS-Ready score | 1 | ≥85% (MVP) or ≥90% (Standard) |
+| GATE-17 | Traceability coverage | 2 | ADR topics table in Section 18 |
+| GATE-18 | NFR completeness | 2 | Quality attributes in Section 21 |
+| GATE-19 | Success metrics | 2 | Metrics in Section 5 |
+| GATE-20 | Release criteria | 2 | Launch criteria in Section 14 |
+
+**PRD Element Type Codes (13 valid codes):**
+
+| Code | Type | Primary Section |
+|------|------|-----------------|
+| 01 | Functional Requirement | Section 9 |
+| 02 | Quality Attribute / NFR | Section 21 |
+| 03 | Constraint | Section 12 |
+| 04 | Assumption | Section 12 |
+| 05 | Dependency | Section 7 |
+| 06 | Acceptance Criteria | Section 11 |
+| 07 | Risk | Section 13 |
+| 08 | Metric / KPI | Section 5 |
+| 09 | User Story | Section 8 |
+| 11 | Use Case | Section 9 |
+| 22 | Feature Item | Section 7 |
+| 23 | Goal | Section 6 |
+| 24 | Stakeholder Need | Section 4 |
+
+**Section 10 BLOCKING Requirement:**
+
+Section 10 (Customer-Facing Content & Messaging) is a **blocking section**. PRD validation fails if:
+- Section 10 is missing
+- Section 10 contains placeholder text
+- Section 10 has less than 200 characters of substantive content
+
+This ensures customer-facing messaging (error messages, notifications, UI copy) is defined early.
+
+**Section 8 Layer Separation:**
+
+Section 8 (User Stories) must include a layer separation note distinguishing:
+- **PRD (Layer 2)**: High-level user-facing stories
+- **EARS (Layer 3)**: Formal WHEN-THE-SHALL requirements
+- **BDD (Layer 4)**: Given-When-Then test scenarios
+
+PRD validation flags if Section 8 contains:
+- `Given... When... Then` patterns (belongs in BDD/Layer 4)
+- `WHEN... THE... SHALL` patterns (belongs in EARS/Layer 3)
+
+**Pre-commit Integration:**
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: ucx-prd-validate
+        name: UCX PRD Validation (Tier 1)
+        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && ucx validate prd docs/02_PRD --tier1-only'
+        language: system
+        files: ^docs/02_PRD/.*\.md$
+        stages: [pre-commit]
+```
 
 ### SDD-Compliant Output Format
 
