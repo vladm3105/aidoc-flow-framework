@@ -867,27 +867,30 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             all_issues = result.tier1_issues + result.tier2_issues
             fixable_issues = [i for i in all_issues if i.code in FIXABLE_CODES]
 
+            # Always run fixer for DEFERRED→UCX-ACTION migration (v1.19.2+)
+            # Even if no fixable issues, we may have legacy DEFERRED comments to migrate
             if fixable_issues:
                 console.print(f"\n[cyan]Auto-fixing {len(fixable_issues)} structural issue(s)...[/cyan]")
 
-                try:
-                    fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
-                    fix_summary = fixer.fix_all(fixable_issues)
+            try:
+                fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
+                fix_summary = fixer.fix_all(fixable_issues)
 
-                    # Display fix results with partial fix indicators (v1.17.0+)
-                    for fix_result in fix_summary.results:
-                        if fix_result.fixed:
-                            if fix_result.partial_fix:
-                                console.print(f"  [cyan]◐[/cyan] {fix_result.code}: {fix_result.message}")
-                                console.print(f"    [dim]LLM Task: {fix_result.llm_task}[/dim]")
-                            else:
-                                console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
-                            for change in fix_result.changes:
-                                console.print(f"    [dim]→ {change}[/dim]")
+                # Display fix results with partial fix indicators (v1.17.0+)
+                for fix_result in fix_summary.results:
+                    if fix_result.fixed:
+                        if fix_result.partial_fix:
+                            console.print(f"  [cyan]◐[/cyan] {fix_result.code}: {fix_result.message}")
+                            console.print(f"    [dim]LLM Task: {fix_result.llm_task}[/dim]")
                         else:
-                            console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
+                            console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
+                        for change in fix_result.changes:
+                            console.print(f"    [dim]→ {change}[/dim]")
+                    else:
+                        console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
 
-                    # Summary with partial fix count (v1.17.0+)
+                # Summary with partial fix count (v1.17.0+)
+                if fix_summary.results:  # Only show summary if there were any fixes attempted
                     console.print(
                         f"\n[green]Fixed: {fix_summary.fully_fixed_count}[/green] | "
                         f"[cyan]Partial: {fix_summary.partial_fix_count}[/cyan] | "
@@ -895,21 +898,21 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
                         f"[red]Failed: {fix_summary.failed_count}[/red]"
                     )
 
-                    if fix_summary.partial_fix_count > 0:
-                        console.print(f"\n[cyan]LLM Completion Required: {fix_summary.partial_fix_count}[/cyan]")
-                        console.print("[dim]Run `ucx remediate` to complete partial fixes with AI.[/dim]")
+                if fix_summary.partial_fix_count > 0:
+                    console.print(f"\n[cyan]LLM Completion Required: {fix_summary.partial_fix_count}[/cyan]")
+                    console.print("[dim]Run `ucx remediate` to complete partial fixes with AI.[/dim]")
 
-                    # Re-run validation to show updated results
-                    if fix_summary.fixed_count > 0:
-                        console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
-                        result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+                # Re-run validation to show updated results
+                if fix_summary.fixed_count > 0:
+                    console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
+                    result = validator.validate(Path(doc_path), tier1_only=tier1_only)
 
-                except Exception as e:
-                    fixer_error = str(e)
-                    console.print(f"[red]Fixer error: {e}[/red]")
-                    import logging
-                    logging.getLogger(__name__).exception("Fixer failed")
-                    # Continue with validation - don't block on fixer failure
+            except Exception as e:
+                fixer_error = str(e)
+                console.print(f"[red]Fixer error: {e}[/red]")
+                import logging
+                logging.getLogger(__name__).exception("Fixer failed")
+                # Continue with validation - don't block on fixer failure
 
         # Attach fixer context to result (v1.17.0+)
         if fix_summary:

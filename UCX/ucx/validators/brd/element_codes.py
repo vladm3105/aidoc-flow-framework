@@ -160,6 +160,14 @@ def _is_reference_context(
     if re.search(r'\*\*Business (Driver|Constraint)[s]?\*\*:.*BRD\.\d{2,}\.\d{2}\.\d{2,}', line):
         return True
 
+    # Check for bold field labels with element ID references
+    # e.g., "**Related Requirements**: BRD-02, BRD.19.01.01"
+    # e.g., "**Dependencies**: BRD.19.01.02"
+    # e.g., "**Upstream**: BRD.19.01.01"
+    # Uses negative lookahead to exclude element definitions like **BRD.01.01.01**:
+    if re.match(r'^\*\*(?!BRD\.)[^*]+\*\*:', stripped_line):
+        return True
+
     # Check for "Related Requirements" section references
     # e.g., "- BRD.02.01.01-05 (All Partners): Webhook event sources"
     # e.g., "- BRD.02.01.01, 03, 04 (Partners): Settlement file sources"
@@ -192,6 +200,13 @@ def _is_reference_context(
     # e.g., "- Target operational float: ~$20k (BRD.14.23.01.02 target)"
     # e.g., "- Maximum timeout: 30s (BRD.14.09.01 constraint)"
     if re.search(r'\(BRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?\s+\w+\)', line):
+        return True
+
+    # Parenthetical references with text before the ID
+    # e.g., "(see BRD.43.01.08 OFAC Hit Handling SLA)"
+    # e.g., "(per BRD.01.03.01)"
+    # e.g., "(ref: BRD.02.01.01)"
+    if re.search(r'\([^)]*\bBRD\.\d{2,}\.\d{2}\.\d{2,}(?:\.\d{2,})?[^)]*\)', line):
         return True
 
     # @brd: cross-reference annotations

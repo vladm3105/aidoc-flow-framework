@@ -744,7 +744,8 @@ The `--fix` flag automatically fixes structural issues without AI:
 | `BRD-E004` | 1 | Missing 'layer-1-artifact' tag | Adds to tags array |
 | `BRD-E009` | 1 | Missing Document Control | Adds Section 0 template |
 | `BRD-E020` | 1 | Invalid element type code | Remaps to valid code (01-32, 91-99) |
-| `GATE-E001` | 1 | **Placeholder text [TBD]** | **Converts to `<!-- DEFERRED: ... -->` comments** |
+| `GATE-E001` | 1 | **Placeholder text [TBD]** | **Converts to UCX-ACTION INTERNAL blocks (v1.19.2+)** |
+| `GATE-E002` | 1 | **Premature downstream reference** | **Converts to UCX-ACTION HANDOFF blocks (v1.19.1+)** |
 | `GATE-E008` | 1 | Duplicate element ID | Renumbers duplicates with next available sequence |
 | `GATE-E010` | 1 | File exceeds 20K tokens | Auto-splits at section boundaries |
 | `DIAG-E001` | 1 | **Missing architecture diagram** | **Adds `<!-- DIAGRAM-REQUIRED: ... -->` placeholder** |
@@ -753,7 +754,7 @@ The `--fix` flag automatically fixes structural issues without AI:
 | `BRD-W005` | 1 | Legacy development_status | Renames to status |
 | `VAL-W002` | 1 | Legacy status value | Updates (active→production, draft→development) |
 | `GATE-W003` | 2 | Count mismatch | Updates prose count to match actual |
-| `GATE-W008` | 2 | Element in wrong section | Moves element to correct section file |
+| `GATE-W008` | 2 | Element in wrong section | Creates UCX-ACTION INTERNAL for move task (v1.19.2+) |
 | `DIAG-W001` | 2 | Diagram node count | Updates prose to match diagram |
 | `BRD-W010` | 2 | Missing @depends tags | Auto-detects BRD references and adds tags |
 | `BRD-W011` | 2 | Missing C4-L1 diagram | Adds @diagram-request for ADR layer |
@@ -1698,6 +1699,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.19.2 | 2026-03-18 | **Unified UCX-ACTION Approach**: GATE-E001 now converts placeholders to UCX-ACTION INTERNAL blocks (was DEFERRED comments). GATE-W008 creates UCX-ACTION for move tasks. Automatic migration of legacy DEFERRED comments to UCX-ACTION format. Unified format: TYPE (INTERNAL/HANDOFF), TARGET (BRD/PRD/ADR/etc.), PRIORITY, CONTEXT with prefixes. See [CHANGELOG_v1.19.2.md](docs/CHANGELOG_v1.19.2.md). |
+| 1.19.1 | 2026-03-18 | **GATE-E002 UCX-ACTION Handoff Fixer**: Premature downstream references converted to UCX-ACTION HANDOFF blocks. GATE-E008 false positive fix for bold field labels and parenthetical references. See [CHANGELOG_v1.19.1.md](docs/CHANGELOG_v1.19.1.md). |
 | 1.18.0 | 2026-03-17 | **Layer Action Handoff System**: Capture out-of-scope items as ACTIONS that handoff to downstream layers (PRD, EARS, BDD, ADR, CTR) without penalizing BRD score. New scripts: `extract_actions.py` and `validate_actions.py`. ACTION format with fields: ACTION_ID, TYPE, TARGET, PRIORITY, SOURCE, PERSONA, CONTEXT, REQUIREMENT. Actions Manifest in Chairperson output. See [CHANGELOG_v1.18.0.md](docs/CHANGELOG_v1.18.0.md). |
 | 1.17.0 | 2026-03-15 | **Fixer-to-LLM Hand-off System**: Validation now ALWAYS fixes by default (no `--fix` flag needed). Added `--no-fix` flag to opt out. New FixerContext tracks fixed/partial/skipped issues. Section 7 "Fixer Session Summary" added to validation reports with embedded JSON. LLM_COMPLETION markers inserted for partial fixes. New `ucx clean-markers` command. UCRem reads fixer context and injects into prompts. All 6 fixer personas updated with hand-off protocol. See [CHANGELOG_v1.17.0.md](docs/CHANGELOG_v1.17.0.md). |
 | 1.16.2 | 2026-03-15 | **Duplicate Fixer Guardrails & Reference Detection Sync**: Fixed circular rename bug in GATE-E008 fixer (could cause infinite loops). Added backtick reference detection. Synced reference logic between validator and fixer. Protected historical reports from fixer modifications. See [CHANGELOG_v1.16.2.md](docs/CHANGELOG_v1.16.2.md). |

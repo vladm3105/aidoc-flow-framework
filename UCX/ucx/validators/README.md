@@ -4,7 +4,7 @@
 
 The validators module provides non-AI document validation for UCX. It validates document structure, metadata, element codes, and quality gates without requiring AI API calls.
 
-**Version**: 1.9.4
+**Version**: 1.19.1
 
 ## Architecture
 
@@ -276,10 +276,144 @@ All traceability tags require 2+ digit document numbers per ID_NAMING_STANDARDS.
 | `@spec:` | `SPEC-\d{2,}` | `@spec: SPEC-01` |
 | `@tasks:` | `TASKS-\d{2,}` | `@tasks: TASKS-01` |
 
+## Auto-Fixers
+
+The validator includes automatic fixers for common issues. Use `--fix` flag to enable:
+
+```bash
+ucx validate brd docs/01_BRD/BRD-01/ --tier1-only  # Auto-fix enabled by default
+```
+
+### Fixable Error Codes
+
+| Code | Issue | Auto-Fix Action |
+|------|-------|-----------------|
+| **GATE-E001** | Placeholder text ([TBD], TODO) | Convert to UCX-ACTION INTERNAL block |
+| **GATE-E002** | Premature downstream reference | Convert to UCX-ACTION HANDOFF block |
+| **GATE-E008** | Duplicate element ID | Renumber duplicates, update references |
+| **GATE-E010** | File exceeds token limit | Auto-split at section boundaries |
+| **GATE-W008** | Element in wrong section | Create UCX-ACTION INTERNAL for move task |
+| **BRD-E002** | Missing custom_fields | Add default custom_fields |
+| **BRD-E003** | Missing 'brd' tag | Add required tag |
+| **BRD-E020** | Invalid element type code | Remap to valid code |
+
+### Unified UCX-ACTION Format
+
+All fixers use a unified UCX-ACTION format for task tracking:
+
+```markdown
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-xxxxxxxx
+TYPE: {INTERNAL|HANDOFF}
+TARGET: {BRD|PRD|ADR|SYS|REQ|...}
+PRIORITY: {P0|P1|P2|P3}
+SOURCE: BRD-XX Section Y
+CONTEXT: {PREFIX}: Description
+REQUIREMENT: What needs to be done
+<!-- UCX-ACTION-END -->
+```
+
+| Field | Description |
+|-------|-------------|
+| **TYPE** | `INTERNAL` for same-layer tasks, `HANDOFF` for downstream layers |
+| **TARGET** | `BRD` for internal tasks, layer acronym for handoffs |
+| **PRIORITY** | P0=Critical, P1=High, P2=Medium, P3=Low |
+| **CONTEXT** | Prefixed description (TODO:, TBD:, MOVE:, FIXME:, etc.) |
+
+### GATE-E001: Placeholder Conversion
+
+Placeholders are converted to UCX-ACTION INTERNAL blocks:
+
+**Before:**
+```markdown
+TODO: Add monitoring thresholds
+[TBD]
+FIXME: Update SLA values
+```
+
+**After:**
+```markdown
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-a1b2c3d4
+TYPE: INTERNAL
+TARGET: BRD
+PRIORITY: P2
+SOURCE: BRD-49 Section 6
+CONTEXT: TODO: Add monitoring thresholds
+REQUIREMENT: Complete: Add monitoring thresholds
+<!-- UCX-ACTION-END -->
+```
+
+### GATE-E002: Downstream Reference Handoff
+
+When BRD references specific downstream document IDs (e.g., `@adr: ADR-56-001`), the fixer converts them to UCX-ACTION handoff blocks:
+
+**Before:**
+```markdown
+@adr: ADR-56-001 (Identity Provider Migration Strategy)
+```
+
+**After:**
+```markdown
+@adr
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-8e95d0bf
+TYPE: HANDOFF
+TARGET: ADR
+PRIORITY: P1
+SOURCE: BRD-56
+CONTEXT: Identity Provider Migration Strategy
+REQUIREMENT: Create ADR-56-001 document
+<!-- UCX-ACTION-END -->
+```
+
+### GATE-E008: Reference Context Detection
+
+The duplicate ID detector distinguishes between element **definitions** and **references**:
+
+| Pattern | Type | Example |
+|---------|------|---------|
+| `## BRD.19.01.01:` | Definition | Heading format |
+| `**BRD.19.01.01**:` | Definition | Bold format |
+| `**Related Requirements**: BRD.19.01.01` | Reference | Bold field label |
+| `(see BRD.43.01.08 ...)` | Reference | Parenthetical with prefix |
+| `(validates: BRD.49.23.05)` | Reference | Validation reference |
+| `\| BRD.19.01.01 \|` | Reference | Table cell |
+
+References are excluded from duplicate detection to prevent false positives.
+
+### Legacy DEFERRED Migration
+
+Existing `<!-- DEFERRED: ... -->` comments are automatically migrated to UCX-ACTION format when running validation:
+
+**Before:**
+```markdown
+<!-- DEFERRED: Move to Section 2 (element type 23) -->
+<!-- DEFERRED: TODO item pending -->
+<!-- DEFERRED: Content to be determined -->
+```
+
+**After:**
+```markdown
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-76c82e76
+TYPE: INTERNAL
+TARGET: BRD
+PRIORITY: P2
+SOURCE: BRD-49 Section 5
+CONTEXT: CONTENT: Move to Section 2 (element type 23)
+REQUIREMENT: Add missing content
+<!-- UCX-ACTION-END -->
+```
+
+Migration happens automatically when `ucx validate` runs, even if no new validation issues are detected.
+
 ## Changelog
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.19.2 | 2026-03-18 | **Unified UCX-ACTION approach**: GATE-E001 now uses UCX-ACTION INTERNAL blocks instead of DEFERRED comments; GATE-W008 uses UCX-ACTION for move tasks; Migrates existing DEFERRED comments to UCX-ACTION format |
+| 1.19.1 | 2026-03-18 | **GATE-E002 UCX-ACTION fixer**: Converts downstream refs to UCX-ACTION handoffs; **GATE-E008 false positive fix**: Added reference context detection for bold field labels, parenthetical prefixes |
 | 1.9.7 | 2026-03-11 | Extended `--fix` for Tier 2 count mismatches: GATE-W003 (stated vs actual), DIAG-W001 (diagram nodes) |
 | 1.9.6 | 2026-03-11 | Added `--fix` for auto-fixing structural issues; `--report` for auto-report; `--fix --report --clean-reports` combo; New `BRDFixer` module; Fixed Document Control regex |
 | 1.9.5 | 2026-03-11 | Added `--clean-reports` and `--keep-versions` to `ucx validate` for report cleanup |

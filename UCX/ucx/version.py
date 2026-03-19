@@ -1,7 +1,30 @@
 """Version information for UCX."""
 
-__version__ = "1.19.0"
+__version__ = "1.19.2"
 __version_info__ = tuple(int(x) for x in __version__.split(".")[:3])
+
+# v1.19.2 - Unified UCX-ACTION Approach
+# - CHANGED: GATE-E001 converts placeholders to UCX-ACTION INTERNAL blocks (was DEFERRED comments)
+# - CHANGED: GATE-W008 creates UCX-ACTION INTERNAL for move tasks (was move markers)
+# - NEW: _migrate_deferred_comments() automatically migrates legacy DEFERRED → UCX-ACTION
+# - NEW: Fixer runs migration even when no fixable issues detected
+# - FORMAT: TYPE (INTERNAL/HANDOFF), TARGET (BRD/PRD/ADR/etc.), PRIORITY, CONTEXT with prefixes
+# - CONTEXT prefixes: TODO:, TBD:, FIXME:, PENDING:, CONTENT:, MOVE:, PLACEHOLDER:
+# - INTERNAL actions affect validation score (unlike DEFERRED comments)
+# - No PERSONA field for internal actions (only for cross-layer handoffs)
+# - See: docs/CHANGELOG_v1.19.2.md
+
+# v1.19.1 - GATE-E002 UCX-ACTION Handoff Fixer & GATE-E008 False Positive Fix
+# - NEW: GATE-E002 auto-fixer converts premature downstream refs to UCX-ACTION HANDOFF blocks
+#   - Patterns: @prd: PRD-XX, @adr: ADR-XX, @sys: SYS-XX, @req: REQ.XX
+#   - Generates unique ACTION_ID, TARGET layer, PRIORITY, SOURCE BRD, CONTEXT, REQUIREMENT
+# - FIXED: GATE-E008 false positives for bold field labels
+#   - Pattern: `**Related Requirements**: BRD.19.01.01` now detected as reference
+#   - Negative lookahead: `^\*\*(?!BRD\.)[^*]+\*\*:` excludes element definitions
+# - FIXED: GATE-E008 false positives for parenthetical references
+#   - Pattern: `(see BRD.43.01.08 OFAC Hit Handling SLA)` now detected as reference
+#   - Regex: `\([^)]*\bBRD\.\d{2,}\.\d{2}\.\d{2,}[^)]*\)`
+# - See: docs/CHANGELOG_v1.19.1.md
 
 # v1.19.0 - Hash-Based Finding and Action ID Generation
 # - NEW: FindingIDGenerator class for content-addressable finding IDs

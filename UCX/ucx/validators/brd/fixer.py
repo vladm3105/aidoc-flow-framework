@@ -159,6 +159,7 @@ FIXABLE_CODES: Set[str] = {
     "GATE-E010",  # File exceeds 20K tokens - auto-split at section boundaries
     # Tier 1 placeholder and forward reference fixes
     "GATE-E001",  # Placeholder text [TBD] - convert to DEFERRED comment
+    "GATE-E002",  # Premature downstream ref - convert to deferred forward ref
     "DIAG-E001",  # Missing architecture diagram - add diagram placeholder
     "FWDREF-E001",  # Forward reference to non-existent doc - convert to deferred
     # Tier 2 count mismatch fixes
@@ -309,6 +310,46 @@ class BRDFixer:
         self._file_cache: Dict[Path, str] = {}
         self._modified_files: Set[Path] = set()
 
+    def _generate_ucx_action(
+        self,
+        action_type: str,
+        target: str,
+        priority: str,
+        source: str,
+        context: str,
+        requirement: str,
+    ) -> str:
+        """
+        Generate a UCX-ACTION block for unified task/handoff tracking.
+
+        Args:
+            action_type: HANDOFF (downstream) or INTERNAL (same-layer)
+            target: Target layer (PRD, ADR, SYS, REQ, BRD, etc.)
+            priority: P0, P1, P2, or P3
+            source: Source document and section (e.g., "BRD-49 Section 10")
+            context: Context with optional prefix (MOVE:, CONTENT:, TODO:, etc.)
+            requirement: What needs to be done
+
+        Returns:
+            Formatted UCX-ACTION block
+        """
+        import hashlib
+        from datetime import datetime
+
+        # Generate unique 8-char hex action ID
+        hash_input = f"{target}{context}{requirement}{datetime.now().isoformat()}"
+        action_id = hashlib.md5(hash_input.encode()).hexdigest()[:8]
+
+        return f"""<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-{action_id}
+TYPE: {action_type}
+TARGET: {target}
+PRIORITY: {priority}
+SOURCE: {source}
+CONTEXT: {context}
+REQUIREMENT: {requirement}
+<!-- UCX-ACTION-END -->"""
+
     def fix_all(self, issues: List[ValidationIssue]) -> FixSummary:
         """
         Fix all fixable issues.
@@ -336,10 +377,116 @@ class BRDFixer:
                 result = self.fix_issue(issue)
                 summary.add(result)
 
+        # Migrate legacy DEFERRED comments to UCX-ACTION format (v1.19.2+)
+        migration_results = self._migrate_deferred_comments()
+        for result in migration_results:
+            summary.add(result)
+
         # Write all modified files
         self._write_modified_files()
 
         return summary
+
+    def _migrate_deferred_comments(self) -> List[FixResult]:
+        """
+        Migrate legacy DEFERRED comments to UCX-ACTION INTERNAL blocks.
+
+        Scans all markdown files in the document directory and converts:
+        <!-- DEFERRED: ... --> → UCX-ACTION block with TYPE: INTERNAL
+
+        Returns:
+            List of FixResults for migrated files
+        """
+        results = []
+
+        # Find all markdown files in the document directory
+        if self.doc_path.is_dir():
+            md_files = list(self.doc_path.glob("**/*.md"))
+        else:
+            md_files = [self.doc_path]
+
+        deferred_pattern = re.compile(r'<!-- DEFERRED:\s*(.*?)\s*-->')
+
+        for file_path in md_files:
+            # Skip non-BRD files (review session files, reports, etc.)
+            if '.ucx_review_session' in str(file_path):
+                continue
+            if '_validation_report' in str(file_path.name):
+                continue
+            if '.UCR_' in str(file_path.name) or '.UCRem_' in str(file_path.name):
+                continue
+
+            content = self._get_file_content(file_path)
+
+            # Skip if no DEFERRED comments found
+            deferred_matches = list(deferred_pattern.finditer(content))
+            if not deferred_matches:
+                continue
+
+            # Extract BRD ID and section from file path
+            brd_id = "BRD-XX"
+            brd_match = re.search(r'(BRD-\d+)', str(file_path))
+            if brd_match:
+                brd_id = brd_match.group(1)
+
+            section_num = ""
+            section_match = re.search(r'\.(\d+)_', str(file_path.name))
+            if section_match:
+                section_num = f" Section {section_match.group(1)}"
+
+            source_location = f"{brd_id}{section_num}"
+
+            # Process matches in reverse to preserve positions
+            changes = []
+            for match in reversed(deferred_matches):
+                deferred_text = match.group(1).strip()
+
+                # Determine context prefix and requirement based on content
+                if deferred_text.startswith("TODO"):
+                    context_prefix = "TODO:"
+                    clean_text = deferred_text.replace("TODO", "").strip(" -:")
+                    requirement = clean_text if clean_text else "Complete pending TODO item"
+                elif deferred_text.startswith("FIXME"):
+                    context_prefix = "FIXME:"
+                    clean_text = deferred_text.replace("FIXME", "").strip(" -:")
+                    requirement = clean_text if clean_text else "Fix pending issue"
+                elif deferred_text.startswith("XXX"):
+                    context_prefix = "XXX:"
+                    clean_text = deferred_text.replace("XXX", "").strip(" -:")
+                    requirement = clean_text if clean_text else "Review flagged content"
+                elif "pending" in deferred_text.lower():
+                    context_prefix = "PENDING:"
+                    requirement = "Add pending content"
+                elif "determined" in deferred_text.lower():
+                    context_prefix = "TBD:"
+                    requirement = "Determine and add content"
+                else:
+                    context_prefix = "CONTENT:"
+                    requirement = "Add missing content"
+
+                action_block = self._generate_ucx_action(
+                    action_type="INTERNAL",
+                    target="BRD",
+                    priority="P2",
+                    source=source_location,
+                    context=f"{context_prefix} {deferred_text}",
+                    requirement=requirement
+                )
+
+                content = content[:match.start()] + action_block + content[match.end():]
+                changes.append(f"Migrated: {deferred_text[:40]}...")
+
+            if changes:
+                self._set_file_content(file_path, content)
+                results.append(FixResult(
+                    code="DEFERRED-MIGRATE",
+                    file_path=file_path,
+                    fixed=True,
+                    message=f"Migrated {len(changes)} DEFERRED comment(s) to UCX-ACTION",
+                    changes=changes
+                ))
+
+        return results
 
     def fix_issue(self, issue: ValidationIssue) -> FixResult:
         """
@@ -1757,18 +1904,28 @@ class BRDFixer:
             target_files = list(brd_dir.glob(f"*.{target_section}_*.md"))
 
         if not target_files:
-            # Create a TODO comment instead of failing
+            # Create UCX-ACTION for move task instead of failing
             line_no = issue.line or 0
             lines = content.split("\n")
 
             if 0 < line_no <= len(lines):
-                # Find the element block (from this line to next element or section)
-                element_line = lines[line_no - 1]
+                # Extract BRD ID from file path
+                brd_id = "BRD-XX"
+                brd_match = re.search(r'(BRD-\d+)', str(file_path))
+                if brd_match:
+                    brd_id = brd_match.group(1)
 
-                # Add a TODO comment
-                todo_comment = f"<!-- TODO: Move to Section {target_section} (element type {element_type}) -->"
-                lines.insert(line_no - 1, todo_comment)
+                # Generate UCX-ACTION block
+                action_block = self._generate_ucx_action(
+                    action_type="INTERNAL",
+                    target="BRD",
+                    priority="P2",
+                    source=f"{brd_id} Section {current_section}",
+                    context=f"MOVE: Element type {element_type} in wrong section",
+                    requirement=f"Relocate to Section {target_section} (target file not found)"
+                )
 
+                lines.insert(line_no - 1, action_block)
                 new_content = "\n".join(lines)
                 self._set_file_content(file_path, new_content)
 
@@ -1776,9 +1933,9 @@ class BRDFixer:
                     code=issue.code,
                     file_path=file_path,
                     fixed=True,
-                    message=f"Added TODO comment for move to Section {target_section}",
+                    message=f"Created INTERNAL action for move to Section {target_section}",
                     changes=[
-                        f"Target section file not found, added TODO comment",
+                        f"Target section file not found, created UCX-ACTION",
                         f"Element type {element_type} → Section {target_section}"
                     ]
                 )
@@ -1824,11 +1981,19 @@ class BRDFixer:
         # Future improvement: collect all issues per file and process from
         # bottom to top, or use element ID matching instead of line numbers.
 
-        # Check if TODO comment already exists at this location
+        # Check if UCX-ACTION or legacy marker already exists at this location
         current_line = lines[line_no - 1]
-        todo_marker = f"<!-- MOVE-TO-SECTION-{target_section}: "
+        legacy_marker = f"<!-- MOVE-TO-SECTION-{target_section}: "
+        ucx_marker = "<!-- UCX-ACTION-START -->"
 
-        if todo_marker in current_line or (line_no > 1 and todo_marker in lines[line_no - 2]):
+        # Check previous lines for existing markers
+        has_marker = False
+        for i in range(max(0, line_no - 10), line_no):
+            if legacy_marker in lines[i] or ucx_marker in lines[i]:
+                has_marker = True
+                break
+
+        if has_marker:
             return FixResult(
                 code=issue.code,
                 file_path=file_path,
@@ -1836,9 +2001,23 @@ class BRDFixer:
                 message="Move marker already present"
             )
 
-        # Add TODO comment above the element
-        move_comment = f"<!-- MOVE-TO-SECTION-{target_section}: Element type {element_type} should be in {target_file.name} -->"
-        lines.insert(line_no - 1, move_comment)
+        # Extract BRD ID from file path
+        brd_id = "BRD-XX"
+        brd_match = re.search(r'(BRD-\d+)', str(file_path))
+        if brd_match:
+            brd_id = brd_match.group(1)
+
+        # Generate UCX-ACTION block for move task
+        action_block = self._generate_ucx_action(
+            action_type="INTERNAL",
+            target="BRD",
+            priority="P2",
+            source=f"{brd_id} Section {current_section}",
+            context=f"MOVE: Element type {element_type} in wrong section",
+            requirement=f"Relocate to Section {target_section} ({target_file.name})"
+        )
+
+        lines.insert(line_no - 1, action_block)
         new_content = "\n".join(lines)
         self._set_file_content(file_path, new_content)
 
@@ -1848,7 +2027,7 @@ class BRDFixer:
             fixed=True,
             message=f"Marked element for move to Section {target_section}",
             changes=[
-                f"Added move marker at line {line_no}",
+                f"Added UCX-ACTION at line {line_no}",
                 f"Target: {target_file.name}",
                 f"Element type {element_type} → Section {target_section}"
             ]
@@ -2133,14 +2312,14 @@ This document has been split into section-based files for maintainability.
 
     def _fix_gate_e001(self, issue: ValidationIssue) -> FixResult:
         """
-        Fix placeholder text ([TBD], TODO, FIXME) by converting to DEFERRED comments.
+        Fix placeholder text ([TBD], TODO, FIXME) by converting to UCX-ACTION blocks.
 
         Instead of removing placeholders (which would lose context), this fix:
         1. Parses the placeholder locations from the issue context
-        2. Converts each placeholder to a structured DEFERRED comment
+        2. Converts each placeholder to a structured UCX-ACTION block with TYPE: INTERNAL
         3. Preserves the placeholder intent while removing the blocking error
 
-        Format: [TBD] → <!-- DEFERRED: Content needed - [original context] -->
+        Format: [TBD] → UCX-ACTION block with TYPE: INTERNAL, TARGET: BRD
         """
         file_path = issue.file_path
         if not file_path:
@@ -2153,55 +2332,188 @@ This document has been split into section-based files for maintainability.
 
         content = self._get_file_content(file_path)
 
-        # First, protect existing DEFERRED comments from being re-processed
-        # Replace them with unique placeholders temporarily
-        deferred_placeholder = "___DEFERRED_PROTECTED___"
-        deferred_comments = list(re.finditer(r'<!-- DEFERRED:.*?-->', content, re.DOTALL))
+        # Extract BRD ID and section from file path
+        brd_id = "BRD-XX"
+        brd_match = re.search(r'(BRD-\d+)', str(file_path))
+        if brd_match:
+            brd_id = brd_match.group(1)
+
+        # Extract section number from file name (e.g., BRD-49.6_functional_requirements.md -> Section 6)
+        section_num = ""
+        section_match = re.search(r'\.(\d+)_', str(file_path.name))
+        if section_match:
+            section_num = f" Section {section_match.group(1)}"
+
+        source_location = f"{brd_id}{section_num}"
+
+        # First, clean up any malformed nested comments from previous runs
+        original_content = content
+        malformed_count = 0
+        while '<!-- <!-- ' in content:
+            content = re.sub(
+                r'<!-- <!-- DEFERRED: <!-- DEFERRED: <!-- DEFERRED: .*?--> - (.*?) --> --> -->',
+                r'<!-- DEFERRED: \1 -->',
+                content
+            )
+            content = re.sub(
+                r'<!-- <!-- DEFERRED: <!-- DEFERRED: .*?--> (.*?) --> -->',
+                r'<!-- DEFERRED: \1 -->',
+                content
+            )
+            content = re.sub(
+                r'<!-- <!-- DEFERRED: (.*?) --> -->',
+                r'<!-- DEFERRED: \1 -->',
+                content
+            )
+            content = re.sub(
+                r'<!-- <!-- (.*?) --> -->',
+                r'<!-- \1 -->',
+                content
+            )
+            malformed_count += 1
+            if malformed_count > 10:  # Safety limit
+                break
+
+        # If we cleaned up malformed comments, save immediately
+        if content != original_content:
+            self._set_file_content(file_path, content)
+
+        # Migrate existing DEFERRED comments to UCX-ACTION format
+        deferred_pattern = r'<!-- DEFERRED:\s*(.*?)\s*-->'
+        deferred_matches = list(re.finditer(deferred_pattern, content))
+        for match in reversed(deferred_matches):  # Process in reverse to preserve positions
+            deferred_text = match.group(1).strip()
+            # Determine context prefix based on content
+            if deferred_text.startswith("TODO"):
+                context_prefix = "TODO:"
+                requirement = deferred_text.replace("TODO", "").strip(" -:")
+                if not requirement:
+                    requirement = "Complete pending TODO item"
+            elif deferred_text.startswith("FIXME"):
+                context_prefix = "FIXME:"
+                requirement = deferred_text.replace("FIXME", "").strip(" -:")
+                if not requirement:
+                    requirement = "Fix pending issue"
+            elif deferred_text.startswith("XXX"):
+                context_prefix = "XXX:"
+                requirement = deferred_text.replace("XXX", "").strip(" -:")
+                if not requirement:
+                    requirement = "Review flagged content"
+            elif "pending" in deferred_text.lower():
+                context_prefix = "PENDING:"
+                requirement = "Add pending content"
+            elif "determined" in deferred_text.lower():
+                context_prefix = "TBD:"
+                requirement = "Determine and add content"
+            else:
+                context_prefix = "CONTENT:"
+                requirement = "Add missing content"
+
+            action_block = self._generate_ucx_action(
+                action_type="INTERNAL",
+                target="BRD",
+                priority="P2",
+                source=source_location,
+                context=f"{context_prefix} {deferred_text}",
+                requirement=requirement
+            )
+
+            content = content[:match.start()] + action_block + content[match.end():]
+
+        # Protect existing UCX-ACTION blocks from being re-processed
+        action_placeholder = "___UCX_ACTION_PROTECTED___"
+        action_blocks = list(re.finditer(r'<!-- UCX-ACTION-START -->.*?<!-- UCX-ACTION-END -->', content, re.DOTALL))
         protected_content = content
-        deferred_map = {}
-        for i, match in enumerate(deferred_comments):
-            key = f"{deferred_placeholder}{i}___"
-            deferred_map[key] = match.group(0)
+        action_map = {}
+        for i, match in enumerate(action_blocks):
+            key = f"{action_placeholder}{i}___"
+            action_map[key] = match.group(0)
             protected_content = protected_content.replace(match.group(0), key, 1)
 
-        # Define placeholder patterns and their replacements
-        # Only match patterns OUTSIDE of already-converted DEFERRED comments
-        placeholder_patterns = [
+        # Define placeholder patterns - each returns (pattern, context_prefix, requirement)
+        # Context prefix is used in CONTEXT field, requirement in REQUIREMENT field
+        placeholder_configs = [
             # [TBD] variants
-            (r'\[TBD\]', '<!-- DEFERRED: Content to be determined -->'),
-            (r'\[TBD:\s*([^\]]+)\]', r'<!-- DEFERRED: \1 -->'),
-            (r'\[TO BE DETERMINED\]', '<!-- DEFERRED: Content to be determined -->'),
-            # [Pending] and [placeholder] variants
-            (r'\[Pending\]', '<!-- DEFERRED: Content pending -->'),
-            (r'\[pending\]', '<!-- DEFERRED: Content pending -->'),
-            (r'\[PENDING\]', '<!-- DEFERRED: Content pending -->'),
-            (r'\[placeholder\]', '<!-- DEFERRED: Placeholder content -->'),
-            (r'\[Placeholder\]', '<!-- DEFERRED: Placeholder content -->'),
-            (r'\[PLACEHOLDER\]', '<!-- DEFERRED: Placeholder content -->'),
-            # TODO variants - only match if not already in a protected block
-            (r'(?<![_A-Za-z])TODO:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
-            (r'(?<![_A-Za-z])TODO\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: TODO - \1 -->'),
-            (r'(?<!\w)TODO(?!\w)(?!:)', '<!-- DEFERRED: TODO item pending -->'),
-            # FIXME variants
-            (r'(?<![_A-Za-z])FIXME:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
-            (r'(?<![_A-Za-z])FIXME\s*-\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: FIXME - \1 -->'),
-            (r'(?<!\w)FIXME(?!\w)(?!:)', '<!-- DEFERRED: FIXME item pending -->'),
-            # XXX variants
-            (r'(?<![_A-Za-z])XXX:\s*(.+?)(?=\n|$)', r'<!-- DEFERRED: XXX - \1 -->'),
-            (r'(?<!\w)XXX(?!\w)(?!:)', '<!-- DEFERRED: XXX item pending -->'),
+            (r'\[TBD\]', "TBD:", "Content to be determined", "Determine and add content"),
+            (r'\[TBD:\s*([^\]]+)\]', "TBD:", None, "Add specified content"),  # None = use capture group
+            (r'\[TO BE DETERMINED\]', "TBD:", "Content to be determined", "Determine and add content"),
+            # [Pending] variants
+            (r'\[Pending\]', "PENDING:", "Content pending", "Add pending content"),
+            (r'\[pending\]', "PENDING:", "Content pending", "Add pending content"),
+            (r'\[PENDING\]', "PENDING:", "Content pending", "Add pending content"),
+            # [Placeholder] variants
+            (r'\[placeholder\]', "PLACEHOLDER:", "Placeholder content", "Replace placeholder with actual content"),
+            (r'\[Placeholder\]', "PLACEHOLDER:", "Placeholder content", "Replace placeholder with actual content"),
+            (r'\[PLACEHOLDER\]', "PLACEHOLDER:", "Placeholder content", "Replace placeholder with actual content"),
         ]
 
         changes = []
         new_content = protected_content
 
-        for pattern, replacement in placeholder_patterns:
+        for config in placeholder_configs:
+            pattern, context_prefix, context_text, requirement = config
             matches = list(re.finditer(pattern, new_content, re.IGNORECASE))
-            if matches:
-                new_content = re.sub(pattern, replacement, new_content, flags=re.IGNORECASE)
-                changes.append(f"Converted {len(matches)} '{pattern[:15]}...' placeholder(s)")
+            for match in reversed(matches):
+                # For patterns with capture groups, use the captured text
+                if context_text is None and len(match.groups()) > 0:
+                    actual_context = f"{context_prefix} {match.group(1)}"
+                    actual_requirement = f"Add: {match.group(1)}"
+                else:
+                    actual_context = f"{context_prefix} {context_text}"
+                    actual_requirement = requirement
 
-        # Restore protected DEFERRED comments
-        for key, original in deferred_map.items():
+                action_block = self._generate_ucx_action(
+                    action_type="INTERNAL",
+                    target="BRD",
+                    priority="P2",
+                    source=source_location,
+                    context=actual_context,
+                    requirement=actual_requirement
+                )
+                new_content = new_content[:match.start()] + action_block + new_content[match.end():]
+                changes.append(f"Converted '{pattern[:20]}' placeholder")
+
+        # Handle TODO/FIXME/XXX patterns separately (more complex regex)
+        todo_patterns = [
+            # TODO: <text> or TODO - <text>
+            (r'(?<![_A-Za-z])TODO:\s*(.+?)(?=\n|$)', "TODO:"),
+            (r'(?<![_A-Za-z])TODO\s*-\s*(.+?)(?=\n|$)', "TODO:"),
+            (r'(?<!\w)TODO(?!\w)(?!:)(?!\s*-)', "TODO:"),
+            # FIXME variants
+            (r'(?<![_A-Za-z])FIXME:\s*(.+?)(?=\n|$)', "FIXME:"),
+            (r'(?<![_A-Za-z])FIXME\s*-\s*(.+?)(?=\n|$)', "FIXME:"),
+            (r'(?<!\w)FIXME(?!\w)(?!:)(?!\s*-)', "FIXME:"),
+            # XXX variants
+            (r'(?<![_A-Za-z])XXX:\s*(.+?)(?=\n|$)', "XXX:"),
+            (r'(?<!\w)XXX(?!\w)(?!:)', "XXX:"),
+        ]
+
+        for pattern, context_prefix in todo_patterns:
+            matches = list(re.finditer(pattern, new_content))
+            for match in reversed(matches):
+                if len(match.groups()) > 0 and match.group(1):
+                    # Has captured description
+                    description = match.group(1).strip()
+                    actual_context = f"{context_prefix} {description}"
+                    actual_requirement = f"Complete: {description}"
+                else:
+                    # Standalone keyword
+                    actual_context = f"{context_prefix} Item pending"
+                    actual_requirement = f"Complete {context_prefix.rstrip(':')} item"
+
+                action_block = self._generate_ucx_action(
+                    action_type="INTERNAL",
+                    target="BRD",
+                    priority="P2",
+                    source=source_location,
+                    context=actual_context,
+                    requirement=actual_requirement
+                )
+                new_content = new_content[:match.start()] + action_block + new_content[match.end():]
+                changes.append(f"Converted {context_prefix.rstrip(':')} placeholder")
+
+        # Restore protected UCX-ACTION blocks
+        for key, original in action_map.items():
             new_content = new_content.replace(key, original)
 
         if new_content != content:
@@ -2210,7 +2522,7 @@ This document has been split into section-based files for maintainability.
                 code=issue.code,
                 file_path=file_path,
                 fixed=True,
-                message=f"Converted {len(changes)} placeholder type(s) to DEFERRED comments",
+                message=f"Converted {len(changes)} placeholder(s) to UCX-ACTION blocks",
                 changes=changes
             )
 
@@ -2219,6 +2531,102 @@ This document has been split into section-based files for maintainability.
             file_path=file_path,
             fixed=False,
             message="No placeholder patterns found to convert"
+        )
+
+    def _fix_gate_e002(self, issue: ValidationIssue) -> FixResult:
+        """
+        Fix premature downstream references by converting to UCX-ACTION handoffs.
+
+        BRD (Layer 1) should not reference specific downstream document IDs like
+        ADR-56-001 or PRD-05 since those don't exist yet. This fix:
+        1. Finds specific downstream references (e.g., @adr: ADR-56-001)
+        2. Converts them to generic tags + UCX-ACTION handoff block
+        3. Preserves the intent while creating proper layer handoff
+
+        Format: @adr: ADR-56-001 (text) → @adr + UCX-ACTION block
+        """
+        import hashlib
+        from datetime import datetime
+
+        file_path = issue.file_path
+        if not file_path:
+            return FixResult(
+                code=issue.code,
+                file_path=self.doc_path,
+                fixed=False,
+                message="No file path specified"
+            )
+
+        content = self._get_file_content(file_path)
+
+        # Extract BRD ID from file path (e.g., BRD-56 from BRD-56_octo_security.md)
+        brd_id = "BRD-XX"
+        brd_match = re.search(r'(BRD-\d+)', str(file_path))
+        if brd_match:
+            brd_id = brd_match.group(1)
+
+        # Define downstream reference patterns and their layer info
+        downstream_patterns = [
+            # @prd: PRD-05 (description) -> @prd + UCX-ACTION
+            (r'@prd:\s*(PRD-\d+)([^\n]*)', '@prd', 'PRD', 'P1'),
+            # @adr: ADR-56-001 (description) -> @adr + UCX-ACTION
+            (r'@adr:\s*(ADR-[\d-]+)([^\n]*)', '@adr', 'ADR', 'P1'),
+            # @sys: SYS-01 (description) -> @sys + UCX-ACTION
+            (r'@sys:\s*(SYS-\d+)([^\n]*)', '@sys', 'SYS', 'P1'),
+            # @req: REQ.01.xx (description) -> @req + UCX-ACTION
+            (r'@req:\s*(REQ\.[\d.]+)([^\n]*)', '@req', 'REQ', 'P2'),
+        ]
+
+        changes = []
+        new_content = content
+
+        for pattern, generic_tag, target, priority in downstream_patterns:
+            matches = list(re.finditer(pattern, new_content, re.IGNORECASE))
+            for match in reversed(matches):  # Process in reverse to preserve positions
+                doc_id = match.group(1).strip()
+                description = match.group(2).strip()
+                # Clean up description (remove parentheses wrapper if present)
+                description = re.sub(r'^\s*\(?\s*|\s*\)?\s*$', '', description)
+
+                # Generate unique action ID (8-char hex based on content + timestamp)
+                hash_input = f"{doc_id}{description}{datetime.now().isoformat()}"
+                action_id = hashlib.md5(hash_input.encode()).hexdigest()[:8]
+
+                # Build UCX-ACTION block
+                action_block = f"""{generic_tag}
+<!-- UCX-ACTION-START -->
+ACTION_ID: ACT-{action_id}
+TYPE: HANDOFF
+TARGET: {target}
+PRIORITY: {priority}
+SOURCE: {brd_id}
+CONTEXT: {description if description else f'{target} document creation'}
+REQUIREMENT: Create {doc_id} document
+<!-- UCX-ACTION-END -->"""
+
+                # Replace in content
+                new_content = (
+                    new_content[:match.start()] +
+                    action_block +
+                    new_content[match.end():]
+                )
+                changes.append(f"Created {target} handoff action for: {doc_id}")
+
+        if new_content != content:
+            self._set_file_content(file_path, new_content)
+            return FixResult(
+                code=issue.code,
+                file_path=file_path,
+                fixed=True,
+                message=f"Created {len(changes)} UCX-ACTION handoff(s)",
+                changes=changes
+            )
+
+        return FixResult(
+            code=issue.code,
+            file_path=file_path,
+            fixed=False,
+            message="No downstream reference patterns found to convert"
         )
 
     def _fix_diag_e001(self, issue: ValidationIssue) -> FixResult:
