@@ -54,6 +54,25 @@ class LiteLLMClient(BaseAIClient):
         "No prose, no markdown, no explanation."
     )
 
+    # Minimal prompt for the Phase 1 budget/rate-limit probe.
+    BUDGET_CHECK_PROMPT = "Return ONLY: OK"
+    BUDGET_CHECK_EXPECTED = "OK"
+    # Short timeout for the budget probe; fail-fast if the API is unresponsive.
+    BUDGET_CHECK_TIMEOUT = 30  # seconds
+
+    # Rate-limit / quota phrases that may appear in API error messages or
+    # model output when the service is throttling requests.
+    QUOTA_HINT_PATTERNS = [
+        "rate limit",
+        "rate_limit",
+        "quota",
+        "too many requests",
+        "insufficient_quota",    # OpenAI quota exhausted
+        "resource_exhausted",    # Gemini gRPC status
+        "overloaded",            # Anthropic overloaded_error
+        "429",                   # HTTP Too Many Requests
+    ]
+
     def __init__(
         self,
         model: str = "opus",
@@ -237,7 +256,56 @@ class LiteLLMClient(BaseAIClient):
             )
 
     def _run_availability_preflight(self) -> None:
-        """Verify model availability by checking current UTC date response."""
+        """
+        Run a 3-phase preflight before every LiteLLM generation call.
+
+        Phase 1 – Budget / rate-limit check
+            Send ``BUDGET_CHECK_PROMPT`` ("Return ONLY: OK") with
+            ``max_tokens=8`` and ``BUDGET_CHECK_TIMEOUT`` seconds.
+            Catch provider-specific rate-limit exceptions.
+            Result: ``"ok"`` | ``"quota_exceeded"`` | ``"no_response"``
+
+        Phase 2 – Capability check  (runs ONLY when Phase 1 → ``"no_response"``)
+            Verify the model ID is known to LiteLLM via its static model-info
+            registry (no network call).  This distinguishes "unknown model" from
+            "known model that is temporarily unreachable".
+
+        Phase 3 – Date probe  (runs ONLY when Phase 1 → ``"ok"``)
+            Ask the model for the current UTC date and validate the response.
+        """
+        # ── Phase 1: Budget / rate-limit check ─────────────────────────────
+        self.logger.debug(
+            "Preflight Phase 1: budget/rate-limit check (%s)", self.provider
+        )
+        budget_result = self._run_budget_check()
+
+        if budget_result == "quota_exceeded":
+            raise AIClientError(
+                f"Usage quota or rate limit detected for {self.model_id}. "
+                "Choose another model and retry.",
+                model=self.model_id,
+            )
+
+        if budget_result == "no_response":
+            # ── Phase 2: Capability check ───────────────────────────────────
+            self.logger.debug(
+                "Preflight Phase 2: capability check (%s)", self.provider
+            )
+            cap_ok, cap_message = self._run_capability_check()
+            if not cap_ok:
+                raise AIClientError(
+                    f"LLM capability check failed for {self.model_id}: {cap_message}",
+                    model=self.model_id,
+                )
+            raise AIClientError(
+                f"LLM budget/rate-limit check: no response from {self.model_id} "
+                f"(model registered: {cap_message}). "
+                "Possible causes: network issue, service outage, or rate limiting.",
+                model=self.model_id,
+            )
+
+        # ── Phase 3: Date probe ─────────────────────────────────────────────
+        self.logger.debug("Preflight Phase 3: date probe (%s)", self.provider)
         expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
 
         preflight_kwargs = {
@@ -267,6 +335,103 @@ class LiteLLMClient(BaseAIClient):
             expected_utc_date,
             detected_date,
         )
+
+    def _run_budget_check(self) -> str:
+        """
+        Phase 1: Send ``BUDGET_CHECK_PROMPT`` to detect quota / rate-limit issues.
+
+        Uses ``max_tokens=8`` and ``BUDGET_CHECK_TIMEOUT`` seconds so the probe
+        consumes negligible tokens and fails fast when the API is throttling.
+
+        Returns:
+            ``"ok"``             – API is responsive and within quota.
+            ``"quota_exceeded"`` – Provider returned a rate-limit / quota error.
+            ``"no_response"``    – Timeout, network error, or empty response.
+        """
+        try:
+            self.logger.debug(
+                "Budget check: sending minimal prompt to %s (timeout=%ss)",
+                self.model_id,
+                self.BUDGET_CHECK_TIMEOUT,
+            )
+            preflight_kwargs: dict = {
+                "model": self.model_id,
+                "messages": [{"role": "user", "content": self.BUDGET_CHECK_PROMPT}],
+                "max_tokens": 8,
+                "temperature": 0,
+                "timeout": self.BUDGET_CHECK_TIMEOUT,
+            }
+            if self.api_key:
+                preflight_kwargs["api_key"] = self.api_key
+            if self.api_base:
+                preflight_kwargs["api_base"] = self.api_base
+
+            response = self.litellm.completion(**preflight_kwargs)
+            content = response.choices[0].message.content.strip()
+
+            if not content:
+                self.logger.debug("Budget check: empty response from %s", self.model_id)
+                return "no_response"
+
+            lower = content.lower()
+            if any(p in lower for p in self.QUOTA_HINT_PATTERNS):
+                self.logger.warning(
+                    "Budget check: quota/rate-limit signal in response from %s: %.80s",
+                    self.model_id,
+                    content,
+                )
+                return "quota_exceeded"
+
+            self.logger.debug("Budget check: OK for %s", self.model_id)
+            return "ok"
+
+        except Exception as exc:
+            err_str = str(exc).lower()
+            err_type = type(exc).__name__.lower()
+            is_quota = (
+                any(p in err_str for p in self.QUOTA_HINT_PATTERNS)
+                or "ratelimit" in err_type
+                or "quota" in err_type
+                or "overloaded" in err_type
+                or "resourceexhausted" in err_type
+            )
+            if is_quota:
+                self.logger.warning(
+                    "Budget check: quota/rate-limit exception from %s: %s",
+                    self.model_id,
+                    exc,
+                )
+                return "quota_exceeded"
+
+            self.logger.debug(
+                "Budget check: no_response from %s (%s: %s)",
+                self.model_id,
+                type(exc).__name__,
+                exc,
+            )
+            return "no_response"
+
+    def _run_capability_check(self) -> tuple[bool, str]:
+        """
+        Phase 2: Verify the model ID is registered in LiteLLM's static model
+        registry.  No network call is made.
+
+        Returns:
+            ``(True,  info_str)``  – Model is known; includes max-token count.
+            ``(False, error_msg)`` – Model not recognised by LiteLLM.
+        """
+        try:
+            info = self.litellm.get_model_info(self.model_id)
+            max_tokens = info.get("max_tokens", "unknown") if info else "unknown"
+            msg = f"model={self.model_id} max_tokens={max_tokens}"
+            self.logger.debug("Capability check OK for %s: %s", self.model_id, msg)
+            return True, msg
+        except Exception as exc:
+            # get_model_info may raise for unknown / custom models.
+            # Treat as a soft pass so custom endpoints aren’t blocked.
+            msg = f"model info unavailable for {self.model_id}: {exc}"
+            self.logger.debug("Capability check (soft pass): %s", msg)
+            return True, msg
 
     def _extract_iso_date(self, text: str) -> Optional[str]:
         """Extract first ISO date token from response text."""

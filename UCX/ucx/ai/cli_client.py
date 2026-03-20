@@ -117,13 +117,45 @@ class CLIClient(BaseAIClient):
     LONG_PROMPT_THRESHOLD = 10000
 
     # Common quota/usage-limit phrases surfaced by CLI tools.
+    # Covers Anthropic (claude), Google (gemini), OpenAI/Codex, and generic HTTP 429.
     QUOTA_HINT_PATTERNS = [
         "out of extra usage",
         "rate limit",
+        "rate_limit",            # OpenAI/Codex JSON field
         "quota",
         "usage limit",
         "too many requests",
+        "insufficient_quota",    # OpenAI quota exhausted
+        "resource_exhausted",    # Gemini gRPC status
+        "overloaded_error",      # Anthropic claude overloaded
+        "429",                   # HTTP Too Many Requests
     ]
+
+    # Minimal prompt for the budget/rate-limit probe (Phase 1).
+    # Uses only a handful of tokens so cost is negligible.
+    BUDGET_CHECK_PROMPT = "Return ONLY: OK"
+    BUDGET_CHECK_EXPECTED = "OK"
+    # Shorter timeout for the budget probe; a non-responsive tool fails fast.
+    BUDGET_CHECK_TIMEOUT = 30  # seconds
+
+    # Per-tool lightweight version/list command used in Phase 2 (capability check).
+    # These commands must not invoke the LLM — they only verify the binary/daemon.
+    CAPABILITY_CHECKS: dict[str, list[str]] = {
+        "claude": ["claude", "--version"],
+        "gemini": ["gemini", "--version"],
+        "codex": ["codex", "--version"],
+        "ollama": ["ollama", "--version"],
+        "aider": ["aider", "--version"],
+    }
+
+    # Install hints shown when a binary is not found during capability check.
+    INSTALL_HINTS: dict[str, str] = {
+        "claude": "npm install -g @anthropic-ai/claude-code",
+        "gemini": "npm install -g @google/gemini-cli",
+        "codex": "npm install -g @openai/codex",
+        "ollama": "https://ollama.ai",
+        "aider": "pip install aider-chat",
+    }
 
     # Strong signals that a CLI returned an error message instead of model output.
     RESPONSE_ERROR_PREFIXES = [
@@ -376,7 +408,62 @@ class CLIClient(BaseAIClient):
             )
 
     def _run_availability_preflight(self, **kwargs) -> None:
-        """Verify CLI model health by checking current UTC date response."""
+        """
+        Run a 3-phase preflight before every LLM generation call.
+
+        Phase 1 – Budget / rate-limit check
+            Send a minimal ``BUDGET_CHECK_PROMPT`` with a short timeout.
+            Detect quota / rate-limit signals in the response text or process
+            error output.  For Ollama (local daemon) the check is replaced by
+            ``ollama list`` to confirm the service and requested model are
+            available — Ollama has no API rate limits.
+            Result: ``"ok"`` | ``"quota_exceeded"`` | ``"no_response"``
+
+        Phase 2 – Capability check  (runs ONLY when Phase 1 → ``"no_response"``)
+            Execute the tool's lightweight version / list command (no LLM call)
+            to determine whether the binary / daemon is installed.  This lets us
+            give the user an actionable message:
+            * Binary missing  → install hint
+            * Binary present  → service/network issue
+
+        Phase 3 – Date probe  (runs ONLY when Phase 1 → ``"ok"``)
+            Ask the model for the current UTC date.  A mismatch means the model
+            is not responding coherently (wrong context, stale state, etc.).
+        """
+        # ── Phase 1: Budget / rate-limit check ─────────────────────────────
+        self.logger.debug("Preflight Phase 1: budget/rate-limit check (%s)", self.cli_tool)
+        budget_result = self._run_budget_check(**kwargs)
+
+        if budget_result == "quota_exceeded":
+            raise AIClientError(
+                f"Usage quota or rate limit detected for {self.cli_tool}. "
+                "Choose another model/backend and retry "
+                "(example: --cli-tool gemini --model gemini-2.5-pro).",
+                model=self.cli_tool,
+            )
+
+        if budget_result == "no_response":
+            # ── Phase 2: Capability check ───────────────────────────────────
+            self.logger.debug(
+                "Preflight Phase 2: capability check (%s)", self.cli_tool
+            )
+            cap_ok, cap_message = self._run_capability_check()
+            if not cap_ok:
+                raise AIClientError(
+                    f"LLM capability check failed for {self.cli_tool}: {cap_message}",
+                    model=self.cli_tool,
+                )
+            # Tool is installed but produced no response → service/network issue
+            raise AIClientError(
+                f"LLM budget/rate-limit check: no response from {self.cli_tool} "
+                f"(tool is present: {cap_message}). "
+                "Possible causes: network issue, service outage, or extreme rate limiting. "
+                "Try another backend: --cli-tool gemini --model gemini-2.5-pro",
+                model=self.cli_tool,
+            )
+
+        # ── Phase 3: Date probe ─────────────────────────────────────────────
+        self.logger.debug("Preflight Phase 3: date probe (%s)", self.cli_tool)
         expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
         response = self._execute_cli(self.PREFLIGHT_PROMPT, system_prompt=None, **kwargs).strip()
 
@@ -401,6 +488,193 @@ class CLIClient(BaseAIClient):
             expected_utc_date,
             detected_date,
         )
+
+    def _run_budget_check(self, **kwargs) -> str:
+        """
+        Phase 1: Send a minimal prompt to detect quota / rate-limit issues early.
+
+        For Ollama (local daemon) this is replaced by an ``ollama list`` probe
+        that confirms the service and the requested model are available; Ollama
+        has no API rate limits.
+
+        For all other CLI tools the method executes
+        ``BUDGET_CHECK_PROMPT`` ("Return ONLY: OK") with
+        ``BUDGET_CHECK_TIMEOUT`` seconds and inspects the output.
+
+        Returns:
+            ``"ok"``             – Tool is responsive and within quota.
+            ``"quota_exceeded"`` – Quota or rate-limit signal detected.
+            ``"no_response"``    – No output (timeout, empty, binary error).
+        """
+        if self.cli_tool == "ollama":
+            return self._run_ollama_budget_check()
+
+        try:
+            self.logger.debug(
+                "Budget check: sending minimal prompt to %s (timeout=%ss)",
+                self.cli_tool,
+                self.BUDGET_CHECK_TIMEOUT,
+            )
+            response = self._execute_cli(
+                self.BUDGET_CHECK_PROMPT,
+                system_prompt=None,
+                timeout_override=self.BUDGET_CHECK_TIMEOUT,
+            ).strip()
+
+            if not response:
+                self.logger.debug("Budget check: empty response from %s", self.cli_tool)
+                return "no_response"
+
+            lower = response.lower()
+            if any(p in lower for p in self.QUOTA_HINT_PATTERNS):
+                self.logger.warning(
+                    "Budget check: quota/rate-limit signal in response from %s: %.80s",
+                    self.cli_tool,
+                    response,
+                )
+                return "quota_exceeded"
+
+            self.logger.debug("Budget check: OK for %s", self.cli_tool)
+            return "ok"
+
+        except subprocess.TimeoutExpired:
+            self.logger.warning(
+                "Budget check: timed out after %ss for %s",
+                self.BUDGET_CHECK_TIMEOUT,
+                self.cli_tool,
+            )
+            return "no_response"
+
+        except subprocess.CalledProcessError as e:
+            error_text = ((e.stderr or "") + (e.output or "")).lower()
+            if any(p in error_text for p in self.QUOTA_HINT_PATTERNS):
+                self.logger.warning(
+                    "Budget check: quota/rate-limit in error output for %s: %.120s",
+                    self.cli_tool,
+                    error_text[:120],
+                )
+                return "quota_exceeded"
+            self.logger.debug(
+                "Budget check: CalledProcessError for %s (no_response)", self.cli_tool
+            )
+            return "no_response"
+
+        except FileNotFoundError:
+            self.logger.debug("Budget check: binary not found for %s", self.cli_tool)
+            return "no_response"
+
+        except AIClientError as exc:
+            if any(p in str(exc).lower() for p in self.QUOTA_HINT_PATTERNS):
+                return "quota_exceeded"
+            return "no_response"
+
+        except Exception as exc:
+            self.logger.debug(
+                "Budget check: unexpected error for %s: %s", self.cli_tool, exc
+            )
+            return "no_response"
+
+    def _run_ollama_budget_check(self) -> str:
+        """
+        Ollama-specific Phase 1 check: verify service health and model availability.
+
+        Runs ``ollama list`` (instant, no LLM call) to confirm the daemon is
+        reachable and the requested model has been pulled.  Ollama is a local
+        service with no API quota or rate limits.
+
+        Returns:
+            ``"ok"``          – Daemon running and model found in the list.
+            ``"no_response"`` – Daemon not running or model not pulled.
+        """
+        model_name = self._resolved_model or self.cli_tool
+        try:
+            result = subprocess.run(
+                ["ollama", "list"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env={**os.environ, **self.env_vars},
+            )
+            if result.returncode != 0:
+                self.logger.debug(
+                    "Ollama list returned exit code %d", result.returncode
+                )
+                return "no_response"
+
+            if model_name and model_name not in result.stdout:
+                self.logger.warning(
+                    "Ollama model '%s' not found in 'ollama list'. "
+                    "Pull it first: ollama pull %s",
+                    model_name,
+                    model_name,
+                )
+                return "no_response"
+
+            self.logger.debug(
+                "Ollama service OK, model '%s' available", model_name
+            )
+            return "ok"
+
+        except subprocess.TimeoutExpired:
+            self.logger.warning("ollama list timed out; daemon may not be running")
+            return "no_response"
+        except FileNotFoundError:
+            self.logger.debug("ollama binary not found in PATH")
+            return "no_response"
+        except Exception as exc:
+            self.logger.debug("Ollama budget check error: %s", exc)
+            return "no_response"
+
+    def _run_capability_check(self) -> tuple[bool, str]:
+        """
+        Phase 2: Verify the tool binary is installed and responds to a lightweight
+        version / list command.  Called only when Phase 1 returns ``"no_response"``.
+
+        Returns:
+            ``(True,  version_line)`` – Binary found and responsive.
+            ``(False, error_msg)``    – Binary missing, crashed, or timed out.
+        """
+        cmd = self.CAPABILITY_CHECKS.get(self.cli_tool)
+        if not cmd:
+            return True, f"no capability check defined for {self.cli_tool}"
+
+        try:
+            env = {**os.environ, **self.env_vars}
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env=env,
+            )
+            combined = (result.stdout + result.stderr).strip()
+            first_line = combined.splitlines()[0][:100] if combined else ""
+
+            if result.returncode != 0:
+                self.logger.debug(
+                    "Capability check for %s returned exit code %d: %s",
+                    self.cli_tool,
+                    result.returncode,
+                    first_line,
+                )
+                return False, (
+                    f"{cmd[0]} returned exit code {result.returncode}: {first_line}"
+                )
+
+            self.logger.debug(
+                "Capability check OK for %s: %s", self.cli_tool, first_line
+            )
+            return True, first_line
+
+        except subprocess.TimeoutExpired:
+            return False, f"{cmd[0]} capability check timed out after 10s"
+
+        except FileNotFoundError:
+            hint = self.INSTALL_HINTS.get(self.cli_tool, f"install {self.cli_tool}")
+            return False, f"{cmd[0]} not found in PATH. Install: {hint}"
+
+        except Exception as exc:
+            return False, f"{cmd[0]} capability check error: {exc}"
 
     def _extract_iso_date(self, text: str) -> Optional[str]:
         """Extract first ISO date token from response text."""
@@ -449,9 +723,18 @@ class CLIClient(BaseAIClient):
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
+        timeout_override: Optional[int] = None,
         **kwargs,
     ) -> str:
-        """Execute CLI command with stdin input."""
+        """Execute CLI command with stdin input.
+
+        Args:
+            prompt: Text to send via stdin.
+            system_prompt: Optional system prompt passed via flag.
+            timeout_override: Override ``self.timeout`` for this call only.
+                Used by the budget-check probe which uses a shorter timeout.
+            **kwargs: Ignored; retained for forward-compatibility.
+        """
         command = self._build_command(system_prompt=system_prompt)
         codex_last_message_path: Optional[Path] = None
 
@@ -474,12 +757,15 @@ class CLIClient(BaseAIClient):
 
         try:
             # Execute command with prompt via stdin
+            effective_timeout = (
+                timeout_override if timeout_override is not None else self.timeout
+            )
             result = subprocess.run(
                 command,
                 input=prompt,
                 capture_output=True,
                 text=True,
-                timeout=self.timeout,
+                timeout=effective_timeout,
                 cwd=self.working_dir,
                 env=env,
             )

@@ -257,12 +257,18 @@ System SHALL handle transient errors with retries.
                     client.generate("Create a PRD")
 
     def test_preflight_passes_and_allows_main_request(self):
-        """CLI generate should run preflight and proceed when date probe matches."""
+        """CLI generate should run all 3 preflight phases and proceed when they all pass."""
         client = CLIClient(cli_tool="claude")
         expected_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
         main_response = "# PRD-01: Platform\n\n## 1. Document Control\n"
 
-        with patch.object(client, "_execute_cli", side_effect=[expected_date, main_response]):
+        # Phase 1 budget check gets "OK", Phase 3 date probe gets expected_date,
+        # main generate() call gets the PRD content.
+        with patch.object(
+            client,
+            "_execute_cli",
+            side_effect=["OK", expected_date, main_response],
+        ):
             generated = client.generate("Create a PRD")
 
         assert generated == main_response
@@ -307,3 +313,287 @@ class TestLiteLLMClientPreflight:
 
         with pytest.raises(AIClientError, match="preflight failed"):
             client.generate("Create a PRD")
+
+
+class TestCLIClientPreflightPhases:
+    """Unit tests for the 3-phase CLIClient preflight sub-methods."""
+
+    import subprocess as _subprocess  # used in parametrize side_effects
+
+    # ---- Phase 1: _run_budget_check ----------------------------------------
+
+    def test_budget_check_quota_in_response_returns_quota_exceeded(self):
+        """A response containing a quota phrase should return 'quota_exceeded'."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_execute_cli", return_value="rate limit exceeded"):
+            assert client._run_budget_check() == "quota_exceeded"
+
+    def test_budget_check_rate_limit_phrase_returns_quota_exceeded(self):
+        """'too many requests' in response → 'quota_exceeded'."""
+        client = CLIClient(cli_tool="gemini")
+        with patch.object(client, "_execute_cli", return_value="Error 429 too many requests"):
+            assert client._run_budget_check() == "quota_exceeded"
+
+    def test_budget_check_ok_response_returns_ok(self):
+        """A clean 'OK' response → 'ok'."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_execute_cli", return_value="OK"):
+            assert client._run_budget_check() == "ok"
+
+    def test_budget_check_empty_response_returns_no_response(self):
+        """An empty response → 'no_response'."""
+        client = CLIClient(cli_tool="codex")
+        with patch.object(client, "_execute_cli", return_value=""):
+            assert client._run_budget_check() == "no_response"
+
+    def test_budget_check_timeout_returns_no_response(self):
+        """A TimeoutExpired during the budget probe → 'no_response'."""
+        import subprocess
+        client = CLIClient(cli_tool="claude")
+        with patch.object(
+            client, "_execute_cli",
+            side_effect=subprocess.TimeoutExpired("claude", 30),
+        ):
+            assert client._run_budget_check() == "no_response"
+
+    def test_budget_check_called_process_error_with_quota_hint(self):
+        """CalledProcessError whose stderr contains a quota hint → 'quota_exceeded'."""
+        import subprocess
+        client = CLIClient(cli_tool="aider")
+        exc = subprocess.CalledProcessError(
+            1, "aider", output="", stderr="insufficient_quota: plan limit reached"
+        )
+        with patch.object(client, "_execute_cli", side_effect=exc):
+            assert client._run_budget_check() == "quota_exceeded"
+
+    def test_budget_check_called_process_error_without_quota_hint(self):
+        """CalledProcessError without a quota hint → 'no_response'."""
+        import subprocess
+        client = CLIClient(cli_tool="aider")
+        exc = subprocess.CalledProcessError(1, "aider", output="", stderr="some other error")
+        with patch.object(client, "_execute_cli", side_effect=exc):
+            assert client._run_budget_check() == "no_response"
+
+    def test_budget_check_file_not_found_returns_no_response(self):
+        """FileNotFoundError (binary missing) → 'no_response'; capability check follows."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_execute_cli", side_effect=FileNotFoundError()):
+            assert client._run_budget_check() == "no_response"
+
+    # ---- Phase 1 Ollama: _run_ollama_budget_check --------------------------
+
+    def test_ollama_budget_check_service_running_and_model_found(self):
+        """ollama list returns OK and model name present → 'ok'."""
+        client = CLIClient(cli_tool="ollama", model="llama3")
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+        mock_proc.stdout = "llama3   7B   ..."
+        with patch("subprocess.run", return_value=mock_proc):
+            assert client._run_ollama_budget_check() == "ok"
+
+    def test_ollama_budget_check_model_not_in_list(self):
+        """Model absent from ollama list → 'no_response'."""
+        client = CLIClient(cli_tool="ollama", model="mistral")
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+        mock_proc.stdout = "llama3   7B   ..."  # mistral is missing
+        with patch("subprocess.run", return_value=mock_proc):
+            assert client._run_ollama_budget_check() == "no_response"
+
+    def test_ollama_budget_check_daemon_not_running(self):
+        """ollama list fails (daemon down) → 'no_response'."""
+        import subprocess
+        client = CLIClient(cli_tool="ollama")
+        with patch("subprocess.run", side_effect=subprocess.TimeoutExpired("ollama", 10)):
+            assert client._run_ollama_budget_check() == "no_response"
+
+    def test_ollama_budget_check_binary_missing(self):
+        """ollama binary not found → 'no_response'."""
+        client = CLIClient(cli_tool="ollama")
+        with patch("subprocess.run", side_effect=FileNotFoundError()):
+            assert client._run_ollama_budget_check() == "no_response"
+
+    # ---- Phase 2: _run_capability_check ------------------------------------
+
+    def test_capability_check_binary_found_and_responsive(self):
+        """Version command succeeds → (True, first_line)."""
+        client = CLIClient(cli_tool="claude")
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+        mock_proc.stdout = "claude 1.2.3\n"
+        mock_proc.stderr = ""
+        with patch("subprocess.run", return_value=mock_proc):
+            ok, msg = client._run_capability_check()
+        assert ok is True
+        assert "claude" in msg
+
+    def test_capability_check_binary_not_found(self):
+        """FileNotFoundError for version command → (False, install hint)."""
+        client = CLIClient(cli_tool="claude")
+        with patch("subprocess.run", side_effect=FileNotFoundError()):
+            ok, msg = client._run_capability_check()
+        assert ok is False
+        assert "not found in PATH" in msg
+        assert "npm install" in msg  # install hint should be present
+
+    def test_capability_check_nonzero_exit(self):
+        """Version command returning non-zero → (False, exit-code msg)."""
+        client = CLIClient(cli_tool="gemini")
+        mock_proc = MagicMock()
+        mock_proc.returncode = 1
+        mock_proc.stdout = ""
+        mock_proc.stderr = "some internal error"
+        with patch("subprocess.run", return_value=mock_proc):
+            ok, msg = client._run_capability_check()
+        assert ok is False
+        assert "exit code 1" in msg
+
+    def test_capability_check_timeout(self):
+        """Version command times out → (False, timeout msg)."""
+        import subprocess
+        client = CLIClient(cli_tool="codex")
+        with patch("subprocess.run", side_effect=subprocess.TimeoutExpired("codex", 10)):
+            ok, msg = client._run_capability_check()
+        assert ok is False
+        assert "timed out" in msg
+
+    # ---- Full 3-phase preflight flow ---------------------------------------
+
+    def test_preflight_quota_exceeded_raises_immediately(self):
+        """Phase 1 quota → AIClientError with retry guidance; Phase 2 not reached."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_run_budget_check", return_value="quota_exceeded"):
+            with pytest.raises(AIClientError, match="quota or rate limit"):
+                client._run_availability_preflight()
+
+    def test_preflight_no_response_tool_missing_raises_capability_error(self):
+        """Phase 1 no_response + Phase 2 failure → AIClientError about missing tool."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_run_budget_check", return_value="no_response"):
+            with patch.object(
+                client, "_run_capability_check",
+                return_value=(False, "claude not found in PATH. Install: npm install -g ..."),
+            ):
+                with pytest.raises(AIClientError, match="capability check failed"):
+                    client._run_availability_preflight()
+
+    def test_preflight_no_response_tool_installed_raises_service_error(self):
+        """Phase 1 no_response + Phase 2 pass → AIClientError about service/network."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_run_budget_check", return_value="no_response"):
+            with patch.object(
+                client, "_run_capability_check",
+                return_value=(True, "claude 1.0.0"),
+            ):
+                with pytest.raises(AIClientError, match="no response from claude"):
+                    client._run_availability_preflight()
+
+    def test_preflight_ok_then_date_mismatch_raises(self):
+        """Phase 1 ok + Phase 3 date mismatch → AIClientError about date probe."""
+        client = CLIClient(cli_tool="claude")
+        with patch.object(client, "_run_budget_check", return_value="ok"):
+            with patch.object(client, "_execute_cli", return_value="1999-01-01"):
+                with pytest.raises(AIClientError, match="preflight failed"):
+                    client._run_availability_preflight()
+
+
+class TestLiteLLMClientBudgetCheck:
+    """Unit tests for Phase 1 (_run_budget_check) in LiteLLMClient."""
+
+    def _make_client_with_fake_litellm(self, completion_fn=None, get_model_info_fn=None):
+        """Helper: create a LiteLLMClient with a fake litellm module."""
+        client = LiteLLMClient(model="opus")
+
+        class _Msg:
+            def __init__(self, content):
+                self.content = content
+
+        class _Choice:
+            def __init__(self, content):
+                self.message = _Msg(content)
+
+        class _Resp:
+            def __init__(self, content):
+                self.choices = [_Choice(content)]
+                self.usage = None
+
+        class _FakeLiteLLM:
+            def completion(self_, **kwargs):
+                if completion_fn:
+                    return completion_fn(**kwargs)
+                return _Resp("OK")
+
+            def token_counter(self_, model, text):
+                return max(1, len(text) // 4)
+
+            def get_model_info(self_, model):
+                if get_model_info_fn:
+                    return get_model_info_fn(model)
+                return {"max_tokens": 4096}
+
+        client._litellm = _FakeLiteLLM()
+        return client, _Resp
+
+    def test_budget_check_ok_response(self):
+        """A clean response (no quota patterns) → 'ok'."""
+        client, _Resp = self._make_client_with_fake_litellm(
+            completion_fn=lambda **kw: _Resp("OK")
+        )
+        assert client._run_budget_check() == "ok"
+
+    def test_budget_check_quota_in_content(self):
+        """Response text containing a quota phrase → 'quota_exceeded'."""
+        client, _Resp = self._make_client_with_fake_litellm(
+            completion_fn=lambda **kw: _Resp("Error: rate limit exceeded")
+        )
+        assert client._run_budget_check() == "quota_exceeded"
+
+    def test_budget_check_empty_content(self):
+        """Empty response → 'no_response'."""
+        client, _Resp = self._make_client_with_fake_litellm(
+            completion_fn=lambda **kw: _Resp("")
+        )
+        assert client._run_budget_check() == "no_response"
+
+    def test_budget_check_rate_limit_exception(self):
+        """A RateLimitError-named exception → 'quota_exceeded'."""
+        client, _ = self._make_client_with_fake_litellm()
+
+        class FakeRateLimitError(Exception):
+            pass
+
+        def _raise(**kw):
+            raise FakeRateLimitError("rate limit exceeded")
+
+        client._litellm.completion = _raise  # type: ignore[method-assign]
+        # Exception name doesn't contain 'ratelimit' but message does
+        assert client._run_budget_check() == "quota_exceeded"
+
+    def test_budget_check_network_error_returns_no_response(self):
+        """A generic network exception → 'no_response'."""
+        client, _ = self._make_client_with_fake_litellm()
+
+        def _raise(**kw):
+            raise ConnectionError("network unreachable")
+
+        client._litellm.completion = _raise  # type: ignore[method-assign]
+        assert client._run_budget_check() == "no_response"
+
+    def test_capability_check_model_known(self):
+        """get_model_info returns data → (True, info string)."""
+        client, _ = self._make_client_with_fake_litellm(
+            get_model_info_fn=lambda m: {"max_tokens": 8192}
+        )
+        ok, msg = client._run_capability_check()
+        assert ok is True
+        assert "max_tokens=8192" in msg
+
+    def test_capability_check_model_unknown_soft_pass(self):
+        """get_model_info raises for unknown model → (True, soft-pass message)."""
+        client, _ = self._make_client_with_fake_litellm(
+            get_model_info_fn=lambda m: (_ for _ in ()).throw(ValueError("unknown model"))
+        )
+        ok, msg = client._run_capability_check()
+        # Unknown models should soft-pass to avoid blocking custom endpoints
+        assert ok is True
+        assert "unavailable" in msg
