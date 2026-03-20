@@ -124,9 +124,9 @@ Required subsections:
 
 ## SECTION 8 REQUIREMENTS (Layer Separation)
 
-Section 8 **MUST** include this scope note at the beginning:
+Section 8 **MUST** include this Layer Separation Note scope note at the beginning:
 
-> This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
+> **Layer Separation Note**: This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
 
 **CORRECT User Story Format:**
 ```markdown
