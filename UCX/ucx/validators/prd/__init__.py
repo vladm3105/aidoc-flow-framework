@@ -27,6 +27,11 @@ from datetime import datetime, timezone
 from enum import Enum
 import re
 
+from ucx.models.enums import DocType, ValidationStatus
+from ucx.models.review import ValidationResult
+from ucx.validators.base import BaseValidator
+from ucx.validators.registry import register_validator
+
 
 class Tier(Enum):
     """Validation tier classification for PRD."""
@@ -244,6 +249,71 @@ class PRDValidationResult:
         return "\n".join(lines)
 
 
+@register_validator(DocType.PRD)
+class PRDValidator(BaseValidator):
+    """Registry-facing PRD validator backed by UnifiedPRDValidator."""
+
+    def __init__(
+        self,
+        strict: bool = False,
+        profile: str = "mvp",
+        tier1_only: bool = False,
+    ):
+        super().__init__()
+        self.strict = strict
+        self.profile = profile
+        self.tier1_only = tier1_only
+        self._unified_result: Optional[PRDValidationResult] = None
+
+    def validate(self, doc_path: Path) -> ValidationResult:
+        self.errors = []
+        self.warnings = []
+        self.passes = []
+
+        validator = UnifiedPRDValidator(
+            strict=self.strict,
+            verbose=False,
+            profile=self.profile,
+        )
+        self._unified_result = validator.validate(doc_path, tier1_only=self.tier1_only)
+
+        for issue in self._unified_result.tier1_issues:
+            self.errors.append(f"[{issue.code}] {issue.file}: {issue.message}")
+
+        for issue in self._unified_result.tier2_issues:
+            self.warnings.append(f"[{issue.code}] {issue.file}: {issue.message}")
+
+        self.passes.append(
+            f"SYS-Ready Score: {self._unified_result.sys_ready_score:.1f}% "
+            f"({'PASS' if self._unified_result.sys_passed else 'FAIL'})"
+        )
+        self.passes.append(
+            f"EARS-Ready Score: {self._unified_result.ears_ready_score:.1f}% "
+            f"({'PASS' if self._unified_result.ears_passed else 'FAIL'})"
+        )
+        self.passes.append(f"Files validated: {len(self._unified_result.files_validated)}")
+
+        if self.errors or (self.strict and self.warnings):
+            status = ValidationStatus.FAILED
+        else:
+            status = ValidationStatus.PASSED
+
+        return ValidationResult(
+            status=status,
+            errors=self.errors,
+            warnings=self.warnings,
+            passes=self.passes,
+        )
+
+    def _validate_file(self, file_path: Path, content: str) -> None:
+        """Required by BaseValidator; not used because validate() is overridden."""
+        return
+
+    @property
+    def unified_result(self) -> Optional[PRDValidationResult]:
+        return self._unified_result
+
+
 class UnifiedPRDValidator:
     """Unified validator for PRD documents.
 
@@ -285,12 +355,16 @@ class UnifiedPRDValidator:
         """
         path = Path(path)
         result = PRDValidationResult(template_profile=self.profile, threshold=self.threshold)
+        from ucx.validators.common.file_utils import is_companion_report
 
         # Collect files to validate
         if path.is_dir():
             files = sorted(path.glob("*.md"))
-            # Exclude index and templates
-            files = [f for f in files if not f.name.startswith("PRD-00")]
+            # Exclude index/templates and companion reports (validation/review/remediation files).
+            files = [
+                f for f in files
+                if not f.name.startswith("PRD-00") and not is_companion_report(f)
+            ]
         else:
             files = [path]
 

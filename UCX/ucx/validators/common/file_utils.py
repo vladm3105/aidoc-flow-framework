@@ -15,12 +15,13 @@ from typing import List, Optional
 # - BRD-01.UCX_validation_report_v003.md
 # - BRD-01.UCX_review_report_v003.md
 # - BRD-01.UCX_remediation_report_v003.md
+# - BRD-01.UCX_creation_report_v001.md
 # - .precommit_validation_report.md (current validation format, hidden file)
 COMPANION_REPORT_PATTERN = re.compile(
     r"(\.(A_audit_report|R_review_report|F_fix_report|V_validation_report|"
     r"UCA_audit_report|UCR_review_report|UCR_remediation_report|"
     r"UCRem_fix_report|UCRem_remediation_report|UCRem_report|"
-    r"UCX_validation_report|UCX_review_report|UCX_remediation_report)"
+    r"UCX_creation_report|UCX_validation_report|UCX_review_report|UCX_remediation_report)"
     r"(_v[0-9]+)?\.md$|^\.precommit_validation_report\.md$)"
 )
 

@@ -59,7 +59,7 @@ class PRDValidator(BaseValidator):
 
         try:
             # Use unified validator
-            from ucx.validators.prd import UnifiedPRDValidator
+            from ucx.validators.prd.__init__ import UnifiedPRDValidator
 
             validator = UnifiedPRDValidator(
                 strict=self.strict,

@@ -14,6 +14,7 @@ def test_extract_doc_id_from_slug_folder(tmp_path: Path):
 
 
 def test_report_filename_uses_canonical_ucx_pattern():
+    assert report_filename("PRD-01", "creation", 2) == "PRD-01.UCX_creation_report_v002.md"
     assert report_filename("PRD-01", "validation", 3) == "PRD-01.UCX_validation_report_v003.md"
     assert report_filename("BRD-09", "review", 12) == "BRD-09.UCX_review_report_v012.md"
     assert report_filename("EARS-02", "remediation", 1) == "EARS-02.UCX_remediation_report_v001.md"

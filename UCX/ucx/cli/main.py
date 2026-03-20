@@ -2,6 +2,7 @@
 
 import click
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -286,12 +287,67 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
     """
     from ucx import UCCPhase
     from ucx.exceptions import AIClientError
+    from ucx.models.enums import DocType
+    from ucx.utils.reporting import ensure_report_schema, extract_doc_id, next_report_version, report_filename
 
     config = ctx.obj["config"]
     ucc = UCCPhase(config)
 
+    output_path_obj = Path(output_path)
+
+    def write_creation_failure_report(error: Exception, *, retry_attempted: bool = False) -> None:
+        try:
+            doc_type_enum = DocType.from_string(doc_type)
+            normalized_output = ucc._normalize_output_path(doc_type_enum, output_path_obj, kwargs.get("from_upstream"))
+            report_dir = normalized_output if normalized_output.suffix == "" else normalized_output.parent
+            report_dir.mkdir(parents=True, exist_ok=True)
+
+            doc_id = extract_doc_id(normalized_output, doc_type_enum)
+            version = next_report_version(report_dir, doc_id, "creation")
+            report_path = report_dir / report_filename(doc_id, "creation", version)
+
+            error_name = error.__class__.__name__.upper()
+            failure_code = f"UCC-E-{error_name}"
+            body = (
+                f"# UCX Creation Failure Report: {doc_id}\n\n"
+                f"## Summary\n\n"
+                f"- Status: FAILED\n"
+                f"- Failure Code: {failure_code}\n"
+                f"- Error Type: {error.__class__.__name__}\n"
+                f"- Error Message: {str(error)}\n"
+                f"- Timestamp: {datetime.now(timezone.utc).isoformat()}\n\n"
+                f"## Invocation\n\n"
+                f"- Command: ucx create {doc_type} {output_path_obj}\n"
+                f"- validate_after: {validate}\n"
+                f"- save_prompt: {save_prompt}\n"
+                f"- from_upstream: {kwargs.get('from_upstream')}\n"
+                f"- from_ref: {kwargs.get('from_ref')}\n"
+                f"- from_iplan: {kwargs.get('from_iplan')}\n"
+                f"- template: {kwargs.get('template')}\n\n"
+                f"## Investigation Hints\n\n"
+                f"1. Inspect prompt history in .ucx_create_session/.\n"
+                f"2. Re-run with an alternate model/backend.\n"
+                f"3. Validate project prompt/template assets under docs/UCX/.\n"
+            )
+            content = ensure_report_schema(
+                body,
+                report_type="creation",
+                source_artifact_type=doc_type_enum.value,
+                source_artifact_id=doc_id,
+                report_version=version,
+                validator_or_reviewer="UCX create",
+            )
+            # Fill creation-specific fields that schema helper initializes.
+            content = content.replace("failure_code: UCC-E-CREATE", f"failure_code: {failure_code}")
+            content = content.replace("error_type: unknown", f"error_type: {error.__class__.__name__}")
+            content = content.replace("retry_attempted: false", f"retry_attempted: {str(retry_attempted).lower()}")
+            report_path.write_text(content, encoding="utf-8")
+            console.print(f"[red]Creation failure report:[/red] {report_path}")
+        except Exception as report_error:
+            console.print(f"[yellow]Unable to write creation failure report:[/yellow] {report_error}")
+
     try:
-        doc = ucc.create(doc_type, output_path, validate_after=validate, save_prompt=save_prompt, **kwargs)
+        doc = ucc.create(doc_type, output_path_obj, validate_after=validate, save_prompt=save_prompt, **kwargs)
     except AIClientError as e:
         message = str(e)
         lowered = message.lower()
@@ -300,6 +356,7 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
         )
 
         if not is_quota_issue:
+            write_creation_failure_report(e)
             raise
 
         console.print("[yellow]AI generation failed due to quota/rate limits.[/yellow]")
@@ -312,6 +369,7 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
                 "Re-run with a different backend/model, for example: "
                 "ucx --cli-tool gemini --model gemini-2.5-pro create ..."
             )
+            write_creation_failure_report(e)
             raise click.exceptions.Exit(code=2)
 
         next_tool = click.prompt(
@@ -333,13 +391,20 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
 
         retry_config = config.model_copy(update={"cli_tool": next_tool, "model": next_model})
         console.print(f"[cyan]Retrying with backend={next_tool}, model={next_model}...[/cyan]")
-        doc = UCCPhase(retry_config).create(
-            doc_type,
-            output_path,
-            validate_after=validate,
-            save_prompt=save_prompt,
-            **kwargs,
-        )
+        try:
+            doc = UCCPhase(retry_config).create(
+                doc_type,
+                output_path_obj,
+                validate_after=validate,
+                save_prompt=save_prompt,
+                **kwargs,
+            )
+        except Exception as retry_error:
+            write_creation_failure_report(retry_error, retry_attempted=True)
+            raise
+    except Exception as e:
+        write_creation_failure_report(e)
+        raise
 
     console.print(f"[green]Created:[/green] {doc.path}")
 
@@ -1127,6 +1192,8 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
         # Resolve doc_id for report metadata with strict checks
         doc_path_obj = Path(doc_path)
         doc_enum = DocType.from_string(doc_type)
+        validator = ucr._get_validator(doc_enum)
+        unified_result = getattr(validator, "unified_result", None)
         doc_id = resolve_doc_id_strict(doc_path_obj, doc_enum)
 
         # Auto-report behavior: mirror BRD path (default enabled via --report)
@@ -1180,7 +1247,22 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
                         indent=2,
                     )
             else:
-                if hasattr(result, "format_report"):
+                if unified_result is not None and hasattr(unified_result, "format_report"):
+                    output_content = unified_result.format_report(
+                        doc_id=doc_id,
+                        doc_type=doc_type.upper(),
+                        version=version,
+                    )
+                    if not precommit:
+                        output_content = ensure_report_schema(
+                            output_content,
+                            report_type="validation",
+                            source_artifact_type=doc_enum.value,
+                            source_artifact_id=doc_id,
+                            report_version=version,
+                            validator_or_reviewer=f"UCX validate ({doc_enum.value})",
+                        )
+                elif hasattr(result, "format_report"):
                     output_content = result.format_report(
                         doc_id=doc_id,
                         doc_type=doc_type.upper(),

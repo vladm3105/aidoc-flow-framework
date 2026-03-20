@@ -12,8 +12,11 @@ from ucx.models.document import Document
 from ucx.models.enums import DocType
 from ucx.exceptions import UCXError, PromptError, SkillError
 from ucx.validators.common.file_utils import sort_section_files
+from ucx.utils.logging import get_logger
 
 CREATE_SESSION_DIR = ".ucx_create_session"
+MAX_UPSTREAM_SECTION_CHARS = 6000
+MAX_UPSTREAM_TOTAL_CHARS = 60000
 
 
 class UCCPhase:
@@ -43,6 +46,7 @@ class UCCPhase:
         """
         self.config = config or UCXConfig()
         self._ai_client = None
+        self.logger = get_logger("ucx.api.creation")
 
     @property
     def ai_client(self):
@@ -158,9 +162,24 @@ class UCCPhase:
         # Generate document
         content = self.ai_client.generate(prompt)
 
+        # Retry once with a stricter directive if PRD output is not a real artifact body.
+        if doc_type == DocType.PRD and not self._looks_like_prd_document(content):
+            retry_prompt = self._build_prd_retry_prompt(prompt, output_path)
+            content = self.ai_client.generate(retry_prompt)
+            if not self._looks_like_prd_document(content):
+                self.logger.warning(
+                    "PRD AI output invalid after retry; using deterministic template fallback"
+                )
+                content = self._build_prd_template_fallback(output_path)
+
         # Apply deterministic PRD guardrails before writing output
         if doc_type == DocType.PRD:
             content = self._apply_prd_output_guardrails(content, output_path)
+            if not self._looks_like_prd_document(content):
+                raise UCXError(
+                    "PRD creation failed: model returned summary/invalid output instead of full PRD document. "
+                    "Retry with --model sonnet or refine docs/UCX/creation/UCC_PROMPT_PRD_PROJECT.md constraints."
+                )
 
         # Write output
         actual_output.write_text(content, encoding="utf-8")
@@ -516,6 +535,61 @@ class UCCPhase:
         fm_text = yaml.safe_dump(frontmatter, sort_keys=False).strip()
         return f"---\n{fm_text}\n---\n\n{body.lstrip()}"
 
+    def _looks_like_prd_document(self, content: str) -> bool:
+        """Heuristic check that generated PRD is a full artifact, not a creation summary."""
+        fm_match = re.match(r"^---[ \t]*\n(.*?)\n---[ \t]*\n?", content, re.DOTALL)
+        body = content[fm_match.end():] if fm_match else content
+
+        if re.search(r"(?im)^##\s+PRD-\d+\s+Creation\s+Summary", body):
+            return False
+        if re.search(r"(?i)I\s+have\s+created\s+the\s+PRD", body):
+            return False
+
+        has_h1 = bool(re.search(r"(?m)^#\s+PRD-\d{2,9}:", body))
+        has_doc_control = bool(re.search(r"(?im)^##\s+1\.\s+Document\s+Control", body))
+        has_exec_summary = bool(re.search(r"(?im)^##\s+2\.\s+Executive\s+Summary", body))
+        section_count = len(re.findall(r"(?m)^##\s+\d+\.", body))
+
+        return has_h1 and has_doc_control and has_exec_summary and section_count >= 6
+
+    def _build_prd_retry_prompt(self, base_prompt: str, output_path: Path) -> str:
+        """Build strict retry prompt for PRD creation when first output is malformed."""
+        target_doc_id = self._extract_target_doc_id(DocType.PRD, output_path) or "PRD-XX"
+        return (
+            base_prompt
+            + "\n\n---\n\n"
+            + "CRITICAL RETRY DIRECTIVE:\n"
+            + "Your previous response was invalid because it returned a creation summary instead of a PRD artifact.\n"
+            + "Return ONLY the full PRD markdown document content, with valid YAML frontmatter and complete section bodies.\n"
+            + f"The H1 MUST start with '# {target_doc_id}:'.\n"
+            + "Do NOT include explanations, compliance tables, or meta-commentary about what was created.\n"
+            + "Do NOT wrap output in code fences.\n"
+        )
+
+    def _build_prd_template_fallback(self, output_path: Path) -> str:
+        """Build deterministic PRD content from project template as fallback."""
+        target_doc_id = self._extract_target_doc_id(DocType.PRD, output_path) or "PRD-XX"
+        template = self._load_template(DocType.PRD)
+
+        # Remove template frontmatter so output guardrails own final frontmatter.
+        body = re.sub(r"\A---\n.*?\n---\n?", "", template, flags=re.DOTALL).lstrip()
+
+        # Normalize H1 identity placeholder to the target doc id.
+        body = re.sub(
+            r"(?m)^#\s+PRD-NN:\s*",
+            f"# {target_doc_id}: ",
+            body,
+            count=1,
+        )
+        body = re.sub(
+            r"(?m)^#\s+PRD-\d{2,9}:\s*",
+            f"# {target_doc_id}: ",
+            body,
+            count=1,
+        )
+
+        return body
+
     def _validate_and_score_prd(self, document: Document) -> None:
         """Run Tier 1 validation and compute readiness scores on created PRD.
 
@@ -774,18 +848,45 @@ class UCCPhase:
         without an LLM call.
         """
         parts = ["\n---\n\n# UPSTREAM ARTIFACT\n\n"]
+        used_chars = 0
+
+        def clamp(text: str) -> str:
+            nonlocal used_chars
+            if not text:
+                return ""
+
+            clipped = text
+            if len(clipped) > MAX_UPSTREAM_SECTION_CHARS:
+                clipped = (
+                    clipped[:MAX_UPSTREAM_SECTION_CHARS].rstrip()
+                    + "\n\n[...truncated upstream section for token budget...]"
+                )
+
+            remaining = MAX_UPSTREAM_TOTAL_CHARS - used_chars
+            if remaining <= 0:
+                return ""
+
+            if len(clipped) > remaining:
+                clipped = clipped[:remaining].rstrip() + "\n\n[...truncated upstream artifact for token budget...]"
+
+            used_chars += len(clipped)
+            return clipped
 
         if upstream_path.is_dir():
             section_files = self._resolve_section_files(upstream_path)
             for f in section_files:
                 cleaned = self._prepare_upstream_section_content(f)
+                cleaned = clamp(cleaned)
                 if not cleaned:
                     continue
                 parts.append(f"## File: {f.name}\n\n")
                 parts.append(cleaned)
                 parts.append("\n\n")
+                if used_chars >= MAX_UPSTREAM_TOTAL_CHARS:
+                    break
         elif upstream_path.is_file():
             cleaned = self._prepare_upstream_section_content(upstream_path)
+            cleaned = clamp(cleaned)
             if not cleaned:
                 return ""
             parts.append(f"## File: {upstream_path.name}\n\n")

@@ -70,6 +70,7 @@ def resolve_doc_id_strict(doc_path: Path, doc_type: DocType) -> str:
 def report_filename(doc_id: str, report_kind: str, version: int) -> str:
     """Build canonical UCX report filename for a versioned report."""
     kind_map = {
+        "creation": "UCX_creation_report",
         "validation": "UCX_validation_report",
         "review": "UCX_review_report",
         "remediation": "UCX_remediation_report",
@@ -82,6 +83,7 @@ def report_filename(doc_id: str, report_kind: str, version: int) -> str:
 def next_report_version(search_dir: Path, doc_id: str, report_kind: str) -> int:
     """Return the next canonical UCX report version for a document."""
     kind_map = {
+        "creation": "UCX_creation_report",
         "validation": "UCX_validation_report",
         "review": "UCX_review_report",
         "remediation": "UCX_remediation_report",
@@ -143,6 +145,11 @@ def ensure_report_schema(
         custom_fields.setdefault("tier1_warnings", 0)
         custom_fields.setdefault("tier2_warnings", 0)
         custom_fields.setdefault("checks_run", 0)
+    elif report_type == "creation":
+        custom_fields.setdefault("creation_status", "FAILED")
+        custom_fields.setdefault("failure_code", "UCC-E-CREATE")
+        custom_fields.setdefault("error_type", "unknown")
+        custom_fields.setdefault("retry_attempted", False)
     elif report_type == "review":
         custom_fields.setdefault("weighted_score", 0.0)
         custom_fields.setdefault("p0_findings", 0)
