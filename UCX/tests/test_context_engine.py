@@ -283,7 +283,7 @@ class TestAttentionSteeringFormat:
 
     def test_attention_steering_contains_prefix(self):
         """Attention steering should include the persona prefix."""
-        result = build_attention_steering_format("architect", "ARCH")
+        result = build_attention_steering_format("architect", "ARCH", use_hash_ids=False)
 
         assert "ARCH" in result
         assert "ARCH-P0-001" in result
@@ -320,7 +320,7 @@ class TestAttentionSteeringFormat:
 
     def test_chairperson_manifest_contains_rem_format(self):
         """Chairperson manifest should show REM prefix format."""
-        result = build_chairperson_manifest_format()
+        result = build_chairperson_manifest_format(use_hash_ids=False)
 
         assert "REM-P0-001" in result
 

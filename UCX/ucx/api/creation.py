@@ -529,6 +529,12 @@ class UCCPhase:
         try:
             from ucx.api.review import UCRPhase
             from ucx.models.enums import DocType
+            from ucx.utils.reporting import (
+                ensure_report_schema,
+                next_report_version,
+                report_filename,
+                resolve_doc_id_strict,
+            )
 
             ucr = UCRPhase(self.config)
             result = ucr.validate(DocType.PRD, document.path)
@@ -537,15 +543,12 @@ class UCCPhase:
 
             # Write validation report alongside created document (same behavior as `ucx validate`)
             doc_dir = document.path if document.path.is_dir() else document.path.parent
-            report_path = doc_dir / ".precommit_validation_report.md"
-            folder_name = doc_dir.name
-            doc_id_match = re.match(r"([A-Z]+-\d+)", folder_name)
-            if not doc_id_match and document.path.is_file():
-                doc_id_match = re.match(r"([A-Z]+-\d+)", document.path.stem)
-            doc_id = doc_id_match.group(1) if doc_id_match else folder_name.split("_")[0]
+            doc_id = resolve_doc_id_strict(document.path, DocType.PRD)
+            version = next_report_version(doc_dir, doc_id, "validation")
+            report_path = doc_dir / report_filename(doc_id, "validation", version)
 
             if unified_result and hasattr(unified_result, "format_report"):
-                report_content = unified_result.format_report(doc_id=doc_id, doc_type="PRD", version=1)
+                report_content = unified_result.format_report(doc_id=doc_id, doc_type="PRD", version=version)
             else:
                 report_content = (
                     f"Status: {result.status.value if hasattr(result.status, 'value') else result.status}\n"
@@ -553,6 +556,14 @@ class UCCPhase:
                     f"Warnings: {len(result.warnings)}\n"
                 )
 
+            report_content = ensure_report_schema(
+                report_content,
+                report_type="validation",
+                source_artifact_type=DocType.PRD.value,
+                source_artifact_id=doc_id,
+                report_version=version,
+                validator_or_reviewer="UCX UCCPhase",
+            )
             report_path.write_text(report_content, encoding="utf-8")
             document.metadata["validation_report_path"] = str(report_path)
 
@@ -807,7 +818,7 @@ class UCCPhase:
             all_files = [
                 f for f in doc_dir.glob("*.md")
                 if not any(skip in f.name for skip in [
-                    ".UCR_", ".UCRem_", ".V_", ".precommit_"
+                    ".UCR_", ".UCRem_", ".V_", ".UCX_", ".precommit_"
                 ])
             ]
             return sort_section_files(all_files)
@@ -833,7 +844,7 @@ class UCCPhase:
             all_files = [
                 f for f in doc_dir.glob("*.md")
                 if not any(skip in f.name for skip in [
-                    ".UCR_", ".UCRem_", ".V_", ".precommit_"
+                    ".UCR_", ".UCRem_", ".V_", ".UCX_", ".precommit_"
                 ])
             ]
             return sort_section_files(all_files)

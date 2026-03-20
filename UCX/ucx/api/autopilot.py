@@ -178,7 +178,7 @@ class UCXAutopilot:
         import re
         doc_id_match = re.search(rf"({doc_type.value.upper()}-\d+)", str(target), re.IGNORECASE)
         doc_id = doc_id_match.group(1).upper() if doc_id_match else f"{doc_type.value.upper()}-XX"
-        review_report = target.parent / f"{doc_id}.UCR_review_report_v001.md"
+        review_report = target.parent / f"{doc_id}.UCX_review_report_v001.md"
         fix_report: Optional[Path] = None
 
         # Smart detection: create or review?

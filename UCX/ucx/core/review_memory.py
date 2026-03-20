@@ -31,9 +31,13 @@ FINDING_ID_PATTERN = re.compile(
     r'(?:'
     r'\|\s*\*?\*?([A-Z]{2,4}-P[012]-\d{1,3})\*?\*?\s*\|'  # Table: | ARCH-P0-001 |
     r'|'
-    r'\*\*([A-Z]{2,4}-P[012]-\d{1,3})\*\*'  # Bold: **TL-P0-001**
+    r'\*\*\[?([A-Z]{2,4}-P[012]-\d{1,3})\]?\*\*'  # Bold: **TL-P0-001** or **[TL-P0-001]**
     r'|'
     r'(?:^|\n)\s*([A-Z]{2,4}-P[012]-\d{1,3})[:\s]'  # Line start: AUD-P0-001:
+    r'|'
+    r'\*\*\[?(P[012]-\d{1,3})\]?\*\*'  # Legacy bold without prefix: **P0-001** or **[P0-001]**
+    r'|'
+    r'(?:^|\n)\s*(P[012]-\d{1,3})[:\s]'  # Legacy line start: P0-001:
     r')',
     re.MULTILINE
 )
@@ -57,6 +61,8 @@ def _parse_finding_id(raw_id: str) -> tuple[str, str, str]:
     parts = raw_id.split('-')
     if len(parts) >= 3:
         return (parts[0], parts[1], parts[2])
+    if len(parts) == 2 and parts[0] in {"P0", "P1", "P2"}:
+        return ("LEG", parts[0], parts[1])
     return (raw_id, "P0", "000")  # Fallback for malformed IDs
 
 
@@ -765,7 +771,13 @@ class ReviewMemory:
         for persona, response in responses.items():
             for match in FINDING_ID_PATTERN.finditer(response):
                 # Extract finding ID from whichever group matched
-                raw_id = match.group(1) or match.group(2) or match.group(3)
+                raw_id = (
+                    match.group(1)
+                    or match.group(2)
+                    or match.group(3)
+                    or match.group(4)
+                    or match.group(5)
+                )
                 if not raw_id or raw_id in seen_ids:
                     continue
 
@@ -777,8 +789,9 @@ class ReviewMemory:
                 end = min(len(response), match.end() + 500)
                 context = response[start:end]
 
-                # Try to extract explicit category tag
-                cat_match = category_pattern.search(context)
+                # Use forward-local slice for category tags so previous findings don't leak in.
+                category_slice = response[match.start():min(len(response), match.end() + 250)]
+                cat_match = category_pattern.search(category_slice)
                 explicit_tag = cat_match.group(1).lower() if cat_match else None
 
                 # Use CategoryConflictResolver for category assignment

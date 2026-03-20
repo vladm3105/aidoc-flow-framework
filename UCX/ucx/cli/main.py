@@ -437,7 +437,15 @@ def review(ctx, doc_type, doc_path, output, skip_validation, persona, no_resume,
     # Handle --clean-reports flag
     if clean_reports:
         # Find all UCR/UCRem report files
-        report_patterns = ["*.UCR_review_report_v*.md", "*_UCR_REVIEW*.md", "*UCR_REVIEW*.md", "*_UCRem_*.md", "*PERSONA_REVIEW*.md"]
+        report_patterns = [
+            "*.UCX_review_report_v*.md",
+            "*.UCX_remediation_report_v*.md",
+            "*.UCR_review_report_v*.md",
+            "*_UCR_REVIEW*.md",
+            "*UCR_REVIEW*.md",
+            "*_UCRem_*.md",
+            "*PERSONA_REVIEW*.md",
+        ]
         all_reports = []
 
         for pattern in report_patterns:
@@ -863,6 +871,7 @@ def remediate(ctx, doc_path, report, output, apply_auto_safe):
 @click.argument("doc_type")
 @click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path), help="Write validation report to file")
+@click.option("--precommit", is_flag=True, help="Emit .precommit_validation_report.md (hook mode only)")
 @click.option("--tier1-only", is_flag=True, help="Run only Tier 1 (core) checks for pre-commit")
 @click.option("--strict", is_flag=True, help="Treat warnings as errors")
 @click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
@@ -872,7 +881,7 @@ def remediate(ctx, doc_path, report, output, apply_auto_safe):
 @click.option("--clean-reports", is_flag=True, help="Clean up old validation reports, keep only latest (or --keep-versions)")
 @click.option("--keep-versions", type=int, default=1, help="Number of report versions to keep (default: 1)")
 @click.pass_context
-def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format, fix, no_fix, report, clean_reports, keep_versions):
+def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, output_format, fix, no_fix, report, clean_reports, keep_versions):
     """
     Validate a document (no AI review).
 
@@ -910,6 +919,13 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
     """
     import json
     import sys
+    from ucx.models.enums import DocType
+    from ucx.utils.reporting import (
+        ensure_report_schema,
+        next_report_version,
+        report_filename,
+        resolve_doc_id_strict,
+    )
 
     doc_path = Path(doc_path)
 
@@ -1039,11 +1055,9 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
                 }]
             )
 
-        # Extract doc_id from path (e.g., BRD-01 from BRD-01_platform_architecture)
+        # Resolve doc_id from path with strict checks
         doc_path_obj = Path(doc_path)
-        folder_name = doc_path_obj.name if doc_path_obj.is_dir() else doc_path_obj.parent.name
-        doc_id_match = re.match(r"(BRD-\d+)", folder_name)
-        doc_id = doc_id_match.group(1) if doc_id_match else folder_name.split("_")[0]
+        doc_id = resolve_doc_id_strict(doc_path_obj, DocType.BRD)
 
         # Handle --report flag: auto-generate report to document directory
         if report and not output:
@@ -1057,9 +1071,13 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             # If output path is a directory or ends with /, auto-generate filename
             if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
                 output_path.mkdir(parents=True, exist_ok=True)
-                # Single hidden file - overwrites on each run (dot-prefix = hidden)
-                output_path = output_path / ".precommit_validation_report.md"
-                version = 1  # Report format uses version 1 (single file)
+                if precommit:
+                    output_path = output_path / ".precommit_validation_report.md"
+                    version = 1
+                else:
+                    doc_id = resolve_doc_id_strict(doc_path_obj, DocType.BRD)
+                    version = next_report_version(output_path, doc_id, "validation")
+                    output_path = output_path / report_filename(doc_id, "validation", version)
             else:
                 # Output to specified file
                 output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1073,6 +1091,15 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             else:
                 # Use SDD-compliant report format for file output
                 output_content = result.format_report(doc_id=doc_id, doc_type="BRD", version=version)
+                if not precommit:
+                    output_content = ensure_report_schema(
+                        output_content,
+                        report_type="validation",
+                        source_artifact_type=DocType.BRD.value,
+                        source_artifact_id=doc_id,
+                        report_version=version,
+                        validator_or_reviewer="UCX validate (brd)",
+                    )
 
             output_path.write_text(output_content)
             console.print(f"[green]Validation report written to:[/green] {output_path}")
@@ -1097,13 +1124,10 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
         ucr = UCRPhase(ctx.obj["config"])
         result = ucr.validate(doc_type, Path(doc_path))
 
-        # Derive doc_id for report metadata (e.g., PRD-01)
+        # Resolve doc_id for report metadata with strict checks
         doc_path_obj = Path(doc_path)
-        folder_name = doc_path_obj.name if doc_path_obj.is_dir() else doc_path_obj.parent.name
-        doc_id_match = re.match(r"([A-Z]+-\d+)", folder_name)
-        if not doc_id_match and doc_path_obj.is_file():
-            doc_id_match = re.match(r"([A-Z]+-\d+)", doc_path_obj.stem)
-        doc_id = doc_id_match.group(1) if doc_id_match else folder_name.split("_")[0]
+        doc_enum = DocType.from_string(doc_type)
+        doc_id = resolve_doc_id_strict(doc_path_obj, doc_enum)
 
         # Auto-report behavior: mirror BRD path (default enabled via --report)
         if report and not output:
@@ -1127,11 +1151,15 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
         if output:
             output_path = Path(output)
 
-            # If output is a directory, write canonical hidden validation report file
+            # If output is a directory, write canonical report file (or precommit in precommit mode)
             if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
                 output_path.mkdir(parents=True, exist_ok=True)
-                output_path = output_path / ".precommit_validation_report.md"
-                version = 1
+                if precommit:
+                    output_path = output_path / ".precommit_validation_report.md"
+                    version = 1
+                else:
+                    version = next_report_version(output_path, doc_id, "validation")
+                    output_path = output_path / report_filename(doc_id, "validation", version)
             else:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 version_match = re.search(r"v(\d+)", str(output_path))
@@ -1158,6 +1186,15 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
                         doc_type=doc_type.upper(),
                         version=version,
                     )
+                    if not precommit:
+                        output_content = ensure_report_schema(
+                            output_content,
+                            report_type="validation",
+                            source_artifact_type=doc_enum.value,
+                            source_artifact_id=doc_id,
+                            report_version=version,
+                            validator_or_reviewer=f"UCX validate ({doc_enum.value})",
+                        )
                 elif hasattr(result, "format_text"):
                     output_content = result.format_text(verbose=ctx.obj.get("verbose", False))
                 else:

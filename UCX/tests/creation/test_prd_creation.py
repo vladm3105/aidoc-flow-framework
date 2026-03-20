@@ -401,4 +401,6 @@ custom_fields:
         assert document.metadata["ears_ready_score"] == 88.0
         assert document.metadata["template_profile"] == "mvp"
         assert document.metadata["readiness_status"] == "PASS"
-        assert prd_file.parent.joinpath(".precommit_validation_report.md").read_text(encoding="utf-8") == "report:PRD-01:PRD:v1"
+        report_text = prd_file.parent.joinpath("PRD-01.UCX_validation_report_v001.md").read_text(encoding="utf-8")
+        assert "report:PRD-01:PRD:v1" in report_text
+        assert "title: 'UCX Validation Report: PRD-01'" in report_text

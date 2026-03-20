@@ -348,6 +348,25 @@ class PromptLoader:
 
         return result
 
+    def list_templates(self) -> list[str]:
+        """List available framework templates as phase-relative paths.
+
+        Returns values like `ucc/UCC_PROMPT_BRD.md` or `ucr/UCR_PROMPT_PRD.md`.
+        """
+        templates: list[str] = []
+        if not self._framework_template_dir.exists():
+            return templates
+
+        for phase_dir in sorted(self._framework_template_dir.iterdir()):
+            if not phase_dir.is_dir():
+                continue
+            for file in sorted(phase_dir.glob("*.md")):
+                templates.append(f"{phase_dir.name}/{file.name}")
+            for file in sorted(phase_dir.glob("*.md.j2")):
+                templates.append(f"{phase_dir.name}/{file.name}")
+
+        return templates
+
     def load_raw(self, template_path: str) -> str:
         """
         Load a template by raw path (deprecated - use load() instead).

@@ -40,6 +40,12 @@ from ucx.models.fix import FixProposal
 from ucx.exceptions import PromptError
 from ucx.prescreening import analyze_ucr_report, ScreeningResult
 from ucx.utils.file_ops import find_latest_review_report
+from ucx.utils.reporting import (
+    ensure_report_schema,
+    next_report_version,
+    report_filename,
+    resolve_doc_id_strict,
+)
 
 
 class UCRemPhase:
@@ -160,12 +166,19 @@ class UCRemPhase:
             doc_type = self._detect_doc_type(review_report)
             doc_id = self._extract_doc_id(doc_path, doc_type)
             if output_path is None:
-                if doc_path.is_dir():
-                    output_path = doc_path / f"{doc_id}.UCRem_report.md"
-                else:
-                    output_path = doc_path.parent / f"{doc_id}.UCRem_report.md"
+                output_dir = doc_path if doc_path.is_dir() else doc_path.parent
+                version = next_report_version(output_dir, doc_id, "remediation")
+                output_path = output_dir / report_filename(doc_id, "remediation", version)
 
             empty_report = self._generate_empty_report(doc_id, review_report)
+            empty_report = ensure_report_schema(
+                empty_report,
+                report_type="remediation",
+                source_artifact_type=doc_type.value,
+                source_artifact_id=doc_id,
+                report_version=version,
+                validator_or_reviewer=f"UCX UCRemPhase ({self.config.model})",
+            )
             output_path.write_text(empty_report, encoding="utf-8")
             return [], output_path
 
@@ -174,12 +187,10 @@ class UCRemPhase:
 
         # Set default output path - write to document folder, not review report folder
         if output_path is None:
-            # Extract doc_id from doc_path (e.g., BRD-01 from BRD-01_platform_architecture)
             doc_id = self._extract_doc_id(doc_path, doc_type)
-            if doc_path.is_dir():
-                output_path = doc_path / f"{doc_id}.UCRem_report.md"
-            else:
-                output_path = doc_path.parent / f"{doc_id}.UCRem_report.md"
+            output_dir = doc_path if doc_path.is_dir() else doc_path.parent
+            version = next_report_version(output_dir, doc_id, "remediation")
+            output_path = output_dir / report_filename(doc_id, "remediation", version)
 
         # Build prompt with adaptive fixer selection
         prompt = self._build_remediation_prompt(
@@ -194,6 +205,18 @@ class UCRemPhase:
 
         # Inject screening metadata into report
         fix_content = self._inject_screening_metadata(fix_content)
+        report_version = 1
+        match = re.search(r"_v(\d{3})\.md$", output_path.name)
+        if match:
+            report_version = int(match.group(1))
+        fix_content = ensure_report_schema(
+            fix_content,
+            report_type="remediation",
+            source_artifact_type=doc_type.value,
+            source_artifact_id=self._extract_doc_id(doc_path, doc_type),
+            report_version=report_version,
+            validator_or_reviewer=f"UCX UCRemPhase ({self.config.model})",
+        )
 
         # Write fix report
         output_path.write_text(fix_content, encoding="utf-8")
@@ -205,12 +228,12 @@ class UCRemPhase:
     def _generate_empty_report(self, doc_id: str, review_report: Path) -> str:
         """Generate report when no actionable findings exist."""
         return f"""---
-title: "UCRem Report: {doc_id}"
-doc_id: "{doc_id}.UCRem"
+title: "UCX Remediation Report: {doc_id}"
+doc_id: "{doc_id}.UCXRem"
 version: "1.0.0"
-tags: [ucrem, remediation-report, no-action-required]
+tags: [ucx-remediation, remediation-report, no-action-required]
 custom_fields:
-  document_type: ucrem_report
+    document_type: ucx_remediation_report
   artifact_type: REMEDIATION_REPORT
   target_artifact_id: "{doc_id}"
   source_review: "{review_report.name}"
@@ -223,7 +246,7 @@ custom_fields:
     manual_required: 0
 ---
 
-# UCRem Report: {doc_id}
+# UCX Remediation Report: {doc_id}
 
 ## Summary
 
@@ -257,12 +280,25 @@ The document is ready for downstream processing. No remediation required.
         # Normalize: if file, look for report in parent
         if doc_path.is_file():
             report_path = doc_path.parent / ".precommit_validation_report.md"
+            doc_dir = doc_path.parent
         else:
             report_path = doc_path / ".precommit_validation_report.md"
+            doc_dir = doc_path
 
         if not report_path.exists():
-            logger.debug(f"No validation report found at {report_path}")
-            return None
+            # Standard mode writes versioned validation reports; use latest canonical one as fallback.
+            doc_type = self._detect_doc_type(doc_path)
+            doc_id = self._extract_doc_id(doc_path, doc_type)
+            candidates = sorted(
+                doc_dir.glob(f"{doc_id}.UCX_validation_report_v*.md"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+            if candidates:
+                report_path = candidates[0]
+            else:
+                logger.debug(f"No validation report found at {report_path}")
+                return None
 
         try:
             content = report_path.read_text(encoding="utf-8")
@@ -501,18 +537,7 @@ The document is ready for downstream processing. No remediation required.
         # Get the relevant name (directory name or file stem)
         name = doc_path.name if doc_path.is_dir() else doc_path.stem
 
-        # Try to extract doc_id pattern (e.g., BRD-01, PRD-02)
-        doc_type_upper = doc_type.value.upper()
-        pattern = rf"({doc_type_upper}-\d+)"
-        match = re.search(pattern, name, re.IGNORECASE)
-        if match:
-            return match.group(1).upper()
-
-        # Fallback: use directory/file name up to first underscore
-        if "_" in name:
-            return name.split("_")[0].upper()
-
-        return name.upper()
+        return resolve_doc_id_strict(doc_path, doc_type)
 
     def _build_remediation_prompt(
         self,

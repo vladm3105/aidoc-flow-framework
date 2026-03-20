@@ -118,9 +118,8 @@ def find_latest_review_report(doc_path: Path) -> Optional[Path]:
     """
     Find the latest UCR review report for a document.
 
-    Searches for files matching the pattern:
-    - {DOC_ID}.UCR_review_report_v{NNN}.md
-    - {DOC_ID}_UCR_REVIEW_v{NNN}.md (legacy)
+    Searches for files matching the canonical pattern:
+    - {DOC_ID}.UCX_review_report_v{NNN}.md
 
     Returns the report with the highest version number.
 
@@ -132,18 +131,13 @@ def find_latest_review_report(doc_path: Path) -> Optional[Path]:
 
     Examples:
         >>> find_latest_review_report(Path("docs/01_BRD/BRD-01_platform_architecture"))
-        PosixPath('docs/01_BRD/BRD-01_platform_architecture/BRD-01.UCR_review_report_v003.md')
+        PosixPath('docs/01_BRD/BRD-01_platform_architecture/BRD-01.UCX_review_report_v003.md')
     """
     import re
 
     search_dir = doc_path if doc_path.is_dir() else doc_path.parent
 
-    # Find all UCR review reports
-    patterns = [
-        "*.UCR_review_report_v*.md",  # Current format
-        "*_UCR_REVIEW_v*.md",         # Legacy format
-        "*UCR_REVIEW*.md",            # Older legacy
-    ]
+    patterns = ["*.UCX_review_report_v*.md"]
 
     all_reports: List[Path] = []
     for pattern in patterns:
@@ -182,10 +176,7 @@ def find_latest_remediation_report(doc_path: Path) -> Optional[Path]:
 
     search_dir = doc_path if doc_path.is_dir() else doc_path.parent
 
-    patterns = [
-        "*.UCRem_report*.md",
-        "*_UCRem_REPORT*.md",
-    ]
+    patterns = ["*.UCX_remediation_report_v*.md"]
 
     all_reports: List[Path] = []
     for pattern in patterns:

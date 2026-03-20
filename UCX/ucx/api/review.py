@@ -30,6 +30,12 @@ from ucx.utils.logging import (
     log_review_result,
     log_timing,
 )
+from ucx.utils.reporting import (
+    ensure_report_schema,
+    next_report_version,
+    report_filename,
+    resolve_doc_id_strict,
+)
 
 
 class UCRPhase:
@@ -84,24 +90,9 @@ class UCRPhase:
         Returns:
             Next version number (1 if no existing reports)
         """
-        # Extract doc_id from path (e.g., "BRD-01" from "BRD-01_platform_architecture")
-        doc_id = self._extract_doc_id(doc_path, doc_type)
-
-        # Pattern to match versioned reports: BRD-01.UCR_review_report_v001.md
-        pattern = re.compile(
-            rf"{re.escape(doc_id)}\.UCR_review_report_v(\d{{3}})\.md$"
-        )
-
-        max_version = 0
+        doc_id = extract_doc_id(doc_path, doc_type)
         search_dir = doc_path if doc_path.is_dir() else doc_path.parent
-
-        for file in search_dir.glob(f"{doc_id}.UCR_review_report_v*.md"):
-            match = pattern.match(file.name)
-            if match:
-                version = int(match.group(1))
-                max_version = max(max_version, version)
-
-        return max_version + 1
+        return next_report_version(search_dir, doc_id, "review")
 
     def _extract_doc_id(self, doc_path: Path, doc_type: DocType) -> str:
         """
@@ -118,14 +109,7 @@ class UCRPhase:
         Returns:
             Document ID string (e.g., "BRD-01")
         """
-        doc_id_match = re.search(
-            rf"({doc_type.value.upper()}-\d+)",
-            str(doc_path),
-            re.IGNORECASE
-        )
-        if doc_id_match:
-            return doc_id_match.group(1).upper()
-        return f"{doc_type.value.upper()}-XX"
+        return resolve_doc_id_strict(doc_path, doc_type)
 
     def _generate_review_id(self, doc_path: Path, doc_type: DocType, version: int) -> str:
         """
@@ -173,9 +157,7 @@ class UCRPhase:
         review_id = self._generate_review_id(doc_path, doc_type, version)
         doc_id = self._extract_doc_id(doc_path, doc_type)
 
-        # New naming format: {DOC_ID}.UCR_review_report_v{NNN}.md
-        # Example: BRD-01.UCR_review_report_v001.md
-        filename = f"{doc_id}.UCR_review_report_v{version:03d}.md"
+        filename = report_filename(doc_id, "review", version)
 
         if doc_path.is_dir():
             versioned_path = doc_path / filename
@@ -274,6 +256,14 @@ class UCRPhase:
 
         # Write review report
         self.logger.debug(f"Writing review report to {output_path}")
+        review_content = ensure_report_schema(
+            review_content,
+            report_type="review",
+            source_artifact_type=doc_type.value,
+            source_artifact_id=self._extract_doc_id(doc_path, doc_type),
+            report_version=version,
+            validator_or_reviewer=f"UCX UCRPhase ({self.config.model})",
+        )
         output_path.write_text(review_content, encoding="utf-8")
 
         # Parse results (includes weighted_score from frontmatter)
