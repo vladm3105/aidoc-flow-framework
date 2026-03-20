@@ -1,5 +1,6 @@
 """CLI-based AI client that wraps shell commands for CLI agents."""
 
+import datetime
 import json
 import os
 import re
@@ -153,6 +154,11 @@ class CLIClient(BaseAIClient):
         "timed out",
     ]
 
+    PREFLIGHT_PROMPT = (
+        "Availability check. Return ONLY the current UTC date in YYYY-MM-DD format. "
+        "No prose, no markdown, no explanation."
+    )
+
     def __init__(
         self,
         cli_tool: str = "claude",
@@ -254,6 +260,8 @@ class CLIClient(BaseAIClient):
         start_time = time.perf_counter()
 
         try:
+            self._run_availability_preflight(**kwargs)
+
             # For long prompts, use file-based input
             if prompt_len > self.LONG_PROMPT_THRESHOLD:
                 self.logger.debug(
@@ -366,6 +374,38 @@ class CLIClient(BaseAIClient):
                 f"CLI execution error: {str(e)}",
                 model=self.cli_tool,
             )
+
+    def _run_availability_preflight(self, **kwargs) -> None:
+        """Verify CLI model health by checking current UTC date response."""
+        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        response = self._execute_cli(self.PREFLIGHT_PROMPT, system_prompt=None, **kwargs).strip()
+
+        embedded_error = self._detect_embedded_cli_error(response)
+        if embedded_error is not None:
+            raise AIClientError(
+                "LLM availability preflight failed: CLI returned error-like text response: "
+                f"{embedded_error}",
+                model=self.cli_tool,
+            )
+
+        detected_date = self._extract_iso_date(response)
+        if detected_date != expected_utc_date:
+            raise AIClientError(
+                "LLM availability preflight failed: date probe mismatch. "
+                f"Expected UTC date {expected_utc_date}, got '{response}'.",
+                model=self.cli_tool,
+            )
+
+        self.logger.debug(
+            "LLM preflight passed: expected_utc_date=%s detected_date=%s",
+            expected_utc_date,
+            detected_date,
+        )
+
+    def _extract_iso_date(self, text: str) -> Optional[str]:
+        """Extract first ISO date token from response text."""
+        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", text)
+        return match.group(1) if match else None
 
     def _detect_embedded_cli_error(self, response_text: str) -> Optional[str]:
         """Detect plain-text CLI/tool errors that can arrive with exit code 0."""

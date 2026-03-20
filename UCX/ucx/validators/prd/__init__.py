@@ -25,6 +25,7 @@ from typing import Optional, Union, List, Dict, Any
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+import json
 import re
 
 from ucx.models.enums import DocType, ValidationStatus
@@ -402,6 +403,14 @@ class UnifiedPRDValidator:
         from ucx.validators.prd.element_codes import validate_element_codes
         from ucx.validators.prd.quality_gate import run_quality_gates
 
+        # Verify captured LLM response payloads are present and analysable.
+        llm_issues = self._validate_llm_response_capture(file_path, content)
+        for issue in llm_issues:
+            if issue.tier == Tier.TIER1:
+                result.tier1_issues.append(issue)
+            elif not tier1_only:
+                result.tier2_issues.append(issue)
+
         # Structure validation
         structure_issues = validate_structure(file_path, content)
         for issue in structure_issues:
@@ -433,6 +442,101 @@ class UnifiedPRDValidator:
                 result.tier1_issues.append(issue)
             else:
                 result.tier2_issues.append(issue)
+
+    def _validate_llm_response_capture(self, file_path: Path, content: str) -> List[ValidationIssue]:
+        """Validate embedded raw LLM responses captured during PRD creation."""
+        issues: List[ValidationIssue] = []
+
+        if "UCX_LLM_RESPONSE_CAPTURE:BEGIN" not in content:
+            issues.append(ValidationIssue(
+                code="PRD-E023",
+                message="Missing UCX LLM response audit capture block; cannot investigate generation quality",
+                file=file_path.name,
+                tier=Tier.TIER1,
+            ))
+            return issues
+
+        if "UCX_LLM_RESPONSE_CAPTURE:END" not in content:
+            issues.append(ValidationIssue(
+                code="PRD-E023",
+                message="UCX LLM response audit block is incomplete (missing END marker)",
+                file=file_path.name,
+                tier=Tier.TIER1,
+            ))
+            return issues
+
+        meta_match = re.search(r"<!--\s*UCX_LLM_META:\s*(\{.*?\})\s*-->", content, re.DOTALL)
+        fallback_used = False
+        if meta_match:
+            try:
+                meta = json.loads(meta_match.group(1))
+                fallback_used = bool(meta.get("fallback_used", False))
+            except Exception:
+                issues.append(ValidationIssue(
+                    code="PRD-W022",
+                    message="Unable to parse UCX_LLM_META JSON payload",
+                    file=file_path.name,
+                    tier=Tier.TIER2,
+                ))
+
+        raw_attempts = re.findall(
+            r"<pre\s+data-ucx-llm-attempt=\"\d+\">(.*?)</pre>",
+            content,
+            re.DOTALL,
+        )
+
+        if not raw_attempts:
+            issues.append(ValidationIssue(
+                code="PRD-E023",
+                message="No raw LLM attempt payloads found inside UCX response audit block",
+                file=file_path.name,
+                tier=Tier.TIER1,
+            ))
+            return issues
+
+        invalid_attempts = 0
+        for raw in raw_attempts:
+            decoded = (
+                raw.replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&amp;", "&")
+                .replace("&quot;", '"')
+                .replace("&#x27;", "'")
+            )
+            lowered = decoded.lower()
+            looks_like_summary = bool(re.search(r"\bi\s+have\s+created\s+the\s+prd\b", lowered))
+            looks_like_template = (
+                "[mvp product/feature name]" in lowered
+                or "prd.nn." in lowered
+                or "yyyy-mm-ddthh:mm:ss" in lowered
+            )
+            looks_like_structured_prd = bool(
+                re.search(r"(?m)^#\s+PRD-\d{2,9}:", decoded)
+                and re.search(r"(?im)^##\s+1\.\s+Document\s+Control", decoded)
+            )
+            if looks_like_summary or looks_like_template or not looks_like_structured_prd:
+                invalid_attempts += 1
+
+        if invalid_attempts == len(raw_attempts):
+            issues.append(ValidationIssue(
+                code="PRD-E024",
+                message=(
+                    "All captured LLM responses are invalid/template-like; "
+                    "PRD generation output requires investigation"
+                ),
+                file=file_path.name,
+                tier=Tier.TIER1,
+            ))
+
+        if fallback_used:
+            issues.append(ValidationIssue(
+                code="PRD-W023",
+                message="UCX deterministic template fallback was used because LLM response quality failed",
+                file=file_path.name,
+                tier=Tier.TIER2,
+            ))
+
+        return issues
 
     def _validate_corpus(
         self,

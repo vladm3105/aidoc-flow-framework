@@ -1,6 +1,8 @@
 """UCX Creation (UCC) Phase API."""
 
 import datetime
+import html
+import json
 import re
 from pathlib import Path
 from typing import Optional, Union
@@ -161,20 +163,29 @@ class UCCPhase:
 
         # Generate document
         content = self.ai_client.generate(prompt)
+        prd_attempt_responses: list[str] = [content] if doc_type == DocType.PRD else []
+        prd_fallback_used = False
 
         # Retry once with a stricter directive if PRD output is not a real artifact body.
         if doc_type == DocType.PRD and not self._looks_like_prd_document(content):
             retry_prompt = self._build_prd_retry_prompt(prompt, output_path)
             content = self.ai_client.generate(retry_prompt)
+            prd_attempt_responses.append(content)
             if not self._looks_like_prd_document(content):
                 self.logger.warning(
                     "PRD AI output invalid after retry; using deterministic template fallback"
                 )
                 content = self._build_prd_template_fallback(output_path)
+                prd_fallback_used = True
 
         # Apply deterministic PRD guardrails before writing output
         if doc_type == DocType.PRD:
             content = self._apply_prd_output_guardrails(content, output_path)
+            content = self._append_prd_llm_response_audit(
+                content,
+                attempts=prd_attempt_responses,
+                fallback_used=prd_fallback_used,
+            )
             if not self._looks_like_prd_document(content):
                 raise UCXError(
                     "PRD creation failed: model returned summary/invalid output instead of full PRD document. "
@@ -589,6 +600,53 @@ class UCCPhase:
         )
 
         return body
+
+    def _append_prd_llm_response_audit(
+        self,
+        content: str,
+        *,
+        attempts: list[str],
+        fallback_used: bool,
+    ) -> str:
+        """Append raw LLM responses to PRD for audit and validation."""
+        cleaned_attempts = [a for a in attempts if isinstance(a, str) and a.strip()]
+        if not cleaned_attempts:
+            return content
+
+        meta = {
+            "capture_version": 1,
+            "fallback_used": fallback_used,
+            "attempt_count": len(cleaned_attempts),
+            "captured_at": datetime.datetime.utcnow().isoformat() + "Z",
+        }
+
+        lines = [
+            "",
+            "\n## Appendix D: UCX LLM Response Audit (Auto-Generated)",
+            "",
+            "<!-- UCX_LLM_RESPONSE_CAPTURE:BEGIN -->",
+            f"<!-- UCX_LLM_META: {json.dumps(meta, sort_keys=True)} -->",
+            "",
+            "This appendix captures raw CLI LLM response payloads used during PRD creation.",
+            "Use it for investigation when validator flags generation quality issues.",
+            "",
+        ]
+
+        for idx, raw in enumerate(cleaned_attempts, start=1):
+            escaped = html.escape(raw)
+            lines.extend([
+                f"### Attempt {idx} Raw Response",
+                "",
+                f"<pre data-ucx-llm-attempt=\"{idx}\">{escaped}</pre>",
+                "",
+            ])
+
+        lines.extend([
+            "<!-- UCX_LLM_RESPONSE_CAPTURE:END -->",
+            "",
+        ])
+
+        return content.rstrip() + "\n" + "\n".join(lines)
 
     def _validate_and_score_prd(self, document: Document) -> None:
         """Run Tier 1 validation and compute readiness scores on created PRD.

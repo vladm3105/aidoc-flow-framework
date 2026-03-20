@@ -1,9 +1,11 @@
 """Unit tests for AI module."""
 
+import datetime
 import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 
 from ucx.ai.cli_client import CLIClient
+from ucx.ai.litellm_client import LiteLLMClient
 from ucx.config.settings import RetryConfig
 from ucx.exceptions import AIClientError
 from ucx.ai.retry import RetryPolicy, RetryState
@@ -214,11 +216,16 @@ class TestCLIClientResponseValidation:
 
         with patch.object(
             client,
-            "_execute_cli",
-            return_value="Error: rate limit exceeded. Try '--help' for help.",
+            "_run_availability_preflight",
+            return_value=None,
         ):
-            with pytest.raises(AIClientError, match="error-like text response"):
-                client.generate("Create a PRD")
+            with patch.object(
+                client,
+                "_execute_cli",
+                return_value="Error: rate limit exceeded. Try '--help' for help.",
+            ):
+                with pytest.raises(AIClientError, match="error-like text response"):
+                    client.generate("Create a PRD")
 
     def test_generate_accepts_markdown_document_with_error_words(self):
         """Valid markdown content should pass even if it mentions error handling."""
@@ -234,8 +241,9 @@ title: Test
 System SHALL handle transient errors with retries.
 """
 
-        with patch.object(client, "_execute_cli", return_value=response):
-            generated = client.generate("Create a PRD")
+        with patch.object(client, "_run_availability_preflight", return_value=None):
+            with patch.object(client, "_execute_cli", return_value=response):
+                generated = client.generate("Create a PRD")
 
         assert generated == response
 
@@ -243,6 +251,59 @@ System SHALL handle transient errors with retries.
         """JSON-style error payloads returned as text should be rejected."""
         client = CLIClient(cli_tool="claude")
 
-        with patch.object(client, "_execute_cli", return_value='{"error":"invalid api key"}'):
-            with pytest.raises(AIClientError, match="invalid api key"):
+        with patch.object(client, "_run_availability_preflight", return_value=None):
+            with patch.object(client, "_execute_cli", return_value='{"error":"invalid api key"}'):
+                with pytest.raises(AIClientError, match="invalid api key"):
+                    client.generate("Create a PRD")
+
+    def test_preflight_passes_and_allows_main_request(self):
+        """CLI generate should run preflight and proceed when date probe matches."""
+        client = CLIClient(cli_tool="claude")
+        expected_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        main_response = "# PRD-01: Platform\n\n## 1. Document Control\n"
+
+        with patch.object(client, "_execute_cli", side_effect=[expected_date, main_response]):
+            generated = client.generate("Create a PRD")
+
+        assert generated == main_response
+
+    def test_preflight_blocks_main_request_on_date_mismatch(self):
+        """CLI generate should fail early when preflight date probe is incorrect."""
+        client = CLIClient(cli_tool="claude")
+
+        with patch.object(client, "_execute_cli", return_value="1999-01-01"):
+            with pytest.raises(AIClientError, match="preflight failed"):
                 client.generate("Create a PRD")
+
+
+class TestLiteLLMClientPreflight:
+    """Tests for universal preflight in LiteLLM client."""
+
+    def test_preflight_fails_when_date_mismatch(self):
+        """LiteLLM client should fail when date probe response is incorrect."""
+        client = LiteLLMClient(model="opus")
+
+        class _Msg:
+            def __init__(self, content):
+                self.content = content
+
+        class _Choice:
+            def __init__(self, content):
+                self.message = _Msg(content)
+
+        class _Resp:
+            def __init__(self, content):
+                self.choices = [_Choice(content)]
+                self.usage = None
+
+        class _FakeLiteLLM:
+            def completion(self, **kwargs):
+                return _Resp("1999-01-01")
+
+            def token_counter(self, model, text):
+                return max(1, len(text) // 4)
+
+        client._litellm = _FakeLiteLLM()
+
+        with pytest.raises(AIClientError, match="preflight failed"):
+            client.generate("Create a PRD")

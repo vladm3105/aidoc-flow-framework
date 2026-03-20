@@ -1,8 +1,10 @@
 """LiteLLM AI client implementation for multi-provider support."""
 
+import datetime
 import time
 from typing import Optional
 import os
+import re
 
 from ucx.ai.base import BaseAIClient
 from ucx.exceptions import AIClientError
@@ -46,6 +48,11 @@ class LiteLLMClient(BaseAIClient):
         "sonnet": "anthropic/claude-sonnet-4-20250514",
         "haiku": "anthropic/claude-3-5-haiku-20241022",
     }
+
+    PREFLIGHT_PROMPT = (
+        "Availability check. Return ONLY the current UTC date in YYYY-MM-DD format. "
+        "No prose, no markdown, no explanation."
+    )
 
     def __init__(
         self,
@@ -175,6 +182,8 @@ class LiteLLMClient(BaseAIClient):
         start_time = time.perf_counter()
 
         try:
+            self._run_availability_preflight()
+
             self.logger.debug(f"Calling litellm.completion with model={self.model_id}")
             response = self.litellm.completion(**kwargs)
 
@@ -226,6 +235,43 @@ class LiteLLMClient(BaseAIClient):
                 f"LiteLLM API error: {e}",
                 model=self.model_id,
             )
+
+    def _run_availability_preflight(self) -> None:
+        """Verify model availability by checking current UTC date response."""
+        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+
+        preflight_kwargs = {
+            "model": self.model_id,
+            "messages": [{"role": "user", "content": self.PREFLIGHT_PROMPT}],
+            "max_tokens": 32,
+            "temperature": 0,
+        }
+        if self.api_key:
+            preflight_kwargs["api_key"] = self.api_key
+        if self.api_base:
+            preflight_kwargs["api_base"] = self.api_base
+
+        response = self.litellm.completion(**preflight_kwargs)
+        content = response.choices[0].message.content.strip()
+        detected_date = self._extract_iso_date(content)
+
+        if detected_date != expected_utc_date:
+            raise AIClientError(
+                "LLM availability preflight failed: date probe mismatch. "
+                f"Expected UTC date {expected_utc_date}, got '{content}'.",
+                model=self.model_id,
+            )
+
+        self.logger.debug(
+            "LLM preflight passed: expected_utc_date=%s detected_date=%s",
+            expected_utc_date,
+            detected_date,
+        )
+
+    def _extract_iso_date(self, text: str) -> Optional[str]:
+        """Extract first ISO date token from response text."""
+        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", text)
+        return match.group(1) if match else None
 
     def count_tokens(self, text: str) -> int:
         """

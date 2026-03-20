@@ -404,3 +404,4 @@ custom_fields:
         report_text = prd_file.parent.joinpath("PRD-01.UCX_validation_report_v001.md").read_text(encoding="utf-8")
         assert "report:PRD-01:PRD:v1" in report_text
         assert "title: 'UCX Validation Report: PRD-01'" in report_text
+

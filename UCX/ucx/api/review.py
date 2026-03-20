@@ -90,7 +90,7 @@ class UCRPhase:
         Returns:
             Next version number (1 if no existing reports)
         """
-        doc_id = extract_doc_id(doc_path, doc_type)
+        doc_id = self._extract_doc_id(doc_path, doc_type)
         search_dir = doc_path if doc_path.is_dir() else doc_path.parent
         return next_report_version(search_dir, doc_id, "review")
 

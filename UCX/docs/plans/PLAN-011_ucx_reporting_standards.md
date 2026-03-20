@@ -3,7 +3,7 @@
 **Document ID**: PLAN-011_ucx_reporting_standards
 **Created**: 2026-03-20
 **Updated**: 2026-03-20
-**Status**: Completed (v4)
+**Status**: Completed (v6)
 **Target Version**: UCX v1.22.0
 **Related Plans**: PLAN-009_prd_creation.md, PLAN-010_prd_validation.md
 
@@ -409,3 +409,13 @@ Migration cleanup policy:
 - The authoritative pre-commit behavior is commit-time generation only.
 - Any report generation outside this contract is treated as a defect.
 - Manual `--precommit` invocation is permitted for diagnostics/tests but remains explicitly precommit mode (never standard mode).
+
+---
+
+## Change History
+
+| Date | Version | Change |
+|------|---------|--------|
+| 2026-03-20 | v6 | Moved preflight to shared AI clients so every LLM request runs a UTC-date availability probe before main prompt execution. |
+| 2026-03-20 | v5 | Added PRD creation preflight sequence in UCC: first probe LLM with a current UTC date request and validate response, then proceed to large PRD prompt only when probe passes. |
+| 2026-03-20 | v4 | Completed UCX reporting standardization and cross-layer parity baseline. |
