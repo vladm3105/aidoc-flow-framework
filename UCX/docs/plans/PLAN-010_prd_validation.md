@@ -2,16 +2,16 @@
 
 **Document ID**: PLAN-010_prd_validation
 **Created**: 2026-03-19
-**Updated**: 2026-03-19
-**Status**: Revised (v6)
-**Target Version**: UCX v1.20.0
+**Updated**: 2026-03-20
+**Status**: Revised (v7)
+**Target Version**: UCX v1.21.3
 **Related Plans**: PLAN-009_prd_creation.md (creation counterpart)
 
 ---
 
 ## Objective
 
-Extend UCX Framework v1.19.2 unified validation approach from BRD (Layer 1) to PRD (Layer 2), maintaining architectural consistency with the proven BRD validator pattern while addressing PRD-specific requirements.
+Extend UCX Framework unified validation approach from BRD (Layer 1) to PRD (Layer 2), maintaining architectural consistency with the proven BRD validator pattern while aligning validation rules and scripts with the implemented PRD creation pipeline.
 
 ---
 
@@ -25,7 +25,20 @@ UCX provides three phases for SSD document lifecycle:
 | **UCR** | `ucx validate` | Validate structure, quality gates, scoring | **This Plan** |
 | **UCRem** | `ucx remediate` | Fix issues with auto-fixer + LLM hand-off | **This Plan** |
 
-PRD creation is already handled by UCC (`ucx create prd`). This plan implements UCR and UCRem for PRD.
+PRD creation is already handled by UCC (`ucx create prd`). This plan implements UCR and UCRem for PRD and defines the validation baseline that must remain compliant with the implemented PRD creation workflow.
+
+### Current Create/Validate Alignment Baseline (v1.21.3)
+
+The PRD validator and related scripts must remain compatible with the current UCC create behavior:
+
+| Area | Current Runtime Behavior | Validation/Script Requirement |
+|------|--------------------------|-------------------------------|
+| Prompt loading | Framework PRD prompt + project PRD overrides are merged | Validation guidance and docs must not assume project prompts replace framework contracts |
+| Output contract | UCC injects target `doc_id`, H1, Document Control, and element-prefix requirements before generation | Validation must check the same identity fields and treat mismatches as creation/metadata drift |
+| Frontmatter guardrails | UCC normalizes top-level `title`, `doc_id`, `version`, `status`, `tags` before write | Validation must require the same top-level fields |
+| YAML delimiters | UCC/validators accept frontmatter delimiters with trailing spaces | Validation regex and helper scripts must allow tolerant delimiter parsing |
+| Prompt history | Canonical PRD path saves `.ucx_create_session/` beside the PRD file | Scripts/docs must reference `docs/02_PRD/<slug>/.ucx_create_session/` as the canonical path |
+| Validation report path | `ucx validate prd` writes `.precommit_validation_report.md` in the PRD folder | Plan and scripts must use single-file validation report naming |
 
 ---
 
@@ -234,6 +247,15 @@ LEGACY_PATTERNS = {
 
 **Metadata Validation:**
 ```yaml
+# Required top-level frontmatter fields (aligned with creation guardrails)
+title: "PRD-NN: ..."
+doc_id: PRD-NN
+version: 1.0.0
+status: Draft | Review | Approved
+tags: [...]
+```
+
+```yaml
 # Required custom_fields
 document_type: prd
 artifact_type: PRD
@@ -254,10 +276,10 @@ schema_version: "1.1"
 
 | Field | Format | Requirement |
 |-------|--------|-------------|
-| Status | Draft / Review / Approved / Implemented | MANDATORY |
+| Status | Draft / Review / Approved | MANDATORY |
 | Version | X.Y.Z (semantic) | MANDATORY |
-| Date Created | YYYY-MM-DDTHH:MM:SS | MANDATORY |
-| Last Updated | YYYY-MM-DDTHH:MM:SS | MANDATORY |
+| Date Created | YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS | MANDATORY |
+| Last Updated | YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS | MANDATORY |
 | Author | Name | MANDATORY |
 | Reviewer | Name | MANDATORY |
 | Approver | Name | MANDATORY |
@@ -317,7 +339,7 @@ def _is_reference_context(line: str, match: re.Match) -> bool:
 | CORPUS-16 | Glossary path | 2 | Standardized location |
 | CORPUS-17 | Token count | 1/2 | WARNING @ 40K, ERROR @ 80K |
 | CORPUS-18 | YAML frontmatter | 2 | Required fields present |
-| CORPUS-19 | ISO date format | 2 | YYYY-MM-DDTHH:MM:SS |
+| CORPUS-19 | Date format consistency | 2 | Accept `YYYY-MM-DD` and `YYYY-MM-DDTHH:MM:SS` |
 
 ---
 
@@ -789,7 +811,7 @@ The AI review prompt must be updated to align with the new 21-section structure,
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
 | **Personas Applied** | 10 |
-| **Reviewer** | UCX Framework v1.20.0 |
+| **Reviewer** | UCX Framework v1.21.x |
 | **Status** | [Draft / Review / Approved] |
 | **SYS-Ready Score** | [SCORE]% (Target: ≥90%) |
 | **EARS-Ready Score** | [SCORE]% (Target: ≥90%) |
@@ -1032,7 +1054,7 @@ Update PRD hooks to match BRD pattern (script-based validation + AI review):
 **Deprecation:**
 
 ```yaml
-# DEPRECATED - Remove after UCX v1.20.0 migration
+# DEPRECATED - Remove after full UCX PRD validator migration
 - id: prd-core-wrapper
   name: "[DEPRECATED] PRD Core Wrapper - Use ucx-prd-validate"
   stages: [manual]
@@ -1045,7 +1067,7 @@ Update PRD hooks to match BRD pattern (script-based validation + AI review):
 **Version Bump (`version.py`):**
 ```python
 __version__ = "1.20.0"
-# v1.20.0 - PRD unified validator
+# v1.21.3 baseline - PRD unified validator and create/validate alignment
 # - 10 Python modules for PRD validation
 # - 19 corpus-level + 19 file-level quality gates
 # - Dual readiness scoring (SYS-Ready, EARS-Ready)
@@ -1123,22 +1145,18 @@ python3 ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01/
 
 ## Output Reports
 
-### Unified Report Naming Convention
+### Current Report and Session Artifact Naming
 
-UCX uses a unified naming convention for all output reports:
+Current UCX runtime behavior uses these artifact locations/names:
 
-```
-{DOC_ID}.UCX_{report_type}_report_v{NNN}.md
-```
+| Phase | Artifact | Current Path / Naming |
+|-------|----------|-----------------------|
+| **UCC (Create)** | Prompt history | `docs/02_PRD/<slug>/.ucx_create_session/prompt_prd_<timestamp>.txt` |
+| **UCR (Validate)** | Validation report | `.precommit_validation_report.md` |
+| **UCR (Review)** | Review report | `{DOC_ID}.UCR_review_report_v{NNN}.md` |
+| **UCRem (Remediate)** | Remediation report | `{DOC_ID}.UCRem_report.md` |
 
-| Phase | Report Type | Naming Pattern | Example |
-|-------|-------------|----------------|---------|
-| **UCC (Create)** | create | `{DOC_ID}.UCX_create_report_v{NNN}.md` | `PRD-01.UCX_create_report_v001.md` |
-| **UCR (Validate)** | validate | `{DOC_ID}.UCX_validate_report_v{NNN}.md` | `PRD-01.UCX_validate_report_v001.md` |
-| **UCR (Review)** | review | `{DOC_ID}.UCX_review_report_v{NNN}.md` | `PRD-01.UCX_review_report_v001.md` |
-| **UCRem (Remediate)** | remediate | `{DOC_ID}.UCX_remediate_report_v{NNN}.md` | `PRD-01.UCX_remediate_report_v001.md` |
-
-### Validation Report Structure (`UCX_validate_report`)
+### Validation Report Structure (`.precommit_validation_report.md`)
 
 Generated after `ucx validate prd` completes:
 
@@ -1220,13 +1238,13 @@ custom_fields:
 - [ ] Run `ucx review prd PRD-01/` for AI review
 ```
 
-### Review Report Structure (`UCX_review_report`)
+### Review Report Structure (`UCR_review_report`)
 
 Generated after `ucx review prd` completes:
 
 ```markdown
 ---
-title: "UCX Review Report: PRD"
+title: "UCR Review Report: PRD"
 tags:
   - ucx-review
   - prd-review
@@ -1235,7 +1253,7 @@ tags:
 custom_fields:
   document_type: ucx-review-report
   source_artifact_type: PRD
-  review_id: "UCX-PRD-01-review-v001"
+    review_id: "UCR-PRD-01-v001"
   layer: 2
   review_method: unified-context-review
   scoring_method: category-weighted-v1.12.0
@@ -1249,18 +1267,18 @@ custom_fields:
   last_updated: "2026-03-19T16:00:00"
 ---
 
-# UCX Review Report: PRD-01
+# UCR Review Report: PRD-01
 
 ## 0. Document Control
 
 | Item | Details |
 |------|---------|
 | **Source Document** | PRD-01 |
-| **Review ID** | UCX-PRD-01-review-v001 |
+| **Review ID** | UCR-PRD-01-v001 |
 | **Review Date** | 2026-03-19T16:00:00 |
 | **Review Method** | UCR (Unified Context Review) |
 | **Personas Applied** | 10 |
-| **Reviewer** | UCX Framework v1.20.0 |
+| **Reviewer** | UCX Framework v1.21.x |
 | **Status** | Draft |
 
 ## 1. Readiness Scores
@@ -1301,13 +1319,13 @@ custom_fields:
 [UCX-ACTION blocks for auto-fixer...]
 ```
 
-### Remediation Report Structure (`UCX_remediate_report`)
+### Remediation Report Structure (`UCRem_report`)
 
 Generated after `ucx remediate prd` completes:
 
 ```markdown
 ---
-title: "UCX Remediate Report: PRD"
+title: "UCRem Report: PRD-01"
 tags:
   - ucx-remediate
   - prd-remediate
@@ -1315,9 +1333,9 @@ tags:
 custom_fields:
   document_type: ucx-remediate-report
   source_artifact_type: PRD
-  remediate_id: "UCX-PRD-01-remediate-v001"
+    remediate_id: "PRD-01.UCRem"
   layer: 2
-  source_review: UCX-PRD-01-review-v001
+    source_review: "PRD-01.UCR_review_report_v001.md"
   p0_resolved: 5
   p1_resolved: 8
   p1_deferred: 4
@@ -1325,15 +1343,15 @@ custom_fields:
   last_updated: "2026-03-19T17:00:00"
 ---
 
-# UCX Remediate Report: PRD-01
+# UCRem Report: PRD-01
 
 ## 0. Document Control
 
 | Item | Details |
 |------|---------|
 | **Remediated Document** | PRD-01 |
-| **Remediate ID** | UCX-PRD-01-remediate-v001 |
-| **Source Review** | UCX-PRD-01-review-v001 |
+| **Remediate ID** | PRD-01.UCRem |
+| **Source Review** | PRD-01.UCR_review_report_v001.md |
 | **Remediate Date** | 2026-03-19T17:00:00 |
 | **Status** | Complete |
 
@@ -1387,29 +1405,27 @@ custom_fields:
 
 ### Report Location
 
-All reports are saved in the document directory:
+Current artifacts are saved in the document directory:
 
 ```
 docs/02_PRD/PRD-01/
 ├── PRD-01.0_index.md
 ├── PRD-01.1_document_control.md
 ├── ...
-├── PRD-01.UCX_create_report_v001.md     ← PLAN-009
-├── PRD-01.UCX_validate_report_v001.md   ← This plan
-├── PRD-01.UCX_validate_report_v002.md   ← Subsequent runs
-├── PRD-01.UCX_review_report_v001.md     ← This plan
-├── PRD-01.UCX_review_report_v002.md     ← Subsequent runs
-└── PRD-01.UCX_remediate_report_v001.md  ← This plan
+├── .ucx_create_session/
+│   └── prompt_prd_<timestamp>.txt        ← UCC prompt history
+├── .precommit_validation_report.md       ← This plan (single-file overwrite)
+├── PRD-01.UCR_review_report_v001.md      ← UCR review output
+├── PRD-01.UCR_review_report_v002.md      ← Subsequent review runs
+└── PRD-01.UCRem_report.md                ← UCRem remediation output
 ```
 
 ### Backward Compatibility
 
-> **Note**: This unified naming replaces the legacy format:
-> - `UCR_review_report` → `UCX_review_report`
-> - `UCRem_remediation_report` → `UCX_remediate_report`
->
-> The validator will detect both formats for version incrementing during transition.
-> Legacy reports will be preserved but new reports use the unified format.
+> **Note**: Validation already uses the single-file `.precommit_validation_report.md`
+> convention. Review and remediation currently retain their runtime naming
+> (`UCR_review_report`, `UCRem_report`). This plan should not assume a future
+> unified `UCX_*` report family unless the implementation is changed first.
 
 ---
 
@@ -1440,7 +1456,7 @@ docs/02_PRD/PRD-01/
 | `validators/__init__.py` | Add PRD imports | +5 |
 | `validators/registry.py` | Register PRD validator | +3 |
 | `cli.py` | Add PRD commands + `ucx score` | +80 |
-| `version.py` | Bump to v1.20.0 | +5 |
+| `version.py` | Bump to current release baseline | +5 |
 | `prompts/templates/ucr/UCR_PROMPT_PRD.md` | 21-section alignment, dual scoring, quality gates | +200 |
 
 **Total Modifications:** ~443 lines
@@ -1484,12 +1500,12 @@ docs/02_PRD/PRD-01/
 19. Legacy hooks deprecated with clear migration message
 
 ### Output Reports
-20. Validation generates `{DOC_ID}.UCX_validate_report_v{NNN}.md`
-21. Review generates `{DOC_ID}.UCX_review_report_v{NNN}.md`
-22. Remediation generates `{DOC_ID}.UCX_remediate_report_v{NNN}.md`
+20. Validation generates `.precommit_validation_report.md`
+21. Review generates `{DOC_ID}.UCR_review_report_v{NNN}.md`
+22. Remediation generates `{DOC_ID}.UCRem_report.md`
 23. Reports include dual scores (SYS-Ready, EARS-Ready)
 24. Version incrementing works correctly per report type
-25. Backward compatibility with legacy `UCR_*` and `UCRem_*` naming
+25. Validation rules and scripts remain compliant with UCC creation guardrails and prompt-session paths
 
 ### Testing
 26. All tests pass
@@ -1530,5 +1546,5 @@ docs/02_PRD/PRD-01/
 
 ---
 
-*Plan Version: v6 (Unified output reports added)*
-*Generated: 2026-03-19*
+*Plan Version: v7 (Create/validate alignment and current runtime naming)*
+*Generated: 2026-03-20*

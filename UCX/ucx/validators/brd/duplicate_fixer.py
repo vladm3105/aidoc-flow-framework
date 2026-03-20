@@ -154,7 +154,7 @@ class DuplicateElementFixer:
             f for f in self.brd_path.glob("**/*.md")
             if not any(
                 skip in f.parts
-                for skip in [".ucx_review_session", ".doc_review_memory", ".backup", "__pycache__"]
+                for skip in [".ucx_review_session", ".ucx_create_session", ".doc_review_memory", ".backup", "__pycache__"]
             )
         ]
 
@@ -472,7 +472,7 @@ class DuplicateElementFixer:
         md_files = [
             f for f in self.brd_path.glob("**/*.md")
             if not any(skip in f.parts for skip in [
-                ".ucx_review_session", ".doc_review_memory", ".backup", "__pycache__"
+                ".ucx_review_session", ".ucx_create_session", ".doc_review_memory", ".backup", "__pycache__"
             ])
             and "_review_report" not in f.name.lower()
             and "_audit_report" not in f.name.lower()

@@ -45,7 +45,6 @@ REQUIRED_CUSTOM_FIELDS = {
     "layer": {"allowed": [2]},
     "architecture_approaches": {"type": "array"},
     "priority": {"allowed": ["primary", "shared", "fallback"]},
-    "status": {"allowed": ["development", "production", "active", "draft", "deprecated", "reference", "planned"]},
 }
 
 LEGACY_STATUS_VALUES = ["active", "draft", "deprecated", "reference", "planned"]
@@ -101,12 +100,13 @@ REQUIRED_SECTIONS_MVP = [
 # Map profiles to section lists
 SECTION_MAP = {
     "standard": REQUIRED_SECTIONS_STANDARD,
-    "mvp": REQUIRED_SECTIONS_MVP
+    "mvp": REQUIRED_SECTIONS_MVP,
+    "full": REQUIRED_SECTIONS_MVP,
 }
 
 # BRD reference pattern
 # BRD reference pattern - Updated to support BRD-NN, BRD.NN and deep IDs
-BRD_REF_PATTERN = r"@brd:\s*BRD[-.][\w.-]+"
+BRD_REF_PATTERN = r"@brd:\s*BRD\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}"
 
 # File naming patterns
 # Monolithic: PRD-NN+_slug.md (2+ digits per ID_NAMING_STANDARDS.md)
@@ -226,6 +226,32 @@ def extract_sections(content: str) -> List[Tuple[str, int]]:
     return sections
 
 
+def extract_doc_id_from_filename(file_path: Path) -> Optional[str]:
+    """Extract PRD-NN doc id from filename."""
+    match = re.match(r"^(PRD-\d{2,9})(?:\.\d+)?_", file_path.name)
+    return match.group(1) if match else None
+
+
+def extract_doc_id_from_h1(content: str) -> Optional[str]:
+    """Extract PRD-NN doc id from H1 heading."""
+    match = re.search(r"^#\s+(PRD-\d{2,9}):", content, re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def extract_doc_id_from_doc_control(content: str) -> Optional[str]:
+    """Extract PRD-NN doc id from Section 1 Document Control."""
+    match = re.search(r"(?im)^\s*-\s*Document\s+ID:\s*(PRD-\d{2,9})\s*$", content)
+    return match.group(1) if match else None
+
+
+def find_prd_root_dir(file_path: Path) -> Optional[Path]:
+    """Find nearest 02_PRD directory."""
+    for path in [file_path.parent, *file_path.parents]:
+        if path.name == "02_PRD":
+            return path
+    return None
+
+
 # =============================================================================
 # VALIDATION FUNCTIONS
 # =============================================================================
@@ -265,12 +291,16 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult):
 
     status = custom_fields.get("status")
     legacy_status = custom_fields.get("development_status")
-    if status is None and legacy_status is not None:
+    if status is None and legacy_status is None:
+        result.add_error("PRD-E002", "Missing required field: custom_fields.status or custom_fields.development_status")
+    elif status is None and legacy_status is not None:
         if legacy_status in LEGACY_STATUS_VALUES:
             custom_fields["status"] = legacy_status
             result.add_warning("PRD-W005", "Legacy custom_fields.development_status detected; migrate to custom_fields.status")
         else:
             result.add_error("PRD-E002", f"Invalid legacy development_status: '{legacy_status}'")
+    elif status is not None and status not in ["development", "production", "active", "draft", "deprecated", "reference", "planned"]:
+        result.add_error("PRD-E002", f"Invalid value for status: '{status}'")
     elif legacy_status is not None:
         result.add_warning("PRD-W005", "Both status and legacy development_status detected; status is authoritative")
 
@@ -340,34 +370,36 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
                 result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NN+: Title', got '{h1_text[:50]}'")
 
     # Determine profile and required sections
-    profile = "standard"
+    profile = "mvp"
     if metadata and "custom_fields" in metadata:
-        profile = metadata["custom_fields"].get("template_profile", "standard")
+        profile = metadata["custom_fields"].get("template_profile", "mvp")
 
     # Check template_variant as fallback
-    if profile == "standard" and metadata and "custom_fields" in metadata:
+    if profile == "mvp" and metadata and "custom_fields" in metadata:
          if "template_variant" in metadata["custom_fields"]:
              profile = metadata["custom_fields"]["template_variant"]
 
     # Auto-detect MVP profile based on total_sections: 21 or section structure
-    if profile == "standard" and metadata and "custom_fields" in metadata:
+    if profile == "mvp" and metadata and "custom_fields" in metadata:
         total_sections = metadata["custom_fields"].get("total_sections")
         if total_sections == 21:
             profile = "mvp"
 
     # Auto-detect MVP profile from section structure (1-indexed vs 0-indexed)
-    if profile == "standard":
+    if profile == "mvp":
         section_headers = [s[0] for s in sections]
         # MVP uses "## 1. Document Control", standard uses "## 0. Document Control"
         has_mvp_doc_control = any(re.match(r"^## 1\. Document Control", h) for h in section_headers)
         has_standard_doc_control = any(re.match(r"^## 0\. Document Control", h) for h in section_headers)
-        if has_mvp_doc_control and not has_standard_doc_control:
+        if not has_mvp_doc_control and has_standard_doc_control:
+            profile = "standard"
+        elif has_mvp_doc_control and not has_standard_doc_control:
             profile = "mvp"
 
-    # Handle unknown profile (default to standard)
+    # Handle unknown profile (default to mvp)
     if profile not in SECTION_MAP:
-        result.add_warning("PRD-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")
-        profile = "standard"
+        result.add_warning("PRD-W001", f"Unknown template_profile '{profile}', defaulting to mvp validation")
+        profile = "mvp"
         
     required_sections = SECTION_MAP[profile]
 
@@ -421,9 +453,9 @@ def validate_traceability(content: str, result: ValidationResult):
 
 
 def validate_feature_ids(content: str, result: ValidationResult):
-    """Validate feature ID format."""
+    """Validate feature ID format against unified PRD.NN.TT.SS IDs."""
     # Look for Feature ID patterns in tables
-    # Expected format: simple 3-digit (001, 015, 042)
+    # Expected format: PRD.NN.TT.SS (or PRD.NN placeholders in templates)
     feature_table_match = re.search(
         r"\| Feature ID \|.*?\n\|[-:\s|]+\n(.*?)(?=\n\n|\n##|\Z)",
         content,
@@ -439,13 +471,114 @@ def validate_feature_ids(content: str, result: ValidationResult):
                 cols = [c.strip() for c in line.split("|")]
                 if len(cols) >= 2:
                     feature_id = cols[1].strip()
-                    if feature_id and not re.match(r"^\d{3}$", feature_id):
+                    if feature_id and not re.match(r"^PRD\.(NN|\d{2,})\.\d{2}\.\d{2,}$", feature_id):
                         # Skip header-like content
                         if not feature_id.startswith("-") and feature_id != "Feature ID":
                             result.add_warning(
                                 "PRD-W001",
-                                f"Feature ID '{feature_id}' not in 3-digit format (NNN)"
+                                f"Feature ID '{feature_id}' should use unified PRD.NN.TT.SS format"
                             )
+
+
+def validate_id_consistency(file_path: Path, content: str, metadata: Optional[Dict], result: ValidationResult):
+    """Validate consistency of PRD document ID across filename/frontmatter/H1/Document Control."""
+    filename_id = extract_doc_id_from_filename(file_path)
+    frontmatter_id = None
+    if metadata:
+        raw_doc_id = metadata.get("doc_id")
+        if raw_doc_id:
+            frontmatter_id = str(raw_doc_id).strip()
+
+    h1_id = extract_doc_id_from_h1(content)
+    doc_control_id = extract_doc_id_from_doc_control(content)
+
+    ids = {
+        "filename": filename_id,
+        "frontmatter": frontmatter_id,
+        "h1": h1_id,
+        "document_control": doc_control_id,
+    }
+    present = {v for v in ids.values() if v}
+
+    if len(present) > 1:
+        result.add_error("PRD-E001", f"Inconsistent PRD ID across filename/frontmatter/H1/Document Control: {ids}")
+
+    canonical_id = filename_id or frontmatter_id
+    if not canonical_id:
+        return
+
+    doc_match = re.match(r"^PRD-(\d{2,9})$", canonical_id)
+    if not doc_match:
+        return
+
+    doc_num = doc_match.group(1)
+    element_ids = re.findall(r"\bPRD\.(\d{2,9})\.(\d{2})\.(\d{2,9})\b", content)
+    mismatched = sorted({f"PRD.{n}.{tt}.{ss}" for n, tt, ss in element_ids if n != doc_num})
+    if mismatched:
+        result.add_error(
+            "PRD-E001",
+            f"Element IDs must use document number '{doc_num}'. Mismatches: {', '.join(mismatched[:5])}"
+        )
+
+
+def validate_layer2_scope(content: str, result: ValidationResult):
+    """Validate Layer-2 PRD scope boundaries (SSD concept)."""
+    forbidden_downstream = [
+        r"\bADR-\d{2,9}\b",
+        r"\bSYS-\d{2,9}\b",
+        r"\bREQ-\d{2,9}\b",
+        r"\bCTR-\d{2,9}\b",
+        r"\bSPEC-\d{2,9}\b",
+        r"\bTSPEC-\d{2,9}\b",
+        r"\bTASKS-\d{2,9}\b",
+    ]
+
+    matches = []
+    for pattern in forbidden_downstream:
+        matches.extend(re.findall(pattern, content))
+
+    if matches:
+        samples = ", ".join(sorted(set(matches))[:5])
+        result.add_error(
+            "PRD-E022",
+            "PRD contains concrete downstream artifact IDs (Layer 5+), violating Layer-2 scope: " + samples,
+        )
+
+    if re.search(r"Given\s+.+\s+When\s+.+\s+Then", content, re.IGNORECASE | re.DOTALL):
+        result.add_error("PRD-E020", "PRD contains Given/When/Then BDD syntax; keep executable behavior in Layer 4")
+
+    if re.search(r"WHEN\s+.+\s+THE\s+.+\s+SHALL", content, re.IGNORECASE):
+        result.add_error("PRD-E021", "PRD contains WHEN-THE-SHALL EARS syntax; keep formal requirements in Layer 3")
+
+
+def validate_traceability_matrix(file_path: Path, metadata: Optional[Dict], result: ValidationResult):
+    """Validate PRD traceability matrix presence and entry."""
+    prd_root = find_prd_root_dir(file_path)
+    if prd_root is None:
+        return
+
+    matrix_path = prd_root / "PRD-00_TRACEABILITY_MATRIX.md"
+    if not matrix_path.exists():
+        result.add_error(
+            "PRD-E027",
+            "Missing required traceability matrix file: PRD-00_TRACEABILITY_MATRIX.md",
+        )
+        return
+
+    doc_id = None
+    if metadata and metadata.get("doc_id"):
+        doc_id = str(metadata["doc_id"]).strip()
+    if not doc_id:
+        doc_id = extract_doc_id_from_filename(file_path)
+    if not doc_id:
+        return
+
+    matrix_content = matrix_path.read_text(encoding="utf-8")
+    if doc_id not in matrix_content:
+        result.add_warning(
+            "PRD-W016",
+            f"Traceability matrix does not contain entry for {doc_id}. Update PRD-00_TRACEABILITY_MATRIX.md.",
+        )
 
 
 def validate_crosslinking_tags(content: str, result: ValidationResult):
@@ -575,6 +708,9 @@ def validate_prd_file(file_path: Path) -> ValidationResult:
     validate_structure(content, sections, result, metadata)
     validate_traceability(content, result)
     validate_feature_ids(content, result)
+    validate_id_consistency(file_path, content, metadata, result)
+    validate_layer2_scope(content, result)
+    validate_traceability_matrix(file_path, metadata, result)
     validate_diagram_contract(content, result, metadata)
     validate_crosslinking_tags(content, result)
 

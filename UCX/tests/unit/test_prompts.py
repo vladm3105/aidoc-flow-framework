@@ -4,7 +4,7 @@ import pytest
 from pathlib import Path
 
 from ucx.prompts.schema import UCCContext, UCRContext, UCRemContext
-from ucx.prompts.loader import PromptLoader
+from ucx.prompts.loader import PromptLoader, ProjectPromptNotFoundError
 from ucx.prompts.renderer import PromptRenderer
 
 
@@ -127,7 +127,7 @@ class TestPromptLoader:
     def test_loader_load_nonexistent(self, tmp_path: Path):
         """Test loading nonexistent template."""
         loader = PromptLoader(tmp_path)
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(ProjectPromptNotFoundError):
             loader.load("nonexistent", "brd")
 
 

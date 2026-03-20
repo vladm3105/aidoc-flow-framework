@@ -2,7 +2,7 @@
 
 UCX supports two modes of AI interaction:
 
-1. **CLI Mode**: Execute CLI agents (Claude CLI, Gemini CLI, etc.) via shell commands
+1. **CLI Mode**: Execute CLI agents (Claude CLI, Codex CLI, Gemini CLI, etc.) via shell commands
    - Model parameter: opus/sonnet/haiku passed via --model flag to Claude CLI
    - Default: opus
 
@@ -51,7 +51,7 @@ def get_client(
 
     Args:
         mode: Client mode - "cli" for CLI agents, "api" for LiteLLM API calls
-        cli_tool: CLI tool to use (claude, gemini, ollama) - CLI mode
+        cli_tool: CLI tool to use (claude, codex, gemini, ollama, aider) - CLI mode
         timeout: Command timeout in seconds - CLI mode
         model: Model name - opus/sonnet/haiku for CLI mode, provider/model for API mode
         api_key: API key - API mode only
@@ -85,10 +85,19 @@ def get_client(
     mode = mode.lower()
 
     if mode == "cli":
-        # For CLI mode, only pass model if it's a recognized alias
+        # For CLI mode:
+        # - Claude accepts alias models (opus/sonnet/haiku)
+        # - Other CLIs (codex, gemini, ollama, aider) receive explicit model
+        #   names when provided (except Claude aliases which are Claude-specific)
         cli_model = None
-        if model and model.lower() in ("opus", "sonnet", "haiku"):
-            cli_model = model.lower()
+        if model:
+            model_lower = model.lower()
+            if cli_tool.lower() == "claude":
+                if model_lower in ("opus", "sonnet", "haiku"):
+                    cli_model = model_lower
+            else:
+                if model_lower not in ("opus", "sonnet", "haiku"):
+                    cli_model = model
         return CLIClient(
             cli_tool=cli_tool,
             model=cli_model,

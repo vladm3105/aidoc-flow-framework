@@ -28,7 +28,7 @@ UCX supports two modes for interacting with AI:
 
 | Mode | Client | Description |
 |------|--------|-------------|
-| **CLI** (default) | `CLIClient` | Execute CLI agents (Claude CLI, Gemini CLI, etc.) via shell commands |
+| **CLI** (default) | `CLIClient` | Execute CLI agents (Claude CLI, Codex CLI, Gemini CLI, etc.) via shell commands |
 | **API** | `LiteLLMClient` | Direct HTTP API calls via LiteLLM to providers |
 
 ### CLI Mode (Default)
@@ -41,11 +41,13 @@ ucx review brd docs/01_BRD/BRD-01/
 
 # Specify CLI tool and model
 ucx --mode cli --cli-tool claude --model sonnet review brd docs/01_BRD/BRD-01/
+ucx --mode cli --cli-tool codex --model gpt-5-codex review brd docs/01_BRD/BRD-01/
 ucx --mode cli --cli-tool gemini review brd docs/01_BRD/BRD-01/
 ```
 
 Supported CLI tools:
 - `claude` - Claude Code CLI (default) - supports `--model opus/sonnet/haiku` and `--enable-web-search`
+- `codex` - OpenAI Codex CLI (supports `--model`, e.g. `gpt-5-codex`)
 - `gemini` - Google Gemini CLI
 - `ollama` - Ollama local LLM CLI
 - `aider` - Aider AI coding assistant
@@ -104,6 +106,7 @@ UCX supports multiple AI backends through a provider-agnostic architecture.
 | CLI Tool | Provider | Command | Features | Status |
 |----------|----------|---------|----------|--------|
 | **claude** | Anthropic | `--cli-tool claude` | Web search, opus/sonnet/haiku models | Default |
+| **codex** | OpenAI | `--cli-tool codex` | Model select via `--model gpt-5-codex` | Supported |
 | **gemini** | Google | `--cli-tool gemini` | stdin input | Supported |
 | **ollama** | Local | `--cli-tool ollama` | Any ollama model | Supported |
 | **aider** | Aider AI | `--cli-tool aider` | Code-focused analysis | Supported |
@@ -161,6 +164,9 @@ UCX uses a factory pattern with clean abstraction:
 ```bash
 # CLI Mode - Claude (default)
 ucx review brd docs/01_BRD/BRD-01/
+
+# CLI Mode - Codex
+ucx --cli-tool codex --model gpt-5-codex review brd docs/01_BRD/BRD-01/
 
 # CLI Mode - Gemini
 ucx --cli-tool gemini review brd docs/01_BRD/BRD-01/
@@ -376,8 +382,29 @@ ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
 # Run autopilot
 ucx autopilot brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
 
-# Create new document
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+# Create new document (prompt saved automatically, filename auto-slugged)
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+# writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+
+# Or use the full canonical path — writes directly, no extra nesting (v1.21.1+)
+ucx create prd docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# v1.21.2+: creation guardrails enforce target metadata/identity before write
+# (doc_id/version/status/tags, H1 prefix, Document ID row, PRD.NN.* element prefix)
+
+# v1.21.3+: canonical-path prompt history is saved beside the PRD file
+# in docs/02_PRD/<slug>/.ucx_create_session/ (no extra nested slug folder)
+
+# Inspect saved prompt (v1.21.0+)
+ls docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/
+
+# If quota/rate limit occurs, retry with another backend/model
+ucx --cli-tool codex create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+ucx --cli-tool gemini --model gemini-2.5-pro create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Disable prompt saving
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
 
 # Validate document structure (always fixes by default v1.17.0+)
 ucx validate brd docs/01_BRD/BRD-01.md
@@ -1962,6 +1989,11 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.21.3 | 2026-03-20 | **Prompt history canonical-path fix & create/validate alignment docs**: When `ucx create prd` is called with the full canonical PRD path, `.ucx_create_session/` is now saved directly in the canonical PRD folder instead of under an extra nested slug directory. Documentation and planning artifacts were updated to reflect the final create/validate baseline: framework+project prompt merge, pre-write metadata guardrails, canonical prompt-session location, and current validation report behavior. |
+| 1.21.2 | 2026-03-20 | **PRD creation guardrails & prompt merge**: `ucx create prd` now merges framework prompt contracts with project-specific overrides (instead of replacing framework rules), injects an explicit output contract from the target path, and applies pre-write guardrails to normalize required frontmatter (`title`, `doc_id`, `version`, `status`, `tags`), enforce PRD identity consistency (frontmatter/H1/Document Control), and align PRD element prefixes to target `PRD.NN.*`. Frontmatter parsing was also hardened to accept delimiter lines with trailing spaces. |
+| 1.21.1 | 2026-03-20 | **Create path resolution fix**: When an explicit canonical `.md` path is supplied whose parent directory already matches the document slug, `ucx create` now writes directly to that path without creating an additional sub-directory. Passing `docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md` previously produced double-nesting (`…/PRD-01_platform_architecture/PRD-01_platform_architecture/…`); it now resolves to the correct single-level path. Plain doc-ID inputs (`PRD-01`) continue to auto-create the slug directory as before. |
+| 1.21.0 | 2026-03-19 | **Creation UX improvements**: `ucx create` now saves assembled prompts by default under `.ucx_create_session/` (for sectioned PRDs: inside the PRD folder), applies upstream section filtering/compaction for token efficiency, normalizes plain output IDs to slugged filenames, and handles quota/rate-limit failures with clear guidance plus interactive backend/model retry in TTY mode. |
+| 1.20.0 | 2026-03-19 | **PRD Validation & Scoring**: Full PRD validator (`UnifiedPRDValidator`) with 10 quality gates and 25+ error/warning codes. Dual readiness scores: SYS-Ready and EARS-Ready. Auto-injection of scores into Document Control section. Post-creation validation hook in `ucx create prd`. |
 | 1.19.2 | 2026-03-18 | **Unified UCX-ACTION Approach**: GATE-E001 now converts placeholders to UCX-ACTION INTERNAL blocks (was DEFERRED comments). GATE-W008 creates UCX-ACTION for move tasks. Automatic migration of legacy DEFERRED comments to UCX-ACTION format. Unified format: TYPE (INTERNAL/HANDOFF), TARGET (BRD/PRD/ADR/etc.), PRIORITY, CONTEXT with prefixes. See [CHANGELOG_v1.19.2.md](docs/CHANGELOG_v1.19.2.md). |
 | 1.19.1 | 2026-03-18 | **GATE-E002 UCX-ACTION Handoff Fixer**: Premature downstream references converted to UCX-ACTION HANDOFF blocks. GATE-E008 false positive fix for bold field labels and parenthetical references. See [CHANGELOG_v1.19.1.md](docs/CHANGELOG_v1.19.1.md). |
 | 1.18.0 | 2026-03-17 | **Layer Action Handoff System**: Capture out-of-scope items as ACTIONS that handoff to downstream layers (PRD, EARS, BDD, ADR, CTR) without penalizing BRD score. New scripts: `extract_actions.py` and `validate_actions.py`. ACTION format with fields: ACTION_ID, TYPE, TARGET, PRIORITY, SOURCE, PERSONA, CONTEXT, REQUIREMENT. Actions Manifest in Chairperson output. See [CHANGELOG_v1.18.0.md](docs/CHANGELOG_v1.18.0.md). |
@@ -2022,16 +2054,20 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.18.0 - Layer Action Handoff System
-- NEW: ACTION handoff system captures out-of-scope items without score penalty
-- NEW: Target layers: PRD (L2), EARS (L3), BDD (L4), ADR (L5), CTR (L8)
-- NEW: `extract_actions.py` script with filter by target/type/priority
-- NEW: `validate_actions.py` script with strict mode
-- NEW: Actions Manifest in Chairperson output
-- NEW: Section 12 "Downstream Layer Actions" in UCR reports
-- See [CHANGELOG_v1.18.0](docs/CHANGELOG_v1.18.0.md) for details
+**Latest Release**: v1.21.3 - PRD creation path and metadata hardening
+- PRD create canonical-path write fix (v1.21.1)
+- Framework + project prompt merge for PRD create (v1.21.2)
+- PRD output metadata/identity guardrails before write (v1.21.2)
+- Canonical-path prompt session folder fix (v1.21.3)
+- See [CHANGELOG_v1.21.3](docs/CHANGELOG/CHANGELOG_v1.21.3.md) for details
 
-**Previous Releases**: v1.17.x / v1.16.x / v1.15.x / v1.14.x
+**Previous Releases**: v1.21.2 / v1.21.1 / v1.21.0 / v1.20.0
+- v1.21.2: PRD creation guardrails and prompt merge
+- v1.21.1: Canonical-path create write fix (no extra nesting)
+- v1.21.0: Prompt history and creation UX improvements
+- v1.20.0: PRD validation and scoring
+
+**Earlier Releases**: v1.17.x / v1.16.x / v1.15.x / v1.14.x
 - v1.17.0: Fixer-to-LLM hand-off system
 - v1.16.2: Duplicate fixer guardrails & reference detection sync
 - v1.16.1: Single-file validation reports (`.precommit_validation_report.md`)
@@ -2088,6 +2124,9 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 | [CHANGELOG v1.16.2](docs/CHANGELOG_v1.16.2.md) | Duplicate fixer guardrails & reference detection sync |
 | [CHANGELOG v1.17.0](docs/CHANGELOG_v1.17.0.md) | Fixer-to-LLM hand-off system |
 | [CHANGELOG v1.18.0](docs/CHANGELOG_v1.18.0.md) | Layer Action Handoff System |
+| [CHANGELOG v1.21.3](docs/CHANGELOG/CHANGELOG_v1.21.3.md) | Canonical prompt-session folder fix and create/validate alignment docs |
+| [CHANGELOG v1.21.1](docs/CHANGELOG/CHANGELOG_v1.21.1.md) | Create path resolution fix (no double-nesting for canonical paths) |
+| [CHANGELOG v1.21.2](docs/CHANGELOG/CHANGELOG_v1.21.2.md) | PRD creation guardrails, prompt merge behavior, tolerant frontmatter delimiters |
 | [PLAN-002](docs/plans/PLAN-002_category_weighted_scoring.md) | Category-weighted scoring implementation |
 | [PLAN-003](docs/plans/PLAN-003_persona_prompt_restructuring.md) | Context engineering & Finding ID standardization |
 | [PLAN-006](docs/plans/PLAN-006_fixer_to_llm_handoff.md) | Fixer-to-LLM hand-off implementation |

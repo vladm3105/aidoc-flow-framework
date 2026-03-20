@@ -2,9 +2,9 @@
 
 **Document**: Unified Context Creation (UCC) Phase for PRD  
 **Layer**: 2 (Product Requirements)  
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Last Updated**: 2026-03-19  
-**Status**: Active (v1.20.0)
+**Status**: Active (v1.21.0+)
 
 ---
 
@@ -74,15 +74,47 @@ All three feed into **one AI call** that produces the complete PRD.
 ### Creation Command
 
 ```bash
-# Basic PRD creation
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+# Basic PRD creation (prompt saved automatically, filename auto-slugged)
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+# writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
 
 # With post-creation validation and scoring (v1.20.0+)
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate
 
 # With strict validation (warnings treated as errors)
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate --strict
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate --strict
+
+# Disable prompt saving
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
 ```
+
+UCX resolves the output path using three rules, applied in order:
+
+**1. Plain doc ID** — `PRD-01` or `PRD-01.md` with no slug: UCX derives the slug
+from the upstream artifact folder and creates `{slug}/` + `{ID}_{slug}.md`:
+
+```text
+input:  docs/02_PRD/PRD-01
+upstream: docs/01_BRD/BRD-01_platform_architecture
+writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+```
+
+**2. Explicit canonical path** — full `.md` path whose parent directory already
+matches the slug (e.g. you pre-created the folder): UCX writes directly to the
+specified path without adding an extra sub-directory:
+
+```text
+input:  docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+```
+
+**3. Custom slugged name** — `PRD-01_custom_name.md` with a parent that does
+not match the stem: UCX creates `PRD-01_custom_name/PRD-01_custom_name.md`
+(same auto-folder behavior as rule 1).
+
+> **Note (fixed in v1.21.1)**: Before this fix, rule 2 was treated as rule 3,
+> causing double-nesting (`…/PRD-01_platform_architecture/PRD-01_platform_architecture/PRD-01_platform_architecture.md`).
+> Pass the full canonical `.md` path to write directly to that location.
 
 ### Execution Details
 
@@ -98,7 +130,31 @@ ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate 
    - Section 8 layer separation rule
    - Dual readiness scoring
 
-3. **Post-creation** (if `--validate` flag used):
+3. **Prompt saved** (default, v1.21.0+):
+  - Full assembled prompt written to `.ucx_create_session/prompt_prd_<timestamp>.txt`
+  - For sectioned PRD outputs, session files are stored inside the PRD folder
+    (for example `docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/`)
+   - Useful for debugging, auditing, or re-running with a different model
+   - Disable with `--no-save-prompt`
+
+4. **Prompt composition** (v1.21.2+):
+  - UCX merges framework PRD prompt contracts with project-specific PRD overrides
+  - Project prompt augments framework rules; it does not replace required framework constraints
+
+5. **Creation guardrails** (v1.21.2+):
+  - UCX injects a target output contract before AI generation
+  - Before writing output, UCX normalizes required frontmatter fields
+    (`title`, `doc_id`, `version`, `status`, `tags`)
+  - UCX enforces ID consistency across frontmatter, H1, and Document Control
+  - UCX aligns PRD element IDs to the target document number (`PRD.NN.*`)
+
+6. **Prompt session path** (v1.21.3+):
+  - When you pass the full canonical PRD path, `.ucx_create_session/` is saved
+    directly in the canonical PRD folder
+  - Example: `docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/`
+    rather than `docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture/.ucx_create_session/`
+
+7. **Post-creation** (if `--validate` flag used):
    - Tier 1 validation runs (checks structure, format, blocking issues)
    - Readiness scores computed
    - Scores injected into Document Control
@@ -477,37 +533,70 @@ Measures whether the PRD has sufficient detail for formal EARS requirements (Lay
 
 ```bash
 # Create PRD from upstream BRD
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+# writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
 ```
 
 ### With Validation & Scoring
 
 ```bash
 # Create + auto-validate + compute scores (v1.20.0+)
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate
 
 # Create + strict validation (warnings as errors)
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate --strict
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate --strict
 ```
+
+### Prompt History (v1.21.0+)
+
+The assembled prompt is saved by default for history tracking and inspection:
+
+```bash
+# Prompt saved automatically to .ucx_create_session/
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Inspect saved prompt
+ls docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/
+# prompt_prd_20260319T142301Z.txt
+
+# Disable if not needed
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
+```
+
+Each run creates a new timestamped file — old prompts are never overwritten.
 
 ### With Model Selection
 
 ```bash
 # Use Sonnet (faster, lower cost)
-ucx --model sonnet create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+ucx --model sonnet create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
 # Use Opus (highest quality)
-ucx --model opus create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+ucx --model opus create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Use Codex CLI backend
+ucx --cli-tool codex create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Or target an already-existing canonical path (no extra nesting)
+ucx --cli-tool codex create prd docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# If quota/rate limit is hit, switch backend/model and retry
+ucx --cli-tool gemini --model gemini-2.5-pro create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ```
+
+When quota/rate-limit errors occur, `ucx create` now:
+- prints a clear quota/rate-limit message (instead of generic "No error output");
+- in interactive terminals, asks which backend/model to try next and retries once;
+- in non-interactive mode, prints rerun guidance and exits with non-zero status.
 
 ### With Web Search
 
 ```bash
 # Enable fact-checking, best practices research
-ucx -W create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+ucx -W create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
 # Full CLI equivalent
-ucx --enable-web-search create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+ucx --enable-web-search create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ```
 
 ### Post-Creation Validation
@@ -680,6 +769,40 @@ Executable Given-When-Then test scenarios belong in BDD (Layer 4).
 
 ## Validation & Post-Creation
 
+### Prompt History (v1.21.0+)
+
+After assembly (before the AI call), the full prompt is saved to:
+
+```
+docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/prompt_prd_20260319T142301Z.txt
+```
+
+The file contains a self-documenting header followed by the raw prompt:
+
+```
+# UCX Creation Prompt — PRD
+# Saved: 20260319T142301Z
+# Output: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+# From upstream: docs/01_BRD/BRD-01_platform_architecture
+# Prompt size: 190,432 chars
+#------------------------------------------------------------------------------
+... (full prompt content)
+```
+
+Use `--no-save-prompt` to disable. Validators skip `.ucx_create_session/` automatically.
+
+### Prompt Merge Behavior (v1.21.2+)
+
+Creation prompt assembly now uses this order:
+
+1. Framework PRD prompt (structural contracts and validation rules)
+2. Project PRD prompt (domain-specific overrides/context)
+3. Persona skills
+4. Template + upstream/reference inputs
+5. Generated output contract from target path (`doc_id`, ID prefixes, required frontmatter)
+
+This prevents project overrides from accidentally dropping mandatory framework PRD contracts.
+
 ### Automatic Validation (if `--validate` flag used)
 
 After PRD creation, the system automatically:
@@ -816,6 +939,9 @@ Two traceability needs:
 - **[PLAN-009_prd_creation.md](plans/PLAN-009_prd_creation.md)** — Detailed implementation plan
 - **[PLAN-010_prd_validation.md](plans/PLAN-010_prd_validation.md)** — Validation system details
 - **[CHANGELOG_v1.20.0.md](CHANGELOG/CHANGELOG_v1.20.0.md)** — v1.20.0 release notes
+- **[CHANGELOG_v1.21.0.md](CHANGELOG/CHANGELOG_v1.21.0.md)** — v1.21.0 release notes (prompt history, upstream optimization, quota recovery)
+- **[CHANGELOG_v1.21.2.md](CHANGELOG/CHANGELOG_v1.21.2.md)** — prompt merge + PRD creation guardrails + frontmatter delimiter tolerance
+- **[CHANGELOG_v1.21.3.md](CHANGELOG/CHANGELOG_v1.21.3.md)** — canonical prompt-session folder fix and final create/validate alignment
 
 ---
 
@@ -823,7 +949,7 @@ Two traceability needs:
 
 ```bash
 # Create PRD with validation
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01 --validate
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate
 
 # Validate existing PRD
 ucx validate prd docs/02_PRD/PRD-01/

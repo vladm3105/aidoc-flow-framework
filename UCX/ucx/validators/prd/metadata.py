@@ -68,6 +68,12 @@ def validate_metadata(file_path: Path, content: str) -> List[ValidationIssue]:
     # Validate BRD traceability format
     issues.extend(_validate_brd_traceability(file_path, content))
 
+    # Validate ID consistency across filename/frontmatter/H1/Document Control
+    issues.extend(_validate_id_consistency(file_path, frontmatter, content))
+
+    # Validate PRD traceability matrix presence and membership
+    issues.extend(_validate_traceability_matrix(file_path, frontmatter))
+
     return issues
 
 
@@ -89,7 +95,7 @@ def _validate_frontmatter_fields(
 
     # Validate doc_id format
     doc_id = frontmatter.get("doc_id", "")
-    if doc_id and not re.match(r"PRD-\d{2}", str(doc_id)):
+    if doc_id and not re.match(r"^PRD-\d{2,9}$", str(doc_id)):
         issues.append(ValidationIssue(
             code="PRD-W002",
             message=f"Invalid doc_id format '{doc_id}', expected PRD-NN",
@@ -264,7 +270,138 @@ def _is_main_file(file_path: Path) -> bool:
     """Check if file is a main PRD file (not a section file)."""
     file_name = file_path.name
     # Section files have format PRD-NN.S_slug.md
-    return not re.match(r"PRD-\d{2}\.\d+_", file_name)
+    return not re.match(r"PRD-\d{2,9}\.\d+_", file_name)
+
+
+def _extract_filename_doc_id(file_path: Path) -> Optional[str]:
+    """Extract PRD-NN doc ID from filename."""
+    match = re.match(r"^(PRD-\d{2,9})(?:\.\d+)?_", file_path.name)
+    return match.group(1) if match else None
+
+
+def _extract_h1_doc_id(content: str) -> Optional[str]:
+    """Extract PRD-NN doc ID from H1 heading."""
+    match = re.search(r"^#\s+(PRD-\d{2,9}):", content, re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def _extract_doc_control_doc_id(content: str) -> Optional[str]:
+    """Extract PRD-NN doc ID from Section 1 Document Control."""
+    match = re.search(r"(?im)^\s*-\s*Document\s+ID:\s*(PRD-\d{2,9})\s*$", content)
+    return match.group(1) if match else None
+
+
+def _validate_id_consistency(
+    file_path: Path,
+    frontmatter: Dict[str, Any],
+    content: str,
+) -> List[ValidationIssue]:
+    """Ensure filename/frontmatter/H1/Document Control use the same PRD-NN."""
+    issues: List[ValidationIssue] = []
+    file_name = file_path.name
+
+    if not _is_main_file(file_path):
+        return issues
+
+    filename_id = _extract_filename_doc_id(file_path)
+    frontmatter_id = str(frontmatter.get("doc_id", "")).strip() or None
+    h1_id = _extract_h1_doc_id(content)
+    doc_control_id = _extract_doc_control_doc_id(content)
+
+    ids = {
+        "filename": filename_id,
+        "frontmatter": frontmatter_id,
+        "h1": h1_id,
+        "document_control": doc_control_id,
+    }
+
+    present_ids = {v for v in ids.values() if v}
+    if len(present_ids) > 1:
+        issues.append(ValidationIssue(
+            code="PRD-E001",
+            message=(
+                "Inconsistent PRD document ID across filename/frontmatter/H1/Document Control: "
+                f"{ids}"
+            ),
+            file=file_name,
+            tier=Tier.TIER1,
+        ))
+
+    canonical_id = filename_id or frontmatter_id
+    if canonical_id:
+        doc_num_match = re.match(r"PRD-(\d{2,9})$", canonical_id)
+        if doc_num_match:
+            doc_num = doc_num_match.group(1)
+            element_ids = re.findall(r"\bPRD\.(\d{2,9})\.(\d{2})\.(\d{2,9})\b", content)
+            mismatched = sorted({f"PRD.{n}.{tt}.{ss}" for n, tt, ss in element_ids if n != doc_num})
+            if mismatched:
+                issues.append(ValidationIssue(
+                    code="PRD-E001",
+                    message=(
+                        f"Element IDs must use document number '{doc_num}' from {canonical_id}. "
+                        f"Found mismatches: {', '.join(mismatched[:5])}"
+                    ),
+                    file=file_name,
+                    tier=Tier.TIER1,
+                ))
+
+    return issues
+
+
+def _find_prd_root_dir(file_path: Path) -> Optional[Path]:
+    """Find the nearest 02_PRD directory for the current file."""
+    search_paths = [file_path.parent, *file_path.parents]
+    for path in search_paths:
+        if path.name == "02_PRD":
+            return path
+    return None
+
+
+def _validate_traceability_matrix(
+    file_path: Path,
+    frontmatter: Dict[str, Any],
+) -> List[ValidationIssue]:
+    """Validate PRD traceability matrix presence and PRD entry."""
+    issues: List[ValidationIssue] = []
+    file_name = file_path.name
+
+    if not _is_main_file(file_path):
+        return issues
+
+    prd_root = _find_prd_root_dir(file_path)
+    if prd_root is None:
+        return issues
+
+    matrix_path = prd_root / "PRD-00_TRACEABILITY_MATRIX.md"
+    if not matrix_path.exists():
+        issues.append(ValidationIssue(
+            code="PRD-E027",
+            message=(
+                "Missing required traceability matrix file 'PRD-00_TRACEABILITY_MATRIX.md' "
+                "in 02_PRD directory"
+            ),
+            file=file_name,
+            tier=Tier.TIER1,
+        ))
+        return issues
+
+    doc_id = str(frontmatter.get("doc_id", "")).strip() or _extract_filename_doc_id(file_path)
+    if not doc_id:
+        return issues
+
+    matrix_text = matrix_path.read_text(encoding="utf-8")
+    if doc_id not in matrix_text:
+        issues.append(ValidationIssue(
+            code="PRD-W016",
+            message=(
+                f"Traceability matrix missing entry for {doc_id}. "
+                "Update PRD-00_TRACEABILITY_MATRIX.md in the same change set"
+            ),
+            file=file_name,
+            tier=Tier.TIER2,
+        ))
+
+    return issues
 
 
 def _get_field_alternates(field: str) -> List[str]:

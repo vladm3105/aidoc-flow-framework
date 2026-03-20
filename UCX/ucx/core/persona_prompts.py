@@ -3,6 +3,7 @@
 from pathlib import Path
 from typing import Optional
 
+from ucx.exceptions import ConfigurationError, SkillError
 from ucx.observability.logging import get_logger
 from ucx.skills.loader import DEFAULT_SKILLS_DIR
 from ucx.core.context_engine import (
@@ -93,6 +94,16 @@ def _load_skill_content(
         if content:
             logger.info(f"Loaded project-specific skill: {persona} from {project_skills}")
             return content
+
+        if not project_skills.exists():
+            raise ConfigurationError(
+                f"Project-specific skills directory not found: {project_dir}/docs/UCX/skills/. Create project-specific persona files before running review."
+            )
+
+        raise SkillError(
+            f"Project-specific skill not found: {project_skills}/{persona}.md. Framework and hardcoded persona fallbacks are disabled for project execution.",
+            skill_name=persona,
+        )
 
     # Priority 2: Explicit skill_dir
     if skill_dir is not None:

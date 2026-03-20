@@ -114,6 +114,7 @@ class DocumentLoader:
         r"\.UCR_",  # Review reports
         r"\.V_",  # Validation reports
         r"\.ucx_review_session",  # Review memory
+        r"\.ucx_create_session",  # Creation prompt history
         r"^\.prompt_cache",  # Generated prompts
         r"^\.",  # Hidden files
     ]

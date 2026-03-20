@@ -98,7 +98,7 @@ class BaseValidator(ABC):
             self.errors.append(f"{file_name}: Missing YAML frontmatter")
             return False
 
-        match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
+        match = re.match(r"^---[ \t]*\n(.*?)\n---[ \t]*", content, re.DOTALL)
         if not match:
             self.errors.append(f"{file_name}: Malformed YAML frontmatter")
             return False

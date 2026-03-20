@@ -409,7 +409,7 @@ REQUIREMENT: {requirement}
 
         for file_path in md_files:
             # Skip non-BRD files (review session files, reports, etc.)
-            if '.ucx_review_session' in str(file_path):
+            if '.ucx_review_session' in str(file_path) or '.ucx_create_session' in str(file_path):
                 continue
             if '_validation_report' in str(file_path.name):
                 continue

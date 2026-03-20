@@ -1,6 +1,7 @@
 """UCX CLI main entry point."""
 
 import click
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -29,7 +30,7 @@ console = Console()
 )
 @click.option(
     "--cli-tool",
-    type=click.Choice(["claude", "gemini", "ollama", "aider"]),
+    type=click.Choice(["claude", "codex", "gemini", "ollama", "aider"]),
     default="claude",
     help="CLI tool to use in cli mode",
 )
@@ -92,7 +93,7 @@ def cli(
 
     \b
     MODES:
-      --mode cli   Execute CLI agents (claude, gemini, ollama) via shell [default]
+            --mode cli   Execute CLI agents (claude, codex, gemini, ollama) via shell [default]
       --mode api   Direct API calls via LiteLLM (requires API key)
 
     \b
@@ -252,8 +253,9 @@ def autopilot(ctx, doc_type, target, **kwargs):
 @click.option("--multi-file", is_flag=True)
 @click.option("--validate/--no-validate", default=True, help="Run validation after creation (default: enabled)")
 @click.option("--strict", is_flag=True, help="Fail on any validation issue")
+@click.option("--save-prompt/--no-save-prompt", default=True, help="Save assembled prompt to .ucx_create_session/ (default: enabled)")
 @click.pass_context
-def create(ctx, doc_type, output_path, validate, strict, **kwargs):
+def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
     """
     Create a new document (UCC phase) with optional validation.
 
@@ -264,17 +266,88 @@ def create(ctx, doc_type, output_path, validate, strict, **kwargs):
       - Injects scores into Document Control section
 
     \b
+    Prompt history (v1.21.0+):
+      Prompt is saved by default to
+      .ucx_create_session/prompt_<type>_<timestamp>.txt alongside the output
+      file. Useful for debugging, auditing, or re-running with a different model.
+      Use --no-save-prompt to disable.
+
+    \b
     Examples:
       ucx create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
-      ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01
-      ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01 --no-validate
-      ucx create prd docs/02_PRD/PRD-01.md --from-upstream docs/01_BRD/BRD-01 --strict
+            ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+            ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-validate
+            ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --strict
+            ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
+
+        If `output_path` is a plain document ID like `PRD-01` or `PRD-01.md`, UCX
+        derives a slug from the upstream artifact and writes `PRD-01_{slug}.md`.
+        Example: `BRD-01_platform_architecture` -> `PRD-01_platform_architecture.md`.
     """
     from ucx import UCCPhase
+    from ucx.exceptions import AIClientError
 
-    ucc = UCCPhase(ctx.obj["config"])
-    doc = ucc.create(doc_type, output_path, validate_after=validate, **kwargs)
+    config = ctx.obj["config"]
+    ucc = UCCPhase(config)
+
+    try:
+        doc = ucc.create(doc_type, output_path, validate_after=validate, save_prompt=save_prompt, **kwargs)
+    except AIClientError as e:
+        message = str(e)
+        lowered = message.lower()
+        is_quota_issue = any(
+            token in lowered for token in ["out of extra usage", "quota", "rate limit", "usage limit", "too many requests"]
+        )
+
+        if not is_quota_issue:
+            raise
+
+        console.print("[yellow]AI generation failed due to quota/rate limits.[/yellow]")
+        console.print(f"[dim]{message}[/dim]")
+
+        # Interactive recovery path: ask user for next backend/model and retry once.
+        if not click.get_text_stream("stdin").isatty():
+            console.print(
+                "[yellow]Non-interactive mode detected.[/yellow] "
+                "Re-run with a different backend/model, for example: "
+                "ucx --cli-tool gemini --model gemini-2.5-pro create ..."
+            )
+            raise click.exceptions.Exit(code=2)
+
+        next_tool = click.prompt(
+            "Choose CLI backend to retry",
+            type=click.Choice(["claude", "codex", "gemini", "ollama", "aider"], case_sensitive=False),
+            default="gemini",
+            show_choices=True,
+        )
+        next_model = click.prompt(
+            "Enter model to use for retry",
+            default=(
+                "gemini-2.5-pro"
+                if next_tool == "gemini"
+                else "gpt-5-codex"
+                if next_tool == "codex"
+                else "sonnet"
+            ),
+        )
+
+        retry_config = config.model_copy(update={"cli_tool": next_tool, "model": next_model})
+        console.print(f"[cyan]Retrying with backend={next_tool}, model={next_model}...[/cyan]")
+        doc = UCCPhase(retry_config).create(
+            doc_type,
+            output_path,
+            validate_after=validate,
+            save_prompt=save_prompt,
+            **kwargs,
+        )
+
     console.print(f"[green]Created:[/green] {doc.path}")
+
+    # Display saved prompt path if applicable
+    if "prompt_saved_path" in doc.metadata:
+        console.print(f"[dim]Prompt saved:[/dim] {doc.metadata['prompt_saved_path']}")
+    if "validation_report_path" in doc.metadata:
+        console.print(f"[dim]Validation report:[/dim] {doc.metadata['validation_report_path']}")
 
     # Display readiness scores if computed (PRD only, requires PLAN-010 scoring module)
     if "sys_ready_score" in doc.metadata:
@@ -886,7 +959,6 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
 
     # Use unified validator for BRD
     if doc_type_lower == "brd":
-        import re
         from ucx.validators.brd import UnifiedBRDValidator
 
         validator = UnifiedBRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
@@ -1019,11 +1091,23 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
         # Exit with appropriate code
         sys.exit(result.exit_code(strict=strict))
     else:
-        # Fallback to legacy validator for other types
+        # Fallback validator path for non-BRD types
         from ucx import UCRPhase
 
         ucr = UCRPhase(ctx.obj["config"])
         result = ucr.validate(doc_type, Path(doc_path))
+
+        # Derive doc_id for report metadata (e.g., PRD-01)
+        doc_path_obj = Path(doc_path)
+        folder_name = doc_path_obj.name if doc_path_obj.is_dir() else doc_path_obj.parent.name
+        doc_id_match = re.match(r"([A-Z]+-\d+)", folder_name)
+        if not doc_id_match and doc_path_obj.is_file():
+            doc_id_match = re.match(r"([A-Z]+-\d+)", doc_path_obj.stem)
+        doc_id = doc_id_match.group(1) if doc_id_match else folder_name.split("_")[0]
+
+        # Auto-report behavior: mirror BRD path (default enabled via --report)
+        if report and not output:
+            output = doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent
 
         console.print(f"Status: {result.status.value}")
         console.print(f"Errors: {result.error_count}")
@@ -1038,6 +1122,53 @@ def validate(ctx, doc_type, doc_path, output, tier1_only, strict, output_format,
             console.print("\n[yellow]Warnings:[/yellow]")
             for warning in result.warnings:
                 console.print(f"  - {warning}")
+
+        # Write report file when output is specified (explicitly or via --report default)
+        if output:
+            output_path = Path(output)
+
+            # If output is a directory, write canonical hidden validation report file
+            if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
+                output_path.mkdir(parents=True, exist_ok=True)
+                output_path = output_path / ".precommit_validation_report.md"
+                version = 1
+            else:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                version_match = re.search(r"v(\d+)", str(output_path))
+                version = int(version_match.group(1)) if version_match else 1
+
+            if output_format == "json":
+                if hasattr(result, "to_dict"):
+                    output_content = json.dumps(result.to_dict(), indent=2)
+                else:
+                    output_content = json.dumps(
+                        {
+                            "doc_path": str(doc_path_obj),
+                            "status": result.status.value if hasattr(result.status, "value") else str(result.status),
+                            "errors": result.errors,
+                            "warnings": result.warnings,
+                            "passes": getattr(result, "passes", []),
+                        },
+                        indent=2,
+                    )
+            else:
+                if hasattr(result, "format_report"):
+                    output_content = result.format_report(
+                        doc_id=doc_id,
+                        doc_type=doc_type.upper(),
+                        version=version,
+                    )
+                elif hasattr(result, "format_text"):
+                    output_content = result.format_text(verbose=ctx.obj.get("verbose", False))
+                else:
+                    output_content = (
+                        f"Status: {result.status.value if hasattr(result.status, 'value') else result.status}\n"
+                        f"Errors: {len(result.errors)}\n"
+                        f"Warnings: {len(result.warnings)}\n"
+                    )
+
+            output_path.write_text(output_content, encoding="utf-8")
+            console.print(f"[green]Validation report written to:[/green] {output_path}")
 
         # Exit with appropriate code
         if result.errors:

@@ -147,7 +147,7 @@ class UCXConfig(BaseSettings):
     )
     cli_tool: str = Field(
         default="claude",
-        description="CLI tool to use in cli mode (claude, gemini, ollama, aider)",
+        description="CLI tool to use in cli mode (claude, codex, gemini, ollama, aider)",
     )
     cli_timeout: int = Field(
         default=600,
@@ -327,10 +327,12 @@ class UCXConfig(BaseSettings):
         return cls(**data)
 
     def get_skill_dir(self) -> Path:
-        """Get skill directory, using default if not set."""
+        """Get framework skill directory, using default if not set."""
         if self.skill_dir:
             return self.skill_dir
-        # Default to framework skills directory (/UCX/skills/)
+        # Default to framework skills directory (/UCX/skills/).
+        # Framework skills are reference assets unless a caller explicitly opts
+        # into non-project execution.
         # Note: ucx/skills/personas/ is deprecated as of v1.7.2
         return Path(__file__).parent.parent.parent / "skills"
 
@@ -338,7 +340,8 @@ class UCXConfig(BaseSettings):
         """Get framework prompt directory, using default if not set."""
         if self.prompt_dir:
             return self.prompt_dir
-        # Default to package prompts directory
+        # Default to package prompts directory. These prompts are templates for
+        # creating project-specific prompts and are not execution defaults.
         return Path(__file__).parent.parent / "prompts" / "templates"
 
     def get_project_dir(self) -> Optional[Path]:
@@ -374,11 +377,19 @@ class UCXConfig(BaseSettings):
             return project_dir / "docs" / "UCX" / "review"
         return self.project_prompt_dir
 
+    def get_project_template_dir(self) -> Optional[Path]:
+        """Get project template directory under docs/UCX/templates/."""
+        project_dir = self.get_project_dir()
+        if project_dir:
+            return project_dir / "docs" / "UCX" / "templates"
+        return None
+
     def get_template_dir(self) -> Path:
-        """Get template directory, using default if not set."""
+        """Get framework template directory, using default if not set."""
         if self.template_dir:
             return self.template_dir
-        # Default to framework templates
+        # Default to framework templates. These are references used to create
+        # project-specific templates, not execution fallbacks.
         return Path(__file__).parent.parent.parent / "templates"
 
     def get_ai_client(self):

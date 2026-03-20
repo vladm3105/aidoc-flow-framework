@@ -64,16 +64,19 @@ def validate_structure(file_path: Path, content: str) -> List[ValidationIssue]:
     # Check for placeholders
     issues.extend(_check_placeholders(file_path, content))
 
+    # Validate SSD Layer-2 scope boundaries
+    issues.extend(_validate_layer2_scope(file_path, content))
+
     return issues
 
 
 def _validate_file_naming(file_path: Path) -> List[ValidationIssue]:
     """Validate PRD file naming convention."""
-    issues = []
+    issues: List[ValidationIssue] = []
     file_name = file_path.name
 
     # Skip validation for section files (they have different patterns)
-    if re.match(r"PRD-\d{2}\.\d+_", file_name):
+    if re.match(r"PRD-\d{2,9}\.\d+_", file_name):
         return issues
 
     # Check main file naming
@@ -90,7 +93,7 @@ def _validate_file_naming(file_path: Path) -> List[ValidationIssue]:
 
 def _validate_h1(file_path: Path, content: str) -> List[ValidationIssue]:
     """Validate H1 heading format."""
-    issues = []
+    issues: List[ValidationIssue] = []
     file_name = file_path.name
 
     # Find H1 heading
@@ -170,7 +173,7 @@ def _is_main_prd_file(file_path: Path, content: str) -> bool:
     file_name = file_path.name
 
     # Section files have format PRD-NN.S_slug.md
-    if re.match(r"PRD-\d{2}\.\d+_", file_name):
+    if re.match(r"PRD-\d{2,9}\.\d+_", file_name):
         return False
 
     # If it has multiple sections, it's likely a main file
@@ -344,6 +347,58 @@ def _check_placeholders(file_path: Path, content: str) -> List[ValidationIssue]:
                         tier=Tier.TIER1,
                     ))
             break  # Only report first placeholder type
+
+    return issues
+
+
+def _validate_layer2_scope(file_path: Path, content: str) -> List[ValidationIssue]:
+    """Enforce PRD Layer-2 concept: product intent before implementation design."""
+    issues: List[ValidationIssue] = []
+    file_name = file_path.name
+
+    # PRD should not hard-link to concrete downstream document IDs (Layer 5+).
+    forbidden_downstream = [
+        r"\bADR-\d{2,9}\b",
+        r"\bSYS-\d{2,9}\b",
+        r"\bREQ-\d{2,9}\b",
+        r"\bCTR-\d{2,9}\b",
+        r"\bSPEC-\d{2,9}\b",
+        r"\bTSPEC-\d{2,9}\b",
+        r"\bTASKS-\d{2,9}\b",
+    ]
+
+    matches = []
+    for pattern in forbidden_downstream:
+        matches.extend(re.findall(pattern, content))
+
+    if matches:
+        samples = ", ".join(sorted(set(matches))[:5])
+        issues.append(ValidationIssue(
+            code="PRD-E022",
+            message=(
+                "PRD includes concrete downstream artifact IDs (Layer 5+), which violates Layer-2 scope. "
+                f"Found: {samples}"
+            ),
+            file=file_name,
+            tier=Tier.TIER1,
+        ))
+
+    # Full-document guards for lower/higher-layer syntax leakage.
+    if has_bdd_patterns(content):
+        issues.append(ValidationIssue(
+            code="PRD-E020",
+            message="PRD contains Given/When/Then BDD syntax; keep executable behavior in Layer 4 BDD artifacts",
+            file=file_name,
+            tier=Tier.TIER1,
+        ))
+
+    if has_ears_patterns(content):
+        issues.append(ValidationIssue(
+            code="PRD-E021",
+            message="PRD contains WHEN-THE-SHALL EARS syntax; keep formal requirement syntax in Layer 3 EARS artifacts",
+            file=file_name,
+            tier=Tier.TIER1,
+        ))
 
     return issues
 

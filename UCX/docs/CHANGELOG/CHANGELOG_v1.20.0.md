@@ -38,7 +38,7 @@ v1.20.0 achieves feature parity between PRD (Layer 2) and BRD (Layer 1) validati
 
 **CLI Enhancement**
 - New flags: `--validate`, `--no-validate`, `--strict` for create command
-- Example: `ucx create prd docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/ --strict`
+- Example: `ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --strict`
 
 **Project-Specific PRD Prompts**
 - Architecture: Projects can override with `UCC_PROMPT_PRD_PROJECT.md`

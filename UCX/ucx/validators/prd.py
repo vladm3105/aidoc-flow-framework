@@ -5,6 +5,7 @@ Provides both the legacy interface and access to advanced features.
 """
 
 from pathlib import Path
+import re
 
 from ucx.models.enums import DocType
 from ucx.models.review import ValidationResult
@@ -151,6 +152,91 @@ class PRDValidator(BaseValidator):
             [r"@brd:", r"@ears:"],
             file_name,
         )
+
+        # Enforce document ID consistency (filename/frontmatter/H1/Document Control).
+        filename_id = self._extract_filename_doc_id(file_path)
+        frontmatter_id = self._extract_frontmatter_doc_id(content)
+        h1_id = self._extract_h1_doc_id(content)
+        section_id = self._extract_doc_control_doc_id(content)
+
+        ids = {
+            "filename": filename_id,
+            "frontmatter": frontmatter_id,
+            "h1": h1_id,
+            "document_control": section_id,
+        }
+        present = {v for v in ids.values() if v}
+        if len(present) > 1:
+            self.errors.append(f"[{file_name}] PRD-E001: Inconsistent PRD ID across filename/frontmatter/H1/Document Control: {ids}")
+
+        canonical = filename_id or frontmatter_id
+        if canonical:
+            doc_num_match = re.match(r"^PRD-(\d{2,9})$", canonical)
+            if doc_num_match:
+                doc_num = doc_num_match.group(1)
+                element_ids = re.findall(r"\bPRD\.(\d{2,9})\.(\d{2})\.(\d{2,9})\b", content)
+                mismatched = sorted({f"PRD.{n}.{tt}.{ss}" for n, tt, ss in element_ids if n != doc_num})
+                if mismatched:
+                    self.errors.append(
+                        f"[{file_name}] PRD-E001: Element IDs must use document number '{doc_num}'. "
+                        f"Found mismatches: {', '.join(mismatched[:5])}"
+                    )
+
+        # Enforce Layer-2 scope: forbid concrete downstream IDs (Layer 5+).
+        forbidden = [
+            r"\bADR-\d{2,9}\b",
+            r"\bSYS-\d{2,9}\b",
+            r"\bREQ-\d{2,9}\b",
+            r"\bCTR-\d{2,9}\b",
+            r"\bSPEC-\d{2,9}\b",
+            r"\bTSPEC-\d{2,9}\b",
+            r"\bTASKS-\d{2,9}\b",
+        ]
+        found = []
+        for pattern in forbidden:
+            found.extend(re.findall(pattern, content))
+        if found:
+            self.errors.append(
+                f"[{file_name}] PRD-E022: PRD contains concrete downstream artifact IDs (Layer 5+): "
+                f"{', '.join(sorted(set(found))[:5])}"
+            )
+
+        # Enforce traceability matrix presence and row membership.
+        matrix_path = self._find_matrix_path(file_path)
+        if matrix_path is None or not matrix_path.exists():
+            self.errors.append(
+                f"[{file_name}] PRD-E027: Missing required traceability matrix file PRD-00_TRACEABILITY_MATRIX.md"
+            )
+        else:
+            doc_id = frontmatter_id or filename_id
+            if doc_id:
+                matrix_text = matrix_path.read_text(encoding="utf-8")
+                if doc_id not in matrix_text:
+                    self.warnings.append(
+                        f"[{file_name}] PRD-W016: Traceability matrix missing entry for {doc_id}"
+                    )
+
+    def _extract_filename_doc_id(self, file_path: Path) -> str | None:
+        match = re.match(r"^(PRD-\d{2,9})(?:\.\d+)?_", file_path.name)
+        return match.group(1) if match else None
+
+    def _extract_frontmatter_doc_id(self, content: str) -> str | None:
+        match = re.search(r"(?im)^doc_id:\s*(PRD-\d{2,9})\s*$", content)
+        return match.group(1) if match else None
+
+    def _extract_h1_doc_id(self, content: str) -> str | None:
+        match = re.search(r"^#\s+(PRD-\d{2,9}):", content, re.MULTILINE)
+        return match.group(1) if match else None
+
+    def _extract_doc_control_doc_id(self, content: str) -> str | None:
+        match = re.search(r"(?im)^\s*-\s*Document\s+ID:\s*(PRD-\d{2,9})\s*$", content)
+        return match.group(1) if match else None
+
+    def _find_matrix_path(self, file_path: Path) -> Path | None:
+        for path in [file_path.parent, *file_path.parents]:
+            if path.name == "02_PRD":
+                return path / "PRD-00_TRACEABILITY_MATRIX.md"
+        return None
 
     @property
     def unified_result(self):

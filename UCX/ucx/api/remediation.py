@@ -578,7 +578,6 @@ The document is ready for downstream processing. No remediation required.
         Search order:
         1. Project-specific: {project_dir}/docs/UCX/remediation/UCRem_PROMPT_{TYPE}_PROJECT.md
         2. Project BEELOCAL: {project_dir}/docs/UCX/remediation/UCRem_PROMPT_{TYPE}_BEELOCAL.md
-        3. Framework: {prompt_dir}/ucrem/UCRem_PROMPT_{TYPE}.md
         """
         candidates = []
         doc_type_upper = doc_type.value.upper()
@@ -593,22 +592,16 @@ The document is ready for downstream processing. No remediation required.
                 remediation_dir / f"UCRem_PROMPT_{doc_type_upper}.md",
             ])
 
-        # Framework prompts as fallback
-        prompt_dir = self.config.get_prompt_dir() / "ucrem"
-        candidates.extend([
-            prompt_dir / f"UCRem_PROMPT_{doc_type_upper}_PROJECT.md",
-            prompt_dir / f"UCRem_PROMPT_{doc_type_upper}.md",
-        ])
-
         for path in candidates:
-            if path.exists():
+            if path.exists() and not path.is_symlink():
                 return path.read_text(encoding="utf-8")
 
         # Build helpful error message
         searched_paths = "\n  - ".join(str(p) for p in candidates)
         raise PromptError(
-            f"No UCRem prompt found for {doc_type.value}\n\nSearched:\n  - {searched_paths}",
-            prompt_name=f"UCRem_PROMPT_{doc_type_upper}.md",
+            f"Project-specific UCRem prompt not found for {doc_type.value}\n\nSearched:\n  - {searched_paths}\n\n"
+            "UCX remediation uses project-specific prompts only. Create the prompt in docs/UCX/remediation/ using the framework prompt as a reference.",
+            prompt_name=f"UCRem_PROMPT_{doc_type_upper}_PROJECT.md",
         )
 
     def _load_fixer_skills(
@@ -623,7 +616,7 @@ The document is ready for downstream processing. No remediation required.
             fixers: List of fixer personas to load. If None, loads all.
                    Mandatory fixers are always included.
 
-        Checks project-specific skills first, then framework skills.
+        Uses project-specific skills only.
         """
         parts = []
 
@@ -658,30 +651,38 @@ The document is ready for downstream processing. No remediation required.
         }
         skills_to_load = sorted(skills_to_load, key=lambda x: order.get(x, 99))
 
-        # Skill directories to check (project-specific first)
-        skill_dirs = []
         project_dir = self.config.get_project_dir()
-        if project_dir:
-            skill_dirs.append(project_dir / "docs" / "UCX" / "skills")
-        skill_dirs.append(self.config.get_skill_dir())
+        if not project_dir:
+            raise PromptError(
+                "Project directory not configured. Set UCX_PROJECT_DIR or use --project-dir before running remediation.",
+                prompt_name="docs/UCX/skills",
+            )
+
+        skills_dir = project_dir / "docs" / "UCX" / "skills"
+        if not skills_dir.exists():
+            raise PromptError(
+                f"Project-specific skills directory not found: {skills_dir}. Create project persona files before running remediation.",
+                prompt_name=str(skills_dir),
+            )
 
         loaded_count = 0
         for skill in skills_to_load:
-            # Find skill in first available directory
-            for skill_dir in skill_dirs:
-                skill_path = skill_dir / f"{skill}.md"
-                if skill_path.exists():
-                    title = fixer_names.get(skill, skill.replace("_", " ").title())
-                    # Mark domain vs mandatory
-                    if skill in MANDATORY_FIXER_SKILLS:
-                        role_type = "(Mandatory)"
-                    else:
-                        role_type = "(Domain)"
-                    parts.append(f"### Skill: {title} {role_type}\n\n")
-                    parts.append(skill_path.read_text(encoding="utf-8"))
-                    parts.append("\n\n")
-                    loaded_count += 1
-                    break  # Found, move to next skill
+            skill_path = skills_dir / f"{skill}.md"
+            if not skill_path.exists() or skill_path.is_symlink():
+                raise PromptError(
+                    f"Project-specific skill not found: {skill_path}. Framework skills are reference-only and cannot be used during remediation.",
+                    prompt_name=str(skill_path),
+                )
+
+            title = fixer_names.get(skill, skill.replace("_", " ").title())
+            if skill in MANDATORY_FIXER_SKILLS:
+                role_type = "(Mandatory)"
+            else:
+                role_type = "(Domain)"
+            parts.append(f"### Skill: {title} {role_type}\n\n")
+            parts.append(skill_path.read_text(encoding="utf-8"))
+            parts.append("\n\n")
+            loaded_count += 1
 
         # Add summary
         if fixers and loaded_count < len(FIXER_SKILLS):

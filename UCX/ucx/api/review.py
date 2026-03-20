@@ -548,55 +548,34 @@ class UCRPhase:
     def _load_skills(self, skill_names: list[str]) -> str:
         """Load skill content for personas.
 
-        Priority order (v1.14.4+):
-        1. Project-specific skills ({project_dir}/docs/UCX/skills/)
-        2. Framework skills (fallback)
-
-        This ensures unified prompt review uses the same project-specific
-        skills as persona prompts review, including Category Tagging sections.
+        Project-specific skills are required for project execution.
         """
         parts = []
         loaded = []
-        loaded_from_project = []
-        loaded_from_framework = []
 
-        # Get project and framework skill directories
         project_dir = self.config.get_project_dir()
-        project_skills_dir = project_dir / "docs" / "UCX" / "skills" if project_dir else None
-        framework_skills_dir = self.config.get_skill_dir()
+        if project_dir is None:
+            raise ProjectPromptNotFoundError("ucr", "skills", Path.cwd())
+
+        project_skills_dir = project_dir / "docs" / "UCX" / "skills"
+        if not project_skills_dir.exists():
+            raise ProjectPromptNotFoundError("ucr", "skills", project_dir)
 
         for name in skill_names:
-            skill_content = None
-            source = None
+            skill_path = project_skills_dir / f"{name}.md"
+            if not skill_path.exists() or skill_path.is_symlink():
+                raise ProjectPromptNotFoundError("ucr", f"skills/{name}", project_dir)
 
-            # Priority 1: Project-specific skills
-            if project_skills_dir and project_skills_dir.exists():
-                skill_path = project_skills_dir / f"{name}.md"
-                if skill_path.exists():
-                    skill_content = skill_path.read_text(encoding="utf-8")
-                    source = "project"
-                    loaded_from_project.append(name)
-
-            # Priority 2: Framework skills (fallback)
-            if skill_content is None:
-                skill_path = framework_skills_dir / f"{name}.md"
-                if skill_path.exists():
-                    skill_content = skill_path.read_text(encoding="utf-8")
-                    source = "framework"
-                    loaded_from_framework.append(name)
-
-            if skill_content:
-                title = name.replace("_", " ").title()
-                parts.append(f"### Skill: {title}\n\n")
-                parts.append(skill_content)
-                parts.append("\n\n")
-                loaded.append(name)
+            skill_content = skill_path.read_text(encoding="utf-8")
+            title = name.replace("_", " ").title()
+            parts.append(f"### Skill: {title}\n\n")
+            parts.append(skill_content)
+            parts.append("\n\n")
+            loaded.append(name)
 
         self.logger.debug(f"Loaded skills: {loaded}")
-        if loaded_from_project:
-            self.logger.info(f"Loaded {len(loaded_from_project)} project-specific skills: {loaded_from_project}")
-        if loaded_from_framework:
-            self.logger.debug(f"Loaded {len(loaded_from_framework)} framework skills (fallback): {loaded_from_framework}")
+        if loaded:
+            self.logger.info(f"Loaded {len(loaded)} project-specific skills: {loaded}")
 
         return "".join(parts)
 

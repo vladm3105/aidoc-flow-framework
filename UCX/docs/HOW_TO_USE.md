@@ -9,7 +9,7 @@ This guide covers practical usage of the UCX (Unified Context) Framework.
 - Python 3.10+
 - UCX package installed in venv
 - Project structure with `docs/` directory
-- For CLI mode: Claude CLI, Gemini CLI, or Ollama installed
+- For CLI mode: Claude CLI, Codex CLI, Gemini CLI, or Ollama installed
 - For API mode: Provider API keys
 
 ### Installation
@@ -30,7 +30,7 @@ UCX supports two modes for AI interaction:
 
 | Mode | Client | When to Use |
 |------|--------|-------------|
-| **CLI** (default) | `CLIClient` | Use existing CLI tools (Claude CLI, Gemini CLI) |
+| **CLI** (default) | `CLIClient` | Use existing CLI tools (Claude CLI, Codex CLI, Gemini CLI) |
 | **API** | `LiteLLMClient` | Direct API calls when CLI isn't available |
 
 ### CLI Mode (Default)
@@ -43,6 +43,7 @@ ucx review brd docs/01_BRD/BRD-01/
 
 # Specify CLI tool
 ucx --mode cli --cli-tool claude review brd docs/01_BRD/BRD-01/
+ucx --mode cli --cli-tool codex --model gpt-5-codex review brd docs/01_BRD/BRD-01/
 ucx --mode cli --cli-tool gemini review brd docs/01_BRD/BRD-01/
 ucx --mode cli --cli-tool ollama review brd docs/01_BRD/BRD-01/
 ```
@@ -91,14 +92,32 @@ ucx -p docs/UCX/ review prd docs/02_PRD/PRD-01_user_onboarding/
 ### Create a New PRD
 
 ```bash
-# Create PRD from upstream BRD
-ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/
+# Create PRD from upstream BRD (plain ID — UCX auto-slugs and creates folder)
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+# writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+
+# Create with full canonical path (v1.21.1+) — writes directly, no extra nesting
+ucx create prd docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# v1.21.2+: output guardrails normalize required metadata and target PRD identity
+# (frontmatter fields + H1 + Document ID row + PRD.NN element prefix alignment)
+
+# v1.21.3+: prompt history for canonical PRD paths is saved directly in
+# docs/02_PRD/<slug>/.ucx_create_session/
 
 # Create with validation
-ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/ --validate
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --validate
 
 # Create with strict validation (fail on any issue)
-ucx create prd --output docs/02_PRD/PRD-01/ --from-upstream docs/01_BRD/BRD-01/ --strict
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --strict
+
+# Prompt history location (v1.21.0+)
+ls docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/
+
+# Retry with alternate backend/model if quota or rate limit is hit
+ucx --cli-tool codex create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+ucx --cli-tool gemini --model gemini-2.5-pro create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ```
 
 ### Project-Specific Prompts & Skills
@@ -143,7 +162,9 @@ cp /opt/data/docs_flow_framework/UCX/skills/auditor.md \
 | 2 | `/UCX/skills/` | Framework defaults (fallback) |
 
 **Key difference**:
-- **Prompts**: Project-specific ONLY (no fallback to framework)
+- **UCR review prompts**: Project-specific preferred (framework fallback if project prompt is absent)
+- **UCC create prompts (v1.21.2+)**: Framework contracts + project overrides are merged
+- **UCC prompt session path (v1.21.3+)**: Canonical PRD paths save `.ucx_create_session/` beside the file, not in a nested slug folder
 - **Skills**: Project first, framework fallback if not found
 
 **Recommended personas for fintech/compliance**:
@@ -170,8 +191,13 @@ ucx create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
 # Create with API mode
 ucx --mode api create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
 
-# Create a PRD from upstream BRD
-ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01
+# Create a PRD from upstream BRD (auto-slugged output filename)
+ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+# writes: docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md
+
+# Or supply the full canonical path — UCX writes directly without extra nesting (v1.21.1+)
+ucx create prd docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
 # Use specific template
 ucx create brd docs/01_BRD/BRD-01 --template BRD-MVP-TEMPLATE.md

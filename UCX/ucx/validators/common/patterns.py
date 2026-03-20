@@ -15,7 +15,7 @@ from typing import Dict
 # =============================================================================
 
 YAML_FRONTMATTER_PATTERN = re.compile(
-    r"^---\n(.*?)\n---",
+    r"^---[ \t]*\n(.*?)\n---[ \t]*",
     re.DOTALL,
 )
 

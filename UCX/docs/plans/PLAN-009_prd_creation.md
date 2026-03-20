@@ -3,8 +3,8 @@
 **Document ID**: PLAN-009_prd_creation
 **Created**: 2026-03-19
 **Updated**: 2026-03-19
-**Status**: Revised (v6)
-**Target Version**: UCX v1.20.0
+**Status**: Revised (v7)
+**Target Version**: UCX v1.21.0+
 **Related Plans**: PLAN-010_prd_validation.md (validation counterpart)
 
 ---
@@ -1514,5 +1514,129 @@ ucx review prd docs/02_PRD/PRD-01/ 2>&1 | grep -i "loading.*skill"
 
 ---
 
-*Plan Version: v6 (Unified output reports, project-specific skills)*
+*Plan Version: v7 (Unified output reports, project-specific skills, upstream optimization, quota recovery)*
 *Generated: 2026-03-19*
+
+---
+
+## Phase 7: Creation Prompt History (v1.21.0)
+
+**Goal**: Save the assembled creation prompt to disk by default so users can audit, debug, and reuse prompts.
+
+### Behaviour
+
+- `ucx create` saves the full assembled prompt to `.ucx_create_session/prompt_<type>_<timestamp>.txt` **by default**.
+- File includes a self-documenting header with doc type, timestamp, upstream path, ref path, IPLAN path, and prompt size in chars.
+- Use `--no-save-prompt` to disable.
+
+Session location rules:
+- Sectioned single-file outputs (`PRD-01_{slug}.md`) store session files under `{doc_folder}/.ucx_create_session/`.
+- Simple single-file outputs store session files under `{parent}/.ucx_create_session/`.
+- Directory/multi-file outputs store session files under `{output_dir}/.ucx_create_session/`.
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `ucx/api/creation.py` | Added `save_prompt: bool = True` param to `create()`; added `_save_prompt_to_session()` method; new module constant `CREATE_SESSION_DIR = ".ucx_create_session"` |
+| `ucx/cli/main.py` | Added `--save-prompt/--no-save-prompt` flag (default enabled); displays saved path in output |
+| `ucx/validators/brd/fixer.py` | Added `.ucx_create_session` to skip list |
+| `ucx/validators/brd/duplicate_fixer.py` | Added `.ucx_create_session` to two skip lists |
+| `ucx/prompts/document.py` | Added `.ucx_create_session` to `SKIP_PATTERNS` |
+
+### Session Directory Layout
+
+```
+docs/02_PRD/PRD-01_platform_architecture/
+├── PRD-01_platform_architecture.md
+└── .ucx_create_session/
+    ├── prompt_prd_20260319T142301Z.txt
+    ├── prompt_prd_20260320T091500Z.txt   ← each run appends a new file
+    └── ...
+```
+
+### Python API
+
+```python
+# Default: prompt is saved automatically
+doc = ucc.create("prd", output_path, from_upstream=brd_path)
+
+# Opt out
+doc = ucc.create("prd", output_path, from_upstream=brd_path, save_prompt=False)
+
+# Inspect where it was saved
+print(doc.metadata.get("prompt_saved_path"))
+```
+
+---
+
+## Phase 8: Upstream Context Optimization and Slugged Output (v1.21.0)
+
+**Goal**: Reduce PRD creation token waste from sectioned BRD folders and improve output naming deterministically.
+
+### Behaviour
+
+- `--from-upstream` for sectioned BRD now resolves section files from `*.0_index.md` links, not from naive directory-wide `*.md` scanning.
+- YAML frontmatter, HTML comments, and navigation boilerplate are stripped before prompt assembly.
+- Low-signal heavy blocks are compacted deterministically:
+    - Mermaid diagrams -> compact placeholders (`[Diagram omitted for token efficiency: Mermaid ...]`)
+    - Cross-BRD dependency tables -> compact bullet summary
+    - Reference-heavy subsections -> compact list summary
+- If `output_path` is a plain doc ID (`PRD-01` or `PRD-01.md`) and upstream is slugged (`BRD-01_platform_architecture`), output path is normalized to `PRD-01_platform_architecture.md`.
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `ucx/api/creation.py` | Added `_resolve_section_files()`, `_strip_file_boilerplate()`, section compaction helpers, `_normalize_output_path()`, `_infer_slug_from_upstream()` |
+| `ucx/cli/main.py` | Updated `create` help text/examples for slugged output behavior |
+| `README.md` | Updated PRD creation examples to sectioned BRD upstream paths |
+| `docs/HOW_TO_CREATE_PRD.md` | Added auto-slug behavior documentation and updated examples |
+| `docs/HOW_TO_USE.md` | Updated PRD creation examples and expected output filenames |
+
+### Verification
+
+```bash
+# Plain doc ID + slugged upstream yields slugged output filename
+ucx --project-dir . create prd docs/02_PRD/PRD-01 \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture \
+    --no-validate
+
+# Expect output file path suffix: PRD-01_platform_architecture.md
+```
+
+---
+
+## Phase 9: Quota-Aware Failure Handling and Retry Prompt (v1.21.0+)
+
+**Goal**: Handle CLI model quota/rate-limit failures gracefully and guide user to retry with another backend/model.
+
+### Behaviour
+
+- `CLIClient` now captures useful error text from both `stderr` and `stdout` (some CLIs emit fatal errors to `stdout`).
+- Quota/rate-limit phrases are detected and surfaced with explicit guidance.
+- `ucx create` catches quota-related `AIClientError` and:
+    - prints a clear, user-facing quota message;
+    - in interactive TTY mode, asks user which backend/model to try next and retries once;
+    - in non-interactive mode, prints exact rerun guidance and exits with non-zero code.
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `ucx/ai/cli_client.py` | Enhanced `CalledProcessError` handling to include stdout, quota phrase detection, and actionable guidance |
+| `ucx/cli/main.py` | `create` now catches quota/rate-limit `AIClientError`, prompts for backend/model in interactive mode, retries once |
+
+### Verification
+
+```bash
+# Non-interactive sanity check should print guidance (not generic "No error output")
+ucx --project-dir . --model sonnet create prd docs/02_PRD/PRD-01 \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture \
+    --no-validate < /dev/null
+
+# Interactive mode should ask for backend/model when quota is hit
+ucx --project-dir . --model sonnet create prd docs/02_PRD/PRD-01 \
+    --from-upstream docs/01_BRD/BRD-01_platform_architecture \
+    --no-validate
+```

@@ -125,6 +125,16 @@ class LiteLLMClient(BaseAIClient):
         """
         max_tokens = max_tokens or 8192
 
+        # GPT-5 family currently only supports temperature=1.
+        effective_temperature = temperature
+        model_name = self.model_id.lower()
+        if "gpt-5" in model_name and temperature != 1:
+            effective_temperature = 1.0
+            self.logger.warning(
+                f"Model {self.model_id} requires temperature=1. "
+                f"Auto-adjusting from {temperature} to {effective_temperature}."
+            )
+
         prompt_tokens = self.count_tokens(prompt)
         system_tokens = self.count_tokens(system_prompt) if system_prompt else 0
         total_input_tokens = prompt_tokens + system_tokens
@@ -132,7 +142,7 @@ class LiteLLMClient(BaseAIClient):
         self.logger.info(
             f"Generate request: model={self.model_id} provider={self.provider} "
             f"prompt_tokens={prompt_tokens} system_tokens={system_tokens} "
-            f"max_tokens={max_tokens} temperature={temperature}"
+            f"max_tokens={max_tokens} temperature={effective_temperature}"
         )
 
         # Log AI request
@@ -153,7 +163,7 @@ class LiteLLMClient(BaseAIClient):
             "model": self.model_id,
             "messages": messages,
             "max_tokens": max_tokens,
-            "temperature": temperature,
+            "temperature": effective_temperature,
         }
 
         # Add optional parameters

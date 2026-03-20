@@ -10,6 +10,7 @@ Skill loading priority:
 from pathlib import Path
 from typing import Optional
 
+from ucx.exceptions import ConfigurationError, SkillError
 from ucx.observability.logging import get_logger
 
 logger = get_logger(__name__)
@@ -62,6 +63,7 @@ class SkillLoader:
         skill_dir: Optional[Path] = None,
         project_dir: Optional[Path] = None,
         cache_skills: bool = True,
+        strict_project_only: bool = False,
     ) -> None:
         """
         Initialize the skill loader.
@@ -70,6 +72,7 @@ class SkillLoader:
             skill_dir: Directory containing skill files. Defaults to /UCX/skills/.
             project_dir: Project root for project-specific skills (takes priority).
             cache_skills: Whether to cache loaded skills.
+            strict_project_only: Require skills from docs/UCX/skills/ only.
         """
         if skill_dir is None:
             skill_dir = DEFAULT_SKILLS_DIR
@@ -78,6 +81,7 @@ class SkillLoader:
         self._project_dir = project_dir
         self._project_skills_dir = get_project_skills_dir(project_dir) if project_dir else None
         self._cache_skills = cache_skills
+        self._strict_project_only = strict_project_only
         self._skill_cache: dict[str, str] = {}
 
         logger.debug(
@@ -85,6 +89,7 @@ class SkillLoader:
             skill_dir=str(skill_dir),
             project_dir=str(project_dir) if project_dir else None,
             project_skills_dir=str(self._project_skills_dir) if self._project_skills_dir else None,
+            strict_project_only=str(strict_project_only),
         )
 
     def _find_skill_in_dir(self, skill_name: str, skill_dir: Path) -> Optional[Path]:
@@ -148,6 +153,22 @@ class SkillLoader:
                     path=str(skill_path),
                 )
 
+        if self._strict_project_only:
+            if self._project_dir is None:
+                raise ConfigurationError(
+                    "Project directory not configured. Set UCX_PROJECT_DIR or use --project-dir before running UCX with project-specific skills."
+                )
+            if not self._project_skills_dir or not self._project_skills_dir.exists():
+                raise SkillError(
+                    f"Project-specific skills directory not found: {self._project_dir}/docs/UCX/skills/. Create project-specific persona files before running UCX.",
+                    skill_name=skill_name,
+                )
+            if not skill_path:
+                raise SkillError(
+                    f"Project-specific skill not found: {self._project_skills_dir}/{skill_name}.md. Framework skills are reference assets only. Create the project-specific skill first.",
+                    skill_name=skill_name,
+                )
+
         # Priority 2: Framework skills (fallback)
         if not skill_path:
             skill_path = self._find_skill_in_dir(skill_name, self._skill_dir)
@@ -182,10 +203,7 @@ class SkillLoader:
         """
         skills = {}
         for name in skill_names:
-            try:
-                skills[name] = self.load(name)
-            except FileNotFoundError:
-                logger.warning("Skill not found, skipping", skill=name)
+            skills[name] = self.load(name)
 
         logger.info("Loaded skills", count=len(skills), requested=len(skill_names))
         return skills

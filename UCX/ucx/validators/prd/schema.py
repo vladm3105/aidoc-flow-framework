@@ -157,22 +157,22 @@ TEMPLATE_PROFILES: Dict[str, Dict] = {
 
 # Valid PRD element ID format: PRD.NN.TT.SS
 PRD_ELEMENT_ID_PATTERN: Pattern = re.compile(
-    r"PRD\.(\d{2})\.(\d{2})\.(\d{2})"
+    r"PRD\.(\d{2,9})\.(\d{2})\.(\d{2,9})"
 )
 
 # Pattern to extract element IDs from content
 PRD_ELEMENT_ID_EXTRACT: Pattern = re.compile(
-    r"\bPRD\.(\d{2})\.(\d{2})\.(\d{2})\b"
+    r"\bPRD\.(\d{2,9})\.(\d{2})\.(\d{2,9})\b"
 )
 
 # BRD traceability pattern (required format)
 BRD_TRACE_PATTERN: Pattern = re.compile(
-    r"@brd:\s*BRD\.(\d{2})\.(\d{2})\.(\d{2})"
+    r"@brd:\s*BRD\.(\d{2,9})\.(\d{2,9})\.(\d{2,9})"
 )
 
 # Invalid BRD reference pattern (document-level only)
 BRD_TRACE_INVALID: Pattern = re.compile(
-    r"@brd:\s*BRD-(\d{2})(?!\.\d)"
+    r"@brd:\s*BRD-(\d{2,9})(?!\.\d)"
 )
 
 # =============================================================================
@@ -289,12 +289,12 @@ VALID_STATUS_VALUES: Set[str] = {
 
 # Valid PRD file name patterns
 PRD_FILE_PATTERN: Pattern = re.compile(
-    r"^PRD-(\d{2})(?:\.(\d+))?_[a-z0-9_]+\.md$"
+    r"^PRD-(\d{2,9})(?:\.(\d+))?_[a-z0-9_]+\.md$"
 )
 
 # Index file pattern (excluded from validation)
 PRD_INDEX_PATTERN: Pattern = re.compile(
-    r"^PRD-(\d{2})\.0_index\.md$"
+    r"^PRD-(\d{2,9})\.0_index\.md$"
 )
 
 # Template/example file pattern (excluded from validation)
@@ -405,7 +405,8 @@ def is_blocking_section(section: int) -> bool:
 
 def get_profile_threshold(profile: str) -> int:
     """Get score threshold for a template profile."""
-    return TEMPLATE_PROFILES.get(profile, TEMPLATE_PROFILES["standard"])["sys_ready_threshold"]
+    threshold = TEMPLATE_PROFILES.get(profile, TEMPLATE_PROFILES["standard"])["sys_ready_threshold"]
+    return int(threshold)
 
 
 def detect_legacy_pattern(text: str) -> List[tuple[str, str]]:

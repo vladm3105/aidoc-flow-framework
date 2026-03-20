@@ -22,7 +22,7 @@ class CLIClient(BaseAIClient):
     """
     AI client that invokes CLI agents via shell commands.
 
-    Supports Claude CLI, Gemini CLI, and other command-line AI tools.
+    Supports Claude CLI, Codex CLI, Gemini CLI, and other command-line AI tools.
     Handles long prompts via file-based input for reliability.
 
     Example:
@@ -31,6 +31,9 @@ class CLIClient(BaseAIClient):
 
         >>> # Or use Gemini CLI
         >>> client = CLIClient(cli_tool="gemini")
+
+        >>> # Or use Codex CLI
+        >>> client = CLIClient(cli_tool="codex", model="gpt-5-codex")
     """
 
     # Supported CLI tools and their command patterns
@@ -54,6 +57,15 @@ class CLIClient(BaseAIClient):
             "input_method": "stdin",
             "supports_files": False,
             "timeout_default": 300,
+        },
+        "codex": {
+            "command": "codex",
+            "base_args": ["exec", "-"],
+            "system_prompt_flag": None,
+            "model_flag": "-m",
+            "input_method": "stdin",
+            "supports_files": False,
+            "timeout_default": 600,
         },
         "ollama": {
             "command": "ollama",
@@ -85,6 +97,15 @@ class CLIClient(BaseAIClient):
     # Threshold for using file-based input (characters)
     LONG_PROMPT_THRESHOLD = 10000
 
+    # Common quota/usage-limit phrases surfaced by CLI tools.
+    QUOTA_HINT_PATTERNS = [
+        "out of extra usage",
+        "rate limit",
+        "quota",
+        "usage limit",
+        "too many requests",
+    ]
+
     def __init__(
         self,
         cli_tool: str = "claude",
@@ -98,7 +119,7 @@ class CLIClient(BaseAIClient):
         Initialize CLI client.
 
         Args:
-            cli_tool: CLI tool to use (claude, gemini, ollama, aider)
+            cli_tool: CLI tool to use (claude, codex, gemini, ollama, aider)
             model: Model override (opus, sonnet, haiku for Claude; model name for Ollama)
             timeout: Command timeout in seconds (uses tool default if not set)
             working_dir: Working directory for command execution
@@ -237,7 +258,25 @@ class CLIClient(BaseAIClient):
                 duration_ms=duration_ms,
                 success=False,
             )
-            error_msg = e.stderr[:500] if e.stderr else "No error output"
+            # Some CLI tools emit fatal messages to stdout (not stderr).
+            stderr_msg = (e.stderr or "").strip()
+            stdout_msg = (e.output or "").strip()
+            raw_error_text = "\n".join(part for part in [stderr_msg, stdout_msg] if part).strip()
+
+            if raw_error_text:
+                error_msg = raw_error_text[:1000]
+            else:
+                error_msg = "No error output"
+
+            lower_error = raw_error_text.lower()
+            if any(pattern in lower_error for pattern in self.QUOTA_HINT_PATTERNS):
+                guidance = (
+                    "Usage quota or rate limit detected. "
+                    "Choose another model/backend and retry "
+                    "(example: --cli-tool gemini --model gemini-2.5-pro)."
+                )
+                error_msg = f"{error_msg}\n{guidance}" if error_msg != "No error output" else guidance
+
             self.logger.error(f"CLI command failed: exit_code={e.returncode} error={error_msg}")
             raise AIClientError(
                 f"CLI command failed with exit code {e.returncode}: {error_msg}",
@@ -266,6 +305,14 @@ class CLIClient(BaseAIClient):
     ) -> str:
         """Execute CLI command with stdin input."""
         command = self._build_command(system_prompt=system_prompt)
+        codex_last_message_path: Optional[Path] = None
+
+        # Codex CLI prints execution metadata to stdout; capture only the final
+        # assistant message to keep generated documents clean.
+        if self.cli_tool == "codex":
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
+                codex_last_message_path = Path(f.name)
+            command.extend(["--output-last-message", str(codex_last_message_path)])
 
         # Log command
         log_cli_command(command, self.timeout)
@@ -277,37 +324,46 @@ class CLIClient(BaseAIClient):
 
         start_time = time.perf_counter()
 
-        # Execute command with prompt via stdin
-        result = subprocess.run(
-            command,
-            input=prompt,
-            capture_output=True,
-            text=True,
-            timeout=self.timeout,
-            cwd=self.working_dir,
-            env=env,
-        )
-
-        duration_s = time.perf_counter() - start_time
-
-        # Log result
-        log_cli_result(
-            command=command[0],
-            returncode=result.returncode,
-            duration_s=duration_s,
-            output_len=len(result.stdout),
-        )
-
-        if result.returncode != 0:
-            self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
-            raise subprocess.CalledProcessError(
-                result.returncode,
+        try:
+            # Execute command with prompt via stdin
+            result = subprocess.run(
                 command,
-                output=result.stdout,
-                stderr=result.stderr,
+                input=prompt,
+                capture_output=True,
+                text=True,
+                timeout=self.timeout,
+                cwd=self.working_dir,
+                env=env,
             )
 
-        return result.stdout.strip()
+            duration_s = time.perf_counter() - start_time
+
+            # Log result
+            log_cli_result(
+                command=command[0],
+                returncode=result.returncode,
+                duration_s=duration_s,
+                output_len=len(result.stdout),
+            )
+
+            if result.returncode != 0:
+                self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
+                raise subprocess.CalledProcessError(
+                    result.returncode,
+                    command,
+                    output=result.stdout,
+                    stderr=result.stderr,
+                )
+
+            if self.cli_tool == "codex" and codex_last_message_path and codex_last_message_path.exists():
+                codex_message = codex_last_message_path.read_text(encoding="utf-8").strip()
+                if codex_message:
+                    return codex_message
+
+            return result.stdout.strip()
+        finally:
+            if codex_last_message_path:
+                codex_last_message_path.unlink(missing_ok=True)
 
     def _execute_with_file_input(
         self,
@@ -330,6 +386,12 @@ class CLIClient(BaseAIClient):
 
         try:
             command = self._build_command(system_prompt=system_prompt)
+            codex_last_message_path: Optional[Path] = None
+
+            if self.cli_tool == "codex":
+                with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
+                    codex_last_message_path = Path(f.name)
+                command.extend(["--output-last-message", str(codex_last_message_path)])
 
             # Log command
             log_cli_command(command, self.timeout)
@@ -340,38 +402,47 @@ class CLIClient(BaseAIClient):
 
             start_time = time.perf_counter()
 
-            # Read file content and pass via stdin
-            with open(temp_path, "r", encoding="utf-8") as f:
-                result = subprocess.run(
-                    command,
-                    input=f.read(),
-                    capture_output=True,
-                    text=True,
-                    timeout=self.timeout,
-                    cwd=self.working_dir,
-                    env=env,
+            try:
+                # Read file content and pass via stdin
+                with open(temp_path, "r", encoding="utf-8") as f:
+                    result = subprocess.run(
+                        command,
+                        input=f.read(),
+                        capture_output=True,
+                        text=True,
+                        timeout=self.timeout,
+                        cwd=self.working_dir,
+                        env=env,
+                    )
+
+                duration_s = time.perf_counter() - start_time
+
+                # Log result
+                log_cli_result(
+                    command=command[0],
+                    returncode=result.returncode,
+                    duration_s=duration_s,
+                    output_len=len(result.stdout),
                 )
 
-            duration_s = time.perf_counter() - start_time
+                if result.returncode != 0:
+                    self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
+                    raise subprocess.CalledProcessError(
+                        result.returncode,
+                        command,
+                        output=result.stdout,
+                        stderr=result.stderr,
+                    )
 
-            # Log result
-            log_cli_result(
-                command=command[0],
-                returncode=result.returncode,
-                duration_s=duration_s,
-                output_len=len(result.stdout),
-            )
+                if self.cli_tool == "codex" and codex_last_message_path and codex_last_message_path.exists():
+                    codex_message = codex_last_message_path.read_text(encoding="utf-8").strip()
+                    if codex_message:
+                        return codex_message
 
-            if result.returncode != 0:
-                self.logger.warning(f"CLI stderr: {result.stderr[:500] if result.stderr else 'empty'}")
-                raise subprocess.CalledProcessError(
-                    result.returncode,
-                    command,
-                    output=result.stdout,
-                    stderr=result.stderr,
-                )
-
-            return result.stdout.strip()
+                return result.stdout.strip()
+            finally:
+                if codex_last_message_path:
+                    codex_last_message_path.unlink(missing_ok=True)
 
         finally:
             # Clean up temp file
