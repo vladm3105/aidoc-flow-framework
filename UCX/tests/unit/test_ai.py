@@ -3,7 +3,9 @@
 import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 
+from ucx.ai.cli_client import CLIClient
 from ucx.config.settings import RetryConfig
+from ucx.exceptions import AIClientError
 from ucx.ai.retry import RetryPolicy, RetryState
 from ucx.ai.tokens import TokenCounter, TokenBudget, ContentTruncator
 
@@ -201,3 +203,46 @@ class TestContentTruncator:
         result = truncator.truncate(content, max_tokens=20, preserve_structure=True)
         # Result should be truncated
         assert len(result) <= len(content)
+
+
+class TestCLIClientResponseValidation:
+    """Tests for CLI response-level error detection."""
+
+    def test_generate_rejects_error_like_plain_text(self):
+        """CLI text error payloads should raise AIClientError even with exit code 0."""
+        client = CLIClient(cli_tool="claude")
+
+        with patch.object(
+            client,
+            "_execute_cli",
+            return_value="Error: rate limit exceeded. Try '--help' for help.",
+        ):
+            with pytest.raises(AIClientError, match="error-like text response"):
+                client.generate("Create a PRD")
+
+    def test_generate_accepts_markdown_document_with_error_words(self):
+        """Valid markdown content should pass even if it mentions error handling."""
+        client = CLIClient(cli_tool="claude")
+        response = """---
+title: Test
+---
+
+# PRD-01: Platform
+
+## 5. Error Handling
+
+System SHALL handle transient errors with retries.
+"""
+
+        with patch.object(client, "_execute_cli", return_value=response):
+            generated = client.generate("Create a PRD")
+
+        assert generated == response
+
+    def test_generate_rejects_json_error_payload(self):
+        """JSON-style error payloads returned as text should be rejected."""
+        client = CLIClient(cli_tool="claude")
+
+        with patch.object(client, "_execute_cli", return_value='{"error":"invalid api key"}'):
+            with pytest.raises(AIClientError, match="invalid api key"):
+                client.generate("Create a PRD")

@@ -1,11 +1,13 @@
 """CLI-based AI client that wraps shell commands for CLI agents."""
 
+import json
 import os
+import re
 import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypedDict
 
 from ucx.ai.base import BaseAIClient
 from ucx.exceptions import AIClientError
@@ -16,6 +18,18 @@ from ucx.utils.logging import (
     log_ai_request,
     log_ai_response,
 )
+
+
+class CLIToolConfig(TypedDict, total=False):
+    command: str
+    base_args: list[str]
+    system_prompt_flag: Optional[str]
+    model_flag: Optional[str]
+    input_method: str
+    supports_files: bool
+    timeout_default: int
+    supports_web_search: bool
+    allowed_tools_flag: str
 
 
 class CLIClient(BaseAIClient):
@@ -37,7 +51,7 @@ class CLIClient(BaseAIClient):
     """
 
     # Supported CLI tools and their command patterns
-    CLI_TOOLS = {
+    CLI_TOOLS: dict[str, CLIToolConfig] = {
         "claude": {
             "command": "claude",
             "base_args": ["-p", "--dangerously-skip-permissions"],  # -p for print mode, skip permission prompts
@@ -56,6 +70,7 @@ class CLIClient(BaseAIClient):
             "model_flag": None,
             "input_method": "stdin",
             "supports_files": False,
+            "supports_web_search": False,
             "timeout_default": 300,
         },
         "codex": {
@@ -65,6 +80,7 @@ class CLIClient(BaseAIClient):
             "model_flag": "-m",
             "input_method": "stdin",
             "supports_files": False,
+            "supports_web_search": False,
             "timeout_default": 600,
         },
         "ollama": {
@@ -74,6 +90,7 @@ class CLIClient(BaseAIClient):
             "model_flag": None,  # Model is part of command for ollama
             "input_method": "stdin",
             "supports_files": False,
+            "supports_web_search": False,
             "timeout_default": 300,
         },
         "aider": {
@@ -83,6 +100,7 @@ class CLIClient(BaseAIClient):
             "model_flag": "--model",
             "input_method": "arg",
             "supports_files": True,
+            "supports_web_search": False,
             "timeout_default": 300,
         },
     }
@@ -104,6 +122,35 @@ class CLIClient(BaseAIClient):
         "quota",
         "usage limit",
         "too many requests",
+    ]
+
+    # Strong signals that a CLI returned an error message instead of model output.
+    RESPONSE_ERROR_PREFIXES = [
+        "error:",
+        "fatal:",
+        "exception:",
+        "traceback (most recent call last):",
+        "usage:",
+        "invalid api key",
+        "authentication failed",
+        "permission denied",
+        "command not found",
+    ]
+
+    RESPONSE_ERROR_TERMS = [
+        "rate limit",
+        "quota",
+        "too many requests",
+        "unauthorized",
+        "forbidden",
+        "permission denied",
+        "invalid api key",
+        "authentication failed",
+        "try '--help'",
+        "failed to",
+        "not found",
+        "network error",
+        "timed out",
     ]
 
     def __init__(
@@ -139,17 +186,18 @@ class CLIClient(BaseAIClient):
                 f"Supported: {list(self.CLI_TOOLS.keys())}"
             )
 
-        self.tool_config = self.CLI_TOOLS[self.cli_tool]
+        self.tool_config: CLIToolConfig = self.CLI_TOOLS[self.cli_tool]
         self.timeout = timeout or self.tool_config["timeout_default"]
 
         # Resolve model alias
+        self._resolved_model: Optional[str]
         if model and model.lower() in self.MODEL_ALIASES:
             self._resolved_model = self.MODEL_ALIASES[model.lower()]
         else:
             self._resolved_model = model
 
         # Validate web search support
-        if enable_web_search and not self.tool_config.get("supports_web_search"):
+        if enable_web_search and not self.tool_config["supports_web_search"]:
             self.logger.warning(
                 f"Web search requested but {cli_tool} does not support it. Ignoring."
             )
@@ -215,6 +263,26 @@ class CLIClient(BaseAIClient):
             else:
                 result = self._execute_cli(prompt, system_prompt, **kwargs)
 
+            embedded_error = self._detect_embedded_cli_error(result)
+            if embedded_error is not None:
+                duration_ms = (time.perf_counter() - start_time) * 1000
+                log_ai_response(
+                    provider=f"cli:{self.cli_tool}",
+                    model=self._resolved_model or self.cli_tool,
+                    response_tokens=0,
+                    duration_ms=duration_ms,
+                    success=False,
+                )
+                self.logger.error(
+                    "CLI returned error-like text payload with exit code 0: %s",
+                    embedded_error,
+                )
+                raise AIClientError(
+                    "CLI returned an error-like text response instead of model output: "
+                    f"{embedded_error}",
+                    model=self.cli_tool,
+                )
+
             duration_ms = (time.perf_counter() - start_time) * 1000
             response_tokens = self.count_tokens(result)
 
@@ -249,6 +317,8 @@ class CLIClient(BaseAIClient):
                 f"Consider increasing timeout for long documents.",
                 model=self.cli_tool,
             )
+        except AIClientError:
+            raise
         except subprocess.CalledProcessError as e:
             duration_ms = (time.perf_counter() - start_time) * 1000
             log_ai_response(
@@ -296,6 +366,44 @@ class CLIClient(BaseAIClient):
                 f"CLI execution error: {str(e)}",
                 model=self.cli_tool,
             )
+
+    def _detect_embedded_cli_error(self, response_text: str) -> Optional[str]:
+        """Detect plain-text CLI/tool errors that can arrive with exit code 0."""
+        text = (response_text or "").strip()
+        if not text:
+            return "empty response"
+
+        # Parse JSON-style error payloads if present.
+        if text.startswith("{") and text.endswith("}"):
+            try:
+                payload = json.loads(text)
+                if isinstance(payload, dict):
+                    value = payload.get("error") or payload.get("errors")
+                    if value:
+                        return str(value)[:300]
+            except Exception:
+                pass
+
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        first_line = lines[0].lower() if lines else ""
+
+        if any(first_line.startswith(prefix) for prefix in self.RESPONSE_ERROR_PREFIXES):
+            return lines[0][:300] if lines else "error-like prefix"
+
+        # Avoid false positives for valid markdown documents (headings/frontmatter).
+        looks_like_markdown_doc = bool(
+            re.search(r"(?m)^#\s+\S", text)
+            or re.search(r"(?m)^##\s+\S", text)
+            or text.startswith("---\n")
+        )
+
+        lowered = text.lower()
+        term_hits = sum(1 for term in self.RESPONSE_ERROR_TERMS if term in lowered)
+
+        if not looks_like_markdown_doc and len(text) <= 5000 and term_hits >= 2:
+            return lines[0][:300] if lines else text[:300]
+
+        return None
 
     def _execute_cli(
         self,
@@ -474,7 +582,7 @@ class CLIClient(BaseAIClient):
             command.extend([self.tool_config["system_prompt_flag"], system_prompt])
 
         # Add web search capability if enabled (Claude CLI only)
-        if self.enable_web_search and self.tool_config.get("allowed_tools_flag"):
+        if self.enable_web_search and self.tool_config["allowed_tools_flag"]:
             command.extend([self.tool_config["allowed_tools_flag"], "WebSearch"])
             self.logger.debug("Web search enabled via --allowedTools WebSearch")
 
