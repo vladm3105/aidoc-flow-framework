@@ -115,10 +115,19 @@ ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_ar
 # Prompt history location (v1.21.0+)
 ls docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/
 
+# Optional: include raw PRD LLM responses as Appendix D (disabled by default)
+UCX_PRD_LLM_AUDIT_COPY=true \
+    ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
 # Retry with alternate backend/model if quota or rate limit is hit
 ucx --cli-tool codex create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ucx --cli-tool gemini --model gemini-2.5-pro create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ```
+
+PRD environment toggles:
+
+- `UCX_UPSTREAM_SECTION_CHARS` and `UCX_UPSTREAM_TOTAL_CHARS`: optional upstream clipping controls (default: unlimited)
+- `UCX_PRD_LLM_AUDIT_COPY`: set to `true` to append Appendix D with raw LLM attempts; unset/false keeps it disabled
 
 ### Project-Specific Prompts & Skills
 
@@ -341,6 +350,11 @@ print(f"Findings: {len(result.findings)}")
 | **P1** | High - should fix | Fix before release |
 | **P2** | Medium - consider | Optional improvement |
 
+**Finding ID lifecycle (review reports):**
+- Persona outputs should emit extraction IDs as `{PREFIX}-P{PRIORITY}-{NNN}`.
+- Assembled reports canonicalize findings into hash IDs as `P{0|1|2}-{hex}`.
+- Canonical IDs are used for deduplication and weighted scoring; persona IDs remain available for traceability.
+
 ---
 
 ## Phase 3: UCRem (Remediation)
@@ -375,16 +389,32 @@ ucx prescreen BRD-01.UCR_review_report_v003.md -o screening.json
 # Auto-detect latest review report (recommended - v1.16.0+)
 ucx remediate docs/01_BRD/BRD-01/
 
+# PRD remediation (same command contract)
+ucx remediate docs/02_PRD/PRD-01/
+
 # Apply auto-safe fixes automatically
 ucx remediate docs/01_BRD/BRD-01/ --apply-auto-safe
 
+# PRD remediation with auto-safe fixes
+ucx remediate docs/02_PRD/PRD-01/ --apply-auto-safe
+
 # Use specific report (override auto-detection)
 ucx remediate docs/01_BRD/BRD-01/ -r BRD-01.UCR_review_report_v001.md
+
+# PRD remediation using a specific review report
+ucx remediate docs/02_PRD/PRD-01/ -r docs/02_PRD/PRD-01/PRD-01.UCX_review_report_v001.md
 ```
 
-**Auto-detection** finds the latest `*.UCR_review_report_v*.md` by version number:
-- `BRD-01.UCR_review_report_v003.md` selected over `v001.md` or `v002.md`
+**Auto-detection** finds the latest `*.UCX_review_report_v*.md` by version number:
+- `BRD-01.UCX_review_report_v003.md` selected over `v001.md` or `v002.md`
 - Falls back to modification time if versions match
+ - PRD review reports in the same folder are discovered using the same latest-version strategy
+
+**Remediation output (single canonical report):**
+- Each run writes `{DOC-ID}.UCX_remediation_report_v{NNN}.md` in the document directory.
+- The remediation report is the canonical artifact for both summary and detailed fix blocks.
+- `--apply-auto-safe` applies fixes parsed from the canonical UCX remediation report.
+- Remediation generation is source-protected by default: unexpected edits to source documentation files are restored automatically.
 
 ### Python API
 

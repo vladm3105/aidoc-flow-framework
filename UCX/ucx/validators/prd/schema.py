@@ -246,10 +246,14 @@ EARS_PATTERNS: List[Pattern] = [
 
 # Layer separation note content (required in Section 8)
 LAYER_SEPARATION_NOTE_KEYWORDS: List[str] = [
-    "Layer Separation",
-    "EARS (Layer 3)",
-    "BDD (Layer 4)",
-    "downstream artifact",
+    "layer separation",
+    "ears",
+    "layer 3",
+    "bdd",
+    "layer 4",
+    "feature files",
+    "behavioral requirements",
+    "test specifications",
 ]
 
 # =============================================================================
@@ -445,8 +449,23 @@ def has_ears_patterns(content: str) -> bool:
 
 def has_layer_separation_note(content: str) -> bool:
     """Check if content has layer separation note."""
-    count = sum(1 for keyword in LAYER_SEPARATION_NOTE_KEYWORDS if keyword in content)
-    return count >= 2  # Require at least 2 keywords
+    normalized = content.lower()
+
+    has_heading = "layer separation" in normalized
+    has_ears_scope = "ears" in normalized and (
+        "layer 3" in normalized or "behavioral requirements" in normalized
+    )
+    has_bdd_scope = "bdd" in normalized and (
+        "layer 4" in normalized
+        or "feature files" in normalized
+        or "test specifications" in normalized
+    )
+
+    if has_heading and has_ears_scope and has_bdd_scope:
+        return True
+
+    count = sum(1 for keyword in LAYER_SEPARATION_NOTE_KEYWORDS if keyword in normalized)
+    return count >= 5
 
 
 def estimate_tokens(content: str) -> int:

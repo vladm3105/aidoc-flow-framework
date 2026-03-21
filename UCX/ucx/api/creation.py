@@ -3,6 +3,7 @@
 import datetime
 import html
 import json
+import os
 import re
 from pathlib import Path
 from typing import Optional, Union
@@ -17,8 +18,48 @@ from ucx.validators.common.file_utils import sort_section_files
 from ucx.utils.logging import get_logger
 
 CREATE_SESSION_DIR = ".ucx_create_session"
-MAX_UPSTREAM_SECTION_CHARS = 6000
-MAX_UPSTREAM_TOTAL_CHARS = 60000
+
+
+def _optional_int_env(name: str) -> Optional[int]:
+    """Return positive integer from env var, or None when unset/invalid/disabled.
+
+    Env values <= 0 disable the corresponding limit.
+    """
+    raw = os.getenv(name)
+    if raw is None:
+        return None
+    try:
+        value = int(raw)
+    except ValueError:
+        return None
+    return value if value > 0 else None
+
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    """Parse boolean environment flags with common truthy/falsey forms."""
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    normalized = raw.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+# Default behavior is full upstream inclusion (no truncation).
+# Optional controls for large upstream artifacts:
+# - UCX_UPSTREAM_SECTION_CHARS: max chars per upstream section file
+# - UCX_UPSTREAM_TOTAL_CHARS: max chars across all upstream content
+# Set either variable to a positive integer to enable clipping.
+# Unset, non-integer, or <=0 means unlimited for that dimension.
+MAX_UPSTREAM_SECTION_CHARS = _optional_int_env("UCX_UPSTREAM_SECTION_CHARS")
+MAX_UPSTREAM_TOTAL_CHARS = _optional_int_env("UCX_UPSTREAM_TOTAL_CHARS")
+
+# PRD raw LLM response appendix is optional and disabled by default.
+# Set UCX_PRD_LLM_AUDIT_COPY=true to append Appendix D with raw LLM attempts.
+PRD_LLM_AUDIT_COPY_ENABLED = _env_flag("UCX_PRD_LLM_AUDIT_COPY", default=False)
 
 
 class UCCPhase:
@@ -181,11 +222,12 @@ class UCCPhase:
         # Apply deterministic PRD guardrails before writing output
         if doc_type == DocType.PRD:
             content = self._apply_prd_output_guardrails(content, output_path)
-            content = self._append_prd_llm_response_audit(
-                content,
-                attempts=prd_attempt_responses,
-                fallback_used=prd_fallback_used,
-            )
+            if PRD_LLM_AUDIT_COPY_ENABLED:
+                content = self._append_prd_llm_response_audit(
+                    content,
+                    attempts=prd_attempt_responses,
+                    fallback_used=prd_fallback_used,
+                )
             if not self._looks_like_prd_document(content):
                 raise UCXError(
                     "PRD creation failed: model returned summary/invalid output instead of full PRD document. "
@@ -437,13 +479,20 @@ class UCCPhase:
             "- YAML frontmatter MUST be valid and closed with `---`\n",
             f"- Frontmatter `doc_id` MUST equal `{target_doc_id}`\n",
             "- Frontmatter MUST include: `title`, `doc_id`, `version`, `status`, `tags`\n",
+            "- Frontmatter `custom_fields.document_type` MUST equal `prd`\n",
+            "- Frontmatter `custom_fields.artifact_type` MUST equal `PRD`\n",
+            "- Frontmatter `custom_fields.layer` MUST equal `2`\n",
             f"- H1 title MUST start with `# {target_doc_id}:`\n",
             f"- Document Control table `Document ID` value MUST be `{target_doc_id}`\n",
+            "- Do NOT emit placeholder tokens such as `(TBD)`, `[TODO]`, or `XXX`\n",
         ]
 
         if doc_type == DocType.PRD:
             doc_num = target_doc_id.split("-", 1)[1]
             contract.append(f"- All PRD element IDs MUST use `PRD.{doc_num}.TT.SS`\n")
+            contract.append(
+                "- Section 8 MUST begin with the exact Layer Separation Note required by the PRD validator\n"
+            )
 
         return "".join(contract)
 
@@ -512,9 +561,9 @@ class UCCPhase:
         custom_fields = frontmatter.get("custom_fields", {})
         if not isinstance(custom_fields, dict):
             custom_fields = {}
-        custom_fields.setdefault("document_type", "prd")
-        custom_fields.setdefault("artifact_type", "PRD")
-        custom_fields.setdefault("layer", 2)
+        custom_fields["document_type"] = "prd"
+        custom_fields["artifact_type"] = "PRD"
+        custom_fields["layer"] = 2
         frontmatter["custom_fields"] = custom_fields
 
         # Enforce ID consistency in common PRD locations.
@@ -543,8 +592,32 @@ class UCCPhase:
                 body,
             )
 
+        body = self._ensure_prd_layer_separation_note(body)
+
         fm_text = yaml.safe_dump(frontmatter, sort_keys=False).strip()
         return f"---\n{fm_text}\n---\n\n{body.lstrip()}"
+
+    def _ensure_prd_layer_separation_note(self, body: str) -> str:
+        """Inject the validator-compatible Section 8 layer note when it is missing."""
+        required_note = (
+            "> **Layer Separation Note**: This section provides role definitions and story summaries. "
+            "Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files."
+        )
+
+        section_8_match = re.search(
+            r"(?ms)(^## 8\.\s+[^\n]+\n)(.*?)(?=^## \d+\.|\Z)",
+            body,
+        )
+        if not section_8_match:
+            return body
+
+        section_heading = section_8_match.group(1)
+        section_content = section_8_match.group(2)
+        if required_note in section_content:
+            return body
+
+        replacement = f"{section_heading}\n{required_note}\n\n{section_content.lstrip()}"
+        return body[:section_8_match.start()] + replacement + body[section_8_match.end():]
 
     def _looks_like_prd_document(self, content: str) -> bool:
         """Heuristic check that generated PRD is a full artifact, not a creation summary."""
@@ -608,7 +681,7 @@ class UCCPhase:
         attempts: list[str],
         fallback_used: bool,
     ) -> str:
-        """Append raw LLM responses to PRD for audit and validation."""
+        """Append raw LLM responses to PRD when audit copy is enabled."""
         cleaned_attempts = [a for a in attempts if isinstance(a, str) and a.strip()]
         if not cleaned_attempts:
             return content
@@ -904,6 +977,16 @@ class UCCPhase:
         Programmatically strips YAML frontmatter and HTML comment blocks from
         each file before merging, then prunes low-signal sections/subsections
         without an LLM call.
+
+        Upstream clipping controls:
+        - UCX_UPSTREAM_SECTION_CHARS: cap per section file
+        - UCX_UPSTREAM_TOTAL_CHARS: cap for merged upstream block
+
+                PRD audit appendix control:
+                - UCX_PRD_LLM_AUDIT_COPY: append raw LLM attempts as Appendix D
+                    (disabled by default)
+
+        By default both are unlimited (full upstream output).
         """
         parts = ["\n---\n\n# UPSTREAM ARTIFACT\n\n"]
         used_chars = 0
@@ -914,18 +997,19 @@ class UCCPhase:
                 return ""
 
             clipped = text
-            if len(clipped) > MAX_UPSTREAM_SECTION_CHARS:
+            if MAX_UPSTREAM_SECTION_CHARS and len(clipped) > MAX_UPSTREAM_SECTION_CHARS:
                 clipped = (
                     clipped[:MAX_UPSTREAM_SECTION_CHARS].rstrip()
                     + "\n\n[...truncated upstream section for token budget...]"
                 )
 
-            remaining = MAX_UPSTREAM_TOTAL_CHARS - used_chars
-            if remaining <= 0:
-                return ""
+            if MAX_UPSTREAM_TOTAL_CHARS:
+                remaining = MAX_UPSTREAM_TOTAL_CHARS - used_chars
+                if remaining <= 0:
+                    return ""
 
-            if len(clipped) > remaining:
-                clipped = clipped[:remaining].rstrip() + "\n\n[...truncated upstream artifact for token budget...]"
+                if len(clipped) > remaining:
+                    clipped = clipped[:remaining].rstrip() + "\n\n[...truncated upstream artifact for token budget...]"
 
             used_chars += len(clipped)
             return clipped
@@ -940,7 +1024,7 @@ class UCCPhase:
                 parts.append(f"## File: {f.name}\n\n")
                 parts.append(cleaned)
                 parts.append("\n\n")
-                if used_chars >= MAX_UPSTREAM_TOTAL_CHARS:
+                if MAX_UPSTREAM_TOTAL_CHARS and used_chars >= MAX_UPSTREAM_TOTAL_CHARS:
                     break
         elif upstream_path.is_file():
             cleaned = self._prepare_upstream_section_content(upstream_path)

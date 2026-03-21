@@ -100,6 +100,24 @@ The document ID must be internally consistent across filename, frontmatter, H1, 
 - Use `PRD-NN` only for document-level identity.
 - Use `PRD.NN.TT.SS` only for element-level IDs, with `NN` matching the same document number.
 
+## MINIMUM ID FAMILY COVERAGE (Required for SYS-Ready)
+
+To avoid low readiness scores, include enough concrete elements for each major validator-scored family.
+
+Minimum recommended coverage in the initial PRD draft:
+- Section 4: at least 3 stakeholder needs using `PRD.NN.24.SS`
+- Section 5: at least 5 success metrics using `PRD.NN.08.SS`
+- Section 6: at least 3 goals using `PRD.NN.23.SS`
+- Section 7: at least 5 dependencies using `PRD.NN.05.SS` and at least 5 feature items using `PRD.NN.22.SS`
+- Section 8: at least 10 user stories using `PRD.NN.09.SS`
+- Section 9: at least 10 functional requirements using `PRD.NN.01.SS`
+- Section 11: at least 10 acceptance criteria using `PRD.NN.06.SS`
+- Section 12: at least 5 constraints using `PRD.NN.03.SS` and explicit assumptions using `PRD.NN.04.SS`
+- Section 13: at least 5 risks using `PRD.NN.07.SS`
+- Section 21: explicit quality attributes using `PRD.NN.02.SS`
+
+These are lower-bound drafting targets, not placeholders. Use real content only.
+
 ---
 
 ## SECTION 10 REQUIREMENTS (BLOCKING)
@@ -278,6 +296,13 @@ custom_fields:
 ---
 ```
 
+Frontmatter rules:
+- `custom_fields.document_type` must be exactly `prd`
+- `custom_fields.artifact_type` must be exactly `PRD`
+- `custom_fields.layer` must be exactly `2`
+- Do not emit alternate values such as `prd-document`
+- Do not leave placeholder values such as `(TBD)` in metadata tables or persona/stakeholder rows
+
 ---
 
 ## AUTHOR PERSONAS
@@ -328,6 +353,9 @@ Create a complete PRD from the upstream BRD artifact.
 6. Use PRD.NN.TT.SS element IDs only
 7. Include dual scoring in Document Control
 8. Generate a single monolithic PRD file
+9. Meet the minimum ID-family coverage needed for SYS-Ready scoring
+10. Use exact frontmatter values for `document_type`, `artifact_type`, and `layer`
+11. Do not use `(TBD)` or similar placeholders anywhere in the PRD
 
 ---
 

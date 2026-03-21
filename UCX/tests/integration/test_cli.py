@@ -8,6 +8,8 @@ from pathlib import Path
 from click.testing import CliRunner
 
 from ucx.cli.main import cli
+from ucx.config.settings import UCXConfig
+from ucx.exceptions import AIClientError
 
 
 class TestCLIHelp:
@@ -41,6 +43,12 @@ class TestCLIHelp:
         result = runner.invoke(cli, ["autopilot", "--help"])
         assert result.exit_code == 0
         assert "autopilot" in result.output.lower() or "doc_type" in result.output.lower()
+
+    def test_ai_probe_help(self, runner: CliRunner):
+        """Test ai probe help."""
+        result = runner.invoke(cli, ["ai", "probe", "--help"])
+        assert result.exit_code == 0
+        assert "probe" in result.output.lower()
 
 
 class TestCLIVersion:
@@ -164,3 +172,71 @@ class TestCLIIntegration:
 
         result = runner.invoke(cli, ["--config", str(config_path), "--help"])
         assert result.exit_code == 0
+
+    def test_ai_probe_success(self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch):
+        """Test ai probe reports success when preflight passes."""
+
+        class _FakeClient:
+            model = "opus"
+
+            def _run_availability_preflight(self):
+                return None
+
+        monkeypatch.setattr(UCXConfig, "get_ai_client", lambda self: _FakeClient())
+
+        result = runner.invoke(cli, ["ai", "probe"])
+        assert result.exit_code == 0
+        assert "AI probe passed" in result.output
+
+    def test_ai_probe_failure(self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch):
+        """Test ai probe surfaces preflight failures as CLI errors."""
+
+        class _FakeClient:
+            model = "opus"
+
+            def _run_availability_preflight(self):
+                raise AIClientError("probe failed", model="opus")
+
+        monkeypatch.setattr(UCXConfig, "get_ai_client", lambda self: _FakeClient())
+
+        result = runner.invoke(cli, ["ai", "probe"])
+        assert result.exit_code == 1
+        assert "probe failed" in result.output
+
+    def test_ai_probe_full_output(self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch):
+        """Test ai probe can print raw phase-3 LLM output."""
+
+        class _FakeClient:
+            model = "opus"
+
+            def _run_availability_preflight(self, return_details=False):
+                if return_details:
+                    return {"phase3_response": "1710892800"}
+                return None
+
+        monkeypatch.setattr(UCXConfig, "get_ai_client", lambda self: _FakeClient())
+
+        result = runner.invoke(cli, ["ai", "probe", "--full-output"])
+        assert result.exit_code == 0
+        assert "AI probe passed" in result.output
+        assert "Raw LLM probe output" in result.output
+        assert "1710892800" in result.output
+
+    def test_ai_probe_cli_tool_model_override(self, runner: CliRunner, monkeypatch: pytest.MonkeyPatch):
+        """Test ai probe applies --cli-tool and --model overrides."""
+
+        class _FakeClient:
+            model = "gemini-2.5-pro"
+
+            def _run_availability_preflight(self, return_details=False):
+                return None
+
+        monkeypatch.setattr(UCXConfig, "get_ai_client", lambda self: _FakeClient())
+
+        result = runner.invoke(
+            cli,
+            ["ai", "probe", "--cli-tool", "gemini", "--model", "gemini-2.5-pro"],
+        )
+        assert result.exit_code == 0
+        assert "provider=gemini" in result.output
+        assert "model=gemini-2.5-pro" in result.output

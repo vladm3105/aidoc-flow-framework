@@ -11,6 +11,7 @@ from rich.table import Table
 
 from ucx.version import __version__
 from ucx.config.settings import UCXConfig
+from ucx.exceptions import AIClientError
 from ucx.utils.logging import setup_logging, get_logger
 
 console = Console()
@@ -273,6 +274,18 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
       file. Useful for debugging, auditing, or re-running with a different model.
       Use --no-save-prompt to disable.
 
+        \b
+        Environment options (PRD):
+            - UCX_UPSTREAM_SECTION_CHARS / UCX_UPSTREAM_TOTAL_CHARS:
+                Optional upstream clipping controls (default: unlimited)
+            - UCX_PRD_LLM_AUDIT_COPY=true:
+                Optional Appendix D capture with raw LLM attempts (default: disabled)
+
+        \b
+        Creation audit report (always):
+            Every create run writes a versioned creation report
+            (`<DOC_ID>.UCX_creation_report_vNNN.md`) in the output directory.
+
     \b
     Examples:
       ucx create brd docs/01_BRD/BRD-01 --from-ref docs/00_REF/
@@ -280,6 +293,7 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
             ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-validate
             ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --strict
             ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
+            UCX_PRD_LLM_AUDIT_COPY=true ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
         If `output_path` is a plain document ID like `PRD-01` or `PRD-01.md`, UCX
         derives a slug from the upstream artifact and writes `PRD-01_{slug}.md`.
@@ -294,6 +308,7 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
     ucc = UCCPhase(config)
 
     output_path_obj = Path(output_path)
+    retry_attempted = False
 
     def write_creation_failure_report(error: Exception, *, retry_attempted: bool = False) -> None:
         try:
@@ -346,6 +361,57 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
         except Exception as report_error:
             console.print(f"[yellow]Unable to write creation failure report:[/yellow] {report_error}")
 
+    def write_creation_success_report(doc_obj, *, retry_attempted: bool = False) -> None:
+        try:
+            doc_type_enum = DocType.from_string(doc_type)
+            normalized_output = ucc._normalize_output_path(doc_type_enum, output_path_obj, kwargs.get("from_upstream"))
+            report_dir = normalized_output if normalized_output.suffix == "" else normalized_output.parent
+            report_dir.mkdir(parents=True, exist_ok=True)
+
+            doc_id = extract_doc_id(normalized_output, doc_type_enum)
+            version = next_report_version(report_dir, doc_id, "creation")
+            report_path = report_dir / report_filename(doc_id, "creation", version)
+
+            body = (
+                f"# UCX Creation Report: {doc_id}\n\n"
+                f"## Summary\n\n"
+                f"- Status: SUCCEEDED\n"
+                f"- Timestamp: {datetime.now(timezone.utc).isoformat()}\n"
+                f"- Output Path: {doc_obj.path}\n\n"
+                f"## Invocation\n\n"
+                f"- Command: ucx create {doc_type} {output_path_obj}\n"
+                f"- validate_after: {validate}\n"
+                f"- save_prompt: {save_prompt}\n"
+                f"- from_upstream: {kwargs.get('from_upstream')}\n"
+                f"- from_ref: {kwargs.get('from_ref')}\n"
+                f"- from_iplan: {kwargs.get('from_iplan')}\n"
+                f"- template: {kwargs.get('template')}\n\n"
+                f"## Outputs\n\n"
+                f"- Created document: {doc_obj.path}\n"
+                f"- Prompt saved: {doc_obj.metadata.get('prompt_saved_path', 'N/A')}\n"
+                f"- Validation report: {doc_obj.metadata.get('validation_report_path', 'N/A')}\n"
+                f"- Validation status: {doc_obj.metadata.get('validation_status', 'unknown')}\n"
+                f"- Retry attempted: {str(retry_attempted).lower()}\n"
+            )
+
+            content = ensure_report_schema(
+                body,
+                report_type="creation",
+                source_artifact_type=doc_type_enum.value,
+                source_artifact_id=doc_id,
+                report_version=version,
+                validator_or_reviewer="UCX create",
+            )
+            content = content.replace("creation_status: FAILED", "creation_status: SUCCEEDED")
+            content = content.replace("failure_code: UCC-E-CREATE", "failure_code: NONE")
+            content = content.replace("error_type: unknown", "error_type: none")
+            content = content.replace("retry_attempted: false", f"retry_attempted: {str(retry_attempted).lower()}")
+
+            report_path.write_text(content, encoding="utf-8")
+            doc_obj.metadata["creation_report_path"] = str(report_path)
+        except Exception as report_error:
+            console.print(f"[yellow]Unable to write creation success report:[/yellow] {report_error}")
+
     try:
         doc = ucc.create(doc_type, output_path_obj, validate_after=validate, save_prompt=save_prompt, **kwargs)
     except AIClientError as e:
@@ -390,6 +456,7 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
         )
 
         retry_config = config.model_copy(update={"cli_tool": next_tool, "model": next_model})
+        retry_attempted = True
         console.print(f"[cyan]Retrying with backend={next_tool}, model={next_model}...[/cyan]")
         try:
             doc = UCCPhase(retry_config).create(
@@ -406,7 +473,12 @@ def create(ctx, doc_type, output_path, validate, strict, save_prompt, **kwargs):
         write_creation_failure_report(e)
         raise
 
+    write_creation_success_report(doc, retry_attempted=retry_attempted)
+
     console.print(f"[green]Created:[/green] {doc.path}")
+
+    if "creation_report_path" in doc.metadata:
+        console.print(f"[dim]Creation report:[/dim] {doc.metadata['creation_report_path']}")
 
     # Display saved prompt path if applicable
     if "prompt_saved_path" in doc.metadata:
@@ -1395,6 +1467,74 @@ Add project-specific prompts here:
 """)
 
     console.print(f"[green]Initialized UCX in {output_dir}[/green]")
+
+
+@cli.group()
+def ai():
+    """AI utility commands."""
+
+
+@ai.command("probe")
+@click.option(
+    "--cli-tool",
+    type=click.Choice(["claude", "codex", "gemini", "ollama", "aider"]),
+    default=None,
+    help="Override CLI tool for this probe run",
+)
+@click.option(
+    "--model",
+    default=None,
+    help="Override model for this probe run",
+)
+@click.option(
+    "--full-output",
+    is_flag=True,
+    help="Print raw LLM output used by the probe",
+)
+@click.pass_context
+def ai_probe(ctx, cli_tool: Optional[str], model: Optional[str], full_output: bool):
+    """Run the configured AI client's shared preflight probe."""
+    base_config = ctx.obj["config"]
+
+    # Allow probe-specific model/provider overrides without affecting other commands.
+    config_updates = {}
+    if cli_tool:
+        config_updates["ai_mode"] = "cli"
+        config_updates["cli_tool"] = cli_tool
+    if model:
+        config_updates["model"] = model
+
+    config = base_config.model_copy(update=config_updates) if config_updates else base_config
+
+    client = config.get_ai_client()
+    preflight = getattr(client, "_run_availability_preflight", None)
+
+    if preflight is None:
+        raise click.ClickException(
+            "Configured AI client does not support preflight probing."
+        )
+
+    provider = config.cli_tool if config.ai_mode == "cli" else "litellm"
+    model_name = getattr(client, "model_id", None) or getattr(client, "model", config.model)
+    console.print(
+        f"[cyan]AI probe[/cyan]: mode={config.ai_mode} provider={provider} model={model_name}"
+    )
+
+    try:
+        if full_output:
+            details = preflight(return_details=True)
+        else:
+            details = preflight()
+    except AIClientError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    console.print("[green]AI probe passed[/green]")
+
+    if full_output and isinstance(details, dict):
+        raw_response = details.get("phase3_response")
+        if raw_response:
+            console.print("[cyan]Raw LLM probe output:[/cyan]")
+            console.print(raw_response)
 
 
 @cli.command("config")

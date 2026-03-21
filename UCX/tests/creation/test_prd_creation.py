@@ -282,9 +282,41 @@ custom_fields:
         assert "doc_id: PRD-01" in fixed
         assert "version: 1.0.0" in fixed
         assert "status: Draft" in fixed
+        assert "document_type: prd" in fixed
+        assert "artifact_type: PRD" in fixed
+        assert "layer: 2" in fixed
         assert "# PRD-01: Sample" in fixed
         assert "| Document ID | PRD-01 |" in fixed
         assert "PRD.01.08.01" in fixed
+
+    def test_prd_output_guardrails_inject_section_8_note(self):
+        """Ensure Section 8 gets the exact validator-compatible layer note when omitted."""
+        ucc = UCCPhase()
+        output_path = Path("docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md")
+
+        raw = """---
+title: \"PRD-01: Sample\"
+doc_id: PRD-01
+version: \"1.0.0\"
+status: Draft
+tags:
+  - prd
+  - layer-2-artifact
+custom_fields:
+  document_type: prd
+  artifact_type: PRD
+  layer: 2
+---
+
+# PRD-01: Sample
+
+## 8. User Stories & User Roles
+#### PRD.01.09.01: Sender initiates quote
+"""
+
+        fixed = ucc._apply_prd_output_guardrails(raw, output_path)
+
+        assert "> **Layer Separation Note**: This section provides role definitions and story summaries." in fixed
 
     def test_output_contract_contains_target_id(self):
         """Ensure output contract binds generated content to target document ID."""

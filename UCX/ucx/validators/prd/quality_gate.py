@@ -205,20 +205,36 @@ def _gate_05_element_format(file_name: str, content: str) -> List[ValidationIssu
     """GATE-05: Validate element ID format (PRD.NN.TT.SS)."""
     issues = []
 
-    # Find PRD element patterns
-    valid_pattern = re.compile(r"\bPRD\.(\d{2})\.(\d{2})\.(\d{2})\b")
-    invalid_pattern = re.compile(r"\bPRD[-_](\d+)\b(?!\.)")
+    invalid_pattern = re.compile(r"\bPRD-(\d{2,9})\b(?=\s*:)")
+    doc_level_contexts = [
+        re.compile(r"^\s*#\s+PRD-\d{2,9}\s*:"),
+        re.compile(r"^\s*title:\s*['\"]?PRD-\d{2,9}\s*:"),
+        re.compile(r"^\s*doc_id:\s*PRD-\d{2,9}\s*$"),
+        re.compile(r"^\s*\|\s*Document ID\s*\|\s*PRD-\d{2,9}\s*\|"),
+        re.compile(r"@depends:\s*PRD-\d{2,9}\b"),
+        re.compile(r"@discoverability:\s*PRD-\d{2,9}\b"),
+        re.compile(r"Target document ID:\s*`PRD-\d{2,9}`"),
+    ]
 
-    # Check for invalid formats
-    for match in invalid_pattern.finditer(content):
-        line_num = content[:match.start()].count('\n') + 1
-        issues.append(ValidationIssue(
-            code="PRD-E005",
-            message=f"Invalid element format '{match.group()}', use PRD.NN.TT.SS",
-            file=file_name,
-            line=line_num,
-            tier=Tier.TIER1,
-        ))
+    for line_num, line in enumerate(content.splitlines(), start=1):
+        if not invalid_pattern.search(line):
+            continue
+        if any(pattern.search(line) for pattern in doc_level_contexts):
+            continue
+
+        for match in invalid_pattern.finditer(line):
+            prefix = line[:match.start()].strip()
+            # Allow narrative mentions like "... in PRD-02: ..." while still
+            # flagging list/item labels that incorrectly use PRD-NN as element IDs.
+            if prefix and prefix not in {"-", "*", "+"} and not re.fullmatch(r"\d+\.", prefix):
+                continue
+            issues.append(ValidationIssue(
+                code="PRD-E005",
+                message=f"Invalid element format '{match.group()}', use PRD.NN.TT.SS",
+                file=file_name,
+                line=line_num,
+                tier=Tier.TIER1,
+            ))
 
     return issues
 

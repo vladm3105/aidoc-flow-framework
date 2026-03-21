@@ -186,10 +186,7 @@ class CLIClient(BaseAIClient):
         "timed out",
     ]
 
-    PREFLIGHT_PROMPT = (
-        "Availability check. Return ONLY the current UTC date in YYYY-MM-DD format. "
-        "No prose, no markdown, no explanation."
-    )
+    PREFLIGHT_PROMPT = "what is date today in utc in epoc format"
 
     def __init__(
         self,
@@ -407,7 +404,7 @@ class CLIClient(BaseAIClient):
                 model=self.cli_tool,
             )
 
-    def _run_availability_preflight(self, **kwargs) -> None:
+    def _run_availability_preflight(self, return_details: bool = False, **kwargs):
         """
         Run a 3-phase preflight before every LLM generation call.
 
@@ -426,9 +423,9 @@ class CLIClient(BaseAIClient):
             * Binary missing  → install hint
             * Binary present  → service/network issue
 
-        Phase 3 – Date probe  (runs ONLY when Phase 1 → ``"ok"``)
-            Ask the model for the current UTC date.  A mismatch means the model
-            is not responding coherently (wrong context, stale state, etc.).
+        Phase 3 – Epoch date probe  (runs ONLY when Phase 1 → ``"ok"``)
+            Ask the model for UTC epoch time and validate it maps to today's UTC
+            date. A mismatch means the model is not responding coherently.
         """
         # ── Phase 1: Budget / rate-limit check ─────────────────────────────
         self.logger.debug("Preflight Phase 1: budget/rate-limit check (%s)", self.cli_tool)
@@ -462,9 +459,9 @@ class CLIClient(BaseAIClient):
                 model=self.cli_tool,
             )
 
-        # ── Phase 3: Date probe ─────────────────────────────────────────────
-        self.logger.debug("Preflight Phase 3: date probe (%s)", self.cli_tool)
-        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        # ── Phase 3: Epoch date probe ───────────────────────────────────────
+        self.logger.debug("Preflight Phase 3: epoch date probe (%s)", self.cli_tool)
+        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).date()
         response = self._execute_cli(self.PREFLIGHT_PROMPT, system_prompt=None, **kwargs).strip()
 
         embedded_error = self._detect_embedded_cli_error(response)
@@ -475,19 +472,32 @@ class CLIClient(BaseAIClient):
                 model=self.cli_tool,
             )
 
-        detected_date = self._extract_iso_date(response)
+        detected_date = self._extract_epoch_utc_date(response)
         if detected_date != expected_utc_date:
             raise AIClientError(
                 "LLM availability preflight failed: date probe mismatch. "
-                f"Expected UTC date {expected_utc_date}, got '{response}'.",
+                f"Expected UTC date {expected_utc_date.isoformat()}, got '{response}'.",
                 model=self.cli_tool,
             )
 
         self.logger.debug(
-            "LLM preflight passed: expected_utc_date=%s detected_date=%s",
+            "LLM preflight passed: expected_utc_date=%s detected_date=%s (epoch prompt)",
             expected_utc_date,
             detected_date,
         )
+
+        if return_details:
+            return {
+                "phase1_result": budget_result,
+                "phase3_prompt": self.PREFLIGHT_PROMPT,
+                "phase3_response": response,
+                "expected_utc_date": expected_utc_date.isoformat(),
+                "detected_utc_date": detected_date.isoformat() if detected_date else None,
+                "provider": self.cli_tool,
+                "model": self._resolved_model or self.cli_tool,
+            }
+
+        return None
 
     def _run_budget_check(self, **kwargs) -> str:
         """
@@ -676,10 +686,30 @@ class CLIClient(BaseAIClient):
         except Exception as exc:
             return False, f"{cmd[0]} capability check error: {exc}"
 
-    def _extract_iso_date(self, text: str) -> Optional[str]:
-        """Extract first ISO date token from response text."""
-        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", text)
-        return match.group(1) if match else None
+    def _extract_epoch_utc_date(self, text: str) -> Optional[datetime.date]:
+        """
+        Extract an epoch timestamp from text and return the corresponding UTC date.
+
+        Supports epoch seconds (10 digits) and milliseconds (13 digits).
+        """
+        ms_match = re.search(r"\b(\d{13})\b", text)
+        sec_match = re.search(r"\b(\d{10})\b", text)
+
+        raw = ms_match.group(1) if ms_match else (sec_match.group(1) if sec_match else None)
+        if raw is None:
+            return None
+
+        try:
+            epoch = int(raw)
+            if len(raw) == 13:
+                epoch = epoch // 1000
+
+            if epoch <= 0:
+                return None
+
+            return datetime.datetime.fromtimestamp(epoch, tz=datetime.timezone.utc).date()
+        except (ValueError, OSError, OverflowError):
+            return None
 
     def _detect_embedded_cli_error(self, response_text: str) -> Optional[str]:
         """Detect plain-text CLI/tool errors that can arrive with exit code 0."""

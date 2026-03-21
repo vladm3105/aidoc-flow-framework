@@ -259,15 +259,15 @@ System SHALL handle transient errors with retries.
     def test_preflight_passes_and_allows_main_request(self):
         """CLI generate should run all 3 preflight phases and proceed when they all pass."""
         client = CLIClient(cli_tool="claude")
-        expected_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        expected_epoch = str(int(datetime.datetime.now(datetime.timezone.utc).timestamp()))
         main_response = "# PRD-01: Platform\n\n## 1. Document Control\n"
 
-        # Phase 1 budget check gets "OK", Phase 3 date probe gets expected_date,
+        # Phase 1 budget check gets "OK", Phase 3 epoch probe gets expected_epoch,
         # main generate() call gets the PRD content.
         with patch.object(
             client,
             "_execute_cli",
-            side_effect=["OK", expected_date, main_response],
+            side_effect=["OK", expected_epoch, main_response],
         ):
             generated = client.generate("Create a PRD")
 
@@ -277,7 +277,7 @@ System SHALL handle transient errors with retries.
         """CLI generate should fail early when preflight date probe is incorrect."""
         client = CLIClient(cli_tool="claude")
 
-        with patch.object(client, "_execute_cli", return_value="1999-01-01"):
+        with patch.object(client, "_execute_cli", return_value="946684800"):
             with pytest.raises(AIClientError, match="preflight failed"):
                 client.generate("Create a PRD")
 
@@ -304,7 +304,7 @@ class TestLiteLLMClientPreflight:
 
         class _FakeLiteLLM:
             def completion(self, **kwargs):
-                return _Resp("1999-01-01")
+                return _Resp("946684800")
 
             def token_counter(self, model, text):
                 return max(1, len(text) // 4)
@@ -492,7 +492,7 @@ class TestCLIClientPreflightPhases:
         """Phase 1 ok + Phase 3 date mismatch → AIClientError about date probe."""
         client = CLIClient(cli_tool="claude")
         with patch.object(client, "_run_budget_check", return_value="ok"):
-            with patch.object(client, "_execute_cli", return_value="1999-01-01"):
+            with patch.object(client, "_execute_cli", return_value="946684800"):
                 with pytest.raises(AIClientError, match="preflight failed"):
                     client._run_availability_preflight()
 

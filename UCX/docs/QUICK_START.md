@@ -126,6 +126,12 @@ ucx --project-dir . create brd --output docs/01_BRD/BRD-XX_new_feature/
 
 ```bash
 ucx --project-dir . remediate brd docs/01_BRD/BRD-01_platform_architecture/
+
+# PRD remediation uses the same command contract
+ucx --project-dir . remediate docs/02_PRD/PRD-01_user_onboarding/
+
+# Optional explicit PRD review report selection
+ucx --project-dir . remediate docs/02_PRD/PRD-01_user_onboarding/ -r docs/02_PRD/PRD-01_user_onboarding/PRD-01.UCX_review_report_v001.md
 ```
 
 ## Command Options
@@ -217,6 +223,11 @@ Review report written to document directory:
 ```
 {document_dir}/{DOC_ID}.UCR_review_report_v00X.md
 ```
+
+PRD review finding IDs:
+- Persona outputs should emit extraction IDs as `{PREFIX}-P{PRIORITY}-{NNN}`.
+- Assembled reports canonicalize findings into hash IDs as `P{0|1|2}-{hex}`.
+- Canonical IDs drive deduplication and scoring while persona IDs retain traceability.
 
 ## Review Mode Selection
 

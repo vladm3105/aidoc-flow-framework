@@ -44,7 +44,14 @@ ucx review ears docs/03_EARS/
 ucx review bdd docs/04_BDD/
 ```
 
+PRD finding ID lifecycle:
+
+- Persona outputs should emit extraction IDs as `{PREFIX}-P{PRIORITY}-{NNN}`.
+- Assembled reports canonicalize findings into hash IDs as `P{0|1|2}-{hex}`.
+- Canonical IDs are used for deduplication and scoring; persona IDs remain for traceability.
+
 CLI features:
+
 - **Auto-selects prompt** based on document type
 - **Loads persona skills** dynamically
 - **Outputs review report** to document directory
@@ -593,8 +600,12 @@ ucx review brd docs/01_BRD/BRD-01/
 # Step 2: Run UCRem remediation (auto-detects latest report, v1.16.0+)
 ucx remediate docs/01_BRD/BRD-01/
 
+# PRD remediation uses the same command contract
+ucx remediate docs/02_PRD/PRD-01/
+
 # Or specify explicit report:
 # ucx remediate docs/01_BRD/BRD-01/ -r BRD-01.UCR_review_report_v001.md
+# ucx remediate docs/02_PRD/PRD-01/ -r docs/02_PRD/PRD-01/PRD-01.UCX_review_report_v001.md
 
 # Step 3: Apply fixes (via Claude skill)
 /doc-brd-fixer BRD-01 --from-ucrem BRD-01.UCRem_report.md

@@ -49,10 +49,7 @@ class LiteLLMClient(BaseAIClient):
         "haiku": "anthropic/claude-3-5-haiku-20241022",
     }
 
-    PREFLIGHT_PROMPT = (
-        "Availability check. Return ONLY the current UTC date in YYYY-MM-DD format. "
-        "No prose, no markdown, no explanation."
-    )
+    PREFLIGHT_PROMPT = "what is date today in utc in epoc format"
 
     # Minimal prompt for the Phase 1 budget/rate-limit probe.
     BUDGET_CHECK_PROMPT = "Return ONLY: OK"
@@ -255,7 +252,7 @@ class LiteLLMClient(BaseAIClient):
                 model=self.model_id,
             )
 
-    def _run_availability_preflight(self) -> None:
+    def _run_availability_preflight(self, return_details: bool = False):
         """
         Run a 3-phase preflight before every LiteLLM generation call.
 
@@ -270,8 +267,9 @@ class LiteLLMClient(BaseAIClient):
             registry (no network call).  This distinguishes "unknown model" from
             "known model that is temporarily unreachable".
 
-        Phase 3 – Date probe  (runs ONLY when Phase 1 → ``"ok"``)
-            Ask the model for the current UTC date and validate the response.
+        Phase 3 – Epoch date probe  (runs ONLY when Phase 1 → ``"ok"``)
+            Ask the model for UTC epoch time and validate it maps to today's UTC
+            date.
         """
         # ── Phase 1: Budget / rate-limit check ─────────────────────────────
         self.logger.debug(
@@ -304,9 +302,9 @@ class LiteLLMClient(BaseAIClient):
                 model=self.model_id,
             )
 
-        # ── Phase 3: Date probe ─────────────────────────────────────────────
-        self.logger.debug("Preflight Phase 3: date probe (%s)", self.provider)
-        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        # ── Phase 3: Epoch date probe ───────────────────────────────────────
+        self.logger.debug("Preflight Phase 3: epoch date probe (%s)", self.provider)
+        expected_utc_date = datetime.datetime.now(datetime.timezone.utc).date()
 
         preflight_kwargs = {
             "model": self.model_id,
@@ -321,20 +319,33 @@ class LiteLLMClient(BaseAIClient):
 
         response = self.litellm.completion(**preflight_kwargs)
         content = response.choices[0].message.content.strip()
-        detected_date = self._extract_iso_date(content)
+        detected_date = self._extract_epoch_utc_date(content)
 
         if detected_date != expected_utc_date:
             raise AIClientError(
                 "LLM availability preflight failed: date probe mismatch. "
-                f"Expected UTC date {expected_utc_date}, got '{content}'.",
+                f"Expected UTC date {expected_utc_date.isoformat()}, got '{content}'.",
                 model=self.model_id,
             )
 
         self.logger.debug(
-            "LLM preflight passed: expected_utc_date=%s detected_date=%s",
+            "LLM preflight passed: expected_utc_date=%s detected_date=%s (epoch prompt)",
             expected_utc_date,
             detected_date,
         )
+
+        if return_details:
+            return {
+                "phase1_result": budget_result,
+                "phase3_prompt": self.PREFLIGHT_PROMPT,
+                "phase3_response": content,
+                "expected_utc_date": expected_utc_date.isoformat(),
+                "detected_utc_date": detected_date.isoformat() if detected_date else None,
+                "provider": self.provider,
+                "model": self.model_id,
+            }
+
+        return None
 
     def _run_budget_check(self) -> str:
         """
@@ -433,10 +444,30 @@ class LiteLLMClient(BaseAIClient):
             self.logger.debug("Capability check (soft pass): %s", msg)
             return True, msg
 
-    def _extract_iso_date(self, text: str) -> Optional[str]:
-        """Extract first ISO date token from response text."""
-        match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", text)
-        return match.group(1) if match else None
+    def _extract_epoch_utc_date(self, text: str) -> Optional[datetime.date]:
+        """
+        Extract an epoch timestamp from text and return the corresponding UTC date.
+
+        Supports epoch seconds (10 digits) and milliseconds (13 digits).
+        """
+        ms_match = re.search(r"\b(\d{13})\b", text)
+        sec_match = re.search(r"\b(\d{10})\b", text)
+
+        raw = ms_match.group(1) if ms_match else (sec_match.group(1) if sec_match else None)
+        if raw is None:
+            return None
+
+        try:
+            epoch = int(raw)
+            if len(raw) == 13:
+                epoch = epoch // 1000
+
+            if epoch <= 0:
+                return None
+
+            return datetime.datetime.fromtimestamp(epoch, tz=datetime.timezone.utc).date()
+        except (ValueError, OSError, OverflowError):
+            return None
 
     def count_tokens(self, text: str) -> int:
         """

@@ -4,19 +4,21 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.19.0
-**Next Major**: 1.20.0 (PRD/EARS Validation Parity)
+**Current Version**: 1.21.4
+**Next Minor**: 1.22.0 (EARS validator parity and remediation hardening follow-up)
+**Next Major**: 2.0.0
 
 ---
 
 ## Version Timeline
 
 ```
-v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 ──► v1.19.0 (Current) ──► v1.20.0 ──► v2.0.0
-   │           │            │            │           │            │           │            │                      │           │
-   │           │            │            │           │            │           │            │                      │           └─► Breaking changes
-   │           │            │            │           │            │           │            │                      └─► PRD/EARS validation parity
-   │           │            │            │           │            │           │            └─► Hash-based Finding IDs (PLAN-008)
+v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 ──► v1.19.0 ──► v1.20.0 ──► v1.21.x (Current) ──► v1.22.0 ──► v2.0.0
+  │           │            │            │           │            │           │            │           │                    │           │
+  │           │            │            │           │            │           │            │           │                    │           └─► Breaking changes
+  │           │            │            │           │            │           │            │           │                    └─► EARS validator parity + hardening follow-up
+  │           │            │            │           │            │           │            │           └─► PRD/EARS validation parity
+  │           │            │            │           │            │           │            └─► Hash-based Finding IDs (PLAN-008)
    │           │            │            │           │            │           └─► Layer Action Handoff System
    │           │            │            │           │            └─► Fixer-to-LLM hand-off
    │           │            │            │           └─► Duplicate fixer guardrails (v1.16.2)
@@ -30,9 +32,23 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 
 ## Planned Releases
 
+### v1.22.0 - EARS Validation Parity and Hardening Follow-Up
+
+**Status**: Planned
+**ETA**: Q3 2026
+
+**Features**:
+| Feature | Description | Status |
+|---------|-------------|--------|
+| EARS Validators | Complete EARS validation parity module and quality gates | Planned |
+| Remediation Safety Telemetry | Optional visibility for restored source files during generation | Planned |
+| Reporting Consistency | Align creation/review/remediation docs and commands across guides | Planned |
+
+---
+
 ### v1.20.0 - PRD/EARS Validation Parity
 
-**Status**: In Progress (v1.20.0 PRD Complete)
+**Status**: In Progress (PRD complete, EARS carried forward)
 **ETA**: Q3 2026
 
 **Features**:
@@ -78,7 +94,20 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 
 ## Completed Releases
 
-### v1.19.0 (2026-03-18) - Current
+### v1.21.4 (2026-03-20) - Current
+
+**Features**:
+- Canonical remediation consolidation to a single UCX report artifact (`UCX_remediation_report_vNNN`)
+- Remediation source protection: UCRem snapshots source docs and restores unexpected mutations during report generation
+- `ucx ai probe` command with epoch-based preflight checks and optional full-output diagnostics
+- Creation audit report generation on every `ucx create` run (`UCX_creation_report_vNNN`)
+- PRD creation runtime controls (`UCX_UPSTREAM_SECTION_CHARS`, `UCX_UPSTREAM_TOTAL_CHARS`, `UCX_PRD_LLM_AUDIT_COPY`)
+
+See [CHANGELOG_v1.21.4](CHANGELOG/CHANGELOG_v1.21.4.md)
+
+---
+
+### v1.19.0 (2026-03-18)
 
 **Features**:
 - **Hash-Based Finding IDs**: Content-addressable finding IDs (`P1-a7f3` format) replacing sequential IDs (`REM-P1-001`)

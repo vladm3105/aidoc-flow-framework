@@ -508,6 +508,56 @@ custom_fields:
 class TestQualityGates:
     """Test quality gate checks."""
 
+    def test_gate_05_skips_document_level_prd_ids(self):
+        """Document-level PRD IDs should not be treated as invalid element IDs."""
+        from ucx.validators.prd.quality_gate import _gate_05_element_format
+
+        content = """---
+title: \"PRD-01: Test Product\"
+doc_id: PRD-01
+---
+
+# PRD-01: Test Product
+
+| Document ID | PRD-01 |
+
+## 16. Implementation Approach
+- Follow-up work may be documented in PRD-02: Corridor expansion.
+@depends: PRD-03
+"""
+
+        issues = _gate_05_element_format("PRD-01_test.md", content)
+        assert issues == []
+
+    def test_gate_05_flags_invalid_element_style_prd_ids(self):
+        """Element-like uses of PRD-NN should still fail GATE-05."""
+        from ucx.validators.prd.quality_gate import _gate_05_element_format
+
+        content = """# PRD-01: Test Product
+
+## 9. Functional Requirements
+- PRD-01: Invalid requirement identifier
+"""
+
+        issues = _gate_05_element_format("PRD-01_test.md", content)
+        assert len([issue for issue in issues if issue.code == "PRD-E005"]) == 1
+
+    def test_structure_accepts_exact_layer_separation_note(self):
+        """The framework-required Section 8 note should satisfy validation."""
+        from ucx.validators.prd.structure import validate_structure
+
+        content = """
+# PRD-01: Test Product
+
+## 8. User Stories & User Roles
+> **Layer Separation Note**: This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
+
+#### PRD.01.09.01: User story
+"""
+
+        issues = validate_structure(Path("PRD-01_test.md"), content)
+        assert len([issue for issue in issues if issue.code == "PRD-E011"]) == 0
+
     def test_gate_10_file_size(self):
         """Large files should trigger size warnings."""
         from ucx.validators.prd.quality_gate import _gate_10_file_size

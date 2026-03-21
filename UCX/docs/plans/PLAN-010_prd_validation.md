@@ -3,7 +3,7 @@
 **Document ID**: PLAN-010_prd_validation
 **Created**: 2026-03-19
 **Updated**: 2026-03-20
-**Status**: Revised (v7)
+**Status**: Revised (v10)
 **Target Version**: UCX v1.21.3
 **Related Plans**: PLAN-009_prd_creation.md (creation counterpart)
 
@@ -39,6 +39,15 @@ The PRD validator and related scripts must remain compatible with the current UC
 | YAML delimiters | UCC/validators accept frontmatter delimiters with trailing spaces | Validation regex and helper scripts must allow tolerant delimiter parsing |
 | Prompt history | Canonical PRD path saves `.ucx_create_session/` beside the PRD file | Scripts/docs must reference `docs/02_PRD/<slug>/.ucx_create_session/` as the canonical path |
 | Validation report path | `ucx validate prd` writes `.precommit_validation_report.md` in the PRD folder | Plan and scripts must use single-file validation report naming |
+
+### Revision History
+
+| Revision | Date | Summary |
+|----------|------|---------|
+| v10 | 2026-03-20 | Updated remediation artifact model to canonical UCX report naming and single-report behavior: remediation details and fix blocks are consolidated into `{DOC_ID}.UCX_remediation_report_v{NNN}.md`; removed legacy UCRem sidecar assumptions. |
+| v9 | 2026-03-20 | Added PRD UCR finding-ID lifecycle alignment with BRD approach: persona output IDs use `{PREFIX}-P{PRIORITY}-{NNN}` and assembled report IDs use canonical hash format `P{0\|1\|2}-{hex}` for scoring/traceability. |
+| v8 | 2026-03-20 | Added create/validate alignment history for PRD refresh fixes: exact PRD metadata guardrails, deterministic Section 8 note injection, narrower PRD-E005 detection for document-level references, and stronger prompt contracts for score-driving element families. |
+| v7 | 2026-03-20 | Aligned plan with current runtime naming, prompt merge behavior, canonical session history path, and unified PRD validation report generation. |
 
 ---
 
@@ -1153,8 +1162,8 @@ Current UCX runtime behavior uses these artifact locations/names:
 |-------|----------|-----------------------|
 | **UCC (Create)** | Prompt history | `docs/02_PRD/<slug>/.ucx_create_session/prompt_prd_<timestamp>.txt` |
 | **UCR (Validate)** | Validation report | `.precommit_validation_report.md` |
-| **UCR (Review)** | Review report | `{DOC_ID}.UCR_review_report_v{NNN}.md` |
-| **UCRem (Remediate)** | Remediation report | `{DOC_ID}.UCRem_report.md` |
+| **UCR (Review)** | Review report | `{DOC_ID}.UCX_review_report_v{NNN}.md` |
+| **UCRem (Remediate)** | Remediation report | `{DOC_ID}.UCX_remediation_report_v{NNN}.md` |
 
 ### Validation Report Structure (`.precommit_validation_report.md`)
 
@@ -1319,13 +1328,13 @@ custom_fields:
 [UCX-ACTION blocks for auto-fixer...]
 ```
 
-### Remediation Report Structure (`UCRem_report`)
+### Remediation Report Structure (`UCX_remediation_report`)
 
 Generated after `ucx remediate prd` completes:
 
 ```markdown
 ---
-title: "UCRem Report: PRD-01"
+title: "UCX Remediation Report: PRD-01"
 tags:
   - ucx-remediate
   - prd-remediate
@@ -1333,9 +1342,11 @@ tags:
 custom_fields:
   document_type: ucx-remediate-report
   source_artifact_type: PRD
-    remediate_id: "PRD-01.UCRem"
+    report_type: remediation
+    source_artifact_id: PRD-01
+    report_version: v001
   layer: 2
-    source_review: "PRD-01.UCR_review_report_v001.md"
+    source_review: "PRD-01.UCX_review_report_v001.md"
   p0_resolved: 5
   p1_resolved: 8
   p1_deferred: 4
@@ -1343,15 +1354,15 @@ custom_fields:
   last_updated: "2026-03-19T17:00:00"
 ---
 
-# UCRem Report: PRD-01
+# UCX Remediation Report: PRD-01
 
 ## 0. Document Control
 
 | Item | Details |
 |------|---------|
 | **Remediated Document** | PRD-01 |
-| **Remediate ID** | PRD-01.UCRem |
-| **Source Review** | PRD-01.UCR_review_report_v001.md |
+| **Report ID** | PRD-01.UCX_remediation_report_v001 |
+| **Source Review** | PRD-01.UCX_review_report_v001.md |
 | **Remediate Date** | 2026-03-19T17:00:00 |
 | **Status** | Complete |
 
@@ -1415,17 +1426,17 @@ docs/02_PRD/PRD-01/
 ├── .ucx_create_session/
 │   └── prompt_prd_<timestamp>.txt        ← UCC prompt history
 ├── .precommit_validation_report.md       ← This plan (single-file overwrite)
-├── PRD-01.UCR_review_report_v001.md      ← UCR review output
-├── PRD-01.UCR_review_report_v002.md      ← Subsequent review runs
-└── PRD-01.UCRem_report.md                ← UCRem remediation output
+├── PRD-01.UCX_review_report_v001.md      ← UCR review output
+├── PRD-01.UCX_review_report_v002.md      ← Subsequent review runs
+└── PRD-01.UCX_remediation_report_v001.md ← UCRem remediation output (canonical single report)
 ```
 
 ### Backward Compatibility
 
-> **Note**: Validation already uses the single-file `.precommit_validation_report.md`
-> convention. Review and remediation currently retain their runtime naming
-> (`UCR_review_report`, `UCRem_report`). This plan should not assume a future
-> unified `UCX_*` report family unless the implementation is changed first.
+> **Note**: Validation remains single-file (`.precommit_validation_report.md`),
+> while review/remediation use versioned UCX report families
+> (`UCX_review_report_vNNN`, `UCX_remediation_report_vNNN`).
+> Remediation uses one canonical report artifact per run.
 
 ---
 
@@ -1501,8 +1512,8 @@ docs/02_PRD/PRD-01/
 
 ### Output Reports
 20. Validation generates `.precommit_validation_report.md`
-21. Review generates `{DOC_ID}.UCR_review_report_v{NNN}.md`
-22. Remediation generates `{DOC_ID}.UCRem_report.md`
+21. Review generates `{DOC_ID}.UCX_review_report_v{NNN}.md`
+22. Remediation generates `{DOC_ID}.UCX_remediation_report_v{NNN}.md`
 23. Reports include dual scores (SYS-Ready, EARS-Ready)
 24. Version incrementing works correctly per report type
 25. Validation rules and scripts remain compliant with UCC creation guardrails and prompt-session paths
@@ -1546,5 +1557,5 @@ docs/02_PRD/PRD-01/
 
 ---
 
-*Plan Version: v7 (Create/validate alignment and current runtime naming)*
+*Plan Version: v10 (Create/validate alignment, PRD review ID lifecycle alignment, and canonical UCX remediation report consolidation)*
 *Generated: 2026-03-20*

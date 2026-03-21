@@ -403,7 +403,7 @@ class UnifiedPRDValidator:
         from ucx.validators.prd.element_codes import validate_element_codes
         from ucx.validators.prd.quality_gate import run_quality_gates
 
-        # Verify captured LLM response payloads are present and analysable.
+        # Validate captured LLM payloads only when audit capture is present.
         llm_issues = self._validate_llm_response_capture(file_path, content)
         for issue in llm_issues:
             if issue.tier == Tier.TIER1:
@@ -448,12 +448,7 @@ class UnifiedPRDValidator:
         issues: List[ValidationIssue] = []
 
         if "UCX_LLM_RESPONSE_CAPTURE:BEGIN" not in content:
-            issues.append(ValidationIssue(
-                code="PRD-E023",
-                message="Missing UCX LLM response audit capture block; cannot investigate generation quality",
-                file=file_path.name,
-                tier=Tier.TIER1,
-            ))
+            # Audit capture is optional; when omitted, skip this validation track.
             return issues
 
         if "UCX_LLM_RESPONSE_CAPTURE:END" not in content:

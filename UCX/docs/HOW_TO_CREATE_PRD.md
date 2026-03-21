@@ -86,7 +86,26 @@ ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_ar
 
 # Disable prompt saving
 ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
+
+# Optional: cap upstream content used in the assembled prompt
+UCX_UPSTREAM_SECTION_CHARS=12000 UCX_UPSTREAM_TOTAL_CHARS=180000 \
+  ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Optional: include raw PRD LLM responses as Appendix D (disabled by default)
+UCX_PRD_LLM_AUDIT_COPY=true \
+  ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ```
+
+**Upstream artifact size controls (environment variables)**:
+- `UCX_UPSTREAM_SECTION_CHARS`: maximum characters included per upstream section file
+- `UCX_UPSTREAM_TOTAL_CHARS`: maximum characters included across all merged upstream files
+- Default behavior when unset: full upstream content (no UCX truncation)
+- Invalid values or values `<=0`: treated as unlimited
+
+**Optional PRD audit appendix control (environment variable)**:
+- `UCX_PRD_LLM_AUDIT_COPY`: set to `true`/`1`/`yes`/`on` to append Appendix D with raw LLM attempts
+- Default behavior when unset: disabled (no Appendix D in generated PRD)
+- `false`/`0`/`no`/`off`: explicitly disable appendix capture
 
 UCX resolves the output path using three rules, applied in order:
 
@@ -159,6 +178,15 @@ not match the stem: UCX creates `PRD-01_custom_name/PRD-01_custom_name.md`
    - Readiness scores computed
    - Scores injected into Document Control
    - Report generated
+
+8. **Optional upstream clipping** (environment-controlled):
+  - `UCX_UPSTREAM_SECTION_CHARS` and `UCX_UPSTREAM_TOTAL_CHARS` can be set to positive integers
+  - Use this only when you need prompt-size constraints; leave unset for full upstream output
+
+9. **Creation report** (always generated):
+  - `ucx create` writes a versioned creation report for audit traceability
+  - File pattern: `PRD-01.UCX_creation_report_vNNN.md`
+  - Created in the PRD output directory
 
 ---
 
@@ -957,6 +985,12 @@ ucx validate prd docs/02_PRD/PRD-01/
 # Review PRD with personas
 ucx review prd docs/02_PRD/PRD-01/ --persona
 
+# Generate PRD remediation fixes (auto-detect latest review report)
+ucx remediate docs/02_PRD/PRD-01/
+
+# Generate remediation from a specific report
+ucx remediate docs/02_PRD/PRD-01/ -r docs/02_PRD/PRD-01/PRD-01.UCX_review_report_v001.md
+
 # Quick validation (Tier 1 only)
 ucx validate prd docs/02_PRD/PRD-01/ --tier1-only
 
@@ -964,3 +998,16 @@ ucx validate prd docs/02_PRD/PRD-01/ --tier1-only
 ucx create --help
 ucx validate --help
 ```
+
+PRD remediation output artifact:
+- Canonical report path: `docs/02_PRD/<slug>/<DOC_ID>.UCX_remediation_report_vNNN.md`
+- The canonical UCX remediation report includes both remediation summary and detailed fix blocks.
+- `ucx remediate --apply-auto-safe` applies fixes parsed from this canonical report.
+
+### Review Finding IDs (PRD)
+
+PRD review uses a two-stage finding ID lifecycle:
+- Persona outputs use extraction IDs in the format `{PREFIX}-P{PRIORITY}-{NNN}`.
+- Final assembled report canonicalizes findings into hash IDs in the format `P{0|1|2}-{hex}`.
+
+This behavior preserves persona traceability while ensuring deterministic deduplication and scoring in the assembled report.

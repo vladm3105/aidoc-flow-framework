@@ -107,6 +107,7 @@ class UCRemPhase:
         review_report: Optional[Union[str, Path]] = None,
         *,
         output_path: Optional[Path] = None,
+        protect_source: bool = True,
     ) -> tuple[list[FixProposal], Path]:
         """
         Generate fix proposals from review report.
@@ -119,6 +120,8 @@ class UCRemPhase:
             doc_path: Path to original document
             review_report: Path to UCR review report (optional - auto-detects latest if None)
             output_path: Custom output path for fix report
+            protect_source: If True, restore unexpected source document changes
+                performed by external tooling during report generation.
 
         Returns:
             Tuple of (list of FixProposal instances, output path where report was written)
@@ -200,8 +203,30 @@ class UCRemPhase:
             fixers=self.last_screening.required_fixers,
         )
 
+        # Remediation generation should be report-oriented; protect source docs
+        # from unintended mutations by external model/tool behavior.
+        source_snapshot: dict[Path, str] = {}
+        if protect_source:
+            source_files = self._collect_source_files(doc_path)
+            source_snapshot = self._snapshot_source_files(source_files)
+
         # Generate fixes
         fix_content = self.ai_client.generate(prompt)
+
+        if protect_source and source_snapshot:
+            restored_files = self._restore_unexpected_source_changes(source_snapshot)
+            if restored_files:
+                logger.warning(
+                    "Restored unexpected source file changes during remediation generation: %s",
+                    ", ".join(str(path) for path in restored_files),
+                )
+
+        # Consolidate legacy two-file outputs into canonical UCX report content.
+        fix_content = self._consolidate_external_ucrem_report(
+            content=fix_content,
+            doc_path=doc_path,
+            output_path=output_path,
+        )
 
         # Inject screening metadata into report
         fix_content = self._inject_screening_metadata(fix_content)
@@ -224,6 +249,164 @@ class UCRemPhase:
         # Parse fix proposals and return with output path
         fixes = self._parse_fixes(fix_content, doc_path)
         return fixes, output_path
+
+    def _collect_source_files(self, doc_path: Path) -> list[Path]:
+        """Collect source documentation files that must remain unchanged.
+
+        Excludes UCX companion reports and hidden session files.
+        """
+        if doc_path.is_file():
+            return [doc_path]
+
+        files: list[Path] = []
+        for file_path in doc_path.rglob("*.md"):
+            if any(part.startswith(".") for part in file_path.parts):
+                continue
+            if is_companion_report(file_path):
+                continue
+            files.append(file_path)
+        return sorted(files)
+
+    def _snapshot_source_files(self, source_files: list[Path]) -> dict[Path, str]:
+        """Capture source file contents before remediation generation."""
+        snapshot: dict[Path, str] = {}
+        for file_path in source_files:
+            try:
+                snapshot[file_path] = file_path.read_text(encoding="utf-8")
+            except OSError:
+                # Skip unreadable files; protection remains best-effort.
+                continue
+        return snapshot
+
+    def _restore_unexpected_source_changes(self, snapshot: dict[Path, str]) -> list[Path]:
+        """Restore source files modified unexpectedly during generation."""
+        restored: list[Path] = []
+        for file_path, original_content in snapshot.items():
+            try:
+                current_content = file_path.read_text(encoding="utf-8") if file_path.exists() else None
+            except OSError:
+                continue
+
+            if current_content == original_content:
+                continue
+
+            try:
+                file_path.parent.mkdir(parents=True, exist_ok=True)
+                file_path.write_text(original_content, encoding="utf-8")
+                restored.append(file_path)
+            except OSError:
+                continue
+
+        return restored
+
+    def _consolidate_external_ucrem_report(
+        self,
+        *,
+        content: str,
+        doc_path: Path,
+        output_path: Path,
+    ) -> str:
+        """Inline legacy externally referenced UCRem report content.
+
+        Some remediation prompt variants return a short UCX wrapper body that
+        references a separate UCRem report path. This breaks auto-apply parsing
+        because fix YAML blocks are not present in the canonical UCX report.
+        """
+        match = re.search(
+            r"UCRem(?:\s+remediation)?\s+report generated at\s+`([^`]+)`",
+            content,
+            re.IGNORECASE,
+        )
+        if not match:
+            return content
+
+        raw_report_path = match.group(1).strip()
+        external_report_path = self._resolve_external_report_path(
+            raw_report_path=raw_report_path,
+            doc_path=doc_path,
+            output_path=output_path,
+        )
+
+        if external_report_path is None:
+            logger.warning(
+                "Could not resolve referenced UCRem remediation report: %s (output=%s)",
+                raw_report_path,
+                str(output_path),
+            )
+            return content
+
+        try:
+            external_content = external_report_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            logger.warning(
+                "Failed to read referenced UCRem remediation report: %s (%s)",
+                str(external_report_path),
+                str(exc),
+            )
+            return content
+
+        # Strip frontmatter so canonical UCX schema remains authoritative.
+        fm_match = re.match(r"\A---\n(.*?)\n---\n?(.*)\Z", external_content, re.DOTALL)
+        consolidated_body = fm_match.group(2) if fm_match else external_content
+
+        # Only consolidate when detailed fix blocks exist in the external body.
+        if "```yaml" not in consolidated_body:
+            return content
+
+        if self._is_same_report_version(external_report_path, output_path):
+            try:
+                external_report_path.unlink(missing_ok=True)
+            except OSError as exc:
+                logger.warning(
+                    "Failed to remove duplicate UCRem report after consolidation: %s (%s)",
+                    str(external_report_path),
+                    str(exc),
+                )
+
+        return consolidated_body.lstrip()
+
+    def _resolve_external_report_path(
+        self,
+        *,
+        raw_report_path: str,
+        doc_path: Path,
+        output_path: Path,
+    ) -> Optional[Path]:
+        """Resolve referenced remediation report path to an existing file."""
+        candidate = Path(raw_report_path)
+        if candidate.is_absolute() and candidate.exists():
+            return candidate
+
+        doc_dir = doc_path if doc_path.is_dir() else doc_path.parent
+        project_dir = self.config.get_project_dir()
+
+        search_candidates: list[Path] = []
+        if project_dir is not None:
+            search_candidates.append(project_dir / candidate)
+        search_candidates.extend([
+            output_path.parent / candidate,
+            doc_dir / candidate,
+            Path.cwd() / candidate,
+        ])
+
+        seen: set[str] = set()
+        for path in search_candidates:
+            normalized = str(path.resolve()) if path.exists() else str(path)
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            if path.exists():
+                return path
+
+        return None
+
+    def _is_same_report_version(self, external_report: Path, output_report: Path) -> bool:
+        """Return True when both report filenames share the same _vNNN suffix."""
+        external_match = re.search(r"_v(\d{3})\.md$", external_report.name)
+        output_match = re.search(r"_v(\d{3})\.md$", output_report.name)
+        if not external_match or not output_match:
+            return False
+        return external_match.group(1) == output_match.group(1)
 
     def _generate_empty_report(self, doc_id: str, review_report: Path) -> str:
         """Generate report when no actionable findings exist."""

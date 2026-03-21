@@ -399,12 +399,24 @@ ucx create prd docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architec
 # Inspect saved prompt (v1.21.0+)
 ls docs/02_PRD/PRD-01_platform_architecture/.ucx_create_session/
 
+# Inspect creation audit report (always generated)
+ls docs/02_PRD/PRD-01_platform_architecture/PRD-01.UCX_creation_report_v*.md
+
 # If quota/rate limit occurs, retry with another backend/model
 ucx --cli-tool codex create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 ucx --cli-tool gemini --model gemini-2.5-pro create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
 # Disable prompt saving
 ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture --no-save-prompt
+
+# Optional: cap upstream content included in assembled prompt
+# (default behavior is full upstream content)
+UCX_UPSTREAM_SECTION_CHARS=12000 UCX_UPSTREAM_TOTAL_CHARS=180000 \
+  ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
+
+# Optional: append raw PRD LLM responses as Appendix D (disabled by default)
+UCX_PRD_LLM_AUDIT_COPY=true \
+  ucx create prd docs/02_PRD/PRD-01 --from-upstream docs/01_BRD/BRD-01_platform_architecture
 
 # Validate document structure (always fixes by default v1.17.0+)
 ucx validate brd docs/01_BRD/BRD-01.md
@@ -418,6 +430,22 @@ ucx clean-markers docs/01_BRD/BRD-01.md
 # Show help
 ucx --help
 ```
+
+**Upstream content controls for `ucx create`**:
+- `UCX_UPSTREAM_SECTION_CHARS`: max characters per upstream section file
+- `UCX_UPSTREAM_TOTAL_CHARS`: max total characters across merged upstream content
+- If unset (default), upstream content is not truncated by UCX
+- Values that are non-integer or `<=0` are treated as unlimited
+
+**Optional PRD LLM audit appendix**:
+- `UCX_PRD_LLM_AUDIT_COPY`: set to `true`/`1`/`yes`/`on` to append raw PRD LLM attempts as Appendix D
+- Default (unset): disabled, no Appendix D is appended
+- `false`/`0`/`no`/`off` explicitly disables capture
+
+**Creation audit report behavior**:
+- `ucx create` now writes a versioned creation report on every run (success or failure)
+- Report pattern: `<DOC_ID>.UCX_creation_report_vNNN.md`
+- Report location: same directory as the created document
 
 ### Project-Specific Prompts (Recommended)
 
@@ -977,10 +1005,12 @@ custom_fields:
 | Output Type | Filename Pattern | Example |
 |-------------|------------------|---------|
 | Validation | `.precommit_validation_report.md` | `.precommit_validation_report.md` |
-| Review | `{DOC-ID}.UCR_review_report_v{NNN}.md` | `BRD-01.UCR_review_report_v001.md` |
-| Remediation | `{DOC-ID}.UCRem_remediation_report.md` | `BRD-01.UCRem_remediation_report.md` |
+| Review | `{DOC-ID}.UCX_review_report_v{NNN}.md` | `BRD-01.UCX_review_report_v001.md` |
+| Remediation | `{DOC-ID}.UCX_remediation_report_v{NNN}.md` | `BRD-01.UCX_remediation_report_v001.md` |
 
-> **Note (v1.16.1)**: Validation reports now use a single file that overwrites on each run. Review reports retain versioning for history tracking.
+> **Note (v1.16.1+)**: Validation reports use a single file that overwrites on each run. Review and remediation reports retain versioning for history tracking.
+>
+> **Note (v1.21.4+)**: Remediation now uses one canonical UCX report per run. Detailed fix blocks are consolidated into `{DOC-ID}.UCX_remediation_report_v{NNN}.md`, and `--apply-auto-safe` parses fixes from that canonical file.
 
 **Tiered Validation:**
 
@@ -1989,6 +2019,7 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.21.4 | 2026-03-20 | **Remediation consolidation, source protection, AI probe, and PRD runtime alignment**: Added canonical single-artifact remediation behavior (`UCX_remediation_report_vNNN`) with consolidated fix blocks for `--apply-auto-safe`. Added source-document protection during remediation generation (unexpected source edits are restored automatically). Added `ucx ai probe` command with epoch-based preflight diagnostics. Added creation audit report generation (`UCX_creation_report_vNNN`) and PRD runtime controls (`UCX_UPSTREAM_SECTION_CHARS`, `UCX_UPSTREAM_TOTAL_CHARS`, `UCX_PRD_LLM_AUDIT_COPY`). Updated PRD validation edge-case handling and aligned docs/PLAN-010 with current naming and behavior. |
 | 1.21.3 | 2026-03-20 | **Prompt history canonical-path fix & create/validate alignment docs**: When `ucx create prd` is called with the full canonical PRD path, `.ucx_create_session/` is now saved directly in the canonical PRD folder instead of under an extra nested slug directory. Documentation and planning artifacts were updated to reflect the final create/validate baseline: framework+project prompt merge, pre-write metadata guardrails, canonical prompt-session location, and current validation report behavior. |
 | 1.21.2 | 2026-03-20 | **PRD creation guardrails & prompt merge**: `ucx create prd` now merges framework prompt contracts with project-specific overrides (instead of replacing framework rules), injects an explicit output contract from the target path, and applies pre-write guardrails to normalize required frontmatter (`title`, `doc_id`, `version`, `status`, `tags`), enforce PRD identity consistency (frontmatter/H1/Document Control), and align PRD element prefixes to target `PRD.NN.*`. Frontmatter parsing was also hardened to accept delimiter lines with trailing spaces. |
 | 1.21.1 | 2026-03-20 | **Create path resolution fix**: When an explicit canonical `.md` path is supplied whose parent directory already matches the document slug, `ucx create` now writes directly to that path without creating an additional sub-directory. Passing `docs/02_PRD/PRD-01_platform_architecture/PRD-01_platform_architecture.md` previously produced double-nesting (`…/PRD-01_platform_architecture/PRD-01_platform_architecture/…`); it now resolves to the correct single-level path. Plain doc-ID inputs (`PRD-01`) continue to auto-create the slug directory as before. |
@@ -2054,7 +2085,16 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.21.3 - PRD creation path and metadata hardening
+**Latest Release**: v1.21.4 - Remediation/reporting consolidation and AI probe utilities
+- Canonical single-file remediation output (`UCX_remediation_report_vNNN`) with inlined fix blocks
+- Remediation source protection restores unexpected source-document mutations during report generation
+- `ucx ai probe` command for preflight diagnostics with optional full output
+- Creation audit report on each `ucx create` run (`UCX_creation_report_vNNN`)
+- PRD runtime controls for upstream clipping and optional LLM audit appendix
+- PRD validation refinements for document-level ID references and Section 8 layer-separation note detection
+- See [CHANGELOG_v1.21.4](docs/CHANGELOG/CHANGELOG_v1.21.4.md) for details
+
+**Previous Latest Release**: v1.21.3 - PRD creation path and metadata hardening
 - PRD create canonical-path write fix (v1.21.1)
 - Framework + project prompt merge for PRD create (v1.21.2)
 - PRD output metadata/identity guardrails before write (v1.21.2)
