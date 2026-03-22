@@ -84,6 +84,7 @@ class PRDValidationResult:
     template_profile: str = "mvp"
     threshold: int = 85
     files_validated: List[str] = field(default_factory=list)
+    checks_run: List[str] = field(default_factory=list)
     validation_time: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     @property
@@ -169,6 +170,7 @@ class PRDValidationResult:
             "template_profile": self.template_profile,
             "threshold": self.threshold,
             "files_validated": self.files_validated,
+            "checks_run": self.checks_run,
             "validation_time": self.validation_time,
             "has_errors": self.has_errors,
             "sys_passed": self.sys_passed,
@@ -194,6 +196,10 @@ class PRDValidationResult:
         lines.append(f"  sys_ready_score: {self.sys_ready_score:.1f}")
         lines.append(f"  ears_ready_score: {self.ears_ready_score:.1f}")
         lines.append(f'  last_updated: "{self.validation_time}"')
+        lines.append(f"  tier1_errors: {len(self.tier1_issues)}")
+        lines.append("  tier1_warnings: 0")
+        lines.append(f"  tier2_warnings: {len(self.tier2_issues)}")
+        lines.append(f"  checks_run: {len(self.checks_run)}")
         lines.append("---")
         lines.append("")
         lines.append(f"# UCX Validate Report: {doc_id}")
@@ -314,7 +320,6 @@ class PRDValidator(BaseValidator):
     def unified_result(self) -> Optional[PRDValidationResult]:
         return self._unified_result
 
-
 class UnifiedPRDValidator:
     """Unified validator for PRD documents.
 
@@ -380,6 +385,17 @@ class UnifiedPRDValidator:
 
             # Run file-level validation
             self._validate_file(file_path, content, result, tier1_only)
+
+        # Keep report metadata consistent with BRD validator conventions.
+        result.checks_run = [
+            "structure",
+            "metadata",
+            "element_codes",
+            "quality_gate_tier1",
+            "scoring",
+        ]
+        if not tier1_only:
+            result.checks_run.append("quality_gate_tier2")
 
         # Run corpus-level checks if multi-file
         if len(files) > 1:

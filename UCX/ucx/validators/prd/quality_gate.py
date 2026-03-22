@@ -295,10 +295,25 @@ def _gate_08_element_uniqueness(file_name: str, content: str) -> List[Validation
 
         # Check if this looks like a definition (not a reference)
         line_start = content.rfind('\n', 0, match.start()) + 1
+        line_end_idx = content.find('\n', match.end())
+        if line_end_idx == -1:
+            line_end_idx = len(content)
+        full_line = content[line_start:line_end_idx]
         prefix = content[line_start:match.start()].strip()
 
+        # Skip lines that contain reference indicators — even if the prefix
+        # looks like a definition marker (e.g. "- PRD.01.06.01 → @brd: ...").
+        # Mirrors the same logic in element_codes._is_definition_context().
+        is_reference = (
+            '\u2192' in full_line or          # → arrow used in traceability
+            '@brd:' in full_line.lower() or
+            '@prd:' in full_line.lower() or
+            'traces to' in full_line.lower() or
+            'references ' in full_line.lower()
+        )
+
         # Definition patterns: start of line, bullet, table cell, bold
-        is_definition = (
+        is_definition = not is_reference and (
             prefix == "" or
             prefix == "-" or
             prefix == "*" or
@@ -325,7 +340,8 @@ def _gate_10_file_size(file_name: str, content: str) -> List[ValidationIssue]:
     """GATE-10: Check file size limits."""
     issues = []
 
-    line_count = content.count('\n') + 1
+    # Use logical line count to avoid trailing-newline off-by-one behavior.
+    line_count = max(1, len(content.splitlines()))
     token_count = estimate_tokens(content)
 
     # Line count checks
@@ -421,14 +437,10 @@ def _gate_09_acceptance_criteria(file_name: str, content: str) -> List[Validatio
     issues = []
 
     # Find Section 11 (Acceptance Criteria)
-    section_11 = re.search(
-        r"^## 11\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_11 = _extract_main_section(content, 11)
 
     if section_11:
-        section_content = section_11.group(0)
+        section_content = section_11
 
         # Check for AC elements (PRD.NN.06.SS)
         ac_pattern = re.compile(r"PRD\.\d{2}\.06\.\d{2}")
@@ -450,14 +462,10 @@ def _gate_11_feature_hierarchy(file_name: str, content: str) -> List[ValidationI
     issues = []
 
     # Find Section 7 (Scope & Requirements)
-    section_7 = re.search(
-        r"^## 7\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_7 = _extract_main_section(content, 7)
 
     if section_7:
-        section_content = section_7.group(0)
+        section_content = section_7
 
         # Check for feature elements (PRD.NN.22.SS)
         feature_pattern = re.compile(r"PRD\.\d{2}\.22\.\d{2}")
@@ -479,14 +487,10 @@ def _gate_12_user_story_format(file_name: str, content: str) -> List[ValidationI
     issues = []
 
     # Find Section 8 (User Stories)
-    section_8 = re.search(
-        r"^## 8\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_8 = _extract_main_section(content, 8)
 
     if section_8:
-        section_content = section_8.group(0)
+        section_content = section_8
 
         # Check for user story elements (PRD.NN.09.SS)
         us_pattern = re.compile(r"PRD\.\d{2}\.09\.\d{2}")
@@ -562,14 +566,10 @@ def _gate_17_traceability_coverage(file_name: str, content: str) -> List[Validat
     issues = []
 
     # Find Section 18 (Traceability)
-    section_18 = re.search(
-        r"^## 18\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_18 = _extract_main_section(content, 18)
 
     if section_18:
-        section_content = section_18.group(0)
+        section_content = section_18
 
         # Check for ADR topics table
         if "ADR" not in section_content and "Architecture Decision" not in section_content:
@@ -588,14 +588,10 @@ def _gate_18_nfr_completeness(file_name: str, content: str) -> List[ValidationIs
     issues = []
 
     # Find Section 21 (Quality Assurance)
-    section_21 = re.search(
-        r"^## 21\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_21 = _extract_main_section(content, 21)
 
     if section_21:
-        section_content = section_21.group(0)
+        section_content = section_21
 
         # Check for NFR elements (PRD.NN.02.SS)
         nfr_pattern = re.compile(r"PRD\.\d{2}\.02\.\d{2}")
@@ -617,14 +613,10 @@ def _gate_19_success_metrics(file_name: str, content: str) -> List[ValidationIss
     issues = []
 
     # Find Section 5 (Success Metrics)
-    section_5 = re.search(
-        r"^## 5\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_5 = _extract_main_section(content, 5)
 
     if section_5:
-        section_content = section_5.group(0)
+        section_content = section_5
 
         # Check for metric elements (PRD.NN.08.SS)
         metric_pattern = re.compile(r"PRD\.\d{2}\.08\.\d{2}")
@@ -646,14 +638,10 @@ def _gate_20_release_criteria(file_name: str, content: str) -> List[ValidationIs
     issues = []
 
     # Find Section 14 (Success Definition)
-    section_14 = re.search(
-        r"^## 14\.\s+(.+?)(?=^## \d+\.|$)",
-        content,
-        re.MULTILINE | re.DOTALL
-    )
+    section_14 = _extract_main_section(content, 14)
 
     if section_14:
-        section_content = section_14.group(0)
+        section_content = section_14
 
         # Check for release/launch criteria keywords
         criteria_keywords = ["release", "launch", "milestone", "criteria", "target"]
@@ -698,3 +686,16 @@ def _is_allowed_context(line: str) -> bool:
     ]
     line_lower = line.lower()
     return any(kw in line_lower for kw in allowed_keywords)
+
+
+def _extract_main_section(content: str, section_num: int) -> Optional[str]:
+    """Extract full main section content from a monolithic PRD.
+
+    Uses \\Z for end-of-string to avoid multiline '$' truncation bugs.
+    """
+    pattern = re.compile(
+        rf"^## {section_num}\.\s+.*?(?=^## \d+\.|\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+    match = pattern.search(content)
+    return match.group(0) if match else None

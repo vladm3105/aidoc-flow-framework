@@ -485,7 +485,7 @@ class PRDScorer:
     def _get_section_content(self, content: str, section_num: int) -> Optional[str]:
         """Extract content for a specific section."""
         pattern = re.compile(
-            rf"^## {section_num}\..*?(?=^## \d+\.|$)",
+            rf"^## {section_num}\..*?(?=^## \d+\.|\Z)",
             re.MULTILINE | re.DOTALL
         )
         match = pattern.search(content)

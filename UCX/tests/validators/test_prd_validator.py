@@ -508,6 +508,47 @@ custom_fields:
 class TestQualityGates:
     """Test quality gate checks."""
 
+    def test_section_extraction_uses_full_section_content(self):
+        """Section-based gates should inspect full section bodies, not only headings."""
+        from ucx.validators.prd.quality_gate import run_quality_gates
+
+        content = """
+## 5. Success Metrics
+PRD.01.08.01 Metric A
+
+## 7. Scope & Requirements
+PRD.01.22.01 Feature A
+
+## 8. User Stories & User Roles
+PRD.01.09.01 As a sender, I want to send funds, so that family receives quickly.
+
+## 11. Acceptance Criteria
+PRD.01.06.01 Criteria A
+PRD.01.06.02 Criteria B
+PRD.01.06.03 Criteria C
+
+## 14. Success Definition
+Release criteria: all launch checks complete.
+
+## 18. Traceability
+### 18.4 Architecture Decision Requirements
+ADR topics table present
+
+## 21. Quality Assurance & Testing Strategy
+PRD.01.02.01 Quality attribute A
+"""
+
+        issues = run_quality_gates(Path("PRD-01_test.md"), content, tier1_only=False)
+        codes = {issue.code for issue in issues}
+
+        assert "PRD-W009" not in codes
+        assert "PRD-W011" not in codes
+        assert "PRD-W012" not in codes
+        assert "PRD-W018" not in codes
+        assert "PRD-W019" not in codes
+        assert "PRD-W020" not in codes
+        assert "PRD-W021" not in codes
+
     def test_gate_05_skips_document_level_prd_ids(self):
         """Document-level PRD IDs should not be treated as invalid element IDs."""
         from ucx.validators.prd.quality_gate import _gate_05_element_format
@@ -579,3 +620,24 @@ doc_id: PRD-01
 """
         issues = _gate_01_placeholders("test.md", content)
         assert len(issues) >= 2
+
+
+class TestScoringSectionExtraction:
+    """Regression tests for PRD scoring section extraction behavior."""
+
+    def test_get_section_content_returns_body_not_heading_only(self):
+        """Section extraction should include body content for score computations."""
+        scorer = PRDScorer(profile="mvp")
+        content = """
+## 11. Acceptance Criteria
+Line A
+Line B
+
+## 12. Constraints & Assumptions
+Line C
+"""
+
+        section = scorer._get_section_content(content, 11)
+        assert section is not None
+        assert "Line A" in section
+        assert "Line B" in section
