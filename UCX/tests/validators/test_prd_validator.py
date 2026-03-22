@@ -408,6 +408,21 @@ PRD.01.99.01 - Invalid type code 99
         type_errors = [i for i in issues if i.code == "PRD-E013"]
         assert len(type_errors) >= 2
 
+    def test_malformed_short_segment_id(self):
+        """Single-digit segments in PRD IDs should be flagged as invalid format."""
+        from ucx.validators.prd.element_codes import validate_element_codes
+
+        content = """
+PRD.01.09.3 - Invalid short sequence segment
+PRD.1.09.03 - Invalid short doc segment
+PRD.01.9.03 - Invalid short type segment
+"""
+        path = Path("test.md")
+        issues = validate_element_codes(path, content)
+
+        format_errors = [i for i in issues if i.code == "PRD-E013"]
+        assert len(format_errors) >= 3
+
     def test_duplicate_detection(self):
         """Duplicate element IDs should be detected."""
         from ucx.validators.prd.element_codes import validate_element_codes

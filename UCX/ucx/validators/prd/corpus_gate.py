@@ -83,9 +83,22 @@ def _check_corpus_element_uniqueness(
 
             # Check if definition context
             line_start = content.rfind('\n', 0, match.start()) + 1
+            line_end_idx = content.find('\n', match.end())
+            if line_end_idx == -1:
+                line_end_idx = len(content)
+            full_line = content[line_start:line_end_idx]
             prefix = content[line_start:match.start()].strip()
 
-            is_definition = (
+            # Skip reference lines — mirrors element_codes._is_definition_context()
+            is_reference = (
+                '\u2192' in full_line or
+                '@brd:' in full_line.lower() or
+                '@prd:' in full_line.lower() or
+                'traces to' in full_line.lower() or
+                'references ' in full_line.lower()
+            )
+
+            is_definition = not is_reference and (
                 prefix == "" or
                 prefix == "-" or
                 prefix == "*" or
@@ -317,7 +330,8 @@ def get_corpus_statistics(files: List[Path]) -> Dict:
     for file_path in files:
         try:
             content = file_path.read_text(encoding='utf-8')
-            lines = content.count('\n') + 1
+            # Keep line counting consistent with quality gates.
+            lines = max(1, len(content.splitlines()))
             tokens = estimate_tokens(content)
 
             stats["total_lines"] += lines

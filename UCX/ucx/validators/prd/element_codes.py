@@ -67,6 +67,9 @@ def validate_element_codes(file_path: Path, content: str) -> List[ValidationIssu
     # Check for legacy patterns
     issues.extend(_check_legacy_patterns(file_name, content))
 
+    # Detect malformed short-segment IDs (e.g., PRD.01.09.3)
+    issues.extend(_check_malformed_short_segment_ids(file_name, content))
+
     # Check for forbidden downstream references
     issues.extend(_check_downstream_refs(file_name, content))
 
@@ -254,6 +257,36 @@ def _check_legacy_patterns(file_name: str, content: str) -> List[ValidationIssue
                     line=line_num,
                     tier=Tier.TIER2,
                 ))
+
+    return issues
+
+
+def _check_malformed_short_segment_ids(file_name: str, content: str) -> List[ValidationIssue]:
+    """Flag malformed PRD IDs where any segment uses a single digit.
+
+    Examples:
+    - PRD.01.09.3
+    - PRD.1.09.03
+    - PRD.01.9.03
+    """
+    issues = []
+    malformed_pattern = re.compile(r"\bPRD\.(\d{1,2})\.(\d{1,2})\.(\d{1,2})\b")
+
+    for match in malformed_pattern.finditer(content):
+        doc_num, type_code, seq_num = match.groups()
+
+        # Strict format requires exactly 2 digits in each segment.
+        if len(doc_num) == 2 and len(type_code) == 2 and len(seq_num) == 2:
+            continue
+
+        line_num = content[:match.start()].count('\n') + 1
+        issues.append(ValidationIssue(
+            code="PRD-E013",
+            message=f"Invalid format '{match.group(0)}', expected PRD.NN.TT.SS",
+            file=file_name,
+            line=line_num,
+            tier=Tier.TIER1,
+        ))
 
     return issues
 
