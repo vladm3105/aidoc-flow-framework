@@ -2,16 +2,16 @@
 
 **Document ID**: PLAN-009_prd_creation
 **Created**: 2026-03-19
-**Updated**: 2026-03-19
+**Updated**: 2026-03-21
 **Status**: Revised (v7)
 **Target Version**: UCX v1.21.0+
-**Related Plans**: PLAN-010_prd_validation.md (validation counterpart)
+**Related Plans**: PLAN-010_prd_validation.md (validation counterpart), PLAN-012_prd_derived_artifact_flow.md (derived-artifact downstream flow)
 
 ---
 
 ## Objective
 
-Enhance UCX PRD creation (UCC phase) to align with the 21-section MVP template structure, dual scoring requirements, and Section 10/Section 8 mandatory content rules. Ensure created PRDs pass validation immediately.
+Enhance UCX PRD creation (UCC phase) to align with the 21-section MVP template structure, dual scoring requirements, and Section 10/Section 8 mandatory content rules. Ensure created PRDs pass validation immediately and serve as the canonical source artifact for downstream PLAN-012 processing.
 
 ---
 
@@ -34,6 +34,10 @@ Upstream BRD content
 ```
 
 This plan focuses on **prompt engineering**, not Python module creation.
+
+Creation boundary:
+- `ucx create prd` emits the canonical source PRD only.
+- Post-create validation may score and report on that artifact, but derived `_validation` and `_remediated` copies belong to the downstream PLAN-012 flow.
 
 ---
 
@@ -539,6 +543,7 @@ DocType.PRD: [
 
 > **Architecture Note**: Scoring logic is defined in `ucx/validators/prd/scoring.py` (PLAN-010).
 > This phase imports the scorer module rather than duplicating scoring logic.
+> Under PLAN-012, this post-create validation path remains report-only; it must not create derived PRD copies.
 
 ```python
 def create(

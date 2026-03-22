@@ -6,7 +6,7 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 
 **Current Version**: 1.21.6
 **Latest Patch**: 1.21.6 (Validation source protection and report-only safety)
-**Next Minor**: 1.22.0 (EARS validator parity and remediation hardening follow-up)
+**Next Minor**: 1.22.0 (PRD derived-artifact flow, EARS parity, and remediation hardening follow-up)
 **Next Major**: 2.0.0
 
 ---
@@ -17,7 +17,7 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 ──► v1.19.0 ──► v1.20.0 ──► v1.21.x (Current) ──► v1.22.0 ──► v2.0.0
   │           │            │            │           │            │           │            │           │          │                    │           │
   │           │            │            │           │            │           │            │           │          │                    │           └─► Breaking changes
-  │           │            │            │           │            │           │            │           │          │                    └─► EARS validator parity + hardening follow-up
+  │           │            │            │           │            │           │            │           │          │                    └─► PRD derived-artifact flow + EARS parity + hardening follow-up
   │           │            │            │           │            │           │            │           │          ├─► v1.21.6: Validation source protection + report-only
   │           │            │            │           │            │           │            │           │          │
   │           │            │            │           │            │           │            │           │          └─► v1.21.5: Preflight robustness (ISO date fallback)
@@ -36,7 +36,7 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 
 ## Planned Releases
 
-### v1.22.0 - EARS Validation Parity and Hardening Follow-Up
+### v1.22.0 - PRD Derived-Artifact Flow, EARS Parity, and Hardening Follow-Up
 
 **Status**: Planned
 **ETA**: Q3 2026
@@ -44,9 +44,11 @@ v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x 
 **Features**:
 | Feature | Description | Status |
 |---------|-------------|--------|
+| PRD Derived-Artifact Flow | Introduce immutable-source PRD workflow with `PRD-01_validation_report.md`, `_validation`, and `_remediated` artifacts | Planned |
+| PRD Artifact Consistency Checks | Keep pre-commit limited to artifact availability and lineage consistency checks without rerunning validation logic | Planned |
 | EARS Validators | Complete EARS validation parity module and quality gates | Planned |
 | Remediation Safety Telemetry | Optional visibility for restored source files during generation | Planned |
-| Reporting Consistency | Align creation/review/remediation docs and commands across guides | Planned |
+| Reporting Consistency | Align PLAN-009/010/011 and user guides with PRD stage-aware artifact naming and lineage semantics | Planned |
 
 ---
 

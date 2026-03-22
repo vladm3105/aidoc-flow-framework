@@ -2,10 +2,10 @@
 
 **Document ID**: PLAN-011_ucx_reporting_standards
 **Created**: 2026-03-20
-**Updated**: 2026-03-20
-**Status**: Completed (v6)
+**Updated**: 2026-03-21
+**Status**: Revised (v7)
 **Target Version**: UCX v1.22.0
-**Related Plans**: PLAN-009_prd_creation.md, PLAN-010_prd_validation.md
+**Related Plans**: PLAN-009_prd_creation.md, PLAN-010_prd_validation.md, PLAN-012_prd_derived_artifact_flow.md
 
 ---
 
@@ -18,7 +18,7 @@ Establish UCX-wide reporting standards across all supported SSD layers with dete
 3. Versioned remediation report (`{DOC_TYPE}-XX.UCX_remediation_report_vNNN.md`)
 4. Pre-commit report (`.precommit_validation_report.md`) generated only by commit-time validation
 
-This standard must apply consistently to BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, and future layer validators integrated into UCX.
+This standard must apply consistently to BRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, and future layer validators integrated into UCX. PRD is now a documented transition case: PLAN-012 introduces a stage-aware derived-artifact workflow whose validation-report naming and lineage fields refine the generic rules in this plan.
 
 Naming rule:
 - `{DOC_TYPE}-XX` is exactly the document ID from the parent artifact folder (for example: `BRD-01`, `PRD-01`, `EARS-03`).
@@ -37,6 +37,11 @@ UCX provides three document lifecycle phases and one commit-time guardrail path 
 | Pre-commit guardrail | `ucx validate --precommit` (hook path) | Commit-time fast gate | Must be sole emitter of `.precommit_validation_report.md` |
 
 PLAN-011 scope is reporting-system normalization only. It does not alter artifact content-generation prompts/templates defined in layer-specific plans.
+
+PRD exception boundary:
+- Current PRD runtime behavior in v1.21.6 remains source-protected and report-only.
+- Planned v1.22.0 PRD work in PLAN-012 replaces the generic validation filename with `PRD-01_validation_report.md` and adds derived-copy lineage requirements.
+- Review and remediation report versioning remain under PLAN-011 unless a future cross-layer revision generalizes the PRD pattern.
 
 ---
 
@@ -85,6 +90,19 @@ Gap summary:
 - Rewriting report content templates across all layers
 - Introducing report types beyond UCX_validation/UCX_review/UCX_remediation/pre-commit
 - Changes to external CI pipelines outside UCX repository
+- Generalizing PRD derived-copy naming to all layers before PLAN-012 is implemented and validated
+
+---
+
+## PRD Exception Handling
+
+PLAN-012 creates a PRD-specific exception to the generic validation naming rule in this plan.
+
+Interim alignment rules:
+- PRD validation stays report-only.
+- PRD validation target filename becomes `PRD-01_validation_report.md` when PLAN-012 is implemented.
+- PRD review and remediation reports remain versioned report families with lineage metadata identifying the `_validation` source artifact.
+- `.precommit_validation_report.md` remains reserved for commit-time diagnostics only and must not be reused as the standard PRD validation artifact.
 
 ---
 
@@ -93,6 +111,10 @@ Gap summary:
 ### 1) Validation Report (versioned)
 
 **File Pattern**: `{DOC_TYPE}-XX.UCX_validation_report_vNNN.md`
+
+PRD note:
+- PLAN-012 defines `PRD-01_validation_report.md` as a PRD-specific validation artifact for the derived-copy workflow.
+- Other layers continue using the generic naming contract until a broader stage-aware standard is approved.
 
 **Generation Trigger**:
 - `ucx validate <doc_type> <path>`
@@ -303,7 +325,7 @@ Likely modules (confirm in Phase 1):
 
 ## Acceptance Criteria
 
-1. Running `ucx validate <doc_type> <path>` creates/updates only `{DOC_TYPE}-XX.UCX_validation_report_vNNN.md` for supported layers.
+1. Running `ucx validate <doc_type> <path>` creates/updates only the standard validation artifact for that layer. For PRD, PLAN-012 defines the planned exception `PRD-01_validation_report.md`; other supported layers use `{DOC_TYPE}-XX.UCX_validation_report_vNNN.md`.
 2. Running `ucx review <doc_type> <path>` creates/updates only `{DOC_TYPE}-XX.UCX_review_report_vNNN.md` for supported layers.
 3. Running `ucx remediate <doc_type> <path>` creates/updates only `{DOC_TYPE}-XX.UCX_remediation_report_vNNN.md` for supported layers.
 4. Running pre-commit mode creates/updates only `.precommit_validation_report.md`.

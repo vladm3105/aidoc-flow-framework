@@ -1004,13 +1004,15 @@ custom_fields:
 
 | Output Type | Filename Pattern | Example |
 |-------------|------------------|---------|
-| Validation | `.precommit_validation_report.md` | `.precommit_validation_report.md` |
+| Validation | Current v1.21.x baseline: single validation report file. Planned PRD v1.22.0 flow: `PRD-01_validation_report.md` | `PRD-01_validation_report.md` |
 | Review | `{DOC-ID}.UCX_review_report_v{NNN}.md` | `BRD-01.UCX_review_report_v001.md` |
 | Remediation | `{DOC-ID}.UCX_remediation_report_v{NNN}.md` | `BRD-01.UCX_remediation_report_v001.md` |
 
 > **Note (v1.16.1+)**: Validation reports use a single file that overwrites on each run. Review and remediation reports retain versioning for history tracking.
 >
 > **Note (v1.21.4+)**: Remediation now uses one canonical UCX report per run. Detailed fix blocks are consolidated into `{DOC-ID}.UCX_remediation_report_v{NNN}.md`, and `--apply-auto-safe` parses fixes from that canonical file.
+>
+> **Planned PRD change (PLAN-012 / v1.22.0)**: PRD validation remains report-only but moves to a fixed validation artifact (`PRD-01_validation_report.md`) and copy-based follow-up commands (`validate-fix`, `remediate-apply`) instead of mutating the canonical source PRD.
 
 **Tiered Validation:**
 
@@ -2095,6 +2097,13 @@ See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 - Consistent with remediation source protection pattern from v1.21.4
 - Zero breaking changes; all validation tests passing
 - See [CHANGELOG_v1.21.6](docs/CHANGELOG/CHANGELOG_v1.21.6.md) for details
+
+**Next Planned Release**: v1.22.0 - PRD derived-artifact workflow and reporting alignment
+- Canonical source PRD remains immutable after creation
+- PRD validation target artifact becomes `PRD-01_validation_report.md`
+- New planned copy-based commands: `ucx validate-fix prd` and `ucx remediate-apply prd`
+- Pre-commit remains lightweight and checks artifact availability plus lineage consistency only
+- See [ROADMAP.md](docs/ROADMAP.md) for planned scope
 
 **Previous Latest Release**: v1.21.5 - AI preflight probe robustness and formatting drift tolerance
 - Added ISO date fallback mechanism to preflight Phase 3 for handling LLM formatting drift

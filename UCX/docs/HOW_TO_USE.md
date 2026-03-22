@@ -92,6 +92,13 @@ Auto-fixing 3 structural issue(s)...
 
 Use `ucx remediate` to apply actual fixes to the source PRD/BRD if desired.
 
+**Planned PRD Flow (v1.22.0 / PLAN-012)**:
+The current command set stops at report-only validation. The planned PRD derived-artifact flow adds:
+- `ucx validate-fix prd ...` to create a `_validation` copy from the source PRD plus `PRD-01_validation_report.md`
+- `ucx remediate-apply prd ...` to create a `_remediated` copy from the `_validation` PRD plus remediation report
+
+Those commands are not part of the current v1.21.6 runtime.
+
 
 ### Review a PRD Document
 

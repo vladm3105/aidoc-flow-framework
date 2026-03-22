@@ -2,10 +2,10 @@
 
 **Document ID**: PLAN-010_prd_validation
 **Created**: 2026-03-19
-**Updated**: 2026-03-20
-**Status**: Revised (v10)
+**Updated**: 2026-03-21
+**Status**: Revised (v11)
 **Target Version**: UCX v1.21.3
-**Related Plans**: PLAN-009_prd_creation.md (creation counterpart)
+**Related Plans**: PLAN-009_prd_creation.md (creation counterpart), PLAN-011_ucx_reporting_standards.md (reporting baseline), PLAN-012_prd_derived_artifact_flow.md (planned PRD derived-copy flow)
 
 ---
 
@@ -38,12 +38,13 @@ The PRD validator and related scripts must remain compatible with the current UC
 | Frontmatter guardrails | UCC normalizes top-level `title`, `doc_id`, `version`, `status`, `tags` before write | Validation must require the same top-level fields |
 | YAML delimiters | UCC/validators accept frontmatter delimiters with trailing spaces | Validation regex and helper scripts must allow tolerant delimiter parsing |
 | Prompt history | Canonical PRD path saves `.ucx_create_session/` beside the PRD file | Scripts/docs must reference `docs/02_PRD/<slug>/.ucx_create_session/` as the canonical path |
-| Validation report path | `ucx validate prd` writes `.precommit_validation_report.md` in the PRD folder | Plan and scripts must use single-file validation report naming |
+| Validation report path | Current v1.21.6 runtime still writes a single validation report file in the PRD folder | PLAN-012 will replace the PRD standard path with `PRD-01_validation_report.md` and add derived-copy commands |
 
 ### Revision History
 
 | Revision | Date | Summary |
 |----------|------|---------|
+| v11 | 2026-03-21 | Aligned PLAN-010 references with PLAN-012. Documented current v1.21.6 report-only validation as the baseline and marked fixed PRD validation naming plus derived-copy flow as planned v1.22.0 work. |
 | v10 | 2026-03-20 | Updated remediation artifact model to canonical UCX report naming and single-report behavior: remediation details and fix blocks are consolidated into `{DOC_ID}.UCX_remediation_report_v{NNN}.md`; removed legacy UCRem sidecar assumptions. |
 | v9 | 2026-03-20 | Added PRD UCR finding-ID lifecycle alignment with BRD approach: persona output IDs use `{PREFIX}-P{PRIORITY}-{NNN}` and assembled report IDs use canonical hash format `P{0\|1\|2}-{hex}` for scoring/traceability. |
 | v8 | 2026-03-20 | Added create/validate alignment history for PRD refresh fixes: exact PRD metadata guardrails, deterministic Section 8 note injection, narrower PRD-E005 detection for document-level references, and stronger prompt contracts for score-driving element families. |
@@ -1154,20 +1155,20 @@ python3 ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01/
 
 ## Output Reports
 
-### Current Report and Session Artifact Naming
+### Current Report and Session Artifact Naming (v1.21.6 Baseline)
 
-Current UCX runtime behavior uses these artifact locations/names:
+Current UCX runtime behavior uses these artifact locations/names. PLAN-012 defines the v1.22.0 target state for PRD-specific derived artifacts and supersedes the validation-row naming below once implemented.
 
 | Phase | Artifact | Current Path / Naming |
 |-------|----------|-----------------------|
 | **UCC (Create)** | Prompt history | `docs/02_PRD/<slug>/.ucx_create_session/prompt_prd_<timestamp>.txt` |
-| **UCR (Validate)** | Validation report | `.precommit_validation_report.md` |
+| **UCR (Validate)** | Validation report | Single validation report file in PRD folder (current baseline before PLAN-012 transition) |
 | **UCR (Review)** | Review report | `{DOC_ID}.UCX_review_report_v{NNN}.md` |
 | **UCRem (Remediate)** | Remediation report | `{DOC_ID}.UCX_remediation_report_v{NNN}.md` |
 
-### Validation Report Structure (`.precommit_validation_report.md`)
+### Validation Report Structure (Current Single-File Baseline)
 
-Generated after `ucx validate prd` completes:
+Generated after `ucx validate prd` completes in the current baseline. PLAN-012 changes the PRD target filename to `PRD-01_validation_report.md` and keeps validation report-only.
 
 ```markdown
 ---
@@ -1425,7 +1426,7 @@ docs/02_PRD/PRD-01/
 ├── ...
 ├── .ucx_create_session/
 │   └── prompt_prd_<timestamp>.txt        ← UCC prompt history
-├── .precommit_validation_report.md       ← This plan (single-file overwrite)
+├── validation report file                ← Current single-file baseline; PLAN-012 targets PRD-01_validation_report.md
 ├── PRD-01.UCX_review_report_v001.md      ← UCR review output
 ├── PRD-01.UCX_review_report_v002.md      ← Subsequent review runs
 └── PRD-01.UCX_remediation_report_v001.md ← UCRem remediation output (canonical single report)
@@ -1433,10 +1434,7 @@ docs/02_PRD/PRD-01/
 
 ### Backward Compatibility
 
-> **Note**: Validation remains single-file (`.precommit_validation_report.md`),
-> while review/remediation use versioned UCX report families
-> (`UCX_review_report_vNNN`, `UCX_remediation_report_vNNN`).
-> Remediation uses one canonical report artifact per run.
+> **Note**: This plan documents the current validation baseline. PLAN-012 refines the PRD operational flow so validation remains report-only, introduces `PRD-01_validation_report.md` as the fixed PRD validation artifact, and moves deterministic fix application into copy-based follow-up commands.
 
 ---
 
@@ -1511,7 +1509,7 @@ docs/02_PRD/PRD-01/
 19. Legacy hooks deprecated with clear migration message
 
 ### Output Reports
-20. Validation generates `.precommit_validation_report.md`
+20. Validation generates the current single-file baseline report and remains compatible with PLAN-012 migration to `PRD-01_validation_report.md`
 21. Review generates `{DOC_ID}.UCX_review_report_v{NNN}.md`
 22. Remediation generates `{DOC_ID}.UCX_remediation_report_v{NNN}.md`
 23. Reports include dual scores (SYS-Ready, EARS-Ready)
