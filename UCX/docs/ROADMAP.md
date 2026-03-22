@@ -4,7 +4,8 @@
 
 This roadmap outlines planned features and improvements for UCX (Unified Context Framework).
 
-**Current Version**: 1.21.4
+**Current Version**: 1.21.6
+**Latest Patch**: 1.21.6 (Validation source protection and report-only safety)
 **Next Minor**: 1.22.0 (EARS validator parity and remediation hardening follow-up)
 **Next Major**: 2.0.0
 
@@ -14,10 +15,13 @@ This roadmap outlines planned features and improvements for UCX (Unified Context
 
 ```
 v1.12.0 ──► v1.13.x ──► v1.14.x ──► v1.15.x ──► v1.16.x ──► v1.17.0 ──► v1.18.0 ──► v1.19.0 ──► v1.20.0 ──► v1.21.x (Current) ──► v1.22.0 ──► v2.0.0
-  │           │            │            │           │            │           │            │           │                    │           │
-  │           │            │            │           │            │           │            │           │                    │           └─► Breaking changes
-  │           │            │            │           │            │           │            │           │                    └─► EARS validator parity + hardening follow-up
-  │           │            │            │           │            │           │            │           └─► PRD/EARS validation parity
+  │           │            │            │           │            │           │            │           │          │                    │           │
+  │           │            │            │           │            │           │            │           │          │                    │           └─► Breaking changes
+  │           │            │            │           │            │           │            │           │          │                    └─► EARS validator parity + hardening follow-up
+  │           │            │            │           │            │           │            │           │          ├─► v1.21.6: Validation source protection + report-only
+  │           │            │            │           │            │           │            │           │          │
+  │           │            │            │           │            │           │            │           │          └─► v1.21.5: Preflight robustness (ISO date fallback)
+  │           │            │            │           │            │           │            │           └─► v1.21.4: Canonical reports + source protection
   │           │            │            │           │            │           │            └─► Hash-based Finding IDs (PLAN-008)
    │           │            │            │           │            │           └─► Layer Action Handoff System
    │           │            │            │           │            └─► Fixer-to-LLM hand-off
@@ -107,7 +111,41 @@ See [CHANGELOG_v1.21.4](CHANGELOG/CHANGELOG_v1.21.4.md)
 
 ---
 
-### v1.19.0 (2026-03-18)
+### v1.21.5 (2026-03-21)
+
+**Status**: Released
+**Type**: Patch (Robustness & Reliability)
+
+**Features**:
+- **AI Preflight Probe Robustness**: Added ISO date fallback mechanism for LLM date validation
+- **Formatting Drift Tolerance**: Handles responses where ISO date is correct but epoch token is malformed
+- **Two-Stage Validation**: Primary epoch extraction + ISO date search as fallback
+- **Confidence Preference**: Prefers expected date if found in ISO matches; uses first valid date as secondary fallback
+
+**Problem Solved**:
+LLM providers (especially Claude) occasionally return responses with correct ISO date (YYYY-MM-DD) in prose text but inconsistent/malformed epoch unix timestamp. Example: "2026-03-21" in text but epoch token `1774252800` = 2026-03-23. Preflight now accepts the logical date instead of raising false-negative errors.
+
+**Code Changes**:
+- New method: `CLIClient._extract_iso_utc_date(text, expected_date=None)` for YYYY-MM-DD pattern extraction
+- Modified: `_run_availability_preflight()` Phase 3 logic to implement two-stage validation
+- New test: `test_preflight_accepts_iso_date_when_epoch_is_inconsistent()` with regression coverage
+
+**Impact**:
+- ✅ Zero breaking changes (backward compatible)
+- ✅ All 24 preflight tests passing
+- ✅ Reduces false-negative preflight failures in remediation/review/creation workflows
+- ✅ Safety preserved: ISO fallback only activates when epoch fails; must parse as valid date
+
+**Validation**:
+- 24 preflight unit tests passing (including new regression test)
+- Live remediation tested with Claude CLI: Preflight passed via ISO fallback, source protection confirmed
+- Integration tests passing across all provider backends
+
+See [CHANGELOG_v1.21.5](CHANGELOG/CHANGELOG_v1.21.5.md)
+
+---
+
+### v1.21.4 (2026-03-20)
 
 **Features**:
 - **Hash-Based Finding IDs**: Content-addressable finding IDs (`P1-a7f3` format) replacing sequential IDs (`REM-P1-001`)

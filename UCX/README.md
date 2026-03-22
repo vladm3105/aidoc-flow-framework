@@ -2019,6 +2019,8 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.21.6 | 2026-03-21 | **Validation source protection & report-only safety**: Added source file protection to `ucx validate` command. Validation now snapshots source markdown files before fix analysis, analyzes what could be fixed, documents findings in reports, then restores source files to original state. This ensures validation remains a safe, read-only operation that produces only report artifacts without modifying the source PRD/BRD. Consistent with remediation source protection pattern from v1.21.4. Zero breaking changes. See [CHANGELOG_v1.21.6](docs/CHANGELOG/CHANGELOG_v1.21.6.md). |
+| 1.21.5 | 2026-03-21 | **AI preflight probe robustness & formatting drift tolerance**: Added ISO date fallback mechanism to preflight Phase 3 validation. When LLM responses contain correct ISO date (YYYY-MM-DD) but malformed/inconsistent epoch token, preflight now accepts the ISO date. Two-stage validation: primary epoch extraction → ISO search fallback. Reduces false-negative preflight failures from Claude and other LLM formatting drift. Zero breaking changes; 24 preflight tests passing. See [CHANGELOG_v1.21.5](docs/CHANGELOG/CHANGELOG_v1.21.5.md). |
 | 1.21.4 | 2026-03-20 | **Remediation consolidation, source protection, AI probe, and PRD runtime alignment**: Added canonical single-artifact remediation behavior (`UCX_remediation_report_vNNN`) with consolidated fix blocks for `--apply-auto-safe`. Added source-document protection during remediation generation (unexpected source edits are restored automatically). Added `ucx ai probe` command with epoch-based preflight diagnostics. Added creation audit report generation (`UCX_creation_report_vNNN`) and PRD runtime controls (`UCX_UPSTREAM_SECTION_CHARS`, `UCX_UPSTREAM_TOTAL_CHARS`, `UCX_PRD_LLM_AUDIT_COPY`). Updated PRD validation edge-case handling and aligned docs/PLAN-010 with current naming and behavior. |
 | 1.21.3 | 2026-03-20 | **Prompt history canonical-path fix & create/validate alignment docs**: When `ucx create prd` is called with the full canonical PRD path, `.ucx_create_session/` is now saved directly in the canonical PRD folder instead of under an extra nested slug directory. Documentation and planning artifacts were updated to reflect the final create/validate baseline: framework+project prompt merge, pre-write metadata guardrails, canonical prompt-session location, and current validation report behavior. |
 | 1.21.2 | 2026-03-20 | **PRD creation guardrails & prompt merge**: `ucx create prd` now merges framework prompt contracts with project-specific overrides (instead of replacing framework rules), injects an explicit output contract from the target path, and applies pre-write guardrails to normalize required frontmatter (`title`, `doc_id`, `version`, `status`, `tags`), enforce PRD identity consistency (frontmatter/H1/Document Control), and align PRD element prefixes to target `PRD.NN.*`. Frontmatter parsing was also hardened to accept delimiter lines with trailing spaces. |
@@ -2085,21 +2087,21 @@ pytest tests/ --cov=ucx --cov-report=term-missing
 
 See [ROADMAP.md](docs/ROADMAP.md) for planned features and release timeline.
 
-**Latest Release**: v1.21.4 - Remediation/reporting consolidation and AI probe utilities
-- Canonical single-file remediation output (`UCX_remediation_report_vNNN`) with inlined fix blocks
-- Remediation source protection restores unexpected source-document mutations during report generation
-- `ucx ai probe` command for preflight diagnostics with optional full output
-- Creation audit report on each `ucx create` run (`UCX_creation_report_vNNN`)
-- PRD runtime controls for upstream clipping and optional LLM audit appendix
-- PRD validation refinements for document-level ID references and Section 8 layer-separation note detection
-- See [CHANGELOG_v1.21.4](docs/CHANGELOG/CHANGELOG_v1.21.4.md) for details
+**Latest Release**: v1.21.6 - Validation source protection and report-only safety
+- Added source file protection to `ucx validate` command (v1.21.6)
+- Validation analyzes fixable issues and documents them in reports without modifying source PRD/BRD
+- Ensures validation is safe, read-only operation with only report artifacts generated
+- Snapshots source files before fix analysis, restores them after report generation
+- Consistent with remediation source protection pattern from v1.21.4
+- Zero breaking changes; all validation tests passing
+- See [CHANGELOG_v1.21.6](docs/CHANGELOG/CHANGELOG_v1.21.6.md) for details
 
-**Previous Latest Release**: v1.21.3 - PRD creation path and metadata hardening
-- PRD create canonical-path write fix (v1.21.1)
-- Framework + project prompt merge for PRD create (v1.21.2)
-- PRD output metadata/identity guardrails before write (v1.21.2)
-- Canonical-path prompt session folder fix (v1.21.3)
-- See [CHANGELOG_v1.21.3](docs/CHANGELOG/CHANGELOG_v1.21.3.md) for details
+**Previous Latest Release**: v1.21.5 - AI preflight probe robustness and formatting drift tolerance
+- Added ISO date fallback mechanism to preflight Phase 3 for handling LLM formatting drift
+- Supports two-stage date validation: primary epoch extraction + ISO date search fallback
+- Reduces false-negative preflight failures when LLMs return correct ISO date with malformed epoch token
+- Zero breaking changes; all 24 preflight tests passing
+- See [CHANGELOG_v1.21.5](docs/CHANGELOG/CHANGELOG_v1.21.5.md) for details
 
 **Previous Releases**: v1.21.2 / v1.21.1 / v1.21.0 / v1.20.0
 - v1.21.2: PRD creation guardrails and prompt merge

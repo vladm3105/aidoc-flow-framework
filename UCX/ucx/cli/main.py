@@ -1027,6 +1027,13 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
     Use --no-fix to skip fixing (e.g., for pre-commit hooks).
 
     \b
+    Source Protection (v1.21.6+):
+    Validation now uses source protection: fix recommendations are analyzed and
+    documented in the validation report, but the source PRD/BRD file remains
+    untouched. This ensures validation is a safe, read-only operation that
+    produces a report artifact only.
+
+    \b
     By default, writes validation report to document directory (like review).
     Use --no-report for console-only output.
 
@@ -1036,20 +1043,22 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
       Tier 2 (Advisory): Links, references, diagrams, glossary
 
     \b
-    Auto-fix (default behavior):
-      Fixes structural issues deterministically (no AI):
+    Auto-fix analysis (default behavior):
+    Validates what fixes could be applied, documents them in the report:
       - Missing metadata fields (custom_fields.document_type, artifact_type, layer)
       - Missing tags (brd, layer-1-artifact)
       - Missing Document Control fields
       - Legacy status values
-      - Inserts LLM_COMPLETION markers for partial fixes
+      - Partial fixes requiring LLM completion
+
+    Source files remain unchanged; apply fixes manually or use ucx remediate.
 
     \b
     Examples:
-      ucx validate brd docs/01_BRD/BRD-01                    # Validate + fix + report (default)
-      ucx validate brd docs/01_BRD/BRD-01 --no-fix          # Skip fixing (validate only)
-      ucx validate brd docs/01_BRD/BRD-01 --no-report       # Fix but no report file
-      ucx validate brd docs/01_BRD/BRD-01 --tier1-only      # Tier 1 + fix + report
+      ucx validate brd docs/01_BRD/BRD-01                    # Validate + analyze fixes + report (source protected)
+      ucx validate brd docs/01_BRD/BRD-01 --no-fix          # Validate only, no fix analysis
+      ucx validate brd docs/01_BRD/BRD-01 --no-report       # Analyze but no report file
+      ucx validate brd docs/01_BRD/BRD-01 --tier1-only      # Tier 1 + fix analysis + report
       ucx validate brd docs/01_BRD/BRD-01 --strict --format json
       ucx validate brd docs/01_BRD/BRD-01 -o custom_report.md
       ucx validate brd docs/01_BRD/BRD-01 --clean-reports --keep-versions 3
@@ -1133,47 +1142,107 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
             if fixable_issues:
                 console.print(f"\n[cyan]Auto-fixing {len(fixable_issues)} structural issue(s)...[/cyan]")
 
+            # === VALIDATION SOURCE PROTECTION (v1.21.6+) ===
+            # Snapshot source files before running fixer to ensure validation
+            # creates reports only, without modifying the source PRD/BRD document.
+            source_snapshot: dict[Path, str] = {}
             try:
-                fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
-                fix_summary = fixer.fix_all(fixable_issues)
+                # Get list of markdown sources in the document directory
+                doc_path_obj = Path(doc_path)
+                search_dir = doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent
+                source_files = list(search_dir.glob("*.md"))
+                # Exclude reports (validation, review, remediation, creation reports)
+                source_files = [
+                    f for f in source_files 
+                    if not any(keyword in f.name for keyword in [
+                        "validation_report", "V_validation", "REVIEW", "REPORT", 
+                        "remediation_report", "creation_report"
+                    ])
+                ]
+                
+                # Snapshot before fixer runs
+                for file_path in source_files:
+                    try:
+                        source_snapshot[file_path] = file_path.read_text(encoding="utf-8")
+                    except OSError:
+                        continue
+                
+                # Run fixer (will write changes to files)
+                try:
+                    fixer = BRDFixer(doc_path, verbose=ctx.obj.get("verbose", False))
+                    fix_summary = fixer.fix_all(fixable_issues)
 
-                # Display fix results with partial fix indicators (v1.17.0+)
-                for fix_result in fix_summary.results:
-                    if fix_result.fixed:
-                        if fix_result.partial_fix:
-                            console.print(f"  [cyan]◐[/cyan] {fix_result.code}: {fix_result.message}")
-                            console.print(f"    [dim]LLM Task: {fix_result.llm_task}[/dim]")
+                    # Display fix results with partial fix indicators (v1.17.0+)
+                    for fix_result in fix_summary.results:
+                        if fix_result.fixed:
+                            if fix_result.partial_fix:
+                                console.print(f"  [cyan]◐[/cyan] {fix_result.code}: {fix_result.message}")
+                                console.print(f"    [dim]LLM Task: {fix_result.llm_task}[/dim]")
+                            else:
+                                console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
+                            for change in fix_result.changes:
+                                console.print(f"    [dim]→ {change}[/dim]")
                         else:
-                            console.print(f"  [green]✓[/green] {fix_result.code}: {fix_result.message}")
-                        for change in fix_result.changes:
-                            console.print(f"    [dim]→ {change}[/dim]")
-                    else:
-                        console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
+                            console.print(f"  [yellow]⊘[/yellow] {fix_result.code}: {fix_result.message}")
 
-                # Summary with partial fix count (v1.17.0+)
-                if fix_summary.results:  # Only show summary if there were any fixes attempted
-                    console.print(
-                        f"\n[green]Fixed: {fix_summary.fully_fixed_count}[/green] | "
-                        f"[cyan]Partial: {fix_summary.partial_fix_count}[/cyan] | "
-                        f"[yellow]Skipped: {fix_summary.skipped_count}[/yellow] | "
-                        f"[red]Failed: {fix_summary.failed_count}[/red]"
-                    )
+                    # Summary with partial fix count (v1.17.0+)
+                    if fix_summary.results:  # Only show summary if there were any fixes attempted
+                        console.print(
+                            f"\n[green]Fixed: {fix_summary.fully_fixed_count}[/green] | "
+                            f"[cyan]Partial: {fix_summary.partial_fix_count}[/cyan] | "
+                            f"[yellow]Skipped: {fix_summary.skipped_count}[/yellow] | "
+                            f"[red]Failed: {fix_summary.failed_count}[/red]"
+                        )
 
-                if fix_summary.partial_fix_count > 0:
-                    console.print(f"\n[cyan]LLM Completion Required: {fix_summary.partial_fix_count}[/cyan]")
-                    console.print("[dim]Run `ucx remediate` to complete partial fixes with AI.[/dim]")
+                    if fix_summary.partial_fix_count > 0:
+                        console.print(f"\n[cyan]LLM Completion Required: {fix_summary.partial_fix_count}[/cyan]")
+                        console.print("[dim]Run `ucx remediate` to complete partial fixes with AI.[/dim]")
 
-                # Re-run validation to show updated results
-                if fix_summary.fixed_count > 0:
-                    console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
-                    result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+                    # Re-run validation to show updated results
+                    if fix_summary.fixed_count > 0:
+                        console.print("\n[cyan]Re-validating after fixes...[/cyan]\n")
+                        result = validator.validate(Path(doc_path), tier1_only=tier1_only)
 
+                except Exception as e:
+                    fixer_error = str(e)
+                    console.print(f"[red]Fixer error: {e}[/red]")
+                    import logging
+                    logging.getLogger(__name__).exception("Fixer failed")
+                
+                # === RESTORE SOURCE FILES ===
+                # Restore source documents to original state (validation report-only protection)
+                if source_snapshot:
+                    restored_files = []
+                    for file_path, original_content in source_snapshot.items():
+                        try:
+                            current_content = file_path.read_text(encoding="utf-8") if file_path.exists() else None
+                        except OSError:
+                            continue
+                        
+                        # Only restore if file was modified
+                        if current_content != original_content:
+                            try:
+                                file_path.write_text(original_content, encoding="utf-8")
+                                restored_files.append(file_path)
+                            except OSError:
+                                continue
+                    
+                    if restored_files:
+                        console.print(
+                            f"\n[yellow]⚠ Restored source files (validation report-only):[/yellow]"
+                        )
+                        for f in restored_files:
+                            console.print(f"  [dim]→ {f.name}[/dim]")
+                        console.print(
+                            "[dim]Source documents unchanged. "
+                            "Fix recommendations documented in validation report only.[/dim]"
+                        )
+                
             except Exception as e:
-                fixer_error = str(e)
-                console.print(f"[red]Fixer error: {e}[/red]")
+                console.print(f"[red]Source protection error: {e}[/red]")
                 import logging
-                logging.getLogger(__name__).exception("Fixer failed")
-                # Continue with validation - don't block on fixer failure
+                logging.getLogger(__name__).exception("Source protection failed")
+
 
         # Attach fixer context to result (v1.17.0+)
         if fix_summary:

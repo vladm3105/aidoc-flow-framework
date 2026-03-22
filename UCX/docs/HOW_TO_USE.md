@@ -63,18 +63,35 @@ ucx --mode api --model opus review brd docs/01_BRD/BRD-01/
 ### Validate a PRD Document
 
 ```bash
-# Full validation (Tier 1 + Tier 2)
+# Full validation (Tier 1 + Tier 2) - Source protected
 ucx validate prd docs/02_PRD/PRD-01_user_onboarding/
 
-# Tier 1 only (fast, pre-commit mode)
+# Tier 1 only (fast, pre-commit mode) - Source protected
 ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --tier1-only
 
-# With auto-fix and report
-ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --fix --report
+# Validate without fix analysis
+ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --no-fix
 
 # JSON output
 ucx validate prd docs/02_PRD/PRD-01_user_onboarding/ --format json
 ```
+
+**Source Protection (v1.21.6+)**:
+As of v1.21.6, validation uses **source protection**: the utility analyzes what could be fixed, documents recommendations in the validation report, but **never modifies the source PRD/BRD file**. This makes validation a safe, read-only operation that produces only report artifacts.
+
+Example output:
+```
+Auto-fixing 3 structural issue(s)...
+  ✓ GATE-E001: Missing custom_fields.document_type
+  ◐ GATE-E002: Missing required tags
+    LLM Task: Cross-verify tag alignment with PRD scope
+  ⚠ Restored source files (validation report-only):
+    → PRD-01_platform_architecture.md
+  Source documents unchanged. Fix recommendations documented in validation report only.
+```
+
+Use `ucx remediate` to apply actual fixes to the source PRD/BRD if desired.
+
 
 ### Review a PRD Document
 
@@ -507,6 +524,87 @@ if result.is_success:
     print(f"Success! Score: {result.score}")
 else:
     print(f"Needs manual review. Score: {result.score}")
+```
+
+---
+
+## AI Availability Probe (v1.21.4+)
+
+The `ucx ai probe` command runs the AI preflight checks without executing a full create/review/remediate cycle. Use it to diagnose AI backend availability, model responsiveness, and date/time validation.
+
+### Basic Usage
+
+```bash
+# Quick availability check (3-phase preflight)
+ucx ai probe
+
+# Full-output probe with detailed diagnostics
+ucx ai probe --full-output
+
+# Specify CLI tool and model
+ucx ai probe --cli-tool claude --model opus
+ucx ai probe --cli-tool codex --model gpt-5-codex
+ucx ai probe --cli-tool gemini
+```
+
+### What It Checks
+
+The probe runs a **3-phase availability check**:
+
+| Phase | Check | Result |
+|-------|-------|--------|
+| **1. Budget/Rate-Limit** | Send minimal prompt; detect quota/rate-limit signals | `"ok"` \| `"quota_exceeded"` \| `"no_response"` |
+| **2. Capability** (if Phase 1 fails) | Run tool version/list command (no LLM call) | Determines if binary/daemon is installed |
+| **3. Epoch Date Validation** | Ask LLM for UTC date; validate against today's UTC | Confirms coherent responses |
+
+**Phase 3 Robustness (v1.21.5+)**:
+- **Two-stage validation**: Primary epoch extraction + ISO date fallback
+- **Formatting drift tolerance**: Accepts correct ISO date (YYYY-MM-DD) even if epoch token is malformed
+- **Preference logic**: If expected UTC date found in response ISO matches, uses it; otherwise uses first valid ISO date
+- **Safety**: Only accepts dates that parse as valid `YYYY-MM-DD` from the response text itself
+
+This handles common LLM formatting errors where the prose includes the correct date but the timestamp is inconsistent (e.g., Claude responses with "2026-03-21" in text but epoch `1774252800` = 2026-03-23 UTC).
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | All 3 phases passed; LLM is available and coherent |
+| `1` | Phase 1 failed (quota/rate-limit) or Phase 2 failed (tool not installed) |
+| `2` | Phase 3 failed (date validation mismatch) |
+
+### Usage in Scripts
+
+```bash
+# Health check in CI/CD
+ucx ai probe
+if [ $? -eq 0 ]; then
+    echo "LLM ready; starting review"
+    ucx review brd docs/01_BRD/BRD-01/
+else
+    echo "LLM unavailable; skipping AI operations"
+    exit 1
+fi
+
+# Diagnosis with full output
+ucx ai probe --full-output > probe_report.txt
+cat probe_report.txt
+```
+
+### Troubleshooting with `--full-output`
+
+```bash
+# Get detailed phase-by-phase diagnostics
+ucx ai probe --cli-tool claude --full-output
+
+# Example output:
+# Phase 1 (Budget Check): ok
+# Phase 2 (Capability Check): [skipped - Phase 1 passed]
+# Phase 3 (Epoch Date Validation):
+#   Expected UTC date: 2026-03-21
+#   Response: **2026-03-21 in UTC epoch**: `1774252800` (inconsistent epoch = 2026-03-23)
+#   ISO fallback applied: 2026-03-21 found in response text
+#   Result: PASS (epoch mismatch accepted via ISO fallback)
 ```
 
 ---

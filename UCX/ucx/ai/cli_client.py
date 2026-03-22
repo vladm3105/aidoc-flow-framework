@@ -426,6 +426,17 @@ class CLIClient(BaseAIClient):
         Phase 3 – Epoch date probe  (runs ONLY when Phase 1 → ``"ok"``)
             Ask the model for UTC epoch time and validate it maps to today's UTC
             date. A mismatch means the model is not responding coherently.
+
+            **Robustness Enhancement (v1.21.5+)**:
+            Two-stage date validation to handle LLM formatting drift:
+            1. Primary: Extract & validate epoch unix timestamp
+            2. Fallback: If epoch mismatches, search response for ISO date (YYYY-MM-DD)
+            3. Preference: If expected date found in ISO matches, use it; else use first
+            4. Exit: Only raise AIClientError if BOTH epoch AND ISO validation fail
+
+            This pattern handles common LLM formatting errors where the prose contains
+            the correct date but the timestamp is inconsistent (e.g., Claude responses
+            with "2026-03-21" in text but epoch 1774252800 = 2026-03-23 UTC).
         """
         # ── Phase 1: Budget / rate-limit check ─────────────────────────────
         self.logger.debug("Preflight Phase 1: budget/rate-limit check (%s)", self.cli_tool)
@@ -473,6 +484,23 @@ class CLIClient(BaseAIClient):
             )
 
         detected_date = self._extract_epoch_utc_date(response)
+
+        # ─── ISO Date Fallback for Formatting Drift Tolerance ───────────────
+        # Some providers (especially Claude) occasionally return a malformed or
+        # inconsistent epoch token while still including the correct ISO date
+        # (YYYY-MM-DD) in the response prose. Two-stage validation:
+        #   1. Try primary epoch extraction (existing behavior)
+        #   2. If epoch mismatches, search response text for ISO pattern
+        #   3. If expected_utc_date found in ISO matches, prefer it
+        #   4. Otherwise use first valid ISO date, or None if no dates found
+        # This reduces false-negative preflight failures from LLM formatting drift
+        # Example: Response includes "2026-03-21" in text but epoch 1774252800
+        # (which = 2026-03-23). ISO fallback accepts the logical date.
+        if detected_date != expected_utc_date:
+            iso_detected_date = self._extract_iso_utc_date(response, expected_utc_date)
+            if iso_detected_date == expected_utc_date:
+                detected_date = iso_detected_date
+
         if detected_date != expected_utc_date:
             raise AIClientError(
                 "LLM availability preflight failed: date probe mismatch. "
@@ -710,6 +738,46 @@ class CLIClient(BaseAIClient):
             return datetime.datetime.fromtimestamp(epoch, tz=datetime.timezone.utc).date()
         except (ValueError, OSError, OverflowError):
             return None
+
+    def _extract_iso_utc_date(
+        self,
+        text: str,
+        expected_date: Optional[datetime.date] = None,
+    ) -> Optional[datetime.date]:
+        """Extract an ISO date (YYYY-MM-DD) from text as fallback to epoch parsing.
+
+        Used by Phase 3 preflight when LLM responses contain correct ISO dates
+        but malformed/inconsistent epoch tokens (formatting drift). Searches
+        response text for ISO pattern (\\b\\d{4}-\\d{2}-\\d{2}\\b) and returns:
+          1. expected_date if found in matches (preference: provides confidence)
+          2. First valid ISO date parsed from matches (fallback)
+          3. None if no valid ISO dates found (both tests fail)
+
+        Args:
+            text: Response text to search for ISO date patterns
+            expected_date: Preferred date (typically today's UTC date)
+
+        Returns:
+            Parsed datetime.date, or None if no valid ISO dates found
+        """
+        matches = re.findall(r"\b(\d{4}-\d{2}-\d{2})\b", text or "")
+        if not matches:
+            return None
+
+        parsed: list[datetime.date] = []
+        for raw in matches:
+            try:
+                parsed.append(datetime.date.fromisoformat(raw))
+            except ValueError:
+                continue
+
+        if not parsed:
+            return None
+
+        if expected_date and expected_date in parsed:
+            return expected_date
+
+        return parsed[0]
 
     def _detect_embedded_cli_error(self, response_text: str) -> Optional[str]:
         """Detect plain-text CLI/tool errors that can arrive with exit code 0."""

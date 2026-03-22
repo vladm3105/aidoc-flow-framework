@@ -496,6 +496,22 @@ class TestCLIClientPreflightPhases:
                 with pytest.raises(AIClientError, match="preflight failed"):
                     client._run_availability_preflight()
 
+    def test_preflight_accepts_iso_date_when_epoch_is_inconsistent(self):
+        """Accept valid ISO date fallback when epoch value in response is inconsistent."""
+        client = CLIClient(cli_tool="claude")
+        expected = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+        # Simulates Claude-style drift where prose includes the right ISO date,
+        # but epoch token maps to a different day.
+        response = (
+            f"**{expected} in UTC epoch**: `1774252800`\n"
+            "(That's 2026-03-21T00:00:00Z. Current moment would vary by time of day.)"
+        )
+
+        with patch.object(client, "_run_budget_check", return_value="ok"):
+            with patch.object(client, "_execute_cli", return_value=response):
+                # Should pass via ISO fallback instead of raising date mismatch.
+                client._run_availability_preflight()
+
 
 class TestLiteLLMClientBudgetCheck:
     """Unit tests for Phase 1 (_run_budget_check) in LiteLLMClient."""
