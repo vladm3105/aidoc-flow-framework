@@ -1323,6 +1323,137 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
 
         # Exit with appropriate code
         sys.exit(result.exit_code(strict=strict))
+    elif doc_type_lower == "prd":
+        # PRD-specific validator path (PLAN-012, v1.22.0)
+        # Emits fixed report name PRD-01_validation_report.md (no versioning)
+        from ucx.validators.prd import UnifiedPRDValidator
+        from ucx.validators.prd.fixer import PRDFixer
+        from ucx.validators.prd.artifact_ops import prd_validation_report_name
+
+        validator = UnifiedPRDValidator(strict=strict, verbose=ctx.obj.get("verbose", False))
+        result = validator.validate(Path(doc_path), tier1_only=tier1_only)
+
+        # --- Source Protection (v1.21.6+, PRD path) ---
+        doc_path_obj = Path(doc_path)
+        search_dir = doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent
+        source_snapshot: dict[Path, str] = {}
+        prd_fix_result = None
+        prd_fixer_error = None
+
+        if not no_fix:
+            # Snapshot source files — exclude reports and derived copies
+            for f in search_dir.glob("*.md"):
+                if any(kw in f.name for kw in [
+                    "_validation_report", "_validation.", "_remediated.",
+                    "review_report", "remediation_report", "creation_report",
+                ]):
+                    continue
+                try:
+                    source_snapshot[f] = f.read_text(encoding="utf-8")
+                except OSError:
+                    continue
+
+            # Collect all issues and run PRD fixer on source files (dry_run=True in validation)
+            all_issues = result.tier1_issues + result.tier2_issues
+            if all_issues:
+                try:
+                    prd_fixer = PRDFixer(dry_run=True, verbose=ctx.obj.get("verbose", False))
+                    # Get the primary PRD source file (not derived copies)
+                    prd_source_files = [
+                        f for f in search_dir.glob("*.md")
+                        if not any(kw in f.name for kw in [
+                            "_validation", "_remediated", "report"
+                        ])
+                    ]
+                    for prd_file in prd_source_files:
+                        prd_fix_result = prd_fixer.fix(prd_file, all_issues)
+                        if prd_fix_result.actions:
+                            console.print(
+                                f"\n[cyan]Fix analysis: {len(prd_fix_result.actions)} action(s) "
+                                f"identified (report-only, source unchanged)[/cyan]"
+                            )
+                except Exception as e:
+                    prd_fixer_error = str(e)
+                    console.print(f"[yellow]PRD fix analysis error: {e}[/yellow]")
+
+            # Restore source files if fixer modified them
+            for file_path, original in source_snapshot.items():
+                try:
+                    current = file_path.read_text(encoding="utf-8") if file_path.exists() else None
+                except OSError:
+                    continue
+                if current != original:
+                    try:
+                        file_path.write_text(original, encoding="utf-8")
+                    except OSError:
+                        continue
+
+        # Resolve doc_id
+        try:
+            doc_id = resolve_doc_id_strict(doc_path_obj, DocType.PRD)
+        except (ValueError, Exception):
+            doc_id = "PRD-XX"
+
+        # Auto-report: PRD emits fixed report name (PLAN-012)
+        if report and not output:
+            output = doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent
+
+        if output:
+            output_path = Path(output)
+            if str(output).endswith("/") or (output_path.exists() and output_path.is_dir()):
+                output_path.mkdir(parents=True, exist_ok=True)
+                # Fixed PRD validation report name (no versioning per PLAN-012)
+                output_path = output_path / prd_validation_report_name(doc_id)
+            else:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            if output_format == "json":
+                import json as json_module
+                output_content = json_module.dumps(result.to_dict() if hasattr(result, "to_dict") else {}, indent=2)
+            else:
+                unified_result = result  # UnifiedPRDValidator returns PRDValidationResult directly
+                if hasattr(unified_result, "format_report"):
+                    output_content = unified_result.format_report(
+                        doc_id=doc_id, doc_type="PRD", version=1
+                    )
+                else:
+                    output_content = f"# PRD Validation Report: {doc_id}\n\nStatus: {getattr(result, 'status', 'unknown')}\n"
+
+                from ucx.validators.prd.artifact_ops import is_source_prd
+                # Determine source PRD filename for lineage metadata
+                source_prd_file = None
+                for f in search_dir.glob("*.md"):
+                    if is_source_prd(f) and not any(kw in f.name for kw in ["report"]):
+                        source_prd_file = f.name
+                        break
+
+                output_content = ensure_report_schema(
+                    output_content,
+                    report_type="validation",
+                    source_artifact_type=DocType.PRD.value,
+                    source_artifact_id=doc_id,
+                    report_version=1,
+                    validator_or_reviewer="UCX validate (prd)",
+                )
+                # Inject PLAN-012 lineage metadata into the report frontmatter
+                if source_prd_file:
+                    output_content = _inject_prd_validation_lineage(output_content, doc_id, source_prd_file)
+
+            output_path.write_text(output_content, encoding="utf-8")
+            console.print(f"[green]Validation report:[/green] {output_path}")
+        else:
+            if hasattr(result, "format_text"):
+                console.print(result.format_text(verbose=ctx.obj.get("verbose", False)))
+            else:
+                console.print(f"Status: {getattr(result, 'status', 'unknown')}")
+
+        # Exit based on tier1 issues
+        if result.tier1_issues:
+            sys.exit(2)
+        elif strict and result.tier2_issues:
+            sys.exit(2)
+        else:
+            sys.exit(0)
     else:
         # Fallback validator path for non-BRD types
         from ucx import UCRPhase
@@ -1331,12 +1462,6 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
         result = ucr.validate(doc_type, Path(doc_path))
 
         # Resolve doc_id for report metadata with strict checks
-        doc_path_obj = Path(doc_path)
-        doc_enum = DocType.from_string(doc_type)
-        validator = ucr._get_validator(doc_enum)
-        unified_result = getattr(validator, "unified_result", None)
-        doc_id = resolve_doc_id_strict(doc_path_obj, doc_enum)
-
         # Auto-report behavior: mirror BRD path (default enabled via --report)
         if report and not output:
             output = doc_path_obj if doc_path_obj.is_dir() else doc_path_obj.parent
@@ -1439,6 +1564,324 @@ def validate(ctx, doc_type, doc_path, output, precommit, tier1_only, strict, out
             sys.exit(1)
         else:
             sys.exit(0)
+
+
+@cli.command("validate-fix")
+@click.argument("doc_type")
+@click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--report", "-r",
+    type=click.Path(exists=True, path_type=Path),
+    help="Validation report to use for fix guidance (auto-detects PRD-01_validation_report.md if not given)",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be created without writing files",
+)
+@click.pass_context
+def validate_fix(ctx, doc_type, doc_path, report, dry_run):
+    """
+    Create a _validation copy with validation fixes applied (PLAN-012 Stage 3).
+
+    Reads the canonical source PRD, applies deterministic validation fixes,
+    injects processing-stage lineage metadata, and writes the result as a
+    new ``_validation`` copy. The source PRD is never modified.
+
+    \b
+    Only 'prd' is supported as doc_type for this command.
+
+    \b
+    Examples:
+      ucx validate-fix prd docs/02_PRD/PRD-01/PRD-01_platform_architecture.md
+      ucx validate-fix prd docs/02_PRD/PRD-01/PRD-01_platform_architecture.md --dry-run
+      ucx validate-fix prd docs/02_PRD/PRD-01/PRD-01_platform_architecture.md \\
+          --report docs/02_PRD/PRD-01/PRD-01_validation_report.md
+    """
+    import sys
+    from ucx.validators.prd import UnifiedPRDValidator
+    from ucx.validators.prd.fixer import PRDFixer
+    from ucx.validators.prd.artifact_ops import (
+        create_validation_copy,
+        identify_prd_artifact_stage,
+        prd_validation_report_name,
+    )
+    from ucx.models.enums import DocType
+
+    doc_path = Path(doc_path)
+
+    if doc_type.lower() != "prd":
+        console.print("[red]Error: validate-fix currently only supports 'prd'.[/red]")
+        sys.exit(1)
+
+    # Must be a source PRD (no _validation or _remediated suffix)
+    stage = identify_prd_artifact_stage(doc_path)
+    if stage != "source":
+        console.print(
+            f"[red]Error: Input must be a canonical source PRD (no stage suffix). "
+            f"Got stage: '{stage}' for '{doc_path.name}'[/red]"
+        )
+        sys.exit(1)
+
+    # Resolve doc_id
+    try:
+        from ucx.utils.reporting import resolve_doc_id_strict
+        doc_id = resolve_doc_id_strict(doc_path, DocType.PRD)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        sys.exit(1)
+
+    # Auto-detect validation report if not given
+    validation_report = report
+    if validation_report is None:
+        auto_report = doc_path.parent / prd_validation_report_name(doc_id)
+        if auto_report.exists():
+            validation_report = auto_report
+            console.print(f"[dim]Using validation report: {auto_report.name}[/dim]")
+        else:
+            console.print(
+                f"[yellow]No validation report found ({auto_report.name}). "
+                f"Run 'ucx validate prd' first, or use --report.[/yellow]"
+            )
+
+    # Read source content and extract version
+    source_content = doc_path.read_text(encoding="utf-8")
+    from ucx.validators.prd.artifact_ops import extract_prd_identity_fields
+    fields = extract_prd_identity_fields(source_content)
+    source_version = fields.get("version") or "0.0.0"
+
+    console.print(f"[cyan]Source PRD:[/cyan] {doc_path.name}")
+    console.print(f"[cyan]Doc ID:[/cyan] {doc_id}, [cyan]Version:[/cyan] {source_version}")
+
+    # Run validation to get issues
+    console.print("\n[cyan]Running validation...[/cyan]")
+    validator = UnifiedPRDValidator(strict=False, verbose=ctx.obj.get("verbose", False))
+    val_result = validator.validate(doc_path if doc_path.is_dir() else doc_path.parent)
+    all_issues = val_result.tier1_issues + val_result.tier2_issues
+    console.print(f"  Found {len(val_result.tier1_issues)} Tier 1, {len(val_result.tier2_issues)} Tier 2 issues")
+
+    # Apply PRDFixer to a temporary copy of content to get modified content
+    import tempfile
+    import shutil
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_file = Path(tmpdir) / doc_path.name
+        shutil.copy2(doc_path, tmp_file)
+
+        # Run fixer on the temp copy (dry_run=False → modifies tmp file)
+        prd_fixer = PRDFixer(dry_run=False, verbose=ctx.obj.get("verbose", False))
+        fix_result = prd_fixer.fix(tmp_file, all_issues)
+        fixed_content = tmp_file.read_text(encoding="utf-8")
+
+    fixed_count = sum(1 for a in fix_result.actions if a.status == "applied")
+    console.print(f"  Applied {fixed_count}/{len(fix_result.actions)} fix action(s)")
+
+    # Build validation copy with lineage metadata
+    output_path, output_content = create_validation_copy(
+        # Pass the source path but override content with fixed content
+        doc_path,
+        source_doc_id=doc_id,
+        source_version=source_version,
+    )
+    # Merge the fixer's changes into the content before metadata injection
+    # (create_validation_copy uses source_path.read_text, so we need to re-apply fixes)
+    # Re-do: use fixed_content as base for metadata injection
+    from ucx.validators.prd.artifact_ops import (
+        inject_processing_stage_metadata,
+        append_derivation_history_row,
+        prd_validation_copy_name,
+    )
+    from datetime import datetime, timezone
+    derivation_date = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
+
+    output_content = inject_processing_stage_metadata(
+        fixed_content,
+        processing_stage="validation-fixed",
+        source_doc_id=doc_id,
+        source_version=source_version,
+        derived_from=doc_path.name,
+    )
+    output_content = append_derivation_history_row(
+        output_content,
+        version=source_version,
+        date=derivation_date,
+        author="UCX Validation Fixer",
+        description=f"Derived validation-fixed copy from `{doc_path.name}` using `{prd_validation_report_name(doc_id)}`",
+    )
+    output_stem = prd_validation_copy_name(doc_path.stem)
+    output_path = doc_path.parent / f"{output_stem}.md"
+
+    if dry_run:
+        console.print(f"\n[yellow]Dry run:[/yellow] Would create {output_path.name}")
+        console.print(f"  processing_stage: validation-fixed")
+        console.print(f"  derived_from: {doc_path.name}")
+        console.print(f"  Fixes applied: {fixed_count}")
+    else:
+        output_path.write_text(output_content, encoding="utf-8")
+        console.print(f"\n[green]Created:[/green] {output_path}")
+        console.print(f"  processing_stage: validation-fixed")
+        console.print(f"  derived_from: {doc_path.name}")
+        console.print(f"  Fixes applied: {fixed_count}")
+        console.print(f"\n[dim]Next: ucx review prd {output_path}[/dim]")
+
+
+@cli.command("remediate-apply")
+@click.argument("doc_type")
+@click.argument("doc_path", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--report", "-r",
+    type=click.Path(exists=True, path_type=Path),
+    required=True,
+    help="Remediation report path (required)",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be created without writing files",
+)
+@click.pass_context
+def remediate_apply(ctx, doc_type, doc_path, report, dry_run):
+    """
+    Create a _remediated copy from a _validation PRD (PLAN-012 Stage 6).
+
+    Reads the ``_validation`` PRD, applies auto-safe fixes, injects
+    processing-stage lineage metadata, and writes the result as a
+    new ``_remediated`` copy. The ``_validation`` PRD is never modified.
+
+    \b
+    Only 'prd' is supported as doc_type for this command.
+
+    \b
+    Examples:
+      ucx remediate-apply prd docs/02_PRD/PRD-01/PRD-01_platform_architecture_validation.md \\
+          --report docs/02_PRD/PRD-01/PRD-01_validation_remediation_report_v001.md
+      ucx remediate-apply prd ... --dry-run
+    """
+    import sys
+    from ucx.validators.prd.artifact_ops import (
+        identify_prd_artifact_stage,
+        create_remediated_copy,
+        inject_processing_stage_metadata,
+        append_derivation_history_row,
+        prd_remediated_copy_name,
+        extract_prd_identity_fields,
+    )
+    from ucx.models.enums import DocType
+
+    doc_path = Path(doc_path)
+    report_path = Path(report)
+
+    if doc_type.lower() != "prd":
+        console.print("[red]Error: remediate-apply currently only supports 'prd'.[/red]")
+        sys.exit(1)
+
+    # Must be a _validation PRD
+    stage = identify_prd_artifact_stage(doc_path)
+    if stage != "validation-fixed":
+        console.print(
+            f"[red]Error: Input must be a _validation PRD (suffix '_validation'). "
+            f"Got stage: '{stage}' for '{doc_path.name}'[/red]"
+        )
+        sys.exit(1)
+
+    # Resolve doc_id from validation PRD  
+    try:
+        from ucx.utils.reporting import resolve_doc_id_strict
+        doc_id = resolve_doc_id_strict(doc_path, DocType.PRD)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        sys.exit(1)
+
+    # Read _validation PRD content and extract version
+    validation_content = doc_path.read_text(encoding="utf-8")
+    fields = extract_prd_identity_fields(validation_content)
+    source_version = fields.get("version") or "0.0.0"
+    source_doc_id = fields.get("source_doc_id") or doc_id
+
+    console.print(f"[cyan]Validation PRD:[/cyan] {doc_path.name}")
+    console.print(f"[cyan]Doc ID:[/cyan] {source_doc_id}, [cyan]Version:[/cyan] {source_version}")
+
+    # Parse remediation report for auto-safe UCX-ACTION blocks
+    report_content = report_path.read_text(encoding="utf-8")
+    applied_fixes = _apply_ucx_action_fixes(validation_content, report_content)
+    fixed_count = applied_fixes["count"]
+    fixed_content = applied_fixes["content"]
+
+    if fixed_count > 0:
+        console.print(f"  Applied {fixed_count} fix(es) from remediation report")
+    else:
+        console.print(f"  [dim]No auto-applicable fixes found in report (manual review required)[/dim]")
+        fixed_content = validation_content  # Use as-is
+
+    # Build remediated copy with lineage metadata
+    from datetime import datetime, timezone
+    derivation_date = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
+
+    output_content = inject_processing_stage_metadata(
+        fixed_content,
+        processing_stage="remediated",
+        source_doc_id=source_doc_id,
+        source_version=source_version,
+        derived_from=doc_path.name,
+    )
+    output_content = append_derivation_history_row(
+        output_content,
+        version=source_version,
+        date=derivation_date,
+        author="UCX Remediation Apply",
+        description=f"Derived remediated copy from `{doc_path.name}` using `{report_path.name}`",
+    )
+    output_stem = prd_remediated_copy_name(doc_path.stem)
+    output_path = doc_path.parent / f"{output_stem}.md"
+
+    if dry_run:
+        console.print(f"\n[yellow]Dry run:[/yellow] Would create {output_path.name}")
+        console.print(f"  processing_stage: remediated")
+        console.print(f"  derived_from: {doc_path.name}")
+        console.print(f"  Fixes applied: {fixed_count}")
+    else:
+        output_path.write_text(output_content, encoding="utf-8")
+        console.print(f"\n[green]Created:[/green] {output_path}")
+        console.print(f"  processing_stage: remediated")
+        console.print(f"  derived_from: {doc_path.name}")
+        console.print(f"  Fixes applied: {fixed_count}")
+        console.print(f"\n[dim]Review and promote `{output_path.name}` as the final PRD version.[/dim]")
+
+
+def _apply_ucx_action_fixes(content: str, report_content: str) -> dict:
+    """Parse UCX-ACTION blocks from a report and apply auto-applicable fixes to content.
+
+    Looks for blocks with ``suggested_fix:`` and attempts text substitution
+    using ``old_content`` → ``suggested_fix`` pairs.
+
+    Returns a dict with keys ``content`` (updated) and ``count`` (fixes applied).
+    """
+    import re
+
+    ucx_action_pattern = re.compile(
+        r"<!--\s*UCX-ACTION\[.*?\].*?(?:old_content:\s*\|\s*\n(.*?))?suggested_fix:\s*\|\s*\n(.*?)-->",
+        re.DOTALL,
+    )
+
+    updated = content
+    count = 0
+
+    for m in ucx_action_pattern.finditer(report_content):
+        old_raw = m.group(1)
+        new_raw = m.group(2)
+        if not new_raw:
+            continue
+
+        # Strip leading whitespace indentation (6+ spaces from YAML block)
+        indent_re = re.compile(r"^[ \t]{4,}", re.MULTILINE)
+        suggested = indent_re.sub("", new_raw).strip()
+
+        if old_raw:
+            old_text = indent_re.sub("", old_raw).strip()
+            if old_text and old_text in updated:
+                updated = updated.replace(old_text, suggested, 1)
+                count += 1
+
+    return {"content": updated, "count": count}
 
 
 @cli.command("clean-markers")
@@ -1626,6 +2069,35 @@ def config_cmd(ctx, show):
         table.add_row("Web Search", str(config.enable_web_search))
 
         console.print(table)
+
+
+def _inject_prd_validation_lineage(content: str, doc_id: str, source_prd_file: str) -> str:
+    """Inject PLAN-012 lineage metadata into a PRD validation report frontmatter."""
+    import re
+    import yaml
+
+    match = re.match(r"\A(---\n)(.*?)(\n---\n?)(.*)\Z", content, re.DOTALL)
+    if not match:
+        return content
+
+    before, raw_fm, after_delim, body = match.groups()
+    try:
+        fm = yaml.safe_load(raw_fm) or {}
+        if not isinstance(fm, dict):
+            fm = {}
+    except Exception:
+        return content
+
+    custom = fm.get("custom_fields")
+    if not isinstance(custom, dict):
+        custom = {}
+
+    custom["source_artifact_file"] = source_prd_file
+    custom["source_processing_stage"] = "source"
+
+    fm["custom_fields"] = custom
+    new_fm = yaml.dump(fm, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    return f"{before}{new_fm.rstrip()}{after_delim}{body}"
 
 
 def _display_result(result):
