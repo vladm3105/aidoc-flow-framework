@@ -1,1 +1,1 @@
-../../ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md
+../../mcp/templates/BRD-MVP-TEMPLATE.md
