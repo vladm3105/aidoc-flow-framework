@@ -1,150 +1,59 @@
-"""Pytest fixtures for UCX tests."""
+"""Shared pytest fixtures for UCX v2 test suite."""
+
+from __future__ import annotations
 
 import pytest
-from pathlib import Path
-from ucx.config.settings import UCXConfig
-from ucx.ai.mock import MockAIClient
+
+from ucx.config.settings import UCXSettings
+from ucx.mcp.server import create_server
 
 
 @pytest.fixture
-def config():
-    """Provide default UCX configuration."""
-    return UCXConfig(
-        model="mock",
-        max_iterations=2,
-        min_score=90,
+def settings() -> UCXSettings:
+    """Return UCXSettings with deterministic test values."""
+    return UCXSettings(
+        ai_model="claude-3-7-sonnet-20250219",
+        ai_api_key=None,
+        ai_max_tokens=1024,
+        max_fix_iterations=2,
+        log_level="DEBUG",
+        log_format="text",
     )
 
 
 @pytest.fixture
-def mock_ai_client():
-    """Provide mock AI client for testing without API calls."""
-    client = MockAIClient()
-
-    # Add default responses
-    client.add_response("review", """
-# UCR Review Report
-
-## Executive Summary
-Document reviewed with minor issues.
-
-## Findings
-- P0-1: Missing compliance section
-- P1-1: Unclear requirement
-- P2-1: Could improve formatting
-
-Score: 75/100
-""")
-
-    client.add_response("create", """---
-title: Generated BRD
-doc_id: BRD-01
-version: "1.0"
-status: draft
----
-
-# Business Requirements Document
-
-## 1. Executive Summary
-This document describes business requirements.
-
-## 2. Business Context
-...
-""")
-
-    client.add_response("remediate", """
-# UCRem Fix Report
-
-## Fix Proposals
-
-```yaml
-fix_id: FIX-P0-01
-source_finding: P0-1
-priority: P0
-confidence: auto-safe
-target_file: "BRD-01.md"
-target_section: "5.0"
-fix_type: add_section
-fix_action:
-  section_number: "5.1"
-  heading: "Compliance Requirements"
-  content: "Compliance section content"
-rationale: Missing required compliance section
-validated_by:
-  - Auditor Fixer
-  - Architect Fixer
-```
-""")
-
-    return client
+def mcp_server(settings: UCXSettings):
+    """Return a configured FastMCP server instance."""
+    return create_server(settings)
 
 
 @pytest.fixture
-def sample_brd(tmp_path):
-    """Create sample BRD for testing."""
-    brd_path = tmp_path / "BRD-01.md"
-    brd_path.write_text("""---
-title: Sample BRD
-doc_id: BRD-01
-version: "1.0"
-status: draft
----
-
-# Business Requirements Document
-
-## 1. Executive Summary
-
-This is a sample BRD for testing purposes.
-
-## 2. Business Context
-
-The business context for this project.
-
-## 3. Requirements
-
-BRD.01.01.01 - First requirement
-
-## 4. Constraints
-
-System constraints go here.
-""")
-    return brd_path
+def sample_brd_content() -> str:
+    """Minimal valid BRD document text for validator tests."""
+    return (
+        "---\n"
+        "doc_id: BRD-01\n"
+        "artifact_type: brd\n"
+        "version: 1.0\n"
+        "title: Sample BRD\n"
+        "---\n\n"
+        "# BRD-01: Sample Business Requirements\n\n"
+        "## BRD.01.01 Introduction\n\n"
+        "This document defines business requirements.\n"
+    )
 
 
 @pytest.fixture
-def sample_review_report(tmp_path):
-    """Create sample review report."""
-    report_path = tmp_path / "BRD_UCR_REVIEW.md"
-    report_path.write_text("""
-# UCR Review Report
-
-## Executive Summary
-Document reviewed.
-
-## Critical Findings (P0)
-- P0-1: Missing section
-
-## High Priority Findings (P1)
-- P1-1: Incomplete requirement
-- P1-2: Unclear constraint
-
-## Enhancement Recommendations (P2)
-- P2-1: Improve formatting
-
-Score: 72/100
-""")
-    return report_path
-
-
-@pytest.fixture
-def temp_project(tmp_path):
-    """Create temporary project structure."""
-    # Create directories
-    (tmp_path / "docs" / "00_REF").mkdir(parents=True)
-    (tmp_path / "docs" / "01_BRD").mkdir(parents=True)
-
-    # Create reference doc
-    ref_doc = tmp_path / "docs" / "00_REF" / "spec.md"
-    ref_doc.write_text("# Reference Specification\n\nSample content.")
-
-    return tmp_path
+def sample_prd_content() -> str:
+    """Minimal valid PRD document text for validator tests."""
+    return (
+        "---\n"
+        "doc_id: PRD-01\n"
+        "artifact_type: prd\n"
+        "version: 1.0\n"
+        "title: Sample PRD\n"
+        "---\n\n"
+        "# PRD-01: Sample Product Requirements\n\n"
+        "## PRD.01.01 Introduction\n\n"
+        "This document defines product requirements.\n"
+    )

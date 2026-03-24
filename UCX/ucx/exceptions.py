@@ -1,93 +1,45 @@
-"""UCX custom exceptions."""
+"""UCX v2 exception hierarchy."""
 
-from typing import Optional, Any
+from __future__ import annotations
 
 
 class UCXError(Exception):
     """Base exception for all UCX errors."""
 
-    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
+
+class UCXConfigError(UCXError):
+    """Configuration is missing or invalid."""
+
+
+class UCXValidationError(UCXError):
+    """Document failed validation and cannot proceed."""
+
+    def __init__(self, message: str, path: str, error_count: int = 0) -> None:
         super().__init__(message)
-        self.message = message
-        self.details = details or {}
-
-    def __str__(self) -> str:
-        if self.details:
-            return f"{self.message} - {self.details}"
-        return self.message
+        self.path = path
+        self.error_count = error_count
 
 
-class ConfigurationError(UCXError):
-    """Raised when configuration is invalid."""
+class UCXDocumentNotFound(UCXError):
+    """Requested document path does not exist."""
 
-    pass
+    def __init__(self, path: str) -> None:
+        super().__init__(f"Document not found: {path}")
+        self.path = path
 
 
-class ValidationError(UCXError):
-    """Raised when document validation fails."""
+class UCXStageError(UCXError):
+    """Operation violates the document workflow stage contract."""
 
-    def __init__(
-        self,
-        message: str,
-        errors: Optional[list[str]] = None,
-        warnings: Optional[list[str]] = None,
-    ):
+    def __init__(self, message: str, required_stage: str, actual_stage: str) -> None:
         super().__init__(message)
-        self.errors = errors or []
-        self.warnings = warnings or []
+        self.required_stage = required_stage
+        self.actual_stage = actual_stage
 
 
-class AIClientError(UCXError):
-    """Raised when AI client operation fails."""
-
-    def __init__(
-        self,
-        message: str,
-        model: Optional[str] = None,
-        status_code: Optional[int] = None,
-    ):
-        super().__init__(message)
-        self.model = model
-        self.status_code = status_code
+class UCXAIError(UCXError):
+    """AI provider call failed."""
 
 
-class PromptError(UCXError):
-    """Raised when prompt loading or rendering fails."""
-
-    def __init__(self, message: str, prompt_name: Optional[str] = None):
-        super().__init__(message)
-        self.prompt_name = prompt_name
-
-
-class SkillError(UCXError):
-    """Raised when skill loading fails."""
-
-    def __init__(self, message: str, skill_name: Optional[str] = None):
-        super().__init__(message)
-        self.skill_name = skill_name
-
-
-class DriftDetectedError(UCXError):
-    """Raised when upstream drift is detected."""
-
-    def __init__(
-        self,
-        message: str,
-        changed_files: Optional[list[str]] = None,
-    ):
-        super().__init__(message)
-        self.changed_files = changed_files or []
-
-
-class PhaseError(UCXError):
-    """Raised when a UCX phase fails."""
-
-    def __init__(
-        self,
-        message: str,
-        phase: str,
-        iteration: Optional[int] = None,
-    ):
-        super().__init__(message)
-        self.phase = phase
-        self.iteration = iteration
+class UCXToolError(UCXError):
+    """MCP tool execution failed."""

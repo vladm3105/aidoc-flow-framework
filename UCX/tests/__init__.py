@@ -1,1 +1,1 @@
-"""UCX test suite."""
+"""UCX v2 tests package."""

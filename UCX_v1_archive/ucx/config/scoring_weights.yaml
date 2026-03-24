@@ -1,0 +1,259 @@
+# UCX Category-Weighted Scoring Configuration
+# Version: 1.0.0
+#
+# This file defines the default scoring weights for all document types.
+# Project-specific overrides can be placed in: docs/UCX/scoring_weights.yaml
+#
+# See: UCX/docs/scoring/SCORING_GUIDE.md for documentation
+
+# Default weights (apply to all document types unless overridden)
+defaults:
+  categories:
+    functional:
+      weight: 0.25
+      max_deduction: 25
+      element_codes: [1, 22, 24]
+      description: "Functional requirements completeness"
+
+    quality:
+      weight: 0.15
+      max_deduction: 15
+      element_codes: [2, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+      description: "Quality attributes coverage"
+
+    compliance:
+      weight: 0.20
+      max_deduction: 20
+      element_codes: []  # Cross-cutting, matched by keyword
+      keywords:
+        # Fintech (default industry)
+        - "FinCEN"
+        - "OFAC"
+        - "PCI-DSS"
+        - "AML"
+        - "KYC"
+        - "SAR"
+        - "CTR"
+        - "MTL"
+        - "BSA"
+        - "FFIEC"
+        - "SOX"
+        - "GLBA"
+        # General compliance
+        - "GDPR"
+        - "CCPA"
+        - "SOC2"
+        - "ISO27001"
+        - "PII"
+        - "encryption"
+        - "audit"
+        - "compliance"
+        - "regulatory"
+      description: "Regulatory and compliance requirements"
+
+    constraints:
+      weight: 0.10
+      max_deduction: 10
+      element_codes: [3, 4]
+      description: "Constraints and assumptions"
+
+    integration:
+      weight: 0.10
+      max_deduction: 10
+      element_codes: [5, 16, 20]
+      description: "Dependencies and integrations"
+
+    acceptance:
+      weight: 0.10
+      max_deduction: 10
+      element_codes: [6, 14, 40, 41, 42, 43, 44, 45]
+      description: "Acceptance criteria and testability"
+
+    risk:
+      weight: 0.05
+      max_deduction: 5
+      element_codes: [7]
+      description: "Risk identification and mitigation"
+
+    architecture:
+      weight: 0.05
+      max_deduction: 5
+      element_codes: [10, 12, 13, 32]
+      description: "Architecture decisions"
+
+  thresholds:
+    pass: 85    # >= 85: PRD-Ready
+    warn: 70    # 70-84: Needs attention
+    fail: 0     # < 70: Not ready
+
+# Document-type specific weight overrides
+# Each override merges with defaults, only specify changed values
+document_types:
+
+  # Layer 1: Business Requirements Document
+  brd:
+    # Uses defaults (compliance-heavy for business requirements)
+    categories: {}
+
+  # Layer 2: Product Requirements Document
+  prd:
+    categories:
+      functional:
+        weight: 0.30  # Higher for product features
+      compliance:
+        weight: 0.15  # Lower than BRD
+
+  # Layer 3: EARS Requirements
+  ears:
+    categories:
+      functional:
+        weight: 0.35  # Highest - formal requirements focus
+      quality:
+        weight: 0.10
+      compliance:
+        weight: 0.10
+      acceptance:
+        weight: 0.15  # Higher for testability
+
+  # Layer 4: BDD Scenarios
+  bdd:
+    categories:
+      functional:
+        weight: 0.20
+      compliance:
+        weight: 0.10
+      integration:
+        weight: 0.15
+      acceptance:
+        weight: 0.25  # Highest - test scenario focus
+      risk:
+        weight: 0.025
+      architecture:
+        weight: 0.025
+
+  # Layer 5: Architecture Decision Records
+  adr:
+    categories:
+      functional:
+        weight: 0.10  # Lower for decisions
+      compliance:
+        weight: 0.10
+      constraints:
+        weight: 0.15  # Higher for decision context
+      integration:
+        weight: 0.15
+      acceptance:
+        weight: 0.05
+      risk:
+        weight: 0.15  # Higher for decision impact
+      architecture:
+        weight: 0.15  # Highest - architecture focus
+
+  # Layer 6: System Requirements
+  sys:
+    categories:
+      functional:
+        weight: 0.30  # High for system features
+      quality:
+        weight: 0.20  # High for NFRs
+      compliance:
+        weight: 0.10
+
+  # Layer 7: Atomic Requirements
+  req:
+    categories:
+      functional:
+        weight: 0.40  # Highest - atomic requirement focus
+      compliance:
+        weight: 0.10
+      constraints:
+        weight: 0.05
+      acceptance:
+        weight: 0.15
+      risk:
+        weight: 0.025
+      architecture:
+        weight: 0.025
+
+  # Layer 8: Data Contracts
+  spec:
+    categories:
+      functional:
+        weight: 0.25
+      quality:
+        weight: 0.20  # High for spec quality
+      compliance:
+        weight: 0.10
+      constraints:
+        weight: 0.05
+      integration:
+        weight: 0.15  # High for interfaces
+      acceptance:
+        weight: 0.15
+
+  # Layer 8: Contracts (CTR)
+  ctr:
+    categories:
+      functional:
+        weight: 0.15
+      quality:
+        weight: 0.10
+      compliance:
+        weight: 0.20  # High for contract compliance
+      constraints:
+        weight: 0.15
+      integration:
+        weight: 0.20  # Highest - contract boundaries
+
+  # Layer 10: Test Specifications
+  tspec:
+    categories:
+      functional:
+        weight: 0.25
+      quality:
+        weight: 0.20  # High for test quality
+      compliance:
+        weight: 0.10
+      constraints:
+        weight: 0.05
+      integration:
+        weight: 0.15
+      acceptance:
+        weight: 0.20  # High for test coverage
+      risk:
+        weight: 0.025
+      architecture:
+        weight: 0.025
+
+  # Layer 11: Task Breakdown
+  tasks:
+    categories:
+      functional:
+        weight: 0.30  # High for task coverage
+      quality:
+        weight: 0.10
+      compliance:
+        weight: 0.05
+      integration:
+        weight: 0.15
+      acceptance:
+        weight: 0.15
+      risk:
+        weight: 0.10  # Higher for task risks
+
+# Scoring method configuration
+scoring:
+  # Default method for new reviews
+  default_method: weighted
+
+  # Allow legacy scoring for backward compatibility
+  allow_legacy: true
+
+  # Show deprecation warning when legacy is used
+  legacy_deprecation_warning: true
+
+# Priority deduction multipliers
+priority_multipliers:
+  P0: 10  # Critical findings
+  P1: 3   # Major findings
+  P2: 1   # Minor findings

@@ -4,29 +4,29 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ucx"
-version = "1.1.0"
-description = "UCX - Unified Context Framework for AI-driven document lifecycle management"
+version = "2.0.0"
+description = "UCX — Unified Context Framework v2, MCP-first agentic document lifecycle management"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "UCX Team" }
 ]
 keywords = [
     "documentation",
     "ai",
-    "claude",
+    "mcp",
+    "agentic",
     "specification-driven-development",
     "document-lifecycle",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Environment :: Console",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Other Environment",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Documentation",
@@ -34,92 +34,58 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    # CLI & Configuration
-    "click>=8.1",
+    # MCP server (primary interface)
+    "fastmcp>=0.1",
+    # Data models and configuration
     "pydantic>=2.0",
     "pydantic-settings>=2.0",
-    "rich>=13.0",
     "pyyaml>=6.0",
-    "jinja2>=3.1",
-    # AI Integration (LiteLLM for multi-provider support)
+    # AI providers (multi-provider via LiteLLM)
     "litellm>=1.40",
     "tiktoken>=0.5",
     # Observability
     "structlog>=24.0",
-    "opentelemetry-api>=1.20",
-    "opentelemetry-sdk>=1.20",
-    "opentelemetry-exporter-otlp>=1.20",
-    # MCP Server
-    "fastmcp>=0.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
-    "pytest-asyncio>=0.23",
+    "anyio[trio]>=4.0",
     "pytest-cov>=4.1",
-    "pytest-mock>=3.12",
     "mypy>=1.8",
-    "ruff>=0.2",
-    "pre-commit>=3.6",
-]
-docs = [
-    "mkdocs>=1.5",
-    "mkdocs-material>=9.5",
-    "mkdocstrings[python]>=0.24",
+    "ruff>=0.3",
 ]
 
 [project.scripts]
-ucx = "ucx.cli.main:cli"
-
-[project.urls]
-Documentation = "https://github.com/example/ucx#readme"
-Issues = "https://github.com/example/ucx/issues"
-Source = "https://github.com/example/ucx"
+# No CLI entrypoint — MCP server is the primary interface
+ucx-mcp = "ucx.mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["ucx"]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
-select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # Pyflakes
-    "I",      # isort
-    "B",      # flake8-bugbear
-    "C4",     # flake8-comprehensions
-    "UP",     # pyupgrade
-    "ARG",    # flake8-unused-arguments
-    "SIM",    # flake8-simplify
-]
-ignore = [
-    "E501",   # line too long (handled by formatter)
-    "B008",   # do not perform function calls in argument defaults
-]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 strict = true
-warn_return_any = true
-warn_unused_ignores = true
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-asyncio_mode = "auto"
-addopts = "-v --cov=ucx --cov-report=term-missing"
-
-[tool.coverage.run]
-source = ["ucx"]
-branch = true
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise NotImplementedError",
-    "if TYPE_CHECKING:",
+# Discover all test subdirectories: unit/, smoke/, regression/, mcp/
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+# Markers used in the test suite
+markers = [
+    "anyio: async tests via anyio",
+    "smoke: end-to-end plumbing tests (no AI calls)",
+    "regression: contract stability tests",
+    "unit: pure unit tests with no IO",
 ]
