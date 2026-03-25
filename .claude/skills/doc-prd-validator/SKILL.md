@@ -63,8 +63,8 @@ Invoke when:
 |------|-------|
 | Schema | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
 | Template | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
-| Validation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
+| Creation Rules | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
+| Validation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
 | Layer | 2 |
 | Artifact Type | PRD |
 
@@ -390,8 +390,8 @@ Info: 1
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
 - **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
 - **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+- **Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Version History

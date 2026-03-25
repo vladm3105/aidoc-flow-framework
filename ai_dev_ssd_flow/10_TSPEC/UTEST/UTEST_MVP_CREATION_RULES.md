@@ -187,3 +187,15 @@ python scripts/validate_utest.py docs/10_TSPEC/UTEST/
 - [UTEST-MVP-TEMPLATE.md](UTEST-MVP-TEMPLATE.md)
 - [UTEST_MVP_VALIDATION_RULES.md](UTEST_MVP_VALIDATION_RULES.md)
 - [UTEST_MVP_QUALITY_GATES.md](UTEST_MVP_QUALITY_GATES.md)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

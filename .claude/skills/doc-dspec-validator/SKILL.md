@@ -108,4 +108,4 @@ Required cumulative tags:
 ## References
 
 - Schema: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_VALIDATION_RULES.md`
+- Validation Rules: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`

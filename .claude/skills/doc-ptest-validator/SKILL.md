@@ -33,7 +33,7 @@ Validate PTEST documents for subtype-specific schema, structure, traceability, a
 
 - `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_SCHEMA.yaml`
 
 ---
 

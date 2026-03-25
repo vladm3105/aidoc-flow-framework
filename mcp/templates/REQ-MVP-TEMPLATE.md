@@ -51,7 +51,7 @@ AI_CONTEXT_END
 
 **Validation Note**: This is the standard REQ template. Some legacy validators may report warnings - this is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-  References: Schema `REQ_MVP_SCHEMA.yaml` | Rules `REQ_MVP_CREATION_RULES.md`, `REQ_MVP_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+  References: Schema `REQ_MVP_SCHEMA.yaml` | Rules `REQ-MVP-TEMPLATE.md`, `REQ_MVP_SCHEMA.yaml` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 
 # REQ-NN: [RESOURCE_TYPE] [Requirement Title]

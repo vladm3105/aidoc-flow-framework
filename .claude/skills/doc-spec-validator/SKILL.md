@@ -318,7 +318,7 @@ Info: N
 
 - **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 - **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 
 ---

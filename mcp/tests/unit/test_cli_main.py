@@ -71,3 +71,56 @@ def test_main_review_build_generates_output_artifacts(tmp_path: Path) -> None:
     assert (out_dir / "review_prompt.txt").exists()
     assert (out_dir / "review_prompt_sidecar.json").exists()
     assert (out_dir / "review_prompt_inspection.json").exists()
+
+
+def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    layer_root = tmp_path / "docs/UCX/templates/layers/01_BRD"
+    layer_root.mkdir(parents=True, exist_ok=True)
+    (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
+    (layer_root / "BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")
+
+    sections_file = tmp_path / "sections.json"
+    sections_file.write_text(
+        json.dumps(
+            [
+                {
+                    "section_id": "1.0",
+                    "title": "Architecture",
+                    "content": "system architecture and integration dependencies",
+                },
+                {
+                    "section_id": "9.0",
+                    "title": "Appendix",
+                    "content": "reference metadata appendix",
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    out_dir = tmp_path / "tmp/evidence-layer"
+    exit_code = main(
+        [
+            "review-build",
+            "--project",
+            str(tmp_path),
+            "--persona",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--template",
+            "UCR_PROMPT_BRD_PROJECT.md",
+            "--layer",
+            "01_BRD",
+            "--sections-json",
+            str(sections_file),
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    prompt = (out_dir / "review_prompt.txt").read_text(encoding="utf-8")
+    assert "MCP Actionable Review Rules" in prompt
+    assert "BRD_MVP_SCHEMA.yaml" in prompt

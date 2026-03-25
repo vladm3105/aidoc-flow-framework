@@ -149,7 +149,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 2. **PRE-CHECK**: Run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` (verify planning docs exist for the layer).
 
-3. **SETUP**: Load `X_MVP_CREATION_RULES.md` + `X-MVP-TEMPLATE.md`. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md). Note: MVP uses flat files only; do not use document splitting rules.
+3. **SETUP**: Load `X-MVP-TEMPLATE.md` + `X-MVP-TEMPLATE.md`. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md). Note: MVP uses flat files only; do not use document splitting rules.
 
 4. **GENERATE**: Create the file (e.g., `X-01.md`).
 
@@ -163,7 +163,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ### Step 1: Business Hypothesis (BRD) — **Day 1 (Morning)**
 
-**Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD_MVP_CREATION_RULES.md`
+**Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD-MVP-TEMPLATE.md`
 
 1. **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
 
@@ -177,7 +177,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
 
-**Artifacts**: `02_PRD/PRD-MVP-TEMPLATE.md`, `PRD_MVP_CREATION_RULES.md`
+**Artifacts**: `02_PRD/PRD-MVP-TEMPLATE.md`, `PRD-MVP-TEMPLATE.md`
 
 1. **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
 
@@ -191,7 +191,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
 
-**Artifacts**: `03_EARS/EARS-MVP-TEMPLATE.md`, `EARS_MVP_CREATION_RULES.md`
+**Artifacts**: `03_EARS/EARS-MVP-TEMPLATE.md`, `EARS-MVP-TEMPLATE.md`
 
 1. **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
 
@@ -205,7 +205,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
 
-**Artifacts**: `04_BDD/BDD-MVP-TEMPLATE.feature`, `BDD_MVP_CREATION_RULES.md`
+**Artifacts**: `04_BDD/BDD-MVP-TEMPLATE.feature`, `BDD-MVP-TEMPLATE.feature`
 
 1. **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
 
@@ -237,7 +237,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
 
-**Artifacts**: `07_REQ/REQ-MVP-TEMPLATE.md`, `REQ_MVP_CREATION_RULES.md`
+**Artifacts**: `07_REQ/REQ-MVP-TEMPLATE.md`, `REQ-MVP-TEMPLATE.md`
 
 1. **Plan**: List all required REQ files in `REQ-00_required_documents_list.md`.
 

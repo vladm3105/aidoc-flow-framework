@@ -33,7 +33,7 @@ Validate FTEST documents for subtype-specific schema, structure, traceability, a
 
 - `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml`
 
 ---
 

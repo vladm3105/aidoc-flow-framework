@@ -48,7 +48,7 @@ AI_CONTEXT_END
 
 > **Validation Note**: MVP templates use ≥90% score thresholds. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `PRD_MVP_SCHEMA.yaml` | Rules `PRD_MVP_CREATION_RULES.md`, `PRD_MVP_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `PRD_MVP_SCHEMA.yaml` | Rules `PRD-MVP-TEMPLATE.md`, `PRD_MVP_SCHEMA.yaml` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # PRD-NN: [MVP Product/Feature Name]
 

@@ -209,3 +209,15 @@ python scripts/validate_sectest.py docs/10_TSPEC/SECTEST/
 - [SECTEST-MVP-TEMPLATE.md](SECTEST-MVP-TEMPLATE.md)
 - [SECTEST_MVP_VALIDATION_RULES.md](SECTEST_MVP_VALIDATION_RULES.md)
 - [SECTEST_MVP_QUALITY_GATES.md](SECTEST_MVP_QUALITY_GATES.md)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

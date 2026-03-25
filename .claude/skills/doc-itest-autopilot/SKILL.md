@@ -117,8 +117,8 @@ When generating ITEST document instances, the autopilot MUST:
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_CREATION_RULES.md`
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py`
 
 ---

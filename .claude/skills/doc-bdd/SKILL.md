@@ -53,8 +53,8 @@ Before creating BDD, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD, PRD, EARS**: Read artifacts that drive these test scenarios
 3. **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+5. **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
 
 ## When to Use This Skill
 
@@ -608,8 +608,8 @@ The ADR will:
 - **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
 - **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
 - **Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+- **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
 

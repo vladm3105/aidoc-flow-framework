@@ -54,8 +54,8 @@ Before creating REQ, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream SYS**: Read system requirements driving this REQ
 3. **Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
 6. **Quality Gate Validation**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_QUALITY_GATE_VALIDATION.md`
 7. **Validation Script**: `./ai_dev_ssd_flow/07_REQ/scripts/validate_req_template.sh`
 
@@ -626,8 +626,8 @@ For supplementary documentation needs, create:
 ## Related Resources
 
 - **Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
-- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
+- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
 - **REQ README**: `ai_dev_ssd_flow/07_REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 

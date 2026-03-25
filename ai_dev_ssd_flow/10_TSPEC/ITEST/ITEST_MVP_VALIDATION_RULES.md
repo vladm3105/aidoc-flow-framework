@@ -232,3 +232,15 @@ Score = (CTR × 0.30) + (Contract × 0.25) + (Seq × 0.20) + (Effects × 0.15) +
 - [ITEST_MVP_QUALITY_GATES.md](ITEST_MVP_QUALITY_GATES.md)
 - [ITEST_MVP_CREATION_RULES.md](ITEST_MVP_CREATION_RULES.md)
 - [../scripts/validate_itest.py](../scripts/validate_itest.py)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

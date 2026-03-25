@@ -534,3 +534,15 @@ Result: PASSED WITH WARNINGS
 **Document Version**: 2.1.0
 **Last Updated**: 2026-02-26T00:00:00
 **Schema Version**: TASKS v2.0 (13 sections)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

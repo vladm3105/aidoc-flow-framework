@@ -47,7 +47,7 @@ AI_CONTEXT_END
 
 > **Validation Note**: This is the standard EARS template (6 sections). Some legacy validators may report warnings - this is expected behavior.
 
-> References: Schema `EARS_MVP_SCHEMA.yaml` | Rules `EARS_MVP_CREATION_RULES.md`, `EARS_MVP_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `EARS_MVP_SCHEMA.yaml` | Rules `EARS-MVP-TEMPLATE.md`, `EARS_MVP_SCHEMA.yaml` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # EARS-NN: [Target Component/Feature]
 

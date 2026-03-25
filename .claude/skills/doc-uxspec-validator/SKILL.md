@@ -59,4 +59,4 @@ Validate UX Specifications (UXSPEC) documents against Layer 9.52 schema standard
 ## References
 
 - Schema: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC_MVP_VALIDATION_RULES.md`
+- Validation Rules: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC_MVP_SCHEMA.yaml`

@@ -54,8 +54,8 @@ Before creating SYS, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream ADR**: Read architecture decisions constraining system
 3. **Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_SCHEMA.yaml`
 6. **Quality Gate Validation**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_QUALITY_GATE_VALIDATION.md`
 
 ## When to Use This Skill
@@ -509,13 +509,13 @@ For supplementary documentation needs, create:
 ## Related Resources
 
 - **Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md` (primary authority)
-- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
-- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
+- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_SCHEMA.yaml`
 - **SYS README**: `ai_dev_ssd_flow/06_SYS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Sectioning Guidance** (for documents >25K tokens):
-- Follow split rules in `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+- Follow split rules in `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
 - Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference

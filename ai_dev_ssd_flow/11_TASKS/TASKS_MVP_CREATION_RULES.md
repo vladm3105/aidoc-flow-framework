@@ -730,3 +730,15 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 **Workflow (v2.0)**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

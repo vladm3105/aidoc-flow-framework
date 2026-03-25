@@ -295,7 +295,7 @@ Info: N
 
 - **CTR Skill**: `.claude/skills/doc-ctr/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml`
 - **CTR Schema**: `ai_dev_ssd_flow/08_CTR/CTR_SCHEMA.yaml`
 
 ---

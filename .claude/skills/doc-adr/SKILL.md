@@ -55,8 +55,8 @@ Before creating ADR, read:
 2. **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
 4. **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-5. **Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`
+5. **Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
 7. **Quality Gate Validation**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_QUALITY_GATE_VALIDATION.md`
 
 ## When to Use This Skill
@@ -579,8 +579,8 @@ The SYS will:
 - **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
 - **Schema**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml` (machine-readable validation)
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
-- **ADR Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_CREATION_RULES.md`
-- **ADR Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`
+- **ADR Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
+- **ADR Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
 - **ADR README**: `ai_dev_ssd_flow/05_ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 

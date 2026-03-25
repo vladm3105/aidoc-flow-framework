@@ -33,7 +33,7 @@ Validate SECTEST documents for subtype-specific schema, structure, traceability,
 
 - `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml`
 
 ---
 

@@ -1,10 +1,12 @@
 """Prompt assembly and validation for MCP runtime."""
 
 from .context_builder import (
+    CreationAssembly,
     PromptAssembly,
     ContractValidationError,
     SectionMappingResult,
     SourceSection,
+    assemble_project_creation_prompt,
     assemble_project_review_prompt,
     build_prompt_bundle,
     build_appendix_index,
@@ -17,10 +19,12 @@ from .context_builder import (
 )
 
 __all__ = [
+    "CreationAssembly",
     "PromptAssembly",
     "ContractValidationError",
     "SectionMappingResult",
     "SourceSection",
+    "assemble_project_creation_prompt",
     "assemble_project_review_prompt",
     "build_prompt_bundle",
     "build_appendix_index",

@@ -185,3 +185,37 @@ def test_assemble_project_review_prompt_uses_project_ucx_assets(tmp_path: Path) 
     assert "Architect domain knowledge" in assembly.prompt_text
     assert "Review template body" in assembly.prompt_text
     assert assembly.bundle.metadata.persona == "architect"
+
+
+def test_assemble_project_review_prompt_with_layer_includes_template_schema_assets(tmp_path: Path) -> None:
+    for relative in [
+        Path("docs/UCX/skills/personas"),
+        Path("docs/UCX/skills/layer_aliases"),
+        Path("docs/UCX/prompts/templates/creation"),
+        Path("docs/UCX/prompts/templates/review"),
+        Path("docs/UCX/prompts/templates/remediation"),
+        Path("docs/UCX/templates"),
+        Path("docs/UCX/templates/layers/01_BRD"),
+    ]:
+        (tmp_path / relative).mkdir(parents=True, exist_ok=True)
+
+    (tmp_path / "docs/UCX/skills/personas/architect.md").write_text("Architect domain knowledge", encoding="utf-8")
+    (tmp_path / "docs/UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template body", encoding="utf-8")
+    (tmp_path / "docs/UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
+    (tmp_path / "docs/UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")
+
+    assembly = assemble_project_review_prompt(
+        project_root=tmp_path,
+        persona="architect",
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture Overview", content="system architecture and integration design"),
+            SourceSection(section_id="9.0", title="Appendix", content="reference appendix metadata"),
+        ],
+        layer="01_BRD",
+    )
+
+    assert "MCP Actionable Review Rules" in assembly.prompt_text
+    assert "BRD-MVP-TEMPLATE.md" in assembly.prompt_text
+    assert "BRD_MVP_SCHEMA.yaml" in assembly.prompt_text

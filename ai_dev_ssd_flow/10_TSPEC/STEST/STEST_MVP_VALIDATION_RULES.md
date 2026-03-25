@@ -185,3 +185,15 @@ Score = (Paths × 0.30) + (Timeout × 0.25) + (Rollback × 0.25) + (Health × 0.
 - [STEST_MVP_QUALITY_GATES.md](STEST_MVP_QUALITY_GATES.md)
 - [STEST_MVP_CREATION_RULES.md](STEST_MVP_CREATION_RULES.md)
 - [../scripts/validate_stest.py](../scripts/validate_stest.py)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

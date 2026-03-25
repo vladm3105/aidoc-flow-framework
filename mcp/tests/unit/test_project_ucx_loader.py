@@ -87,12 +87,12 @@ def test_load_project_layer_assets_reads_authoritative_layer_files(tmp_path: Pat
     create_runtime_ucx_tree(tmp_path)
     layer_root = tmp_path / "docs/UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
-    (layer_root / "README.md").write_text("Layer guidance", encoding="utf-8")
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD md", encoding="utf-8")
     (layer_root / "BRD-MVP-TEMPLATE.yaml").write_text("doc_id: BRD-01\n", encoding="utf-8")
+    (layer_root / "BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")
 
     assets = load_project_layer_assets(project_root=tmp_path, layer="01_BRD")
 
-    assert "README.md" in assets
     assert "BRD-MVP-TEMPLATE.md" in assets
     assert "BRD-MVP-TEMPLATE.yaml" in assets
+    assert "BRD_MVP_SCHEMA.yaml" in assets

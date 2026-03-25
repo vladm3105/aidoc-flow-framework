@@ -67,7 +67,7 @@ AI_CONTEXT_END
 
 > **Validation**: Use `scripts/validate_brd_wrapper.sh` as the canonical BRD validation entrypoint (`--skip-advisory` for automation). Schema checks via `BRD_MVP_SCHEMA.yaml` are advisory.
 
-> References: Schema `BRD_MVP_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `BRD_MVP_SCHEMA.yaml` | Rules `BRD-MVP-TEMPLATE.md`, `BRD_MVP_SCHEMA.yaml` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ---
 

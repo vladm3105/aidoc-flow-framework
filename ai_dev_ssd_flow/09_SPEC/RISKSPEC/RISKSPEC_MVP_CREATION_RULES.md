@@ -141,3 +141,15 @@ RISKSPEC does **NOT** require CTR (Contract) reference:
 
 **Rules Version**: 1.0
 **Last Updated**: 2026-03-01
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

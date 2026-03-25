@@ -52,8 +52,8 @@ Before creating CTR, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (especially Section 3: Interface Specifications, Section 4: Data Schemas)
 3. **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` and `CTR-MVP-TEMPLATE.yaml`
-4. **Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+4. **Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md`
+5. **Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
 
 ## Reserved ID Exemption (CTR-00_*)
@@ -811,8 +811,8 @@ For supplementary documentation related to CTR artifacts:
 
 - **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` (primary authority)
 - **Schema Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+- **CTR Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md`
+- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml`
 - **CTR README**: `ai_dev_ssd_flow/08_CTR/README.md`
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **JSON Schema**: https://json-schema.org/

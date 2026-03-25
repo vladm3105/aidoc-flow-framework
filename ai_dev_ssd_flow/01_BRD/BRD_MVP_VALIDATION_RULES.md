@@ -1854,3 +1854,15 @@ BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 
 **Maintained By**: Business Analyst Team, Quality Assurance Team
 **Review Frequency**: Updated with BRD template enhancements
 **Support**: See [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md) for comprehensive template guidance (standard template)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

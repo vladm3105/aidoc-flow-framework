@@ -58,7 +58,7 @@ Automated PRD generation pipeline from BRD documents.
 - Information extracted holistically across all sections
 - Discovery pattern: `BRD-NN.0_index.md` through `BRD-NN.18_appendices.md`
 
-**Reference**: See `PRD_MVP_CREATION_RULES.md` Section 22 for complete sectioned BRD handling rules.
+**Reference**: See `PRD-MVP-TEMPLATE.md` Section 22 for complete sectioned BRD handling rules.
 
 ## Output Structure
 

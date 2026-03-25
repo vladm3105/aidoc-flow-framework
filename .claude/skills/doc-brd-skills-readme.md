@@ -82,7 +82,7 @@ No score warning band is used.
 ## Source of Truth
 
 - Template structure: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- Scoring policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- Scoring policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
 
 ---
 

@@ -70,8 +70,8 @@ Before creating a BRD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
 5. **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
@@ -448,7 +448,7 @@ Cost estimates                Evaluation criteria        Selected approach
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md` Section 9 for complete guidelines
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` Section 9 for complete guidelines
 
 ### 5. Document Control Section Positioning
 
@@ -752,14 +752,14 @@ For supplementary documentation related to BRD artifacts:
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` for validation details.
+**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` for validation details.
 
 ## Related Resources
 
 - **Main Guide**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
-- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_CREATION_RULES.md`
-- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
 - **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` (unified; deprecated: doc-brd-validator, doc-brd-reviewer)

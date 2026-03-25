@@ -182,3 +182,15 @@ python scripts/validate_stest.py docs/10_TSPEC/STEST/
 - [STEST-MVP-TEMPLATE.md](STEST-MVP-TEMPLATE.md)
 - [STEST_MVP_VALIDATION_RULES.md](STEST_MVP_VALIDATION_RULES.md)
 - [STEST_MVP_QUALITY_GATES.md](STEST_MVP_QUALITY_GATES.md)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

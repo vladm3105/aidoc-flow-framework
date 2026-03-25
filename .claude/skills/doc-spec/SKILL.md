@@ -55,8 +55,8 @@ Before creating SPEC, read:
 2. **Upstream REQ**: Read atomic requirements (PRIMARY SOURCE)
 3. **Upstream CTR**: Read contracts if Layer 9 created
 4. **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
-5. **Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+5. **Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 7. **Validation Scripts**:
   - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py`
   - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py`
@@ -795,8 +795,8 @@ For supplementary documentation needs, create:
 ## Related Resources
 
 - **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (primary authority)
-- **SPEC Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
-- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- **SPEC Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md`
+- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 - **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 - **SPEC README**: `ai_dev_ssd_flow/09_SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`

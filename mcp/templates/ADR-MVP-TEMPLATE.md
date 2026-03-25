@@ -46,7 +46,7 @@ AI_CONTEXT_END
 
 > **Validation Note**: This is the standard ADR template. Some legacy validators may report warnings - this is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `ADR_MVP_SCHEMA.yaml` | Rules `ADR_MVP_CREATION_RULES.md`, `ADR_MVP_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `ADR_MVP_SCHEMA.yaml` | Rules `ADR-MVP-TEMPLATE.md`, `ADR_MVP_SCHEMA.yaml` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # ADR-NN: [Architecture Decision Title]
 

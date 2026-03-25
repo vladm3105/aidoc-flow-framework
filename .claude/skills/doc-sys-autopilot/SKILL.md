@@ -385,7 +385,7 @@ Generate SYS documents with functional requirements and quality attributes.
 
 2. **Load SYS Template**:
   - Primary: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-  - Rules: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
+  - Rules: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
 
 3. **Generate Document Control Section**:
 
@@ -1531,8 +1531,8 @@ jobs:
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
 - **SYS Audit Skill**: `.claude/skills/doc-sys-audit/SKILL.md`
 - **SYS Template**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_CREATION_RULES.md`
-- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_VALIDATION_RULES.md`
+- **SYS Creation Rules**: `ai_dev_ssd_flow/06_SYS/SYS-MVP-TEMPLATE.md`
+- **SYS Validation Rules**: `ai_dev_ssd_flow/06_SYS/SYS_MVP_SCHEMA.yaml`
 - **ADR Autopilot Skill**: `.claude/skills/doc-adr-autopilot/SKILL.md`
 
 ---

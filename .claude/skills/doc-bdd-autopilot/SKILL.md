@@ -1732,8 +1732,8 @@ After autopilot completion:
 - **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
 - **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
 - **BDD Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-- **BDD Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+- **BDD Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **BDD Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
 
 ### Framework References
 

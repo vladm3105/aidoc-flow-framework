@@ -1254,3 +1254,15 @@ complexity: [1-5]
 - **Count Mismatch**: Ensure summary counts match the task list items.
 - **Missing Complexity**: Rate every task (1-5) and the overall document.
 - **Vague Archives**: Clearly state how legacy/archive files are handled.
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

@@ -33,7 +33,7 @@ Validate STEST documents for subtype-specific schema, structure, traceability, a
 
 - `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml`
 
 ---
 

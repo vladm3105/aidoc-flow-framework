@@ -59,4 +59,4 @@ Validate Process Specifications (PROCSPEC) documents against Layer 9.54 schema s
 ## References
 
 - Schema: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_VALIDATION_RULES.md`
+- Validation Rules: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_SCHEMA.yaml`

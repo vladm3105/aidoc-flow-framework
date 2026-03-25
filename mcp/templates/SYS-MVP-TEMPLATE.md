@@ -31,8 +31,8 @@ custom_fields:
 
 > ** Document Authority**: This is the **STANDARD** for SYS structure.
 > - **Schema**: `SYS_MVP_SCHEMA.yaml v2.0` - Validation rules
-> - **Creation Rules**: `SYS_MVP_CREATION_RULES.md` - Usage guidance
-> - **Validation Rules**: `SYS_MVP_VALIDATION_RULES.md` - Post-creation checks
+> - **Creation Rules**: `SYS-MVP-TEMPLATE.md` - Usage guidance
+> - **Validation Rules**: `SYS_MVP_SCHEMA.yaml` - Post-creation checks
 > - **File Size Limits**: Warning 15,000 tokens, max 20,000 tokens per file. Split using `SYS-SECTION-TEMPLATE.md` if exceeded.
 > - **v2.0 Features**: External Dependencies table with fallback strategy (Section 4.5)
 

@@ -1569,8 +1569,8 @@ After autopilot completion:
 
 - **REQ Template**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
 - **REQ Schema**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
-- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_VALIDATION_RULES.md`
+- **REQ Creation Rules**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+- **REQ Validation Rules**: `ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
 
 ### Section Splitting Reference (for documents >50KB)
 

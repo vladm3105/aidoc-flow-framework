@@ -1382,8 +1382,8 @@ After autopilot completion:
 
 - **EARS Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
 - **EARS Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
-- **EARS Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
-- **EARS Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
+- **EARS Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+- **EARS Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
 
 ### Section Templates (for documents >800 lines)
 

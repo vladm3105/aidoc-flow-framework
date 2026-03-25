@@ -59,4 +59,4 @@ Validate Risk Specifications (RISKSPEC) documents against Layer 9.53 schema stan
 ## References
 
 - Schema: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_VALIDATION_RULES.md`
+- Validation Rules: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_SCHEMA.yaml`

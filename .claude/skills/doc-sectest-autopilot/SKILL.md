@@ -118,8 +118,8 @@ When generating SECTEST document instances, the autopilot MUST:
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_CREATION_RULES.md`
-- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/scripts/validate_sectest.py`
 
 ---

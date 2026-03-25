@@ -56,7 +56,7 @@
 ## Source of Truth
 
 - Template: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- Validation policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- Validation policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
 - Wrapper/quality workflow: `ai_dev_ssd_flow/01_BRD/BRD_QUALITY_GATE_WORKFLOW.md`
 
 ---

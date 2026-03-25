@@ -1138,3 +1138,15 @@ Warnings: 1
 - [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) - Current template (v3.0)
 - [README.md](README.md) - REQ directory guide with creation steps
 - [<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->](<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->) - Archived MVP template (v3.0.2)
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

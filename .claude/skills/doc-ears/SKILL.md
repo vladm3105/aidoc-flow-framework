@@ -53,8 +53,8 @@ Before creating EARS, read:
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
 3. **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 1.1, primary authority)
 4. **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation rules)
-5. **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
+5. **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+6. **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
 
 ### Template Binding (CRITICAL)
 
@@ -597,8 +597,8 @@ The BDD will:
 
 - **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
 - **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation)
-- **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md`
+- **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+- **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
 - **Threshold Naming**: `ai_dev_ssd_flow/THRESHOLD_NAMING_RULES.md`

@@ -2215,3 +2215,15 @@ python scripts/validate_cross_document.py --layer BRD --auto-fix
 ### Quality Gate
 
 **Blocking**: YES - Cannot proceed to PRD creation until Phase 1 validation passes with 0 errors.
+
+---
+
+## DEPRECATED: Template+Schema migration (2026-03-24)
+
+This file is deprecated and retained for backward compatibility only.
+
+Active references for MCP and framework tooling must use:
+- `*-MVP-TEMPLATE.*`
+- `*_MVP_SCHEMA.yaml`
+
+Do not add new dependencies on this file.

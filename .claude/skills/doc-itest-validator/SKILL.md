@@ -33,7 +33,7 @@ Validate ITEST documents for subtype-specific schema, structure, traceability, c
 
 - `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml`
 
 ---
 

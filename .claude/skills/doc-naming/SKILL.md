@@ -652,12 +652,12 @@ Each document type has validation rules with Element ID compliance checks:
 |---------------|----------------------|
 | BRD | `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md` |
 | PRD | `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md` |
-| EARS | `ai_dev_ssd_flow/03_EARS/EARS_MVP_VALIDATION_RULES.md` |
+| EARS | `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` |
 | BDD | `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md` |
 | ADR | `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md` |
 | SYS | `ai_dev_flow/06_SYS/SYS_VALIDATION_RULES.md` |
 | REQ | `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md` |
-| CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md` |
+| CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml` |
 | SPEC | `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md` |
 | TSPEC | `ai_dev_flow/10_TSPEC/TSPEC_VALIDATION_RULES.md` |
 | TASKS | `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md` |

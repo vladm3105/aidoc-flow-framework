@@ -38,8 +38,8 @@ Before authoring SECTEST, read:
 
 1. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md`
 2. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml`
-3. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_CREATION_RULES.md`
-4. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_VALIDATION_RULES.md`
+3. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md`
+4. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml`
 5. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml`
 
 ---

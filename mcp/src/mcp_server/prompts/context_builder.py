@@ -6,6 +6,8 @@ from pathlib import Path
 
 from mcp_server.models.context_engineering_contracts import serialize_prompt_metadata_sidecar
 from mcp_server.skills.project_ucx_loader import (
+    load_project_document_template,
+    load_project_layer_assets,
     load_project_persona_file,
     load_project_prompt_template,
 )
@@ -52,6 +54,16 @@ class PromptAssembly:
     persona_text: str
 
 
+@dataclass(frozen=True)
+class CreationAssembly:
+    prompt_text: str
+    bundle: PromptBundle
+    prompt_template_text: str
+    persona_text: str
+    layer_assets: dict[str, str]
+    document_template_text: str | None
+
+
 SECTION_CATEGORIES: dict[str, tuple[str, ...]] = {
     "functional": ("functional", "feature", "capability", "workflow", "behavior"),
     "quality": ("quality", "latency", "availability", "performance", "reliability"),
@@ -73,6 +85,24 @@ PERSONA_CATEGORY_MAP: dict[str, tuple[str, ...]] = {
     "integration_lead": ("integration", "technical", "functional"),
     "chairperson": ("functional", "quality", "technical", "integration", "compliance", "risk", "operations"),
 }
+
+
+MCP_CREATION_ACTIONABLE_RULES = """## MCP Actionable Creation Rules
+- Use the layer template file (`*-MVP-TEMPLATE.*`) as the primary structural source.
+- Use the layer schema file (`*_MVP_SCHEMA.yaml`) for required fields, section ordering, and validation constraints.
+- Resolve conflicts using this precedence: project-tuned template > layer template > layer schema.
+- Do not rely on deprecated `*_MVP_CREATION_RULES.md` or `*_MVP_VALIDATION_RULES.md` files.
+- Keep output deterministic: preserve section order from template/schema and include required metadata fields.
+"""
+
+
+MCP_REVIEW_ACTIONABLE_RULES = """## MCP Actionable Review Rules
+- Use the layer template file (`*-MVP-TEMPLATE.*`) as the structural authority for section and formatting checks.
+- Use the layer schema file (`*_MVP_SCHEMA.yaml`) as the machine-readable authority for required fields and validation constraints.
+- Use this precedence for review findings: project-tuned template > layer template > layer schema.
+- Do not rely on deprecated `*_MVP_CREATION_RULES.md` or `*_MVP_VALIDATION_RULES.md` files.
+- Report deterministic findings tied to concrete template/schema constraints.
+"""
 
 
 def estimate_tokens(*parts: str) -> int:
@@ -269,6 +299,7 @@ def assemble_project_review_prompt(
     doc_type: str,
     template_name: str,
     sections: list[SourceSection],
+    layer: str | None = None,
 ) -> PromptAssembly:
     mapping = map_sections_for_persona(persona, sections)
     discovered_snippets = discover_relevant_snippets(
@@ -276,10 +307,14 @@ def assemble_project_review_prompt(
         skipped_sections=mapping.skipped_sections,
     )
     appendix_index = build_appendix_index(sections)
+    structure_blocks = ["level1_overview", "level2_relevant", "appendix_index", "format_rules"]
+    if layer:
+        structure_blocks.append("layer_assets")
+
     bundle = build_prompt_bundle(
         persona=persona,
         doc_type=doc_type,
-        structure_blocks=["level1_overview", "level2_relevant", "appendix_index", "format_rules"],
+        structure_blocks=structure_blocks,
         included_sections=mapping.included_sections,
         skipped_sections=mapping.skipped_sections,
         discovered_snippets=discovered_snippets,
@@ -291,17 +326,122 @@ def assemble_project_review_prompt(
         phase="review",
         template_name=template_name,
     )
-    prompt_text = "\n\n".join(
-        [
-            persona_text.strip(),
-            prompt_template_text.strip(),
-            json.dumps(inspect_prompt_bundle(bundle), sort_keys=True),
-            serialize_prompt_metadata_sidecar(bundle.metadata),
-        ]
-    )
+    parts = [
+        persona_text.strip(),
+        prompt_template_text.strip(),
+        MCP_REVIEW_ACTIONABLE_RULES.strip(),
+    ]
+    if layer:
+        layer_assets = load_project_layer_assets(project_root=project_root, layer=layer)
+        layer_section = "\n\n".join(
+            f"### Layer asset: {name}\n{content.strip()}"
+            for name, content in sorted(layer_assets.items())
+        )
+        parts.append("## Authoritative Layer Assets\n" + layer_section)
+    parts.append(json.dumps(inspect_prompt_bundle(bundle), sort_keys=True))
+    parts.append(serialize_prompt_metadata_sidecar(bundle.metadata))
+
+    prompt_text = "\n\n".join(parts)
     return PromptAssembly(
         prompt_text=prompt_text,
         bundle=bundle,
         prompt_template_text=prompt_template_text,
         persona_text=persona_text,
+    )
+
+
+def assemble_project_creation_prompt(
+    *,
+    project_root: Path,
+    persona: str,
+    doc_type: str,
+    layer: str,
+    template_name: str,
+    sections: list[SourceSection] | None = None,
+) -> CreationAssembly:
+    """Assemble a creation prompt that fuses MCP runtime assets with authoritative SSD layer inputs.
+
+    Layer assets (*-MVP-TEMPLATE.* and *_MVP_SCHEMA.yaml files) from docs/UCX/templates/layers/<layer>/
+    and the project-specific tuned template from docs/UCX/templates/<template_name> are both
+    included in the assembled prompt text so the AI has full authoritative context for creation.
+    """
+    if not sections:
+        # Creation builds don't have an existing document to section; synthesize a task anchor
+        # so the PromptBundle contract (sections_included must be non-empty) is satisfied.
+        # The content uses category keywords (functional, workflow, architecture, technical)
+        # so it survives persona-based section mapping for all standard personas.
+        sections = [
+            SourceSection(
+                section_id="creation_task",
+                title=f"Create {doc_type.upper()} document: functional and technical scope",
+                content=(
+                    f"Define functional requirements, system architecture, and workflow behavior "
+                    f"for a new {doc_type.upper()} document. "
+                    f"Use the authoritative {layer} SSD layer assets and the project template."
+                ),
+                included=True,
+            )
+        ]
+
+    mapping = map_sections_for_persona(persona, sections)
+    discovered_snippets = discover_relevant_snippets(
+        persona=persona,
+        skipped_sections=mapping.skipped_sections,
+    )
+    appendix_index = build_appendix_index(sections)
+    bundle = build_prompt_bundle(
+        persona=persona,
+        doc_type=doc_type,
+        structure_blocks=["level1_overview", "level2_relevant", "layer_assets", "format_rules"],
+        included_sections=mapping.included_sections,
+        skipped_sections=mapping.skipped_sections,
+        discovered_snippets=discovered_snippets,
+        appendix_index=appendix_index,
+    )
+
+    persona_text = load_project_persona_file(project_root=project_root, persona=persona)
+    prompt_template_text = load_project_prompt_template(
+        project_root=project_root,
+        phase="creation",
+        template_name=template_name,
+    )
+
+    # Authoritative SSD layer assets (MVP template + schema) copied during scaffold
+    layer_assets = load_project_layer_assets(project_root=project_root, layer=layer)
+
+    # Project-tuned document template (may not exist for all layers; tolerated)
+    document_template_text: str | None = None
+    tuned_template_name = f"{doc_type.upper()}-MVP-TEMPLATE.md"
+    try:
+        document_template_text = load_project_document_template(
+            project_root=project_root,
+            template_name=tuned_template_name,
+        )
+    except FileNotFoundError:
+        pass
+
+    # Assemble prompt: persona | creation template | layer authoritative assets | tuned template
+    layer_section = "\n\n".join(
+        f"### Layer asset: {name}\n{content.strip()}"
+        for name, content in sorted(layer_assets.items())
+    )
+    parts = [
+        persona_text.strip(),
+        prompt_template_text.strip(),
+        MCP_CREATION_ACTIONABLE_RULES.strip(),
+        "## Authoritative Layer Assets\n" + layer_section,
+    ]
+    if document_template_text:
+        parts.append("## Project-Tuned Template\n" + document_template_text.strip())
+    parts.append(json.dumps(inspect_prompt_bundle(bundle), sort_keys=True))
+    parts.append(serialize_prompt_metadata_sidecar(bundle.metadata))
+
+    prompt_text = "\n\n".join(parts)
+    return CreationAssembly(
+        prompt_text=prompt_text,
+        bundle=bundle,
+        prompt_template_text=prompt_template_text,
+        persona_text=persona_text,
+        layer_assets=layer_assets,
+        document_template_text=document_template_text,
     )

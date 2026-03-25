@@ -118,8 +118,8 @@ When generating STEST document instances, the autopilot MUST:
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_CREATION_RULES.md`
-- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py`
 
 ---

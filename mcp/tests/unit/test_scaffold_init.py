@@ -30,9 +30,9 @@ def _create_canonical_scaffold(root: Path) -> None:
 
 def _create_authoritative_ssd(root: Path) -> None:
     (root / "01_BRD").mkdir(parents=True, exist_ok=True)
-    (root / "01_BRD/README.md").write_text("BRD layer readme", encoding="utf-8")
     (root / "01_BRD/BRD-MVP-TEMPLATE.md").write_text("authoritative brd md", encoding="utf-8")
     (root / "01_BRD/BRD-MVP-TEMPLATE.yaml").write_text("doc_id: BRD-01\n", encoding="utf-8")
+    (root / "01_BRD/BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")
 
 
 def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
@@ -50,8 +50,8 @@ def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
     assert (project_root / "docs/UCX/skills/layer_aliases/default.yaml").exists()
     assert (project_root / "docs/UCX/prompts/templates/review/base.md").exists()
     assert (project_root / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").exists()
-    assert (project_root / "docs/UCX/templates/layers/01_BRD/README.md").exists()
     assert (project_root / "docs/UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.yaml").exists()
+    assert (project_root / "docs/UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").exists()
 
 
 def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) -> None:

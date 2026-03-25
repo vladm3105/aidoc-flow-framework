@@ -117,8 +117,8 @@ When generating FTEST document instances, the autopilot MUST:
 ## Canonical References
 
 - `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_CREATION_RULES.md`
-- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_VALIDATION_RULES.md`
+- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
+- `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml`
 - `ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py`
 
 ---

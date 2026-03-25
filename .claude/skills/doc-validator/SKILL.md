@@ -54,7 +54,7 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 | 6 | SYS | `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md` |
 | 7 | REQ | `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md` |
 | 8 | IMPL | `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md` |
-| 8 | CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md` |
+| 8 | CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml` |
 | 10 | SPEC | `ai_dev_flow/10_SPEC/SPEC_VALIDATION_RULES.md` |
 | 11 | TASKS | `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md` |
 
