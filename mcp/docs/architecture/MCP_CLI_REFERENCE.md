@@ -14,8 +14,8 @@
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
 | init | --project | none | scaffold summary lines |
-| create-build | --project --persona --doc-type --layer --template --out | --sections-json | creation prompt path and layer asset names |
-| review-build | --project --persona --doc-type --template --sections-json --out | --layer | review prompt path, sidecar path, inspection path, layer asset names |
+| create-build | --project --persona --doc-type --layer --template | --sections-json --out | creation prompt path and layer asset names |
+| review-build | --project --persona --doc-type --template --sections-json | --layer --out | review prompt path, sidecar path, inspection path, layer asset names |
 
 ---
 
@@ -39,15 +39,17 @@ Required:
 - --doc-type document type label
 - --layer SSD layer directory name
 - --template template file under docs/UCX/prompt templates creation path
-- --out output directory
 
 Optional:
 - --sections-json path to JSON array with section_id, title, content, included
+- --out explicit output directory
 
 Behavior:
 - If sections-json is provided, command loads provided sections as SourceSection list.
 - If sections-json is omitted, command runs with default internal section fallback behavior.
-- Command writes creation_prompt.txt, creation_prompt_sidecar.json, and creation_prompt_inspection.json when output directory is provided.
+- If out is omitted, command writes artifacts to `<document_dir>/.ucx_create/creation` when sections-json is provided, otherwise to `<project>/docs/.ucx_create/creation`.
+- If out points to a `.ucx_create` folder, command appends `/creation` automatically.
+- Command writes creation_prompt.txt, creation_prompt_sidecar.json, and creation_prompt_inspection.json.
 
 Constraint:
 - Direct markdown source ingestion as a dedicated create-build mode is not implemented.
@@ -60,13 +62,15 @@ Required:
 - --doc-type document type label
 - --template review template file
 - --sections-json required sections payload path
-- --out output directory
 
 Optional:
 - --layer SSD layer directory name
+- --out explicit output directory
 
 Behavior:
 - Command requires sections-json input.
+- If out is omitted, command writes artifacts to `<document_dir>/.ucx_create/review`.
+- If out points to a `.ucx_create` folder, command appends `/review` automatically.
 - Command writes review_prompt.txt, review_prompt_sidecar.json, and review_prompt_inspection.json.
 
 ---
@@ -105,10 +109,14 @@ Failure modes:
 
 mcp init --project /path/to/project
 
-### 5.2 Build creation prompt with sections payload
+### 5.2 Build creation prompt with default stage output folder
+
+mcp create-build --project /path/to/project --persona architect --doc-type brd --layer 01_BRD --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json
+
+### 5.3 Build creation prompt with explicit output directory
 
 mcp create-build --project /path/to/project --persona architect --doc-type brd --layer 01_BRD --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json --out /path/to/out
 
-### 5.3 Build review prompt
+### 5.4 Build review prompt
 
 mcp review-build --project /path/to/project --persona auditor --doc-type brd --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json --out /path/to/out

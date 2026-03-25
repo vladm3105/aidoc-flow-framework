@@ -124,3 +124,83 @@ def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> N
     prompt = (out_dir / "review_prompt.txt").read_text(encoding="utf-8")
     assert "MCP Actionable Review Rules" in prompt
     assert "BRD_MVP_SCHEMA.yaml" in prompt
+
+
+def test_main_review_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    sections_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
+    sections_dir.mkdir(parents=True, exist_ok=True)
+    sections_file = sections_dir / "sections.json"
+    sections_file.write_text(
+        json.dumps(
+            [
+                {
+                    "section_id": "1.0",
+                    "title": "Architecture",
+                    "content": "system architecture and integration dependencies",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    exit_code = main(
+        [
+            "review-build",
+            "--project",
+            str(tmp_path),
+            "--persona",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--template",
+            "UCR_PROMPT_BRD_PROJECT.md",
+            "--sections-json",
+            str(sections_file),
+        ]
+    )
+
+    default_out = sections_dir / ".ucx_create/review"
+    assert exit_code == 0
+    assert (default_out / "review_prompt.txt").exists()
+
+
+def test_main_review_build_out_ucx_root_appends_stage(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    sections_file = tmp_path / "sections.json"
+    sections_file.write_text(
+        json.dumps(
+            [
+                {
+                    "section_id": "1.0",
+                    "title": "Architecture",
+                    "content": "system architecture and integration dependencies",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    ucx_root = tmp_path / "docs/01_BRD/BRD-01_platform_architecture/.ucx_create"
+    exit_code = main(
+        [
+            "review-build",
+            "--project",
+            str(tmp_path),
+            "--persona",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--template",
+            "UCR_PROMPT_BRD_PROJECT.md",
+            "--sections-json",
+            str(sections_file),
+            "--out",
+            str(ucx_root),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (ucx_root / "review/review_prompt.txt").exists()

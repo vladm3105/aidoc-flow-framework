@@ -377,3 +377,37 @@ def test_cli_create_build_writes_sidecar_json(tmp_path: Path) -> None:
     assert sidecar_file.exists()
     parsed = json.loads(sidecar_file.read_text(encoding="utf-8"))
     assert parsed.get("persona") == "architect"
+
+
+def test_cli_create_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+    _scaffold_creation_fixtures(tmp_path)
+    sections_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
+    sections_dir.mkdir(parents=True, exist_ok=True)
+    sections_path = sections_dir / "sections.json"
+    sections_path.write_text(
+        json.dumps(
+            [
+                {
+                    "section_id": "1.0",
+                    "title": "Business Context",
+                    "content": "functional business workflow",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    rc = main([
+        "create-build",
+        "--project", str(tmp_path),
+        "--persona", "architect",
+        "--doc-type", "brd",
+        "--layer", "01_BRD",
+        "--template", "UCC_PROMPT_BRD_PROJECT.md",
+        "--sections-json", str(sections_path),
+    ])
+
+    default_out = sections_dir / ".ucx_create/creation"
+    assert rc == 0
+    assert (default_out / "creation_prompt.txt").exists()
+    assert (default_out / "creation_prompt_sidecar.json").exists()
