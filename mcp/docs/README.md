@@ -74,9 +74,17 @@ Use this precedence for conflict resolution:
 - [Rollback Notes 001](plans/ROLLBACK-NOTES-001_mcp_partial_deployment.md)
 - [Test Checklist 001](plans/TEST-CHECKLIST-001_mcp_new_contract_rows.md)
 
+## 7. Changelog
+
+- [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md)
+
+## 8. Roadmap
+
+- [MCP Roadmap](ROADMAP.md)
+
 ---
 
-## 7. Reconciliation Index
+## 9. Reconciliation Index
 
 | Path | Type | Canonical Status | Action |
 | --- | --- | --- | --- |
@@ -98,7 +106,7 @@ Use this precedence for conflict resolution:
 
 ---
 
-## 8. Release Blocking Conditions
+## 10. Release Blocking Conditions
 
 Release readiness requires:
 - Coverage matrix PASS for layers L0 through L9
