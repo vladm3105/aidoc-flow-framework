@@ -1,0 +1,107 @@
+# MCP Documentation Index
+
+| Field | Value |
+| --- | --- |
+| Scope | MCP documentation set under mcp/docs |
+| Status | Active |
+| Version | 1.0 |
+| Date | 2026-03-24 |
+| Timezone | America/New_York |
+
+---
+
+## 1. Layer Map
+
+| Layer | Name | Primary Artifact |
+| --- | --- | --- |
+| L0 | Navigation and Inventory | README.md |
+| L1 | Architecture Overview | architecture/MCP_RUNTIME_ARCHITECTURE.md |
+| L2 | CLI and Tool Surface | architecture/MCP_CLI_REFERENCE.md |
+| L3 | Source Input Contracts | specs/SPEC-005_mcp_source_input_ingestion_contracts.md |
+| L4 | Creation Flow Contracts | specs/SPEC-006_mcp_creation_flow_operational_contracts.md |
+| L5 | Review and Remediation Operations | specs/SPEC-007_mcp_review_remediation_operational_contracts.md |
+| L6 | Policy Layer | policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md |
+| L7 | Validation and Quality Gates | policies/DOC_QUALITY_GATES.md |
+| L8 | Runbooks | architecture/MCP_OPERATOR_RUNBOOK.md |
+| L9 | Traceability and Audit | plans/DOC-COVERAGE-MATRIX-001_mcp_layers.md |
+
+---
+
+## 2. Canonical Source of Truth Order
+
+Use this precedence for conflict resolution:
+1. Runtime code and tests under mcp/src/mcp_server and mcp/tests
+2. Canonical specs under mcp/docs/specs
+3. Policies under mcp/docs/policies
+4. Architecture and runbooks under mcp/docs/architecture
+5. Plans and reports under mcp/docs/plans
+
+---
+
+## 3. Architecture Documents
+
+- [MCP Persona Design Guide](architecture/MCP_PERSONA_DESIGN_GUIDE.md)
+- [MCP Runtime Architecture](architecture/MCP_RUNTIME_ARCHITECTURE.md)
+- [MCP CLI Reference](architecture/MCP_CLI_REFERENCE.md)
+- [MCP Operator Runbook](architecture/MCP_OPERATOR_RUNBOOK.md)
+
+## 4. Canonical Specifications
+
+- [SPEC-001 MCP Core Architecture and Workflow Contracts](specs/SPEC-001_mcp_core_architecture_workflow_contracts.md)
+- [SPEC-002 MCP Review, Scoring, Handoff, and Identity Contracts](specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md)
+- [SPEC-003 MCP Creation, Validation, and Profile Contracts](specs/SPEC-003_mcp_creation_validation_profile_contracts.md)
+- [SPEC-004 MCP Reporting, Lineage, and Artifact Contracts](specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md)
+- [SPEC-005 MCP Source Input and Ingestion Contracts](specs/SPEC-005_mcp_source_input_ingestion_contracts.md)
+- [SPEC-006 MCP Creation Flow Operational Contracts](specs/SPEC-006_mcp_creation_flow_operational_contracts.md)
+- [SPEC-007 MCP Review and Remediation Operational Contracts](specs/SPEC-007_mcp_review_remediation_operational_contracts.md)
+
+## 5. Policies
+
+- [Legacy Report Policy](policies/legacy_report_policy.md)
+- [Compatibility and Deprecation Policy](policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md)
+- [Documentation Quality Gates](policies/DOC_QUALITY_GATES.md)
+- [Documentation Lifecycle and Versioning Policy](policies/DOC_LIFECYCLE_AND_VERSIONING_POLICY.md)
+
+## 6. Plans and Reports
+
+- [IPLAN-001 MCP Server Implementation from Canonical Specs](plans/IPLAN-001_mcp_server_implementation_from_canonical_specs.md)
+- [IPLAN-002 MCP Docs Full Layer Coverage Plan](plans/IPLAN-002_mcp_docs_full_layer_coverage.md)
+- [Coverage Matrix](plans/DOC-COVERAGE-MATRIX-001_mcp_layers.md)
+- [Reconciliation Log](plans/DOC-RECONCILIATION-LOG-001.md)
+- [Compliance Report 001](plans/COMPLIANCE-REPORT-001_mcp_canonical_contracts.md)
+- [Compliance Report 002](plans/COMPLIANCE-REPORT-002_mcp_docs_layer_coverage.md)
+- [Release Readiness 001](plans/RELEASE-READINESS-001_mcp_cutover_status.md)
+- [Rollback Notes 001](plans/ROLLBACK-NOTES-001_mcp_partial_deployment.md)
+- [Test Checklist 001](plans/TEST-CHECKLIST-001_mcp_new_contract_rows.md)
+
+---
+
+## 7. Reconciliation Index
+
+| Path | Type | Canonical Status | Action |
+| --- | --- | --- | --- |
+| architecture/MCP_PERSONA_DESIGN_GUIDE.md | architecture guide | active | retain |
+| architecture/MCP_RUNTIME_ARCHITECTURE.md | architecture guide | active | retain |
+| architecture/MCP_CLI_REFERENCE.md | architecture guide | active | retain |
+| architecture/MCP_OPERATOR_RUNBOOK.md | runbook | active | retain |
+| policies/legacy_report_policy.md | policy | active | retain |
+| policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md | policy | active | retain |
+| policies/DOC_QUALITY_GATES.md | policy | active | retain |
+| policies/DOC_LIFECYCLE_AND_VERSIONING_POLICY.md | policy | active | retain |
+| specs/SPEC-001_mcp_core_architecture_workflow_contracts.md | spec | active | retain |
+| specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md | spec | active | retain |
+| specs/SPEC-003_mcp_creation_validation_profile_contracts.md | spec | active | retain |
+| specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md | spec | active | retain |
+| specs/SPEC-005_mcp_source_input_ingestion_contracts.md | spec | active | retain |
+| specs/SPEC-006_mcp_creation_flow_operational_contracts.md | spec | active | retain |
+| specs/SPEC-007_mcp_review_remediation_operational_contracts.md | spec | active | retain |
+
+---
+
+## 8. Release Blocking Conditions
+
+Release readiness requires:
+- Coverage matrix PASS for layers L0 through L9
+- Reconciliation log with zero unresolved conflicts
+- Quality gates PASS for docs-to-code checks
+- No broken links in active canonical artifacts
