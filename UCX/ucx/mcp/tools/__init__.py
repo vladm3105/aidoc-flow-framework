@@ -1,1 +1,0 @@
-"""UCX MCP tools package."""
