@@ -407,7 +407,7 @@ def test_cli_create_build_without_out_uses_document_stage_dir(tmp_path: Path) ->
         "--sections-json", str(sections_path),
     ])
 
-    default_out = sections_dir / ".ucx_create/creation"
+    default_out = sections_dir / ".ucx/creation"
     assert rc == 0
     assert (default_out / "creation_prompt.txt").exists()
     assert (default_out / "creation_prompt_sidecar.json").exists()

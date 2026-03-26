@@ -161,7 +161,7 @@ def test_main_review_build_without_out_uses_document_stage_dir(tmp_path: Path) -
         ]
     )
 
-    default_out = sections_dir / ".ucx_create/review"
+    default_out = sections_dir / ".ucx/review"
     assert exit_code == 0
     assert (default_out / "review_prompt.txt").exists()
 
@@ -183,7 +183,7 @@ def test_main_review_build_out_ucx_root_appends_stage(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    ucx_root = tmp_path / "docs/01_BRD/BRD-01_platform_architecture/.ucx_create"
+    ucx_root = tmp_path / "docs/01_BRD/BRD-01_platform_architecture/.ucx"
     exit_code = main(
         [
             "review-build",
@@ -204,3 +204,47 @@ def test_main_review_build_out_ucx_root_appends_stage(tmp_path: Path) -> None:
 
     assert exit_code == 0
     assert (ucx_root / "review/review_prompt.txt").exists()
+
+
+def test_main_validate_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    doc_file = doc_dir / "BRD-01_platform_architecture.md"
+    doc_file.write_text(
+        """---
+title: "Sample"
+tags: [brd]
+custom_fields:
+  document_type: brd
+  artifact_type: BRD
+  layer: 1
+  architecture_approaches: [ai-agent-based]
+  priority: shared
+  status: draft
+---
+
+# BRD-01: Sample
+""",
+        encoding="utf-8",
+    )
+
+    exit_code = main(
+        [
+            "validate-build",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(doc_file),
+        ]
+    )
+
+    default_out = doc_dir / ".ucx/validate"
+    assert exit_code == 1
+    assert (default_out / "validation_report.json").exists()
+    assert (default_out / "validation_report.txt").exists()

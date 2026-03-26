@@ -6,10 +6,10 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.0.0 |
-| Latest Release | 1.0.0 (L0-L9 documentation coverage and IPLAN-002 closure) |
-| Next Minor | 1.1.0 (automation and continuous verification baseline) |
-| Next Major | 2.0.0 (contract governance expansion and release-gate hardening) |
+| Current Version | 1.0.1 |
+| Latest Release | 1.0.1 (validate-build script validation and .ucx stage output normalization) |
+| Next Minor | 1.1.0 (full UCX_v1-to-MCP migration without autopilot) |
+| Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
 Versioning policy reference:
@@ -19,51 +19,51 @@ Versioning policy reference:
 
 ## Version Timeline
 
-v1.0.0 (Current) -> v1.1.0 -> v1.2.0 -> v2.0.0
+v1.0.1 (Current) -> v1.1.0 (Migration Core) -> v1.2.0 (Migration Completion) -> v2.0.0
 
 ---
 
 ## Planned Releases
 
-### v1.1.0 - Automation Baseline and Drift Detection
+### v1.1.0 - Migration Core (UCX_v1 to MCP without autopilot)
 
 | Field | Value |
 | --- | --- |
 | Status | Planned |
 | Type | Minor |
-| Scope | Documentation automation and repeatable verification |
+| Scope | Implement missing MCP runtime capabilities and migrate to MCP-first documentation |
 
 Planned scope:
-- Add scriptable internal-link integrity verification for mcp/docs artifacts.
-- Add repeatable CLI contract parity checks between CLI docs and argparse definitions.
-- Standardize evidence collection workflow updates for coverage and compliance reports.
-- Add roadmap/changelog cross-reference requirements for future releases.
+- Implement currently missing commands except autopilot: `remediate`, `validate-fix`, `remediate-fix`.
+- Add operational command controls for validation and review modes.
+- Implement prescreen and diagnostics entry points (`prescreen`, `scan`, `scoring`).
+- Publish MCP-first documentation for framework overview and operational flows.
+- Remove active MCP runtime-doc dependency on UCX_v1 references.
 
 Acceptance targets:
-- Deterministic verification commands documented and executable by maintainers.
-- Compliance report updates use repeatable evidence outputs.
-- No change to runtime behavior.
+- In-scope commands execute with deterministic output contracts and tests.
+- MCP docs are sufficient to operate MCP without consulting UCX_v1 archive docs.
+- Migration plan execution starts from `plans/IPLAN-003_mcp_full_migration_from_ucx_v1.md`.
 
 ---
 
-### v1.2.0 - Operational Readiness and Governance Refinement
+### v1.2.0 - Migration Completion and Cutover
 
 | Field | Value |
 | --- | --- |
 | Status | Planned |
 | Type | Minor |
-| Scope | Release operations and documentation governance consistency |
+| Scope | Complete migration closure and UCX_v1 sunset readiness for MCP |
 
 Planned scope:
-- Refine release-gate checklist for documentation-only versus runtime-impacting changes.
-- Expand operator runbook scenarios for failure-mode and recovery coverage.
-- Add explicit ownership mapping updates for all active artifacts.
-- Align reconciliation and coverage artifacts to a single periodic review cadence.
+- Finalize all in-scope capabilities and flow-level runbook procedures.
+- Publish migration completion report and deprecation/sunset policy execution evidence.
+- Enforce MCP as canonical source for runtime behavior and operator guidance.
+- Restrict UCX_v1 mentions to migration/deprecation policy artifacts only.
 
 Acceptance targets:
-- Release-gate documentation distinguishes mandatory and conditional checks.
-- Runbook includes complete scenario outcome expectations.
-- Ownership map is complete for active MCP docs artifacts.
+- UCX_v1 is no longer required for MCP runtime operation or documentation interpretation.
+- Migration completion report is published with test and documentation parity evidence.
 
 ---
 
@@ -87,6 +87,29 @@ Potential breaking considerations:
 ---
 
 ## Completed Releases
+
+### v1.0.1 (2026-03-25)
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Patch |
+| Summary | Script-based validation command and stage output path normalization |
+
+Delivered:
+- Added `validate-build` CLI command for script-based structural validation against layer schema/template assets.
+- Added validation runner package under `mcp/src/mcp_server/validation/` with JSON/TXT report outputs.
+- Standardized stage output root from `.ucx_create` to `.ucx` and validation stage from `validation` to `validate`.
+- Updated CLI reference and test coverage for new command and stage-path behavior.
+- Defined UCX_v1 compatibility command contracts in MCP CLI and docs:
+	- `review` alias for `review-build`
+	- Reserved `remediate`, `remediate-fix`, and `validate-fix` commands with explicit not-implemented status
+
+References:
+- architecture/MCP_CLI_REFERENCE.md
+- CHANGELOG/CHANGELOG_v1.0.0.md
+
+---
 
 ### v1.0.0 (2026-03-24)
 

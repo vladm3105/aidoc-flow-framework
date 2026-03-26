@@ -5,7 +5,7 @@
 | Status | Active |
 | Version | 1.0 |
 | Date | 2026-03-24 |
-| Scope | Operational procedures and troubleshooting for mcp init, create-build, and review-build |
+| Scope | Operational procedures and troubleshooting for mcp init, create-build, review-build, and validate-build |
 
 ---
 
@@ -21,7 +21,7 @@ Implementation complexity: 3/5.
 
 - Runtime environment can execute mcp CLI command.
 - Project path is available and writable for output operations.
-- For create-build and review-build, project contains project-local docs/UCX assets or operator has permission to run init.
+- For create-build, review-build, and validate-build, project contains project-local docs/UCX assets or operator has permission to run init.
 
 ---
 
@@ -68,6 +68,17 @@ Procedure:
 Success condition:
 - review artifacts exist and inspection is parseable JSON.
 
+### 3.5 Validate-build
+
+Procedure:
+1. Select target document file or document directory.
+2. Run validate-build with project, doc-type, layer, and document arguments.
+3. Confirm validation_report.json and validation_report.txt are written in output path.
+4. Review report errors and warnings, then remediate source document if required.
+
+Success condition:
+- Validation exit code is 0 and report summary indicates passed.
+
 ---
 
 ## 4. Troubleshooting Scenarios
@@ -99,6 +110,16 @@ Resolution:
 1. Run mcp init --project path
 2. Re-run failed command
 
+### Scenario D: validate-build fails on structure checks
+
+Expected behavior:
+- Command returns non-zero exit code and reports missing required fields/tags/sections.
+
+Troubleshooting checks:
+- Validate document has YAML frontmatter with required custom_fields and tags.
+- Validate layer schema file exists under docs/UCX/templates/layers/{layer}.
+- Validate required section headings and structure match schema regex patterns.
+
 ---
 
 ## 5. Failure Modes and Responses
@@ -108,6 +129,7 @@ Resolution:
 | ProjectSkillsNotFound | command error payload includes missing_paths | run init, then retry |
 | Invalid sections-json payload | parser or deserialization error | correct payload and retry |
 | Missing template or persona | loader error via missing path | add required file under docs/UCX and retry |
+| validate-build structural violations | validation report contains missing requirements | remediate document and re-run validate-build |
 | Output write failure | file I/O error | validate output directory permissions |
 
 ---

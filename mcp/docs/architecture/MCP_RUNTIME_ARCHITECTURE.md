@@ -5,7 +5,7 @@
 | Status | Active |
 | Version | 1.0 |
 | Date | 2026-03-24 |
-| Scope | Implemented runtime architecture for init, create-build, and review-build operations |
+| Scope | Implemented runtime architecture for init, create-build, review-build, and validate-build operations |
 
 ---
 
@@ -22,6 +22,7 @@ Implementation complexity: 4/5.
 In scope:
 - CLI command entrypoint behavior
 - Prompt assembly pipeline for creation and review
+- Script-based structural validation pipeline for document checks
 - Project UCX loading behavior
 - Output artifact generation behavior
 
@@ -38,6 +39,7 @@ Out of scope:
 | CLI entrypoint | mcp/src/mcp_server/cli/main.py | Parse command arguments and dispatch command handlers |
 | Prompt assembly | mcp/src/mcp_server/prompts/context_builder.py | Build prompt bundles, metadata sidecars, and context contracts |
 | Review and creation runner | mcp/src/mcp_server/review/runner.py | Execute assembly and optionally write prompt, sidecar, and inspection artifacts |
+| Validation runner | mcp/src/mcp_server/validation/runner.py | Execute schema-guided structural validation and write JSON/TXT validation reports |
 | Project UCX loader | mcp/src/mcp_server/skills/project_ucx_loader.py | Resolve project-local personas/templates/layer assets and enforce missing-path errors |
 | UCX scaffold | mcp/src/mcp_server/skills/scaffold.py | Initialize project-local docs/UCX file structure |
 
@@ -72,6 +74,15 @@ Implemented behavior note:
 3. Runner invokes assemble_project_review_prompt.
 4. Prompt bundle is validated and inspection output generated.
 5. If output directory provided, review artifacts are written.
+
+### 4.4 validate-build flow
+
+1. CLI parses validate-build arguments.
+2. Runtime resolves document file or document directory input.
+3. Validation runner loads project layer schema/template assets from docs/UCX/templates/layers/{layer}.
+4. Validation checks execute for required frontmatter custom fields, required tags, and required section regex patterns.
+5. Validation runner emits validation_report.json and validation_report.txt when output path is configured.
+6. CLI returns exit code 0 for pass and 1 for fail.
 
 ---
 
@@ -117,4 +128,6 @@ Failure condition:
 | Missing UCX directory set | project loader validation | raise ProjectSkillsNotFound |
 | Invalid sections-json payload shape | CLI deserialization stage | command failure with parse error |
 | Prompt bundle contract invalid | assembly validation stage | raise ContractValidationError |
+| Missing or invalid YAML frontmatter in target document | validation runner stage | mark validation as failed and report error |
+| Required schema-driven fields/tags/sections not satisfied | validation runner stage | mark validation as failed and report violations |
 | Output path not writable | artifact write stage | command failure with I/O error |

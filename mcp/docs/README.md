@@ -8,6 +8,8 @@
 | Date | 2026-03-24 |
 | Timezone | America/New_York |
 
+MCP is the canonical SSD Unified Context framework runtime and documentation surface for active development. UCX_v1 archive materials are historical references only and are not authoritative for MCP runtime behavior.
+
 ---
 
 ## 1. Layer Map
@@ -54,6 +56,7 @@ Use this precedence for conflict resolution:
 - [SPEC-005 MCP Source Input and Ingestion Contracts](specs/SPEC-005_mcp_source_input_ingestion_contracts.md)
 - [SPEC-006 MCP Creation Flow Operational Contracts](specs/SPEC-006_mcp_creation_flow_operational_contracts.md)
 - [SPEC-007 MCP Review and Remediation Operational Contracts](specs/SPEC-007_mcp_review_remediation_operational_contracts.md)
+- [SPEC-008 MCP Output Schema Contracts](specs/SPEC-008_mcp_output_schema_contracts.md)
 
 ## 5. Policies
 
@@ -66,6 +69,7 @@ Use this precedence for conflict resolution:
 
 - [IPLAN-001 MCP Server Implementation from Canonical Specs](plans/IPLAN-001_mcp_server_implementation_from_canonical_specs.md)
 - [IPLAN-002 MCP Docs Full Layer Coverage Plan](plans/IPLAN-002_mcp_docs_full_layer_coverage.md)
+- [IPLAN-003 MCP Full Migration from UCX_v1 (without autopilot)](plans/IPLAN-003_mcp_full_migration_from_ucx_v1.md)
 - [Coverage Matrix](plans/DOC-COVERAGE-MATRIX-001_mcp_layers.md)
 - [Reconciliation Log](plans/DOC-RECONCILIATION-LOG-001.md)
 - [Compliance Report 001](plans/COMPLIANCE-REPORT-001_mcp_canonical_contracts.md)
