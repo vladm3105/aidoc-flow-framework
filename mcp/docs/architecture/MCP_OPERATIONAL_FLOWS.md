@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.2 |
+| Version | 1.3 |
 | Date | 2026-03-27 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
@@ -14,6 +14,7 @@
 - project initialization flow: `init` → `create-build`
 - document lifecycle flow (6 stages): `create` → `validate` → `validate-fix` → `review` → `remediate` → `remediate-fix`
 - review prompt flow: `review-build` and `review`
+- readiness and lineage flow: `preflight`, `consistency`
 - diagnostics flow: `prescreen`, `scan`, `scoring`
 
 ---
@@ -231,6 +232,20 @@ When `--document` points to a folder, MCP applies the following resolution rules
 
 ## 5. Diagnostics Flow
 
+### 5.1 Readiness and lineage checks
+
+1. Execute `preflight` before create, review, or remediation stages when environment or provider readiness must be verified.
+2. Inspect `probe_status`, `probe_fallback_used`, and `probe_fallback_reason` when a probe payload is present.
+3. Execute `consistency` against a file or folder to validate artifact lineage without re-running full validation.
+4. Treat `preflight` blocked output and `consistency` failed output as CI-gating conditions.
+
+Outputs:
+
+- preflight report: `preflight_report.json`, `preflight_report.txt`
+- consistency report: `consistency_report.json`, `consistency_report.txt`
+
+### 5.2 Prescreen, scan, and scoring
+
 1. Execute `prescreen` to identify high-priority candidate files.
 2. Execute `scan` on JSON report files to extract finding-category counts.
 3. Execute `scoring` commands for numeric quality scoring and comparisons.
@@ -263,6 +278,8 @@ Review controls:
 | Command Group | Pass | Fail |
 | --- | --- | --- |
 | validate | 0 | 1 |
+| consistency | 0 | 1 for blocking lineage failures, 2 for runtime errors |
+| preflight | 0 for ready or degraded | 1 for blocked, 2 for runtime errors |
 | scoring validate | 0 | 1 |
 | other implemented commands | 0 | 2 only for CLI usage/argument failures |
 

@@ -192,6 +192,8 @@ Rules:
 - Finding and action IDs are deterministic hashes over normalized identity fields.
 - Collision strategy increases hash length before fallback suffixing.
 - Legacy sequential IDs remain parseable through compatibility validator.
+- String identity fields are whitespace-normalized and case-folded before hashing.
+- Remediation outputs that emit findings must emit both `finding_id` and `action_id` for each finding entry.
 
 Required legacy finding-ID compatibility families:
 - persona-prefixed sequential IDs: `{PERSONA}-P{0|1|2|3}-{NNN}`
@@ -205,6 +207,7 @@ Required formats:
 Failure modes:
 - Non-deterministic ID generation for identical input.
 - Collision not resolved by adaptive length policy.
+- Remediation findings emitted without machine-parseable hash identities.
 
 ---
 

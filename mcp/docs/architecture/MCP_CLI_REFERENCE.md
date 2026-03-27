@@ -23,6 +23,8 @@
 | remediate | --project --doc-type --layer --document | --review-report --out | remediation report |
 | remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), plus apply report |
 | prescreen | --document | --out | prescreen candidate report |
+| consistency | --target | --format {text,json} --out | artifact lineage and stage-consistency report |
+| preflight | --project | --context {create,review,remediate,any} --document --format {text,json} --out | runtime and environment readiness report |
 | scan | --report-file | --out | category-count scan report |
 | scoring show | --report-file | none | score payload |
 | scoring validate | --report-file --threshold | none | threshold validation payload |
@@ -36,7 +38,10 @@
 | --- | --- |
 | Command success | 0 |
 | Validation failure (`validate`) | 1 |
+| Blocking consistency failures (`consistency`) | 1 |
+| Blocked preflight (`preflight`) | 1 |
 | Score threshold failure (`scoring validate`) | 1 |
+| Command runtime error (`consistency`, `preflight`) | 2 |
 | CLI usage or parser failure | 2 |
 
 ---
@@ -192,6 +197,8 @@ Other commands:
 
 ```bash
 mcp prescreen --document /path/to/docs/01_BRD
+mcp consistency --target /path/to/docs/01_BRD/BRD-01_platform/
+mcp preflight --project /path/to/project --context review --format json
 mcp scan --report-file /path/to/validation_report.json
 mcp scoring show --report-file /path/to/validation_report.json
 mcp scoring validate --report-file /path/to/validation_report.json --threshold 90

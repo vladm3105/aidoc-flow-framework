@@ -4,8 +4,8 @@
 | --- | --- |
 | Canonical ID | SPEC-004 |
 | Status | Active |
-| Version | 1.2 |
-| Date | 2026-03-24 |
+| Version | 1.3 |
+| Date | 2026-03-27 |
 | Source Basis | Canonical normative specification |
 | Scope | Report naming, report schema, derived artifact naming, lineage metadata, artifact discovery, pre-commit separation |
 
@@ -137,10 +137,17 @@ Additional required metrics by report type:
 - Review: `weighted_score`, `finding_counts`, `personas_applied`
 - Remediation: `findings_addressed`, `changes_applied`, `remaining_findings`
 
+Conditional lifecycle fields:
+- Source-protected fix flows may emit `source_protection_telemetry`.
+- `source_protection_telemetry` is required only when one or more source files were actively monitored for mutation during `validate-fix` or `remediate-fix`.
+- When source monitoring is not applicable, `source_protection_telemetry` must be omitted rather than emitted as an empty object.
+
 Rules:
 - Report schema must be machine-parseable.
 - Review and remediation reports must identify the exact source artifact filename consumed.
 - Remediation reports must reference the upstream review report when one was consumed.
+- Conditional telemetry omission is schema-valid when source monitoring did not occur.
+- Remediation findings must include `finding_id`, `action_id`, and `priority` fields when findings are present.
 
 Timestamp normalization rules:
 - `generated_at` must be RFC 3339 / ISO 8601 with explicit timezone offset.
@@ -176,6 +183,18 @@ Fix-queue naming normalization:
 Rules:
 - Fix-queue findings must remain machine-parseable and stable across re-runs with identical inputs.
 - Missing required fix-queue fields are schema-invalid for combined audit handoff.
+
+### 5.2 Remediation Finding Identity Contract
+
+Required per-finding fields for remediation reports:
+- finding_id
+- action_id
+- priority
+
+Rules:
+- `finding_id` must use `P{0|1|2|3}-{hex}` format.
+- `action_id` must use `ACT-{hex}` format.
+- Legacy sequential finding IDs remain accepted only through compatibility validation layers; canonical remediation outputs must emit hash-based IDs.
 
 ---
 

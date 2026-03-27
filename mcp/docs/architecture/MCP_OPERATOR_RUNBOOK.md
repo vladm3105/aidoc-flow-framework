@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.1 |
-| Date | 2026-03-26 |
+| Version | 1.2 |
+| Date | 2026-03-27 |
 | Scope | Operational procedures and troubleshooting for implemented MCP command surface |
 
 ---
@@ -109,12 +109,38 @@ Procedure:
 2. Confirm remediation report artifacts are produced.
 3. Run remediate-fix with remediation report input.
 4. Confirm `_remediated` artifact and apply report artifacts are produced.
+5. For remediation reports with findings, confirm each finding includes stable `finding_id` and `action_id` fields.
 
 Success condition:
 
 - Remediation planning and apply phases complete with deterministic artifacts.
 
-### 3.8 Diagnostics commands
+### 3.8 Consistency checks
+
+Procedure:
+
+1. Run consistency against a source file or document folder.
+2. Review the text or JSON report for missing source, validation, or remediation prerequisites.
+3. Correct lineage gaps before running downstream lifecycle stages.
+
+Success condition:
+
+- Report status is pass and command returns exit code 0.
+
+### 3.9 Preflight readiness
+
+Procedure:
+
+1. Run preflight with project path and an appropriate context value.
+2. If validating a specific target, include the document path.
+3. If a probe payload file exists under tmp, review fallback parsing fields in the report.
+4. Do not proceed to review or remediation when preflight returns blocked.
+
+Success condition:
+
+- Report status is ready or degraded, and blocking errors are absent.
+
+### 3.10 Diagnostics commands
 
 Procedure:
 
@@ -175,6 +201,41 @@ Troubleshooting checks:
 - Validate layer schema file exists under docs/UCX/templates/layers/{layer}.
 - Validate required section headings and structure match schema regex patterns.
 
+### Scenario E: preflight returns blocked
+
+Expected behavior:
+
+- Command returns exit code 1 and report lists blocking errors.
+
+Troubleshooting checks:
+
+- Confirm docs/UCX scaffold exists under the selected project root.
+- Confirm required review or creation template folders exist for the selected context.
+- Confirm optional probe payload is not signaling blocked provider state.
+
+### Scenario F: source protection telemetry absent
+
+Expected behavior:
+
+- validate-fix or remediate-fix may omit `source_protection_telemetry` when no canonical source files were monitored, such as section-folder copy flows.
+
+### Scenario G: remediation finding IDs appear to change between reruns
+
+Expected behavior:
+
+- Identical remediation inputs emit the same `finding_id` and `action_id` values across reruns.
+
+Troubleshooting checks:
+
+- Confirm the source content, category, severity, and recommended action are unchanged.
+- Confirm downstream consumers accept legacy sequential finding IDs only through compatibility validation and do not rewrite canonical hash IDs.
+
+Troubleshooting checks:
+
+- Confirm command operated on a folder fallback path rather than a single canonical source file.
+- Confirm source protection summary still reports protected mode.
+- Treat telemetry omission as valid when source monitoring was not applicable.
+
 ---
 
 ## 5. Failure Modes and Responses
@@ -182,6 +243,8 @@ Troubleshooting checks:
 | Failure Mode | Detection | Response |
 | --- | --- | --- |
 | ProjectSkillsNotFound | command error payload includes missing_paths | run init, then retry |
+| blocked preflight | preflight report status is blocked | repair missing project/runtime prerequisites, then rerun |
+| consistency lineage failure | consistency report contains errors | restore missing prerequisite artifact or rerun upstream stage |
 | Invalid sections-json payload | parser or deserialization error | correct payload and retry |
 | Missing template or persona | loader error via missing path | add required file under docs/UCX and retry |
 | validate structural violations | validation report contains missing requirements | remediate document and re-run validate |

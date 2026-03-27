@@ -161,6 +161,47 @@ def _build_text_report(report: dict[str, object]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str], passes: list[str]) -> None:
+    normalized = doc_type.strip().lower()
+
+    if normalized == "ears":
+        # EARS parity requires a trigger clause and explicit system actor semantics.
+        has_trigger = re.search(r"\b(WHEN|IF|WHILE)\b", content, re.IGNORECASE)
+        has_actor_clause = re.search(r"\bTHE\s+SYSTEM\s+SHALL\b", content, re.IGNORECASE)
+        if not has_trigger:
+            errors.append("Missing EARS trigger clause: <WHEN|IF|WHILE>")
+            return
+        if not has_actor_clause:
+            errors.append("Missing EARS actor clause: THE SYSTEM SHALL")
+            return
+        passes.append("ears syntax present: trigger + THE SYSTEM SHALL")
+        return
+
+    if normalized == "spec":
+        # SPEC parity requires structured implementation content.
+        if re.search(r"```yaml[\s\S]*?```", content, re.IGNORECASE):
+            passes.append("spec structure present: fenced yaml block")
+        else:
+            errors.append("Missing SPEC structure: fenced yaml block (```yaml ... ```)")
+        return
+
+    if normalized == "tasks":
+        # TASKS parity requires executable checklist items.
+        if re.search(r"^\s*-\s*\[[ xX]\]\s+", content, re.MULTILINE):
+            passes.append("tasks structure present: markdown checkbox list")
+        else:
+            errors.append("Missing TASKS structure: markdown checkbox list item")
+        return
+
+    if normalized == "ctr":
+        # CTR parity requires explicit API or contract structure token.
+        if re.search(r"\b(openapi\s*:|endpoint\b|contract\b)", content, re.IGNORECASE):
+            passes.append("ctr structure present: contract token")
+        else:
+            errors.append("Missing CTR structure: openapi/endpoint/contract token")
+        return
+
+
 def run_project_validation_build(
     *,
     project_root: Path,
@@ -228,6 +269,13 @@ def run_project_validation_build(
                 errors.append(f"Missing required section: {section_name}")
         except re.error:
             warnings.append(f"Skipped invalid schema regex for section: {section_name}")
+
+    _run_doc_type_parity_checks(
+        doc_type=doc_type,
+        content=combined_content,
+        errors=errors,
+        passes=passes,
+    )
 
     is_valid = len(errors) == 0
     report: dict[str, object] = {

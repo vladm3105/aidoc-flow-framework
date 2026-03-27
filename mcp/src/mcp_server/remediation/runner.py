@@ -1,14 +1,78 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import json
 from pathlib import Path
 import re
 import shutil
 from typing import Any
 
+from mcp_server.reporting import build_action_id, build_finding_id
+
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
+
+
+def _priority_from_severity(severity: str) -> str:
+    if severity == "tier1":
+        return "P1"
+    if severity == "tier2":
+        return "P2"
+    return "P3"
+
+
+def _build_finding_entry(
+    *,
+    file_path: str,
+    doc_type: str,
+    layer: str,
+    category: str,
+    severity: str,
+    message: str,
+    recommended_action: str,
+    finding_ids: set[str],
+    action_ids: set[str],
+) -> dict[str, Any]:
+    priority = _priority_from_severity(severity)
+    finding_id = build_finding_id(
+        priority=priority,
+        identity_fields={
+            "file": file_path,
+            "doc_type": doc_type,
+            "layer": layer,
+            "category": category,
+            "severity": severity,
+            "message": message,
+            "recommended_action": recommended_action,
+        },
+        existing_ids=finding_ids,
+    )
+    finding_ids.add(finding_id)
+
+    action_id = build_action_id(
+        identity_fields={
+            "file": file_path,
+            "doc_type": doc_type,
+            "layer": layer,
+            "category": category,
+            "recommended_action": recommended_action,
+            "priority": priority,
+        },
+        existing_ids=action_ids,
+    )
+    action_ids.add(action_id)
+
+    return {
+        "finding_id": finding_id,
+        "action_id": action_id,
+        "priority": priority,
+        "file": file_path,
+        "category": category,
+        "severity": severity,
+        "message": message,
+        "recommended_action": recommended_action,
+    }
 
 
 @dataclass(frozen=True)
@@ -117,39 +181,53 @@ def run_remediation_build(
 ) -> RemediationRunResult:
     files = _collect_markdown_files(document_path)
     findings: list[dict[str, Any]] = []
+    finding_ids: set[str] = set()
+    action_ids: set[str] = set()
 
     for file_path in files:
         content = file_path.read_text(encoding="utf-8")
         if not _has_frontmatter(content):
             findings.append(
-                {
-                    "file": str(file_path),
-                    "category": "frontmatter",
-                    "severity": "tier1",
-                    "message": "Missing YAML frontmatter",
-                    "recommended_action": "add_frontmatter",
-                }
+                _build_finding_entry(
+                    file_path=str(file_path),
+                    doc_type=doc_type,
+                    layer=layer,
+                    category="frontmatter",
+                    severity="tier1",
+                    message="Missing YAML frontmatter",
+                    recommended_action="add_frontmatter",
+                    finding_ids=finding_ids,
+                    action_ids=action_ids,
+                )
             )
         if PLACEHOLDER_PATTERN.search(content):
             findings.append(
-                {
-                    "file": str(file_path),
-                    "category": "placeholder",
-                    "severity": "tier2",
-                    "message": "Contains placeholder tokens",
-                    "recommended_action": "replace_placeholders",
-                }
+                _build_finding_entry(
+                    file_path=str(file_path),
+                    doc_type=doc_type,
+                    layer=layer,
+                    category="placeholder",
+                    severity="tier2",
+                    message="Contains placeholder tokens",
+                    recommended_action="replace_placeholders",
+                    finding_ids=finding_ids,
+                    action_ids=action_ids,
+                )
             )
 
     if review_report is not None and review_report.exists():
         findings.append(
-            {
-                "file": str(review_report),
-                "category": "review_report",
-                "severity": "tier2",
-                "message": "Review report linked for downstream manual remediation",
-                "recommended_action": "apply_review_findings",
-            }
+            _build_finding_entry(
+                file_path=str(review_report),
+                doc_type=doc_type,
+                layer=layer,
+                category="review_report",
+                severity="tier2",
+                message="Review report linked for downstream manual remediation",
+                recommended_action="apply_review_findings",
+                finding_ids=finding_ids,
+                action_ids=action_ids,
+            )
         )
 
     report: dict[str, object] = {
@@ -225,6 +303,47 @@ def _copy_tree_with_suffix(src_dir: Path, suffix: str, output_dir: Path) -> list
     return copied
 
 
+def _hash_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _guard_source_integrity(source_paths: list[Path], operation: str, apply_fn: Any) -> tuple[list[Path], dict[str, object]]:
+    snapshots: dict[Path, str] = {}
+    for path in source_paths:
+        if path.exists() and path.is_file():
+            snapshots[path] = path.read_text(encoding="utf-8")
+
+    derived_paths = apply_fn()
+
+    restored_files: list[str] = []
+    integrity_events: list[dict[str, str]] = []
+    for path, original in snapshots.items():
+        current = path.read_text(encoding="utf-8") if path.exists() else ""
+        if current != original:
+            path.write_text(original, encoding="utf-8")
+            restored_files.append(str(path))
+            integrity_events.append(
+                {
+                    "path": str(path),
+                    "before_hash": _hash_text(original),
+                    "after_hash": _hash_text(current),
+                }
+            )
+
+    telemetry: dict[str, object] = {}
+    if snapshots:
+        telemetry = {
+            "operation": operation,
+            "source_protection_enabled": True,
+            "source_files_monitored": [str(path) for path in snapshots],
+            "restoration_events": len(restored_files),
+            "restored_files": restored_files,
+            "integrity_events": integrity_events,
+            "guard_status": "restored" if restored_files else "clean",
+        }
+    return derived_paths, telemetry
+
+
 def _resolve_source_document_path(document_path: Path) -> Path:
     if document_path.is_file():
         return document_path
@@ -278,10 +397,14 @@ def run_validate_fix_build(
     if output_dir is None:
         output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
 
-    if effective_document_path.is_file():
-        derived_paths = [_copy_with_suffix(effective_document_path, "validation", output_dir)]
-    else:
-        derived_paths = _copy_tree_with_suffix(effective_document_path, "validation", output_dir)
+    source_paths = [effective_document_path] if effective_document_path.is_file() else []
+
+    def _apply_copy() -> list[Path]:
+        if effective_document_path.is_file():
+            return [_copy_with_suffix(effective_document_path, "validation", output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, "validation", output_dir)
+
+    derived_paths, telemetry = _guard_source_integrity(source_paths, "validate-fix", _apply_copy)
 
     report: dict[str, object] = {
         "project_root": str(project_root),
@@ -296,6 +419,8 @@ def run_validate_fix_build(
             "applied_changes": "none (copy-only deterministic baseline)",
         },
     }
+    if telemetry:
+        report["source_protection_telemetry"] = telemetry
 
     report_json = json.dumps(report, sort_keys=True)
     report_text = _as_text("MCP Validate-Fix Report", report, "derived_paths")
@@ -333,10 +458,19 @@ def run_remediate_fix_build(
     if output_dir is None:
         output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
 
+    source_paths: list[Path] = []
     if effective_document_path.is_file():
-        derived_paths = [_copy_with_canonical_suffix(effective_document_path, "remediated", output_dir)]
-    else:
-        derived_paths = _copy_tree_with_suffix(effective_document_path, "remediated", output_dir)
+        source_paths.append(effective_document_path)
+        base_source = effective_document_path.parent / f"{_canonical_stem(effective_document_path)}.md"
+        if base_source.exists() and base_source != effective_document_path:
+            source_paths.append(base_source)
+
+    def _apply_copy() -> list[Path]:
+        if effective_document_path.is_file():
+            return [_copy_with_canonical_suffix(effective_document_path, "remediated", output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, "remediated", output_dir)
+
+    derived_paths, telemetry = _guard_source_integrity(source_paths, "remediate-fix", _apply_copy)
 
     report: dict[str, object] = {
         "project_root": str(project_root),
@@ -351,6 +485,8 @@ def run_remediate_fix_build(
             "applied_changes": "none (copy-only deterministic baseline)",
         },
     }
+    if telemetry:
+        report["source_protection_telemetry"] = telemetry
 
     report_json = json.dumps(report, sort_keys=True)
     report_text = _as_text("MCP Remediate-Fix Report", report, "derived_paths")

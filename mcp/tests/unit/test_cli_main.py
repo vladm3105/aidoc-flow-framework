@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
+from importlib import import_module
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -249,3 +250,84 @@ custom_fields:
     assert exit_code == 1
     assert (default_out / "validation_report.json").exists()
     assert (default_out / "validation_report.txt").exists()
+
+
+def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> None:
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    source = doc_dir / "BRD-01_platform_architecture.md"
+    source.write_text("# source\n", encoding="utf-8")
+    (doc_dir / "BRD-01_validation_report.md").write_text("# validation report\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_validation.md").write_text("# validation copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_remediated.md").write_text("# remediated copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01_validation_remediation_report_v001.md").write_text("# remediation report\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/consistency"
+    exit_code = main(
+        [
+            "consistency",
+            "--target",
+            str(doc_dir),
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (out_dir / "consistency_report.json").exists()
+    assert (out_dir / "consistency_report.txt").exists()
+
+
+def test_main_consistency_fails_without_source_artifact(tmp_path: Path) -> None:
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    exit_code = main(["consistency", "--target", str(doc_dir), "--format", "json"])
+    assert exit_code == 1
+
+
+def test_main_preflight_ready_for_initialized_project(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    out_dir = tmp_path / "tmp/preflight"
+    exit_code = main(
+        [
+            "preflight",
+            "--project",
+            str(tmp_path),
+            "--context",
+            "any",
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (out_dir / "preflight_report.json").exists()
+    assert (out_dir / "preflight_report.txt").exists()
+
+
+def test_main_preflight_blocked_for_missing_ucx_root(tmp_path: Path) -> None:
+    exit_code = main(["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"])
+    assert exit_code == 1
+
+
+def test_main_consistency_runtime_error_returns_2(tmp_path: Path, monkeypatch) -> None:
+    def _boom(*, target_path, output_dir=None):  # type: ignore[no-untyped-def]
+        raise RuntimeError("synthetic consistency failure")
+
+    cli_main_module = import_module("mcp_server.cli.main")
+    monkeypatch.setattr(cli_main_module, "run_consistency_check", _boom)
+    exit_code = main(["consistency", "--target", str(tmp_path), "--format", "json"])
+    assert exit_code == 2
+
+
+def test_main_preflight_runtime_error_returns_2(tmp_path: Path, monkeypatch) -> None:
+    def _boom(*, project_root, context, document_path=None, output_dir=None):  # type: ignore[no-untyped-def]
+        raise RuntimeError("synthetic preflight failure")
+
+    cli_main_module = import_module("mcp_server.cli.main")
+    monkeypatch.setattr(cli_main_module, "run_preflight", _boom)
+    exit_code = main(["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"])
+    assert exit_code == 2

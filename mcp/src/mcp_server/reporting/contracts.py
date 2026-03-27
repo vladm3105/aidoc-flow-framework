@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -21,6 +23,11 @@ DEFAULT_LEGACY_REPORT_POLICY = "ignore"
 REQUIRED_FIX_BUCKETS = ("auto_fixable", "manual_required", "blocked")
 REQUIRED_FIX_FIELDS = ("source", "code", "severity", "file", "section", "action_hint", "confidence")
 ALLOWED_CONFIDENCE = {"high", "medium", "manual-required"}
+FINDING_PRIORITY_CODES = ("P0", "P1", "P2", "P3")
+HASH_FINDING_ID_PATTERN = re.compile(r"^(P[0-3])-([0-9a-f]{8,64})$")
+HASH_ACTION_ID_PATTERN = re.compile(r"^ACT-([0-9a-f]{8,64})$")
+LEGACY_PERSONA_FINDING_ID_PATTERN = re.compile(r"^([A-Z]+)-P([0-3])-(\d{3})$")
+LEGACY_REMEDIATION_FINDING_ID_PATTERN = re.compile(r"^(REM)-P([0-3])-(\d{3})$")
 
 
 @dataclass(frozen=True)
@@ -335,6 +342,120 @@ def map_lifecycle_to_audit_wrapper(
         "source_processing_stage": source_stage,
         "source_artifact_file": source_artifact_file,
     }
+
+
+def _normalize_identity_value(value: object) -> object:
+    if isinstance(value, str):
+        return " ".join(value.split()).casefold()
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): _normalize_identity_value(val) for key, val in sorted(value.items(), key=lambda item: str(item[0]))}
+    if isinstance(value, (list, tuple)):
+        return [_normalize_identity_value(item) for item in value]
+    return value
+
+
+def _compute_identity_digest(*, namespace: str, identity_fields: dict[str, object]) -> str:
+    normalized = {
+        "namespace": namespace,
+        "identity_fields": {key: _normalize_identity_value(value) for key, value in sorted(identity_fields.items())},
+    }
+    serialized = json.dumps(normalized, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+
+def _allocate_hash_identity(*, prefix: str, digest: str, existing_ids: set[str] | None, initial_hex_length: int) -> str:
+    if initial_hex_length < 8:
+        raise ValueError("initial_hex_length must be at least 8")
+
+    reserved = existing_ids or set()
+    for length in range(initial_hex_length, len(digest) + 1):
+        candidate = f"{prefix}-{digest[:length]}"
+        if candidate not in reserved:
+            return candidate
+
+    raise ValueError(f"Unable to allocate unique {prefix} identity from digest")
+
+
+def build_finding_id(
+    *,
+    priority: str,
+    identity_fields: dict[str, object],
+    existing_ids: set[str] | None = None,
+    initial_hex_length: int = 12,
+) -> str:
+    if priority not in FINDING_PRIORITY_CODES:
+        supported = ", ".join(FINDING_PRIORITY_CODES)
+        raise ValueError(f"Unsupported finding priority: {priority!r}. Supported values: {supported}")
+
+    digest = _compute_identity_digest(namespace="finding", identity_fields={"priority": priority, **identity_fields})
+    return _allocate_hash_identity(
+        prefix=priority,
+        digest=digest,
+        existing_ids=existing_ids,
+        initial_hex_length=initial_hex_length,
+    )
+
+
+def build_action_id(
+    *,
+    identity_fields: dict[str, object],
+    existing_ids: set[str] | None = None,
+    initial_hex_length: int = 12,
+) -> str:
+    digest = _compute_identity_digest(namespace="action", identity_fields=identity_fields)
+    return _allocate_hash_identity(
+        prefix="ACT",
+        digest=digest,
+        existing_ids=existing_ids,
+        initial_hex_length=initial_hex_length,
+    )
+
+
+def parse_compatible_finding_id(value: str) -> dict[str, object]:
+    match = HASH_FINDING_ID_PATTERN.match(value)
+    if match:
+        return {
+            "family": "hash",
+            "priority": match.group(1),
+            "hex": match.group(2),
+            "legacy": False,
+        }
+
+    match = LEGACY_REMEDIATION_FINDING_ID_PATTERN.match(value)
+    if match:
+        return {
+            "family": "legacy-remediation",
+            "persona": match.group(1),
+            "priority": f"P{match.group(2)}",
+            "sequence": int(match.group(3)),
+            "legacy": True,
+        }
+
+    match = LEGACY_PERSONA_FINDING_ID_PATTERN.match(value)
+    if match:
+        return {
+            "family": "legacy-persona",
+            "persona": match.group(1),
+            "priority": f"P{match.group(2)}",
+            "sequence": int(match.group(3)),
+            "legacy": True,
+        }
+
+    raise ValueError(f"Unsupported finding ID format: {value!r}")
+
+
+def validate_compatible_finding_id(value: str) -> bool:
+    try:
+        parse_compatible_finding_id(value)
+    except ValueError:
+        return False
+    return True
+
+
+def validate_action_id(value: str) -> bool:
+    return HASH_ACTION_ID_PATTERN.match(value) is not None
 
 
 def validate_generated_at_has_offset(value: str) -> bool:

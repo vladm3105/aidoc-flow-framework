@@ -84,7 +84,7 @@ References:
 
 | Field | Value |
 | --- | --- |
-| Status | Planned |
+| Status | Implemented |
 | Type | Minor |
 | Scope | Refine diagnostics coverage, operational controls, and release governance evidence |
 
@@ -93,6 +93,18 @@ Planned scope:
 - Expand diagnostics and command-control coverage where needed.
 - Continue aligning operator and runtime documentation to implemented contracts.
 - Strengthen release-history and governance evidence artifacts for future MCP releases.
+
+Implemented scope to date:
+
+- Implement IPLAN-005 baseline command contracts for:
+  - `consistency` (lightweight artifact-lineage checks)
+  - `preflight` (runtime and environment readiness checks)
+- Add preflight fallback parsing and runtime-error exit-contract coverage.
+- Complete remediation source-restoration telemetry hardening with present and omitted branch coverage.
+- Expand EARS and SPEC TASKS CTR validation parity-depth checks, including negative-path fixtures and EARS folder validation coverage.
+- Add deterministic hash-based `finding_id` and `action_id` emission for remediation findings with legacy finding-ID compatibility validation.
+- Update runbook, lifecycle flow documentation, and remediation/reporting specs for G3 diagnostics contracts.
+- Publish final IPLAN-005 closure tracking and evidence artifacts.
 
 ---
 

@@ -34,6 +34,29 @@ structure:
     )
 
 
+def _write_ears_schema_assets(project_root: Path) -> None:
+    layer_root = project_root / "docs/UCX/templates/layers/03_EARS"
+    layer_root.mkdir(parents=True, exist_ok=True)
+    (layer_root / "EARS_MVP_SCHEMA.yaml").write_text(
+        """
+metadata:
+  required_custom_fields:
+    document_type:
+      required: true
+    status:
+      required: true
+  required_tags:
+    - ears
+structure:
+  required_sections:
+    - name: Title
+      pattern: '^# '
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def test_validate_to_fix_to_remediate_flow(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
     _write_schema_assets(tmp_path)
@@ -152,3 +175,53 @@ TODO refine content
     )
 
     assert (remediate_out / "BRD-01_sample_remediated.md").exists()
+
+
+def test_validate_ears_directory_flow_passes_for_section_set(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    _write_ears_schema_assets(tmp_path)
+
+    document_dir = tmp_path / "docs/03_EARS/EARS-01_sectioned"
+    document_dir.mkdir(parents=True, exist_ok=True)
+    (document_dir / "EARS-01.1_requirement.md").write_text(
+        """---
+title: Sample
+tags: [ears]
+custom_fields:
+  document_type: ears
+  status: draft
+---
+
+# EARS-01: Sample
+
+WHEN request is accepted THE SYSTEM SHALL persist the record.
+""",
+        encoding="utf-8",
+    )
+
+    validate_out = tmp_path / "tmp/ears-validate"
+    assert (
+        main(
+            [
+                "validate",
+                "--project",
+                str(tmp_path),
+                "--doc-type",
+                "ears",
+                "--layer",
+                "03_EARS",
+                "--document",
+                str(document_dir),
+                "--format",
+                "json",
+                "--out",
+                str(validate_out),
+            ]
+        )
+        == 0
+    )
+
+    validation_report = validate_out / "validation_report.json"
+    payload = json.loads(validation_report.read_text(encoding="utf-8"))
+    summary = payload.get("summary", {})
+    assert summary.get("is_valid") is True

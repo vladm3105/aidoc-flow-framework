@@ -183,3 +183,188 @@ This release establishes a complete L0-L9 MCP documentation set under mcp/docs a
 ### Validation Evidence Snapshot (2026-03-27)
 
 - `pytest mcp/tests/ -q`: PASS (`107 passed, 2 warnings`)
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (IPLAN-005 implementation kickoff)
+**Status**: In Progress
+
+### Runtime and CLI Updates
+
+- Added `consistency` command for lightweight artifact lineage and stage-chain checks:
+  - `mcp/src/mcp_server/consistency/runner.py`
+  - `mcp/src/mcp_server/consistency/__init__.py`
+  - `mcp/src/mcp_server/cli/main.py`
+- Added `preflight` command for runtime and environment readiness checks:
+  - `mcp/src/mcp_server/preflight/runner.py`
+  - `mcp/src/mcp_server/preflight/__init__.py`
+  - `mcp/src/mcp_server/cli/main.py`
+- Applied frozen exit-code contract for both commands:
+  - `0` success
+  - `1` blocking failures
+  - `2` runtime errors
+
+### Test Coverage Updates
+
+- Added CLI tests covering success and failure paths:
+  - `mcp/tests/unit/test_cli_main.py`
+
+### Documentation and Plan Tracking Updates
+
+- Updated CLI command reference and exit semantics:
+  - `mcp/docs/architecture/MCP_CLI_REFERENCE.md`
+- Updated roadmap planned scope for v1.3.0:
+  - `mcp/docs/ROADMAP.md`
+- Updated IPLAN-005 phase and matrix tracking artifacts:
+  - `mcp/docs/plans/IPLAN-005_mcp_gap_closure_from_ucx_roadmap.md`
+  - `mcp/docs/plans/CHECKLIST-005-G1_baseline_and_contracts.md`
+  - `mcp/docs/plans/CHECKLIST-005-G2_validation_and_consistency.md`
+  - `mcp/docs/plans/CHECKLIST-005-G3_diagnostics_and_safety.md`
+  - `mcp/docs/plans/GAP-CLOSURE-MATRIX-001_mcp_ucx_gap_closure.md`
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/unit/test_cli_main.py -q`: PASS (`11 passed, 2 warnings`)
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (IPLAN-005 diagnostics and parity depth progression)
+**Status**: In Progress
+
+### Runtime and Validation Updates
+
+- Added deterministic fallback parsing for provider probe outputs in preflight diagnostics:
+  - status-token fallback handling
+  - ISO-date fallback extraction for degraded signal recovery
+  - `mcp/src/mcp_server/preflight/runner.py`
+- Added source protection telemetry and restoration guards in remediation fix flows:
+  - integrity hash snapshots
+  - mutation detection and restore telemetry
+  - `mcp/src/mcp_server/remediation/runner.py`
+- Added EARS plus SPEC TASKS CTR parity depth checks in project validation runner:
+  - `mcp/src/mcp_server/validation/runner.py`
+
+### Test Coverage Updates
+
+- Added focused preflight fallback unit coverage:
+  - `mcp/tests/unit/test_preflight_runner.py`
+- Expanded CLI runtime-error contract coverage for new commands:
+  - `mcp/tests/unit/test_cli_main.py`
+- Expanded remediation telemetry and restoration safety tests:
+  - `mcp/tests/unit/test_remediation_runner.py`
+- Added parity-depth validation tests for EARS and SPEC TASKS CTR:
+  - `mcp/tests/unit/test_validation_runner.py`
+
+### Gap Closure Tracking Updates
+
+- GAP-02 status moved to Closed in matrix tracking.
+- GAP-03 status moved to Closed in matrix tracking.
+- GAP-04, GAP-01, and GAP-06 moved to In Progress as implementation depth expanded.
+- Tracking updated in:
+  - `mcp/docs/plans/GAP-CLOSURE-MATRIX-001_mcp_ucx_gap_closure.md`
+  - `mcp/docs/plans/CHECKLIST-005-G2_validation_and_consistency.md`
+  - `mcp/docs/plans/CHECKLIST-005-G3_diagnostics_and_safety.md`
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/unit/test_cli_main.py mcp/tests/unit/test_preflight_runner.py mcp/tests/unit/test_remediation_runner.py mcp/tests/unit/test_validation_runner.py -q`: PASS (`31 passed, 2 warnings`)
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (G3 diagnostics documentation and telemetry schema closure)
+**Status**: Implemented
+
+### Documentation and Spec Updates
+
+- Updated operator procedures and troubleshooting for `consistency`, `preflight`, and telemetry omission behavior:
+  - `mcp/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+- Updated lifecycle flow documentation with readiness/lineage commands and corrected exit semantics:
+  - `mcp/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
+- Updated reporting contract rules for conditional telemetry emission:
+  - `mcp/docs/specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md`
+- Updated remediation/fix-flow contract definitions for telemetry present and omitted branches:
+  - `mcp/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md`
+
+### Tracking Updates
+
+- G3 checklist updated to record completed telemetry branch coverage and documentation closure.
+- GAP-04 moved to Closed in matrix tracking.
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/unit/test_remediation_runner.py mcp/tests/unit/test_validation_runner.py -q`: PASS (`19 passed, 2 warnings`)
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (G2 EARS parity depth progression)
+**Status**: In Progress
+
+### Validation Updates
+
+- Strengthened EARS parity checks to require both a trigger clause and explicit `THE SYSTEM SHALL` actor semantics:
+  - `mcp/src/mcp_server/validation/runner.py`
+- Added folder-path validation coverage for EARS section-set execution:
+  - `mcp/tests/unit/test_validation_runner.py`
+  - `mcp/tests/integration/test_migration_flows.py`
+
+### Test Coverage Updates
+
+- Added EARS negative-path coverage for missing trigger and missing actor-clause cases.
+- Preserved SPEC, TASKS, and CTR negative-path parity fixtures.
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/unit/test_validation_runner.py mcp/tests/integration/test_migration_flows.py -q`: pending in current implementation slice
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (G4 identity delivery and IPLAN-005 closure)
+**Status**: Implemented
+
+### Runtime and Contract Updates
+
+- Added deterministic hash-based identity builders for remediation findings and actions:
+  - `mcp/src/mcp_server/reporting/contracts.py`
+  - `mcp/src/mcp_server/reporting/__init__.py`
+- Remediation reports now emit stable `finding_id`, `action_id`, and `priority` fields for each finding:
+  - `mcp/src/mcp_server/remediation/runner.py`
+- Added compatibility validation for legacy persona-prefixed and remediation-prefixed sequential finding IDs.
+
+### Test Coverage Updates
+
+- Added deterministic ID, compatibility, and collision-length coverage:
+  - `mcp/tests/unit/test_reporting_contracts.py`
+- Added remediation rerun stability coverage for hash-based finding and action IDs:
+  - `mcp/tests/unit/test_remediation_runner.py`
+- Revalidated reporting, remediation, migration, and validation slices together:
+  - `mcp/tests/integration/test_reporting_contracts_integration.py`
+  - `mcp/tests/integration/test_migration_flows.py`
+  - `mcp/tests/unit/test_validation_runner.py`
+
+### Documentation and Closure Updates
+
+- Updated identity and reporting specifications for canonical remediation finding IDs:
+  - `mcp/docs/specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md`
+  - `mcp/docs/specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md`
+- Updated operator runbook with remediation identity verification guidance:
+  - `mcp/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+- Closed G2 and G4 checklists, finalized matrix state, and published final closure report:
+  - `mcp/docs/plans/CHECKLIST-005-G2_validation_and_consistency.md`
+  - `mcp/docs/plans/CHECKLIST-005-G4_identity_and_release.md`
+  - `mcp/docs/plans/GAP-CLOSURE-MATRIX-001_mcp_ucx_gap_closure.md`
+  - `mcp/docs/plans/CLOSURE-REPORT-005_mcp_ucx_gap_closure.md`
+  - `mcp/docs/plans/IPLAN-005_mcp_gap_closure_from_ucx_roadmap.md`
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/unit/test_reporting_contracts.py mcp/tests/unit/test_remediation_runner.py mcp/tests/integration/test_reporting_contracts_integration.py mcp/tests/integration/test_migration_flows.py mcp/tests/unit/test_validation_runner.py -q`: PASS (`40 passed, 2 warnings`)

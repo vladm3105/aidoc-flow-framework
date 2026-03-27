@@ -235,6 +235,12 @@ File-level checks include:
 - element identifier format
 - mandatory-content enforcement
 
+Layer-parity checks may add deterministic structure rules per artifact type. Current MCP parity minimums include:
+- EARS: trigger clause (`WHEN`, `IF`, or `WHILE`) and explicit `THE SYSTEM SHALL` actor phrase
+- SPEC: fenced YAML implementation block
+- TASKS: markdown checkbox list item
+- CTR: explicit `openapi`, `endpoint`, or `contract` token
+
 Corpus-level checks include:
 - duplicate identity detection
 - downstream reference blocking

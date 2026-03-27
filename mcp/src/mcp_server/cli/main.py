@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import shutil
 
+from mcp_server.consistency import run_consistency_check
 from mcp_server.core.stage_output import (
     STAGE_CREATE,
     STAGE_REMEDIATE,
@@ -12,6 +13,7 @@ from mcp_server.core.stage_output import (
     STAGE_VALIDATE,
     resolve_stage_output_dir,
 )
+from mcp_server.preflight import run_preflight
 from mcp_server.prescreening import run_prescreen
 from mcp_server.prompts import SourceSection
 from mcp_server.remediation import (
@@ -202,6 +204,29 @@ def _build_parser() -> argparse.ArgumentParser:
     scoring_compare_parser = scoring_subparsers.add_parser("compare", help="Compare scores between baseline and candidate reports")
     scoring_compare_parser.add_argument("--baseline-report-file", required=True, help="Path to baseline JSON report")
     scoring_compare_parser.add_argument("--candidate-report-file", required=True, help="Path to candidate JSON report")
+
+    consistency_parser = subparsers.add_parser(
+        "consistency",
+        help="Run lightweight artifact lineage and stage consistency checks",
+    )
+    consistency_parser.add_argument("--target", required=True, help="Path to source document file or document directory")
+    consistency_parser.add_argument("--format", choices=["text", "json"], default="text", help="Consistency output format")
+    consistency_parser.add_argument("--out", default=None, help="Optional output directory for consistency artifacts")
+
+    preflight_parser = subparsers.add_parser(
+        "preflight",
+        help="Run runtime and environment readiness checks before create, review, or remediation stages",
+    )
+    preflight_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    preflight_parser.add_argument(
+        "--context",
+        choices=["create", "review", "remediate", "any"],
+        default="any",
+        help="Operational context for required readiness checks",
+    )
+    preflight_parser.add_argument("--document", default=None, help="Optional document path to verify")
+    preflight_parser.add_argument("--format", choices=["text", "json"], default="text", help="Preflight output format")
+    preflight_parser.add_argument("--out", default=None, help="Optional output directory for preflight artifacts")
 
     return parser
 
@@ -535,6 +560,52 @@ def main(argv: list[str] | None = None) -> int:
         prescreen_result = run_prescreen(document_path=document_path, output_dir=prescreen_output_dir)
         print(prescreen_result.report_json)
         return 0
+
+    if args.command == "consistency":
+        target_path = Path(args.target).expanduser().resolve()
+        explicit_out = Path(args.out).expanduser().resolve() if args.out else None
+        try:
+            consistency_result = run_consistency_check(target_path=target_path, output_dir=explicit_out)
+        except Exception as exc:
+            print(f"consistency failed: {exc}")
+            return 2
+
+        if args.format == "json":
+            print(consistency_result.report_json)
+        else:
+            print(consistency_result.report_text.rstrip())
+            if consistency_result.report_path is not None:
+                print(f"Consistency report generated at {consistency_result.report_path}")
+            if consistency_result.summary_path is not None:
+                print(f"Consistency summary generated at {consistency_result.summary_path}")
+
+        return 0 if consistency_result.passed else 1
+
+    if args.command == "preflight":
+        project_root = Path(args.project).expanduser().resolve()
+        preflight_document = Path(args.document).expanduser().resolve() if args.document else None
+        explicit_out = Path(args.out).expanduser().resolve() if args.out else None
+        try:
+            preflight_result = run_preflight(
+                project_root=project_root,
+                context=args.context,
+                document_path=preflight_document,
+                output_dir=explicit_out,
+            )
+        except Exception as exc:
+            print(f"preflight failed: {exc}")
+            return 2
+
+        if args.format == "json":
+            print(preflight_result.report_json)
+        else:
+            print(preflight_result.report_text.rstrip())
+            if preflight_result.report_path is not None:
+                print(f"Preflight report generated at {preflight_result.report_path}")
+            if preflight_result.summary_path is not None:
+                print(f"Preflight summary generated at {preflight_result.summary_path}")
+
+        return 1 if preflight_result.status == "blocked" else 0
 
     if args.command == "scan":
         report_file = Path(args.report_file).expanduser().resolve()
