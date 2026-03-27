@@ -19,7 +19,7 @@ from mcp_server.remediation import (
     run_remediation_build,
     run_validate_fix_build,
 )
-from mcp_server.review import run_project_creation_build, run_project_review_build
+from mcp_server.review import run_project_creation_artifact, run_project_creation_build, run_project_review_build
 from mcp_server.scan import run_scan
 from mcp_server.scoring import compare_scores, show_score, validate_score
 from mcp_server.skills.scaffold import scaffold_project_ucx
@@ -89,8 +89,26 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Optional output directory; defaults to <document_dir>/.ucx/creation",
     )
 
+    create_artifact_parser = subparsers.add_parser(
+        "create",
+        help="Create final document artifact at target path using project/layer templates",
+    )
+    create_artifact_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    create_artifact_parser.add_argument("--persona", required=True, help="Persona file name without extension")
+    create_artifact_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
+    create_artifact_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
+    create_artifact_parser.add_argument("--template", required=True, help="Template file in docs/UCX/prompts/templates/creation")
+    create_artifact_parser.add_argument("--target", required=True, help="Final target document path to create")
+    create_artifact_parser.add_argument("--sections-json", default=None, help="Optional path to sections JSON array")
+    create_artifact_parser.add_argument("--overwrite", action="store_true", help="Overwrite target document if it exists")
+    create_artifact_parser.add_argument(
+        "--out",
+        default=None,
+        help="Optional output directory for creation prompt diagnostics",
+    )
+
     validate_parser = subparsers.add_parser(
-        "validate-build",
+        "validate",
         help="Run script-based document structure validation against layer template/schema assets",
     )
     validate_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
@@ -281,8 +299,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "create-build":
         project_root = Path(args.project).expanduser().resolve()
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
-        creation_sections: list[SourceSection] | None = None
-        sections_path: Path | None = None
+        creation_sections = None
+        sections_path = None
         if args.sections_json:
             sections_path = Path(args.sections_json).expanduser().resolve()
             payload = json.loads(sections_path.read_text(encoding="utf-8"))
@@ -315,7 +333,59 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Layer assets included: {creation_result.layer_asset_names}")
         return 0
 
-    if args.command == "validate-build":
+    if args.command == "create":
+        project_root = Path(args.project).expanduser().resolve()
+        target_path = Path(args.target).expanduser().resolve()
+        explicit_out = Path(args.out).expanduser().resolve() if args.out else None
+        creation_sections = None
+        sections_path = None
+        if args.sections_json:
+            sections_path = Path(args.sections_json).expanduser().resolve()
+            payload = json.loads(sections_path.read_text(encoding="utf-8"))
+            creation_sections = [
+                SourceSection(
+                    section_id=item["section_id"],
+                    title=item["title"],
+                    content=item["content"],
+                    included=item.get("included", True),
+                )
+                for item in payload
+            ]
+
+        output_dir = resolve_stage_output_dir(
+            stage=STAGE_CREATE,
+            project_root=project_root,
+            output_dir=explicit_out,
+            document_dir=target_path.parent if sections_path is None else sections_path.parent,
+        )
+
+        try:
+            creation_artifact_result = run_project_creation_artifact(
+                project_root=project_root,
+                persona=args.persona,
+                doc_type=args.doc_type,
+                layer=args.layer,
+                template_name=args.template,
+                target_path=target_path,
+                sections=creation_sections,
+                output_dir=output_dir,
+                overwrite=bool(args.overwrite),
+            )
+        except (FileExistsError, ValueError) as exc:
+            print(f"create failed: {exc}")
+            return 1
+
+        print(f"Created document artifact at {creation_artifact_result.target_path}")
+        print(f"Template source: {creation_artifact_result.template_source}")
+        if creation_artifact_result.prompt_path is not None:
+            print(f"Creation prompt generated at {creation_artifact_result.prompt_path}")
+        if creation_artifact_result.sidecar_path is not None:
+            print(f"Creation sidecar generated at {creation_artifact_result.sidecar_path}")
+        if creation_artifact_result.inspection_path is not None:
+            print(f"Creation inspection generated at {creation_artifact_result.inspection_path}")
+        return 0
+
+    if args.command == "validate":
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None

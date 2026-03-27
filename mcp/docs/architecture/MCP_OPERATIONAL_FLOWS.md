@@ -3,55 +3,233 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.0 |
-| Date | 2026-03-26 |
+| Version | 1.2 |
+| Date | 2026-03-27 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
 
 ## 1. Flow Set
 
-- create flow: `create-build`
-- review flow: `review-build` and `review`
-- validate flow: `validate-build`
-- validation-derived artifact flow: `validate-fix`
-- remediation planning flow: `remediate`
-- remediation-apply derived artifact flow: `remediate-fix`
-- prescreen flow: `prescreen`
-- report scan flow: `scan`
-- score flows: `scoring show`, `scoring validate`, `scoring compare`
+- project initialization flow: `init` → `create-build`
+- document lifecycle flow (6 stages): `create` → `validate` → `validate-fix` → `review` → `remediate` → `remediate-fix`
+- review prompt flow: `review-build` and `review`
+- diagnostics flow: `prescreen`, `scan`, `scoring`
 
 ---
 
-## 2. Validate and Fix Flow
+## 2. Project Initialization Flow
 
-1. Execute `validate-build` against source file or folder.
-2. Emit `validation_report.json` and `validation_report.txt`.
-3. Execute `validate-fix` with source-protected mode.
-4. Emit `_validation` derived artifact(s) and `validate_fix_report.*`.
+This flow runs once per project to create the project-specific UCX scaffold that all subsequent document lifecycle commands depend on.
 
-Constraints:
+### Stage A — Scaffold (`init`)
 
-- source document is not modified in default mode.
-- derived artifacts are generated deterministically.
+**Command**: `init`
+
+**Input**: `--project <project_root>`
+
+**Output** (written to `<project_root>/docs/UCX/`):
+
+| Destination folder | Contents |
+| --- | --- |
+| `skills/personas/` | Persona definition files |
+| `skills/layer_aliases/` | Layer alias mappings |
+| `prompts/templates/creation/` | Creation prompt templates |
+| `prompts/templates/review/` | Review prompt templates |
+| `prompts/templates/remediation/` | Remediation prompt templates |
+| `templates/` | Document MVP and project-tuned templates |
+| `templates/layers/NN_TYPE/` | Layer-specific MVP templates and schemas (from `ai_dev_ssd_flow/`) |
+
+**Rules**:
+- Existing files are never overwritten (idempotent).
+- Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
+- Only MVP templates (`*-MVP-TEMPLATE.md`) and MVP schemas (`*_MVP_SCHEMA.yaml`) are copied from layer directories.
 
 ---
 
-## 3. Remediation Flow
+### Stage B — Create Prompt (`create-build`)
 
-1. Execute `remediate` against source or validation-derived artifact.
-2. Emit `remediation_report.json` and `remediation_report.txt`.
-3. Execute `remediate-fix`.
-4. Emit `_remediated` derived artifact(s) and `remediate_fix_report.*`.
+**Command**: `create-build`
 
-Constraints:
+**Input**: `--project`, `--persona`, `--doc-type`, `--layer`, `--template` + optional `--sections-json`
 
-- source document remains unchanged.
-- remediation planning and apply phases are explicit separate commands.
+**Output** (written to the document folder or `--out`):
+
+| Artifact | Purpose |
+| --- | --- |
+| `creation_prompt.md` | Assembled prompt ready for LLM input |
+| `creation_sidecar.json` | Metadata: persona, doc type, layer assets used, template source |
+| Layer asset files | MVP template, schema, and any project-tuned template bundled into the prompt |
+
+**Rules**:
+- Loads project-tuned template from `docs/UCX/templates/TYPE-MVP-TEMPLATE.md` if present; falls back to layer MVP template from `docs/UCX/templates/layers/NN_TYPE/`.
+- Does not write the final document artifact; use `create` for that.
+- `--sections-json` injects existing document sections into the prompt for guided creation (incremental authoring).
 
 ---
 
-## 4. Diagnostics Flow
+### Initialization Flow Summary
+
+```
+init
+  └─ writes docs/UCX/ scaffold (personas, templates, schemas, prompts)
+        ↓
+create-build
+  └─ assembles LLM creation prompt + sidecar
+        ↓
+  [LLM generates document content]
+        ↓
+create
+  └─ writes TYPE-NN_{slug}.md  ← stage 1 of document lifecycle
+```
+
+The `init` command must be run before any `create-build` or `create` command. It is safe to re-run; it will skip files that already exist.
+
+---
+
+## 3. Document Lifecycle Flow
+
+This flow applies uniformly to all SSD document layers (BRD, PRD, EARS, SYS, REQ, CTR, and others).
+
+Each stage reads from the previous stage's output artifact. The source document is never modified after stage 1.
+
+### Stage 1 — Create
+
+**Command**: `create`
+
+**Input**: none (template only)
+
+**Output**: `TYPE-NN_{slug}.md`
+
+**Rules**:
+- Source document is the canonical authored artifact.
+- Filename contains no stage suffix.
+- `processing_stage: source` in metadata.
+
+---
+
+### Stage 2 — Validate
+
+**Command**: `validate`
+
+**Input**: `TYPE-NN_{slug}.md` (source)
+
+**Output**: `validation_report.json`, `validation_report.txt`
+
+**Rules**:
+- Validation reads the source document; it does not modify it.
+- Deterministic, script-based checks only (no LLM).
+- When `--document` points to a folder, MCP resolves the canonical source artifact automatically (see Source Artifact Resolution).
+
+---
+
+### Stage 3 — Validate-Fix
+
+**Command**: `validate-fix`
+
+**Input**: `TYPE-NN_{slug}.md` (source) + optional `validation_report.json`
+
+**Output**: `TYPE-NN_{slug}_validation.md` (derived copy, written alongside source)
+
+**Rules**:
+- Source document is not modified.
+- Derived copy is named `{slug}_validation.md`.
+- When `--document` points to a folder, MCP resolves the canonical source artifact automatically.
+- `processing_stage: validation-fixed` in derived copy metadata.
+- `derived_from: TYPE-NN_{slug}.md` in derived copy metadata.
+
+---
+
+### Stage 4 — Review
+
+**Command**: `review-build` / `review`
+
+**Input**: `TYPE-NN_{slug}_validation.md` (validation copy)
+
+**Output**: `TYPE-NN.UCX_review_report_vNNN.md`
+
+**Rules**:
+- Review runs against the `_validation` copy, not the source.
+- LLM-based content and cross-layer compliance review.
+- Report is versioned; repeated runs do not overwrite prior results.
+
+---
+
+### Stage 5 — Remediate
+
+**Command**: `remediate`
+
+**Input**: `TYPE-NN_{slug}_validation.md` + optional `review_report`
+
+**Output**: `TYPE-NN.UCX_remediation_report_vNNN.md`
+
+**Rules**:
+- Remediation runs against the `_validation` copy, not the source.
+- Report is versioned.
+- When `--document` points to a folder, MCP resolves the canonical source artifact (the `_validation` copy) automatically.
+
+---
+
+### Stage 6 — Remediate-Fix
+
+**Command**: `remediate-fix`
+
+**Input**: `TYPE-NN_{slug}_validation.md` + optional `remediation_report`
+
+**Output**: `TYPE-NN_{slug}_remediated.md` (derived copy, written alongside source)
+
+**Rules**:
+- Input is the `_validation` copy, not the source.
+- Output uses the canonical base name (`{slug}_remediated.md`), not `{slug}_validation_remediated.md`.
+- When `--document` points to a folder, MCP resolves the `_validation` copy automatically.
+- Source and `_validation` copy are not modified.
+- `processing_stage: remediated` in derived copy metadata.
+- `derived_from: TYPE-NN_{slug}_validation.md` in derived copy metadata.
+
+---
+
+## 4. Artifact Lineage and Naming
+
+### Canonical Artifact Set (per document folder)
+
+| Stage | Artifact | Filename Pattern | Mutates Prior Artifact |
+| --- | --- | --- | --- |
+| 1 | Source document | `TYPE-NN_{slug}.md` | No |
+| 2 | Validation report | `validation_report.json/.txt` | No |
+| 3 | Validation copy | `TYPE-NN_{slug}_validation.md` | No |
+| 4 | Review report | `TYPE-NN.UCX_review_report_vNNN.md` | No |
+| 5 | Remediation report | `TYPE-NN.UCX_remediation_report_vNNN.md` | No |
+| 6 | Remediated copy | `TYPE-NN_{slug}_remediated.md` | No |
+
+### Lineage Chain
+
+```
+TYPE-NN_{slug}.md
+  └─ validate ──→ validation_report.json
+  └─ validate-fix   ──→ TYPE-NN_{slug}_validation.md
+                              └─ review       ──→ UCX_review_report_vNNN.md
+                              └─ remediate    ──→ UCX_remediation_report_vNNN.md
+                              └─ remediate-fix ──→ TYPE-NN_{slug}_remediated.md
+```
+
+### Reserved Suffixes
+
+- `_validation` — UCX-derived copy from `validate-fix` only
+- `_remediated` — UCX-derived copy from `remediate-fix` only
+- These suffixes must not appear in canonical source document filenames.
+
+### Source Artifact Resolution
+
+When `--document` points to a folder, MCP applies the following resolution rules at each stage:
+
+| Stage | Resolution rule |
+| --- | --- |
+| validate, validate-fix, remediate | Locate single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validation` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
+| remediate-fix | Locate single file matching `^[A-Z]+-\d+_.+_validation\.md$`; use it as the `_validation` copy input. Fall back to full folder set if no unique match. |
+
+---
+
+## 5. Diagnostics Flow
 
 1. Execute `prescreen` to identify high-priority candidate files.
 2. Execute `scan` on JSON report files to extract finding-category counts.
@@ -65,13 +243,13 @@ Outputs:
 
 ---
 
-## 5. Operational Controls
+## 6. Operational Controls
 
 Validation controls:
 
-- `validate-build --tier1-only`
-- `validate-build --strict`
-- `validate-build --format {text,json}`
+- `validate --tier1-only`
+- `validate --strict`
+- `validate --format {text,json}`
 
 Review controls:
 
@@ -80,17 +258,17 @@ Review controls:
 
 ---
 
-## 6. Exit Behavior
+## 7. Exit Behavior
 
 | Command Group | Pass | Fail |
 | --- | --- | --- |
-| validate-build | 0 | 1 |
+| validate | 0 | 1 |
 | scoring validate | 0 | 1 |
 | other implemented commands | 0 | 2 only for CLI usage/argument failures |
 
 ---
 
-## 7. Evidence Commands
+## 8. Evidence Commands
 
 - `pytest mcp/tests/unit/test_cli_main.py`
 - `pytest mcp/tests/unit/test_validation_runner.py`
@@ -98,3 +276,4 @@ Review controls:
 - `pytest mcp/tests/unit/test_prescreening.py`
 - `pytest mcp/tests/unit/test_scoring_cli.py`
 - `pytest mcp/tests/integration/test_migration_flows.py`
+- `pytest mcp/tests/integration/test_lifecycle_pipeline_integration.py`

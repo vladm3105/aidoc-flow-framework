@@ -23,7 +23,7 @@ def resolve_stage_output_dir(
     output_dir: Path | None = None,
     document_dir: Path | None = None,
 ) -> Path:
-    """Resolve output directory for an MCP stage with hidden per-doc defaults."""
+    """Resolve output directory for an MCP stage with document-folder defaults."""
     if stage not in SUPPORTED_STAGES:
         raise ValueError(f"Unsupported stage: {stage}")
 
@@ -34,5 +34,9 @@ def resolve_stage_output_dir(
             return output_dir
         return output_dir
 
-    base_dir = document_dir if document_dir is not None else (project_root / "docs")
-    return base_dir / STAGE_OUTPUT_ROOT / stage
+    # UCX_v1-style default: write artifacts directly into the target document folder.
+    if document_dir is not None:
+        return document_dir
+
+    # Fallback when no document context exists (for example, creation without sections).
+    return project_root / "docs" / STAGE_OUTPUT_ROOT / stage

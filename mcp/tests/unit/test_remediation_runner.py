@@ -123,6 +123,71 @@ def test_validate_fix_fails_for_invalid_validation_report_path(tmp_path: Path) -
     assert exit_code == 1
 
 
+def test_cli_validate_fix_directory_prefers_source_artifact(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    source_doc = doc_dir / "BRD-01_platform.md"
+    source_doc.write_text("# BRD-01\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_remediated.md").write_text("# remediated copy\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/validate"
+    exit_code = main(
+        [
+            "validate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(doc_dir),
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (out_dir / "BRD-01_platform_validation.md").exists()
+    assert not (out_dir / "BRD-01_platform_validation" / "BRD-01_platform.md").exists()
+
+
+def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    doc_dir = tmp_path / "docs/02_PRD/PRD-01_platform"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    (doc_dir / "PRD-01_platform.md").write_text("# source\n", encoding="utf-8")
+    (doc_dir / "PRD-01_platform_validation.md").write_text("# validation copy\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+    exit_code = main(
+        [
+            "remediate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "prd",
+            "--layer",
+            "02_PRD",
+            "--document",
+            str(doc_dir),
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    # Uses _validation copy as input → _remediated output with canonical base stem
+    assert (out_dir / "PRD-01_platform_remediated.md").exists()
+    # Must NOT create a tree copy of the whole folder
+    assert not (out_dir / f"{doc_dir.name}_remediated").exists()
+    # Must NOT create _validation_remediated (non-canonical name)
+    assert not (out_dir / "PRD-01_platform_validation_remediated.md").exists()
+
+
 def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
     document = tmp_path / "docs/01_BRD/BRD-01_sample.md"

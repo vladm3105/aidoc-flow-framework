@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.1.0 |
-| Latest Release | 1.1.0 (migration core commands and docs implemented without autopilot) |
-| Next Minor | 1.2.0 (migration closure evidence and release gating hardening) |
+| Current Version | 1.2.0 |
+| Latest Release | 1.2.0 (lifecycle normalization, command alignment, and project initialization flow documentation) |
+| Next Minor | 1.3.0 (diagnostics and governance refinement) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -20,7 +20,7 @@ Versioning policy reference:
 
 ## Version Timeline
 
-v1.1.0 (Current) -> v1.2.0 (Migration Completion) -> v2.0.0
+v1.2.0 (Current) -> v1.3.0 (Diagnostics and Governance Refinement) -> v2.0.0
 
 ---
 
@@ -50,25 +50,49 @@ Outcome summary:
 
 ---
 
-### v1.2.0 - Migration Completion and Cutover
+### v1.2.0 - Lifecycle Normalization and Command Alignment
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Scope | Normalize active MCP lifecycle command naming, generalize derived-artifact flow semantics, and publish explicit project-initialization guidance |
+
+Delivered scope:
+
+- Normalize active validation command naming to `validate` across runtime, tests, and active documentation.
+- Generalize source-protected derived-artifact flow semantics across all SSD document layers.
+- Normalize folder-based artifact resolution so downstream stages consume the correct prior artifact.
+- Publish explicit project initialization flow documentation for `init`, `create-build`, and `create`.
+- Record historical closure in `plans/IPLAN-004_mcp_lifecycle_normalization_and_command_alignment.md`.
+
+Outcome summary:
+
+- Active runtime and architecture docs use MCP-native lifecycle naming.
+- Derived artifact naming and source resolution rules are explicit and test-backed.
+- Project-specific prompt/template initialization is documented as part of the operational flow.
+
+References:
+
+- plans/IPLAN-004_mcp_lifecycle_normalization_and_command_alignment.md
+- architecture/MCP_OPERATIONAL_FLOWS.md
+- architecture/MCP_CLI_REFERENCE.md
+
+---
+
+### v1.3.0 - Diagnostics and Governance Refinement
 
 | Field | Value |
 | --- | --- |
 | Status | Planned |
 | Type | Minor |
-| Scope | Complete migration closure and UCX_v1 sunset readiness for MCP |
+| Scope | Refine diagnostics coverage, operational controls, and release governance evidence |
 
 Planned scope:
 
-- Finalize all in-scope capabilities and flow-level runbook procedures.
-- Publish migration completion report and deprecation/sunset policy execution evidence.
-- Enforce MCP as canonical source for runtime behavior and operator guidance.
-- Restrict UCX_v1 mentions to migration/deprecation policy artifacts only.
-
-Acceptance targets:
-
-- MCP runtime execution and documentation interpretation no longer require legacy archive references.
-- Migration completion report is published with test and documentation parity evidence.
+- Expand diagnostics and command-control coverage where needed.
+- Continue aligning operator and runtime documentation to implemented contracts.
+- Strengthen release-history and governance evidence artifacts for future MCP releases.
 
 ---
 
@@ -105,7 +129,7 @@ Potential breaking considerations:
 
 Delivered:
 
-- Added `validate-build` CLI command for script-based structural validation against layer schema/template assets.
+- Added `validate` CLI command for script-based structural validation against layer schema/template assets.
 - Added validation runner package under `mcp/src/mcp_server/validation/` with JSON/TXT report outputs.
 - Standardized stage output root from `.ucx_create` to `.ucx` and validation stage from `validation` to `validate`.
 - Updated CLI reference and test coverage for new command and stage-path behavior.

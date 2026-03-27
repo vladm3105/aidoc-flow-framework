@@ -26,11 +26,25 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
         return [document_path]
 
     candidates = sorted(document_path.glob("*.md"))
-    return [
+    filtered = [
         path
         for path in candidates
         if "REVIEW" not in path.name.upper() and "REPORT" not in path.name.upper()
     ]
+
+    # Prefer canonical source artifact when present:
+    # <DOC-ID>_<slug>.md and exclude derived variants like *_validation.md/*_remediated.md.
+    source_artifacts = [
+        path
+        for path in filtered
+        if "_validation" not in path.stem
+        and "_remediated" not in path.stem
+        and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
+    ]
+    if len(source_artifacts) == 1:
+        return source_artifacts
+
+    return filtered
 
 
 def _parse_frontmatter(content: str) -> dict[str, object]:

@@ -43,7 +43,22 @@ class RemediateFixRunResult:
 def _collect_markdown_files(document_path: Path) -> list[Path]:
     if document_path.is_file():
         return [document_path]
-    return sorted(document_path.glob("*.md"))
+    candidates = sorted(document_path.glob("*.md"))
+    filtered = [
+        path
+        for path in candidates
+        if "REVIEW" not in path.name.upper() and "REPORT" not in path.name.upper()
+    ]
+    source_artifacts = [
+        path
+        for path in filtered
+        if "_validation" not in path.stem
+        and "_remediated" not in path.stem
+        and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
+    ]
+    if len(source_artifacts) == 1:
+        return source_artifacts
+    return filtered
 
 
 def _has_frontmatter(text: str) -> bool:
@@ -171,9 +186,26 @@ def run_remediation_build(
     )
 
 
+def _canonical_stem(src: Path) -> str:
+    """Strip UCX stage suffixes (_validation, _remediated) from stem."""
+    stem = src.stem
+    for postfix in ("_validation", "_remediated"):
+        if stem.endswith(postfix):
+            return stem[: -len(postfix)]
+    return stem
+
+
 def _copy_with_suffix(src: Path, suffix: str, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     target = output_dir / f"{src.stem}_{suffix}{src.suffix}"
+    target.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+    return target
+
+
+def _copy_with_canonical_suffix(src: Path, suffix: str, output_dir: Path) -> Path:
+    """Copy src to output_dir using the canonical base stem (stripping stage postfixes)."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    target = output_dir / f"{_canonical_stem(src)}_{suffix}{src.suffix}"
     target.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
     return target
 
@@ -193,6 +225,43 @@ def _copy_tree_with_suffix(src_dir: Path, suffix: str, output_dir: Path) -> list
     return copied
 
 
+def _resolve_source_document_path(document_path: Path) -> Path:
+    if document_path.is_file():
+        return document_path
+
+    candidates = sorted(document_path.glob("*.md"))
+    filtered = [
+        path
+        for path in candidates
+        if "REVIEW" not in path.name.upper() and "REPORT" not in path.name.upper()
+    ]
+    source_artifacts = [
+        path
+        for path in filtered
+        if "_validation" not in path.stem
+        and "_remediated" not in path.stem
+        and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
+    ]
+    if len(source_artifacts) == 1:
+        return source_artifacts[0]
+    return document_path
+
+
+def _resolve_validation_copy_path(document_path: Path) -> Path:
+    """When given a folder, find the _validation derived copy; fallback to original path."""
+    if document_path.is_file():
+        return document_path
+    candidates = [
+        path
+        for path in sorted(document_path.glob("*.md"))
+        if path.stem.endswith("_validation")
+        and re.match(r"^[A-Z]+-\d+_.+_validation\.md$", path.name)
+    ]
+    if len(candidates) == 1:
+        return candidates[0]
+    return document_path
+
+
 def run_validate_fix_build(
     *,
     project_root: Path,
@@ -204,17 +273,19 @@ def run_validate_fix_build(
 ) -> ValidateFixRunResult:
     _validate_optional_report_path(validation_report, "validation report")
 
-    if output_dir is None:
-        output_dir = document_path.parent / ".ucx/validate"
+    effective_document_path = _resolve_source_document_path(document_path)
 
-    if document_path.is_file():
-        derived_paths = [_copy_with_suffix(document_path, "validation", output_dir)]
+    if output_dir is None:
+        output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
+
+    if effective_document_path.is_file():
+        derived_paths = [_copy_with_suffix(effective_document_path, "validation", output_dir)]
     else:
-        derived_paths = _copy_tree_with_suffix(document_path, "validation", output_dir)
+        derived_paths = _copy_tree_with_suffix(effective_document_path, "validation", output_dir)
 
     report: dict[str, object] = {
         "project_root": str(project_root),
-        "document_path": str(document_path),
+        "document_path": str(effective_document_path),
         "doc_type": doc_type,
         "layer": layer,
         "validation_report": str(validation_report) if validation_report else None,
@@ -257,17 +328,19 @@ def run_remediate_fix_build(
 ) -> RemediateFixRunResult:
     _validate_optional_report_path(remediation_report, "remediation report")
 
-    if output_dir is None:
-        output_dir = document_path.parent / ".ucx/remediation"
+    effective_document_path = _resolve_validation_copy_path(document_path)
 
-    if document_path.is_file():
-        derived_paths = [_copy_with_suffix(document_path, "remediated", output_dir)]
+    if output_dir is None:
+        output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
+
+    if effective_document_path.is_file():
+        derived_paths = [_copy_with_canonical_suffix(effective_document_path, "remediated", output_dir)]
     else:
-        derived_paths = _copy_tree_with_suffix(document_path, "remediated", output_dir)
+        derived_paths = _copy_tree_with_suffix(effective_document_path, "remediated", output_dir)
 
     report: dict[str, object] = {
         "project_root": str(project_root),
-        "document_path": str(document_path),
+        "document_path": str(effective_document_path),
         "doc_type": doc_type,
         "layer": layer,
         "remediation_report": str(remediation_report) if remediation_report else None,

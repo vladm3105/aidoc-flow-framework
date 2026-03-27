@@ -85,9 +85,9 @@ Implemented behavior note:
 4. Prompt bundle is validated and inspection output generated.
 5. If output directory provided, review artifacts are written.
 
-### 4.4 validate-build flow
+### 4.4 validate flow
 
-1. CLI parses validate-build arguments.
+1. CLI parses validate arguments.
 2. Runtime resolves document file or document directory input.
 3. Validation runner loads project layer schema/template assets from docs/UCX/templates/layers/{layer}.
 4. Validation checks execute for required frontmatter custom fields, required tags, and required section regex patterns.

@@ -139,3 +139,47 @@ This release establishes a complete L0-L9 MCP documentation set under mcp/docs a
 
 - `pytest mcp/tests/unit/test_cli_main.py mcp/tests/unit/test_validation_runner.py mcp/tests/unit/test_remediation_runner.py mcp/tests/unit/test_prescreening.py mcp/tests/unit/test_scoring_cli.py -q`: PASS
 - `pytest mcp/tests/integration/test_migration_flows.py -q`: PASS
+
+---
+
+## Post-Release Update (2026-03-27)
+
+**Type**: Minor-level update (lifecycle normalization and command alignment)
+**Status**: Implemented
+
+### Runtime and CLI Updates
+
+- Renamed the active script-based validation command from `validate-build` to `validate`:
+  - `mcp/src/mcp_server/cli/main.py`
+- Generalized derived-artifact flow handling across document layers:
+  - `validate`, `validate-fix`, and `remediate` resolve canonical source artifacts from document folders
+  - `remediate-fix` resolves `_validation` artifacts from document folders
+  - remediated outputs use canonical base names (`{slug}_remediated.md`)
+  - `mcp/src/mcp_server/remediation/runner.py`
+
+### Test Coverage Updates
+
+- Updated CLI and lifecycle tests for `validate` naming and cross-layer derived-artifact behavior:
+  - `mcp/tests/unit/test_cli_main.py`
+  - `mcp/tests/unit/test_validation_runner.py`
+  - `mcp/tests/unit/test_remediation_runner.py`
+  - `mcp/tests/integration/test_migration_flows.py`
+
+### Documentation and History Updates
+
+- Expanded operational flow documentation with project initialization and full lifecycle lineage:
+  - `mcp/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
+- Updated CLI reference to reflect `validate` naming, initialization flow, and derived-artifact lineage:
+  - `mcp/docs/architecture/MCP_CLI_REFERENCE.md`
+- Updated active runtime-facing and operator docs to use `validate` as canonical naming:
+  - `mcp/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
+  - `mcp/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+  - `mcp/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`
+- Recorded historical closure in:
+  - `mcp/docs/plans/IPLAN-004_mcp_lifecycle_normalization_and_command_alignment.md`
+- Updated roadmap release tracking in:
+  - `mcp/docs/ROADMAP.md`
+
+### Validation Evidence Snapshot (2026-03-27)
+
+- `pytest mcp/tests/ -q`: PASS (`107 passed, 2 warnings`)

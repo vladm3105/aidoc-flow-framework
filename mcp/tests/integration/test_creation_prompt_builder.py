@@ -379,7 +379,7 @@ def test_cli_create_build_writes_sidecar_json(tmp_path: Path) -> None:
     assert parsed.get("persona") == "architect"
 
 
-def test_cli_create_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+def test_cli_create_build_without_out_uses_document_dir(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     sections_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
     sections_dir.mkdir(parents=True, exist_ok=True)
@@ -407,7 +407,68 @@ def test_cli_create_build_without_out_uses_document_stage_dir(tmp_path: Path) ->
         "--sections-json", str(sections_path),
     ])
 
-    default_out = sections_dir / ".ucx/creation"
+    default_out = sections_dir
     assert rc == 0
     assert (default_out / "creation_prompt.txt").exists()
     assert (default_out / "creation_prompt_sidecar.json").exists()
+
+
+def test_cli_create_writes_final_target_artifact(tmp_path: Path) -> None:
+    _scaffold_creation_fixtures(tmp_path)
+    target = tmp_path / "docs/01_BRD/BRD-01_platform_architecture/BRD-01_platform_architecture.md"
+
+    rc = main([
+        "create",
+        "--project", str(tmp_path),
+        "--persona", "architect",
+        "--doc-type", "brd",
+        "--layer", "01_BRD",
+        "--template", "UCC_PROMPT_BRD_PROJECT.md",
+        "--target", str(target),
+    ])
+
+    assert rc == 0
+    assert target.exists()
+    content = target.read_text(encoding="utf-8")
+    assert "Project-Tuned BRD Template" in content
+
+
+def test_cli_create_uses_layer_template_when_project_tuned_missing(tmp_path: Path) -> None:
+    _scaffold_creation_fixtures(tmp_path)
+    (tmp_path / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
+    target = tmp_path / "docs/01_BRD/BRD-02_platform/BRD-02_platform.md"
+
+    rc = main([
+        "create",
+        "--project", str(tmp_path),
+        "--persona", "architect",
+        "--doc-type", "brd",
+        "--layer", "01_BRD",
+        "--template", "UCC_PROMPT_BRD_PROJECT.md",
+        "--target", str(target),
+    ])
+
+    assert rc == 0
+    assert target.exists()
+    content = target.read_text(encoding="utf-8")
+    assert "SDD authoritative template structure" in content
+
+
+def test_cli_create_fails_when_target_exists_without_overwrite(tmp_path: Path) -> None:
+    _scaffold_creation_fixtures(tmp_path)
+    target = tmp_path / "docs/01_BRD/BRD-03_platform/BRD-03_platform.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("existing", encoding="utf-8")
+
+    rc = main([
+        "create",
+        "--project", str(tmp_path),
+        "--persona", "architect",
+        "--doc-type", "brd",
+        "--layer", "01_BRD",
+        "--template", "UCC_PROMPT_BRD_PROJECT.md",
+        "--target", str(target),
+    ])
+
+    assert rc == 1
+    assert target.read_text(encoding="utf-8") == "existing"

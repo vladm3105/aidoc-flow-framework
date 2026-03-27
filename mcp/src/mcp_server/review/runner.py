@@ -79,7 +79,17 @@ class CreationRunResult:
     sidecar_json: str
     inspection: dict[str, object]
     layer_asset_names: list[str]
+    layer_assets: dict[str, str]
     document_template_text: str | None
+    prompt_path: Path | None
+    sidecar_path: Path | None
+    inspection_path: Path | None
+
+
+@dataclass(frozen=True)
+class CreationArtifactResult:
+    target_path: Path
+    template_source: str
     prompt_path: Path | None
     sidecar_path: Path | None
     inspection_path: Path | None
@@ -124,8 +134,60 @@ def run_project_creation_build(
         sidecar_json=sidecar_json,
         inspection=inspection,
         layer_asset_names=sorted(assembly.layer_assets.keys()),
+        layer_assets=dict(assembly.layer_assets),
         document_template_text=assembly.document_template_text,
         prompt_path=prompt_path,
         sidecar_path=sidecar_path,
         inspection_path=inspection_path,
+    )
+
+
+def run_project_creation_artifact(
+    *,
+    project_root: Path,
+    persona: str,
+    doc_type: str,
+    layer: str,
+    template_name: str,
+    target_path: Path,
+    sections: list[SourceSection] | None = None,
+    output_dir: Path | None = None,
+    overwrite: bool = False,
+) -> CreationArtifactResult:
+    creation_result = run_project_creation_build(
+        project_root=project_root,
+        persona=persona,
+        doc_type=doc_type,
+        layer=layer,
+        template_name=template_name,
+        sections=sections,
+        output_dir=output_dir,
+    )
+
+    target_path = target_path.expanduser().resolve()
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    if target_path.exists() and not overwrite:
+        raise FileExistsError(f"Target document already exists: {target_path}")
+
+    if creation_result.document_template_text:
+        final_content = creation_result.document_template_text
+        template_source = "project_template"
+    else:
+        mvp_template_name = next(
+            (name for name in creation_result.layer_asset_names if "-MVP-TEMPLATE" in name),
+            None,
+        )
+        if mvp_template_name is None:
+            raise ValueError("No layer MVP template asset found for final artifact creation")
+        final_content = creation_result.layer_assets[mvp_template_name]
+        template_source = f"layer_asset:{mvp_template_name}"
+
+    target_path.write_text(final_content, encoding="utf-8")
+
+    return CreationArtifactResult(
+        target_path=target_path,
+        template_source=template_source,
+        prompt_path=creation_result.prompt_path,
+        sidecar_path=creation_result.sidecar_path,
+        inspection_path=creation_result.inspection_path,
     )

@@ -40,7 +40,7 @@ Primary command groups:
 
 - create: `create-build`
 - review: `review-build`, `review`
-- validate: `validate-build`, `validate-fix`
+- validate: `validate`, `validate-fix`
 - remediation: `remediate`, `remediate-fix`
 - diagnostics: `prescreen`, `scan`, `scoring`
 

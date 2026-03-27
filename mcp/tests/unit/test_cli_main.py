@@ -127,7 +127,7 @@ def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> N
     assert "BRD_MVP_SCHEMA.yaml" in prompt
 
 
-def test_main_review_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+def test_main_review_build_without_out_uses_document_dir(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
 
     sections_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
@@ -162,7 +162,7 @@ def test_main_review_build_without_out_uses_document_stage_dir(tmp_path: Path) -
         ]
     )
 
-    default_out = sections_dir / ".ucx/review"
+    default_out = sections_dir
     assert exit_code == 0
     assert (default_out / "review_prompt.txt").exists()
 
@@ -207,7 +207,7 @@ def test_main_review_build_out_ucx_root_appends_stage(tmp_path: Path) -> None:
     assert (ucx_root / "review/review_prompt.txt").exists()
 
 
-def test_main_validate_build_without_out_uses_document_stage_dir(tmp_path: Path) -> None:
+def test_main_validate_without_out_uses_document_dir(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
 
     doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform_architecture"
@@ -233,7 +233,7 @@ custom_fields:
 
     exit_code = main(
         [
-            "validate-build",
+            "validate",
             "--project",
             str(tmp_path),
             "--doc-type",
@@ -245,7 +245,7 @@ custom_fields:
         ]
     )
 
-    default_out = doc_dir / ".ucx/validate"
+    default_out = doc_dir
     assert exit_code == 1
     assert (default_out / "validation_report.json").exists()
     assert (default_out / "validation_report.txt").exists()

@@ -21,7 +21,7 @@ Implementation complexity: 3/5.
 
 - Runtime environment can execute mcp CLI command.
 - Project path is available and writable for output operations.
-- For create-build, review-build, validate-build, and remediation flows, project contains project-local docs/UCX assets or operator has permission to run init.
+- For create-build, review-build, validate, and remediation flows, project contains project-local docs/UCX assets or operator has permission to run init.
 
 ---
 
@@ -81,7 +81,7 @@ Success condition:
 Procedure:
 
 1. Select target document file or document directory.
-2. Run validate-build with project, doc-type, layer, and document arguments.
+2. Run validate with project, doc-type, layer, and document arguments.
 3. Confirm validation_report.json and validation_report.txt are written in output path.
 4. Review report errors and warnings, then remediate source document if required.
 
@@ -93,7 +93,7 @@ Success condition:
 
 Procedure:
 
-1. Run validate-build and capture validation report path.
+1. Run validate and capture validation report path.
 2. Run validate-fix with source document and validation report path.
 3. Confirm derived `_validation` artifact and `validate_fix_report.*` files are produced.
 
@@ -163,7 +163,7 @@ Resolution:
 1. Run mcp init --project path.
 2. Re-run failed command.
 
-### Scenario D: validate-build fails on structure checks
+### Scenario D: validate fails on structure checks
 
 Expected behavior:
 
@@ -184,7 +184,7 @@ Troubleshooting checks:
 | ProjectSkillsNotFound | command error payload includes missing_paths | run init, then retry |
 | Invalid sections-json payload | parser or deserialization error | correct payload and retry |
 | Missing template or persona | loader error via missing path | add required file under docs/UCX and retry |
-| validate-build structural violations | validation report contains missing requirements | remediate document and re-run validate-build |
+| validate structural violations | validation report contains missing requirements | remediate document and re-run validate |
 | validate-fix/remediate-fix output missing | fix report generated without derived artifacts | verify document path and output path permissions, then rerun |
 | scan/scoring parse failure | report payload invalid JSON | repair upstream report generation, then rerun diagnostics |
 | Output write failure | file I/O error | validate output directory permissions |

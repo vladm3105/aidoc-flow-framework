@@ -58,7 +58,7 @@ Normative rules:
 
 ## 4. Command Schema Contracts
 
-### 4.1 validate-build schema
+### 4.1 validate schema
 
 Schema id:
 

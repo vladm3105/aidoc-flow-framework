@@ -109,3 +109,94 @@ custom_fields:
     assert not result.is_valid
     payload = json.loads(result.report_json)
     assert any("Missing required section" in error for error in payload["errors"])
+
+
+def test_run_project_validation_build_directory_prefers_source_artifact(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    _write_minimal_layer_assets(tmp_path)
+
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    source_doc = doc_dir / "BRD-01_platform.md"
+    source_doc.write_text(
+        """---
+title: "Sample"
+tags: [brd]
+custom_fields:
+  document_type: brd
+  status: draft
+---
+
+# BRD-01: Sample
+
+## 1. Intro
+""",
+        encoding="utf-8",
+    )
+
+    # Derived artifact intentionally invalid; validation should ignore this file
+    (doc_dir / "BRD-01_platform_validation.md").write_text(
+        """---
+title: "Validation Copy"
+tags: [brd]
+custom_fields:
+  document_type: brd
+  status: draft
+---
+
+# BRD-01: Validation Copy
+""",
+        encoding="utf-8",
+    )
+
+    result = run_project_validation_build(
+        project_root=tmp_path,
+        doc_type="brd",
+        layer="01_BRD",
+        document_path=doc_dir,
+        output_dir=None,
+    )
+
+    assert result.is_valid
+    payload = json.loads(result.report_json)
+    checked = payload.get("files_checked", [])
+    assert checked == [str(source_doc)]
+
+
+def test_run_project_validation_build_directory_fallback_to_section_set(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    _write_minimal_layer_assets(tmp_path)
+
+    doc_dir = tmp_path / "docs/01_BRD/BRD-02_sectioned"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    (doc_dir / "BRD-02.1_intro.md").write_text(
+        """---
+title: "Sectioned"
+tags: [brd]
+custom_fields:
+  document_type: brd
+  status: draft
+---
+
+# BRD-02: Sectioned
+
+## 1. Intro
+""",
+        encoding="utf-8",
+    )
+
+    result = run_project_validation_build(
+        project_root=tmp_path,
+        doc_type="brd",
+        layer="01_BRD",
+        document_path=doc_dir,
+        output_dir=None,
+    )
+
+    assert result.is_valid
+    payload = json.loads(result.report_json)
+    checked = payload.get("files_checked", [])
+    assert len(checked) == 1
+    assert checked[0].endswith("BRD-02.1_intro.md")

@@ -60,7 +60,7 @@ TODO refine content
     assert (
         main(
             [
-                "validate-build",
+                "validate",
                 "--project",
                 str(tmp_path),
                 "--doc-type",
@@ -151,4 +151,4 @@ TODO refine content
         == 0
     )
 
-    assert (remediate_out / "BRD-01_sample_validation_remediated.md").exists()
+    assert (remediate_out / "BRD-01_sample_remediated.md").exists()

@@ -8,5 +8,7 @@ workstream_c_owner: mcp-docs-maintainer
 release_approver: mcp-release-approver
 evidence_bundle_path: mcp/tmp/iplan-003-evidence/
 closure_report_path: mcp/docs/plans/IPLAN-003_MIGRATION_CLOSURE_REPORT.md
+post_release_history_note: "Post-closure lifecycle normalization and active command-name alignment are recorded in IPLAN-004 and remain release-readiness relevant background for operators using the v1.1.0 migration baseline."
+post_release_history_path: mcp/docs/plans/IPLAN-004_mcp_lifecycle_normalization_and_command_alignment.md
 signoff_date: 2026-03-26
-last_updated: 2026-03-26
+last_updated: 2026-03-27
