@@ -21,12 +21,14 @@ Implementation complexity: 4/5.
 ## 2. Scope and Boundaries
 
 In scope:
+
 - schema envelope for MCP JSON outputs
 - schema versioning and compatibility rules
 - required fields for validate, validate-fix, remediate, remediate-fix, prescreen, scan, and scoring outputs
 - deterministic serialization constraints
 
 Out of scope:
+
 - prompt text content quality
 - LLM model behavior tuning
 - UI rendering concerns outside schema payloads
@@ -36,6 +38,7 @@ Out of scope:
 ## 3. Global Envelope Contract
 
 All MCP JSON outputs in scope must include:
+
 - `schema_id` string
 - `schema_version` string using semantic version format
 - `generated_at` ISO-8601 UTC timestamp
@@ -45,6 +48,7 @@ All MCP JSON outputs in scope must include:
 - `errors` array (empty when none)
 
 Normative rules:
+
 1. `schema_id` must be stable per command family.
 2. `schema_version` must increment for structural changes.
 3. Unknown fields are allowed but must not alter required field semantics.
@@ -57,9 +61,11 @@ Normative rules:
 ### 4.1 validate-build schema
 
 Schema id:
+
 - `mcp.validate.report`
 
 Required fields:
+
 - `summary`
 - `tier1_issues`
 - `tier2_issues`
@@ -67,96 +73,116 @@ Required fields:
 - `exit_code`
 
 Constraints:
+
 - `exit_code` mapping must follow CLI contract.
 - `is_valid` must be true only when blocking checks pass.
 
 ### 4.2 validate-fix schema
 
 Schema id:
+
 - `mcp.validate_fix.report`
 
 Required fields:
-- `source_document`
-- `validation_document`
-- `fix_actions`
-- `manual_actions`
-- `validation_report_path`
+
+- `project_root`
+- `document_path`
+- `doc_type`
+- `layer`
+- `validation_report`
+- `derived_paths`
+- `summary`
 
 Constraints:
-- source-protection status must be explicit.
-- each fix action must include code/id, target, and result.
+
+- source-protection status must be explicit in summary payload.
 
 ### 4.3 remediate schema
 
 Schema id:
+
 - `mcp.remediate.report`
 
 Required fields:
-- `review_report_path`
-- `findings_total`
-- `findings_actionable`
-- `proposed_fixes`
-- `remediation_report_path`
+
+- `project_root`
+- `document_path`
+- `doc_type`
+- `layer`
+- `review_report`
+- `findings`
+- `summary`
 
 Constraints:
-- finding identifiers must be preserved from source report when present.
+
+- finding category and severity fields must be present for each emitted finding.
 
 ### 4.4 remediate-fix schema
 
 Schema id:
+
 - `mcp.remediate_fix.report`
 
 Required fields:
-- `validation_document`
-- `remediated_document`
-- `applied_fixes`
-- `skipped_fixes`
-- `requires_manual_review`
+
+- `project_root`
+- `document_path`
+- `doc_type`
+- `layer`
+- `remediation_report`
+- `derived_paths`
+- `summary`
 
 Constraints:
+
 - no direct mutation of original source document in protected mode.
 
 ### 4.5 prescreen schema
 
 Schema id:
+
 - `mcp.prescreen.report`
 
 Required fields:
-- `report_path`
-- `actionable_findings`
-- `domain_groups`
-- `recommended_fixers`
+
+- `document_path`
+- `candidates`
+- `summary`
 
 ### 4.6 scan schema
 
 Schema id:
+
 - `mcp.scan.report`
 
 Required fields:
-- `report_path`
-- `counts_by_priority`
-- `counts_by_category`
-- `uncategorized_count`
+
+- `report_file`
+- `categories`
+- `summary`
 
 ### 4.7 scoring schema
 
 Schema ids:
+
 - `mcp.scoring.show`
 - `mcp.scoring.validate`
 - `mcp.scoring.compare`
 
 Required fields for compare:
-- `report_path`
-- `score_current`
-- `score_reference`
-- `score_delta`
-- `weighted_breakdown`
+
+- `baseline_report_file`
+- `candidate_report_file`
+- `baseline_score`
+- `candidate_score`
+- `delta`
 
 ---
 
 ## 5. Text Output Contract
 
 For text outputs paired with JSON:
+
 1. text summary must include command, status, and primary metric line.
 2. text output must include artifact paths when files are emitted.
 3. text output must not omit blocking errors present in JSON.
@@ -166,10 +192,12 @@ For text outputs paired with JSON:
 ## 6. Versioning and Change Rules
 
 Allowed without major bump:
+
 - adding optional fields
 - adding non-breaking enum values when documented
 
 Requires major bump:
+
 - removing required fields
 - renaming required fields
 - changing field type for required fields
@@ -180,12 +208,14 @@ Requires major bump:
 ## 7. Validation Evidence Requirements
 
 Required checks:
+
 - schema presence test for each command family
 - required-fields test per schema id
 - deterministic ordering test on repeated identical input
 - schema-version regression check in CI
 
 Required test targets:
+
 - `mcp/tests/unit/test_validation_runner.py`
 - `mcp/tests/unit/test_remediation_runner.py`
 - `mcp/tests/unit/test_prescreening.py`

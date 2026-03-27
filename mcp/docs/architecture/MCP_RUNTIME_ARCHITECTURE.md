@@ -3,9 +3,9 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.0 |
-| Date | 2026-03-24 |
-| Scope | Implemented runtime architecture for init, create-build, review-build, and validate-build operations |
+| Version | 1.1 |
+| Date | 2026-03-26 |
+| Scope | Implemented runtime architecture for create, review, validation, fix, remediation, and diagnostics operations |
 
 ---
 
@@ -20,13 +20,18 @@ Implementation complexity: 4/5.
 ## 2. Runtime Boundaries
 
 In scope:
+
 - CLI command entrypoint behavior
 - Prompt assembly pipeline for creation and review
 - Script-based structural validation pipeline for document checks
+- Source-protected fix artifact generation (`validate-fix`, `remediate-fix`)
+- Deterministic remediation planning (`remediate`)
+- Diagnostics command group (`prescreen`, `scan`, `scoring`)
 - Project UCX loading behavior
 - Output artifact generation behavior
 
 Out of scope:
+
 - Future ingestion modes not implemented in runtime
 - External skill implementations in project-local skill systems
 
@@ -40,6 +45,10 @@ Out of scope:
 | Prompt assembly | mcp/src/mcp_server/prompts/context_builder.py | Build prompt bundles, metadata sidecars, and context contracts |
 | Review and creation runner | mcp/src/mcp_server/review/runner.py | Execute assembly and optionally write prompt, sidecar, and inspection artifacts |
 | Validation runner | mcp/src/mcp_server/validation/runner.py | Execute schema-guided structural validation and write JSON/TXT validation reports |
+| Remediation runner | mcp/src/mcp_server/remediation/runner.py | Build remediation findings and generate derived fix artifacts |
+| Prescreen runner | mcp/src/mcp_server/prescreening/runner.py | Detect high-priority remediation candidates |
+| Scan runner | mcp/src/mcp_server/scan/runner.py | Aggregate finding categories from JSON reports |
+| Scoring runner | mcp/src/mcp_server/scoring/runner.py | Compute, validate, and compare deterministic report scores |
 | Project UCX loader | mcp/src/mcp_server/skills/project_ucx_loader.py | Resolve project-local personas/templates/layer assets and enforce missing-path errors |
 | UCX scaffold | mcp/src/mcp_server/skills/scaffold.py | Initialize project-local docs/UCX file structure |
 
@@ -64,6 +73,7 @@ Out of scope:
 6. If output directory provided, creation artifacts are written.
 
 Implemented behavior note:
+
 - Direct markdown source ingestion as a first-class create-build mode is not implemented.
 - Implemented source path is structured sections payload via sections-json or synthetic fallback behavior when omitted.
 
@@ -84,6 +94,18 @@ Implemented behavior note:
 5. Validation runner emits validation_report.json and validation_report.txt when output path is configured.
 6. CLI returns exit code 0 for pass and 1 for fail.
 
+### 4.5 fix and remediation flow
+
+1. `validate-fix` generates `_validation` derived artifact(s) with source protection enabled.
+2. `remediate` generates deterministic findings and remediation report artifacts.
+3. `remediate-fix` generates `_remediated` derived artifact(s) with source protection enabled.
+
+### 4.6 diagnostics flow
+
+1. `prescreen` identifies candidate documents for remediation prioritization.
+2. `scan` aggregates category counts from report JSON.
+3. `scoring` computes numeric score payloads and supports validate/compare operations.
+
 ---
 
 ## 5. Error Handling Contracts
@@ -91,23 +113,28 @@ Implemented behavior note:
 ### 5.1 Missing project UCX assets
 
 Error type:
+
 - ProjectSkillsNotFound
 
 Required payload fields:
+
 - error_code
 - project_root
 - missing_paths
 - resolution
 
 Required resolution string:
+
 - Run mcp init --project {project_root} to create project-specific files.
 
 ### 5.2 Contract validation failures
 
 Error type:
+
 - ContractValidationError
 
 Failure condition:
+
 - prompt bundle fails context or metadata sidecar validation.
 
 ---

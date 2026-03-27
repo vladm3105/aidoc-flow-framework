@@ -1,0 +1,149 @@
+from __future__ import annotations
+
+from pathlib import Path
+import json
+import sys
+
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from mcp_server.cli.main import main  # noqa: E402
+
+
+def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("# BRD-01\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/validate"
+    exit_code = main(
+        [
+            "validate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(document),
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    assert (out_dir / "validate_fix_report.json").exists()
+    assert (out_dir / "validate_fix_report.txt").exists()
+    assert (out_dir / "BRD-01_sample_validation.md").exists()
+
+
+def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("TODO: complete section\n", encoding="utf-8")
+
+    remediation_out = tmp_path / "tmp/remediate"
+    remediate_exit = main(
+        [
+            "remediate",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(document),
+            "--out",
+            str(remediation_out),
+        ]
+    )
+
+    assert remediate_exit == 0
+    report_path = remediation_out / "remediation_report.json"
+    assert report_path.exists()
+
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    assert payload["summary"]["total_findings"] >= 1
+
+    remediate_fix_exit = main(
+        [
+            "remediate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(document),
+            "--remediation-report",
+            str(report_path),
+            "--out",
+            str(remediation_out),
+        ]
+    )
+
+    assert remediate_fix_exit == 0
+    assert (remediation_out / "remediate_fix_report.json").exists()
+    assert (remediation_out / "BRD-01_sample_remediated.md").exists()
+
+
+def test_validate_fix_fails_for_invalid_validation_report_path(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("# BRD-01\n", encoding="utf-8")
+
+    missing_report = tmp_path / "tmp/missing_validation_report.json"
+    exit_code = main(
+        [
+            "validate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(document),
+            "--validation-report",
+            str(missing_report),
+        ]
+    )
+
+    assert exit_code == 1
+
+
+def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("TODO: complete section\n", encoding="utf-8")
+
+    missing_report = tmp_path / "tmp/missing_remediation_report.json"
+    exit_code = main(
+        [
+            "remediate-fix",
+            "--project",
+            str(tmp_path),
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--document",
+            str(document),
+            "--remediation-report",
+            str(missing_report),
+        ]
+    )
+
+    assert exit_code == 1

@@ -5,7 +5,7 @@
 | Scope | MCP documentation set under mcp/docs |
 | Status | Active |
 | Version | 1.0 |
-| Date | 2026-03-24 |
+| Date | 2026-03-26 |
 | Timezone | America/New_York |
 
 MCP is the canonical SSD Unified Context framework runtime and documentation surface for active development. UCX_v1 archive materials are historical references only and are not authoritative for MCP runtime behavior.
@@ -32,6 +32,7 @@ MCP is the canonical SSD Unified Context framework runtime and documentation sur
 ## 2. Canonical Source of Truth Order
 
 Use this precedence for conflict resolution:
+
 1. Runtime code and tests under mcp/src/mcp_server and mcp/tests
 2. Canonical specs under mcp/docs/specs
 3. Policies under mcp/docs/policies
@@ -43,9 +44,11 @@ Use this precedence for conflict resolution:
 ## 3. Architecture Documents
 
 - [MCP Persona Design Guide](architecture/MCP_PERSONA_DESIGN_GUIDE.md)
+- [MCP Unified Context Framework](architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md)
 - [MCP Runtime Architecture](architecture/MCP_RUNTIME_ARCHITECTURE.md)
 - [MCP CLI Reference](architecture/MCP_CLI_REFERENCE.md)
 - [MCP Operator Runbook](architecture/MCP_OPERATOR_RUNBOOK.md)
+- [MCP Operational Flows](architecture/MCP_OPERATIONAL_FLOWS.md)
 
 ## 4. Canonical Specifications
 
@@ -57,6 +60,8 @@ Use this precedence for conflict resolution:
 - [SPEC-006 MCP Creation Flow Operational Contracts](specs/SPEC-006_mcp_creation_flow_operational_contracts.md)
 - [SPEC-007 MCP Review and Remediation Operational Contracts](specs/SPEC-007_mcp_review_remediation_operational_contracts.md)
 - [SPEC-008 MCP Output Schema Contracts](specs/SPEC-008_mcp_output_schema_contracts.md)
+- [SPEC-009 MCP Remediation and Fix Flow Contracts](specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md)
+- [SPEC-010 MCP Prescreen, Scan, and Scoring Contracts](specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md)
 
 ## 5. Policies
 
@@ -64,6 +69,7 @@ Use this precedence for conflict resolution:
 - [Compatibility and Deprecation Policy](policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md)
 - [Documentation Quality Gates](policies/DOC_QUALITY_GATES.md)
 - [Documentation Lifecycle and Versioning Policy](policies/DOC_LIFECYCLE_AND_VERSIONING_POLICY.md)
+- [MCP Cutover and UCX_v1 Archive Policy](policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md)
 
 ## 6. Plans and Reports
 
@@ -113,6 +119,7 @@ Use this precedence for conflict resolution:
 ## 10. Release Blocking Conditions
 
 Release readiness requires:
+
 - Coverage matrix PASS for layers L0 through L9
 - Reconciliation log with zero unresolved conflicts
 - Quality gates PASS for docs-to-code checks

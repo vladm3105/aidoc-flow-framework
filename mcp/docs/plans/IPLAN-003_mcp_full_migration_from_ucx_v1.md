@@ -14,16 +14,16 @@ tags:
 custom_fields:
   document_type: iplan
   plan_id: IPLAN-003
-  status: draft
+  status: planning
   created_date: 2026-03-26
   timezone: America/New_York
 ---
 
-# IPLAN-003: MCP Full Migration from UCX_v1 (without autopilot)
+## IPLAN-003: MCP Full Migration from UCX_v1 (without autopilot)
 
 ## 1. Objective
 
-Complete migration of operational capabilities from UCX_v1 archive behavior into MCP runtime and MCP documentation, excluding autopilot orchestration, and establish MCP as an independent SSD Unified Context framework implementation with no runtime or documentation dependency on UCX_v1.
+Complete migration of runtime and documentation capabilities from legacy archive behavior into MCP, excluding autopilot orchestration, and establish MCP as an independent SSD Unified Context framework implementation with no legacy-archive prerequisite.
 
 ## 2. Scope
 
@@ -32,7 +32,7 @@ Complete migration of operational capabilities from UCX_v1 archive behavior into
 1. Implement all currently missing MCP capabilities except autopilot.
 2. Replace placeholder CLI contracts with executable runtime behavior.
 3. Add missing MCP-first documentation: framework overview, flow contracts, CLI contracts, runbooks, and archive/cutover policy.
-4. Remove or neutralize UCX_v1 references in MCP runtime-facing and operator-facing docs.
+4. Remove or neutralize legacy archive references in MCP runtime-facing and runbook docs.
 5. Add deterministic validation and acceptance gates for migration completion.
 
 ### Out of Scope
@@ -91,9 +91,10 @@ Complete migration of operational capabilities from UCX_v1 archive behavior into
 
 ## 5. Implementation Workstreams
 
-## 5.1 Workstream A: CLI and Runtime Implementation
+### 5.1 Workstream A: CLI and Runtime Implementation
 
 Target modules:
+
 1. `mcp/src/mcp_server/cli/main.py`
 2. `mcp/src/mcp_server/review/*`
 3. `mcp/src/mcp_server/validation/*`
@@ -103,13 +104,15 @@ Target modules:
 7. `mcp/src/mcp_server/scan/*` (new)
 
 Required outcomes:
+
 1. Placeholder commands replaced by functional handlers.
 2. New command families registered with deterministic argument contracts.
-3. Output directories normalized under `.ucx/<stage>` until renamed by policy in Workstream C.
+3. Output directories normalized under `.ucx/<stage>` with naming frozen in M1 for this migration release.
 
-## 5.2 Workstream B: Test and Validation Coverage
+### 5.2 Workstream B: Test and Validation Coverage
 
 Target test areas:
+
 1. `mcp/tests/unit/test_cli_main.py`
 2. `mcp/tests/unit/test_validation_runner.py`
 3. `mcp/tests/unit/test_remediation_runner.py` (new)
@@ -118,23 +121,30 @@ Target test areas:
 6. `mcp/tests/integration/test_migration_flows.py` (new)
 
 Required outcomes:
+
 1. Command-level tests for each new and implemented command.
 2. Derived-artifact invariants verified (source unchanged, copy mutated).
 3. Exit-code and JSON and text formatting behavior verified.
 
-## 5.3 Workstream C: MCP Documentation Migration and Independence
+### 5.3 Workstream C: MCP Documentation Migration and Independence
 
 Create new docs:
+
 1. `mcp/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`
    - General description of MCP as SSD Unified Context framework.
 2. `mcp/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
    - End-to-end flow descriptions: create, review, validate, validate-fix, remediate, remediate-fix, scan, scoring.
-3. `mcp/docs/specs/SPEC-008_mcp_output_schema_contracts.md`
-4. `mcp/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md`
-5. `mcp/docs/specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md`
-6. `mcp/docs/policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md`
+3. `mcp/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md`
+4. `mcp/docs/specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md`
+5. `mcp/docs/policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md`
+
+Update existing spec:
+
+1. `mcp/docs/specs/SPEC-008_mcp_output_schema_contracts.md`
+   - Extend with any new schema ids introduced by M2 and M3 command implementation.
 
 Update existing docs:
+
 1. `mcp/docs/architecture/MCP_CLI_REFERENCE.md`
 2. `mcp/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
 3. `mcp/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
@@ -143,9 +153,11 @@ Update existing docs:
 6. `mcp/docs/CHANGELOG/CHANGELOG_v1.0.0.md` (or next release changelog file)
 
 Documentation migration rules:
+
 1. Remove phrasing that positions MCP as compatibility wrapper for UCX_v1.
 2. Use MCP-native command names and flow semantics.
 3. Keep a single MCP cutover/archive policy page for historical mapping.
+4. Treat naming policy as frozen after M1 and allow only additive documentation updates afterward.
 
 ## 6. Phase Plan
 
@@ -154,10 +166,14 @@ Documentation migration rules:
 1. Finalize CLI argument contracts for all missing commands except autopilot.
 2. Freeze command names and artifact naming patterns.
 3. Add and refresh CLI contract tests.
+4. Publish baseline `MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md` and lock naming semantics for downstream phases.
 
 Exit criteria:
+
 1. No placeholder command paths remain for in-scope commands.
 2. CLI reference can be generated from runtime contracts without manual overrides.
+3. Unit tests for command parsing and dispatch pass for all implemented in-scope commands.
+4. Baseline `MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md` is published and referenced from `mcp/docs/README.md`.
 
 ### Phase M2: Implement fix and remediation runtime
 
@@ -166,8 +182,10 @@ Exit criteria:
 3. Implement `remediate-fix` apply pipeline to produce `_remediated` outputs.
 
 Exit criteria:
+
 1. End-to-end source -> validation copy -> remediated copy flow passes integration tests.
 2. Source documents remain unchanged unless explicit non-protected mode is introduced.
+3. Protected-mode verification includes checksum equality for source files before and after fix commands.
 
 ### Phase M3: Implement operational controls and diagnostics
 
@@ -176,18 +194,22 @@ Exit criteria:
 3. Implement `prescreen`, `scan`, and `scoring` command group.
 
 Exit criteria:
+
 1. All commands produce deterministic output contracts with tests.
 2. Operator runbook includes normal, degraded, and error scenarios.
+3. Exit code behavior is documented and validated for success, validation-fail, and runtime-error paths.
 
 ### Phase M4: Documentation cutover to MCP-first
 
 1. Publish new general description and flow docs.
 2. Update CLI, runtime, runbook, and spec docs for implemented command set.
-3. Add cutover and archive policy and roadmap milestones.
+3. Update cutover and archive policy and roadmap milestones using locked M1 naming semantics.
 
 Exit criteria:
+
 1. MCP docs are complete for in-scope commands and flows.
 2. No active runtime docs require UCX_v1 references to be understandable.
+3. Documentation index links resolve and pass link consistency checks.
 
 ### Phase M5: UCX_v1 detachment gate
 
@@ -196,41 +218,80 @@ Exit criteria:
 3. Publish release readiness summary for migration closure.
 
 Exit criteria:
+
 1. MCP is independently documented and operable.
-2. UCX_v1 is marked deprecated and non-authoritative for MCP runtime behavior.
+2. UCX_v1 is documented as archived and non-authoritative for MCP runtime behavior.
 
-## 7. Acceptance Matrix
+## 7. Acceptance Thresholds
 
-### 7.1 Functional acceptance
+Pass and fail determination is driven only by this section and Section 7.1 command evidence.
+
+1. Command implementation threshold: 100% of in-scope commands in Section 4 return implemented behavior (no placeholder response text).
+2. Test threshold: all new and modified MCP tests pass with 0 failures for targeted unit and integration suites listed in Section 5.2.
+3. Schema threshold: all in-scope command JSON outputs conform to SPEC-008, SPEC-009, or SPEC-010 contracts.
+4. Documentation threshold: 0 unresolved internal links in updated MCP docs scope.
+5. Independence threshold: 0 operational legacy-archive dependency references outside `MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md`.
+
+## 7.1 Validation Evidence Command Set
+
+Use the following command set as the authoritative execution proof for migration acceptance:
+
+1. Unit and integration tests:
+   - `pytest mcp/tests/unit/test_cli_main.py`
+   - `pytest mcp/tests/unit/test_validation_runner.py`
+   - `pytest mcp/tests/unit/test_remediation_runner.py`
+   - `pytest mcp/tests/unit/test_prescreening.py`
+   - `pytest mcp/tests/unit/test_scoring_cli.py`
+   - `pytest mcp/tests/integration/test_migration_flows.py`
+2. Command surface verification:
+   - `mcp --help`
+   - `mcp <command> --help` for each in-scope command in Section 4
+3. Documentation and policy verification:
+   - `python scripts/validate_doc_links.py --root mcp/docs --include "*.md" --fail-on-broken`
+   - `rg -n "UCX_v1|UCX v1|ucx_v1|UCX" mcp/docs --glob "*.md" --glob "!mcp/docs/policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md"`
+
+Required evidence artifacts:
+
+1. Test output logs with command lines and exit codes.
+2. Command help snapshots for each in-scope command.
+3. Link-check result report for updated docs scope.
+4. UCX_v1 reference scan report with file-level findings.
+5. Schema conformance evidence for command outputs mapped to SPEC-008, SPEC-009, and SPEC-010.
+
+## 8. Acceptance Matrix
+
+This matrix is a qualitative coverage checklist and does not replace Section 7 thresholds.
+
+### 8.1 Functional acceptance
 
 1. All in-scope commands execute and return documented outputs.
 2. Fix flow commands produce expected derived artifacts and reports.
 3. Prescreen, scan, and scoring commands execute with deterministic output schema.
 
-### 7.2 Documentation acceptance
+### 8.2 Documentation acceptance
 
 1. New framework overview and operational flow docs are published.
 2. CLI reference and runbook cover all implemented commands.
 3. Specs include remediation and fix and diagnostics contracts.
 
-### 7.3 Independence acceptance
+### 8.3 Independence acceptance
 
-1. MCP docs do not require UCX_v1 docs for operation.
+1. MCP docs do not require legacy archive docs for runtime execution.
 2. UCX_v1 references are isolated to an archive and cutover document.
 3. MCP docs identify MCP as canonical source of truth.
 
-## 8. Execution Checklist
+## 9. Execution Checklist
 
 1. Create implementation branches for each phase.
 2. Implement P0 commands and tests.
 3. Implement P1 controls and tests.
 4. Implement P2 diagnostics commands and tests.
 5. Author and update MCP docs listed in Workstream C.
-6. Run full test suite for affected modules.
+6. Run Section 7.1 validation evidence command set and collect artifacts.
 7. Run documentation consistency and link checks.
-8. Publish migration completion report.
+8. Publish migration completion report with mandatory evidence bundle.
 
-## 9. Risks and Controls
+## 10. Risks and Controls
 
 1. Risk: command-surface expansion causes inconsistent behavior.
    - Control: strict CLI contract tests and schema-based output validation.
@@ -239,10 +300,31 @@ Exit criteria:
 3. Risk: docs drift from runtime after migration.
    - Control: release gate requiring CLI-doc parity checks before merge.
 
-## 10. Deliverables
+## 11. Ownership and Accountability
+
+1. Workstream A owner: MCP runtime maintainer.
+2. Workstream B owner: MCP test and quality maintainer.
+3. Workstream C owner: MCP documentation maintainer.
+4. Phase exit approval owner: MCP release approver.
+5. Active release tracking record: `mcp/docs/plans/IPLAN-003_RELEASE_TRACKING.yaml`.
+6. Release tracking record minimum fields: `release_id`, `iplan_id`, `phase`, `status`, `workstream_a_owner`, `workstream_b_owner`, `workstream_c_owner`, `release_approver`, `evidence_bundle_path`, `last_updated`.
+7. Named assignees for items 1-4 must be recorded in the active release tracking record before M2 starts.
+8. The release tracking record must be updated at each phase transition and before final closure sign-off.
+9. Each phase exit requires explicit sign-off from workstream owner and release approver with linked evidence artifacts from Section 7.1.
+
+## 12. Deliverables
 
 1. Runtime: all in-scope missing capabilities implemented.
 2. Tests: unit and integration coverage for all new commands.
 3. Documentation: MCP-first overview, flows, specs, runbook, roadmap, changelog.
 4. Governance: cutover and archive policy for UCX_v1 references.
-5. Closure artifact: migration completion report under `mcp/docs/plans/`.
+5. Closure artifact: `mcp/docs/plans/IPLAN-003_MIGRATION_CLOSURE_REPORT.md`.
+
+## 12.1 Closure Report Minimum Contents
+
+1. Scope summary with in-scope command completion matrix.
+2. Test execution table with command, result, and evidence path.
+3. Schema conformance summary for SPEC-008, SPEC-009, and SPEC-010.
+4. Documentation link-check summary and unresolved-link count.
+5. Legacy-archive scan summary confirming archive-only references.
+6. Final sign-off section with workstream owner approvals and release approver approval.

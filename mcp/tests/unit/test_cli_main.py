@@ -71,6 +71,7 @@ def test_main_review_build_generates_output_artifacts(tmp_path: Path) -> None:
     assert (out_dir / "review_prompt.txt").exists()
     assert (out_dir / "review_prompt_sidecar.json").exists()
     assert (out_dir / "review_prompt_inspection.json").exists()
+    assert (out_dir / "review_controls.json").exists()
 
 
 def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> None:

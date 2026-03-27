@@ -89,6 +89,53 @@ This release establishes a complete L0-L9 MCP documentation set under mcp/docs a
 - Added UCX_v1 compatibility command definitions and implementation-status notes (`review`, `remediate`, `remediate-fix`, `validate-fix`):
   - `mcp/docs/architecture/MCP_CLI_REFERENCE.md`
 
-### Validation Evidence Snapshot
+### Validation Evidence Snapshot (2026-03-25)
 
 - Targeted MCP test execution for new and changed validator/CLI paths: PASS (9 passed)
+
+---
+
+## Post-Release Update (2026-03-26)
+
+**Type**: Minor-level update (migration core implementation without autopilot)
+**Status**: Implemented
+
+### Runtime and CLI Implementation Updates
+
+- Implemented in-scope command runtime behavior:
+  - `remediate`
+  - `validate-fix`
+  - `remediate-fix`
+  - `prescreen`
+  - `scan`
+  - `scoring show|validate|compare`
+- Added review mode and maintenance controls:
+  - `--unified`, `--one-turn`, `--no-resume`, `--session-ttl`
+  - `--clean-memory`, `--clean-reports`, `--keep-versions`
+- Added validation controls:
+  - `--tier1-only`, `--strict`, `--format {text,json}`
+
+### Test Coverage Updates (2026-03-26)
+
+- Added command-path and flow tests:
+  - `mcp/tests/unit/test_remediation_runner.py`
+  - `mcp/tests/unit/test_prescreening.py`
+  - `mcp/tests/unit/test_scoring_cli.py`
+  - `mcp/tests/integration/test_migration_flows.py`
+
+### Documentation and Policy Updates
+
+- Added framework/flow architecture docs:
+  - `mcp/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`
+  - `mcp/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
+- Added new specs:
+  - `mcp/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md`
+  - `mcp/docs/specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md`
+- Added cutover policy and release tracking record:
+  - `mcp/docs/policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md`
+  - `mcp/docs/plans/IPLAN-003_RELEASE_TRACKING.yaml`
+
+### Validation Evidence Snapshot (2026-03-26)
+
+- `pytest mcp/tests/unit/test_cli_main.py mcp/tests/unit/test_validation_runner.py mcp/tests/unit/test_remediation_runner.py mcp/tests/unit/test_prescreening.py mcp/tests/unit/test_scoring_cli.py -q`: PASS
+- `pytest mcp/tests/integration/test_migration_flows.py -q`: PASS

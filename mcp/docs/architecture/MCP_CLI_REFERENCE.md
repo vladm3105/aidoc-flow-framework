@@ -3,9 +3,9 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.0 |
-| Date | 2026-03-24 |
-| Scope | CLI command contracts implemented in mcp/src/mcp_server/cli/main.py |
+| Version | 1.1 |
+| Date | 2026-03-26 |
+| Scope | Implemented command contracts in `mcp/src/mcp_server/cli/main.py` |
 
 ---
 
@@ -13,220 +13,82 @@
 
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
-| init | --project | none | scaffold summary lines |
-| create-build | --project --persona --doc-type --layer --template | --sections-json --out | creation prompt path and layer asset names |
-| review-build | --project --persona --doc-type --template --sections-json | --layer --out | review prompt path, sidecar path, inspection path, layer asset names |
-| review | --project --persona --doc-type --template --sections-json | --layer --out | alias of review-build |
-| validate-build | --project --doc-type --layer --document | --out | validation report path and summary path |
-| remediate | --project --doc-type --layer --document | --review-report --out | reserved UCX_v1-compat command (not implemented) |
-| remediate-fix | --project --doc-type --layer --document | --remediation-report --out | reserved UCX_v1-compat command (not implemented) |
-| validate-fix | --project --doc-type --layer --document | --validation-report --out | reserved UCX_v1-compat command (not implemented) |
+| init | --project | none | scaffold summary |
+| create-build | --project --persona --doc-type --layer --template | --sections-json --out | creation prompt artifacts |
+| review-build | --project --persona --doc-type --template --sections-json | --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
+| review | same as review-build | same as review-build | alias for review-build |
+| validate-build | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status |
+| validate-fix | --project --doc-type --layer --document | --validation-report --out | validation-derived artifacts and fix report |
+| remediate | --project --doc-type --layer --document | --review-report --out | remediation report |
+| remediate-fix | --project --doc-type --layer --document | --remediation-report --out | remediated-derived artifacts and apply report |
+| prescreen | --document | --out | prescreen candidate report |
+| scan | --report-file | --out | category-count scan report |
+| scoring show | --report-file | none | score payload |
+| scoring validate | --report-file --threshold | none | threshold validation payload |
+| scoring compare | --baseline-report-file --candidate-report-file | none | score delta payload |
 
 ---
 
-## 2. Command Contracts
+## 2. Exit Code Semantics
 
-### 2.1 init
-
-Required:
-
-- --project path to project root where docs/UCX assets are created
-
-Behavior:
-
-- Creates project UCX scaffold if missing
-- Skips existing files
-- Returns created and skipped counts
-
-### 2.2 create-build
-
-Required:
-
-- --project project root containing docs/UCX
-- --persona persona file base name
-- --doc-type document type label
-- --layer SSD layer directory name
-- --template template file under docs/UCX/prompt templates creation path
-
-Optional:
-
-- --sections-json path to JSON array with section_id, title, content, included
-- --out explicit output directory
-
-Behavior:
-
-- If sections-json is provided, command loads provided sections as SourceSection list.
-- If sections-json is omitted, command runs with default internal section fallback behavior.
-- If out is omitted, command writes artifacts to `<document_dir>/.ucx/creation` when sections-json is provided, otherwise to `<project>/docs/.ucx/creation`.
-- If out points to a `.ucx` folder, command appends `/creation` automatically.
-- Command writes creation_prompt.txt, creation_prompt_sidecar.json, and creation_prompt_inspection.json.
-
-Constraint:
-
-- Direct markdown source ingestion as a dedicated create-build mode is not implemented.
-
-### 2.3 review-build
-
-Required:
-
-- --project project root containing docs/UCX
-- --persona persona file base name
-- --doc-type document type label
-- --template review template file
-- --sections-json required sections payload path
-
-Optional:
-
-- --layer SSD layer directory name
-- --out explicit output directory
-
-Behavior:
-
-- Command requires sections-json input.
-- If out is omitted, command writes artifacts to `<document_dir>/.ucx/review`.
-- If out points to a `.ucx` folder, command appends `/review` automatically.
-- Command writes review_prompt.txt, review_prompt_sidecar.json, and review_prompt_inspection.json.
-
-### 2.4 validate-build
-
-Required:
-
-- --project project root containing docs/UCX
-- --doc-type document type label
-- --layer SSD layer directory name
-- --document path to document file or document directory
-
-Optional:
-
-- --out explicit output directory
-
-Behavior:
-
-- Command performs script-based structural validation (no LLM).
-- Validation checks load layer schema/template assets from `docs/UCX/templates/layers/<layer>/`.
-- Command validates required frontmatter custom fields, required tags, and required section regex patterns from schema.
-- If out is omitted, command writes artifacts to `<document_dir>/.ucx/validate`.
-- If out points to a `.ucx` folder, command appends `/validate` automatically.
-- Command writes validation_report.json and validation_report.txt.
-
-### 2.5 review (alias)
-
-Required:
-
-- Same required arguments as `review-build`
-
-Behavior:
-
-- Command is an alias of `review-build` for UCX_v1 naming compatibility.
-
-### 2.6 remediate (reserved)
-
-Required:
-
-- --project project root containing docs/UCX
-- --doc-type document type label
-- --layer SSD layer directory name
-- --document path to document file or document directory
-
-Optional:
-
-- --review-report path to review report input
-- --out explicit output directory
-
-Behavior:
-
-- Command contract is defined for UCX_v1 compatibility.
-- Current MCP implementation returns a not-implemented response.
-
-### 2.7 remediate-fix (reserved)
-
-Required:
-
-- --project project root containing docs/UCX
-- --doc-type document type label
-- --layer SSD layer directory name
-- --document path to document file or document directory
-
-Optional:
-
-- --remediation-report path to remediation report input
-- --out explicit output directory
-
-Behavior:
-
-- Command contract is defined for UCX_v1 compatibility.
-- Current MCP implementation returns a not-implemented response.
-
-### 2.8 validate-fix (reserved)
-
-Required:
-
-- --project project root containing docs/UCX
-- --doc-type document type label
-- --layer SSD layer directory name
-- --document path to document file or document directory
-
-Optional:
-
-- --validation-report path to validation report input
-- --out explicit output directory
-
-Behavior:
-
-- Command contract is defined for UCX_v1 compatibility.
-- Current MCP implementation returns a not-implemented response.
-
----
-
-## 3. Sections JSON Payload Contract
-
-Expected element fields:
-
-- section_id
-- title
-- content
-- included (optional, defaults true)
-
-Required top-level structure:
-
-- JSON array of section objects
-
-Failure modes:
-
-- Missing required field in any section object
-- Invalid JSON syntax
-- Unreadable file path
-
----
-
-## 4. Exit Behavior
-
-| Condition | Exit Outcome |
+| Condition | Exit Code |
 | --- | --- |
-| Successful command | return code 0 |
-| Unknown or missing command | parser help, return code 2 |
-| Runtime error | non-zero process failure |
+| Command success | 0 |
+| Validation failure (`validate-build`) | 1 |
+| Score threshold failure (`scoring validate`) | 1 |
+| CLI usage or parser failure | 2 |
+
+---
+
+## 3. Output Directory Semantics
+
+Default stage output root:
+
+- `.ucx/<stage>`
+
+Stage mapping:
+
+- create-build -> `creation`
+- review-build/review -> `review`
+- validate-build/validate-fix -> `validate`
+- remediate/remediate-fix -> `remediation`
+
+Rule:
+
+- if `--out` points to `.ucx`, CLI appends stage automatically.
+
+---
+
+## 4. Validation Control Contract
+
+`validate-build` controls:
+
+- `--tier1-only`: evaluate blocking tier1 checks only
+- `--strict`: treat warnings as failures
+- `--format json`: emit deterministic JSON status payload to stdout
+
+JSON status payload fields:
+
+- `report_path`
+- `summary_path`
+- `tier1_only`
+- `strict`
+- `errors`
+- `warnings`
+- `passed`
 
 ---
 
 ## 5. Examples
 
-### 5.1 Initialize project UCX scaffold
-
-mcp init --project /path/to/project
-
-### 5.2 Build creation prompt with default stage output folder
-
-mcp create-build --project /path/to/project --persona architect --doc-type brd --layer 01_BRD --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json
-
-### 5.3 Build creation prompt with explicit output directory
-
-mcp create-build --project /path/to/project --persona architect --doc-type brd --layer 01_BRD --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json --out /path/to/out
-
-### 5.4 Build review prompt
-
-mcp review-build --project /path/to/project --persona auditor --doc-type brd --template BRD-MVP-TEMPLATE.md --sections-json /path/to/sections.json --out /path/to/out
-
-### 5.5 Validate document structure without LLM
-
-mcp validate-build --project /path/to/project --doc-type brd --layer 01_BRD --document /path/to/docs/01_BRD/BRD-01.md
+```bash
+mcp validate-build --project /path/to/project --doc-type brd --layer 01_BRD --document /path/to/doc.md --tier1-only --format json
+mcp validate-fix --project /path/to/project --doc-type brd --layer 01_BRD --document /path/to/doc.md --validation-report /path/to/validation_report.json
+mcp remediate --project /path/to/project --doc-type brd --layer 01_BRD --document /path/to/doc.md
+mcp remediate-fix --project /path/to/project --doc-type brd --layer 01_BRD --document /path/to/doc.md --remediation-report /path/to/remediation_report.json
+mcp prescreen --document /path/to/docs/01_BRD
+mcp scan --report-file /path/to/validation_report.json
+mcp scoring show --report-file /path/to/validation_report.json
+mcp scoring validate --report-file /path/to/validation_report.json --threshold 90
+mcp scoring compare --baseline-report-file /path/to/a.json --candidate-report-file /path/to/b.json
+```
