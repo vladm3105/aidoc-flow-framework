@@ -54,7 +54,7 @@ flowchart LR
 
 | ADR ID | Title | Status | Category | Related BDD | Impact | Last Updated |
 |--------|-------|--------|----------|-------------|--------|--------------|
-| [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13T00:00:00 |
+| [ADR-TEMPLATE.yaml](./ADR-TEMPLATE.yaml) | Template (default) | Reference | Reference | - | - | 2026-03-29 |
 
 ## Planned
 
@@ -89,11 +89,7 @@ flowchart LR
 
 When creating a new ADR:
 
-1. **Copy Template**:
-   ```bash
-   cp ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md \
-      docs/05_ADR/ADR-NN_decision_title.md
-   ```
+1. **Generate via MCP**: Use `sdd_create` with `doc_type=adr`, `layer=05_ADR`
 
 2. **Assign ADR ID**: Use next sequential number (ADR-01, ADR-02, ...)
 
@@ -182,9 +178,9 @@ gantt
 
 ## Related Documents
 
-- **Template**: [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md)
-- **README**: [README.md](./README.md) - Learn about ADR purpose, structure, and best practices
-- **Traceability Matrix**: [ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md](./ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Template**: [ADR-TEMPLATE.yaml](./ADR-TEMPLATE.yaml)
+- **README**: [README.md](./README.md) - ADR purpose, structure, and best practices
+- **Traceability**: Per-ADR Section 9 + AI-generated reports
 - **CTR Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](./ADR-CTR_SEPARATE_FILES_POLICY.md) - Contract file naming policy
 
 ## Maintenance Guidelines

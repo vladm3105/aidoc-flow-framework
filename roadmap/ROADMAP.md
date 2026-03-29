@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.5.0 |
-| Latest Release | 0.5.0 (BDD template unification — 4 layers complete) |
-| Next Minor | 0.6.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.6.0 |
+| Latest Release | 0.6.0 (ADR template unification — 5 layers complete) |
+| Next Minor | 0.7.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,11 +13,12 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 (Current) ──► v0.6.0 ──► v1.0.0
-  │           │           │           │           │                     │           │
-  │           │           │           │           │                     │           └─► Multi-MCP ecosystem
-  │           │           │           │           │                     └─► API executors via LiteLLM
-  │           │           │           │           └─► BDD template unification (4 layers complete)
+v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 ──► v0.6.0 (Current) ──► v0.7.0 ──► v1.0.0
+  │           │           │           │           │           │                     │           │
+  │           │           │           │           │           │                     │           └─► Multi-MCP
+  │           │           │           │           │           │                     └─► API executors
+  │           │           │           │           │           └─► ADR unification (5 layers complete)
+  │           │           │           │           └─► BDD template unification
   │           │           │           └─► EARS template unification
   │           │           └─► PRD template unification + C4 model mapping
   │           └─► BRD unification (v0.2.0) + mcp_sdd naming (v0.2.1)
@@ -28,7 +29,7 @@ v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 (Curr
 
 ## Planned Releases
 
-### v0.6.0 - API Executors and Progress Notifications
+### v0.7.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -63,6 +64,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.6.0 (2026-03-29)
+
+ADR template unification. Consolidated 6 ADR files into single `ADR-TEMPLATE.yaml` (466 lines, 10 sections + glossary + lifecycle appendix). ADR serves as decision bridge between Container (PRD) and Component (SYS). Originating topic points to PRD Section 14. Active ADR instances kept in directory. See changelog/CHANGELOG_v0.6.0.md for details.
 
 ### v0.5.0 (2026-03-29)
 
