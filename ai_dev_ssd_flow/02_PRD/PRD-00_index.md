@@ -47,7 +47,7 @@ flowchart LR
 
 | PRD ID | Title | Status | Related BRD | Features | Priority | Last Updated |
 |--------|-------|--------|-------------|----------|----------|--------------|
-| [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md) | Template (default) | Reference | - | - | - | 2025-11-13T00:00:00 |
+| [PRD-TEMPLATE.yaml](./PRD-TEMPLATE.yaml) | Template (default) | Reference | - | - | - | 2026-03-29 |
 
 ## Planned
 
@@ -72,11 +72,7 @@ flowchart LR
 
 When creating a new PRD:
 
-1. **Copy Template**:
-   ```bash
-   cp ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md \
-      docs/02_PRD/PRD-NN_product_name.md
-   ```
+1. **Generate via MCP**: Use `sdd_create` with `doc_type=prd` and `layer=02_PRD`
 
 2. **Assign PRD ID**: Use next sequential number (PRD-01, PRD-02, ...)
 
@@ -160,7 +156,7 @@ The Threshold Registry (PRD-NN pattern) centralizes magic numbers, limits, and c
 3. Value requires coordinated updates
 4. Value has compliance/regulatory implications
 
-See [PRD-MVP-TEMPLATE.md Section 7](./PRD-MVP-TEMPLATE.md#7-technical-requirements-specifications) for threshold registry reference format.
+See `PRD-TEMPLATE.yaml` Section 9 (Functional Requirements) for `@threshold:` tag format.
 
 ## Migration Guide
 
@@ -294,7 +290,7 @@ When migrating a Legacy PRD to Current status:
 
 ## Related Documents
 
-- **Template**: [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md)
+- **Template**: [PRD-TEMPLATE.yaml](./PRD-TEMPLATE.yaml)
 - **README**: [README.md](./README.md) - Learn about PRD purpose and structure
 - **Traceability Matrix**: [PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md](./PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

@@ -20,33 +20,27 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author a co
 
 ---
 
-## MANDATORY STRUCTURE (21 Sections)
+## MANDATORY STRUCTURE (15 Sections)
 
-All PRDs MUST contain exactly 21 numbered sections in this order, matching `PRD-MVP-TEMPLATE.md`.
+All PRDs MUST contain exactly 15 numbered sections in this order, matching `PRD-TEMPLATE.yaml`.
 
-| # | Section | Key Content | Element Codes |
-|---|---------|-------------|---------------|
-| 1 | Document Control | Metadata, dual scoring, versioning | - |
-| 2 | Executive Summary | 2-3 sentence overview, business value | - |
-| 3 | Problem Statement | Current state, business impact | - |
-| 4 | Target Audience & User Personas | Primary/secondary users | 24 |
-| 5 | Success Metrics (KPIs) | Primary/secondary KPIs, go/no-go gates | 08 |
-| 6 | Goals & Objectives | Business goals, objectives, stretch goals | 23 |
-| 7 | Scope & Requirements | In-scope, out-of-scope, dependencies | 05, 22 |
-| 8 | User Stories & User Roles | PRD-level stories with layer note | 09 |
-| 9 | Functional Requirements | Core capabilities, user journeys | 01, 11, 22 |
-| 10 | **Customer-Facing Content & Messaging** | **BLOCKING - substantive content required** | - |
-| 11 | Acceptance Criteria | Business/technical criteria | 06 |
-| 12 | Constraints & Assumptions | Business/technical constraints | 03, 04 |
-| 13 | Risk Assessment | High-risk items, mitigation | 07 |
-| 14 | Success Definition | Go-live criteria, validation | - |
-| 15 | Stakeholders & Communication | Core team, RACI matrix | 24 |
-| 16 | Implementation Approach | MVP phases, testing strategy | - |
-| 17 | Budget & Resources | Development cost, ROI hypothesis | - |
-| 18 | Traceability | Upstream BRD, ADR Requirements table | - |
-| 19 | References | Internal/external documentation | - |
-| 20 | EARS Enhancement Appendix | Timing profiles, boundary values | - |
-| 21 | Quality Assurance & Testing Strategy | Quality standards, testing strategy | 02 |
+| # | Section | Key Content |
+|---|---------|-------------|
+| 1 | Document Control | Metadata, EARS-Ready scoring, BRD reference |
+| 2 | Executive Summary | MVP hypothesis, timeline overview |
+| 3 | Problem Statement | Current state, business impact, opportunity |
+| 4 | Target Audience & User Personas | Primary/secondary personas |
+| 5 | Success Metrics & KPIs | 30-day validation, 90-day business, decision gates |
+| 6 | Goals & Objectives | Primary, secondary, stretch goals |
+| 7 | Scope & Requirements | In-scope features, dependencies, out-of-scope |
+| 8 | User Stories & User Roles | PRD-level stories (EARS/BDD own details) |
+| 9 | Functional Requirements | Core capabilities, user journey, diagram contract |
+| 10 | **Customer-Facing Content & Messaging** | **BLOCKING — substantive content required** |
+| 11 | Acceptance Criteria | Launch gates, business/technical acceptance |
+| 12 | Constraints & Assumptions | Product-level constraints and assumptions |
+| 13 | Risk Assessment | Risks with likelihood, impact, mitigation |
+| 14 | Traceability | Upstream BRD tags, downstream EARS/BDD/ADR, ADR topic elaboration |
+| 15 | Glossary | Flat terms list |
 
 MVP format constraints:
 - Keep PRD as a single monolithic file (no section split files)
@@ -339,7 +333,7 @@ Apply these 7 expert personas during PRD creation:
 Before completing PRD creation, verify:
 
 - [ ] All 21 sections present with correct numbering
-- [ ] Section titles exactly match PRD-MVP-TEMPLATE.md
+- [ ] Section titles exactly match PRD-TEMPLATE.yaml
 - [ ] Section 10 has substantive content (not placeholders)
 - [ ] Section 8 includes layer separation note
 - [ ] Section 8 has NO Given-When-Then or WHEN-THE-SHALL patterns
@@ -359,7 +353,7 @@ Create a complete PRD from the upstream BRD artifact.
 
 **CRITICAL REMINDERS**:
 1. Use 21-section structure exactly
-2. Keep section titles identical to PRD-MVP-TEMPLATE.md
+2. Keep section titles identical to PRD-TEMPLATE.yaml
 3. Section 10 is BLOCKING - no placeholders
 4. Section 8 must have layer separation note
 5. NO Given-When-Then patterns (that's BDD, Layer 4)

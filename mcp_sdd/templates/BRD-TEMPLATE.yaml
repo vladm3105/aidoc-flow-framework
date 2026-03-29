@@ -20,7 +20,8 @@
 #    PRD (Layer 2)  — user stories, personas, implementation phases, testing strategy
 #    ADR (Layer 5)  — architecture decisions (BRD only identifies topics)
 #    SYS (Layer 6)  — quality attribute details (performance, reliability, etc.)
-#    TSPEC (Layer 10) — test coverage and test cases
+#    TSPEC (Layer 10) — test specifications (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST)
+#    TASKS (Layer 11) — implementation task breakdown
 #
 #  Validation:
 #    MCP tool: sdd_validate (mcp_sdd server)
@@ -50,6 +51,48 @@ metadata:
       No standalone scripts — mcp_sdd is the execution layer.
       Key tools: sdd_validate (structure), sdd_score_validate (quality gate),
         sdd_preflight (environment), sdd_consistency (cross-doc).
+  c4_level:
+    _guidance: |
+      SDD layers map to C4 architecture model zoom levels:
+        Context (BRD)    — business environment, actors, boundaries
+          └─ EARS/BDD    — formalize Context→Container transition
+        Container (PRD)  — product features, functional blocks
+          └─ ADR         — decisions that shape Component architecture
+        Component (SYS)  — system structure, interfaces, quality attributes
+          └─ REQ/CTR     — decompose Component→Code into atomic units
+        Code (SPEC)      — implementation-ready specifications
+          └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
+          └─ TASKS       — implementation task breakdown
+
+      BRD is Context level. Content must describe business environment,
+      actors, and system boundaries — not product features (Container),
+      system structure (Component), or implementation details (Code).
+    value: context
+
+  diagram_standard:
+    _guidance: |
+      Diagrams follow C4 model zoom levels. Each SDD layer uses diagrams
+      appropriate to its C4 level:
+
+      | C4 Level | SDD Layer | Diagram Types |
+      | Context  | BRD       | C4-L1 (system context), DFD-L1 (top-level data flow), sequenceDiagram (business journey) |
+      | Container| PRD       | C4-L2 (container), DFD-L2 (feature data flow), sequenceDiagram (product interactions) |
+      | Component| SYS       | C4-L3 (component), DFD-L3 (component data flow), sequenceDiagram (system interactions) |
+      | Code     | SPEC      | C4-L4 (code), DFD-L4, class diagrams, sequenceDiagram (implementation flow) |
+
+      BRD is Context level (C4-L1):
+        - System context diagram: actors, external systems, system boundary
+        - Top-level data flow (DFD-L1): major data movements across boundary
+        - Business journey sequence diagram: happy path only
+
+      Diagram rules:
+        - Show business-level interactions, not technical implementation
+        - PASS: "User", "MVP App", "Payment System", "Delivery Partner"
+        - FAIL: "POST /api/endpoint", "Redis cache", "Load Balancer"
+    tags:
+      - "@diagram: c4-l1"
+      - "@diagram: dfd-l1"
+
   tags:
     - brd-document
     - layer-1-artifact

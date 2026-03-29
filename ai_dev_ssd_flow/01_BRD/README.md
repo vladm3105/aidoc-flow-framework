@@ -5,7 +5,24 @@
 BRDs capture business objectives, stakeholder needs, and success criteria as the
 first step in the SDD workflow. Each BRD represents one MVP iteration cycle.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+
+## C4 Model Mapping
+
+BRD is the **Context** level in the C4 architecture model. Content describes the business
+environment, actors, and system boundaries — not product features, architecture, or code.
+
+```text
+Context (BRD)    — business environment, actors, boundaries        ← this layer
+  └─ EARS/BDD    — formalize Context→Container transition
+Container (PRD)  — product features, functional blocks
+  └─ ADR         — decisions that shape Component architecture
+Component (SYS)  — system structure, interfaces, quality attributes
+  └─ REQ/CTR     — decompose Component→Code into atomic units
+Code (SPEC)      — implementation-ready specifications
+  └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
+  └─ TASKS       — implementation task breakdown
+```
 
 ## Files
 
