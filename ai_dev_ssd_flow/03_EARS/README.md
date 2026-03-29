@@ -1,329 +1,95 @@
----
-title: "EARS (Event-Action-Response-State) — Engineering Requirements"
-tags:
-  - index-document
-  - layer-3-artifact
-  - shared-architecture
-custom_fields:
-  document_type: readme
-  artifact_type: EARS
-  layer: 3
-  priority: shared
----
-
-# EARS (Event-Action-Response-State) — Engineering Requirements
-
-## Generation Rules
-
-- Index-only: maintain `EARS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
-- Templates: default to the MVP template; use a full/sectioned template only if explicitly required.
-- Inputs used for generation: `EARS-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
-
-**Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (EARS-02, EARS-03, etc.), not template changes.
+# EARS Requirements — Layer 3
 
 ## Overview
 
-EARS files capture engineering requirements in a structured, precise format that transforms high-level product requirements into clear, testable statements. EARS uses the **WHEN-THE-SHALL-WITHIN** syntax to ensure every requirement is measurable and implementation-ready.
+EARS (Easy Approach to Requirements Syntax) formalizes business and product
+requirements into precise, testable statements using WHEN-THE-SHALL-WITHIN syntax.
 
-## Purpose
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
 
-EARS serves as the crucial translation layer between:
-- **Upstream**: Product Requirements Documents (PRDs) 
-- **Downstream**: Atomic Requirements (REQs), Architecture Decisions (ADRs), and Technical Specifications
+## C4 Model Position
 
-## Position in Document Workflow
+EARS is a **refinement step** that formalizes the transition from Context (BRD) to
+Container (PRD). It does not have its own C4 level — it translates requirements
+into atomic, testable logic for downstream BDD scenarios.
 
-**[WARN] See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
-
-**[WARN] See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
-
-## Statement Types
-
-### Event-Driven Requirements
-Define system behavior in response to specific events:
-
-```markdown
-WHEN [triggering condition] THE [system] SHALL [response action] WITHIN [timeframe]
+```text
+Context (BRD)    — business environment, actors, boundaries
+  └─ EARS/BDD    — formalize Context→Container transition              ← this layer
+Container (PRD)  — product features, functional blocks
+  └─ ADR         — decisions that shape Component architecture
+Component (SYS)  — system structure, interfaces, quality attributes
+  └─ REQ/CTR     — decompose Component→Code into atomic units
+Code (SPEC)      — implementation-ready specifications
+  └─ TSPEC       — test specifications
+  └─ TASKS       — implementation task breakdown
 ```
 
-**Example:**
-```markdown
-WHEN the [DATA_ANALYSIS - e.g., user behavior analysis, trend detection] Agent requests historical data, the client SHALL retrieve data from [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] and cache the response with endpoint-appropriate TTL.
-```
+## Files
 
-### State-Driven Requirements
-Define behavior based on system states:
+| File | Purpose |
+|------|---------|
+| `EARS-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
+| `EARS-00_index.md` | EARS registry — tracks planned and active EARS documents per project |
 
-```markdown
-WHILE [state condition] THE [system] SHALL [behavior] WITHIN [constraint]
-```
+## Template Sync Rule
 
-**Example:**
-```markdown
-WHILE [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] is degraded, the client SHALL use the last valid cached response if freshness SLA is met.
-```
+**IMPORTANT**: `EARS-TEMPLATE.yaml` exists in two locations that must stay in sync:
 
-### Unwanted Behavior Requirements
-Define behaviors to avoid (negative requirements):
+| Location | Role |
+|----------|------|
+| `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `mcp_sdd/templates/EARS-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
-```markdown
-IF [problem condition] THE [system] SHALL [preventive action] WITHIN [timeframe]
-```
+After any change to the canonical source, copy it to the runtime location:
 
-**Example:**
-```markdown
-IF rate limits are exceeded, the client SHALL queue or throttle requests per token bucket policy and return a clear 429 error with retry-after guidance to callers.
-```
-
-### Ubiquitous Requirements
-Define system-wide constraints and quality attributes:
-
-```markdown
-THE [system] SHALL [requirement] WITHIN [constraint]
-```
-
-**Examples:**
-```markdown
-THE client SHALL normalize responses to the internal schema used by [EXTERNAL_SERVICE_GATEWAY] to enable seamless failover.
-
-THE client SHALL complete requests within 2 seconds p95 for supported endpoints.
-```
-
-## MVP Template Structure (6 Sections)
-
-EARS documents follow a standardized 6-section structure:
-
-| Section | Title | Content |
-|---------|-------|---------|
-| (unnumbered) | Document Control | Metadata, BDD-Ready Score, Source Document |
-| 1 | Purpose and Context | Document Purpose, Scope, Intended Audience |
-| 2 | EARS in Development Workflow | Layer positioning diagram, SDD role |
-| 3 | Requirements | Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous |
-| 4 | Quality Attributes | Performance, Security, Reliability tables |
-| 5 | Traceability | Upstream Sources, Downstream Artifacts, Tags |
-| 6 | References | Internal Documentation, External Standards |
-
-**Template**: `EARS-MVP-TEMPLATE.md` (Version 1.1)
-**Schema**: `EARS_MVP_SCHEMA.yaml`
-
-## File Structure
-
-### Header with Traceability Tags
-
-All EARS files start with traceability tags linking to related artifacts:
-
-```markdown
-@requirement:[REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN)
-@adr:[ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN)
-@PRD:[PRD-NN](../02_PRD/PRD-NN_...md)
-@SYS:[SYS-NN](../06_SYS/SYS-NN_...md)
-@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
-@bdd:[BDD-NN.SS:scenarios](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
-```
-
-### Requirements section
-
-Organize statements by type with clear headers:
-
-```markdown
-## Requirements
-
-### Event-driven
-- WHEN [condition] THE [system] SHALL [action] WITHIN [constraint].
-- WHEN [another condition] THE [system] SHALL [different action].
-
-### Unwanted Behavior
-- IF [problem] THE [system] SHALL [prevention] WITHIN [timeframe].
-- IF [another problem] THE [system] SHALL [fallback].
-
-### State-driven
-- WHILE [state] THE [system] SHALL [behavior] WITHIN [limit].
-- WHILE [another state] THE [system] SHALL [alternative behavior].
-
-### Ubiquitous
-- THE [system] SHALL [system-wide requirement].
-- THE [system] SHALL [quality attribute] WITHIN [threshold].
-```
-
-### Traceability section
-
-Document upstream sources and downstream artifacts:
-
-```markdown
-## Traceability
-- Upstream Sources: [PRD-NN](../02_PRD/PRD-NN_...md), [SYS-NN](../06_SYS/SYS-NN_...md)
-- Downstream Artifacts: [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN), [SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
-- Anchors/IDs: `# EARS-NN`
-- Code Path(s): `src/domain/component/module.py`
-```
-
-## Layer Scripts
-
-This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
-
-- **Location**: `03_EARS/scripts/`
-- **Primary Validator**: `validate_ears_quality_score.sh`
-- **Usage**: Run scripts directly or usage via `validate_all.py`.
-
-### Pre-Commit Hooks
-
-EARS validation is **automatically enforced** via pre-commit hooks:
-
-```yaml
-# .pre-commit-config.yaml
-- id: ears-core-validator
-  name: Validate EARS core checks (validator, framework library)
-  stages: [pre-commit]  # Runs automatically on git commit
-
-- id: ears-quality-gate
-  name: Validate EARS quality gates
-  stages: [pre-commit]
-
-- id: ears-ready-score
-  name: Validate EARS BDD-Ready score (≥90%)
-  stages: [pre-commit]
-```
-
-**Manual Execution**:
 ```bash
-# Run all EARS pre-commit hooks
-pre-commit run ears-core-validator --all-files
-pre-commit run ears-quality-gate --all-files
-pre-commit run ears-ready-score --all-files
-
-# Or run specific validation
-python3 ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py ai_dev_ssd_flow/03_EARS
-bash ai_dev_ssd_flow/03_EARS/scripts/validate_ears_quality_score.sh ai_dev_ssd_flow/03_EARS
+cp ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml mcp_sdd/templates/EARS-TEMPLATE.yaml
 ```
 
-**Quality Gates Enforced**:
-- ✅ EARS structure compliance (6 sections MVP)
-- ✅ WHEN-THE-SHALL-WITHIN syntax validation
-- ✅ Metadata and tags (ears, layer-3-artifact)
-- ✅ BDD-Ready score ≥90%
-- ✅ Statement ID format (EARS.NN.25.SS)
-- ✅ No placeholder text in approved documents
+## MCP Tools (mcp_sdd)
 
-## File Naming Convention
+All operations run through the `sdd-lifecycle` MCP server:
 
+| Tool | Purpose |
+|------|---------|
+| `sdd_create` | Generate EARS from template |
+| `sdd_validate` | Structural + EARS parity validation (trigger + actor clause) |
+| `sdd_score_validate` | BDD-Ready score (>=90/100 to proceed to BDD) |
+| `sdd_consistency` | Cross-document traceability check |
+| `sdd_next_action` | Lifecycle advisor — recommends next step |
+
+## EARS Syntax Patterns
+
+| Pattern | Trigger | Format |
+|---------|---------|--------|
+| Event-Driven | External event | WHEN [trigger], THE [component] SHALL [action] WITHIN [timing] |
+| State-Driven | System state | WHILE [state], THE [component] SHALL [behavior] WITHIN [context] |
+| Unwanted | Error condition | IF [error], THE [component] SHALL [recovery] WITHIN [timing] |
+| Ubiquitous | Always applies | THE [component] SHALL [behavior] for [scope] |
+
+## Element IDs
+
+Hash-based, content-derived IDs scoped to EARS content:
+
+```text
+Format: EARS.{doc_id}.{section_id}.{hash}
+Example: EARS.01.03.c4d8
 ```
-EARS-NN_descriptive_title.md
+
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars.
+See template `metadata.id_standard` for details.
+
+## Upstream Traceability
+
+Each EARS links to source PRD and BRD via cumulative tags:
+
+```text
+@prd: PRD.NN.09.xxxx    (links to PRD functional requirement)
+@brd: BRD.NN.07.xxxx    (links to BRD functional requirement)
 ```
 
-Where:
-- `EARS` is the constant prefix
-- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
-- `descriptive_title` uses snake_case for clarity
+## Archive
 
-**Examples:**
-- `EARS-01_external_api_integration.md`
-- `EARS-035_resource_limit_enforcement.md`
-- `EARS-042_ml_model_serving.md`
-
-## Guidelines for Writing EARS Statements
-
-### 1. Use Precise, Measurable Language
-- Replace vague terms with specific criteria
-- Include quantitative constraints wherever possible
-- Define exact timeframes, thresholds, and boundaries
-
-### 2. One Concept Per Statement
-- Each WHEN-THE-SHALL-WITHIN statement represents one atomic requirement
-- Avoid combining multiple behaviors into single statements
-- Split complex requirements into multiple clear statements
-
-### 3. Maintain Consistent Context
-- Use consistent terminology within a file
-- Define acronyms and domain-specific terms clearly
-- Reference the same system component consistently
-
-### 4. Include Performance and Quality Attributes
-- Specify response times, throughput, availability, and other quality attributes
-- Define error conditions and failure modes explicitly
-- Include security and audit requirements where applicable
-
-### 5. Enable Testability
-- Write statements that can be directly translated to BDD scenarios
-- Include specific input conditions that trigger behavior
-- Define measurable outputs and side effects
-
-## Integration with Development Workflow
-
-### Pre-Writing Steps
-1. Read the source PRD thoroughly
-2. Identify functional requirements in the PRD
-3. Prepare traceability links to related artifacts
-4. Understand system context and constraints
-
-### Writing Process
-1. Use the template structure for consistency
-2. Categorize each requirement by behavioral type
-3. Write clear, unambiguous WHEN-THE-SHALL-WITHIN statements
-4. Include performance constraints and edge cases
-5. Add comprehensive traceability information
-
-### Post-Writing Validation
-1. Cross-reference all linked artifacts exist and are accessible
-2. Ensure each statement is independently testable
-3. Verify consistency with PRD functional requirements
-4. Check for complete coverage of all PRD requirements
-
-## Quality Gates
-
-**Each EARS statement must:**
-- Use proper WHEN-THE-SHALL-WITHIN format
-- Be atomic (one concept per statement)
-- Include measurable criteria
-- Be verifiable through testing
-- Include appropriate time/space constraints
-- Maintain traceability links
-- Use consistent terminology
-
-**Each EARS file must:**
-- Follow naming conventions
-- Include complete traceability header
-- Categorize statements appropriately
-- Cover all source PRD requirements
-- Reference valid downstream artifacts
-- Include code path information
-
-## Example Template
-
-See `EARS-01_external_api_integration.md` for a complete example of a well-structured EARS file.
-
-## Benefits
-
-1. **Precision**: Eliminates ambiguity in requirements interpretation
-2. **Traceability**: Maintains clear links throughout the development pipeline
-3. **Testability**: Enables direct translation to BDD scenarios and unit tests
-4. **Consistency**: Standardizes requirements documentation across teams
-5. **AI-Readiness**: Provides structured input for AI-assisted specification generation
-
-## Common Pitfalls
-
-1. **Vague Language**: Avoid terms like "fast," "reliable," "secure" without quantification
-2. **Overloading**: Don't combine multiple behaviors into single statements
-3. **Missing Context**: Always specify the subject system and triggering conditions
-4. **Orphaned Statements**: Ensure each statement can be traced to a PRD source
-5. **Incomplete Coverage**: Review PRDs to capture all functional requirements
-
-## Version Control and Collaboration
-
-- Commits should include the EARS ID in commit messages
-- Reviews should verify completeness of PRD coverage
-- Regular updates may be needed as PRDs evolve
-- Changes should maintain backward traceability links
-## File Size Limits
-
-- Target: 800 lines per file
-- Maximum: 1200 lines per file (absolute)
-- If a file approaches/exceeds limits, split into section files using `EARS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
-
-## Document Splitting Standard
-
-When EARS documents grow large or span disparate requirement groups:
-- Ensure `EARS-{NN}.0_index.md` exists and contains a section map
-- Create `EARS-{NN}.{S}_{section_slug}.md` from `EARS-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter)
-- Keep Prev/Next navigation and update traceability entries
-- Validate with link and size lints; keep YAML frontmatter consistent across sections
+`EARS_v1_archive/` contains deprecated files from the previous dual-file template
+approach. See `EARS_v1_archive/README.md` for migration details.

@@ -17,7 +17,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 ## Purpose
 
-This document serves as the master index for all EARS (Event-Action-Response-State) Requirements in the project. Use this index to:
+This document serves as the master index for all EARS (Easy Approach to Requirements Syntax) Requirements in the project. Use this index to:
 
 - **Discover** existing formal requirements
 - **Track** requirement specification status
@@ -46,7 +46,7 @@ flowchart LR
 
 | EARS ID | Title | Requirement Type | Status | Related PRD | Test Coverage | Last Updated |
 |---------|-------|------------------|--------|-------------|---------------|--------------|
-| [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13T00:00:00 |
+| [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml) | Template (default) | Reference | Reference | - | - | 2026-03-29 |
 
 ## Planned
 
@@ -83,8 +83,7 @@ When creating a new EARS document:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md \
-      docs/03_EARS/EARS-NN_requirement_area.md
+   # Generate via MCP: sdd_create with doc_type=ears, layer=03_EARS
    ```
 
 2. **Assign EARS ID**: Use next sequential number (EARS-01, EARS-02, ...)
@@ -154,9 +153,9 @@ When creating a new EARS document:
 
 ## Related Documents
 
-- **Template**: [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md)
+- **Template**: [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml)
 - **README**: [README.md](./README.md) - Learn about EARS purpose and statement types
-- **Traceability Matrix**: [EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability**: Per-EARS Section 5 (Traceability) + AI-generated reports
 
 ## Maintenance Guidelines
 

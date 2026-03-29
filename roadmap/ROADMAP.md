@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.3.0 |
-| Latest Release | 0.3.0 (PRD template unification + C4 model mapping) |
-| Next Minor | 0.4.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.4.0 |
+| Latest Release | 0.4.0 (EARS template unification) |
+| Next Minor | 0.5.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,10 +13,11 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.0 ──► v0.2.1 ──► v0.3.0 (Current) ──► v0.4.0 ──► v1.0.0
-  │           │           │           │                     │           │
-  │           │           │           │                     │           └─► Multi-MCP ecosystem
-  │           │           │           │                     └─► API executors via LiteLLM
+v0.1.0 ──► v0.2.0 ──► v0.2.1 ──► v0.3.0 ──► v0.4.0 (Current) ──► v0.5.0 ──► v1.0.0
+  │           │           │           │           │                     │           │
+  │           │           │           │           │                     │           └─► Multi-MCP ecosystem
+  │           │           │           │           │                     └─► API executors via LiteLLM
+  │           │           │           │           └─► EARS template unification
   │           │           │           └─► PRD template unification + C4 model mapping
   │           │           └─► mcp_sdd template naming migration
   │           └─► BRD template unification: single YAML, hash IDs, embedded guidance
@@ -27,7 +28,7 @@ v0.1.0 ──► v0.2.0 ──► v0.2.1 ──► v0.3.0 (Current) ──► v0
 
 ## Planned Releases
 
-### v0.4.0 - API Executors and Progress Notifications
+### v0.5.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -62,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.4.0 (2026-03-29)
+
+EARS template unification. Consolidated 6 EARS files into single `EARS-TEMPLATE.yaml` (387 lines, 5 sections + glossary). Incorporated PRD EARS appendix content (timing profiles, boundary values). Split BRD downstream EARS/BDD into separate entries. See changelog/CHANGELOG_v0.4.0.md for details.
 
 ### v0.3.0 (2026-03-29)
 

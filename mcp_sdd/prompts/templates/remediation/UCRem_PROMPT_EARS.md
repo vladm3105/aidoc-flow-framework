@@ -204,26 +204,28 @@ rationale: |
 
 ## Element ID Convention
 
-EARS elements follow: `EARS.{doc_num}.{pattern_code}.{seq}`
+EARS elements use hash-based IDs: `EARS.{doc_id}.{section_id}.{hash}`
 
-Pattern codes:
-- `UB` = Ubiquitous
-- `EV` = Event-Driven
-- `ST` = State-Driven
-- `OP` = Optional
-- `UW` = Unwanted (exception)
-- `CX` = Complex
+- Section IDs match the 5-section EARS-TEMPLATE.yaml structure
+- Hash: SHA256 of content, first 4 hex chars
+- Example: `EARS.01.03.c4d8` (doc 01, section 3 requirements, hash c4d8)
+
+Common section IDs:
+- `03` = Requirements (Section 3 — all EARS syntax patterns)
+- `04` = Quality Attributes (Section 4 — performance, security, reliability)
+- `05` = Traceability (Section 5)
 
 ---
 
 ## Quality Checklist
 
 Before finalizing fixes:
-- [ ] All statements use valid EARS pattern
+- [ ] All statements use valid EARS pattern (WHEN/WHILE/IF/THE-SHALL)
 - [ ] Each statement is atomic (single requirement)
-- [ ] PRD traceability is complete
-- [ ] Constraints are quantified
-- [ ] Ambiguous terms are defined
+- [ ] PRD traceability complete: `@prd: PRD.NN.09.xxxx`
+- [ ] BRD traceability complete: `@brd: BRD.NN.07.xxxx`
+- [ ] Constraints are quantified (p50/p95/p99, not vague terms)
+- [ ] Element IDs use EARS.NN.{section}.xxxx hash format
 
 ---
 

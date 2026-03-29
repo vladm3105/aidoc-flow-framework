@@ -869,9 +869,12 @@ traceability:
     - type: PRD
       layer: 2
       description: "Product Requirements Document — user stories, product features, acceptance criteria"
-    - type: "EARS/BDD"
-      layer: "3/4"
-      description: "Test specifications — acceptance test scenarios"
+    - type: EARS
+      layer: 3
+      description: "Formal WHEN-THE-SHALL-WITHIN requirements from BRD features"
+    - type: BDD
+      layer: 4
+      description: "Given-When-Then test scenarios from EARS requirements"
     - type: ADR
       layer: 5
       description: "Architecture Decision Records — resolves topics from Section 8"
