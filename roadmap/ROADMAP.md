@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.4.0 |
-| Latest Release | 0.4.0 (EARS template unification) |
-| Next Minor | 0.5.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.5.0 |
+| Latest Release | 0.5.0 (BDD template unification — 4 layers complete) |
+| Next Minor | 0.6.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,14 +13,14 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.0 ──► v0.2.1 ──► v0.3.0 ──► v0.4.0 (Current) ──► v0.5.0 ──► v1.0.0
+v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 (Current) ──► v0.6.0 ──► v1.0.0
   │           │           │           │           │                     │           │
   │           │           │           │           │                     │           └─► Multi-MCP ecosystem
   │           │           │           │           │                     └─► API executors via LiteLLM
-  │           │           │           │           └─► EARS template unification
-  │           │           │           └─► PRD template unification + C4 model mapping
-  │           │           └─► mcp_sdd template naming migration
-  │           └─► BRD template unification: single YAML, hash IDs, embedded guidance
+  │           │           │           │           └─► BDD template unification (4 layers complete)
+  │           │           │           └─► EARS template unification
+  │           │           └─► PRD template unification + C4 model mapping
+  │           └─► BRD unification (v0.2.0) + mcp_sdd naming (v0.2.1)
   └─► MCP transport layer: 19 tools, CLI executor registry, pipeline orchestration
 ```
 
@@ -28,7 +28,7 @@ v0.1.0 ──► v0.2.0 ──► v0.2.1 ──► v0.3.0 ──► v0.4.0 (Curr
 
 ## Planned Releases
 
-### v0.5.0 - API Executors and Progress Notifications
+### v0.6.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.5.0 (2026-03-29)
+
+BDD template unification. Consolidated BDD `.feature` + `.yaml` dual-file into single `BDD-TEMPLATE.yaml` (365 lines, 5 sections). Gherkin syntax embedded in `_example` fields. Four SDD layers unified: BRD (Context), PRD (Container), EARS (transition), BDD (transition). See changelog/CHANGELOG_v0.5.0.md for details.
 
 ### v0.4.0 (2026-03-29)
 

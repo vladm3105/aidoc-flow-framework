@@ -45,7 +45,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 > - Direct integration with CI/CD test pipelines
 >
 > **Templates**:
-> - `BDD-MVP-TEMPLATE.feature` - Standard BDD scenarios
+> - `BDD-TEMPLATE.yaml` - Standard BDD scenarios
 > - `BDD-AGGREGATOR-TEMPLATE.feature` - Multi-feature aggregator
 >
 > This is an intentional deviation from the dual-format (MD + YAML) pattern used by other artifacts.
@@ -336,7 +336,7 @@ Track acceptance test coverage for requirements:
 ### Internal Links
 
 - [BDD README](./README.md): Comprehensive BDD documentation and guidelines
-- [BDD-MVP-TEMPLATE.feature](./BDD-MVP-TEMPLATE.feature): Template for creating new BDD feature files
+- [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml): Template for creating new BDD feature files
 - [AI Dev Flow Index](../index.md): Master index with complete traceability workflow
 
 ### External Links
@@ -347,8 +347,8 @@ Track acceptance test coverage for requirements:
 
 ### Related Standards
 
-- [REQ-MVP-TEMPLATE.md](../07_REQ/REQ-MVP-TEMPLATE.md): Requirements template (BDD validates requirements; standard template)
-- [SPEC-MVP-TEMPLATE.yaml](../09_SPEC/SPEC-MVP-TEMPLATE.yaml): Technical SPEC template (implements BDD scenarios)
+- REQ template: `../07_REQ/` (BDD validates requirements)
+- SPEC template: `../09_SPEC/` (implements BDD scenarios)
 - [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md): Code generation template (generates BDD test code)
 
 ---
@@ -369,5 +369,5 @@ Track acceptance test coverage for requirements:
 ---
 
 **Index Version**: 1.0
-**Template Compliance**: BDD-MVP-TEMPLATE.feature v1.0
+**Template Compliance**: BDD-TEMPLATE.yaml v1.0
 **Traceability Standard**: AI Dev Flow Traceability v1.0
