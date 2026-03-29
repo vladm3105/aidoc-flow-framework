@@ -67,7 +67,7 @@ metadata:
 
       PRD is Container level (C4-L2):
         - Container diagram: product containers, their interactions
-        - Feature-level data flow (DFD-L1): data movement between features
+        - Feature-level data flow (DFD-L2): data movement between features
         - Product interaction sequence diagrams: user↔product↔backend
         - Sequence diagrams MUST include alt/else for exception paths
 
@@ -77,7 +77,7 @@ metadata:
         - FAIL: "PostgreSQL", "Redis", "Kubernetes pod"
     tags:
       - "@diagram: c4-l2"
-      - "@diagram: dfd-l1"
+      - "@diagram: dfd-l2"
       - "@diagram: sequence-sync"
 
   tags:

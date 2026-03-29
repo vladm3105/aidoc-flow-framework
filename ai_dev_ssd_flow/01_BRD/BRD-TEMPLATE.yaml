@@ -868,7 +868,7 @@ traceability:
   downstream_expected:
     - type: PRD
       layer: 2
-      description: "Product Requirements Document — user stories, implementation details"
+      description: "Product Requirements Document — user stories, product features, acceptance criteria"
     - type: "EARS/BDD"
       layer: "3/4"
       description: "Test specifications — acceptance test scenarios"

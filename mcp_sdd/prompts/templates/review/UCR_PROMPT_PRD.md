@@ -28,10 +28,11 @@ Before claiming an item is PRESENT, verify it meets ALL criteria:
 2. **Specific and actionable** - Generic mentions don't count (e.g., "security" ≠ PCI-DSS scope)
 3. **Complete specification** - Partial coverage is a GAP, not "present"
 
-**Sections to Cross-Reference**:
-- User Stories (Section 5) - Acceptance criteria details
-- Technical Specifications (Section 18) - Implementation specifics
-- Parent BRD - Inherited requirements
+**Sections to Cross-Reference** (15-section PRD-TEMPLATE.yaml structure):
+- User Stories (Section 8) - Role definitions and story summaries
+- Functional Requirements (Section 9) - Core capabilities and user journeys
+- Traceability (Section 14) - Upstream BRD links and ADR topic elaboration
+- Parent BRD - Inherited requirements via @brd: tags
 
 **IMPORTANT**: Even if something is mentioned, if it lacks implementation specifics, FLAG IT AS A GAP.
 

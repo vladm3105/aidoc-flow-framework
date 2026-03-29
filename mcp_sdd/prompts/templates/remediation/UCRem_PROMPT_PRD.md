@@ -19,16 +19,18 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 
 ## PRD-Specific Context
 
-PRD is Layer 2 in the SDD workflow:
-- **Upstream**: BRD (Business Requirements)
-- **Downstream**: EARS (Formal Requirements)
+PRD is Layer 2 (Container level) in the SDD workflow:
+- **Upstream**: BRD (Business Requirements) — linked via `@brd: BRD.NN.07.xxxx` tags
+- **Downstream**: EARS (Formal Requirements), BDD (Test Scenarios), ADR (Architecture Decisions)
+- **Template**: PRD-TEMPLATE.yaml (15 sections)
+- **Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
 
 Common PRD issues to remediate:
-- Missing user persona definitions
-- Incomplete acceptance criteria
-- Missing BRD traceability
-- Vague user stories
-- Missing non-functional requirements
+- Missing user persona definitions (Section 4)
+- Incomplete acceptance criteria (Section 11)
+- Missing BRD traceability (Section 14)
+- Vague user stories (Section 8)
+- Missing customer-facing content (Section 10 — MANDATORY)
 
 ---
 
@@ -171,19 +173,20 @@ verification: |
 ```yaml
 fix_type: add_section
 fix_action:
-  parent_section: "3.2"
-  section_number: "3.2.X"
+  parent_section: "8"
+  section_number: "8.stories"
   heading: "User Story: {Title}"
   content: |
-    **As a** {persona}
-    **I want** {capability}
-    **So that** {benefit}
+    - id: "PRD.NN.08.xxxx"
+      role: "{persona}"
+      want: "{capability}"
+      so_that: "{benefit}"
+      priority: P1
+      acceptance_criteria:
+        - "{Measurable criterion 1}"
+        - "{Measurable criterion 2}"
 
-    **Acceptance Criteria**:
-    - [ ] {Criterion 1}
-    - [ ] {Criterion 2}
-
-    **Traces**: @brd: BRD.XX.XX.XX
+    **Traces**: @brd: BRD.NN.07.xxxx
 ```
 
 ### Acceptance Criteria Fix
@@ -202,38 +205,49 @@ fix_action:
 ```yaml
 fix_type: add_section
 fix_action:
-  parent_section: "2.1"
-  section_number: "2.1.X"
+  parent_section: "4"
+  section_number: "4.personas"
   heading: "{Persona Name}"
   content: |
-    **Demographics**: {Age, role, tech comfort}
-    **Goals**: {Primary goals}
-    **Pain Points**: {Current frustrations}
-    **Usage Context**: {When/where they use product}
+    name: "{Persona Name}"
+    role: "{Role/Description}"
+    key_characteristic: "{What defines this user}"
+    main_pain_point: "{What problem they face}"
+    success_criteria: "{What outcome they need}"
+    usage_frequency: "{How often they'll use the product}"
 ```
 
 ---
 
 ## Element ID Convention
 
-PRD elements follow: `PRD.{doc_num}.{type_code}.{seq}`
+PRD elements use hash-based IDs: `PRD.{doc_id}.{section_id}.{hash}`
 
-Type codes:
-- `US` = User Story
-- `AC` = Acceptance Criteria
-- `NF` = Non-Functional Requirement
-- `PS` = Persona
+- Section IDs match the 15-section PRD-TEMPLATE.yaml structure
+- Hash: SHA256 of content, first 4 hex chars
+- Example: `PRD.01.08.b3f2` (doc 01, section 8 user stories, hash b3f2)
+
+Common section IDs:
+- `04` = Personas (Section 4)
+- `05` = Success Metrics (Section 5)
+- `06` = Goals (Section 6)
+- `08` = User Stories (Section 8)
+- `09` = Functional Requirements (Section 9)
+- `11` = Acceptance Criteria (Section 11)
+- `12` = Constraints (Section 12)
+- `13` = Risks (Section 13)
 
 ---
 
 ## Quality Checklist
 
 Before finalizing fixes:
-- [ ] All BRD traces are valid
-- [ ] User stories follow standard format
-- [ ] Acceptance criteria are measurable
-- [ ] Personas are defined for all user types
-- [ ] Non-functional requirements are quantified
+- [ ] All @brd: traces use hash format (BRD.NN.07.xxxx)
+- [ ] User stories follow role/want/so_that format (Section 8)
+- [ ] Acceptance criteria are measurable (Section 11)
+- [ ] Personas defined for all user types (Section 4)
+- [ ] Customer-facing content is substantive, not placeholder (Section 10)
+- [ ] Element IDs use PRD.NN.{section}.xxxx hash format
 
 ---
 
