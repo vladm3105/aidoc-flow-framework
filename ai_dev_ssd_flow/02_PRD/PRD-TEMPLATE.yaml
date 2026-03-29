@@ -54,6 +54,25 @@ metadata:
         Requirements maturity (35%): system boundaries, stakeholder requirements, problem statement
         EARS translation readiness (20%): user journeys, quality attributes quantified
         Strategic alignment (5%): domain references
+
+  c4_level:
+    _guidance: |
+      SDD layers map to C4 architecture model zoom levels:
+        Context (BRD)    — business environment, actors, boundaries
+          └─ EARS/BDD    — formalize Context→Container transition
+        Container (PRD)  — product features, functional blocks
+          └─ ADR         — decisions that shape Component architecture
+        Component (SYS)  — system structure, interfaces, quality attributes
+          └─ REQ/CTR     — decompose Component→Code into atomic units
+        Code (SPEC)      — implementation-ready specifications
+          └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
+          └─ TASKS       — implementation task breakdown
+
+      PRD is Container level. Content must describe product features and
+      functional blocks — not business environment (Context), system
+      internals (Component), or implementation details (Code).
+    value: container
+
   diagram_standard:
     _guidance: |
       Diagrams follow C4 model zoom levels. Each SDD layer uses diagrams
@@ -85,24 +104,6 @@ metadata:
     - layer-2-artifact
     - shared-architecture
 
-  c4_level:
-    _guidance: |
-      SDD layers map to C4 architecture model zoom levels:
-        Context (BRD)    — business environment, actors, boundaries
-          └─ EARS/BDD    — formalize Context→Container transition
-        Container (PRD)  — product features, functional blocks
-          └─ ADR         — decisions that shape Component architecture
-        Component (SYS)  — system structure, interfaces, quality attributes
-          └─ REQ/CTR     — decompose Component→Code into atomic units
-        Code (SPEC)      — implementation-ready specifications
-          └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
-          └─ TASKS       — implementation task breakdown
-
-      PRD is Container level. Content must describe product features and
-      functional blocks — not business environment (Context), system
-      internals (Component), or implementation details (Code).
-    value: container
-
   deliverable_type:
     _guidance: |
       Inherited from upstream BRD. Determines downstream SPEC subtype routing.
@@ -117,7 +118,7 @@ metadata:
   id_standard:
     _guidance: |
       All element IDs use content-derived hashes scoped to PRD content.
-      Format: PRD.{doc_id}.{section_id}.{hash}
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
       Example: PRD.01.09.b3f2
 
       Hash algorithm (SHA256, 4-char hex):
@@ -129,7 +130,7 @@ metadata:
       Template placeholder: "xxxx" represents the hash suffix.
       Reference: UCX_v1_archive/ucx/utils/finding_hash.py
 
-    format: "PRD.{doc_id}.{section_id}.{hash}"
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
     hash_algorithm: SHA256
     hash_length: 4
     max_hash_length: 8
