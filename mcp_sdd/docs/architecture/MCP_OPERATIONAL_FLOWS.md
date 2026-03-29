@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.3 |
-| Date | 2026-03-27 |
+| Version | 1.4 |
+| Date | 2026-03-29 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
@@ -38,13 +38,14 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | `prompts/templates/creation/` | Creation prompt templates |
 | `prompts/templates/review/` | Review prompt templates |
 | `prompts/templates/remediation/` | Remediation prompt templates |
-| `templates/` | Document MVP and project-tuned templates |
-| `templates/layers/NN_TYPE/` | Layer-specific MVP templates and schemas (from `ai_dev_ssd_flow/`) |
+| `templates/` | Document templates (unified and project-tuned) |
+| `templates/layers/NN_TYPE/` | Layer-specific templates and schemas (from `ai_dev_ssd_flow/`) |
 
 **Rules**:
 - Existing files are never overwritten (idempotent).
 - Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
-- Only MVP templates (`*-MVP-TEMPLATE.md`) and MVP schemas (`*_MVP_SCHEMA.yaml`) are copied from layer directories.
+- Templates matching `*-TEMPLATE.*` and schemas matching `*_MVP_SCHEMA.yaml` are copied from layer directories.
+- Both unified naming (`BRD-TEMPLATE.yaml`) and legacy naming (`PRD-MVP-TEMPLATE.md`) are supported. Unified name takes precedence when both exist.
 
 ---
 
@@ -63,7 +64,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | Layer asset files | MVP template, schema, and any project-tuned template bundled into the prompt |
 
 **Rules**:
-- Loads project-tuned template from `docs/UCX/templates/TYPE-MVP-TEMPLATE.md` if present; falls back to layer MVP template from `docs/UCX/templates/layers/NN_TYPE/`.
+- Loads project-tuned template: tries `TYPE-TEMPLATE.yaml`, then `TYPE-TEMPLATE.md`, then `TYPE-MVP-TEMPLATE.md` from `docs/UCX/templates/`. Falls back to layer template from `docs/UCX/templates/layers/NN_TYPE/`.
 - Does not write the final document artifact; use `create` for that.
 - `--sections-json` injects existing document sections into the prompt for guided creation (incremental authoring).
 

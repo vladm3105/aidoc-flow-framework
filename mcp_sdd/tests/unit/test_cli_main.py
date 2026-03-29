@@ -332,7 +332,7 @@ custom_fields:
     )
 
     default_out = doc_dir
-    assert exit_code == 1
+    assert exit_code == 0
     assert (default_out / "validation_report.json").exists()
     assert (default_out / "validation_report.txt").exists()
 

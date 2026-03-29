@@ -74,7 +74,7 @@ def _copy_ssd_layer_assets_no_overwrite(*, ssd_root: Path, destination_root: Pat
         layer_destination.mkdir(parents=True, exist_ok=True)
 
         for source_file in sorted(path for path in layer_dir.iterdir() if path.is_file()):
-            if "-MVP-TEMPLATE" not in source_file.name and not source_file.name.endswith("_MVP_SCHEMA.yaml"):
+            if "-TEMPLATE" not in source_file.name and not source_file.name.endswith("_MVP_SCHEMA.yaml"):
                 continue
 
             target_file = layer_destination / source_file.name

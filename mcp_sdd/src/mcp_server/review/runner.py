@@ -173,14 +173,14 @@ def run_project_creation_artifact(
         final_content = creation_result.document_template_text
         template_source = "project_template"
     else:
-        mvp_template_name = next(
-            (name for name in creation_result.layer_asset_names if "-MVP-TEMPLATE" in name),
+        template_name = next(
+            (name for name in creation_result.layer_asset_names if "-TEMPLATE" in name),
             None,
         )
-        if mvp_template_name is None:
-            raise ValueError("No layer MVP template asset found for final artifact creation")
-        final_content = creation_result.layer_assets[mvp_template_name]
-        template_source = f"layer_asset:{mvp_template_name}"
+        if template_name is None:
+            raise ValueError("No layer template asset found for final artifact creation")
+        final_content = creation_result.layer_assets[template_name]
+        template_source = f"layer_asset:{template_name}"
 
     target_path.write_text(final_content, encoding="utf-8")
 

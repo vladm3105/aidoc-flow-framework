@@ -2,7 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | Approved |
+| Status | Implemented |
+| Commit | 4ecd8bc |
+| Release | v0.1.0 (2026-03-28) |
 | Type | Feature — New MCP Server |
 | Priority | High |
 | Date | 2026-03-28 |

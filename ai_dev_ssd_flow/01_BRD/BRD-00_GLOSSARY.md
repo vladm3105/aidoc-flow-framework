@@ -20,15 +20,15 @@ custom_fields:
 
 ## Purpose
 
-This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local section 17 (Glossary).
+This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local Section 15 (Glossary).
 
 ## Usage Guidelines
 
 ### For BRD Authors
 
-1. **Check this glossary first** before defining any term in individual BRD section 17
+1. **Check this glossary first** before defining any term in individual BRD Section 15
 2. **Reference entries** from this glossary instead of duplicating definitions
-3. **Add project-specific terms** to individual BRD section 17 when they don't belong here
+3. **Add project-specific terms** to individual BRD Section 15 when they don't belong here
 4. **Propose additions** to this master glossary when terms are used across 3+ BRDs
 
 ### When to Define Terms Here vs. Individual BRD
@@ -56,17 +56,17 @@ Common business terminology used across multiple BRDs.
 
 | Term | Definition | Common Usage Context |
 |------|------------|---------------------|
-| Acceptance Criteria | Conditions that must be met for deliverables to be accepted by stakeholders | section 9 of BRDs, validation checkpoints |
-| Business Objective | Specific, measurable goal aligned with organizational strategic priorities | section 2.4 of BRDs, strategic alignment |
-| Business Process | Sequence of activities performed to achieve a business outcome | Process scope, section 5 |
+| Acceptance Criteria | Conditions that must be met for deliverables to be accepted by stakeholders | Section 11 of BRDs, validation checkpoints |
+| Business Objective | Specific, measurable goal aligned with organizational strategic priorities | Section 4 of BRDs, strategic alignment |
+| Business Process | Sequence of activities performed to achieve a business outcome | Project scope, Section 5 |
 | Deliverable | Tangible or intangible output produced as part of project execution | Project scope, milestones |
-| KPI | Key Performance Indicator - measurable value demonstrating effectiveness toward achieving objectives | Success metrics, section 9.7 |
-| Milestone | Significant point in project timeline marking completion of major phase | Project timeline, section 15 |
-| ROI | Return on Investment - measure of profitability relative to cost | Cost-benefit analysis, section 14 |
-| Stakeholder | Person or group with interest in or influence over project outcome | Stakeholder analysis, section 4 |
-| Success Metric | Quantifiable measure used to evaluate achievement of objectives | Acceptance criteria, section 9 |
+| KPI | Key Performance Indicator - measurable value demonstrating effectiveness toward achieving objectives | Success metrics, Section 4 |
+| Milestone | Significant point in project timeline marking completion of major phase | Project timeline, appendix |
+| ROI | Return on Investment - measure of profitability relative to cost | Cost-benefit, Section 4 |
+| Stakeholder | Person or group with interest in or influence over project outcome | Stakeholder analysis, Section 6 |
+| Success Metric | Quantifiable measure used to evaluate achievement of objectives | Acceptance criteria, Section 11 |
 | Transaction | Single business operation or exchange of value | Core business model, process flows |
-| Workflow | Sequence of steps to complete a business process | Process scope definition, section 5 |
+| Workflow | Sequence of steps to complete a business process | Project scope, Section 5 |
 
 ---
 
@@ -76,11 +76,11 @@ Common technical terminology explained for business stakeholders.
 
 | Term | Definition | Common Usage Context |
 |------|------------|---------------------|
-| API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, section 6 FRs |
+| API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, Section 7 FRs |
 | Integration | Connection between two or more systems to share data and functionality | Partner ecosystems, external systems |
 | MCP | Model Context Protocol - standard protocol enabling AI assistants to connect with external data sources and tools | AI agent integrations, tool connectivity FRs |
 | RAG | Retrieval-Augmented Generation - technique combining information retrieval with LLM generation for contextual responses | AI/ML features, knowledge base FRs |
-| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | Quality Attributes section 7.5, performance requirements |
+| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | Quality expectations, Section 9 |
 | Webhook | Automated notification sent from one system to another when specific events occur | Status updates, real-time integrations |
 
 ---
@@ -91,8 +91,8 @@ Industry/domain terminology requiring definition for cross-domain understanding.
 
 | Term | Definition | Domain | Common Usage Context |
 |------|------------|--------|---------------------|
-| AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, section 6 |
-| Identity Verification | Verification of user or business identity required by regulations | Compliance | User onboarding, section 6 FRs |
+| AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, Section 7 |
+| Identity Verification | Verification of user or business identity required by regulations | Compliance | User onboarding, Section 7 FRs |
 | NAV | Net Asset Value - total value of assets minus liabilities, typically per share/unit | Financial Services | Portfolio valuation, fund accounting BRDs |
 | Remittance | Transfer of money by foreign worker to individual in home country | Financial Services | Cross-border payment BRDs |
 
@@ -113,10 +113,10 @@ Standard abbreviations used across BRD framework.
 | BDD | Behavior-Driven Development | SDD Framework |
 | BO | Business Objective | BRD Framework |
 | BRD | Business Requirements Document | SDD Framework |
-| EARS | Event-Action-Response-State (Engineering Requirements) | SDD Framework |
+| EARS | Easy Approach to Requirements Syntax | SDD Framework |
 | FR | Functional Requirement | BRD Framework |
 | KPI | Key Performance Indicator | Business |
-| Verification | Identity verification (individual or business) | Compliance |
+| KYC | Know Your Customer (identity verification) | Compliance |
 | IPLAN | Implementation Plan (deprecated) | SDD Framework |
 | MCP | Model Context Protocol | Technical |
 | MVP | Minimum Viable Product | Business |
@@ -142,7 +142,7 @@ These three requirement types serve different purposes in the SDD workflow. Unde
 |------|-------|-----------|---------|----------------|
 | **FR** | L1 (BRD) | Functional Requirement | Business-level capability statement from stakeholder perspective | "The system shall allow users to reset their password via email." |
 | **EARS** | L3 | Engineering Requirement (WHEN-THE-SHALL-WITHIN format) | Structured technical requirement with conditions and constraints | "WHEN a user requests password reset, THE system SHALL send a reset link WITHIN 30 seconds." |
-| **REQ** | L7 | Atomic Requirement | Implementation-ready requirement decomposed for development | "REQ.07.01.01: Implement password reset endpoint with rate limiting (max 3 attempts/hour)." |
+| **REQ** | L7 | Atomic Requirement | Implementation-ready requirement decomposed for development | "REQ.07.01.xxxx: Implement password reset endpoint with rate limiting (max 3 attempts/hour)." |
 
 **Workflow Progression**:
 1. **FR** (BRD): Capture stakeholder intent in business language
@@ -160,13 +160,10 @@ These three requirement types serve different purposes in the SDD workflow. Unde
 
 References to related BRDs and framework documents.
 
-| Term/Concept | Referenced Document | section | Relationship |
-|--------------|---------------------|---------|--------------|
-| BRD Template | ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md | All | Standard template for creating BRDs (MVP → PROD → NEW MVP lifecycle) |
-| BRD Creation Rules | ai_dev_flow/01_BRD/BRD_MVP_CREATION_RULES.md | N/A | Authoring guidelines and best practices |
-| BRD Validation Rules | ai_dev_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md | N/A | Quality assurance and validation checks |
-| FR Examples Guide | ai_dev_flow/01_BRD/FR_EXAMPLES_GUIDE.md | N/A | Functional requirement writing examples |
-| SDD Guide | ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md | N/A | Overall framework methodology |
+| Term/Concept | Referenced Document | Relationship |
+|--------------|---------------------|--------------|
+| BRD Template | ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml | Single source of truth for BRD structure, authoring guidance, and ID standards |
+| SDD Guide | ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md | Overall framework methodology |
 
 ---
 
@@ -176,14 +173,14 @@ Regulatory, industry, and technical standards referenced in BRDs.
 
 | Standard | Organization | Relevance | Common Application |
 |----------|--------------|-----------|-------------------|
-| PCI-DSS | Payment Card Industry security Standards Council | Payment security compliance | Payment processing BRDs, Quality Attributes section 7.3 |
-| GDPR | European Union | Data privacy regulation | Data handling, QA section 7.3 |
-| CCPA | State of California | Consumer privacy rights | Data handling, QA section 7.3 |
-| SOC 2 | AICPA | security and availability controls | security QAs, audit requirements |
-| ISO 27001 | International Organization for Standardization | Information security management | security QAs, section 7.3 |
-| WCAG 2.1 | W3C | Web accessibility standards | Accessibility QAs, section 7.8 |
-| FinCEN | US Department of Treasury | AML/CFT compliance | Financial services BRDs, regulatory requirements |
-| OFAC | US Department of Treasury Office of Foreign Assets Control | Sanctions screening | Cross-border transactions, compliance FRs |
+| PCI-DSS | Payment Card Industry Security Standards Council | Payment security compliance | Quality expectations (Section 9), security |
+| GDPR | European Union | Data privacy regulation | Quality expectations (Section 9), security |
+| CCPA | State of California | Consumer privacy rights | Quality expectations (Section 9), security |
+| SOC 2 | AICPA | Security and availability controls | Quality expectations (Section 9), audit |
+| ISO 27001 | International Organization for Standardization | Information security management | Quality expectations (Section 9), security |
+| WCAG 2.1 | W3C | Web accessibility standards | Quality expectations (Section 9) |
+| FinCEN | US Department of Treasury | AML/CFT compliance | Functional requirements (Section 7) |
+| OFAC | US Department of Treasury Office of Foreign Assets Control | Sanctions screening | Functional requirements (Section 7) |
 
 ---
 
@@ -223,7 +220,7 @@ Add terms to this glossary when they meet ANY of these criteria:
 
 ### Proposal Process
 
-1. **Identify candidate term** in individual BRD section 17
+1. **Identify candidate term** in individual BRD Section 15
 2. **Check usage frequency** across existing BRDs
 3. **Submit proposal** to Business Analyst Team with:
    - Term definition

@@ -8,6 +8,8 @@ from typing import Any, cast
 
 import yaml  # type: ignore[import-untyped]
 
+from mcp_server.utils.template_naming import resolve_template_path
+
 
 @dataclass(frozen=True)
 class ValidationRunResult:
@@ -88,9 +90,9 @@ def _load_layer_yaml_template(*, project_root: Path, layer: str) -> tuple[dict[s
 
     artifact = layer.split("_", 1)[1].strip().upper()
     template_root = _resolve_canonical_template_root(project_root)
-    template_path = template_root / layer / f"{artifact}-MVP-TEMPLATE.yaml"
-    if not template_path.exists():
-        return {}, f"Missing canonical layer template: {template_path}"
+    template_path = resolve_template_path(template_root / layer, artifact, ".yaml")
+    if template_path is None:
+        return {}, f"Missing canonical layer template in: {template_root / layer}"
 
     parsed = yaml.safe_load(template_path.read_text(encoding="utf-8"))
     if isinstance(parsed, dict):

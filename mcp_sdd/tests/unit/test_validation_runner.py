@@ -842,3 +842,61 @@ custom_fields:
         payload = json.loads(result.report_json)
         checked = payload.get("files_checked", [])
         assert checked == [str(source_doc)]
+
+
+# =============================================================================
+# Template naming migration tests (PLAN-002)
+# =============================================================================
+
+
+def test_template_naming_new_name_only(tmp_path: Path) -> None:
+    """BRD-TEMPLATE.yaml (unified) is found when no MVP name exists."""
+    from mcp_server.utils.template_naming import resolve_template_path
+
+    layer_dir = tmp_path / "01_BRD"
+    layer_dir.mkdir()
+    (layer_dir / "BRD-TEMPLATE.yaml").write_text("id: BRD-01\n", encoding="utf-8")
+
+    result = resolve_template_path(layer_dir, "BRD", ".yaml")
+    assert result is not None
+    assert result.name == "BRD-TEMPLATE.yaml"
+
+
+def test_template_naming_old_name_only(tmp_path: Path) -> None:
+    """BRD-MVP-TEMPLATE.yaml (legacy) is found via fallback."""
+    from mcp_server.utils.template_naming import resolve_template_path
+
+    layer_dir = tmp_path / "01_BRD"
+    layer_dir.mkdir()
+    (layer_dir / "BRD-MVP-TEMPLATE.yaml").write_text("id: BRD-01\n", encoding="utf-8")
+
+    result = resolve_template_path(layer_dir, "BRD", ".yaml")
+    assert result is not None
+    assert result.name == "BRD-MVP-TEMPLATE.yaml"
+
+
+def test_template_naming_new_takes_precedence(tmp_path: Path) -> None:
+    """When both exist, unified name takes precedence over MVP name."""
+    from mcp_server.utils.template_naming import resolve_template_path
+
+    layer_dir = tmp_path / "01_BRD"
+    layer_dir.mkdir()
+    (layer_dir / "BRD-TEMPLATE.yaml").write_text("id: unified\n", encoding="utf-8")
+    (layer_dir / "BRD-MVP-TEMPLATE.yaml").write_text("id: legacy\n", encoding="utf-8")
+
+    result = resolve_template_path(layer_dir, "BRD", ".yaml")
+    assert result is not None
+    assert result.name == "BRD-TEMPLATE.yaml"
+
+
+def test_template_naming_non_brd_layer_still_works(tmp_path: Path) -> None:
+    """Non-BRD layers using old naming convention still resolve."""
+    from mcp_server.utils.template_naming import resolve_template_path
+
+    layer_dir = tmp_path / "02_PRD"
+    layer_dir.mkdir()
+    (layer_dir / "PRD-MVP-TEMPLATE.yaml").write_text("id: PRD-01\n", encoding="utf-8")
+
+    result = resolve_template_path(layer_dir, "PRD", ".yaml")
+    assert result is not None
+    assert result.name == "PRD-MVP-TEMPLATE.yaml"

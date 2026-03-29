@@ -11,6 +11,7 @@ from mcp_server.skills.project_ucx_loader import (
     load_project_persona_file,
     load_project_prompt_template,
 )
+from mcp_server.utils.template_naming import load_tuned_template
 
 from mcp_server.models.context_engineering_contracts import (
     AppendixIndexEntry,
@@ -88,7 +89,7 @@ PERSONA_CATEGORY_MAP: dict[str, tuple[str, ...]] = {
 
 
 MCP_CREATION_ACTIONABLE_RULES = """## MCP Actionable Creation Rules
-- Use the layer template file (`*-MVP-TEMPLATE.*`) as the primary structural source.
+- Use the layer template file (`*-TEMPLATE.*`) as the primary structural source.
 - Use the layer schema file (`*_MVP_SCHEMA.yaml`) for required fields, section ordering, and validation constraints.
 - Resolve conflicts using this precedence: project-tuned template > layer template > layer schema.
 - Do not rely on deprecated `*_MVP_CREATION_RULES.md` or `*_MVP_VALIDATION_RULES.md` files.
@@ -97,7 +98,7 @@ MCP_CREATION_ACTIONABLE_RULES = """## MCP Actionable Creation Rules
 
 
 MCP_REVIEW_ACTIONABLE_RULES = """## MCP Actionable Review Rules
-- Use the layer template file (`*-MVP-TEMPLATE.*`) as the structural authority for section and formatting checks.
+- Use the layer template file (`*-TEMPLATE.*`) as the structural authority for section and formatting checks.
 - Use the layer schema file (`*_MVP_SCHEMA.yaml`) as the machine-readable authority for required fields and validation constraints.
 - Use this precedence for review findings: project-tuned template > layer template > layer schema.
 - Do not rely on deprecated `*_MVP_CREATION_RULES.md` or `*_MVP_VALIDATION_RULES.md` files.
@@ -361,7 +362,7 @@ def assemble_project_creation_prompt(
 ) -> CreationAssembly:
     """Assemble a creation prompt that fuses MCP runtime assets with authoritative SSD layer inputs.
 
-    Layer assets (*-MVP-TEMPLATE.* and *_MVP_SCHEMA.yaml files) from docs/UCX/templates/layers/<layer>/
+    Layer assets (*-TEMPLATE.* and *_MVP_SCHEMA.yaml files) from docs/UCX/templates/layers/<layer>/
     and the project-specific tuned template from docs/UCX/templates/<template_name> are both
     included in the assembled prompt text so the AI has full authoritative context for creation.
     """
@@ -406,19 +407,15 @@ def assemble_project_creation_prompt(
         template_name=template_name,
     )
 
-    # Authoritative SSD layer assets (MVP template + schema) copied during scaffold
+    # Authoritative SSD layer assets (template + schema) copied during scaffold
     layer_assets = load_project_layer_assets(project_root=project_root, layer=layer)
 
     # Project-tuned document template (may not exist for all layers; tolerated)
-    document_template_text: str | None = None
-    tuned_template_name = f"{doc_type.upper()}-MVP-TEMPLATE.md"
-    try:
-        document_template_text = load_project_document_template(
-            project_root=project_root,
-            template_name=tuned_template_name,
-        )
-    except FileNotFoundError:
-        pass
+    document_template_text = load_tuned_template(
+        doc_type=doc_type,
+        loader_fn=load_project_document_template,
+        project_root=project_root,
+    )
 
     # Assemble prompt: persona | creation template | layer authoritative assets | tuned template
     layer_section = "\n\n".join(

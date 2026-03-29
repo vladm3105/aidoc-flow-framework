@@ -40,15 +40,11 @@ Master index of all Business Requirements Documents for the project.
 
 **Note**: Always runs from scratch, ignoring previous results.
 
-### Validate BRD (Unified)
+### Validate BRD (via mcp_sdd)
 
-```bash
-# Canonical BRD core validation (pre-commit/CI parity)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-
-# Optional full tiered validation
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
-```
+Validation runs through `sdd-lifecycle` MCP server tools:
+- `sdd_validate` — structural validation
+- `sdd_score_validate` — PRD-Ready score (>=90/100)
 
 ### Fix BRD Issues
 
@@ -116,7 +112,7 @@ BRD autopilot uses these source directories (in priority order):
 - **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
 - **Reference Documents**: [00_REF](../00_REF/)
 - **PRD Layer**: [02_PRD](../02_PRD/)
-- **Templates**: [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md)
+- **Template**: [BRD-TEMPLATE.yaml](BRD-TEMPLATE.yaml)
 
 ---
 

@@ -85,7 +85,7 @@ def load_project_layer_assets(*, project_root: Path, layer: str) -> dict[str, st
 
     assets: dict[str, str] = {}
     for file_path in sorted(path for path in layer_root.iterdir() if path.is_file()):
-        if "-MVP-TEMPLATE" in file_path.name or file_path.name.endswith("_MVP_SCHEMA.yaml"):
+        if "-TEMPLATE" in file_path.name or file_path.name.endswith("_MVP_SCHEMA.yaml"):
             assets[file_path.name] = file_path.read_text(encoding="utf-8")
 
     if not assets:

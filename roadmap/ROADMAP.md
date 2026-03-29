@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.1.0 |
-| Latest Release | 0.1.0 (MCP protocol transport layer for SDD lifecycle) |
-| Next Minor | 0.2.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.2.1 |
+| Latest Release | 0.2.1 (mcp_sdd template naming migration for unified YAML support) |
+| Next Minor | 0.3.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,10 +13,12 @@
 ## Version Timeline
 
 ```text
-v0.1.0 (Current) ──► v0.2.0 ──► v1.0.0
-  │                     │           │
-  │                     │           └─► Multi-MCP ecosystem (governance + own KB)
-  │                     └─► API executors via LiteLLM, MCP progress notifications
+v0.1.0 ──► v0.2.0 ──► v0.2.1 (Current) ──► v0.3.0 ──► v1.0.0
+  │           │           │                     │           │
+  │           │           │                     │           └─► Multi-MCP ecosystem
+  │           │           │                     └─► API executors via LiteLLM
+  │           │           └─► mcp_sdd template naming migration
+  │           └─► BRD template unification: single YAML, hash IDs, embedded guidance
   └─► MCP transport layer: 19 tools, CLI executor registry, pipeline orchestration
 ```
 
@@ -24,32 +26,7 @@ v0.1.0 (Current) ──► v0.2.0 ──► v1.0.0
 
 ## Planned Releases
 
-### v0.1.0 - MCP Protocol Transport Layer
-
-| Field | Value |
-| --- | --- |
-| Status | Implemented |
-| Type | Minor |
-| Release Date | 2026-03-28 |
-| Scope | Expose SDD lifecycle as MCP tools with per-call executor selection |
-| Plan | plans/PLAN-001_mcp_protocol_transport_layer.md |
-| Changelog | changelog/CHANGELOG_v0.1.0.md |
-
-Delivered scope:
-
-- MCP server (`sdd-lifecycle`) exposing 19 tools over stdio transport
-- Open executor registry: 5 CLI agents (claude, codex, gemini, opencode, copilot-cli) + 3 API stubs
-- Executor type system: CLI (subprocess) and API (LiteLLM stub for v0.2.0)
-- Deterministic tools (11): init, validate, consistency, preflight, prescreen, scan, scoring (show/validate/compare), list_executors, register_executor
-- LLM-dependent tools (6): create_build, create, review, validate_fix, remediate, remediate_fix
-- Orchestration tools (2): sdd_run_lifecycle (pipeline), sdd_next_action (advisor)
-- Runtime-configurable executors: executors.json config file + sdd_register_executor tool
-- Directory rename: mcp/ to mcp_sdd/
-- Validated against b-local project: preflight, create, validate, next_action, run_lifecycle all passing
-
----
-
-### v0.2.0 - API Executors and Progress Notifications
+### v0.3.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -84,6 +61,14 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.2.1 (2026-03-29)
+
+MCP SDD template naming migration. Updated 5 source files (10 occurrences) to support unified `{ARTIFACT}-TEMPLATE.yaml` naming with backward-compatible fallback to legacy `{ARTIFACT}-MVP-TEMPLATE.*`. Added resolution helper, 4 migration tests. See changelog/CHANGELOG_v0.2.1.md for details.
+
+### v0.2.0 (2026-03-28)
+
+BRD template unification. Consolidated 4 BRD files (dual templates + creation rules + validation rules) into single `BRD-TEMPLATE.yaml` with embedded authoring guidance, hash-based element IDs, and streamlined 15-section structure. See changelog/CHANGELOG_v0.2.0.md for details.
 
 ### v0.1.0 (2026-03-28)
 
