@@ -539,7 +539,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 **Hybrid Approach** (Best Practice):
 1. Use tag-only format during active development
 2. Convert to hyperlinked format before documentation release
-3. Run link validation after conversion: `./scripts/validate_links.py --path docs/`
+3. Run link validation after conversion: mcp_sdd `sdd_validate_links` --path docs/
 
 **Cross-Document Hyperlink Patterns**:
 
@@ -665,9 +665,9 @@ Traceability Requirements
 
 Validation Rules & Aids
 - Run before commit:
-  - `python 07_REQ/scripts/validate_requirement_ids.py`
-  - Optional: `python scripts/validate_links.py` (broken references)
-  - Optional: `python scripts/validate_traceability_matrix.py` (matrix compliance)
+  - mcp_sdd `sdd_validate` (requirement ID validation)
+  - Optional: mcp_sdd `sdd_validate_links` (broken references)
+  - Optional: mcp_sdd `sdd_validate` (matrix compliance)
 - Quick regexes (conceptual):
   - **Unified Element ID** (all document types): `^[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$`
   - **Internal Heading**: `^###\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$`
@@ -1142,13 +1142,13 @@ ID naming standards are enforced by automated validators. For the complete error
 
 ```bash
 # Validate ID patterns
-python3 07_REQ/scripts/validate_requirement_ids.py .
+mcp_sdd `sdd_validate` (requirement ID validation)
 
 # Validate forward references
-python3 scripts/validate_forward_references.py .
+mcp_sdd `sdd_validate` (forward reference validation)
 
 # Run all validators
-python3 scripts/validate_all.py . --all
+mcp_sdd `sdd_validate` --all
 ```
 
 ---
@@ -1162,7 +1162,7 @@ python3 scripts/validate_all.py . --all
 - Element ID DOC_NUM MUST match filename digit count exactly.
 - All documents are monolithic (single self-contained file) up to 50,000 tokens. If a document exceeds 50,000 tokens, create a new document of the same type with its own scope.
 - Internal element IDs use unified 4-segment format: `TYPE.DOC_NUM.TT.SS`.
-- Run `python 07_REQ/scripts/validate_requirement_ids.py` and fix any violations before committing.
+- Run mcp_sdd `sdd_validate` (requirement ID validation) and fix any violations before committing.
 
 ---
 

@@ -116,7 +116,7 @@ User is prompted with:
 ```
 
 **If MVP Track Selected**:
-- Use **MVP Templates** (`*-MVP-TEMPLATE.md`) - the standard for all projects.
+- Use **Templates** (`*-TEMPLATE.yaml`) - the standard for all projects.
 - Follow schedule in [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md).
 - Skip to Step 2.
 
@@ -165,25 +165,21 @@ ls -la work_plans/  # Verify work_plans directory
 **Commands**:
 ```bash
 # Point to the framework checkout (adjust for your environment)
-FRAMEWORK_ROOT=/path/to/ai_dev_flow
+FRAMEWORK_ROOT=/path/to/ai_dev_ssd_flow
 
-# Create ai_dev_flow directory for framework templates
-mkdir -p ai_dev_flow
+# Create ai_dev_ssd_flow directory for framework templates
+mkdir -p ai_dev_ssd_flow
 
-# Copy all templates into your project ai_dev_flow/ directory
-cp -r "$FRAMEWORK_ROOT"/* ai_dev_flow/
-
-# Copy validation scripts
-mkdir -p scripts
-cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
+# Copy all templates into your project ai_dev_ssd_flow/ directory
+cp -r "$FRAMEWORK_ROOT"/* ai_dev_ssd_flow/
 ```
 
 **Directory Purpose**:
-- `ai_dev_flow/` = Framework templates (standard: `*-MVP-TEMPLATE.*`; lifecycle: MVP → PROD → NEW MVP)
+- `ai_dev_ssd_flow/` = Framework templates (standard: `*-TEMPLATE.yaml`; lifecycle: MVP → PROD → NEW MVP)
 - `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 **Action for MVP Track**:
-- When creating `BRD-01`, `PRD-01`, etc., use the `*-MVP-TEMPLATE.md` source files.
+- When creating `BRD-01`, `PRD-01`, etc., use the `*-TEMPLATE.yaml` source files.
 - See [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) for details.
 
 ---
@@ -359,8 +355,7 @@ After all documents of type created:
 # Use: doc-brd, doc-prd, doc-req, etc.
 
 # 2. Automated validation (framework scripts)
-./07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01_example.md
-python scripts/validate_metadata.py docs/07_REQ/REQ-01_example.md
+# Validation via mcp_sdd `sdd_validate` tool
 
 # 3. Manual validation checklist
 # - Verify YAML frontmatter structure
@@ -390,7 +385,7 @@ grep -r "@prd: PRD-" docs/07_REQ/*.md | sort | uniq
 # Example: All @prd tags in REQ files point to existing PRD-XXX
 
 # 3. Inconsistency detection
-python scripts/trace_check.py --type REQ
+# Validation via mcp_sdd `sdd_validate` tool --type REQ
 # Check bidirectional traceability
 
 # 4. Additional checks
@@ -519,7 +514,7 @@ Initialize the project with 15-layer SDD documentation structure using STRICT fr
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/01_BRD/BRD-01_*.md
+# Validation via mcp_sdd `sdd_validate` tool for BRD docs
 
 # Manual checks
 # - Business language (not technical)
@@ -540,7 +535,7 @@ python scripts/validate_metadata.py docs/01_BRD/BRD-01_*.md
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/02_PRD/PRD-01_*.md
+# Validation via mcp_sdd `sdd_validate` tool for PRD docs
 
 # Cross-reference check
 grep "@brd:" docs/02_PRD/*.md | cut -d: -f2 | sort | uniq
@@ -562,14 +557,14 @@ ls docs/01_BRD/BRD-*.md
 **Validation Commands**:
 ```bash
 # Primary validation
-./07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
+# Validation via mcp_sdd `sdd_validate` tool for REQ docs
 
 # Duplicate detection
 grep -h "^## REQ-" docs/07_REQ/*.md | sort | uniq -d
 # Output should be empty (no duplicates)
 
 # Traceability check
-python scripts/trace_check.py --type REQ --strict
+# Validation via mcp_sdd `sdd_validate` tool --type REQ --strict
 ```
 
 #### SPEC (Technical Specifications)
@@ -588,7 +583,7 @@ python scripts/trace_check.py --type REQ --strict
 python -c "import yaml; yaml.safe_load(open('docs/09_SPEC/SPEC-01_*.yaml'))"
 
 # Schema validation
-python scripts/validate_spec_schema.py docs/09_SPEC/SPEC-01_*.yaml
+# Validation via mcp_sdd `sdd_validate` tool for SPEC docs
 
 # REQ coverage check
 grep "@req:" docs/09_SPEC/*.yaml | cut -d: -f2 | sort | uniq
@@ -608,7 +603,7 @@ grep "@req:" docs/09_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 **Validation Commands**:
 ```bash
 # Dependency validation
-python scripts/validate_task_dependencies.py docs/11_TASKS/TASKS-01_*.md
+# Validation via mcp_sdd `sdd_validate` tool for TASKS docs
 
 # Contract verification: Check TASKS Section 7-8 for implementation contracts
 ```
@@ -694,7 +689,7 @@ grep -h "^## REQ-" docs/07_REQ/*.md | sort | uniq -d
 
 ```bash
 # Detection
-python scripts/trace_check.py --strict
+# Validation via mcp_sdd `sdd_validate` tool --strict
 
 # Resolution
 # 1. Add missing @tag references
@@ -707,7 +702,7 @@ python scripts/trace_check.py --strict
 
 ```bash
 # Detection
-python scripts/validate_metadata.py docs/07_REQ/*.md
+# Validation via mcp_sdd `sdd_validate` tool for REQ metadata
 
 # Resolution
 # 1. Fix YAML syntax errors (indentation, quotes)
@@ -741,7 +736,7 @@ grep -L "Acceptance Criteria" docs/07_REQ/*.md
 **Measurement Commands**:
 ```bash
 # Generate quality report
-python scripts/quality_metrics.py --phase REQ
+# Validation via mcp_sdd `sdd_validate` tool --phase REQ
 
 # Expected output:
 # Total documents: 45
@@ -996,10 +991,9 @@ mkdir -p scripts work_plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
 # Step 3: Copy Templates
-FRAMEWORK_ROOT=/path/to/ai_dev_flow
-mkdir -p ai_dev_flow
-cp -r "$FRAMEWORK_ROOT"/* ai_dev_flow/
-cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
+FRAMEWORK_ROOT=/path/to/ai_dev_ssd_flow
+mkdir -p ai_dev_ssd_flow
+cp -r "$FRAMEWORK_ROOT"/* ai_dev_ssd_flow/
 
 # Step 4: Apply Domain Config
 # Run placeholder replacement based on domain selection

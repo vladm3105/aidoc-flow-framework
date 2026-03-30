@@ -52,11 +52,11 @@ SPEC serves as an **orchestrator** that routes to subtypes based on `deliverable
 
 | Subtype | Code | deliverable_type | Output | Template | CTR Required |
 |---------|------|------------------|--------|----------|--------------|
-| **[CSPEC](./CSPEC/)** | 50 | `code` (default) | Source code | `CSPEC-MVP-TEMPLATE.yaml` | Yes |
-| **[DSPEC](./DSPEC/)** | 51 | `document` | Documentation artifacts | `DSPEC-MVP-TEMPLATE.yaml` | Optional |
-| **[UXSPEC](./UXSPEC/)** | 52 | `ux` | Wireframes, mockups | `UXSPEC-MVP-TEMPLATE.yaml` | Optional |
-| **[RISKSPEC](./RISKSPEC/)** | 53 | `risk` | Risk matrices | `RISKSPEC-MVP-TEMPLATE.yaml` | No |
-| **[PROCSPEC](./PROCSPEC/)** | 54 | `process` | SOPs, runbooks | `PROCSPEC-MVP-TEMPLATE.yaml` | Optional |
+| **[CSPEC](./CSPEC/)** | 50 | `code` (default) | Source code | `CSPEC-TEMPLATE.yaml` | Yes |
+| **[DSPEC](./DSPEC/)** | 51 | `document` | Documentation artifacts | `DSPEC-TEMPLATE.yaml` | Optional |
+| **[UXSPEC](./UXSPEC/)** | 52 | `ux` | Wireframes, mockups | `UXSPEC-TEMPLATE.yaml` | Optional |
+| **[RISKSPEC](./RISKSPEC/)** | 53 | `risk` | Risk matrices | `RISKSPEC-TEMPLATE.yaml` | No |
+| **[PROCSPEC](./PROCSPEC/)** | 54 | `process` | SOPs, runbooks | `PROCSPEC-TEMPLATE.yaml` | Optional |
 
 ### Routing Logic
 

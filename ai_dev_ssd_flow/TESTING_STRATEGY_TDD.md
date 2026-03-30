@@ -511,7 +511,7 @@ Acceptance tests from BDD scenarios
 @brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
-@bdd: BDD-01_user_authentication.feature
+@bdd: BDD-01_user_authentication.yaml
 @adr: ADR-01
 @sys: SYS-01
 @req: REQ-01.01.01, REQ-01.02.01, REQ-01.03.01
@@ -521,7 +521,7 @@ Acceptance tests from BDD scenarios
 @code: src/services/auth_service.py
 """
 # Load all BDD scenarios
-scenarios('../../04_BDD/BDD-01_user_authentication.feature')
+scenarios('../../04_BDD/BDD-01_user_authentication.yaml')
 
 @pytest.fixture
 def context():
@@ -640,7 +640,7 @@ Each test type includes all upstream traceability tags:
 @brd: BRD.01.01.01
 @prd: PRD-01
 @ears: EARS-01
-@bdd: BDD-01_user_authentication.feature
+@bdd: BDD-01_user_authentication.yaml
 @adr: ADR-01
 @sys: SYS-01
 @req: REQ-01.01.01, REQ-01.02.01, REQ-01.03.01
@@ -1036,7 +1036,7 @@ def test_bdd_happy_path_login(self):
 **→ Acceptance Test** (tests/acceptance/test_bdd_user_scenarios.py):
 ```python
 # Executes complete BDD-01 scenario
-scenarios('../../04_BDD/BDD-01_user_authentication.feature')
+scenarios('../../04_BDD/BDD-01_user_authentication.yaml')
 ```
 
 ---

@@ -375,7 +375,7 @@ Document the technical specifications and designs derived from this document.
 | ADR | [ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Architectural approach implementing these requirements |
 | REQ | [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
 | CTR | [CTR-NN](../08_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
-| BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
+| BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.yaml#scenarios) | [Test scenarios] | Acceptance test scenarios |
 | SPEC | [SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
 | TSPEC | [TSPEC-NN](../10_TSPEC/TSPEC-NN_...md) | [Test specification] | TDD test specifications (UTEST, ITEST, STEST, FTEST) |
 | TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
@@ -562,7 +562,7 @@ python scripts/extract_tags.py --source src/ docs/ --output docs/generated/tags.
 
 **Validate tags against document existence:**
 ```bash
-python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --docs docs/ --strict
+mcp_sdd `sdd_validate` --tags docs/generated/tags.json --docs docs/ --strict
 ```
 
 **Generate bidirectional matrices:**
@@ -630,8 +630,8 @@ From EARS-TEMPLATE.yaml:
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
-| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
-| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
+| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.yaml#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
+| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.yaml#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
 
 ### Document Links
 - **Anchors/IDs**: `#EARS-01`
@@ -835,10 +835,10 @@ Implements real-time resource limit validation and enforcement.
 **Validation Commands**:
 ```bash
 # Validate tag format and completeness
-python scripts/validate_tags_against_docs.py --strict
+mcp_sdd `sdd_validate` --strict
 
 # Check cumulative tag chains
-python scripts/validate_tags_against_docs.py --check-cumulative
+mcp_sdd `sdd_validate` --check-cumulative
 
 # Generate traceability matrix from tags
 python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
@@ -1174,7 +1174,7 @@ All traceability references MUST use markdown links with anchors:
 \[CTR-01](../08_CTR/CTR-01_position_risk_validation.md#CTR-01)
 \[CTR-01 Schema](../08_CTR/CTR-01_position_risk_validation.yaml)
 [PRD-01](../02_PRD/PRD-01_risk_management.md)
-[BDD-03.1](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenarios)
+[BDD-03.1](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.yaml#scenarios)
 ```
 
 ### Anchor Types
@@ -1240,10 +1240,10 @@ Before committing any document:
 
 ```bash
 # Validate requirement IDs and format
-python 07_REQ/scripts/validate_requirement_ids.py
+mcp_sdd `sdd_validate` (requirement ID validation)
 
-# Check broken references (if available)
-python scripts/validate_links.py
+# Check broken references
+mcp_sdd `sdd_validate_links`
 
 # Generate traceability matrix (if available)
 python scripts/generate_traceability_matrix.py --auto
@@ -1423,7 +1423,7 @@ Note: Script name canonicalization — use `scripts/generate_traceability_matrix
 - Architecture: ADR-33
  - Contract: CTR-01_position_risk_validation (if implementing contract)
 - Specification: SPEC-03_resource_limit_service.yaml
-- BDD: 04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature
+- BDD: 04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.yaml
 """
 ```
 
@@ -1437,7 +1437,7 @@ Risk Validator Service - Contract Provider
 - Architecture: ADR-33
   - Contract: CTR-01_position_risk_validation.md + .yaml (implements)
 - Specification: SPEC-05_risk_validator_service.yaml
-- BDD: 04_BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.feature
+- BDD: 04_BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.yaml
 - Role: Provider (implements contract interface)
 """
 ```

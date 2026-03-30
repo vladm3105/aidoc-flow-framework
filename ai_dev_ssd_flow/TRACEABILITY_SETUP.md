@@ -70,7 +70,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 
 **Validate tags against documents:**
 ```bash
-python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+mcp_sdd `sdd_validate` --tags docs/generated/tags.json --strict
 ```
 
 **Generate bidirectional matrices:**
@@ -92,7 +92,7 @@ python scripts/extract_tags.py --validate-only
 
 **Validate cumulative tagging hierarchy compliance:**
 ```bash
-python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+mcp_sdd `sdd_validate` --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
 ```
 
 **What it checks:**
@@ -219,7 +219,7 @@ All timestamps use ISO 8601 format: `YYYY-MM-DDTHH:MM:SS`
 **Layer-specific validation:**
 ```bash
 # Validate specific artifact type
-python scripts/validate_tags_against_docs.py \
+mcp_sdd `sdd_validate` \
   --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
@@ -251,10 +251,10 @@ python scripts/validate_tags_against_docs.py \
 
 ```bash
 # Validate requirement IDs
-python 07_REQ/scripts/validate_requirement_ids.py
+mcp_sdd `sdd_validate` (requirement ID validation)
 
 # Check for broken links
-python scripts/validate_links.py
+mcp_sdd `sdd_validate_links`
 ```
 
 ---
@@ -279,14 +279,14 @@ if [ $? -ne 0 ]; then
 fi
 
 # Validate tags against documents
-python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --strict
+mcp_sdd `sdd_validate` --source src/ docs/ tests/ --docs docs/ --strict
 if [ $? -ne 0 ]; then
   echo "[FAIL] Tag validation failed - orphaned or invalid tags found"
   exit 1
 fi
 
 # Validate cumulative tagging hierarchy
-python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+mcp_sdd `sdd_validate` --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
 if [ $? -ne 0 ]; then
   echo "[FAIL] Cumulative tagging validation failed - missing upstream tags or gaps in chain"
   exit 1
@@ -310,14 +310,14 @@ repos:
     hooks:
       - id: validate-traceability-tags
         name: Validate Traceability Tags
-        entry: python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --strict
+        entry: mcp_sdd `sdd_validate` --source src/ docs/ tests/ --docs docs/ --strict
         language: python
         pass_filenames: false
         always_run: true
 
       - id: validate-cumulative-tagging
         name: Validate Cumulative Tagging Hierarchy
-        entry: python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+        entry: mcp_sdd `sdd_validate` --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
         language: python
         pass_filenames: false
         always_run: true
@@ -367,7 +367,7 @@ jobs:
         run: python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
       - name: Validate Tags Against Documents
-        run: python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+        run: mcp_sdd `sdd_validate` --tags docs/generated/tags.json --strict
 
       - name: Generate Traceability Matrices
         run: python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
@@ -390,8 +390,8 @@ jobs:
 
 def after_document_created(document_path):
     # Validate immediately
-    run_command("python 07_REQ/scripts/validate_requirement_ids.py")
-    run_command("python scripts/validate_links.py")
+    run_command("mcp_sdd `sdd_validate` (requirement ID validation)")
+    run_command("mcp_sdd `sdd_validate_links`")
 
     # Report results
     if validation_passed:

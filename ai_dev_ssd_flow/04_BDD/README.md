@@ -34,7 +34,7 @@ Code (SPEC)      — implementation-ready specifications
 | `BDD-TEMPLATE.yaml` | Single source of truth — template with Gherkin guidance in `_example` fields |
 | `BDD-00_index.md` | BDD registry — tracks planned and active BDD documents per project |
 
-BDD instances (actual test files) are `.feature` files generated from the YAML template.
+BDD instances (actual test files) are `.yaml` files generated from the YAML template.
 
 ## Template Sync Rule
 

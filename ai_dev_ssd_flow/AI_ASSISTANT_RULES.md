@@ -582,10 +582,10 @@ ai_dev_ssd_flow/[NN]_[TYPE]/[TYPE]-TEMPLATE.yaml
 **Automated Validation**:
 ```bash
 # Run validation script
-python scripts/validate_traceability_matrix.py --type [TYPE] --strict
+mcp_sdd `sdd_validate` --type [TYPE] --strict
 
 # Check coverage
-python scripts/check_traceability_coverage.py --all
+mcp_sdd `sdd_validate` --check-coverage --all
 ```
 
 ### Why This Is Critical
@@ -657,10 +657,10 @@ ls -laR docs/
 ls docs/*/index.*
 
 # Check for broken references (after documents created)
-python scripts/validate_links.py
+mcp_sdd `sdd_validate_links`
 
 # Validate requirement IDs (after documents created)
-python 07_REQ/scripts/validate_requirement_ids.py
+mcp_sdd `sdd_validate` (requirement ID validation)
 
 # Generate traceability matrix (after documents created)
 python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
@@ -1188,7 +1188,7 @@ Ensure all documents maintain semantic consistency with their upstream sources t
 
 1. **Run cross-document validation**:
    ```bash
-   python scripts/validate_cross_document.py --document {created_doc} --auto-fix
+   mcp_sdd `sdd_validate` --document {created_doc} --auto-fix
    ```
 
 2. **Verify tag references**: All @tags must reference existing documents with valid requirement IDs
@@ -1205,7 +1205,7 @@ Ensure all documents maintain semantic consistency with their upstream sources t
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc} --auto-fix
+  1. Run: mcp_sdd `sdd_validate` --document {doc} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -1337,7 +1337,7 @@ Define three validation phases that execute at different workflow stages.
 
 **Command**:
 ```bash
-python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+mcp_sdd `sdd_validate` --document {doc_path} --auto-fix
 ```
 
 **Blocking**: YES - Cannot proceed until Phase 1 passes
@@ -1354,7 +1354,7 @@ python scripts/validate_cross_document.py --document {doc_path} --auto-fix
 
 **Command**:
 ```bash
-python scripts/validate_cross_document.py --layer {TYPE} --auto-fix
+mcp_sdd `sdd_validate` --layer {TYPE} --auto-fix
 ```
 
 **Automatic Trigger Detection**:
@@ -1374,7 +1374,7 @@ python scripts/validate_cross_document.py --layer {TYPE} --auto-fix
 
 **Command**:
 ```bash
-python scripts/validate_cross_document.py --all --auto-fix --strict
+mcp_sdd `sdd_validate` --all --auto-fix --strict
 ```
 
 **Quality Gate Thresholds**:

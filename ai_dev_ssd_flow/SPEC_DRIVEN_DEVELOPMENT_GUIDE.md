@@ -128,9 +128,9 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
 
 **Validation Commands:**
-- Validation note: use the per-artifact validators and the pre-commit hook pattern defined in `TRACEABILITY_VALIDATION.md` instead of a monolithic `validate_quality_gates.sh` script.
+- Validation note: use mcp_sdd `sdd_validate` tool and the pre-commit hook pattern defined in `TRACEABILITY.md` instead of a monolithic `validate_quality_gates.sh` script.
 - Pre-commit automation: Quality gates run on every commit to docs/ directory
-- Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
+- Refer to [TRACEABILITY.md](./TRACEABILITY.md) for complete quality gate specifications
 
 The quality gates ensure smooth 15-layer transitions and prevent immature artifacts from affecting downstream development.
 
@@ -877,7 +877,7 @@ Tags enable automated traceability validation. Code becomes the single source of
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
 # Validate tags reference real documents
-python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+mcp_sdd `sdd_validate` --tags docs/generated/tags.json --strict
 
 # Generate bidirectional matrices
 python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
@@ -1007,10 +1007,10 @@ Implements real-time resource limit validation and enforcement.
 **Validation Commands**:
 ```bash
 # Validate tag format and completeness
-python scripts/validate_tags_against_docs.py --strict
+mcp_sdd `sdd_validate` --strict
 
 # Check cumulative tag chains
-python scripts/validate_tags_against_docs.py --check-cumulative
+mcp_sdd `sdd_validate` --check-cumulative
 
 # Generate traceability matrix from tags
 python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
@@ -1409,7 +1409,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - [ ] **Traceability tags validated** [WARN] **MANDATORY**
   - [ ] All code files must have @brd:/@req:/@spec: tags
   - [ ] Tag format validation passes: `python scripts/extract_tags.py --validate-only`
-  - [ ] Tags reference existing documents: `python scripts/validate_tags_against_docs.py --strict`
+  - [ ] Tags reference existing documents: `mcp_sdd `sdd_validate` --strict`
   - [ ] Matrices auto-generated: `python scripts/generate_traceability_matrix.py --auto`
   - [ ] No orphaned tags
 - [ ] BDD scenarios tagged with @requirement and @adr links
@@ -1551,24 +1551,24 @@ performance:
 ## Validation Commands
 
 ### Core Validation Scripts
-- **REQ V2 Validation**: `python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md`
+- **REQ V2 Validation**: mcp_sdd `sdd_validate` (REQ SPEC-readiness check)
   - Checks for interface definitions with type signatures
   - Validates schema completeness (JSON Schema/Pydantic)
   - Verifies error catalog with recovery strategies
   - Confirms configuration examples present
   - Generates SPEC-Ready Score (0-100%)
-- Validate requirement IDs: `python 07_REQ/scripts/validate_requirement_ids.py`
+- Validate requirement IDs: mcp_sdd `sdd_validate` (requirement ID validation)
   - Enhanced to validate REQ V2 mandatory sections
-- Check links (repo-level tools if available): `python scripts/validate_links.py`
+- Check links (repo-level tools if available): mcp_sdd `sdd_validate_links`
 - Generate matrices (if available): `python scripts/generate_traceability_matrix.py --auto`
 
-### Artifact-Specific Validation Scripts
+### Artifact-Specific Validation
 ```bash
-# Document structure validation (available scripts)
-bash 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
-bash 07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
-bash 08_CTR/scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
-bash 11_TASKS/scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
+# Document structure validation via mcp_sdd
+mcp_sdd `sdd_validate` --type BRD --file docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
+mcp_sdd `sdd_validate` --type REQ --file docs/07_REQ/REQ-01.md    # REQ 12-section format
+mcp_sdd `sdd_validate` --type CTR --file docs/08_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
+mcp_sdd `sdd_validate` --type TASKS --file docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
 ```
 
 ## Traceability Matrix Management (MANDATORY)
@@ -1621,7 +1621,7 @@ Each document type has its own dedicated traceability matrix template:
    - section 3: Document upstream sources (which documents drove this artifact)
    - section 4: Document downstream artifacts (which documents/code derive from this - even if "To Be Created")
    - section 8: Update implementation status and completion percentage
-4. **Validate Matrix**: Run `python scripts/validate_traceability_matrix.py --type [TYPE]`
+4. **Validate Matrix**: Run mcp_sdd `sdd_validate` --type [TYPE]
 5. **Commit Together**: Commit artifact + matrix + index in same commit
 
 ### Matrix sections to Update
@@ -1671,7 +1671,7 @@ Before committing, verify:
 - [ ] Downstream artifacts documented (section 4)
 - [ ] All references resolve correctly
 - [ ] No orphaned artifacts (documents missing from matrix)
-- [ ] Validation script passes: `python scripts/validate_traceability_matrix.py --type [TYPE] --strict`
+- [ ] Validation script passes: mcp_sdd `sdd_validate` --type [TYPE] --strict
 
 ### Why This Is Critical
 
@@ -1705,7 +1705,7 @@ Use validation scripts for automated matrix management:
 python scripts/generate_traceability_matrix.py --type ADR --output docs/05_ADR/
 
 # Validate existing matrix
-python scripts/validate_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_MATRIX_ADR.md
+mcp_sdd `sdd_validate` --matrix docs/05_ADR/TRACEABILITY_MATRIX_ADR.md
 
 # Update matrix incrementally
 python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_MATRIX_ADR.md
@@ -1800,15 +1800,15 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
   - [ ] section 5: Error Handling (exception catalog + state machines)
   - [ ] section 6: Configuration (YAML + validation + env vars)
   - [ ] No placeholders (concrete examples only)
-  - [ ] SPEC-Ready Score ≥90% (`validate_req_spec_readiness.py`)
+  - [ ] SPEC-Ready Score ≥90% (mcp_sdd `sdd_validate`)
 - ADR updated with Impact Analysis and Implementation Assessment sections.
 - Tech Spec updated: `id` equals filename; includes upstream/downstream links, interfaces, data model, states, errors, performance, observability.
 - BDD scenarios include Gherkin-native upstream tags: `@brd: BRD.NN.EE.SS`, `@prd: PRD.NN.EE.SS`, `@ears: EARS.NN.EE.SS`.
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
 - security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
-  - `python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/{domain}/REQ-NN.md`
-  - `python 07_REQ/scripts/validate_requirement_ids.py`
+  - mcp_sdd `sdd_validate` (REQ SPEC-readiness check for 07_REQ/{domain}/REQ-NN.md)
+  - mcp_sdd `sdd_validate` (requirement ID validation)
   - Manual link checks
 
 ## Appendix: Claude Instructions (Merged)

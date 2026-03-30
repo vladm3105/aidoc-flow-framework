@@ -1,7 +1,7 @@
 """MCP Tool definitions and handler dispatch for SDD lifecycle.
 
-19 tools total:
-  - 11 deterministic (execute directly)
+20 tools total:
+  - 12 deterministic (execute directly)
   - 2 orchestration (pipeline + advisor)
   - 6 LLM-dependent (optional executor param)
 """
@@ -67,6 +67,20 @@ TOOLS: list[Tool] = [
                 "target": {"type": "string", "description": "Path to source document file or directory"},
                 "format": {"type": "string", "enum": ["text", "json"], "default": "json"},
                 "out": {"type": "string", "description": "Output directory"},
+            },
+            "required": ["target"],
+        },
+    ),
+    Tool(
+        name="sdd_validate_links",
+        description="Validate markdown links in documentation files. Checks relative file links exist and anchor references resolve. Returns broken links with file, line number, and target. Scans .md files only (YAML files with embedded links are not scanned).",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "target": {"type": "string", "description": "Path to a markdown file or directory to scan"},
+                "workspace_root": {"type": "string", "description": "Workspace root for resolving absolute paths (defaults to target or its parent)"},
+                "format": {"type": "string", "enum": ["text", "json"], "default": "json", "description": "Output format (used by CLI only)"},
+                "out": {"type": "string", "description": "Output directory for reports"},
             },
             "required": ["target"],
         },
@@ -535,6 +549,19 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.consistency import run_consistency_check
         result = run_consistency_check(
             target_path=_path(arguments, "target"),
+            output_dir=_opt_path(arguments, "out"),
+        )
+        return {
+            "passed": result.passed,
+            "report": json.loads(result.report_json),
+            "report_path": str(result.report_path) if result.report_path else None,
+        }
+
+    if name == "sdd_validate_links":
+        from mcp_server.link_validation import run_link_validation
+        result = run_link_validation(
+            target_path=_path(arguments, "target"),
+            workspace_root=_opt_path(arguments, "workspace_root"),
             output_dir=_opt_path(arguments, "out"),
         )
         return {

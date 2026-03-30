@@ -36,7 +36,7 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 ### Splitting Rules (MVP context)
 
 - MVP default: Single flat file per artifact.
-- Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` in MVP.
+- Split only when a single file exceeds the monolithic 50,000-token limit (100,000 max); prefer single flat files by default.
 - Sectioned templates apply only when splitting is explicitly required.
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
@@ -168,7 +168,7 @@ graph TB
     PRD["02_PRD/PRD-NN_{slug}/ - Product Requirements"]
     ADR["05_ADR/ADR-NN_{slug}/ - Architecture Decisions"]
     EARS["03_EARS/EARS-NN_{slug}/ - EARS Syntax"]
-    BDD["04_BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
+    BDD["04_BDD/BDD-NN_{suite}/ - BDD Scenarios (YAML)"]
     SYS["06_SYS/SYS-NN_{slug}/ - System Specs"]
     REQ["07_REQ/REQ-NN_{slug}/ - Atomic Requirements"]
     CTR["08_CTR/CTR-NN_{slug}/ - API Contracts"]
@@ -230,7 +230,7 @@ mkdir -p docs/08_CTR/CTR-01_data_service_api
 mkdir -p scripts work_plans
 ```
 
-Note: Traceability matrix generator — use the singular script `scripts/generate_traceability_matrix.py`. The plural `generate_traceability_matrix.py` is a backward-compatible wrapper.
+Note: Traceability matrix generation is available via mcp_sdd `sdd_validate` tool.
 
 Index Width Policy: See README.md → “Using This Repo” for the `-000` index/utility convention used here.
 
@@ -239,16 +239,16 @@ Index Width Policy: See README.md → “Using This Repo” for the `-000` index
 ```bash
 # NOTE: In this repo, drop any `docs/` prefix used in generic examples.
 # Validate requirement IDs
-python 07_REQ/scripts/validate_requirement_ids.py
+# Validation via mcp_sdd `sdd_validate` tool
 
 # Check broken references
-python scripts/validate_links.py
+# Validation via mcp_sdd `sdd_validate` tool
 
 # Generate traceability matrix
-python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+# Validation via mcp_sdd `sdd_validate` tool
 
 # Lint file sizes (target 800, max 1200)
-./scripts/lint_file_sizes.sh
+# Validation via mcp_sdd `sdd_validate` tool
 ```
 
 ---
@@ -353,12 +353,12 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 ### Pre-Creation
 - [ ] Read upstream documents (strategy, BRD, PRD, EARS, etc.)
-- [ ] Identify which template to use from `ai_dev_flow/[TYPE]/`
+- [ ] Identify which template to use from `ai_dev_ssd_flow/[TYPE]/`
 - [ ] Assign next sequential ID ([TYPE]-NN)
 - [ ] Check for existing traceability matrix: `[TYPE]-00_TRACEABILITY_MATRIX.md`
 
 ### During Creation
-- [ ] Use template from `ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
+- [ ] Use template from `ai_dev_ssd_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
 - [ ] Include H1 header with ID: `# [TYPE]-NN: Title`
 - [ ] Fill all required sections from template
 - [ ] Add Traceability section (section 7) with upstream/downstream links
@@ -377,10 +377,9 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
   - [ ] Update section 8 (Implementation Status)
 - [ ] Update index file: `[TYPE]-00_index.md`
 - [ ] Validate all markdown links resolve correctly
-- [ ] Run validation scripts:
-  ```bash
-  python 07_REQ/scripts/validate_requirement_ids.py
-  python scripts/validate_traceability_matrix.py --type [TYPE]
+- [ ] Run validation:
+  ```
+  Validation via mcp_sdd `sdd_validate` tool
   ```
 - [ ] Commit files together (artifact + matrix + index)
 
@@ -389,7 +388,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 - [ ] Traceability matrix updated (MANDATORY)
 - [ ] No broken links or missing anchors
 - [ ] No orphaned artifacts (all docs in matrix)
-- [ ] Validation scripts pass without errors
+- [ ] Validation via mcp_sdd `sdd_validate` tool passes without errors
 - [ ] File size under token limits (50K standard, 100K max)
 
 ---
@@ -419,7 +418,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **PRD** | Product features | .md | **Nested** | `02_PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
 | **ADR** | Architecture decisions | .md | **Nested** | `05_ADR/ADR-05_db_selection/ADR-05.0_db_selection_index.md` |
 | **EARS** | Measurable requirements | .md | **Nested** | `03_EARS/EARS-03_performance/EARS-03_performance.md` |
-| **BDD** | Acceptance tests | .feature | **Nested (section-based)** | `04_BDD/BDD-02_query/BDD-02.14_query_filtering.feature` |
+| **BDD** | Acceptance tests | .yaml | **Nested** | `04_BDD/BDD-02_query/BDD-02_query.yaml` |
 | **SYS** | System specifications | .md | **Nested** | `06_SYS/SYS-06_api_gateway/SYS-06_api_gateway.md` |
 | **REQ** | Atomic requirements | .md | **Nested** | `07_REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
 | **CTR** | API contracts | .md + .yaml | **Nested** | `08_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
@@ -434,14 +433,14 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 ## File Size Limits (All Documents)
 
 - Target: 800 lines per file
-- Maximum: 1200 lines per file (absolute) for Markdown and feature files
+- Maximum: 1200 lines per file (absolute) for Markdown files
 - YAML Exception: YAML specs are monolithic; warnings start at ~1000 lines and errors at ~2000 lines in the linter. Prefer readability and coherent grouping over splitting.
 - If a file approaches/exceeds limits, split into sections/subsections per the type’s templates (except YAML where monolithic files are preferred)
 
 ## Document Splitting Standard (All Types)
 
 - Triggers:
-  - Approaches or exceeds size limits (MD/feature > 800 target or > 1200 max; YAML > ~2000 only if readability suffers)
+  - Approaches or exceeds size limits (MD > 800 target or > 1200 max; YAML > ~2000 only if readability suffers)
   - Logical boundaries emerge (distinct topics, modules, or lifecycle phases)
   - Navigation or maintenance suffers (anchors hard to find, very long TOC)
 - General Steps:
@@ -451,54 +450,39 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
      - Pattern: `{TYPE}-{NN}.{S}_{slug}.{ext}` (S starts at 1)
   4) Update index with section map, prev/next links, and brief descriptions
   5) Update cross-references and traceability matrices
-  6) Validate links and run `./scripts/lint_file_sizes.sh`
+  6) Validate links via mcp_sdd `sdd_validate` tool
 - Type-specific Notes:
-  - BDD: Use section-based `.SS_{slug}.feature`. If a section grows, split into subsections `.SS.mm_{slug}.feature` and add an aggregator `.SS.00_{slug}.feature` with `@redirect`.
+  - BDD: Use monolithic `BDD-NN_{slug}.yaml` per suite. Split only when exceeding token limits.
   - SPEC (YAML): Prefer monolithic. Only split by component/domain when extremely large or harming readability; ensure interfaces remain coherent.
   - CTR: Maintain dual-file structure (`.md` + `.yaml`). If split by endpoint groups, keep paired files consistent and cross-linked.
 
 ---
 
-## BDD Section-Based Format (MANDATORY)
+## BDD Monolithic YAML Format (MANDATORY)
 
-**All BDD files MUST use section-based numbering** - No backward compatibility with legacy formats.
+**All BDD files MUST use monolithic YAML format** - No section-based files.
 
-### Three Valid Patterns
-
-#### 1. Section-Only Format (Primary)
+### Valid Pattern
 ```
-Pattern: BDD-NN.SS_{slug}.feature
-Example: BDD-02.14_query_result_filtering.feature
-Use When: Standard section file (≤800 lines, ≤12 scenarios)
-```
-
-#### 2. Subsection Format (When Section >800 Lines)
-```
-Pattern: BDD-NN.SS.mm_{slug}.feature
-Example: BDD-02.24.01_quality_performance.feature
-Use When: Section requires splitting (each subsection ≤800 lines)
-```
-
-#### 3. Aggregator Format (Optional Redirect Stub)
-```
-Pattern: BDD-NN.SS.00_{slug}.feature
-Example: BDD-02.12.00_query_graph_traversal.feature
-Use When: Organizing multiple subsections under one section
-Requirements: @redirect tag MANDATORY, 0 scenarios
+Pattern: BDD-NN_{slug}.yaml
+Example: BDD-02_knowledge_engine.yaml
+Use When: All BDD suites (one YAML file per suite)
 ```
 
 ### Index File (Mandatory)
 ```
 Pattern: BDD-NN.0_index.md
 Example: BDD-02.0_index.md
-Purpose: Suite overview, section map, traceability matrix
+Purpose: Suite overview, traceability matrix
 ```
 
 ### Prohibited Patterns (ERROR)
 ```
-[FAIL] BDD-02_query_part1.feature          # _partN suffix
-[FAIL] BDD-02_knowledge_engine.feature     # Single-file format
-[FAIL] BDD-02_knowledge_engine/features/   # Directory-based structure
+[FAIL] BDD-02.14_query_filtering.feature   # Section-based .feature
+[FAIL] BDD-02.24.01_quality.feature         # Subsection .feature
+[FAIL] BDD-02.12.00_graph_traversal.feature # Aggregator .feature
+[FAIL] BDD-02_query_part1.feature           # _partN suffix
+[FAIL] BDD-02_knowledge_engine/features/    # Directory-based structure
 ```
 
 ### File Organization (Nested Suite)
@@ -506,22 +490,17 @@ Purpose: Suite overview, section map, traceability matrix
 docs/04_BDD/
  BDD-02_knowledge_engine/
      BDD-02.0_index.md                       # Index (MANDATORY)
-     BDD-02.1_ingest.feature                 # Section-only
-     BDD-02.2_query.feature                  # Section-only
-     BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
-     BDD-02.12.01_depth_first.feature        # Subsection
-     BDD-02.12.02_breadth_first.feature      # Subsection
-     BDD-02.3_learning.feature               # Section-only
+     BDD-02_knowledge_engine.yaml            # Monolithic BDD suite
 ```
 
-### Section Metadata Tags (Required)
-```gherkin
-@section: 2.14              # Section number
-@parent_doc: BDD-02         # Parent BDD suite
-@index: BDD-02.0_index.md   # Index file reference
-@brd:BRD.02.03.14          # Upstream traceability
-@prd:PRD.02.05.14
-@ears:EARS.02.14.01
+### Metadata Tags (Required in YAML)
+```yaml
+parent_doc: BDD-02         # Parent BDD suite
+index: BDD-02.0_index.md   # Index file reference
+upstream:
+  brd: BRD.02.03.14        # Upstream traceability
+  prd: PRD.02.05.14
+  ears: EARS.02.14.01
 ```
 
 ### Cross-Doc BDD Link Format
@@ -529,23 +508,13 @@ docs/04_BDD/
 # Suite folder
 ../04_BDD/BDD-NN_{suite}/
 
-# Section link (most common)
-[BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
-
-# Subsection link
-[BDD-NN.SS.mm](../04_BDD/BDD-NN_{suite}/BDD-NN.SS.mm_{slug}.feature#scenario-1)
-
-# Aggregator link (redirect, 0 scenarios)
-[BDD-NN.SS.00](../04_BDD/BDD-NN_{suite}/BDD-NN.SS.00_{slug}.feature)
+# Suite link
+[BDD-NN](../04_BDD/BDD-NN_{suite}/BDD-NN_{slug}.yaml)
 ```
 
 ### Validation
-```bash
-# Validate section-based format
-python3 04_BDD/scripts/validate_bdd_suite.py --root BDD
-
-# Migrate legacy formats
-python3 04_BDD/scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_knowledge_engine
+```
+Validation via mcp_sdd `sdd_validate` tool with `doc_type=bdd`
 ```
 
 ---
@@ -584,9 +553,9 @@ python3 04_BDD/scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_know
 ## Emergency Fixes
 
 ### Broken Reference
-```bash
+```
 # Find all broken references
-python scripts/validate_links.py
+Validation via mcp_sdd `sdd_validate` tool
 
 # Fix pattern
 [REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
@@ -594,9 +563,9 @@ python scripts/validate_links.py
 ```
 
 ### Duplicate ID
-```bash
+```
 # Check for duplicates
-python 07_REQ/scripts/validate_requirement_ids.py
+Validation via mcp_sdd `sdd_validate` tool
 
 # Resolution: Rename duplicate with next sequential ID
 # Update all references to new ID

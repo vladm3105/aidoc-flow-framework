@@ -231,14 +231,15 @@ After completing a sprint or any significant/breaking change, review and update:
 
 ---
 
-## 8.1 AI Expert Board
+## 8.1 Document Review
 
-The framework includes a project-specific 6-member AI Expert Board (a "Red Team" / Internal Audit board) to validate architectural documentation natively.
+Document review and validation is handled by mcp_sdd tools:
 
-- **Initialization**: The board should be created during a new project initialization, or manually on demand later by copying `ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml` to `docs/AI_EXPERTS/review.yaml`.
-- **Phase 1 (Ideation)**: Using the board to brainstorm solutions *before* a BRD/PRD is written.
-- **Phase 2 (Audit)**: Using `/opt/data/docs_flow_framework/automation/pipelines/doc_review/run_review.sh` to blindly critique a completed document and generate a mandatory `PERSONA_REVIEW_REPORT.md` quality gate.
-- **Reference**: See `ai_dev_ssd_flow/AI_EXPERTS/README.md` for persona design and usage.
+- **Validation**: `sdd_validate` — structural and schema compliance checks
+- **Link validation**: `sdd_validate_links` — markdown link integrity
+- **Review**: `sdd_review` — LLM-powered semantic review
+- **Remediation**: `sdd_remediate` — automated fix application
+- **Full lifecycle**: `sdd_run_lifecycle` — create → validate → review → fix pipeline
 
 ---
 
@@ -284,7 +285,7 @@ Required frontmatter:
 | Run Project Knowledge Base | [project_knowledge/README.md](project_knowledge/README.md) |
 | Configure KB databases | [project_knowledge/docker-compose.db.yml](project_knowledge/docker-compose.db.yml) |
 | Use KB MCP tools | [project_knowledge/mcp/README.md](project_knowledge/mcp/README.md) |
-| Run AI Expert Board | [ai_dev_ssd_flow/AI_EXPERTS/README.md](ai_dev_ssd_flow/AI_EXPERTS/README.md) |
+| Validate documents | mcp_sdd `sdd_validate` and `sdd_validate_links` tools |
 
 ---
 

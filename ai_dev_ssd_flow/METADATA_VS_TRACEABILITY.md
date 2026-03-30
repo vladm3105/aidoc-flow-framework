@@ -34,7 +34,7 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 | **Location** | Top of file (lines 1-20) | section 7 (Traceability) in document body |
 | **Format** | YAML key-value pairs | Markdown inline: `@artifact: ID (Description)` |
 | **Audience** | Documentation systems (Docusaurus), validation tools | Auditors, reviewers, QA, AI assistants |
-| **Validation** | Schema-based (`scripts/validate_metadata.py`) | Bidirectional link checking (`scripts/validate_tags_against_docs.py`) |
+| **Validation** | Schema-based (mcp_sdd `sdd_validate`) | Bidirectional link checking (mcp_sdd `sdd_validate`) |
 | **Changeability** | Can be updated as needed | Immutable after document approval |
 | **Content** | Classification tags, layer info, architecture approach | Specific document IDs with descriptions |
 | **Machine-Readable** | Yes (YAML parsers) | Yes (regex: `@[a-z]+: [A-Z]+-\d+`) |
@@ -195,14 +195,7 @@ Each SDD layer inherits ALL upstream traceability tags:
 ### YAML Frontmatter Validation
 
 ```bash
-# Validate all markdown files
-python3 scripts/validate_metadata.py .
-
-# Validate specific directory
-python3 scripts/validate_metadata.py ai_dev_flow
-
-# Strict mode (warnings as errors)
-python3 scripts/validate_metadata.py --strict .
+# Validation via mcp_sdd `sdd_validate` tool
 ```
 
 **Checks**:
@@ -335,7 +328,5 @@ Need AI assistant to follow dependency chains?
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - section "Metadata Management Approaches"
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- See `scripts/validate_metadata.py` and `scripts/validate_tags_against_docs.py` for local validation tooling.
+- Use mcp_sdd `sdd_validate` tool for YAML validation and cumulative tag compliance checks.
 <!-- VALIDATOR:IGNORE-LINKS-END -->
-- [scripts/validate_metadata.py](./scripts/validate_metadata.py) - YAML validation tool
-- Local validation: `scripts/validate_tags_against_docs.py` for cumulative tag compliance and bidirectional checks

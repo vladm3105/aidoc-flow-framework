@@ -41,7 +41,7 @@ custom_fields:
 **AI Assistant Actions**:
 ```bash
 # Create BRD-01
-cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
+cp docs/01_BRD/BRD-TEMPLATE.yaml docs/01_BRD/BRD-01_business_objectives.yaml
 # Fill BRD-01 with project-specific content
 # Update index
 ```
@@ -86,7 +86,7 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 
 **AI Assistant Actions**:
 ```bash
-# Create BDD-01.feature
+# Create BDD-01.yaml
 # Create ADR documents for major decisions
 # Link to 02_PRD/EARS in traceability
 ```
@@ -177,9 +177,7 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 **AI Assistant Actions**:
 ```bash
 # Create TASKS documents
-python 07_REQ/scripts/validate_requirement_ids.py
-python scripts/validate_links.py
-python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+# Validation via mcp_sdd `sdd_validate` tool
 ```
 
 **Deliverable**: TASKS documents approved, validation passed, ready for code generation
@@ -238,7 +236,7 @@ Added entry:
  Index updated
 
 Validation:
-Running: python 07_REQ/scripts/validate_requirement_ids.py
+Running: mcp_sdd `sdd_validate`
  No broken references
 
 Day 1 Complete!
@@ -276,7 +274,7 @@ By end of Week 1, project should have:
 find docs/ -type f -name "*.md" | wc -l  # Expect >10 documents
 
 # Check traceability
-python scripts/validate_links.py  # Expect 0 broken links
+# Validation via mcp_sdd `sdd_validate` tool
 
 # Check index files
 ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
@@ -286,13 +284,7 @@ ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
 
 ```bash
 # Comprehensive validation
-python 07_REQ/scripts/validate_requirement_ids.py
-python scripts/validate_links.py
-python scripts/validate_traceability_matrix.py
-
-# Generate matrices
-python scripts/generate_traceability_matrix.py --type ADR --input docs/05_ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md
-python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+# Validation via mcp_sdd `sdd_validate` tool
 
 # Verify YAML SPEC valid
 find docs/09_SPEC/ -name "*.yaml" -exec python -m yamllint {} \;

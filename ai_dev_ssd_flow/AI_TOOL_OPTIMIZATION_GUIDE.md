@@ -37,18 +37,7 @@ See also:
 - Suggested sizes: Standard docs <15,000 tokens; Split if >20,000 tokens.
 - Validate locally (recommended):
   ```bash
-  # Metadata frontmatter
-  python3 scripts/validate_metadata.py .
-
-  # Cross-document references
-python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client_example.yaml
-
-
-  # Traceability Section-7 links
-  python3 scripts/validate_links.py
-
-  # TASKS structure (checks Section 8: Implementation Contracts)
-bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
+  # Validation via mcp_sdd `sdd_validate` tool
 
   ```
 - Split only when needed: Files >20,000 tokens or strong logical boundaries.
@@ -104,17 +93,7 @@ Use your AI coding assistant for quick "trace-check" style reviews, and rely on 
 Common local checks:
 
 ```bash
-# Metadata frontmatter validation
-python3 scripts/validate_metadata.py .
-
-# Cross-document references (upstream/downstream integrity)
-python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client_example.yaml
-
-# Section-7 link integrity (Traceability sections)
-python3 scripts/validate_links.py
-
-# TASKS structure rules (includes Section 8: Implementation Contracts)
-bash 11_TASKS/scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
+# Validation via mcp_sdd `sdd_validate` tool
 ```
 
 Assistant guidance:

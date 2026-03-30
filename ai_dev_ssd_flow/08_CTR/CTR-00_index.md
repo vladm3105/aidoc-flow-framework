@@ -29,7 +29,7 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 
 ## Template References
 - **Template**: [CTR-TEMPLATE.yaml](./CTR-TEMPLATE.yaml) - Unified template (single source of truth)
-- **Validation Schema**: [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Machine-readable validation rules (OpenAPI 3.x format)
+- **Validation**: mcp_sdd `sdd_validate` with `doc_type=ctr`
 
 ## Contract Catalog
 

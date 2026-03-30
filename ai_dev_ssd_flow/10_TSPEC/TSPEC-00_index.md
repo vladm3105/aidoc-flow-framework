@@ -109,12 +109,12 @@ Central registry for all TSPEC documents organized by test type. This index prov
 
 ### Templates
 
-- [UTEST-MVP-TEMPLATE.md](UTEST/UTEST-MVP-TEMPLATE.md) - Unit test template
-- [ITEST-MVP-TEMPLATE.md](ITEST/ITEST-MVP-TEMPLATE.md) - Integration test template
-- [STEST-MVP-TEMPLATE.md](STEST/STEST-MVP-TEMPLATE.md) - Smoke test template
-- [FTEST-MVP-TEMPLATE.md](FTEST/FTEST-MVP-TEMPLATE.md) - Functional test template
-- [PTEST-MVP-TEMPLATE.md](PTEST/PTEST-MVP-TEMPLATE.md) - Performance test template
-- [SECTEST-MVP-TEMPLATE.md](SECTEST/SECTEST-MVP-TEMPLATE.md) - Security test template
+- [UTEST-TEMPLATE.yaml](UTEST/UTEST-TEMPLATE.yaml) - Unit test template
+- [ITEST-TEMPLATE.yaml](ITEST/ITEST-TEMPLATE.yaml) - Integration test template
+- [STEST-TEMPLATE.yaml](STEST/STEST-TEMPLATE.yaml) - Smoke test template
+- [FTEST-TEMPLATE.yaml](FTEST/FTEST-TEMPLATE.yaml) - Functional test template
+- [PTEST-TEMPLATE.yaml](PTEST/PTEST-TEMPLATE.yaml) - Performance test template
+- [SECTEST-TEMPLATE.yaml](SECTEST/SECTEST-TEMPLATE.yaml) - Security test template
 
 ### Rules & Quality Gates
 

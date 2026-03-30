@@ -216,6 +216,15 @@ def _build_parser() -> argparse.ArgumentParser:
     consistency_parser.add_argument("--format", choices=["text", "json"], default="text", help="Consistency output format")
     consistency_parser.add_argument("--out", default=None, help="Optional output directory for consistency artifacts")
 
+    validate_links_parser = subparsers.add_parser(
+        "validate-links",
+        help="Validate markdown links in documentation files",
+    )
+    validate_links_parser.add_argument("--target", required=True, help="Path to file or directory to scan")
+    validate_links_parser.add_argument("--workspace-root", default=None, help="Workspace root for resolving absolute paths")
+    validate_links_parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+    validate_links_parser.add_argument("--out", default=None, help="Output directory for reports")
+
     preflight_parser = subparsers.add_parser(
         "preflight",
         help="Run runtime and environment readiness checks before create, review, or remediation stages",
@@ -664,6 +673,26 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"Consistency summary generated at {consistency_result.summary_path}")
 
         return 0 if consistency_result.passed else 1
+
+    if args.command == "validate-links":
+        from mcp_server.link_validation import run_link_validation
+        target = Path(args.target).expanduser().resolve()
+        ws_root = Path(args.workspace_root).expanduser().resolve() if args.workspace_root else None
+        out_dir = Path(args.out).expanduser().resolve() if args.out else None
+        try:
+            link_result = run_link_validation(target_path=target, workspace_root=ws_root, output_dir=out_dir)
+        except Exception as exc:
+            print(f"validate-links failed: {exc}")
+            return 2
+
+        if args.format == "json":
+            print(link_result.report_json)
+        else:
+            print(link_result.report_text.rstrip())
+            if link_result.report_path is not None:
+                print(f"Link validation report generated at {link_result.report_path}")
+
+        return 0 if link_result.passed else 1
 
     if args.command == "preflight":
         project_root = Path(args.project).expanduser().resolve()

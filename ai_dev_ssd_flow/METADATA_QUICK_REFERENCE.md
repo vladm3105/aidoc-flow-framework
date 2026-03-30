@@ -403,16 +403,10 @@ Before committing documents with metadata:
 
 ---
 
-## Quick Validation Script
+## Quick Validation
 
 ```bash
-# Validate single file
-python scripts/validate_metadata.py docs/01_BRD/BRD-NN_name.md
-
-# Validate all BRDs
-for file in docs/01_BRD/*.md; do
-  python scripts/validate_metadata.py "$file"
-done
+# Validate documents using mcp_sdd `sdd_validate` tool
 
 # Check bidirectional references
 grep -l "fallback_reference: BRD-NN" docs/01_BRD/*.md  # Should find BRD-NN

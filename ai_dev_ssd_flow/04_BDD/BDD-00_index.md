@@ -36,17 +36,16 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ## File Format Note
 
-> **Architecture Decision**: BDD uses `.feature` files (Gherkin syntax) instead of `.md` files.
+> **Architecture Decision**: BDD uses `.yaml` files (YAML with Gherkin content) instead of `.md` files.
 >
 > **Rationale**:
-> - Gherkin is the standard format for BDD scenarios (Given/When/Then)
-> - `.feature` files are executable by testing frameworks (Cucumber, Behave, pytest-bdd)
-> - IDE syntax highlighting and validation for Gherkin
-> - Direct integration with CI/CD test pipelines
+> - YAML provides structured format for BDD scenarios (Given/When/Then)
+> - `.yaml` files are machine-readable and support validation tooling
+> - Consistent with unified YAML template pattern across all layers
+> - Direct integration with mcp_sdd `sdd_validate` tool
 >
 > **Templates**:
-> - `BDD-TEMPLATE.yaml` - Standard BDD scenarios
-> - `BDD-AGGREGATOR-TEMPLATE.feature` - Multi-feature aggregator
+> - `BDD-TEMPLATE.yaml` - Standard BDD scenarios (single source of truth)
 >
 > This is an intentional deviation from the dual-format (MD + YAML) pattern used by other artifacts.
 
@@ -55,7 +54,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ## Purpose
 
 - Central index for Behavior-Driven Development (BDD) feature files
-- Tracks allocation and sequencing for section-based files inside suite folders (`BDD-NN.SS_{slug}.feature`)
+- Tracks allocation and sequencing for monolithic YAML files inside suite folders (`BDD-NN_{slug}.yaml`)
 - Provides traceability from requirements to acceptance tests
 
 ## Allocation Rules
@@ -66,9 +65,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 - Within each suite, allocate section numbers sequentially: `.1`, `.2`, `.3`, ...
 
 **File Naming**:
-- Format: `BDD-NN_{descriptive_slug}.feature`
+- Format: `BDD-NN_{descriptive_slug}.yaml`
 - Slugs: short, descriptive, lower_snake_case
-- Example: `BDD-042_risk_validation_service.feature`
+- Example: `BDD-042_risk_validation_service.yaml`
 
 **Content Requirements**:
 - One primary feature/capability per file
@@ -113,7 +112,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ### Templates
 
-- **[BDD-AGGREGATOR-TEMPLATE.feature](./BDD-AGGREGATOR-TEMPLATE.feature)**: Redirect stub when many subsections
+- **[BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)**: Unified BDD template (single source of truth)
 
 ## Planned
 
@@ -129,7 +128,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-01**: External Service Gateway Integration (./BDD-01_external_gateway_integration.feature)
+- **BDD-01**: External Service Gateway Integration (./BDD-01_external_gateway_integration.yaml)
   - **Requirements**: REQ.NN.EE.SS (Integration), REQ.NN.EE.SS (Gateway)
   - **ADRs**: ADR-NN (Architecture)
   - **Status**: Draft | Review | Approved
@@ -141,7 +140,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-02**: Resource Risk Limits Validation (./BDD-02_resource_risk_limits.feature)
+- **BDD-02**: Resource Risk Limits Validation (./BDD-02_resource_risk_limits.yaml)
   - **Requirements**: REQ.NN.EE.SS (Risk Limits)
   - **ADRs**: ADR-NN (Risk Parameters)
   - **Status**: Draft | Review | Approved
@@ -153,7 +152,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-03**: System State Classifier Behavior (./BDD-03_system_state_classifier.feature)
+- **BDD-03**: System State Classifier Behavior (./BDD-03_system_state_classifier.yaml)
   - **Requirements**: REQ.NN.EE.SS (ML Models)
   - **ADRs**: ADR-NN (ML Architecture)
   - **Status**: Draft | Review | Approved
@@ -165,7 +164,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.feature)
+- **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.yaml)
   - **Requirements**: REQ.NN.EE.SS (Strategy)
   - **ADRs**: ADR-NN (Strategy Architecture)
   - **Status**: Draft | Review | Approved
@@ -177,7 +176,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-005**: [Analytics Pipeline](./BDD-005_analytics_pipeline.feature)
+- **BDD-005**: [Analytics Pipeline](./BDD-005_analytics_pipeline.yaml)
   - **Requirements**: REQ.NN.EE.SS (Analytics)
   - **ADRs**: ADR-NN (Data Architecture)
   - **Status**: Draft | Review | Approved
@@ -189,7 +188,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-006**: [Monitoring and Alerting Service](./BDD-006_monitoring_alerting.feature)
+- **BDD-006**: [Monitoring and Alerting Service](./BDD-006_monitoring_alerting.yaml)
   - **Requirements**: REQ.NN.EE.SS (Monitoring)
   - **ADRs**: ADR-NN (Monitoring Architecture)
   - **Status**: Draft | Review | Approved
@@ -254,8 +253,8 @@ In REQ documents, reference BDD scenarios:
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated |
 |--------|----------------|-------------------------------|
-| [BDD-NN.SS](../../04_BDD/BDD-NN_suite/BDD-NN.SS_section.feature) | Feature: Title | Primary functional criteria |
-| [BDD-NN.SS](../../04_BDD/BDD-NN_suite/BDD-NN.SS_section.feature#scenario-1) | Scenario: Specific | Specific acceptance criterion |
+| [BDD-NN.SS](../../04_BDD/BDD-NN_suite/BDD-NN.SS_section.yaml) | Feature: Title | Primary functional criteria |
+| [BDD-NN.SS](../../04_BDD/BDD-NN_suite/BDD-NN.SS_section.yaml#scenario-1) | Scenario: Specific | Specific acceptance criterion |
 ```
 
 ### Running BDD Tests
@@ -289,7 +288,7 @@ Track acceptance test coverage for requirements:
 
 ### Validation Checklist
 
-- [ ] All BDD files follow section-based naming: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+- [ ] All BDD files follow monolithic naming: `04_BDD/BDD-NN_{suite}/BDD-NN_{slug}.yaml`
 - [ ] All BDD files have traceability tags (@brd, @prd, @ears)
 - [ ] All BDD files have upstream links (REQ, SYS, ADR)
 - [ ] All BDD files have downstream links (SPEC, Code, TASKS)

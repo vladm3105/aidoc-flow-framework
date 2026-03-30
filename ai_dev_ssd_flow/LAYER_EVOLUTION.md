@@ -77,7 +77,7 @@ Until registry integration is complete, these files contain hardcoded layer defi
 
 | File | Content Type | Update Required |
 |------|--------------|-----------------|
-| `scripts/validate_cross_document.py` | `LAYER_CONFIG` dict (line ~83) | Add layer entry with number, folder, tags |
+| mcp_sdd `sdd_validate` | Layer validation config | Add layer entry with number, folder, tags |
 | `mcp_sdd/templates/` | Template directory | Copy unified YAML template |
 | `VALIDATION_STANDARDS.md` | Layer tables | Update validator tables |
 | `AI_ASSISTANT_RULES.md` | Layer references | Update Rule 15 layer diagram |
@@ -120,7 +120,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 ### Changing Required Tags
 
 1. Update `required_tags` in `LAYER_REGISTRY.yaml`
-2. Run `python scripts/sync_layer_config.py --check` to identify affected files
+2. Run mcp_sdd `sdd_validate` to identify affected files
 3. Update hardcoded definitions in affected scripts
 4. Update documentation
 
@@ -142,9 +142,8 @@ Communicate timeline for complete removal (recommend 6-12 months).
 
 ### Phase 2: Validation Tools (Future)
 
-- [ ] Create `scripts/sync_layer_config.py`
-- [ ] Integrate registry with `validate_cross_document.py`
-- [ ] Integrate registry with `validate_all.py`
+- [ ] Integrate registry with mcp_sdd `sdd_validate` tool
+- [ ] Auto-validate layer config via `sdd_validate`
 
 ### Phase 3: Full Integration (Future)
 
@@ -160,11 +159,8 @@ Communicate timeline for complete removal (recommend 6-12 months).
 # Check YAML syntax
 python -c "import yaml; yaml.safe_load(open('LAYER_REGISTRY.yaml'))"
 
-# Validate registry against files (when sync script available)
-python scripts/sync_layer_config.py --check
-
-# Generate consistency report
-python scripts/sync_layer_config.py --report
+# Validate registry against files
+# Use mcp_sdd `sdd_validate` tool for layer consistency checks
 ```
 
 ---

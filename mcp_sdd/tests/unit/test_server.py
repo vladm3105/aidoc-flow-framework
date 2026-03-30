@@ -27,7 +27,7 @@ from mcp_server.executor.cli_runner import ExecutorResult
 
 class TestToolRegistry:
     def test_tool_count(self):
-        assert len(TOOLS) == 19
+        assert len(TOOLS) == 20
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
@@ -45,7 +45,7 @@ class TestToolRegistry:
 
     def test_deterministic_tool_names(self):
         deterministic = {
-            "sdd_init", "sdd_validate", "sdd_consistency", "sdd_preflight",
+            "sdd_init", "sdd_validate", "sdd_consistency", "sdd_validate_links", "sdd_preflight",
             "sdd_prescreen", "sdd_scan", "sdd_score_show", "sdd_score_validate",
             "sdd_score_compare", "sdd_list_executors", "sdd_register_executor",
         }

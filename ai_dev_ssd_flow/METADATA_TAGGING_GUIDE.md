@@ -755,24 +755,13 @@ if __name__ == '__main__':
     sys.exit(0 if result else 1)
 ```
 
-### 9.3 Pre-commit Hook
+### 9.3 Pre-commit Validation
+
+Validate metadata before commit using mcp_sdd `sdd_validate` tool.
 
 ```bash
-#!/bin/bash
-# .git/hooks/pre-commit
-
-# Validate metadata on 01_BRD/ADR files
-for file in $(git diff --cached --name-only | grep -E '(BRD|ADR)/.*\.md$'); do
-  if [ -f "$file" ]; then
-    python scripts/validate_metadata.py "$file"
-    if [ $? -ne 0 ]; then
-      echo "[FAIL] Metadata validation failed for $file"
-      exit 1
-    fi
-  fi
-done
-
-echo "[PASS] Metadata validation passed"
+# Validate all documents before commit
+# Use mcp_sdd `sdd_validate` tool for comprehensive validation
 ```
 
 ---

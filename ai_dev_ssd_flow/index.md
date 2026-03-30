@@ -33,7 +33,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 > Units & Conversions (KB vs tokens): KB = 1,024 bytes; tokens ≈ 4 characters. Rough conversions: tokens ≈ (KB × 1024) ÷ 4 and KB ≈ (tokens × 4) ÷ 1024. Examples: 10 KB ≈ 2,500 tokens; 50 KB ≈ 12,500 tokens; 10,000 tokens ≈ 39 KB.
 
-> MVP Note: MVP templates default to single, flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` for MVP.
+> MVP Note: All SDD documents are monolithic up to 50,000 tokens. See document size policy in README.md.
 
 ## Template Selection (MVP Lifecycle)
 
@@ -43,17 +43,17 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 | Layer | Type | Template |
 |-------|------|----------|
-| 1 | BRD | `BRD-MVP-TEMPLATE.md` |
-| 2 | PRD | `PRD-MVP-TEMPLATE.md` |
-| 3 | EARS | `EARS-MVP-TEMPLATE.md` |
-| 4 | BDD | `BDD-MVP-TEMPLATE.feature` |
-| 5 | ADR | `ADR-MVP-TEMPLATE.md` |
-| 6 | SYS | `SYS-MVP-TEMPLATE.md` |
-| 7 | REQ | `REQ-MVP-TEMPLATE.md` |
-| 8 | CTR | `CTR-MVP-TEMPLATE.md` |
-| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
-| 10 | TSPEC | `UTEST/ITEST/STEST/FTEST/PTEST/SECTEST-MVP-TEMPLATE.md` |
-| 11 | TASKS | `TASKS-TEMPLATE.md` |
+| 1 | BRD | `BRD-TEMPLATE.yaml` |
+| 2 | PRD | `PRD-TEMPLATE.yaml` |
+| 3 | EARS | `EARS-TEMPLATE.yaml` |
+| 4 | BDD | `BDD-TEMPLATE.yaml` |
+| 5 | ADR | `ADR-TEMPLATE.yaml` |
+| 6 | SYS | `SYS-TEMPLATE.yaml` |
+| 7 | REQ | `REQ-TEMPLATE.yaml` |
+| 8 | CTR | `CTR-TEMPLATE.yaml` |
+| 9 | SPEC | `SPEC-TEMPLATE.yaml` |
+| 10 | TSPEC | `TSPEC-TEMPLATE.yaml` (unified parent template) |
+| 11 | TASKS | `TASKS-TEMPLATE.yaml` |
 
 ## Validation Decision Framework
 
@@ -64,8 +64,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 - Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `template` field definitions
 - Workflow: [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Detailed MVP workflow
-- Autopilot: [AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md](./AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md) - YAML template usage documentation
-- Dual-Format Architecture: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - MD vs YAML templates, YAML schemas, authority hierarchy
+- Automation: Validation via mcp_sdd `sdd_validate` tool
 
 ## Framework Purpose
 
@@ -81,7 +80,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
   - Each BRD represents ONE iteration; new features = new BRD
   - 1-2 week cycles from idea to production
   - Cross-BRD traceability preserves knowledge across cycles
-- **Automation Flow**: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
+- **Automation Flow**: See `./SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 **Key Automation Benefits**:
 - 90%+ automation (14 of 15 layers)
@@ -107,8 +106,8 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - [PASS] **Project Setup**: New comprehensive setup guide with domain selection questionnaire
 - [PASS] **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
 - [PASS] **Decision Frameworks**: Contract decision questionnaire and CTR guidance
-- [PASS] **Dual-Format Architecture**: Created DUAL_MVP_TEMPLATES_ARCHITECTURE.md with MD/YAML template authority hierarchy
-- [PASS] **Autopilot Documentation**: Created AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md with YAML-only template usage guide
+- [PASS] **Unified YAML Templates**: All SDD templates consolidated to single YAML format
+- [PASS] **MCP Automation**: Validation and workflow automation via mcp_sdd server
 
 ## Document Structure
 
@@ -122,9 +121,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **CHG** (`CHG/`) - 4-Gate change management with document immutability enforcement
   - **Guide**: [CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete change management procedures
-  - **Templates**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) (L3) | [CHG-MVP-TEMPLATE.md](./CHG/CHG-MVP-TEMPLATE.md) (L2)
-  - **Schema**: [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
-  - **Rules**: [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md)
+  - **Template**: [CHG-TEMPLATE.yaml](./CHG/CHG-TEMPLATE.yaml)
 
   **4-Gate System**:
   - **GATE-01** (L1-L4): Business/Product validation - [gates/GATE-01_BUSINESS_PRODUCT.md](./CHG/gates/GATE-01_BUSINESS_PRODUCT.md)
@@ -153,41 +150,41 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`01_BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
-  - Template: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (MVP Default)
+  - Template: [BRD-TEMPLATE.yaml](./01_BRD/BRD-TEMPLATE.yaml)
   - Index: [BRD-00_index.md](./01_BRD/BRD-00_index.md)
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
 - **PRD** (`02_PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-00_index.md](./02_PRD/PRD-00_index.md)
-  - Template: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
+  - Template: [PRD-TEMPLATE.yaml](./02_PRD/PRD-TEMPLATE.yaml)
 - **EARS** (`03_EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
   - Index: [EARS-00_index.md](./03_EARS/EARS-00_index.md)
-  - Template: [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (MVP Default)
+  - Template: [EARS-TEMPLATE.yaml](./03_EARS/EARS-TEMPLATE.yaml)
 
 ### Testing Layer (Layer 4)
 
 - **BDD** (`04_BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
   - Nested: One folder per suite: `04_BDD/BDD-NN_{slug}/`
   - Index: `04_BDD/BDD-00_index.md`
-  - Template: [BDD-MVP-TEMPLATE.feature](./04_BDD/BDD-MVP-TEMPLATE.feature)
-  - Purpose: Executable acceptance tests written before implementation (Test-First approach)
+  - Template: [BDD-TEMPLATE.yaml](./04_BDD/BDD-TEMPLATE.yaml)
+  - Purpose: Acceptance test specifications written before implementation (Test-First approach)
   - Maps to TASKS execution plans for test-driven development workflow
 
 ### Architecture Layer (Layers 5-6)
 
 - **ADR** (`05_ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
   - Index: [ADR-00_index.md](./05_ADR/ADR-00_index.md)
-  - Template: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (MVP Default)
+  - Template: [ADR-TEMPLATE.yaml](./05_ADR/ADR-TEMPLATE.yaml)
   - Purpose: Technical decisions with context, decision, and consequences
 - **SYS** (`06_SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-00_index.md](./06_SYS/SYS-00_index.md)
-  - Template: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (MVP Default)
+  - Template: [SYS-TEMPLATE.yaml](./06_SYS/SYS-TEMPLATE.yaml)
   - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 
 - **REQ** (`07_REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
   - Index: [REQ-00_index.md](./07_REQ/REQ-00_index.md)
-  - Template: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (MVP Default)
+  - Template: [REQ-TEMPLATE.yaml](./07_REQ/REQ-TEMPLATE.yaml)
   - Organization: Nested per-document folders (DEFAULT)
     - Folder: `07_REQ/REQ-NN_{slug}/`
     - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
@@ -212,11 +209,10 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **SPEC** (`09_SPEC/`) - Layer 9: Technical specifications ready for code generation
   - YAML: Monolithic single file per component (codegen source)
-  - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` only if the document is too large for AI assistants
   - Layout:
-    - Nested (default): `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
+    - Nested (default): `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
     - Flat (exception): `09_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
-  - Template: [SPEC-MVP-TEMPLATE.yaml](./09_SPEC/SPEC-MVP-TEMPLATE.yaml)
+  - Template: [SPEC-TEMPLATE.yaml](./09_SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
   - Examples:
@@ -233,13 +229,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
   - **TSPEC** (`10_TSPEC/`) - Layer 10: Test specifications for TDD workflow
    - Index: [TSPEC-00_index.md](./10_TSPEC/TSPEC-00_index.md)
-   - Templates:
-     - [UTEST-MVP-TEMPLATE.md](./10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md) - Unit tests
-     - [ITEST-MVP-TEMPLATE.md](./10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md) - Integration tests
-     - [STEST-MVP-TEMPLATE.md](./10_TSPEC/STEST/STEST-MVP-TEMPLATE.md) - Smoke tests
-     - [FTEST-MVP-TEMPLATE.md](./10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md) - Functional tests
-     - [PTEST-MVP-TEMPLATE.md](./10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md) - Performance tests
-     - [SECTEST-MVP-TEMPLATE.md](./10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md) - Security tests
+   - Template: [TSPEC-TEMPLATE.yaml](./10_TSPEC/TSPEC-TEMPLATE.yaml) (unified parent template covering UTEST, ITEST, STEST, FTEST, PTEST, SECTEST)
    - Purpose: Formalize test specifications before implementation (TDD)
    - Test types: UTEST (40), ITEST (41), STEST (42), FTEST (43), PTEST (44), SECTEST (45)
 
@@ -247,7 +237,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
   - **TASKS** (`11_TASKS/`) - Layer 11: Code generation plans with exact TODOs
    - Index: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md)
-   - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
+   - Template: [TASKS-TEMPLATE.yaml](./11_TASKS/TASKS-TEMPLATE.yaml)
    - Purpose: Step-by-step guide to generate code from YAML SPEC
    - Each TASKS document corresponds to one SPEC
 
@@ -357,10 +347,9 @@ flowchart TD
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
 
-### Splitting Rules
+### Document Size Policy
 
-- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+All SDD documents are monolithic up to 50,000 tokens. See document size policy in README.md.
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. "Review" and "Prod" are outcomes, not formal layers.
 
@@ -400,7 +389,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 - **Traceability**: [TRACEABILITY.md](./TRACEABILITY.md) - Traceability requirements and conventions
 - **Traceability Style**: [Tag Format Specification](./TRACEABILITY.md#tag-format-specification) - Style guide for traceability links
 - **Traceability Setup**: [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setting up traceability in projects
-- **Traceability Validation**: [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) - Validation procedures
+- **Traceability Validation**: Validation via mcp_sdd `sdd_validate` tool
 
 ### Domain Adaptation
 
@@ -436,7 +425,6 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 ### Templates & Examples
 
 - **Complete Tagging Example**: [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - Full example of cumulative tagging
-- **Matrix Template Guide**: [MATRIX_TEMPLATE_COMPLETION_GUIDE.md](./MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - How to fill traceability matrices
 
 ## Creating New Documents
 
@@ -446,50 +434,11 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 4. Name file following ID standards: `{TYPE}-{NN}_{slug}.{ext}`
 5. Fill in all template sections with complete traceability links
 6. Update index file with new document entry
-7. Validate traceability using validation scripts
+7. Validate traceability via mcp_sdd `sdd_validate` tool
 
 ## Validation
 
-Validate document structure and traceability using automated scripts:
-
-```bash
-# Core validation scripts
-python 07_REQ/scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
-python 07_REQ/scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
-python scripts/validate_documentation_paths.py           # Path consistency
-python scripts/validate_links.py                         # Markdown link validation
-python scripts/validate_tags_against_docs.py             # Tag extraction and validation
-python scripts/validate_traceability_matrix.py           # Traceability matrix structure
-python scripts/validate_traceability_matrix.py             # Matrix validation and enforcement
-
-# Template validation scripts
-bash 01_BRD/scripts/validate_brd.py                    # BRD template compliance
-bash 07_REQ/scripts/validate_req_template.sh                    # REQ template compliance
-bash 08_CTR/scripts/validate_ctr.sh                             # CTR dual-file format compliance
-bash 11_TASKS/scripts/validate_tasks.sh                           # TASKS format including Section 7-8
-
-# Traceability generation
-python scripts/generate_traceability_matrix.py           # Generate traceability matrices
-python scripts/update_traceability_matrix.py             # Update existing matrices
-python scripts/extract_tags.py                           # Extract tags to JSON
-
-# Change Management (4-Gate System)
-./CHG/scripts/validate_gate01.sh <CHG_FILE>              # GATE-01 (Business/Product)
-./CHG/scripts/validate_gate05.sh <CHG_FILE>              # GATE-05 (Architecture/Contract)
-./CHG/scripts/validate_gate09.sh <CHG_FILE>              # GATE-09 (Design/Test)
-./CHG/scripts/validate_gate12.sh <CHG_FILE>              # GATE-12 (Implementation)
-./CHG/scripts/validate_all_gates.sh <CHG_FILE>           # Validate all applicable gates
-python CHG/scripts/validate_chg_routing.py <CHG_FILE>    # Determine gate routing
-```
-
-**Script Categories:**
-
-- **ID & Naming Validation**: Validates document IDs, naming conventions, and file paths
-- **Content Validation**: Checks template compliance, tag usage, and link validity
-- **Traceability Tools**: Generates and validates traceability matrices
-- **Readiness Scoring**: Assesses REQ SPEC-readiness using 12-section framework
-
-See [scripts/README.md](./scripts/README.md) for detailed script documentation.
+Validation via mcp_sdd `sdd_validate` tool. The MCP server provides automated validation for document structure, traceability, naming conventions, and template compliance across all layers.
 
 ## Glossary
 
@@ -525,4 +474,4 @@ Business-level Functional Requirements (BRD) are decomposed into Atomic Requirem
 - **Completeness**: Fill all template sections; mark N/A if not applicable
 - **Consistency**: Follow ID naming conventions strictly
 - **Updates**: Update index files when adding new documents
-- **Validation**: Run validation scripts after changes
+- **Validation**: Validation via mcp_sdd `sdd_validate` tool after changes

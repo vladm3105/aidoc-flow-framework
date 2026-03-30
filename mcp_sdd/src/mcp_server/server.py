@@ -1,7 +1,7 @@
 """MCP server entry point for SDD lifecycle tools.
 
-Exposes 19 tools over stdio transport:
-  - 11 deterministic (validation, scoring, consistency, etc.)
+Exposes 20 tools over stdio transport:
+  - 12 deterministic (validation, scoring, consistency, link validation, etc.)
   - 2 orchestration (pipeline, next-action advisor)
   - 6 LLM-dependent (create, review, fix — with per-call executor selection)
 
