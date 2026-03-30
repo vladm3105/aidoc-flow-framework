@@ -45,7 +45,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 - Existing files are never overwritten (idempotent).
 - Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
 - Templates matching `*-TEMPLATE.*` are copied from layer directories.
-- All 7 core layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ) use unified YAML naming (`{TYPE}-TEMPLATE.yaml`). Legacy `*-MVP-TEMPLATE.*` naming is supported via fallback for layers not yet migrated (CTR, SPEC, TSPEC, TASKS).
+- All 10 layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC) use unified YAML naming (`{TYPE}-TEMPLATE.yaml`). Legacy `*-MVP-TEMPLATE.*` naming is supported via fallback for layers not yet migrated (TASKS).
 
 ---
 
