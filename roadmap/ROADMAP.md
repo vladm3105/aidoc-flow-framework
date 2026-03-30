@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.10.0 |
-| Latest Release | 0.10.0 (SPEC template unification — C4 Code level, 9 layers complete) |
-| Next Minor | 0.11.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.11.0 |
+| Latest Release | 0.11.0 (TSPEC template unification — 10 layers complete) |
+| Next Minor | 0.12.0 (TASKS layer unification — final layer) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -28,7 +28,7 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 
 ## Planned Releases
 
-### v0.11.0 - API Executors and Progress Notifications
+### v0.13.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.11.0 (2026-03-30)
+
+TSPEC template unification. Parent aggregator for 6 test subtypes (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST). 10 layers unified. See changelog/CHANGELOG_v0.11.0.md.
 
 ### v0.10.0 (2026-03-29)
 
