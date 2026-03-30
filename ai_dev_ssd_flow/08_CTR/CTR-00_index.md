@@ -28,7 +28,7 @@ Contracts can be organized in subdirectories by service type for better document
 See [README.md](./README.md) for detailed guidance on organizational structure.
 
 ## Template References
-- **Markdown Template**: [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Human-readable contract documentation (primary standard)
+- **Template**: [CTR-TEMPLATE.yaml](./CTR-TEMPLATE.yaml) - Unified template (single source of truth)
 - **Validation Schema**: [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Machine-readable validation rules (OpenAPI 3.x format)
 
 ## Contract Catalog
@@ -71,7 +71,7 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 
 ### Process
 1. **Reserve ID**: Check this index for next available CTR-NN number
-2. **Copy Template**: Copy CTR-MVP-TEMPLATE.md and create OpenAPI 3.x YAML schema
+2. **Generate via MCP**: Use `sdd_create` with `doc_type=ctr`, `layer=08_CTR`
 3. **Create Dual Files**: Create both .md and .yaml with same CTR-NN_slug
 4. **Complete Documentation**: Fill all sections in markdown template
 5. **Define Schema**: Complete YAML schema in OpenAPI 3.x format with request/response structures

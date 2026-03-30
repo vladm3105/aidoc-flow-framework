@@ -282,9 +282,9 @@ Before merging PR with new CTR:
 
 ### Related Documents
 
-- [CTR-MVP-TEMPLATE.md](../08_CTR/CTR-MVP-TEMPLATE.md) - Markdown template
+- [CTR-TEMPLATE.yaml](../08_CTR/CTR-TEMPLATE.yaml) - Contract template
 - [08_CTR/README.md](../08_CTR/README.md) - Contracts overview
-- [SPEC-MVP-TEMPLATE.yaml](../09_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
+- SPEC template: `../09_SPEC/` - Technical specification template
 - [TRACEABILITY.md](../TRACEABILITY.md) - Document linking standards
 
 ### Standards
