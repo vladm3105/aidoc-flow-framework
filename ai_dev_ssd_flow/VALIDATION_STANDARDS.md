@@ -15,29 +15,23 @@ custom_fields:
 
 # SDD Validation Standards
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
-
 Canonical metadata contract reference: [METADATA_CORE_MATRIX.md](./METADATA_CORE_MATRIX.md).
 
-This document defines the complete error code registry, validation rules, and exit code conventions for the Specification-Driven Development (SDD) framework validation system.
+This document defines the error code registry, validation rules, and exit code conventions for the SDD framework validation system. Validation is executed via mcp_sdd `sdd_validate` tool.
 
 ## Validation Scope
 
-**Artifact Layers (1-10)**: This validation system covers all 10 documentation artifact layers defined in `LAYER_REGISTRY.yaml`:
+**Artifact Layers (1-11)**: All 11 SDD layers with unified YAML templates:
 
 | Layer | Artifact | Description |
 |-------|----------|-------------|
 | 1-4 | BRD, PRD, EARS, BDD | Core requirements |
 | 5-7 | ADR, SYS, REQ | Architecture and detailed requirements |
-| 8-10 | CTR, SPEC, TASKS | Implementation artifacts |
+| 8-11 | CTR, SPEC, TSPEC, TASKS | Implementation artifacts |
 
 **Out of Scope**:
-- Layer 0 (Strategy): Optional pre-artifact planning, not validated
-- Layers 11-13 (Code, Tests, Validation): Source code traceability not implemented
-
-### MVP Validator Profile
-
-- Validators support a relaxed MVP profile using frontmatter `custom_fields.template_profile: mvp` in MVP templates. Under the MVP profile, certain non-critical checks are downgraded to warnings to speed early drafting. Use the default (full) profile for enterprise/regulatory documents.
+- Layer 0 (REF/Strategy): Optional pre-artifact planning, not validated
+- Layers 12-14 (IPLAN, Code, Tests): Source code traceability not implemented
 
 ## Exit Code Conventions
 
@@ -275,36 +269,9 @@ See ADR-01 through ADR-05 for implementation details.
 
 ---
 
-## Validation Script Summary
+## Validation Execution
 
-### Layer-Specific Validators
-
-| Script | Layer | Description |
-|--------|-------|-------------|
-| `validate_brd_template.sh` | 1 | BRD structure and content |
-| `validate_prd.py` | 2 | PRD format and references |
-| `validate_ears.py` | 3 | EARS syntax validation |
-| `validate_bdd.py` | 4 | BDD feature file format |
-| `validate_adr.py` | 5 | ADR structure and decisions |
-| `validate_sys.py` | 6 | System requirements |
-| `validate_req_template.sh` | 7 | Atomic requirements |
-| `validate_impl.sh` | 8 | Implementation approach |
-| `validate_ctr.sh` | 9 | Contract validation |
-| `validate_spec.py` | 10 | SPEC YAML format |
-| `validate_tasks.sh` | 11 | Task breakdown (now includes execution commands) |
-
-### Cross-Document Validators
-
-| Script | Category | Description |
-|--------|----------|-------------|
-| `validate_cross_document.py` | XDOC | Traceability validation |
-| `validate_links.py` | LINKS | Link integrity |
-| `validate_tags_against_docs.py` | TAGS | Tag compliance |
-| `validate_section_count.py` | SECTION | Section file counts |
-| `validate_diagram_consistency.py` | DIAGRAM | Mermaid diagram consistency |
-| `validate_terminology.py` | TERM | Terminology consistency |
-| `validate_counts.py` | COUNT | Count validation |
-| `validate_forward_references.py` | FWDREF | Forward reference prevention |
+Validation is centralized via mcp_sdd `sdd_validate` tool, which replaces per-layer shell scripts (archived to `VALIDATION_v1_archive/` and per-layer `*_v1_archive/` directories).
 
 ### XDOC Error Codes Reference
 
@@ -323,108 +290,9 @@ The `validate_cross_document.py` script detects and reports the following issue 
 | XDOC-009 | ERROR | Missing traceability section | Adds section template |
 | XDOC-010 | WARNING | Duplicate tag reference | No auto-fix |
 
-### Auto-Fix Command Options
+### XDOC Auto-Fix
 
-```bash
-# Preview changes without applying
-python scripts/validate_cross_document.py --all --auto-fix --dry-run
-
-# Apply fixes (XDOC-003 requires confirmation)
-python scripts/validate_cross_document.py --all --auto-fix
-
-# Apply all fixes including XDOC-003 without confirmation
-python scripts/validate_cross_document.py --all --auto-fix --force-xdoc
-
-# Disable backup creation
-python scripts/validate_cross_document.py --all --auto-fix --no-backup
-```
-
-### Audit Log Format
-
-All XDOC-003 tag removals are logged to `tmp/validation_audit.json`:
-
-```json
-{
-  "timestamp": "2025-12-29T14:30:00.000000",
-  "file": "/path/to/document.md",
-  "issue_code": "XDOC_003",
-  "action": "removed_tag",
-  "removed_content": "@brd: BRD-01",
-  "backup_path": "/path/to/document.md.bak"
-}
-```
-
----
-
-## CI/CD Integration
-
-### Basic Validation Pipeline
-
-```yaml
-validate:
-  script:
-    - python3 scripts/validate_all.py . --all
-  allow_failure: false
-```
-
-### Validation with Auto-Fix
-
-```yaml
-validate-and-fix:
-  script:
-    - python3 scripts/validate_all.py . --all --auto-fix
-    - git diff --exit-code || git commit -am "Auto-fix validation issues"
-```
-
-### Strict Mode (Warnings as Errors)
-
-```yaml
-validate-strict:
-  script:
-    - python3 scripts/validate_all.py . --all --strict
-```
-
----
-
-## Quick Reference
-
-### Running All Validators
-
-```bash
-# All validators, text output
-python3 scripts/validate_all.py . --all
-
-# Specific layers
-python3 scripts/validate_all.py . --layer BRD --layer PRD
-
-# Markdown report
-python3 scripts/validate_all.py . --all --report markdown
-
-# JSON for CI/CD
-python3 scripts/validate_all.py . --all --report json
-```
-
-### Running Individual Validators
-
-```bash
-# Section count validation
-python3 scripts/validate_section_count.py .
-
-# Forward reference validation
-python3 scripts/validate_forward_references.py .
-
-# Terminology with auto-fix
-python3 scripts/validate_terminology.py . --auto-fix
-
-# Count validation with auto-fix
-python3 scripts/validate_counts.py . --auto-fix
-```
-
-### List Available Validators
-
-```bash
-python3 scripts/validate_all.py --list-validators
-```
+XDOC-003 tag removals are logged to `tmp/validation_audit.json` when auto-fix is enabled.
 
 ---
 

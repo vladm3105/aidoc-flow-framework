@@ -68,7 +68,7 @@ Each IPLAN includes:
 
 | Document | Purpose |
 |----------|---------|
-| `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md` | TASKS format specification |
+| `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.yaml` | TASKS format specification |
 | `ai_dev_ssd_flow/11_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.md` | SDD implementation tracking |
 | `governance/plans/IPLAN-TEMPLATE.md` | Governance IPLAN format |
 | `governance/GOVERNANCE_RULES.md` Section 3 | Issue processing workflow |

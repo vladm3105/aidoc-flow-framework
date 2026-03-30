@@ -163,11 +163,11 @@ feature_definition:
     Tags appear on separate lines BEFORE the Feature: keyword.
     All three traceability tags are MANDATORY for Layer 4.
 
-    File splitting rules:
-      - Single .feature file per module (default)
-      - Split when >500 lines or >12 scenarios
-      - Aggregator file (BDD-NN.SS.00_{slug}.feature) for navigation
-      - Aggregator has @redirect tag and 0 executable scenarios
+    File size rules:
+      - Single .feature file per module (default), monolithic up to 50,000 tokens
+      - If >50,000 tokens: create a new BDD document with its own scope
+      - Do NOT split into sectioned files — each document is self-contained
+      - Keep scenarios atomic (one behavior per scenario)
 
   _example: |
     @brd:BRD.01.07.a7f3

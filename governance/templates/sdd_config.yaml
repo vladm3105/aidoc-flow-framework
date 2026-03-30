@@ -11,9 +11,9 @@ sdd_depth: "standard"
 required_layers:
   lite:
     - 0   # REF
-    - 1   # BRD-MVP
-    - 2   # PRD-MVP
-    - 11  # TASKS-MVP
+    - 1   # BRD
+    - 2   # PRD
+    - 11  # TASKS
   standard:
     - 0   # REF
     - 1   # BRD

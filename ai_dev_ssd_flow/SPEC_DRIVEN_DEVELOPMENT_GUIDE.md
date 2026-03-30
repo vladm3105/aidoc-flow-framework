@@ -50,13 +50,9 @@ MVP (BRD-01) → PROD v1.0 → NEW MVP (BRD-02) → PROD v2.0 → NEW MVP (BRD-0
 - Quality Gates: AI-scored validation enables auto-approval
 - Deployment Pipeline: Automated build, security scans, optional human approval
 
-### Splitting Rules
+### Document Size Policy
 
-- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
-- **Universal Rule**: If ANY file > 20,000 tokens OR > 1 file per ID, you **MUST** use the Nested Directory Pattern (`TYPE-{ID}_{Slug}/`).
-
-> MVP Mode: Follow the Universal Splitting Rule. Default to single files until the 20,000-token trigger is hit.
+All SDD documents are monolithic (single self-contained file) up to 50,000 tokens. If a document exceeds 50,000 tokens, create a new document of the same type with its own scope. Do NOT split into sectioned files.
 
 > [WARN] **Token Limit Update (2025-11)**: This guide reflects the current **20,000 token** hard limit for corpus files.
 > For tool-specific optimization strategies, see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
@@ -263,7 +259,7 @@ PRDs should reference the documentation in this directory, but the documentation
 @adr:[ADR-NN](./05_ADR/ADR-NN_{slug}.md#ADR-NN)
 @spec:[{service_name}](./09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml)
 
-Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructions/DOCUMENT_ID_CORE_RULES.md`, `docs/DOCUMENT_ID_CORE_RULES.md`, `TRACEABILITY.md`, and `ID_NAMING_STANDARDS.md`.
+Status: Framework standard. Aligns with `TRACEABILITY.md` and `ID_NAMING_STANDARDS.md`.
 
 ## Purpose
 - Establish a clear, repeatable, and testable process to move from product intent to code using specifications as the source of truth.
@@ -645,11 +641,8 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Behavior-Driven Development (BDD)
 - **Purpose**: Executable specifications written in natural language
-- **Location**: `04_BDD/BDD-NN_{suite_slug}/`
-- **File Formats**:
-  - Section: `BDD-NN.SS_{section_slug}.feature`
-  - Subsection: `BDD-NN.SS.mm_{subsection_slug}.feature`
-  - Aggregator (redirect): `BDD-NN.SS.00_{section_slug}.feature`
+- **Location**: `04_BDD/`
+- **File Format**: `BDD-NN_{slug}.yaml` (unified YAML, Gherkin syntax in `_example` fields)
 - **Scenario Types**: Success path, alternative path, error path, edge cases
 - **Gherkin Syntax**: Given-When-Then structure for behavioral specifications
 - **Key Features**:
@@ -703,7 +696,7 @@ Reference documents provide supplementary context that supports workflow artifac
   - `ADR-REF-NN_{slug}.md` - Architecture reference documents
 - **File Format**: `{TYPE}-REF-NN_{slug}.md` where `{TYPE}` is BRD or ADR
 - **Numbering**: Independent sequence per parent TYPE (BRD-REF-01, ADR-REF-01, etc.)
-- **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./00_REF/REF-TEMPLATE.md)
+- **Template**: [`REF-TEMPLATE.md`](./00_REF/REF-TEMPLATE.md)
 - **Skill**: Use `doc-ref` skill for creation
 - **Required Sections**:
   - Document Control table
@@ -723,8 +716,8 @@ Reference documents provide supplementary context that supports workflow artifac
 | Format | Structured sections | **Free format** |
 
 **Specific Exemptions by Type:**
-- **BRD-REF**: No PRD-Ready Score required (reference: `BRD_MVP_VALIDATION_RULES.md`)
-- **ADR-REF**: No SYS-Ready Score required (reference: `ADR_MVP_VALIDATION_RULES.md`)
+- **BRD-REF**: No PRD-Ready Score required
+- **ADR-REF**: No SYS-Ready Score required
 
 **Validation**: Reduced (4 checks only):
 1. Document Control fields (required)
@@ -1486,7 +1479,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - PRD: [PRD-NN](./02_PRD/PRD-NN_{slug}.md)
 - SYS: [SYS-NN](./06_SYS/SYS-NN_{slug}.md)
 - EARS: [EARS-NN](./03_EARS/EARS-NN_{slug}.md)
-- BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{section}.feature`
+- BDD: `04_BDD/BDD-NN_{slug}.yaml`
 - ADR: [ADR-NN](./05_ADR/ADR-NN_{slug}.md#ADR-NN)
 - **REQ V2**: [REQ-NN](./07_REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
 - CTR: [CTR-NN](./08_CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./08_CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
@@ -1622,7 +1615,7 @@ Each document type has its own dedicated traceability matrix template:
 **Every time you create or update an artifact document, follow these steps:**
 
 1. **Check for Matrix File**: Look for `[TYPE]-00_TRACEABILITY_MATRIX.md` in artifact folder
-2. **Create if Missing**: Copy template from `ai_dev_flow/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+2. **Create if Missing**: Use `{TYPE}-TEMPLATE.yaml` from the layer directory as reference
 3. **Update Matrix sections**:
    - section 2: Add document to inventory with ID, title, status, date
    - section 3: Document upstream sources (which documents drove this artifact)
@@ -1726,7 +1719,7 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
 
 ## Diagram Standards
 
-> ** Authoritative Source**: [`ai_dev_flow/DIAGRAM_STANDARDS.md`](DIAGRAM_STANDARDS.md) is the single source of truth for all diagram requirements. This section provides a summary; defer to the core document for complete specifications.
+> **Authoritative Source**: [DIAGRAM_STANDARDS.md](DIAGRAM_STANDARDS.md) is the single source of truth for all diagram requirements. This section provides a summary; defer to the core document for complete specifications.
 
 **Mandatory Rule**: All diagrams, charts, workflows, and visual representations MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 
@@ -1751,7 +1744,7 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
 - `mermaid-gen`: Syntax generation and best practices
 - `charts-flow`: File management and SVG conversion
 
-**Full Reference**: See `ai_dev_flow/DIAGRAM_STANDARDS.md` for prohibited format examples, enforcement rules, and traceability requirements.
+**Full Reference**: See [DIAGRAM_STANDARDS.md](./DIAGRAM_STANDARDS.md) for prohibited format examples, enforcement rules, and traceability requirements.
 
 ## Quality Attribute Templates
 - **Performance**: Add to SPEC performance section, e.g., latency_p95_ms: 50, throughput: 1000 rps; to ADR impact analysis, e.g., "p95 latency < 50 ms, trade-off: reduced batch size".
@@ -1913,11 +1906,11 @@ Quality attribute clarification (allowed)
 - Include file dependency mapping for multi-file documentation sets
 - Use consistent naming convention: [component]_[sequence]_[type].md
 
-**Example: BRD-09 Section File Structure (Justified Case):**
-- BRD-09.1_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
-- BRD-09.2_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
-- BRD-09.3_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
-- **Justification**: BRD-09 is Phase 1 critical prerequisite blocking 6 downstream BRDs, requires separate phase gate documentation, serves 3 distinct audiences with different information needs
+**Example: Multiple BRDs for Complex Scope:**
+- BRD-09_prerequisites.yaml (20K) - Focus: Critical path dependencies
+- BRD-10_provider_integration.yaml (50K) - Focus: Full technical requirements
+- BRD-11_phase_gates.yaml (12K) - Focus: Go/no-go checklists
+- **Rationale**: Each BRD has its own scope; linked via `@depends: BRD-09`
 
 **AI Assistant Compatibility:**
 - Structure each file for independent processing by AI systems

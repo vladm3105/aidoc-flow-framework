@@ -64,13 +64,13 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 Expected Tags = Layer Number - 1
 ```
 
-### Layers 9-13 (Range)
+### Layers 9-14 (Range)
 ```
 Min Tags = Base + Present Optional Layers
 Max Tags = Base + Total Optional Layers (1)
 
 Where:
-  Base = 7 for L9, 8 for L10, 9 for L11, 10 for L12, 11 for L13
+  Base = 7 for L9, 8 for L10, 9 for L11, 10 for L12, 11 for L13, 12 for L14
   Present Optional Layers = count(CTR in project)
   Total Optional Layers = 1 (CTR)
 ```
@@ -81,20 +81,22 @@ Where:
 
 ### Scenario A: Project WITHOUT CTR
 ```
-SPEC (L9):  7 tags  (@brd, @prd, @ears, @bdd, @adr, @sys, @req)
-TASKS (L10): 8 tags  (@brd→@spec)
-Code (L11):  9 tags  (@brd→@tasks)
-Tests (L12): 10 tags (@brd→@code)
-Validation (L13): 11 tags (all upstream)
+SPEC (L9):   7 tags  (@brd, @prd, @ears, @bdd, @adr, @sys, @req)
+TSPEC (L10): 8 tags  (@brd→@spec)
+TASKS (L11): 9 tags  (@brd→@tspec)
+Code (L12):  10 tags (@brd→@tasks)
+Tests (L13): 11 tags (@brd→@code)
+Validation (L14): 12 tags (all upstream)
 ```
 
 ### Scenario B: Project WITH CTR
 ```
-SPEC (L9):  8 tags  (@brd→@req + @ctr)
-TASKS (L10): 9 tags (@brd→@spec + @ctr)
-Code (L11):  10 tags (@brd→@tasks + @ctr)
-Tests (L12): 11 tags (@brd→@code + @ctr)
-Validation (L13): 12 tags (all upstream)
+SPEC (L9):   8 tags  (@brd→@req + @ctr)
+TSPEC (L10): 9 tags  (@brd→@spec + @ctr)
+TASKS (L11): 10 tags (@brd→@tspec + @ctr)
+Code (L12):  11 tags (@brd→@tasks + @ctr)
+Tests (L13): 12 tags (@brd→@code + @ctr)
+Validation (L14): 13 tags (all upstream)
 ```
 
 ---
@@ -126,22 +128,23 @@ def get_expected_tag_count(layer: int, has_ctr: bool) -> tuple[int, int]:
     # Layer-specific base counts
     layer_bases = {
         9: 7,   # SPEC
-        10: 8,  # TASKS
-        11: 9,  # Code
-        12: 10, # Tests
-        13: 11, # Validation (advisory)
+        10: 8,  # TSPEC
+        11: 9,  # TASKS
+        12: 10, # Code
+        13: 11, # Tests
+        14: 12, # Validation (advisory)
     }
-    
+
     if layer not in layer_bases:
         return (0, 0)
-    
+
     base = layer_bases[layer]
-    
-    # Layer 14: Validation) has advisory range
-    if layer == 13:
-        return (base, 12)
-    
-    # Layers 9-12: Range based on optional layers
+
+    # Layer 14: Validation has advisory range
+    if layer == 14:
+        return (base, 13)
+
+    # Layers 9-13: Range based on optional layers
     min_count = base + optional_layers
     max_count = base + 1
     
@@ -171,10 +174,10 @@ def validate_tag_count(artifact_tags: list[str], layer: int, has_ctr: bool) -> t
 
 ## Cross-Reference
 
-**Update the following files to reference this document**:
-- README.md (line ~755): Replace tag count section with link to this file
-- TRACEABILITY_SETUP.md (line ~120): Replace inline counts with reference
-- TRACEABILITY_VALIDATION.md: Update all tag count references
+**Referenced by**:
+- README.md
+- TRACEABILITY_SETUP.md
+- TRACEABILITY.md
 
 **Example Reference**:
 ```markdown

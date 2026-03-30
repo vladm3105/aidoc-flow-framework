@@ -200,7 +200,7 @@ ls -la "$PROJECT_DIR/.claude/" | grep "^d" | grep custom || echo "  (none found)
 echo ""
 echo "Template access:"
 if [ -L "$PROJECT_DIR/.templates/ai_dev_ssd_flow" ]; then
-    SDD_COUNT=$(find "$PROJECT_DIR/.templates/ai_dev_ssd_flow" -name "*-TEMPLATE.md" -o -name "*-template.md" 2>/dev/null | wc -l)
+    SDD_COUNT=$(find "$PROJECT_DIR/.templates/ai_dev_ssd_flow" -name "*-TEMPLATE.yaml" -o -name "*-TEMPLATE.md" 2>/dev/null | wc -l)
     echo -e "${GREEN}  ✓ SDD: $SDD_COUNT templates accessible${NC}"
 else
     echo -e "${RED}  ✗ SDD template symlink not found${NC}"

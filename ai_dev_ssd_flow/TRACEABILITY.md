@@ -16,7 +16,7 @@ custom_fields:
 
 # Traceability Guidelines for AI Dev Flow
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the `ai_dev_ssd_flow/` root without the `docs/` prefix; see README for path mapping.
 
 ## Purpose
 
@@ -49,24 +49,25 @@ The following rules govern traceability in the SDD workflow:
 - **Anchors/IDs**: Primary identifiers within this document
 - **Code Path(s)**: Implementation locations (where applicable)
 
-### Schema Authority Principle
+### Template Authority Principle
 
-**Critical Rule**: `*_MVP_SCHEMA.yaml` files are the single source of truth for their respective artifact types. When conflicts exist between style guides and schemas, **the schema is authoritative**.
+**Critical Rule**: Unified `{TYPE}-TEMPLATE.yaml` files are the single source of truth for their respective artifact types. Validation is handled by mcp_sdd `sdd_validate` tool.
 
-**Element Code Authority Exception**: Element type code semantics and per-artifact code allowance are governed by `ID_NAMING_STANDARDS.md` (standardized element type table). Validators and hooks MUST enforce schema structure and element code policy together.
+**Element Code Authority Exception**: Element type code semantics and per-artifact code allowance are governed by `ID_NAMING_STANDARDS.md` (standardized element type table).
 
-| Artifact | Schema File | Layer |
-|----------|-------------|-------|
-| PRD | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` | 2 |
-| EARS | `ai_dev_flow/03_EARS/EARS_MVP_SCHEMA.yaml` | 3 |
-| BDD | `ai_dev_flow/04_BDD/BDD_MVP_SCHEMA.yaml` | 4 |
-| ADR | `ai_dev_flow/05_ADR/ADR_MVP_SCHEMA.yaml` | 5 |
-| SYS | `ai_dev_flow/06_SYS/SYS_MVP_SCHEMA.yaml` | 6 |
-| REQ | `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml` | 7 |
-| CTR | `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml` | 8 |
-| SPEC | `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml` | 9 |
-| TSPEC | `ai_dev_flow/10_TSPEC/{UTEST,ITEST,STEST,FTEST}_MVP_SCHEMA.yaml` | 10 |
-| TASKS | `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml` | 11 |
+| Artifact | Template | Layer |
+|----------|----------|-------|
+| BRD | `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | 1 |
+| PRD | `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` | 2 |
+| EARS | `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` | 3 |
+| BDD | `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml` | 4 |
+| ADR | `ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml` | 5 |
+| SYS | `ai_dev_ssd_flow/06_SYS/SYS-TEMPLATE.yaml` | 6 |
+| REQ | `ai_dev_ssd_flow/07_REQ/REQ-TEMPLATE.yaml` | 7 |
+| CTR | `ai_dev_ssd_flow/08_CTR/CTR-TEMPLATE.yaml` | 8 |
+| SPEC | `ai_dev_ssd_flow/09_SPEC/SPEC-TEMPLATE.yaml` | 9 |
+| TSPEC | `ai_dev_ssd_flow/10_TSPEC/TSPEC-TEMPLATE.yaml` | 10 |
+| TASKS | `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.yaml` | 11 |
 
 ## [WARN] Upstream Artifact Verification (CRITICAL)
 
@@ -586,7 +587,7 @@ python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json 
 
 ### Example: Complete Traceability section
 
-From EARS-MVP-TEMPLATE.md:
+From EARS-TEMPLATE.yaml:
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
@@ -1331,7 +1332,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 3. Regenerate all source code
 4. Update all tests
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
+**Files**: [CHG-TEMPLATE.yaml](./CHG/CHG-TEMPLATE.yaml) | [CHG-00_index.md](./CHG/CHG-00_index.md)
 
 ### Upstream Changes (BRD, PRD, SYS, EARS, REQ)
 

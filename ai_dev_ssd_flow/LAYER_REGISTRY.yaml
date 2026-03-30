@@ -8,8 +8,8 @@ metadata:
   framework: "Specification-Driven Development (SDD)"
   total_layers: 15
   maintainer: "SDD Framework Team"
-  template_policy: mvp_only
-  deprecated_templates: archived/
+  template_policy: unified_yaml
+  deprecated_templates: "*_v1_archive/"
   changelog:
     - version: "1.6"
       date: "2026-02-05"
@@ -40,7 +40,7 @@ layers:
     error_prefix: BRD
     optional: false
     description: "Layer 1 - Business-level functional requirements and objectives"
-    template: "BRD-MVP-TEMPLATE.md"
+    template: "BRD-TEMPLATE.yaml"
 
   - number: 2
     artifact: PRD
@@ -52,7 +52,7 @@ layers:
     error_prefix: PRD
     optional: false
     description: "Layer 2 - Product features and user stories derived from BRD"
-    template: "PRD-MVP-TEMPLATE.md"
+    template: "PRD-TEMPLATE.yaml"
 
   - number: 3
     artifact: EARS
@@ -64,19 +64,19 @@ layers:
     error_prefix: EARS
     optional: false
     description: "Layer 3 - Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
-    template: "EARS-MVP-TEMPLATE.md"
+    template: "EARS-TEMPLATE.yaml"
 
   - number: 4
     artifact: BDD
     name: "Behavior-Driven Development"
     folder: 04_BDD/
-    extensions: [.feature, .md]
+    extensions: [.yaml]
     required_tags: [brd, prd, ears]
     can_reference: [BRD, PRD, EARS]
     error_prefix: BDD
     optional: false
     description: "Layer 4 - Test scenarios using Given-When-Then format"
-    template: "BDD-MVP-TEMPLATE.feature"
+    template: "BDD-TEMPLATE.yaml"
 
   - number: 5
     artifact: ADR
@@ -88,7 +88,7 @@ layers:
     error_prefix: ADR
     optional: false
     description: "Layer 5 - Architectural decisions with Context-Decision-Consequences"
-    template: "ADR-MVP-TEMPLATE.md"
+    template: "ADR-TEMPLATE.yaml"
 
   - number: 6
     artifact: SYS
@@ -100,7 +100,7 @@ layers:
     error_prefix: SYS
     optional: false
     description: "Layer 6 - Functional requirements and quality attributes"
-    template: "SYS-MVP-TEMPLATE.md"
+    template: "SYS-TEMPLATE.yaml"
 
   - number: 7
     artifact: REQ
@@ -112,7 +112,7 @@ layers:
     error_prefix: REQ
     optional: false
     description: "Layer 7 - Single, granular, testable requirements"
-    template: "REQ-MVP-TEMPLATE.md"
+    template: "REQ-TEMPLATE.yaml"
 
   - number: 8
     artifact: CTR
@@ -124,7 +124,7 @@ layers:
     error_prefix: CTR
     optional: true
     description: "Layer 8 - API/data contracts using dual-file format"
-    template: "CTR-MVP-TEMPLATE.md"
+    template: "CTR-TEMPLATE.yaml"
 
   - number: 9
     artifact: SPEC
@@ -136,7 +136,7 @@ layers:
     error_prefix: SPEC
     optional: false
     description: "Layer 9 - Implementation-ready YAML specifications"
-    template: "SPEC-MVP-TEMPLATE.yaml"
+    template: "SPEC-TEMPLATE.yaml"
 
   - number: 10
     artifact: TSPEC
@@ -148,32 +148,26 @@ layers:
     error_prefix: TSPEC
     optional: false
     description: "Layer 10 - Test specifications for TDD workflow (UTEST, ITEST, STEST, FTEST)"
-    template: null  # Multiple templates per test type
+    template: "TSPEC-TEMPLATE.yaml"  # Unified parent template with per-subtype overrides
     test_types:
       - code: 40
         type: UTEST
         name: "Unit Test Specification"
-        template: "UTEST/UTEST-MVP-TEMPLATE.md"
       - code: 41
         type: ITEST
         name: "Integration Test Specification"
-        template: "ITEST/ITEST-MVP-TEMPLATE.md"
       - code: 42
         type: STEST
         name: "Smoke Test Specification"
-        template: "STEST/STEST-MVP-TEMPLATE.md"
       - code: 43
         type: FTEST
         name: "Functional Test Specification"
-        template: "FTEST/FTEST-MVP-TEMPLATE.md"
       - code: 44
         type: PTEST
         name: "Performance Test Specification"
-        template: null  # Reserved
       - code: 45
         type: SECTEST
         name: "Security Test Specification"
-        template: null  # Reserved
 
   - number: 11
     artifact: TASKS
@@ -185,7 +179,7 @@ layers:
     error_prefix: TASKS
     optional: false
     description: "Layer 11 - AI-structured TODO tasks from SPEC and TSPEC"
-    template: "TASKS-TEMPLATE.md"
+    template: "TASKS-TEMPLATE.yaml"
 
   - number: 12
     artifact: CODE
@@ -250,6 +244,5 @@ layer_groups:
     description: "Code execution and validation layers"
 
 id_patterns:
-  standard: "^[A-Z]+-\\d{2,}$"
-  sectioned: "^[A-Z]+-\\d{2,}\\.\\d+$"
-  hierarchical: "^[A-Z]+\\.\\d{2}\\.\\d{2}\\.\\d{2}$"
+  document: "^[A-Z]+-\\d{2,}$"
+  element: "^[A-Z]+\\.\\d{2,}\\.\\d{2,}\\.\\d{2,}$"

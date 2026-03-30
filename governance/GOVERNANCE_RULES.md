@@ -11,7 +11,7 @@ Operational policies and conventions that govern how this project is developed. 
 
 | Depth | Layers | Best For | Timeline |
 |:------|:-------|:---------|:---------|
-| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS-MVP | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Lite** | REF → BRD → PRD → TASKS | MVPs, prototypes, solo + AI | 1-3 months |
 | **SDD-Standard** | REF → BRD → PRD → EARS → ADR → SYS → REQ → TASKS | Production apps, small teams | 3-6 months |
 | **SDD-Full** | All 15 layers with 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
 

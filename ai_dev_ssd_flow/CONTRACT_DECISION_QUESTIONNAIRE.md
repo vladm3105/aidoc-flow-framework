@@ -466,7 +466,7 @@ Next Steps:
 ## References
 
 - [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md#rule-5-contract-decision-questionnaire) - Rule 5: Contract Questionnaire
-- [CTR-MVP-TEMPLATE.md](./08_CTR/CTR-MVP-TEMPLATE.md) - Contract template
+- [CTR-TEMPLATE.yaml](./08_CTR/CTR-TEMPLATE.yaml) - Contract template
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete workflow
 - [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Previous step
 

@@ -93,10 +93,10 @@ summary: Single-sentence description of component purpose, scope, and primary va
 
 metadata:
   # ===================
-  # FILE SIZE LIMITS (Warning)
-  # - Target (Markdown): <15,000 tokens per section file
-  # - Maximum (Markdown): 20,000 tokens (Error limit)
-  # - YAML (monolithic): Warning at 20,000 tokens
+  # FILE SIZE LIMITS
+  # - Monolithic: up to 50,000 tokens per file (default)
+  # - If >50,000 tokens: create a new SPEC document with its own scope
+  # - Do NOT split into sectioned files — each document is self-contained
   # ===================
   #  HIGH-GUIDANCE MODE: This template is optimized for "Algorithmic Specificity"
   # Strategy:

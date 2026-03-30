@@ -397,66 +397,11 @@ custom_fields:
 ---
 ```
 
-### 4.7 Section Files (Document Chunks)
+### 4.7 Document Size Policy
 
-Section files use specialized frontmatter for navigation and assembly. See [ID_NAMING_STANDARDS.md - Section-Based File Splitting](./ID_NAMING_STANDARDS.md#section-based-file-splitting-document-chunking) for naming conventions.
+All SDD documents are **monolithic** (single self-contained file) up to 50,000 tokens.
 
-**Section File (Content Section):**
-```yaml
----
-doc_id: BRD-03
-section: 2
-title: "Business Context"
-parent_doc: BRD-03.0_index.md
-prev_section: BRD-03.1_executive_summary.md
-next_section: BRD-03.3_functional_requirements.md
-tags:
-  - section-file
-  - [document-type-tag]
-custom_fields:
-  total_sections: 7
-  section_type: content
-  architecture_approaches: [[approach-name]]
-  priority: [primary|fallback|shared]
----
-```
-
-**Section 0 (Index/Overview) - Required:**
-```yaml
----
-doc_id: BRD-03
-section: 0
-title: "Trading Platform - Index"
-total_sections: 7
-original_size_kb: 150
-split_date: 2025-12-17T00:00:00
-tags:
-  - section-index
-  - [document-type-tag]
-custom_fields:
-  section_type: index
-  architecture_approaches: [[approach-name]]
-  priority: [primary|fallback|shared]
-  status: [development|production|reference]
----
-```
-
-**Required Fields for Section Files:**
-
-| Field | Required In | Purpose |
-|-------|-------------|---------|
-| `doc_id` | All sections | Parent document identifier (e.g., `BRD-03`) |
-| `section` | All sections | Section number (0 = index, 1+ = content) |
-| `title` | All sections | Section-specific title |
-| `total_sections` | Section 0 | Total number of sections in split document |
-| `parent_doc` | Content sections | Link to Section 0 index file |
-| `prev_section` | Content sections | Link to previous section (if exists) |
-| `next_section` | Content sections | Link to next section (if exists) |
-
-**Section File Naming Pattern:**
-- Pattern: `{TYPE}-{NN}.{SECTION}_{slug}.md`
-- Example: `BRD-03.2_business_context.md`
-- Distinct from element IDs which use all dots: `BRD.03.01.05`
+If a document exceeds 50,000 tokens, create a new document of the same type with its own scope (e.g., BRD-02 instead of splitting BRD-01). Do NOT split into sectioned files — each document is self-contained for simpler validation, review, and maintenance.
 
 ---
 

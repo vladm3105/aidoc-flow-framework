@@ -16,7 +16,7 @@ All SDD depths follow the same issue creation pattern - the difference is how ma
 Human creates REF/ (Project Description)
     ↓
 AI Agent generates specification layers:
-    - SDD-Lite: BRD-MVP → PRD-MVP
+    - SDD-Lite: BRD → PRD
     - SDD-Standard: BRD → PRD → EARS → ADR → SYS → REQ
     - SDD-Full: All 15 layers
     ↓

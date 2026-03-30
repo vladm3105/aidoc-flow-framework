@@ -128,6 +128,6 @@ BRD/PRD Changes Proposed
 
 | Document | Location |
 |----------|----------|
-| CHG Template | `ai_dev_ssd_flow/CHG/CHG-TEMPLATE.md` |
-| Change Management Guide | `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` |
+| CHG Template | `ai_dev_ssd_flow/CHG/CHG-TEMPLATE.yaml` |
+| Change Management Guide | `ai_dev_ssd_flow/CHG/CHG-00_index.md` |
 | 4-Gate Definitions | `ai_dev_ssd_flow/CHG/gates/` |

@@ -135,8 +135,9 @@ metadata:
       Valid:   BRD-01_platform_architecture.yaml, BRD-06_user_authentication.yaml
       Invalid: BRD-01.yaml (missing slug), brd-001_platform.yaml (wrong case)
 
-      Monolithic (single file): documents <25KB — default for MVP.
-      Section-based (folder): documents >25KB — BRD-NN_{slug}/ with index.
+      Monolithic (single file): up to 50,000 tokens — default.
+      If >50,000 tokens: create a new document of the same type (e.g., BRD-02) with its own scope.
+      Do NOT split into sectioned files — each document is self-contained.
 
       Index: Maintain BRD-00_index.md as the authoritative source of planned/active BRDs.
 
@@ -551,7 +552,7 @@ functional_requirements:
       related_requirements:
         _guidance: |
           Cross-reference format: "BRD-NN (Description, Section X)"
-          Use explicit file paths for split BRDs.
+          Use explicit file paths when referencing other BRDs.
         references:
           - "[Platform BRDs — e.g., BRD-01 (Platform Architecture)]"
           - "[Feature BRDs — e.g., BRD-06 (User Authentication)]"

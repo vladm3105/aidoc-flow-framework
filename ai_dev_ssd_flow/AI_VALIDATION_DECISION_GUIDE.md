@@ -21,11 +21,8 @@ custom_fields:
 
 **Related Documents:**
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Core validation rules
-- [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - Architecture and gates
-- [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI reference
-
-**Document-Specific Guides:**
-- [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
+- [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md) - Error codes and severity levels
+- mcp_sdd `sdd_validate` tool — replaces per-layer shell scripts
 
 **Last Updated:** 2026-01-24T00:00:00
 
@@ -78,7 +75,7 @@ When a validation fails, you must decide:
 
 ### REQ Validation Decisions
 
-**See:** [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) for comprehensive REQ-specific patterns, gate details, and resolution workflows.
+**Key REQ patterns:**
 
 **Key REQ Gates:**
 - **GATE-01**: Placeholder detection → Fix document (remove TBD, TODO, FIXME)
@@ -100,7 +97,7 @@ When a validation fails, you must decide:
 - **Inconsistent status fields**: Fix document (align states)
 - **Missing traceability to strategy**: Fix document (add cross-links)
 
-**See:** Specific guidance in `01_BRD/AI_VALIDATION_DECISION_GUIDE.md` (when available).
+Validation via mcp_sdd `sdd_validate` with `doc_type=brd`.
 
 ---
 
@@ -114,7 +111,7 @@ When a validation fails, you must decide:
 - **Code gen readiness fails**: Fix document (ensure all models/stubs present)
 - **Invalid Python syntax in examples**: Fix document (correct code)
 
-**See:** Specific guidance in `09_SPEC/AI_VALIDATION_DECISION_GUIDE.md` (when available).
+Validation via mcp_sdd `sdd_validate` with `doc_type=spec`.
 
 ---
 
@@ -163,15 +160,7 @@ Choose and implement one of:
 
 ### Step 4: Re-Validate & Verify
 
-```bash
-# Single file
-bash validate_all.sh --file <document.md>
-
-# Directory
-bash validate_all.sh --directory <folder>
-```
-
-Confirm the fix resolves the issue without introducing new failures.
+Re-run validation via mcp_sdd `sdd_validate` tool to confirm the fix resolves the issue without introducing new failures.
 
 ### Step 5: Update Framework Knowledge
 
@@ -295,12 +284,8 @@ To extend this framework for a new document type:
 
 ### Adding Custom Validators
 
-To add a new validator:
-
-1. Create `<LAYER>/<ARTIFACT>/scripts/validate_<name>.sh` or `.py`
-2. Follow orchestrator pattern (integrate with `validate_all.sh`)
-3. Output standard format: Gate, severity, message
-4. Document in `VALIDATION_COMMANDS.md` and `VALIDATION_STRATEGY_GUIDE.md`
+To add a new validator, extend mcp_sdd's `sdd_validate` tool with new validation rules.
+Per-layer shell scripts are deprecated — validation is centralized in mcp_sdd.
 
 ---
 
@@ -329,9 +314,8 @@ To add a new validator:
 [ ] 4. Consider template variants (MVP vs full)
 [ ] 5. Add to validator script
 [ ] 6. Test against sample documents
-[ ] 7. Document in VALIDATION_COMMANDS.md
-[ ] 8. Add decision patterns to AI_VALIDATION_DECISION_GUIDE.md
-[ ] 9. Link from VALIDATION_STRATEGY_GUIDE.md
+[ ] 7. Add decision patterns to AI_VALIDATION_DECISION_GUIDE.md
+[ ] 8. Update mcp_sdd validation rules
 ```
 
 ---
@@ -339,9 +323,8 @@ To add a new validator:
 ## Related Resources
 
 - [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md) - Core universal rules
-- [VALIDATION_STRATEGY_GUIDE.md](./VALIDATION_STRATEGY_GUIDE.md) - Architecture and gate details
-- [VALIDATION_COMMANDS.md](./VALIDATION_COMMANDS.md) - CLI command reference
-- [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md) - REQ-specific patterns
+- [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md) - Error codes and severity levels
+- mcp_ssd `sdd_validate` — centralized validation for all 11 layers
 
 ---
 

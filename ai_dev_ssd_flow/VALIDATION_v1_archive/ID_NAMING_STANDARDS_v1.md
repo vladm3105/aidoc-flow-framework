@@ -31,7 +31,7 @@ Purpose
   - `01_BRD/` - Business Requirements Documents
   - `02_PRD/` - Product Requirements Documents
   - `03_EARS/` - EARS Requirements
-  - `04_BDD/` - BDD Requirements (unified YAML, Gherkin in `_example` fields)
+  - `04_BDD/` - Feature files (`.feature` format only)
   - `05_ADR/` - Architecture Decision Records
   - `06_SYS/` - System Requirements
   - `07_REQ/` - Requirements
@@ -57,12 +57,12 @@ Purpose
   - Java: Per Java naming conventions
   - Go: Per Go style guide
 
-### Exception: BDD Test Files
-BDD test scenarios located in `tests/bdd/` or similar directories **SHOULD** follow ID_NAMING_STANDARDS:
+### Exception: BDD Feature Files
+BDD test scenarios in `.feature` files (Gherkin format) located in `tests/bdd/` or similar directories **SHOULD** follow ID_NAMING_STANDARDS:
 
 ```
-tests/bdd/gateway/BDD-01_connection_management.yaml
-tests/bdd/gateway/BDD-02_error_handling.yaml
+tests/bdd/gateway/BDD-01_connection_management.feature
+tests/bdd/gateway/BDD-02_error_handling.feature
 ```
 
 ---
@@ -174,7 +174,7 @@ Format
 
 ### Type-Specific Exceptions
 
-- **BDD**: Unified YAML format (`BDD-DOC_NUM_{slug}.yaml`), Gherkin syntax embedded in `_example` fields.
+- **BDD**: Uses nested per-suite folders with `.feature` files at `04_BDD/BDD-DOC_NUM_{slug}/`.
 - **CTR**: Dual-file format (both `.md` and `.yaml`) stored together; use nested folder for multi-file contracts.
 
 
@@ -209,7 +209,7 @@ Universal Numbering Pattern (All Document Types)
     - **Examples**:
       - **ADR**: `PRD-05` → `ADR-05_caching_strategy.md` (single file, flat structure)
       - **SYS**: `PRD-02` → `SYS-02_session_memory.md` (single file, flat structure)
-      - **BDD**: `PRD-04` → `BDD-04_authentication.yaml` (single file, flat structure)
+      - **BDD**: `PRD-04` → `BDD-04_authentication.feature` (single file, flat structure)
       - **EARS**: `PRD-06` → `EARS-06_notifications.md` (single file, flat structure)
   - **One-to-Many (Nested Structure)**: 
     - Multiple artifacts of the same type per PRD use decimal suffixes starting from `.01` and increasing sequentially.
@@ -217,7 +217,7 @@ Universal Numbering Pattern (All Document Types)
     - **Examples**:
       - **ADR**: `PRD-12` → `ADR-12_{slug}/` folder containing `ADR-12.01.md`, `ADR-12.02.md`
       - **SYS**: `PRD-08` → `SYS-08_{slug}/` folder containing `SYS-08.01.md`, `SYS-08.02.md`, `SYS-08.03.md`
-      - **BDD**: `PRD-05` → `BDD-05_{slug}/` folder containing `BDD-05.01.yaml`, `BDD-05.02.yaml`
+      - **BDD**: `PRD-05` → `BDD-05_{slug}/` folder containing `BDD-05.01.feature`, `BDD-05.02.feature`
   - **Roots**: `BRD` and `PRD` maintain independent sequential numbering starting from `01` and increasing sequentially.
   - **Exceptions**: 
     - `REF` and `*-00` utility files remain independent.
@@ -239,22 +239,82 @@ Document ID Standards (ai_dev_ssd_flow)
   - Examples:
     - `docs/05_ADR/ADR-01_database_selection.md`
     - `docs/05_ADR/ADR-100_cloud_migration.md`
-- BDD Requirements
-  - **File Format**: Unified YAML (same as all other layers). Gherkin syntax embedded in `_example` fields.
-    - **BDD Documents**: `BDD-DOC_NUM_{slug}.yaml` (unified YAML format)
-    - **Index**: `BDD-00_index.md` (Markdown format)
+- BDD Features and Tags
+  - **File Format Clarification**:
+    - **Test Scenarios**: `BDD-DOC_NUM_{slug}.feature` (Gherkin format - `.feature` extension)
+    - **Index/Directory**: `BDD-00_index.md` (Markdown format - `.md` extension)
     - **Template**: `BDD-TEMPLATE.yaml` (unified YAML template)
+    - **Traceability Matrix**: `BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` (Markdown format - `.md` extension)
+
+  **Section-Based File Organization** (MANDATORY):
+
+  All BDD files use section-based numbering (dot notation) aligned with 02_PRD/BRD standards.
+
+  **Three Valid Patterns**:
+
+  1. **Section-Only Format** (primary pattern):
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
+     - Use when: Standard section file (< 15,000 tokens)
+
+  2. **Subsection Format** (when section >800 lines):
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.24.01_quality_performance.feature`
+     - Use when: Section requires splitting (each subsection ≤800 lines)
+
+  3. **Aggregator Format** (optional redirect stub):
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.12.00_query_graph_traversal.feature`
+     - Use when: Organizing multiple subsections under one section
+     - Requirements: `@redirect` tag, 0 scenarios, references to subsections
+
+  **Numbering Scheme**:
+  - `.0` suffix: Index file (e.g., `BDD-02.0_index.md`)
+  - `.1`, `.2`, `.3`, etc.: Content sections (e.g., `BDD-02_knowledge_engine/BDD-02.1_ingest.feature`)
+  - `.SS.01`, `.SS.02`, etc.: Subsections (e.g., `BDD-02.3.01_learning_path.feature`)
+  - `.SS.00`: Aggregator/redirect stub (e.g., `BDD-02.2.00_query.feature`)
 
   **File Organization**:
-  - Monolithic: single `.yaml` file per BDD document, up to 50,000 tokens
-  - If >50,000 tokens: create a new BDD document with its own scope (e.g., BDD-03)
-  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (e.g., `PRD-02` -> `BDD-02`)
-  - Variable Length: DOC_NUM matches parent PRD
+  - Nested folder per suite: `04_BDD/BDD-DOC_NUM_{slug}/`
+  - All `.feature` files and the index live inside the suite folder
+  - Each BDD suite MUST have index file: `BDD-DOC_NUM.0_index.md`
+  - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md` (inside the suite folder)
+
+  **Hard Limits**:
+  - Max file size: 20,000 tokens per `.feature` file (warning: 15,000 tokens)
+  - Max scenarios: 12 scenarios per Feature block
+  - If section exceeds 20,000 tokens → Split into subsections (`.SS.mm` format)
+  - If many subsections → Add aggregator (`.SS.00` format)
+
+  **Prohibited Patterns** (cause validation ERROR):
+  - `_partN` suffix (e.g., `BDD-02_query_part1.feature`)
+  - Single-file format: `BDD-NN_slug.feature` (legacy format)
+  - Directory-based structure: `BDD-NN_{slug}/features/` (legacy format)
+
+  **Section Metadata** (in .feature files):
+  - Add section tags: `@section: NN.SS`, `@parent_doc: BDD-NN`, `@index: BDD-NN.0_index.md`
+  - Feature title format: `Feature: BDD-NN.SS: Domain Description`
+  - Example:
+    ```gherkin
+    @section: 2.1
+    @parent_doc: BDD-02
+    @index: BDD-02.0_index.md
+    Feature: BDD-02.1: Ingest and Analysis
+    ```
+
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (e.g., `PRD-02` -> `BDD-02`).
+  - Variable Length: DOC_NUM matches parent PRD.
+  - Section Numbers: SECTION = 0 (index), 1+ (content sections)
+  - Subsection Numbers: SUBSECTION = 01-99 (subsections), 00 (aggregator)
   - Tags (mandatory):
     - `@brd:BRD.NN.EE.SS` (upstream BRD element)
     - `@prd:PRD.NN.EE.SS` (upstream PRD element)
     - `@ears:EARS.NN.SS.RR` (upstream EARS requirement)
   - Tags appear before `Scenario:` using valid relative paths + anchors
+  - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
 - Technical Specifications (SPEC)
   - **Vertical ID Alignment**: SPEC ID MUST match the parent PRD ID (e.g., `PRD-12` -> `SPEC-12`).
   - **Format**: `09_SPEC/SPEC-DOC_NUM_{slug}.yaml`
@@ -349,9 +409,9 @@ When a single PRD requires multiple downstream artifacts of the same type, ALL a
 - **BDD (Behavior-Driven Development)**
   ```
   PRD-03 → 04_BDD/BDD-03_risk_management/
-     BDD-03.01_position_limits.yaml
-     BDD-03.02_margin_requirements.yaml
-     BDD-03.03_circuit_breakers.yaml
+     BDD-03.01_position_limits.feature
+     BDD-03.02_margin_requirements.feature
+     BDD-03.03_circuit_breakers.feature
   ```
 
 - **EARS (Event-Action-Response-State)**
@@ -645,7 +705,7 @@ Cross-Reference Link Format (MANDATORY)
   - BDD in SPEC verification:
     - `verification:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-      - BDD: "`04_BDD/BDD-DOC_NUM_{slug}.yaml`"`
+      - BDD: "`04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature(:LNN)`"`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
   - BRD in BRD:
     - `[BRD-DOC_NUM](BRD-DOC_NUM_{slug}.md)` (same directory)
@@ -677,7 +737,7 @@ Validation Rules & Aids
   - REQ filename: `REQ-\d{2,}_.+\.md$`
   - ADR H1 ID: `^#\sADR-\d{2,}:.+$`
   - ADR filename: `ADR-\d{2,}_.+\.md$`
-  - BDD filename: `BDD-\d{2,}_.+\.yaml$`
+  - BDD filename: `BDD-\d{2,}_.+\.feature$`
   - BDD tag: `^@requirement:\[REQ-\d{2,}\]\(.+\.md#REQ-\d{2,}\)$`
   - SPEC id: `^[a-z][a-z0-9_]*[a-z0-9]$`.
   - SPEC filename: `SPEC-\d{2,}_.+\.ya?ml$`

@@ -284,17 +284,16 @@ gemini @SMALL_FILE.md "Analyze this document"
    - Major sections (overview, requirements, technical SPEC)
    - Independent concerns that can stand alone
 
-2. **Create Section Files (RECOMMENDED):**
+2. **Create New Documents (RECOMMENDED):**
 
-   Use section-based dot notation per [ID_NAMING_STANDARDS.md - Section-Based File Splitting](./ID_NAMING_STANDARDS.md#section-based-file-splitting-document-chunking):
+   Create separate documents of the same type, each with its own scope:
    ```
-   SPEC-03.0_index.md           (required index/overview)
-   SPEC-03.1_interfaces.md      (interfaces, data models)
-   SPEC-03.2_business_logic.md  (business logic, state management)
-   SPEC-03.3_quality.md         (performance, observability)
+   SPEC-03_interfaces.yaml      (interfaces, data models)
+   SPEC-04_business_logic.yaml  (business logic, state management)
+   SPEC-05_quality.yaml         (performance, observability)
    ```
 
-   **Pattern**: `{TYPE}-{NN}.{SECTION}_{slug}.md`
+   Do NOT split into sectioned files — each document is self-contained.
    - Dash before document number, dot before section number
    - Section 0 is always required (index)
    - Distinct from element IDs which use all dots (`SPEC.03.01.05`)
@@ -409,7 +408,7 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 
 ### Example 2: Comprehensive BRD (60KB)
 
-**File**: BRD-MVP-TEMPLATE.md (standard template) (60KB, ~15,000 tokens)
+**File**: BRD-TEMPLATE.yaml (unified template) (60KB, ~15,000 tokens)
 
 **Tool Usage:**
 - **Claude Code**: [PASS] Optimal (uses 7.5% of context, can load 10+ files simultaneously)
@@ -421,9 +420,9 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 gemini
 
 # Let Gemini use file read tool
-> "Read BRD-MVP-TEMPLATE.md and identify key requirements"
-> "Analyze section 5 of BRD-MVP-TEMPLATE.md for functional SPEC"
-> "What are the security requirements in BRD-MVP-TEMPLATE.md?"
+> "Read BRD-TEMPLATE.yaml and identify key requirements"
+> "Analyze section 5 of BRD-TEMPLATE.yaml for functional SPEC"
+> "What are the security requirements in BRD-TEMPLATE.yaml?"
 ```
 
 **Recommendation**: Keep as single file, provide tool-specific usage notes.

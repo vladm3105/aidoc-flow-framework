@@ -194,6 +194,6 @@ pytest tests/bdd/ --bdd --html=reports/bdd_report.html
 | Document | Purpose |
 |----------|---------|
 | `ai_dev_ssd_flow/10_TSPEC/TSPEC-TEMPLATE.yaml` | TSPEC format |
-| `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.feature` | BDD scenario format |
+| `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml` | BDD scenario format |
 | `governance/templates/qa/01-testing-strategy.md` | Testing strategy |
 | `governance/templates/qa/03-ci-pipeline-spec.md` | CI pipeline config |

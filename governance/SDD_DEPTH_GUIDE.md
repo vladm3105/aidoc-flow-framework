@@ -45,11 +45,11 @@ This document explains the three depth variants of Specification-Driven Developm
 ```
 Layer 0: REF (Project Description)
     ↓
-Layer 1: BRD-MVP (Business Requirements - simplified)
+Layer 1: BRD (Business Requirements - simplified)
     ↓
-Layer 2: PRD-MVP (Product Requirements - simplified)
+Layer 2: PRD (Product Requirements - simplified)
     ↓
-Layer 11: TASKS-MVP (Implementation Tasks)
+Layer 11: TASKS (Implementation Tasks)
     ↓
 GitHub Issues → Code → Deploy
 ```
@@ -58,9 +58,9 @@ GitHub Issues → Code → Deploy
 | Layer | Artifact | Required | Notes |
 |:------|:---------|:---------|:------|
 | 0 | REF | Yes | Human-written project description |
-| 1 | BRD-MVP | Yes | Use `BRD-MVP-TEMPLATE.md` |
-| 2 | PRD-MVP | Yes | Use `PRD-MVP-TEMPLATE.md` |
-| 11 | TASKS-MVP | Yes | Use `TASKS-TEMPLATE.md` (simplified) |
+| 1 | BRD | Yes | Use `BRD-TEMPLATE.yaml` |
+| 2 | PRD | Yes | Use `PRD-TEMPLATE.yaml` |
+| 11 | TASKS | Yes | Use `TASKS-TEMPLATE.yaml` |
 
 **Skipped Layers:** EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC
 
@@ -179,7 +179,7 @@ Review → Merge → Deploy
 
 | Depth | Specification Layers | Issue Precision |
 |:------|:--------------------|:----------------|
-| **SDD-Lite** | 2 (BRD-MVP, PRD-MVP) | Good for MVPs |
+| **SDD-Lite** | 2 (BRD, PRD) | Good for MVPs |
 | **SDD-Standard** | 6 (BRD→PRD→EARS→ADR→SYS→REQ) | Production-ready |
 | **SDD-Full** | 10 (all layers) | Enterprise-grade |
 
@@ -192,7 +192,7 @@ Review → Merge → Deploy
 Projects can start with SDD-Lite and add layers as complexity grows:
 
 **Phase 1 (MVP):** SDD-Lite
-- REF → BRD-MVP → PRD-MVP → TASKS-MVP
+- REF → BRD → PRD → TASKS
 
 **Phase 2 (Production):** Add Standard layers
 - Add EARS for formal requirements
@@ -222,21 +222,21 @@ When adding layers to an existing project:
 
 | Artifact | Template |
 |:---------|:---------|
-| BRD | `ai_dev_ssd_flow/BRD/BRD-MVP-TEMPLATE.md` |
-| PRD | `ai_dev_ssd_flow/PRD/PRD-MVP-TEMPLATE.md` |
-| TASKS | `ai_dev_ssd_flow/TASKS/TASKS-TEMPLATE.md` |
+| BRD | `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` |
+| PRD | `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` |
+| TASKS | `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.yaml` |
 
 ### SDD-Standard Templates
 
 | Artifact | Template |
 |:---------|:---------|
-| BRD | `ai_dev_ssd_flow/BRD/BRD-TEMPLATE.md` |
-| PRD | `ai_dev_ssd_flow/PRD/PRD-TEMPLATE.md` |
-| EARS | `ai_dev_ssd_flow/EARS/EARS-TEMPLATE.md` |
-| ADR | `ai_dev_ssd_flow/ADR/ADR-TEMPLATE.md` |
-| SYS | `ai_dev_ssd_flow/SYS/SYS-TEMPLATE.md` |
-| REQ | `ai_dev_ssd_flow/REQ/REQ-TEMPLATE.md` |
-| TASKS | `ai_dev_ssd_flow/TASKS/TASKS-TEMPLATE.md` |
+| BRD | `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` |
+| PRD | `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` |
+| EARS | `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` |
+| ADR | `ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml` |
+| SYS | `ai_dev_ssd_flow/06_SYS/SYS-TEMPLATE.yaml` |
+| REQ | `ai_dev_ssd_flow/07_REQ/REQ-TEMPLATE.yaml` |
+| TASKS | `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.yaml` |
 
 ### SDD-Full Templates
 

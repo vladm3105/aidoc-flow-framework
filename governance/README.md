@@ -12,7 +12,7 @@ This repository uses **Specification-Driven Development (SDD)** with scalable de
 
 | Depth | Layers | Best For | Timeline |
 |:------|:-------|:---------|:---------|
-| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS-MVP | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Lite** | REF → BRD → PRD → TASKS | MVPs, prototypes, solo + AI | 1-3 months |
 | **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams | 3-6 months |
 | **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
 

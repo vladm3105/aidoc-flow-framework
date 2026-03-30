@@ -70,6 +70,7 @@ When a clear, low-risk fix will move a document to "pass", the assistant should 
 
 ## Pointers
 
-- REQ-specific addendum: [07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/REQ_AI_VALIDATION_DECISION_GUIDE.md)
 - Naming standards: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md)
-- Validation scripts: [scripts/](./scripts/)
+- AI decision guide: [AI_VALIDATION_DECISION_GUIDE.md](./AI_VALIDATION_DECISION_GUIDE.md)
+- Validation standards: [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md)
+- mcp_sdd validation: `sdd_validate` tool (replaces per-layer shell scripts)

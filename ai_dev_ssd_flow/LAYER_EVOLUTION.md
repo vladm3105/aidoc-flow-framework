@@ -59,15 +59,15 @@ mkdir -p docs/NEWTYPE
 
 ### Step 3: Create Layer Template
 
-Create `NEWTYPE/NEWTYPE-TEMPLATE.md` following existing template patterns.
+Create `NEWTYPE/NEWTYPE-TEMPLATE.yaml` following the unified YAML template pattern.
 
 ### Step 4: Create Layer README
 
 Create `NEWTYPE/README.md` documenting layer purpose and usage.
 
-### Step 5: Create Validation Script
+### Step 5: Add to mcp_sdd
 
-Create `scripts/validate_newtype.sh` or `scripts/validate_newtype.py` for layer-specific validation.
+Copy `NEWTYPE-TEMPLATE.yaml` to `mcp_sdd/templates/` so any CLI AI agent can use it via `sdd_create`.
 
 ---
 
@@ -78,7 +78,7 @@ Until registry integration is complete, these files contain hardcoded layer defi
 | File | Content Type | Update Required |
 |------|--------------|-----------------|
 | `scripts/validate_cross_document.py` | `LAYER_CONFIG` dict (line ~83) | Add layer entry with number, folder, tags |
-| `scripts/validate_all.py` | Layer type imports | Add new validator import and call |
+| `mcp_sdd/templates/` | Template directory | Copy unified YAML template |
 | `VALIDATION_STANDARDS.md` | Layer tables | Update validator tables |
 | `AI_ASSISTANT_RULES.md` | Layer references | Update Rule 15 layer diagram |
 | `TRACEABILITY.md` | Layer mappings | Add layer to traceability rules |

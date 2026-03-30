@@ -68,10 +68,10 @@ Use the following model across the MVP → PROD → NEW MVP lifecycle.
 
 | Layer Artifact | Required Model | Purpose |
 |----------------|----------------|---------|
-| BRD (L1) | C4 L1 + DFD L0 | Business/system boundary and top-level data movement |
-| PRD (L2) | C4 L2 + DFD L1 + key sequence | Product container interactions, data movement, temporal user/system flow |
-| ADR (L5) | C4 L3 + decision sequence (+ DFD L2 when data-impacting) | Architecture decision implementation view |
-| SYS (L6) | System Diagram Contract (bridge) | Enforce container/interface/data-flow constraints and downstream ownership |
+| BRD (L1) | C4 L1 (Context) + DFD L1 | Business/system boundary and top-level data movement |
+| PRD (L2) | C4 L2 (Container) + DFD L2 + key sequence | Product container interactions, data movement, temporal user/system flow |
+| ADR (L5) | Decision sequence (no C4 level — decision bridge) | Architecture decision rationale and alternatives |
+| SYS (L6) | C4 L3 (Component) + DFD L3 | System component structure, interfaces, data-flow constraints |
 | SPEC/Code/Test (L9+) | C4 L4 (Code) | Implementation-level code structure ownership |
 
 ### Diagram Intent Header (Mandatory)
@@ -80,14 +80,14 @@ Each required diagram block MUST include an intent header immediately above the 
 
 Required fields:
 - `diagram_type`: `c4` | `dfd` | `sequence`
-- `level`: `l0` | `l1` | `l2` | `l3` | `l4` (as applicable)
+- `level`: `l1` | `l2` | `l3` | `l4` (as applicable, aligned: C4 level = DFD level)
 - `scope_boundary`: short boundary definition
 - `upstream_refs`: source requirement/decision references
 - `downstream_refs`: implementation or validation references
 
 Required machine tags adjacent to diagram blocks:
-- `@diagram: c4-l1 | c4-l2 | c4-l3`
-- `@diagram: dfd-l0 | dfd-l1 | dfd-l2`
+- `@diagram: c4-l1 | c4-l2 | c4-l3 | c4-l4`
+- `@diagram: dfd-l1 | dfd-l2 | dfd-l3`
 - `@diagram: sequence-sync | sequence-async | sequence-error`
 
 Validation severity defaults:
@@ -103,8 +103,8 @@ Validation severity defaults:
 ### System Diagram Contract (SYS)
 
 Required fields in SYS diagram contract subsection:
-- `@diagram: c4-l2|c4-l3` references used by this system scope
-- `@diagram: dfd-l1|dfd-l2` boundary tags where applicable
+- `@diagram: c4-l3` component-level references
+- `@diagram: dfd-l3` data-flow boundary tags
 - Required sequence paths for critical integrations and error handling
 - Downstream SPEC path for C4 L4 ownership
 
@@ -112,10 +112,10 @@ Required fields in SYS diagram contract subsection:
 
 | Layer | Mandatory Checks |
 |---|---|
-| BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l0`; sequence optional for critical journeys |
-| PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l1`, required sequence with explicit error path |
-| ADR (L5) | `@diagram: c4-l3`, required decision sequence; conditional `@diagram: dfd-l2` when data-impacting |
-| SYS (L6) | Required System Diagram Contract subsection, C4 L2/L3 refs, DFD boundary tags, sequence-path constraints, downstream SPEC ownership link |
+| BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
+| PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, required sequence with explicit error path |
+| ADR (L5) | Required decision sequence; no C4/DFD tags (decision bridge, not a C4 level) |
+| SYS (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required System Diagram Contract subsection, sequence-path constraints, downstream SPEC ownership link |
 | SPEC/Code/Test (L9+) | C4 L4 ownership declarations aligned with SYS references |
 
 ### Interactive Diagrams (RECOMMENDED)
@@ -196,7 +196,7 @@ flowchart LR
 
 ### Traceability
 
-This standard applies to all SDD artifacts across Layers 1-15.
+This standard applies to all SDD artifacts across Layers 1-11.
 
 **Cross-references**:
 - `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`

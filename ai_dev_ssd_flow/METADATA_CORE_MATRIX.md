@@ -88,7 +88,7 @@ Notes:
 
 ```bash
 grep -R --line-number -E 'status:|development_status:' ai_dev_ssd_flow
-grep -R --line-number -E 'required_custom_fields:|status:|development_status:' ai_dev_ssd_flow/**/*_MVP_SCHEMA.yaml
+grep -R --line-number -E 'required_custom_fields:|status:|development_status:' ai_dev_ssd_flow/**/*-TEMPLATE.yaml
 grep -R --line-number 'METADATA_CORE_MATRIX.md' ai_dev_ssd_flow/METADATA_TAGGING_GUIDE.md ai_dev_ssd_flow/METADATA_QUICK_REFERENCE.md ai_dev_ssd_flow/README.md
 grep -R --line-number -E 'document_type|status|template|draft|development|production' ai_dev_ssd_flow/scripts/pre_commit_hooks ai_dev_ssd_flow/.pre-commit-config.yaml
 ```

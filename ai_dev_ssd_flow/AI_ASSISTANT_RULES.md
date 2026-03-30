@@ -27,7 +27,7 @@ See also:
 - AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
 - Tool Optimization Guide (sizes, validation, style): AI_TOOL_OPTIMIZATION_GUIDE.md
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. For details, see README → "Using This Repo".
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_ssd_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. For details, see README → "Using This Repo".
 
 ## Assistant Output Style (All Tools)
 
@@ -415,7 +415,7 @@ REQ → SPEC → TSPEC → TASKS → Code
 
 #### [PASS] Apply ID Standards To:
 - Documentation in `docs/` directories: BRD, PRD, REQ, ADR, SPEC, CTR, TASKS, EARS, SYS
-- BDD feature files (`.feature`) in `tests/bdd/` or similar directories
+- BDD files (`.yaml`) in `tests/bdd/` or similar directories
 
 #### [FAIL] Do NOT Apply ID Standards To:
 - **Python source code** (`src/`, `[project_module]/`): Follow PEP 8 conventions
@@ -446,7 +446,7 @@ or for sub-documents:
 - **{NN}**: Sequential number (01-99, then 100+)
 - **{YY}**: Sub-document number (01-99, then 100+) - optional
 - **{descriptive_slug}**: Lowercase, underscores, describes content
-- **{ext}**: File extension (.md, .yaml, .feature)
+- **{ext}**: File extension (.md, .yaml)
 
 #### Examples
 ```
@@ -456,7 +456,6 @@ CTR-012_data_service_api.md
 CTR-012_data_service_api.yaml  (dual-file contract)
 SPEC-023_risk_calculator.yaml
 TASKS-023_implement_risk_calculator.md
-REQ-042.1_authentication_methods.md  (section file)
 ```
 
 ### ID Assignment Process
@@ -565,9 +564,9 @@ You MUST:
 
 ### Template Locations
 
-All artifact types have traceability matrix templates:
+All artifact types have unified YAML templates:
 ```
-ai_dev_flow/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md
+ai_dev_ssd_flow/[NN]_[TYPE]/[TYPE]-TEMPLATE.yaml
 ```
 
 ### Validation Requirements
@@ -791,28 +790,15 @@ AI Assistant **SHOULD** target these sizes:
 | SPEC | 15-40KB | 100KB | Complete technical spec |
 | TASKS | 5-15KB | 30KB | Implementation steps |
 
-### When to Split Documents
+### Document Size Policy
 
-AI Assistant **MUST** split documents when:
+All SDD documents are **monolithic** (single self-contained file) up to 50,000 tokens. If a document exceeds 50,000 tokens, create a **new document of the same type** with its own scope. Do NOT split into sectioned files.
 
-1. **Single file exceeds 20,000 tokens** - Hard limit
-2. **REQ contains multiple concepts** - Split into one REQ per concept
-3. **SPEC covers multiple independent modules** - Create one SPEC per module
-4. **ADR documents multiple decisions** - Create one ADR per decision
+AI Assistant **MUST** create separate documents when:
 
-### Splitting Strategy
-
-Use sub-document numbering:
-
-```
-Original: REQ-042_authentication.md (too large, multiple concepts)
-
-Split into:
-REQ-042.1_authentication_methods.md
-REQ-042.2_password_policies.md
-REQ-042.3_mfa_requirements.md
-REQ-042.4_session_management.md
-```
+1. **REQ contains multiple concepts** — one REQ per atomic concept
+2. **SPEC covers multiple independent modules** — one SPEC per module
+3. **ADR documents multiple decisions** — one ADR per decision
 
 ---
 
@@ -853,8 +839,8 @@ class PositionLimiter:
     """
     resource limit enforcement per [REQ-023](../docs/07_REQ/risk/REQ-023_resource_limit.md).
 
-    Architecture: [ADR-008](../docs/05_ADR/ADR-008_realtime_enforcement/ADR-008.0_realtime_enforcement_index.md) - Real-time enforcement
-    Acceptance Tests: [BDD-015](../docs/04_BDD/BDD-015_resource_limits/BDD-015.1_resource_limits.feature)
+    Architecture: [ADR-008](../docs/05_ADR/ADR-008_realtime_enforcement.md) - Real-time enforcement
+    Acceptance Tests: [BDD-015](../docs/04_BDD/BDD-015_resource_limits.yaml)
     """
 
     def enforce_limit(self, position: Position) -> EnforcementResult:
