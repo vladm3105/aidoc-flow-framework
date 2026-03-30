@@ -46,7 +46,7 @@ flowchart LR
 
 | SYS ID | Title | System Category | Status | Related ADR | Requirements | Last Updated |
 |--------|-------|-----------------|--------|-------------|--------------|--------------|
-| [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13T00:00:00 |
+| [SYS-TEMPLATE.yaml](./SYS-TEMPLATE.yaml) | Template (default) | Reference | Reference | - | - | 2026-03-29 |
 
 ## Planned
 
@@ -85,7 +85,7 @@ When creating a new SYS document:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md \
+   # Generate via MCP: sdd_create with doc_type=sys, layer=06_SYS
       docs/06_SYS/SYS-NN_system_area.md
    ```
 
@@ -180,7 +180,7 @@ When creating a new SYS document:
 
 ## Related Documents
 
-- **Template**: [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md)
+- **Template**: [SYS-TEMPLATE.yaml](./SYS-TEMPLATE.yaml)
 - **README**: [README.md](./README.md) - Learn about SYS purpose and structure
 - **Traceability Matrix**: [SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

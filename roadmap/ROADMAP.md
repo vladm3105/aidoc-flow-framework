@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.6.0 |
-| Latest Release | 0.6.0 (ADR template unification — 5 layers complete) |
-| Next Minor | 0.7.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.7.0 |
+| Latest Release | 0.7.0 (SYS template unification — 6 layers, C4 Component level) |
+| Next Minor | 0.8.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,14 +13,13 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 ──► v0.6.0 (Current) ──► v0.7.0 ──► v1.0.0
-  │           │           │           │           │           │                     │           │
-  │           │           │           │           │           │                     │           └─► Multi-MCP
-  │           │           │           │           │           │                     └─► API executors
-  │           │           │           │           │           └─► ADR unification (5 layers complete)
-  │           │           │           │           └─► BDD template unification
-  │           │           │           └─► EARS template unification
-  │           │           └─► PRD template unification + C4 model mapping
+v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (Current) ──► v0.8.0 ──► v1.0.0
+  │           │             │            │           │                     │           │
+  │           │             │            │           │                     │           └─► Multi-MCP
+  │           │             │            │           │                     └─► API executors
+  │           │             │            │           └─► SYS unification (6 layers, C4 Component)
+  │           │             │            └─► ADR unification (decision bridge)
+  │           │             └─► PRD + EARS + BDD unification + C4 mapping
   │           └─► BRD unification (v0.2.0) + mcp_sdd naming (v0.2.1)
   └─► MCP transport layer: 19 tools, CLI executor registry, pipeline orchestration
 ```
@@ -29,7 +28,7 @@ v0.1.0 ──► v0.2.x ──► v0.3.0 ──► v0.4.0 ──► v0.5.0 ─�
 
 ## Planned Releases
 
-### v0.7.0 - API Executors and Progress Notifications
+### v0.8.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -64,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.7.0 (2026-03-29)
+
+SYS template unification. First C4 Component level layer. Consolidated 6 SYS files into `SYS-TEMPLATE.yaml` (437 lines, 12 sections + glossary). Six quality attribute categories with measurable metrics. Diagram tags: c4-l3, dfd-l3. See changelog/CHANGELOG_v0.7.0.md.
 
 ### v0.6.0 (2026-03-29)
 

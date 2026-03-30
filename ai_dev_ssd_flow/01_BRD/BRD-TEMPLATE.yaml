@@ -880,7 +880,7 @@ traceability:
       description: "Architecture Decision Records — resolves topics from Section 8"
     - type: SYS
       layer: 6
-      description: "System Requirements — detailed quality attributes from Section 9"
+      description: "System Requirements — system structure, interfaces, quality attributes"
 
   cross_brd_dependencies:
     - related_brd: "[Platform BRD — e.g., BRD-01]"
