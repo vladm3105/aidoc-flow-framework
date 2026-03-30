@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.7.0 |
-| Latest Release | 0.7.0 (SYS template unification — 6 layers, C4 Component level) |
-| Next Minor | 0.8.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.8.0 |
+| Latest Release | 0.8.0 (REQ template unification — 7 layers, all mcp_sdd templates unified) |
+| Next Minor | 0.9.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -28,7 +28,7 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 
 ## Planned Releases
 
-### v0.8.0 - API Executors and Progress Notifications
+### v0.9.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.8.0 (2026-03-29)
+
+REQ template unification. All 7 mcp_sdd templates now unified YAML — no `*-MVP-TEMPLATE.*` files remain. Atomic single-testable-concept requirement principle. See changelog/CHANGELOG_v0.8.0.md.
 
 ### v0.7.0 (2026-03-29)
 
