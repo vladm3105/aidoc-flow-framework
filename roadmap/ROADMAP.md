@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.11.0 |
-| Latest Release | 0.11.0 (TSPEC template unification — 10 layers complete) |
-| Next Minor | 0.12.0 (TASKS layer unification — final layer) |
+| Current Version | 0.12.0 |
+| Latest Release | 0.12.0 (TASKS template unification — ALL 11 LAYERS COMPLETE) |
+| Next Minor | 0.13.0 (IMPLEMENTATION_PLAN modernization) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.12.0 (2026-03-30)
+
+TASKS template unification — FINAL LAYER. All 11 SDD layers unified. Session handoff protocol for stateless MCP calls. Full 10-layer upstream chain verification. 11 unified YAML templates in mcp_sdd. See changelog/CHANGELOG_v0.12.0.md.
 
 ### v0.11.0 (2026-03-30)
 

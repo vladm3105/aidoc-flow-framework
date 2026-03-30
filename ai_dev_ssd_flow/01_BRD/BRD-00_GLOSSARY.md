@@ -130,6 +130,7 @@ Standard abbreviations used across BRD framework.
 | SME | Subject Matter Expert | Role |
 | SPEC | Technical Specification | SDD Framework |
 | SYS | System Requirements | SDD Framework |
+| TASKS | AI Implementation Guide (code-generation bridge) | SDD Framework |
 | TDD | Test-Driven Development | Testing |
 | TSPEC | Test Specification | SDD Framework |
 | UAT | User Acceptance Testing | Testing |
