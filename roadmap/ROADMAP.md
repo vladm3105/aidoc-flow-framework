@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.9.0 |
-| Latest Release | 0.9.0 (CTR template unification — 8 layers complete) |
-| Next Minor | 0.10.0 (API executors via LiteLLM, MCP progress notifications) |
+| Current Version | 0.10.0 |
+| Latest Release | 0.10.0 (SPEC template unification — C4 Code level, 9 layers complete) |
+| Next Minor | 0.11.0 (API executors via LiteLLM, MCP progress notifications) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -28,7 +28,7 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 
 ## Planned Releases
 
-### v0.10.0 - API Executors and Progress Notifications
+### v0.11.0 - API Executors and Progress Notifications
 
 | Field | Value |
 | --- | --- |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.10.0 (2026-03-29)
+
+SPEC template unification. C4 Code level complete — all four C4 levels unified. SPEC orchestrator routes to 5 subtypes (CSPEC, DSPEC, UXSPEC, RISKSPEC, PROCSPEC). See changelog/CHANGELOG_v0.10.0.md.
 
 ### v0.9.0 (2026-03-29)
 
