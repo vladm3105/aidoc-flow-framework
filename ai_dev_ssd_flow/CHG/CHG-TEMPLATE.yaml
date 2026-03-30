@@ -1,0 +1,221 @@
+# =============================================================================
+#  CHG-TEMPLATE.yaml — Unified Change Management Template
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Purpose: Governance overlay for changes to SDD artifacts across all layers
+#  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts
+#
+#  REPLACES: (archived to CHG_v1_archive/)
+#    CHG-TEMPLATE.md, CHG-MVP-TEMPLATE.md, CHG_MVP_SCHEMA.yaml,
+#    CHG_MVP_CREATION_RULES.md, sources/, workflows/, scripts/,
+#    CHANGE_CLASSIFICATION_GUIDE.md, CHANGE_MANAGEMENT_GUIDE.md
+#
+#  ACTIVE COMPANION FILES (NOT in this template):
+#    gates/GATE-01_BUSINESS_PRODUCT.md     — business/product gate
+#    gates/GATE-05_ARCHITECTURE_CONTRACT.md — architecture/contract gate
+#    gates/GATE-09_DESIGN_TEST.md          — design/test gate
+#    gates/GATE-12_IMPLEMENTATION.md       — implementation gate
+#    templates/GATE_APPROVAL_FORM.md       — gate approval companion
+#    templates/POST_MORTEM-TEMPLATE.md     — emergency post-mortem companion
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+# =============================================================================
+
+id: CHG-NN
+title: "[Change Title]"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance  # NOT a lifecycle artifact — governance overlay
+  last_updated: "2026-03-30"
+
+  change_level:
+    _guidance: |
+      Change classification determines the process:
+
+      | Level | Scope | Gate Required | Process |
+      | L1    | Typo, formatting, clarification | None — direct commit | Fix → commit → done |
+      | L2    | Section update, requirement refinement | Peer review | Assess impact → update → verify |
+      | L3    | Cross-layer change, new requirements | Formal gate (GATE-01/05/09/12) | Full CHG process |
+      | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document → post-mortem within 48h |
+
+    value: L2  # L1 | L2 | L3 | Emergency
+
+  change_source:
+    _guidance: |
+      Where the change originates determines the entry gate:
+
+      | Source     | Description | Entry Gate | Affected Layers |
+      | Upstream   | BRD/PRD change cascading down | GATE-01 | PRD→EARS→BDD→ADR→SYS→REQ→CTR→SPEC→TSPEC→TASKS |
+      | Midstream  | ADR/SYS change affecting neighbors | GATE-05 | ADR↔SYS↔REQ, CTR↔SPEC |
+      | Downstream | SPEC/TASKS change propagating up | GATE-09 | SPEC→REQ→SYS (impact assessment required) |
+      | External   | Regulatory, vendor, market change | GATE-01 | Varies — full impact assessment |
+      | Feedback   | Production feedback, user issues | GATE-12 | TASKS→SPEC→TSPEC (bug fixes, improvements) |
+
+      Workflow per source:
+        1. Classify change (L1/L2/L3)
+        2. Route to entry gate based on source
+        3. Assess impact on affected layers
+        4. Update affected artifacts
+        5. Verify changes pass gate criteria
+        6. Record change in CHG document
+
+    value: null  # upstream | midstream | downstream | external | feedback
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-NN"
+  status: Proposed  # Proposed | In Review | Approved | Implemented | Rejected | Rolled Back
+  change_level: L2  # L1 | L2 | L3 | Emergency
+  change_source: null  # upstream | midstream | downstream | external | feedback
+  entry_gate: null  # GATE-01 | GATE-05 | GATE-09 | GATE-12 | None (L1)
+  author: "[Author Name]"
+  date_proposed: "YYYY-MM-DDTHH:MM:SS"
+  date_approved: null
+  date_implemented: null
+  supersedes: []  # List of artifact IDs this change supersedes
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  _guidance: "What changed, why, and business justification."
+  what: |
+    [Concise description of the change]
+  why: |
+    [Business/technical justification — why this change is needed]
+  trigger: |
+    [What triggered this change — feedback, requirement, incident, etc.]
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  _guidance: |
+    Identify ALL affected layers and artifacts. For L3/Emergency changes,
+    trace the full impact chain through the SDD workflow.
+
+  _antipatterns:
+    - "FAIL: changing SPEC without checking upstream REQ/SYS impact"
+    - "FAIL: changing BRD without cascading to PRD/EARS/BDD"
+    - "FAIL: missing downstream impact from upstream change"
+
+  affected_layers:
+    - layer: "[Layer name — e.g., PRD]"
+      artifacts: ["[PRD-01]"]
+      impact: "[What changes in this artifact]"
+
+  cascade_direction: null  # upstream→downstream | downstream→upstream | lateral
+
+  risk_level: Medium  # Low | Medium | High | Critical
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  _guidance: "Steps taken to implement the change. List every artifact modified."
+  steps:
+    - step: "[Step 1 — what was modified]"
+      artifact: "[Artifact ID]"
+      status: Completed  # Pending | In Progress | Completed
+
+  artifacts_modified:
+    - id: "[Artifact ID]"
+      file: "[File path]"
+      change_type: "modified"  # created | modified | deleted | superseded
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  _guidance: "How the change was validated. Must cover affected layers."
+  checks:
+    - check: "[Validation performed]"
+      result: Pass  # Pass | Fail | Pending
+      method: "[How verified — test, review, mcp_sdd tool]"
+
+# =============================================================================
+# Section 6: Gate Approval (L3 only)
+# =============================================================================
+
+gate_approval:
+  _guidance: |
+    Required for L3 changes only. Reference the gate definition in gates/ directory.
+    Use templates/GATE_APPROVAL_FORM.md as companion document.
+    L1/L2 changes: set to null.
+
+  gate: null  # GATE-01 | GATE-05 | GATE-09 | GATE-12
+  approver: null
+  approval_date: null
+  conditions: []  # Any conditions attached to approval
+
+# =============================================================================
+# Section 7: Rollback Plan (L2/L3)
+# =============================================================================
+
+rollback_plan:
+  _guidance: |
+    Required for L2 and L3 changes. How to reverse if the change fails.
+    L1 changes: set to null.
+
+  strategy: null  # revert-commit | restore-backup | manual-fix
+  steps: []
+  estimated_effort: null
+
+# =============================================================================
+# Section 8: Emergency Change (conditional)
+# =============================================================================
+
+emergency_change:
+  _guidance: |
+    CONDITIONAL — only populated when change_level is Emergency.
+    Emergency bypass skips normal gate process for critical production issues.
+
+    Requirements:
+      - Unique ID format: CHG-EMG-{YYYYMMDD-HHMM}
+      - Post-mortem MANDATORY within 48 hours (use templates/POST_MORTEM-TEMPLATE.md)
+      - Post-hoc gate approval required after fix deployed
+      - All normal CHG sections still required (filled retroactively if needed)
+
+  emergency_id: null  # CHG-EMG-YYYYMMDD-HHMM
+  incident_severity: null  # P0 | P1
+  fix_deployed: null  # YYYY-MM-DDTHH:MM:SS
+  post_mortem_due: null  # fix_deployed + 48 hours
+  post_mortem_completed: false
+  post_hoc_gate: null  # Gate approval after the fact
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  terms:
+    - term: CHG
+      definition: "Change Record — governance document for SDD artifact modifications"
+    - term: L1
+      definition: "Trivial change — typo, formatting, clarification (no gate)"
+    - term: L2
+      definition: "Minor change — section update, refinement (peer review)"
+    - term: L3
+      definition: "Major change — cross-layer, new requirements (formal gate)"
+    - term: Emergency
+      definition: "Critical production fix — bypass normal process, post-mortem within 48h"
+    - term: Gate
+      definition: "Approval checkpoint — GATE-01 (business), GATE-05 (architecture), GATE-09 (design), GATE-12 (implementation)"
+
+# =============================================================================
+# End of CHG-TEMPLATE.yaml
+# =============================================================================

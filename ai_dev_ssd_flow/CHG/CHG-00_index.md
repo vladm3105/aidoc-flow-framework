@@ -32,15 +32,10 @@ Document Organization
 
 Templates
 
-- [CHG-MVP-TEMPLATE.md](./CHG-MVP-TEMPLATE.md): Minimal viable CHG template (default)
-- [CHG-TEMPLATE.md](./CHG-TEMPLATE.md): Full CHG template
-- [CHG_MVP_CREATION_RULES.md](./CHG_MVP_CREATION_RULES.md): Creation rules for CHG documents
-- [CHG_MVP_SCHEMA.yaml](./CHG_MVP_SCHEMA.yaml): Schema validation for CHG documents
-
-Guides
-
-- [CHANGE_MANAGEMENT_GUIDE.md](./CHANGE_MANAGEMENT_GUIDE.md): Comprehensive change management guide
-- [CHANGE_CLASSIFICATION_GUIDE.md](./CHANGE_CLASSIFICATION_GUIDE.md): Change classification reference
+- [CHG-TEMPLATE.yaml](./CHG-TEMPLATE.yaml): Unified template (all change levels L1/L2/L3/Emergency)
+- [gates/](./gates/): Gate definitions (GATE-01, 05, 09, 12)
+- [templates/GATE_APPROVAL_FORM.md](./templates/GATE_APPROVAL_FORM.md): Gate approval companion
+- [templates/POST_MORTEM-TEMPLATE.md](./templates/POST_MORTEM-TEMPLATE.md): Emergency post-mortem
 
 Gates
 
