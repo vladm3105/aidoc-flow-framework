@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.4 |
+| Version | 1.5 |
 | Date | 2026-03-29 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
@@ -44,8 +44,8 @@ This flow runs once per project to create the project-specific UCX scaffold that
 **Rules**:
 - Existing files are never overwritten (idempotent).
 - Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
-- Templates matching `*-TEMPLATE.*` and schemas matching `*_MVP_SCHEMA.yaml` are copied from layer directories.
-- Both unified naming (`BRD-TEMPLATE.yaml`) and legacy naming (`PRD-MVP-TEMPLATE.md`) are supported. Unified name takes precedence when both exist.
+- Templates matching `*-TEMPLATE.*` are copied from layer directories.
+- All 7 core layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ) use unified YAML naming (`{TYPE}-TEMPLATE.yaml`). Legacy `*-MVP-TEMPLATE.*` naming is supported via fallback for layers not yet migrated (CTR, SPEC, TSPEC, TASKS).
 
 ---
 
@@ -61,7 +61,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | --- | --- |
 | `creation_prompt.md` | Assembled prompt ready for LLM input |
 | `creation_sidecar.json` | Metadata: persona, doc type, layer assets used, template source |
-| Layer asset files | MVP template, schema, and any project-tuned template bundled into the prompt |
+| Layer asset files | Unified YAML template, schema, and any project-tuned template bundled into the prompt |
 
 **Rules**:
 - Loads project-tuned template: tries `TYPE-TEMPLATE.yaml`, then `TYPE-TEMPLATE.md`, then `TYPE-MVP-TEMPLATE.md` from `docs/UCX/templates/`. Falls back to layer template from `docs/UCX/templates/layers/NN_TYPE/`.
