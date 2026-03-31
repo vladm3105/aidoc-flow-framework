@@ -107,22 +107,22 @@ custom_fields:
 ### Upstream References
 
 #### Business Requirements (@brd)
-- @brd: BRD.01.01.01 (Platform Architecture & Technology Stack)
+- @brd: BRD.01.ae5c (Platform Architecture & Technology Stack)
   - section 5.2.3: Real-time data streaming requirements
   - Establishes need for persistent connections
 
 #### Product Requirements (@prd)
-- @prd: PRD.03.01.01 (Unified [PRODUCT_NAME] Product Definition)
+- @prd: PRD.03.4782 (Unified [PRODUCT_NAME] Product Definition)
   - section 4.1: Live quote updates with <500ms latency
   - Drives WebSocket choice over polling
 
 #### EARS (@ears) — Event-Action-Response-State (Engineering Requirements)
-- @ears: EARS.02.24.01 (Exchange Integration Requirements)
-  - EARS.02.24.03: WHEN connection lost THEN system SHALL reconnect WITHIN 5 seconds
+- @ears: EARS.02.646e (Exchange Integration Requirements)
+  - EARS.02.1bf1: WHEN connection lost THEN system SHALL reconnect WITHIN 5 seconds
   - Direct source for this requirement
 
 #### Acceptance Criteria (@bdd)
-- @bdd: BDD.01.13.01 (Quote Display Acceptance Criteria)
+- @bdd: BDD.01.c284 (Quote Display Acceptance Criteria)
   - Scenario: Reconnection after network interruption
   - Defines expected user experience
 
@@ -132,8 +132,8 @@ custom_fields:
   - Provides architectural context
 
 #### System Requirements (@sys)
-- @sys: SYS.01.25.01 ([PRODUCT_NAME] System Requirements)
-  - SYS.01.25.12: Connection resilience requirements
+- @sys: SYS.01.731c ([PRODUCT_NAME] System Requirements)
+  - SYS.01.a01f: Connection resilience requirements
   - System-level performance constraints
 
 ### Downstream References

@@ -91,13 +91,13 @@ TASKS-23_implement_risk_calculator.md
 | Reference Type | Notation | Format | Example | Use For |
 |----------------|----------|--------|---------|---------|
 | **Document** | Dash | `TYPE-NN` | `ADR-33` | Whole document/file |
-| **Element** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific item within document |
+| **Element** | Dot | `TYPE.NN.TT.SS` | `BRD.07.eb7f` | Specific item within document |
 
 **Which uses which?**
 - **Dash** (document-level): ADR, SPEC, CTR
 - **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, TASKS
 
-**Common mistakes**: `@brd: BRD-07` [FAIL] → `@brd: BRD.07.01.01`  | `@adr: ADR.33.10.01` [FAIL] → `@adr: ADR-33` 
+**Common mistakes**: `@brd: BRD-07` [FAIL] → `@brd: BRD.07.eb7f`  | `@adr: ADR.33.22e3` [FAIL] → `@adr: ADR-33` 
 
 ### General Utility Documents (`{DOC_TYPE}-00_*`)
 - Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
@@ -498,9 +498,9 @@ docs/04_BDD/
 parent_doc: BDD-02         # Parent BDD suite
 index: BDD-02.0_index.md   # Index file reference
 upstream:
-  brd: BRD.02.03.14        # Upstream traceability
-  prd: PRD.02.05.14
-  ears: EARS.02.14.01
+  brd: BRD.02.96ef        # Upstream traceability
+  prd: PRD.02.ac41
+  ears: EARS.02.5fb1
 ```
 
 ### Cross-Doc BDD Link Format

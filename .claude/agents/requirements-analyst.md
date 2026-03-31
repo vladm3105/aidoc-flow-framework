@@ -81,7 +81,7 @@ Source: [Upstream artifact reference]
 **Upstream Traceability**:
 | REQ ID | BRD Source | PRD Feature | EARS Reference |
 |--------|------------|-------------|----------------|
-| REQ-001 | BRD.01.01.10 | PRD.01.07.03 | EARS.01.24.02 |
+| REQ-001 | BRD.01.603c | PRD.01.5d9d | EARS.01.3209 |
 
 **Downstream Traceability**:
 | REQ ID | SPEC Implementation | Test Coverage | Code References |
@@ -217,12 +217,12 @@ docs/REQ/
 **Tag Verification**:
 ```bash
 # Required cumulative tags for REQ (Layer 7) - Upstream is REQUIRED
-@brd: BRD.NN.EE.SS          # Layer 1 (dot notation, e.g., BRD.01.01.15)
-@prd: PRD.NN.EE.SS          # Layer 2 (dot notation, e.g., PRD.01.07.03)
-@ears: EARS.NN.EE.SS        # Layer 3 (dot notation, e.g., EARS.01.24.02)
-@bdd: BDD.NN.EE.SS          # Layer 4 (dot notation, e.g., BDD.01.13.01)
+@brd: BRD.NN.EE.SS          # Layer 1 (dot notation, e.g., BRD.01.110d)
+@prd: PRD.NN.EE.SS          # Layer 2 (dot notation, e.g., PRD.01.5d9d)
+@ears: EARS.NN.EE.SS        # Layer 3 (dot notation, e.g., EARS.01.3209)
+@bdd: BDD.NN.EE.SS          # Layer 4 (dot notation, e.g., BDD.01.c284)
 @adr: ADR-NNN               # Layer 5 (dash notation)
-@sys: SYS.NN.EE.SS          # Layer 6 (dot notation, e.g., SYS.01.25.01)
+@sys: SYS.NN.EE.SS          # Layer 6 (dot notation, e.g., SYS.01.731c)
 ```
 
 **Link Check**:
@@ -255,9 +255,9 @@ docs/REQ/
    **Then** [expected result]
 
 ## Traceability
-@brd: BRD.01.01.15
-@prd: PRD.01.07.03
-@ears: EARS.01.24.02
+@brd: BRD.01.110d
+@prd: PRD.01.5d9d
+@ears: EARS.01.3209
 
 ## Implementation Notes
 [Technical considerations for SPEC development]

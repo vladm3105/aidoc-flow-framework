@@ -249,8 +249,8 @@ fix_action:
     ## Traces
 
     ### Upstream
-    - @brd: BRD.01.02.03 (Scalability requirement)
-    - @brd: BRD.01.02.04 (Reliability requirement)
+    - @brd: BRD.01.3df9 (Scalability requirement)
+    - @brd: BRD.01.7ce7 (Reliability requirement)
     - @bdd: Feature: System handles peak load
 
     ### Downstream

@@ -86,7 +86,7 @@ Every finding MUST include:
 
 Example:
 ```
-| R1 | P0 | BRD-01.6_functional_requirements.md | 6.1 (BRD.01.01.07) | Add: "All SAR narratives drafted by AI agents MUST be reviewed and submitted by a licensed Compliance Officer within 24 hours" | Auditor |
+| R1 | P0 | BRD-01.6_functional_requirements.md | 6.1 (BRD.01.357a) | Add: "All SAR narratives drafted by AI agents MUST be reviewed and submitted by a licensed Compliance Officer within 24 hours" | Auditor |
 ```
 
 ### Priority Classification (Conservative)

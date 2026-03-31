@@ -146,7 +146,7 @@ element_type_codes:
   73: "rollback"
 
 element_id_format: "PROCSPEC.{DOC}.{TYPE}.{SEQ}"
-element_id_example: "PROCSPEC.01.70.01"
+element_id_example: "PROCSPEC.01.7bee"
 
 # =============================================================================
 # Process Step Schema

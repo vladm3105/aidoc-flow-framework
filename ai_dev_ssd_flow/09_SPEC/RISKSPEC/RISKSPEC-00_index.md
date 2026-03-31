@@ -51,10 +51,10 @@ flowchart LR
 
 | Code | Type | Description | Example |
 |------|------|-------------|---------|
-| 65 | risk | Risk identification | `RISKSPEC.01.65.01` |
-| 66 | control | Control measure | `RISKSPEC.01.66.01` |
-| 67 | mitigation | Mitigation strategy | `RISKSPEC.01.67.01` |
-| 68 | assessment | Impact assessment | `RISKSPEC.01.68.01` |
+| 65 | risk | Risk identification | `RISKSPEC.01.6887` |
+| 66 | control | Control measure | `RISKSPEC.01.3246` |
+| 67 | mitigation | Mitigation strategy | `RISKSPEC.01.ec1f` |
+| 68 | assessment | Impact assessment | `RISKSPEC.01.cc56` |
 
 ## Quality Gate: RISK-Ready Score
 

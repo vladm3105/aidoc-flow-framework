@@ -65,10 +65,10 @@ PROCSPEC.{DOC}.{TYPE}.{SEQ}
 
 | Code | Type | Example |
 |------|------|---------|
-| 70 | step | PROCSPEC.01.70.01 |
-| 71 | decision | PROCSPEC.01.71.01 |
-| 72 | escalation | PROCSPEC.01.72.01 |
-| 73 | rollback | PROCSPEC.01.73.01 |
+| 70 | step | PROCSPEC.01.7bee |
+| 71 | decision | PROCSPEC.01.2bf4 |
+| 72 | escalation | PROCSPEC.01.dd48 |
+| 73 | rollback | PROCSPEC.01.fd41 |
 
 ## Process Types
 

@@ -520,16 +520,16 @@ Every document **MUST** include section 7 with:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| `@brd: BRD.01.01.01` | Business Requirements | Risk management objectives |
-| `@prd: PRD.02.01.01` | Product Requirements | resource limit feature |
+| `@brd: BRD.01.ae5c` | Business Requirements | Risk management objectives |
+| `@prd: PRD.02.52a5` | Product Requirements | resource limit feature |
 | `@adr: ADR-008` | Architecture Decision | Real-time limit enforcement |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | `@spec: SPEC-023` | Technical Specification | Implementation spec |
-| `@tasks: TASKS.23.29.01` | Implementation Tasks | AI generation tasks |
-| `@bdd: BDD.15.13.01` | BDD Scenarios | Acceptance tests |
+| `@tasks: TASKS.23.e8a1` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD.15.1cf6` | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
 - **REQ-03**: resource limit enforcement requirement

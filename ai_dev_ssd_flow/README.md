@@ -137,7 +137,7 @@ All SDD documents are **monolithic** (single self-contained file) up to **50,000
 | Purpose | Format | Example | Use |
 |---------|--------|---------|-----|
 | **Document reference** | `TYPE-NN` (dash) | `ADR-01`, `BRD-07` | Whole document |
-| **Element reference** | `TYPE.NN.TT.SS` (dots) | `BRD.07.01.01` | Specific element within document |
+| **Element reference** | `TYPE.NN.TT.SS` (dots) | `BRD.07.eb7f` | Specific element within document |
 
 ### File Naming
 

@@ -63,10 +63,10 @@ UXSPEC.{DOC}.{TYPE}.{SEQ}
 
 | Code | Type | Example |
 |------|------|---------|
-| 60 | flow | UXSPEC.01.60.01 |
-| 61 | screen | UXSPEC.01.61.01 |
-| 62 | component | UXSPEC.01.62.01 |
-| 63 | interaction | UXSPEC.01.63.01 |
+| 60 | flow | UXSPEC.01.c890 |
+| 61 | screen | UXSPEC.01.f2ae |
+| 62 | component | UXSPEC.01.bf46 |
+| 63 | interaction | UXSPEC.01.fb37 |
 
 ## CTR Requirement
 

@@ -148,7 +148,7 @@ element_type_codes:
   58: "reference"
 
 element_id_format: "DSPEC.{DOC}.{TYPE}.{SEQ}"
-element_id_example: "DSPEC.01.55.01"
+element_id_example: "DSPEC.01.0764"
 
 # =============================================================================
 # Validation Rules

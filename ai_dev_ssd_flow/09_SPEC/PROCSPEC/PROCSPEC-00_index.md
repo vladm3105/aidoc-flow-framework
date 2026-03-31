@@ -51,10 +51,10 @@ flowchart LR
 
 | Code | Type | Description | Example |
 |------|------|-------------|---------|
-| 70 | step | Process step | `PROCSPEC.01.70.01` |
-| 71 | decision | Decision point | `PROCSPEC.01.71.01` |
-| 72 | escalation | Escalation procedure | `PROCSPEC.01.72.01` |
-| 73 | rollback | Rollback procedure | `PROCSPEC.01.73.01` |
+| 70 | step | Process step | `PROCSPEC.01.7bee` |
+| 71 | decision | Decision point | `PROCSPEC.01.2bf4` |
+| 72 | escalation | Escalation procedure | `PROCSPEC.01.dd48` |
+| 73 | rollback | Rollback procedure | `PROCSPEC.01.fd41` |
 
 ## Quality Gate: PROC-Ready Score
 

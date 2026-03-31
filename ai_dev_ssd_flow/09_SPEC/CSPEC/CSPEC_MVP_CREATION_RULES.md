@@ -66,11 +66,11 @@ CSPEC.{DOC}.{TYPE}.{SEQ}
 
 | Code | Type | Example |
 |------|------|---------|
-| 50 | interface | CSPEC.01.50.01 |
-| 51 | method | CSPEC.01.51.01 |
-| 52 | model | CSPEC.01.52.01 |
-| 53 | error | CSPEC.01.53.01 |
-| 54 | config | CSPEC.01.54.01 |
+| 50 | interface | CSPEC.01.cea3 |
+| 51 | method | CSPEC.01.2dae |
+| 52 | model | CSPEC.01.dbb9 |
+| 53 | error | CSPEC.01.a5ee |
+| 54 | config | CSPEC.01.41bb |
 
 ## CTR Requirement
 

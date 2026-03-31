@@ -531,9 +531,9 @@ tasks:
     description: |
       Create function to check current spend against configured thresholds.
     traceability:
-      brd: "BRD-01:BRD.01.02.01"
-      prd: "PRD-01:PRD.01.04.02"
-      ears: "EARS-01:EARS.01.03.01"
+      brd: "BRD-01:BRD.01.7499"
+      prd: "PRD-01:PRD.01.3955"
+      ears: "EARS-01:EARS.01.3b4f"
       spec: "SPEC-01"
     acceptance_criteria:
       - "Threshold check returns boolean within 100ms"
@@ -762,7 +762,7 @@ This example shows how a new feature flows through the hybrid model.
 ```markdown
 # In BRD-01_cost_monitoring.md, Section 3.2
 
-## BRD.01.02.05 Budget Alerting
+## BRD.01.d26e Budget Alerting
 The system shall notify stakeholders when spending approaches or exceeds budget thresholds.
 
 - Threshold levels: 50%, 80%, 100%, 120%
@@ -775,7 +775,7 @@ The system shall notify stakeholders when spending approaches or exceeds budget 
 ```markdown
 # PRD-01_cost_monitoring.md, Section 5
 
-## PRD.01.05.01 Budget Alert Notifications
+## PRD.01.b9a0 Budget Alert Notifications
 
 **User Story**: As a FinOps Manager, I want to receive email alerts when cloud spend reaches 80% of my budget so that I can take corrective action before overspending.
 
@@ -790,7 +790,7 @@ The system shall notify stakeholders when spending approaches or exceeds budget 
 ```markdown
 # EARS-01_cost_monitoring.md
 
-## EARS.01.03.01 Budget Threshold Alert
+## EARS.01.3b4f Budget Threshold Alert
 
 **Requirement**:
 WHEN the calculated spend percentage exceeds a configured threshold,
@@ -813,9 +813,9 @@ Feature: Budget Alert Notifications
   I want budget threshold alerts
   So that I can prevent overspending
 
-  @brd: BRD-01:BRD.01.02.05
-  @prd: PRD-01:PRD.01.05.01
-  @ears: EARS-01:EARS.01.03.01
+  @brd: BRD-01:BRD.01.d26e
+  @prd: PRD-01:PRD.01.b9a0
+  @ears: EARS-01:EARS.01.3b4f
 
   Scenario: Email sent when 80% threshold exceeded
     Given a budget of $10,000 for project "web-app"
@@ -835,16 +835,16 @@ Feature: Budget Alert Notifications
 ```markdown
 # REQ-05_budget_alerts/REQ-05_budget_alerts.md
 
-## REQ.05.01.01 Threshold Detection
+## REQ.05.f03e Threshold Detection
 
 **Requirement**: The budget monitoring service shall calculate spend percentage after each cost update and compare against configured thresholds.
 
 **Traceability**:
-- @brd: BRD-01:BRD.01.02.05
-- @prd: PRD-01:PRD.01.05.01
-- @ears: EARS-01:EARS.01.03.01
-- @bdd: BDD-01:BDD.01.01.01
-- @sys: SYS-01:SYS.01.03.01
+- @brd: BRD-01:BRD.01.d26e
+- @prd: PRD-01:PRD.01.b9a0
+- @ears: EARS-01:EARS.01.3b4f
+- @bdd: BDD-01:BDD.01.4127
+- @sys: SYS-01:SYS.01.e77b
 
 **Acceptance Criteria**:
 - Calculation accuracy: within 0.1% of actual
@@ -861,10 +861,10 @@ title: Budget Alert System
 version: 1.0.0
 
 traceability:
-  brd: BRD-01:BRD.01.02.05
-  prd: PRD-01:PRD.01.05.01
-  ears: EARS-01:EARS.01.03.01
-  req: REQ-05:REQ.05.01.01
+  brd: BRD-01:BRD.01.d26e
+  prd: PRD-01:PRD.01.b9a0
+  ears: EARS-01:EARS.01.3b4f
+  req: REQ-05:REQ.05.f03e
 
 components:
   - name: ThresholdChecker
@@ -908,8 +908,8 @@ tasks:
   - id: TASKS-05.01.01
     title: "Implement ThresholdChecker class"
     traceability:
-      brd: "BRD-01:BRD.01.02.05"
-      prd: "PRD-01:PRD.01.05.01"
+      brd: "BRD-01:BRD.01.d26e"
+      prd: "PRD-01:PRD.01.b9a0"
       spec: "SPEC-05"
     acceptance_criteria:
       - "Calculates percentage with 0.1% accuracy"
@@ -920,8 +920,8 @@ tasks:
   - id: TASKS-05.01.02
     title: "Implement AlertDispatcher class"
     traceability:
-      brd: "BRD-01:BRD.01.02.05"
-      prd: "PRD-01:PRD.01.05.01"
+      brd: "BRD-01:BRD.01.d26e"
+      prd: "PRD-01:PRD.01.b9a0"
       spec: "SPEC-05"
     acceptance_criteria:
       - "Sends email via configured SMTP"

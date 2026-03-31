@@ -101,7 +101,7 @@ Cover all categories:
 ## Traceability Tags
 
 ```gherkin
-@ears:EARS.01.EV.05 @prd:PRD.01.01.12
+@ears:EARS.01.EV.05 @prd:PRD.01.910c
 Scenario: User login with valid credentials
 ```
 

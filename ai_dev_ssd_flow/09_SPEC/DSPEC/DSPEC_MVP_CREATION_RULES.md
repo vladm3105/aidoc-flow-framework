@@ -64,10 +64,10 @@ DSPEC.{DOC}.{TYPE}.{SEQ}
 
 | Code | Type | Example |
 |------|------|---------|
-| 55 | section | DSPEC.01.55.01 |
-| 56 | topic | DSPEC.01.56.01 |
-| 57 | example | DSPEC.01.57.01 |
-| 58 | reference | DSPEC.01.58.01 |
+| 55 | section | DSPEC.01.0764 |
+| 56 | topic | DSPEC.01.731c |
+| 57 | example | DSPEC.01.f1fc |
+| 58 | reference | DSPEC.01.79c4 |
 
 ## CTR Requirement
 

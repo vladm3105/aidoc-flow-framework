@@ -146,7 +146,7 @@ element_type_codes:
   68: "assessment"
 
 element_id_format: "RISKSPEC.{DOC}.{TYPE}.{SEQ}"
-element_id_example: "RISKSPEC.01.65.01"
+element_id_example: "RISKSPEC.01.6887"
 
 # =============================================================================
 # Risk Categories

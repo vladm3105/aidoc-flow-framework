@@ -551,7 +551,7 @@ custom_fields:
 - Example (not an active link): `[@brd: BRD-NN] (./BRD-NN_example.md)`
 
 **In Document Body:**
-- Use tag notation: `@brd: BRD.22.01.01`, `@adr: ADR-02`
+- Use tag notation: `@brd: BRD.22.8e83`, `@adr: ADR-02`
 
 ### 7.3 Tag Format Convention (By Design)
 
@@ -565,7 +565,7 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 **Key Distinction**:
 
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-17.md`
+- `@brd: BRD.17.a381` → Points to element 01.01 inside document `BRD-17.md`
 
 **Why Two Systems?**
 

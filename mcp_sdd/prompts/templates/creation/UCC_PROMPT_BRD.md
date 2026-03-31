@@ -109,7 +109,7 @@ Type codes:
 - `05` = Security requirement
 - `06` = Integration requirement
 
-Example: `BRD.01.01.15` = BRD-01, functional requirement #15
+Example: `BRD.01.110d` = BRD-01, functional requirement #15
 
 ---
 
@@ -118,7 +118,7 @@ Example: `BRD.01.01.15` = BRD-01, functional requirement #15
 Use these tags for traceability:
 
 ```
-@brd: BRD.01.01.15      # Reference to this BRD element
+@brd: BRD.01.110d      # Reference to this BRD element
 @prd: PRD.01.01.XX      # Forward reference to PRD
 @adr: ADR-XX            # Architecture decision reference
 @ref: REF-XX            # Reference document

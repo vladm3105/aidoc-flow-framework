@@ -51,11 +51,11 @@ flowchart LR
 
 | Code | Type | Description | Example |
 |------|------|-------------|---------|
-| 50 | interface | API/class interface | `CSPEC.01.50.01` |
-| 51 | method | Method specification | `CSPEC.01.51.01` |
-| 52 | model | Data model | `CSPEC.01.52.01` |
-| 53 | error | Error definition | `CSPEC.01.53.01` |
-| 54 | config | Configuration | `CSPEC.01.54.01` |
+| 50 | interface | API/class interface | `CSPEC.01.cea3` |
+| 51 | method | Method specification | `CSPEC.01.2dae` |
+| 52 | model | Data model | `CSPEC.01.dbb9` |
+| 53 | error | Error definition | `CSPEC.01.a5ee` |
+| 54 | config | Configuration | `CSPEC.01.41bb` |
 
 ## Quality Gate: TASKS-Ready Score
 

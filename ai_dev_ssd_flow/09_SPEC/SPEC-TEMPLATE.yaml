@@ -683,19 +683,19 @@ architecture:
   # Element IDs - REQUIRED (Format: SPEC.{DOC}.{TYPE}.{SEQ})
   # Type Codes: 16=interface, 17=data_model, 21=validation_rule
   element_ids:
-    - id: "SPEC.01.16.01"
+    - id: "SPEC.01.baff"
       type: "interface"
       name: "POST /auth/login"
       description: "User authentication endpoint"
-    - id: "SPEC.01.16.02"
+    - id: "SPEC.01.5c4b"
       type: "interface"
       name: "POST /auth/refresh"
       description: "Token refresh endpoint"
-    - id: "SPEC.01.17.01"
+    - id: "SPEC.01.3dd9"
       type: "data_model"
       name: "TokenPayload"
       description: "JWT token payload structure"
-    - id: "SPEC.01.21.01"
+    - id: "SPEC.01.f8c8"
       type: "validation_rule"
       name: "RS256 Algorithm Enforcement"
       description: "Validate token uses RS256 algorithm"

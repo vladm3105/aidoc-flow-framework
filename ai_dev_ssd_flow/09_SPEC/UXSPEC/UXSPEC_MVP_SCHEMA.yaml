@@ -126,7 +126,7 @@ element_type_codes:
   63: "interaction"
 
 element_id_format: "UXSPEC.{DOC}.{TYPE}.{SEQ}"
-element_id_example: "UXSPEC.01.60.01"
+element_id_example: "UXSPEC.01.c890"
 
 # =============================================================================
 # UX Specification Section

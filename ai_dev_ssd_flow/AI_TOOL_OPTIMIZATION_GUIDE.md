@@ -275,7 +275,7 @@ gemini @SMALL_FILE.md "Analyze this document"
    Do NOT split into sectioned files — each document is self-contained.
    - Dash before document number, dot before section number
    - Section 0 is always required (index)
-   - Distinct from element IDs which use all dots (`SPEC.03.01.05`)
+   - Distinct from element IDs which use all dots (`SPEC.03.9d19`)
 
 3. **Create Index File (Section 0):**
    ```markdown

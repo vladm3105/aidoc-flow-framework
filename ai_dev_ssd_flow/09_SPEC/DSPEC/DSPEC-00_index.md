@@ -49,10 +49,10 @@ flowchart LR
 
 | Code | Type | Description | Example |
 |------|------|-------------|---------|
-| 55 | section | Document section | `DSPEC.01.55.01` |
-| 56 | topic | Content topic | `DSPEC.01.56.01` |
-| 57 | example | Code/usage example | `DSPEC.01.57.01` |
-| 58 | reference | External reference | `DSPEC.01.58.01` |
+| 55 | section | Document section | `DSPEC.01.0764` |
+| 56 | topic | Content topic | `DSPEC.01.731c` |
+| 57 | example | Code/usage example | `DSPEC.01.f1fc` |
+| 58 | reference | External reference | `DSPEC.01.79c4` |
 
 ## Quality Gate: DOC-Ready Score
 

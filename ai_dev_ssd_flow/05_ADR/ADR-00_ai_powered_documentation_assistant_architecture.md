@@ -57,10 +57,10 @@ Current skill-based workflow requires users to:
 
 | Requirement | Source | Description |
 |-------------|--------|-------------|
-| Automated skill selection | PRD.00.07.01 | System recommends skills based on user intent |
-| Context awareness | PRD.00.07.02 | System analyzes project structure before doc creation |
-| Quality guidance | PRD.00.07.03 | Proactive quality checks during artifact creation |
-| Workflow navigation | PRD.00.07.04 | Next-step recommendations after artifact completion |
+| Automated skill selection | PRD.00.b23e | System recommends skills based on user intent |
+| Context awareness | PRD.00.5e76 | System analyzes project structure before doc creation |
+| Quality guidance | PRD.00.26d1 | Proactive quality checks during artifact creation |
+| Workflow navigation | PRD.00.76f9 | Next-step recommendations after artifact completion |
 
 ---
 
@@ -398,7 +398,7 @@ workflow_recommendations:
 
 ```text
 @brd: null (framework-level ADR)
-@prd: PRD.00.07.01, PRD.00.07.02, PRD.00.07.03, PRD.00.07.04
+@prd: PRD.00.b23e, PRD.00.5e76, PRD.00.26d1, PRD.00.76f9
 @ears: null (to be created)
 @bdd: null (to be created)
 ```

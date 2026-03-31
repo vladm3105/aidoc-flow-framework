@@ -74,7 +74,7 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 | Purpose | Notation | Format | Example | References |
 |---------|----------|--------|---------|------------|
 | **Document Reference** | Dash | `TYPE-NN` | `ADR-01`, `BRD-07` | Whole document/file |
-| **Element Reference** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific element within document |
+| **Element Reference** | Dot | `TYPE.NN.TT.SS` | `BRD.07.eb7f` | Specific element within document |
 
 ### Document Reference (Dash Notation)
 
@@ -102,11 +102,11 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 - `SS`: Sequential number within element type
 
 **Examples**:
-- `BRD.07.01.01` → Functional Requirement #1 inside BRD-07
-- `PRD.02.09.05` → User Story #5 inside PRD-02
-- `EARS.04.25.08` → EARS Requirement #8 inside EARS-04
+- `BRD.07.eb7f` → Functional Requirement #1 inside BRD-07
+- `PRD.02.c603` → User Story #5 inside PRD-02
+- `EARS.04.3ce6` → EARS Requirement #8 inside EARS-04
 
-**Tag Usage**: `@brd: BRD.07.01.01`, `@prd: PRD.02.09.05`
+**Tag Usage**: `@brd: BRD.07.eb7f`, `@prd: PRD.02.c603`
 
 ### Which Artifacts Use Which Notation?
 
@@ -119,9 +119,9 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 
 | Incorrect | Correct | Explanation |
 |-----------|---------|-------------|
-| `@brd: BRD-07` | `@brd: BRD.07.01.01` | BRD uses element notation (dot) |
-| `@adr: ADR.33.10.01` | `@adr: ADR-33` | ADR uses document notation (dash) |
-| `BRD.7.01.01` | `BRD.07.01.01` | Element DOC_NUM must match filename digits |
+| `@brd: BRD-07` | `@brd: BRD.07.eb7f` | BRD uses element notation (dot) |
+| `@adr: ADR.33.22e3` | `@adr: ADR-33` | ADR uses document notation (dash) |
+| `BRD.7.01.01` | `BRD.07.eb7f` | Element DOC_NUM must match filename digits |
 
 ---
 
@@ -196,8 +196,8 @@ Universal Numbering Pattern (All Document Types)
     - New repositories: choose `00` or `000` and keep it consistent across types.
     - General utility files follow `{DOC_TYPE}-00_{slug}.{ext}`.
 - **Element ID DOC_NUM**: MUST match filename digit count exactly
-  - Filename `BRD-01_platform.md` → Element ID `BRD.01.01.01`
-  - Filename `ADR-100_cloud_migration.md` → Element ID `ADR.100.10.01`
+  - Filename `BRD-01_platform.md` → Element ID `BRD.01.ae5c`
+  - Filename `ADR-100_cloud_migration.md` → Element ID `ADR.100.0309`
 - **Uniqueness Rule**: Each DOC_NUM is unique within its type
   - Format: `TYPE-DOC_NUM_{slug}.md` (e.g., `BRD-01_platform.md`)
 - **Size Policy**: Documents are monolithic up to 50,000 tokens. If a document exceeds 50,000 tokens, create a new document of the same type with its own scope (e.g., BRD-02) rather than splitting BRD-01.
@@ -483,11 +483,11 @@ The framework uses two distinct ID patterns for different purposes:
 | Pattern | Format | Example | Purpose |
 |---------|--------|---------|---------|
 | **Document ID** | `TYPE-DOC_NUM` | `BRD-03` | Complete document reference |
-| **Element ID** | `TYPE.DOC_NUM.TT.SS` | `BRD.03.01.05` | Internal element (all dots, 4-segment) |
+| **Element ID** | `TYPE.DOC_NUM.TT.SS` | `BRD.03.debc` | Internal element (all dots, 4-segment) |
 
 **Key Distinction**:
 - `BRD-03` → Document reference (dash notation)
-- `BRD.03.01.05` → Element ID (all dots, 4-segment format for internal references)
+- `BRD.03.debc` → Element ID (all dots, 4-segment format for internal references)
 - Element ID DOC_NUM MUST match filename digit count (e.g., `BRD-03` → `BRD.03.xx.xx`)
 
 ### Common Confusion: When to Use Each Format
@@ -495,8 +495,8 @@ The framework uses two distinct ID patterns for different purposes:
 **Question**: "Is the 4-segment format only for external traceability references?"
 
 **Answer**: NO. The 4-segment format is used for **ALL element references**, both:
-- Internal element headings: `### BRD.01.01.05: Feature Name`
-- External traceability tags: `@brd: BRD.01.01.05`
+- Internal element headings: `### BRD.01.92d8: Feature Name`
+- External traceability tags: `@brd: BRD.01.92d8`
 
 **Rule Summary**:
 
@@ -505,7 +505,7 @@ The framework uses two distinct ID patterns for different purposes:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 | A **document file** | Dash format | `BRD-01`, `[BRD-01](../01_BRD/BRD-01.md)` |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
-| A **specific element** (requirement, feature, constraint) | 4-segment dot format | `BRD.01.01.05`, `@brd: BRD.01.01.05` |
+| A **specific element** (requirement, feature, constraint) | 4-segment dot format | `BRD.01.92d8`, `@brd: BRD.01.92d8` |
 
 **Key Insight**: The 4-segment format unifies internal and external element references to avoid confusion. Use it consistently everywhere you reference a specific element. Element ID DOC_NUM MUST match filename digit count.
 
@@ -515,16 +515,16 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 **Tag-Only Format** (Primary - Always Valid):
 ```markdown
-@brd: BRD.01.09.01
+@brd: BRD.01.a341
 ```
 
 **Hyperlinked Format** (Enhanced - Recommended for Published Docs):
 ```markdown
-[@brd: BRD.01.09.01](../../01_BRD/BRD-01_platform_architecture.md#brd010901-feature-name)
+[@brd: BRD.01.a341](../../01_BRD/BRD-01_platform_architecture.md#brd010901-feature-name)
 ```
 
 **Anchor ID Convention**: Convert element ID to lowercase, remove dots, append slug:
-- Element: `BRD.01.09.01` → Anchor: `#brd010901-feature-name`
+- Element: `BRD.01.a341` → Anchor: `#brd010901-feature-name`
 
 **Format Comparison**:
 
@@ -545,9 +545,9 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 | Reference Type | Pattern | Example |
 |----------------|---------|---------|
-| Same folder | Example only | `BRD.01.01.01 -> ./BRD-01_platform.md#brd010101` |
-| Parent folder | Example only | `BRD.01.01.01 -> ../01_BRD/BRD-01_platform.md#brd010101` |
-| Nested folder | Example only | `BRD.01.01.01 -> ../01_BRD/BRD-01_platform/BRD-01_platform.md#brd010101` |
+| Same folder | Example only | `BRD.01.ae5c -> ./BRD-01_platform.md#brd010101` |
+| Parent folder | Example only | `BRD.01.ae5c -> ../01_BRD/BRD-01_platform.md#brd010101` |
+| Nested folder | Example only | `BRD.01.ae5c -> ../01_BRD/BRD-01_platform/BRD-01_platform.md#brd010101` |
 
 **Cross-Document Links**:
 
@@ -581,7 +581,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 | Reason | Example | Recommendation |
 |--------|---------|----------------|
-| Deprecation | `EARS.04.25.008` deprecated, `009` remains | Document deprecation in revision history |
+| Deprecation | `EARS.04.1d91` deprecated, `009` remains | Document deprecation in revision history |
 | Historical removal | Requirements removed during review | Add note: "IDs 010-015 removed per review" |
 | Logical grouping | IDs 001-050 for auth, 100-150 for data | Document grouping convention |
 | Reserved ranges | IDs 900-999 reserved for future use | Document reservation in index |
@@ -719,9 +719,9 @@ BDD Tag Examples
 # Internal element references (dot format for element IDs)
 # Format: TYPE.DOC_NUM.ELEM_TYPE.SEQ
 # DOC_NUM in element ID MUST match filename digit count
-@brd: BRD.01.01.05    # BRD doc 01, Functional Requirement #5
-@brd: BRD.01.03.02    # BRD doc 01, Constraint #2
-@prd: PRD.02.07.15    # PRD doc 02, User Story #15
+@brd: BRD.01.92d8    # BRD doc 01, Functional Requirement #5
+@brd: BRD.01.fe7c    # BRD doc 01, Constraint #2
+@prd: PRD.02.1a5d    # PRD doc 02, User Story #15
 @adr: ADR-03          # ADR doc 03 (dash notation for documents)
 ```
 
@@ -841,17 +841,17 @@ Consistent across ALL document types:
 
 | ID | Length | Meaning |
 |----|--------|---------|
-| `BRD.01.01.01` | 12 | BRD #1, Functional Requirement #1 |
-| `BRD.01.03.05` | 12 | BRD #1, Constraint #5 |
-| `BRD.02.96.03` | 12 | BRD #2, Security Requirement #3 |
-| `BRD.02.91.01` | 12 | BRD #2, Performance Requirement #1 |
-| `PRD.02.07.42` | 12 | PRD #2, User Story #42 |
-| `ADR.01.10.01` | 12 | ADR #1, Decision #1 |
-| `TASKS.01.17.128` | 15 | TASKS #1, Task #128 |
-| `TASKS.01.29.03` | 14 | TASKS #1, Task Breakdown #3 |
-| `BRD.99.01.9999` | 15 | BRD #99, Functional Requirement #9999 |
-| `SPEC.01.15.03` | 13 | SPEC #1, Interface #3 |
-| `BRD.01.32.01` | 12 | BRD #1, Architecture Topic #1 (Legacy compatibility) |
+| `BRD.01.ae5c` | 12 | BRD #1, Functional Requirement #1 |
+| `BRD.01.e9cc` | 12 | BRD #1, Constraint #5 |
+| `BRD.02.dc6a` | 12 | BRD #2, Security Requirement #3 |
+| `BRD.02.d4c1` | 12 | BRD #2, Performance Requirement #1 |
+| `PRD.02.3ca9` | 12 | PRD #2, User Story #42 |
+| `ADR.01.e354` | 12 | ADR #1, Decision #1 |
+| `TASKS.01.f680` | 15 | TASKS #1, Task #128 |
+| `TASKS.01.46b8` | 14 | TASKS #1, Task Breakdown #3 |
+| `BRD.99.9999` | 15 | BRD #99, Functional Requirement #9999 |
+| `SPEC.01.588f` | 13 | SPEC #1, Interface #3 |
+| `BRD.01.88b9` | 12 | BRD #1, Architecture Topic #1 (Legacy compatibility) |
 
 ### Canonical Source-of-Truth and Compatibility Policy
 
@@ -875,28 +875,28 @@ Consistent across ALL document types:
 IDs automatically expand as needed without schema changes:
 
 ```text
-BRD.01.01.01      → Start (minimum)
-BRD.01.01.99      → Approaching 2-digit limit
-BRD.01.01.100     → Auto-expand to 3 digits
-BRD.01.01.9999    → Still valid (4 digits)
-BRD.99.99.999999  → Maximum practical scale
+BRD.01.ae5c      → Start (minimum)
+BRD.01.90db      → Approaching 2-digit limit
+BRD.01.783a     → Auto-expand to 3 digits
+BRD.01.9999    → Still valid (4 digits)
+BRD.99.999999  → Maximum practical scale
 ```
 
 ### Cross-Reference Tag Format
 
 | Tag Format | Example | Meaning |
 |------------|---------|---------|
-| `@brd: BRD.01.01.01` | BRD doc 1, FR #1 | Functional requirement reference |
-| `@prd: PRD.02.07.05` | PRD doc 2, User Story #5 | User story reference |
-| `@adr: ADR.03.10.01` | ADR doc 3, Decision #1 | Architecture decision reference |
-| `@spec: SPEC.01.15.02` | SPEC doc 1, Interface #2 | Interface specification reference |
+| `@brd: BRD.01.ae5c` | BRD doc 1, FR #1 | Functional requirement reference |
+| `@prd: PRD.02.529a` | PRD doc 2, User Story #5 | User story reference |
+| `@adr: ADR.03.257b` | ADR doc 3, Decision #1 | Architecture decision reference |
+| `@spec: SPEC.01.eeeb` | SPEC doc 1, Interface #2 | Interface specification reference |
 
 ### AI-First Design Rationale
 
 This format is optimized for AI-assisted documentation workflows:
 
 1. **Token efficiency**: 12 chars minimum vs 15+ for human-readable formats
-2. **AI translation**: Human asks "what is BRD.01.03.05?", AI responds "Constraint #5: Budget limit $50K"
+2. **AI translation**: Human asks "what is BRD.01.e9cc?", AI responds "Constraint #5: Budget limit $50K"
 3. **Single regex pattern**: `[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}` validates all types
 4. **Zero capacity planning**: Grows automatically without range management
 5. **Consistent parsing**: Same pattern across all 12+ document types
@@ -915,12 +915,12 @@ This format is optimized for AI-assisted documentation workflows:
 
 | Document Type | Heading Format | Example |
 |---------------|----------------|---------|
-| BRD | `### BRD.NN.TT.SS: Name` | `### BRD.01.01.01: Market Data Feed` |
-| PRD | `### PRD.NN.TT.SS: Name` | `### PRD.02.07.01: User Dashboard` |
-| EARS | `### EARS.NN.TT.SS: Name` | `### EARS.01.01.01: Data Validation` |
-| BDD | `### BDD.NN.TT.SS: Name` | `### BDD.01.13.01: Login Scenario` |
-| SYS | `### SYS.NN.TT.SS: Name` | `### SYS.01.01.01: API Gateway` |
-| ADR | `### ADR.NN.TT.SS: Name` | `### ADR.01.10.01: Database Selection` |
+| BRD | `### BRD.NN.TT.SS: Name` | `### BRD.01.ae5c: Market Data Feed` |
+| PRD | `### PRD.NN.TT.SS: Name` | `### PRD.02.8dcf: User Dashboard` |
+| EARS | `### EARS.NN.TT.SS: Name` | `### EARS.01.6c50: Data Validation` |
+| BDD | `### BDD.NN.TT.SS: Name` | `### BDD.01.c284: Login Scenario` |
+| SYS | `### SYS.NN.TT.SS: Name` | `### SYS.01.b4d5: API Gateway` |
+| ADR | `### ADR.NN.TT.SS: Name` | `### ADR.01.e354: Database Selection` |
 
 **Format Breakdown**:
 
@@ -931,13 +931,13 @@ This format is optimized for AI-assisted documentation workflows:
 | `.TT` | Element type code (see table above) | `.01` = Functional Requirement |
 | `.SS` | Sequential within element type | `.01` = first item of this type |
 
-**Example**: `BRD.01.03.05` = BRD document 01, Constraint (type 03), item #5
+**Example**: `BRD.01.e9cc` = BRD document 01, Constraint (type 03), item #5
 
 **Validation Regex**:
 
 ```python
 INTERNAL_HEADING_PATTERN = r'^###\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$'
-# Matches: ### BRD.01.01.01: Feature Name
+# Matches: ### BRD.01.ae5c: Feature Name
 ```
 
 **REMOVED Patterns (v3.0 - No Backward Compatibility)**:
@@ -961,8 +961,8 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 | Before (REMOVED) | After (MANDATORY) |
 |------------------|-------------------|
-| `### BRD.017.001: Feature` | `### BRD.17.01.01: Feature` |
-| `### Feature F-01: User Dashboard` | `### PRD.01.07.01: User Dashboard` |
+| `### BRD.017.001: Feature` | `### BRD.17.a381: Feature` |
+| `### Feature F-01: User Dashboard` | `### PRD.01.1dbc: User Dashboard` |
 
 ---
 
@@ -1031,7 +1031,7 @@ The following patterns are **REMOVED** and MUST NOT be used:
 **Heading Format**:
 
 ```markdown
-#### BRD.01.10.03: [Topic Name]
+#### BRD.01.fb92: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business - reference upstream requirements]
 **Business Constraints**:
@@ -1046,9 +1046,9 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 | Document | Topic # | Full ID | Meaning |
 |----------|---------|---------|---------|
-| BRD-01 | 3 | `BRD.01.10.03` | Third architecture decision topic in BRD-01 |
-| BRD-17 | 1 | `BRD.17.10.01` | First architecture decision topic in BRD-17 |
-| BRD-03 | 12 | `BRD.03.10.12` | Twelfth architecture decision topic in BRD-03 |
+| BRD-01 | 3 | `BRD.01.fb92` | Third architecture decision topic in BRD-01 |
+| BRD-17 | 1 | `BRD.17.9229` | First architecture decision topic in BRD-17 |
+| BRD-03 | 12 | `BRD.03.9e3f` | Twelfth architecture decision topic in BRD-03 |
 
 **Content Rules (Business-Only)**:
 
@@ -1082,7 +1082,7 @@ Business drivers/constraints        Technical options/criteria    Final decision
 
 ```python
 ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$'
-# Matches: ### BRD.01.10.03: ... OR #### PRD.17.10.01: ...
+# Matches: ### BRD.01.fb92: ... OR #### PRD.17.0416: ...
 # Heading level (H3-H5) varies by document section context
 ```
 
@@ -1123,13 +1123,13 @@ ID naming standards are enforced by automated validators. For the complete error
 **Mixed ID Notation** (IDPAT-E003):
 ```markdown
 [FAIL] Incorrect: BRD-01.02, PRD-001.AC.05
- Correct: BRD.01.02.01, PRD.001.06.05
+ Correct: BRD.01.7499, PRD.001.8ab9
 ```
 
 **Legacy ID Format** (IDPAT-W001):
 ```markdown
 [FAIL] Legacy: FR-001, AC-005, NFR-003
- Unified: REQ.01.01.001, REQ.01.06.005, SYS.01.02.003
+ Unified: REQ.01.6c3d, REQ.01.1678, SYS.01.0212
 ```
 
 **Forward Reference** (FWDREF-E001):

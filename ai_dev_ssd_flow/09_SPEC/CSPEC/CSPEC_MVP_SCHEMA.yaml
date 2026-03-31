@@ -142,7 +142,7 @@ element_type_codes:
   54: "config"
 
 element_id_format: "CSPEC.{DOC}.{TYPE}.{SEQ}"
-element_id_example: "CSPEC.01.50.01"
+element_id_example: "CSPEC.01.cea3"
 
 # =============================================================================
 # Validation Rules

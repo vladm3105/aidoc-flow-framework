@@ -102,7 +102,7 @@ Ensures consistent ID formats across documents.
 
 **Valid Formats**:
 - Document ID: `TYPE-NN` (e.g., `BRD-01`, `ADR-100`)
-- Element ID: `TYPE.NN.TT.SS` (e.g., `BRD.01.01.05`)
+- Element ID: `TYPE.NN.TT.SS` (e.g., `BRD.01.92d8`)
 
 **Invalid Formats**:
 - Mixed: `TYPE-NN.TT` (hyphen then dot)

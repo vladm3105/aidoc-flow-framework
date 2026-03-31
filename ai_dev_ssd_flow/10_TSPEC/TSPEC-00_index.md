@@ -87,12 +87,12 @@ Central registry for all TSPEC documents organized by test type. This index prov
 
 | Test Type | Code | Example |
 |-----------|------|---------|
-| Unit Test | 40 | `TSPEC.01.40.01` |
-| Integration Test | 41 | `TSPEC.01.41.01` |
-| Smoke Test | 42 | `TSPEC.01.42.01` |
-| Functional Test | 43 | `TSPEC.01.43.01` |
-| Performance Test | 44 | `TSPEC.01.44.01` |
-| Security Test | 45 | `TSPEC.01.45.01` |
+| Unit Test | 40 | `TSPEC.01.0f79` |
+| Integration Test | 41 | `TSPEC.01.d67b` |
+| Smoke Test | 42 | `TSPEC.01.ddad` |
+| Functional Test | 43 | `TSPEC.01.4963` |
+| Performance Test | 44 | `TSPEC.01.7d7b` |
+| Security Test | 45 | `TSPEC.01.6b8f` |
 
 ## Validation Status
 

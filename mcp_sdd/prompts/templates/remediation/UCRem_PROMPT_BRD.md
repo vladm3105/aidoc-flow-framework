@@ -372,7 +372,7 @@ When proposing fixes that add new elements:
 
 1. **Assign Element IDs** following naming standards:
    - Format: `BRD.{doc_num}.{type_code}.{seq}`
-   - Example: `BRD.01.01.15` (functional requirement #15 in BRD-01)
+   - Example: `BRD.01.110d` (functional requirement #15 in BRD-01)
 
 2. **Update Traceability** if fix introduces new requirements:
    - Note in fix that downstream PRD/EARS may need updates

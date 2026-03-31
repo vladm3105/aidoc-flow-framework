@@ -154,7 +154,7 @@ custom_fields:
   name: "Should return error for invalid input"
   type: unit
   priority: P0
-  traces: "@req: REQ.01.01.05"
+  traces: "@req: REQ.01.4de2"
 
   given:
     - "Input value is empty string"
@@ -175,8 +175,8 @@ custom_fields:
 
 | Requirement | Unit | Integration | E2E |
 |-------------|------|-------------|-----|
-| REQ.01.01.01 | UT-001, UT-002 | IT-001 | - |
-| REQ.01.01.02 | UT-003 | IT-002 | E2E-001 |
+| REQ.01.e43b | UT-001, UT-002 | IT-001 | - |
+| REQ.01.3446 | UT-003 | IT-002 | E2E-001 |
 
 ---
 

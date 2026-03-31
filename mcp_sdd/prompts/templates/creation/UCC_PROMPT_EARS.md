@@ -124,7 +124,7 @@ Every EARS requirement traces to PRD:
 EARS.01.EV.05 - Login Event
   When the user submits valid credentials, the system shall authenticate
   the user and create a session.
-  @prd: PRD.01.01.12
+  @prd: PRD.01.910c
   @bdd: BDD-01/login.feature
 ```
 

@@ -63,10 +63,10 @@ RISKSPEC.{DOC}.{TYPE}.{SEQ}
 
 | Code | Type | Example |
 |------|------|---------|
-| 65 | risk | RISKSPEC.01.65.01 |
-| 66 | control | RISKSPEC.01.66.01 |
-| 67 | mitigation | RISKSPEC.01.67.01 |
-| 68 | assessment | RISKSPEC.01.68.01 |
+| 65 | risk | RISKSPEC.01.6887 |
+| 66 | control | RISKSPEC.01.3246 |
+| 67 | mitigation | RISKSPEC.01.ec1f |
+| 68 | assessment | RISKSPEC.01.cc56 |
 
 ## CTR Requirement
 

@@ -155,7 +155,7 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 
 **CORRECT User Story Format:**
 ```markdown
-#### PRD.01.09.01: [Story Title]
+#### PRD.01.5612: [Story Title]
 
 **As a** [role],
 **I want** [capability],
@@ -185,7 +185,7 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 ### 18.1 Upstream Traceability
 
 Use 4-segment format with `@brd:` prefix:
-- **CORRECT**: `@brd: BRD.01.01.05`
+- **CORRECT**: `@brd: BRD.01.92d8`
 - **WRONG**: `@brd: BRD-01` (document-level only)
 
 ### 18.2 Architecture Decision Requirements Table

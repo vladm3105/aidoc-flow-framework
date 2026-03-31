@@ -37,7 +37,7 @@ custom_fields:
 
 > **Tag Format Note**: EARS references support two valid formats:
 > - **Document-level**: `EARS-NN` (e.g., `@ears: EARS-01`) - References entire EARS document
-> - **Element-level**: `EARS.NN.SECTION.ELEMENT` (e.g., `@ears: EARS.01.24.03`) - References specific requirement element within a section
+> - **Element-level**: `EARS.NN.SECTION.ELEMENT` (e.g., `@ears: EARS.01.05c2`) - References specific requirement element within a section
 >
 > Use document-level when referencing the overall EARS document. Use element-level for precise traceability to specific requirements within the document. The same pattern applies to other artifacts with section-based element IDs.
 
