@@ -43,12 +43,17 @@ class ExecutorConfig:
 BUILTIN_CLI_EXECUTORS: dict[str, dict] = {
     "claude": {
         "command": "claude",
-        "args": ["-p", "--output-format", "json", "--verbose"],
+        "args": [
+            "-p",
+            "--output-format", "json",
+            "--verbose",
+            "--dangerously-skip-permissions",
+        ],
         "prompt_mode": "file",
     },
     "codex": {
         "command": "codex",
-        "args": ["exec"],
+        "args": ["exec", "--full-auto"],
         "prompt_mode": "positional",
     },
     "gemini": {

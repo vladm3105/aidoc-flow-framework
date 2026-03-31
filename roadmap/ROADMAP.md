@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.12.0 |
-| Latest Release | 0.12.0 (TASKS template unification — ALL 11 LAYERS COMPLETE) |
+| Current Version | 0.12.1 |
+| Latest Release | 0.12.1 (sdd_validate_links tool, framework cleanup, executor fixes) |
 | Next Minor | 0.13.0 (IMPLEMENTATION_PLAN modernization) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.12.1 (2026-03-30)
+
+Framework cleanup + sdd_validate_links tool (20th MCP tool). Archived deprecated infrastructure (validation scripts, automation, schema docs). Fixed ~130 stale references across 30+ active docs. CLI executor configs fixed for non-interactive file writes (Claude Code, Codex). See changelog/CHANGELOG_v0.12.1.md.
 
 ### v0.12.0 (2026-03-30)
 

@@ -86,7 +86,8 @@ Use this precedence for conflict resolution:
 
 ## 7. Changelog
 
-- [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md)
+- [CHANGELOG v1.5.0](CHANGELOG/CHANGELOG_v1.5.0.md) — sdd_validate_links tool, executor write fixes
+- [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md) — initial MCP documentation layer
 
 ## 8. Roadmap
 

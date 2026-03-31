@@ -6,8 +6,8 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.4.0 |
-| Latest Release | 1.4.0 (MCP protocol transport layer with 19 tools and executor registry) |
+| Current Version | 1.5.0 |
+| Latest Release | 1.5.0 (sdd_validate_links tool, executor write fixes, 20 tools) |
 | Previous Release | 1.3.0 (diagnostics and governance refinement) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
@@ -128,7 +128,7 @@ Delivered scope:
 
 - MCP server entry point (`mcp_sdd/src/mcp_server/server.py`) over stdio transport, server name `sdd-lifecycle`
 - Executor package (`mcp_sdd/src/mcp_server/executor/`): open registry with CLI and API type system, async subprocess runner, LiteLLM API stub, type-based dispatcher
-- Tool registry (`mcp_sdd/src/mcp_server/tool_registry.py`): 19 tools (11 deterministic, 2 orchestration, 6 LLM-dependent)
+- Tool registry (`mcp_sdd/src/mcp_server/tool_registry.py`): 20 tools (12 deterministic, 2 orchestration, 6 LLM-dependent)
 - Packaging: `mcp_sdd/pyproject.toml` with `mcp-sdd` console script
 - Registration: `.mcp.json` for Claude Code auto-discovery
 - Tests: 33 new tests in `mcp_sdd/tests/unit/test_server.py`, all passing
@@ -138,6 +138,29 @@ References:
 
 - plans/PLAN-001_mcp_protocol_transport_layer.md (repo-level plan)
 - changelog/CHANGELOG_v0.1.0.md (repo-level changelog)
+
+---
+
+### v1.5.0 - Link Validation Tool and Executor Write Fixes
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-03-30 |
+| Scope | New sdd_validate_links tool and CLI executor write-mode fixes |
+
+Delivered scope:
+
+- New tool: `sdd_validate_links` (20th tool, 12th deterministic) — validates markdown links and anchor references
+- Executor fixes: Claude Code `--dangerously-skip-permissions`, Codex `--full-auto` for non-interactive file writes
+- Tool count: 19 → 20 (12 deterministic, 2 orchestration, 6 LLM-dependent)
+- 18 new unit tests (186 total, 0 regressions)
+- Standalone `scripts/validate_doc_links.py` replaced by MCP tool
+
+References:
+
+- changelog/CHANGELOG_v0.12.1.md (repo-level changelog)
 
 ---
 
