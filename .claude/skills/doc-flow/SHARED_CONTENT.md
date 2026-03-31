@@ -173,17 +173,17 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 ### Tag Format
 
 ```markdown
-@brd: BRD.09.01.15, BRD.09.01.901
-@prd: PRD.16.07.03
-@ears: EARS.12.24.02, EARS.12.24.01
-@bdd: BDD.15.13.01
+@brd: BRD.09.0115, BRD.09.01901
+@prd: PRD.16.0703
+@ears: EARS.12.2402, EARS.12.2401
+@bdd: BDD.15.1301
 @adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02  # Optional - include only if exists
+@sys: SYS.12.2501, SYS.12.2502
+@req: REQ.45.2601
+@impl: IMPL.03.2802  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
-@tasks: TASKS.15.29.01
+@tasks: TASKS.15.2901
 ```
 
 ### Feature-Level Traceability Tags
@@ -192,16 +192,16 @@ Internal feature IDs within documents use simple sequential numbering:
 
 | Context | Format | Example | Cross-Reference |
 |---------|--------|---------|-----------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.22.07.15` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.01.01.30` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.06.24.03` |
-| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.08.25.01` |
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.22.0715` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.01.0130` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.06.2403` |
+| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.08.2501` |
 
 **Global Uniqueness**: Document ID + Feature ID creates globally unique references.
 
 ### Format Rules
 
-- Format: Use unified 4-segment `TYPE.NN.TT.SS` format (e.g., `BRD.01.01.30`)
+- Format: Use unified 3-segment `TYPE.NN.xxxx` format (e.g., `BRD.01.0130`)
 - Multiple refs: Comma-separated list within same tag line
 - Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
 - SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
@@ -210,7 +210,7 @@ Internal feature IDs within documents use simple sequential numbering:
 ### Validation Rules
 
 1. **No gaps**: Each layer must include ALL upstream tags from previous layers
-2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.TT.SS` pattern (4-segment format)
+2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.xxxx` pattern (3-segment format)
 3. **Valid references**: All tagged document IDs must exist and be reachable
 4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
 5. **SPEC exception**: SPEC uses YAML format, not markdown tags
@@ -226,14 +226,14 @@ version: "1.0.0"
 
 # Cumulative Tagging Hierarchy (Layer 10)
 cumulative_tags:
-  brd: "BRD.09.01.15, BRD.09.01.906"
-  prd: "PRD.16.07.03"
-  ears: "EARS.12.24.02, EARS.12.24.01"
-  bdd: "BDD.15.13.01"
+  brd: "BRD.09.0115, BRD.09.01906"
+  prd: "PRD.16.0703"
+  ears: "EARS.12.2402, EARS.12.2401"
+  bdd: "BDD.15.1301"
   adr: "ADR-033"
-  sys: "SYS.12.25.901, SYS.12.25.921"
-  req: "REQ.45.26.01, REQ.45.26.02"
-  impl: "IMPL.03.28.02"  # Optional
+  sys: "SYS.12.25901, SYS.12.25921"
+  req: "REQ.45.2601, REQ.45.2602"
+  impl: "IMPL.03.2802"  # Optional
   ctr: "CTR-005"  # Optional
 ```
 
@@ -363,7 +363,7 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 
 2. UPDATE downstream artifact
    └─ Add upstream traceability tags:
-      @brd: BRD.01.01.15
+      @brd: BRD.01.0115
 
 3. UPDATE upstream artifact (CRITICAL - often missed)
    └─ Add downstream reference in Traceability section:
@@ -403,7 +403,7 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 ## Traceability
 - Upstream Sources: [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
 - Downstream Artifacts: (none yet)
-@brd: BRD.01.01.15
+@brd: BRD.01.0115
 
 # In BRD-01 (update existing upstream artifact):
 ## Traceability

@@ -173,14 +173,14 @@ SPEC-Ready Score = (Completed Sections / 12) * 100%
 
 ### 4. Element ID Format (MANDATORY)
 
-**Pattern**: `REQ.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `REQ.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Functional Requirement | 01 | REQ.02.01.01 |
-| Dependency | 05 | REQ.02.05.01 |
-| Acceptance Criteria | 06 | REQ.02.06.01 |
-| Atomic Requirement | 27 | REQ.02.27.01 |
+| Functional Requirement | 01 | REQ.02.0101 |
+| Dependency | 05 | REQ.02.0501 |
+| Acceptance Criteria | 06 | REQ.02.0601 |
+| Atomic Requirement | 27 | REQ.02.2701 |
 
 **REMOVED PATTERNS** - Do NOT use:
 - `AC-XXX` - Use `REQ.NN.06.SS`
@@ -215,11 +215,11 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` -> Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.03` -> Points to element 01.03 inside document `BRD-017.md`
+- `@brd: BRD.17.0103` -> Points to element 01.03 inside document `BRD-017.md`
 
 ## Cumulative Tagging Requirements
 
@@ -233,12 +233,12 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.01.01, SYS.01.02.07
+@sys: SYS.01.0101, SYS.01.0207
 ```
 
 **Upstream Sources**:
@@ -542,7 +542,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 5. **Missing cumulative tags**: Layer 7 must include all 6 upstream tags
 6. **Vague acceptance criteria**: Must be measurable and testable
 7. **Hardcoded values**: Use @threshold references, not magic numbers
-8. **Legacy element IDs**: Use `REQ.NN.TT.SS` format, not AC-XXX or FR-XXX
+8. **Legacy element IDs**: Use `REQ.NN.xxxx` format, not AC-XXX or FR-XXX
 9. **Status/score mismatch**: Status must match the LOWER of the two scores
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
@@ -581,7 +581,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -646,7 +646,7 @@ For supplementary documentation needs, create:
 
 **Quality Gate**: SPEC-Ready Score >=90% AND IMPL-Ready Score >=90%
 
-**Element ID Format**: `REQ.NN.TT.SS`
+**Element ID Format**: `REQ.NN.xxxx`
 - Functional Requirement = 01
 - Dependency = 05
 - Acceptance Criteria = 06

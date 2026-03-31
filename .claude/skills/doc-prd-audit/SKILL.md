@@ -268,7 +268,7 @@ Forbidden tag patterns:
 | Author | Product Manager/Owner Name | MANDATORY |
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
-| BRD Reference | `@brd: BRD.NN.TT.SS` format | MANDATORY |
+| BRD Reference | `@brd: BRD.NN.xxxx` format | MANDATORY |
 | SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 | EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 
@@ -293,10 +293,10 @@ Both scores must be present and meet thresholds for downstream artifact generati
 **Layer 2 Cumulative Tags (Required)**:
 
 ```markdown
-@brd: BRD.NN.TT.SS
+@brd: BRD.NN.xxxx
 ```
 
-**Unified Element ID Format**: `PRD.NN.TT.SS`
+**Unified Element ID Format**: `PRD.NN.xxxx`
 
 ### 7. Structure Compliance (Nested Folder Rule)
 
@@ -452,7 +452,7 @@ Validates PRD requirements accurately reflect BRD source.
 | PRD-E011 | ERROR | Missing Functional Requirements (Section 8) |
 | PRD-E012 | ERROR | Missing Traceability (Section 16) |
 | PRD-E013 | ERROR | Missing upstream @brd tag |
-| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.TT.SS) |
+| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.xxxx) |
 | PRD-E015 | ERROR | SYS-Ready Score missing or below threshold |
 | PRD-E016 | ERROR | EARS-Ready Score missing or below threshold |
 | PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |

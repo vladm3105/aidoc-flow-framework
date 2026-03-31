@@ -86,6 +86,7 @@ Use this precedence for conflict resolution:
 
 ## 7. Changelog
 
+- [CHANGELOG v1.6.0](CHANGELOG/CHANGELOG_v1.6.0.md) — 3-segment element IDs, template migration
 - [CHANGELOG v1.5.0](CHANGELOG/CHANGELOG_v1.5.0.md) — sdd_validate_links tool, executor write fixes
 - [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md) — initial MCP documentation layer
 

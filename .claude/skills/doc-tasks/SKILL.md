@@ -84,12 +84,12 @@ Use `doc-tasks` when:
 
 ## Element ID Format (MANDATORY)
 
-**Pattern**: `TASKS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `TASKS.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Task | 18 | TASKS.02.18.01 |
-| Task Item | 30 | TASKS.02.30.01 |
+| Task | 18 | TASKS.02.1801 |
+| Task Item | 30 | TASKS.02.3001 |
 
 > **REMOVED PATTERNS** - Do NOT use:
 > - `TASK-XXX` → Use `TASKS.NN.18.SS`
@@ -97,7 +97,7 @@ Use `doc-tasks` when:
 >
 > **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
-**Fix**: Replace `### TASK-01: Implementation` with `### TASKS.02.18.01: Implementation`
+**Fix**: Replace `### TASK-01: Implementation` with `### TASKS.02.1801: Implementation`
 
 ## TASKS-Specific Guidance
 
@@ -111,7 +111,7 @@ Use `doc-tasks` when:
 
 ### Phase 1: Project Setup (3 tasks)
 
-**TASKS.01.18.01: Initialize Project Structure**
+**TASKS.01.1801: Initialize Project Structure**
 - **Action**: Create directory structure per SPEC architecture
 - **Files to Create**:
   - `src/controllers/data_validation_controller.py`
@@ -123,20 +123,20 @@ Use `doc-tasks` when:
 - **SPEC Reference**: SPEC-01:implementation.modules
 - **Success Criteria**: All directories and empty files created
 
-**TASKS.01.18.02: Set Up Development Environment**
+**TASKS.01.1802: Set Up Development Environment**
 - **Action**: Configure Python environment and dependencies
 - **Files to Create**: `requirements.txt`, `pyproject.toml`
-- **Dependencies**: TASKS.01.18.01
+- **Dependencies**: TASKS.01.1801
 - **Estimated Effort**: 1 hour
 - **SPEC Reference**: SPEC-01:deployment.container
 - **Success Criteria**: `pip install -r requirements.txt` succeeds
 
 ### Phase 2: Data Models (2 tasks)
 
-**TASKS.01.18.03: Implement DataRequest Model**
+**TASKS.01.1803: Implement DataRequest Model**
 - **Action**: Create Pydantic model per CTR-01 schema
 - **Files to Modify**: `src/models/data_request.py`
-- **Dependencies**: TASKS.01.18.02
+- **Dependencies**: TASKS.01.1802
 - **Estimated Effort**: 1 hour
 - **SPEC Reference**: SPEC-01:interfaces.data_models
 - **CTR Reference**: CTR-01#/components/schemas/DataRequest
@@ -160,7 +160,7 @@ Use `doc-tasks` when:
 
 **Format**: `TASKS.{SPEC-ID}.18.{SEQ}` (unified element ID format)
 
-**Example**: `TASKS.01.18.03` means:
+**Example**: `TASKS.01.1803` means:
 - SPEC-01 (from SPEC-01_data_validation.yaml)
 - Element type 18 (Task)
 - Sequence 03 (third task in breakdown)
@@ -206,13 +206,13 @@ Use `doc-tasks` when:
 
 ```mermaid
 graph TD
-    T001[TASKS.01.18.01: Project Setup]
-    T002[TASKS.01.18.02: Dev Environment]
-    T003[TASKS.01.18.03: DataRequest Model]
-    T004[TASKS.01.18.04: ValidationResponse Model]
-    T005[TASKS.01.18.05: Data Repository]
-    T006[TASKS.01.18.06: Data Validator Service]
-    T007[TASKS.01.18.07: API Controller]
+    T001[TASKS.01.1801: Project Setup]
+    T002[TASKS.01.1802: Dev Environment]
+    T003[TASKS.01.1803: DataRequest Model]
+    T004[TASKS.01.1804: ValidationResponse Model]
+    T005[TASKS.01.1805: Data Repository]
+    T006[TASKS.01.1806: Data Validator Service]
+    T007[TASKS.01.1807: API Controller]
 
     T001 --> T002
     T002 --> T003
@@ -302,21 +302,21 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
 
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
+- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.01.01` ✅
+- `@brd: BRD.17.0101` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
@@ -330,13 +330,13 @@ Examples:
 
 | Artifact | Element Type | Code | Example |
 |----------|--------------|------|---------|
-| BRD | Business Requirement | 01 | BRD.01.01.03 |
-| PRD | Product Feature | 07 | PRD.01.07.02 |
-| EARS | Statement | 25 | EARS.01.25.01 |
-| BDD | Scenario | 14 | BDD.01.14.01 |
-| SYS | System Requirement | 26 | SYS.01.26.01 |
-| REQ | Atomic Requirement | 27 | REQ.01.27.01 |
-| IMPL | Implementation Phase | 29 | IMPL.01.29.01 |
+| BRD | Business Requirement | 01 | BRD.01.0103 |
+| PRD | Product Feature | 07 | PRD.01.0702 |
+| EARS | Statement | 25 | EARS.01.2501 |
+| BDD | Scenario | 14 | BDD.01.1401 |
+| SYS | System Requirement | 26 | SYS.01.2601 |
+| REQ | Atomic Requirement | 27 | REQ.01.2701 |
+| IMPL | Implementation Phase | 29 | IMPL.01.2901 |
 
 **Minimum (IMPL and CTR skipped)**:
 ```markdown
@@ -344,26 +344,26 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.01
+@sys: SYS.01.2601
+@req: REQ.01.2701
 @spec: SPEC-01
 ```
 
 **Maximum (IMPL, CTR, and ICON included)**:
 ```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.01
-@impl: IMPL.01.29.01
+@sys: SYS.01.2601
+@req: REQ.01.2701
+@impl: IMPL.01.2901
 @ctr: CTR-01
 @spec: SPEC-01
 @icon: TASKS-01:DataValidator  # if providing or consuming implementation contracts
@@ -405,7 +405,7 @@ Examples:
 | CHECK 5 | Section 8 (Implementation Contracts) exists with 8.1/8.2/8.3 subsection |
 | CHECK 6 | All 8 required traceability tags present |
 | CHECK 7 | Parent SPEC reference valid and file exists |
-| CHECK 8 | Element ID format compliance (TASKS.NN.TT.SS) |
+| CHECK 8 | Element ID format compliance (TASKS.NN.xxxx) |
 
 ### Tier 2: Warnings
 
@@ -591,7 +591,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer TASKS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

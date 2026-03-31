@@ -73,7 +73,7 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (SPEC.NN.TT.SS, codes 15, 16, 17, 21, 28) | All Phases |
+| `doc-naming` | Element ID format (SPEC.NN.xxxx, codes 15, 16, 17, 21, 28) | All Phases |
 | `doc-req-validator` | Validate REQ SPEC-Ready score | Phase 2 |
 | `doc-spec` | SPEC creation rules, YAML format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
@@ -261,25 +261,25 @@ metadata:
 traceability:
   upstream_sources:
     business_requirements:
-      - id: "BRD.01.01.03"
-        link: "../01_BRD/BRD-01.md#BRD.01.01.03"
+      - id: "BRD.01.0103"
+        link: "../01_BRD/BRD-01.md#BRD.01.0103"
         relationship: "Business driver"
     product_requirements:
-      - id: "PRD.01.07.02"
-        link: "../02_PRD/PRD-01.md#PRD.01.07.02"
+      - id: "PRD.01.0702"
+        link: "../02_PRD/PRD-01.md#PRD.01.0702"
     atomic_requirements:
       - id: "REQ-01.01.01"
         # CRITICAL: Use nested REQ path format
         link: "../07_REQ/SYS-01_iam/REQ-01.01_jwt_authentication.md"
   cumulative_tags:
-    brd: ["BRD.01.01.03"]
-    prd: ["PRD.01.07.02"]
-    ears: ["EARS.01.25.01"]
-    bdd: ["BDD.01.14.01"]
+    brd: ["BRD.01.0103"]
+    prd: ["PRD.01.0702"]
+    ears: ["EARS.01.2501"]
+    bdd: ["BDD.01.1401"]
     adr: ["ADR-01"]
-    sys: ["SYS.01.26.01"]
-    req: ["REQ.01.27.01"]
-    ctr: ["CTR.01.16.01"]
+    sys: ["SYS.01.2601"]
+    req: ["REQ.01.2701"]
+    ctr: ["CTR.01.1601"]
     threshold: ["perf.auth.p95_latency", "sla.uptime.target"]  # 9th layer
 
 interfaces:
@@ -324,7 +324,7 @@ interfaces:
           output: { success: boolean }
 
 data_models:
-  - id: SPEC.01.17.01
+  - id: SPEC.01.1701
     name: "RequestModel"
     json_schema:
       type: object
@@ -336,7 +336,7 @@ data_models:
           id: str
 
 validation_rules:
-  - id: SPEC.01.21.01
+  - id: SPEC.01.2101
     rule: "Email format validation"
     implementation: "Use EmailStr from pydantic"
 
@@ -534,7 +534,7 @@ After passing the fix cycle:
    - classes defined with constructors and methods
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use SPEC.NN.TT.SS format
+   - All IDs use SPEC.NN.xxxx format
    - Element type codes valid for SPEC (15, 16, 17, 21, 28)
    - No legacy patterns
 
@@ -568,25 +568,25 @@ After passing the fix cycle:
 
 | Code | Element Type | Example |
 |------|--------------|---------|
-| 15 | Step | SPEC.01.15.01 |
-| 16 | Interface | SPEC.01.16.01 |
-| 17 | Data Model | SPEC.01.17.01 |
-| 21 | Validation Rule | SPEC.01.21.01 |
-| 28 | Specification Element | SPEC.01.28.01 |
+| 15 | Step | SPEC.01.1501 |
+| 16 | Interface | SPEC.01.1601 |
+| 17 | Data Model | SPEC.01.1701 |
+| 21 | Validation Rule | SPEC.01.2101 |
+| 28 | Specification Element | SPEC.01.2801 |
 
 ---
 
 ## Cumulative Tags (7-8 Required)
 
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
-@ears: EARS.NN.TT.SS
-@bdd: BDD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
+@ears: EARS.NN.xxxx
+@bdd: BDD.NN.xxxx
 @adr: ADR-NN
-@sys: SYS.NN.TT.SS
-@req: REQ.NN.TT.SS
-@ctr: CTR.NN.TT.SS  # Optional
+@sys: SYS.NN.xxxx
+@req: REQ.NN.xxxx
+@ctr: CTR.NN.xxxx  # Optional
 ```
 
 ---
@@ -917,7 +917,7 @@ Auto-repair existing SPEC documents while preserving manual content.
 |---|-------|----------|-------------|
 | 1 | Missing req_implementations | root | Added template section |
 | 2 | Hardcoded latency | performance.latency_targets | Replaced with @threshold:perf.api.p95 |
-| 3 | Missing @ctr tag | traceability | Added @ctr: CTR.01.16.01 |
+| 3 | Missing @ctr tag | traceability | Added @ctr: CTR.01.1601 |
 | ... | ... | ... | ... |
 
 ## Files Modified

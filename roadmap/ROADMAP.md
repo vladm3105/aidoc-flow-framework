@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.12.1 |
-| Latest Release | 0.12.1 (sdd_validate_links tool, framework cleanup, executor fixes) |
+| Current Version | 0.13.0 |
+| Latest Release | 0.13.0 (3-segment element IDs, AUTOPILOT archived) |
 | Next Minor | 0.13.0 (IMPLEMENTATION_PLAN modernization) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
@@ -63,6 +63,10 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+### v0.13.0 (2026-03-31)
+
+3-segment element IDs: TYPE.NN.hash replaces TYPE.NN.TT.hash. Element type codes deprecated (YAML keys provide context). All templates, prompts, skills, and framework docs updated. AUTOPILOT archived. See changelog/CHANGELOG_v0.13.0.md.
 
 ### v0.12.1 (2026-03-30)
 

@@ -1023,7 +1023,7 @@ custom_fields:
 | TC-003 | Missing steps table | Added table structure |
 | TC-005 | Malformed expected results | Repaired section format |
 | TC-007 | Missing SPEC reference | Added @spec placeholder |
-| TC-009 | Invalid element ID | Converted to TSPEC.01.40.09 |
+| TC-009 | Invalid element ID | Converted to TSPEC.01.4009 |
 
 ## Fixes Applied
 

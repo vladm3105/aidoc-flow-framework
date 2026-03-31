@@ -277,7 +277,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `ADR.NN.TT.SS` format
+- Element IDs use `ADR.NN.xxxx` format
 - Element type codes valid for ADR (13, 14, 15, 16)
 - ADR numbering sequential
 

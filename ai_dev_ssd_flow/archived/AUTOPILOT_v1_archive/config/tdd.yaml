@@ -1,0 +1,213 @@
+# MVP Autopilot TDD Configuration
+# Version: 1.0
+# Last Updated: 2026-02-06
+#
+# Use with: python mvp_autopilot.py --config config/tdd.yaml
+# Or:       python mvp_autopilot.py --tdd-mode
+#
+# Reference: IPLAN-001 TDD Autopilot Integration
+
+# =============================================================================
+# TDD Mode Configuration
+# =============================================================================
+
+# TDD is enabled in this profile
+tdd:
+  enabled: true
+  generate_tests: true
+  validate_failing: true
+  validate_passing: true
+  update_tags: true
+  test_framework: pytest
+  coverage_threshold: 90
+  test_output_dirs:
+    unit: tests/unit/
+    integration: tests/integration/
+    smoke: tests/smoke/
+    functional: tests/functional/
+
+# =============================================================================
+# TDD Awareness (Phase 2 Scripts)
+# =============================================================================
+
+tdd_awareness:
+  enabled: true
+
+  # Step 1: Analyze existing tests
+  analyze_tests:
+    enabled: true
+    script: "AUTOPILOT/scripts/analyze_test_requirements.py"
+    args:
+      test_dir: "tests/unit/"
+      output: "tmp/test_requirements.json"
+      pattern: "test_*.py"
+
+  # Step 2: Generate test-aware SPEC
+  generate_spec:
+    enabled: true
+    script: "AUTOPILOT/scripts/generate_spec_tdd.py"
+    args:
+      test_requirements: "tmp/test_requirements.json"
+      output: "ai_dev_flow/09_SPEC/"
+      req_dir: "ai_dev_flow/07_REQ/"
+
+  # Step 3: Update traceability tags
+  update_traceability:
+    enabled: true
+    script: "AUTOPILOT/scripts/update_test_traceability.py"
+    args:
+      test_dir: "tests/unit/"
+      spec_dir: "ai_dev_flow/09_SPEC/"
+      tasks_dir: "ai_dev_flow/11_TASKS/"
+      code_dir: "src/"
+
+# =============================================================================
+# TDD Workflow Stages
+# =============================================================================
+
+tdd_stages:
+  # Stage 1: Analyze existing tests (if any)
+  - name: analyze_tests
+    action: run_script
+    script: "AUTOPILOT/scripts/analyze_test_requirements.py"
+    args: "--test-dir tests/unit/ --output tmp/test_requirements.json"
+    on_success: continue
+    on_failure: skip  # No tests yet is OK
+
+  # Stage 2: Generate standard artifacts (L1-L9)
+  - name: generate_artifacts
+    action: autopilot
+    layers: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
+    auto_approve_threshold: 90
+
+  # Stage 3: Generate TSPEC (L10)
+  - name: generate_tspec
+    action: autopilot
+    layers: [TSPEC]
+    test_types: [UTEST, ITEST, STEST, FTEST]
+
+  # Stage 4: Generate unit tests from TSPEC
+  - name: generate_unit_tests
+    action: test_automation
+    command: "generate-unit"
+    args: "--input ai_dev_flow/10_TSPEC/UTEST/ --output tests/unit/ --framework pytest"
+    expected_status: fail
+    skip_quality_gate: true
+    traceability_mode: pending
+
+  # Stage 5: Generate TASKS (L11)
+  - name: generate_tasks
+    action: autopilot
+    layers: [TASKS]
+
+  # Stage 6: Validate TDD Red State
+  - name: validate_red_state
+    action: run_tests
+    test_dir: tests/unit/
+    expected_exit_code: 1  # Tests must fail
+    on_success: error  # If tests pass, something is wrong
+    on_failure: continue
+
+  # Stage 7: Generate Code (when --up-to CODE)
+  - name: generate_code
+    action: code_generation
+    source: [SPEC, TASKS]
+    output: src/
+    conditional: true
+
+  # Stage 8: Validate TDD Green State
+  - name: validate_green_state
+    action: run_tests
+    test_dir: tests/unit/
+    expected_exit_code: 0  # Tests must pass
+    coverage_check: true
+    coverage_threshold: 90
+    conditional: true  # Only after code generation
+
+  # Stage 9: Update Traceability Tags
+  - name: update_traceability
+    action: run_script
+    script: "AUTOPILOT/scripts/update_test_traceability.py"
+    args: "--test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/ --tasks-dir ai_dev_flow/11_TASKS/ --code-dir src/"
+    conditional: true  # Only after code generation
+
+  # Stage 10: Validate No PENDING Tags
+  - name: validate_traceability
+    action: run_script
+    script: "AUTOPILOT/scripts/update_test_traceability.py"
+    args: "--test-dir tests/unit/ --validate-only"
+    expected_exit_code: 0
+    on_failure: warning
+
+# =============================================================================
+# Quality Gates for TDD Mode
+# =============================================================================
+
+quality_gates:
+  auto_approve_threshold: 90
+  strict_threshold: 95
+
+  tdd_specific:
+    # Tests must fail before code (Red State)
+    red_state:
+      required: true
+      description: "Unit tests must fail before code generation"
+
+    # Tests must pass after code (Green State)
+    green_state:
+      required: true
+      description: "Unit tests must pass after code generation"
+      coverage_threshold: 90
+
+    # No PENDING traceability tags
+    traceability:
+      pending_tags_allowed: false
+      validate_on_complete: true
+
+# =============================================================================
+# Entry/Exit Points for TDD Mode
+# =============================================================================
+
+entry_exit_points:
+  # TDD mode can start from any layer
+  valid_entries:
+    - L1_BRD
+    - L7_REQ
+    - L9_SPEC
+
+  # TDD mode should complete through CODE
+  valid_exits:
+    - L11_TASKS
+    - CODE
+
+# =============================================================================
+# Reporting
+# =============================================================================
+
+reporting:
+  format: markdown
+  include_tdd_summary: true
+  tdd_summary_sections:
+    - test_generation_stats
+    - red_state_validation
+    - green_state_validation
+    - coverage_report
+    - traceability_status
+
+# =============================================================================
+# Troubleshooting
+# =============================================================================
+
+troubleshooting:
+  common_issues:
+    - symptom: "Tests pass before code generation"
+      likely_cause: "Stub implementations in test file"
+      resolution: "Remove stub implementations, use NotImplementedError"
+
+    - symptom: "PENDING tags not resolved"
+      likely_cause: "Missing SPEC/TASKS/Code files"
+      resolution: "Ensure all artifacts are generated before running update_traceability"
+
+    - symptom: "Coverage below threshold"
+      likely_cause: "Missing test cases or untested code paths"
+      resolution: "Review TSPEC coverage matrix, add missing test cases"

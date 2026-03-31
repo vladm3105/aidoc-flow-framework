@@ -265,7 +265,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `BDD.NN.TT.SS` format
+- Element IDs use `BDD.NN.xxxx` format
 - Element type codes valid for BDD (35, 36, 37)
 - No legacy patterns (SC-NNN, TC-NNN)
 

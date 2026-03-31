@@ -77,7 +77,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (REQ.NN.TT.SS), type codes 01/05/06/27 | All Phases |
+| `doc-naming` | Element ID format (REQ.NN.xxxx), type codes 01/05/06/27 | All Phases |
 | `doc-sys-validator` | Validate SYS SPEC-Ready score | Phase 2: SYS Readiness |
 | `doc-req` | REQ creation rules, REQ MVP 11-section structure, template | Phase 3: REQ Generation |
 | `quality-advisor` | Real-time quality feedback during REQ generation | Phase 3: REQ Generation |
@@ -322,18 +322,18 @@ Decompose SYS functional requirements into separate atomic REQ files.
 ```
 docs/07_REQ/REQ-01_f1_iam/
 ├── REQ-01.00_index.md                    # Index with capability matrix
-├── REQ-01.01_jwt_authentication.md       # SYS.01.01.01
-├── REQ-01.02_token_refresh_mechanism.md  # SYS.01.01.02
-├── REQ-01.03_token_revocation.md         # SYS.01.01.03
-├── REQ-01.04_session_binding.md          # SYS.01.01.04
-├── REQ-01.05_rbac_enforcement.md         # SYS.01.02.01
-├── REQ-01.06_4d_authorization_matrix.md  # SYS.01.02.02
-├── REQ-01.07_permission_inheritance.md   # SYS.01.02.03
-├── REQ-01.08_context_aware_access.md     # SYS.01.02.04
-├── REQ-01.09_mfa_integration.md          # SYS.01.03.01
-├── REQ-01.10_api_key_management.md       # SYS.01.03.02
-├── REQ-01.11_audit_logging.md            # SYS.01.04.01
-└── REQ-01.12_compliance_reporting.md     # SYS.01.04.02
+├── REQ-01.01_jwt_authentication.md       # SYS.01.0101
+├── REQ-01.02_token_refresh_mechanism.md  # SYS.01.0102
+├── REQ-01.03_token_revocation.md         # SYS.01.0103
+├── REQ-01.04_session_binding.md          # SYS.01.0104
+├── REQ-01.05_rbac_enforcement.md         # SYS.01.0201
+├── REQ-01.06_4d_authorization_matrix.md  # SYS.01.0202
+├── REQ-01.07_permission_inheritance.md   # SYS.01.0203
+├── REQ-01.08_context_aware_access.md     # SYS.01.0204
+├── REQ-01.09_mfa_integration.md          # SYS.01.0301
+├── REQ-01.10_api_key_management.md       # SYS.01.0302
+├── REQ-01.11_audit_logging.md            # SYS.01.0401
+└── REQ-01.12_compliance_reporting.md     # SYS.01.0402
 ```
 
 **Decomposition Rules**:
@@ -355,9 +355,9 @@ docs/07_REQ/REQ-01_f1_iam/
 
 | REQ ID | Capability | SYS Source | Priority | SPEC-Ready |
 |--------|------------|------------|----------|------------|
-| REQ-01.01 | JWT Authentication | SYS.01.01.01 | P1 | 94% |
-| REQ-01.02 | Token Refresh | SYS.01.01.02 | P1 | 92% |
-| REQ-01.03 | Token Revocation | SYS.01.01.03 | P1 | 91% |
+| REQ-01.01 | JWT Authentication | SYS.01.0101 | P1 | 94% |
+| REQ-01.02 | Token Refresh | SYS.01.0102 | P1 | 92% |
+| REQ-01.03 | Token Revocation | SYS.01.0103 | P1 | 91% |
 | ... | ... | ... | ... | ... |
 
 ## Cross-Reference Matrix
@@ -534,11 +534,11 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    ```markdown
    | Test Case                      | Input                  | Expected Output      | Coverage     |
    |--------------------------------|------------------------|----------------------|--------------|
-   | **[Logic] Valid login**        | Valid email/password   | 200 with tokens      | REQ.01.01.01 |
-   | **[Validation] Invalid email** | "not-an-email"         | 400 INVALID_EMAIL    | REQ.01.21.01 |
-   | **[State] Locked account**     | Locked user            | 403 ACCOUNT_LOCKED   | REQ.01.27.01 |
-   | **[Edge] Rate limit boundary** | 5th attempt            | 200 OK (not blocked) | REQ.01.06.07 |
-   | **[Security] Missing token**   | No Authorization header| 401 Unauthorized     | REQ.01.02.02 |
+   | **[Logic] Valid login**        | Valid email/password   | 200 with tokens      | REQ.01.0101 |
+   | **[Validation] Invalid email** | "not-an-email"         | 400 INVALID_EMAIL    | REQ.01.2101 |
+   | **[State] Locked account**     | Locked user            | 403 ACCOUNT_LOCKED   | REQ.01.2701 |
+   | **[Edge] Rate limit boundary** | 5th attempt            | 200 OK (not blocked) | REQ.01.0607 |
+   | **[Security] Missing token**   | No Authorization header| 401 Unauthorized     | REQ.01.0202 |
    ```
 
    **Section 9: Acceptance Criteria** (ENHANCED in v2.0)
@@ -596,7 +596,7 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    - Monitor section completion as content is generated
    - Detect anti-patterns (incomplete Protocol/ABC, missing schemas)
    - Validate cumulative tagging (6 required tags for Layer 7)
-   - Check element ID format compliance (REQ.NN.TT.SS)
+   - Check element ID format compliance (REQ.NN.xxxx)
    - Validate acceptance criteria count (>=15)
    - Flag issues early to reduce post-generation rework
 
@@ -604,10 +604,10 @@ Generate REQ documents from validated SYS with real-time quality feedback.
 
    | Element Type | Code | Example |
    |--------------|------|---------|
-   | Functional Requirement | 01 | REQ.02.01.01 |
-   | Dependency | 05 | REQ.02.05.01 |
-   | Acceptance Criteria | 06 | REQ.02.06.01 |
-   | Atomic Requirement | 27 | REQ.02.27.01 |
+   | Functional Requirement | 01 | REQ.02.0101 |
+   | Dependency | 05 | REQ.02.0501 |
+   | Acceptance Criteria | 06 | REQ.02.0601 |
+   | Atomic Requirement | 27 | REQ.02.2701 |
 
 8. **Add Cumulative Traceability Tags** (6 Required):
 
@@ -615,12 +615,12 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    ## 11. Traceability
 
    **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
-   @brd: BRD.01.01.03
-   @prd: PRD.01.07.02
-   @ears: EARS.01.25.01
-   @bdd: BDD.01.14.01
+   @brd: BRD.01.0103
+   @prd: PRD.01.0702
+   @ears: EARS.01.2501
+   @bdd: BDD.01.1401
    @adr: ADR-033, ADR-045
-   @sys: SYS.01.01.01, SYS.01.02.07
+   @sys: SYS.01.0101, SYS.01.0207
    ```
 
 9. **Add Threshold References**:
@@ -669,7 +669,7 @@ python3 ai_dev_ssd_flow/07_REQ/scripts/validate_req_spec_readiness.py docs/07_RE
 | Data Schemas            | JSON Schema or Pydantic            | REQ-E011, REQ-E016    |
 | Error Handling          | Exception catalog                  | REQ-E012, REQ-E017    |
 | Acceptance Criteria     | >=15 criteria                      | REQ-E013, REQ-W002    |
-| Element ID Format       | REQ.NN.TT.SS (4-segment)           | REQ-E020              |
+| Element ID Format       | REQ.NN.xxxx (3-segment)           | REQ-E020              |
 | Cumulative Tags         | 6 tags present                     | REQ-W003              |
 | SPEC-Ready Score        | >= 90%                             | REQ-W001              |
 | IMPL-Ready Score        | >= 90%                             | REQ-W001              |
@@ -698,7 +698,7 @@ python3 ai_dev_ssd_flow/07_REQ/scripts/validate_req_spec_readiness.py docs/07_RE
 | Missing JSON Schema | Add schema template |
 | Missing Exception Catalog | Add error handling template |
 | Acceptance criteria < 15 | Add placeholder criteria |
-| Invalid element ID format | Convert to REQ.NN.TT.SS format |
+| Invalid element ID format | Convert to REQ.NN.xxxx format |
 | Missing cumulative tags | Add with placeholder references |
 | Missing SPEC-Ready Score | Calculate and insert |
 
@@ -1043,7 +1043,7 @@ flowchart TD
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
 | 1 | Missing @discoverability | REQ-01.03 | Add cross-link tags |
-| 2 | Legacy element ID | REQ-01.05:L45 | Convert AC-001 to REQ.01.06.01 |
+| 2 | Legacy element ID | REQ-01.05:L45 | Convert AC-001 to REQ.01.0601 |
 | 3 | Missing test category | REQ-01.07:AC-003 | Add [Logic] prefix |
 | ... | ... | ... | ... |
 
@@ -1063,7 +1063,7 @@ review_mode:
   checks:
     - section_completeness     # All 11 sections
     - atomic_decomposition     # File structure
-    - element_id_compliance    # REQ.NN.TT.SS format
+    - element_id_compliance    # REQ.NN.xxxx format
     - acceptance_criteria      # >= 15 count
     - cross_links              # @discoverability tags
     - cumulative_tags          # 6 upstream tags
@@ -1145,7 +1145,7 @@ Auto-repair existing REQ documents while preserving manual content.
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | REQ-01.05:L45 | Converted AC-001 → REQ.01.06.01 |
+| 1 | Legacy element ID | REQ-01.05:L45 | Converted AC-001 → REQ.01.0601 |
 | 2 | Missing @discoverability | REQ-01.03 | Added cross-links to REQ-01.01, REQ-01.11 |
 | 3 | Missing test category | REQ-01.07:AC-003 | Added [Logic] prefix |
 | 4 | Below 15 criteria | REQ-01.09 | Added 3 placeholder criteria |
@@ -1212,9 +1212,9 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    AC_XXX_to_REQ_NN_06_SS: true   # AC-001 → REQ.01.06.01
-    FR_XXX_to_REQ_NN_01_SS: true   # FR-001 → REQ.01.01.01
-    R_XXX_to_REQ_NN_27_SS: true    # R-001 → REQ.01.27.01
+    AC_XXX_to_REQ_NN_06_SS: true   # AC-001 → REQ.01.0601
+    FR_XXX_to_REQ_NN_xxxx: true   # FR-001 → REQ.01.0101
+    R_XXX_to_REQ_NN_27_SS: true    # R-001 → REQ.01.2701
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1518,7 +1518,7 @@ After autopilot completion:
 - [ ] Section 5: Error Handling has Exception Catalog
 - [ ] Section 7: Quality Attributes has @threshold references
 - [ ] Section 9: Acceptance Criteria has >= 15 measurable criteria
-- [ ] Element IDs use REQ.NN.TT.SS format (codes: 01, 05, 06, 27)
+- [ ] Element IDs use REQ.NN.xxxx format (codes: 01, 05, 06, 27)
 - [ ] No legacy ID patterns (AC-XXX, FR-XXX, R-XXX)
 - [ ] Each requirement is atomic (single responsibility)
 

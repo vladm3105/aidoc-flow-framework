@@ -493,10 +493,10 @@ Ensures traceability and cross-references are correct.
 
 ```markdown
 <!-- Before -->
-## TASKS.01.18.01: Implement Authentication Handler
+## TASKS.01.1801: Implement Authentication Handler
 
 <!-- After -->
-## TASKS.01.18.01: Implement Authentication Handler
+## TASKS.01.1801: Implement Authentication Handler
 
 @spec: [SPEC-01.auth.handler](../09_SPEC/SPEC-01.md#auth-handler)
 @tspec: [TSPEC-01.40.01](../10_TSPEC/TSPEC-01.md#tspec-01-40-01)

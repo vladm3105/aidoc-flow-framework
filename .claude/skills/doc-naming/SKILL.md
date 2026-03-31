@@ -97,7 +97,7 @@ TYPE-NN
 ### Validation Regex
 
 ```regex
-^[A-Z]{2,5}-[0-9]{2,}$
+^[A-Z]{2,8}-[0-9]{2,}$
 ```
 
 ### Examples
@@ -138,47 +138,46 @@ Reference documents use a modified pattern within parent TYPE directories:
 
 ---
 
-## 4. Element ID Format (TYPE.NN.TT.SS)
+## 4. Element ID Format (TYPE.NN.xxxx)
 
 ### Pattern
 
 ```
-{DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}
+{DOC_TYPE}.{DOC_NUM}.{HASH}
 ```
 
 | Segment | Description | Format |
 |---------|-------------|--------|
-| DOC_TYPE | Document type acronym | 2-5 uppercase letters |
+| DOC_TYPE | Document type acronym | 2-8 uppercase letters |
 | DOC_NUM | Document number | 2+ digits |
-| ELEM_TYPE | Element type code | 2+ digits (01-31) |
-| SEQ | Sequential number | 2+ digits |
+| HASH | Element hash | 4+ alphanumeric chars |
 
 ### Validation Regex
 
 ```regex
-^[A-Z]{2,5}\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}$
+^[A-Z]{2,8}\.[0-9]{2,}\.[a-z0-9]{4,}$
 ```
 
 ### Examples
 
 | Element ID | Valid | Breakdown |
 |------------|-------|-----------|
-| `BRD.02.06.01` | ✅ | BRD doc 02, Acceptance Criteria (06), item 01 |
-| `PRD.01.09.03` | ✅ | PRD doc 01, User Story (09), item 03 |
-| `ADR.05.10.01` | ✅ | ADR doc 05, Decision (10), item 01 |
-| `SPEC.03.16.02` | ✅ | SPEC doc 03, Interface (16), item 02 |
-| `AC-001` | ❌ | Legacy pattern - use TYPE.NN.06.SS |
-| `FR-01` | ❌ | Legacy pattern - use TYPE.NN.01.SS |
-| `BRD-02-06-01` | ❌ | Wrong separator (use dots) |
-| `brd.02.06.01` | ❌ | Lowercase not allowed |
+| `BRD.02.0601` | ✅ | BRD doc 02, Acceptance Criteria (06), item 01 |
+| `PRD.01.0903` | ✅ | PRD doc 01, User Story (09), item 03 |
+| `ADR.05.1001` | ✅ | ADR doc 05, Decision (10), item 01 |
+| `SPEC.03.1602` | ✅ | SPEC doc 03, Interface (16), item 02 |
+| `AC-001` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
+| `FR-01` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
+| `BRD-02-0601` | ❌ | Wrong separator (use dots) |
+| `brd.02.0601` | ❌ | Lowercase not allowed |
 
 ### Heading Format
 
 Element IDs appear as markdown headings:
 
 ```markdown
-### BRD.02.06.01: User Authentication Acceptance Criteria
-#### PRD.01.09.03: User Login Story
+### BRD.02.0601: User Authentication Acceptance Criteria
+#### PRD.01.0903: User Login Story
 ```
 
 ---
@@ -248,36 +247,36 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 | Removed Pattern | Migration Path | Applies To |
 |-----------------|----------------|------------|
-| `AC-XXX` | `TYPE.NN.06.SS` | BRD, PRD, REQ |
-| `FR-XXX` | `TYPE.NN.01.SS` | BRD, PRD, SYS, REQ |
-| `BC-XXX` | `TYPE.NN.03.SS` | BRD, PRD |
-| `BA-XXX` | `TYPE.NN.04.SS` | BRD, PRD |
-| `QA-XXX` | `TYPE.NN.02.SS` | BRD, PRD, SYS |
-| `BO-XXX` | `TYPE.NN.23.SS` | BRD |
-| `RISK-XXX` | `TYPE.NN.07.SS` | BRD, PRD |
-| `METRIC-XXX` | `TYPE.NN.08.SS` | BRD, PRD |
-| `Feature F-XXX` | `TYPE.NN.22.SS` | BRD, PRD |
-| `Event-XXX` | `TYPE.NN.25.SS` | EARS |
-| `State-XXX` | `TYPE.NN.25.SS` | EARS |
-| `TASK-XXX` | `TYPE.NN.18.SS` | TASKS |
-| `T-XXX` | `TYPE.NN.18.SS` | TASKS |
-| `IF-XXX` | `TYPE.NN.16.SS` | CTR |
-| `DM-XXX` | `TYPE.NN.17.SS` | CTR |
-| `CC-XXX` | `TYPE.NN.20.SS` | CTR |
-| `DEC-XXX` | `TYPE.NN.10.SS` | ADR |
-| `ALT-XXX` | `TYPE.NN.12.SS` | ADR |
-| `CON-XXX` | `TYPE.NN.13.SS` | ADR |
+| `AC-XXX` | `TYPE.NN.xxxx` | BRD, PRD, REQ |
+| `FR-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS, REQ |
+| `BC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `BA-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `QA-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS |
+| `BO-XXX` | `TYPE.NN.xxxx` | BRD |
+| `RISK-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `METRIC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `Feature F-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `Event-XXX` | `TYPE.NN.xxxx` | EARS |
+| `State-XXX` | `TYPE.NN.xxxx` | EARS |
+| `TASK-XXX` | `TYPE.NN.xxxx` | TASKS |
+| `T-XXX` | `TYPE.NN.xxxx` | TASKS |
+| `IF-XXX` | `TYPE.NN.xxxx` | CTR |
+| `DM-XXX` | `TYPE.NN.xxxx` | CTR |
+| `CC-XXX` | `TYPE.NN.xxxx` | CTR |
+| `DEC-XXX` | `TYPE.NN.xxxx` | ADR |
+| `ALT-XXX` | `TYPE.NN.xxxx` | ADR |
+| `CON-XXX` | `TYPE.NN.xxxx` | ADR |
 
 ### Migration Examples
 
 | Legacy | Unified Format |
 |--------|----------------|
-| `### AC-001: Login Validation` | `### BRD.02.06.01: Login Validation` |
-| `#### FR-01: User Auth` | `#### PRD.01.01.01: User Auth` |
-| `### Event-001: KYC Submission` | `### EARS.06.25.01: KYC Submission` |
-| `### TASK-01: Setup` | `### TASKS.02.18.01: Setup` |
-| `### DEC-01: Use PostgreSQL` | `### ADR.05.10.01: Use PostgreSQL` |
-| `### ALT-01: MongoDB Option` | `### ADR.05.12.01: MongoDB Option` |
+| `### AC-001: Login Validation` | `### BRD.02.0601: Login Validation` |
+| `#### FR-01: User Auth` | `#### PRD.01.0101: User Auth` |
+| `### Event-001: KYC Submission` | `### EARS.06.2501: KYC Submission` |
+| `### TASK-01: Setup` | `### TASKS.02.1801: Setup` |
+| `### DEC-01: Use PostgreSQL` | `### ADR.05.1001: Use PostgreSQL` |
+| `### ALT-01: MongoDB Option` | `### ADR.05.1201: MongoDB Option` |
 
 ---
 
@@ -449,73 +448,73 @@ timestamp_utc = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 ### BRD Examples
 
 ```markdown
-### BRD.02.01.01: User Authentication Requirement
-### BRD.02.06.01: Login Acceptance Criteria
-### BRD.02.23.01: Revenue Growth Objective
-### BRD.02.09.01: User Onboarding Story
-### BRD.02.10.01: Database Selection Decision
-### BRD.02.32.01: Infrastructure Architecture Topic
-### BRD.02.32.02: Data Architecture Topic
-### BRD.02.33.01: Cost Reduction Benefit
-### BRD.02.33.02: Efficiency Improvement Benefit
+### BRD.02.0101: User Authentication Requirement
+### BRD.02.0601: Login Acceptance Criteria
+### BRD.02.2301: Revenue Growth Objective
+### BRD.02.0901: User Onboarding Story
+### BRD.02.1001: Database Selection Decision
+### BRD.02.3201: Infrastructure Architecture Topic
+### BRD.02.3202: Data Architecture Topic
+### BRD.02.3301: Cost Reduction Benefit
+### BRD.02.3302: Efficiency Improvement Benefit
 @threshold: BRD.02.perf.response_time.max
 ```
 
 ### PRD Examples
 
 ```markdown
-### PRD.01.09.01: User Login Story
-### PRD.01.22.01: Dashboard Feature
-### PRD.01.06.01: Feature Acceptance Criteria
+### PRD.01.0901: User Login Story
+### PRD.01.2201: Dashboard Feature
+### PRD.01.0601: Feature Acceptance Criteria
 @threshold: PRD.01.timeout.session.idle
 ```
 
 ### EARS Examples
 
 ```markdown
-#### EARS.06.25.01: KYC Submission Event
-#### EARS.06.25.02: Pending Status State
+#### EARS.06.2501: KYC Submission Event
+#### EARS.06.2502: Pending Status State
 ```
 
 ### ADR Examples
 
 ```markdown
-### ADR.05.10.01: Use PostgreSQL Decision
-### ADR.05.12.01: MongoDB Alternative
-### ADR.05.13.01: Migration Consequence
+### ADR.05.1001: Use PostgreSQL Decision
+### ADR.05.1201: MongoDB Alternative
+### ADR.05.1301: Migration Consequence
 @threshold: ADR.05.circuit.failure_threshold
 ```
 
 ### SPEC Examples
 
 ```markdown
-### SPEC.03.16.01: REST API Interface
-### SPEC.03.17.01: User Data Model
-### SPEC.03.21.01: Email Validation Rule
+### SPEC.03.1601: REST API Interface
+### SPEC.03.1701: User Data Model
+### SPEC.03.2101: Email Validation Rule
 ```
 
 ### CTR Examples
 
 ```markdown
-### CTR.02.16.01: Partner API Interface
-### CTR.02.17.01: Order Data Model
-### CTR.02.20.01: Rate Limit Clause
+### CTR.02.1601: Partner API Interface
+### CTR.02.1701: Order Data Model
+### CTR.02.2001: Rate Limit Clause
 ```
 
 ### TSPEC Examples
 
 ```markdown
-### TSPEC.01.40.01: User Authentication Unit Test
-### TSPEC.01.41.01: API Integration Test
-### TSPEC.01.42.01: Login Flow Smoke Test
-### TSPEC.01.43.01: Order Processing Functional Test
+### TSPEC.01.4001: User Authentication Unit Test
+### TSPEC.01.4101: API Integration Test
+### TSPEC.01.4201: Login Flow Smoke Test
+### TSPEC.01.4301: Order Processing Functional Test
 ```
 
 ### TASKS Examples
 
 ```markdown
-### TASKS.02.18.01: Setup Development Environment
-### TASKS.02.30.01: Configure CI Pipeline
+### TASKS.02.1801: Setup Development Environment
+### TASKS.02.3001: Configure CI Pipeline
 ```
 
 ---
@@ -533,9 +532,9 @@ Run this checklist BEFORE creating any SDD document:
 
 ### Element IDs
 
-- [ ] All element IDs use 4-segment dot notation: `TYPE.NN.TT.SS`
-- [ ] Element type code (TT) is valid for this document type (see Section 5)
-- [ ] Sequential numbers (SS) are unique within the document
+- [ ] All element IDs use 3-segment dot notation: `TYPE.NN.xxxx`
+- [ ] Element hash is 4+ alphanumeric characters (see Section 5)
+- [ ] Element hashes are unique within the document
 - [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, etc.) are used
 
 ### Threshold Tags
@@ -605,15 +604,15 @@ grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
    - Example: `DEC-XXX` → Decision → Code 10
 
 3. **Construct the unified ID**
-   - Pattern: `{DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}`
-   - Example: `AC-001` in BRD-02 → `BRD.02.06.01`
-   - Example: `DEC-01` in ADR-05 → `ADR.05.10.01`
+   - Pattern: `{DOC_TYPE}.{DOC_NUM}.{HASH}`
+   - Example: `AC-001` in BRD-02 → `BRD.02.0601`
+   - Example: `DEC-01` in ADR-05 → `ADR.05.1001`
 
 4. **Replace all occurrences**
    ```bash
    # Example sed replacement
-   sed -i 's/### AC-001:/### BRD.02.06.01:/g' file.md
-   sed -i 's/### DEC-01:/### ADR.05.10.01:/g' file.md
+   sed -i 's/### AC-001:/### BRD.02.0601:/g' file.md
+   sed -i 's/### DEC-01:/### ADR.05.1001:/g' file.md
    ```
 
 5. **Validate the result**
@@ -629,9 +628,9 @@ grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
 | Error | Cause | Fix |
 |-------|-------|-----|
 | Wrong element code | Using FR code (01) for Acceptance Criteria | Use code 06 for AC |
-| Missing document number | `BRD..06.01` | Include document number: `BRD.02.06.01` |
-| Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.06.01` |
-| Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.06.01` |
+| Missing document number | `BRD..06.01` | Include document number: `BRD.02.0601` |
+| Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.0601` |
+| Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.0601` |
 
 ---
 

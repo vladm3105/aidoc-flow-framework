@@ -63,7 +63,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (BRD.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
+| `doc-naming` | Element ID format (BRD.NN.xxxx), threshold tags, legacy pattern detection | All Phases |
 | `doc-brd` | BRD creation rules, template, section structure, Platform vs Feature guidance | Phase 3: BRD Generation |
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-audit` | **Unified quality gate**: structure validation + content review + PRD-Ready scoring | Phase 4-5: Audit |
@@ -262,7 +262,7 @@ BRD has no upstream document type. Smart detection works differently:
        - Simple patterns: `FR-XXX`, `AC-XXX`, `BO-XXX`, `NFR-XXX`
        - Compound patterns: `FR-{DOMAIN}-XXX` (e.g., `FR-CICD-001`, `FR-AUTH-002`)
        - Any pattern matching: `(FR|AC|BO|NFR|QA|BC)(-[A-Za-z0-9]+)*-[0-9]+`
-    b. Convert ALL detected IDs to BRD.NN.TT.SS format:
+    b. Convert ALL detected IDs to BRD.NN.xxxx format:
        - `FR-*` → `BRD.NN.01.SS` (Functional Requirement)
        - `NFR-*` → `BRD.NN.02.SS` (Quality Attribute)
        - `AC-*` → `BRD.NN.06.SS` (Acceptance Criteria)
@@ -776,7 +776,7 @@ Generate the BRD document with real-time quality feedback.
 6. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
-   - Validate element ID format compliance (BRD.NN.TT.SS)
+   - Validate element ID format compliance (BRD.NN.xxxx)
    - Check for placeholder text ([TBD], TODO, XXX)
    - Flag issues early to reduce post-generation rework
 
@@ -1032,14 +1032,14 @@ bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 | Business Objectives | BRD.NN.23.SS format | BRD-W001 |
 | Business Requirements | BRD.NN.01.SS format | BRD-W002 |
 | Section 7.2 ADR Topics | All 7 categories present | BRD-E013 to BRD-E018 |
-| Element ID Format | BRD.NN.TT.SS (4-segment) | BRD-E019 to BRD-E021 |
+| Element ID Format | BRD.NN.xxxx (3-segment) | BRD-E019 to BRD-E021 |
 | PRD-Ready Score | >= 90% | BRD-W004 |
 
 **Auto-Fix Actions**:
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
-| Invalid element ID format | Convert to BRD.NN.TT.SS format |
+| Invalid element ID format | Convert to BRD.NN.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Deprecated ID patterns (BO-XXX, FR-XXX) | Convert to unified format |
@@ -1165,7 +1165,7 @@ After passing the fix cycle:
    - N/A topics have explicit reasons
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use BRD.NN.TT.SS format
+   - All IDs use BRD.NN.xxxx format
   - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
    - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
 
@@ -1511,9 +1511,9 @@ flowchart TD
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Legacy element ID | Section 4:L45 | Convert BO-001 to BRD.01.23.01 |
+| 1 | Legacy element ID | Section 4:L45 | Convert BO-001 to BRD.01.2301 |
 | 2 | Missing PRD-Ready score | Document Control | Calculate and insert |
-| 3 | Invalid ID format | Section 5:L78 | Convert FR-001 to BRD.01.01.01 |
+| 3 | Invalid ID format | Section 5:L78 | Convert FR-001 to BRD.01.0101 |
 | ... | ... | ... | ... |
 
 ## Manual Review Required
@@ -1536,7 +1536,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # 18 sections, Document Control
-    - element_id_compliance     # BRD.NN.TT.SS format
+    - element_id_compliance     # BRD.NN.xxxx format
     - adr_topics_validation     # 7 ADR categories in Section 7.2
     - platform_feature_check    # Correct section handling
     - cumulative_tags           # Traceability references
@@ -1652,17 +1652,17 @@ flowchart TD
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| `BO-XXX` | `BRD.NN.23.SS` | BO-001 → BRD.01.23.01 |
-| `FR-XXX` | `BRD.NN.01.SS` | FR-001 → BRD.01.01.01 |
-| `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.06.01 |
-| `BC-XXX` | `BRD.NN.03.SS` | BC-001 → BRD.01.03.01 |
-| `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.32.01 |
+| `BO-XXX` | `BRD.NN.23.SS` | BO-001 → BRD.01.2301 |
+| `FR-XXX` | `BRD.NN.01.SS` | FR-001 → BRD.01.0101 |
+| `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.0601 |
+| `BC-XXX` | `BRD.NN.03.SS` | BC-001 → BRD.01.0301 |
+| `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.3201 |
 
 **Element Type Code Migration** (v2.3):
 
 | Invalid Code | Correct Action | Context | Example |
 |--------------|----------------|---------|---------|
-| 25 in BRD | Manual reclassification to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) | Business content section | BRD.01.25.01 → BRD.01.23.01 (if business objective) |
+| 25 in BRD | Manual reclassification to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) | Business content section | BRD.01.2501 → BRD.01.2301 (if business objective) |
 
 **Note**: Code 25 is valid only for EARS documents (EARS Statement). In BRD, code 33 is not accepted by the standardized BRD validator; use a context-appropriate valid BRD code.
 
@@ -1689,7 +1689,7 @@ flowchart TD
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 4:L45 | Converted BO-001 → BRD.01.23.01 |
+| 1 | Legacy element ID | Section 4:L45 | Converted BO-001 → BRD.01.2301 |
 | 2 | Missing PRD-Ready score | Document Control | Added 94% with breakdown |
 | 3 | Missing Cloud Comparison | Section 7.2.3 | Added template table |
 | ... | ... | ... | ... |
@@ -1750,10 +1750,10 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    BO_XXX_to_BRD_NN_23_SS: true   # BO-001 → BRD.01.23.01
-    FR_XXX_to_BRD_NN_01_SS: true   # FR-001 → BRD.01.01.01
-    AC_XXX_to_BRD_NN_06_SS: true   # AC-001 → BRD.01.06.01
-    BC_XXX_to_BRD_NN_03_SS: true   # BC-001 → BRD.01.03.01
+    BO_XXX_to_BRD_NN_23_SS: true   # BO-001 → BRD.01.2301
+    FR_XXX_to_BRD_NN_xxxx: true   # FR-001 → BRD.01.0101
+    AC_XXX_to_BRD_NN_06_SS: true   # AC-001 → BRD.01.0601
+    BC_XXX_to_BRD_NN_03_SS: true   # BC-001 → BRD.01.0301
 ```
 
 **Command Line Options (Review/Fix)**:

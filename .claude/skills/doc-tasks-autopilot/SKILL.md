@@ -71,7 +71,7 @@ Automated **Task Breakdown (TASKS)** generation pipeline that processes SPEC and
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (TASKS.NN.TT.SS, codes 18, 30) | All Phases |
+| `doc-naming` | Element ID format (TASKS.NN.xxxx, codes 18, 30) | All Phases |
 | `doc-spec-validator` | Validate SPEC TASKS-Ready score | Phase 2 |
 | `doc-tspec-validator` | Validate TSPEC TASKS-Ready score | Phase 2 |
 | `doc-tasks` | TASKS creation rules, TODO format | Phase 3 |
@@ -250,8 +250,8 @@ flowchart TD
 
 | Element Type | Code | Pattern | Example |
 |--------------|------|---------|---------|
-| Task | 18 | TASKS.NN.18.SS | TASKS.01.18.01 |
-| Task Item | 30 | TASKS.NN.30.SS | TASKS.01.30.01 |
+| Task | 18 | TASKS.NN.18.SS | TASKS.01.1801 |
+| Task Item | 30 | TASKS.NN.30.SS | TASKS.01.3001 |
 
 ### Priority Levels
 
@@ -281,33 +281,33 @@ Summary of implementation tasks derived from SPEC-01.
 ## 2. Dependency Graph
 ```mermaid
 graph TD
-    T1[TASKS.01.18.01] --> T2[TASKS.01.18.02]
-    T1 --> T3[TASKS.01.18.03]
-    T2 --> T4[TASKS.01.18.04]
+    T1[TASKS.01.1801] --> T2[TASKS.01.1802]
+    T1 --> T3[TASKS.01.1803]
+    T2 --> T4[TASKS.01.1804]
     T3 --> T4
 ```
 
 ## 3. Implementation Tasks
 
-### TASKS.01.18.01: Setup Project Structure
+### TASKS.01.1801: Setup Project Structure
 - **Priority**: P0
 - **Upstream**: None
-- **Downstream**: TASKS.01.18.02, TASKS.01.18.03
-- **SPEC Reference**: SPEC.01.28.01
+- **Downstream**: TASKS.01.1802, TASKS.01.1803
+- **SPEC Reference**: SPEC.01.2801
 - **Estimated Complexity**: 2/5
 
-### TASKS.01.18.02: Implement Core Logic
+### TASKS.01.1802: Implement Core Logic
 - **Priority**: P1
-- **Upstream**: TASKS.01.18.01
-- **Downstream**: TASKS.01.18.04
-- **SPEC Reference**: SPEC.01.28.02
+- **Upstream**: TASKS.01.1801
+- **Downstream**: TASKS.01.1804
+- **SPEC Reference**: SPEC.01.2802
 
 ## 7. Implementation Contracts
 [Protocol interfaces, exception hierarchies, state machine contracts]
 
 ## 8. Traceability
-@brd: BRD.01.01.01
-@prd: PRD.01.09.01
+@brd: BRD.01.0101
+@prd: PRD.01.0901
 ...
 ```
 
@@ -429,7 +429,7 @@ After passing the fix cycle:
    - Mermaid diagram renders correctly
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use TASKS.NN.TT.SS format
+   - All IDs use TASKS.NN.xxxx format
    - Element type codes valid for TASKS (18, 30)
    - No legacy patterns (TASK-XXX, TODO-XXX, TI-XXX)
 
@@ -461,16 +461,16 @@ After passing the fix cycle:
 ## Cumulative Tags (9 Required)
 
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
-@ears: EARS.NN.TT.SS
-@bdd: BDD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
+@ears: EARS.NN.xxxx
+@bdd: BDD.NN.xxxx
 @adr: ADR-NN
-@sys: SYS.NN.TT.SS
-@req: REQ.NN.TT.SS
-@spec: SPEC.NN.TT.SS
-@tspec: TSPEC.NN.TT.SS
-@ctr: CTR.NN.TT.SS  # Optional
+@sys: SYS.NN.xxxx
+@req: REQ.NN.xxxx
+@spec: SPEC.NN.xxxx
+@tspec: TSPEC.NN.xxxx
+@ctr: CTR.NN.xxxx  # Optional
 ```
 
 ---
@@ -579,14 +579,14 @@ flowchart TD
 ### Auto-Fixable Issues
 | Issue | Location | Fix Action |
 |-------|----------|------------|
-| Legacy ID pattern | Line 45 | Convert TASK-001 → TASKS.01.18.01 |
-| Missing cumulative tag | Traceability | Add @sys: SYS.01.01.01 |
+| Legacy ID pattern | Line 45 | Convert TASK-001 → TASKS.01.1801 |
+| Missing cumulative tag | Traceability | Add @sys: SYS.01.0101 |
 
 ### Manual Review Required
 | Issue | Location | Recommendation |
 |-------|----------|----------------|
 | Circular dependency | T3 ↔ T5 | Restructure task dependencies |
-| Missing complexity | TASKS.01.18.04 | Add Estimated Complexity |
+| Missing complexity | TASKS.01.1804 | Add Estimated Complexity |
 ```
 
 **Score Indicators**:
@@ -667,7 +667,7 @@ flowchart TD
 
 | Category | Description | Auto-Fix Actions |
 |----------|-------------|------------------|
-| `element_ids` | Element ID format | Convert legacy patterns to TASKS.NN.TT.SS |
+| `element_ids` | Element ID format | Convert legacy patterns to TASKS.NN.xxxx |
 | `priorities` | Priority format | Normalize to P0-P3 format |
 | `dependency_graph` | Task dependencies | Regenerate Mermaid graph from task refs |
 | `cumulative_tags` | Traceability tags | Add missing 9 upstream tags |
@@ -679,10 +679,10 @@ flowchart TD
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| TASK-NNN | TASKS.NN.18.SS | TASK-001 → TASKS.01.18.01 |
-| TODO-NNN | TASKS.NN.18.SS | TODO-005 → TASKS.01.18.05 |
-| TI-NNN | TASKS.NN.30.SS | TI-001 → TASKS.01.30.01 |
-| ITEM-NNN | TASKS.NN.30.SS | ITEM-010 → TASKS.01.30.10 |
+| TASK-NNN | TASKS.NN.18.SS | TASK-001 → TASKS.01.1801 |
+| TODO-NNN | TASKS.NN.18.SS | TODO-005 → TASKS.01.1805 |
+| TI-NNN | TASKS.NN.30.SS | TI-001 → TASKS.01.3001 |
+| ITEM-NNN | TASKS.NN.30.SS | ITEM-010 → TASKS.01.3010 |
 
 **Content Preservation Rules**:
 
@@ -737,20 +737,20 @@ fix_mode:
 ### Element ID Migration
 | Original | Fixed | Location |
 |----------|-------|----------|
-| TASK-001 | TASKS.01.18.01 | Line 45 |
-| TI-001 | TASKS.01.30.01 | Line 78 |
+| TASK-001 | TASKS.01.1801 | Line 45 |
+| TI-001 | TASKS.01.3001 | Line 78 |
 
 ### Dependency Graph Regenerated
 - Updated Mermaid diagram with corrected task references
 - Total tasks: 12, Dependencies: 18
 
 ### Cumulative Tags Added
-- @ears: EARS.01.25.001 (added)
-- @sys: SYS.01.01.01 (added)
-- @req: REQ.01.01.01 (added)
+- @ears: EARS.01.25001 (added)
+- @sys: SYS.01.0101 (added)
+- @req: REQ.01.0101 (added)
 
 ### Implementation Contracts Generated
-- Protocol interface: `IDataProcessor` (TASKS.01.18.03 has 4 dependencies)
+- Protocol interface: `IDataProcessor` (TASKS.01.1803 has 4 dependencies)
 - Exception hierarchy: `TaskExecutionError` family
 
 ## Manual Review Required

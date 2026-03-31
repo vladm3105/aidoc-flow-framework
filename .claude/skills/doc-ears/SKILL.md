@@ -111,10 +111,10 @@ Per EARS-MVP-TEMPLATE.md, EARS documents require these sections:
 **Source Document Rule (E044)**:
 ```markdown
 # VALID - Single @prd reference
-| **Source Document** | @prd: PRD.01.07.01 |
+| **Source Document** | @prd: PRD.01.0701 |
 
 # INVALID - Range or multiple values
-| **Source Document** | @prd: PRD.12.19.01 - @prd: PRD.12.19.57 |
+| **Source Document** | @prd: PRD.12.1901 - @prd: PRD.12.1957 |
 ```
 
 ## EARS Syntax Patterns
@@ -168,31 +168,31 @@ for [scope/context].
 Always use triple backticks for EARS statements:
 
 ````markdown
-#### EARS.01.25.01: Requirement Name
+#### EARS.01.2501: Requirement Name
 ```
 WHEN [condition],
 THE [component] SHALL [action]
 WITHIN [constraint].
 ```
-**Traceability**: @brd: BRD.01.01.01 | @prd: PRD.01.07.01
+**Traceability**: @brd: BRD.01.0101 | @prd: PRD.01.0701
 ````
 
 ## Unified Element ID Format (MANDATORY)
 
-**Pattern**: `EARS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `EARS.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| EARS Statement | 25 | EARS.02.25.01 |
+| EARS Statement | 25 | EARS.02.2501 |
 
 **Category ID Ranges**:
 
 | Category | ID Range | Example |
 |----------|----------|---------|
-| Event-Driven | 001-099 | EARS.01.25.001 |
-| State-Driven | 101-199 | EARS.01.25.101 |
-| Unwanted Behavior | 201-299 | EARS.01.25.201 |
-| Ubiquitous | 401-499 | EARS.01.25.401 |
+| Event-Driven | 001-099 | EARS.01.25001 |
+| State-Driven | 101-199 | EARS.01.25101 |
+| Unwanted Behavior | 201-299 | EARS.01.25201 |
+| Ubiquitous | 401-499 | EARS.01.25401 |
 
 > **REMOVED PATTERNS** - Do NOT use:
 > - Category prefixes: `E-XXX`, `S-XXX`, `Event-XXX`, `State-XXX`
@@ -307,7 +307,7 @@ error:
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
 | Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - document references |
-| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - element references |
+| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - element references |
 
 ## Cumulative Tagging Requirements
 
@@ -321,8 +321,8 @@ error:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD.01.01.03, BRD.01.01.10
-@prd: PRD.01.07.02, PRD.01.07.15
+@brd: BRD.01.0103, BRD.01.0110
+@prd: PRD.01.0702, PRD.01.0715
 ```
 ```
 
@@ -330,14 +330,14 @@ error:
 
 **Inline format** - Use pipes:
 ```markdown
-**Traceability**: @brd: BRD.02.01.10 | @prd: PRD.02.01.01 | @threshold: PRD.035.key
+**Traceability**: @brd: BRD.02.0110 | @prd: PRD.02.0101 | @threshold: PRD.035.key
 ```
 
 **List format** - Also valid:
 ```markdown
 **Traceability**:
-- @brd: BRD.02.01.10
-- @prd: PRD.02.01.01
+- @brd: BRD.02.0110
+- @prd: PRD.02.0101
 - @threshold: PRD.035.category.key
 ```
 
@@ -552,7 +552,7 @@ Before ending session:
 | `ears-requirements` tag | Use `ears` |
 | `document_type: engineering-requirements` | Use `document_type: ears` |
 | `architecture_approach: value` | Use `architecture_approaches: [value]` |
-| `#### Event-001: Title` | Use `#### EARS.01.25.01: Title` |
+| `#### Event-001: Title` | Use `#### EARS.01.2501: Title` |
 | `Source Document: PRD-NN` | Use `Source Document: @prd: PRD.NN.EE.SS` |
 | Multiple @prd in Source Document | Use single @prd, list others in Upstream Sources |
 | `@brd: X @prd: Y` (no separators) | Use `@brd: X \| @prd: Y` |
@@ -615,7 +615,7 @@ The BDD will:
 | **Layer** | 3 |
 | **Tags Required** | @brd, @prd (2 tags) |
 | **BDD-Ready Score** | ≥90% required for "Approved" status |
-| **Element ID Format** | `EARS.NN.25.SS` (4-segment unified format) |
+| **Element ID Format** | `EARS.NN.25.SS` (3-segment unified format) |
 | **Source Document** | Single @prd: PRD.NN.EE.SS value |
 | **Downstream References** | Generic names only (no numeric IDs) |
 | **File Size Limit** | 1200 lines maximum |

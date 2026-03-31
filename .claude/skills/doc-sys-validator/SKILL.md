@@ -145,14 +145,14 @@ Pattern: `SYS-NNN_descriptive_name.md`
 ### 3. Content Validation
 
 **Functional Requirement Format:**
-- Pattern: `SYS.NN.01.SS` (unified 4-segment format)
+- Pattern: `SYS.NN.01.SS` (unified 3-segment format)
 - Table columns: SYS ID, Requirement, Priority, Source, Verification Method
 - Element type code: 01 = Functional Requirement
 - Priority values: Must Have, Should Have, Could Have, Won't Have
 
-**Quality Attribute Format (4-segment):**
+**Quality Attribute Format (3-segment):**
 - Pattern: `SYS.NN.02.SS` (02 = Quality Attribute type)
-- Example: `SYS.08.02.15`
+- Example: `SYS.08.0215`
 - Categories: Performance, Reliability, Scalability, Security, Observability, Maintainability
 
 **Quality Attribute Metrics:**
@@ -206,7 +206,7 @@ Pattern: `SYS-NNN_descriptive_name.md`
 | SYS-E012 | error | Missing Traceability (Section 13) |
 | SYS-E013 | warning | File name does not match format |
 | SYS-W001 | warning | Functional requirements not using SYS.NN.01.SS |
-| SYS-W002 | warning | Quality attributes not using 4-segment format |
+| SYS-W002 | warning | Quality attributes not using 3-segment format |
 | SYS-W003 | warning | Missing Performance category |
 | SYS-W004 | warning | Missing Security category |
 | SYS-W005 | warning | Missing upstream tags (require 5) |

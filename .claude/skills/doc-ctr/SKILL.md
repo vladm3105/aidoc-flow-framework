@@ -147,13 +147,13 @@ ai_dev_ssd_flow/08_CTR/CTR-01_data_validation.yaml
 
 ### 4. Element ID Format (MANDATORY)
 
-**Pattern**: `CTR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `CTR.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Interface | 16 | CTR.02.16.01 |
-| Data Model | 17 | CTR.02.17.01 |
-| Contract Clause | 20 | CTR.02.20.01 |
+| Interface | 16 | CTR.02.1601 |
+| Data Model | 17 | CTR.02.1701 |
+| Contract Clause | 20 | CTR.02.2001 |
 
 > **REMOVED PATTERNS** - Do NOT use legacy formats:
 > - `INT-XXX` - Use `CTR.NN.16.SS` instead
@@ -433,21 +433,21 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
 
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
+- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.01.01` ✅
+- `@brd: BRD.17.0101` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
@@ -474,13 +474,13 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.03
+@sys: SYS.01.2601
+@req: REQ.01.2703
 ```
 
 ## Upstream/Downstream Artifacts
@@ -515,7 +515,7 @@ Examples:
 | CHECK 3 | SPEC-Ready Score format (✅ emoji + percentage + target) |
 | CHECK 4 | YAML Schema Validation (OpenAPI/JSON Schema valid) |
 | CHECK 5 | Cumulative Tagging (7-8 upstream tags) |
-| CHECK 6 | Element ID Format (`CTR.NN.TT.SS`) |
+| CHECK 6 | Element ID Format (`CTR.NN.xxxx`) |
 
 ### Tier 2: Warnings (Recommended)
 
@@ -567,7 +567,7 @@ CTR validation is **automatically enforced** via pre-commit hooks:
 - ✅ OpenAPI 3.0 or JSON Schema validation
 - ✅ Document Control fields (9 required fields)
 - ✅ Cumulative tagging (@brd through @req - 7 tags)
-- ✅ Element ID format (CTR.NN.TT.SS for interfaces/models/clauses)
+- ✅ Element ID format (CTR.NN.xxxx for interfaces/models/clauses)
 - ✅ Usage examples (request/response pairs)
 - ✅ Error handling specifications
 - ✅ Versioning policy (semantic versioning)
@@ -711,7 +711,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Validation rules specified
 - [ ] Version number semantic (Major.Minor.Patch)
 - [ ] Cumulative tags: @brd through @req/impl (7-8 tags)
-- [ ] Element IDs use `CTR.NN.TT.SS` format
+- [ ] Element IDs use `CTR.NN.xxxx` format
 - [ ] Traceability matrix updated
 
 ### Diagram Standards
@@ -726,7 +726,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 4. **Vague validation**: Schema validation must be precise and testable
 5. **Missing cumulative tags**: Layer 9 must include all 7-8 upstream tags
 6. **Skipping when needed**: Don't skip if multiple teams need shared contract
-7. **Wrong element IDs**: Use `CTR.NN.TT.SS`, not legacy `INT-XXX`, `MODEL-XXX`, `CLAUSE-XXX`
+7. **Wrong element IDs**: Use `CTR.NN.xxxx`, not legacy `INT-XXX`, `MODEL-XXX`, `CLAUSE-XXX`
 8. **Wrong cumulative tag codes**: Use correct element type codes (EARS=25, BDD=14, SYS=26, REQ=27, IMPL=29)
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
@@ -765,7 +765,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -830,7 +830,7 @@ For supplementary documentation related to CTR artifacts:
 
 **Layer**: 8 (Optional)
 
-**Element ID Format**: `CTR.NN.TT.SS`
+**Element ID Format**: `CTR.NN.xxxx`
 - Interface = 16
 - Data Model = 17
 - Contract Clause = 20

@@ -9,15 +9,14 @@ TYPE-NN                    Example: BRD-02, PRD-01, ADR-001
 ## Element ID Format
 
 ```
-TYPE.NN.TT.SS              Example: BRD.02.06.01
-│    │   │  │
-│    │   │  └── Sequential number (01, 02, ...)
-│    │   └───── Element type code (01-31)
+TYPE.NN.xxxx              Example: BRD.02.0601
+│    │   │
+│    │   └───── Element hash (4+ alphanumeric chars)
 │    └───────── Document number (02, 03, ...)
 └────────────── Document type (BRD, PRD, ADR, ...)
 ```
 
-**Regex**: `^[A-Z]{2,5}\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}$`
+**Regex**: `^[A-Z]{2,8}\.[0-9]{2,}\.[a-z0-9]{4,}$`
 
 ---
 

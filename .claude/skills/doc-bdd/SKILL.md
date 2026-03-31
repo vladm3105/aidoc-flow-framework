@@ -122,9 +122,9 @@ docs/04_BDD/
 @section: 2.14
 @parent_doc: BDD-02
 @index: BDD-02.0_index.md
-@brd:BRD.02.01.03
-@prd:PRD.02.07.02
-@ears:EARS.02.14.01
+@brd:BRD.02.0103
+@prd:PRD.02.0702
+@ears:EARS.02.1401
 
 Feature: BDD-02.14: Query Result Filtering
   As a data analyst
@@ -149,14 +149,14 @@ Feature: BDD-02.14: Query Result Filtering
 
 ```gherkin
 # INVALID (frameworks cannot parse comment-based tags):
-# @brd: BRD.01.01.01
-# @prd: PRD.01.01.01
+# @brd: BRD.01.0101
+# @prd: PRD.01.0101
 Feature: My Feature
 
 # VALID (Gherkin-native tags before Feature):
-@brd:BRD.01.01.01
-@prd:PRD.01.01.01
-@ears:EARS.01.24.01
+@brd:BRD.01.0101
+@prd:PRD.01.0101
+@ears:EARS.01.2401
 Feature: My Feature
 ```
 
@@ -173,12 +173,12 @@ And the system timezone is "America/New_York"
 
 ## Unified Element ID Format (MANDATORY)
 
-**Pattern**: `BDD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `BDD.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Test Scenario | 14 | BDD.02.14.01 |
-| Step | 15 | BDD.02.15.01 |
+| Test Scenario | 14 | BDD.02.1401 |
+| Step | 15 | BDD.02.1501 |
 
 > **REMOVED PATTERNS** - Do NOT use:
 > - `SCENARIO-XXX`, `TS-XXX` → Use `BDD.NN.14.SS`
@@ -262,9 +262,9 @@ Scenario: API responds within performance threshold
 
 **Format** (Gherkin-native tags before Feature):
 ```gherkin
-@brd:BRD.01.01.03
-@prd:PRD.01.07.02
-@ears:EARS.01.24.01
+@brd:BRD.01.0103
+@prd:PRD.01.0702
+@ears:EARS.01.2401
 Feature: Feature Name
 ```
 
@@ -273,7 +273,7 @@ Feature: Feature Name
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
 | Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - document references |
-| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ | Hierarchical artifacts - element references |
+| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ | Hierarchical artifacts - element references |
 
 ## Scenario Types
 

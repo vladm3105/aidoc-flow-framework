@@ -289,7 +289,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `SPEC.NN.TT.SS` format
+- Element IDs use `SPEC.NN.xxxx` format
 - Element type codes valid for SPEC
 - Component naming convention
 

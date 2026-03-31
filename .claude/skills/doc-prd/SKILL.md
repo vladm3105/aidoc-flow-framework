@@ -274,30 +274,30 @@ Business constraints           Evaluation criteria         Trade-off analysis
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
 | Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - file references |
-| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical - element references |
+| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical - element references |
 
 **Key Distinction**:
 - `@adr: ADR-033` -> Points to document `ADR-033_slug.md`
-- `@brd: BRD.17.01.01` -> Points to element 01.01 inside `BRD-017.md`
+- `@brd: BRD.17.0101` -> Points to element 01.01 inside `BRD-017.md`
 
 ## Unified Element ID Format (MANDATORY)
 
-**Pattern**: `PRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `PRD.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Functional Requirement | 01 | PRD.02.01.01 |
-| Quality Attribute | 02 | PRD.02.02.01 |
-| Constraint | 03 | PRD.02.03.01 |
-| Assumption | 04 | PRD.02.04.01 |
-| Dependency | 05 | PRD.02.05.01 |
-| Acceptance Criteria | 06 | PRD.02.06.01 |
-| Risk | 07 | PRD.02.07.01 |
-| Metric | 08 | PRD.02.08.01 |
-| User Story | 09 | PRD.02.09.01 |
-| Use Case | 11 | PRD.02.11.01 |
-| Feature Item | 22 | PRD.02.22.01 |
-| Stakeholder Need | 24 | PRD.02.24.01 |
+| Functional Requirement | 01 | PRD.02.0101 |
+| Quality Attribute | 02 | PRD.02.0201 |
+| Constraint | 03 | PRD.02.0301 |
+| Assumption | 04 | PRD.02.0401 |
+| Dependency | 05 | PRD.02.0501 |
+| Acceptance Criteria | 06 | PRD.02.0601 |
+| Risk | 07 | PRD.02.0701 |
+| Metric | 08 | PRD.02.0801 |
+| User Story | 09 | PRD.02.0901 |
+| Use Case | 11 | PRD.02.1101 |
+| Feature Item | 22 | PRD.02.2201 |
+| Stakeholder Need | 24 | PRD.02.2401 |
 
 **REMOVED Patterns** (Do NOT use):
 - `AC-XXX` -> Use `PRD.NN.06.SS`
@@ -331,7 +331,7 @@ Business constraints           Evaluation criteria         Trade-off analysis
 When referencing features from other PRDs, use the cross-reference format:
 
 ```markdown
-@prd: PRD.22.01.15
+@prd: PRD.22.0115
 ```
 
 **Components**:
@@ -340,15 +340,15 @@ When referencing features from other PRDs, use the cross-reference format:
 - `.01` - Element type (01 = Functional Requirement)
 - `.15` - Sequence ID within document
 
-**Uniqueness**: `PRD.22.01.15` is globally unique (PRD-022, Feature 015)
+**Uniqueness**: `PRD.22.0115` is globally unique (PRD-022, Feature 015)
 
 **Invalid Formats** (Do NOT Use):
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `Feature-022-001` | Deprecated format | `PRD.22.01.01` |
+| `Feature-022-001` | Deprecated format | `PRD.22.0101` |
 | `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
-| `Feature 3.1` | Text format | `PRD.25.01.03` |
-| `PRD.1.1` | Not zero-padded | `PRD.01.01.01` |
+| `Feature 3.1` | Text format | `PRD.25.0103` |
+| `PRD.1.1` | Not zero-padded | `PRD.01.0101` |
 | `F-01` | Deprecated F- format | `PRD.NN.01.01` |
 
 ## Cumulative Tagging Requirements
@@ -365,11 +365,11 @@ When referencing features from other PRDs, use the cross-reference format:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD.01.01.03, BRD.01.01.10
+@brd: BRD.01.0103, BRD.01.0110
 ```
 
-- BRD.01.01.03 - Business requirements driving this product
-- BRD.01.01.10 - Success criteria from business case
+- BRD.01.0103 - Business requirements driving this product
+- BRD.01.0110 - Success criteria from business case
 
 **Upstream Sources**:
 - [BRD-01](../../../ai_dev_ssd_flow/PROJECT/fixtures/budget_alert/BRD-01.md) - Parent business requirements
@@ -597,7 +597,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 4. **User Stories scope violation**: Section 8 must stay at PRD-level (no EARS/BDD detail)
 5. **ADR forward references**: Don't write "See ADR-033" (ADRs don't exist yet)
 6. **Missing @brd tags**: Layer 2 must include Layer 1 tags
-7. **ID format errors**: Use unified format PRD.NN.TT.SS (not F-XXX, US-XXX, etc.)
+7. **ID format errors**: Use unified format PRD.NN.xxxx (not F-XXX, US-XXX, etc.)
 8. **Missing EARS Enhancement Appendix**: Section 20 required for EARS-Ready score
 9. **Missing upstream BRD update**: Must add PRD reference to parent BRD's Downstream Artifacts
 

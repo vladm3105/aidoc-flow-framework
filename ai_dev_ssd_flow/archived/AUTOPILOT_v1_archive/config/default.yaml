@@ -1,0 +1,241 @@
+# MVP Autopilot Default Configuration
+# Version: 6.0
+# Last Updated: 2026-02-06
+
+# Global settings that apply to all executions
+defaults:
+  auto_fix: true
+  mvp_validators: true
+  report: markdown
+  parallel_execution: false
+  timeout_per_layer: 300
+  max_retries: 3
+
+# Default entry and exit points
+default_entry_point: L1_BRD
+default_exit_point: L11_TASKS
+
+# =============================================================================
+# TSPEC Layer Configuration (v6.0)
+# =============================================================================
+tspec:
+  enabled: true
+  directory: "10_TSPEC"
+  test_types:
+    - type: UTEST
+      directory: UTEST
+      sources: [REQ, SPEC]
+      min_score: 90
+      description: Unit test specifications
+    - type: ITEST
+      directory: ITEST
+      sources: [CTR, SYS, SPEC]
+      min_score: 85
+      description: Integration test specifications
+    - type: STEST
+      directory: STEST
+      sources: [EARS, BDD, REQ]
+      min_score: 100
+      description: Smoke test specifications
+    - type: FTEST
+      directory: FTEST
+      sources: [SYS]
+      min_score: 85
+      description: Functional test specifications
+  validator: "10_TSPEC/scripts/validate_tspec_quality_score.sh"
+
+# =============================================================================
+# TDD Configuration (v6.0)
+# =============================================================================
+tdd:
+  enabled: false                    # Enable via --tdd-mode flag
+  generate_tests: true              # Generate test files from TSPEC
+  validate_failing: true            # Validate tests fail before code
+  validate_passing: true            # Validate tests pass after code
+  update_tags: true                 # Update PENDING tags to actual paths
+  test_framework: pytest
+  coverage_threshold: 90
+  test_output_dirs:
+    unit: tests/unit/
+    integration: tests/integration/
+    smoke: tests/smoke/
+    functional: tests/functional/
+
+# =============================================================================
+# TDD Awareness Configuration (Phase 2)
+# Enables test-aware SPEC generation where SPEC is designed to satisfy
+# existing test requirements.
+# =============================================================================
+tdd_awareness:
+  enabled: true                      # Enable TDD awareness for SPEC generation
+
+  # Test Requirements Analysis
+  test_requirements_analyzer:
+    script: "AUTOPILOT/scripts/analyze_test_requirements.py"
+    output_file: "tmp/test_requirements.json"
+    pattern: "test_*.py"
+
+  # Test-Aware SPEC Generation
+  spec_generation:
+    script: "AUTOPILOT/scripts/generate_spec_tdd.py"
+    test_driven: true
+    validate_against_tests: true
+    output_dir: "09_SPEC/"
+
+  # Traceability Tag Updates
+  traceability_updater:
+    script: "AUTOPILOT/scripts/update_test_traceability.py"
+    resolve_pending_tags: true
+    validate_no_pending: true
+
+  # Two-Phase Tagging Strategy
+  # Phase 1: Tests generated with PENDING tags
+  # Phase 2: Tags updated after SPEC/Code generation
+  tagging:
+    phase1_tags:
+      - "@spec: PENDING"
+      - "@code: PENDING"
+      - "@tasks: PENDING"
+    phase2_resolution:
+      spec: "ai_dev_flow/09_SPEC/"
+      tasks: "ai_dev_flow/11_TASKS/"
+      code: "src/"
+
+  # Quality Gates for TDD Mode
+  quality_gates:
+    red_state_required: true         # Tests MUST fail before code
+    green_state_required: true       # Tests MUST pass after code
+    coverage_threshold: 90           # Minimum coverage %
+    pending_tags_allowed: false      # No PENDING tags at completion
+
+# =============================================================================
+# Change Management Configuration (v6.0)
+# =============================================================================
+change_management:
+  enabled: false                    # Enable via --chg-mode flag
+  auto_classify: true               # Auto-determine L1/L2/L3
+  create_chg_doc: true              # Auto-create CHG document
+  validate_gates: true              # Run gate validation scripts
+  archive_obsolete: true            # Archive replaced artifacts (L3)
+  chg_directory: "docs/CHG"
+  templates:
+    l2: "CHG/CHG-MVP-TEMPLATE.md"
+    l3: "CHG/CHG-TEMPLATE.md"
+  gates:
+    gate01: "CHG/scripts/validate_gate01.sh"
+    gate05: "CHG/scripts/validate_gate05.sh"
+    gate09: "CHG/scripts/validate_gate09.sh"
+    gate12: "CHG/scripts/validate_gate12.sh"
+
+# Auto-detect project mode (greenfield vs brownfield)
+project_modes:
+  auto:
+    description: Auto-detect project mode
+    fallback: greenfield
+  
+  greenfield:
+    description: New project starting from scratch
+    detection:
+      condition: no_layers_exist
+      commands:
+        - test ! -f ai_dev_flow/01_BRD/BRD*.md
+        - test ! -f ai_dev_flow/02_PRD/PRD*.md
+      behavior:
+        skip_existing: false
+        overwrite_on_conflict: false
+        validate_before_generate: false
+        generate_index_files: true
+        create_directory_structure: true
+  
+  brownfield:
+    description: Existing project with partial artifacts
+    detection:
+      condition: layers_exist
+      commands:
+        - test -f ai_dev_flow/*/BRD*.md -o -f ai_dev_flow/*/PRD*.md
+      behavior:
+        skip_existing: true
+        overwrite_on_conflict: false
+        validate_before_generate: true
+        discover_existing_artifacts: true
+        resume_from_last_completed: true
+        update_index_files: true
+
+# Entry exit points (valid entry layers)
+entry_exit_points:
+  valid_entries:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TSPEC
+    - L11_TASKS
+
+# Valid exit points (valid stop layers)
+valid_exits:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TSPEC
+    - L11_TASKS
+
+# Common start/end combinations
+presets:
+  planning_phase:
+    entry: L1_BRD
+    exit: L5_ADR
+    description: Business planning through architecture decisions
+
+  requirements_phase:
+    entry: L2_PRD
+    exit: L7_REQ
+    description: Requirements definition and decomposition
+
+  specifications_phase:
+    entry: L7_REQ
+    exit: L9_SPEC
+    description: Technical specifications
+
+  tspec_phase:
+    entry: L9_SPEC
+    exit: L10_TSPEC
+    description: Generate test specifications from SPEC
+
+  full_docs:
+    entry: L1_BRD
+    exit: L11_TASKS
+    description: Complete documentation pipeline
+
+  testing_focus:
+    entry: L4_BDD
+    exit: L11_TASKS
+    description: Start from BDD, generate through implementation plan
+
+  contracts_only:
+    entry: L7_REQ
+    exit: L8_CTR
+    description: Generate API contracts from requirements
+
+  # TDD Presets (v6.0)
+  tdd_full:
+    entry: L1_BRD
+    exit: L11_TASKS
+    tdd_mode: true
+    description: Full TDD workflow with test-first validation
+
+  tdd_from_spec:
+    entry: L9_SPEC
+    exit: L11_TASKS
+    tdd_mode: true
+    description: TDD workflow starting from SPEC

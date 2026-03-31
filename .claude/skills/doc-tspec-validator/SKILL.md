@@ -35,7 +35,7 @@ Validates TSPEC documents for:
 - Cumulative tagging (8 required: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec)
 - TASKS-Ready scoring
 - File naming convention (TSPEC-NN_{slug}.md or {TYPE}-NN_{slug}.md)
-- Element ID format (TSPEC.NN.TT.SS where TT is 40-43)
+- Element ID format (TSPEC.NN.xxxx where TT is 40-43)
 - Test type validation (UTEST/ITEST/STEST/FTEST)
 
 ## Activation
@@ -196,7 +196,7 @@ Forbidden tag patterns:
 
 ### 5. Element ID Format
 
-**Pattern**: `TSPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `TSPEC.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 **Valid Element Type Codes**: 40, 41, 42, 43, 44, 45
 
@@ -204,19 +204,19 @@ Forbidden tag patterns:
 
 | Element ID | Valid | Test Type |
 |------------|-------|-----------|
-| `TSPEC.01.40.01` | Yes | Unit Test |
-| `TSPEC.01.41.01` | Yes | Integration Test |
-| `TSPEC.01.42.01` | Yes | Smoke Test |
-| `TSPEC.01.43.01` | Yes | Functional Test |
-| `TSPEC.01.44.01` | Yes | Performance Test |
-| `TSPEC.01.45.01` | Yes | Security Test |
-| `TSPEC.01.46.01` | No | Invalid code (46 not in 40-45) |
+| `TSPEC.01.4001` | Yes | Unit Test |
+| `TSPEC.01.4101` | Yes | Integration Test |
+| `TSPEC.01.4201` | Yes | Smoke Test |
+| `TSPEC.01.4301` | Yes | Functional Test |
+| `TSPEC.01.4401` | Yes | Performance Test |
+| `TSPEC.01.4501` | Yes | Security Test |
+| `TSPEC.01.4601` | No | Invalid code (46 not in 40-45) |
 | `TC-001` | No | Legacy pattern |
 | `UT-001` | No | Legacy pattern |
 
 **Deprecated Patterns (Do NOT use)**:
 
-- `TC-XXX` - Use `TSPEC.NN.TT.SS` instead
+- `TC-XXX` - Use `TSPEC.NN.xxxx` instead
 - `UT-XXX` - Use `TSPEC.NN.40.SS` instead
 - `IT-XXX` - Use `TSPEC.NN.41.SS` instead
 - `ST-XXX` - Use `TSPEC.NN.42.SS` instead
@@ -253,8 +253,8 @@ docs/10_TSPEC/
 **Layer 10 Cumulative Tags (8 Required)**:
 
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
 @ears: EARS.NN.25.SS
 @bdd: BDD.NN.14.SS
 @adr: ADR-NN
@@ -274,14 +274,14 @@ docs/10_TSPEC/
 | Notation | Format | Artifacts |
 |----------|--------|-----------|
 | Dash | TYPE-NN | ADR, SPEC, CTR |
-| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, TSPEC |
+| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, TSPEC |
 
 ### 8. Test Case Format Requirements
 
 Each test case MUST include:
 
 ```markdown
-### TSPEC.NN.TT.SS: [Test Name]
+### TSPEC.NN.xxxx: [Test Name]
 
 **Category**: [Logic] | [State] | [Validation] | [Edge] | [Integration] | [Critical Path]
 
@@ -385,7 +385,7 @@ AND no side effects occur
 | TSPEC-E010 | ERROR | Missing Test Case Details (Section 4) |
 | TSPEC-E011 | ERROR | Invalid element type code (must be 40-43) |
 | TSPEC-E012 | ERROR | Missing cumulative tags (requires 8: @brd through @spec) |
-| TSPEC-E013 | ERROR | Invalid element ID format (not TSPEC.NN.TT.SS) |
+| TSPEC-E013 | ERROR | Invalid element ID format (not TSPEC.NN.xxxx) |
 | TSPEC-E014 | ERROR | Missing upstream @spec tag |
 | TSPEC-E015 | ERROR | Missing Coverage Matrix (Section 5) |
 | TSPEC-E016 | ERROR | Missing SPEC Reference in Document Control |
@@ -444,7 +444,7 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
 4. Verify section structure (6 required sections)
 5. Validate Document Control table completeness
 6. Check SPEC Reference presence
-7. Validate element ID format (TSPEC.NN.TT.SS)
+7. Validate element ID format (TSPEC.NN.xxxx)
 8. Verify element type code matches document type:
    - UTEST: code 40
    - ITEST: code 41
@@ -466,7 +466,7 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
 | Issue | Auto-Fix Action |
 |-------|-----------------|
 | Missing cumulative tags | Add with upstream document reference |
-| Invalid element ID format | Convert to TSPEC.NN.TT.SS format |
+| Invalid element ID format | Convert to TSPEC.NN.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Deprecated ID patterns | Convert to unified format (TC-001 to TSPEC.NN.TT.01) |
@@ -494,13 +494,13 @@ Status: PASS/FAIL
 TASKS-Ready Score: 92% (Target: >=90%) [PASS]
 
 Cumulative Tags:
-  @brd: BRD.01.01.01 [PRESENT]
-  @prd: PRD.01.07.01 [PRESENT]
-  @ears: EARS.01.25.01 [PRESENT]
-  @bdd: BDD.01.14.01 [PRESENT]
+  @brd: BRD.01.0101 [PRESENT]
+  @prd: PRD.01.0701 [PRESENT]
+  @ears: EARS.01.2501 [PRESENT]
+  @bdd: BDD.01.1401 [PRESENT]
   @adr: ADR-01 [PRESENT]
-  @sys: SYS.01.26.01 [PRESENT]
-  @req: REQ.01.27.01 [PRESENT]
+  @sys: SYS.01.2601 [PRESENT]
+  @req: REQ.01.2701 [PRESENT]
   @spec: SPEC-01 [PRESENT]
   Tags: 8/8 [COMPLETE]
 
@@ -518,9 +518,9 @@ Errors: 0
 Warnings: 3
 Info: 1
 
-[TSPEC-W002] WARNING: Missing pseudocode for TSPEC.01.40.05
+[TSPEC-W002] WARNING: Missing pseudocode for TSPEC.01.4005
 [TSPEC-W004] WARNING: Coverage percentage (83%) below target (90%)
-[TSPEC-W019] WARNING: Missing I/O table for TSPEC.01.40.12
+[TSPEC-W019] WARNING: Missing I/O table for TSPEC.01.4012
 [TSPEC-I002] INFO: Consider adding test data setup documentation
 ```
 

@@ -229,11 +229,11 @@ Validates PRD requirements accurately reflect BRD source.
 **Detection**:
 ```
 Verifying PRD requirements map to BRD source...
-├── PRD.01.01.01 → BRD.01.01.01 (Multi-Provider Auth) ✓
-├── PRD.01.01.02 → BRD.01.01.02 (4D Authorization) ✓
-├── PRD.01.01.03 → BRD.01.01.03 (Trust Levels) ✓
-├── PRD.01.01.09 → ??? ✗ NO BRD MAPPING
-├── BRD.01.01.10 → ??? ✗ NO PRD MAPPING (deferred)
+├── PRD.01.0101 → BRD.01.0101 (Multi-Provider Auth) ✓
+├── PRD.01.0102 → BRD.01.0102 (4D Authorization) ✓
+├── PRD.01.0103 → BRD.01.0103 (Trust Levels) ✓
+├── PRD.01.0109 → ??? ✗ NO BRD MAPPING
+├── BRD.01.0110 → ??? ✗ NO PRD MAPPING (deferred)
 └── Result: 11/12 aligned, 1 orphan, 1 missing
 
 Scope Alignment:
@@ -311,9 +311,9 @@ Validates `@brd:`, `@depends:`, and `@discoverability:` tags.
 ```
 Validating traceability tags...
 ├── @brd tags: 15 found
-│   ├── BRD.01.01.01 ✓ (exists in BRD-01)
-│   ├── BRD.01.01.02 ✓
-│   ├── BRD.01.99.01 ✗ NOT FOUND in BRD
+│   ├── BRD.01.0101 ✓ (exists in BRD-01)
+│   ├── BRD.01.0102 ✓
+│   ├── BRD.01.9901 ✗ NOT FOUND in BRD
 │   └── ...
 ├── @depends tags: 2 found
 │   ├── PRD-06 ✓ (exists)
@@ -425,7 +425,7 @@ Reviewing customer-facing content (Section 10)...
 Validates element IDs and threshold tags follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `PRD.NN.TT.SS` format
+- Element IDs use `PRD.NN.xxxx` format
 - Element type codes valid for PRD (01-09, 11, 22, 24)
 - Threshold tags use `@threshold: PRD.NN.key` format
 - No legacy patterns (US-NNN, FR-NNN, AC-NNN, F-NNN)
@@ -434,9 +434,9 @@ Validates element IDs and threshold tags follow `doc-naming` standards.
 ```
 Validating naming compliance (per doc-naming skill)...
 ├── Element IDs: 24 found
-│   ├── PRD.01.01.01 ✓ (valid format, code 01 valid for PRD)
-│   ├── PRD.01.09.05 ✓ (valid format, code 09 valid for PRD)
-│   ├── PRD.01.25.01 ✗ (code 25 not valid for PRD - EARS only)
+│   ├── PRD.01.0101 ✓ (valid format, code 01 valid for PRD)
+│   ├── PRD.01.0905 ✓ (valid format, code 09 valid for PRD)
+│   ├── PRD.01.2501 ✗ (code 25 not valid for PRD - EARS only)
 │   └── ...
 ├── Threshold tags: 8 found
 │   ├── @threshold: PRD.01.perf.auth.p99 ✓
@@ -976,8 +976,8 @@ docs/02_PRD/PRD-01_f1_iam/
 
 | Requirement | Reason | Note |
 |-------------|--------|------|
-| BRD.01.01.10 | Device Trust | Marked P3, next cycle |
-| BRD.01.01.12 | Time-Based Access | Marked P3, next cycle |
+| BRD.01.0110 | Device Trust | Marked P3, next cycle |
+| BRD.01.0112 | Time-Based Access | Marked P3, next cycle |
 
 ---
 

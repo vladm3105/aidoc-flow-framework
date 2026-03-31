@@ -154,13 +154,13 @@ Use `doc-adr` when:
 
 ### 4. Element ID Format (MANDATORY)
 
-**Pattern**: `ADR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `ADR.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Decision | 10 | ADR.02.10.01 |
-| Alternative | 12 | ADR.02.12.01 |
-| Consequence | 13 | ADR.02.13.01 |
+| Decision | 10 | ADR.02.1001 |
+| Alternative | 12 | ADR.02.1201 |
+| Consequence | 13 | ADR.02.1301 |
 
 **REMOVED PATTERNS** - Do NOT use legacy formats:
 - ❌ `DEC-XXX` → Use `ADR.NN.10.SS`
@@ -203,11 +203,11 @@ caching:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.30` → Points to element 01.30 inside document `BRD-017.md`
+- `@brd: BRD.17.0130` → Points to element 01.30 inside document `BRD-017.md`
 
 ## Cumulative Tagging Requirements
 
@@ -222,10 +222,10 @@ caching:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 
-@brd: BRD.01.01.30
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0130
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 ```
 
 **Upstream Sources**:
@@ -400,7 +400,7 @@ Commit ADR and traceability matrix.
 | CHECK 5 | Warning | Decision Quality Assessment |
 | CHECK 6 | Warning | Architecture Documentation (Mermaid diagrams) |
 | CHECK 7 | Warning | Implementation Readiness |
-| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
 
 ### Validation Tiers
 
@@ -443,7 +443,7 @@ pre-commit run adr-sys-ready-score --all-files
 - ✅ SYS-Ready score ≥90% for Accepted status
 - ✅ Metadata and tags (adr, layer-5-artifact)
 - ✅ Upstream traceability (@brd, @prd, @ears, @bdd)
-- ✅ Element ID format (ADR.NN.TT.SS)
+- ✅ Element ID format (ADR.NN.xxxx)
 - ✅ No placeholder text in approved documents
 - ✅ Architecture diagrams (Mermaid required)
 - ✅ Decision quality and alternatives analysis
@@ -474,7 +474,7 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN -
 - [ ] Relations to other ADRs documented
 - [ ] Technology Stack (ADR-000) referenced if applicable
 - [ ] Cumulative tags: @brd, @prd, @ears, @bdd included
-- [ ] Element IDs use unified format (ADR.NN.TT.SS)
+- [ ] Element IDs use unified format (ADR.NN.xxxx)
 - [ ] No legacy patterns (DEC-XXX, ALT-XXX, CON-XXX)
 - [ ] Traceability matrix updated
 
@@ -504,8 +504,8 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
-| Legacy element ID (DEC-XXX, ALT-XXX, CON-XXX) | Convert to ADR.NN.TT.SS format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
+| Legacy element ID (DEC-XXX, ALT-XXX, CON-XXX) | Convert to ADR.NN.xxxx format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -531,7 +531,7 @@ LOOP:
 3. **Vague consequences**: Be specific about impacts
 4. **No verification**: Must define how to validate decision
 5. **Missing cumulative tags**: Layer 5 must include Layers 1-4 tags
-6. **Legacy element IDs**: Use ADR.NN.TT.SS not DEC-XXX/ALT-XXX/CON-XXX
+6. **Legacy element IDs**: Use ADR.NN.xxxx not DEC-XXX/ALT-XXX/CON-XXX
 7. **Wrong SYS-Ready Score format**: Must include ✅ emoji and percentage
 
 ---
@@ -601,7 +601,7 @@ The SYS will:
 
 **SYS-Ready Score**: ≥90% required for "Accepted" status
 
-**Element ID Format**: ADR.NN.TT.SS (Decision=10, Alternative=12, Consequence=13)
+**Element ID Format**: ADR.NN.xxxx (Decision=10, Alternative=12, Consequence=13)
 
 **File Size**: 800 lines target, 1200 max
 

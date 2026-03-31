@@ -349,8 +349,8 @@ When `PRD.NN.05.*` IDs appear in Section 5 (Success Metrics), convert to `PRD.NN
 
 ```python
 # Section 5 metrics must use type code 08, not 05
-old_id = "PRD.01.05.01"  # Wrong: uses section number as type code
-new_id = "PRD.01.08.01"  # Correct: uses Metric type code 08
+old_id = "PRD.01.0501"  # Wrong: uses section number as type code
+new_id = "PRD.01.0801"  # Correct: uses Metric type code 08
 ```
 
 **Regex Patterns**:
@@ -551,7 +551,7 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 
 | Change Type | Auto-Action | Example |
 |-------------|-------------|---------|
-| New requirement added | Append with generated ID | `PRD.01.01.13` |
+| New requirement added | Append with generated ID | `PRD.01.0113` |
 | Threshold value changed | Find & replace value | `timeout: 30 -> 45` |
 | Reference updated | Update `@ref:` path | Path correction |
 | Version incremented | Update version reference | `v1.2 -> v1.3` |
@@ -570,7 +570,7 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
         existing_ids: List of existing IDs in document
 
     Returns:
-        Next available ID (e.g., 'PRD.01.01.13')
+        Next available ID (e.g., 'PRD.01.0113')
     """
     pattern = f"{doc_type}.{doc_num}.{element_type}."
     matching = [id for id in existing_ids if id.startswith(pattern)]
@@ -582,7 +582,7 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
     return f"{pattern}{str(max_seq + 1).zfill(2)}"
 ```
 
-**ID Pattern for PRD**: `PRD.NN.TT.SS` where:
+**ID Pattern for PRD**: `PRD.NN.xxxx` where:
 - `NN` = Document number (01, 02, etc.)
 - `TT` = Type code (01=Functional, 05=User Story, 06=Acceptance Criterion, etc.)
 - `SS` = Sequence number (01, 02, etc.)
@@ -643,11 +643,11 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 | Added | BRD-01.3_quality_ops.md | 7.2 | New performance requirement |
 
 **New Requirements Added**:
-- PRD.01.01.13: Passkey Authentication Support
-- PRD.01.01.14: WebAuthn Fallback Mechanism
+- PRD.01.0113: Passkey Authentication Support
+- PRD.01.0114: WebAuthn Fallback Mechanism
 
 **Thresholds Updated**:
-- PRD.01.02.05: session_idle_timeout: 30->45 min
+- PRD.01.0205: session_idle_timeout: 30->45 min
 
 **Impact**: EARS-01, BDD-01, ADR-01 may require review
 ```
@@ -734,10 +734,10 @@ Documents requiring update after regeneration:
 - Instead, marked with `[DEPRECATED]` status:
 
 ```markdown
-### PRD.01.01.05: Legacy Authentication Method [DEPRECATED]
+### PRD.01.0105: Legacy Authentication Method [DEPRECATED]
 
 > **Status**: DEPRECATED (upstream removed 2026-02-10T16:00:00)
-> **Reason**: Replaced by PRD.01.01.13 (Passkey Authentication)
+> **Reason**: Replaced by PRD.01.0113 (Passkey Authentication)
 > **Action**: Retain for traceability; do not implement
 
 **Original Requirement**: {original_text}
@@ -783,10 +783,10 @@ After processing drift, update `.drift_cache.json`:
   ],
   "deprecated_items": [
     {
-      "id": "PRD.01.01.05",
+      "id": "PRD.01.0105",
       "deprecated_date": "2026-02-10T16:00:00",
       "reason": "Upstream removal",
-      "replaced_by": "PRD.01.01.13"
+      "replaced_by": "PRD.01.0113"
     }
   ]
 }
@@ -813,15 +813,15 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| PRD.01.01.13 | Added | BRD-01.1:3.5 | Passkey authentication support |
-| PRD.01.02.05 | Updated | BRD-01.1:4.2 | Session timeout 30->45 min |
+| PRD.01.0113 | Added | BRD-01.1:3.5 | Passkey authentication support |
+| PRD.01.0205 | Updated | BRD-01.1:4.2 | Session timeout 30->45 min |
 
 ### Tier 2 Auto-Merges (5-15%)
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| PRD.01.01.14 | Added | BRD-01.2:5.3 | WebAuthn fallback mechanism |
-| PRD.01.07.04 | Added | BRD-01.2:7.2 | New risk: credential phishing |
+| PRD.01.0114 | Added | BRD-01.2:5.3 | WebAuthn fallback mechanism |
+| PRD.01.0704 | Added | BRD-01.2:7.2 | New risk: credential phishing |
 
 ### Tier 3 Archives (> 15%)
 
@@ -835,7 +835,7 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Deprecated Date | Reason | Replaced By |
 |----|-----------------|--------|-------------|
-| PRD.01.01.05 | 2026-02-10T16:00:00 | Upstream removed | PRD.01.01.13 |
+| PRD.01.0105 | 2026-02-10T16:00:00 | Upstream removed | PRD.01.0113 |
 
 ### Version Changes
 
@@ -1052,7 +1052,7 @@ Before applying any fixes:
 | 2.3 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-reviewer` to `doc-brd-audit` (unified quality gate) |
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; added compatibility for `PRD-NN.A_audit_report_vNNN.md` (preferred) with legacy `PRD-NN.R_review_report_vNNN.md` support |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
-| 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.TT.SS format); Archive manifest creation; Enhanced drift cache with merge history |
+| 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.xxxx format); Archive manifest creation; Enhanced drift cache with merge history |
 | 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion for PRD codes (01-09, 11, 22, 24); Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)

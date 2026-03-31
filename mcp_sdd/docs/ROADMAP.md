@@ -6,8 +6,8 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.5.0 |
-| Latest Release | 1.5.0 (sdd_validate_links tool, executor write fixes, 20 tools) |
+| Current Version | 1.6.0 |
+| Latest Release | 1.6.0 (3-segment element IDs, template + prompt migration) |
 | Previous Release | 1.3.0 (diagnostics and governance refinement) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
@@ -161,6 +161,25 @@ Delivered scope:
 References:
 
 - changelog/CHANGELOG_v0.12.1.md (repo-level changelog)
+
+---
+
+### v1.6.0 - 3-Segment Element ID Migration
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-03-31 |
+| Scope | Element IDs from TYPE.NN.TT.hash to TYPE.NN.hash |
+
+Delivered scope:
+
+- All 11 templates: format, guidance, examples updated to 3-segment
+- Prompt templates: UCC_PROMPT_PRD "4-segment" instruction removed
+- Validation regex: `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`
+- Element type code table deprecated
+- AUTOPILOT directory archived
 
 ---
 

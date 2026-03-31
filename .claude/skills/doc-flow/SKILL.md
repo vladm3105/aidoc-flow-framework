@@ -337,7 +337,7 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 
 **`doc-naming`** - Unified ID naming standards enforcement
 - Use for ID format validation across all artifact types
-- Validates 4-segment element IDs (TYPE.NN.TT.SS)
+- Validates 3-segment element IDs (TYPE.NN.xxxx)
 - Enforces variable-length DOC_NUM (2+ digits)
 - Reference: `.claude/skills/doc-naming/SKILL.md`
 
@@ -483,7 +483,7 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

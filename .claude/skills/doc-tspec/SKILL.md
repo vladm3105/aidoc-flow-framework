@@ -87,19 +87,19 @@ Use `doc-tspec` when:
 
 ## Element ID Format (MANDATORY)
 
-**Pattern**: `TSPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `TSPEC.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Test Category | Example |
 |--------------|------|---------------|---------|
-| Unit Test Case | 40 | UTEST | TSPEC.01.40.01 |
-| Integration Test Case | 41 | ITEST | TSPEC.01.41.01 |
-| Smoke Test Case | 42 | STEST | TSPEC.01.42.01 |
-| Functional Test Case | 43 | FTEST | TSPEC.01.43.01 |
-| Performance Test Case | 44 | PTEST | TSPEC.01.44.01 |
-| Security Test Case | 45 | SECTEST | TSPEC.01.45.01 |
+| Unit Test Case | 40 | UTEST | TSPEC.01.4001 |
+| Integration Test Case | 41 | ITEST | TSPEC.01.4101 |
+| Smoke Test Case | 42 | STEST | TSPEC.01.4201 |
+| Functional Test Case | 43 | FTEST | TSPEC.01.4301 |
+| Performance Test Case | 44 | PTEST | TSPEC.01.4401 |
+| Security Test Case | 45 | SECTEST | TSPEC.01.4501 |
 
 > **REMOVED PATTERNS** - Do NOT use legacy formats:
-> - `TC-XXX` - Use `TSPEC.NN.TT.SS` instead
+> - `TC-XXX` - Use `TSPEC.NN.xxxx` instead
 > - `UT-XXX` - Use `TSPEC.NN.40.SS` instead
 > - `IT-XXX` - Use `TSPEC.NN.41.SS` instead
 > - `ST-XXX` - Use `TSPEC.NN.42.SS` instead
@@ -171,7 +171,7 @@ docs/10_TSPEC/
 Each test case MUST include:
 
 ```markdown
-### TSPEC.NN.TT.SS: [Test Name]
+### TSPEC.NN.xxxx: [Test Name]
 
 **Category**: [Logic] | [State] | [Validation] | [Edge] | [Integration] | [Critical Path]
 
@@ -282,13 +282,13 @@ AND no side effects occur
 
 | Artifact | Element Type | Code | Example |
 |----------|--------------|------|---------|
-| BRD | Business Requirement | 01 | BRD.01.01.03 |
-| PRD | Product Feature | 07 | PRD.01.07.02 |
-| EARS | EARS Statement | 25 | EARS.01.25.01 |
-| BDD | Scenario | 14 | BDD.01.14.01 |
+| BRD | Business Requirement | 01 | BRD.01.0103 |
+| PRD | Product Feature | 07 | PRD.01.0702 |
+| EARS | EARS Statement | 25 | EARS.01.2501 |
+| BDD | Scenario | 14 | BDD.01.1401 |
 | ADR | Document reference | - | ADR-033 (dash notation) |
-| SYS | System Requirement | 26 | SYS.01.26.01 |
-| REQ | Atomic Requirement | 27 | REQ.01.27.01 |
+| SYS | System Requirement | 26 | SYS.01.2601 |
+| REQ | Atomic Requirement | 27 | REQ.01.2701 |
 | SPEC | Document reference | - | SPEC-01 (dash notation) |
 
 **Minimum (8 tags - CTR skipped)**:
@@ -297,25 +297,25 @@ AND no side effects occur
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 10):
 
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.01
+@sys: SYS.01.2601
+@req: REQ.01.2701
 @spec: SPEC-01
 ```
 
 **Maximum (9 tags - CTR included)**:
 ```markdown
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
-@sys: SYS.01.26.01
-@req: REQ.01.27.01
+@sys: SYS.01.2601
+@req: REQ.01.2701
 @ctr: CTR-01
 @spec: SPEC-01
 ```
@@ -327,11 +327,11 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
 | Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - references to files/documents |
-| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, TSPEC | Hierarchical artifacts - references to elements inside documents |
+| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, TSPEC | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` - Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` - Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` - Points to element 01.01 inside document `BRD-017.md`
 
 ## Validation Checks
 
@@ -343,7 +343,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 | CHECK 2 | YAML frontmatter present with required fields |
 | CHECK 3 | Document Control table complete |
 | CHECK 4 | All required sections present |
-| CHECK 5 | Element ID format compliance (TSPEC.NN.TT.SS) |
+| CHECK 5 | Element ID format compliance (TSPEC.NN.xxxx) |
 | CHECK 6 | Element type code matches document type (40/41/42/43) |
 | CHECK 7 | All 8 required traceability tags present |
 | CHECK 8 | Parent SPEC reference valid and file exists |
@@ -413,7 +413,7 @@ Summary table listing all test cases with priority.
 ### Step 8: Write Test Case Details
 
 For each test case:
-- Assign Element ID (TSPEC.NN.TT.SS)
+- Assign Element ID (TSPEC.NN.xxxx)
 - Define category
 - Add traceability tags
 - Create I/O table
@@ -478,7 +478,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSP
 - [ ] Document Control section at top
 - [ ] Test Scope defines component and categories
 - [ ] Test Case Index lists all tests with priority
-- [ ] Each test case has TSPEC.NN.TT.SS ID
+- [ ] Each test case has TSPEC.NN.xxxx ID
 - [ ] Element type code matches document type (40/41/42/43)
 - [ ] I/O tables present for all test cases
 - [ ] Pseudocode provided for complex logic
@@ -498,9 +498,9 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 1. **Wrong element type code**: Use 40 for UTEST, 41 for ITEST, 42 for STEST, 43 for FTEST
 2. **Missing I/O tables**: Every test case needs input/output specification
 3. **No coverage matrix**: Must track REQ element coverage
-4. **Wrong tag format**: Use TSPEC.NN.TT.SS for elements, TYPE-NN for documents
+4. **Wrong tag format**: Use TSPEC.NN.xxxx for elements, TYPE-NN for documents
 5. **Missing cumulative tags**: Layer 10 requires all 8-9 upstream tags
-6. **Legacy test IDs**: Use TSPEC.NN.TT.SS, NOT TC-XXX, UT-XXX, etc.
+6. **Legacy test IDs**: Use TSPEC.NN.xxxx, NOT TC-XXX, UT-XXX, etc.
 7. **No pseudocode**: Complex tests require algorithm specification
 8. **Incomplete error cases**: Document expected behavior for all error conditions
 
@@ -540,7 +540,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer TSPEC --auto-f
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -797,7 +797,7 @@ For supplementary documentation needs, create:
 
 **Layer**: 10
 
-**Element ID Format**: `TSPEC.NN.TT.SS`
+**Element ID Format**: `TSPEC.NN.xxxx`
 - Unit Test = 40
 - Integration Test = 41
 - Smoke Test = 42

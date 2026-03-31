@@ -459,7 +459,7 @@ Fix: Set `drift_detected: true`, add to manual review
 
 **Upstream**: PRD (Layer 2)
 **Downstream**: BDD (Layer 4)
-**ID Pattern**: `EARS.NN.TT.SS` (e.g., `EARS.01.25.13`)
+**ID Pattern**: `EARS.NN.xxxx` (e.g., `EARS.01.2513`)
 
 #### Drift Issue Codes (from `doc-ears-reviewer` Check #9)
 
@@ -538,7 +538,7 @@ def determine_tier(drift_percentage: float) -> int:
 
 | Change Type | Action | ID Assignment |
 |-------------|--------|---------------|
-| New requirement in PRD | Add EARS statement | Next sequential ID (e.g., `EARS.01.25.13`) |
+| New requirement in PRD | Add EARS statement | Next sequential ID (e.g., `EARS.01.2513`) |
 | Updated threshold | Update constraint value | Keep existing ID |
 | Added clarification | Append to existing statement | Keep existing ID |
 
@@ -549,7 +549,7 @@ def generate_next_ears_id(ears_doc: str, type_code: str = "25") -> str:
     """
     Generate next sequential EARS ID.
 
-    ID Pattern: EARS.NN.TT.SS
+    ID Pattern: EARS.NN.xxxx
     - NN: Document number (01-99)
     - TT: Type code (25=Statement, 26=Constraint)
     - SS: Sequence number (01-99)
@@ -615,15 +615,15 @@ new_version = increment_version(current_version, "patch")  # "1.0.1"
 
 | New ID | Statement Summary | Source PRD Section |
 |--------|-------------------|-------------------|
-| EARS.01.25.13 | System shall support batch processing | PRD-01 Section 5.2 |
-| EARS.01.25.14 | System shall provide progress notifications | PRD-01 Section 5.3 |
-| EARS.01.26.05 | Response time constraint for batch ops | PRD-01 Section 7.1 |
+| EARS.01.2513 | System shall support batch processing | PRD-01 Section 5.2 |
+| EARS.01.2514 | System shall provide progress notifications | PRD-01 Section 5.3 |
+| EARS.01.2605 | Response time constraint for batch ops | PRD-01 Section 7.1 |
 
 ### Modifications
 
 | ID | Previous | Updated | Reason |
 |----|----------|---------|--------|
-| EARS.01.25.07 | "within 100ms" | "within 50ms" | Performance threshold tightened |
+| EARS.01.2507 | "within 100ms" | "within 50ms" | Performance threshold tightened |
 
 ### No Deletions (See No-Deletion Policy)
 ```
@@ -751,7 +751,7 @@ new_version = increment_version(current_version, "major")  # "2.0.0"
 **Deprecation Marker Format**:
 
 ```markdown
-### EARS.01.25.05 [DEPRECATED]
+### EARS.01.2505 [DEPRECATED]
 
 > **Deprecation Date**: 2026-02-10
 > **Reason**: Removed from PRD-01 v1.3.0 (Section 4.2 deleted)
@@ -776,7 +776,7 @@ def mark_deprecated(
     Mark EARS requirement as deprecated instead of deleting.
 
     Args:
-        ears_id: EARS ID to deprecate (e.g., "EARS.01.25.05")
+        ears_id: EARS ID to deprecate (e.g., "EARS.01.2505")
         reason: Reason for deprecation
         upstream_ref: PRD reference that triggered deprecation
         downstream_refs: List of downstream BDD references affected
@@ -825,8 +825,8 @@ After processing drift issues, update `.drift_cache.json`:
       "drift_percentage": 8.3,
       "version_before": "1.0.1",
       "version_after": "1.1.0",
-      "additions": ["EARS.01.25.13", "EARS.01.25.14", "EARS.01.26.05"],
-      "modifications": ["EARS.01.25.07"],
+      "additions": ["EARS.01.2513", "EARS.01.2514", "EARS.01.2605"],
+      "modifications": ["EARS.01.2507"],
       "deprecations": []
     }
   ],
@@ -1090,7 +1090,7 @@ Before applying any fixes:
 |---------|------|---------|
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata`; added compatibility for `EARS-NN.A_audit_report_vNNN.md` (preferred) with legacy `EARS-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
-| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.TT.SS pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.xxxx pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary and pattern file creation; Element ID conversion for EARS codes (25, 26); Broken link fixes; PRD drift detection; EARS pattern syntax validation; Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)

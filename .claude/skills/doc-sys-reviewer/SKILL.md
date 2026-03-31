@@ -282,7 +282,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `SYS.NN.TT.SS` format
+- Element IDs use `SYS.NN.xxxx` format
 - Element type codes valid for SYS (01, 05, 17, 18, 19, 20, 21)
 - No legacy patterns (SR-NNN, SYS-NNN)
 

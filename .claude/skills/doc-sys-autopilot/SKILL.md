@@ -75,7 +75,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (SYS.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
+| `doc-naming` | Element ID format (SYS.NN.xxxx), threshold tags, legacy pattern detection | All Phases |
 | `doc-sys` | SYS creation rules, 5-part structure, quality attribute categories | Phase 3: SYS Generation |
 | `quality-advisor` | Real-time quality feedback during SYS generation | Phase 3: SYS Generation |
 | `doc-sys-validator` | Validate SYS structure, content, REQ-Ready score | Phase 4: SYS Validation |
@@ -407,17 +407,17 @@ Generate SYS documents with functional requirements and quality attributes.
 
    | Element ID | Requirement | Priority | Source | Verification |
    |------------|-------------|----------|--------|--------------|
-   | SYS.01.01.01 | The system shall... | Must Have | ADR-01.Decision | Integration Test |
-   | SYS.01.01.02 | The system shall... | Should Have | ADR-01.Impl | Unit Test |
+   | SYS.01.0101 | The system shall... | Must Have | ADR-01.Decision | Integration Test |
+   | SYS.01.0102 | The system shall... | Should Have | ADR-01.Impl | Unit Test |
 
    **Element Type Codes** (per `doc-naming` skill):
 
    | Element Type | Code | Example |
    |--------------|------|---------|
-   | Functional Requirement | 01 | SYS.02.01.01 |
-   | Quality Attribute | 02 | SYS.02.02.01 |
-   | Use Case | 11 | SYS.02.11.01 |
-   | System Requirement | 26 | SYS.02.26.01 |
+   | Functional Requirement | 01 | SYS.02.0101 |
+   | Quality Attribute | 02 | SYS.02.0201 |
+   | Use Case | 11 | SYS.02.1101 |
+   | System Requirement | 26 | SYS.02.2601 |
 
 5. **Generate Quality Attributes (Part 2 - Section 5)**:
 
@@ -438,8 +438,8 @@ Generate SYS documents with functional requirements and quality attributes.
    ```markdown
    | ID | Category | Attribute | Target | Measurement | Source |
    |----|----------|-----------|--------|-------------|--------|
-   | SYS.01.02.01 | Performance | API Response Time | p95 < 100ms | APM Monitoring | @threshold: PRD.01.perf.api.p95_latency |
-   | SYS.01.02.02 | Reliability | Availability | 99.9% | Uptime Monitoring | @threshold: PRD.01.sla.uptime.target |
+   | SYS.01.0201 | Performance | API Response Time | p95 < 100ms | APM Monitoring | @threshold: PRD.01.perf.api.p95_latency |
+   | SYS.01.0202 | Reliability | Availability | 99.9% | Uptime Monitoring | @threshold: PRD.01.sla.uptime.target |
    ```
 
 6. **Generate Interface Specifications (Part 3 - Section 6)**:
@@ -454,7 +454,7 @@ Generate SYS documents with functional requirements and quality attributes.
 7. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
-   - Validate element ID format compliance (SYS.NN.TT.SS)
+   - Validate element ID format compliance (SYS.NN.xxxx)
    - Check for placeholder text ([TBD], TODO, XXX)
    - Verify Mermaid diagram presence (recommended for SYS)
    - Validate @threshold tag usage for quantitative values
@@ -478,10 +478,10 @@ Generate SYS documents with functional requirements and quality attributes.
 
    **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 
-   @brd: BRD.01.01.03
-   @prd: PRD.01.07.02, PRD.01.07.15
-   @ears: EARS.01.25.01, EARS.01.25.02
-   @bdd: BDD.01.14.01
+   @brd: BRD.01.0103
+   @prd: PRD.01.0702, PRD.01.0715
+   @ears: EARS.01.2501, EARS.01.2502
+   @bdd: BDD.01.1401
    @adr: ADR-01, ADR-04
    ```
 
@@ -541,15 +541,15 @@ status: Draft
 
 | ID | Requirement | Priority | Source | Verification |
 |----|-------------|----------|--------|--------------|
-| SYS.01.01.01 | The system SHALL authenticate users via JWT | Must Have | ADR-01 | Integration Test |
-| SYS.01.01.02 | The system SHALL validate tokens within @threshold:PRD.01.perf.auth.p95_latency | Must Have | ADR-01 | Performance Test |
+| SYS.01.0101 | The system SHALL authenticate users via JWT | Must Have | ADR-01 | Integration Test |
+| SYS.01.0102 | The system SHALL validate tokens within @threshold:PRD.01.perf.auth.p95_latency | Must Have | ADR-01 | Performance Test |
 
 ## Quality Attributes
 
 | ID | Category | Attribute | Target | Measurement |
 |----|----------|-----------|--------|-------------|
-| SYS.01.02.01 | Performance | Auth latency | p95 < @threshold:PRD.01.perf.auth.p95_latency | APM |
-| SYS.01.02.02 | Reliability | Auth availability | @threshold:PRD.01.sla.auth.uptime | Uptime Monitor |
+| SYS.01.0201 | Performance | Auth latency | p95 < @threshold:PRD.01.perf.auth.p95_latency | APM |
+| SYS.01.0202 | Reliability | Auth availability | @threshold:PRD.01.sla.auth.uptime | Uptime Monitor |
 
 ## External Dependencies
 
@@ -560,10 +560,10 @@ status: Draft
 
 ## Traceability
 
-@brd: BRD.01.02.01
-@prd: PRD.01.07.01
-@ears: EARS.01.25.01
-@bdd: BDD.01.14.01
+@brd: BRD.01.0201
+@prd: PRD.01.0701
+@ears: EARS.01.2501
+@bdd: BDD.01.1401
 @adr: ADR-01
 ```
 
@@ -676,7 +676,7 @@ python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}/
 | CHECK 5 | Warning | System Boundaries |
 | CHECK 6 | Warning | Interface Specifications (CTR-ready) |
 | CHECK 7 | Warning | Upstream Traceability |
-| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
 | SYS-E040 | Error | External Dependencies table present |
 | SYS-E041 | Error | Fallback Strategy column in dependencies |
 | SYS-E042 | Error | 6-Category REQ-Ready scoring breakdown |
@@ -699,7 +699,7 @@ python ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-NN_{slug}/
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
-| Invalid element ID format | Convert to SYS.NN.TT.SS format |
+| Invalid element ID format | Convert to SYS.NN.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Legacy patterns (FR-XXX, QA-XXX, SR-XXX) | Convert to unified format |
@@ -1015,7 +1015,7 @@ flowchart TD
 |---|-------|----------|------------|
 | 1 | Hardcoded timeout value | SYS-01.01:L45 | Replace with @threshold:PRD.01.timeout.auth |
 | 2 | Missing fallback strategy | SYS-01.03:L78 | Add fallback column |
-| 3 | Legacy element ID | SYS-01.02:L23 | Convert FR-001 to SYS.01.01.01 |
+| 3 | Legacy element ID | SYS-01.02:L23 | Convert FR-001 to SYS.01.0101 |
 | ... | ... | ... | ... |
 
 ## Manual Review Required
@@ -1038,7 +1038,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # Document control, sections
-    - element_id_compliance     # SYS.NN.TT.SS format
+    - element_id_compliance     # SYS.NN.xxxx format
     - threshold_references      # @threshold format and validity
     - external_dependencies     # Table, fallback, timeouts
     - quality_attributes        # 6 categories present
@@ -1117,7 +1117,7 @@ flowchart TD
 |----------|-------|-----------------|-------------------|
 | **Element IDs** | Legacy FR-XXX format | Convert to SYS.NN.01.SS | ✅ |
 | **Element IDs** | Legacy QA-XXX format | Convert to SYS.NN.02.SS | ✅ |
-| **Element IDs** | Invalid segment count | Restructure to 4-segment | ✅ |
+| **Element IDs** | Invalid segment count | Restructure to 3-segment | ✅ |
 | **Thresholds** | Hardcoded numeric values | Replace with @threshold:PRD.NN.xxx | ✅ |
 | **Thresholds** | Invalid threshold format | Convert to @threshold:PRD.NN.category.field | ✅ |
 | **Dependencies** | Missing fallback column | Add Fallback Strategy column | ✅ |
@@ -1152,7 +1152,7 @@ flowchart TD
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | SYS-01.01:L23 | Converted FR-001 → SYS.01.01.01 |
+| 1 | Legacy element ID | SYS-01.01:L23 | Converted FR-001 → SYS.01.0101 |
 | 2 | Hardcoded timeout | SYS-01.02:L45 | Replaced with @threshold:PRD.01.timeout.auth |
 | 3 | Missing fallback | SYS-01.03:L78 | Added "JWT cache; local validation" |
 | ... | ... | ... | ... |
@@ -1218,9 +1218,9 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    FR_XXX_to_SYS_NN_01_SS: true   # FR-001 → SYS.01.01.01
-    QA_XXX_to_SYS_NN_02_SS: true   # QA-001 → SYS.01.02.01
-    SR_XXX_to_SYS_NN_26_SS: true   # SR-001 → SYS.01.26.01
+    FR_XXX_to_SYS_NN_xxxx: true   # FR-001 → SYS.01.0101
+    QA_XXX_to_SYS_NN_02_SS: true   # QA-001 → SYS.01.0201
+    SR_XXX_to_SYS_NN_26_SS: true   # SR-001 → SYS.01.2601
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1575,21 +1575,21 @@ jobs:
 | ADR-06 | SYS-06 | AI/ML |
 | ADR-07 | SYS-07 | Technology Selection |
 
-**Element ID Codes (SYS.NN.TT.SS)**:
+**Element ID Codes (SYS.NN.xxxx)**:
 
 | Type | Code | Example |
 |------|------|---------|
-| Functional Requirement | 01 | SYS.02.01.01 |
-| Quality Attribute | 02 | SYS.02.02.01 |
-| Use Case | 11 | SYS.02.11.01 |
-| System Requirement | 26 | SYS.02.26.01 |
+| Functional Requirement | 01 | SYS.02.0101 |
+| Quality Attribute | 02 | SYS.02.0201 |
+| Use Case | 11 | SYS.02.1101 |
+| System Requirement | 26 | SYS.02.2601 |
 
 **Cumulative Tags Required** (Layer 6 - 5 tags):
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
-@ears: EARS.NN.TT.SS
-@bdd: BDD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
+@ears: EARS.NN.xxxx
+@bdd: BDD.NN.xxxx
 @adr: ADR-NN
 ```
 

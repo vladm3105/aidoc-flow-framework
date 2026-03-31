@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-02-06T12:00:00",
+  "test_directory": "tests/unit",
+  "test_files": [
+    {
+      "file_path": "tests/unit/test_sample_req_01.py",
+      "req_id": "REQ-01",
+      "traceability": {
+        "brd": "BRD.01.01.01",
+        "prd": "PRD.01.02.01",
+        "req": "REQ-01.01.01",
+        "spec": "PENDING",
+        "code": "PENDING"
+      },
+      "test_classes": [
+        {
+          "name": "TestSampleRequirement",
+          "docstring": "Tests for sample requirement.",
+          "methods": [
+            {
+              "name": "test_validate_input",
+              "docstring": "Test input validation."
+            },
+            {
+              "name": "test_process_request",
+              "docstring": "Test request processing."
+            },
+            {
+              "name": "test_error_handling",
+              "docstring": "Test error handling for invalid input."
+            }
+          ]
+        }
+      ],
+      "required_functions": [
+        "validate_input",
+        "process_request"
+      ]
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "total_classes": 1,
+    "total_methods": 3,
+    "pending_specs": 1,
+    "pending_code": 1
+  }
+}

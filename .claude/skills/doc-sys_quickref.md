@@ -39,7 +39,7 @@ docs/06_SYS/SYS-NN_{descriptive_name}/SYS-NN_{descriptive_name}.md
 **Input**: Trade order (symbol, quantity, price, account)
 **Processing**: Validation steps
 **Output**: Validation result
-**Source**: EARS.01.24.01, ADR-033
+**Source**: EARS.01.2401, ADR-033
 ```
 
 **Quality Attribute (QA)**:

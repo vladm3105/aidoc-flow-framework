@@ -457,12 +457,12 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
    - Validate cumulative tagging (@brd requirement for Layer 2)
-   - Check element ID format compliance (PRD.NN.TT.SS)
+   - Check element ID format compliance (PRD.NN.xxxx)
    - Flag issues early to reduce post-generation rework
 
 6. **Traceability Tags**:
    ```markdown
-   @brd: BRD.01.01.01, BRD.01.01.02, BRD.01.23.01
+   @brd: BRD.01.0101, BRD.01.0102, BRD.01.2301
    ```
 
 7. **File Output** (ALWAYS use nested folder):
@@ -645,8 +645,8 @@ After passing the fix cycle:
 3. **BRD Alignment Check**:
    ```
    Verifying PRD requirements map to BRD source...
-   ├── PRD.01.01.01 → BRD.01.01.01 (Multi-Provider Auth) ✓
-   ├── PRD.01.01.02 → BRD.01.01.02 (4D Authorization) ✓
+   ├── PRD.01.0101 → BRD.01.0101 (Multi-Provider Auth) ✓
+   ├── PRD.01.0102 → BRD.01.0102 (4D Authorization) ✓
    └── Result: 12/12 requirements aligned ✓
    ```
 
@@ -955,7 +955,7 @@ Validate existing PRD documents and generate a quality report without modificati
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Legacy element ID | Section 9:L45 | Convert PO-001 to PRD.01.07.01 |
+| 1 | Legacy element ID | Section 9:L45 | Convert PO-001 to PRD.01.0701 |
 | 2 | Placeholder text | Section 14:L78 | Remove [TODO] marker |
 | 3 | Inconsistent threshold | Section 5:L23 | Align to BRD value |
 | ... | ... | ... | ... |
@@ -975,7 +975,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # 21 sections
-    - element_id_compliance     # PRD.NN.TT.SS format
+    - element_id_compliance     # PRD.NN.xxxx format
     - link_integrity            # Internal link check
     - threshold_consistency     # Cross-section consistency
     - brd_alignment             # Upstream traceability
@@ -1044,10 +1044,10 @@ Auto-repair existing PRD documents while preserving manual content.
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| `PO-XXX` | `PRD.NN.07.SS` | PO-001 → PRD.01.07.01 |
-| `FF-XXX` | `PRD.NN.01.SS` | FF-001 → PRD.01.01.01 |
-| `AC-XXX` | `PRD.NN.06.SS` | AC-001 → PRD.01.06.01 |
-| `US-XXX` | `PRD.NN.08.SS` | US-001 → PRD.01.08.01 |
+| `PO-XXX` | `PRD.NN.07.SS` | PO-001 → PRD.01.0701 |
+| `FF-XXX` | `PRD.NN.01.SS` | FF-001 → PRD.01.0101 |
+| `AC-XXX` | `PRD.NN.06.SS` | AC-001 → PRD.01.0601 |
+| `US-XXX` | `PRD.NN.08.SS` | US-001 → PRD.01.0801 |
 
 **Fix Report Structure**:
 
@@ -1063,7 +1063,7 @@ Auto-repair existing PRD documents while preserving manual content.
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 9:L45 | Converted PO-001 → PRD.01.07.01 |
+| 1 | Legacy element ID | Section 9:L45 | Converted PO-001 → PRD.01.0701 |
 | 2 | Placeholder text | Section 14:L78 | Removed [TODO] marker |
 | 3 | Inconsistent threshold | Section 5:L23 | Aligned to BRD.01 value |
 | ... | ... | ... | ... |
@@ -1120,7 +1120,7 @@ fix_mode:
 
   element_id_migration:
     PO_XXX_to_PRD_NN_07_SS: true
-    FF_XXX_to_PRD_NN_01_SS: true
+    FF_XXX_to_PRD_NN_xxxx: true
     AC_XXX_to_PRD_NN_06_SS: true
     US_XXX_to_PRD_NN_08_SS: true
 ```

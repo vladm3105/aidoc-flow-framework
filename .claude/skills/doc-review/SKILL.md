@@ -189,7 +189,7 @@ reference_checks:
 
   tag_format:
     pattern: "@(brd|prd|ears|bdd|adr|sys|req|spec|impl|ctr|tasks):"
-    validate: "follows TYPE.NN.TT.SS format"
+    validate: "follows TYPE.NN.xxxx format"
     error_code: "REF-E004"
 
   circular_reference:
@@ -610,8 +610,8 @@ You are a reference validation expert. Analyze the following file(s) for:
    - [text](path#anchor) - anchor exists
 
 2. **Invalid Cross-References**: Check traceability tags
-   - @brd: BRD.NN.TT.SS format
-   - @prd: PRD.NN.TT.SS format
+   - @brd: BRD.NN.xxxx format
+   - @prd: PRD.NN.xxxx format
    - Document referenced must exist
 
 3. **Relative Path Errors**: Validate ../ paths resolve correctly

@@ -287,7 +287,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `TSPEC.NN.TT.SS` format
+- Element IDs use `TSPEC.NN.xxxx` format
 - Element type codes valid for TSPEC (40, 41, 42, 43, 44, 45)
 - Test case naming convention
 

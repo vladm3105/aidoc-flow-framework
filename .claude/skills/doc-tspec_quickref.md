@@ -22,7 +22,7 @@
 
 ## Element ID Format
 
-**Pattern**: `TSPEC.NN.TT.SS`
+**Pattern**: `TSPEC.NN.xxxx`
 
 | Component | Description | Range |
 |-----------|-------------|-------|
@@ -31,15 +31,15 @@
 | `SS` | Sequential test case | 01-99 |
 
 **Examples**:
-- `TSPEC.01.40.01` = Document 1, Unit Test #1
-- `TSPEC.01.41.03` = Document 1, Integration Test #3
-- `TSPEC.01.44.01` = Document 1, Performance Test #1
+- `TSPEC.01.4001` = Document 1, Unit Test #1
+- `TSPEC.01.4103` = Document 1, Integration Test #3
+- `TSPEC.01.4401` = Document 1, Performance Test #1
 
 ## Cumulative Tags (8-9 Required)
 
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
 @ears: EARS.NN.25.SS
 @bdd: BDD.NN.14.SS
 @adr: ADR-NN

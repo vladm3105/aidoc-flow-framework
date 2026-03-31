@@ -84,7 +84,7 @@ When generating DSPEC document instances, the autopilot MUST:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (DSPEC.NN.TT.SS, codes 55-58) | All Phases |
+| `doc-naming` | Element ID format (DSPEC.NN.xxxx, codes 55-58) | All Phases |
 | `doc-req-validator` | Validate REQ SPEC-Ready score | Phase 2 |
 | `doc-dspec-validator` | Validation with DOC-Ready scoring | Phase 4 |
 | `doc-dspec-reviewer` | Content review, quality scoring | Phase 5 |

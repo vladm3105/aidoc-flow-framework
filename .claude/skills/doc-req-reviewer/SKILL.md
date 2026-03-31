@@ -276,7 +276,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `REQ.NN.TT.SS` format
+- Element IDs use `REQ.NN.xxxx` format
 - Element type codes valid for REQ (01, 05, 06, 27)
 - Atomic file naming convention
 
@@ -368,7 +368,7 @@ Phase 2: Detect Drift
    - @sys: tags → [SYS document ID, requirement ID]
    - Links to ../06_SYS/ → [path]
    - Traceability table upstream artifacts → [path]
-   - Section 10 parent SYS requirement → [SYS.NN.TT.SS]
+   - Section 10 parent SYS requirement → [SYS.NN.xxxx]
 
 2. For each upstream reference:
    a. Resolve path to absolute file path

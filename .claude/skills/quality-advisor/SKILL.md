@@ -268,7 +268,7 @@ naming_conventions:
   filename_format: "{TYPE}-{NN}_{slug}.md"  # e.g., PRD-01_authentication.md
 
   # Element ID format (unified)
-  element_id_format: "{TYPE}.{NN}.{TT}.{SS}"  # e.g., PRD.01.09.01
+  element_id_format: "{TYPE}.{NN}.{TT}.{SS}"  # e.g., PRD.01.0901
 
   # Threshold tag format
   threshold_format: "@threshold: {TYPE}.{NN}.{key}"  # e.g., @threshold: PRD.01.perf.auth.p99
@@ -293,7 +293,7 @@ naming_validation:
     valid: 22
     invalid: 2
     issues:
-      - "PRD.01.25.01 - code 25 not valid for PRD"
+      - "PRD.01.2501 - code 25 not valid for PRD"
       - "US-001 - deprecated pattern, use PRD.01.09.SS"
   threshold_tags:
     total: 8
@@ -415,12 +415,12 @@ artifact_type: REQ
 layer: 7
 tag_compliance: pass
 required_tags:
-  - "@brd: BRD.01.01.01 ✓"
-  - "@prd: PRD.01.07.01 ✓"
-  - "@ears: EARS.01.24.01 ✓"
-  - "@bdd: BDD.01.13.01 ✓"
+  - "@brd: BRD.01.0101 ✓"
+  - "@prd: PRD.01.0701 ✓"
+  - "@ears: EARS.01.2401 ✓"
+  - "@bdd: BDD.01.1301 ✓"
   - "@adr: ADR-02 ✓"
-  - "@sys: SYS.01.25.01 ✓"
+  - "@sys: SYS.01.2501 ✓"
 tag_count: "6/6 required tags present"
 status: "Ready for downstream artifacts"
 ```

@@ -473,8 +473,8 @@ Ensures traceability and cross-references are correct.
 
 | SYS Element | Traces From | Traces To | Type |
 |-------------|-------------|-----------|------|
-| SYS.01.17.01 | ADR.01.14.01 | REQ.01.01.01 | Component->Requirement |
-| SYS.01.18.01 | ADR.01.14.02 | CTR.01.09.01 | Interface->Contract |
+| SYS.01.1701 | ADR.01.1401 | REQ.01.0101 | Component->Requirement |
+| SYS.01.1801 | ADR.01.1402 | CTR.01.0901 | Interface->Contract |
 ```
 
 ---
@@ -517,7 +517,7 @@ Fix: Set `drift_detected: true`, add to manual review
 
 **Upstream**: ADR (Architecture Decision Records)
 **Downstream**: REQ (Requirements Specifications)
-**ID Pattern**: `SYS.NN.TT.SS` (Document.Type.Sequence)
+**ID Pattern**: `SYS.NN.xxxx` (Document.Type.Sequence)
 
 #### Tiered Auto-Merge System
 
@@ -576,7 +576,7 @@ def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str
         existing_ids: List of existing IDs for this type
 
     Returns:
-        Next available ID (e.g., "SYS.01.17.13")
+        Next available ID (e.g., "SYS.01.1713")
     """
     # Extract sequence numbers from existing IDs
     sequences = [int(id.split('.')[-1]) for id in existing_ids
@@ -585,8 +585,8 @@ def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str
     next_seq = max(sequences, default=0) + 1
     return f'SYS.{sys_doc_num}.{type_code}.{next_seq:02d}'
 
-# Example: If SYS-01 has SYS.01.17.01 through SYS.01.17.12
-# New ID: SYS.01.17.13
+# Example: If SYS-01 has SYS.01.1701 through SYS.01.1712
+# New ID: SYS.01.1713
 ```
 
 **Tier 1 Fix Report Entry**:
@@ -596,8 +596,8 @@ def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str
 
 | ADR Source | New SYS Element | Section | Description |
 |------------|-----------------|---------|-------------|
-| ADR-01.14.05 | SYS.01.17.13 | Components | New auth cache component |
-| ADR-01.14.06 | SYS.01.18.08 | Interfaces | New event bus interface |
+| ADR-01.14.05 | SYS.01.1713 | Components | New auth cache component |
+| ADR-01.14.06 | SYS.01.1808 | Interfaces | New event bus interface |
 
 **Version**: 1.0.0 -> 1.0.1
 **Change Percentage**: 3.2%
@@ -625,13 +625,13 @@ def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str
 **Upstream Trigger**: ADR-01.md v2.0 (modified 2026-02-09)
 
 #### Added
-- SYS.01.17.13: Authentication cache component (from ADR-01.14.05)
-- SYS.01.17.14: Rate limiting component (from ADR-01.14.06)
-- SYS.01.18.08: Event bus interface (from ADR-01.14.07)
+- SYS.01.1713: Authentication cache component (from ADR-01.14.05)
+- SYS.01.1714: Rate limiting component (from ADR-01.14.06)
+- SYS.01.1808: Event bus interface (from ADR-01.14.07)
 
 #### Modified
-- SYS.01.17.03: Updated auth flow to include cache [MODIFIED]
-- SYS.01.18.02: Added rate limit headers to API interface [MODIFIED]
+- SYS.01.1703: Updated auth flow to include cache [MODIFIED]
+- SYS.01.1802: Added rate limit headers to API interface [MODIFIED]
 
 #### Deprecated
 - None
@@ -642,7 +642,7 @@ def generate_sys_id(sys_doc_num: str, type_code: str, existing_ids: list) -> str
 **Modified Element Marker**:
 
 ```markdown
-### SYS.01.17.03: Authentication Service [MODIFIED]
+### SYS.01.1703: Authentication Service [MODIFIED]
 
 <!-- MODIFIED: 2026-02-10 via auto-merge from ADR-01.14.05 -->
 <!-- Previous version: 1.0.1 -->
@@ -710,15 +710,15 @@ Elements are NEVER deleted during auto-merge. Instead, mark as deprecated:
 **Deprecated Element Format**:
 
 ```markdown
-### SYS.01.17.05: Legacy Cache Service [DEPRECATED]
+### SYS.01.1705: Legacy Cache Service [DEPRECATED]
 
 <!-- DEPRECATED: 2026-02-10 -->
-<!-- Deprecation Reason: Superseded by SYS.01.17.13 per ADR-01.14.05 -->
-<!-- Replaced By: SYS.01.17.13 -->
+<!-- Deprecation Reason: Superseded by SYS.01.1713 per ADR-01.14.05 -->
+<!-- Replaced By: SYS.01.1713 -->
 <!-- Original Version: 1.0.0 -->
 
 > **Status**: DEPRECATED - Do not use in new implementations
-> **Superseded By**: [SYS.01.17.13](#sys011713-authentication-cache)
+> **Superseded By**: [SYS.01.1713](#sys011713-authentication-cache)
 > **Deprecation Date**: 2026-02-10
 
 [Original content preserved for reference...]
@@ -731,8 +731,8 @@ Elements are NEVER deleted during auto-merge. Instead, mark as deprecated:
 
 | Element ID | Deprecated | Reason | Replaced By |
 |------------|------------|--------|-------------|
-| SYS.01.17.05 | 2026-02-10 | ADR-01.14.05 supersedes | SYS.01.17.13 |
-| SYS.01.18.03 | 2026-02-10 | Interface redesign | SYS.01.18.08 |
+| SYS.01.1705 | 2026-02-10 | ADR-01.14.05 supersedes | SYS.01.1713 |
+| SYS.01.1803 | 2026-02-10 | Interface redesign | SYS.01.1808 |
 ```
 
 #### Enhanced Drift Cache
@@ -758,8 +758,8 @@ After processing drift issues, update `.drift_cache.json` with merge history:
       "change_percentage": 8.5,
       "version_before": "1.0.1",
       "version_after": "1.1.0",
-      "elements_added": ["SYS.01.17.13", "SYS.01.18.08"],
-      "elements_modified": ["SYS.01.17.03", "SYS.01.18.02"],
+      "elements_added": ["SYS.01.1713", "SYS.01.1808"],
+      "elements_modified": ["SYS.01.1703", "SYS.01.1802"],
       "elements_deprecated": [],
       "upstream_trigger": "ADR-01.md v2.0"
     }
@@ -1034,7 +1034,7 @@ Before applying any fixes:
 |---------|------|---------|
 | 2.2 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected upstream report contract to use audit/review reports (`.A_` preferred, `.R_` legacy); normalized report location path to `docs/06_SYS` |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
-| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.TT.SS pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5% auto-merge, Tier 2: 5-15% with changelog, Tier 3: >15% archive and regenerate); Added change percentage calculation; Auto-generated IDs for new elements (SYS.NN.xxxx pattern); No-deletion policy with [DEPRECATED] markers; Archive manifest creation; Enhanced drift cache with merge history; ADR upstream / REQ downstream integration |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; SYS Index, Component, and Interface file creation; Element ID conversion (types 01, 05, 17, 18, 19, 20, 21); Broken link fixes; ADR upstream drift handling; Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)

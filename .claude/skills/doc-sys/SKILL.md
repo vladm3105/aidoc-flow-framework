@@ -137,14 +137,14 @@ Use `doc-sys` when:
 
 ### 4. Element ID Format (MANDATORY)
 
-**Pattern**: `SYS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `SYS.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Functional Requirement | 01 | SYS.02.01.01 |
-| Quality Attribute | 02 | SYS.02.02.01 |
-| Use Case | 11 | SYS.02.11.01 |
-| System Requirement | 26 | SYS.02.26.01 |
+| Functional Requirement | 01 | SYS.02.0101 |
+| Quality Attribute | 02 | SYS.02.0201 |
+| Use Case | 11 | SYS.02.1101 |
+| System Requirement | 26 | SYS.02.2601 |
 
 **REMOVED PATTERNS** - Do NOT use legacy formats:
 - ❌ `FR-XXX` → Use `SYS.NN.01.SS`
@@ -200,11 +200,11 @@ Use `doc-sys` when:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
 
 ## Cumulative Tagging Requirements
 
@@ -218,10 +218,10 @@ Use `doc-sys` when:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 
-@brd: BRD.01.01.03
-@prd: PRD.01.07.02, PRD.01.07.15
-@ears: EARS.01.25.01, EARS.01.25.02
-@bdd: BDD.01.14.01
+@brd: BRD.01.0103
+@prd: PRD.01.0702, PRD.01.0715
+@ears: EARS.01.2501, EARS.01.2502
+@bdd: BDD.01.1401
 @adr: ADR-033, ADR-045
 ```
 
@@ -280,7 +280,7 @@ Complete metadata including EARS-Ready Score and REQ-Ready Score.
 ### Step 5: Define System Requirements
 
 For each requirement:
-- Use unified element ID format (`SYS.NN.TT.SS`)
+- Use unified element ID format (`SYS.NN.xxxx`)
 - Specify inputs, processing, outputs (for functional)
 - Specify measurable criteria (for quality attributes)
 - Use `@threshold` tags for all quantitative values
@@ -330,7 +330,7 @@ Commit SYS file and traceability matrix.
 | CHECK 5 | Warning | System Boundaries |
 | CHECK 6 | Warning | Interface Specifications (CTR-ready) |
 | CHECK 7 | Warning | Upstream Traceability |
-| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
 
 ### Validation Tiers
 
@@ -373,7 +373,7 @@ pre-commit run sys-req-ready-score --all-files
 - ✅ REQ-Ready score ≥90% for Approved status
 - ✅ Metadata and tags (sys, layer-6-artifact)
 - ✅ Upstream traceability (@brd, @prd, @ears, @bdd, @adr)
-- ✅ Element ID format (SYS.NN.TT.SS)
+- ✅ Element ID format (SYS.NN.xxxx)
 - ✅ No placeholder text in approved documents
 - ✅ System diagrams (Mermaid required)
 - ✅ Measurable requirements with @threshold tags
@@ -396,7 +396,7 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 -
 
 - [ ] Document Control section with 9 required fields
 - [ ] REQ-Ready Score with ✅ emoji and percentage
-- [ ] Requirements use unified element ID format (SYS.NN.TT.SS)
+- [ ] Requirements use unified element ID format (SYS.NN.xxxx)
 - [ ] No legacy patterns (FR-XXX, QA-XXX, UC-XXX, SR-XXX)
 - [ ] Each requirement has measurable criteria
 - [ ] All quantitative values use @threshold tags
@@ -433,8 +433,8 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
-| Legacy element ID (FR-XXX, QA-XXX, etc.) | Convert to SYS.NN.TT.SS format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
+| Legacy element ID (FR-XXX, QA-XXX, etc.) | Convert to SYS.NN.xxxx format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -460,7 +460,7 @@ LOOP:
 3. **Text-based diagrams**: Use Mermaid ONLY, not ASCII art or code blocks
 4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
 5. **No verification method**: Each requirement needs test approach
-6. **Legacy element IDs**: Use SYS.NN.TT.SS not FR-XXX/QA-XXX/SR-XXX
+6. **Legacy element IDs**: Use SYS.NN.xxxx not FR-XXX/QA-XXX/SR-XXX
 7. **Hardcoded values**: Use @threshold tags, not magic numbers
 8. **Wrong REQ-Ready Score format**: Must include ✅ emoji and percentage
 
@@ -528,7 +528,7 @@ For supplementary documentation needs, create:
 
 **REQ-Ready Score**: ≥90% required for "Approved" status
 
-**Element ID Format**: SYS.NN.TT.SS (FR=01, QA=02, UC=11, SR=26)
+**Element ID Format**: SYS.NN.xxxx (FR=01, QA=02, UC=11, SR=26)
 
 **Key Sections**:
 - System Requirements (unified element IDs)

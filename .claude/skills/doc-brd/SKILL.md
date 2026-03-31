@@ -81,15 +81,15 @@ Before creating a BRD, read:
 Before creating ANY BRD section, confirm:
 
 1. ✅ Read `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
-2. ✅ Element ID format: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dots)
+2. ✅ Element ID format: `BRD.{DOC_NUM}.{HASH}` (3 segments, dots)
 
 **Common Element Types**:
 | Code | Type | Example |
 |------|------|---------|
-| 01 | Functional Requirement | BRD.02.01.01 |
-| 06 | Acceptance Criteria | BRD.02.06.01 |
-| 23 | Business Objective | BRD.02.23.01 |
-| 32 | Architecture Topic | BRD.02.32.01 |
+| 01 | Functional Requirement | BRD.02.0101 |
+| 06 | Acceptance Criteria | BRD.02.0601 |
+| 23 | Business Objective | BRD.02.2301 |
+| 32 | Architecture Topic | BRD.02.3201 |
 
 > ⚠️ **Removed Patterns**: Do NOT use `AC-XXX`, `FR-XXX`, `BC-XXX`, `BO-XXX` formats.
 
@@ -371,7 +371,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 #### Complete Topic Example
 
 ```markdown
-### BRD.01.32.01: Infrastructure
+### BRD.01.3201: Infrastructure
 
 **Status**: Selected
 
@@ -409,7 +409,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 
 **N/A Example**:
 ```markdown
-### BRD.01.32.06: AI/ML Architecture
+### BRD.01.3206: AI/ML Architecture
 
 **Status**: N/A - No AI/ML components in project scope
 
@@ -420,7 +420,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 
 **Pending Example**:
 ```markdown
-### BRD.01.32.05: Observability
+### BRD.01.3205: Observability
 
 **Status**: Pending - Awaiting infrastructure finalization
 
@@ -474,8 +474,8 @@ Cost estimates                Evaluation criteria        Selected approach
 **Format**: BRD has no `@` tags since it's Layer 1 (top of hierarchy)
 
 **Downstream artifacts will tag BRD** (using unified format):
-- PRD will include: `@brd: BRD.01.01.30` (TYPE.NN.TT.SS format)
-- EARS will include: `@brd: BRD.01.01.30`
+- PRD will include: `@brd: BRD.01.0130` (TYPE.NN.xxxx format)
+- EARS will include: `@brd: BRD.01.0130`
 - All downstream artifacts inherit BRD tags
 
 ## Tag Format Convention (By Design)
@@ -485,21 +485,21 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
 
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
+- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.01.01` ✅
+- `@brd: BRD.17.0101` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
@@ -701,7 +701,7 @@ python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
 
 | Issue | Fix Action |
 |-------|------------|
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -727,7 +727,7 @@ After creating BRD, use:
 
 The PRD will:
 - Reference this BRD as upstream source
-- Include `@brd: BRD.NN.01.SS` tags (unified 4-segment format)
+- Include `@brd: BRD.NN.01.SS` tags (unified 3-segment format)
 - Define product features and KPIs
 - Inherit Architecture Decision Requirements topics
 

@@ -130,7 +130,7 @@ Forbidden tag patterns:
 | Author | Product Manager/Owner Name | MANDATORY |
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
-| BRD Reference | `@brd: BRD.NN.TT.SS` format | MANDATORY |
+| BRD Reference | `@brd: BRD.NN.xxxx` format | MANDATORY |
 | SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 | EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 
@@ -163,25 +163,25 @@ Both scores must be present and meet thresholds for downstream artifact generati
 **Layer 2 Cumulative Tags (Required)**:
 
 ```markdown
-@brd: BRD.NN.TT.SS
+@brd: BRD.NN.xxxx
 ```
 
 **Unified Element ID Format**:
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Functional Requirement | 01 | PRD.02.01.01 |
-| Quality Attribute | 02 | PRD.02.02.01 |
-| Constraint | 03 | PRD.02.03.01 |
-| Assumption | 04 | PRD.02.04.01 |
-| Dependency | 05 | PRD.02.05.01 |
-| Acceptance Criteria | 06 | PRD.02.06.01 |
-| Risk | 07 | PRD.02.07.01 |
-| Metric | 08 | PRD.02.08.01 |
-| User Story | 09 | PRD.02.09.01 |
-| Use Case | 11 | PRD.02.11.01 |
-| Feature Item | 22 | PRD.02.22.01 |
-| Stakeholder Need | 24 | PRD.02.24.01 |
+| Functional Requirement | 01 | PRD.02.0101 |
+| Quality Attribute | 02 | PRD.02.0201 |
+| Constraint | 03 | PRD.02.0301 |
+| Assumption | 04 | PRD.02.0401 |
+| Dependency | 05 | PRD.02.0501 |
+| Acceptance Criteria | 06 | PRD.02.0601 |
+| Risk | 07 | PRD.02.0701 |
+| Metric | 08 | PRD.02.0801 |
+| User Story | 09 | PRD.02.0901 |
+| Use Case | 11 | PRD.02.1101 |
+| Feature Item | 22 | PRD.02.2201 |
+| Stakeholder Need | 24 | PRD.02.2401 |
 
 **Deprecated Patterns (Do NOT use)**:
 
@@ -232,7 +232,7 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E011 | ERROR | Missing Functional Requirements (Section 8) |
 | PRD-E012 | ERROR | Missing Traceability (Section 16) |
 | PRD-E013 | ERROR | Missing upstream @brd tag |
-| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.TT.SS) |
+| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.xxxx) |
 | PRD-E015 | ERROR | SYS-Ready Score missing or below threshold |
 | PRD-E016 | ERROR | EARS-Ready Score missing or below threshold |
 | PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |
@@ -298,7 +298,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 6. Validate Document Control table completeness
 7. Check dual scoring (SYS-Ready + EARS-Ready ≥90%)
 8. Validate upstream @brd reference format
-9. Check element ID format (PRD.NN.TT.SS)
+9. Check element ID format (PRD.NN.xxxx)
 10. Detect deprecated patterns (US-NNN, FR-NNN)
 11. Validate diagram contract (C4-L2, DFD-L1, sequence tag, sequence exception path)
 12. Validate diagram intent header fields
@@ -352,7 +352,7 @@ def validate_prd_structure(prd_path: str) -> list[Error]:
 | Folder name mismatch (PRD-E021) | Rename folder to match PRD ID |
 | Link paths broken after move | Update `../01_BRD/` → `../../01_BRD/` |
 | Missing cumulative @brd tag | Add with upstream document reference |
-| Invalid element ID format | Convert to PRD.NN.TT.SS format |
+| Invalid element ID format | Convert to PRD.NN.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Deprecated ID patterns | Convert to unified format |

@@ -264,7 +264,7 @@ Verifies all required sections have substantive content.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `EARS.NN.TT.SS` format
+- Element IDs use `EARS.NN.xxxx` format
 - Element type codes valid for EARS (25, 26)
 - No legacy patterns (REQ-NNN, R-NNN)
 

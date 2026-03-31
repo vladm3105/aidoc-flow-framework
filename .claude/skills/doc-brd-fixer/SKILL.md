@@ -818,7 +818,7 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 
 | Change Type | Auto-Action | Example |
 |-------------|-------------|---------|
-| New requirement added | Append with generated ID | `BRD.01.01.13` |
+| New requirement added | Append with generated ID | `BRD.01.0113` |
 | Threshold value changed | Find & replace value | `timeout: 30 → 45` |
 | Reference updated | Update `@ref:` path | Path correction |
 | Version incremented | Update version reference | `v1.2 → v1.3` |
@@ -837,7 +837,7 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
         existing_ids: List of existing IDs in document
 
     Returns:
-        Next available ID (e.g., 'BRD.01.01.13')
+        Next available ID (e.g., 'BRD.01.0113')
     """
     pattern = f"{doc_type}.{doc_num}.{element_type}."
     matching = [id for id in existing_ids if id.startswith(pattern)]
@@ -902,11 +902,11 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 | Added | GAP_Analysis.md | GAP-F1-07 | New gap identified for WebAuthn |
 
 **New Requirements Added**:
-- BRD.01.01.13: Passkey Authentication Support
-- BRD.01.01.14: WebAuthn Fallback Mechanism
+- BRD.01.0113: Passkey Authentication Support
+- BRD.01.0114: WebAuthn Fallback Mechanism
 
 **Thresholds Updated**:
-- BRD.01.02.05: session_idle_timeout: 30→45 min
+- BRD.01.0205: session_idle_timeout: 30→45 min
 
 **Impact**: PRD-01, EARS-01, ADR-01 may require review
 ```
@@ -993,10 +993,10 @@ Documents requiring update after regeneration:
 - Instead, marked with `[DEPRECATED]` status:
 
 ```markdown
-### BRD.01.01.05: Legacy Authentication Method [DEPRECATED]
+### BRD.01.0105: Legacy Authentication Method [DEPRECATED]
 
 > **Status**: DEPRECATED (upstream removed 2026-02-10T16:00:00)
-> **Reason**: Replaced by BRD.01.01.13 (Passkey Authentication)
+> **Reason**: Replaced by BRD.01.0113 (Passkey Authentication)
 > **Action**: Retain for traceability; do not implement
 
 **Original Requirement**: {original_text}
@@ -1042,10 +1042,10 @@ After processing drift, update `.drift_cache.json`:
   ],
   "deprecated_items": [
     {
-      "id": "BRD.01.01.05",
+      "id": "BRD.01.0105",
       "deprecated_date": "2026-02-10T16:00:00",
       "reason": "Upstream removal",
-      "replaced_by": "BRD.01.01.13"
+      "replaced_by": "BRD.01.0113"
     }
   ]
 }
@@ -1072,15 +1072,15 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| BRD.01.01.13 | Added | F1_IAM:3.5 | Passkey authentication support |
-| BRD.01.02.05 | Updated | F1_IAM:4.2 | Session timeout 30→45 min |
+| BRD.01.0113 | Added | F1_IAM:3.5 | Passkey authentication support |
+| BRD.01.0205 | Updated | F1_IAM:4.2 | Session timeout 30→45 min |
 
 ### Tier 2 Auto-Merges (5-15%)
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| BRD.01.01.14 | Added | GAP:GAP-F1-07 | WebAuthn fallback mechanism |
-| BRD.01.07.04 | Added | GAP:GAP-F1-08 | New risk: credential phishing |
+| BRD.01.0114 | Added | GAP:GAP-F1-07 | WebAuthn fallback mechanism |
+| BRD.01.0704 | Added | GAP:GAP-F1-08 | New risk: credential phishing |
 
 ### Tier 3 Archives (> 15%)
 
@@ -1094,7 +1094,7 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Deprecated Date | Reason | Replaced By |
 |----|-----------------|--------|-------------|
-| BRD.01.01.05 | 2026-02-10T16:00:00 | Upstream removed | BRD.01.01.13 |
+| BRD.01.0105 | 2026-02-10T16:00:00 | Upstream removed | BRD.01.0113 |
 
 ### Version Changes
 

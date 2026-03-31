@@ -412,8 +412,8 @@ Ensures traceability and cross-references are correct.
 
 | ADR Element | Traces To | Type |
 |-------------|-----------|------|
-| ADR.01.14.01 | BDD.01.09.03 | Behavior Implementation |
-| ADR.01.13.01 | BRD.01.22.05 | Business Context |
+| ADR.01.1401 | BDD.01.0903 | Behavior Implementation |
+| ADR.01.1301 | BRD.01.2205 | Business Context |
 ```
 
 ---

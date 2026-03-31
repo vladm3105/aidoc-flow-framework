@@ -512,9 +512,9 @@ Ensures traceability and cross-references are correct.
 
 | REQ Element | Traces From | Traces To | Type |
 |-------------|-------------|-----------|------|
-| REQ.01.01.01 | SYS.01.17.01 | SPEC.01.01.01 | Requirement->Spec |
-| REQ.01.05.01 | SYS.01.05.01 | BDD.01.09.01 | UseCase->Behavior |
-| REQ.01.06.01 | REQ.01.01.01 | TSPEC.01.01.01 | Criteria->TestSpec |
+| REQ.01.0101 | SYS.01.1701 | SPEC.01.0101 | Requirement->Spec |
+| REQ.01.0501 | SYS.01.0501 | BDD.01.0901 | UseCase->Behavior |
+| REQ.01.0601 | REQ.01.0101 | TSPEC.01.0101 | Criteria->TestSpec |
 ```
 
 ---
@@ -558,7 +558,7 @@ Fix: Set `drift_detected: true`, add to manual review
 **Upstream**: SYS (Layer 6 - System Design)
 **Downstream**: CTR (Layer 8 - Contracts), SPEC (Layer 9 - Specifications)
 
-**ID Pattern**: `REQ.NN.TT.SS` where:
+**ID Pattern**: `REQ.NN.xxxx` where:
 - `NN` = Module number (01-99)
 - `TT` = Type code (01=Functional, 05=UseCase, 06=AcceptanceCriteria, 27=NFR)
 - `SS` = Sequence number (01-99)
@@ -637,7 +637,7 @@ def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str
     """
     Generate next available REQ ID.
 
-    Example: If REQ.01.01.12 exists, next is REQ.01.01.13
+    Example: If REQ.01.0112 exists, next is REQ.01.0113
     """
     pattern = f"REQ.{module}.{type_code}."
     max_seq = 0
@@ -650,21 +650,21 @@ def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str
     next_seq = str(max_seq + 1).zfill(2)
     return f"REQ.{module}.{type_code}.{next_seq}"
 
-# Example: REQ.01.01.12 exists -> new ID is REQ.01.01.13
+# Example: REQ.01.0112 exists -> new ID is REQ.01.0113
 ```
 
 **Tier 1 Merge Template**:
 
 ```markdown
 <!-- AUTO-MERGED from SYS-01 v1.2 | Tier 1 | 2026-02-10T16:00:00 -->
-### REQ.01.01.13: [New Requirement Title]
+### REQ.01.0113: [New Requirement Title]
 
 | Attribute | Value |
 |-----------|-------|
-| ID | REQ.01.01.13 |
+| ID | REQ.01.0113 |
 | Status | Draft |
 | Priority | P2 |
-| Source | SYS.01.17.05 (auto-merged) |
+| Source | SYS.01.1705 (auto-merged) |
 | Version Added | 1.0.1 |
 
 **Description**: [Auto-extracted from SYS component description]
@@ -672,7 +672,7 @@ def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str
 **Acceptance Criteria**:
 - [ ] AC-01: [Derived from SYS interface contracts]
 
-@trace: SYS.01.17.05
+@trace: SYS.01.1705
 ```
 
 ---
@@ -702,21 +702,21 @@ def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str
 
 | REQ ID | Title | Source SYS Element |
 |--------|-------|-------------------|
-| REQ.01.01.13 | New Data Validation | SYS.01.17.05 |
-| REQ.01.01.14 | Extended Logging | SYS.01.17.06 |
+| REQ.01.0113 | New Data Validation | SYS.01.1705 |
+| REQ.01.0114 | Extended Logging | SYS.01.1706 |
 
 ### Updated Requirements
 
 | REQ ID | Change Type | Previous | Current |
 |--------|-------------|----------|---------|
-| REQ.01.01.03 | Priority | P3 | P2 |
-| REQ.01.01.07 | Description | [truncated] | [truncated] |
+| REQ.01.0103 | Priority | P3 | P2 |
+| REQ.01.0107 | Description | [truncated] | [truncated] |
 
 ### Deprecated (No Deletion)
 
 | REQ ID | Reason | Superseded By |
 |--------|--------|---------------|
-| REQ.01.01.02 | Component removed in SYS | REQ.01.01.13 |
+| REQ.01.0102 | Component removed in SYS | REQ.01.0113 |
 ```
 
 **No Deletion Policy**:
@@ -724,18 +724,18 @@ def generate_next_req_id(existing_ids: list, module: str, type_code: str) -> str
 Requirements are NEVER deleted. Instead, mark as deprecated:
 
 ```markdown
-### REQ.01.01.02: Legacy Authentication [DEPRECATED]
+### REQ.01.0102: Legacy Authentication [DEPRECATED]
 
-> **DEPRECATED**: This requirement is superseded by REQ.01.01.13 as of v1.1.
-> Reason: Source component SYS.01.17.02 removed in SYS v1.3.
+> **DEPRECATED**: This requirement is superseded by REQ.01.0113 as of v1.1.
+> Reason: Source component SYS.01.1702 removed in SYS v1.3.
 > Retained for historical traceability.
 
 | Attribute | Value |
 |-----------|-------|
-| ID | REQ.01.01.02 |
+| ID | REQ.01.0102 |
 | Status | **Deprecated** |
 | Deprecated Date | 2026-02-10 |
-| Superseded By | REQ.01.01.13 |
+| Superseded By | REQ.01.0113 |
 ```
 
 ---
@@ -786,10 +786,10 @@ new_version: "2.0"
 
 | Old REQ ID | Status | New REQ ID | Notes |
 |------------|--------|------------|-------|
-| REQ.01.01.01 | Retained | REQ.01.01.01 | No change |
-| REQ.01.01.02 | Deprecated | - | Functionality removed |
-| REQ.01.01.03 | Merged | REQ.01.01.02 | Combined with REQ.01.01.04 |
-| - | New | REQ.01.01.10 | New from SYS.01.17.08 |
+| REQ.01.0101 | Retained | REQ.01.0101 | No change |
+| REQ.01.0102 | Deprecated | - | Functionality removed |
+| REQ.01.0103 | Merged | REQ.01.0102 | Combined with REQ.01.0104 |
+| - | New | REQ.01.0110 | New from SYS.01.1708 |
 
 ## Regeneration Trigger
 
@@ -835,9 +835,9 @@ After processing drift issues, update `.drift_cache.json`:
       "version_before": "1.0",
       "version_after": "1.1",
       "upstream_version": "SYS-01 v1.3",
-      "added_ids": ["REQ.01.01.13", "REQ.01.01.14"],
-      "updated_ids": ["REQ.01.01.03", "REQ.01.01.07"],
-      "deprecated_ids": ["REQ.01.01.02"]
+      "added_ids": ["REQ.01.0113", "REQ.01.0114"],
+      "updated_ids": ["REQ.01.0103", "REQ.01.0107"],
+      "deprecated_ids": ["REQ.01.0102"]
     }
   ],
   "acknowledged_drift": [
@@ -1117,7 +1117,7 @@ Before applying any fixes:
 | Version | Date | Changes |
 |---------|------|---------|
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
-| 2.0 | 2026-02-10 | **Enhanced Phase 6 Auto-Merge System**: Tiered auto-merge thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); Change percentage calculation algorithm; Auto-generated IDs for new requirements (REQ.NN.TT.SS pattern); No deletion policy - mark as [DEPRECATED] instead; Archive manifest creation for Tier 3; Enhanced drift cache with merge history and downstream notifications; New options: --auto-merge, --force-tier, --show-merge-history, --restore-archive, --notify-downstream; New fix types: drift_merge, drift_archive, deprecate; Semantic versioning (patch/minor/major) based on change tier |
+| 2.0 | 2026-02-10 | **Enhanced Phase 6 Auto-Merge System**: Tiered auto-merge thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); Change percentage calculation algorithm; Auto-generated IDs for new requirements (REQ.NN.xxxx pattern); No deletion policy - mark as [DEPRECATED] instead; Archive manifest creation for Tier 3; Enhanced drift cache with merge history and downstream notifications; New options: --auto-merge, --force-tier, --show-merge-history, --restore-archive, --notify-downstream; New fix types: drift_merge, drift_archive, deprecate; Semantic versioning (patch/minor/major) based on change tier |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; REQ Index, Glossary, and Use Case file creation; Element ID conversion (types 01, 05, 06, 27); Broken link fixes; SYS upstream drift handling; Support for sectioned REQ naming (REQ-NN-SSS); Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)

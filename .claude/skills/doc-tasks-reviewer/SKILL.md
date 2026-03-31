@@ -283,7 +283,7 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `TASKS.NN.TT.SS` format
+- Element IDs use `TASKS.NN.xxxx` format
 - Element type codes valid for TASKS (18, 30)
 - Task naming convention
 

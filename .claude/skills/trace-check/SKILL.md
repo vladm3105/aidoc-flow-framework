@@ -151,7 +151,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 **Actions**:
 1. Scan all source files (.py, .md, .yaml, .feature) for tag patterns
 2. Parse @brd:, @sys:, @spec:, @test:, @impl-status: tags
-3. Validate format: TYPE.NN.TT.SS (4-segment unified format)
+3. Validate format: TYPE.NN.xxxx (3-segment unified format)
 4. Build tag-to-document mapping
 5. Cross-reference with actual document existence
 
@@ -161,15 +161,15 @@ import re
 
 TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\.\-]+(?:[\.:]\w[\w\.\-]*)?)*)'
 
-# Example matches (unified TYPE.NN.TT.SS format):
-# @brd: BRD.01.01.30, BRD.01.01.03
-# @sys: SYS.01.25.08
+# Example matches (unified TYPE.NN.xxxx format):
+# @brd: BRD.01.0130, BRD.01.0103
+# @sys: SYS.01.2508
 # @spec: SPEC-003
-# @test: BDD.01.13.01
+# @test: BDD.01.1301
 ```
 
 **Validation Rules**:
-1. **Format Check:** All @brd/@prd tags must use unified TYPE.NN.TT.SS format (4-segment)
+1. **Format Check:** All @brd/@prd tags must use unified TYPE.NN.xxxx format (3-segment)
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
@@ -180,15 +180,15 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\
 {
   "src/[project_module]/gateway/connection_service.py": {
     "tags": {
-      "brd": ["BRD.01.01.01", "BRD.01.01.02", "BRD.01.01.03"],
-      "sys": ["SYS.01.25.01", "SYS.01.25.02"],
+      "brd": ["BRD.01.0101", "BRD.01.0102", "BRD.01.0103"],
+      "sys": ["SYS.01.2501", "SYS.01.2502"],
       "spec": ["SPEC-01"],
-      "test": ["BDD.01.13.01", "BDD.07.13.01"],
+      "test": ["BDD.01.1301", "BDD.07.1301"],
       "impl-status": ["complete"]
     },
     "line_numbers": {
-      "BRD.01.01.01": 15,
-      "BRD.01.01.02": 15
+      "BRD.01.0101": 15,
+      "BRD.01.0102": 15
     }
   }
 }
@@ -196,9 +196,9 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\
 
 **Error Detection**:
 - ❌ `@brd: 030` - Missing document and element ID
-- ❌ `@brd: BRD.99.01.01` - Document BRD-99 doesn't exist
-- ❌ `@brd: BRD.01.01.99` - Element 99 not in BRD-01
-- ✅ `@brd: BRD.01.01.30` - Valid format and exists
+- ❌ `@brd: BRD.99.0101` - Document BRD-99 doesn't exist
+- ❌ `@brd: BRD.01.0199` - Element 99 not in BRD-01
+- ✅ `@brd: BRD.01.0130` - Valid format and exists
 
 **Scripts**:
 ```bash
@@ -524,17 +524,17 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{2,}\.\d{3})
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD.01.01.01 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD.01.01.02 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD.01.01.30 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
+| BRD.01.0101 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.01.0102 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.01.0130 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
 ```
 
 **Reverse Matrix (Code → BRD)**:
 ```markdown
 | Source File | BRD Requirements | Implementation Status |
 |-------------|------------------|---------------------|
-| src/[project_module]/gateway/connection_service.py | BRD.01.01.01, BRD.01.01.02, BRD.01.01.03 | Complete |
-| src/[project_module]/services/account_service.py | BRD.01.01.30, BRD.01.01.31, BRD.01.01.32 | In Progress |
+| src/[project_module]/gateway/connection_service.py | BRD.01.0101, BRD.01.0102, BRD.01.0103 | Complete |
+| src/[project_module]/services/account_service.py | BRD.01.0130, BRD.01.0131, BRD.01.0132 | In Progress |
 ```
 
 **Traditional Section 7 Validation** (Optional):

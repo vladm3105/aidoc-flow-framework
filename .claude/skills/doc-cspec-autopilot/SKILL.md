@@ -72,7 +72,7 @@ When generating CSPEC document instances, the autopilot MUST:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (CSPEC.NN.TT.SS, codes 50-54) | All Phases |
+| `doc-naming` | Element ID format (CSPEC.NN.xxxx, codes 50-54) | All Phases |
 | `doc-req-validator` | Validate REQ SPEC-Ready score | Phase 2 |
 | `doc-ctr-validator` | Validate CTR contracts (required for CSPEC) | Phase 2 |
 | `doc-cspec-validator` | Validation with CODE-Ready scoring | Phase 4 |

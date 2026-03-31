@@ -461,8 +461,8 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    ## Traceability
 
    **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
-   @brd: BRD.01.01.03, BRD.01.01.10
-   @prd: PRD.01.07.02, PRD.01.07.15
+   @brd: BRD.01.0103, BRD.01.0110
+   @prd: PRD.01.0702, PRD.01.0715
    ```
 
 9. **Add Threshold References Section**:
@@ -504,7 +504,7 @@ python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/EARS-NN_{sl
 | Section Structure | Required sections present | EARS-E006 |
 | Document Control | All required fields | EARS-E009 |
 | EARS Syntax | WHEN-THE-SHALL-WITHIN patterns | EARS-E010 |
-| Element ID Format | EARS.NN.25.SS (4-segment) | EARS-E030 |
+| Element ID Format | EARS.NN.25.SS (3-segment) | EARS-E030 |
 | Source Document | Single @prd: PRD.NN.EE.SS value | EARS-E040, EARS-E044 |
 | Cumulative Tags | @brd, @prd present | EARS-W002 |
 | BDD-Ready Score | >= 90% | EARS-W003 |
@@ -878,7 +878,7 @@ flowchart TD
 ### Auto-Fixable Issues
 | Issue | Location | Fix Action |
 |-------|----------|------------|
-| Legacy ID pattern | EARS.01.25.001 | Convert ER-001 → EARS.01.25.001 |
+| Legacy ID pattern | EARS.01.25001 | Convert ER-001 → EARS.01.25001 |
 | Missing @threshold | Line 45 | Add @threshold: PRD.01.xx.yy |
 
 ### Manual Review Required
@@ -976,11 +976,11 @@ flowchart TD
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| ER-XXX | EARS.NN.25.0XX | ER-001 → EARS.01.25.001 |
-| SR-XXX | EARS.NN.25.1XX | SR-101 → EARS.01.25.101 |
-| UB-XXX | EARS.NN.25.2XX | UB-201 → EARS.01.25.201 |
-| UQ-XXX | EARS.NN.25.4XX | UQ-401 → EARS.01.25.401 |
-| QA-XXX | EARS.NN.02.SS | QA-001 → EARS.01.02.01 |
+| ER-XXX | EARS.NN.25.0XX | ER-001 → EARS.01.25001 |
+| SR-XXX | EARS.NN.25.1XX | SR-101 → EARS.01.25101 |
+| UB-XXX | EARS.NN.25.2XX | UB-201 → EARS.01.25201 |
+| UQ-XXX | EARS.NN.25.4XX | UQ-401 → EARS.01.25401 |
+| QA-XXX | EARS.NN.02.SS | QA-001 → EARS.01.0201 |
 
 **Content Preservation Rules**:
 
@@ -1034,24 +1034,24 @@ fix_mode:
 ### Element ID Migration
 | Original | Fixed | Location |
 |----------|-------|----------|
-| ER-001 | EARS.01.25.001 | Line 45 |
-| SR-101 | EARS.01.25.101 | Line 78 |
+| ER-001 | EARS.01.25001 | Line 45 |
+| SR-101 | EARS.01.25101 | Line 78 |
 
 ### Threshold References Added
 | Statement | Threshold Added |
 |-----------|-----------------|
-| EARS.01.25.001 | @threshold: PRD.01.auth.p95 |
+| EARS.01.25001 | @threshold: PRD.01.auth.p95 |
 
 ### Cumulative Tags Added
-- @brd: BRD.01.01.03 (added)
-- @prd: PRD.01.07.02 (verified)
+- @brd: BRD.01.0103 (added)
+- @prd: PRD.01.0702 (verified)
 
 ## Manual Review Required
 
 ### Compound Statements (Split Required)
 | Statement ID | Issue | Recommendation |
 |--------------|-------|----------------|
-| EARS.01.25.015 | Multiple actions | Split into EARS.01.25.015, .016 |
+| EARS.01.25015 | Multiple actions | Split into EARS.01.25015, .016 |
 
 ### Ambiguous Terms
 | Location | Term | Suggested Replacement |

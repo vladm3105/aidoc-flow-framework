@@ -71,7 +71,7 @@ Automated **Data Contracts (CTR)** generation pipeline that first analyzes which
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (CTR.NN.TT.SS, codes 16, 17, 20) | All Phases |
+| `doc-naming` | Element ID format (CTR.NN.xxxx, codes 16, 17, 20) | All Phases |
 | `doc-req-validator` | Validate REQ SPEC-Ready score | Phase 2 |
 | `doc-ctr` | CTR creation rules, dual-file format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
@@ -618,7 +618,7 @@ After passing the fix cycle:
    - Error responses complete (401, 403, 500)
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use CTR.NN.TT.SS format
+   - All IDs use CTR.NN.xxxx format
    - Element type codes valid for CTR (16, 17, 20)
    - No legacy patterns (IF-XXX, DM-XXX, CC-XXX)
 
@@ -652,9 +652,9 @@ After passing the fix cycle:
 
 | Code | Element Type | Example |
 |------|--------------|---------|
-| 16 | Interface | CTR.01.16.01 |
-| 17 | Data Model | CTR.01.17.01 |
-| 20 | Contract Clause | CTR.01.20.01 |
+| 16 | Interface | CTR.01.1601 |
+| 17 | Data Model | CTR.01.1701 |
+| 20 | Contract Clause | CTR.01.2001 |
 
 ---
 
@@ -935,7 +935,7 @@ flowchart TD
 |----------|---------------|------------|
 | `openapi` | Missing operationId, invalid $refs, schema errors | Low |
 | `consistency` | MD ↔ YAML endpoint mismatch, schema sync | Low |
-| `element_ids` | CTR_XXX → CTR.NN.TT.SS format | Low |
+| `element_ids` | CTR_XXX → CTR.NN.xxxx format | Low |
 | `traceability` | Add missing cumulative tags (7 required) | Low |
 | `sections` | Add missing document sections from template | Low |
 | `responses` | Add standard error responses (401, 403, 500) | Low |
@@ -965,10 +965,10 @@ Legacy patterns are converted to unified format:
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| `IF-XXX` | `CTR.NN.16.SS` | IF-001 → CTR.01.16.01 |
-| `DM-XXX` | `CTR.NN.17.SS` | DM-003 → CTR.01.17.03 |
-| `CC-XXX` | `CTR.NN.20.SS` | CC-005 → CTR.01.20.05 |
-| `CTR_XXX` | `CTR.NN.TT.SS` | CTR_001 → CTR.01.16.01 |
+| `IF-XXX` | `CTR.NN.16.SS` | IF-001 → CTR.01.1601 |
+| `DM-XXX` | `CTR.NN.17.SS` | DM-003 → CTR.01.1703 |
+| `CC-XXX` | `CTR.NN.20.SS` | CC-005 → CTR.01.2005 |
+| `CTR_XXX` | `CTR.NN.xxxx` | CTR_001 → CTR.01.1601 |
 
 ### Dual-File Consistency Fixes
 
@@ -1007,11 +1007,11 @@ Location: `tmp/ctr_backup_YYYYMMDD_HHMMSS/`
 
 | CTR | Category | Issue | Fix Applied | Result |
 |-----|----------|-------|-------------|--------|
-| CTR-02 | traceability | Missing @ears | Added @ears: EARS.02.25.01 | ✅ |
+| CTR-02 | traceability | Missing @ears | Added @ears: EARS.02.2501 | ✅ |
 | CTR-02 | consistency | Schema mismatch | Synced SessionModel | ✅ |
 | CTR-08 | openapi | Missing operationId | Added getChatStream | ✅ |
 | CTR-08 | responses | Missing 401 | Added Unauthorized | ✅ |
-| CTR-08 | element_ids | IF-001 format | → CTR.08.16.01 | ✅ |
+| CTR-08 | element_ids | IF-001 format | → CTR.08.1601 | ✅ |
 
 ### Before/After Scores
 

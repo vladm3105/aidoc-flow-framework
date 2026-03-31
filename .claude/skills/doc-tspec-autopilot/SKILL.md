@@ -73,7 +73,7 @@ Automated **Test Specifications (TSPEC)** generation pipeline that processes SPE
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (TSPEC.NN.TT.SS, codes 40-43) | All Phases |
+| `doc-naming` | Element ID format (TSPEC.NN.xxxx, codes 40-43) | All Phases |
 | `doc-spec-validator` | Validate SPEC TASKS-Ready score | Phase 2 |
 | `doc-tspec` | TSPEC creation rules, test type structure | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
@@ -278,8 +278,8 @@ docs/10_TSPEC/
 
 | SPEC Element | UTEST | ITEST | STEST | FTEST | Coverage |
 |--------------|-------|-------|-------|-------|----------|
-| SPEC.01.28.01 | TSPEC.01.40.01 | TSPEC.01.41.01 | TSPEC.01.42.01 | - | 75% |
-| SPEC.01.28.02 | TSPEC.01.40.02 | TSPEC.01.41.02 | - | TSPEC.01.43.01 | 75% |
+| SPEC.01.2801 | TSPEC.01.4001 | TSPEC.01.4101 | TSPEC.01.4201 | - | 75% |
+| SPEC.01.2802 | TSPEC.01.4002 | TSPEC.01.4102 | - | TSPEC.01.4301 | 75% |
 
 ---
 
@@ -287,12 +287,12 @@ docs/10_TSPEC/
 
 | Test Type | Code | Pattern | Example |
 |-----------|------|---------|---------|
-| UTEST | 40 | TSPEC.NN.40.SS | TSPEC.01.40.01 |
-| ITEST | 41 | TSPEC.NN.41.SS | TSPEC.01.41.01 |
-| STEST | 42 | TSPEC.NN.42.SS | TSPEC.01.42.01 |
-| FTEST | 43 | TSPEC.NN.43.SS | TSPEC.01.43.01 |
-| PTEST | 44 | TSPEC.NN.44.SS | TSPEC.01.44.01 |
-| SECTEST | 45 | TSPEC.NN.45.SS | TSPEC.01.45.01 |
+| UTEST | 40 | TSPEC.NN.40.SS | TSPEC.01.4001 |
+| ITEST | 41 | TSPEC.NN.41.SS | TSPEC.01.4101 |
+| STEST | 42 | TSPEC.NN.42.SS | TSPEC.01.4201 |
+| FTEST | 43 | TSPEC.NN.43.SS | TSPEC.01.4301 |
+| PTEST | 44 | TSPEC.NN.44.SS | TSPEC.01.4401 |
+| SECTEST | 45 | TSPEC.NN.45.SS | TSPEC.01.4501 |
 
 ---
 
@@ -396,7 +396,7 @@ After passing the fix cycle:
    - Target coverage met per test type
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use TSPEC.NN.TT.SS format
+   - All IDs use TSPEC.NN.xxxx format
    - Element type codes valid for TSPEC (40, 41, 42, 43)
    - No legacy patterns (UT-XXX, IT-XXX, ST-XXX, FT-XXX)
 
@@ -428,15 +428,15 @@ After passing the fix cycle:
 ## Cumulative Tags (8 Required)
 
 ```markdown
-@brd: BRD.NN.TT.SS
-@prd: PRD.NN.TT.SS
-@ears: EARS.NN.TT.SS
-@bdd: BDD.NN.TT.SS
+@brd: BRD.NN.xxxx
+@prd: PRD.NN.xxxx
+@ears: EARS.NN.xxxx
+@bdd: BDD.NN.xxxx
 @adr: ADR-NN
-@sys: SYS.NN.TT.SS
-@req: REQ.NN.TT.SS
+@sys: SYS.NN.xxxx
+@req: REQ.NN.xxxx
 @spec: SPEC-NN
-@ctr: CTR.NN.TT.SS  # Optional
+@ctr: CTR.NN.xxxx  # Optional
 ```
 
 ---
@@ -553,14 +553,14 @@ flowchart TD
 ### Auto-Fixable Issues
 | Issue | Location | Fix Action |
 |-------|----------|------------|
-| Legacy ID pattern | Line 45 | Convert UT-001 → TSPEC.01.40.01 |
-| Missing cumulative tag | Traceability | Add @req: REQ.01.01.01 |
+| Legacy ID pattern | Line 45 | Convert UT-001 → TSPEC.01.4001 |
+| Missing cumulative tag | Traceability | Add @req: REQ.01.0101 |
 
 ### Manual Review Required
 | Issue | Location | Recommendation |
 |-------|----------|----------------|
 | Missing STEST file | TSPEC-01.3 | Create smoke test specifications |
-| Low coverage | SPEC.01.28.05 | Add unit tests for method |
+| Low coverage | SPEC.01.2805 | Add unit tests for method |
 ```
 
 **Score Indicators**:
@@ -645,7 +645,7 @@ flowchart TD
 
 | Category | Description | Auto-Fix Actions |
 |----------|-------------|------------------|
-| `element_ids` | Element ID format | Convert legacy patterns to TSPEC.NN.TT.SS |
+| `element_ids` | Element ID format | Convert legacy patterns to TSPEC.NN.xxxx |
 | `test_types` | Test type files | Create missing UTEST/ITEST/STEST/FTEST files |
 | `coverage_matrix` | Coverage tracking | Regenerate matrix from test specifications |
 | `cumulative_tags` | Traceability tags | Add missing 8 upstream tags |
@@ -657,12 +657,12 @@ flowchart TD
 
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| UT-NNN | TSPEC.NN.40.SS | UT-001 → TSPEC.01.40.01 |
-| IT-NNN | TSPEC.NN.41.SS | IT-001 → TSPEC.01.41.01 |
-| ST-NNN | TSPEC.NN.42.SS | ST-001 → TSPEC.01.42.01 |
-| FT-NNN | TSPEC.NN.43.SS | FT-001 → TSPEC.01.43.01 |
-| TC-NNN | TSPEC.NN.40.SS | TC-001 → TSPEC.01.40.01 (assume UTEST) |
-| TEST-NNN | TSPEC.NN.43.SS | TEST-001 → TSPEC.01.43.01 (assume FTEST) |
+| UT-NNN | TSPEC.NN.40.SS | UT-001 → TSPEC.01.4001 |
+| IT-NNN | TSPEC.NN.41.SS | IT-001 → TSPEC.01.4101 |
+| ST-NNN | TSPEC.NN.42.SS | ST-001 → TSPEC.01.4201 |
+| FT-NNN | TSPEC.NN.43.SS | FT-001 → TSPEC.01.4301 |
+| TC-NNN | TSPEC.NN.40.SS | TC-001 → TSPEC.01.4001 (assume UTEST) |
+| TEST-NNN | TSPEC.NN.43.SS | TEST-001 → TSPEC.01.4301 (assume FTEST) |
 
 **Content Preservation Rules**:
 
@@ -717,9 +717,9 @@ fix_mode:
 ### Element ID Migration
 | Original | Fixed | File | Location |
 |----------|-------|------|----------|
-| UT-001 | TSPEC.01.40.01 | TSPEC-01.1_utest.md | Line 45 |
-| IT-001 | TSPEC.01.41.01 | TSPEC-01.2_itest.md | Line 23 |
-| ST-001 | TSPEC.01.42.01 | TSPEC-01.3_stest.md | Line 12 |
+| UT-001 | TSPEC.01.4001 | TSPEC-01.1_utest.md | Line 45 |
+| IT-001 | TSPEC.01.4101 | TSPEC-01.2_itest.md | Line 23 |
+| ST-001 | TSPEC.01.4201 | TSPEC-01.3_stest.md | Line 12 |
 
 ### Test Type Files Created
 | File | Tests Generated | Status |
@@ -729,33 +729,33 @@ fix_mode:
 ### Coverage Matrix Regenerated
 | SPEC Element | Before | After |
 |--------------|--------|-------|
-| SPEC.01.28.01 | 50% | 75% |
-| SPEC.01.28.02 | 25% | 75% |
+| SPEC.01.2801 | 50% | 75% |
+| SPEC.01.2802 | 25% | 75% |
 | Overall | 45% | 78% |
 
 ### Cumulative Tags Added
-- @ears: EARS.01.25.001 (added)
-- @sys: SYS.01.01.01 (added)
-- @req: REQ.01.01.01 (added)
+- @ears: EARS.01.25001 (added)
+- @sys: SYS.01.0101 (added)
+- @req: REQ.01.0101 (added)
 
 ## Test Stubs Generated
 | SPEC Element | Test Type | Stub ID |
 |--------------|-----------|---------|
-| SPEC.01.28.05 | UTEST | TSPEC.01.40.12 |
-| SPEC.01.28.05 | ITEST | TSPEC.01.41.08 |
+| SPEC.01.2805 | UTEST | TSPEC.01.4012 |
+| SPEC.01.2805 | ITEST | TSPEC.01.4108 |
 
 ## Manual Review Required
 
 ### Tests Without Assertions
 | Test ID | File | Issue |
 |---------|------|-------|
-| TSPEC.01.40.03 | TSPEC-01.1_utest.md | No assert statements |
-| TSPEC.01.41.02 | TSPEC-01.2_itest.md | Missing expected outcome |
+| TSPEC.01.4003 | TSPEC-01.1_utest.md | No assert statements |
+| TSPEC.01.4102 | TSPEC-01.2_itest.md | Missing expected outcome |
 
 ### Low Coverage Areas
 | SPEC Element | Current | Target | Action Needed |
 |--------------|---------|--------|---------------|
-| SPEC.01.28.07 | 25% | 75% | Add 3+ UTEST, 1+ ITEST |
+| SPEC.01.2807 | 25% | 75% | Add 3+ UTEST, 1+ ITEST |
 
 ## Validation Results
 - **TASKS-Ready Score**: Before: 68% → After: 92%

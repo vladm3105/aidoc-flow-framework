@@ -58,7 +58,7 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 | 10 | SPEC | `ai_dev_flow/10_SPEC/SPEC_VALIDATION_RULES.md` |
 | 11 | TASKS | `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md` |
 
-**ID Format Validation**: For unified ID format validation (4-segment element IDs), use `doc-naming` skill.
+**ID Format Validation**: For unified ID format validation (3-segment element IDs), use `doc-naming` skill.
 
 **Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 

@@ -147,8 +147,8 @@ Pattern: `EARS-NNN_descriptive_name.md`
 | Complex | Combination of patterns | WHEN user logs in WHILE session active THE system SHALL refresh token |
 
 **Requirement ID Format:**
-- Pattern: `EARS.NN.EE.SS` (4-segment format)
-- Example: `EARS.01.24.01`
+- Pattern: `EARS.NN.EE.SS` (3-segment format)
+- Example: `EARS.01.2401`
 
 **BDD-Ready Score:**
 - Minimum threshold: 90%

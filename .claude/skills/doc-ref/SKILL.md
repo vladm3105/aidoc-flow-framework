@@ -135,7 +135,7 @@ docs/{TYPE}/{TYPE}-REF-NN_{slug}.md
 REF documents are **free-format supplementary documents** and do NOT use element IDs:
 
 - **No element type codes** (01-31 codes from ID_NAMING_STANDARDS.md do not apply)
-- **No sub-element IDs** (no `TYPE.NN.TT.SS` pattern)
+- **No sub-element IDs** (no `TYPE.NN.xxxx` pattern)
 - Content sections can be organized freely without formal ID structure
 
 **Rationale**: REF documents serve as reference targets that other documents link to. They provide supporting information but do not define formal requirements or architecture decisions requiring element-level traceability.

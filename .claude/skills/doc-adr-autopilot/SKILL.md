@@ -75,7 +75,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (ADR.NN.TT.SS), threshold tags, legacy pattern detection | All Phases |
+| `doc-naming` | Element ID format (ADR.NN.xxxx), threshold tags, legacy pattern detection | All Phases |
 | `doc-adr` | ADR creation rules, 11-section MVP structure, lifecycle states | Phase 3: ADR Generation |
 | `quality-advisor` | Real-time quality feedback during ADR generation | Phase 3: ADR Generation |
 | `doc-adr-validator` | Validate ADR structure, content, SYS-Ready score | Phase 4: ADR Validation |
@@ -504,7 +504,7 @@ Generate ADR documents with Context-Decision-Consequences format.
 8. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
-   - Validate element ID format compliance (ADR.NN.TT.SS)
+   - Validate element ID format compliance (ADR.NN.xxxx)
    - Check for placeholder text ([TBD], TODO, XXX)
    - Verify Mermaid diagram presence (required for ADR)
    - Flag issues early to reduce post-generation rework
@@ -602,9 +602,9 @@ Generate ADR documents with Context-Decision-Consequences format.
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Decision | 10 | ADR.02.10.01 |
-| Alternative | 12 | ADR.02.12.01 |
-| Consequence | 13 | ADR.02.13.01 |
+| Decision | 10 | ADR.02.1001 |
+| Alternative | 12 | ADR.02.1201 |
+| Consequence | 13 | ADR.02.1301 |
 
 ### Phase 4: ADR Validation
 
@@ -630,7 +630,7 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.
 | CHECK 5 | Warning | Decision Quality Assessment |
 | CHECK 6 | Warning | Architecture Documentation (Mermaid diagrams) |
 | CHECK 7 | Warning | Implementation Readiness |
-| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
 
 **SYS-Ready Scoring Criteria (100%)**:
 
@@ -647,7 +647,7 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
-| Invalid element ID format | Convert to ADR.NN.TT.SS format |
+| Invalid element ID format | Convert to ADR.NN.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Legacy patterns (DEC-XXX, ALT-XXX, CON-XXX) | Convert to unified format |
@@ -823,10 +823,10 @@ Generate one ADR from a specific BRD topic.
 
 ```bash
 # Example: Generate ADR-01 from Infrastructure topic
-/doc-adr-autopilot BRD.01.32.01
+/doc-adr-autopilot BRD.01.3201
 
 # Output:
-# Analyzing BRD.01.32.01 (Infrastructure)...
+# Analyzing BRD.01.3201 (Infrastructure)...
 # Status: Selected
 # Generating ADR-01_infrastructure.md...
 # SYS-Ready Score: 94%
@@ -844,13 +844,13 @@ Generate all ADRs from BRD Section 7.2.
 # Output:
 # Scanning BRD-01 Section 7.2...
 # Found 7 ADR topics:
-#   BRD.01.32.01 (Infrastructure) - Selected
-#   BRD.01.32.02 (Data Architecture) - Selected
-#   BRD.01.32.03 (Integration) - Selected
-#   BRD.01.32.04 (Security) - Selected
-#   BRD.01.32.05 (Observability) - Pending
-#   BRD.01.32.06 (AI/ML) - Pending
-#   BRD.01.32.07 (Technology) - Selected
+#   BRD.01.3201 (Infrastructure) - Selected
+#   BRD.01.3202 (Data Architecture) - Selected
+#   BRD.01.3203 (Integration) - Selected
+#   BRD.01.3204 (Security) - Selected
+#   BRD.01.3205 (Observability) - Pending
+#   BRD.01.3206 (AI/ML) - Pending
+#   BRD.01.3207 (Technology) - Selected
 #
 # Generating ADRs...
 # [================>          ] 5/7 Complete
@@ -958,7 +958,7 @@ flowchart TD
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
 | 1 | Missing visual indicator | Document Control | Add ✅/🟡/❌ to SYS-Ready Score |
-| 2 | Legacy element ID | Section 5:L45 | Convert DEC-001 to ADR.01.10.01 |
+| 2 | Legacy element ID | Section 5:L45 | Convert DEC-001 to ADR.01.1001 |
 | 3 | Missing traceability tag | Section 17 | Add @bdd tag |
 | ... | ... | ... | ... |
 
@@ -983,7 +983,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # Document control, required sections
-    - element_id_compliance     # ADR.NN.TT.SS format
+    - element_id_compliance     # ADR.NN.xxxx format
     - mermaid_diagrams          # Architecture flow presence
     - v2_compliance             # New v2.0 sections
     - cumulative_tags           # 4 upstream tags
@@ -1070,7 +1070,7 @@ flowchart TD
 | **v2.0 Sections** | Missing MVP Scope | Add Section 7 template | ✅ |
 | **v2.0 Sections** | Missing CB Recovery | Add template if CB mentioned | ✅ |
 | **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
-| **Traceability** | Non-hierarchical format | Convert to BRD.NN.TT.SS format | ✅ |
+| **Traceability** | Non-hierarchical format | Convert to BRD.NN.xxxx format | ✅ |
 | **Diagrams** | Missing Mermaid | Insert template diagram | ✅ |
 
 **Content Preservation Rules**:
@@ -1096,9 +1096,9 @@ flowchart TD
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 5:L45 | Converted DEC-001 → ADR.01.10.01 |
+| 1 | Legacy element ID | Section 5:L45 | Converted DEC-001 → ADR.01.1001 |
 | 2 | Missing visual indicator | Document Control | Added ✅ 94% (Target: ≥90%) |
-| 3 | Missing @bdd tag | Section 17 | Added @bdd: BDD.01.14.01 |
+| 3 | Missing @bdd tag | Section 17 | Added @bdd: BDD.01.1401 |
 | 4 | Missing Risk Thresholds | Section 11 | Added template table |
 | ... | ... | ... | ... |
 
@@ -1162,9 +1162,9 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    DEC_XXX_to_ADR_NN_10_SS: true   # DEC-001 → ADR.01.10.01
-    ALT_XXX_to_ADR_NN_12_SS: true   # ALT-001 → ADR.01.12.01
-    CON_XXX_to_ADR_NN_13_SS: true   # CON-001 → ADR.01.13.01
+    DEC_XXX_to_ADR_NN_10_SS: true   # DEC-001 → ADR.01.1001
+    ALT_XXX_to_ADR_NN_12_SS: true   # ALT-001 → ADR.01.1201
+    CON_XXX_to_ADR_NN_13_SS: true   # CON-001 → ADR.01.1301
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1452,7 +1452,7 @@ jobs:
 /doc-adr-autopilot BRD-01 --all-topics
 
 # Generate single ADR from specific topic
-/doc-adr-autopilot BRD.01.32.01
+/doc-adr-autopilot BRD.01.3201
 
 # Preview only
 /doc-adr-autopilot BRD-01 --dry-run
@@ -1484,7 +1484,7 @@ jobs:
 | Risk Thresholds | Quantified parameter table in Section 11 | ADR-E032 |
 | Circuit Breaker | Recovery table if CB mentioned | ADR-E033 |
 | MVP Scope | Section 7.1/7.2 present | ADR-E034 |
-| Traceability Format | Hierarchical dot notation (@brd:BRD.NN.TT.SS) | ADR-E035 |
+| Traceability Format | Hierarchical dot notation (@brd:BRD.NN.xxxx) | ADR-E035 |
 | Index File | ADR-NN.00_index.md for nested folders | ADR-E036 |
 
 ---

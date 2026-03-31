@@ -106,13 +106,13 @@ metadata:
   task_ready_score: "✅ 95% (Target: ≥90%)"
 
 cumulative_tags:
-  brd: ["BRD.01.01.03"]
-  prd: ["PRD.01.07.02"]
-  ears: ["EARS.01.25.01"]
-  bdd: ["BDD.01.14.01"]
+  brd: ["BRD.01.0103"]
+  prd: ["PRD.01.0702"]
+  ears: ["EARS.01.2501"]
+  bdd: ["BDD.01.1401"]
   adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.26.01"]
-  req: ["REQ.01.27.01"]
+  sys: ["SYS.01.2601"]
+  req: ["REQ.01.2701"]
   contracts: ["CTR-01"]  # optional - if Layer 8 created
 
 overview:
@@ -261,15 +261,15 @@ traceability:
 
 ### 2. Element ID Format (MANDATORY)
 
-**Pattern**: `SPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+**Pattern**: `SPEC.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
 
 | Element Type | Code | Example |
 |--------------|------|---------|
-| Step | 15 | SPEC.02.15.01 |
-| Interface | 16 | SPEC.02.16.01 |
-| Data Model | 17 | SPEC.02.17.01 |
-| Validation Rule | 21 | SPEC.02.21.01 |
-| Specification Element | 28 | SPEC.02.28.01 |
+| Step | 15 | SPEC.02.1501 |
+| Interface | 16 | SPEC.02.1601 |
+| Data Model | 17 | SPEC.02.1701 |
+| Validation Rule | 21 | SPEC.02.2101 |
+| Specification Element | 28 | SPEC.02.2801 |
 
 > **REMOVED PATTERNS** - Do NOT use legacy formats:
 > - `STEP-XXX` - Use `SPEC.NN.15.SS` instead
@@ -382,26 +382,26 @@ rate_limit:
 **Format (maximum - CTR included)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.01.01.03", "BRD.01.01.05"]
-  prd: ["PRD.01.07.02", "PRD.01.07.15"]
-  ears: ["EARS.01.25.01", "EARS.01.25.02"]
-  bdd: ["BDD.01.14.01"]
+  brd: ["BRD.01.0103", "BRD.01.0105"]
+  prd: ["PRD.01.0702", "PRD.01.0715"]
+  ears: ["EARS.01.2501", "EARS.01.2502"]
+  bdd: ["BDD.01.1401"]
   adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.26.01", "SYS.01.26.07"]
-  req: ["REQ.01.27.01"]
+  sys: ["SYS.01.2601", "SYS.01.2607"]
+  req: ["REQ.01.2701"]
   contracts: ["CTR-01"]
 ```
 
 **Format (minimum - CTR skipped)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.01.01.03"]
-  prd: ["PRD.01.07.02"]
-  ears: ["EARS.01.25.01"]
-  bdd: ["BDD.01.14.01"]
+  brd: ["BRD.01.0103"]
+  prd: ["PRD.01.0702"]
+  ears: ["EARS.01.2501"]
+  bdd: ["BDD.01.1401"]
   adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.26.01"]
-  req: ["REQ.01.27.01"]
+  sys: ["SYS.01.2601"]
+  req: ["REQ.01.2701"]
 ```
 
 **Tag Count**: 7-8 tags (minimum 7, maximum 8)
@@ -445,21 +445,21 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
 
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
+- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.01.01` ✅
+- `@brd: BRD.17.0101` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 ## Validation Checks
@@ -472,7 +472,7 @@ Examples:
 | CHECK 2 | Required Metadata Fields (version, status, task_ready_score) |
 | CHECK 3 | TASKS-Ready Score format (✅ emoji + percentage + target) |
 | CHECK 4 | Complete Traceability Chain (cumulative_tags section) |
-| CHECK 5 | Element ID Format (`SPEC.NN.TT.SS`) |
+| CHECK 5 | Element ID Format (`SPEC.NN.xxxx`) |
 
 ### Tier 2: Warnings (Recommended)
 
@@ -523,7 +523,7 @@ SPEC validation is **automatically enforced** via pre-commit hooks:
 - ✅ Required metadata fields (version, status, tasks_ready_score)
 - ✅ TASKS-Ready score format (✅ emoji + percentage)
 - ✅ Complete traceability chain (8 cumulative tags: @brd through @ctr)
-- ✅ Element ID format (SPEC.NN.TT.SS for components)
+- ✅ Element ID format (SPEC.NN.xxxx for components)
 - ✅ Interface specifications (CTR contract references)
 - ✅ Code generation compatibility
 - ✅ Threshold registry integration (@threshold references)
@@ -697,7 +697,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPE
 - [ ] Monitoring specified
 - [ ] Traceability links to upstream/downstream
 - [ ] 100% implementation-ready
-- [ ] Element IDs use `SPEC.NN.TT.SS` format
+- [ ] Element IDs use `SPEC.NN.xxxx` format
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
@@ -712,7 +712,7 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 5. **Missing algorithms**: Functions need step-by-step algorithms
 6. **Incomplete**: Must be 100% implementation-ready
 7. **Hardcoded values**: Use @threshold for performance/timeout/rate limits
-8. **Wrong element IDs**: Use `SPEC.NN.TT.SS`, not legacy `STEP-XXX`, `IF-XXX`, `DM-XXX`
+8. **Wrong element IDs**: Use `SPEC.NN.xxxx`, not legacy `STEP-XXX`, `IF-XXX`, `DM-XXX`
 9. **Wrong cumulative tag codes**: Use correct element type codes (EARS=25, BDD=14, SYS=26, REQ=27, IMPL=29)
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
@@ -751,7 +751,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer SPEC --auto-fi
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -808,7 +808,7 @@ For supplementary documentation needs, create:
 
 **Layer**: 9
 
-**Element ID Format**: `SPEC.NN.TT.SS`
+**Element ID Format**: `SPEC.NN.xxxx`
 - Step = 15
 - Interface = 16
 - Data Model = 17
