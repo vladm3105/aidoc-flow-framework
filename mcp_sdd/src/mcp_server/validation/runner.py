@@ -70,7 +70,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
 
 
 def _collect_yaml_files(document_path: Path) -> list[Path]:
-    """Collect YAML document files, excluding templates."""
+    """Collect YAML document files, excluding templates and derived copies."""
     if document_path.is_file() and document_path.suffix.lower() in (".yaml", ".yml"):
         if "TEMPLATE" not in document_path.name.upper():
             return [document_path]
@@ -78,11 +78,23 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
     if not document_path.is_dir():
         return []
     candidates = sorted(document_path.glob("*.yaml"))
+    source_artifacts = [
+        path
+        for path in candidates
+        if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
+        and "TEMPLATE" not in path.name.upper()
+        and "_validation" not in path.stem
+        and "_remediated" not in path.stem
+    ]
+    if len(source_artifacts) == 1:
+        return source_artifacts
     return [
         path
         for path in candidates
         if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
         and "TEMPLATE" not in path.name.upper()
+        and "_validation" not in path.stem
+        and "_remediated" not in path.stem
     ]
 
 

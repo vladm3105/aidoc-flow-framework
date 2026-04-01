@@ -170,6 +170,150 @@ def _as_text(title: str, report: dict[str, object], detail_key: str) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def _build_validate_fix_prompt(
+    report: dict[str, object],
+    validation_report_path: Path | None,
+) -> str:
+    """Build an actionable fix prompt that includes validation findings.
+
+    Reads the validation report (JSON) and embeds errors/warnings in the
+    prompt so the executor knows exactly what to fix in the derived copy.
+    """
+    lines = [
+        "# Validate-Fix Task",
+        "",
+        f"**Document**: {report.get('document_path', '')}",
+        f"**Doc type**: {report.get('doc_type', '')}",
+        f"**Layer**: {report.get('layer', '')}",
+        "",
+    ]
+
+    # Derived files to edit
+    derived = report.get("derived_paths", [])
+    if isinstance(derived, list) and derived:
+        lines.append("## Files to Fix (derived copies — source is protected)")
+        lines.append("")
+        for path in derived:
+            lines.append(f"- `{path}`")
+        lines.append("")
+
+    # Read and embed validation findings
+    validation_data: dict[str, Any] = {}
+    if validation_report_path and validation_report_path.exists():
+        try:
+            validation_data = json.loads(
+                validation_report_path.read_text(encoding="utf-8")
+            )
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    errors = validation_data.get("errors", [])
+    warnings = validation_data.get("warnings", [])
+
+    if errors or warnings:
+        lines.append("## Validation Findings to Fix")
+        lines.append("")
+
+    if errors:
+        lines.append(f"### Errors ({len(errors)})")
+        lines.append("")
+        for error in errors:
+            lines.append(f"- {error}")
+        lines.append("")
+
+    if warnings:
+        lines.append(f"### Warnings ({len(warnings)})")
+        lines.append("")
+        for warning in warnings:
+            lines.append(f"- {warning}")
+        lines.append("")
+
+    # Instructions
+    lines.append("## Instructions")
+    lines.append("")
+    lines.append(
+        "Fix the errors and warnings listed above in the derived copy file(s). "
+        "Do NOT modify the original source document. "
+        "Read the derived file, identify the root cause of each error, "
+        "and apply targeted edits to resolve each finding."
+    )
+    lines.append("")
+    lines.append(
+        "After fixing, the derived file should pass `sdd_validate` "
+        "with zero errors from the rules above."
+    )
+    lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _build_remediate_fix_prompt(
+    report: dict[str, object],
+    remediation_report_path: Path | None,
+) -> str:
+    """Build an actionable remediation-fix prompt with review findings.
+
+    Reads the remediation report (JSON) and embeds findings in the prompt
+    so the executor knows what to fix in the derived remediated copy.
+    """
+    lines = [
+        "# Remediate-Fix Task",
+        "",
+        f"**Document**: {report.get('document_path', '')}",
+        f"**Doc type**: {report.get('doc_type', '')}",
+        f"**Layer**: {report.get('layer', '')}",
+        "",
+    ]
+
+    derived = report.get("derived_paths", [])
+    if isinstance(derived, list) and derived:
+        lines.append("## Files to Fix (derived copies — source is protected)")
+        lines.append("")
+        for path in derived:
+            lines.append(f"- `{path}`")
+        lines.append("")
+
+    # Read and embed remediation findings
+    remediation_data: dict[str, Any] = {}
+    if remediation_report_path and remediation_report_path.exists():
+        try:
+            remediation_data = json.loads(
+                remediation_report_path.read_text(encoding="utf-8")
+            )
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    findings = remediation_data.get("findings", [])
+    if findings:
+        lines.append(f"## Remediation Findings ({len(findings)})")
+        lines.append("")
+        for finding in findings:
+            if not isinstance(finding, dict):
+                continue
+            severity = finding.get("severity", "unknown")
+            message = finding.get("message", "")
+            action = finding.get("recommended_action", "")
+            file_path = finding.get("file_path", "")
+            lines.append(f"- [{severity}] {message}")
+            if action:
+                lines.append(f"  Action: {action}")
+            if file_path:
+                lines.append(f"  File: {file_path}")
+        lines.append("")
+
+    lines.append("## Instructions")
+    lines.append("")
+    lines.append(
+        "Fix the findings listed above in the derived copy file(s). "
+        "Do NOT modify the original source document or the validation copy. "
+        "Read the derived file, identify the root cause of each finding, "
+        "and apply targeted edits to resolve each issue."
+    )
+    lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def run_remediation_build(
     *,
     project_root: Path,
@@ -423,7 +567,7 @@ def run_validate_fix_build(
         report["source_protection_telemetry"] = telemetry
 
     report_json = json.dumps(report, sort_keys=True)
-    report_text = _as_text("MCP Validate-Fix Report", report, "derived_paths")
+    report_text = _build_validate_fix_prompt(report, validation_report)
     report_path, summary_path = _write_report_files(
         output_dir,
         "validate_fix_report.json",
@@ -489,7 +633,7 @@ def run_remediate_fix_build(
         report["source_protection_telemetry"] = telemetry
 
     report_json = json.dumps(report, sort_keys=True)
-    report_text = _as_text("MCP Remediate-Fix Report", report, "derived_paths")
+    report_text = _build_remediate_fix_prompt(report, remediation_report)
     report_path, summary_path = _write_report_files(
         output_dir,
         "remediate_fix_report.json",
