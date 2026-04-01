@@ -7,6 +7,7 @@ from pathlib import Path
 from .registry import ExecutorType, get_executor
 from .cli_runner import ExecutorResult, run_cli_executor
 from .api_runner import run_api_executor
+from mcp_server.logging_config import log_executor_launch, log_executor_result
 
 
 async def run_executor(
@@ -18,23 +19,38 @@ async def run_executor(
     """Dispatch to CLI or API executor based on registry type."""
     config = get_executor(name)
 
+    start = log_executor_launch(
+        executor=name,
+        prompt_chars=len(prompt),
+        working_dir=str(working_dir) if working_dir else None,
+        timeout=timeout,
+    )
+
     if config.executor_type == ExecutorType.CLI:
-        return await run_cli_executor(
+        result = await run_cli_executor(
             config=config,
             prompt=prompt,
             working_dir=working_dir,
             timeout=timeout,
         )
     elif config.executor_type == ExecutorType.API:
-        return await run_api_executor(
+        result = await run_api_executor(
             config=config,
             prompt=prompt,
             timeout=timeout,
         )
     else:
-        return ExecutorResult(
+        result = ExecutorResult(
             stdout="",
             stderr=f"Unknown executor type: {config.executor_type}",
             exit_code=-3,
             executor_name=name,
         )
+
+    log_executor_result(
+        executor=name,
+        start_time=start,
+        exit_code=result.exit_code,
+        stdout_chars=len(result.stdout) if result.stdout else 0,
+    )
+    return result

@@ -15,6 +15,12 @@ from pathlib import Path
 
 from mcp.types import TextContent, Tool
 
+from mcp_server.logging_config import (
+    configure_logging,
+    log_tool_call,
+    log_tool_result,
+)
+
 from mcp_server.executor import (
     ExecutorConfig,
     ExecutorType,
@@ -396,7 +402,11 @@ async def _maybe_run_executor(
     deterministic_result: dict,
     working_dir: Path | None = None,
 ) -> dict:
-    """If executor specified, run it with the prompt. Otherwise return prompt text."""
+    """If executor specified, run it with the prompt. Otherwise return prompt text.
+
+    Derives working_dir from the 'document' argument when not explicitly
+    provided, so executor output lands in the document's folder.
+    """
     executor_name = arguments.get("executor")
     if not executor_name:
         return {
@@ -404,6 +414,13 @@ async def _maybe_run_executor(
             "prompt_text": prompt_text,
             "executor": None,
         }
+
+    # Default working_dir to document folder
+    if working_dir is None:
+        doc_arg = arguments.get("document")
+        if doc_arg:
+            doc_path = Path(doc_arg).expanduser().resolve()
+            working_dir = doc_path if doc_path.is_dir() else doc_path.parent
 
     timeout = arguments.get("timeout", 300)
     exec_result: ExecutorResult = await run_executor(
@@ -482,10 +499,34 @@ def _inspect_document_folder(document_dir: Path) -> dict:
 
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Main tool handler — routes MCP tool calls to runner functions."""
+    # Configure logging if project root is available
+    project_arg = arguments.get("project")
+    if project_arg:
+        configure_logging(Path(project_arg).expanduser().resolve())
+
+    start = log_tool_call(
+        tool=name,
+        arguments=arguments,
+        project_root=Path(project_arg) if project_arg else None,
+    )
     try:
         result = await _dispatch(name, arguments)
+        # Extract summary counts if available
+        summary = result.get("summary", result.get("report", {}).get("summary", {}))
+        if isinstance(summary, dict):
+            log_tool_result(
+                tool=name,
+                start_time=start,
+                errors=summary.get("errors", 0) if isinstance(summary.get("errors"), int) else 0,
+                warnings=summary.get("warnings", 0) if isinstance(summary.get("warnings"), int) else 0,
+                passes=summary.get("passes", 0) if isinstance(summary.get("passes"), int) else 0,
+                is_valid=summary.get("is_valid"),
+            )
+        else:
+            log_tool_result(tool=name, start_time=start)
         return [TextContent(type="text", text=json.dumps(result, indent=2, default=str))]
     except Exception as e:
+        log_tool_result(tool=name, start_time=start, errors=1)
         return [TextContent(type="text", text=json.dumps({"error": str(e), "tool": name}))]
 
 
