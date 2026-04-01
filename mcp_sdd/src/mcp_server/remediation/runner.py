@@ -228,6 +228,15 @@ def _build_validate_fix_prompt(
             lines.append(f"- {warning}")
         lines.append("")
 
+    # Document context from validation report
+    passes = validation_data.get("passes", [])
+    if passes:
+        lines.append("## Validation Passes (context)")
+        lines.append("")
+        for p in passes:
+            lines.append(f"- {p}")
+        lines.append("")
+
     # Instructions
     lines.append("## Instructions")
     lines.append("")
@@ -236,6 +245,33 @@ def _build_validate_fix_prompt(
         "Do NOT modify the original source document. "
         "Read the derived file, identify the root cause of each error, "
         "and apply targeted edits to resolve each finding."
+    )
+    lines.append("")
+    lines.append("### Fix Strategy")
+    lines.append("")
+    lines.append(
+        "1. **Read the derived file first** to understand the document structure."
+    )
+    lines.append(
+        "2. **For phantom ID errors (SDD-XS-001)**: Find where the ID is "
+        "referenced, then find the correct existing ID it should point to. "
+        "Match by semantic role — read the context around the reference "
+        "(e.g., story title, requirement description) and find the defined "
+        "element whose meaning aligns. Do NOT create new elements; remap "
+        "to existing IDs."
+    )
+    lines.append(
+        "3. **For propagation warnings (BRD-XS-001)**: Add the missing "
+        "technology/decision name to the referenced section text."
+    )
+    lines.append(
+        "4. **For phase alignment errors (BRD-XS-002)**: Ensure phase "
+        "names match between scope and implementation sections."
+    )
+    lines.append(
+        "5. **For entity consistency warnings (BRD-XS-004)**: Either "
+        "remove the stale entity from the executive summary or add it "
+        "to the functional requirements."
     )
     lines.append("")
     lines.append(
