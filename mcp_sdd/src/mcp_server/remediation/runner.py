@@ -366,7 +366,10 @@ def run_remediation_build(
 
     for file_path in files:
         content = file_path.read_text(encoding="utf-8")
-        if not _has_frontmatter(content):
+        # YAML documents (.yaml/.yml) are structured data — they don't use
+        # markdown frontmatter delimiters.  Only check .md files.
+        is_yaml_file = file_path.suffix.lower() in (".yaml", ".yml")
+        if not is_yaml_file and not _has_frontmatter(content):
             findings.append(
                 _build_finding_entry(
                     file_path=str(file_path),
