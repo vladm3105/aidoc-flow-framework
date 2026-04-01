@@ -9,6 +9,14 @@ from typing import Any, cast
 import yaml  # type: ignore[import-untyped]
 
 from mcp_server.utils.template_naming import resolve_template_path
+from mcp_server.validation.cross_section import (
+    run_cross_section_checks,
+    run_cross_section_checks_md,
+)
+from mcp_server.validation.brd_rules import (
+    run_brd_cross_section_checks,
+    run_brd_cross_section_checks_md,
+)
 
 
 @dataclass(frozen=True)
@@ -59,6 +67,53 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
         return source_artifacts
 
     return filtered
+
+
+def _collect_yaml_files(document_path: Path) -> list[Path]:
+    """Collect YAML document files, excluding templates."""
+    if document_path.is_file() and document_path.suffix.lower() in (".yaml", ".yml"):
+        if "TEMPLATE" not in document_path.name.upper():
+            return [document_path]
+        return []
+    if not document_path.is_dir():
+        return []
+    candidates = sorted(document_path.glob("*.yaml"))
+    return [
+        path
+        for path in candidates
+        if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
+        and "TEMPLATE" not in path.name.upper()
+    ]
+
+
+def _validate_yaml_metadata(
+    yaml_data: dict[str, object],
+    template: dict[str, object],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+) -> None:
+    """Validate YAML document metadata against template requirements."""
+    metadata = yaml_data.get("metadata", {})
+    if not isinstance(metadata, dict):
+        warnings.append("YAML document missing metadata section")
+        return
+
+    # Tag validation
+    tags = metadata.get("tags", [])
+    tag_set = {t for t in tags if isinstance(t, str)} if isinstance(tags, list) else set()
+    for required_tag in _extract_required_tags(template):
+        if required_tag in tag_set:
+            passes.append(f"required tag present: {required_tag}")
+        else:
+            errors.append(f"Missing required tag: {required_tag}")
+
+    # Document type check
+    doc_type_val = metadata.get("document_type")
+    if isinstance(doc_type_val, str) and doc_type_val == "template":
+        warnings.append(
+            "document_type is 'template' — should be instance type (e.g., 'brd-document')"
+        )
 
 
 def _parse_frontmatter(content: str) -> dict[str, object]:
@@ -251,72 +306,127 @@ def run_project_validation_build(
 ) -> ValidationRunResult:
     template, template_error = _load_layer_yaml_template(project_root=project_root, layer=layer)
 
-    files = _collect_markdown_files(document_path)
     errors: list[str] = []
     warnings: list[str] = []
     passes: list[str] = []
+    files: list[Path] = []
+    combined_content = ""
 
     if template_error is not None:
         errors.append(template_error)
 
-    if not files:
-        errors.append("No markdown files found to validate")
+    # --- YAML/MD decision fork ---
+    yaml_files = _collect_yaml_files(document_path)
 
-    frontmatter: dict[str, object] = {}
-    if files:
-        frontmatter = _parse_frontmatter(files[0].read_text(encoding="utf-8"))
-        if not frontmatter:
-            errors.append("Missing or invalid YAML frontmatter")
-
-    custom_fields_raw = frontmatter.get("custom_fields") if isinstance(frontmatter, dict) else None
-    custom_fields: dict[str, Any]
-    if custom_fields_raw is None:
-        custom_fields = {}
-    elif isinstance(custom_fields_raw, dict):
-        custom_fields = cast(dict[str, Any], custom_fields_raw)
-    else:
-        errors.append("custom_fields must be a mapping")
-        custom_fields = {}
-
-    for field_name in _extract_required_custom_fields(template):
-        if field_name in custom_fields:
-            passes.append(f"custom_fields.{field_name} present")
+    if yaml_files:
+        # ===== YAML validation path =====
+        files = yaml_files
+        yaml_text = yaml_files[0].read_text(encoding="utf-8")
+        yaml_data = yaml.safe_load(yaml_text)
+        if not isinstance(yaml_data, dict):
+            errors.append("YAML file did not parse to a mapping")
+            yaml_data = {}
         else:
-            errors.append(f"Missing required custom field: custom_fields.{field_name}")
+            passes.append(f"yaml_parsed: {yaml_files[0].name}")
 
-    tags_raw = frontmatter.get("tags") if isinstance(frontmatter, dict) else None
-    tags: list[Any]
-    if tags_raw is None:
-        tags = []
-    elif isinstance(tags_raw, list):
-        tags = tags_raw
+        _validate_yaml_metadata(yaml_data, template, errors, warnings, passes)
+
+        # Tier 1: Generic cross-section (all layers)
+        run_cross_section_checks(
+            yaml_data=yaml_data,
+            doc_type=doc_type,
+            errors=errors,
+            warnings=warnings,
+            passes=passes,
+        )
+        # Tier 2: Layer-specific cross-section
+        if doc_type.strip().lower() == "brd":
+            run_brd_cross_section_checks(
+                yaml_data=yaml_data,
+                errors=errors,
+                warnings=warnings,
+                passes=passes,
+            )
+        combined_content = yaml_text
     else:
-        errors.append("tags must be an array")
-        tags = []
+        # ===== Existing MD validation path (unchanged) =====
+        files = _collect_markdown_files(document_path)
 
-    tag_set = {tag for tag in tags if isinstance(tag, str)}
-    for required_tag in _extract_required_tags(template):
-        if required_tag in tag_set:
-            passes.append(f"required tag present: {required_tag}")
+        if not files:
+            errors.append("No markdown or YAML files found to validate")
+
+        frontmatter: dict[str, object] = {}
+        if files:
+            frontmatter = _parse_frontmatter(files[0].read_text(encoding="utf-8"))
+            if not frontmatter:
+                errors.append("Missing or invalid YAML frontmatter")
+
+        custom_fields_raw = frontmatter.get("custom_fields") if isinstance(frontmatter, dict) else None
+        custom_fields: dict[str, Any]
+        if custom_fields_raw is None:
+            custom_fields = {}
+        elif isinstance(custom_fields_raw, dict):
+            custom_fields = cast(dict[str, Any], custom_fields_raw)
         else:
-            errors.append(f"Missing required tag: {required_tag}")
+            errors.append("custom_fields must be a mapping")
+            custom_fields = {}
 
-    combined_content = "\n\n".join(path.read_text(encoding="utf-8") for path in files)
-    for section_name, pattern in _extract_required_section_patterns(template):
-        try:
-            if re.search(pattern, combined_content, re.MULTILINE):
-                passes.append(f"required section present: {section_name}")
+        for field_name in _extract_required_custom_fields(template):
+            if field_name in custom_fields:
+                passes.append(f"custom_fields.{field_name} present")
             else:
-                errors.append(f"Missing required section: {section_name}")
-        except re.error:
-            warnings.append(f"Skipped invalid schema regex for section: {section_name}")
+                errors.append(f"Missing required custom field: custom_fields.{field_name}")
 
-    _run_doc_type_parity_checks(
-        doc_type=doc_type,
-        content=combined_content,
-        errors=errors,
-        passes=passes,
-    )
+        tags_raw = frontmatter.get("tags") if isinstance(frontmatter, dict) else None
+        tags: list[Any]
+        if tags_raw is None:
+            tags = []
+        elif isinstance(tags_raw, list):
+            tags = tags_raw
+        else:
+            errors.append("tags must be an array")
+            tags = []
+
+        tag_set = {tag for tag in tags if isinstance(tag, str)}
+        for required_tag in _extract_required_tags(template):
+            if required_tag in tag_set:
+                passes.append(f"required tag present: {required_tag}")
+            else:
+                errors.append(f"Missing required tag: {required_tag}")
+
+        combined_content = "\n\n".join(path.read_text(encoding="utf-8") for path in files) if files else ""
+        for section_name, pattern in _extract_required_section_patterns(template):
+            try:
+                if re.search(pattern, combined_content, re.MULTILINE):
+                    passes.append(f"required section present: {section_name}")
+                else:
+                    errors.append(f"Missing required section: {section_name}")
+            except re.error:
+                warnings.append(f"Skipped invalid schema regex for section: {section_name}")
+
+        _run_doc_type_parity_checks(
+            doc_type=doc_type,
+            content=combined_content,
+            errors=errors,
+            passes=passes,
+        )
+
+        # Tier 1: Generic cross-section (degraded MD path)
+        run_cross_section_checks_md(
+            content=combined_content,
+            doc_type=doc_type,
+            errors=errors,
+            warnings=warnings,
+            passes=passes,
+        )
+        # Tier 2: Layer-specific (degraded MD path)
+        if doc_type.strip().lower() == "brd":
+            run_brd_cross_section_checks_md(
+                content=combined_content,
+                errors=errors,
+                warnings=warnings,
+                passes=passes,
+            )
 
     is_valid = len(errors) == 0
     report: dict[str, object] = {

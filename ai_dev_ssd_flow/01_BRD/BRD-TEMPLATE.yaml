@@ -166,6 +166,25 @@ metadata:
     max_hash_length: 8
     placeholder: "xxxx"
 
+  cross_section_rules:
+    description: "Machine-enforced by sdd_validate (mcp_sdd)"
+    generic:
+      - id: SDD-XS-001
+        rule: "All element IDs in traceability must exist in source sections"
+      - id: SDD-XS-002
+        rule: "Readiness score must be recalculated if validation findings exist"
+      - id: SDD-XS-003
+        rule: "Documents with diagram contracts must have diagrams section with items"
+    brd_specific:
+      - id: BRD-XS-001
+        rule: "ADT selected decisions must propagate to implementation and cost sections"
+      - id: BRD-XS-002
+        rule: "Phase names and count must match between scope and implementation"
+      - id: BRD-XS-004
+        rule: "Entities in executive summary must appear in functional requirements or stakeholders"
+      - id: BRD-XS-005
+        rule: "Currency lists must be consistent across FR-01, mandatory conditions, acceptance criteria"
+
 # =============================================================================
 # Section 1: Document Control
 # =============================================================================
@@ -235,6 +254,32 @@ executive_summary:
     secondary:
       - segment: "[e.g., Accountants managing client accounts]"
         need: "[What they need]"
+
+# =============================================================================
+# Diagrams Registry
+# =============================================================================
+diagrams:
+  id: "{doc_type}.{doc_id}.xxxx"
+  directory: "diagrams/"
+  format: "SVG rendered from Mermaid sources (.mmd)"
+  required_for_platform_brd:
+    - type: "structure_overview"
+      description: "Document section map with key metrics"
+    - type: "cross_brd_dependencies"
+      description: "Upstream/downstream BRD dependency graph"
+    - type: "data_model"
+      description: "Primary data model or entity hierarchy"
+  required_for_feature_brd:
+    - type: "user_journey"
+      description: "Happy-path user flow"
+    - type: "integration_points"
+      description: "External system touchpoints"
+  optional:
+    - type: "implementation_phases"
+    - type: "risk_summary"
+    - type: "architecture_decisions"
+    - type: "key_flow_diagrams"
+  items: []  # Populated per BRD instance with id, title, file, source, scope
 
 # =============================================================================
 # Section 3: Introduction

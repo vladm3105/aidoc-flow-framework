@@ -118,6 +118,34 @@ Required fields in SYS diagram contract subsection:
 | SYS (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required System Diagram Contract subsection, sequence-path constraints, downstream SPEC ownership link |
 | SPEC/Code/Test (L9+) | C4 L4 ownership declarations aligned with SYS references |
 
+### BRD Required Diagrams by Type
+
+BRD diagrams are scoped by `brd_type` (platform or feature). Required diagrams ensure consistent visual coverage across all BRDs.
+
+**Platform BRD (3 required)**:
+
+| # | Type | Description | Diagram Tag |
+|---|------|-------------|-------------|
+| 1 | `structure_overview` | Document section map with key metrics | `@diagram: c4-l1` |
+| 2 | `cross_brd_dependencies` | Upstream/downstream BRD dependency graph | `@diagram: c4-l1` |
+| 3 | `data_model` | Primary data model or entity hierarchy | `@diagram: dfd-l1` |
+
+**Feature BRD (2 required)**:
+
+| # | Type | Description | Diagram Tag |
+|---|------|-------------|-------------|
+| 1 | `user_journey` | Happy-path user flow | `@diagram: sequence-sync` |
+| 2 | `integration_points` | External system touchpoints | `@diagram: c4-l1` |
+
+**Optional (both types)**:
+
+- `implementation_phases` -- phase timeline or Gantt
+- `risk_summary` -- risk matrix visualization
+- `architecture_decisions` -- ADT decision tree
+- `key_flow_diagrams` -- domain-specific data or process flows
+
+All diagrams follow the `diagrams` registry in BRD-TEMPLATE.yaml. Each item requires: `id`, `title`, `file`, `source`, `scope`.
+
 ### Interactive Diagrams (RECOMMENDED)
 
 For enhanced navigability, Mermaid diagrams MAY include click handlers to link nodes to related documents or sections. This is **optional but recommended** for traceability diagrams.
