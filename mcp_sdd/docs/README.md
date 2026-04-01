@@ -85,6 +85,8 @@ Use this precedence for conflict resolution:
 - [Test Checklist 001](plans/TEST-CHECKLIST-001_mcp_new_contract_rows.md)
 - [PLAN-016 Cross-Section Validation](plans/PLAN-016_cross_section_validation.md)
 - [PLAN-016 Checklist](plans/PLAN-016_checklist.md)
+- [PLAN-017 Executor Output and Logging](plans/PLAN-017_executor_output_and_logging.md)
+- [PLAN-018 UCX Root Relocation](plans/PLAN-018_ucx_root_relocation.md)
 
 ## 7. Changelog
 
