@@ -144,29 +144,50 @@ def _check_phase_alignment(
     if not isinstance(impl_phases_raw, list):
         impl_phases_raw = []
 
-    scope_phase_ids: set[str] = set()
+    def _normalize_phase(phase_str: str) -> str:
+        """Normalize phase names for comparison.
+
+        Extracts the 'Phase N' prefix so that 'Phase 1: Core Ledger' and
+        'Phase 1' are treated as the same phase.
+        """
+        m = re.match(r"(Phase\s+\d+)", phase_str, re.IGNORECASE)
+        return m.group(1) if m else phase_str
+
+    scope_phase_ids: list[str] = []
     for item in scope_phases_raw:
         if isinstance(item, dict) and "phase" in item:
-            scope_phase_ids.add(str(item["phase"]))
+            scope_phase_ids.append(str(item["phase"]))
 
-    impl_phase_ids: set[str] = set()
+    impl_phase_ids: list[str] = []
     for item in impl_phases_raw:
         if isinstance(item, dict) and "phase" in item:
-            impl_phase_ids.add(str(item["phase"]))
+            impl_phase_ids.append(str(item["phase"]))
 
     if not scope_phase_ids and not impl_phase_ids:
         passes.append("BRD-XS-002: Phase section not present (skipped)")
         return
 
-    if scope_phase_ids == impl_phase_ids:
+    # Compare counts first (using raw lists)
+    if len(scope_phase_ids) != len(impl_phase_ids):
+        errors.append(
+            f"BRD-XS-002: Phase count mismatch — scope has "
+            f"{len(scope_phase_ids)}, implementation has {len(impl_phase_ids)}"
+        )
+        return
+
+    # Compare normalized phase identifiers
+    scope_normalized = {_normalize_phase(p) for p in scope_phase_ids}
+    impl_normalized = {_normalize_phase(p) for p in impl_phase_ids}
+
+    if scope_normalized == impl_normalized:
         passes.append(
             f"BRD-XS-002: {len(scope_phase_ids)} scope phase(s) aligned "
             f"with implementation phases"
         )
         return
 
-    missing_from_impl = scope_phase_ids - impl_phase_ids
-    extra_in_impl = impl_phase_ids - scope_phase_ids
+    missing_from_impl = scope_normalized - impl_normalized
+    extra_in_impl = impl_normalized - scope_normalized
 
     if missing_from_impl:
         errors.append(
@@ -259,7 +280,12 @@ def _check_currency_consistency(
     warnings: list[str],
     passes: list[str],
 ) -> None:
+    # mandatory_conditions can be top-level or nested under project_scope
     mandatory = yaml_data.get("mandatory_conditions")
+    if mandatory is None:
+        scope = yaml_data.get("project_scope")
+        if isinstance(scope, dict):
+            mandatory = scope.get("mandatory_conditions")
     if mandatory is None:
         passes.append("BRD-XS-005: No currency scope detected (skipped)")
         return
