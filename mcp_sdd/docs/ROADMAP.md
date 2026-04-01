@@ -8,7 +8,8 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 | --- | --- |
 | Current Version | 1.6.0 |
 | Latest Release | 1.6.0 (3-segment element IDs, template + prompt migration) |
-| Previous Release | 1.3.0 (diagnostics and governance refinement) |
+| Next Minor | 1.7.0 (cross-section validation, YAML fork, BRD template improvements) |
+| Previous Release | 1.5.0 (link validation tool, executor write fixes) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -180,6 +181,31 @@ Delivered scope:
 - Validation regex: `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`
 - Element type code table deprecated
 - AUTOPILOT directory archived
+
+---
+
+### v1.7.0 - Cross-Section Validation and BRD Template Improvements
+
+| Field | Value |
+| --- | --- |
+| Status | Planned |
+| Type | Minor |
+| Scope | Two-tier cross-section validation in sdd_validate, YAML document support, BRD template enhancements |
+
+Planned scope:
+
+- Tier 1 (generic, all layers): Traceability ID existence validation (SDD-XS-001), readiness score plausibility check (SDD-XS-002), diagram registry presence (SDD-XS-003)
+- Tier 2 (BRD-specific): ADT decision propagation (BRD-XS-001), phase alignment (BRD-XS-002), entity consistency (BRD-XS-004), currency scope consistency (BRD-XS-005)
+- YAML document support in `sdd_validate` — validates `.yaml` BRDs alongside existing `.md` path
+- BRD-TEMPLATE.yaml updates: `diagrams` section, `cross_section_rules` metadata
+- New BRD-MD-TEMPLATE.md for standardized YAML-to-MD rendering
+- DIAGRAM_STANDARDS.md: BRD required diagram list, DFD-L1 standardization
+- New modules: `validation/cross_section.py`, `validation/brd_rules.py`
+- Pattern established for future layer-specific rules (`prd_rules.py`, `spec_rules.py`)
+
+References:
+
+- plans/PLAN-016_cross_section_validation.md
 
 ---
 

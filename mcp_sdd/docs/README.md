@@ -83,9 +83,12 @@ Use this precedence for conflict resolution:
 - [Release Readiness 001](plans/RELEASE-READINESS-001_mcp_cutover_status.md)
 - [Rollback Notes 001](plans/ROLLBACK-NOTES-001_mcp_partial_deployment.md)
 - [Test Checklist 001](plans/TEST-CHECKLIST-001_mcp_new_contract_rows.md)
+- [PLAN-016 Cross-Section Validation](plans/PLAN-016_cross_section_validation.md)
+- [PLAN-016 Checklist](plans/PLAN-016_checklist.md)
 
 ## 7. Changelog
 
+- [CHANGELOG v1.7.0](CHANGELOG/CHANGELOG_v1.7.0.md) — cross-section validation, YAML fork, BRD diagram registry
 - [CHANGELOG v1.6.0](CHANGELOG/CHANGELOG_v1.6.0.md) — 3-segment element IDs, template migration
 - [CHANGELOG v1.5.0](CHANGELOG/CHANGELOG_v1.5.0.md) — sdd_validate_links tool, executor write fixes
 - [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md) — initial MCP documentation layer

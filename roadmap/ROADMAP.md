@@ -4,7 +4,7 @@
 | --- | --- |
 | Current Version | 0.13.0 |
 | Latest Release | 0.13.0 (3-segment element IDs, AUTOPILOT archived) |
-| Next Minor | 0.13.0 (IMPLEMENTATION_PLAN modernization) |
+| Next Minor | 0.14.0 (cross-section validation, BRD template improvements) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,31 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.14.0 - Cross-Section Validation and BRD Template Improvements
+
+| Field | Value |
+| --- | --- |
+| Status | Planned |
+| Type | Minor |
+| Scope | mcp_sdd v1.7.0: two-tier cross-section validation, YAML document support, BRD template enhancements |
+
+Planned scope:
+
+- Generic cross-section validation rules in `sdd_validate` for all 11 SDD layers (traceability ID existence, readiness score plausibility, diagram registry)
+- BRD-specific cross-section rules (ADT propagation, phase alignment, entity consistency, currency scope)
+- YAML document support in validation pipeline
+- BRD-TEMPLATE.yaml: `diagrams` section, `cross_section_rules` metadata
+- BRD-MD-TEMPLATE.md: standardized YAML-to-MD rendering
+- DIAGRAM_STANDARDS.md: BRD required diagram list, DFD-L1 standardization
+- Extensible pattern for future layer-specific rules (PRD, SPEC)
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-016_cross_section_validation.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.7.0.md
+
+---
 
 ### v0.13.0 - API Executors and Progress Notifications
 
