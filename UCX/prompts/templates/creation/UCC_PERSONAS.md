@@ -1,8 +1,10 @@
 # UCC Author Personas
 
+> **Note (v1.12.0)**: Per-doctype persona sequences are now defined in `persona_mappings.yaml` and loaded at runtime. This file serves as a reference for individual persona role definitions only.
+
 ## Overview
 
-The **Unified Context Creation (UCC)** system uses multiple expert personas to collaboratively author documents. Each persona contributes their domain expertise to ensure comprehensive, high-quality output.
+The **Unified Context Creation (UCC)** system uses multiple expert personas to collaboratively author documents. Each persona contributes their domain expertise to ensure comprehensive, high-quality output. The specific personas loaded for each document type are configured in `UCX/skills/persona_mappings.yaml`.
 
 ---
 

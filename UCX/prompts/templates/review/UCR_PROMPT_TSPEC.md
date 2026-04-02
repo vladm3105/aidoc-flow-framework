@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Test Specification Document (TSPEC). Apply all 5 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 
@@ -193,7 +193,7 @@ After all persona reviews, synthesize findings into the **PERSONA_REVIEW_REPORT*
 > **Target Document**: [TSPEC-NNN] (Version X.X)
 > **Review Date**: [DATE]
 > **Method**: UCR (Unified Context Review)
-> **Personas Applied**: 5 (QA Lead, Tech Lead, Chaos Engineer, Operator, Integration Lead)
+> **Personas Applied**: {PERSONA_COUNT} ({PERSONA_LIST})
 
 ## 1. Executive Summary
 - **Consensus Recommendation**: (Proceed / Remediation Required / Test Coverage Incomplete)

@@ -18,22 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **Te
 
 ---
 
-## Author Personas
-
-### 1. QA_LEAD
-- **Focus**: Test strategy, coverage
-- **Contribution**: Define test approach, ensure coverage
-- **Quality Gate**: 100% requirement coverage
-
-### 2. TECH_LEAD
-- **Focus**: Test implementation, automation
-- **Contribution**: Specify test implementation
-- **Quality Gate**: Tests are automatable
-
-### 3. OPERATOR
-- **Focus**: Environment, data, reliability
-- **Contribution**: Define test environment, data
-- **Quality Gate**: Tests are reliable
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

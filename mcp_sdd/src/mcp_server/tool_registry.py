@@ -217,11 +217,11 @@ TOOLS: list[Tool] = [
                 "document": {"type": "string", "description": "Path to document file or directory"},
                 "stages": {
                     "type": "array",
-                    "items": {"type": "string", "enum": ["create", "validate", "validate_fix", "review", "remediate", "remediate_fix"]},
+                    "items": {"type": "string", "enum": ["validate", "validate_fix", "review", "remediate", "remediate_fix"]},
                     "description": "Lifecycle stages to run in order",
                 },
                 "executor": {"type": "string", "description": "Executor for LLM-dependent stages. Use sdd_list_executors to see options."},
-                "persona": {"type": "string", "description": "Persona for review/create stages"},
+                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override for review/create stages. If omitted, loaded from persona_mappings.yaml."},
                 "template": {"type": "string", "description": "Template for review/create stages"},
                 "out": {"type": "string", "description": "Output directory"},
             },
@@ -231,12 +231,12 @@ TOOLS: list[Tool] = [
     # ── LLM-dependent tools ──────────────────────────────────────────────
     Tool(
         name="sdd_create_build",
-        description="Assemble LLM creation prompt with persona, template, and layer assets. If executor specified, spawns agent to generate content.",
+        description="Assemble LLM creation prompt with personas, template, and layer assets. If executor specified, spawns agent to generate content.",
         inputSchema={
             "type": "object",
             "properties": {
                 "project": {"type": "string", "description": "Project root path"},
-                "persona": {"type": "string", "description": "Persona file name without extension"},
+                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "template": {"type": "string", "description": "Template file in UCX/prompts/templates/creation"},
@@ -245,7 +245,7 @@ TOOLS: list[Tool] = [
                 "executor": {"type": "string", "description": "Executor name. Omit to return prompt text."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
-            "required": ["project", "persona", "doc_type", "layer", "template"],
+            "required": ["project", "doc_type", "layer", "template"],
         },
     ),
     Tool(
@@ -255,7 +255,7 @@ TOOLS: list[Tool] = [
             "type": "object",
             "properties": {
                 "project": {"type": "string", "description": "Project root path"},
-                "persona": {"type": "string", "description": "Persona file name without extension"},
+                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "template": {"type": "string", "description": "Template file name"},
@@ -266,7 +266,7 @@ TOOLS: list[Tool] = [
                 "executor": {"type": "string", "description": "Executor name. Omit for template-only creation."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
-            "required": ["project", "persona", "doc_type", "layer", "template", "target"],
+            "required": ["project", "doc_type", "layer", "template", "target"],
         },
     ),
     Tool(
@@ -276,7 +276,7 @@ TOOLS: list[Tool] = [
             "type": "object",
             "properties": {
                 "project": {"type": "string", "description": "Project root path"},
-                "persona": {"type": "string", "description": "Persona file name without extension"},
+                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type"},
                 "template": {"type": "string", "description": "Review template file name"},
                 "document": {"type": "string", "description": "Path to document file or directory for auto section loading"},
@@ -288,7 +288,7 @@ TOOLS: list[Tool] = [
                 "executor": {"type": "string", "description": "Executor name. Omit to return prompt text."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
-            "required": ["project", "persona", "doc_type", "template"],
+            "required": ["project", "doc_type", "template"],
         },
     ),
     Tool(
@@ -734,7 +734,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         )
         result = run_project_creation_build(
             project_root=project_root,
-            persona=arguments["persona"],
+            personas=arguments.get("personas"),
             doc_type=arguments["doc_type"],
             layer=arguments["layer"],
             template_name=arguments["template"],
@@ -759,7 +759,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         )
         result = run_project_creation_artifact(
             project_root=project_root,
-            persona=arguments["persona"],
+            personas=arguments.get("personas"),
             doc_type=arguments["doc_type"],
             layer=arguments["layer"],
             template_name=arguments["template"],
@@ -793,7 +793,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         )
         result = run_project_review_build(
             project_root=project_root,
-            persona=arguments["persona"],
+            personas=arguments.get("personas"),
             doc_type=arguments["doc_type"],
             template_name=arguments["template"],
             sections=sections,

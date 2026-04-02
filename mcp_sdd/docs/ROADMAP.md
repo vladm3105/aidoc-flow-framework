@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.11.0 |
-| Latest Release | 1.11.0 (unified report naming standard) |
-| Previous Release | 1.10.0 (UCX root relocation) |
+| Current Version | 1.12.0 |
+| Latest Release | 1.12.0 (multi-persona mapping support) |
+| Previous Release | 1.11.0 (unified report naming standard) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -298,6 +298,31 @@ Delivered scope:
 References:
 
 - plans/PLAN-021_sdd_reporting_naming_standard.md
+
+---
+
+### v1.12.0 - Multi-Persona Mapping Support
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | Multi-persona mapping support via persona_mappings.yaml (PLAN-022) |
+
+Delivered scope:
+
+- `persona_mappings.yaml` — machine-readable per-doctype, per-phase persona sequences
+- 15-persona category map (expanded from 7)
+- Multi-persona prompt assembly with token budget tracking
+- Tool schema migration: `persona` (string) → `personas` (array, optional)
+- CLI migration: `--persona` → `--personas` (optional, `nargs="+"`)
+- YAML schema validation with persona name cross-references
+- 31 prompt templates cleaned of hardcoded persona lists
+
+References:
+
+- plans/PLAN-022_multi_persona_mappings.md
 
 ---
 

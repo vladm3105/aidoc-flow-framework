@@ -32,9 +32,12 @@ class ContextContract:
 
 @dataclass(frozen=True)
 class PromptMetadataSidecar:
-    persona: str
+    personas: list[str]
     doc_type: str
     structure_blocks: list[str]
+    persona_count: int = 0
+    persona_token_estimate: int = 0
+    persona_token_warning: str | None = None
     sections_included: list[str] = field(default_factory=list)
     sections_skipped: list[str] = field(default_factory=list)
     tokens_total: int = 0
@@ -72,8 +75,8 @@ def validate_context_contract(context: ContextContract) -> list[str]:
 def validate_prompt_metadata_sidecar(metadata: PromptMetadataSidecar) -> list[str]:
     errors: list[str] = []
 
-    if not metadata.persona:
-        errors.append("persona is required")
+    if not metadata.personas:
+        errors.append("personas is required")
     if not metadata.doc_type:
         errors.append("doc_type is required")
     if not metadata.structure_blocks:
@@ -99,7 +102,10 @@ def serialize_prompt_metadata_sidecar(metadata: PromptMetadataSidecar) -> str:
     """Serialize prompt metadata for CLI/API sidecar emission."""
 
     payload = {
-        "persona": metadata.persona,
+        "personas": metadata.personas,
+        "persona_count": metadata.persona_count,
+        "persona_token_estimate": metadata.persona_token_estimate,
+        "persona_token_warning": metadata.persona_token_warning,
         "doc_type": metadata.doc_type,
         "structure_blocks": metadata.structure_blocks,
         "sections": {

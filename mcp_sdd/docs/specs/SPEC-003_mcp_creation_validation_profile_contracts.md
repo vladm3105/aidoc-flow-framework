@@ -30,7 +30,7 @@ In scope:
 - Threshold and readiness-profile contracts.
 
 Out of scope:
-- Review scoring and persona semantics (defined by SPEC-002).
+- Review scoring and multi-persona semantics (defined by SPEC-002).
 - Report naming, lineage persistence, and stage-specific artifact discovery (defined by SPEC-004).
 - Cross-layer namespace and response-envelope policy (defined by SPEC-001).
 

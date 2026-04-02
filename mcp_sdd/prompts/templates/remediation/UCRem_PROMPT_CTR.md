@@ -63,43 +63,7 @@ producers: []
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. ARCHITECT FIXER
-- **Focus**: Contract design, versioning strategy
-- **Question**: "Is this contract well-designed for evolution?"
-- **Flag for manual if**: Breaking change needed, new versioning approach
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Schema completeness, validation rules
-- **Question**: "Is the schema complete and implementable?"
-- **Flag for manual if**: Complex validation logic needed
-
-### 3. INTEGRATION_EXPERT FIXER
-- **Focus**: Consumer/producer compatibility
-- **Question**: "Will this work for all consumers and producers?"
-- **Flag for manual if**: Consumer migration needed, compatibility issue
-
-### 4. QA_LEAD FIXER
-- **Focus**: Testability, example data
-- **Question**: "Can contracts be validated automatically?"
-- **Flag for manual if**: Complex test data generation needed
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Edge cases, breaking changes, hidden assumptions
-- **Question**: "What happens with unexpected data? What could break?"
-- **Flag for manual if**: Undefined behavior, hidden breaking change
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

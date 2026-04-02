@@ -18,27 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **EA
 
 ---
 
-## Author Personas
-
-### 1. REQUIREMENTS_SPECIALIST
-- **Focus**: EARS syntax compliance, structure
-- **Contribution**: Ensure all requirements follow EARS patterns
-- **Quality Gate**: 100% syntax compliance
-
-### 2. TECH_LEAD
-- **Focus**: Technical accuracy, feasibility
-- **Contribution**: Validate technical requirements are implementable
-- **Quality Gate**: Requirements are implementable
-
-### 3. QA_LEAD
-- **Focus**: Testability, verification methods
-- **Contribution**: Ensure requirements are testable
-- **Quality Gate**: All requirements have verification methods
-
-### 4. DEVILS_ADVOCATE
-- **Focus**: Edge cases, negative scenarios
-- **Contribution**: Add unwanted behavior requirements
-- **Quality Gate**: Failure modes are documented
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

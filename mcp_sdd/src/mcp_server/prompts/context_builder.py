@@ -6,9 +6,11 @@ from pathlib import Path
 
 from mcp_server.models.context_engineering_contracts import serialize_prompt_metadata_sidecar
 from mcp_server.skills.project_ucx_loader import (
+    PersonaMappingError,
+    load_multi_persona_files,
+    load_persona_mapping,
     load_project_document_template,
     load_project_layer_assets,
-    load_project_persona_file,
     load_project_prompt_template,
 )
 from mcp_server.utils.template_naming import load_tuned_template
@@ -52,7 +54,8 @@ class PromptAssembly:
     prompt_text: str
     bundle: PromptBundle
     prompt_template_text: str
-    persona_text: str
+    persona_texts: list[str]
+    persona_names: list[str]
 
 
 @dataclass(frozen=True)
@@ -60,7 +63,8 @@ class CreationAssembly:
     prompt_text: str
     bundle: PromptBundle
     prompt_template_text: str
-    persona_text: str
+    persona_texts: list[str]
+    persona_names: list[str]
     layer_assets: dict[str, str]
     document_template_text: str | None
 
@@ -85,7 +89,17 @@ PERSONA_CATEGORY_MAP: dict[str, tuple[str, ...]] = {
     "operator": ("operations", "quality", "technical", "risk"),
     "integration_lead": ("integration", "technical", "functional"),
     "chairperson": ("functional", "quality", "technical", "integration", "compliance", "risk", "operations"),
+    "product_owner": ("functional", "quality", "compliance"),
+    "business_analyst": ("functional", "compliance", "quality"),
+    "strategist": ("functional", "quality", "risk"),
+    "requirements_specialist": ("functional", "technical", "compliance"),
+    "ux_strategist": ("functional", "quality"),
+    "qa_lead": ("functional", "technical", "quality", "risk"),
+    "fact_checker": ("compliance", "quality", "functional"),
+    "content_strategist": ("functional", "quality", "compliance"),
 }
+
+TOKEN_WARNING_THRESHOLD = 15_000  # ~60KB text; default BRD review (11 personas) is ~12K tokens
 
 
 MCP_CREATION_ACTIONABLE_RULES = """## MCP Actionable Creation Rules
@@ -132,8 +146,12 @@ def categorize_section(section: SourceSection) -> tuple[str, float]:
     return best_category, normalized_score
 
 
-def map_sections_for_persona(persona: str, sections: list[SourceSection]) -> SectionMappingResult:
-    required_categories = PERSONA_CATEGORY_MAP.get(persona, ("functional", "technical"))
+def map_sections_for_personas(personas: list[str], sections: list[SourceSection]) -> SectionMappingResult:
+    """Union of all persona categories — include section if ANY persona needs it."""
+    all_categories: set[str] = set()
+    for p in personas:
+        all_categories.update(PERSONA_CATEGORY_MAP.get(p, ("functional", "technical")))
+
     included_sections: list[SourceSection] = []
     skipped_sections: list[SourceSection] = []
     category_confidence: dict[str, float] = {}
@@ -141,7 +159,7 @@ def map_sections_for_persona(persona: str, sections: list[SourceSection]) -> Sec
     for section in sections:
         category, confidence = categorize_section(section)
         category_confidence[section.section_id] = confidence
-        if category in required_categories:
+        if category in all_categories:
             included_sections.append(section)
         else:
             skipped_sections.append(section)
@@ -155,11 +173,15 @@ def map_sections_for_persona(persona: str, sections: list[SourceSection]) -> Sec
 
 def discover_relevant_snippets(
     *,
-    persona: str,
+    personas: list[str],
     skipped_sections: list[SourceSection],
     max_snippets: int = 5,
 ) -> list[RelevantSnippet]:
-    keywords = PERSONA_CATEGORY_MAP.get(persona, ("functional", "technical"))
+    """Find relevant snippets using union of all persona keywords."""
+    all_keywords: set[str] = set()
+    for p in personas:
+        all_keywords.update(PERSONA_CATEGORY_MAP.get(p, ("functional", "technical")))
+    keywords = tuple(all_keywords)
     snippets: list[RelevantSnippet] = []
 
     for section in skipped_sections:
@@ -234,13 +256,15 @@ def build_runtime_context(
 
 def build_prompt_bundle(
     *,
-    persona: str,
+    personas: list[str],
     doc_type: str,
     structure_blocks: list[str],
     included_sections: list[SourceSection],
     skipped_sections: list[SourceSection],
     discovered_snippets: list[RelevantSnippet],
     appendix_index: list[AppendixIndexEntry],
+    persona_token_estimate: int = 0,
+    persona_token_warning: str | None = None,
 ) -> PromptBundle:
     context = build_runtime_context(
         included_sections=included_sections,
@@ -249,9 +273,12 @@ def build_prompt_bundle(
         appendix_index=appendix_index,
     )
     metadata = PromptMetadataSidecar(
-        persona=persona,
+        personas=personas,
         doc_type=doc_type,
         structure_blocks=structure_blocks,
+        persona_count=len(personas),
+        persona_token_estimate=persona_token_estimate,
+        persona_token_warning=persona_token_warning,
         sections_included=context.sections_included,
         sections_skipped=context.sections_skipped,
         tokens_total=context.token_estimate,
@@ -279,7 +306,8 @@ def inspect_prompt_bundle(bundle: PromptBundle, *, token_warning_threshold: int 
         warnings.append("token budget warning: bundle exceeds warning threshold")
 
     return {
-        "persona": bundle.metadata.persona,
+        "personas": bundle.metadata.personas,
+        "persona_count": bundle.metadata.persona_count,
         "doc_type": bundle.metadata.doc_type,
         "structure_blocks": bundle.metadata.structure_blocks,
         "sections": {
@@ -293,18 +321,68 @@ def inspect_prompt_bundle(bundle: PromptBundle, *, token_warning_threshold: int 
     }
 
 
+def _resolve_personas(
+    project_root: Path,
+    personas: list[str] | None,
+    doc_type: str,
+    phase: str,
+) -> list[tuple[str, str]]:
+    """Resolve persona list from explicit param or mapping config."""
+    if personas is None:
+        mapping = load_persona_mapping(project_root=project_root)
+        phase_map = mapping.get(phase)
+        if not phase_map:
+            raise PersonaMappingError(
+                f"No persona mapping for phase '{phase}' in persona_mappings.yaml"
+            )
+        doc_map = phase_map.get(doc_type) or phase_map.get("_default")
+        if not doc_map or "personas" not in doc_map:
+            raise PersonaMappingError(
+                f"No persona mapping for phase '{phase}', doctype '{doc_type}' "
+                f"and no _default fallback in persona_mappings.yaml"
+            )
+        personas = doc_map["personas"]
+    return load_multi_persona_files(project_root=project_root, personas=personas)
+
+
+def _format_persona_block(persona_pairs: list[tuple[str, str]]) -> str:
+    """Format multiple personas into a single prompt block."""
+    if len(persona_pairs) == 1:
+        return persona_pairs[0][1]
+    parts = []
+    for i, (name, content) in enumerate(persona_pairs, 1):
+        parts.append(f"### Persona {i}: {name.upper()}\n\n{content.strip()}")
+    return "\n\n---\n\n".join(parts)
+
+
+def _compute_token_warning(combined_text: str) -> tuple[int, str | None]:
+    """Compute persona token estimate and optional warning."""
+    token_est = estimate_tokens(combined_text)
+    warning = None
+    if token_est > TOKEN_WARNING_THRESHOLD:
+        warning = (
+            f"Combined persona text ({token_est} tokens) exceeds "
+            f"threshold ({TOKEN_WARNING_THRESHOLD}). Consider reducing persona count."
+        )
+    return token_est, warning
+
+
 def assemble_project_review_prompt(
     *,
     project_root: Path,
-    persona: str,
+    personas: list[str] | None = None,
     doc_type: str,
     template_name: str,
     sections: list[SourceSection],
     layer: str | None = None,
 ) -> PromptAssembly:
-    mapping = map_sections_for_persona(persona, sections)
+    persona_pairs = _resolve_personas(project_root, personas, doc_type, "review")
+    persona_names = [name for name, _ in persona_pairs]
+    persona_texts = [text for _, text in persona_pairs]
+
+    mapping = map_sections_for_personas(persona_names, sections)
     discovered_snippets = discover_relevant_snippets(
-        persona=persona,
+        personas=persona_names,
         skipped_sections=mapping.skipped_sections,
     )
     appendix_index = build_appendix_index(sections)
@@ -312,23 +390,27 @@ def assemble_project_review_prompt(
     if layer:
         structure_blocks.append("layer_assets")
 
+    combined_persona_text = _format_persona_block(persona_pairs)
+    persona_token_est, persona_token_warn = _compute_token_warning(combined_persona_text)
+
     bundle = build_prompt_bundle(
-        persona=persona,
+        personas=persona_names,
         doc_type=doc_type,
         structure_blocks=structure_blocks,
         included_sections=mapping.included_sections,
         skipped_sections=mapping.skipped_sections,
         discovered_snippets=discovered_snippets,
         appendix_index=appendix_index,
+        persona_token_estimate=persona_token_est,
+        persona_token_warning=persona_token_warn,
     )
-    persona_text = load_project_persona_file(project_root=project_root, persona=persona)
     prompt_template_text = load_project_prompt_template(
         project_root=project_root,
         phase="review",
         template_name=template_name,
     )
     parts = [
-        persona_text.strip(),
+        combined_persona_text.strip(),
         prompt_template_text.strip(),
         MCP_REVIEW_ACTIONABLE_RULES.strip(),
     ]
@@ -347,14 +429,15 @@ def assemble_project_review_prompt(
         prompt_text=prompt_text,
         bundle=bundle,
         prompt_template_text=prompt_template_text,
-        persona_text=persona_text,
+        persona_texts=persona_texts,
+        persona_names=persona_names,
     )
 
 
 def assemble_project_creation_prompt(
     *,
     project_root: Path,
-    persona: str,
+    personas: list[str] | None = None,
     doc_type: str,
     layer: str,
     template_name: str,
@@ -367,10 +450,6 @@ def assemble_project_creation_prompt(
     included in the assembled prompt text so the AI has full authoritative context for creation.
     """
     if not sections:
-        # Creation builds don't have an existing document to section; synthesize a task anchor
-        # so the PromptBundle contract (sections_included must be non-empty) is satisfied.
-        # The content uses category keywords (functional, workflow, architecture, technical)
-        # so it survives persona-based section mapping for all standard personas.
         sections = [
             SourceSection(
                 section_id="creation_task",
@@ -384,46 +463,52 @@ def assemble_project_creation_prompt(
             )
         ]
 
-    mapping = map_sections_for_persona(persona, sections)
+    persona_pairs = _resolve_personas(project_root, personas, doc_type, "creation")
+    persona_names = [name for name, _ in persona_pairs]
+    persona_texts = [text for _, text in persona_pairs]
+
+    mapping = map_sections_for_personas(persona_names, sections)
     discovered_snippets = discover_relevant_snippets(
-        persona=persona,
+        personas=persona_names,
         skipped_sections=mapping.skipped_sections,
     )
     appendix_index = build_appendix_index(sections)
+
+    combined_persona_text = _format_persona_block(persona_pairs)
+    persona_token_est, persona_token_warn = _compute_token_warning(combined_persona_text)
+
     bundle = build_prompt_bundle(
-        persona=persona,
+        personas=persona_names,
         doc_type=doc_type,
         structure_blocks=["level1_overview", "level2_relevant", "layer_assets", "format_rules"],
         included_sections=mapping.included_sections,
         skipped_sections=mapping.skipped_sections,
         discovered_snippets=discovered_snippets,
         appendix_index=appendix_index,
+        persona_token_estimate=persona_token_est,
+        persona_token_warning=persona_token_warn,
     )
 
-    persona_text = load_project_persona_file(project_root=project_root, persona=persona)
     prompt_template_text = load_project_prompt_template(
         project_root=project_root,
         phase="creation",
         template_name=template_name,
     )
 
-    # Authoritative SSD layer assets (template + schema) copied during scaffold
     layer_assets = load_project_layer_assets(project_root=project_root, layer=layer)
 
-    # Project-tuned document template (may not exist for all layers; tolerated)
     document_template_text = load_tuned_template(
         doc_type=doc_type,
         loader_fn=load_project_document_template,
         project_root=project_root,
     )
 
-    # Assemble prompt: persona | creation template | layer authoritative assets | tuned template
     layer_section = "\n\n".join(
         f"### Layer asset: {name}\n{content.strip()}"
         for name, content in sorted(layer_assets.items())
     )
     parts = [
-        persona_text.strip(),
+        combined_persona_text.strip(),
         prompt_template_text.strip(),
         MCP_CREATION_ACTIONABLE_RULES.strip(),
         "## Authoritative Layer Assets\n" + layer_section,
@@ -438,7 +523,8 @@ def assemble_project_creation_prompt(
         prompt_text=prompt_text,
         bundle=bundle,
         prompt_template_text=prompt_template_text,
-        persona_text=persona_text,
+        persona_texts=persona_texts,
+        persona_names=persona_names,
         layer_assets=layer_assets,
         document_template_text=document_template_text,
     )

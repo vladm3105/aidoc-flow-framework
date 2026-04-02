@@ -68,43 +68,7 @@ Common ADR issues to remediate:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. ARCHITECT FIXER
-- **Focus**: Architectural coherence, pattern consistency
-- **Question**: "Does this fix maintain architectural integrity?"
-- **Flag for manual if**: New architectural pattern needed, conflicts with existing ADRs
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Implementation feasibility, technical accuracy
-- **Question**: "Is this technically accurate and implementable?"
-- **Flag for manual if**: Technical research needed, prototype required
-
-### 3. OPERATOR FIXER
-- **Focus**: Operational consequences, deployment impact
-- **Question**: "What are the operational implications?"
-- **Flag for manual if**: Infrastructure changes needed, SRE review required
-
-### 4. INTEGRATION FIXER
-- **Focus**: Cross-system impact, dependency analysis
-- **Question**: "How does this affect other systems?"
-- **Flag for manual if**: Multi-team coordination needed
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Hidden risks, unstated assumptions
-- **Question**: "What could go wrong? What assumptions are we making?"
-- **Flag for manual if**: Critical risk identified, assumption needs validation
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

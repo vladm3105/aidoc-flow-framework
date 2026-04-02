@@ -18,22 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **Da
 
 ---
 
-## Author Personas
-
-### 1. ARCHITECT
-- **Focus**: Contract design, versioning strategy
-- **Contribution**: Define contract structure, versioning
-- **Quality Gate**: Contracts are well-designed
-
-### 2. TECH_LEAD
-- **Focus**: Implementation, validation rules
-- **Contribution**: Specify validation, defaults
-- **Quality Gate**: Contracts are implementable
-
-### 3. INTEGRATION_EXPERT
-- **Focus**: Compatibility, migration
-- **Contribution**: Ensure backward compatibility
-- **Quality Gate**: No breaking changes
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

@@ -8,6 +8,7 @@ import re
 
 CANONICAL_SCAFFOLD_MAPPINGS: tuple[tuple[Path, Path], ...] = (
     (Path("skills/personas"), Path("UCX/skills/personas")),
+    (Path("skills/persona_mappings.yaml"), Path("UCX/skills/persona_mappings.yaml")),
     (Path("skills/layer_aliases"), Path("UCX/skills/layer_aliases")),
     (Path("prompts/templates/creation"), Path("UCX/prompts/templates/creation")),
     (Path("prompts/templates/review"), Path("UCX/prompts/templates/review")),
@@ -111,15 +112,25 @@ def scaffold_project_ucx(
     skipped_paths: list[str] = []
 
     for source_relative, destination_relative in CANONICAL_SCAFFOLD_MAPPINGS:
-        source_dir = source_root / source_relative
-        if not source_dir.exists():
-            raise FileNotFoundError(f"Missing canonical scaffold source: {source_dir}")
+        source_path = source_root / source_relative
+        if not source_path.exists():
+            raise FileNotFoundError(f"Missing canonical scaffold source: {source_path}")
 
-        destination_dir = project_root / destination_relative
-        destination_dir.mkdir(parents=True, exist_ok=True)
-        created, skipped = _copy_tree_no_overwrite(source_dir, destination_dir)
-        created_paths.extend(created)
-        skipped_paths.extend(skipped)
+        destination_path = project_root / destination_relative
+        if source_path.is_file():
+            # Single-file scaffold mapping (e.g. persona_mappings.yaml)
+            destination_path.parent.mkdir(parents=True, exist_ok=True)
+            if destination_path.exists():
+                skipped_paths.append(str(destination_path))
+            else:
+                shutil.copy2(source_path, destination_path)
+                created_paths.append(str(destination_path))
+        else:
+            # Directory scaffold mapping
+            destination_path.mkdir(parents=True, exist_ok=True)
+            created, skipped = _copy_tree_no_overwrite(source_path, destination_path)
+            created_paths.extend(created)
+            skipped_paths.extend(skipped)
 
     if not authoritative_ssd_root.exists():
         raise FileNotFoundError(f"Missing authoritative SSD source: {authoritative_ssd_root}")

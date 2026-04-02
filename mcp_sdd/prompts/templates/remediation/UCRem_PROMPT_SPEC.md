@@ -40,43 +40,7 @@ Common SPEC issues to remediate:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. TECH_LEAD FIXER
-- **Focus**: Algorithm clarity, implementation details
-- **Question**: "Can a developer implement this without asking questions?"
-- **Flag for manual if**: Algorithm research needed, design decision required
-
-### 2. ARCHITECT FIXER
-- **Focus**: System integration, pattern consistency
-- **Question**: "Does this fit the architectural patterns?"
-- **Flag for manual if**: Architectural conflict, new pattern needed
-
-### 3. OPERATOR FIXER
-- **Focus**: Operations, monitoring, configuration
-- **Question**: "Can this be deployed and monitored effectively?"
-- **Flag for manual if**: Infrastructure design needed
-
-### 4. INTEGRATION_EXPERT FIXER
-- **Focus**: API contracts, dependency management
-- **Question**: "Are all integrations fully specified?"
-- **Flag for manual if**: External API research needed, contract negotiation
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Edge cases, failure modes, hidden complexity
-- **Question**: "What happens when this fails? What's not specified?"
-- **Flag for manual if**: Undefined behavior, complexity underestimated
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

@@ -76,7 +76,7 @@ Normative behavior:
 
 Normative behavior:
 - included field false marks section as ineligible for included section list.
-- section categorization and persona mapping behavior is handled by assembly runtime contracts.
+- section categorization and multi-persona mapping behavior (via `persona_mappings.yaml`) is handled by assembly runtime contracts.
 - skipped sections may still contribute discovered snippets under contextual rules.
 
 ---

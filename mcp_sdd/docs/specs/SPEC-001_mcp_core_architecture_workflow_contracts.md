@@ -32,7 +32,7 @@ In scope:
 
 Out of scope:
 - Feature-specific scoring formulas.
-- Persona prompt internals.
+- Multi-persona prompt internals (persona list resolution and `persona_mappings.yaml`).
 - Hash identity generation algorithms.
 - Detailed creation-template contracts.
 - Detailed report naming and version allocation rules.

@@ -100,7 +100,7 @@ ai_dev_ssd_flow/
 | `sdd_create` | Scaffold new SDD documents |
 | `sdd_consistency` | Artifact lineage checks (MD + YAML) |
 | `sdd_preflight` | Environment readiness checks |
-| `sdd_review` | Multi-persona LLM document review (11 personas) |
+| `sdd_review` | Multi-persona LLM document review (configurable persona lists via `persona_mappings.yaml`) |
 | `sdd_remediate` | Deterministic remediation findings + review report parsing |
 | `sdd_remediate_fix` | Source-protected remediation fix (executor-driven) |
 | `sdd_run_lifecycle` | Full create→validate→review→fix pipeline |

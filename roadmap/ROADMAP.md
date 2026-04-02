@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.18.0 |
-| Latest Release | 0.18.0 (unified report naming standard) |
-| Previous Minor | 0.17.0 (UCX root relocation) |
+| Current Version | 0.19.0 |
+| Latest Release | 0.19.0 (UCX v1.12.0 multi-persona mapping support) |
+| Previous Minor | 0.18.0 (unified report naming standard) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,30 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.19.0 - Multi-Persona Mapping Support
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | mcp_sdd v1.12.0: multi-persona mapping support via persona_mappings.yaml |
+
+Delivered scope:
+
+- Per-doctype, per-phase persona sequences in `persona_mappings.yaml`
+- 15-persona category map (expanded from 7)
+- Multi-persona prompt assembly with token budget tracking
+- Tool and CLI schema migration: `persona` → `personas` (array, optional)
+- 31 prompt templates cleaned of hardcoded persona lists
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-022_multi_persona_mappings.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md
+
+---
 
 ### v0.18.0 - Unified Report Naming Standard
 

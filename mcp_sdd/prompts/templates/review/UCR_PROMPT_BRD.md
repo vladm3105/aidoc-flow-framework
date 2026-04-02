@@ -4,11 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Business Requirements Document (BRD). Apply all personas sequentially, maintaining full context throughout.
 
-**Core Personas (Required)**: Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson
-
-**Quality Assurance Personas (Optional)**: Judge, Chairperson Editor
-
-**Total Personas**: 11 required + 2 optional = 13 maximum
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 
@@ -627,7 +623,7 @@ custom_fields:
 | **Review ID** | [REVIEW_ID] |
 | **Review Date** | [YYYY-MM-DDTHH:MM:SS] |
 | **Review Method** | UCR (Unified Context Review) |
-| **Personas Applied** | 11 Core (Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, Business Analyst, Fact Checker, Chairperson) + [0/2] Optional (Judge, Editor) |
+| **Personas Applied** | {PERSONA_COUNT} ({PERSONA_LIST}) |
 | **Reviewer** | UCX Framework v1.5.x |
 | **Status** | [Draft / Final] |
 | **PRD-Ready Score** | [SCORE]/100 |

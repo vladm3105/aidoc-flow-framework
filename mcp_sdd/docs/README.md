@@ -46,7 +46,37 @@ Use this precedence for conflict resolution:
 
 ---
 
-## 3. Architecture Documents
+## 3. Skills and Project Isolation Model
+
+UCX uses a **project isolation model** for AI skills. Framework assets are scaffold sources only — they are never loaded at runtime.
+
+### Initialization
+
+`sdd_init --project <path>` copies all personas, prompts, templates, and layer assets from the framework into `{project}/UCX/`. Existing files are never overwritten.
+
+### Runtime Loading
+
+All MCP tools resolve personas, prompts, and templates exclusively from `{project}/UCX/`:
+
+| Asset Type | Runtime Path |
+| --- | --- |
+| Persona definitions (15 core) | `{project}/UCX/skills/personas/{persona}.md` |
+| Persona-to-doc-type mappings | `{project}/UCX/skills/persona_mappings.yaml` |
+| Layer alias mappings | `{project}/UCX/skills/layer_aliases/` |
+| Creation prompt templates | `{project}/UCX/prompts/templates/creation/` |
+| Review prompt templates | `{project}/UCX/prompts/templates/review/` |
+| Remediation prompt templates | `{project}/UCX/prompts/templates/remediation/` |
+| Document templates and layer schemas | `{project}/UCX/templates/` |
+
+No fallback to framework defaults. Missing assets raise `ProjectSkillsNotFound`. `validate_project_ucx_root()` checks both required directories and required files (including `persona_mappings.yaml`). Preflight checks (`sdd_preflight`) emit a `missing_persona_mappings` warning when the mapping file is absent. Persona mapping loading uses mtime-based caching to avoid redundant YAML parsing.
+
+### Prompt Assembly
+
+LLM-dependent tools assemble prompts from: persona files + phase template + actionable rules + layer assets + bundle metadata. Reviews accept `personas: list[str]` (resolved from `persona_mappings.yaml` when omitted). During review, document sections are mapped to persona focus areas so each persona receives domain-relevant content.
+
+---
+
+## 4. Architecture Documents
 
 - [MCP Persona Design Guide](architecture/MCP_PERSONA_DESIGN_GUIDE.md)
 - [MCP Unified Context Framework](architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md)
@@ -55,7 +85,7 @@ Use this precedence for conflict resolution:
 - [MCP Operator Runbook](architecture/MCP_OPERATOR_RUNBOOK.md)
 - [MCP Operational Flows](architecture/MCP_OPERATIONAL_FLOWS.md)
 
-## 4. Canonical Specifications
+## 5. Canonical Specifications
 
 - [SPEC-001 MCP Core Architecture and Workflow Contracts](specs/SPEC-001_mcp_core_architecture_workflow_contracts.md)
 - [SPEC-002 MCP Review, Scoring, Handoff, and Identity Contracts](specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md)
@@ -68,7 +98,7 @@ Use this precedence for conflict resolution:
 - [SPEC-009 MCP Remediation and Fix Flow Contracts](specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md)
 - [SPEC-010 MCP Prescreen, Scan, and Scoring Contracts](specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md)
 
-## 5. Policies
+## 6. Policies
 
 - [Legacy Report Policy](policies/legacy_report_policy.md)
 - [Compatibility and Deprecation Policy](policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md)
@@ -76,7 +106,7 @@ Use this precedence for conflict resolution:
 - [Documentation Lifecycle and Versioning Policy](policies/DOC_LIFECYCLE_AND_VERSIONING_POLICY.md)
 - [MCP Cutover and UCX_v1 Archive Policy](policies/MCP_CUTOVER_AND_UCXV1_ARCHIVE_POLICY.md)
 
-## 6. Plans and Reports
+## 7. Plans and Reports
 
 - [IPLAN-001 MCP Server Implementation from Canonical Specs](plans/IPLAN-001_mcp_server_implementation_from_canonical_specs.md)
 - [IPLAN-002 MCP Docs Full Layer Coverage Plan](plans/IPLAN-002_mcp_docs_full_layer_coverage.md)
@@ -96,7 +126,7 @@ Use this precedence for conflict resolution:
 - [PLAN-020 UCX Root Relocation](plans/PLAN-020_ucx_root_relocation.md)
 - [PLAN-021 SDD Reporting Naming Standard](plans/PLAN-021_sdd_reporting_naming_standard.md)
 
-## 7. Changelog
+## 8. Changelog
 
 - [CHANGELOG v1.11.0](CHANGELOG/CHANGELOG_v1.11.0.md) — unified report naming standard
 - [CHANGELOG v1.10.0](CHANGELOG/CHANGELOG_v1.10.0.md) — UCX root relocation (docs/UCX → UCX)
@@ -107,13 +137,13 @@ Use this precedence for conflict resolution:
 - [CHANGELOG v1.5.0](CHANGELOG/CHANGELOG_v1.5.0.md) — sdd_validate_links tool, executor write fixes
 - [CHANGELOG v1.0.0](CHANGELOG/CHANGELOG_v1.0.0.md) — initial MCP documentation layer
 
-## 8. Roadmap
+## 9. Roadmap
 
 - [MCP Roadmap](ROADMAP.md)
 
 ---
 
-## 9. Reconciliation Index
+## 10. Reconciliation Index
 
 | Path | Type | Canonical Status | Action |
 | --- | --- | --- | --- |
@@ -135,7 +165,7 @@ Use this precedence for conflict resolution:
 
 ---
 
-## 10. Release Blocking Conditions
+## 11. Release Blocking Conditions
 
 Release readiness requires:
 

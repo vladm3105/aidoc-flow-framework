@@ -31,7 +31,7 @@ custom_fields:
 > **Source Review**: {UCR_REVIEW_FILE}
 > **Remediation Date**: {CURRENT_DATE}
 > **Method**: UCRem (Unified Context Remediation)
-> **Personas Applied**: 5 (Architect, Auditor, QA, Integration, Chaos Engineer)
+> **Personas Applied**: {PERSONA_COUNT} ({PERSONA_LIST})
 
 ---
 
@@ -286,4 +286,4 @@ After applying Phase 1 and Phase 2 fixes:
 **Report Generated**: {CURRENT_DATE}
 **Method**: UCRem (Unified Context Remediation)
 **Generator**: Claude Opus 4.5
-**Personas Applied**: 5
+**Personas Applied**: {PERSONA_COUNT}

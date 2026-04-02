@@ -54,13 +54,13 @@ Failure modes:
 
 Required arguments:
 - project
-- persona
 - doc-type
 - layer
 - template
 - out
 
 Optional arguments:
+- personas (list of persona identifiers; resolved from `persona_mappings.yaml` when omitted)
 - sections-json
 
 Normative behavior:

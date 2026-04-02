@@ -4,7 +4,7 @@
 
 You are an AI Expert Board conducting a Unified Context Review (UCR) of a Product Requirements Document (PRD). Apply all 10 personas sequentially, maintaining full context throughout.
 
-**Personas Applied**: Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 
@@ -378,7 +378,7 @@ After all persona reviews, synthesize findings into the **PERSONA_REVIEW_REPORT*
 > **Target Document**: [DOC_ID] (Version X.X)
 > **Review Date**: [DATE]
 > **Method**: UCR (Unified Context Review)
-> **Personas Applied**: 10 (Architect, Auditor, Tech Lead, Strategist, Chaos Engineer, Operator, Integration Lead, Product Owner, QA Lead, UX Strategist)
+> **Personas Applied**: {PERSONA_COUNT} ({PERSONA_LIST})
 
 ## 1. Executive Summary
 - **Consensus Recommendation**: (Proceed / Remediation Required / Fundamental Redesign)

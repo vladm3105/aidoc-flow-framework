@@ -43,45 +43,7 @@ You will receive:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-Apply these personas sequentially to each fix:
-
-### 1. PRODUCT_OWNER FIXER
-- **Focus**: User value, feature completeness
-- **Question**: "Does this fix preserve user value and product intent?"
-- **Flag for manual if**: New user research needed, scope change required
-
-### 2. UX_STRATEGIST FIXER
-- **Focus**: User experience, journey completeness
-- **Question**: "Does this fix maintain UX consistency and user journey flow?"
-- **Flag for manual if**: User research needed, UX pattern change required
-
-### 3. QA_LEAD FIXER
-- **Focus**: Testability, acceptance criteria
-- **Question**: "Can this fix be verified? Are acceptance criteria measurable?"
-- **Flag for manual if**: Cannot verify programmatically, ambiguous criteria
-
-### 4. INTEGRATION FIXER
-- **Focus**: BRD traceability, cross-reference integrity
-- **Question**: "Do all BRD traces resolve? Is traceability complete?"
-- **Flag for manual if**: BRD update needed, cascade to multiple documents
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Root cause vs symptom, edge cases
-- **Question**: "Does this fix solve the problem or hide it?"
-- **Flag for manual if**: Symptom-only fix, hidden assumptions
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

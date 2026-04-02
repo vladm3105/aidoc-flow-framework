@@ -47,43 +47,7 @@ Valid EARS patterns:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. REQUIREMENTS_SPECIALIST FIXER
-- **Focus**: EARS syntax compliance, atomicity
-- **Question**: "Does this fix use valid EARS syntax? Is it atomic?"
-- **Flag for manual if**: New requirement pattern needed, ambiguity unresolvable
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Technical implementability
-- **Question**: "Can this requirement be implemented unambiguously?"
-- **Flag for manual if**: Technical feasibility unclear
-
-### 3. QA_LEAD FIXER
-- **Focus**: Testability, verification
-- **Question**: "Can this requirement be tested deterministically?"
-- **Flag for manual if**: Non-deterministic outcome, timing dependencies
-
-### 4. INTEGRATION FIXER
-- **Focus**: PRD traceability, BDD readiness
-- **Question**: "Does this trace to PRD and enable BDD generation?"
-- **Flag for manual if**: PRD gap, cascading changes needed
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Edge cases, ambiguity
-- **Question**: "Can this be interpreted multiple ways?"
-- **Flag for manual if**: Ambiguous terms, undefined edge cases
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

@@ -18,22 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **At
 
 ---
 
-## Author Personas
-
-### 1. REQUIREMENTS_SPECIALIST
-- **Focus**: Atomic structure, INCOSE compliance
-- **Contribution**: Ensure atomic decomposition
-- **Quality Gate**: Each REQ is indivisible
-
-### 2. TECH_LEAD
-- **Focus**: Technical accuracy, implementability
-- **Contribution**: Validate technical feasibility
-- **Quality Gate**: REQs are implementable
-
-### 3. INTEGRATION_EXPERT
-- **Focus**: Interface requirements, contracts
-- **Contribution**: Define integration REQs
-- **Quality Gate**: Interfaces are complete
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

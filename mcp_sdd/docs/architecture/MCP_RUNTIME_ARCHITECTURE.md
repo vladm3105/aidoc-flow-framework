@@ -6,8 +6,8 @@
 | --- | --- |
 | Canonical Name | UCX (Unified Context Framework) |
 | Status | Active |
-| Version | 1.2 |
-| Date | 2026-03-27 |
+| Version | 1.4 |
+| Date | 2026-04-02 |
 | Scope | Implemented runtime architecture for create, review, validation, fix, remediation, and diagnostics operations |
 
 ---
@@ -52,8 +52,8 @@ Out of scope:
 | Prescreen runner | mcp_sdd/src/mcp_server/prescreening/runner.py | Detect high-priority remediation candidates |
 | Scan runner | mcp_sdd/src/mcp_server/scan/runner.py | Aggregate finding categories from JSON reports |
 | Scoring runner | mcp_sdd/src/mcp_server/scoring/runner.py | Compute, validate, and compare deterministic report scores |
-| Project UCX loader | mcp_sdd/src/mcp_server/skills/project_ucx_loader.py | Resolve project-local personas/templates/layer assets and enforce missing-path errors |
-| UCX scaffold | mcp_sdd/src/mcp_server/skills/scaffold.py | Initialize project-local UCX file structure |
+| Project UCX loader | mcp_sdd/src/mcp_server/skills/project_ucx_loader.py | Resolve project-local personas/templates/layer assets; raise ProjectSkillsNotFound on missing paths (no fallback) |
+| UCX scaffold | mcp_sdd/src/mcp_server/skills/scaffold.py | Copy framework assets to project UCX directory during init (no-overwrite semantics) |
 
 ---
 
@@ -63,17 +63,30 @@ Out of scope:
 
 1. CLI parses init command with project argument.
 2. Runtime resolves project root path.
-3. Scaffold service creates project-local UCX directories and files.
-4. CLI reports created and skipped counts.
+3. Scaffold service copies all framework assets into `{project}/UCX/` using `CANONICAL_SCAFFOLD_MAPPINGS`:
+   - `skills/personas/` — 15 persona definition files
+   - `skills/persona_mappings.yaml` — per-doctype, per-phase persona sequence configuration
+   - `skills/layer_aliases/` — layer alias mappings
+   - `prompts/templates/creation/` — UCC creation prompt templates
+   - `prompts/templates/review/` — UCR review prompt templates
+   - `prompts/templates/remediation/` — UCRem remediation prompt templates
+   - `templates/` — document templates and layer-specific schemas (sourced from `ai_dev_ssd_flow/`)
+4. Existing files are never overwritten (no-overwrite semantics; idempotent).
+5. CLI reports created and skipped counts.
+
+**Project isolation contract**: After init, all runtime operations load assets exclusively from the project's `UCX/` directory. Framework scaffold sources under `mcp_sdd/skills/` and `mcp_sdd/prompts/templates/` are never loaded at runtime. If required project assets are missing, the runtime raises `ProjectSkillsNotFound` — no fallback to framework defaults occurs.
 
 ### 4.2 create-build flow
 
 1. CLI parses create-build arguments.
-2. Runtime loads optional sections-json payload into SourceSection objects.
-3. Runner invokes assemble_project_creation_prompt.
-4. Project UCX loader resolves project-local persona, template, and layer assets.
-5. Prompt bundle is validated.
-6. If output directory provided, creation artifacts are written.
+2. Runtime resolves personas using 2-tier priority:
+   - Tier 1: Explicit `personas` parameter (if provided).
+   - Tier 2: `persona_mappings.yaml` lookup by `(doc_type, create)` pair.
+3. Runtime loads optional sections-json payload into SourceSection objects.
+4. Runner invokes assemble_project_creation_prompt with the resolved persona list.
+5. Project UCX loader resolves project-local persona files, templates, and layer assets for each persona.
+6. Prompt bundle is validated. `PromptMetadataSidecar` includes `personas`, `persona_count`, `persona_token_estimate`, and `persona_token_warning` fields.
+7. If output directory provided, creation artifacts are written.
 
 Implemented behavior note:
 
@@ -83,11 +96,12 @@ Implemented behavior note:
 ### 4.3 review-build flow
 
 1. CLI parses review-build arguments.
-2. Runtime resolves one review source mode: sections-json payload or document auto-loading.
-3. In document mode, runtime builds SourceSection objects from canonical main artifact plus appendix artifacts in the target folder.
-4. Runner invokes assemble_project_review_prompt.
-5. Prompt bundle is validated and inspection output generated.
-6. If output directory provided, review artifacts are written.
+2. Runtime resolves personas using 2-tier priority (explicit `personas` parameter or `persona_mappings.yaml` lookup by `(doc_type, review)`).
+3. Runtime resolves one review source mode: sections-json payload or document auto-loading.
+4. In document mode, runtime builds SourceSection objects from canonical main artifact plus appendix artifacts in the target folder.
+5. Runner invokes assemble_project_review_prompt with the resolved persona list. Each persona receives sections mapped to its domain categories.
+6. Prompt bundle is validated and inspection output generated.
+7. If output directory provided, review artifacts are written.
 
 ### 4.4 validate flow
 
@@ -135,7 +149,33 @@ Required resolution string:
 
 - Run mcp init --project {project_root} to create project-specific files.
 
-### 5.2 Contract validation failures
+### 5.2 Persona mapping failures
+
+**Structural YAML errors** raise `PersonaMappingError`:
+
+- `persona_mappings.yaml` has missing `version` field or empty `personas` list.
+- No mapping entry exists for the requested `(doc_type, phase)` pair and no explicit `personas` parameter was provided.
+
+Required payload fields:
+
+- error_code
+- doc_type
+- phase
+- resolution
+
+**Missing persona files** raise `ProjectSkillsNotFound`:
+
+- A persona identifier in the mapping references a non-existent persona file. The `_validate_persona_mapping` function raises `ProjectSkillsNotFound` with `missing_paths` listing the absent files.
+
+### 5.2.1 Persona mapping caching
+
+`load_persona_mapping()` caches results keyed on `(project_root, mtime)`. The YAML file is re-read only when its filesystem modification time changes. This mtime-based LRU cache prevents redundant file reads during multi-stage lifecycle runs within the same project.
+
+### 5.2.2 Early UCX root validation
+
+`validate_project_ucx_root()` checks `_REQUIRED_FILES` including `persona_mappings.yaml` for early detection of missing project assets before persona resolution runs. This catches missing files at project load time rather than at persona resolution time.
+
+### 5.3 Contract validation failures
 
 Error type:
 
@@ -161,6 +201,8 @@ Failure condition:
 | Failure Mode | Detection Point | Required Behavior |
 | --- | --- | --- |
 | Missing UCX directory set | project loader validation | raise ProjectSkillsNotFound |
+| Structural persona_mappings.yaml errors (missing version, empty personas, no mapping entry) | persona resolution stage | raise PersonaMappingError with doc_type, phase, and resolution |
+| Missing persona files referenced in persona_mappings.yaml | `_validate_persona_mapping` in persona resolution stage | raise ProjectSkillsNotFound with missing_paths |
 | Invalid sections-json payload shape | CLI deserialization stage | command failure with parse error |
 | Prompt bundle contract invalid | assembly validation stage | raise ContractValidationError |
 | Missing or invalid YAML frontmatter in target document | validation runner stage | mark validation as failed and report error |

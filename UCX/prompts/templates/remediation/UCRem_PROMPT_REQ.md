@@ -46,43 +46,7 @@ Common REQ issues to remediate:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. REQUIREMENTS_SPECIALIST FIXER
-- **Focus**: INCOSE compliance, atomicity
-- **Question**: "Is this truly atomic? Can it be split further?"
-- **Flag for manual if**: Decomposition strategy unclear
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Technical accuracy, implementability
-- **Question**: "Can this be implemented unambiguously?"
-- **Flag for manual if**: Technical research needed
-
-### 3. QA_LEAD FIXER
-- **Focus**: Testability, verification method
-- **Question**: "Is the verification method appropriate and complete?"
-- **Flag for manual if**: Verification criteria undefined
-
-### 4. INTEGRATION FIXER
-- **Focus**: SYS traceability, downstream readiness
-- **Question**: "Does this trace to SYS and enable SPEC generation?"
-- **Flag for manual if**: SYS update needed
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Ambiguity, edge cases, hidden assumptions
-- **Question**: "Can this be interpreted multiple ways?"
-- **Flag for manual if**: Ambiguous terms, undefined edge cases
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

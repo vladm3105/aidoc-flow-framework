@@ -47,7 +47,7 @@ def build_valid_context() -> ContextContract:
 
 def build_valid_metadata() -> PromptMetadataSidecar:
     return PromptMetadataSidecar(
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         structure_blocks=["level1_overview", "level2_relevant"],
         sections_included=["1", "2"],
@@ -75,13 +75,13 @@ def test_context_contract_validation_fails_for_empty_sections_included() -> None
 
 def test_prompt_metadata_validation_requires_required_fields() -> None:
     metadata = PromptMetadataSidecar(
-        persona="",
+        personas=[],
         doc_type="",
         structure_blocks=[],
         tokens_total=0,
     )
     errors = validate_prompt_metadata_sidecar(metadata)
-    assert "persona is required" in errors
+    assert "personas is required" in errors
     assert "doc_type is required" in errors
     assert "structure_blocks must be non-empty" in errors
     assert "tokens_total must be > 0" in errors

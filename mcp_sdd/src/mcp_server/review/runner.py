@@ -27,7 +27,7 @@ class ReviewRunResult:
 def run_project_review_build(
     *,
     project_root: Path,
-    persona: str,
+    personas: list[str] | None = None,
     doc_type: str,
     template_name: str,
     sections: list[SourceSection],
@@ -36,7 +36,7 @@ def run_project_review_build(
 ) -> ReviewRunResult:
     assembly = assemble_project_review_prompt(
         project_root=project_root,
-        persona=persona,
+        personas=personas,
         doc_type=doc_type,
         template_name=template_name,
         sections=sections,
@@ -98,7 +98,7 @@ class CreationArtifactResult:
 def run_project_creation_build(
     *,
     project_root: Path,
-    persona: str,
+    personas: list[str] | None = None,
     doc_type: str,
     layer: str,
     template_name: str,
@@ -107,7 +107,7 @@ def run_project_creation_build(
 ) -> CreationRunResult:
     assembly = assemble_project_creation_prompt(
         project_root=project_root,
-        persona=persona,
+        personas=personas,
         doc_type=doc_type,
         layer=layer,
         template_name=template_name,
@@ -145,7 +145,7 @@ def run_project_creation_build(
 def run_project_creation_artifact(
     *,
     project_root: Path,
-    persona: str,
+    personas: list[str] | None = None,
     doc_type: str,
     layer: str,
     template_name: str,
@@ -156,7 +156,7 @@ def run_project_creation_artifact(
 ) -> CreationArtifactResult:
     creation_result = run_project_creation_build(
         project_root=project_root,
-        persona=persona,
+        personas=personas,
         doc_type=doc_type,
         layer=layer,
         template_name=template_name,

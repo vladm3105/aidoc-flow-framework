@@ -43,43 +43,7 @@ Common TSPEC issues to remediate:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. QA_LEAD FIXER
-- **Focus**: Test strategy, coverage completeness
-- **Question**: "Do tests cover all requirements and edge cases?"
-- **Flag for manual if**: New test strategy needed, coverage gaps unclear
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Test implementation, automation feasibility
-- **Question**: "Can these tests be automated reliably?"
-- **Flag for manual if**: Complex test setup, flaky test risk
-
-### 3. OPERATOR FIXER
-- **Focus**: Environment, test data, reliability
-- **Question**: "Is test environment properly specified?"
-- **Flag for manual if**: Infrastructure setup needed, data issues
-
-### 4. INTEGRATION FIXER
-- **Focus**: SPEC traceability, requirement coverage
-- **Question**: "Does every SPEC requirement have tests?"
-- **Flag for manual if**: SPEC update needed, coverage matrix incomplete
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Test reliability, false positives/negatives
-- **Question**: "Can this test give false confidence?"
-- **Flag for manual if**: Flaky test risk, hidden dependencies
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

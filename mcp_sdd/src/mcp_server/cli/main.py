@@ -38,7 +38,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     review_parser = subparsers.add_parser("review-build", help="Assemble project review prompt and diagnostics artifacts")
     review_parser.add_argument("--project", required=True, help="Project root containing UCX")
-    review_parser.add_argument("--persona", required=True, help="Persona file name without extension")
+    review_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     review_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
     review_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
     review_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
@@ -62,7 +62,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Alias for review-build (UCX_v1 compatibility)",
     )
     review_alias_parser.add_argument("--project", required=True, help="Project root containing UCX")
-    review_alias_parser.add_argument("--persona", required=True, help="Persona file name without extension")
+    review_alias_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     review_alias_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
     review_alias_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
     review_alias_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
@@ -83,7 +83,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     create_parser = subparsers.add_parser("create-build", help="Assemble project creation prompt with SSD layer assets")
     create_parser.add_argument("--project", required=True, help="Project root containing UCX")
-    create_parser.add_argument("--persona", required=True, help="Persona file name without extension")
+    create_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     create_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     create_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
@@ -99,7 +99,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Create final document artifact at target path using project/layer templates",
     )
     create_artifact_parser.add_argument("--project", required=True, help="Project root containing UCX")
-    create_artifact_parser.add_argument("--persona", required=True, help="Persona file name without extension")
+    create_artifact_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     create_artifact_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_artifact_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     create_artifact_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
@@ -390,7 +390,7 @@ def main(argv: list[str] | None = None) -> int:
 
         review_result = run_project_review_build(
             project_root=project_root,
-            persona=args.persona,
+            personas=args.personas,
             doc_type=args.doc_type,
             template_name=args.template,
             sections=review_sections,
@@ -440,7 +440,7 @@ def main(argv: list[str] | None = None) -> int:
 
         creation_result = run_project_creation_build(
             project_root=project_root,
-            persona=args.persona,
+            personas=args.personas,
             doc_type=args.doc_type,
             layer=args.layer,
             template_name=args.template,
@@ -480,7 +480,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             creation_artifact_result = run_project_creation_artifact(
                 project_root=project_root,
-                persona=args.persona,
+                personas=args.personas,
                 doc_type=args.doc_type,
                 layer=args.layer,
                 template_name=args.template,

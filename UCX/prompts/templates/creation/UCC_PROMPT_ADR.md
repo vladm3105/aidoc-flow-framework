@@ -18,32 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **Ar
 
 ---
 
-## Author Personas
-
-### 1. ARCHITECT
-- **Focus**: System design, patterns, trade-offs
-- **Contribution**: Define architectural approach, document patterns
-- **Quality Gate**: Decision is architecturally sound
-
-### 2. TECH_LEAD
-- **Focus**: Implementation feasibility, team capability
-- **Contribution**: Validate implementation approach, identify constraints
-- **Quality Gate**: Decision is implementable by team
-
-### 3. STRATEGIST
-- **Focus**: Long-term implications, cost-benefit
-- **Contribution**: Analyze strategic fit, document trade-offs
-- **Quality Gate**: Decision aligns with strategy
-
-### 4. DEVILS_ADVOCATE
-- **Focus**: Risks, failure modes, assumptions
-- **Contribution**: Challenge decision, document risks
-- **Quality Gate**: Risks are acknowledged
-
-### 5. OPERATOR
-- **Focus**: Operational impact, maintainability
-- **Contribution**: Document operational considerations
-- **Quality Gate**: Operations impact is understood
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

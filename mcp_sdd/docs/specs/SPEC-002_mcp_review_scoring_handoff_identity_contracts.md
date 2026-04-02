@@ -4,10 +4,10 @@
 | --- | --- |
 | Canonical ID | SPEC-002 |
 | Status | Active |
-| Version | 1.4 |
-| Date | 2026-03-24 |
+| Version | 1.5 |
+| Date | 2026-04-02 |
 | Source Basis | Canonical normative specification |
-| Scope | Review scoring, persona output, context engineering, handoff contracts, hash identity contracts |
+| Scope | Review scoring, multi-persona output, context engineering, handoff contracts, hash identity contracts |
 
 ---
 
@@ -23,7 +23,7 @@ Implementation complexity: 4/5.
 
 In scope:
 - Category-weighted scoring contracts.
-- Persona finding and prompt structure contracts.
+- Multi-persona finding and prompt structure contracts.
 - Context-engineering contracts.
 - Prompt inspection and diagnostics contracts.
 - Fixer-to-LLM and layer action handoff contracts.
@@ -56,18 +56,19 @@ Failure modes:
 
 ---
 
-## 4. Persona Prompt and Finding Contract
+## 4. Multi-Persona Prompt and Finding Contract
 
 Rules:
 - Persona findings must be machine-parseable.
 - Chair synthesis must include parseable action/finding manifest boundaries.
 - Terminal prompt sections contain format instructions.
+- Multiple personas may be assigned per review via `personas: list[str]` resolved from `persona_mappings.yaml`.
 
 Required finding fields:
 - finding_id
 - priority
 - category
-- persona
+- personas
 - message
 - target_layer
 
@@ -82,7 +83,7 @@ Priority domain:
 ## 5. Context Engineering Contract
 
 Rules:
-- Include mapped core sections per persona.
+- Include mapped core sections per persona (each persona in the `personas` list receives its domain-relevant sections).
 - Hybrid keyword scan discovers additional relevant snippets.
 - Appendix defaults to index mode and optional verification tags.
 - Dynamic mapping includes confidence scores.
@@ -104,7 +105,10 @@ Rules:
 - Quick checks emit warnings for format degradation risk.
 
 Required metadata fields:
-- persona
+- personas
+- persona_count
+- persona_token_estimate
+- persona_token_warning (str | None, emitted when token budget risk is detected)
 - doc_type
 - structure_blocks
 - sections.included
@@ -173,7 +177,7 @@ Required action fields:
 - target_layer
 - priority
 - source_ref
-- persona
+- personas
 - context
 - requirement
 - skipped_optional_layers

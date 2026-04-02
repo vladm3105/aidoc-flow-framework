@@ -38,43 +38,7 @@ For EACH finding in the UCR review report:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. ARCHITECT FIXER
-- **Focus**: Structural integrity, pattern preservation
-- **Question**: "Does this fix maintain architectural coherence?"
-- **Flag for manual if**: New architectural pattern needed, conflicts with ADR
-
-### 2. AUDITOR FIXER
-- **Focus**: Compliance completeness, security controls
-- **Question**: "Is this fix fully compliant, not just apparently compliant?"
-- **Flag for manual if**: Regulatory interpretation needed, legal review required
-
-### 3. QA FIXER
-- **Focus**: Testability, verification methods
-- **Question**: "Can this fix be verified? Does it include acceptance criteria?"
-- **Flag for manual if**: Cannot verify programmatically, breaks existing tests
-
-### 4. INTEGRATION FIXER
-- **Focus**: Cross-reference integrity, traceability
-- **Question**: "Do all references still resolve? What's the cascade impact?"
-- **Flag for manual if**: Cascade to multiple documents, circular reference risk
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Root cause vs symptom, edge cases, failure modes
-- **Question**: "Does this fix solve the problem or hide it?"
-- **Flag for manual if**: Symptom-only fix, edge case gaps, hidden assumptions
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

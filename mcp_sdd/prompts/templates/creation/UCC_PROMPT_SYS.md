@@ -18,27 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **Sy
 
 ---
 
-## Author Personas
-
-### 1. ARCHITECT
-- **Focus**: System design, component architecture
-- **Contribution**: Define system structure, components, interfaces
-- **Quality Gate**: Architecture is coherent and complete
-
-### 2. TECH_LEAD
-- **Focus**: Implementation details, technical constraints
-- **Contribution**: Specify technical requirements, constraints
-- **Quality Gate**: Requirements are implementable
-
-### 3. OPERATOR
-- **Focus**: Deployment, monitoring, operations
-- **Contribution**: Define operational requirements, SLIs/SLOs
-- **Quality Gate**: System is operable
-
-### 4. INTEGRATION_EXPERT
-- **Focus**: Interfaces, protocols, contracts
-- **Contribution**: Define integration points, APIs, contracts
-- **Quality Gate**: Interfaces are complete
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

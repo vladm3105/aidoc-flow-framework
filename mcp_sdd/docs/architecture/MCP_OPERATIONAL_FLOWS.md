@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.5 |
+| Version | 1.6 |
 | Date | 2026-03-29 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
@@ -12,7 +12,7 @@
 ## 1. Flow Set
 
 - project initialization flow: `init` → `create-build`
-- document lifecycle flow (6 stages): `create` → `validate` → `validate-fix` → `review` → `remediate` → `remediate-fix`
+- document lifecycle flow (5 stages): `validate` → `validate-fix` → `review` → `remediate` → `remediate-fix`
 - review prompt flow: `review-build` and `review`
 - readiness and lineage flow: `preflight`, `consistency`
 - diagnostics flow: `prescreen`, `scan`, `scoring`
@@ -33,7 +33,8 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 | Destination folder | Contents |
 | --- | --- |
-| `skills/personas/` | Persona definition files |
+| `skills/personas/` | 15 persona definition files |
+| `skills/persona_mappings.yaml` | Per-doctype, per-phase persona sequence configuration |
 | `skills/layer_aliases/` | Layer alias mappings |
 | `prompts/templates/creation/` | Creation prompt templates |
 | `prompts/templates/review/` | Review prompt templates |
@@ -53,14 +54,14 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 **Command**: `create-build`
 
-**Input**: `--project`, `--persona`, `--doc-type`, `--layer`, `--template` + optional `--sections-json`
+**Input**: `--project`, `--doc-type`, `--layer`, `--template` + optional `--personas`, `--sections-json`
 
 **Output** (written to the document folder or `--out`):
 
 | Artifact | Purpose |
 | --- | --- |
 | `creation_prompt.md` | Assembled prompt ready for LLM input |
-| `creation_sidecar.json` | Metadata: persona, doc type, layer assets used, template source |
+| `creation_sidecar.json` | Metadata: personas (list), doc type, layer assets used, template source, persona token estimates |
 | Layer asset files | Unified YAML template, schema, and any project-tuned template bundled into the prompt |
 
 **Rules**:
@@ -74,7 +75,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 ```
 init
-  └─ writes UCX/ scaffold (personas, templates, schemas, prompts)
+  └─ writes UCX/ scaffold (personas, persona_mappings.yaml, templates, schemas, prompts)
         ↓
 create-build
   └─ assembles LLM creation prompt + sidecar
@@ -152,6 +153,8 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 **Rules**:
 - Review runs against the `_validation` copy, not the source.
+- Multiple personas are loaded per the 2-tier resolution: explicit `--personas` override or `persona_mappings.yaml` defaults for the `(doc_type, review)` pair.
+- Each persona receives only the document sections mapped to its domain categories.
 - LLM-based content and cross-layer compliance review.
 - Report is versioned; repeated runs do not overwrite prior results.
 
@@ -269,7 +272,7 @@ Validation controls:
 
 Review controls:
 
-- `--persona`, `--unified`, `--one-turn`, `--no-resume`, `--session-ttl`
+- `--personas`, `--unified`, `--one-turn`, `--no-resume`, `--session-ttl`
 - `--clean-memory`, `--clean-reports`, `--keep-versions`
 
 ---

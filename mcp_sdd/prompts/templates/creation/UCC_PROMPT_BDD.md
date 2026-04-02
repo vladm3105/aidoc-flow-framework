@@ -18,27 +18,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **BD
 
 ---
 
-## Author Personas
-
-### 1. QA_LEAD
-- **Focus**: Test coverage, scenario completeness
-- **Contribution**: Define scenarios, ensure coverage
-- **Quality Gate**: All acceptance criteria have scenarios
-
-### 2. TECH_LEAD
-- **Focus**: Automation feasibility, step definitions
-- **Contribution**: Ensure scenarios are automatable
-- **Quality Gate**: Steps can be implemented
-
-### 3. DEVILS_ADVOCATE
-- **Focus**: Edge cases, negative scenarios
-- **Contribution**: Add error scenarios, boundary cases
-- **Quality Gate**: Failure paths are covered
-
-### 4. OPERATOR
-- **Focus**: Environment, data setup
-- **Contribution**: Define Background steps, test data
-- **Quality Gate**: Scenarios are self-contained
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

@@ -36,13 +36,13 @@ Out of scope:
 
 Required arguments:
 - project
-- persona
 - doc-type
 - template
 - sections-json
 - out
 
-Optional argument:
+Optional arguments:
+- personas (list of persona identifiers; resolved from `persona_mappings.yaml` when omitted)
 - layer
 
 Normative behavior:

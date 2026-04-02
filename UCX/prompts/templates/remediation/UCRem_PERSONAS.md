@@ -1,5 +1,7 @@
 # UCRem Persona Definitions
 
+> **Note (v1.12.0)**: Remediation persona sequences are now defined in `persona_mappings.yaml` under `remediation._default` and loaded at runtime with adaptive filtering. This file serves as a reference for individual fixer persona role definitions only.
+
 ## Overview
 
 UCRem uses **6 specialized Fixer Personas** organized into two categories:

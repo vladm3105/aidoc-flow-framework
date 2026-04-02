@@ -36,6 +36,8 @@ def _scaffold_creation_fixtures(project_root: Path, layer: str = "01_BRD") -> No
     ]:
         (project_root / relative).mkdir(parents=True, exist_ok=True)
 
+    (project_root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
+
     # Persona
     (project_root / "UCX/skills/personas/architect.md").write_text(
         "Architect domain knowledge and system design principles.", encoding="utf-8"
@@ -68,20 +70,20 @@ def test_assemble_project_creation_prompt_includes_persona(tmp_path: Path) -> No
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
     )
     assert "Architect domain knowledge" in assembly.prompt_text
-    assert assembly.persona_text.strip() == "Architect domain knowledge and system design principles."
+    assert assembly.persona_texts[0].strip() == "Architect domain knowledge and system design principles."
 
 
 def test_assemble_project_creation_prompt_includes_creation_template(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -94,7 +96,7 @@ def test_assemble_project_creation_prompt_includes_layer_schema(tmp_path: Path) 
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -108,7 +110,7 @@ def test_assemble_project_creation_prompt_includes_layer_mvp_template(tmp_path: 
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -121,7 +123,7 @@ def test_assemble_project_creation_prompt_includes_project_tuned_template(tmp_pa
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -135,7 +137,7 @@ def test_assemble_project_creation_prompt_layer_asset_names_sorted(tmp_path: Pat
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -149,7 +151,7 @@ def test_assemble_project_creation_prompt_includes_mcp_internal_actionable_rules
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -165,7 +167,7 @@ def test_assemble_project_creation_prompt_tolerates_missing_project_template(tmp
 
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -178,12 +180,12 @@ def test_assemble_project_creation_prompt_bundle_metadata(tmp_path: Path) -> Non
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
     )
-    assert assembly.bundle.metadata.persona == "architect"
+    assert assembly.bundle.metadata.personas == ["architect"]
     assert assembly.bundle.metadata.doc_type == "brd"
 
 
@@ -195,7 +197,7 @@ def test_assemble_project_creation_prompt_with_sections(tmp_path: Path) -> None:
     ]
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -208,7 +210,7 @@ def test_assemble_project_creation_prompt_returns_frozen_dataclass(tmp_path: Pat
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -231,7 +233,7 @@ def test_run_project_creation_build_writes_artifacts(tmp_path: Path) -> None:
 
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -247,7 +249,7 @@ def test_run_project_creation_build_prompt_content(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -262,7 +264,7 @@ def test_run_project_creation_build_layer_asset_names(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -276,14 +278,14 @@ def test_run_project_creation_build_sidecar_is_valid_json(tmp_path: Path) -> Non
     _scaffold_creation_fixtures(tmp_path)
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
     )
 
     parsed = json.loads(result.sidecar_json)
-    assert parsed.get("persona") == "architect"
+    assert parsed.get("personas") == ["architect"]
     assert parsed.get("doc_type") == "brd"
 
 
@@ -291,7 +293,7 @@ def test_run_project_creation_build_returns_document_template(tmp_path: Path) ->
     _scaffold_creation_fixtures(tmp_path)
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -305,7 +307,7 @@ def test_run_project_creation_build_no_output_dir_leaves_no_files(tmp_path: Path
     _scaffold_creation_fixtures(tmp_path)
     result = run_project_creation_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         layer="01_BRD",
         template_name="UCC_PROMPT_BRD_PROJECT.md",
@@ -328,7 +330,7 @@ def test_cli_create_build_exit_zero(tmp_path: Path) -> None:
     rc = main([
         "create-build",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -345,7 +347,7 @@ def test_cli_create_build_writes_prompt_file(tmp_path: Path) -> None:
     main([
         "create-build",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -366,7 +368,7 @@ def test_cli_create_build_writes_sidecar_json(tmp_path: Path) -> None:
     main([
         "create-build",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -376,7 +378,7 @@ def test_cli_create_build_writes_sidecar_json(tmp_path: Path) -> None:
     sidecar_file = output_dir / "creation_prompt_sidecar.json"
     assert sidecar_file.exists()
     parsed = json.loads(sidecar_file.read_text(encoding="utf-8"))
-    assert parsed.get("persona") == "architect"
+    assert parsed.get("personas") == ["architect"]
 
 
 def test_cli_create_build_without_out_uses_document_dir(tmp_path: Path) -> None:
@@ -400,7 +402,7 @@ def test_cli_create_build_without_out_uses_document_dir(tmp_path: Path) -> None:
     rc = main([
         "create-build",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -420,7 +422,7 @@ def test_cli_create_writes_final_target_artifact(tmp_path: Path) -> None:
     rc = main([
         "create",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -441,7 +443,7 @@ def test_cli_create_uses_layer_template_when_project_tuned_missing(tmp_path: Pat
     rc = main([
         "create",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",
@@ -463,7 +465,7 @@ def test_cli_create_fails_when_target_exists_without_overwrite(tmp_path: Path) -
     rc = main([
         "create",
         "--project", str(tmp_path),
-        "--persona", "architect",
+        "--personas", "architect",
         "--doc-type", "brd",
         "--layer", "01_BRD",
         "--template", "UCC_PROMPT_BRD_PROJECT.md",

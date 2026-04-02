@@ -14,7 +14,7 @@ from .context_builder import (
     categorize_section,
     discover_relevant_snippets,
     inspect_prompt_bundle,
-    map_sections_for_persona,
+    map_sections_for_personas,
     validate_prompt_bundle_or_raise,
 )
 
@@ -32,6 +32,6 @@ __all__ = [
     "categorize_section",
     "discover_relevant_snippets",
     "inspect_prompt_bundle",
-    "map_sections_for_persona",
+    "map_sections_for_personas",
     "validate_prompt_bundle_or_raise",
 ]

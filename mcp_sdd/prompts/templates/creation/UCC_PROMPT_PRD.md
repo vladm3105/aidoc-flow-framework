@@ -312,19 +312,7 @@ Frontmatter rules:
 
 ---
 
-## AUTHOR PERSONAS
-
-Apply these 7 expert personas during PRD creation:
-
-| Persona | Focus | Sections |
-|---------|-------|----------|
-| **PRODUCT_OWNER** | Feature definition, MVP scope, priorities | 1-7, 14-17 |
-| **UX_STRATEGIST** | User experience, accessibility | 4, 8, 9 |
-| **CONTENT_STRATEGIST** | Customer messaging, content design | **10** (PRIMARY) |
-| **TECH_LEAD** | Technical feasibility, constraints | 9, 12, 16, 18, 21 |
-| **QA_LEAD** | Testability, acceptance criteria | 11, 20, 21 |
-| **ARCHITECT** | System integration, diagrams | 9, 18, 20 |
-| **REQUIREMENTS_SPECIALIST** | Layer separation, story scoping | **8** (PRIMARY) |
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

@@ -25,6 +25,7 @@ def _create_project_ucx(root: Path) -> None:
     ]:
         (root / relative).mkdir(parents=True, exist_ok=True)
 
+    (root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
     (root / "UCX/skills/personas/architect.md").write_text("Architect persona", encoding="utf-8")
     (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template", encoding="utf-8")
     layer_root = root / "UCX/templates/layers/01_BRD"
@@ -39,7 +40,7 @@ def test_run_project_review_build_writes_artifacts(tmp_path: Path) -> None:
 
     result = run_project_review_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
@@ -62,7 +63,7 @@ def test_run_project_review_build_includes_layer_assets_when_layer_provided(tmp_
 
     result = run_project_review_build(
         project_root=tmp_path,
-        persona="architect",
+        personas=["architect"],
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[

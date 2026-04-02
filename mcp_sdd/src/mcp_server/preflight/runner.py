@@ -154,12 +154,16 @@ def run_preflight(
     if normalized_context in {"review", "remediate", "any"}:
         review_templates = ucx_root / "prompts/templates/review"
         personas = ucx_root / "skills/personas"
+        persona_mappings = ucx_root / "skills/persona_mappings.yaml"
         checks["review_templates_exists"] = review_templates.exists()
         checks["personas_exists"] = personas.exists()
+        checks["persona_mappings_exists"] = persona_mappings.exists()
         if not review_templates.exists():
             errors.append("missing_review_templates")
         if not personas.exists():
             errors.append("missing_personas")
+        if not persona_mappings.exists():
+            warnings.append("missing_persona_mappings")
 
     if document_path is not None:
         checks["document_exists"] = document_path.exists()

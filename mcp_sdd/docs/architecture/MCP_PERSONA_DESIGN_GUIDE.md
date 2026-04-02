@@ -37,17 +37,58 @@ Out of scope:
 
 At runtime, MCP loads personas/skills/prompts from project scope only:
 - `{project_root}/UCX/skills/personas/`
+- `{project_root}/UCX/skills/persona_mappings.yaml`
 - `{project_root}/UCX/skills/layer_aliases/`
 - `{project_root}/UCX/prompts/templates/creation/`
 - `{project_root}/UCX/prompts/templates/review/`
 - `{project_root}/UCX/prompts/templates/remediation/`
 
-### 3.2 MCP bundled assets usage
+### 3.2 Persona Mapping Configuration
+
+`persona_mappings.yaml` is the canonical source for per-doctype, per-phase persona sequences. It is located at `{project}/UCX/skills/persona_mappings.yaml` and scaffolded by `sdd_init`.
+
+**Format**:
+
+```yaml
+mappings:
+  brd:
+    create:
+      personas: [architect, strategist, business_analyst]
+      mode: sequential
+    review:
+      personas: [architect, auditor, tech_lead, chaos_engineer, operator, chairperson]
+      mode: parallel
+    remediate:
+      personas: [tech_lead, auditor]
+      mode: sequential
+  prd:
+    create:
+      personas: [product_owner, ux_strategist, tech_lead]
+      mode: sequential
+    review:
+      personas: [architect, auditor, tech_lead, product_owner, chairperson]
+      mode: parallel
+```
+
+The `mode` field (`sequential`, `parallel`, `adaptive`) is metadata-only in v1.0. It is not read by the runtime and has no effect on execution. It serves as documentation for intended execution semantics in future versions.
+
+### 3.3 Persona Resolution Priority (2-Tier)
+
+The runtime resolves personas using a 2-tier priority:
+
+| Priority | Source | Behavior |
+| --- | --- | --- |
+| 1 (highest) | Explicit `personas` parameter on tool call or CLI | Overrides all defaults |
+| 2 (default) | `persona_mappings.yaml` lookup by `(doc_type, phase)` | Used when no explicit `personas` parameter is provided |
+
+There is no single `persona` parameter. All tools and CLI commands accept only `personas` (list/array). If neither source provides a persona list, the runtime raises `PersonaMappingError`.
+
+### 3.4 MCP bundled assets usage
 
 Bundled assets under framework MCP paths are used only as scaffold input for `mcp init`.
 They are not loaded by runtime execution paths.
 
-### 3.3 Missing asset behavior
+### 3.5 Missing asset behavior
 
 If required project-specific paths are missing, MCP must raise:
 - `ProjectSkillsNotFound`
@@ -63,32 +104,31 @@ Required resolution message:
 
 ## 4. Persona Taxonomy
 
-### 4.1 Required core personas
+The `PERSONA_CATEGORY_MAP` defines 15 personas. All personas are registered in the runtime and available for assignment in `persona_mappings.yaml`.
 
-| Persona | Primary Responsibility | Applies To |
-| --- | --- | --- |
-| architect | Structure, boundaries, scalability | review, create |
-| auditor | Compliance, policy, risk | review, remediate |
-| tech_lead | Feasibility and implementation constraints | review, create, remediate |
-| chaos_engineer | Failure mode and edge-case analysis | review, remediate |
-| operator | Operability, rollback, diagnostics | review, remediate |
-| integration_lead | Contract boundaries and dependency impacts | review, create, remediate |
-| chairperson | Synthesis and final recommendation | review |
+### 4.1 Complete Persona Registry (15 personas)
 
-### 4.2 Optional personas
+| Persona | Primary Responsibility | Category | Finding Prefix |
+| --- | --- | --- | --- |
+| `architect` | Structure, boundaries, scalability | technical | ARCH |
+| `auditor` | Compliance, policy, risk | compliance | AUD |
+| `tech_lead` | Feasibility and implementation constraints | technical | TL |
+| `strategist` | Business strategy, unit economics | functional | STR |
+| `chaos_engineer` | Failure mode and edge-case analysis | risk | CE |
+| `operator` | Operability, rollback, diagnostics | operations | OP |
+| `integration_lead` | Contract boundaries and dependency impacts | integration | IL |
+| `product_owner` | MVP scope, user personas | functional | PO |
+| `business_analyst` | Requirements, traceability | functional | BA |
+| `fact_checker` | Cross-validation, accuracy | quality | FC |
+| `chairperson` | Synthesis, scoring, final recommendation | quality | REM |
+| `qa_lead` | Testability, BDD, verification | quality | QA |
+| `requirements_specialist` | EARS and REQ formal requirements | functional | RS |
+| `ux_strategist` | PRD and UX-focused requirements | functional | UX |
+| `judge` | High-stakes approvals, external audit | compliance | JDG |
 
-| Persona | Enable Condition |
-| --- | --- |
-| judge | High-stakes approvals, external audit, regulated cutover |
-| chairperson_editor | Publication quality review package required |
+### 4.2 Remediation Adaptive Loading
 
-### 4.3 Layer-specific personas
-
-| Persona | Primary Layers |
-| --- | --- |
-| qa_lead | TSPEC and verification-heavy artifacts |
-| requirements_specialist | EARS and REQ style artifacts |
-| ux_strategist | PRD and UX-focused requirements |
+During remediation, personas use `loading: adaptive` semantics. Domain personas are loaded only when review findings match their registered categories. This prevents loading irrelevant persona context for remediation runs where a persona's category has no findings.
 
 ## 5. Persona Output Contract
 
@@ -132,8 +172,11 @@ Required context fields:
 
 Prompt diagnostics must emit deterministic sidecar metadata.
 
-Required metadata fields:
-- `persona`
+Required metadata fields (`PromptMetadataSidecar`):
+- `personas` — `list[str]` of persona identifiers loaded for the prompt
+- `persona_count` — integer count of loaded personas
+- `persona_token_estimate` — estimated token cost for all persona content
+- `persona_token_warning` — boolean flag when persona token cost exceeds `TOKEN_WARNING_THRESHOLD` (15,000 tokens)
 - `doc_type`
 - `structure_blocks`
 - `sections.included`
@@ -159,34 +202,43 @@ For each persona prompt build:
 | Failure Mode | Detection Point | Required Behavior |
 | --- | --- | --- |
 | Missing project personas dir | startup resolver | raise `ProjectSkillsNotFound` |
+| Missing `persona_mappings.yaml` | startup resolver | raise `ProjectSkillsNotFound` |
+| Structural YAML errors (missing version, empty personas list) | persona resolution | raise `PersonaMappingError` with doc_type, phase, and resolution guidance |
+| No mapping entry for `(doc_type, phase)` | persona resolution | raise `PersonaMappingError` |
+| Missing persona files referenced in mapping | `_validate_persona_mapping` | raise `ProjectSkillsNotFound` with missing_paths |
 | Missing layer alias map | startup resolver | raise `ProjectSkillsNotFound` |
 | Missing prompt template family | startup resolver | raise `ProjectSkillsNotFound` |
 | Persona finding schema drift | parser stage | contract test failure |
 | Missing metadata sidecar fields | diagnostics stage | contract test failure |
 | Non-deterministic scoring/context output | regression stage | determinism test failure |
 
-## 9. Implementation Status (Current Repository Snapshot)
+## 9. Implementation Status
 
 | Capability | Status | Source |
 | --- | --- | --- |
-| Persona and context contracts defined | Defined | `mcp_sdd/docs/specs/SPEC-002_*` |
-| Runtime policy for project-specific-only loading | Defined | `mcp_sdd/docs/plans/IPLAN-001_*` |
-| `mcp init` behavior in implementation plan | Implemented | `mcp_sdd/src/mcp_server/skills/scaffold.py`, `mcp_sdd/src/mcp_server/cli/main.py` |
-| Context-engineering runtime implementation | Partial implementation present | `mcp_sdd/src/mcp_server/prompts/context_builder.py` |
-| Project-specific UCX runtime loader | Partial implementation present | `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py` |
-| Review prompt build runner and artifact emission | Implemented | `mcp_sdd/src/mcp_server/review/runner.py`, `mcp_sdd/src/mcp_server/cli/main.py` |
+| Persona and context contracts defined | Implemented | `mcp_sdd/docs/specs/SPEC-002_*` |
+| Runtime policy for project-specific-only loading | Implemented | `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py` |
+| `mcp init` scaffold with no-overwrite semantics | Implemented | `mcp_sdd/src/mcp_server/skills/scaffold.py` |
+| `ProjectSkillsNotFound` error contract | Implemented | `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py` |
+| Context-engineering runtime (prompt assembly) | Implemented | `mcp_sdd/src/mcp_server/prompts/context_builder.py` |
+| Project-specific UCX runtime loader | Implemented | `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py` |
+| Review prompt build runner and artifact emission | Implemented | `mcp_sdd/src/mcp_server/review/runner.py` |
+| Creation prompt assembly and layer asset loading | Implemented | `mcp_sdd/src/mcp_server/prompts/context_builder.py` |
+| Sidecar metadata and inspection diagnostics | Implemented | `mcp_sdd/src/mcp_server/prompts/context_builder.py` |
+| Scaffold mapping for all 6 asset categories | Implemented | `mcp_sdd/src/mcp_server/skills/scaffold.py` |
 
-## 10. Implementation Gate
+## 10. Scaffold Contract
 
-Implementation-ready for persona/context subsystem requires all conditions:
-- Project-specific resolver implemented and tested.
-- `ProjectSkillsNotFound` error contract implemented and tested.
-- `mcp init` command scaffolding implemented and tested.
-- Context-engineering fields and sidecar diagnostics implemented per SPEC-002 Sections 5-6.
-- Determinism and schema regression tests passing.
+`sdd_init` copies all framework assets into `{project}/UCX/` using the mappings defined in `scaffold.py:CANONICAL_SCAFFOLD_MAPPINGS`. Seven asset categories are copied:
 
-Current status:
-- Resolver and `ProjectSkillsNotFound` contract are partially implemented and tested.
-- Context bundle assembly, sidecar serialization, dynamic mapping, and prompt inspection are partially implemented and tested.
-- `mcp init` scaffolding command is implemented and tested with no-overwrite semantics.
-- Review prompt build path emits prompt text, sidecar metadata, and inspection artifacts with tests.
+1. `skills/personas` — 15 persona definition files
+2. `skills/persona_mappings.yaml` — per-doctype, per-phase persona sequence configuration
+3. `skills/layer_aliases` — layer alias mappings
+4. `prompts/templates/creation` — UCC creation prompt templates
+5. `prompts/templates/review` — UCR review prompt templates
+6. `prompts/templates/remediation` — UCRem remediation prompt templates
+7. `templates` — document templates and layer-specific schemas (from `ai_dev_ssd_flow/`)
+
+No-overwrite semantics: existing files in the project UCX directory are never overwritten. Re-running `sdd_init` is safe and idempotent.
+
+After initialization, the project owns its UCX assets. Teams customize personas, prompts, and templates in `{project}/UCX/` without affecting other projects or the framework scaffold source.

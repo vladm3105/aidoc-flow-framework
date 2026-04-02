@@ -64,43 +64,7 @@ Feature: {Feature Name}
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. QA_LEAD FIXER
-- **Focus**: Test coverage, scenario completeness
-- **Question**: "Does this fix ensure complete scenario coverage?"
-- **Flag for manual if**: New test scenarios need business validation
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Step implementability, automation feasibility
-- **Question**: "Can these steps be automated reliably?"
-- **Flag for manual if**: Step requires human judgment
-
-### 3. BUSINESS_ANALYST FIXER
-- **Focus**: Business logic accuracy, acceptance criteria
-- **Question**: "Does this scenario match business expectations?"
-- **Flag for manual if**: Business rule interpretation needed
-
-### 4. INTEGRATION FIXER
-- **Focus**: EARS traceability, cross-scenario consistency
-- **Question**: "Does this trace to EARS? Is it consistent with other scenarios?"
-- **Flag for manual if**: EARS update needed, conflicting scenarios
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Edge cases, failure scenarios
-- **Question**: "What happens when this fails? Are edge cases covered?"
-- **Flag for manual if**: Missing failure scenarios, undefined behavior
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 

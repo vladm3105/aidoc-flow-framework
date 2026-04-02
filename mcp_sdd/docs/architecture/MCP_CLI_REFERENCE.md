@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.3 |
+| Version | 1.4 |
 | Date | 2026-03-27 |
 | Scope | Implemented command contracts in `mcp_sdd/src/mcp_server/cli/main.py` |
 
@@ -14,9 +14,9 @@
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
 | init | --project | none | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/` |
-| create-build | --project --persona --doc-type --layer --template | --sections-json --out | creation prompt artifacts (`creation_prompt.md`, `creation_sidecar.json`) |
-| create | --project --persona --doc-type --layer --template --target | --sections-json --overwrite --out | final document artifact + creation diagnostics |
-| review-build | --project --persona --doc-type --template and one of (--sections-json, --document) | --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
+| create-build | --project --doc-type --layer --template | --personas --sections-json --out | creation prompt artifacts (`creation_prompt.md`, `creation_sidecar.json`) |
+| create | --project --doc-type --layer --template --target | --personas --sections-json --overwrite --out | final document artifact + creation diagnostics |
+| review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
 | review | same as review-build | same as review-build | alias for review-build |
 | validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | validate-fix | --project --doc-type --layer --document | --validation-report --out | `TYPE-NN_{slug}_validation.md` derived copy written alongside source, plus fix report |
@@ -151,7 +151,31 @@ JSON status payload fields:
 
 ---
 
-## 7. Examples
+## 7. Persona Resolution
+
+The `--personas` argument accepts zero or more space-separated persona identifiers (`nargs="+"`). It is optional on all commands that accept it.
+
+**Resolution behavior**:
+
+1. If `--personas` is provided on the command line, those personas are used (highest priority).
+2. If `--personas` is omitted, the runtime looks up `persona_mappings.yaml` using the `(doc_type, phase)` pair.
+3. If neither source provides personas, the command raises `PersonaMappingError`.
+
+**MCP tool schema** (for programmatic callers):
+
+```json
+{
+  "personas": {
+    "type": "array",
+    "items": {"type": "string"},
+    "description": "Optional list of persona identifiers. Defaults to persona_mappings.yaml lookup."
+  }
+}
+```
+
+---
+
+## 8. Examples
 
 Project initialization:
 
@@ -160,13 +184,17 @@ Project initialization:
 mcp init --project /path/to/project
 # Writes: UCX/skills/personas/, prompts/templates/*, templates/layers/NN_TYPE/*
 
-# Assemble LLM creation prompt for a BRD
-mcp create-build --project /path/to/project --persona architect --doc-type brd \
+# Assemble LLM creation prompt for a BRD (personas resolved from persona_mappings.yaml)
+mcp create-build --project /path/to/project --doc-type brd \
   --layer 01_BRD --template UCC_PROMPT_BRD_PROJECT.md
 # Writes: creation_prompt.md, creation_sidecar.json
 
+# Explicit persona override (space-separated, optional)
+mcp create-build --project /path/to/project --personas architect strategist --doc-type brd \
+  --layer 01_BRD --template UCC_PROMPT_BRD_PROJECT.md
+
 # After LLM generates content, write the final source document
-mcp create --project /path/to/project --persona architect --doc-type brd \
+mcp create --project /path/to/project --doc-type brd \
   --layer 01_BRD --template UCC_PROMPT_BRD_PROJECT.md \
   --target /path/to/docs/01_BRD/BRD-01_platform/BRD-01_platform.md
 ```
@@ -174,8 +202,8 @@ mcp create --project /path/to/project --persona architect --doc-type brd \
 Full 6-stage lifecycle for a BRD document:
 
 ```bash
-# Stage 1 — Create source document
-mcp create --project /path/to/project --persona architect --doc-type brd --layer 01_BRD \
+# Stage 1 — Create source document (personas from persona_mappings.yaml)
+mcp create --project /path/to/project --doc-type brd --layer 01_BRD \
   --template UCC_PROMPT_BRD_PROJECT.md \
   --target /path/to/docs/01_BRD/BRD-01_platform/BRD-01_platform.md
 
@@ -190,12 +218,12 @@ mcp validate-fix --project /path/to/project --doc-type brd --layer 01_BRD \
   --validation-report /path/to/validation_report.json
 # → BRD-01_platform_validation.md written alongside source
 
-# Stage 4 — Review _validation copy
-mcp review --project /path/to/project --persona architect --doc-type brd \
+# Stage 4 — Review _validation copy (personas from persona_mappings.yaml)
+mcp review --project /path/to/project --doc-type brd \
   --layer 01_BRD --sections-json /path/to/sections.json
 
-# Stage 4 alternative — Review document folder (auto main + appendices)
-mcp review --project /path/to/project --persona architect --doc-type brd \
+# Stage 4 alternative — Review document folder with explicit personas
+mcp review --project /path/to/project --personas architect auditor chairperson --doc-type brd \
   --layer 01_BRD --template UCR_PROMPT_BRD_PROJECT.md \
   --document /path/to/docs/01_BRD/BRD-01_platform/
 

@@ -57,43 +57,7 @@ Common SYS issues to remediate:
 
 ---
 
-## The 6 Fixer Personas
-
-Apply these personas to each fix. Note: Adaptive loading (v1.10.0+) may exclude domain fixers with no findings, but Chaos Engineer and Chairperson are always loaded.
-
-### 1. ARCHITECT FIXER
-- **Focus**: System design coherence, component boundaries
-- **Question**: "Does this fix maintain clean component boundaries?"
-- **Flag for manual if**: Component restructuring needed, new ADR required
-
-### 2. TECH_LEAD FIXER
-- **Focus**: Technical specifications, implementation details
-- **Question**: "Is this specification complete enough for implementation?"
-- **Flag for manual if**: Research needed, prototype required
-
-### 3. OPERATOR FIXER
-- **Focus**: Operations, monitoring, deployment
-- **Question**: "Can this be operated and monitored effectively?"
-- **Flag for manual if**: Infrastructure design needed, SRE review required
-
-### 4. INTEGRATION_EXPERT FIXER
-- **Focus**: Interface definitions, protocol specifications
-- **Question**: "Are interfaces fully specified and compatible?"
-- **Flag for manual if**: Contract negotiation needed, breaking changes
-
-### 5. DEVIL'S ADVOCATE
-- **Focus**: Failure modes, edge cases, hidden dependencies
-- **Question**: "What happens when this fails? What's missing?"
-- **Flag for manual if**: Undefined failure modes, circular dependencies
-
-### 6. CHAIRPERSON (Mandatory)
-- **Focus**: Synthesis, de-duplication, conflict resolution, execution order
-- **Question**: "Are all fixes coherent? Are there duplicates or conflicts?"
-- **Responsibilities**:
-  - Merge overlapping fixes from different personas
-  - Resolve disagreements between fixers
-  - Determine fix dependencies and application order
-  - Confirm all findings are addressed
+<!-- Personas injected at runtime from persona_mappings.yaml -->
 
 ---
 
