@@ -450,13 +450,28 @@ def _inspect_document_folder(document_dir: Path) -> dict:
     yaml_files = sorted(document_dir.glob("*.yaml"))
     all_names = [f.name for f in md_files] + [f.name for f in json_files] + [f.name for f in yaml_files]
 
+    from mcp_server.utils.source_files import REPORT_PATTERN
+
     source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
-    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validation" not in f.stem and "_remediated" not in f.stem]
-    has_validation_report = any("validation_report" in f.name for f in json_files)
-    has_validation_copy = any("_validation" in f.stem for f in md_files + yaml_files)
-    has_review_report = any("review_report" in f.name.lower() for f in md_files)
-    has_remediation_report = any("remediation_report" in f.name.lower() for f in md_files)
-    has_remediated_copy = any("_remediated" in f.stem for f in md_files + yaml_files)
+    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validate_copy" not in f.stem and "_remediate_copy" not in f.stem]
+    has_validation_report = any(
+        REPORT_PATTERN.match(f.name) and ".validate." in f.name
+        for f in json_files + md_files + yaml_files
+    )
+    has_validation_copy = any(
+        "_validate_copy" in f.stem for f in md_files + yaml_files
+    )
+    has_review_report = any(
+        REPORT_PATTERN.match(f.name) and ".review." in f.name
+        for f in json_files + md_files
+    )
+    has_remediation_report = any(
+        REPORT_PATTERN.match(f.name) and ".remediate." in f.name
+        for f in json_files + md_files
+    )
+    has_remediated_copy = any(
+        "_remediate_copy" in f.stem for f in md_files + yaml_files
+    )
 
     if has_remediated_copy:
         current_stage = "remediated"

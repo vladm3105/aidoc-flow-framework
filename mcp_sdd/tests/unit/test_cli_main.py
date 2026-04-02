@@ -333,8 +333,8 @@ custom_fields:
 
     default_out = doc_dir
     assert exit_code == 0
-    assert (default_out / "validation_report.json").exists()
-    assert (default_out / "validation_report.txt").exists()
+    assert (default_out / "BRD-01.validate.json").exists()
+    assert (default_out / "BRD-01.validate.txt").exists()
 
 
 def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> None:
@@ -343,9 +343,9 @@ def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> N
 
     source = doc_dir / "BRD-01_platform_architecture.md"
     source.write_text("# source\n", encoding="utf-8")
-    (doc_dir / "BRD-01_validation_report.md").write_text("# validation report\n", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_architecture_validation.md").write_text("# validation copy\n", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_architecture_remediated.md").write_text("# remediated copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01.validate.json").write_text("{}", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_validate_copy.md").write_text("# validation copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_remediate_copy.md").write_text("# remediated copy\n", encoding="utf-8")
     (doc_dir / "BRD-01_validation_remediation_report_v001.md").write_text("# remediation report\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/consistency"
@@ -360,8 +360,8 @@ def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> N
     )
 
     assert exit_code == 0
-    assert (out_dir / "consistency_report.json").exists()
-    assert (out_dir / "consistency_report.txt").exists()
+    assert (out_dir / "BRD-01.consistency.json").exists()
+    assert (out_dir / "BRD-01.consistency.txt").exists()
 
 
 def test_main_consistency_fails_without_source_artifact(tmp_path: Path) -> None:

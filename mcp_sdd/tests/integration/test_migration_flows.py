@@ -101,7 +101,7 @@ TODO refine content
         == 0
     )
 
-    validation_report = validate_out / "validation_report.json"
+    validation_report = next(validate_out.glob("*.validate.json"), validate_out / "validation_report.json")
     assert validation_report.exists()
 
     assert (
@@ -125,7 +125,7 @@ TODO refine content
         == 0
     )
 
-    validation_copy = validate_out / "BRD-01_sample_validation.md"
+    validation_copy = validate_out / "BRD-01_sample_validate_copy.md"
     assert validation_copy.exists()
 
     assert (
@@ -147,7 +147,7 @@ TODO refine content
         == 0
     )
 
-    remediation_report = remediate_out / "remediation_report.json"
+    remediation_report = next(remediate_out.glob("*.remediate.json"), remediate_out / "remediation_report.json")
     assert remediation_report.exists()
 
     payload = json.loads(remediation_report.read_text(encoding="utf-8"))
@@ -174,7 +174,7 @@ TODO refine content
         == 0
     )
 
-    assert (remediate_out / "BRD-01_sample_remediated.md").exists()
+    assert (remediate_out / "BRD-01_sample_remediate_copy.md").exists()
 
 
 def test_validate_ears_directory_flow_passes_for_section_set(tmp_path: Path) -> None:
@@ -221,7 +221,7 @@ WHEN request is accepted THE SYSTEM SHALL persist the record.
         == 0
     )
 
-    validation_report = validate_out / "validation_report.json"
+    validation_report = next(validate_out.glob("*.validate.json"), validate_out / "validation_report.json")
     payload = json.loads(validation_report.read_text(encoding="utf-8"))
     summary = payload.get("summary", {})
     assert summary.get("is_valid") is True

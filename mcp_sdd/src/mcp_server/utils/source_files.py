@@ -8,8 +8,22 @@ from pathlib import Path
 # Pattern for SDD source artifacts: TYPE-NN_slug.ext
 _SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
+# Report naming patterns (PLAN-021)
+REPORT_PATTERN = re.compile(
+    r"^[A-Z]+-\d+\."
+    r"(?:(?:sdd|gov|kb)\.)?"
+    r"(?:validate|validate_fix|review|remediate|remediate_fix|"
+    r"consistency|links|prescreen|score)"
+    r"(?:\.v\d+)?"
+    r"\.(?:json|md|txt)$"
+)
+
+DERIVED_COPY_PATTERN = re.compile(
+    r"^[A-Z]+-\d+_.+_(?:validate|remediate)_copy\.(?:md|yaml|yml)$"
+)
+
 # Stems and name substrings that mark derived / non-source files
-_DERIVED_STEMS = ("_validation", "_remediated")
+_DERIVED_STEMS = ("_validate_copy", "_remediate_copy")
 _EXCLUDED_NAMES = ("TEMPLATE", "REVIEW", "REPORT")
 
 
@@ -19,7 +33,11 @@ def _is_excluded(path: Path) -> bool:
     name_upper = path.name.upper()
     if any(tag in stem_lower for tag in _DERIVED_STEMS):
         return True
-    return any(tag in name_upper for tag in _EXCLUDED_NAMES)
+    if any(tag in name_upper for tag in _EXCLUDED_NAMES):
+        return True
+    if DERIVED_COPY_PATTERN.match(path.name):
+        return True
+    return False
 
 
 def collect_source_files(
@@ -58,6 +76,22 @@ def collect_source_files(
         return canonical
 
     return sorted(candidates)
+
+
+def extract_doc_id(path: Path) -> str:
+    """Extract document ID (e.g., 'BRD-03') from filename or parent folder.
+
+    Handles:
+    - BRD-03_security_compliance.yaml -> BRD-03
+    - BRD-03_security_compliance/ (directory) -> BRD-03
+    - BRD-03.validate.json (report) -> BRD-03
+    """
+    name = path.name if path.is_file() else path.name
+    match = re.match(r"^([A-Z]+-\d+)", name)
+    if match:
+        return match.group(1)
+    match = re.match(r"^([A-Z]+-\d+)", path.parent.name)
+    return match.group(1) if match else "UNKNOWN"
 
 
 def is_yaml_document(path: Path) -> bool:

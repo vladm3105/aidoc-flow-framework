@@ -271,8 +271,8 @@ def _list_review_markdown_candidates(document_dir: Path) -> list[Path]:
         for path in candidates
         if "REVIEW" not in path.name.upper()
         and "REPORT" not in path.name.upper()
-        and "_validation" not in path.stem
-        and "_remediated" not in path.stem
+        and "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
     ]
 
 

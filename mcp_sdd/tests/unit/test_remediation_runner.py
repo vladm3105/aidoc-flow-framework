@@ -38,9 +38,9 @@ def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
     )
 
     assert exit_code == 0
-    assert (out_dir / "validate_fix_report.json").exists()
-    assert (out_dir / "validate_fix_report.txt").exists()
-    assert (out_dir / "BRD-01_sample_validation.md").exists()
+    assert (out_dir / "BRD-01.validate_fix.json").exists()
+    assert (out_dir / "BRD-01.validate_fix.txt").exists()
+    assert (out_dir / "BRD-01_sample_validate_copy.md").exists()
 
 
 def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
@@ -68,7 +68,7 @@ def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
     )
 
     assert remediate_exit == 0
-    report_path = remediation_out / "remediation_report.json"
+    report_path = remediation_out / "BRD-01.remediate.json"
     assert report_path.exists()
 
     payload = json.loads(report_path.read_text(encoding="utf-8"))
@@ -97,8 +97,8 @@ def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
     )
 
     assert remediate_fix_exit == 0
-    assert (remediation_out / "remediate_fix_report.json").exists()
-    assert (remediation_out / "BRD-01_sample_remediated.md").exists()
+    assert (remediation_out / "BRD-01.remediate_fix.json").exists()
+    assert (remediation_out / "BRD-01_sample_remediate_copy.md").exists()
 
 
 def test_validate_fix_fails_for_invalid_validation_report_path(tmp_path: Path) -> None:
@@ -134,7 +134,7 @@ def test_cli_validate_fix_directory_prefers_source_artifact(tmp_path: Path) -> N
     doc_dir.mkdir(parents=True, exist_ok=True)
     source_doc = doc_dir / "BRD-01_platform.md"
     source_doc.write_text("# BRD-01\n", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_remediated.md").write_text("# remediated copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_remediate_copy.md").write_text("# remediated copy\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/validate"
     exit_code = main(
@@ -154,8 +154,8 @@ def test_cli_validate_fix_directory_prefers_source_artifact(tmp_path: Path) -> N
     )
 
     assert exit_code == 0
-    assert (out_dir / "BRD-01_platform_validation.md").exists()
-    assert not (out_dir / "BRD-01_platform_validation" / "BRD-01_platform.md").exists()
+    assert (out_dir / "BRD-01_platform_validate_copy.md").exists()
+    assert not (out_dir / "BRD-01_platform_validate_copy" / "BRD-01_platform.md").exists()
 
 
 def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> None:
@@ -164,7 +164,7 @@ def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> 
     doc_dir = tmp_path / "docs/02_PRD/PRD-01_platform"
     doc_dir.mkdir(parents=True, exist_ok=True)
     (doc_dir / "PRD-01_platform.md").write_text("# source\n", encoding="utf-8")
-    (doc_dir / "PRD-01_platform_validation.md").write_text("# validation copy\n", encoding="utf-8")
+    (doc_dir / "PRD-01_platform_validate_copy.md").write_text("# validation copy\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/remediate"
     exit_code = main(
@@ -184,12 +184,12 @@ def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> 
     )
 
     assert exit_code == 0
-    # Uses _validation copy as input → _remediated output with canonical base stem
-    assert (out_dir / "PRD-01_platform_remediated.md").exists()
+    # Uses _validate_copy as input -> _remediate_copy output with canonical base stem
+    assert (out_dir / "PRD-01_platform_remediate_copy.md").exists()
     # Must NOT create a tree copy of the whole folder
-    assert not (out_dir / f"{doc_dir.name}_remediated").exists()
-    # Must NOT create _validation_remediated (non-canonical name)
-    assert not (out_dir / "PRD-01_platform_validation_remediated.md").exists()
+    assert not (out_dir / f"{doc_dir.name}_remediate_copy").exists()
+    # Must NOT create _validate_copy_remediate_copy (non-canonical name)
+    assert not (out_dir / "PRD-01_platform_validate_copy_remediate_copy.md").exists()
 
 
 def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path) -> None:
@@ -242,7 +242,7 @@ def test_validate_fix_emits_source_protection_telemetry(tmp_path: Path) -> None:
     )
 
     assert exit_code == 0
-    payload = json.loads((out_dir / "validate_fix_report.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
     assert isinstance(telemetry, dict)
     assert telemetry.get("source_protection_enabled") is True
@@ -285,7 +285,7 @@ def test_validate_fix_restores_source_when_mutated(tmp_path: Path, monkeypatch) 
 
     assert exit_code == 0
     assert document.read_text(encoding="utf-8") == original
-    payload = json.loads((out_dir / "validate_fix_report.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
     assert isinstance(telemetry, dict)
     assert telemetry.get("restoration_events") == 1
@@ -316,7 +316,7 @@ def test_validate_fix_omits_telemetry_when_source_monitoring_not_applicable(tmp_
     )
 
     assert exit_code == 0
-    payload = json.loads((out_dir / "validate_fix_report.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
     assert "source_protection_telemetry" not in payload
 
 
@@ -367,8 +367,8 @@ def test_remediation_findings_use_stable_hash_ids_across_reruns(tmp_path: Path) 
         == 0
     )
 
-    first_payload = json.loads((out_first / "remediation_report.json").read_text(encoding="utf-8"))
-    second_payload = json.loads((out_second / "remediation_report.json").read_text(encoding="utf-8"))
+    first_payload = json.loads((out_first / "BRD-01.remediate.json").read_text(encoding="utf-8"))
+    second_payload = json.loads((out_second / "BRD-01.remediate.json").read_text(encoding="utf-8"))
 
     first_pairs = [(item["finding_id"], item["action_id"]) for item in first_payload["findings"]]
     second_pairs = [(item["finding_id"], item["action_id"]) for item in second_payload["findings"]]

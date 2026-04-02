@@ -209,38 +209,38 @@ class TestNextAction:
 
     def test_after_validation(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "validation_report.json").write_text("{}")
+        (tmp_path / "BRD-01.validate.json").write_text("{}")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "validated"
         assert result["next_action"] == "validate_fix"
 
     def test_after_validation_fix(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "validation_report.json").write_text("{}")
-        (tmp_path / "BRD-01_platform_validation.md").write_text("# BRD fixed")
+        (tmp_path / "BRD-01.validate.json").write_text("{}")
+        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# BRD fixed")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "validation_fixed"
         assert result["next_action"] == "review"
 
     def test_after_review(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_validation.md").write_text("# fixed")
-        (tmp_path / "BRD-01.UCX_review_report_v001.md").write_text("# review")
+        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# fixed")
+        (tmp_path / "BRD-01.review.md").write_text("# review")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "reviewed"
         assert result["next_action"] == "remediate"
 
     def test_after_remediation_report(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_validation.md").write_text("# fixed")
-        (tmp_path / "BRD-01.UCX_remediation_report_v001.md").write_text("# rem")
+        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# fixed")
+        (tmp_path / "BRD-01.remediate.md").write_text("# rem")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "remediation_reported"
         assert result["next_action"] == "remediate_fix"
 
     def test_fully_remediated(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_remediated.md").write_text("# final")
+        (tmp_path / "BRD-01_platform_remediate_copy.md").write_text("# final")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "remediated"
         assert result["next_action"] == "done"

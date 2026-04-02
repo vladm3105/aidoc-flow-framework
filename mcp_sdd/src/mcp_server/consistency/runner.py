@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from mcp_server.utils.source_files import extract_doc_id
+
 
 SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
@@ -69,7 +71,13 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
         for path in folder.glob(ext)
         if SOURCE_PATTERN.match(path.name)
     )
-    candidates = [path for path in candidates if "_validation" not in path.stem and "_remediated" not in path.stem]
+    candidates = [
+        path for path in candidates
+        if "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
+        and "REPORT" not in path.name.upper()
+        and "REVIEW" not in path.name.upper()
+    ]
     if len(candidates) == 0:
         return None, ["missing_source_artifact"]
     if len(candidates) > 1:
@@ -99,19 +107,25 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
 
         src_ext = source.suffix  # .md, .yaml, or .yml
 
-        # Validation report: check JSON first (we write JSON), then .md fallback
+        # Validation report: check new naming first, then legacy fallback
+        validation_report_new = folder / f"{doc_id}.validate.json"
         validation_report_json = folder / f"{doc_id}_validation_report.json"
         validation_report_md = folder / f"{doc_id}_validation_report.md"
-        validation_report = validation_report_json if validation_report_json.exists() else validation_report_md
+        if validation_report_new.exists():
+            validation_report = validation_report_new
+        elif validation_report_json.exists():
+            validation_report = validation_report_json
+        else:
+            validation_report = validation_report_md
 
         # Validation copy: check same extension as source first, then .md fallback
-        validation_copy_src = folder / f"{stem}_validation{src_ext}"
-        validation_copy_md = folder / f"{stem}_validation.md"
+        validation_copy_src = folder / f"{stem}_validate_copy{src_ext}"
+        validation_copy_md = folder / f"{stem}_validate_copy.md"
         validation_copy = validation_copy_src if validation_copy_src.exists() else validation_copy_md
 
         # Remediated copy: check same extension as source first, then .md fallback
-        remediated_copy_src = folder / f"{stem}_remediated{src_ext}"
-        remediated_copy_md = folder / f"{stem}_remediated.md"
+        remediated_copy_src = folder / f"{stem}_remediate_copy{src_ext}"
+        remediated_copy_md = folder / f"{stem}_remediate_copy.md"
         remediated_copy = remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
 
         review_reports = sorted(folder.glob("*_review_report_v*.md")) + sorted(folder.glob(f"{doc_id}.R_review_report_v*.md"))
@@ -148,8 +162,9 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
     summary_path: Path | None = None
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
-        report_path = output_dir / "consistency_report.json"
-        summary_path = output_dir / "consistency_report.txt"
+        doc_id = extract_doc_id(target_path)
+        report_path = output_dir / f"{doc_id}.consistency.json"
+        summary_path = output_dir / f"{doc_id}.consistency.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 

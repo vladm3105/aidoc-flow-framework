@@ -291,7 +291,7 @@ custom_fields:
     )
 
     # Derived artifact intentionally invalid; validation should ignore this file
-    (doc_dir / "BRD-01_platform_validation.md").write_text(
+    (doc_dir / "BRD-01_platform_validate_copy.md").write_text(
         """---
 title: "Validation Copy"
 tags: [brd]

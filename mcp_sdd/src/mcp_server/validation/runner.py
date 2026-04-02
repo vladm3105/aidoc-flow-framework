@@ -8,7 +8,7 @@ from typing import Any, cast
 
 import yaml  # type: ignore[import-untyped]
 
-from mcp_server.utils.source_files import collect_source_files, is_yaml_document
+from mcp_server.utils.source_files import collect_source_files, extract_doc_id, is_yaml_document
 from mcp_server.utils.template_naming import resolve_template_path
 from mcp_server.validation.cross_section import (
     run_cross_section_checks,
@@ -37,8 +37,8 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
             for path in sorted(document_path.parent.glob("*.md"))
             if "REVIEW" not in path.name.upper()
             and "REPORT" not in path.name.upper()
-            and "_validation" not in path.stem
-            and "_remediated" not in path.stem
+            and "_validate_copy" not in path.stem
+            and "_remediate_copy" not in path.stem
             and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
         ]
         if len(source_artifacts) == 1:
@@ -56,12 +56,12 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
     ]
 
     # Prefer canonical source artifact when present:
-    # <DOC-ID>_<slug>.md and exclude derived variants like *_validation.md/*_remediated.md.
+    # <DOC-ID>_<slug>.md and exclude derived variants like *_validate_copy.md/*_remediate_copy.md.
     source_artifacts = [
         path
         for path in filtered
-        if "_validation" not in path.stem
-        and "_remediated" not in path.stem
+        if "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
     if len(source_artifacts) == 1:
@@ -84,8 +84,8 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         for path in candidates
         if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
         and "TEMPLATE" not in path.name.upper()
-        and "_validation" not in path.stem
-        and "_remediated" not in path.stem
+        and "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
     ]
     if len(source_artifacts) == 1:
         return source_artifacts
@@ -94,8 +94,8 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         for path in candidates
         if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
         and "TEMPLATE" not in path.name.upper()
-        and "_validation" not in path.stem
-        and "_remediated" not in path.stem
+        and "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
     ]
 
 
@@ -479,8 +479,9 @@ def run_project_validation_build(
     summary_path: Path | None = None
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
-        report_path = output_dir / "validation_report.json"
-        summary_path = output_dir / "validation_report.txt"
+        doc_id = extract_doc_id(document_path)
+        report_path = output_dir / f"{doc_id}.validate.json"
+        summary_path = output_dir / f"{doc_id}.validate.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 

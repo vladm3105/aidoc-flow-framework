@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import re
 
+from mcp_server.utils.source_files import extract_doc_id
+
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
 
@@ -64,8 +66,9 @@ def run_prescreen(*, document_path: Path, output_dir: Path | None = None) -> Pre
     summary_path: Path | None = None
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
-        report_path = output_dir / "prescreen_report.json"
-        summary_path = output_dir / "prescreen_report.txt"
+        doc_id = extract_doc_id(document_path)
+        report_path = output_dir / f"{doc_id}.prescreen.json"
+        summary_path = output_dir / f"{doc_id}.prescreen.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 

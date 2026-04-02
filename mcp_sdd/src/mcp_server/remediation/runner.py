@@ -9,6 +9,7 @@ import shutil
 from typing import Any
 
 from mcp_server.reporting import build_action_id, build_finding_id
+from mcp_server.utils.source_files import extract_doc_id
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
@@ -116,8 +117,8 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
     source_artifacts = [
         path
         for path in filtered
-        if "_validation" not in path.stem
-        and "_remediated" not in path.stem
+        if "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
     if len(source_artifacts) == 1:
@@ -578,10 +579,11 @@ def run_remediation_build(
 
     report_json = json.dumps(report, sort_keys=True)
     report_text = _as_text("MCP Remediation Report", report, "findings")
+    doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        "remediation_report.json",
-        "remediation_report.txt",
+        f"{doc_id}.remediate.json",
+        f"{doc_id}.remediate.txt",
         report_json,
         report_text,
     )
@@ -596,9 +598,9 @@ def run_remediation_build(
 
 
 def _canonical_stem(src: Path) -> str:
-    """Strip UCX stage suffixes (_validation, _remediated) from stem."""
+    """Strip stage suffixes from stem."""
     stem = src.stem
-    for postfix in ("_validation", "_remediated"):
+    for postfix in ("_validate_copy", "_remediate_copy"):
         if stem.endswith(postfix):
             return stem[: -len(postfix)]
     return stem
@@ -679,7 +681,7 @@ def _resolve_source_document_path(document_path: Path) -> Path:
     if document_path.is_file():
         return document_path
 
-    candidates = sorted(document_path.glob("*.md"))
+    candidates = sorted(document_path.glob("*.md")) + sorted(document_path.glob("*.yaml"))
     filtered = [
         path
         for path in candidates
@@ -688,9 +690,9 @@ def _resolve_source_document_path(document_path: Path) -> Path:
     source_artifacts = [
         path
         for path in filtered
-        if "_validation" not in path.stem
-        and "_remediated" not in path.stem
-        and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
+        if "_validate_copy" not in path.stem
+        and "_remediate_copy" not in path.stem
+        and re.match(r"^[A-Z]+-\d+_.+\.(md|yaml)$", path.name)
     ]
     if len(source_artifacts) == 1:
         return source_artifacts[0]
@@ -698,15 +700,16 @@ def _resolve_source_document_path(document_path: Path) -> Path:
 
 
 def _resolve_validation_copy_path(document_path: Path) -> Path:
-    """When given a folder, find the _validation derived copy; fallback to original path."""
+    """Find the _validate_copy derived copy in a folder."""
     if document_path.is_file():
         return document_path
-    candidates = [
-        path
-        for path in sorted(document_path.glob("*.md"))
-        if path.stem.endswith("_validation")
-        and re.match(r"^[A-Z]+-\d+_.+_validation\.md$", path.name)
-    ]
+    candidates = []
+    for ext in ("*.md", "*.yaml", "*.yml"):
+        candidates.extend(
+            path for path in sorted(document_path.glob(ext))
+            if "_validate_copy" in path.stem
+            and re.match(r"^[A-Z]+-\d+_.+_validate_copy\.", path.name)
+        )
     if len(candidates) == 1:
         return candidates[0]
     return document_path
@@ -732,8 +735,8 @@ def run_validate_fix_build(
 
     def _apply_copy() -> list[Path]:
         if effective_document_path.is_file():
-            return [_copy_with_suffix(effective_document_path, "validation", output_dir)]
-        return _copy_tree_with_suffix(effective_document_path, "validation", output_dir)
+            return [_copy_with_suffix(effective_document_path, "validate_copy", output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, "validate_copy", output_dir)
 
     derived_paths, telemetry = _guard_source_integrity(source_paths, "validate-fix", _apply_copy)
 
@@ -755,10 +758,11 @@ def run_validate_fix_build(
 
     report_json = json.dumps(report, sort_keys=True)
     report_text = _build_validate_fix_prompt(report, validation_report)
+    doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        "validate_fix_report.json",
-        "validate_fix_report.txt",
+        f"{doc_id}.validate_fix.json",
+        f"{doc_id}.validate_fix.txt",
         report_json,
         report_text,
     )
@@ -798,8 +802,8 @@ def run_remediate_fix_build(
 
     def _apply_copy() -> list[Path]:
         if effective_document_path.is_file():
-            return [_copy_with_canonical_suffix(effective_document_path, "remediated", output_dir)]
-        return _copy_tree_with_suffix(effective_document_path, "remediated", output_dir)
+            return [_copy_with_canonical_suffix(effective_document_path, "remediate_copy", output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, "remediate_copy", output_dir)
 
     derived_paths, telemetry = _guard_source_integrity(source_paths, "remediate-fix", _apply_copy)
 
@@ -821,10 +825,11 @@ def run_remediate_fix_build(
 
     report_json = json.dumps(report, sort_keys=True)
     report_text = _build_remediate_fix_prompt(report, remediation_report)
+    doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        "remediate_fix_report.json",
-        "remediate_fix_report.txt",
+        f"{doc_id}.remediate_fix.json",
+        f"{doc_id}.remediate_fix.txt",
         report_json,
         report_text,
     )

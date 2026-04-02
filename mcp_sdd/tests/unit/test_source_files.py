@@ -32,7 +32,7 @@ def test_collect_source_files_finds_md(tmp_path: Path) -> None:
 def test_collect_source_files_excludes_validation_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")
-    val = tmp_path / "BRD-01_test_validation.yaml"
+    val = tmp_path / "BRD-01_test_validate_copy.yaml"
     val.write_text("title: validation copy\n")
     result = collect_source_files(tmp_path)
     assert src in result
@@ -42,7 +42,7 @@ def test_collect_source_files_excludes_validation_copy(tmp_path: Path) -> None:
 def test_collect_source_files_excludes_remediated_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")
-    rem = tmp_path / "BRD-01_test_remediated.yaml"
+    rem = tmp_path / "BRD-01_test_remediate_copy.yaml"
     rem.write_text("title: remediated copy\n")
     result = collect_source_files(tmp_path)
     assert src in result

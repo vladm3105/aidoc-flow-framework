@@ -14,6 +14,8 @@ from pathlib import Path
 import re
 from urllib.parse import unquote
 
+from mcp_server.utils.source_files import extract_doc_id
+
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
@@ -249,8 +251,9 @@ def run_link_validation(
     summary_path: Path | None = None
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
-        report_path = output_dir / "link_validation_report.json"
-        summary_path = output_dir / "link_validation_report.txt"
+        doc_id = extract_doc_id(target_path)
+        report_path = output_dir / f"{doc_id}.links.json"
+        summary_path = output_dir / f"{doc_id}.links.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 
