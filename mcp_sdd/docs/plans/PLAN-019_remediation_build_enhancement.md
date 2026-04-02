@@ -1,69 +1,137 @@
-# PLAN-019: Remediation Build Enhancement for YAML Documents
+# PLAN-019: Remediation Build Enhancement — Review Report Parsing
 
 ## Context
 
-During BRD-03 full pipeline testing (`sdd_validate → sdd_validate_fix → sdd_review → sdd_remediate → sdd_remediate_fix`), the deterministic `sdd_remediate` tool produced a near-empty report — a single tier2 finding "Review report linked for downstream manual remediation." All remediation intelligence came from the executor (Claude), not from mcp_sdd.
+During BRD-03 full pipeline testing, the deterministic `sdd_remediate` tool produced a near-empty report — a single tier2 finding "Review report linked for downstream manual remediation." All remediation intelligence came from the executor (Claude), not from mcp_sdd. The executor had to read the review report itself to figure out what to fix.
 
-The `run_remediation_build()` function currently performs only two checks (frontmatter presence, placeholder tokens) — both irrelevant for YAML documents. It does not parse the review report to extract actionable findings, nor does it validate YAML document structure.
-
-**Goal**: Make `sdd_remediate` produce a structured, actionable remediation report by parsing the review report findings into per-finding remediation entries.
+**Goal**: Make `sdd_remediate` parse the review report and produce structured, per-finding remediation entries so the `sdd_remediate_fix` prompt gives the executor an actionable task list.
 
 **Status**: Planned (implement after PLAN-018)
 
 **Scope**: `mcp_sdd/src/mcp_server/remediation/` (runner + new review_parser module)
 
-**Note**: YAML structure validation originally in this plan (Section 2) has been moved to PLAN-018 (YAML Parity), which is implemented first. This plan retains only review report parsing (Section 1) and enhanced prompt generation (Section 3).
-
 ---
 
-## Current State
+## Current State (after PLAN-018)
 
 ```
 run_remediation_build()
-  ├── _collect_markdown_files()     # also picks up YAML
-  ├── frontmatter check             # skipped for YAML (fixed in 5fcd538)
-  ├── placeholder check (TBD/TODO)  # rarely fires on structured YAML
-  └── review_report link            # just adds pointer, doesn't parse content
+  ├── frontmatter check          # skipped for YAML (5fcd538)
+  ├── placeholder check          # TBD/TODO tokens
+  ├── YAML structure validation  # PLAN-018: required keys, empty sections, element IDs
+  └── review_report link         # just adds pointer, doesn't parse content
 ```
 
-**Output**: 1 finding ("review report linked") — no P0/P1/P2 detail, no structured actions.
+**Output**: YAML documents get structure findings (PLAN-018), but the review report is still just a tier2 pointer. The executor prompt (~742 chars) says "apply_review_findings" with no specifics.
 
-**Executor prompt**: 742 chars — just says "apply_review_findings" with no specifics. The executor has to read the review report itself to figure out what to fix.
+**Prompt already enhanced**: `_build_remediate_fix_prompt()` (improved in PLAN-016/017) automatically includes all findings in the prompt. Once the remediation report has parsed review findings, they flow into the prompt with no additional prompt code changes needed.
 
 ---
 
 ## Proposed Changes
 
-### 1. Parse review report findings
+### 1. Create `review_parser.py`
 
-When `review_report` parameter is provided and file exists:
+New module: `mcp_sdd/src/mcp_server/remediation/review_parser.py`
 
-- Read the review report (MD format)
-- Extract P0/P1/P2 findings using regex patterns:
-  - `| REM-P0-NNN |` table rows
-  - `### Errors`, `### Warnings` sections
-  - Score line (`PRD-Ready Score: NN/100`)
-- Create one remediation finding per review finding with:
-  - `severity`: P0 → tier1, P1 → tier1, P2 → tier2
-  - `message`: finding text from review
-  - `recommended_action`: specific action (add_fr, fix_business_rule, update_traceability, fix_budget, etc.)
-  - `section`: which BRD section to fix (extracted from review finding)
-  - `source_finding_id`: the review finding ID (REM-P0-001, etc.)
+Parses UCR review reports (MD format) using two strategies:
 
-### ~~2. YAML document structure validation~~ → Moved to PLAN-018
+**Strategy A — Frontmatter extraction** (fast, reliable):
+Review reports have YAML frontmatter with structured metadata:
+```yaml
+custom_fields:
+  prd_ready_score: "72/100"
+  findings_p0: 3
+  findings_p1: 18
+  findings_p2: 11
+  false_positives_identified: 4
+```
+Extract score, counts, and recommendation directly.
 
-YAML structure validation (required keys, element ID format, empty sections) is now part of PLAN-018 (YAML Parity and API Consistency), which implements YAML support across all tools including remediation.
+**Strategy B — Table row parsing** (detailed findings):
+Two table formats to support:
 
-### 2. Enhanced remediate_fix prompt
+1. **Section 4 "Required Remediations"** (preferred — has actionable detail):
+   ```
+   | R1 | P0 | `target_file.md` | Section ref | Remediation text | Source |
+   ```
+   Regex: `r'\|\s*(R\d+)\s*\|\s*(P[012])\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'`
 
-The `_build_remediate_fix_prompt()` already includes findings. With parsed review findings, the prompt will contain:
+2. **Sections 2-3 "Critical/High Findings"** (fallback — descriptive, not actionable):
+   ```
+   | REM-P0-001 | Finding text | Expert | Section | Impact |
+   ```
+   Regex: supports both `REM-P0-NNN` and `P0-N` ID patterns.
 
-- Each P0/P1/P2 finding with specific section references
-- Recommended action per finding
-- Review score and threshold
-- Structural validation findings
+**Priority**: Parse Section 4 first. If found, use remediation text as `recommended_action`. If Section 4 absent, fall back to Sections 2-3 findings.
 
-This gives the executor a structured task list instead of "go read the review report."
+**Fallback**: If parsing extracts 0 findings, keep the existing "Review report linked" tier2 finding unchanged. Never replace a working fallback with an empty result.
+
+**Function signatures**:
+
+```python
+@dataclass(frozen=True)
+class ReviewSummary:
+    score: str                    # e.g., "72/100"
+    recommendation: str           # e.g., "REMEDIATION REQUIRED"
+    p0_count: int
+    p1_count: int
+    p2_count: int
+    false_positives: int
+
+@dataclass(frozen=True)
+class ReviewFinding:
+    finding_id: str               # "R1", "REM-P0-001", "P0-1"
+    priority: str                 # "P0", "P1", "P2"
+    severity: str                 # "tier1" (P0/P1), "tier2" (P2)
+    message: str                  # Finding or remediation text
+    section: str                  # Target section reference
+    source_expert: str            # Which persona raised it
+    recommended_action: str       # Remediation text (from Section 4) or inferred
+
+def parse_review_report(report_path: Path) -> tuple[ReviewSummary | None, list[ReviewFinding]]:
+    """Parse a UCR review report and extract structured findings.
+    
+    Returns (summary, findings). If parsing fails completely,
+    returns (None, []) — caller should keep fallback finding.
+    """
+```
+
+### 2. Wire into `run_remediation_build()`
+
+In `remediation/runner.py`, replace the simple "review report linked" block:
+
+```python
+# Current:
+if review_report is not None and review_report.exists():
+    findings.append(_build_finding_entry(..., message="Review report linked..."))
+
+# Proposed:
+if review_report is not None and review_report.exists():
+    from mcp_server.remediation.review_parser import parse_review_report
+    review_summary, review_findings = parse_review_report(review_report)
+    
+    if review_findings:
+        for rf in review_findings:
+            findings.append(_build_finding_entry(
+                file_path=str(review_report),
+                doc_type=doc_type, layer=layer,
+                category="review_finding",
+                severity=rf.severity,
+                message=rf.message,
+                recommended_action=rf.recommended_action,
+                finding_ids=finding_ids, action_ids=action_ids,
+            ))
+        # Add review summary to report
+        report["review_summary"] = dataclasses.asdict(review_summary) if review_summary else None
+    else:
+        # Fallback: keep pointer if parsing returned nothing
+        findings.append(_build_finding_entry(..., message="Review report linked..."))
+```
+
+### ~~3. Enhanced remediate_fix prompt~~ — Already done
+
+`_build_remediate_fix_prompt()` was improved in PLAN-016/017 to automatically include all findings from the remediation report. Once parsed review findings are in the findings list, they flow into the executor prompt with no additional code changes.
 
 ---
 
@@ -71,22 +139,30 @@ This gives the executor a structured task list instead of "go read the review re
 
 | File | Action | Est. Lines |
 |------|--------|-----------|
-| `mcp_sdd/src/mcp_server/remediation/review_parser.py` | Create — extract findings from review report MD | ~120 |
-| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify `run_remediation_build()` — wire parsed findings | +30 |
-| `mcp_sdd/tests/unit/test_review_parser.py` | Create — test review parsing | ~150 |
+| `mcp_sdd/src/mcp_server/remediation/review_parser.py` | **Create** — frontmatter + table parsing | ~150 |
+| `mcp_sdd/src/mcp_server/remediation/runner.py` | **Modify** — wire parsed findings, add review_summary | +30 |
+| `mcp_sdd/tests/unit/test_review_parser.py` | **Create** — parser tests | ~180 |
+| `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.9.0.md` | **Create** | ~40 |
+| `mcp_sdd/docs/ROADMAP.md` | **Modify** — add v1.9.0 | +15 |
+| `mcp_sdd/docs/README.md` | **Modify** — add changelog link | +1 |
+| `changelog/CHANGELOG_v0.16.0.md` | **Create** | ~30 |
+| `roadmap/ROADMAP.md` | **Modify** — add v0.16.0 | +15 |
 
-**Total**: ~300 new lines across 3 files
+**Total**: ~460 lines across 8 files
 
 ---
 
 ## Implementation Order
 
-1. Create `review_parser.py` with regex-based review report parser
-2. Wire parsed findings into `run_remediation_build()` remediation report
-3. Write tests
-4. Run full test suite
-5. Smoke test against BRD-03 review report
-6. Verify remediate_fix prompt includes structured findings
+1. Create `review_parser.py` with `parse_review_report()`
+2. Wire parsed findings into `run_remediation_build()`
+3. Write `test_review_parser.py`
+4. Run full test suite (187 existing + new)
+5. Smoke test: `sdd_remediate` on BRD-03 with review report — verify structured findings
+6. Smoke test: `sdd_remediate_fix` prompt — verify findings in executor prompt
+7. Create mcp_sdd changelog v1.9.0 and roadmap entry
+8. Create framework changelog v0.16.0 and roadmap entry
+9. Update READMEs
 
 ---
 
@@ -108,24 +184,50 @@ This gives the executor a structured task list instead of "go read the review re
 ```json
 {
   "findings": [
-    {"severity": "tier1", "message": "Travel Rule FR absent (31 CFR 1010.410(f))",
-     "source_finding_id": "REM-P0-001", "section": "functional_requirements",
-     "recommended_action": "add_functional_requirement"},
-    {"severity": "tier1", "message": "OFAC silent failure (HTTP 200 + malformed response)",
-     "source_finding_id": "REM-P0-002", "section": "functional_requirements",
-     "recommended_action": "fix_business_rule"},
-    {"severity": "tier1", "message": "Budget inconsistency ($500K vs stated components)",
-     "source_finding_id": "REM-P0-003", "section": "constraints_and_assumptions",
-     "recommended_action": "fix_budget"}
+    {"severity": "tier1", "category": "review_finding",
+     "message": "Add Travel Rule FR BRD.03.01.13 — collect/transmit originator/beneficiary data for transactions >= $3,000 per 31 CFR 1010.410(f)",
+     "recommended_action": "Add FR BRD.03.01.13 Travel Rule Compliance"},
+    {"severity": "tier1", "category": "review_finding",
+     "message": "Extend OFAC fail-closed to cover HTTP 200 with empty/null/malformed/schema-mismatch responses",
+     "recommended_action": "Add schema validation to BRD.03.01.02 business rules"},
+    {"severity": "tier1", "category": "review_finding",
+     "message": "Revise budget constraint BRD.03.03.16 — include itemized cost breakdown",
+     "recommended_action": "Revise BRD.03.03.16 with compliance cost breakdown table"}
   ],
   "review_summary": {
     "score": "72/100",
     "recommendation": "REMEDIATION REQUIRED",
-    "p0_count": 3, "p1_count": 18, "p2_count": 11
+    "p0_count": 3, "p1_count": 18, "p2_count": 11,
+    "false_positives": 4
   },
-  "summary": {"total_findings": 32, "tier1_findings": 21, "tier2_findings": 11}
+  "summary": {"total_findings": 24, "tier1_findings": 21, "tier2_findings": 3}
 }
 ```
+
+---
+
+## Test Plan
+
+### `test_review_parser.py`
+
+**Frontmatter parsing**:
+- `test_parse_frontmatter_extracts_score` — score "72/100" from frontmatter
+- `test_parse_frontmatter_extracts_counts` — p0=3, p1=18, p2=11
+- `test_parse_frontmatter_missing_returns_none` — no frontmatter → summary is None
+
+**Section 4 remediation table**:
+- `test_parse_remediation_table_extracts_findings` — parse R1/R2/R3 rows
+- `test_parse_remediation_priority_mapping` — P0 → tier1, P1 → tier1, P2 → tier2
+- `test_parse_remediation_text_as_action` — remediation text becomes recommended_action
+
+**Section 2-3 finding tables (fallback)**:
+- `test_parse_finding_table_rem_id_pattern` — `REM-P0-001` ID format
+- `test_parse_finding_table_short_id_pattern` — `P0-1` ID format
+- `test_parse_fallback_when_no_section_4` — only Sections 2-3 present
+
+**Integration**:
+- `test_parse_returns_empty_on_unparseable` — garbage input → (None, [])
+- `test_parse_full_brd03_report` — real BRD-03 review report (if available in test)
 
 ---
 
@@ -133,14 +235,16 @@ This gives the executor a structured task list instead of "go read the review re
 
 | Risk | Mitigation |
 |------|-----------|
-| Review report format varies | Regex patterns cover UCR output template; fallback to raw link if parsing fails |
-| Large finding count inflates prompt | Cap at 50 findings in prompt; remainder as "N additional findings in report" |
-| Breaking existing remediation flow | Additive — new findings supplement existing checks; no existing behavior removed |
+| Review report format varies between executors | Parse frontmatter first (standardized); table parsing handles both ID patterns |
+| Section 4 absent in some reviews | Fall back to Sections 2-3; if both fail, keep "review linked" finding |
+| Large finding count inflates prompt | Cap at 50 findings; remainder as "N additional findings in report" |
+| Breaking existing remediation flow | Additive — fallback preserved when parsing returns 0 results |
+| Regex fragility on table formatting | Test against real BRD-03 report; handle pipe-alignment variations |
 
 ---
 
 ## Dependencies
 
-- **PLAN-018** (YAML parity) — must implement first; provides YAML structure validation and shared source file collector
-- PLAN-020 (UCX relocation) — independent, no blocking dependency
-- Review report format stability — UCR output template in `mcp_sdd/prompts/templates/review/UCR_OUTPUT_TEMPLATE.md`
+- **PLAN-018** (YAML parity) — done; provides YAML structure validation and shared collector
+- PLAN-020 (UCX relocation) — independent
+- UCR output template format: `mcp_sdd/prompts/templates/review/UCR_OUTPUT_TEMPLATE.md`
