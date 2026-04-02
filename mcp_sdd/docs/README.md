@@ -89,6 +89,7 @@ Use this precedence for conflict resolution:
 - [PLAN-018 YAML Parity and API Consistency](plans/PLAN-018_yaml_parity_and_api_consistency.md)
 - [PLAN-019 Remediation Build Enhancement](plans/PLAN-019_remediation_build_enhancement.md)
 - [PLAN-020 UCX Root Relocation](plans/PLAN-020_ucx_root_relocation.md)
+- [PLAN-021 SDD Reporting Naming Standard](plans/PLAN-021_sdd_reporting_naming_standard.md)
 
 ## 7. Changelog
 
