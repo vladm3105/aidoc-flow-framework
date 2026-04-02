@@ -88,6 +88,7 @@ Use this precedence for conflict resolution:
 - [PLAN-017 Executor Output and Logging](plans/PLAN-017_executor_output_and_logging.md)
 - [PLAN-018 UCX Root Relocation](plans/PLAN-018_ucx_root_relocation.md)
 - [PLAN-019 Remediation Build Enhancement](plans/PLAN-019_remediation_build_enhancement.md)
+- [PLAN-020 YAML Parity and API Consistency](plans/PLAN-020_yaml_parity_and_api_consistency.md)
 
 ## 7. Changelog
 
