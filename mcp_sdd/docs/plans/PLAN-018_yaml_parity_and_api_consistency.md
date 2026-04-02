@@ -1,4 +1,4 @@
-# PLAN-020: YAML Document Parity and API Consistency
+# PLAN-018: YAML Document Parity and API Consistency
 
 ## Context
 

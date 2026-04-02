@@ -1,4 +1,4 @@
-# PLAN-018: Relocate UCX from docs/UCX to project root UCX/
+# PLAN-020: Relocate UCX from docs/UCX to project root UCX/
 
 ## Context
 

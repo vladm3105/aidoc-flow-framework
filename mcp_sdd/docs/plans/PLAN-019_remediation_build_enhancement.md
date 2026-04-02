@@ -8,11 +8,11 @@ The `run_remediation_build()` function currently performs only two checks (front
 
 **Goal**: Make `sdd_remediate` produce a structured, actionable remediation report by parsing the review report findings into per-finding remediation entries.
 
-**Status**: Planned (implement after PLAN-020)
+**Status**: Planned (implement after PLAN-018)
 
 **Scope**: `mcp_sdd/src/mcp_server/remediation/` (runner + new review_parser module)
 
-**Note**: YAML structure validation originally in this plan (Section 2) has been moved to PLAN-020 (YAML Parity), which is implemented first. This plan retains only review report parsing (Section 1) and enhanced prompt generation (Section 3).
+**Note**: YAML structure validation originally in this plan (Section 2) has been moved to PLAN-018 (YAML Parity), which is implemented first. This plan retains only review report parsing (Section 1) and enhanced prompt generation (Section 3).
 
 ---
 
@@ -50,9 +50,9 @@ When `review_report` parameter is provided and file exists:
   - `section`: which BRD section to fix (extracted from review finding)
   - `source_finding_id`: the review finding ID (REM-P0-001, etc.)
 
-### ~~2. YAML document structure validation~~ → Moved to PLAN-020
+### ~~2. YAML document structure validation~~ → Moved to PLAN-018
 
-YAML structure validation (required keys, element ID format, empty sections) is now part of PLAN-020 (YAML Parity and API Consistency), which implements YAML support across all tools including remediation.
+YAML structure validation (required keys, element ID format, empty sections) is now part of PLAN-018 (YAML Parity and API Consistency), which implements YAML support across all tools including remediation.
 
 ### 2. Enhanced remediate_fix prompt
 
@@ -141,6 +141,6 @@ This gives the executor a structured task list instead of "go read the review re
 
 ## Dependencies
 
-- **PLAN-020** (YAML parity) — must implement first; provides YAML structure validation and shared source file collector
-- PLAN-018 (UCX relocation) — independent, no blocking dependency
+- **PLAN-018** (YAML parity) — must implement first; provides YAML structure validation and shared source file collector
+- PLAN-020 (UCX relocation) — independent, no blocking dependency
 - Review report format stability — UCR output template in `mcp_sdd/prompts/templates/review/UCR_OUTPUT_TEMPLATE.md`

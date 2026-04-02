@@ -86,9 +86,9 @@ Use this precedence for conflict resolution:
 - [PLAN-016 Cross-Section Validation](plans/PLAN-016_cross_section_validation.md)
 - [PLAN-016 Checklist](plans/PLAN-016_checklist.md)
 - [PLAN-017 Executor Output and Logging](plans/PLAN-017_executor_output_and_logging.md)
-- [PLAN-018 UCX Root Relocation](plans/PLAN-018_ucx_root_relocation.md)
+- [PLAN-018 YAML Parity and API Consistency](plans/PLAN-018_yaml_parity_and_api_consistency.md)
 - [PLAN-019 Remediation Build Enhancement](plans/PLAN-019_remediation_build_enhancement.md)
-- [PLAN-020 YAML Parity and API Consistency](plans/PLAN-020_yaml_parity_and_api_consistency.md)
+- [PLAN-020 UCX Root Relocation](plans/PLAN-020_ucx_root_relocation.md)
 
 ## 7. Changelog
 
