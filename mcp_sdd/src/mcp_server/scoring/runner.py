@@ -11,6 +11,11 @@ class ScoreShowResult:
     summary: dict[str, int]
     payload: dict[str, object]
 
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
 
 @dataclass(frozen=True)
 class ScoreValidateResult:
@@ -18,6 +23,16 @@ class ScoreValidateResult:
     threshold: int
     passed: bool
     payload: dict[str, object]
+
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
+    @property
+    def is_valid(self) -> bool:
+        """Alias for passed (API consistency)."""
+        return self.passed
 
 
 @dataclass(frozen=True)
@@ -27,17 +42,34 @@ class ScoreCompareResult:
     delta: int
     payload: dict[str, object]
 
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
 
 def _derive_score(report_payload: dict[str, object]) -> tuple[int, dict[str, int]]:
     summary = report_payload.get("summary", {})
+
+    if isinstance(summary, dict) and "structural_errors" in summary:
+        # New categorized scoring
+        structural = int(summary.get("structural_errors", 0) or 0)
+        cross_section = int(summary.get("cross_section_errors", 0) or 0)
+        warnings = int(summary.get("warnings", 0) or 0)
+        score = max(0, 100 - (structural * 20) - (cross_section * 10) - (warnings * 5))
+        return score, {
+            "errors": structural + cross_section,
+            "structural_errors": structural,
+            "cross_section_errors": cross_section,
+            "warnings": warnings,
+        }
+
+    # Backward compat: old reports without categories
     errors = 0
     warnings = 0
-
     if isinstance(summary, dict):
-        # Accept both summary key variants for compatibility across report families.
         errors = int(summary.get("errors", summary.get("error_count", 0)) or 0)
         warnings = int(summary.get("warnings", summary.get("warning_count", 0)) or 0)
-
     if errors == 0 and warnings == 0:
         top_errors = report_payload.get("errors", [])
         top_warnings = report_payload.get("warnings", [])
@@ -45,7 +77,6 @@ def _derive_score(report_payload: dict[str, object]) -> tuple[int, dict[str, int
             errors = len(top_errors)
         if isinstance(top_warnings, list):
             warnings = len(top_warnings)
-
     score = max(0, 100 - (errors * 20) - (warnings * 5))
     return score, {"errors": errors, "warnings": warnings}
 

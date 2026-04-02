@@ -38,6 +38,16 @@ class LinkValidationRunResult:
     report_path: Path | None
     summary_path: Path | None
 
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
+    @property
+    def is_valid(self) -> bool:
+        """Alias for passed (API consistency)."""
+        return self.passed
+
 
 def _should_skip_dir(path: Path, root: Path) -> bool:
     """Check if any directory component relative to root is in the skip list."""

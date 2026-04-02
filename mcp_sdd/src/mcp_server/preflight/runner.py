@@ -21,6 +21,16 @@ class PreflightRunResult:
     report_path: Path | None
     summary_path: Path | None
 
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
+    @property
+    def is_ready(self) -> bool:
+        """Alias for status == 'ready' (API consistency)."""
+        return self.status == "ready"
+
 
 def _render_text(payload: dict[str, object]) -> str:
     lines = [

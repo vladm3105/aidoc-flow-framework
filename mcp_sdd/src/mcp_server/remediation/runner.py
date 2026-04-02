@@ -350,6 +350,19 @@ def _build_remediate_fix_prompt(
     return "\n".join(lines).rstrip() + "\n"
 
 
+def _get_required_yaml_keys(doc_type: str) -> list[str]:
+    """Return minimum required top-level YAML keys per document type."""
+    normalized = doc_type.strip().lower()
+    common = ["metadata", "traceability"]
+    specific: dict[str, list[str]] = {
+        "brd": ["document_control", "executive_summary", "functional_requirements"],
+        "prd": ["document_control", "features"],
+        "ears": ["document_control", "requirements"],
+        "spec": ["document_control", "implementation"],
+    }
+    return common + specific.get(normalized, ["document_control"])
+
+
 def run_remediation_build(
     *,
     project_root: Path,
@@ -393,6 +406,100 @@ def run_remediation_build(
                     severity="tier2",
                     message="Contains placeholder tokens",
                     recommended_action="replace_placeholders",
+                    finding_ids=finding_ids,
+                    action_ids=action_ids,
+                )
+            )
+
+    # YAML structure validation
+    for file_path in files:
+        if file_path.suffix.lower() not in (".yaml", ".yml"):
+            continue
+        try:
+            import yaml as _yaml
+            yaml_data = _yaml.safe_load(file_path.read_text(encoding="utf-8"))
+        except Exception:
+            findings.append(
+                _build_finding_entry(
+                    file_path=str(file_path),
+                    doc_type=doc_type,
+                    layer=layer,
+                    category="yaml_parse",
+                    severity="tier1",
+                    message="YAML file failed to parse",
+                    recommended_action="fix_yaml_syntax",
+                    finding_ids=finding_ids,
+                    action_ids=action_ids,
+                )
+            )
+            continue
+
+        if not isinstance(yaml_data, dict):
+            continue
+
+        # Check for required top-level keys based on doc_type
+        required_keys = _get_required_yaml_keys(doc_type)
+        for key in required_keys:
+            if key not in yaml_data:
+                findings.append(
+                    _build_finding_entry(
+                        file_path=str(file_path),
+                        doc_type=doc_type,
+                        layer=layer,
+                        category="yaml_structure",
+                        severity="tier2",
+                        message=f"Missing required YAML section: {key}",
+                        recommended_action=f"add_{key}_section",
+                        finding_ids=finding_ids,
+                        action_ids=action_ids,
+                    )
+                )
+
+        # Check for empty sections
+        for key, value in yaml_data.items():
+            if key in ("id", "title") or key.startswith("_"):
+                continue
+            if value is None or value == {} or value == []:
+                findings.append(
+                    _build_finding_entry(
+                        file_path=str(file_path),
+                        doc_type=doc_type,
+                        layer=layer,
+                        category="yaml_structure",
+                        severity="tier2",
+                        message=f"Empty YAML section: {key}",
+                        recommended_action=f"populate_{key}_section",
+                        finding_ids=finding_ids,
+                        action_ids=action_ids,
+                    )
+                )
+
+        # Validate element ID format
+        import re as _re
+        _ID_PATTERN = _re.compile(r"^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$")
+        _bad_ids: list[str] = []
+        def _check_ids(obj: object, path: str = "") -> None:
+            if isinstance(obj, dict):
+                for k, v in obj.items():
+                    if k == "id" and isinstance(v, str) and v.strip():
+                        if not _ID_PATTERN.match(v) and not v.startswith("{"):  # skip template placeholders
+                            _bad_ids.append(v)
+                    _check_ids(v, f"{path}.{k}")
+            elif isinstance(obj, list):
+                for item in obj:
+                    _check_ids(item, path)
+        _check_ids(yaml_data)
+
+        if _bad_ids:
+            findings.append(
+                _build_finding_entry(
+                    file_path=str(file_path),
+                    doc_type=doc_type,
+                    layer=layer,
+                    category="element_id",
+                    severity="tier2",
+                    message=f"Invalid element ID format ({len(_bad_ids)} found): {_bad_ids[:3]}",
+                    recommended_action="fix_element_ids",
                     finding_ids=finding_ids,
                     action_ids=action_ids,
                 )

@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 
-SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.md$")
+SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
 
 @dataclass(frozen=True)
@@ -17,6 +17,16 @@ class ConsistencyRunResult:
     passed: bool
     report_path: Path | None
     summary_path: Path | None
+
+    @property
+    def report(self) -> dict[str, object]:
+        """Alias for payload (API consistency)."""
+        return self.payload
+
+    @property
+    def is_valid(self) -> bool:
+        """Alias for passed (API consistency)."""
+        return self.passed
 
 
 def _render_text(payload: dict[str, object]) -> str:
@@ -53,7 +63,12 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
     if target_path.is_file():
         return target_path, []
 
-    candidates = sorted(path for path in folder.glob("*.md") if SOURCE_PATTERN.match(path.name))
+    candidates = sorted(
+        path
+        for ext in ("*.md", "*.yaml", "*.yml")
+        for path in folder.glob(ext)
+        if SOURCE_PATTERN.match(path.name)
+    )
     candidates = [path for path in candidates if "_validation" not in path.stem and "_remediated" not in path.stem]
     if len(candidates) == 0:
         return None, ["missing_source_artifact"]
@@ -82,9 +97,22 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         stem = source.stem
         doc_id = stem.split("_", 1)[0] if "_" in stem else stem
 
-        validation_report = folder / f"{doc_id}_validation_report.md"
-        validation_copy = folder / f"{stem}_validation.md"
-        remediated_copy = folder / f"{stem}_remediated.md"
+        src_ext = source.suffix  # .md, .yaml, or .yml
+
+        # Validation report: check JSON first (we write JSON), then .md fallback
+        validation_report_json = folder / f"{doc_id}_validation_report.json"
+        validation_report_md = folder / f"{doc_id}_validation_report.md"
+        validation_report = validation_report_json if validation_report_json.exists() else validation_report_md
+
+        # Validation copy: check same extension as source first, then .md fallback
+        validation_copy_src = folder / f"{stem}_validation{src_ext}"
+        validation_copy_md = folder / f"{stem}_validation.md"
+        validation_copy = validation_copy_src if validation_copy_src.exists() else validation_copy_md
+
+        # Remediated copy: check same extension as source first, then .md fallback
+        remediated_copy_src = folder / f"{stem}_remediated{src_ext}"
+        remediated_copy_md = folder / f"{stem}_remediated.md"
+        remediated_copy = remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
 
         review_reports = sorted(folder.glob("*_review_report_v*.md")) + sorted(folder.glob(f"{doc_id}.R_review_report_v*.md"))
         remediation_reports = sorted(folder.glob("*_remediation_report_v*.md")) + sorted(folder.glob(f"{doc_id}.F_fix_report_v*.md"))

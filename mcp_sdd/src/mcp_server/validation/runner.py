@@ -8,6 +8,7 @@ from typing import Any, cast
 
 import yaml  # type: ignore[import-untyped]
 
+from mcp_server.utils.source_files import collect_source_files, is_yaml_document
 from mcp_server.utils.template_naming import resolve_template_path
 from mcp_server.validation.cross_section import (
     run_cross_section_checks,
@@ -328,7 +329,8 @@ def run_project_validation_build(
         errors.append(template_error)
 
     # --- YAML/MD decision fork ---
-    yaml_files = _collect_yaml_files(document_path)
+    # TODO: replace _collect_markdown_files with collect_source_files after full validation
+    yaml_files = [f for f in collect_source_files(document_path, extensions=(".yaml", ".yml")) if is_yaml_document(f)]
 
     if yaml_files:
         # ===== YAML validation path =====
@@ -342,6 +344,8 @@ def run_project_validation_build(
             passes.append(f"yaml_parsed: {yaml_files[0].name}")
 
         _validate_yaml_metadata(yaml_data, template, errors, warnings, passes)
+
+        structural_error_count = len(errors)
 
         # Tier 1: Generic cross-section (all layers)
         run_cross_section_checks(
@@ -359,6 +363,7 @@ def run_project_validation_build(
                 warnings=warnings,
                 passes=passes,
             )
+        cross_section_error_count = len(errors) - structural_error_count
         combined_content = yaml_text
     else:
         # ===== Existing MD validation path (unchanged) =====
@@ -423,6 +428,8 @@ def run_project_validation_build(
             passes=passes,
         )
 
+        structural_error_count = len(errors)
+
         # Tier 1: Generic cross-section (degraded MD path)
         run_cross_section_checks_md(
             content=combined_content,
@@ -439,6 +446,7 @@ def run_project_validation_build(
                 warnings=warnings,
                 passes=passes,
             )
+        cross_section_error_count = len(errors) - structural_error_count
 
     is_valid = len(errors) == 0
     report: dict[str, object] = {
@@ -456,6 +464,8 @@ def run_project_validation_build(
         "passes": passes,
         "summary": {
             "errors": len(errors),
+            "structural_errors": structural_error_count,
+            "cross_section_errors": cross_section_error_count,
             "warnings": len(warnings),
             "passes": len(passes),
             "is_valid": is_valid,
