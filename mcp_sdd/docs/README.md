@@ -92,6 +92,7 @@ Use this precedence for conflict resolution:
 
 ## 7. Changelog
 
+- [CHANGELOG v1.8.0](CHANGELOG/CHANGELOG_v1.8.0.md) — YAML parity, categorized scoring, API aliases
 - [CHANGELOG v1.7.0](CHANGELOG/CHANGELOG_v1.7.0.md) — cross-section validation, YAML fork, BRD diagram registry
 - [CHANGELOG v1.6.0](CHANGELOG/CHANGELOG_v1.6.0.md) — 3-segment element IDs, template migration
 - [CHANGELOG v1.5.0](CHANGELOG/CHANGELOG_v1.5.0.md) — sdd_validate_links tool, executor write fixes

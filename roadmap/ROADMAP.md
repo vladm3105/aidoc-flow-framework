@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.13.0 |
-| Latest Release | 0.13.0 (3-segment element IDs, AUTOPILOT archived) |
-| Next Minor | 0.14.0 (cross-section validation, BRD template improvements) |
+| Current Version | 0.15.0 |
+| Latest Release | 0.15.0 (YAML parity, categorized scoring, API aliases) |
+| Previous Minor | 0.14.0 (cross-section validation, BRD template improvements) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,31 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.15.0 - YAML Parity and API Consistency
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | mcp_sdd v1.8.0: YAML document support across all tools, categorized scoring, API normalization |
+
+Delivered scope:
+
+- YAML source/derived artifact detection in sdd_consistency and sdd_next_action
+- Categorized scoring: structural (20pt), cross-section (10pt), warning (5pt)
+- Result class .report/.is_valid/.is_ready property aliases
+- YAML structure validation in sdd_remediate
+- Shared utils/source_files.py collector
+- 24 new tests (187 total)
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-018_yaml_parity_and_api_consistency.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.8.0.md
+
+---
 
 ### v0.14.0 - Cross-Section Validation and BRD Template Improvements
 

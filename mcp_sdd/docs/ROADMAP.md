@@ -6,10 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.6.0 |
-| Latest Release | 1.6.0 (3-segment element IDs, template + prompt migration) |
-| Next Minor | 1.7.0 (cross-section validation, YAML fork, BRD template improvements) |
-| Previous Release | 1.5.0 (link validation tool, executor write fixes) |
+| Current Version | 1.8.0 |
+| Latest Release | 1.8.0 (YAML parity, categorized scoring, API aliases) |
+| Previous Release | 1.7.0 (cross-section validation, YAML fork, BRD template improvements) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -206,6 +205,30 @@ Planned scope:
 References:
 
 - plans/PLAN-016_cross_section_validation.md
+
+---
+
+### v1.8.0 - YAML Parity and API Consistency
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | YAML document support across all tools, categorized scoring, result class API normalization |
+
+Delivered scope:
+
+- YAML source/derived artifact detection in `sdd_consistency` and `sdd_next_action`
+- Categorized scoring: structural (20pt), cross-section (10pt), warning (5pt)
+- Result class `.report`/`.is_valid`/`.is_ready` property aliases (6 classes)
+- YAML structure validation in `sdd_remediate` (required keys, empty sections, element IDs)
+- Shared `utils/source_files.py` collector
+- 24 new tests (187 total)
+
+References:
+
+- plans/PLAN-018_yaml_parity_and_api_consistency.md
 
 ---
 
