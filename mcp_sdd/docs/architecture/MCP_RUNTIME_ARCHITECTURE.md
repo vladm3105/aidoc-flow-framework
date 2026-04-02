@@ -1,7 +1,10 @@
-# MCP Runtime Architecture
+# UCX Runtime Architecture
+
+> **UCX** (Unified Context Framework) — also known as `mcp_sdd` or `sdd-lifecycle`. See [README](../README.md) for naming context.
 
 | Field | Value |
 | --- | --- |
+| Canonical Name | UCX (Unified Context Framework) |
 | Status | Active |
 | Version | 1.2 |
 | Date | 2026-03-27 |

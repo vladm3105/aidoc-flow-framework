@@ -1,11 +1,14 @@
-# MCP Unified Context Framework
+# UCX — Unified Context Framework
+
+> **Aliases**: `ucx`, `mcp_sdd`, `sdd-lifecycle`. Package directory: `mcp_sdd/`. The legacy `UCX_v1` archive is a historical predecessor, not the current system.
 
 | Field | Value |
 | --- | --- |
+| Canonical Name | UCX (Unified Context Framework) |
 | Status | Active |
 | Version | 1.0 |
 | Date | 2026-03-26 |
-| Scope | MCP as canonical SSD unified-context runtime and documentation framework |
+| Scope | UCX as canonical SDD unified-context runtime and documentation framework |
 
 ---
 

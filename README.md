@@ -65,7 +65,7 @@ CHG (Change Management) is a governance overlay with 4 gates. See `ai_dev_ssd_fl
 | Directory | Purpose |
 |:----------|:--------|
 | `ai_dev_ssd_flow/` | SDD layer templates, standards, and framework guides |
-| `mcp_sdd/` | MCP server: 20 tools for SDD lifecycle (validation, creation, review) |
+| `mcp_sdd/` | **UCX** (Unified Context Framework) MCP server: 20 tools for SDD lifecycle. Also known as `ucx` or `mcp_sdd`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `project_knowledge/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |

@@ -1,14 +1,19 @@
-# MCP Documentation Index
+# UCX — Unified Context Framework
+
+> **Aliases**: `ucx`, `mcp_sdd`, `sdd-lifecycle`
+>
+> The package directory is `mcp_sdd/` (historical name). The canonical name is **UCX** (Unified Context Framework). References to `mcp_sdd`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ai_dev_ssd_flow/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
 
 | Field | Value |
 | --- | --- |
-| Scope | MCP documentation set under mcp_sdd/docs |
+| Canonical Name | UCX (Unified Context Framework) |
+| Package Directory | `mcp_sdd/` |
+| MCP Server Name | `sdd-lifecycle` |
+| Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | Active |
-| Version | 1.0 |
-| Date | 2026-03-26 |
+| Version | 1.11.0 |
+| Date | 2026-04-02 |
 | Timezone | America/New_York |
-
-MCP is the canonical SSD Unified Context framework runtime and documentation surface for active development. UCX_v1 archive materials are historical references only and are not authoritative for MCP runtime behavior.
 
 ---
 
