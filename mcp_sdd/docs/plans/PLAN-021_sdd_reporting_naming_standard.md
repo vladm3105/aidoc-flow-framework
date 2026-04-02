@@ -2,171 +2,230 @@
 
 ## Context
 
-Report naming across the SDD framework is inconsistent — 6 different patterns coexist between mcp_sdd tools and legacy Claude skills. This creates confusion for tooling, automation, and human operators.
+Report naming across the SDD framework is inconsistent — 6 different patterns coexist. This plan defines a unified standard and implements it in mcp_sdd. Legacy naming is deprecated with no backward compatibility — clean break.
 
-**Goal**: Define a unified report naming standard for the SDD framework that works across all sub-frameworks (mcp_sdd, project governance, project knowledge base) and all lifecycle stages.
+**Goal**: Define and implement a unified report naming standard for the SDD framework across all sub-frameworks (sdd-lifecycle, project-governance, project-knowledge).
 
 **Status**: Planned
 
-**Scope**: Standards document + mcp_sdd implementation. Claude `doc-*` skill alignment is downstream.
+**Target Release**: mcp_sdd v1.11.0 / docs_flow_framework v0.18.0
+
+**Scope**: Standards document + mcp_sdd implementation. Legacy report files will be deleted, not migrated.
 
 ---
 
-## Current State: 6 Competing Patterns
+## SDD Sub-Framework Registry
 
-| # | Pattern | Example | Source |
-|---|---------|---------|--------|
-| 1 | `{DOC-ID}.V_validation_report_v{NNN}.md` | `BRD-04.V_validation_report_v003.md` | Legacy Claude skills |
-| 2 | `{DOC-ID}.A_audit_report_v{NNN}.md` | `BRD-04.A_audit_report_v007.md` | Legacy Claude skills |
-| 3 | `{DOC-ID}.UCRem_remediation_report_v{NNN}.md` | `BRD-04.UCRem_remediation_report_v001.md` | Legacy Claude skills |
-| 4 | `{DOC-ID}.UCR_review_report_v{NNN}.md` | `BRD-04.UCR_review_report_v005.md` | Legacy Claude skills |
-| 5 | `validation_report.{json\|txt}` | `validation_report.json` | mcp_sdd tools |
-| 6 | `{DOC-ID}_{slug}_validation.yaml` | `BRD-03_security_compliance_validation.yaml` | mcp_sdd validate_fix |
+| Code | Sub-Framework | MCP Server | Scope |
+|------|--------------|------------|-------|
+| `sdd` | SDD Lifecycle | `sdd-lifecycle` | Document creation, validation, review, remediation |
+| `gov` | Project Governance | `project-governance` | GitHub Projects, IPLANs, governance rules |
+| `kb` | Project Knowledge | `project-knowledge` | FTS5 + semantic search, frontmatter indexing |
 
-### Problems
-
-1. **Pattern 5 has no document ID** — multiple docs in same folder would overwrite each other
-2. **Patterns 1-4 use different separators** — `.V_`, `.A_`, `.UCRem_`, `.UCR_` (dot + type prefix)
-3. **Pattern 6 appends stage to the slug** — `_validation`, `_remediated` (derived copies)
-4. **No standard for sub-framework reports** — governance, knowledge base will need their own report types
-5. **Version numbering inconsistent** — some use `_v{NNN}`, mcp_sdd uses no versioning
-6. **Format inconsistent** — legacy uses `.md`, mcp_sdd uses `.json` + `.txt`
+The sub-framework code identifies which system produced the report. `sdd` is the default and can be omitted for core lifecycle reports.
 
 ---
 
-## Proposed Standard
+## Naming Convention
 
-### Report Naming Convention
+### Reports
 
 ```
 {DOC-ID}.{STAGE}.{FORMAT}
 ```
 
+With optional sub-framework prefix for non-sdd reports:
+
+```
+{DOC-ID}.{SUB}.{STAGE}.{FORMAT}
+```
+
 | Component | Description | Values |
 |-----------|-------------|--------|
 | `{DOC-ID}` | Source document ID | `BRD-03`, `PRD-01`, `SPEC-01` |
-| `{STAGE}` | Lifecycle stage that produced the report | See stage table below |
-| `{FORMAT}` | File extension | `.json` (machine), `.md` (human), `.txt` (summary) |
+| `{SUB}` | Sub-framework code (optional, omit for `sdd`) | `gov`, `kb` |
+| `{STAGE}` | Lifecycle stage that produced the report | See table below |
+| `{FORMAT}` | File extension | `.json`, `.md`, `.txt` |
 
 ### Stage Codes
 
 | Stage Code | Full Name | mcp_sdd Tool | Description |
 |------------|-----------|-------------|-------------|
-| `validate` | Validation Report | `sdd_validate` | Structural + cross-section validation |
-| `validate_fix` | Validation Fix Report | `sdd_validate_fix` | Source-protected fix manifest |
-| `review` | Review Report | `sdd_review` | Multi-persona UCR review |
-| `remediate` | Remediation Report | `sdd_remediate` | Deterministic findings + parsed review |
-| `remediate_fix` | Remediation Fix Report | `sdd_remediate_fix` | Source-protected remediation fix manifest |
-| `consistency` | Consistency Report | `sdd_consistency` | Artifact lineage check |
-| `links` | Link Validation Report | `sdd_validate_links` | Markdown link check |
-| `prescreen` | Prescreen Report | `sdd_prescreen` | Remediation candidate scan |
-| `score` | Score Report | `sdd_score_show` | Quality score |
+| `validate` | Validation | `sdd_validate` | Structural + cross-section validation |
+| `validate_fix` | Validation Fix | `sdd_validate_fix` | Source-protected fix manifest |
+| `review` | Review | `sdd_review` | Multi-persona UCR review |
+| `remediate` | Remediation | `sdd_remediate` | Deterministic findings + parsed review |
+| `remediate_fix` | Remediation Fix | `sdd_remediate_fix` | Source-protected remediation fix manifest |
+| `consistency` | Consistency | `sdd_consistency` | Artifact lineage check |
+| `links` | Link Validation | `sdd_validate_links` | Markdown link check |
+| `prescreen` | Prescreen | `sdd_prescreen` | Remediation candidate scan |
+| `score` | Score | `sdd_score_show` | Quality score |
+
+Reserved codes for future sub-frameworks:
+
+| Stage Code | Sub-Framework | Description |
+|------------|--------------|-------------|
+| `gov.approval` | governance | Approval workflow report |
+| `gov.gate` | governance | Quality gate report |
+| `kb.index` | knowledge | Knowledge base index report |
+| `kb.search` | knowledge | Search quality report |
+
+### Format Roles
+
+| Format | Role | Audience |
+|--------|------|----------|
+| `.json` | Machine-readable full report | Tools, pipelines, scoring |
+| `.md` | Human-readable narrative report | Developers, reviewers |
+| `.txt` | One-page text summary | Terminal output, logs |
 
 ### Examples
 
-| Current Name | Proposed Name |
-|-------------|---------------|
-| `validation_report.json` | `BRD-03.validate.json` |
-| `validation_report.txt` | `BRD-03.validate.txt` |
-| `review_report.md` | `BRD-03.review.md` |
-| `remediation_report.json` | `BRD-03.remediate.json` |
-| `remediate_fix_report.json` | `BRD-03.remediate_fix.json` |
-| `consistency_report.json` | `BRD-03.consistency.json` |
-| `link_validation_report.json` | `BRD-03.links.json` |
-| `prescreen_report.json` | `BRD-03.prescreen.json` |
+| Report | Filename |
+|--------|----------|
+| BRD-03 validation (machine) | `BRD-03.validate.json` |
+| BRD-03 validation (summary) | `BRD-03.validate.txt` |
+| BRD-03 review (human) | `BRD-03.review.md` |
+| BRD-03 remediation (machine) | `BRD-03.remediate.json` |
+| BRD-03 consistency | `BRD-03.consistency.json` |
+| BRD-03 governance approval | `BRD-03.gov.approval.json` |
+| BRD-03 knowledge index | `BRD-03.kb.index.json` |
+| Versioned review | `BRD-03.review.v002.md` |
 
 ### Derived Copy Naming
 
-Source-protected copies (validation, remediated):
+Source-protected copies use underscores (not dots) to distinguish from reports:
 
 ```
-{DOC-ID}_{slug}.{STAGE}.{ext}
+{DOC-ID}_{slug}_{STAGE}_copy.{ext}
 ```
 
-| Current Name | Proposed Name |
-|-------------|---------------|
-| `BRD-03_security_compliance_validation.yaml` | `BRD-03_security_compliance.validate_copy.yaml` |
-| `BRD-03_security_compliance_remediated.yaml` | `BRD-03_security_compliance.remediate_copy.yaml` |
+| Copy Type | Filename |
+|-----------|----------|
+| Validation copy | `BRD-03_security_compliance_validate_copy.yaml` |
+| Remediation copy | `BRD-03_security_compliance_remediate_copy.yaml` |
 
-### Versioned Reports (optional, for audit trail)
+### Versioned Reports
 
-When version history is needed (e.g., iterative review cycles):
+When audit trail is needed:
 
 ```
 {DOC-ID}.{STAGE}.v{NNN}.{FORMAT}
 ```
 
-Example: `BRD-03.review.v002.md`
-
-Default: no version suffix (latest overwrites). Version suffix only when `--keep-history` flag is set.
-
-### Sub-Framework Report Types
-
-Reserved stage codes for future sub-frameworks:
-
-| Sub-Framework | Stage Prefix | Example |
-|--------------|-------------|---------|
-| mcp_sdd | (none — core stages) | `BRD-03.validate.json` |
-| project-governance | `gov_` | `BRD-03.gov_approval.json` |
-| project-knowledge | `kb_` | `BRD-03.kb_index.json` |
+Default: no version (latest overwrites). Version suffix when `--keep-history` flag is set.
 
 ---
 
-## Legacy Compatibility
+## Detection Patterns (Regex)
 
-### Mapping Table
+```python
+# Report: {DOC-ID}.{stage}.{format}
+REPORT_PATTERN = re.compile(
+    r"^[A-Z]+-\d+\."
+    r"(?:(?:sdd|gov|kb)\.)?"  # optional sub-framework
+    r"(?:validate|validate_fix|review|remediate|remediate_fix|"
+    r"consistency|links|prescreen|score)"
+    r"(?:\.v\d+)?"  # optional version
+    r"\.(?:json|md|txt)$"
+)
 
-| Legacy Pattern | Standard Name | Migration |
-|---------------|---------------|-----------|
-| `BRD-04.V_validation_report_v003.md` | `BRD-04.validate.v003.md` | Rename |
-| `BRD-04.A_audit_report_v007.md` | `BRD-04.audit.v007.md` | Rename (`audit` = combined validate+review) |
-| `BRD-04.UCR_review_report_v005.md` | `BRD-04.review.v005.md` | Rename |
-| `BRD-04.UCRem_remediation_report_v001.md` | `BRD-04.remediate.v001.md` | Rename |
-| `BRD-04.F_fix_report_v002.md` | `BRD-04.fix.v002.md` | Rename |
-| `BRD-04.R_review_report_v001.md` | `BRD-04.review.v001.md` | Rename |
+# Derived copy: {DOC-ID}_{slug}_{stage}_copy.{ext}
+DERIVED_COPY_PATTERN = re.compile(
+    r"^[A-Z]+-\d+_.+_(?:validate|remediate)_copy\.(?:md|yaml|yml)$"
+)
 
-### Transition Period
-
-- mcp_sdd tools adopt new naming immediately
-- Legacy Claude skill reports remain readable (backward-compatible glob patterns)
-- `sdd_consistency` updated to detect both naming conventions
-- No mass rename of existing legacy reports
+# Source artifact: {DOC-ID}_{slug}.{ext} (not report, not derived)
+SOURCE_PATTERN = re.compile(
+    r"^[A-Z]+-\d+_.+\.(?:md|yaml|yml)$"
+)
+```
 
 ---
 
-## Implementation Scope
+## Implementation
 
 ### Phase 1: Standards Document
 
-Create `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — the canonical reference.
+Create `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — canonical reference with:
+- Sub-framework registry
+- Naming convention
+- Stage codes
+- Format roles
+- Detection regex patterns
 
 ### Phase 2: mcp_sdd Report Output
 
-Update report output filenames in all runners:
+Update report filenames in all runners. Requires `doc_id` parameter passed to each runner.
 
-| Runner | Current Output | New Output |
-|--------|---------------|------------|
+| Runner | Current | New |
+|--------|---------|-----|
 | `validation/runner.py` | `validation_report.json` | `{doc_id}.validate.json` |
+| `validation/runner.py` | `validation_report.txt` | `{doc_id}.validate.txt` |
 | `remediation/runner.py` | `remediation_report.json` | `{doc_id}.remediate.json` |
+| `remediation/runner.py` | `remediation_report.txt` | `{doc_id}.remediate.txt` |
 | `remediation/runner.py` (validate_fix) | `validate_fix_report.json` | `{doc_id}.validate_fix.json` |
+| `remediation/runner.py` (validate_fix) | `validate_fix_report.txt` | `{doc_id}.validate_fix.txt` |
 | `remediation/runner.py` (remediate_fix) | `remediate_fix_report.json` | `{doc_id}.remediate_fix.json` |
+| `remediation/runner.py` (remediate_fix) | `remediate_fix_report.txt` | `{doc_id}.remediate_fix.txt` |
 | `consistency/runner.py` | `consistency_report.json` | `{doc_id}.consistency.json` |
+| `consistency/runner.py` | `consistency_report.txt` | `{doc_id}.consistency.txt` |
 | `link_validation/runner.py` | `link_validation_report.json` | `{doc_id}.links.json` |
+| `link_validation/runner.py` | `link_validation_report.txt` | `{doc_id}.links.txt` |
 | `prescreening/runner.py` | `prescreen_report.json` | `{doc_id}.prescreen.json` |
-
-Requires passing `doc_id` to runners that don't currently receive it.
+| `prescreening/runner.py` | `prescreen_report.txt` | `{doc_id}.prescreen.txt` |
 
 ### Phase 3: Derived Copy Naming
 
 Update `_copy_with_suffix` and `_copy_with_canonical_suffix` in `remediation/runner.py`:
-- `_validation.yaml` → `.validate_copy.yaml`
-- `_remediated.yaml` → `.remediate_copy.yaml`
+- `_validation` → `_validate_copy`
+- `_remediated` → `_remediate_copy`
 
 ### Phase 4: Detection Updates
 
-Update `_inspect_document_folder` and `_collect_yaml_files` to recognize both old and new naming patterns during transition.
+Update in `utils/source_files.py`, `tool_registry.py`, `consistency/runner.py`:
+- Add `REPORT_PATTERN`, `DERIVED_COPY_PATTERN` constants
+- Update `collect_source_files` to exclude new derived copy pattern
+- Update `_inspect_document_folder` to detect new report/copy names
 
-### Phase 5: Documentation + Changelogs
+### Phase 5: Delete Legacy Reports
+
+Remove all legacy-named reports from existing projects:
+- `*.V_validation_report_*.md`
+- `*.A_audit_report_*.md`
+- `*.UCR_review_report_*.md`
+- `*.UCRem_remediation_report_*.md`
+- `*.UCRem_report.md`
+- `*.F_fix_report_*.md`
+- `*.R_review_report_*.md`
+
+### Phase 6: Tests
+
+Update existing tests + add new tests for naming patterns.
+
+### Phase 7: Documentation + Changelogs
+
+- mcp_sdd CHANGELOG v1.11.0 / ROADMAP
+- Framework CHANGELOG v0.18.0 / ROADMAP
+- Update mcp_sdd docs README
+
+---
+
+## File Changes
+
+| File | Action | Est. Lines |
+|------|--------|-----------|
+| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | **Create** | ~100 |
+| `mcp_sdd/src/mcp_server/validation/runner.py` | Modify — report filenames | +10 |
+| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify — report filenames + copy naming | +20 |
+| `mcp_sdd/src/mcp_server/consistency/runner.py` | Modify — report filenames | +10 |
+| `mcp_sdd/src/mcp_server/link_validation/runner.py` | Modify — report filenames | +10 |
+| `mcp_sdd/src/mcp_server/prescreening/runner.py` | Modify — report filenames | +10 |
+| `mcp_sdd/src/mcp_server/utils/source_files.py` | Modify — detection patterns | +15 |
+| `mcp_sdd/src/mcp_server/tool_registry.py` | Modify — `_inspect_document_folder` | +10 |
+| Tests (updated + new) | Cover naming patterns | ~100 |
+| Documentation | Changelogs, roadmaps, READMEs | ~80 |
+
+**Total**: ~365 lines across 10+ files
 
 ---
 
@@ -174,14 +233,13 @@ Update `_inspect_document_folder` and `_collect_yaml_files` to recognize both ol
 
 | Risk | Mitigation |
 |------|-----------|
-| Breaking existing `_validation`/`_remediated` detection | Support both patterns during transition |
-| Legacy reports not renamed | Glob patterns match both conventions |
-| Sub-framework naming conflicts | Reserved prefix system |
-| doc_id extraction from file path | Parse from filename or require as parameter |
+| `doc_id` not available in all runners | Extract from document filename or add parameter |
+| Breaking existing report detection in pipelines | Update all detection logic in same release |
+| Legacy reports left in repos after deletion | One-time cleanup script per project |
 
 ---
 
 ## Dependencies
 
-- All prior plans (016-020) done — this builds on the stabilized mcp_sdd
+- All prior plans (016-020) done
 - Claude skill alignment is downstream — not in this plan's scope
