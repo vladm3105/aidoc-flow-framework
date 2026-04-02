@@ -29,7 +29,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 **Input**: `--project <project_root>`
 
-**Output** (written to `<project_root>/docs/UCX/`):
+**Output** (written to `<project_root>/UCX/`):
 
 | Destination folder | Contents |
 | --- | --- |
@@ -64,7 +64,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | Layer asset files | Unified YAML template, schema, and any project-tuned template bundled into the prompt |
 
 **Rules**:
-- Loads project-tuned template: tries `TYPE-TEMPLATE.yaml`, then `TYPE-TEMPLATE.md`, then `TYPE-MVP-TEMPLATE.md` from `docs/UCX/templates/`. Falls back to layer template from `docs/UCX/templates/layers/NN_TYPE/`.
+- Loads project-tuned template: tries `TYPE-TEMPLATE.yaml`, then `TYPE-TEMPLATE.md`, then `TYPE-MVP-TEMPLATE.md` from `UCX/templates/`. Falls back to layer template from `UCX/templates/layers/NN_TYPE/`.
 - Does not write the final document artifact; use `create` for that.
 - `--sections-json` injects existing document sections into the prompt for guided creation (incremental authoring).
 
@@ -74,7 +74,7 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 ```
 init
-  └─ writes docs/UCX/ scaffold (personas, templates, schemas, prompts)
+  └─ writes UCX/ scaffold (personas, templates, schemas, prompts)
         ↓
 create-build
   └─ assembles LLM creation prompt + sidecar

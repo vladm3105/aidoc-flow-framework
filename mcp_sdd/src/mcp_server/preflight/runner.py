@@ -6,6 +6,8 @@ from pathlib import Path
 import re
 import sys
 
+from mcp_server.skills.project_ucx_loader import resolve_ucx_root
+
 
 _ALLOWED_CONTEXTS = {"create", "review", "remediate", "any"}
 _STATUS_TOKEN_PATTERN = re.compile(r"\b(READY|DEGRADED|BLOCKED)\b", re.IGNORECASE)
@@ -127,7 +129,7 @@ def run_preflight(
     if normalized_context not in _ALLOWED_CONTEXTS:
         raise ValueError(f"Unsupported preflight context: {context}")
 
-    ucx_root = project_root / "docs/UCX"
+    ucx_root = resolve_ucx_root(project_root)
     checks: dict[str, object] = {
         "project_exists": project_root.exists(),
         "ucx_root_exists": ucx_root.exists(),

@@ -21,7 +21,7 @@ Implementation complexity: 3/5.
 
 - Runtime environment can execute mcp CLI command.
 - Project path is available and writable for output operations.
-- For create-build, review-build, validate, and remediation flows, project contains project-local docs/UCX assets or operator has permission to run init.
+- For create-build, review-build, validate, and remediation flows, project contains project-local UCX assets or operator has permission to run init.
 
 ---
 
@@ -33,11 +33,11 @@ Procedure:
 
 1. Run mcp init with project path.
 2. Confirm output reports created and skipped counts.
-3. Verify required directories exist under docs/UCX.
+3. Verify required directories exist under UCX.
 
 Success condition:
 
-- docs/UCX structure exists and command returns successful exit.
+- UCX structure exists and command returns successful exit.
 
 ### 3.2 Create-build with sections payload
 
@@ -198,7 +198,7 @@ Expected behavior:
 Troubleshooting checks:
 
 - Validate document has YAML frontmatter with required custom_fields and tags.
-- Validate layer schema file exists under docs/UCX/templates/layers/{layer}.
+- Validate layer schema file exists under UCX/templates/layers/{layer}.
 - Validate required section headings and structure match schema regex patterns.
 
 ### Scenario E: preflight returns blocked
@@ -209,7 +209,7 @@ Expected behavior:
 
 Troubleshooting checks:
 
-- Confirm docs/UCX scaffold exists under the selected project root.
+- Confirm UCX scaffold exists under the selected project root.
 - Confirm required review or creation template folders exist for the selected context.
 - Confirm optional probe payload is not signaling blocked provider state.
 
@@ -255,7 +255,7 @@ Troubleshooting checks:
 | blocked preflight | preflight report status is blocked | repair missing project/runtime prerequisites, then rerun |
 | consistency lineage failure | consistency report contains errors | restore missing prerequisite artifact or rerun upstream stage |
 | Invalid sections-json payload | parser or deserialization error | correct payload and retry |
-| Missing template or persona | loader error via missing path | add required file under docs/UCX and retry |
+| Missing template or persona | loader error via missing path | add required file under UCX and retry |
 | validate structural violations | validation report contains missing requirements | remediate document and re-run validate |
 | validate-fix/remediate-fix output missing | fix report generated without derived artifacts | verify document path and output path permissions, then rerun |
 | scan/scoring parse failure | report payload invalid JSON | repair upstream report generation, then rerun diagnostics |

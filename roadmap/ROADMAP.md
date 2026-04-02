@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.16.0 |
-| Latest Release | 0.16.0 (review report parsing in sdd_remediate) |
-| Previous Minor | 0.15.0 (YAML parity, categorized scoring, API aliases) |
+| Current Version | 0.17.0 |
+| Latest Release | 0.17.0 (UCX root relocation) |
+| Previous Minor | 0.16.0 (review report parsing in sdd_remediate) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,28 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.17.0 - UCX Root Relocation
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | mcp_sdd v1.10.0: relocate UCX from docs/UCX to project root UCX |
+
+Delivered scope:
+
+- Centralized resolve_ucx_root() with backward-compatible fallback
+- Auto-migration in sdd_init
+- 22 files updated, 2 projects migrated
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-020_ucx_root_relocation.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.10.0.md
+
+---
 
 ### v0.16.0 - Remediation Build Enhancement
 

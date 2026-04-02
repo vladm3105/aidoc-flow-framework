@@ -362,8 +362,8 @@ def assemble_project_creation_prompt(
 ) -> CreationAssembly:
     """Assemble a creation prompt that fuses MCP runtime assets with authoritative SSD layer inputs.
 
-    Layer assets (*-TEMPLATE.* and *_MVP_SCHEMA.yaml files) from docs/UCX/templates/layers/<layer>/
-    and the project-specific tuned template from docs/UCX/templates/<template_name> are both
+    Layer assets (*-TEMPLATE.* and *_MVP_SCHEMA.yaml files) from UCX/templates/layers/<layer>/
+    and the project-specific tuned template from UCX/templates/<template_name> are both
     included in the assembled prompt text so the AI has full authoritative context for creation.
     """
     if not sections:

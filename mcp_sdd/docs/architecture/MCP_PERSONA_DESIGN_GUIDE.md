@@ -36,11 +36,11 @@ Out of scope:
 ### 3.1 Source-of-truth at runtime
 
 At runtime, MCP loads personas/skills/prompts from project scope only:
-- `{project_root}/docs/UCX/skills/personas/`
-- `{project_root}/docs/UCX/skills/layer_aliases/`
-- `{project_root}/docs/UCX/prompts/templates/creation/`
-- `{project_root}/docs/UCX/prompts/templates/review/`
-- `{project_root}/docs/UCX/prompts/templates/remediation/`
+- `{project_root}/UCX/skills/personas/`
+- `{project_root}/UCX/skills/layer_aliases/`
+- `{project_root}/UCX/prompts/templates/creation/`
+- `{project_root}/UCX/prompts/templates/review/`
+- `{project_root}/UCX/prompts/templates/remediation/`
 
 ### 3.2 MCP bundled assets usage
 
@@ -150,7 +150,7 @@ For each persona prompt build:
 ## 7. Initialization and Runtime Sequence
 
 1. `mcp init --project {project_root}` creates project-specific UCX files from MCP scaffold templates.
-2. Team customizes project-specific personas/skills/prompts in `{project_root}/docs/UCX/`.
+2. Team customizes project-specific personas/skills/prompts in `{project_root}/UCX/`.
 3. MCP runtime resolves project-specific assets only.
 4. MCP rejects runtime execution with `ProjectSkillsNotFound` when required assets are absent.
 

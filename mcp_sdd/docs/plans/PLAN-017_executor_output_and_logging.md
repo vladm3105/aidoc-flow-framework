@@ -6,7 +6,7 @@ During BRD-03 review pipeline testing, two infrastructure gaps were identified:
 
 1. **Executor output not routed to document folder** — the executor writes files to its working directory but mcp_sdd doesn't enforce that output goes to the document's folder. Each tool should default `output_dir` to the document's parent folder.
 
-2. **No mcp_sdd logging** — no structured logging of executor invocations, exit codes, timing, or pipeline stages. Logs should be written to the project's `docs/UCX/logs/` directory.
+2. **No mcp_sdd logging** — no structured logging of executor invocations, exit codes, timing, or pipeline stages. Logs should be written to the project's `UCX/logs/` directory.
 
 **Goal**: Route all executor output to document folders by default, and add structured logging to the project UCX directory.
 
@@ -35,7 +35,7 @@ The executor `working_dir` should also be set to the document folder so any file
 
 **File**: New `mcp_sdd/src/mcp_server/logging_config.py`
 
-Log file location: `{project_root}/docs/UCX/logs/mcp_sdd.log`
+Log file location: `{project_root}/UCX/logs/mcp_sdd.log`
 
 Log entries for:
 - Tool invocations (tool name, arguments, timestamp)

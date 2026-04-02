@@ -1,0 +1,631 @@
+# =============================================================================
+#  PRD-TEMPLATE.yaml — Unified Product Requirements Document Template
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Purpose: AI-consumable + human-reviewable PRD template
+#  Lifecycle: MVP → PROD → NEW MVP (each PRD corresponds to one BRD cycle)
+#  Rendering: AI assistant converts to MD/HTML on demand for stakeholder review
+#
+#  REPLACES: (archived to PRD_v1_archive/)
+#    PRD-MVP-TEMPLATE.md, PRD-MVP-TEMPLATE.yaml, PRD_MVP_SCHEMA.yaml,
+#    PRD_MVP_CREATION_RULES.md, PRD_MVP_VALIDATION_RULES.md,
+#    PRD_MVP_QUALITY_GATE_VALIDATION.md
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream Ownership (NOT duplicated here):
+#    EARS (Layer 3)  — formal WHEN-THE-SHALL-WITHIN requirements
+#    BDD (Layer 4)   — Given-When-Then executable test scenarios
+#    ADR (Layer 5)   — architecture decisions (PRD elaborates topics, ADR resolves)
+#    SYS (Layer 6)   — system structure, interfaces, quality attributes
+#    TSPEC (Layer 10) — test specifications (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST)
+#    TASKS (Layer 11) — implementation task breakdown
+#
+#  Validation:
+#    MCP tool: sdd_validate (mcp_sdd server)
+# =============================================================================
+
+id: PRD-NN
+title: "[Product Requirements Title]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  document_type: "prd-document"
+  layer: 2
+  lifecycle: mvp-prod-newmvp
+  total_sections: 15
+  last_updated: "2026-03-29"
+  validation:
+    tool: sdd_validate
+    server: mcp_sdd
+    _guidance: |
+      All validation runs through mcp_sdd MCP tools.
+      EARS-Ready Score: >=90/100 required before downstream EARS generation.
+      Scoring criteria:
+        Business clarity (40%): SMART objectives, capability definitions, acceptance criteria
+        Requirements maturity (35%): system boundaries, stakeholder requirements, problem statement
+        EARS translation readiness (20%): user journeys, quality attributes quantified
+        Strategic alignment (5%): domain references
+
+  c4_level:
+    _guidance: |
+      SDD layers map to C4 architecture model zoom levels:
+        Context (BRD)    — business environment, actors, boundaries
+          └─ EARS/BDD    — formalize Context→Container transition
+        Container (PRD)  — product features, functional blocks
+          └─ ADR         — decisions that shape Component architecture
+        Component (SYS)  — system structure, interfaces, quality attributes
+          └─ REQ/CTR     — decompose Component→Code into atomic units
+        Code (SPEC)      — implementation-ready specifications
+          └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
+          └─ TASKS       — implementation task breakdown
+
+      PRD is Container level. Content must describe product features and
+      functional blocks — not business environment (Context), system
+      internals (Component), or implementation details (Code).
+    value: container
+
+  diagram_standard:
+    _guidance: |
+      Diagrams follow C4 model zoom levels. Each SDD layer uses diagrams
+      appropriate to its C4 level:
+
+      | C4 Level | SDD Layer | Diagram Types |
+      | Context  | BRD       | C4-L1 (system context), DFD-L1 (top-level data flow), sequenceDiagram (business journey) |
+      | Container| PRD       | C4-L2 (container), DFD-L2 (feature data flow), sequenceDiagram (product interactions) |
+      | Component| SYS       | C4-L3 (component), DFD-L3 (component data flow), sequenceDiagram (system interactions) |
+      | Code     | SPEC      | C4-L4 (code), DFD-L4, class diagrams, sequenceDiagram (implementation flow) |
+
+      PRD is Container level (C4-L2):
+        - Container diagram: product containers, their interactions
+        - Feature-level data flow (DFD-L2): data movement between features
+        - Product interaction sequence diagrams: user↔product↔backend
+        - Sequence diagrams MUST include alt/else for exception paths
+
+      Diagram rules:
+        - Show product-level interactions, not system internals
+        - PASS: "User", "Product", "Backend", "Partner API"
+        - FAIL: "PostgreSQL", "Redis", "Kubernetes pod"
+    tags:
+      - "@diagram: c4-l2"
+      - "@diagram: dfd-l2"
+      - "@diagram: sequence-sync"
+
+  tags:
+    - prd-document
+    - layer-2-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Inherited from upstream BRD. Determines downstream SPEC subtype routing.
+    value: code  # code | document | ux | risk | process
+    routing:
+      code: CSPEC
+      document: DSPEC
+      ux: UXSPEC
+      risk: RISKSPEC
+      process: PROCSPEC
+
+  id_standard:
+    _guidance: |
+      All element IDs use content-derived hashes scoped to PRD content.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: PRD.01.09.b3f2
+
+      Hash algorithm (SHA256, 4-char hex):
+        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
+           - from PRD content, NOT upstream BRD content
+        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
+        3. Collision: extend hash from 4 to 8 chars if duplicate detected
+
+      Template placeholder: "xxxx" represents the hash suffix.
+      Reference: UCX_v1_archive/ucx/utils/finding_hash.py
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+    placeholder: "xxxx"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _guidance: |
+    EARS-Ready Score: >=90/100 required before EARS generation.
+    BRD Reference: link to upstream BRD using hash-based IDs.
+  product_name: "[Product Name]"
+  version: "1.0"
+  status: Draft  # Draft | In Review | Approved
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Product Manager]"
+  reviewer: "[Technical Lead]"
+  approver: "[Stakeholder]"
+  brd_reference: "@brd: BRD.NN.07.xxxx"
+  priority: High
+  target_release: "[MVP Launch Date]"
+  ears_ready_score: "[Score]/100"
+
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial MVP draft"
+
+# =============================================================================
+# Section 2: Executive Summary
+# =============================================================================
+
+executive_summary:
+  _guidance: |
+    2-3 sentences: What problem does this MVP solve? Who benefits?
+    What's the expected business impact?
+
+  overview: |
+    [2-3 sentences: problem, beneficiaries, expected impact.]
+
+  mvp_hypothesis:
+    _guidance: |
+      Pattern: "We believe that [target users] will [key behavior/outcome]
+      if we [MVP solution]. We will know this is true when [measurable criteria]."
+    statement: "We believe that [target users] will [outcome] if we [solution]."
+    validation: "We will know this is true when [measurable criteria]."
+
+  timeline:
+    - phase: Development
+      dates: "YYYY-MM-DD to YYYY-MM-DD"
+      duration: "[X] weeks"
+    - phase: Testing
+      dates: "YYYY-MM-DD to YYYY-MM-DD"
+      duration: "[X] weeks"
+    - phase: "MVP Launch"
+      dates: "YYYY-MM-DD"
+    - phase: "Validation Period"
+      dates: "+30 days post-launch"
+      duration: "30 days"
+
+# =============================================================================
+# Section 3: Problem Statement
+# =============================================================================
+
+problem_statement:
+  current_state:
+    - "[Pain point 1]: [Impact]"
+    - "[Pain point 2]: [Impact]"
+    - "[Pain point 3]: [Impact]"
+
+  business_impact:
+    revenue: "[estimate]"
+    customer_satisfaction: "[estimate]"
+    competitive: "[brief description]"
+
+  opportunity: |
+    [1-2 sentences: What market or business opportunity does this MVP address?]
+
+# =============================================================================
+# Section 4: Target Audience & User Personas
+# =============================================================================
+
+target_audience:
+  _guidance: |
+    PRD owns detailed personas. BRD only has high-level target_users.
+    Define primary persona with key characteristics, pain points, success criteria.
+    PRD expands BRD segments into actionable personas for product design.
+
+  primary_persona:
+    name: "[Persona Name]"
+    role: "[Role/Description]"
+    key_characteristic: "[What defines this user]"
+    main_pain_point: "[What problem they face]"
+    success_criteria: "[What outcome they need]"
+    usage_frequency: "[How often they'll use the product]"
+
+  secondary_personas:
+    - name: "[Persona Name]"
+      role: "[Role/Description]"
+
+# =============================================================================
+# Section 5: Success Metrics & KPIs
+# =============================================================================
+
+success_metrics:
+  _guidance: |
+    Product-level metrics with baselines and targets.
+    Absorbs old Section 14 (Success Definition) post-launch validation.
+
+  mvp_validation_30day:
+    - id: "PRD.NN.05.xxxx"
+      metric: "[Adoption metric]"
+      baseline: "0"
+      target: "[target]"
+      measurement: "[how measured]"
+    - id: "PRD.NN.05.xxxx"
+      metric: "[Engagement metric]"
+      baseline: "N/A"
+      target: "[target]"
+      measurement: "[how measured]"
+
+  business_90day:
+    - metric: "[Primary business metric]"
+      target: "[target]"
+      decision_threshold: "< [threshold] = Pivot"
+
+  post_launch_validation:
+    _note: "Absorbed from old Section 14.2"
+    day_7:
+      - metric: "[Adoption metric]"
+        target: "[target]"
+    day_30:
+      - metric: "[Error rate]"
+        target: "<0.5%"
+
+  decision_gate:
+    _note: "Absorbed from old Section 14.3"
+    proceed: "All targets met → Full product investment"
+    iterate: "60-80% targets met → Refine and retry"
+    pivot: "<60% targets met → Change direction or shutdown"
+
+# =============================================================================
+# Section 6: Goals & Objectives
+# =============================================================================
+
+goals_and_objectives:
+  primary:
+    - id: "PRD.NN.06.xxxx"
+      goal: "[Primary goal]"
+      metric: "[Metric]"
+      target: "[Target]"
+      timeline: "MVP Launch"
+    - id: "PRD.NN.06.xxxx"
+      goal: "[Secondary goal]"
+      metric: "[Metric]"
+      target: "[Target]"
+      timeline: "MVP+30d"
+
+  secondary:
+    - id: "PRD.NN.06.xxxx"
+      objective: "[Objective]"
+      priority: P2
+      success_criteria: "[Criteria]"
+
+  stretch_goals:
+    - goal: "[Stretch goal]"
+      condition: "If MVP metrics exceed by 50%"
+      benefit: "[Benefit]"
+
+# =============================================================================
+# Section 7: Scope & Requirements
+# =============================================================================
+
+scope_and_requirements:
+  in_scope:
+    _guidance: "List 5-15 must-have features for MVP, prioritized."
+    features:
+      - id: 1
+        name: "[Feature name]"
+        priority: P1-Must
+        description: "[Brief description]"
+      - id: 2
+        name: "[Feature name]"
+        priority: P1-Must
+        description: "[Brief description]"
+      - id: 3
+        name: "[Feature name]"
+        priority: P2-Should
+        description: "[Brief description]"
+
+  dependencies:
+    technical: "[System/API/infra — status, impact]"
+    business: "[Org/process prerequisite — owner, date]"
+    external: "[Vendor/regulatory — status, impact]"
+
+  out_of_scope:
+    - "[Feature excluded — rationale]"
+    - "[Feature excluded — rationale]"
+
+# =============================================================================
+# Section 8: User Stories & User Roles
+# =============================================================================
+
+user_stories:
+  _guidance: |
+    PRD holds role definitions and story summaries.
+    Detailed behaviors live in EARS (Layer 3).
+    Executable test scenarios live in BDD (Layer 4).
+
+    Story format: "As a [role], I want [capability] so that [benefit]"
+    Keep summaries to 2-3 sentences max.
+    Include product-level acceptance criteria (what, not how).
+
+  _antipatterns:
+    - "FAIL: WHEN-THE-SHALL-WITHIN format — belongs in EARS (Layer 3)"
+    - "FAIL: Given-When-Then scenarios — belongs in BDD (Layer 4)"
+    - "FAIL: Technical implementation details — belongs in SYS (Layer 6)"
+    - "FAIL: API endpoint specifications — belongs in SPEC (Layer 9)"
+
+  roles:
+    - role: "[Primary user role]"
+      description: "[Role description]"
+    - role: "[Secondary user role]"
+      description: "[Role description]"
+
+  stories:
+    - id: "PRD.NN.08.xxxx"
+      role: "[user role]"
+      want: "[capability]"
+      so_that: "[benefit]"
+      priority: P1
+      acceptance_criteria:
+        - "[Product-level criterion — what, not how]"
+    - id: "PRD.NN.08.xxxx"
+      role: "[user role]"
+      want: "[capability]"
+      so_that: "[benefit]"
+      priority: P1
+      acceptance_criteria:
+        - "[Product-level criterion]"
+
+# =============================================================================
+# Section 9: Functional Requirements
+# =============================================================================
+
+functional_requirements:
+  _guidance: |
+    Product-level FRs that expand BRD business capabilities with technical context.
+    Each FR must be atomic and testable.
+    Use @threshold: tags for quantitative values that may change.
+
+    Threshold convention: @threshold: PRD.NN.{category}.{key}
+    Categories: quota, risk, perf, timeout, rate
+    Example: @threshold: PRD.01.perf.api.p95
+
+    Content boundaries (PRD vs downstream):
+      KEEP: product capability descriptions, user journeys, error handling
+      REMOVE: system architecture details (SYS), code-level specs (SPEC)
+
+  _antipatterns:
+    - "FAIL: database schema or query details — belongs in SPEC"
+    - "FAIL: API endpoint implementation — belongs in SPEC"
+    - "FAIL: infrastructure configuration — belongs in ADR/SYS"
+
+  core_capabilities:
+    - id: "PRD.NN.09.xxxx"
+      name: "[Capability name]"
+      description: |
+        [Product-level description of what this capability enables for users]
+      priority: P1
+      acceptance_criteria:
+        - id: "PRD.NN.09.xxxx"
+          criterion: "[Measurable criterion]"
+          target: "[Target value]"
+      brd_reference: "@brd: BRD.NN.07.xxxx"
+
+    - id: "PRD.NN.09.xxxx"
+      name: "[Capability name]"
+      description: "[Description]"
+      priority: P1
+      acceptance_criteria: []
+      brd_reference: "@brd: BRD.NN.07.xxxx"
+
+  user_journey:
+    _guidance: |
+      Product-level user journey with happy path and error handling.
+      Use business-level sequence diagrams, not technical implementation.
+    diagram:
+      type: sequenceDiagram
+      content: |
+        participant User
+        participant Product
+        participant Backend
+
+        User->>Product: Initiate action
+        Product->>Backend: Process request
+        alt Success
+            Backend-->>Product: Confirmation
+            Product->>User: Success message
+        else Error
+            Backend-->>Product: Error details
+            Product->>User: Error with guidance
+        end
+
+  diagram_contract:
+    _guidance: |
+      PRD is Container level (C4-L2) — diagrams show product interactions.
+      See metadata.diagram_standard for full C4 diagram mapping.
+      Sequence diagrams must include alt/else for exception paths.
+
+# =============================================================================
+# Section 10: Customer-Facing Content & Messaging
+# =============================================================================
+
+customer_facing_content:
+  _guidance: |
+    MANDATORY section. Must contain substantive content addressing
+    at least 3 of the following categories. Placeholder-only content
+    is a blocking error.
+
+    Categories: product positioning, key messaging, feature descriptions,
+    documentation requirements, help text, error messages, success
+    confirmations, onboarding content, release notes.
+
+    Quality: clear language, consistent tone, accessible to target audience.
+
+  positioning: |
+    [Product positioning statement for target audience]
+
+  key_messages:
+    - "[Key message 1 — value proposition]"
+    - "[Key message 2 — differentiation]"
+
+  error_messages:
+    - trigger: "[Error condition]"
+      message: "[User-friendly error message]"
+      guidance: "[What user should do next]"
+
+  success_messages:
+    - trigger: "[Success event]"
+      message: "[Confirmation message]"
+      channel: "[In-app | Email | Push]"
+
+# =============================================================================
+# Section 11: Acceptance Criteria
+# =============================================================================
+
+acceptance_criteria:
+  _guidance: |
+    Product acceptance criteria verifiable by business stakeholders.
+    Absorbs old Section 14.1 (Go-Live Criteria) as launch_gates.
+
+  launch_gates:
+    _note: "Absorbed from old Section 14.1 (Go-Live Criteria)"
+    items:
+      - category: Functional
+        criterion: "All P1 features complete"
+        threshold: "100%"
+        validation: "UAT signoff"
+      - category: Quality
+        criterion: "Critical bugs resolved"
+        threshold: "0 open"
+        validation: "QA signoff"
+      - category: Performance
+        criterion: "Meets baseline metrics"
+        threshold: ">=90%"
+        validation: "Load test"
+      - category: Security
+        criterion: "Passes security baseline"
+        threshold: "Pass"
+        validation: "Security review"
+
+  business_acceptance:
+    - "[Business-verifiable outcome 1]"
+    - "[Business-verifiable outcome 2]"
+
+  technical_acceptance:
+    - "[Technical criterion 1]"
+    - "[Technical criterion 2]"
+
+# =============================================================================
+# Section 12: Constraints & Assumptions
+# =============================================================================
+
+constraints_and_assumptions:
+  constraints:
+    - id: "PRD.NN.12.xxxx"
+      category: "[Technical | Business | Regulatory | Timeline]"
+      description: "[Constraint description]"
+      impact: "[Impact on product]"
+
+  assumptions:
+    - id: "PRD.NN.12.xxxx"
+      assumption: "[Assumption]"
+      validation_method: "[How to validate]"
+      impact_if_false: "[Mitigation]"
+
+# =============================================================================
+# Section 13: Risk Assessment
+# =============================================================================
+
+risk_assessment:
+  risks:
+    - id: "PRD.NN.13.xxxx"
+      description: "[Risk description]"
+      likelihood: High  # High | Medium | Low
+      impact: High      # High | Medium | Low
+      mitigation: "[Mitigation strategy]"
+      owner: "[Role]"
+
+# =============================================================================
+# Section 14: Traceability
+# =============================================================================
+
+traceability:
+  _guidance: |
+    Upstream: REQUIRED — all PRDs must reference at least one BRD element.
+    Downstream: OPTIONAL — only add links to artifacts that exist.
+    Do NOT reference specific ADR numbers — ADRs don't exist yet.
+    Do NOT use placeholder IDs (TBD, XXX, NNN).
+
+    ADR topic elaboration: PRD Section 14 elaborates BRD Section 8
+    (ADR topics) with technical options for ADR evaluation.
+    BRD identifies WHAT decisions are needed.
+    PRD elaborates HOW to evaluate options.
+    ADR records WHICH option was chosen and WHY.
+
+  tags:
+    - "@prd: PRD-NN"
+
+  upstream:
+    brd_references:
+      - "@brd: BRD.NN.07.xxxx"
+      - "@brd: BRD.NN.08.xxxx"
+
+  downstream_expected:
+    - type: EARS
+      layer: 3
+      description: "Formal requirements from PRD features"
+    - type: BDD
+      layer: 4
+      description: "Acceptance test scenarios"
+    - type: ADR
+      layer: 5
+      description: "Architecture decisions from PRD ADR topic elaboration"
+
+  adr_topic_elaboration:
+    _guidance: |
+      Elaborate BRD Section 8 topics with technical options for ADR evaluation.
+      Do NOT reference specific ADR numbers (ADR-01, etc.).
+    topics:
+      - topic: "[Topic from BRD Section 8]"
+        brd_reference: "@brd: BRD.NN.08.xxxx"
+        status: Pending
+        business_driver: "[Driver]"
+        options: "[Options to evaluate]"
+
+  cross_links:
+    depends:
+      - "@depends: PRD-NN"
+    discoverability:
+      - "@discoverability: PRD-NN (short rationale)"
+
+  health_score:
+    brd_coverage: "[X]%"
+    target_score: ">=90/100"
+
+  ears_cross_reference:
+    _note: |
+      EARS Enhancement content (Timing Profile Matrix, Boundary Value Matrix,
+      State Transition Diagrams, Fallback Paths, EARS-Ready Checklist) belongs
+      in EARS layer (03_EARS). See tmp/EARS_APPENDIX_FROM_PRD.md for preserved
+      content to incorporate during EARS migration.
+
+# =============================================================================
+# Section 15: Glossary
+# =============================================================================
+
+glossary:
+  _guidance: "Flat list of project-specific terms. Keep concise."
+
+  terms:
+    - term: PRD
+      definition: "Product Requirements Document"
+    - term: MVP
+      definition: "Minimum Viable Product"
+    - term: KPI
+      definition: "Key Performance Indicator"
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# End of PRD-TEMPLATE.yaml
+# =============================================================================

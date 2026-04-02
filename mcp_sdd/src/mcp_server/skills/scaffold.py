@@ -7,16 +7,26 @@ import re
 
 
 CANONICAL_SCAFFOLD_MAPPINGS: tuple[tuple[Path, Path], ...] = (
-    (Path("skills/personas"), Path("docs/UCX/skills/personas")),
-    (Path("skills/layer_aliases"), Path("docs/UCX/skills/layer_aliases")),
-    (Path("prompts/templates/creation"), Path("docs/UCX/prompts/templates/creation")),
-    (Path("prompts/templates/review"), Path("docs/UCX/prompts/templates/review")),
-    (Path("prompts/templates/remediation"), Path("docs/UCX/prompts/templates/remediation")),
-    (Path("templates"), Path("docs/UCX/templates")),
+    (Path("skills/personas"), Path("UCX/skills/personas")),
+    (Path("skills/layer_aliases"), Path("UCX/skills/layer_aliases")),
+    (Path("prompts/templates/creation"), Path("UCX/prompts/templates/creation")),
+    (Path("prompts/templates/review"), Path("UCX/prompts/templates/review")),
+    (Path("prompts/templates/remediation"), Path("UCX/prompts/templates/remediation")),
+    (Path("templates"), Path("UCX/templates")),
 )
 
 
 LAYER_DIR_PATTERN = re.compile(r"^\d{2}_[A-Z]+$")
+
+
+def _migrate_legacy_ucx(project_root: Path) -> bool:
+    """If docs/UCX exists and UCX/ doesn't, move it."""
+    legacy = project_root / "docs" / "UCX"
+    new = project_root / "UCX"
+    if legacy.exists() and not new.exists():
+        shutil.move(str(legacy), str(new))
+        return True
+    return False
 
 
 @dataclass(frozen=True)
@@ -94,6 +104,7 @@ def scaffold_project_ucx(
     canonical_root: Path | None = None,
     ssd_root: Path | None = None,
 ) -> InitScaffoldResult:
+    _migrate_legacy_ucx(project_root)
     source_root = canonical_root or _default_canonical_root()
     authoritative_ssd_root = ssd_root or _default_ssd_root()
     created_paths: list[str] = []
@@ -115,7 +126,7 @@ def scaffold_project_ucx(
 
     ssd_created, ssd_skipped = _copy_ssd_layer_assets_no_overwrite(
         ssd_root=authoritative_ssd_root,
-        destination_root=project_root / "docs/UCX/templates/layers",
+        destination_root=project_root / "UCX/templates/layers",
     )
     created_paths.extend(ssd_created)
     skipped_paths.extend(ssd_skipped)

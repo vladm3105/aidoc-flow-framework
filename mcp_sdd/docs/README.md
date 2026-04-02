@@ -92,6 +92,7 @@ Use this precedence for conflict resolution:
 
 ## 7. Changelog
 
+- [CHANGELOG v1.10.0](CHANGELOG/CHANGELOG_v1.10.0.md) — UCX root relocation (docs/UCX → UCX)
 - [CHANGELOG v1.9.0](CHANGELOG/CHANGELOG_v1.9.0.md) — review report parsing in sdd_remediate
 - [CHANGELOG v1.8.0](CHANGELOG/CHANGELOG_v1.8.0.md) — YAML parity, categorized scoring, API aliases
 - [CHANGELOG v1.7.0](CHANGELOG/CHANGELOG_v1.7.0.md) — cross-section validation, YAML fork, BRD diagram registry

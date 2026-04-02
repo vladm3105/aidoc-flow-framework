@@ -22,7 +22,7 @@ Implementation complexity: 3/5.
 In scope:
 
 - deterministic CLI orchestration for create, review, validate, validate-fix, remediate, remediate-fix, prescreen, scan, and scoring
-- project-local asset loading from `docs/UCX`
+- project-local asset loading from `UCX`
 - schema-governed JSON/TXT artifact generation under `.ucx/<stage>`
 - operator runbook and policy controls under `mcp/docs`
 

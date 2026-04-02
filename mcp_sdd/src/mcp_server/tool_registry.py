@@ -37,7 +37,7 @@ TOOLS: list[Tool] = [
     # ── Deterministic tools ──────────────────────────────────────────────
     Tool(
         name="sdd_init",
-        description="Scaffold project-specific UCX assets (personas, templates, schemas, prompts) under docs/UCX/",
+        description="Scaffold project-specific UCX assets (personas, templates, schemas, prompts) under UCX/",
         inputSchema={
             "type": "object",
             "properties": {
@@ -239,7 +239,7 @@ TOOLS: list[Tool] = [
                 "persona": {"type": "string", "description": "Persona file name without extension"},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
-                "template": {"type": "string", "description": "Template file in docs/UCX/prompts/templates/creation"},
+                "template": {"type": "string", "description": "Template file in UCX/prompts/templates/creation"},
                 "sections": {"type": "array", "items": {"type": "object"}, "description": "Optional sections JSON array [{section_id, title, content, included?}]"},
                 "out": {"type": "string", "description": "Output directory"},
                 "executor": {"type": "string", "description": "Executor name. Omit to return prompt text."},

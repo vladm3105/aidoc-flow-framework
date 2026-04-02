@@ -20,13 +20,13 @@ from mcp_server.skills import (  # noqa: E402
 
 
 REQUIRED_RELATIVE_PATHS = [
-    Path("docs/UCX/skills/personas"),
-    Path("docs/UCX/skills/layer_aliases"),
-    Path("docs/UCX/prompts/templates/creation"),
-    Path("docs/UCX/prompts/templates/review"),
-    Path("docs/UCX/prompts/templates/remediation"),
-    Path("docs/UCX/templates"),
-    Path("docs/UCX/templates/layers"),
+    Path("UCX/skills/personas"),
+    Path("UCX/skills/layer_aliases"),
+    Path("UCX/prompts/templates/creation"),
+    Path("UCX/prompts/templates/review"),
+    Path("UCX/prompts/templates/remediation"),
+    Path("UCX/templates"),
+    Path("UCX/templates/layers"),
 ]
 
 
@@ -50,7 +50,7 @@ def test_validate_project_ucx_root_raises_for_missing_paths(tmp_path: Path) -> N
 
 def test_load_project_persona_file_reads_project_specific_persona(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
-    persona_file = tmp_path / "docs/UCX/skills/personas/architect.md"
+    persona_file = tmp_path / "UCX/skills/personas/architect.md"
     persona_file.write_text("Architect persona", encoding="utf-8")
 
     result = load_project_persona_file(project_root=tmp_path, persona="architect")
@@ -60,7 +60,7 @@ def test_load_project_persona_file_reads_project_specific_persona(tmp_path: Path
 
 def test_load_project_prompt_template_reads_project_specific_template(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
-    template_file = tmp_path / "docs/UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md"
+    template_file = tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md"
     template_file.write_text("Review prompt", encoding="utf-8")
 
     result = load_project_prompt_template(
@@ -73,7 +73,7 @@ def test_load_project_prompt_template_reads_project_specific_template(tmp_path: 
 
 def test_load_project_document_template_reads_project_specific_template(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
-    template_file = tmp_path / "docs/UCX/templates/BRD-MVP-TEMPLATE.md"
+    template_file = tmp_path / "UCX/templates/BRD-MVP-TEMPLATE.md"
     template_file.write_text("BRD tuned template", encoding="utf-8")
 
     result = load_project_document_template(
@@ -85,7 +85,7 @@ def test_load_project_document_template_reads_project_specific_template(tmp_path
 
 def test_load_project_layer_assets_reads_authoritative_layer_files(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
-    layer_root = tmp_path / "docs/UCX/templates/layers/01_BRD"
+    layer_root = tmp_path / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD md", encoding="utf-8")
     (layer_root / "BRD-MVP-TEMPLATE.yaml").write_text("doc_id: BRD-01\n", encoding="utf-8")

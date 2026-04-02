@@ -14,7 +14,7 @@ from mcp_server.cli.main import main  # noqa: E402
 
 
 def _write_schema_assets(project_root: Path) -> None:
-    layer_root = project_root / "docs/UCX/templates/layers/01_BRD"
+    layer_root = project_root / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD_MVP_SCHEMA.yaml").write_text(
         """
@@ -35,7 +35,7 @@ structure:
 
 
 def _write_ears_schema_assets(project_root: Path) -> None:
-    layer_root = project_root / "docs/UCX/templates/layers/03_EARS"
+    layer_root = project_root / "UCX/templates/layers/03_EARS"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "EARS_MVP_SCHEMA.yaml").write_text(
         """

@@ -26,36 +26,36 @@ from mcp_server.cli.main import main  # noqa: E402
 def _scaffold_creation_fixtures(project_root: Path, layer: str = "01_BRD") -> None:
     """Create minimal project UCX layout with creation assets."""
     for relative in [
-        Path("docs/UCX/skills/personas"),
-        Path("docs/UCX/skills/layer_aliases"),
-        Path("docs/UCX/prompts/templates/creation"),
-        Path("docs/UCX/prompts/templates/review"),
-        Path("docs/UCX/prompts/templates/remediation"),
-        Path("docs/UCX/templates"),
-        Path(f"docs/UCX/templates/layers/{layer}"),
+        Path("UCX/skills/personas"),
+        Path("UCX/skills/layer_aliases"),
+        Path("UCX/prompts/templates/creation"),
+        Path("UCX/prompts/templates/review"),
+        Path("UCX/prompts/templates/remediation"),
+        Path("UCX/templates"),
+        Path(f"UCX/templates/layers/{layer}"),
     ]:
         (project_root / relative).mkdir(parents=True, exist_ok=True)
 
     # Persona
-    (project_root / "docs/UCX/skills/personas/architect.md").write_text(
+    (project_root / "UCX/skills/personas/architect.md").write_text(
         "Architect domain knowledge and system design principles.", encoding="utf-8"
     )
 
     # Creation prompt template
-    (project_root / "docs/UCX/prompts/templates/creation/UCC_PROMPT_BRD_PROJECT.md").write_text(
+    (project_root / "UCX/prompts/templates/creation/UCC_PROMPT_BRD_PROJECT.md").write_text(
         "Creation template instructions for BRD generation.", encoding="utf-8"
     )
 
     # Authoritative SSD layer assets (MVP template + schema)
-    (project_root / f"docs/UCX/templates/layers/{layer}/BRD-MVP-TEMPLATE.md").write_text(
+    (project_root / f"UCX/templates/layers/{layer}/BRD-MVP-TEMPLATE.md").write_text(
         "# BRD MVP TEMPLATE\nSDD authoritative template structure.", encoding="utf-8"
     )
-    (project_root / f"docs/UCX/templates/layers/{layer}/BRD_MVP_SCHEMA.yaml").write_text(
+    (project_root / f"UCX/templates/layers/{layer}/BRD_MVP_SCHEMA.yaml").write_text(
         "schema_version: '1.0'\nrequired_sections: [0, 1, 2]\n", encoding="utf-8"
     )
 
     # Project-tuned document template (optional but present here)
-    (project_root / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").write_text(
+    (project_root / "UCX/templates/BRD-MVP-TEMPLATE.md").write_text(
         "# Project-Tuned BRD Template\nProject-specific overrides applied.", encoding="utf-8"
     )
 
@@ -161,7 +161,7 @@ def test_assemble_project_creation_prompt_includes_mcp_internal_actionable_rules
 def test_assemble_project_creation_prompt_tolerates_missing_project_template(tmp_path: Path) -> None:
     """document_template_text is None when the project-tuned template does not exist."""
     _scaffold_creation_fixtures(tmp_path)
-    (tmp_path / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
+    (tmp_path / "UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
 
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
@@ -435,7 +435,7 @@ def test_cli_create_writes_final_target_artifact(tmp_path: Path) -> None:
 
 def test_cli_create_uses_layer_template_when_project_tuned_missing(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
-    (tmp_path / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
+    (tmp_path / "UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
     target = tmp_path / "docs/01_BRD/BRD-02_platform/BRD-02_platform.md"
 
     rc = main([

@@ -15,19 +15,19 @@ from mcp_server.review import run_project_review_build  # noqa: E402
 
 def _create_project_ucx(root: Path) -> None:
     for relative in [
-        Path("docs/UCX/skills/personas"),
-        Path("docs/UCX/skills/layer_aliases"),
-        Path("docs/UCX/prompts/templates/creation"),
-        Path("docs/UCX/prompts/templates/review"),
-        Path("docs/UCX/prompts/templates/remediation"),
-        Path("docs/UCX/templates"),
-        Path("docs/UCX/templates/layers"),
+        Path("UCX/skills/personas"),
+        Path("UCX/skills/layer_aliases"),
+        Path("UCX/prompts/templates/creation"),
+        Path("UCX/prompts/templates/review"),
+        Path("UCX/prompts/templates/remediation"),
+        Path("UCX/templates"),
+        Path("UCX/templates/layers"),
     ]:
         (root / relative).mkdir(parents=True, exist_ok=True)
 
-    (root / "docs/UCX/skills/personas/architect.md").write_text("Architect persona", encoding="utf-8")
-    (root / "docs/UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template", encoding="utf-8")
-    layer_root = root / "docs/UCX/templates/layers/01_BRD"
+    (root / "UCX/skills/personas/architect.md").write_text("Architect persona", encoding="utf-8")
+    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template", encoding="utf-8")
+    layer_root = root / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
     (layer_root / "BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")

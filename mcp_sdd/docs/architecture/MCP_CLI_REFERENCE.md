@@ -13,7 +13,7 @@
 
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
-| init | --project | none | project UCX scaffold (personas, templates, schemas, prompts) under `docs/UCX/` |
+| init | --project | none | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/` |
 | create-build | --project --persona --doc-type --layer --template | --sections-json --out | creation prompt artifacts (`creation_prompt.md`, `creation_sidecar.json`) |
 | create | --project --persona --doc-type --layer --template --target | --sections-json --overwrite --out | final document artifact + creation diagnostics |
 | review-build | --project --persona --doc-type --template and one of (--sections-json, --document) | --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
@@ -158,7 +158,7 @@ Project initialization:
 ```bash
 # Initialize project UCX scaffold (run once; idempotent)
 mcp init --project /path/to/project
-# Writes: docs/UCX/skills/personas/, prompts/templates/*, templates/layers/NN_TYPE/*
+# Writes: UCX/skills/personas/, prompts/templates/*, templates/layers/NN_TYPE/*
 
 # Assemble LLM creation prompt for a BRD
 mcp create-build --project /path/to/project --persona architect --doc-type brd \

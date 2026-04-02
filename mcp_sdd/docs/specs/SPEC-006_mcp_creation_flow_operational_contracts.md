@@ -36,7 +36,7 @@ Out of scope:
 
 Normative behavior:
 - init requires project argument.
-- command scaffolds project-local docs/UCX files.
+- command scaffolds project-local UCX files.
 - existing files may be skipped without failure.
 
 Required outputs:
@@ -78,7 +78,7 @@ Required artifact names when output enabled:
 
 ## 5. Project UCX Dependency Contract
 
-Runtime must load required project-local assets from docs/UCX paths.
+Runtime must load required project-local assets from UCX paths.
 
 If required paths are missing, runtime must raise:
 - ProjectSkillsNotFound

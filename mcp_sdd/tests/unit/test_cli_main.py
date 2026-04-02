@@ -18,8 +18,8 @@ def test_main_init_command_scaffolds_project(tmp_path: Path) -> None:
     exit_code = main(["init", "--project", str(tmp_path)])
 
     assert exit_code == 0
-    assert (tmp_path / "docs/UCX/skills/personas/architect.md").exists()
-    assert (tmp_path / "docs/UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").exists()
+    assert (tmp_path / "UCX/skills/personas/architect.md").exists()
+    assert (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").exists()
 
 
 def test_main_without_command_returns_usage_error() -> None:
@@ -77,7 +77,7 @@ def test_main_review_build_generates_output_artifacts(tmp_path: Path) -> None:
 
 def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
-    layer_root = tmp_path / "docs/UCX/templates/layers/01_BRD"
+    layer_root = tmp_path / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
     (layer_root / "BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")

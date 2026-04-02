@@ -34,13 +34,13 @@ def _build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     init_parser = subparsers.add_parser("init", help="Scaffold project-specific UCX assets")
-    init_parser.add_argument("--project", required=True, help="Project root where docs/UCX will be created")
+    init_parser.add_argument("--project", required=True, help="Project root where UCX will be created")
 
     review_parser = subparsers.add_parser("review-build", help="Assemble project review prompt and diagnostics artifacts")
-    review_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    review_parser.add_argument("--project", required=True, help="Project root containing UCX")
     review_parser.add_argument("--persona", required=True, help="Persona file name without extension")
     review_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
-    review_parser.add_argument("--template", required=True, help="Template file in docs/UCX/prompts/templates/review")
+    review_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
     review_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
     review_parser.add_argument("--sections-json", default=None, help="Path to sections JSON array")
     review_parser.add_argument("--document", default=None, help="Path to document file or document directory for auto section loading")
@@ -61,10 +61,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "review",
         help="Alias for review-build (UCX_v1 compatibility)",
     )
-    review_alias_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    review_alias_parser.add_argument("--project", required=True, help="Project root containing UCX")
     review_alias_parser.add_argument("--persona", required=True, help="Persona file name without extension")
     review_alias_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
-    review_alias_parser.add_argument("--template", required=True, help="Template file in docs/UCX/prompts/templates/review")
+    review_alias_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
     review_alias_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
     review_alias_parser.add_argument("--sections-json", default=None, help="Path to sections JSON array")
     review_alias_parser.add_argument("--document", default=None, help="Path to document file or document directory for auto section loading")
@@ -82,11 +82,11 @@ def _build_parser() -> argparse.ArgumentParser:
     )
 
     create_parser = subparsers.add_parser("create-build", help="Assemble project creation prompt with SSD layer assets")
-    create_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    create_parser.add_argument("--project", required=True, help="Project root containing UCX")
     create_parser.add_argument("--persona", required=True, help="Persona file name without extension")
     create_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    create_parser.add_argument("--template", required=True, help="Template file in docs/UCX/prompts/templates/creation")
+    create_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
     create_parser.add_argument("--sections-json", default=None, help="Optional path to sections JSON array")
     create_parser.add_argument(
         "--out",
@@ -98,11 +98,11 @@ def _build_parser() -> argparse.ArgumentParser:
         "create",
         help="Create final document artifact at target path using project/layer templates",
     )
-    create_artifact_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    create_artifact_parser.add_argument("--project", required=True, help="Project root containing UCX")
     create_artifact_parser.add_argument("--persona", required=True, help="Persona file name without extension")
     create_artifact_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_artifact_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    create_artifact_parser.add_argument("--template", required=True, help="Template file in docs/UCX/prompts/templates/creation")
+    create_artifact_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
     create_artifact_parser.add_argument("--target", required=True, help="Final target document path to create")
     create_artifact_parser.add_argument("--sections-json", default=None, help="Optional path to sections JSON array")
     create_artifact_parser.add_argument("--overwrite", action="store_true", help="Overwrite target document if it exists")
@@ -116,7 +116,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate",
         help="Run script-based document structure validation against layer template/schema assets",
     )
-    validate_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    validate_parser.add_argument("--project", required=True, help="Project root containing UCX")
     validate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     validate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     validate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -133,7 +133,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "remediate",
         help="Generate deterministic remediation findings and report artifacts",
     )
-    remediate_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    remediate_parser.add_argument("--project", required=True, help="Project root containing UCX")
     remediate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     remediate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     remediate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -152,7 +152,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "remediate-fix",
         help="Generate source-protected remediated derived artifacts",
     )
-    remediate_fix_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    remediate_fix_parser.add_argument("--project", required=True, help="Project root containing UCX")
     remediate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     remediate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     remediate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -171,7 +171,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate-fix",
         help="Generate source-protected validation derived artifacts",
     )
-    validate_fix_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    validate_fix_parser.add_argument("--project", required=True, help="Project root containing UCX")
     validate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     validate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     validate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -229,7 +229,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "preflight",
         help="Run runtime and environment readiness checks before create, review, or remediation stages",
     )
-    preflight_parser.add_argument("--project", required=True, help="Project root containing docs/UCX")
+    preflight_parser.add_argument("--project", required=True, help="Project root containing UCX")
     preflight_parser.add_argument(
         "--context",
         choices=["create", "review", "remediate", "any"],

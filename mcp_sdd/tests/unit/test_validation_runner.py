@@ -15,7 +15,7 @@ from mcp_server.validation import run_project_validation_build  # noqa: E402  # 
 
 
 def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> None:
-    layer_root = project_root / f"docs/UCX/templates/layers/{layer}"
+    layer_root = project_root / f"UCX/templates/layers/{layer}"
     layer_root.mkdir(parents=True, exist_ok=True)
 
     canonical_root = project_root / f"ai_dev_ssd_flow/{layer}"
@@ -82,7 +82,7 @@ def _write_minimal_generic_layer_assets(
     artifact_prefix: str,
     required_tag: str,
 ) -> None:
-    layer_root = project_root / f"docs/UCX/templates/layers/{layer}"
+    layer_root = project_root / f"UCX/templates/layers/{layer}"
     layer_root.mkdir(parents=True, exist_ok=True)
 
     canonical_root = project_root / f"ai_dev_ssd_flow/{layer}"
@@ -144,7 +144,7 @@ def test_run_project_validation_build_uses_canonical_yaml_template_not_project_l
     _write_minimal_layer_assets(tmp_path)
 
     # Make project-layer template deliberately incompatible with the document.
-    layer_root = tmp_path / "docs/UCX/templates/layers/01_BRD"
+    layer_root = tmp_path / "UCX/templates/layers/01_BRD"
     (layer_root / "BRD-MVP-TEMPLATE.yaml").write_text(
         """
 id: BRD-01

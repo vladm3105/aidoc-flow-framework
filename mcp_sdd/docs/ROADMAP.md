@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.9.0 |
-| Latest Release | 1.9.0 (review report parsing in sdd_remediate) |
-| Previous Release | 1.8.0 (YAML parity, categorized scoring, API aliases) |
+| Current Version | 1.10.0 |
+| Latest Release | 1.10.0 (UCX root relocation) |
+| Previous Release | 1.9.0 (review report parsing in sdd_remediate) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -252,6 +252,29 @@ Delivered scope:
 References:
 
 - plans/PLAN-019_remediation_build_enhancement.md
+
+---
+
+### v1.10.0 - UCX Root Relocation
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | Relocate UCX from docs/UCX/ to project root UCX/ |
+
+Delivered scope:
+
+- All UCX paths relocated from `docs/UCX/` to `UCX/`
+- Centralized `resolve_ucx_root()` with backward-compatible fallback
+- Auto-migration in `sdd_init` (detects and moves `docs/UCX/` → `UCX/`)
+- 22 files updated (~100 path references)
+- 2 projects migrated (docs_flow_framework, b-local-docs)
+
+References:
+
+- plans/PLAN-020_ucx_root_relocation.md
 
 ---
 

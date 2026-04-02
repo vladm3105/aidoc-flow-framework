@@ -46,12 +46,12 @@ def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
 
     assert result.created_count >= 6
     assert result.skipped_count == 0
-    assert (project_root / "docs/UCX/skills/personas/architect.md").exists()
-    assert (project_root / "docs/UCX/skills/layer_aliases/default.yaml").exists()
-    assert (project_root / "docs/UCX/prompts/templates/review/base.md").exists()
-    assert (project_root / "docs/UCX/templates/BRD-MVP-TEMPLATE.md").exists()
-    assert (project_root / "docs/UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.yaml").exists()
-    assert (project_root / "docs/UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").exists()
+    assert (project_root / "UCX/skills/personas/architect.md").exists()
+    assert (project_root / "UCX/skills/layer_aliases/default.yaml").exists()
+    assert (project_root / "UCX/prompts/templates/review/base.md").exists()
+    assert (project_root / "UCX/templates/BRD-MVP-TEMPLATE.md").exists()
+    assert (project_root / "UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.yaml").exists()
+    assert (project_root / "UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").exists()
 
 
 def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) -> None:
@@ -61,7 +61,7 @@ def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) 
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
 
-    existing = project_root / "docs/UCX/skills/personas/architect.md"
+    existing = project_root / "UCX/skills/personas/architect.md"
     existing.parent.mkdir(parents=True, exist_ok=True)
     existing.write_text("project override", encoding="utf-8")
 

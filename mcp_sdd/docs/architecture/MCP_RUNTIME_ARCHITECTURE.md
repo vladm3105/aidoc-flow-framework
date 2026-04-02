@@ -50,7 +50,7 @@ Out of scope:
 | Scan runner | mcp_sdd/src/mcp_server/scan/runner.py | Aggregate finding categories from JSON reports |
 | Scoring runner | mcp_sdd/src/mcp_server/scoring/runner.py | Compute, validate, and compare deterministic report scores |
 | Project UCX loader | mcp_sdd/src/mcp_server/skills/project_ucx_loader.py | Resolve project-local personas/templates/layer assets and enforce missing-path errors |
-| UCX scaffold | mcp_sdd/src/mcp_server/skills/scaffold.py | Initialize project-local docs/UCX file structure |
+| UCX scaffold | mcp_sdd/src/mcp_server/skills/scaffold.py | Initialize project-local UCX file structure |
 
 ---
 
@@ -60,7 +60,7 @@ Out of scope:
 
 1. CLI parses init command with project argument.
 2. Runtime resolves project root path.
-3. Scaffold service creates project-local docs/UCX directories and files.
+3. Scaffold service creates project-local UCX directories and files.
 4. CLI reports created and skipped counts.
 
 ### 4.2 create-build flow
@@ -92,7 +92,7 @@ Implemented behavior note:
 2. Runtime resolves document file or document directory input.
    - If input is a markdown file and parent folder has one canonical source artifact, validation redirects to that canonical source for any non-source markdown input.
    - This canonical redirection behavior applies across all document layers.
-3. Validation runner loads project layer schema/template assets from docs/UCX/templates/layers/{layer}.
+3. Validation runner loads project layer schema/template assets from UCX/templates/layers/{layer}.
 4. Validation checks execute for required frontmatter custom fields, required tags, and required section regex patterns.
 5. Validation runner emits validation_report.json and validation_report.txt when output path is configured.
 6. CLI returns exit code 0 for pass and 1 for fail.

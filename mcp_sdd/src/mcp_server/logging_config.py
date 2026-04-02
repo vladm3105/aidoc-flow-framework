@@ -1,6 +1,6 @@
 """Structured logging for mcp_sdd operations.
 
-Writes JSON-lines logs to {project_root}/docs/UCX/logs/mcp_sdd.log.
+Writes JSON-lines logs to {project_root}/UCX/logs/mcp_sdd.log.
 Falls back to stderr if the log directory cannot be created.
 """
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 
-_LOG_SUBDIR = "docs/UCX/logs"
+_LOG_SUBDIR = "UCX/logs"
 _LOG_FILENAME = "mcp_sdd.log"
 _configured_project_root: Path | None = None
 _file_handler: logging.FileHandler | None = None
@@ -53,6 +53,10 @@ def configure_logging(project_root: Path) -> Path | None:
         return Path(_file_handler.baseFilename)
 
     log_dir = project_root / _LOG_SUBDIR
+    if not log_dir.parent.exists():
+        legacy_dir = project_root / "docs" / "UCX" / "logs"
+        if legacy_dir.parent.exists():
+            log_dir = legacy_dir
     try:
         log_dir.mkdir(parents=True, exist_ok=True)
     except OSError:
