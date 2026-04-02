@@ -2,52 +2,93 @@
 
 ## Context
 
-Full tool testing of all 20 mcp_sdd tools against BRD-03 (YAML format) revealed 4 issues where tools assume `.md` input or have inconsistent APIs. These tools work correctly for MD documents but fail or produce incorrect results for YAML-format SDD artifacts.
+Full tool testing of all 20 mcp_sdd tools against BRD-03 (YAML format) revealed 6 issues where tools assume `.md` input or have inconsistent APIs. These tools work correctly for MD documents but fail or produce incorrect results for YAML-format SDD artifacts.
 
 **Goal**: Ensure all mcp_sdd tools handle YAML documents on par with MD documents, and normalize result class APIs.
 
 **Status**: Planned
 
-**Scope**: `mcp_sdd` server code only
+**Scope**: `mcp_sdd` server code only. `sdd_create` / `sdd_create_build` testing is out of scope (separate plan).
 
 ---
 
 ## Issues Found
 
-### Issue 1: `sdd_consistency` expects `.md` source artifacts
+### Issue 1: `sdd_consistency` expects `.md` source and derived artifacts
 
 **Tool**: `sdd_consistency` (`consistency/runner.py`)
 **Symptom**: Reports `missing_source_artifact` and `BLOCKED` for YAML-only BRD directories.
-**Root cause**: `_find_source_artifact()` searches for `[A-Z]+-\d+_.+\.md` pattern. YAML files (`*.yaml`) are not recognized as source artifacts.
+**Root cause**: Multiple hardcoded `.md` assumptions:
+  - `_resolve_source()` (line 56): `folder.glob("*.md")` — misses `.yaml` source artifacts
+  - Derived artifact detection (lines 85-87): constructs `_validation.md` and `_remediated.md` paths — misses `.yaml` variants
+  - Validation report lookup (line 85): looks for `{doc_id}_validation_report.md` — but we write `.json`
 **Impact**: Consistency check is unusable for YAML documents — blocks the lifecycle pipeline.
 
-**Fix**: Add `.yaml`/`.yml` glob alongside `.md` in source artifact detection. Apply same `_validation`/`_remediated` exclusion filter used in validation runner.
+**Fix**:
+  - `_resolve_source()`: Search both `*.md` and `*.yaml` with `_validation`/`_remediated` exclusion
+  - Derived artifact detection: Check for both `.md` and `.yaml` validation/remediated copies
+  - Validation report: Check `.json` in addition to `.md`
+  - Use shared `collect_source_files()` utility (Issue #6)
 
 ### Issue 2: `sdd_next_action` doesn't detect YAML artifacts
 
 **Tool**: `sdd_next_action` (`tool_registry.py:_inspect_document_folder()`)
-**Symptom**: After full remediation pipeline on YAML BRD, reports stage as "reviewed" instead of "remediated". Recommends `sdd_remediate` when remediation is already complete.
-**Root cause**: `_inspect_document_folder()` only searches for `.md` files:
+**Symptom**: After full remediation pipeline on YAML BRD, reports stage as "reviewed" instead of "remediated". YAML files not included in `existing_artifacts` list.
+**Root cause**: Three `.md`-only assumptions:
+  - `md_files = sorted(document_dir.glob("*.md"))` — YAML not collected
+  - `all_names` built from `md_files + json_files` only — YAML invisible
   - `source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.md$")` — misses `.yaml`
-  - `has_validation_copy = any("_validation" in f.stem for f in md_files)` — only checks `.md`
-  - `has_remediated_copy = any("_remediated" in f.stem for f in md_files)` — only checks `.md`
-**Impact**: Pipeline orchestration gives wrong recommendations for YAML documents.
+  - `has_validation_copy`, `has_remediated_copy` check only `md_files`
+**Impact**: Pipeline orchestration gives wrong recommendations and incomplete artifact lists for YAML documents.
 
-**Fix**: Include `.yaml` files in artifact detection alongside `.md`. Check both extensions for source, validation, and remediated copies.
+**Fix**:
+  - Add `yaml_files = sorted(document_dir.glob("*.yaml"))` 
+  - Include in `all_names`
+  - Expand `source_pattern` to match `.yaml`
+  - Check both `md_files` and `yaml_files` for validation/remediated copies
 
 ### Issue 3: Scoring formula weights cross-section errors same as structural errors
 
 **Tool**: `sdd_score_show` / `sdd_score_validate` (`scoring/runner.py`)
-**Symptom**: 9 cross-section warnings (SDD-XS-001 phantom IDs) scored as 9 × 20 = 180 deductions → score 0. These are content-level issues, not structural failures.
-**Root cause**: Generic scoring formula `score = max(0, 100 - (errors * 20) - (warnings * 5))` doesn't distinguish error categories. A single SDD-XS-001 error (phantom traceability ID) costs the same as a missing required section.
+**Symptom**: 9 cross-section errors (SDD-XS-001 phantom IDs) scored as 9 x 20 = 180 deductions → score 0. These are content-level issues, not structural failures.
+**Root cause**: `_derive_score()` reads flat `summary.errors` count. No distinction between error categories. Formula: `score = max(0, 100 - (errors * 20) - (warnings * 5))`.
 **Impact**: Score is misleading — a BRD with 5+ cross-section issues always scores 0, masking the actual document quality.
 
-**Fix**: Introduce error weight categories:
-  - `structural_error`: 20 points (missing section, missing frontmatter) — current weight
-  - `cross_section_error`: 10 points (SDD-XS, BRD-XS rules) — reduced weight
-  - `warning`: 5 points (current weight, unchanged)
+**Fix** (two-part):
 
-Implementation: Add `error_category` field to validation report errors (e.g., prefix-based: `SDD-XS-*` and `BRD-XS-*` are cross-section). Scoring runner checks prefix to determine weight.
+**Part A — Validation runner emits categorized counts**: Add `structural_errors` and `cross_section_errors` to the report `summary` dict. The validation runner already knows the category when appending errors (cross-section rules are called in a separate block). Count errors before and after cross-section checks to derive the split.
+
+```python
+# In runner.py report summary:
+"summary": {
+    "errors": len(errors),                    # total (backward compat)
+    "structural_errors": structural_count,    # new
+    "cross_section_errors": xs_count,         # new
+    "warnings": len(warnings),
+    "passes": len(passes),
+    "is_valid": is_valid,
+}
+```
+
+**Part B — Scoring runner uses categorized weights**: Update `_derive_score()`:
+
+```python
+structural = int(summary.get("structural_errors", summary.get("errors", 0)))
+cross_section = int(summary.get("cross_section_errors", 0))
+warnings = int(summary.get("warnings", 0))
+
+# If categorized counts available, use weighted formula
+if "structural_errors" in summary:
+    score = max(0, 100 - (structural * 20) - (cross_section * 10) - (warnings * 5))
+else:
+    # Backward compat: old reports without categories
+    score = max(0, 100 - (structural * 20) - (warnings * 5))
+```
+
+Weights:
+  - `structural_error`: 20 points (missing section, missing frontmatter)
+  - `cross_section_error`: 10 points (SDD-XS, BRD-XS rules)
+  - `warning`: 5 points (unchanged)
 
 ### Issue 4: Result class API inconsistency
 
@@ -70,7 +111,7 @@ Implementation: Add `error_category` field to validation report errors (e.g., pr
 | validate_fix | `ValidateFixRunResult` | `report` | — |
 | remediate_fix | `RemediateFixRunResult` | `report` | — |
 
-**Fix**: Add a uniform `report` property alias to all result classes that currently use `payload`. This is non-breaking — existing `payload` attribute stays, `report` is added as an alias. Also add `is_valid` alias where `passed` is used.
+**Fix**: Add `@property` aliases to frozen dataclasses. Non-breaking — existing attributes stay, aliases added. Properties work on `@dataclass(frozen=True)` since they don't set instance attributes.
 
 ```python
 @property
@@ -82,28 +123,6 @@ def is_valid(self) -> bool:
     return self.passed
 ```
 
----
-
-## File Changes
-
-| File | Action | Issue | Est. Lines |
-|------|--------|-------|-----------|
-| `consistency/runner.py` | Add YAML source detection | #1 | +15 |
-| `tool_registry.py` | Add YAML to `_inspect_document_folder()` | #2 | +10 |
-| `scoring/runner.py` | Category-weighted scoring | #3 | +20 |
-| `validation/runner.py` | Add error category prefix to cross-section errors | #3 | +5 |
-| `validation/cross_section.py` | Tag errors with `[cross-section]` category | #3 | +5 |
-| `validation/brd_rules.py` | Tag errors with `[cross-section]` category | #3 | +5 |
-| `consistency/runner.py` | Add `report` + `is_valid` aliases | #4 | +8 |
-| `link_validation/runner.py` | Add `report` + `is_valid` aliases | #4 | +8 |
-| `preflight/runner.py` | Add `report` + `is_ready` aliases | #4 | +8 |
-| `scoring/runner.py` | Add `report` alias to ScoreShowResult | #4 | +5 |
-| `remediation/runner.py` | YAML structure validation | #5 | +40 |
-| `utils/source_files.py` | Create shared source file collector | #6 | ~50 |
-| `validation/runner.py` | Use shared collector | #6 | -20 (remove duplication) |
-| `remediation/runner.py` | Use shared collector | #6 | -10 (remove duplication) |
-| Tests (new/updated) | Cover YAML parity + scoring weights + structure | All | ~200 |
-
 ### Issue 5: YAML structure validation in remediation (absorbed from PLAN-019)
 
 **Tool**: `sdd_remediate` (`remediation/runner.py`)
@@ -112,9 +131,9 @@ def is_valid(self) -> bool:
 **Impact**: Remediation report is near-empty for YAML documents.
 
 **Fix**: Add YAML structure validation when document is `.yaml/.yml`:
-- **Required top-level keys**: Verify expected keys exist per doc_type (BRD: `metadata`, `document_control`, `executive_summary`, `functional_requirements`, `traceability`)
-- **Element ID format**: Verify `id:` values match `TYPE.NN.hash` pattern
-- **Empty section detection**: Flag sections that exist but have no content
+- **Required top-level keys**: Load from the layer template (`BRD-TEMPLATE.yaml` sections list) via `_load_layer_yaml_template()` — not hardcoded per doc_type. Extract section names from template and verify they exist as top-level keys in the document YAML.
+- **Element ID format**: Verify `id:` values match `TYPE.NN.hash` pattern (`^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`)
+- **Empty section detection**: Flag sections that are `null`, empty dict `{}`, or empty list `[]`
 
 ### Issue 6: Shared source file collection utility
 
@@ -122,43 +141,76 @@ def is_valid(self) -> bool:
 **Symptom**: Three runners independently implement YAML/MD file collection with `_validation`/`_remediated` exclusion. Pattern duplicated across files.
 **Root cause**: YAML support added incrementally (PLAN-016 added to validation only).
 
-**Fix**: Create shared `mcp_sdd/src/mcp_server/utils/source_files.py` with:
+**Fix**: Create shared `mcp_sdd/src/mcp_server/utils/source_files.py`:
+
 ```python
-def collect_source_files(document_path: Path, extensions: tuple[str, ...] = (".md", ".yaml", ".yml")) -> list[Path]:
-    """Collect source document files, excluding templates and derived copies."""
+def collect_source_files(
+    document_path: Path,
+    extensions: tuple[str, ...] = (".md", ".yaml", ".yml"),
+) -> list[Path]:
+    """Collect source document files, excluding templates and derived copies.
+    
+    Handles both file and directory inputs. Excludes:
+    - *_validation.* (derived validation copies)
+    - *_remediated.* (derived remediated copies)
+    - *TEMPLATE* (template files)
+    - *REVIEW*, *REPORT* (review/audit artifacts)
+    """
 ```
-Replace `_collect_markdown_files` and `_collect_yaml_files` in all runners with this shared utility.
+
+Wire into each runner as it's fixed (not as a separate step).
 
 ---
 
-**Total**: ~350 lines across 12+ files
+## File Changes
+
+| File | Action | Issue | Est. Lines |
+|------|--------|-------|-----------|
+| `utils/source_files.py` | **Create** shared collector | #6 | ~60 |
+| `consistency/runner.py` | YAML source + derived detection, use shared collector, add `report`/`is_valid` aliases | #1, #4, #6 | +30 |
+| `tool_registry.py` | YAML in `_inspect_document_folder()` — all_names, source, validation, remediated | #2 | +15 |
+| `scoring/runner.py` | Category-weighted scoring, add `report` alias | #3, #4 | +25 |
+| `validation/runner.py` | Emit `structural_errors`/`cross_section_errors` in summary, use shared collector | #3, #6 | +15 |
+| `link_validation/runner.py` | Add `report`/`is_valid` aliases | #4 | +8 |
+| `preflight/runner.py` | Add `report`/`is_ready` aliases | #4 | +8 |
+| `remediation/runner.py` | YAML structure validation, use shared collector | #5, #6 | +50 |
+| `tests/unit/test_source_files.py` | **Create** — shared collector tests | #6 | ~80 |
+| `tests/unit/test_yaml_parity.py` | **Create** — consistency, next_action, scoring YAML tests | #1-3 | ~120 |
+| `tests/unit/test_api_aliases.py` | **Create** — result class alias tests | #4 | ~60 |
+
+**Total**: ~470 lines across 11 files
 
 ---
 
 ## Implementation Order
 
-1. Create shared `utils/source_files.py` (Issue #6)
-2. Fix `sdd_consistency` YAML source detection (Issue #1)
-3. Fix `sdd_next_action` YAML artifact detection (Issue #2)
-4. Add YAML structure validation to `sdd_remediate` (Issue #5)
-5. Add error category prefix to cross-section validation errors (Issue #3)
-6. Update scoring formula for category-weighted errors (Issue #3)
-7. Add result class API aliases (Issue #4)
-8. Wire shared source file collector into all runners
-9. Write tests
-10. Run full test suite
-11. Re-test all 20 tools against BRD-03
+1. Create `utils/source_files.py` shared collector (Issue #6)
+2. Fix `sdd_consistency` — YAML source + derived detection, use shared collector, add aliases (Issues #1, #4, #6)
+3. Fix `sdd_next_action` — YAML artifacts in `_inspect_document_folder()` (Issue #2)
+4. Add YAML structure validation to `sdd_remediate`, use shared collector (Issues #5, #6)
+5. Emit categorized error counts in `validation/runner.py` (Issue #3 Part A)
+6. Update `_derive_score()` in `scoring/runner.py` for category weights (Issue #3 Part B)
+7. Add `report`/`is_valid` aliases to remaining result classes (Issue #4)
+8. Wire shared collector into `validation/runner.py` replacing `_collect_markdown_files` + `_collect_yaml_files` (Issue #6)
+9. Write tests for all changes
+10. Run full test suite (existing 163 + new)
+11. Re-test all 20 tools against BRD-03 YAML
+12. Test `sdd_run_lifecycle` pipeline end-to-end on YAML BRD
 
 ---
 
 ## Verification
 
-1. `python -m pytest mcp_sdd/tests/unit/ -v` — all pass
-2. `sdd_consistency` on YAML BRD → detects source artifact, no BLOCKED
-3. `sdd_next_action` on YAML BRD after remediation → stage "remediated", next "review" or "complete"
-4. `sdd_score_show` on 9 cross-section errors → score > 0 (not zero)
-5. All result classes accessible via both `report` and `payload` (where applicable)
-6. All result classes accessible via both `is_valid` and `passed` (where applicable)
+1. `python -m pytest mcp_sdd/tests/unit/ -v` — all existing + new tests pass
+2. `sdd_consistency` on YAML BRD → detects source artifact and derived copies, no BLOCKED
+3. `sdd_next_action` on YAML BRD after remediation → stage "remediated", YAML files in artifacts list
+4. `sdd_score_show` on 9 cross-section errors → score > 0 (not zero), categorized counts in output
+5. `sdd_score_validate` with threshold=85 → uses weighted formula
+6. `sdd_remediate` on YAML BRD → reports missing keys, invalid IDs, empty sections (not just "review linked")
+7. All result classes accessible via both `report` and `payload` (where applicable)
+8. All result classes accessible via both `is_valid` and `passed` (where applicable)
+9. `sdd_run_lifecycle` pipeline (validate → validate_fix → review) completes on YAML BRD
+10. Shared `collect_source_files()` used in validation, consistency, and remediation runners
 
 ---
 
@@ -167,8 +219,18 @@ Replace `_collect_markdown_files` and `_collect_yaml_files` in all runners with 
 | Risk | Mitigation |
 |------|-----------|
 | API aliases break existing callers | Additive only — `payload`/`passed` stay, `report`/`is_valid` added |
-| Scoring weight change affects existing quality gates | Cross-section errors are new (PLAN-016) — no existing gates use them |
-| YAML parity in consistency may miss MD-specific checks | YAML path skips frontmatter/section checks (appropriate) |
+| Scoring weight change affects existing gates | Backward compat: old reports without categories use original formula |
+| YAML parity in consistency may miss MD checks | YAML path skips frontmatter/section checks (appropriate for structured data) |
+| Template loading for YAML structure validation | Reuse existing `_load_layer_yaml_template()` — already tested |
+| Shared collector breaks existing file selection | Keep existing private functions as deprecated wrappers calling shared utility |
+
+---
+
+## Out of Scope
+
+- `sdd_create` / `sdd_create_build` testing — separate plan, not YAML parity related
+- Review report parsing for remediation — PLAN-019 (depends on this plan)
+- UCX relocation — PLAN-020 (independent)
 
 ---
 
