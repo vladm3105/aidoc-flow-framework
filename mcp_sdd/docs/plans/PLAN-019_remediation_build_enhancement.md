@@ -49,21 +49,33 @@ custom_fields:
 Extract score, counts, and recommendation directly.
 
 **Strategy B — Table row parsing** (detailed findings):
-Two table formats to support:
+Three table formats to support (different column counts):
 
-1. **Section 4 "Required Remediations"** (preferred — has actionable detail):
+1. **Section 4 "Required Remediations"** (preferred — 6 columns, has actionable detail):
    ```
    | R1 | P0 | `target_file.md` | Section ref | Remediation text | Source |
    ```
    Regex: `r'\|\s*(R\d+)\s*\|\s*(P[012])\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'`
 
-2. **Sections 2-3 "Critical/High Findings"** (fallback — descriptive, not actionable):
+2. **Sections 2-3 "Critical/High Findings"** (fallback — 5 columns):
    ```
    | REM-P0-001 | Finding text | Expert | Section | Impact |
    ```
    Regex: supports both `REM-P0-NNN` and `P0-N` ID patterns.
 
-**Priority**: Parse Section 4 first. If found, use remediation text as `recommended_action`. If Section 4 absent, fall back to Sections 2-3 findings.
+3. **Section 5 "Enhancement Recommendations"** (P2 — 4 columns, no Section column):
+   ```
+   | REM-P2-001 | Finding text | Expert | Value Add |
+   ```
+   Different column count from P0/P1 tables. Parser uses flexible column detection or separate regex.
+
+**Priority**: Parse Section 4 first. If found, use remediation text as `recommended_action`. If Section 4 absent, fall back to Sections 2-3 + Section 5 findings.
+
+**Text cleanup**: Remediation text from Section 4 may contain markdown formatting (`**bold**`, backtick code refs, long multi-sentence text). Parser must:
+- Strip `**` bold markers
+- Strip backtick formatting
+- Truncate `recommended_action` to ~300 chars (append "..." if truncated)
+- Keep `message` at full length for the finding entry
 
 **Fallback**: If parsing extracts 0 findings, keep the existing "Review report linked" tier2 finding unchanged. Never replace a working fallback with an empty result.
 
@@ -107,12 +119,16 @@ if review_report is not None and review_report.exists():
     findings.append(_build_finding_entry(..., message="Review report linked..."))
 
 # Proposed:
+_review_summary_data: dict[str, object] | None = None  # stored for report dict
+
 if review_report is not None and review_report.exists():
     from mcp_server.remediation.review_parser import parse_review_report
     review_summary, review_findings = parse_review_report(review_report)
     
     if review_findings:
-        for rf in review_findings:
+        # Cap at 50 findings to avoid prompt inflation
+        capped = review_findings[:50]
+        for rf in capped:
             findings.append(_build_finding_entry(
                 file_path=str(review_report),
                 doc_type=doc_type, layer=layer,
@@ -122,11 +138,42 @@ if review_report is not None and review_report.exists():
                 recommended_action=rf.recommended_action,
                 finding_ids=finding_ids, action_ids=action_ids,
             ))
-        # Add review summary to report
-        report["review_summary"] = dataclasses.asdict(review_summary) if review_summary else None
+        if len(review_findings) > 50:
+            findings.append(_build_finding_entry(
+                file_path=str(review_report),
+                doc_type=doc_type, layer=layer,
+                category="review_finding_overflow",
+                severity="tier2",
+                message=f"{len(review_findings) - 50} additional review findings not shown (see review report)",
+                recommended_action="review_full_report",
+                finding_ids=finding_ids, action_ids=action_ids,
+            ))
+        # Store review summary for report dict (added at report construction below)
+        if review_summary:
+            import dataclasses
+            _review_summary_data = dataclasses.asdict(review_summary)
     else:
         # Fallback: keep pointer if parsing returned nothing
         findings.append(_build_finding_entry(..., message="Review report linked..."))
+
+# ... later, at report dict construction:
+report: dict[str, object] = {
+    ...
+    "review_summary": _review_summary_data,  # None if no summary parsed
+}
+```
+
+### 3. Update `remediation/__init__.py`
+
+Add `parse_review_report` to `__all__` exports:
+
+```python
+from .review_parser import parse_review_report
+
+__all__ = [
+    ...existing exports...,
+    "parse_review_report",
+]
 ```
 
 ### ~~3. Enhanced remediate_fix prompt~~ — Already done
@@ -139,16 +186,17 @@ if review_report is not None and review_report.exists():
 
 | File | Action | Est. Lines |
 |------|--------|-----------|
-| `mcp_sdd/src/mcp_server/remediation/review_parser.py` | **Create** — frontmatter + table parsing | ~150 |
-| `mcp_sdd/src/mcp_server/remediation/runner.py` | **Modify** — wire parsed findings, add review_summary | +30 |
-| `mcp_sdd/tests/unit/test_review_parser.py` | **Create** — parser tests | ~180 |
+| `mcp_sdd/src/mcp_server/remediation/review_parser.py` | **Create** — frontmatter + table parsing + text cleanup | ~170 |
+| `mcp_sdd/src/mcp_server/remediation/runner.py` | **Modify** — wire parsed findings, review_summary, 50-cap | +40 |
+| `mcp_sdd/src/mcp_server/remediation/__init__.py` | **Modify** — add `parse_review_report` export | +2 |
+| `mcp_sdd/tests/unit/test_review_parser.py` | **Create** — parser tests | ~200 |
 | `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.9.0.md` | **Create** | ~40 |
 | `mcp_sdd/docs/ROADMAP.md` | **Modify** — add v1.9.0 | +15 |
 | `mcp_sdd/docs/README.md` | **Modify** — add changelog link | +1 |
 | `changelog/CHANGELOG_v0.16.0.md` | **Create** | ~30 |
 | `roadmap/ROADMAP.md` | **Modify** — add v0.16.0 | +15 |
 
-**Total**: ~460 lines across 8 files
+**Total**: ~500 lines across 9 files
 
 ---
 
@@ -220,14 +268,27 @@ if review_report is not None and review_report.exists():
 - `test_parse_remediation_priority_mapping` — P0 → tier1, P1 → tier1, P2 → tier2
 - `test_parse_remediation_text_as_action` — remediation text becomes recommended_action
 
-**Section 2-3 finding tables (fallback)**:
+**Section 2-3 finding tables (fallback, 5 columns)**:
 - `test_parse_finding_table_rem_id_pattern` — `REM-P0-001` ID format
 - `test_parse_finding_table_short_id_pattern` — `P0-1` ID format
 - `test_parse_fallback_when_no_section_4` — only Sections 2-3 present
 
+**Section 5 P2 table (4 columns)**:
+- `test_parse_p2_table_4_columns` — `REM-P2-001` with Value Add column (no Section)
+- `test_parse_p2_severity_tier2` — P2 findings mapped to tier2
+
+**Text cleanup**:
+- `test_strip_markdown_bold` — `**bold text**` → `bold text`
+- `test_strip_backticks` — `` `code` `` → `code`
+- `test_truncate_long_action` — action >300 chars truncated with "..."
+
+**Wiring**:
+- `test_findings_capped_at_50` — 60 review findings → 50 entries + 1 overflow note
+- `test_review_summary_in_report` — verify `review_summary` key in remediation report dict
+
 **Integration**:
 - `test_parse_returns_empty_on_unparseable` — garbage input → (None, [])
-- `test_parse_full_brd03_report` — real BRD-03 review report (if available in test)
+- `test_parse_full_brd03_report` — real BRD-03 review report
 
 ---
 
