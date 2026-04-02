@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.10.0 |
-| Latest Release | 1.10.0 (UCX root relocation) |
-| Previous Release | 1.9.0 (review report parsing in sdd_remediate) |
+| Current Version | 1.11.0 |
+| Latest Release | 1.11.0 (unified report naming standard) |
+| Previous Release | 1.10.0 (UCX root relocation) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -275,6 +275,29 @@ Delivered scope:
 References:
 
 - plans/PLAN-020_ucx_root_relocation.md
+
+---
+
+### v1.11.0 - Unified Report Naming Standard
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | Unified report naming: {DOC-ID}.{STAGE}.{FORMAT} |
+
+Delivered scope:
+
+- Report naming convention with sub-framework registry (sdd, gov, kb)
+- `extract_doc_id()` helper, `REPORT_PATTERN`/`DERIVED_COPY_PATTERN` regex
+- Derived copies: `_validate_copy`/`_remediate_copy`
+- Standards document: `REPORT_NAMING_STANDARDS.md`
+- 1,089 legacy reports deleted (clean break)
+
+References:
+
+- plans/PLAN-021_sdd_reporting_naming_standard.md
 
 ---
 

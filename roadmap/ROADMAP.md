@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.17.0 |
-| Latest Release | 0.17.0 (UCX root relocation) |
-| Previous Minor | 0.16.0 (review report parsing in sdd_remediate) |
+| Current Version | 0.18.0 |
+| Latest Release | 0.18.0 (unified report naming standard) |
+| Previous Minor | 0.17.0 (UCX root relocation) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,29 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.18.0 - Unified Report Naming Standard
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | mcp_sdd v1.11.0: unified report naming, sub-framework registry, legacy cleanup |
+
+Delivered scope:
+
+- `{DOC-ID}.{STAGE}.{FORMAT}` naming convention
+- Sub-framework codes: sdd, gov, kb
+- REPORT_NAMING_STANDARDS.md framework standard
+- 1,089 legacy reports deleted from b-local-docs
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-021_sdd_reporting_naming_standard.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.11.0.md
+
+---
 
 ### v0.17.0 - UCX Root Relocation
 

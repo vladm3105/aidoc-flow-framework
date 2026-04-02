@@ -6,7 +6,7 @@ Report naming across the SDD framework is inconsistent — 6 different patterns 
 
 **Goal**: Define and implement a unified report naming standard for the SDD framework across all sub-frameworks (sdd-lifecycle, project-governance, project-knowledge).
 
-**Status**: Planned
+**Status**: Implemented (2026-04-02, mcp_sdd v1.11.0 / framework v0.18.0)
 
 **Target Release**: mcp_sdd v1.11.0 / docs_flow_framework v0.18.0
 
