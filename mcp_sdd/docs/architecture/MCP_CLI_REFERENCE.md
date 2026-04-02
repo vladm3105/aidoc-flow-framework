@@ -18,12 +18,12 @@
 | create | --project --persona --doc-type --layer --template --target | --sections-json --overwrite --out | final document artifact + creation diagnostics |
 | review-build | --project --persona --doc-type --template and one of (--sections-json, --document) | --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
 | review | same as review-build | same as review-build | alias for review-build |
-| validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status |
+| validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | validate-fix | --project --doc-type --layer --document | --validation-report --out | `TYPE-NN_{slug}_validation.md` derived copy written alongside source, plus fix report |
-| remediate | --project --doc-type --layer --document | --review-report --out | remediation report |
+| remediate | --project --doc-type --layer --document | --review-report --out | remediation report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), plus apply report |
 | prescreen | --document | --out | prescreen candidate report |
-| consistency | --target | --format {text,json} --out | artifact lineage and stage-consistency report |
+| consistency | --target | --format {text,json} --out | artifact lineage and stage-consistency report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | preflight | --project | --context {create,review,remediate,any} --document --format {text,json} --out | runtime and environment readiness report |
 | scan | --report-file | --out | category-count scan report |
 | scoring show | --report-file | none | score payload |

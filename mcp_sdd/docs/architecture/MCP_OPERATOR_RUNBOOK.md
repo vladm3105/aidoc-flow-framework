@@ -219,7 +219,16 @@ Expected behavior:
 
 - validate-fix or remediate-fix may omit `source_protection_telemetry` when no canonical source files were monitored, such as section-folder copy flows.
 
-### Scenario G: remediation finding IDs appear to change between reruns
+### Scenario G: YAML document troubleshooting
+
+Applicable when operating on `.yaml` source documents:
+
+- Frontmatter check is skipped for `.yaml` files. YAML documents are structured data, not Markdown with frontmatter.
+- Derived copies (`_validation.yaml`, `_remediated.yaml`) are excluded from source artifact detection during folder resolution.
+- Scoring uses categorized weights: structural errors (20pt deduction), cross-section errors (10pt deduction), warnings (5pt deduction).
+- If validation reports unexpected frontmatter failures on a YAML file, confirm the runner is using YAML-aware check dispatch rather than the Markdown path.
+
+### Scenario H: remediation finding IDs appear to change between reruns
 
 Expected behavior:
 

@@ -74,6 +74,10 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 - Link cycles via `@depends: BRD-01` in traceability section
 - Target: 200-400 lines per BRD instance
 
+## Document Formats
+
+BRDs can be authored in YAML (`.yaml`) or Markdown (`.md`). Both formats are validated by `sdd_validate` with cross-section consistency rules. YAML format enables structured validation (required keys, element ID format, empty section detection) in addition to standard checks.
+
 ## BRD Types
 
 | Type | Filename Pattern | Purpose |

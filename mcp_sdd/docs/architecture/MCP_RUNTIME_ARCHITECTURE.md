@@ -97,6 +97,8 @@ Implemented behavior note:
 5. Validation runner emits validation_report.json and validation_report.txt when output path is configured.
 6. CLI returns exit code 0 for pass and 1 for fail.
 
+Document format support: The validation pipeline supports both `.md` and `.yaml` document formats. YAML documents follow the same lifecycle pipeline with YAML-specific structure validation (required keys, element ID format, empty section detection) applied during the validation and remediation stages. Frontmatter checks are skipped for `.yaml` files since YAML documents are structured data, not Markdown with frontmatter.
+
 ### 4.5 fix and remediation flow
 
 1. `validate-fix` generates `_validation` derived artifact(s) with source protection enabled.
