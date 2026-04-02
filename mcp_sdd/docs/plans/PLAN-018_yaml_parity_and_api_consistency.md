@@ -178,7 +178,21 @@ Wire into each runner as it's fixed (not as a separate step).
 | `tests/unit/test_yaml_parity.py` | **Create** — consistency, next_action, scoring YAML tests | #1-3 | ~120 |
 | `tests/unit/test_api_aliases.py` | **Create** — result class alias tests | #4 | ~60 |
 
-**Total**: ~470 lines across 11 files
+### Documentation Updates
+
+| File | Action |
+|------|--------|
+| `mcp_sdd/docs/README.md` | Update tool descriptions to note YAML support; add CHANGELOG v1.8.0 link |
+| `mcp_sdd/docs/ROADMAP.md` | Add v1.8.0 planned release section |
+| `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.8.0.md` | **Create** — YAML parity, categorized scoring, API aliases, shared collector |
+| `mcp_sdd/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Update artifact lifecycle diagram to show YAML path alongside MD |
+| `mcp_sdd/docs/architecture/MCP_CLI_REFERENCE.md` | Note YAML document support in validate/consistency/remediate tool docs |
+| `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Add YAML troubleshooting section (common issues: frontmatter false positive, derived copy detection) |
+| `roadmap/ROADMAP.md` | Add v0.15.0 planned release (maps to mcp_sdd v1.8.0) |
+| `changelog/CHANGELOG_v0.15.0.md` | **Create** — framework-level changelog for YAML parity |
+| `ai_dev_ssd_flow/01_BRD/README.md` | Note that BRDs can be authored in YAML or MD; both validated by sdd_validate |
+
+**Total**: ~530 lines across 20 files (11 code + 9 docs)
 
 ---
 
@@ -196,6 +210,13 @@ Wire into each runner as it's fixed (not as a separate step).
 10. Run full test suite (existing 163 + new)
 11. Re-test all 20 tools against BRD-03 YAML
 12. Test `sdd_run_lifecycle` pipeline end-to-end on YAML BRD
+13. Create `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.8.0.md`
+14. Update `mcp_sdd/docs/ROADMAP.md` — add v1.8.0 release
+15. Update `mcp_sdd/docs/README.md` — tool descriptions + changelog link
+16. Update mcp_sdd architecture docs (runtime, CLI reference, runbook)
+17. Create `changelog/CHANGELOG_v0.15.0.md` (framework-level)
+18. Update `roadmap/ROADMAP.md` — add v0.15.0 release
+19. Update `ai_dev_ssd_flow/01_BRD/README.md` — note YAML authoring support
 
 ---
 
