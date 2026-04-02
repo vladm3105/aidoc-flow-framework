@@ -98,22 +98,56 @@ def is_valid(self) -> bool:
 | `link_validation/runner.py` | Add `report` + `is_valid` aliases | #4 | +8 |
 | `preflight/runner.py` | Add `report` + `is_ready` aliases | #4 | +8 |
 | `scoring/runner.py` | Add `report` alias to ScoreShowResult | #4 | +5 |
-| Tests (new/updated) | Cover YAML parity + scoring weights | All | ~150 |
+| `remediation/runner.py` | YAML structure validation | #5 | +40 |
+| `utils/source_files.py` | Create shared source file collector | #6 | ~50 |
+| `validation/runner.py` | Use shared collector | #6 | -20 (remove duplication) |
+| `remediation/runner.py` | Use shared collector | #6 | -10 (remove duplication) |
+| Tests (new/updated) | Cover YAML parity + scoring weights + structure | All | ~200 |
 
-**Total**: ~240 lines across 10+ files
+### Issue 5: YAML structure validation in remediation (absorbed from PLAN-019)
+
+**Tool**: `sdd_remediate` (`remediation/runner.py`)
+**Symptom**: `run_remediation_build()` only checks frontmatter + placeholders — both irrelevant for YAML. No structural validation of YAML documents.
+**Root cause**: Remediation was built for MD-only workflow.
+**Impact**: Remediation report is near-empty for YAML documents.
+
+**Fix**: Add YAML structure validation when document is `.yaml/.yml`:
+- **Required top-level keys**: Verify expected keys exist per doc_type (BRD: `metadata`, `document_control`, `executive_summary`, `functional_requirements`, `traceability`)
+- **Element ID format**: Verify `id:` values match `TYPE.NN.hash` pattern
+- **Empty section detection**: Flag sections that exist but have no content
+
+### Issue 6: Shared source file collection utility
+
+**Tools**: validation, consistency, remediation runners
+**Symptom**: Three runners independently implement YAML/MD file collection with `_validation`/`_remediated` exclusion. Pattern duplicated across files.
+**Root cause**: YAML support added incrementally (PLAN-016 added to validation only).
+
+**Fix**: Create shared `mcp_sdd/src/mcp_server/utils/source_files.py` with:
+```python
+def collect_source_files(document_path: Path, extensions: tuple[str, ...] = (".md", ".yaml", ".yml")) -> list[Path]:
+    """Collect source document files, excluding templates and derived copies."""
+```
+Replace `_collect_markdown_files` and `_collect_yaml_files` in all runners with this shared utility.
+
+---
+
+**Total**: ~350 lines across 12+ files
 
 ---
 
 ## Implementation Order
 
-1. Fix `sdd_consistency` YAML source detection
-2. Fix `sdd_next_action` YAML artifact detection
-3. Add error category prefix to cross-section validation errors
-4. Update scoring formula for category-weighted errors
-5. Add result class API aliases
-6. Write tests
-7. Run full test suite
-8. Re-test all 20 tools against BRD-03
+1. Create shared `utils/source_files.py` (Issue #6)
+2. Fix `sdd_consistency` YAML source detection (Issue #1)
+3. Fix `sdd_next_action` YAML artifact detection (Issue #2)
+4. Add YAML structure validation to `sdd_remediate` (Issue #5)
+5. Add error category prefix to cross-section validation errors (Issue #3)
+6. Update scoring formula for category-weighted errors (Issue #3)
+7. Add result class API aliases (Issue #4)
+8. Wire shared source file collector into all runners
+9. Write tests
+10. Run full test suite
+11. Re-test all 20 tools against BRD-03
 
 ---
 
@@ -141,4 +175,5 @@ def is_valid(self) -> bool:
 ## Dependencies
 
 - PLAN-016 (cross-section validation) — done, introduced the errors that exposed Issues 1-3
-- PLAN-019 (remediation enhancement) — independent, can implement in either order
+- PLAN-019 (remediation enhancement) — YAML structure validation absorbed into this plan; PLAN-019 retains review report parsing only
+- Implement BEFORE PLAN-019 (review parsing depends on YAML-aware remediation)

@@ -6,11 +6,13 @@ During BRD-03 full pipeline testing (`sdd_validate → sdd_validate_fix → sdd_
 
 The `run_remediation_build()` function currently performs only two checks (frontmatter presence, placeholder tokens) — both irrelevant for YAML documents. It does not parse the review report to extract actionable findings, nor does it validate YAML document structure.
 
-**Goal**: Make `sdd_remediate` produce a structured, actionable remediation report by parsing the review report findings and validating YAML document structure.
+**Goal**: Make `sdd_remediate` produce a structured, actionable remediation report by parsing the review report findings into per-finding remediation entries.
 
-**Status**: Planned (implement after PLAN-018 UCX relocation)
+**Status**: Planned (implement after PLAN-020)
 
-**Scope**: `mcp_sdd/src/mcp_server/remediation/runner.py` + tests
+**Scope**: `mcp_sdd/src/mcp_server/remediation/` (runner + new review_parser module)
+
+**Note**: YAML structure validation originally in this plan (Section 2) has been moved to PLAN-020 (YAML Parity), which is implemented first. This plan retains only review report parsing (Section 1) and enhanced prompt generation (Section 3).
 
 ---
 
@@ -48,19 +50,11 @@ When `review_report` parameter is provided and file exists:
   - `section`: which BRD section to fix (extracted from review finding)
   - `source_finding_id`: the review finding ID (REM-P0-001, etc.)
 
-### 2. YAML document structure validation
+### ~~2. YAML document structure validation~~ → Moved to PLAN-020
 
-For YAML documents (`.yaml/.yml`):
+YAML structure validation (required keys, element ID format, empty sections) is now part of PLAN-020 (YAML Parity and API Consistency), which implements YAML support across all tools including remediation.
 
-- **Required top-level keys check**: Verify expected keys exist based on doc_type template
-  - BRD: `metadata`, `document_control`, `executive_summary`, `functional_requirements`, `traceability`
-  - PRD: `metadata`, `document_control`, `features`, `user_journeys`, `traceability`
-  - Generic: `metadata`, `traceability` (minimum)
-- **Element ID format validation**: Verify `id:` values match `TYPE.NN.hash` pattern
-- **Empty section detection**: Flag sections that exist but have no content
-- **Cross-reference resolution**: Check that `@depends: BRD-NN` references point to existing documents
-
-### 3. Enhanced remediate_fix prompt
+### 2. Enhanced remediate_fix prompt
 
 The `_build_remediate_fix_prompt()` already includes findings. With parsed review findings, the prompt will contain:
 
@@ -77,23 +71,22 @@ This gives the executor a structured task list instead of "go read the review re
 
 | File | Action | Est. Lines |
 |------|--------|-----------|
-| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify `run_remediation_build()` — add review parsing + YAML structure checks | +150 |
 | `mcp_sdd/src/mcp_server/remediation/review_parser.py` | Create — extract findings from review report MD | ~120 |
-| `mcp_sdd/tests/unit/test_remediation_runner.py` | Create — test review parsing + YAML structure validation | ~200 |
+| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify `run_remediation_build()` — wire parsed findings | +30 |
+| `mcp_sdd/tests/unit/test_review_parser.py` | Create — test review parsing | ~150 |
 
-**Total**: ~470 new lines across 3 files
+**Total**: ~300 new lines across 3 files
 
 ---
 
 ## Implementation Order
 
 1. Create `review_parser.py` with regex-based review report parser
-2. Add YAML structure validation to `run_remediation_build()`
-3. Wire parsed findings into remediation report
-4. Write tests
-5. Run full test suite
-6. Smoke test against BRD-03 review report
-7. Verify remediate_fix prompt includes structured findings
+2. Wire parsed findings into `run_remediation_build()` remediation report
+3. Write tests
+4. Run full test suite
+5. Smoke test against BRD-03 review report
+6. Verify remediate_fix prompt includes structured findings
 
 ---
 
@@ -148,5 +141,6 @@ This gives the executor a structured task list instead of "go read the review re
 
 ## Dependencies
 
-- PLAN-018 (UCX relocation) — not blocking but preferred to implement after
+- **PLAN-020** (YAML parity) — must implement first; provides YAML structure validation and shared source file collector
+- PLAN-018 (UCX relocation) — independent, no blocking dependency
 - Review report format stability — UCR output template in `mcp_sdd/prompts/templates/review/UCR_OUTPUT_TEMPLATE.md`
