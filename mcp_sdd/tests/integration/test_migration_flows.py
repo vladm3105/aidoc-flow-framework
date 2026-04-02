@@ -101,7 +101,7 @@ TODO refine content
         == 0
     )
 
-    validation_report = next(validate_out.glob("*.validate.json"), validate_out / "validation_report.json")
+    validation_report = next(validate_out.glob("*.ucx.validate.json"), validate_out / "validation_report.json")
     assert validation_report.exists()
 
     assert (
@@ -147,7 +147,7 @@ TODO refine content
         == 0
     )
 
-    remediation_report = next(remediate_out.glob("*.remediate.json"), remediate_out / "remediation_report.json")
+    remediation_report = next(remediate_out.glob("*.ucx.remediate.json"), remediate_out / "remediation_report.json")
     assert remediation_report.exists()
 
     payload = json.loads(remediation_report.read_text(encoding="utf-8"))
@@ -221,7 +221,7 @@ WHEN request is accepted THE SYSTEM SHALL persist the record.
         == 0
     )
 
-    validation_report = next(validate_out.glob("*.validate.json"), validate_out / "validation_report.json")
+    validation_report = next(validate_out.glob("*.ucx.validate.json"), validate_out / "validation_report.json")
     payload = json.loads(validation_report.read_text(encoding="utf-8"))
     summary = payload.get("summary", {})
     assert summary.get("is_valid") is True

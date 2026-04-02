@@ -582,8 +582,8 @@ def run_remediation_build(
     doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        f"{doc_id}.remediate.json",
-        f"{doc_id}.remediate.txt",
+        f"{doc_id}.ucx.remediate.json",
+        f"{doc_id}.ucx.remediate.txt",
         report_json,
         report_text,
     )
@@ -761,8 +761,8 @@ def run_validate_fix_build(
     doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        f"{doc_id}.validate_fix.json",
-        f"{doc_id}.validate_fix.txt",
+        f"{doc_id}.ucx.validate_fix.json",
+        f"{doc_id}.ucx.validate_fix.txt",
         report_json,
         report_text,
     )
@@ -828,8 +828,8 @@ def run_remediate_fix_build(
     doc_id = extract_doc_id(document_path)
     report_path, summary_path = _write_report_files(
         output_dir,
-        f"{doc_id}.remediate_fix.json",
-        f"{doc_id}.remediate_fix.txt",
+        f"{doc_id}.ucx.remediate_fix.json",
+        f"{doc_id}.ucx.remediate_fix.txt",
         report_json,
         report_text,
     )

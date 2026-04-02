@@ -38,8 +38,8 @@ def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
     )
 
     assert exit_code == 0
-    assert (out_dir / "BRD-01.validate_fix.json").exists()
-    assert (out_dir / "BRD-01.validate_fix.txt").exists()
+    assert (out_dir / "BRD-01.ucx.validate_fix.json").exists()
+    assert (out_dir / "BRD-01.ucx.validate_fix.txt").exists()
     assert (out_dir / "BRD-01_sample_validate_copy.md").exists()
 
 
@@ -68,7 +68,7 @@ def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
     )
 
     assert remediate_exit == 0
-    report_path = remediation_out / "BRD-01.remediate.json"
+    report_path = remediation_out / "BRD-01.ucx.remediate.json"
     assert report_path.exists()
 
     payload = json.loads(report_path.read_text(encoding="utf-8"))
@@ -97,7 +97,7 @@ def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
     )
 
     assert remediate_fix_exit == 0
-    assert (remediation_out / "BRD-01.remediate_fix.json").exists()
+    assert (remediation_out / "BRD-01.ucx.remediate_fix.json").exists()
     assert (remediation_out / "BRD-01_sample_remediate_copy.md").exists()
 
 
@@ -242,7 +242,7 @@ def test_validate_fix_emits_source_protection_telemetry(tmp_path: Path) -> None:
     )
 
     assert exit_code == 0
-    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
     assert isinstance(telemetry, dict)
     assert telemetry.get("source_protection_enabled") is True
@@ -285,7 +285,7 @@ def test_validate_fix_restores_source_when_mutated(tmp_path: Path, monkeypatch) 
 
     assert exit_code == 0
     assert document.read_text(encoding="utf-8") == original
-    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
     assert isinstance(telemetry, dict)
     assert telemetry.get("restoration_events") == 1
@@ -316,7 +316,7 @@ def test_validate_fix_omits_telemetry_when_source_monitoring_not_applicable(tmp_
     )
 
     assert exit_code == 0
-    payload = json.loads((out_dir / "BRD-01.validate_fix.json").read_text(encoding="utf-8"))
+    payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     assert "source_protection_telemetry" not in payload
 
 
@@ -367,8 +367,8 @@ def test_remediation_findings_use_stable_hash_ids_across_reruns(tmp_path: Path) 
         == 0
     )
 
-    first_payload = json.loads((out_first / "BRD-01.remediate.json").read_text(encoding="utf-8"))
-    second_payload = json.loads((out_second / "BRD-01.remediate.json").read_text(encoding="utf-8"))
+    first_payload = json.loads((out_first / "BRD-01.ucx.remediate.json").read_text(encoding="utf-8"))
+    second_payload = json.loads((out_second / "BRD-01.ucx.remediate.json").read_text(encoding="utf-8"))
 
     first_pairs = [(item["finding_id"], item["action_id"]) for item in first_payload["findings"]]
     second_pairs = [(item["finding_id"], item["action_id"]) for item in second_payload["findings"]]

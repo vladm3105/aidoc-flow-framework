@@ -60,7 +60,7 @@ def test_next_action_detects_yaml_validation_copy(tmp_path: Path) -> None:
     src.write_text("title: test\n")
     val = tmp_path / "BRD-01_test_validate_copy.yaml"
     val.write_text("title: validation copy\n")
-    report = tmp_path / "BRD-01.validate.json"
+    report = tmp_path / "BRD-01.ucx.validate.json"
     report.write_text(json.dumps({"summary": {"errors": 0}}))
     info = _inspect_document_folder(tmp_path)
     assert info["current_stage"] == "validation_fixed"

@@ -4,21 +4,20 @@
 
 | Code | Sub-Framework | MCP Server | Scope |
 |------|--------------|------------|-------|
-| `sdd` | SDD Lifecycle | `sdd-lifecycle` | Document creation, validation, review, remediation |
+| `ucx` | UCX (Unified Context Framework) | `sdd-lifecycle` | Document creation, validation, review, remediation |
 | `gov` | Project Governance | `project-governance` | GitHub Projects, IPLANs, governance rules |
 | `kb` | Project Knowledge | `project-knowledge` | FTS5 + semantic search, frontmatter indexing |
 
 ## Report Naming Convention
 
-Format: `{DOC-ID}.{STAGE}.{FORMAT}` (sdd default, code omitted)
-Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` (non-sdd sub-frameworks)
+Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` — sub-framework code is always explicit.
 
 ### Components
 
 | Component | Description | Examples |
 |-----------|-------------|---------|
 | `{DOC-ID}` | Source document ID | `BRD-03`, `PRD-01`, `SPEC-01` |
-| `{SUB}` | Sub-framework code (optional for sdd) | `gov`, `kb` |
+| `{SUB}` | Sub-framework code (always explicit) | `ucx`, `gov`, `kb` |
 | `{STAGE}` | Lifecycle stage | `validate`, `review`, `remediate` |
 | `{FORMAT}` | File extension | `.json`, `.md`, `.txt` |
 
@@ -48,11 +47,11 @@ Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` (non-sdd sub-frameworks)
 
 | Report | Filename |
 |--------|----------|
-| BRD-03 validation | `BRD-03.validate.json` |
-| BRD-03 review | `BRD-03.review.md` |
-| BRD-03 remediation | `BRD-03.remediate.json` |
+| BRD-03 validation | `BRD-03.ucx.validate.json` |
+| BRD-03 review | `BRD-03.ucx.review.md` |
+| BRD-03 remediation | `BRD-03.ucx.remediate.json` |
 | Governance approval | `BRD-03.gov.approval.json` |
-| Versioned review | `BRD-03.review.v002.md` |
+| Versioned review | `BRD-03.ucx.review.v002.md` |
 
 ## Derived Copy Naming
 
@@ -78,7 +77,7 @@ import re
 
 REPORT_PATTERN = re.compile(
     r"^[A-Z]+-\d+\."
-    r"(?:(?:sdd|gov|kb)\.)?"
+    r"(?:ucx|gov|kb)\."
     r"(?:validate|validate_fix|review|remediate|remediate_fix|"
     r"consistency|links|prescreen|score)"
     r"(?:\.v\d+)?"

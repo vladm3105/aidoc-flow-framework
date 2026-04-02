@@ -8,10 +8,15 @@ from pathlib import Path
 # Pattern for SDD source artifacts: TYPE-NN_slug.ext
 _SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
+# Sub-framework code for mcp_sdd (UCX = Unified Context Framework)
+UCX_SUB_CODE = "ucx"
+
 # Report naming patterns (PLAN-021)
+# Format: {DOC-ID}.{SUB}.{STAGE}.{FORMAT}
+# SUB is always explicit: ucx, gov, kb
 REPORT_PATTERN = re.compile(
     r"^[A-Z]+-\d+\."
-    r"(?:(?:sdd|gov|kb)\.)?"
+    r"(?:ucx|gov|kb)\."
     r"(?:validate|validate_fix|review|remediate|remediate_fix|"
     r"consistency|links|prescreen|score)"
     r"(?:\.v\d+)?"

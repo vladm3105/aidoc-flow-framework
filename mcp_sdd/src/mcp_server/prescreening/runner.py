@@ -67,8 +67,8 @@ def run_prescreen(*, document_path: Path, output_dir: Path | None = None) -> Pre
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
         doc_id = extract_doc_id(document_path)
-        report_path = output_dir / f"{doc_id}.prescreen.json"
-        summary_path = output_dir / f"{doc_id}.prescreen.txt"
+        report_path = output_dir / f"{doc_id}.ucx.prescreen.json"
+        summary_path = output_dir / f"{doc_id}.ucx.prescreen.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 
