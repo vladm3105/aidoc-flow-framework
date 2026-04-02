@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.15.0 |
-| Latest Release | 0.15.0 (YAML parity, categorized scoring, API aliases) |
-| Previous Minor | 0.14.0 (cross-section validation, BRD template improvements) |
+| Current Version | 0.16.0 |
+| Latest Release | 0.16.0 (review report parsing in sdd_remediate) |
+| Previous Minor | 0.15.0 (YAML parity, categorized scoring, API aliases) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -27,6 +27,29 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 ---
 
 ## Planned Releases
+
+### v0.16.0 - Remediation Build Enhancement
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | mcp_sdd v1.9.0: review report parsing for structured remediation findings |
+
+Delivered scope:
+
+- Review report parser (frontmatter + 3 table formats)
+- Parsed findings in remediation report (was single pointer)
+- Fix prompt: 742 chars → ~10K chars with per-finding actions
+- 18 new tests (205 total)
+
+References:
+
+- mcp_sdd/docs/plans/PLAN-019_remediation_build_enhancement.md
+- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.9.0.md
+
+---
 
 ### v0.15.0 - YAML Parity and API Consistency
 

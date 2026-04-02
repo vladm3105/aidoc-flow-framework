@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.8.0 |
-| Latest Release | 1.8.0 (YAML parity, categorized scoring, API aliases) |
-| Previous Release | 1.7.0 (cross-section validation, YAML fork, BRD template improvements) |
+| Current Version | 1.9.0 |
+| Latest Release | 1.9.0 (review report parsing in sdd_remediate) |
+| Previous Release | 1.8.0 (YAML parity, categorized scoring, API aliases) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -229,6 +229,29 @@ Delivered scope:
 References:
 
 - plans/PLAN-018_yaml_parity_and_api_consistency.md
+
+---
+
+### v1.9.0 - Remediation Build Enhancement
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | Review report parsing in sdd_remediate for structured remediation findings |
+
+Delivered scope:
+
+- Review report parser (frontmatter + 3 table formats)
+- Parsed findings replace single "review linked" pointer in remediation report
+- 50-finding cap, review_summary in report output
+- Fix prompt: 742 chars → ~10K chars with per-finding actions
+- 18 new tests (205 total)
+
+References:
+
+- plans/PLAN-019_remediation_build_enhancement.md
 
 ---
 
