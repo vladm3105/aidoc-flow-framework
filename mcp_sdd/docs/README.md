@@ -87,6 +87,7 @@ Use this precedence for conflict resolution:
 - [PLAN-016 Checklist](plans/PLAN-016_checklist.md)
 - [PLAN-017 Executor Output and Logging](plans/PLAN-017_executor_output_and_logging.md)
 - [PLAN-018 UCX Root Relocation](plans/PLAN-018_ucx_root_relocation.md)
+- [PLAN-019 Remediation Build Enhancement](plans/PLAN-019_remediation_build_enhancement.md)
 
 ## 7. Changelog
 
