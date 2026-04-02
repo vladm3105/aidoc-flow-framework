@@ -142,71 +142,191 @@ SOURCE_PATTERN = re.compile(
 
 ---
 
+## `doc_id` Extraction Strategy
+
+Runners need `doc_id` to construct report filenames. Strategy:
+
+**New helper in `utils/source_files.py`:**
+
+```python
+def extract_doc_id(path: Path) -> str:
+    """Extract document ID (e.g., 'BRD-03') from filename or parent folder.
+    
+    Handles:
+    - BRD-03_security_compliance.yaml → BRD-03
+    - BRD-03_security_compliance/ (directory) → BRD-03
+    - BRD-03.validate.json (report) → BRD-03
+    """
+    name = path.name if path.is_file() else path.name
+    match = re.match(r"^([A-Z]+-\d+)", name)
+    if match:
+        return match.group(1)
+    # Fallback: try parent folder name
+    match = re.match(r"^([A-Z]+-\d+)", path.parent.name)
+    return match.group(1) if match else "UNKNOWN"
+```
+
+**Runner integration:** Each runner calls `extract_doc_id(document_path)` to get the ID for report filenames. No signature changes needed — `document_path`/`target_path` is already available in all runners.
+
+| Runner | Has | Extraction |
+|--------|-----|-----------|
+| `validation/runner.py` | `document_path` | `extract_doc_id(document_path)` |
+| `remediation/runner.py` | `document_path` | `extract_doc_id(document_path)` |
+| `consistency/runner.py` | `target_path` | `extract_doc_id(target_path)` |
+| `link_validation/runner.py` | `target_path` | `extract_doc_id(target_path)` |
+| `prescreening/runner.py` | `document_path` | `extract_doc_id(document_path)` |
+| `scan/runner.py` | `report_file` | `extract_doc_id(report_file)` |
+
+---
+
 ## Implementation
 
-### Phase 1: Standards Document
+### Phase 1: Standards Document + Helpers
 
-Create `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — canonical reference with:
-- Sub-framework registry
-- Naming convention
-- Stage codes
-- Format roles
-- Detection regex patterns
+1. Create `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — canonical reference
+2. Add `extract_doc_id()` to `utils/source_files.py`
+3. Add `REPORT_PATTERN`, `DERIVED_COPY_PATTERN` constants to `utils/source_files.py`
 
 ### Phase 2: mcp_sdd Report Output
 
-Update report filenames in all runners. Requires `doc_id` parameter passed to each runner.
+Update report filenames in all runners:
 
 | Runner | Current | New |
 |--------|---------|-----|
-| `validation/runner.py` | `validation_report.json` | `{doc_id}.validate.json` |
-| `validation/runner.py` | `validation_report.txt` | `{doc_id}.validate.txt` |
-| `remediation/runner.py` | `remediation_report.json` | `{doc_id}.remediate.json` |
-| `remediation/runner.py` | `remediation_report.txt` | `{doc_id}.remediate.txt` |
-| `remediation/runner.py` (validate_fix) | `validate_fix_report.json` | `{doc_id}.validate_fix.json` |
-| `remediation/runner.py` (validate_fix) | `validate_fix_report.txt` | `{doc_id}.validate_fix.txt` |
-| `remediation/runner.py` (remediate_fix) | `remediate_fix_report.json` | `{doc_id}.remediate_fix.json` |
-| `remediation/runner.py` (remediate_fix) | `remediate_fix_report.txt` | `{doc_id}.remediate_fix.txt` |
-| `consistency/runner.py` | `consistency_report.json` | `{doc_id}.consistency.json` |
-| `consistency/runner.py` | `consistency_report.txt` | `{doc_id}.consistency.txt` |
-| `link_validation/runner.py` | `link_validation_report.json` | `{doc_id}.links.json` |
-| `link_validation/runner.py` | `link_validation_report.txt` | `{doc_id}.links.txt` |
-| `prescreening/runner.py` | `prescreen_report.json` | `{doc_id}.prescreen.json` |
-| `prescreening/runner.py` | `prescreen_report.txt` | `{doc_id}.prescreen.txt` |
+| `validation/runner.py` | `validation_report.json/.txt` | `{doc_id}.validate.json/.txt` |
+| `remediation/runner.py` | `remediation_report.json/.txt` | `{doc_id}.remediate.json/.txt` |
+| `remediation/runner.py` (validate_fix) | `validate_fix_report.json/.txt` | `{doc_id}.validate_fix.json/.txt` |
+| `remediation/runner.py` (remediate_fix) | `remediate_fix_report.json/.txt` | `{doc_id}.remediate_fix.json/.txt` |
+| `consistency/runner.py` | `consistency_report.json/.txt` | `{doc_id}.consistency.json/.txt` |
+| `link_validation/runner.py` | `link_validation_report.json/.txt` | `{doc_id}.links.json/.txt` |
+| `prescreening/runner.py` | `prescreen_report.json/.txt` | `{doc_id}.prescreen.json/.txt` |
+
+Also update `tool_registry.py` dispatch handlers that construct report paths between stages:
+- `sdd_validate` handler returns `report_path` — downstream tools use this path
+- `_handle_lifecycle_pipeline` passes stage results — report paths must use new names
+- `_build_remediate_fix_prompt` reads `remediation_report_path` — callers pass new name
 
 ### Phase 3: Derived Copy Naming
 
-Update `_copy_with_suffix` and `_copy_with_canonical_suffix` in `remediation/runner.py`:
-- `_validation` → `_validate_copy`
-- `_remediated` → `_remediate_copy`
+Update in `remediation/runner.py`:
+
+| Function | Change |
+|----------|--------|
+| `_copy_with_suffix(src, "validation", ...)` | → `_copy_with_suffix(src, "validate_copy", ...)` |
+| `_copy_with_suffix(src, "remediated", ...)` | → `_copy_with_suffix(src, "remediate_copy", ...)` |
+| `_copy_with_canonical_suffix(src, "remediated", ...)` | → `_copy_with_canonical_suffix(src, "remediate_copy", ...)` |
+| `_canonical_stem()` | Strip `_validate_copy` and `_remediate_copy` (remove `_validation`/`_remediated`) |
+| `_resolve_validation_copy_path()` | Search for `_validate_copy.{md,yaml,yml}` (remove `_validation.md` pattern) |
+| `_resolve_source_document_path()` | Search both `.md` and `.yaml` (currently `.md` only) |
 
 ### Phase 4: Detection Updates
 
-Update in `utils/source_files.py`, `tool_registry.py`, `consistency/runner.py`:
-- Add `REPORT_PATTERN`, `DERIVED_COPY_PATTERN` constants
-- Update `collect_source_files` to exclude new derived copy pattern
-- Update `_inspect_document_folder` to detect new report/copy names
+| File | Function | Change |
+|------|----------|--------|
+| `utils/source_files.py` | `collect_source_files()` | Exclude `_validate_copy`/`_remediate_copy` (replace `_validation`/`_remediated`) |
+| `utils/source_files.py` | `_is_excluded()` | Update stem checks |
+| `tool_registry.py` | `_inspect_document_folder()` | New detection patterns: |
+
+```python
+# In _inspect_document_folder():
+has_validation_report = any(
+    REPORT_PATTERN.match(f.name) and ".validate." in f.name
+    for f in json_files + md_files + yaml_files
+)
+has_validation_copy = any(
+    "_validate_copy" in f.stem for f in md_files + yaml_files
+)
+has_review_report = any(
+    REPORT_PATTERN.match(f.name) and ".review." in f.name
+    for f in json_files + md_files
+)
+has_remediation_report = any(
+    REPORT_PATTERN.match(f.name) and ".remediate." in f.name
+    for f in json_files + md_files
+)
+has_remediated_copy = any(
+    "_remediate_copy" in f.stem for f in md_files + yaml_files
+)
+```
+
+Also update `consistency/runner.py` derived artifact detection (lines 100-114) to use new names.
 
 ### Phase 5: Delete Legacy Reports
 
-Remove all legacy-named reports from existing projects:
-- `*.V_validation_report_*.md`
-- `*.A_audit_report_*.md`
-- `*.UCR_review_report_*.md`
-- `*.UCRem_remediation_report_*.md`
-- `*.UCRem_report.md`
-- `*.F_fix_report_*.md`
-- `*.R_review_report_*.md`
+**Projects:**
+- `/opt/data/b-local/b-local-docs/` — all `docs/01_BRD/` subfolders
+- `/opt/data/docs_flow_framework/` — if any exist
+
+**Procedure:**
+1. Dry run: `find docs/01_BRD -name "*.V_validation_report_*" -o -name "*.A_audit_report_*" ...` — count files
+2. Delete: `find ... -delete`
+3. Also delete old mcp_sdd generic reports: `validation_report.json`, `consistency_report.json`, etc.
+4. Git commit the deletions
+
+**Patterns to delete:**
+```bash
+find docs/ \( \
+  -name "*.V_validation_report_*.md" -o \
+  -name "*.A_audit_report_*.md" -o \
+  -name "*.UCR_review_report_*.md" -o \
+  -name "*.UCRem_remediation_report_*.md" -o \
+  -name "*.UCRem_report.md" -o \
+  -name "*.F_fix_report_*.md" -o \
+  -name "*.R_review_report_*.md" -o \
+  -name "validation_report.json" -o \
+  -name "validation_report.txt" -o \
+  -name "consistency_report.*" -o \
+  -name "link_validation_report.*" -o \
+  -name "prescreen_report.*" -o \
+  -name "remediation_report.*" -o \
+  -name "remediate_fix_report.*" -o \
+  -name "validate_fix_report.*" -o \
+  -name "*_validation.yaml" -o \
+  -name "*_validation.md" -o \
+  -name "*_remediated.yaml" -o \
+  -name "*_remediated.md" \
+\) -type f
+```
 
 ### Phase 6: Tests
 
-Update existing tests + add new tests for naming patterns.
+**16 test files need updating:**
+
+Unit tests (11):
+- `test_yaml_parity.py` — report path assertions
+- `test_api_aliases.py` — minor if any
+- `test_validation_runner.py` — report filename assertions
+- `test_server.py` — tool handler tests
+- `test_cli_main.py` — CLI output paths
+- `test_creation_profile_contracts.py` — if report refs
+- `test_link_validation_runner.py` — report filename
+- `test_prescreening.py` — report filename
+- `test_source_files.py` — derived copy patterns
+- `test_remediation_runner.py` — report filenames + copy names
+- `test_reporting_contracts.py` — report format
+
+Integration tests (4):
+- `test_migration_flows.py` — report detection
+- `test_creation_profile_contracts_integration.py`
+- `test_lifecycle_pipeline_integration.py` — pipeline report passing
+- `test_reporting_contracts_integration.py`
+
+Contract tests (1):
+- `test_context_engineering_contracts.py`
+
+New tests:
+- `test_report_naming.py` — regex patterns, `extract_doc_id()`, naming convention
+
+**Estimated: ~250 lines of test changes across 16 files + ~80 lines new test file.**
 
 ### Phase 7: Documentation + Changelogs
 
-- mcp_sdd CHANGELOG v1.11.0 / ROADMAP
-- Framework CHANGELOG v0.18.0 / ROADMAP
-- Update mcp_sdd docs README
+- mcp_sdd CHANGELOG v1.11.0
+- mcp_sdd ROADMAP — add v1.11.0
+- mcp_sdd README — add changelog link
+- Framework CHANGELOG v0.18.0
+- Framework ROADMAP — add v0.18.0
+- Update `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` — cross-reference to REPORT_NAMING_STANDARDS
 
 ---
 
@@ -214,18 +334,20 @@ Update existing tests + add new tests for naming patterns.
 
 | File | Action | Est. Lines |
 |------|--------|-----------|
-| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | **Create** | ~100 |
+| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | **Create** | ~120 |
+| `mcp_sdd/src/mcp_server/utils/source_files.py` | Modify — `extract_doc_id()`, patterns | +30 |
 | `mcp_sdd/src/mcp_server/validation/runner.py` | Modify — report filenames | +10 |
-| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify — report filenames + copy naming | +20 |
-| `mcp_sdd/src/mcp_server/consistency/runner.py` | Modify — report filenames | +10 |
-| `mcp_sdd/src/mcp_server/link_validation/runner.py` | Modify — report filenames | +10 |
-| `mcp_sdd/src/mcp_server/prescreening/runner.py` | Modify — report filenames | +10 |
-| `mcp_sdd/src/mcp_server/utils/source_files.py` | Modify — detection patterns | +15 |
-| `mcp_sdd/src/mcp_server/tool_registry.py` | Modify — `_inspect_document_folder` | +10 |
-| Tests (updated + new) | Cover naming patterns | ~100 |
-| Documentation | Changelogs, roadmaps, READMEs | ~80 |
+| `mcp_sdd/src/mcp_server/remediation/runner.py` | Modify — filenames + copy naming + `_canonical_stem` + `_resolve_*` | +30 |
+| `mcp_sdd/src/mcp_server/consistency/runner.py` | Modify — filenames + derived detection | +15 |
+| `mcp_sdd/src/mcp_server/link_validation/runner.py` | Modify — filenames | +10 |
+| `mcp_sdd/src/mcp_server/prescreening/runner.py` | Modify — filenames | +10 |
+| `mcp_sdd/src/mcp_server/scan/runner.py` | Modify — if outputs reports | +5 |
+| `mcp_sdd/src/mcp_server/tool_registry.py` | Modify — `_inspect_document_folder` + dispatch paths | +20 |
+| `mcp_sdd/tests/unit/test_report_naming.py` | **Create** — naming tests | ~80 |
+| 16 existing test files | Modify — report name assertions | ~250 |
+| Documentation (6 files) | Changelogs, roadmaps, READMEs | ~100 |
 
-**Total**: ~365 lines across 10+ files
+**Total**: ~680 lines across 25+ files
 
 ---
 
@@ -233,9 +355,10 @@ Update existing tests + add new tests for naming patterns.
 
 | Risk | Mitigation |
 |------|-----------|
-| `doc_id` not available in all runners | Extract from document filename or add parameter |
-| Breaking existing report detection in pipelines | Update all detection logic in same release |
-| Legacy reports left in repos after deletion | One-time cleanup script per project |
+| `extract_doc_id` returns "UNKNOWN" for unexpected paths | Validate in tests; log warning when fallback used |
+| Pipeline breaks between stages (report path mismatch) | Update all dispatch handlers in same commit; integration test covers pipeline |
+| 16 test files is large blast radius | Run full suite after each phase; commit per phase |
+| Legacy report deletion removes useful audit history | This is intentional — clean break, no backward compat |
 
 ---
 
