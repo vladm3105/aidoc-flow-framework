@@ -92,16 +92,24 @@ ai_dev_ssd_flow/
 
 | Tool | Purpose |
 |------|---------|
-| `sdd_validate` | Validate SDD artifacts against templates |
+| Tool | Purpose |
+|------|---------|
+| `sdd_validate` | Validate SDD artifacts against templates (MD + YAML, cross-section rules) |
+| `sdd_validate_fix` | Generate source-protected fix from validation report (executor-driven) |
 | `sdd_validate_links` | Validate markdown links (file + anchor resolution) |
 | `sdd_create` | Scaffold new SDD documents |
-| `sdd_consistency` | Artifact lineage checks |
+| `sdd_consistency` | Artifact lineage checks (MD + YAML) |
 | `sdd_preflight` | Environment readiness checks |
-| `sdd_review` | LLM-powered document review |
-| `sdd_remediate` | LLM-powered fix application |
+| `sdd_review` | Multi-persona LLM document review (11 personas) |
+| `sdd_remediate` | Deterministic remediation findings + review report parsing |
+| `sdd_remediate_fix` | Source-protected remediation fix (executor-driven) |
 | `sdd_run_lifecycle` | Full create→validate→review→fix pipeline |
+| `sdd_score_show` | Quality score with categorized weights (structural/cross-section) |
+| `sdd_next_action` | Recommend next lifecycle stage (MD + YAML aware) |
 
 All 11 unified YAML templates available in `mcp_sdd/templates/`.
+
+Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/` via `sdd_init`.
 
 ---
 
@@ -169,7 +177,7 @@ See [CUMULATIVE_TAG_REFERENCE.md](./ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md)
 | Document | Purpose |
 |----------|---------|
 | [roadmap/ROADMAP.md](./roadmap/ROADMAP.md) | Version timeline and planned releases |
-| [changelog/](./changelog/) | Per-version changelogs (v0.1.0 – v0.12.0) |
+| [changelog/](./changelog/) | Per-version changelogs (v0.1.0 – v0.17.0) |
 
 ---
 
@@ -177,9 +185,9 @@ See [CUMULATIVE_TAG_REFERENCE.md](./ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md)
 
 | Field | Value |
 |-------|-------|
-| Current Version | 0.12.0 |
-| Latest Release | All 11 SDD layers unified |
-| Next Minor | 0.13.0 (API executors) |
+| Current Version | 0.17.0 |
+| Latest Release | UCX root relocation, review report parsing, YAML parity, cross-section validation |
+| mcp_sdd Version | 1.10.0 |
 | Next Major | 1.0.0 (multi-MCP ecosystem) |
 
 ---

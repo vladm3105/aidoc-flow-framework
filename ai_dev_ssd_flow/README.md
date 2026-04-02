@@ -9,12 +9,12 @@ custom_fields:
   document_type: readme
   priority: shared
   development_status: active
-  version: "3.0"
+  version: "3.1"
 ---
 
 # Specification-Driven Development (SDD) Framework
 
-**Version**: 3.0 (v0.12.0 — All 11 Layers Unified)
+**Version**: 3.1 (v0.17.0 — Cross-section validation, YAML parity, UCX relocation)
 
 The SDD framework transforms business requirements into production code through a structured, traceable workflow. All 11 artifact layers use unified YAML templates with embedded authoring guidance.
 
