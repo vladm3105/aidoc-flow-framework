@@ -505,20 +505,60 @@ def run_remediation_build(
                 )
             )
 
+    _review_summary_data: dict[str, object] | None = None
+
     if review_report is not None and review_report.exists():
-        findings.append(
-            _build_finding_entry(
-                file_path=str(review_report),
-                doc_type=doc_type,
-                layer=layer,
-                category="review_report",
-                severity="tier2",
-                message="Review report linked for downstream manual remediation",
-                recommended_action="apply_review_findings",
-                finding_ids=finding_ids,
-                action_ids=action_ids,
+        from mcp_server.remediation.review_parser import parse_review_report
+        review_summary, review_findings = parse_review_report(review_report)
+
+        if review_findings:
+            capped = review_findings[:50]
+            for rf in capped:
+                findings.append(
+                    _build_finding_entry(
+                        file_path=str(review_report),
+                        doc_type=doc_type,
+                        layer=layer,
+                        category="review_finding",
+                        severity=rf.severity,
+                        message=rf.message,
+                        recommended_action=rf.recommended_action,
+                        finding_ids=finding_ids,
+                        action_ids=action_ids,
+                    )
+                )
+            if len(review_findings) > 50:
+                findings.append(
+                    _build_finding_entry(
+                        file_path=str(review_report),
+                        doc_type=doc_type,
+                        layer=layer,
+                        category="review_finding_overflow",
+                        severity="tier2",
+                        message=f"{len(review_findings) - 50} additional review findings not shown (see review report)",
+                        recommended_action="review_full_report",
+                        finding_ids=finding_ids,
+                        action_ids=action_ids,
+                    )
+                )
+            if review_summary:
+                import dataclasses as _dc
+                _review_summary_data = _dc.asdict(review_summary)
+        else:
+            # Fallback: parsing returned nothing, keep pointer
+            findings.append(
+                _build_finding_entry(
+                    file_path=str(review_report),
+                    doc_type=doc_type,
+                    layer=layer,
+                    category="review_report",
+                    severity="tier2",
+                    message="Review report linked for downstream manual remediation",
+                    recommended_action="apply_review_findings",
+                    finding_ids=finding_ids,
+                    action_ids=action_ids,
+                )
             )
-        )
 
     report: dict[str, object] = {
         "project_root": str(project_root),
@@ -526,6 +566,7 @@ def run_remediation_build(
         "doc_type": doc_type,
         "layer": layer,
         "review_report": str(review_report) if review_report else None,
+        "review_summary": _review_summary_data,
         "files_checked": [str(path) for path in files],
         "findings": findings,
         "summary": {
