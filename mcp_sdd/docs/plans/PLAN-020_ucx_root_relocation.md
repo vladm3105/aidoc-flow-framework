@@ -6,11 +6,9 @@ UCX (Unified Context) contains operational infrastructure — personas, prompt t
 
 **Goal**: Move `{project}/docs/UCX/` → `{project}/UCX/` across mcp_sdd codebase and all scaffolded projects.
 
-**Status**: Planned (independent of other plans, lowest priority)
+**Status**: Implemented (2026-04-02, mcp_sdd v1.10.0 / framework v0.17.0)
 
-**Type**: Breaking change — requires migration of existing scaffolded projects.
-
-**Target Release**: mcp_sdd v1.10.0 / docs_flow_framework v0.17.0
+**Type**: Breaking change — required migration of existing scaffolded projects.
 
 ---
 

@@ -6,7 +6,7 @@ Full tool testing of all 20 mcp_sdd tools against BRD-03 (YAML format) revealed 
 
 **Goal**: Ensure all mcp_sdd tools handle YAML documents on par with MD documents, and normalize result class APIs.
 
-**Status**: Planned
+**Status**: Implemented (2026-04-02, mcp_sdd v1.8.0 / framework v0.15.0)
 
 **Scope**: `mcp_sdd` server code only. `sdd_create` / `sdd_create_build` testing is out of scope (separate plan).
 

@@ -10,9 +10,7 @@ Analysis shows 3 of 7 proposed rules are **not BRD-specific** — they apply to 
 
 **Scope**: `mcp_sdd` server code + templates only. Claude `doc-*` skills are out of scope.
 
-**Status**: Planned
-
-**Target Release**: mcp_sdd v1.7.0 / docs_flow_framework v0.14.0
+**Status**: Implemented (2026-04-01, mcp_sdd v1.7.0 / framework v0.14.0)
 
 ---
 

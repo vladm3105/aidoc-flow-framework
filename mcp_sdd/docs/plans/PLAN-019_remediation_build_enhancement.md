@@ -6,7 +6,7 @@ During BRD-03 full pipeline testing, the deterministic `sdd_remediate` tool prod
 
 **Goal**: Make `sdd_remediate` parse the review report and produce structured, per-finding remediation entries so the `sdd_remediate_fix` prompt gives the executor an actionable task list.
 
-**Status**: Planned (implement after PLAN-018)
+**Status**: Implemented (2026-04-02, mcp_sdd v1.9.0 / framework v0.16.0)
 
 **Scope**: `mcp_sdd/src/mcp_server/remediation/` (runner + new review_parser module)
 
