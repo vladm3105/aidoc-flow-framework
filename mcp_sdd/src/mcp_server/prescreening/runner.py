@@ -64,6 +64,9 @@ def run_prescreen(*, document_path: Path, output_dir: Path | None = None) -> Pre
 
     report_path: Path | None = None
     summary_path: Path | None = None
+    # Default output to the parent document folder per PLAN-017 convention.
+    if output_dir is None:
+        output_dir = document_path.parent if document_path.is_file() else document_path
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
         doc_id = extract_doc_id(document_path)

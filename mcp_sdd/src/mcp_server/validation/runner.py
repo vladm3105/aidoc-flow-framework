@@ -37,7 +37,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
             for path in sorted(document_path.parent.glob("*.md"))
             if "REVIEW" not in path.name.upper()
             and "REPORT" not in path.name.upper()
-            and "_validate_copy" not in path.stem
+            and "_validated" not in path.stem
             and "_remediate_copy" not in path.stem
             and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
         ]
@@ -56,11 +56,11 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
     ]
 
     # Prefer canonical source artifact when present:
-    # <DOC-ID>_<slug>.md and exclude derived variants like *_validate_copy.md/*_remediate_copy.md.
+    # <DOC-ID>_<slug>.md and exclude derived variants like *_validated.md/*_remediate_copy.md.
     source_artifacts = [
         path
         for path in filtered
-        if "_validate_copy" not in path.stem
+        if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
@@ -84,7 +84,7 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         for path in candidates
         if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
         and "TEMPLATE" not in path.name.upper()
-        and "_validate_copy" not in path.stem
+        and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
     ]
     if len(source_artifacts) == 1:
@@ -94,7 +94,7 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         for path in candidates
         if re.match(r"^[A-Z]+-\d+_.+\.yaml$", path.name)
         and "TEMPLATE" not in path.name.upper()
-        and "_validate_copy" not in path.stem
+        and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
     ]
 
@@ -477,11 +477,14 @@ def run_project_validation_build(
 
     report_path: Path | None = None
     summary_path: Path | None = None
+    # Default output to the parent document folder per PLAN-017 convention.
+    if output_dir is None:
+        output_dir = document_path.parent if document_path.is_file() else document_path
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
         doc_id = extract_doc_id(document_path)
-        report_path = output_dir / f"{doc_id}.ucx.validate.json"
-        summary_path = output_dir / f"{doc_id}.ucx.validate.txt"
+        report_path = output_dir / f"{doc_id}.ucx.validate_review.json"
+        summary_path = output_dir / f"{doc_id}.ucx.validate_review.txt"
         report_path.write_text(report_json, encoding="utf-8")
         summary_path.write_text(report_text, encoding="utf-8")
 

@@ -48,7 +48,7 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_validate",
-        description="Run script-based structural validation against layer schema/template assets. Returns pass/fail with error details.",
+        description="Run structural validation against layer schema/template assets. When errors are found, creates a source-protected derived copy with fix instructions. If executor specified, spawns agent to apply fixes.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -60,6 +60,9 @@ TOOLS: list[Tool] = [
                 "strict": {"type": "boolean", "description": "Treat warnings as failures", "default": False},
                 "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "json"},
                 "out": {"type": "string", "description": "Output directory for reports"},
+                "validation_report": {"type": "string", "description": "Path to existing validation report. Skips re-validation, generates fix artifacts from this report."},
+                "executor": {"type": "string", "description": "Executor name. Omit to return fix report text."},
+                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -292,24 +295,6 @@ TOOLS: list[Tool] = [
         },
     ),
     Tool(
-        name="sdd_validate_fix",
-        description="Generate source-protected validation derived copy. If executor specified, spawns agent to apply fixes.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "project": {"type": "string", "description": "Project root path"},
-                "doc_type": {"type": "string", "description": "Document type"},
-                "layer": {"type": "string", "description": "SDD layer directory"},
-                "document": {"type": "string", "description": "Path to document file or directory"},
-                "validation_report": {"type": "string", "description": "Optional path to validation report"},
-                "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Executor name. Omit to return fix report."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
-            },
-            "required": ["project", "doc_type", "layer", "document"],
-        },
-    ),
-    Tool(
         name="sdd_remediate",
         description="Generate deterministic remediation findings and report. If executor specified, spawns agent with remediation prompt.",
         inputSchema={
@@ -453,13 +438,13 @@ def _inspect_document_folder(document_dir: Path) -> dict:
     from mcp_server.utils.source_files import REPORT_PATTERN
 
     source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
-    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validate_copy" not in f.stem and "_remediate_copy" not in f.stem]
+    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validated" not in f.stem and "_remediate_copy" not in f.stem]
     has_validation_report = any(
-        REPORT_PATTERN.match(f.name) and ".validate." in f.name
+        REPORT_PATTERN.match(f.name) and ".validate_review." in f.name
         for f in json_files + md_files + yaml_files
     )
     has_validation_copy = any(
-        "_validate_copy" in f.stem for f in md_files + yaml_files
+        "_validated" in f.stem for f in md_files + yaml_files
     )
     has_review_report = any(
         REPORT_PATTERN.match(f.name) and ".review." in f.name
@@ -485,14 +470,10 @@ def _inspect_document_folder(document_dir: Path) -> dict:
         current_stage = "reviewed"
         next_action = "remediate"
         next_tool = "sdd_remediate"
-    elif has_validation_copy:
-        current_stage = "validation_fixed"
+    elif has_validation_report or has_validation_copy:
+        current_stage = "validated"
         next_action = "review"
         next_tool = "sdd_review"
-    elif has_validation_report:
-        current_stage = "validated"
-        next_action = "validate_fix"
-        next_tool = "sdd_validate_fix"
     elif source_files:
         current_stage = "created"
         next_action = "validate"
@@ -549,6 +530,13 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 async def _dispatch(name: str, arguments: dict) -> dict:
     """Dispatch to the appropriate handler."""
 
+    # ── Deprecated aliases ───────────────────────────────────────────────
+
+    if name == "sdd_validate_fix":
+        import warnings
+        warnings.warn("sdd_validate_fix is deprecated. Use sdd_validate.", DeprecationWarning, stacklevel=2)
+        name = "sdd_validate"
+
     # ── Deterministic tools ──────────────────────────────────────────────
 
     if name == "sdd_init":
@@ -558,7 +546,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_validate":
         from mcp_server.validation import run_project_validation_build
+        from mcp_server.remediation import run_validate_fix_build
         from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
+
         project_root = _path(arguments, "project")
         document_path = _path(arguments, "document")
         output_dir = resolve_stage_output_dir(
@@ -567,16 +557,34 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=_opt_path(arguments, "out"),
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
-        result = run_project_validation_build(
-            project_root=project_root,
-            doc_type=arguments["doc_type"],
-            layer=arguments["layer"],
-            document_path=document_path,
-            output_dir=output_dir,
-        )
-        payload = result.report
-        errors = payload.get("errors", []) if isinstance(payload, dict) else []
-        warnings = payload.get("warnings", []) if isinstance(payload, dict) else []
+
+        # --- Phase 1: Validate (or load existing report) ---
+        existing_report = _opt_path(arguments, "validation_report")
+        if existing_report and existing_report.exists():
+            report_data = json.loads(existing_report.read_text(encoding="utf-8"))
+            errors = report_data.get("errors", [])
+            warnings = report_data.get("warnings", [])
+            report_path = existing_report
+            summary_path = None
+        else:
+            result = run_project_validation_build(
+                project_root=project_root,
+                doc_type=arguments["doc_type"],
+                layer=arguments["layer"],
+                document_path=document_path,
+                output_dir=output_dir,
+            )
+            payload = result.report
+            errors = payload.get("errors", []) if isinstance(payload, dict) else []
+            warnings = payload.get("warnings", []) if isinstance(payload, dict) else []
+            report_path = result.report_path
+            summary_path = result.summary_path
+
+        if not isinstance(errors, list):
+            errors = []
+        if not isinstance(warnings, list):
+            warnings = []
+
         tier1_only = arguments.get("tier1_only", False)
         strict = arguments.get("strict", False)
 
@@ -590,17 +598,55 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             effective_errors = [item for item in errors if isinstance(item, str)]
 
         effective_warnings = [item for item in warnings if isinstance(item, str)]
-        failed = len(effective_errors) > 0 or (strict and len(effective_warnings) > 0)
+        is_valid = len(effective_errors) == 0 and (not strict or len(effective_warnings) == 0)
 
-        return {
-            "report_path": str(result.report_path) if result.report_path else None,
-            "summary_path": str(result.summary_path) if result.summary_path else None,
+        # --- Phase 2: Fix (conditional — only when validation fails) ---
+        fix_generated = False
+        fix_response: dict[str, object] = {}
+        fix_result = None
+        if not is_valid:
+            try:
+                fix_result = run_validate_fix_build(
+                    project_root=project_root,
+                    doc_type=arguments["doc_type"],
+                    layer=arguments["layer"],
+                    document_path=document_path,
+                    validation_report=report_path,
+                    output_dir=output_dir,
+                )
+                fix_response = {
+                    "fix_generated": True,
+                    "fix_report_path": str(fix_result.report_path) if fix_result.report_path else None,
+                    "fix_summary_path": str(fix_result.summary_path) if fix_result.summary_path else None,
+                    "derived_paths": [str(p) for p in fix_result.derived_paths],
+                }
+                fix_generated = True
+            except (FileNotFoundError, ValueError) as exc:
+                fix_response = {"fix_generated": False, "fix_error": str(exc)}
+
+        response = {
+            "report_path": str(report_path) if report_path else None,
+            "summary_path": str(summary_path) if summary_path else None,
             "tier1_only": tier1_only,
             "strict": strict,
             "errors": effective_errors,
             "warnings": effective_warnings,
-            "passed": not failed,
+            "is_valid": is_valid,
+            "passed": True,
+            "fix_generated": fix_generated,
+            **fix_response,
         }
+
+        if fix_generated and arguments.get("executor") and fix_result is not None:
+            exec_response = await _maybe_run_executor(
+                arguments, fix_result.report_text, response, working_dir=project_root,
+            )
+            exec_response["passed"] = True
+            exec_response["is_valid"] = is_valid
+            exec_response["fix_generated"] = True
+
+            return exec_response
+        return response
 
     if name == "sdd_consistency":
         from mcp_server.consistency import run_consistency_check
@@ -801,33 +847,21 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=output_dir,
         )
         det_result = _serialize_result(result)
-        return await _maybe_run_executor(
+        exec_response = await _maybe_run_executor(
             arguments, result.prompt_text, det_result, working_dir=project_root,
         )
 
-    if name == "sdd_validate_fix":
-        from mcp_server.remediation import run_validate_fix_build
-        from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
-        document_path = _path(arguments, "document")
-        output_dir = resolve_stage_output_dir(
-            stage=STAGE_VALIDATE,
-            project_root=project_root,
-            output_dir=_opt_path(arguments, "out"),
-            document_dir=document_path if document_path.is_dir() else document_path.parent,
-        )
-        result = run_validate_fix_build(
-            project_root=project_root,
-            doc_type=arguments["doc_type"],
-            layer=arguments["layer"],
-            document_path=document_path,
-            validation_report=_opt_path(arguments, "validation_report"),
-            output_dir=output_dir,
-        )
-        det_result = _serialize_result(result)
-        return await _maybe_run_executor(
-            arguments, result.report_text, det_result, working_dir=project_root,
-        )
+        # Persist executor review output to document folder (UCX_v1 parity).
+        if exec_response.get("executor") and exec_response.get("exit_code") == 0:
+            executor_output = exec_response.get("output", "")
+            if executor_output and output_dir is not None and document_path is not None:
+                from mcp_server.utils.source_files import extract_doc_id
+                doc_id = extract_doc_id(document_path)
+                review_report_path = output_dir / f"{doc_id}.ucx.review.md"
+                review_report_path.write_text(executor_output, encoding="utf-8")
+                exec_response["review_report_path"] = str(review_report_path)
+
+        return exec_response
 
     if name == "sdd_remediate":
         from mcp_server.remediation import run_remediation_build
@@ -886,7 +920,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
     results: dict[str, dict] = {}
     stage_handlers = {
         "validate": "sdd_validate",
-        "validate_fix": "sdd_validate_fix",
+        "validate_fix": "sdd_validate",  # Deprecated — absorbed into validate
         "review": "sdd_review",
         "remediate": "sdd_remediate",
         "remediate_fix": "sdd_remediate_fix",
@@ -896,6 +930,11 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
         tool_name = stage_handlers.get(stage)
         if tool_name is None:
             results[stage] = {"skipped": True, "reason": f"Stage '{stage}' not supported in pipeline"}
+            continue
+
+        # Skip validate_fix if validate already produced fix output
+        if stage == "validate_fix" and "validate" in results:
+            results[stage] = {**results["validate"], "_absorbed": True}
             continue
 
         stage_args = {

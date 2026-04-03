@@ -14,6 +14,7 @@ from mcp_server.cli.main import main  # noqa: E402
 
 
 def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
+    """Deprecated validate-fix delegates to merged validate; fix artifacts are produced on error."""
     main(["init", "--project", str(tmp_path)])
 
     document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
@@ -37,10 +38,12 @@ def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
         ]
     )
 
-    assert exit_code == 0
+    # Document has no frontmatter — validation fails, fix artifacts generated
+    assert exit_code == 1
+    assert (out_dir / "BRD-01.ucx.validate_review.json").exists()
     assert (out_dir / "BRD-01.ucx.validate_fix.json").exists()
     assert (out_dir / "BRD-01.ucx.validate_fix.txt").exists()
-    assert (out_dir / "BRD-01_sample_validate_copy.md").exists()
+    assert (out_dir / "BRD-01_sample_validated.md").exists()
 
 
 def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
@@ -128,6 +131,7 @@ def test_validate_fix_fails_for_invalid_validation_report_path(tmp_path: Path) -
 
 
 def test_cli_validate_fix_directory_prefers_source_artifact(tmp_path: Path) -> None:
+    """Deprecated validate-fix on directory input prefers canonical source for derived copy."""
     main(["init", "--project", str(tmp_path)])
 
     doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform"
@@ -153,9 +157,10 @@ def test_cli_validate_fix_directory_prefers_source_artifact(tmp_path: Path) -> N
         ]
     )
 
-    assert exit_code == 0
-    assert (out_dir / "BRD-01_platform_validate_copy.md").exists()
-    assert not (out_dir / "BRD-01_platform_validate_copy" / "BRD-01_platform.md").exists()
+    # Document has no frontmatter — validation fails, fix artifacts generated
+    assert exit_code == 1
+    assert (out_dir / "BRD-01_platform_validated.md").exists()
+    assert not (out_dir / "BRD-01_platform_validated" / "BRD-01_platform.md").exists()
 
 
 def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> None:
@@ -164,7 +169,7 @@ def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> 
     doc_dir = tmp_path / "docs/02_PRD/PRD-01_platform"
     doc_dir.mkdir(parents=True, exist_ok=True)
     (doc_dir / "PRD-01_platform.md").write_text("# source\n", encoding="utf-8")
-    (doc_dir / "PRD-01_platform_validate_copy.md").write_text("# validation copy\n", encoding="utf-8")
+    (doc_dir / "PRD-01_platform_validated.md").write_text("# validation copy\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/remediate"
     exit_code = main(
@@ -184,12 +189,12 @@ def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> 
     )
 
     assert exit_code == 0
-    # Uses _validate_copy as input -> _remediate_copy output with canonical base stem
+    # Uses _validated as input -> _remediate_copy output with canonical base stem
     assert (out_dir / "PRD-01_platform_remediate_copy.md").exists()
     # Must NOT create a tree copy of the whole folder
     assert not (out_dir / f"{doc_dir.name}_remediate_copy").exists()
-    # Must NOT create _validate_copy_remediate_copy (non-canonical name)
-    assert not (out_dir / "PRD-01_platform_validate_copy_remediate_copy.md").exists()
+    # Must NOT create _validated_remediate_copy (non-canonical name)
+    assert not (out_dir / "PRD-01_platform_validated_remediate_copy.md").exists()
 
 
 def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path) -> None:
@@ -219,6 +224,7 @@ def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path)
 
 
 def test_validate_fix_emits_source_protection_telemetry(tmp_path: Path) -> None:
+    """Deprecated validate-fix delegates to merged validate; telemetry in fix report."""
     main(["init", "--project", str(tmp_path)])
     document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
     document.parent.mkdir(parents=True, exist_ok=True)
@@ -241,7 +247,7 @@ def test_validate_fix_emits_source_protection_telemetry(tmp_path: Path) -> None:
         ]
     )
 
-    assert exit_code == 0
+    assert exit_code == 1  # Validation fails (no frontmatter), fix artifacts generated
     payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
     assert isinstance(telemetry, dict)
@@ -283,7 +289,7 @@ def test_validate_fix_restores_source_when_mutated(tmp_path: Path, monkeypatch) 
         ]
     )
 
-    assert exit_code == 0
+    assert exit_code == 1  # Validation fails, fix artifacts generated
     assert document.read_text(encoding="utf-8") == original
     payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     telemetry = payload.get("source_protection_telemetry", {})
@@ -315,7 +321,7 @@ def test_validate_fix_omits_telemetry_when_source_monitoring_not_applicable(tmp_
         ]
     )
 
-    assert exit_code == 0
+    assert exit_code == 1  # Validation fails, fix artifacts generated
     payload = json.loads((out_dir / "BRD-01.ucx.validate_fix.json").read_text(encoding="utf-8"))
     assert "source_protection_telemetry" not in payload
 

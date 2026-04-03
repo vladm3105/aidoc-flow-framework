@@ -27,7 +27,7 @@ from mcp_server.executor.cli_runner import ExecutorResult
 
 class TestToolRegistry:
     def test_tool_count(self):
-        assert len(TOOLS) == 20
+        assert len(TOOLS) == 19  # sdd_validate_fix merged into sdd_validate
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
@@ -60,14 +60,15 @@ class TestToolRegistry:
     def test_llm_dependent_tool_names(self):
         llm_dependent = {
             "sdd_create_build", "sdd_create", "sdd_review",
-            "sdd_validate_fix", "sdd_remediate", "sdd_remediate_fix",
+            "sdd_remediate", "sdd_remediate_fix",
         }
         tool_names = {t.name for t in TOOLS}
         assert llm_dependent.issubset(tool_names)
+        assert "sdd_validate_fix" not in tool_names
 
     def test_llm_tools_have_executor_param(self):
         llm_tools = ["sdd_create_build", "sdd_create", "sdd_review",
-                      "sdd_validate_fix", "sdd_remediate", "sdd_remediate_fix"]
+                      "sdd_validate", "sdd_remediate", "sdd_remediate_fix"]
         for tool in TOOLS:
             if tool.name in llm_tools:
                 props = tool.inputSchema.get("properties", {})
@@ -79,6 +80,9 @@ class TestToolRegistry:
         assert "tier1_only" in props
         assert "strict" in props
         assert "format" in props
+        assert "executor" in props
+        assert "timeout" in props
+        assert "validation_report" in props
 
     def test_sdd_create_has_target_param(self):
         create_tool = next(t for t in TOOLS if t.name == "sdd_create")
@@ -209,22 +213,24 @@ class TestNextAction:
 
     def test_after_validation(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01.ucx.validate.json").write_text("{}")
+        (tmp_path / "BRD-01.ucx.validate_review.json").write_text("{}")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "validated"
-        assert result["next_action"] == "validate_fix"
+        assert result["next_action"] == "review"
+        assert result["next_tool"] == "sdd_review"
 
     def test_after_validation_fix(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01.ucx.validate.json").write_text("{}")
-        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# BRD fixed")
+        (tmp_path / "BRD-01.ucx.validate_review.json").write_text("{}")
+        (tmp_path / "BRD-01_platform_validated.md").write_text("# BRD fixed")
         result = _inspect_document_folder(tmp_path)
-        assert result["current_stage"] == "validation_fixed"
+        assert result["current_stage"] == "validated"
         assert result["next_action"] == "review"
+        assert result["next_tool"] == "sdd_review"
 
     def test_after_review(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# fixed")
+        (tmp_path / "BRD-01_platform_validated.md").write_text("# fixed")
         (tmp_path / "BRD-01.ucx.review.md").write_text("# review")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "reviewed"
@@ -232,7 +238,7 @@ class TestNextAction:
 
     def test_after_remediation_report(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_validate_copy.md").write_text("# fixed")
+        (tmp_path / "BRD-01_platform_validated.md").write_text("# fixed")
         (tmp_path / "BRD-01.ucx.remediate.md").write_text("# rem")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "remediation_reported"
@@ -252,7 +258,7 @@ class TestNextAction:
 
 class TestLifecyclePipeline:
     def test_pipeline_stops_on_failure(self):
-        """Pipeline should stop when a stage fails (passed=False)."""
+        """Pipeline should stop when a stage returns passed=False (e.g. review)."""
         import mcp_server.tool_registry as tr
         original = tr._dispatch
 
@@ -261,7 +267,8 @@ class TestLifecyclePipeline:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
-                return {"passed": True, "errors": [], "warnings": []}
+                # validate now always returns passed=True (stage completed)
+                return {"passed": True, "is_valid": False, "fix_generated": True}
             return {"passed": False, "errors": ["Missing section"]}
 
         async def _run():
@@ -272,14 +279,14 @@ class TestLifecyclePipeline:
                     "doc_type": "brd",
                     "layer": "01_BRD",
                     "document": "/tmp/test/docs/01_BRD/BRD-01/",
-                    "stages": ["validate", "validate_fix", "review"],
+                    "stages": ["validate", "review"],
                 })
                 return result
             finally:
                 tr._dispatch = original
 
         payload = asyncio.get_event_loop().run_until_complete(_run())
-        assert payload.get("_stopped_at") == "validate_fix"
+        assert payload.get("_stopped_at") == "review"
         assert call_count == 2
 
     def test_pipeline_completes_all_stages(self):
@@ -298,7 +305,7 @@ class TestLifecyclePipeline:
                     "doc_type": "brd",
                     "layer": "01_BRD",
                     "document": "/tmp/test/docs/01_BRD/BRD-01/",
-                    "stages": ["validate", "validate_fix"],
+                    "stages": ["validate", "review"],
                 })
                 return result
             finally:
@@ -306,6 +313,37 @@ class TestLifecyclePipeline:
 
         payload = asyncio.get_event_loop().run_until_complete(_run())
         assert "_stopped_at" not in payload
+        assert "validate" in payload["_completed_stages"]
+        assert "review" in payload["_completed_stages"]
+
+    def test_validate_fix_stage_absorbed(self):
+        """Pipeline should absorb validate_fix when validate already ran."""
+        import mcp_server.tool_registry as tr
+        original = tr._dispatch
+
+        call_count = 0
+        async def mock_dispatch(name, arguments):
+            nonlocal call_count
+            call_count += 1
+            return {"passed": True, "fix_generated": True, "is_valid": False}
+
+        async def _run():
+            tr._dispatch = mock_dispatch
+            try:
+                result = await tr._handle_lifecycle_pipeline({
+                    "project": "/tmp/test",
+                    "doc_type": "brd",
+                    "layer": "01_BRD",
+                    "document": "/tmp/test/docs/01_BRD/BRD-01/",
+                    "stages": ["validate", "validate_fix"],
+                })
+                return result
+            finally:
+                tr._dispatch = original
+
+        payload = asyncio.get_event_loop().run_until_complete(_run())
+        assert call_count == 1  # Only validate dispatched, validate_fix absorbed
+        assert payload["validate_fix"].get("_absorbed") is True
         assert "validate" in payload["_completed_stages"]
         assert "validate_fix" in payload["_completed_stages"]
 
@@ -331,3 +369,101 @@ class TestErrorHandling:
         )
         with pytest.raises(AttributeError):
             result.stdout = "modified"
+
+
+class TestReviewReportPersistence:
+    """Verify executor review output is saved to document folder."""
+
+    def test_review_report_saved_on_executor_success(self, tmp_path):
+        from mcp_server.review.runner import ReviewRunResult
+
+        # Set up minimal document folder
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01")
+
+        fake_review_result = ReviewRunResult(
+            prompt_text="review prompt text",
+            sidecar_json="{}",
+            inspection={},
+            layer_asset_names=[],
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+        )
+        fake_exec_result = ExecutorResult(
+            stdout="## Review Report\nREM-P0-001 finding",
+            stderr="",
+            exit_code=0,
+            executor_name="claude",
+            prompt_file="/tmp/sdd_prompt_test.md",
+        )
+
+        # Patch the two dependencies: review build + executor
+        with (
+            patch(
+                "mcp_server.review.run_project_review_build",
+                return_value=fake_review_result,
+            ),
+            patch(
+                "mcp_server.tool_registry.run_executor",
+                new_callable=AsyncMock,
+                return_value=fake_exec_result,
+            ),
+        ):
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "document": str(doc_dir),
+                    "executor": "claude",
+                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
+                })
+            )
+
+        payload = json.loads(result[0].text)
+        assert payload.get("review_report_path") is not None
+
+        report_path = Path(payload["review_report_path"])
+        assert report_path.exists()
+        assert report_path.name == "BRD-01.ucx.review.md"
+        assert "REM-P0-001" in report_path.read_text(encoding="utf-8")
+
+    def test_review_report_not_saved_without_executor(self, tmp_path):
+        from mcp_server.review.runner import ReviewRunResult
+
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01")
+
+        fake_review_result = ReviewRunResult(
+            prompt_text="review prompt text",
+            sidecar_json="{}",
+            inspection={},
+            layer_asset_names=[],
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+        )
+
+        with patch(
+            "mcp_server.review.run_project_review_build",
+            return_value=fake_review_result,
+        ):
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "document": str(doc_dir),
+                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
+                })
+            )
+
+        payload = json.loads(result[0].text)
+        assert payload.get("executor") is None
+        assert "review_report_path" not in payload
+        # No .ucx.review.md created
+        review_files = list(doc_dir.glob("*.ucx.review.md"))
+        assert len(review_files) == 0

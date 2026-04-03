@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.12.0 |
-| Latest Release | 1.12.0 (multi-persona mapping support) |
-| Previous Release | 1.11.0 (unified report naming standard) |
+| Current Version | 1.13.0 |
+| Latest Release | 1.13.0 (merge sdd_validate_fix into sdd_validate) |
+| Previous Release | 1.12.0 (multi-persona mapping support) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -291,7 +291,7 @@ Delivered scope:
 
 - Report naming convention with sub-framework registry (sdd, gov, kb)
 - `extract_doc_id()` helper, `REPORT_PATTERN`/`DERIVED_COPY_PATTERN` regex
-- Derived copies: `_validate_copy`/`_remediate_copy`
+- Derived copies: `_validate_copy`/`_remediate_copy` (renamed to `_validated`/`_remediate_copy` in v1.13.0)
 - Standards document: `REPORT_NAMING_STANDARDS.md`
 - 1,089 legacy reports deleted (clean break)
 
@@ -323,6 +323,34 @@ Delivered scope:
 References:
 
 - plans/PLAN-022_multi_persona_mappings.md
+
+---
+
+### v1.13.0 - Merge sdd_validate_fix into sdd_validate
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-02 |
+| Scope | Merge sdd_validate_fix into sdd_validate, artifact naming changes (PLAN-023) |
+
+Delivered scope:
+
+- `sdd_validate_fix` merged into `sdd_validate` — one tool runs validation + creates fix artifacts when errors found
+- `sdd_validate_fix` retained as deprecated alias (routes to `sdd_validate`)
+- Pipeline flow simplified: validate → review → remediate → remediate_fix (no separate validate_fix step)
+- `sdd_next_action`: "validated" goes directly to "review" (no intermediate "validate_fix" step)
+- New response fields: `is_valid` (bool), `fix_generated` (bool), `passed` always True (for pipeline)
+- Tool count: 20 → 19 (12 deterministic, 1 orchestration, 6 LLM-dependent)
+- Artifact naming changes:
+  - `{id}.ucx.validate.json/.txt` → `{id}.ucx.validate_review.json/.txt` (initial validation report)
+  - `*_validate_copy.*` → `*_validated.*` (derived copy suffix)
+  - `{id}.ucx.validate_fix.json/.txt` — unchanged (fix metadata + instructions)
+
+References:
+
+- plans/PLAN-023_merge_validate_tools.md
 
 ---
 

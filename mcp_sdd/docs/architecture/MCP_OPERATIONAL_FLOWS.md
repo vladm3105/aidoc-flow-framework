@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.6 |
-| Date | 2026-03-29 |
+| Version | 1.7 |
+| Date | 2026-04-02 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
@@ -12,7 +12,7 @@
 ## 1. Flow Set
 
 - project initialization flow: `init` → `create-build`
-- document lifecycle flow (5 stages): `validate` → `validate-fix` → `review` → `remediate` → `remediate-fix`
+- document lifecycle flow (5 stages): `create` → `validate` → `review` → `remediate` → `remediate-fix`
 - review prompt flow: `review-build` and `review`
 - readiness and lineage flow: `preflight`, `consistency`
 - diagnostics flow: `prescreen`, `scan`, `scoring`
@@ -117,42 +117,37 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 **Input**: `TYPE-NN_{slug}.md` (source)
 
-**Output**: `validation_report.json`, `validation_report.txt`
+**Output**:
+
+| Artifact | Condition |
+| --- | --- |
+| `validate_review_report.json`, `validate_review_report.txt` | Always produced |
+| `TYPE-NN_{slug}_validated.md` | Produced when validation errors are found (source-protected derived copy with fix instructions) |
+| `validate_fix_report.json`, `validate_fix_report.txt` | Produced when validation errors are found |
 
 **Rules**:
 - Validation reads the source document; it does not modify it.
 - Deterministic, script-based checks only (no LLM).
-- When `--document` points to a folder, MCP resolves the canonical source artifact automatically (see Source Artifact Resolution).
-
----
-
-### Stage 3 — Validate-Fix
-
-**Command**: `validate-fix`
-
-**Input**: `TYPE-NN_{slug}.md` (source) + optional `validation_report.json`
-
-**Output**: `TYPE-NN_{slug}_validation.md` (derived copy, written alongside source)
-
-**Rules**:
-- Source document is not modified.
-- Derived copy is named `{slug}_validation.md`.
-- When `--document` points to a folder, MCP resolves the canonical source artifact automatically.
+- When validation errors are found, `validate` automatically creates a source-protected derived copy (`_validated`) containing fix instructions. The source document is never modified.
 - `processing_stage: validation-fixed` in derived copy metadata.
 - `derived_from: TYPE-NN_{slug}.md` in derived copy metadata.
+- When `--document` points to a folder, MCP resolves the canonical source artifact automatically (see Source Artifact Resolution).
+- New response fields: `is_valid` (bool), `fix_generated` (bool), `passed` always True (for pipeline compatibility).
+
+> **Deprecation note**: `sdd_validate_fix` is deprecated and merged into `sdd_validate`. Calling `validate-fix` as a separate command is no longer required. The alias still works but emits a deprecation warning.
 
 ---
 
-### Stage 4 — Review
+### Stage 3 — Review
 
 **Command**: `review-build` / `review`
 
-**Input**: `TYPE-NN_{slug}_validation.md` (validation copy)
+**Input**: `TYPE-NN_{slug}_validated.md` (validated copy)
 
 **Output**: `TYPE-NN.UCX_review_report_vNNN.md`
 
 **Rules**:
-- Review runs against the `_validation` copy, not the source.
+- Review runs against the `_validated` copy, not the source.
 - Multiple personas are loaded per the 2-tier resolution: explicit `--personas` override or `persona_mappings.yaml` defaults for the `(doc_type, review)` pair.
 - Each persona receives only the document sections mapped to its domain categories.
 - LLM-based content and cross-layer compliance review.
@@ -160,36 +155,36 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 ---
 
-### Stage 5 — Remediate
+### Stage 4 — Remediate
 
 **Command**: `remediate`
 
-**Input**: `TYPE-NN_{slug}_validation.md` + optional `review_report`
+**Input**: `TYPE-NN_{slug}_validated.md` + optional `review_report`
 
 **Output**: `TYPE-NN.UCX_remediation_report_vNNN.md`
 
 **Rules**:
-- Remediation runs against the `_validation` copy, not the source.
+- Remediation runs against the `_validated` copy, not the source.
 - Report is versioned.
-- When `--document` points to a folder, MCP resolves the canonical source artifact (the `_validation` copy) automatically.
+- When `--document` points to a folder, MCP resolves the canonical source artifact (the `_validated` copy) automatically.
 
 ---
 
-### Stage 6 — Remediate-Fix
+### Stage 5 — Remediate-Fix
 
 **Command**: `remediate-fix`
 
-**Input**: `TYPE-NN_{slug}_validation.md` + optional `remediation_report`
+**Input**: `TYPE-NN_{slug}_validated.md` + optional `remediation_report`
 
 **Output**: `TYPE-NN_{slug}_remediated.md` (derived copy, written alongside source)
 
 **Rules**:
-- Input is the `_validation` copy, not the source.
-- Output uses the canonical base name (`{slug}_remediated.md`), not `{slug}_validation_remediated.md`.
-- When `--document` points to a folder, MCP resolves the `_validation` copy automatically.
-- Source and `_validation` copy are not modified.
+- Input is the `_validated` copy, not the source.
+- Output uses the canonical base name (`{slug}_remediated.md`), not `{slug}_validated_remediated.md`.
+- When `--document` points to a folder, MCP resolves the `_validated` copy automatically.
+- Source and `_validated` copy are not modified.
 - `processing_stage: remediated` in derived copy metadata.
-- `derived_from: TYPE-NN_{slug}_validation.md` in derived copy metadata.
+- `derived_from: TYPE-NN_{slug}_validated.md` in derived copy metadata.
 
 ---
 
@@ -200,26 +195,30 @@ Each stage reads from the previous stage's output artifact. The source document 
 | Stage | Artifact | Filename Pattern | Mutates Prior Artifact |
 | --- | --- | --- | --- |
 | 1 | Source document | `TYPE-NN_{slug}.md` | No |
-| 2 | Validation report | `validation_report.json/.txt` | No |
-| 3 | Validation copy | `TYPE-NN_{slug}_validation.md` | No |
-| 4 | Review report | `TYPE-NN.UCX_review_report_vNNN.md` | No |
-| 5 | Remediation report | `TYPE-NN.UCX_remediation_report_vNNN.md` | No |
-| 6 | Remediated copy | `TYPE-NN_{slug}_remediated.md` | No |
+| 2 | Validation report | `validate_review_report.json/.txt` | No |
+| 2 | Validated copy (when errors found) | `TYPE-NN_{slug}_validated.md` | No |
+| 2 | Validate-fix report (when errors found) | `validate_fix_report.json/.txt` | No |
+| 3 | Review report | `TYPE-NN.UCX_review_report_vNNN.md` | No |
+| 4 | Remediation report | `TYPE-NN.UCX_remediation_report_vNNN.md` | No |
+| 5 | Remediated copy | `TYPE-NN_{slug}_remediated.md` | No |
 
 ### Lineage Chain
 
 ```
 TYPE-NN_{slug}.md
-  └─ validate ──→ validation_report.json
-  └─ validate-fix   ──→ TYPE-NN_{slug}_validation.md
-                              └─ review       ──→ UCX_review_report_vNNN.md
-                              └─ remediate    ──→ UCX_remediation_report_vNNN.md
-                              └─ remediate-fix ──→ TYPE-NN_{slug}_remediated.md
+  └─ validate ──→ validate_review_report.json
+  │            ──→ TYPE-NN_{slug}_validated.md       (when errors found)
+  │            ──→ validate_fix_report.json/.txt     (when errors found)
+  │
+  TYPE-NN_{slug}_validated.md
+                        └─ review       ──→ UCX_review_report_vNNN.md
+                        └─ remediate    ──→ UCX_remediation_report_vNNN.md
+                        └─ remediate-fix ──→ TYPE-NN_{slug}_remediated.md
 ```
 
 ### Reserved Suffixes
 
-- `_validation` — UCX-derived copy from `validate-fix` only
+- `_validated` — UCX-derived copy from `validate` (when errors are found)
 - `_remediated` — UCX-derived copy from `remediate-fix` only
 - These suffixes must not appear in canonical source document filenames.
 
@@ -229,8 +228,9 @@ When `--document` points to a folder, MCP applies the following resolution rules
 
 | Stage | Resolution rule |
 | --- | --- |
-| validate, validate-fix, remediate | Locate single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validation` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
-| remediate-fix | Locate single file matching `^[A-Z]+-\d+_.+_validation\.md$`; use it as the `_validation` copy input. Fall back to full folder set if no unique match. |
+| validate | Locate single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validated` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
+| remediate | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
+| remediate-fix | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
 
 ---
 

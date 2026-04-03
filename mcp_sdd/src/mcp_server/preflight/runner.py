@@ -212,6 +212,9 @@ def run_preflight(
 
     report_path: Path | None = None
     summary_path: Path | None = None
+    # Default output to the parent document folder per PLAN-017 convention.
+    if output_dir is None and document_path is not None:
+        output_dir = document_path.parent if document_path.is_file() else document_path
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
         report_path = output_dir / "preflight_report.json"

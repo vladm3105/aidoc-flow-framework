@@ -73,7 +73,7 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
     )
     candidates = [
         path for path in candidates
-        if "_validate_copy" not in path.stem
+        if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
         and "REPORT" not in path.name.upper()
         and "REVIEW" not in path.name.upper()
@@ -108,7 +108,7 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         src_ext = source.suffix  # .md, .yaml, or .yml
 
         # Validation report: check new naming first, then legacy fallback
-        validation_report_new = folder / f"{doc_id}.ucx.validate.json"
+        validation_report_new = folder / f"{doc_id}.ucx.validate_review.json"
         validation_report_json = folder / f"{doc_id}_validation_report.json"
         validation_report_md = folder / f"{doc_id}_validation_report.md"
         if validation_report_new.exists():
@@ -119,8 +119,8 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
             validation_report = validation_report_md
 
         # Validation copy: check same extension as source first, then .md fallback
-        validation_copy_src = folder / f"{stem}_validate_copy{src_ext}"
-        validation_copy_md = folder / f"{stem}_validate_copy.md"
+        validation_copy_src = folder / f"{stem}_validated{src_ext}"
+        validation_copy_md = folder / f"{stem}_validated.md"
         validation_copy = validation_copy_src if validation_copy_src.exists() else validation_copy_md
 
         # Remediated copy: check same extension as source first, then .md fallback

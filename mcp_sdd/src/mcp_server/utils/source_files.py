@@ -17,18 +17,18 @@ UCX_SUB_CODE = "ucx"
 REPORT_PATTERN = re.compile(
     r"^[A-Z]+-\d+\."
     r"(?:ucx|gov|kb)\."
-    r"(?:validate|validate_fix|review|remediate|remediate_fix|"
+    r"(?:validate_review|validate_fix|validate|review|remediate|remediate_fix|"
     r"consistency|links|prescreen|score)"
     r"(?:\.v\d+)?"
     r"\.(?:json|md|txt)$"
 )
 
 DERIVED_COPY_PATTERN = re.compile(
-    r"^[A-Z]+-\d+_.+_(?:validate|remediate)_copy\.(?:md|yaml|yml)$"
+    r"^[A-Z]+-\d+_.+_(?:validated|remediate_copy)\.(?:md|yaml|yml)$"
 )
 
 # Stems and name substrings that mark derived / non-source files
-_DERIVED_STEMS = ("_validate_copy", "_remediate_copy")
+_DERIVED_STEMS = ("_validated", "_remediate_copy")
 _EXCLUDED_NAMES = ("TEMPLATE", "REVIEW", "REPORT")
 
 

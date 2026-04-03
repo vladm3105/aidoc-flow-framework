@@ -9,9 +9,9 @@
 | Canonical Name | UCX (Unified Context Framework) |
 | Package Directory | `mcp_sdd/` |
 | MCP Server Name | `sdd-lifecycle` |
-| Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
+| Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate_review.json`) |
 | Status | Active |
-| Version | 1.11.0 |
+| Version | 1.13.0 |
 | Date | 2026-04-02 |
 | Timezone | America/New_York |
 
@@ -128,6 +128,8 @@ LLM-dependent tools assemble prompts from: persona files + phase template + acti
 
 ## 8. Changelog
 
+- [CHANGELOG v1.13.0](CHANGELOG/CHANGELOG_v1.13.0.md) — merge sdd_validate_fix into sdd_validate (PLAN-023)
+- [CHANGELOG v1.12.0](CHANGELOG/CHANGELOG_v1.12.0.md) — multi-persona mapping support (PLAN-022)
 - [CHANGELOG v1.11.0](CHANGELOG/CHANGELOG_v1.11.0.md) — unified report naming standard
 - [CHANGELOG v1.10.0](CHANGELOG/CHANGELOG_v1.10.0.md) — UCX root relocation (docs/UCX → UCX)
 - [CHANGELOG v1.9.0](CHANGELOG/CHANGELOG_v1.9.0.md) — review report parsing in sdd_remediate

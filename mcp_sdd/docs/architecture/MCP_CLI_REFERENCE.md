@@ -19,7 +19,7 @@
 | review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
 | review | same as review-build | same as review-build | alias for review-build |
 | validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
-| validate-fix | --project --doc-type --layer --document | --validation-report --out | `TYPE-NN_{slug}_validation.md` derived copy written alongside source, plus fix report |
+| validate-fix | --project --doc-type --layer --document | --validation-report --out | **DEPRECATED** — alias for `validate`. Use `validate` instead. When validation errors are found, `validate` produces the `_validated` derived copy and fix report automatically. |
 | remediate | --project --doc-type --layer --document | --review-report --out | remediation report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), plus apply report |
 | prescreen | --document | --out | prescreen candidate report |
@@ -50,7 +50,7 @@
 
 Default output behavior:
 
-- Document-aware commands (`create-build` with `--sections-json`, `review-build`, `validate`, `validate-fix`, `remediate`, `remediate-fix`) write artifacts directly into the target document folder.
+- Document-aware commands (`create-build` with `--sections-json`, `review-build`, `validate`, `remediate`, `remediate-fix`) write artifacts directly into the target document folder.
 - `create` writes the final source document artifact to `--target` and writes creation diagnostics to the target document folder unless `--out` is provided.
 - Fallback when no document context is available uses `.ucx/<stage>` under project docs.
 
@@ -59,7 +59,7 @@ Stage mapping:
 - create-build -> `creation`
 - create -> `creation` (diagnostic artifacts only; final document always uses `--target`)
 - review-build/review -> `review`
-- validate/validate-fix -> `validate`
+- validate -> `validate`
 - remediate/remediate-fix -> `remediation`
 
 Rule:
@@ -75,8 +75,8 @@ When `--document` points to a folder, MCP resolves the target artifact as follow
 
 | Command | Resolution |
 | --- | --- |
-| `validate`, `validate-fix`, `remediate` | Find single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validation` or `_remediated` suffix — use as source. Fall back to full folder set if no unique match. |
-| `remediate-fix` | Find single file matching `^[A-Z]+-\d+_.+_validation\.md$` — use as `_validation` copy input. Fall back to full folder set if no unique match. |
+| `validate`, `remediate` | Find single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validated` or `_remediated` suffix — use as source. Fall back to full folder set if no unique match. |
+| `remediate-fix` | Find single file matching `^[A-Z]+-\d+_.+_validated\.md$` — use as `_validated` copy input. Fall back to full folder set if no unique match. |
 
 When `validate --document` points to a markdown file, MCP applies canonical source redirection across all layers:
 
@@ -87,34 +87,34 @@ This behavior ensures validation remains monolith-first for hybrid document fold
 
 **Output filename rules:**
 
-- `validate-fix` always uses the source stem: `{slug}_validation.md`
-- `remediate-fix` always uses the canonical base stem (stripping `_validation` if present): `{slug}_remediated.md`
+- `validate` (when errors found) uses the source stem: `{slug}_validated.md`
+- `remediate-fix` always uses the canonical base stem (stripping `_validated` if present): `{slug}_remediated.md`
 
-This ensures derived copies never accumulate stage suffixes (e.g., `_validation_remediated.md` is never produced).
+This ensures derived copies never accumulate stage suffixes (e.g., `_validated_remediated.md` is never produced).
 
 ---
 
 ## 5. Derived Artifact Lineage
 
-The 6-stage lifecycle produces this artifact chain (applies to all document layers):
+The 5-stage lifecycle produces this artifact chain (applies to all document layers):
 
 ```text
 TYPE-NN_{slug}.md                      ← stage 1: create
   ↓
-validation_report.json/.txt            ← stage 2: validate
+validate_review_report.json/.txt       ← stage 2: validate
+TYPE-NN_{slug}_validated.md            ← stage 2: validate (when errors found)
+validate_fix_report.json/.txt          ← stage 2: validate (when errors found)
   ↓
-TYPE-NN_{slug}_validation.md           ← stage 3: validate-fix
+UCX_review_report_vNNN.md              ← stage 3: review
   ↓
-UCX_review_report_vNNN.md              ← stage 4: review
+UCX_remediation_report_vNNN.md         ← stage 4: remediate
   ↓
-UCX_remediation_report_vNNN.md         ← stage 5: remediate
-  ↓
-TYPE-NN_{slug}_remediated.md           ← stage 6: remediate-fix
+TYPE-NN_{slug}_remediated.md           ← stage 5: remediate-fix
 ```
 
 Reserved filename suffixes:
 
-- `_validation` — produced by `validate-fix` only
+- `_validated` — produced by `validate` when errors are found
 - `_remediated` — produced by `remediate-fix` only; always uses canonical base stem
 
 ---
@@ -199,7 +199,7 @@ mcp create --project /path/to/project --doc-type brd \
   --target /path/to/docs/01_BRD/BRD-01_platform/BRD-01_platform.md
 ```
 
-Full 6-stage lifecycle for a BRD document:
+Full 5-stage lifecycle for a BRD document:
 
 ```bash
 # Stage 1 — Create source document (personas from persona_mappings.yaml)
@@ -207,32 +207,27 @@ mcp create --project /path/to/project --doc-type brd --layer 01_BRD \
   --template UCC_PROMPT_BRD_PROJECT.md \
   --target /path/to/docs/01_BRD/BRD-01_platform/BRD-01_platform.md
 
-# Stage 2 — Validate source
+# Stage 2 — Validate source (produces _validated copy + fix report when errors found)
 mcp validate --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/BRD-01_platform.md \
   --format json
+# → BRD-01_platform_validated.md written alongside source (when errors found)
 
-# Stage 3 — Produce _validation copy
-mcp validate-fix --project /path/to/project --doc-type brd --layer 01_BRD \
-  --document /path/to/docs/01_BRD/BRD-01_platform/ \
-  --validation-report /path/to/validation_report.json
-# → BRD-01_platform_validation.md written alongside source
-
-# Stage 4 — Review _validation copy (personas from persona_mappings.yaml)
+# Stage 3 — Review _validated copy (personas from persona_mappings.yaml)
 mcp review --project /path/to/project --doc-type brd \
   --layer 01_BRD --sections-json /path/to/sections.json
 
-# Stage 4 alternative — Review document folder with explicit personas
+# Stage 3 alternative — Review document folder with explicit personas
 mcp review --project /path/to/project --personas architect auditor chairperson --doc-type brd \
   --layer 01_BRD --template UCR_PROMPT_BRD_PROJECT.md \
   --document /path/to/docs/01_BRD/BRD-01_platform/
 
-# Stage 5 — Remediation plan against _validation copy
+# Stage 4 — Remediation plan against _validated copy
 mcp remediate --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
   --review-report /path/to/UCX_review_report_v001.md
 
-# Stage 6 — Produce _remediated copy
+# Stage 5 — Produce _remediated copy
 mcp remediate-fix --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
   --remediation-report /path/to/remediation_report.json

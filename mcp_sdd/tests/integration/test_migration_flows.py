@@ -63,23 +63,16 @@ def test_validate_to_fix_to_remediate_flow(tmp_path: Path) -> None:
 
     document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
     document.parent.mkdir(parents=True, exist_ok=True)
+    # Document missing frontmatter — will fail validation and trigger fix generation
     document.write_text(
-        """---
-title: Sample
-tags: [brd]
-custom_fields:
-  document_type: brd
----
-
-## 1. Intro
-TODO refine content
-""",
+        "# BRD-01: Sample\nTODO refine content\n",
         encoding="utf-8",
     )
 
     validate_out = tmp_path / "tmp/validate"
     remediate_out = tmp_path / "tmp/remediate"
 
+    # Merged validate now runs validation + fix in one call
     assert (
         main(
             [
@@ -98,34 +91,14 @@ TODO refine content
                 str(validate_out),
             ]
         )
-        == 0
+        == 1  # Validation fails (errors found)
     )
 
-    validation_report = next(validate_out.glob("*.ucx.validate.json"), validate_out / "validation_report.json")
+    validation_report = next(validate_out.glob("*.ucx.validate_review.json"), validate_out / "validation_report.json")
     assert validation_report.exists()
 
-    assert (
-        main(
-            [
-                "validate-fix",
-                "--project",
-                str(tmp_path),
-                "--doc-type",
-                "brd",
-                "--layer",
-                "01_BRD",
-                "--document",
-                str(document),
-                "--validation-report",
-                str(validation_report),
-                "--out",
-                str(validate_out),
-            ]
-        )
-        == 0
-    )
-
-    validation_copy = validate_out / "BRD-01_sample_validate_copy.md"
+    # Merged validate produces the derived copy automatically when errors exist
+    validation_copy = validate_out / "BRD-01_sample_validated.md"
     assert validation_copy.exists()
 
     assert (
@@ -221,7 +194,7 @@ WHEN request is accepted THE SYSTEM SHALL persist the record.
         == 0
     )
 
-    validation_report = next(validate_out.glob("*.ucx.validate.json"), validate_out / "validation_report.json")
+    validation_report = next(validate_out.glob("*.ucx.validate_review.json"), validate_out / "validation_report.json")
     payload = json.loads(validation_report.read_text(encoding="utf-8"))
     summary = payload.get("summary", {})
     assert summary.get("is_valid") is True

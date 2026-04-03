@@ -117,7 +117,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
     source_artifacts = [
         path
         for path in filtered
-        if "_validate_copy" not in path.stem
+        if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
@@ -373,6 +373,10 @@ def run_remediation_build(
     review_report: Path | None = None,
     output_dir: Path | None = None,
 ) -> RemediationRunResult:
+    # Default output to the parent document folder per PLAN-017 convention.
+    if output_dir is None:
+        output_dir = document_path.parent if document_path.is_file() else document_path
+
     files = _collect_markdown_files(document_path)
     findings: list[dict[str, Any]] = []
     finding_ids: set[str] = set()
@@ -600,7 +604,7 @@ def run_remediation_build(
 def _canonical_stem(src: Path) -> str:
     """Strip stage suffixes from stem."""
     stem = src.stem
-    for postfix in ("_validate_copy", "_remediate_copy"):
+    for postfix in ("_validated", "_remediate_copy"):
         if stem.endswith(postfix):
             return stem[: -len(postfix)]
     return stem
@@ -690,7 +694,7 @@ def _resolve_source_document_path(document_path: Path) -> Path:
     source_artifacts = [
         path
         for path in filtered
-        if "_validate_copy" not in path.stem
+        if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
         and re.match(r"^[A-Z]+-\d+_.+\.(md|yaml)$", path.name)
     ]
@@ -700,15 +704,15 @@ def _resolve_source_document_path(document_path: Path) -> Path:
 
 
 def _resolve_validation_copy_path(document_path: Path) -> Path:
-    """Find the _validate_copy derived copy in a folder."""
+    """Find the _validated derived copy in a folder."""
     if document_path.is_file():
         return document_path
     candidates = []
     for ext in ("*.md", "*.yaml", "*.yml"):
         candidates.extend(
             path for path in sorted(document_path.glob(ext))
-            if "_validate_copy" in path.stem
-            and re.match(r"^[A-Z]+-\d+_.+_validate_copy\.", path.name)
+            if "_validated" in path.stem
+            and re.match(r"^[A-Z]+-\d+_.+_validated\.", path.name)
         )
     if len(candidates) == 1:
         return candidates[0]
@@ -735,8 +739,8 @@ def run_validate_fix_build(
 
     def _apply_copy() -> list[Path]:
         if effective_document_path.is_file():
-            return [_copy_with_suffix(effective_document_path, "validate_copy", output_dir)]
-        return _copy_tree_with_suffix(effective_document_path, "validate_copy", output_dir)
+            return [_copy_with_suffix(effective_document_path, "validated", output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, "validated", output_dir)
 
     derived_paths, telemetry = _guard_source_integrity(source_paths, "validate-fix", _apply_copy)
 

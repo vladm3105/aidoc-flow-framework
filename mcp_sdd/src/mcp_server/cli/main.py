@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import sys
 
 from mcp_server.consistency import run_consistency_check
 from mcp_server.core.stage_output import (
@@ -128,6 +129,13 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional output directory; defaults to <document_dir>/.ucx/validate",
     )
+    validate_parser.add_argument(
+        "--validation-report",
+        default=None,
+        help="Path to existing validation report. Skips re-validation, generates fix artifacts from this report.",
+    )
+    validate_parser.add_argument("--executor", default=None, help="Executor name (reserved for future CLI executor support)")
+    validate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds (reserved)")
 
     remediate_parser = subparsers.add_parser(
         "remediate",
@@ -169,7 +177,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     validate_fix_parser = subparsers.add_parser(
         "validate-fix",
-        help="Generate source-protected validation derived artifacts",
+        help="[DEPRECATED] Use 'validate' instead. Generates validation + fix artifacts.",
     )
     validate_fix_parser.add_argument("--project", required=True, help="Project root containing UCX")
     validate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
@@ -271,7 +279,7 @@ def _list_review_markdown_candidates(document_dir: Path) -> list[Path]:
         for path in candidates
         if "REVIEW" not in path.name.upper()
         and "REPORT" not in path.name.upper()
-        and "_validate_copy" not in path.stem
+        and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
     ]
 
@@ -325,6 +333,110 @@ def _build_review_sections_from_document(document_path: Path) -> tuple[list[Sour
         for path in files
     ]
     return sections, files
+
+
+def _run_validate_command(
+    *,
+    project_root: Path,
+    document_path: Path,
+    doc_type: str,
+    layer: str,
+    output_dir: Path,
+    tier1_only: bool = False,
+    strict: bool = False,
+    format_: str = "text",
+    validation_report_path: Path | None = None,
+) -> int:
+    """Shared validate logic for both 'validate' and deprecated 'validate-fix' CLI commands."""
+
+    # --- Phase 1: Validate (or load existing report) ---
+    if validation_report_path and validation_report_path.exists():
+        report_data = json.loads(validation_report_path.read_text(encoding="utf-8"))
+        errors = report_data.get("errors", [])
+        warnings = report_data.get("warnings", [])
+        report_path = validation_report_path
+        summary_path = None
+    else:
+        validation_result = run_project_validation_build(
+            project_root=project_root,
+            doc_type=doc_type,
+            layer=layer,
+            document_path=document_path,
+            output_dir=output_dir,
+        )
+        payload = validation_result.report
+        errors = payload.get("errors", []) if isinstance(payload, dict) else []
+        warnings = payload.get("warnings", []) if isinstance(payload, dict) else []
+        report_path = validation_result.report_path
+        summary_path = validation_result.summary_path
+
+    if not isinstance(errors, list):
+        errors = []
+    if not isinstance(warnings, list):
+        warnings = []
+
+    if tier1_only:
+        effective_errors = [
+            item
+            for item in errors
+            if isinstance(item, str)
+            and (
+                item.startswith("Missing required custom field")
+                or item.startswith("Missing required tag")
+            )
+        ]
+    else:
+        effective_errors = [item for item in errors if isinstance(item, str)]
+
+    effective_warnings = [item for item in warnings if isinstance(item, str)]
+    failed = len(effective_errors) > 0 or (strict and len(effective_warnings) > 0)
+
+    response_payload: dict[str, object] = {
+        "report_path": str(report_path) if report_path else None,
+        "summary_path": str(summary_path) if summary_path else None,
+        "tier1_only": tier1_only,
+        "strict": strict,
+        "errors": effective_errors,
+        "warnings": effective_warnings,
+        "is_valid": not failed,
+        "passed": not failed,  # CLI: passed == is_valid (exit code signals result). MCP uses passed=True always.
+    }
+
+    # --- Phase 2: Fix (conditional — only when validation fails) ---
+    if failed:
+        try:
+            fix_result = run_validate_fix_build(
+                project_root=project_root,
+                doc_type=doc_type,
+                layer=layer,
+                document_path=document_path,
+                validation_report=report_path,
+                output_dir=output_dir,
+            )
+            response_payload["fix_generated"] = True
+            response_payload["fix_report_path"] = str(fix_result.report_path)
+            response_payload["fix_summary_path"] = str(fix_result.summary_path)
+            response_payload["derived_paths"] = [str(p) for p in fix_result.derived_paths]
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"Fix generation failed: {exc}", file=sys.stderr)
+            response_payload["fix_generated"] = False
+    else:
+        response_payload["fix_generated"] = False
+
+    if format_ == "json":
+        print(json.dumps(response_payload, sort_keys=True))
+    else:
+        print(f"Validation report generated at {report_path}")
+        if summary_path:
+            print(f"Validation summary generated at {summary_path}")
+        print(f"Tier1-only mode: {tier1_only}")
+        print(f"Strict mode: {strict}")
+        print("Validation status: PASSED" if not failed else "Validation status: FAILED")
+        if response_payload.get("fix_generated"):
+            print(f"Fix report: {response_payload.get('fix_report_path')}")
+            print(f"Derived copies: {len(response_payload.get('derived_paths', []))}")
+
+    return 0 if not failed else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -513,60 +625,22 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=explicit_out,
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
-
-        validation_result = run_project_validation_build(
+        validation_report_path = (
+            Path(args.validation_report).expanduser().resolve()
+            if args.validation_report
+            else None
+        )
+        return _run_validate_command(
             project_root=project_root,
+            document_path=document_path,
             doc_type=args.doc_type,
             layer=args.layer,
-            document_path=document_path,
             output_dir=output_dir,
+            tier1_only=bool(args.tier1_only),
+            strict=bool(args.strict),
+            format_=args.format,
+            validation_report_path=validation_report_path,
         )
-        payload = validation_result.report
-        errors = payload.get("errors", []) if isinstance(payload, dict) else []
-        warnings = payload.get("warnings", []) if isinstance(payload, dict) else []
-
-        if not isinstance(errors, list):
-            errors = []
-        if not isinstance(warnings, list):
-            warnings = []
-
-        if args.tier1_only:
-            tier1_errors = [
-                item
-                for item in errors
-                if isinstance(item, str)
-                and (
-                    item.startswith("Missing required custom field")
-                    or item.startswith("Missing required tag")
-                )
-            ]
-            effective_errors = tier1_errors
-        else:
-            effective_errors = [item for item in errors if isinstance(item, str)]
-
-        effective_warnings = [item for item in warnings if isinstance(item, str)]
-        failed = len(effective_errors) > 0 or (args.strict and len(effective_warnings) > 0)
-
-        response_payload = {
-            "report_path": str(validation_result.report_path) if validation_result.report_path else None,
-            "summary_path": str(validation_result.summary_path) if validation_result.summary_path else None,
-            "tier1_only": bool(args.tier1_only),
-            "strict": bool(args.strict),
-            "errors": effective_errors,
-            "warnings": effective_warnings,
-            "passed": not failed,
-        }
-
-        if args.format == "json":
-            print(json.dumps(response_payload, sort_keys=True))
-        else:
-            print(f"Validation report generated at {validation_result.report_path}")
-            print(f"Validation summary generated at {validation_result.summary_path}")
-            print(f"Tier1-only mode: {args.tier1_only}")
-            print(f"Strict mode: {args.strict}")
-            print("Validation status: PASSED" if not failed else "Validation status: FAILED")
-
-        return 0 if not failed else 1
 
     if args.command == "remediate":
         project_root = Path(args.project).expanduser().resolve()
@@ -620,9 +694,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "validate-fix":
+        print("WARNING: validate-fix is deprecated. Use 'validate' instead.", file=sys.stderr)
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
-        validation_report = Path(args.validation_report).expanduser().resolve() if args.validation_report else None
+        validation_report_path = (
+            Path(args.validation_report).expanduser().resolve()
+            if args.validation_report
+            else None
+        )
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
             stage=STAGE_VALIDATE,
@@ -630,22 +709,17 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=explicit_out,
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
-        try:
-            validate_fix_result = run_validate_fix_build(
-                project_root=project_root,
-                doc_type=args.doc_type,
-                layer=args.layer,
-                document_path=document_path,
-                validation_report=validation_report,
-                output_dir=output_dir,
-            )
-        except (FileNotFoundError, ValueError) as exc:
-            print(f"validate-fix failed: {exc}")
-            return 1
-        print(f"Validate-fix report generated at {validate_fix_result.report_path}")
-        print(f"Validate-fix summary generated at {validate_fix_result.summary_path}")
-        print(f"Derived artifacts created: {len(validate_fix_result.derived_paths)}")
-        return 0
+        return _run_validate_command(
+            project_root=project_root,
+            document_path=document_path,
+            doc_type=args.doc_type,
+            layer=args.layer,
+            output_dir=output_dir,
+            tier1_only=False,
+            strict=False,
+            format_="json",
+            validation_report_path=validation_report_path,
+        )
 
     if args.command == "prescreen":
         document_path = Path(args.document).expanduser().resolve()

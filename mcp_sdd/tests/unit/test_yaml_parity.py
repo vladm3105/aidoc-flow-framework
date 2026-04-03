@@ -29,11 +29,11 @@ def test_consistency_finds_yaml_source(tmp_path: Path) -> None:
 def test_consistency_detects_yaml_validation_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")
-    val = tmp_path / "BRD-01_test_validate_copy.yaml"
+    val = tmp_path / "BRD-01_test_validated.yaml"
     val.write_text("title: validation copy\n")
     result = run_consistency_check(target_path=tmp_path)
     details = result.payload.get("details", {})
-    assert details.get("validation_copy") == "BRD-01_test_validate_copy.yaml"
+    assert details.get("validation_copy") == "BRD-01_test_validated.yaml"
 
 
 def test_consistency_still_works_for_md(tmp_path: Path) -> None:
@@ -58,12 +58,12 @@ def test_next_action_detects_yaml_source(tmp_path: Path) -> None:
 def test_next_action_detects_yaml_validation_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")
-    val = tmp_path / "BRD-01_test_validate_copy.yaml"
+    val = tmp_path / "BRD-01_test_validated.yaml"
     val.write_text("title: validation copy\n")
-    report = tmp_path / "BRD-01.ucx.validate.json"
+    report = tmp_path / "BRD-01.ucx.validate_review.json"
     report.write_text(json.dumps({"summary": {"errors": 0}}))
     info = _inspect_document_folder(tmp_path)
-    assert info["current_stage"] == "validation_fixed"
+    assert info["current_stage"] == "validated"  # Merged: validate_fix absorbed into validate
 
 
 def test_next_action_detects_yaml_remediated_copy(tmp_path: Path) -> None:

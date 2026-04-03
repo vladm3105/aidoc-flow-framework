@@ -1,20 +1,44 @@
-# UCX Framework Skills
+# UCX Framework Skills — Canonical Scaffold Source
 
-This directory contains the **framework default** persona skills for UCX document reviews.
+This directory contains the **canonical scaffold source** for persona skills. These files are copied into each project during `sdd_init` and are **never loaded by the runtime directly**.
 
-## Skill Loading Priority (v1.8.0+)
+## Project Isolation Model (v1.8.0+)
 
-Skills are loaded with the following priority:
+UCX uses a **project isolation** model with no runtime fallback to framework defaults.
 
-| Priority | Location | Description |
-|----------|----------|-------------|
-| 1 | `{project}/docs/UCX/skills/` | Project-specific skills (preferred) |
-| 2 | `/UCX/skills/` (this directory) | Framework defaults (fallback) |
+### Initialization (`sdd_init`)
 
-**Key Behavior**:
-- If a project has `docs/UCX/skills/auditor.md`, that file is used
-- If not found, `/UCX/skills/auditor.md` (this file) is used as fallback
-- Prompts are project-specific ONLY (no fallback)
+`sdd_init --project <path>` copies all personas, prompts, templates, and layer assets from this framework directory into the project's `{project}/UCX/` directory. Existing files are never overwritten (idempotent).
+
+| Framework Source | Project Destination |
+|---|---|
+| `mcp_sdd/skills/personas/` | `{project}/UCX/skills/personas/` |
+| `mcp_sdd/skills/layer_aliases/` | `{project}/UCX/skills/layer_aliases/` |
+| `mcp_sdd/prompts/templates/creation/` | `{project}/UCX/prompts/templates/creation/` |
+| `mcp_sdd/prompts/templates/review/` | `{project}/UCX/prompts/templates/review/` |
+| `mcp_sdd/prompts/templates/remediation/` | `{project}/UCX/prompts/templates/remediation/` |
+| `mcp_sdd/templates/` + `ai_dev_ssd_flow/` layers | `{project}/UCX/templates/` |
+
+### Runtime Loading
+
+At runtime, all MCP tools resolve personas, prompts, and templates **exclusively from the project's UCX directory**:
+
+- `{project}/UCX/skills/personas/{persona}.md`
+- `{project}/UCX/prompts/templates/{phase}/{template}.md`
+- `{project}/UCX/templates/layers/{layer}/`
+
+**No fallback to framework defaults occurs.** If required project-specific files are missing, the runtime raises `ProjectSkillsNotFound` with the message: *"Run mcp init --project {project_root} to create project-specific files."*
+
+### Customization
+
+After initialization, each project owns its UCX assets independently. Teams can customize personas, prompts, and templates in `{project}/UCX/` without affecting other projects or the framework source.
+
+## Persona Mappings
+
+`persona_mappings.yaml` defines the default persona list for each doc-type. When `personas` is omitted from a create-build or review-build command, the runtime resolves the applicable persona list from this file. Each entry maps a doc-type key to an ordered list of persona identifiers.
+
+Location (framework scaffold source): `mcp_sdd/skills/persona_mappings.yaml`
+Location (project runtime): `{project}/UCX/skills/persona_mappings.yaml`
 
 ## Available Skills (12 Core Personas)
 
@@ -36,6 +60,7 @@ Skills are loaded with the following priority:
 **Extended Personas** (not in VALID_PERSONAS, available as templates):
 | Skill | Role | Focus |
 |-------|------|-------|
+| `content_strategist.md` | Content Strategist | Documentation clarity, audience alignment, terminology consistency |
 | `requirements_specialist.md` | Requirements Specialist | EARS/INCOSE syntax |
 | `ux_strategist.md` | UX Strategist | User journeys, accessibility |
 
@@ -72,34 +97,31 @@ What this persona should look for.
 - priority: high
 ```
 
-## Creating Project-Specific Skills
+## Customizing Project Skills
 
-To customize skills for your project:
+After running `sdd_init`, customize skills in the project's own UCX directory:
 
 ```bash
-# Create project skills directory
-mkdir -p {project}/docs/UCX/skills/
+# Initialize project (copies all framework defaults to project)
+mcp init --project /path/to/project
 
-# Copy and customize specific skills
-cp /opt/data/docs_flow_framework/UCX/skills/auditor.md \
-   {project}/docs/UCX/skills/auditor.md
-
-# Edit to add domain-specific knowledge
-# Example: Add FinCEN, OFAC focus for fintech
+# Edit project-specific personas
+# Example: Add FinCEN, OFAC focus for fintech auditor
+vi /path/to/project/UCX/skills/personas/auditor.md
 ```
 
-## Verification
+Do not edit files in `mcp_sdd/skills/personas/` for project-specific changes. Edit only the project copy under `{project}/UCX/skills/personas/`.
 
-To verify skills are loaded from the correct location:
+## Verification
 
 ```bash
 UCX_LOG_LEVEL=DEBUG ucx review brd docs/01_BRD/BRD-01/
 
-# Project skills:
-# "Loaded project-specific skill: auditor from .../docs/UCX/skills"
+# Expected: loads from project UCX
+# "Loaded project-specific skill: auditor from .../UCX/skills/personas"
 
-# Framework fallback:
-# "Loaded framework skill (fallback): auditor"
+# If project assets missing:
+# "ProjectSkillsNotFound: Run mcp init --project ... to create project-specific files."
 ```
 
 ## Finding ID Format (v1.13.0+)
@@ -126,5 +148,13 @@ See `chairperson.md` and `operator.md` for examples with explicit Finding ID tab
 
 - **v1.14.3**: Added `qa_lead` persona, renamed `devils_advocate` to `chaos_engineer`
 - **v1.13.0**: Finding ID format, context engineering
+
+## Architectural Contract
+
+These rules are normative (from IPLAN-001):
+
+1. `mcp_sdd/skills/` and `mcp_sdd/prompts/templates/` are the canonical scaffold source used by `sdd_init` to create project-specific UCX files; they are never loaded by the runtime directly.
+2. At runtime, the MCP resolves all skills, personas, and prompt templates exclusively from the active project's UCX directory.
+3. If project-specific skills, personas, or prompt templates are absent at runtime, the MCP raises `ProjectSkillsNotFound`. No fallback to MCP bundled templates occurs.
 
 Part of UCX Framework v1.14.3+
