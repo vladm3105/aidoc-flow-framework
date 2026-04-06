@@ -4,14 +4,13 @@
 
 ## Overview
 
-UCRem uses **6 specialized Fixer Personas** organized into two categories:
+UCRem uses **5 specialized Fixer Personas** organized into two categories:
 
 ### Domain Fixers (Adaptive Loading)
 Loaded only when findings exist in their domain:
-- **Architect Fixer** - Structural integrity, patterns
+- **Architect Fixer** - Structural integrity, patterns, cross-references
 - **Auditor Fixer** - Compliance, security controls
 - **QA Fixer** - Testability, verification
-- **Integration Fixer** - Cross-references, traceability
 
 ### Mandatory Fixers (Always Loaded)
 Always loaded to ensure quality and synthesis:
@@ -33,8 +32,8 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 # Output:
 # Domain fixers needed: qa_lead
 # Mandatory fixers: chaos_engineer, chairperson
-# Excluded fixers: architect, auditor, integration_lead
-# → Token savings: 3 personas excluded
+# Excluded fixers: architect, auditor
+# → Token savings: 2 personas excluded
 ```
 
 **Benefits:**
@@ -94,7 +93,6 @@ fixes, report_path = ucrem.generate_fixes(
 | Architect Fixer | ✓ | ✓ | - | - | ✓ | Domain |
 | Auditor Fixer | ✓ | ✓ | - | ✓* | ✓ | Domain |
 | QA Fixer | ✓ | ✓ | ✓ | ✓ | - | Domain |
-| Integration Fixer | ✓ | ✓ | ✓ | ✓ | ✓ | Domain |
 | Chaos Engineer | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
 | Chairperson | ✓ | ✓ | ✓ | ✓ | ✓ | **Mandatory** |
 
@@ -283,75 +281,7 @@ qa_fixer_assessment:
 
 ---
 
-## 4. INTEGRATION FIXER
-
-### Identity
-
-**Role**: Ensures fixes maintain cross-reference integrity and don't break document relationships.
-
-**Skeptical Stance**: "Do all references still resolve? Does this fix cascade correctly?"
-
-### Responsibilities
-
-| Phase | Responsibility |
-|-------|---------------|
-| **Proposal** | Propose fixes that maintain traceability |
-| **Validation** | Verify all @brd:, @prd:, @ears: refs resolve after fix |
-| **Cross-Check** | Ensure fixes don't orphan dependent documents |
-
-### Fix Proposal Rules
-
-1. **Reference Integrity**: All cross-references must resolve post-fix
-2. **Cascade Awareness**: Document downstream impact of fixes
-3. **ID Stability**: Avoid changing element IDs when possible
-4. **Traceability Matrix**: Update when adding new traceable elements
-
-### Integration Fix Template
-
-```yaml
-integration_fix:
-  references_affected:
-    - type: "@brd:"
-      from: "PRD-01.3.2"
-      status: valid|needs_update|broken
-  new_references_needed:
-    - type: "@prd:"
-      target: "PRD-01.3.5"
-      reason: "New requirement added"
-  downstream_impact:
-    - artifact: "EARS-01"
-      impact: "May need new EARS statement for requirement"
-```
-
-### Confidence Criteria
-
-| Confidence | Criteria |
-|------------|----------|
-| `auto-safe` | No reference changes, or all refs verified valid |
-| `auto-assisted` | References need update, paths deterministic |
-| `manual-required` | Circular reference risk, or cascade to multiple documents |
-
-### Output Format
-
-```yaml
-integration_fixer_assessment:
-  reference_impact: none|local|cross_document
-  broken_refs_created: 0|count
-  cascade_documents: [list]
-  traceability_update: none|add_entry|update_entry
-  recommendation: approve|update_refs|cascade_review
-```
-
-### Trigger Phrases for Manual Flag
-
-- "Cascade to multiple documents required"
-- "Element ID change affects downstream"
-- "Circular reference possible"
-- "Orphaned requirement created"
-
----
-
-## 5. DEVIL'S ADVOCATE
+## 4. DEVIL'S ADVOCATE
 
 ### Identity
 
@@ -442,7 +372,7 @@ Each persona reviews OTHER personas' fixes:
 | Architect | Structural integrity |
 | Auditor | Compliance completeness |
 | QA | Testability |
-| Integration | Reference integrity |
+| Architect | Reference integrity |
 | Chaos Engineer | Root cause |
 
 ### Step 3: Conflict Resolution
@@ -473,7 +403,7 @@ def final_confidence(assessments: list[str]) -> str:
 
 ---
 
-## 6. CHAIRPERSON (Mandatory)
+## 5. CHAIRPERSON (Mandatory)
 
 ### Identity
 

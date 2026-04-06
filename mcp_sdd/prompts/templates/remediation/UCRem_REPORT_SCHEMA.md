@@ -55,7 +55,7 @@ custom_fields:
   review_date: "{UCR_REVIEW_DATE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Chaos Engineer, Chairperson]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}
@@ -254,7 +254,7 @@ cross_validation:
       Renumber FIX-P1-05 to 7.2.5.
     resolution: |
       Apply FIX-P0-02 first (P0 priority). Renumber FIX-P1-05 section to 7.2.5.
-    resolved_by: Integration Fixer
+    resolved_by: Architect Fixer
 
   - conflict_id: CV-02
     fixes_involved: [FIX-P0-01, FIX-P1-03]

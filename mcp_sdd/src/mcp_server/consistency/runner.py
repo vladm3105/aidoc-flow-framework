@@ -108,7 +108,7 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         src_ext = source.suffix  # .md, .yaml, or .yml
 
         # Validation report: check new naming first, then legacy fallback
-        validation_report_new = folder / f"{doc_id}.ucx.validate_review.json"
+        validation_report_new = folder / f"{doc_id}.ucx.validate.json"
         validation_report_json = folder / f"{doc_id}_validation_report.json"
         validation_report_md = folder / f"{doc_id}_validation_report.md"
         if validation_report_new.exists():

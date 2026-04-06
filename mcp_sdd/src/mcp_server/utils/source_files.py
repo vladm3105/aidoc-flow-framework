@@ -17,7 +17,7 @@ UCX_SUB_CODE = "ucx"
 REPORT_PATTERN = re.compile(
     r"^[A-Z]+-\d+\."
     r"(?:ucx|gov|kb)\."
-    r"(?:validate_review|validate_fix|validate|review|remediate|remediate_fix|"
+    r"(?:validate_fix|validate|review|remediate|remediate_fix|"
     r"consistency|links|prescreen|score)"
     r"(?:\.v\d+)?"
     r"\.(?:json|md|txt)$"

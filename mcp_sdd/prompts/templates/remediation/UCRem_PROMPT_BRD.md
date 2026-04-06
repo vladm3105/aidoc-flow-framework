@@ -89,7 +89,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Integration Fixer, Chaos Engineer, Chairperson]
+  personas_applied: [Architect Fixer, Auditor Fixer, QA Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}
@@ -271,7 +271,7 @@ rationale: |
   [TODO] placeholders require domain expert input.
 validated_by:
   - Auditor Fixer
-  - Integration Fixer
+  - Auditor Fixer
 verification: |
   Verify section 7.2.4 exists with structure.
   Count [TODO] placeholders - all must be resolved.

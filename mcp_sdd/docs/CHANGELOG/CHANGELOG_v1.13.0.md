@@ -15,7 +15,7 @@ Merge `sdd_validate_fix` into `sdd_validate` so a single tool runs structural va
 - Pipeline flow simplified from 6 stages to 5: create → validate → review → remediate → remediate-fix
 - New response fields on `sdd_validate`: `is_valid` (bool), `fix_generated` (bool), `passed` always True (for pipeline compatibility)
 - Artifact naming:
-  - `{id}.ucx.validate.json/.txt` → `{id}.ucx.validate_review.json/.txt` (initial validation report)
+  - `{id}.ucx.validate.json/.txt` — initial validation report (unchanged per PLAN-021)
   - `*_validate_copy.*` → `*_validated.*` (derived copy suffix)
   - `{id}.ucx.validate_fix.json/.txt` — unchanged (fix metadata and instructions)
 
@@ -28,13 +28,13 @@ Merge `sdd_validate_fix` into `sdd_validate` so a single tool runs structural va
 
 `sdd_validate_fix` continues to work as a deprecated alias. Callers receive a deprecation warning and are routed to `sdd_validate`. Output artifacts are identical. Callers should migrate to `sdd_validate` directly.
 
-External consumers reading `*.ucx.validate.json` filenames must update to `*.ucx.validate_review.json`. Consumers matching `*_validate_copy.*` must update to `*_validated.*`.
+Consumers matching `*_validate_copy.*` must update to `*_validated.*`. Validation report naming `*.ucx.validate.json` is unchanged per PLAN-021.
 
 ## Files Changed
 
 - `mcp_sdd/src/mcp_server/tool_registry.py` — removed `sdd_validate_fix` tool definition
 - `mcp_sdd/src/mcp_server/server.py` — merged validate_fix logic into validate handler, added deprecated alias routing
-- `mcp_sdd/src/mcp_server/validation/runner.py` — updated output filenames (`validate_review`, `_validated`)
+- `mcp_sdd/src/mcp_server/validation/runner.py` — updated output filenames (`validate`, `_validated`)
 - `mcp_sdd/src/mcp_server/validation/fix_runner.py` — integrated into validation runner
 - `mcp_sdd/src/mcp_server/cli/main.py` — removed `validate-fix` subcommand, updated validate output handling
 - `mcp_sdd/src/mcp_server/next_action.py` — "validated" → "review" transition (removed "validate_fix" intermediate)

@@ -209,46 +209,95 @@ def _check_phase_alignment(
 
 # ── BRD-XS-004: Entity Consistency ──────────────────────────────────
 
+def _extract_stakeholder_entities(yaml_data: dict[str, object]) -> list[str]:
+    """Extract organizational entity names from the top-level stakeholders section.
+
+    Extracts partner/vendor names from ``name`` fields whose ``role`` indicates
+    an external or partner relationship.  Individual person names (CEO, CTO)
+    are not expected to appear in functional requirements, so they are excluded.
+    """
+    stakeholders = yaml_data.get("stakeholders", {})
+    if not isinstance(stakeholders, dict):
+        return []
+
+    _PARTNER_ROLE_KEYWORDS = ("partner", "vendor", "provider", "supplier", "external")
+
+    entities: list[str] = []
+    for group_key in ("decision_makers", "key_contributors"):
+        group: list[object] = stakeholders.get(group_key, [])  # type: ignore[assignment]
+        if not isinstance(group, list):
+            continue
+        for entry in group:
+            if not isinstance(entry, dict):
+                continue
+            role = str(entry.get("role", "")).lower()
+            # Only extract names from partner/vendor roles.
+            if not any(kw in role for kw in _PARTNER_ROLE_KEYWORDS):
+                continue
+            name_val = entry.get("name", "")
+            if isinstance(name_val, str):
+                for part in re.split(r"[,/]", name_val):
+                    candidate = part.strip()
+                    if (
+                        len(candidate) >= 3
+                        and not candidate.islower()
+                        and candidate.lower() not in _GENERIC_WORDS
+                    ):
+                        entities.append(candidate)
+    return entities
+
+
+def _extract_problem_entities(yaml_data: dict[str, object]) -> list[str]:
+    """Extract organization/product names from business_objectives.problem_statement.
+
+    Scans ``current_workarounds`` for parenthesized entity names (e.g. vendor
+    names).  Free-text audience descriptions in ``affected_stakeholders`` are
+    excluded — they describe user segments, not entities that should appear in
+    functional requirements.
+    """
+    biz_obj = yaml_data.get("business_objectives", {})
+    if not isinstance(biz_obj, dict):
+        return []
+
+    problem_stmt = biz_obj.get("problem_statement", {})
+    if not isinstance(problem_stmt, dict):
+        return []
+
+    entities: list[str] = []
+    # Extract from current_workarounds — more likely to mention vendor names.
+    workarounds: list[object] = problem_stmt.get("current_workarounds", [])  # type: ignore[assignment]
+    if isinstance(workarounds, list):
+        for item in workarounds:
+            text = str(item) if item else ""
+            for match in re.findall(r"\(([^)]+)\)", text):
+                for part in re.split(r"[,/]", match):
+                    candidate = part.strip()
+                    if (
+                        len(candidate) >= 3
+                        and not candidate.islower()
+                        and candidate.lower() not in _GENERIC_WORDS
+                        # Skip numeric descriptions like "5-8% fees".
+                        and not re.match(r"^[\d$%~<>.\-\s]+", candidate)
+                    ):
+                        entities.append(candidate)
+    return entities
+
+
 def _check_entity_consistency(
     yaml_data: dict[str, object],
     errors: list[str],
     warnings: list[str],
     passes: list[str],
 ) -> None:
-    exec_summary = yaml_data.get("executive_summary", {})
-    if not isinstance(exec_summary, dict):
-        passes.append("BRD-XS-004: executive_summary absent (skipped)")
-        return
-
-    # Stakeholder names.
-    stakeholder_list: list[object] = exec_summary.get("key_stakeholders", [])  # type: ignore[assignment]
-    if not isinstance(stakeholder_list, list):
-        stakeholder_list = []
-    entities: list[str] = []
-    for entry in stakeholder_list:
-        if isinstance(entry, dict) and "stakeholder" in entry:
-            entities.append(str(entry["stakeholder"]))
-
-    # Partner names from business_problem text (parenthesized content).
-    biz_problem = str(exec_summary.get("business_problem", ""))
-    paren_matches = re.findall(r"\(([^)]+)\)", biz_problem)
-    for match in paren_matches:
-        for part in match.split(","):
-            candidate = part.strip()
-            if (
-                len(candidate) >= 3
-                and not candidate.islower()
-                and candidate.lower() not in _GENERIC_WORDS
-            ):
-                entities.append(candidate)
+    entities = _extract_stakeholder_entities(yaml_data) + _extract_problem_entities(yaml_data)
 
     if not entities:
         passes.append("BRD-XS-004: No entities extracted (skipped)")
         return
 
-    # Build search corpus.
+    # Build search corpus from downstream sections.
     corpus_parts: list[str] = []
-    for key in ("functional_requirements", "stakeholders", "introduction"):
+    for key in ("functional_requirements", "introduction", "project_scope"):
         section = yaml_data.get(key, {})
         corpus_parts.append(_serialize(section).lower())
     corpus = " ".join(corpus_parts)
@@ -261,9 +310,9 @@ def _check_entity_consistency(
     if missing:
         for name in missing:
             warnings.append(
-                f"BRD-XS-004: Entity '{name}' from executive_summary "
-                f"not found in functional_requirements/stakeholders/"
-                f"introduction"
+                f"BRD-XS-004: Entity '{name}' from stakeholders/"
+                f"business_objectives not found in "
+                f"functional_requirements/introduction/project_scope"
             )
     else:
         passes.append(

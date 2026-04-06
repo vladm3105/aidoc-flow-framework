@@ -94,7 +94,7 @@ custom_fields:
   source_review: "{UCR_REVIEW_FILE}"
   remediation_date: "{CURRENT_DATE}"
   method: UCRem
-  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Integration Fixer, Chaos Engineer, Chairperson]
+  personas_applied: [Product Owner Fixer, UX Strategist Fixer, QA Lead Fixer, Chaos Engineer, Chairperson]
   statistics:
     total_findings: {N}
     auto_safe_fixes: {N}

@@ -40,7 +40,7 @@ def test_cli_validate_fix_creates_validation_artifacts(tmp_path: Path) -> None:
 
     # Document has no frontmatter — validation fails, fix artifacts generated
     assert exit_code == 1
-    assert (out_dir / "BRD-01.ucx.validate_review.json").exists()
+    assert (out_dir / "BRD-01.ucx.validate.json").exists()
     assert (out_dir / "BRD-01.ucx.validate_fix.json").exists()
     assert (out_dir / "BRD-01.ucx.validate_fix.txt").exists()
     assert (out_dir / "BRD-01_sample_validated.md").exists()

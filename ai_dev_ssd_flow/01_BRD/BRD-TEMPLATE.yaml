@@ -223,25 +223,21 @@ document_control:
 # =============================================================================
 
 executive_summary:
+  required: false
   _guidance: |
-    Required 3-paragraph quantitative structure:
+    OPTIONAL — derived section. Can be generated on demand by an AI assistant
+    from authoritative sections (business_objectives, stakeholders, project_scope).
+
+    Not validated by UCX. Not consumed by downstream prompts or cross-section rules.
+    Include only when a human-readable rollup is needed for stakeholder presentations.
+
+    When populated, use 3-paragraph quantitative structure:
       1. Business Context: market opportunity with quantitative sizing
       2. Solution Overview: business capability with measurable outcomes
       3. Business Impact: expected benefits with specific metrics
 
-    Each paragraph must include at least one quantitative element:
-      Context: market size, volume, or gap ("$XX billion market")
-      Solution: capability scope with numbers ("X regions", "Y types")
-      Impact: measurable outcome targets ("X% cost reduction", "$Y revenue")
-
-  _antipatterns:
-    - "FAIL: '[Company] will provide a fast and affordable way...' — no quantitative measures"
-    - "FAIL: 'The solution will significantly improve...' — subjective, not measurable"
-    - "FAIL: 'We expect strong market adoption' — no specific targets"
-
   overview: |
-    [Three paragraphs: Business Context, Solution Overview, Business Impact.
-    Each must include quantitative measures.]
+    [Generated on demand from business_objectives, stakeholders, project_scope.]
 
   target_users:
     _guidance: |

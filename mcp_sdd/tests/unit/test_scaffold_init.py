@@ -70,4 +70,115 @@ def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) 
     result = scaffold_project_ucx(project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root)
 
     assert result.skipped_count >= 1
+    assert result.updated_count == 0
     assert existing.read_text(encoding="utf-8") == "project override"
+
+
+def test_scaffold_update_overwrites_stale_files(tmp_path: Path) -> None:
+    canonical_root = tmp_path / "canonical"
+    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    project_root = tmp_path / "project"
+    _create_canonical_scaffold(canonical_root)
+    _create_authoritative_ssd(ssd_root)
+
+    # First init — creates files.
+    scaffold_project_ucx(project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root)
+
+    # Simulate framework update — change canonical source content.
+    (canonical_root / "skills/personas/architect.md").write_text("architect persona v2", encoding="utf-8")
+    (ssd_root / "01_BRD/BRD-MVP-TEMPLATE.yaml").write_text("doc_id: BRD-01-v2\n", encoding="utf-8")
+
+    # Re-init WITHOUT update — stale files should be skipped.
+    result_no_update = scaffold_project_ucx(
+        project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root,
+    )
+    assert result_no_update.updated_count == 0
+    assert (project_root / "UCX/skills/personas/architect.md").read_text(encoding="utf-8") == "architect persona"
+
+    # Re-init WITH update — stale files should be overwritten.
+    result_update = scaffold_project_ucx(
+        project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root,
+        force_update=True,
+    )
+    assert result_update.updated_count >= 2
+    assert (project_root / "UCX/skills/personas/architect.md").read_text(encoding="utf-8") == "architect persona v2"
+    assert (project_root / "UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.yaml").read_text(encoding="utf-8") == "doc_id: BRD-01-v2\n"
+
+
+def test_scaffold_update_skips_identical_files(tmp_path: Path) -> None:
+    canonical_root = tmp_path / "canonical"
+    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    project_root = tmp_path / "project"
+    _create_canonical_scaffold(canonical_root)
+    _create_authoritative_ssd(ssd_root)
+
+    # First init.
+    scaffold_project_ucx(project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root)
+
+    # Re-init with update but no source changes — nothing should be updated.
+    # persona_mappings.yaml is always reported as protected during --update.
+    result = scaffold_project_ucx(
+        project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root,
+        force_update=True,
+    )
+    assert result.updated_count == 0
+    assert result.protected_count == 1  # persona_mappings.yaml
+    assert result.skipped_count >= 6
+
+
+def test_scaffold_update_protects_persona_mappings(tmp_path: Path) -> None:
+    """--update must NOT overwrite persona_mappings.yaml (project-owned)."""
+    canonical_root = tmp_path / "canonical"
+    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    project_root = tmp_path / "project"
+    _create_canonical_scaffold(canonical_root)
+    _create_authoritative_ssd(ssd_root)
+
+    # First init.
+    scaffold_project_ucx(project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root)
+
+    # Project customizes persona_mappings.yaml.
+    mappings_path = project_root / "UCX/skills/persona_mappings.yaml"
+    mappings_path.write_text('version: "1.0"\ncreation:\n  brd:\n    personas: [architect, auditor]\n    mode: sequential\n', encoding="utf-8")
+
+    # Framework updates source.
+    (canonical_root / "skills/persona_mappings.yaml").write_text('version: "2.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n', encoding="utf-8")
+
+    # --update should protect persona_mappings.yaml.
+    result = scaffold_project_ucx(
+        project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root,
+        force_update=True,
+    )
+    assert result.protected_count >= 1
+    assert any("persona_mappings.yaml" in p for p in result.protected_paths)
+    # Project customization preserved.
+    assert "auditor" in mappings_path.read_text(encoding="utf-8")
+
+
+def test_scaffold_update_mappings_resets_persona_mappings(tmp_path: Path) -> None:
+    """--update --update-mappings explicitly resets persona_mappings.yaml."""
+    canonical_root = tmp_path / "canonical"
+    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    project_root = tmp_path / "project"
+    _create_canonical_scaffold(canonical_root)
+    _create_authoritative_ssd(ssd_root)
+
+    # First init + project customization.
+    scaffold_project_ucx(project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root)
+    mappings_path = project_root / "UCX/skills/persona_mappings.yaml"
+    mappings_path.write_text('version: "1.0"\ncreation:\n  brd:\n    personas: [architect, auditor]\n    mode: sequential\n', encoding="utf-8")
+
+    # Framework updates source.
+    (canonical_root / "skills/persona_mappings.yaml").write_text('version: "2.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n', encoding="utf-8")
+
+    # --update-mappings should overwrite persona_mappings.yaml.
+    result = scaffold_project_ucx(
+        project_root=project_root, canonical_root=canonical_root, ssd_root=ssd_root,
+        force_update=True,
+        force_update_mappings=True,
+    )
+    assert result.protected_count == 0
+    assert any("persona_mappings.yaml" in p for p in result.updated_paths)
+    content = mappings_path.read_text(encoding="utf-8")
+    assert 'version: "2.0"' in content
+    assert "auditor" not in content

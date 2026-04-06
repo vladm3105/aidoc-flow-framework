@@ -356,7 +356,7 @@ def _get_required_yaml_keys(doc_type: str) -> list[str]:
     normalized = doc_type.strip().lower()
     common = ["metadata", "traceability"]
     specific: dict[str, list[str]] = {
-        "brd": ["document_control", "executive_summary", "functional_requirements"],
+        "brd": ["document_control", "functional_requirements"],
         "prd": ["document_control", "features"],
         "ears": ["document_control", "requirements"],
         "spec": ["document_control", "implementation"],

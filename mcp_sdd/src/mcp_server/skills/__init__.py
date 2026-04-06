@@ -19,12 +19,20 @@ from .registry import (
     resolve_tool_call,
     validate_alias_registry,
 )
+from .persona_manager import (
+    check_persona_mapping_health,
+    diff_persona_mappings,
+    set_persona_mapping,
+    show_persona_mappings,
+)
 from .scaffold import InitScaffoldResult, scaffold_project_ucx
 
 __all__ = [
     "AliasResolution",
     "CANONICAL_CROSS_LAYER_TOOLS",
     "InitScaffoldResult",
+    "check_persona_mapping_health",
+    "diff_persona_mappings",
     "LAYER_PREFIXES",
     "PersonaMappingError",
     "ProjectSkillsNotFound",
@@ -37,6 +45,8 @@ __all__ = [
     "load_project_prompt_template",
     "resolve_tool_call",
     "scaffold_project_ucx",
+    "set_persona_mapping",
+    "show_persona_mappings",
     "validate_alias_registry",
     "validate_project_ucx_root",
 ]

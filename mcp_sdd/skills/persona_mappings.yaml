@@ -18,51 +18,51 @@ creation:
     personas: [architect, product_owner, business_analyst, strategist, tech_lead]
     mode: sequential
   prd:
-    personas: [product_owner, ux_strategist, content_strategist, tech_lead, qa_lead, architect, requirements_specialist]
+    personas: [product_owner, ux_strategist, content_strategist, tech_lead, architect, requirements_specialist]
     mode: sequential
   ears:
     personas: [requirements_specialist, tech_lead, qa_lead, chaos_engineer]
     mode: sequential
   bdd:
-    personas: [qa_lead, tech_lead, chaos_engineer, operator]
+    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
     mode: sequential
   adr:
-    personas: [architect, tech_lead, strategist, chaos_engineer, operator]
+    personas: [architect, tech_lead, auditor, chaos_engineer, operator]
     mode: sequential
   sys:
-    personas: [architect, tech_lead, operator, integration_lead]
+    personas: [architect, tech_lead, operator, integration_lead, auditor]
     mode: sequential
   req:
-    personas: [requirements_specialist, tech_lead, integration_lead]
+    personas: [requirements_specialist, tech_lead, integration_lead, qa_lead, chaos_engineer]
     mode: sequential
   spec:
-    personas: [tech_lead, architect, operator, integration_lead]
+    personas: [tech_lead, architect, operator, integration_lead, auditor]
     mode: sequential
   ctr:
-    personas: [architect, tech_lead, integration_lead]
+    personas: [architect, tech_lead, integration_lead, auditor, chaos_engineer]
     mode: sequential
   tspec:
-    personas: [qa_lead, tech_lead, operator]
+    personas: [qa_lead, tech_lead, operator, integration_lead, auditor]
     mode: sequential
 
 review:
   brd:
-    personas: [architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_lead, product_owner, business_analyst, fact_checker, chairperson]
+    personas: [architect, auditor, business_analyst, chaos_engineer, chairperson]
     mode: sequential
   prd:
-    personas: [architect, auditor, tech_lead, strategist, chaos_engineer, operator, integration_lead, product_owner, qa_lead, ux_strategist]
+    personas: [architect, auditor, tech_lead, product_owner, chaos_engineer]
     mode: sequential
   ears:
     personas: [requirements_specialist, tech_lead, qa_lead, chaos_engineer, integration_lead]
     mode: sequential
   bdd:
-    personas: [qa_lead, tech_lead, chaos_engineer, operator, integration_lead, auditor]
+    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
     mode: sequential
   adr:
-    personas: [architect, tech_lead, operator, auditor, strategist, chaos_engineer, integration_lead]
+    personas: [architect, tech_lead, operator, auditor, chaos_engineer]
     mode: sequential
   sys:
-    personas: [architect, tech_lead, qa_lead, chaos_engineer, integration_lead, operator]
+    personas: [architect, tech_lead, chaos_engineer, operator, auditor]
     mode: sequential
   req:
     personas: [requirements_specialist, tech_lead, qa_lead, chaos_engineer, integration_lead]
@@ -79,6 +79,6 @@ review:
 
 remediation:
   _default:
-    personas: [architect, auditor, qa_lead, integration_lead, chaos_engineer, chairperson]
+    personas: [architect, auditor, qa_lead, chaos_engineer, chairperson]
     mode: sequential
     loading: adaptive

@@ -333,8 +333,8 @@ custom_fields:
 
     default_out = doc_dir
     assert exit_code == 0
-    assert (default_out / "BRD-01.ucx.validate_review.json").exists()
-    assert (default_out / "BRD-01.ucx.validate_review.txt").exists()
+    assert (default_out / "BRD-01.ucx.validate.json").exists()
+    assert (default_out / "BRD-01.ucx.validate.txt").exists()
     # Passing document should NOT produce fix artifacts
     assert not (default_out / "BRD-01.ucx.validate_fix.json").exists()
     assert not any(default_out.glob("*_validated.*"))
@@ -369,7 +369,7 @@ def test_main_validate_failing_doc_produces_fix_artifacts(tmp_path: Path) -> Non
     )
 
     assert exit_code == 1  # Validation failed
-    assert (doc_dir / "BRD-01.ucx.validate_review.json").exists()
+    assert (doc_dir / "BRD-01.ucx.validate.json").exists()
     assert (doc_dir / "BRD-01.ucx.validate_fix.json").exists()
     assert any(doc_dir.glob("*_validated.*"))
 
@@ -380,7 +380,7 @@ def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> N
 
     source = doc_dir / "BRD-01_platform_architecture.md"
     source.write_text("# source\n", encoding="utf-8")
-    (doc_dir / "BRD-01.ucx.validate_review.json").write_text("{}", encoding="utf-8")
+    (doc_dir / "BRD-01.ucx.validate.json").write_text("{}", encoding="utf-8")
     (doc_dir / "BRD-01_platform_architecture_validated.md").write_text("# validation copy\n", encoding="utf-8")
     (doc_dir / "BRD-01_platform_architecture_remediate_copy.md").write_text("# remediated copy\n", encoding="utf-8")
     (doc_dir / "BRD-01_validation_remediation_report_v001.md").write_text("# remediation report\n", encoding="utf-8")

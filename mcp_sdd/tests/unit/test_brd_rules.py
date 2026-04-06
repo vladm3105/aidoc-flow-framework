@@ -202,11 +202,12 @@ def test_phase_alignment_skips_missing_section():
 
 
 def test_entity_consistency_passes():
-    """Stakeholder entity found in functional_requirements passes."""
+    """Partner entity from stakeholders found in functional_requirements passes."""
     data = {
-        "executive_summary": {
-            "key_stakeholders": [{"stakeholder": "Bridge"}],
-            "business_problem": "Integration required",
+        "stakeholders": {
+            "decision_makers": [
+                {"role": "Partner Teams", "name": "Bridge"},
+            ],
         },
         "functional_requirements": {"items": "Bridge payment processing"},
     }
@@ -216,23 +217,29 @@ def test_entity_consistency_passes():
 
 
 def test_entity_consistency_warns_stale():
-    """Entity in business_problem parentheses but absent from FRs warns."""
+    """Partner entity absent from downstream sections warns."""
     data = {
-        "executive_summary": {
-            "key_stakeholders": [],
-            "business_problem": "Partners (Bridge, Sardine) handle payments",
+        "stakeholders": {
+            "decision_makers": [
+                {"role": "Partner Teams", "name": "Bridge, Sardine"},
+            ],
         },
         "functional_requirements": {"items": "Bridge integration only"},
-        "stakeholders": {},
         "introduction": {},
+        "project_scope": {},
     }
     errors, warnings, passes = _run(data)
     assert any("Sardine" in w for w in warnings)
 
 
-def test_entity_consistency_skips_no_summary():
-    """No executive_summary key results in a skip."""
+def test_entity_consistency_skips_no_entities():
+    """No partner stakeholders or workaround entities results in a skip."""
     data = {
+        "stakeholders": {
+            "decision_makers": [
+                {"role": "Executive Leadership", "name": "CEO"},
+            ],
+        },
         "functional_requirements": {"items": "something"},
     }
     errors, warnings, passes = _run(data)
