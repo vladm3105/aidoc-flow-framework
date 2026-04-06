@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -34,11 +35,19 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="mcp")
     subparsers = parser.add_subparsers(dest="command")
 
+    _default_project = os.environ.get("SDD_DEFAULT_PROJECT")
+    _project_required = _default_project is None
+    _project_help = "Project root (default: $SDD_DEFAULT_PROJECT)" if _default_project else "Project root"
+
+    get_project_parser = subparsers.add_parser("get-project", help="Show resolved default project from environment")
+
     init_parser = subparsers.add_parser("init", help="Scaffold project-specific UCX assets")
-    init_parser.add_argument("--project", required=True, help="Project root where UCX will be created")
+    init_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help + " where UCX will be created")
+    init_parser.add_argument("--update", action="store_true", default=False, help="Overwrite stale files with latest framework versions (protects persona_mappings.yaml)")
+    init_parser.add_argument("--update-mappings", action="store_true", default=False, help="Also reset persona_mappings.yaml to framework defaults (requires --update)")
 
     review_parser = subparsers.add_parser("review-build", help="Assemble project review prompt and diagnostics artifacts")
-    review_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    review_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     review_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     review_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
     review_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
@@ -62,7 +71,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "review",
         help="Alias for review-build (UCX_v1 compatibility)",
     )
-    review_alias_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    review_alias_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     review_alias_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     review_alias_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
     review_alias_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
@@ -83,7 +92,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
 
     create_parser = subparsers.add_parser("create-build", help="Assemble project creation prompt with SSD layer assets")
-    create_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    create_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     create_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     create_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
@@ -99,7 +108,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "create",
         help="Create final document artifact at target path using project/layer templates",
     )
-    create_artifact_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    create_artifact_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     create_artifact_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
     create_artifact_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     create_artifact_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
@@ -117,7 +126,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate",
         help="Run script-based document structure validation against layer template/schema assets",
     )
-    validate_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    validate_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     validate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     validate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     validate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -141,7 +150,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "remediate",
         help="Generate deterministic remediation findings and report artifacts",
     )
-    remediate_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    remediate_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     remediate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     remediate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     remediate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -160,7 +169,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "remediate-fix",
         help="Generate source-protected remediated derived artifacts",
     )
-    remediate_fix_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    remediate_fix_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     remediate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     remediate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     remediate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -179,7 +188,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate-fix",
         help="[DEPRECATED] Use 'validate' instead. Generates validation + fix artifacts.",
     )
-    validate_fix_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    validate_fix_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     validate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
     validate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
     validate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -193,6 +202,26 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional output directory; defaults to <document_dir>/.ucx/validate",
     )
+
+    personas_show_parser = subparsers.add_parser("personas-show", help="Show persona assignments for a project")
+    personas_show_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    personas_show_parser.add_argument("--phase", choices=["creation", "review", "remediation"], default=None)
+    personas_show_parser.add_argument("--doc-type", default=None, help="Filter by document type")
+    personas_show_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
+
+    personas_set_parser = subparsers.add_parser("personas-set", help="Update persona list for a phase+doctype")
+    personas_set_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    personas_set_parser.add_argument("--phase", required=True, choices=["creation", "review", "remediation"])
+    personas_set_parser.add_argument("--doc-type", required=True, help="Document type (e.g. brd, prd, _default)")
+    personas_set_parser.add_argument("--personas", nargs="+", required=True, help="Ordered persona names")
+
+    personas_diff_parser = subparsers.add_parser("personas-diff", help="Compare project persona mappings against framework defaults")
+    personas_diff_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    personas_diff_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
+
+    env_show_parser = subparsers.add_parser("env-show", help="Show project .env keys without exposing values")
+    env_show_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    env_show_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
 
     prescreen_parser = subparsers.add_parser("prescreen", help="Prescreen documents for deterministic remediation candidates")
     prescreen_parser.add_argument("--document", required=True, help="Path to document file or document directory")
@@ -237,7 +266,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "preflight",
         help="Run runtime and environment readiness checks before create, review, or remediation stages",
     )
-    preflight_parser.add_argument("--project", required=True, help="Project root containing UCX")
+    preflight_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     preflight_parser.add_argument(
         "--context",
         choices=["create", "review", "remediate", "any"],
@@ -439,16 +468,66 @@ def _run_validate_command(
     return 0 if not failed else 1
 
 
+def _print_personas_table(result: dict) -> None:
+    """Print persona mappings as a human-readable table."""
+    mappings = result.get("mappings", {})
+    if not mappings:
+        print("No mappings found.")
+        return
+    for phase, doctypes in mappings.items():
+        print(f"\n{phase.upper()}")
+        print("-" * 60)
+        for dt, config in sorted(doctypes.items()):
+            personas = config.get("personas", []) if isinstance(config, dict) else []
+            print(f"  {dt:<12} {', '.join(personas)}")
+
+
+def _print_diff_summary(result: dict) -> None:
+    """Print persona diff as a human-readable summary."""
+    summary = result.get("summary", {})
+    if summary.get("changed") == 0 and summary.get("added") == 0 and summary.get("removed") == 0:
+        print(f"No differences. ({summary.get('unchanged', 0)} entries match framework defaults)")
+        return
+    for entry in result.get("changed", []):
+        print(f"CHANGED  {entry['phase']}.{entry['doc_type']}")
+        print(f"  project:  {', '.join(entry['project_personas'])}")
+        print(f"  default:  {', '.join(entry['default_personas'])}")
+    for entry in result.get("added", []):
+        print(f"ADDED    {entry['phase']}.{entry['doc_type']}: {', '.join(entry['personas'])}")
+    for entry in result.get("removed", []):
+        print(f"REMOVED  {entry['phase']}.{entry['doc_type']}: {', '.join(entry['personas'])}")
+    print(f"\nSummary: {summary.get('changed', 0)} changed, {summary.get('added', 0)} added, "
+          f"{summary.get('removed', 0)} removed, {summary.get('unchanged', 0)} unchanged")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 
+    if args.command == "get-project":
+        default = os.environ.get("SDD_DEFAULT_PROJECT")
+        if default:
+            print(f"SDD_DEFAULT_PROJECT={default}")
+        else:
+            print("No default project configured. Set SDD_DEFAULT_PROJECT or pass --project.")
+        return 0
+
     if args.command == "init":
         project_root = Path(args.project).expanduser().resolve()
-        init_result = scaffold_project_ucx(project_root=project_root)
+        force_update = getattr(args, "update", False)
+        force_update_mappings = getattr(args, "update_mappings", False)
+        init_result = scaffold_project_ucx(
+            project_root=project_root,
+            force_update=force_update,
+            force_update_mappings=force_update_mappings,
+        )
         print(f"Initialized project UCX scaffold at {init_result.project_root}")
         print(f"Created: {init_result.created_count}")
         print(f"Skipped existing: {init_result.skipped_count}")
+        if init_result.updated_count:
+            print(f"Updated: {init_result.updated_count}")
+        if init_result.protected_count:
+            print(f"Protected (project-owned): {init_result.protected_count}")
         return 0
 
     if args.command in {"review-build", "review"}:
@@ -767,6 +846,61 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"Link validation report generated at {link_result.report_path}")
 
         return 0 if link_result.passed else 1
+
+    if args.command == "personas-show":
+        from mcp_server.skills.persona_manager import show_persona_mappings
+        result = show_persona_mappings(
+            project_root=Path(args.project).expanduser().resolve(),
+            phase=args.phase,
+            doc_type=args.doc_type,
+        )
+        if args.output_format == "json":
+            print(json.dumps(result, indent=2))
+        else:
+            _print_personas_table(result)
+        return 0
+
+    if args.command == "personas-set":
+        from mcp_server.skills.persona_manager import set_persona_mapping
+        result = set_persona_mapping(
+            project_root=Path(args.project).expanduser().resolve(),
+            phase=args.phase,
+            doc_type=args.doc_type,
+            personas=args.personas,
+        )
+        print(f"Updated {args.phase}.{args.doc_type}: {', '.join(args.personas)}")
+        if result.get("previous_personas"):
+            print(f"Previous: {', '.join(result['previous_personas'])}")
+        return 0
+
+    if args.command == "personas-diff":
+        from mcp_server.skills.persona_manager import diff_persona_mappings
+        result = diff_persona_mappings(
+            project_root=Path(args.project).expanduser().resolve(),
+        )
+        if args.output_format == "json":
+            print(json.dumps(result, indent=2))
+        else:
+            _print_diff_summary(result)
+        return 0
+
+    if args.command == "env-show":
+        from mcp_server.env_manager import show_project_env
+        result = show_project_env(
+            project_root=Path(args.project).expanduser().resolve(),
+        )
+        if args.output_format == "json":
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"Project: {result['project_root']}")
+            print(f".env exists: {result['env_file_exists']}")
+            if result["env_file_exists"]:
+                print(f"Keys ({result['env_key_count']}): {', '.join(result['env_keys'])}")
+                if result.get("blocked_vars"):
+                    print(f"Blocked system vars: {', '.join(result['blocked_vars'])}")
+                if result.get("parse_error"):
+                    print("Warning: .env file has parse errors")
+        return 0
 
     if args.command == "preflight":
         project_root = Path(args.project).expanduser().resolve()

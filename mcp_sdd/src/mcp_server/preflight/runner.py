@@ -164,6 +164,17 @@ def run_preflight(
             errors.append("missing_personas")
         if not persona_mappings.exists():
             warnings.append("missing_persona_mappings")
+        elif persona_mappings.exists():
+            try:
+                from mcp_server.skills.persona_manager import check_persona_mapping_health
+                health = check_persona_mapping_health(project_root=project_root)
+                checks["persona_mapping_health"] = health["status"]
+                for name in health["missing_persona_files"]:
+                    errors.append(f"persona_file_missing:{name}")
+                for entry in health["missing_doctypes"]:
+                    warnings.append(f"persona_mapping_incomplete:{entry}")
+            except Exception:
+                warnings.append("persona_mapping_health_check_failed")
 
     if document_path is not None:
         checks["document_exists"] = document_path.exists()
@@ -186,10 +197,24 @@ def run_preflight(
         elif probe_status == "degraded":
             warnings.append("provider_probe_degraded")
 
-    # Token signals optional provider configuration readiness.
-    checks["provider_token_present"] = bool(project_root.joinpath(".env").exists())
+    # Project .env loading and inspection.
+    env_path = project_root / ".env"
+    checks["provider_token_present"] = env_path.exists()
     if not checks["provider_token_present"]:
         warnings.append("provider_token_not_detected")
+    else:
+        try:
+            from mcp_server.env_manager import load_project_env, show_project_env, BLOCKED_ENV_VARS
+            env_info = show_project_env(project_root)
+            checks["env_key_count"] = env_info["env_key_count"]
+            checks["env_keys"] = env_info["env_keys"]
+            if env_info.get("blocked_vars"):
+                checks["env_blocked_vars"] = env_info["blocked_vars"]
+                warnings.append(f"env_blocked_vars:{','.join(env_info['blocked_vars'])}")
+            if env_info.get("parse_error"):
+                warnings.append("env_parse_error")
+        except Exception:
+            warnings.append("env_inspection_failed")
 
     if errors:
         status = "blocked"

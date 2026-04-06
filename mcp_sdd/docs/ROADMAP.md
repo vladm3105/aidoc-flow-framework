@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.13.0 |
-| Latest Release | 1.13.0 (merge sdd_validate_fix into sdd_validate) |
-| Previous Release | 1.12.0 (multi-persona mapping support) |
+| Current Version | 1.18.0 |
+| Latest Release | 1.18.0 (default project resolution — PLAN-027 Phase 2) |
+| Previous Release | 1.17.0 (project environment management — PLAN-027 Phase 1) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -344,13 +344,152 @@ Delivered scope:
 - New response fields: `is_valid` (bool), `fix_generated` (bool), `passed` always True (for pipeline)
 - Tool count: 20 → 19 (12 deterministic, 1 orchestration, 6 LLM-dependent)
 - Artifact naming changes:
-  - `{id}.ucx.validate.json/.txt` → `{id}.ucx.validate_review.json/.txt` (initial validation report)
+  - `{id}.ucx.validate.json/.txt` — initial validation report (unchanged per PLAN-021)
   - `*_validate_copy.*` → `*_validated.*` (derived copy suffix)
   - `{id}.ucx.validate_fix.json/.txt` — unchanged (fix metadata + instructions)
 
 References:
 
 - plans/PLAN-023_merge_validate_tools.md
+
+---
+
+### v1.14.0 - Executor Simplification and PLAN-021 Naming Compliance
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-03 |
+| Scope | Simplify CLI executor prompt delivery; fix validation report naming to comply with PLAN-021 |
+
+Delivered scope:
+
+- CLI executor prompt delivery unified: all executors use positional arguments (removed stdin fallback, `prompt_mode` branching, temp file creation)
+- Removed `prompt_file` from `ExecutorResult`, `PROMPT_SIZE_THRESHOLD` constant, `tempfile` import
+- Fixed validation report naming: `{id}.ucx.validate_review.json/.txt` → `{id}.ucx.validate.json/.txt` per PLAN-021 stage code table
+- Updated `REPORT_PATTERN` regex, `_inspect_document_folder` detection, `consistency/runner.py` lookup
+- Updated architecture docs, changelogs, roadmap for consistency
+
+References:
+
+- PLAN-021 (reporting naming standard)
+- CHANGELOG/CHANGELOG_v1.14.0.md
+
+---
+
+### v1.15.0 - Persona Optimization
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-03 |
+| Scope | Optimize persona mappings across creation, review, and remediation phases (PLAN-024, PLAN-025) |
+
+Delivered scope:
+
+- Review phase: max 5 personas per layer (BRD 11→5, PRD 10→5, ADR 7→5, SYS 6→5, BDD 6→5)
+- Creation phase: coverage gap fixes (7 layers updated), PRD 7→6
+- Remediation phase: `_default` 6→5 (drop integration_lead)
+- 5 review prompt templates rewritten to match new persona sections
+- 10 remediation templates updated (removed Integration Fixer)
+- `UCRem_PERSONAS.md` rewritten (6→5 fixers)
+- Deprecated legacy review files deleted (`UCX/review/UCR_*_PROJECT.md`)
+- Category coverage verified: 7/7 across most layers, 4 accepted gaps documented
+- Total persona slots: 113 → 105
+
+References:
+
+- plans/PLAN-024 (review phase optimization)
+- plans/PLAN-025 (creation/remediation optimization)
+- CHANGELOG/CHANGELOG_v1.15.0.md
+
+---
+
+### v1.16.0 - Persona Management Tools
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-05 |
+| Scope | Persona management MCP tools, scaffold update mode, BRD template refinement |
+
+Delivered scope:
+
+- 3 new MCP tools: `sdd_personas_show`, `sdd_personas_set`, `sdd_personas_diff`
+- 3 new CLI commands: `personas-show`, `personas-set`, `personas-diff`
+- `sdd_init --update` mode: sync stale project UCX files with framework source
+- `sdd_init --update-mappings`: explicit reset of protected `persona_mappings.yaml`
+- `PROTECTED_PROJECT_FILES` mechanism prevents accidental overwrite of project-owned configs
+- Preflight persona mapping health check (missing files, missing doctypes)
+- BRD `executive_summary` demoted to optional (derived section, generated on demand)
+- BRD-XS-004 entity consistency rule rewritten to use `stakeholders`/`business_objectives`
+- `executive_summary` removed from BRD required keys in remediation runner
+- 22 MCP tools total (was 19)
+- 295 tests pass (21 new tests)
+
+References:
+
+- PLAN-026 (persona management tools)
+- CHANGELOG/CHANGELOG_v1.16.0.md
+
+---
+
+### v1.17.0 - Project Environment Management
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-06 |
+| Scope | Auto-load project .env for executors, secure inspection tool, enhanced preflight |
+
+Delivered scope:
+
+- New module: `mcp_sdd/src/mcp_server/env_manager.py` — `.env` loading with mtime-based cache, system variable blocklist, BOM handling, permission warnings
+- New MCP tool: `sdd_env_show` — show project .env keys without exposing values
+- New CLI command: `env-show` — text/JSON output of .env key inventory
+- Executor env merge chain: `os.environ` < `config.env` < `project_env` (.env wins, except blocked vars)
+- `project_env` parameter threaded through `run_cli_executor` → `run_executor` → `_maybe_run_executor`
+- Enhanced preflight: reports `env_key_count`, `env_keys`, `env_blocked_vars`
+- Security: `BLOCKED_ENV_VARS` frozenset (PATH, HOME, PYTHONPATH, etc.), file permission warning, None value filtering
+- Dependency: `python-dotenv>=1.0.0`
+- 23 MCP tools total (was 22)
+- 314 tests pass (19 new tests)
+
+References:
+
+- PLAN-027 (project environment management)
+- CHANGELOG/CHANGELOG_v1.17.0.md
+
+---
+
+### v1.18.0 - Default Project Resolution
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-06 |
+| Scope | Session/config default project, token-efficient tool calls (PLAN-027 Phase 2) |
+
+Delivered scope:
+
+- New module: `mcp_sdd/src/mcp_server/project_context.py` — session state, config default, 4-level resolve chain
+- New MCP tools: `sdd_set_project`, `sdd_get_project` (25 tools total)
+- New CLI command: `get-project`
+- `_PROJECT_TOOLS` injection in `handle_tool()` — before `configure_logging`, guarded by schema
+- `executors.json` migrated to object format with backward-compat array shim
+- `SDD_DEFAULT_PROJECT` env var fallback for all CLI `--project` arguments
+- Token savings: ~650-750 tokens per 15-call session
+- 337 tests pass (23 new tests)
+
+References:
+
+- PLAN-027 Phase 2 (default project resolution)
+- CHANGELOG/CHANGELOG_v1.18.0.md
 
 ---
 

@@ -56,3 +56,34 @@ def test_run_preflight_json_status_overrides_fallback(tmp_path: Path) -> None:
     assert isinstance(checks, dict)
     assert checks.get("probe_fallback_used") is False
     assert checks.get("probe_fallback_reason") == "json_status"
+
+
+def test_preflight_includes_persona_health_check(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    result = run_preflight(project_root=tmp_path, context="review", output_dir=None)
+    checks = result.payload.get("checks", {})
+    assert "persona_mapping_health" in checks
+    assert checks["persona_mapping_health"] in {"ok", "warning", "error"}
+
+
+def test_preflight_reports_env_key_count(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    env_file = tmp_path / ".env"
+    env_file.write_text("API_KEY=sk-test\nMODEL=gpt-4\n", encoding="utf-8")
+
+    result = run_preflight(project_root=tmp_path, context="any", output_dir=None)
+    checks = result.payload.get("checks", {})
+    assert checks.get("env_key_count") == 2
+    assert sorted(checks.get("env_keys", [])) == ["API_KEY", "MODEL"]
+
+
+def test_preflight_reports_blocked_env_vars(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+    env_file = tmp_path / ".env"
+    env_file.write_text("PATH=/evil\nAPI_KEY=safe\n", encoding="utf-8")
+
+    result = run_preflight(project_root=tmp_path, context="any", output_dir=None)
+    checks = result.payload.get("checks", {})
+    assert "PATH" in checks.get("env_blocked_vars", [])
+    warnings = result.payload.get("warnings", [])
+    assert any("env_blocked_vars" in w for w in warnings)

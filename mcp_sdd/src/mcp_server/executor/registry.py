@@ -29,7 +29,7 @@ class ExecutorConfig:
     # CLI fields
     command: str = ""
     args: list[str] = field(default_factory=list)
-    prompt_mode: str = ""  # "file" | "positional"
+    prompt_mode: str = ""  # deprecated — all executors now use positional
     # API fields (stub for v0.1.0)
     model: str = ""
     api_base: str = ""
@@ -49,27 +49,22 @@ BUILTIN_CLI_EXECUTORS: dict[str, dict] = {
             "--verbose",
             "--dangerously-skip-permissions",
         ],
-        "prompt_mode": "file",
     },
     "codex": {
         "command": "codex",
         "args": ["exec", "--full-auto"],
-        "prompt_mode": "positional",
     },
     "gemini": {
         "command": "gemini",
         "args": [],
-        "prompt_mode": "positional",
     },
     "opencode": {
         "command": "opencode",
         "args": ["run"],
-        "prompt_mode": "positional",
     },
     "copilot-cli": {
         "command": "gh",
         "args": ["copilot"],
-        "prompt_mode": "positional",
         "status": "experimental",
     },
 }
@@ -116,15 +111,39 @@ def _init_builtins() -> None:
 
 
 def load_config_file(path: Path) -> int:
-    """Load additional executors from a JSON config file. Returns count loaded."""
+    """Load executors and optional default_project from a JSON config file.
+
+    Accepts two formats:
+    - Object: {"default_project": "...", "executors": [...]}
+    - Array (backward-compat): [{...}, ...] treated as executors-only
+
+    Returns count of executors loaded.
+    """
     if not path.is_file():
         return 0
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, list):
-        logger.warning("executors.json must be a JSON array, got %s", type(data).__name__)
+
+    # Backward-compat: plain array → executors-only
+    if isinstance(data, list):
+        executors = data
+        default_project = None
+    elif isinstance(data, dict):
+        executors = data.get("executors", [])
+        default_project = data.get("default_project")
+    else:
+        logger.warning("executors.json: expected object or array, got %s", type(data).__name__)
         return 0
+
+    if default_project:
+        from mcp_server.project_context import set_config_default
+        set_config_default(Path(default_project).expanduser().resolve())
+
+    if not isinstance(executors, list):
+        logger.warning("executors.json: 'executors' field must be an array")
+        return 0
+
     count = 0
-    for entry in data:
+    for entry in executors:
         if not isinstance(entry, dict) or "name" not in entry:
             continue
         name = entry["name"]

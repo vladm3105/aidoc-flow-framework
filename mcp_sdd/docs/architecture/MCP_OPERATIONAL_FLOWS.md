@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.7 |
-| Date | 2026-04-02 |
+| Version | 1.8 |
+| Date | 2026-04-05 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
@@ -43,10 +43,73 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | `templates/layers/NN_TYPE/` | Layer-specific templates and schemas (from `ai_dev_ssd_flow/`) |
 
 **Rules**:
-- Existing files are never overwritten (idempotent).
+- Existing files are never overwritten (idempotent) in default mode.
 - Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
 - Templates matching `*-TEMPLATE.*` are copied from layer directories.
 - All 11 layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS) use unified YAML naming (`{TYPE}-TEMPLATE.yaml`). No legacy `*-MVP-TEMPLATE.*` files remain.
+
+**Update mode** (`--update`):
+- Overwrites stale templates and prompts with latest framework versions.
+- `persona_mappings.yaml` is protected (project-owned after init). Use `--update-mappings` to explicitly reset it.
+- Content-identical files are skipped (no unnecessary writes).
+- Result reports `created_paths`, `skipped_paths`, `updated_paths`, `protected_paths`.
+
+---
+
+### Stage A.2 — Persona Management (`personas-show`, `personas-set`, `personas-diff`)
+
+Three commands for inspecting and modifying project-specific persona-to-layer mappings after initialization.
+
+**`personas-show`**: Display current persona assignments.
+
+```
+Input:  --project, optional --phase, --doc-type, --format
+Output: Phase → doctype → persona list table (text or JSON)
+```
+
+**`personas-set`**: Update persona list for a specific phase+doctype.
+
+```
+Input:  --project, --phase, --doc-type, --personas (space-separated names)
+Output: Confirmation with previous and new persona lists
+Rules:  Validates persona .md files exist. Supports _default as doc_type.
+        Preserves YAML header comments. Invalidates persona mapping cache.
+```
+
+**`personas-diff`**: Compare project mappings against framework defaults.
+
+```
+Input:  --project, optional --format
+Output: Added, removed, changed entries with summary counts
+```
+
+---
+
+### Stage A.3 — Default Project (`set-project`, `get-project`)
+
+Set a session-level default project to avoid repeating `--project` on every MCP tool call.
+
+```
+MCP: sdd_set_project(project="/path/to/project")  → session default set
+MCP: sdd_get_project()                             → show resolved project + source
+CLI: export SDD_DEFAULT_PROJECT=/path/to/project   → env var default for CLI
+CLI: mcp get-project                               → show env var value
+```
+
+Resolution order: explicit `--project` > session override > `SDD_DEFAULT_PROJECT` env var > `executors.json` config default. `handle_tool()` injects the resolved project before `configure_logging` and dispatch for all project-dependent tools.
+
+---
+
+### Stage A.4 — Environment Inspection (`env-show`)
+
+Show project `.env` keys without exposing values.
+
+```
+Input:  --project, optional --format {text,json}
+Output: env_keys list, env_key_count, blocked_vars, env_file_exists
+```
+
+Environment variables from `.env` are auto-loaded when executors run. Merge order: `os.environ` (base) < `config.env` (executor static) < `project_env` (.env file). System variables (`PATH`, `HOME`, `PYTHONPATH`, `LD_LIBRARY_PATH`, `LD_PRELOAD`, `SHELL`, `USER`, `IFS`) are blocked. Loading uses mtime-based caching.
 
 ---
 
@@ -121,7 +184,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 | Artifact | Condition |
 | --- | --- |
-| `validate_review_report.json`, `validate_review_report.txt` | Always produced |
+| `validate_report.json`, `validate_report.txt` | Always produced |
 | `TYPE-NN_{slug}_validated.md` | Produced when validation errors are found (source-protected derived copy with fix instructions) |
 | `validate_fix_report.json`, `validate_fix_report.txt` | Produced when validation errors are found |
 
@@ -195,7 +258,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 | Stage | Artifact | Filename Pattern | Mutates Prior Artifact |
 | --- | --- | --- | --- |
 | 1 | Source document | `TYPE-NN_{slug}.md` | No |
-| 2 | Validation report | `validate_review_report.json/.txt` | No |
+| 2 | Validation report | `validate_report.json/.txt` | No |
 | 2 | Validated copy (when errors found) | `TYPE-NN_{slug}_validated.md` | No |
 | 2 | Validate-fix report (when errors found) | `validate_fix_report.json/.txt` | No |
 | 3 | Review report | `TYPE-NN.UCX_review_report_vNNN.md` | No |
@@ -206,7 +269,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 ```
 TYPE-NN_{slug}.md
-  └─ validate ──→ validate_review_report.json
+  └─ validate ──→ validate_report.json
   │            ──→ TYPE-NN_{slug}_validated.md       (when errors found)
   │            ──→ validate_fix_report.json/.txt     (when errors found)
   │

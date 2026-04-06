@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.4 |
-| Date | 2026-03-27 |
+| Version | 1.5 |
+| Date | 2026-04-05 |
 | Scope | Implemented command contracts in `mcp_sdd/src/mcp_server/cli/main.py` |
 
 ---
@@ -13,7 +13,12 @@
 
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
-| init | --project | none | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/` |
+| init | --project | --update --update-mappings | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/`. With `--update`: sync stale files (protects persona_mappings.yaml). With `--update-mappings`: also reset persona_mappings.yaml. |
+| personas-show | --project | --phase --doc-type --format {text,json} | persona assignments table (phase → doctype → persona list) |
+| personas-set | --project --phase --doc-type --personas | none | update persona list for a phase+doctype, validate persona files exist |
+| personas-diff | --project | --format {text,json} | comparison of project persona mappings vs framework defaults |
+| env-show | --project | --format {text,json} | project .env keys without values, blocked system vars, key count |
+| get-project | (none) | (none) | resolved default project from `SDD_DEFAULT_PROJECT` env var |
 | create-build | --project --doc-type --layer --template | --personas --sections-json --out | creation prompt artifacts (`creation_prompt.md`, `creation_sidecar.json`) |
 | create | --project --doc-type --layer --template --target | --personas --sections-json --overwrite --out | final document artifact + creation diagnostics |
 | review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
@@ -101,7 +106,7 @@ The 5-stage lifecycle produces this artifact chain (applies to all document laye
 ```text
 TYPE-NN_{slug}.md                      ← stage 1: create
   ↓
-validate_review_report.json/.txt       ← stage 2: validate
+validate_report.json/.txt              ← stage 2: validate
 TYPE-NN_{slug}_validated.md            ← stage 2: validate (when errors found)
 validate_fix_report.json/.txt          ← stage 2: validate (when errors found)
   ↓
@@ -184,6 +189,12 @@ Project initialization:
 mcp init --project /path/to/project
 # Writes: UCX/skills/personas/, prompts/templates/*, templates/layers/NN_TYPE/*
 
+# Sync stale templates/prompts with framework source (protects persona_mappings.yaml)
+mcp init --project /path/to/project --update
+
+# Also reset persona_mappings.yaml to framework defaults
+mcp init --project /path/to/project --update --update-mappings
+
 # Assemble LLM creation prompt for a BRD (personas resolved from persona_mappings.yaml)
 mcp create-build --project /path/to/project --doc-type brd \
   --layer 01_BRD --template UCC_PROMPT_BRD_PROJECT.md
@@ -232,6 +243,40 @@ mcp remediate-fix --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
   --remediation-report /path/to/remediation_report.json
 # → BRD-01_platform_remediated.md written alongside source
+```
+
+Persona management:
+
+```bash
+# Show all persona assignments for a project
+mcp personas-show --project /path/to/project
+
+# Show creation phase only, JSON format
+mcp personas-show --project /path/to/project --phase creation --format json
+
+# Show specific doctype
+mcp personas-show --project /path/to/project --phase review --doc-type brd
+
+# Update BRD creation personas
+mcp personas-set --project /path/to/project --phase creation --doc-type brd \
+  --personas architect product_owner business_analyst
+
+# Compare project against framework defaults
+mcp personas-diff --project /path/to/project
+
+# Show project .env keys (without values)
+mcp env-show --project /path/to/project
+
+# Show project .env keys in JSON
+mcp env-show --project /path/to/project --format json
+
+# Show resolved default project
+mcp get-project
+
+# With SDD_DEFAULT_PROJECT set, --project is optional:
+export SDD_DEFAULT_PROJECT=/path/to/project
+mcp preflight --context any
+mcp env-show
 ```
 
 Other commands:

@@ -9,10 +9,10 @@
 | Canonical Name | UCX (Unified Context Framework) |
 | Package Directory | `mcp_sdd/` |
 | MCP Server Name | `sdd-lifecycle` |
-| Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate_review.json`) |
+| Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | Active |
-| Version | 1.13.0 |
-| Date | 2026-04-02 |
+| Version | 1.18.0 |
+| Date | 2026-04-06 |
 | Timezone | America/New_York |
 
 ---
@@ -52,7 +52,7 @@ UCX uses a **project isolation model** for AI skills. Framework assets are scaff
 
 ### Initialization
 
-`sdd_init --project <path>` copies all personas, prompts, templates, and layer assets from the framework into `{project}/UCX/`. Existing files are never overwritten.
+`sdd_init --project <path>` copies all personas, prompts, templates, and layer assets from the framework into `{project}/UCX/`. Existing files are never overwritten. Use `--update` to sync stale files with framework source (protects `persona_mappings.yaml`). Use `--update --update-mappings` to also reset persona mappings to defaults.
 
 ### Runtime Loading
 
@@ -68,7 +68,45 @@ All MCP tools resolve personas, prompts, and templates exclusively from `{projec
 | Remediation prompt templates | `{project}/UCX/prompts/templates/remediation/` |
 | Document templates and layer schemas | `{project}/UCX/templates/` |
 
-No fallback to framework defaults. Missing assets raise `ProjectSkillsNotFound`. `validate_project_ucx_root()` checks both required directories and required files (including `persona_mappings.yaml`). Preflight checks (`sdd_preflight`) emit a `missing_persona_mappings` warning when the mapping file is absent. Persona mapping loading uses mtime-based caching to avoid redundant YAML parsing.
+No fallback to framework defaults. Missing assets raise `ProjectSkillsNotFound`. `validate_project_ucx_root()` checks both required directories and required files (including `persona_mappings.yaml`). Preflight checks (`sdd_preflight`) emit a `missing_persona_mappings` warning when the mapping file is absent and run a persona mapping health check when present. Persona mapping loading uses mtime-based caching to avoid redundant YAML parsing.
+
+### Persona Management
+
+Three tools for inspecting and modifying project-specific persona-to-layer mappings:
+
+| Tool | CLI | Purpose |
+| --- | --- | --- |
+| `sdd_personas_show` | `personas-show` | Display persona assignments per phase/doctype |
+| `sdd_personas_set` | `personas-set` | Update persona list for a phase+doctype |
+| `sdd_personas_diff` | `personas-diff` | Compare project mappings vs framework defaults |
+
+`persona_mappings.yaml` is project-owned after initialization. The `PROTECTED_PROJECT_FILES` mechanism in `scaffold.py` prevents `--update` from overwriting it.
+
+### Environment Management
+
+Project `.env` files are loaded automatically when executors run. Values are never exposed through MCP tools or CLI output.
+
+| Tool / Command | Purpose |
+| --- | --- |
+| `sdd_env_show` / `env-show` | Show .env keys without values, blocked vars, key count |
+
+Env merge order: `os.environ` (base) < `config.env` (executor static) < `project_env` (.env file). System variables (`PATH`, `HOME`, `PYTHONPATH`, `LD_LIBRARY_PATH`, `LD_PRELOAD`, `SHELL`, `USER`, `IFS`) are blocked and logged. Loading uses mtime-based caching. Missing `.env` returns empty dict. Preflight reports `env_key_count`, `env_keys`, and `env_blocked_vars`.
+
+### Default Project Resolution
+
+Tools that require `--project` resolve it from a 4-level fallback chain:
+
+1. Explicit `--project` argument (always wins)
+2. Session override via `sdd_set_project` (MCP only, cleared on restart)
+3. `SDD_DEFAULT_PROJECT` env var (persistent across sessions)
+4. `default_project` field in `executors.json` (config file)
+
+| Tool / Command | Purpose |
+| --- | --- |
+| `sdd_set_project` | Set session default (pass empty string to clear) |
+| `sdd_get_project` / `get-project` | Show resolved project and source |
+
+CLI: `--project` becomes optional when `SDD_DEFAULT_PROJECT` is set.
 
 ### Prompt Assembly
 
@@ -128,6 +166,9 @@ LLM-dependent tools assemble prompts from: persona files + phase template + acti
 
 ## 8. Changelog
 
+- [CHANGELOG v1.16.0](CHANGELOG/CHANGELOG_v1.16.0.md) — persona management tools, sdd_init --update, BRD executive_summary optional
+- [CHANGELOG v1.15.0](CHANGELOG/CHANGELOG_v1.15.0.md) — persona optimization (PLAN-024, PLAN-025)
+- [CHANGELOG v1.14.0](CHANGELOG/CHANGELOG_v1.14.0.md) — executor simplification + PLAN-021 naming compliance
 - [CHANGELOG v1.13.0](CHANGELOG/CHANGELOG_v1.13.0.md) — merge sdd_validate_fix into sdd_validate (PLAN-023)
 - [CHANGELOG v1.12.0](CHANGELOG/CHANGELOG_v1.12.0.md) — multi-persona mapping support (PLAN-022)
 - [CHANGELOG v1.11.0](CHANGELOG/CHANGELOG_v1.11.0.md) — unified report naming standard

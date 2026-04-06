@@ -15,6 +15,7 @@ async def run_executor(
     prompt: str,
     working_dir: Path | None = None,
     timeout: int | None = None,
+    project_env: dict[str, str] | None = None,
 ) -> ExecutorResult:
     """Dispatch to CLI or API executor based on registry type."""
     config = get_executor(name)
@@ -32,6 +33,7 @@ async def run_executor(
             prompt=prompt,
             working_dir=working_dir,
             timeout=timeout,
+            project_env=project_env,
         )
     elif config.executor_type == ExecutorType.API:
         result = await run_api_executor(

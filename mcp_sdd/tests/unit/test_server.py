@@ -27,7 +27,7 @@ from mcp_server.executor.cli_runner import ExecutorResult
 
 class TestToolRegistry:
     def test_tool_count(self):
-        assert len(TOOLS) == 19  # sdd_validate_fix merged into sdd_validate
+        assert len(TOOLS) == 25  # +3 persona (PLAN-024), +1 env_show, +2 project mgmt (PLAN-027)
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
@@ -157,6 +157,53 @@ class TestExecutorRegistry:
         config = get_executor("copilot-cli")
         assert config.status == "experimental"
 
+    def test_load_config_file_old_array_format(self, tmp_path):
+        from mcp_server.executor.registry import load_config_file
+        config_file = tmp_path / "executors.json"
+        config_file.write_text(
+            json.dumps([{"name": "test-old", "executor_type": "cli", "command": "echo"}]),
+            encoding="utf-8",
+        )
+        count = load_config_file(config_file)
+        assert count == 1
+        cfg = get_executor("test-old")
+        assert cfg.command == "echo"
+        remove_executor("test-old")
+
+    def test_load_config_file_new_object_format(self, tmp_path):
+        from mcp_server.executor.registry import load_config_file
+        import mcp_server.project_context as pc
+        old_config = pc._config_default_project
+        config_file = tmp_path / "executors.json"
+        config_file.write_text(
+            json.dumps({
+                "default_project": str(tmp_path),
+                "executors": [{"name": "test-new", "executor_type": "cli", "command": "echo"}],
+            }),
+            encoding="utf-8",
+        )
+        count = load_config_file(config_file)
+        assert count == 1
+        assert pc._config_default_project == tmp_path
+        cfg = get_executor("test-new")
+        assert cfg.command == "echo"
+        remove_executor("test-new")
+        pc._config_default_project = old_config
+
+    def test_load_config_file_object_without_executors(self, tmp_path):
+        from mcp_server.executor.registry import load_config_file
+        import mcp_server.project_context as pc
+        old_config = pc._config_default_project
+        config_file = tmp_path / "executors.json"
+        config_file.write_text(
+            json.dumps({"default_project": str(tmp_path)}),
+            encoding="utf-8",
+        )
+        count = load_config_file(config_file)
+        assert count == 0
+        assert pc._config_default_project == tmp_path
+        pc._config_default_project = old_config
+
 
 # ── Handler tests ────────────────────────────────────────────────────────────
 
@@ -213,7 +260,7 @@ class TestNextAction:
 
     def test_after_validation(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01.ucx.validate_review.json").write_text("{}")
+        (tmp_path / "BRD-01.ucx.validate.json").write_text("{}")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "validated"
         assert result["next_action"] == "review"
@@ -221,7 +268,7 @@ class TestNextAction:
 
     def test_after_validation_fix(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01.ucx.validate_review.json").write_text("{}")
+        (tmp_path / "BRD-01.ucx.validate.json").write_text("{}")
         (tmp_path / "BRD-01_platform_validated.md").write_text("# BRD fixed")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "validated"
@@ -396,7 +443,6 @@ class TestReviewReportPersistence:
             stderr="",
             exit_code=0,
             executor_name="claude",
-            prompt_file="/tmp/sdd_prompt_test.md",
         )
 
         # Patch the two dependencies: review build + executor

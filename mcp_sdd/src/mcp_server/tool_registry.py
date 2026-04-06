@@ -1,7 +1,8 @@
 """MCP Tool definitions and handler dispatch for SDD lifecycle.
 
-20 tools total:
-  - 12 deterministic (execute directly)
+25 tools total:
+  - 2 session management (set/get project)
+  - 13 deterministic (execute directly)
   - 2 orchestration (pipeline + advisor)
   - 6 LLM-dependent (optional executor param)
 """
@@ -34,6 +35,27 @@ from mcp_server.executor.cli_runner import ExecutorResult
 # ── Tool definitions ────────────────────────────────────────────────────────
 
 TOOLS: list[Tool] = [
+    # ── Session management tools ─────────────────────────────────────────
+    Tool(
+        name="sdd_set_project",
+        description="Set default project for this session. Subsequent tool calls can omit project. Pass empty string to clear session default.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path, or empty string to clear"},
+            },
+            "required": ["project"],
+        },
+    ),
+    Tool(
+        name="sdd_get_project",
+        description="Show current default project (session override, config default, or none).",
+        inputSchema={
+            "type": "object",
+            "properties": {},
+            "required": [],
+        },
+    ),
     # ── Deterministic tools ──────────────────────────────────────────────
     Tool(
         name="sdd_init",
@@ -41,7 +63,9 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "update": {"type": "boolean", "description": "Overwrite stale files with latest framework versions. Protects project-owned files like persona_mappings.yaml (default: false)", "default": False},
+                "update_mappings": {"type": "boolean", "description": "Also reset persona_mappings.yaml to framework defaults. Requires update=true (default: false)", "default": False},
             },
             "required": ["project"],
         },
@@ -52,7 +76,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd, ears)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
@@ -100,11 +124,60 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "context": {"type": "string", "enum": ["create", "review", "remediate", "any"], "default": "any"},
                 "document": {"type": "string", "description": "Optional document path to verify"},
                 "format": {"type": "string", "enum": ["text", "json"], "default": "json"},
                 "out": {"type": "string", "description": "Output directory"},
+            },
+            "required": ["project"],
+        },
+    ),
+    Tool(
+        name="sdd_personas_show",
+        description="Show persona assignments for a project. Displays phase-doctype-persona mappings.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "phase": {"type": "string", "enum": ["creation", "review", "remediation"], "description": "Filter by phase (optional)"},
+                "doc_type": {"type": "string", "description": "Filter by document type (optional)"},
+            },
+            "required": ["project"],
+        },
+    ),
+    Tool(
+        name="sdd_personas_set",
+        description="Update persona list for a specific phase and document type. Validates persona files exist and writes back to YAML.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "phase": {"type": "string", "enum": ["creation", "review", "remediation"], "description": "Lifecycle phase"},
+                "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd, _default)"},
+                "personas": {"type": "array", "items": {"type": "string"}, "description": "Ordered list of persona names"},
+            },
+            "required": ["project", "phase", "doc_type", "personas"],
+        },
+    ),
+    Tool(
+        name="sdd_personas_diff",
+        description="Compare project persona mappings against framework defaults. Shows added, removed, and changed entries.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+            },
+            "required": ["project"],
+        },
+    ),
+    Tool(
+        name="sdd_env_show",
+        description="Show project .env keys without exposing values. Reports key count, blocked system variables, and file status.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
             },
             "required": ["project"],
         },
@@ -214,7 +287,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
@@ -238,7 +311,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
@@ -257,7 +330,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
@@ -278,7 +351,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
                 "doc_type": {"type": "string", "description": "Document type"},
                 "template": {"type": "string", "description": "Review template file name"},
@@ -300,7 +373,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "doc_type": {"type": "string", "description": "Document type"},
                 "layer": {"type": "string", "description": "SDD layer directory"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
@@ -318,7 +391,7 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path"},
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
                 "doc_type": {"type": "string", "description": "Document type"},
                 "layer": {"type": "string", "description": "SDD layer directory"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
@@ -331,6 +404,13 @@ TOOLS: list[Tool] = [
         },
     ),
 ]
+
+# Tools that accept a "project" parameter — used by handle_tool injection.
+_PROJECT_TOOLS: frozenset[str] = frozenset(
+    tool.name
+    for tool in TOOLS
+    if "project" in (tool.inputSchema.get("properties") or {})
+)
 
 
 # ── Helper functions ────────────────────────────────────────────────────────
@@ -407,12 +487,20 @@ async def _maybe_run_executor(
             doc_path = Path(doc_arg).expanduser().resolve()
             working_dir = doc_path if doc_path.is_dir() else doc_path.parent
 
+    # Load project .env for executor subprocess
+    project_env = None
+    project_arg = arguments.get("project")
+    if project_arg:
+        from mcp_server.env_manager import load_project_env
+        project_env = load_project_env(Path(project_arg).expanduser().resolve()) or None
+
     timeout = arguments.get("timeout", 300)
     exec_result: ExecutorResult = await run_executor(
         name=executor_name,
         prompt=prompt_text,
         working_dir=working_dir,
         timeout=timeout,
+        project_env=project_env,
     )
 
     return {
@@ -420,7 +508,7 @@ async def _maybe_run_executor(
         "exit_code": exec_result.exit_code,
         "output": exec_result.stdout,
         "stderr": exec_result.stderr if exec_result.stderr else None,
-        "prompt_file": exec_result.prompt_file,
+        "prompt_file": None,
         "deterministic_result": deterministic_result,
     }
 
@@ -440,7 +528,7 @@ def _inspect_document_folder(document_dir: Path) -> dict:
     source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
     source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validated" not in f.stem and "_remediate_copy" not in f.stem]
     has_validation_report = any(
-        REPORT_PATTERN.match(f.name) and ".validate_review." in f.name
+        REPORT_PATTERN.match(f.name) and ".validate." in f.name
         for f in json_files + md_files + yaml_files
     )
     has_validation_copy = any(
@@ -496,6 +584,15 @@ def _inspect_document_folder(document_dir: Path) -> dict:
 
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Main tool handler — routes MCP tool calls to runner functions."""
+    # Inject resolved default project if not explicitly provided (before logging)
+    if name in _PROJECT_TOOLS and not arguments.get("project"):
+        from mcp_server.project_context import resolve_project
+        try:
+            resolved = resolve_project(None)
+            arguments["project"] = str(resolved)
+        except ValueError:
+            pass  # Let individual tool handlers raise on missing project
+
     # Configure logging if project root is available
     project_arg = arguments.get("project")
     if project_arg:
@@ -530,6 +627,32 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 async def _dispatch(name: str, arguments: dict) -> dict:
     """Dispatch to the appropriate handler."""
 
+    # ── Session management tools ───────────────────────────────────────
+
+    if name == "sdd_set_project":
+        from mcp_server.project_context import set_session_project, clear_session_project
+        project_val = arguments.get("project", "")
+        if not project_val:
+            clear_session_project()
+            return {"cleared": True, "session_project": None}
+        project_root = _path(arguments, "project")
+        return set_session_project(project_root)
+
+    if name == "sdd_get_project":
+        from mcp_server.project_context import get_session_project, resolve_project
+        session = get_session_project()
+        try:
+            resolved = resolve_project(None)
+            source = "session" if session else "config"
+        except ValueError:
+            resolved = None
+            source = "none"
+        return {
+            "session_project": str(session) if session else None,
+            "resolved_project": str(resolved) if resolved else None,
+            "source": source,
+        }
+
     # ── Deprecated aliases ───────────────────────────────────────────────
 
     if name == "sdd_validate_fix":
@@ -541,7 +664,11 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_init":
         from mcp_server.skills.scaffold import scaffold_project_ucx
-        result = scaffold_project_ucx(project_root=_path(arguments, "project"))
+        result = scaffold_project_ucx(
+            project_root=_path(arguments, "project"),
+            force_update=bool(arguments.get("update", False)),
+            force_update_mappings=bool(arguments.get("update_mappings", False)),
+        )
         return _serialize_result(result)
 
     if name == "sdd_validate":
@@ -686,6 +813,35 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             "report": json.loads(result.report_json),
             "report_path": str(result.report_path) if result.report_path else None,
         }
+
+    if name == "sdd_personas_show":
+        from mcp_server.skills.persona_manager import show_persona_mappings
+        return show_persona_mappings(
+            project_root=_path(arguments, "project"),
+            phase=arguments.get("phase"),
+            doc_type=arguments.get("doc_type"),
+        )
+
+    if name == "sdd_personas_set":
+        from mcp_server.skills.persona_manager import set_persona_mapping
+        return set_persona_mapping(
+            project_root=_path(arguments, "project"),
+            phase=arguments["phase"],
+            doc_type=arguments["doc_type"],
+            personas=arguments["personas"],
+        )
+
+    if name == "sdd_personas_diff":
+        from mcp_server.skills.persona_manager import diff_persona_mappings
+        return diff_persona_mappings(
+            project_root=_path(arguments, "project"),
+        )
+
+    if name == "sdd_env_show":
+        from mcp_server.env_manager import show_project_env
+        return show_project_env(
+            project_root=_path(arguments, "project"),
+        )
 
     if name == "sdd_prescreen":
         from mcp_server.prescreening import run_prescreen

@@ -6,8 +6,8 @@
 | --- | --- |
 | Canonical Name | UCX (Unified Context Framework) |
 | Status | Active |
-| Version | 1.2 |
-| Date | 2026-04-02 |
+| Version | 1.3 |
+| Date | 2026-04-05 |
 | Scope | UCX as canonical SDD unified-context runtime and documentation framework |
 
 ---
@@ -77,11 +77,18 @@ UCX uses a project isolation model for all AI skills assets. The framework provi
 | `mcp_sdd/prompts/templates/remediation/` | `{project}/UCX/prompts/templates/remediation/` | UCRem remediation prompt templates |
 | `mcp_sdd/templates/` + `ai_dev_ssd_flow/` | `{project}/UCX/templates/` | Document templates and layer-specific schemas |
 
+**Update mode** (`sdd_init --update`):
+
+- Syncs stale templates and prompts with latest framework versions.
+- `persona_mappings.yaml` is project-owned and protected from overwrite. Use `--update-mappings` to explicitly reset it.
+- `PROTECTED_PROJECT_FILES` in `scaffold.py` defines the protected set.
+
 **Runtime contract**:
 
 1. Framework scaffold sources (`mcp_sdd/skills/`, `mcp_sdd/prompts/templates/`) are never loaded by the runtime directly.
 2. All MCP tools resolve personas, prompts, and templates exclusively from the active project's `UCX/` directory.
 3. If project-specific files are absent, the runtime raises `ProjectSkillsNotFound` with actionable resolution guidance. No fallback to framework defaults occurs.
+4. Preflight checks (`sdd_preflight`) run a persona mapping health check when `persona_mappings.yaml` is present: verifies all referenced persona `.md` files exist and reports missing doctypes compared to framework defaults.
 
 ### 4.2 Multi-Persona System
 
@@ -118,6 +125,20 @@ Complete persona registry (15):
 
 During remediation, personas use adaptive loading: domain personas are loaded only when review findings match their registered categories.
 
+### 4.2.1 Persona Management Tools
+
+Three MCP tools for inspecting and modifying project-specific persona-to-layer mappings:
+
+| MCP Tool | CLI Command | Purpose |
+| --- | --- | --- |
+| `sdd_personas_show` | `personas-show` | Display persona assignments per phase/doctype |
+| `sdd_personas_set` | `personas-set` | Update persona list for a phase+doctype with validation |
+| `sdd_personas_diff` | `personas-diff` | Compare project mappings against framework defaults |
+
+`sdd_personas_set` validates that all referenced persona `.md` files exist before writing. It preserves the YAML header comments and uses flow-style lists to match the canonical format. After writing, it invalidates the mtime-based persona mapping cache. Supports `_default` as doc_type for remediation fallback entries.
+
+`persona_mappings.yaml` is project-owned after initialization. The `PROTECTED_PROJECT_FILES` mechanism in `scaffold.py` prevents `sdd_init --update` from overwriting it.
+
 ### 4.3 Prompt Assembly Pipeline
 
 LLM-dependent tools (`sdd_create`, `sdd_review`, `sdd_remediate_fix`) assemble prompts from multiple project-local sources:
@@ -134,10 +155,41 @@ During review, document sections are categorized (functional, compliance, risk, 
 
 Assembled prompts can optionally be executed via registered executors:
 
-- **CLI executors**: External tools (aider, gpt-engineer) invoked via subprocess
-- **API executors**: LLM API providers (Claude, GPT-4) invoked via LiteLLM
+- **CLI executors**: External tools (Claude Code, Codex, Gemini) invoked via subprocess with the prompt passed as a positional argument
+- **API executors**: LLM API providers (Claude, GPT-4) invoked via LiteLLM (stub)
+
+All CLI executors use the same delivery mechanism: the prompt text is appended as a positional argument to the executor command. There is no stdin or file-based fallback.
 
 If no executor is specified, the tool returns the assembled prompt text for manual use.
+
+### 4.5 Default Project Resolution
+
+Tools that require `project` resolve it from a 4-level fallback chain before dispatch:
+
+| Priority | Source | Scope |
+| --- | --- | --- |
+| 1 | Explicit `project` argument | Per call |
+| 2 | `sdd_set_project` session override | Per MCP server process |
+| 3 | `SDD_DEFAULT_PROJECT` env var | Per shell/environment |
+| 4 | `executors.json` `default_project` field | Per config file |
+
+Injection happens in `handle_tool()` before `configure_logging`, guarded by `_PROJECT_TOOLS` frozenset. Non-project tools (`sdd_scan`, `sdd_consistency`) are not affected. `_handle_lifecycle_pipeline` calls `_dispatch()` with the already-injected `arguments` dict.
+
+### 4.6 Project Environment Isolation
+
+Each project can provide a `.env` file at the project root containing API keys and provider credentials. The environment manager (`env_manager.py`) loads these automatically when executors are invoked.
+
+| Aspect | Behavior |
+| --- | --- |
+| Loading | `dotenv_values()` — parses `.env` without modifying `os.environ` |
+| Caching | mtime-based per project root — reload only when file changes |
+| Merge order | `os.environ` < `config.env` < `project_env` (.env wins) |
+| Blocked vars | `PATH`, `HOME`, `PYTHONPATH`, `LD_LIBRARY_PATH`, `LD_PRELOAD`, `SHELL`, `USER`, `IFS` |
+| Missing `.env` | Returns empty dict — executor inherits parent environment |
+| Inspection | `sdd_env_show` / `env-show` — reports keys only, never values |
+| Preflight | Reports `env_key_count`, `env_keys`, `env_blocked_vars` |
+
+Multi-project safety: each `--project` argument resolves to an independent cache entry. Switching between projects within a session loads the correct `.env` automatically.
 
 ---
 
