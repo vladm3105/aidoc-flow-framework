@@ -39,6 +39,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
             and "REPORT" not in path.name.upper()
             and "_validated" not in path.stem
             and "_remediate_copy" not in path.stem
+            and not re.search(r"_remediate_v\d+", path.stem)
             and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
         ]
         if len(source_artifacts) == 1:
@@ -62,6 +63,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
         for path in filtered
         if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not re.search(r"_remediate_v\d+", path.stem)
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
     if len(source_artifacts) == 1:
@@ -86,6 +88,7 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         and "TEMPLATE" not in path.name.upper()
         and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not re.search(r"_remediate_v\d+", path.stem)
     ]
     if len(source_artifacts) == 1:
         return source_artifacts
@@ -96,6 +99,7 @@ def _collect_yaml_files(document_path: Path) -> list[Path]:
         and "TEMPLATE" not in path.name.upper()
         and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not re.search(r"_remediate_v\d+", path.stem)
     ]
 
 

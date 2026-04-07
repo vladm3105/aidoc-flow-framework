@@ -97,13 +97,13 @@ Success condition:
 
 This section is retained for historical reference only. `sdd_validate_fix` still works as a deprecated alias routing to `sdd_validate`.
 
-### 3.7 Remediate and remediate-fix
+### 3.7 Remediate and remediate --fix
 
 Procedure:
 
 1. Run remediate against source or validation-derived artifact.
 2. Confirm remediation report artifacts are produced.
-3. Run remediate-fix with remediation report input.
+3. Run `remediate --fix` (optionally with `--remediation-report`) to produce the derived copy. The standalone `remediate-fix` command has been absorbed into `remediate --fix`.
 4. Confirm `_remediated` artifact and apply report artifacts are produced.
 5. For remediation reports with findings, confirm each finding includes stable `finding_id` and `action_id` fields.
 
@@ -260,14 +260,14 @@ Troubleshooting checks:
 
 Expected behavior:
 
-- The validate phase (within `sdd_validate`) or remediate-fix may omit `source_protection_telemetry` when no canonical source files were monitored, such as section-folder copy flows.
+- The validate phase (within `sdd_validate`) or `remediate --fix` may omit `source_protection_telemetry` when no canonical source files were monitored, such as section-folder copy flows.
 
 ### Scenario H: YAML document troubleshooting
 
 Applicable when operating on `.yaml` source documents:
 
 - Frontmatter check is skipped for `.yaml` files. YAML documents are structured data, not Markdown with frontmatter.
-- Derived copies (`_validated.yaml`, `_remediate_copy.yaml`) are excluded from source artifact detection during folder resolution.
+- Derived copies (`_validated.yaml`, `_remediate_v{N}.yaml`, legacy `_remediate_copy.yaml`) are excluded from source artifact detection during folder resolution.
 - Scoring uses categorized weights: structural errors (20pt deduction), cross-section errors (10pt deduction), warnings (5pt deduction).
 - If validation reports unexpected frontmatter failures on a YAML file, confirm the runner is using YAML-aware check dispatch rather than the Markdown path.
 
@@ -304,7 +304,7 @@ Troubleshooting checks:
 | missing_persona_mappings (preflight warning) | preflight detects persona_mappings.yaml absent | run init to scaffold persona_mappings.yaml |
 | validate structural violations | validation report contains missing requirements | remediate document and re-run validate |
 | validate fix artifacts missing from sdd_validate output | sdd_validate completed but derived `_validated` artifact or `validate_fix_report.*` absent | verify document path and output path permissions; confirm validation report contains errors (fix artifacts are only produced when errors exist); rerun sdd_validate |
-| remediate-fix output missing | fix report generated without derived artifacts | verify document path and output path permissions, then rerun |
+| remediate --fix output missing | fix report generated without derived artifacts | verify document path and output path permissions, then rerun |
 | scan/scoring parse failure | report payload invalid JSON | repair upstream report generation, then rerun diagnostics |
 | Output write failure | file I/O error | validate output directory permissions |
 

@@ -14,7 +14,7 @@ custom_fields:
 
 # Specification-Driven Development (SDD) Framework
 
-**Version**: 3.1 (v0.17.0 — Cross-section validation, YAML parity, UCX relocation)
+**Version**: 3.2 (v0.21.0 — UCX rebranded as Unified Context eXcelerator, AI agent orchestration platform)
 
 The SDD framework transforms business requirements into production code through a structured, traceable workflow. All 11 artifact layers use unified YAML templates with embedded authoring guidance.
 

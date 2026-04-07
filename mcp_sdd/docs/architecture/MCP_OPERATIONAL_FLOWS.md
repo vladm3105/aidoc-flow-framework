@@ -12,7 +12,7 @@
 ## 1. Flow Set
 
 - project initialization flow: `init` → `create-build`
-- document lifecycle flow (5 stages): `create` → `validate` → `review` → `remediate` → `remediate-fix`
+- document lifecycle flow (5 stages): `create` → `validate` → `review` → `remediate` → `remediate --fix`
 - review prompt flow: `review-build` and `review`
 - readiness and lineage flow: `preflight`, `consistency`
 - diagnostics flow: `prescreen`, `scan`, `scoring`
@@ -236,9 +236,11 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 ### Stage 5 — Remediate-Fix
 
-**Command**: `remediate-fix`
+**Command**: `remediate --fix`
 
-**Input**: `TYPE-NN_{slug}_validated.md` + optional `remediation_report`
+> **Note**: The standalone `sdd_remediate_fix` MCP tool and `remediate-fix` CLI command have been absorbed into `sdd_remediate` with `fix=true` parameter. Use `remediate --fix` instead.
+
+**Input**: `TYPE-NN_{slug}_validated.md` + optional `--remediation-report`
 
 **Output**: `TYPE-NN_{slug}_remediated.md` (derived copy, written alongside source)
 
@@ -257,7 +259,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 
 **Post-fix quality checks (v1.20.0+)**:
 - `verify_remediation_quality()` runs automatically after executor completes: detects cosmetic FWDREF renames, stub sections (<50 words), and low content delta. Returns `quality_pass: true/false`.
-- In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after `remediate_fix` to catch regressions.
+- In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after `remediate --fix` to catch regressions. The `clean_before` parameter on `sdd_run_lifecycle` triggers `sdd_clean` to prune obsolete stage artifacts before the pipeline starts.
 
 ---
 
@@ -273,7 +275,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 | 2 | Validate-fix report (when errors found) | `validate_fix_report.json/.txt` | No |
 | 3 | Review report | `TYPE-NN.UCX_review_report_vNNN.md` | No |
 | 4 | Remediation report | `TYPE-NN.UCX_remediation_report_vNNN.md` | No |
-| 5 | Remediated copy | `TYPE-NN_{slug}_remediated.md` | No |
+| 5 | Remediated copy (`remediate --fix`) | `TYPE-NN_{slug}_remediated.md` | No |
 
 ### Lineage Chain
 
@@ -286,13 +288,13 @@ TYPE-NN_{slug}.md
   TYPE-NN_{slug}_validated.md
                         └─ review       ──→ UCX_review_report_vNNN.md
                         └─ remediate    ──→ UCX_remediation_report_vNNN.md
-                        └─ remediate-fix ──→ TYPE-NN_{slug}_remediated.md
+                        └─ remediate --fix ──→ TYPE-NN_{slug}_remediated.md
 ```
 
 ### Reserved Suffixes
 
 - `_validated` — UCX-derived copy from `validate` (when errors are found)
-- `_remediated` — UCX-derived copy from `remediate-fix` only
+- `_remediated` — UCX-derived copy from `remediate --fix` only
 - These suffixes must not appear in canonical source document filenames.
 
 ### Source Artifact Resolution
@@ -302,9 +304,9 @@ When `--document` points to a folder, MCP applies the following resolution rules
 | Stage | Resolution rule |
 | --- | --- |
 | validate | Locate single file matching `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` with no `_validated` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
-| review | Collect all `.md`, `.yaml`, `.yml` files (excluding `_LEGACY`, `REVIEW`, `REPORT`, `_validated`, `_remediate_copy` stems). Identify canonical source via `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` (excluding appendix files). YAML-first precedence when both formats exist. Append appendix files (detected by `appendix`/`appendices` in filename). |
+| review | Collect all `.md`, `.yaml`, `.yml` files (excluding `_LEGACY`, `REVIEW`, `REPORT`, `_validated`, `_remediate_copy`, `_remediate_v{N}` stems). Identify canonical source via `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` (excluding appendix files). YAML-first precedence when both formats exist. Append appendix files (detected by `appendix`/`appendices` in filename). |
 | remediate | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
-| remediate-fix | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
+| remediate --fix | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
 
 ---
 

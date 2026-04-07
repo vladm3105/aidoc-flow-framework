@@ -101,7 +101,7 @@ def test_cli_remediate_and_remediate_fix_create_outputs(tmp_path: Path) -> None:
 
     assert remediate_fix_exit == 0
     assert (remediation_out / "BRD-01.ucx.remediate_fix.json").exists()
-    assert (remediation_out / "BRD-01_sample_remediate_copy.md").exists()
+    assert (remediation_out / "BRD-01_sample_remediate_v1.md").exists()
 
 
 def test_validate_fix_fails_for_invalid_validation_report_path(tmp_path: Path) -> None:
@@ -189,12 +189,12 @@ def test_cli_remediate_fix_directory_prefers_validation_copy(tmp_path: Path) -> 
     )
 
     assert exit_code == 0
-    # Uses _validated as input -> _remediate_copy output with canonical base stem
-    assert (out_dir / "PRD-01_platform_remediate_copy.md").exists()
+    # Uses _validated as input -> _remediate_v1 output with canonical base stem
+    assert (out_dir / "PRD-01_platform_remediate_v1.md").exists()
     # Must NOT create a tree copy of the whole folder
-    assert not (out_dir / f"{doc_dir.name}_remediate_copy").exists()
-    # Must NOT create _validated_remediate_copy (non-canonical name)
-    assert not (out_dir / "PRD-01_platform_validated_remediate_copy.md").exists()
+    assert not (out_dir / f"{doc_dir.name}_remediate_v1").exists()
+    # Must NOT create _validated_remediate_v1 (non-canonical name)
+    assert not (out_dir / "PRD-01_platform_validated_remediate_v1.md").exists()
 
 
 def test_remediate_fix_fails_for_invalid_remediation_report_path(tmp_path: Path) -> None:
@@ -380,3 +380,167 @@ def test_remediation_findings_use_stable_hash_ids_across_reruns(tmp_path: Path) 
     second_pairs = [(item["finding_id"], item["action_id"]) for item in second_payload["findings"]]
 
     assert first_pairs == second_pairs
+
+
+# ── Versioned remediation copies ────────────────────────────────────────────
+
+
+def test_remediate_fix_version_incrementing(tmp_path: Path) -> None:
+    """Run remediate_fix twice -> both _v1 and _v2 exist, v1 not overwritten."""
+    main(["init", "--project", str(tmp_path)])
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("TODO: complete section\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+
+    # First run
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(document), "--out", str(out_dir),
+    ]) == 0
+    v1 = out_dir / "BRD-01_sample_remediate_v1.md"
+    assert v1.exists()
+    v1_content = v1.read_text(encoding="utf-8")
+
+    # Second run
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(document), "--out", str(out_dir),
+    ]) == 0
+    v2 = out_dir / "BRD-01_sample_remediate_v2.md"
+    assert v2.exists()
+    # v1 must not be overwritten
+    assert v1.read_text(encoding="utf-8") == v1_content
+
+
+def test_remediate_fix_iterative_flow(tmp_path: Path) -> None:
+    """Pass _remediate_v1 as document -> produces _v2 (canonical stem properly stripped)."""
+    main(["init", "--project", str(tmp_path)])
+    doc_dir = tmp_path / "docs/01_BRD"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    source = doc_dir / "BRD-01_sample.md"
+    source.write_text("# BRD-01\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+
+    # Create v1
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(source), "--out", str(out_dir),
+    ]) == 0
+    v1 = out_dir / "BRD-01_sample_remediate_v1.md"
+    assert v1.exists()
+
+    # Pass v1 as input document -> should create v2 with canonical stem
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(v1), "--out", str(out_dir),
+    ]) == 0
+    v2 = out_dir / "BRD-01_sample_remediate_v2.md"
+    assert v2.exists()
+
+
+def test_remediate_fix_directory_versioning(tmp_path: Path) -> None:
+    """Run remediate_fix on directory twice -> both _v1/ and _v2/ dirs exist."""
+    main(["init", "--project", str(tmp_path)])
+
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_sections"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    (doc_dir / "BRD-01.1_intro.md").write_text("# Intro\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+
+    # First run
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(doc_dir), "--out", str(out_dir),
+    ]) == 0
+    v1_dir = out_dir / "BRD-01_sections_remediate_v1"
+    assert v1_dir.exists() and v1_dir.is_dir()
+
+    # Second run
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(doc_dir), "--out", str(out_dir),
+    ]) == 0
+    v2_dir = out_dir / "BRD-01_sections_remediate_v2"
+    assert v2_dir.exists() and v2_dir.is_dir()
+    # v1 must still exist
+    assert v1_dir.exists()
+
+
+def test_remediate_fix_backward_compat_legacy_copy(tmp_path: Path) -> None:
+    """Pre-existing _remediate_copy is excluded from source discovery; fix creates _v1."""
+    main(["init", "--project", str(tmp_path)])
+    doc_dir = tmp_path / "docs/01_BRD"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+    source = doc_dir / "BRD-01_sample.md"
+    source.write_text("# BRD-01\n", encoding="utf-8")
+    legacy = doc_dir / "BRD-01_sample_remediate_copy.md"
+    legacy.write_text("# legacy\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(source), "--out", str(out_dir),
+    ]) == 0
+    # Creates v1, not v2 (legacy _remediate_copy doesn't count as v0)
+    assert (out_dir / "BRD-01_sample_remediate_v1.md").exists()
+
+
+def test_remediate_fix_prefix_safety(tmp_path: Path) -> None:
+    """Two documents with shared prefix -> version numbers independent."""
+    main(["init", "--project", str(tmp_path)])
+    doc_dir = tmp_path / "docs/01_BRD"
+    doc_dir.mkdir(parents=True, exist_ok=True)
+
+    short = doc_dir / "BRD-01_test.md"
+    short.write_text("# short\n", encoding="utf-8")
+    extended = doc_dir / "BRD-01_test_extended.md"
+    extended.write_text("# extended\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+
+    # Create v1 for extended
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(extended), "--out", str(out_dir),
+    ]) == 0
+    assert (out_dir / "BRD-01_test_extended_remediate_v1.md").exists()
+
+    # Create v1 for short — should NOT be v2 due to extended prefix match
+    assert main([
+        "remediate-fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(short), "--out", str(out_dir),
+    ]) == 0
+    assert (out_dir / "BRD-01_test_remediate_v1.md").exists()
+
+
+def test_remediate_fix_chain_via_cli(tmp_path: Path) -> None:
+    """sdd_remediate --fix produces both findings JSON and versioned copy."""
+    main(["init", "--project", str(tmp_path)])
+    document = tmp_path / "docs/01_BRD/BRD-01_sample.md"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("TODO: complete section\n", encoding="utf-8")
+
+    out_dir = tmp_path / "tmp/remediate"
+    assert main([
+        "remediate", "--fix", "--project", str(tmp_path),
+        "--doc-type", "brd", "--layer", "01_BRD",
+        "--document", str(document), "--out", str(out_dir),
+    ]) == 0
+
+    # Remediation findings report
+    assert (out_dir / "BRD-01.ucx.remediate.json").exists()
+    # Versioned copy from auto-chained fix
+    assert (out_dir / "BRD-01_sample_remediate_v1.md").exists()

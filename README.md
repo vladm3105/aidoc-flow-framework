@@ -65,7 +65,7 @@ CHG (Change Management) is a governance overlay with 4 gates. See `ai_dev_ssd_fl
 | Directory | Purpose |
 |:----------|:--------|
 | `ai_dev_ssd_flow/` | SDD layer templates, standards, and framework guides |
-| `mcp_sdd/` | **UCX** (Unified Context Framework) MCP server: 20 tools for SDD lifecycle. Also known as `ucx` or `mcp_sdd`. |
+| `mcp_sdd/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_sdd`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `project_knowledge/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |
@@ -88,22 +88,19 @@ ai_dev_ssd_flow/
 
 ### mcp_sdd/ Highlights
 
-20 MCP tools (12 deterministic, 2 orchestration, 6 LLM-dependent):
+25 MCP tools (13 deterministic, 1 maintenance, 2 session management, 2 executor management, 2 orchestration, 5 LLM-dependent):
 
 | Tool | Purpose |
 |------|---------|
-| Tool | Purpose |
-|------|---------|
 | `sdd_validate` | Validate SDD artifacts against templates (MD + YAML, cross-section rules) |
-| `sdd_validate_fix` | Generate source-protected fix from validation report (executor-driven) |
 | `sdd_validate_links` | Validate markdown links (file + anchor resolution) |
 | `sdd_create` | Scaffold new SDD documents |
 | `sdd_consistency` | Artifact lineage checks (MD + YAML) |
 | `sdd_preflight` | Environment readiness checks |
 | `sdd_review` | Multi-persona LLM document review (configurable persona lists via `persona_mappings.yaml`) |
-| `sdd_remediate` | Deterministic remediation findings + review report parsing |
-| `sdd_remediate_fix` | Source-protected remediation fix (executor-driven) |
-| `sdd_run_lifecycle` | Full create→validate→review→fix pipeline |
+| `sdd_remediate` | Deterministic remediation findings + source-protected fix via `--fix` |
+| `sdd_clean` | Prune obsolete stage artifacts (reports, derived copies), keep latest N |
+| `sdd_run_lifecycle` | Full create→validate→review→fix pipeline (with optional `clean_before`) |
 | `sdd_score_show` | Quality score with categorized weights (structural/cross-section) |
 | `sdd_next_action` | Recommend next lifecycle stage (MD + YAML aware) |
 

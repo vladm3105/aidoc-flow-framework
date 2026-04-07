@@ -147,7 +147,7 @@ def test_validate_to_fix_to_remediate_flow(tmp_path: Path) -> None:
         == 0
     )
 
-    assert (remediate_out / "BRD-01_sample_remediate_copy.md").exists()
+    assert (remediate_out / "BRD-01_sample_remediate_v1.md").exists()
 
 
 def test_validate_ears_directory_flow_passes_for_section_set(tmp_path: Path) -> None:

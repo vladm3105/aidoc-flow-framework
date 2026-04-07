@@ -1,18 +1,20 @@
-# UCX — Unified Context Framework
+# UCX — Unified Context eXcelerator
 
 > **Aliases**: `ucx`, `mcp_sdd`, `sdd-lifecycle`
 >
-> The package directory is `mcp_sdd/` (historical name). The canonical name is **UCX** (Unified Context Framework). References to `mcp_sdd`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ai_dev_ssd_flow/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
+> The package directory is `mcp_sdd/` (historical name). The canonical name is **UCX** (Unified Context eXcelerator). References to `mcp_sdd`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ai_dev_ssd_flow/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
+>
+> UCX is an AI agent orchestration platform that creates and manages context for AI agents (Claude Code, Gemini CLI, GitHub Copilot, Codex, OpenRouter) per project. Skills are project-specific, not agent-specific — any agent calls UCX to get the right context for a specific project.
 
 | Field | Value |
 | --- | --- |
-| Canonical Name | UCX (Unified Context Framework) |
+| Canonical Name | UCX (Unified Context eXcelerator) |
 | Package Directory | `mcp_sdd/` |
 | MCP Server Name | `sdd-lifecycle` |
 | Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | Active |
-| Version | 1.20.0 |
-| Date | 2026-04-06 |
+| Version | 1.21.0 |
+| Date | 2026-04-07 |
 | Timezone | America/New_York |
 
 ---
@@ -48,7 +50,7 @@ Use this precedence for conflict resolution:
 
 ## 3. Skills and Project Isolation Model
 
-UCX uses a **project isolation model** for AI skills. Framework assets are scaffold sources only — they are never loaded at runtime.
+UCX uses a **project isolation model** for AI skills. Skills are project-specific, not agent-specific — each project receives customized personas, prompts, and templates at initialization. Any AI agent calls UCX to get the right context for that project. Framework assets are scaffold sources only — they are never loaded at runtime.
 
 ### Initialization
 
@@ -167,6 +169,8 @@ LLM-dependent tools assemble prompts from: persona files + phase template + acti
 
 ## 8. Changelog
 
+- [CHANGELOG v1.21.0](CHANGELOG/CHANGELOG_v1.21.0.md) — API executor, tool surface cleanup (PLAN-030, PLAN-031)
+- [CHANGELOG v1.20.0](CHANGELOG/CHANGELOG_v1.20.0.md) — review/remediation quality (PLAN-029)
 - [CHANGELOG v1.19.0](CHANGELOG/CHANGELOG_v1.19.0.md) — review YAML document support (PLAN-028)
 - [CHANGELOG v1.18.0](CHANGELOG/CHANGELOG_v1.18.0.md) — default project resolution (PLAN-027 Phase 2)
 - [CHANGELOG v1.17.0](CHANGELOG/CHANGELOG_v1.17.0.md) — project environment management (PLAN-027 Phase 1)

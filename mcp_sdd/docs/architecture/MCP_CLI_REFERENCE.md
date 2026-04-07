@@ -25,8 +25,9 @@
 | review | same as review-build | same as review-build | alias for review-build |
 | validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | validate-fix | --project --doc-type --layer --document | --validation-report --out | **DEPRECATED** — alias for `validate`. Use `validate` instead. When validation errors are found, `validate` produces the `_validated` derived copy and fix report automatically. |
-| remediate | --project --doc-type --layer --document | --review-report --out | remediation report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
-| remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), apply report, plus `remediation_quality` metrics (FWDREF rename detection, stub section detection, content delta). In pipeline mode, auto-validates derived copy post-fix. |
+| remediate | --project --doc-type --layer --document | --fix --review-report --remediation-report --out | remediation report. With `--fix`: produces `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), apply report, plus `remediation_quality` metrics (FWDREF rename detection, stub section detection, content delta). `--remediation-report` supplies a pre-existing report to the fix flow. In pipeline mode, auto-validates derived copy post-fix. Supports both .md and .yaml document formats. |
+| remediate-fix | (deprecated) | (deprecated) | **DEPRECATED** — alias for `remediate --fix`. Use `remediate --fix` instead. |
+| clean | --project --document | --dry-run --out | prune obsolete stage artifacts (`_validated`, `_remediated`, reports) from document folders. `--dry-run` lists candidates without deleting. |
 | prescreen | --document | --out | prescreen candidate report |
 | consistency | --target | --format {text,json} --out | artifact lineage and stage-consistency report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | preflight | --project | --context {create,review,remediate,any} --document --format {text,json} --out | runtime and environment readiness report |
@@ -55,7 +56,7 @@
 
 Default output behavior:
 
-- Document-aware commands (`create-build` with `--sections-json`, `review-build`, `validate`, `remediate`, `remediate-fix`) write artifacts directly into the target document folder.
+- Document-aware commands (`create-build` with `--sections-json`, `review-build`, `validate`, `remediate`, `remediate --fix`) write artifacts directly into the target document folder.
 - `create` writes the final source document artifact to `--target` and writes creation diagnostics to the target document folder unless `--out` is provided.
 - Fallback when no document context is available uses `.ucx/<stage>` under project docs.
 
@@ -65,7 +66,8 @@ Stage mapping:
 - create -> `creation` (diagnostic artifacts only; final document always uses `--target`)
 - review-build/review -> `review`
 - validate -> `validate`
-- remediate/remediate-fix -> `remediation`
+- remediate/remediate --fix -> `remediation`
+- clean -> `clean`
 
 Rule:
 
@@ -81,7 +83,7 @@ When `--document` points to a folder, MCP resolves the target artifact as follow
 | Command | Resolution |
 | --- | --- |
 | `validate`, `remediate` | Find single file matching `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` with no `_validated` or `_remediated` suffix — use as source. Fall back to full folder set if no unique match. |
-| `remediate-fix` | Find single file matching `^[A-Z]+-\d+_.+_validated\.md$` — use as `_validated` copy input. Fall back to full folder set if no unique match. |
+| `remediate --fix` | Find single file matching `^[A-Z]+-\d+_.+_validated\.md$` — use as `_validated` copy input. Fall back to full folder set if no unique match. |
 
 When `validate --document` points to a markdown file, MCP applies canonical source redirection across all layers:
 
@@ -93,7 +95,7 @@ This behavior ensures validation remains monolith-first for hybrid document fold
 **Output filename rules:**
 
 - `validate` (when errors found) uses the source stem: `{slug}_validated.md`
-- `remediate-fix` always uses the canonical base stem (stripping `_validated` if present): `{slug}_remediated.md`
+- `remediate --fix` always uses the canonical base stem (stripping `_validated` if present): `{slug}_remediated.md`
 
 This ensures derived copies never accumulate stage suffixes (e.g., `_validated_remediated.md` is never produced).
 
@@ -114,13 +116,13 @@ UCX_review_report_vNNN.md              ← stage 3: review
   ↓
 UCX_remediation_report_vNNN.md         ← stage 4: remediate
   ↓
-TYPE-NN_{slug}_remediated.md           ← stage 5: remediate-fix
+TYPE-NN_{slug}_remediated.md           ← stage 5: remediate --fix
 ```
 
 Reserved filename suffixes:
 
 - `_validated` — produced by `validate` when errors are found
-- `_remediated` — produced by `remediate-fix` only; always uses canonical base stem
+- `_remediated` — produced by `remediate --fix` only; always uses canonical base stem
 
 ---
 
@@ -241,7 +243,7 @@ mcp remediate --project /path/to/project --doc-type brd --layer 01_BRD \
   --review-report /path/to/UCX_review_report_v001.md
 
 # Stage 5 — Produce _remediated copy
-mcp remediate-fix --project /path/to/project --doc-type brd --layer 01_BRD \
+mcp remediate --fix --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
   --remediation-report /path/to/remediation_report.json
 # → BRD-01_platform_remediated.md written alongside source

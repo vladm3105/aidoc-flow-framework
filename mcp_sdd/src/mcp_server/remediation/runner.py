@@ -119,6 +119,7 @@ def _collect_markdown_files(document_path: Path) -> list[Path]:
         for path in filtered
         if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not _REMEDIATE_VERSION_RE.search(path.stem)
         and re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
     ]
     if len(source_artifacts) == 1:
@@ -770,9 +771,33 @@ def run_remediation_build(
     )
 
 
+_REMEDIATE_VERSION_RE = re.compile(r"_remediate_v(\d+)")
+
+
+def _next_remediate_version(canonical_stem: str, output_dir: Path) -> int:
+    """Scan *output_dir* for highest ``_remediate_v{N}`` and return N+1."""
+    highest = 0
+    if not output_dir.exists():
+        return 1
+    prefix = canonical_stem + "_remediate_v"
+    for child in output_dir.iterdir():
+        name = child.stem if child.is_file() else child.name
+        if not name.startswith(prefix):
+            continue
+        # Exact prefix match — avoid BRD-01_test matching BRD-01_test_extended
+        rest = name[len(prefix):]
+        # rest should be digits only (for files) or digits (for dirs)
+        digits = rest.split("_")[0]  # handle unlikely extra suffixes
+        if digits.isdigit():
+            highest = max(highest, int(digits))
+    return highest + 1
+
+
 def _canonical_stem(src: Path) -> str:
     """Strip stage suffixes from stem."""
     stem = src.stem
+    # Strip versioned remediate suffix first
+    stem = _REMEDIATE_VERSION_RE.sub("", stem)
     for postfix in ("_validated", "_remediate_copy"):
         if stem.endswith(postfix):
             return stem[: -len(postfix)]
@@ -865,6 +890,7 @@ def _resolve_source_document_path(document_path: Path) -> Path:
         for path in filtered
         if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not _REMEDIATE_VERSION_RE.search(path.stem)
         and re.match(r"^[A-Z]+-\d+_.+\.(md|yaml)$", path.name)
     ]
     if len(source_artifacts) == 1:
@@ -973,10 +999,15 @@ def run_remediate_fix_build(
         if base_source.exists() and base_source != effective_document_path:
             source_paths.append(base_source)
 
+    # Compute versioned suffix
+    canon = _canonical_stem(effective_document_path) if effective_document_path.is_file() else effective_document_path.name
+    next_ver = _next_remediate_version(canon, output_dir)
+    version_suffix = f"remediate_v{next_ver}"
+
     def _apply_copy() -> list[Path]:
         if effective_document_path.is_file():
-            return [_copy_with_canonical_suffix(effective_document_path, "remediate_copy", output_dir)]
-        return _copy_tree_with_suffix(effective_document_path, "remediate_copy", output_dir)
+            return [_copy_with_canonical_suffix(effective_document_path, version_suffix, output_dir)]
+        return _copy_tree_with_suffix(effective_document_path, version_suffix, output_dir)
 
     derived_paths, telemetry = _guard_source_integrity(source_paths, "remediate-fix", _apply_copy)
 
@@ -987,6 +1018,7 @@ def run_remediate_fix_build(
         "layer": layer,
         "remediation_report": str(remediation_report) if remediation_report else None,
         "derived_paths": [str(path) for path in derived_paths],
+        "remediate_version": next_ver,
         "summary": {
             "derived_artifacts_created": len(derived_paths),
             "source_protected": True,

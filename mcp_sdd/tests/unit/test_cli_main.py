@@ -382,7 +382,7 @@ def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> N
     source.write_text("# source\n", encoding="utf-8")
     (doc_dir / "BRD-01.ucx.validate.json").write_text("{}", encoding="utf-8")
     (doc_dir / "BRD-01_platform_architecture_validated.md").write_text("# validation copy\n", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_architecture_remediate_copy.md").write_text("# remediated copy\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_remediate_v1.md").write_text("# remediated v1\n", encoding="utf-8")
     (doc_dir / "BRD-01_validation_remediation_report_v001.md").write_text("# remediation report\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/consistency"

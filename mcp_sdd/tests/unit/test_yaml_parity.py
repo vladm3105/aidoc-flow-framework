@@ -69,8 +69,8 @@ def test_next_action_detects_yaml_validation_copy(tmp_path: Path) -> None:
 def test_next_action_detects_yaml_remediated_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")
-    rem = tmp_path / "BRD-01_test_remediate_copy.yaml"
-    rem.write_text("title: remediated copy\n")
+    rem = tmp_path / "BRD-01_test_remediate_v1.yaml"
+    rem.write_text("title: remediated v1\n")
     info = _inspect_document_folder(tmp_path)
     assert info["current_stage"] == "remediated"
 

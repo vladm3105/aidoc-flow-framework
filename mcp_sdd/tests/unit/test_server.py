@@ -60,15 +60,20 @@ class TestToolRegistry:
     def test_llm_dependent_tool_names(self):
         llm_dependent = {
             "sdd_create_build", "sdd_create", "sdd_review",
-            "sdd_remediate", "sdd_remediate_fix",
+            "sdd_remediate",
         }
         tool_names = {t.name for t in TOOLS}
         assert llm_dependent.issubset(tool_names)
         assert "sdd_validate_fix" not in tool_names
+        assert "sdd_remediate_fix" not in tool_names  # Absorbed into sdd_remediate
+
+    def test_maintenance_tool_names(self):
+        tool_names = {t.name for t in TOOLS}
+        assert "sdd_clean" in tool_names
 
     def test_llm_tools_have_executor_param(self):
         llm_tools = ["sdd_create_build", "sdd_create", "sdd_review",
-                      "sdd_validate", "sdd_remediate", "sdd_remediate_fix"]
+                      "sdd_validate", "sdd_remediate"]
         for tool in TOOLS:
             if tool.name in llm_tools:
                 props = tool.inputSchema.get("properties", {})
@@ -147,11 +152,17 @@ class TestExecutorRegistry:
         with pytest.raises(KeyError):
             remove_executor("ghost-agent")
 
-    def test_api_executor_has_stub_status(self):
+    def test_api_executor_has_active_status(self):
         config = get_executor("api/gpt-4o")
         assert config.executor_type == ExecutorType.API
-        assert config.status == "stub"
+        assert config.status == "active"
         assert config.model == "gpt-4o"
+
+    def test_openrouter_executor_registered(self):
+        config = get_executor("api/openrouter")
+        assert config.executor_type == ExecutorType.API
+        assert config.model == "openrouter/auto"
+        assert config.api_key_env == "OPENROUTER_API_KEY"
 
     def test_copilot_experimental_status(self):
         config = get_executor("copilot-cli")
@@ -289,11 +300,11 @@ class TestNextAction:
         (tmp_path / "BRD-01.ucx.remediate.md").write_text("# rem")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "remediation_reported"
-        assert result["next_action"] == "remediate_fix"
+        assert result["next_action"] == "remediate --fix"
 
     def test_fully_remediated(self, tmp_path):
         (tmp_path / "BRD-01_platform.md").write_text("# BRD")
-        (tmp_path / "BRD-01_platform_remediate_copy.md").write_text("# final")
+        (tmp_path / "BRD-01_platform_remediate_v1.md").write_text("# final")
         result = _inspect_document_folder(tmp_path)
         assert result["current_stage"] == "remediated"
         assert result["next_action"] == "done"

@@ -4,7 +4,7 @@
 
 | Code | Sub-Framework | MCP Server | Scope |
 |------|--------------|------------|-------|
-| `ucx` | UCX (Unified Context Framework) | `sdd-lifecycle` | Document creation, validation, review, remediation |
+| `ucx` | UCX (Unified Context eXcelerator) | `sdd-lifecycle` | Agent-agnostic context assembly, document creation, validation, review, remediation |
 | `gov` | Project Governance | `project-governance` | GitHub Projects, IPLANs, governance rules |
 | `kb` | Project Knowledge | `project-knowledge` | FTS5 + semantic search, frontmatter indexing |
 
@@ -26,10 +26,10 @@ Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` — sub-framework code is always expli
 | Code | Tool | Description |
 |------|------|-------------|
 | `validate` | `sdd_validate` | Structural + cross-section validation |
-| `validate_fix` | `sdd_validate_fix` | Source-protected fix manifest |
+| `validate_fix` | `sdd_validate` | Source-protected fix manifest |
 | `review` | `sdd_review` | Multi-persona review |
 | `remediate` | `sdd_remediate` | Deterministic findings + parsed review |
-| `remediate_fix` | `sdd_remediate_fix` | Source-protected remediation fix |
+| `remediate_fix` | `sdd_remediate --fix` | Source-protected remediation fix (absorbed into `sdd_remediate`) |
 | `consistency` | `sdd_consistency` | Artifact lineage check |
 | `links` | `sdd_validate_links` | Markdown link check |
 | `prescreen` | `sdd_prescreen` | Remediation candidate scan |
@@ -57,12 +57,12 @@ Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` — sub-framework code is always expli
 
 Source-protected copies use underscores:
 
-Format: `{DOC-ID}_{slug}_{STAGE}_copy.{ext}`
+| Copy | Format | Example |
+|------|--------|---------|
+| Validation | `{DOC-ID}_{slug}_validated.{ext}` | `BRD-03_security_compliance_validated.yaml` |
+| Remediation | `{DOC-ID}_{slug}_remediate_v{N}.{ext}` | `BRD-03_security_compliance_remediate_v1.yaml` |
 
-| Copy | Filename |
-|------|----------|
-| Validation | `BRD-03_security_compliance_validate_copy.yaml` |
-| Remediation | `BRD-03_security_compliance_remediate_copy.yaml` |
+Remediation copies are versioned (PLAN-030): `_v1`, `_v2`, `_v3`, etc. Each iteration preserves the previous version. Legacy `_remediate_copy` suffix is still recognized for backward compatibility.
 
 ## Versioned Reports
 
@@ -85,7 +85,7 @@ REPORT_PATTERN = re.compile(
 )
 
 DERIVED_COPY_PATTERN = re.compile(
-    r"^[A-Z]+-\d+_.+_(?:validate|remediate)_copy\.(?:md|yaml|yml)$"
+    r"^[A-Z]+-\d+_.+_(?:validated|remediate_copy|remediate_v\d+)\.(?:md|yaml|yml)$"
 )
 
 SOURCE_PATTERN = re.compile(

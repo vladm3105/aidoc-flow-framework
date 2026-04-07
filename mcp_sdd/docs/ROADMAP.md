@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.20.0 |
-| Latest Release | 1.20.0 (review/remediation quality — PLAN-029) |
-| Previous Release | 1.19.0 (review YAML document support — PLAN-028) |
+| Current Version | 1.21.0 |
+| Latest Release | 1.21.0 (API executor, tool surface cleanup — PLAN-031) |
+| Previous Release | 1.20.0 (review/remediation quality — PLAN-029) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -544,6 +544,34 @@ References:
 
 - plans/PLAN-029_review_remediation_quality.md
 - CHANGELOG/CHANGELOG_v1.20.0.md
+
+---
+
+### v1.21.0 - API Executor and Tool Surface Cleanup
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-07 |
+| Scope | LiteLLM API executor, sdd_remediate_fix absorption, sdd_clean tool (PLAN-030, PLAN-031) |
+
+Delivered scope:
+
+- Versioned remediation copies: `_remediate_v{N}` naming preserves all iterations (PLAN-030)
+- API executor via LiteLLM: 100+ LLM providers including OpenRouter, Claude API, OpenAI, Gemini
+- Built-in OpenRouter executor entry (`api/openrouter`)
+- API executors upgraded from stub to active status
+- `sdd_remediate_fix` absorbed into `sdd_remediate` as `fix=true` mode with optional `remediation_report` parameter
+- New `sdd_clean` maintenance tool: prunes obsolete stage artifacts with configurable `keep` count and `dry_run` safety
+- `sdd_run_lifecycle` gains `clean_before` parameter for clean-slate pipeline runs
+- `sdd_next_action` updated: recommends `remediate --fix` instead of standalone `remediate_fix`
+- `litellm` added as optional dependency (`pip install mcp_sdd[api]`)
+
+References:
+
+- plans/PLAN-030_versioned_remediation_copies.md
+- plans/PLAN-031_api_executor_and_tool_surface.md
 
 ---
 

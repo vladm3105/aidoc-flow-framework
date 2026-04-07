@@ -236,9 +236,9 @@ def test_truncate_long_action(tmp_path: Path) -> None:
     report.write_text(content, encoding="utf-8")
     _, findings = parse_review_report(report)
     assert len(findings) == 1
-    # recommended_action uses default max_len=300
-    assert len(findings[0].recommended_action) <= 305  # 300 + "..."
-    assert findings[0].recommended_action.endswith("...")
+    # recommended_action uses max_len=2000 (PLAN-029)
+    assert len(findings[0].recommended_action) <= 500  # 500 < 2000, no truncation
+    assert not findings[0].recommended_action.endswith("...")
 
 
 # ---------------------------------------------------------------------------

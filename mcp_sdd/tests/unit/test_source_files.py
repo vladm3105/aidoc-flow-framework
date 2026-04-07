@@ -49,6 +49,19 @@ def test_collect_source_files_excludes_remediated_copy(tmp_path: Path) -> None:
     assert rem not in result
 
 
+def test_collect_source_files_excludes_versioned_remediate(tmp_path: Path) -> None:
+    src = tmp_path / "BRD-01_test.yaml"
+    src.write_text("title: test\n")
+    v1 = tmp_path / "BRD-01_test_remediate_v1.yaml"
+    v1.write_text("title: remediate v1\n")
+    v2 = tmp_path / "BRD-01_test_remediate_v2.yaml"
+    v2.write_text("title: remediate v2\n")
+    result = collect_source_files(tmp_path)
+    assert src in result
+    assert v1 not in result
+    assert v2 not in result
+
+
 def test_collect_source_files_excludes_template(tmp_path: Path) -> None:
     tpl = tmp_path / "BRD-TEMPLATE.yaml"
     tpl.write_text("title: template\n")

@@ -10,6 +10,9 @@ dependencies = [
     "python-dotenv>=1.0.0",
 ]
 
+[project.optional-dependencies]
+api = ["litellm>=1.40.0"]
+
 [project.scripts]
 mcp-sdd = "mcp_server.server:main_sync"
 

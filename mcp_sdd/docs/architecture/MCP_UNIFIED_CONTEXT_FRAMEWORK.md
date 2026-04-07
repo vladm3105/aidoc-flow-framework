@@ -1,22 +1,33 @@
-# UCX — Unified Context Framework
+# UCX — Unified Context eXcelerator
 
 > **Aliases**: `ucx`, `mcp_sdd`, `sdd-lifecycle`. Package directory: `mcp_sdd/`. The legacy `UCX_v1` archive is a historical predecessor, not the current system.
 
 | Field | Value |
 | --- | --- |
-| Canonical Name | UCX (Unified Context Framework) |
+| Canonical Name | UCX (Unified Context eXcelerator) |
 | Status | Active |
-| Version | 1.3 |
-| Date | 2026-04-05 |
-| Scope | UCX as canonical SDD unified-context runtime and documentation framework |
+| Version | 1.4 |
+| Date | 2026-04-07 |
+| Scope | AI agent orchestration platform — per-project context management, persona assembly, and executor pipelines for any AI agent |
 
 ---
 
 ## 1. Purpose
 
-Define MCP as the canonical runtime, contract, and documentation surface for SSD unified-context operations.
+UCX is an AI agent orchestration platform that creates and manages context for AI agents (Claude Code, Gemini CLI, GitHub Copilot, Codex, OpenRouter) in respect to each project's needs. It provides per-project customized personas, prompts, templates, and validation rules consumed uniformly by any agent through MCP tools or CLI.
+
+UCX serves as the unified wrapper for agent skills and prompts — skills are project-specific, not agent-specific. Any AI agent calls UCX to get the right context for a specific project.
 
 Implementation complexity: 3/5.
+
+### 1.1 Architecture Layers
+
+| Layer | Status | Purpose |
+| --- | --- | --- |
+| Context Engine | Active | Per-project personas, prompts, templates, layer assets |
+| Deterministic QA | Active | Validators, scoring, consistency checks, link validation |
+| Executor Registry | Active | Pluggable AI agents: Claude, Gemini, Codex, OpenRouter via CLI and API executors |
+| Workflows/Pipelines | Planned | Chained agent tasks for continuous development and automated bug fixing |
 
 ---
 
@@ -24,14 +35,16 @@ Implementation complexity: 3/5.
 
 In scope:
 
-- deterministic CLI orchestration for create, review, validate, validate-fix, remediate, remediate-fix, prescreen, scan, and scoring
+- deterministic CLI orchestration for create, review, validate, validate-fix, remediate, remediate --fix, prescreen, scan, scoring, and clean
 - project-local asset loading from `UCX`
 - schema-governed JSON/TXT artifact generation under `.ucx/<stage>`
 - operator runbook and policy controls under `mcp/docs`
+- per-project context assembly for any AI agent (agent-agnostic prompt delivery)
+- pluggable executor registry for CLI and API agents
 
 Out of scope:
 
-- autopilot orchestration loops
+- autopilot orchestration loops (planned for workflows/pipelines layer)
 - non-deterministic automatic content rewriting of source files
 - legacy archive runtime dependencies
 
@@ -44,7 +57,8 @@ Primary command groups:
 - create: `create-build`
 - review: `review-build`, `review`
 - validate: `validate`, `validate-fix`
-- remediation: `remediate`, `remediate-fix`
+- remediation: `remediate`, `remediate --fix`
+- maintenance: `clean`
 - diagnostics: `prescreen`, `scan`, `scoring`
 
 Primary implementation paths:
@@ -63,7 +77,7 @@ Primary implementation paths:
 
 ### 4.1 Project Isolation Model
 
-UCX uses a project isolation model for all AI skills assets. The framework provides canonical scaffold sources; each project receives independent copies at initialization time. The runtime operates exclusively with project-specific files.
+UCX uses a project isolation model for all AI skills assets. Skills are project-specific, not agent-specific — each project receives independent copies at initialization time. Any AI agent (Claude, Gemini, Copilot, Codex) calls UCX to get the right personas, prompts, and templates for that specific project. The runtime operates exclusively with project-specific files.
 
 **Initialization** (`sdd_init`):
 
@@ -141,7 +155,7 @@ Three MCP tools for inspecting and modifying project-specific persona-to-layer m
 
 ### 4.3 Prompt Assembly Pipeline
 
-LLM-dependent tools (`sdd_create`, `sdd_review`, `sdd_remediate_fix`) assemble prompts from multiple project-local sources:
+LLM-dependent tools (`sdd_create`, `sdd_review`, `sdd_remediate` with `fix=true`) assemble prompts from multiple project-local sources:
 
 1. **Persona files** — loaded from `{project}/UCX/skills/personas/{persona}.md` for each persona in the resolved list
 2. **Phase template** — loaded from `{project}/UCX/prompts/templates/{phase}/{template}.md`
@@ -153,14 +167,16 @@ During review, document sections are categorized (functional, compliance, risk, 
 
 ### 4.4 Executor Integration
 
-Assembled prompts can optionally be executed via registered executors:
+UCX's executor system is the key enabler for multi-agent support. Assembled prompts can be executed via registered executors, making UCX agent-agnostic:
 
-- **CLI executors**: External tools (Claude Code, Codex, Gemini) invoked via subprocess with the prompt passed as a positional argument
-- **API executors**: LLM API providers (Claude, GPT-4) invoked via LiteLLM (stub)
+- **CLI executors**: External tools (Claude Code, Codex, Gemini CLI, GitHub Copilot) invoked via subprocess with the prompt passed as a positional argument
+- **API executors**: LLM API providers (Claude, GPT-4, OpenRouter) invoked via LiteLLM. OpenRouter is a built-in executor with native support in the executor registry.
 
 All CLI executors use the same delivery mechanism: the prompt text is appended as a positional argument to the executor command. There is no stdin or file-based fallback.
 
-If no executor is specified, the tool returns the assembled prompt text for manual use.
+If no executor is specified, the tool returns the assembled prompt text for manual use by any agent or API call.
+
+Non-MCP agents access UCX via CLI parity: every MCP tool has a CLI equivalent (`python -m mcp_server.cli.main <command>`), so agents without MCP support can still use the context engine.
 
 ### 4.5 Default Project Resolution
 

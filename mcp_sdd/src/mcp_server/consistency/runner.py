@@ -75,6 +75,7 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
         path for path in candidates
         if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not re.search(r"_remediate_v\d+", path.stem)
         and "REPORT" not in path.name.upper()
         and "REVIEW" not in path.name.upper()
     ]
@@ -123,10 +124,17 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         validation_copy_md = folder / f"{stem}_validated.md"
         validation_copy = validation_copy_src if validation_copy_src.exists() else validation_copy_md
 
-        # Remediated copy: check same extension as source first, then .md fallback
-        remediated_copy_src = folder / f"{stem}_remediate_copy{src_ext}"
-        remediated_copy_md = folder / f"{stem}_remediate_copy.md"
-        remediated_copy = remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
+        # Remediated copy: prefer versioned (_remediate_v{N}), fallback to legacy _remediate_copy
+        _versioned_glob = sorted(
+            folder.glob(f"{stem}_remediate_v*{src_ext}"),
+            key=lambda p: int(m.group(1)) if (m := re.search(r"_remediate_v(\d+)", p.stem)) else 0,
+        )
+        if _versioned_glob:
+            remediated_copy = _versioned_glob[-1]  # highest version
+        else:
+            remediated_copy_src = folder / f"{stem}_remediate_copy{src_ext}"
+            remediated_copy_md = folder / f"{stem}_remediate_copy.md"
+            remediated_copy = remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
 
         review_reports = sorted(folder.glob("*_review_report_v*.md")) + sorted(folder.glob(f"{doc_id}.R_review_report_v*.md"))
         remediation_reports = sorted(folder.glob("*_remediation_report_v*.md")) + sorted(folder.glob(f"{doc_id}.F_fix_report_v*.md"))

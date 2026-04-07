@@ -8,7 +8,7 @@ from pathlib import Path
 # Pattern for SDD source artifacts: TYPE-NN_slug.ext
 _SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
-# Sub-framework code for mcp_sdd (UCX = Unified Context Framework)
+# Sub-framework code for mcp_sdd (UCX = Unified Context eXcelerator)
 UCX_SUB_CODE = "ucx"
 
 # Report naming patterns (PLAN-021)
@@ -24,11 +24,11 @@ REPORT_PATTERN = re.compile(
 )
 
 DERIVED_COPY_PATTERN = re.compile(
-    r"^[A-Z]+-\d+_.+_(?:validated|remediate_copy)\.(?:md|yaml|yml)$"
+    r"^[A-Z]+-\d+_.+_(?:validated|remediate_copy|remediate_v\d+)\.(?:md|yaml|yml)$"
 )
 
 # Stems and name substrings that mark derived / non-source files
-_DERIVED_STEMS = ("_validated", "_remediate_copy")
+_DERIVED_STEMS = ("_validated", "_remediate_copy", "_remediate_v")
 _EXCLUDED_NAMES = ("TEMPLATE", "REVIEW", "REPORT")
 
 

@@ -1,20 +1,20 @@
 # UCX Runtime Architecture
 
-> **UCX** (Unified Context Framework) — also known as `mcp_sdd` or `sdd-lifecycle`. See [README](../README.md) for naming context.
+> **UCX** (Unified Context eXcelerator) — also known as `mcp_sdd` or `sdd-lifecycle`. See [README](../README.md) for naming context.
 
 | Field | Value |
 | --- | --- |
-| Canonical Name | UCX (Unified Context Framework) |
+| Canonical Name | UCX (Unified Context eXcelerator) |
 | Status | Active |
-| Version | 1.4 |
-| Date | 2026-04-02 |
-| Scope | Implemented runtime architecture for create, review, validation, fix, remediation, and diagnostics operations |
+| Version | 1.5 |
+| Date | 2026-04-07 |
+| Scope | Implemented runtime architecture for create, review, validation, fix, remediation, and diagnostics operations. Agent-agnostic context assembly for any AI agent via MCP and CLI. |
 
 ---
 
 ## 1. Purpose
 
-Document implemented runtime architecture boundaries, component responsibilities, and execution flow.
+Document implemented runtime architecture boundaries, component responsibilities, and execution flow. UCX provides agent-agnostic context assembly — any AI agent (Claude, Gemini, Copilot, Codex, OpenRouter) calls UCX via MCP or CLI to get project-specific personas, prompts, and templates.
 
 Implementation complexity: 4/5.
 
@@ -27,7 +27,7 @@ In scope:
 - CLI command entrypoint behavior
 - Prompt assembly pipeline for creation and review
 - Script-based structural validation pipeline for document checks
-- Source-protected fix artifact generation (`validate-fix`, `remediate-fix`)
+- Source-protected fix artifact generation (`validate-fix`, `remediate --fix`)
 - Deterministic remediation planning (`remediate`)
 - Diagnostics command group (`prescreen`, `scan`, `scoring`)
 - Project UCX loading behavior
@@ -120,9 +120,9 @@ Document format support: The validation pipeline supports both `.md` and `.yaml`
 
 1. `validate-fix` generates `_validation` derived artifact(s) with source protection enabled.
 2. `remediate` generates deterministic findings and remediation report artifacts. Review findings are sorted by priority (P0→P1→P2) before the 50-finding cap. `recommended_action` text preserved up to 2000 chars.
-3. `remediate-fix` generates `_remediated` derived artifact(s) with source protection enabled. Executor prompt includes phased findings (P0/P1/P2), embedded document content (50K cap), and 6-step fix strategy with FWDREF handling and section ordering rules.
+3. `remediate --fix` (internally `sdd_remediate` with `fix=true`) generates `_remediated` derived artifact(s) with source protection enabled. The standalone `sdd_remediate_fix` MCP tool has been absorbed into `sdd_remediate`. An optional `remediation_report` parameter can supply a pre-existing report. Executor prompt includes phased findings (P0/P1/P2), embedded document content (50K cap), and 6-step fix strategy with FWDREF handling and section ordering rules.
 4. `verify_remediation_quality()` runs post-executor: detects cosmetic FWDREF renames, stub sections (<50 words), low content delta. Returns `quality_pass` flag in tool output under `remediation_quality`.
-5. In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after step 3 to catch regressions. Result under `post_remediation_verify`.
+5. In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after step 3 to catch regressions. Result under `post_remediation_verify`. The `clean_before` parameter on `sdd_run_lifecycle` triggers `sdd_clean` to prune obsolete stage artifacts before the pipeline starts.
 
 ### 4.6 diagnostics flow
 
