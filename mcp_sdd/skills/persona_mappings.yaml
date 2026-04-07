@@ -47,7 +47,7 @@ creation:
 
 review:
   brd:
-    personas: [architect, auditor, business_analyst, chaos_engineer, chairperson]
+    personas: [architect, auditor, business_analyst, chaos_engineer, fact_checker, chairperson]
     mode: sequential
   prd:
     personas: [architect, auditor, tech_lead, product_owner, chaos_engineer]

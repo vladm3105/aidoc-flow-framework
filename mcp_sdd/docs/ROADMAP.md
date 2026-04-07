@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.18.0 |
-| Latest Release | 1.18.0 (default project resolution — PLAN-027 Phase 2) |
-| Previous Release | 1.17.0 (project environment management — PLAN-027 Phase 1) |
+| Current Version | 1.20.0 |
+| Latest Release | 1.20.0 (review/remediation quality — PLAN-029) |
+| Previous Release | 1.19.0 (review YAML document support — PLAN-028) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -195,7 +195,7 @@ Planned scope:
 
 - Tier 1 (generic, all layers): Traceability ID existence validation (SDD-XS-001), readiness score plausibility check (SDD-XS-002), diagram registry presence (SDD-XS-003)
 - Tier 2 (BRD-specific): ADT decision propagation (BRD-XS-001), phase alignment (BRD-XS-002), entity consistency (BRD-XS-004), currency scope consistency (BRD-XS-005)
-- YAML document support in `sdd_validate` — validates `.yaml` BRDs alongside existing `.md` path
+- YAML document support in `sdd_validate` — validates `.yaml` BRDs alongside existing `.md` path (completed in v1.8.0; review pipeline YAML support delivered in v1.19.0)
 - BRD-TEMPLATE.yaml updates: `diagrams` section, `cross_section_rules` metadata
 - New BRD-MD-TEMPLATE.md for standardized YAML-to-MD rendering
 - DIAGRAM_STANDARDS.md: BRD required diagram list, DFD-L1 standardization
@@ -490,6 +490,60 @@ References:
 
 - PLAN-027 Phase 2 (default project resolution)
 - CHANGELOG/CHANGELOG_v1.18.0.md
+
+---
+
+### v1.19.0 - Review YAML Document Support
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-06 |
+| Scope | YAML document support in review pipeline document collection (PLAN-028) |
+
+Delivered scope:
+
+- Review pipeline document collection extended to `.yaml` and `.yml` files alongside `.md`
+- YAML-first precedence: when both `.yaml` and `.md` canonical sources exist, YAML wins
+- `_LEGACY.md` files excluded from candidate list (prevents multi-match failures)
+- Appendix detection simplified to name-based matching only (removed `.18[_.]` fallback)
+- Function renames: `_list_review_markdown_candidates` → `_list_review_document_candidates`, `_collect_review_markdown_files` → `_collect_review_document_files`
+- 16 new tests (353 total)
+
+References:
+
+- plans/PLAN-028_review_yaml_document_support.md
+- CHANGELOG/CHANGELOG_v1.19.0.md
+
+---
+
+### v1.20.0 - Review/Remediation Pipeline Quality
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-06 |
+| Scope | Review accuracy improvements, remediation prompt enrichment, post-fix quality gates (PLAN-029) |
+
+Delivered scope:
+
+- Remediate-fix prompt: 4-line generic → 6-step fix strategy with FWDREF handling, section ordering, substantive content rules
+- Document content embedding in remediate-fix prompt (50K char cap)
+- Phased finding groups (P0→P1→P2) in executor prompt
+- Priority-sorted 50-finding cap (P0 never dropped)
+- `recommended_action` truncation increased from 300 to 2000 chars
+- `fact_checker` persona added to default BRD review sequence (catches scope misunderstandings)
+- Auditor: APPLICABILITY CHECK guard — verifies regulation relevance before P0 classification
+- Chairperson: Applicability Veto (4th synthesis principle) — excludes out-of-scope findings from scoring
+- Post-fix validation: auto-run `sdd_validate` on derived copy after `remediate_fix` in pipeline
+- New `verify_remediation_quality()` function: detects cosmetic FWDREF renames, stub sections, low content delta
+
+References:
+
+- plans/PLAN-029_review_remediation_quality.md
+- CHANGELOG/CHANGELOG_v1.20.0.md
 
 ---
 

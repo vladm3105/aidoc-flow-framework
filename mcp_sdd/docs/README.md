@@ -11,7 +11,7 @@
 | MCP Server Name | `sdd-lifecycle` |
 | Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | Active |
-| Version | 1.18.0 |
+| Version | 1.20.0 |
 | Date | 2026-04-06 |
 | Timezone | America/New_York |
 
@@ -163,9 +163,13 @@ LLM-dependent tools assemble prompts from: persona files + phase template + acti
 - [PLAN-019 Remediation Build Enhancement](plans/PLAN-019_remediation_build_enhancement.md)
 - [PLAN-020 UCX Root Relocation](plans/PLAN-020_ucx_root_relocation.md)
 - [PLAN-021 SDD Reporting Naming Standard](plans/PLAN-021_sdd_reporting_naming_standard.md)
+- [PLAN-028 Review YAML Document Support](plans/PLAN-028_review_yaml_document_support.md)
 
 ## 8. Changelog
 
+- [CHANGELOG v1.19.0](CHANGELOG/CHANGELOG_v1.19.0.md) — review YAML document support (PLAN-028)
+- [CHANGELOG v1.18.0](CHANGELOG/CHANGELOG_v1.18.0.md) — default project resolution (PLAN-027 Phase 2)
+- [CHANGELOG v1.17.0](CHANGELOG/CHANGELOG_v1.17.0.md) — project environment management (PLAN-027 Phase 1)
 - [CHANGELOG v1.16.0](CHANGELOG/CHANGELOG_v1.16.0.md) — persona management tools, sdd_init --update, BRD executive_summary optional
 - [CHANGELOG v1.15.0](CHANGELOG/CHANGELOG_v1.15.0.md) — persona optimization (PLAN-024, PLAN-025)
 - [CHANGELOG v1.14.0](CHANGELOG/CHANGELOG_v1.14.0.md) — executor simplification + PLAN-021 naming compliance

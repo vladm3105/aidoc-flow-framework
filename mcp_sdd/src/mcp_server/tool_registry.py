@@ -1063,9 +1063,26 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=output_dir,
         )
         det_result = _serialize_result(result)
-        return await _maybe_run_executor(
+        exec_response = await _maybe_run_executor(
             arguments, result.report_text, det_result, working_dir=project_root,
         )
+
+        # Post-executor quality check: compare original vs remediated
+        derived_paths = det_result.get("derived_paths", [])
+        if derived_paths and document_path:
+            from mcp_server.remediation.runner import verify_remediation_quality
+            from pathlib import Path as _P
+            derived_p = _P(derived_paths[0])
+            if derived_p.exists():
+                finding_count = len(det_result.get("findings", []))
+                quality = verify_remediation_quality(
+                    original_path=document_path,
+                    remediated_path=derived_p,
+                    finding_count=finding_count,
+                )
+                exec_response["remediation_quality"] = quality
+
+        return exec_response
 
     raise ValueError(f"Unknown tool: {name}")
 
@@ -1109,6 +1126,25 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
                 results["_stopped_at"] = stage
                 results["_reason"] = "Stage failed"
                 break
+
+            # Post-fix verification: auto-validate derived copy after remediate_fix
+            if stage == "remediate_fix":
+                derived_paths = stage_result.get("derived_paths", [])
+                if derived_paths:
+                    verify_args = {
+                        k: v for k, v in stage_args.items()
+                        if k in ("project", "doc_type", "layer")
+                    }
+                    verify_args["document"] = derived_paths[0]
+                    try:
+                        verify_result = await _dispatch("sdd_validate", verify_args)
+                        results["post_remediation_verify"] = verify_result
+                    except Exception as ve:
+                        results["post_remediation_verify"] = {
+                            "error": str(ve),
+                            "note": "Post-fix validation failed but remediate_fix output is still available",
+                        }
+
         except Exception as e:
             results[stage] = {"error": str(e)}
             results["_stopped_at"] = stage

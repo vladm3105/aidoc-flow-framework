@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.5 |
-| Date | 2026-04-05 |
+| Version | 1.6 |
+| Date | 2026-04-06 |
 | Scope | Implemented command contracts in `mcp_sdd/src/mcp_server/cli/main.py` |
 
 ---
@@ -21,12 +21,12 @@
 | get-project | (none) | (none) | resolved default project from `SDD_DEFAULT_PROJECT` env var |
 | create-build | --project --doc-type --layer --template | --personas --sections-json --out | creation prompt artifacts (`creation_prompt.md`, `creation_sidecar.json`) |
 | create | --project --doc-type --layer --template --target | --personas --sections-json --overwrite --out | final document artifact + creation diagnostics |
-| review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary |
+| review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts and control summary. Document mode supports `.md`, `.yaml`, `.yml` files with YAML-first precedence. |
 | review | same as review-build | same as review-build | alias for review-build |
 | validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | validate-fix | --project --doc-type --layer --document | --validation-report --out | **DEPRECATED** — alias for `validate`. Use `validate` instead. When validation errors are found, `validate` produces the `_validated` derived copy and fix report automatically. |
 | remediate | --project --doc-type --layer --document | --review-report --out | remediation report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
-| remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), plus apply report |
+| remediate-fix | --project --doc-type --layer --document | --remediation-report --out | `TYPE-NN_{slug}_remediated.md` derived copy (canonical base name), apply report, plus `remediation_quality` metrics (FWDREF rename detection, stub section detection, content delta). In pipeline mode, auto-validates derived copy post-fix. |
 | prescreen | --document | --out | prescreen candidate report |
 | consistency | --target | --format {text,json} --out | artifact lineage and stage-consistency report. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | preflight | --project | --context {create,review,remediate,any} --document --format {text,json} --out | runtime and environment readiness report |
@@ -80,7 +80,7 @@ When `--document` points to a folder, MCP resolves the target artifact as follow
 
 | Command | Resolution |
 | --- | --- |
-| `validate`, `remediate` | Find single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validated` or `_remediated` suffix — use as source. Fall back to full folder set if no unique match. |
+| `validate`, `remediate` | Find single file matching `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` with no `_validated` or `_remediated` suffix — use as source. Fall back to full folder set if no unique match. |
 | `remediate-fix` | Find single file matching `^[A-Z]+-\d+_.+_validated\.md$` — use as `_validated` copy input. Fall back to full folder set if no unique match. |
 
 When `validate --document` points to a markdown file, MCP applies canonical source redirection across all layers:
@@ -140,8 +140,10 @@ Validation target resolution:
 
 Review source resolution (`review-build`/`review` with `--document`):
 
-- Canonical main source is selected first when uniquely identifiable (`TYPE-NN_{slug}.md`).
-- Appendix files are then included using filename signals (`appendix`, `appendices`, `.18_`, `.18.`, `.19_`, `.19.`).
+- Document collection scans for `.md`, `.yaml`, and `.yml` files. Legacy files (`_LEGACY` in stem) are excluded.
+- Canonical main source is identified by matching `^[A-Z]+-\d+_.+\.(md|yaml|yml)$`, excluding appendix files.
+- YAML-first precedence: when both `.yaml` and `.md` canonical sources exist, `.yaml` is selected.
+- Appendix files are included using filename signals (`appendix`, `appendices` in name).
 - Existing `--sections-json` mode remains supported for explicit section payload workflows.
 
 JSON status payload fields:

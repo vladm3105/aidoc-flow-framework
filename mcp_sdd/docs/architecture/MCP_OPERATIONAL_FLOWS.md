@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 1.8 |
-| Date | 2026-04-05 |
+| Version | 1.9 |
+| Date | 2026-04-06 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
@@ -215,6 +215,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 - Each persona receives only the document sections mapped to its domain categories.
 - LLM-based content and cross-layer compliance review.
 - Report is versioned; repeated runs do not overwrite prior results.
+- In `--document` folder mode, the review pipeline collects `.md`, `.yaml`, and `.yml` files. YAML-first precedence applies when both `.yaml` and `.md` canonical sources exist. Legacy (`_LEGACY`) files are excluded. Appendix files are detected by name (`appendix`/`appendices`).
 
 ---
 
@@ -248,6 +249,15 @@ Each stage reads from the previous stage's output artifact. The source document 
 - Source and `_validated` copy are not modified.
 - `processing_stage: remediated` in derived copy metadata.
 - `derived_from: TYPE-NN_{slug}_validated.md` in derived copy metadata.
+
+**Executor prompt (v1.20.0+)**:
+- Findings are grouped by priority phase: Phase 1 (P0 critical), Phase 2 (P1 high), Phase 3 (P2 enhancements).
+- Derived copy content is embedded in the prompt (capped at 50K chars) so the executor has full document context.
+- Fix strategy includes: FWDREF placeholder handling, section ordering preservation, substantive content requirements, and verification guidance.
+
+**Post-fix quality checks (v1.20.0+)**:
+- `verify_remediation_quality()` runs automatically after executor completes: detects cosmetic FWDREF renames, stub sections (<50 words), and low content delta. Returns `quality_pass: true/false`.
+- In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after `remediate_fix` to catch regressions.
 
 ---
 
@@ -291,7 +301,8 @@ When `--document` points to a folder, MCP applies the following resolution rules
 
 | Stage | Resolution rule |
 | --- | --- |
-| validate | Locate single file matching `^[A-Z]+-\d+_.+\.md$` with no `_validated` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
+| validate | Locate single file matching `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` with no `_validated` or `_remediated` stem suffix; use it as the source. Fall back to full folder set if no unique match. |
+| review | Collect all `.md`, `.yaml`, `.yml` files (excluding `_LEGACY`, `REVIEW`, `REPORT`, `_validated`, `_remediate_copy` stems). Identify canonical source via `^[A-Z]+-\d+_.+\.(md\|yaml\|yml)$` (excluding appendix files). YAML-first precedence when both formats exist. Append appendix files (detected by `appendix`/`appendices` in filename). |
 | remediate | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
 | remediate-fix | Locate single file matching `^[A-Z]+-\d+_.+_validated\.md$`; use it as the `_validated` input. Fall back to full folder set if no unique match. |
 

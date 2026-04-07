@@ -36,6 +36,7 @@ Provide the semantic completion described in "Task", then remove the marker.
 1. **De-Duplication**: Multiple experts might flag the same issue (e.g., Architect and Operator both complaining about a single point of failure). Combine them into one cohesive finding or fix.
 2. **Priority Escalation**: Certain findings override others based on document type (e.g. UX findings are P0 for PRDs, Security findings are P0 for ADRs).
 3. **Conflict Resolution**: If the Tech Lead says a feature is too complex, but the Product Owner says it's mission critical, your synthesis must acknowledge the trade-off explicitly and demand a specific decision from the human project sponsor.
+4. **Applicability Veto**: Before including a finding in the final score, verify it is within the document's declared scope and domain. If a finding flags a missing regulation or framework that the document explicitly states is out of scope, delegated to another document, or not applicable to the system's domain, EXCLUDE it from the score calculation. List vetoed findings separately in the manifest under `out_of_scope_findings` with rationale for exclusion.
 
 ## The Format Rule
 - Adhere strictly to the requested output layout (review report or remediation report).

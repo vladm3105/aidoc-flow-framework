@@ -181,7 +181,7 @@ def _parse_section4(text: str) -> list[ReviewFinding]:
             message=message,
             section=section,
             source_expert=source,
-            recommended_action=_clean_text(m.group(5)),
+            recommended_action=_clean_text(m.group(5), max_len=2000),
         ))
     return findings
 
@@ -221,7 +221,7 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
                 message=message,
                 section=section,
                 source_expert=source,
-                recommended_action=_clean_text(m.group(2)),
+                recommended_action=_clean_text(m.group(2), max_len=2000),
             ))
     return findings
 

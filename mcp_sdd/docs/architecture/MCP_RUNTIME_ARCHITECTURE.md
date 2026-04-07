@@ -98,7 +98,7 @@ Implemented behavior note:
 1. CLI parses review-build arguments.
 2. Runtime resolves personas using 2-tier priority (explicit `personas` parameter or `persona_mappings.yaml` lookup by `(doc_type, review)`).
 3. Runtime resolves one review source mode: sections-json payload or document auto-loading.
-4. In document mode, runtime builds SourceSection objects from canonical main artifact plus appendix artifacts in the target folder.
+4. In document mode, runtime builds SourceSection objects from canonical main artifact plus appendix artifacts in the target folder. Document collection supports `.md`, `.yaml`, and `.yml` files. YAML-first precedence applies when both formats exist for the same canonical source. Legacy (`_LEGACY`) files are excluded from candidate lists.
 5. Runner invokes assemble_project_review_prompt with the resolved persona list. Each persona receives sections mapped to its domain categories.
 6. Prompt bundle is validated and inspection output generated.
 7. If output directory provided, review artifacts are written.
@@ -119,8 +119,10 @@ Document format support: The validation pipeline supports both `.md` and `.yaml`
 ### 4.5 fix and remediation flow
 
 1. `validate-fix` generates `_validation` derived artifact(s) with source protection enabled.
-2. `remediate` generates deterministic findings and remediation report artifacts.
-3. `remediate-fix` generates `_remediated` derived artifact(s) with source protection enabled.
+2. `remediate` generates deterministic findings and remediation report artifacts. Review findings are sorted by priority (P0→P1→P2) before the 50-finding cap. `recommended_action` text preserved up to 2000 chars.
+3. `remediate-fix` generates `_remediated` derived artifact(s) with source protection enabled. Executor prompt includes phased findings (P0/P1/P2), embedded document content (50K cap), and 6-step fix strategy with FWDREF handling and section ordering rules.
+4. `verify_remediation_quality()` runs post-executor: detects cosmetic FWDREF renames, stub sections (<50 words), low content delta. Returns `quality_pass` flag in tool output under `remediation_quality`.
+5. In pipeline mode (`sdd_run_lifecycle`), `sdd_validate` auto-runs on the derived copy after step 3 to catch regressions. Result under `post_remediation_verify`.
 
 ### 4.6 diagnostics flow
 

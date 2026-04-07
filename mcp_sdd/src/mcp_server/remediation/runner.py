@@ -322,33 +322,190 @@ def _build_remediate_fix_prompt(
 
     findings = remediation_data.get("findings", [])
     if findings:
-        lines.append(f"## Remediation Findings ({len(findings)})")
-        lines.append("")
+        # Group findings by priority for phased execution
+        grouped: dict[str, list[dict]] = {"P0": [], "P1": [], "P2": []}
         for finding in findings:
             if not isinstance(finding, dict):
                 continue
-            severity = finding.get("severity", "unknown")
-            message = finding.get("message", "")
-            action = finding.get("recommended_action", "")
-            file_path = finding.get("file_path", "")
-            lines.append(f"- [{severity}] {message}")
-            if action:
-                lines.append(f"  Action: {action}")
-            if file_path:
-                lines.append(f"  File: {file_path}")
+            priority = finding.get("priority", "P2")
+            bucket = priority if priority in grouped else "P2"
+            grouped[bucket].append(finding)
+
+        lines.append(f"## Remediation Findings ({len(findings)} total)")
         lines.append("")
+
+        phase_labels = [
+            ("P0", "Phase 1: Critical Fixes (Apply First)"),
+            ("P1", "Phase 2: High Priority Fixes"),
+            ("P2", "Phase 3: Enhancements (Apply If Time Permits)"),
+        ]
+        for priority_key, phase_label in phase_labels:
+            phase_findings = grouped[priority_key]
+            if not phase_findings:
+                continue
+            lines.append(f"### {phase_label} ({len(phase_findings)})")
+            lines.append("")
+            for finding in phase_findings:
+                severity = finding.get("severity", "unknown")
+                message = finding.get("message", "")
+                action = finding.get("recommended_action", "")
+                file_path = finding.get("file_path", "")
+                lines.append(f"- [{priority_key}/{severity}] {message}")
+                if action:
+                    lines.append(f"  Action: {action}")
+                if file_path:
+                    lines.append(f"  File: {file_path}")
+            lines.append("")
+
+    # Embed derived file content so executor has full context
+    _MAX_EMBED_CHARS = 50_000
+    if isinstance(derived, list) and derived:
+        lines.append("## Current Document Content")
+        lines.append("")
+        for path_str in derived:
+            p = Path(str(path_str))
+            if p.exists() and p.is_file():
+                try:
+                    content = p.read_text(encoding="utf-8")
+                    lines.append(f"### File: `{p.name}`")
+                    lines.append("```yaml")
+                    if len(content) > _MAX_EMBED_CHARS:
+                        lines.append(content[:_MAX_EMBED_CHARS])
+                        lines.append(f"... (truncated at {_MAX_EMBED_CHARS} chars)")
+                    else:
+                        lines.append(content)
+                    lines.append("```")
+                    lines.append("")
+                except OSError:
+                    pass
 
     lines.append("## Instructions")
     lines.append("")
     lines.append(
         "Fix the findings listed above in the derived copy file(s). "
-        "Do NOT modify the original source document or the validation copy. "
-        "Read the derived file, identify the root cause of each finding, "
-        "and apply targeted edits to resolve each issue."
+        "Do NOT modify the original source document or the validation copy."
+    )
+    lines.append("")
+    lines.append("### Fix Strategy")
+    lines.append("")
+    lines.append(
+        "1. **Read the derived file first** to understand existing document "
+        "structure, section ordering, and content already present. Many "
+        "findings may reference content that already exists in a different "
+        "section or phrasing — verify before adding duplicate content."
+    )
+    lines.append(
+        "2. **FWDREF-DEFERRED / FWDREF placeholders**: These mark content "
+        "deferred to a downstream layer (e.g., PRD). Do NOT rename "
+        "'FWDREF-DEFERRED' to 'FWDREF' without adding the actual "
+        "substantive content the placeholder represents. Renaming a "
+        "placeholder token is NOT a fix — either replace with real "
+        "content or leave unchanged."
+    )
+    lines.append(
+        "3. **New sections** added to address findings MUST contain "
+        "substantive content — minimum 3 paragraphs or a detailed table "
+        "with specific, actionable items. Stub sections with only a "
+        "header and 1-2 bullet points are not acceptable."
+    )
+    lines.append(
+        "4. **Preserve section ordering**. Insert new sections at the "
+        "correct sequential position (e.g., 9.5 goes after 9.4, not "
+        "before it). Do NOT reorder existing sections."
+    )
+    lines.append(
+        "5. **For each finding**, confirm the fix addresses the EXACT "
+        "gap identified — not a symptom or a superficial rewording. "
+        "Re-read the finding after applying the fix to verify."
+    )
+    lines.append(
+        "6. **Do NOT introduce new validation errors**. After all edits, "
+        "the derived file should remain valid YAML (if applicable) with "
+        "no broken references, orphaned sections, or malformed tables."
     )
     lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
+
+
+def verify_remediation_quality(
+    original_path: Path,
+    remediated_path: Path,
+    finding_count: int = 0,
+) -> dict[str, object]:
+    """Deterministic quality check comparing original vs remediated document.
+
+    Detects cosmetic-only changes, stub sections, and FWDREF renames without
+    content. Returns a quality report dict. No LLM call needed.
+    """
+    issues: list[str] = []
+
+    if not original_path.exists() or not remediated_path.exists():
+        return {"error": "One or both files do not exist", "issues": []}
+
+    original = original_path.read_text(encoding="utf-8")
+    remediated = remediated_path.read_text(encoding="utf-8")
+
+    orig_words = len(original.split())
+    rem_words = len(remediated.split())
+    word_delta = rem_words - orig_words
+
+    # 1. Check for suspiciously low content delta given finding count
+    if finding_count > 3 and word_delta < finding_count * 10:
+        issues.append(
+            f"Low content delta: {word_delta} words added for {finding_count} findings "
+            f"(expected ≥{finding_count * 10}). Findings may not be substantively addressed."
+        )
+
+    # 2. Detect FWDREF-DEFERRED → FWDREF rename without content change
+    import re as _re
+    orig_deferred = len(_re.findall(r"FWDREF-DEFERRED", original))
+    rem_deferred = len(_re.findall(r"FWDREF-DEFERRED", remediated))
+    rem_fwdref = len(_re.findall(r"FWDREF(?!-DEFERRED)", remediated))
+    orig_fwdref = len(_re.findall(r"FWDREF(?!-DEFERRED)", original))
+    renamed_count = orig_deferred - rem_deferred
+    if renamed_count > 0:
+        # Check if net FWDREF count grew by same amount (pure rename)
+        new_fwdref = rem_fwdref - orig_fwdref
+        if new_fwdref >= renamed_count * 0.8:
+            issues.append(
+                f"Cosmetic FWDREF rename: {renamed_count} FWDREF-DEFERRED tokens removed, "
+                f"{new_fwdref} FWDREF tokens added. Likely renamed without adding content."
+            )
+
+    # 3. Detect stub sections (new headers with <50 words before next header)
+    orig_lines = original.splitlines()
+    rem_lines = remediated.splitlines()
+    orig_headers = {line.strip() for line in orig_lines if _re.match(r"\s*##\s+", line)}
+    new_headers = []
+    for i, line in enumerate(rem_lines):
+        stripped = line.strip()
+        if _re.match(r"##\s+", stripped) and stripped not in orig_headers:
+            # Count words until next header
+            content_words = 0
+            for j in range(i + 1, min(i + 50, len(rem_lines))):
+                next_line = rem_lines[j].strip()
+                if _re.match(r"##\s+", next_line):
+                    break
+                content_words += len(next_line.split())
+            if content_words < 50:
+                new_headers.append((stripped, content_words))
+
+    if new_headers:
+        for header, wc in new_headers:
+            issues.append(
+                f"Stub section: '{header}' has only {wc} words of content (minimum 50 expected)."
+            )
+
+    return {
+        "original_words": orig_words,
+        "remediated_words": rem_words,
+        "word_delta": word_delta,
+        "fwdref_deferred_removed": renamed_count if orig_deferred > 0 else 0,
+        "finding_count": finding_count,
+        "issues": issues,
+        "quality_pass": len(issues) == 0,
+    }
 
 
 def _get_required_yaml_keys(doc_type: str) -> list[str]:
@@ -517,7 +674,14 @@ def run_remediation_build(
         review_summary, review_findings = parse_review_report(review_report)
 
         if review_findings:
-            capped = review_findings[:50]
+            # Priority-aware cap: include all P0s first, then P1s, then P2s
+            _MAX_REVIEW_FINDINGS = 50
+            _priority_order = {"P0": 0, "P1": 1, "P2": 2}
+            sorted_findings = sorted(
+                review_findings,
+                key=lambda rf: _priority_order.get(rf.priority, 2),
+            )
+            capped = sorted_findings[:_MAX_REVIEW_FINDINGS]
             for rf in capped:
                 findings.append(
                     _build_finding_entry(
@@ -532,7 +696,8 @@ def run_remediation_build(
                         action_ids=action_ids,
                     )
                 )
-            if len(review_findings) > 50:
+            if len(review_findings) > _MAX_REVIEW_FINDINGS:
+                overflow = len(review_findings) - _MAX_REVIEW_FINDINGS
                 findings.append(
                     _build_finding_entry(
                         file_path=str(review_report),
@@ -540,7 +705,11 @@ def run_remediation_build(
                         layer=layer,
                         category="review_finding_overflow",
                         severity="tier2",
-                        message=f"{len(review_findings) - 50} additional review findings not shown (see review report)",
+                        message=(
+                            f"{overflow} additional review findings not shown "
+                            f"(total: {len(review_findings)}, showing top {_MAX_REVIEW_FINDINGS} by priority). "
+                            f"Re-run sdd_remediate after fixing these to surface remaining findings."
+                        ),
                         recommended_action="review_full_report",
                         finding_ids=finding_ids,
                         action_ids=action_ids,

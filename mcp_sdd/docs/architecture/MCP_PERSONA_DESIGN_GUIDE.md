@@ -119,8 +119,8 @@ The `PERSONA_CATEGORY_MAP` defines 15 personas. All personas are registered in t
 | `integration_lead` | Contract boundaries and dependency impacts | integration | IL |
 | `product_owner` | MVP scope, user personas | functional | PO |
 | `business_analyst` | Requirements, traceability | functional | BA |
-| `fact_checker` | Cross-validation, accuracy | quality | FC |
-| `chairperson` | Synthesis, scoring, final recommendation | quality | REM |
+| `fact_checker` | Cross-validation, accuracy, scope-mismatch detection | quality | FC |
+| `chairperson` | Synthesis, scoring, final recommendation, applicability veto | quality | REM |
 | `qa_lead` | Testability, BDD, verification | quality | QA |
 | `requirements_specialist` | EARS and REQ formal requirements | functional | RS |
 | `ux_strategist` | PRD and UX-focused requirements | functional | UX |
@@ -129,6 +129,16 @@ The `PERSONA_CATEGORY_MAP` defines 15 personas. All personas are registered in t
 ### 4.2 Remediation Adaptive Loading
 
 During remediation, personas use `loading: adaptive` semantics. Domain personas are loaded only when review findings match their registered categories. This prevents loading irrelevant persona context for remediation runs where a persona's category has no findings.
+
+### 4.3 Applicability Controls (v1.20.0+)
+
+Three personas contribute to regulatory applicability filtering during review:
+
+1. **Auditor** — APPLICABILITY CHECK: verifies regulation is relevant to the document's stated domain before flagging as P0. Out-of-scope regulations classified as P1 "Scope Gap".
+2. **Fact Checker** — detects scope misunderstandings where findings flag requirements inapplicable to the document's domain. Added to default BRD review sequence in v1.20.0.
+3. **Chairperson** — Applicability Veto (synthesis principle #4): excludes out-of-scope findings from score calculation. Vetoed findings listed separately in manifest under `out_of_scope_findings`.
+
+This layered approach reduces false-positive P0 findings from generic regulatory frameworks being applied to documents where those regulations are not in scope.
 
 ## 5. Persona Output Contract
 
