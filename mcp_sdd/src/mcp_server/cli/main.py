@@ -301,8 +301,16 @@ def _write_review_controls_artifact(output_dir: Path, args: argparse.Namespace) 
     return controls_path
 
 
-def _list_review_markdown_candidates(document_dir: Path) -> list[Path]:
-    candidates = sorted(document_dir.glob("*.md"))
+_CANONICAL_SOURCE_RE = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
+_REVIEW_SOURCE_EXTENSIONS = {".md", ".yaml", ".yml"}
+
+
+def _list_review_document_candidates(document_dir: Path) -> list[Path]:
+    candidates = sorted(
+        list(document_dir.glob("*.md"))
+        + list(document_dir.glob("*.yaml"))
+        + list(document_dir.glob("*.yml"))
+    )
     return [
         path
         for path in candidates
@@ -310,38 +318,44 @@ def _list_review_markdown_candidates(document_dir: Path) -> list[Path]:
         and "REPORT" not in path.name.upper()
         and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and "_LEGACY" not in path.stem
     ]
 
 
 def _find_canonical_source(document_dir: Path) -> Path | None:
     source_artifacts = [
         path
-        for path in _list_review_markdown_candidates(document_dir)
-        if re.match(r"^[A-Z]+-\d+_.+\.md$", path.name)
+        for path in _list_review_document_candidates(document_dir)
+        if _CANONICAL_SOURCE_RE.match(path.name)
+        and not re.search(r"(appendix|appendices)", path.name, re.IGNORECASE)
     ]
     if len(source_artifacts) == 1:
         return source_artifacts[0]
+    if len(source_artifacts) > 1:
+        yaml_sources = [p for p in source_artifacts if p.suffix.lower() in {".yaml", ".yml"}]
+        if len(yaml_sources) == 1:
+            return yaml_sources[0]
     return None
 
 
-def _collect_review_markdown_files(document_path: Path) -> list[Path]:
+def _collect_review_document_files(document_path: Path) -> list[Path]:
     document_dir = document_path if document_path.is_dir() else document_path.parent
-    candidates = _list_review_markdown_candidates(document_dir)
-    if not candidates and document_path.is_file() and document_path.suffix.lower() == ".md":
+    candidates = _list_review_document_candidates(document_dir)
+    if not candidates and document_path.is_file() and document_path.suffix.lower() in _REVIEW_SOURCE_EXTENSIONS:
         return [document_path]
 
     selected: list[Path] = []
     canonical_source = _find_canonical_source(document_dir)
     if canonical_source is not None:
         selected.append(canonical_source)
-    elif document_path.is_file() and document_path.suffix.lower() == ".md":
+    elif document_path.is_file() and document_path.suffix.lower() in _REVIEW_SOURCE_EXTENSIONS:
         selected.append(document_path)
 
     appendix_files = [
         path
         for path in candidates
         if path not in selected
-        and re.search(r"(appendix|appendices|\.18[_.])", path.name, re.IGNORECASE)
+        and re.search(r"(appendix|appendices)", path.name, re.IGNORECASE)
     ]
     selected.extend(appendix_files)
 
@@ -351,7 +365,7 @@ def _collect_review_markdown_files(document_path: Path) -> list[Path]:
 
 
 def _build_review_sections_from_document(document_path: Path) -> tuple[list[SourceSection], list[Path]]:
-    files = _collect_review_markdown_files(document_path)
+    files = _collect_review_document_files(document_path)
     sections = [
         SourceSection(
             section_id=path.stem,

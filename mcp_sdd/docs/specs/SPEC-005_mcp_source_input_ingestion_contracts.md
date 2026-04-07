@@ -67,8 +67,14 @@ Constraint:
 ### 4.2 review-build
 
 Normative behavior:
-- sections-json is required.
-- command must fail if sections-json is missing.
+- One of sections-json or document is required.
+- If sections-json is provided, it takes precedence.
+- If document is provided (folder or file), the review pipeline collects source files automatically:
+  - Supported extensions: `.md`, `.yaml`, `.yml`.
+  - Canonical source identified by `^[A-Z]+-\d+_.+\.(md|yaml|yml)$` (excluding appendix files).
+  - YAML-first precedence: when both `.yaml` and `.md` canonical sources exist in the same folder, `.yaml` is selected.
+  - Legacy files (`_LEGACY` in stem) are excluded from candidate lists.
+  - Appendix files are included by name signal (`appendix`/`appendices`).
 
 ---
 
