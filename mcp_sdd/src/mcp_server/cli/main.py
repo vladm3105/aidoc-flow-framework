@@ -164,6 +164,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional output directory; defaults to <document_dir>/.ucx/remediation",
     )
+    remediate_parser.add_argument(
+        "--fix",
+        action="store_true",
+        default=False,
+        help="Auto-chain into remediate-fix after findings",
+    )
 
     remediate_fix_parser = subparsers.add_parser(
         "remediate-fix",
@@ -318,6 +324,7 @@ def _list_review_document_candidates(document_dir: Path) -> list[Path]:
         and "REPORT" not in path.name.upper()
         and "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
+        and not re.search(r"_remediate_v\d+", path.stem)
         and "_LEGACY" not in path.stem
     ]
 
@@ -756,6 +763,24 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(f"Remediation report generated at {remediation_result.report_path}")
         print(f"Remediation summary generated at {remediation_result.summary_path}")
+
+        if args.fix:
+            from mcp_server.remediation import run_remediate_fix_build as _run_fix_build
+            try:
+                fix_result = _run_fix_build(
+                    project_root=project_root,
+                    doc_type=args.doc_type,
+                    layer=args.layer,
+                    document_path=document_path,
+                    remediation_report=remediation_result.report_path,
+                    output_dir=output_dir,
+                )
+            except (FileNotFoundError, ValueError) as exc:
+                print(f"remediate --fix chain failed: {exc}")
+                return 1
+            print(f"Remediate-fix report generated at {fix_result.report_path}")
+            print(f"Derived artifacts created: {len(fix_result.derived_paths)}")
+
         return 0
 
     if args.command == "remediate-fix":
@@ -912,6 +937,10 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"Keys ({result['env_key_count']}): {', '.join(result['env_keys'])}")
                 if result.get("blocked_vars"):
                     print(f"Blocked system vars: {', '.join(result['blocked_vars'])}")
+                if result.get("api_keys_present"):
+                    print(f"API keys present: {', '.join(result['api_keys_present'])}")
+                if result.get("ucx_executor_overrides"):
+                    print(f"UCX executor overrides: {', '.join(result['ucx_executor_overrides'].keys())}")
                 if result.get("parse_error"):
                     print("Warning: .env file has parse errors")
         return 0

@@ -15,6 +15,7 @@ if str(SRC) not in sys.path:
 import pytest
 
 from mcp_server.project_context import (
+    ProjectContext,
     clear_session_project,
     get_session_project,
     resolve_project,
@@ -125,6 +126,52 @@ class TestSetSessionProject:
         missing = tmp_path / "nope"
         with pytest.raises(ValueError, match="not a directory"):
             set_session_project(missing)
+
+
+class TestProjectContext:
+    def test_resolve_none_returns_none(self) -> None:
+        assert ProjectContext.resolve(None) is None
+
+    def test_resolve_empty_string_returns_none(self) -> None:
+        assert ProjectContext.resolve("") is None
+
+    def test_resolve_returns_context(self, tmp_path: Path) -> None:
+        ctx = ProjectContext.resolve(str(tmp_path))
+        assert ctx is not None
+        assert ctx.project_root == tmp_path
+        assert isinstance(ctx.project_env, dict)
+        assert isinstance(ctx.executor_overrides, dict)
+
+    def test_context_is_frozen(self, tmp_path: Path) -> None:
+        ctx = ProjectContext.resolve(str(tmp_path))
+        with pytest.raises(AttributeError):
+            ctx.project_root = tmp_path / "other"  # type: ignore[misc]
+
+    def test_missing_env_returns_empty_dict(self, tmp_path: Path) -> None:
+        ctx = ProjectContext.resolve(str(tmp_path))
+        assert ctx.project_env == {}
+
+    def test_missing_executors_json_returns_empty_dict(self, tmp_path: Path) -> None:
+        ctx = ProjectContext.resolve(str(tmp_path))
+        assert ctx.executor_overrides == {}
+
+    def test_loads_project_env(self, tmp_path: Path) -> None:
+        env_file = tmp_path / ".env"
+        env_file.write_text("MY_VAR=hello\n")
+        ctx = ProjectContext.resolve(str(tmp_path))
+        assert ctx.project_env.get("MY_VAR") == "hello"
+
+    def test_loads_executor_overrides(self, tmp_path: Path) -> None:
+        ucx_dir = tmp_path / "UCX"
+        ucx_dir.mkdir()
+        import json
+        (ucx_dir / "executors.json").write_text(json.dumps({
+            "executors": [
+                {"name": "test-exec", "executor_type": "api", "model": "test-model"}
+            ]
+        }))
+        ctx = ProjectContext.resolve(str(tmp_path))
+        assert "test-exec" in ctx.executor_overrides
 
 
 class TestClearSessionProject:

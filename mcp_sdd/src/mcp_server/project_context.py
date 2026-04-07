@@ -96,3 +96,38 @@ def resolve_project(explicit: str | None) -> Path:
         return _config_default_project
 
     raise ValueError("No project specified and no default configured")
+
+
+# ── Per-call project snapshot ──────────────────────────────────────────────
+
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class ProjectContext:
+    """Immutable snapshot of project-specific configuration for a single tool call."""
+
+    project_root: Path
+    project_env: dict[str, str] = field(default_factory=dict)
+    executor_overrides: dict = field(default_factory=dict)
+    # executor_overrides typed as dict (not dict[str, ExecutorConfig]) to avoid
+    # circular import — registry.py imports are deferred to resolve().
+
+    @staticmethod
+    def resolve(project_arg: str | None) -> "ProjectContext | None":
+        """Build context from a project argument. Returns None if no project.
+
+        Handles both None and "" as no-project (returns None).
+        """
+        if not project_arg:
+            return None
+        project_root = Path(project_arg).expanduser().resolve()
+
+        from mcp_server.env_manager import load_project_env
+        from mcp_server.executor.registry import load_project_executor_config
+
+        return ProjectContext(
+            project_root=project_root,
+            project_env=load_project_env(project_root),
+            executor_overrides=load_project_executor_config(project_root),
+        )

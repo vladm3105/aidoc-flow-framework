@@ -32,14 +32,14 @@ class TestProjectToolsSet:
         expected_project_tools = {
             "sdd_init", "sdd_validate", "sdd_preflight",
             "sdd_personas_show", "sdd_personas_set", "sdd_personas_diff",
-            "sdd_env_show", "sdd_set_project",
+            "sdd_env_show", "sdd_set_project", "sdd_list_executors",
             "sdd_create_build", "sdd_create", "sdd_review",
-            "sdd_remediate", "sdd_remediate_fix", "sdd_run_lifecycle",
+            "sdd_remediate", "sdd_run_lifecycle", "sdd_clean",
         }
         assert expected_project_tools.issubset(_PROJECT_TOOLS)
 
     def test_non_project_tools_excluded(self) -> None:
-        non_project = {"sdd_scan", "sdd_list_executors", "sdd_consistency",
+        non_project = {"sdd_scan", "sdd_consistency",
                        "sdd_validate_links", "sdd_prescreen", "sdd_next_action",
                        "sdd_get_project"}
         assert non_project.isdisjoint(_PROJECT_TOOLS)

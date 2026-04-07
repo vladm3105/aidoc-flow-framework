@@ -204,7 +204,7 @@ def run_preflight(
         warnings.append("provider_token_not_detected")
     else:
         try:
-            from mcp_server.env_manager import load_project_env, show_project_env, BLOCKED_ENV_VARS
+            from mcp_server.env_manager import show_project_env
             env_info = show_project_env(project_root)
             checks["env_key_count"] = env_info["env_key_count"]
             checks["env_keys"] = env_info["env_keys"]
@@ -213,8 +213,21 @@ def run_preflight(
                 warnings.append(f"env_blocked_vars:{','.join(env_info['blocked_vars'])}")
             if env_info.get("parse_error"):
                 warnings.append("env_parse_error")
+            # API executor readiness
+            checks["api_keys_present"] = env_info.get("api_keys_present", [])
+            checks["ucx_executor_overrides"] = env_info.get("ucx_executor_overrides", {})
         except Exception:
             warnings.append("env_inspection_failed")
+
+    # Project executors.json validation
+    project_executors_path = project_root / "UCX" / "executors.json"
+    checks["project_executors_json"] = project_executors_path.is_file()
+    if project_executors_path.is_file():
+        from mcp_server.executor.registry import load_project_executor_config
+        project_execs = load_project_executor_config(project_root)
+        checks["project_executor_count"] = len(project_execs)
+        if not project_execs:
+            warnings.append("project_executors_json_invalid")
 
     if errors:
         status = "blocked"

@@ -243,10 +243,15 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_list_executors",
-        description="List all registered CLI and API executors with their type, status, and configuration.",
+        description="List all registered CLI and API executors with their type, status, and configuration. When project is provided, includes project-specific executor overrides.",
         inputSchema={
             "type": "object",
-            "properties": {},
+            "properties": {
+                "project": {
+                    "type": "string",
+                    "description": "Optional project root. When provided, includes project-specific executor overrides.",
+                },
+            },
             "required": [],
         },
     ),
@@ -267,6 +272,27 @@ TOOLS: list[Tool] = [
                 "timeout": {"type": "integer", "description": "Default timeout in seconds", "default": 300},
             },
             "required": ["name", "executor_type"],
+        },
+    ),
+    # ── Maintenance tools ──────────────────────────────────────────────
+    Tool(
+        name="sdd_clean",
+        description="Remove obsolete stage artifacts from document folder, keeping only the latest report and derived copy per stage.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "document": {"type": "string", "description": "Path to document file or directory to clean."},
+                "stages": {
+                    "type": "array",
+                    "items": {"type": "string", "enum": ["validate", "review", "remediate", "creation", "all"]},
+                    "description": "Stages to clean. Default: ['all'].",
+                    "default": ["all"],
+                },
+                "keep": {"type": "integer", "description": "Number of latest versions to keep per artifact type. Default: 1.", "default": 1, "minimum": 0},
+                "dry_run": {"type": "boolean", "description": "List files that would be deleted without deleting. Default: true.", "default": True},
+            },
+            "required": ["document"],
         },
     ),
     # ── Orchestration tools ──────────────────────────────────────────────
@@ -300,6 +326,7 @@ TOOLS: list[Tool] = [
                 "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override for review/create stages. If omitted, loaded from persona_mappings.yaml."},
                 "template": {"type": "string", "description": "Template for review/create stages"},
                 "out": {"type": "string", "description": "Output directory"},
+                "clean_before": {"type": "boolean", "description": "Run sdd_clean (keep=0) before starting pipeline. Default: false.", "default": False},
             },
             "required": ["project", "doc_type", "layer", "document", "stages"],
         },
@@ -369,7 +396,7 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_remediate",
-        description="Generate deterministic remediation findings and report. If executor specified, spawns agent with remediation prompt.",
+        description="Generate deterministic remediation findings and report. With fix=true, generates source-protected derived copy. If executor specified, spawns agent.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -378,27 +405,11 @@ TOOLS: list[Tool] = [
                 "layer": {"type": "string", "description": "SDD layer directory"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
                 "review_report": {"type": "string", "description": "Optional path to review report"},
+                "remediation_report": {"type": "string", "description": "Path to existing remediation report. With fix=true, skips findings generation and applies fix from this report directly."},
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Executor name. Omit to return findings."},
+                "executor": {"type": "string", "description": "Executor name. Omit to return findings/fix report."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
-            },
-            "required": ["project", "doc_type", "layer", "document"],
-        },
-    ),
-    Tool(
-        name="sdd_remediate_fix",
-        description="Generate source-protected remediated derived copy. If executor specified, spawns agent to apply fixes.",
-        inputSchema={
-            "type": "object",
-            "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "doc_type": {"type": "string", "description": "Document type"},
-                "layer": {"type": "string", "description": "SDD layer directory"},
-                "document": {"type": "string", "description": "Path to document file or directory"},
-                "remediation_report": {"type": "string", "description": "Optional path to remediation report"},
-                "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Executor name. Omit to return fix report."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
+                "fix": {"type": "boolean", "description": "Generate source-protected remediated derived copy after findings.", "default": False},
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -466,6 +477,8 @@ async def _maybe_run_executor(
     prompt_text: str,
     deterministic_result: dict,
     working_dir: Path | None = None,
+    system_prompt: str | None = None,
+    ctx: "ProjectContext | None" = None,
 ) -> dict:
     """If executor specified, run it with the prompt. Otherwise return prompt text.
 
@@ -487,12 +500,10 @@ async def _maybe_run_executor(
             doc_path = Path(doc_arg).expanduser().resolve()
             working_dir = doc_path if doc_path.is_dir() else doc_path.parent
 
-    # Load project .env for executor subprocess
-    project_env = None
-    project_arg = arguments.get("project")
-    if project_arg:
-        from mcp_server.env_manager import load_project_env
-        project_env = load_project_env(Path(project_arg).expanduser().resolve()) or None
+    # Use context instead of loading env/overrides independently.
+    # Empty dict ({}) coerced to None so downstream treats "no env" uniformly.
+    project_env = ctx.project_env if ctx and ctx.project_env else None
+    project_overrides = ctx.executor_overrides if ctx and ctx.executor_overrides else None
 
     timeout = arguments.get("timeout", 300)
     exec_result: ExecutorResult = await run_executor(
@@ -501,6 +512,8 @@ async def _maybe_run_executor(
         working_dir=working_dir,
         timeout=timeout,
         project_env=project_env,
+        system_prompt=system_prompt,
+        project_overrides=project_overrides,
     )
 
     return {
@@ -526,7 +539,7 @@ def _inspect_document_folder(document_dir: Path) -> dict:
     from mcp_server.utils.source_files import REPORT_PATTERN
 
     source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
-    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validated" not in f.stem and "_remediate_copy" not in f.stem]
+    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validated" not in f.stem and "_remediate_copy" not in f.stem and not re.search(r"_remediate_v\d+", f.stem)]
     has_validation_report = any(
         REPORT_PATTERN.match(f.name) and ".validate." in f.name
         for f in json_files + md_files + yaml_files
@@ -543,7 +556,7 @@ def _inspect_document_folder(document_dir: Path) -> dict:
         for f in json_files + md_files
     )
     has_remediated_copy = any(
-        "_remediate_copy" in f.stem for f in md_files + yaml_files
+        "_remediate_copy" in f.stem or re.search(r"_remediate_v\d+", f.stem) for f in md_files + yaml_files
     )
 
     if has_remediated_copy:
@@ -552,8 +565,8 @@ def _inspect_document_folder(document_dir: Path) -> dict:
         next_tool = None
     elif has_remediation_report:
         current_stage = "remediation_reported"
-        next_action = "remediate_fix"
-        next_tool = "sdd_remediate_fix"
+        next_action = "remediate --fix"
+        next_tool = "sdd_remediate"
     elif has_review_report:
         current_stage = "reviewed"
         next_action = "remediate"
@@ -626,6 +639,8 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 
 async def _dispatch(name: str, arguments: dict) -> dict:
     """Dispatch to the appropriate handler."""
+    from mcp_server.project_context import ProjectContext
+    ctx = ProjectContext.resolve(arguments.get("project"))
 
     # ── Session management tools ───────────────────────────────────────
 
@@ -665,7 +680,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_init":
         from mcp_server.skills.scaffold import scaffold_project_ucx
         result = scaffold_project_ucx(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
             force_update=bool(arguments.get("update", False)),
             force_update_mappings=bool(arguments.get("update_mappings", False)),
         )
@@ -676,7 +691,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.remediation import run_validate_fix_build
         from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
 
-        project_root = _path(arguments, "project")
+        project_root = ctx.project_root
         document_path = _path(arguments, "document")
         output_dir = resolve_stage_output_dir(
             stage=STAGE_VALIDATE,
@@ -767,6 +782,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         if fix_generated and arguments.get("executor") and fix_result is not None:
             exec_response = await _maybe_run_executor(
                 arguments, fix_result.report_text, response, working_dir=project_root,
+                ctx=ctx,
             )
             exec_response["passed"] = True
             exec_response["is_valid"] = is_valid
@@ -803,7 +819,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_preflight":
         from mcp_server.preflight import run_preflight
         result = run_preflight(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
             context=arguments.get("context", "any"),
             document_path=_opt_path(arguments, "document"),
             output_dir=_opt_path(arguments, "out"),
@@ -817,7 +833,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_personas_show":
         from mcp_server.skills.persona_manager import show_persona_mappings
         return show_persona_mappings(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
             phase=arguments.get("phase"),
             doc_type=arguments.get("doc_type"),
         )
@@ -825,7 +841,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_personas_set":
         from mcp_server.skills.persona_manager import set_persona_mapping
         return set_persona_mapping(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
             phase=arguments["phase"],
             doc_type=arguments["doc_type"],
             personas=arguments["personas"],
@@ -834,13 +850,13 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_personas_diff":
         from mcp_server.skills.persona_manager import diff_persona_mappings
         return diff_persona_mappings(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
         )
 
     if name == "sdd_env_show":
         from mcp_server.env_manager import show_project_env
         return show_project_env(
-            project_root=_path(arguments, "project"),
+            project_root=ctx.project_root,
         )
 
     if name == "sdd_prescreen":
@@ -882,19 +898,39 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_list_executors":
         executors = list_executors()
-        return {
-            "executors": [
-                {
+        exec_list = [
+            {
+                "name": e.name,
+                "executor_type": e.executor_type.value,
+                "command": e.command if e.executor_type == ExecutorType.CLI else None,
+                "model": e.model if e.executor_type == ExecutorType.API else None,
+                "status": e.status,
+                "timeout": e.timeout,
+                "source": "global",
+            }
+            for e in executors
+        ]
+
+        # Merge project overrides if project provided
+        if ctx and ctx.executor_overrides:
+            project_names: set[str] = set()
+            for e in ctx.executor_overrides.values():
+                project_names.add(e.name)
+                exec_list.append({
                     "name": e.name,
                     "executor_type": e.executor_type.value,
                     "command": e.command if e.executor_type == ExecutorType.CLI else None,
                     "model": e.model if e.executor_type == ExecutorType.API else None,
                     "status": e.status,
                     "timeout": e.timeout,
-                }
-                for e in executors
-            ]
-        }
+                    "source": "project",
+                })
+            # Mark global entries that are overridden
+            for item in exec_list:
+                if item.get("source") != "project" and item["name"] in project_names:
+                    item["overridden_by_project"] = True
+
+        return {"executors": exec_list}
 
     if name == "sdd_register_executor":
         config = ExecutorConfig(
@@ -927,7 +963,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_create_build":
         from mcp_server.review import run_project_creation_build
         from mcp_server.core.stage_output import STAGE_CREATE, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
+        project_root = ctx.project_root
         output_dir = resolve_stage_output_dir(
             stage=STAGE_CREATE,
             project_root=project_root,
@@ -946,12 +982,13 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         det_result = _serialize_result(result)
         return await _maybe_run_executor(
             arguments, result.prompt_text, det_result, working_dir=project_root,
+            ctx=ctx,
         )
 
     if name == "sdd_create":
         from mcp_server.review import run_project_creation_artifact
         from mcp_server.core.stage_output import STAGE_CREATE, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
+        project_root = ctx.project_root
         target_path = _path(arguments, "target")
         output_dir = resolve_stage_output_dir(
             stage=STAGE_CREATE,
@@ -975,7 +1012,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_review":
         from mcp_server.review import run_project_review_build
         from mcp_server.core.stage_output import STAGE_REVIEW, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
+        project_root = ctx.project_root
         document_path = _opt_path(arguments, "document")
         sections = _build_sections(arguments)
 
@@ -1005,6 +1042,8 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         det_result = _serialize_result(result)
         exec_response = await _maybe_run_executor(
             arguments, result.prompt_text, det_result, working_dir=project_root,
+            system_prompt=getattr(result, "system_prompt", None),
+            ctx=ctx,
         )
 
         # Persist executor review output to document folder (UCX_v1 parity).
@@ -1022,7 +1061,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     if name == "sdd_remediate":
         from mcp_server.remediation import run_remediation_build
         from mcp_server.core.stage_output import STAGE_REMEDIATE, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
+        project_root = ctx.project_root
         document_path = _path(arguments, "document")
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REMEDIATE,
@@ -1030,6 +1069,37 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=_opt_path(arguments, "out"),
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
+        # Path A: Direct fix from existing remediation report (skip findings)
+        if arguments.get("fix") and arguments.get("remediation_report"):
+            from mcp_server.remediation import run_remediate_fix_build
+            fix_result = run_remediate_fix_build(
+                project_root=project_root,
+                doc_type=arguments["doc_type"],
+                layer=arguments["layer"],
+                document_path=document_path,
+                remediation_report=_opt_path(arguments, "remediation_report"),
+                output_dir=output_dir,
+            )
+            fix_det = _serialize_result(fix_result)
+            fix_response = await _maybe_run_executor(
+                arguments, fix_result.report_text, fix_det, working_dir=project_root,
+                ctx=ctx,
+            )
+            # Post-fix quality check
+            derived_paths = fix_det.get("derived_paths", [])
+            if derived_paths and document_path:
+                from mcp_server.remediation.runner import verify_remediation_quality
+                derived_p = Path(derived_paths[0])
+                if derived_p.exists():
+                    quality = verify_remediation_quality(
+                        original_path=document_path,
+                        remediated_path=derived_p,
+                        finding_count=0,
+                    )
+                    fix_response["remediation_quality"] = quality
+            return fix_response
+
+        # Path B: Generate findings (always)
         result = run_remediation_build(
             project_root=project_root,
             doc_type=arguments["doc_type"],
@@ -1039,50 +1109,67 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=output_dir,
         )
         det_result = _serialize_result(result)
-        return await _maybe_run_executor(
+        remediate_response = await _maybe_run_executor(
             arguments, result.report_text, det_result, working_dir=project_root,
+            system_prompt=getattr(result, "system_prompt", None),
+            ctx=ctx,
         )
 
-    if name == "sdd_remediate_fix":
-        from mcp_server.remediation import run_remediate_fix_build
-        from mcp_server.core.stage_output import STAGE_REMEDIATE, resolve_stage_output_dir
-        project_root = _path(arguments, "project")
-        document_path = _path(arguments, "document")
-        output_dir = resolve_stage_output_dir(
-            stage=STAGE_REMEDIATE,
-            project_root=project_root,
-            output_dir=_opt_path(arguments, "out"),
-            document_dir=document_path if document_path.is_dir() else document_path.parent,
-        )
-        result = run_remediate_fix_build(
-            project_root=project_root,
-            doc_type=arguments["doc_type"],
-            layer=arguments["layer"],
-            document_path=document_path,
-            remediation_report=_opt_path(arguments, "remediation_report"),
-            output_dir=output_dir,
-        )
-        det_result = _serialize_result(result)
-        exec_response = await _maybe_run_executor(
-            arguments, result.report_text, det_result, working_dir=project_root,
-        )
-
-        # Post-executor quality check: compare original vs remediated
-        derived_paths = det_result.get("derived_paths", [])
-        if derived_paths and document_path:
-            from mcp_server.remediation.runner import verify_remediation_quality
-            from pathlib import Path as _P
-            derived_p = _P(derived_paths[0])
-            if derived_p.exists():
-                finding_count = len(det_result.get("findings", []))
-                quality = verify_remediation_quality(
-                    original_path=document_path,
-                    remediated_path=derived_p,
-                    finding_count=finding_count,
+        # Path C: Auto-chain into fix after findings (fix=true, no existing report)
+        if arguments.get("fix"):
+            from mcp_server.remediation import run_remediate_fix_build as _run_fix
+            try:
+                fix_result = _run_fix(
+                    project_root=project_root,
+                    doc_type=arguments["doc_type"],
+                    layer=arguments["layer"],
+                    document_path=document_path,
+                    remediation_report=result.report_path,
+                    output_dir=output_dir,
                 )
-                exec_response["remediation_quality"] = quality
+                fix_det = _serialize_result(fix_result)
+                fix_response = await _maybe_run_executor(
+                    arguments, fix_result.report_text, fix_det, working_dir=project_root,
+                    ctx=ctx,
+                )
+                remediate_response["fix_result"] = fix_response
+                # Post-fix quality check
+                derived_paths = fix_det.get("derived_paths", [])
+                if derived_paths and document_path:
+                    from mcp_server.remediation.runner import verify_remediation_quality
+                    derived_p = Path(derived_paths[0])
+                    if derived_p.exists():
+                        quality = verify_remediation_quality(
+                            original_path=document_path,
+                            remediated_path=derived_p,
+                            finding_count=len(det_result.get("findings", [])),
+                        )
+                        remediate_response["fix_result"]["remediation_quality"] = quality
+            except (FileNotFoundError, ValueError) as exc:
+                remediate_response["fix_result"] = {"error": str(exc)}
 
-        return exec_response
+        return remediate_response
+
+    if name == "sdd_clean":
+        from mcp_server.cleanup.runner import run_clean
+        document_path = _path(arguments, "document")
+        stages = arguments.get("stages", ["all"])
+        keep = arguments.get("keep", 1)
+        dry_run = arguments.get("dry_run", True)
+        result = run_clean(
+            document_path=document_path,
+            stages=stages,
+            keep=keep,
+            dry_run=dry_run,
+        )
+        return {
+            "dry_run": result.dry_run,
+            "deleted": result.deleted,
+            "deleted_count": len(result.deleted),
+            "kept": result.kept,
+            "kept_count": len(result.kept),
+            "bytes_freed": result.total_bytes_freed,
+        }
 
     raise ValueError(f"Unknown tool: {name}")
 
@@ -1091,12 +1178,23 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
     """Run multiple lifecycle stages in sequence."""
     stages = arguments["stages"]
     results: dict[str, dict] = {}
+
+    # Optional pre-clean: remove all stage artifacts before pipeline starts
+    if arguments.get("clean_before"):
+        from mcp_server.cleanup.runner import run_clean
+        doc_path = _path(arguments, "document")
+        clean_result = run_clean(document_path=doc_path, stages=["all"], keep=0, dry_run=False)
+        results["_clean_before"] = {
+            "deleted_count": len(clean_result.deleted),
+            "bytes_freed": clean_result.total_bytes_freed,
+        }
+
     stage_handlers = {
         "validate": "sdd_validate",
         "validate_fix": "sdd_validate",  # Deprecated — absorbed into validate
         "review": "sdd_review",
         "remediate": "sdd_remediate",
-        "remediate_fix": "sdd_remediate_fix",
+        "remediate_fix": "sdd_remediate",  # Absorbed — routed as sdd_remediate with fix=true
     }
 
     for stage in stages:
@@ -1115,6 +1213,10 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
             if k not in ("stages",) and v is not None
         }
 
+        # Inject fix=true for remediate_fix stage (absorbed into sdd_remediate)
+        if stage == "remediate_fix":
+            stage_args["fix"] = True
+
         try:
             stage_result = await _dispatch(tool_name, stage_args)
             results[stage] = stage_result
@@ -1129,7 +1231,8 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
 
             # Post-fix verification: auto-validate derived copy after remediate_fix
             if stage == "remediate_fix":
-                derived_paths = stage_result.get("derived_paths", [])
+                fix_result = stage_result.get("fix_result", stage_result)
+                derived_paths = fix_result.get("derived_paths", [])
                 if derived_paths:
                     verify_args = {
                         k: v for k, v in stage_args.items()

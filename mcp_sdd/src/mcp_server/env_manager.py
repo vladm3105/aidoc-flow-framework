@@ -131,12 +131,19 @@ def show_project_env(project_root: Path) -> dict[str, Any]:
     blocked = sorted(BLOCKED_ENV_VARS & set(all_keys))
     safe_keys = [k for k in all_keys if k not in BLOCKED_ENV_VARS]
 
+    # API executor readiness: check if expected API key vars are present
+    api_key_vars = {"OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GEMINI_API_KEY", "OPENROUTER_API_KEY"}
+    api_keys_present = sorted(api_key_vars & set(safe_keys))
+    ucx_overrides = {k: "(set)" for k in safe_keys if k.startswith("UCX_EXECUTOR_")}
+
     return {
         "project_root": str(project_root),
         "env_file_exists": True,
         "env_keys": safe_keys,
         "env_key_count": len(safe_keys),
         "blocked_vars": blocked,
+        "api_keys_present": api_keys_present,
+        "ucx_executor_overrides": ucx_overrides,
     }
 
 

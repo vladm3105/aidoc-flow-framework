@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .registry import ExecutorType, get_executor
+from .registry import ExecutorConfig, ExecutorType, get_executor
 from .cli_runner import ExecutorResult, run_cli_executor
 from .api_runner import run_api_executor
 from mcp_server.logging_config import log_executor_launch, log_executor_result
@@ -16,9 +16,11 @@ async def run_executor(
     working_dir: Path | None = None,
     timeout: int | None = None,
     project_env: dict[str, str] | None = None,
+    system_prompt: str | None = None,
+    project_overrides: dict[str, ExecutorConfig] | None = None,
 ) -> ExecutorResult:
     """Dispatch to CLI or API executor based on registry type."""
-    config = get_executor(name)
+    config = get_executor(name, project_overrides=project_overrides)
 
     start = log_executor_launch(
         executor=name,
@@ -39,7 +41,9 @@ async def run_executor(
         result = await run_api_executor(
             config=config,
             prompt=prompt,
+            system_prompt=system_prompt,
             timeout=timeout,
+            project_env=project_env,
         )
     else:
         result = ExecutorResult(

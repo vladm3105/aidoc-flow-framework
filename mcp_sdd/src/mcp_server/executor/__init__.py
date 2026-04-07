@@ -5,6 +5,7 @@ from .registry import (
     ExecutorType,
     get_executor,
     list_executors,
+    load_project_executor_config,
     register_executor,
     remove_executor,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "ExecutorType",
     "get_executor",
     "list_executors",
+    "load_project_executor_config",
     "register_executor",
     "remove_executor",
     "run_executor",
