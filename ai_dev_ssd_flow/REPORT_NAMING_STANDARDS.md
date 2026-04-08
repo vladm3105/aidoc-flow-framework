@@ -51,7 +51,7 @@ Format: `{DOC-ID}.{SUB}.{STAGE}.{FORMAT}` — sub-framework code is always expli
 | BRD-03 review | `BRD-03.ucx.review.md` |
 | BRD-03 remediation | `BRD-03.ucx.remediate.json` |
 | Governance approval | `BRD-03.gov.approval.json` |
-| Versioned review | `BRD-03.ucx.review.v002.md` |
+| Versioned review | `BRD-03.ucx.review.v2.md` |
 
 ## Derived Copy Naming
 
@@ -66,7 +66,7 @@ Remediation copies are versioned (PLAN-030): `_v1`, `_v2`, `_v3`, etc. Each iter
 
 ## Versioned Reports
 
-Format: `{DOC-ID}.{STAGE}.v{NNN}.{FORMAT}`
+Format: `{DOC-ID}.{STAGE}.v{N}.{FORMAT}`
 
 Default: no version (latest overwrites). Version suffix with `--keep-history`.
 

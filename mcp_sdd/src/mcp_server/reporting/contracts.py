@@ -56,7 +56,7 @@ def build_family_report_name(*, doc_id: str, family: str, version: int) -> str:
         raise ValueError("Version must be positive")
     prefix = FAMILY_PREFIX[family]
     suffix = "audit" if family == "audit" else "review" if family == "review" else "fix"
-    return f"{doc_id}.{prefix}_{suffix}_report_v{version:03d}.md"
+    return f"{doc_id}.{prefix}_{suffix}_report_v{version}.md"
 
 
 def build_source_artifact_name(*, doc_id: str, slug: str) -> str:
@@ -80,7 +80,7 @@ def build_lifecycle_report_name(*, doc_id: str, source_stage: str, report_type: 
         raise ValueError(f"Unsupported lifecycle report type: {report_type}")
     if version <= 0:
         raise ValueError("Version must be positive")
-    return f"{doc_id}_{source_stage}_{report_type}_report_v{version:03d}.md"
+    return f"{doc_id}_{source_stage}_{report_type}_report_v{version}.md"
 
 
 def choose_preferred_review_input(candidates: list[ReportFamilySelection]) -> ReportFamilySelection:
@@ -104,7 +104,7 @@ def choose_preferred_review_input(candidates: list[ReportFamilySelection]) -> Re
 
 
 def _extract_version(path_name: str) -> int | None:
-    match = re.search(r"_v(\d{3})\.md$", path_name)
+    match = re.search(r"_v(\d+)\.md$", path_name)
     if not match:
         return None
     return int(match.group(1))
@@ -136,13 +136,13 @@ def discover_artifacts(*, folder: Path, doc_id: str, slug: str) -> ArtifactDisco
         if version is None:
             continue
         if ".A_audit_report_" in name:
-            audit_candidates.append(ReportFamilySelection(family="audit", path=name, version=version, timestamp=f"v{version:03d}"))
+            audit_candidates.append(ReportFamilySelection(family="audit", path=name, version=version, timestamp=f"v{version}"))
         elif ".R_review_report_" in name:
-            audit_candidates.append(ReportFamilySelection(family="review", path=name, version=version, timestamp=f"v{version:03d}"))
+            audit_candidates.append(ReportFamilySelection(family="review", path=name, version=version, timestamp=f"v{version}"))
 
     latest_review_report = choose_preferred_review_input(audit_candidates).path if audit_candidates else _select_latest_lifecycle_report(
         file_names,
-        suffix="_review_report_v001.md",
+        suffix="_review_report_v1.md",
     )
     if latest_review_report is None:
         lifecycle_review_candidates = [name for name in file_names if "_review_report_v" in name]
@@ -248,7 +248,7 @@ def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation:
                 "status": "error",
                 "operation": operation,
                 "missing_prerequisite_type": "review_report",
-                "expected_filename_pattern": f"{doc_id}.A_audit_report_vNNN.md | {doc_id}.R_review_report_vNNN.md | {doc_id}_validation-fixed_review_report_vNNN.md",
+                "expected_filename_pattern": f"{doc_id}.A_audit_report_vN.md | {doc_id}.R_review_report_vN.md | {doc_id}_validation-fixed_review_report_vN.md",
             }
         return {
             "status": "ready",
@@ -270,7 +270,7 @@ def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation:
                 "status": "error",
                 "operation": operation,
                 "missing_prerequisite_type": "remediation_report",
-                "expected_filename_pattern": f"{doc_id}_validation-fixed_remediation_report_vNNN.md | {doc_id}.F_fix_report_vNNN.md",
+                "expected_filename_pattern": f"{doc_id}_validation-fixed_remediation_report_vN.md | {doc_id}.F_fix_report_vN.md",
             }
         return {
             "status": "ready",

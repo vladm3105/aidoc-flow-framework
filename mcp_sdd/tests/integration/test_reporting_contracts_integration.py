@@ -22,12 +22,12 @@ from mcp_server.reporting import (  # noqa: E402
 
 def test_audit_wrapper_outputs_deterministic_family_selection_and_versioned_names() -> None:
     candidates = [
-        ReportFamilySelection(family="review", path="SPEC-001.R_review_report_v005.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
-        ReportFamilySelection(family="audit", path="SPEC-001.A_audit_report_v005.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
+        ReportFamilySelection(family="review", path="SPEC-001.R_review_report_v5.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
+        ReportFamilySelection(family="audit", path="SPEC-001.A_audit_report_v5.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
     ]
     selected_first = choose_preferred_review_input(candidates)
     selected_second = choose_preferred_review_input(candidates)
-    assert selected_first.path == "SPEC-001.A_audit_report_v005.md"
+    assert selected_first.path == "SPEC-001.A_audit_report_v5.md"
     assert selected_first == selected_second
 
 
@@ -46,8 +46,8 @@ def test_multi_stage_run_preserves_deterministic_name_mapping_across_reports() -
         version=2,
         source_artifact_file="SPEC-001_doc_validation.md",
     )
-    assert review_map["report_name"] == "SPEC-001.A_audit_report_v001.md"
-    assert remediation_map["report_name"] == "SPEC-001.F_fix_report_v002.md"
+    assert review_map["report_name"] == "SPEC-001.A_audit_report_v1.md"
+    assert remediation_map["report_name"] == "SPEC-001.F_fix_report_v2.md"
     assert review_map["source_artifact_id"] == remediation_map["source_artifact_id"]
 
 

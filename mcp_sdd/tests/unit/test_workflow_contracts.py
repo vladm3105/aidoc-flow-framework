@@ -36,7 +36,7 @@ def test_upstream_missing_emits_skip_metadata_fields() -> None:
     result = evaluate_upstream_missing(
         operation="brd_remediate_apply",
         upstream_type="review_report",
-        upstream_id="BRD-01.R_review_report_v001.md",
+        upstream_id="BRD-01.R_review_report_v1.md",
         upstream_exists=False,
         optional_upstream=False,
     )
@@ -45,7 +45,7 @@ def test_upstream_missing_emits_skip_metadata_fields() -> None:
     metadata = result["skip_metadata"]
     assert metadata["skipped_operation"] == "brd_remediate_apply"
     assert metadata["missing_upstream_type"] == "review_report"
-    assert metadata["missing_upstream_id"] == "BRD-01.R_review_report_v001.md"
+    assert metadata["missing_upstream_id"] == "BRD-01.R_review_report_v1.md"
     assert metadata["skip_reason"] == "required_upstream_missing"
 
 

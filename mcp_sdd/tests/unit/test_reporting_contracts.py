@@ -26,9 +26,9 @@ from mcp_server.reporting import (  # noqa: E402
 
 
 def test_report_family_name_generation_uses_A_R_F_prefixes() -> None:
-    assert build_family_report_name(doc_id="SPEC-001", family="audit", version=1) == "SPEC-001.A_audit_report_v001.md"
-    assert build_family_report_name(doc_id="SPEC-001", family="review", version=2) == "SPEC-001.R_review_report_v002.md"
-    assert build_family_report_name(doc_id="SPEC-001", family="fix", version=3) == "SPEC-001.F_fix_report_v003.md"
+    assert build_family_report_name(doc_id="SPEC-001", family="audit", version=1) == "SPEC-001.A_audit_report_v1.md"
+    assert build_family_report_name(doc_id="SPEC-001", family="review", version=2) == "SPEC-001.R_review_report_v2.md"
+    assert build_family_report_name(doc_id="SPEC-001", family="fix", version=3) == "SPEC-001.F_fix_report_v3.md"
 
 
 def test_lifecycle_to_audit_wrapper_name_mapping_preserves_lineage_fields() -> None:
@@ -42,7 +42,7 @@ def test_lifecycle_to_audit_wrapper_name_mapping_preserves_lineage_fields() -> N
         source_artifact_file="SPEC-001_doc_validation.md",
     )
 
-    assert mapped["report_name"] == "SPEC-001.A_audit_report_v004.md"
+    assert mapped["report_name"] == "SPEC-001.A_audit_report_v4.md"
     assert mapped["source_processing_stage"] == "validation-fixed"
     assert mapped["source_artifact_file"] == "SPEC-001_doc_validation.md"
 

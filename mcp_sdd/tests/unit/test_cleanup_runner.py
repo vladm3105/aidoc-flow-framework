@@ -55,8 +55,8 @@ class TestReportCleanup:
             "BRD-01_test.yaml",
             "BRD-01.ucx.validate.json",
             "BRD-01.ucx.validate.txt",
-            "BRD-01.ucx.validate.v001.json",
-            "BRD-01.ucx.validate.v002.json",
+            "BRD-01.ucx.validate.v1.json",
+            "BRD-01.ucx.validate.v2.json",
         ])
         result = run_clean(tmp_path, stages=["validate"], keep=1, dry_run=False)
         # Keeps latest versioned + latest unversioned per format

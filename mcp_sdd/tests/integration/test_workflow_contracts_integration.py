@@ -38,7 +38,7 @@ def test_downstream_operation_skips_when_required_upstream_missing() -> None:
     decision = evaluate_upstream_missing(
         operation="prd_remediate_apply",
         upstream_type="review_report",
-        upstream_id="PRD-01.R_review_report_v003.md",
+        upstream_id="PRD-01.R_review_report_v3.md",
         upstream_exists=False,
         optional_upstream=False,
     )
@@ -48,7 +48,7 @@ def test_downstream_operation_skips_when_required_upstream_missing() -> None:
     assert decision["skip_metadata"] == {
         "skipped_operation": "prd_remediate_apply",
         "missing_upstream_type": "review_report",
-        "missing_upstream_id": "PRD-01.R_review_report_v003.md",
+        "missing_upstream_id": "PRD-01.R_review_report_v3.md",
         "skip_reason": "required_upstream_missing",
     }
 
