@@ -76,7 +76,7 @@ Use `doc-bdd` when:
 ```
 docs/04_BDD/
 ├── BDD-02_knowledge_engine/           # Suite folder (REQUIRED)
-│   ├── BDD-02.0_index.md              # Index file (MANDATORY)
+│   ├── BDD-02.md              # Index file (MANDATORY)
 │   ├── BDD-02.1_ingest.feature        # Section 1
 │   ├── BDD-02.2_query.feature         # Section 2
 │   ├── BDD-02.3.00_learning.feature   # Aggregator (if 5+ subsections)
@@ -121,7 +121,7 @@ docs/04_BDD/
 # Traceability Tags (Gherkin-native, NOT in comments)
 @section: 2.14
 @parent_doc: BDD-02
-@index: BDD-02.0_index.md
+@index: BDD-02.md
 @brd:BRD.02.0103
 @prd:PRD.02.0702
 @ears:EARS.02.1401
@@ -372,7 +372,7 @@ Feature: BDD-NN.SS: Domain Description
 @redirect
 @section: 2.12.00
 @parent_doc: BDD-02
-@index: BDD-02.0_index.md
+@index: BDD-02.md
 
 Feature: BDD-02.12: Query Graph Traversal (Aggregator)
 
@@ -432,7 +432,7 @@ mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
 ### Step 4: Create Index File
 
 ```bash
-cp ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
+cp ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.md
 ```
 
 ### Step 5: Design Section Split

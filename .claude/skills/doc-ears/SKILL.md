@@ -411,7 +411,7 @@ docs/03_EARS/EARS-01_risk_limits/
 **Sectioned EARS** (for larger documents >25KB):
 ```
 docs/03_EARS/EARS-01_risk_limits/
-  EARS-01.0_index.md
+  EARS-01.md
   EARS-01.1_event_driven.md
   ...
 ```

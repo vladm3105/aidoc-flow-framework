@@ -260,7 +260,7 @@ flowchart TD
 ```
 docs/10_TSPEC/
 ├── TSPEC-01_authentication/
-│   ├── TSPEC-01.0_index.md              # Suite index
+│   ├── TSPEC-01.md              # Suite index
 │   ├── TSPEC-01.1_utest.md              # Unit tests
 │   ├── TSPEC-01.2_itest.md              # Integration tests
 │   ├── TSPEC-01.3_stest.md              # Smoke tests

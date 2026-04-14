@@ -291,7 +291,7 @@ custom_fields:
 #### Path Resolution
 
 Paths are relative to the BRD file location:
-- BRD at: `docs/01_BRD/BRD-01_platform/BRD-01.0_index.md`
+- BRD at: `docs/01_BRD/BRD-01_platform/BRD-01.md`
 - REF at: `docs/00_REF/source_docs/`
 - Path: `"../../00_REF/source_docs/"`
 
@@ -554,7 +554,7 @@ Check `docs/01_BRD/` for next available ID number (e.g., BRD-01, BRD-02).
 **Example (Shortened Pattern - PREFERRED)**:
 ```
 docs/01_BRD/BRD-01_platform_architecture/
-├── BRD-01.0_index.md
+├── BRD-01.md
 ├── BRD-01.1_executive_summary.md
 ├── BRD-01.2_business_context.md
 └── BRD-01.3_requirements.md

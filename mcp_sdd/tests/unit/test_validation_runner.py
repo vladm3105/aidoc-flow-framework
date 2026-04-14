@@ -319,7 +319,7 @@ custom_fields:
     assert checked == [str(source_doc)]
 
 
-def test_run_project_validation_build_file_index_redirects_to_source_artifact(tmp_path: Path) -> None:
+def test_run_project_validation_build_file_appendix_redirects_to_source_artifact(tmp_path: Path) -> None:
         main(["init", "--project", str(tmp_path)])
         _write_minimal_layer_assets(tmp_path)
 
@@ -343,22 +343,7 @@ custom_fields:
                 encoding="utf-8",
         )
 
-        index_doc = doc_dir / "BRD-01.0_index.md"
-        index_doc.write_text(
-                """---
-title: "Index"
-tags: [brd]
-custom_fields:
-    document_type: brd
-    status: draft
----
-
-# BRD-01: Index
-""",
-                encoding="utf-8",
-        )
-
-        appendix_doc = doc_dir / "BRD-01.18_appendices.md"
+        appendix_doc = doc_dir / "BRD-01_appendices.md"
         appendix_doc.write_text(
                 """---
 title: "Appendices"
@@ -377,7 +362,7 @@ custom_fields:
                 project_root=tmp_path,
                 doc_type="brd",
                 layer="01_BRD",
-                document_path=index_doc,
+                document_path=appendix_doc,
                 output_dir=None,
         )
 

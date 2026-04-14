@@ -9,6 +9,8 @@ BRD-XS-001  ADT Decision Propagation
 BRD-XS-002  Phase Alignment
 BRD-XS-004  Entity Consistency
 BRD-XS-005  Currency Scope Consistency (conditional)
+BRD-XS-006  FR Acceptance Criteria Completeness
+BRD-XS-007  Traceability Link Completeness
 """
 
 from __future__ import annotations
@@ -374,6 +376,116 @@ def _check_currency_consistency(
         )
 
 
+# ── BRD-XS-006: FR Acceptance Criteria Completeness ───────────────────
+
+def _check_fr_acceptance_criteria(
+    yaml_data: dict[str, object],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+) -> None:
+    fr_section = yaml_data.get("functional_requirements", {})
+    if not isinstance(fr_section, dict):
+        return
+
+    reqs: list[object] = fr_section.get("requirements", [])  # type: ignore[assignment]
+    if not isinstance(reqs, list) or not reqs:
+        return
+
+    total_frs = 0
+    frs_with_ac = 0
+    frs_missing_ac: list[str] = []
+
+    for req in reqs:
+        if not isinstance(req, dict):
+            continue
+        total_frs += 1
+        fr_id = str(req.get("id", "unknown"))
+
+        ac = req.get("acceptance_criteria")
+        items: list[object] = []
+        if isinstance(ac, dict):
+            items = ac.get("items", [])  # type: ignore[assignment]
+        elif isinstance(ac, list):
+            items = ac
+
+        if isinstance(items, list) and len(items) >= 1:
+            frs_with_ac += 1
+        else:
+            frs_missing_ac.append(fr_id)
+
+    if not total_frs:
+        return
+
+    if frs_missing_ac:
+        warnings.append(
+            f"BRD-XS-006: {len(frs_missing_ac)}/{total_frs} FRs have no "
+            f"acceptance_criteria items: {frs_missing_ac[:5]}"
+            + (f" (+{len(frs_missing_ac)-5} more)" if len(frs_missing_ac) > 5 else "")
+        )
+    else:
+        passes.append(
+            f"BRD-XS-006: All {total_frs} FRs have acceptance_criteria items"
+        )
+
+
+# ── BRD-XS-007: Traceability Link Completeness ───────────────────────
+
+def _check_traceability_link_completeness(
+    yaml_data: dict[str, object],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+) -> None:
+    traceability = yaml_data.get("traceability", {})
+    if not isinstance(traceability, dict):
+        return
+
+    obj_to_req = traceability.get("objectives_to_requirements")
+    if obj_to_req is None:
+        return
+
+    # Handle both list format and dict with "entries" key
+    entries: list[object] = []
+    if isinstance(obj_to_req, list):
+        entries = obj_to_req
+    elif isinstance(obj_to_req, dict):
+        entries = obj_to_req.get("entries", [])  # type: ignore[assignment]
+        if not isinstance(entries, list):
+            entries = []
+
+    if not entries:
+        return
+
+    total = 0
+    empty_links: list[str] = []
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        total += 1
+        obj_id = str(entry.get("objective_id", entry.get("id", "unknown")))
+
+        fr_links = entry.get("related_frs", entry.get("requirement_ids", []))
+        if not isinstance(fr_links, list) or len(fr_links) == 0:
+            empty_links.append(obj_id)
+
+    if not total:
+        return
+
+    if empty_links:
+        warnings.append(
+            f"BRD-XS-007: {len(empty_links)}/{total} objective→requirement "
+            f"mappings have empty related_frs: {empty_links[:5]}"
+            + (f" (+{len(empty_links)-5} more)" if len(empty_links) > 5 else "")
+        )
+    else:
+        passes.append(
+            f"BRD-XS-007: All {total} objective→requirement mappings "
+            f"have linked FRs"
+        )
+
+
 # ── Public API ───────────────────────────────────────────────────────
 
 def run_brd_cross_section_checks(
@@ -388,6 +500,8 @@ def run_brd_cross_section_checks(
     _check_phase_alignment(yaml_data, errors, warnings, passes)
     _check_entity_consistency(yaml_data, errors, warnings, passes)
     _check_currency_consistency(yaml_data, errors, warnings, passes)
+    _check_fr_acceptance_criteria(yaml_data, errors, warnings, passes)
+    _check_traceability_link_completeness(yaml_data, errors, warnings, passes)
 
 
 def run_brd_cross_section_checks_md(

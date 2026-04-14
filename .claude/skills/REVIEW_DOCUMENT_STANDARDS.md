@@ -42,7 +42,7 @@ docs/01_BRD/
 
 # Sectioned BRD
 docs/01_BRD/BRD-03_f3_observability/
-├── BRD-03.0_index.md
+├── BRD-03.md
 ├── BRD-03.1_core.md
 ├── BRD-03.2_requirements.md
 ├── BRD-03.3_quality_ops.md
@@ -109,7 +109,7 @@ docs/02_PRD/
 
 ```
 docs/01_BRD/BRD-03_f3_observability/
-├── BRD-03.0_index.md
+├── BRD-03.md
 ├── BRD-03.1_core.md
 ├── BRD-03.2_requirements.md
 ├── BRD-03.R_review_report_v001.md    # First review (2026-02-08)

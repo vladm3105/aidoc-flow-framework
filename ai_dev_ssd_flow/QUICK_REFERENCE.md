@@ -127,7 +127,7 @@ Section File: docs/05_ADR/ADR-05_database_selection/ADR-05.2_database_selection_
 
 Examples:
 - Flat: `09_SPEC/SPEC-01_api_client_example.yaml`
-- Nested: `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
+- Nested: `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.md`)
 
 ### SPEC Subtypes (deliverable_type routing)
 
@@ -177,7 +177,7 @@ graph TB
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
-    idx["BRD-01.0_index.md"]
+    idx["BRD-01.md"]
     sec1["BRD-01.1_executive_summary.md"]
     sec2["BRD-01.2_business_objectives.md"]
   end
@@ -472,7 +472,7 @@ Use When: All BDD suites (one YAML file per suite)
 ### Index File (Mandatory)
 ```
 Pattern: BDD-NN.0_index.md
-Example: BDD-02.0_index.md
+Example: BDD-02.md
 Purpose: Suite overview, traceability matrix
 ```
 
@@ -489,14 +489,14 @@ Purpose: Suite overview, traceability matrix
 ```
 docs/04_BDD/
  BDD-02_knowledge_engine/
-     BDD-02.0_index.md                       # Index (MANDATORY)
+     BDD-02.md                       # Index (MANDATORY)
      BDD-02_knowledge_engine.yaml            # Monolithic BDD suite
 ```
 
 ### Metadata Tags (Required in YAML)
 ```yaml
 parent_doc: BDD-02         # Parent BDD suite
-index: BDD-02.0_index.md   # Index file reference
+index: BDD-02.md   # Index file reference
 upstream:
   brd: BRD.02.96ef        # Upstream traceability
   prd: PRD.02.ac41

@@ -163,7 +163,7 @@ def test_main_review_build_without_out_uses_document_dir(tmp_path: Path) -> None
         ]
     )
 
-    default_out = sections_dir
+    default_out = sections_dir / ".ucx" / "review"
     assert exit_code == 0
     assert (default_out / "review_prompt.txt").exists()
 
@@ -217,10 +217,10 @@ def test_main_review_build_document_auto_loads_main_and_appendices(tmp_path: Pat
     main_doc = document_dir / "BRD-01_platform_architecture.md"
     main_doc.write_text("# Main\n\n## 1. Intro\n", encoding="utf-8")
 
-    appendix_doc = document_dir / "BRD-01.18_appendices.md"
+    appendix_doc = document_dir / "BRD-01_appendices.md"
     appendix_doc.write_text("# Appendices\n\n## A. Extra\n", encoding="utf-8")
 
-    (document_dir / "BRD-01.0_index.md").write_text("# Index\n", encoding="utf-8")
+    (document_dir / "BRD-01.md").write_text("# Index\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/evidence-document"
     exit_code = main(
@@ -249,7 +249,7 @@ def test_main_review_build_document_auto_loads_main_and_appendices(tmp_path: Pat
     skipped = sections.get("skipped", []) if isinstance(sections, dict) else []
     merged_ids = set(included + skipped)
     assert "BRD-01_platform_architecture" in merged_ids
-    assert "BRD-01.18_appendices" in merged_ids
+    assert "BRD-01_appendices" in merged_ids
 
 
 def test_main_review_build_document_auto_loads_main_and_appendices_across_layers(tmp_path: Path) -> None:
@@ -261,7 +261,7 @@ def test_main_review_build_document_auto_loads_main_and_appendices_across_layers
     main_doc = document_dir / "SYS-07_runtime_architecture.md"
     main_doc.write_text("# Main\n\n## 1. Intro\n", encoding="utf-8")
 
-    appendix_doc = document_dir / "SYS-07.19_appendices.md"
+    appendix_doc = document_dir / "SYS-07_appendices.md"
     appendix_doc.write_text("# Appendices\n\n## A. Extra\n", encoding="utf-8")
 
     out_dir = tmp_path / "tmp/evidence-document-sys"
@@ -290,7 +290,7 @@ def test_main_review_build_document_auto_loads_main_and_appendices_across_layers
     skipped = sections.get("skipped", []) if isinstance(sections, dict) else []
     merged_ids = set(included + skipped)
     assert "SYS-07_runtime_architecture" in merged_ids
-    assert "SYS-07.19_appendices" in merged_ids
+    assert "SYS-07_appendices" in merged_ids
 
 
 def test_main_validate_without_out_uses_document_dir(tmp_path: Path) -> None:
@@ -331,7 +331,7 @@ custom_fields:
         ]
     )
 
-    default_out = doc_dir
+    default_out = doc_dir / ".ucx" / "validate"
     assert exit_code == 0
     assert (default_out / "BRD-01.ucx.validate.json").exists()
     assert (default_out / "BRD-01.ucx.validate.txt").exists()
@@ -368,10 +368,11 @@ def test_main_validate_failing_doc_produces_fix_artifacts(tmp_path: Path) -> Non
         ]
     )
 
+    validate_out = doc_dir / ".ucx" / "validate"
     assert exit_code == 1  # Validation failed
-    assert (doc_dir / "BRD-01.ucx.validate.json").exists()
-    assert (doc_dir / "BRD-01.ucx.validate_fix.json").exists()
-    assert any(doc_dir.glob("*_validated.*"))
+    assert (validate_out / "BRD-01.ucx.validate.json").exists()
+    assert (validate_out / "BRD-01.ucx.validate_fix.json").exists()
+    assert any(validate_out.glob("*_validated.*"))
 
 
 def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> None:

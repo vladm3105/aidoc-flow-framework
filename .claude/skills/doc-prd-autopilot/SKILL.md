@@ -626,7 +626,7 @@ After passing the fix cycle:
 1. **Link Integrity Check**:
    ```
    Scanning PRD-01 for internal links...
-   ├── PRD-01.0_index.md: 17 links found
+   ├── PRD-01.md: 17 links found
    │   ├── PRD-01.1_document_control.md ✓
    │   ├── PRD-01.2_executive_summary.md ✓
    │   └── ... (all valid)
@@ -1069,7 +1069,7 @@ Auto-repair existing PRD documents while preserving manual content.
 | ... | ... | ... | ... |
 
 ## Files Modified
-- docs/02_PRD/PRD-01_f1_iam/PRD-01.0_index.md
+- docs/02_PRD/PRD-01_f1_iam/PRD-01.md
 - docs/02_PRD/PRD-01_f1_iam/PRD-01.5_success_metrics.md
 - docs/02_PRD/PRD-01_f1_iam/PRD-01.9_functional_requirements.md
 
@@ -1158,7 +1158,7 @@ docs/02_PRD/
 docs/02_PRD/
 ├── PRD-00_TRACEABILITY_MATRIX.md  # Updated
 └── PRD-01_f1_iam/                  # Nested folder (REQUIRED)
-    ├── PRD-01.0_index.md
+    ├── PRD-01.md
     ├── PRD-01.1_document_control.md
     ├── PRD-01.2_executive_summary.md
     ├── PRD-01.3_problem_statement.md
@@ -1373,7 +1373,7 @@ docs/02_PRD/PRD-03_f3_observability/        # Nested folder (REQUIRED)
 └── .drift_cache.json                        # Drift cache
 
 docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
-├── PRD-04.0_index.md                        # Index file
+├── PRD-04.md                        # Index file
 ├── PRD-04.1_core.md
 ├── PRD-04.A_audit_report_v001.md           # Combined audit report
 └── .drift_cache.json                        # Drift cache

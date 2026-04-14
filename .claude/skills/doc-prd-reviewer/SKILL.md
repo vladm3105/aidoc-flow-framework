@@ -137,7 +137,7 @@ Validates all internal document links resolve correctly.
 **Detection**:
 ```
 Scanning PRD-01 for internal links...
-├── PRD-01.0_index.md: 17 links found
+├── PRD-01.md: 17 links found
 │   ├── PRD-01.1_document_control.md ✓
 │   ├── PRD-01.2_executive_summary.md ✓
 │   ├── PRD-01.18_missing_section.md ✗ NOT FOUND
@@ -549,7 +549,7 @@ Detects when upstream source documents have been modified after the PRD was crea
   "last_reviewed": "2026-02-10T17:00:00",
   "reviewer_version": "1.4",
   "upstream_documents": {
-    "../../01_BRD/BRD-01_f1_iam/BRD-01.0_index.md": {
+    "../../01_BRD/BRD-01_f1_iam/BRD-01.md": {
       "hash": "sha256:a1b2c3d4e5f6g7h8i9j0...",
       "last_modified": "2026-02-10T15:34:26",
       "file_size": 50781,
@@ -718,7 +718,7 @@ sed -n '/^## Section Name/,/^## /p' <file_path> | head -n -1 | sha256sum | cut -
 
 | Upstream Document | Hash Status | Last Modified | Change % | Status |
 |-------------------|-------------|---------------|----------|--------|
-| BRD-01.0_index.md | ✅ Match | 2026-02-10T15:34:26 | 0% | Current |
+| BRD-01.md | ✅ Match | 2026-02-10T15:34:26 | 0% | Current |
 | BRD-01.7_functional_requirements.md | ✅ Match | 2026-02-10T15:34:21 | 0% | Current |
 
 ### Drift Summary
@@ -922,7 +922,7 @@ prd_reviewer:
 
 ```
 docs/02_PRD/PRD-01_f1_iam/
-├── PRD-01.0_index.md
+├── PRD-01.md
 ├── PRD-01.R_review_report_v001.md    # First review
 ├── PRD-01.R_review_report_v002.md    # After fixes
 └── PRD-01.R_review_report_v003.md    # Final review

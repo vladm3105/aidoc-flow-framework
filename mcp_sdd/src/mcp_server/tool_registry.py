@@ -1052,6 +1052,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             if executor_output and output_dir is not None and document_path is not None:
                 from mcp_server.utils.source_files import extract_doc_id
                 doc_id = extract_doc_id(document_path)
+                output_dir.mkdir(parents=True, exist_ok=True)
                 review_report_path = output_dir / f"{doc_id}.ucx.review.md"
                 review_report_path.write_text(executor_output, encoding="utf-8")
                 exec_response["review_report_path"] = str(review_report_path)

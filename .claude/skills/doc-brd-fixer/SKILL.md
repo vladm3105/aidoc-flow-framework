@@ -951,11 +951,11 @@ custom_fields:
 
 ```
 docs/01_BRD/BRD-01_f1_iam/
-├── BRD-01.0_index.md              # Current (v2.0)
+├── BRD-01.md              # Current (v2.0)
 ├── BRD-01.1_core.md               # Current (v2.0)
 ├── .archive/
 │   ├── v1.2/
-│   │   ├── BRD-01.0_index.md      # Archived v1.2
+│   │   ├── BRD-01.md      # Archived v1.2
 │   │   ├── BRD-01.1_core.md
 │   │   └── ARCHIVE_MANIFEST.md    # Archive metadata
 ```

@@ -290,7 +290,7 @@ gemini @SMALL_FILE.md "Analyze this document"
    ## Section Map
    | Section | File | Description |
    |---------|------|-------------|
-   | 0 | [Index](SPEC-03.0_index.md) | This file |
+   | 0 | [Index](SPEC-03.md) | This file |
    | 1 | [Interfaces](SPEC-03.1_interfaces.md) | Interfaces & Data Models |
    | 2 | [Business Logic](SPEC-03.2_business_logic.md) | Core Logic |
    | 3 | [Quality](SPEC-03.3_quality.md) | Performance & Observability |

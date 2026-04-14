@@ -70,7 +70,7 @@ docs/02_PRD/PRD-01_f1_iam.md
 **Sectioned** (>=25KB):
 ```
 docs/02_PRD/PRD-01_f1_iam/
-├── PRD-01.0_index.md
+├── PRD-01.md
 ├── PRD-01.1_document_control.md
 ...
 └── PRD-01.21_qa_strategy.md

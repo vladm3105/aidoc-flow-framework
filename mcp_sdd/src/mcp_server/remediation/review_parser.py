@@ -146,10 +146,14 @@ def _parse_frontmatter(text: str) -> ReviewSummary | None:
 # ---------------------------------------------------------------------------
 
 def _parse_section4(text: str) -> list[ReviewFinding]:
-    """Parse Section 4 'Required Remediations' 6-column table."""
-    # Find the section heading
+    """Parse Section 4 'Required Remediations' 6-column table.
+
+    Accepts both heading formats:
+      ## 4. Required Remediations
+      ## Section 4: Required Remediations [Table]
+    """
     heading_match = re.search(
-        r"^##\s+4\.\s+Required\s+Remediations",
+        r"^##\s+(?:Section\s+)?4[\.:]\s+Required\s+Remediations",
         text,
         re.MULTILINE | re.IGNORECASE,
     )
@@ -158,7 +162,7 @@ def _parse_section4(text: str) -> list[ReviewFinding]:
 
     # Extract text from heading to next section heading or end
     section_start = heading_match.end()
-    next_heading = re.search(r"^##\s+\d+\.", text[section_start:], re.MULTILINE)
+    next_heading = re.search(r"^##\s+(?:Section\s+)?\d+[\.:]", text[section_start:], re.MULTILINE)
     section_text = (
         text[section_start : section_start + next_heading.start()]
         if next_heading
@@ -192,7 +196,7 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
 
     for section_num in ("2", "3"):
         heading_pat = re.compile(
-            rf"^##\s+{section_num}\.\s+",
+            rf"^##\s+(?:Section\s+)?{section_num}[\.:]\s+",
             re.MULTILINE,
         )
         heading_match = heading_pat.search(text)
@@ -200,7 +204,7 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
             continue
 
         section_start = heading_match.end()
-        next_heading = re.search(r"^##\s+\d+\.", text[section_start:], re.MULTILINE)
+        next_heading = re.search(r"^##\s+(?:Section\s+)?\d+[\.:]", text[section_start:], re.MULTILINE)
         section_text = (
             text[section_start : section_start + next_heading.start()]
             if next_heading
@@ -229,7 +233,7 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
 def _parse_section5(text: str) -> list[ReviewFinding]:
     """Parse Section 5 'Enhancement Recommendations' (P2, 4-column table)."""
     heading_match = re.search(
-        r"^##\s+5\.\s+Enhancement\s+Recommendations",
+        r"^##\s+(?:Section\s+)?5[\.:]\s+(?:P2\s+)?Enhancement\s+Recommendations",
         text,
         re.MULTILINE | re.IGNORECASE,
     )
@@ -237,7 +241,7 @@ def _parse_section5(text: str) -> list[ReviewFinding]:
         return []
 
     section_start = heading_match.end()
-    next_heading = re.search(r"^##\s+\d+\.", text[section_start:], re.MULTILINE)
+    next_heading = re.search(r"^##\s+(?:Section\s+)?\d+[\.:]", text[section_start:], re.MULTILINE)
     section_text = (
         text[section_start : section_start + next_heading.start()]
         if next_heading

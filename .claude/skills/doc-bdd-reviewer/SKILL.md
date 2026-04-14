@@ -476,7 +476,7 @@ Review reports are stored alongside the reviewed document per project standards.
 
 ```
 docs/04_BDD/BDD-01_f1_iam/
-├── BDD-01.0_index.md
+├── BDD-01.md
 ├── BDD-01.1_authentication.feature
 ├── BDD-01.2_authorization.feature
 ├── BDD-01.R_review_report_v001.md    # First review

@@ -493,9 +493,9 @@ AI Assistant **MUST** use this format for all document references:
 #### Examples
 ```markdown
 # Nested folder structure (ALL TYPES - DEFAULT)
-[BRD-01](../01_BRD/BRD-01/BRD-01.0_index.md#BRD-01)
-[PRD-02](../02_PRD/PRD-02/PRD-02.0_index.md#PRD-02)
-[ADR-005](../05_ADR/ADR-005/ADR-005.0_index.md#ADR-005)
+[BRD-01](../01_BRD/BRD-01/BRD-01.md#BRD-01)
+[PRD-02](../02_PRD/PRD-02/PRD-02.md#PRD-02)
+[ADR-005](../05_ADR/ADR-005/ADR-005.md#ADR-005)
 
 # Flat structure (REQ, SPEC, CTR, etc.)
 [REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)

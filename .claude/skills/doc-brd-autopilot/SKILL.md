@@ -1946,7 +1946,7 @@ docs/01_BRD/
 # Sectioned BRD (document ≥20k tokens)
 docs/01_BRD/
 ├── BRD-01_f1_iam/
-│   ├── BRD-01.0_index.md                # ← Section index
+│   ├── BRD-01.md                # ← Section index
 │   ├── BRD-01.1_core.md                 # ← Section 1
 │   ├── BRD-01.2_requirements.md         # ← Section 2
 │   ├── BRD-01.3_quality_ops.md          # ← Section 3

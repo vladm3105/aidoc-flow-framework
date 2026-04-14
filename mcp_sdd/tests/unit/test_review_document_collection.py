@@ -21,11 +21,11 @@ from mcp_server.cli.main import (
 
 def test_list_candidates_includes_yaml(tmp_path: Path) -> None:
     (tmp_path / "BRD-05_multi_agent.yaml").write_text("title: test")
-    (tmp_path / "BRD-05.18_appendices.md").write_text("# appendix")
+    (tmp_path / "BRD-05_appendices.md").write_text("# appendix")
     result = _list_review_document_candidates(tmp_path)
     names = [p.name for p in result]
     assert "BRD-05_multi_agent.yaml" in names
-    assert "BRD-05.18_appendices.md" in names
+    assert "BRD-05_appendices.md" in names
 
 
 def test_list_candidates_excludes_legacy(tmp_path: Path) -> None:
@@ -54,7 +54,7 @@ def test_list_candidates_excludes_review_report(tmp_path: Path) -> None:
 
 def test_find_canonical_yaml_only(tmp_path: Path) -> None:
     (tmp_path / "BRD-05_multi_agent.yaml").write_text("title: test")
-    (tmp_path / "BRD-05.18_appendices.md").write_text("# appendix")
+    (tmp_path / "BRD-05_appendices.md").write_text("# appendix")
     result = _find_canonical_source(tmp_path)
     assert result is not None
     assert result.name == "BRD-05_multi_agent.yaml"
@@ -86,7 +86,7 @@ def test_find_canonical_ignores_legacy(tmp_path: Path) -> None:
 
 def test_find_canonical_appendix_not_canonical(tmp_path: Path) -> None:
     """Appendix files should not match as canonical source."""
-    (tmp_path / "BRD-14.19_appendices.md").write_text("# appendix")
+    (tmp_path / "BRD-14_appendices.md").write_text("# appendix")
     (tmp_path / "BRD-14_feature.yaml").write_text("title: feature")
     result = _find_canonical_source(tmp_path)
     assert result is not None
@@ -106,11 +106,11 @@ def test_find_canonical_no_match(tmp_path: Path) -> None:
 
 def test_collect_yaml_with_appendix(tmp_path: Path) -> None:
     (tmp_path / "BRD-05_multi_agent.yaml").write_text("title: test")
-    (tmp_path / "BRD-05.18_appendices.md").write_text("# appendix")
+    (tmp_path / "BRD-05_appendices.md").write_text("# appendix")
     result = _collect_review_document_files(tmp_path)
     names = [p.name for p in result]
     assert names[0] == "BRD-05_multi_agent.yaml"
-    assert "BRD-05.18_appendices.md" in names
+    assert "BRD-05_appendices.md" in names
     assert len(result) == 2
 
 
@@ -138,11 +138,11 @@ def test_collect_empty_folder(tmp_path: Path) -> None:
 def test_collect_section19_appendix_detected(tmp_path: Path) -> None:
     """BRD-14 through BRD-17 use .19_appendices.md — should be detected."""
     (tmp_path / "BRD-14_feature.yaml").write_text("title: feature")
-    (tmp_path / "BRD-14.19_appendices.md").write_text("# appendix")
+    (tmp_path / "BRD-14_appendices.md").write_text("# appendix")
     result = _collect_review_document_files(tmp_path)
     names = [p.name for p in result]
     assert "BRD-14_feature.yaml" in names
-    assert "BRD-14.19_appendices.md" in names
+    assert "BRD-14_appendices.md" in names
 
 
 # ---------------------------------------------------------------------------

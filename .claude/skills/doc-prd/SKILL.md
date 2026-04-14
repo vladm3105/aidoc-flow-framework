@@ -412,7 +412,7 @@ Check `docs/02_PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 **Sectioned PRD** (for large documents >25KB):
 ```
 docs/02_PRD/PRD-01_user_authentication/
-  PRD-01.0_index.md
+  PRD-01.md
   PRD-01.1_executive_summary.md
   PRD-01.2_problem_statement.md
   ...
