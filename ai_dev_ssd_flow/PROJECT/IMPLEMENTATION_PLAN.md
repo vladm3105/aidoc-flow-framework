@@ -7,9 +7,9 @@ tags:
   - sdd-workflow
   - implementation-plan
 custom_fields:
-  document_type: implementation-plan
-  artifact_type: IPLAN
-  layer: 12
+  document_type: implementation-plan-template
+  artifact_type: PROJECT
+  layer: 0
   priority: shared
   development_status: active
   location: ai_dev_ssd_flow/PROJECT/IMPLEMENTATION_PLAN.md

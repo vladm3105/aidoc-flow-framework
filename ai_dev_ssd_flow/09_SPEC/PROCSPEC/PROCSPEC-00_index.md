@@ -70,7 +70,7 @@ flowchart LR
 
 ## Related Documents
 
-- **Parent Template**: [SPEC-MVP-TEMPLATE.yaml](../SPEC-MVP-TEMPLATE.yaml)
+- **Parent Template**: [SPEC-TEMPLATE.yaml](../SPEC-TEMPLATE.yaml)
 - **Template**: [PROCSPEC-MVP-TEMPLATE.yaml](./PROCSPEC-MVP-TEMPLATE.yaml)
 - **Schema**: [PROCSPEC_MVP_SCHEMA.yaml](./PROCSPEC_MVP_SCHEMA.yaml)
 - **Creation Rules**: [PROCSPEC_MVP_CREATION_RULES.md](./PROCSPEC_MVP_CREATION_RULES.md)

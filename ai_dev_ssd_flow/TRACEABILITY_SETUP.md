@@ -13,7 +13,7 @@ custom_fields:
 
 # Traceability Setup Guide
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
 **Purpose**: Configure automated traceability validation and drift detection for projects

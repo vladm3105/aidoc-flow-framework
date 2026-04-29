@@ -51,7 +51,7 @@ Workflows
 - [workflows/UPSTREAM_WORKFLOW.md](./workflows/UPSTREAM_WORKFLOW.md): Upstream change workflow (BRD/PRD)
 - [workflows/MIDSTREAM_WORKFLOW.md](./workflows/MIDSTREAM_WORKFLOW.md): Midstream change workflow (ADR/CTR)
 - [workflows/DESIGN_WORKFLOW.md](./workflows/DESIGN_WORKFLOW.md): Design change workflow (EARS/BDD/SPEC)
-- [workflows/DOWNSTREAM_WORKFLOW.md](./workflows/DOWNSTREAM_WORKFLOW.md): Downstream change workflow (TASKS/IPLAN)
+- [workflows/DOWNSTREAM_WORKFLOW.md](./workflows/DOWNSTREAM_WORKFLOW.md): Downstream change workflow (TASKS)
 - [workflows/EMERGENCY_WORKFLOW.md](./workflows/EMERGENCY_WORKFLOW.md): Emergency change workflow
 
 Sources

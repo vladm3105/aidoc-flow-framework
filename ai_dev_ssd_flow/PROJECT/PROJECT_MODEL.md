@@ -115,7 +115,7 @@ This document defines a **hybrid development methodology** that integrates:
 |----------|--------|-------------------|
 | BRD-00_index.md | Required | Create using `/doc-brd` skill |
 | ADR folder structure | Required | Create `docs/05_ADR/` |
-| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) or use IPLANs from `governance/plans/` |
+| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) |
 | CHG template | Required | Copy from `ai_dev_ssd_flow/CHG/` (SDD projects only) |
 
 ### 2.3 Team Readiness
@@ -237,7 +237,7 @@ This document defines a **hybrid development methodology** that integrates:
 | Phase-Gated Deployment | dev → staging → prod with automated gates |
 | AI Label Lifecycle | `ai:ready` → `ai:in-progress` → `ai:review-requested` |
 | Multi-Cloud Support | Setup scripts for GCP, AWS, Azure |
-| Lightweight Governance | IPLAN templates instead of full SDD artifacts |
+| Lightweight Governance | TASKS templates instead of full SDD artifacts |
 | Rapid Setup | 47+ placeholder variables, validation script |
 | GitHub-Native | 18 workflow templates, issue automation |
 
@@ -247,7 +247,7 @@ This document defines a **hybrid development methodology** that integrates:
 |----------|------------|
 | Limited Traceability | No formal requirement→code lineage (phase-based only) |
 | Regulatory Gap | Insufficient for FDA/ISO compliance |
-| Documentation Scope | IPLANs vs full SDD artifacts |
+| Documentation Scope | TASKS vs full SDD artifacts |
 | Team Scale | Optimized for solo/small teams, not enterprise |
 | Change Management | No formal CHG/4-Gate system |
 
@@ -269,7 +269,7 @@ This document defines a **hybrid development methodology** that integrates:
 | Traceability | Minimal | Phase-based | Full | Full |
 | Regulatory | None | None | Optional | Required |
 | Deployment Model | Manual | Phase-gated | Sprint-based | Formal gates |
-| Documentation | Minimal | IPLANs | 15-layer SDD | 15-layer SDD |
+| Documentation | Minimal | TASKS | 15-layer SDD | 15-layer SDD |
 | Setup Complexity | Low | Low | Medium | High |
 
 ---
@@ -1251,7 +1251,7 @@ These common mistakes undermine the hybrid model's effectiveness:
 | Setup Guide | `governance/SETUP_GUIDE.md` | Step-by-step customization |
 | Cloud Guide | `governance/CLOUD_GUIDE.md` | GCP/AWS/Azure setup |
 | Governance Rules | `governance/GOVERNANCE_RULES.md` | AI-first governance |
-| IPLAN Templates | `governance/plans/` | Implementation plan templates |
+| TASKS Templates | `governance/plans/` | Implementation task templates |
 | GitHub Workflows | `governance/GITHUB_WORKFLOWS.md` | 18 workflow documentation |
 | AI PR Review | `governance/AI_PR_Review/` | AI code review setup |
 
@@ -1290,7 +1290,7 @@ These common mistakes undermine the hybrid model's effectiveness:
 | **Traceability** | Issue→PR→Code | Phase→Issue→PR→Deploy | BRD→Code (full) | Full with automation |
 | **Human Touchpoints** | Every sprint | PR review, prod deploy | 5 checkpoints | Sprint + checkpoints |
 | **Quality Gates** | DoD checklists | Phase completion gates | 14+ validators | Integrated in CI |
-| **Feedback Loop** | Retrospective | IPLAN documents | CHG documents | Both + automation |
+| **Feedback Loop** | Retrospective | TASKS documents | CHG documents | Both + automation |
 | **Best For** | Small teams, POCs | AI-first MVPs | Regulated, complex | Production products |
 | **Team Size** | 1-5 | 1-5 | 10+ | 5-15 |
 | **Timeline** | <3 months | 1-6 months | >12 months | 3-12 months |

@@ -1,0 +1,150 @@
+# SPEC-TEMPLATE.yaml — Unified Technical Specification
+# SDD v3 Layer 7 — Implementation-ready specification
+# Version: 3.0
+
+metadata:
+  schema_version: "1.0"
+  document_type: "spec-document"
+  layer: 7
+  total_sections: 8
+  last_updated: "2026-04-28"
+  deliverable_type: code
+  tags:
+    - spec-document
+    - layer-7-artifact
+    - shared-architecture
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  status: Draft
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author]"
+  component: "[Component Name]"
+  code_ready_score: "[Score]/100"
+
+# =============================================================================
+# Section 2: Component Overview
+# =============================================================================
+component_overview:
+  _guidance: |
+    One paragraph describing what this component does and its role
+    in the system architecture (from ADR decisions).
+  description: "[Component purpose and role]"
+  architecture_decision: "@adr: ADR-NN"
+  language: "[Python | TypeScript | Go | Java | ...]"
+  dependencies:
+    - name: "[Dependency Package]"
+      version: "[>=X.Y.Z]"
+      purpose: "[Why needed]"
+
+# =============================================================================
+# Section 3: Interfaces
+# =============================================================================
+interfaces:
+  _guidance: |
+    Define the public API of this component: classes, functions, method signatures.
+    Use type annotations. No implementation — this is the contract.
+  exports:
+    - name: "[ClassName | function_name]"
+      type: "[class | function | async function]"
+      signature: "[def name(param: Type) -> ReturnType:]"
+      description: "[What it does]"
+      errors:
+        - "[ErrorType]: [When raised]"
+
+# =============================================================================
+# Section 4: Data Models
+# =============================================================================
+data_models:
+  _guidance: |
+    Define data structures passed through component interfaces.
+    Use typed field definitions, not SQL/ORM.
+  models:
+    - name: "[ModelName]"
+      type: "[dataclass | TypedDict | Pydantic BaseModel]"
+      fields:
+        - name: "[field_name]"
+          type: "[Type]"
+          required: true
+          description: "[Field purpose]"
+
+# =============================================================================
+# Section 5: Behavior
+# =============================================================================
+behavior:
+  _guidance: |
+    Describe component logic: validation rules, state transitions,
+    business rules inherited from EARS/BDD. No implementation code —
+    this is specification, not source.
+  validation_rules:
+    - rule: "[Validation condition]"
+      source: "@ears: EARS.NN"
+  state_transitions:
+    - from: "[State]"
+      to: "[State]"
+      trigger: "[Event/Condition]"
+      source: "@bdd: BDD.NN"
+  error_handling:
+    - condition: "[Error condition]"
+      response: "[How handled]"
+      source: "@bdd: BDD.NN"
+
+# =============================================================================
+# Section 6: Implementation Notes
+# =============================================================================
+implementation_notes:
+  _guidance: |
+    Constraints, patterns, and considerations for implementation.
+    NOT implementation code — guidance for the AI/coder.
+  constraints:
+    - "[Constraint — e.g., Must be stateless]"
+  patterns:
+    - "[Pattern — e.g., Repository pattern for data access]"
+  performance_considerations:
+    - "[Consideration — e.g., LRU cache for frequent reads]"
+
+# =============================================================================
+# Section 7: Test Contract References
+# =============================================================================
+test_contracts:
+  _guidance: |
+    Reference TDD layer documents that define tests for this component.
+    TDD declares test files before implementation files (test-first order).
+  tdd_document: "@tdd: TDD-NN"
+  test_files:
+    - path: "tests/unit/test_[module].py"
+      covers: "[Functions/classes tested]"
+    - path: "tests/integration/test_[module].py"
+      covers: "[Integration points tested]"
+    - path: "tests/e2e/test_[workflow].py"
+      covers: "[BDD scenarios tested]"
+
+# =============================================================================
+# Section 8: Traceability
+# =============================================================================
+traceability:
+  tags:
+    - "@spec: SPEC-NN"
+  upstream:
+    tdd_references:
+      - "@tdd: TDD-NN"
+    adr_references:
+      - "@adr: ADR-NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    prd_references:
+      - "@prd: PRD-NN"
+    brd_references:
+      - "@brd: BRD-NN"
+  downstream:
+    - type: CODE
+      description: "Source code implementation"
+  health_score:
+    code_ready: "[X]%"
+    target_score: ">=90/100"

@@ -71,7 +71,7 @@ flowchart LR
 
 ## Related Documents
 
-- **Parent Template**: [SPEC-MVP-TEMPLATE.yaml](../SPEC-MVP-TEMPLATE.yaml)
+- **Parent Template**: [SPEC-TEMPLATE.yaml](../SPEC-TEMPLATE.yaml)
 - **Template**: [CSPEC-MVP-TEMPLATE.yaml](./CSPEC-MVP-TEMPLATE.yaml)
 - **Schema**: [CSPEC_MVP_SCHEMA.yaml](./CSPEC_MVP_SCHEMA.yaml)
 - **Creation Rules**: [CSPEC_MVP_CREATION_RULES.md](./CSPEC_MVP_CREATION_RULES.md)

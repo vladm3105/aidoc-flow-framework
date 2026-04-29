@@ -290,7 +290,7 @@ Or use domain-aware template generation when creating documents.
 
 ```bash
 # Point to the framework checkout (adjust for your environment)
-FRAMEWORK_ROOT=/path/to/ai_dev_flow
+FRAMEWORK_ROOT=/opt/data/docs_flow_framework/ai_dev_ssd_flow
 
 # Copy templates by artifact type (portable example uses docs/)
 cp -r "$FRAMEWORK_ROOT/BRD"/*   docs/01_BRD/

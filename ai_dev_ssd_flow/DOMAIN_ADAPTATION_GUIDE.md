@@ -40,7 +40,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 4. **List external integrations**: Third-party services, APIs, data providers
 
 ### Step 2: Replace Placeholders
-1. **Copy templates** from `ai_dev_flow/` to your project's `docs/` folder
+1. **Copy templates** from `ai_dev_ssd_flow/` to your project's `docs/` folder
 2. **Search for [PLACEHOLDERS]** - all framework placeholders use `[UPPERCASE_BRACKET]` format
 3. **Replace with domain-specific values** - use your terminology consistently
 4. **Update descriptions** - customize example descriptions to match your domain

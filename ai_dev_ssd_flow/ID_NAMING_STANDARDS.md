@@ -1170,6 +1170,6 @@ mcp_sdd `sdd_validate` --all
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 3.0 | 2026-03-30 | DEPRECATED section-based file splitting; all documents are monolithic up to 50,000 tokens; removed section file naming patterns, section frontmatter, section templates, split_type metadata; updated ai_dev_flow references to ai_dev_ssd_flow; updated template references to unified YAML format |
+| 3.0 | 2026-03-30 | DEPRECATED section-based file splitting; all documents are monolithic up to 50,000 tokens; removed section file naming patterns, section frontmatter, section templates, split_type metadata; updated ai_dev_ssd_flow references to ai_dev_ssd_flow; updated template references to unified YAML format |
 | 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance=91, Reliability=92, Scalability=94, Security=96, Observability=98, Maintainability=99); Added BRD Section-to-Element-Code Mapping table with scope clarification (BRD-specific, other document types need own mappings); Updated reserved range from 74-99 to 74-90 |
 | 2.1 | 2026-02-28 | Initial published version with unified element ID format |

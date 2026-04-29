@@ -19,7 +19,7 @@ custom_fields:
 
 ---
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; use zero-padded directories (`01_BRD`, `02_PRD`, etc.). See README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; use zero-padded directories (`01_BRD`, `02_PRD`, etc.). See README → “Using This Repo” for path mapping.
 
 ## Units & Conversions (KB vs tokens)
 

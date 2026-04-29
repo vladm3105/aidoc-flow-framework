@@ -1,0 +1,134 @@
+# SDD v3 Layer Registry
+# Single source of truth for all layer definitions
+# Version: 3.0
+# Last Updated: 2026-04-28
+
+version: "3.0"
+metadata:
+  framework: "Specification-Driven Development (SDD) v3 — Streamlined"
+  total_layers: 7
+  maintainer: "SDD Framework Team"
+  template_policy: unified_yaml
+  changelog:
+    - version: "3.0"
+      date: "2026-04-28"
+      changes:
+        - "Collapsed from 14 layers to 7 (BRD→PRD→EARS→BDD→ADR→TDD→SPEC)"
+        - "Cut: SYS, REQ, CTR, TSPEC (42-file), TASKS, TESTS (doc), VALIDATION"
+        - "Added Layer 6 TDD (lightweight test-driven development guide)"
+        - "SPEC promoted to Layer 7 (unified, single template, no subtypes)"
+        - "Maximum cumulative tags reduced from 14 to 6"
+        - "Removed: 00_REF, CHG, PROJECT, all v1 archives"
+
+layers:
+  - number: 1
+    artifact: BRD
+    name: "Business Requirements Document"
+    folder: 01_BRD/
+    extensions: [.yaml]
+    required_tags: []
+    can_reference: []
+    error_prefix: BRD
+    optional: false
+    description: "Layer 1 — Business-level functional requirements and objectives"
+    template: "BRD-TEMPLATE.yaml"
+    downstream: [PRD]
+
+  - number: 2
+    artifact: PRD
+    name: "Product Requirements Document"
+    folder: 02_PRD/
+    extensions: [.yaml]
+    required_tags: [brd]
+    can_reference: [BRD]
+    error_prefix: PRD
+    optional: false
+    description: "Layer 2 — Product features and user stories derived from BRD"
+    template: "PRD-TEMPLATE.yaml"
+    downstream: [EARS]
+
+  - number: 3
+    artifact: EARS
+    name: "Easy Approach to Requirements Syntax"
+    folder: 03_EARS/
+    extensions: [.yaml]
+    required_tags: [brd, prd]
+    can_reference: [BRD, PRD]
+    error_prefix: EARS
+    optional: false
+    description: "Layer 3 — Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
+    template: "EARS-TEMPLATE.yaml"
+    downstream: [BDD]
+
+  - number: 4
+    artifact: BDD
+    name: "Behavior-Driven Development"
+    folder: 04_BDD/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears]
+    can_reference: [BRD, PRD, EARS]
+    error_prefix: BDD
+    optional: false
+    description: "Layer 4 — Test scenarios using Given-When-Then format"
+    template: "BDD-TEMPLATE.yaml"
+    downstream: [ADR]
+
+  - number: 5
+    artifact: ADR
+    name: "Architecture Decision Record"
+    folder: 05_ADR/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears, bdd]
+    can_reference: [BRD, PRD, EARS, BDD]
+    error_prefix: ADR
+    optional: false
+    description: "Layer 5 — Architectural decisions with Context-Decision-Consequences"
+    template: "ADR-TEMPLATE.yaml"
+    downstream: [TDD]
+
+  - number: 6
+    artifact: TDD
+    name: "Test-Driven Development Guide"
+    folder: 06_TDD/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears, bdd, adr]
+    can_reference: [BRD, PRD, EARS, BDD, ADR]
+    error_prefix: TDD
+    optional: false
+    description: "Layer 6 — Lightweight TDD guide: test pyramid, BDD-to-test mapping, test file ordering"
+    template: "TDD-TEMPLATE.yaml"
+    downstream: [SPEC]
+
+  - number: 7
+    artifact: SPEC
+    name: "Technical Specification"
+    folder: 07_SPEC/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears, bdd, adr, tdd]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, TDD]
+    error_prefix: SPEC
+    optional: false
+    description: "Layer 7 — Implementation-ready technical specification"
+    template: "SPEC-TEMPLATE.yaml"
+    downstream: [CODE]
+
+layer_groups:
+  business:
+    layers: [1]
+    description: "Business requirements and objectives"
+
+  product:
+    layers: [2, 3, 4]
+    description: "Product features, formal requirements, acceptance criteria"
+
+  architecture:
+    layers: [5, 6]
+    description: "Architecture decisions and test-driven development"
+
+  implementation:
+    layers: [7]
+    description: "Technical implementation specification"
+
+id_patterns:
+  document: "^[A-Z]+-\\d{2,}$"
+  element: "^[A-Z]+\\.\\d{2,}\\.\\d{2,}\\.\\d{2,}$"

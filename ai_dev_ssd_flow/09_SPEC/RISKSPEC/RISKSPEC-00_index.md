@@ -78,7 +78,7 @@ RISKSPEC supports the following frameworks:
 
 ## Related Documents
 
-- **Parent Template**: [SPEC-MVP-TEMPLATE.yaml](../SPEC-MVP-TEMPLATE.yaml)
+- **Parent Template**: [SPEC-TEMPLATE.yaml](../SPEC-TEMPLATE.yaml)
 - **Template**: [RISKSPEC-MVP-TEMPLATE.yaml](./RISKSPEC-MVP-TEMPLATE.yaml)
 - **Schema**: [RISKSPEC_MVP_SCHEMA.yaml](./RISKSPEC_MVP_SCHEMA.yaml)
 - **Creation Rules**: [RISKSPEC_MVP_CREATION_RULES.md](./RISKSPEC_MVP_CREATION_RULES.md)

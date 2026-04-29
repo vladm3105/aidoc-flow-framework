@@ -20,7 +20,9 @@ The SDD framework transforms business requirements into production code through 
 
 ---
 
-## 15-Layer Architecture
+## Layer Architecture
+
+The SDD framework has **14 numbered layers (1-14)** plus **Layer 0 (optional strategy)**:
 
 ```mermaid
 flowchart LR
@@ -41,6 +43,7 @@ flowchart LR
 
 | Layer | Artifact | C4 Level | Template | Purpose |
 |-------|----------|----------|----------|---------|
+| 0 | STRAT | — | — | Optional pre-artifact strategy (market analysis, vision) |
 | 1 | BRD | Context (L1) | `BRD-TEMPLATE.yaml` | Business objectives and market context |
 | 2 | PRD | Container (L2) | `PRD-TEMPLATE.yaml` | Product features and user stories |
 | 3 | EARS | Transition | `EARS-TEMPLATE.yaml` | Formal WHEN-THE-SHALL requirements |
@@ -52,7 +55,9 @@ flowchart LR
 | 9 | SPEC | Code (L4) | `SPEC-TEMPLATE.yaml` | Implementation-ready specifications |
 | 10 | TSPEC | Validation | `TSPEC-TEMPLATE.yaml` | Test specifications (6 subtypes) |
 | 11 | TASKS | Execution | `TASKS-TEMPLATE.yaml` | AI code generation guide |
-| 12-14 | Code/Tests/Validation | — | — | Source code, test execution, deployment |
+| 12 | Code | — | — | Source code implementation |
+| 13 | Tests | — | — | Test implementations |
+| 14 | Validation | — | — | Quality gate results |
 
 **CHG** (Change Management) is a governance overlay, not a layer. See `CHG/CHG-00_index.md`.
 
@@ -110,7 +115,7 @@ ai_dev_ssd_flow/
 ├── 08_CTR/          CTR-TEMPLATE.yaml, ...
 ├── 09_SPEC/         SPEC-TEMPLATE.yaml, + subtypes (CSPEC, DSPEC, UXSPEC, RISKSPEC, PROCSPEC)
 ├── 10_TSPEC/        TSPEC-TEMPLATE.yaml, + subtypes (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST)
-├── 11_TASKS/        TASKS-TEMPLATE.yaml, IMPLEMENTATION_PLAN_TEMPLATE.md/.yaml
+├── 11_TASKS/        TASKS-TEMPLATE.yaml, IMPLEMENTATION_PLAN_TEMPLATE.md/.yaml (orchestrator)
 ├── CHG/             CHG-TEMPLATE.yaml, gates/, workflows/, sources/
 ├── PROJECT/         SDD Project Model (sprint integration, CI/CD, 4-gate system)
 └── [framework docs] Standards, guides, and references (see below)
@@ -226,7 +231,7 @@ Full guide: [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md)
 
 This repository is a **framework template**. To use in a project:
 
-1. Copy unified templates from `mcp_sdd/templates/` or layer directories
+1. Copy unified templates from layer directories
 2. Create `docs/{NN}_{TYPE}/` directories for your project artifacts
 3. Use mcp_sdd `sdd_create` to scaffold new documents
 4. Validate with mcp_sdd `sdd_validate`
@@ -285,6 +290,15 @@ Path note: Examples in guides may show a `docs/` prefix. In this repository, lay
 | [TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](./TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) | Complete traceability matrix template |
 | [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) | Drift detection and CI/CD setup |
 | [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) | End-to-end tagging example |
+
+---
+
+## Version Mapping
+
+| ai_dev_ssd_flow | UCX / mcp_sdd | Release Date | Key Changes |
+|-----------------|---------------|--------------|-------------|
+| v0.21.0 | v1.21.x | 2026-04 | UCX rebranded as Unified Context eXcelerator |
+| v0.19.0 | v1.12.0 | 2026-03 | Category-weighted scoring, hash-based finding IDs |
 
 ---
 

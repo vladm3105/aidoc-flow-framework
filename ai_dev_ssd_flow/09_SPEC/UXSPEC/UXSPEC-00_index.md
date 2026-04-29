@@ -70,7 +70,7 @@ flowchart LR
 
 ## Related Documents
 
-- **Parent Template**: [SPEC-MVP-TEMPLATE.yaml](../SPEC-MVP-TEMPLATE.yaml)
+- **Parent Template**: [SPEC-TEMPLATE.yaml](../SPEC-TEMPLATE.yaml)
 - **Template**: [UXSPEC-MVP-TEMPLATE.yaml](./UXSPEC-MVP-TEMPLATE.yaml)
 - **Schema**: [UXSPEC_MVP_SCHEMA.yaml](./UXSPEC_MVP_SCHEMA.yaml)
 - **Creation Rules**: [UXSPEC_MVP_CREATION_RULES.md](./UXSPEC_MVP_CREATION_RULES.md)

@@ -6,7 +6,7 @@
 version: "1.6"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 15
+  total_layers: 14
   maintainer: "SDD Framework Team"
   template_policy: unified_yaml
   deprecated_templates: "*_v1_archive/"

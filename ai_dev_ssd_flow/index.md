@@ -83,7 +83,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - **Automation Flow**: See `./SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 **Key Automation Benefits**:
-- 90%+ automation (14 of 15 layers)
+- 90%+ automation (14 of 14 layers)
 - Quality gates enable optional human checkpoints (auto-approve if score ≥90%)
 - Code-from-specs capability (YAML → Python)
 - Auto-fix testing with 3 retry attempts
@@ -117,7 +117,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Change Management (CHG) - 4-Gate System
 
-[WARN] **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management system with formal gate validation.
+[WARN] **Note**: CHG is NOT a layer in the 14-layer architecture - it's a change management system with formal gate validation.
 
 - **CHG** (`CHG/`) - 4-Gate change management with document immutability enforcement
   - **Guide**: [CHANGE_MANAGEMENT_GUIDE.md](./CHG/CHANGE_MANAGEMENT_GUIDE.md) - Complete change management procedures
@@ -253,7 +253,7 @@ Layer 12 and beyond are **implementation layers** (not SDD documentation artifac
 
 **Workflow**: `SPEC (Layer 9) → TSPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
 
-> **Note**: The former "IPLAN" (Implementation Plan) artifact was deprecated. Execution commands are now in TASKS Section 4.
+> **Note**: The former IPLAN (Implementation Plan) artifact was deprecated. Execution commands are now in TASKS Section 4.
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
@@ -351,7 +351,7 @@ flowchart TD
 
 All SDD documents are monolithic up to 50,000 tokens. See document size policy in README.md.
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. "Review" and "Prod" are outcomes, not formal layers.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 1-14) defined in README.md. Diagram groupings are for visual clarity only. "Review" and "Prod" are outcomes, not formal layers.
 
 ### Workflow Explanation
 

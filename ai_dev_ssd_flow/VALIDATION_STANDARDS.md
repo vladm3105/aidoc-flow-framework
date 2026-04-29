@@ -31,7 +31,7 @@ This document defines the error code registry, validation rules, and exit code c
 
 **Out of Scope**:
 - Layer 0 (REF/Strategy): Optional pre-artifact planning, not validated
-- Layers 12-14 (IPLAN, Code, Tests): Source code traceability not implemented
+- Layers 12-14 (Code, Tests, Validation): Source code traceability not implemented
 
 ## Exit Code Conventions
 

@@ -68,7 +68,7 @@ flowchart LR
 
 ## Related Documents
 
-- **Parent Template**: [SPEC-MVP-TEMPLATE.yaml](../SPEC-MVP-TEMPLATE.yaml)
+- **Parent Template**: [SPEC-TEMPLATE.yaml](../SPEC-TEMPLATE.yaml)
 - **Template**: [DSPEC-MVP-TEMPLATE.yaml](./DSPEC-MVP-TEMPLATE.yaml)
 - **Schema**: [DSPEC_MVP_SCHEMA.yaml](./DSPEC_MVP_SCHEMA.yaml)
 - **Creation Rules**: [DSPEC_MVP_CREATION_RULES.md](./DSPEC_MVP_CREATION_RULES.md)

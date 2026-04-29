@@ -1,0 +1,448 @@
+# =============================================================================
+#  ADR-TEMPLATE.yaml — Architecture Decision Record (SDD v3)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD
+#  Purpose: AI-consumable + human-reviewable ADR template
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream: TDD (Layer 6), SPEC (Layer 7)
+#  Upstream: BRD (L1), PRD (L2), EARS (L3), BDD (L4)
+#
+#  v3 changes from ai_dev_ssd_flow:
+#    TDD replaces SYS as primary downstream; removed REQ, TSPEC, TASKS refs
+# =============================================================================
+
+id: ADR-NN
+title: "[Architecture Decision Title]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  document_type: "adr-document"
+  layer: 5
+  lifecycle: mvp-prod-newmvp
+  total_sections: 10
+  last_updated: "2026-03-29"
+  validation:
+    tool: sdd_validate
+    server: mcp_sdd
+    _guidance: |
+      All validation runs through mcp_sdd MCP tools.
+      TDD-Ready Score: >=90/100 required before downstream TDD generation.
+
+      TDD-Ready scoring criteria:
+        Decision completeness (30%): clear decision with rationale, alternatives evaluated
+        Architecture clarity (25%): diagrams present, integration points defined
+        Consequence analysis (20%): positive outcomes, trade-offs, costs documented
+        Traceability (15%): upstream PRD/EARS/BDD/BRD tags complete
+        Verification (10%): success criteria defined, BDD cross-refs present
+
+      Status-to-score mapping:
+        >= 90%: Accepted
+        70-89%: Proposed
+        < 70%: Draft (significant work needed)
+
+  c4_level:
+    _guidance: |
+      ADR is NOT a C4 level. It is the decision bridge between
+      Container (PRD) and Code (SPEC).
+
+      SDD v3 C4 map (7 layers):
+        Context (BRD)    — business environment, actors, boundaries
+        Container (PRD)  — product features, functional blocks
+        EARS              — formalize Context→Container transition
+        BDD               — executable acceptance scenarios
+        ADR               — architecture decisions                 ← this layer
+        TDD               — test-driven development guide
+        Code (SPEC)       — implementation-ready specifications
+
+      ADR synthesizes inputs from PRD (architecture topics), EARS (timing
+      constraints), and BDD (integration/failure scenarios) to make architecture
+      decisions that shape the implementation specification (SPEC).
+
+  diagram_standard:
+    _guidance: |
+      ADR uses architecture decision diagrams (no C4 level — bridge layer):
+        - sequenceDiagram: architecture interaction flows
+        - flowchart: decision logic, rollback paths, alternative comparison
+
+      ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SYS (Layer 6).
+      ADR diagrams show the decision's impact, not the system structure itself.
+
+  tags:
+    - adr-document
+    - layer-5-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Inherited from upstream PRD (which inherits from BRD).
+    value: code  # code | document | ux | risk | process
+
+  id_standard:
+    _guidance: |
+      All element IDs use content-derived hashes scoped to ADR content.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: ADR.01.03.e5b1
+
+      Hash algorithm (SHA256, 4-char hex):
+        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
+           - from ADR content, NOT upstream PRD/BRD content
+        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
+        3. Collision: extend hash from 4 to 8 chars if duplicate detected
+
+      Template placeholder: "xxxx" represents the hash suffix.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+    placeholder: "xxxx"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _guidance: |
+    ADR uses a DIFFERENT status lifecycle from other layers:
+      Proposed → Accepted → Deprecated → Superseded
+      (NOT Draft/In Review/Approved)
+
+    TDD-Ready Score: >=90/100 required before TDD generation.
+    Originating Topic: links to PRD Section 14 (ADR topic elaboration).
+    Each ADR addresses ONE architecture decision. New decisions = new ADR.
+  status: Proposed  # Proposed | Accepted | Deprecated | Superseded
+  date: "YYYY-MM-DD"
+  decision_makers:
+    - "[Architect Name]"
+    - "[Tech Lead Name]"
+  author: "[Author Name]"
+  version: "1.0"
+  originating_topic: "@prd: PRD.NN.14.xxxx"
+  brd_reference: "@brd: BRD.NN.08.xxxx"
+  tdd_ready_score: "[Score]/100"
+
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial ADR proposal"
+
+# =============================================================================
+# Section 2: Context
+# =============================================================================
+
+context:
+  _guidance: |
+    Describe WHY this decision is needed. Include business driver from BRD,
+    technical constraints from PRD/EARS, and current system state.
+
+  problem_statement: |
+    [What architectural problem or opportunity requires a decision?
+    Reference the originating BRD topic and PRD elaboration.]
+
+  business_driver: |
+    [Why does the business need this decision? Link to BRD objectives.]
+
+  key_constraints:
+    - "[Constraint 1 — budget, timeline, team skills]"
+    - "[Constraint 2 — regulatory, compliance]"
+
+  technical_context: |
+    [Current system state, existing architecture, integration requirements.
+    Reference EARS timing constraints and BDD failure scenarios that
+    inform this decision.]
+
+# =============================================================================
+# Section 3: Decision
+# =============================================================================
+
+decision:
+  _guidance: |
+    State the chosen solution clearly. Be decisive — the decision rationale
+    must explain WHY this option was selected, not just WHAT it is.
+
+  _antipatterns:
+    - "FAIL: ambiguous decision — unclear which option is chosen"
+    - "FAIL: multiple decisions in one ADR — split into separate ADRs"
+    - "FAIL: missing rationale — must explain why, not just what"
+
+  chosen_solution:
+    id: "ADR.NN.03.xxxx"
+    title: "[Chosen Solution Name]"
+    description: |
+      [Clear description of the selected approach and why it was chosen
+      over alternatives.]
+
+  key_components:
+    - name: "[Component 1]"
+      role: "[What it does in the architecture]"
+    - name: "[Component 2]"
+      role: "[What it does]"
+
+  implementation_approach:
+    mvp_scope: |
+      [What is implemented in the current MVP cycle]
+    next_cycle_scope: |
+      [What is deferred to the next cycle]
+
+# =============================================================================
+# Section 4: Alternatives Considered
+# =============================================================================
+
+alternatives:
+  _guidance: |
+    Evaluate 2-3 viable alternatives. Each must have pros, cons, estimated cost,
+    and fit rating. Non-selected options must include a rejection reason.
+
+  _antipatterns:
+    - "FAIL: more than 3 alternatives — violates MVP streamlining"
+    - "FAIL: missing rejection reason for non-selected options"
+    - "FAIL: no cost estimate per alternative"
+
+  options:
+    - id: "ADR.NN.04.xxxx"
+      name: "[Selected Option]"
+      selected: true
+      description: "[Description]"
+      pros:
+        - "[Pro 1]"
+        - "[Pro 2]"
+      cons:
+        - "[Con 1]"
+        - "[Con 2]"
+      estimated_cost: "$[X]/month"
+      fit: Best
+
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative B]"
+      selected: false
+      description: "[Description]"
+      pros:
+        - "[Pro 1]"
+      cons:
+        - "[Con 1]"
+      rejection_reason: "[Why not selected]"
+      estimated_cost: "$[X]/month"
+      fit: Good  # Good | Poor
+
+    - id: "ADR.NN.04.xxxx"
+      name: "[Alternative C — optional]"
+      selected: false
+      description: "[Description]"
+      pros:
+        - "[Pro 1]"
+      cons:
+        - "[Con 1]"
+      rejection_reason: "[Why not selected]"
+      estimated_cost: "$[X]/month"
+      fit: Poor
+
+# =============================================================================
+# Section 5: Consequences
+# =============================================================================
+
+consequences:
+  _guidance: |
+    Document the full impact of the decision: positive outcomes,
+    trade-offs/risks with severity, and cost breakdown.
+
+  positive_outcomes:
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 1]"
+    - id: "ADR.NN.05.xxxx"
+      outcome: "[Positive outcome 2]"
+
+  tradeoffs_and_risks:
+    - id: "ADR.NN.05.xxxx"
+      tradeoff: "[Trade-off or risk]"
+      impact: High  # High | Medium | Low
+      mitigation: "[How to mitigate]"
+
+  cost_estimate:
+    mvp_cost: "$[X,XXX]"
+    ongoing_monthly: "$[X,XXX]/month"
+    notes: "[Cost assumptions and caveats]"
+
+# =============================================================================
+# Section 6: Architecture Flow
+# =============================================================================
+
+architecture_flow:
+  _guidance: |
+    Provide Mermaid diagrams showing the decision's impact on architecture.
+    Include MVP scope boundary and external system integrations.
+    Show decision impact, not system internals (SYS owns C4-L3 detail).
+
+  high_level_flow:
+    diagram:
+      type: flowchart
+      content: |
+        flowchart TD
+            subgraph MVP Scope
+                A[Component A] --> B[Component B]
+                B --> C[Component C]
+            end
+            C --> D[External System]
+
+  integration_points:
+    - system: "[System/Service]"
+      integration_type: "[REST | gRPC | Async | Event]"
+      purpose: "[Data flow description]"
+
+# =============================================================================
+# Section 7: Implementation Assessment
+# =============================================================================
+
+implementation_assessment:
+  _guidance: |
+    Decision-level assessment only — NOT detailed implementation plans.
+    TASKS (Layer 11) owns implementation details.
+    Focus on: rollback feasibility, monitoring baseline, risk mitigation.
+
+  mvp_phases:
+    - phase: "[Phase 1]"
+      scope: "[What this phase delivers]"
+      risk: "[Key risk]"
+
+  rollback_plan:
+    strategy: "[How to reverse this decision if it fails]"
+    trigger: "[What conditions trigger rollback]"
+    estimated_effort: "[Time/cost to rollback]"
+
+  monitoring_baseline:
+    - metric: "[Key metric to watch]"
+      target: "[Target value]"
+      alert_threshold: "[When to alert]"
+
+# =============================================================================
+# Section 8: Verification
+# =============================================================================
+
+verification:
+  _guidance: |
+    Define success criteria for this decision. Cross-reference BDD scenarios
+    that validate the architecture. Lightweight — full tests are in TSPEC.
+
+  success_criteria:
+    - criterion: "[Measurable success condition]"
+      measurement: "[How to verify]"
+
+  bdd_scenario_refs:
+    _note: "Cross-references to BDD scenarios that validate this decision."
+    scenarios:
+      - "@bdd: BDD.NN.03.xxxx"
+      - "@bdd: BDD.NN.03.xxxx"
+
+# =============================================================================
+# Section 9: Traceability
+# =============================================================================
+
+traceability:
+  _guidance: |
+    ADR synthesizes inputs from all upstream layers.
+    Originating topic comes from PRD Section 14 (ADR topic elaboration).
+    Cumulative tags: @brd + @prd + @ears + @bdd required (Layer 5).
+
+  tags:
+    - "@adr: ADR-NN"
+
+  originating_topic: "@prd: PRD.NN.14.xxxx"
+
+  upstream:
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    prd_references:
+      - "@prd: PRD.NN.14.xxxx"
+    brd_references:
+      - "@brd: BRD.NN.08.xxxx"
+
+  downstream_expected:
+    - type: TDD
+      layer: 6
+      description: "Test-driven development guide mapping architecture to test contracts"
+    - type: SPEC
+      layer: 7
+      description: "Technical specification implementing this architecture decision"
+
+  cross_links:
+    depends:
+      - "@depends: ADR-NN"
+    discoverability:
+      - "@discoverability: ADR-NN (short rationale)"
+
+  health_score:
+    tdd_ready: "[X]%"
+    target_score: ">=90/100"
+
+# =============================================================================
+# Section 10: Related Decisions
+# =============================================================================
+
+related_decisions:
+  _guidance: |
+    Document dependencies on other ADRs, related decisions, and
+    supersedes relationships. Each ADR = one decision.
+
+  dependencies:
+    - adr: "[ADR-NN]"
+      relationship: "[Depends on | Extends | Constrains]"
+      rationale: "[Why this dependency exists]"
+
+  supersedes:
+    _note: "List ADRs this decision replaces, if any."
+    items: []
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  _guidance: "Flat list of project-specific terms. Keep concise."
+
+  terms:
+    - term: ADR
+      definition: "Architecture Decision Record"
+    - term: TDD-Ready
+      definition: "Score measuring ADR maturity for TDD transition (>=90%)"
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# Appendix: MVP Lifecycle
+# =============================================================================
+
+appendix:
+  lifecycle:
+    _guidance: |
+      Each ADR represents ONE architecture decision in the MVP → PROD → NEW MVP cycle.
+      New decisions = New ADR (ADR-02, ADR-03, etc.).
+
+      When to create new ADR:
+        - New technology selection needed
+        - Existing decision proven inadequate in production
+        - Scope expansion requires architectural change
+
+      When to update existing ADR:
+        - Clarifying existing decision (patch version)
+        - Status change (Proposed → Accepted)
+
+      When to deprecate/supersede:
+        - Decision replaced by better approach → Superseded
+        - Decision no longer relevant → Deprecated
+
+# =============================================================================
+# End of ADR-TEMPLATE.yaml
+# =============================================================================

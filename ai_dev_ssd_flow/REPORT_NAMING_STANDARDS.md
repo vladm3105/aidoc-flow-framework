@@ -5,7 +5,7 @@
 | Code | Sub-Framework | MCP Server | Scope |
 |------|--------------|------------|-------|
 | `ucx` | UCX (Unified Context eXcelerator) | `sdd-lifecycle` | Agent-agnostic context assembly, document creation, validation, review, remediation |
-| `gov` | Project Governance | `project-governance` | GitHub Projects, IPLANs, governance rules |
+| `gov` | Project Governance | `project-governance` | GitHub Projects, TASKS, governance rules |
 | `kb` | Project Knowledge | `project-knowledge` | FTS5 + semantic search, frontmatter indexing |
 
 ## Report Naming Convention
