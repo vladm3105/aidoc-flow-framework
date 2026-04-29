@@ -3,28 +3,27 @@
 ## Overview
 
 BDD defines executable acceptance scenarios using Given-When-Then (Gherkin) syntax,
-translating EARS formal requirements into testable behaviors.
+translating EARS formal requirements into testable behaviors with spec_trace links to
+SPEC sections for req-to-implementation traceability.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
-**Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use UTEST/ITEST for CI.
+**Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use TDD (L7) unit/integration tests for CI.
 
 ## C4 Model Position
 
 BDD is a **refinement step** alongside EARS that formalizes the transition from
 Context (BRD) to Container (PRD). BDD translates EARS requirements into executable
-Given-When-Then scenarios.
+Given-When-Then scenarios, which TDD (L7) maps to concrete test cases.
 
 ```text
 Context (BRD)    — business environment, actors, boundaries
   └─ EARS/BDD    — formalize Context→Container transition              ← this layer
 Container (PRD)  — product features, functional blocks
   └─ ADR         — decisions that shape Component architecture
-Component (SYS)  — system structure, interfaces, quality attributes
-  └─ REQ/CTR     — decompose Component→Code into atomic units
-Code (SPEC)      — implementation-ready specifications
-  └─ TSPEC       — test specifications
-  └─ TASKS       — implementation task breakdown
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions from SPEC + BDD scenarios
+  └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files
@@ -34,21 +33,19 @@ Code (SPEC)      — implementation-ready specifications
 | `BDD-TEMPLATE.yaml` | Single source of truth — template with Gherkin guidance in `_example` fields |
 | `BDD-00_index.md` | BDD registry — tracks planned and active BDD documents per project |
 
-BDD instances (actual test files) are `.yaml` files generated from the YAML template.
-
 ## Template Sync Rule
 
 **IMPORTANT**: `BDD-TEMPLATE.yaml` exists in two locations that must stay in sync:
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ai_dev_flow_v3/04_BDD/BDD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/BDD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml mcp_sdd/templates/BDD-TEMPLATE.yaml
+cp ai_dev_flow_v3/04_BDD/BDD-TEMPLATE.yaml mcp_sdd/templates/BDD-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)
@@ -83,7 +80,7 @@ Example: BDD.01.03.d7a2
 
 ## Upstream Traceability
 
-BDD requires cumulative tags (Layer 4 — all three mandatory):
+BDD requires cumulative tags (Layer 4):
 
 ```text
 @ears:EARS.NN.03.xxxx    (links to EARS requirement)
@@ -92,6 +89,16 @@ BDD requires cumulative tags (Layer 4 — all three mandatory):
 ```
 
 Note: NO spaces after colon in Gherkin tags.
+
+## Downstream Traceability
+
+Each BDD scenario includes a `spec_trace` field linking to SPEC sections:
+
+```text
+spec_trace:
+  - "SPEC Section 3 (Interfaces)"
+  - "SPEC Section 5 (Behavior)"
+```
 
 ## Archive
 

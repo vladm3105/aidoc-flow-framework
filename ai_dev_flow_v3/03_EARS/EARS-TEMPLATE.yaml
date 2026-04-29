@@ -52,18 +52,21 @@ metadata:
       EARS is NOT a C4 level. It is a refinement step that formalizes
       the transition from Context (BRD) to Container (PRD).
 
-      SDD v3 C4 map (7 layers):
+      SDD v3.2 C4 map (8 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition     ← this layer
         BDD               — executable acceptance scenarios
         ADR               — architecture decisions
-        TDD               — test-driven development guide
-        Code (SPEC)       — implementation-ready specifications
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
 
       EARS translates business requirements (BRD) and product features (PRD)
       into formal, testable, atomic logic statements using WHEN-THE-SHALL-WITHIN
       syntax. Content must be precise and quantifiable — not narrative or vague.
+    value: none
 
   diagram_standard:
     _guidance: |
@@ -141,7 +144,7 @@ purpose_and_context:
     specifications for each requirement.
 
     EARS position in SDD workflow:
-      BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+      BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
     EARS role: Translation layer between product requirements (PRD) and
     behavioral test specifications (BDD). Each EARS statement must be:

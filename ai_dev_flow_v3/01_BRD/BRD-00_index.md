@@ -8,7 +8,7 @@ custom_fields:
   document_type: brd-index
   artifact_type: BRD-INDEX
   layer: 1
-  last_updated: "2026-02-10T22:30:00"
+  last_updated: "2026-04-29"
 ---
 
 # BRD-00: Business Requirements Document Index
@@ -17,39 +17,43 @@ Master index of all Business Requirements Documents for the project.
 
 ---
 
+## Position in Document Workflow
+
+```mermaid
+flowchart LR
+    BRD[BRD - L1] --> PRD[PRD - L2]
+
+    style BRD fill:#ffe0b2,stroke:#e65100,stroke-width:3px
+```
+
+**Layer**: 1 (Business Requirements Layer)
+**Downstream**: PRD (Layer 2)
+**Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
+
+---
+
 ## Quick Start
 
 ### Generate New BRD
 
-```bash
-# From reference documents (primary)
-/doc-brd-autopilot docs/00_REF/foundation/F1_Technical_Specification.md
+Use the `sdd-lifecycle` MCP server:
 
-# From REF directory (alternative)
-/doc-brd-autopilot REF/
-
-# Interactive mode (prompts for input)
-/doc-brd-autopilot
+```
+sdd_create doc_type=brd layer=01_BRD
 ```
 
-### Audit Existing BRD (Fresh Audit Policy)
+### Validate BRD
 
-```bash
-/doc-brd-audit BRD-01
+```
+sdd_validate doc_type=brd
+sdd_score_validate doc_type=brd  # PRD-Ready score (>=90/100)
 ```
 
-**Note**: Always runs from scratch, ignoring previous results.
+### Review and Fix BRD
 
-### Validate BRD (via mcp_sdd)
-
-Validation runs through `sdd-lifecycle` MCP server tools:
-- `sdd_validate` — structural validation
-- `sdd_score_validate` — PRD-Ready score (>=90/100)
-
-### Fix BRD Issues
-
-```bash
-/doc-brd-fixer BRD-01
+```
+sdd_review doc_type=brd
+sdd_remediate doc_type=brd  # Apply review findings
 ```
 
 ---
@@ -100,19 +104,17 @@ BRD autopilot uses these source directories (in priority order):
 
 | Priority | Location | Content |
 |----------|----------|---------|
-| 1 | `docs/00_REF/` | Technical specifications, gap analysis |
-| 2 | `REF/` | Alternative reference documents |
-| 3 | `docs/` | Existing project documentation |
-| 4 | User Prompts | Interactive input (fallback) |
+| 1 | Project reference documents | Technical specifications, gap analysis |
+| 2 | Existing project documentation | Architecture docs, stakeholder input |
+| 3 | User prompts | Interactive input (fallback) |
 
 ---
 
 ## Quick Links
 
-- **Glossary**: [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
-- **Reference Documents**: [00_REF](../00_REF/)
 - **PRD Layer**: [02_PRD](../02_PRD/)
 - **Template**: [BRD-TEMPLATE.yaml](BRD-TEMPLATE.yaml)
+- **README**: [README.md](README.md)
 
 ---
 
@@ -141,7 +143,8 @@ BRD autopilot uses these source directories (in priority order):
 - **Foundation**: F1-F7 modules use BRD-01 through BRD-07
 - **Domain**: D1-D7 modules use BRD-08 through BRD-14 (or custom numbering)
 - **Feature BRDs**: Continue sequence from last allocated number
+- **Filename**: `BRD-NN_{descriptive_slug}.yaml` (platform BRDs: `BRD-NN_platform_{slug}.yaml`)
 
 ---
 
-*Last Updated: 2026-02-10T22:30:00*
+*Last Updated: 2026-04-29*

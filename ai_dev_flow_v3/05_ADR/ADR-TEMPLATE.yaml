@@ -11,11 +11,10 @@
 #    _note         — contextual clarification
 #    _example      — sample values for reference
 #
-#  Downstream: TDD (Layer 6), SPEC (Layer 7)
+#  Downstream: SPEC (Layer 6)
 #  Upstream: BRD (L1), PRD (L2), EARS (L3), BDD (L4)
 #
-#  v3 changes from ai_dev_ssd_flow:
-#    TDD replaces SYS as primary downstream; removed REQ, TSPEC, TASKS refs
+#  v3.2 changes: Swapped TDD/SPEC order (ADR→SPEC→TDD). SPEC(L6) is sole direct downstream.
 # =============================================================================
 
 id: ADR-NN
@@ -37,9 +36,9 @@ metadata:
     server: mcp_sdd
     _guidance: |
       All validation runs through mcp_sdd MCP tools.
-      TDD-Ready Score: >=90/100 required before downstream TDD generation.
+      SPEC-Ready Score: >=90/100 required before downstream SPEC generation.
 
-      TDD-Ready scoring criteria:
+      SPEC-Ready scoring criteria:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
         Architecture clarity (25%): diagrams present, integration points defined
         Consequence analysis (20%): positive outcomes, trade-offs, costs documented
@@ -54,20 +53,22 @@ metadata:
   c4_level:
     _guidance: |
       ADR is NOT a C4 level. It is the decision bridge between
-      Container (PRD) and Code (SPEC).
+      Container (PRD) and Component (SPEC).
 
-      SDD v3 C4 map (7 layers):
+      SDD v3.2 C4 map (8 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition
         BDD               — executable acceptance scenarios
         ADR               — architecture decisions                 ← this layer
-        TDD               — test-driven development guide
-        Code (SPEC)       — implementation-ready specifications
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
 
-      ADR synthesizes inputs from PRD (architecture topics), EARS (timing
-      constraints), and BDD (integration/failure scenarios) to make architecture
-      decisions that shape the implementation specification (SPEC).
+      ADR records Context-Decision-Consequences for architecture decisions.
+      Content must evaluate alternatives and document consequences — not design components.
+    value: none
 
   diagram_standard:
     _guidance: |
@@ -75,7 +76,7 @@ metadata:
         - sequenceDiagram: architecture interaction flows
         - flowchart: decision logic, rollback paths, alternative comparison
 
-      ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SYS (Layer 6).
+      ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SPEC (Layer 6).
       ADR diagrams show the decision's impact, not the system structure itself.
 
   tags:
@@ -118,7 +119,7 @@ document_control:
       Proposed → Accepted → Deprecated → Superseded
       (NOT Draft/In Review/Approved)
 
-    TDD-Ready Score: >=90/100 required before TDD generation.
+    SPEC-Ready Score: >=90/100 required before SPEC generation.
     Originating Topic: links to PRD Section 14 (ADR topic elaboration).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded
@@ -130,7 +131,7 @@ document_control:
   version: "1.0"
   originating_topic: "@prd: PRD.NN.14.xxxx"
   brd_reference: "@brd: BRD.NN.08.xxxx"
-  tdd_ready_score: "[Score]/100"
+  spec_ready_score: "[Score]/100"
 
   revision_history:
     - version: "1.0"
@@ -282,7 +283,7 @@ architecture_flow:
   _guidance: |
     Provide Mermaid diagrams showing the decision's impact on architecture.
     Include MVP scope boundary and external system integrations.
-    Show decision impact, not system internals (SYS owns C4-L3 detail).
+    Show decision impact, not system internals (SPEC owns C4-L3 detail).
 
   high_level_flow:
     diagram:
@@ -304,10 +305,10 @@ architecture_flow:
 # Section 7: Implementation Assessment
 # =============================================================================
 
-implementation_assessment:
+ implementation_assessment:
   _guidance: |
     Decision-level assessment only — NOT detailed implementation plans.
-    TASKS (Layer 11) owns implementation details.
+    IPLAN (Layer 8) owns implementation details.
     Focus on: rollback feasibility, monitoring baseline, risk mitigation.
 
   mvp_phases:
@@ -332,7 +333,7 @@ implementation_assessment:
 verification:
   _guidance: |
     Define success criteria for this decision. Cross-reference BDD scenarios
-    that validate the architecture. Lightweight — full tests are in TSPEC.
+    that validate the architecture. Lightweight — full tests are in TDD (Layer 7).
 
   success_criteria:
     - criterion: "[Measurable success condition]"
@@ -370,11 +371,8 @@ traceability:
       - "@brd: BRD.NN.08.xxxx"
 
   downstream_expected:
-    - type: TDD
-      layer: 6
-      description: "Test-driven development guide mapping architecture to test contracts"
     - type: SPEC
-      layer: 7
+      layer: 6
       description: "Technical specification implementing this architecture decision"
 
   cross_links:
@@ -384,7 +382,7 @@ traceability:
       - "@discoverability: ADR-NN (short rationale)"
 
   health_score:
-    tdd_ready: "[X]%"
+    spec_ready: "[X]%"
     target_score: ">=90/100"
 
 # =============================================================================
@@ -415,8 +413,8 @@ glossary:
   terms:
     - term: ADR
       definition: "Architecture Decision Record"
-    - term: TDD-Ready
-      definition: "Score measuring ADR maturity for TDD transition (>=90%)"
+    - term: SPEC-Ready
+      definition: "Score measuring ADR maturity for SPEC transition (>=90%)"
     - term: "[Domain term]"
       definition: "[Definition]"
 

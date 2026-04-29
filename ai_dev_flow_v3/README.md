@@ -1,16 +1,78 @@
-# SDD v3 — Streamlined Specification-Driven Development
+# SDD v3.2 — Streamlined Specification-Driven Development
 
 ## Overview
 
-SDD v3 is a **7-layer documentation-to-code framework** that produces implementation-ready technical specifications from business requirements. Each layer is a single YAML document type with cumulative traceability.
+SDD v3.2 is an **8-layer documentation-to-code framework** that produces implementation-ready technical specifications from business requirements. Each layer is a single YAML document type with cumulative traceability.
 
 ```
-BRD → PRD → EARS → BDD → ADR → TDD → SPEC → Code
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ```
 
 ## Why v3?
 
-SDD v2 (14 layers) required maintaining ~40 reference documents, 20+ templates, and a 14-deep traceability chain. v3 collapses this to 7 document layers plus code, reducing documentation surface area by 50%.
+SDD v3 (originally v2's 14-layer framework) required maintaining ~40 reference documents, 20+ templates, and a 14-deep traceability chain. v3.2 collapses this to 8 document layers plus code, reducing documentation surface area while maintaining full traceability with logical layer ordering.
+
+## C4 Architecture Model
+
+SDD v3.2 layers align with the C4 model at 4 zoom levels, with two bridge groups connecting them:
+
+```mermaid
+flowchart TB
+    subgraph C4L1["C4-L1: Context"]
+        BRD["BRD<br/>Business Requirements<br/>Layer 1<br/><i>Actors, boundaries,<br/>business environment</i>"]
+    end
+
+    subgraph C4L2["C4-L2: Container"]
+        PRD["PRD<br/>Product Requirements<br/>Layer 2<br/><i>Features, functional blocks,<br/>product interactions</i>"]
+    end
+
+    subgraph BRIDGE1["Decision Bridge (no C4 level)"]
+        EARS["EARS<br/>Layer 3<br/><i>Formal<br/>requirements</i>"]
+        BDD["BDD<br/>Layer 4<br/><i>Acceptance<br/>scenarios</i>"]
+        ADR["ADR<br/>Layer 5<br/><i>Architecture<br/>decisions</i>"]
+    end
+
+    subgraph C4L3["C4-L3: Component"]
+        SPEC["SPEC<br/>Technical Specification<br/>Layer 6<br/><i>Interfaces, data models,<br/>behavior contracts</i>"]
+    end
+
+    subgraph BRIDGE2["Implementation Bridge (no C4 level)"]
+        TDD["TDD<br/>Layer 7<br/><i>Test case<br/>definitions</i>"]
+        IPLAN["IPLAN<br/>Layer 8<br/><i>Execution<br/>planning</i>"]
+    end
+
+    subgraph C4L4["C4-L4: Code"]
+        CODE["Source Code<br/><i>Class/package structure</i>"]
+    end
+
+    BRD --> PRD
+    PRD --> EARS
+    EARS --> BDD
+    BDD --> ADR
+    ADR --> SPEC
+    SPEC --> TDD
+    TDD --> IPLAN
+    IPLAN --> CODE
+
+    style BRD fill:#bbdefb,stroke:#1565c0
+    style PRD fill:#c8e6c9,stroke:#2e7d32
+    style EARS fill:#fff9c4,stroke:#f9a825
+    style BDD fill:#ffe0b2,stroke:#e65100
+    style ADR fill:#e1bee7,stroke:#6a1b9a
+    style SPEC fill:#b2dfdb,stroke:#00695c
+    style TDD fill:#f8bbd0,stroke:#c2185b
+    style IPLAN fill:#cfd8dc,stroke:#455a64
+    style CODE fill:#d7ccc8,stroke:#4e342e
+```
+
+| C4 Level | SDD | Artifact | Diagram Tags | Description |
+|----------|-----|----------|-------------|-------------|
+| **C4-L1 Context** | L1 | BRD | `@diagram: c4-l1` `@diagram: dfd-l1` | System context: actors, boundaries |
+| **C4-L2 Container** | L2 | PRD | `@diagram: c4-l2` `@diagram: dfd-l2` `@diagram: sequence-sync` | Product containers, features |
+| **Decision Bridge** | L3-L5 | EARS, BDD, ADR | _(none)_ | Requirements → scenarios → decisions |
+| **C4-L3 Component** | L6 | SPEC | `@diagram: c4-l3` `@diagram: dfd-l3` | Interfaces, data models |
+| **Impl Bridge** | L7-L8 | TDD, IPLAN | _(none)_ | Test definitions → execution |
+| **C4-L4 Code** | — | Source Code | `@diagram: c4-l4` | Class/package structure |
 
 ## Layer Structure
 
@@ -40,12 +102,19 @@ ai_dev_flow_v3/
 ├── 05_ADR/                         # Architecture Decision Records
 │   ├── ADR-TEMPLATE.yaml
 │   └── ADR-00_index.md
-├── 06_TDD/                         # Test-Driven Development Guide
+├── 06_SPEC/                        # Technical Specification
+│   ├── SPEC-TEMPLATE.yaml
+│   └── SPEC-00_index.md
+├── 07_TDD/                         # Test-Driven Development Guide
 │   ├── TDD-TEMPLATE.yaml
 │   └── TDD-00_index.md
-└── 07_SPEC/                        # Technical Specification
-    ├── SPEC-TEMPLATE.yaml
-    └── SPEC-00_index.md
+├── 08_IPLAN/                       # Implementation Plan
+│   ├── IPLAN-TEMPLATE.yaml
+│   └── IPLAN-00_index.yaml
+└── plans/
+    ├── MIGRATION_PLAN.md
+    ├── MIGRATION_PLAN_GAP_ANALYSIS.md
+    └── CHG_MIGRATION_PLAN.md
 ```
 
 ## Quick Start
@@ -53,7 +122,7 @@ ai_dev_flow_v3/
 1. **Set up**: Copy this directory to your project as `ai_dev_flow/`
 2. **Create BRD**: `cp 01_BRD/BRD-TEMPLATE.yaml 01_BRD/BRD-01.yaml` and fill in business requirements
 3. **Follow the chain**: Generate PRD from BRD, EARS from PRD, BDD from EARS, etc.
-4. **Generate code**: SPEC is the final output — implementation-ready with test contracts from TDD
+4. **Generate tests then code**: SPEC defines the component contract → TDD defines test cases → IPLAN orchestrates implementation
 
 ## Layer Flow
 
@@ -64,8 +133,10 @@ ai_dev_flow_v3/
 | 3 | PRD | EARS | EARS-Ready >=90 |
 | 4 | EARS | BDD | BDD-Ready >=90 |
 | 5 | BDD | ADR | ADR-Ready >=90 |
-| 6 | ADR | TDD | TDD-Ready >=90 |
-| 7 | TDD | SPEC | CODE-Ready >=90 |
+| 6 | ADR | SPEC | SPEC-Ready >=90 |
+| 7 | SPEC | TDD | TDD-Ready >=90 |
+| 8 | TDD | IPLAN | IPLAN-Ready >=90 |
+| 9 | IPLAN | Code | EXEC-Ready >=90 |
 
 ## v2 to v3 Migration
 
@@ -73,7 +144,8 @@ See [MIGRATION_PLAN.md](MIGRATION_PLAN.md) for detailed changes.
 
 | v2 | v3 | Change |
 |----|-----|--------|
-| 14 layers | 7 layers | Cut SYS, REQ, CTR, TSPEC (42 files), TASKS, TESTS, VALIDATION |
-| 42 TSPEC files | 1 TDD template | 6 test subtypes collapsed to single document |
+| 14 layers | 8 layers | Cut SYS, REQ, CTR, TSPEC (42 files), TASKS, TESTS, VALIDATION |
+| 42 TSPEC files | 1 TDD template | Test case definitions embedded directly |
 | 5 SPEC subtypes | 1 SPEC template | CSPEC/DSPEC/UXSPEC/RISKSPEC/PROCSPEC unified |
-| 14 cumulative tags | 6 cumulative tags | Traceability chain depth reduced by 57% |
+| 14 cumulative tags | 8 cumulative tags | SPEC(L6)→TDD(L7) for logical test-after-spec ordering |
+| TASKS | IPLAN | Lighter-weight execution bridge with session handoff |

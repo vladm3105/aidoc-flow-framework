@@ -5,7 +5,7 @@
 EARS (Easy Approach to Requirements Syntax) formalizes business and product
 requirements into precise, testable statements using WHEN-THE-SHALL-WITHIN syntax.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## C4 Model Position
 
@@ -18,11 +18,9 @@ Context (BRD)    — business environment, actors, boundaries
   └─ EARS/BDD    — formalize Context→Container transition              ← this layer
 Container (PRD)  — product features, functional blocks
   └─ ADR         — decisions that shape Component architecture
-Component (SYS)  — system structure, interfaces, quality attributes
-  └─ REQ/CTR     — decompose Component→Code into atomic units
-Code (SPEC)      — implementation-ready specifications
-  └─ TSPEC       — test specifications
-  └─ TASKS       — implementation task breakdown
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions validating SPEC contracts
+  └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files
@@ -38,13 +36,13 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ai_dev_flow_v3/03_EARS/EARS-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/EARS-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml mcp_sdd/templates/EARS-TEMPLATE.yaml
+cp ai_dev_flow_v3/03_EARS/EARS-TEMPLATE.yaml mcp_sdd/templates/EARS-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

@@ -1,5 +1,5 @@
 ---
-title: "ADR-000: ADR Index"
+title: "ADR-00: ADR Index"
 tags:
   - index-document
   - layer-5-artifact
@@ -9,15 +9,14 @@ custom_fields:
   artifact_type: ADR
   layer: 5
   priority: shared
+  last_updated: "2026-04-29"
 ---
 
-# ADR-000: Architecture Decision Records Master Index
-
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+# ADR-00: Architecture Decision Records Master Index
 
 ## Purpose
 
-This document serves as the master index for all Architecture Decision Records (ADRs) in the project. Use this index to:
+This document serves as the master index for all Architecture Decision Records in the project. Use this index to:
 
 - **Discover** architectural decisions and their rationale
 - **Track** decision status and evolution
@@ -28,27 +27,16 @@ This document serves as the master index for all Architecture Decision Records (
 
 ```mermaid
 flowchart LR
-    BDD[BDD] --> ADR[ADR]
-    ADR --> SYS[SYS]
-    ADR --> REQ[REQ]
-    ADR --> SPEC[SPEC]
+    BDD[BDD - L4] --> ADR[ADR - L5]
+    ADR --> SPEC[SPEC - L6]
 
     style ADR fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
-
-**Layer**: 5 (Architecture Layer)
+**Layer**: 5 (Architecture Decision Layer)
 **Upstream**: BRD, PRD, EARS, BDD
-**Downstream**: SYS, REQ, SPEC
-
-## Foundation ADRs
-
-| ADR ID | Title | Status | Category | Last Updated |
-|--------|-------|--------|----------|--------------|
-| ADR-000 | Technology Stack | Reference | Foundation | See project docs |
-
-**Note**: ADR-000 (Technology Stack) is typically located in project `docs/05_ADR/` directory and serves as the foundation for all technology decisions.
+**Downstream**: SPEC (Technical Specification, Layer 6)
+**Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## Architecture Decision Records Index
 
@@ -58,11 +46,9 @@ flowchart LR
 
 ## Planned
 
-- Use this section to list ADRs planned but not yet created. Move rows to the main index table when created.
-
-| ID | Decision Topic | Source (01_BRD/PRD) | Priority | Notes |
-|----|----------------|------------------|----------|-------|
-| ADR-XX | … | 01_BRD/PRD-YY | High/Med/Low | … |
+| ID | Decision Topic | Source (01_BRD/02_PRD) | Priority | Notes |
+|----|----------------|------------------------|----------|-------|
+| ADR-XX | … | BRD-YY / PRD-ZZ | High/Med/Low | … |
 
 ## Status Definitions
 
@@ -81,7 +67,7 @@ flowchart LR
 | **Integration** | System-to-system communication | API contracts, message queues, webhooks |
 | **Technology Selection** | Framework, language, platform choices | Python vs Go, FastAPI vs Flask |
 | **Data Architecture** | Database, storage, consistency | PostgreSQL, BigQuery, caching strategy |
-| **security** | Authentication, authorization, encryption | OAuth2, RBAC, Secrets management |
+| **Security** | Authentication, authorization, encryption | OAuth2, RBAC, secrets management |
 | **Observability** | Monitoring, logging, alerting | Cloud Monitoring, OpenTelemetry |
 | **AI/ML** | Model serving, training, MLOps | Vertex AI, model deployment patterns |
 
@@ -89,15 +75,13 @@ flowchart LR
 
 When creating a new ADR:
 
-1. **Generate via MCP**: Use `sdd_create` with `doc_type=adr`, `layer=05_ADR`
+1. **Generate via MCP**: `sdd_create doc_type=adr layer=05_ADR`
 
 2. **Assign ADR ID**: Use next sequential number (ADR-01, ADR-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
-4. **Reference Technology Stack**: Include "Technology Stack Compliance" section referencing ADR-000
-
-5. **Create Cross-References**: Link to upstream BDD scenarios and downstream 06_SYS/07_REQ/SPEC
+4. **Create Cross-References**: Link to upstream BDD scenarios and downstream 06_SPEC
 
 ## Allocation Rules
 
@@ -107,6 +91,10 @@ When creating a new ADR:
 - **Alternatives Required**: Document at least 2-3 alternatives considered
 - **Consequences Analysis**: Include positive and negative outcomes
 - **Index Updates**: Add entry for every new ADR
+
+## Quality Gate
+
+ADR must achieve **SPEC-Ready score >=90/100** before downstream SPEC generation.
 
 ## Index by Status
 
@@ -136,7 +124,7 @@ When creating a new ADR:
 ### Data Architecture
 - None
 
-### security
+### Security
 - None
 
 ### Observability
@@ -144,18 +132,6 @@ When creating a new ADR:
 
 ### AI/ML
 - None
-
-## Decision Timeline
-
-```mermaid
-gantt
-    title Architecture Decision Timeline
-    dateFormat YYYY-MM-DDTHH:MM:SS
-    section Decisions
-    No ADRs yet :2025-11-13T00:00:00, 1d
-```
-
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ## Impact Summary
 
@@ -179,33 +155,24 @@ gantt
 ## Related Documents
 
 - **Template**: [ADR-TEMPLATE.yaml](./ADR-TEMPLATE.yaml)
-- **README**: [README.md](./README.md) - ADR purpose, structure, and best practices
-- **Traceability**: Per-ADR Section 9 + AI-generated reports
-- **CTR Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](./ADR-CTR_SEPARATE_FILES_POLICY.md) - Contract file naming policy
+- **README**: [README.md](./README.md) — ADR purpose, structure, and best practices
+- **Upstream**: [04_BDD](../04_BDD/) — Behavior-Driven Development
+- **Downstream**: [06_SPEC](../06_SPEC/) — Technical Specification
 
 ## Maintenance Guidelines
-
-### Updating This Index
-
-- Update whenever new ADR is created
-- Track status changes (Proposed → Accepted → Deprecated/Superseded)
-- Maintain category classifications
-- Document decision timeline and evolution
-
-### Quality Checks
 
 Before marking ADR as "Accepted":
 - [PASS] Problem statement clearly defined with business context
 - [PASS] At least 2-3 alternatives considered and documented
 - [PASS] Consequences analysis includes both positive and negative outcomes
-- [PASS] Technology Stack Compliance section references ADR-000
 - [PASS] Architecture flow diagrams included (Mermaid format)
 - [PASS] Implementation assessment covers complexity, dependencies, resources
 - [PASS] Rollback procedures documented
-- [PASS] Cross-references to BDD scenarios and downstream artifacts complete
+- [PASS] Cross-references to BDD scenarios and downstream SPEC complete
+- [PASS] SPEC-Ready score >=90/100
 
 ---
 
-**Index Version**: 2.0
-**Last Updated**: 2025-11-13T00:00:00
+**Index Version**: 3.0
+**Last Updated**: 2026-04-29
 **Maintainer**: [Project Team]

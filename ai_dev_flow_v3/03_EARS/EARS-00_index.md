@@ -1,5 +1,5 @@
 ---
-title: "EARS-000: EARS Index"
+title: "EARS-00: EARS Index"
 tags:
   - index-document
   - layer-3-artifact
@@ -9,11 +9,10 @@ custom_fields:
   artifact_type: EARS
   layer: 3
   priority: shared
+  last_updated: "2026-04-29"
 ---
 
-# EARS-000: EARS Requirements Master Index
-
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+# EARS-00: EARS Requirements Master Index
 
 ## Purpose
 
@@ -28,29 +27,24 @@ This document serves as the master index for all EARS (Easy Approach to Requirem
 
 ```mermaid
 flowchart LR
-    PRD[PRD] --> EARS[EARS]
-    EARS --> BDD[BDD]
-    EARS --> SYS[SYS]
-    EARS --> REQ[REQ]
+    PRD[PRD - L2] --> EARS[EARS - L3]
+    EARS --> BDD[BDD - L4]
 
     style EARS fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
-
 **Layer**: 3 (Formal Requirements Layer)
 **Upstream**: BRD, PRD
-**Downstream**: BDD, SYS, REQ
+**Downstream**: BDD (Behavior-Driven Development, Layer 4)
+**Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## EARS Requirements Index
 
-| EARS ID | Title | Requirement Type | Status | Related PRD | Test Coverage | Last Updated |
-|---------|-------|------------------|--------|-------------|---------------|--------------|
-| [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml) | Template (default) | Reference | Reference | - | - | 2026-03-29 |
+| EARS ID | Title | Requirement Type | Status | Related PRD | Last Updated |
+|---------|-------|------------------|--------|-------------|--------------|
+| [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml) | Template (default) | Reference | Reference | - | 2026-03-29 |
 
 ## Planned
-
-- Use this section to list EARS documents planned but not yet created. Move rows to the main index table when created.
 
 | ID | Title | Source PRD | Priority | Notes |
 |----|-------|------------|----------|-------|
@@ -81,10 +75,7 @@ flowchart LR
 
 When creating a new EARS document:
 
-1. **Copy Template**:
-   ```bash
-   # Generate via MCP: sdd_create with doc_type=ears, layer=03_EARS
-   ```
+1. **Generate via MCP**: `sdd_create doc_type=ears layer=03_EARS`
 
 2. **Assign EARS ID**: Use next sequential number (EARS-01, EARS-02, ...)
 
@@ -134,12 +125,6 @@ When creating a new EARS document:
 ### Verified
 - None
 
-## Test Coverage Summary
-
-| EARS ID | Total Requirements | BDD Scenarios | Unit Tests | Integration Tests | Coverage % |
-|---------|-------------------|---------------|------------|-------------------|------------|
-| - | 0 | 0 | 0 | 0 | 0% |
-
 ## Metrics
 
 | Metric | Value | Description |
@@ -148,35 +133,29 @@ When creating a new EARS document:
 | Total Requirements | 0 | Total atomic requirements specified |
 | Event-Driven | 0 | WHEN/THEN requirements |
 | State-Driven | 0 | WHILE/THEN requirements |
-| Test Coverage | 0% | Percentage with BDD scenarios |
-| Verification Rate | 0% | Percentage verified through testing |
+
+## Quality Gate
+
+EARS must achieve **BDD-Ready score >=90/100** before downstream BDD generation.
 
 ## Related Documents
 
 - **Template**: [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml)
-- **README**: [README.md](./README.md) - Learn about EARS purpose and statement types
-- **Traceability**: Per-EARS Section 5 (Traceability) + AI-generated reports
+- **README**: [README.md](./README.md) — EARS purpose and statement types
+- **Upstream**: [02_PRD](../02_PRD/) — Product Requirements
+- **Downstream**: [04_BDD](../04_BDD/) — Behavior-Driven Development
 
 ## Maintenance Guidelines
-
-### Updating This Index
-
-- Update whenever new EARS document is created
-- Track status changes through requirement lifecycle
-- Maintain test coverage metrics
-- Link to BDD scenarios for verification
-
-### Quality Checks
 
 Before marking EARS as "Approved":
 - [PASS] All requirements follow EARS patterns (WHEN/THEN, WHILE/THEN, etc.)
 - [PASS] Requirements are atomic and independently testable
 - [PASS] Measurable acceptance criteria defined
-- [PASS] Cross-references to PRD complete
-- [PASS] BDD scenarios planned or created
+- [PASS] Cross-references to PRD use hash-based element IDs
+- [PASS] BDD-Ready score >=90/100
 
 ---
 
-**Index Version**: 2.0
-**Last Updated**: 2025-11-13T00:00:00
+**Index Version**: 3.0
+**Last Updated**: 2026-04-29
 **Maintainer**: [Project Team]

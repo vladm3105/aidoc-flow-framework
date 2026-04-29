@@ -5,23 +5,20 @@
 ADRs document architecture decisions using the Context-Decision-Consequences
 pattern. Each ADR addresses ONE decision, synthesizing inputs from PRD, EARS, and BDD.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## C4 Model Position
 
-ADR is the **decision bridge** between Container (PRD) and Component (SYS).
-It records architectural decisions that shape the Component-level design.
+ADR is the **decision bridge** between Container (PRD) and Component (SPEC) — it does not have its own C4 level. ADR records architectural decisions that shape the Component-level design.
 
 ```text
 Context (BRD)    — business environment, actors, boundaries
   └─ EARS/BDD    — formalize Context→Container transition
 Container (PRD)  — product features, functional blocks
   └─ ADR         — decisions that shape Component architecture        ← this layer
-Component (SYS)  — system structure, interfaces, quality attributes
-  └─ REQ/CTR     — decompose Component→Code into atomic units
-Code (SPEC)      — implementation-ready specifications
-  └─ TSPEC       — test specifications
-  └─ TASKS       — implementation task breakdown
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions validating SPEC contracts
+  └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files
@@ -30,8 +27,6 @@ Code (SPEC)      — implementation-ready specifications
 |------|---------|
 | `ADR-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
 | `ADR-00_index.md` | ADR registry — tracks planned and active ADRs per project |
-| `ADR-00_ai_powered_*.md` | Active ADR instance — framework architecture decision |
-| `ADR-CTR_SEPARATE_FILES_POLICY.md` | Active ADR instance — contract file policy |
 
 ## Template Sync Rule
 
@@ -39,11 +34,11 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ai_dev_flow_v3/05_ADR/ADR-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/ADR-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 ```bash
-cp ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml mcp_sdd/templates/ADR-TEMPLATE.yaml
+cp ai_dev_flow_v3/05_ADR/ADR-TEMPLATE.yaml mcp_sdd/templates/ADR-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)
@@ -52,7 +47,7 @@ cp ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml mcp_sdd/templates/ADR-TEMPLATE.yaml
 |------|---------|
 | `sdd_create` | Generate ADR from template |
 | `sdd_validate` | Structural validation |
-| `sdd_score_validate` | SYS-Ready score (>=90/100 to proceed to SYS) |
+| `sdd_score_validate` | SPEC-Ready score (>=90/100 to proceed to SPEC) |
 | `sdd_consistency` | Cross-document traceability check |
 | `sdd_next_action` | Lifecycle advisor |
 
@@ -66,10 +61,10 @@ Proposed → Accepted → Deprecated → Superseded
 
 (NOT Draft/In Review/Approved)
 
-| Status | SYS-Ready Score | Meaning |
+| Status | SPEC-Ready Score | Meaning |
 |--------|-----------------|---------|
 | Proposed | 70-89% | Decision under evaluation |
-| Accepted | >=90% | Decision approved, ready for SYS |
+| Accepted | >=90% | Decision approved, ready for SPEC |
 | Deprecated | — | Decision no longer relevant |
 | Superseded | — | Replaced by newer ADR |
 
@@ -87,8 +82,8 @@ Example: ADR.01.03.e5b1
 ADR synthesizes inputs from all upstream layers (cumulative tags):
 
 ```text
-@prd: PRD.NN.14.xxxx    (originating topic — PRD ADR elaboration)
 @brd: BRD.NN.08.xxxx    (business-level topic origin)
+@prd: PRD.NN.14.xxxx    (originating topic — PRD ADR elaboration)
 @ears: EARS.NN.03.xxxx   (timing constraints informing decision)
 @bdd: BDD.NN.03.xxxx     (integration/failure scenarios)
 ```

@@ -41,14 +41,16 @@ metadata:
         sdd_preflight (environment), sdd_consistency (cross-doc).
   c4_level:
     _guidance: |
-      SDD v3 C4 map (7 layers):
-        Context (BRD)    — business environment, actors, boundaries
+      SDD v3.2 C4 map (8 layers):
+        Context (BRD)    — business environment, actors, boundaries   ← this layer
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition
         BDD               — executable acceptance scenarios
         ADR               — architecture decisions
-        TDD               — test-driven development guide
-        Code (SPEC)       — implementation-ready specifications
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
 
       BRD is Context level. Content must describe business environment,
       actors, and system boundaries — not product features (Container),
@@ -63,7 +65,7 @@ metadata:
       | C4 Level | SDD Layer | Diagram Types |
       | Context  | BRD       | C4-L1 (system context), DFD-L1 (top-level data flow), sequenceDiagram (business journey) |
       | Container| PRD       | C4-L2 (container), DFD-L2 (feature data flow), sequenceDiagram (product interactions) |
-      | Code     | SPEC      | C4-L4 (code), class diagrams, sequenceDiagram (implementation flow) |
+      | Component| SPEC      | C4-L3 (component), DFD-L3, sequenceDiagram (implementation flow) |
 
       BRD is Context level (C4-L1):
         - System context diagram: actors, external systems, system boundary
@@ -85,15 +87,10 @@ metadata:
 
   deliverable_type:
     _guidance: |
-      Determines downstream SPEC subtype routing.
+      Identifies primary deliverable category for this BRD.
       Set once at BRD creation; inherited by all downstream artifacts.
+      In v3.2, all routes point to the unified SPEC (Layer 6) — no subtypes.
     value: code  # code | document | ux | risk | process
-    routing:
-      code: CSPEC
-      document: DSPEC
-      ux: UXSPEC
-      risk: RISKSPEC
-      process: PROCSPEC
 
   # ---------------------------------------------------------------------------
   # BRD Type and File Organization
@@ -109,7 +106,7 @@ metadata:
 
       Feature BRDs: Define business features and user workflows.
         - Filename: BRD-NN_{feature_slug}.yaml
-        - ADR timing: Standard workflow (BRD → PRD → SYS → EARS → REQ → ADR).
+        - ADR timing: Standard workflow (BRD → PRD → EARS → BDD → ADR).
         - References Platform BRDs for technology foundations.
 
     value: feature  # platform | feature
@@ -698,8 +695,8 @@ adr_topics:
 quality_expectations:
   _guidance: |
     State business-level quality expectations as categorized statements.
-    SYS (Layer 6) owns the detailed metrics, IDs, and validation methods.
-    Categories help SYS route expectations to correct subsections.
+    SPEC (Layer 6) owns the detailed metrics, IDs, and validation methods.
+    Categories help SPEC route expectations to correct subsections.
 
     KEEP: customer-facing SLAs and business outcomes.
     REMOVE: internal technical performance metrics.
@@ -861,7 +858,7 @@ approval:
 traceability:
   _guidance: |
     Do NOT create numeric downstream references until artifacts exist.
-    Use placeholders. Test coverage traceability belongs in TSPEC.
+    Use placeholders. Test coverage traceability belongs in TDD (Layer 7).
 
     Cross-linking tags (machine-parseable):
       @depends: BRD-NN — hard prerequisite BRD(s)

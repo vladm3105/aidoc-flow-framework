@@ -41,7 +41,7 @@ Thresholds are defined in **source documents** (01_BRD/02_PRD/ADR) and reference
 
 **Consumer Documents** (reference thresholds using `@threshold:` tags):
 
-- **EARS, BDD, SYS, REQ, CTR, SPEC**: Reference thresholds from 01_BRD/02_PRD/ADR
+- **EARS, BDD, SPEC, TDD, IPLAN**: Reference thresholds from 01_BRD/02_PRD/ADR
 - **ADR**: May also reference 01_BRD/PRD thresholds when satisfying business/product requirements
 - **Code/Config**: Reference source document thresholds for implementation
 
@@ -226,11 +226,10 @@ Source Documents (define thresholds):
 Consumer Documents (reference via @threshold: tags):
  EARS  → references: @threshold: PRD.01.quota.l1.daily
  BDD   → references: @threshold: PRD.01.quota.l1.daily
- SYS   → references: @threshold: ADR.15.pool.db.max
  ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
- REQ   → references: @threshold: BRD.01.risk.high.min
- CTR   → references: @threshold: PRD.01.rate.api.user
  SPEC  → references: @threshold: ADR.15.circuit.failure.count
+ TDD   → references: @threshold: ADR.15.pool.db.max
+ IPLAN → references: @threshold: SPEC.NN.perf.target
          ↓
 Code (implements with config reference)
 ```

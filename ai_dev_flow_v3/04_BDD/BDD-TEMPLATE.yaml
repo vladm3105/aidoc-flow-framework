@@ -11,9 +11,10 @@
 #    _note         — contextual clarification
 #    _example      — sample values for reference
 #
-#  Downstream: ADR (Layer 5), TDD (Layer 6)
+#  Downstream: ADR (Layer 5), TDD (Layer 7 via BDD scenario mapping)
 #  Upstream: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
 #
+#  v3.2 changes: Added spec_trace for req-to-SPEC trace links; TDD at L7
 #  v3 changes: Added TDD as downstream; removed SYS, TSPEC, TASKS refs
 # =============================================================================
 
@@ -52,18 +53,20 @@ metadata:
       BDD is NOT a C4 level. It is a refinement step that formalizes
       the transition from Context (BRD) to Container (PRD), alongside EARS.
 
-      SDD v3 C4 map (7 layers):
+      SDD v3.2 C4 map (8 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition
         BDD               — executable acceptance scenarios         ← this layer
         ADR               — architecture decisions
-        TDD               — test-driven development guide
-        Code (SPEC)       — implementation-ready specifications
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
 
       BDD translates EARS formal requirements into executable Given-When-Then
-      scenarios. Content must be executable test scenarios — not narrative.
       scenarios. Content must be precise, executable Gherkin — not narrative.
+    value: none
 
   diagram_standard:
     _guidance: |
@@ -201,6 +204,7 @@ scenario_structure:
       - @scenario-id:BDD.NN.03.xxxx hash-based ID tag
       - Given-When-Then steps (executable Gherkin)
       - Threshold references for timing constraints
+      - spec_trace: list of SPEC sections this scenario maps to (req-to-SPEC bridge)
 
     AI-Agent BDD patterns:
       - Agent autonomy scenarios: Given agent has {capability}
@@ -250,6 +254,8 @@ scenario_structure:
         when: "[Action from EARS trigger]"
         then: "[Outcome from EARS SHALL clause]"
         threshold: "@threshold:PRD.NN.perf.api.p95"
+        spec_trace:
+          - "[SPEC section — e.g., 3 (Interfaces), 5 (Behavior)]"
 
     error:
       - id: "BDD.NN.03.xxxx"
@@ -257,6 +263,8 @@ scenario_structure:
         given: "[Error precondition from EARS IF clause]"
         when: "[Action that triggers error]"
         then: "[System SHALL NOT / error response]"
+        spec_trace:
+          - "[SPEC section — e.g., 3 (Interfaces), 5 (Behavior — error_handling)]"
 
     recovery:
       - id: "BDD.NN.03.xxxx"
@@ -264,6 +272,8 @@ scenario_structure:
         given: "[Failure condition]"
         when: "[Recovery trigger]"
         then: "[System SHALL recover WITHIN threshold]"
+        spec_trace:
+          - "[SPEC section — e.g., 5 (Behavior — state_transitions)]"
 
     parameterized:
       - id: "BDD.NN.03.xxxx"
@@ -274,6 +284,8 @@ scenario_structure:
           rows:
             - ["value1", "input1", "result1"]
             - ["value2", "input2", "result2"]
+        spec_trace:
+          - "[SPEC section — e.g., 4 (Data Models)]"
 
     optional:
       - id: "BDD.NN.03.xxxx"
@@ -281,6 +293,8 @@ scenario_structure:
         given: "[Context without optional field]"
         when: "[Action]"
         then: "[System SHALL use default value]"
+        spec_trace:
+          - "[SPEC section — e.g., 2 (Component Overview)]"
 
 # =============================================================================
 # Section 4: Traceability
@@ -315,8 +329,8 @@ traceability:
       layer: 5
       description: "Architecture decisions informed by BDD scenario coverage"
     - type: TDD
-      layer: 6
-      description: "Test-driven development guide mapping BDD scenarios to test implementation"
+      layer: 7
+      description: "Test-driven development guide mapping BDD scenarios to test implementation (via SPEC contracts)"
 
   cross_links:
     depends:

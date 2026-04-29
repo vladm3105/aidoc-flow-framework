@@ -1,9 +1,9 @@
-# Quick Reference — SDD v3
+# Quick Reference — SDD v3.2
 
-## 7-Layer Chain
+## 8-Layer Chain
 
 ```
-BRD → PRD → EARS → BDD → ADR → TDD → SPEC → Code
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ```
 
 ## Templates
@@ -15,8 +15,9 @@ BRD → PRD → EARS → BDD → ADR → TDD → SPEC → Code
 | L3 EARS | [EARS-TEMPLATE.yaml](03_EARS/EARS-TEMPLATE.yaml) | @brd @prd |
 | L4 BDD | [BDD-TEMPLATE.yaml](04_BDD/BDD-TEMPLATE.yaml) | @brd @prd @ears |
 | L5 ADR | [ADR-TEMPLATE.yaml](05_ADR/ADR-TEMPLATE.yaml) | @brd @prd @ears @bdd |
-| L6 TDD | [TDD-TEMPLATE.yaml](06_TDD/TDD-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr |
-| L7 SPEC | [SPEC-TEMPLATE.yaml](07_SPEC/SPEC-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr @tdd |
+| L6 SPEC | [SPEC-TEMPLATE.yaml](06_SPEC/SPEC-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr |
+| L7 TDD | [TDD-TEMPLATE.yaml](07_TDD/TDD-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr @spec |
+| L8 IPLAN | [IPLAN-TEMPLATE.yaml](08_IPLAN/IPLAN-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr @spec @tdd |
 
 ## Key Files
 
@@ -39,5 +40,6 @@ BRD → PRD → EARS → BDD → ADR → TDD → SPEC → Code
 | EARS-Ready | >=90/100 | PRD features, user stories, domain clarity |
 | BDD-Ready | >=90/100 | EARS syntax, atomicity, testability |
 | ADR-Ready | >=90/100 | BDD scenarios, Gherkin quality, edge cases |
-| TDD-Ready | >=90/100 | ADR decision, alternatives, consequences |
-| CODE-Ready | >=90/100 | SPEC interfaces, data models, test contracts |
+| TDD-Ready | >=90/100 | SPEC interfaces, data models, behavior contracts |
+| IPLAN-Ready | >=90/100 | TDD test case coverage, threshold definitions |
+| EXEC-Ready | >=90/100 | IPLAN file manifest completeness, execution commands, contracts |

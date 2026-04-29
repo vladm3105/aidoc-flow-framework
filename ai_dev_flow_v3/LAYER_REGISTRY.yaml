@@ -1,15 +1,29 @@
 # SDD v3 Layer Registry
 # Single source of truth for all layer definitions
-# Version: 3.0
-# Last Updated: 2026-04-28
+# Version: 3.2
+# Last Updated: 2026-04-29
 
-version: "3.0"
+version: "3.2"
 metadata:
   framework: "Specification-Driven Development (SDD) v3 — Streamlined"
-  total_layers: 7
+  total_layers: 8
   maintainer: "SDD Framework Team"
   template_policy: unified_yaml
   changelog:
+    - version: "3.2"
+      date: "2026-04-29"
+      changes:
+        - "Swapped SPEC and TDD layer positions: ADR(L5) → SPEC(L6) → TDD(L7)"
+        - "TDD now positioned after SPEC (logical: specify first, then define tests)"
+        - "Expanded TDD template with test case definitions (inputs, outputs, edge cases)"
+        - "Added spec_trace field to BDD for req-to-SPEC trace links"
+    - version: "3.1"
+      date: "2026-04-29"
+      changes:
+        - "Added Layer 8 IPLAN (optional implementation plan — bridges TDD to Code)"
+        - "IPLAN solves Gap #4: execution bridge, session handoff, implementation contracts, audit trail"
+        - "File manifest with test-first creation order"
+        - "Stateless MCP executor session handoff protocol"
     - version: "3.0"
       date: "2026-04-28"
       changes:
@@ -18,7 +32,6 @@ metadata:
         - "Added Layer 6 TDD (lightweight test-driven development guide)"
         - "SPEC promoted to Layer 7 (unified, single template, no subtypes)"
         - "Maximum cumulative tags reduced from 14 to 6"
-        - "Removed: 00_REF, CHG, PROJECT, all v1 archives"
 
 layers:
   - number: 1
@@ -69,7 +82,7 @@ layers:
     can_reference: [BRD, PRD, EARS]
     error_prefix: BDD
     optional: false
-    description: "Layer 4 — Test scenarios using Given-When-Then format"
+    description: "Layer 4 — Test scenarios using Given-When-Then format with req-to-SPEC trace links"
     template: "BDD-TEMPLATE.yaml"
     downstream: [ADR]
 
@@ -84,32 +97,45 @@ layers:
     optional: false
     description: "Layer 5 — Architectural decisions with Context-Decision-Consequences"
     template: "ADR-TEMPLATE.yaml"
-    downstream: [TDD]
+    downstream: [SPEC]
 
   - number: 6
-    artifact: TDD
-    name: "Test-Driven Development Guide"
-    folder: 06_TDD/
+    artifact: SPEC
+    name: "Technical Specification"
+    folder: 06_SPEC/
     extensions: [.yaml]
     required_tags: [brd, prd, ears, bdd, adr]
     can_reference: [BRD, PRD, EARS, BDD, ADR]
-    error_prefix: TDD
-    optional: false
-    description: "Layer 6 — Lightweight TDD guide: test pyramid, BDD-to-test mapping, test file ordering"
-    template: "TDD-TEMPLATE.yaml"
-    downstream: [SPEC]
-
-  - number: 7
-    artifact: SPEC
-    name: "Technical Specification"
-    folder: 07_SPEC/
-    extensions: [.yaml]
-    required_tags: [brd, prd, ears, bdd, adr, tdd]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, TDD]
     error_prefix: SPEC
     optional: false
-    description: "Layer 7 — Implementation-ready technical specification"
+    description: "Layer 6 — Implementation-ready technical specification: interfaces, data models, behavior contracts"
     template: "SPEC-TEMPLATE.yaml"
+    downstream: [TDD]
+
+  - number: 7
+    artifact: TDD
+    name: "Test-Driven Development Guide"
+    folder: 07_TDD/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears, bdd, adr, spec]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    error_prefix: TDD
+    optional: false
+    description: "Layer 7 — Test case definitions, BDD-to-test mapping, quality thresholds, TDD execution order — defined from SPEC component contracts"
+    template: "TDD-TEMPLATE.yaml"
+    downstream: [IPLAN]
+
+  - number: 8
+    artifact: IPLAN
+    name: "Implementation Plan"
+    folder: 08_IPLAN/
+    extensions: [.yaml]
+    required_tags: [brd, prd, ears, bdd, adr, spec, tdd]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
+    error_prefix: IPLAN
+    optional: false
+    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in 08_IPLAN/tmp/."
+    template: "IPLAN-TEMPLATE.yaml"
     downstream: [CODE]
 
 layer_groups:
@@ -123,11 +149,77 @@ layer_groups:
 
   architecture:
     layers: [5, 6]
-    description: "Architecture decisions and test-driven development"
+    description: "Architecture decisions and technical specification"
 
   implementation:
-    layers: [7]
-    description: "Technical implementation specification"
+    layers: [7, 8]
+    description: "Test definitions and execution planning"
+
+# =============================================================================
+# C4 Architecture Model Mapping
+# =============================================================================
+# Maps the 4 C4 zoom levels to SDD v3.2 layers.
+#
+# | C4 Level        | SDD Layers | Artifacts     | Diagram Tags                     |
+# |-----------------|------------|---------------|----------------------------------|
+# | L1 Context      | L1         | BRD           | @diagram: c4-l1, @diagram: dfd-l1|
+# | L2 Container    | L2         | PRD           | @diagram: c4-l2, @diagram: dfd-l2|
+# | Decision Bridge | L3-L5      | EARS, BDD, ADR| none (decision sequence for ADR) |
+# | L3 Component    | L6         | SPEC          | @diagram: c4-l3, @diagram: dfd-l3|
+# | Implement Bridge| L7-L8      | TDD, IPLAN    | none (test defs, execution plan) |
+# | L4 Code         | Code       | Source Code   | @diagram: c4-l4                  |
+#
+# Bridge layers (L3-L5, L7-L8) are SDD-specific refinements that don't
+# correspond directly to C4 zoom levels. They translate, validate, and
+# connect the C4 levels.
+
+c4_mapping:
+  context:
+    level: c4-l1
+    sdd_layer: 1
+    artifact: BRD
+    diagram_tags: ["@diagram: c4-l1", "@diagram: dfd-l1"]
+    description: "System context — actors, external systems, business boundaries"
+    mandatory_purpose: "Must describe the business environment, not product features"
+
+  container:
+    level: c4-l2
+    sdd_layer: 2
+    artifact: PRD
+    diagram_tags: ["@diagram: c4-l2", "@diagram: dfd-l2", "@diagram: sequence-sync"]
+    description: "Product containers — features, functional blocks, interactions"
+    mandatory_purpose: "Must describe product-level interactions, not system internals"
+
+  decision_bridge:
+    level: bridge
+    sdd_layers: [3, 4, 5]
+    artifacts: [EARS, BDD, ADR]
+    description: "Requirement formalization (EARS) → acceptance scenarios (BDD) → architecture decisions (ADR)"
+    note: "Not a C4 level — bridges the transition from Container (PRD) to Component (SPEC)"
+    diagram_tags: []  # ADR uses decision sequence diagrams only; EARS/BDD none
+
+  component:
+    level: c4-l3
+    sdd_layer: 6
+    artifact: SPEC
+    diagram_tags: ["@diagram: c4-l3", "@diagram: dfd-l3"]
+    description: "Component interfaces, data models, behavior contracts"
+    mandatory_purpose: "Must define component boundaries — not architecture decisions or code"
+
+  implementation_bridge:
+    level: bridge
+    sdd_layers: [7, 8]
+    artifacts: [TDD, IPLAN]
+    description: "Test case definitions (TDD) → execution planning (IPLAN)"
+    note: "Not a C4 level — validates SPEC contracts and executes implementation"
+    diagram_tags: []
+
+  code:
+    level: c4-l4
+    artifact: CODE
+    diagram_tags: ["@diagram: c4-l4"]
+    description: "Source code class/package structure — C4-L4 ownership declared in code, referenced by IPLAN"
+    note: "Not an SDD document layer — code is the output target"
 
 id_patterns:
   document: "^[A-Z]+-\\d{2,}$"

@@ -3,9 +3,9 @@
 ## Overview
 
 BRDs capture business objectives, stakeholder needs, and success criteria as the
-first step in the SDD workflow. Each BRD represents one MVP iteration cycle.
+first step in the SDD v3.2 workflow. Each BRD represents one MVP iteration cycle.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## C4 Model Mapping
 
@@ -14,14 +14,12 @@ environment, actors, and system boundaries — not product features, architectur
 
 ```text
 Context (BRD)    — business environment, actors, boundaries        ← this layer
-  └─ EARS/BDD    — formalize Context→Container transition
 Container (PRD)  — product features, functional blocks
+  └─ EARS/BDD    — formalize Context→Container transition
   └─ ADR         — decisions that shape Component architecture
-Component (SYS)  — system structure, interfaces, quality attributes
-  └─ REQ/CTR     — decompose Component→Code into atomic units
-Code (SPEC)      — implementation-ready specifications
-  └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
-  └─ TASKS       — implementation task breakdown
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions validating SPEC contracts
+  └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files
@@ -30,7 +28,6 @@ Code (SPEC)      — implementation-ready specifications
 |------|---------|
 | `BRD-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
 | `BRD-00_index.md` | BRD registry — tracks planned and active BRDs per project |
-| `BRD-00_GLOSSARY.md` | Shared glossary — terms used across multiple BRDs |
 
 ## Template Sync Rule
 
@@ -38,16 +35,14 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/BRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml mcp_sdd/templates/BRD-TEMPLATE.yaml
+cp ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml mcp_sdd/templates/BRD-TEMPLATE.yaml
 ```
-
-If the runtime copy is stale, `sdd_create` and `sdd_validate` will use outdated structure.
 
 ## MCP Tools (mcp_sdd)
 
@@ -76,7 +71,7 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 
 ## Document Formats
 
-BRDs can be authored in YAML (`.yaml`) or Markdown (`.md`). Both formats are validated by `sdd_validate` with cross-section consistency rules. YAML format enables structured validation (required keys, element ID format, empty section detection) in addition to standard checks.
+BRDs are authored in YAML (`.yaml`). Both formats are validated by `sdd_validate` with cross-section consistency rules. YAML format enables structured validation (required keys, element ID format, empty section detection).
 
 ## BRD Types
 

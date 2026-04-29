@@ -3,26 +3,24 @@
 ## Overview
 
 PRDs define product features, user personas, and acceptance criteria as the
-second step in the SDD workflow. Each PRD corresponds to one BRD iteration cycle.
+second step in the SDD v3.2 workflow. Each PRD corresponds to one BRD iteration cycle.
 
-**Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## C4 Model Mapping
 
 PRD is the **Container** level in the C4 architecture model. Content describes
 product features and functional blocks — not business environment (Context),
-system internals (Component), or implementation details (Code).
+component details (Component), or implementation details (Code).
 
 ```text
 Context (BRD)    — business environment, actors, boundaries
   └─ EARS/BDD    — formalize Context→Container transition
 Container (PRD)  — product features, functional blocks                 ← this layer
   └─ ADR         — decisions that shape Component architecture
-Component (SYS)  — system structure, interfaces, quality attributes
-  └─ REQ/CTR     — decompose Component→Code into atomic units
-Code (SPEC)      — implementation-ready specifications
-  └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
-  └─ TASKS       — implementation task breakdown
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions validating SPEC contracts
+  └─ IPLAN       — execution plan bridging TDD to Code
 ```
 
 ## Files
@@ -38,13 +36,13 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ai_dev_flow_v3/02_PRD/PRD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/PRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml mcp_sdd/templates/PRD-TEMPLATE.yaml
+cp ai_dev_flow_v3/02_PRD/PRD-TEMPLATE.yaml mcp_sdd/templates/PRD-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

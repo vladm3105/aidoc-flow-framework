@@ -1,5 +1,5 @@
 ---
-title: "PRD-000: PRD Index"
+title: "PRD-00: PRD Index"
 tags:
   - index-document
   - layer-2-artifact
@@ -9,39 +9,34 @@ custom_fields:
   artifact_type: PRD
   layer: 2
   priority: shared
+  last_updated: "2026-04-29"
 ---
 
-# PRD-000: Product Requirements Documents Master Index
-
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+# PRD-00: Product Requirements Documents Master Index
 
 ## Purpose
 
-This document serves as the master index for all Product Requirements Documents (PRDs) in the project. Use this index to:
+This document serves as the master index for all Product Requirements Documents in the project. Use this index to:
 
 - **Discover** existing product requirements
 - **Track** feature specification status
 - **Coordinate** product planning across teams
-- **Reference** business requirements and downstream artifacts
+- **Reference** upstream BRD and downstream EARS artifacts
 
 ## Position in Document Workflow
 
 ```mermaid
 flowchart LR
-    BRD[BRD] --> PRD[PRD]
-    PRD --> EARS[EARS]
-    PRD --> BDD[BDD]
-    PRD --> SYS[SYS]
-    PRD --> REQ[REQ]
+    BRD[BRD - L1] --> PRD[PRD - L2]
+    PRD --> EARS[EARS - L3]
 
     style PRD fill:#fff3e0,stroke:#ff6f00,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
-
 **Layer**: 2 (Product Requirements Layer)
-**Upstream**: BRD (Business Requirements)
-**Downstream**: EARS, BDD, SYS, REQ
+**Upstream**: BRD (Business Requirements, Layer 1)
+**Downstream**: EARS (Formal Requirements, Layer 3)
+**Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## Product Requirements Index
 
@@ -51,11 +46,9 @@ flowchart LR
 
 ## Planned
 
-- Use this section to list PRDs planned but not yet created. Move rows to the main index table when created.
-
 | ID | Title | Priority | Target Date | Notes |
 |----|-------|----------|-------------|-------|
-| PRD-XX | … | High/Med/Low | YYYY-MM-DDTHH:MM:SS | … |
+| PRD-XX | … | High/Med/Low | YYYY-MM-DD | … |
 
 ## Status Definitions
 
@@ -63,7 +56,7 @@ flowchart LR
 |--------|---------|-------------|
 | **Draft** | In development | PRD being written, requirements gathering in progress |
 | **Review** | Under review | Stakeholders reviewing product requirements |
-| **Approved** | Finalized | PRD approved, ready for downstream development |
+| **Approved** | Finalized | PRD approved, ready for downstream EARS generation |
 | **In Progress** | Active development | Features being implemented |
 | **Completed** | Delivered | All features implemented and released |
 | **Archived** | Superseded | Replaced by newer PRD or no longer relevant |
@@ -92,56 +85,14 @@ When creating a new PRD:
 - **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **One Product Per File**: Each `PRD-NN` file covers a coherent product or feature area
 - **Slugs**: Short, descriptive, lower_snake_case
-- **Cross-Links**: Each PRD should reference upstream BRD and downstream 03_EARS/04_BDD/06_SYS/REQ
+- **Cross-Links**: Each PRD references upstream BRD hash-based element IDs
 - **Index Updates**: Add a line for every new PRD; do not remove past entries
-
-## Template Variants
-
-PRDs support three template variants based on feature complexity and implementation approach:
-
-| Variant | Code | Sections | Use Case | Selection Criteria |
-|---------|------|----------|----------|-------------------|
-| **Standard** | S | 21 sections (1-21) | Business features, platform capabilities | Default for most PRDs |
-| **Agent-Based** | A | 12-15 sections | AI/ML agents with inference pipelines | ML models, autonomous decision-making |
-| **Automation** | W | 9-12 sections | Workflow-focused, n8n-centric | Event-driven automation, minimal UI |
-
-### Template Variant Selection Guide
-
-```mermaid
-flowchart TD
-    Start[New PRD] --> Q1{ML/AI agent<br/>with inference?}
-    Q1 -->|Yes| Agent[Agent-Based Template<br/>12-15 sections]
-    Q1 -->|No| Q2{Workflow/automation<br/>focused?}
-    Q2 -->|Yes| Workflow[Automation Template<br/>9-12 sections]
-    Q2 -->|No| Standard[Standard Template<br/>21 sections]
-```
-
-### Variant-Specific Required Sections
-
-| Section | Standard (S) | Agent-Based (A) | Automation (W) |
-|---------|:------------:|:---------------:|:--------------:|
-| YAML Metadata |  |  |  |
-| Document Control |  |  |  |
-| Product Overview |  |  |  |
-| User Stories |  |  (condensed) |  (optional) |
-| Functional Requirements |  |  |  |
-| ML Pipeline Specification |  |  |  |
-| Workflow Specification |  |  |  |
-| EARS Enhancement Appendix |  |  |  |
-
-**Legend**:  = Required,  = Optional/Condensed
+- **Element IDs**: Hash-based format `PRD.NN.SS.xxxx` (SHA256, 4-char hex)
 
 ## Threshold Registry Integration
 
-### Purpose
-The Threshold Registry (PRD-NN pattern) centralizes magic numbers, limits, and configuration values that span multiple PRDs. This prevents conflicts and enables consistent updates.
+Threshold tags in PRD functional requirements use `@threshold:` convention for quantitative values that may change across iterations:
 
-### Reference Pattern
-```markdown
-@threshold: PRD.035.category.key
-```
-
-### Common Threshold Categories
 | Category | Example Key | Description |
 |----------|-------------|-------------|
 | Quota Limits | `quota_velocity_daily` | Daily transaction limits by verification tier |
@@ -150,59 +101,23 @@ The Threshold Registry (PRD-NN pattern) centralizes magic numbers, limits, and c
 | Risk Thresholds | `risk_score_high` | Risk scoring breakpoints |
 | Rate Limits | `api_rate_per_minute` | API rate limiting values |
 
-### When to Create Threshold Registry Entries
-1. Value appears in 2+ PRDs
+When to use thresholds:
+1. Value appears in 2+ sections
 2. Value affects cross-system behavior
 3. Value requires coordinated updates
-4. Value has compliance/regulatory implications
 
 See `PRD-TEMPLATE.yaml` Section 9 (Functional Requirements) for `@threshold:` tag format.
 
-## Migration Guide
+## Quality Gate
 
-### PRD Migration Status Categories
+PRD must achieve **EARS-Ready score >=90/100** before downstream EARS generation.
 
-| Status | Definition | Action Required |
-|--------|------------|-----------------|
-| **Current** | Compliant with v2.0 template (21 sections: 1-21 including EARS Appendix and QA) | None |
-| **Legacy** | Pre-v2.0 format (missing EARS Appendix, inconsistent Feature IDs) | Migration required |
-| **Migrated** | Updated from legacy to current format | Validation only |
-
-### Migration Checklist for Legacy PRDs
-
-When migrating a Legacy PRD to Current status:
-
-1. **Template Variant Selection**
-   - [ ] Identify appropriate variant (S/A/W)
-   - [ ] Add `template_variant` to YAML metadata
-
-2. **Feature ID Standardization**
-   - [ ] Convert all Element IDs to unified 4-segment format: `PRD.NN.EE.SS`
-   - [ ] Use correct element codes (e.g., User Story = 09)
-   - [ ] Update cross-references in downstream artifacts (e.g., `@prd: PRD.NN.EE.SS`)
-
-3. **EARS Enhancement Appendix**
-   - [ ] Add Section 20 with all 5 subsections
-   - [ ] Populate timing profile matrix (p50/p95/p99)
-   - [ ] Define boundary value matrix with explicit operators
-   - [ ] Create state transition diagram
-   - [ ] Document fallback paths
-   - [ ] Complete EARS-Ready checklist
-
-4. **Threshold Registry Integration**
-   - [ ] Identify all magic numbers/thresholds
-   - [ ] Create PRD-NN entries for shared values
-   - [ ] Replace inline values with registry references
-
-5. **Bidirectional Reference Validation**
-   - [ ] Verify all upstream references exist and reciprocate
-   - [ ] Verify all downstream references exist and reciprocate
-   - [ ] Update cross-reference section
-
-6. **Final Validation**
-   - [ ] Calculate EARS-Ready score (target ≥90)
-   - [ ] Update migration status to "Migrated"
-   - [ ] Update traceability matrix entry
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Average EARS-Ready Score | >=90 | - | - |
+| Bidirectional Reference Validation | 100% | - | - |
+| BRD Coverage | 100% | - | - |
+| Threshold Registry Coverage | 100% | - | - |
 
 ## Index by Status
 
@@ -233,66 +148,20 @@ When migrating a Legacy PRD to Current status:
 | P2 (Medium) | - |
 | P3 (Low) | - |
 
-## Index by Product Area
-
-| Product Area | PRD Documents | Count |
-|--------------|---------------|-------|
-| Core Platform | - | 0 |
-| User Features | - | 0 |
-| Admin Tools | - | 0 |
-| Integrations | - | 0 |
-| Infrastructure | - | 0 |
-
-## Feature Summary
-
-### User Stories by Epic
-- None yet
-
-### Functional Requirements
-- None yet
-
-### Quality Attributes
-- None yet
-
 ## Metrics
 
-### Document Metrics
 | Metric | Value | Description |
 |--------|-------|-------------|
 | Total PRDs | 0 | Total product requirement documents |
-| Total Features | 0 | Total features specified |
 | Total User Stories | 0 | Total user stories documented |
-| Approved PRDs | 0 | PRDs ready for implementation |
-| In Progress | 0 | PRDs with active development |
-
-### Quality Metrics
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Average EARS-Ready Score | ≥90 | - | - |
-| Bidirectional Validation Rate | 100% | - | - |
-| Template Variant Compliance | 100% | - | - |
-| Feature ID Standard Compliance | 100% | - | - |
-| Threshold Registry Coverage | 100% | - | - |
-
-### Migration Metrics
-| Migration Status | Count | Percentage |
-|------------------|-------|------------|
-| Current | 0 | 0% |
-| Legacy | 0 | 0% |
-| Migrated | 0 | 0% |
-
-### Template Variant Distribution
-| Variant | Count | Percentage |
-|---------|-------|------------|
-| Standard (S) | 0 | 0% |
-| Agent-Based (A) | 0 | 0% |
-| Automation (W) | 0 | 0% |
+| Approved PRDs | 0 | PRDs ready for EARS generation |
 
 ## Related Documents
 
 - **Template**: [PRD-TEMPLATE.yaml](./PRD-TEMPLATE.yaml)
-- **README**: [README.md](./README.md) - Learn about PRD purpose and structure
-- **Traceability Matrix**: [PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md](./PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **README**: [README.md](./README.md) — PRD purpose, structure, and MCP tool usage
+- **Upstream**: [01_BRD](../01_BRD/) — Business Requirements
+- **Downstream**: [03_EARS](../03_EARS/) — Formal Requirements
 
 ## Maintenance Guidelines
 
@@ -309,22 +178,14 @@ Before marking PRD as "Approved":
 - [PASS] All user stories follow standard format (As a... I want... So that...)
 - [PASS] Functional requirements are testable and specific
 - [PASS] Quality attributes have measurable criteria
-- [PASS] Cross-references to BRD are complete
+- [PASS] Cross-references to BRD use hash-based element IDs
 - [PASS] Acceptance criteria defined for each feature
-- [PASS] **EARS-Ready score ≥90** (required for EARS progression)
+- [PASS] **EARS-Ready score >=90** (required for EARS progression)
 - [PASS] **Bidirectional references validated** (all A→B have B→A)
-- [PASS] **Template variant declared** in YAML metadata
-- [PASS] **Feature IDs follow standard format** (`PRD.NN.01.SS`)
 - [PASS] **Threshold registry references** for shared values
 
 ---
 
-**Index Version**: 3.0
-**Last Updated**: 2025-11-29T00:00:00
+**Index Version**: 4.0
+**Last Updated**: 2026-04-29
 **Maintainer**: [Project Team]
-
-### Version History
-| Version | Date | Changes |
-|---------|------|---------|
-| 3.0 | 2025-11-29T00:00:00 | Added Template Variants, Threshold Registry Integration, Migration Guide, enhanced Quality Metrics |
-| 2.0 | 2025-11-13T00:00:00 | Initial structured index |

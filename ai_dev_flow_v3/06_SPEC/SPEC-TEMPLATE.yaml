@@ -1,30 +1,65 @@
 # SPEC-TEMPLATE.yaml — Unified Technical Specification
-# SDD v3 Layer 7 — Implementation-ready specification
-# Version: 3.0
+# SDD v3.2 Layer 6 — Implementation-ready specification
+# Version: 3.2
+# Upstream: ADR (Layer 5), BDD (Layer 4)
+# Downstream: TDD (Layer 7)
 
 metadata:
   schema_version: "1.0"
   document_type: "spec-document"
-  layer: 7
+  layer: 6
   total_sections: 8
-  last_updated: "2026-04-28"
+  last_updated: "2026-04-29"
   deliverable_type: code
   tags:
     - spec-document
-    - layer-7-artifact
+    - layer-6-artifact
     - shared-architecture
+
+  c4_level:
+    _guidance: |
+      SDD v3.2 C4 map:
+        C4-L1 Context   — BRD: business environment, actors, boundaries
+        C4-L2 Container — PRD: product features, functional blocks
+        Bridge           — EARS→BDD→ADR: formalize, specify acceptance, decide
+        C4-L3 Component — SPEC: component interfaces, data, behavior ← this layer
+        Bridge           — TDD→IPLAN: define tests, plan execution
+        C4-L4 Code       — source code implementation
+
+      SPEC is Component level (C4-L3). Content must describe component
+      interfaces, data models, and behavior contracts — not architecture
+      decisions (ADR) or code implementation (Code).
+    value: component
+
+  diagram_standard:
+    _guidance: |
+      SPEC is Component level (C4-L3):
+        - Component diagram: internal components, their interfaces and relationships
+        - Data flow (DFD-L3): data movement between components
+        - Sequence diagrams: MUST include alt/else for error paths
+        - MUST reference downstream TDD where C4-L4 ownership is implemented
+        - MUST NOT embed C4-L4 code/class diagrams — belongs in Code layer
+
+      Diagram rules:
+        - Show component interactions, not code implementation details
+        - PASS: "AuthService", "PaymentGateway", "UserRepository", "NotificationQueue"
+        - FAIL: "auth_service.py", "async def validate_token()", "PostgreSQL table"
+        - FAIL: "Redis cache key format", "Kubernetes pod configuration"
+    tags:
+      - "@diagram: c4-l3"
+      - "@diagram: dfd-l3"
 
 # =============================================================================
 # Section 1: Document Control
 # =============================================================================
-document_control:
+  document_control:
   status: Draft
   version: "1.0"
   date_created: "YYYY-MM-DDTHH:MM:SS"
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Author]"
   component: "[Component Name]"
-  code_ready_score: "[Score]/100"
+  tdd_ready_score: "[Score]/100"
 
 # =============================================================================
 # Section 2: Component Overview
@@ -108,12 +143,12 @@ implementation_notes:
     - "[Consideration — e.g., LRU cache for frequent reads]"
 
 # =============================================================================
-# Section 7: Test Contract References
+# Section 7: Downstream TDD Contracts
 # =============================================================================
-test_contracts:
+tdd_contracts:
   _guidance: |
-    Reference TDD layer documents that define tests for this component.
-    TDD declares test files before implementation files (test-first order).
+    Reference the TDD document that will define test cases for this SPEC component.
+    TDD (Layer 7) defines test inputs, expected outputs, edge cases, and thresholds.
   tdd_document: "@tdd: TDD-NN"
   test_files:
     - path: "tests/unit/test_[module].py"
@@ -130,8 +165,6 @@ traceability:
   tags:
     - "@spec: SPEC-NN"
   upstream:
-    tdd_references:
-      - "@tdd: TDD-NN"
     adr_references:
       - "@adr: ADR-NN.03.xxxx"
     bdd_references:
@@ -143,8 +176,14 @@ traceability:
     brd_references:
       - "@brd: BRD-NN"
   downstream:
+    - type: TDD
+      layer: 7
+      description: "Test case definitions validating SPEC contracts"
+    - type: IPLAN
+      layer: 8
+      description: "Implementation plan — bridges TDD to Code"
     - type: CODE
       description: "Source code implementation"
   health_score:
-    code_ready: "[X]%"
+    tdd_ready: "[X]%"
     target_score: ">=90/100"

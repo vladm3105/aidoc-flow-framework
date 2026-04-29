@@ -71,8 +71,8 @@ Use the following model across the MVP → PROD → NEW MVP lifecycle.
 | BRD (L1) | C4 L1 (Context) + DFD L1 | Business/system boundary and top-level data movement |
 | PRD (L2) | C4 L2 (Container) + DFD L2 + key sequence | Product container interactions, data movement, temporal user/system flow |
 | ADR (L5) | Decision sequence (no C4 level — decision bridge) | Architecture decision rationale and alternatives |
-| SYS (L6) | C4 L3 (Component) + DFD L3 | System component structure, interfaces, data-flow constraints |
-| SPEC/Code/Test (L9+) | C4 L4 (Code) | Implementation-level code structure ownership |
+| SPEC (L6) | C4 L3 (Component) + DFD L3 | Component interfaces, data-flow constraints, behavior contracts |
+| Code | C4 L4 (Code) | Implementation-level class/package structure |
 
 ### Diagram Intent Header (Mandatory)
 
@@ -95,28 +95,32 @@ Validation severity defaults:
 - Warning: missing trust-boundary annotation or missing sequence exception-path branch
 - Info: optional enrichment gaps
 
-### SYS Bridge Rule
+### SPEC Component Diagram Rule
 
-- SYS MUST NOT require embedded C4 L4 code/class diagrams as mandatory content.
-- SYS MUST reference downstream SPEC location where C4 L4 ownership is implemented.
+- SPEC MUST NOT require embedded C4 L4 code/class diagrams as mandatory content.
+- SPEC MUST reference downstream TDD/IPLAN location where C4 L4 ownership is implemented.
 
-### System Diagram Contract (SYS)
+### Component Diagram Contract (SPEC)
 
-Required fields in SYS diagram contract subsection:
+Required fields in SPEC diagram contract subsection:
 - `@diagram: c4-l3` component-level references
 - `@diagram: dfd-l3` data-flow boundary tags
 - Required sequence paths for critical integrations and error handling
-- Downstream SPEC path for C4 L4 ownership
+- Downstream TDD path for test case ownership
 
 ### Layer Enforcement Summary
 
 | Layer | Mandatory Checks |
 |---|---|
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
-| PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, required sequence with explicit error path |
+| PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
+| EARS (L3) | No diagrams required (refinement step; inherits upstream) |
+| BDD (L4) | Gherkin scenarios (no C4/DFD diagram requirements) |
 | ADR (L5) | Required decision sequence; no C4/DFD tags (decision bridge, not a C4 level) |
-| SYS (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required System Diagram Contract subsection, sequence-path constraints, downstream SPEC ownership link |
-| SPEC/Code/Test (L9+) | C4 L4 ownership declarations aligned with SYS references |
+| SPEC (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required Component Diagram Contract subsection, sequence-path constraints, downstream TDD ownership link |
+| TDD (L7) | No C4/DFD requirements (test case definitions) |
+| IPLAN (L8) | No C4/DFD requirements (execution plan) |
+| Code | C4 L4 ownership declarations aligned with SPEC references |
 
 ### BRD Required Diagrams by Type
 
@@ -224,9 +228,9 @@ flowchart LR
 
 ### Traceability
 
-This standard applies to all SDD artifacts across Layers 1-11.
+This standard applies to all SDD artifacts across Layers 1-8.
 
 **Cross-references**:
 - `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`
 - `charts-flow` skill: `.claude/skills/charts-flow/SKILL.md`
-- Framework guide: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Framework guide: `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

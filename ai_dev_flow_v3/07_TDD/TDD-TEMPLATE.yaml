@@ -1,18 +1,27 @@
 # TDD-TEMPLATE.yaml — Test-Driven Development Guide
-# SDD v3 Layer 6 — Bridges BDD scenarios to test implementation ordering
-# Version: 3.0
+# SDD v3.2 Layer 7 — Test case definitions from SPEC component contracts
+# Version: 3.2
+# Upstream: SPEC (Layer 6), ADR (Layer 5), BDD (Layer 4)
+# Downstream: IPLAN (Layer 8)
 
 metadata:
   schema_version: "1.0"
   document_type: "tdd-document"
-  layer: 6
-  total_sections: 5
-  last_updated: "2026-04-28"
+  layer: 7
+  total_sections: 7
+  last_updated: "2026-04-29"
   deliverable_type: code
   tags:
     - tdd-document
-    - layer-6-artifact
+    - layer-7-artifact
     - shared-architecture
+
+  c4_level:
+    _guidance: |
+      TDD is NOT a C4 level. It defines test cases that validate SPEC
+      (C4-L3 Component) contracts through test execution. C4-L4 (Code)
+      ownership belongs to the Code layer, referenced by IPLAN.
+    value: none
 
 # =============================================================================
 # Section 1: Document Control
@@ -24,7 +33,11 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[Author]"
   component: "[Component Name]"
-  spec_ready_score: "[Score]/100"
+  iplan_ready_score: "[Score]/100"
+  _guidance: |
+    IPLAN-Ready Score: >=90/100 required before IPLAN generation.
+    Upstream: SPEC (Layer 6) defines the component contract.
+    TDD defines test cases that validate SPEC compliance.
 
 # =============================================================================
 # Section 2: Test Pyramid
@@ -81,7 +94,96 @@ test_mapping:
     rows: []
 
 # =============================================================================
-# Section 4: Test Thresholds
+# Section 4: Test Case Definitions
+# =============================================================================
+test_cases:
+  _guidance: |
+    Detailed test case specifications derived from SPEC interfaces,
+    data models, and behavior contracts. Each test case defines inputs,
+    expected outputs, and edge case coverage.
+
+    Test cases are organized by SPEC component contract:
+    - Unit tests validate individual interfaces and data models (SPEC Sections 3-4)
+    - Integration tests validate component interactions and behavior (SPEC Section 5)
+    - E2E tests validate full workflows mapped from BDD scenarios
+
+  unit_tests:
+    _guidance: "Validate individual functions, methods, and data model constraints from SPEC Sections 3-4."
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        spec_ref: "@spec: SPEC-NN"
+        target: "[function_name | ClassName.method_name]"
+        test_file: "tests/unit/test_[module].py"
+        test_function: "test_[description]"
+        inputs:
+          - name: "[param_name]"
+            type: "[Type]"
+            value: "[concrete test value]"
+        expected_output:
+          type: "[ReturnType | ExceptionType]"
+          value: "[concrete expected value]"
+        edge_cases:
+          - condition: "[boundary/null/empty condition]"
+            expected: "[expected behavior]"
+
+  integration_tests:
+    _guidance: "Validate component interactions, state transitions, and error handling from SPEC Section 5."
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        spec_ref: "@spec: SPEC-NN"
+        contract: "[interface or behavior contract from SPEC]"
+        test_file: "tests/integration/test_[module].py"
+        test_function: "test_[description]_integration"
+        setup:
+          - "[dependency or mock setup]"
+        action:
+          description: "[what triggers the interaction]"
+        expected_state:
+          - "[expected system state after interaction]"
+        error_paths:
+          - condition: "[error condition]"
+            expected_error: "[ErrorType]"
+
+  e2e_tests:
+    _guidance: "Validate full workflows mapped from BDD scenarios."
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Descriptive test name]"
+        bdd_ref: "@bdd: BDD.NN.03.xxxx"
+        spec_ref: "@spec: SPEC-NN"
+        test_file: "tests/e2e/test_[workflow].py"
+        test_function: "test_[description]_e2e"
+        workflow:
+          - step: 1
+            action: "[user/system action]"
+            expected: "[visible result]"
+          - step: 2
+            action: "[next action]"
+            expected: "[next result]"
+        timeout_seconds: 30
+        cleanup: "[cleanup actions after test]"
+
+  security_tests:
+    _guidance: "Optional — include only if SPEC or ADR mandates security testing."
+    cases:
+      - id: "TDD.NN.04.xxxx"
+        name: "[Security test name]"
+        spec_ref: "@spec: SPEC-NN"
+        threat: "[OWASP category or threat model ref]"
+        test_file: "tests/security/test_[module].py"
+        test_function: "test_[description]_security"
+        inputs:
+          - name: "[input name]"
+            type: "[Type]"
+            value: "[malicious/edge test value]"
+        expected_result:
+          type: "rejection | sanitization | error"
+          value: "[expected secure behavior]"
+
+# =============================================================================
+# Section 5: Test Thresholds
 # =============================================================================
 thresholds:
   _guidance: |
@@ -106,14 +208,14 @@ thresholds:
       - "No regression failures"
     fail_action: "Block deploy to staging"
   security:
-    _note: "Optional — include only if ADR mandates security testing"
+    _note: "Optional — include only if SPEC or ADR mandates security testing"
     coverage_target: "All authentication/authorization paths"
     pass_criteria:
       - "No OWASP Top 10 vulnerabilities detected"
     fail_action: "Block deploy"
 
 # =============================================================================
-# Section 5: TDD Execution Order
+# Section 6: TDD Execution Order
 # =============================================================================
 tdd_order:
   _guidance: |
@@ -123,7 +225,7 @@ tdd_order:
   phases:
     - phase: 1
       name: "Write Tests"
-      action: "Generate all test files from Section 3 mappings"
+      action: "Generate all test files from Sections 3-4 test mappings and cases"
       output: "Test files at declared paths"
     - phase: 2
       name: "Run Tests (Red)"
@@ -143,20 +245,22 @@ tdd_order:
       output: "Refactored code"
 
 # =============================================================================
-# Section 6: Traceability
+# Section 7: Traceability
 # =============================================================================
 traceability:
   tags:
     - "@tdd: TDD-NN"
   upstream:
+    spec_references:
+      - "@spec: SPEC-NN"
     adr_references:
       - "@adr: ADR-NN.03.xxxx"
     bdd_references:
       - "@bdd: BDD.NN.03.xxxx"
   downstream:
-    - type: SPEC
-      layer: 7
-      description: "Technical specification informed by test contracts"
+    - type: IPLAN
+      layer: 8
+      description: "Implementation plan — test-first file generation order enforced"
   health_score:
-    spec_ready: "[X]%"
+    iplan_ready: "[X]%"
     target_score: ">=90/100"

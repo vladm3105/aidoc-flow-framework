@@ -46,14 +46,16 @@ metadata:
 
   c4_level:
     _guidance: |
-      SDD v3 C4 map (7 layers):
+      SDD v3.2 C4 map (8 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks     ← this layer
         EARS              — formalize Context→Container transition
         BDD               — executable acceptance scenarios
         ADR               — architecture decisions
-        TDD               — test-driven development guide
-        Code (SPEC)       — implementation-ready specifications
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
 
       PRD is Container level. Content must describe product features and
       functional blocks — not business environment (Context), system
@@ -68,7 +70,7 @@ metadata:
       | C4 Level | SDD Layer | Diagram Types |
       | Context  | BRD       | C4-L1 (system context), DFD-L1, sequenceDiagram (business journey) |
       | Container| PRD       | C4-L2 (container), DFD-L2, sequenceDiagram (product interactions) |
-      | Code     | SPEC      | C4-L4 (code), class diagrams, sequenceDiagram (implementation flow) |
+      | Component| SPEC      | C4-L3 (component), DFD-L3, sequenceDiagram (implementation flow) |
 
       PRD is Container level (C4-L2):
         - Container diagram: product containers, their interactions
@@ -92,14 +94,9 @@ metadata:
 
   deliverable_type:
     _guidance: |
-      Inherited from upstream BRD. Determines downstream SPEC subtype routing.
+      Inherited from upstream BRD. Identifies primary deliverable category.
+      In v3.2, all routes point to the unified SPEC (Layer 6) — no subtypes.
     value: code  # code | document | ux | risk | process
-    routing:
-      code: CSPEC
-      document: DSPEC
-      ux: UXSPEC
-      risk: RISKSPEC
-      process: PROCSPEC
 
   id_standard:
     _guidance: |
@@ -336,8 +333,8 @@ user_stories:
   _antipatterns:
     - "FAIL: WHEN-THE-SHALL-WITHIN format — belongs in EARS (Layer 3)"
     - "FAIL: Given-When-Then scenarios — belongs in BDD (Layer 4)"
-    - "FAIL: Technical implementation details — belongs in SYS (Layer 6)"
-    - "FAIL: API endpoint specifications — belongs in SPEC (Layer 9)"
+    - "FAIL: Technical implementation details — belongs in SPEC (Layer 6)"
+    - "FAIL: API endpoint specifications — belongs in SPEC (Layer 6)"
 
   roles:
     - role: "[Primary user role]"
@@ -377,12 +374,12 @@ functional_requirements:
 
     Content boundaries (PRD vs downstream):
       KEEP: product capability descriptions, user journeys, error handling
-      REMOVE: system architecture details (SYS), code-level specs (SPEC)
+      REMOVE: system architecture details (ADR), code-level specs (SPEC)
 
   _antipatterns:
     - "FAIL: database schema or query details — belongs in SPEC"
     - "FAIL: API endpoint implementation — belongs in SPEC"
-    - "FAIL: infrastructure configuration — belongs in ADR/SYS"
+    - "FAIL: infrastructure configuration — belongs in ADR/SPEC"
 
   core_capabilities:
     - id: "PRD.NN.09.xxxx"

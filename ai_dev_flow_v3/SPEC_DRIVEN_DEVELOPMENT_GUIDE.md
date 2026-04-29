@@ -1,11 +1,11 @@
-# Specification-Driven Development Guide — SDD v3
+# Specification-Driven Development Guide — SDD v3.2
 
 ## Overview
 
-SDD v3 is a streamlined 7-layer documentation-to-code framework. Each layer produces one YAML document type, with cumulative traceability from business requirements to implementation specification.
+SDD v3.2 is a streamlined 8-layer documentation-to-code framework. Each layer produces one YAML document type, with cumulative traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
 
 ```
-BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → TDD (L6) → SPEC (L7) → Code
+BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
 ```
 
 ## Layer Descriptions
@@ -15,26 +15,28 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → TDD (L6) → S
 | L1 | BRD | Business requirements, objectives, scope | — | PRD |
 | L2 | PRD | Product features, user stories, ADR topics | BRD | EARS |
 | L3 | EARS | Formal requirements (WHEN-THE-SHALL-WITHIN) | BRD, PRD | BDD |
-| L4 | BDD | Executable acceptance scenarios (Given-When-Then) | BRD, PRD, EARS | ADR, TDD |
-| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | BRD, PRD, EARS, BDD | TDD |
-| L6 | TDD | Test pyramid, BDD-to-test mapping, TDD execution order | BRD, PRD, EARS, BDD, ADR | SPEC |
-| L7 | SPEC | Component interfaces, data models, behavior, test contracts | BRD, PRD, EARS, BDD, ADR, TDD | Code |
+| L4 | BDD | Executable acceptance scenarios (Given-When-Then) with spec_trace | BRD, PRD, EARS | ADR |
+| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | BRD, PRD, EARS, BDD | SPEC |
+| L6 | SPEC | Component interfaces, data models, behavior contracts | BRD, PRD, EARS, BDD, ADR | TDD |
+| L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | BRD, PRD, EARS, BDD, ADR, SPEC | IPLAN |
+| L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | BRD, PRD, EARS, BDD, ADR, SPEC, TDD | Code |
 
 ## Cumulative Traceability
 
 Each layer inherits tags from all upstream layers:
 
 ```
-BRD: @brd
-PRD: @brd @prd
-EARS: @brd @prd @ears
-BDD: @brd @prd @ears @bdd
-ADR: @brd @prd @ears @bdd @adr
-TDD: @brd @prd @ears @bdd @adr @tdd
-SPEC: @brd @prd @ears @bdd @adr @tdd @spec
+BRD:   @brd
+PRD:   @brd @prd
+EARS:  @brd @prd @ears
+BDD:   @brd @prd @ears @bdd
+ADR:   @brd @prd @ears @bdd @adr
+SPEC:  @brd @prd @ears @bdd @adr @spec
+TDD:   @brd @prd @ears @bdd @adr @spec @tdd
+IPLAN: @brd @prd @ears @bdd @adr @spec @tdd @iplan
 ```
 
-Maximum 6 cumulative tags at SPEC layer (vs 14 in SDD v2).
+Maximum 8 cumulative tags at IPLAN layer (vs 14 in SDD v2).
 
 ## Readiness Score Flow
 
@@ -42,8 +44,8 @@ Each layer must achieve >=90/100 readiness score before generating the next laye
 
 ```
 BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>=90)
-→ BDD → ADR-Ready (>=90) → ADR → TDD-Ready (>=90) → TDD → SPEC-Ready (>=90)
-→ SPEC → CODE-Ready (>=90) → Code
+→ BDD → ADR-Ready (>=90) → ADR → SPEC-Ready (>=90) → SPEC → TDD-Ready (>=90)
+→ TDD → IPLAN-Ready (>=90) → IPLAN → EXEC-Ready (>=90) → Code
 ```
 
 ## What Was Cut from SDD v2
@@ -51,9 +53,31 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 | Cut | Replaced By |
 |-----|-------------|
 | SYS (L6) | ADR captures architecture; PRD captures scope |
-| REQ (L7) | EARS + BDD provide sufficient granularity |
-| CTR (L8) | Only needed for multi-team API contracts |
-| TSPEC (L10) 42-file suite | TDD (L6) single document per component |
-| TASKS (L11) | AI generates tasks from SPEC on-the-fly |
-| 09_SPEC/ subtypes (5 types) | Unified SPEC template |
+| REQ (L7) | EARS + BDD spec_trace provide requirement-to-spec links |
+| CTR (L8) | SPEC interface contracts handled inline |
+| TSPEC (L10) 42-file suite | TDD (L7) with embedded test case definitions |
+| TASKS (L11) | IPLAN (L8) execution bridge with session handoff |
+| 09_SPEC/ subtypes (5 types) | Unified SPEC template (L6) |
 | CHG/ gate system | Project-level concern |
+
+## v3.2 Changes from v3.0
+
+| Change | Rationale |
+|--------|-----------|
+| SPEC (L6) ↔ TDD (L7) swapped | Logical: specify first, then define tests against specification |
+| TDD template expanded | Test case definitions with inputs, outputs, edge cases |
+| BDD spec_trace added | Each scenario links to SPEC sections for req-to-SPEC traceability |
+| IPLAN (L8) | Execution bridge with session handoff (replaces TASKS) |
+
+## Development vs Deployment Separation
+
+SDD v3.2 enforces a strict boundary between development and deployment concerns. Development plans (IPLAN L8) produce artifacts. Deployment plans consume and apply them.
+
+| Concern | Plan Type | Owns | Done When |
+|---------|-----------|------|-----------|
+| **Development** | IPLAN (L8) | Source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, shipped via `git push` | Code + IaC + scripts authored, committed, green; tests pass |
+| **Deployment** | Separate deployment plan | Operator execution: `terraform apply`, `atlas migrate apply`, image build + deploy, environment activation, acceptance/soak runs | Artifacts applied to target environment; acceptance gates green |
+
+**Rule.** An IPLAN flips to `Completed` once source code + Terraform modules + CI/CD scripts are authored, committed, and green. It does NOT wait for deployment. A deployment-stuck IPLAN (e.g., "ready for `terraform apply`") is still complete from the development side.
+
+**Cross-plan handoff.** When closing a development IPLAN whose artifacts depend on a deployment step, register the obligation in `IPLAN-00_index.yaml` §deferred_items before flipping status. The IPLAN status reflects authoring-completion; the registry entry tracks the deploy-side handoff. |
