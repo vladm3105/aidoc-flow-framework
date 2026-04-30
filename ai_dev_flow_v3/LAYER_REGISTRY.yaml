@@ -10,6 +10,12 @@ metadata:
   maintainer: "SDD Framework Team"
   template_policy: unified_yaml
   changelog:
+    - version: "3.2-sec3"
+      date: "2026-04-29"
+      changes:
+        - "Added CHG/ governance overlay: 5-gate change management system (GATE-01, GATE-03, GATE-06, GATE-08, GATE-CODE)"
+        - "C1/C2/C3 change level naming (no collision with layer L1-L8 numbers)"
+        - "12 files: template, index, README, 7 gate docs, 2 companion templates"
     - version: "3.2"
       date: "2026-04-29"
       changes:

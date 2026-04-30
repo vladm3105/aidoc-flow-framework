@@ -111,6 +111,21 @@ ai_dev_flow_v3/
 ├── 08_IPLAN/                       # Implementation Plan
 │   ├── IPLAN-TEMPLATE.yaml
 │   └── IPLAN-00_index.yaml
+├── CHG/                            # Change Management (governance overlay)
+│   ├── README.md
+│   ├── CHG-00_index.md
+│   ├── CHG-TEMPLATE.yaml
+│   ├── gates/                      # Gate definitions
+│   │   ├── GATE-01_BUSINESS_PRODUCT.md
+│   │   ├── GATE-03_REQUIREMENTS_ARCHITECTURE.md
+│   │   ├── GATE-06_DESIGN_TEST.md
+│   │   ├── GATE-08_IPLAN.md
+│   │   ├── GATE-CODE_IMPLEMENTATION.md
+│   │   ├── GATE_INTERACTION_DIAGRAM.md
+│   │   └── GATE_ERROR_CATALOG.md
+│   └── templates/
+│       ├── GATE_APPROVAL_FORM.md
+│       └── POST_MORTEM-TEMPLATE.md
 └── plans/
     ├── MIGRATION_PLAN.md
     ├── MIGRATION_PLAN_GAP_ANALYSIS.md
