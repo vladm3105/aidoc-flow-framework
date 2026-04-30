@@ -3,7 +3,7 @@
 # Version: 1.0
 
 $schema: "http://json-schema.org/draft-07/schema#"
-$id: "https://ai-dev-flow/schemas/ptest-mvp-v1.0.json"
+$id: "https://ucx-flow/schemas/ptest-mvp-v1.0.json"
 title: "PTEST MVP Schema"
 description: "Validation schema for Performance Test Specification documents"
 type: object

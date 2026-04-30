@@ -1,6 +1,6 @@
 # SDD Project Model v2.2 Configuration
 # This file configures automation scripts for sprint integration and validation.
-# Location: ai_dev_ssd_flow/PROJECT/config/project_model.yaml
+# Location: ucx_flow_v3/PROJECT/config/project_model.yaml
 
 # Project settings
 project:
@@ -14,7 +14,7 @@ validation:
   strict_mode: true
   coverage_threshold: 85
   max_complexity: 10
-  validators_path: "ai_dev_ssd_flow/scripts/"
+  validators_path: "ucx_flow_v3/scripts/"
 
 # Drift check settings
 drift_check:

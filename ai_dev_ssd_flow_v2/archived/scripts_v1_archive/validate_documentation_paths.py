@@ -351,7 +351,7 @@ def main():
         root_dir = Path(args.root)
     else:
         # Prefer explicit env var, then discover by walking up from script dir
-        env_root = os.environ.get("AI_DEV_FLOW_ROOT")
+        env_root = os.environ.get("UCX_FLOW_ROOT")
         if env_root and Path(env_root).exists():
             root_dir = Path(env_root)
         else:

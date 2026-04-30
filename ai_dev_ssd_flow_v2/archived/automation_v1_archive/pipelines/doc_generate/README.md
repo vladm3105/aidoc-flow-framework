@@ -6,7 +6,7 @@
 >
 > Replaced by: **UCC (Unified Context Creation)**
 > ```
-> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/creation/run_ucc.sh
+> /opt/data/docs_flow_framework/ucx_flow_v3/UCX/creation/run_ucc.sh
 > ```
 >
 > UCC provides:
@@ -57,6 +57,6 @@ bash automation/pipelines/doc_generate/run_generate.sh \
 
 ## Adding New Targets
 To enable this pipeline for a new document type (e.g., `EARS`):
-1. Create `ai_dev_ssd_flow/AI_EXPERTS/generate.ears.yaml`
+1. Create `ucx_flow_v3/AI_EXPERTS/generate.ears.yaml`
 2. Define the independent drafters, the Chairperson assembler, the Judge, and the Editor blocks.
 3. Ensure you have defined a `doc-ears/SKILL.md` to enforce exact layout requirements.

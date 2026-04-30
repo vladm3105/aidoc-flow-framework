@@ -1,6 +1,6 @@
 # Multi-Project Setup - Quick Reference
 
-**Quick commands for managing AI Dev Flow Framework across multiple projects**
+**Quick commands for managing UCX Flow Framework across multiple projects**
 
 ---
 
@@ -12,7 +12,7 @@
 | **SDD-Standard** | Production apps, small teams | + EARS, BDD, ADR |
 | **SDD-Full** | Enterprise, regulated, multi-team | All 8 layers + CHG governance overlay |
 
-v2 (14-layer) variant preserved in `ai_dev_ssd_flow/` for existing projects.
+v2 (14-layer) variant preserved in `ucx_flow_v3/` for existing projects.
 
 ---
 
@@ -71,7 +71,7 @@ python ucx_knowledge/scripts/pilot_validate.py
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD v2 templates (14 layers, legacy)
+# ✓ Symlinks .templates/ucx_flow_v3/ → SDD v2 templates (14 layers, legacy)
 # ✓ Symlinks .templates/governance/ → SDD governance templates
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
@@ -86,7 +86,7 @@ python ucx_knowledge/scripts/pilot_validate.py
 #
 # Initialize AI Expert Board:
 # → mkdir -p docs/AI_EXPERTS
-# → Copy ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml to docs/AI_EXPERTS/review.yaml
+# → Copy ucx_flow_v3/AI_EXPERTS/review.template.yaml to docs/AI_EXPERTS/review.yaml
 # → This team should be created during new project initialization or manually on demand later.
 ```
 
@@ -215,7 +215,7 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 ├── .templates/
-│   ├── ai_dev_ssd_flow/         → /opt/data/ucx_framework/ai_dev_ssd_flow/
+│   ├── ucx_flow_v3/         → /opt/data/ucx_framework/ucx_flow_v3/
 │   └── governance/  → /opt/data/ucx_framework/governance/
 │
 ├── scripts/
@@ -302,7 +302,7 @@ ls /opt/data/ucx_framework/ucx_flow_v3/
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SPEC/, 07_TDD/, 08_IPLAN/, CHG/
 
 # View SDD v2 templates (14 layers - legacy)
-ls /opt/data/ucx_framework/ai_dev_ssd_flow/
+ls /opt/data/ucx_framework/ucx_flow_v3/
 
 # Template directories:
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SYS/,
@@ -382,7 +382,7 @@ vim /opt/data/ucx_framework/.claude/skills/new-skill/SKILL.md
 
 ```bash
 # Edit SDD template in framework
-vim /opt/data/ucx_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
+vim /opt/data/ucx_framework/ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md
 
 # Edit SDD governance template in framework
 vim /opt/data/ucx_framework/governance/PROJECT_PLAN.md
@@ -437,7 +437,7 @@ cd /opt/data/project_name
 
 ```bash
 # Verify SDD templates
-ls -la /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/
+ls -la /opt/data/project_name/.templates/ucx_flow_v3/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
 # Verify SDD governance templates
@@ -572,10 +572,10 @@ vim docs/BRD/BRD-01.yaml
 
 ```bash
 # 1. Access SDD template via symlink
-cat /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml
+cat /opt/data/project_name/.templates/ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml
 
 # 2. Copy to project docs
-cp .templates/ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml \
+cp .templates/ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml \
    docs/BRD/BRD-001_my_requirements.md
 
 # 3. Edit project copy
@@ -616,18 +616,18 @@ vim docs/PROJECT_PLAN.md
 | Framework | README | Key Docs |
 |-----------|--------|----------|
 | **ucx_flow_v3** | `ucx_flow_v3/README.md` | 8-layer SDD v3 methodology (recommended) |
-| **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 14-layer SDD v2 methodology (legacy) |
+| **ucx_flow_v3** | `ucx_flow_v3/README.md` | 14-layer SDD v2 methodology (legacy) |
 | **governance** | `governance/README.md` | Governance, CI/CD, Issues |
 
 ---
 
 ## Autopilot v6.0 Quick Start
 
-> **Note**: Autopilot is a v2 artifact. For v3 projects, use the MCP tools (`sdd_create`, `sdd_run_lifecycle`) instead. Autopilot scripts are preserved in `ai_dev_ssd_flow/AUTOPILOT/` for legacy projects.
+> **Note**: Autopilot is a v2 artifact. For v3 projects, use the MCP tools (`sdd_create`, `sdd_run_lifecycle`) instead. Autopilot scripts are preserved in `ucx_flow_v3/AUTOPILOT/` for legacy projects.
 
 ```bash
 # Run MVP Autopilot with TDD mode
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -636,14 +636,14 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --report markdown
 
 # Run with Change Management mode
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --chg-mode \
   --chg-level L2 \
   --auto-fix
 
 # Run validation only
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --validate-gates
 ```

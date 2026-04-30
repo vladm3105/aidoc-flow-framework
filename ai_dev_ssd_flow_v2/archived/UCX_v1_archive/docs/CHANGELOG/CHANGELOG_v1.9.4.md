@@ -37,7 +37,7 @@ Added hierarchical element type codes for Quality Attribute subcategories:
 **Files Changed**:
 - `UCX/ucx/validators/brd/schema.py` - Added codes to `VALID_BRD_CODES` and `SECTION_CODE_MAP`
 - `UCX/ucx/validators/common/error_codes.py` - Updated BRD-E020 message
-- `ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py` - Added codes to validation
+- `ucx_flow_v3/scripts/validate_standardized_element_codes.py` - Added codes to validation
 
 ### 2. Complete Section-to-Code Mapping
 
@@ -52,9 +52,9 @@ Added missing section mappings to `SECTION_CODE_MAP`:
 
 **Files Changed**:
 - `UCX/ucx/validators/brd/schema.py`
-- `ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py`
-- `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
-- `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md`
+- `ucx_flow_v3/scripts/validate_standardized_element_codes.py`
+- `ucx_flow_v3/ID_NAMING_STANDARDS.md`
+- `ucx_flow_v3/01_BRD/BRD_VALIDATION_RULES.md`
 
 ### 3. Preferred Section Codes
 
@@ -126,7 +126,7 @@ PREFERRED_SECTION_CODES = {
 
 **Fix**: Corrected to code 14 (Test Scenario) per ID_NAMING_STANDARDS.md.
 
-**File**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_QUALITY_GATE_VALIDATION.md`
+**File**: `ucx_flow_v3/04_BDD/BDD_MVP_QUALITY_GATE_VALIDATION.md`
 
 ---
 
@@ -139,11 +139,11 @@ PREFERRED_SECTION_CODES = {
 | `UCX/README.md` | Added Valid Element Type Codes section; Updated Version History |
 | `UCX/ucx/validators/README.md` | Added Element Type Codes table, Section-to-Code Mapping, Tag Patterns, Changelog |
 | `UCX/docs/QUICK_START.md` | Updated validation examples |
-| `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` | Added QA codes 91-99; Added Section-to-Code Mapping table; Added Version History |
-| `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md` | Updated Section-Code Semantic Rules; Added v2.2 changelog |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` | Expanded CHECK 25 element codes table; Added v1.5.0 changelog |
-| `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` | Added sections 7.6-7.8; Updated element codes to 91-99 |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` | Changed Architecture Topic code from 32 to 10 |
+| `ucx_flow_v3/ID_NAMING_STANDARDS.md` | Added QA codes 91-99; Added Section-to-Code Mapping table; Added Version History |
+| `ucx_flow_v3/01_BRD/BRD_VALIDATION_RULES.md` | Updated Section-Code Semantic Rules; Added v2.2 changelog |
+| `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md` | Expanded CHECK 25 element codes table; Added v1.5.0 changelog |
+| `ucx_flow_v3/01_BRD/BRD-MVP-TEMPLATE.md` | Added sections 7.6-7.8; Updated element codes to 91-99 |
+| `ucx_flow_v3/01_BRD/BRD_MVP_SCHEMA.yaml` | Changed Architecture Topic code from 32 to 10 |
 
 ### Version Synchronization
 
@@ -186,14 +186,14 @@ PREFERRED_SECTION_CODES = {
 
 | File | Lines Changed | Description |
 |------|---------------|-------------|
-| `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` | +60 | QA codes, section mapping, version history |
-| `ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md` | +62 | Section-code rules, version history |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` | +33 | CHECK 25 expansion |
-| `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` | +91 | New QA sections |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` | +6 | Architecture Topic code fix |
-| `ai_dev_ssd_flow/04_BDD/BDD_MVP_QUALITY_GATE_VALIDATION.md` | +2 | Element code fix |
-| `ai_dev_ssd_flow/METADATA_TAGGING_GUIDE.md` | +2 | Element code reference fix |
-| `ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py` | +37 | Added codes 91-99, section mappings |
+| `ucx_flow_v3/ID_NAMING_STANDARDS.md` | +60 | QA codes, section mapping, version history |
+| `ucx_flow_v3/01_BRD/BRD_VALIDATION_RULES.md` | +62 | Section-code rules, version history |
+| `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md` | +33 | CHECK 25 expansion |
+| `ucx_flow_v3/01_BRD/BRD-MVP-TEMPLATE.md` | +91 | New QA sections |
+| `ucx_flow_v3/01_BRD/BRD_MVP_SCHEMA.yaml` | +6 | Architecture Topic code fix |
+| `ucx_flow_v3/04_BDD/BDD_MVP_QUALITY_GATE_VALIDATION.md` | +2 | Element code fix |
+| `ucx_flow_v3/METADATA_TAGGING_GUIDE.md` | +2 | Element code reference fix |
+| `ucx_flow_v3/scripts/validate_standardized_element_codes.py` | +37 | Added codes 91-99, section mappings |
 
 ---
 
@@ -259,7 +259,7 @@ Validators emit warnings (BRD-W023) for legacy codes but don't fail validation.
 
 ## Related Documents
 
-- [ID_NAMING_STANDARDS.md](../../../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Canonical element code reference
-- [BRD_VALIDATION_RULES.md](../../../ai_dev_ssd_flow/01_BRD/BRD_VALIDATION_RULES.md) - Script execution contract
-- [BRD_MVP_VALIDATION_RULES.md](../../../ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md) - 25 validation checks
+- [ID_NAMING_STANDARDS.md](../../../ucx_flow_v3/ID_NAMING_STANDARDS.md) - Canonical element code reference
+- [BRD_VALIDATION_RULES.md](../../../ucx_flow_v3/01_BRD/BRD_VALIDATION_RULES.md) - Script execution contract
+- [BRD_MVP_VALIDATION_RULES.md](../../../ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md) - 25 validation checks
 - [validators/README.md](../ucx/validators/README.md) - Validator architecture

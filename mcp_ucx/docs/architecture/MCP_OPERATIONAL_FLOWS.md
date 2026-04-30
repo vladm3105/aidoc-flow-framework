@@ -40,11 +40,11 @@ This flow runs once per project to create the project-specific UCX scaffold that
 | `prompts/templates/review/` | Review prompt templates |
 | `prompts/templates/remediation/` | Remediation prompt templates |
 | `templates/` | Document templates (unified and project-tuned) |
-| `templates/layers/NN_TYPE/` | Layer-specific templates and schemas (from `ai_dev_ssd_flow/`) |
+| `templates/layers/NN_TYPE/` | Layer-specific templates and schemas (from `ucx_flow_v3/`) |
 
 **Rules**:
 - Existing files are never overwritten (idempotent) in default mode.
-- Source assets come from the framework canonical scaffold and `ai_dev_ssd_flow/` layer directories.
+- Source assets come from the framework canonical scaffold and `ucx_flow_v3/` layer directories.
 - Templates matching `*-TEMPLATE.*` are copied from layer directories.
 - All 11 layers (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TSPEC, TASKS) use unified YAML naming (`{TYPE}-TEMPLATE.yaml`). No legacy `*-MVP-TEMPLATE.*` files remain.
 

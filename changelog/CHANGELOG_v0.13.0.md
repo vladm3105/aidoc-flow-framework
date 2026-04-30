@@ -27,7 +27,7 @@ Migrated element IDs from 4-segment `TYPE.NN.TT.hash` to 3-segment `TYPE.NN.hash
 ### Templates Updated (Phase 2)
 
 - 11 primary templates in `mcp_ucx/templates/` — format, guidance, all inline examples
-- 11 mirror templates synced to `ai_dev_ssd_flow/{NN}_{TYPE}/`
+- 11 mirror templates synced to `ucx_flow_v3/{NN}_{TYPE}/`
 - 11 layer READMEs updated
 - SPEC-TEMPLATE.yaml `element_ids:` section updated
 
@@ -51,7 +51,7 @@ All `doc-*` and `doc-*-autopilot` skills updated. `doc-naming/SKILL.md` (primary
 
 ### Archived
 
-- `ai_dev_ssd_flow/AUTOPILOT/` → `archived/AUTOPILOT_v1_archive/` (deprecated, 14 files with hardcoded ID parsing)
+- `ucx_flow_v3/AUTOPILOT/` → `archived/AUTOPILOT_v1_archive/` (deprecated, 14 files with hardcoded ID parsing)
 
 ### Deprecated
 

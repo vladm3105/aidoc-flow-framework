@@ -6,7 +6,7 @@ Updates PENDING traceability tags in test files with actual file paths
 after SPEC and code generation. Part of Phase 2: TDD Awareness in MVP Autopilot.
 
 Usage:
-    python update_test_traceability.py --test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/ --code-dir src/
+    python update_test_traceability.py --test-dir tests/unit/ --spec-dir ucx_flow_v3/09_SPEC/ --code-dir src/
     python update_test_traceability.py --test-dir tests/unit/ --validate-only
 
 Reference: IPLAN-001 Section 4.3.2
@@ -405,18 +405,18 @@ def main():
         epilog="""
 Examples:
   # Update PENDING tags with resolved paths
-  python update_test_traceability.py --test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/ --code-dir src/
+  python update_test_traceability.py --test-dir tests/unit/ --spec-dir ucx_flow_v3/09_SPEC/ --code-dir src/
 
   # Dry run (show what would be updated)
-  python update_test_traceability.py --test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/ --dry-run
+  python update_test_traceability.py --test-dir tests/unit/ --spec-dir ucx_flow_v3/09_SPEC/ --dry-run
 
   # Validate no PENDING tags remain
   python update_test_traceability.py --test-dir tests/unit/ --validate-only
 
   # Update with all directories
   python update_test_traceability.py --test-dir tests/unit/ \\
-    --spec-dir ai_dev_flow/09_SPEC/ \\
-    --tasks-dir ai_dev_flow/11_TASKS/ \\
+    --spec-dir ucx_flow_v3/09_SPEC/ \\
+    --tasks-dir ucx_flow_v3/11_TASKS/ \\
     --code-dir src/
         """
     )

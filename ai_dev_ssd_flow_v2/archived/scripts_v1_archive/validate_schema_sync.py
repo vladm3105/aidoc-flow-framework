@@ -49,16 +49,16 @@ ARTIFACT_TYPES = {
 }
 
 
-def find_ai_dev_flow_dir() -> Path:
+def find_ucx_flow_v3_dir() -> Path:
     """Locate the framework root flexibly without hardcoding repository names.
 
     Resolution order:
-    1) Environment variable AI_DEV_FLOW_ROOT, if set and valid
+    1) Environment variable UCX_FLOW_ROOT, if set and valid
     2) Walk up from this script's directory to find a directory containing key artifact folders
     3) Current working directory (and its parents)
     """
     # 1) Environment override
-    env = Path(os.environ.get("AI_DEV_FLOW_ROOT", "")) if "AI_DEV_FLOW_ROOT" in os.environ else None
+    env = Path(os.environ.get("UCX_FLOW_ROOT", "")) if "UCX_FLOW_ROOT" in os.environ else None
     if env and env.exists() and (env / "02_PRD").exists():
         return env.resolve()
 
@@ -84,7 +84,7 @@ def find_ai_dev_flow_dir() -> Path:
             return candidate
 
     raise FileNotFoundError(
-        "Could not locate framework root. Set AI_DEV_FLOW_ROOT or run from within the repository.")
+        "Could not locate framework root. Set UCX_FLOW_ROOT or run from within the repository.")
 
 
 def extract_yaml_frontmatter(content: str) -> Optional[Dict]:
@@ -259,7 +259,7 @@ def main():
     fix_mode = "--fix" in sys.argv
 
     try:
-        base_dir = find_ai_dev_flow_dir()
+        base_dir = find_ucx_flow_v3_dir()
     except FileNotFoundError as e:
         print(f"Error: {e}")
         sys.exit(1)

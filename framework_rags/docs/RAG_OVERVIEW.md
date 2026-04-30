@@ -1,8 +1,8 @@
-# RAG Services for AI Dev Flow Framework
+# RAG Services for UCX Flow Framework
 
 ## Why RAG for Documentation?
 
-The AI Dev Flow Framework generates extensive documentation across 13 layers (REF → TASKS). As projects grow, this creates challenges:
+The UCX Flow Framework generates extensive documentation across 13 layers (REF → TASKS). As projects grow, this creates challenges:
 
 | Challenge | Impact |
 |-----------|--------|
@@ -89,7 +89,7 @@ REF documents (Layer 0) serve as the foundation - containing initial project doc
 
 ---
 
-## Integration with AI Dev Flow
+## Integration with UCX Flow
 
 ### Document Generation Workflow
 
@@ -344,7 +344,7 @@ make rag-up         # Start services
 ### 4. Index Documentation
 
 ```bash
-make rag-index          # Index framework docs (ai_dev_ssd_flow/)
+make rag-index          # Index framework docs (ucx_flow_v3/)
 make rag-index-project  # Index project docs from PROJECT_ROOT
 ```
 
@@ -358,7 +358,7 @@ python rag_tools/health_monitor.py
 python rag_tools/query_router.py "What validation rules exist for BRD?"
 
 # Scan documents by layer
-python rag_tools/doc_scanner.py --source ../ai_dev_flow --layer 2
+python rag_tools/doc_scanner.py --source ../ucx_flow_v3 --layer 2
 ```
 
 ### 4. Integrate with MCP

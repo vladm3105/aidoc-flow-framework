@@ -20,7 +20,7 @@ custom_fields:
 
 ## Purpose
 
-This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local Section 15 (Glossary).
+This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the UCX Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local Section 15 (Glossary).
 
 ## Usage Guidelines
 
@@ -163,8 +163,8 @@ References to related BRDs and framework documents.
 
 | Term/Concept | Referenced Document | Relationship |
 |--------------|---------------------|--------------|
-| BRD Template | ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml | Single source of truth for BRD structure, authoring guidance, and ID standards |
-| SDD Guide | ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md | Overall framework methodology |
+| BRD Template | ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml | Single source of truth for BRD structure, authoring guidance, and ID standards |
+| SDD Guide | ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md | Overall framework methodology |
 
 ---
 

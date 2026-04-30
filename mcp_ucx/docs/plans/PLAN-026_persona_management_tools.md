@@ -53,7 +53,7 @@ After `sdd_init` scaffolds a project's UCX directory, there were no MCP tools to
 | `mcp_ucx/src/mcp_server/cli/main.py` | 3 subcommands + init flags |
 | `mcp_ucx/src/mcp_server/validation/brd_rules.py` | BRD-XS-004 rewritten |
 | `mcp_ucx/src/mcp_server/remediation/runner.py` | Remove executive_summary from required keys |
-| `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | executive_summary: required: false |
+| `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml` | executive_summary: required: false |
 | `mcp_ucx/tests/unit/test_persona_manager.py` | **Created** — 15 tests |
 | `mcp_ucx/tests/unit/test_scaffold_init.py` | +3 tests |
 | `mcp_ucx/tests/unit/test_brd_rules.py` | Updated entity tests |

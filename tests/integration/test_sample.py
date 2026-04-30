@@ -3,7 +3,7 @@ Sample integration tests demonstrating ITEST patterns.
 
 These tests verify component interactions and integrations.
 
-Reference: ai_dev_flow/10_TSPEC/ITEST/
+Reference: ucx_flow_v3/07_TDD/
 Test ID: ITEST-001
 """
 

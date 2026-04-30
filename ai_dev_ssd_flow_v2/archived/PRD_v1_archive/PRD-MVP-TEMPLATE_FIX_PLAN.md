@@ -15,7 +15,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/02_PRD/` documents and align template, validation rules, schema, and skills to a consistent **21-section** MVP structure.
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/02_PRD/` documents and align template, validation rules, schema, and skills to a consistent **21-section** MVP structure.
 
 ## Target Files
 
@@ -78,7 +78,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/02_PRD/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/02_PRD/.backup_2026-02-25
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/02_PRD/.backup_2026-02-25
 
 # Backup templates and rules
 cp PRD-MVP-TEMPLATE.md .backup_2026-02-25/
@@ -793,10 +793,10 @@ Lines 108, 125, 519 already say "21 sections" - no changes needed.
 **Line 352**: Change "17 sections" to "21 sections":
 ```markdown
 # Before:
-   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
 
 # After:
-   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
 ```
 
 **Line 876**: Change "17/21 sections" to "21 sections":
@@ -860,7 +860,7 @@ custom_fields:
 > **MVP Template Notes**:
 > - This is the standard PRD template (21 sections)
 > - Single file - no sectioning per user requirement
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full PRD" template)
 ```
 

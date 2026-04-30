@@ -7,7 +7,7 @@ These fixtures are specific to functional tests (FTEST) which:
 - May be slower due to full system testing
 - Verify business requirements are met
 
-Reference: ai_dev_flow/10_TSPEC/FTEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import pytest

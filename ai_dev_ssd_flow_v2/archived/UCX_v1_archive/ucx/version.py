@@ -491,7 +491,7 @@ __version_info__ = tuple(int(x) for x in __version__.split(".")[:3])
 # - CLI: `ucx validate brd <path>` with --tier1-only, --strict, --format
 # - Quality gates: 10 GATE checks (GATE-01 to GATE-10)
 # - Element code validation: BRD.NN.TT.SS format with section mapping
-# - Deprecated: ai_dev_ssd_flow/01_BRD/scripts/ validators (removal in v2.0.0)
+# - Deprecated: ucx_flow_v3/01_BRD/scripts/ validators (removal in v2.0.0)
 
 # v1.8.0 - Project-specific skills support
 # - SkillLoader now accepts project_dir parameter

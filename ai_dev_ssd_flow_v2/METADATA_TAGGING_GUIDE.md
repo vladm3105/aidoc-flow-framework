@@ -29,7 +29,7 @@ custom_fields:
 
 ### 1.1 Purpose
 
-Define YAML frontmatter metadata standards for projects supporting multiple architectural approaches (e.g., AI Agent-Based vs Traditional implementations) within the AI Dev Flow framework.
+Define YAML frontmatter metadata standards for projects supporting multiple architectural approaches (e.g., AI Agent-Based vs Traditional implementations) within the UCX Flow framework.
 
 ### 1.2 Scope
 

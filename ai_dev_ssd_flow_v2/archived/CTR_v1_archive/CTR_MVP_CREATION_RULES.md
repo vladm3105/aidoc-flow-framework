@@ -29,7 +29,7 @@ custom_fields:
 - Maintain `CTR-00_index.md` as the authoritative source of planned and active CTR files (mark planned items with Status: Planned).
 - Generators use: `CTR-00_index.md` + `CTR-MVP-TEMPLATE.md` (MVP default; no separate full variant provided).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 Rules for creating Data Contracts (CTR) documents in the SDD framework.
 

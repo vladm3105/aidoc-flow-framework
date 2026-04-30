@@ -26,7 +26,7 @@ Integrate all BRD validation scripts into UCX as the single source of truth. Pre
 
 ## Current State
 
-### Scripts to Migrate: `ai_dev_ssd_flow/01_BRD/scripts/`
+### Scripts to Migrate: `ucx_flow_v3/01_BRD/scripts/`
 
 | Script | Purpose | Migrate to UCX | Notes |
 |--------|---------|----------------|-------|
@@ -39,7 +39,7 @@ Integrate all BRD validation scripts into UCX as the single source of truth. Pre
 | `claude_brd_skill_audit_hook.sh` | AI-based audit (manual) | ❌ No | Stays separate (AI-based, not validation) |
 | `README.md` | Documentation | ❌ No | Update to point to UCX |
 
-### Scripts to Migrate: `ai_dev_ssd_flow/scripts/` (Shared)
+### Scripts to Migrate: `ucx_flow_v3/scripts/` (Shared)
 
 | Script | Purpose | Migrate to UCX | Notes |
 |--------|---------|----------------|-------|
@@ -71,7 +71,7 @@ Integrate all BRD validation scripts into UCX as the single source of truth. Pre
 | **Shared scripts (later)** | 7 | Phase 2 migration |
 | **PRD/other** | 1 | PRD migration phase |
 
-### Scripts NOT Migrated (Remain in ai_dev_ssd_flow)
+### Scripts NOT Migrated (Remain in ucx_flow_v3)
 
 | Script | Reason |
 |--------|--------|
@@ -83,14 +83,14 @@ Integrate all BRD validation scripts into UCX as the single source of truth. Pre
 
 | Script | Framework Location | BeeLocal Location | Status |
 |--------|-------------------|-------------------|--------|
-| `validate_brd.py` | `ai_dev_ssd_flow/01_BRD/scripts/` | `ai_dev_ssd_flow/01_BRD/scripts/` | Identical |
-| `validate_standardized_element_codes.py` | `ai_dev_ssd_flow/scripts/` | `ai_dev_ssd_flow/scripts/` | Identical |
-| `validate_brd_wrapper.sh` | `ai_dev_ssd_flow/01_BRD/scripts/` | `ai_dev_ssd_flow/01_BRD/scripts/` | Identical |
-| `validate_brd_quality_score.sh` | `ai_dev_ssd_flow/01_BRD/scripts/` | `ai_dev_ssd_flow/01_BRD/scripts/` | Identical |
-| `validate_metadata.py` | `ai_dev_ssd_flow/scripts/` | `ai_dev_ssd_flow/scripts/` | Identical |
-| `validate_links.py` | `ai_dev_ssd_flow/scripts/` | `ai_dev_ssd_flow/scripts/` | Identical |
-| `validate_forward_references.py` | `ai_dev_ssd_flow/scripts/` | `ai_dev_ssd_flow/scripts/` | Identical |
-| `validate_diagram_consistency.py` | `ai_dev_ssd_flow/scripts/` | `ai_dev_ssd_flow/scripts/` | Identical |
+| `validate_brd.py` | `ucx_flow_v3/01_BRD/scripts/` | `ucx_flow_v3/01_BRD/scripts/` | Identical |
+| `validate_standardized_element_codes.py` | `ucx_flow_v3/scripts/` | `ucx_flow_v3/scripts/` | Identical |
+| `validate_brd_wrapper.sh` | `ucx_flow_v3/01_BRD/scripts/` | `ucx_flow_v3/01_BRD/scripts/` | Identical |
+| `validate_brd_quality_score.sh` | `ucx_flow_v3/01_BRD/scripts/` | `ucx_flow_v3/01_BRD/scripts/` | Identical |
+| `validate_metadata.py` | `ucx_flow_v3/scripts/` | `ucx_flow_v3/scripts/` | Identical |
+| `validate_links.py` | `ucx_flow_v3/scripts/` | `ucx_flow_v3/scripts/` | Identical |
+| `validate_forward_references.py` | `ucx_flow_v3/scripts/` | `ucx_flow_v3/scripts/` | Identical |
+| `validate_diagram_consistency.py` | `ucx_flow_v3/scripts/` | `ucx_flow_v3/scripts/` | Identical |
 
 ### Current UCX Validators (Limited)
 
@@ -513,7 +513,7 @@ Add deprecation notice to all migrated scripts (see templates below).
 
 #### Scripts to Deprecate
 
-**BRD-specific** (`ai_dev_ssd_flow/01_BRD/scripts/`):
+**BRD-specific** (`ucx_flow_v3/01_BRD/scripts/`):
 - `validate_brd.py`
 - `validate_brd_quality_score.sh`
 - `validate_brd_wrapper.sh`
@@ -521,7 +521,7 @@ Add deprecation notice to all migrated scripts (see templates below).
 - `brd_standardized_element_codes_hook.sh`
 - `brd_legacy_pattern_hook.sh`
 
-**Shared** (`ai_dev_ssd_flow/scripts/`):
+**Shared** (`ucx_flow_v3/scripts/`):
 - `validate_standardized_element_codes.py`
 - `detect_legacy_element_ids.py`
 - `validate_metadata.py`
@@ -593,7 +593,7 @@ echo "         Will be removed in UCX v2.0.0." >&2
 Replace:
 ```yaml
 - id: brd-core-wrapper
-  entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh
+  entry: bash ucx_flow_v3/01_BRD/scripts/brd_core_wrapper_hook.sh
 ```
 
 With:
@@ -725,7 +725,7 @@ Status: PASS (warnings present)
 After UCX migration complete, deprecate:
 
 ```
-ai_dev_ssd_flow/01_BRD/scripts/
+ucx_flow_v3/01_BRD/scripts/
 ├── validate_brd.py                    # → ucx validate brd
 ├── validate_brd_quality_score.sh      # → ucx validate brd
 ├── validate_brd_wrapper.sh            # → ucx validate brd
@@ -734,7 +734,7 @@ ai_dev_ssd_flow/01_BRD/scripts/
 ├── brd_legacy_pattern_hook.sh         # → ucx validate brd --tier1-only
 └── README.md                          # Update to redirect to UCX
 
-ai_dev_ssd_flow/scripts/
+ucx_flow_v3/scripts/
 ├── validate_standardized_element_codes.py  # → ucx validate brd
 ├── detect_legacy_element_ids.py           # → ucx validate brd
 ├── validate_metadata.py                   # → ucx validate brd
@@ -746,7 +746,7 @@ ai_dev_ssd_flow/scripts/
 └── error_codes.py                         # → ucx (common module)
 ```
 
-**Keep in ai_dev_ssd_flow:**
+**Keep in ucx_flow_v3:**
 - `claude_brd_skill_audit_hook.sh` - AI-based, not validation
 - `validate_all.py` - Replace with `ucx validate --all` later
 - PRD/other type validators - Phase 2 migration
@@ -818,7 +818,7 @@ tests/integration/
 | 1.2 | Create `brd/` module (all validators) | ✅ Complete |
 | 1.3 | CLI: `ucx validate brd` | ✅ Complete |
 | 1.4 | Update BeeLocal pre-commit hooks | ✅ Complete |
-| 1.5 | Deprecate `ai_dev_ssd_flow/01_BRD/scripts/` | ✅ Complete |
+| 1.5 | Deprecate `ucx_flow_v3/01_BRD/scripts/` | ✅ Complete |
 
 **Deliverable**: UCX 1.9.2 ✅
 
@@ -830,7 +830,7 @@ tests/integration/
 | 2.2 | Create `ears/` module | High |
 | 2.3 | CLI: `ucx validate prd`, `ucx validate ears` | High |
 | 2.4 | Port PRD element codes validation | High |
-| 2.5 | Deprecate `ai_dev_ssd_flow/02_PRD/scripts/`, `03_EARS/scripts/` | High |
+| 2.5 | Deprecate `ucx_flow_v3/02_PRD/scripts/`, `03_EARS/scripts/` | High |
 
 **Deliverable**: UCX 1.11.0
 
@@ -842,7 +842,7 @@ tests/integration/
 | 3.2 | Create `adr/` module | Medium |
 | 3.3 | Create `sys/` module | Medium |
 | 3.4 | CLI: `ucx validate bdd`, `ucx validate adr`, `ucx validate sys` | Medium |
-| 3.5 | Deprecate `ai_dev_ssd_flow/04_BDD/`, `05_ADR/`, `06_SYS/` scripts | Medium |
+| 3.5 | Deprecate `ucx_flow_v3/04_BDD/`, `05_ADR/`, `06_SYS/` scripts | Medium |
 
 **Deliverable**: UCX 1.12.0
 
@@ -854,7 +854,7 @@ tests/integration/
 | 4.2 | Create `ctr/` module | Medium |
 | 4.3 | Create `spec/` module | Medium |
 | 4.4 | CLI: `ucx validate req`, `ucx validate ctr`, `ucx validate spec` | Medium |
-| 4.5 | Deprecate `ai_dev_ssd_flow/07_REQ/`, `08_CTR/`, `09_SPEC/` scripts | Medium |
+| 4.5 | Deprecate `ucx_flow_v3/07_REQ/`, `08_CTR/`, `09_SPEC/` scripts | Medium |
 
 **Deliverable**: UCX 1.13.0
 
@@ -867,7 +867,7 @@ tests/integration/
 | 5.3 | Create `chg/` module (gates, routing) | Low |
 | 5.4 | CLI: `ucx validate tspec`, `ucx validate tasks` | Medium |
 | 5.5 | CLI: `ucx validate all` (orchestrator) | Medium |
-| 5.6 | Deprecate remaining `ai_dev_ssd_flow/` scripts | Medium |
+| 5.6 | Deprecate remaining `ucx_flow_v3/` scripts | Medium |
 
 **Deliverable**: UCX 1.14.0
 
@@ -875,7 +875,7 @@ tests/integration/
 
 | Task | Description | Priority |
 |------|-------------|----------|
-| 6.1 | Remove deprecated `ai_dev_ssd_flow/*/scripts/` validators | Low |
+| 6.1 | Remove deprecated `ucx_flow_v3/*/scripts/` validators | Low |
 | 6.2 | Update all framework documentation | Low |
 | 6.3 | Create migration guide for projects | Low |
 | 6.4 | Performance optimization | Low |
@@ -920,7 +920,7 @@ ucx/validators/{type}/
 
 ### Gap 1: Missing Dependency - error_codes.py
 
-The `validate_brd.py` imports from `ai_dev_ssd_flow/scripts/error_codes.py`:
+The `validate_brd.py` imports from `ucx_flow_v3/scripts/error_codes.py`:
 
 ```python
 from error_codes import Severity, calculate_exit_code, format_error

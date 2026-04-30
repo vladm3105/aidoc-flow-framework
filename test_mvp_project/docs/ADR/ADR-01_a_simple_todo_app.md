@@ -369,5 +369,5 @@ Migrate from MVP ADR to full `ADR-TEMPLATE.md` when:
 > - This template is ~250 lines (vs 699 lines for full ADR)
 > - Single file - no sectioning
 > - Focus on decision + rationale + 2-3 alternatives
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - Expands to full ADR-TEMPLATE.md structure for complex decisions

@@ -48,8 +48,8 @@ tdd_awareness:
     script: "AUTOPILOT/scripts/generate_spec_tdd.py"
     args:
       test_requirements: "tmp/test_requirements.json"
-      output: "ai_dev_flow/09_SPEC/"
-      req_dir: "ai_dev_flow/07_REQ/"
+      output: "ucx_flow_v3/09_SPEC/"
+      req_dir: "ucx_flow_v3/07_REQ/"
 
   # Step 3: Update traceability tags
   update_traceability:
@@ -57,8 +57,8 @@ tdd_awareness:
     script: "AUTOPILOT/scripts/update_test_traceability.py"
     args:
       test_dir: "tests/unit/"
-      spec_dir: "ai_dev_flow/09_SPEC/"
-      tasks_dir: "ai_dev_flow/11_TASKS/"
+      spec_dir: "ucx_flow_v3/09_SPEC/"
+      tasks_dir: "ucx_flow_v3/11_TASKS/"
       code_dir: "src/"
 
 # =============================================================================
@@ -90,7 +90,7 @@ tdd_stages:
   - name: generate_unit_tests
     action: test_automation
     command: "generate-unit"
-    args: "--input ai_dev_flow/10_TSPEC/UTEST/ --output tests/unit/ --framework pytest"
+    args: "--input ucx_flow_v3/10_TSPEC/UTEST/ --output tests/unit/ --framework pytest"
     expected_status: fail
     skip_quality_gate: true
     traceability_mode: pending
@@ -128,7 +128,7 @@ tdd_stages:
   - name: update_traceability
     action: run_script
     script: "AUTOPILOT/scripts/update_test_traceability.py"
-    args: "--test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/ --tasks-dir ai_dev_flow/11_TASKS/ --code-dir src/"
+    args: "--test-dir tests/unit/ --spec-dir ucx_flow_v3/09_SPEC/ --tasks-dir ucx_flow_v3/11_TASKS/ --code-dir src/"
     conditional: true  # Only after code generation
 
   # Stage 10: Validate No PENDING Tags

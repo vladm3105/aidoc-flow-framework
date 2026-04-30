@@ -86,7 +86,7 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 - Maintain `BRD-00_index.md` as the authoritative source of planned and active BRD documents (mark planned items with Status: Planned).
 - Generators use: `BRD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
 **Date**: 2025-11-19T00:00:00
@@ -146,7 +146,7 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 - Maintain `BRD-00_index.md` as the authoritative source of planned and active BRD documents (mark planned items with Status: Planned).
 - Generators use: `BRD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 
 ### Two Structure Options
 
@@ -1925,7 +1925,7 @@ Include backup/recovery procedures and connection pooling specifications.
 | Sequence | `SS` (2+ digit) | `02` (Data Architecture) |
 | Full ID | `BRD.NN.32.SS` | `BRD.06.32.02` |
 
-**Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
+**Reference**: See `ucx_flow_v3/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
 ---
 
@@ -1952,7 +1952,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 ## 11. Quality Gates (Pre-Commit Validation)
 
-- **Unified Core Validation**: Run `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+- **Unified Core Validation**: Run `bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
 - **Blockers**: Missing sections, invalid formats, broken traceability
 - **Warnings**: Missing references, incomplete criteria, unverified assumptions
 - **Platform Feature Validation**: Different requirements for Platform vs Feature BRDs
@@ -2076,13 +2076,13 @@ All business objectives in section 2.4 must follow SMART criteria:
 **Pre-Commit Validation**:
 ```bash
 # Canonical BRD core validation (pre-commit/CI parity)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
 # Optional full tiered validation
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 
 # Component-level structural diagnostics (secondary)
-python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
+python3 ucx_flow_v3/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
 ```
 
 **Template Location**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)
@@ -2091,7 +2091,7 @@ python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 1 - Business Requirements)
+**Framework Compliance**: 100% UCX Flow SDD framework aligned (Layer 1 - Business Requirements)
 **Maintained By**: Business Analyst Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

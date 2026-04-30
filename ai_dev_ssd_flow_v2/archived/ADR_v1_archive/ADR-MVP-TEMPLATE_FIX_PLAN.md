@@ -15,7 +15,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/05_ADR/` documents and align template, validation rules, schema, and skills to a consistent **11-section** MVP structure (Section 1: Document Control through Section 11: MVP Lifecycle).
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/05_ADR/` documents and align template, validation rules, schema, and skills to a consistent **11-section** MVP structure (Section 1: Document Control through Section 11: MVP Lifecycle).
 
 ## Target Files
 
@@ -78,7 +78,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/05_ADR/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/05_ADR/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/05_ADR/.backup_2026-02-26
 
 # Backup templates and rules
 cp ADR-MVP-TEMPLATE.md .backup_2026-02-26/
@@ -323,7 +323,7 @@ Add document footer:
 > - This is the standard ADR template (11 sections: 1-11)
 > - Single file - no sectioning per user requirement
 > - Focus on decision + rationale + alternatives
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full ADR" template)
 ```
 

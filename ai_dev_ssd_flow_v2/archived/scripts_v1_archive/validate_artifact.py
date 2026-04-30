@@ -63,7 +63,7 @@ class ConfigLoader:
 
     def _find_config(self) -> Optional[Path]:
         candidates = [
-            Path("ai_dev_ssd_flow/PROJECT/config/project_model.yaml"),
+            Path("ucx_flow_v3/PROJECT/config/project_model.yaml"),
             Path("PROJECT/config/project_model.yaml"),
             Path("config/project_model.yaml"),
         ]
@@ -266,14 +266,14 @@ class ValidatorRunner:
     def _find_scripts_path(self) -> Path:
         """Find the scripts directory."""
         candidates = [
-            Path("ai_dev_ssd_flow/scripts"),
+            Path("ucx_flow_v3/scripts"),
             Path("scripts"),
             Path(__file__).parent,
         ]
         for path in candidates:
             if path.exists():
                 return path
-        return Path("ai_dev_ssd_flow/scripts")
+        return Path("ucx_flow_v3/scripts")
 
     def run_validator(self, artifact_path: Path,
                       validator_override: Optional[str] = None) -> ValidationResult:

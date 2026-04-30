@@ -38,7 +38,7 @@ custom_fields:
 make docs
 
 # EQUIVALENT LONG COMMAND
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -60,7 +60,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ```bash
 # TRIGGER AUTOMATICALLY
 # On push to main/develop
-# On pull request to ai_dev_flow/**
+# On pull request to ucx_flow_v3/**
 # Or manually: Actions → "MVP Documentation Generation" → Run workflow
 
 # EQUIVALE: CLI TRIGGER
@@ -292,7 +292,7 @@ make docs
 
 ### Workflow 2: Brownfield Resume (Existing Project)
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --resume \
   --auto-fix
@@ -306,7 +306,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ### Workflow 3: Fork-as-New (Clean Restart)
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --fork-from-nn 01 \
   --new-nn 02 \
   --new-slug new_product
@@ -320,7 +320,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ### Workflow 4: Planning Phase Only
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --up-to ADR \
   --plan-only \
   --report markdown
@@ -388,7 +388,7 @@ make docker-build
 
 # Run autopilot in container
 make docker-run \
-  --mount ./ai_dev_flow:/opt/data/docs_flow_framework
+  --mount ./ucx_flow_v3:/opt/data/docs_flow_framework
 
 # Benefits:
 # - Consistent environment
@@ -460,7 +460,7 @@ The autopilot pipeline is fully flexible and supports starting from ANY layer an
 
 ```bash
 # Generate architecture decisions and technical specifications
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --from-layer ADR \
   --up-to SPEC \
@@ -482,7 +482,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Generate implementation plans from existing specifications
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --from-layer SPEC \
   --up-to TASKS \
@@ -502,7 +502,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Continue existing project from where you left off
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --resume \
   --auto-fix \
@@ -521,7 +521,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Preview what will be generated without making changes
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -542,7 +542,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Uses code generator (Vertex AI, OpenAI, or local mock)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --from-layer SPEC \
   --up-to CODE \
@@ -564,7 +564,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Just redeploy without changes (L13 - Deployment)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --from-layer TASKS \
   --up-to DEPLOY \
@@ -585,27 +585,27 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Planning phase only (BRD → ADR)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --profile planning_phase \
   --auto-fix
 
 # Requirements phase only (PRD → REQ)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --profile requirements_phase \
   --auto-fix
 
 # Specifications phase only (REQ → SPEC)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --profile specifications_phase \
   --auto-fix
 
 # Testing focus (BDD → TASKS)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --profile testing_focus \
   --auto-fix
 
 # Strict mode with higher thresholds
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --profile strict \
   --auto-fix \
   --strict
@@ -668,7 +668,7 @@ gh workflow run mvp-docs-generation.yml \
 # 3. Update REQ with new atomic requirements
 # 4. Resume to generate updated SPEC and TASKS
 
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --resume \
   --from-layer SYS \
@@ -682,7 +682,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 make deploy
 
 # Or with autopilot
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --from-layer TASKS \
   --up-to DEPLOY \
@@ -693,7 +693,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 ```bash
 # Validate existing documentation without generation
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --validate-only \
   --report markdown
 

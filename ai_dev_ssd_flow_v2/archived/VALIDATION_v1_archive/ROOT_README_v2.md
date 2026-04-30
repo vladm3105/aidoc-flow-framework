@@ -3,7 +3,7 @@
 **AI-First Specification-Driven Development (SDD) with Scalable Depth**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+[![Documentation](https://img.shields.io/badge/docs-comprehensive-blue.svg)](./ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 [![AI-First](https://img.shields.io/badge/AI--First-Framework-purple.svg)](./governance/README.md)
 
 > **AI-First Design**: This framework is designed for AI agents (Claude Code, Gemini CLI, GitHub Copilot) as the primary operators. Humans work *through* AI assistants, not directly with the framework. AI agents autonomously execute workflows, generate artifacts, and manage the development lifecycle.
@@ -58,7 +58,7 @@ Recommended default entrypoint: `/doc-brd-audit <BRD path>`.
 - **Preserves knowledge**: Cross-BRD traceability builds on previous work
 - **90%+ automation**: Framework automates 14 of 15 layers per cycle
 
-> **See Also**: [MVP_WORKFLOW_GUIDE.md](./ai_dev_ssd_flow/MVP_WORKFLOW_GUIDE.md) for detailed workflow steps
+> **See Also**: [MVP_WORKFLOW_GUIDE.md](./ucx_flow_v3/MVP_WORKFLOW_GUIDE.md) for detailed workflow steps
 
 ---
 
@@ -76,8 +76,8 @@ This repository provides a **unified SDD framework** with three depth variants t
 
 | Directory | Purpose |
 |:----------|:--------|
-| `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, etc.) |
-| `ai_dev_ssd_flow/AI_EXPERTS/` | AI Expert Board framework and templates |
+| `ucx_flow_v3/` | Layer documentation and templates (BRD, PRD, EARS, etc.) |
+| `ucx_flow_v3/AI_EXPERTS/` | AI Expert Board framework and templates |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 | `project_knowledge/` | Standalone RAG + Graph knowledge base package for cross-project retrieval |
@@ -155,7 +155,7 @@ Author writes/updates doc → PR on feature branch
 > RAG + Graph provides targeted 300-500 token context per AI query —
 > agents query the KB rather than reading full file trees.
 
-> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./ai_dev_ssd_flow/DOC_GOVERNANCE_CORE.md)
+> **Full specification**: See [DOC_GOVERNANCE_CORE.md](./ucx_flow_v3/DOC_GOVERNANCE_CORE.md)
 
 ---
 
@@ -210,13 +210,13 @@ python project_knowledge/scripts/pilot_validate.py
 
 ---
 
-## Framework 1: AI Dev Flow (SDD)
+## Framework 1: UCX Flow (SDD)
 
 **Specification-Driven Development Template System for AI-Assisted Software Engineering**
 
 ### Overview
 
-The AI Dev Flow Framework is a comprehensive template system for implementing AI-Driven Specification-Driven Development (SDD). It provides structured workflows, document templates, and traceability mechanisms to transform business requirements into production-ready code through a systematic, traceable approach optimized for AI-assisted development.
+The UCX Flow Framework is a comprehensive template system for implementing AI-Driven Specification-Driven Development (SDD). It provides structured workflows, document templates, and traceability mechanisms to transform business requirements into production-ready code through a systematic, traceable approach optimized for AI-assisted development.
 
 > MVP Note: When using the MVP track, all artifacts are single, flat files. Do not use document splitting or `DOCUMENT_SPLITTING_RULES.md`.
 
@@ -224,7 +224,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 **PRIMARY GOAL: Fastest Transition from Business Idea to Production MVP**
 
-AI Dev Flow eliminates manual bottlenecks through intelligent automation and strategic human oversight.
+UCX Flow eliminates manual bottlenecks through intelligent automation and strategic human oversight.
 
 **Automation Capabilities**:
 - **Quality-Gated Automation**: Replace mandatory checkpoints with AI-scored quality validation
@@ -404,7 +404,7 @@ The framework includes a native **Agent Orchestration System** located in `.aide
 - **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`)
 - **75+ Skills**: Comprehensive skill library for document generation, validation, and review
 
-**[Get Started with the Framework](./ai_dev_ssd_flow/README.md)**
+**[Get Started with the Framework](./ucx_flow_v3/README.md)**
 
 ## Quality Gates and Traceability Validation
 
@@ -420,7 +420,7 @@ The framework includes automated quality gates that ensure each layer in the 16-
 **Pre-commit Quality Gates:**
 - `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` - Validates individual artifact readiness
 - Automatic validation during `git commit` on changes to `docs/` directory
-- Refer to [`TRACEABILITY_VALIDATION.md`](./ai_dev_ssd_flow/TRACEABILITY_VALIDATION.md) for complete specification
+- Refer to [`TRACEABILITY_VALIDATION.md`](./ucx_flow_v3/TRACEABILITY_VALIDATION.md) for complete specification
 
 ### Quality Gate Workflow By Layer
 
@@ -481,8 +481,8 @@ Quality gates provide quantitative measures of framework effectiveness:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/[YOUR_ORG]/ai-dev-flow-framework.git
-cd ai-dev-flow-framework
+git clone https://github.com/[YOUR_ORG]/ucx-flow-framework.git
+cd ucx-flow-framework
 ```
 
 ### 2. Multi-Project Setup (Recommended)
@@ -531,10 +531,10 @@ For organizations managing multiple projects with shared framework resources:
 
 ### 3. Explore the Templates
 
-All templates are located in `ai_dev_ssd_flow/`:
+All templates are located in `ucx_flow_v3/`:
 
 ```bash
-cd ai_dev_ssd_flow
+cd ucx_flow_v3
 ls -R
 ```
 
@@ -552,7 +552,7 @@ mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 **Option B: Existing Project**
 ```bash
 # Copy templates to your project
-cp -r ai_dev_ssd_flow/* your-project/docs/
+cp -r ucx_flow_v3/* your-project/docs/
 ```
 
 ### 5. Follow the Workflow
@@ -594,13 +594,13 @@ Then validate and auto-generate matrices:
 
 ```bash
 # Extract tags from codebase
-python ai_dev_ssd_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+python ucx_flow_v3/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
 # Validate cumulative tagging hierarchy
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --validate-cumulative --strict
 
 # Generate traceability matrices
-python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
+python ucx_flow_v3/scripts/generate_traceability_matrices.py --auto
 
 # View generated matrices
 ls docs/generated/matrices/
@@ -692,7 +692,7 @@ The framework supports full automation from requirements to production:
 - Build artifacts
 - Human approves deployment to production (optional if quality score ≥90%)
 
-See [SDD_AUTOMATION_WORKFLOW.md](./ai_dev_ssd_flow/SDD_AUTOMATION_WORKFLOW.md) for complete automation playbook.
+See [SDD_AUTOMATION_WORKFLOW.md](./ucx_flow_v3/SDD_AUTOMATION_WORKFLOW.md) for complete automation playbook.
 
 ### Template Categories
 
@@ -859,13 +859,13 @@ All documentation follows standardized ID formats:
 **Step 3: Validate Tags**
 ```bash
 # Check tag format and document references
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --strict
 ```
 
 **Step 4: Generate Matrices**
 ```bash
 # Auto-generate bidirectional matrices
-python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
+python ucx_flow_v3/scripts/generate_traceability_matrices.py --auto
 ```
 
 **Step 5: Phase Out Section 7**
@@ -892,7 +892,7 @@ python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
 - Single developer
 - Low risk
 
-Reference: `ai_dev_ssd_flow/WHEN_TO_CREATE_IMPL.md`
+Reference: `ucx_flow_v3/WHEN_TO_CREATE_IMPL.md`
 
 ### When to Create CTR (API Contracts)
 
@@ -907,7 +907,7 @@ Reference: `ai_dev_ssd_flow/WHEN_TO_CREATE_IMPL.md`
 - No external interface
 - No serialization
 
-Reference: `ai_dev_ssd_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr`
+Reference: `ucx_flow_v3/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr`
 
 ### Dual-File CTR Format
 
@@ -916,7 +916,7 @@ API contracts require BOTH files:
 - `CTR-001_api_contract.md` - Human-readable context, error handling, quality attributes
 - `CTR-001_api_contract.yaml` - Machine-readable JSON Schema, OpenAPI/AsyncAPI
 
-Policy: `ai_dev_ssd_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
+Policy: `ucx_flow_v3/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 
 ## Token Limits (AI Tool Optimized)
 
@@ -933,7 +933,7 @@ Policy: `ai_dev_ssd_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 
 ### General Rules
 - Create sequential files (doc_001.md, doc_002.md) only when exceeding 100,000 tokens
-- Reference: `ai_dev_ssd_flow/AI_TOOL_OPTIMIZATION_GUIDE.md`
+- Reference: `ucx_flow_v3/AI_TOOL_OPTIMIZATION_GUIDE.md`
 
 ## Documentation Standards
 
@@ -1001,11 +1001,11 @@ python tests/scripts/compare_test_results.py baseline.json current.json
 | `tests/scripts/compare_test_results.py` | Regression detection between runs |
 | `tests/scripts/archive_test_results.py` | Result archival and trend tracking |
 | `tests/scripts/generate_coverage_report.py` | Coverage report generation |
-| `ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py` | Central test catalog management |
+| `ucx_flow_v3/10_TSPEC/scripts/manage_test_registry.py` | Central test catalog management |
 
 ### Test Registry
 
-The test registry (`ai_dev_ssd_flow/10_TSPEC/test_registry.yaml`) provides a central catalog of all tests with:
+The test registry (`ucx_flow_v3/10_TSPEC/test_registry.yaml`) provides a central catalog of all tests with:
 - Test ID and type tracking
 - Upstream artifact references (REQ, SPEC, CTR)
 - Execution history and results
@@ -1013,13 +1013,13 @@ The test registry (`ai_dev_ssd_flow/10_TSPEC/test_registry.yaml`) provides a cen
 
 ```bash
 # List all registered tests
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --list
+python ucx_flow_v3/10_TSPEC/scripts/manage_test_registry.py --list
 
 # Add a test to registry
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --add UTEST-001 UTEST "Test name" "tests/unit/test_file.py::test_func"
+python ucx_flow_v3/10_TSPEC/scripts/manage_test_registry.py --add UTEST-001 UTEST "Test name" "tests/unit/test_file.py::test_func"
 
 # Validate registry
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --validate
+python ucx_flow_v3/10_TSPEC/scripts/manage_test_registry.py --validate
 ```
 
 ### CI/CD Integration
@@ -1039,7 +1039,7 @@ GitHub Actions workflow (`.github/workflows/test-pipeline.yml`) provides:
 | Branch coverage | Enabled |
 | Fail on decrease | Configurable |
 
-Reference: `ai_dev_ssd_flow/10_TSPEC/`, `tests/README.md`
+Reference: `ucx_flow_v3/10_TSPEC/`, `tests/README.md`
 
 ---
 
@@ -1047,23 +1047,23 @@ Reference: `ai_dev_ssd_flow/10_TSPEC/`, `tests/README.md`
 
 ### Cumulative Tag Automation (v2.0 - Recommended)
 
-**Validation Scripts Location**: `ai_dev_ssd_flow/scripts/` (copy to your project or use directly from framework)
+**Validation Scripts Location**: `ucx_flow_v3/scripts/` (copy to your project or use directly from framework)
 
 ```bash
 # Extract cumulative tags from all source files
-python ai_dev_ssd_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+python ucx_flow_v3/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
 # Validate cumulative tagging hierarchy (ENFORCES all upstream tags present)
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
+python ucx_flow_v3/scripts/validate_tags_against_docs.py \
   --source src/ docs/ tests/ \
   --validate-cumulative \
   --strict
 
 # Generate bidirectional traceability matrices
-python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
+python ucx_flow_v3/scripts/generate_traceability_matrices.py --auto
 
 # Complete workflow (extract + validate cumulative + generate)
-python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
+python ucx_flow_v3/scripts/generate_traceability_matrices.py --auto
 ```
 
 **CI/CD Integration:**
@@ -1071,8 +1071,8 @@ python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto
 # .github/workflows/traceability.yml
 - name: Validate Cumulative Tagging Hierarchy
   run: |
-    python ai_dev_ssd_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
-    python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict
+    python ucx_flow_v3/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+    python ucx_flow_v3/scripts/validate_tags_against_docs.py --validate-cumulative --strict
 ```
 
 ### Legacy Validation Scripts
@@ -1081,13 +1081,13 @@ For projects using traditional Section 7:
 
 ```bash
 # Validate requirement IDs and format
-python ai_dev_ssd_flow/scripts/validate_requirement_ids.py
+python ucx_flow_v3/scripts/validate_requirement_ids.py
 
 # Validate traceability matrices
-python ai_dev_ssd_flow/scripts/validate_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
+python ucx_flow_v3/scripts/validate_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
 
 # Update traceability matrices incrementally
-python ai_dev_ssd_flow/scripts/update_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
+python ucx_flow_v3/scripts/update_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
 
 ```
 
@@ -1098,10 +1098,10 @@ Pre-commit checklist:
 **Cumulative Tagging Projects (v2.0):**
 - [ ] All artifacts include cumulative tags from ALL upstream layers
 - [ ] Tags use unified format (TYPE.NN.TT.SS)
-- [ ] Tag extraction successful: `python ai_dev_ssd_flow/scripts/extract_tags.py --source src/ docs/ tests/`
-- [ ] Cumulative validation passes: `python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
+- [ ] Tag extraction successful: `python ucx_flow_v3/scripts/extract_tags.py --source src/ docs/ tests/`
+- [ ] Cumulative validation passes: `python ucx_flow_v3/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
 - [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
-- [ ] Traceability matrices generated: `python ai_dev_ssd_flow/scripts/generate_traceability_matrices.py --auto`
+- [ ] Traceability matrices generated: `python ucx_flow_v3/scripts/generate_traceability_matrices.py --auto`
 - [ ] Implementation status tags present (@impl-status: complete|in-progress|pending)
 
 **Traditional Projects (Legacy):**
@@ -1149,7 +1149,7 @@ aidoc-flow-framework/
 ├── README.md                          # This file
 ├── MULTI_PROJECT_SETUP_GUIDE.md       # Multi-project hybrid setup guide
 ├── MULTI_PROJECT_QUICK_REFERENCE.md   # Quick reference for common multi-project tasks
-├── ai_dev_ssd_flow/                       # Template system (v2.2)
+├── ucx_flow_v3/                       # Template system (v2.2)
 │   ├── index.md                       # Workflow overview with Mermaid diagram
 │   ├── README.md                      # Framework documentation
 │   ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Authoritative SDD methodology
@@ -1295,35 +1295,35 @@ Contributions welcome! Please:
 ## Automation & Workflow
 
 **MVP Autopilot Guide (v6.0)**:
-- [ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md](./ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide with TSPEC, TDD, and CHG
-- [ai_dev_ssd_flow/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./ai_dev_ssd_flow/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
-- [ai_dev_ssd_flow/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./ai_dev_ssd_flow/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
+- [ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md](./ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide with TSPEC, TDD, and CHG
+- [ucx_flow_v3/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./ucx_flow_v3/AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
+- [ucx_flow_v3/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./ucx_flow_v3/AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
 
 **Configuration**:
-- [ai_dev_ssd_flow/AUTOPILOT/config/default.yaml](./ai_dev_ssd_flow/AUTOPILOT/config/default.yaml) - Default configuration
-- [ai_dev_ssd_flow/AUTOPILOT/config/tdd.yaml](./ai_dev_ssd_flow/AUTOPILOT/config/tdd.yaml) - TDD mode configuration
-- [ai_dev_ssd_flow/AUTOPILOT/config/quality_gates.yaml](./ai_dev_ssd_flow/AUTOPILOT/config/quality_gates.yaml) - Quality gate settings
+- [ucx_flow_v3/AUTOPILOT/config/default.yaml](./ucx_flow_v3/AUTOPILOT/config/default.yaml) - Default configuration
+- [ucx_flow_v3/AUTOPILOT/config/tdd.yaml](./ucx_flow_v3/AUTOPILOT/config/tdd.yaml) - TDD mode configuration
+- [ucx_flow_v3/AUTOPILOT/config/quality_gates.yaml](./ucx_flow_v3/AUTOPILOT/config/quality_gates.yaml) - Quality gate settings
 
 **Core Scripts**:
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py) - Main orchestration script
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_metadata.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_metadata.py) - Metadata validator
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_quality_gates.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_quality_gates.py) - Quality gate checker (Python)
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_quality_gates.sh](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_quality_gates.sh) - Quality gate validator (shell)
+- [ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py](./ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py) - Main orchestration script
+- [ucx_flow_v3/AUTOPILOT/scripts/validate_metadata.py](./ucx_flow_v3/AUTOPILOT/scripts/validate_metadata.py) - Metadata validator
+- [ucx_flow_v3/AUTOPILOT/scripts/validate_quality_gates.py](./ucx_flow_v3/AUTOPILOT/scripts/validate_quality_gates.py) - Quality gate checker (Python)
+- [ucx_flow_v3/AUTOPILOT/scripts/validate_quality_gates.sh](./ucx_flow_v3/AUTOPILOT/scripts/validate_quality_gates.sh) - Quality gate validator (shell)
 
 **TDD Scripts (v6.0)**:
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/analyze_test_requirements.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/analyze_test_requirements.py) - Parse tests, extract traceability
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/generate_spec_tdd.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/generate_spec_tdd.py) - Generate test-aware SPEC
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_stage.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_stage.py) - Validate Red/Green state
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/update_test_traceability.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/update_test_traceability.py) - Update PENDING tags
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/generate_integration_tests.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/generate_integration_tests.py) - Generate integration tests
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/generate_smoke_tests.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/generate_smoke_tests.py) - Generate smoke tests
-- [ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_e2e.py](./ai_dev_ssd_flow/AUTOPILOT/scripts/validate_tdd_e2e.py) - End-to-end TDD validation
+- [ucx_flow_v3/AUTOPILOT/scripts/analyze_test_requirements.py](./ucx_flow_v3/AUTOPILOT/scripts/analyze_test_requirements.py) - Parse tests, extract traceability
+- [ucx_flow_v3/AUTOPILOT/scripts/generate_spec_tdd.py](./ucx_flow_v3/AUTOPILOT/scripts/generate_spec_tdd.py) - Generate test-aware SPEC
+- [ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_stage.py](./ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_stage.py) - Validate Red/Green state
+- [ucx_flow_v3/AUTOPILOT/scripts/update_test_traceability.py](./ucx_flow_v3/AUTOPILOT/scripts/update_test_traceability.py) - Update PENDING tags
+- [ucx_flow_v3/AUTOPILOT/scripts/generate_integration_tests.py](./ucx_flow_v3/AUTOPILOT/scripts/generate_integration_tests.py) - Generate integration tests
+- [ucx_flow_v3/AUTOPILOT/scripts/generate_smoke_tests.py](./ucx_flow_v3/AUTOPILOT/scripts/generate_smoke_tests.py) - Generate smoke tests
+- [ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_e2e.py](./ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_e2e.py) - End-to-end TDD validation
 
 **Quick Start**:
 
 ```bash
 # Standard MVP generation
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -1331,7 +1331,7 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --report markdown
 
 # TDD mode (test-first development)
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --intent "My MVP" \
   --slug my_mvp \
@@ -1339,7 +1339,7 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --auto-fix
 
 # Change Management mode
-python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --chg-mode \
   --chg-level L2 \
@@ -1584,17 +1584,17 @@ MIT License - See LICENSE file for details
 ## References
 
 ### Core Documentation
-- [Workflow Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
-- [Index](./ai_dev_ssd_flow/index.md) - Template overview with workflow diagram
-- [Quick Reference](./ai_dev_ssd_flow/QUICK_REFERENCE.md) - Quick reference for common tasks
-- [ID Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Naming conventions
-- [Threshold Naming Rules](./ai_dev_ssd_flow/THRESHOLD_NAMING_RULES.md) - Threshold and limit naming standards
-- [Traceability](./ai_dev_ssd_flow/TRACEABILITY.md) - Cumulative tagging hierarchy
-- [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Validation automation and CI/CD integration
-- [Traceability Validation](./ai_dev_ssd_flow/TRACEABILITY_VALIDATION.md) - Validation procedures
-- [Complete Tagging Example](./ai_dev_ssd_flow/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging
-- [Traceability Matrix Template](./ai_dev_ssd_flow/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) - Complete matrix examples
-- [Matrix Completion Guide](./ai_dev_ssd_flow/MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - How to fill matrices
+- [Workflow Guide](./ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
+- [Index](./ucx_flow_v3/index.md) - Template overview with workflow diagram
+- [Quick Reference](./ucx_flow_v3/QUICK_REFERENCE.md) - Quick reference for common tasks
+- [ID Standards](./ucx_flow_v3/ID_NAMING_STANDARDS.md) - Naming conventions
+- [Threshold Naming Rules](./ucx_flow_v3/THRESHOLD_NAMING_RULES.md) - Threshold and limit naming standards
+- [Traceability](./ucx_flow_v3/TRACEABILITY.md) - Cumulative tagging hierarchy
+- [Traceability Setup](./ucx_flow_v3/TRACEABILITY_SETUP.md) - Validation automation and CI/CD integration
+- [Traceability Validation](./ucx_flow_v3/TRACEABILITY_VALIDATION.md) - Validation procedures
+- [Complete Tagging Example](./ucx_flow_v3/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging
+- [Traceability Matrix Template](./ucx_flow_v3/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) - Complete matrix examples
+- [Matrix Completion Guide](./ucx_flow_v3/MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - How to fill matrices
 
 ### Multi-Project Setup
 - [Multi-Project Setup Guide](./MULTI_PROJECT_SETUP_GUIDE.md) - Complete hybrid approach documentation
@@ -1602,47 +1602,47 @@ MIT License - See LICENSE file for details
 - Setup Script: `scripts/setup_project_hybrid.sh` - Automated project configuration
 
 ### Domain Adaptation
-- [Domain Adaptation Guide](./ai_dev_ssd_flow/DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
-- [Domain Selection Questionnaire](./ai_dev_ssd_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md) - Domain selection tool
-- [Financial Domain Config](./ai_dev_ssd_flow/FINANCIAL_DOMAIN_CONFIG.md) - Financial sector configuration
-- [Software Domain Config](./ai_dev_ssd_flow/SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
-- [Generic Domain Config](./ai_dev_ssd_flow/GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
+- [Domain Adaptation Guide](./ucx_flow_v3/DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
+- [Domain Selection Questionnaire](./ucx_flow_v3/DOMAIN_SELECTION_QUESTIONNAIRE.md) - Domain selection tool
+- [Financial Domain Config](./ucx_flow_v3/FINANCIAL_DOMAIN_CONFIG.md) - Financial sector configuration
+- [Software Domain Config](./ucx_flow_v3/SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
+- [Generic Domain Config](./ucx_flow_v3/GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
 
 ### Decision Guides
-- [Contract Decision Questionnaire](./ai_dev_ssd_flow/CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR
-- [Platform vs Feature BRD](./ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md) - BRD type selection
-- [CTR Policy](./ai_dev_ssd_flow/05_ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
+- [Contract Decision Questionnaire](./ucx_flow_v3/CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR
+- [Platform vs Feature BRD](./ucx_flow_v3/PLATFORM_VS_FEATURE_BRD.md) - BRD type selection
+- [CTR Policy](./ucx_flow_v3/05_ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
 
 ### AI Tool Optimization
-- [Tool Optimization Guide](./ai_dev_ssd_flow/AI_TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
-- [AI Assistant Rules](./ai_dev_ssd_flow/AI_ASSISTANT_RULES.md) - Rules for AI assistants
+- [Tool Optimization Guide](./ucx_flow_v3/AI_TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
+- [AI Assistant Rules](./ucx_flow_v3/AI_ASSISTANT_RULES.md) - Rules for AI assistants
 
 ### Validation Scripts (v2.2)
 
 **Core Validation (15 scripts)**:
-- `ai_dev_ssd_flow/scripts/extract_tags.py` - Extract @tags from source files
-- `ai_dev_ssd_flow/scripts/validate_tags_against_docs.py` - Validate cumulative tagging hierarchy (use `--validate-cumulative`)
-- `ai_dev_ssd_flow/scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
-- `ai_dev_ssd_flow/scripts/validate_traceability_matrix.py` - Validate matrix structure
-- `ai_dev_ssd_flow/scripts/validate_traceability_matrix_enforcement.py` - Enforce matrix rules
-- `ai_dev_ssd_flow/scripts/update_traceability_matrix.py` - Update existing matrices
-- `ai_dev_ssd_flow/scripts/validate_requirement_ids.py` - Validate REQ-ID format
-- `ai_dev_ssd_flow/scripts/validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
-- `ai_dev_ssd_flow/scripts/validate_documentation_paths.py` - Path consistency validation
-- `ai_dev_ssd_flow/scripts/validate_links.py` - Markdown link validation
-- `ai_dev_ssd_flow/scripts/validate_brd_template.sh` - BRD template compliance
-- `ai_dev_ssd_flow/scripts/validate_req_template.sh` - REQ template compliance
-- `ai_dev_ssd_flow/scripts/generate_traceability_matrix.py` - Generate single matrix (legacy)
-- `ai_dev_ssd_flow/scripts/README.md` - Complete scripts documentation
+- `ucx_flow_v3/scripts/extract_tags.py` - Extract @tags from source files
+- `ucx_flow_v3/scripts/validate_tags_against_docs.py` - Validate cumulative tagging hierarchy (use `--validate-cumulative`)
+- `ucx_flow_v3/scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
+- `ucx_flow_v3/scripts/validate_traceability_matrix.py` - Validate matrix structure
+- `ucx_flow_v3/scripts/validate_traceability_matrix_enforcement.py` - Enforce matrix rules
+- `ucx_flow_v3/scripts/update_traceability_matrix.py` - Update existing matrices
+- `ucx_flow_v3/scripts/validate_requirement_ids.py` - Validate REQ-ID format
+- `ucx_flow_v3/scripts/validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
+- `ucx_flow_v3/scripts/validate_documentation_paths.py` - Path consistency validation
+- `ucx_flow_v3/scripts/validate_links.py` - Markdown link validation
+- `ucx_flow_v3/scripts/validate_brd_template.sh` - BRD template compliance
+- `ucx_flow_v3/scripts/validate_req_template.sh` - REQ template compliance
+- `ucx_flow_v3/scripts/generate_traceability_matrix.py` - Generate single matrix (legacy)
+- `ucx_flow_v3/scripts/README.md` - Complete scripts documentation
 
 ### Project Setup Scripts
 - `scripts/setup_project_hybrid.sh` - Automated multi-project hybrid setup
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/[YOUR_ORG]/ai-dev-flow-framework/issues)
-- **Documentation**: [ai_dev_ssd_flow/](./ai_dev_ssd_flow/)
-- **Examples**: See `ai_dev_ssd_flow/*/examples/` directories
+- **Issues**: [GitHub Issues](https://github.com/[YOUR_ORG]/ucx-flow-framework/issues)
+- **Documentation**: [ucx_flow_v3/](./ucx_flow_v3/)
+- **Examples**: See `ucx_flow_v3/*/examples/` directories
 
 ## Acknowledgments
 
@@ -1662,7 +1662,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 ### Version 2.9 (2026-02-25T10:00:00)
 - [PASS] **MVP → PROD → NEW MVP Lifecycle Prominence**: Made iterative lifecycle the central philosophy
   - Added "Core Philosophy" section immediately after AI-First Design in README
-  - Added prominent lifecycle section to `ai_dev_ssd_flow/index.md`
+  - Added prominent lifecycle section to `ucx_flow_v3/index.md`
   - Updated `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` with lifecycle section at top
   - Updated `MVP_WORKFLOW_GUIDE.md` (v3.1) with comprehensive lifecycle diagram
   - Added cross-references between core philosophy and detailed reference sections
@@ -1707,7 +1707,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ### Version 2.6 (2026-02-17T12:00:00)
 - [PASS] **Production Readiness**: Framework cleaned and production-ready
-  - **ai_dev_ssd_flow**: Removed 10 backup directories (191 files), added 4 missing templates
+  - **ucx_flow_v3**: Removed 10 backup directories (191 files), added 4 missing templates
   - **governance**: Fixed error handling in 10 Python workflow scripts
   - Removed broken IPLAN references (IPLAN-004, 006, 008, 009, 010, 011) from 18 files
   - Standardized emoji decorations to text notation across 326 files
@@ -1757,10 +1757,10 @@ Developed for AI-assisted software engineering workflows optimized for:
   - Added `tests/scripts/compare_test_results.py` - Regression detection between runs
   - Added `tests/scripts/archive_test_results.py` - Result archival and trend tracking
   - Added `tests/scripts/generate_coverage_report.py` - Coverage report generation
-  - Added `ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py` - Test catalog management
-  - Added `ai_dev_ssd_flow/10_TSPEC/test_registry.yaml` - Central test registry
-  - Added `ai_dev_ssd_flow/10_TSPEC/test_registry_schema.yaml` - Registry validation schema
-  - Added `ai_dev_ssd_flow/10_TSPEC/test_result_schema.yaml` - Result file schema
+  - Added `ucx_flow_v3/10_TSPEC/scripts/manage_test_registry.py` - Test catalog management
+  - Added `ucx_flow_v3/10_TSPEC/test_registry.yaml` - Central test registry
+  - Added `ucx_flow_v3/10_TSPEC/test_registry_schema.yaml` - Registry validation schema
+  - Added `ucx_flow_v3/10_TSPEC/test_result_schema.yaml` - Result file schema
   - Added `.github/workflows/test-pipeline.yml` - CI/CD test automation
 - [PASS] **Sample Tests**: 44 sample tests demonstrating patterns for each test type
 - [PASS] **Documentation Updates**: Updated TSPEC README, main README, and tests/README

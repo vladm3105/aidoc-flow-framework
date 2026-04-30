@@ -719,11 +719,11 @@ These standalone persona reference files in prompt templates need updating to re
 
 ### Step 24: Update SDD framework documentation
 
-#### 24a: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+#### 24a: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - Update UCX tool description to reflect multi-persona parameters
 - Reference `persona_mappings.yaml` in UCX configuration section
 
-#### 24b: `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md`
+#### 24b: `ucx_flow_v3/REPORT_NAMING_STANDARDS.md`
 - Update persona metadata field in report naming contract if applicable
 
 ### Step 25: UCX/ directory mirror sync
@@ -926,8 +926,8 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 
 | File | Action | Step |
 |------|--------|------|
-| `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` | UCX tool description | 24a |
-| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | Persona metadata in reports | 24b |
+| `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` | UCX tool description | 24a |
+| `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` | Persona metadata in reports | 24b |
 
 ### UCX/ Mirror Sync (5 file groups, Step 25)
 

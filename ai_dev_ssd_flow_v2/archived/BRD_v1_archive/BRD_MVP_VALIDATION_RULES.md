@@ -86,13 +86,13 @@ Each BRD represents ONE iteration cycle. Validation ensures each BRD is focused 
 
 ```bash
 # Core blocking validation (default for automation)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
 # Full tiered validation (includes advisory checks)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 
 # Structural diagnostics (secondary)
-python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
+python3 ucx_flow_v3/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
 ```
 
 ### Cross-Linking Tags (AI-Friendly)
@@ -111,7 +111,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `01_BRD/scripts/validate_brd_wrapper.sh` (canonical) + `01_BRD/scripts/validate_brd.py` (component)
 **Primary Template**: `BRD-MVP-TEMPLATE.md` (standard template)
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 19 total sections (fixed validator to match template)
 
 ---
@@ -153,12 +153,12 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 
 ## Overview
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The BRD validation script (`validate_brd_template.sh`) performs **24 validation checks** to ensure compliance with:
 
 - **BRD-MVP-TEMPLATE.md**: Complete business requirements structure (standard template)
-- **AI Dev Flow SDD Framework**: Business-driven SDD methodology
+- **UCX Flow SDD Framework**: Business-driven SDD methodology
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
 
@@ -866,7 +866,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 - **Score <90/100**: [FAIL] FAIL - PRD-ready threshold not met, refactoring required
 
 **Fix**:
-1. Run canonical BRD validation wrapper: `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+1. Run canonical BRD validation wrapper: `bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
 2. Review detailed deduction report
 3. Address violations using BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines)
 4. Re-run validation until score ≥90/100
@@ -1675,13 +1675,13 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (standard template)
 
 ```bash
 # Canonical BRD core checks (pre-commit/CI parity)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
 
 # Optional full tiered validation
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
+bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 
 # Component-level structural diagnostics (secondary)
-python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
+python3 ucx_flow_v3/01_BRD/scripts/validate_brd.py docs/01_BRD --verbose
 
 # Validate all BRD files (legacy pattern)
 **Business Requirements Completeness (40%)**:

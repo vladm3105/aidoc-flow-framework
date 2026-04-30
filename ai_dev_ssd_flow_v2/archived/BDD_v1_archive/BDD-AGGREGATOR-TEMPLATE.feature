@@ -77,7 +77,7 @@ Background:
 # =============================================================================
 
 # Document Path: 04_BDD/BDD-NN.SS.00_{slug}.feature
-# Framework: AI Dev Flow SDD
+# Framework: UCX Flow SDD
 # Layer: 4 (BDD - Behavior-Driven Development)
 # Template Version: 1.0
 # Last Updated: 2025-12-27

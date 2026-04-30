@@ -25,7 +25,7 @@ custom_fields:
 | **Version** | 1.0.0 |
 | **Date Created** | 2026-02-08T00:00:00 |
 | **Last Updated** | 2026-02-08T00:00:00 |
-| **Author** | AI Dev Flow Framework |
+| **Author** | UCX Flow Framework |
 | **Component** | REST API Server |
 | **SPEC Reference** | @spec: SPEC-01 |
 | **Coverage Target** | ≥85% |

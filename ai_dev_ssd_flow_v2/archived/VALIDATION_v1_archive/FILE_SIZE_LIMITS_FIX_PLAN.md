@@ -102,10 +102,10 @@ This replaces the inconsistent 300-500/600 limits currently scattered across var
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/.backup_file_size_limits_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/.backup_file_size_limits_2026-02-26
 
 # Backup affected files
-cd /opt/data/docs_flow_framework/ai_dev_ssd_flow
+cd /opt/data/docs_flow_framework/ucx_flow_v3
 
 # READMEs
 cp 02_PRD/README.md .backup_file_size_limits_2026-02-26/PRD_README.md
@@ -160,7 +160,7 @@ cp 11_TASKS/archive/IMPLEMENTATION_GUIDE.md .backup_file_size_limits_2026-02-26/
 
 1. **Immediate Rollback**:
    ```bash
-   cd /opt/data/docs_flow_framework/ai_dev_ssd_flow
+   cd /opt/data/docs_flow_framework/ucx_flow_v3
    cp .backup_file_size_limits_2026-02-26/PRD_README.md 02_PRD/README.md
    cp .backup_file_size_limits_2026-02-26/EARS_README.md 03_EARS/README.md
    # ... (restore all files from backup)
@@ -741,20 +741,20 @@ Already covered in Phase 6.2.
 ```bash
 # Verify no 300-500/600 patterns remain in active files
 grep -rn "300.*500\|target.*600\|max.*600" \
-  /opt/data/docs_flow_framework/ai_dev_ssd_flow/*/README.md \
-  /opt/data/docs_flow_framework/ai_dev_ssd_flow/*/*.yaml \
-  /opt/data/docs_flow_framework/ai_dev_ssd_flow/QUICK_REFERENCE.md \
+  /opt/data/docs_flow_framework/ucx_flow_v3/*/README.md \
+  /opt/data/docs_flow_framework/ucx_flow_v3/*/*.yaml \
+  /opt/data/docs_flow_framework/ucx_flow_v3/QUICK_REFERENCE.md \
   2>/dev/null | grep -v ".backup" | grep -v "archive"
 
 # Verify no 500 line threshold patterns remain (excluding performance/latency refs)
 grep -rn "≤500\|<=500\|<500\|>500\|exceed.*500" \
-  /opt/data/docs_flow_framework/ai_dev_ssd_flow/ \
+  /opt/data/docs_flow_framework/ucx_flow_v3/ \
   /opt/data/docs_flow_framework/.claude/skills/ \
   --include="*.md" --include="*.yaml" \
   2>/dev/null | grep -v ".backup" | grep -vi "latency\|delay\|timeout\|ms\|token"
 
 # Verify 800/1200 is present in key files
-grep -n "800\|1200" /opt/data/docs_flow_framework/ai_dev_ssd_flow/*/README.md | grep -i "line\|target\|max"
+grep -n "800\|1200" /opt/data/docs_flow_framework/ucx_flow_v3/*/README.md | grep -i "line\|target\|max"
 
 # Verify skills have correct limits
 grep -n "800\|1200" /opt/data/docs_flow_framework/.claude/skills/doc-*/SKILL.md | grep -i "line\|target\|max"

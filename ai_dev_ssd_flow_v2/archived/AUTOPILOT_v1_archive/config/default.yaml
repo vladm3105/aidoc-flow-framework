@@ -97,8 +97,8 @@ tdd_awareness:
       - "@code: PENDING"
       - "@tasks: PENDING"
     phase2_resolution:
-      spec: "ai_dev_flow/09_SPEC/"
-      tasks: "ai_dev_flow/11_TASKS/"
+      spec: "ucx_flow_v3/09_SPEC/"
+      tasks: "ucx_flow_v3/11_TASKS/"
       code: "src/"
 
   # Quality Gates for TDD Mode
@@ -138,8 +138,8 @@ project_modes:
     detection:
       condition: no_layers_exist
       commands:
-        - test ! -f ai_dev_flow/01_BRD/BRD*.md
-        - test ! -f ai_dev_flow/02_PRD/PRD*.md
+        - test ! -f ucx_flow_v3/01_BRD/BRD*.md
+        - test ! -f ucx_flow_v3/02_PRD/PRD*.md
       behavior:
         skip_existing: false
         overwrite_on_conflict: false
@@ -152,7 +152,7 @@ project_modes:
     detection:
       condition: layers_exist
       commands:
-        - test -f ai_dev_flow/*/BRD*.md -o -f ai_dev_flow/*/PRD*.md
+        - test -f ucx_flow_v3/*/BRD*.md -o -f ucx_flow_v3/*/PRD*.md
       behavior:
         skip_existing: true
         overwrite_on_conflict: false

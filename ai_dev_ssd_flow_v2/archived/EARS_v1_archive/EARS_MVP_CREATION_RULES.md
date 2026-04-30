@@ -39,7 +39,7 @@ custom_fields:
 - Maintain `EARS-00_index.md` as the authoritative source of planned and active EARS documents (mark planned items with Status: Planned).
 - Generators use: `EARS-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
@@ -75,7 +75,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/03_EARS/` within project docs directory
 - **Naming**: `EARS-NN_descriptive_title.md` (NN MUST match parent PRD ID e.g., `PRD-12` -> `EARS-12`)
 - **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
@@ -359,7 +359,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 3)
+**Framework Compliance**: 100% UCX Flow SDD framework (Layer 3)
 **Integration**: Enforces EARS → BDD progression quality gates
 
 

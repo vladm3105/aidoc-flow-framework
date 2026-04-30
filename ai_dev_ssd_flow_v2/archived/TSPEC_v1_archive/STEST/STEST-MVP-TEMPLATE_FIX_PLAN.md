@@ -315,8 +315,8 @@ enum: ["@ears", "@bdd", "@req"]
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
-2. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml` - Update traceability structure
+1. `ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
+2. `ucx_flow_v3/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml` - Update traceability structure
 
 **Steps**:
 
@@ -330,7 +330,7 @@ enum: ["@ears", "@bdd", "@req"]
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` - Update traceability section and AI_CONTEXT
+1. `ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` - Update traceability section and AI_CONTEXT
 
 **Steps**:
 
@@ -345,27 +345,27 @@ enum: ["@ears", "@bdd", "@req"]
 
 ```bash
 # Verify YAML template has cumulative tags
-grep -c "@brd" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
+grep -c "@brd" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
 # Expected: ≥1
 
 # Verify schema has cumulative_tags structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml
 # Expected: Both sections present
 
 # Verify YAML template structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 
 # Verify MD template has cumulative tags section
-grep -c "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
+grep -c "Cumulative Tags" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
 # Expected: ≥1
 
 # Verify AI_CONTEXT mentions cumulative tags (case-insensitive)
-grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
+grep -i "cumulative" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
 # Expected: Results showing cumulative tags mention
 
 # Verify schema no longer uses upstream as required
-grep -n "required:" ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml | grep -A2 "traceability"
+grep -n "required:" ucx_flow_v3/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml | grep -A2 "traceability"
 # Expected: Should show cumulative_tags and type_specific, not upstream
 ```
 

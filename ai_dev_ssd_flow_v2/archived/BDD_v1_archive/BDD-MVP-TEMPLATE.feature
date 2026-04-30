@@ -9,7 +9,7 @@
 #
 # DO NOT run in CI pipeline - use UTEST/ITEST for CI
 #
-# See: ai_dev_ssd_flow/10_TSPEC/TEST_PYRAMID_GUIDE.md for test pyramid documentation
+# See: ucx_flow_v3/10_TSPEC/TEST_PYRAMID_GUIDE.md for test pyramid documentation
 # =============================================================================
 
 # MVP Note: Use a single .feature file per module; split into multiple files only when >500 lines.

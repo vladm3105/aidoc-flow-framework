@@ -28,7 +28,7 @@ Invoke when user requests validation of REQ documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/REQ/REQ_SCHEMA.yaml`
+Schema: `ucx_flow_v3/REQ/REQ_SCHEMA.yaml`
 Layer: 7
 Artifact Type: REQ
 
@@ -221,13 +221,13 @@ Pattern: `REQ-NNN_descriptive_name.md`
 
 ```bash
 # Validate single REQ document
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-001_example.md
+python ucx_flow_v3/scripts/validate_req.py docs/07_REQ/REQ-001_example.md
 
 # Validate all REQ documents
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/
+python ucx_flow_v3/scripts/validate_req.py docs/07_REQ/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/ --verbose
+python ucx_flow_v3/scripts/validate_req.py docs/07_REQ/ --verbose
 ```
 
 ## Validation Workflow

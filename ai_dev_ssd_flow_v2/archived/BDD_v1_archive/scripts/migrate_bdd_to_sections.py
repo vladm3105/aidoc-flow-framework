@@ -346,7 +346,7 @@ def create_index_file(dest: Path, suite_num: str) -> None:
 ---
 
 **Document Path**: `BDD/BDD-{suite_num}.0_index.md`
-**Framework**: AI Dev Flow SDD
+**Framework**: UCX Flow SDD
 **Layer**: 4 (BDD - Behavior-Driven Development)
 **Last Updated**: [YYYY-MM-DD]
 """

@@ -304,8 +304,8 @@ Constraints:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml` - Restructure traceability
-2. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml` - Update traceability structure and x-validation-rules
+1. `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml` - Restructure traceability
+2. `ucx_flow_v3/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml` - Update traceability structure and x-validation-rules
 
 **Steps**:
 
@@ -320,7 +320,7 @@ Constraints:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` - Update Section 6 and AI_CONTEXT
+1. `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` - Update Section 6 and AI_CONTEXT
 
 **Steps**:
 
@@ -335,27 +335,27 @@ Constraints:
 
 ```bash
 # Verify YAML template has cumulative tags
-grep -c "@brd" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
+grep -c "@brd" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
 # Expected: >=1
 
 # Verify traceability structure in YAML
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 
 # Verify schema has cumulative_tags structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
 # Expected: Both sections present
 
 # Verify MD template has cumulative tags section
-grep -n "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
+grep -n "Cumulative Tags" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
 # Expected: Section header present
 
 # Verify AI_CONTEXT updated
-grep "cumulative" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
+grep "cumulative" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
 # Expected: Mention of cumulative tags
 
 # Verify x-validation-rules updated (reference type_specific)
-grep "type_specific" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
+grep "type_specific" ucx_flow_v3/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
 # Expected: Multiple results including x-validation-rules
 ```
 

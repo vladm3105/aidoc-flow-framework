@@ -560,7 +560,7 @@ check_template_structure() {
   echo "--- GATE-13: Template Structure Compliance ---"
   local found=0
 
-  # 21-section PRD-MVP-TEMPLATE structure (aligned with ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md)
+  # 21-section PRD-MVP-TEMPLATE structure (aligned with ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md)
   local REQUIRED_SECTIONS=(
     "Document Control" "Executive Summary" "Problem Statement"
     "Target Audience" "Success Metrics" "Goals & Objectives"
@@ -826,7 +826,7 @@ check_element_codes() {
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local REPO_ROOT
   REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
-  local VALIDATOR="${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_prd_standardized_element_codes.py"
+  local VALIDATOR="${REPO_ROOT}/ucx_flow_v3/scripts/validate_prd_standardized_element_codes.py"
 
   if [[ ! -f "$VALIDATOR" ]]; then
     echo -e "${RED}GATE-E020: Element code validator not found: $VALIDATOR${NC}"

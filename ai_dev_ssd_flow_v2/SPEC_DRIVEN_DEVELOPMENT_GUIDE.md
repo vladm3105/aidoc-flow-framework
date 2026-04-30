@@ -16,7 +16,7 @@ custom_fields:
 
 # Specification-Driven Development Principles Guide
 
-**Framework Philosophy**: AI Dev Flow enables maximum velocity to production through 90%+ automation and strategic human oversight.
+**Framework Philosophy**: UCX Flow enables maximum velocity to production through 90%+ automation and strategic human oversight.
 
 ---
 
@@ -286,7 +286,7 @@ Status: Framework standard. Aligns with `TRACEABILITY.md` and `ID_NAMING_STANDAR
 
 ## Metadata Management Approaches
 
-AI Dev Flow uses **dual metadata approaches** to serve both human and machine readers:
+UCX Flow uses **dual metadata approaches** to serve both human and machine readers:
 
 ### 1. YAML Frontmatter (Machine-Readable)
 

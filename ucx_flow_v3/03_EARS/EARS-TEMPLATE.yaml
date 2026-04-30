@@ -14,7 +14,7 @@
 #  Downstream: BDD (Layer 4)
 #  Upstream: BRD (Layer 1), PRD (Layer 2)
 #
-#  v3 changes from ai_dev_ssd_flow:
+#  v3 changes from ucx_flow_v3:
 #    Removed downstream references to ADR, SYS, TSPEC, TASKS
 # =============================================================================
 

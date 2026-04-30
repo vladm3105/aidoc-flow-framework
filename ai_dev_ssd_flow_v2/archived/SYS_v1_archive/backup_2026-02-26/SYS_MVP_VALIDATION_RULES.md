@@ -55,10 +55,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/06_SYS/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile mvp
+python3 ucx_flow_v3/06_SYS/scripts/validate_sys.py --path ucx_flow_v3/06_SYS --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/06_SYS/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile full
+python3 ucx_flow_v3/06_SYS/scripts/validate_sys.py --path ucx_flow_v3/06_SYS --profile full
 ```
 
 ### Cross-Linking Tags (AI-Friendly)
@@ -71,7 +71,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 
 
 
-Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
@@ -79,7 +79,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 **Purpose**: Complete validation rules for SYS documents
 **Script**: `python 06_SYS/scripts/validate_sys.py`
 **Primary Template**: `SYS-MVP-TEMPLATE.md` (standard template)
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: Added deployment requirements validation (CHECK 10), architectural correction from REQ to SYS layer
 
 ---
@@ -96,7 +96,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 
 ## Overview
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The SYS validation script ensures system requirements meet quality standards for REQ progression and implement ADR architectural decisions.
 

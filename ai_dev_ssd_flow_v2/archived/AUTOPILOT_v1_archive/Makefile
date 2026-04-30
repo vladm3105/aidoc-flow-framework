@@ -1,4 +1,4 @@
-# AI Dev Flow Framework - Makefile
+# UCX Flow Framework - Makefile
 # Version: 1.0
 # Last Updated: 2026-01-19
 
@@ -53,85 +53,85 @@ help: ## Show this help message
 
 validate: ## Run all validators
 	@echo "$(COLOR_BOLD)Running framework validation...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--all \
 		--report markdown
 
 validate-brd: ## Validate BRD layer
 	@echo "$(COLOR_GREEN)Validating BRD layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer BRD \
 		--report markdown
 
 validate-prd: ## Validate PRD layer
 	@echo "$(COLOR_GREEN)Validating PRD layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer PRD \
 		--report markdown
 
 validate-ears: ## Validate EARS layer
 	@echo "$(COLOR_GREEN)Validating EARS layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer EARS \
 		--report markdown
 
 validate-bdd: ## Validate BDD layer
 	@echo "$(COLOR_GREEN)Validating BDD layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer BDD \
 		--report markdown
 
 validate-adr: ## Validate ADR layer
 	@echo "$(COLOR_GREEN)Validating ADR layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer ADR \
 		--report markdown
 
 validate-sys: ## Validate SYS layer
 	@echo "$(COLOR_GREEN)Validating SYS layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer SYS \
 		--report markdown
 
 validate-req: ## Validate REQ layer
 	@echo "$(COLOR_GREEN)Validating REQ layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer REQ \
 		--report markdown
 
 validate-ctr: ## Validate CTR layer
 	@echo "$(COLOR_GREEN)Validating CTR layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer CTR \
 		--report markdown
 
 validate-spec: ## Validate SPEC layer
 	@echo "$(COLOR_GREEN)Validating SPEC layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer SPEC \
 		--report markdown
 
 validate-tasks: ## Validate TASKS layer
 	@echo "$(COLOR_GREEN)Validating TASKS layer...$(COLOR_RESET)"
-	python3 ai_dev_flow/scripts/validate_all.py \
-		ai_dev_flow \
+	python3 ucx_flow_v3/scripts/validate_all.py \
+		ucx_flow_v3 \
 		--layer TASKS \
 		--report markdown
 
 docs: ## Generate MVP documentation
 	@echo "$(COLOR_GREEN)Generating MVP documentation...$(COLOR_RESET)"
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--intent "My MVP" \
 		--slug my_mvp \
 		--up-to TASKS \
@@ -139,8 +139,8 @@ docs: ## Generate MVP documentation
 		--report markdown
 
 docs-full: ## Generate full MVP documentation (BRD→TASKS)
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--intent "My MVP" \
 		--slug my_mvp \
 		--up-to TASKS \
@@ -148,16 +148,16 @@ docs-full: ## Generate full MVP documentation (BRD→TASKS)
 		--report markdown
 
 docs-prd: ## Start from PRD (PRD→TASKS)
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--from-layer PRD \
 		--up-to TASKS \
 		--auto-fix \
 		--report markdown
 
 docs-ears: ## Start from EARS (EARS→TASKS)
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--from-layer EARS \
 		--up-to TASKS \
 		--auto-fix \
@@ -165,8 +165,8 @@ docs-ears: ## Start from EARS (EARS→TASKS)
 
 autopilot: ## Run autopilot with defaults
 	@echo "$(COLOR_GREEN)Running autopilot with MVP profile...$(COLOR_RESET)"
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--intent "My MVP" \
 		--slug my_mvp \
 		--profile mvp \
@@ -175,8 +175,8 @@ autopilot: ## Run autopilot with defaults
 
 autopilot-strict: ## Run autopilot with strict validation
 	@echo "$(COLOR_GREEN)Running autopilot with strict profile...$(COLOR_RESET)"
-	python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-		--root ai_dev_flow \
+	python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+		--root ucx_flow_v3 \
 		--intent "My MVP" \
 		--slug my_mvp \
 		--profile strict \
@@ -186,40 +186,40 @@ autopilot-strict: ## Run autopilot with strict validation
 
 test: ## Run autopilot test suite
 	@echo "$(COLOR_GREEN)Running autopilot tests...$(COLOR_RESET)"
-	python3 -m pytest ai_dev_flow/AUTOPILOT/tests/ -v
+	python3 -m pytest ucx_flow_v3/AUTOPILOT/tests/ -v
 
 lint: ## Run Python linters
 	@echo "$(COLOR_GREEN)Running Python linters...$(COLOR_RESET)"
-	python3 -m ruff check ai_dev_flow/AUTOPILOT/scripts/ ai_dev_flow/scripts/
-	python3 -m mypy ai_dev_flow/AUTOPILOT/scripts/
+	python3 -m ruff check ucx_flow_v3/AUTOPILOT/scripts/ ucx_flow_v3/scripts/
+	python3 -m mypy ucx_flow_v3/AUTOPILOT/scripts/
 
 format: ## Format Python code
 	@echo "$(COLOR_GREEN)Formatting Python code...$(COLOR_RESET)"
-	black ai_dev_flow/AUTOPILOT/scripts/
-	isort ai_dev_flow/AUTOPILOT/scripts/
+	black ucx_flow_v3/AUTOPILOT/scripts/
+	isort ucx_flow_v3/AUTOPILOT/scripts/
 
 clean: ## Remove generated files and reports
 	@echo "$(COLOR_GREEN)Cleaning generated files...$(COLOR_RESET)"
-	find ai_dev_flow/AUTOPILOT/work_plans -name "*.md" -delete 2>/dev/null || true
-	find ai_dev_flow/AUTOPILOT/work_plans -name "*.json" -delete 2>/dev/null || true
+	find ucx_flow_v3/AUTOPILOT/work_plans -name "*.md" -delete 2>/dev/null || true
+	find ucx_flow_v3/AUTOPILOT/work_plans -name "*.json" -delete 2>/dev/null || true
 
 install: ## Install Python dependencies
 	@echo "$(COLOR_GREEN)Installing Python dependencies...$(COLOR_RESET)"
 	pip install --quiet --upgrade pip
-	pip install --quiet -r ai_dev_flow/scripts/requirements.txt
-	pip install --quiet -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+	pip install --quiet -r ucx_flow_v3/scripts/requirements.txt
+	pip install --quiet -r ucx_flow_v3/AUTOPILOT/scripts/requirements.txt
 
 docker-build: ## Build Docker images
 	@echo "$(COLOR_GREEN)Building Docker images...$(COLOR_RESET)"
-	docker build -t ai_dev_flow_autopilot .
+	docker build -t ucx_flow_v3_autopilot .
 
 docker-run: ## Run Docker containers
 	@echo "$(COLOR_GREEN)Running Docker containers...$(COLOR_RESET)"
-	docker run --rm -v "$(PWD):/opt/data/docs_flow_framework" ai_dev_flow_autopilot
+	docker run --rm -v "$(PWD):/opt/data/docs_flow_framework" ucx_flow_v3_autopilot
 
 watch: ## Watch for file changes and auto-reload config
 	@echo "$(COLOR_GREEN)Watching for file changes...$(COLOR_RESET)"
-	python3 ai_dev_flow/AUTOPILOT/scripts/dev_mode.py --watch --root ai_dev_flow
+	python3 ucx_flow_v3/AUTOPILOT/scripts/dev_mode.py --watch --root ucx_flow_v3
 
 # ==============================================================================
 # Development Tools (Agent Automation)

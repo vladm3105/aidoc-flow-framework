@@ -55,10 +55,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/05_ADR/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile mvp
+python3 ucx_flow_v3/05_ADR/scripts/validate_adr.py --path ucx_flow_v3/05_ADR --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/05_ADR/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile full
+python3 ucx_flow_v3/05_ADR/scripts/validate_adr.py --path ucx_flow_v3/05_ADR --profile full
 ```
 ### Cross-Linking Tags (AI-Friendly)
 
@@ -69,7 +69,7 @@ Use same-layer cross-links to document ADR relationships:
 Validation handling: Info-level (non-blocking). Reported for visibility only.
 ---
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1.0
 **Date**: 2025-11-19T00:00:00
@@ -77,7 +77,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Purpose**: Complete validation rules for ADR documents
 **Script**: `python 05_ADR/scripts/validate_adr.py`
 **Primary Template**: `ADR-MVP-TEMPLATE.md` (standard template)
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
 
 ---
@@ -94,7 +94,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 
 ## Overview
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The ADR validation script ensures architecture decisions follow quality standards for SYS progression and meet SDD quality gates.
 
@@ -373,7 +373,7 @@ python 05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision.m
 
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`  `) are exempted.
 
-**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+**Central Authority**: `ucx_flow_v3/DIAGRAM_STANDARDS.md`
 **Diagram Skill**: `mermaid-gen` skill
 
 ---

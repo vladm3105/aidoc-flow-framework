@@ -343,7 +343,7 @@ Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_reme
 | File | Change |
 |------|--------|
 | `README.md` (root) | Update tool list (swap `sdd_remediate_fix` for `sdd_clean`) |
-| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | Update stage codes table (remove standalone `remediate_fix` stage, note it's now `remediate` with `fix=true`) |
+| `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` | Update stage codes table (remove standalone `remediate_fix` stage, note it's now `remediate` with `fix=true`) |
 
 ### 4d. Roadmap
 

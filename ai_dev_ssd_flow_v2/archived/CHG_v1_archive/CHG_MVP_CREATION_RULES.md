@@ -214,7 +214,7 @@ python CHG/scripts/validate_chg_routing.py docs/CHG/CHG-XX_{slug}/CHG-XX_{slug}.
 ./CHG/scripts/validate_all_gates.sh docs/CHG/CHG-XX_{slug}/CHG-XX_{slug}.md
 
 # Verify no orphaned references
-python ai_dev_flow/scripts/validate_traceability_matrix.py
+python ucx_flow_v3/scripts/validate_traceability_matrix.py
 
 # Check archived files have deprecation notices
 grep -r "DEPRECATED" docs/CHG/CHG-XX_{slug}/archive/

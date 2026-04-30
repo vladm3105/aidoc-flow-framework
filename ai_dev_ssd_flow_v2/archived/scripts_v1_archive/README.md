@@ -89,7 +89,7 @@ Checks documentation files against size limits (target: 800 lines, max: 1200 lin
 ./lint_file_sizes.sh
 
 # Check specific directory
-./lint_file_sizes.sh ai_dev_ssd_flow/
+./lint_file_sizes.sh ucx_flow_v3/
 ```
 
 ### 6. `validate_standardized_element_codes.py`
@@ -97,16 +97,16 @@ Checks documentation files against size limits (target: 800 lines, max: 1200 lin
 Validates BRD element IDs against standardized element type codes and section-element mapping rules.
 
 Primary orchestration path for enforcement is the BRD wrapper:
-- `ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ... --skip-advisory`
+- `ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh ... --skip-advisory`
 - The wrapper invokes this script as its first core blocking check.
 
 **Usage:**
 ```bash
-# Validate BRD files under ai_dev_ssd_flow/01_BRD
+# Validate BRD files under ucx_flow_v3/01_BRD
 python3 validate_standardized_element_codes.py --strict
 
 # Validate from repository root
-python3 ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py --strict
+python3 ucx_flow_v3/scripts/validate_standardized_element_codes.py --strict
 ```
 
 **Enforcement points:**
@@ -129,12 +129,12 @@ Framework template config:
 
 The all-layer matrix hook is the canonical project pre-commit orchestration entrypoint:
 
-- `ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs`
-- `ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs --changed-only`
+- `ucx_flow_v3/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs`
+- `ucx_flow_v3/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs --changed-only`
 
 Behavior notes:
 - Defaults `DOCS_ROOT` to `docs` when omitted.
-- Enforces project-artifact scope and rejects `ai_dev_ssd_flow` as `DOCS_ROOT`.
+- Enforces project-artifact scope and rejects `ucx_flow_v3` as `DOCS_ROOT`.
 - In `--changed-only` mode, targets only touched layers/modules/files.
 
 ### 7b. BRD Section-Based Handling
@@ -150,7 +150,7 @@ Current BRD wrapper/gate behavior for section-based BRD modules:
 Canonical PRD validation entrypoint for local hooks, automation, and orchestration.
 
 Primary orchestration path for enforcement is the PRD wrapper:
-- `ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD`
+- `ucx_flow_v3/02_PRD/scripts/prd_core_wrapper_hook.sh ucx_flow_v3/02_PRD`
 - The wrapper runs blocking core checks first, then optional advisory checks.
 
 **Enforcement points:**

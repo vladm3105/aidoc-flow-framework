@@ -6,7 +6,7 @@ These fixtures are specific to unit tests (UTEST) which are:
 - Isolated (no external dependencies)
 - Deterministic (same result every time)
 
-Reference: ai_dev_flow/10_TSPEC/UTEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import pytest

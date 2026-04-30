@@ -226,7 +226,7 @@ bash validate_all.sh --file path/to/document.md
 ## Framework Structure at a Glance
 
 ```
-ai_dev_flow/
+ucx_flow_v3/
 
  CORE FRAMEWORK (universal, no type prefix)
    VALIDATION_DECISION_FRAMEWORK.md      ← Core rules

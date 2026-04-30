@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test Registry Management Script for AI Dev Flow.
+Test Registry Management Script for UCX Flow.
 
 Manages the central test registry (test_registry.yaml) including:
 - Adding/updating/removing tests

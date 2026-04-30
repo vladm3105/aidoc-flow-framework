@@ -1,5 +1,5 @@
 ---
-title: "AI Dev Flow - Universal Specification-Driven Development Framework"
+title: "UCX Flow - Universal Specification-Driven Development Framework"
 tags:
 
   - index-document
@@ -12,7 +12,7 @@ custom_fields:
 ---
 <!-- markdownlint-disable MD025 MD001 -->
 
-# AI Dev Flow - Universal Specification-Driven Development Framework
+# UCX Flow - Universal Specification-Driven Development Framework
 
 **Purpose**: Enable AI-assisted software development across any project domain through structured, traceable requirements and specifications.
 
@@ -89,7 +89,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - **Governance**: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
 - **Lifecycle**: See [Core Lifecycle](#core-lifecycle-mvp--prod--new-mvp) above.
 
-### Why AI Dev Flow?
+### Why UCX Flow?
 
 **Traditional Development Challenges**:
 
@@ -99,7 +99,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - AI code generation requires unstructured guidance
 - Slow transition from idea to production MVP
 
-**AI Dev Flow Solutions**:
+**UCX Flow Solutions**:
 
 - [PASS] **90%+ Automation**: 14 of 15 layers generate automatically with quality gates
 - [PASS] **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
@@ -138,7 +138,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 | CHG | Change Management | Cross-cutting concern for tracking changes across all layers |
 | IPLAN | Implementation Plan | Session-based execution plans with bash commands |
 
-## Roles & Automation in AI Dev Flow
+## Roles & Automation in UCX Flow
 
 The framework orchestrates three key participants to transform business ideas into production code:
 
@@ -298,7 +298,7 @@ flowchart TD
 ## Using This Repo
 
 - **Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
-- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_ssd_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ucx_flow_v3/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python 02_PRD/scripts/validate_prd.py`, `./07_REQ/scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
@@ -380,9 +380,9 @@ This repository uses consistent **2-digit width** (`00`) for all index files acr
 - Do NOT mix widths (e.g., BRD-00 with PRD-000)
 - Once chosen, keep stable throughout project lifetime
 
-## Metadata Management in AI Dev Flow
+## Metadata Management in UCX Flow
 
-AI Dev Flow uses **dual metadata approaches** to serve both human and machine audiences:
+UCX Flow uses **dual metadata approaches** to serve both human and machine audiences:
 
 ### 1. YAML Frontmatter (Machine-Readable)
 
@@ -498,7 +498,7 @@ flowchart LR
 
 ### 15-Layer Architecture with Cumulative Tagging
 
-The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
+The UCX Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
 
 | Layer | Artifact | Purpose | Tags Required | Key Decision |
 | ------- | ---------- | --------- | --------------- | -------------- |
@@ -924,10 +924,10 @@ Note on Validation layer (Layer 14): Validation consumes all upstream tags. Docu
 
 ```bash
 # Copy entire framework to your project
-cp -r ai_dev_ssd_flow/ <your_project>/docs/
+cp -r ucx_flow_v3/ <your_project>/docs/
 
 # Or copy specific templates as needed
-cp ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
+cp ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
 
 ```
 
@@ -1303,7 +1303,7 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_MVP_SCHEMA.yaml
 
 ```bash
 # Validate document against schema (planned)
-python scripts/validate_artifact.py --schema ai_dev_ssd_flow/07_REQ/REQ_MVP_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
+python scripts/validate_artifact.py --schema ucx_flow_v3/07_REQ/REQ_MVP_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict
@@ -1375,7 +1375,7 @@ python CHG/scripts/validate_chg_routing.py <CHG_FILE>
 
 ### Business Requirements → Production Code
 
-The AI Dev Flow follows a structured progression through 15 layers:
+The UCX Flow follows a structured progression through 15 layers:
 
 **Documentation Layers (0-10)**:
 
@@ -1480,7 +1480,7 @@ Templates are optimized for AI code generation:
 
 ```mermaid
 graph LR
-  subgraph ai_dev_ssd_flow["ai_dev_ssd_flow/"]
+  subgraph ucx_flow_v3["ucx_flow_v3/"]
         direction TB
 
         subgraph docs["Documentation Artifacts"]
@@ -1667,7 +1667,7 @@ Notes:
 
 ### Adopting This Framework
 
-1. **Copy templates** to your project: `cp -r ai_dev_ssd_flow/ <your_project>/docs/`
+1. **Copy templates** to your project: `cp -r ucx_flow_v3/ <your_project>/docs/`
 2. **Read domain guide**: Review [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md)
 3. **Replace placeholders**: Search for `[PLACEHOLDERS]` and customize
 4. **Create first document**: Follow Quick Start Guide above

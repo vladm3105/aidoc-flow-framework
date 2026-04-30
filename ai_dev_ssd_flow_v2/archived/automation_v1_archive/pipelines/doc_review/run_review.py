@@ -263,7 +263,7 @@ def find_experts_yaml(target_dir: Path, artifact_type: str, git_root: Path | Non
         candidates.append(git_root / "docs" / "AI_EXPERTS" / "review.yaml")
 
     # Framework fallback
-    candidates.append(Path("/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml"))
+    candidates.append(Path("/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/review.template.yaml"))
 
     for candidate in candidates:
         if candidate.exists():
@@ -335,7 +335,7 @@ def find_skill_file(persona: str, git_root: Path | None) -> Path | None:
     candidates = []
     if git_root:
         candidates.append(git_root / "docs" / "AI_EXPERTS" / "skills" / f"{persona}.md")
-    candidates.append(Path(f"/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/skills/{persona}.md"))
+    candidates.append(Path(f"/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/skills/{persona}.md"))
 
     for candidate in candidates:
         if candidate.exists():
@@ -430,7 +430,7 @@ def run_pipeline(target_file: Path, dry_run: bool = False) -> None:
     shared_context_file.write_text(shared_context, encoding="utf-8")
 
     # Template file
-    template_file = Path("/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/PERSONA_REVIEW-MVP-TEMPLATE.md")
+    template_file = Path("/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/PERSONA_REVIEW-MVP-TEMPLATE.md")
 
     # ==========================================================================
     # Step 1: Persona Reviews

@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `BDD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `BDD-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
 Behavior-Driven Development (BDD) feature files capture executable specifications written in natural language, enabling collaboration between business stakeholders, developers, and testers. BDD files transform requirements into concrete, verifiable scenarios that drive automated testing and development validation.
 
@@ -290,8 +290,8 @@ pre-commit run bdd-quality-gate --all-files
 pre-commit run bdd-adr-ready-score --all-files
 
 # Or run specific validation
-python3 ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py ai_dev_ssd_flow/04_BDD
-bash ai_dev_ssd_flow/04_BDD/scripts/validate_bdd_quality_score.sh ai_dev_ssd_flow/04_BDD
+python3 ucx_flow_v3/04_BDD/scripts/validate_bdd.py ucx_flow_v3/04_BDD
+bash ucx_flow_v3/04_BDD/scripts/validate_bdd_quality_score.sh ucx_flow_v3/04_BDD
 ```
 
 **Quality Gates Enforced**:

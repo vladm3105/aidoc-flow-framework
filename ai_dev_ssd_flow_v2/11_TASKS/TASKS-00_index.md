@@ -16,7 +16,7 @@ custom_fields:
 
 # TASKS-000: Code Generation Plans Master Index
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ## Purpose
 
@@ -76,8 +76,8 @@ When creating a new TASKS Plan:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md \
-      ai_dev_ssd_flow/11_TASKS/TASKS-NN_component_name.md
+   cp ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.md \
+      ucx_flow_v3/11_TASKS/TASKS-NN_component_name.md
    ```
 
 2. **Assign TASKS ID**: Use next sequential number (TASKS-02, TASKS-03, ...)

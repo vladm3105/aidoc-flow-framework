@@ -270,5 +270,5 @@ Code Generation (Layer 12)
 | `governance/TSPEC_BDD_QA_BRIDGE.md` | QA workflow integration |
 | `governance/templates/qa/01-testing-strategy.md` | Testing strategy details |
 | `governance/templates/qa/03-ci-pipeline-spec.md` | CI pipeline configuration |
-| `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.feature` | BDD scenario template |
+| `ucx_flow_v3/04_BDD/BDD-TEMPLATE.feature` | BDD scenario template |
 | `TSPEC-MVP-TEMPLATE.yaml` | TSPEC format template |

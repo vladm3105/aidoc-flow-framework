@@ -27,7 +27,7 @@ Implementation-ready technical specification for a single software component. De
 - **Test contract references** — links to TDD layer (Layer 7) for test case definitions
 - **Unified v1.0 metadata model** — same structure as all other layers
 
-## What's Different from SPEC v2 (ai_dev_ssd_flow)
+## What's Different from SPEC v2 (ucx_flow_v3)
 
 | SPEC v2 (14-layer) | SPEC v3.2 (8-layer) |
 |--------------------|-------------------|

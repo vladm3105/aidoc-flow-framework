@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Cross-Document Validation System for AI Dev Flow Framework
+Cross-Document Validation System for UCX Flow Framework
 
 Validates upstream document content consistency across the 15-layer SDD workflow.
 Auto-fixes issues without user confirmation following strict hierarchy rules.
@@ -27,7 +27,7 @@ Validation Rules (XDOC-001 to XDOC-010):
     XDOC-009: Missing traceability section
     XDOC-010: Orphan requirement (no downstream)
 
-Author: AI Dev Flow Framework
+Author: UCX Flow Framework
 Version: 1.0.0
 """
 
@@ -1114,7 +1114,7 @@ def generate_report(doc_path: Optional[Path], issues: List[ValidationIssue], pha
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Cross-document validation for AI Dev Flow framework',
+        description='Cross-document validation for UCX Flow framework',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

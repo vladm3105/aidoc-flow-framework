@@ -38,13 +38,13 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/03_EARS/EARS-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/EARS-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml mcp_sdd/templates/EARS-TEMPLATE.yaml
+cp ucx_flow_v3/03_EARS/EARS-TEMPLATE.yaml mcp_sdd/templates/EARS-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

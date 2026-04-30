@@ -31,11 +31,11 @@ CTR instances are dual-file: `CTR-NN_slug.md` + `CTR-NN_slug.yaml` (OpenAPI 3.x)
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/08_CTR/CTR-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/08_CTR/CTR-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/CTR-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 ```bash
-cp ai_dev_ssd_flow/08_CTR/CTR-TEMPLATE.yaml mcp_sdd/templates/CTR-TEMPLATE.yaml
+cp ucx_flow_v3/08_CTR/CTR-TEMPLATE.yaml mcp_sdd/templates/CTR-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

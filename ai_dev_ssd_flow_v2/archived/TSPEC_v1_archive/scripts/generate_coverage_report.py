@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Coverage Report Generator for AI Dev Flow.
+Coverage Report Generator for UCX Flow.
 
 Generates coverage reports, checks thresholds, and tracks coverage trends.
 
@@ -257,7 +257,7 @@ def print_trend(history: List[Dict]) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate coverage reports for AI Dev Flow"
+        description="Generate coverage reports for UCX Flow"
     )
     parser.add_argument(
         "--type",

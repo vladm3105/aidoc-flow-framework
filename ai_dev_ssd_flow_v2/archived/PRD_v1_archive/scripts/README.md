@@ -23,11 +23,11 @@ bash validate_prd_quality_score.sh docs/02_PRD/<folder>
 bash validate_prd_wrapper.sh docs/02_PRD
 
 # Automation core mode (pre-commit/CI parity)
-bash prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+bash prd_core_wrapper_hook.sh ucx_flow_v3/02_PRD
 
 # Direct strict ID checks (optional diagnostics)
-bash prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
-bash prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
+bash prd_standardized_element_codes_hook.sh ucx_flow_v3/02_PRD
+bash prd_legacy_pattern_hook.sh ucx_flow_v3/02_PRD
 
 # Inspect validator options
 python3 validate_prd.py --help

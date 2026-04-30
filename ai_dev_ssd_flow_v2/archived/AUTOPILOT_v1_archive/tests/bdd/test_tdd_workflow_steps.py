@@ -4,7 +4,7 @@ BDD Step Definitions for TDD Workflow
 Step implementations for tdd_workflow.feature acceptance tests.
 
 Usage:
-    pytest ai_dev_flow/AUTOPILOT/tests/bdd/ -v -m bdd
+    pytest ucx_flow_v3/AUTOPILOT/tests/bdd/ -v -m bdd
 """
 
 import json
@@ -31,7 +31,7 @@ def project_context(temp_project_dir):
     return {
         "project_dir": temp_project_dir,
         "test_dir": temp_project_dir / "tests" / "unit",
-        "spec_dir": temp_project_dir / "ai_dev_flow" / "09_SPEC",
+        "spec_dir": temp_project_dir / "ucx_flow_v3" / "09_SPEC",
         "code_dir": temp_project_dir / "src",
         "output_file": None,
         "result": None,
@@ -47,8 +47,8 @@ def project_context(temp_project_dir):
 def sdd_directory_structure(project_context):
     """Verify SDD directory structure exists."""
     dirs = [
-        "ai_dev_flow/07_REQ",
-        "ai_dev_flow/09_SPEC",
+        "ucx_flow_v3/07_REQ",
+        "ucx_flow_v3/09_SPEC",
         "tests/unit",
         "src/services",
     ]

@@ -183,7 +183,7 @@ def extract_doc_id(path: Path) -> str:
 
 ### Phase 1: Standards Document + Helpers
 
-1. Create `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — canonical reference
+1. Create `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` — canonical reference
 2. Add `extract_doc_id()` to `utils/source_files.py`
 3. Add `REPORT_PATTERN`, `DERIVED_COPY_PATTERN` constants to `utils/source_files.py`
 
@@ -326,7 +326,7 @@ New tests:
 - mcp_ucx README — add changelog link
 - Framework CHANGELOG v0.18.0
 - Framework ROADMAP — add v0.18.0
-- Update `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` — cross-reference to REPORT_NAMING_STANDARDS
+- Update `ucx_flow_v3/ID_NAMING_STANDARDS.md` — cross-reference to REPORT_NAMING_STANDARDS
 
 ---
 
@@ -334,7 +334,7 @@ New tests:
 
 | File | Action | Est. Lines |
 |------|--------|-----------|
-| `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` | **Create** | ~120 |
+| `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` | **Create** | ~120 |
 | `mcp_ucx/src/mcp_server/utils/source_files.py` | Modify — `extract_doc_id()`, patterns | +30 |
 | `mcp_ucx/src/mcp_server/validation/runner.py` | Modify — report filenames | +10 |
 | `mcp_ucx/src/mcp_server/remediation/runner.py` | Modify — filenames + copy naming + `_canonical_stem` + `_resolve_*` | +30 |

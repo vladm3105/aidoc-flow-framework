@@ -11,7 +11,7 @@ Unified the ADR (Layer 5) artifact into a single YAML template, completing the f
 
 ### ADR Layer Unification
 
-**New**: `ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml` (466 lines, schema v1.0)
+**New**: `ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml` (466 lines, schema v1.0)
 
 **Replaced** (6 files, 3,118 lines → 466 lines):
 

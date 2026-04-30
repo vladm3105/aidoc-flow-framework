@@ -14,7 +14,7 @@
 #  Downstream: EARS (Layer 3)
 #  Upstream: BRD (Layer 1)
 #
-#  v3 changes from ai_dev_ssd_flow:
+#  v3 changes from ucx_flow_v3:
 #    Removed references to ADR, SYS, TSPEC, TASKS downstream
 # =============================================================================
 

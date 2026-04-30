@@ -398,7 +398,7 @@ Recommended number of validation gates per type:
 ### Step 1: Copy REQ files
 
 ```bash
-cd ai_dev_flow/01_BRD
+cd ucx_flow_v3/01_BRD
 
 # Copy REQ guides and adapt
 cp ../07_REQ/REQ_VALIDATION_STRATEGY.md BRD_VALIDATION_STRATEGY.md

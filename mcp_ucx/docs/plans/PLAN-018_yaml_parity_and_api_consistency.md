@@ -190,7 +190,7 @@ Wire into each runner as it's fixed (not as a separate step).
 | `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Add YAML troubleshooting section (common issues: frontmatter false positive, derived copy detection) |
 | `roadmap/ROADMAP.md` | Add v0.15.0 planned release (maps to mcp_ucx v1.8.0) |
 | `changelog/CHANGELOG_v0.15.0.md` | **Create** — framework-level changelog for YAML parity |
-| `ai_dev_ssd_flow/01_BRD/README.md` | Note that BRDs can be authored in YAML or MD; both validated by sdd_validate |
+| `ucx_flow_v3/01_BRD/README.md` | Note that BRDs can be authored in YAML or MD; both validated by sdd_validate |
 
 **Total**: ~530 lines across 20 files (11 code + 9 docs)
 
@@ -216,7 +216,7 @@ Wire into each runner as it's fixed (not as a separate step).
 16. Update mcp_ucx architecture docs (runtime, CLI reference, runbook)
 17. Create `changelog/CHANGELOG_v0.15.0.md` (framework-level)
 18. Update `roadmap/ROADMAP.md` — add v0.15.0 release
-19. Update `ai_dev_ssd_flow/01_BRD/README.md` — note YAML authoring support
+19. Update `ucx_flow_v3/01_BRD/README.md` — note YAML authoring support
 
 ---
 

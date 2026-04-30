@@ -35,7 +35,7 @@ You Write PRD → Autopilot Generates Docs → Vertex AI Generates Code → Depl
 
 **What you do**: Write your product requirements
 
-**Location**: `ai_dev_flow/02_PRD/PRD-01_trading_bot.md`
+**Location**: `ucx_flow_v3/02_PRD/PRD-01_trading_bot.md`
 
 **Example PRD**:
 ```markdown
@@ -73,7 +73,7 @@ Enable automated trading with minimal user intervention.
 
 **Commit to GitHub**:
 ```bash
-git add ai_dev_flow/02_PRD/PRD-01_trading_bot.md
+git add ucx_flow_v3/02_PRD/PRD-01_trading_bot.md
 git commit -m "docs: Add PRD for trading bot"
 git push origin main
 ```
@@ -113,8 +113,8 @@ gh workflow run mvp-autopilot.yml \
 
 ```bash
 # Run locally first to test
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --from-layer PRD \
   --up-to SPEC \
   --slug trading_bot \
@@ -133,7 +133,7 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 **What it does**: Converts PRD requirements to EARS format
 
-**Generated**: `ai_dev_flow/03_EARS/EARS-01_trading_bot.md`
+**Generated**: `ucx_flow_v3/03_EARS/EARS-01_trading_bot.md`
 
 **Example output**:
 ```markdown
@@ -152,7 +152,7 @@ WHEN the system is active, THE system SHALL monitor BTC/USD price every 5 second
 
 **What it does**: Creates behavior-driven test scenarios
 
-**Generated**: `ai_dev_flow/04_BDD/BDD-01_trading_bot.feature`
+**Generated**: `ucx_flow_v3/04_BDD/BDD-01_trading_bot.feature`
 
 **Example output**:
 ```gherkin
@@ -176,7 +176,7 @@ Scenario: Execute buy on MA crossover
 
 **What it does**: Documents technical architecture choices
 
-**Generated**: `ai_dev_flow/05_ADR/ADR-01_trading_bot.md`
+**Generated**: `ucx_flow_v3/05_ADR/ADR-01_trading_bot.md`
 
 **Example output**:
 ```markdown
@@ -208,7 +208,7 @@ Scenario: Execute buy on MA crossover
 
 #### Layer 6: SYS System Requirements (10 min)
 
-**Generated**: `ai_dev_flow/06_SYS/SYS-01_trading_bot.md`
+**Generated**: `ucx_flow_v3/06_SYS/SYS-01_trading_bot.md`
 
 **Includes**: All 15 required sections (scope, interfaces, data, testing, etc.)
 
@@ -222,7 +222,7 @@ Scenario: Execute buy on MA crossover
 
 **Generated**: 12 requirement files
 ```
-ai_dev_flow/07_REQ/
+ucx_flow_v3/07_REQ/
  REQ-01_market_data.md
  REQ-02_ma_calculation.md
  REQ-03_signal_detection.md
@@ -245,7 +245,7 @@ ai_dev_flow/07_REQ/
 
 **What it does**: Defines API contracts (OpenAPI format)
 
-**Generated**: `ai_dev_flow/08_CTR/CTR-01_trading_bot.yaml`
+**Generated**: `ucx_flow_v3/08_CTR/CTR-01_trading_bot.yaml`
 
 **Example**:
 ```yaml
@@ -285,7 +285,7 @@ paths:
 
 **What it does**: Complete technical specification in YAML
 
-**Generated**: `ai_dev_flow/09_SPEC/SPEC-01_trading_bot.yaml`
+**Generated**: `ucx_flow_v3/09_SPEC/SPEC-01_trading_bot.yaml`
 
 **Example**:
 ```yaml
@@ -372,9 +372,9 @@ traceability:
 ```yaml
 - name: Generate Code with Vertex AI
   run: |
-    python3 ai_dev_flow/scripts/vertex_code_generator.py \
-      --spec ai_dev_flow/09_SPEC/SPEC-01_trading_bot.yaml \
-      --contracts ai_dev_flow/08_CTR/ \
+    python3 ucx_flow_v3/scripts/vertex_code_generator.py \
+      --spec ucx_flow_v3/09_SPEC/SPEC-01_trading_bot.yaml \
+      --contracts ucx_flow_v3/08_CTR/ \
       --model claude-3.7-sonnet \
       --output src/ \
       --project ${{ secrets.GCP_PROJECT_ID }} \
@@ -507,9 +507,9 @@ class SignalGenerator:
     mypy src/ --strict
     
     # Contract compliance
-    python3 ai_dev_flow/scripts/check_contract_compliance.py \
+    python3 ucx_flow_v3/scripts/check_contract_compliance.py \
       --code src/ \
-      --contracts ai_dev_flow/08_CTR/ \
+      --contracts ucx_flow_v3/08_CTR/ \
       --min-score 95
     
     # Security scan

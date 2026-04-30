@@ -11,7 +11,7 @@ Unified the BDD (Layer 4) artifact into a single YAML template, completing the f
 
 ### BDD Layer Unification
 
-**New**: `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml` (365 lines, schema v1.0)
+**New**: `ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml` (365 lines, schema v1.0)
 
 **Replaced** (6 files, 4,108 lines → 365 lines):
 

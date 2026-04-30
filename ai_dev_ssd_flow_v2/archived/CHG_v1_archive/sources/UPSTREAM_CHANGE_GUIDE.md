@@ -275,10 +275,10 @@ After upstream changes, verify:
 
 ```bash
 # Check for broken references
-python ai_dev_flow/scripts/validate_forward_references.py
+python ucx_flow_v3/scripts/validate_forward_references.py
 
 # Verify traceability matrix
-python ai_dev_flow/scripts/validate_traceability_matrix.py
+python ucx_flow_v3/scripts/validate_traceability_matrix.py
 
 # Run test suite to verify TSPEC coverage
 pytest tests/

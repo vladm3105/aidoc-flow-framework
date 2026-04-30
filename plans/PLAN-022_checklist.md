@@ -335,8 +335,8 @@
 - [ ] 23c `mcp_ucx/skills/README.md` — document `persona_mappings.yaml`, add `content_strategist.md` to listing
 
 ### Step 24: Update SDD framework documentation
-- [ ] 24a `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` — update UCX tool description
-- [ ] 24b `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — update persona metadata field
+- [ ] 24a `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` — update UCX tool description
+- [ ] 24b `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` — update persona metadata field
 
 ### Step 25: UCX/ directory mirror sync
 - [ ] 25.1 Copy `mcp_ucx/skills/persona_mappings.yaml` → `UCX/skills/persona_mappings.yaml`

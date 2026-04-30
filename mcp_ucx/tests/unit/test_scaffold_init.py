@@ -38,7 +38,7 @@ def _create_authoritative_ssd(root: Path) -> None:
 
 def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
@@ -58,7 +58,7 @@ def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
 
 def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) -> None:
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
@@ -76,7 +76,7 @@ def test_scaffold_project_ucx_does_not_overwrite_existing_files(tmp_path: Path) 
 
 def test_scaffold_update_overwrites_stale_files(tmp_path: Path) -> None:
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
@@ -107,7 +107,7 @@ def test_scaffold_update_overwrites_stale_files(tmp_path: Path) -> None:
 
 def test_scaffold_update_skips_identical_files(tmp_path: Path) -> None:
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
@@ -129,7 +129,7 @@ def test_scaffold_update_skips_identical_files(tmp_path: Path) -> None:
 def test_scaffold_update_protects_persona_mappings(tmp_path: Path) -> None:
     """--update must NOT overwrite persona_mappings.yaml (project-owned)."""
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)
@@ -158,7 +158,7 @@ def test_scaffold_update_protects_persona_mappings(tmp_path: Path) -> None:
 def test_scaffold_update_mappings_resets_persona_mappings(tmp_path: Path) -> None:
     """--update --update-mappings explicitly resets persona_mappings.yaml."""
     canonical_root = tmp_path / "canonical"
-    ssd_root = tmp_path / "ai_dev_ssd_flow"
+    ssd_root = tmp_path / "ucx_flow_v3"
     project_root = tmp_path / "project"
     _create_canonical_scaffold(canonical_root)
     _create_authoritative_ssd(ssd_root)

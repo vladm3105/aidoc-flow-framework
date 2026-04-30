@@ -208,7 +208,7 @@ def run_brd_cross_section_checks_md(
 
 **Files** (must stay in sync):
 - `mcp_ucx/templates/BRD-TEMPLATE.yaml`
-- `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml`
+- `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml`
 
 Add `diagrams` section and `cross_section_rules` to metadata. See plan body for YAML content.
 
@@ -220,7 +220,7 @@ Standardized YAML-to-MD rendering template defining section headings, diagram re
 
 ### 6. DIAGRAM_STANDARDS.md update
 
-**File**: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`
+**File**: `ucx_flow_v3/DIAGRAM_STANDARDS.md`
 
 Add BRD-specific required diagram list (Platform: 3 minimum, Feature: 2 minimum). Fix DFD-L0 vs DFD-L1 discrepancy — standardize to `dfd-l1`.
 
@@ -240,9 +240,9 @@ Add BRD-specific required diagram list (Platform: 3 minimum, Feature: 2 minimum)
 | `mcp_ucx/src/mcp_server/validation/runner.py` | **Modify** | +80-100 lines | Infrastructure |
 | `mcp_ucx/src/mcp_server/validation/__init__.py` | **Modify** | +4 exports | Infrastructure |
 | `mcp_ucx/templates/BRD-TEMPLATE.yaml` | **Modify** | +40 lines | BRD template |
-| `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | **Sync** | Same | BRD template |
+| `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml` | **Sync** | Same | BRD template |
 | `mcp_ucx/templates/BRD-MD-TEMPLATE.md` | **Create** | ~120 lines | BRD template |
-| `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` | **Modify** | +25 lines | Framework standard |
+| `ucx_flow_v3/DIAGRAM_STANDARDS.md` | **Modify** | +25 lines | Framework standard |
 | `mcp_ucx/tests/unit/test_cross_section.py` | **Create** | ~200 lines | Generic tests |
 | `mcp_ucx/tests/unit/test_brd_rules.py` | **Create** | ~250 lines | BRD tests |
 

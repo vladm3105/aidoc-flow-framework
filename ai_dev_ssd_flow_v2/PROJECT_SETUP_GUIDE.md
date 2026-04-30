@@ -45,7 +45,7 @@ custom_fields:
 
 ## Quick Start Overview
 
-This guide walks AI Assistants through initializing a brand new project using the AI Dev Flow framework. Follow these steps in order.
+This guide walks AI Assistants through initializing a brand new project using the UCX Flow framework. Follow these steps in order.
 
 ###  Using the project-init Skill (Recommended)
 
@@ -165,17 +165,17 @@ ls -la work_plans/  # Verify work_plans directory
 **Commands**:
 ```bash
 # Point to the framework checkout (adjust for your environment)
-FRAMEWORK_ROOT=/path/to/ai_dev_ssd_flow
+FRAMEWORK_ROOT=/path/to/ucx_flow_v3
 
-# Create ai_dev_ssd_flow directory for framework templates
-mkdir -p ai_dev_ssd_flow
+# Create ucx_flow_v3 directory for framework templates
+mkdir -p ucx_flow_v3
 
-# Copy all templates into your project ai_dev_ssd_flow/ directory
-cp -r "$FRAMEWORK_ROOT"/* ai_dev_ssd_flow/
+# Copy all templates into your project ucx_flow_v3/ directory
+cp -r "$FRAMEWORK_ROOT"/* ucx_flow_v3/
 ```
 
 **Directory Purpose**:
-- `ai_dev_ssd_flow/` = Framework templates (standard: `*-TEMPLATE.yaml`; lifecycle: MVP → PROD → NEW MVP)
+- `ucx_flow_v3/` = Framework templates (standard: `*-TEMPLATE.yaml`; lifecycle: MVP → PROD → NEW MVP)
 - `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 **Action for MVP Track**:
@@ -991,9 +991,9 @@ mkdir -p scripts work_plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
 # Step 3: Copy Templates
-FRAMEWORK_ROOT=/path/to/ai_dev_ssd_flow
-mkdir -p ai_dev_ssd_flow
-cp -r "$FRAMEWORK_ROOT"/* ai_dev_ssd_flow/
+FRAMEWORK_ROOT=/path/to/ucx_flow_v3
+mkdir -p ucx_flow_v3
+cp -r "$FRAMEWORK_ROOT"/* ucx_flow_v3/
 
 # Step 4: Apply Domain Config
 # Run placeholder replacement based on domain selection

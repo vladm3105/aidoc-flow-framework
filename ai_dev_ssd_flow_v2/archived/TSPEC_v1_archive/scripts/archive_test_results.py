@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test Result Archival Script for AI Dev Flow.
+Test Result Archival Script for UCX Flow.
 
 Archives test results for historical tracking and trend analysis.
 

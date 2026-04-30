@@ -55,12 +55,12 @@ custom_fields:
 ### Usage
 
 ```bash
-./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile mvp
+./ucx_flow_v3/07_REQ/scripts/validate_req_template.sh --profile mvp
 ```
 
 ---
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 3.0.0
 **Date**: 2025-11-18T00:00:00
@@ -69,7 +69,7 @@ custom_fields:
 **Script**: `07_REQ/scripts/validate_req_template.sh`
 **Primary Template**: `REQ-MVP-TEMPLATE.md` (MVP profile)
 **Baseline Template**: `REQ-MVP-TEMPLATE.md`
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 
 ---
 
@@ -85,12 +85,12 @@ custom_fields:
 
 ## Overview
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The REQ validation script (`validate_req_template.sh`) performs **20 validation checks** to ensure compliance with:
 
 - **REQ-MVP-TEMPLATE.md**: Current template (MVP profile)
-- **AI Dev Flow SDD Framework**: Traceability and ID naming standards
+- **UCX Flow SDD Framework**: Traceability and ID naming standards
 - **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
 - **Document Control**: 12 required fields (MVP profile)
 
@@ -807,7 +807,7 @@ brd: BRD.09.01.15 [FAIL] (missing @ prefix)
 
 **Option 2 - Separate File** (10+ components):
 - Create: `REQ-045_TRACEABILITY_MATRIX.md`
-- Template: Available in AI Dev Flow framework
+- Template: Available in UCX Flow framework
 - Link from section 10
 
 **Reference**: `REQ-MVP-TEMPLATE.md` section 10 (Traceability - includes matrix guidance)

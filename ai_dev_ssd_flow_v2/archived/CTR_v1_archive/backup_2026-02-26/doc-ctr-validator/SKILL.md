@@ -28,7 +28,7 @@ Invoke when user requests validation of CTR documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
+Schema: `ucx_flow_v3/CTR/CTR_SCHEMA.yaml`
 Layer: 8
 Artifact Type: CTR
 
@@ -236,13 +236,13 @@ Part 5: Traceability and Documentation
 
 ```bash
 # Validate single CTR document (validates both .md and .yaml)
-python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/CTR-001_example.md
+python ucx_flow_v3/scripts/validate_ctr.py docs/08_CTR/CTR-001_example.md
 
 # Validate all CTR documents
-python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/
+python ucx_flow_v3/scripts/validate_ctr.py docs/08_CTR/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_ctr.py docs/08_CTR/ --verbose
+python ucx_flow_v3/scripts/validate_ctr.py docs/08_CTR/ --verbose
 ```
 
 ## Validation Workflow
@@ -302,8 +302,8 @@ Info: N
 
 - **CTR Skill**: `.claude/skills/doc-ctr/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
-- **CTR Schema**: `ai_dev_flow/CTR/CTR_SCHEMA.yaml`
+- **CTR Validation Rules**: `ucx_flow_v3/08_CTR/CTR_VALIDATION_RULES.md`
+- **CTR Schema**: `ucx_flow_v3/CTR/CTR_SCHEMA.yaml`
 
 ---
 

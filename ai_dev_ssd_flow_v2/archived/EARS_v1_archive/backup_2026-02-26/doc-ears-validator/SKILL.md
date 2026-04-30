@@ -28,7 +28,7 @@ Invoke when user requests validation of EARS documents or after creating/modifyi
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/EARS/EARS_SCHEMA.yaml`
+Schema: `ucx_flow_v3/EARS/EARS_SCHEMA.yaml`
 Layer: 3
 Artifact Type: EARS
 
@@ -196,13 +196,13 @@ Pattern: `EARS-NNN_descriptive_name.md`
 
 ```bash
 # Validate single EARS document
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
+python ucx_flow_v3/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
 
 # Validate all EARS documents
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/
+python ucx_flow_v3/scripts/validate_ears.py docs/03_EARS/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/ --verbose
+python ucx_flow_v3/scripts/validate_ears.py docs/03_EARS/ --verbose
 ```
 
 ## Validation Workflow

@@ -280,19 +280,19 @@ gh workflow run mvp-docs-generation.yml \
 
 ```bash
 # Start from ADR, generate SPEC only
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --from-layer ADR \
   --up-to SPEC \
   --auto-fix
 
 # Start from SPEC, generate TASKS
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --from-layer SPEC \
   --up-to TASKS \
   --auto-fix
 
 # Resume existing project
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
   --root . \
   --resume \
   --auto-fix
@@ -355,14 +355,14 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 4. **Test Configuration Loading**
    ```bash
    # Test default config
-   python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+   python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
      --root . \
      --intent "Test" \
      --slug test \
      --profile mvp
 
    # Test quality gates
-   python3 ai_dev_flow/AUTOPILOT/scripts/validate_quality_gates.py \
+   python3 ucx_flow_v3/AUTOPILOT/scripts/validate_quality_gates.py \
      --help
    ```
 
@@ -377,11 +377,11 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 ### Documentation Files
 - [ ] `AUTOPILOT/MVP_AUTOPILOT.md` - Review v5.0 guide for accuracy
 - [ ] `AUTOPILOT/HOW_TO_USE_AUTOPILOT.md` - Review usage examples
-- [ ] `ai_dev_flow/README.md` - Verify Automation section
+- [ ] `ucx_flow_v3/README.md` - Verify Automation section
 
 ### Workflow Files
-- [ ] `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` - Review updated examples
-- [ ] `ai_dev_flow/MVP_AUTOMATION_DESIGN.md` - Review script references
+- [ ] `ucx_flow_v3/MVP_WORKFLOW_GUIDE.md` - Review updated examples
+- [ ] `ucx_flow_v3/MVP_AUTOMATION_DESIGN.md` - Review script references
 
 ### Build/Deploy Files
 - [ ] `.github/workflows/mvp-docs-generation.yml` - Test GitHub Actions

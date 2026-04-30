@@ -11,7 +11,7 @@ Unified the SYS (Layer 6) artifact into a single YAML template. SYS is the first
 
 ### SYS Layer Unification
 
-**New**: `ai_dev_ssd_flow/06_SYS/SYS-TEMPLATE.yaml` (437 lines, schema v1.0)
+**New**: `ucx_flow_v3/06_SYS/SYS-TEMPLATE.yaml` (437 lines, schema v1.0)
 
 **Replaced**: 6 files (3,785 lines → 437 lines). 17+ files archived to `SYS_v1_archive/`.
 

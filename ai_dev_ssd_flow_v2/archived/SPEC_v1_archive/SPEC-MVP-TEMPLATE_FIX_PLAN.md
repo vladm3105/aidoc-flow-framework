@@ -53,9 +53,9 @@ mkdir -p /tmp/spec_fix_backup_$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/tmp/spec_fix_backup_$(date +%Y%m%d_%H%M%S)"
 
 # Backup template files
-cp ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md "$BACKUP_DIR/"
-cp ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md "$BACKUP_DIR/"
-cp ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md "$BACKUP_DIR/"
+cp ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md "$BACKUP_DIR/"
+cp ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md "$BACKUP_DIR/"
+cp ucx_flow_v3/09_SPEC/SPEC_MVP_VALIDATION_RULES.md "$BACKUP_DIR/"
 
 # Backup skill files
 cp .claude/skills/doc-spec-validator/SKILL.md "$BACKUP_DIR/"
@@ -67,14 +67,14 @@ cp .claude/skills/doc-spec_quickref.md "$BACKUP_DIR/"
 
 ```bash
 # Verify section counts
-grep -n "required sections" ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md
-grep -n "major sections" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md
+grep -n "required sections" ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md
+grep -n "major sections" ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md
 
 # Check for duplicates
-grep -n "upstream_links:" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md
+grep -n "upstream_links:" ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md
 
 # Verify paths in validator
-grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
+grep -n "ucx_flow_v3" .claude/skills/doc-spec-validator/SKILL.md
 ```
 
 ---
@@ -83,7 +83,7 @@ grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
 
 ### 1.1 Fix AI_CONTEXT Section Count (GAP-01)
 
-**File**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md`
+**File**: `ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md`
 **Line**: 41
 
 **Before**:
@@ -98,7 +98,7 @@ grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
 
 ### 1.2 Remove Duplicate upstream_links Section (GAP-02)
 
-**File**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+**File**: `ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md`
 **Lines**: 99-106 (remove the duplicate)
 
 **Before** (lines 91-107):
@@ -136,7 +136,7 @@ grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
 
 ### 1.3 Remove Duplicate Error Code Line (GAP-03)
 
-**File**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+**File**: `ucx_flow_v3/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
 **Lines**: 327, 329 (line 329 is duplicate of 327)
 
 **Before** (lines 327-329):
@@ -153,7 +153,7 @@ grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
 
 ### 1.4 Fix Section Count in Creation Rules (GAP-04)
 
-**File**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+**File**: `ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md`
 **Line**: 71
 
 **Before**:
@@ -179,12 +179,12 @@ grep -n "ai_dev_flow" .claude/skills/doc-spec-validator/SKILL.md
 
 **Before**:
 ```
-Schema: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
+Schema: `ucx_flow_v3/SPEC/SPEC_SCHEMA.yaml`
 ```
 
 **After**:
 ```
-Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
+Schema: `ucx_flow_v3/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 ```
 
 ### 2.2 Fix Cumulative Tag Formats (GAP-06)
@@ -225,14 +225,14 @@ Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 
 **Before**:
 ```markdown
-- **SPEC Validation Rules**: `ai_dev_flow/09_SPEC/SPEC_VALIDATION_RULES.md`
-- **SPEC Schema**: `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml`
+- **SPEC Validation Rules**: `ucx_flow_v3/09_SPEC/SPEC_VALIDATION_RULES.md`
+- **SPEC Schema**: `ucx_flow_v3/SPEC/SPEC_SCHEMA.yaml`
 ```
 
 **After**:
 ```markdown
-- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
-- **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
+- **SPEC Validation Rules**: `ucx_flow_v3/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- **SPEC Schema**: `ucx_flow_v3/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 ```
 
 ### 2.4 Fix Autopilot Template Path (GAP-14)
@@ -242,12 +242,12 @@ Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 
 **Before**:
 ```markdown
-- **SPEC Template**: `ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml`
+- **SPEC Template**: `ucx_flow_v3/09_SPEC/SPEC-TEMPLATE.yaml`
 ```
 
 **After**:
 ```markdown
-- **SPEC Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+- **SPEC Template**: `ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
 ```
 
 ---
@@ -288,7 +288,7 @@ Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
 ## Output Location
 
 ```
-ai_dev_flow/SPEC/SPEC-NNN_{slug}.yaml
+ucx_flow_v3/SPEC/SPEC-NNN_{slug}.yaml
 ```
 ```
 
@@ -311,7 +311,7 @@ docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
 ## Template Location
 
 ```
-ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml
+ucx_flow_v3/10_SPEC/SPEC-MVP-TEMPLATE.yaml
 ```
 ```
 
@@ -320,8 +320,8 @@ ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml
 ## Template Location
 
 ```
-ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md    # Human workflow
-ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml  # Autopilot workflow
+ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md    # Human workflow
+ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.yaml  # Autopilot workflow
 ```
 ```
 
@@ -402,7 +402,7 @@ Add entry (if version history section exists):
 ```markdown
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.3 | 2026-02-26 | Fixed schema path to ai_dev_ssd_flow/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
+| 1.3 | 2026-02-26 | Fixed schema path to ucx_flow_v3/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
 ```
 
 ### 4.5 Update doc-spec-autopilot/SKILL.md Version History
@@ -410,7 +410,7 @@ Add entry (if version history section exists):
 ```markdown
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 2.4 | 2026-02-26 | Fixed template path from ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml to ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml | System |
+| 2.4 | 2026-02-26 | Fixed template path from ucx_flow_v3/09_SPEC/SPEC-TEMPLATE.yaml to ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.yaml | System |
 ```
 
 ---
@@ -421,28 +421,28 @@ Add entry (if version history section exists):
 
 ```bash
 # Verify AI_CONTEXT section count
-grep -n "8 required sections" ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md
+grep -n "8 required sections" ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md
 
 # Count actual numbered sections in template
-grep -E "^## [0-9]+\." ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md | wc -l
+grep -E "^## [0-9]+\." ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.md | wc -l
 ```
 
 ### 5.2 Verify Creation Rules Fixes
 
 ```bash
 # Verify no duplicate upstream_links
-grep -c "upstream_links:" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md
+grep -c "upstream_links:" ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md
 # Expected: 1
 
 # Verify section count fix
-grep -n "major sections" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md
+grep -n "major sections" ucx_flow_v3/09_SPEC/SPEC_MVP_CREATION_RULES.md
 ```
 
 ### 5.3 Verify Validation Rules Fixes
 
 ```bash
 # Verify no duplicate SPEC-E025 lines
-grep -c "SPEC-E025" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md
+grep -c "SPEC-E025" ucx_flow_v3/09_SPEC/SPEC_MVP_VALIDATION_RULES.md
 # Expected: 1
 ```
 
@@ -450,10 +450,10 @@ grep -c "SPEC-E025" ai_dev_ssd_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md
 
 ```bash
 # Verify correct schema path
-grep "ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml" .claude/skills/doc-spec-validator/SKILL.md
+grep "ucx_flow_v3/09_SPEC/SPEC_MVP_SCHEMA.yaml" .claude/skills/doc-spec-validator/SKILL.md
 
 # Verify no old paths remain
-grep -c "ai_dev_flow/SPEC" .claude/skills/doc-spec-validator/SKILL.md
+grep -c "ucx_flow_v3/SPEC" .claude/skills/doc-spec-validator/SKILL.md
 # Expected: 0
 
 # Verify cumulative tag format
@@ -464,10 +464,10 @@ grep -E "@brd: BRD\.[0-9]{2}\.[0-9]{2}\.[0-9]{2}" .claude/skills/doc-spec-valida
 
 ```bash
 # Verify correct template path
-grep "ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
+grep "ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
 
 # Verify no old paths remain
-grep -c "ai_dev_flow/09_SPEC/SPEC-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
+grep -c "ucx_flow_v3/09_SPEC/SPEC-TEMPLATE.yaml" .claude/skills/doc-spec-autopilot/SKILL.md
 # Expected: 0
 ```
 
@@ -485,7 +485,7 @@ grep -c "Layer.* 10" .claude/skills/doc-spec_quickref.md
 grep "docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml" .claude/skills/doc-spec_quickref.md
 
 # Verify template path
-grep "ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE" .claude/skills/doc-spec_quickref.md
+grep "ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE" .claude/skills/doc-spec_quickref.md
 ```
 
 ---
@@ -496,11 +496,11 @@ grep "ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE" .claude/skills/doc-spec_quickre
 
 ```bash
 # Verify layer 9 is consistent across all SPEC files
-grep -rn "layer.*9" ai_dev_ssd_flow/09_SPEC/*.md ai_dev_ssd_flow/09_SPEC/*.yaml
+grep -rn "layer.*9" ucx_flow_v3/09_SPEC/*.md ucx_flow_v3/09_SPEC/*.yaml
 grep -rn "layer.*9" .claude/skills/doc-spec*/SKILL.md
 
 # Verify no layer 10 references remain
-grep -rn "layer.*10" ai_dev_ssd_flow/09_SPEC/ .claude/skills/doc-spec*/
+grep -rn "layer.*10" ucx_flow_v3/09_SPEC/ .claude/skills/doc-spec*/
 # Expected: No matches
 ```
 
@@ -508,8 +508,8 @@ grep -rn "layer.*10" ai_dev_ssd_flow/09_SPEC/ .claude/skills/doc-spec*/
 
 ```bash
 # Verify all skill files use correct paths
-grep -rn "ai_dev_ssd_flow/09_SPEC" .claude/skills/doc-spec*/SKILL.md
-grep -rn "ai_dev_flow/.*SPEC" .claude/skills/doc-spec*/SKILL.md
+grep -rn "ucx_flow_v3/09_SPEC" .claude/skills/doc-spec*/SKILL.md
+grep -rn "ucx_flow_v3/.*SPEC" .claude/skills/doc-spec*/SKILL.md
 # Second command should return no matches
 ```
 
@@ -538,9 +538,9 @@ If issues are found post-implementation:
 
 ```bash
 # Restore from backup
-cp "$BACKUP_DIR/SPEC-MVP-TEMPLATE.md" ai_dev_ssd_flow/09_SPEC/
-cp "$BACKUP_DIR/SPEC_MVP_CREATION_RULES.md" ai_dev_ssd_flow/09_SPEC/
-cp "$BACKUP_DIR/SPEC_MVP_VALIDATION_RULES.md" ai_dev_ssd_flow/09_SPEC/
+cp "$BACKUP_DIR/SPEC-MVP-TEMPLATE.md" ucx_flow_v3/09_SPEC/
+cp "$BACKUP_DIR/SPEC_MVP_CREATION_RULES.md" ucx_flow_v3/09_SPEC/
+cp "$BACKUP_DIR/SPEC_MVP_VALIDATION_RULES.md" ucx_flow_v3/09_SPEC/
 cp "$BACKUP_DIR/SKILL.md" .claude/skills/doc-spec-validator/
 cp "$BACKUP_DIR/SKILL.md" .claude/skills/doc-spec-autopilot/
 cp "$BACKUP_DIR/doc-spec_quickref.md" .claude/skills/

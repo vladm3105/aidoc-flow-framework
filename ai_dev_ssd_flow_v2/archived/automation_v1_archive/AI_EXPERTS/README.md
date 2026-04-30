@@ -4,7 +4,7 @@
 >
 > **This directory is deprecated as of 2026-03-09.**
 >
-> Replaced by: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/`
+> Replaced by: `/opt/data/docs_flow_framework/ucx_flow_v3/UCX/`
 >
 > - Personas → `UCX/skills/`
 > - Review prompts → `UCX/review/UCR_PROMPT_*.md`
@@ -15,7 +15,7 @@
 ---
 
 ## Overview
-The **AI Expert Board** is an advanced QA and ideation methodology built into `docs_flow_framework/ai_dev_ssd_flow`. 
+The **AI Expert Board** is an advanced QA and ideation methodology built into `docs_flow_framework/ucx_flow_v3`. 
 
 Instead of relying on a single AI context window (which is prone to bias, "yes-man" behavior, and hallucination), this framework utilizes a **Board of 7 Specialized AI Personas**. These personas act as an adversarial "Red Team" to audit your system designs, requirements, and business logic.
 

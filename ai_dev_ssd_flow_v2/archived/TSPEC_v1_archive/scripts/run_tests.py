@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unified Test Runner for AI Dev Flow.
+Unified Test Runner for UCX Flow.
 
 Runs tests by type (unit, integration, smoke, functional) with optional
 coverage reporting and result saving.
@@ -223,7 +223,7 @@ def print_summary(result: TestResult) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Unified test runner for AI Dev Flow")
+    parser = argparse.ArgumentParser(description="Unified test runner for UCX Flow")
     parser.add_argument(
         "--type",
         required=True,

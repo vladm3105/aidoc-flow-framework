@@ -582,7 +582,7 @@ After passing the fix cycle:
 5. **Traceability Matrix Update**:
    ```bash
    # Update CTR traceability
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --ctr docs/08_CTR/CTR-NN_{slug}.md \
      --matrix docs/08_CTR/CTR-00_TRACEABILITY_MATRIX.md
    ```
@@ -1040,7 +1040,7 @@ fix_mode:
 - **CTR Validator**: `.claude/skills/doc-ctr-validator/SKILL.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md`
 - **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **CTR Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md`
+- **CTR Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.md`
 
 ---
 

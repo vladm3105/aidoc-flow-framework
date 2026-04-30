@@ -9,7 +9,7 @@
 2. `brd-standardized-element-codes` - Element type codes
 3. `brd-legacy-patterns` - Legacy pattern detection
 
-**Config File**: `ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
+**Config File**: `ucx_flow_v3/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
 **Status**: `stages: [pre-commit]` (active)
 
@@ -30,7 +30,7 @@ See IPLAN-001 Section 10.1.1 for emergency disable procedure.
 
 **Check hook status**:
 ```bash
-grep "stages:" ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml | grep "brd-"
+grep "stages:" ucx_flow_v3/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml | grep "brd-"
 
 # Expected: All 3 BRD hooks show stages: [pre-commit]
 ```
@@ -43,7 +43,7 @@ grep "stages:" ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-confi
 3. Check stages: `grep "id: brd-core-wrapper" -A 5 <config-file> | grep stages`
 
 **Hooks blocking commits**:
-1. Run validator directly: `python3 ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py <brd-file>`
+1. Run validator directly: `python3 ucx_flow_v3/01_BRD/scripts/validate_brd.py <brd-file>`
 2. Fix validation errors
 3. Commit again
 
@@ -51,4 +51,4 @@ grep "stages:" ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-confi
 
 - IPLAN-001 v1.2.2: `/opt/data/b-local/b-local-docs/work_plans/IPLAN-001_brd_audit_remediation_v1.2.md`
 - Root Cause Addendum: `/opt/data/docs_flow_framework/work_plans/BRD_FRAMEWORK_ROOT_CAUSE_ADDENDUM.md`
-- Validation Rules: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- Validation Rules: `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md`

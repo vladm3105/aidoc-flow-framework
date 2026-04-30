@@ -7,7 +7,7 @@
 
 ## Objective
 
-Migrate governance documentation, templates, and governance-side automation references from legacy SDD (`ai_dev_ssd_flow`, TASKS/TSPEC/SYS/REQ/CTR-centric flows) to SDD v3.2 (`ucx_flow_v3`, BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code).
+Migrate governance documentation, templates, and governance-side automation references from legacy SDD (`ucx_flow_v3`, TASKS/TSPEC/SYS/REQ/CTR-centric flows) to SDD v3.2 (`ucx_flow_v3`, BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code).
 
 ## Review Findings (Current State)
 
@@ -24,7 +24,7 @@ The governance directory currently contains mixed versions (v3 references and le
    - `governance/CHG_GOVERNANCE_BRIDGE.md` uses gate mapping tied to legacy layer numbering.
 
 3. **Path drift to old framework root**
-   - Multiple files still reference `ai_dev_ssd_flow/...` paths instead of `ucx_flow_v3/...`.
+   - Multiple files still reference `ucx_flow_v3/...` paths instead of `ucx_flow_v3/...`.
 
 4. **Workflow and script references not v3-normalized**
    - Governance docs and script guidance still assume TASKS-generated issue flow and old layer aliases.
@@ -53,7 +53,7 @@ Update foundational governance documents to v3.2 chain and terminology.
 - Replace legacy layer tables with v3 layer map.
 - Remove SYS/REQ/CTR/TSPEC/TASKS as active layers.
 - Replace TASKS-generated issue flow language with IPLAN-driven execution planning language.
-- Update all framework root links from `ai_dev_ssd_flow` to `ucx_flow_v3`.
+- Update all framework root links from `ucx_flow_v3` to `ucx_flow_v3`.
 - Keep governance workflow labels and GitHub board flow intact unless they depend on removed artifacts.
 
 ### Workstream 2: Bridge Document Refactor
@@ -113,7 +113,7 @@ Introduce explicit migration semantics for legacy references.
 
 ## Acceptance Criteria
 
-1. No governance docs in active guidance reference `ai_dev_ssd_flow/`.
+1. No governance docs in active guidance reference `ucx_flow_v3/`.
 2. No active governance flow describes SYS/REQ/CTR/TSPEC/TASKS as required layers.
 3. All core governance docs present the v3 chain exactly as `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`.
 4. Bridge docs map QA and CHG to v3 artifacts and v3 gate names.
@@ -126,7 +126,7 @@ Introduce explicit migration semantics for legacy references.
 Run these checks after edits:
 
 ```bash
-rg "ai_dev_ssd_flow" governance/
+rg "ucx_flow_v3" governance/
 rg "\bSYS\b|\bREQ\b|\bCTR\b|\bTSPEC\b|\bTASKS\b" governance/*.md governance/**/*.md
 rg "BRD.*PRD.*EARS.*BDD.*ADR.*SPEC.*TDD.*IPLAN" governance/README.md governance/GOVERNANCE_RULES.md governance/SDD_DEPTH_GUIDE.md governance/AI_ISSUE_LIFECYCLE.md
 ```
@@ -209,14 +209,14 @@ Update `governance/github/LABEL_REGISTRY.yaml` source label text to remove TASKS
 
 ### E. Pre-commit and Setup Path Normalization
 
-Normalize framework path references in setup and pre-commit templates from `ai_dev_ssd_flow` to `ucx_flow_v3` where applicable. If a legacy path must remain for compatibility, mark it deprecated and document removal criteria.
+Normalize framework path references in setup and pre-commit templates from `ucx_flow_v3` to `ucx_flow_v3` where applicable. If a legacy path must remain for compatibility, mark it deprecated and document removal criteria.
 
 ### F. Expanded Validation Gates
 
 Replace the narrow validation procedure with multi-surface checks:
 
 ```bash
-rg "ai_dev_ssd_flow" governance/
+rg "ucx_flow_v3" governance/
 rg "\bSYS\b|\bREQ\b|\bCTR\b|\bTSPEC\b|\bTASKS\b" governance/ --glob "*.md" --glob "*.yaml" --glob "*.yml"
 rg "BRD.*PRD.*EARS.*BDD.*ADR.*SPEC.*TDD.*IPLAN" governance/README.md governance/GOVERNANCE_RULES.md governance/SDD_DEPTH_GUIDE.md governance/AI_ISSUE_LIFECYCLE.md
 rg "sync[-_]tasks|tasks_to_github" governance/github governance/scripts governance/setup governance/templates
@@ -246,7 +246,7 @@ After migration completion:
 
 ## Revised Acceptance Criteria (Supersedes Prior Section)
 
-1. Zero `ai_dev_ssd_flow` references in Active governance files.
+1. Zero `ucx_flow_v3` references in Active governance files.
 2. No Active governance artifact treats SYS/REQ/CTR/TSPEC/TASKS as required layers.
 3. `README`, `GOVERNANCE_RULES`, `SDD_DEPTH_GUIDE`, and `AI_ISSUE_LIFECYCLE` all include the v3 chain `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`.
 4. Bridge docs (`TASKS_IPLAN_BRIDGE`, `TSPEC_BDD_QA_BRIDGE`, `CHG_GOVERNANCE_BRIDGE`) are rewritten to v3 semantics and gate names.

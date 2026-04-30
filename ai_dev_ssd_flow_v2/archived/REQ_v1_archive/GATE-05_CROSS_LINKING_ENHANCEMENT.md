@@ -2,7 +2,7 @@
 
 **Date**: 2026-01-25T00:00:00  
 **Status**: Deployed  
-**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/validate_req_quality_score.sh`
+**Location**: `/opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/scripts/validate_req_quality_score.sh`
 
 ## Summary
 
@@ -106,7 +106,7 @@ fi
 
 **Full Command**:
 ```bash
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ && \
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ && \
   ./scripts/validate_all.sh --directory /path/to/REQ-11_domain_core
 ```
 
@@ -134,6 +134,6 @@ cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ && \
 
 ---
 
-**Approved by**: Framework Governance (AI Dev Flow)  
+**Approved by**: Framework Governance (UCX Flow)  
 **Directive**: DIR-05 (Validation Standards)  
 **Related**: GATE-05 decision guide, /tmp/add_cross_refs.py

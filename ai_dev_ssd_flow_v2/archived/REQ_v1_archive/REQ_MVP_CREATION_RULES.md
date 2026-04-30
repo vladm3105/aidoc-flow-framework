@@ -41,7 +41,7 @@ custom_fields:
 - Maintain `REQ-00_index.md` as the authoritative source of planned and active REQ files (mark planned items with Status: Planned).
 - Generators use: `REQ-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 3.2
 **Date**: 2025-11-19T00:00:00
@@ -73,7 +73,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `07_REQ/REQ-{PRD_ID}_{Slug}/` (Vertical Slice Grouping)
 - **Organization**: Group REQs by their parent PRD to maintain vertical alignment.
 - **Naming**: `REQ-{DOC_NUM}_{slug}.md` (Sequential 01-401)
@@ -321,7 +321,7 @@ find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 7 - Requirements)
+**Framework Compliance**: 100% UCX Flow SDD framework aligned (Layer 7 - Requirements)
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Updated with template and validation rule changes
 

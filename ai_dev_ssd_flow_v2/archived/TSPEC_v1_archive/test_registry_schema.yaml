@@ -4,7 +4,7 @@
 
 $schema: "http://json-schema.org/draft-07/schema#"
 title: "Test Registry Schema"
-description: "Schema for validating test registry entries in the AI Dev Flow framework"
+description: "Schema for validating test registry entries in the UCX Flow framework"
 
 definitions:
   test_status:

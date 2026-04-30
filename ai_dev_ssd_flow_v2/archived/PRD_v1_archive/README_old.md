@@ -20,7 +20,7 @@ custom_fields:
 - Index-only: maintain `PRD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `PRD-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
 Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.
 
@@ -286,7 +286,7 @@ pre-commit run prd-standardized-element-codes --all-files
 pre-commit run prd-legacy-patterns --all-files
 
 # Or run specific validation
-bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh ai_dev_ssd_flow/02_PRD
+bash ucx_flow_v3/02_PRD/scripts/validate_prd_wrapper.sh ucx_flow_v3/02_PRD
 ```
 
 **Quality Gates Enforced**:

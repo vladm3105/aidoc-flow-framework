@@ -60,7 +60,7 @@ custom_fields:
 - Maintain `PRD-00_index.md` as the authoritative source of planned and active PRD documents (mark planned items with Status: Planned).
 - Generators use: `PRD-00_index.md` + selected template profile (MVP by default; enterprise when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 2.1
 **Date**: 2025-11-26T00:00:00
@@ -99,7 +99,7 @@ custom_fields:
 
 ## 1. Document Control
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 **Purpose**: Establishes document metadata, versioning, and dual scoring requirements for PRD quality gates.
 
@@ -461,7 +461,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 ```
 
-**Reference**: See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` Section 18 for template (standard template)
+**Reference**: See `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` Section 18 for template (standard template)
 
 ---
 
@@ -756,7 +756,7 @@ find docs/PRD -name "PRD-*.md" -exec python 02_PRD/scripts/validate_prd.py {} \;
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 2 - Product Requirements)
+**Framework Compliance**: 100% UCX Flow SDD framework aligned (Layer 2 - Product Requirements)
 **Maintained By**: Product Management Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

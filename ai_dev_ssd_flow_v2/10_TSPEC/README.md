@@ -38,7 +38,7 @@ Code (SPEC)      — implementation-ready specifications
 ## Template Sync Rule
 
 ```bash
-cp ai_dev_ssd_flow/10_TSPEC/TSPEC-TEMPLATE.yaml mcp_sdd/templates/TSPEC-TEMPLATE.yaml
+cp ucx_flow_v3/10_TSPEC/TSPEC-TEMPLATE.yaml mcp_sdd/templates/TSPEC-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

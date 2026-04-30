@@ -17,7 +17,7 @@ custom_fields:
 **Version**: 2.0
 **Date**: 2025-12-27T00:00:00
 **Purpose**: Step-by-step checklist for creating section-based BDD suites
-**Framework**: AI Dev Flow SDD methodology
+**Framework**: UCX Flow SDD methodology
 
 **IMPORTANT**: This checklist enforces section-based format ONLY. Legacy formats (single-file, directory-based) are prohibited.
 
@@ -243,7 +243,7 @@ rg -n "after\s+[0-9]+\s+(attempts?|retries?)" docs/04_BDD/BDD-NN_*/BDD-NN*.featu
 
 ```bash
 # Run section-based validation suite
-python ai_dev_flow/04_BDD/scripts/validate_bdd_suite.py \
+python ucx_flow_v3/04_BDD/scripts/validate_bdd_suite.py \
   --root docs/BDD \
   --prd-root docs/PRD
 ```
@@ -410,5 +410,5 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 ---
 
 **Document Path**: `04_BDD/BDD_GENERATION_CHECKLIST.md`
-**Framework**: AI Dev Flow SDD
+**Framework**: UCX Flow SDD
 **Last Updated**: 2025-12-27T00:00:00

@@ -230,7 +230,7 @@ bash validate_all.sh --file path/to/document.md
 ## File Organization Pattern
 
 ```
-ai_dev_flow/
+ucx_flow_v3/
  Framework-Level (universal, no prefix):
     VALIDATION_DECISION_FRAMEWORK.md    [Universal rules]
     VALIDATION_STANDARDS.md             [Error codes]

@@ -2,7 +2,7 @@
 # REQ Template Validator v3.0
 # Validates REQ documents against:
 # - REQ-TEMPLATE-V3.md (primary template - authoritative)
-# - AI Dev Flow SDD framework standards
+# - UCX Flow SDD framework standards
 # - Cumulative tagging hierarchy (Layer 7: 6 required tags)
 # Usage: ./validate_req_template.sh <REQ_FILE>
 

@@ -31,7 +31,7 @@ custom_fields:
 Maintain `SYS-00_index.md` as the authoritative source of planned and active SYS files (mark planned items with Status: Planned).
 Generators use: `SYS-00_index.md` + standard template profile (`mvp`).
 
-Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix. When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix. When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
 **Date**: 2025-11-19T00:00:00
@@ -39,7 +39,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 
 
 **Source**: Derived from SYS-MVP-TEMPLATE.md and ADR decisions
-**Purpose**: Complete reference for creating SYS documents according to AI Dev Flow SDD framework
+**Purpose**: Complete reference for creating SYS documents according to UCX Flow SDD framework
 **Changes**: Added deployment requirements section (v1.3). Previous: Threshold Registry Integration (v1.2), Status/Score mapping (v1.1)
 
 
@@ -431,7 +431,7 @@ SYS documents establish system requirements that must be decomposed into atomic 
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 6)
+**Framework Compliance**: 100% UCX Flow SDD framework (Layer 6)
 **Integration**: Enforces SYS → Requirements Layer (REQ) progression quality gates
 
 ---

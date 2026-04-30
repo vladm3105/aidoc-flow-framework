@@ -49,15 +49,15 @@ Update the primary authority documents.
 
 | File | Changes |
 |------|---------|
-| `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` | Replace 4-segment format with 3-segment. Remove element type code from format spec. Update regex to `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`. Deprecate type code table (mark as historical). Remove Section-to-Element-Code Mapping. Update all examples. Update IDPAT-E002, IDPAT-E003 messages. |
-| `ai_dev_ssd_flow/VALIDATION_STANDARDS.md` | Update IDPAT-E002 format to 3-segment. Update IDPAT-E003 "normalize to dot notation (TYPE.NN.hash)". Update IDPAT-W001. Deprecate ELEM-E001/W001 (type codes no longer in IDs). |
-| `ai_dev_ssd_flow/LAYER_REGISTRY.yaml` | Change `id_patterns.element` to `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`. Remove `id_patterns.document` (unchanged). |
+| `ucx_flow_v3/ID_NAMING_STANDARDS.md` | Replace 4-segment format with 3-segment. Remove element type code from format spec. Update regex to `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`. Deprecate type code table (mark as historical). Remove Section-to-Element-Code Mapping. Update all examples. Update IDPAT-E002, IDPAT-E003 messages. |
+| `ucx_flow_v3/VALIDATION_STANDARDS.md` | Update IDPAT-E002 format to 3-segment. Update IDPAT-E003 "normalize to dot notation (TYPE.NN.hash)". Update IDPAT-W001. Deprecate ELEM-E001/W001 (type codes no longer in IDs). |
+| `ucx_flow_v3/LAYER_REGISTRY.yaml` | Change `id_patterns.element` to `^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`. Remove `id_patterns.document` (unchanged). |
 
 ---
 
 ## Phase 1.5: Archive AUTOPILOT (prerequisite)
 
-The `ai_dev_ssd_flow/AUTOPILOT/` directory (14 files, 49 element ID occurrences) is deprecated infrastructure. Archive to `ai_dev_ssd_flow/archived/AUTOPILOT_v1_archive/` before proceeding. This eliminates Python scripts with hardcoded ID-parsing logic that would need code changes otherwise.
+The `ucx_flow_v3/AUTOPILOT/` directory (14 files, 49 element ID occurrences) is deprecated infrastructure. Archive to `ucx_flow_v3/archived/AUTOPILOT_v1_archive/` before proceeding. This eliminates Python scripts with hardcoded ID-parsing logic that would need code changes otherwise.
 
 ---
 
@@ -75,11 +75,11 @@ Files: `BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`, `BDD-TEMP
 
 **SPEC-TEMPLATE.yaml special**: Also update `element_ids:` section examples from `SPEC.01.16.01` to `SPEC.01.xxxx` format.
 
-### Phase 2b: Mirror templates (11 files in `ai_dev_ssd_flow/{NN}_{TYPE}/`)
+### Phase 2b: Mirror templates (11 files in `ucx_flow_v3/{NN}_{TYPE}/`)
 
 Copy-sync from `mcp_ucx/templates/` to layer directories.
 
-### Phase 2c: Layer READMEs (11 files in `ai_dev_ssd_flow/{NN}_{TYPE}/README.md`)
+### Phase 2c: Layer READMEs (11 files in `ucx_flow_v3/{NN}_{TYPE}/README.md`)
 
 Each README contains element ID examples (e.g., `BRD.01.07.a7f3`). Update all to 3-segment format.
 
@@ -138,31 +138,31 @@ Each README contains element ID examples (e.g., `BRD.01.07.a7f3`). Update all to
 
 | File | Key changes |
 |------|-------------|
-| `ai_dev_ssd_flow/README.md` | Element reference table |
-| `ai_dev_ssd_flow/QUICK_REFERENCE.md` | Element format row |
-| `ai_dev_ssd_flow/TRACEABILITY.md` | Tag format, cross-ref examples |
-| `ai_dev_ssd_flow/METADATA_TAGGING_GUIDE.md` | Dot notation explanation |
-| `ai_dev_ssd_flow/COMPLETE_TAGGING_EXAMPLE.md` | Usage examples |
-| `ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md` | Validation logic |
-| `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` | `@artifact-type` format |
-| `ai_dev_ssd_flow/AI_ASSISTANT_RULES.md` | XDOC-006, inline examples |
-| `ai_dev_ssd_flow/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | Feature ID format |
-| `ai_dev_ssd_flow/TRACEABILITY_SETUP.md` | Format references |
-| `ai_dev_ssd_flow/TESTING_STRATEGY_TDD.md` | 9x `BRD.01.01.01` references |
-| `ai_dev_ssd_flow/METADATA_VS_TRACEABILITY.md` | 6 mixed IDs |
-| `ai_dev_ssd_flow/THRESHOLD_NAMING_RULES.md` | `@threshold:` tag format |
-| `ai_dev_ssd_flow/01_BRD/BRD-00_GLOSSARY.md` | 1 ID reference |
-| `ai_dev_ssd_flow/METADATA_CORE_MATRIX.md` | If any ID refs |
-| `ai_dev_ssd_flow/AI_TOOL_OPTIMIZATION_GUIDE.md` | 1 ID ref |
-| `ai_dev_ssd_flow/PROJECT_SETUP_GUIDE.md` | 1 ID ref |
-| `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md` | 23 ID refs |
-| `ai_dev_ssd_flow/FINANCIAL_DOMAIN_CONFIG.md` | 9 ID refs |
-| `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_index.md` | 6 ID refs |
-| `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC-00_index.md` | 5 ID refs |
-| `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_CREATION_RULES.md` | 5 ID refs |
-| `ai_dev_ssd_flow/05_ADR/ADR-00_ai_powered_documentation_assistant_architecture.md` | 5 ID refs |
-| `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC-00_index.md` | 4 ID refs |
-| `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_CREATION_RULES.md` | 4 ID refs |
+| `ucx_flow_v3/README.md` | Element reference table |
+| `ucx_flow_v3/QUICK_REFERENCE.md` | Element format row |
+| `ucx_flow_v3/TRACEABILITY.md` | Tag format, cross-ref examples |
+| `ucx_flow_v3/METADATA_TAGGING_GUIDE.md` | Dot notation explanation |
+| `ucx_flow_v3/COMPLETE_TAGGING_EXAMPLE.md` | Usage examples |
+| `ucx_flow_v3/CUMULATIVE_TAG_REFERENCE.md` | Validation logic |
+| `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` | `@artifact-type` format |
+| `ucx_flow_v3/AI_ASSISTANT_RULES.md` | XDOC-006, inline examples |
+| `ucx_flow_v3/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | Feature ID format |
+| `ucx_flow_v3/TRACEABILITY_SETUP.md` | Format references |
+| `ucx_flow_v3/TESTING_STRATEGY_TDD.md` | 9x `BRD.01.01.01` references |
+| `ucx_flow_v3/METADATA_VS_TRACEABILITY.md` | 6 mixed IDs |
+| `ucx_flow_v3/THRESHOLD_NAMING_RULES.md` | `@threshold:` tag format |
+| `ucx_flow_v3/01_BRD/BRD-00_GLOSSARY.md` | 1 ID reference |
+| `ucx_flow_v3/METADATA_CORE_MATRIX.md` | If any ID refs |
+| `ucx_flow_v3/AI_TOOL_OPTIMIZATION_GUIDE.md` | 1 ID ref |
+| `ucx_flow_v3/PROJECT_SETUP_GUIDE.md` | 1 ID ref |
+| `ucx_flow_v3/PROJECT/PROJECT_MODEL.md` | 23 ID refs |
+| `ucx_flow_v3/FINANCIAL_DOMAIN_CONFIG.md` | 9 ID refs |
+| `ucx_flow_v3/10_TSPEC/TSPEC-00_index.md` | 6 ID refs |
+| `ucx_flow_v3/09_SPEC/CSPEC/CSPEC-00_index.md` | 5 ID refs |
+| `ucx_flow_v3/09_SPEC/CSPEC/CSPEC_MVP_CREATION_RULES.md` | 5 ID refs |
+| `ucx_flow_v3/05_ADR/ADR-00_ai_powered_documentation_assistant_architecture.md` | 5 ID refs |
+| `ucx_flow_v3/09_SPEC/DSPEC/DSPEC-00_index.md` | 4 ID refs |
+| `ucx_flow_v3/09_SPEC/DSPEC/DSPEC_MVP_CREATION_RULES.md` | 4 ID refs |
 
 ---
 
@@ -227,7 +227,7 @@ Files: `architect.md`, `auditor.md`, `business_analyst.md`, `chairperson.md`, `c
 
 | File | Phase Updated | Verify |
 |------|---------------|--------|
-| `ai_dev_ssd_flow/README.md` | Phase 5 | Element ID table uses 3-segment |
+| `ucx_flow_v3/README.md` | Phase 5 | Element ID table uses 3-segment |
 | `README.md` (root) | Phase 9 | Element ID section uses 3-segment |
 
 ### SDD Framework Changelog & Roadmap
@@ -257,11 +257,11 @@ Files: `architect.md`, `auditor.md`, `business_analyst.md`, `chairperson.md`, `c
 
 ## Phase 11: Final Review
 
-1. `grep -rP '[A-Z]{2,8}\.\d{2,}\.\d{2,}\.[0-9a-f]{2,}' ai_dev_ssd_flow/ mcp_ucx/ .claude/ --include='*.md' --include='*.yaml' | grep -v archive | grep -v v1_archive` — verify 0 active 4-segment refs remain
+1. `grep -rP '[A-Z]{2,8}\.\d{2,}\.\d{2,}\.[0-9a-f]{2,}' ucx_flow_v3/ mcp_ucx/ .claude/ --include='*.md' --include='*.yaml' | grep -v archive | grep -v v1_archive` — verify 0 active 4-segment refs remain
 2. Validate all 11 template YAML files
 3. Run `python -m pytest tests/` — all tests pass
 4. Dry-run `sdd_create` for BRD — verify 3-segment IDs in output
-5. Run `sdd_validate_links` on `ai_dev_ssd_flow/` — no broken links
+5. Run `sdd_validate_links` on `ucx_flow_v3/` — no broken links
 
 ---
 

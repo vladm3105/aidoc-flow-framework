@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures for AI Dev Flow testing.
+Shared pytest fixtures for UCX Flow testing.
 
 Fixtures are organized by test type:
 - Unit test fixtures: Mocks, stubs, isolated components
@@ -7,7 +7,7 @@ Fixtures are organized by test type:
 - Smoke test fixtures: Deployment verification
 - Functional test fixtures: End-to-end scenarios
 
-Reference: TESTING_STRATEGY_TDD.md, ai_dev_flow/10_TSPEC/
+Reference: ucx_flow_v3/TESTING_STRATEGY_TDD.md
 """
 
 import json
@@ -34,9 +34,12 @@ def project_root() -> Path:
 
 
 @pytest.fixture(scope="session")
-def ai_dev_flow_path(project_root: Path) -> Path:
-    """Return ai_dev_flow directory path."""
-    return project_root / "ai_dev_flow"
+def ucx_flow_path(project_root: Path) -> Path:
+    """Return ucx_flow_v3 directory path (fallback to ucx_flow_v3 for compatibility)."""
+    ucx_root = project_root / "ucx_flow_v3"
+    if ucx_root.exists():
+        return ucx_root
+    return project_root / "ucx_flow_v3"
 
 
 @pytest.fixture(scope="session")
@@ -243,7 +246,7 @@ def authenticated_user():
 
 
 @pytest.fixture
-def schema_validator(ai_dev_flow_path: Path):
+def schema_validator(ucx_flow_path: Path):
     """
     Schema validator for SDD artifacts.
 
@@ -254,7 +257,7 @@ def schema_validator(ai_dev_flow_path: Path):
         try:
             import jsonschema
 
-            schema_path = ai_dev_flow_path / "schemas" / schema_filename
+            schema_path = ucx_flow_path / "schemas" / schema_filename
             if not schema_path.exists():
                 # Try in the specific layer directory
                 return True  # Schema not found, skip validation

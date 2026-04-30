@@ -6,7 +6,7 @@
 >
 > Replaced by: **UCR (Unified Context Review)**
 > ```
-> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/review/run_ucr.sh
+> /opt/data/docs_flow_framework/ucx_flow_v3/UCX/review/run_ucr.sh
 > ```
 >
 > UCR provides:

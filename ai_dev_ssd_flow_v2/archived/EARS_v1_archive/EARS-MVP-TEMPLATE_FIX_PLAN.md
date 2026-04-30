@@ -16,7 +16,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/03_EARS/` documents and align template, validation rules, schema, and skills to a consistent **6-section** MVP structure.
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/03_EARS/` documents and align template, validation rules, schema, and skills to a consistent **6-section** MVP structure.
 
 ## Target Files
 
@@ -84,7 +84,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/03_EARS/` 
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/03_EARS/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/03_EARS/.backup_2026-02-26
 
 # Backup templates and rules
 cp EARS-MVP-TEMPLATE.md .backup_2026-02-26/
@@ -457,7 +457,7 @@ Add document footer:
 > **MVP Template Notes**:
 > - This is the standard EARS template (6 sections)
 > - Single file - no sectioning per user requirement
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full EARS" template)
 ```
 

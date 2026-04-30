@@ -12,7 +12,7 @@ custom_fields:
   layer: 0
   priority: shared
   development_status: active
-  location: ai_dev_ssd_flow/PROJECT/IMPLEMENTATION_PLAN.md
+  location: ucx_flow_v3/PROJECT/IMPLEMENTATION_PLAN.md
   created: 2026-02-16
   updated: 2026-02-16
 ---
@@ -22,8 +22,8 @@ custom_fields:
 **Version**: 2.2
 **Created**: 2026-02-16
 **Updated**: 2026-02-16
-**Source**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
-**Location**: `ai_dev_ssd_flow/PROJECT/IMPLEMENTATION_PLAN.md`
+**Source**: `ucx_flow_v3/PROJECT/PROJECT_MODEL.md`
+**Location**: `ucx_flow_v3/PROJECT/IMPLEMENTATION_PLAN.md`
 
 ---
 
@@ -119,7 +119,7 @@ The SDD Project Model v2.2 extends the core SDD framework with:
 
 ### ADR-02: Validator Orchestration Strategy
 
-**Context**: Multiple validators exist in `ai_dev_ssd_flow/scripts/`. Need unified invocation.
+**Context**: Multiple validators exist in `ucx_flow_v3/scripts/`. Need unified invocation.
 
 **Decision**: Create `validate_artifact.py` as thin wrapper that delegates to existing validators based on artifact type.
 
@@ -137,7 +137,7 @@ The SDD Project Model v2.2 extends the core SDD framework with:
 
 **Context**: Scripts need configurable settings (repo name, project board, thresholds).
 
-**Decision**: Use YAML configuration at `ai_dev_ssd_flow/PROJECT/config/project_model.yaml` with environment variable overrides.
+**Decision**: Use YAML configuration at `ucx_flow_v3/PROJECT/config/project_model.yaml` with environment variable overrides.
 
 **Rationale**:
 - YAML is human-readable and consistent with TASKS format
@@ -333,7 +333,7 @@ python scripts/validate_artifact.py --path docs/BRD/BRD-01.md --strict --gate GA
 
 **Traceability**: @brd: BRD-01:FR-04
 
-**File**: `ai_dev_ssd_flow/PROJECT/.github/ISSUE_TEMPLATE/sdd-task.yml`
+**File**: `ucx_flow_v3/PROJECT/.github/ISSUE_TEMPLATE/sdd-task.yml`
 
 **Template Structure**:
 ```yaml
@@ -419,7 +419,7 @@ body:
 
 **Traceability**: @brd: BRD-01:FR-05
 
-**File**: `ai_dev_ssd_flow/PROJECT/.github/workflows/sdd-validation.yml`
+**File**: `ucx_flow_v3/PROJECT/.github/workflows/sdd-validation.yml`
 
 **Workflow Jobs**:
 1. `validate-artifacts`: Run validators on changed doc files
@@ -436,7 +436,7 @@ body:
 
 **Traceability**: @brd: BRD-01:FR-09
 
-**File**: `ai_dev_ssd_flow/PROJECT/config/project_model.yaml`
+**File**: `ucx_flow_v3/PROJECT/config/project_model.yaml`
 
 **Configuration Schema**:
 ```yaml
@@ -496,7 +496,7 @@ labels:
 
 **Traceability**: @brd: BRD-01:FR-06
 
-**File**: `ai_dev_ssd_flow/scripts/chg_generator.py`
+**File**: `ucx_flow_v3/scripts/chg_generator.py`
 
 **Component Architecture**:
 ```
@@ -535,7 +535,7 @@ python scripts/chg_generator.py \
 
 **Traceability**: @brd: BRD-01:FR-07
 
-**File**: `ai_dev_ssd_flow/scripts/sprint0_setup.py`
+**File**: `ucx_flow_v3/scripts/sprint0_setup.py`
 
 **Component Architecture**:
 ```
@@ -575,14 +575,14 @@ sprint0_setup.py
 python scripts/sprint0_setup.py \
   --repo owner/repo-name \
   --project-number 31 \
-  --config ai_dev_ssd_flow/PROJECT/config/project_model.yaml
+  --config ucx_flow_v3/PROJECT/config/project_model.yaml
 ```
 
 ### 4.9 SPEC-09: RACI Matrix Generator
 
 **Traceability**: @brd: BRD-01:FR-08
 
-**File**: `ai_dev_ssd_flow/scripts/raci_generator.py`
+**File**: `ucx_flow_v3/scripts/raci_generator.py`
 
 **Component Architecture**:
 ```
@@ -622,7 +622,7 @@ raci_generator.py
 **CLI Interface**:
 ```bash
 python scripts/raci_generator.py \
-  --config ai_dev_ssd_flow/PROJECT/config/project_model.yaml \
+  --config ucx_flow_v3/PROJECT/config/project_model.yaml \
   --output docs/RACI_MATRIX.md \
   --format markdown
 ```
@@ -631,7 +631,7 @@ python scripts/raci_generator.py \
 
 **Traceability**: @brd: BRD-01:FR-11
 
-**File**: `ai_dev_ssd_flow/scripts/layer_selector.py`
+**File**: `ucx_flow_v3/scripts/layer_selector.py`
 
 **Component Architecture**:
 ```
@@ -759,7 +759,7 @@ python scripts/layer_selector.py --work-type "bug fix" --description "Fix null p
 ## 6. Directory Structure
 
 ```
-ai_dev_ssd_flow/
+ucx_flow_v3/
  PROJECT/                           # SDD Project Model v2.2
     PROJECT_MODEL.md               # Methodology document
     IMPLEMENTATION_PLAN.md         # This document
@@ -828,12 +828,12 @@ ai_dev_ssd_flow/
 
 | Script | Depends On | Location |
 |--------|-----------|----------|
-| tasks_to_github.py | extract_tags.py | ai_dev_ssd_flow/scripts/ |
-| validate_artifact.py | validate_cross_document.py | ai_dev_ssd_flow/scripts/ |
-| validate_artifact.py | validate_tags_against_docs.py | ai_dev_ssd_flow/scripts/ |
-| drift_check.py | project_model.yaml | ai_dev_ssd_flow/PROJECT/config/ |
-| chg_generator.py | validate_artifact.py | ai_dev_ssd_flow/scripts/ |
-| sprint0_setup.py | tasks_to_github.py | ai_dev_ssd_flow/scripts/ |
+| tasks_to_github.py | extract_tags.py | ucx_flow_v3/scripts/ |
+| validate_artifact.py | validate_cross_document.py | ucx_flow_v3/scripts/ |
+| validate_artifact.py | validate_tags_against_docs.py | ucx_flow_v3/scripts/ |
+| drift_check.py | project_model.yaml | ucx_flow_v3/PROJECT/config/ |
+| chg_generator.py | validate_artifact.py | ucx_flow_v3/scripts/ |
+| sprint0_setup.py | tasks_to_github.py | ucx_flow_v3/scripts/ |
 
 ---
 
@@ -853,7 +853,7 @@ ai_dev_ssd_flow/
 ## 9. Acceptance Criteria Summary
 
 ### Definition of Done for Phase 0
-- [ ] Directory structure created at `ai_dev_ssd_flow/PROJECT/`
+- [ ] Directory structure created at `ucx_flow_v3/PROJECT/`
 - [ ] Configuration file validated against schema
 - [ ] Sample fixtures for Budget Alert example
 
@@ -915,7 +915,7 @@ ai_dev_ssd_flow/
 
 ```bash
 # Phase 0: Project Setup
-mkdir -p ai_dev_ssd_flow/PROJECT/{config,templates,fixtures,.github/{ISSUE_TEMPLATE,workflows},tests}
+mkdir -p ucx_flow_v3/PROJECT/{config,templates,fixtures,.github/{ISSUE_TEMPLATE,workflows},tests}
 
 # Generate SDD artifacts (Tier 1)
 /doc-brd-autopilot           # Generate BRD from reference docs

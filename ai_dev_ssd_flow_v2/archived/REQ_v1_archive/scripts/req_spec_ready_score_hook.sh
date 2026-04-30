@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
-INPUT_ROOT="${1:-ai_dev_ssd_flow/07_REQ}"
+INPUT_ROOT="${1:-ucx_flow_v3/07_REQ}"
 MIN_SCORE="${2:-90}"
 
 if [[ "${INPUT_ROOT}" = /* ]]; then

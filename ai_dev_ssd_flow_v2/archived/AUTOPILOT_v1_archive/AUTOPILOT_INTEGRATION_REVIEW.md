@@ -216,8 +216,8 @@ Configuration → Pre-Checks → Generation (L1-L9)
 #### 3.3.1 New Autopilot Flag: `--tdd-mode`
 
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "My MVP" \
   --slug my_mvp \
   --tdd-mode \        # NEW: Enable TDD workflow
@@ -256,8 +256,8 @@ tdd:
 
 ```bash
 # For modifying existing artifacts
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --chg-mode \              # NEW: Enable CHG workflow
   --chg-level L2 \          # Change level (L1/L2/L3)
   --chg-source midstream \  # Change source
@@ -577,16 +577,16 @@ tspec_quality_gates:
 
 ```bash
 # Standard workflow with TSPEC
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "Test TSPEC Integration" \
   --slug test_tspec \
   --auto-fix \
   --report markdown
 
 # TDD workflow
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "Test TDD Integration" \
   --slug test_tdd \
   --tdd-mode \
@@ -594,8 +594,8 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --report markdown
 
 # CHG workflow
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --chg-mode \
   --chg-level L2 \
   --chg-source midstream \
@@ -655,5 +655,5 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 | Version | 1.0 |
 | Date Created | 2026-02-06T00:00:00 |
 | Status | Draft |
-| Author | AI Dev Flow Framework |
+| Author | UCX Flow Framework |
 | Review Required | Yes |

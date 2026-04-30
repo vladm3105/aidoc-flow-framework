@@ -136,8 +136,8 @@ tag:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
-2. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml` - Expand tag enum
+1. `ucx_flow_v3/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
+2. `ucx_flow_v3/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml` - Expand tag enum
 
 **Steps**:
 
@@ -153,15 +153,15 @@ tag:
 
 ```bash
 # Verify YAML template has cumulative tags
-grep -c "@brd" ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml
+grep -c "@brd" ucx_flow_v3/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml
 # Expected: ≥1
 
 # Verify schema validates cumulative tags
-grep "@brd" ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml
+grep "@brd" ucx_flow_v3/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml
 # Expected: Results showing @brd in enum
 
 # Verify traceability structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 ```
 

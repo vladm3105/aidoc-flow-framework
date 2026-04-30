@@ -52,9 +52,9 @@ Before creating ADR, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
-4. **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-5. **Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
+4. **Template**: `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md`
+5. **Creation Rules**: `ucx_flow_v3/05_ADR/ADR_CREATION_RULES.md`
+6. **Validation Rules**: `ucx_flow_v3/05_ADR/ADR_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -86,7 +86,7 @@ Use `doc-adr` when:
 
 ### 1. Four-Part ADR Structure (17 Sections Total)
 
-**MVP Template**: See `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
+**MVP Template**: See `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
 
 **Part 1 - Decision Context and Requirements** (Sections 1-6):
 - Document Control, Workflow Position, Status, Context, Decision, Requirements Satisfied
@@ -162,7 +162,7 @@ Use `doc-adr` when:
 - ❌ `ALT-XXX` → Use `ADR.NN.12.SS`
 - ❌ `CON-XXX` → Use `ADR.NN.13.SS`
 
-**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md)
+**Reference**: [ID_NAMING_STANDARDS.md](../../ucx_flow_v3/ID_NAMING_STANDARDS.md)
 
 ### 5. Threshold Management
 
@@ -387,13 +387,13 @@ Commit ADR and traceability matrix.
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --layer ADR --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
 ```
 
 ### Manual Checklist
@@ -421,7 +421,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --exp
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ucx_flow_v3/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -511,19 +511,19 @@ The SYS will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
-- **Schema**: `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` (machine-readable validation)
+- **Template**: `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
+- **Schema**: `ucx_flow_v3/05_ADR/ADR_SCHEMA.yaml` (machine-readable validation)
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
-- **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
-- **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
-- **ADR README**: `ai_dev_flow/05_ADR/README.md`
+- **ADR Creation Rules**: `ucx_flow_v3/05_ADR/ADR_CREATION_RULES.md`
+- **ADR Validation Rules**: `ucx_flow_v3/05_ADR/ADR_VALIDATION_RULES.md`
+- **ADR README**: `ucx_flow_v3/05_ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all ADR documents):
 - **Structure**: `docs/05_ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
-- Index template: `ai_dev_flow/05_ADR/ADR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/05_ADR/ADR-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ucx_flow_v3/05_ADR/ADR-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/05_ADR/ADR-SECTION-TEMPLATE.md`
+- Reference: `ucx_flow_v3/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 - **Note**: Monolithic format allowed for small documents (≤25KB), but MUST still be in nested folder
 
 ## Quick Reference

@@ -19,7 +19,7 @@ Exit codes:
     0 = No regressions detected
     1 = Regressions found
 
-Reference: ai_dev_flow/10_TSPEC/test_result_schema.yaml
+Reference: ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml
 """
 
 import argparse

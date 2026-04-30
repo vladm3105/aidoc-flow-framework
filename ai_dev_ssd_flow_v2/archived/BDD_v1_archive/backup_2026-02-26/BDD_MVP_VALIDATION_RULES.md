@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile mvp
+python3 ucx_flow_v3/04_BDD/scripts/validate_bdd.py ucx_flow_v3/04_BDD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
+python3 ucx_flow_v3/04_BDD/scripts/validate_bdd.py ucx_flow_v3/04_BDD --profile full
 ```
 
 ### Cross-Linking Tags (AI-Friendly)
@@ -85,7 +85,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only. Ta
 
 ---
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
@@ -93,7 +93,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only. Ta
 **Purpose**: Complete validation rules for BDD feature files
 **Script**: `python 04_BDD/scripts/validate_bdd.py`
 **Primary Template**: `BDD-MVP-TEMPLATE.feature`
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: Added split-file structure validation (v1.1). Previous: ADR-ready scoring validation system (v1.0)
 
 ---
@@ -111,7 +111,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only. Ta
 
 ## Overview
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The BDD validation script ensures feature files meet quality standards for ADR progression and automated test execution.
 

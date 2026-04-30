@@ -241,8 +241,8 @@ traceability:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml` - Restructure traceability
-2. `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml` - Expand enum and restructure schema
+1. `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml` - Restructure traceability
+2. `ucx_flow_v3/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml` - Expand enum and restructure schema
 
 **Steps**:
 
@@ -257,7 +257,7 @@ traceability:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` - Update Section 6 and AI_CONTEXT
+1. `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` - Update Section 6 and AI_CONTEXT
 
 **Steps**:
 
@@ -272,23 +272,23 @@ traceability:
 
 ```bash
 # Verify YAML template has cumulative tags
-grep -c "@brd" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
+grep -c "@brd" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
 # Expected: >=1
 
 # Verify schema validates cumulative tags
-grep "@brd" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml
+grep "@brd" ucx_flow_v3/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml
 # Expected: Results showing @brd in enum
 
 # Verify traceability structure in YAML
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 
 # Verify MD template has cumulative tags section
-grep -n "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
+grep -n "Cumulative Tags" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
 # Expected: Section header present
 
 # Verify AI_CONTEXT updated
-grep "cumulative" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
+grep "cumulative" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
 # Expected: Mention of cumulative traceability
 ```
 

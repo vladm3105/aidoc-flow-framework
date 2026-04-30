@@ -89,7 +89,7 @@ UCX uses a project isolation model for all AI skills assets. Skills are project-
 | `mcp_ucx/prompts/templates/creation/` | `{project}/UCX/prompts/templates/creation/` | UCC creation prompt templates |
 | `mcp_ucx/prompts/templates/review/` | `{project}/UCX/prompts/templates/review/` | UCR review prompt templates |
 | `mcp_ucx/prompts/templates/remediation/` | `{project}/UCX/prompts/templates/remediation/` | UCRem remediation prompt templates |
-| `mcp_ucx/templates/` + `ai_dev_ssd_flow/` | `{project}/UCX/templates/` | Document templates and layer-specific schemas |
+| `mcp_ucx/templates/` + `ucx_flow_v3/` | `{project}/UCX/templates/` | Document templates and layer-specific schemas |
 
 **Update mode** (`sdd_init --update`):
 

@@ -21,7 +21,7 @@ custom_fields:
 
 ## Overview
 
-This configuration file provides complete customization for financial services projects within the AI Dev Flow framework. Use this as the **default domain** when no other domain is specified.
+This configuration file provides complete customization for financial services projects within the UCX Flow framework. Use this as the **default domain** when no other domain is specified.
 
 ### Financial Services Scope
 

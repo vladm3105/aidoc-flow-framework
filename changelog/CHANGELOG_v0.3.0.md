@@ -11,7 +11,7 @@ Unified the PRD (Layer 2) artifact into a single YAML template, following the sa
 
 ### PRD Layer Unification
 
-**New**: `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` (605 lines, schema v1.0)
+**New**: `ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml` (605 lines, schema v1.0)
 
 **Replaced** (6 files, 4,616 lines → 605 lines):
 

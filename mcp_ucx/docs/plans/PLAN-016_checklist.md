@@ -488,7 +488,7 @@
           rule: "Currency lists must be consistent across FR-01, mandatory conditions, acceptance criteria"
   ```
 
-### File: `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` — SYNC
+### File: `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml` — SYNC
 
 - [ ] **6.3** Copy exact same changes from step 6.1 and 6.2 to sync copy
 
@@ -508,7 +508,7 @@
 
 ## Phase 7: Standards Update
 
-### File: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` — MODIFY (+25 lines)
+### File: `ucx_flow_v3/DIAGRAM_STANDARDS.md` — MODIFY (+25 lines)
 
 - [ ] **7.1** Add new subsection "BRD Required Diagrams by Type" after existing BRD diagram guidance:
   - Platform BRD table: 3 required (structure overview, cross-BRD deps, data model)
@@ -540,7 +540,7 @@
 
 - [ ] **8.5** Verify template sync:
   ```bash
-  diff mcp_ucx/templates/BRD-TEMPLATE.yaml ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml
+  diff mcp_ucx/templates/BRD-TEMPLATE.yaml ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml
   ```
   **Expected**: Identical content
 

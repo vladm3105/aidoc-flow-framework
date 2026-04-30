@@ -144,7 +144,7 @@ custom_fields:
 @diagram-scope: system-boundary
 @diagram-lifecycle: mvp-prod-newmvp
 
-downstream_c4_l4_owner: SPEC-XX / ai_dev_ssd_flow/09_SPEC/...
+downstream_c4_l4_owner: SPEC-XX / ucx_flow_v3/09_SPEC/...
 required_sequence_paths: success, timeout, retry, fallback
 trust_boundaries: ingress-api, internal-service-mesh, data-store-edge
 ```
@@ -1238,5 +1238,5 @@ BDD scenarios and acceptance tests validating this system.
 > - This is the standard SYS template (15 sections: 1-15)
 > - Single file - no sectioning per user requirement
 > - Focus on system requirements + quality attributes
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full SYS" template)

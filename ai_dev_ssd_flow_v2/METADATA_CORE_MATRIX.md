@@ -87,8 +87,8 @@ Notes:
 ## 8. Acceptance Evidence Commands
 
 ```bash
-grep -R --line-number -E 'status:|development_status:' ai_dev_ssd_flow
-grep -R --line-number -E 'required_custom_fields:|status:|development_status:' ai_dev_ssd_flow/**/*-TEMPLATE.yaml
-grep -R --line-number 'METADATA_CORE_MATRIX.md' ai_dev_ssd_flow/METADATA_TAGGING_GUIDE.md ai_dev_ssd_flow/METADATA_QUICK_REFERENCE.md ai_dev_ssd_flow/README.md
-grep -R --line-number -E 'document_type|status|template|draft|development|production' ai_dev_ssd_flow/scripts/pre_commit_hooks ai_dev_ssd_flow/.pre-commit-config.yaml
+grep -R --line-number -E 'status:|development_status:' ucx_flow_v3
+grep -R --line-number -E 'required_custom_fields:|status:|development_status:' ucx_flow_v3/**/*-TEMPLATE.yaml
+grep -R --line-number 'METADATA_CORE_MATRIX.md' ucx_flow_v3/METADATA_TAGGING_GUIDE.md ucx_flow_v3/METADATA_QUICK_REFERENCE.md ucx_flow_v3/README.md
+grep -R --line-number -E 'document_type|status|template|draft|development|production' ucx_flow_v3/scripts/pre_commit_hooks ucx_flow_v3/.pre-commit-config.yaml
 ```

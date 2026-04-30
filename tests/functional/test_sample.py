@@ -3,7 +3,7 @@ Sample functional tests demonstrating FTEST patterns.
 
 These tests verify complete user workflows and end-to-end scenarios.
 
-Reference: ai_dev_flow/10_TSPEC/FTEST/
+Reference: ucx_flow_v3/07_TDD/
 Test ID: FTEST-001
 """
 

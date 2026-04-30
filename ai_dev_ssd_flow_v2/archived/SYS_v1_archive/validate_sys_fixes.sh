@@ -7,7 +7,7 @@
 
 # Don't exit on error - we handle errors via pass/fail functions
 
-SYS_DIR="/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS"
+SYS_DIR="/opt/data/docs_flow_framework/ucx_flow_v3/06_SYS"
 SKILLS_DIR="/opt/data/docs_flow_framework/.claude/skills"
 
 RED='\033[0;31m'

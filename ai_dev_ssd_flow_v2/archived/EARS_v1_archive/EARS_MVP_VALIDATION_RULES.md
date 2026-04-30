@@ -56,7 +56,7 @@ custom_fields:
 
 ```bash
 # MVP validation (default profile)
-python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS
+python3 ucx_flow_v3/03_EARS/scripts/validate_ears.py --path ucx_flow_v3/03_EARS
 
 # Full profile (set in document frontmatter)
 # custom_fields:
@@ -73,7 +73,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 
 ---
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 2.0
 **Date**: 2025-11-29T00:00:00
@@ -81,7 +81,7 @@ Validation handling: Info-level (non-blocking). Reported for visibility only.
 **Purpose**: Complete validation rules for EARS documents
 **Script**: `03_EARS/scripts/validate_ears.py`
 **Primary Template**: `EARS-MVP-TEMPLATE.md` (standard template)
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
 
 ---

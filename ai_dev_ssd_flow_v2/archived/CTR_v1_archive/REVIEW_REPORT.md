@@ -215,7 +215,7 @@ After fixes, verify with:
 
 ```bash
 # 1. Check YAML syntax
-cd /opt/data/docs_flow_framework/ai_dev_flow/08_CTR
+cd /opt/data/docs_flow_framework/ucx_flow_v3/08_CTR
 python3 -c "import yaml; yaml.safe_load(open('examples/CTR-01_service_contract_example.yaml'))"
 
 # 2. Check all examples

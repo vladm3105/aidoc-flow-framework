@@ -48,7 +48,7 @@ Creation boundary:
 | Component | Location | Status |
 |-----------|----------|--------|
 | UCC Prompt | `UCX/creation/UCC_PROMPT_PRD.md` | **Outdated - requires full rewrite** |
-| Template | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` | Current (21 sections) |
+| Template | `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` | Current (21 sections) |
 | Python API | `ucx/api/creation.py` | Working |
 | CLI | `ucx create prd` | Working |
 | Personas | `ucx/skills/personas/` (5 configured) | Needs refinement |

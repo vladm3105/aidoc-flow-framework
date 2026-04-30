@@ -229,4 +229,4 @@ This standard applies to all SDD artifacts across Layers 1-11.
 **Cross-references**:
 - `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`
 - `charts-flow` skill: `.claude/skills/charts-flow/SKILL.md`
-- Framework guide: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Framework guide: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

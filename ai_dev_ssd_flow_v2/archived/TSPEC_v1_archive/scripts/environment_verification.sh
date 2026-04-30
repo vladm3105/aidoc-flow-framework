@@ -14,18 +14,18 @@ echo ""
 
 # Verify scripts directory exists
 echo "--- Checking Scripts Directory ---"
-if [ -d "/opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/scripts" ]; then
+if [ -d "/opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/scripts" ]; then
     echo "✅ Scripts directory exists"
-    ls -la /opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/scripts/ | head -5
+    ls -la /opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/scripts/ | head -5
 else
     echo "❌ Scripts directory missing - creating..."
-    mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/scripts
+    mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/scripts
 fi
 echo ""
 
 # Verify error_codes.py exists
 echo "--- Checking Error Code Registry ---"
-ERROR_CODES_FILE="/opt/data/docs_flow_framework/ai_dev_ssd_flow/scripts/error_codes.py"
+ERROR_CODES_FILE="/opt/data/docs_flow_framework/ucx_flow_v3/scripts/error_codes.py"
 if [ -f "$ERROR_CODES_FILE" ]; then
     echo "✅ Error code registry exists"
 
@@ -48,10 +48,10 @@ for TYPE in UTEST ITEST STEST FTEST PTEST SECTEST; do
     echo "Checking $TYPE:"
 
     # Check for nested structure
-    nested_count=$(find /opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/$TYPE -type d -name "${TYPE}-[0-9]*" 2>/dev/null | wc -l)
+    nested_count=$(find /opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/$TYPE -type d -name "${TYPE}-[0-9]*" 2>/dev/null | wc -l)
 
     # Check for flat structure
-    flat_count=$(find /opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/$TYPE -maxdepth 1 -type f -name "${TYPE}-[0-9]*.md" 2>/dev/null | wc -l)
+    flat_count=$(find /opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/$TYPE -maxdepth 1 -type f -name "${TYPE}-[0-9]*.md" 2>/dev/null | wc -l)
 
     if [ $nested_count -gt 0 ]; then
         echo "  ✅ Nested structure: $nested_count folders"
@@ -72,7 +72,7 @@ echo "--- Verifying Python Import Paths ---"
 python3 << 'EOF'
 from pathlib import Path
 
-script_dir = Path('/opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/scripts')
+script_dir = Path('/opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/scripts')
 shared_scripts = script_dir.parents[1] / 'scripts'
 
 print(f"Script directory: {script_dir}")

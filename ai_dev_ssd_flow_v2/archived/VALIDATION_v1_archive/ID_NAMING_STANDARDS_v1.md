@@ -14,9 +14,9 @@ custom_fields:
   scope: documentation-only
 ---
 
-# Document ID & Tagging Standards — ai_dev_ssd_flow
+# Document ID & Tagging Standards — ucx_flow_v3
 
-Status: Authoritative for this `ai_dev_ssd_flow` example set. These rules reflect the naming and linking already used here and supersede repo-wide norms within this directory (do not change existing files to match other guides).
+Status: Authoritative for this `ucx_flow_v3` example set. These rules reflect the naming and linking already used here and supersede repo-wide norms within this directory (do not change existing files to match other guides).
 
 Purpose
 - Provide a single, practical guide for IDs, tags, links, file layout, and validation within this example.
@@ -135,7 +135,7 @@ Scope & Authority
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Exception**: CTR (API Contracts) uses dual-file format: both .md and .yaml files required per contract.
 
-Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_ssd_flow directory, type folders live at the ai_dev_ssd_flow root (e.g., `01_BRD/`, `02_PRD/`, `05_ADR/`). Adjust relative links accordingly.
+Note on paths: Examples may show a top-level `docs/` prefix; in this ucx_flow_v3 directory, type folders live at the ucx_flow_v3 root (e.g., `01_BRD/`, `02_PRD/`, `05_ADR/`). Adjust relative links accordingly.
 
 ## General Utility Documents (`{DOC_TYPE}-00_*`)
 
@@ -223,7 +223,7 @@ Universal Numbering Pattern (All Document Types)
     - `REF` and `*-00` utility files remain independent.
     - **TASKS** have independent sequential numbering (not PRD-aligned). TASKS are special document types that provide AI code generation instructions and audit trail of code generation steps.
 
-Document ID Standards (ai_dev_ssd_flow)
+Document ID Standards (ucx_flow_v3)
 - Requirements (REQ)
   - **H1 ID**: `REQ-DOC_NUM` (e.g., `# REQ-12: [LEARNING_GOV] ...`).
   - **Directory**: `07_REQ/REQ-{PRD_ID}_{Slug}/` (Vertical Slice Grouping).
@@ -756,7 +756,7 @@ Validation Rules & Aids
   - REF H1 ID: `^#\s[A-Z]{2,5}-REF-\d{2,}:.+$`
   - REF filename: `[A-Z]{2,5}-REF-\d{2,}_.+\.md$`
 
-Examples (ai_dev_ssd_flow) - Monolithic Documents (DOC_NUM)
+Examples (ucx_flow_v3) - Monolithic Documents (DOC_NUM)
 - **Standard Types**:
   - SYS: `06_SYS/SYS-03_position_risk_limits.md` (H1: `# SYS-03: resource Risk Limits`)
   - EARS: `03_EARS/EARS-03_resource_limit_enforcement.md` (H1: `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
@@ -789,7 +789,7 @@ Anchors & Linking
 - Use ID anchors where applicable (e.g., `#REQ-01`, `#ADR-32`).
 - Prefer stable ID anchors over line anchors. If a line anchor (e.g., `#L28`) is used, revalidate after edits.
 
-Local Clarifications (ai_dev_ssd_flow)
+Local Clarifications (ucx_flow_v3)
 - Variable-length numeric filename prefixes (DOC_NUM) are required here for readability and ordering; do not rename to match other directories' styles.
 - DOC_NUM starts at 2 digits (01) and grows as needed (100, 1000).
 - SPEC filenames keep `SPEC-DOC_NUM_{slug}.yaml`; the YAML `id:` is the stable spec identifier used by tags and prose.
@@ -1230,6 +1230,6 @@ python3 scripts/validate_all.py . --all
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 3.0 | 2026-03-30 | DEPRECATED section-based file splitting; all documents are monolithic up to 50,000 tokens; removed section file naming patterns, section frontmatter, section templates, split_type metadata; updated ai_dev_flow references to ai_dev_ssd_flow; updated template references to unified YAML format |
+| 3.0 | 2026-03-30 | DEPRECATED section-based file splitting; all documents are monolithic up to 50,000 tokens; removed section file naming patterns, section frontmatter, section templates, split_type metadata; updated ucx_flow_v3 references to ucx_flow_v3; updated template references to unified YAML format |
 | 2.2 | 2026-03-11 | Added QA subcategory codes 91-99 (Performance=91, Reliability=92, Scalability=94, Security=96, Observability=98, Maintainability=99); Added BRD Section-to-Element-Code Mapping table with scope clarification (BRD-specific, other document types need own mappings); Updated reserved range from 74-99 to 74-90 |
 | 2.1 | 2026-02-28 | Initial published version with unified element ID format |

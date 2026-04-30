@@ -147,7 +147,7 @@ V3 profile alignment updates:
 ### 4.1 Authoritative Layer Registry Binding
 
 Authoritative source:
-- `ai_dev_ssd_flow/LAYER_REGISTRY.yaml`
+- `ucx_flow_v3/LAYER_REGISTRY.yaml`
 
 Rules:
 - Layer metadata in the registry is normative for profile resolution and validation behavior.

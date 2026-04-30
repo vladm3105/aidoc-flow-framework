@@ -14,7 +14,7 @@ def resolve_template_path(layer_dir: Path, artifact: str, suffix: str) -> Path |
     """Try unified name first, fall back to MVP name.
 
     Args:
-        layer_dir: Directory containing template files (e.g., ai_dev_ssd_flow/01_BRD/)
+        layer_dir: Directory containing template files (e.g., ucx_flow_v3/01_BRD/)
         artifact: Artifact type uppercase (e.g., "BRD")
         suffix: File extension including dot (e.g., ".yaml")
 

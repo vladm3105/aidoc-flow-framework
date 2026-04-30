@@ -1,5 +1,5 @@
-# Test dependencies for AI Dev Flow
-# Reference: ai_dev_flow/10_TSPEC/
+# Test dependencies for UCX Flow
+# Reference: ucx_flow_v3/07_TDD/
 
 # Core testing framework
 pytest>=8.0.0

@@ -132,7 +132,7 @@ ucx_flow_v3/
 
 ## Quick Start
 
-1. **Set up**: Copy this directory to your project as `ai_dev_flow/`
+1. **Set up**: Copy this directory to your project as `ucx_flow_v3/`
 2. **Create BRD**: `cp 01_BRD/BRD-TEMPLATE.yaml 01_BRD/BRD-01.yaml` and fill in business requirements
 3. **Follow the chain**: Generate PRD from BRD, EARS from PRD, BDD from EARS, etc.
 4. **Generate tests then code**: SPEC defines the component contract → TDD defines test cases → IPLAN orchestrates implementation

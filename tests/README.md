@@ -1,6 +1,6 @@
-# AI Dev Flow Test Suite
+# UCX Flow Test Suite
 
-Testing infrastructure for the AI Dev Flow framework aligned with TSPEC (Layer 10).
+Testing infrastructure for the UCX Flow framework aligned with TSPEC (Layer 10).
 
 ## Directory Structure
 
@@ -86,7 +86,7 @@ pytest tests/ --cov=src --cov-report=html
 | Fixture | Scope | Purpose |
 |---------|-------|---------|
 | `project_root` | session | Project root directory path |
-| `ai_dev_flow_path` | session | ai_dev_flow directory path |
+| `ucx_flow_path` | session | ucx_flow_v3 directory path (with ucx_flow_v3 fallback) |
 | `test_config` | session | Test configuration from test_config.yaml |
 | `test_results` | session | Accumulate results for comparison |
 | `mock_config` | function | Mock configuration for unit tests |
@@ -225,17 +225,10 @@ python tests/scripts/generate_coverage_report.py --check --threshold 80
 
 Tests are cataloged in the TSPEC layer registry:
 
-```bash
-# List registered tests
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --list
+`ucx_flow_v3` does not include the legacy TSPEC test registry scripts.
 
-# Register new test
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --add \
-  UTEST-001 UTEST "Test description" "tests/unit/test_file.py::test_func"
-
-# Sync from filesystem
-python ai_dev_ssd_flow/10_TSPEC/scripts/manage_test_registry.py --sync
-```
+For legacy projects that still use TSPEC tooling, keep using the existing
+`ucx_flow_v3` registry commands in those repos.
 
 ## CI/CD Integration
 
@@ -256,7 +249,7 @@ GitHub Actions workflow (`.github/workflows/test-pipeline.yml`) runs:
 Test module for authentication.
 
 Test ID: UTEST-001
-Reference: ai_dev_ssd_flow/10_TSPEC/UTEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import pytest
@@ -280,7 +273,7 @@ class TestAuthentication:
 Integration tests for database operations.
 
 Test ID: ITEST-001
-Reference: ai_dev_ssd_flow/10_TSPEC/ITEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import pytest
@@ -321,7 +314,7 @@ pytest-bdd>=7.0.0        # BDD integration
 
 ## References
 
-- [ai_dev_ssd_flow/10_TSPEC/README.md](../ai_dev_ssd_flow/10_TSPEC/README.md) - TSPEC layer documentation
-- [ai_dev_ssd_flow/TESTING_STRATEGY_TDD.md](../ai_dev_ssd_flow/TESTING_STRATEGY_TDD.md) - TDD workflow
+- [ucx_flow_v3/07_TDD/TDD-00_index.md](../ucx_flow_v3/07_TDD/TDD-00_index.md) - TDD layer index
+- [ucx_flow_v3/TESTING_STRATEGY_TDD.md](../ucx_flow_v3/TESTING_STRATEGY_TDD.md) - TDD workflow
 - [pytest.ini](../pytest.ini) - Pytest configuration
 - [pyproject.toml](../pyproject.toml) - Tool configuration

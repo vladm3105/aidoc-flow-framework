@@ -56,10 +56,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile mvp
+python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py ucx_flow_v3/02_PRD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
+python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py ucx_flow_v3/02_PRD --profile full
 ```
 
 ### Cross-Linking Tags (AI-Friendly)
@@ -72,7 +72,7 @@ Validation handling: Recognized as info-level (non-blocking). Reported for visib
 
 ---
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.0.0
 **Date**: 2025-11-26T00:00:00
@@ -80,7 +80,7 @@ Validation handling: Recognized as info-level (non-blocking). Reported for visib
 **Purpose**: Complete validation rules for PRD documents
 **Script**: `python 02_PRD/scripts/validate_prd.py`
 **Primary Template**: `PRD-MVP-TEMPLATE.md` (standard template)
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 
 ---
 
@@ -1005,7 +1005,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 2 - Product Requirements)
+**Framework Compliance**: 100% UCX Flow SDD framework aligned (Layer 2 - Product Requirements)
 **Maintained By**: Product Management Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

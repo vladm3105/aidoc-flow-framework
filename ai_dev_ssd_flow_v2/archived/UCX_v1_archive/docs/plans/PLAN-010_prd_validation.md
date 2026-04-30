@@ -1140,7 +1140,7 @@ ucx validate prd /opt/data/b-local/b-local-docs/docs/02_PRD/ --tier1-only
 ucx score prd /opt/data/b-local/b-local-docs/docs/02_PRD/PRD-01/ --profile mvp
 
 # Compare with legacy scripts
-python3 ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01/
+python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01/
 ```
 
 **Validation Criteria:**
@@ -1475,9 +1475,9 @@ docs/02_PRD/PRD-01/
 | File | Purpose |
 |------|---------|
 | `validators/brd/` | Architecture pattern |
-| `ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py` | Legacy validation logic |
-| `ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh` | Quality gate wrapper |
-| `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` | 21-section template |
+| `ucx_flow_v3/02_PRD/scripts/validate_prd.py` | Legacy validation logic |
+| `ucx_flow_v3/02_PRD/scripts/validate_prd_wrapper.sh` | Quality gate wrapper |
+| `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` | 21-section template |
 
 ---
 

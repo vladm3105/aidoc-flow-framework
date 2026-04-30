@@ -6,7 +6,7 @@ Implements 14 comprehensive checks based on bash validator v1.0.
 
 Validates TASKS documents against:
 - TASKS-TEMPLATE.md structure
-- AI Dev Flow SDD framework standards
+- UCX Flow SDD framework standards
 - Layer 10 artifact requirements
 - Code generation task structure
 - Implementation Contracts (Section 7-8)

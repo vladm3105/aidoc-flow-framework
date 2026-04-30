@@ -47,7 +47,7 @@ LEGACY_PRD_CODES = {
 }
 
 # Section-to-element type code mapping for 21-section PRD-MVP-TEMPLATE
-# Reference: ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md
+# Reference: ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md
 SECTION_CODE_MAP = {
     "5": "08",   # Section 5: Success Metrics (KPIs) → Metric/KPI
     "6": "23",   # Section 6: Goals & Objectives → Business Objective (legacy but allowed here)
@@ -83,7 +83,7 @@ def resolve_scan_root(path_arg: Path) -> Path:
     if candidate.exists():
         return candidate
 
-    nested = path_arg / "ai_dev_ssd_flow" / "02_PRD"
+    nested = path_arg / "ucx_flow_v3" / "02_PRD"
     if nested.exists():
         return nested
 
@@ -204,8 +204,8 @@ def main() -> int:
     parser.add_argument(
         "path",
         nargs="?",
-        default="ai_dev_ssd_flow/02_PRD",
-        help="Root path to scan (repo root, ai_dev_ssd_flow root, or 02_PRD path).",
+        default="ucx_flow_v3/02_PRD",
+        help="Root path to scan (repo root, ucx_flow_v3 root, or 02_PRD path).",
     )
     parser.add_argument(
         "--strict",

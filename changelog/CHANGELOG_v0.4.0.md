@@ -11,7 +11,7 @@ Unified the EARS (Layer 3) artifact into a single YAML template, following the s
 
 ### EARS Layer Unification
 
-**New**: `ai_dev_ssd_flow/03_EARS/EARS-TEMPLATE.yaml` (387 lines, schema v1.0)
+**New**: `ucx_flow_v3/03_EARS/EARS-TEMPLATE.yaml` (387 lines, schema v1.0)
 
 **Replaced** (6 files, 2,988 lines → 387 lines):
 

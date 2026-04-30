@@ -39,11 +39,11 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/ADR-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 ```bash
-cp ai_dev_ssd_flow/05_ADR/ADR-TEMPLATE.yaml mcp_sdd/templates/ADR-TEMPLATE.yaml
+cp ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml mcp_sdd/templates/ADR-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

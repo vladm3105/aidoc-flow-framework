@@ -32,7 +32,7 @@ custom_fields:
 - Maintain `TASKS-00_index.md` as the authoritative source of planned and active TASKS files (mark planned items with Status: Planned).
 - Generators use: `TASKS-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
@@ -176,7 +176,7 @@ SPEC-08 (Trading Intelligence) → Depends on SPEC-01, SPEC-03, SPEC-07
 
 ## 2. File Naming Convention
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ### Format
 

@@ -7,16 +7,16 @@
 All functionality in this directory has been superseded by the **UCx (Unified Context) Framework**:
 
 ```
-/opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/
+/opt/data/docs_flow_framework/ucx_flow_v3/UCX/
 ```
 
 ## Migration Guide
 
 | Old Location | New Location | Notes |
 |--------------|--------------|-------|
-| `automation/AI_EXPERTS/` | `ai_dev_ssd_flow/UCX/skills/` | Persona definitions |
-| `automation/pipelines/doc_review/` | `ai_dev_ssd_flow/UCX/review/` | UCR replaces multi-model pipeline |
-| `automation/pipelines/doc_generate/` | `ai_dev_ssd_flow/UCX/creation/` | UCC replaces doc generation |
+| `automation/AI_EXPERTS/` | `ucx_flow_v3/UCX/skills/` | Persona definitions |
+| `automation/pipelines/doc_review/` | `ucx_flow_v3/UCX/review/` | UCR replaces multi-model pipeline |
+| `automation/pipelines/doc_generate/` | `ucx_flow_v3/UCX/creation/` | UCC replaces doc generation |
 | `automation/core/` | N/A | UCX uses simpler shell scripts |
 
 ## Why Deprecated?
@@ -40,7 +40,7 @@ All functionality in this directory has been superseded by the **UCx (Unified Co
 
 **New way (use UCX):**
 ```bash
-./ai_dev_ssd_flow/UCX/review/run_ucr.sh brd docs/01_BRD/
+./ucx_flow_v3/UCX/review/run_ucr.sh brd docs/01_BRD/
 ```
 
 ### For Document Generation
@@ -52,7 +52,7 @@ All functionality in this directory has been superseded by the **UCx (Unified Co
 
 **New way (use UCX):**
 ```bash
-./ai_dev_ssd_flow/UCX/creation/run_ucc.sh brd output/ --from-ref refs/
+./ucx_flow_v3/UCX/creation/run_ucc.sh brd output/ --from-ref refs/
 ```
 
 ## Timeline
@@ -63,5 +63,5 @@ All functionality in this directory has been superseded by the **UCx (Unified Co
 ## Questions?
 
 See UCX documentation:
-- `ai_dev_ssd_flow/UCX/docs/UNIFIED_CONTEXT_FRAMEWORK.md`
-- `ai_dev_ssd_flow/UCX/docs/HOW_TO_USE.md`
+- `ucx_flow_v3/UCX/docs/UNIFIED_CONTEXT_FRAMEWORK.md`
+- `ucx_flow_v3/UCX/docs/HOW_TO_USE.md`

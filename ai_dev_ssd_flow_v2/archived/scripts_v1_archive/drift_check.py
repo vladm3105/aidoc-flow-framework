@@ -60,7 +60,7 @@ class ConfigLoader:
 
     def _find_config(self) -> Path:
         candidates = [
-            Path("ai_dev_ssd_flow/PROJECT/config/project_model.yaml"),
+            Path("ucx_flow_v3/PROJECT/config/project_model.yaml"),
             Path("PROJECT/config/project_model.yaml"),
             Path("config/project_model.yaml"),
         ]

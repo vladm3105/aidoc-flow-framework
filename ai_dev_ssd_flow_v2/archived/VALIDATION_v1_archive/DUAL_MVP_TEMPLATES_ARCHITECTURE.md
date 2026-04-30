@@ -10,7 +10,7 @@
 
 ## Overview
 
-The AI Dev Flow Framework now supports **two parallel documentation formats** optimized for different audiences:
+The UCX Flow Framework now supports **two parallel documentation formats** optimized for different audiences:
 
 1. **Markdown (`.md`)** - Human-readable templates with narrative explanations
 2. **YAML (`.yaml`)** - AI-optimized templates with structured data
@@ -82,14 +82,14 @@ def example_function():
 ```
 
 **File Locations**:
-- `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-- `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md`
-- `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-- `ai_dev_flow/08_CTR/CTR-MVP-TEMPLATE.md`
-- `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
+- `ucx_flow_v3/01_BRD/BRD-MVP-TEMPLATE.md`
+- `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
+- `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md`
+- `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md`
+- `ucx_flow_v3/06_SYS/SYS-MVP-TEMPLATE.md`
+- `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md`
+- `ucx_flow_v3/08_CTR/CTR-MVP-TEMPLATE.md`
+- `ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.md`
 
 **When to Use MD Template**:
 - [PASS] Creating BRD/PRD for business stakeholders
@@ -189,15 +189,15 @@ traceability:
 ```
 
 **File Locations**:
-- `ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/08_CTR/CTR-MVP-TEMPLATE.yaml` (NEW)
-- `ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (EXISTING)
-- `ai_dev_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/01_BRD/BRD-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/06_SYS/SYS-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/08_CTR/CTR-MVP-TEMPLATE.yaml` (NEW)
+- `ucx_flow_v3/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (EXISTING)
+- `ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.yaml` (NEW)
 
 **When to Use YAML Template**:
 - [PASS] Autopilot generating artifacts automatically
@@ -407,16 +407,16 @@ error_messages:
 ```
 
 **File Locations**:
-- `ai_dev_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-- `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- `ai_dev_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
-- `ai_dev_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- `ai_dev_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
-- `ai_dev_flow/06_SYS/SYS_MVP_SCHEMA.yaml`
-- `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml`
-- `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml`
-- `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-- `ai_dev_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/01_BRD/BRD_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/03_EARS/EARS_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/04_BDD/BDD_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/05_ADR/ADR_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/06_SYS/SYS_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/07_REQ/REQ_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/08_CTR/CTR_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/09_SPEC/SPEC_MVP_SCHEMA.yaml`
+- `ucx_flow_v3/11_TASKS/TASKS_MVP_SCHEMA.yaml`
 
 **Key Concepts**:
 - **Format-Aware**: Schemas validate both formats with format-specific rules
@@ -763,7 +763,7 @@ verification:
 
 ```bash
 # Example usage (future enhancement)
-python3 ai_dev_flow/scripts/md_to_yaml_converter.py \
+python3 ucx_flow_v3/scripts/md_to_yaml_converter.py \
   --input docs/REQ-01_database.md \
   --output docs/REQ-01_database.yaml \
   --template 07_REQ/REQ-MVP-TEMPLATE.yaml \
@@ -959,7 +959,7 @@ def validate_document(file_path, schema_path):
 **For Human Review/Editing**:
 ```bash
 # Copy MD template
-cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md my_project/docs/REQ-01_feature.md
+cp ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md my_project/docs/REQ-01_feature.md
 
 # Edit in your favorite editor
 vim my_project/docs/REQ-01_feature.md
@@ -968,7 +968,7 @@ vim my_project/docs/REQ-01_feature.md
 **For Autopilot Generation**:
 ```bash
 # Copy YAML template
-cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
+cp ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
 
 # Autopilot loads and fills in structure
 python3 autopilot.py --template my_project/docs/REQ-01_feature.yaml
@@ -977,8 +977,8 @@ python3 autopilot.py --template my_project/docs/REQ-01_feature.yaml
 **For Both Formats**:
 ```bash
 # Create both versions
-cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md my_project/docs/REQ-01_feature.md
-cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
+cp ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md my_project/docs/REQ-01_feature.md
+cp ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.yaml my_project/docs/REQ-01_feature.yaml
 
 # Humans edit MD, Autopilot uses YAML
 ```
@@ -1042,13 +1042,13 @@ python3 -c "import yaml; yaml.safe_load(open('path/to/file.yaml'))"
 **Run Validator**:
 ```bash
 # Example: Validate REQ document
-python3 ai_dev_flow/07_REQ/scripts/validate_req.py \
+python3 ucx_flow_v3/07_REQ/scripts/validate_req.py \
   --path path/to/REQ-01_feature.md
 ```
 
 **Convert MD to YAML** (future enhancement):
 ```bash
-python3 ai_dev_flow/scripts/md_to_yaml_converter.py \
+python3 ucx_flow_v3/scripts/md_to_yaml_converter.py \
   --input path/to/document.md \
   --output path/to/document.yaml \
   --template XXXX-MVP-TEMPLATE.yaml
@@ -1064,7 +1064,7 @@ python3 ai_dev_flow/scripts/md_to_yaml_converter.py \
 | **Version** | 1.0 |
 | **Status** | Active |
 | **Date** | 2026-01-20T00:00:00 |
-| **Maintained By** | AI Dev Flow Team |
+| **Maintained By** | UCX Flow Team |
 | **Related Documents** | DUAL_FORMAT_ARCHITECTURE_IMPLEMENTATION_PLAN.md |
 | **Purpose** | Explain dual-format architecture, document types, and usage guidelines |
 

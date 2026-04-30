@@ -6,14 +6,14 @@ This tool scaffolds single-file MVP artifacts using existing templates,
 runs layer validators, and optionally attempts simple auto-fixes.
 
 Usage:
-  python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-    --root ai_dev_flow \
+  python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+    --root ucx_flow_v3 \
     --intent "My MVP idea" \
     --up-to TASKS \
     --auto-fix
 
 Notes:
-  - Generation uses the repository's MVP templates under `ai_dev_flow/*`.
+  - Generation uses the repository's MVP templates under `ucx_flow_v3/*`.
   - No network calls or LLMs are used; content is copied from templates with
     light substitutions from `--intent` and IDs.
   - Validators are invoked via the existing validate_all.py registry.
@@ -338,7 +338,7 @@ def should_skip_layer(layer_config: LayerPipelineConfig, mode: ProjectMode) -> b
 class Layer:
     name: str
     layer_no: int
-    # template filename relative to `ai_dev_flow/<NAME>/`
+    # template filename relative to `ucx_flow_v3/<NAME>/`
     template: str
     # expected file extension for generated artifact
     ext: str = ".md"
@@ -1174,7 +1174,7 @@ def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], ro
 
 def main():
     parser = argparse.ArgumentParser(description="MVP Autopilot (BRD → TASKS)")
-    parser.add_argument("--root", default="ai_dev_flow", help="Docs root (default: ai_dev_flow)")
+    parser.add_argument("--root", default="ucx_flow_v3", help="Docs root (default: ucx_flow_v3)")
     parser.add_argument("--intent", default="", help="Seed idea to name the MVP")
     parser.add_argument("--nn", default="01", help="Numeric ID to assign (default: 01)")
     parser.add_argument(
@@ -1194,7 +1194,7 @@ def main():
     parser.add_argument("--report", choices=["none","markdown","json","text"], default="none", help="Write a run summary report")
     parser.add_argument("--report-path", default="", help="Custom report file path (defaults to work_plans/)")
     parser.add_argument("--mvp-validators", action="store_true", help="Use lighter MVP validators when available (e.g., BRD python validator)")
-    parser.add_argument("--config", default="", help="Path to autopilot config YAML (defaults to ai_dev_flow/.autopilot.yaml if present)")
+    parser.add_argument("--config", default="", help="Path to autopilot config YAML (defaults to ucx_flow_v3/.autopilot.yaml if present)")
     parser.add_argument("--profile", default="", help="Named profile from config to load (e.g., mvp, strict)")
     # Resume/Fork & planning controls
     parser.add_argument("--resume", action="store_true", help="Resume existing project; reuse and validate existing artifacts, generate only missing ones")
@@ -1217,7 +1217,7 @@ def main():
     args = parser.parse_args()
 
     # Load config (before using args), merge profile/defaults into args where CLI kept defaults
-    cfg_path = Path(args.config) if args.config else Path(args.root or "ai_dev_flow") / ".autopilot.yaml"
+    cfg_path = Path(args.config) if args.config else Path(args.root or "ucx_flow_v3") / ".autopilot.yaml"
     cfg = load_v4_config(cfg_path) if (args.config or cfg_path.exists()) else {}
 
     def _apply_cfg_flag(current_val, cfg_val):

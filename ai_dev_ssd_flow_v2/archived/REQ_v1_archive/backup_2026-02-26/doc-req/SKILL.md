@@ -51,10 +51,10 @@ Before creating REQ, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream SYS**: Read system requirements driving this REQ
-3. **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_req_template.sh`
+3. **Template**: `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ucx_flow_v3/07_REQ/REQ_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/07_REQ/REQ_VALIDATION_RULES.md`
+6. **Validation Script**: `./ucx_flow_v3/scripts/validate_req_template.sh`
 
 ## When to Use This Skill
 
@@ -331,7 +331,7 @@ Especially focus on SYS (Layer 6) - system requirements to decompose.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/REQ/` for next available ID number.
+Check `ucx_flow_v3/REQ/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: REQ-01, REQ-99, REQ-102
@@ -398,14 +398,14 @@ Include all 6 upstream tags (@brd through @sys).
 
 ### Step 8: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ucx_flow_v3/REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 9: Validate REQ
 
 ```bash
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-NN_*.md
+./ucx_flow_v3/scripts/validate_req_template.sh ucx_flow_v3/REQ/REQ-NN_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-NN --expected-layers brd,prd,ears,bdd,adr,sys --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --artifact REQ-NN --expected-layers brd,prd,ears,bdd,adr,sys --strict
 ```
 
 ### Step 10: Commit Changes
@@ -457,7 +457,7 @@ Commit REQ file and traceability matrix.
 find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ucx_flow_v3/scripts/validate_tags_against_docs.py \
   --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
@@ -483,7 +483,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ucx_flow_v3/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 
@@ -516,10 +516,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/REQ/REQ-NN_slug.md --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --document docs/REQ/REQ-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all REQ documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --layer REQ --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -577,16 +577,16 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
-- **REQ Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
-- **REQ README**: `ai_dev_flow/07_REQ/README.md`
+- **Template**: `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md` (primary authority)
+- **REQ Creation Rules**: `ucx_flow_v3/07_REQ/REQ_CREATION_RULES.md`
+- **REQ Validation Rules**: `ucx_flow_v3/07_REQ/REQ_VALIDATION_RULES.md`
+- **REQ README**: `ucx_flow_v3/07_REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (for documents >50KB):
-- Index template: `ai_dev_flow/07_REQ/REQ-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/07_REQ/REQ-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ucx_flow_v3/07_REQ/REQ-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/07_REQ/REQ-SECTION-TEMPLATE.md`
+- Reference: `ucx_flow_v3/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 

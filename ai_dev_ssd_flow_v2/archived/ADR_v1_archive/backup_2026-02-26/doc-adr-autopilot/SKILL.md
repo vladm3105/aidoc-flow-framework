@@ -362,8 +362,8 @@ Generate ADR documents with Context-Decision-Consequences format.
    ```
 
 2. **Load ADR Template**:
-   - Primary: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-   - Comprehensive: `ai_dev_flow/05_ADR/ADR-TEMPLATE.md`
+   - Primary: `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md`
+   - Comprehensive: `ucx_flow_v3/05_ADR/ADR-TEMPLATE.md`
 
 3. **Generate Document Control Section**:
 
@@ -555,7 +555,7 @@ After ADR generation, validate structure and SYS-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.md --verbose
+python ucx_flow_v3/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.md --verbose
 ```
 
 **Validation Checks** (8 Total):
@@ -707,7 +707,7 @@ After passing the fix cycle:
 3. **Traceability Matrix Update**:
    ```bash
    # Update ADR-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --type ADR \
      --matrix docs/05_ADR/ADR-00_TRACEABILITY_MATRIX.md
    ```
@@ -829,12 +829,12 @@ Validate existing ADR documents and generate a quality report without modificati
 
 ```bash
 # Review single ADR
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode review
 
 # Review all ADRs
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ \
   --mode review \
   --output-report tmp/adr_review_report.md
@@ -953,24 +953,24 @@ Auto-repair existing ADR documents while preserving manual content.
 
 ```bash
 # Fix single ADR
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --fix-types "element_ids,tags,v2_sections"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/adr_autopilot.py \
+python ucx_flow_v3/scripts/adr_autopilot.py \
   --adr docs/05_ADR/ADR-01_infrastructure.md \
   --mode fix \
   --dry-run
@@ -1314,7 +1314,7 @@ grep -q "7.2.*Architecture Decision Requirements" docs/01_BRD/BRD-*.md || {
 
 # Example: Trigger SYS autopilot for validated ADRs
 if [ "$ALL_ADRS_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/sys_autopilot.py \
+  python ucx_flow_v3/scripts/sys_autopilot.py \
     --adr-dir docs/05_ADR/ \
     --output docs/06_SYS/
 fi
@@ -1339,7 +1339,7 @@ jobs:
 
       - name: Run ADR Autopilot
         run: |
-          python ai_dev_flow/scripts/adr_autopilot.py \
+          python ucx_flow_v3/scripts/adr_autopilot.py \
             --brd docs/01_BRD/ \
             --output docs/05_ADR/ \
             --validate
@@ -1385,9 +1385,9 @@ jobs:
 - **ADR Validator Skill**: `.claude/skills/doc-adr-validator/SKILL.md`
 - **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
 - **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **ADR Template**: `ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-- **ADR Creation Rules**: `ai_dev_flow/05_ADR/ADR_CREATION_RULES.md`
-- **ADR Validation Rules**: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
+- **ADR Template**: `ucx_flow_v3/05_ADR/ADR-MVP-TEMPLATE.md`
+- **ADR Creation Rules**: `ucx_flow_v3/05_ADR/ADR_CREATION_RULES.md`
+- **ADR Validation Rules**: `ucx_flow_v3/05_ADR/ADR_VALIDATION_RULES.md`
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
 - **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`

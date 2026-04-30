@@ -52,13 +52,13 @@ custom_fields:
 - Maintain `ADR-00_index.md` as the authoritative source of planned and active ADR documents (mark planned items with Status: Planned).
 - Generators use: `ADR-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.1
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2025-11-30T00:00:00
 **Source**: Derived from ADR-MVP-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (standard template)
-**Purpose**: Complete reference for creating ADR documents according to AI Dev Flow SDD framework
+**Purpose**: Complete reference for creating ADR documents according to UCX Flow SDD framework
 **Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
 
 ---
@@ -85,7 +85,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/05_ADR/ADR-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
 - **Folder Naming**: `ADR-NN_{slug}/` where slug MUST match the index file slug (e.g., `ADR-01_cloud_migration/`)
 - **Folder Structure** (DEFAULT): `docs/05_ADR/ADR-NN_{slug}/ADR-NN.S_{slug}.md`
@@ -314,7 +314,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 5)
+**Framework Compliance**: 100% UCX Flow SDD framework (Layer 5)
 **Integration**: Enforces ADR → SYS progression quality gates
 
 ---
@@ -323,7 +323,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`  `) are exempted.
 
-**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+**Central Authority**: `ucx_flow_v3/DIAGRAM_STANDARDS.md`
 **Diagram Skill**: `mermaid-gen` skill
 
 ---

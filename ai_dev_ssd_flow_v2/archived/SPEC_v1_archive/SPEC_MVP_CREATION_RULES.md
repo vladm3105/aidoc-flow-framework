@@ -23,13 +23,13 @@ custom_fields:
 - Maintain `SPEC-00_index.md` as the authoritative source of planned and active SPEC files (mark planned items with Status: Planned).
 - Generators use: `SPEC-00_index.md` + selected template profile (`SPEC-MVP-TEMPLATE.yaml` as MVP default; full profile only when explicitly requested).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.4
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2026-02-26T00:00:00
 **Source**: Derived from SPEC-MVP-TEMPLATE.yaml and technical specification patterns
-**Purpose**: Complete reference for creating SPEC YAML files according to AI Dev Flow SDD framework
+**Purpose**: Complete reference for creating SPEC YAML files according to UCX Flow SDD framework
 **Changes**: v1.4: Removed duplicate upstream_links section; removed specific section count from YAML structure header. v1.3: Added file size limits as warning, removed document splitting requirement. v1.2: Added Threshold Registry Integration section. v1.1: Status/Score mapping, common mistakes section
 
 ---
@@ -56,7 +56,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 - **Location**: `docs/09_SPEC/` within project docs directory
 - **Naming**: `SPEC-{DOC_NUM}_{descriptive_component_name}.yaml` (DOC_NUM = variable-length, starts at 2 digits)
 - **Structure**: One monolithic YAML file per architectural component (codegen source)
@@ -543,7 +543,7 @@ req_implementations:
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 9)
+**Framework Compliance**: 100% UCX Flow SDD framework (Layer 9)
 **Integration**: Enforces SPEC → TASKS progression quality gates
 
 ---

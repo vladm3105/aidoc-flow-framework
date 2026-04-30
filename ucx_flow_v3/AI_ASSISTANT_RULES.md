@@ -63,7 +63,7 @@ Each AI agent session follows this protocol:
 
 ## What NOT to Reference
 
-- `ai_dev_ssd_flow/` — SDD v2 (superseded)
+- `ucx_flow_v3/` — SDD v2 (superseded)
 - SYS, REQ, CTR layers — cut from v3
 - TSPEC subtypes (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST) — replaced by TDD with embedded test cases
 - TASKS — replaced by IPLAN

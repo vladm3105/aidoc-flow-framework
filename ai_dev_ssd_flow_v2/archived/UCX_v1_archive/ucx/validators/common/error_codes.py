@@ -1,6 +1,6 @@
 """Standardized Error Code Registry for UCX Document Validation.
 
-Ported from ai_dev_ssd_flow/scripts/error_codes.py for unified validation.
+Ported from ucx_flow_v3/scripts/error_codes.py for unified validation.
 
 Pattern: {TYPE}-{SEVERITY}{NNN}
 - TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, XDOC, VAL

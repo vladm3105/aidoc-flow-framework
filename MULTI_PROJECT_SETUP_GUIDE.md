@@ -1,6 +1,6 @@
 # Multi-Project Framework Setup Guide
 
-**Purpose**: Configuration patterns for sharing AI Dev Flow Framework resources across multiple projects
+**Purpose**: Configuration patterns for sharing UCX Flow Framework resources across multiple projects
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
@@ -20,14 +20,14 @@ This repository provides a **unified SDD framework** with scalable depth. v3 (8 
 | **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams, 3-6 months |
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team, 6+ months |
 
-The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existing projects.
+The original v2 (14-layer) variant is preserved in `ucx_flow_v3/` for existing projects.
 
 ### Key Directories
 
 | Directory | Purpose |
 |:----------|:--------|
 | `ucx_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
+| `ucx_flow_v3/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 | `ucx_knowledge/` | Standalone RAG + Graph knowledge base package |
@@ -55,7 +55,7 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
 │   │   └── docs/                     # UCX documentation
 │   │
 |   ├── ucx_flow_v3/              # SDD v3 templates (8 layers, recommended)
-│   ├── ai_dev_ssd_flow/              # SDD v2 templates (14 layers, legacy)
+│   ├── ucx_flow_v3/              # SDD v2 templates (14 layers, legacy)
 │   │   ├── 01_BRD/                   # Business Requirements
 │   │   ├── 02_PRD/                   # Product Requirements
 │   │   ├── ...                       # (layers 03-11)
@@ -82,9 +82,9 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
     │   ├── .envrc                    # direnv: PYTHONPATH, venv activation
     │   ├── docs/                     # Project artifacts (BRD, ADR, etc.)
     │   ├── src/                      # Source code
-    │   ├── ai_dev_flow/              # Symlink → SDD templates (optional)
+    │   ├── ucx_flow_v3/              # Symlink → SDD templates (optional)
     │   ├── .templates/
-    │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD v2 templates (legacy)
+    │   │   ├── ucx_flow_v3/      # Symlink → SDD v2 templates (legacy)
     │   │   └── governance/           # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
@@ -329,7 +329,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Skills** | `.claude/skills/` | `.claude/custom_skills/` | Both merged |
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
-| **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only (v2 legacy) |
+| **SDD Templates** | `.templates/ucx_flow_v3/` | N/A | Symlink only (v2 legacy) |
 | | `.templates/ucx_flow_v3/` | N/A | Symlink only (v3 recommended) |
 | **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
@@ -385,7 +385,7 @@ Core docs:
 ls -la /opt/data/ucx_framework/.claude/
 # Expected: skills/, commands/, agents/
 
-ls -la /opt/data/ucx_framework/ai_dev_ssd_flow/
+ls -la /opt/data/ucx_framework/ucx_flow_v3/
 # Expected: BRD/, PRD/, ADR/, REQ/, etc.
 ```
 
@@ -442,9 +442,9 @@ ln -sf "$FRAMEWORK_DIR/.claude/agents" "$PROJECT_DIR/.claude/agents"
 
 # Setup template symlinks (BOTH frameworks)
 mkdir -p "$PROJECT_DIR/.templates"
-backup_if_needed "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+backup_if_needed "$PROJECT_DIR/.templates/ucx_flow_v3"
 backup_if_needed "$PROJECT_DIR/.templates/governance"
-ln -sf "$FRAMEWORK_DIR/ai_dev_ssd_flow" "$PROJECT_DIR/.templates/ai_dev_ssd_flow"
+ln -sf "$FRAMEWORK_DIR/ucx_flow_v3" "$PROJECT_DIR/.templates/ucx_flow_v3"
 ln -sf "$FRAMEWORK_DIR/governance" "$PROJECT_DIR/.templates/governance"
 
 # Setup validation script symlinks
@@ -530,7 +530,7 @@ mkdir -p scripts
 
 # Setup AI Expert Board
 mkdir -p docs/AI_EXPERTS
-cp /opt/data/ucx_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml docs/AI_EXPERTS/review.yaml
+cp /opt/data/ucx_framework/ucx_flow_v3/AI_EXPERTS/review.template.yaml docs/AI_EXPERTS/review.yaml
 # Edit docs/AI_EXPERTS/review.yaml to configure the 7 personas for your specific domain.
 # Note: The AI Experts team should be created during a new project initialization, or manually on demand later.
 # INTEGRATION LEAD (Persona 7): Requires an INTEGRATION_MATRIX.md to work optimally.
@@ -543,7 +543,7 @@ cp /opt/data/ucx_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml docs/
 Use a framework-maintained hook profile and symlink project-level `.pre-commit-config.yaml` to avoid manual mirroring across repositories.
 
 **Framework library location (current profile):**
-- `ucx_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
+- `ucx_framework/ucx_flow_v3/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
 **Project symlink example (any project):**
 
@@ -552,7 +552,7 @@ cd /opt/data/<project-repo>
 
 # Replace local config with symlink to shared library profile
 rm -f .pre-commit-config.yaml
-ln -s ../../ucx_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml .pre-commit-config.yaml
+ln -s ../../ucx_framework/ucx_flow_v3/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml .pre-commit-config.yaml
 
 # Verify target
 ls -l .pre-commit-config.yaml
@@ -681,10 +681,10 @@ When using `--with-github`, the following resources are symlinked:
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 ├── .templates/
-│   ├── ai_dev_ssd_flow/             # Symlink → SDD v2 templates (14 layers, legacy)
+│   ├── ucx_flow_v3/             # Symlink → SDD v2 templates (14 layers, legacy)
 │   └── governance/                  # Symlink → SDD governance templates
 │
-├── ai_dev_flow/                     # Optional: Symlink → SDD templates (convenience)
+├── ucx_flow_v3/                     # Optional: Symlink → SDD templates (convenience)
 │
 ├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── 01_BRD/
@@ -827,7 +827,7 @@ Test service connection and report status with diagnostics
 # Project: [PROJECT_NAME]
 
 **Active Framework**: /opt/data/ucx_framework
-**Templates**: .templates/ai_dev_ssd_flow/
+**Templates**: .templates/ucx_flow_v3/
 **Work Plans**: work_plans/
 
 ## Project-Specific Rules
@@ -859,9 +859,9 @@ Add to each project's `.gitignore`:
 .claude/skills
 .claude/commands
 .claude/agents
-.templates/ai_dev_ssd_flow
+.templates/ucx_flow_v3
 .templates/governance
-ai_dev_flow
+ucx_flow_v3
 scripts/validate
 
 # Keep project-specific resources (commit these)
@@ -905,7 +905,7 @@ vim /opt/data/ucx_framework/.claude/skills/doc-flow/SKILL.md
 
 ```bash
 # Edit SDD framework template
-vim /opt/data/ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
+vim /opt/data/ucx_framework/ucx_flow_v3/01_BRD/BRD-MVP-TEMPLATE.md
 
 # Edit SDD governance framework template
 vim /opt/data/ucx_framework/governance/PROJECT_PLAN.md
@@ -956,7 +956,7 @@ cd ${PROJECT_PATH}
 # /skill ib-api-helper  # Should work (custom, if exists)
 
 # Verify SDD template access
-ls -la ${PROJECT_PATH}/.templates/ai_dev_ssd_flow/01_BRD/
+ls -la ${PROJECT_PATH}/.templates/ucx_flow_v3/01_BRD/
 # Should list: BRD-MVP-TEMPLATE.md, etc.
 
 # Verify SDD governance template access
@@ -1201,17 +1201,17 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 ### Related Documentation
 
-- [AI Dev Flow Framework README](./README.md) - Framework overview
+- [UCX Flow Framework README](./README.md) - Framework overview
 
 **SDD v3 Framework (ucx_flow_v3 — current, recommended)**:
 - [SDD v3 README](./ucx_flow_v3/README.md) - 8-layer workflow with C4 mapping
 - [Layer Registry](./ucx_flow_v3/LAYER_REGISTRY.yaml) - Authoritative layer definitions
 - [CHG Governance Overlay](./ucx_flow_v3/CHG/README.md) - 5-gate change management
 
-**SDD v2 Framework (ai_dev_ssd_flow — legacy)**:
-- [SDD Methodology Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
-- [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
-- [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
+**SDD v2 Framework (ucx_flow_v3 — legacy)**:
+- [SDD Methodology Guide](./ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
+- [ID Naming Standards](./ucx_flow_v3/ID_NAMING_STANDARDS.md) - Document naming conventions
+- [Traceability Setup](./ucx_flow_v3/TRACEABILITY_SETUP.md) - Tag-based traceability
 
 **SDD Governance Framework (governance)**:
 - [SDD governance README](./governance/README.md) - Lightweight governance overview
@@ -1232,7 +1232,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 - **SDD v3 Migration**: Updated all references for the 8-layer v3 framework
   - SDD Depth Selection now shows v3 8-layer pipeline (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
-  - v2 14-layer variant preserved in `ai_dev_ssd_flow/` for legacy projects
+  - v2 14-layer variant preserved in `ucx_flow_v3/` for legacy projects
   - Added `ucx_flow_v3/` to directory tables and architecture diagrams
   - Updated test structure alignment to TDD (L7) instead of TSPEC (L10)
   - Updated Use Case 1 for v3 project structure
@@ -1261,12 +1261,12 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
   - Three integration options: direnv, shell profile, wrapper script
 - Updated architecture diagram to include UCX package structure
 - Updated setup script to auto-generate `.envrc` file
-- Updated project layout to include `.envrc` and `ai_dev_flow/` symlink
+- Updated project layout to include `.envrc` and `ucx_flow_v3/` symlink
 - Added UCX CLI commands documentation
 
 ### Version 2.1 (2026-02-17T00:00:00)
 
-- **Dual Framework Support**: Added `governance` alongside `ai_dev_ssd_flow`
+- **Dual Framework Support**: Added `governance` alongside `ucx_flow_v3`
 - Updated setup script to symlink BOTH framework template directories
 - Added framework selection decision matrix
 - Added Use Case 1b for SDD governance greenfield projects

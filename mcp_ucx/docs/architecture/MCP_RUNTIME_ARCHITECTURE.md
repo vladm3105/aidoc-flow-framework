@@ -70,7 +70,7 @@ Out of scope:
    - `prompts/templates/creation/` — UCC creation prompt templates
    - `prompts/templates/review/` — UCR review prompt templates
    - `prompts/templates/remediation/` — UCRem remediation prompt templates
-   - `templates/` — document templates and layer-specific schemas (sourced from `ai_dev_ssd_flow/`)
+   - `templates/` — document templates and layer-specific schemas (sourced from `ucx_flow_v3/`)
 4. Existing files are never overwritten (no-overwrite semantics; idempotent).
 5. CLI reports created and skipped counts.
 

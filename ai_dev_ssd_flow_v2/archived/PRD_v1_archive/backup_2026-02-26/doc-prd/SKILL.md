@@ -51,9 +51,9 @@ Before creating a PRD, read:
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD**: Read the BRD that drives this PRD
    **Note on Sectioned BRDs**: If BRD is split into multiple section files (0-18), read ALL files as ONE logical document. See `PRD_CREATION_RULES.md` Section 22.
-3. **Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md`
+3. **Template**: `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
+4. **Creation Rules**: `ucx_flow_v3/02_PRD/PRD_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/02_PRD/PRD_VALIDATION_RULES.md`
 
 ## When to Use This Skill
 
@@ -68,7 +68,7 @@ Use `doc-prd` when:
 
 ### 1. Required Sections (21 Total)
 
-PRD documents follow the **MVP template structure** (17 sections). See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
+PRD documents follow the **MVP template structure** (17 sections). See `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` for complete structure.
 
 > **Note**: MVP template is the framework standard. All readiness scores use ≥90% thresholds. Expansion happens through NEW MVP iterations (PRD-02, PRD-03), not template changes.
 
@@ -426,13 +426,13 @@ Quality standards and testing strategy (moved from BRD).
 
 ```bash
 # PRD validation (must be in nested folder)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-NN_{slug}/
+python ucx_flow_v3/scripts/validate_prd.py docs/02_PRD/PRD-NN_{slug}/
 
 # Link integrity
-python ai_dev_flow/scripts/validate_links.py --path docs/02_PRD/
+python ucx_flow_v3/scripts/validate_links.py --path docs/02_PRD/
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NN --expected-layers brd --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --artifact PRD-NN --expected-layers brd --strict
 ```
 
 ## Validation Checklist
@@ -481,7 +481,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NN --exp
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ucx_flow_v3/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -492,10 +492,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1) - must use nested folder path
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --document docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md --auto-fix
 
 # Layer validation (Phase 2) - run when all PRD documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --layer PRD --auto-fix
 ```
 
 ### Validation Codes Reference
@@ -549,7 +549,7 @@ custom_fields:
 ## Diagram Standards
 
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ucx_flow_v3/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ---
 
@@ -567,19 +567,19 @@ The EARS will:
 
 ## Related Resources
 
-- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_CREATION_RULES.md`
-- **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_VALIDATION_RULES.md`
-- **PRD README**: `ai_dev_flow/02_PRD/README.md`
+- **Main Guide**: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **PRD Schema**: `ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **PRD Template**: `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Creation Rules**: `ucx_flow_v3/02_PRD/PRD_CREATION_RULES.md`
+- **PRD Validation Rules**: `ucx_flow_v3/02_PRD/PRD_VALIDATION_RULES.md`
+- **PRD README**: `ucx_flow_v3/02_PRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all PRD documents):
 - **Structure**: `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
-- Index template: `ai_dev_flow/02_PRD/PRD-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/02_PRD/PRD-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+- Index template: `ucx_flow_v3/02_PRD/PRD-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/02_PRD/PRD-SECTION-TEMPLATE.md`
+- Reference: `ucx_flow_v3/ID_NAMING_STANDARDS.md`
 
 ## Quick Reference
 

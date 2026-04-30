@@ -33,7 +33,7 @@ Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-
 | **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams | 3-6 months |
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team | 6+ months |
 
-See [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [ai_dev_ssd_flow/](./ai_dev_ssd_flow/).
+See [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [ucx_flow_v3/](./ucx_flow_v3/).
 
 ---
 
@@ -58,7 +58,7 @@ CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GA
 
 ### v2 (Legacy — 14 Layers)
 
-The original 14-layer framework is preserved in `ai_dev_ssd_flow/` for existing projects. SYS, REQ, CTR, TSPEC subtypes, and TASKS remain available.
+The original 14-layer framework is preserved in `ucx_flow_v3/` for existing projects. SYS, REQ, CTR, TSPEC subtypes, and TASKS remain available.
 
 
 
@@ -69,7 +69,7 @@ The original 14-layer framework is preserved in `ai_dev_ssd_flow/` for existing 
 | Directory | Purpose |
 |:----------|:--------|
 | `ucx_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
+| `ucx_flow_v3/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
 | `mcp_ucx/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_ucx`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `ucx_knowledge/` | Knowledge base package (RAG + Graph) |
@@ -103,10 +103,10 @@ ucx_flow_v3/
 └── plans/                Migration plans (v2→v3, CHG transition)
 ```
 
-### ai_dev_ssd_flow/ (Legacy v2)
+### ucx_flow_v3/ (Legacy v2)
 
 ```
-ai_dev_ssd_flow/
+ucx_flow_v3/
 ├── {NN}_{TYPE}/          11 layer directories, each with {TYPE}-TEMPLATE.yaml
 ├── CHG/                  Change management (4-gate system)
 ├── PROJECT/              SDD Project Model (sprint integration)
@@ -193,7 +193,7 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 |----------|---------|
 | [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) | SDD v3 framework overview (current, recommended) |
 | [ucx_flow_v3/LAYER_REGISTRY.yaml](./ucx_flow_v3/LAYER_REGISTRY.yaml) | Authoritative v3 layer definitions with C4 mapping |
-| [ai_dev_ssd_flow/README.md](./ai_dev_ssd_flow/README.md) | SDD v2 framework overview (legacy, maintained) |
+| [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) | SDD v2 framework overview (legacy, maintained) |
 | [ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD v3 methodology |
 | [ucx_flow_v3/ID_NAMING_STANDARDS.md](./ucx_flow_v3/ID_NAMING_STANDARDS.md) | Document and element ID formats |
 | [ucx_flow_v3/TRACEABILITY.md](./ucx_flow_v3/TRACEABILITY.md) | Cross-layer traceability rules |

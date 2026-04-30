@@ -44,14 +44,14 @@ Updated all active framework docs for post-unification compliance:
 - C4/DFD alignment: DFD-L0→L1, ADR=bridge (no C4), SYS=C4-L3
 - Document size: sectioned files deprecated → 50,000 tokens monolithic
 - Validation: per-layer scripts → mcp_ucx `sdd_validate` / `sdd_validate_links`
-- Directory names: `ai_dev_flow/` → `ai_dev_ssd_flow/`
+- Directory names: `ucx_flow_v3/` → `ucx_flow_v3/`
 
 ### Rewritten Documents (Project-Agnostic)
 
 | Document | Before | After |
 |----------|--------|-------|
 | Root `README.md` | 1,819 lines | 175 lines |
-| `ai_dev_ssd_flow/README.md` | 1,693 lines | 260 lines |
+| `ucx_flow_v3/README.md` | 1,693 lines | 260 lines |
 | `MVP_WORKFLOW_GUIDE.md` | 691 lines | 193 lines |
 | `ID_NAMING_STANDARDS.md` | 1,641 lines | 1,175 lines (sectioned content removed) |
 

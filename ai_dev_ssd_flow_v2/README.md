@@ -1,5 +1,5 @@
 ---
-title: "SDD Framework — ai_dev_ssd_flow"
+title: "SDD Framework — ucx_flow_v3"
 tags:
   - framework-guide
   - shared-architecture
@@ -104,7 +104,7 @@ glossary:
 ## Directory Structure
 
 ```
-ai_dev_ssd_flow/
+ucx_flow_v3/
 ├── 01_BRD/          BRD-TEMPLATE.yaml, BRD-00_index.md, README.md
 ├── 02_PRD/          PRD-TEMPLATE.yaml, ...
 ├── 03_EARS/         EARS-TEMPLATE.yaml, ...
@@ -236,7 +236,7 @@ This repository is a **framework template**. To use in a project:
 3. Use mcp_sdd `sdd_create` to scaffold new documents
 4. Validate with mcp_sdd `sdd_validate`
 
-Path note: Examples in guides may show a `docs/` prefix. In this repository, layer directories live at the `ai_dev_ssd_flow/` root (e.g., `01_BRD/`, `02_PRD/`).
+Path note: Examples in guides may show a `docs/` prefix. In this repository, layer directories live at the `ucx_flow_v3/` root (e.g., `01_BRD/`, `02_PRD/`).
 
 ---
 
@@ -295,7 +295,7 @@ Path note: Examples in guides may show a `docs/` prefix. In this repository, lay
 
 ## Version Mapping
 
-| ai_dev_ssd_flow | UCX / mcp_sdd | Release Date | Key Changes |
+| ucx_flow_v3 | UCX / mcp_sdd | Release Date | Key Changes |
 |-----------------|---------------|--------------|-------------|
 | v0.21.0 | v1.21.x | 2026-04 | UCX rebranded as Unified Context eXcelerator |
 | v0.19.0 | v1.12.0 | 2026-03 | Category-weighted scoring, hash-based finding IDs |

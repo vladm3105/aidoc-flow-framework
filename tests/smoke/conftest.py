@@ -7,7 +7,7 @@ These fixtures are specific to smoke tests (STEST) which:
 - Run quickly after deployment
 - Validate system is operational
 
-Reference: ai_dev_flow/10_TSPEC/STEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import pytest

@@ -1,6 +1,6 @@
 ---
 title: "Script Index"
-description: "Comprehensive registry of all scripts in the AI Dev Flow framework"
+description: "Comprehensive registry of all scripts in the UCX Flow framework"
 ---
 
 # Script Index
@@ -90,4 +90,4 @@ Located in `AUTOPILOT/scripts/`:
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh` | Orchestrates all-layer validation in full or `--changed-only` mode; defaults to `docs` root and enforces project-artifact scope (rejects `ai_dev_ssd_flow` as `DOCS_ROOT`). |
+| `scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh` | Orchestrates all-layer validation in full or `--changed-only` mode; defaults to `docs` root and enforces project-artifact scope (rejects `ucx_flow_v3` as `DOCS_ROOT`). |

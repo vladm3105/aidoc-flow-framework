@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `EARS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use a full/sectioned template only if explicitly required.
 - Inputs used for generation: `EARS-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
 **Lifecycle**: MVP → PROD → NEW MVP. Expansion happens through new iterations (EARS-02, EARS-03, etc.), not template changes.
 

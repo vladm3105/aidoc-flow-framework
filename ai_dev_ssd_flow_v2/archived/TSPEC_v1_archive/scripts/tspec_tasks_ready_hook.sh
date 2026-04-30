@@ -9,7 +9,7 @@ set -euo pipefail
 
 # Get the directory containing this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TSPEC_DIR="${1:-ai_dev_ssd_flow/10_TSPEC}"
+TSPEC_DIR="${1:-ucx_flow_v3/10_TSPEC}"
 OVERRIDE_THRESHOLD="${2:-}"  # NEW v2.0: Optional threshold override
 
 # Support both absolute and relative paths

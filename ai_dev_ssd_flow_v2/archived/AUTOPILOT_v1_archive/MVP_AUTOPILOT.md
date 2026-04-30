@@ -21,7 +21,7 @@ custom_fields:
 
 # MVP Autopilot: Core Guide (v6.1)
 
-This document is the authoritative reference for MVP Autopilot in the AI Dev Flow framework. It explains what autopilot does, how to use it, and provides practical guidance for both local development and GitHub Actions CI/CD.
+This document is the authoritative reference for MVP Autopilot in the UCX Flow framework. It explains what autopilot does, how to use it, and provides practical guidance for both local development and GitHub Actions CI/CD.
 
 **v6.1 Enhancements**:
 - **Reviewer Skills v1.4**: Mandatory drift cache with SHA-256 hash-based detection
@@ -38,11 +38,11 @@ This document is the authoritative reference for MVP Autopilot in the AI Dev Flo
 **Local Development**:
 ```bash
 # Install dependencies
-pip install -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+pip install -r ucx_flow_v3/AUTOPILOT/scripts/requirements.txt
 
 # Run autopilot with defaults
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "My MVP" \
   --slug my_mvp \
   --auto-fix \
@@ -112,7 +112,7 @@ make docs
 ### Directory Structure
 
 ```
-ai_dev_flow/AUTOPILOT/
+ucx_flow_v3/AUTOPILOT/
  MVP_AUTOPILOT.md              # This guide
  MVP_GITHUB_CICD_INTEGRATION_PLAN.md
  MVP_PIPELINE_END_TO_END_USER_GUIDE.md
@@ -570,18 +570,18 @@ Auto-approval threshold: 90%
 
 ```bash
 # Install dependencies
-pip install -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+pip install -r ucx_flow_v3/AUTOPILOT/scripts/requirements.txt
 
 # Run with auto-fix (recommended for speed)
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "My MVP" \
   --slug my_mvp \
   --auto-fix
 
 # Validate existing docs
-python3 ai_dev_flow/scripts/validate_all.py \
-  ai_dev_flow \
+python3 ucx_flow_v3/scripts/validate_all.py \
+  ucx_flow_v3 \
   --all \
   --report markdown
 ```
@@ -698,8 +698,8 @@ Test-Driven Development integration enables test-first workflow where tests are 
 ### TDD Mode Activation
 
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --intent "My MVP" \
   --slug my_mvp \
   --tdd-mode \
@@ -808,62 +808,62 @@ The following scripts support the TDD workflow:
 |--------|---------|-------|
 | `analyze_test_requirements.py` | Parse test files, extract traceability tags and method signatures | `--test-dir tests/unit/ --output tmp/test_requirements.json` |
 | `generate_spec_tdd.py` | Generate SPEC YAML from test requirements | `--test-requirements tmp/test_requirements.json --output tmp/generated_specs/` |
-| `update_test_traceability.py` | Update PENDING tags with actual file paths | `--test-dir tests/unit/ --spec-dir ai_dev_flow/09_SPEC/` |
+| `update_test_traceability.py` | Update PENDING tags with actual file paths | `--test-dir tests/unit/ --spec-dir ucx_flow_v3/09_SPEC/` |
 | `validate_tdd_stage.py` | Validate Red/Green state | `--stage red --test-dir tests/unit/` |
 
 #### Test Generation Scripts
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `generate_integration_tests.py` | Generate integration tests from CTR/SYS/SPEC | `--spec-dir ai_dev_flow/09_SPEC/ --output tests/integration/` |
-| `generate_smoke_tests.py` | Generate smoke tests from EARS/BDD/REQ | `--bdd-dir ai_dev_flow/04_BDD/ --output tests/smoke/` |
+| `generate_integration_tests.py` | Generate integration tests from CTR/SYS/SPEC | `--spec-dir ucx_flow_v3/09_SPEC/ --output tests/integration/` |
+| `generate_smoke_tests.py` | Generate smoke tests from EARS/BDD/REQ | `--bdd-dir ucx_flow_v3/04_BDD/ --output tests/smoke/` |
 
 #### TDD Workflow Commands
 
 ```bash
 # Step 1: Analyze existing tests
-python ai_dev_flow/AUTOPILOT/scripts/analyze_test_requirements.py \
+python ucx_flow_v3/AUTOPILOT/scripts/analyze_test_requirements.py \
   --test-dir tests/unit/ \
   --output tmp/test_requirements.json \
   --verbose
 
 # Step 2: Generate test-aware SPEC
-python ai_dev_flow/AUTOPILOT/scripts/generate_spec_tdd.py \
+python ucx_flow_v3/AUTOPILOT/scripts/generate_spec_tdd.py \
   --test-requirements tmp/test_requirements.json \
-  --output ai_dev_flow/09_SPEC/ \
+  --output ucx_flow_v3/09_SPEC/ \
   --verbose
 
 # Step 3: Validate Red State (before implementation)
-python ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py \
+python ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_stage.py \
   --stage red \
   --test-dir tests/unit/
 
 # Step 4: [Implement code based on SPEC]
 
 # Step 5: Validate Green State (after implementation)
-python ai_dev_flow/AUTOPILOT/scripts/validate_tdd_stage.py \
+python ucx_flow_v3/AUTOPILOT/scripts/validate_tdd_stage.py \
   --stage green \
   --test-dir tests/unit/ \
   --code-dir src/ \
   --coverage 90
 
 # Step 6: Update traceability tags
-python ai_dev_flow/AUTOPILOT/scripts/update_test_traceability.py \
+python ucx_flow_v3/AUTOPILOT/scripts/update_test_traceability.py \
   --test-dir tests/unit/ \
-  --spec-dir ai_dev_flow/09_SPEC/ \
-  --tasks-dir ai_dev_flow/11_TASKS/ \
+  --spec-dir ucx_flow_v3/09_SPEC/ \
+  --tasks-dir ucx_flow_v3/11_TASKS/ \
   --code-dir src/
 
 # Step 7: Generate integration tests
-python ai_dev_flow/AUTOPILOT/scripts/generate_integration_tests.py \
-  --spec-dir ai_dev_flow/09_SPEC/ \
-  --ctr-dir ai_dev_flow/08_CTR/ \
+python ucx_flow_v3/AUTOPILOT/scripts/generate_integration_tests.py \
+  --spec-dir ucx_flow_v3/09_SPEC/ \
+  --ctr-dir ucx_flow_v3/08_CTR/ \
   --output tests/integration/
 
 # Step 8: Generate smoke tests
-python ai_dev_flow/AUTOPILOT/scripts/generate_smoke_tests.py \
-  --bdd-dir ai_dev_flow/04_BDD/ \
-  --ears-dir ai_dev_flow/03_EARS/ \
+python ucx_flow_v3/AUTOPILOT/scripts/generate_smoke_tests.py \
+  --bdd-dir ucx_flow_v3/04_BDD/ \
+  --ears-dir ucx_flow_v3/03_EARS/ \
   --output tests/smoke/
 ```
 
@@ -877,8 +877,8 @@ CHG integration enables formal change management with the 4-Gate validation syst
 
 ```bash
 # For L2 Minor changes
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --chg-mode \
   --chg-level L2 \
   --chg-source midstream \
@@ -886,8 +886,8 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --report markdown
 
 # For L3 Major changes
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --chg-mode \
   --chg-level L3 \
   --chg-source upstream \
@@ -1061,8 +1061,8 @@ Change → SPEC update → TSPEC update → TASKS update → Code → Tests
 
 Resume from last completed layer:
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --resume \
   --auto-fix \
   --report markdown
@@ -1072,8 +1072,8 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 Generate execution plan without making changes:
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --plan-only \
   --report markdown
 ```
@@ -1082,8 +1082,8 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 
 Execute layers in parallel when possible:
 ```bash
-python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ucx_flow_v3 \
   --profile parallel \
   --auto-fix
 ```
@@ -1121,7 +1121,7 @@ The Autopilot includes a comprehensive test suite for validating TDD scripts and
 ### Test Suite Structure
 
 ```
-ai_dev_flow/AUTOPILOT/tests/
+ucx_flow_v3/AUTOPILOT/tests/
  conftest.py                    # Shared fixtures & configuration
  pytest.ini                     # Pytest settings & markers
  fixtures/                      # Baseline data for comparisons
@@ -1158,24 +1158,24 @@ ai_dev_flow/AUTOPILOT/tests/
 
 ```bash
 # Run all tests
-pytest ai_dev_flow/AUTOPILOT/tests/ -v
+pytest ucx_flow_v3/AUTOPILOT/tests/ -v
 
 # Run smoke tests only (quick validation)
-pytest ai_dev_flow/AUTOPILOT/tests/ -m smoke -v
+pytest ucx_flow_v3/AUTOPILOT/tests/ -m smoke -v
 
 # Run unit tests with coverage
-pytest ai_dev_flow/AUTOPILOT/tests/ -m unit \
-  --cov=ai_dev_flow/AUTOPILOT/scripts \
+pytest ucx_flow_v3/AUTOPILOT/tests/ -m unit \
+  --cov=ucx_flow_v3/AUTOPILOT/scripts \
   --cov-report=term-missing
 
 # Run regression tests
-pytest ai_dev_flow/AUTOPILOT/tests/ -m regression -v
+pytest ucx_flow_v3/AUTOPILOT/tests/ -m regression -v
 
 # Run BDD acceptance tests
-pytest ai_dev_flow/AUTOPILOT/tests/bdd/ -v
+pytest ucx_flow_v3/AUTOPILOT/tests/bdd/ -v
 
 # Exclude slow tests
-pytest ai_dev_flow/AUTOPILOT/tests/ -m "not slow" -v
+pytest ucx_flow_v3/AUTOPILOT/tests/ -m "not slow" -v
 ```
 
 ### Test Fixtures
@@ -1201,8 +1201,8 @@ Add to GitHub Actions workflow:
 - name: Run Autopilot Tests
   run: |
     pip install pytest pytest-cov pytest-bdd pyyaml
-    pytest ai_dev_flow/AUTOPILOT/tests/ -v \
-      --cov=ai_dev_flow/AUTOPILOT/scripts \
+    pytest ucx_flow_v3/AUTOPILOT/tests/ -v \
+      --cov=ucx_flow_v3/AUTOPILOT/scripts \
       --cov-report=xml \
       --junitxml=test-results.xml
 
@@ -1239,30 +1239,30 @@ When adding new TDD scripts, create corresponding tests:
 ## Related Documentation
 
 **Framework Guides**:
-- `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` - Workflow patterns
-- `ai_dev_flow/MVP_AUTOMATION_DESIGN.md` - Architecture design
-- `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` - SDD methodology
-- `ai_dev_flow/TRACEABILITY.md` - Traceability standards
+- `ucx_flow_v3/MVP_WORKFLOW_GUIDE.md` - Workflow patterns
+- `ucx_flow_v3/MVP_AUTOMATION_DESIGN.md` - Architecture design
+- `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` - SDD methodology
+- `ucx_flow_v3/TRACEABILITY.md` - Traceability standards
 
 **TSPEC & TDD** (v6.0):
-- `ai_dev_flow/10_TSPEC/README.md` - TSPEC layer overview
-- `ai_dev_flow/10_TSPEC/TSPEC-00_index.md` - Test specification index
-- `ai_dev_flow/TESTING_STRATEGY_TDD.md` - TDD integration guide
+- `ucx_flow_v3/10_TSPEC/README.md` - TSPEC layer overview
+- `ucx_flow_v3/10_TSPEC/TSPEC-00_index.md` - Test specification index
+- `ucx_flow_v3/TESTING_STRATEGY_TDD.md` - TDD integration guide
 
 **Change Management** (v6.0):
-- `ai_dev_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` - 4-Gate system
-- `ai_dev_flow/CHG/CHANGE_CLASSIFICATION_GUIDE.md` - L1/L2/L3 decision
-- `ai_dev_flow/CHG/CHG-MVP-TEMPLATE.md` - L2 change template
-- `ai_dev_flow/CHG/CHG-TEMPLATE.md` - L3 change template
+- `ucx_flow_v3/CHG/CHANGE_MANAGEMENT_GUIDE.md` - 4-Gate system
+- `ucx_flow_v3/CHG/CHANGE_CLASSIFICATION_GUIDE.md` - L1/L2/L3 decision
+- `ucx_flow_v3/CHG/CHG-MVP-TEMPLATE.md` - L2 change template
+- `ucx_flow_v3/CHG/CHG-TEMPLATE.md` - L3 change template
 
 **Validation**:
-- `ai_dev_flow/VALIDATION_STANDARDS.md` - Validation rules
-- Layer-specific validation rules: `ai_dev_flow/{LAYER}/*_VALIDATION_RULES.md`
+- `ucx_flow_v3/VALIDATION_STANDARDS.md` - Validation rules
+- Layer-specific validation rules: `ucx_flow_v3/{LAYER}/*_VALIDATION_RULES.md`
 
 **Scripts**:
-- `ai_dev_flow/scripts/README.md` - Script registry
-- `ai_dev_flow/10_TSPEC/scripts/README.md` - TSPEC validation scripts
-- `ai_dev_flow/CHG/scripts/` - CHG gate validation scripts
+- `ucx_flow_v3/scripts/README.md` - Script registry
+- `ucx_flow_v3/10_TSPEC/scripts/README.md` - TSPEC validation scripts
+- `ucx_flow_v3/CHG/scripts/` - CHG gate validation scripts
 
 ---
 

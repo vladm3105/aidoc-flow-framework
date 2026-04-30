@@ -50,10 +50,10 @@ Before creating EARS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
-4. **Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
-5. **Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-6. **Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+3. **Template**: `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
+4. **Schema**: `ucx_flow_v3/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
+5. **Creation Rules**: `ucx_flow_v3/03_EARS/EARS_CREATION_RULES.md`
+6. **Validation Rules**: `ucx_flow_v3/03_EARS/EARS_VALIDATION_RULES.md`
 
 ### Template Binding (CRITICAL)
 
@@ -467,7 +467,7 @@ Run validation scripts:
 python scripts/validate_ears.py --path docs/03_EARS/EARS-01_{slug}/EARS-01_{slug}.md
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ucx_flow_v3/scripts/validate_tags_against_docs.py \
   --artifact EARS-01 \
   --expected-layers brd,prd \
   --strict
@@ -594,17 +594,17 @@ The BDD will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
-- **Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation)
-- **Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+- **Template**: `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
+- **Schema**: `ucx_flow_v3/03_EARS/EARS_SCHEMA.yaml` (machine-readable validation)
+- **Creation Rules**: `ucx_flow_v3/03_EARS/EARS_CREATION_RULES.md`
+- **Validation Rules**: `ucx_flow_v3/03_EARS/EARS_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
-- **Threshold Naming**: `ai_dev_flow/THRESHOLD_NAMING_RULES.md`
+- **ID Standards**: `ucx_flow_v3/ID_NAMING_STANDARDS.md`
+- **Threshold Naming**: `ucx_flow_v3/THRESHOLD_NAMING_RULES.md`
 
 **Section Templates** (for documents >300 lines):
-- Index template: `ai_dev_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- Index template: `ucx_flow_v3/03_EARS/EARS-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/03_EARS/EARS-SECTION-TEMPLATE.md`
 
 ## Quick Reference
 

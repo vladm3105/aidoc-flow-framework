@@ -37,7 +37,7 @@ DEFAULT_MAPPINGS = [
     ("ai_project_issues_flow/governance/plans/IPLAN-TEMPLATE.md", "governance/plans/IPLAN-TEMPLATE.md"),
 
     # SDD artifact path standardization
-    ("ai_dev_flow/", "ucx_flow_v3/"),
+    ("ucx_flow_v3/", "ucx_flow_v3/"),
 
     # Template path corrections
     ("ai_project_issues_flow/templates/CONTRIBUTING.md", "CONTRIBUTING.md"),

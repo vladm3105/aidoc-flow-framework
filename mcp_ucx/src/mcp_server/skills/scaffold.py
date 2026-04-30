@@ -75,7 +75,7 @@ def _default_ssd_root() -> Path:
     v3_root = repo_root / "ucx_flow_v3"
     if v3_root.exists():
         return v3_root
-    return repo_root / "ai_dev_ssd_flow"
+    return repo_root / "ucx_flow_v3"
 
 
 def _is_content_identical(source: Path, target: Path) -> bool:

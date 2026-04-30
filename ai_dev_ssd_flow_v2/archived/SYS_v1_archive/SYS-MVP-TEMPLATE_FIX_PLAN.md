@@ -16,7 +16,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/` documents and align template, validation rules, schema, and skills to a consistent **15-section** MVP structure (Section 1: Document Control through Section 15: Change History).
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/06_SYS/` documents and align template, validation rules, schema, and skills to a consistent **15-section** MVP structure (Section 1: Document Control through Section 15: Change History).
 
 ## Target Files
 
@@ -71,10 +71,10 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/06_SYS/.backup_2026-02-26
 
 # Backup templates and rules
-cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS
+cd /opt/data/docs_flow_framework/ucx_flow_v3/06_SYS
 cp SYS-MVP-TEMPLATE.md .backup_2026-02-26/
 cp SYS-MVP-TEMPLATE.yaml .backup_2026-02-26/
 cp SYS_MVP_VALIDATION_RULES.md .backup_2026-02-26/
@@ -103,7 +103,7 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-sys* .backup_2026-02-26/
 
 1. **Immediate Rollback**:
    ```bash
-   cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS
+   cd /opt/data/docs_flow_framework/ucx_flow_v3/06_SYS
    # Restore all files
    cp .backup_2026-02-26/SYS-MVP-TEMPLATE.md ./
    cp .backup_2026-02-26/SYS-MVP-TEMPLATE.yaml ./
@@ -307,7 +307,7 @@ Add after Section 15 (Change History):
 > - This is the standard SYS template (15 sections: 1-15)
 > - Single file - no sectioning per user requirement
 > - Focus on system requirements + quality attributes
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full SYS" template)
 ```
 
@@ -769,7 +769,7 @@ traceability:
 # After:
 ### 1. SYS MVP Structure (15 Sections Total)
 
-**MVP Template**: See `ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
+**MVP Template**: See `ucx_flow_v3/06_SYS/SYS-MVP-TEMPLATE.md` for complete 15-section structure.
 ```
 
 ### 5.3 doc-sys_quickref.md Fixes (Gap 3, 14)
@@ -787,7 +787,7 @@ docs/06_SYS/SYS-NN_{descriptive_name}/SYS-NN_{descriptive_name}.md
 
 **Template path** (line 76) - no change needed, already correct:
 ```markdown
-ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md
+ucx_flow_v3/06_SYS/SYS-MVP-TEMPLATE.md
 ```
 
 ### 5.4 doc-sys-validator/SKILL.md Fixes (Gap 9)
@@ -905,7 +905,7 @@ grep -c "pattern:" SYS_MVP_SCHEMA.yaml
 
 **Verification Commands**:
 ```bash
-cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS
+cd /opt/data/docs_flow_framework/ucx_flow_v3/06_SYS
 
 # Count sections in MD template
 grep -c "^## [0-9]" SYS-MVP-TEMPLATE.md
@@ -984,7 +984,7 @@ EOF
 
 set -e
 
-SYS_DIR="/opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS"
+SYS_DIR="/opt/data/docs_flow_framework/ucx_flow_v3/06_SYS"
 SKILLS_DIR="/opt/data/docs_flow_framework/.claude/skills"
 
 RED='\033[0;31m'
@@ -1179,7 +1179,7 @@ fi
 ### 7.2 Make Script Executable
 
 ```bash
-chmod +x /opt/data/docs_flow_framework/ai_dev_ssd_flow/06_SYS/validate_sys_fixes.sh
+chmod +x /opt/data/docs_flow_framework/ucx_flow_v3/06_SYS/validate_sys_fixes.sh
 ```
 
 ---
@@ -1229,7 +1229,7 @@ Add to project CHANGELOG or create one:
 
 ### 8.3 Update REQ-MVP-TEMPLATE References
 
-**File**: `ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+**File**: `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md`
 
 Verify Section 13.1 (Upstream Sources) references correct SYS format:
 

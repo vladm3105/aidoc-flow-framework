@@ -44,7 +44,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python3 update_schema.py <schema_file> [schema_file2] ...")
         print("\nUpdates references section in schema to add yaml_template field.")
-        print("Example: python3 update_schema.py ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml")
+        print("Example: python3 update_schema.py ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml")
         sys.exit(1)
     
     for schema_path in sys.argv[1:]:

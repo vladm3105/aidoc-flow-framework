@@ -42,7 +42,7 @@ full file trees.
 
 ## Summary
 
-Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
+Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ucx_flow_v3/MVP_WORKFLOW_GUIDE.md` and `ucx_flow_v3/index.md` as an extended automation playbook.
 
 **Plan Date**: 2026-01-17T00:00:00  
 **Status**: FINAL REVIEW  
@@ -1345,7 +1345,7 @@ generation_plan:
 | Check | Criteria |
 |-------|----------|
 | File naming | Compliant with ID_NAMING_STANDARDS.md |
-| Template reference | Template exists in `ai_dev_flow/{TYPE}/` |
+| Template reference | Template exists in `ucx_flow_v3/{TYPE}/` |
 | Upstream refs | All referenced IDs exist in upstream documents |
 | Batch ordering | Dependencies resolved before dependents |
 | Completeness | All required artifacts covered |
@@ -1660,8 +1660,8 @@ Each layer configures the workflow via `handlers/lgw_{type}.yaml`:
 layer_id: L{N}_{TYPE}
 type: "{TYPE}"
 upstream_layers: ["L{N-1}"]
-template: "ai_dev_flow/{NN}_{TYPE}/{TYPE}-TEMPLATE.md"
-mvp_template: "ai_dev_flow/{NN}_{TYPE}/{TYPE}-MVP-TEMPLATE.md"
+template: "ucx_flow_v3/{NN}_{TYPE}/{TYPE}-TEMPLATE.md"
+mvp_template: "ucx_flow_v3/{NN}_{TYPE}/{TYPE}-MVP-TEMPLATE.md"
 output_dir: "docs/{TYPE}/"
 
 generation:

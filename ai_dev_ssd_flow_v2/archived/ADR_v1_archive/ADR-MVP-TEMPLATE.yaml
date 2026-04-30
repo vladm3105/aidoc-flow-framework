@@ -360,4 +360,4 @@ template_metadata:
   notes:
     - "YAML template aligned with MD template (11 sections)"
     - "No separate 'full ADR' template - expansion via NEW ADRs"
-    - "Maintains ai_dev_flow framework compliance"
+    - "Maintains ucx_flow_v3 framework compliance"

@@ -15,7 +15,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/` documents and align template, validation rules, schema, and skills to a consistent **11-section** MVP structure (Section 1: Document Control through Section 11: Implementation Notes).
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/` documents and align template, validation rules, schema, and skills to a consistent **11-section** MVP structure (Section 1: Document Control through Section 11: Implementation Notes).
 
 **Key Issue**: The MD template has `## 13. MVP Lifecycle` which creates a numbering gap (no Section 12) and contradicts the stated "11 sections" in multiple places. The YAML template correctly has only 11 sections (no Section 13).
 
@@ -76,7 +76,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/.backup_2026-02-26
 
 # Backup templates and rules
 cp REQ-MVP-TEMPLATE.md .backup_2026-02-26/

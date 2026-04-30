@@ -346,7 +346,7 @@ Validate that source SYS documents meet REQ-Ready requirements before generation
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_sys.py \
+python ucx_flow_v3/scripts/validate_sys.py \
   --sys docs/06_SYS/SYS-NN_{slug}.md \
   --min-score 90 \
   --auto-fix
@@ -373,7 +373,7 @@ Generate REQ documents from validated SYS with real-time quality feedback.
    ```
 
 2. **Load REQ Template**:
-   - Primary: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
+   - Primary: `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md`
    - Section templates: For sectioned REQ (>50KB)
 
 3. **Generate Document Control Section**:
@@ -593,7 +593,7 @@ After REQ generation, validate structure and dual readiness scores.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_req.py docs/07_REQ/REQ-NN_{slug}.md --verbose
+python ucx_flow_v3/scripts/validate_req.py docs/07_REQ/REQ-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -801,7 +801,7 @@ After passing the fix cycle:
 
    ```bash
    # Update REQ-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --req docs/07_REQ/REQ-NN_{slug}.md \
      --matrix docs/07_REQ/REQ-00_TRACEABILITY_MATRIX.md
    ```
@@ -838,7 +838,7 @@ Generate REQ from one SYS document.
 
 ```bash
 # Example: Generate REQ from SYS-01
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --sys docs/06_SYS/SYS-01_order_management.md \
   --output docs/07_REQ/ \
   --id 01 \
@@ -851,7 +851,7 @@ Generate REQ from multiple SYS documents in sequence.
 
 ```bash
 # Example: Generate REQ from all SYS
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --batch config/req_batch.yaml \
   --output docs/07_REQ/
 ```
@@ -888,7 +888,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --sys docs/06_SYS/SYS-01_order_management.md \
   --dry-run
 ```
@@ -903,12 +903,12 @@ Validate existing REQ documents and generate a quality report without modificati
 
 ```bash
 # Review single REQ folder
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode review
 
 # Review all REQ folders
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/ \
   --mode review \
   --output-report tmp/req_review_report.md
@@ -1037,24 +1037,24 @@ Auto-repair existing REQ documents while preserving manual content.
 
 ```bash
 # Fix single REQ folder
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --fix-types "element_ids,sections,cross_links"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/req_autopilot.py \
+python ucx_flow_v3/scripts/req_autopilot.py \
   --req docs/07_REQ/REQ-01_f1_iam/ \
   --mode fix \
   --dry-run
@@ -1399,7 +1399,7 @@ fi
 
 # Example: Trigger SPEC autopilot for validated REQ
 if [ "$REQ_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/spec_autopilot.py \
+  python ucx_flow_v3/scripts/spec_autopilot.py \
     --req "$REQ_PATH" \
     --output docs/SPEC/
 fi
@@ -1424,7 +1424,7 @@ jobs:
 
       - name: Run REQ Autopilot
         run: |
-          python ai_dev_flow/scripts/req_autopilot.py \
+          python ucx_flow_v3/scripts/req_autopilot.py \
             --sys docs/06_SYS/ \
             --output docs/07_REQ/ \
             --validate
@@ -1529,21 +1529,21 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **REQ Template**: `ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md`
-- **REQ Schema**: `ai_dev_flow/07_REQ/REQ_SCHEMA.yaml`
-- **REQ Creation Rules**: `ai_dev_flow/07_REQ/REQ_CREATION_RULES.md`
-- **REQ Validation Rules**: `ai_dev_flow/07_REQ/REQ_VALIDATION_RULES.md`
+- **REQ Template**: `ucx_flow_v3/07_REQ/REQ-MVP-TEMPLATE.md`
+- **REQ Schema**: `ucx_flow_v3/07_REQ/REQ_SCHEMA.yaml`
+- **REQ Creation Rules**: `ucx_flow_v3/07_REQ/REQ_CREATION_RULES.md`
+- **REQ Validation Rules**: `ucx_flow_v3/07_REQ/REQ_VALIDATION_RULES.md`
 
 ### Section Templates (for documents >50KB)
 
-- Index template: `ai_dev_flow/07_REQ/REQ-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/07_REQ/REQ-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ucx_flow_v3/07_REQ/REQ-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/07_REQ/REQ-SECTION-TEMPLATE.md`
+- Reference: `ucx_flow_v3/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md`
 - **SYS Autopilot Skill**: `.claude/skills/doc-sys-autopilot/SKILL.md` (if available)
 - **EARS Autopilot Skill**: `.claude/skills/doc-ears-autopilot/SKILL.md`
 

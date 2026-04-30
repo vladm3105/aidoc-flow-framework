@@ -47,10 +47,10 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| Schema | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
-| Template | `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md` |
-| Validation Rules | `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
+| Schema | `ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml` |
+| Template | `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` |
+| Creation Rules | `ucx_flow_v3/02_PRD/PRD_MVP_CREATION_RULES.md` |
+| Validation Rules | `ucx_flow_v3/02_PRD/PRD_MVP_VALIDATION_RULES.md` |
 | Layer | 2 |
 | Artifact Type | PRD |
 
@@ -239,22 +239,22 @@ Both scores must be present and meet thresholds for downstream artifact generati
 
 ```bash
 # Validate single PRD document (must be in nested folder)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
+python ucx_flow_v3/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
 
 # Validate all PRD documents in directory
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/
+python ucx_flow_v3/scripts/validate_prd.py docs/02_PRD/
 
 # Validate with verbose output
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --verbose
+python ucx_flow_v3/scripts/validate_prd.py docs/02_PRD/ --verbose
 
 # Validate with auto-fix (includes structure fixes)
-python ai_dev_flow/scripts/validate_prd.py docs/02_PRD/ --auto-fix
+python ucx_flow_v3/scripts/validate_prd.py docs/02_PRD/ --auto-fix
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
 
 # Layer-wide validation
-python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --layer PRD --auto-fix
 ```
 
 ## Validation Workflow
@@ -355,10 +355,10 @@ Info: 1
 
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, threshold tags)
 - **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **PRD Template**: `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Schema**: `ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ucx_flow_v3/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ucx_flow_v3/02_PRD/PRD_MVP_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Version History

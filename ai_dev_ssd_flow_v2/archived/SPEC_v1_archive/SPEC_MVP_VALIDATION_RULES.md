@@ -20,7 +20,7 @@ custom_fields:
 
 # SPEC Validation Rules Reference
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
 **Date**: 2025-11-30T00:00:00
@@ -28,7 +28,7 @@ custom_fields:
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python 09_SPEC/scripts/validate_spec.py`
 **Primary Template**: `SPEC-MVP-TEMPLATE.yaml`
-**Framework**: AI Dev Flow SDD (100% compliant)
+**Framework**: UCX Flow SDD (100% compliant)
 **Changes**: v1.3: Removed duplicate error code line (SPEC-E025). v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
 
 ---

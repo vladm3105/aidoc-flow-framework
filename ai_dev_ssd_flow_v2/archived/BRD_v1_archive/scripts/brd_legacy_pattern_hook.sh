@@ -23,4 +23,4 @@ else
 	BRD_ROOT="${REPO_ROOT}/${INPUT_ROOT}"
 fi
 
-python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/detect_legacy_element_ids.py" "${BRD_ROOT}" --summary
+python3 "${REPO_ROOT}/ucx_flow_v3/scripts/detect_legacy_element_ids.py" "${BRD_ROOT}" --summary

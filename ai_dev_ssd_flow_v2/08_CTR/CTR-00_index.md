@@ -13,7 +13,7 @@ custom_fields:
 
 # CTR-000: API Contracts Master Index
 
-Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ## Purpose
 This index catalogs all API contract documents (CTR) that define interfaces between components in the SDD workflow. Contracts specify request/response schemas, error handling, quality attributes, and versioning policies for component communication.

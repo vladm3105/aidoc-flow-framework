@@ -247,7 +247,7 @@ For each persona prompt build:
 4. `prompts/templates/creation` — UCC creation prompt templates
 5. `prompts/templates/review` — UCR review prompt templates
 6. `prompts/templates/remediation` — UCRem remediation prompt templates
-7. `templates` — document templates and layer-specific schemas (from `ai_dev_ssd_flow/`)
+7. `templates` — document templates and layer-specific schemas (from `ucx_flow_v3/`)
 
 No-overwrite semantics: existing files in the project UCX directory are never overwritten. Re-running `sdd_init` is safe and idempotent.
 

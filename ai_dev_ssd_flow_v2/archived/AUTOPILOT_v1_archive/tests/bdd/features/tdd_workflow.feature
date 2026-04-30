@@ -1,6 +1,6 @@
 @bdd @tdd-workflow
 Feature: TDD Workflow Automation
-  As a developer using the AI Dev Flow framework
+  As a developer using the UCX Flow framework
   I want automated TDD workflow support
   So that I can follow test-driven development practices efficiently
 

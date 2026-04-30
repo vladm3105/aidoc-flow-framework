@@ -38,13 +38,13 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/BRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml mcp_sdd/templates/BRD-TEMPLATE.yaml
+cp ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml mcp_sdd/templates/BRD-TEMPLATE.yaml
 ```
 
 If the runtime copy is stale, `sdd_create` and `sdd_validate` will use outdated structure.

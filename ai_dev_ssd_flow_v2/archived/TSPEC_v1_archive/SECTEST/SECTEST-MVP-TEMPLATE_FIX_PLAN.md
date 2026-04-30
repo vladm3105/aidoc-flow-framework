@@ -313,8 +313,8 @@ x-validation-rules:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
-2. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml` - Update traceability structure and x-validation-rules
+1. `ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml` - Restructure traceability with cumulative tags
+2. `ucx_flow_v3/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml` - Update traceability structure and x-validation-rules
 
 **Steps**:
 
@@ -329,7 +329,7 @@ x-validation-rules:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md` - Update traceability section and AI_CONTEXT
+1. `ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md` - Update traceability section and AI_CONTEXT
 
 **Steps**:
 
@@ -344,31 +344,31 @@ x-validation-rules:
 
 ```bash
 # Verify YAML template has cumulative tags
-grep -c "@brd" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml
+grep -c "@brd" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml
 # Expected: ≥1
 
 # Verify schema has cumulative_tags structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
 # Expected: Both sections present
 
 # Verify YAML template structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 
 # Verify MD template has cumulative tags section
-grep -c "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md
+grep -c "Cumulative Tags" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md
 # Expected: ≥1
 
 # Verify AI_CONTEXT mentions cumulative tags (case-insensitive)
-grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md
+grep -i "cumulative" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST-MVP-TEMPLATE.md
 # Expected: Results showing cumulative tags mention
 
 # Verify x-validation-rules updated (no "upstream" references in rules)
-grep "upstream" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
+grep "upstream" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
 # Expected: 0 or only in description text (not in required/check fields)
 
 # Verify x-validation-rules reference type_specific
-grep "type_specific" ai_dev_ssd_flow/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
+grep "type_specific" ucx_flow_v3/10_TSPEC/SECTEST/SECTEST_MVP_SCHEMA.yaml
 # Expected: Multiple results including x-validation-rules
 ```
 

@@ -223,7 +223,7 @@ traceability:
 
   # SYS -> SPEC ownership bridge (C4 L4 handoff)
   # Compatibility-window policy: warning-first if omitted during migration.
-  sys_c4_l4_owner_ref: "SPEC-NN / ai_dev_ssd_flow/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml"
+  sys_c4_l4_owner_ref: "SPEC-NN / ucx_flow_v3/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml"
   required_sequence_paths:
     - success
     - timeout

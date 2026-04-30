@@ -325,7 +325,7 @@ Before generating a PRD, validate that the source BRD meets PRD-Ready requiremen
 
 **Validation Command** (internal):
 ```bash
-python ai_dev_flow/scripts/validate_prd_ready.py \
+python ucx_flow_v3/scripts/validate_prd_ready.py \
   --brd docs/01_BRD/BRD-01_f1_iam/ \
   --min-score 90 \
   --auto-fix
@@ -349,7 +349,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-   - **MVP Template** (standard): `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
+   - **MVP Template** (standard): `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md` (17 sections, ≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
    - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
@@ -573,7 +573,7 @@ After passing the fix cycle:
 5. **Traceability Matrix Update**:
    ```bash
    # Update PRD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --prd docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md \
      --matrix docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md
    ```
@@ -1114,7 +1114,7 @@ Generated after completion:
 | `BRDNotFoundError` | Specified BRD does not exist | Check path and BRD ID |
 | `PRDReadyScoreLow` | BRD score < 90% after auto-fix attempts | Manual BRD improvement required |
 | `EARSReadyScoreLow` | PRD score < 90% after auto-fix | Manual PRD improvement required |
-| `TemplateNotFoundError` | PRD template missing | Verify `ai_dev_flow/02_PRD/` exists |
+| `TemplateNotFoundError` | PRD template missing | Verify `ucx_flow_v3/02_PRD/` exists |
 
 ### Recovery Actions
 
@@ -1159,7 +1159,7 @@ Generated after completion:
 Before using this skill, ensure:
 
 1. **BRD Documents Exist**: At least one BRD in `docs/01_BRD/`
-2. **Templates Available**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
+2. **Templates Available**: `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
 3. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ### Pre-Flight Check
@@ -1169,7 +1169,7 @@ Before using this skill, ensure:
 ls docs/01_BRD/
 
 # Verify PRD template
-ls ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md
+ls ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md
 
 # Check for existing PRDs
 ls docs/02_PRD/ 2>/dev/null || echo "PRD directory will be created"
@@ -1233,15 +1233,15 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **PRD Template**: `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **PRD Creation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_CREATION_RULES.md`
-- **PRD Validation Rules**: `ai_dev_flow/02_PRD/PRD_MVP_VALIDATION_RULES.md`
+- **PRD Template**: `ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md`
+- **PRD Schema**: `ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **PRD Creation Rules**: `ucx_flow_v3/02_PRD/PRD_MVP_CREATION_RULES.md`
+- **PRD Validation Rules**: `ucx_flow_v3/02_PRD/PRD_MVP_VALIDATION_RULES.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md`
 
 ---
 

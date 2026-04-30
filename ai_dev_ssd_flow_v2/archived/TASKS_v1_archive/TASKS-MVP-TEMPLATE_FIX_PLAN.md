@@ -41,7 +41,7 @@ This fix plan addresses **12 identified gaps** in TASKS template and schema file
 
 ### GAP-01: TASKS-MVP-TEMPLATE.md Does Not Exist (CRITICAL)
 
-**Location**: `ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.md`
+**Location**: `ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.md`
 
 **Current State**: File does not exist. A symlink `TASKS-TEMPLATE.md -> TASKS-MVP-TEMPLATE.md` points to this non-existent file.
 
@@ -330,7 +330,7 @@ custom_fields:
 
 ### GAP-09: Broken Symlink TASKS-TEMPLATE.md
 
-**Location**: `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md`
+**Location**: `ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.md`
 
 **Current**: Symlink pointing to non-existent `TASKS-MVP-TEMPLATE.md`
 
@@ -384,7 +384,7 @@ custom_fields:
 
 **Files to create**:
 
-1. `ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.md` - Create from YAML template
+1. `ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.md` - Create from YAML template
 
 **Steps**:
 
@@ -397,7 +397,7 @@ custom_fields:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml`
+1. `ucx_flow_v3/11_TASKS/TASKS_MVP_SCHEMA.yaml`
 
 **Steps**:
 
@@ -409,7 +409,7 @@ custom_fields:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml`
+1. `ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.yaml`
 
 **Steps**:
 
@@ -420,9 +420,9 @@ custom_fields:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/11_TASKS/README.md` - Update section count
-2. `ai_dev_ssd_flow/11_TASKS/TASKS_MVP_VALIDATION_RULES.md` - Update section references
-3. `ai_dev_ssd_flow/11_TASKS/TASKS_MVP_CREATION_RULES.md` - Update section references
+1. `ucx_flow_v3/11_TASKS/README.md` - Update section count
+2. `ucx_flow_v3/11_TASKS/TASKS_MVP_VALIDATION_RULES.md` - Update section references
+3. `ucx_flow_v3/11_TASKS/TASKS_MVP_CREATION_RULES.md` - Update section references
 
 **Steps**:
 
@@ -434,7 +434,7 @@ custom_fields:
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/11_TASKS/TASKS_MVP_QUALITY_GATE_VALIDATION.md`
+1. `ucx_flow_v3/11_TASKS/TASKS_MVP_QUALITY_GATE_VALIDATION.md`
 
 **Steps**:
 
@@ -446,35 +446,35 @@ custom_fields:
 
 ```bash
 # Verify MD template exists
-ls -la ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.md
+ls -la ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.md
 # Expected: File exists (not broken symlink)
 
 # Verify symlink is valid
-file ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md
+file ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.md
 # Expected: "symbolic link to TASKS-MVP-TEMPLATE.md" (valid)
 
 # Verify layer in schema
-grep -n "const: 11" ai_dev_ssd_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml | head -5
+grep -n "const: 11" ucx_flow_v3/11_TASKS/TASKS_MVP_SCHEMA.yaml | head -5
 # Expected: layer const is 11
 
 # Verify traceability structure in YAML
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.yaml
 # Expected: Both sections present
 
 # Verify traceability structure in schema
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/11_TASKS/TASKS_MVP_SCHEMA.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/11_TASKS/TASKS_MVP_SCHEMA.yaml
 # Expected: Both sections present
 
 # Verify MD template has cumulative tags section
-grep -n "Cumulative Tags" ai_dev_ssd_flow/11_TASKS/TASKS-MVP-TEMPLATE.md
+grep -n "Cumulative Tags" ucx_flow_v3/11_TASKS/TASKS-MVP-TEMPLATE.md
 # Expected: Section header present
 
 # Verify Quality Gate layer
-grep "layer: 11" ai_dev_ssd_flow/11_TASKS/TASKS_MVP_QUALITY_GATE_VALIDATION.md
+grep "layer: 11" ucx_flow_v3/11_TASKS/TASKS_MVP_QUALITY_GATE_VALIDATION.md
 # Expected: layer is 11
 
 # Verify section count in README
-grep -i "13 sections\|13-section" ai_dev_ssd_flow/11_TASKS/README.md
+grep -i "13 sections\|13-section" ucx_flow_v3/11_TASKS/README.md
 # Expected: 13 sections mentioned
 ```
 

@@ -12,8 +12,8 @@ Smoke tests validate:
 - No obvious regressions
 
 Usage:
-    python generate_smoke_tests.py --ears-dir ai_dev_flow/03_EARS/ --output tests/smoke/
-    python generate_smoke_tests.py --bdd-dir ai_dev_flow/04_BDD/ --output tests/smoke/
+    python generate_smoke_tests.py --ears-dir ucx_flow_v3/03_EARS/ --output tests/smoke/
+    python generate_smoke_tests.py --bdd-dir ucx_flow_v3/04_BDD/ --output tests/smoke/
 
 Reference: IPLAN-001 Section 4.3.5
 """
@@ -524,20 +524,20 @@ def main():
         epilog="""
 Examples:
   # Generate from EARS files
-  python generate_smoke_tests.py --ears-dir ai_dev_flow/03_EARS/ --output tests/smoke/
+  python generate_smoke_tests.py --ears-dir ucx_flow_v3/03_EARS/ --output tests/smoke/
 
   # Generate from BDD feature files
-  python generate_smoke_tests.py --bdd-dir ai_dev_flow/04_BDD/ --output tests/smoke/
+  python generate_smoke_tests.py --bdd-dir ucx_flow_v3/04_BDD/ --output tests/smoke/
 
   # Generate from all sources
   python generate_smoke_tests.py \\
-    --ears-dir ai_dev_flow/03_EARS/ \\
-    --bdd-dir ai_dev_flow/04_BDD/ \\
-    --req-dir ai_dev_flow/07_REQ/ \\
+    --ears-dir ucx_flow_v3/03_EARS/ \\
+    --bdd-dir ucx_flow_v3/04_BDD/ \\
+    --req-dir ucx_flow_v3/07_REQ/ \\
     --output tests/smoke/
 
   # With custom timeout
-  python generate_smoke_tests.py --bdd-dir ai_dev_flow/04_BDD/ --output tests/smoke/ --timeout 60
+  python generate_smoke_tests.py --bdd-dir ucx_flow_v3/04_BDD/ --output tests/smoke/ --timeout 60
         """
     )
 

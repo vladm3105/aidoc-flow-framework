@@ -1466,4 +1466,4 @@ PW = FTE × Weeks
 
 ---
 
-*This document is part of the AI Dev Flow governance framework and should be used in conjunction with project-specific planning documents.*
+*This document is part of the UCX Flow governance framework and should be used in conjunction with project-specific planning documents.*

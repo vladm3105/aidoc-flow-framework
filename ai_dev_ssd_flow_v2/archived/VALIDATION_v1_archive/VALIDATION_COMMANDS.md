@@ -35,7 +35,7 @@ Scope policy: pre-commit blocking checks run for instance documents with `custom
 
 ### Master Orchestrator: validate_all.sh
 
-**Location:** `ai_dev_flow/07_REQ/scripts/validate_all.sh`
+**Location:** `ucx_flow_v3/07_REQ/scripts/validate_all.sh`
 
 **Purpose:** Single entry point for all REQ validation workflows
 
@@ -218,7 +218,7 @@ python3 add_crosslinks_req.py --req-num 8
 
 ### Master Validator: validate_all.sh
 
-**Location:** `ai_dev_flow/01_BRD/scripts/validate_all.sh` (or 02_PRD, 03_EARS)
+**Location:** `ucx_flow_v3/01_BRD/scripts/validate_all.sh` (or 02_PRD, 03_EARS)
 
 **Purpose:** Unified validation for business requirements documents
 
@@ -235,7 +235,7 @@ bash validate_all.sh --directory <folder>
 bash validate_all.sh --directory <folder> --min-score 85
 ```
 
-**Note:** Validators and gates differ from REQ. See REQ-specific documentation at `ai_dev_flow/07_REQ/VALIDATION_COMMANDS.md`.
+**Note:** Validators and gates differ from REQ. See REQ-specific documentation at `ucx_flow_v3/07_REQ/VALIDATION_COMMANDS.md`.
 
 ---
 
@@ -243,7 +243,7 @@ bash validate_all.sh --directory <folder> --min-score 85
 
 ### Master Validator: validate_all.sh
 
-**Location:** `ai_dev_flow/09_SPEC/scripts/validate_all.sh`
+**Location:** `ucx_flow_v3/09_SPEC/scripts/validate_all.sh`
 
 **Purpose:** Validate technical specifications against requirements
 
@@ -299,13 +299,13 @@ python3 scripts/validate_framework.py --strict
 
 ### 1. Pre-Commit Validation (Single File)
 ```bash
-cd ai_dev_flow/07_REQ/scripts
+cd ucx_flow_v3/07_REQ/scripts
 bash validate_all.sh --file path/to/file.md
 ```
 
 ### 2. Release Validation (Directory)
 ```bash
-cd ai_dev_flow/07_REQ/scripts
+cd ucx_flow_v3/07_REQ/scripts
 bash validate_all.sh --directory /full/path/to/REQ-06_infrastructure
 ```
 
@@ -313,7 +313,7 @@ bash validate_all.sh --directory /full/path/to/REQ-06_infrastructure
 ```bash
 #!/bin/bash
 cd /path/to/docs
-bash ai_dev_flow/07_REQ/scripts/validate_all.sh --directory ai_dev_flow/07_REQ || exit 1
+bash ucx_flow_v3/07_REQ/scripts/validate_all.sh --directory ucx_flow_v3/07_REQ || exit 1
 echo " All REQ validations passed"
 ```
 
@@ -331,8 +331,8 @@ bash validate_all.sh --directory . --skip-quality
 
 ```bash
 # Make scripts executable
-chmod +x ai_dev_flow/*/scripts/*.sh
-chmod +x ai_dev_flow/*/scripts/*.py
+chmod +x ucx_flow_v3/*/scripts/*.sh
+chmod +x ucx_flow_v3/*/scripts/*.py
 ```
 
 ### Module Not Found (Python)

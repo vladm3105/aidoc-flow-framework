@@ -54,7 +54,7 @@ This document defines validation rules for BRD documents. Both **Claude skills**
 | `validate_standardized_element_codes.py` | Validate compliant BRD.NN.TT.SS IDs | 0=pass, 2=fail |
 | `detect_legacy_element_ids.py` | Detect legacy patterns (FR-*, ADR-*, etc.) | 0=pass, 2=fail |
 
-**Location**: `ai_dev_ssd_flow/scripts/`
+**Location**: `ucx_flow_v3/scripts/`
 
 ---
 
@@ -89,16 +89,16 @@ For validating a specific BRD, call scripts directly with the BRD path:
 
 ```bash
 # Validate element IDs
-python3 ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py <BRD_FOLDER> --verbose
+python3 ucx_flow_v3/scripts/validate_standardized_element_codes.py <BRD_FOLDER> --verbose
 
 # Detect legacy patterns
-python3 ai_dev_ssd_flow/scripts/detect_legacy_element_ids.py <BRD_FOLDER> --verbose --summary
+python3 ucx_flow_v3/scripts/detect_legacy_element_ids.py <BRD_FOLDER> --verbose --summary
 ```
 
 **Example**:
 ```bash
-python3 ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py docs/01_BRD/BRD-63_project_governance --verbose
-python3 ai_dev_ssd_flow/scripts/detect_legacy_element_ids.py docs/01_BRD/BRD-63_project_governance --verbose --summary
+python3 ucx_flow_v3/scripts/validate_standardized_element_codes.py docs/01_BRD/BRD-63_project_governance --verbose
+python3 ucx_flow_v3/scripts/detect_legacy_element_ids.py docs/01_BRD/BRD-63_project_governance --verbose --summary
 ```
 
 ### 4.3 All BRDs Validation (Pre-commit/CI)
@@ -213,7 +213,7 @@ Violations produce `BRD-E022` errors (non-canonical code) or `GATE-W008` warning
 
 ### Script Execution
 ```bash
-python3 ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py docs/01_BRD/BRD-63_project_governance --verbose
+python3 ucx_flow_v3/scripts/validate_standardized_element_codes.py docs/01_BRD/BRD-63_project_governance --verbose
 ```
 
 ### Results
@@ -221,7 +221,7 @@ python3 ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py docs/01_B
 
 ### Legacy Pattern Check
 ```bash
-python3 ai_dev_ssd_flow/scripts/detect_legacy_element_ids.py docs/01_BRD/BRD-63_project_governance --verbose --summary
+python3 ucx_flow_v3/scripts/detect_legacy_element_ids.py docs/01_BRD/BRD-63_project_governance --verbose --summary
 ```
 
 ### Results
@@ -245,10 +245,10 @@ The same scripts are used by pre-commit hooks:
 ```yaml
 # .pre-commit-config.yaml
 - id: brd-standardized-element-codes
-  entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
+  entry: bash ucx_flow_v3/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
 
 - id: brd-legacy-pattern-detection
-  entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
+  entry: bash ucx_flow_v3/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
 ```
 
 ---

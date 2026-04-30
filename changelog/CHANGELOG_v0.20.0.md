@@ -72,12 +72,12 @@ Authoritative layer definitions in `ucx_flow_v3/LAYER_REGISTRY.yaml` (232 lines)
 
 ## v2 Documentation Updates
 
-- Fixed stale indexes in 24 ai_dev_ssd_flow/ files (removed `_draft` suffixes, corrected cross-references)
+- Fixed stale indexes in 24 ucx_flow_v3/ files (removed `_draft` suffixes, corrected cross-references)
 - Updated layer count references from 14 to reflect v3 8-layer structure
-- `ai_dev_ssd_flow/README.md`: added v3 availability notice and cross-reference
-- `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`: 6 lines updated for dev/deploy separation
-- `ai_dev_ssd_flow/11_TASKS/IMPLEMENTATION_PLAN_README.md`: 5 lines updated for IPLAN handoff
-- `ai_dev_ssd_flow/11_TASKS/TASKS-00_index.md`: 3 lines updated
+- `ucx_flow_v3/README.md`: added v3 availability notice and cross-reference
+- `ucx_flow_v3/PROJECT/PROJECT_MODEL.md`: 6 lines updated for dev/deploy separation
+- `ucx_flow_v3/11_TASKS/IMPLEMENTATION_PLAN_README.md`: 5 lines updated for IPLAN handoff
+- `ucx_flow_v3/11_TASKS/TASKS-00_index.md`: 3 lines updated
 
 ## mcp_ucx Template Updates
 
@@ -85,7 +85,7 @@ Authoritative layer definitions in `ucx_flow_v3/LAYER_REGISTRY.yaml` (232 lines)
 
 ## Backward Compatibility
 
-- v2 ai_dev_ssd_flow/ preserved as-is — existing projects continue unaffected
+- v2 ucx_flow_v3/ preserved as-is — existing projects continue unaffected
 - v3 is an opt-in migration for new projects
 - v2 → v3 migration guidance in `ucx_flow_v3/plans/`
 - CHG overlay follows same opt-in pattern — gates trigger only when CHG process is invoked

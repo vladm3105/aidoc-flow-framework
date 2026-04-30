@@ -7,16 +7,16 @@
 
 ## Executive Summary
 
-This fix plan addresses **36 identified gaps** across TSPEC template files, skill documentation, reviewer/fixer skills, and validator rules. Issues include incorrect path references (`ai_dev_flow` vs `ai_dev_ssd_flow`), missing test type codes (44-45 for PTEST/SECTEST) across multiple skills, inconsistent cumulative tag formats, section count mismatches between templates (6 sections) and validator (7 sections), missing quick reference file, and **traceability structure modernization** (UTEST, ITEST, STEST templates/schemas still use deprecated `upstream` structure instead of `cumulative_tags`/`type_specific`).
+This fix plan addresses **36 identified gaps** across TSPEC template files, skill documentation, reviewer/fixer skills, and validator rules. Issues include incorrect path references (`ucx_flow_v3` vs `ucx_flow_v3`), missing test type codes (44-45 for PTEST/SECTEST) across multiple skills, inconsistent cumulative tag formats, section count mismatches between templates (6 sections) and validator (7 sections), missing quick reference file, and **traceability structure modernization** (UTEST, ITEST, STEST templates/schemas still use deprecated `upstream` structure instead of `cumulative_tags`/`type_specific`).
 
 ## Gap Summary Table
 
 | Gap ID | File | Issue | Severity | Phase |
 | ------ | ---- | ----- | -------- | ----- |
-| GAP-01 | TSPEC-MVP-TEMPLATE.md | Template paths use `ai_dev_flow/` instead of `ai_dev_ssd_flow/` | HIGH | 1 |
-| GAP-02 | doc-tspec/SKILL.md | All template paths use `ai_dev_flow/` (14+ occurrences) | HIGH | 1 |
-| GAP-03 | doc-tspec-validator/SKILL.md | All template paths use `ai_dev_flow/` (12+ occurrences) | HIGH | 1 |
-| GAP-04 | doc-tspec-autopilot/SKILL.md | Template path at line 759 uses `ai_dev_flow/` | HIGH | 1 |
+| GAP-01 | TSPEC-MVP-TEMPLATE.md | Template paths use `ucx_flow_v3/` instead of `ucx_flow_v3/` | HIGH | 1 |
+| GAP-02 | doc-tspec/SKILL.md | All template paths use `ucx_flow_v3/` (14+ occurrences) | HIGH | 1 |
+| GAP-03 | doc-tspec-validator/SKILL.md | All template paths use `ucx_flow_v3/` (12+ occurrences) | HIGH | 1 |
+| GAP-04 | doc-tspec-autopilot/SKILL.md | Template path at line 759 uses `ucx_flow_v3/` | HIGH | 1 |
 | GAP-05 | doc-tspec/SKILL.md | Missing PTEST (code 44) and SECTEST (code 45) support | MEDIUM | 2 |
 | GAP-06 | doc-tspec-validator/SKILL.md | Missing PTEST (code 44) and SECTEST (code 45) validation | MEDIUM | 2 |
 | GAP-07 | doc-tspec-autopilot/SKILL.md | Missing PTEST (code 44) and SECTEST (code 45) in workflow | MEDIUM | 2 |
@@ -24,7 +24,7 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 | GAP-09 | TSPEC-MVP-TEMPLATE.md | AI_CONTEXT says "5 required sections" but template has 5 main + appendix | LOW | 3 |
 | GAP-10 | doc-tspec-validator/SKILL.md | Validates 7 sections but aggregator template has 5 sections | MEDIUM | 3 |
 | GAP-11 | TSPEC-MVP-TEMPLATE.md | Appendix shows flat structure instead of nested folder structure | MEDIUM | 4 |
-| GAP-12 | README.md | Scripts directory shows `scripts/` but actual path is `ai_dev_ssd_flow/10_TSPEC/scripts/` | LOW | 4 |
+| GAP-12 | README.md | Scripts directory shows `scripts/` but actual path is `ucx_flow_v3/10_TSPEC/scripts/` | LOW | 4 |
 | GAP-13 | N/A | Missing `.claude/skills/doc-tspec_quickref.md` file | MEDIUM | 5 |
 | GAP-14 | doc-tspec/SKILL.md | Version 1.0 needs update after fixes | LOW | 8 |
 | GAP-15 | doc-tspec-validator/SKILL.md | Version 1.1 needs update after fixes | LOW | 8 |
@@ -68,7 +68,7 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 >   - `SECTEST/SECTEST-MVP-TEMPLATE.md` - Security tests
 ```
 
-**Issue**: Template paths are relative but should reference `ai_dev_ssd_flow/10_TSPEC/` prefix for consistency with other skills.
+**Issue**: Template paths are relative but should reference `ucx_flow_v3/10_TSPEC/` prefix for consistency with other skills.
 
 **Fix**: Paths are correct as relative references within same directory. No change needed for GAP-01.
 
@@ -81,18 +81,18 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 **Current**:
 
 ```markdown
-- UTEST: `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- ITEST: `ai_dev_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+- UTEST: `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
+- ITEST: `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
 ```
 
 **Required**:
 
 ```markdown
-- UTEST: `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- ITEST: `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
+- UTEST: `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
+- ITEST: `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
 ```
 
-**Fix**: Replace all `ai_dev_flow/10_TSPEC/` with `ai_dev_ssd_flow/10_TSPEC/`
+**Fix**: Replace all `ucx_flow_v3/10_TSPEC/` with `ucx_flow_v3/10_TSPEC/`
 
 ---
 
@@ -103,18 +103,18 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 **Current**:
 
 ```markdown
-| TSPEC Index | `ai_dev_flow/10_TSPEC/TSPEC-00_index.md` |
-| UTEST Template | `ai_dev_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
+| TSPEC Index | `ucx_flow_v3/10_TSPEC/TSPEC-00_index.md` |
+| UTEST Template | `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
 ```
 
 **Required**:
 
 ```markdown
-| TSPEC Index | `ai_dev_ssd_flow/10_TSPEC/TSPEC-00_index.md` |
-| UTEST Template | `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
+| TSPEC Index | `ucx_flow_v3/10_TSPEC/TSPEC-00_index.md` |
+| UTEST Template | `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` |
 ```
 
-**Fix**: Replace all `ai_dev_flow/10_TSPEC/` with `ai_dev_ssd_flow/10_TSPEC/`
+**Fix**: Replace all `ucx_flow_v3/10_TSPEC/` with `ucx_flow_v3/10_TSPEC/`
 
 ---
 
@@ -125,13 +125,13 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 **Current**:
 
 ```markdown
-- **TSPEC Template**: `ai_dev_flow/10_TSPEC/TSPEC-TEMPLATE.md`
+- **TSPEC Template**: `ucx_flow_v3/10_TSPEC/TSPEC-TEMPLATE.md`
 ```
 
 **Required**:
 
 ```markdown
-- **TSPEC Template**: `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md`
+- **TSPEC Template**: `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md`
 ```
 
 **Fix**: Update path and filename to MVP template
@@ -262,7 +262,7 @@ This fix plan addresses **36 identified gaps** across TSPEC template files, skil
 
 **Current**: Shows `scripts/` relative path
 
-**Issue**: Actual path is `ai_dev_ssd_flow/10_TSPEC/scripts/`
+**Issue**: Actual path is `ucx_flow_v3/10_TSPEC/scripts/`
 
 **Fix**: Clarify relative path is from within `10_TSPEC/` directory (no change needed, relative paths are correct)
 
@@ -731,14 +731,14 @@ properties:
 
 **Files to modify**:
 
-1. `.claude/skills/doc-tspec/SKILL.md` - Replace `ai_dev_flow/` with `ai_dev_ssd_flow/`
-2. `.claude/skills/doc-tspec-validator/SKILL.md` - Replace `ai_dev_flow/` with `ai_dev_ssd_flow/`
+1. `.claude/skills/doc-tspec/SKILL.md` - Replace `ucx_flow_v3/` with `ucx_flow_v3/`
+2. `.claude/skills/doc-tspec-validator/SKILL.md` - Replace `ucx_flow_v3/` with `ucx_flow_v3/`
 3. `.claude/skills/doc-tspec-autopilot/SKILL.md` - Fix template path
 
 **Verification**:
 
 ```bash
-grep -r "ai_dev_flow/10_TSPEC" .claude/skills/
+grep -r "ucx_flow_v3/10_TSPEC" .claude/skills/
 # Expected: No results
 ```
 
@@ -753,7 +753,7 @@ grep -r "ai_dev_flow/10_TSPEC" .claude/skills/
 3. `.claude/skills/doc-tspec-autopilot/SKILL.md` - Add PTEST and SECTEST to test type tables
 4. `.claude/skills/doc-tspec-reviewer/SKILL.md` - Update test type count (4→6), add to nested folder table, add codes 44-45
 5. `.claude/skills/doc-tspec-fixer/SKILL.md` - Add to nested folder table, add codes 44-45 to type mapping
-6. `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.yaml` - Verify PTEST/SECTEST link paths
+6. `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.yaml` - Verify PTEST/SECTEST link paths
 
 **Element Type Code Reference**:
 
@@ -773,7 +773,7 @@ grep -r "ai_dev_flow/10_TSPEC" .claude/skills/
 **Files to modify**:
 
 1. `.claude/skills/doc-tspec-autopilot/SKILL.md` - Fix @spec tag format from `SPEC.NN.TT.SS` to `SPEC-NN`
-2. `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Clarify section count in AI_CONTEXT
+2. `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Clarify section count in AI_CONTEXT
 
 **Verification**:
 
@@ -788,7 +788,7 @@ grep -n "@spec: SPEC\." .claude/skills/doc-tspec-autopilot/SKILL.md
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Update appendix to show nested folder structure
+1. `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Update appendix to show nested folder structure
 2. `.claude/skills/doc-tspec-validator/SKILL.md` - Update Section 6 to show nested folder structure
 
 ---
@@ -826,7 +826,7 @@ grep -n "@spec: SPEC\." .claude/skills/doc-tspec-autopilot/SKILL.md
 
 **Files to modify**:
 
-1. `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Clarify that aggregator has 5 sections vs individual test types which have 6 sections
+1. `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md` - Clarify that aggregator has 5 sections vs individual test types which have 6 sections
 2. Add note distinguishing aggregator template purpose from individual test type templates
 
 ---
@@ -895,27 +895,27 @@ grep -n "@spec: SPEC\." .claude/skills/doc-tspec-autopilot/SKILL.md
 
 ```bash
 # Verify YAML templates use cumulative_tags structure
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
-grep -n "cumulative_tags\|type_specific" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml
+grep -n "cumulative_tags\|type_specific" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml
 # Expected: Both sections present in each
 
 # Verify schemas use cumulative_tags structure (no upstream in required)
-grep -n "upstream" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
-grep -n "upstream" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml
-grep -n "upstream" ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml
+grep -n "upstream" ucx_flow_v3/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml
+grep -n "upstream" ucx_flow_v3/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml
+grep -n "upstream" ucx_flow_v3/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml
 # Expected: 0 results or only in description text
 
 # Verify MD templates have Cumulative Tags section
-grep -c "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
-grep -c "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
-grep -c "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
+grep -c "Cumulative Tags" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
+grep -c "Cumulative Tags" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
+grep -c "Cumulative Tags" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
 # Expected: ≥1 each
 
 # Verify AI_CONTEXT mentions cumulative tags
-grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
-grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
-grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
+grep -i "cumulative" ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md
+grep -i "cumulative" ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md
+grep -i "cumulative" ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
 # Expected: Results showing cumulative tags in AI_CONTEXT
 ```
 
@@ -925,7 +925,7 @@ grep -i "cumulative" ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md
 
 ```bash
 # Phase 1: Verify no old paths remain in all TSPEC skills
-grep -rn "ai_dev_flow/10_TSPEC" .claude/skills/doc-tspec*.md
+grep -rn "ucx_flow_v3/10_TSPEC" .claude/skills/doc-tspec*.md
 
 # Phase 2: Verify PTEST/SECTEST codes present in all 5 skill files
 grep -n "code 44\|code 45\|PTEST\|SECTEST" .claude/skills/doc-tspec/SKILL.md
@@ -939,7 +939,7 @@ grep -n "@spec: SPEC\." .claude/skills/doc-tspec-autopilot/SKILL.md
 # Expected: No results (should use SPEC-NN format)
 
 # Phase 4: Verify nested folder structure documented
-grep -A5 "Appendix" ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md
+grep -A5 "Appendix" ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md
 
 # Phase 5: Verify quick reference exists
 ls -la .claude/skills/doc-tspec_quickref.md
@@ -960,7 +960,7 @@ grep "version:" .claude/skills/doc-tspec-fixer/SKILL.md
 
 | Risk | Mitigation |
 | ---- | ---------- |
-| Breaking existing validation scripts | Scripts reference correct paths already in `ai_dev_ssd_flow/` |
+| Breaking existing validation scripts | Scripts reference correct paths already in `ucx_flow_v3/` |
 | Missing PTEST/SECTEST in existing documents | Graceful degradation - codes 44-45 are optional |
 | Confusion with section counts | Clear documentation distinguishes aggregator (5) vs individual (6) sections |
 | Reviewer/fixer not aligned | Both updated in same phase to maintain consistency |
@@ -977,23 +977,23 @@ grep "version:" .claude/skills/doc-tspec-fixer/SKILL.md
 | `.claude/skills/doc-tspec-autopilot/SKILL.md` | 1, 2, 3, 8 | Path fix, PTEST/SECTEST, @spec format, version |
 | `.claude/skills/doc-tspec-reviewer/SKILL.md` | 2, 8 | PTEST/SECTEST (count, table, codes), version |
 | `.claude/skills/doc-tspec-fixer/SKILL.md` | 2, 8 | PTEST/SECTEST (table, codes), version |
-| `ai_dev_ssd_flow/10_TSPEC/TSPEC-MVP-TEMPLATE.md` | 4, 7 | Nested folder structure, section clarification |
+| `ucx_flow_v3/10_TSPEC/TSPEC-MVP-TEMPLATE.md` | 4, 7 | Nested folder structure, section clarification |
 | `.claude/skills/doc-tspec_quickref.md` | 5 | New file creation |
-| `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
-| `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
-| `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
-| `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
-| `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
-| `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
-| `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
-| `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
-| `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
+| `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
+| `ucx_flow_v3/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
+| `ucx_flow_v3/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
+| `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
+| `ucx_flow_v3/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
+| `ucx_flow_v3/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
+| `ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml` | 9 | Traceability: cumulative_tags + type_specific structure |
+| `ucx_flow_v3/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml` | 9 | Schema traceability + x-validation-rules update |
+| `ucx_flow_v3/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md` | 9 | Section 6 restructure + AI_CONTEXT cumulative tags |
 
 ## Completion Criteria
 
 ### Phases 1-8 (Completed)
 
-- [x] All `ai_dev_flow/` paths replaced with `ai_dev_ssd_flow/`
+- [x] All `ucx_flow_v3/` paths replaced with `ucx_flow_v3/`
 - [x] PTEST (code 44) and SECTEST (code 45) added to all 5 skill files
 - [x] @spec tag format uses dash notation (SPEC-NN)
 - [x] Nested folder structure documented consistently (includes PTEST/SECTEST)
@@ -1056,15 +1056,15 @@ Beyond the original 27 gaps in skill files and main templates, the following sub
 
 ```bash
 # Verify nested folder rule in all subtypes
-grep -rn "Nested Folder Rule" ai_dev_ssd_flow/10_TSPEC/*/
+grep -rn "Nested Folder Rule" ucx_flow_v3/10_TSPEC/*/
 # Expected: 12 results (2 per subtype: Creation Rules + Validation Rules)
 
 # Verify cumulative tags in all subtypes
-grep -rn "Cumulative Tags" ai_dev_ssd_flow/10_TSPEC/*/
+grep -rn "Cumulative Tags" ucx_flow_v3/10_TSPEC/*/
 # Expected: 12+ results (Creation Rules, Validation Rules, some templates)
 
 # Verify quality gate checklists updated
-grep -rn "Document in nested folder" ai_dev_ssd_flow/10_TSPEC/*/
+grep -rn "Document in nested folder" ucx_flow_v3/10_TSPEC/*/
 # Expected: 6 results (one per subtype Quality Gates file)
 ```
 

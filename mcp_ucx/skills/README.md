@@ -17,7 +17,7 @@ UCX uses a **project isolation** model with no runtime fallback to framework def
 | `mcp_ucx/prompts/templates/creation/` | `{project}/UCX/prompts/templates/creation/` |
 | `mcp_ucx/prompts/templates/review/` | `{project}/UCX/prompts/templates/review/` |
 | `mcp_ucx/prompts/templates/remediation/` | `{project}/UCX/prompts/templates/remediation/` |
-| `mcp_ucx/templates/` + `ai_dev_ssd_flow/` layers | `{project}/UCX/templates/` |
+| `mcp_ucx/templates/` + `ucx_flow_v3/` layers | `{project}/UCX/templates/` |
 
 ### Runtime Loading
 

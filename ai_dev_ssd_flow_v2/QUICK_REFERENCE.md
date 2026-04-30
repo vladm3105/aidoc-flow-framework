@@ -12,14 +12,14 @@ custom_fields:
 # Quick Reference Card
 
 **Version**: 2.0
-**Purpose**: One-page cheat sheet for AI Dev Flow framework
+**Purpose**: One-page cheat sheet for UCX Flow framework
 **Target**: Developers and AI Assistants
 **Status**: Production
 **Last Updated**: 2026-02-07T00:00:00
 
 ---
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_ssd_flow root without the `docs/` prefix; use zero-padded directories (`01_BRD`, `02_PRD`, etc.). See README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; use zero-padded directories (`01_BRD`, `02_PRD`, etc.). See README → “Using This Repo” for path mapping.
 
 ## Units & Conversions (KB vs tokens)
 
@@ -353,12 +353,12 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 ### Pre-Creation
 - [ ] Read upstream documents (strategy, BRD, PRD, EARS, etc.)
-- [ ] Identify which template to use from `ai_dev_ssd_flow/[TYPE]/`
+- [ ] Identify which template to use from `ucx_flow_v3/[TYPE]/`
 - [ ] Assign next sequential ID ([TYPE]-NN)
 - [ ] Check for existing traceability matrix: `[TYPE]-00_TRACEABILITY_MATRIX.md`
 
 ### During Creation
-- [ ] Use template from `ai_dev_ssd_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
+- [ ] Use template from `ucx_flow_v3/[TYPE]/[TYPE]-TEMPLATE.[ext]`
 - [ ] Include H1 header with ID: `# [TYPE]-NN: Title`
 - [ ] Fill all required sections from template
 - [ ] Add Traceability section (section 7) with upstream/downstream links

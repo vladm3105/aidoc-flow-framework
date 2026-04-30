@@ -12,8 +12,8 @@ Integration tests validate:
 - External service integrations
 
 Usage:
-    python generate_integration_tests.py --ctr-dir ai_dev_flow/08_CTR/ --output tests/integration/
-    python generate_integration_tests.py --spec-dir ai_dev_flow/09_SPEC/ --sys-dir ai_dev_flow/06_SYS/ --output tests/integration/
+    python generate_integration_tests.py --ctr-dir ucx_flow_v3/08_CTR/ --output tests/integration/
+    python generate_integration_tests.py --spec-dir ucx_flow_v3/09_SPEC/ --sys-dir ucx_flow_v3/06_SYS/ --output tests/integration/
 
 Reference: IPLAN-001 Section 4.3.4
 """
@@ -448,16 +448,16 @@ def main():
         epilog="""
 Examples:
   # Generate from CTR files
-  python generate_integration_tests.py --ctr-dir ai_dev_flow/08_CTR/ --output tests/integration/
+  python generate_integration_tests.py --ctr-dir ucx_flow_v3/08_CTR/ --output tests/integration/
 
   # Generate from SPEC files
-  python generate_integration_tests.py --spec-dir ai_dev_flow/09_SPEC/ --output tests/integration/
+  python generate_integration_tests.py --spec-dir ucx_flow_v3/09_SPEC/ --output tests/integration/
 
   # Generate from all sources
   python generate_integration_tests.py \\
-    --ctr-dir ai_dev_flow/08_CTR/ \\
-    --spec-dir ai_dev_flow/09_SPEC/ \\
-    --sys-dir ai_dev_flow/06_SYS/ \\
+    --ctr-dir ucx_flow_v3/08_CTR/ \\
+    --spec-dir ucx_flow_v3/09_SPEC/ \\
+    --sys-dir ucx_flow_v3/06_SYS/ \\
     --output tests/integration/
         """
     )

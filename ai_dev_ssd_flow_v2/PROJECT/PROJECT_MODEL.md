@@ -13,7 +13,7 @@ custom_fields:
   layer: 0
   priority: shared
   development_status: active
-  location: ai_dev_ssd_flow/PROJECT/
+  location: ucx_flow_v3/PROJECT/
   architecture_approaches:
     - ai-agent-based
     - traditional-8layer
@@ -29,7 +29,7 @@ custom_fields:
 **Version**: 2.2
 **Created**: 2026-02-14
 **Updated**: 2026-02-16
-**Location**: `ai_dev_ssd_flow/PROJECT/PROJECT_MODEL.md`
+**Location**: `ucx_flow_v3/PROJECT/PROJECT_MODEL.md`
 **Status**: Active
 **Applicable To**: Production projects requiring both agile delivery and requirements traceability
 
@@ -115,8 +115,8 @@ This document defines a **hybrid development methodology** that integrates:
 |----------|--------|-------------------|
 | BRD-00_index.md | Required | Create using `/doc-brd` skill |
 | ADR folder structure | Required | Create `docs/05_ADR/` |
-| TASKS template | Required | Copy from `ai_dev_ssd_flow/11_TASKS/` (SDD) |
-| CHG template | Required | Copy from `ai_dev_ssd_flow/CHG/` (SDD projects only) |
+| TASKS template | Required | Copy from `ucx_flow_v3/11_TASKS/` (SDD) |
+| CHG template | Required | Copy from `ucx_flow_v3/CHG/` (SDD projects only) |
 
 ### 2.3 Team Readiness
 
@@ -175,7 +175,7 @@ This document defines a **hybrid development methodology** that integrates:
 
 ### 3.2 Document Flow Framework (SDD)
 
-**Source Reference**: `ai_dev_ssd_flow/`
+**Source Reference**: `ucx_flow_v3/`
 
 | Aspect | Description |
 |--------|-------------|
@@ -508,7 +508,7 @@ flowchart TB
 
 **CHG Document Location**: `docs/CHG/CHG-NN_{slug}/`
 
-**Reference**: `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `governance/plans/` (AI Project Flow)
+**Reference**: `ucx_flow_v3/CHG/CHANGE_MANAGEMENT_GUIDE.md` (SDD projects) or `governance/plans/` (AI Project Flow)
 
 ---
 
@@ -1231,16 +1231,16 @@ These common mistakes undermine the hybrid model's effectiveness:
 
 ## 14. Related Documents
 
-### AI Dev Flow (SDD)
+### UCX Flow (SDD)
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| MVP Workflow Guide | `ai_dev_ssd_flow/MVP_WORKFLOW_GUIDE.md` | SDD workflow reference |
-| ID Naming Standards | `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` | Artifact naming conventions |
-| Traceability Guide | `ai_dev_ssd_flow/TRACEABILITY.md` | Cumulative tagging rules |
-| CHG Guide | `ai_dev_ssd_flow/CHG/CHANGE_MANAGEMENT_GUIDE.md` | Change management procedures |
-| 4-Gate System | `ai_dev_ssd_flow/CHG/gates/` | Gate validation rules |
-| TASKS Template | `ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.md` | Task breakdown format |
+| MVP Workflow Guide | `ucx_flow_v3/MVP_WORKFLOW_GUIDE.md` | SDD workflow reference |
+| ID Naming Standards | `ucx_flow_v3/ID_NAMING_STANDARDS.md` | Artifact naming conventions |
+| Traceability Guide | `ucx_flow_v3/TRACEABILITY.md` | Cumulative tagging rules |
+| CHG Guide | `ucx_flow_v3/CHG/CHANGE_MANAGEMENT_GUIDE.md` | Change management procedures |
+| 4-Gate System | `ucx_flow_v3/CHG/gates/` | Gate validation rules |
+| TASKS Template | `ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.md` | Task breakdown format |
 
 ### AI Project Flow
 

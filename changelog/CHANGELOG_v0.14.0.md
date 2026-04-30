@@ -19,7 +19,7 @@ Adds two-tier cross-section validation to mcp_ucx `sdd_validate` tool (v1.7.0). 
 ### Templates
 
 - `BRD-TEMPLATE.yaml`: Added `diagrams` section and `cross_section_rules` metadata
-- `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml`: Synced
+- `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml`: Synced
 
 ### Standards
 

@@ -17,7 +17,7 @@ custom_fields:
 # AI Assistant Execution Rules
 
 **Version**: 1.0
-**Purpose**: Core rules for AI Coding Assistants executing AI Dev Flow framework
+**Purpose**: Core rules for AI Coding Assistants executing UCX Flow framework
 **Target Tools**: Claude AI, Claude Code, Gemini CLI, GitHub Copilot, Cursor, Windsurf
 **Status**: Production
 
@@ -27,7 +27,7 @@ See also:
 - AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
 - Tool Optimization Guide (sizes, validation, style): AI_TOOL_OPTIMIZATION_GUIDE.md
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_ssd_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. For details, see README → "Using This Repo".
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ucx_flow_v3 root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. For details, see README → "Using This Repo".
 
 ## Assistant Output Style (All Tools)
 
@@ -290,7 +290,7 @@ Or use domain-aware template generation when creating documents.
 
 ```bash
 # Point to the framework checkout (adjust for your environment)
-FRAMEWORK_ROOT=/opt/data/docs_flow_framework/ai_dev_ssd_flow
+FRAMEWORK_ROOT=/opt/data/docs_flow_framework/ucx_flow_v3
 
 # Copy templates by artifact type (portable example uses docs/)
 cp -r "$FRAMEWORK_ROOT/BRD"/*   docs/01_BRD/
@@ -566,7 +566,7 @@ You MUST:
 
 All artifact types have unified YAML templates:
 ```
-ai_dev_ssd_flow/[NN]_[TYPE]/[TYPE]-TEMPLATE.yaml
+ucx_flow_v3/[NN]_[TYPE]/[TYPE]-TEMPLATE.yaml
 ```
 
 ### Validation Requirements
@@ -1446,7 +1446,7 @@ After each validation phase, generate report:
 
 ## Product Appendix: AI‑Assisted Documentation Features (PRD Summary)
 
-This appendix consolidates and supersedes the former `PRD-00_ai_assisted_documentation_features.md`. It specifies the product requirements that guide assistant behavior and UX for documentation generation within the AI Dev Flow.
+This appendix consolidates and supersedes the former `PRD-00_ai_assisted_documentation_features.md`. It specifies the product requirements that guide assistant behavior and UX for documentation generation within the UCX Flow.
 
 ### 1. Problem Statement
 

@@ -250,7 +250,7 @@ for [scope/context].
 > **MVP Template Notes**:
 > - This is the standard EARS template (6 sections)
 > - Single file - no sectioning per user requirement
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP -> PROD -> NEW MVP (no separate "full EARS" template)
 
 ---

@@ -136,7 +136,7 @@ python3 scripts/validate_schema_sync.py --verbose
 
 **Output Example**:
 ```
-Checking schema-template sync in: /path/to/ai_dev_flow
+Checking schema-template sync in: /path/to/ucx_flow_v3
 ============================================================
   ADR: v1.0 (synced)
   BDD: v1.0 (synced)

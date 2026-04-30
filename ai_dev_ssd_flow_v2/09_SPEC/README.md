@@ -49,11 +49,11 @@ SPEC routes to specialized subtypes based on `deliverable_type` (set at BRD Laye
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/09_SPEC/SPEC-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/09_SPEC/SPEC-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/SPEC-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 ```bash
-cp ai_dev_ssd_flow/09_SPEC/SPEC-TEMPLATE.yaml mcp_sdd/templates/SPEC-TEMPLATE.yaml
+cp ucx_flow_v3/09_SPEC/SPEC-TEMPLATE.yaml mcp_sdd/templates/SPEC-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

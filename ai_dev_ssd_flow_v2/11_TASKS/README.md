@@ -33,7 +33,7 @@ execution order. Individual TASKS documents are created in that order.
 ## Template Sync Rule
 
 ```bash
-cp ai_dev_ssd_flow/11_TASKS/TASKS-TEMPLATE.yaml mcp_sdd/templates/TASKS-TEMPLATE.yaml
+cp ucx_flow_v3/11_TASKS/TASKS-TEMPLATE.yaml mcp_sdd/templates/TASKS-TEMPLATE.yaml
 ```
 
 ## What Makes TASKS Unique

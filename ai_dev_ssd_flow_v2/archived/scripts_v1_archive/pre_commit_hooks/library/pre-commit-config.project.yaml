@@ -177,7 +177,7 @@ repos:
 
       - id: brd-claude-skill-audit
         name: Claude BRD Skill Audit (AI Review)
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/claude_brd_skill_audit_hook.sh
+        entry: bash ucx_flow_v3/01_BRD/scripts/claude_brd_skill_audit_hook.sh
         language: system
         files: ^docs/01_BRD/.*\.md$
         pass_filenames: true
@@ -185,7 +185,7 @@ repos:
 
       - id: prd-claude-skill-audit
         name: Claude PRD Skill Audit (AI Review)
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/claude_prd_skill_audit_hook.sh
+        entry: bash ucx_flow_v3/02_PRD/scripts/claude_prd_skill_audit_hook.sh
         language: system
         files: ^docs/02_PRD/.*\.md$
         pass_filenames: true
@@ -197,14 +197,14 @@ repos:
 
       - id: sdd-layer-quality-matrix
         name: SDD Quality Matrix (All Layers - Full)
-        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs
+        entry: bash ucx_flow_v3/scripts/pre_commit_hooks/sdd_layer_quality_matrix_hook.sh docs
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: sdd-metadata-scope
         name: SDD Metadata Scope Enforcement
-        entry: bash ai_dev_ssd_flow/scripts/pre_commit_hooks/sdd_metadata_scope_hook.sh ai_dev_ssd_flow
+        entry: bash ucx_flow_v3/scripts/pre_commit_hooks/sdd_metadata_scope_hook.sh ucx_flow_v3
         language: system
         pass_filenames: false
         stages: [pre-commit]
@@ -216,28 +216,28 @@ repos:
       # BRD Legacy (deprecated - use ucx-brd-validate)
       - id: brd-core-wrapper
         name: "[DEPRECATED] BRD Core Wrapper - Use ucx-brd-validate"
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD
+        entry: bash ucx_flow_v3/01_BRD/scripts/brd_core_wrapper_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-standardized-element-codes
         name: "[DEPRECATED] BRD Element Codes - Use ucx-brd-validate"
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
+        entry: bash ucx_flow_v3/01_BRD/scripts/brd_standardized_element_codes_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-legacy-patterns
         name: "[DEPRECATED] BRD Legacy Patterns - Use ucx-brd-validate"
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
+        entry: bash ucx_flow_v3/01_BRD/scripts/brd_legacy_pattern_hook.sh docs/01_BRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: brd-quality-gate
         name: "[DEPRECATED] BRD Quality Gate - Use ucx-brd-validate-full"
-        entry: bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+        entry: bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
         language: system
         pass_filenames: false
         stages: [manual]
@@ -245,14 +245,14 @@ repos:
       # PRD Legacy (will migrate to UCX in v1.10.0)
       - id: prd-core-wrapper
         name: PRD Core Wrapper (Legacy)
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh docs/02_PRD
+        entry: bash ucx_flow_v3/02_PRD/scripts/prd_core_wrapper_hook.sh docs/02_PRD
         language: system
         pass_filenames: false
         stages: [manual]
 
       - id: prd-quality-gate
         name: PRD Quality Gate (Legacy)
-        entry: bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory
+        entry: bash ucx_flow_v3/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD --skip-advisory
         language: system
         pass_filenames: false
         stages: [manual]

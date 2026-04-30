@@ -13,7 +13,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/04_BDD/` documents and align template, validation rules, schema, and skills to a consistent MVP structure.
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/04_BDD/` documents and align template, validation rules, schema, and skills to a consistent MVP structure.
 
 ## Target Files
 
@@ -52,7 +52,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/04_BDD/` d
 | 11 | Schema references old creation rules filename | Medium | BDD_MVP_SCHEMA.yaml line 28 | 2 |
 | 12 | Schema references old validation rules filename | Medium | BDD_MVP_SCHEMA.yaml line 29 | 2 |
 | 13 | Missing `schema_version` and `total_sections` in schema metadata | Low | BDD_MVP_SCHEMA.yaml | 2 |
-| 14 | doc-bdd/SKILL.md path prefix wrong (ai_dev_flow vs ai_dev_ssd_flow) | High | doc-bdd/SKILL.md lines 53-56 | 3 |
+| 14 | doc-bdd/SKILL.md path prefix wrong (ucx_flow_v3 vs ucx_flow_v3) | High | doc-bdd/SKILL.md lines 53-56 | 3 |
 | 15 | doc-bdd/SKILL.md Related Resources old paths and filenames | High | doc-bdd/SKILL.md lines 606-612 | 3 |
 | 16 | doc-bdd/SKILL.md references non-existent BDD_SPLITTING_RULES.md | Medium | doc-bdd/SKILL.md lines 56, 612 | 3 |
 | 17 | doc-bdd-autopilot/SKILL.md Templates/Rules section old paths | High | doc-bdd-autopilot/SKILL.md lines 1673-1680 | 3 |
@@ -68,7 +68,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/04_BDD/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/04_BDD/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/04_BDD/.backup_2026-02-26
 
 # Backup templates and rules
 cp BDD-MVP-TEMPLATE.feature .backup_2026-02-26/
@@ -241,78 +241,78 @@ references:
 
 **Line 31**: Change schema path from:
 ```markdown
-Schema: `ai_dev_flow/BDD/BDD_SCHEMA.yaml`
+Schema: `ucx_flow_v3/BDD/BDD_SCHEMA.yaml`
 ```
 
 To:
 ```markdown
-Schema: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+Schema: `ucx_flow_v3/04_BDD/BDD_MVP_SCHEMA.yaml`
 ```
 
 ### 3.3 doc-bdd/SKILL.md Fixes (CRITICAL - Multiple Locations)
 
 **Lines 53-56** (Pre-requisite References): Change from:
 ```markdown
-3. **Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-6. **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+3. **Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-TEMPLATE.feature`
+4. **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+6. **Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 ```
 
 To:
 ```markdown
-3. **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+3. **Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+4. **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 ```
 
 > **Note**: Remove `BDD_SPLITTING_RULES.md` reference - file does not exist. Splitting rules are in `BDD_MVP_CREATION_RULES.md` Section 1.2.
 
 **Lines 606-612** (Related Resources): Change from:
 ```markdown
-- **Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Subsection Template**: `ai_dev_flow/04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Subsection Template**: `ucx_flow_v3/04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+- **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+- **Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 ```
 
 To:
 ```markdown
-- **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+- **Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **Schema**: `ucx_flow_v3/04_BDD/BDD_MVP_SCHEMA.yaml`
+- **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_CREATION_RULES.md`
+- **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 ```
 
-**Lines 434, 446** (Command Examples): Update path prefix from `ai_dev_flow/` to `ai_dev_ssd_flow/`.
+**Lines 434, 446** (Command Examples): Update path prefix from `ucx_flow_v3/` to `ucx_flow_v3/`.
 
 ### 3.4 doc-bdd-autopilot/SKILL.md Fixes (CRITICAL)
 
 **Lines 1673-1680** (Templates and Rules): Change from:
 ```markdown
-- **BDD Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Section Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **BDD Schema**: `ai_dev_flow/04_BDD/BDD_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **BDD Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **BDD Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **BDD Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Section Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **BDD Schema**: `ucx_flow_v3/04_BDD/BDD_SCHEMA.yaml`
+- **BDD Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+- **BDD Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+- **BDD Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 ```
 
 To:
 ```markdown
-- **BDD Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **BDD Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_CREATION_RULES.md`
-- **BDD Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_VALIDATION_RULES.md`
+- **BDD Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **BDD Schema**: `ucx_flow_v3/04_BDD/BDD_MVP_SCHEMA.yaml`
+- **BDD Creation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_CREATION_RULES.md`
+- **BDD Validation Rules**: `ucx_flow_v3/04_BDD/BDD_MVP_VALIDATION_RULES.md`
 ```
 
 > **Note**: Remove `BDD_SPLITTING_RULES.md` and `BDD-SECTION-TEMPLATE.feature` references - files don't exist. Use `BDD-MVP-TEMPLATE.feature` as primary template.
@@ -331,12 +331,12 @@ docs/04_BDD/BDD-NN_{slug}/BDD-NN.SS_{section_slug}.feature
 
 **Line 68**: Change template location from:
 ```text
-ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature
+ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature
 ```
 
 To:
 ```text
-ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature
+ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature
 ```
 
 ---
@@ -404,7 +404,7 @@ grep "default:" BDD_MVP_SCHEMA.yaml
 
 | Skill | Test Action | Expected Result |
 |-------|-------------|-----------------|
-| doc-bdd | Verify path references | Correct ai_dev_ssd_flow paths |
+| doc-bdd | Verify path references | Correct ucx_flow_v3 paths |
 | doc-bdd-validator | Validate test BDD | Pass all checks |
 
 ---
@@ -451,8 +451,8 @@ grep "default:" BDD_MVP_SCHEMA.yaml
 - [ ] References BDD_MVP_VALIDATION_RULES.md
 
 ### Skill Files Verification
-- [ ] doc-bdd-validator/SKILL.md has correct schema path (`ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`)
-- [ ] doc-bdd/SKILL.md prerequisite refs use `ai_dev_ssd_flow/` path prefix (lines 53-56)
+- [ ] doc-bdd-validator/SKILL.md has correct schema path (`ucx_flow_v3/04_BDD/BDD_MVP_SCHEMA.yaml`)
+- [ ] doc-bdd/SKILL.md prerequisite refs use `ucx_flow_v3/` path prefix (lines 53-56)
 - [ ] doc-bdd/SKILL.md Related Resources use MVP filenames (lines 606-612)
 - [ ] doc-bdd/SKILL.md command examples use correct paths (lines 434, 446)
 - [ ] doc-bdd/SKILL.md no reference to non-existent BDD_SPLITTING_RULES.md

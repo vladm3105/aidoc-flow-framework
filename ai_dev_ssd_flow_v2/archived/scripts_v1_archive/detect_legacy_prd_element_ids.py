@@ -166,7 +166,7 @@ def resolve_scan_root(path_arg: Path) -> Path:
     if nested.exists():
         return nested
 
-    flow_nested = path_arg / "ai_dev_ssd_flow" / "02_PRD"
+    flow_nested = path_arg / "ucx_flow_v3" / "02_PRD"
     if flow_nested.exists():
         return flow_nested
 
@@ -180,7 +180,7 @@ def main() -> int:
     parser.add_argument(
         "path",
         nargs="?",
-        default="ai_dev_ssd_flow/02_PRD",
+        default="ucx_flow_v3/02_PRD",
         help="Root path to scan for PRD documents.",
     )
     parser.add_argument(

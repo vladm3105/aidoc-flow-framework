@@ -563,9 +563,9 @@ The following documents become **DEPRECATED** and superseded by UCX centralized 
 
 | Deprecated Document | Replacement | Action |
 |---------------------|-------------|--------|
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | `UCX/docs/scoring/SCORING_GUIDE.md` | Add deprecation notice |
-| `ai_dev_ssd_flow/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` | Add deprecation notice |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18 scoring) | `UCX/docs/scoring/WEIGHT_MATRIX.md` | Partial deprecation (scoring sections only) |
+| `ucx_flow_v3/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | `UCX/docs/scoring/SCORING_GUIDE.md` | Add deprecation notice |
+| `ucx_flow_v3/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` | Add deprecation notice |
+| `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18 scoring) | `UCX/docs/scoring/WEIGHT_MATRIX.md` | Partial deprecation (scoring sections only) |
 
 **Task 6.2: Add deprecation notices**
 
@@ -674,7 +674,7 @@ UCX/
             └── legacy_report_no_categories.md
 
 # Deprecated files (to be marked in Phase 6):
-ai_dev_ssd_flow/01_BRD/
+ucx_flow_v3/01_BRD/
 ├── BRD_MVP_QUALITY_GATE_VALIDATION.md  # → UCX scoring
 ├── BRD_AI_VALIDATION_DECISION_GUIDE.md # → UCX troubleshooting
 └── BRD_MVP_VALIDATION_RULES.md         # Scoring sections → UCX
@@ -897,9 +897,9 @@ document_types:
 
 | File | Current Purpose | Replacement |
 |------|-----------------|-------------|
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | Corpus-level quality gates | `UCX/docs/scoring/SCORING_GUIDE.md` |
-| `ai_dev_ssd_flow/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | AI decision-making guide | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` |
-| `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18) | PRD-Ready scoring formula | `UCX/docs/scoring/WEIGHT_MATRIX.md` |
+| `ucx_flow_v3/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md` | Corpus-level quality gates | `UCX/docs/scoring/SCORING_GUIDE.md` |
+| `ucx_flow_v3/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md` | AI decision-making guide | `UCX/docs/scoring/SCORING_TROUBLESHOOTING.md` |
+| `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md` (CHECK 13-18) | PRD-Ready scoring formula | `UCX/docs/scoring/WEIGHT_MATRIX.md` |
 
 ---
 
@@ -954,9 +954,9 @@ document_types:
 
 ## References
 
-- [ID_NAMING_STANDARDS.md](/opt/data/docs_flow_framework/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Element type codes
-- [BRD_MVP_VALIDATION_RULES.md](/opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md) - Existing scoring
-- [BRD_QUALITY_GATE_WORKFLOW.md](/opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD_QUALITY_GATE_WORKFLOW.md) - Quality gates
+- [ID_NAMING_STANDARDS.md](/opt/data/docs_flow_framework/ucx_flow_v3/ID_NAMING_STANDARDS.md) - Element type codes
+- [BRD_MVP_VALIDATION_RULES.md](/opt/data/docs_flow_framework/ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md) - Existing scoring
+- [BRD_QUALITY_GATE_WORKFLOW.md](/opt/data/docs_flow_framework/ucx_flow_v3/01_BRD/BRD_QUALITY_GATE_WORKFLOW.md) - Quality gates
 - [PLAN-001](/opt/data/docs_flow_framework/UCX/docs/plans/PLAN-001_unified_brd_validation.md) - Unified BRD validation
 
 ---

@@ -3,7 +3,7 @@ Sample smoke tests demonstrating STEST patterns.
 
 These tests verify system health after deployment.
 
-Reference: ai_dev_flow/10_TSPEC/STEST/
+Reference: ucx_flow_v3/07_TDD/
 Test ID: STEST-001
 """
 
@@ -18,7 +18,7 @@ class TestSystemHealth:
     def test_project_structure_exists(self, project_root: Path):
         """Verify project structure is intact."""
         required_dirs = [
-            "ai_dev_flow",
+            "ucx_flow_v3",
             "tests",
             "scripts",
         ]
@@ -78,34 +78,22 @@ class TestConfigurationHealth:
 class TestArtifactHealth:
     """Smoke tests for SDD artifact verification."""
 
-    def test_tspec_layer_exists(self, ai_dev_flow_path: Path):
-        """Verify TSPEC layer documentation exists."""
-        tspec_path = ai_dev_flow_path / "10_TSPEC"
-        assert tspec_path.exists(), "TSPEC layer missing"
-        assert (tspec_path / "README.md").exists()
+    def test_tdd_layer_exists(self, ucx_flow_path: Path):
+        """Verify TDD layer documentation exists."""
+        tdd_path = ucx_flow_path / "07_TDD"
+        assert tdd_path.exists(), "TDD layer missing"
+        assert (tdd_path / "TDD-TEMPLATE.yaml").exists()
 
-    def test_test_type_templates_exist(self, ai_dev_flow_path: Path):
-        """Verify all test type templates exist."""
-        tspec_path = ai_dev_flow_path / "10_TSPEC"
-        test_types = ["UTEST", "ITEST", "STEST", "FTEST"]
+    def test_tdd_index_exists(self, ucx_flow_path: Path):
+        """Verify TDD index exists."""
+        tdd_path = ucx_flow_path / "07_TDD"
+        assert (tdd_path / "TDD-00_index.md").exists()
 
-        for test_type in test_types:
-            type_dir = tspec_path / test_type
-            assert type_dir.exists(), f"{test_type} directory missing"
-
-    def test_registry_files_exist(self, ai_dev_flow_path: Path):
-        """Verify test registry files exist."""
-        tspec_path = ai_dev_flow_path / "10_TSPEC"
-
-        registry_files = [
-            "test_registry.yaml",
-            "test_registry_schema.yaml",
-            "test_result_schema.yaml",
-        ]
-
-        for filename in registry_files:
-            file_path = tspec_path / filename
-            assert file_path.exists(), f"Registry file missing: {filename}"
+    def test_tdd_template_metadata_exists(self, ucx_flow_path: Path):
+        """Verify TDD template includes metadata section."""
+        template_path = ucx_flow_path / "07_TDD" / "TDD-TEMPLATE.yaml"
+        content = template_path.read_text()
+        assert "metadata:" in content
 
 
 class TestScriptHealth:
@@ -114,10 +102,10 @@ class TestScriptHealth:
     def test_test_scripts_exist(self, project_root: Path):
         """Verify test management scripts exist."""
         scripts = [
-            "scripts/run_tests.py",
-            "scripts/compare_test_results.py",
-            "scripts/archive_test_results.py",
-            "scripts/generate_coverage_report.py",
+            "tests/scripts/run_tests.py",
+            "tests/scripts/compare_test_results.py",
+            "tests/scripts/archive_test_results.py",
+            "tests/scripts/generate_coverage_report.py",
         ]
 
         for script in scripts:
@@ -129,8 +117,8 @@ class TestScriptHealth:
         import ast
 
         scripts = [
-            "scripts/run_tests.py",
-            "scripts/compare_test_results.py",
+            "tests/scripts/run_tests.py",
+            "tests/scripts/compare_test_results.py",
         ]
 
         for script in scripts:

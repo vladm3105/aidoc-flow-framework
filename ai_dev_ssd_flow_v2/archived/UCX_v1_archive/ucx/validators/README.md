@@ -70,7 +70,7 @@ Valid BRD element type codes (used in `BRD.NN.TT.SS` format):
 | **99** | **Maintainability Requirement** | **7.8** |
 
 > **Note**: Codes 91-99 are canonical for Quality Attribute subcategories. Code 02 accepted for legacy/overview sections.
-> See `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` for complete reference.
+> See `ucx_flow_v3/ID_NAMING_STANDARDS.md` for complete reference.
 
 ## Section-to-Code Mapping
 

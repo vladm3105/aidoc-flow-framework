@@ -92,7 +92,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 3. **Update Validation Runner** (`mcp_ucx/src/mcp_server/validation/runner.py`)
    - Add dispatch logic for "tdd" and "iplan" doc_types
-   - Fix `_resolve_canonical_template_root()` (lines 152-158): Change `ai_dev_ssd_flow` to `ucx_flow_v3`
+   - Fix `_resolve_canonical_template_root()` (lines 152-158): Change `ucx_flow_v3` to `ucx_flow_v3`
    - Add TDD/IPLAN parity checks to `_run_doc_type_parity_checks()` (lines 277-315)
    - Register new rule modules in `run_project_validation_build()`
 
@@ -101,7 +101,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 ### Tasks
 
 1. **Update `profile_contracts.py`** (`mcp_ucx/src/mcp_server/creation/profile_contracts.py`)
-   - Change `registry_source` from `"ai_dev_ssd_flow/LAYER_REGISTRY.yaml"` to `"ucx_flow_v3/LAYER_REGISTRY.yaml"`
+   - Change `registry_source` from `"ucx_flow_v3/LAYER_REGISTRY.yaml"` to `"ucx_flow_v3/LAYER_REGISTRY.yaml"`
 
 2. **Update `persona_mappings.yaml`** (`mcp_ucx/skills/persona_mappings.yaml`)
    - Add TDD phase mappings (creation/review/remediation personas)

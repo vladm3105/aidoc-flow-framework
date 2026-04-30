@@ -511,7 +511,7 @@ AI_CONTEXT_END
 | [Term 1] | [Definition relevant to this MVP] |
 | [Term 2] | [Definition relevant to this MVP] |
 
-**Master Glossary Reference**: See [ai_dev_flow/GLOSSARY.md](../GLOSSARY.md)
+**Master Glossary Reference**: See [ucx_flow_v3/GLOSSARY.md](../GLOSSARY.md)
 
 ---
 
@@ -583,5 +583,5 @@ Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 > **MVP Template Notes**:
 > - This template is ~500 lines (vs 1,393 lines for full PRD)
 > - Single file - no sectioning per user requirement
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - Expands to full PRD-TEMPLATE.md structure upon MVP success

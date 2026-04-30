@@ -1,5 +1,5 @@
 ---
-title: "AI Dev Flow Framework Index"
+title: "UCX Flow Framework Index"
 tags:
   - framework-guide
   - shared-architecture
@@ -11,7 +11,7 @@ custom_fields:
   development_status: active
 ---
 
-# AI Dev Flow Template Index
+# UCX Flow Template Index
 
 This directory provides comprehensive templates for the AI-Driven Specification-Driven Development (SDD) workflow. All artifacts follow numeric ID standards and use relative markdown links for traceability.
 
@@ -111,7 +111,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 
 ## Document Structure
 
-The AI Dev Flow organizes documentation through a hierarchical, traceable structure:
+The UCX Flow organizes documentation through a hierarchical, traceable structure:
 
 > Default Directory Model: All artifact types use nested folders by default — `NN_{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`04_BDD/BDD-NN_{slug}/`) due to validator requirements.
 
@@ -259,7 +259,7 @@ Layer 12 and beyond are **implementation layers** (not SDD documentation artifac
 
 ## Traceability Flow
 
-**[WARN] AUTHORITATIVE WORKFLOW**: This is the single source of truth for the AI Dev Flow traceability chain. All template diagrams reference this section.
+**[WARN] AUTHORITATIVE WORKFLOW**: This is the single source of truth for the UCX Flow traceability chain. All template diagrams reference this section.
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 

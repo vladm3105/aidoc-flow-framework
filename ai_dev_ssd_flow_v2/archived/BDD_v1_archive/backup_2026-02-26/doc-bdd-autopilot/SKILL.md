@@ -268,7 +268,7 @@ Validate that source EARS meet BDD-Ready requirements before generation.
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_bdd_ready.py \
+python ucx_flow_v3/scripts/validate_bdd_ready.py \
   --ears docs/03_EARS/EARS-01_{slug}/ \
   --min-score 90 \
   --auto-fix
@@ -475,7 +475,7 @@ After BDD generation, validate structure and ADR-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
+python ucx_flow_v3/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
 ```
 
 **Validation Checks**:
@@ -680,7 +680,7 @@ After passing the fix cycle:
 
    ```bash
    # Update BDD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --bdd docs/04_BDD/BDD-NN_{slug}/ \
      --matrix docs/04_BDD/BDD-00_TRACEABILITY_MATRIX.md
    ```
@@ -968,7 +968,7 @@ Generate BDD from one EARS document.
 
 ```bash
 # Example: Generate BDD from EARS-01
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --ears docs/03_EARS/EARS-01_f1_iam/ \
   --output docs/04_BDD/ \
   --id 01 \
@@ -981,7 +981,7 @@ Generate BDD from multiple EARS in sequence.
 
 ```bash
 # Example: Generate BDD from all EARS
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --batch config/bdd_batch.yaml \
   --output docs/04_BDD/
 ```
@@ -1015,7 +1015,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --ears docs/03_EARS/EARS-01_f1_iam/ \
   --dry-run
 ```
@@ -1029,12 +1029,12 @@ Validate existing BDD documents and generate a quality report without modificati
 **Command**:
 ```bash
 # Review single BDD suite
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode review
 
 # Review all BDD suites
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/ \
   --mode review \
   --output-report tmp/bdd_review_report.md
@@ -1138,24 +1138,24 @@ Auto-repair existing BDD documents while preserving manual content.
 **Command**:
 ```bash
 # Fix single BDD suite
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix
 
 # Fix with backup
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --backup
 
 # Fix specific issue types only
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --fix-types "tags,thresholds,syntax"
 
 # Dry-run fix (preview changes)
-python ai_dev_flow/scripts/bdd_autopilot.py \
+python ucx_flow_v3/scripts/bdd_autopilot.py \
   --bdd docs/04_BDD/BDD-01_f1_iam/ \
   --mode fix \
   --dry-run
@@ -1543,7 +1543,7 @@ fi
 
 # Example: Trigger ADR autopilot for validated BDD
 if [ "$BDD_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/adr_autopilot.py \
+  python ucx_flow_v3/scripts/adr_autopilot.py \
     --bdd "$BDD_PATH" \
     --output docs/05_ADR/
 fi
@@ -1568,7 +1568,7 @@ jobs:
 
       - name: Run BDD Autopilot
         run: |
-          python ai_dev_flow/scripts/bdd_autopilot.py \
+          python ucx_flow_v3/scripts/bdd_autopilot.py \
             --ears docs/03_EARS/ \
             --output docs/04_BDD/ \
             --validate
@@ -1670,19 +1670,19 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **BDD Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Section Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **BDD Schema**: `ai_dev_flow/04_BDD/BDD_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **BDD Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **BDD Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **BDD Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Section Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **BDD Schema**: `ucx_flow_v3/04_BDD/BDD_SCHEMA.yaml`
+- **BDD Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+- **BDD Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+- **BDD Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md`
 - **EARS Autopilot Skill**: `.claude/skills/doc-ears-autopilot/SKILL.md`
 - **ADR Autopilot Skill**: `.claude/skills/doc-adr-autopilot/SKILL.md`
 

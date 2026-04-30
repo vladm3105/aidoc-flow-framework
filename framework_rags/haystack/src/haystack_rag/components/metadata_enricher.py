@@ -156,7 +156,7 @@ class MetadataEnricher:
         # Try to extract project name from path
         parts = path.parts
         for i, part in enumerate(parts):
-            if part in ("docs", "ai_dev_flow", "documentation") and i > 0:
+            if part in ("docs", "ucx_flow_v3", "ucx_flow_v3", "documentation") and i > 0:
                 meta["project_name"] = parts[i - 1]
                 break
 

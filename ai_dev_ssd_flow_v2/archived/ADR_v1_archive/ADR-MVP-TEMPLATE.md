@@ -402,5 +402,5 @@ When creating the next ADR iteration:
 > - This is the standard ADR template (11 sections: 1-11)
 > - Single file - no sectioning per user requirement
 > - Focus on decision + rationale + alternatives
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full ADR" template)

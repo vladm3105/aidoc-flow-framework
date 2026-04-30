@@ -206,12 +206,12 @@ rag-verify: ## Health check all services
 
 rag-index: ## Index framework documentation
 	@echo "$(COLOR_GREEN)Indexing framework documentation...$(COLOR_RESET)"
-	@echo "$(COLOR_YELLOW)This will index docs from ../ai_dev_ssd_flow/ (including 00_REF)$(COLOR_RESET)"
-	python rag_tools/batch_indexer.py --source ../ai_dev_ssd_flow --verbose
+	@echo "$(COLOR_YELLOW)This will index docs from ../ucx_flow_v3/$(COLOR_RESET)"
+	python rag_tools/batch_indexer.py --source ../ucx_flow_v3 --verbose
 
 rag-index-ref: ## Index only REF documents (Layer 0)
 	@echo "$(COLOR_GREEN)Indexing reference documents (Layer 0)...$(COLOR_RESET)"
-	python rag_tools/batch_indexer.py --source ../ai_dev_ssd_flow/00_REF --verbose
+	python rag_tools/batch_indexer.py --source ../ucx_flow_v3/01_BRD --verbose
 
 rag-index-project: check-env ## Index project documentation from PROJECT_ROOT
 	@echo "$(COLOR_GREEN)Indexing project documentation from $(PROJECT_ROOT)...$(COLOR_RESET)"

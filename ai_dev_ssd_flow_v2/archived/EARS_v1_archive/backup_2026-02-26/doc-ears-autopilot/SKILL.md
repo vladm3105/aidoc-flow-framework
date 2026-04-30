@@ -268,7 +268,7 @@ Validate that source PRDs meet EARS-Ready requirements before generation.
 **Validation Command** (internal):
 
 ```bash
-python ai_dev_flow/scripts/validate_ears_ready.py \
+python ucx_flow_v3/scripts/validate_ears_ready.py \
   --prd docs/02_PRD/PRD-01_{slug}/ \
   --min-score 90 \
   --auto-fix
@@ -295,7 +295,7 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    ```
 
 2. **Load EARS Template**:
-   - Primary: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+   - Primary: `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md`
    - Section templates: For sectioned EARS (>300 lines)
 
 3. **Generate Document Control Section**:
@@ -435,7 +435,7 @@ After EARS generation, validate structure and BDD-Ready score.
 **Validation Command**:
 
 ```bash
-python ai_dev_flow/scripts/validate_ears.py docs/03_EARS/EARS-NN_{slug}.md --verbose
+python ucx_flow_v3/scripts/validate_ears.py docs/03_EARS/EARS-NN_{slug}.md --verbose
 ```
 
 **Validation Checks**:
@@ -618,7 +618,7 @@ After passing the fix cycle:
 
    ```bash
    # Update EARS-00_TRACEABILITY_MATRIX.md
-   python ai_dev_flow/scripts/update_traceability_matrix.py \
+   python ucx_flow_v3/scripts/update_traceability_matrix.py \
      --ears docs/03_EARS/EARS-NN_{slug}.md \
      --matrix docs/03_EARS/EARS-00_TRACEABILITY_MATRIX.md
    ```
@@ -715,7 +715,7 @@ Generate EARS from one PRD document.
 
 ```bash
 # Example: Generate EARS from PRD-01
-python ai_dev_flow/scripts/ears_autopilot.py \
+python ucx_flow_v3/scripts/ears_autopilot.py \
   --prd docs/02_PRD/PRD-01_f1_iam/ \
   --output docs/03_EARS/ \
   --id 01 \
@@ -728,7 +728,7 @@ Generate EARS from multiple PRDs in sequence.
 
 ```bash
 # Example: Generate EARS from all PRDs
-python ai_dev_flow/scripts/ears_autopilot.py \
+python ucx_flow_v3/scripts/ears_autopilot.py \
   --batch config/ears_batch.yaml \
   --output docs/03_EARS/
 ```
@@ -762,7 +762,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_flow/scripts/ears_autopilot.py \
+python ucx_flow_v3/scripts/ears_autopilot.py \
   --prd docs/02_PRD/PRD-01_f1_iam/ \
   --dry-run
 ```
@@ -1212,7 +1212,7 @@ fi
 
 # Example: Trigger BDD autopilot for validated EARS
 if [ "$EARS_VALIDATED" = "true" ]; then
-  python ai_dev_flow/scripts/bdd_autopilot.py \
+  python ucx_flow_v3/scripts/bdd_autopilot.py \
     --ears "$EARS_PATH" \
     --output docs/04_BDD/
 fi
@@ -1237,7 +1237,7 @@ jobs:
 
       - name: Run EARS Autopilot
         run: |
-          python ai_dev_flow/scripts/ears_autopilot.py \
+          python ucx_flow_v3/scripts/ears_autopilot.py \
             --prd docs/02_PRD/ \
             --output docs/03_EARS/ \
             --validate
@@ -1334,20 +1334,20 @@ After autopilot completion:
 
 ### Templates and Rules
 
-- **EARS Template**: `ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- **EARS Schema**: `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml`
-- **EARS Creation Rules**: `ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
-- **EARS Validation Rules**: `ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
+- **EARS Template**: `ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md`
+- **EARS Schema**: `ucx_flow_v3/03_EARS/EARS_SCHEMA.yaml`
+- **EARS Creation Rules**: `ucx_flow_v3/03_EARS/EARS_CREATION_RULES.md`
+- **EARS Validation Rules**: `ucx_flow_v3/03_EARS/EARS_VALIDATION_RULES.md`
 
 ### Section Templates (for documents >300 lines)
 
-- Index template: `ai_dev_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- Index template: `ucx_flow_v3/03_EARS/EARS-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/03_EARS/EARS-SECTION-TEMPLATE.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **MVP Autopilot**: `ucx_flow_v3/AUTOPILOT/MVP_AUTOPILOT.md`
 - **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
 - **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
 

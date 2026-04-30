@@ -2,7 +2,7 @@
 
 > **Aliases**: `ucx`, `mcp_ucx`, `sdd-lifecycle`
 >
-> The package directory is `mcp_ucx/` (historical name). The canonical name is **UCX** (Unified Context eXcelerator). References to `mcp_ucx`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ai_dev_ssd_flow/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
+> The package directory is `mcp_ucx/` (historical name). The canonical name is **UCX** (Unified Context eXcelerator). References to `mcp_ucx`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ucx_flow_v3/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
 >
 > UCX is an AI agent orchestration platform that creates and manages context for AI agents (Claude Code, Gemini CLI, GitHub Copilot, Codex, OpenRouter) per project. Skills are project-specific, not agent-specific — any agent calls UCX to get the right context for a specific project.
 

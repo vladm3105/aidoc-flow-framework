@@ -18,9 +18,9 @@ custom_fields:
 - Index-only: maintain `SYS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `SYS-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.
 

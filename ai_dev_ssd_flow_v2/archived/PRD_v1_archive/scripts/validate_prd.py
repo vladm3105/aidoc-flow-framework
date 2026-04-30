@@ -71,7 +71,7 @@ REQUIRED_SECTIONS_STANDARD = [
     (r"^## 3\. Functional Requirements", "Section 3: Functional Requirements"),
 ]
 
-# 21-section PRD-MVP-TEMPLATE structure (aligned with ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md)
+# 21-section PRD-MVP-TEMPLATE structure (aligned with ucx_flow_v3/02_PRD/PRD-MVP-TEMPLATE.md)
 REQUIRED_SECTIONS_MVP = [
     (r"^# PRD-\d{2,}:", "Title (H1 with PRD-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),

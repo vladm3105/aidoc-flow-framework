@@ -25,7 +25,7 @@ Create a unified automation tool (`AUTOPILOT/scripts/mvp_autopilot.py`) that exe
 - Supports continuous delivery loop: MVP v1.0 → Defects → Production → MVP v2.0
 
 ## Core Philosophy
-The automation treats the `ai_dev_flow` framework as a **compile target**. It moves through layers (BRD -> PRD -> EARS -> ...) only when the previous layer passes validation gates, enabling rapid iteration while preserving quality.
+The automation treats the `ucx_flow_v3` framework as a **compile target**. It moves through layers (BRD -> PRD -> EARS -> ...) only when the previous layer passes validation gates, enabling rapid iteration while preserving quality.
 
 ## Architecture
 

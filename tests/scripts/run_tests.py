@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unified test runner for AI Dev Flow.
+Unified test runner for UCX Flow.
 
 Executes tests by type (UTEST, ITEST, STEST, FTEST) with consistent
 configuration and result collection. Supports saving results for
@@ -16,7 +16,7 @@ Usage:
     python scripts/run_tests.py --type all --coverage  # Run with coverage
     python scripts/run_tests.py --compare baseline.json current.json
 
-Reference: ai_dev_flow/10_TSPEC/, TESTING_STRATEGY_TDD.md
+Reference: ucx_flow_v3/07_TDD/, ucx_flow_v3/TESTING_STRATEGY_TDD.md
 """
 
 import argparse
@@ -300,7 +300,7 @@ def compare_results(baseline_path: Path, current_path: Path) -> int:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Unified test runner for AI Dev Flow",
+        description="Unified test runner for UCX Flow",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

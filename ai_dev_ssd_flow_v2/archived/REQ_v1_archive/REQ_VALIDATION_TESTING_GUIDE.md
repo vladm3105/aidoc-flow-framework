@@ -1,6 +1,6 @@
 # REQ Validation Testing Guide
 
-**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/`  
+**Location**: `/opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/scripts/`  
 **Date**: 2026-01-25T00:00:00
 
 ## Overview
@@ -30,13 +30,13 @@ The REQ validation suite includes automated test coverage for critical gates, in
 
 Via `validate_all.sh`:
 ```bash
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 ./scripts/validate_all.sh --test-gate05
 ```
 
 Directly:
 ```bash
-bash /opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/test_gate05_isolation.sh
+bash /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/scripts/test_gate05_isolation.sh
 ```
 
 **Expected Output**:
@@ -90,7 +90,7 @@ The main validation driver has been updated to support the test mode:
 
 ### Quick Test
 ```bash
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 ./scripts/validate_all.sh --test-gate05
 ```
 
@@ -108,7 +108,7 @@ cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
 # Include in automated test pipeline
 #!/bin/bash
 set -e
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 ./scripts/validate_all.sh --test-gate05
 echo "[PASS] GATE-05 test passed"
 ```
@@ -127,7 +127,7 @@ echo "[PASS] GATE-05 test passed"
 ### Test fails with "GATE-05 ERROR not detected"
 
 **Cause**: GATE-05 logic not incrementing isolated files count  
-**Solution**: Verify `/opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/validate_req_quality_score.sh` has the updated check:
+**Solution**: Verify `/opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/scripts/validate_req_quality_score.sh` has the updated check:
 ```bash
 elif [[ $isolated -eq $total_files && $total_files -gt 0 ]]; then
     # CRITICAL: ALL files are isolated

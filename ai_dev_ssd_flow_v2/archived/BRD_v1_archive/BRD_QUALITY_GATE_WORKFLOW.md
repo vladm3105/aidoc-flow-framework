@@ -118,7 +118,7 @@ This document defines the complete quality gate workflow for Business Requiremen
 
 **Output**: Draft BRD document in `docs/01_BRD/BRD-NN_{slug}/` (portable path convention)
 
-In this repository, equivalent paths are under `ai_dev_ssd_flow/01_BRD/`.
+In this repository, equivalent paths are under `ucx_flow_v3/01_BRD/`.
 
 ---
 
@@ -378,9 +378,9 @@ Standardized element type code checks are enforced in local and CI workflows.
 
 | Execution Point | Command | Purpose |
 |-----------------|---------|---------|
-| Local pre-commit | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Block commits using canonical BRD core checks |
-| CI validation | `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Enforce same canonical BRD core checks in pull requests |
-| Full orchestration | `python3 ai_dev_ssd_flow/scripts/validate_all.py ai_dev_ssd_flow --all` | Include cross-validator execution in aggregate validation |
+| Local pre-commit | `bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Block commits using canonical BRD core checks |
+| CI validation | `bash ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory` | Enforce same canonical BRD core checks in pull requests |
+| Full orchestration | `python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 --all` | Include cross-validator execution in aggregate validation |
 
 Validation source of truth: `ID_NAMING_STANDARDS.md` (Standardized Element Type Codes) plus BRD section-element mapping rules.
 
@@ -472,4 +472,4 @@ ADR (Layer 5)
 ---
 
 *Generated from BRD quality gate workflow analysis*
-*Framework: AI Dev SSD Flow*
+*Framework: UCX Flow*

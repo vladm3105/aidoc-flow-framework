@@ -5,7 +5,7 @@ Generates source code from high-level SPEC files using Google Vertex AI.
 
 Usage:
   python3 vertex_code_generator.py \
-    --spec ai_dev_flow/09_SPEC/SPEC-01_service.yaml \
+    --spec ucx_flow_v3/09_SPEC/SPEC-01_service.yaml \
     --output src/ \
     --project my-gcp-project \
     --location us-central1 \
@@ -74,7 +74,7 @@ You are a Senior Software Engineer acting as an automated code generator.
 Your task is to generate production-ready Python code based strictly on the provided Technical Specification (SPEC).
 
 CONTEXT:
-- Framework: AI Dev Flow (Layer 11: Implementation)
+- Framework: UCX Flow (Layer 11: Implementation)
 - Input: SPEC YAML + API Contracts
 - Output: Complete Python source files
 

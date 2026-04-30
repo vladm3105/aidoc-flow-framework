@@ -25,7 +25,7 @@ The following documents are **DEPRECATED** as of UCX v1.12.0:
 
 ### 1. BRD_MVP_QUALITY_GATE_VALIDATION.md
 
-**Location**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md`
+**Location**: `ucx_flow_v3/01_BRD/BRD_MVP_QUALITY_GATE_VALIDATION.md`
 
 **Status**: Deprecated, scheduled for removal in v2.0.0
 
@@ -38,7 +38,7 @@ The following documents are **DEPRECATED** as of UCX v1.12.0:
 
 ### 2. BRD_AI_VALIDATION_DECISION_GUIDE.md
 
-**Location**: `ai_dev_ssd_flow/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md`
+**Location**: `ucx_flow_v3/01_BRD/BRD_AI_VALIDATION_DECISION_GUIDE.md`
 
 **Status**: Deprecated, scheduled for removal in v2.0.0
 
@@ -51,7 +51,7 @@ The following documents are **DEPRECATED** as of UCX v1.12.0:
 
 ### 3. BRD_MVP_VALIDATION_RULES.md (Partial)
 
-**Location**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+**Location**: `ucx_flow_v3/01_BRD/BRD_MVP_VALIDATION_RULES.md`
 
 **Status**: Scoring sections (CHECK 13-18) deprecated
 

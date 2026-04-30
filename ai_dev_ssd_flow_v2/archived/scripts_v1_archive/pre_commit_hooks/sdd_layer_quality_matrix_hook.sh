@@ -19,7 +19,7 @@ DOCS_ROOT:
 
 Important:
   This hook validates project artifacts only.
-  Framework/template library roots (e.g. ai_dev_ssd_flow/) are not valid DOCS_ROOT values.
+  Framework/template library roots (e.g. ucx_flow_v3/) are not valid DOCS_ROOT values.
 EOF
 }
 
@@ -225,45 +225,45 @@ run_layer() {
 			if [[ ${CHANGED_ONLY} -eq 1 && ${#BRD_CHANGED_MODULES[@]} -gt 0 ]]; then
 				for module_dir in "${!BRD_CHANGED_MODULES[@]}"; do
 					echo "  [TARGET] ${module_dir}"
-					bash "${REPO_ROOT}/ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh" "${module_dir}" --skip-advisory
+					bash "${REPO_ROOT}/ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh" "${module_dir}" --skip-advisory
 				done
 			else
-				bash "${REPO_ROOT}/ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh" "${LAYER_PATHS[BRD]}" --skip-advisory
+				bash "${REPO_ROOT}/ucx_flow_v3/01_BRD/scripts/validate_brd_wrapper.sh" "${LAYER_PATHS[BRD]}" --skip-advisory
 			fi
 			;;
 		PRD)
 			if [[ ${CHANGED_ONLY} -eq 1 && ${#PRD_CHANGED_MODULES[@]} -gt 0 ]]; then
 				for module_dir in "${!PRD_CHANGED_MODULES[@]}"; do
 					echo "  [TARGET] ${module_dir}"
-					bash "${REPO_ROOT}/ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh" "${module_dir}" --skip-advisory
+					bash "${REPO_ROOT}/ucx_flow_v3/02_PRD/scripts/validate_prd_wrapper.sh" "${module_dir}" --skip-advisory
 				done
 			else
-				bash "${REPO_ROOT}/ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh" "${LAYER_PATHS[PRD]}" --skip-advisory
+				bash "${REPO_ROOT}/ucx_flow_v3/02_PRD/scripts/validate_prd_wrapper.sh" "${LAYER_PATHS[PRD]}" --skip-advisory
 			fi
 			;;
 		EARS)
-			python3 "${REPO_ROOT}/ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py" --path "${LAYER_PATHS[EARS]}"
+			python3 "${REPO_ROOT}/ucx_flow_v3/03_EARS/scripts/validate_ears.py" --path "${LAYER_PATHS[EARS]}"
 			;;
 		BDD)
-			python3 "${REPO_ROOT}/ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py" "${LAYER_PATHS[BDD]}"
+			python3 "${REPO_ROOT}/ucx_flow_v3/04_BDD/scripts/validate_bdd.py" "${LAYER_PATHS[BDD]}"
 			;;
 		ADR)
-			python3 "${REPO_ROOT}/ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py" "${LAYER_PATHS[ADR]}"
+			python3 "${REPO_ROOT}/ucx_flow_v3/05_ADR/scripts/validate_adr.py" "${LAYER_PATHS[ADR]}"
 			;;
 		SYS)
-			python3 "${REPO_ROOT}/ai_dev_ssd_flow/06_SYS/scripts/validate_sys.py" "${LAYER_PATHS[SYS]}"
+			python3 "${REPO_ROOT}/ucx_flow_v3/06_SYS/scripts/validate_sys.py" "${LAYER_PATHS[SYS]}"
 			;;
 		REQ)
-			bash "${REPO_ROOT}/ai_dev_ssd_flow/07_REQ/scripts/validate_all.sh" --directory "${LAYER_PATHS[REQ]}"
+			bash "${REPO_ROOT}/ucx_flow_v3/07_REQ/scripts/validate_all.sh" --directory "${LAYER_PATHS[REQ]}"
 			;;
 		CTR)
-			bash "${REPO_ROOT}/ai_dev_ssd_flow/08_CTR/scripts/validate_ctr_all.sh" --directory "${LAYER_PATHS[CTR]}"
+			bash "${REPO_ROOT}/ucx_flow_v3/08_CTR/scripts/validate_ctr_all.sh" --directory "${LAYER_PATHS[CTR]}"
 			;;
 		SPEC)
-			bash "${REPO_ROOT}/ai_dev_ssd_flow/09_SPEC/scripts/validate_all_spec.sh" --directory "${LAYER_PATHS[SPEC]}"
+			bash "${REPO_ROOT}/ucx_flow_v3/09_SPEC/scripts/validate_all_spec.sh" --directory "${LAYER_PATHS[SPEC]}"
 			;;
 		TSPEC)
-			bash "${REPO_ROOT}/ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh" "${LAYER_PATHS[TSPEC]}"
+			bash "${REPO_ROOT}/ucx_flow_v3/10_TSPEC/scripts/validate_all_tspec.sh" "${LAYER_PATHS[TSPEC]}"
 			;;
 		TASKS)
 			local tasks_found=0
@@ -272,13 +272,13 @@ run_layer() {
 					[[ -f "${tasks_file}" ]] || continue
 					tasks_found=1
 					echo "  [TARGET] ${tasks_file}"
-					bash "${REPO_ROOT}/ai_dev_ssd_flow/11_TASKS/scripts/validate_tasks.sh" "${tasks_file}"
+					bash "${REPO_ROOT}/ucx_flow_v3/11_TASKS/scripts/validate_tasks.sh" "${tasks_file}"
 				done
 			else
 				while IFS= read -r tasks_file; do
 					[[ -z "${tasks_file}" ]] && continue
 					tasks_found=1
-					bash "${REPO_ROOT}/ai_dev_ssd_flow/11_TASKS/scripts/validate_tasks.sh" "${tasks_file}"
+					bash "${REPO_ROOT}/ucx_flow_v3/11_TASKS/scripts/validate_tasks.sh" "${tasks_file}"
 				done < <(find "${LAYER_PATHS[TASKS]}" -type f -name 'TASKS-*.md' 2>/dev/null | sort)
 			fi
 

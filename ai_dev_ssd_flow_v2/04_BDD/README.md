@@ -42,13 +42,13 @@ BDD instances (actual test files) are `.yaml` files generated from the YAML temp
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/BDD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/04_BDD/BDD-TEMPLATE.yaml mcp_sdd/templates/BDD-TEMPLATE.yaml
+cp ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml mcp_sdd/templates/BDD-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

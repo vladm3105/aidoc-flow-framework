@@ -38,13 +38,13 @@ Code (SPEC)      — implementation-ready specifications
 
 | Location | Role |
 |----------|------|
-| `ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml` | **Canonical source** — edit here |
+| `ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml` | **Canonical source** — edit here |
 | `mcp_sdd/templates/PRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ai_dev_ssd_flow/02_PRD/PRD-TEMPLATE.yaml mcp_sdd/templates/PRD-TEMPLATE.yaml
+cp ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml mcp_sdd/templates/PRD-TEMPLATE.yaml
 ```
 
 ## MCP Tools (mcp_sdd)

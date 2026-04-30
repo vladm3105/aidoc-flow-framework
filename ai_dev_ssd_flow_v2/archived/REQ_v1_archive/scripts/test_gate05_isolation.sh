@@ -46,7 +46,7 @@ echo "2. Running validation on isolated corpus..."
 echo "(Checking if GATE-05 detects complete isolation...)"
 echo ""
 
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 
 # Run quality gate only (faster, more direct)
 ./scripts/validate_req_quality_score.sh "$TEST_DIR" 2>&1 | tee /tmp/gate05_test_output.txt | grep -E "(GATE-05|ERROR|)" | head -10

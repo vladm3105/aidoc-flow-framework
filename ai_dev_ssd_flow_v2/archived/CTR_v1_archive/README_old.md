@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `CTR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `CTR-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
 ## 1. Purpose
 
@@ -105,21 +105,21 @@ CTR validation is **automatically enforced** via pre-commit hooks:
 # .pre-commit-config.yaml
 - id: ctr-core-validator
   name: Validate CTR core checks (validator, framework library)
-  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_core_validator_hook.sh ai_dev_ssd_flow/08_CTR
+  entry: bash ucx_flow_v3/08_CTR/scripts/ctr_core_validator_hook.sh ucx_flow_v3/08_CTR
   language: system
   pass_filenames: false
   stages: [pre-commit]
 
 - id: ctr-quality-gate
   name: Validate CTR quality gates
-  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_quality_gate_hook.sh ai_dev_ssd_flow/08_CTR
+  entry: bash ucx_flow_v3/08_CTR/scripts/ctr_quality_gate_hook.sh ucx_flow_v3/08_CTR
   language: system
   pass_filenames: false
   stages: [pre-commit]
 
 - id: ctr-spec-ready-score
   name: Validate CTR SPEC-Ready score (≥90%)
-  entry: bash ai_dev_ssd_flow/08_CTR/scripts/ctr_spec_ready_score_hook.sh ai_dev_ssd_flow/08_CTR
+  entry: bash ucx_flow_v3/08_CTR/scripts/ctr_spec_ready_score_hook.sh ucx_flow_v3/08_CTR
   language: system
   pass_filenames: false
   stages: [pre-commit]

@@ -6,7 +6,7 @@
 
 set -e
 
-FIXTURES_DIR="/opt/data/docs_flow_framework/ai_dev_ssd_flow/10_TSPEC/scripts/tests/fixtures"
+FIXTURES_DIR="/opt/data/docs_flow_framework/ucx_flow_v3/10_TSPEC/scripts/tests/fixtures"
 
 echo "========================================="
 echo "Creating TSPEC Test Fixtures"

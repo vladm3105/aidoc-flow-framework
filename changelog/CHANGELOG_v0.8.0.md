@@ -11,7 +11,7 @@ Unified the REQ (Layer 7) artifact into a single YAML template. This completes t
 
 ### REQ Layer Unification
 
-**New**: `ai_dev_ssd_flow/07_REQ/REQ-TEMPLATE.yaml` (350 lines, schema v1.0)
+**New**: `ucx_flow_v3/07_REQ/REQ-TEMPLATE.yaml` (350 lines, schema v1.0)
 
 **Replaced**: 6 files (4,175 lines → 350 lines). 20+ files archived to `REQ_v1_archive/`.
 

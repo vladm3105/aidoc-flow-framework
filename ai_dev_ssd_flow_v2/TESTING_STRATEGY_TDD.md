@@ -17,7 +17,7 @@ custom_fields:
 
 # SDD Testing Strategy with Test-Driven Development
 
-**Purpose**: Define comprehensive testing approach for AI Dev Flow framework integrating Test-Driven Development with specification-driven development.
+**Purpose**: Define comprehensive testing approach for UCX Flow framework integrating Test-Driven Development with specification-driven development.
 
 **Version**: 1.0
 **Last Updated**: 2026-01-21T00:00:00
@@ -1219,7 +1219,7 @@ python AUTOPILOT/scripts/update_test_traceability.py \
 | **Date Created** | 2026-01-21T00:00:00 |
 | **Last Updated** | 2026-01-21T00:00:00 |
 | **Status** | Active |
-| **Maintained By** | AI Dev Flow Working Group |
+| **Maintained By** | UCX Flow Working Group |
 | **Review Frequency** | Quarterly or on major framework updates |
 
 **Change History**:

@@ -11,7 +11,7 @@ Unified the BRD (Layer 1) artifact into a single YAML template that serves as th
 
 ### New File
 
-- `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml`: Unified BRD template (898 lines, schema v1.5)
+- `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml`: Unified BRD template (898 lines, schema v1.5)
 
 ### Replaced Files (4 → 1)
 

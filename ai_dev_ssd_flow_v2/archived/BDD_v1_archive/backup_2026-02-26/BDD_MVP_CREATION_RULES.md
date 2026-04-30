@@ -62,7 +62,7 @@ custom_fields:
 **Version**: 1.3
 **Date**: 2025-11-19T00:00:00
 **Last Updated**: 2025-12-26T00:00:00
-**Purpose**: Complete reference for creating BDD feature files according to AI Dev Flow SDD framework
+**Purpose**: Complete reference for creating BDD feature files according to UCX Flow SDD framework
 **Changes**: Added Split-File Structure section (v1.3). Previous: Threshold Registry Integration section (v1.2)
 
 ---
@@ -90,7 +90,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ucx_flow_v3 root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ### 1.0 Structure Selection Criteria
 
@@ -521,7 +521,7 @@ Feature: BDD-02.14: Query Result Filtering
 **Step 1**: Create index file from template
 ```bash
 # Create BDD-NN.0_index.md from BDD-SECTION-0-TEMPLATE.md
-cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02.0_index.md
+cp ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02.0_index.md
 ```
 
 **Step 2**: Design section split (3-8 sections recommended)
@@ -965,7 +965,7 @@ Feature: BDD-03: Core Behaviors
 
 ---
 
-**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 4)
+**Framework Compliance**: 100% UCX Flow SDD framework (Layer 4)
 
 ---
 

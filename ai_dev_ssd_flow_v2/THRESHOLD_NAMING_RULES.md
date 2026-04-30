@@ -900,10 +900,10 @@ thresholds:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2025-12-16T00:00:00 | AI Dev Flow Team | Initial creation based on PRD-NN analysis |
-| 1.1 | 2025-12-16T00:00:00 | AI Dev Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
-| 1.2 | 2025-12-16T00:00:00 | AI Dev Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
-| 1.3 | 2025-12-16T00:00:00 | AI Dev Flow Team | Removed Threshold Registry requirement; thresholds now defined in 01_BRD/02_PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |
+| 1.0 | 2025-12-16T00:00:00 | UCX Flow Team | Initial creation based on PRD-NN analysis |
+| 1.1 | 2025-12-16T00:00:00 | UCX Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
+| 1.2 | 2025-12-16T00:00:00 | UCX Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
+| 1.3 | 2025-12-16T00:00:00 | UCX Flow Team | Removed Threshold Registry requirement; thresholds now defined in 01_BRD/02_PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |
 
 ---
 

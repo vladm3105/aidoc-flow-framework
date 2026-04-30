@@ -65,7 +65,7 @@ BRD, PRD, EARS → BDD → ADR, SYS
 ## Template Location
 
 ```text
-ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature
+ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature
 ```
 
 ## Related Skills

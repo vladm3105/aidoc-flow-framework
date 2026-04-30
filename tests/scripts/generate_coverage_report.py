@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate coverage reports and track trends for AI Dev Flow.
+Generate coverage reports and track trends for UCX Flow.
 
 Provides functionality to:
 - Run coverage.py during test execution
@@ -15,7 +15,7 @@ Usage:
     python scripts/generate_coverage_report.py --trend tests/results/
     python scripts/generate_coverage_report.py --check --threshold 80
 
-Reference: ai_dev_flow/10_TSPEC/, TESTING_STRATEGY_TDD.md
+Reference: ucx_flow_v3/07_TDD/, ucx_flow_v3/TESTING_STRATEGY_TDD.md
 """
 
 import argparse

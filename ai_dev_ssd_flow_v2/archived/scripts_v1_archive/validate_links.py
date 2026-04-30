@@ -280,7 +280,7 @@ def main():
     import json
 
     parser = argparse.ArgumentParser(description='Validate links in Section 7')
-    parser.add_argument('--docs-dir', default='ai_dev_ssd_flow', help='Documentation directory')
+    parser.add_argument('--docs-dir', default='ucx_flow_v3', help='Documentation directory')
     parser.add_argument('--json', action='store_true', help='Output JSON format')
 
     args = parser.parse_args()

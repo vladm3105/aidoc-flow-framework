@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Metadata Validation Script for AI Dev Flow Framework
+Metadata Validation Script for UCX Flow Framework
 
 Validates YAML frontmatter metadata in markdown files:
 - YAML syntax correctness

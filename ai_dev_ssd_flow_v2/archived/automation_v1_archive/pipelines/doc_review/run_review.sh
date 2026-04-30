@@ -73,14 +73,14 @@ elif [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/review.yaml" ]]; then
 # 5. Framework fallback
 else
     log_warn "No review.yaml found. Falling back to framework template."
-    EXPERTS_YAML="$(dirname "$AUTOMATION_ROOT")/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml"
+    EXPERTS_YAML="$(dirname "$AUTOMATION_ROOT")/ucx_flow_v3/AI_EXPERTS/review.template.yaml"
 fi
 require_file "$EXPERTS_YAML"
 log_info "Using experts config: $EXPERTS_YAML"
 
 # Set output path
 OUTPUT_FILE="$TARGET_DIR/${doc_id}_PERSONA_REVIEW_REPORT.md"
-TEMPLATE_FILE="$(dirname "$AUTOMATION_ROOT")/ai_dev_ssd_flow/AI_EXPERTS/PERSONA_REVIEW-MVP-TEMPLATE.md"
+TEMPLATE_FILE="$(dirname "$AUTOMATION_ROOT")/ucx_flow_v3/AI_EXPERTS/PERSONA_REVIEW-MVP-TEMPLATE.md"
 
 log_info "Target Document: $TARGET_BASENAME (ID: $doc_id, v$version)"
 
@@ -201,7 +201,7 @@ print(f\"P_API_KEY_ENV={shlex.quote(str(agent.get('api_key_env') or ''))}\")
         if [[ -f "$GIT_ROOT/docs/AI_EXPERTS/skills/${persona}.md" ]]; then
             SKILL_FILE="$GIT_ROOT/docs/AI_EXPERTS/skills/${persona}.md"
         else
-            SKILL_FILE="/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/skills/${persona}.md"
+            SKILL_FILE="/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/skills/${persona}.md"
         fi
     fi
     
@@ -341,7 +341,7 @@ if [[ -z "$SKILL_FILE" ]]; then
     if [[ -f "$GIT_ROOT/docs/AI_EXPERTS/skills/chairperson.md" ]]; then
         SKILL_FILE="$GIT_ROOT/docs/AI_EXPERTS/skills/chairperson.md"
     else
-        SKILL_FILE="/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/skills/chairperson.md"
+        SKILL_FILE="/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/skills/chairperson.md"
     fi
 fi
 

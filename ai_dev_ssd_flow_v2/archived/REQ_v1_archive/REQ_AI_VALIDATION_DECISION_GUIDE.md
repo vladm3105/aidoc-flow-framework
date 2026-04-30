@@ -23,7 +23,7 @@ custom_fields:
 
 **Purpose**: REQ-focused patterns, validator nuances, and common fixes tailored to REQ artifacts.
 
-**Audience**: AI assistants (Claude, GPT-4, Gemini, etc.) working with REQ artifacts in ai_dev_flow
+**Audience**: AI assistants (Claude, GPT-4, Gemini, etc.) working with REQ artifacts in ucx_flow_v3
 
 **Last Updated**: 2026-01-24T00:00:00
 
@@ -440,7 +440,7 @@ passed = total_score >= min_score  # Default: 90%
 
 ```bash
 # From framework directory
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 
 # Run validator
 python scripts/validate_req_spec_readiness.py \

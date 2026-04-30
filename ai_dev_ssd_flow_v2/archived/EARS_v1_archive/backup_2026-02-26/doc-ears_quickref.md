@@ -65,7 +65,7 @@ BRD, PRD → EARS → BDD, ADR
 ## Template Location
 
 ```
-ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md
+ucx_flow_v3/03_EARS/EARS-MVP-TEMPLATE.md
 ```
 
 ## Related Skills

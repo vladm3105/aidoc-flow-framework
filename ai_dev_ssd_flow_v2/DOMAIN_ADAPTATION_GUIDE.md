@@ -14,13 +14,13 @@ custom_fields:
 
 **Version**: 1.0
 **Last Updated**: 2025-11-05T00:00:00
-**Purpose**: Guide for adapting the AI Dev Flow framework to specific project domains
+**Purpose**: Guide for adapting the UCX Flow framework to specific project domains
 
 ---
 
 ## Overview
 
-The AI Dev Flow framework is domain-agnostic and designed for reuse across any software development project. This guide provides checklists and guidance for adapting the framework templates to specific domains.
+The UCX Flow framework is domain-agnostic and designed for reuse across any software development project. This guide provides checklists and guidance for adapting the framework templates to specific domains.
 
 **Framework Strengths**:
 - 15-layer architecture (11 documentation artifacts + 3 execution layers) from business requirements to production code
@@ -40,7 +40,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 4. **List external integrations**: Third-party services, APIs, data providers
 
 ### Step 2: Replace Placeholders
-1. **Copy templates** from `ai_dev_ssd_flow/` to your project's `docs/` folder
+1. **Copy templates** from `ucx_flow_v3/` to your project's `docs/` folder
 2. **Search for [PLACEHOLDERS]** - all framework placeholders use `[UPPERCASE_BRACKET]` format
 3. **Replace with domain-specific values** - use your terminology consistently
 4. **Update descriptions** - customize example descriptions to match your domain

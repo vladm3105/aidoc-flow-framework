@@ -93,7 +93,7 @@ Apply this model during each MVP cycle:
 
 > See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `template` field definitions.
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_ssd_flow/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py ai_dev_ssd_flow/02_PRD`. For the automation-focused flow, see `ai_dev_ssd_flow/SDD_AUTOMATION_WORKFLOW.md`.
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ucx_flow_v3/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py ucx_flow_v3/02_PRD`. For the automation-focused flow, see `ucx_flow_v3/SDD_AUTOMATION_WORKFLOW.md`.
 
 All SDD documents are monolithic (single self-contained file) up to 50,000 tokens. If a document exceeds 50,000 tokens, create a new document of the same type with its own scope.
 
@@ -147,7 +147,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **PLAN**: Create/Update `X-00_index.md` & `X-00_required_documents_list.md`.
 
-2. **PRE-CHECK**: Run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` (verify planning docs exist for the layer).
+2. **PRE-CHECK**: Run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3` (verify planning docs exist for the layer).
 
 3. **SETUP**: Load `X-TEMPLATE.yaml` from the layer directory. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md).
 
@@ -167,13 +167,13 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
 
-2. **Pre-Check**: Verify index/required lists structure; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Verify index/required lists structure; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: "Create BRD-01 using BRD-TEMPLATE. Focus on Hypothesis."
 
-4. **Validate**: `python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD`
+4. **Validate**: `python3 ucx_flow_v3/01_BRD/01_BRD/scripts/validate_brd.py ucx_flow_v3/01_BRD`
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 --layer BRD`
 
 ### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
 
@@ -181,13 +181,13 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
 
-2. **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: "Create PRD-01 using PRD-TEMPLATE. List P1 features."
 
-4. **Validate**: `python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD`
+4. **Validate**: `python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py ucx_flow_v3/02_PRD`
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (check traceability)
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/scripts/validate_links.py --docs-dir ucx_flow_v3` (check traceability)
 
 ### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
 
@@ -195,13 +195,13 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
 
-2. **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: "Create EARS-01. Map PRD features to MVP Logic."
 
-4. **Validate**: `python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS`
+4. **Validate**: `python3 ucx_flow_v3/03_EARS/scripts/validate_ears.py --path ucx_flow_v3/03_EARS`
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer EARS`
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 --layer EARS`
 
 ### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
 
@@ -209,11 +209,11 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
 
-2. **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: "Create `BDD-01_checkout.yaml`. Include Happy Path + Critical Error Path scenarios."
 
-4. **Validate**: `python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD`
+4. **Validate**: `python3 ucx_flow_v3/04_BDD/scripts/validate_bdd.py ucx_flow_v3/04_BDD`
 
 5. **Quality Gate Validation**: Verify Gherkin syntax across suite.
 
@@ -223,17 +223,17 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Identify *irreversible* decisions (ADR) and System Boundary (SYS).
 
-2. **Pre-Check**: Ensure upstream docs exist (`BRD-01`, `PRD-01`, `EARS-01`); verify `ADR-00_index.md` and `SYS-00_index.md` + required lists; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure upstream docs exist (`BRD-01`, `PRD-01`, `EARS-01`); verify `ADR-00_index.md` and `SYS-00_index.md` + required lists; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: `ADR-01` (Tech Stack), `SYS-01` (System Spec).
 
 4. **Validate**:
 
-    - `python3 ai_dev_flow/05_ADR/scripts/validate_adr.py ai_dev_flow/05_ADR`
+    - `python3 ucx_flow_v3/05_ADR/scripts/validate_adr.py ucx_flow_v3/05_ADR`
 
-    - `python3 ai_dev_flow/06_SYS/scripts/validate_sys.py ai_dev_flow/06_SYS`
+    - `python3 ucx_flow_v3/06_SYS/scripts/validate_sys.py ucx_flow_v3/06_SYS`
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 --layer ADR --layer SYS`
 
 ### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
 
@@ -241,15 +241,15 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: List all required REQ files in `REQ-00_required_documents_list.md`.
 
-2. **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: Batch creation of atomic requirements.
 
 4. **Validate** (per file):
 
-    - `find ai_dev_flow/07_REQ -name 'REQ-*.md' -exec bash ai_dev_flow/07_REQ/scripts/validate_req_template.sh {} \;`
+    - `find ucx_flow_v3/07_REQ -name 'REQ-*.md' -exec bash ucx_flow_v3/07_REQ/scripts/validate_req_template.sh {} \;`
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/07_REQ/scripts/validate_requirement_ids.py --directory ai_dev_flow/07_REQ` (unique IDs)
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/07_REQ/scripts/validate_requirement_ids.py --directory ucx_flow_v3/07_REQ` (unique IDs)
 
 ### Step 7: Spec & Code (SPEC -> TSPEC -> TASKS) — **Day 2 (Afternoon)**
 
@@ -257,13 +257,13 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1. **Plan**: Map REQs to Specs.
 
-2. **Pre-Check**: Ensure required REQ files exist; verify any 09_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2. **Pre-Check**: Ensure required REQ files exist; verify any 09_SPEC/TASKS index/required lists used; run `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`.
 
 3. **Generate**: Specs and Task Lists.
 
-4. **Validate**: `python3 ai_dev_flow/09_SPEC/scripts/validate_spec.py ai_dev_flow/09_SPEC`.
+4. **Validate**: `python3 ucx_flow_v3/09_SPEC/scripts/validate_spec.py ucx_flow_v3/09_SPEC`.
 
-5. **Quality Gate Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (final pre-code check).
+5. **Quality Gate Validation**: `python3 ucx_flow_v3/scripts/validate_links.py --docs-dir ucx_flow_v3` (final pre-code check).
 
 ---
 
@@ -362,7 +362,7 @@ flowchart LR
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --intent "Your MVP idea" \
   --slug your_mvp \
   --auto-fix \
@@ -377,7 +377,7 @@ Outcome: Generates complete MVP documentation (BRD → TASKS) with auto-approval
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --resume \
   --auto-fix \
   --report markdown
@@ -390,7 +390,7 @@ Outcome: Validates existing artifacts, generates missing layers, and applies fix
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --from-layer ADR \
   --up-to SPEC \
   --auto-fix \
@@ -404,7 +404,7 @@ Outcome: Generates architecture decisions and technical specifications while ski
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --from-layer SPEC \
   --up-to TASKS \
   --auto-fix \
@@ -418,7 +418,7 @@ Outcome: Generates implementation plans from existing specifications.
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --resume \
   --strict \
   --report json
@@ -430,7 +430,7 @@ Outcome: Runs strict mode where warnings fail validation, using full validators 
 #### Scenario 6: Validate Only (No Changes)
 
 ```bash
-python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow \
+python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 \
   --all \
   --report markdown
 
@@ -450,7 +450,7 @@ Let's walk through generating a **crypto trading bot** from idea to production u
 
 ```bash
 python3 AUTOPILOT/scripts/mvp_autopilot.py \
-  --root ai_dev_flow \
+  --root ucx_flow_v3 \
   --intent "Crypto trading bot with moving average crossover strategy" \
   --slug trading_bot \
   --auto-fix \
@@ -505,7 +505,7 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
 ### Generated Artifacts
 
 ```text
-ai_dev_flow/
+ucx_flow_v3/
  01_BRD/BRD-01_trading_bot.md               (Business hypothesis)
  02_PRD/PRD-01_trading_bot.md               (Product requirements)
  03_EARS/EARS-01_trading_bot.md             (Engineering requirements)
@@ -556,13 +556,13 @@ When using the MVP track, run validation with awareness:
 
    - Traceability is still strictly enforced.
 
-   - Use `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` frequently.
+   - Use `python3 ucx_flow_v3/scripts/validate_links.py --docs-dir ucx_flow_v3` frequently.
 
    - Optional cross-checks:
 
-     - Forward refs: `python3 ai_dev_flow/scripts/validate_forward_references.py ai_dev_flow`
+     - Forward refs: `python3 ucx_flow_v3/scripts/validate_forward_references.py ucx_flow_v3`
 
-     - Cross-doc: `python3 ai_dev_flow/scripts/validate_cross_document.py --all --strict`
+     - Cross-doc: `python3 ucx_flow_v3/scripts/validate_cross_document.py --all --strict`
 
 2. **Ignore "Missing Section" Warnings**:
 
@@ -657,34 +657,34 @@ See the "Lifecycle" section at the bottom of every MVP template for iteration gu
 
 ```bash
 # Start new project
-python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP Idea" --auto-fix
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ucx_flow_v3 --intent "My MVP Idea" --auto-fix
 
 # Resume existing project (Generate missing files + Validate)
-python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --resume --auto-fix
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ucx_flow_v3 --resume --auto-fix
 
 # Validate only (no new files)
-python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-validate
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ucx_flow_v3 --resume --skip-validate
 
 ```
 
 ### Manual Validation Commands (Debugging)
 
-- **Orchestrator (All)**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
+- **Orchestrator (All)**: `python3 ucx_flow_v3/scripts/validate_all.py ucx_flow_v3 --all --report markdown`
 
-- **Plan Check**: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
+- **Plan Check**: `python3 ucx_flow_v3/scripts/validate_documentation_paths.py --root ucx_flow_v3`
 
-- **BRD**: `python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD`
+- **BRD**: `python3 ucx_flow_v3/01_BRD/01_BRD/scripts/validate_brd.py ucx_flow_v3/01_BRD`
 
-- **PRD**: `python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD`
+- **PRD**: `python3 ucx_flow_v3/02_PRD/scripts/validate_prd.py ucx_flow_v3/02_PRD`
 
-- **EARS**: `python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS`
+- **EARS**: `python3 ucx_flow_v3/03_EARS/scripts/validate_ears.py --path ucx_flow_v3/03_EARS`
 
-- **BDD**: `python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD`
+- **BDD**: `python3 ucx_flow_v3/04_BDD/scripts/validate_bdd.py ucx_flow_v3/04_BDD`
 
-- **ADR**: `python3 ai_dev_flow/05_ADR/scripts/validate_adr.py ai_dev_flow/05_ADR`
+- **ADR**: `python3 ucx_flow_v3/05_ADR/scripts/validate_adr.py ucx_flow_v3/05_ADR`
 
-- **SYS**: `python3 ai_dev_flow/06_SYS/scripts/validate_sys.py ai_dev_flow/06_SYS`
+- **SYS**: `python3 ucx_flow_v3/06_SYS/scripts/validate_sys.py ucx_flow_v3/06_SYS`
 
-- **SPEC**: `python3 ai_dev_flow/09_SPEC/scripts/validate_spec.py ai_dev_flow/09_SPEC`
+- **SPEC**: `python3 ucx_flow_v3/09_SPEC/scripts/validate_spec.py ucx_flow_v3/09_SPEC`
 
-- **Links**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`
+- **Links**: `python3 ucx_flow_v3/scripts/validate_links.py --docs-dir ucx_flow_v3`

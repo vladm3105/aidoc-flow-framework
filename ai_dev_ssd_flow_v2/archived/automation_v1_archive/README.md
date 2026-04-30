@@ -6,7 +6,7 @@
 >
 > All functionality has been superseded by the **UCx (Unified Context) Framework**:
 > ```
-> /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX/
+> /opt/data/docs_flow_framework/ucx_flow_v3/UCX/
 > ```
 >
 > See `DEPRECATED.md` for migration guide.

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Setup hybrid shared/custom resources for a project
-# Part of AI Dev Flow Framework multi-project architecture
+# Part of UCX Flow Framework multi-project architecture
 
 set -e
 

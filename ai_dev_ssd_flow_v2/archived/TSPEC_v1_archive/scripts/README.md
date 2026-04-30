@@ -166,7 +166,7 @@ Validators use standardized error codes from the central registry.
 [UTEST-W001] Low pseudocode coverage (TC-003)
 ```
 
-**Registry**: `ai_dev_ssd_flow/scripts/error_codes.py` (lines 227-281)
+**Registry**: `ucx_flow_v3/scripts/error_codes.py` (lines 227-281)
 **Total Codes**: 38 (33 general TSPEC + 5 type-specific per validator)
 
 ## Features (v2.0)

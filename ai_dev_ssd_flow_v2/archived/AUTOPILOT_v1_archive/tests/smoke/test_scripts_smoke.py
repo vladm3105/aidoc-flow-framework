@@ -5,7 +5,7 @@ Quick validation that all scripts are executable, imports work,
 and basic CLI functionality operates correctly.
 
 Usage:
-    pytest ai_dev_flow/AUTOPILOT/tests/smoke/ -v -m smoke
+    pytest ucx_flow_v3/AUTOPILOT/tests/smoke/ -v -m smoke
 """
 
 import subprocess

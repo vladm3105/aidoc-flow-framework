@@ -41,7 +41,7 @@ show_help() {
     echo "  --help             Show this help message"
     echo ""
     echo "Example:"
-    echo "  $0 --verbose --quality-gates ai_dev_ssd_flow/10_TSPEC"
+    echo "  $0 --verbose --quality-gates ucx_flow_v3/10_TSPEC"
     exit 0
 }
 

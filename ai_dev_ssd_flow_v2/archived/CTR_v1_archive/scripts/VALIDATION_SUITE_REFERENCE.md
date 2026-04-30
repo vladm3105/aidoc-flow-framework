@@ -1,13 +1,13 @@
 # CTR Validation Suite - Complete Reference
 
 **Version:** 1.0.0
-**Framework:** AI Dev Flow
+**Framework:** UCX Flow
 **Layer:** 8 (Contracts)
 **Created:** 2026-01-25T00:00:00
 
 ## Overview
 
-This directory contains a comprehensive validation suite for CTR (Contract) artifacts in the AI Dev Flow framework. These scripts ensure that all contracts meet Layer 8 standards for API specifications, data models, error handling, and traceability.
+This directory contains a comprehensive validation suite for CTR (Contract) artifacts in the UCX Flow framework. These scripts ensure that all contracts meet Layer 8 standards for API specifications, data models, error handling, and traceability.
 
 ## Main Validators
 
@@ -167,7 +167,7 @@ Isolated test for traceability tag detection.
 
 ### 1. Setup
 ```bash
-cd your_project/ai_dev_flow/08_CTR/scripts
+cd your_project/ucx_flow_v3/08_CTR/scripts
 # All validators are ready to use
 ```
 
@@ -241,7 +241,7 @@ python3 validate_ctr_spec_readiness.py ../CTR-NN_name.md
 
 ## Framework Integration
 
-These validators integrate with the **AI Dev Flow Framework**:
+These validators integrate with the **UCX Flow Framework**:
 - **Template:** CTR-MVP-TEMPLATE.md (14-section structure)
 - **Standards:** ID_NAMING_STANDARDS.md (CTR-NN format)
 - **Readiness:** 90% SPEC-readiness threshold for MVP
@@ -281,6 +281,6 @@ These validators integrate with the **AI Dev Flow Framework**:
 
 ## License & Attribution
 
-Part of the **AI Dev Flow Framework**  
-Framework Location: `/opt/data/docs_flow_framework/ai_dev_flow/`  
+Part of the **UCX Flow Framework**  
+Framework Location: `/opt/data/docs_flow_framework/ucx_flow_v3/`  
 Last Updated: 2024-01-25T00:00:00

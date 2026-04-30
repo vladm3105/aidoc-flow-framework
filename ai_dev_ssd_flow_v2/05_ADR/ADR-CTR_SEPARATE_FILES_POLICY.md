@@ -18,7 +18,7 @@ custom_fields:
 
 **Status**: Accepted
 **Date**: 2025-11-02T00:00:00
-**Decision Makers**: AI Dev Flow Working Group
+**Decision Makers**: UCX Flow Working Group
 **Scope**: All API contracts (internal and external)
 
 ## Context
@@ -30,7 +30,7 @@ API contracts (CTR documents) can be represented in multiple ways:
 3. **YAML Only**: Machine-readable contract without documentation
 4. **Markdown Only**: Human-readable documentation without formal schema
 
-The AI dev flow templates previously provided contradictory guidance, with some templates suggesting embedding contracts in SPEC files while others emphasized separate CTR files.
+The UCX flow templates previously provided contradictory guidance, with some templates suggesting embedding contracts in SPEC files while others emphasized separate CTR files.
 
 ### Problem Statement
 
@@ -297,7 +297,7 @@ Before merging PR with new CTR:
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
-| 2025-11-02T00:00:00 | 1.0 | Initial ADR - Separate CTR files policy | AI Dev Flow Working Group |
+| 2025-11-02T00:00:00 | 1.0 | Initial ADR - Separate CTR files policy | UCX Flow Working Group |
 
 ---
 

@@ -49,10 +49,10 @@ Before creating CTR, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream REQ**: Read atomic requirements (especially Section 3: Interface Specifications, Section 4: Data Schemas)
-3. **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
-4. **Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
+3. **Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
+4. **Creation Rules**: `ucx_flow_v3/08_CTR/CTR_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/08_CTR/CTR_VALIDATION_RULES.md`
+6. **Validation Script**: `./ucx_flow_v3/scripts/validate_ctr.sh`
 
 ## Reserved ID Exemption (CTR-00_*)
 
@@ -100,8 +100,8 @@ Use `doc-ctr` when:
 
 **Example**:
 ```
-ai_dev_flow/CTR/CTR-01_data_validation.md
-ai_dev_flow/CTR/CTR-01_data_validation.yaml
+ucx_flow_v3/CTR/CTR-01_data_validation.md
+ucx_flow_v3/CTR/CTR-01_data_validation.yaml
 ```
 
 ### 2. Document Control Fields (9 Required)
@@ -149,7 +149,7 @@ ai_dev_flow/CTR/CTR-01_data_validation.yaml
 > - `DM-XXX` - Use `CTR.NN.17.SS` instead
 > - `CC-XXX` - Use `CTR.NN.20.SS` instead
 
-**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ucx_flow_v3/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ### 5. YAML Contract Format
 
@@ -527,7 +527,7 @@ Focus on REQ Section 3 (Interface Specifications) and Section 4 (Data Schemas).
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/CTR/` for next available ID number.
+Check `ucx_flow_v3/CTR/` for next available ID number.
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: CTR-01, CTR-99, CTR-102
@@ -594,19 +594,19 @@ Include all 7-8 upstream tags (@brd through @req/impl).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ucx_flow_v3/CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate CTR
 
 ```bash
 # YAML schema validation
-yamllint ai_dev_flow/CTR/CTR-01_*.yaml
+yamllint ucx_flow_v3/CTR/CTR-01_*.yaml
 
 # OpenAPI validation
-openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
+openapi-spec-validator ucx_flow_v3/CTR/CTR-01_*.yaml
 
 # Cumulative tagging
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact CTR-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl --strict
+python ucx_flow_v3/scripts/validate_tags_against_docs.py --artifact CTR-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl --strict
 ```
 
 ### Step 13: Commit Changes
@@ -619,19 +619,19 @@ Commit both files (.md and .yaml) and traceability matrix.
 
 ```bash
 # Quality gates
-scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-01_*.md
+scripts/validate_quality_gates.sh ucx_flow_v3/CTR/CTR-01_*.md
 
 # YAML validation
-yamllint ai_dev_flow/CTR/CTR-01_*.yaml
+yamllint ucx_flow_v3/CTR/CTR-01_*.yaml
 
 # OpenAPI validation (if using OpenAPI)
-openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
+openapi-spec-validator ucx_flow_v3/CTR/CTR-01_*.yaml
 
 # CTR-specific validation (includes dual-file check)
-./ai_dev_flow/scripts/validate_ctr.sh CTR-01
+./ucx_flow_v3/scripts/validate_ctr.sh CTR-01
 
 # Cumulative tagging
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
+python ucx_flow_v3/scripts/validate_tags_against_docs.py \
   --artifact CTR-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl \
   --strict
@@ -655,7 +655,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `ucx_flow_v3/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ## Common Pitfalls
 
@@ -676,7 +676,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ```
 LOOP:
-  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ucx_flow_v3/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -687,10 +687,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/CTR/CTR-NN_slug.md --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --document docs/CTR/CTR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all CTR documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
+python ucx_flow_v3/scripts/validate_cross_document.py --layer CTR --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -748,20 +748,20 @@ For supplementary documentation related to CTR artifacts:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` (primary authority)
-- **Schema Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
-- **CTR README**: `ai_dev_flow/08_CTR/README.md`
+- **Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
+- **CTR Creation Rules**: `ucx_flow_v3/08_CTR/CTR_CREATION_RULES.md`
+- **CTR Validation Rules**: `ucx_flow_v3/08_CTR/CTR_VALIDATION_RULES.md`
+- **CTR README**: `ucx_flow_v3/08_CTR/README.md`
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **JSON Schema**: https://json-schema.org/
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 - **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
 
 **Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/08_CTR/CTR-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/08_CTR/CTR-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Index template: `ucx_flow_v3/08_CTR/CTR-SECTION-0-TEMPLATE.md`
+- Content template: `ucx_flow_v3/08_CTR/CTR-SECTION-TEMPLATE.md`
+- Reference: `ucx_flow_v3/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 

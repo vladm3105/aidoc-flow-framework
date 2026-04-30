@@ -136,7 +136,7 @@ def resolve_scan_root(path_arg: Path) -> Path:
     if candidate.exists():
         return candidate
 
-    nested = path_arg / "ai_dev_ssd_flow" / "01_BRD"
+    nested = path_arg / "ucx_flow_v3" / "01_BRD"
     if nested.exists():
         return nested
 
@@ -254,8 +254,8 @@ def main() -> int:
     parser.add_argument(
         "path",
         nargs="?",
-        default="ai_dev_ssd_flow/01_BRD",
-        help="Root path to scan (repo root, ai_dev_ssd_flow root, or 01_BRD path).",
+        default="ucx_flow_v3/01_BRD",
+        help="Root path to scan (repo root, ucx_flow_v3 root, or 01_BRD path).",
     )
     parser.add_argument(
         "--strict",

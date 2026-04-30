@@ -18,7 +18,7 @@ custom_fields:
 - Index-only: maintain `ADR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `ADR-00_index.md` + selected template profile; no skeletons are used.
-- Example index: `ai_dev_ssd_flow/tmp/SYS-00_index.md`.
+- Example index: `ucx_flow_v3/tmp/SYS-00_index.md`.
 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.
 
@@ -278,21 +278,21 @@ ADR validation is **automatically enforced** via pre-commit hooks:
 ```yaml
 - id: adr-core-validator
   name: Validate ADR core checks (validator, framework library)
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh ai_dev_ssd_flow/05_ADR
+  entry: bash ucx_flow_v3/05_ADR/scripts/adr_core_validator_hook.sh ucx_flow_v3/05_ADR
   language: system
   pass_filenames: false
   stages: [pre-commit]
 
 - id: adr-quality-gate
   name: Validate ADR quality gates
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh ai_dev_ssd_flow/05_ADR
+  entry: bash ucx_flow_v3/05_ADR/scripts/adr_quality_gate_hook.sh ucx_flow_v3/05_ADR
   language: system
   pass_filenames: false
   stages: [pre-commit]
 
 - id: adr-sys-ready-score
   name: Validate ADR SYS-Ready score (≥90%)
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh ai_dev_ssd_flow/05_ADR
+  entry: bash ucx_flow_v3/05_ADR/scripts/adr_sys_ready_score_hook.sh ucx_flow_v3/05_ADR
   language: system
   pass_filenames: false
   stages: [pre-commit]

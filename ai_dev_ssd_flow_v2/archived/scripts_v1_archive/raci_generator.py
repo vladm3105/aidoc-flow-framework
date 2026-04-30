@@ -304,7 +304,7 @@ def main(config: Optional[str], output: str, output_format: str,
     if not config_path:
         # Try to find config
         candidates = [
-            Path("ai_dev_ssd_flow/PROJECT/config/project_model.yaml"),
+            Path("ucx_flow_v3/PROJECT/config/project_model.yaml"),
             Path("PROJECT/config/project_model.yaml"),
         ]
         for path in candidates:

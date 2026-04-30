@@ -99,7 +99,7 @@ name: MVP Autopilot - Documentation Generation
 on:
   pull_request:
     paths:
-      - 'ai_dev_flow/**'
+      - 'ucx_flow_v3/**'
       - '.github/workflows/mvp-autopilot.yml'
   push:
     branches: [main, develop]
@@ -130,18 +130,18 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          pip install -r ai_dev_flow/scripts/requirements.txt
+          pip install -r ucx_flow_v3/scripts/requirements.txt
       
       - name: Validate Documentation Structure
         run: |
-          python3 ai_dev_flow/scripts/validate_documentation_paths.py \
-            --root ai_dev_flow \
+          python3 ucx_flow_v3/scripts/validate_documentation_paths.py \
+            --root ucx_flow_v3 \
             --strict
       
       - name: Validate All Layers
         run: |
-          python3 ai_dev_flow/scripts/validate_all.py \
-            ai_dev_flow \
+          python3 ucx_flow_v3/scripts/validate_all.py \
+            ucx_flow_v3 \
             --all \
             --report json
       
@@ -166,12 +166,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install Dependencies
-        run: pip install -r ai_dev_flow/scripts/requirements.txt
+        run: pip install -r ucx_flow_v3/scripts/requirements.txt
       
       - name: Run MVP Autopilot
         run: |
-          python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
-            --root ai_dev_flow \
+          python3 ucx_flow_v3/AUTOPILOT/scripts/mvp_autopilot.py \
+            --root ucx_flow_v3 \
             --intent "${{ github.event.inputs.intent }}" \
             --slug ${{ github.event.inputs.slug }} \
             --profile ${{ github.event.inputs.profile }} \
@@ -261,7 +261,7 @@ name: Quality Checks
 on:
   pull_request:
     paths:
-      - 'ai_dev_flow/**'
+      - 'ucx_flow_v3/**'
 
 jobs:
   traceability:
@@ -276,14 +276,14 @@ jobs:
       
       - name: Validate Traceability Links
         run: |
-          python3 ai_dev_flow/scripts/validate_links.py \
-            --docs-dir ai_dev_flow \
+          python3 ucx_flow_v3/scripts/validate_links.py \
+            --docs-dir ucx_flow_v3 \
             --strict
       
       - name: Generate Traceability Matrix
         run: |
-          python3 ai_dev_flow/scripts/generate_traceability_matrix.py \
-            --root ai_dev_flow \
+          python3 ucx_flow_v3/scripts/generate_traceability_matrix.py \
+            --root ucx_flow_v3 \
             --output docs/generated/traceability_matrix.md
       
       - name: Upload Matrix
@@ -299,14 +299,14 @@ jobs:
       
       - name: Check Cross-Document Consistency
         run: |
-          python3 ai_dev_flow/scripts/validate_cross_document.py \
+          python3 ucx_flow_v3/scripts/validate_cross_document.py \
             --all \
             --strict
       
       - name: Check ID Uniqueness
         run: |
-          python3 ai_dev_flow/07_REQ/scripts/validate_requirement_ids.py \
-            --directory ai_dev_flow/07_REQ
+          python3 ucx_flow_v3/07_REQ/scripts/validate_requirement_ids.py \
+            --directory ucx_flow_v3/07_REQ
 ```
 
 **Complexity**:  Low  
@@ -397,9 +397,9 @@ jobs:
           python -m py_compile ${{ github.event.inputs.output_dir }}/**/*.py
           
           # Check contract compliance
-          python3 ai_dev_flow/scripts/check_contract_compliance.py \
+          python3 ucx_flow_v3/scripts/check_contract_compliance.py \
             --code ${{ github.event.inputs.output_dir }} \
-            --contracts ai_dev_flow/08_CTR/
+            --contracts ucx_flow_v3/08_CTR/
       
       - name: Run Tests
         run: |
@@ -431,7 +431,7 @@ If GitHub Copilot Workspace isn't available, use GPT-4 directly:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python3 ai_dev_flow/scripts/generate_code_from_spec.py \
+          python3 ucx_flow_v3/scripts/generate_code_from_spec.py \
             --spec ${{ github.event.inputs.spec_file }} \
             --output ${{ github.event.inputs.output_dir }} \
             --model gpt-4-turbo

@@ -22,7 +22,7 @@
 #
 # Usage:
 #    ./scripts/lint_file_sizes.sh [directory]
-#    ./scripts/lint_file_sizes.sh ai_dev_flow/
+#    ./scripts/lint_file_sizes.sh ucx_flow_v3/
 #    ./scripts/lint_file_sizes.sh docs/
 #
 # See Also:

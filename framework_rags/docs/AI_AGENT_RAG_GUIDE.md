@@ -1,6 +1,6 @@
 # AI Agent RAG Usage Guide
 
-Instructions for AI agents to effectively use RAG services when working with AI Dev Flow Framework projects.
+Instructions for AI agents to effectively use RAG services when working with UCX Flow Framework projects.
 
 ---
 

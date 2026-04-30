@@ -69,14 +69,14 @@ GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
 EXPERTS_YAML=""
 if [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/generate.${DOC_TYPE}.yaml" ]]; then
     EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/generate.${DOC_TYPE}.yaml"
-elif [[ -f "/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/generate.${DOC_TYPE}.yaml" ]]; then
-    EXPERTS_YAML="/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/generate.${DOC_TYPE}.yaml"
+elif [[ -f "/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/generate.${DOC_TYPE}.yaml" ]]; then
+    EXPERTS_YAML="/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/generate.${DOC_TYPE}.yaml"
 else
     # Fallback to generic generate template if it exists
     if [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/generate.template.yaml" ]]; then
         EXPERTS_YAML="$GIT_ROOT/docs/AI_EXPERTS/generate.template.yaml"
-    elif [[ -f "/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/generate.template.yaml" ]]; then
-        EXPERTS_YAML="/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/generate.template.yaml"
+    elif [[ -f "/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/generate.template.yaml" ]]; then
+        EXPERTS_YAML="/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/generate.template.yaml"
     else
         die "Could not find a generation board (generate.${DOC_TYPE}.yaml or generate.template.yaml)"
     fi
@@ -107,10 +107,10 @@ echo "=== SHARED FRAMEWORK STANDARDS & CONTEXT ===" > "$SHARED_CONTEXT_FILE"
 
 # Inject core framework standards
 FRAMEWORK_DOCS=(
-    "ai_dev_ssd_flow/ID_NAMING_STANDARDS.md"
-    "ai_dev_ssd_flow/VALIDATION_STANDARDS.md"
-    "ai_dev_ssd_flow/LAYER_REGISTRY.yaml"
-    "ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    "ucx_flow_v3/ID_NAMING_STANDARDS.md"
+    "ucx_flow_v3/VALIDATION_STANDARDS.md"
+    "ucx_flow_v3/LAYER_REGISTRY.yaml"
+    "ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
 )
 
 for fdoc in "${FRAMEWORK_DOCS[@]}"; do
@@ -210,7 +210,7 @@ print(f\"P_MAX_TOKENS={shlex.quote(str(agent.get('max_tokens') or ''))}\")
         if [[ -n "$GIT_ROOT" && -f "$GIT_ROOT/docs/AI_EXPERTS/skills/${persona}.md" ]]; then
             SKILL_FILE="$GIT_ROOT/docs/AI_EXPERTS/skills/${persona}.md"
         else
-            SKILL_FILE="/opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/skills/${persona}.md"
+            SKILL_FILE="/opt/data/docs_flow_framework/ucx_flow_v3/AI_EXPERTS/skills/${persona}.md"
         fi
     fi
     if [[ "$SKILL_FILE" != /* && -n "$GIT_ROOT" ]]; then SKILL_FILE="$GIT_ROOT/$SKILL_FILE"; fi

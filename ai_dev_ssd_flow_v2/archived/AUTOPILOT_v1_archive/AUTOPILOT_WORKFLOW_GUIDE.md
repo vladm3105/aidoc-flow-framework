@@ -147,7 +147,7 @@ def load_autopilot_template(artifact_type: str, layer_dir: str) -> dict:
     Raises:
         FileNotFoundError: If YAML template doesn't exist
     """
-    yaml_template = f"ai_dev_flow/{layer_dir}/{artifact_type}-MVP-TEMPLATE.yaml"
+    yaml_template = f"ucx_flow_v3/{layer_dir}/{artifact_type}-MVP-TEMPLATE.yaml"
     template_path = Path(yaml_template)
 
     if not template_path.exists():

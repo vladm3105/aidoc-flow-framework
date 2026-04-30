@@ -144,7 +144,7 @@ After adding section 2 (Required Tags), all subsequent sections are renumbered:
 1. **Read the existing template**
    ```bash
    Read file_path: $FRAMEWORK_ROOT/[ARTIFACT]/[ARTIFACT]-00_TRACEABILITY_MATRIX-TEMPLATE.md
-   # Example: FRAMEWORK_ROOT=/path/to/ai_dev_flow
+   # Example: FRAMEWORK_ROOT=/path/to/ucx_flow_v3
    ```
 
 2. **Insert cumulative tagging section after section 1**
@@ -239,5 +239,5 @@ python scripts/generate_traceability_matrix.py \
 
 **Document Status**: Active
 **Created**: 2025-11-13T00:00:00
-**Author**: AI Dev Flow Framework Team
+**Author**: UCX Flow Framework Team
 **Purpose**: Guide completion of remaining traceability matrix templates using established pattern

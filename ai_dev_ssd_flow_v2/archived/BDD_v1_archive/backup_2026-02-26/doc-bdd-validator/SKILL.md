@@ -28,7 +28,7 @@ Invoke when user requests validation of BDD documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_flow/BDD/BDD_SCHEMA.yaml`
+Schema: `ucx_flow_v3/BDD/BDD_SCHEMA.yaml`
 Layer: 4
 Artifact Type: BDD
 
@@ -215,16 +215,16 @@ Scenario Outline: [Description]
 
 ```bash
 # Validate single BDD document
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
+python ucx_flow_v3/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
 
 # Validate all BDD documents
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/
+python ucx_flow_v3/scripts/validate_bdd.py docs/04_BDD/
 
 # Validate .feature files
-python ai_dev_flow/scripts/validate_bdd.py tests/bdd/features/
+python ucx_flow_v3/scripts/validate_bdd.py tests/bdd/features/
 
 # Check with verbose output
-python ai_dev_flow/scripts/validate_bdd.py docs/04_BDD/ --verbose
+python ucx_flow_v3/scripts/validate_bdd.py docs/04_BDD/ --verbose
 ```
 
 ## Validation Workflow

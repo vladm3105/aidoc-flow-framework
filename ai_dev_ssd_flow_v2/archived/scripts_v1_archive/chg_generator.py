@@ -63,7 +63,7 @@ class ConfigLoader:
 
     def _find_config(self) -> Optional[Path]:
         candidates = [
-            Path("ai_dev_ssd_flow/PROJECT/config/project_model.yaml"),
+            Path("ucx_flow_v3/PROJECT/config/project_model.yaml"),
             Path("PROJECT/config/project_model.yaml"),
             Path("config/project_model.yaml"),
         ]
@@ -178,7 +178,7 @@ class ChangeClassifier:
 class CHGDocumentGenerator:
     """Generate CHG documents."""
 
-    TEMPLATE_PATH = Path("ai_dev_ssd_flow/PROJECT/templates/CHG-PROJECT-TEMPLATE.md")
+    TEMPLATE_PATH = Path("ucx_flow_v3/PROJECT/templates/CHG-PROJECT-TEMPLATE.md")
 
     def __init__(self, config: Optional[ConfigLoader] = None):
         self.config = config

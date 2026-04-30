@@ -9,7 +9,7 @@ set -euo pipefail
 
 # Get the directory containing this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SPEC_DIR="${1:-ai_dev_ssd_flow/09_SPEC}"
+SPEC_DIR="${1:-ucx_flow_v3/09_SPEC}"
 
 # Support both absolute and relative paths
 if [[ ! "$SPEC_DIR" =~ ^/ ]]; then

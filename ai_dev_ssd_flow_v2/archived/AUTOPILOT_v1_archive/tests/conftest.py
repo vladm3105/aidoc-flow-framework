@@ -5,9 +5,9 @@ Provides shared fixtures, markers, and configuration for testing
 the TDD workflow automation scripts.
 
 Usage:
-    pytest ai_dev_flow/AUTOPILOT/tests/ -v
-    pytest ai_dev_flow/AUTOPILOT/tests/ -m smoke
-    pytest ai_dev_flow/AUTOPILOT/tests/ -m "not slow"
+    pytest ucx_flow_v3/AUTOPILOT/tests/ -v
+    pytest ucx_flow_v3/AUTOPILOT/tests/ -m smoke
+    pytest ucx_flow_v3/AUTOPILOT/tests/ -m "not slow"
 """
 
 import json
@@ -61,17 +61,17 @@ def temp_project_dir() -> Generator[Path, None, None]:
 
     # Create SDD directory structure
     dirs = [
-        "ai_dev_flow/01_BRD",
-        "ai_dev_flow/02_PRD",
-        "ai_dev_flow/03_EARS",
-        "ai_dev_flow/04_BDD",
-        "ai_dev_flow/05_ADR",
-        "ai_dev_flow/06_SYS",
-        "ai_dev_flow/07_REQ",
-        "ai_dev_flow/08_CTR",
-        "ai_dev_flow/09_SPEC",
-        "ai_dev_flow/10_TSPEC",
-        "ai_dev_flow/11_TASKS",
+        "ucx_flow_v3/01_BRD",
+        "ucx_flow_v3/02_PRD",
+        "ucx_flow_v3/03_EARS",
+        "ucx_flow_v3/04_BDD",
+        "ucx_flow_v3/05_ADR",
+        "ucx_flow_v3/06_SYS",
+        "ucx_flow_v3/07_REQ",
+        "ucx_flow_v3/08_CTR",
+        "ucx_flow_v3/09_SPEC",
+        "ucx_flow_v3/10_TSPEC",
+        "ucx_flow_v3/11_TASKS",
         "tests/unit",
         "tests/integration",
         "tests/smoke",
@@ -98,13 +98,13 @@ def temp_test_dir(temp_project_dir: Path) -> Path:
 @pytest.fixture
 def temp_spec_dir(temp_project_dir: Path) -> Path:
     """Return path to temp SPEC directory."""
-    return temp_project_dir / "ai_dev_flow" / "09_SPEC"
+    return temp_project_dir / "ucx_flow_v3" / "09_SPEC"
 
 
 @pytest.fixture
 def temp_req_dir(temp_project_dir: Path) -> Path:
     """Return path to temp REQ directory."""
-    return temp_project_dir / "ai_dev_flow" / "07_REQ"
+    return temp_project_dir / "ucx_flow_v3" / "07_REQ"
 
 
 # =============================================================================
@@ -250,7 +250,7 @@ implementation:
 @pytest.fixture
 def sample_bdd_file(temp_project_dir: Path) -> Path:
     """Create a sample BDD feature file."""
-    bdd_dir = temp_project_dir / "ai_dev_flow" / "04_BDD"
+    bdd_dir = temp_project_dir / "ucx_flow_v3" / "04_BDD"
     bdd_file = bdd_dir / "sample_feature.feature"
     bdd_file.write_text('''@smoke @critical
 Feature: Input Validation
@@ -278,7 +278,7 @@ Feature: Input Validation
 @pytest.fixture
 def sample_ears_file(temp_project_dir: Path) -> Path:
     """Create a sample EARS file."""
-    ears_dir = temp_project_dir / "ai_dev_flow" / "03_EARS"
+    ears_dir = temp_project_dir / "ucx_flow_v3" / "03_EARS"
     ears_file = ears_dir / "EARS-01_sample.md"
     ears_file.write_text('''---
 title: "EARS-01: Sample EARS Requirements"
@@ -302,7 +302,7 @@ WHEN the validation fails THE system SHALL return an error message WITHIN 50ms.
 @pytest.fixture
 def sample_ctr_file(temp_project_dir: Path) -> Path:
     """Create a sample CTR file."""
-    ctr_dir = temp_project_dir / "ai_dev_flow" / "08_CTR"
+    ctr_dir = temp_project_dir / "ucx_flow_v3" / "08_CTR"
     ctr_file = ctr_dir / "CTR-01_sample.yaml"
     ctr_file.write_text('''id: CTR-01
 title: Sample Contract

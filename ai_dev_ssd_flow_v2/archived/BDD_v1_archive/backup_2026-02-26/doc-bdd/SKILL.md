@@ -50,10 +50,10 @@ Before creating BDD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD, PRD, EARS**: Read artifacts that drive these test scenarios
-3. **Template**: `ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-6. **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+3. **Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-TEMPLATE.feature`
+4. **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+5. **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+6. **Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 
 ## When to Use This Skill
 
@@ -431,7 +431,7 @@ mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
 ### Step 4: Create Index File
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
+cp ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.0_index.md
 ```
 
 ### Step 5: Design Section Split
@@ -443,7 +443,7 @@ cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_eng
 ### Step 6: Create Section Files
 
 ```bash
-cp ai_dev_flow/04_BDD/BDD-SECTION-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
+cp ucx_flow_v3/04_BDD/BDD-SECTION-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
 ```
 
 ### Step 7: Add Section Metadata Tags
@@ -603,15 +603,15 @@ The ADR will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Subsection Template**: `ai_dev_flow/04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
-- **Aggregator Template**: `ai_dev_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **Creation Rules**: `ai_dev_flow/04_BDD/BDD_CREATION_RULES.md`
-- **Validation Rules**: `ai_dev_flow/04_BDD/BDD_VALIDATION_RULES.md`
-- **Splitting Rules**: `ai_dev_flow/04_BDD/BDD_SPLITTING_RULES.md`
+- **Template**: `ucx_flow_v3/04_BDD/BDD-MVP-TEMPLATE.feature`
+- **Index Template**: `ucx_flow_v3/04_BDD/BDD-SECTION-0-TEMPLATE.md`
+- **Subsection Template**: `ucx_flow_v3/04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
+- **Aggregator Template**: `ucx_flow_v3/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- **Creation Rules**: `ucx_flow_v3/04_BDD/BDD_CREATION_RULES.md`
+- **Validation Rules**: `ucx_flow_v3/04_BDD/BDD_VALIDATION_RULES.md`
+- **Splitting Rules**: `ucx_flow_v3/04_BDD/BDD_SPLITTING_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+- **ID Standards**: `ucx_flow_v3/ID_NAMING_STANDARDS.md`
 
 ## Quick Reference
 

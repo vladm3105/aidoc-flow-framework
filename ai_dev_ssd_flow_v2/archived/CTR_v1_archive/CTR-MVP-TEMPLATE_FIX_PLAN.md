@@ -15,7 +15,7 @@
 
 ## Overview
 
-Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/` documents and align template, validation rules, schema, and skills to a consistent **12-section** MVP structure with 2 optional lettered appendices (A, B).
+Fix identified gaps in `/opt/data/docs_flow_framework/ucx_flow_v3/08_CTR/` documents and align template, validation rules, schema, and skills to a consistent **12-section** MVP structure with 2 optional lettered appendices (A, B).
 
 ## Target Files
 
@@ -34,13 +34,13 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/` d
 
 - `ADR-MVP-TEMPLATE_FIX_PLAN.md` (for alignment reference - 11 sections)
 - `PRD-MVP-TEMPLATE_FIX_PLAN.md` (for alignment reference - 21 sections)
-- `/opt/data/docs_flow_framework/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (for element ID format and type codes - **AUTHORITATIVE SOURCE**)
+- `/opt/data/docs_flow_framework/ucx_flow_v3/ID_NAMING_STANDARDS.md` (for element ID format and type codes - **AUTHORITATIVE SOURCE**)
 
-## Element Type Code Reference (from `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`)
+## Element Type Code Reference (from `ucx_flow_v3/ID_NAMING_STANDARDS.md`)
 
-**Source**: `/opt/data/docs_flow_framework/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
+**Source**: `/opt/data/docs_flow_framework/ucx_flow_v3/ID_NAMING_STANDARDS.md`
 
-**Authoritative CTR Element Type Codes** (per `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` lines 1259-1263):
+**Authoritative CTR Element Type Codes** (per `ucx_flow_v3/ID_NAMING_STANDARDS.md` lines 1259-1263):
 
 | Code | Element Type | Artifact Types |
 |------|--------------|----------------|
@@ -48,7 +48,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/` d
 | 17 | Data Model | SPEC, CTR |
 | 20 | Contract Clause | CTR |
 
-**IMPORTANT**: The codes 28, 29 used in doc-ctr-fixer and doc-ctr-reviewer are **NOT VALID** per `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`. These must be corrected to 16, 17, 20.
+**IMPORTANT**: The codes 28, 29 used in doc-ctr-fixer and doc-ctr-reviewer are **NOT VALID** per `ucx_flow_v3/ID_NAMING_STANDARDS.md`. These must be corrected to 16, 17, 20.
 
 ---
 
@@ -77,7 +77,7 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/` d
 | 19 | **doc-ctr-reviewer "12/12" reference** needs verification | Medium | doc-ctr-reviewer/SKILL.md:110 | 5 |
 | 20 | **doc-ctr-fixer uses CTR-NN-TYPE-SS pattern** (differs from standard CTR-NN) | High | doc-ctr-fixer/SKILL.md:319-349 | 5 |
 | 21 | **doc-ctr-reviewer element type codes 28, 29** (inconsistent with other skills) | High | doc-ctr-reviewer/SKILL.md:257-258 | 5 |
-| 22 | **Wrong directory path in skills**: `ai_dev_flow/` should be `ai_dev_ssd_flow/` | Critical | doc-ctr/SKILL.md, doc-ctr-validator/SKILL.md, doc-ctr-autopilot/SKILL.md | 5 |
+| 22 | **Wrong directory path in skills**: `ucx_flow_v3/` should be `ucx_flow_v3/` | Critical | doc-ctr/SKILL.md, doc-ctr-validator/SKILL.md, doc-ctr-autopilot/SKILL.md | 5 |
 
 ---
 
@@ -87,10 +87,10 @@ Fix identified gaps in `/opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/` d
 
 ```bash
 # Create backup directory
-mkdir -p /opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR/.backup_2026-02-26
+mkdir -p /opt/data/docs_flow_framework/ucx_flow_v3/08_CTR/.backup_2026-02-26
 
 # Backup templates and rules
-cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR
+cd /opt/data/docs_flow_framework/ucx_flow_v3/08_CTR
 cp CTR-MVP-TEMPLATE.md .backup_2026-02-26/
 cp CTR-MVP-TEMPLATE.yaml .backup_2026-02-26/
 cp CTR_MVP_VALIDATION_RULES.md .backup_2026-02-26/
@@ -119,7 +119,7 @@ cp -r /opt/data/docs_flow_framework/.claude/skills/doc-ctr* .backup_2026-02-26/
 
 1. **Immediate Rollback**:
    ```bash
-   cd /opt/data/docs_flow_framework/ai_dev_ssd_flow/08_CTR
+   cd /opt/data/docs_flow_framework/ucx_flow_v3/08_CTR
    cp .backup_2026-02-26/CTR-MVP-TEMPLATE.md ./
    cp .backup_2026-02-26/CTR-MVP-TEMPLATE.yaml ./
    cp .backup_2026-02-26/CTR_MVP_VALIDATION_RULES.md ./
@@ -383,7 +383,7 @@ Add document footer:
 > - This is the standard CTR template (12 numbered sections + 2 appendices)
 > - Dual-file format: .md + .yaml
 > - Focus on API contracts, data schemas, interface specifications
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full CTR" template)
 ```
 
@@ -701,24 +701,24 @@ appendices:
 **CRITICAL: Fix directory path** (throughout file):
 ```markdown
 # Before:
-ai_dev_flow/08_CTR/
+ucx_flow_v3/08_CTR/
 
 # After:
-ai_dev_ssd_flow/08_CTR/
+ucx_flow_v3/08_CTR/
 ```
 
 **Lines 52-55**: Update template references:
 
 ```markdown
 # Before:
-2. **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
-3. **Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
+2. **Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
+3. **Creation Rules**: `ucx_flow_v3/08_CTR/CTR_CREATION_RULES.md`
+4. **Validation Rules**: `ucx_flow_v3/08_CTR/CTR_VALIDATION_RULES.md`
 
 # After:
-2. **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` and `CTR-MVP-TEMPLATE.yaml`
-3. **Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-4. **Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+2. **Template**: `ucx_flow_v3/08_CTR/CTR-MVP-TEMPLATE.md` and `CTR-MVP-TEMPLATE.yaml`
+3. **Creation Rules**: `ucx_flow_v3/08_CTR/CTR_MVP_CREATION_RULES.md`
+4. **Validation Rules**: `ucx_flow_v3/08_CTR/CTR_MVP_VALIDATION_RULES.md`
 ```
 
 **Lines 125-133**: Update section list to 12 sections:
@@ -761,17 +761,17 @@ ai_dev_ssd_flow/08_CTR/
 
 ```markdown
 # Before:
-- **Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.md` (primary authority)
-- **Schema Template**: `ai_dev_flow/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_flow/08_CTR/CTR_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_flow/08_CTR/CTR_VALIDATION_RULES.md`
+- **Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ucx_flow_v3/08_CTR/CTR-TEMPLATE.yaml` (machine-readable)
+- **CTR Creation Rules**: `ucx_flow_v3/08_CTR/CTR_CREATION_RULES.md`
+- **CTR Validation Rules**: `ucx_flow_v3/08_CTR/CTR_VALIDATION_RULES.md`
 
 # After:
-- **Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.md` (primary authority)
-- **Schema Template**: `ai_dev_ssd_flow/08_CTR/CTR-MVP-TEMPLATE.yaml` (machine-readable)
-- **CTR Creation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_CREATION_RULES.md`
-- **CTR Validation Rules**: `ai_dev_ssd_flow/08_CTR/CTR_MVP_VALIDATION_RULES.md`
-- **CTR README**: `ai_dev_ssd_flow/08_CTR/README.md`
+- **Template**: `ucx_flow_v3/08_CTR/CTR-MVP-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ucx_flow_v3/08_CTR/CTR-MVP-TEMPLATE.yaml` (machine-readable)
+- **CTR Creation Rules**: `ucx_flow_v3/08_CTR/CTR_MVP_CREATION_RULES.md`
+- **CTR Validation Rules**: `ucx_flow_v3/08_CTR/CTR_MVP_VALIDATION_RULES.md`
+- **CTR README**: `ucx_flow_v3/08_CTR/README.md`
 ```
 
 ### 5.3 doc-ctr-validator/SKILL.md Fixes (CRITICAL)
@@ -832,14 +832,14 @@ ai_dev_ssd_flow/08_CTR/
 ### 0. Structure Compliance (12/12) - BLOCKING
 ```
 
-**Lines 257-258** (if present): Fix element type codes to match `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`:
+**Lines 257-258** (if present): Fix element type codes to match `ucx_flow_v3/ID_NAMING_STANDARDS.md`:
 
 ```markdown
 # Before (INCORRECT):
 | 28 | Contract Interface | API endpoints |
 | 29 | Contract Event | Event definitions |
 
-# After (CORRECT - per `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`):
+# After (CORRECT - per `ucx_flow_v3/ID_NAMING_STANDARDS.md`):
 | 16 | Interface | API endpoints, service interfaces |
 | 17 | Data Model | Schema definitions, data structures |
 | 20 | Contract Clause | Contract terms, SLA definitions |
@@ -851,7 +851,7 @@ ai_dev_ssd_flow/08_CTR/
 
 ### 5.5 doc-ctr-fixer/SKILL.md Fixes (CRITICAL)
 
-**Lines 319-349**: Fix element type codes to match `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`:
+**Lines 319-349**: Fix element type codes to match `ucx_flow_v3/ID_NAMING_STANDARDS.md`:
 
 ```markdown
 # Before (INCORRECT):
@@ -866,7 +866,7 @@ ai_dev_ssd_flow/08_CTR/
 | 28 | Contract Interface | API endpoints |
 | 29 | Contract Event | Event definitions |
 
-# After (CORRECT - per `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`):
+# After (CORRECT - per `ucx_flow_v3/ID_NAMING_STANDARDS.md`):
 | Invalid Code | Valid Code | Element Type |
 |--------------|------------|--------------|
 | 28 | 16 | Interface |
@@ -1069,7 +1069,7 @@ grep "PART [0-9]" CTR-MVP-TEMPLATE.md
 - [ ] Metadata updated (total_sections: 12)
 
 ### Skill Files Verification
-- [ ] doc-ctr/SKILL.md uses `ai_dev_ssd_flow/08_CTR/` path (not `ai_dev_flow/08_CTR/`)
+- [ ] doc-ctr/SKILL.md uses `ucx_flow_v3/08_CTR/` path (not `ucx_flow_v3/08_CTR/`)
 - [ ] doc-ctr/SKILL.md references CTR-MVP-TEMPLATE.md (not CTR-TEMPLATE.md)
 - [ ] doc-ctr/SKILL.md lists 12 sections
 - [ ] doc-ctr-validator/SKILL.md says "12 sections" (not "20 sections in 5 Parts")
@@ -1078,7 +1078,7 @@ grep "PART [0-9]" CTR-MVP-TEMPLATE.md
 - [ ] All skills reference Layer 8 (not Layer 9)
 - [ ] doc-ctr-reviewer/SKILL.md uses correct element type codes (16, 17, 20)
 - [ ] doc-ctr-fixer/SKILL.md uses correct element type codes (16, 17, 20)
-- [ ] All skills align with `/opt/data/docs_flow_framework/ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` for type codes
+- [ ] All skills align with `/opt/data/docs_flow_framework/ucx_flow_v3/ID_NAMING_STANDARDS.md` for type codes
 
 ### README Verification
 - [ ] Section references updated to 12 sections
@@ -1155,8 +1155,8 @@ After fixing the template and skills, verify these files:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.3 | 2026-02-26 | Added gap #22 (wrong directory path `ai_dev_flow` → `ai_dev_ssd_flow`); Fixed all path references in Phase 5.2; Added path verification to checklist |
-| 1.2 | 2026-02-26 | Updated all ID_NAMING_STANDARDS.md references to use full path (`ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`) |
+| 1.3 | 2026-02-26 | Added gap #22 (wrong directory path `ucx_flow_v3` → `ucx_flow_v3`); Fixed all path references in Phase 5.2; Added path verification to checklist |
+| 1.2 | 2026-02-26 | Updated all ID_NAMING_STANDARDS.md references to use full path (`ucx_flow_v3/ID_NAMING_STANDARDS.md`) |
 | 1.1 | 2026-02-26 | Gap review update: Fixed section count inconsistency (14→12); Added gaps #18-21 for element type codes; Added detailed fixes for doc-ctr-reviewer (5.4) and doc-ctr-fixer (5.5); Added Element Type Code Reference section; Updated verification checklist for type codes |
 | 1.0 | 2026-02-26 | Initial fix plan with 17 identified gaps |
 

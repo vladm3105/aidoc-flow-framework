@@ -414,7 +414,7 @@ Each document type has its own `scripts/validate_all.sh` that delegates to type-
 ## File Locations (REQ-Specific)
 
 ```
-ai_dev_flow/07_REQ/
+ucx_flow_v3/07_REQ/
  scripts/
     add_crosslinks_req.py          # Cross-link generator
     validate_all.sh                # Master orchestrator
@@ -432,9 +432,9 @@ ai_dev_flow/07_REQ/
 ```
 
 **Framework-Level Versions:**
-- `ai_dev_flow/VALIDATION_COMMANDS.md` - Framework-wide CLI reference
-- `ai_dev_flow/VALIDATION_STRATEGY_GUIDE.md` - Framework-wide architecture
-- `ai_dev_flow/AI_VALIDATION_DECISION_GUIDE.md` - Framework-wide decision framework
+- `ucx_flow_v3/VALIDATION_COMMANDS.md` - Framework-wide CLI reference
+- `ucx_flow_v3/VALIDATION_STRATEGY_GUIDE.md` - Framework-wide architecture
+- `ucx_flow_v3/AI_VALIDATION_DECISION_GUIDE.md` - Framework-wide decision framework
 
 ---
 

@@ -197,10 +197,10 @@ class TDDWorkflowValidator:
             test_dir = self.temp_dir / "tests" / "unit"
             test_dir.mkdir(parents=True, exist_ok=True)
 
-            req_dir = self.temp_dir / "ai_dev_flow" / "07_REQ"
+            req_dir = self.temp_dir / "ucx_flow_v3" / "07_REQ"
             req_dir.mkdir(parents=True, exist_ok=True)
 
-            spec_dir = self.temp_dir / "ai_dev_flow" / "09_SPEC"
+            spec_dir = self.temp_dir / "ucx_flow_v3" / "09_SPEC"
             spec_dir.mkdir(parents=True, exist_ok=True)
 
             # Create sample test files based on scenario
@@ -567,7 +567,7 @@ def validate_input(data: dict) -> bool:
                 [
                     sys.executable, str(script),
                     "--test-dir", str(self.temp_dir / "tests" / "unit"),
-                    "--spec-dir", str(self.temp_dir / "ai_dev_flow" / "09_SPEC"),
+                    "--spec-dir", str(self.temp_dir / "ucx_flow_v3" / "09_SPEC"),
                     "--code-dir", str(self.temp_dir / "src")
                 ],
                 capture_output=True,
@@ -620,7 +620,7 @@ def validate_input(data: dict) -> bool:
             result = subprocess.run(
                 [
                     sys.executable, str(script),
-                    "--spec-dir", str(self.temp_dir / "ai_dev_flow" / "09_SPEC"),
+                    "--spec-dir", str(self.temp_dir / "ucx_flow_v3" / "09_SPEC"),
                     "--output", str(output_dir)
                 ],
                 capture_output=True,
@@ -671,7 +671,7 @@ def validate_input(data: dict) -> bool:
 
         try:
             # Create sample BDD file for smoke test generation
-            bdd_dir = self.temp_dir / "ai_dev_flow" / "04_BDD"
+            bdd_dir = self.temp_dir / "ucx_flow_v3" / "04_BDD"
             bdd_dir.mkdir(parents=True, exist_ok=True)
 
             bdd_file = bdd_dir / "sample.feature"

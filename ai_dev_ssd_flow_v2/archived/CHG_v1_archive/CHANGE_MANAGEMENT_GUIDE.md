@@ -573,10 +573,10 @@ python CHG/scripts/validate_chg_routing.py docs/CHG/CHG-XX/CHG-XX.md
 ./CHG/scripts/validate_all_gates.sh docs/CHG/CHG-XX/CHG-XX.md
 
 # Check traceability
-python ai_dev_flow/scripts/validate_traceability_matrix.py
+python ucx_flow_v3/scripts/validate_traceability_matrix.py
 
 # Verify no broken references
-python ai_dev_flow/scripts/validate_forward_references.py
+python ucx_flow_v3/scripts/validate_forward_references.py
 
 # Run pytest tests
 pytest tests/

@@ -31,7 +31,7 @@ Unified report naming across all mcp_ucx tools. Convention: `{DOC-ID}.{STAGE}.{F
 
 ### New Standards
 
-- `ai_dev_ssd_flow/REPORT_NAMING_STANDARDS.md` — canonical reference
+- `ucx_flow_v3/REPORT_NAMING_STANDARDS.md` — canonical reference
 - `extract_doc_id()` in `utils/source_files.py`
 - `REPORT_PATTERN` / `DERIVED_COPY_PATTERN` regex constants
 

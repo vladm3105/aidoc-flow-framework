@@ -13,7 +13,7 @@ Environment:
 
 References:
     - work_plans/ai_governance_automation.md (Item #2)
-    - ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md
+    - ucx_flow_v3/08_IPLAN/IPLAN-TEMPLATE.yaml
 """
 
 import argparse

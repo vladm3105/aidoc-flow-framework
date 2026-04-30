@@ -727,5 +727,5 @@ PRD-01 (MVP) → Production → PRD-02 (New Features) → Production → PRD-03 
 > **MVP Template Notes**:
 > - This is the standard PRD template (21 sections)
 > - Single file - no sectioning per user requirement
-> - Maintains ai_dev_flow framework compliance
+> - Maintains ucx_flow_v3 framework compliance
 > - **Lifecycle**: MVP → PROD → NEW MVP (no separate "full PRD" template)

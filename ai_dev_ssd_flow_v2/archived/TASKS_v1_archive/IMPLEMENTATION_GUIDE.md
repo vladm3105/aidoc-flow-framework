@@ -1203,6 +1203,6 @@ await connector.connect("localhost", 4002)
 **Version**: 1.1.0
 **Created**: 2025-11-24T00:00:00
 **Last Updated**: 2025-11-25T00:00:00
-**Author**: AI Dev Flow Framework Team
+**Author**: UCX Flow Framework Team
 **Complexity**: 3/5
 **Token Count**: ~12,000 tokens

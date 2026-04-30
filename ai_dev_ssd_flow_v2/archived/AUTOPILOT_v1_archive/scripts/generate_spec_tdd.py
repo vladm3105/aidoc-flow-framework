@@ -6,8 +6,8 @@ Generates SPEC YAML files that satisfy test requirements extracted by
 analyze_test_requirements.py. Part of Phase 2: TDD Awareness in MVP Autopilot.
 
 Usage:
-    python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --output ai_dev_flow/09_SPEC/
-    python generate_spec_tdd.py --test-requirements tmp/auth_requirements.json --req-dir ai_dev_flow/07_REQ/ --output ai_dev_flow/09_SPEC/
+    python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --output ucx_flow_v3/09_SPEC/
+    python generate_spec_tdd.py --test-requirements tmp/auth_requirements.json --req-dir ucx_flow_v3/07_REQ/ --output ucx_flow_v3/09_SPEC/
 
 Reference: IPLAN-001 Section 4.2.2
 """
@@ -610,13 +610,13 @@ def main():
         epilog="""
 Examples:
   # Generate SPEC from test requirements
-  python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --output ai_dev_flow/09_SPEC/
+  python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --output ucx_flow_v3/09_SPEC/
 
   # Generate with REQ directory for additional context
-  python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --req-dir ai_dev_flow/07_REQ/ --output ai_dev_flow/09_SPEC/
+  python generate_spec_tdd.py --test-requirements tmp/test_requirements.json --req-dir ucx_flow_v3/07_REQ/ --output ucx_flow_v3/09_SPEC/
 
   # Validate existing SPEC against tests
-  python generate_spec_tdd.py --validate ai_dev_flow/09_SPEC/SPEC-01_auth.yaml --test-requirements tmp/test_requirements.json
+  python generate_spec_tdd.py --validate ucx_flow_v3/09_SPEC/SPEC-01_auth.yaml --test-requirements tmp/test_requirements.json
         """
     )
 

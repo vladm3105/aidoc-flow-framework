@@ -91,7 +91,7 @@ fi
 ## File Structure
 
 ```
-/opt/data/docs_flow_framework/ai_dev_flow/07_REQ/
+/opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/
  scripts/
     validate_all.sh                           (UPDATED)
     validate_req_quality_score.sh             (UPDATED)
@@ -107,7 +107,7 @@ fi
 ### Run GATE-05 Isolation Test
 
 ```bash
-cd /opt/data/docs_flow_framework/ai_dev_flow/07_REQ
+cd /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ
 ./scripts/validate_all.sh --test-gate05
 ```
 
@@ -154,7 +154,7 @@ GATE-05 TEST: Complete Isolation Detection
 ### Direct Test Execution
 
 ```bash
-bash /opt/data/docs_flow_framework/ai_dev_flow/07_REQ/scripts/test_gate05_isolation.sh
+bash /opt/data/docs_flow_framework/ucx_flow_v3/07_REQ/scripts/test_gate05_isolation.sh
 ```
 
 ## Exit Codes

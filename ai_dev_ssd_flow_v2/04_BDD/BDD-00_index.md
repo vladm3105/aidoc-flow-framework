@@ -336,7 +336,7 @@ Track acceptance test coverage for requirements:
 
 - [BDD README](./README.md): Comprehensive BDD documentation and guidelines
 - [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml): Template for creating new BDD feature files
-- [AI Dev Flow Index](../index.md): Master index with complete traceability workflow
+- [UCX Flow Index](../index.md): Master index with complete traceability workflow
 
 ### External Links
 
@@ -355,7 +355,7 @@ Track acceptance test coverage for requirements:
 ## Maintenance
 
 **Last Updated**: 2025-11-02T00:00:00
-**Maintained By**: AI Dev Flow Working Group
+**Maintained By**: UCX Flow Working Group
 **Review Frequency**: Monthly or when new BDD files are added
 **Version**: 1.0
 
@@ -369,4 +369,4 @@ Track acceptance test coverage for requirements:
 
 **Index Version**: 1.0
 **Template Compliance**: BDD-TEMPLATE.yaml v1.0
-**Traceability Standard**: AI Dev Flow Traceability v1.0
+**Traceability Standard**: UCX Flow Traceability v1.0

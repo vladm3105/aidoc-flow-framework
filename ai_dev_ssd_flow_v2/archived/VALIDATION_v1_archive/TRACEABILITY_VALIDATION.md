@@ -14,7 +14,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2026-02-05T00:00:00
 **Status**: Active
-**Framework**: AI Dev Flow SDD (MVP-first)
+**Framework**: UCX Flow SDD (MVP-first)
 **Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy; supports the MVP-to-production loop (create MVP → fix defects → promote → add new MVP features → fix → repeat)
 
 ---
@@ -209,10 +209,10 @@ validate_cumulative_tags() {
 cat > .git/hooks/pre-commit << 'EOF'
 #!/bin/sh
 
-# AI Dev Flow Quality Gates Integration
+# UCX Flow Quality Gates Integration
 # Validates against 14-Layer Architecture (TRACEABILITY.md)
 
-echo " Running AI Dev Flow quality gate validation..."
+echo " Running UCX Flow quality gate validation..."
 
 # Get changed artifact files
 changed_artifacts=$(git diff --cached --name-only | grep '^docs/')

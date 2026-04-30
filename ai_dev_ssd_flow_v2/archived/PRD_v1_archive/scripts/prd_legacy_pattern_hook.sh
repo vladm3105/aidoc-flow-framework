@@ -4,11 +4,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
-INPUT_ROOT="${1:-ai_dev_ssd_flow/02_PRD}"
+INPUT_ROOT="${1:-ucx_flow_v3/02_PRD}"
 if [[ "${INPUT_ROOT}" = /* ]]; then
 	PRD_ROOT="${INPUT_ROOT}"
 else
 	PRD_ROOT="${REPO_ROOT}/${INPUT_ROOT}"
 fi
 
-python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/detect_legacy_prd_element_ids.py" "${PRD_ROOT}" --summary
+python3 "${REPO_ROOT}/ucx_flow_v3/scripts/detect_legacy_prd_element_ids.py" "${PRD_ROOT}" --summary

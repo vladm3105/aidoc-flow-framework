@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test Result Comparison and Regression Detection for AI Dev Flow.
+Test Result Comparison and Regression Detection for UCX Flow.
 
 Compares test results between runs to detect regressions.
 

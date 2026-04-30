@@ -16,5 +16,5 @@ def check_schema(path):
     except Exception as e:
         print(f"Error: {e}")
 
-check_schema('/opt/data/docs_flow_framework/ai_dev_flow/01_BRD/BRD_MVP_SCHEMA.yaml')
-check_schema('/opt/data/docs_flow_framework/ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml')
+check_schema('/opt/data/docs_flow_framework/ucx_flow_v3/01_BRD/BRD_MVP_SCHEMA.yaml')
+check_schema('/opt/data/docs_flow_framework/ucx_flow_v3/02_PRD/PRD_MVP_SCHEMA.yaml')

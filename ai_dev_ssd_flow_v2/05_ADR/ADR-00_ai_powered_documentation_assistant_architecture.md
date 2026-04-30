@@ -24,7 +24,7 @@ custom_fields:
 
 | Item | Details |
 |------|---------|
-| **Project Name** | AI Dev Flow Framework Enhancement |
+| **Project Name** | UCX Flow Framework Enhancement |
 | **Document Version** | 1.0.0 |
 | **Date Created** | 2025-11-29T00:00:00 |
 | **Last Updated** | 2025-11-29T00:00:00 |
@@ -43,7 +43,7 @@ custom_fields:
 
 ### Background
 
-The AI Dev Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 15-layer workflow. This creates friction and inconsistency in documentation quality.
+The UCX Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 15-layer workflow. This creates friction and inconsistency in documentation quality.
 
 ### Problem Statement
 

@@ -27,8 +27,8 @@ skill: "doc-ctr"
 ## Output Location (Dual-File Format)
 
 ```
-ai_dev_flow/CTR/CTR-NNN_{slug}.md    # Documentation
-ai_dev_flow/CTR/CTR-NNN_{slug}.yaml  # Contract definition
+ucx_flow_v3/CTR/CTR-NNN_{slug}.md    # Documentation
+ucx_flow_v3/CTR/CTR-NNN_{slug}.yaml  # Contract definition
 ```
 
 ## YAML Formats
@@ -77,8 +77,8 @@ BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL → CTR → SPEC
 ## Template Location
 
 ```
-ai_dev_flow/09_CTR/CTR-MVP-TEMPLATE.md
-ai_dev_flow/09_CTR/CTR-MVP-TEMPLATE.yaml
+ucx_flow_v3/09_CTR/CTR-MVP-TEMPLATE.md
+ucx_flow_v3/09_CTR/CTR-MVP-TEMPLATE.yaml
 ```
 
 ## Related Skills

@@ -7,7 +7,7 @@ These fixtures are specific to integration tests (ITEST) which:
 - Are slower than unit tests
 - Test real integration points
 
-Reference: ai_dev_flow/10_TSPEC/ITEST/
+Reference: ucx_flow_v3/07_TDD/
 """
 
 import os

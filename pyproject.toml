@@ -1,8 +1,8 @@
-# AI Dev Flow Framework Configuration
-# Reference: ai_dev_flow/10_TSPEC/
+# UCX Flow Framework Configuration
+# Reference: ucx_flow_v3/07_TDD/
 
 [project]
-name = "ai-dev-flow"
+name = "ucx-flow"
 version = "1.0.0"
 description = "AI-Driven Specification-Driven Development Framework"
 readme = "README.md"

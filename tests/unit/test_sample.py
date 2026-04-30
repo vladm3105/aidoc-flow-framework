@@ -3,7 +3,7 @@ Sample unit tests demonstrating UTEST patterns.
 
 These tests serve as examples and verify the testing infrastructure works.
 
-Reference: ai_dev_flow/10_TSPEC/UTEST/
+Reference: ucx_flow_v3/07_TDD/
 Test ID: UTEST-001
 """
 

@@ -52,7 +52,7 @@ MCP tool equivalents: `sdd_init(update=true)`, `sdd_init(update=true, update_map
 
 ### BRD Template: `executive_summary` Demoted to Optional
 
-**File**: `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml`
+**File**: `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml`
 
 `executive_summary` is now `required: false`. It is a derived section that can be generated on demand from authoritative sections (`business_objectives`, `stakeholders`, `project_scope`). Not consumed by downstream prompts or validation rules.
 
@@ -84,7 +84,7 @@ BRD required top-level keys changed from `["document_control", "executive_summar
 | `mcp_ucx/src/mcp_server/cli/main.py` | 3 subcommands + init flags + formatting helpers |
 | `mcp_ucx/src/mcp_server/validation/brd_rules.py` | BRD-XS-004 rewritten |
 | `mcp_ucx/src/mcp_server/remediation/runner.py` | Remove executive_summary from BRD required keys |
-| `ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml` | executive_summary: required: false |
+| `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml` | executive_summary: required: false |
 | `mcp_ucx/tests/unit/test_persona_manager.py` | **New** — 14 tests |
 | `mcp_ucx/tests/unit/test_scaffold_init.py` | +3 tests (update, protected, update-mappings) |
 | `mcp_ucx/tests/unit/test_brd_rules.py` | Updated entity consistency tests |

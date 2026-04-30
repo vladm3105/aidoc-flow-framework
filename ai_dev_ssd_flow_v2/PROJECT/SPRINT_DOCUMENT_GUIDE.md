@@ -12,7 +12,7 @@ custom_fields:
   layer: 0
   priority: shared
   development_status: active
-  location: ai_dev_ssd_flow/PROJECT/SPRINT_DOCUMENT_GUIDE.md
+  location: ucx_flow_v3/PROJECT/SPRINT_DOCUMENT_GUIDE.md
   created: 2026-02-16
   updated: 2026-02-16
 ---

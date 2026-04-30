@@ -63,7 +63,7 @@ def test_validate_uses_active_registry_metadata_for_target_artifact() -> None:
         },
     )
     assert result["registry_binding_status"] == "ok"
-    assert result["registry_source"] == "ai_dev_ssd_flow/LAYER_REGISTRY.yaml"
+    assert result["registry_source"] == "ucx_flow_v3/LAYER_REGISTRY.yaml"
 
 
 def test_subtype_code_routes_to_expected_subtype_profile_end_to_end() -> None:

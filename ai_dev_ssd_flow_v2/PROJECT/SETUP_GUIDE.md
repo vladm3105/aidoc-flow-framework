@@ -12,7 +12,7 @@ custom_fields:
   layer: 0
   priority: shared
   development_status: active
-  location: ai_dev_ssd_flow/PROJECT/SETUP_GUIDE.md
+  location: ucx_flow_v3/PROJECT/SETUP_GUIDE.md
   created: 2026-02-16
   updated: 2026-02-16
 ---
@@ -20,7 +20,7 @@ custom_fields:
 # SDD Project Model v2.2 - Setup Guide
 
 **Version**: 1.0
-**Location**: `ai_dev_ssd_flow/PROJECT/SETUP_GUIDE.md`
+**Location**: `ucx_flow_v3/PROJECT/SETUP_GUIDE.md`
 
 ---
 
@@ -41,7 +41,7 @@ source .venv/bin/activate  # Linux/macOS
 ### 1.2 Install Dependencies
 
 ```bash
-pip install -r ai_dev_ssd_flow/scripts/requirements-project.txt
+pip install -r ucx_flow_v3/scripts/requirements-project.txt
 ```
 
 ### 1.3 GitHub Token
@@ -60,7 +60,7 @@ export GITHUB_TOKEN="ghp_your_token_here"
 
 ### 2.1 Project Configuration
 
-Edit `ai_dev_ssd_flow/PROJECT/config/project_model.yaml`:
+Edit `ucx_flow_v3/PROJECT/config/project_model.yaml`:
 
 ```yaml
 project:
@@ -84,12 +84,12 @@ project:
 
 ```bash
 # Generate Sprint 0 checklist
-python ai_dev_ssd_flow/scripts/sprint0_setup.py \
+python ucx_flow_v3/scripts/sprint0_setup.py \
   --check-readiness \
   --docs-root docs/
 
 # Create Sprint 0 GitHub issues
-python ai_dev_ssd_flow/scripts/sprint0_setup.py \
+python ucx_flow_v3/scripts/sprint0_setup.py \
   --repo owner/repo-name \
   --create-issues
 ```
@@ -108,7 +108,7 @@ Use Claude Code skills for artifact generation:
 ### 3.3 Sync TASKS to GitHub
 
 ```bash
-python ai_dev_ssd_flow/scripts/tasks_to_github.py \
+python ucx_flow_v3/scripts/tasks_to_github.py \
   --tasks-file docs/11_TASKS/TASKS-01.yaml \
   --repo owner/repo-name \
   --project-number 31 \
@@ -248,7 +248,7 @@ Copy the workflow template to your repository:
 
 ```bash
 mkdir -p .github/workflows
-cp ai_dev_ssd_flow/PROJECT/.github/workflows/sdd-validation.yml \
+cp ucx_flow_v3/PROJECT/.github/workflows/sdd-validation.yml \
    .github/workflows/
 ```
 
@@ -258,7 +258,7 @@ Copy the issue template:
 
 ```bash
 mkdir -p .github/ISSUE_TEMPLATE
-cp ai_dev_ssd_flow/PROJECT/.github/ISSUE_TEMPLATE/sdd-task.yml \
+cp ucx_flow_v3/PROJECT/.github/ISSUE_TEMPLATE/sdd-task.yml \
    .github/ISSUE_TEMPLATE/
 ```
 
@@ -299,10 +299,10 @@ python scripts/validate_artifact.py \
 **Solution**: Export your GitHub token: `export GITHUB_TOKEN="ghp_..."`
 
 **Issue**: "Cannot find project_model.yaml"
-**Solution**: Ensure config file exists at `ai_dev_ssd_flow/PROJECT/config/project_model.yaml`
+**Solution**: Ensure config file exists at `ucx_flow_v3/PROJECT/config/project_model.yaml`
 
 **Issue**: "Validator script not found"
-**Solution**: Verify scripts are in `ai_dev_ssd_flow/scripts/`
+**Solution**: Verify scripts are in `ucx_flow_v3/scripts/`
 
 ### Getting Help
 

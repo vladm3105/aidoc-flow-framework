@@ -163,7 +163,7 @@ To customize UCX for this project:
 
 ## Framework Location
 
-Framework UCX: /opt/data/docs_flow_framework/ai_dev_ssd_flow/UCX
+Framework UCX: /opt/data/docs_flow_framework/ucx_flow_v3/UCX
 EOF
     echo "  ✓ README.md"
 fi

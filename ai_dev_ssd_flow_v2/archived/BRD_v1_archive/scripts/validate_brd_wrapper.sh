@@ -172,7 +172,7 @@ echo "Docs root: ${DOCS_ROOT}"
 echo ""
 
 run_core "Standardized element codes" \
-  python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py" "${BRD_ROOT}" --strict
+  python3 "${REPO_ROOT}/ucx_flow_v3/scripts/validate_standardized_element_codes.py" "${BRD_ROOT}" --strict
 
 if is_section_based_brd_root "${BRD_ROOT}"; then
   echo "[CORE] BRD structural validator"
@@ -188,16 +188,16 @@ run_quality_core "BRD quality gate" \
 if [[ "${SKIP_ADVISORY}" -eq 0 ]]; then
   echo ""
   run_advisory "Metadata validation" \
-    python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_metadata.py" "${BRD_ROOT}" --strict
+    python3 "${REPO_ROOT}/ucx_flow_v3/scripts/validate_metadata.py" "${BRD_ROOT}" --strict
 
   run_advisory "Link validation" \
-    python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_links.py" --docs-dir "${BRD_ROOT}"
+    python3 "${REPO_ROOT}/ucx_flow_v3/scripts/validate_links.py" --docs-dir "${BRD_ROOT}"
 
   run_advisory "Forward reference validation" \
-    python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_forward_references.py" "${BRD_ROOT}"
+    python3 "${REPO_ROOT}/ucx_flow_v3/scripts/validate_forward_references.py" "${BRD_ROOT}"
 
   run_advisory "Diagram consistency validation" \
-    python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_diagram_consistency.py" "${BRD_ROOT}"
+    python3 "${REPO_ROOT}/ucx_flow_v3/scripts/validate_diagram_consistency.py" "${BRD_ROOT}"
 fi
 
 echo ""

@@ -17,7 +17,7 @@ custom_fields:
 
 ## Critical Distinction
 
-AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
+UCX Flow uses **TWO SEPARATE SYSTEMS** for document information:
 
 1. **YAML Frontmatter (Metadata)**: Document classification and tooling integration
 2. **Traceability Tags (`@artifact: ID`)**: Audit trail and compliance tracking

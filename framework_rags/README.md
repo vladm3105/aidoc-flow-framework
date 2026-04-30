@@ -1,4 +1,4 @@
-# RAG Services for AI Dev Flow Framework
+# RAG Services for UCX Flow Framework
 
 Dual-service RAG architecture for comprehensive documentation retrieval.
 
@@ -336,4 +336,4 @@ This allows multiple projects to share the framework code while maintaining sepa
 
 ## License
 
-Part of the AI Dev Flow Framework.
+Part of the UCX Flow Framework.

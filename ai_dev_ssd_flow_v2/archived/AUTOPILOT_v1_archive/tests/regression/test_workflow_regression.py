@@ -4,7 +4,7 @@ Regression Tests for TDD Workflow
 Tests with baseline comparisons to catch regressions in TDD workflow outputs.
 
 Usage:
-    pytest ai_dev_flow/AUTOPILOT/tests/regression/ -v -m regression
+    pytest ucx_flow_v3/AUTOPILOT/tests/regression/ -v -m regression
 """
 
 import json
@@ -234,7 +234,7 @@ def test_example():
             [
                 sys.executable, str(script),
                 "--test-dir", str(temp_test_dir),
-                "--spec-dir", str(temp_test_dir.parent / "ai_dev_flow" / "09_SPEC"),
+                "--spec-dir", str(temp_test_dir.parent / "ucx_flow_v3" / "09_SPEC"),
                 "--code-dir", str(temp_test_dir.parent / "src")
             ],
             capture_output=True,

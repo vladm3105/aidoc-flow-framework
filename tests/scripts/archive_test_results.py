@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Archive and manage test results for AI Dev Flow.
+Archive and manage test results for UCX Flow.
 
 Provides functionality to:
 - Save test results with metadata
@@ -16,7 +16,7 @@ Usage:
     python scripts/archive_test_results.py --trend
     python scripts/archive_test_results.py --list
 
-Reference: ai_dev_flow/10_TSPEC/test_result_schema.yaml
+Reference: ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml
 """
 
 import argparse
