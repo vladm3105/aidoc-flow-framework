@@ -75,7 +75,7 @@ jobs:
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           PR_FILES: ${{ steps.pr.outputs.files }}
         run: |
-          python3 scripts/workflows/check_qa_required.py \
+          python3 governance/scripts/workflows/check_qa_required.py \
             --pr-number "$PR_NUMBER" \
             --files "$PR_FILES" \
             --output-file /tmp/qa_check.json
@@ -133,7 +133,7 @@ jobs:
         if: steps.pr.outputs.dev_issue != '' && steps.qa_check.outputs.qa_required == 'true' && steps.dev.outputs.is_dev != '0'
         id: test_plan
         run: |
-          python3 scripts/workflows/extract_test_plan.py \
+          python3 governance/scripts/workflows/extract_test_plan.py \
             --issue-body-file /tmp/dev_issue_body.txt \
             --output-file /tmp/test_plan.md
           TEST_PLAN=$(cat /tmp/test_plan.md | head -c 5000)

@@ -1,9 +1,9 @@
-# Test Pipeline for AI Dev Flow
+# Test Pipeline for UCX Flow
 #
 # Runs tests across all types (UTEST, ITEST, STEST, FTEST) and compares
 # results against baseline to detect regressions.
 #
-# Reference: ai_dev_flow/10_TSPEC/, TESTING_STRATEGY_TDD.md
+# Reference: ucx_flow_v3/07_TDD/, TESTING_STRATEGY_TDD.md
 
 name: Test Pipeline
 
@@ -13,8 +13,8 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
-      - 'scripts/**'
-      - 'ai_dev_flow/**'
+      - 'tests/scripts/**'
+      - 'ucx_flow_v3/**'
       - 'pytest.ini'
       - 'pyproject.toml'
   pull_request:
@@ -59,7 +59,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python scripts/run_tests.py --type utest --save
+          python tests/scripts/run_tests.py --type utest --save
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -72,7 +72,7 @@ jobs:
       - name: Compare with baseline
         run: |
           if [ -f tests/results/baseline_utest.json ]; then
-            python scripts/compare_test_results.py \
+            python tests/scripts/compare_test_results.py \
               tests/results/baseline_utest.json \
               tests/results/latest_utest.json || true
           else
@@ -122,7 +122,7 @@ jobs:
           TEST_DB_PASSWORD: test_password
           TEST_DB_NAME: test_db
         run: |
-          python scripts/run_tests.py --type itest --save
+          python tests/scripts/run_tests.py --type itest --save
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -156,7 +156,7 @@ jobs:
 
       - name: Run smoke tests
         run: |
-          python scripts/run_tests.py --type stest --save
+          python tests/scripts/run_tests.py --type stest --save
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -195,7 +195,7 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          python scripts/generate_coverage_report.py --type all --html
+          python tests/scripts/generate_coverage_report.py --type all --html
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -206,7 +206,7 @@ jobs:
 
       - name: Check coverage threshold
         run: |
-          python scripts/generate_coverage_report.py --check --threshold 80 || true
+          python tests/scripts/generate_coverage_report.py --check --threshold 80 || true
 
   regression-check:
     name: Regression Detection
@@ -236,7 +236,7 @@ jobs:
         run: |
           if [ -d artifacts/unit-test-results ]; then
             echo "Checking unit test regressions..."
-            python scripts/compare_test_results.py \
+            python tests/scripts/compare_test_results.py \
               --latest artifacts/unit-test-results/ \
               --type utest || echo "Regressions detected in unit tests"
           fi
@@ -244,7 +244,7 @@ jobs:
       - name: Archive results
         run: |
           if [ -d artifacts/unit-test-results ]; then
-            python scripts/archive_test_results.py \
+            python tests/scripts/archive_test_results.py \
               --save artifacts/unit-test-results/latest_utest.json \
               --type utest
           fi

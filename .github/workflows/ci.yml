@@ -19,7 +19,7 @@ env:
 
 jobs:
   validate-brd-element-codes:
-    name: Validate BRD Element Codes
+    name: Validate BRD Template Consistency
     runs-on: self-hosted
     if: >-
       !(github.event_name == 'push' &&
@@ -34,10 +34,28 @@ jobs:
           git clone "https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
             "${GITHUB_WORKSPACE}" --depth 1 --branch "${CLONE_BRANCH}"
 
-      - name: Validate BRD core checks (wrapper)
+      - name: Validate BRD template files
         run: |
           cd "${GITHUB_WORKSPACE}"
-          bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh ai_dev_ssd_flow/01_BRD --skip-advisory
+          python3 << 'PYEOF'
+          from pathlib import Path
+
+          canonical = Path("ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml")
+          runtime = Path("mcp_ucx/templates/BRD-TEMPLATE.yaml")
+
+          if not canonical.exists():
+              raise SystemExit(f"Missing canonical template: {canonical}")
+          if not runtime.exists():
+              raise SystemExit(f"Missing runtime template: {runtime}")
+
+          if canonical.read_text(encoding="utf-8") != runtime.read_text(encoding="utf-8"):
+              raise SystemExit(
+                  "Template drift detected between ucx_flow_v3 and mcp_ucx runtime copy. "
+                  "Sync with: cp ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml mcp_ucx/templates/BRD-TEMPLATE.yaml"
+              )
+
+          print("BRD template consistency checks passed")
+          PYEOF
 
   lint:
     name: Lint

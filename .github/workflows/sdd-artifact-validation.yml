@@ -64,11 +64,17 @@ jobs:
           python3 --version
           pip3 install --quiet pyyaml
 
-      - name: BRD tiered validation wrapper (core)
+      - name: BRD validation via mcp_ucx
         if: steps.changed.outputs.brd_changed == 'true'
         run: |
-          echo "=== BRD Tiered Validation Wrapper ==="
-          bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
+          echo "=== BRD Validation via mcp_ucx ==="
+          python3 -m pip install --quiet ./mcp_ucx
+          python3 -m mcp_server.cli.main validate \
+            --project "${GITHUB_WORKSPACE}" \
+            --doc-type brd \
+            --layer 01_BRD \
+            --document docs/01_BRD \
+            --format text
 
       - name: Validate SDD artifacts
         if: steps.changed.outputs.files != ''

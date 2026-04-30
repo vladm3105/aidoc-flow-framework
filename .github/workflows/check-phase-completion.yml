@@ -38,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          python3 scripts/workflows/handle_issue_reopen.py \
+          python3 governance/scripts/workflows/handle_issue_reopen.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --issue-number "$ISSUE_NUMBER"
 
@@ -47,7 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/workflows/check_phase_completion.py \
+          python3 governance/scripts/workflows/check_phase_completion.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --total-phases ${TOTAL_PHASES} \
             --output-github-actions \

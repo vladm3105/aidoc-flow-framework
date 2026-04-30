@@ -134,7 +134,7 @@ jobs:
           QA_ISSUES: ${{ steps.qa_issues.outputs.issues }}
         run: |
           source .venv/bin/activate
-          python3 scripts/workflows/execute_qa_tests.py \
+          python3 governance/scripts/workflows/execute_qa_tests.py \
             --phase "$PHASE" \
             --qa-issues "$QA_ISSUES" \
             --staging-url "${STAGING_URL}" \
@@ -194,7 +194,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PHASE: ${{ matrix.phase }}
         run: |
-          python3 scripts/workflows/create_bug_issues.py \
+          python3 governance/scripts/workflows/create_bug_issues.py \
             --phase "$PHASE" \
             --results-file /tmp/qa_results.json \
             --max-iterations ${MAX_QA_ITERATIONS}

@@ -106,7 +106,7 @@ jobs:
         env:
           ITERATION: ${{ steps.iteration.outputs.number }}
         run: |
-          python3 scripts/workflows/check_iteration_limit.py \
+          python3 governance/scripts/workflows/check_iteration_limit.py \
             --iteration "$ITERATION" \
             --max-iterations ${MAX_QA_ITERATIONS} \
             --output-file /tmp/limit_check.json

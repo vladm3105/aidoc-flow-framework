@@ -8,8 +8,8 @@ from pathlib import Path
 # Ensure src is in path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from haystack_rag.config import load_config
-from haystack_rag.pipelines import create_indexing_pipeline, create_query_pipeline
+from dev_tools.framework_rags.haystack.src.haystack_rag.config import load_config
+from dev_tools.framework_rags.haystack.src.haystack_rag.pipelines import create_indexing_pipeline, create_query_pipeline
 
 
 def setup_pipelines(pipelines_dir: Path | None = None) -> dict:

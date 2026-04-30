@@ -39,7 +39,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/workflows/update_staging_tracking.py \
+          python3 governance/scripts/workflows/update_staging_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --status deploying \
             --image-tag ${{ inputs.image_tag }}
@@ -149,7 +149,7 @@ jobs:
             STATUS="deployed"
             TEST_RESULT="passed"
           fi
-          python3 scripts/workflows/update_staging_tracking.py \
+          python3 governance/scripts/workflows/update_staging_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --status ${STATUS} \
             --url ${{ steps.url.outputs.url }} \
@@ -194,7 +194,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/workflows/create_test_failure_issues.py \
+          python3 governance/scripts/workflows/create_test_failure_issues.py \
             --junit-xml test-results.xml \
             --phase 8 \
             --labels "regression,ai:ready"

@@ -61,7 +61,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/workflows/verify_prod_readiness.py \
+          python3 governance/scripts/workflows/verify_prod_readiness.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --total-phases ${TOTAL_PHASES} \
             --check-blockers
@@ -179,7 +179,7 @@ jobs:
             if [ "$PERCENT" -lt 100 ]; then
               echo "Monitoring for ${ROLLOUT_STEP_DURATION}s..."
               sleep ${ROLLOUT_STEP_DURATION}
-              ERROR_RATE=$(python3 scripts/workflows/check_error_rate.py \
+              ERROR_RATE=$(python3 governance/scripts/workflows/check_error_rate.py \
                 --project ${GCP_PROJECT} \
                 --service ${SERVICE_NAME} \
                 --window ${ROLLOUT_STEP_DURATION} \
@@ -199,7 +199,7 @@ jobs:
       - name: Update tracking file
         if: steps.rollout.outputs.rollback_needed != 'true'
         run: |
-          python3 scripts/workflows/update_prod_tracking.py \
+          python3 governance/scripts/workflows/update_prod_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --commit-sha ${{ github.sha }} \
             --current-revision ${{ steps.new_revision.outputs.revision }} \

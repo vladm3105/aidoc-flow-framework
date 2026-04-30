@@ -45,7 +45,7 @@ jobs:
             echo "can_deploy=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          python3 scripts/workflows/verify_phase_prerequisites.py \
+          python3 governance/scripts/workflows/verify_phase_prerequisites.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --target-phase ${{ inputs.phase }}
 
@@ -76,7 +76,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/workflows/update_phase_tracking.py \
+          python3 governance/scripts/workflows/update_phase_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --phase ${{ inputs.phase }} \
             --status dev_deploying \
@@ -127,8 +127,8 @@ jobs:
         id: smoke
         run: |
           set +e
-          chmod +x scripts/workflows/smoke_test.sh
-          scripts/workflows/smoke_test.sh "${{ steps.url.outputs.url }}"
+          chmod +x governance/scripts/workflows/smoke_test.sh
+          governance/scripts/workflows/smoke_test.sh "${{ steps.url.outputs.url }}"
           SMOKE_EXIT=$?
           set -e
           if [ $SMOKE_EXIT -eq 0 ]; then
@@ -148,7 +148,7 @@ jobs:
             STATUS="dev_failed"
             SMOKE_RESULT="failed"
           fi
-          python3 scripts/workflows/update_phase_tracking.py \
+          python3 governance/scripts/workflows/update_phase_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --phase ${{ inputs.phase }} \
             --status ${STATUS} \

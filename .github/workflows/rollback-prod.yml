@@ -107,7 +107,7 @@ jobs:
           STEPS_BACK: ${{ inputs.steps_back }}
           ACTOR: ${{ github.actor }}
         run: |
-          python3 scripts/workflows/update_prod_tracking.py \
+          python3 governance/scripts/workflows/update_prod_tracking.py \
             --tracking-file governance/cicd/phase-deployments.json \
             --current-revision "$TARGET_REVISION" \
             --previous-revision "$CURRENT_REVISION" \
