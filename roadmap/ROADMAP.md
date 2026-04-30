@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.20.2 |
-| Latest Release | 0.20.2 (Governance migration follow-up and validation) |
+| Current Version | 0.20.3 |
+| Latest Release | 0.20.3 (strict repository-wide legacy naming cleanup) |
 | Previous Minor | 0.19.0 (multi-persona mapping support) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
@@ -13,9 +13,10 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v0.20.1 ──► v0.20.2 ──► v1.0.0
-  │           │             │            │           │            │              │           │
-  │           │             │            │           │            │              │           └─► Multi-MCP
+v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v0.20.1 ──► v0.20.2 ──► v0.20.3 ──► v1.0.0
+  │           │             │            │           │            │              │           │             │
+  │           │             │            │           │            │              │           │             └─► Multi-MCP
+  │           │             │            │           │            │              │           └─► Strict legacy naming cleanup (repo-wide)
   │           │             │            │           │            │              └─► SDD v3.2 (8-layer, C4 mapping)
   │           │             │            │           │            └─► REQ→SPEC→TSPEC→TASKS unification + UCX features
   │           │             │            │           └─► SYS unification (6 layers, C4 Component)
@@ -48,6 +49,11 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+
+### v0.20.3 — Strict Legacy Naming Cleanup (2026-04-30)
+
+Executed strict repository-wide cleanup of legacy `ai_dev_flow`/`ai_dev_ssd_flow` naming variants and aligned references to UCX Flow naming. See changelog/CHANGELOG_v0.20.3.md.
 
 
 ### v0.20.2 — Governance Migration Follow-up (2026-04-30)
