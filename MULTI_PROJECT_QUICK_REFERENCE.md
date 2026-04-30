@@ -6,11 +6,13 @@
 
 ## SDD Depth Options
 
-| Depth | Use Case | Layers |
+| Depth | Use Case | Layers (v3) |
 |:------|:---------|:-------|
-| **SDD-Lite** | MVPs, prototypes, solo + AI | REF → BRD-MVP → PRD-MVP → TASKS |
-| **SDD-Standard** | Production apps, small teams | + EARS, ADR, SYS, REQ |
-| **SDD-Full** | Enterprise, regulated, multi-team | All 15 layers + 4-Gate CHG |
+| **SDD-Lite** | MVPs, prototypes, solo + AI | REF → BRD → PRD → IPLAN |
+| **SDD-Standard** | Production apps, small teams | + EARS, BDD, ADR |
+| **SDD-Full** | Enterprise, regulated, multi-team | All 8 layers + CHG governance overlay |
+
+v2 (14-layer) variant preserved in `ai_dev_ssd_flow/` for existing projects.
 
 ---
 
@@ -69,7 +71,7 @@ python project_knowledge/scripts/pilot_validate.py
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD layer templates (15 layers)
+# ✓ Symlinks .templates/ai_dev_ssd_flow/ → SDD v2 templates (14 layers, legacy)
 # ✓ Symlinks .templates/governance/ → SDD governance templates
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
@@ -293,7 +295,13 @@ ls /opt/data/docs_flow_framework/.claude/skills/
 ### Templates (All Projects)
 
 ```bash
-# View SDD templates (12 layers - large projects)
+# View SDD v3 templates (8 layers - recommended for new projects)
+ls /opt/data/docs_flow_framework/ai_dev_flow_v3/
+
+# Template directories:
+# 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SPEC/, 07_TDD/, 08_IPLAN/, CHG/
+
+# View SDD v2 templates (14 layers - legacy)
 ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 
 # Template directories:
@@ -308,7 +316,6 @@ ls /opt/data/docs_flow_framework/governance/
 # templates/ - README, CLAUDE.md, CONTRIBUTING
 # .github/ - workflows, issue templates
 # docs/ - ADRs, QA docs, core specs
-```
 
 ### GitHub Workflows (with --with-github)
 
@@ -547,14 +554,28 @@ git commit -m "Add project-specific skill"
 # 3. Only available in this project
 ```
 
-### Pattern 3: Template Usage (SDD Framework)
+### Pattern 3: Template Usage (SDD v3 — Recommended)
+
+```bash
+# 1. Access v3 template
+cat /opt/data/docs_flow_framework/ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml
+
+# 2. Copy to project docs
+cp ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml \
+   docs/BRD/BRD-01.yaml
+
+# 3. Edit project copy
+vim docs/BRD/BRD-01.yaml
+```
+
+### Pattern 3b: Template Usage (SDD v2 — Legacy)
 
 ```bash
 # 1. Access SDD template via symlink
-cat /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
+cat /opt/data/project_name/.templates/ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml
 
 # 2. Copy to project docs
-cp .templates/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md \
+cp .templates/ai_dev_ssd_flow/01_BRD/BRD-TEMPLATE.yaml \
    docs/BRD/BRD-001_my_requirements.md
 
 # 3. Edit project copy
@@ -594,12 +615,15 @@ vim docs/PROJECT_PLAN.md
 
 | Framework | README | Key Docs |
 |-----------|--------|----------|
-| **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 12-layer SDD methodology |
+| **ai_dev_flow_v3** | `ai_dev_flow_v3/README.md` | 8-layer SDD v3 methodology (recommended) |
+| **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 14-layer SDD v2 methodology (legacy) |
 | **governance** | `governance/README.md` | Governance, CI/CD, Issues |
 
 ---
 
 ## Autopilot v6.0 Quick Start
+
+> **Note**: Autopilot is a v2 artifact. For v3 projects, use the MCP tools (`sdd_create`, `sdd_run_lifecycle`) instead. Autopilot scripts are preserved in `ai_dev_ssd_flow/AUTOPILOT/` for legacy projects.
 
 ```bash
 # Run MVP Autopilot with TDD mode
@@ -624,11 +648,11 @@ python3 ai_dev_ssd_flow/AUTOPILOT/scripts/mvp_autopilot.py \
   --validate-gates
 ```
 
-**Key v6.0 Features**:
+**Key v6.0 Features** (v2 only):
 - **TSPEC** (Layer 10): Test Specifications (UTEST, ITEST, STEST, FTEST)
 - **TDD Mode**: Test-first development with Red→Green validation
-- **CHG Integration**: 4-Gate change management system
+- **CHG Integration**: 4-Gate change management system (v2; v3 uses 5-gate CHG overlay)
 
 ---
 
-**Quick Reference Version**: 2.4 (2026-03-12)
+**Quick Reference Version**: 2.5 (2026-04-29)

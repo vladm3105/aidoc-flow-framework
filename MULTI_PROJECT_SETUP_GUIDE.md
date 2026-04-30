@@ -4,7 +4,7 @@
 
 **Scope**: Claude Code skills, commands, agents, templates, and validation scripts
 
-**Last Updated**: 2026-03-12T00:00:00
+**Last Updated**: 2026-04-29T00:00:00
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
@@ -12,25 +12,28 @@
 
 ## SDD Depth Selection
 
-This repository provides a **unified SDD framework** with scalable depth:
+This repository provides a **unified SDD framework** with scalable depth. v3 (8 layers, recommended) and v2 (14 layers, legacy) are both available.
 
-| Depth | Layers | Best For |
-|:------|:-------|:---------|
-| **SDD-Lite** | REF → BRD-MVP → PRD-MVP → TASKS | MVPs, prototypes, solo + AI, 1-3 months |
-| **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams, 3-6 months |
-| **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team, 6+ months |
+| Depth | Layers (v3) | Best For |
+|:------|:---------|:---------|
+| **SDD-Lite** | REF → BRD → PRD → IPLAN | MVPs, prototypes, solo + AI, 1-3 months |
+| **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams, 3-6 months |
+| **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team, 6+ months |
+
+The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existing projects.
 
 ### Key Directories
 
 | Directory | Purpose |
 |:----------|:--------|
-| `ai_dev_ssd_flow/` | Layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
+| `ai_dev_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
+| `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 | `project_knowledge/` | Standalone RAG + Graph knowledge base package |
 | `framework_rags/` | Shared RAG tools and reference utilities |
 
-**See**: [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) for detailed layer mappings.
+**See**: [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) for v3 layer mappings. The v2 depth guide is in [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md).
 
 ---
 
@@ -51,7 +54,8 @@ This repository provides a **unified SDD framework** with scalable depth:
 │   │   ├── bin/                      # CLI entry points
 │   │   └── docs/                     # UCX documentation
 │   │
-│   ├── ai_dev_ssd_flow/              # SDD templates (12 layers)
+|   ├── ai_dev_flow_v3/              # SDD v3 templates (8 layers, recommended)
+│   ├── ai_dev_ssd_flow/              # SDD v2 templates (14 layers, legacy)
 │   │   ├── 01_BRD/                   # Business Requirements
 │   │   ├── 02_PRD/                   # Product Requirements
 │   │   ├── ...                       # (layers 03-11)
@@ -80,7 +84,7 @@ This repository provides a **unified SDD framework** with scalable depth:
     │   ├── src/                      # Source code
     │   ├── ai_dev_flow/              # Symlink → SDD templates (optional)
     │   ├── .templates/
-    │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD templates
+    │   │   ├── ai_dev_ssd_flow/      # Symlink → SDD v2 templates (legacy)
     │   │   └── governance/           # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
@@ -325,7 +329,8 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Skills** | `.claude/skills/` | `.claude/custom_skills/` | Both merged |
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
-| **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only |
+| **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only (v2 legacy) |
+| | `.templates/ai_dev_flow_v3/` | N/A | Symlink only (v3 recommended) |
 | **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
@@ -518,7 +523,7 @@ cd /opt/data/project_name
 # In Claude Code: /skill project-init
 
 # OR manually create folder structure
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p work_plans
 mkdir -p scripts
@@ -585,7 +590,7 @@ PY
 **`/skill project-init`** (Full Structure):
 - Creates complete documentation structure (`docs/`)
 - Creates `work_plans/` directory
-- Initializes all 12 artifact directories (BRD through TASKS)
+- Initializes all 8 artifact directories (BRD through IPLAN) for v3, or 11 directories for v2
 - Ideal for: Starting new projects from scratch
 - Includes: Domain selection, contract decision, template customization
 
@@ -676,7 +681,7 @@ When using `--with-github`, the following resources are symlinked:
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 ├── .templates/
-│   ├── ai_dev_ssd_flow/             # Symlink → SDD templates (12 layers)
+│   ├── ai_dev_ssd_flow/             # Symlink → SDD v2 templates (14 layers, legacy)
 │   └── governance/                  # Symlink → SDD governance templates
 │
 ├── ai_dev_flow/                     # Optional: Symlink → SDD templates (convenience)
@@ -697,11 +702,11 @@ When using `--with-github`, the following resources are symlinked:
 │   └── project_specific.sh          # Project scripts
 │
 ├── src/                             # Source code
-├── tests/                           # Test suite (aligned with TSPEC L10)
-│   ├── unit/                        # UTEST - Unit tests
-│   ├── integration/                 # ITEST - Integration tests
-│   ├── smoke/                       # STEST - Smoke tests
-│   └── functional/                  # FTEST - Functional tests
+├── tests/                           # Test suite (aligned with TDD L7)
+│   ├── unit/                        # Unit tests
+│   ├── integration/                 # Integration tests
+│   ├── smoke/                       # Smoke tests
+│   └── functional/                  # Functional tests
 └── .gitignore                       # Exclude symlinks, include custom
 ```
 
@@ -1074,27 +1079,27 @@ rm -rf skills.backup_20251113
 
 ## Use Cases
 
-### Use Case 1: Greenfield Project (SDD)
+### Use Case 1: Greenfield Project (SDD v3)
 
-**Scenario**: Starting new large project with full SDD methodology
+**Scenario**: Starting new project with v3 streamlined SDD methodology
 
 ```bash
 # 1. Create project root directory
 mkdir -p /opt/data/new_project
 
-# 2. Setup hybrid resources (symlinks to BOTH frameworks)
+# 2. Setup hybrid resources (symlinks to framework)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
-# 3. Create SDD project structure (docs, work_plans, src, tests)
+# 3. Create SDD v3 project structure (docs, work_plans, src, tests)
 cd /opt/data/new_project
 # Use /skill project-init for full structure
 # OR manually:
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}
 mkdir -p work_plans
 mkdir -p src tests
 
-# 4. Result: Complete project setup with SDD framework access
-# Access templates: .templates/ai_dev_ssd_flow/
+# 4. Result: Complete project setup with v3 framework access
+# Access v3 templates: ai_dev_flow_v3/
 ```
 
 ### Use Case 1b: Greenfield Project (SDD governance)
@@ -1198,8 +1203,13 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 - [AI Dev Flow Framework README](./README.md) - Framework overview
 
-**SDD Framework (ai_dev_ssd_flow)**:
-- [SDD Methodology Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 12-layer workflow
+**SDD v3 Framework (ai_dev_flow_v3 — current, recommended)**:
+- [SDD v3 README](./ai_dev_flow_v3/README.md) - 8-layer workflow with C4 mapping
+- [Layer Registry](./ai_dev_flow_v3/LAYER_REGISTRY.yaml) - Authoritative layer definitions
+- [CHG Governance Overlay](./ai_dev_flow_v3/CHG/README.md) - 5-gate change management
+
+**SDD v2 Framework (ai_dev_ssd_flow — legacy)**:
+- [SDD Methodology Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
 - [ID Naming Standards](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./ai_dev_ssd_flow/TRACEABILITY_SETUP.md) - Tag-based traceability
 
@@ -1217,6 +1227,17 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ---
 
 ## Changelog
+
+### Version 2.4 (2026-04-29)
+
+- **SDD v3 Migration**: Updated all references for the 8-layer v3 framework
+  - SDD Depth Selection now shows v3 8-layer pipeline (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
+  - v2 14-layer variant preserved in `ai_dev_ssd_flow/` for legacy projects
+  - Added `ai_dev_flow_v3/` to directory tables and architecture diagrams
+  - Updated test structure alignment to TDD (L7) instead of TSPEC (L10)
+  - Updated Use Case 1 for v3 project structure
+  - Updated manual mkdir commands to v3 8-directory layout
+  - Added v3 framework references with C4 mapping and CHG governance overlay
 
 ### Version 2.3 (2026-03-12)
 

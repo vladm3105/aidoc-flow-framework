@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.19.0 |
-| Latest Release | 0.19.0 (UCX v1.12.0 multi-persona mapping support) |
-| Previous Minor | 0.18.0 (unified report naming standard) |
+| Current Version | 0.20.0 |
+| Latest Release | 0.20.0 (SDD v3.2 — 8-layer streamlined framework with C4 mapping) |
+| Previous Minor | 0.19.0 (multi-persona mapping support) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
 
@@ -13,10 +13,11 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (Current) ──► v0.8.0 ──► v1.0.0
-  │           │             │            │           │                     │           │
-  │           │             │            │           │                     │           └─► Multi-MCP
-  │           │             │            │           │                     └─► API executors
+v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v1.0.0
+  │           │             │            │           │            │              │           │
+  │           │             │            │           │            │              │           └─► Multi-MCP
+  │           │             │            │           │            │              └─► SDD v3.2 (8-layer, C4 mapping)
+  │           │             │            │           │            └─► REQ→SPEC→TSPEC→TASKS unification + UCX features
   │           │             │            │           └─► SYS unification (6 layers, C4 Component)
   │           │             │            └─► ADR unification (decision bridge)
   │           │             └─► PRD + EARS + BDD unification + C4 mapping
@@ -28,27 +29,33 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 (C
 
 ## Planned Releases
 
-### v0.19.0 - Multi-Persona Mapping Support
+### v1.0.0 — Multi-MCP Ecosystem
 
 | Field | Value |
 | --- | --- |
-| Status | Implemented |
-| Type | Minor |
-| Release Date | 2026-04-02 |
-| Scope | mcp_sdd v1.12.0: multi-persona mapping support via persona_mappings.yaml |
+| Status | Future |
+| Type | Major |
+| Scope | Full ecosystem with governance and knowledge base MCP servers |
 
-Delivered scope:
+Planned scope:
 
-- Per-doctype, per-phase persona sequences in `persona_mappings.yaml`
-- 15-persona category map (expanded from 7)
-- Multi-persona prompt assembly with token budget tracking
-- Tool and CLI schema migration: `persona` → `personas` (array, optional)
-- 31 prompt templates cleaned of hardcoded persona lists
+- MCP server: project-governance (versioned change management, CHG gate automation, MCP-level traceability)
+- MCP server: project-knowledge — own implementation using SQLite FTS5 + semantic search + frontmatter-aware indexing
+- Cross-server orchestration patterns
+- Hard contract enforcement and quality gates
+- SDD v3 MCP tool adaptation for 8-layer workflow
 
-References:
+---
 
-- mcp_sdd/docs/plans/PLAN-022_multi_persona_mappings.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md
+## Completed Releases
+
+### v0.20.0 — SDD v3.2 Streamlined Framework (2026-04-29)
+
+Collapsed from 14 layers to 8 layers with C4 architecture model mapping, TDD and IPLAN artifacts, and 5-gate CHG governance overlay. 39 new files in `ai_dev_flow_v3/`. See changelog/CHANGELOG_v0.20.0.md.
+
+### v0.19.0 — Multi-Persona Mapping Support (2026-04-02)
+
+mcp_sdd v1.12.0: multi-persona mapping support via persona_mappings.yaml. See changelog/CHANGELOG_v0.19.0.md.
 
 ---
 
@@ -187,25 +194,7 @@ Planned scope:
 
 ---
 
-### v1.0.0 - Multi-MCP Ecosystem
-
-| Field | Value |
-| --- | --- |
-| Status | Future |
-| Type | Major |
-| Scope | Full ecosystem with governance and knowledge base MCP servers |
-
-Planned scope:
-
-- MCP server: project-governance (GitHub Projects tasks, IPLANs, governance rules)
-- MCP server: project-knowledge — own implementation using SQLite FTS5 + semantic search + frontmatter-aware indexing, built on existing `project_knowledge/mcp/server.py` foundation (concept inspired by markdown-vault-mcp, dependency rejected due to project maturity risk)
-- Cross-server orchestration patterns
-- Hard contract enforcement and quality gates
-
 ---
-
-## Completed Releases
-
 ### v0.13.0 (2026-03-31)
 
 3-segment element IDs: TYPE.NN.hash replaces TYPE.NN.TT.hash. Element type codes deprecated (YAML keys provide context). All templates, prompts, skills, and framework docs updated. AUTOPILOT archived. See changelog/CHANGELOG_v0.13.0.md.

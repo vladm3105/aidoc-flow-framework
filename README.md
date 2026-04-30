@@ -17,11 +17,11 @@ flowchart LR
 
 | Phase | Duration | Output |
 |:------|:---------|:-------|
-| **MVP** | 1-2 weeks | BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TSPEC → TASKS → Production |
+| **MVP** | 1-2 weeks | BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code |
 | **PROD** | 30-90 days | Operate, measure metrics, collect user feedback |
 | **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set, repeat cycle |
 
-Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`.
+Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. Both **v2 (14-layer)** and **v3 (8-layer)** workflows are available — v3 is the recommended path for new projects.
 
 ---
 
@@ -29,34 +29,38 @@ Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-
 
 | Depth | Layers | Best For | Timeline |
 |:------|:-------|:---------|:---------|
-| **SDD-Lite** | REF → BRD → PRD → TASKS | MVPs, prototypes, solo + AI | 1-3 months |
-| **SDD-Standard** | + EARS, ADR, SYS, REQ | Production apps, small teams | 3-6 months |
-| **SDD-Full** | All 15 layers + 4-Gate CHG | Enterprise, regulated, multi-team | 6+ months |
+| **SDD-Lite** | REF → BRD → PRD → IPLAN | MVPs, prototypes, solo + AI | 1-3 months |
+| **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams | 3-6 months |
+| **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team | 6+ months |
 
-See [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) for detailed layer mappings.
+See [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [ai_dev_ssd_flow/](./ai_dev_ssd_flow/).
 
 ---
 
-## 15-Layer Architecture
+## Architecture
 
-All 11 artifact layers use **unified YAML templates** with embedded authoring guidance (`_guidance` fields).
+### SDD v3 (Recommended — 8 Layers)
 
-| Layer | Artifact | C4 Level | Template |
-|-------|----------|----------|----------|
-| 1 | BRD | Context (L1) | `BRD-TEMPLATE.yaml` |
-| 2 | PRD | Container (L2) | `PRD-TEMPLATE.yaml` |
-| 3 | EARS | Transition | `EARS-TEMPLATE.yaml` |
-| 4 | BDD | Transition | `BDD-TEMPLATE.yaml` |
-| 5 | ADR | Bridge | `ADR-TEMPLATE.yaml` |
-| 6 | SYS | Component (L3) | `SYS-TEMPLATE.yaml` |
-| 7 | REQ | Decomposition | `REQ-TEMPLATE.yaml` |
-| 8 | CTR | Decomposition | `CTR-TEMPLATE.yaml` (optional) |
-| 9 | SPEC | Code (L4) | `SPEC-TEMPLATE.yaml` |
-| 10 | TSPEC | Validation | `TSPEC-TEMPLATE.yaml` |
-| 11 | TASKS | Execution | `TASKS-TEMPLATE.yaml` |
-| 12-14 | Code/Tests/Validation | — | Source code, test execution, deployment |
+Streamlined 8-layer framework with C4 architecture model mapping. All layers use **unified YAML templates** with embedded authoring guidance (`_guidance` fields).
 
-CHG (Change Management) is a governance overlay with 4 gates. See `ai_dev_ssd_flow/CHG/`.
+| Layer | Artifact | Name | C4 Level | Template |
+|-------|----------|------|----------|----------|
+| 1 | BRD | Business Requirements Document | C4-L1 Context | `BRD-TEMPLATE.yaml` |
+| 2 | PRD | Product Requirements Document | C4-L2 Container | `PRD-TEMPLATE.yaml` |
+| 3 | EARS | Easy Approach to Requirements Syntax | Decision Bridge | `EARS-TEMPLATE.yaml` |
+| 4 | BDD | Behavior-Driven Development | Decision Bridge | `BDD-TEMPLATE.yaml` |
+| 5 | ADR | Architecture Decision Record | Decision Bridge | `ADR-TEMPLATE.yaml` |
+| 6 | SPEC | Technical Specification | C4-L3 Component | `SPEC-TEMPLATE.yaml` |
+| 7 | TDD | Test-Driven Development Guide | Implementation Bridge | `TDD-TEMPLATE.yaml` |
+| 8 | IPLAN | Implementation Plan | Implementation Bridge | `IPLAN-TEMPLATE.yaml` |
+
+CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GATE-CODE). See `ai_dev_flow_v3/CHG/`.
+
+### v2 (Legacy — 14 Layers)
+
+The original 14-layer framework is preserved in `ai_dev_ssd_flow/` for existing projects. SYS, REQ, CTR, TSPEC subtypes, and TASKS remain available.
+
+
 
 ---
 
@@ -64,14 +68,40 @@ CHG (Change Management) is a governance overlay with 4 gates. See `ai_dev_ssd_fl
 
 | Directory | Purpose |
 |:----------|:--------|
-| `ai_dev_ssd_flow/` | SDD layer templates, standards, and framework guides |
+| `ai_dev_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
+| `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
 | `mcp_sdd/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_sdd`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `project_knowledge/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |
 | `roadmap/` | Roadmap and release planning |
 
-### ai_dev_ssd_flow/ Highlights
+### ai_dev_flow_v3/ (Current)
+
+```
+ai_dev_flow_v3/
+├── 01_BRD/               BRD-TEMPLATE.yaml (978 lines), BRD-00_index.md, README
+├── 02_PRD/               PRD-TEMPLATE.yaml (607 lines), PRD-00_index.md, README
+├── 03_EARS/              EARS-TEMPLATE.yaml (376 lines), EARS-00_index.md, README
+├── 04_BDD/               BDD-TEMPLATE.yaml (367 lines), BDD-00_index.md, README
+├── 05_ADR/               ADR-TEMPLATE.yaml (446 lines), ADR-00_index.md, README
+├── 06_SPEC/              SPEC-TEMPLATE.yaml (189 lines), SPEC-00_index.md, README
+├── 07_TDD/               TDD-TEMPLATE.yaml (266 lines), TDD-00_index.md, README
+├── 08_IPLAN/             IPLAN-TEMPLATE.yaml, IPLAN-00_index.yaml, README
+├── CHG/                  Change management governance overlay (5-gate system)
+├── LAYER_REGISTRY.yaml   Authoritative layer definitions (232 lines)
+├── README.md             v3 framework overview with C4 mapping
+├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
+├── ID_NAMING_STANDARDS.md
+├── TRACEABILITY.md
+├── DIAGRAM_STANDARDS.md
+├── THRESHOLD_NAMING_RULES.md
+├── TESTING_STRATEGY_TDD.md
+├── QUICK_REFERENCE.md
+└── plans/                Migration plans (v2→v3, CHG transition)
+```
+
+### ai_dev_ssd_flow/ (Legacy v2)
 
 ```
 ai_dev_ssd_flow/
@@ -139,12 +169,17 @@ python -m mcp_server.cli.main validate-links --target <path>
 
 Each layer requires traceability tags from ALL upstream layers:
 
+**v3 (8 layers):**
 ```
-BRD (0 tags) → PRD (@brd) → EARS (@brd,@prd) → BDD (+@ears) → ADR (+@bdd) →
-SYS (+@adr) → REQ (+@sys) → CTR (+@req) → SPEC (+@ctr) → TSPEC (+@spec) → TASKS (+@tspec)
+BRD (0 tags) → PRD (@brd) → EARS (+@prd) → BDD (+@ears) → ADR (+@bdd) → SPEC (+@adr) → TDD (+@spec) → IPLAN (+@tdd)
 ```
 
-See [CUMULATIVE_TAG_REFERENCE.md](./ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md).
+See [ai_dev_flow_v3/TRACEABILITY.md](./ai_dev_flow_v3/TRACEABILITY.md).
+
+**v2 (14 layers):**
+```
+BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS
+```
 
 ---
 
@@ -154,27 +189,28 @@ See [CUMULATIVE_TAG_REFERENCE.md](./ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md)
 
 | Document | Purpose |
 |----------|---------|
-| [ai_dev_ssd_flow/README.md](./ai_dev_ssd_flow/README.md) | SDD framework overview |
-| [MVP_WORKFLOW_GUIDE.md](./ai_dev_ssd_flow/MVP_WORKFLOW_GUIDE.md) | MVP → PROD → NEW MVP lifecycle |
-| [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD methodology |
-| [ID_NAMING_STANDARDS.md](./ai_dev_ssd_flow/ID_NAMING_STANDARDS.md) | Document and element ID formats |
-| [TRACEABILITY.md](./ai_dev_ssd_flow/TRACEABILITY.md) | Cross-layer traceability rules |
-| [DIAGRAM_STANDARDS.md](./ai_dev_ssd_flow/DIAGRAM_STANDARDS.md) | Mermaid-only diagram rules, C4+DFD model |
+| [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) | SDD v3 framework overview (current, recommended) |
+| [ai_dev_flow_v3/LAYER_REGISTRY.yaml](./ai_dev_flow_v3/LAYER_REGISTRY.yaml) | Authoritative v3 layer definitions with C4 mapping |
+| [ai_dev_ssd_flow/README.md](./ai_dev_ssd_flow/README.md) | SDD v2 framework overview (legacy, maintained) |
+| [ai_dev_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./ai_dev_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD v3 methodology |
+| [ai_dev_flow_v3/ID_NAMING_STANDARDS.md](./ai_dev_flow_v3/ID_NAMING_STANDARDS.md) | Document and element ID formats |
+| [ai_dev_flow_v3/TRACEABILITY.md](./ai_dev_flow_v3/TRACEABILITY.md) | Cross-layer traceability rules |
+| [ai_dev_flow_v3/DIAGRAM_STANDARDS.md](./ai_dev_flow_v3/DIAGRAM_STANDARDS.md) | Mermaid-only diagram rules, C4+DFD model |
 
 ### Governance
 
 | Document | Purpose |
 |----------|---------|
 | [governance/README.md](./governance/README.md) | Governance template library |
-| [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md) | Lite vs Standard vs Full |
 | [governance/GOVERNANCE_RULES.md](./governance/GOVERNANCE_RULES.md) | Operational policies |
+| [ai_dev_flow_v3/CHG/README.md](./ai_dev_flow_v3/CHG/README.md) | Change management governance overlay (5-gate system) |
 
 ### Releases
 
 | Document | Purpose |
 |----------|---------|
 | [roadmap/ROADMAP.md](./roadmap/ROADMAP.md) | Version timeline and planned releases |
-| [changelog/](./changelog/) | Per-version changelogs (v0.1.0 – v0.17.0) |
+| [changelog/](./changelog/) | Per-version changelogs (v0.1.0 – v0.20.0) |
 
 ---
 
@@ -182,10 +218,10 @@ See [CUMULATIVE_TAG_REFERENCE.md](./ai_dev_ssd_flow/CUMULATIVE_TAG_REFERENCE.md)
 
 | Field | Value |
 |-------|-------|
-| Current Version | 0.17.0 |
-| Latest Release | UCX root relocation, review report parsing, YAML parity, cross-section validation |
-| mcp_sdd Version | 1.10.0 |
-| Next Major | 1.0.0 (multi-MCP ecosystem) |
+| Current Version | 0.20.0 |
+| Latest Release | SDD v3.2 — 8-layer streamlined framework with C4 mapping, CHG governance overlay |
+| mcp_sdd Version | 1.12.0 |
+| Next Major | 1.0.0 (multi-MCP ecosystem with governance and knowledge base) |
 
 ---
 
