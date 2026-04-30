@@ -2,7 +2,7 @@
 """
 Apply deterministic documentation path alias replacements with a safe dry-run mode.
 
-Generalizes path corrections across the docs_flow_framework, including:
+Generalizes path corrections across the ucx_framework, including:
 - SDD artifacts (BRD, PRD, REQ, ADR, SPEC, etc.)
 - Governance documentation
 - AI project flow documents
@@ -17,7 +17,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 
 
-# Default mappings for docs_flow_framework
+# Default mappings for ucx_framework
 # Format: (old_pattern, new_pattern)
 DEFAULT_MAPPINGS = [
     # Governance consolidation (IPLAN-004)
@@ -37,7 +37,7 @@ DEFAULT_MAPPINGS = [
     ("ai_project_issues_flow/governance/plans/IPLAN-TEMPLATE.md", "governance/plans/IPLAN-TEMPLATE.md"),
 
     # SDD artifact path standardization
-    ("ai_dev_flow/", "ai_dev_flow_v3/"),
+    ("ai_dev_flow/", "ucx_flow_v3/"),
 
     # Template path corrections
     ("ai_project_issues_flow/templates/CONTRIBUTING.md", "CONTRIBUTING.md"),
@@ -130,7 +130,7 @@ def run(root: Path, mappings: list[tuple[str, str]], apply: bool,
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Apply documentation path alias replacements for docs_flow_framework"
+        description="Apply documentation path alias replacements for ucx_framework"
     )
     parser.add_argument(
         "--root",

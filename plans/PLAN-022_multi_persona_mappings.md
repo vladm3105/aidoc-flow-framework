@@ -3,7 +3,7 @@
 **Status**: Completed
 **Created**: 2026-04-02
 **Updated**: 2026-04-02 (v6 — implementation complete, architecture review fixes applied)
-**Scope**: mcp_sdd (UCX sub-framework) + framework-level documentation
+**Scope**: mcp_ucx (UCX sub-framework) + framework-level documentation
 **Complexity**: 4/5
 
 ---
@@ -58,7 +58,7 @@ No single `persona` string parameter. All persona resolution is list-based.
 
 ### New Config: `persona_mappings.yaml`
 
-Location (canonical source): `mcp_sdd/skills/persona_mappings.yaml`
+Location (canonical source): `mcp_ucx/skills/persona_mappings.yaml`
 Location (project copy): `{project}/UCX/skills/persona_mappings.yaml`
 
 ```yaml
@@ -469,28 +469,28 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 ## Implementation Steps
 
 ### Step 1: Create `persona_mappings.yaml`
-- **File**: `mcp_sdd/skills/persona_mappings.yaml` (new)
+- **File**: `mcp_ucx/skills/persona_mappings.yaml` (new)
 - **Action**: Create the canonical YAML config with all persona sequences extracted from prompt templates
 - **Validation**: All persona names must match existing `.md` files (except `content_strategist` — Step 2)
 
 ### Step 2: Create `content_strategist.md` persona
-- **File**: `mcp_sdd/skills/personas/content_strategist.md` (new)
+- **File**: `mcp_ucx/skills/personas/content_strategist.md` (new)
 - **Action**: Create persona definition for content strategy role (referenced by PRD creation)
 - **Content**: Content strategy principles, information architecture, documentation standards, category tagging, scoring weights
 
 ### Step 3: Add loader functions and YAML validation
-- **File**: `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py`
+- **File**: `mcp_ucx/src/mcp_server/skills/project_ucx_loader.py`
 - **Action**: Add `load_persona_mapping()`, `load_multi_persona_files()`, `_validate_persona_mapping()`
 - **Action**: Add `PersonaMappingError` exception class
 - **Action**: `load_persona_mapping()` calls `_validate_persona_mapping()` after YAML load — validates structure, required keys, persona name cross-references against `.md` files
 - **Keep**: `load_project_persona_file()` as internal helper (called by `load_multi_persona_files()`)
 
 ### Step 4: Update public API re-export
-- **File**: `mcp_sdd/src/mcp_server/skills/__init__.py`
+- **File**: `mcp_ucx/src/mcp_server/skills/__init__.py`
 - **Action**: Remove `load_project_persona_file` from public exports; add `load_persona_mapping` and `load_multi_persona_files`
 
 ### Step 5: Update `PromptMetadataSidecar`
-- **File**: `mcp_sdd/src/mcp_server/models/context_engineering_contracts.py`
+- **File**: `mcp_ucx/src/mcp_server/models/context_engineering_contracts.py`
 - **Action**: Replace `persona: str` with `personas: list[str]` + `persona_count: int`
 - **Action**: Add `persona_token_estimate: int` field (computed by context builder)
 - **Action**: Add `persona_token_warning: str | None` field (null if under threshold)
@@ -498,44 +498,44 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 - **Action**: Update serialization to emit `"personas"` array, `"persona_count"`, `"persona_token_estimate"`, `"persona_token_warning"`
 
 ### Step 6: Update dataclasses
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Replace `persona_text: str` with `persona_texts: list[str]` + `persona_names: list[str]` on both `PromptAssembly` and `CreationAssembly`
 
 ### Step 7: Complete `PERSONA_CATEGORY_MAP` (all 15 personas)
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Add 8 missing entries: `product_owner`, `business_analyst`, `strategist`, `requirements_specialist`, `ux_strategist`, `qa_lead`, `fact_checker`, `content_strategist`
 
 ### Step 8: Add persona resolution, formatting, and token warning functions
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Add `_resolve_personas()` with descriptive `PersonaMappingError` on missing entries
 - **Action**: Add `_format_persona_block()`
 - **Action**: Add token budget warning logic: compute `persona_token_estimate` via `estimate_tokens()`, emit `persona_token_warning` if over `TOKEN_WARNING_THRESHOLD` (10,000 tokens / ~40KB)
 
 ### Step 9: Update `map_sections_for_persona` to `map_sections_for_personas`
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Change signature to accept `personas: list[str]`, use union of all persona categories
 - **Action**: Update callers in `assemble_project_review_prompt()` and `assemble_project_creation_prompt()`
 
 ### Step 10: Update `discover_relevant_snippets`
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Change `persona: str` to `personas: list[str]`, use union of keywords from all personas
 - **Action**: Update callers in both assembly functions
 
 ### Step 11: Update `build_prompt_bundle`
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Change `persona: str` to `personas: list[str]` in signature and metadata construction
 
 ### Step 12: Update assembly functions
-- **File**: `mcp_sdd/src/mcp_server/prompts/context_builder.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/context_builder.py`
 - **Action**: Update `assemble_project_creation_prompt()` — use `_resolve_personas()`, `_format_persona_block()`, populate `persona_texts` and `persona_names`
 - **Action**: Update `assemble_project_review_prompt()` — same changes
 
 ### Step 13: Update `prompts/__init__.py` exports
-- **File**: `mcp_sdd/src/mcp_server/prompts/__init__.py`
+- **File**: `mcp_ucx/src/mcp_server/prompts/__init__.py`
 - **Action**: Replace `map_sections_for_persona` export with `map_sections_for_personas`
 
 ### Step 14: Update tool schemas and dispatch
-- **File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+- **File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 - **Action**: Replace `persona` (string, required) with `personas` (array, optional) on:
   - `sdd_create_build` (schema: line 239, required list: line 248, dispatch: line 737)
   - `sdd_create` (schema: line 258, required list: line 269, dispatch: line 762)
@@ -547,7 +547,7 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 - **Action**: Update `sdd_remediate` dispatch (line 832) and `sdd_remediate_fix` dispatch (line 856) to extract `arguments.get("personas")`
 
 ### Step 14b: Implement adaptive remediation persona filtering
-- **File**: `mcp_sdd/src/mcp_server/review/runner.py` (or new `remediation/runner.py`)
+- **File**: `mcp_ucx/src/mcp_server/review/runner.py` (or new `remediation/runner.py`)
 - **Action**: Add `_filter_adaptive_personas()` function that:
   - Parses the review report for finding category tags (`[CAT:architecture]`, `[CAT:compliance]`, etc.)
   - Extracts unique categories from findings
@@ -556,19 +556,19 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 - **Action**: Wire into `sdd_remediate` dispatch — when `loading: adaptive` is set in mapping, apply filter before loading persona files
 
 ### Step 15: Update runner (3 functions)
-- **File**: `mcp_sdd/src/mcp_server/review/runner.py`
+- **File**: `mcp_ucx/src/mcp_server/review/runner.py`
 - **Action**: Update `run_project_review_build()` (line 30): `persona: str` → `personas: list[str] | None`
 - **Action**: Update `run_project_creation_build()` (line 101): `persona: str` → `personas: list[str] | None`
 - **Action**: Update `run_project_creation_artifact()` (line 148): `persona: str` → `personas: list[str] | None`
 - **Action**: Pass `personas` through to assembly functions in all three
 
 ### Step 16: Update CLI
-- **File**: `mcp_sdd/src/mcp_server/cli/main.py`
+- **File**: `mcp_ucx/src/mcp_server/cli/main.py`
 - **Action**: Replace `--persona` (required string) with `--personas` (optional, `nargs="+"`) on 4 subcommands: `review-build` (line 41), `review` (line 65), `create-build` (line 86), `create` (line 102)
 - **Action**: Update all handler functions to pass `args.personas` instead of `args.persona`
 
 ### Step 17: Add to scaffold
-- **File**: `mcp_sdd/src/mcp_server/skills/scaffold.py`
+- **File**: `mcp_ucx/src/mcp_server/skills/scaffold.py`
 - **Action**: Add `(Path("skills/persona_mappings.yaml"), Path("UCX/skills/persona_mappings.yaml"))` to `CANONICAL_SCAFFOLD_MAPPINGS`
 
 ### Step 18: Clean prompt templates
@@ -628,29 +628,29 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 
 6 architecture files require updates:
 
-#### 20a: `mcp_sdd/docs/architecture/MCP_PERSONA_DESIGN_GUIDE.md`
+#### 20a: `mcp_ucx/docs/architecture/MCP_PERSONA_DESIGN_GUIDE.md`
 - Document multi-persona architecture and `persona_mappings.yaml` config format
 - Update runtime source policy: single-load → multi-load via mapping
 - Update persona output contract for multi-persona prompts
 - Add complete persona taxonomy table (all 15 personas with category mappings)
 
-#### 20b: `mcp_sdd/docs/architecture/MCP_CLI_REFERENCE.md`
+#### 20b: `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md`
 - Replace `--persona` with `--personas` in all command signatures and examples
 - Document `nargs="+"` behavior and interaction with `persona_mappings.yaml`
 
-#### 20c: `mcp_sdd/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
+#### 20c: `mcp_ucx/docs/architecture/MCP_OPERATIONAL_FLOWS.md`
 - Update creation and review workflow diagrams to show multi-persona loading
 - Document `persona_mappings.yaml` in directory structure
 
-#### 20d: `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+#### 20d: `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
 - Update error handling section for multi-persona failures
 - Document new `persona_mappings.yaml` troubleshooting
 
-#### 20e: `mcp_sdd/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
+#### 20e: `mcp_ucx/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
 - Update runtime loading sequence to show multi-persona resolution
 - Document 2-tier resolution priority (explicit param → mapping config)
 
-#### 20f: `mcp_sdd/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`
+#### 20f: `mcp_ucx/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`
 - Update UCX framework description to reflect multi-persona as core capability
 - Document `persona_mappings.yaml` as canonical persona config source
 
@@ -658,38 +658,38 @@ No changes needed to `_handle_lifecycle_pipeline()` — the per-phase resolution
 
 7 SPEC files reference persona and require contract updates:
 
-#### 21a: `mcp_sdd/docs/specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md` (11 refs)
+#### 21a: `mcp_ucx/docs/specs/SPEC-002_mcp_review_scoring_handoff_identity_contracts.md` (11 refs)
 - Update persona references in review findings contract: `persona: str` → `personas: list[str]`
 - Update scoring handoff identity to carry `persona_names` list
 
-#### 21b: `mcp_sdd/docs/specs/SPEC-003_mcp_creation_validation_profile_contracts.md`
+#### 21b: `mcp_ucx/docs/specs/SPEC-003_mcp_creation_validation_profile_contracts.md`
 - Update persona references in creation context contract
 
-#### 21c: `mcp_sdd/docs/specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md`
+#### 21c: `mcp_ucx/docs/specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md`
 - Update persona field in report lineage metadata
 
-#### 21d: `mcp_sdd/docs/specs/SPEC-005_mcp_source_input_ingestion_contracts.md`
+#### 21d: `mcp_ucx/docs/specs/SPEC-005_mcp_source_input_ingestion_contracts.md`
 - Update persona reference in input parameter contracts
 
-#### 21e: `mcp_sdd/docs/specs/SPEC-006_mcp_creation_flow_operational_contracts.md`
+#### 21e: `mcp_ucx/docs/specs/SPEC-006_mcp_creation_flow_operational_contracts.md`
 - Update persona parameter in creation flow operational contract
 
-#### 21f: `mcp_sdd/docs/specs/SPEC-007_mcp_review_remediation_operational_contracts.md`
+#### 21f: `mcp_ucx/docs/specs/SPEC-007_mcp_review_remediation_operational_contracts.md`
 - Update persona parameter in review/remediation operational contract
 
-#### 21g: `mcp_sdd/docs/specs/SPEC-001_mcp_core_architecture_workflow_contracts.md`
+#### 21g: `mcp_ucx/docs/specs/SPEC-001_mcp_core_architecture_workflow_contracts.md`
 - Update persona reference in core architecture workflow
 
 ### Step 22: Update standalone persona definition files
 
 These standalone persona reference files in prompt templates need updating to reflect that `persona_mappings.yaml` is now the authoritative source for persona sequences:
 
-#### 22a: `mcp_sdd/prompts/templates/creation/UCC_PERSONAS.md`
+#### 22a: `mcp_ucx/prompts/templates/creation/UCC_PERSONAS.md`
 - Add note that per-doctype persona sequences are now in `persona_mappings.yaml`
 - Keep individual persona role descriptions as reference documentation
 - Remove hardcoded per-doctype persona lists (now in YAML config)
 
-#### 22b: `mcp_sdd/prompts/templates/remediation/UCRem_PERSONAS.md`
+#### 22b: `mcp_ucx/prompts/templates/remediation/UCRem_PERSONAS.md`
 - Add note that remediation persona matrix is now in `persona_mappings.yaml` under `remediation._default`
 - Keep fixer role descriptions as reference documentation
 - Remove hardcoded per-layer persona matrix table (now in YAML config)
@@ -706,12 +706,12 @@ These standalone persona reference files in prompt templates need updating to re
 - Add multi-persona support to UCX feature list
 - Reference `persona_mappings.yaml` as new configuration artifact
 
-#### 23b: `mcp_sdd/docs/README.md`
+#### 23b: `mcp_ucx/docs/README.md`
 - Update UCX overview section to describe multi-persona architecture
 - Add `persona_mappings.yaml` to directory structure listing
 - Update tool parameter documentation (persona → personas)
 
-#### 23c: `mcp_sdd/skills/README.md`
+#### 23c: `mcp_ucx/skills/README.md`
 - Document `persona_mappings.yaml` purpose and format
 - Update skills directory structure to include new config file
 - Document how projects customize persona sequences after `sdd_init`
@@ -728,18 +728,18 @@ These standalone persona reference files in prompt templates need updating to re
 
 ### Step 25: UCX/ directory mirror sync
 
-After all source changes, sync canonical `mcp_sdd/` assets to `UCX/` directory:
+After all source changes, sync canonical `mcp_ucx/` assets to `UCX/` directory:
 
-- `UCX/skills/persona_mappings.yaml` — copy from `mcp_sdd/skills/persona_mappings.yaml`
-- `UCX/skills/personas/content_strategist.md` — copy from `mcp_sdd/skills/personas/content_strategist.md`
+- `UCX/skills/persona_mappings.yaml` — copy from `mcp_ucx/skills/persona_mappings.yaml`
+- `UCX/skills/personas/content_strategist.md` — copy from `mcp_ucx/skills/personas/content_strategist.md`
 - `UCX/prompts/templates/creation/UCC_PROMPT_*.md` — mirror updated prompt templates
 - `UCX/prompts/templates/review/UCR_PROMPT_*.md` — mirror updated prompt templates
 
 Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copies in the framework repo must be manually synced.
 
-### Step 26: Create mcp_sdd changelog entry
+### Step 26: Create mcp_ucx changelog entry
 
-- **File**: `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` (new)
+- **File**: `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` (new)
 - **Version**: v1.12.0 (minor — new feature, no breaking external API since persona param was internal)
 - **Content**:
   - **Summary**: Multi-persona mapping support via `persona_mappings.yaml`
@@ -767,9 +767,9 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
   - **Backward Compatibility**: Breaking for direct MCP tool callers using `persona` param — must migrate to `personas` array or omit to use mapping defaults
   - **Files changed**: ~111 files (listed in plan)
 
-### Step 27: Update mcp_sdd roadmap
+### Step 27: Update mcp_ucx roadmap
 
-- **File**: `mcp_sdd/docs/ROADMAP.md`
+- **File**: `mcp_ucx/docs/ROADMAP.md`
 - **Action**: Add v1.12.0 entry with multi-persona mapping milestone
 - **Action**: Mark PLAN-022 as completed under current release cycle
 
@@ -779,7 +779,7 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 - **Version**: v0.19.0 (minor — UCX sub-framework feature)
 - **Content**:
   - **Summary**: UCX v1.12.0 — multi-persona mapping support
-  - **Changes**: Reference `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for details
+  - **Changes**: Reference `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for details
   - **UCX sub-framework**: `persona_mappings.yaml` config, 15-persona category map, multi-persona prompt assembly
   - **Documentation**: Updated architecture docs, specs, READMEs, SDD guide
 
@@ -827,14 +827,14 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 - [ ] All 6 architecture docs updated to reflect multi-persona design
 - [ ] All 7 SPEC files updated with `personas: list[str]` contract
 - [ ] `UCC_PERSONAS.md` and `UCRem_PERSONAS.md` reference `persona_mappings.yaml` as authority
-- [ ] 3 README files updated (root, mcp_sdd/docs, mcp_sdd/skills)
+- [ ] 3 README files updated (root, mcp_ucx/docs, mcp_ucx/skills)
 - [ ] SDD framework docs updated (`SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `REPORT_NAMING_STANDARDS.md`)
-- [ ] UCX/ directory mirror synced with canonical mcp_sdd/ sources (33+ files)
+- [ ] UCX/ directory mirror synced with canonical mcp_ucx/ sources (33+ files)
 - [ ] No stale `--persona` (singular) references remain in any documentation
 
 ### Changelog & Roadmap
-- [ ] `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` created with full change summary
-- [ ] `mcp_sdd/docs/ROADMAP.md` updated with v1.12.0 milestone
+- [ ] `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` created with full change summary
+- [ ] `mcp_ucx/docs/ROADMAP.md` updated with v1.12.0 milestone
 - [ ] `changelog/CHANGELOG_v0.19.0.md` created referencing UCX v1.12.0
 - [ ] `roadmap/ROADMAP.md` updated with v0.19.0 entry
 
@@ -846,35 +846,35 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 
 | File | Step |
 |------|------|
-| `mcp_sdd/skills/persona_mappings.yaml` | 1 |
-| `mcp_sdd/skills/personas/content_strategist.md` | 2 |
-| `mcp_sdd/tests/unit/test_persona_mappings.py` | 19h |
-| `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` | 26 |
+| `mcp_ucx/skills/persona_mappings.yaml` | 1 |
+| `mcp_ucx/skills/personas/content_strategist.md` | 2 |
+| `mcp_ucx/tests/unit/test_persona_mappings.py` | 19h |
+| `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` | 26 |
 | `changelog/CHANGELOG_v0.19.0.md` | 28 |
 
 ### Source Code (9 files, Steps 3-17)
 
 | File | Action | Step |
 |------|--------|------|
-| `mcp_sdd/src/mcp_server/skills/project_ucx_loader.py` | Add 3 functions + error class, YAML validation | 3 |
-| `mcp_sdd/src/mcp_server/skills/__init__.py` | Update public exports | 4 |
-| `mcp_sdd/src/mcp_server/models/context_engineering_contracts.py` | persona → personas + token fields on sidecar | 5 |
-| `mcp_sdd/src/mcp_server/prompts/context_builder.py` | Dataclasses, category map, assembly, section mapping, snippets, bundle, token warning | 6-12 |
-| `mcp_sdd/src/mcp_server/prompts/__init__.py` | Update exports | 13 |
-| `mcp_sdd/src/mcp_server/tool_registry.py` | Schema + dispatch on 6 tools (create, create_build, review, lifecycle, remediate, remediate_fix) | 14 |
-| `mcp_sdd/src/mcp_server/review/runner.py` | Pass personas list + adaptive remediation filter | 14b, 15 |
-| `mcp_sdd/src/mcp_server/cli/main.py` | --persona → --personas on 4 subcommands | 16 |
-| `mcp_sdd/src/mcp_server/skills/scaffold.py` | Add mapping to scaffold | 17 |
+| `mcp_ucx/src/mcp_server/skills/project_ucx_loader.py` | Add 3 functions + error class, YAML validation | 3 |
+| `mcp_ucx/src/mcp_server/skills/__init__.py` | Update public exports | 4 |
+| `mcp_ucx/src/mcp_server/models/context_engineering_contracts.py` | persona → personas + token fields on sidecar | 5 |
+| `mcp_ucx/src/mcp_server/prompts/context_builder.py` | Dataclasses, category map, assembly, section mapping, snippets, bundle, token warning | 6-12 |
+| `mcp_ucx/src/mcp_server/prompts/__init__.py` | Update exports | 13 |
+| `mcp_ucx/src/mcp_server/tool_registry.py` | Schema + dispatch on 6 tools (create, create_build, review, lifecycle, remediate, remediate_fix) | 14 |
+| `mcp_ucx/src/mcp_server/review/runner.py` | Pass personas list + adaptive remediation filter | 14b, 15 |
+| `mcp_ucx/src/mcp_server/cli/main.py` | --persona → --personas on 4 subcommands | 16 |
+| `mcp_ucx/src/mcp_server/skills/scaffold.py` | Add mapping to scaffold | 17 |
 
 ### Prompt Templates (31 files + 4 persona refs, Step 18 + 22)
 
 | File | Action | Step |
 |------|--------|------|
-| `mcp_sdd/prompts/templates/creation/UCC_PROMPT_*.md` (11 files, incl. BRD_PROJECT) | Remove hardcoded personas | 18 |
-| `mcp_sdd/prompts/templates/review/UCR_PROMPT_*.md` (10 files) | Remove hardcoded personas | 18 |
-| `mcp_sdd/prompts/templates/remediation/UCRem_PROMPT_*.md` (10 files) | Remove hardcoded fixer personas | 18 |
-| `mcp_sdd/prompts/templates/creation/UCC_PERSONAS.md` | Reference persona_mappings.yaml | 22a |
-| `mcp_sdd/prompts/templates/remediation/UCRem_PERSONAS.md` | Reference persona_mappings.yaml | 22b |
+| `mcp_ucx/prompts/templates/creation/UCC_PROMPT_*.md` (11 files, incl. BRD_PROJECT) | Remove hardcoded personas | 18 |
+| `mcp_ucx/prompts/templates/review/UCR_PROMPT_*.md` (10 files) | Remove hardcoded personas | 18 |
+| `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_*.md` (10 files) | Remove hardcoded fixer personas | 18 |
+| `mcp_ucx/prompts/templates/creation/UCC_PERSONAS.md` | Reference persona_mappings.yaml | 22a |
+| `mcp_ucx/prompts/templates/remediation/UCRem_PERSONAS.md` | Reference persona_mappings.yaml | 22b |
 | `UCX/prompts/templates/creation/UCC_PERSONAS.md` | Mirror of 22a | 22c |
 | `UCX/prompts/templates/remediation/UCRem_PERSONAS.md` | Mirror of 22b | 22c |
 
@@ -895,32 +895,32 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 
 | File | Action | Step |
 |------|--------|------|
-| `mcp_sdd/docs/architecture/MCP_PERSONA_DESIGN_GUIDE.md` | Multi-persona architecture, taxonomy | 20a |
-| `mcp_sdd/docs/architecture/MCP_CLI_REFERENCE.md` | --personas in signatures | 20b |
-| `mcp_sdd/docs/architecture/MCP_OPERATIONAL_FLOWS.md` | Workflow diagrams | 20c |
-| `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Troubleshooting | 20d |
-| `mcp_sdd/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Runtime loading sequence | 20e |
-| `mcp_sdd/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md` | Framework description | 20f |
+| `mcp_ucx/docs/architecture/MCP_PERSONA_DESIGN_GUIDE.md` | Multi-persona architecture, taxonomy | 20a |
+| `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md` | --personas in signatures | 20b |
+| `mcp_ucx/docs/architecture/MCP_OPERATIONAL_FLOWS.md` | Workflow diagrams | 20c |
+| `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Troubleshooting | 20d |
+| `mcp_ucx/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Runtime loading sequence | 20e |
+| `mcp_ucx/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md` | Framework description | 20f |
 
 ### UCX Specification Docs (7 files, Step 21)
 
 | File | Action | Step |
 |------|--------|------|
-| `mcp_sdd/docs/specs/SPEC-001_*_contracts.md` | Core architecture persona ref | 21g |
-| `mcp_sdd/docs/specs/SPEC-002_*_contracts.md` | Review scoring persona contract (11 refs) | 21a |
-| `mcp_sdd/docs/specs/SPEC-003_*_contracts.md` | Creation validation persona contract | 21b |
-| `mcp_sdd/docs/specs/SPEC-004_*_contracts.md` | Reporting lineage persona field | 21c |
-| `mcp_sdd/docs/specs/SPEC-005_*_contracts.md` | Source input persona ref | 21d |
-| `mcp_sdd/docs/specs/SPEC-006_*_contracts.md` | Creation flow persona param | 21e |
-| `mcp_sdd/docs/specs/SPEC-007_*_contracts.md` | Review/remediation persona param | 21f |
+| `mcp_ucx/docs/specs/SPEC-001_*_contracts.md` | Core architecture persona ref | 21g |
+| `mcp_ucx/docs/specs/SPEC-002_*_contracts.md` | Review scoring persona contract (11 refs) | 21a |
+| `mcp_ucx/docs/specs/SPEC-003_*_contracts.md` | Creation validation persona contract | 21b |
+| `mcp_ucx/docs/specs/SPEC-004_*_contracts.md` | Reporting lineage persona field | 21c |
+| `mcp_ucx/docs/specs/SPEC-005_*_contracts.md` | Source input persona ref | 21d |
+| `mcp_ucx/docs/specs/SPEC-006_*_contracts.md` | Creation flow persona param | 21e |
+| `mcp_ucx/docs/specs/SPEC-007_*_contracts.md` | Review/remediation persona param | 21f |
 
 ### README Files (3 files, Step 23)
 
 | File | Action | Step |
 |------|--------|------|
 | `README.md` (project root) | Feature list update | 23a |
-| `mcp_sdd/docs/README.md` | UCX overview, directory structure | 23b |
-| `mcp_sdd/skills/README.md` | persona_mappings.yaml docs, content_strategist | 23c |
+| `mcp_ucx/docs/README.md` | UCX overview, directory structure | 23b |
+| `mcp_ucx/skills/README.md` | persona_mappings.yaml docs, content_strategist | 23c |
 
 ### SDD Framework Docs (2 files, Step 24)
 
@@ -933,8 +933,8 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 
 | File | Action | Step |
 |------|--------|------|
-| `UCX/skills/persona_mappings.yaml` | Copy from mcp_sdd/skills/ | 25 |
-| `UCX/skills/personas/content_strategist.md` | Copy from mcp_sdd/skills/personas/ | 25 |
+| `UCX/skills/persona_mappings.yaml` | Copy from mcp_ucx/skills/ | 25 |
+| `UCX/skills/personas/content_strategist.md` | Copy from mcp_ucx/skills/personas/ | 25 |
 | `UCX/prompts/templates/creation/UCC_PROMPT_*.md` (11 files) | Mirror updated templates | 25 |
 | `UCX/prompts/templates/review/UCR_PROMPT_*.md` (10 files) | Mirror updated templates | 25 |
 | `UCX/prompts/templates/remediation/UCRem_PROMPT_*.md` (10 files) | Mirror updated templates | 25 |
@@ -943,8 +943,8 @@ Note: `sdd_init` scaffold handles this for new projects, but existing UCX/ copie
 
 | File | Action | Step |
 |------|--------|------|
-| `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` | **Create** — UCX release notes | 26 |
-| `mcp_sdd/docs/ROADMAP.md` | Add v1.12.0 milestone | 27 |
+| `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` | **Create** — UCX release notes | 26 |
+| `mcp_ucx/docs/ROADMAP.md` | Add v1.12.0 milestone | 27 |
 | `changelog/CHANGELOG_v0.19.0.md` | **Create** — framework release notes | 28 |
 | `roadmap/ROADMAP.md` | Add v0.19.0 entry | 29 |
 

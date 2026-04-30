@@ -8,9 +8,9 @@ All active governance workflows align to:
 
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`
 
-- Artifact registry: `ai_dev_flow_v3/LAYER_REGISTRY.yaml`
-- Governance core: `ai_dev_flow_v3/DOC_GOVERNANCE_CORE.md`
-- CHG overlay: `ai_dev_flow_v3/CHG/`
+- Artifact registry: `ucx_flow_v3/LAYER_REGISTRY.yaml`
+- Governance core: `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
+- CHG overlay: `ucx_flow_v3/CHG/`
 
 ## Depth Model
 

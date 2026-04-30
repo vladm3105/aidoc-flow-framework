@@ -100,7 +100,7 @@ cat zed_settings.json.example
 Before configuring MCP clients, ensure RAG services are running:
 
 ```bash
-cd /opt/data/docs_flow_framework/framework_rags
+cd /opt/data/ucx_framework/framework_rags
 make rag-up
 make rag-verify
 ```

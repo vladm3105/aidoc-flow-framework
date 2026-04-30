@@ -6,7 +6,7 @@ set -e
 
 PROJECT_DIR=$1
 INCLUDE_GITHUB=$2  # Optional: pass "--with-github" to include .github symlink
-FRAMEWORK_DIR="/opt/data/docs_flow_framework"
+FRAMEWORK_DIR="/opt/data/ucx_framework"
 
 # Color output
 RED='\033[0;31m'
@@ -91,9 +91,9 @@ echo "Setting up template symlinks..."
 mkdir -p "$PROJECT_DIR/.templates"
 
 # SDD Framework templates
-backup_if_needed "$PROJECT_DIR/.templates/ai_dev_flow_v3"
-ln -sf "$FRAMEWORK_DIR/ai_dev_flow_v3" "$PROJECT_DIR/.templates/ai_dev_flow_v3"
-echo -e "${GREEN}  ✓ SDD templates linked (ai_dev_flow_v3)${NC}"
+backup_if_needed "$PROJECT_DIR/.templates/ucx_flow_v3"
+ln -sf "$FRAMEWORK_DIR/ucx_flow_v3" "$PROJECT_DIR/.templates/ucx_flow_v3"
+echo -e "${GREEN}  ✓ SDD templates linked (ucx_flow_v3)${NC}"
 
 # Issues Flow templates
 backup_if_needed "$PROJECT_DIR/.templates/ai_project_issues_flow"
@@ -144,7 +144,7 @@ add_gitignore_entry() {
 add_gitignore_entry ".claude/skills"
 add_gitignore_entry ".claude/commands"
 add_gitignore_entry ".claude/agents"
-add_gitignore_entry ".templates/ai_dev_flow_v3"
+add_gitignore_entry ".templates/ucx_flow_v3"
 add_gitignore_entry ".templates/ai_project_issues_flow"
 add_gitignore_entry "scripts/validate"
 
@@ -184,7 +184,7 @@ committed to version control (unlike shared skills which are symlinked).
 ## Example
 
 See framework documentation for skill creation guidelines:
-/opt/data/docs_flow_framework/.claude/skills/
+/opt/data/ucx_framework/.claude/skills/
 EOF
 
 echo ""
@@ -199,8 +199,8 @@ echo "Custom resources (directories):"
 ls -la "$PROJECT_DIR/.claude/" | grep "^d" | grep custom || echo "  (none found)"
 echo ""
 echo "Template access:"
-if [ -L "$PROJECT_DIR/.templates/ai_dev_flow_v3" ]; then
-    SDD_COUNT=$(find "$PROJECT_DIR/.templates/ai_dev_flow_v3" -name "*-TEMPLATE.yaml" -o -name "*-TEMPLATE.md" 2>/dev/null | wc -l)
+if [ -L "$PROJECT_DIR/.templates/ucx_flow_v3" ]; then
+    SDD_COUNT=$(find "$PROJECT_DIR/.templates/ucx_flow_v3" -name "*-TEMPLATE.yaml" -o -name "*-TEMPLATE.md" 2>/dev/null | wc -l)
     echo -e "${GREEN}  ✓ SDD: $SDD_COUNT templates accessible${NC}"
 else
     echo -e "${RED}  ✗ SDD template symlink not found${NC}"
@@ -221,7 +221,7 @@ echo ""
 echo "Available resources:"
 echo "  • Shared skills: .claude/skills/ (symlink)"
 echo "  • Custom skills: .claude/custom_skills/ (tracked)"
-echo "  • SDD Templates: .templates/ai_dev_flow_v3/ (v3 chain)"
+echo "  • SDD Templates: .templates/ucx_flow_v3/ (v3 chain)"
 echo "  • Issues Flow: .templates/ai_project_issues_flow/ (governance)"
 echo "  • Validation: scripts/validate/ (symlink)"
 if [ "$INCLUDE_GITHUB" = "--with-github" ]; then
@@ -238,6 +238,6 @@ if [ "$INCLUDE_GITHUB" != "--with-github" ]; then
 fi
 echo ""
 echo "Framework Selection:"
-echo "  • Large projects (months-years): Use ai_dev_flow_v3"
+echo "  • Large projects (months-years): Use ucx_flow_v3"
 echo "  • Small projects (1-6 months): Use ai_project_issues_flow"
 echo ""

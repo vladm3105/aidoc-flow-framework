@@ -21,8 +21,8 @@ Unified the PRD (Layer 2) artifact into a single YAML template, following the sa
 | `PRD-MVP-TEMPLATE.yaml` | 240 | Archived |
 | `PRD_MVP_SCHEMA.yaml` | 380 | Archived |
 | `PRD_MVP_CREATION_RULES.md` | 1,268 | Guidance embedded as `_guidance` fields |
-| `PRD_MVP_VALIDATION_RULES.md` | 1,024 | Validation via mcp_sdd tools |
-| `PRD_MVP_QUALITY_GATE_VALIDATION.md` | 973 | Quality gates via mcp_sdd tools |
+| `PRD_MVP_VALIDATION_RULES.md` | 1,024 | Validation via mcp_ucx tools |
+| `PRD_MVP_QUALITY_GATE_VALIDATION.md` | 973 | Quality gates via mcp_ucx tools |
 
 **Archived** (8 additional files + scripts/ + examples/): 16 total files in `PRD_v1_archive/`
 
@@ -72,26 +72,26 @@ ADR (Layer 5) serves as decision bridge between Container→Component.
 | EARS-Ready scoring criteria | `metadata.validation._guidance` |
 | Diagram contract tags | `functional_requirements.diagram_contract._guidance` |
 
-### mcp_sdd Updates
+### mcp_ucx Updates
 
-- Copied `PRD-TEMPLATE.yaml` to `mcp_sdd/templates/`
-- Removed `mcp_sdd/templates/PRD-MVP-TEMPLATE.md`
+- Copied `PRD-TEMPLATE.yaml` to `mcp_ucx/templates/`
+- Removed `mcp_ucx/templates/PRD-MVP-TEMPLATE.md`
 - Updated `prompts/templates/creation/UCC_PROMPT_PRD.md`: 21→15 sections, template refs
 - No source code changes (PLAN-002 naming migration already in place)
 
 ### Pre-commit Hooks
 
-All hooks disabled (`.pre-commit-config.yaml` set to `repos: []`). Validation runs through mcp_sdd MCP tools only.
+All hooks disabled (`.pre-commit-config.yaml` set to `repos: []`). Validation runs through mcp_ucx MCP tools only.
 
 ## Backward Compatibility
 
 - Existing PRD instances created from old templates remain valid
-- mcp_sdd test suite: 173 passed, 1 pre-existing failure, 0 regressions
+- mcp_ucx test suite: 173 passed, 1 pre-existing failure, 0 regressions
 - Framework-wide stale references (README.md, LAYER_REGISTRY.yaml, etc.) documented for future cleanup
 
 ## Validation Evidence
 
 - YAML syntax: `yaml.safe_load()` passes
 - Template resolution: `resolve_template_path()` finds `PRD-TEMPLATE.yaml`
-- mcp_sdd tests: 173 passed, 0 regressions
-- No `PRD-MVP-TEMPLATE` in mcp_sdd source (grep verified)
+- mcp_ucx tests: 173 passed, 0 regressions
+- No `PRD-MVP-TEMPLATE` in mcp_ucx source (grep verified)

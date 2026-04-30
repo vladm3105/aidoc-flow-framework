@@ -17,7 +17,7 @@ Governance migration to SDD v3.2 baseline in `governance/`, including core docs,
   - `governance/TASKS_IPLAN_BRIDGE.md`
   - `governance/TSPEC_BDD_QA_BRIDGE.md`
   - `governance/CHG_GOVERNANCE_BRIDGE.md`
-- Normalized setup/template/config defaults to `ai_dev_flow_v3`:
+- Normalized setup/template/config defaults to `ucx_flow_v3`:
   - `governance/setup/SETUP_GUIDE.md`
   - `governance/setup/CONFIG.md`
   - `governance/templates/sdd_config.yaml`

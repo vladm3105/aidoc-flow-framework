@@ -17,7 +17,7 @@ Context (BRD) → Container (PRD) → Component (SYS) → Code (SPEC).
 - **C4 Code level**: `c4_level.value: code`, diagrams: c4-l4, dfd-l4, class diagrams
 - **Orchestrator**: Routes to subtypes via `deliverable_type` (code→CSPEC, document→DSPEC, etc.)
 - **Readiness scores per subtype**: TASKS-Ready (CSPEC), DOC-Ready (DSPEC), etc.
-- **mcp_sdd**: SPEC-TEMPLATE.yaml ADDED (9 templates total)
+- **mcp_ucx**: SPEC-TEMPLATE.yaml ADDED (9 templates total)
 - **Tests**: 173 passed, 0 regressions
 
 ## Nine Layers Unified — C4 Model Complete

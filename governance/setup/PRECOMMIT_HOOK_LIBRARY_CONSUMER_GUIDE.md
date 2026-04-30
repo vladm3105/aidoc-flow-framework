@@ -19,8 +19,8 @@ This guide provides onboarding steps to consume framework pre-commit hooks.
 Run from target repository root:
 
 ```bash
-ln -sfn /opt/data/docs_flow_framework/ai_dev_flow_v3 ai_dev_flow_v3
-cp /opt/data/docs_flow_framework/governance/templates/pre-commit-config.framework-library.yaml .pre-commit-config.yaml
+ln -sfn /opt/data/ucx_framework/ucx_flow_v3 ucx_flow_v3
+cp /opt/data/ucx_framework/governance/templates/pre-commit-config.framework-library.yaml .pre-commit-config.yaml
 pre-commit install --hook-type pre-commit
 pre-commit run --all-files
 ```
@@ -30,10 +30,10 @@ pre-commit run --all-files
 | Item | Value |
 | --- | --- |
 | Required dependency | `pre-commit` executable |
-| Framework script path | `ai_dev_flow_v3/01_BRD/scripts/` |
+| Framework script path | `ucx_flow_v3/01_BRD/scripts/` |
 
 ## Failure Modes
 
 | Failure | Cause | Resolution |
 | --- | --- | --- |
-| Script path not found | Missing `ai_dev_flow_v3` link | Recreate symlink |
+| Script path not found | Missing `ucx_flow_v3` link | Recreate symlink |

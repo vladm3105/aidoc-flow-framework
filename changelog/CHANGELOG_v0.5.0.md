@@ -21,15 +21,15 @@ Unified the BDD (Layer 4) artifact into a single YAML template, completing the f
 | `BDD-MVP-TEMPLATE.yaml` | 259 | Archived |
 | `BDD_MVP_SCHEMA.yaml` | 628 | Archived |
 | `BDD_MVP_CREATION_RULES.md` | 1,270 | Guidance embedded as `_guidance` fields |
-| `BDD_MVP_VALIDATION_RULES.md` | 815 | Validation via mcp_sdd tools |
-| `BDD_MVP_QUALITY_GATE_VALIDATION.md` | 956 | Quality gates via mcp_sdd tools |
+| `BDD_MVP_VALIDATION_RULES.md` | 815 | Validation via mcp_ucx tools |
+| `BDD_MVP_QUALITY_GATE_VALIDATION.md` | 956 | Quality gates via mcp_ucx tools |
 
 **Archived**: 20+ files + scripts/ + examples/ + 2 backups → `BDD_v1_archive/`
 
 ### Design Decision: Single YAML (No .feature Template)
 
 BDD instances are `.feature` files but the template is YAML — consistent with
-BRD/PRD/EARS. AI generates valid Gherkin from YAML guidance. No mcp_sdd code changes.
+BRD/PRD/EARS. AI generates valid Gherkin from YAML guidance. No mcp_ucx code changes.
 
 ### Template Structure (5 sections)
 
@@ -59,10 +59,10 @@ New: `BDD.NN.03.xxxx` (Section 3, hash-based)
 Documented in template: QA STAGING ONLY — BDD tests run after staging deployment,
 not in CI pipeline. Use UTEST/ITEST for CI.
 
-### mcp_sdd Updates
+### mcp_ucx Updates
 
-- Copied `BDD-TEMPLATE.yaml` to `mcp_sdd/templates/`
-- Removed `mcp_sdd/templates/BDD-MVP-TEMPLATE.feature`
+- Copied `BDD-TEMPLATE.yaml` to `mcp_ucx/templates/`
+- Removed `mcp_ucx/templates/BDD-MVP-TEMPLATE.feature`
 - BDD prompts: no old references found, no changes needed
 - No source code changes (resolve_template_path finds .yaml natively)
 
@@ -77,12 +77,12 @@ not in CI pipeline. Use UTEST/ITEST for CI.
 
 ## Backward Compatibility
 
-- mcp_sdd test suite: 173 passed, 1 pre-existing failure, 0 regressions
+- mcp_ucx test suite: 173 passed, 1 pre-existing failure, 0 regressions
 - BDD template resolution verified via `resolve_template_path`
 
 ## Validation Evidence
 
 - YAML syntax: `yaml.safe_load()` passes
 - Template resolution: `resolve_template_path()` finds `BDD-TEMPLATE.yaml`
-- mcp_sdd full suite: 173 passed, 0 regressions
+- mcp_ucx full suite: 173 passed, 0 regressions
 - No stale `BDD-MVP-TEMPLATE` references outside archives

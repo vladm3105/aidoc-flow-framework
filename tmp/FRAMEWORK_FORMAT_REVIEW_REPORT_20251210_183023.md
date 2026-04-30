@@ -1,7 +1,7 @@
 # SDD Framework Format Review Report
 
 **Report Generated**: 2025-12-10  
-**Review Scope**: Complete SDD framework documentation in `/opt/data/docs_flow_framework/ai_dev_flow/`  
+**Review Scope**: Complete SDD framework documentation in `/opt/data/ucx_framework/ai_dev_flow/`  
 **Total Files Analyzed**: 166 (markdown, YAML, Python)  
 **Critical Issues Found**: 5 categories  
 
@@ -29,7 +29,7 @@ This report documents deprecated terminology, format corruptions, inconsistent p
 
 #### Files with NFR Deprecation Issues:
 
-1. **File**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_requirement_ids.py`
+1. **File**: `/opt/data/ucx_framework/ai_dev_flow/scripts/validate_requirement_ids.py`
    - **Line**: 53
    - **Issue**: Regex pattern expects old format
    - **Current**: `7: r"##\s*7\.\s*Non-Functional\s+Requirements"`
@@ -37,14 +37,14 @@ This report documents deprecated terminology, format corruptions, inconsistent p
    - **Severity**: CRITICAL
    - **Status**: Not yet fixed (git shows validate_req_spec_readiness.py was fixed but not this file)
 
-2. **File**: `/opt/data/docs_flow_framework/ai_dev_flow/TRACEABILITY.md`
+2. **File**: `/opt/data/ucx_framework/ai_dev_flow/TRACEABILITY.md`
    - **Line**: ~85 (verified in content)
    - **Issue**: Documents deprecated `@nfr:` tag
    - **Current**: `| '\@nfr:' | '\@sys:', '\@brd:', '\@ears:' | NFR tag deprecated - use document type tag for quality attributes |`
    - **Expected**: Should clarify that QA (Quality Attributes) replaces NFR
    - **Severity**: MAJOR - Documentation accuracy
 
-3. **File**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
+3. **File**: `/opt/data/ucx_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
    - **Line**: 88
    - **Issue**: Contains comment about NFR deprecation (correct) but shows understanding
    - **Current**: `re.compile(r'\b(QA-\d+)\b'),  # Quality Attributes (replaces NFR)`
@@ -68,20 +68,20 @@ This report documents deprecated terminology, format corruptions, inconsistent p
 
 | File Path | Section | Status | Impact |
 |-----------|---------|--------|--------|
-| `/opt/data/docs_flow_framework/ai_dev_flow/ADR/README.md` | Line 67 | Active | Breaks markdown rendering |
-| `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-000_index.md` | Line 16 | Active | Unclear documentation |
-| `/opt/data/docs_flow_framework/ai_dev_flow/IMPL/IMPL-000_index.md` | Line ? | Active | Navigation issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/IMPL/IMPL-TEMPLATE.md` | Line ? | Active | Template corruption |
-| `/opt/data/docs_flow_framework/ai_dev_flow/IMPL/IMPL_IMPLEMENTATION_PLAN.md` | Line ? | Active | Navigation issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/CTR/README.md` | Line 26 | Active | Breaks documentation flow |
-| `/opt/data/docs_flow_framework/ai_dev_flow/CTR/CTR-TEMPLATE.md` | Line ? | Active | Template issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/SYS/README.md` | Multiple | Active | Major documentation impact |
-| `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/README.md` | Multiple | Active | Navigation issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-000_index.md` | Line ? | Active | Index corruption |
-| `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md` | Line ? | Active | Template corruption |
-| `/opt/data/docs_flow_framework/ai_dev_flow/EARS/README.md` | Line ? | Active | Navigation issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-TEMPLATE.md` | Line 36 | Active | Template issue |
-| `/opt/data/docs_flow_framework/ai_dev_flow/PRD/README.md` | Line ? | Active | Navigation issue |
+| `/opt/data/ucx_framework/ai_dev_flow/ADR/README.md` | Line 67 | Active | Breaks markdown rendering |
+| `/opt/data/ucx_framework/ai_dev_flow/BDD/BDD-000_index.md` | Line 16 | Active | Unclear documentation |
+| `/opt/data/ucx_framework/ai_dev_flow/IMPL/IMPL-000_index.md` | Line ? | Active | Navigation issue |
+| `/opt/data/ucx_framework/ai_dev_flow/IMPL/IMPL-TEMPLATE.md` | Line ? | Active | Template corruption |
+| `/opt/data/ucx_framework/ai_dev_flow/IMPL/IMPL_IMPLEMENTATION_PLAN.md` | Line ? | Active | Navigation issue |
+| `/opt/data/ucx_framework/ai_dev_flow/CTR/README.md` | Line 26 | Active | Breaks documentation flow |
+| `/opt/data/ucx_framework/ai_dev_flow/CTR/CTR-TEMPLATE.md` | Line ? | Active | Template issue |
+| `/opt/data/ucx_framework/ai_dev_flow/SYS/README.md` | Multiple | Active | Major documentation impact |
+| `/opt/data/ucx_framework/ai_dev_flow/TASKS/README.md` | Multiple | Active | Navigation issue |
+| `/opt/data/ucx_framework/ai_dev_flow/TASKS/TASKS-000_index.md` | Line ? | Active | Index corruption |
+| `/opt/data/ucx_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md` | Line ? | Active | Template corruption |
+| `/opt/data/ucx_framework/ai_dev_flow/EARS/README.md` | Line ? | Active | Navigation issue |
+| `/opt/data/ucx_framework/ai_dev_flow/REQ/REQ-TEMPLATE.md` | Line 36 | Active | Template issue |
+| `/opt/data/ucx_framework/ai_dev_flow/PRD/README.md` | Line ? | Active | Navigation issue |
 | Archived files (2) | | Lower | Not critical |
 
 #### Example Corruption (from BDD-000_index.md):
@@ -119,7 +119,7 @@ This appears to be a template variable that was not properly replaced during doc
 
 #### Example 1: BDD-000_index.md
 
-**File**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-000_index.md`
+**File**: `/opt/data/ucx_framework/ai_dev_flow/BDD/BDD-000_index.md`
 **Lines**: 106, 115, 122, 126, 146, 156 (multiple locations)
 
 **Current (Old Format)**:
@@ -154,13 +154,13 @@ Recent changes (git commit 4fde14d) partially updated the format but the update 
 **Status**: Fixed in some scripts, not others  
 **Impact**: Inconsistent validation behavior across different validators
 
-#### File 1: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_requirement_ids.py`
+#### File 1: `/opt/data/ucx_framework/ai_dev_flow/scripts/validate_requirement_ids.py`
 - **Status**: NOT FIXED (outdated pattern still present)
 - **Line**: 53
 - **Current Pattern**: `r"##\s*7\.\s*Non-Functional\s+Requirements"`
 - **Expected Pattern**: `r"##\s*7\.\s*Quality\s+Attributes"`
 
-#### File 2: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_req_spec_readiness.py`
+#### File 2: `/opt/data/ucx_framework/ai_dev_flow/scripts/validate_req_spec_readiness.py`
 - **Status**: FIXED (git commit shows update)
 - **Line**: 47 (updated)
 - **Current Pattern**: `r"##\s*7\.\s*Quality\s+Attributes"`
@@ -194,10 +194,10 @@ Recent changes (git commit 4fde14d) partially updated the format but the update 
 | `[SYSTEM_STATE...]` | State management | `[SYSTEM_STATE - e.g., operating mode, environment condition]` | ~15 |
 
 #### Files with Highest Placeholder Density:
-1. `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-000_index.md` - ~15 placeholders
-2. `/opt/data/docs_flow_framework/ai_dev_flow/CTR/README.md` - ~25 placeholders
-3. `/opt/data/docs_flow_framework/ai_dev_flow/SYS/README.md` - ~20 placeholders
-4. `/opt/data/docs_flow_framework/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml` - ~15 placeholders
+1. `/opt/data/ucx_framework/ai_dev_flow/BDD/BDD-000_index.md` - ~15 placeholders
+2. `/opt/data/ucx_framework/ai_dev_flow/CTR/README.md` - ~25 placeholders
+3. `/opt/data/ucx_framework/ai_dev_flow/SYS/README.md` - ~20 placeholders
+4. `/opt/data/ucx_framework/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml` - ~15 placeholders
 
 #### Impact Assessment:
 - **Positive**: Enables domain-agnostic framework adaptation
@@ -240,7 +240,7 @@ When creating PRD documents, use EXACTLY these values...
 ### Issue #7: Outdated Archive Directory References
 
 **Severity**: MINOR - Maintenance issue  
-**Files Affected**: `/opt/data/docs_flow_framework/ai_dev_flow/REQ/archived/`
+**Files Affected**: `/opt/data/ucx_framework/ai_dev_flow/REQ/archived/`
 
 #### Details:
 - `REQ-TEMPLATE-V1-ARCHIVED.md` - Contains old NFR terminology

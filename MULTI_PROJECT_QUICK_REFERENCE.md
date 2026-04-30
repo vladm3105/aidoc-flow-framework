@@ -16,7 +16,7 @@ v2 (14-layer) variant preserved in `ai_dev_ssd_flow/` for existing projects.
 
 ---
 
-## Project Knowledge Base (RAG + Graph)
+## UCX Knowledge Base (RAG + Graph)
 
 Use the standalone package in this framework:
 
@@ -27,7 +27,7 @@ Use direct file workflows when retrieval/indexing is not required.
 ```bash
 # Keep knowledge in docs/ (or project-specific folders)
 # Use regular file search/read workflows
-# No project_knowledge DB or MCP startup required
+# No ucx_knowledge DB or MCP startup required
 ```
 
 ### Option B: Indexed mode (RAG + Graph + MCP)
@@ -37,7 +37,7 @@ Use this mode when you need semantic retrieval, graph context, and reusable know
 Optional alternative: use `framework_rags` as a shared RAG runtime instead of built-in project RAG when needed (see `framework_rags/README.md`).
 
 ```bash
-cd /opt/data/docs_flow_framework/project_knowledge
+cd /opt/data/ucx_framework/ucx_knowledge
 
 # 1) Configure environment
 cp .env.example .env
@@ -46,13 +46,13 @@ cp .env.example .env
 docker compose -f docker-compose.db.yml --env-file .env up -d
 
 # 3) Start MCP server
-python -m project_knowledge.mcp.server
+python -m ucx_knowledge.mcp.server
 
 # 4) Ingest documents
-python project_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+python ucx_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
 
 # 5) Run pilot validation
-python project_knowledge/scripts/pilot_validate.py
+python ucx_knowledge/scripts/pilot_validate.py
 ```
 
 ---
@@ -61,10 +61,10 @@ python project_knowledge/scripts/pilot_validate.py
 
 ```bash
 # Setup hybrid shared/custom resources (BOTH frameworks)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/project_name
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/project_name
 
 # With GitHub CI/CD workflows and issue templates
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/project_name --with-github
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/project_name --with-github
 
 # What it does:
 # ✓ Creates .claude/custom_skills/, custom_commands/, custom_agents/
@@ -97,7 +97,7 @@ python project_knowledge/scripts/pilot_validate.py
 ```bash
 # Batch setup
 for PROJECT in [PROJECT_A] [PROJECT_B] [PROJECT_C]; do
-    /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/$PROJECT
+    /opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/$PROJECT
 done
 ```
 
@@ -112,7 +112,7 @@ UCX is the unified CLI for document creation, review, and remediation. Use PYTHO
 ```bash
 # Create .envrc in your project
 cat > /opt/data/project_name/.envrc << 'EOF'
-export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export FRAMEWORK_ROOT="/opt/data/ucx_framework"
 export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
 export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
 source "$FRAMEWORK_ROOT/.venv/bin/activate"
@@ -185,7 +185,7 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 # .pre-commit-config.yaml
 - id: ucx-brd-validate
   name: UCX BRD Validation
-  entry: /opt/data/docs_flow_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
+  entry: /opt/data/ucx_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
   language: system
   files: ^docs/01_BRD/.*\.md$
 ```
@@ -198,16 +198,16 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 /opt/data/project_name/
 ├── .envrc                   ✓ UCX environment (direnv)
 ├── .claude/
-│   ├── skills/              → /opt/data/docs_flow_framework/.claude/skills/
-│   ├── commands/            → /opt/data/docs_flow_framework/.claude/commands/
-│   ├── agents/              → /opt/data/docs_flow_framework/.claude/agents/
+│   ├── skills/              → /opt/data/ucx_framework/.claude/skills/
+│   ├── commands/            → /opt/data/ucx_framework/.claude/commands/
+│   ├── agents/              → /opt/data/ucx_framework/.claude/agents/
 │   ├── custom_skills/       ✓ Tracked in git
 │   ├── custom_commands/     ✓ Tracked in git
 │   ├── custom_agents/       ✓ Tracked in git
 │   ├── settings.local.json  ✓ Tracked in git
 │   └── CLAUDE.md            ✓ Tracked in git (optional)
 │
-├── .github/                 → /opt/data/docs_flow_framework/.github/ (with --with-github)
+├── .github/                 → /opt/data/ucx_framework/.github/ (with --with-github)
 │   ├── workflows/           20 CI/CD workflows
 │   ├── ISSUE_TEMPLATE/      10 issue templates
 │   ├── CODEOWNERS
@@ -215,11 +215,11 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 ├── .templates/
-│   ├── ai_dev_ssd_flow/         → /opt/data/docs_flow_framework/ai_dev_ssd_flow/
-│   └── governance/  → /opt/data/docs_flow_framework/governance/
+│   ├── ai_dev_ssd_flow/         → /opt/data/ucx_framework/ai_dev_ssd_flow/
+│   └── governance/  → /opt/data/ucx_framework/governance/
 │
 ├── scripts/
-│   ├── validate/            → /opt/data/docs_flow_framework/scripts/
+│   ├── validate/            → /opt/data/ucx_framework/scripts/
 │   └── project_*.sh         ✓ Project-specific scripts
 │
 ├── docs/                    ✓ Project documentation artifacts (auto-created by project-init)
@@ -282,7 +282,7 @@ cd /opt/data/project_name
 
 ```bash
 # View available shared skills
-ls /opt/data/docs_flow_framework/.claude/skills/
+ls /opt/data/ucx_framework/.claude/skills/
 
 # Example skills:
 # - doc-flow: SDD workflow
@@ -296,20 +296,20 @@ ls /opt/data/docs_flow_framework/.claude/skills/
 
 ```bash
 # View SDD v3 templates (8 layers - recommended for new projects)
-ls /opt/data/docs_flow_framework/ai_dev_flow_v3/
+ls /opt/data/ucx_framework/ucx_flow_v3/
 
 # Template directories:
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SPEC/, 07_TDD/, 08_IPLAN/, CHG/
 
 # View SDD v2 templates (14 layers - legacy)
-ls /opt/data/docs_flow_framework/ai_dev_ssd_flow/
+ls /opt/data/ucx_framework/ai_dev_ssd_flow/
 
 # Template directories:
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SYS/,
 # 07_REQ/, 08_CTR/, 09_SPEC/, 10_TSPEC/, 11_TASKS/, AUTOPILOT/
 
 # View SDD governance templates (lightweight - small projects)
-ls /opt/data/docs_flow_framework/governance/
+ls /opt/data/ucx_framework/governance/
 
 # Key directories:
 # governance/ - PROJECT_PLAN, GOVERNANCE_RULES
@@ -321,7 +321,7 @@ ls /opt/data/docs_flow_framework/governance/
 
 ```bash
 # Available workflows (20 total):
-ls /opt/data/docs_flow_framework/.github/workflows/
+ls /opt/data/ucx_framework/.github/workflows/
 
 # CI/CD: ci.yml, deploy-dev.yml, deploy-staging.yml, deploy-prod.yml
 # AI Review: ai-review.yml, agent-dispatch.yml
@@ -363,7 +363,7 @@ python scripts/validate/generate_traceability_matrices.py --auto
 
 ```bash
 # Edit in framework
-vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
+vim /opt/data/ucx_framework/.claude/skills/doc-flow/SKILL.md
 
 # Changes immediately available to ALL projects (via symlinks)
 ```
@@ -372,8 +372,8 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 
 ```bash
 # Create in framework
-mkdir /opt/data/docs_flow_framework/.claude/skills/new-skill
-vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
+mkdir /opt/data/ucx_framework/.claude/skills/new-skill
+vim /opt/data/ucx_framework/.claude/skills/new-skill/SKILL.md
 
 # Automatically available to ALL projects
 ```
@@ -382,10 +382,10 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 
 ```bash
 # Edit SDD template in framework
-vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
+vim /opt/data/ucx_framework/ai_dev_ssd_flow/07_REQ/REQ-MVP-TEMPLATE.md
 
 # Edit SDD governance template in framework
-vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
+vim /opt/data/ucx_framework/governance/PROJECT_PLAN.md
 
 # Changes immediately available to ALL projects
 ```
@@ -399,7 +399,7 @@ vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
 
 # 1. Copy to framework
 cp -r ${PROJECT_A_PATH}/.claude/custom_skills/useful-skill \
-      /opt/data/docs_flow_framework/.claude/skills/
+      /opt/data/ucx_framework/.claude/skills/
 
 # 2. Remove from project custom
 rm -rf ${PROJECT_A_PATH}/.claude/custom_skills/useful-skill
@@ -418,9 +418,9 @@ rm -rf ${PROJECT_A_PATH}/.claude/custom_skills/useful-skill
 ls -la /opt/data/project_name/.claude/
 
 # Expected output includes:
-# skills -> /opt/data/docs_flow_framework/.claude/skills
-# commands -> /opt/data/docs_flow_framework/.claude/commands
-# agents -> /opt/data/docs_flow_framework/.claude/agents
+# skills -> /opt/data/ucx_framework/.claude/skills
+# commands -> /opt/data/ucx_framework/.claude/commands
+# agents -> /opt/data/ucx_framework/.claude/agents
 ```
 
 ### Test Skill Discovery
@@ -453,22 +453,22 @@ ls -la /opt/data/project_name/.templates/governance/
 
 ```bash
 # Check if target exists
-ls -la /opt/data/docs_flow_framework/.claude/skills/
+ls -la /opt/data/ucx_framework/.claude/skills/
 
 # Recreate symlink
 cd /opt/data/project_name/.claude
 rm skills
-ln -s /opt/data/docs_flow_framework/.claude/skills skills
+ln -s /opt/data/ucx_framework/.claude/skills skills
 ```
 
 ### Skill Not Found
 
 ```bash
 # Verify skill exists in framework
-ls /opt/data/docs_flow_framework/.claude/skills/skill-name/
+ls /opt/data/ucx_framework/.claude/skills/skill-name/
 
 # Verify skill has SKILL.md
-cat /opt/data/docs_flow_framework/.claude/skills/skill-name/SKILL.md
+cat /opt/data/ucx_framework/.claude/skills/skill-name/SKILL.md
 
 # Check custom skills
 ls /opt/data/project_name/.claude/custom_skills/
@@ -478,7 +478,7 @@ ls /opt/data/project_name/.claude/custom_skills/
 
 ```bash
 # Fix framework permissions
-chmod -R 755 /opt/data/docs_flow_framework/.claude/skills/
+chmod -R 755 /opt/data/ucx_framework/.claude/skills/
 
 # Fix custom permissions
 chmod -R 755 /opt/data/project_name/.claude/custom_skills/
@@ -517,7 +517,7 @@ git clone <project-url> /opt/data/new_clone
 cd /opt/data/new_clone
 
 # Setup framework symlinks
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_clone
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/new_clone
 
 # Symlinks recreated, custom resources already present from git
 ```
@@ -530,8 +530,8 @@ cd /opt/data/new_clone
 
 ```bash
 # 1. Create skill in framework (not project)
-mkdir /opt/data/docs_flow_framework/.claude/skills/new-feature
-vim /opt/data/docs_flow_framework/.claude/skills/new-feature/SKILL.md
+mkdir /opt/data/ucx_framework/.claude/skills/new-feature
+vim /opt/data/ucx_framework/.claude/skills/new-feature/SKILL.md
 
 # 2. Test in any project (immediately available)
 cd /opt/data/any_project
@@ -558,10 +558,10 @@ git commit -m "Add project-specific skill"
 
 ```bash
 # 1. Access v3 template
-cat /opt/data/docs_flow_framework/ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml
+cat /opt/data/ucx_framework/ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml
 
 # 2. Copy to project docs
-cp ai_dev_flow_v3/01_BRD/BRD-TEMPLATE.yaml \
+cp ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml \
    docs/BRD/BRD-01.yaml
 
 # 3. Edit project copy
@@ -603,19 +603,19 @@ vim docs/PROJECT_PLAN.md
 
 ## Resources
 
-**Full Documentation**: `/opt/data/docs_flow_framework/MULTI_PROJECT_SETUP_GUIDE.md`
+**Full Documentation**: `/opt/data/ucx_framework/MULTI_PROJECT_SETUP_GUIDE.md`
 
-**Framework Root**: `/opt/data/docs_flow_framework/`
+**Framework Root**: `/opt/data/ucx_framework/`
 
-**Setup Script**: `/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh`
+**Setup Script**: `/opt/data/ucx_framework/scripts/setup_project_hybrid.sh`
 
-**Skills Catalog**: `/opt/data/docs_flow_framework/.claude/skills/README.md`
+**Skills Catalog**: `/opt/data/ucx_framework/.claude/skills/README.md`
 
 ### Framework-Specific Documentation
 
 | Framework | README | Key Docs |
 |-----------|--------|----------|
-| **ai_dev_flow_v3** | `ai_dev_flow_v3/README.md` | 8-layer SDD v3 methodology (recommended) |
+| **ucx_flow_v3** | `ucx_flow_v3/README.md` | 8-layer SDD v3 methodology (recommended) |
 | **ai_dev_ssd_flow** | `ai_dev_ssd_flow/README.md` | 14-layer SDD v2 methodology (legacy) |
 | **governance** | `governance/README.md` | Governance, CI/CD, Issues |
 

@@ -1,11 +1,11 @@
 # CHANGELOG v0.8.0
 
 **Release Date**: 2026-03-29
-**Type**: Minor (REQ Template Unification — All mcp_sdd Templates Unified)
+**Type**: Minor (REQ Template Unification — All mcp_ucx Templates Unified)
 
 ## Summary
 
-Unified the REQ (Layer 7) artifact into a single YAML template. This completes the migration of ALL templates in `mcp_sdd/templates/` to unified YAML format — no `*-MVP-TEMPLATE.*` files remain.
+Unified the REQ (Layer 7) artifact into a single YAML template. This completes the migration of ALL templates in `mcp_ucx/templates/` to unified YAML format — no `*-MVP-TEMPLATE.*` files remain.
 
 ## Changes
 
@@ -27,9 +27,9 @@ Implementation Notes (Section 11) removed — SPEC/TASKS own implementation.
 - **No diagram tags**: atomic requirement level, not architecture
 - **Hash-based IDs**: `REQ.NN.{section}.xxxx`
 
-### mcp_sdd Milestone
+### mcp_ucx Milestone
 
-All 7 templates in `mcp_sdd/templates/` are now unified YAML:
+All 7 templates in `mcp_ucx/templates/` are now unified YAML:
 - `BRD-TEMPLATE.yaml`, `PRD-TEMPLATE.yaml`, `EARS-TEMPLATE.yaml`
 - `BDD-TEMPLATE.yaml`, `ADR-TEMPLATE.yaml`, `SYS-TEMPLATE.yaml`
 - `REQ-TEMPLATE.yaml`
@@ -50,6 +50,6 @@ No `*-MVP-TEMPLATE.*` files remain.
 
 ## Validation
 
-- mcp_sdd: 173 passed, 0 regressions
+- mcp_ucx: 173 passed, 0 regressions
 - Template resolution: verified
 - Zero stale references

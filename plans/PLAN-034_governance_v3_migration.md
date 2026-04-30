@@ -3,11 +3,11 @@
 **Date**: 2026-04-30
 **Status**: Draft
 **Priority**: High
-**Scope**: `/opt/data/docs_flow_framework/governance` -> align with `/opt/data/docs_flow_framework/ai_dev_flow_v3`
+**Scope**: `/opt/data/ucx_framework/governance` -> align with `/opt/data/ucx_framework/ucx_flow_v3`
 
 ## Objective
 
-Migrate governance documentation, templates, and governance-side automation references from legacy SDD (`ai_dev_ssd_flow`, TASKS/TSPEC/SYS/REQ/CTR-centric flows) to SDD v3.2 (`ai_dev_flow_v3`, BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code).
+Migrate governance documentation, templates, and governance-side automation references from legacy SDD (`ai_dev_ssd_flow`, TASKS/TSPEC/SYS/REQ/CTR-centric flows) to SDD v3.2 (`ucx_flow_v3`, BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code).
 
 ## Review Findings (Current State)
 
@@ -24,7 +24,7 @@ The governance directory currently contains mixed versions (v3 references and le
    - `governance/CHG_GOVERNANCE_BRIDGE.md` uses gate mapping tied to legacy layer numbering.
 
 3. **Path drift to old framework root**
-   - Multiple files still reference `ai_dev_ssd_flow/...` paths instead of `ai_dev_flow_v3/...`.
+   - Multiple files still reference `ai_dev_ssd_flow/...` paths instead of `ucx_flow_v3/...`.
 
 4. **Workflow and script references not v3-normalized**
    - Governance docs and script guidance still assume TASKS-generated issue flow and old layer aliases.
@@ -32,9 +32,9 @@ The governance directory currently contains mixed versions (v3 references and le
 ## Target Governance Baseline (v3.2)
 
 - Canonical chain: `BRD -> PRD -> EARS -> BDD -> ADR -> SPEC -> TDD -> IPLAN -> Code`
-- Canonical registry: `ai_dev_flow_v3/LAYER_REGISTRY.yaml`
-- Canonical governance core: `ai_dev_flow_v3/DOC_GOVERNANCE_CORE.md`
-- CHG overlay: `ai_dev_flow_v3/CHG/` with gates `GATE-01`, `GATE-03`, `GATE-06`, `GATE-08`, `GATE-CODE`
+- Canonical registry: `ucx_flow_v3/LAYER_REGISTRY.yaml`
+- Canonical governance core: `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
+- CHG overlay: `ucx_flow_v3/CHG/` with gates `GATE-01`, `GATE-03`, `GATE-06`, `GATE-08`, `GATE-CODE`
 - YAML-first policy for SDD artifacts; Markdown in governance remains allowed for process guidance and runbooks
 
 ## Migration Workstreams
@@ -53,7 +53,7 @@ Update foundational governance documents to v3.2 chain and terminology.
 - Replace legacy layer tables with v3 layer map.
 - Remove SYS/REQ/CTR/TSPEC/TASKS as active layers.
 - Replace TASKS-generated issue flow language with IPLAN-driven execution planning language.
-- Update all framework root links from `ai_dev_ssd_flow` to `ai_dev_flow_v3`.
+- Update all framework root links from `ai_dev_ssd_flow` to `ucx_flow_v3`.
 - Keep governance workflow labels and GitHub board flow intact unless they depend on removed artifacts.
 
 ### Workstream 2: Bridge Document Refactor
@@ -82,7 +82,7 @@ Normalize onboarding and template docs that propagate governance guidance into d
 - `governance/plans/IPLAN-TEMPLATE.md`
 
 **Required changes**:
-- Ensure generated defaults point to `ai_dev_flow_v3`.
+- Ensure generated defaults point to `ucx_flow_v3`.
 - Update example layer chains and references to TDD/IPLAN.
 - Remove stale TASKS/TSPEC/SYS/REQ/CTR defaults from template text and comments.
 
@@ -161,11 +161,11 @@ Interpretation:
 
 ## Dependencies
 
-- `ai_dev_flow_v3/README.md`
-- `ai_dev_flow_v3/LAYER_REGISTRY.yaml`
-- `ai_dev_flow_v3/DOC_GOVERNANCE_CORE.md`
-- `ai_dev_flow_v3/QUICK_REFERENCE.md`
-- Existing readiness context in `plans/PLAN-033_mcp_sdd_v3_readiness.md`
+- `ucx_flow_v3/README.md`
+- `ucx_flow_v3/LAYER_REGISTRY.yaml`
+- `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
+- `ucx_flow_v3/QUICK_REFERENCE.md`
+- Existing readiness context in `plans/PLAN-033_mcp_ucx_v3_readiness.md`
 
 ## Gap Closure Addendum
 
@@ -209,7 +209,7 @@ Update `governance/github/LABEL_REGISTRY.yaml` source label text to remove TASKS
 
 ### E. Pre-commit and Setup Path Normalization
 
-Normalize framework path references in setup and pre-commit templates from `ai_dev_ssd_flow` to `ai_dev_flow_v3` where applicable. If a legacy path must remain for compatibility, mark it deprecated and document removal criteria.
+Normalize framework path references in setup and pre-commit templates from `ai_dev_ssd_flow` to `ucx_flow_v3` where applicable. If a legacy path must remain for compatibility, mark it deprecated and document removal criteria.
 
 ### F. Expanded Validation Gates
 

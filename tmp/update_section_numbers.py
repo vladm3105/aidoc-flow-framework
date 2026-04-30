@@ -87,7 +87,7 @@ def process_file(filepath: Path) -> bool:
 
 
 def main():
-    base_path = Path('/opt/data/docs_flow_framework/ai_dev_flow')
+    base_path = Path('/opt/data/ucx_framework/ai_dev_flow')
 
     # Find all template files
     template_files = list(base_path.glob('**/*TEMPLATE*.md'))

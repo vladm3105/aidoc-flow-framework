@@ -31,6 +31,6 @@ This guide maps governance depth to the active SDD v3.2 artifact chain.
 
 ## References
 
-- `ai_dev_flow_v3/README.md`
-- `ai_dev_flow_v3/LAYER_REGISTRY.yaml`
-- `ai_dev_flow_v3/CHG/`
+- `ucx_flow_v3/README.md`
+- `ucx_flow_v3/LAYER_REGISTRY.yaml`
+- `ucx_flow_v3/CHG/`

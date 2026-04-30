@@ -26,7 +26,7 @@ Migrated element IDs from 4-segment `TYPE.NN.TT.hash` to 3-segment `TYPE.NN.hash
 
 ### Templates Updated (Phase 2)
 
-- 11 primary templates in `mcp_sdd/templates/` — format, guidance, all inline examples
+- 11 primary templates in `mcp_ucx/templates/` — format, guidance, all inline examples
 - 11 mirror templates synced to `ai_dev_ssd_flow/{NN}_{TYPE}/`
 - 11 layer READMEs updated
 - SPEC-TEMPLATE.yaml `element_ids:` section updated
@@ -61,6 +61,6 @@ All `doc-*` and `doc-*-autopilot` skills updated. `doc-naming/SKILL.md` (primary
 
 ## Validation
 
-- mcp_sdd tests: all passing
+- mcp_ucx tests: all passing
 - YAML template validation: all 11 valid
 - No backward compatibility — clean break, all project docs re-created

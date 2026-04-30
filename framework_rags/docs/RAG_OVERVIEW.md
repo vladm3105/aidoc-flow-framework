@@ -308,7 +308,7 @@ LightRAG extracts 12 domain-agnostic entity types:
 ### 1. Configure Environment
 
 ```bash
-cd /opt/data/docs_flow_framework/framework_rags
+cd /opt/data/ucx_framework/framework_rags
 make setup          # Create .env
 
 # Edit .env with:

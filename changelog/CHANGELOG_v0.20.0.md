@@ -4,7 +4,7 @@
 
 ## Summary
 
-SDD v3 migration: collapsed from 14 layers to 8 layers with C4 architecture mapping, new TDD and IPLAN artifacts, 5-gate CHG governance overlay, and 39 new framework files in `ai_dev_flow_v3/`.
+SDD v3 migration: collapsed from 14 layers to 8 layers with C4 architecture mapping, new TDD and IPLAN artifacts, 5-gate CHG governance overlay, and 39 new framework files in `ucx_flow_v3/`.
 
 ## SDD v3 Layer Migration
 
@@ -41,7 +41,7 @@ SDD v3 migration: collapsed from 14 layers to 8 layers with C4 architecture mapp
 | Implementation Bridge | L7-L8 | TDD, IPLAN | _(none)_ |
 | C4-L4 Code | — | Source Code | `@diagram: c4-l4` |
 
-Authoritative layer definitions in `ai_dev_flow_v3/LAYER_REGISTRY.yaml` (232 lines).
+Authoritative layer definitions in `ucx_flow_v3/LAYER_REGISTRY.yaml` (232 lines).
 
 ## CHG Governance Overlay
 
@@ -50,9 +50,9 @@ Authoritative layer definitions in `ai_dev_flow_v3/LAYER_REGISTRY.yaml` (232 lin
 - 12 CHG files: template, index, README, 7 gate docs, 2 companion templates
 - `GATE_INTERACTION_DIAGRAM.md` and `GATE_ERROR_CATALOG.md`
 - `GATE_APPROVAL_FORM.md` and `POST_MORTEM-TEMPLATE.md`
-- CHG migration plan: `ai_dev_flow_v3/plans/CHG_MIGRATION_PLAN.md` (357 lines)
+- CHG migration plan: `ucx_flow_v3/plans/CHG_MIGRATION_PLAN.md` (357 lines)
 
-## New Files — ai_dev_flow_v3/
+## New Files — ucx_flow_v3/
 
 **Framework core** (39 files):
 
@@ -79,7 +79,7 @@ Authoritative layer definitions in `ai_dev_flow_v3/LAYER_REGISTRY.yaml` (232 lin
 - `ai_dev_ssd_flow/11_TASKS/IMPLEMENTATION_PLAN_README.md`: 5 lines updated for IPLAN handoff
 - `ai_dev_ssd_flow/11_TASKS/TASKS-00_index.md`: 3 lines updated
 
-## mcp_sdd Template Updates
+## mcp_ucx Template Updates
 
 - Removed `_draft` prefix references from BRD, PRD, EARS templates
 
@@ -87,5 +87,5 @@ Authoritative layer definitions in `ai_dev_flow_v3/LAYER_REGISTRY.yaml` (232 lin
 
 - v2 ai_dev_ssd_flow/ preserved as-is — existing projects continue unaffected
 - v3 is an opt-in migration for new projects
-- v2 → v3 migration guidance in `ai_dev_flow_v3/plans/`
+- v2 → v3 migration guidance in `ucx_flow_v3/plans/`
 - CHG overlay follows same opt-in pattern — gates trigger only when CHG process is invoked

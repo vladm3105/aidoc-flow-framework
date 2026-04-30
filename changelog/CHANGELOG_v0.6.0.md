@@ -21,8 +21,8 @@ Unified the ADR (Layer 5) artifact into a single YAML template, completing the f
 | `ADR-MVP-TEMPLATE.yaml` | 363 | Archived |
 | `ADR_MVP_SCHEMA.yaml` | 460 | Archived |
 | `ADR_MVP_CREATION_RULES.md` | 500 | Guidance embedded as `_guidance` fields |
-| `ADR_MVP_VALIDATION_RULES.md` | 422 | Validation via mcp_sdd tools |
-| `ADR_MVP_QUALITY_GATE_VALIDATION.md` | 967 | Quality gates via mcp_sdd tools |
+| `ADR_MVP_VALIDATION_RULES.md` | 422 | Validation via mcp_ucx tools |
+| `ADR_MVP_QUALITY_GATE_VALIDATION.md` | 967 | Quality gates via mcp_ucx tools |
 
 **Archived**: 15+ files + scripts/ + examples/ + backup → `ADR_v1_archive/`
 
@@ -59,10 +59,10 @@ New: `BRD.NN.08.xxxx` (BRD Section 8, hash-based)
 
 ADR downstream now includes SYS (layer 6) + REQ (layer 7) + SPEC (layer 9).
 
-### mcp_sdd Updates
+### mcp_ucx Updates
 
-- Copied `ADR-TEMPLATE.yaml` to `mcp_sdd/templates/`
-- Removed `mcp_sdd/templates/ADR-MVP-TEMPLATE.md`
+- Copied `ADR-TEMPLATE.yaml` to `mcp_ucx/templates/`
+- Removed `mcp_ucx/templates/ADR-MVP-TEMPLATE.md`
 - ADR prompts: no old references found, no changes needed
 - No source code changes
 
@@ -80,5 +80,5 @@ ADR downstream now includes SYS (layer 6) + REQ (layer 7) + SPEC (layer 9).
 
 - YAML syntax: `yaml.safe_load()` passes
 - Template resolution: `resolve_template_path()` finds `ADR-TEMPLATE.yaml`
-- mcp_sdd full suite: 173 passed, 0 regressions
+- mcp_ucx full suite: 173 passed, 0 regressions
 - No stale `ADR-MVP-TEMPLATE` references outside archives

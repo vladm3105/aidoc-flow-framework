@@ -1,7 +1,7 @@
 # Framework Document Format Review Report
 
 **Date**: 2025-12-10 (Updated)
-**Scope**: `/opt/data/docs_flow_framework/ai_dev_flow/` and `.claude/skills/`
+**Scope**: `/opt/data/ucx_framework/ai_dev_flow/` and `.claude/skills/`
 **Status**: ✅ ALL ISSUES RESOLVED
 
 ---

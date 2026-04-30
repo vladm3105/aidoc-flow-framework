@@ -26,14 +26,14 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
 
 | Directory | Purpose |
 |:----------|:--------|
-| `ai_dev_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
+| `ucx_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
 | `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
-| `project_knowledge/` | Standalone RAG + Graph knowledge base package |
+| `ucx_knowledge/` | Standalone RAG + Graph knowledge base package |
 | `framework_rags/` | Shared RAG tools and reference utilities |
 
-**See**: [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) for v3 layer mappings. The v2 depth guide is in [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md).
+**See**: [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) for v3 layer mappings. The v2 depth guide is in [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md).
 
 ---
 
@@ -43,7 +43,7 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
 
 ```
 /opt/data/
-├── docs_flow_framework/              # Central framework repository
+├── ucx_framework/              # Central framework repository
 │   ├── UCX/                          # Unified CLI (Python package)
 │   │   ├── ucx/                      # Source code
 │   │   │   ├── cli/                  # CLI commands
@@ -54,7 +54,7 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
 │   │   ├── bin/                      # CLI entry points
 │   │   └── docs/                     # UCX documentation
 │   │
-|   ├── ai_dev_flow_v3/              # SDD v3 templates (8 layers, recommended)
+|   ├── ucx_flow_v3/              # SDD v3 templates (8 layers, recommended)
 │   ├── ai_dev_ssd_flow/              # SDD v2 templates (14 layers, legacy)
 │   │   ├── 01_BRD/                   # Business Requirements
 │   │   ├── 02_PRD/                   # Product Requirements
@@ -69,7 +69,7 @@ The original v2 (14-layer) variant is preserved in `ai_dev_ssd_flow/` for existi
 │   │
 │   ├── scripts/                      # Validation and automation tools
 │   │   └── ucx-validate.sh           # UCX wrapper for all layers
-│   ├── project_knowledge/            # Standalone RAG + Graph + MCP package
+│   ├── ucx_knowledge/            # Standalone RAG + Graph + MCP package
 │   ├── framework_rags/               # Shared rag_tools and reference services
 │   ├── .venv/                        # Shared Python virtual environment
 │   └── .claude/
@@ -119,7 +119,7 @@ Create `.envrc` in your project root:
 # /opt/data/your_project/.envrc
 
 # Framework root
-export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export FRAMEWORK_ROOT="/opt/data/ucx_framework"
 
 # Add UCX to Python path (no pip install needed)
 export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
@@ -160,7 +160,7 @@ Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 # Framework paths (global availability)
-export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export FRAMEWORK_ROOT="/opt/data/ucx_framework"
 export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
 export PATH="$FRAMEWORK_ROOT/UCX/bin:$PATH"
 
@@ -176,7 +176,7 @@ Create a project-local UCX wrapper:
 #!/bin/bash
 # /opt/data/your_project/bin/ucx
 
-FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+FRAMEWORK_ROOT="/opt/data/ucx_framework"
 PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH" \
   "$FRAMEWORK_ROOT/.venv/bin/python" -m ucx.cli "$@"
 ```
@@ -239,7 +239,7 @@ final_score = 100 - sum(weighted_deduction for each category)
 | 70-84 | WARN | Needs review |
 | <70 | FAIL | Not ready |
 
-**See**: `/opt/data/docs_flow_framework/UCX/docs/scoring/SCORING_GUIDE.md` for complete documentation.
+**See**: `/opt/data/ucx_framework/UCX/docs/scoring/SCORING_GUIDE.md` for complete documentation.
 
 ### Project-Specific UCX Configuration (v1.12.0+)
 
@@ -293,7 +293,7 @@ repos:
     hooks:
       - id: ucx-brd-validate
         name: UCX BRD Validation (Tier 1)
-        entry: bash -c 'source /opt/data/docs_flow_framework/.venv/bin/activate && PYTHONPATH=/opt/data/docs_flow_framework/UCX:$PYTHONPATH ucx validate brd docs/01_BRD --tier1-only'
+        entry: bash -c 'source /opt/data/ucx_framework/.venv/bin/activate && PYTHONPATH=/opt/data/ucx_framework/UCX:$PYTHONPATH ucx validate brd docs/01_BRD --tier1-only'
         language: system
         files: ^docs/01_BRD/.*\.md$
         stages: [pre-commit]
@@ -308,7 +308,7 @@ repos:
     hooks:
       - id: ucx-brd-validate
         name: UCX BRD Validation (Tier 1)
-        entry: /opt/data/docs_flow_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
+        entry: /opt/data/ucx_framework/scripts/ucx-validate.sh brd docs/01_BRD --tier1-only
         language: system
         files: ^docs/01_BRD/.*\.md$
         stages: [pre-commit]
@@ -330,7 +330,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 | **Commands** | `.claude/commands/` | `.claude/custom_commands/` | Both merged |
 | **Agents** | `.claude/agents/` | `.claude/custom_agents/` | Both merged |
 | **SDD Templates** | `.templates/ai_dev_ssd_flow/` | N/A | Symlink only (v2 legacy) |
-| | `.templates/ai_dev_flow_v3/` | N/A | Symlink only (v3 recommended) |
+| | `.templates/ucx_flow_v3/` | N/A | Symlink only (v3 recommended) |
 | **Issues Templates** | `.templates/governance/` | N/A | Symlink only |
 | **GitHub CI/CD** | `.github/` (--with-github) | N/A | Optional symlink |
 | **Scripts** | `scripts/validate/` | `scripts/` | Both available |
@@ -340,7 +340,7 @@ Projects use **symlinks** for shared framework resources while maintaining dedic
 
 ## Setup Procedures
 
-### 0. Project Knowledge Base Setup (Optional, Shared Runtime)
+### 0. UCX Knowledge Base Setup (Optional, Shared Runtime)
 
 Use when the project needs retrieval and graph-backed context:
 
@@ -357,7 +357,7 @@ Choose one mode:
     - Use when the project requires reusable knowledge context across runs.
 
 ```bash
-cd /opt/data/docs_flow_framework/project_knowledge
+cd /opt/data/ucx_framework/ucx_knowledge
 
 # Configure env
 cp .env.example .env
@@ -366,15 +366,15 @@ cp .env.example .env
 docker compose -f docker-compose.db.yml --env-file .env up -d
 
 # Start MCP server
-python -m project_knowledge.mcp.server
+python -m ucx_knowledge.mcp.server
 
 # Optional: ingest docs
-python project_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+python ucx_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
 ```
 
 Core docs:
-- `project_knowledge/README.md`
-- `project_knowledge/mcp/README.md`
+- `ucx_knowledge/README.md`
+- `ucx_knowledge/mcp/README.md`
 
 ---
 
@@ -382,16 +382,16 @@ Core docs:
 
 **Verify framework structure:**
 ```bash
-ls -la /opt/data/docs_flow_framework/.claude/
+ls -la /opt/data/ucx_framework/.claude/
 # Expected: skills/, commands/, agents/
 
-ls -la /opt/data/docs_flow_framework/ai_dev_ssd_flow/
+ls -la /opt/data/ucx_framework/ai_dev_ssd_flow/
 # Expected: BRD/, PRD/, ADR/, REQ/, etc.
 ```
 
 ### 2. Project Setup Script
 
-**Location**: `/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh`
+**Location**: `/opt/data/ucx_framework/scripts/setup_project_hybrid.sh`
 
 ```bash
 #!/bin/bash
@@ -400,7 +400,7 @@ ls -la /opt/data/docs_flow_framework/ai_dev_ssd_flow/
 set -e
 
 PROJECT_DIR=$1
-FRAMEWORK_DIR="/opt/data/docs_flow_framework"
+FRAMEWORK_DIR="/opt/data/ucx_framework"
 
 if [ -z "$PROJECT_DIR" ]; then
     echo "Usage: $0 /opt/data/project_name"
@@ -472,7 +472,7 @@ fi
 if [ ! -f "$PROJECT_DIR/.envrc" ]; then
     cat > "$PROJECT_DIR/.envrc" << 'ENVRC'
 # Framework root
-export FRAMEWORK_ROOT="/opt/data/docs_flow_framework"
+export FRAMEWORK_ROOT="/opt/data/ucx_framework"
 
 # Add UCX to Python path (no pip install needed)
 export PYTHONPATH="$FRAMEWORK_ROOT/UCX:$PYTHONPATH"
@@ -530,7 +530,7 @@ mkdir -p scripts
 
 # Setup AI Expert Board
 mkdir -p docs/AI_EXPERTS
-cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml docs/AI_EXPERTS/review.yaml
+cp /opt/data/ucx_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml docs/AI_EXPERTS/review.yaml
 # Edit docs/AI_EXPERTS/review.yaml to configure the 7 personas for your specific domain.
 # Note: The AI Experts team should be created during a new project initialization, or manually on demand later.
 # INTEGRATION LEAD (Persona 7): Requires an INTEGRATION_MATRIX.md to work optimally.
@@ -543,7 +543,7 @@ cp /opt/data/docs_flow_framework/ai_dev_ssd_flow/AI_EXPERTS/review.template.yaml
 Use a framework-maintained hook profile and symlink project-level `.pre-commit-config.yaml` to avoid manual mirroring across repositories.
 
 **Framework library location (current profile):**
-- `docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
+- `ucx_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
 **Project symlink example (any project):**
 
@@ -552,7 +552,7 @@ cd /opt/data/<project-repo>
 
 # Replace local config with symlink to shared library profile
 rm -f .pre-commit-config.yaml
-ln -s ../../docs_flow_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml .pre-commit-config.yaml
+ln -s ../../ucx_framework/ai_dev_ssd_flow/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml .pre-commit-config.yaml
 
 # Verify target
 ls -l .pre-commit-config.yaml
@@ -607,13 +607,13 @@ PY
 
 ```bash
 # Make script executable
-chmod +x /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh
+chmod +x /opt/data/ucx_framework/scripts/setup_project_hybrid.sh
 
 # Setup one project (basic - templates and skills)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH}
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH}
 
 # Setup with GitHub CI/CD workflows (20 workflows + issue templates)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH} --with-github
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH} --with-github
 ```
 
 ### 5. Bulk Project Setup
@@ -623,7 +623,7 @@ chmod +x /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh
 for PROJECT in [PROJECT_A] [PROJECT_B] [PROJECT_C]; do
     if [ -d "/opt/data/$PROJECT" ]; then
         echo "Setting up: $PROJECT"
-        /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh "/opt/data/$PROJECT"
+        /opt/data/ucx_framework/scripts/setup_project_hybrid.sh "/opt/data/$PROJECT"
     fi
 done
 ```
@@ -813,7 +813,7 @@ Test service connection and report status with diagnostics
   "workingDirectory": "${PROJECT_PATH}",
   "docFlowPath": "docs/",
   "workPlansPath": "work_plans/",
-  "frameworkPath": "/opt/data/docs_flow_framework",
+  "frameworkPath": "/opt/data/ucx_framework",
   "projectType": "mcp_server",
   "traceabilityEnabled": true
 }
@@ -826,7 +826,7 @@ Test service connection and report status with diagnostics
 ```markdown
 # Project: [PROJECT_NAME]
 
-**Active Framework**: /opt/data/docs_flow_framework
+**Active Framework**: /opt/data/ucx_framework
 **Templates**: .templates/ai_dev_ssd_flow/
 **Work Plans**: work_plans/
 
@@ -880,7 +880,7 @@ scripts/validate
 
 ### Framework .gitignore
 
-Add to `/opt/data/docs_flow_framework/.gitignore`:
+Add to `/opt/data/ucx_framework/.gitignore`:
 
 ```gitignore
 # Framework should commit its resources
@@ -895,7 +895,7 @@ Add to `/opt/data/docs_flow_framework/.gitignore`:
 
 ```bash
 # Edit framework skill
-vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
+vim /opt/data/ucx_framework/.claude/skills/doc-flow/SKILL.md
 
 # Changes immediately available to all projects (symlinks)
 # No sync required
@@ -905,10 +905,10 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 
 ```bash
 # Edit SDD framework template
-vim /opt/data/docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
+vim /opt/data/ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md
 
 # Edit SDD governance framework template
-vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
+vim /opt/data/ucx_framework/governance/PROJECT_PLAN.md
 
 # Changes immediately available to all projects
 ```
@@ -917,8 +917,8 @@ vim /opt/data/docs_flow_framework/governance/PROJECT_PLAN.md
 
 ```bash
 # Create new skill in framework
-mkdir /opt/data/docs_flow_framework/.claude/skills/new-skill
-vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
+mkdir /opt/data/ucx_framework/.claude/skills/new-skill
+vim /opt/data/ucx_framework/.claude/skills/new-skill/SKILL.md
 
 # Automatically available to all projects via symlink
 ```
@@ -930,7 +930,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 
 # 1. Copy from project to framework
 cp -r ${PROJECT_PATH}/.claude/custom_skills/useful-skill \
-      /opt/data/docs_flow_framework/.claude/skills/
+      /opt/data/ucx_framework/.claude/skills/
 
 # 2. Remove from project custom
 rm -rf ${PROJECT_PATH}/.claude/custom_skills/useful-skill
@@ -947,7 +947,7 @@ rm -rf ${PROJECT_PATH}/.claude/custom_skills/useful-skill
 ```bash
 # Check symlinks are valid
 ls -la ${PROJECT_PATH}/.claude/
-# Should show: skills -> /opt/data/docs_flow_framework/.claude/skills
+# Should show: skills -> /opt/data/ucx_framework/.claude/skills
 
 # Test skill discovery
 cd ${PROJECT_PATH}
@@ -969,13 +969,13 @@ ls -la ${PROJECT_PATH}/.templates/governance/
 **Issue: Symlink broken**
 ```bash
 # Check target exists
-ls -la /opt/data/docs_flow_framework/.claude/skills/
+ls -la /opt/data/ucx_framework/.claude/skills/
 # If missing, framework not properly set up
 
 # Recreate symlink
 cd /opt/data/project_name/.claude
 rm skills
-ln -s /opt/data/docs_flow_framework/.claude/skills skills
+ln -s /opt/data/ucx_framework/.claude/skills skills
 ```
 
 **Issue: Custom skill not discovered**
@@ -1014,7 +1014,7 @@ cd /opt/data/project_name/.claude
 mv skills skills.backup_20251113
 
 # 2. Identify project-specific skills
-diff -r skills.backup_20251113 /opt/data/docs_flow_framework/.claude/skills
+diff -r skills.backup_20251113 /opt/data/ucx_framework/.claude/skills
 # Any differences = project-specific
 
 # 3. Extract project-specific skills
@@ -1022,7 +1022,7 @@ mkdir custom_skills
 mv skills.backup_20251113/project_specific_skill custom_skills/
 
 # 4. Create symlink to shared
-ln -s /opt/data/docs_flow_framework/.claude/skills skills
+ln -s /opt/data/ucx_framework/.claude/skills skills
 
 # 5. Test
 # Verify both shared and custom skills are accessible
@@ -1088,7 +1088,7 @@ rm -rf skills.backup_20251113
 mkdir -p /opt/data/new_project
 
 # 2. Setup hybrid resources (symlinks to framework)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
 # 3. Create SDD v3 project structure (docs, work_plans, src, tests)
 cd /opt/data/new_project
@@ -1099,7 +1099,7 @@ mkdir -p work_plans
 mkdir -p src tests
 
 # 4. Result: Complete project setup with v3 framework access
-# Access v3 templates: ai_dev_flow_v3/
+# Access v3 templates: ucx_flow_v3/
 ```
 
 ### Use Case 1b: Greenfield Project (SDD governance)
@@ -1111,7 +1111,7 @@ mkdir -p src tests
 mkdir -p /opt/data/new_project
 
 # 2. Setup hybrid resources (symlinks to BOTH frameworks)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
 # 3. Copy SDD governance structure
 cd /opt/data/new_project
@@ -1134,7 +1134,7 @@ cd /opt/data/existing_project/.claude
 cp -r skills skills.backup
 
 # 2. Run setup (handles migration)
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/existing_project
+/opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/existing_project
 
 # 3. Extract custom skills
 # [Manual step: identify and move project-specific skills]
@@ -1146,8 +1146,8 @@ cp -r skills skills.backup
 
 ```bash
 # 1. Create in framework (not project)
-mkdir /opt/data/docs_flow_framework/.claude/skills/new-feature
-vim /opt/data/docs_flow_framework/.claude/skills/new-feature/SKILL.md
+mkdir /opt/data/ucx_framework/.claude/skills/new-feature
+vim /opt/data/ucx_framework/.claude/skills/new-feature/SKILL.md
 
 # 2. Test in any project (immediately available via symlink)
 cd ${PROJECT_PATH}
@@ -1183,7 +1183,7 @@ If symlink approach proves problematic:
 
 ```bash
 # 1. Copy framework skills to project
-cp -r /opt/data/docs_flow_framework/.claude/skills /opt/data/project_name/.claude/skills.new
+cp -r /opt/data/ucx_framework/.claude/skills /opt/data/project_name/.claude/skills.new
 
 # 2. Remove symlink
 rm /opt/data/project_name/.claude/skills
@@ -1203,10 +1203,10 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 
 - [AI Dev Flow Framework README](./README.md) - Framework overview
 
-**SDD v3 Framework (ai_dev_flow_v3 — current, recommended)**:
-- [SDD v3 README](./ai_dev_flow_v3/README.md) - 8-layer workflow with C4 mapping
-- [Layer Registry](./ai_dev_flow_v3/LAYER_REGISTRY.yaml) - Authoritative layer definitions
-- [CHG Governance Overlay](./ai_dev_flow_v3/CHG/README.md) - 5-gate change management
+**SDD v3 Framework (ucx_flow_v3 — current, recommended)**:
+- [SDD v3 README](./ucx_flow_v3/README.md) - 8-layer workflow with C4 mapping
+- [Layer Registry](./ucx_flow_v3/LAYER_REGISTRY.yaml) - Authoritative layer definitions
+- [CHG Governance Overlay](./ucx_flow_v3/CHG/README.md) - 5-gate change management
 
 **SDD v2 Framework (ai_dev_ssd_flow — legacy)**:
 - [SDD Methodology Guide](./ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
@@ -1233,7 +1233,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - **SDD v3 Migration**: Updated all references for the 8-layer v3 framework
   - SDD Depth Selection now shows v3 8-layer pipeline (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
   - v2 14-layer variant preserved in `ai_dev_ssd_flow/` for legacy projects
-  - Added `ai_dev_flow_v3/` to directory tables and architecture diagrams
+  - Added `ucx_flow_v3/` to directory tables and architecture diagrams
   - Updated test structure alignment to TDD (L7) instead of TSPEC (L10)
   - Updated Use Case 1 for v3 project structure
   - Updated manual mkdir commands to v3 8-directory layout

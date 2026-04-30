@@ -1,4 +1,4 @@
-# docs_flow_framework Roadmap
+# ucx_framework Roadmap
 
 | Field | Value |
 | --- | --- |
@@ -21,7 +21,7 @@ v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 �
   │           │             │            │           └─► SYS unification (6 layers, C4 Component)
   │           │             │            └─► ADR unification (decision bridge)
   │           │             └─► PRD + EARS + BDD unification + C4 mapping
-  │           └─► BRD unification (v0.2.0) + mcp_sdd naming (v0.2.1)
+  │           └─► BRD unification (v0.2.0) + mcp_ucx naming (v0.2.1)
   └─► MCP transport layer: 19 tools, CLI executor registry, pipeline orchestration
 ```
 
@@ -60,11 +60,11 @@ Governance documentation and templates migrated to v3.2 baseline in `governance/
 
 ### v0.20.0 — SDD v3.2 Streamlined Framework (2026-04-29)
 
-Collapsed from 14 layers to 8 layers with C4 architecture model mapping, TDD and IPLAN artifacts, and 5-gate CHG governance overlay. 39 new files in `ai_dev_flow_v3/`. See changelog/CHANGELOG_v0.20.0.md.
+Collapsed from 14 layers to 8 layers with C4 architecture model mapping, TDD and IPLAN artifacts, and 5-gate CHG governance overlay. 39 new files in `ucx_flow_v3/`. See changelog/CHANGELOG_v0.20.0.md.
 
 ### v0.19.0 — Multi-Persona Mapping Support (2026-04-02)
 
-mcp_sdd v1.12.0: multi-persona mapping support via persona_mappings.yaml. See changelog/CHANGELOG_v0.19.0.md.
+mcp_ucx v1.12.0: multi-persona mapping support via persona_mappings.yaml. See changelog/CHANGELOG_v0.19.0.md.
 
 ---
 
@@ -75,7 +75,7 @@ mcp_sdd v1.12.0: multi-persona mapping support via persona_mappings.yaml. See ch
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-04-02 |
-| Scope | mcp_sdd v1.11.0: unified report naming, sub-framework registry, legacy cleanup |
+| Scope | mcp_ucx v1.11.0: unified report naming, sub-framework registry, legacy cleanup |
 
 Delivered scope:
 
@@ -86,8 +86,8 @@ Delivered scope:
 
 References:
 
-- mcp_sdd/docs/plans/PLAN-021_sdd_reporting_naming_standard.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.11.0.md
+- mcp_ucx/docs/plans/PLAN-021_sdd_reporting_naming_standard.md
+- mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.11.0.md
 
 ---
 
@@ -98,7 +98,7 @@ References:
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-04-02 |
-| Scope | mcp_sdd v1.10.0: relocate UCX from docs/UCX to project root UCX |
+| Scope | mcp_ucx v1.10.0: relocate UCX from docs/UCX to project root UCX |
 
 Delivered scope:
 
@@ -108,8 +108,8 @@ Delivered scope:
 
 References:
 
-- mcp_sdd/docs/plans/PLAN-020_ucx_root_relocation.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.10.0.md
+- mcp_ucx/docs/plans/PLAN-020_ucx_root_relocation.md
+- mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.10.0.md
 
 ---
 
@@ -120,7 +120,7 @@ References:
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-04-02 |
-| Scope | mcp_sdd v1.9.0: review report parsing for structured remediation findings |
+| Scope | mcp_ucx v1.9.0: review report parsing for structured remediation findings |
 
 Delivered scope:
 
@@ -131,8 +131,8 @@ Delivered scope:
 
 References:
 
-- mcp_sdd/docs/plans/PLAN-019_remediation_build_enhancement.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.9.0.md
+- mcp_ucx/docs/plans/PLAN-019_remediation_build_enhancement.md
+- mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.9.0.md
 
 ---
 
@@ -143,7 +143,7 @@ References:
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-04-02 |
-| Scope | mcp_sdd v1.8.0: YAML document support across all tools, categorized scoring, API normalization |
+| Scope | mcp_ucx v1.8.0: YAML document support across all tools, categorized scoring, API normalization |
 
 Delivered scope:
 
@@ -156,8 +156,8 @@ Delivered scope:
 
 References:
 
-- mcp_sdd/docs/plans/PLAN-018_yaml_parity_and_api_consistency.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.8.0.md
+- mcp_ucx/docs/plans/PLAN-018_yaml_parity_and_api_consistency.md
+- mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.8.0.md
 
 ---
 
@@ -167,7 +167,7 @@ References:
 | --- | --- |
 | Status | Planned |
 | Type | Minor |
-| Scope | mcp_sdd v1.7.0: two-tier cross-section validation, YAML document support, BRD template enhancements |
+| Scope | mcp_ucx v1.7.0: two-tier cross-section validation, YAML document support, BRD template enhancements |
 
 Planned scope:
 
@@ -181,8 +181,8 @@ Planned scope:
 
 References:
 
-- mcp_sdd/docs/plans/PLAN-016_cross_section_validation.md
-- mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.7.0.md
+- mcp_ucx/docs/plans/PLAN-016_cross_section_validation.md
+- mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.7.0.md
 
 ---
 
@@ -214,7 +214,7 @@ Framework cleanup + sdd_validate_links tool (20th MCP tool). Archived deprecated
 
 ### v0.12.0 (2026-03-30)
 
-TASKS template unification — FINAL LAYER. All 11 SDD layers unified. Session handoff protocol for stateless MCP calls. Full 10-layer upstream chain verification. 11 unified YAML templates in mcp_sdd. See changelog/CHANGELOG_v0.12.0.md.
+TASKS template unification — FINAL LAYER. All 11 SDD layers unified. Session handoff protocol for stateless MCP calls. Full 10-layer upstream chain verification. 11 unified YAML templates in mcp_ucx. See changelog/CHANGELOG_v0.12.0.md.
 
 ### v0.11.0 (2026-03-30)
 
@@ -226,11 +226,11 @@ SPEC template unification. C4 Code level complete — all four C4 levels unified
 
 ### v0.9.0 (2026-03-29)
 
-CTR template unification. Dual-file contracts (.md + .yaml OpenAPI). First CTR template added to mcp_sdd. ADR-CTR policy refs updated. See changelog/CHANGELOG_v0.9.0.md.
+CTR template unification. Dual-file contracts (.md + .yaml OpenAPI). First CTR template added to mcp_ucx. ADR-CTR policy refs updated. See changelog/CHANGELOG_v0.9.0.md.
 
 ### v0.8.0 (2026-03-29)
 
-REQ template unification. All 7 mcp_sdd templates now unified YAML — no `*-MVP-TEMPLATE.*` files remain. Atomic single-testable-concept requirement principle. See changelog/CHANGELOG_v0.8.0.md.
+REQ template unification. All 7 mcp_ucx templates now unified YAML — no `*-MVP-TEMPLATE.*` files remain. Atomic single-testable-concept requirement principle. See changelog/CHANGELOG_v0.8.0.md.
 
 ### v0.7.0 (2026-03-29)
 
@@ -254,7 +254,7 @@ PRD template unification + C4 model mapping. Consolidated 6 PRD files into singl
 
 ### v0.2.1 (2026-03-29)
 
-MCP SDD template naming migration. Updated 5 source files (10 occurrences) to support unified `{ARTIFACT}-TEMPLATE.yaml` naming with backward-compatible fallback to legacy `{ARTIFACT}-MVP-TEMPLATE.*`. Added resolution helper, 4 migration tests. See changelog/CHANGELOG_v0.2.1.md for details.
+MCP UCX template naming migration. Updated 5 source files (10 occurrences) to support unified `{ARTIFACT}-TEMPLATE.yaml` naming with backward-compatible fallback to legacy `{ARTIFACT}-MVP-TEMPLATE.*`. Added resolution helper, 4 migration tests. See changelog/CHANGELOG_v0.2.1.md for details.
 
 ### v0.2.0 (2026-03-28)
 
@@ -268,6 +268,6 @@ MCP protocol transport layer. See changelog/CHANGELOG_v0.1.0.md for details.
 
 ## Constraints
 
-- This roadmap covers the docs_flow_framework repository only
+- This roadmap covers the ucx_framework repository only
 - Project-specific roadmaps (ibmcp, b_local, trading) live in their own repos
 - Release sequencing can change based on implementation outcomes

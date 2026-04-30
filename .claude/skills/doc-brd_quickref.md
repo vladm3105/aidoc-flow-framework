@@ -14,7 +14,7 @@
 ## Location Policy
 
 - This framework BRD skill family is intended for many downstream projects.
-- Canonical skill/docs home: `docs_flow_framework/.claude/skills/`
+- Canonical skill/docs home: `ucx_framework/.claude/skills/`
 - Project repositories consume `doc-brd*` skills via symlinks only.
 
 ## When to Use Which Skill

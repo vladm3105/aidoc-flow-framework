@@ -1,6 +1,6 @@
 # Governance Documentation
 
-Governance rules, templates, and workflows for the Docs Flow Framework.
+Governance rules, templates, and workflows for the UCX Framework.
 
 ## SDD v3.2 Baseline
 
@@ -9,9 +9,9 @@ Canonical delivery chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`
 
 Canonical references:
-- `ai_dev_flow_v3/LAYER_REGISTRY.yaml`
-- `ai_dev_flow_v3/DOC_GOVERNANCE_CORE.md`
-- `ai_dev_flow_v3/CHG/`
+- `ucx_flow_v3/LAYER_REGISTRY.yaml`
+- `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
+- `ucx_flow_v3/CHG/`
 
 ## Active vs Deprecated Policy
 
@@ -43,7 +43,7 @@ Deprecated automation:
 
 ## SDD Integration
 
-Use `ai_dev_flow_v3/` for active templates and guidance.
+Use `ucx_flow_v3/` for active templates and guidance.
 Legacy framework roots are deprecated and not part of active governance.
 
 ## Issue Creation Pattern

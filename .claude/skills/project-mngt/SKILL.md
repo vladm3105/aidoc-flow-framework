@@ -43,7 +43,7 @@ Works with:
 
 ### ID Naming Standards
 
-**Reference**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
+**Reference**: `/opt/data/ucx_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Common ID Formats**:
 - **Planning Documents**: `PLAN-NNN` (e.g., PLAN-01, PLAN-02)

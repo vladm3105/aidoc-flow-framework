@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "sdd-lifecycle": {
-      "command": "/opt/data/docs_flow_framework/.venv/bin/python",
+      "command": "/opt/data/ucx_framework/.venv/bin/python",
       "args": ["-m", "mcp_server.server"],
-      "cwd": "/opt/data/docs_flow_framework/mcp_sdd/src"
+      "cwd": "/opt/data/ucx_framework/mcp_ucx/src"
     }
   }
 }

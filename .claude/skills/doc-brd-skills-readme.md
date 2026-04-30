@@ -7,7 +7,7 @@ This guide defines the minimum command flow for BRD quality operations.
 ## Location Policy
 
 - This framework BRD skill set is designed for reuse across multiple projects.
-- Canonical location for `doc-brd*` skills and docs: `docs_flow_framework/.claude/skills/`
+- Canonical location for `doc-brd*` skills and docs: `ucx_framework/.claude/skills/`
 - Downstream projects should reference these via symlinks only.
 - Keep framework as single source of truth for skill content.
 

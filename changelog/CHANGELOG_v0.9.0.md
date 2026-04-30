@@ -12,7 +12,7 @@ Unified the CTR (Layer 8) artifact into a single YAML template. CTR instances re
 - **New**: `CTR-TEMPLATE.yaml` (350 lines, 11 sections + glossary)
 - **Replaced**: 6 files (3,049 lines). Archived to `CTR_v1_archive/`
 - **Sections**: 14 + 2 appendices → 11 (refs merged into traceability, appendices removed)
-- **mcp_sdd**: CTR template ADDED (was missing — first CTR template in mcp_sdd)
+- **mcp_ucx**: CTR template ADDED (was missing — first CTR template in mcp_ucx)
 - **Cross-ref**: Updated ADR-CTR_SEPARATE_FILES_POLICY.md stale template refs
 - **Key features**: Dual-file instances, SemVer versioning, circuit breaker, OpenAPI 3.x
 - **Tests**: 173 passed, 0 regressions

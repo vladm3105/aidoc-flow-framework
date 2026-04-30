@@ -5,11 +5,11 @@
 
 ## Summary
 
-Updated the mcp_sdd server to support the unified template naming convention (`{ARTIFACT}-TEMPLATE.yaml`) introduced in v0.2.0. Adds backward-compatible fallback to legacy naming (`{ARTIFACT}-MVP-TEMPLATE.*`). BRD is the first layer migrated; other layers continue using legacy naming until individually refactored.
+Updated the mcp_ucx server to support the unified template naming convention (`{ARTIFACT}-TEMPLATE.yaml`) introduced in v0.2.0. Adds backward-compatible fallback to legacy naming (`{ARTIFACT}-MVP-TEMPLATE.*`). BRD is the first layer migrated; other layers continue using legacy naming until individually refactored.
 
 ## Changes
 
-### New: Resolution Helper (`mcp_sdd/src/mcp_server/utils/template_naming.py`)
+### New: Resolution Helper (`mcp_ucx/src/mcp_server/utils/template_naming.py`)
 
 - `resolve_template_path()`: Tries unified name first, falls back to MVP name for file path resolution
 - `load_tuned_template()`: Tries `.yaml` → `.md` → `-MVP-.md` for template content loading
@@ -27,7 +27,7 @@ Updated the mcp_sdd server to support the unified template naming convention (`{
 
 ### New: Template Copy
 
-- Copied `BRD-TEMPLATE.yaml` to `mcp_sdd/templates/` alongside existing `BRD-MVP-TEMPLATE.md`
+- Copied `BRD-TEMPLATE.yaml` to `mcp_ucx/templates/` alongside existing `BRD-MVP-TEMPLATE.md`
 
 ### Modified: Test Files
 
@@ -40,7 +40,7 @@ Updated the mcp_sdd server to support the unified template naming convention (`{
 
 ### Plan
 
-- `work_plans/PLAN-002_mcp_sdd_template_naming_migration.md`: Implementation plan
+- `work_plans/PLAN-002_mcp_ucx_template_naming_migration.md`: Implementation plan
 - `work_plans/PLAN-002_checklist.md`: Execution checklist
 
 ## Backward Compatibility

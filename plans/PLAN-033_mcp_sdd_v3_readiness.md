@@ -1,4 +1,4 @@
-# PLAN-033: mcp_sdd V3 Readiness
+# PLAN-033: mcp_ucx V3 Readiness
 
 **Date**: 2026-04-30  
 **Status**: Draft (Updated with Gap Analysis)  
@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-Update `mcp_sdd` to support `ai_dev_flow_v3` (v3.2) layer architecture. V3 introduces TDD (L7) and IPLAN (L8) while cutting SYS, REQ, CTR, TSPEC, and TASKS layers. Current mcp_sdd (v1.21.0) lacks templates, prompts, validation rules, and configuration updates for V3 compatibility.
+Update `mcp_ucx` to support `ucx_flow_v3` (v3.2) layer architecture. V3 introduces TDD (L7) and IPLAN (L8) while cutting SYS, REQ, CTR, TSPEC, and TASKS layers. Current mcp_ucx (v1.21.0) lacks templates, prompts, validation rules, and configuration updates for V3 compatibility.
 
 **Gap Analysis Results**: 12 gaps identified (3 Critical, 4 High, 5 Medium). All critical and high priority gaps are now addressed in this updated plan.
 
@@ -25,10 +25,10 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 ### Tasks
 
 1. **Copy V3 Templates**
-   - Copy `ai_dev_flow_v3/07_TDD/TDD-TEMPLATE.yaml` → `mcp_sdd/templates/TDD-TEMPLATE.yaml`
-   - Copy `ai_dev_flow_v3/08_IPLAN/IPLAN-TEMPLATE.yaml` → `mcp_sdd/templates/IPLAN-TEMPLATE.yaml`
+   - Copy `ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml` → `mcp_ucx/templates/TDD-TEMPLATE.yaml`
+   - Copy `ucx_flow_v3/08_IPLAN/IPLAN-TEMPLATE.yaml` → `mcp_ucx/templates/IPLAN-TEMPLATE.yaml`
 
-2. **Create Prompt Templates** (6 files in `mcp_sdd/prompts/templates/`)
+2. **Create Prompt Templates** (6 files in `mcp_ucx/prompts/templates/`)
    - `creation/UCC_PROMPT_TDD.md` - TDD creation prompt based on TDD-TEMPLATE.yaml
    - `creation/UCC_PROMPT_IPLAN.md` - IPLAN creation prompt based on IPLAN-TEMPLATE.yaml
    - `review/UCR_PROMPT_TDD.md` - TDD review prompt with TDD-specific criteria
@@ -37,7 +37,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
    - `remediation/UCRem_PROMPT_IPLAN.md` - IPLAN remediation prompt
 
 3. **Archive Cut Layer Templates**
-   - Move to `mcp_sdd/templates/archive/`:
+   - Move to `mcp_ucx/templates/archive/`:
      - SYS-TEMPLATE.yaml
      - REQ-TEMPLATE.yaml
      - CTR-TEMPLATE.yaml
@@ -48,7 +48,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 ### Tasks
 
-1. **Update `cross_section.py`** (`mcp_sdd/src/mcp_server/validation/cross_section.py`)
+1. **Update `cross_section.py`** (`mcp_ucx/src/mcp_server/validation/cross_section.py`)
    - Update `READINESS_SCORE_FIELDS`:
      ```python
      READINESS_SCORE_FIELDS = {
@@ -74,7 +74,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
      ```
 
 2. **Create Validation Rules**
-   - `mcp_sdd/src/mcp_server/validation/tdd_rules.py`:
+   - `mcp_ucx/src/mcp_server/validation/tdd_rules.py`:
      - `check_tdd_readiness_score()`: Verify TDD-READY score >= 90
      - `check_test_pyramid()`: Validate 70/20/10 distribution (unit/integration/e2e)
      - `check_bdd_scenario_coverage()`: All BDD scenarios mapped in `test_mapping.scenarios[].tests[]`
@@ -82,7 +82,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
      - `check_tdd_execution_order()`: Verify Red-Green-Refactor sequence declared
      - `check_spec_traceability()`: Validate `spec_ref` in test cases (Section 4)
    
-   - `mcp_sdd/src/mcp_server/validation/iplan_rules.py`:
+   - `mcp_ucx/src/mcp_server/validation/iplan_rules.py`:
      - `check_iplan_readiness_score()`: Verify IPLAN-READY score >= 90
      - `check_file_manifest()`: Validate all files listed with path, order, status, session fields
      - `check_execution_commands()`: Verify setup, implementation, validation commands present
@@ -90,9 +90,9 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
      - `check_tdd_traceability()`: Verify `tdd_ref` and `spec_ref` links present
      - `check_implementation_contracts()`: Optional - validate if present (Section 4)
 
-3. **Update Validation Runner** (`mcp_sdd/src/mcp_server/validation/runner.py`)
+3. **Update Validation Runner** (`mcp_ucx/src/mcp_server/validation/runner.py`)
    - Add dispatch logic for "tdd" and "iplan" doc_types
-   - Fix `_resolve_canonical_template_root()` (lines 152-158): Change `ai_dev_ssd_flow` to `ai_dev_flow_v3`
+   - Fix `_resolve_canonical_template_root()` (lines 152-158): Change `ai_dev_ssd_flow` to `ucx_flow_v3`
    - Add TDD/IPLAN parity checks to `_run_doc_type_parity_checks()` (lines 277-315)
    - Register new rule modules in `run_project_validation_build()`
 
@@ -100,27 +100,27 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 ### Tasks
 
-1. **Update `profile_contracts.py`** (`mcp_sdd/src/mcp_server/creation/profile_contracts.py`)
-   - Change `registry_source` from `"ai_dev_ssd_flow/LAYER_REGISTRY.yaml"` to `"ai_dev_flow_v3/LAYER_REGISTRY.yaml"`
+1. **Update `profile_contracts.py`** (`mcp_ucx/src/mcp_server/creation/profile_contracts.py`)
+   - Change `registry_source` from `"ai_dev_ssd_flow/LAYER_REGISTRY.yaml"` to `"ucx_flow_v3/LAYER_REGISTRY.yaml"`
 
-2. **Update `persona_mappings.yaml`** (`mcp_sdd/skills/persona_mappings.yaml`)
+2. **Update `persona_mappings.yaml`** (`mcp_ucx/skills/persona_mappings.yaml`)
    - Add TDD phase mappings (creation/review/remediation personas)
    - Add IPLAN phase mappings  
    - Remove references to cut layers (sys, req, ctr, tspec, tasks) or mark as deprecated
 
-3. **Update Layer Aliases** (`mcp_sdd/skills/layer_aliases/`)
+3. **Update Layer Aliases** (`mcp_ucx/skills/layer_aliases/`)
    - Add `tdd` and `iplan` aliases if needed
    - Remove or deprecate cut layer aliases
 
-4. **Update `sdd_next_action` for YAML Support** (`mcp_sdd/src/mcp_server/tool_registry.py`)
+4. **Update `sdd_next_action` for YAML Support** (`mcp_ucx/src/mcp_server/tool_registry.py`)
    - Fix `_inspect_document_folder()` (lines 529-593): Add `.yaml` to file scanning alongside `.md`
    - Ensure TDD/IPLAN YAML documents are detected for next-action recommendations
 
-5. **Update `sdd_prescreen` for YAML Support** (`mcp_sdd/src/mcp_server/prescreening/runner.py`)
+5. **Update `sdd_prescreen` for YAML Support** (`mcp_ucx/src/mcp_server/prescreening/runner.py`)
    - Fix `run_prescreen()` (lines 23-26): Add `.yaml` files to document collection
    - Enable TDD/IPLAN documents to be prescreened for remediation priority
 
-6. **Update `sdd_run_lifecycle` Stages Enum** (`mcp_sdd/src/mcp_server/tool_registry.py`)
+6. **Update `sdd_run_lifecycle` Stages Enum** (`mcp_ucx/src/mcp_server/tool_registry.py`)
    - Fix hardcoded enum (line 322): Change from `"enum": ["validate", "validate_fix", "review", "remediate", "remediate_fix"]` 
    - Make stages parameter extensible to support V3-specific stages (e.g., "prescreen", "score_validate")
 
@@ -129,10 +129,10 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 ### Tasks
 
 1. **Verify doc_type Handling**
-   - Check `mcp_sdd/src/mcp_server/tool_registry.py` accepts "tdd" and "iplan"
+   - Check `mcp_ucx/src/mcp_server/tool_registry.py` accepts "tdd" and "iplan"
    - Verify `sdd_validate`, `sdd_create`, `sdd_review`, `sdd_remediate` handle new types
 
-2. **Update `sdd_score_validate` Threshold Awareness** (`mcp_sdd/src/mcp_server/scoring/runner.py`)
+2. **Update `sdd_score_validate` Threshold Awareness** (`mcp_ucx/src/mcp_server/scoring/runner.py`)
    - Add special handling for TDD-READY >= 90 and IPLAN-READY >= 90 thresholds
    - Implement readiness gate validation in `run_score_validate_build()` (lines 51-81)
    - Return explicit pass/fail for readiness gates
@@ -170,7 +170,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 ### Tasks
 
-1. **Update Specs** (`mcp_sdd/docs/specs/`)
+1. **Update Specs** (`mcp_ucx/docs/specs/`)
    - Update SPEC-003 (Validation) to reference TDD/IPLAN rules
    - Update SPEC-006 (Prompt Templates) to include new prompts
 
@@ -178,7 +178,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
    - Update layer map diagram
    - Add TDD and IPLAN to supported document types
 
-3. **Update Roadmap** (`mcp_sdd/docs/ROADMAP.md`)
+3. **Update Roadmap** (`mcp_ucx/docs/ROADMAP.md`)
    - Add V3 migration milestone
    - Mark cut layers as deprecated
 
@@ -186,16 +186,16 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 ### Tasks
 
-1. **CHG Governance Overlay** (`mcp_sdd/src/mcp_server/validation/chg_rules.py`)
+1. **CHG Governance Overlay** (`mcp_ucx/src/mcp_server/validation/chg_rules.py`)
    - Implement 5-gate system validation:
      - GATE-01: Business/Product Gate (L1-L2)
      - GATE-03: Requirements & Architecture Gate (L3-L5)
      - GATE-06: Design & Test Gate (L6-L7)
      - GATE-CODE: Implementation Gate (Code)
    - Support change levels: C1 (trivial), C2 (minor), C3 (major)
-   - Reference: `/opt/data/docs_flow_framework/ai_dev_flow_v3/CHG/`
+   - Reference: `/opt/data/ucx_framework/ucx_flow_v3/CHG/`
 
-2. **Optional CHG Tool** (`mcp_sdd/src/mcp_server/tool_registry.py`)
+2. **Optional CHG Tool** (`mcp_ucx/src/mcp_server/tool_registry.py`)
    - Consider adding `sdd_validate_chg` tool for CHG gate validation
    - Integrate with `sdd_validate` as optional check
 
@@ -203,39 +203,39 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 | File | Change |
 |------|--------|
-| `mcp_sdd/src/mcp_server/validation/cross_section.py` | Update READINESS_SCORE_FIELDS, _DIAGRAM_LAYERS, add MAX_CUMULATIVE_TAGS |
-| `mcp_sdd/src/mcp_server/validation/runner.py` | Add tdd/iplan dispatch, fix template root path (G-01), add parity checks (G-12) |
-| `mcp_sdd/src/mcp_server/creation/profile_contracts.py` | Update registry_source path to v3 |
-| `mcp_sdd/src/mcp_server/tool_registry.py` | Verify doc_type handling, fix sdd_next_action YAML (G-02), fix sdd_run_lifecycle enum (G-04) |
-| `mcp_sdd/src/mcp_server/prescreening/runner.py` | Add YAML support for TDD/IPLAN (G-05) |
-| `mcp_sdd/src/mcp_server/scoring/runner.py` | Add threshold awareness for TDD/IPLAN >=90 (G-06) |
-| `mcp_sdd/skills/persona_mappings.yaml` | Add tdd/iplan mappings, remove/deprecate cut layers |
-| `mcp_sdd/skills/layer_aliases/` | Add tdd/iplan aliases, remove cut layer aliases |
-| `mcp_sdd/docs/specs/SPEC-003.md` | Reference new validation rules |
-| `mcp_sdd/docs/ROADMAP.md` | Add V3 migration milestone |
+| `mcp_ucx/src/mcp_server/validation/cross_section.py` | Update READINESS_SCORE_FIELDS, _DIAGRAM_LAYERS, add MAX_CUMULATIVE_TAGS |
+| `mcp_ucx/src/mcp_server/validation/runner.py` | Add tdd/iplan dispatch, fix template root path (G-01), add parity checks (G-12) |
+| `mcp_ucx/src/mcp_server/creation/profile_contracts.py` | Update registry_source path to v3 |
+| `mcp_ucx/src/mcp_server/tool_registry.py` | Verify doc_type handling, fix sdd_next_action YAML (G-02), fix sdd_run_lifecycle enum (G-04) |
+| `mcp_ucx/src/mcp_server/prescreening/runner.py` | Add YAML support for TDD/IPLAN (G-05) |
+| `mcp_ucx/src/mcp_server/scoring/runner.py` | Add threshold awareness for TDD/IPLAN >=90 (G-06) |
+| `mcp_ucx/skills/persona_mappings.yaml` | Add tdd/iplan mappings, remove/deprecate cut layers |
+| `mcp_ucx/skills/layer_aliases/` | Add tdd/iplan aliases, remove cut layer aliases |
+| `mcp_ucx/docs/specs/SPEC-003.md` | Reference new validation rules |
+| `mcp_ucx/docs/ROADMAP.md` | Add V3 migration milestone |
 
 ## Files to Create
 
 | File | Purpose |
 |------|---------|
-| `mcp_sdd/templates/TDD-TEMPLATE.yaml` | TDD document template (from ai_dev_flow_v3/07_TDD/) |
-| `mcp_sdd/templates/IPLAN-TEMPLATE.yaml` | IPLAN document template (from ai_dev_flow_v3/08_IPLAN/) |
-| `mcp_sdd/prompts/templates/creation/UCC_PROMPT_TDD.md` | TDD creation prompt |
-| `mcp_sdd/prompts/templates/creation/UCC_PROMPT_IPLAN.md` | IPLAN creation prompt |
-| `mcp_sdd/prompts/templates/review/UCR_PROMPT_TDD.md` | TDD review prompt |
-| `mcp_sdd/prompts/templates/review/UCR_PROMPT_IPLAN.md` | IPLAN review prompt |
-| `mcp_sdd/prompts/templates/remediation/UCRem_PROMPT_TDD.md` | TDD remediation prompt |
-| `mcp_sdd/prompts/templates/remediation/UCRem_PROMPT_IPLAN.md` | IPLAN remediation prompt |
-| `mcp_sdd/src/mcp_server/validation/tdd_rules.py` | TDD validation rules (G-07, G-09) |
-| `mcp_sdd/src/mcp_server/validation/iplan_rules.py` | IPLAN validation rules (G-08, G-10, G-11) |
-| `mcp_sdd/src/mcp_server/validation/chg_rules.py` | CHG governance validation (G-08, optional) |
-| `mcp_sdd/tests/validation/test_tdd_rules.py` | TDD rules unit tests |
-| `mcp_sdd/tests/validation/test_iplan_rules.py` | IPLAN rules unit tests |
-| `mcp_sdd/tests/validation/test_chg_rules.py` | CHG rules unit tests (optional) |
+| `mcp_ucx/templates/TDD-TEMPLATE.yaml` | TDD document template (from ucx_flow_v3/07_TDD/) |
+| `mcp_ucx/templates/IPLAN-TEMPLATE.yaml` | IPLAN document template (from ucx_flow_v3/08_IPLAN/) |
+| `mcp_ucx/prompts/templates/creation/UCC_PROMPT_TDD.md` | TDD creation prompt |
+| `mcp_ucx/prompts/templates/creation/UCC_PROMPT_IPLAN.md` | IPLAN creation prompt |
+| `mcp_ucx/prompts/templates/review/UCR_PROMPT_TDD.md` | TDD review prompt |
+| `mcp_ucx/prompts/templates/review/UCR_PROMPT_IPLAN.md` | IPLAN review prompt |
+| `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_TDD.md` | TDD remediation prompt |
+| `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_IPLAN.md` | IPLAN remediation prompt |
+| `mcp_ucx/src/mcp_server/validation/tdd_rules.py` | TDD validation rules (G-07, G-09) |
+| `mcp_ucx/src/mcp_server/validation/iplan_rules.py` | IPLAN validation rules (G-08, G-10, G-11) |
+| `mcp_ucx/src/mcp_server/validation/chg_rules.py` | CHG governance validation (G-08, optional) |
+| `mcp_ucx/tests/validation/test_tdd_rules.py` | TDD rules unit tests |
+| `mcp_ucx/tests/validation/test_iplan_rules.py` | IPLAN rules unit tests |
+| `mcp_ucx/tests/validation/test_chg_rules.py` | CHG rules unit tests (optional) |
 
 ## Success Criteria
 
-1. TDD and IPLAN templates present in `mcp_sdd/templates/` (G-01 fixed)
+1. TDD and IPLAN templates present in `mcp_ucx/templates/` (G-01 fixed)
 2. All 6 prompt templates created and functional
 3. `sdd_validate` correctly validates TDD and IPLAN documents with new rules
 4. `sdd_create` generates TDD and IPLAN documents
@@ -250,7 +250,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 13. `sdd_score_validate` enforces >=90 thresholds for TDD/IPLAN (G-06 fixed)
 14. Cumulative tags enforcement active (max 8 at IPLAN) (G-07 partially)
 15. TDD/IPLAN parity checks added to runner.py (G-12 fixed)
-16. Validation runner uses `ai_dev_flow_v3/` path (G-01 fixed)
+16. Validation runner uses `ucx_flow_v3/` path (G-01 fixed)
 
 ## Gap Summary Addressed
 
@@ -271,8 +271,8 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 ## Dependencies
 
-- V3 template files must exist at `ai_dev_flow_v3/07_TDD/TDD-TEMPLATE.yaml` and `ai_dev_flow_v3/08_IPLAN/IPLAN-TEMPLATE.yaml`
-- `ai_dev_flow_v3/LAYER_REGISTRY.yaml` must be accessible
+- V3 template files must exist at `ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml` and `ucx_flow_v3/08_IPLAN/IPLAN-TEMPLATE.yaml`
+- `ucx_flow_v3/LAYER_REGISTRY.yaml` must be accessible
 - No external package dependencies required
 
 ## Risks

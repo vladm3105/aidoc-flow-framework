@@ -22,5 +22,5 @@ Maps v3 CHG gate overlay to governance execution phases.
 
 ## References
 
-- `ai_dev_flow_v3/CHG/CHG-TEMPLATE.yaml`
-- `ai_dev_flow_v3/CHG/gates/`
+- `ucx_flow_v3/CHG/CHG-TEMPLATE.yaml`
+- `ucx_flow_v3/CHG/gates/`

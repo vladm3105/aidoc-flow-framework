@@ -21,8 +21,8 @@ Unified the EARS (Layer 3) artifact into a single YAML template, following the s
 | `EARS-MVP-TEMPLATE.yaml` | 292 | Archived |
 | `EARS_MVP_SCHEMA.yaml` | 350 | Archived |
 | `EARS_MVP_CREATION_RULES.md` | 706 | Guidance embedded as `_guidance` fields |
-| `EARS_MVP_VALIDATION_RULES.md` | 690 | Validation via mcp_sdd tools |
-| `EARS_MVP_QUALITY_GATE_VALIDATION.md` | 686 | Quality gates via mcp_sdd tools |
+| `EARS_MVP_VALIDATION_RULES.md` | 690 | Validation via mcp_ucx tools |
+| `EARS_MVP_QUALITY_GATE_VALIDATION.md` | 686 | Quality gates via mcp_ucx tools |
 
 **Archived**: 16+ files + scripts/ + examples/ + backup â†’ `EARS_v1_archive/`
 
@@ -58,10 +58,10 @@ BRD `downstream_expected` entry `"EARS/BDD"` (layer "3/4") split into:
 
 EARS documented as refinement step (not a C4 level) that formalizes the Contextâ†’Container transition between BRD and PRD.
 
-### mcp_sdd Updates
+### mcp_ucx Updates
 
-- Copied `EARS-TEMPLATE.yaml` to `mcp_sdd/templates/`
-- Removed `mcp_sdd/templates/EARS-MVP-TEMPLATE.md`
+- Copied `EARS-TEMPLATE.yaml` to `mcp_ucx/templates/`
+- Removed `mcp_ucx/templates/EARS-MVP-TEMPLATE.md`
 - Updated `UCRem_PROMPT_EARS.md`: element IDs (pattern codes â†’ hash-based), quality checklist
 - No source code changes (PLAN-002 naming migration already in place)
 
@@ -71,7 +71,7 @@ EARS documented as refinement step (not a C4 level) that formalizes the Contextâ
 
 ## Backward Compatibility
 
-- mcp_sdd test suite: 173 passed, 1 pre-existing failure, 0 regressions
+- mcp_ucx test suite: 173 passed, 1 pre-existing failure, 0 regressions
 - EARS parity validation (trigger + actor clause check) unchanged and verified
 
 ## Validation Evidence
@@ -79,4 +79,4 @@ EARS documented as refinement step (not a C4 level) that formalizes the Contextâ
 - YAML syntax: `yaml.safe_load()` passes
 - Template resolution: `resolve_template_path()` finds `EARS-TEMPLATE.yaml`
 - EARS parity tests: 4 passed
-- mcp_sdd full suite: 173 passed, 0 regressions
+- mcp_ucx full suite: 173 passed, 0 regressions

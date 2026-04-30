@@ -17,7 +17,7 @@ Unified the TSPEC (Layer 10) parent aggregator into a single YAML template. TSPE
   - 95% context savings vs 6 separate templates
 - **Parent TSPEC files**: archived to `TSPEC_v1_archive/`
 - **Test strategy**: Test pyramid concepts + coverage requirements embedded in `_guidance`
-- **mcp_sdd**: TSPEC-TEMPLATE.yaml ADDED (10 templates total)
+- **mcp_ucx**: TSPEC-TEMPLATE.yaml ADDED (10 templates total)
 - **Tests**: 173 passed, 0 regressions
 
 ## Ten Layers Unified

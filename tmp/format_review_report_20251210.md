@@ -1,7 +1,7 @@
 # Framework Format Review Report
 
 **Date**: 2025-12-10
-**Scope**: `/opt/data/docs_flow_framework/ai_dev_flow/` and `.claude/skills/`
+**Scope**: `/opt/data/ucx_framework/ai_dev_flow/` and `.claude/skills/`
 **Standard Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 ---

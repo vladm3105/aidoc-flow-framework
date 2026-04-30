@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Comprehensive review of all framework documents in `/opt/data/docs_flow_framework/ai_dev_flow/` after recent format updates. The framework is in **excellent condition** with consistent formatting across all document types.
+Comprehensive review of all framework documents in `/opt/data/ucx_framework/ai_dev_flow/` after recent format updates. The framework is in **excellent condition** with consistent formatting across all document types.
 
 ### Key Findings
 

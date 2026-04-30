@@ -4,7 +4,7 @@ import sys
 import subprocess
 import time
 
-SERVER_SCRIPT = "/opt/data/docs_flow_framework/dev_tools/a2a/server.py"
+SERVER_SCRIPT = "/opt/data/ucx_framework/dev_tools/a2a/server.py"
 BASE_URL = "http://localhost:8002"
 
 async def verify():
@@ -14,7 +14,7 @@ async def verify():
         [sys.executable, SERVER_SCRIPT],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd="/opt/data/docs_flow_framework/dev_tools/a2a" 
+        cwd="/opt/data/ucx_framework/dev_tools/a2a" 
     )
     
     # Wait for startup

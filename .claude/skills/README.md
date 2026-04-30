@@ -5,7 +5,7 @@
 ## Skill Location Policy
 
 - This framework is the shared skill library for multiple projects.
-- Canonical source for all skills and skill docs: `docs_flow_framework/.claude/skills/`.
+- Canonical source for all skills and skill docs: `ucx_framework/.claude/skills/`.
 - Downstream project repositories must consume skills via symlinks only.
 - Do not maintain duplicated skill content in project-local copies.
 
@@ -14,24 +14,24 @@
 Use this standard layout so each project references framework-managed skills without copying files.
 
 ```text
-docs_flow_framework/
+ucx_framework/
   .claude/
     skills/                       # Canonical source
 
 project-a/
   .claude/
-    skills -> ../../docs_flow_framework/.claude/skills
+    skills -> ../../ucx_framework/.claude/skills
 
 project-b/
   .claude/
-    skills -> ../../docs_flow_framework/.claude/skills
+    skills -> ../../ucx_framework/.claude/skills
 ```
 
 Setup pattern (run from each project root):
 
 ```bash
 mkdir -p .claude
-ln -sfn ../../docs_flow_framework/.claude/skills .claude/skills
+ln -sfn ../../ucx_framework/.claude/skills .claude/skills
 ```
 
 Verification:

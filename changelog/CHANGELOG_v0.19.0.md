@@ -6,7 +6,7 @@
 
 UCX sub-framework v1.12.0 — multi-persona mapping support.
 
-## UCX Sub-Framework (mcp_sdd)
+## UCX Sub-Framework (mcp_ucx)
 
 - New `persona_mappings.yaml` configuration for per-doctype, per-phase persona sequences
 - All creation/review tools now load multiple persona files based on mapping config
@@ -14,7 +14,7 @@ UCX sub-framework v1.12.0 — multi-persona mapping support.
 - New `content_strategist` persona for PRD workflows
 - Token budget tracking and warning system for combined persona text
 - YAML schema validation with cross-reference checking
-- See `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for full details
+- See `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for full details
 
 ## Architecture Review Fixes
 
@@ -22,7 +22,7 @@ UCX sub-framework v1.12.0 — multi-persona mapping support.
 - Added mtime-based caching for persona mapping loading (C-1)
 - Removed unused `personas` param from remediation tool schemas (C-2)
 - Corrected error types, resolution hints, and lifecycle stage enum
-- See `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for details
+- See `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.12.0.md` for details
 
 ## Documentation
 

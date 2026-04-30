@@ -5,7 +5,7 @@
 
 ## Summary
 
-mcp_sdd v1.11.0: Unified report naming `{DOC-ID}.{STAGE}.{FORMAT}` across all tools. Sub-framework registry (sdd, gov, kb). Derived copies renamed. 1,089 legacy reports deleted.
+mcp_ucx v1.11.0: Unified report naming `{DOC-ID}.{STAGE}.{FORMAT}` across all tools. Sub-framework registry (sdd, gov, kb). Derived copies renamed. 1,089 legacy reports deleted.
 
 ## Changes
 
@@ -17,5 +17,5 @@ mcp_sdd v1.11.0: Unified report naming `{DOC-ID}.{STAGE}.{FORMAT}` across all to
 
 ## References
 
-- [PLAN-021](mcp_sdd/docs/plans/PLAN-021_sdd_reporting_naming_standard.md)
-- [mcp_sdd CHANGELOG v1.11.0](mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.11.0.md)
+- [PLAN-021](mcp_ucx/docs/plans/PLAN-021_sdd_reporting_naming_standard.md)
+- [mcp_ucx CHANGELOG v1.11.0](mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.11.0.md)

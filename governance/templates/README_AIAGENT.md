@@ -17,11 +17,11 @@ Before making any changes, read these files in order:
 
 When tasks involve retrieval, MCP, or knowledge indexing, also read:
 
-5. **[project_knowledge/README.md](project_knowledge/README.md)** — Project Knowledge Base setup and operations
+5. **[ucx_knowledge/README.md](ucx_knowledge/README.md)** — UCX Knowledge Base setup and operations
 
 Knowledge operation modes:
 - **File-only mode**: use direct file reads/search; no DB/MCP runtime.
-- **Indexed mode**: start `project_knowledge` DB + MCP for RAG/Graph retrieval.
+- **Indexed mode**: start `ucx_knowledge` DB + MCP for RAG/Graph retrieval.
 
 Do **NOT** invent process rules, naming conventions, or workflow patterns. If a rule is missing from governance docs, flag it to the human reviewer. Do not create ad-hoc rules.
 
@@ -233,7 +233,7 @@ After completing a sprint or any significant/breaking change, review and update:
 
 ## 8.1 Document Review
 
-Document review and validation is handled by mcp_sdd tools:
+Document review and validation is handled by mcp_ucx tools:
 
 - **Validation**: `sdd_validate` — structural and schema compliance checks
 - **Link validation**: `sdd_validate_links` — markdown link integrity
@@ -282,10 +282,10 @@ Required frontmatter:
 | Read technical specs | [docs/core/](docs/core/) (8 specs) |
 | See execution corrections | [governance/plans/](governance/plans/) (IPLAN index) |
 | Understand Phase 1 | [GCP-COST-GUARD.md](docs/GCP-COST-GUARD.md) |
-| Run Project Knowledge Base | [project_knowledge/README.md](project_knowledge/README.md) |
-| Configure KB databases | [project_knowledge/docker-compose.db.yml](project_knowledge/docker-compose.db.yml) |
-| Use KB MCP tools | [project_knowledge/mcp/README.md](project_knowledge/mcp/README.md) |
-| Validate documents | mcp_sdd `sdd_validate` and `sdd_validate_links` tools |
+| Run UCX Knowledge Base | [ucx_knowledge/README.md](ucx_knowledge/README.md) |
+| Configure KB databases | [ucx_knowledge/docker-compose.db.yml](ucx_knowledge/docker-compose.db.yml) |
+| Use KB MCP tools | [ucx_knowledge/mcp/README.md](ucx_knowledge/mcp/README.md) |
+| Validate documents | mcp_ucx `sdd_validate` and `sdd_validate_links` tools |
 
 ---
 
@@ -311,7 +311,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 1.9 | {DATE} | SDD v3.2 in `ai_dev_flow_v3/` is the active governance baseline |
+| 1.9 | {DATE} | SDD v3.2 in `ucx_flow_v3/` is the active governance baseline |
 | 1.8 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
 | 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 |
 | 1.6 | {DATE} | Consolidated acceptance criteria sync and PR link into mandatory Post-PR Checklist — all 5 steps must execute immediately after PR creation |

@@ -2,7 +2,7 @@
 
 ## Baseline
 
-Use SDD v3 templates and governance defaults from `ai_dev_flow_v3/`.
+Use SDD v3 templates and governance defaults from `ucx_flow_v3/`.
 
 Canonical chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`

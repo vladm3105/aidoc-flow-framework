@@ -1,1 +1,0 @@
-"""Project Knowledge MCP module."""

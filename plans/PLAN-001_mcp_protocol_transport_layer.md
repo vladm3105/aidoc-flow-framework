@@ -19,26 +19,26 @@ The SDD framework at `mcp/src/mcp_server/` has 15 runner functions exposed via a
 
 ### 1.1 Directory Rename (Pre-Implementation Step)
 
-Rename `mcp/` → `mcp_sdd/` to avoid confusion with the MCP protocol itself and other MCP servers in the project.
+Rename `mcp/` → `mcp_ucx/` to avoid confusion with the MCP protocol itself and other MCP servers in the project.
 
 ```bash
-git mv mcp mcp_sdd
+git mv mcp mcp_ucx
 ```
 
 **Scope of rename**:
-- All source paths: `mcp_sdd/src/mcp_server/` (internal package name `mcp_server` stays unchanged)
-- All test paths: `mcp_sdd/tests/`
-- All doc paths: `mcp_sdd/docs/`
-- Templates and skills: `mcp_sdd/templates/`, `mcp_sdd/skills/`, `mcp_sdd/prompts/`
-- Packaging: `mcp_sdd/pyproject.toml`
-- MCP registration `cwd`: updated to `/opt/data/docs_flow_framework/mcp_sdd/src`
+- All source paths: `mcp_ucx/src/mcp_server/` (internal package name `mcp_server` stays unchanged)
+- All test paths: `mcp_ucx/tests/`
+- All doc paths: `mcp_ucx/docs/`
+- Templates and skills: `mcp_ucx/templates/`, `mcp_ucx/skills/`, `mcp_ucx/prompts/`
+- Packaging: `mcp_ucx/pyproject.toml`
+- MCP registration `cwd`: updated to `/opt/data/ucx_framework/mcp_ucx/src`
 
 **What does NOT change**:
 - Python package name remains `mcp_server` (internal imports unchanged)
 - Tool names remain `sdd_*` prefix
 - Server name remains `sdd-lifecycle`
 
-All paths in sections below use the new `mcp_sdd/` root.
+All paths in sections below use the new `mcp_ucx/` root.
 
 ---
 
@@ -70,7 +70,7 @@ AI Agent (Orchestrator)
 AI Agent (Orchestrator)
   │  MCP Protocol (JSON-RPC / stdio)
   ▼
-MCP Server: sdd-lifecycle (mcp_sdd/src/mcp_server/server.py)
+MCP Server: sdd-lifecycle (mcp_ucx/src/mcp_server/server.py)
   ├── Deterministic tools → execute runner functions directly
   └── LLM-dependent tools → spawn CLI AI Agent (executor) as subprocess
                               └── claude / codex / gemini / opencode / copilot-cli
@@ -80,10 +80,10 @@ MCP Server: sdd-lifecycle (mcp_sdd/src/mcp_server/server.py)
 
 ## 4. Files to Create (9 new files, 0 existing files modified)
 
-### 4.1 `mcp_sdd/src/mcp_server/executor/__init__.py`
+### 4.1 `mcp_ucx/src/mcp_server/executor/__init__.py`
 Empty package init.
 
-### 4.2 `mcp_sdd/src/mcp_server/executor/registry.py` (~120 lines)
+### 4.2 `mcp_ucx/src/mcp_server/executor/registry.py` (~120 lines)
 Open executor registry — ships with built-in executors, accepts new ones at runtime via MCP tool call or config file.
 
 **Design principle**: The `executor` parameter on LLM-dependent tools is a free-form string, not a hardcoded enum. Any registered executor name is valid. New CLI AI agents can be added without code changes.
@@ -206,7 +206,7 @@ async def run_executor(name: str, prompt: str, ...) -> ExecutorResult:
   }
   ```
 
-**Optional config file** (`mcp_sdd/executors.json`): Loaded at server startup. Supports both CLI and API executors:
+**Optional config file** (`mcp_ucx/executors.json`): Loaded at server startup. Supports both CLI and API executors:
 
 ```json
 [
@@ -224,7 +224,7 @@ async def run_executor(name: str, prompt: str, ...) -> ExecutorResult:
 - **Copilot CLI**: Marked experimental — invocation pattern to be confirmed as `gh copilot` agent capabilities evolve
 - **No hardcoded enum**: The `executor` parameter on tools is a free string validated against the registry at call time, not at schema definition time
 
-### 4.3 `mcp_sdd/src/mcp_server/executor/cli_runner.py` (~100 lines)
+### 4.3 `mcp_ucx/src/mcp_server/executor/cli_runner.py` (~100 lines)
 Async subprocess runner for CLI agents.
 
 ```python
@@ -242,14 +242,14 @@ async def run_executor(
 - Returns `ExecutorResult(stdout, stderr, exit_code, executor_name)`
 - Timeout with `asyncio.wait_for`
 
-### 4.4 `mcp_sdd/src/mcp_server/executor/api_runner.py` (~40 lines)
+### 4.4 `mcp_ucx/src/mcp_server/executor/api_runner.py` (~40 lines)
 Stub for API-based LLM execution via LiteLLM. Raises `NotImplementedError` in v0.1.0.
 
 - `run_api_executor(config, prompt, system_prompt?, timeout) -> ExecutorResult`
 - When implemented (v0.2.0): uses `litellm.acompletion()` as universal gateway
 - Supports 100+ providers: OpenAI, Anthropic, Google, Azure, Bedrock, Ollama, local models
 
-### 4.5 `mcp_sdd/src/mcp_server/executor/dispatcher.py` (~30 lines)
+### 4.5 `mcp_ucx/src/mcp_server/executor/dispatcher.py` (~30 lines)
 Routes executor calls by type:
 
 ```python
@@ -261,7 +261,7 @@ async def run_executor(name: str, prompt: str, ...) -> ExecutorResult:
         return await run_api_executor(config, prompt, ...)
 ```
 
-### 4.6 `mcp_sdd/src/mcp_server/tool_registry.py` (~450 lines)
+### 4.6 `mcp_ucx/src/mcp_server/tool_registry.py` (~450 lines)
 All 15 MCP Tool definitions + handler dispatch.
 
 **Deterministic tools (11)** — execute directly, return JSON (always available for granular control):
@@ -351,8 +351,8 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 
 **SourceSection reconstruction**: For tools accepting `sections` (create-build, review), the input schema accepts a JSON array of `{section_id, title, content, included?}` objects, converted to `SourceSection` instances internally.
 
-### 4.7 `mcp_sdd/src/mcp_server/server.py` (~50 lines)
-Thin MCP server entry point. Follows exact pattern from `project_knowledge/mcp/server.py`:
+### 4.7 `mcp_ucx/src/mcp_server/server.py` (~50 lines)
+Thin MCP server entry point. Follows exact pattern from `ucx_knowledge/mcp/server.py`:
 
 ```python
 from mcp.server import Server
@@ -380,7 +380,7 @@ if __name__ == "__main__":
     main_sync()
 ```
 
-### 4.8 `mcp_sdd/pyproject.toml` (~30 lines)
+### 4.8 `mcp_ucx/pyproject.toml` (~30 lines)
 Package definition:
 
 ```toml
@@ -405,7 +405,7 @@ build-backend = "hatchling.build"
 packages = ["src/mcp_server"]
 ```
 
-### 4.9 `mcp_sdd/tests/unit/test_server.py` (~200 lines)
+### 4.9 `mcp_ucx/tests/unit/test_server.py` (~200 lines)
 Tests for the MCP transport layer:
 
 - Tool registry completeness (19 tools: 11 deterministic + 2 orchestration + 6 LLM-dependent)
@@ -426,15 +426,15 @@ Tests for the MCP transport layer:
 
 ## 5. Registration
 
-Add to project `.mcp.json` (or create one at `mcp_sdd/.mcp.json`):
+Add to project `.mcp.json` (or create one at `mcp_ucx/.mcp.json`):
 
 ```json
 {
   "mcpServers": {
     "sdd-lifecycle": {
-      "command": "/opt/data/docs_flow_framework/.venv/bin/python",
+      "command": "/opt/data/ucx_framework/.venv/bin/python",
       "args": ["-m", "mcp_server.server"],
-      "cwd": "/opt/data/docs_flow_framework/mcp_sdd/src"
+      "cwd": "/opt/data/ucx_framework/mcp_ucx/src"
     }
   }
 }
@@ -444,7 +444,7 @@ Add to project `.mcp.json` (or create one at `mcp_sdd/.mcp.json`):
 
 ## 6. Implementation Order
 
-0. **Rename `mcp/` → `mcp_sdd/`** — `git mv mcp mcp_sdd`, verify existing tests pass
+0. **Rename `mcp/` → `mcp_ucx/`** — `git mv mcp mcp_ucx`, verify existing tests pass
 1. **Create `roadmap/ROADMAP.md`** — initial roadmap with v0.1.0 planned
 2. `executor/__init__.py` + `executor/registry.py` — zero dependencies
 3. `executor/runner.py` — depends on registry
@@ -459,11 +459,11 @@ Add to project `.mcp.json` (or create one at `mcp_sdd/.mcp.json`):
 
 ## 7. Verification
 
-1. **Unit tests**: `pytest mcp_sdd/tests/unit/test_server.py -v`
-2. **Existing tests still pass**: `pytest mcp_sdd/tests/ -v` (no existing files modified)
+1. **Unit tests**: `pytest mcp_ucx/tests/unit/test_server.py -v`
+2. **Existing tests still pass**: `pytest mcp_ucx/tests/ -v` (no existing files modified)
 3. **Manual MCP test**: Start server and call a deterministic tool:
    ```bash
-   cd /opt/data/docs_flow_framework/mcp_sdd/src
+   cd /opt/data/ucx_framework/mcp_ucx/src
    echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | python -m mcp_server.server
    ```
 4. **Claude Code integration**: Add to `.mcp.json`, restart Claude Code, verify `sdd_*` tools appear in tool list
@@ -507,11 +507,11 @@ State whether changes are backward compatible.
 
 - **Location**: `roadmap/ROADMAP.md` (single file, updated in place)
 - **When to update**: When planning new releases, completing milestones, or shifting priorities
-- **Scope**: This repo only (`docs_flow_framework`). Project-specific roadmaps live in their own repos.
+- **Scope**: This repo only (`ucx_framework`). Project-specific roadmaps live in their own repos.
 
 **Roadmap format** (follows UCX_v1 convention):
 ```markdown
-# docs_flow_framework Roadmap
+# ucx_framework Roadmap
 
 | Field | Value |
 | --- | --- |
@@ -541,9 +541,9 @@ State whether changes are backward compatible.
 ### 8.4 Scope Boundary Rule
 
 Each repository maintains its own changelog and roadmap. Do not mix:
-- `docs_flow_framework` changelog/roadmap — SDD framework, MCP servers, skills, templates
+- `ucx_framework` changelog/roadmap — SDD framework, MCP servers, skills, templates
 - Project-specific repos (ibmcp, b_local, trading) — their own changelogs in their own repos
-- `mcp_sdd/docs/CHANGELOG/` — internal MCP-SDD subsystem changelog (already exists, continues independently)
+- `mcp_ucx/docs/CHANGELOG/` — internal MCP-SDD subsystem changelog (already exists, continues independently)
 
 ---
 
@@ -551,18 +551,18 @@ Each repository maintains its own changelog and roadmap. Do not mix:
 
 | File | Purpose |
 |------|---------|
-| `mcp_sdd/src/mcp_server/cli/main.py` | Existing CLI — all argument patterns and runner imports |
-| `project_knowledge/mcp/server.py` | Reference MCP server implementation to follow |
+| `mcp_ucx/src/mcp_server/cli/main.py` | Existing CLI — all argument patterns and runner imports |
+| `ucx_knowledge/mcp/server.py` | Reference MCP server implementation to follow |
 | `dev_tools/mcp/pyproject.toml` | Reference packaging pattern |
-| `mcp_sdd/src/mcp_server/review/runner.py` | Runner signatures: review, creation |
-| `mcp_sdd/src/mcp_server/validation/runner.py` | Runner signature: validation |
-| `mcp_sdd/src/mcp_server/remediation/runner.py` | Runner signatures: remediation, fix flows |
-| `mcp_sdd/src/mcp_server/scoring/runner.py` | Runner signatures: scoring |
-| `mcp_sdd/src/mcp_server/consistency/runner.py` | Runner signature: consistency |
-| `mcp_sdd/src/mcp_server/preflight/runner.py` | Runner signature: preflight |
-| `mcp_sdd/src/mcp_server/prescreening/runner.py` | Runner signature: prescreen |
-| `mcp_sdd/src/mcp_server/scan/runner.py` | Runner signature: scan |
-| `mcp_sdd/src/mcp_server/skills/scaffold.py` | Runner signature: init |
+| `mcp_ucx/src/mcp_server/review/runner.py` | Runner signatures: review, creation |
+| `mcp_ucx/src/mcp_server/validation/runner.py` | Runner signature: validation |
+| `mcp_ucx/src/mcp_server/remediation/runner.py` | Runner signatures: remediation, fix flows |
+| `mcp_ucx/src/mcp_server/scoring/runner.py` | Runner signatures: scoring |
+| `mcp_ucx/src/mcp_server/consistency/runner.py` | Runner signature: consistency |
+| `mcp_ucx/src/mcp_server/preflight/runner.py` | Runner signature: preflight |
+| `mcp_ucx/src/mcp_server/prescreening/runner.py` | Runner signature: prescreen |
+| `mcp_ucx/src/mcp_server/scan/runner.py` | Runner signature: scan |
+| `mcp_ucx/src/mcp_server/skills/scaffold.py` | Runner signature: init |
 
 ---
 
@@ -690,9 +690,9 @@ if __name__ == "__main__":
 
 ### 10.7 Rename Documentation Impact (High — DEFERRED)
 
-The `git mv mcp mcp_sdd` will leave stale `mcp/` path references in ~20 documentation files inside `mcp_sdd/docs/`. Resolution:
-- Run global find-and-replace `mcp/src` → `mcp_sdd/src`, `mcp/tests` → `mcp_sdd/tests`, `mcp/docs` → `mcp_sdd/docs` across all `.md` files in `mcp_sdd/docs/`
-- Verify with `grep -r "mcp/" mcp_sdd/docs/ | grep -v mcp_sdd` to catch remaining stale refs
+The `git mv mcp mcp_ucx` will leave stale `mcp/` path references in ~20 documentation files inside `mcp_ucx/docs/`. Resolution:
+- Run global find-and-replace `mcp/src` → `mcp_ucx/src`, `mcp/tests` → `mcp_ucx/tests`, `mcp/docs` → `mcp_ucx/docs` across all `.md` files in `mcp_ucx/docs/`
+- Verify with `grep -r "mcp/" mcp_ucx/docs/ | grep -v mcp_ucx` to catch remaining stale refs
 - This is a mechanical step executed immediately after `git mv`
 
 ### 10.8 MCP Progress Notifications (Medium — DEFERRED to v0.2.0)

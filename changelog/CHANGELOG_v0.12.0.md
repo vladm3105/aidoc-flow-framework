@@ -6,7 +6,7 @@
 ## Summary
 
 Unified the TASKS (Layer 11) artifact — the FINAL SDD layer. All 11 layers now have
-unified YAML templates in `mcp_sdd/templates/`. The complete SDD workflow from business
+unified YAML templates in `mcp_ucx/templates/`. The complete SDD workflow from business
 requirements (BRD) to code generation (TASKS) is unified under a single template standard.
 
 ## Changes
@@ -16,7 +16,7 @@ requirements (BRD) to code generation (TASKS) is unified under a single template
 - **New**: `TASKS-TEMPLATE.yaml` (475 lines, 2 pre-content + 13 numbered + glossary)
 - **Replaced**: 6 core files (3,204 lines) archived to `TASKS_v1_archive/`
 - **Kept active**: IMPLEMENTATION_PLAN_TEMPLATE.md/.yaml + README (project orchestrator)
-- **mcp_sdd**: TASKS-TEMPLATE.yaml ADDED — completes **11 unified YAML templates**
+- **mcp_ucx**: TASKS-TEMPLATE.yaml ADDED — completes **11 unified YAML templates**
 
 ### TASKS-Unique Features
 
@@ -26,7 +26,7 @@ requirements (BRD) to code generation (TASKS) is unified under a single template
 - **Implementation Contracts**: Protocol/ABC interfaces for parallel development
 - **Execution-Ready Score**: >=90/100 before code generation
 
-### All Templates in mcp_sdd
+### All Templates in mcp_ucx
 
 ```
 ADR-TEMPLATE.yaml    CTR-TEMPLATE.yaml    REQ-TEMPLATE.yaml    TASKS-TEMPLATE.yaml
@@ -52,8 +52,8 @@ BRD-TEMPLATE.yaml    PRD-TEMPLATE.yaml    SYS-TEMPLATE.yaml
 
 ## Validation
 
-- mcp_sdd: 173 passed, 0 regressions
+- mcp_ucx: 173 passed, 0 regressions
 - Template resolution: verified
-- 11 templates in mcp_sdd/templates/
+- 11 templates in mcp_ucx/templates/
 - MCP Ops Doc: updated to "All 11 layers unified"
 - BRD glossary: TASKS definition added

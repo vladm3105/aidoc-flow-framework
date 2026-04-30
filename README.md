@@ -1,4 +1,4 @@
-# Docs Flow Framework
+# UCX Framework
 
 **AI-First Specification-Driven Development (SDD) with Scalable Depth**
 
@@ -33,7 +33,7 @@ Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-
 | **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams | 3-6 months |
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team | 6+ months |
 
-See [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [ai_dev_ssd_flow/](./ai_dev_ssd_flow/).
+See [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [ai_dev_ssd_flow/](./ai_dev_ssd_flow/).
 
 ---
 
@@ -54,7 +54,7 @@ Streamlined 8-layer framework with C4 architecture model mapping. All layers use
 | 7 | TDD | Test-Driven Development Guide | Implementation Bridge | `TDD-TEMPLATE.yaml` |
 | 8 | IPLAN | Implementation Plan | Implementation Bridge | `IPLAN-TEMPLATE.yaml` |
 
-CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GATE-CODE). See `ai_dev_flow_v3/CHG/`.
+CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GATE-CODE). See `ucx_flow_v3/CHG/`.
 
 ### v2 (Legacy — 14 Layers)
 
@@ -68,18 +68,20 @@ The original 14-layer framework is preserved in `ai_dev_ssd_flow/` for existing 
 
 | Directory | Purpose |
 |:----------|:--------|
-| `ai_dev_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
+| `ucx_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
 | `ai_dev_ssd_flow/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
-| `mcp_sdd/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_sdd`. |
+| `mcp_ucx/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_ucx`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
-| `project_knowledge/` | Knowledge base package (RAG + Graph) |
+| `ucx_knowledge/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |
 | `roadmap/` | Roadmap and release planning |
 
-### ai_dev_flow_v3/ (Current)
+Note: historical records in `changelog/`, `plans/`, and archived docs may contain legacy naming (for example `mcp-sdd` or `MCP SDD`) to preserve release and audit accuracy.
+
+### ucx_flow_v3/ (Current)
 
 ```
-ai_dev_flow_v3/
+ucx_flow_v3/
 ├── 01_BRD/               BRD-TEMPLATE.yaml (978 lines), BRD-00_index.md, README
 ├── 02_PRD/               PRD-TEMPLATE.yaml (607 lines), PRD-00_index.md, README
 ├── 03_EARS/              EARS-TEMPLATE.yaml (376 lines), EARS-00_index.md, README
@@ -116,7 +118,7 @@ ai_dev_ssd_flow/
 └── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 ```
 
-### mcp_sdd/ Highlights
+### mcp_ucx/ Highlights
 
 25 MCP tools (13 deterministic, 1 maintenance, 2 session management, 2 executor management, 2 orchestration, 5 LLM-dependent):
 
@@ -134,7 +136,7 @@ ai_dev_ssd_flow/
 | `sdd_score_show` | Quality score with categorized weights (structural/cross-section) |
 | `sdd_next_action` | Recommend next lifecycle stage (MD + YAML aware) |
 
-All 11 unified YAML templates available in `mcp_sdd/templates/`.
+All 11 unified YAML templates available in `mcp_ucx/templates/`.
 
 Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/` via `sdd_init`.
 
@@ -145,9 +147,9 @@ Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/`
 ### For New Projects
 
 1. Choose your SDD depth (Lite / Standard / Full)
-2. Copy templates from `mcp_sdd/templates/` or layer directories
-3. Create documents using mcp_sdd `sdd_create`
-4. Validate with mcp_sdd `sdd_validate`
+2. Copy templates from `mcp_ucx/templates/` or layer directories
+3. Create documents using mcp_ucx `sdd_create`
+4. Validate with mcp_ucx `sdd_validate`
 
 ### Document Size Policy
 
@@ -156,7 +158,7 @@ All SDD documents are **monolithic** (single self-contained file) up to **50,000
 ### Validation
 
 ```bash
-# Via mcp_sdd CLI
+# Via mcp_ucx CLI
 python -m mcp_server.cli.main validate --project <path> --doc-type brd --layer 01_BRD --document <file>
 
 # Link validation
@@ -174,7 +176,7 @@ Each layer requires traceability tags from ALL upstream layers:
 BRD (0 tags) → PRD (@brd) → EARS (+@prd) → BDD (+@ears) → ADR (+@bdd) → SPEC (+@adr) → TDD (+@spec) → IPLAN (+@tdd)
 ```
 
-See [ai_dev_flow_v3/TRACEABILITY.md](./ai_dev_flow_v3/TRACEABILITY.md).
+See [ucx_flow_v3/TRACEABILITY.md](./ucx_flow_v3/TRACEABILITY.md).
 
 **v2 (14 layers):**
 ```
@@ -189,13 +191,13 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 
 | Document | Purpose |
 |----------|---------|
-| [ai_dev_flow_v3/README.md](./ai_dev_flow_v3/README.md) | SDD v3 framework overview (current, recommended) |
-| [ai_dev_flow_v3/LAYER_REGISTRY.yaml](./ai_dev_flow_v3/LAYER_REGISTRY.yaml) | Authoritative v3 layer definitions with C4 mapping |
+| [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) | SDD v3 framework overview (current, recommended) |
+| [ucx_flow_v3/LAYER_REGISTRY.yaml](./ucx_flow_v3/LAYER_REGISTRY.yaml) | Authoritative v3 layer definitions with C4 mapping |
 | [ai_dev_ssd_flow/README.md](./ai_dev_ssd_flow/README.md) | SDD v2 framework overview (legacy, maintained) |
-| [ai_dev_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./ai_dev_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD v3 methodology |
-| [ai_dev_flow_v3/ID_NAMING_STANDARDS.md](./ai_dev_flow_v3/ID_NAMING_STANDARDS.md) | Document and element ID formats |
-| [ai_dev_flow_v3/TRACEABILITY.md](./ai_dev_flow_v3/TRACEABILITY.md) | Cross-layer traceability rules |
-| [ai_dev_flow_v3/DIAGRAM_STANDARDS.md](./ai_dev_flow_v3/DIAGRAM_STANDARDS.md) | Mermaid-only diagram rules, C4+DFD model |
+| [ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./ucx_flow_v3/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD v3 methodology |
+| [ucx_flow_v3/ID_NAMING_STANDARDS.md](./ucx_flow_v3/ID_NAMING_STANDARDS.md) | Document and element ID formats |
+| [ucx_flow_v3/TRACEABILITY.md](./ucx_flow_v3/TRACEABILITY.md) | Cross-layer traceability rules |
+| [ucx_flow_v3/DIAGRAM_STANDARDS.md](./ucx_flow_v3/DIAGRAM_STANDARDS.md) | Mermaid-only diagram rules, C4+DFD model |
 
 ### Governance
 
@@ -203,7 +205,7 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 |----------|---------|
 | [governance/README.md](./governance/README.md) | Governance template library |
 | [governance/GOVERNANCE_RULES.md](./governance/GOVERNANCE_RULES.md) | Operational policies |
-| [ai_dev_flow_v3/CHG/README.md](./ai_dev_flow_v3/CHG/README.md) | Change management governance overlay (5-gate system) |
+| [ucx_flow_v3/CHG/README.md](./ucx_flow_v3/CHG/README.md) | Change management governance overlay (5-gate system) |
 
 ### Releases
 
@@ -220,7 +222,7 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 |-------|-------|
 | Current Version | 0.20.0 |
 | Latest Release | SDD v3.2 — 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| mcp_sdd Version | 1.12.0 |
+| mcp_ucx Version | 1.12.0 |
 | Next Major | 1.0.0 (multi-MCP ecosystem with governance and knowledge base) |
 
 ---

@@ -31,7 +31,7 @@ UCX (Unified Context eXcelerator) is an AI agent orchestration platform. Its cor
 
 ### 1a. Implement `api_runner.py`
 
-**File**: `mcp_sdd/src/mcp_server/executor/api_runner.py`
+**File**: `mcp_ucx/src/mcp_server/executor/api_runner.py`
 
 Current state: 28 lines, raises `NotImplementedError`.
 
@@ -70,7 +70,7 @@ Implementation requirements:
 
 ### 1b. Update `dispatcher.py`
 
-**File**: `mcp_sdd/src/mcp_server/executor/dispatcher.py`
+**File**: `mcp_ucx/src/mcp_server/executor/dispatcher.py`
 
 Pass `project_env` to `run_api_executor` (currently only CLI runner receives it):
 
@@ -86,7 +86,7 @@ elif config.executor_type == ExecutorType.API:
 
 ### 1c. Update `registry.py` built-in API entries
 
-**File**: `mcp_sdd/src/mcp_server/executor/registry.py`
+**File**: `mcp_ucx/src/mcp_server/executor/registry.py`
 
 Change status from `"stub"` to `"active"` for built-in API executors. Add OpenRouter entry:
 
@@ -117,7 +117,7 @@ Update `_init_builtins()` to reference renamed dict.
 
 ### 1d. Add `litellm` as optional dependency
 
-**File**: `mcp_sdd/pyproject.toml` (or equivalent)
+**File**: `mcp_ucx/pyproject.toml` (or equivalent)
 
 Add optional dependency group:
 
@@ -134,7 +134,7 @@ API executor gracefully degrades when litellm is not installed.
 
 ### 2a. Add `remediation_report` parameter to `sdd_remediate`
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 Add to `sdd_remediate` input schema (after existing `review_report`):
 
@@ -156,7 +156,7 @@ Behavior matrix:
 
 ### 2b. Update `sdd_remediate` handler
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`, lines 1023-1067
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`, lines 1023-1067
 
 **Prerequisite**: PLAN-030 must be complete. `run_remediate_fix_build` already produces versioned output (`_remediate_v{N}`).
 
@@ -200,7 +200,7 @@ Note: `run_remediate_fix_build` is now an internal function only — no longer e
 
 ### 2c. Remove `sdd_remediate_fix` from TOOLS list
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 Delete the `Tool(name="sdd_remediate_fix", ...)` entry (lines 389-406).
 
@@ -212,7 +212,7 @@ if name == "sdd_remediate_fix":
 
 ### 2d. Update `sdd_next_action`
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`, lines 554-557
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`, lines 554-557
 
 Change:
 ```python
@@ -232,7 +232,7 @@ elif has_remediation_report:
 
 ### 2e. Update `_handle_lifecycle_pipeline`
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`, lines 1113-1178
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`, lines 1113-1178
 
 Update stage handlers map:
 ```python
@@ -271,7 +271,7 @@ if stage == "remediate_fix":
 
 ### 2f. Update `sdd_score_compare` tool description
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_remediate --fix` instead.
 
@@ -281,14 +281,14 @@ Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_reme
 
 ### 3a. API executor tests
 
-**File**: `mcp_sdd/tests/unit/test_api_runner.py` (new)
+**File**: `mcp_ucx/tests/unit/test_api_runner.py` (new)
 
 - Test `ImportError` handling when litellm not installed
 - Test API key resolution from project_env vs os.environ
 - Test error mapping (auth, rate limit, timeout, API error)
 - Mock `litellm.acompletion` for success path
 
-**File**: `mcp_sdd/tests/integration/test_api_executor_integration.py` (new)
+**File**: `mcp_ucx/tests/integration/test_api_executor_integration.py` (new)
 
 - Test dispatcher routes API type correctly
 - Test project `.env` API key injection
@@ -296,23 +296,23 @@ Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_reme
 
 ### 3b. Remediate merge tests
 
-**File**: `mcp_sdd/tests/unit/test_remediation_runner.py` (update)
+**File**: `mcp_ucx/tests/unit/test_remediation_runner.py` (update)
 
 - Test `sdd_remediate` with `fix=true` (existing, verify still passes)
 - Test `sdd_remediate` with `fix=true, remediation_report=path` (new — direct fix mode)
 - Test `sdd_remediate` with `remediation_report` but `fix=false` (findings-only, report ignored)
 
-**File**: `mcp_sdd/tests/unit/test_server.py` (update)
+**File**: `mcp_ucx/tests/unit/test_server.py` (update)
 
 - Remove `sdd_remediate_fix` from tool list assertions
 - Add `sdd_clean` to tool list assertions
 - Update any test that directly invokes `sdd_remediate_fix`
 
-**File**: `mcp_sdd/tests/unit/test_yaml_parity.py` (update)
+**File**: `mcp_ucx/tests/unit/test_yaml_parity.py` (update)
 
 - Remove `sdd_remediate_fix` from YAML/MCP parity checks
 
-**File**: `mcp_sdd/tests/integration/test_lifecycle_pipeline_integration.py` (update)
+**File**: `mcp_ucx/tests/integration/test_lifecycle_pipeline_integration.py` (update)
 
 - Verify `remediate_fix` stage in pipeline now routes through `sdd_remediate` with `fix=true`
 
@@ -324,19 +324,19 @@ Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_reme
 
 | File | Change |
 |------|--------|
-| `mcp_sdd/docs/README.md` | Remove `sdd_remediate_fix`, add `sdd_clean`, document API executor |
-| `mcp_sdd/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md` | Update canonical runtime surface, remove remediate-fix as separate command |
-| `mcp_sdd/docs/architecture/MCP_CLI_REFERENCE.md` | Remove `remediate-fix` command, document `remediate --fix --remediation-report` |
-| `mcp_sdd/docs/architecture/MCP_OPERATIONAL_FLOWS.md` | Update remediation flow to single-tool model |
-| `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Update remediation procedures |
-| `mcp_sdd/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Update executor section with API executor details |
+| `mcp_ucx/docs/README.md` | Remove `sdd_remediate_fix`, add `sdd_clean`, document API executor |
+| `mcp_ucx/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md` | Update canonical runtime surface, remove remediate-fix as separate command |
+| `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md` | Remove `remediate-fix` command, document `remediate --fix --remediation-report` |
+| `mcp_ucx/docs/architecture/MCP_OPERATIONAL_FLOWS.md` | Update remediation flow to single-tool model |
+| `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Update remediation procedures |
+| `mcp_ucx/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Update executor section with API executor details |
 
 ### 4b. Specs
 
 | File | Change |
 |------|--------|
-| `mcp_sdd/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md` | Update contracts: single tool, two modes |
-| `mcp_sdd/docs/specs/SPEC-007_mcp_review_remediation_operational_contracts.md` | Remove standalone fix tool contracts |
+| `mcp_ucx/docs/specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md` | Update contracts: single tool, two modes |
+| `mcp_ucx/docs/specs/SPEC-007_mcp_review_remediation_operational_contracts.md` | Remove standalone fix tool contracts |
 
 ### 4c. Framework docs
 
@@ -347,7 +347,7 @@ Update any tool descriptions that reference `sdd_remediate_fix` to say `sdd_reme
 
 ### 4d. Roadmap
 
-**File**: `mcp_sdd/docs/ROADMAP.md`
+**File**: `mcp_ucx/docs/ROADMAP.md`
 
 Add v1.21.0 release entry:
 
@@ -390,7 +390,7 @@ After several iterations a document folder contains dozens of obsolete reports, 
 
 ### 5b. Tool Definition
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 Add to TOOLS list:
 
@@ -440,7 +440,7 @@ Tool(
 
 ### 5c. Cleanup Engine
 
-**File**: `mcp_sdd/src/mcp_server/cleanup/runner.py` (new module)
+**File**: `mcp_ucx/src/mcp_server/cleanup/runner.py` (new module)
 
 ```python
 def run_clean(
@@ -519,7 +519,7 @@ When `clean_before=true`, the pipeline runs `sdd_clean(document, stages=["all"],
 
 ### 5f. Tests
 
-**File**: `mcp_sdd/tests/unit/test_cleanup_runner.py` (new)
+**File**: `mcp_ucx/tests/unit/test_cleanup_runner.py` (new)
 
 1. **Versioned remediation cleanup**: Create `_v1`, `_v2`, `_v3` → clean with `keep=1` → only `_v3` remains
 2. **Report cleanup**: Create `.validate.json`, `.validate.v001.json`, `.validate.v002.json` → clean → only latest remains

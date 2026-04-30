@@ -419,8 +419,8 @@ def renumber_sibling_headings(content: str, section_prefix: str, insert_at: floa
 
 All content fixes MUST align to the canonical template:
 
-- `docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- `docs_flow_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+- `ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- `ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
 
 **Canonical Subsection Anchors (MVP)**:
 

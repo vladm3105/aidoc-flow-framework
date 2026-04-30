@@ -18,7 +18,7 @@ Third run:   BRD-05_multi_agent_ai_system_remediate_v3.yaml  (source: v2)
 
 ## Implementation Phases
 
-### Phase 1: Core Engine — `mcp_sdd/src/mcp_server/remediation/runner.py`
+### Phase 1: Core Engine — `mcp_ucx/src/mcp_server/remediation/runner.py`
 
 **1a. Add helpers** (insert after `_canonical_stem`, ~line 779):
 - `_REMEDIATE_VERSION_RE = re.compile(r"_remediate_v(\d+)")`
@@ -40,21 +40,21 @@ Third run:   BRD-05_multi_agent_ai_system_remediate_v3.yaml  (source: v2)
 
 ### Phase 2: Filter Updates — 4 secondary files
 
-**`mcp_sdd/src/mcp_server/utils/source_files.py`**:
+**`mcp_ucx/src/mcp_server/utils/source_files.py`**:
 - Line ~27: `DERIVED_COPY_PATTERN` regex — add `remediate_v\d+` alternative
 - Line ~31: `_DERIVED_STEMS` — ADD `"_remediate_v"` (substring match covers all vN), KEEP `"_remediate_copy"` for backward compat
 
-**`mcp_sdd/src/mcp_server/validation/runner.py`**:
+**`mcp_ucx/src/mcp_server/validation/runner.py`**:
 - Lines ~41, 64, 88, 98: Add `and not re.search(r"_remediate_v\d+", path.stem)` to each filter
 
-**`mcp_sdd/src/mcp_server/tool_registry.py`**:
+**`mcp_ucx/src/mcp_server/tool_registry.py`**:
 - Line ~529: Source file filter — add `_remediate_v\d+` exclusion
 - Lines ~545-547: `has_remediated_copy` — also check for `_remediate_v\d+`
 
-**`mcp_sdd/src/mcp_server/cli/main.py`**:
+**`mcp_ucx/src/mcp_server/cli/main.py`**:
 - Line ~320: Filter — add `_remediate_v\d+` exclusion
 
-### Phase 3: Consistency Runner — `mcp_sdd/src/mcp_server/consistency/runner.py`
+### Phase 3: Consistency Runner — `mcp_ucx/src/mcp_server/consistency/runner.py`
 
 - Line ~77: Filter — add `_remediate_v\d+` exclusion
 - Lines ~127-129: Replace hardcoded `_remediate_copy` path lookup with version-aware resolution:
@@ -96,11 +96,11 @@ When iterating (v1→v2), the quality check currently compares `original_path=do
 ### Phase 7: Documentation Updates
 
 **Update (not historical changelogs):**
-- `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md` (~line 270) — update `_remediate_copy` reference to `_remediate_v{N}`
-- `mcp_sdd/docs/architecture/MCP_OPERATIONAL_FLOWS.md` (~line 305) — update naming description
+- `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md` (~line 270) — update `_remediate_copy` reference to `_remediate_v{N}`
+- `mcp_ucx/docs/architecture/MCP_OPERATIONAL_FLOWS.md` (~line 305) — update naming description
 
 **Do NOT modify** (historical records):
-- `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.11.0.md` — historical, leave as-is
+- `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.11.0.md` — historical, leave as-is
 
 **Add new CHANGELOG entry** for this feature (version TBD after implementation).
 
@@ -119,7 +119,7 @@ When iterating (v1→v2), the quality check currently compares `original_path=do
 
 ## Verification
 
-1. Run existing tests: `cd mcp_sdd && python -m pytest tests/ -x -q`
+1. Run existing tests: `cd mcp_ucx && python -m pytest tests/ -x -q`
 2. Run `run_remediate_fix_build` twice on same document → verify both `_v1` and `_v2` exist
 3. Verify `_canonical_stem("BRD-05_test_remediate_v3")` returns `"BRD-05_test"`
 4. Verify legacy `_remediate_copy` files still excluded by filters

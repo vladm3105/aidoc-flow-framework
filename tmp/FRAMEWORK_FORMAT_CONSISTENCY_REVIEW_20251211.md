@@ -1,6 +1,6 @@
 # Framework Format Consistency Review Report
 **Date**: 2025-12-11  
-**Scope**: Complete review of `/opt/data/docs_flow_framework/ai_dev_flow/` documentation framework  
+**Scope**: Complete review of `/opt/data/ucx_framework/ai_dev_flow/` documentation framework  
 **Status**: Complete
 
 ---
@@ -28,28 +28,28 @@ This comprehensive review examined all framework document templates, schemas, an
 
 #### Files Affected:
 
-1. **`/opt/data/docs_flow_framework/ai_dev_flow/SYS/SYS-TEMPLATE.md`**
+1. **`/opt/data/ucx_framework/ai_dev_flow/SYS/SYS-TEMPLATE.md`**
    - Line 264: `regulatoryure session invalidation`
    - Line 861: `regulatoryure session handling`
    - **Context**: Both appear in security/session management sections
 
-2. **`/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md`**
+2. **`/opt/data/ucx_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md`**
    - Line 799: `regulatoryure alternative`
    - **Context**: Appears in implementation planning section
 
-3. **`/opt/data/docs_flow_framework/ai_dev_flow/EARS/README.md`**
+3. **`/opt/data/ucx_framework/ai_dev_flow/EARS/README.md`**
    - Contains reference to "regulatoryure" in documentation
    - **Context**: Framework guidance documentation
 
-4. **`/opt/data/docs_flow_framework/ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md`**
+4. **`/opt/data/ucx_framework/ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md`**
    - Contains "regulatoryure" references
    - **Context**: Domain configuration guidance
 
-5. **`/opt/data/docs_flow_framework/ai_dev_flow/IMPL/README.md`**
+5. **`/opt/data/ucx_framework/ai_dev_flow/IMPL/README.md`**
    - Contains "regulatoryure" reference
    - **Context**: Implementation approach guidance
 
-6. **`/opt/data/docs_flow_framework/ai_dev_flow/IMPL/examples/IMPL-001_feature_implementation_example.md`**
+6. **`/opt/data/ucx_framework/ai_dev_flow/IMPL/examples/IMPL-001_feature_implementation_example.md`**
    - Contains "regulatoryure" in example implementation
    - **Context**: Concrete example document
 
@@ -67,12 +67,12 @@ Replace all instances of "regulatoryure" with "secure" or appropriate security-r
 
 #### Files Affected:
 
-1. **`/opt/data/docs_flow_framework/ai_dev_flow/PRD/PRD-TEMPLATE.md`** (3 instances)
+1. **`/opt/data/ucx_framework/ai_dev_flow/PRD/PRD-TEMPLATE.md`** (3 instances)
    - Line 191: `### secondary Users` (should be `### Secondary Users`)
    - Line 216: `### secondary KPIs` (should be `### Secondary KPIs`)
    - Line 251: `### secondary Objectives` (should be `### Secondary Objectives`)
 
-2. **`/opt/data/docs_flow_framework/ai_dev_flow/SYS/SYS-TEMPLATE.md`** (1 instance)
+2. **`/opt/data/ucx_framework/ai_dev_flow/SYS/SYS-TEMPLATE.md`** (1 instance)
    - Line 127: `#### secondary Capability: [Capability Category]` (should be `#### Secondary Capability:`)
 
 #### Positive Example:

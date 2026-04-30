@@ -113,7 +113,7 @@ jobs:
         if: env.SKIP_REVIEW != 'true'
         run: |
           cat > /tmp/review-instructions.txt << 'INSTRUCTIONS_EOF'
-          You are an automated CI code reviewer for the docs_flow_framework project.
+          You are an automated CI code reviewer for the ucx_framework project.
 
           ## Task
           1. Read the PR diff at /tmp/pr-diff.txt

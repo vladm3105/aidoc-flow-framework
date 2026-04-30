@@ -11,24 +11,24 @@ First release of the `sdd-lifecycle` MCP server exposing the SDD document lifecy
 
 ### Directory Rename
 
-- Renamed `mcp/` to `mcp_sdd/` to avoid confusion with MCP protocol
+- Renamed `mcp/` to `mcp_ucx/` to avoid confusion with MCP protocol
 - Updated all internal documentation path references (38 files)
 - Python package name `mcp_server` unchanged — zero import changes
 
-### MCP Server (`mcp_sdd/src/mcp_server/server.py`)
+### MCP Server (`mcp_ucx/src/mcp_server/server.py`)
 
 - Thin entry point using `mcp.server.Server` + `stdio_server` over stdio transport
 - Server name: `sdd-lifecycle`
 - Loads optional `executors.json` at startup for pre-configured executors
 
-### Executor Package (`mcp_sdd/src/mcp_server/executor/`)
+### Executor Package (`mcp_ucx/src/mcp_server/executor/`)
 
 - `registry.py`: Open executor registry with `ExecutorConfig` dataclass, `ExecutorType` enum (CLI/API), 5 built-in CLI executors (claude, codex, gemini, opencode, copilot-cli), 3 API stubs (api/gpt-4o, api/claude-sonnet, api/gemini-pro)
 - `cli_runner.py`: Async subprocess runner with file-based prompt delivery for large prompts, timeout handling, not-installed detection
 - `api_runner.py`: Stub for LiteLLM API gateway (raises NotImplementedError, planned for v0.2.0)
 - `dispatcher.py`: Routes executor calls by type (CLI or API)
 
-### Tool Registry (`mcp_sdd/src/mcp_server/tool_registry.py`)
+### Tool Registry (`mcp_ucx/src/mcp_server/tool_registry.py`)
 
 19 MCP tools in three tiers:
 
@@ -40,7 +40,7 @@ First release of the `sdd-lifecycle` MCP server exposing the SDD document lifecy
 
 ### Packaging
 
-- `mcp_sdd/pyproject.toml`: Package `mcp-sdd-server` v0.1.0 with `mcp-sdd` console script
+- `mcp_ucx/pyproject.toml`: Package `mcp-sdd-server` v0.1.0 with `mcp-sdd` console script
 - `.mcp.json`: MCP server registration for Claude Code auto-discovery
 
 ### Roadmap and Changelog
@@ -56,13 +56,13 @@ First release of the `sdd-lifecycle` MCP server exposing the SDD document lifecy
 
 Fully backward compatible:
 
-- Existing CLI (`mcp_sdd/src/mcp_server/cli/main.py`) unchanged
+- Existing CLI (`mcp_ucx/src/mcp_server/cli/main.py`) unchanged
 - Existing tests unchanged (169 passed, 1 pre-existing integration failure)
 - No existing files modified — all changes are new files
 
 ## Validation Evidence
 
-- New MCP server tests: 33 passed (mcp_sdd/tests/unit/test_server.py)
+- New MCP server tests: 33 passed (mcp_ucx/tests/unit/test_server.py)
 - Full test suite: 169 passed, 1 pre-existing failure (test_validate_to_fix_to_remediate_flow)
 - MCP server initialization: responds to JSON-RPC initialize with protocol version 2024-11-05
 - Tool count verified: 19 tools registered

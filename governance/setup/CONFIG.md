@@ -2,7 +2,7 @@
 
 ## Baseline
 
-This configuration targets SDD v3.2 in `ai_dev_flow_v3/`.
+This configuration targets SDD v3.2 in `ucx_flow_v3/`.
 
 Canonical chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`

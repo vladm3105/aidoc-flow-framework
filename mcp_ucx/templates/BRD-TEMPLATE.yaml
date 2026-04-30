@@ -1,0 +1,1012 @@
+# =============================================================================
+#  BRD-TEMPLATE.yaml — Unified Business Requirements Document Template
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Purpose: AI-consumable + human-reviewable BRD template
+#  Lifecycle: MVP → PROD → NEW MVP (each BRD = one iteration cycle)
+#  Rendering: AI assistant converts to MD/HTML on demand for stakeholder review
+#
+#  REPLACES: (archived to BRD_v1_archive/)
+#    BRD-MVP-TEMPLATE.md, BRD-MVP-TEMPLATE.yaml, BRD_MVP_SCHEMA.yaml,
+#    BRD_MVP_CREATION_RULES.md, BRD_MVP_VALIDATION_RULES.md
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream Ownership (NOT duplicated here):
+#    PRD (Layer 2)  — user stories, personas, implementation phases, testing strategy
+#    ADR (Layer 5)  — architecture decisions (BRD only identifies topics)
+#    SYS (Layer 6)  — quality attribute details (performance, reliability, etc.)
+#    TSPEC (Layer 10) — test specifications (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST)
+#    TASKS (Layer 11) — implementation task breakdown
+#
+#  Validation:
+#    MCP tool: sdd_validate (mcp_ucx server)
+#    BRD validation is human-centric by design. Business requirements span
+#    diverse domains; rigid schema validation constrains legitimate expression.
+# =============================================================================
+
+id: BRD-NN
+title: "[Business Requirements Title]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.5"
+  document_type: "brd-document"
+  layer: 1
+  lifecycle: mvp-prod-newmvp
+  total_sections: 15
+  last_updated: "2026-03-29"
+  validation:
+    tool: sdd_validate
+    server: mcp_ucx
+    _guidance: |
+      All validation runs through mcp_ucx MCP tools.
+      No standalone scripts — mcp_ucx is the execution layer.
+      Key tools: sdd_validate (structure), sdd_score_validate (quality gate),
+        sdd_preflight (environment), sdd_consistency (cross-doc).
+  c4_level:
+    _guidance: |
+      SDD layers map to C4 architecture model zoom levels:
+        Context (BRD)    — business environment, actors, boundaries
+          └─ EARS/BDD    — formalize Context→Container transition
+        Container (PRD)  — product features, functional blocks
+          └─ ADR         — decisions that shape Component architecture
+        Component (SYS)  — system structure, interfaces, quality attributes
+          └─ REQ/CTR     — decompose Component→Code into atomic units
+        Code (SPEC)      — implementation-ready specifications
+          └─ TSPEC       — test specifications (unit, integration, smoke, functional, perf, security)
+          └─ TASKS       — implementation task breakdown
+
+      BRD is Context level. Content must describe business environment,
+      actors, and system boundaries — not product features (Container),
+      system structure (Component), or implementation details (Code).
+    value: context
+
+  diagram_standard:
+    _guidance: |
+      Diagrams follow C4 model zoom levels. Each SDD layer uses diagrams
+      appropriate to its C4 level:
+
+      | C4 Level | SDD Layer | Diagram Types |
+      | Context  | BRD       | C4-L1 (system context), DFD-L1 (top-level data flow), sequenceDiagram (business journey) |
+      | Container| PRD       | C4-L2 (container), DFD-L2 (feature data flow), sequenceDiagram (product interactions) |
+      | Component| SYS       | C4-L3 (component), DFD-L3 (component data flow), sequenceDiagram (system interactions) |
+      | Code     | SPEC      | C4-L4 (code), DFD-L4, class diagrams, sequenceDiagram (implementation flow) |
+
+      BRD is Context level (C4-L1):
+        - System context diagram: actors, external systems, system boundary
+        - Top-level data flow (DFD-L1): major data movements across boundary
+        - Business journey sequence diagram: happy path only
+
+      Diagram rules:
+        - Show business-level interactions, not technical implementation
+        - PASS: "User", "MVP App", "Payment System", "Delivery Partner"
+        - FAIL: "POST /api/endpoint", "Redis cache", "Load Balancer"
+    tags:
+      - "@diagram: c4-l1"
+      - "@diagram: dfd-l1"
+
+  tags:
+    - brd-document
+    - layer-1-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Determines downstream SPEC subtype routing.
+      Set once at BRD creation; inherited by all downstream artifacts.
+    value: code  # code | document | ux | risk | process
+    routing:
+      code: CSPEC
+      document: DSPEC
+      ux: UXSPEC
+      risk: RISKSPEC
+      process: PROCSPEC
+
+  # ---------------------------------------------------------------------------
+  # BRD Type and File Organization
+  # ---------------------------------------------------------------------------
+  brd_type:
+    _guidance: |
+      Set to "platform" or "feature" based on BRD purpose.
+
+      Platform BRDs: Define foundational capabilities, technology stacks, prerequisites.
+        - Filename: BRD-NN_platform_{slug}.yaml
+        - ADR timing: ADRs created BEFORE PRD to validate architectural decisions.
+        - Establishes foundation for Feature BRDs.
+
+      Feature BRDs: Define business features and user workflows.
+        - Filename: BRD-NN_{feature_slug}.yaml
+        - ADR timing: Standard workflow (BRD → PRD → SYS → EARS → REQ → ADR).
+        - References Platform BRDs for technology foundations.
+
+    value: feature  # platform | feature
+
+  file_organization:
+    _guidance: |
+      Filename: BRD-NN_{descriptive_slug}.yaml (lowercase, underscores)
+      Valid:   BRD-01_platform_architecture.yaml, BRD-06_user_authentication.yaml
+      Invalid: BRD-01.yaml (missing slug), brd-001_platform.yaml (wrong case)
+
+      Monolithic (single file): up to 50,000 tokens — default.
+      If >50,000 tokens: create a new document of the same type (e.g., BRD-02) with its own scope.
+      Do NOT split into sectioned files — each document is self-contained.
+
+      Index: Maintain BRD-00_index.md as the authoritative source of planned/active BRDs.
+
+  # ---------------------------------------------------------------------------
+  # Element ID Standard
+  # ---------------------------------------------------------------------------
+  id_standard:
+    _guidance: |
+      All element IDs use content-derived hashes instead of sequential numbers.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: BRD.01.07.a7f3
+
+      Hash algorithm (SHA256, 4-char hex):
+        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
+           - title/description: first 100 chars, lowercased, special chars removed
+        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
+        3. Collision: extend hash from 4 to 8 chars if duplicate detected
+
+      Properties: deterministic, stateless, stable, deduplicating.
+      Template placeholder: "xxxx" represents the hash suffix.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+    placeholder: "xxxx"
+
+  cross_section_rules:
+    description: "Machine-enforced by sdd_validate (mcp_ucx)"
+    generic:
+      - id: SDD-XS-001
+        rule: "All element IDs in traceability must exist in source sections"
+      - id: SDD-XS-002
+        rule: "Readiness score must be recalculated if validation findings exist"
+      - id: SDD-XS-003
+        rule: "Documents with diagram contracts must have diagrams section with items"
+    brd_specific:
+      - id: BRD-XS-001
+        rule: "ADT selected decisions must propagate to implementation and cost sections"
+      - id: BRD-XS-002
+        rule: "Phase names and count must match between scope and implementation"
+      - id: BRD-XS-004
+        rule: "Entities in executive summary must appear in functional requirements or stakeholders"
+      - id: BRD-XS-005
+        rule: "Currency lists must be consistent across FR-01, mandatory conditions, acceptance criteria"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _guidance: |
+    Provide project identification and document tracking information.
+    PRD-Ready Score: >=90/100 required before downstream PRD generation.
+    PRD-Ready Score quantifies business-level content quality.
+    Deductions for: code blocks, API/technical terms, UI implementation details.
+  project_name: "[Project Name]"
+  version: "1.0"
+  status: Draft  # Draft | In Review | Approved
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Primary Author]"
+  prepared_by: "[Business Analyst]"
+  mvp_target_launch: "[Target date]"
+  prd_ready_score: "[Score]/100"
+
+  revision_history:
+    _guidance: |
+      Major version (X.0): structural changes to FR format, content reclassification.
+      Minor version (X.Y): new requirements, clarifications, editorial fixes.
+      For major refactoring, include: structural changes, content removed,
+      PRD-Ready Score improvement (before/after), changelog reference.
+    entries:
+      - version: "1.0"
+        date: "YYYY-MM-DDTHH:MM:SS"
+        author: "[Name]"
+        changes: "Initial MVP draft"
+        approver: ""
+
+# =============================================================================
+# Section 2: Executive Summary
+# =============================================================================
+
+executive_summary:
+  _guidance: |
+    Required 3-paragraph quantitative structure:
+      1. Business Context: market opportunity with quantitative sizing
+      2. Solution Overview: business capability with measurable outcomes
+      3. Business Impact: expected benefits with specific metrics
+
+    Each paragraph must include at least one quantitative element:
+      Context: market size, volume, or gap ("$XX billion market")
+      Solution: capability scope with numbers ("X regions", "Y types")
+      Impact: measurable outcome targets ("X% cost reduction", "$Y revenue")
+
+  _antipatterns:
+    - "FAIL: '[Company] will provide a fast and affordable way...' — no quantitative measures"
+    - "FAIL: 'The solution will significantly improve...' — subjective, not measurable"
+    - "FAIL: 'We expect strong market adoption' — no specific targets"
+
+  overview: |
+    [Three paragraphs: Business Context, Solution Overview, Business Impact.
+    Each must include quantitative measures.]
+
+  target_users:
+    _guidance: |
+      Define WHO uses the product. Different from stakeholders (who approve).
+      PRD expands these into detailed personas and user stories.
+    primary:
+      - segment: "[e.g., Small business owners]"
+        need: "[What they need from this product]"
+        size: "[Estimated market size or user count]"
+    secondary:
+      - segment: "[e.g., Accountants managing client accounts]"
+        need: "[What they need]"
+
+# =============================================================================
+# Diagrams Registry
+# =============================================================================
+diagrams:
+  id: "{doc_type}.{doc_id}.xxxx"
+  directory: "diagrams/"
+  format: "SVG rendered from Mermaid sources (.mmd)"
+  required_for_platform_brd:
+    - type: "structure_overview"
+      description: "Document section map with key metrics"
+    - type: "cross_brd_dependencies"
+      description: "Upstream/downstream BRD dependency graph"
+    - type: "data_model"
+      description: "Primary data model or entity hierarchy"
+  required_for_feature_brd:
+    - type: "user_journey"
+      description: "Happy-path user flow"
+    - type: "integration_points"
+      description: "External system touchpoints"
+  optional:
+    - type: "implementation_phases"
+    - type: "risk_summary"
+    - type: "architecture_decisions"
+    - type: "key_flow_diagrams"
+  items: []  # Populated per BRD instance with id, title, file, source, scope
+
+# =============================================================================
+# Section 3: Introduction
+# =============================================================================
+
+introduction:
+  _guidance: |
+    Provide business context and document scope.
+    Keep concise — detailed requirements belong in later sections.
+
+  business_context: |
+    [Brief situational context — what business environment or trigger motivates this MVP?]
+
+  purpose: |
+    This BRD defines business requirements for [MVP Project Name].
+    Focus: Minimum Viable Product — smallest feature set to deliver value
+    and validate the core business hypothesis.
+
+  document_scope:
+    in_scope:
+      - "Core business objectives for MVP"
+      - "Essential functional requirements (5-15 requirements)"
+      - "Baseline quality expectations"
+      - "Architecture decision topics for downstream ADR"
+      - "MVP success criteria and transition to full product"
+    out_of_scope:
+      - "Detailed stakeholder communication plans"
+      - "Comprehensive cost-benefit analysis (ROI estimate only)"
+      - "Full support and maintenance operations"
+      - "Detailed user stories and personas (PRD owns these)"
+
+# =============================================================================
+# Section 4: Business Objectives
+# =============================================================================
+
+business_objectives:
+  _guidance: |
+    Define the core hypothesis, problem statement, goals, measurable success
+    metrics, and cost-benefit estimate. This is the heart of the BRD.
+
+    All objectives must follow SMART criteria:
+      Specific, Measurable, Achievable, Relevant, Time-bound.
+
+    Each objective must include a quantitative baseline:
+      Current State (baseline) → Target State → Measurement Method → Pass/fail threshold.
+      Use "N/A — new capability" when no baseline exists.
+
+  _antipatterns:
+    - "FAIL: 'Improve transaction speed' — no baseline or target"
+    - "FAIL: 'Reduce costs' — no quantitative measure"
+    - "PASS: 'Reduce delivery time from 24-48 hours to <15 minutes for 95% of transactions'"
+
+  hypothesis:
+    _example: "Users will pay for instant cross-border transfers if simpler than traditional methods."
+    statement: "[Core hypothesis this MVP validates]"
+    validation_questions:
+      - "[Question 1 — e.g., Will users complete onboarding in <5 minutes?]"
+      - "[Question 2 — e.g., Will we achieve >=90% transaction success rate?]"
+      - "[Question 3 — e.g., Will users rate experience >=4.0/5?]"
+
+  problem_statement:
+    problem: "[Concise description of the business problem]"
+    impact: "[Quantifiable impact — revenue loss, customer pain, market gap]"
+    mvp_solution: "[How the MVP addresses this with minimum features]"
+
+  goals:
+    - id: "BRD.NN.04.xxxx"
+      statement: "[Primary goal — e.g., Validate market demand]"
+      baseline: "[Current state or N/A — new capability]"
+      target: "[Quantitative target with timeframe]"
+    - id: "BRD.NN.04.xxxx"
+      statement: "[Secondary goal — e.g., Prove technical feasibility]"
+      baseline: "[Current state]"
+      target: "[Quantitative target]"
+
+  success_metrics:
+    - id: "BRD.NN.04.xxxx"
+      objective: "[Objective statement]"
+      metric: "[How measured]"
+      target: "[Target value]"
+      period: "90 days post-launch"
+    - id: "BRD.NN.04.xxxx"
+      objective: "[Objective statement]"
+      metric: "[How measured]"
+      target: "[Target value]"
+      period: "90 days post-launch"
+
+  expected_benefits:
+    quantifiable:
+      - "User acquisition: [Target number] early users"
+      - "Revenue validation: [Target $] in test transactions"
+      - "Time to market: Launch in [X weeks/months]"
+    qualitative:
+      - "Market validation for full product investment"
+      - "User feedback for product refinement"
+      - "Team learning on technical stack"
+
+  cost_benefit:
+    _guidance: "MVP-level estimate. Expand in subsequent cycles as investment grows."
+    development_costs:
+      team: "[X] people x [Y] weeks = $[ZZZ,ZZZ]"
+      infrastructure: "$[X,XXX]/month"
+      third_party: "$[X,XXX]/month"
+    total_mvp_investment: "$[XXX,XXX]"
+    roi_hypothesis: "[Expected return or validation metric]"
+
+# =============================================================================
+# Section 5: Project Scope
+# =============================================================================
+
+project_scope:
+  _guidance: |
+    Define minimum feature set to deliver value and validate hypothesis.
+    Be explicit about included vs deferred features.
+    P1 = Must Have (5-10 items), P2 = Should Have (2-5 items).
+    Technology stack details belong in ADR topics (Section 8).
+
+  scope_statement: |
+    [Define the minimum set of features needed to deliver value
+    and validate the business hypothesis.]
+
+  core_features:
+    p1_must_have:
+      - "[Core feature 1 — e.g., User registration and basic profile]"
+      - "[Core feature 2 — e.g., Single payment corridor (US → Mexico)]"
+      - "[Core feature 3 — e.g., Bank account payout only]"
+      - "[Core feature 4 — e.g., Email notifications]"
+      - "[Core feature 5 — e.g., Basic transaction history]"
+    p2_should_have:
+      - "[Nice-to-have feature 1]"
+      - "[Nice-to-have feature 2]"
+
+  out_of_scope:
+    _note: "Features deferred to next MVP cycle, documented for traceability."
+    items:
+      - "[Feature deferred — e.g., Multiple payment corridors]"
+      - "[Feature deferred — e.g., Cash pickup options]"
+      - "[Feature deferred — e.g., Mobile apps (web-only for MVP)]"
+    rationale: "MVP focuses on proving core value proposition; additional features added based on user feedback."
+
+  workflow:
+    _guidance: |
+      Define end-to-end user journey as a business-level sequence diagram.
+      Happy path only (5-7 steps). Detailed exception handling belongs in PRD.
+
+      Diagram rules:
+        - Show business-level interactions, not technical implementation.
+        - PASS: "Submit transaction request", "Verify customer identity"
+        - FAIL: "POST /api/endpoint", "validate JWT token", "db.beginTransaction()"
+    diagram:
+      type: sequenceDiagram
+      content: |
+        participant User
+        participant MVP App
+        participant Payment System
+        participant Delivery Partner
+
+        User->>MVP App: Register account
+        MVP App->>User: Verify email
+        User->>MVP App: Initiate transfer
+        MVP App->>Payment System: Process payment
+        Payment System->>Delivery Partner: Send payout
+        Delivery Partner-->>Payment System: Confirm delivery
+        Payment System-->>MVP App: Update status
+        MVP App->>User: Success notification
+
+    happy_path:
+      - "[Step 1 — User action and business outcome]"
+      - "[Step 2 — User action and business outcome]"
+      - "[Step 3 — User action and business outcome]"
+      - "[Step 4 — User action and business outcome]"
+      - "[Step 5 — User action and business outcome]"
+
+# =============================================================================
+# Section 6: Stakeholders
+# =============================================================================
+
+stakeholders:
+  _guidance: |
+    MVP focuses on minimal approval chain. Expand in subsequent cycles.
+    Detailed stakeholder analysis and communication plans belong in PRD.
+
+  decision_makers:
+    - role: "Executive Sponsor"
+      name: "[Name/Title]"
+      authority: "Final approval authority"
+    - role: "Product Owner"
+      name: "[Name/Title]"
+      authority: "Feature prioritization"
+    - role: "Technical Lead"
+      name: "[Name/Title]"
+      authority: "Architecture decisions"
+
+  key_contributors:
+    - role: "Compliance/Legal"
+      name: "[Department]"
+      responsibility: "Regulatory guidance (if applicable)"
+    - role: "Early Users / Beta Testers"
+      name: "[Description]"
+      responsibility: "Feedback loop"
+
+# =============================================================================
+# Section 7: Functional Requirements
+# =============================================================================
+
+functional_requirements:
+  _guidance: |
+    Business-level capabilities, NOT technical implementation details.
+    Aim for 5-15 requirements total per MVP cycle.
+    Technical implementation belongs in PRD. User stories belong in PRD.
+
+    Each requirement has 4 subsections:
+      1. capability — one-sentence business capability description
+      2. business_needs — what must be accomplished (business language)
+      3. business_rules — policy constraints governing behavior
+      4. acceptance_criteria — measurable pass/fail criteria
+
+    Business language rules:
+      PASS: "Retrieve recipient details" — business action
+      FAIL: "Call recipient API" — technical implementation
+      PASS: "Record transaction audit trail" — business outcome
+      FAIL: "Store in database" — technical detail
+      PASS: "Verify recipient eligibility" — business validation
+      FAIL: "Validate against schema" — technical validation
+
+    Business capability starters (approved):
+      "System must enable [actor] to [action]..."
+      "System must support [capability]..."
+      "System must provide [outcome]..."
+      "System must ensure [condition]..."
+
+    Business capability starters (avoid):
+      FAIL: "System must call [API endpoint]..."
+      FAIL: "System must store [data] in [database]..."
+      FAIL: "System must implement [technical pattern]..."
+
+    Business rules format:
+      Use tables when >=3 decision variables or tiered thresholds.
+      Use bullets for sequential rules or single conditions.
+
+    Acceptance criteria language:
+      Performance: "[Metric]: [threshold] for [percentile]% of [operations]"
+      Accuracy: "[Metric] rate: [threshold]%"
+      Compliance: "[Requirement]: [threshold] from [trigger]"
+      Customer: "[Outcome] [condition]"
+
+    Content boundaries (BRD vs PRD):
+      KEEP: Customer-facing SLAs ("95% of transactions in <15 minutes")
+      REMOVE: Technical metrics ("API latency <200ms", "DB query <50ms")
+      KEEP: Business state names (INITIATED, FUNDED, COMPLETED)
+      REMOVE: State machine implementation ("on event, transition to...")
+      KEEP: Fee structure tables with tiers and competitive benchmarks
+      REMOVE: Calculation algorithms (code, formulas)
+      KEEP: Business risk thresholds ("score 0-59: auto-approve")
+      REMOVE: ML model hyperparameters, training pipelines
+
+  _antipatterns:
+    - "FAIL: code blocks of any kind in BRD (Python, JSON, SQL, JS)"
+    - "FAIL: API endpoint specifications"
+    - "FAIL: database schema or query details"
+    - "FAIL: UI implementation ('click button', 'display modal')"
+    - "FAIL: technical retry patterns ('exponential backoff with jitter')"
+    - "FAIL: infrastructure ('deploy to us-east-1', 'Redis cache')"
+
+  priority_definitions:
+    P1: "Must Have — essential for MVP launch; blocks go-live if missing"
+    P2: "Should Have — important but workarounds exist for MVP"
+    Future: "Next MVP cycle enhancements based on user feedback"
+
+  requirements:
+    - id: "BRD.NN.07.xxxx"
+      title: "[MVP Core Feature 1 — Business Capability Name]"
+      capability: "[One-sentence description of business capability]"
+      priority: P1
+      complexity:
+        _guidance: |
+          Rating 1-5 based on business factors:
+            1/5: Single partner or internal only, no regulatory, <3 decisions
+            2/5: 2-3 partners, light regulatory, 3-5 decisions
+            3/5: 3-4 partners, moderate regulatory (AML), 5-10 decisions
+            4/5: 4-6 partners, high regulatory (cross-border), 10-15 decisions
+            5/5: 6+ partners, maximum regulatory, >15 decisions
+
+          Format: "[N]/5 ([partner chain]; [regulatory scope]; [constraint count])"
+          Chain notation: A→B→C for sequential, A→B; A→C for parallel
+          Example: "3/5 (App→RiskProvider→SanctionsProvider; AML compliance; 4 rules)"
+        rating: "[1-5]/5"
+        rationale: "[Partner chain; regulatory scope; business constraints]"
+      business_needs:
+        - "[Business need 1 — what must be accomplished]"
+        - "[Business need 2 — regulatory or compliance requirement]"
+        - "[Business need 3 — partner dependency at business level]"
+      business_rules:
+        - "[Policy constraint 1 — business rule that governs behavior]"
+        - "[Policy constraint 2 — regulatory limit or threshold]"
+      acceptance_criteria:
+        _guidance: |
+          4-6 measurable criteria. Pattern: "[Metric]: [threshold] ([justification])"
+          Quantitative patterns by metric type:
+            Response Time: "<=[time] for [percentile]% of [operations]"
+            Accuracy:      "<=[rate]% [error type] rate"
+            Availability:  "[percentage]% [consistency/uptime]"
+            Compliance:    "<=[time] from [trigger event]"
+            Throughput:    "[count] [unit] per [time period]"
+            Quality:       ">=[percentage]% [quality metric]"
+          Justification phrases: (customer experience), (regulatory requirement),
+            (operational efficiency), (reduces friction), (minimize false blocks)
+        items:
+          - id: "BRD.NN.07.xxxx"
+            criterion: "[Measurable criterion]"
+            target: "[Target value]"
+          - id: "BRD.NN.07.xxxx"
+            criterion: "[Measurable criterion]"
+            target: "[Target value]"
+      related_requirements:
+        _guidance: |
+          Cross-reference format: "BRD-NN (Description, Section X)"
+          Use explicit file paths when referencing other BRDs.
+        references:
+          - "[Platform BRDs — e.g., BRD-01 (Platform Architecture)]"
+          - "[Feature BRDs — e.g., BRD-06 (User Authentication)]"
+
+    - id: "BRD.NN.07.xxxx"
+      title: "[MVP Core Feature 2]"
+      capability: "[One-sentence description]"
+      priority: P1
+      complexity:
+        rating: "[1-5]/5"
+        rationale: "[Partner chain; regulatory scope; business constraints]"
+      business_needs: []
+      business_rules: []
+      acceptance_criteria:
+        items: []
+      related_requirements:
+        references: []
+
+# =============================================================================
+# Section 8: Architecture Decision Topics
+# =============================================================================
+
+adr_topics:
+  _guidance: |
+    Identify decisions needed — BRD does NOT resolve them.
+    ADR (Layer 5) owns the actual decisions.
+    All BRDs must address 7 mandatory topic categories.
+    Status: Selected (if obvious) | Pending (for ADR to resolve) | N/A
+
+    NEVER reference specific ADR numbers (ADR-012, ADR-033) in BRD.
+    BRDs are created BEFORE ADRs in SDD workflow.
+    Use business capability descriptions, not technology vendor names.
+      PASS: "Platform requires scalable relational storage with ACID compliance"
+      FAIL: "MUST use PostgreSQL"
+
+  topics:
+    - id: "BRD.NN.08.xxxx"
+      category: Infrastructure
+      title: "Hosting & Deployment"
+      status: Pending
+      business_driver: "[Why MVP needs this]"
+      budget_constraint: "$[X,XXX]/month"
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: "[Option or Pending]"
+      prd_requirements: "[What PRD must detail]"
+
+    - id: "BRD.NN.08.xxxx"
+      category: Data Architecture
+      title: "Database & Storage"
+      status: Pending
+      business_driver: "[Data requirements]"
+      budget_constraint: "$[X,XXX]/month"
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: "[Option or Pending]"
+      prd_requirements: "[What PRD must detail]"
+
+    - id: "BRD.NN.08.xxxx"
+      category: Integration
+      title: "External Systems"
+      status: Pending
+      business_driver: "[Integration needs]"
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: "[Option or Pending]"
+      prd_requirements: "[What PRD must detail]"
+
+    - id: "BRD.NN.08.xxxx"
+      category: Security
+      title: "Authentication & Data Protection"
+      status: Pending
+      business_driver: "[Security requirements]"
+      budget_constraint: null
+      compliance_requirements: "[e.g., GDPR, PII encryption]"
+      team_constraints: null
+      recommended_selection: "[Option or Pending]"
+      prd_requirements: "[What PRD must detail]"
+
+    - id: "BRD.NN.08.xxxx"
+      category: Observability
+      title: "Monitoring & Logging"
+      status: Pending
+      business_driver: "[Error tracking needs]"
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: "[Option or Pending]"
+      prd_requirements: "[What PRD must detail]"
+
+    - id: "BRD.NN.08.xxxx"
+      category: AI/ML
+      title: "If Applicable"
+      status: N/A
+      business_driver: "[Why N/A or what's needed]"
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: null
+      recommended_selection: null
+      prd_requirements: null
+
+    - id: "BRD.NN.08.xxxx"
+      category: Technology Selection
+      title: "Core Stack"
+      status: Pending
+      business_driver: "[Why technology choice matters]"
+      budget_constraint: null
+      compliance_requirements: null
+      team_constraints: "[Existing skills]"
+      recommended_selection: "[Tech stack or Pending]"
+      prd_requirements: "[Detailed framework versions, build process]"
+
+# =============================================================================
+# Section 9: Quality Expectations
+# =============================================================================
+
+quality_expectations:
+  _guidance: |
+    State business-level quality expectations as categorized statements.
+    SYS (Layer 6) owns the detailed metrics, IDs, and validation methods.
+    Categories help SYS route expectations to correct subsections.
+
+    KEEP: customer-facing SLAs and business outcomes.
+    REMOVE: internal technical performance metrics.
+
+  expectations:
+    - category: performance
+      expectation: "Page load time under 3 seconds"
+    - category: reliability
+      expectation: "System uptime 95% minimum for MVP"
+    - category: reliability
+      expectation: "Daily backups with <4 hour recovery time"
+    - category: scalability
+      expectation: "Support 100 concurrent users at launch"
+    - category: security
+      expectation: "HTTPS/TLS 1.2+ for all connections"
+    - category: security
+      expectation: "PII encrypted at rest (AES-256)"
+    - category: security
+      expectation: "User authentication required (email + password minimum)"
+    - category: observability
+      expectation: "Structured application logging for error tracking"
+    - category: security
+      expectation: "OWASP Top 10 compliance"
+
+# =============================================================================
+# Section 10: Constraints and Assumptions
+# =============================================================================
+
+constraints_and_assumptions:
+  constraints:
+    items:
+      - id: "BRD.NN.10.xxxx"
+        category: Budget
+        description: "MVP budget capped at $[XXX,XXX]"
+        impact: "Limits scope to core features"
+      - id: "BRD.NN.10.xxxx"
+        category: Timeline
+        description: "Must launch within [X] weeks"
+        impact: "Drives feature prioritization"
+      - id: "BRD.NN.10.xxxx"
+        category: Team Size
+        description: "[X] developers available"
+        impact: "Limits parallel workstreams"
+      - id: "BRD.NN.10.xxxx"
+        category: "[Regulatory]"
+        description: "[If applicable]"
+        impact: "[Impact]"
+
+  assumptions:
+    items:
+      - id: "BRD.NN.10.xxxx"
+        assumption: "[Assumption]"
+        validation_method: "[How to validate]"
+        impact_if_false: "[Mitigation plan]"
+      - id: "BRD.NN.10.xxxx"
+        assumption: "[Assumption]"
+        validation_method: "[How to validate]"
+        impact_if_false: "[Mitigation plan]"
+
+# =============================================================================
+# Section 11: Acceptance Criteria and Success Validation
+# =============================================================================
+
+acceptance_criteria:
+  _guidance: |
+    Launch gates and post-launch decision criteria.
+    Per-requirement acceptance criteria live in Section 7 (functional requirements).
+
+  launch_gates:
+    must_have:
+      - "All P1 functional requirements implemented and tested"
+      - "MVP success metrics defined and tracking enabled"
+      - "Security baseline met (authentication, encryption, HTTPS)"
+      - "Basic error handling and user feedback in place"
+      - "Early user onboarding flow tested with [X] beta users"
+      - "Legal/compliance approval (if applicable)"
+    should_have:
+      - "All P2 functional requirements (80% completion acceptable)"
+      - "Automated testing coverage >=60%"
+      - "Documentation for early users (FAQ, help content)"
+
+  post_launch_validation:
+    thirty_day_metrics:
+      - "[X] active users"
+      - "[Y] successful transactions"
+      - ">=[Z]% transaction success rate"
+      - "User satisfaction score >=[rating]"
+    ninety_day_decision_gate:
+      continue: "Start next MVP cycle if [criteria met, new features identified]"
+      pivot: "If [criteria indicate different direction]"
+      maintain: "If [no new features needed]"
+      shutdown: "If [validation fails]"
+
+# =============================================================================
+# Section 12: Business Risk Management
+# =============================================================================
+
+risk_management:
+  _guidance: |
+    MVP accepts higher risk tolerance than full product.
+    Focus on critical user experience and data security risks only.
+
+  risks:
+    - id: "BRD.NN.12.xxxx"
+      description: "[Top risk 1]"
+      likelihood: High  # High | Medium | Low
+      impact: High      # High | Medium | Low
+      mitigation: "[How to mitigate]"
+      owner: "[Role]"
+    - id: "BRD.NN.12.xxxx"
+      description: "[Top risk 2]"
+      likelihood: Medium
+      impact: High
+      mitigation: "[How to mitigate]"
+      owner: "[Role]"
+    - id: "BRD.NN.12.xxxx"
+      description: "[Top risk 3]"
+      likelihood: Low
+      impact: Medium
+      mitigation: "[How to mitigate]"
+      owner: "[Role]"
+
+# =============================================================================
+# Section 13: Approval
+# =============================================================================
+
+approval:
+  _guidance: "Minimal approval chain for MVP. Governance process details belong in project management artifacts."
+
+  approvers:
+    - role: "Executive Sponsor"
+      name: "[TBD]"
+      title: "[Title]"
+      date: "[Pending]"
+    - role: "Product Owner"
+      name: "[TBD]"
+      title: "[Title]"
+      date: "[Pending]"
+    - role: "Business Lead"
+      name: "[TBD]"
+      title: "[Title]"
+      date: "[Pending]"
+    - role: "Technology Lead"
+      name: "[TBD]"
+      title: "[Title]"
+      date: "[Pending]"
+
+  criteria:
+    - "All P1 requirements defined and validated"
+    - "Critical business risks identified with mitigation"
+    - "Budget estimate approved"
+    - "Technical feasibility confirmed"
+    - "Stakeholder alignment achieved"
+
+# =============================================================================
+# Section 14: Traceability
+# =============================================================================
+
+traceability:
+  _guidance: |
+    Do NOT create numeric downstream references until artifacts exist.
+    Use placeholders. Test coverage traceability belongs in TSPEC.
+
+    Cross-linking tags (machine-parseable):
+      @depends: BRD-NN — hard prerequisite BRD(s)
+      @discoverability: BRD-NN (rationale) — related BRDs for AI search
+
+  tags:
+    - "@brd: BRD-NN"
+
+  cross_links:
+    depends:
+      - "@depends: BRD-NN"
+    discoverability:
+      - "@discoverability: BRD-NN (short rationale)"
+
+  objectives_to_requirements:
+    - objective_id: "BRD.NN.04.xxxx"
+      objective: "[Objective]"
+      related_frs:
+        - "BRD.NN.07.xxxx"
+        - "BRD.NN.07.xxxx"
+      coverage: Complete  # Complete | Partial | Planned
+
+  upstream:
+    _note: "Use null if no upstream artifacts exist."
+    artifacts:
+      - type: "[Stakeholder Requirements]"
+        reference: "[Document]"
+        relevance: "[How it informs this BRD]"
+
+  downstream_expected:
+    - type: PRD
+      layer: 2
+      description: "Product Requirements Document — user stories, product features, acceptance criteria"
+    - type: EARS
+      layer: 3
+      description: "Formal WHEN-THE-SHALL-WITHIN requirements from BRD features"
+    - type: BDD
+      layer: 4
+      description: "Given-When-Then test scenarios from EARS requirements"
+    - type: ADR
+      layer: 5
+      description: "Architecture Decision Records — resolves topics from Section 8"
+    - type: SYS
+      layer: 6
+      description: "System Requirements — system structure, interfaces, quality attributes"
+
+  cross_brd_dependencies:
+    - related_brd: "[Platform BRD — e.g., BRD-01]"
+      dependency_type: Foundation
+      rationale: "[Infrastructure/services required]"
+
+  health_score:
+    bo_fr_coverage: "[X]%"
+    cross_brd_validated: "[X]%"
+    target_score: ">=90/100"
+
+# =============================================================================
+# Section 15: Glossary
+# =============================================================================
+
+glossary:
+  _guidance: "Flat list of project-specific terms. Keep concise."
+
+  terms:
+    - term: MVP
+      definition: "Minimum Viable Product"
+    - term: BRD
+      definition: "Business Requirements Document"
+    - term: PRD
+      definition: "Product Requirements Document"
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# Appendix: Lifecycle Reference
+# =============================================================================
+
+appendix:
+  lifecycle:
+    _guidance: |
+      Each BRD represents ONE iteration cycle: MVP → PROD → NEW MVP.
+      New features = New BRD (BRD-02, BRD-03, etc.).
+      Link cycles via cross_brd_dependencies in traceability section.
+
+      When to create NEW BRD vs update existing:
+        Bug fixes, minor clarifications → Update current BRD (patch version)
+        New P1/P2 features → Create NEW BRD
+        Entirely new product area → Create NEW BRD
+        Major scope expansion → Create NEW BRD
+
+    diagram:
+      type: flowchart
+      content: |
+        flowchart LR
+            MVP1[MVP BRD-01] --> PROD1[Production v1]
+            PROD1 --> FEEDBACK1[User Feedback]
+            FEEDBACK1 --> MVP2[NEW MVP BRD-02]
+            MVP2 --> PROD2[Production v2]
+            PROD2 --> FEEDBACK2[User Feedback]
+            FEEDBACK2 --> MVP3[NEW MVP BRD-03]
+            MVP3 --> PROD3[Production v3]
+
+    principles:
+      - "Each MVP is a complete cycle — BRD defines scope, development delivers, production validates"
+      - "New features = New BRD — don't expand existing BRDs indefinitely"
+      - "BRDs are versioned iterations — BRD-01, BRD-02, BRD-03 represent successive feature sets"
+      - "Traceability links cycles — Cross-BRD dependencies show how iterations build on each other"
+
+    when_to_start_new_cycle:
+      - "Current MVP deployed to production and stable"
+      - "User feedback collected (30-90 days)"
+      - "New feature requirements identified"
+      - "Current BRD scope is complete (no pending P1s)"
+      - "Business justification for next iteration approved"
+
+  next_cycle_roadmap:
+    _guidance: "Plan for after this MVP reaches production."
+    next_mvp_features: "[List candidates for next cycle]"
+    platform_scaling: "[Considerations for future BRDs]"
+    market_expansion: "[Plans for future BRDs]"
+    trigger_criteria:
+      - "Current MVP stable in production (30+ days)"
+      - "User feedback collected and analyzed"
+      - "New features prioritized and approved"
+      - "Resources allocated for next cycle"
+
+# =============================================================================
+# End of BRD-TEMPLATE.yaml
+# =============================================================================

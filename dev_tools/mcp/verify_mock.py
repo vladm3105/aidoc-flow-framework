@@ -7,7 +7,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 # Constants
-SERVER_SCRIPT = "/opt/data/docs_flow_framework/dev_tools/mcp/server.py"
+SERVER_SCRIPT = "/opt/data/ucx_framework/dev_tools/mcp/server.py"
 WS_URI = "ws://localhost:8765"
 
 async def verify():

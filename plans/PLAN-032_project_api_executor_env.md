@@ -52,7 +52,7 @@ Introduce a lightweight `ProjectContext` dataclass resolved once at the top of `
 
 ### 0a. Add `ProjectContext` to existing `project_context.py`
 
-**File**: `mcp_sdd/src/mcp_server/project_context.py`
+**File**: `mcp_ucx/src/mcp_server/project_context.py`
 
 Add `ProjectContext` to the existing module rather than creating a new file. `project_context.py` already owns project resolution (session/config defaults) — the per-call snapshot belongs in the same domain. This avoids a confusing split between `project_context.py` (resolution) and a separate `project_env.py` (snapshot).
 
@@ -100,7 +100,7 @@ Key properties:
 
 ### 0b. Integration in `_dispatch`
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 At the top of `_dispatch`, resolve context once:
 
@@ -245,7 +245,7 @@ Handlers without a `project` argument are unchanged: `sdd_consistency`, `sdd_val
 
 ### 1a. Concurrency-safe env injection — `api_runner.py`
 
-**File**: `mcp_sdd/src/mcp_server/executor/api_runner.py`
+**File**: `mcp_ucx/src/mcp_server/executor/api_runner.py`
 
 The MCP server is async (single event loop). Multiple concurrent tool calls may `await acompletion` with different projects, causing env var interleaving. Use an `asyncio.Lock` to serialize the inject-call-restore cycle.
 
@@ -307,7 +307,7 @@ The lock ensures no two API calls interleave their env mutations. The `with` blo
 
 ### 1b. Fix `system_prompt` passthrough — `dispatcher.py`
 
-**File**: `mcp_sdd/src/mcp_server/executor/dispatcher.py`
+**File**: `mcp_ucx/src/mcp_server/executor/dispatcher.py`
 
 `api_runner.run_api_executor` accepts `system_prompt` but the dispatcher never passes it. Add `system_prompt` to the dispatcher signature and forward it to the API runner. CLI executors receive the system prompt embedded in the prompt text (already handled), so no CLI change needed.
 
@@ -350,7 +350,7 @@ Callers of `_maybe_run_executor` that produce a system prompt (review, remediate
 
 ## Phase 2: `UCX_EXECUTOR_*` Env-Var Overrides
 
-**File**: `mcp_sdd/src/mcp_server/executor/api_runner.py`
+**File**: `mcp_ucx/src/mcp_server/executor/api_runner.py`
 
 Allow project `.env` to set project-wide executor defaults. These are **not executor-specific** — they apply to whichever executor is selected for the call. For per-executor overrides, use `UCX/executors.json` (Phase 3).
 
@@ -422,7 +422,7 @@ Replace hardcoded `config.model`, `config.api_base`, `config.timeout`, `config.a
 
 ## Phase 3: Project-Level `executors.json`
 
-**File**: `mcp_sdd/src/mcp_server/executor/registry.py`
+**File**: `mcp_ucx/src/mcp_server/executor/registry.py`
 
 ### 3a. Scoped project executor overlay
 
@@ -487,7 +487,7 @@ def get_executor(name: str, project_overrides: dict[str, ExecutorConfig] | None 
 
 ### 3c. Thread project overrides through dispatcher
 
-**File**: `mcp_sdd/src/mcp_server/executor/dispatcher.py`
+**File**: `mcp_ucx/src/mcp_server/executor/dispatcher.py`
 
 ```python
 async def run_executor(
@@ -503,7 +503,7 @@ async def run_executor(
     ...
 ```
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py` — `_maybe_run_executor` receives `ctx: ProjectContext | None` (Phase 0c) and extracts `ctx.executor_overrides` from there. No separate `load_project_executor_config` call needed — it was already loaded when `ProjectContext.resolve()` ran at the top of `_dispatch`.
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py` — `_maybe_run_executor` receives `ctx: ProjectContext | None` (Phase 0c) and extracts `ctx.executor_overrides` from there. No separate `load_project_executor_config` call needed — it was already loaded when `ProjectContext.resolve()` ran at the top of `_dispatch`.
 
 This way project executor configs are loaded once per tool call via `ProjectContext`, never touch the global registry, and different projects in concurrent calls get their own overlays.
 
@@ -519,7 +519,7 @@ Add preflight validation (Phase 4) to surface these warnings to the user.
 
 ### 3e. Scaffold support
 
-**File**: `mcp_sdd/src/mcp_server/skills/scaffold.py`
+**File**: `mcp_ucx/src/mcp_server/skills/scaffold.py`
 
 Add `UCX/executors.json` as a documented optional path. Do NOT scaffold it by default (most projects don't need it). Do NOT add to `PROTECTED_PROJECT_FILES`. Add a comment in scaffold.py noting it as a recognized path:
 
@@ -543,7 +543,7 @@ Add `UCX/executors.json` as a documented optional path. Do NOT scaffold it by de
 
 ### 4a. `sdd_env_show` — API readiness section
 
-**File**: `mcp_sdd/src/mcp_server/env_manager.py`
+**File**: `mcp_ucx/src/mcp_server/env_manager.py`
 
 Add to `show_project_env` return dict:
 
@@ -562,7 +562,7 @@ Add to `show_project_env` return dict:
 
 ### 4b. CLI text formatter update
 
-**File**: `mcp_sdd/src/mcp_server/cli/main.py`
+**File**: `mcp_ucx/src/mcp_server/cli/main.py`
 
 Update the `env-show` text output handler to display the new fields:
 
@@ -575,7 +575,7 @@ Update the `env-show` text output handler to display the new fields:
 
 ### 4c. `sdd_preflight` — executor environment check
 
-**File**: `mcp_sdd/src/mcp_server/preflight/runner.py`
+**File**: `mcp_ucx/src/mcp_server/preflight/runner.py`
 
 Preflight already receives `project_root`. With Phase 0, the calling handler has `ctx` available and can pass `ctx.executor_overrides` to avoid redundant loading. But preflight also needs to validate the file independently (it's a diagnostic tool). Add after the existing env checks:
 
@@ -597,7 +597,7 @@ Preflight already receives `project_root`. With Phase 0, the calling handler has
 
 ### 4d. `sdd_list_executors` — project overlay visibility
 
-**File**: `mcp_sdd/src/mcp_server/tool_registry.py`
+**File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 Currently `sdd_list_executors` has no `project` parameter and only shows global registry entries. Add optional `project` so agents can see effective executors including project overrides:
 
@@ -661,7 +661,7 @@ Each entry gets a `"source": "global"` or `"source": "project"` field. Global en
 
 ## Phase 5: Documentation Updates
 
-### 5a. `mcp_sdd/docs/README.md`
+### 5a. `mcp_ucx/docs/README.md`
 
 Add to Section 3 (Skills and Project Isolation Model) under Environment Management:
 
@@ -678,7 +678,7 @@ For per-executor overrides (different models for different executors), use `{pro
 
 Document `{project}/UCX/executors.json` as an optional override file with same format as server `executors.json`.
 
-### 5b. `mcp_sdd/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
+### 5b. `mcp_ucx/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
 
 Update executor integration section to document:
 
@@ -697,20 +697,20 @@ Update executor integration section to document:
 
 4. Concurrency model: asyncio.Lock serializes env injection for API calls
 
-### 5c. `mcp_sdd/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+### 5c. `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
 
 Add troubleshooting section for API executor env issues:
 - Missing API keys: check `sdd_env_show` for `api_keys_present`
 - Wrong model: check `UCX_EXECUTOR_MODEL` in `.env` or `UCX/executors.json`
 - Azure endpoints: set `AZURE_API_VERSION` and `UCX_EXECUTOR_API_BASE` in `.env`
 
-### 5d. `mcp_sdd/docs/architecture/MCP_CLI_REFERENCE.md`
+### 5d. `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md`
 
 Document `UCX_EXECUTOR_*` env vars in the environment section. Document `env-show` text output changes.
 
 ### 5e. Changelog
 
-Create `mcp_sdd/docs/CHANGELOG/CHANGELOG_v1.22.0.md`.
+Create `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.22.0.md`.
 
 ---
 

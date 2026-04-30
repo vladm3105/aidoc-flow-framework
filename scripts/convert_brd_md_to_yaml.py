@@ -174,7 +174,7 @@ def _build_metadata(fm: dict, doc_id: str, title: str) -> dict:
         "last_updated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "validation": {
             "tool": "sdd_validate",
-            "server": "mcp_sdd",
+            "server": "mcp_ucx",
         },
         "c4_level": {"value": "context"},
         "tags": tags,
@@ -331,7 +331,7 @@ def _render_yaml(doc: dict) -> str:
         f"#  {doc['id']}_{doc.get('title', '').replace(' ', '_')}.yaml\n"
         f"#  Converted from consolidated markdown\n"
         f"#  Conversion date: {datetime.now(timezone.utc).strftime('%Y-%m-%d')}\n"
-        f"#  Schema: mcp_sdd BRD-TEMPLATE.yaml v1.5\n"
+        f"#  Schema: mcp_ucx BRD-TEMPLATE.yaml v1.5\n"
         f"# {'=' * 77}\n\n"
     )
 

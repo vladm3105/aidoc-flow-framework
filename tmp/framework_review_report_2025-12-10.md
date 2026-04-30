@@ -78,7 +78,7 @@ find ai_dev_flow -name "*.md" -exec sed -i 's/conregulatoryutive/consecutive/g' 
 
 ### 5. Inconsistent Relative Path References
 
-Some documents use `../../../docs_flow_framework/ai_dev_flow/` absolute-style paths:
+Some documents use `../../../ucx_framework/ai_dev_flow/` absolute-style paths:
 - `REQ/REQ-TEMPLATE.md:42` - Links to index.md with absolute path
 - `REQ/REQ-TEMPLATE.md:1291, 1372` - Links to SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 
@@ -143,20 +143,20 @@ Layer numbering is consistent across documents:
 
 ### Fix 1: conregulatoryutive typo
 ```bash
-cd /opt/data/docs_flow_framework
+cd /opt/data/ucx_framework
 find ai_dev_flow -name "*.md" -exec sed -i 's/conregulatoryutive/consecutive/g' {} \;
 ```
 
 ### Fix 2: REQ-TEMPLATE-V3.md references
 ```bash
-cd /opt/data/docs_flow_framework
+cd /opt/data/ucx_framework
 sed -i 's/REQ-TEMPLATE-V3\.md/REQ-TEMPLATE.md/g' ai_dev_flow/REQ/REQ_VALIDATION_RULES.md
 sed -i 's/REQ-TEMPLATE-V3\.md/REQ-TEMPLATE.md/g' ai_dev_flow/REQ/REQ-TEMPLATE.md
 ```
 
 ### Fix 3: NFR to QA terminology
 ```bash
-cd /opt/data/docs_flow_framework
+cd /opt/data/ucx_framework
 sed -i 's/other NFRs/other quality attributes/g' ai_dev_flow/EARS/README.md
 sed -i 's/, NFRs,/, quality attributes,/g' ai_dev_flow/TRACEABILITY.md
 ```

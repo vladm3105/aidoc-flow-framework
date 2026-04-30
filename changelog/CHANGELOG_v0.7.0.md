@@ -38,7 +38,7 @@ Performance, Reliability, Scalability, Security, Observability, Maintainability 
 - REQ-Ready score (dropped stale ears_ready_score)
 - Old `@adr: ADR-NN` → `@adr: ADR.NN.03.xxxx` (hash format)
 - BRD downstream SYS description updated (removed stale section ref)
-- mcp_sdd: SYS-TEMPLATE.yaml copied, SYS-MVP-TEMPLATE.md removed
+- mcp_ucx: SYS-TEMPLATE.yaml copied, SYS-MVP-TEMPLATE.md removed
 
 ## Six Layers Unified
 
@@ -53,6 +53,6 @@ Performance, Reliability, Scalability, Security, Observability, Maintainability 
 
 ## Validation
 
-- mcp_sdd: 173 passed, 0 regressions
+- mcp_ucx: 173 passed, 0 regressions
 - Template resolution: verified
 - Zero stale references

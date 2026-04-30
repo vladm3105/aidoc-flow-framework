@@ -31,6 +31,6 @@ Optional BDD scenario catalog:
 
 ## References
 
-- `ai_dev_flow_v3/07_TDD/TDD-TEMPLATE.yaml`
-- `ai_dev_flow_v3/04_BDD/BDD-TEMPLATE.yaml`
+- `ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml`
+- `ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml`
 - `governance/templates/qa/01-testing-strategy.md`

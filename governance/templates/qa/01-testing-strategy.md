@@ -10,7 +10,7 @@ Canonical chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`
 
 Primary guide:
-- `ai_dev_flow_v3/07_TDD/TDD-TEMPLATE.yaml`
+- `ucx_flow_v3/07_TDD/TDD-TEMPLATE.yaml`
 
 ## Quick Reference
 

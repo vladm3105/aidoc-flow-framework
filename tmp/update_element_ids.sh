@@ -1,13 +1,13 @@
 #!/bin/bash
 # Bulk update TYPE.NNN.NNN to TYPE.NN.EE.SS format
-# Run from /opt/data/docs_flow_framework
+# Run from /opt/data/ucx_framework
 
 set -e
 
 echo "Starting element ID format update..."
 
 # Define the base directory
-BASE_DIR="/opt/data/docs_flow_framework"
+BASE_DIR="/opt/data/ucx_framework"
 
 # Function to update files with sed
 update_file() {
