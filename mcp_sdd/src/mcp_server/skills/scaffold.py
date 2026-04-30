@@ -71,7 +71,11 @@ def _default_repo_root() -> Path:
 
 
 def _default_ssd_root() -> Path:
-    return _default_repo_root() / "ai_dev_ssd_flow"
+    repo_root = _default_repo_root()
+    v3_root = repo_root / "ai_dev_flow_v3"
+    if v3_root.exists():
+        return v3_root
+    return repo_root / "ai_dev_ssd_flow"
 
 
 def _is_content_identical(source: Path, target: Path) -> bool:

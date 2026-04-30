@@ -30,7 +30,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | [DIAGRAM_STANDARDS.md](DIAGRAM_STANDARDS.md) | Mermaid diagram conventions |
 | [THRESHOLD_NAMING_RULES.md](THRESHOLD_NAMING_RULES.md) | Threshold key naming |
 | [TESTING_STRATEGY_TDD.md](TESTING_STRATEGY_TDD.md) | TDD integration |
-| [MIGRATION_PLAN.md](MIGRATION_PLAN.md) | v2→v3 migration details |
+| [CHG_MIGRATION_PLAN.md](plans/CHG_MIGRATION_PLAN.md) | v2→v3 migration details |
 
 ## Readiness Gates
 

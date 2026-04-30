@@ -35,7 +35,7 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 | [PR Issue Link](#pr-issue-link-workflow) | `pr-issue-link.yml` | PR opened | Auto-post PR link to linked issue |
 | [Verify Acceptance](#verify-acceptance-workflow) | `verify-acceptance.yml` | PR opened/synced | Verify acceptance criteria |
 | [Staging Sign-Off](#staging-signoff-workflow) | `staging-signoff.yml` | Manual dispatch | Evaluate staging readiness |
-| [Sync TASKS](#sync-tasks-workflow) | `sync-tasks.yml` | Manual dispatch | Sync TASKS files with GitHub issues |
+| [Sync TASKS](#sync-tasks-workflow) | `sync-tasks.yml` | Manual dispatch | Deprecated legacy TASKS sync workflow |
 | [Validate Governance](#validate-governance-workflow) | `validate-governance.yml` | Push/schedule | Detect governance doc drift |
 | [Validate Config](#validate-config-workflow) | `validate-config.yml` | Manual/schedule | Validate project configuration |
 
@@ -1296,7 +1296,7 @@ Evaluates staging readiness for production deployment.
 
 ---
 
-## Sync TASKS Workflow
+## Sync TASKS Workflow (Deprecated)
 
 **File**: `.github/workflows/sync-tasks.yml`
 
@@ -1308,19 +1308,19 @@ Evaluates staging readiness for production deployment.
 
 ### Purpose
 
-Bidirectional sync between TASKS files and GitHub issues.
+Deprecated legacy workflow retained for compatibility only. Active v3 governance uses artifact generation + IPLAN issue execution.
 
 ### Behavior
 
 1. Fetch phase issues from GitHub
-2. Compare with existing TASKS file
-3. Detect changes (new, closed, status changed)
-4. Generate updated TASKS YAML
-5. Create PR with changes (if enabled)
+2. Evaluate migration blockers that still depend on legacy TASKS sync
+3. Document deprecation status and required replacement path
+4. Exit without generating TASKS artifacts
+5. Create a migration follow-up issue if manual remediation is needed
 
 ### Script
 
-`governance/scripts/workflows/sync_tasks_from_issues.py`
+`governance/scripts/workflows/sync_tasks_from_issues.py (deprecated)`
 
 ---
 

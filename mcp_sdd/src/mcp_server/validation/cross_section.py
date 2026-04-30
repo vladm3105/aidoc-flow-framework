@@ -24,16 +24,16 @@ READINESS_SCORE_FIELDS: dict[str, str] = {
     "prd": "ears_ready_score",
     "ears": "bdd_ready_score",
     "bdd": "adr_ready_score",
-    "adr": "sys_ready_score",
-    "sys": "req_ready_score",
-    "req": "spec_ready_score",
-    "ctr": "spec_ready_score",
-    "spec": "task_ready_score",
-    "tspec": "tasks_ready_score",
-    "tasks": "execution_ready_score",
+    "adr": "spec_ready_score",
+    "spec": "tdd_ready_score",
+    "tdd": "iplan_ready_score",
 }
 
-_DIAGRAM_LAYERS: frozenset[str] = frozenset({"brd", "prd", "adr", "sys", "spec"})
+MAX_CUMULATIVE_TAGS: dict[str, int] = {
+    "brd": 1, "prd": 2, "ears": 3, "bdd": 4, "adr": 5, "spec": 6, "tdd": 7, "iplan": 8
+}
+
+_DIAGRAM_LAYERS: frozenset[str] = frozenset({"brd", "prd", "adr", "spec"})
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -216,6 +216,45 @@ def _check_diagram_registry(
 
 
 # ---------------------------------------------------------------------------
+# SDD-XS-004 -- Cumulative Tags Ceiling
+# ---------------------------------------------------------------------------
+
+
+def _check_cumulative_tags(
+    yaml_data: dict[str, object],
+    doc_type: str,
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+) -> None:
+    """Enforce cumulative metadata tag ceiling by layer."""
+    normalized = doc_type.strip().lower()
+    max_tags = MAX_CUMULATIVE_TAGS.get(normalized)
+    if max_tags is None:
+        return
+
+    metadata = yaml_data.get("metadata")
+    if not isinstance(metadata, dict):
+        passes.append("SDD-XS-004: metadata.tags not found in document (skipped)")
+        return
+
+    tags = metadata.get("tags")
+    if not isinstance(tags, list):
+        passes.append("SDD-XS-004: metadata.tags not found in document (skipped)")
+        return
+
+    tag_count = len([item for item in tags if isinstance(item, str)])
+    if tag_count > max_tags:
+        errors.append(
+            f"SDD-XS-004: metadata.tags has {tag_count} tags; max {max_tags} for {normalized}"
+        )
+    else:
+        passes.append(
+            f"SDD-XS-004: metadata.tags count {tag_count} within max {max_tags} for {normalized}"
+        )
+
+
+# ---------------------------------------------------------------------------
 # SDD-XS-001 (Markdown fallback)
 # ---------------------------------------------------------------------------
 
@@ -289,6 +328,7 @@ def run_cross_section_checks(
     """Generic cross-section validation for all SDD layers (YAML documents)."""
     _check_traceability_id_existence(yaml_data, errors, warnings, passes)
     _check_diagram_registry(yaml_data, doc_type, errors, warnings, passes)
+    _check_cumulative_tags(yaml_data, doc_type, errors, warnings, passes)
     # Score plausibility runs LAST (relies on populated errors/warnings).
     _check_readiness_score_plausibility(yaml_data, doc_type, errors, warnings, passes)
 

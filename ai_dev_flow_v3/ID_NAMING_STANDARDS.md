@@ -47,7 +47,7 @@ Example: `BRD.01.07.a7f3`
 | File | Format | Example |
 |------|--------|---------|
 | Template | `{TYPE}-TEMPLATE.yaml` | `BRD-TEMPLATE.yaml` |
-| Index | `{TYPE}-00_index.md` | `BRD-00_index.md` |
+| Index | `{TYPE}-00_index.md` (Layers 1-7) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
 | Document | `{TYPE}-NN.yaml` | `BRD-01.yaml` |
 | README | `README.md` | — |
 | IPLAN Index | `{TYPE}-00_index.yaml` | `IPLAN-00_index.yaml` |

@@ -73,3 +73,23 @@ def test_scoring_supports_scan_and_validate_report_shapes(tmp_path: Path, capsys
     assert main(["scoring", "show", "--report-file", str(validate_report)]) == 0
     validate_payload = json.loads(capsys.readouterr().out)
     assert validate_payload["score"] == 55
+
+
+def test_scoring_validate_enforces_tdd_readiness_gate(tmp_path: Path, capsys) -> None:
+    report = tmp_path / "tdd_validate.json"
+    payload = {
+        "doc_type": "tdd",
+        "summary": {
+            "errors": 0,
+            "warnings": 0,
+        },
+        "passes": [
+            "TDD-001: iplan_ready_score 89/100 below threshold"
+        ],
+    }
+    report.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert main(["scoring", "validate", "--report-file", str(report), "--threshold", "80"]) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert result["threshold"] == 90
+    assert result["passed"] is False

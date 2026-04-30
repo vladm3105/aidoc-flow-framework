@@ -4,7 +4,7 @@
 
 CHG (Change Management) is a **governance overlay** — not a lifecycle layer. It triggers on-demand when modifying any SDD artifact across all layers. The v2 CHG system is a 4-gate, 14-layer-aware system with 12 existing files and 23 references to unmaterialized content (workflows, source guides, scripts).
 
-This plan maps the 14-layer CHG system to the 7-layer v3 framework, addresses naming collisions, strips references to cut layers, and drops all never-implemented scaffolding.
+This plan maps the 14-layer CHG system to the 8-layer v3 framework, addresses naming collisions, strips references to cut layers, and drops all never-implemented scaffolding.
 
 ---
 
@@ -21,7 +21,7 @@ This plan maps the 14-layer CHG system to the 7-layer v3 framework, addresses na
 | L3 | **C3** | Major: cross-layer change, new requirements | Formal gate |
 | Emergency | **Emergency** | Critical production issue | Post-hoc + post-mortem |
 
-Layer numbers (`L1-L7`) now unambiguously refer to SDD layers only.
+Layer numbers (`L1-L8`) now unambiguously refer to SDD layers only.
 
 ---
 
@@ -126,7 +126,7 @@ New layer coverage: `["TDD", "SPEC"]`
 | TASKS dependency references throughout | **DELETE** |
 | Entry gate routing (Midstream cascade) | Update: GATE-05 → GATE-03 |
 
-Error catalog net change: 6E+5W → 4E+2W
+Error catalog net change: 6E+5W → 5E+2W (added IPLAN-Ready check)
 
 ### GATE-CODE (was GATE-12): Implementation Gate
 
@@ -168,10 +168,10 @@ Upstream:   PRD→EARS→BDD→ADR→SYS→REQ→CTR→SPEC→TSPEC→TASKS
 Midstream:  ADR↔SYS↔REQ, CTR↔SPEC
 Downstream: SPEC→REQ→SYS
 
-New (v3, 7-layer cascade):
-Upstream:   BRD→PRD→EARS→BDD→ADR→TDD→SPEC→Code
-Midstream:  ADR→TDD→SPEC→Code
-Downstream: SPEC→TDD→ADR (bubble-up)
+New (v3, 8-layer cascade):
+Upstream:   BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code
+Midstream:  ADR→TDD→IPLAN→Code
+Downstream: IPLAN→TDD→ADR (bubble-up)
 ```
 
 ### Impact assessment antipatterns
@@ -197,11 +197,11 @@ The v2 diagram has **8 ASCII-art sections** all referencing L1-L14 ranges. Every
 
 | Diagram | What Changes |
 |---------|-------------|
-| System Overview | `15-Layer SDD` → `7-Layer SDD`. Gate labels: GATE-01(L1-L4)→(L1-L2), GATE-05(L5-L8)→GATE-03(L3-L5), GATE-09(L9-L11)→GATE-06(L6-L7), GATE-12(L12-L14)→GATE-CODE(Code) |
-| Gate-to-Layer Mapping | 14 rows → 7 rows + Code |
+| System Overview | `15-Layer SDD` → `8-Layer SDD`. Gate labels: GATE-01(L1-L4)→(L1-L2), GATE-05(L5-L8)→GATE-03(L3-L5), GATE-09(L9-L11)→GATE-06(L6-L7), GATE-08(L12)→(L8), GATE-12(L12-L14)→GATE-CODE(Code) |
+| Gate-to-Layer Mapping | 14 rows → 8 rows + Code |
 | Change Source Routing | All `L-NN` ranges remapped |
-| Cascade Patterns | 4 patterns → 2 patterns (Full Cascade: GATE-01→03→06→CODE; Midstream: GATE-03→06→CODE) |
-| Bubble-Up Pattern | L13→L12/L10/L9/L8/L7 → Code→SPEC/TDD/ADR/BDD/EARS |
+| Cascade Patterns | 4 patterns → 2 patterns (Full Cascade: GATE-01→03→06→CODE; Midstream: GATE-03→06→CODE with IPLAN) |
+| Bubble-Up Pattern | L13→L12/L10/L9/L8/L7 → Code→IPLAN/TDD/SPEC/ADR/BDD/EARS |
 | Approval Matrix | Gate column names updated. Approvers per gate unchanged (approval is by gate, not by layer) |
 | Quick Reference | Gate selection table updated with new names and ranges |
 
@@ -290,6 +290,7 @@ The v2 diagram has **8 ASCII-art sections** all referencing L1-L14 ranges. Every
 |----------|----------|-------------|
 | GATE-09-E001 | GATE-06-E001 | SPEC CODE-Ready score >=90% |
 | GATE-09-E002 | GATE-06-E002 | TDD must cover all BDD scenarios |
+| **NEW** | GATE-06-E005 | IPLAN must have executable commands and file manifest |
 | GATE-09-E003 | **DELETED** | TASKS traceability — TASKS cut |
 | GATE-09-E004 | GATE-06-E003 | TDD/SPEC sync: test_contracts match TDD mappings |
 | GATE-09-E005 | GATE-06-E004 | SPEC change must update TDD first |
@@ -347,7 +348,7 @@ ai_dev_flow_v3/CHG/
 - [ ] No `L1/L2/L3` change level references remain — all should be `C1/C2/C3`
 - [ ] No v2 layer artifacts referenced: SYS, REQ, CTR, TSPEC (as artifact), TASKS
 - [ ] No v2 layer numbers referenced: L6, L7, L8, L9, L10, L11, L12, L13, L14
-- [ ] Gate numbers match v3 layer ranges: 01(L1-L2), 03(L3-L5), 06(L6-L7), CODE
+- [ ] Gate numbers match v3 layer ranges: 01(L1-L2), 03(L3-L5), 06(L6-L7), 08(L8), CODE
 - [ ] Error codes reference v3 artifacts only
 - [ ] Cascade patterns use v3 chain: BRD→PRD→EARS→BDD→ADR→TDD→SPEC→Code
 - [ ] Traceability tag counts match v3 cumulative tags (max 6, not 14)

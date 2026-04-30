@@ -311,7 +311,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| 1.9 | {DATE} | Added SDD v3 reference — 8-layer streamlined framework in `ai_dev_flow_v3/` is now the recommended path for new projects |
+| 1.9 | {DATE} | SDD v3.2 in `ai_dev_flow_v3/` is the active governance baseline |
 | 1.8 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
 | 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 |
 | 1.6 | {DATE} | Consolidated acceptance criteria sync and PR link into mandatory Post-PR Checklist — all 5 steps must execute immediately after PR creation |

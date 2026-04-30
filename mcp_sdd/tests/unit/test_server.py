@@ -27,7 +27,7 @@ from mcp_server.executor.cli_runner import ExecutorResult
 
 class TestToolRegistry:
     def test_tool_count(self):
-        assert len(TOOLS) == 25  # +3 persona (PLAN-024), +1 env_show, +2 project mgmt (PLAN-027)
+        assert len(TOOLS) == 26  # +3 persona, +1 env_show, +2 project mgmt, +1 chg validate
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
@@ -47,7 +47,7 @@ class TestToolRegistry:
         deterministic = {
             "sdd_init", "sdd_validate", "sdd_consistency", "sdd_validate_links", "sdd_preflight",
             "sdd_prescreen", "sdd_scan", "sdd_score_show", "sdd_score_validate",
-            "sdd_score_compare", "sdd_list_executors", "sdd_register_executor",
+            "sdd_score_compare", "sdd_list_executors", "sdd_register_executor", "sdd_validate_chg",
         }
         tool_names = {t.name for t in TOOLS}
         assert deterministic.issubset(tool_names)
@@ -251,6 +251,60 @@ class TestHandlers:
         assert payload["registered"] == "handler-test-agent"
         # Cleanup
         remove_executor("handler-test-agent")
+
+    def test_sdd_validate_chg_dispatch(self, tmp_path):
+        chg_doc = tmp_path / "docs" / "CHG" / "CHG-01_test.yaml"
+        chg_doc.parent.mkdir(parents=True, exist_ok=True)
+        chg_doc.write_text(
+            """
+metadata:
+  document_type: chg-document
+  tags: [chg-document]
+change_control:
+  change_level: C2
+  change_source: design
+  entry_gate: GATE-06
+impact_assessment:
+  affected_layers:
+    - layer: SPEC
+gate_approval:
+  gate: null
+  approver: null
+rollback_plan:
+  strategy: revert-commit
+emergency_change:
+  emergency_id: null
+  fix_deployed: null
+  post_hoc_gate: null
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+        layer_dir = tmp_path / "CHG"
+        layer_dir.mkdir(parents=True, exist_ok=True)
+        (layer_dir / "CHG-TEMPLATE.yaml").write_text(
+            """
+metadata:
+  required_tags:
+    - chg-document
+sections: []
+""".strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        result = asyncio.get_event_loop().run_until_complete(
+            handle_tool(
+                "sdd_validate_chg",
+                {
+                    "project": str(tmp_path),
+                    "layer": "CHG",
+                    "document": str(chg_doc),
+                },
+            )
+        )
+        payload = json.loads(result[0].text)
+        assert "is_valid" in payload
 
 
 # ── Next action advisor tests ────────────────────────────────────────────────

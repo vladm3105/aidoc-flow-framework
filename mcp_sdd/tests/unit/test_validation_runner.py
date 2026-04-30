@@ -18,7 +18,7 @@ def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> No
     layer_root = project_root / f"UCX/templates/layers/{layer}"
     layer_root.mkdir(parents=True, exist_ok=True)
 
-    canonical_root = project_root / f"ai_dev_ssd_flow/{layer}"
+    canonical_root = project_root / f"ai_dev_flow_v3/{layer}"
     canonical_root.mkdir(parents=True, exist_ok=True)
 
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text(
@@ -85,7 +85,7 @@ def _write_minimal_generic_layer_assets(
     layer_root = project_root / f"UCX/templates/layers/{layer}"
     layer_root.mkdir(parents=True, exist_ok=True)
 
-    canonical_root = project_root / f"ai_dev_ssd_flow/{layer}"
+    canonical_root = project_root / f"ai_dev_flow_v3/{layer}"
     canonical_root.mkdir(parents=True, exist_ok=True)
 
     (layer_root / f"{artifact_prefix}-MVP-TEMPLATE.md").write_text(

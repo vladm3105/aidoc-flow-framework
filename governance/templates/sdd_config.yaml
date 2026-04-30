@@ -1,64 +1,53 @@
-# SDD Project Configuration
+# SDD v3 Project Configuration
 # Copy to project root and customize.
-#
-# This file configures which SDD depth is used and enables
-# corresponding validation and change management rules.
 
-# SDD depth: lite | standard | full
-sdd_depth: "standard"
+sdd_version: "3.2"
+sdd_depth: "standard"  # lite | standard | full
 
-# Required layers per depth
-required_layers:
+# v3 chain registry aliases
+layer_aliases:
+  brd: 1
+  prd: 2
+  ears: 3
+  bdd: 4
+  adr: 5
+  spec: 6
+  tdd: 7
+  iplan: 8
+
+required_artifacts:
   lite:
-    - 0   # REF
-    - 1   # BRD
-    - 2   # PRD
-    - 11  # TASKS
+    - brd
+    - prd
+    - iplan
   standard:
-    - 0   # REF
-    - 1   # BRD
-    - 2   # PRD
-    - 3   # EARS
-    - 5   # ADR
-    - 6   # SYS
-    - 7   # REQ
-    - 11  # TASKS
+    - brd
+    - prd
+    - ears
+    - adr
+    - spec
+    - tdd
+    - iplan
   full:
-    - 0   # REF
-    - 1   # BRD
-    - 2   # PRD
-    - 3   # EARS
-    - 4   # BDD
-    - 5   # ADR
-    - 6   # SYS
-    - 7   # REQ
-    - 8   # CTR (optional)
-    - 9   # SPEC
-    - 10  # TSPEC
-    - 11  # TASKS
+    - brd
+    - prd
+    - ears
+    - bdd
+    - adr
+    - spec
+    - tdd
+    - iplan
 
-# Validation settings
-validation:
-  enforce_traceability: true
-  require_quality_score: 90      # Auto-approve if score >= this
-  block_on_missing_layers: true  # Fail CI if required layers missing
-
-# Change management
 change_management:
-  method: "pr-based"             # pr-based | chg-gated
-  # Note: chg-gated only valid for full depth
+  chg_enabled: true
+  required_gates_full:
+    - GATE-01
+    - GATE-03
+    - GATE-06
+    - GATE-08
+    - GATE-CODE
 
-# Test requirements by depth
 testing:
-  lite:
-    utest_coverage: 60
-    itest_coverage: 0
-    require_bdd: false
-  standard:
-    utest_coverage: 80
-    itest_coverage: 60
-    require_bdd: false
-  full:
-    utest_coverage: 80
-    itest_coverage: 60
-    require_bdd: true
+  unit_min_coverage: 80
+  integration_min_coverage: 60
+  require_bdd_in_full: true

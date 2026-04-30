@@ -13,9 +13,19 @@
 | MCP Server Name | `sdd-lifecycle` |
 | Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | Active |
-| Version | 1.21.0 |
-| Date | 2026-04-07 |
+| Version | 1.22.0 |
+| Date | 2026-04-30 |
 | Timezone | America/New_York |
+
+## V3 Layer Architecture
+
+Active document flow for SDD v3.2:
+
+`BRD (L1) -> PRD (L2) -> EARS (L3) -> BDD (L4) -> ADR (L5) -> SPEC (L6) -> TDD (L7) -> IPLAN (L8) -> Code`
+
+Document type notes:
+- New layers: `tdd`, `iplan`
+- Deprecated/cut layers for v3 flow: `sys`, `req`, `ctr`, `tspec`, `tasks`
 
 ---
 

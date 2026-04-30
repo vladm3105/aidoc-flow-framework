@@ -575,6 +575,33 @@ References:
 
 ---
 
+### v1.22.0 - ai_dev_flow_v3 Readiness (TDD/IPLAN)
+
+| Field | Value |
+| --- | --- |
+| Status | Implemented |
+| Type | Minor |
+| Release Date | 2026-04-30 |
+| Scope | Migrate validation, tooling, and prompts to ai_dev_flow_v3 layer model with TDD/IPLAN support |
+
+Delivered scope:
+
+- Add `TDD-TEMPLATE.yaml` and `IPLAN-TEMPLATE.yaml` to active templates.
+- Add creation/review/remediation prompt templates for `tdd` and `iplan`.
+- Archive cut layer templates (`SYS`, `REQ`, `CTR`, `TSPEC`, `TASKS`) to `templates/archive/`.
+- Update validation pipeline to ai_dev_flow_v3 canonical template root.
+- Add `tdd_rules.py` and `iplan_rules.py` with layer-specific checks.
+- Update cross-section readiness mapping to v3 flow and add cumulative tag ceilings up to IPLAN max 8.
+- Enable YAML collection in `sdd_prescreen` and `.yaml/.yml` detection in `sdd_next_action`.
+- Extend `sdd_run_lifecycle` stage schema; add support for `prescreen` and `score_validate` stages.
+- Add readiness-aware score gate behavior for `tdd`/`iplan` with >=90 minimum threshold.
+
+References:
+
+- plans/PLAN-033_mcp_sdd_v3_readiness.md
+
+---
+
 ### v2.0.0 - Governance Expansion and Hard Enforcement
 
 | Field | Value |

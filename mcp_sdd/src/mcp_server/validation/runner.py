@@ -18,6 +18,9 @@ from mcp_server.validation.brd_rules import (
     run_brd_cross_section_checks,
     run_brd_cross_section_checks_md,
 )
+from mcp_server.validation.tdd_rules import run_tdd_validation_checks
+from mcp_server.validation.iplan_rules import run_iplan_validation_checks
+from mcp_server.validation.chg_rules import run_chg_validation_checks
 
 
 @dataclass(frozen=True)
@@ -150,19 +153,19 @@ def _parse_frontmatter(content: str) -> dict[str, object]:
 
 
 def _resolve_canonical_template_root(project_root: Path) -> Path:
-    project_local = project_root / "ai_dev_ssd_flow"
+    project_local = project_root / "ai_dev_flow_v3"
     if project_local.exists():
         return project_local
 
     framework_root = Path(__file__).resolve().parents[4]
-    return framework_root / "ai_dev_ssd_flow"
+    return framework_root / "ai_dev_flow_v3"
 
 
 def _load_layer_yaml_template(*, project_root: Path, layer: str) -> tuple[dict[str, object], str | None]:
-    if "_" not in layer:
-        return {}, f"Invalid layer format: {layer}. Expected format like 01_BRD"
-
-    artifact = layer.split("_", 1)[1].strip().upper()
+    if "_" in layer:
+        artifact = layer.split("_", 1)[1].strip().upper()
+    else:
+        artifact = layer.strip().upper()
     template_root = _resolve_canonical_template_root(project_root)
     template_path = resolve_template_path(template_root / layer, artifact, ".yaml")
     if template_path is None:
@@ -278,7 +281,6 @@ def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str
     normalized = doc_type.strip().lower()
 
     if normalized == "ears":
-        # EARS parity requires a trigger clause and explicit system actor semantics.
         has_trigger = re.search(r"\b(WHEN|IF|WHILE)\b", content, re.IGNORECASE)
         has_actor_clause = re.search(r"\bTHE\s+SYSTEM\s+SHALL\b", content, re.IGNORECASE)
         if not has_trigger:
@@ -291,15 +293,29 @@ def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str
         return
 
     if normalized == "spec":
-        # SPEC parity requires structured implementation content.
         if re.search(r"```yaml[\s\S]*?```", content, re.IGNORECASE):
             passes.append("spec structure present: fenced yaml block")
         else:
             errors.append("Missing SPEC structure: fenced yaml block (```yaml ... ```)")
         return
 
+    if normalized == "tdd":
+        has_tdd_order = re.search(r"tdd_order:", content, re.IGNORECASE)
+        has_test_mapping = re.search(r"test_mapping:", content, re.IGNORECASE)
+        if has_tdd_order and has_test_mapping:
+            passes.append("tdd structure present: test_mapping + tdd_order sections")
+        else:
+            errors.append("Missing TDD structure: test_mapping or tdd_order section")
+        return
+
+    if normalized == "iplan":
+        if re.search(r"file_manifest:", content, re.IGNORECASE) and re.search(r"session_handoff:", content, re.IGNORECASE):
+            passes.append("iplan structure present: file_manifest + session_handoff sections")
+        else:
+            errors.append("Missing IPLAN structure: file_manifest or session_handoff section")
+        return
+
     if normalized == "tasks":
-        # TASKS parity requires executable checklist items.
         if re.search(r"^\s*-\s*\[[ xX]\]\s+", content, re.MULTILINE):
             passes.append("tasks structure present: markdown checkbox list")
         else:
@@ -307,7 +323,6 @@ def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str
         return
 
     if normalized == "ctr":
-        # CTR parity requires explicit API or contract structure token.
         if re.search(r"\b(openapi\s*:|endpoint\b|contract\b)", content, re.IGNORECASE):
             passes.append("ctr structure present: contract token")
         else:
@@ -361,9 +376,30 @@ def run_project_validation_build(
             warnings=warnings,
             passes=passes,
         )
-        # Tier 2: Layer-specific cross-section
+        # Tier 2: Layer-specific validation
         if doc_type.strip().lower() == "brd":
             run_brd_cross_section_checks(
+                yaml_data=yaml_data,
+                errors=errors,
+                warnings=warnings,
+                passes=passes,
+            )
+        if doc_type.strip().lower() == "tdd":
+            run_tdd_validation_checks(
+                yaml_data=yaml_data,
+                errors=errors,
+                warnings=warnings,
+                passes=passes,
+            )
+        if doc_type.strip().lower() == "iplan":
+            run_iplan_validation_checks(
+                yaml_data=yaml_data,
+                errors=errors,
+                warnings=warnings,
+                passes=passes,
+            )
+        if doc_type.strip().lower() == "chg":
+            run_chg_validation_checks(
                 yaml_data=yaml_data,
                 errors=errors,
                 warnings=warnings,

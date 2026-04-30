@@ -24,3 +24,17 @@ def test_cli_prescreen_reports_candidates(tmp_path: Path, capsys) -> None:
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
     assert payload["summary"]["candidates_found"] == 1
+
+
+def test_cli_prescreen_scans_yaml_documents(tmp_path: Path, capsys) -> None:
+    document = tmp_path / "docs/07_TDD/TDD-01_sample.yaml"
+    document.parent.mkdir(parents=True, exist_ok=True)
+    document.write_text("TODO: add content\n", encoding="utf-8")
+
+    exit_code = main(["prescreen", "--document", str(document)])
+
+    assert exit_code == 0
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert payload["summary"]["files_scanned"] == 1
+    assert payload["summary"]["candidates_found"] == 1

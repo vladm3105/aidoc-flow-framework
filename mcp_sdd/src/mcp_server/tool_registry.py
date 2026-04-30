@@ -92,6 +92,20 @@ TOOLS: list[Tool] = [
         },
     ),
     Tool(
+        name="sdd_validate_chg",
+        description="Run CHG governance validation for change records (SDD v3 governance overlay).",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "layer": {"type": "string", "description": "Layer directory for CHG template assets (typically CHG)"},
+                "document": {"type": "string", "description": "Path to CHG document file or directory"},
+                "out": {"type": "string", "description": "Output directory for reports"},
+            },
+            "required": ["project", "layer", "document"],
+        },
+    ),
+    Tool(
         name="sdd_consistency",
         description="Run lightweight artifact lineage and stage consistency checks on a document folder.",
         inputSchema={
@@ -319,13 +333,14 @@ TOOLS: list[Tool] = [
                 "document": {"type": "string", "description": "Path to document file or directory"},
                 "stages": {
                     "type": "array",
-                    "items": {"type": "string", "enum": ["validate", "validate_fix", "review", "remediate", "remediate_fix"]},
-                    "description": "Lifecycle stages to run in order",
+                    "items": {"type": "string"},
+                    "description": "Lifecycle stages to run in order (e.g. validate, review, remediate, prescreen, score_validate)",
                 },
                 "executor": {"type": "string", "description": "Executor for LLM-dependent stages. Use sdd_list_executors to see options."},
                 "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override for review/create stages. If omitted, loaded from persona_mappings.yaml."},
                 "template": {"type": "string", "description": "Template for review/create stages"},
                 "out": {"type": "string", "description": "Output directory"},
+                "threshold": {"type": "integer", "description": "Score threshold for score_validate stage", "default": 80},
                 "clean_before": {"type": "boolean", "description": "Run sdd_clean (keep=0) before starting pipeline. Default: false.", "default": False},
             },
             "required": ["project", "doc_type", "layer", "document", "stages"],
@@ -533,7 +548,7 @@ def _inspect_document_folder(document_dir: Path) -> dict:
 
     md_files = sorted(document_dir.glob("*.md"))
     json_files = sorted(document_dir.glob("*.json"))
-    yaml_files = sorted(document_dir.glob("*.yaml"))
+    yaml_files = sorted(document_dir.glob("*.yaml")) + sorted(document_dir.glob("*.yml"))
     all_names = [f.name for f in md_files] + [f.name for f in json_files] + [f.name for f in yaml_files]
 
     from mcp_server.utils.source_files import REPORT_PATTERN
@@ -790,6 +805,38 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
             return exec_response
         return response
+
+    if name == "sdd_validate_chg":
+        from mcp_server.validation import run_project_validation_build
+        from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
+
+        project_root = ctx.project_root
+        document_path = _path(arguments, "document")
+        output_dir = resolve_stage_output_dir(
+            stage=STAGE_VALIDATE,
+            project_root=project_root,
+            output_dir=_opt_path(arguments, "out"),
+            document_dir=document_path if document_path.is_dir() else document_path.parent,
+        )
+
+        result = run_project_validation_build(
+            project_root=project_root,
+            doc_type="chg",
+            layer=arguments["layer"],
+            document_path=document_path,
+            output_dir=output_dir,
+        )
+        payload = result.report
+        return {
+            "report_path": str(result.report_path) if result.report_path else None,
+            "summary_path": str(result.summary_path) if result.summary_path else None,
+            "errors": payload.get("errors", []) if isinstance(payload, dict) else [],
+            "warnings": payload.get("warnings", []) if isinstance(payload, dict) else [],
+            "passes": payload.get("passes", []) if isinstance(payload, dict) else [],
+            "is_valid": result.is_valid,
+            "passed": result.is_valid,
+            "report": payload,
+        }
 
     if name == "sdd_consistency":
         from mcp_server.consistency import run_consistency_check
@@ -1196,9 +1243,43 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
         "review": "sdd_review",
         "remediate": "sdd_remediate",
         "remediate_fix": "sdd_remediate",  # Absorbed — routed as sdd_remediate with fix=true
+        "prescreen": "sdd_prescreen",
+        "score_validate": "sdd_score_validate",
     }
 
     for stage in stages:
+        stage_args = {
+            k: v for k, v in arguments.items()
+            if k not in ("stages",) and v is not None
+        }
+
+        if stage == "score_validate":
+            validate_result = results.get("validate", {})
+            report_path = validate_result.get("report_path")
+            if not report_path:
+                results[stage] = {
+                    "skipped": True,
+                    "reason": "score_validate requires validate stage report_path",
+                }
+                continue
+            score_args = {
+                "report_file": report_path,
+                "threshold": stage_args.get("threshold", 80),
+            }
+            try:
+                stage_result = await _dispatch("sdd_score_validate", score_args)
+                results[stage] = stage_result
+                if stage_result.get("passed") is False:
+                    results["_stopped_at"] = stage
+                    results["_reason"] = "Stage failed"
+                    break
+            except Exception as e:
+                results[stage] = {"error": str(e)}
+                results["_stopped_at"] = stage
+                results["_reason"] = str(e)
+                break
+            continue
+
         tool_name = stage_handlers.get(stage)
         if tool_name is None:
             results[stage] = {"skipped": True, "reason": f"Stage '{stage}' not supported in pipeline"}
@@ -1208,11 +1289,6 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
         if stage == "validate_fix" and "validate" in results:
             results[stage] = {**results["validate"], "_absorbed": True}
             continue
-
-        stage_args = {
-            k: v for k, v in arguments.items()
-            if k not in ("stages",) and v is not None
-        }
 
         # Inject fix=true for remediate_fix stage (absorbed into sdd_remediate)
         if stage == "remediate_fix":

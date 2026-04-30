@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.20.0 |
-| Latest Release | 0.20.0 (SDD v3.2 — 8-layer streamlined framework with C4 mapping) |
+| Current Version | 0.20.2 |
+| Latest Release | 0.20.2 (Governance migration follow-up and validation) |
 | Previous Minor | 0.19.0 (multi-persona mapping support) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
@@ -13,7 +13,7 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v1.0.0
+v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v0.20.1 ──► v0.20.2 ──► v1.0.0
   │           │             │            │           │            │              │           │
   │           │             │            │           │            │              │           └─► Multi-MCP
   │           │             │            │           │            │              └─► SDD v3.2 (8-layer, C4 mapping)
@@ -48,6 +48,15 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+
+### v0.20.2 — Governance Migration Follow-up (2026-04-30)
+
+Updated remaining governance capacity planning references from TASKS to TDD/IPLAN terminology and completed focused validation checks for migrated governance docs. See changelog/CHANGELOG_v0.20.2.md.
+
+### v0.20.1 — Governance v3.2 Migration (2026-04-30)
+
+Governance documentation and templates migrated to v3.2 baseline in `governance/`; legacy TASKS sync flow deprecated in active runbooks. See changelog/CHANGELOG_v0.20.1.md.
 
 ### v0.20.0 — SDD v3.2 Streamlined Framework (2026-04-29)
 

@@ -127,8 +127,6 @@ ai_dev_flow_v3/
 │       ├── GATE_APPROVAL_FORM.md
 │       └── POST_MORTEM-TEMPLATE.md
 └── plans/
-    ├── MIGRATION_PLAN.md
-    ├── MIGRATION_PLAN_GAP_ANALYSIS.md
     └── CHG_MIGRATION_PLAN.md
 ```
 
@@ -155,7 +153,7 @@ ai_dev_flow_v3/
 
 ## v2 to v3 Migration
 
-See [MIGRATION_PLAN.md](MIGRATION_PLAN.md) for detailed changes.
+See [CHG_MIGRATION_PLAN.md](plans/CHG_MIGRATION_PLAN.md) for detailed changes.
 
 | v2 | v3 | Change |
 |----|-----|--------|

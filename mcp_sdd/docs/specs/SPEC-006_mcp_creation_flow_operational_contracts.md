@@ -4,8 +4,8 @@
 | --- | --- |
 | Canonical ID | SPEC-006 |
 | Status | Active |
-| Version | 1.0 |
-| Date | 2026-03-24 |
+| Version | 1.1 |
+| Date | 2026-04-30 |
 | Scope | Operational contracts for init and create-build flows |
 
 ---
@@ -73,6 +73,11 @@ Required artifact names when output enabled:
 - creation_prompt.txt
 - creation_prompt_sidecar.json
 - creation_prompt_inspection.json
+
+V3 prompt coverage requirements:
+- Creation prompt templates must include support for `tdd` and `iplan` document types.
+- Review and remediation prompt templates must include `tdd` and `iplan` variants.
+- Prompt loading must resolve project-local files under `UCX/prompts/templates/{creation|review|remediation}/`.
 
 ---
 

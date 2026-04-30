@@ -4,8 +4,8 @@
 | --- | --- |
 | Canonical ID | SPEC-003 |
 | Status | Active |
-| Version | 1.4 |
-| Date | 2026-03-24 |
+| Version | 1.5 |
+| Date | 2026-04-30 |
 | Source Basis | Canonical normative specification |
 | Scope | Prompt-driven creation contracts, validation-profile contracts, metadata identity rules, layer-boundary validation rules, subtype resolution and threshold precedence |
 
@@ -138,6 +138,11 @@ Required profile outputs:
 - checks_run
 - threshold_status
 - readiness_scores
+
+V3 profile alignment updates:
+- Canonical registry source path for profile binding is `ai_dev_flow_v3/LAYER_REGISTRY.yaml`.
+- Readiness mapping for active flow is `brd->prd`, `prd->ears`, `ears->bdd`, `bdd->adr`, `adr->spec`, `spec->tdd`, `tdd->iplan`.
+- Cumulative metadata tag ceilings apply by layer with max 8 at IPLAN.
 
 ### 4.1 Authoritative Layer Registry Binding
 

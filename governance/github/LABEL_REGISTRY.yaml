@@ -1,5 +1,5 @@
 # Label Registry - Single Source of Truth
-# Used by: setup-all-labels.sh, tasks_to_github.py, workflows
+# Used by: setup-all-labels.sh, workflows
 #
 # Update this file when adding/modifying labels.
 # Run setup-all-labels.sh to apply changes.
@@ -48,7 +48,7 @@ categories:
   source:
     - name: "source:sdd"
       color: "7057FF"
-      description: "Issue generated from SDD TASKS"
+      description: "Issue generated from SDD artifacts (v3 chain)"
     - name: "source:manual"
       color: "BFD4F2"
       description: "Manually created issue"

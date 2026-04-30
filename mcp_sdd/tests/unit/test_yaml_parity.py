@@ -55,6 +55,14 @@ def test_next_action_detects_yaml_source(tmp_path: Path) -> None:
     assert "BRD-01_test.yaml" in info["existing_artifacts"]
 
 
+def test_next_action_detects_yml_source(tmp_path: Path) -> None:
+    src = tmp_path / "BRD-01_test.yml"
+    src.write_text("title: test\n")
+    info = _inspect_document_folder(tmp_path)
+    assert info["current_stage"] == "created"
+    assert "BRD-01_test.yml" in info["existing_artifacts"]
+
+
 def test_next_action_detects_yaml_validation_copy(tmp_path: Path) -> None:
     src = tmp_path / "BRD-01_test.yaml"
     src.write_text("title: test\n")

@@ -1283,7 +1283,7 @@ ROI = ($3,052,500 - $885,000) ÷ $885,000 × 100% = 245%
 
 | Artifact | Integration Point | Usage |
 |----------|-------------------|-------|
-| **TASKS** | Sprint capacity allocation | Map capacity to task assignments |
+| **TDD/IPLAN** | Sprint capacity allocation | Map capacity to executable test and implementation plans |
 | **IPLAN** | Implementation planning | Use capacity for timeline |
 | **DoD** | Quality gates | Verify capacity includes testing |
 | **SPEC** | Technical specifications | Validate agent requirements |
@@ -1292,7 +1292,7 @@ ROI = ($3,052,500 - $885,000) ÷ $885,000 × 100% = 245%
 
 ```
 Sprint Planning Flow:
-1. Get sprint work items from TASKS
+1. Get sprint work items from TDD and IPLAN artifacts
 2. Calculate required PW for sprint
 3. Check available capacity (this guide)
 4. Adjust scope if over-committed

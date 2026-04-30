@@ -65,7 +65,7 @@ def bind_registry_profile(
     profile_name: str,
     profile_metadata: dict[str, object],
     registry: dict[str, dict[str, object]],
-    registry_source: str = "ai_dev_ssd_flow/LAYER_REGISTRY.yaml",
+    registry_source: str = "ai_dev_flow_v3/LAYER_REGISTRY.yaml",
 ) -> dict[str, object]:
     if layer not in registry:
         return {

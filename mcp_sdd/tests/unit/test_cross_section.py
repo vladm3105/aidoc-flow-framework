@@ -202,3 +202,36 @@ def test_md_fallback_runs_without_crash():
     # Should not crash; exact results depend on content but lists are populated.
     assert isinstance(errors, list)
     assert isinstance(passes, list)
+
+
+def test_cumulative_tags_enforces_max_for_iplan():
+    """IPLAN documents enforce maximum 8 cumulative tags."""
+    yaml_data = {
+        "metadata": {
+            "tags": [
+                "a", "b", "c", "d", "e", "f", "g", "h", "i"
+            ]
+        }
+    }
+    errors, warnings, passes = _make_lists()
+    run_cross_section_checks(
+        yaml_data=yaml_data, doc_type="iplan", errors=errors, warnings=warnings, passes=passes
+    )
+    assert any("SDD-XS-004" in e and "max 8" in e for e in errors)
+
+
+def test_cumulative_tags_passes_within_max_for_tdd():
+    """TDD documents pass when tags count <= 7."""
+    yaml_data = {
+        "metadata": {
+            "tags": [
+                "a", "b", "c", "d", "e", "f", "g"
+            ]
+        }
+    }
+    errors, warnings, passes = _make_lists()
+    run_cross_section_checks(
+        yaml_data=yaml_data, doc_type="tdd", errors=errors, warnings=warnings, passes=passes
+    )
+    assert not any("SDD-XS-004" in e for e in errors)
+    assert any("SDD-XS-004" in p for p in passes)

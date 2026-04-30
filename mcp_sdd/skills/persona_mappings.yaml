@@ -38,6 +38,12 @@ creation:
   spec:
     personas: [tech_lead, architect, operator, integration_lead, auditor]
     mode: sequential
+  tdd:
+    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
+    mode: sequential
+  iplan:
+    personas: [tech_lead, architect, operator, integration_lead, qa_lead]
+    mode: sequential
   ctr:
     personas: [architect, tech_lead, integration_lead, auditor, chaos_engineer]
     mode: sequential
@@ -69,6 +75,12 @@ review:
     mode: sequential
   spec:
     personas: [tech_lead, architect, chaos_engineer, operator, integration_lead]
+    mode: sequential
+  tdd:
+    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
+    mode: sequential
+  iplan:
+    personas: [tech_lead, architect, operator, integration_lead, auditor]
     mode: sequential
   ctr:
     personas: [integration_lead, tech_lead, architect, chaos_engineer, auditor]
