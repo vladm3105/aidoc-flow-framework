@@ -72,7 +72,7 @@ The original 14-layer framework is preserved in `ucx_flow_v3/` for existing proj
 | `ucx_flow_v3/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
 | `mcp_ucx/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_ucx`. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
-| `ucx_knowledge/` | Knowledge base package (RAG + Graph) |
+| `ucx_kb/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |
 | `roadmap/` | Roadmap and release planning |
 

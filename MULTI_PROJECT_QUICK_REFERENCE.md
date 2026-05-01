@@ -27,7 +27,7 @@ Use direct file workflows when retrieval/indexing is not required.
 ```bash
 # Keep knowledge in docs/ (or project-specific folders)
 # Use regular file search/read workflows
-# No ucx_knowledge DB or MCP startup required
+# No ucx_kb DB or MCP startup required
 ```
 
 ### Option B: Indexed mode (RAG + Graph + MCP)
@@ -37,7 +37,7 @@ Use this mode when you need semantic retrieval, graph context, and reusable know
 Optional alternative: use `framework_rags` as a shared RAG runtime instead of built-in project RAG when needed (see `framework_rags/README.md`).
 
 ```bash
-cd /opt/data/ucx_framework/ucx_knowledge
+cd /opt/data/ucx_framework/ucx_kb
 
 # 1) Configure environment
 cp .env.example .env
@@ -46,13 +46,13 @@ cp .env.example .env
 docker compose -f docker-compose.db.yml --env-file .env up -d
 
 # 3) Start MCP server
-python -m ucx_knowledge.mcp.server
+python -m ucx_kb.mcp.server
 
 # 4) Ingest documents
-python ucx_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
 
 # 5) Run pilot validation
-python ucx_knowledge/scripts/pilot_validate.py
+python ucx_kb/scripts/pilot_validate.py
 ```
 
 ---
@@ -80,9 +80,9 @@ python ucx_knowledge/scripts/pilot_validate.py
 # ✓ Symlinks .github/ → framework (20 workflows, 10 issue templates)
 #
 # IMPORTANT: This creates symlinks only
-# To complete project setup (create docs/, work_plans/, etc.):
+# To complete project setup (create docs/, plans/, etc.):
 # → Use: /skill project-init (recommended)
-# → OR manually: mkdir -p docs/{BRD,PRD,...} work_plans scripts
+# → OR manually: mkdir -p docs/{BRD,PRD,...} plans scripts
 #
 # Initialize AI Expert Board:
 # → mkdir -p docs/AI_EXPERTS
@@ -223,7 +223,7 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 │   └── project_*.sh         ✓ Project-specific scripts
 │
 ├── docs/                    ✓ Project documentation artifacts (auto-created by project-init)
-├── work_plans/              ✓ Project implementation plans (auto-created by project-init)
+├── plans/              ✓ Project implementation plans (auto-created by project-init)
 └── src/                     ✓ Project source code
 ```
 
@@ -231,7 +231,7 @@ mkdir -p docs/UCX/{skills,review,creation,remediation}
 
 - `→` Symlink (not tracked in git, created by setup_project_hybrid.sh)
 - `✓` Tracked in git
-- **Auto-created folders**: docs/, work_plans/ created by `/skill project-init`
+- **Auto-created folders**: docs/, plans/ created by `/skill project-init`
 
 ---
 
@@ -498,7 +498,7 @@ chmod -R 755 /opt/data/project_name/.claude/custom_skills/
 - `.claude/settings.local.json`
 - `.claude/CLAUDE.md`
 - `docs/` (project artifacts)
-- `work_plans/` (project plans)
+- `plans/` (project plans)
 - `.gitignore`
 
 **DO NOT commit:**

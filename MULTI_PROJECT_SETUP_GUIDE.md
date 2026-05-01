@@ -30,7 +30,7 @@ The original v2 (14-layer) variant is preserved in `ucx_flow_v3/` for existing p
 | `ucx_flow_v3/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
-| `ucx_knowledge/` | Standalone RAG + Graph knowledge base package |
+| `ucx_kb/` | Standalone RAG + Graph knowledge base package |
 | `framework_rags/` | Shared RAG tools and reference utilities |
 
 **See**: [ucx_flow_v3/README.md](./ucx_flow_v3/README.md) for v3 layer mappings. The v2 depth guide is in [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md).
@@ -69,7 +69,7 @@ The original v2 (14-layer) variant is preserved in `ucx_flow_v3/` for existing p
 │   │
 │   ├── scripts/                      # Validation and automation tools
 │   │   └── ucx-validate.sh           # UCX wrapper for all layers
-│   ├── ucx_knowledge/            # Standalone RAG + Graph + MCP package
+│   ├── ucx_kb/                   # Standalone RAG + Graph + MCP package
 │   ├── framework_rags/               # Shared rag_tools and reference services
 │   ├── .venv/                        # Shared Python virtual environment
 │   └── .claude/
@@ -357,7 +357,7 @@ Choose one mode:
     - Use when the project requires reusable knowledge context across runs.
 
 ```bash
-cd /opt/data/ucx_framework/ucx_knowledge
+cd /opt/data/ucx_framework/ucx_kb
 
 # Configure env
 cp .env.example .env
@@ -366,15 +366,15 @@ cp .env.example .env
 docker compose -f docker-compose.db.yml --env-file .env up -d
 
 # Start MCP server
-python -m ucx_knowledge.mcp.server
+python -m ucx_kb.mcp.server
 
 # Optional: ingest docs
-python ucx_knowledge/orchestrator.py /path/to/docs --pattern "*.yaml"
+python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
 ```
 
 Core docs:
-- `ucx_knowledge/README.md`
-- `ucx_knowledge/mcp/README.md`
+- `ucx_kb/README.md`
+- `ucx_kb/mcp/README.md`
 
 ---
 
@@ -515,7 +515,7 @@ else
 fi
 ```
 
-**Note**: This script creates symlinks for shared resources only. To complete the project setup with documentation folders (`docs/`) and implementation plans folder (`work_plans/`), use:
+**Note**: This script creates symlinks for shared resources only. To complete the project setup with documentation folders (`docs/`) and implementation plans folder (`plans/`), use:
 
 ```bash
 # Recommended: Use project-init skill
@@ -525,7 +525,7 @@ cd /opt/data/project_name
 # OR manually create folder structure
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
-mkdir -p work_plans
+mkdir -p plans
 mkdir -p scripts
 
 # Setup AI Expert Board
@@ -585,11 +585,11 @@ PY
 - Creates `.claude/` directory structure
 - Creates symlinks to framework skills/agents/commands
 - Ideal for: Adding framework to existing projects
-- Does NOT create: `docs/` or `work_plans/` directories
+- Does NOT create: `docs/` or `plans/` directories
 
 **`/skill project-init`** (Full Structure):
 - Creates complete documentation structure (`docs/`)
-- Creates `work_plans/` directory
+- Creates `plans/` directory
 - Initializes all 8 artifact directories (BRD through IPLAN) for v3, or 11 directories for v2
 - Ideal for: Starting new projects from scratch
 - Includes: Domain selection, contract decision, template customization
@@ -694,7 +694,7 @@ When using `--with-github`, the following resources are symlinked:
 │   └── generated/
 │       └── matrices/
 │
-├── work_plans/                      # Implementation plans (auto-created by project-init)
+├── plans/                      # Implementation plans (auto-created by project-init)
 │   └── PLAN-001_*.md
 │
 ├── scripts/
@@ -812,7 +812,7 @@ Test service connection and report status with diagnostics
 {
   "workingDirectory": "${PROJECT_PATH}",
   "docFlowPath": "docs/",
-  "workPlansPath": "work_plans/",
+  "workPlansPath": "plans/",
   "frameworkPath": "/opt/data/ucx_framework",
   "projectType": "mcp_server",
   "traceabilityEnabled": true
@@ -828,7 +828,7 @@ Test service connection and report status with diagnostics
 
 **Active Framework**: /opt/data/ucx_framework
 **Templates**: .templates/ucx_flow_v3/
-**Work Plans**: work_plans/
+**Work Plans**: plans/
 
 ## Project-Specific Rules
 
@@ -873,7 +873,7 @@ scripts/validate
 
 # Keep actual documentation artifacts
 !docs/
-!work_plans/
+!plans/
 !scripts/*.sh
 !scripts/*.py
 ```
@@ -1090,12 +1090,12 @@ mkdir -p /opt/data/new_project
 # 2. Setup hybrid resources (symlinks to framework)
 /opt/data/ucx_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
-# 3. Create SDD v3 project structure (docs, work_plans, src, tests)
+# 3. Create SDD v3 project structure (docs, plans, src, tests)
 cd /opt/data/new_project
 # Use /skill project-init for full structure
 # OR manually:
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}
-mkdir -p work_plans
+mkdir -p plans
 mkdir -p src tests
 
 # 4. Result: Complete project setup with v3 framework access

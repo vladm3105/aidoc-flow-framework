@@ -17,11 +17,11 @@ Before making any changes, read these files in order:
 
 When tasks involve retrieval, MCP, or knowledge indexing, also read:
 
-5. **[ucx_knowledge/README.md](ucx_knowledge/README.md)** — UCX Knowledge Base setup and operations
+5. **[ucx_kb/README.md](ucx_kb/README.md)** — UCX Knowledge Base setup and operations
 
 Knowledge operation modes:
 - **File-only mode**: use direct file reads/search; no DB/MCP runtime.
-- **Indexed mode**: start `ucx_knowledge` DB + MCP for RAG/Graph retrieval.
+- **Indexed mode**: start `ucx_kb` DB + MCP for RAG/Graph retrieval.
 
 Do **NOT** invent process rules, naming conventions, or workflow patterns. If a rule is missing from governance docs, flag it to the human reviewer. Do not create ad-hoc rules.
 
@@ -282,9 +282,9 @@ Required frontmatter:
 | Read technical specs | [docs/core/](docs/core/) (8 specs) |
 | See execution corrections | [governance/plans/](governance/plans/) (IPLAN index) |
 | Understand Phase 1 | [GCP-COST-GUARD.md](docs/GCP-COST-GUARD.md) |
-| Run UCX Knowledge Base | [ucx_knowledge/README.md](ucx_knowledge/README.md) |
-| Configure KB databases | [ucx_knowledge/docker-compose.db.yml](ucx_knowledge/docker-compose.db.yml) |
-| Use KB MCP tools | [ucx_knowledge/mcp/README.md](ucx_knowledge/mcp/README.md) |
+| Run UCX Knowledge Base | [ucx_kb/README.md](ucx_kb/README.md) |
+| Configure KB databases | [ucx_kb/docker-compose.db.yml](ucx_kb/docker-compose.db.yml) |
+| Use KB MCP tools | [ucx_kb/mcp/README.md](ucx_kb/mcp/README.md) |
 | Validate documents | mcp_ucx `sdd_validate` and `sdd_validate_links` tools |
 
 ---
