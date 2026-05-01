@@ -46,7 +46,7 @@ Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS d
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
   1. Use explicit file path when it exists
-  2. Resolve `work_plans/IPLAN-NNN*.md`
+  2. Resolve `plans/IPLAN-NNN*.md`
   3. Resolve `governance/plans/IPLAN-NNN*.md`
   4. If multiple matches exist, fail with disambiguation request
 - Merge conflict rule:
@@ -63,7 +63,7 @@ Automated **Atomic Requirements (REQ)** generation pipeline that processes SYS d
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
   1. Use explicit file path when it exists
-  2. Resolve `work_plans/IPLAN-NNN*.md`
+  2. Resolve `plans/IPLAN-NNN*.md`
   3. Resolve `governance/plans/IPLAN-NNN*.md`
   4. If multiple matches exist, fail with disambiguation request
 - Merge conflict rule:

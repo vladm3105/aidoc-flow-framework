@@ -9,6 +9,7 @@ import shutil
 import sys
 
 from mcp_server.consistency import run_consistency_check
+from mcp_server.cleanup.runner import run_clean
 from mcp_server.core.stage_output import (
     STAGE_CREATE,
     STAGE_REMEDIATE,
@@ -160,6 +161,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Optional path to review report consumed by remediation",
     )
     remediate_parser.add_argument(
+        "--remediation-report",
+        default=None,
+        help="Optional path to existing remediation report consumed by --fix apply phase",
+    )
+    remediate_parser.add_argument(
         "--out",
         default=None,
         help="Optional output directory; defaults to <document_dir>/.ucx/remediation",
@@ -282,6 +288,24 @@ def _build_parser() -> argparse.ArgumentParser:
     preflight_parser.add_argument("--document", default=None, help="Optional document path to verify")
     preflight_parser.add_argument("--format", choices=["text", "json"], default="text", help="Preflight output format")
     preflight_parser.add_argument("--out", default=None, help="Optional output directory for preflight artifacts")
+
+    clean_parser = subparsers.add_parser(
+        "clean",
+        help="Remove obsolete stage artifacts from a document folder",
+    )
+    clean_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    clean_parser.add_argument("--document", required=True, help="Path to document file or document directory to clean")
+    clean_parser.add_argument(
+        "--stages",
+        nargs="+",
+        choices=["validate", "review", "remediate", "creation", "all"],
+        default=["all"],
+        help="Stages to clean (default: all)",
+    )
+    clean_parser.add_argument("--keep", type=int, default=1, help="Number of latest versions to keep per artifact type")
+    clean_parser.add_argument("--dry-run", action="store_true", default=True, help="List files that would be deleted (default)")
+    clean_parser.add_argument("--apply", action="store_true", help="Delete files instead of dry-run listing")
+    clean_parser.add_argument("--out", default=None, help="Optional output directory for cleanup report")
 
     return parser
 
@@ -576,7 +600,7 @@ def main(argv: list[str] | None = None) -> int:
             assert review_document is not None
             review_sections, selected_files = _build_review_sections_from_document(review_document)
             if not review_sections:
-                print("review-build failed: no markdown sources found for --document")
+                print("review-build failed: no supported sources found for --document (.md/.yaml/.yml)")
                 return 1
             document_dir_for_output = review_document if review_document.is_dir() else review_document.parent
 
@@ -746,6 +770,7 @@ def main(argv: list[str] | None = None) -> int:
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
         review_report = Path(args.review_report).expanduser().resolve() if args.review_report else None
+        remediation_report = Path(args.remediation_report).expanduser().resolve() if args.remediation_report else None
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REMEDIATE,
@@ -753,6 +778,28 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=explicit_out,
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
+
+        if remediation_report is not None and not args.fix:
+            print("Warning: --remediation-report is used only with --fix; ignoring provided remediation report.")
+
+        if args.fix and remediation_report is not None:
+            try:
+                fix_result = run_remediate_fix_build(
+                    project_root=project_root,
+                    doc_type=args.doc_type,
+                    layer=args.layer,
+                    document_path=document_path,
+                    remediation_report=remediation_report,
+                    output_dir=output_dir,
+                )
+            except (FileNotFoundError, ValueError) as exc:
+                print(f"remediate --fix failed: {exc}")
+                return 1
+            print(f"Remediate-fix report generated at {fix_result.report_path}")
+            print(f"Remediate-fix summary generated at {fix_result.summary_path}")
+            print(f"Derived artifacts created: {len(fix_result.derived_paths)}")
+            return 0
+
         remediation_result = run_remediation_build(
             project_root=project_root,
             doc_type=args.doc_type,
@@ -970,6 +1017,41 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"Preflight summary generated at {preflight_result.summary_path}")
 
         return 1 if preflight_result.status == "blocked" else 0
+
+    if args.command == "clean":
+        document_path = Path(args.document).expanduser().resolve()
+        apply_changes = bool(args.apply)
+        dry_run = not apply_changes
+        clean_result = run_clean(
+            document_path=document_path,
+            stages=args.stages,
+            keep=max(0, int(args.keep)),
+            dry_run=dry_run,
+        )
+
+        payload = {
+            "dry_run": clean_result.dry_run,
+            "deleted": clean_result.deleted,
+            "deleted_count": len(clean_result.deleted),
+            "kept": clean_result.kept,
+            "kept_count": len(clean_result.kept),
+            "bytes_freed": clean_result.total_bytes_freed,
+        }
+
+        out_dir = Path(args.out).expanduser().resolve() if args.out else None
+        if out_dir is not None:
+            out_dir.mkdir(parents=True, exist_ok=True)
+            report_path = out_dir / "clean_report.json"
+            report_path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+            print(f"Clean report generated at {report_path}")
+
+        if dry_run:
+            print(f"Dry run: {payload['deleted_count']} files would be deleted, {payload['kept_count']} kept")
+        else:
+            print(f"Deleted: {payload['deleted_count']} files, kept {payload['kept_count']}")
+            print(f"Bytes freed: {payload['bytes_freed']}")
+
+        return 0
 
     if args.command == "scan":
         report_file = Path(args.report_file).expanduser().resolve()

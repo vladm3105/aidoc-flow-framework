@@ -4,7 +4,7 @@
 # criterion against PR changes. Posts a verification report.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #1)
+#   - plans/ai_governance_automation.md (Item #1)
 #   - governance/scripts/workflows/verify_acceptance_criteria.py
 
 name: Verify Acceptance Criteria

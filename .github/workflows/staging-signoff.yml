@@ -3,7 +3,7 @@
 # Evaluates staging readiness for production deployment.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #7)
+#   - plans/ai_governance_automation.md (Item #7)
 
 name: Staging Sign-Off
 

@@ -92,7 +92,7 @@ docs/07_REQ/ui/           # User interface
 
 # Support directories
 scripts/               # Validation and utility scripts
-work_plans/            # Implementation plans (/save-plan output)
+plans/            # Implementation plans (/save-plan output)
 ```
 
 ---

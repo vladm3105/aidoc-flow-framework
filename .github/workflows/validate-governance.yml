@@ -3,7 +3,7 @@
 # Detects drift between governance docs and reality.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #11)
+#   - plans/ai_governance_automation.md (Item #11)
 
 name: Validate Governance
 

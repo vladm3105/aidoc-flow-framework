@@ -1,10 +1,10 @@
 """MCP Tool definitions and handler dispatch for SDD lifecycle.
 
-25 tools total:
+26 tools total:
   - 2 session management (set/get project)
-  - 13 deterministic (execute directly)
+  - 18 deterministic (execute directly)
   - 2 orchestration (pipeline + advisor)
-  - 6 LLM-dependent (optional executor param)
+  - 4 LLM-dependent (optional executor param)
 """
 
 from __future__ import annotations

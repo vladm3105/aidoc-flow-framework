@@ -222,7 +222,7 @@ IPLAN resolution order:
 
 1. If `--iplan` is an existing file path, use it.
 2. If `--iplan` value matches `IPLAN-NNN` (no path), resolve in order:
-  - `work_plans/IPLAN-NNN*.md`
+  - `plans/IPLAN-NNN*.md`
   - `governance/plans/IPLAN-NNN*.md`
 3. If multiple matches are found, fail with disambiguation output listing candidate files.
 
@@ -328,7 +328,7 @@ ls docs/01_BRD/BRD-{NN}_*/
 /doc-brd-autopilot --prompt "Create a BRD for user authentication system"
 
 # Generate mode (implementation plan input)
-/doc-brd-autopilot --iplan work_plans/IPLAN-002_brd_skill_input_expansion.md
+/doc-brd-autopilot --iplan plans/IPLAN-002_brd_skill_input_expansion.md
 /doc-brd-autopilot --iplan IPLAN-002
 
 # Mixed input (primary + supplemental)
@@ -378,7 +378,7 @@ Input: docs/00_REF/foundation/F1_IAM_Technical_Specification.md
 
 Input: --iplan IPLAN-002
 ├── Detected Type: Implementation plan
-├── Resolved Path: work_plans/IPLAN-002_brd_skill_input_expansion.md
+├── Resolved Path: plans/IPLAN-002_brd_skill_input_expansion.md
 ├── Validation: Required fields present
 ├── Action: GENERATE MODE - Creating BRD from implementation plan
 └── Mapping: IPLAN sections -> BRD sections (1,2,3,8,9,10,11,12,15)
@@ -492,7 +492,7 @@ Analyze available input sources to extract business requirements.
 
 | Priority | Source | Location | Content Type |
 |----------|--------|----------|--------------|
-| 1 | Implementation Plan | `work_plans/` or `governance/plans/` | Planned scope, constraints, dependencies, validation approach |
+| 1 | Implementation Plan | `plans/` or `governance/plans/` | Planned scope, constraints, dependencies, validation approach |
 | 2 | Reference Documents | `docs/00_REF/` | Technical specs, gap analysis, architecture |
 | 3 | Reference Documents (alt) | `REF/` | Alternative location for reference docs |
 | 4 | Existing Documentation | `docs/` or `README.md` | Project context, scope |

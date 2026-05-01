@@ -4,7 +4,7 @@ name: Auto Add to Project
 # based on issue title patterns like [P1-...] or [P2-...].
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #12)
+#   - plans/ai_governance_automation.md (Item #12)
 
 on:
   issues:

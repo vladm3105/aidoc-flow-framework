@@ -1,10 +1,10 @@
 """MCP server entry point for SDD lifecycle tools.
 
-Exposes 25 tools over stdio transport:
+Exposes 26 tools over stdio transport:
   - 2 session management (set/get project)
-  - 13 deterministic (validation, scoring, consistency, link validation, etc.)
+  - 18 deterministic (validation, scoring, consistency, link validation, etc.)
   - 2 orchestration (pipeline, next-action advisor)
-  - 6 LLM-dependent (create, review, fix — with per-call executor selection)
+  - 4 LLM-dependent (create/review/remediate with per-call executor selection)
 
 Launch: python -m mcp_server.server
 """

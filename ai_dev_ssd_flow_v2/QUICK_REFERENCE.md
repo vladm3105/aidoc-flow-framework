@@ -227,7 +227,7 @@ mkdir -p docs/08_CTR/CTR-01_data_service_api
 # Legacy category folders are not used in new projects.
 
 # Support directories
-mkdir -p scripts work_plans
+mkdir -p scripts plans
 ```
 
 Note: Traceability matrix generation is available via mcp_sdd `sdd_validate` tool.

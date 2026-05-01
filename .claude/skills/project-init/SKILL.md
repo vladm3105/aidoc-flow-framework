@@ -171,13 +171,13 @@ mkdir -p docs/TASKS
 mkdir -p scripts
 
 # Work plans directory (for /save-plan command output)
-mkdir -p work_plans
+mkdir -p plans
 ```
 
 **Validation**:
 ```bash
 ls -la docs/  # Verify 11 artifact directories created
-ls -la work_plans/  # Verify work_plans directory
+ls -la plans/  # Verify plans directory
 ```
 
 ---
@@ -349,7 +349,7 @@ ls docs/*/index.* || ls docs/*/*_index.*
 - ✅ All index files created
 - ✅ All templates include Document Control sections
 - ✅ Validation scripts present (if copied)
-- ✅ work_plans directory exists (for /save-plan command)
+- ✅ plans directory exists (for /save-plan command)
 
 **Error Handling**:
 - If folders missing: Re-run Step 2
@@ -461,7 +461,7 @@ Creating 15-layer architecture (12 artifact directories)...
 ✓ Created: docs/REQ/billing/
 ✓ Created: docs/REQ/workspace/
 ✓ Created: scripts/
-✓ Created: work_plans/
+✓ Created: plans/
 
 Step 3: Domain Configuration
 Applying Software/SaaS terminology:
@@ -522,7 +522,7 @@ AI Assistant:
 Step 2: Folder Creation
 ✓ All core directories created
 ✓ SaaS subdirectories created: tenant/, subscription/, billing/, workspace/
-✓ Support directories created: scripts/, work_plans/
+✓ Support directories created: scripts/, plans/
 
 Step 3: Domain Configuration
 ✓ [RESOURCE_COLLECTION] → Workspace

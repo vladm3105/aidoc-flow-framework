@@ -3,7 +3,7 @@
 # Validates project has required secrets and configuration.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #13)
+#   - plans/ai_governance_automation.md (Item #13)
 
 name: Validate Config
 

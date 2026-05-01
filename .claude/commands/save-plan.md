@@ -112,5 +112,5 @@ Extract the current conversation plan and task list, save to a timestamped imple
    - Add or update section:
    ```markdown
    ### Project Configuration
-   **Work Plans Directory**: /path/to/work_plans/
+   **Work Plans Directory**: /path/to/plans/
    ```

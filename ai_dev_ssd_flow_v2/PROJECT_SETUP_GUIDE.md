@@ -143,15 +143,15 @@ mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/CT
 
 # Support directories
 mkdir -p scripts
-mkdir -p work_plans
+mkdir -p plans
 ```
 
-Note: `work_plans/` is an optional helper directory for scratch operational notes.
+Note: `plans/` is an optional helper directory for scratch operational notes.
 
 **Validation**:
 ```bash
 ls -la docs/  # Verify 11 artifact directories created (BRD through TASKS)
-ls -la work_plans/  # Verify work_plans directory
+ls -la plans/  # Verify plans directory
 ```
 
 **Output**: Complete folder structure ready
@@ -274,7 +274,7 @@ ls scripts/*.py
 - Domain-specific subdirectories exist
 - All index files created
 - Validation scripts present
-- work_plans directory exists (for /save-plan command output)
+- plans directory exists (for /save-plan command output)
 
 ---
 
@@ -321,7 +321,7 @@ Next Steps:
 5. **Zero Tolerance**: Do not start next document type until all errors and warnings resolved
 6. **No Quick Fixes**: Review everything carefully and individually
 7. **Quality Gate**: Pass all validations without errors/warnings before next phase
-8. **Update Execution Plan**: Update project execution plan in `work_plans/` after each phase completion
+8. **Update Execution Plan**: Update project execution plan in `plans/` after each phase completion
 
 ### Document Generation Workflow
 
@@ -344,7 +344,7 @@ After all documents of type created:
   11. Fix all inconsistencies
   12. Execute additional checks as needed
   13. Quality gate approval
-  14. Update project execution plan in work_plans/
+  14. Update project execution plan in plans/
   15. Proceed to next document type
 ```
 
@@ -398,16 +398,16 @@ grep -r "@prd: PRD-" docs/07_REQ/*.md | sort | uniq
 # All documents pass all checks
 
 # 6. Update project execution plan
-# Edit work_plans/{project}-init_REVISED_{date}.md
+# Edit plans/{project}-init_REVISED_{date}.md
 # Document completed phase, issues encountered, next steps
 ```
 
 ### Project Execution Plan Update Protocol
 
-**Purpose**: Maintain living documentation of project initialization progress in `work_plans/` directory.
+**Purpose**: Maintain living documentation of project initialization progress in `plans/` directory.
 
 **What is the Project Execution Plan**:
-- Located in: `work_plans/` directory
+- Located in: `plans/` directory
 - Naming: `{project-name}-project-init_YYYYMMDD.md` or `{project-name}-project-init_REVISED_YYYYMMDD.md`
 - Purpose: Track project initialization and documentation creation workflow
 - Created by: `/save-plan` command or manually during project setup
@@ -665,7 +665,7 @@ DO NOT:
  Upstream traceability validated
  Downstream references checked
  Phase review completed
- Project execution plan (work_plans/) updated with phase outcomes
+ Project execution plan (plans/) updated with phase outcomes
  Quality gate approved
  Git commit with validation summary
 ```
@@ -756,29 +756,29 @@ BRD Phase:
   Generate BRD-01 → Validate → Fix → Complete
   Generate BRD-02 → Validate → Fix → Complete
   ...
-  Phase Review → Quality Gate → Update work_plans/ → Proceed to PRD
+  Phase Review → Quality Gate → Update plans/ → Proceed to PRD
 
 PRD Phase:
   Generate PRD-01 → Validate → Fix → Complete
   Generate PRD-02 → Validate → Fix → Complete
   ...
-  Phase Review → Verify BRD traceability → Quality Gate → Update work_plans/ → Proceed to EARS
+  Phase Review → Verify BRD traceability → Quality Gate → Update plans/ → Proceed to EARS
 
 REQ Phase:
   Generate REQ-01 → Validate → Fix → Complete
   Generate REQ-02 → Validate → Fix → Complete
   ...
-  Phase Review → Verify 02_PRD/EARS traceability → Quality Gate → Update work_plans/ → Proceed to SPEC
+  Phase Review → Verify 02_PRD/EARS traceability → Quality Gate → Update plans/ → Proceed to SPEC
 
 SPEC Phase:
   Generate SPEC-01 → Validate → Fix → Complete
   ...
-  Phase Review → Verify REQ coverage → Quality Gate → Update work_plans/ → Proceed to TASKS
+  Phase Review → Verify REQ coverage → Quality Gate → Update plans/ → Proceed to TASKS
 
 TASKS Phase:
   Generate TASKS-01 → Validate → Fix → Complete
   ...
-  Phase Review → Quality Gate → Update work_plans/ → Ready for implementation
+  Phase Review → Quality Gate → Update plans/ → Ready for implementation
 ```
 
 ### AI Assistant Responsibilities
@@ -837,7 +837,7 @@ Next Action: Fix errors and re-validate
 ```
 
 **Project Execution Plan Update Duties**:
-- Update `work_plans/{project}-init_REVISED_{date}.md` after each phase
+- Update `plans/{project}-init_REVISED_{date}.md` after each phase
 - Document completion status, validation results, issues encountered
 - Update "Current Progress Summary" section
 - Add to "Completed Milestones" with metrics
@@ -895,7 +895,7 @@ Creating folder structure...
  Created: docs/07_REQ/ml/
 
  Created: scripts/
- Created: work_plans/
+ Created: plans/
 
 Copying templates...
  Templates copied from framework
@@ -987,7 +987,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 
 # Step 2: Create Folders
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR,SPEC,TASKS}
-mkdir -p scripts work_plans
+mkdir -p scripts plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
 # Step 3: Copy Templates

@@ -4,7 +4,7 @@
 # and posts a comment on the linked issue with the PR details.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #3)
+#   - plans/ai_governance_automation.md (Item #3)
 
 name: PR Issue Link
 

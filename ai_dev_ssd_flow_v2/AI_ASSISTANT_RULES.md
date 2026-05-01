@@ -161,7 +161,7 @@ mkdir -p docs/07_REQ/billing
 
 # Support directories
 mkdir -p scripts
-mkdir -p work_plans
+mkdir -p plans
 
 # Root documentation (created by VCS init; no action required)
 ```
@@ -227,9 +227,9 @@ ls -la docs/07_REQ/
 # Expected output should include domain-specific subdirectories
 
 # Verify support directories
-ls -la scripts/ work_plans/
+ls -la scripts/ plans/
 
-# Expected: scripts/ and work_plans/ directories exist
+# Expected: scripts/ and plans/ directories exist
 ```
 
 ### Error Handling

@@ -3,7 +3,7 @@
 # Syncs TASKS files with GitHub issues.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #9)
+#   - plans/ai_governance_automation.md (Item #9)
 
 name: Sync TASKS
 

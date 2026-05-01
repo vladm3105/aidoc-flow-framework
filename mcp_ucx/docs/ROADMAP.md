@@ -6,9 +6,9 @@ This roadmap defines planned documentation and governance milestones for MCP doc
 
 | Field | Value |
 | --- | --- |
-| Current Version | 1.21.0 |
-| Latest Release | 1.21.0 (API executor, tool surface cleanup — PLAN-031) |
-| Previous Release | 1.20.0 (review/remediation quality — PLAN-029) |
+| Current Version | 1.22.0 |
+| Latest Release | 1.22.0 (ucx_flow_v3 readiness: TDD/IPLAN — PLAN-033) |
+| Previous Release | 1.21.0 (API executor, tool surface cleanup — PLAN-030/031) |
 | Next Major | 2.0.0 (post-migration governance hardening and policy enforcement) |
 | Timezone | America/New_York |
 
@@ -128,7 +128,7 @@ Delivered scope:
 
 - MCP server entry point (`mcp_ucx/src/mcp_server/server.py`) over stdio transport, server name `sdd-lifecycle`
 - Executor package (`mcp_ucx/src/mcp_server/executor/`): open registry with CLI and API type system, async subprocess runner, LiteLLM API stub, type-based dispatcher
-- Tool registry (`mcp_ucx/src/mcp_server/tool_registry.py`): 20 tools (12 deterministic, 2 orchestration, 6 LLM-dependent)
+- Tool registry (`mcp_ucx/src/mcp_server/tool_registry.py`): 20 tools (12 deterministic, 2 orchestration, 6 LLM-dependent) at v1.4.0 historical snapshot
 - Packaging: `mcp_ucx/pyproject.toml` with `mcp-ucx` console script
 - Registration: `.mcp.json` for Claude Code auto-discovery
 - Tests: 33 new tests in `mcp_ucx/tests/unit/test_server.py`, all passing

@@ -3,7 +3,7 @@ name: Release
 # Creates GitHub releases with QA results and issue links.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #10)
+#   - plans/ai_governance_automation.md (Item #10)
 
 on:
   push:

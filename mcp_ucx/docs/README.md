@@ -179,7 +179,6 @@ LLM-dependent tools assemble prompts from: persona files + phase template + acti
 
 ## 8. Changelog
 
-- [CHANGELOG v1.21.0](CHANGELOG/CHANGELOG_v1.21.0.md) — API executor, tool surface cleanup (PLAN-030, PLAN-031)
 - [CHANGELOG v1.20.0](CHANGELOG/CHANGELOG_v1.20.0.md) — review/remediation quality (PLAN-029)
 - [CHANGELOG v1.19.0](CHANGELOG/CHANGELOG_v1.19.0.md) — review YAML document support (PLAN-028)
 - [CHANGELOG v1.18.0](CHANGELOG/CHANGELOG_v1.18.0.md) — default project resolution (PLAN-027 Phase 2)

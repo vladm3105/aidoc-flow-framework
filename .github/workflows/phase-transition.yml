@@ -4,7 +4,7 @@ name: Phase Transition
 # Can be triggered manually or on a schedule.
 #
 # References:
-#   - work_plans/ai_governance_automation.md (Item #14)
+#   - plans/ai_governance_automation.md (Item #14)
 
 on:
   workflow_dispatch:
