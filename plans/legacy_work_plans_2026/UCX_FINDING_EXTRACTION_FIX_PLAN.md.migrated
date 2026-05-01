@@ -1,0 +1,371 @@
+# UCX Framework Bug Fixes: Finding Extraction & Chairperson Manifest
+
+**Created**: 2026-03-13
+**Reviewed**: 2026-03-13 (gap analysis completed)
+**Status**: Ready for Implementation
+**Priority**: P0 - Blocking UCX review functionality
+
+## Problem Summary
+
+Two bugs prevent UCX from correctly extracting findings and generating machine-parseable reports:
+
+| Bug | Symptom | Root Cause |
+|-----|---------|------------|
+| **#1 Finding Format Mismatch** | Frontmatter shows `P0=0, P1=0, P2=0` despite 30+ findings in content | Regex expects `**[P0-1]**` but personas output `ARCH-P0-001`, `TL-P1-002` |
+| **#2 Chairperson Manifest Missing** | No `<!-- UCX-MANIFEST-START -->` markers generated | Format instructions at prompt beginning get lost after 40K tokens of content |
+| **#3 Inconsistent ID Formats** | Operator uses `P0-OP-001` while others use `ARCH-P0-001` | No unified format standard defined |
+
+---
+
+## Fix #0: Unified Finding ID Format Standard (NEW)
+
+### Canonical Format: `PREFIX-P{0-2}-NNN`
+
+All personas MUST use: **`{PERSONA_PREFIX}-P{PRIORITY}-{SEQUENCE}`**
+
+| Persona | Prefix | Example |
+|---------|--------|---------|
+| Architect | ARCH | `ARCH-P0-001` |
+| Auditor | AUD | `AUD-P0-001` |
+| Tech Lead | TL | `TL-P1-001` |
+| Strategist | STR | `STR-P1-001` |
+| Devil's Advocate | DA | `DA-P0-001` |
+| Operator | OP | `OP-P0-001` |
+| Integration Lead | IL | `IL-P0-001` |
+| Product Owner | PO | `PO-P1-001` |
+| Business Analyst | BA | `BA-P1-001` |
+| Fact Checker | FC | `FC-P0-001` |
+| Chairperson (manifest) | REM | `REM-P0-001` |
+| QA Lead | QA | `QA-P1-001` |
+| UX Strategist | UX | `UX-P1-001` |
+
+**Format Rules**:
+1. **Prefix**: 2-4 uppercase letters identifying the persona
+2. **Priority**: P0, P1, or P2 (no leading zeros)
+3. **Sequence**: 3-digit zero-padded number (001-999)
+4. **Delimiter**: Always hyphen `-`
+
+**Deprecated Formats** (must be normalized):
+- `P0-OP-001` → `OP-P0-001` (priority first - WRONG)
+- `**[P0-1]**` → `{PREFIX}-P0-001` (legacy bracket format)
+- `P0-1` → `{PREFIX}-P0-001` (missing prefix)
+
+---
+
+## Fix #1: Update Finding Extraction Regex
+
+### File: `/opt/data/docs_flow_framework/UCX/ucx/core/review_memory.py`
+
+**Current pattern** (line 506-509):
+```python
+r'\*\*\[([Pp][0-2])-(\d+)\]\*\*\s*([^\n]+?)(?:\n|$)(.*?)(?=\*\*\[[Pp][0-2]-|\Z)'
+```
+
+**New patterns** to match actual persona outputs:
+
+```python
+# Canonical format: PREFIX-P0-NNN (e.g., ARCH-P0-001, TL-P1-002, OP-P0-001)
+# This is the REQUIRED format going forward (Fix #0)
+CANONICAL_PATTERN = re.compile(
+    r'(?:'
+    r'\|\s*\*?\*?([A-Z]{2,4}-P[012]-\d{1,3})\*?\*?\s*\|'  # Table: | ARCH-P0-001 |
+    r'|'
+    r'\*\*([A-Z]{2,4}-P[012]-\d{1,3})\*\*'  # Bold: **TL-P0-001**
+    r'|'
+    r'(?:^|\n)\s*([A-Z]{2,4}-P[012]-\d{1,3})[:\s]'  # Start of line: AUD-P0-001:
+    r')',
+    re.MULTILINE
+)
+
+# Legacy format: P0-PREFIX-NNN (e.g., P0-OP-001) - normalize to canonical
+# Kept for backward compatibility with existing reports
+LEGACY_PRIORITY_FIRST_PATTERN = re.compile(
+    r'(?:'
+    r'\|\s*\*?\*?(P[012]-[A-Z]{2,4}-\d{1,3})\*?\*?\s*\|'  # Table: | P0-OP-001 |
+    r'|'
+    r'\*\*(P[012]-[A-Z]{2,4}-\d{1,3})\*\*'  # Bold: **P1-OP-002**
+    r'|'
+    r'(?:^|\n)\s*(P[012]-[A-Z]{2,4}-\d{1,3})[:\s]'  # Start of line: P0-OP-001:
+    r')',
+    re.MULTILINE
+)
+
+# Legacy format: **[P0-1]** (backward compatibility with very old reports)
+LEGACY_BRACKET_PATTERN = re.compile(
+    r'\*\*\[([Pp][0-2])-(\d+)\]\*\*\s*([^\n]+?)(?:\n|$)(.*?)(?=\*\*\[[Pp][0-2]-|\Z)',
+    re.DOTALL
+)
+```
+
+**Format Migration Plan**:
+
+| Format | Status | Action |
+|--------|--------|--------|
+| `PREFIX-P0-NNN` | **CANONICAL** | Enforce in prompts |
+| `P0-PREFIX-NNN` | Legacy | Normalize to canonical |
+| `**[P0-1]**` | Deprecated | Normalize to canonical |
+
+**Changes to `_extract_findings()` method** (lines 497-549):
+1. Replace single regex with multi-pattern approach (3 patterns)
+2. Extract prefix (ARCH, TL, AUD, OP, etc.) separately from priority
+3. Normalize both formats to consistent internal representation: `PREFIX-P0-NNN`
+4. Maintain backward compatibility with old `**[P0-1]**` format
+
+**Normalization logic**:
+```python
+def _normalize_finding_id(raw_id: str) -> tuple[str, str, str]:
+    """Normalize finding ID to (prefix, priority, number).
+
+    Handles:
+    - ARCH-P0-001 → ('ARCH', 'P0', '001')
+    - P0-OP-001 → ('OP', 'P0', '001')
+    """
+    if raw_id[0] == 'P':  # P0-OP-001 format
+        parts = raw_id.split('-')
+        return (parts[1], parts[0], parts[2])
+    else:  # ARCH-P0-001 format
+        parts = raw_id.split('-')
+        return (parts[0], parts[1], parts[2])
+```
+
+---
+
+## Fix #1.5: Update UCR Prompts with Format Standard (NEW)
+
+### File: `/opt/data/b-local/b-local-docs/docs/UCX/review/UCR_PROMPT_BRD_PROJECT.md`
+
+**Add section after "Output Requirements"** (~line 79):
+
+```markdown
+### Finding ID Format (REQUIRED)
+
+All personas MUST use this ID format: `{PREFIX}-P{PRIORITY}-{NNN}`
+
+| Component | Rule | Example |
+|-----------|------|---------|
+| PREFIX | Persona abbreviation (2-4 chars) | ARCH, AUD, TL, OP |
+| PRIORITY | P0, P1, or P2 | P0 |
+| NNN | 3-digit sequence (001-999) | 001 |
+
+**Examples**:
+- Architect: `ARCH-P0-001`, `ARCH-P1-002`
+- Auditor: `AUD-P0-001`, `AUD-P0-002`
+- Operator: `OP-P0-001`, `OP-P1-001`
+
+**INCORRECT formats** (do NOT use):
+- `P0-OP-001` ❌ (priority first)
+- `**[P0-1]**` ❌ (bracket format)
+- `P0-1` ❌ (missing prefix)
+```
+
+**Update each persona output format section** to include explicit ID format example.
+
+### Persona-Specific Updates
+
+| Persona | Current Table Header | Updated Header |
+|---------|---------------------|----------------|
+| Architect | `\| ID \| Finding \|` | `\| ID (ARCH-P0-NNN) \| Finding \|` |
+| Auditor | `\| ID \| Regulation \|` | `\| ID (AUD-P0-NNN) \| Regulation \|` |
+| Operator | `\| ID \| Finding \|` | `\| ID (OP-P0-NNN) \| Finding \|` |
+| All others | Similar pattern | Add prefix hint |
+
+---
+
+## Fix #2: Restructure Chairperson Prompt
+
+### File: `/opt/data/docs_flow_framework/UCX/ucx/core/persona_prompts.py`
+
+**Method**: `UnifiedPromptLoader.build_persona_prompt()` (lines 1079-1196)
+
+**Change**: For chairperson persona, place format instructions at END of prompt:
+
+```python
+def build_persona_prompt(self, persona: str, document_content: str, ...) -> str:
+    if persona == "chairperson":
+        # Structure: domain knowledge → prior findings → document → FORMAT AT END
+        parts = [
+            self._get_domain_knowledge(persona),
+            self._format_prior_findings(previous_responses),
+            f"\n## DOCUMENT TO REVIEW\n{document_content}",
+            "\n---\n## CRITICAL: REQUIRED OUTPUT FORMAT\n",
+            self._get_chairperson_format_template(),  # Format instructions LAST
+        ]
+        return "\n".join(parts)
+```
+
+### File: `/opt/data/b-local/b-local-docs/docs/UCX/skills/chairperson.md`
+
+**Change**: Move "Remediation Findings Manifest" section to END of file with emphasis:
+
+```markdown
+## OUTPUT FORMAT (REQUIRED - READ LAST)
+
+**FAILURE TO INCLUDE THESE MARKERS WILL CAUSE PROCESSING FAILURE**
+
+You MUST produce:
+1. `<!-- UCX-MANIFEST-START -->` marker
+2. Manifest Summary table
+3. Category Summary table
+4. Fixer Assignment table
+5. Findings Table with REM-P0-001 format IDs
+6. `<!-- UCX-MANIFEST-END -->` marker
+```
+
+---
+
+## Fix #3: Add Manifest Validation
+
+### File: `/opt/data/docs_flow_framework/UCX/ucx/core/review_memory.py`
+
+**Add method** after `save_response()`:
+
+```python
+def _validate_chairperson_response(self, persona: str, response: str) -> None:
+    """Validate Chairperson output contains required manifest markers."""
+    if persona != "chairperson":
+        return
+
+    if "<!-- UCX-MANIFEST-START -->" not in response:
+        self.logger.warning(
+            "Chairperson response missing UCX-MANIFEST-START marker. "
+            "Automated remediation routing will use persona extraction fallback."
+        )
+```
+
+---
+
+## Implementation Order
+
+| Step | File | Change |
+|------|------|--------|
+| 1 | `UCR_PROMPT_BRD_PROJECT.md` | Add Finding ID Format section with PREFIX-P0-NNN standard |
+| 2 | `UCR_PROMPT_BRD_PROJECT.md` | Update each persona output format with ID prefix hints |
+| 3 | `review_memory.py` | Update `_extract_findings()` regex to handle both formats + normalize |
+| 4 | `review_memory.py` | Add `_validate_chairperson_response()` method |
+| 5 | `persona_prompts.py` | Add chairperson-specific prompt structure (format at end) |
+| 6 | `chairperson.md` | Move format instructions to end of file |
+| 7 | Test | Re-run UCX review on BRD-01 |
+| 8 | Verify | Check frontmatter counts match actual findings |
+
+---
+
+## Verification
+
+1. **Test finding extraction** (both formats):
+   ```bash
+   # Parse existing response files
+   cd /opt/data/b-local/b-local-docs
+   source .envrc
+   python -c "
+   from ucx.core.review_memory import ReviewMemory
+   m = ReviewMemory('docs/01_BRD/BRD-01_platform_architecture', 'brd')
+   findings = m._extract_findings(m.get_all_responses())
+   print(f'Extracted {len(findings)} findings')
+
+   # Verify both formats are captured
+   prefix_first = [f for f in findings if f['id'].startswith(('ARCH', 'AUD', 'TL', 'STR', 'DA', 'IL'))]
+   priority_first = [f for f in findings if f['id'].startswith(('P0-OP', 'P1-OP', 'P2-OP'))]
+   print(f'  PREFIX-P0-NNN format: {len(prefix_first)} findings')
+   print(f'  P0-PREFIX-NNN format: {len(priority_first)} findings')
+
+   for f in findings[:5]:
+       print(f'  {f[\"id\"]}: {f[\"title\"][:50]}')
+   "
+   ```
+
+2. **Unit test for both patterns**:
+   ```python
+   def test_finding_extraction_formats():
+       test_responses = {
+           'architect': '| **ARCH-P0-001** | Missing failover |',
+           'operator': '| P0-OP-001 | No rollback procedure |',
+       }
+       # Should extract both ARCH-P0-001 and P0-OP-001 → OP-P0-001
+       findings = m._extract_findings(test_responses)
+       assert len(findings) == 2
+       assert any(f['id'] == 'ARCH-P0-001' for f in findings)
+       assert any(f['id'] == 'OP-P0-001' for f in findings)  # Normalized
+   ```
+
+2. **Test Chairperson prompt**:
+   ```bash
+   # Clear memory and re-run with Opus
+   rm -rf docs/01_BRD/BRD-01_platform_architecture/.doc_review_memory/
+   ucx --model opus review brd docs/01_BRD/BRD-01_platform_architecture/
+
+   # Verify manifest present
+   grep -c "UCX-MANIFEST-START" docs/01_BRD/BRD-01_platform_architecture/BRD-01.UCR_review_report_v007.md
+   ```
+
+3. **Verify frontmatter accuracy**:
+   ```bash
+   ucx scan docs/01_BRD/BRD-01_platform_architecture/BRD-01.UCR_review_report_v007.md --verbose
+   # Should show matching counts between manifest and persona extraction
+   ```
+
+---
+
+## Files to Modify
+
+| File | Lines | Change Type |
+|------|-------|-------------|
+| `/opt/data/b-local/b-local-docs/docs/UCX/review/UCR_PROMPT_BRD_PROJECT.md` | ~79 (after Output Requirements) | Add Finding ID Format section |
+| `/opt/data/b-local/b-local-docs/docs/UCX/review/UCR_PROMPT_BRD_PROJECT.md` | 150-420 (each persona) | Add ID prefix hints to output format |
+| `/opt/data/docs_flow_framework/UCX/ucx/core/review_memory.py` | 497-549 | Update regex + add normalization |
+| `/opt/data/docs_flow_framework/UCX/ucx/core/review_memory.py` | ~292 (in save_response) | Add validation |
+| `/opt/data/docs_flow_framework/UCX/ucx/core/persona_prompts.py` | 1079-1196 | Restructure chairperson |
+| `/opt/data/b-local/b-local-docs/docs/UCX/skills/chairperson.md` | 118-165 | Move format to end |
+
+---
+
+## Risk Assessment
+
+| Risk | Mitigation |
+|------|------------|
+| Breaking existing reports | Keep old pattern as fallback |
+| Chairperson still ignores format | Add retry with explicit reminder |
+| Performance regression | Patterns are O(n), minimal impact |
+| ID format inconsistency after normalization | Document canonical format (PREFIX-P0-NNN) in persona skill files |
+| Missing future formats | Log unmatched patterns for detection |
+
+---
+
+## Related Investigation
+
+This plan was created based on investigation of BRD-01 review failures:
+- Review reports v004, v005, v006 all showed `weighted_score: 100.0, p0_findings: 0` in frontmatter
+- Actual content had 30+ P0 and 50+ P1 findings from personas
+- Chairperson responses were ~1.2-1.7KB summaries instead of ~7KB structured manifests
+- Both Sonnet and Opus models exhibited same behavior (not a model capability issue)
+
+---
+
+## Gap Analysis (2026-03-13)
+
+**Gaps identified during plan review:**
+
+| Gap | Original Issue | Resolution |
+|-----|----------------|------------|
+| **Missing P0-PREFIX-NNN format** | Plan only handled `ARCH-P0-001` format | Added `LEGACY_PRIORITY_FIRST_PATTERN` + normalization |
+| **No unified format standard** | Personas used inconsistent formats | **NEW: Fix #0** - Defined `PREFIX-P0-NNN` as canonical format |
+| **Incorrect line reference** | Plan said validation at line ~740 | Corrected to line ~292 (within `save_response()`) |
+| **Missing normalization logic** | No way to standardize different ID formats | Added `_normalize_finding_id()` helper function |
+| **Missing format documentation** | Persona-specific formats not documented | Added canonical format table in Fix #0 |
+| **Missing prompt enforcement** | Prompts didn't specify ID format | **NEW: Fix #1.5** - Add format standard to UCR prompts |
+| **Missing unit tests** | No tests for format patterns | Added test cases for canonical + legacy formats |
+
+**Evidence from actual responses:**
+- `response_architect.txt`: Uses `ARCH-P0-001` (PREFIX-P0-NNN) ✓ Canonical
+- `response_auditor.txt`: Uses `AUD-P0-001` (PREFIX-P0-NNN) ✓ Canonical
+- `response_operator.txt`: Uses `P0-OP-001`, `P1-OP-002` (P0-PREFIX-NNN) ✗ Legacy → Normalize
+- `response_tech_lead.txt`: Uses `TL-P0-001` (PREFIX-P0-NNN) ✓ Canonical
+
+**Decision: Unified Format**
+
+Canonical format: `PREFIX-P0-NNN` (e.g., `ARCH-P0-001`, `OP-P0-001`)
+
+Rationale:
+1. Most personas already use this format (10 of 11)
+2. PREFIX first groups findings by source, aiding traceability
+3. Sorting by priority can be done programmatically
+4. Matches Chairperson manifest format (`REM-P0-001`)
