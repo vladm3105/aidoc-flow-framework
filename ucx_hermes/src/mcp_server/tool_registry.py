@@ -442,7 +442,7 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_remediate",
-        description="Generate deterministic remediation findings and report. With fix=true, generates source-protected derived copy.",
+        description="Run AI remediation from review findings and produce source-protected derived copy artifacts.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -453,9 +453,9 @@ TOOLS: list[Tool] = [
                 "review_report": {"type": "string", "description": "Optional path to review report"},
                 "remediation_report": {"type": "string", "description": "Path to existing remediation report. With fix=true, skips findings generation and applies fix from this report directly."},
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
+                "executor": {"type": "string", "description": "Required AI executor name for remediation apply."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
-                "fix": {"type": "boolean", "description": "Generate source-protected remediated derived copy after findings.", "default": False},
+                "fix": {"type": "boolean", "description": "Deprecated compatibility flag. Remediation apply runs by default.", "default": True},
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -1174,24 +1174,26 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return det_result
 
     if name == "sdd_remediate":
-        from mcp_server.remediation import run_remediation_build
+        from mcp_server.remediation import run_remediate_fix_build, run_remediation_build
         from mcp_server.core.stage_output import STAGE_REMEDIATE, resolve_stage_output_dir
         project_root = ctx.project_root
         document_path = _path(arguments, "document")
+        executor_name = arguments.get("executor")
+        if not executor_name:
+            return {
+                "passed": False,
+                "error": "ExecutorRequired: sdd_remediate requires an AI executor.",
+                "error_code": "ExecutorRequired",
+            }
+
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REMEDIATE,
             project_root=project_root,
             output_dir=_opt_path(arguments, "out"),
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
-        # NOTE: AI executor auto-fix has been disabled. sdd_remediate now
-        # returns deterministic findings and fix reports only. Interactive
-        # remediation should be performed via Hermes with ucx-sdd-bridge skill.
-        #
-        # Path A removed — direct AI fix from existing report disabled.
-        # Path C removed — auto-chained AI fix after findings disabled.
 
-        # Path B: Generate findings (always, deterministic)
+        # Phase 1: generate remediation findings from review input.
         result = run_remediation_build(
             project_root=project_root,
             doc_type=arguments["doc_type"],
@@ -1202,34 +1204,63 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         )
         det_result = _serialize_result(result)
 
-        # If fix=true, generate deterministic fix artifacts but do NOT spawn AI
-        if arguments.get("fix"):
-            from mcp_server.remediation import run_remediate_fix_build as _run_fix
-            try:
-                fix_result = _run_fix(
-                    project_root=project_root,
-                    doc_type=arguments["doc_type"],
-                    layer=arguments["layer"],
-                    document_path=document_path,
-                    remediation_report=result.report_path,
-                    output_dir=output_dir,
-                )
-                fix_det = _serialize_result(fix_result)
-                det_result["fix_result"] = fix_det
-                # Post-fix quality check (deterministic)
-                derived_paths = fix_det.get("derived_paths", [])
-                if derived_paths and document_path:
-                    from mcp_server.remediation.runner import verify_remediation_quality
-                    derived_p = Path(derived_paths[0])
-                    if derived_p.exists():
-                        quality = verify_remediation_quality(
-                            original_path=document_path,
-                            remediated_path=derived_p,
-                            finding_count=len(det_result.get("findings", [])),
-                        )
-                        det_result["fix_result"]["remediation_quality"] = quality
-            except (FileNotFoundError, ValueError) as exc:
-                det_result["fix_result"] = {"error": str(exc)}
+        # Phase 2: always create remediated derived copy and run AI apply.
+        try:
+            fix_result = run_remediate_fix_build(
+                project_root=project_root,
+                doc_type=arguments["doc_type"],
+                layer=arguments["layer"],
+                document_path=document_path,
+                remediation_report=result.report_path,
+                output_dir=output_dir,
+            )
+            fix_det = _serialize_result(fix_result)
+            det_result["fix_result"] = fix_det
+
+            derived_paths = fix_det.get("derived_paths", [])
+            working_dir = document_path if document_path.is_dir() else document_path.parent
+            if derived_paths:
+                derived_candidate = Path(str(derived_paths[0]))
+                if derived_candidate.exists():
+                    working_dir = derived_candidate.parent
+
+            timeout = int(arguments.get("timeout", 300) or 300)
+            exec_result: ExecutorResult = await run_executor(
+                name=executor_name,
+                prompt=fix_result.report_text,
+                working_dir=working_dir,
+                timeout=timeout,
+                project_env=ctx.project_env if ctx and ctx.project_env else None,
+                system_prompt=None,
+                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+            )
+            det_result["executor"] = executor_name
+            det_result["exit_code"] = exec_result.exit_code
+            det_result["output"] = exec_result.stdout
+            det_result["stderr"] = exec_result.stderr if exec_result.stderr else None
+            det_result["passed"] = exec_result.exit_code == 0
+
+            # Post-apply deterministic quality check.
+            if derived_paths and document_path:
+                from mcp_server.remediation.runner import verify_remediation_quality
+
+                derived_p = Path(str(derived_paths[0]))
+                if derived_p.exists():
+                    quality = verify_remediation_quality(
+                        original_path=document_path,
+                        remediated_path=derived_p,
+                        finding_count=len(det_result.get("findings", [])),
+                    )
+                    det_result["fix_result"]["remediation_quality"] = quality
+
+            if exec_result.exit_code != 0:
+                det_result["error"] = f"ExecutorFailed: remediation executor '{executor_name}' returned exit code {exec_result.exit_code}."
+                det_result["error_code"] = "ExecutorFailed"
+        except (FileNotFoundError, ValueError) as exc:
+            det_result["fix_result"] = {"error": str(exc)}
+            det_result["passed"] = False
+            det_result["error"] = str(exc)
+            det_result["error_code"] = "RemediationBuildError"
 
         return det_result
 

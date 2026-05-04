@@ -93,6 +93,12 @@ class TestToolRegistry:
         create_tool = next(t for t in TOOLS if t.name == "sdd_create")
         assert "target" in create_tool.inputSchema["required"]
 
+    def test_sdd_remediate_executor_semantics(self):
+        remediate_tool = next(t for t in TOOLS if t.name == "sdd_remediate")
+        props = remediate_tool.inputSchema["properties"]
+        assert "executor" in props
+        assert props["fix"]["default"] is True
+
 
 # ── Executor registry tests ─────────────────────────────────────────────────
 
@@ -641,6 +647,25 @@ class TestReviewSagaSchema:
 
         called_kwargs = saga_mock.call_args.kwargs
         assert str(called_kwargs.get("document_path")) == str(doc_dir)
+
+
+class TestRemediateExecutorRequired:
+    def test_sdd_remediate_requires_executor(self, tmp_path):
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01", encoding="utf-8")
+
+        result = asyncio.get_event_loop().run_until_complete(
+            handle_tool("sdd_remediate", {
+                "project": str(tmp_path),
+                "doc_type": "brd",
+                "layer": "01_BRD",
+                "document": str(doc_dir),
+            })
+        )
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is False
+        assert payload.get("error_code") == "ExecutorRequired"
 
     def test_review_report_not_saved_without_executor(self, tmp_path):
         from mcp_server.review.runner import ReviewRunResult

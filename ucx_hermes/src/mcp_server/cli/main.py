@@ -176,7 +176,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     remediate_parser = subparsers.add_parser(
         "remediate",
-        help="Generate deterministic remediation findings and report artifacts",
+        help="Run AI remediation from review findings and generate source-protected derived artifacts",
     )
     remediate_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
     remediate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
@@ -201,8 +201,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "--fix",
         action="store_true",
         default=False,
-        help="Auto-chain into remediate-fix after findings",
+        help="Deprecated compatibility flag. Remediation apply runs by default.",
     )
+    remediate_parser.add_argument("--executor", required=True, help="AI executor name for remediation apply")
+    remediate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds")
 
     remediate_fix_parser = subparsers.add_parser(
         "remediate-fix",
@@ -837,6 +839,10 @@ def main(argv: list[str] | None = None) -> int:
 
         if remediation_report is not None and not args.fix:
             print("Warning: --remediation-report is used only with --fix; ignoring provided remediation report.")
+
+        if not args.executor:
+            print("remediate failed: --executor is required")
+            return 1
 
         if args.fix and remediation_report is not None:
             try:
