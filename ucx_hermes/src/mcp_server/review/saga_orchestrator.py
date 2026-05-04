@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 from dataclasses import dataclass
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import re
 import time
@@ -68,23 +69,47 @@ def _extract_doc_id(*, document_path: Path | None, doc_type: str) -> str:
 
 
 def _resolve_source_stage(*, document_path: Path | None) -> str:
-    if document_path is not None and "_validated" in document_path.name:
+    if document_path is None:
         return "validation-fixed"
-    return "validation-fixed"
+
+    name = document_path.name.lower()
+    if "_validated" in name:
+        return "validation-fixed"
+    if "_remediate_copy" in name or re.search(r"_remediate_v\d+", name):
+        return "remediated"
+
+    if document_path.is_dir():
+        for candidate in sorted(document_path.glob("*")):
+            cname = candidate.name.lower()
+            if "_validated" in cname:
+                return "validation-fixed"
+            if "_remediate_copy" in cname or re.search(r"_remediate_v\d+", cname):
+                return "remediated"
+
+    return "source"
 
 
 def _write_versioned_json(*, output_dir: Path, stem_prefix: str, payload: dict[str, object]) -> Path:
+    output_dir.mkdir(parents=True, exist_ok=True)
     pattern = re.compile(rf"{re.escape(stem_prefix)}_v(\d{{3}})\.json$")
-    max_version = 0
-    for path in output_dir.glob(f"{stem_prefix}_v*.json"):
-        m = pattern.match(path.name)
-        if not m:
+
+    for _ in range(3):
+        max_version = 0
+        for path in output_dir.glob(f"{stem_prefix}_v*.json"):
+            m = pattern.match(path.name)
+            if not m:
+                continue
+            max_version = max(max_version, int(m.group(1)))
+        next_version = max_version + 1
+        out_path = output_dir / f"{stem_prefix}_v{next_version:03d}.json"
+        try:
+            fd = os.open(out_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                f.write(json.dumps(payload, sort_keys=True))
+            return out_path
+        except FileExistsError:
             continue
-        max_version = max(max_version, int(m.group(1)))
-    next_version = max_version + 1
-    out_path = output_dir / f"{stem_prefix}_v{next_version:03d}.json"
-    out_path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
-    return out_path
+    raise RuntimeError(f"Unable to allocate versioned saga artifact for prefix={stem_prefix}")
 
 
 def _branch_prompt_findings(
@@ -256,24 +281,39 @@ def run_project_review_build_saga(
         personas=personas,
         time_bucket=_time_bucket(),
     )
-    run = SagaRunState(
-        review_run_id=review_run_id,
-        document_path=str(project_root),
-        document_fingerprint=document_fingerprint,
-        personas_requested=list(personas),
-    )
-    journal_path = create_saga_journal(output_dir=output_dir, run=run)
+    journal_path = output_dir / f"{review_run_id}_saga_journal_v001.json"
+    if saga_resume and journal_path.exists():
+        run = load_saga_journal(journal_path=journal_path)
+        if run.status in {"CLOSED", "ESCALATED"}:
+            raise ValueError(
+                f"Cannot resume terminal saga run: review_run_id={review_run_id}, status={run.status}"
+            )
+        compensation_count = len(run.compensation_actions)
+        attempts: dict[str, int] = {
+            persona: 0 for persona in personas
+        }
+        for branch in run.branches.values():
+            attempts[branch.persona] = max(attempts.get(branch.persona, 0), int(branch.attempt))
+    else:
+        run = SagaRunState(
+            review_run_id=review_run_id,
+            document_path=str(document_path or project_root),
+            document_fingerprint=document_fingerprint,
+            personas_requested=list(personas),
+        )
+        journal_path = create_saga_journal(output_dir=output_dir, run=run)
+        compensation_count = 0
+        attempts = {persona: 0 for persona in personas}
+
     _safe_transition(journal_path=journal_path, target="FANOUT_STARTED")
     _safe_transition(journal_path=journal_path, target="BRANCH_RUNNING")
 
     findings: list[dict[str, object]] = []
-    compensation_count = 0
     max_workers = max(1, min(len(personas), int(max_parallel_branches or len(personas))))
     timeout = int(branch_timeout_seconds) if branch_timeout_seconds else None
     backoff = max(0, int(retry_backoff_seconds or 0))
 
     completed_personas: set[str] = set()
-    attempts: dict[str, int] = {persona: 0 for persona in personas}
 
     while len(completed_personas) < len(personas):
         pending_personas = [p for p in personas if p not in completed_personas]
@@ -324,6 +364,18 @@ def run_project_review_build_saga(
                     if isinstance(exc, FuturesTimeoutError):
                         error_code = "SagaBranchTimeoutError"
 
+                    set_branch_state(
+                        journal_path=journal_path,
+                        branch=SagaBranchState(
+                            branch_id=branch_id,
+                            persona=persona,
+                            status="BRANCH_FAILED",
+                            attempt=attempts[persona],
+                            error_code=error_code,
+                        ),
+                    )
+                    _safe_transition(journal_path=journal_path, target="BRANCH_FAILED")
+
                     if attempts[persona] <= max_branch_retries:
                         _safe_transition(journal_path=journal_path, target="BRANCH_COMPENSATING")
                         append_compensation_event(
@@ -340,17 +392,6 @@ def run_project_review_build_saga(
                         compensation_count += 1
                         retries_scheduled += 1
                     else:
-                        set_branch_state(
-                            journal_path=journal_path,
-                            branch=SagaBranchState(
-                                branch_id=branch_id,
-                                persona=persona,
-                                status="BRANCH_FAILED",
-                                attempt=attempts[persona],
-                                error_code=error_code,
-                            ),
-                        )
-                        _safe_transition(journal_path=journal_path, target="BRANCH_FAILED")
                         _safe_transition(journal_path=journal_path, target="ESCALATED")
                         return SagaReviewResult(
                             review_mode="saga_parallel",

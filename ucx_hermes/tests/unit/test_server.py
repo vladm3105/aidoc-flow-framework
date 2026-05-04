@@ -595,6 +595,53 @@ class TestReviewSagaSchema:
         assert payload["sidecar_path"] is None
         assert payload["inspection_path"] is None
 
+    def test_saga_review_passes_document_path_to_orchestrator(self, tmp_path):
+        from mcp_server.review.saga_orchestrator import SagaReviewResult
+
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01", encoding="utf-8")
+
+        branch_summary = tmp_path / "BRD-01_validation-fixed_saga_branch_summary_v001.json"
+        journal = tmp_path / "BRD-01_validation-fixed_saga_journal_v001.json"
+        for p in (branch_summary, journal):
+            p.write_text("{}", encoding="utf-8")
+
+        fake_saga = SagaReviewResult(
+            review_mode="saga_parallel",
+            review_run_id="run-002",
+            saga_status="CLOSED",
+            journal_path=journal,
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+            branch_summary={"total": 1, "completed": 1, "failed": 0},
+            branch_summary_path=branch_summary,
+            compensation_summary={"count": 0},
+            reducer_summary={"reduced_count": 1},
+            reducer_summary_path=None,
+            synthesis_summary_path=None,
+            passed=True,
+        )
+
+        with patch(
+            "mcp_server.review.run_project_review_build_saga",
+            return_value=fake_saga,
+        ) as saga_mock:
+            _ = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "review_mode": "saga_parallel",
+                    "document": str(doc_dir),
+                    "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
+                })
+            )
+
+        called_kwargs = saga_mock.call_args.kwargs
+        assert str(called_kwargs.get("document_path")) == str(doc_dir)
+
     def test_review_report_not_saved_without_executor(self, tmp_path):
         from mcp_server.review.runner import ReviewRunResult
 

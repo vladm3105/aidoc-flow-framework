@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import sys
+
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,6 +40,9 @@ def _create_project_ucx(root: Path) -> None:
 
 def test_saga_orchestrator_closed_status(tmp_path: Path) -> None:
     _create_project_ucx(tmp_path)
+    document_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_test"
+    document_dir.mkdir(parents=True, exist_ok=True)
+    (document_dir / "BRD-01_test_validated.md").write_text("validated copy", encoding="utf-8")
     out = tmp_path / "tmp/evidence"
 
     result = run_project_review_build_saga(
@@ -48,6 +54,7 @@ def test_saga_orchestrator_closed_status(tmp_path: Path) -> None:
             SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
             SourceSection(section_id="9.0", title="Appendix", content="reference metadata appendix"),
         ],
+        document_path=document_dir,
         layer="01_BRD",
         output_dir=out,
     )
@@ -63,9 +70,9 @@ def test_saga_orchestrator_closed_status(tmp_path: Path) -> None:
     assert result.branch_summary_path.exists()
     assert result.reducer_summary_path.exists()
     assert result.synthesis_summary_path.exists()
-    assert "BRD-00_validation-fixed_saga_branch_summary_v" in result.branch_summary_path.name
-    assert "BRD-00_validation-fixed_saga_reducer_summary_v" in result.reducer_summary_path.name
-    assert "BRD-00_validation-fixed_saga_synthesis_summary_v" in result.synthesis_summary_path.name
+    assert "BRD-01_validation-fixed_saga_branch_summary_v" in result.branch_summary_path.name
+    assert "BRD-01_validation-fixed_saga_reducer_summary_v" in result.reducer_summary_path.name
+    assert "BRD-01_validation-fixed_saga_synthesis_summary_v" in result.synthesis_summary_path.name
 
 
 def test_saga_orchestrator_escalated_on_missing_persona(tmp_path: Path) -> None:
@@ -92,3 +99,62 @@ def test_saga_orchestrator_escalated_on_missing_persona(tmp_path: Path) -> None:
     assert result.branch_summary_path.exists()
     assert result.reducer_summary_path is None
     assert result.synthesis_summary_path is None
+
+
+def test_saga_source_stage_detection_and_resume_behavior(tmp_path: Path) -> None:
+    _create_project_ucx(tmp_path)
+    docs = tmp_path / "docs"
+    docs.mkdir(parents=True, exist_ok=True)
+
+    source_file = docs / "BRD-02_feature.md"
+    source_file.write_text("# source", encoding="utf-8")
+
+    remediated_file = docs / "BRD-02_feature_remediate_v1.md"
+    remediated_file.write_text("# remediated", encoding="utf-8")
+
+    out = tmp_path / "tmp/evidence"
+    sections = [SourceSection(section_id="1.0", title="Architecture", content="system architecture")]
+
+    source_result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=sections,
+        document_path=source_file,
+        layer="01_BRD",
+        output_dir=out,
+    )
+    assert source_result.branch_summary_path is not None
+    assert "BRD-02_source_saga_branch_summary_v" in source_result.branch_summary_path.name
+
+    rem_result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=sections,
+        document_path=remediated_file,
+        layer="01_BRD",
+        output_dir=out,
+    )
+    assert rem_result.branch_summary_path is not None
+    assert "BRD-02_remediated_saga_branch_summary_v" in rem_result.branch_summary_path.name
+
+    journal_payload = json.loads(source_result.journal_path.read_text(encoding="utf-8"))
+    journal_payload["status"] = "CLOSED"
+    source_result.journal_path.write_text(json.dumps(journal_payload), encoding="utf-8")
+
+    with pytest.raises(ValueError) as exc_info:
+        run_project_review_build_saga(
+            project_root=tmp_path,
+            personas=["architect"],
+            doc_type="brd",
+            template_name="UCR_PROMPT_BRD_PROJECT.md",
+            sections=sections,
+            document_path=source_file,
+            layer="01_BRD",
+            output_dir=out,
+            saga_resume=True,
+        )
+    assert "Cannot resume terminal saga run" in str(exc_info.value)
