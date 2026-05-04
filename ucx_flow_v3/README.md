@@ -136,6 +136,8 @@ ucx_flow_v3/
 2. **Create BRD**: `cp 01_BRD/BRD-TEMPLATE.yaml 01_BRD/BRD-01.yaml` and fill in business requirements
 3. **Follow the chain**: Generate PRD from BRD, EARS from PRD, BDD from EARS, etc.
 4. **Generate tests then code**: SPEC defines the component contract → TDD defines test cases → IPLAN orchestrates implementation
+5. **Recommended agent split**: Hermes runs BRD→IPLAN lifecycle; Claude Code, Codex, or another code-generation agent implements source code from approved IPLANs
+6. **Issue-fix loop**: Hermes triages observability-driven issues; approved issues are fixed and deployed by execution agents; Hermes verifies post-deployment evidence and closes issues
 
 ## Layer Flow
 

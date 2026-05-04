@@ -23,6 +23,26 @@ flowchart LR
 
 Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. Both **v2 (14-layer)** and **v3 (8-layer)** workflows are available — v3 is the recommended path for new projects.
 
+## Recommended Agent Operating Model
+
+Default agent split for v3.2 delivery:
+
+- Hermes agent controls the document lifecycle from BRD through IPLAN.
+- Claude Code, Codex, or another code-generation agent implements source code from approved IPLAN artifacts.
+- UCX validation/review gates remain active before and after code implementation.
+
+## Development and Issue-Fix Operating Model
+
+Default closed-loop workflow:
+
+1. Hermes (human-in-loop) drives planning and approval from BRD through IPLAN.
+2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) implement approved IPLAN scope, open PRs, and run required checks.
+3. Deployment executes through CI/CD after merge gates pass.
+4. Observability stack (metrics, logs, alerts) feeds incidents to Hermes triage.
+5. Hermes creates and prioritizes GitHub issues with traceability links and acceptance criteria.
+6. Approved issues are assigned to execution agents for autonomous fix -> PR -> validate -> deploy.
+7. Hermes verifies post-deployment evidence and closes issues when acceptance criteria and monitoring checks pass.
+
 ---
 
 ## SDD Depth Variants
@@ -70,7 +90,8 @@ The original 14-layer framework is preserved in `ucx_flow_v3/` for existing proj
 |:----------|:--------|
 | `ucx_flow_v3/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
 | `ucx_flow_v3/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
-| `mcp_ucx/` | **UCX** (Unified Context eXcelerator) — AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for any AI agent. Also known as `ucx` or `mcp_ucx`. |
+| `ucx_hermes/` | **UCX Hermes** — Primary AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for Hermes and other AI agents. This is the canonical active runtime. |
+| `mcp_ucx/` | **DEPRECATED** — Historical UCX package directory. Frozen at v1.22.0. Use `ucx_hermes/` for all new work. See [mcp_ucx/docs/README.md](mcp_ucx/docs/README.md) for archive status. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `ucx_kb/` | Knowledge base package (RAG + Graph) |
 | `changelog/` | Per-version changelogs |
@@ -147,9 +168,9 @@ Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/`
 ### For New Projects
 
 1. Choose your SDD depth (Lite / Standard / Full)
-2. Copy templates from `mcp_ucx/templates/` or layer directories
-3. Create documents using mcp_ucx `sdd_create`
-4. Validate with mcp_ucx `sdd_validate`
+2. Copy templates from `ucx_hermes/templates/` or layer directories
+3. Create documents using ucx_hermes `sdd_create`
+4. Validate with ucx_hermes `sdd_validate`
 
 ### Document Size Policy
 
@@ -158,7 +179,7 @@ All SDD documents are **monolithic** (single self-contained file) up to **50,000
 ### Validation
 
 ```bash
-# Via mcp_ucx CLI
+# Via ucx_hermes CLI
 python -m mcp_server.cli.main validate --project <path> --doc-type brd --layer 01_BRD --document <file>
 
 # Link validation
@@ -222,7 +243,7 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 |-------|-------|
 | Current Version | 0.20.0 |
 | Latest Release | SDD v3.2 — 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| mcp_ucx Version | 1.12.0 |
+| ucx_hermes Version | 2.0.0 |
 | Next Major | 1.0.0 (multi-MCP ecosystem with governance and knowledge base) |
 
 ---

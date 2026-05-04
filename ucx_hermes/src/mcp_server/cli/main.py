@@ -203,7 +203,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Deprecated compatibility flag. Remediation apply runs by default.",
     )
-    remediate_parser.add_argument("--executor", required=True, help="AI executor name for remediation apply")
+    remediate_parser.add_argument("--executor", required=True, help="API executor name for remediation apply (e.g. api/gpt-4o)")
     remediate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds")
 
     remediate_fix_parser = subparsers.add_parser(

@@ -40,15 +40,15 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | Location | Role |
 |----------|------|
 | `ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml` | **Canonical source** — edit here |
-| `mcp_ucx/templates/BDD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
+| `ucx_hermes/templates/BDD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml mcp_ucx/templates/BDD-TEMPLATE.yaml
+cp ucx_flow_v3/04_BDD/BDD-TEMPLATE.yaml ucx_hermes/templates/BDD-TEMPLATE.yaml
 ```
 
-## MCP Tools (mcp_ucx)
+## MCP Tools (ucx_hermes)
 
 | Tool | Purpose |
 |------|---------|

@@ -41,6 +41,12 @@ Do **NOT** invent process rules, naming conventions, or workflow patterns. If a 
 | Project Board | [#{PROJECT_BOARD_NUMBER}](https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER}) |
 | Timezone | EST ({TIMEZONE}) for all schedules and timestamps |
 
+### Agent Operating Model
+
+- Hermes operates as control plane: triage, planning/governance, and post-deployment validation decisions.
+- Claude Code, Codex, OpenCode, or equivalent agents operate as execution plane: implementation, PR iteration, CI checks, and deployment execution.
+- Observability-driven incidents are triaged by Hermes into GitHub issues; approved issues are moved to `ai:ready` for autonomous execution.
+
 ### Repository Architecture
 
 This is a **monorepo** project. All documentation, governance, and component source code live in this single repository under `components/`:
@@ -71,7 +77,7 @@ These are **hard rules**. Violation requires immediate correction.
 | Do not commit secrets or credentials | No `.env`, API keys, tokens, or SA key files |
 | Do not delete governance docs or plans | Mark as `Superseded`, never delete |
 | Do not skip tests to unblock a PR | Fix the tests instead |
-| Do not use marketplace actions in GitHub Actions workflows | GitHub Connect is unreliable on GHES v3.12.4. Use inline shell commands instead. See [GOVERNANCE_RULES.md §2a](governance/GOVERNANCE_RULES.md#2a-no-marketplace-actions-mandatory) |
+| Do not use unreviewed workflow actions | Marketplace actions are allowed but must be pinned and reviewed per [GOVERNANCE_RULES.md §2a](governance/GOVERNANCE_RULES.md#2a-github-actions-baseline) |
 
 ---
 
@@ -315,7 +321,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 | 1.8 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
 | 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 |
 | 1.6 | {DATE} | Consolidated acceptance criteria sync and PR link into mandatory Post-PR Checklist — all 5 steps must execute immediately after PR creation |
-| 1.5 | {DATE} | Added prohibited marketplace actions rule — all workflows must be self-contained due to unreliable GitHub Connect on GHES v3.12.4 |
+| 1.5 | {DATE} | Updated workflow policy baseline to GitHub-hosted runners with version-pinned, reviewed marketplace actions |
 | 1.4 | {DATE} | Added on-demand PR review reference — formal GitHub Reviews API with fix-and-verify loop |
 | 1.3 | {DATE} | Added mandatory Acceptance Criteria Sync rule — AI must check off criteria before requesting review |
 | 1.2 | {DATE} | Added mandatory PR reviewer assignment rule — AI must assign reviewer from CONTRIBUTING.md maintainers list |

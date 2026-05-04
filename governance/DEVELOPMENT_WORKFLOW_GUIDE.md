@@ -15,15 +15,20 @@ This guide describes the workflow for developing GitHub Issues within the govern
 ## Workflow Overview
 
 ```
-Issue → Review → Implement → Test/Code Review → Commit → CI → Docs → Approve → Close
-  │        │          │              │            │       │      │        │       │
-  ▼        ▼          ▼              ▼            ▼       ▼      ▼        ▼       ▼
-Assigned  Validate   Write      AI Agent:      Push   Run    Update   Get    Close
-to dev    practical   code     - Unit tests  changes tests   issue   sign-  issue
-          approach            - Bug fixes            pass   comments  off
-                              - Comments
-                              - Docstrings
+Task Defined -> Issue Created -> Work -> PR -> Round 1 Gates -> Round 2 (if needed) -> Escalate or Merge -> Deploy Verify
+    │               │             │      │      │                    │                   │              │
+    ▼               ▼             ▼      ▼      ▼                    ▼                   ▼              ▼
+Hermes/        Hermes adds   Execution  CI   sdd_validate ->     Repeat same       Human review     Hermes reviews
+Human source   traceability   agent fix     sdd_review ->        sequence on        if Round 2      post-deploy
+                                + PR        sdd_remediate ->     Round 1 fail       fails           evidence
+                                            validate -> Hermes
+                                            final blocker-gap
 ```
+
+Execution scope for this guide:
+
+- Hermes manages issue triage, planning boundaries, and lifecycle governance gates.
+- Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform implementation and deployment steps for approved issues.
 
 ---
 
@@ -55,6 +60,11 @@ Before starting work:
 - [ ] Scope is well-defined
 - [ ] No unresolved blockers
 - [ ] Branch name determined: `ai/{issue-number}-{short-name}`
+
+`ai:ready` gate policy:
+
+- Only issues in `ai:ready` are eligible for autonomous execution by coding agents.
+- Issues created by observability triage remain pending until human/policy approval moves them to `ai:ready`.
 
 ---
 
@@ -365,6 +375,15 @@ If changes requested:
 3. Re-request review
 4. Update issue comment with changes made
 
+### Round-Based PR Governance (Mandatory)
+
+After PR submission, apply this sequence:
+
+1. Round 1: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap/inconsistency review.
+2. If any blocking gate fails, run Round 2 with the same sequence.
+3. If Round 2 fails, escalate to human review and keep merge blocked until resolved.
+4. If gates pass, merge is allowed.
+
 ---
 
 ## Step 9: Close Issue
@@ -374,7 +393,8 @@ If changes requested:
 1. **Verify issue closed** - PR should auto-close via `Closes #123`
 2. **Update project board** - Status should update automatically
 3. **Verify branch deleted** - Auto-deleted after merge
-4. **Post completion comment** (if not auto-closed):
+4. **Validate post-deployment signals** - Hermes confirms monitoring/alert state is healthy for the fixed scope
+5. **Post completion comment** (if not auto-closed):
 
 ```markdown
 ## Completed

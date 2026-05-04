@@ -433,8 +433,12 @@ TOOLS: list[Tool] = [
                     "description": "Resume an existing saga review run when review_mode=saga_parallel.",
                     "default": False,
                 },
+                "executor": {"type": "string", "description": "Required API executor name for review execution (e.g. api/openrouter)."},
+                "temperature": {"type": "number", "description": "Optional generation temperature for API executor."},
+                "top_p": {"type": "number", "description": "Optional nucleus sampling parameter for API executor."},
+                "top_k": {"type": "integer", "description": "Optional top-k sampling parameter (provider-specific)."},
+                "max_output_tokens": {"type": "integer", "description": "Optional max output tokens for API executor response."},
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
             "required": ["project", "doc_type", "template"],
@@ -453,9 +457,13 @@ TOOLS: list[Tool] = [
                 "review_report": {"type": "string", "description": "Optional path to review report"},
                 "remediation_report": {"type": "string", "description": "Path to existing remediation report. With fix=true, skips findings generation and applies fix from this report directly."},
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Required AI executor name for remediation apply."},
+                "executor": {"type": "string", "description": "Required API executor name for remediation apply (e.g. api/gpt-4o)."},
                 "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
                 "fix": {"type": "boolean", "description": "Deprecated compatibility flag. Remediation apply runs by default.", "default": True},
+                "temperature": {"type": "number", "description": "Optional generation temperature for API executor."},
+                "top_p": {"type": "number", "description": "Optional nucleus sampling parameter for API executor."},
+                "top_k": {"type": "integer", "description": "Optional top-k sampling parameter (provider-specific)."},
+                "max_output_tokens": {"type": "integer", "description": "Optional max output tokens for API executor response."},
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -1086,6 +1094,36 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.review import run_project_review_build, run_project_review_build_saga
         from mcp_server.core.stage_output import STAGE_REVIEW, resolve_stage_output_dir
         project_root = ctx.project_root
+        executor_name = arguments.get("executor")
+        if not executor_name:
+            return {
+                "passed": False,
+                "error": "ExecutorRequired: sdd_review requires an API executor.",
+                "error_code": "ExecutorRequired",
+            }
+
+        try:
+            executor_cfg = get_executor(
+                executor_name,
+                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+            )
+        except KeyError as exc:
+            return {
+                "passed": False,
+                "error": str(exc),
+                "error_code": "UnknownExecutor",
+            }
+
+        if executor_cfg.executor_type != ExecutorType.API:
+            return {
+                "passed": False,
+                "error": (
+                    f"ExecutorTypeNotAllowed: sdd_review requires API executor, "
+                    f"got '{executor_name}' ({executor_cfg.executor_type.value})."
+                ),
+                "error_code": "ExecutorTypeNotAllowed",
+            }
+
         review_mode = arguments.get("review_mode", "prompt_only")
         if review_mode != "prompt_only":
             if review_mode != "saga_parallel":
@@ -1142,7 +1180,45 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 saga_resume=bool(arguments.get("saga_resume", False)),
             )
             det_result = _serialize_result(saga_result)
+            if not saga_result.passed:
+                det_result["passed"] = False
+                det_result["error"] = "SagaEscalated: review orchestration escalated before synthesis."
+                det_result["error_code"] = "SagaEscalated"
+                det_result["executor"] = executor_name
+                det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
+                return det_result
+
+            prompt_text = ""
+            if saga_result.prompt_path is not None and saga_result.prompt_path.exists():
+                prompt_text = saga_result.prompt_path.read_text(encoding="utf-8")
+
+            timeout = int(arguments.get("timeout", 300) or 300)
+            generation_params = {
+                "temperature": arguments.get("temperature"),
+                "top_p": arguments.get("top_p"),
+                "top_k": arguments.get("top_k"),
+                "max_output_tokens": arguments.get("max_output_tokens"),
+            }
+            exec_result: ExecutorResult = await run_executor(
+                name=executor_name,
+                prompt=prompt_text,
+                working_dir=doc_dir,
+                timeout=timeout,
+                project_env=ctx.project_env if ctx and ctx.project_env else None,
+                system_prompt=None,
+                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                generation_params=generation_params,
+            )
+
             det_result["review_mode"] = "saga_parallel"
+            det_result["executor"] = executor_name
+            det_result["exit_code"] = exec_result.exit_code
+            det_result["output"] = exec_result.stdout
+            det_result["stderr"] = exec_result.stderr if exec_result.stderr else None
+            det_result["passed"] = exec_result.exit_code == 0
+            if exec_result.exit_code != 0:
+                det_result["error"] = f"ExecutorFailed: review executor '{executor_name}' returned exit code {exec_result.exit_code}."
+                det_result["error_code"] = "ExecutorFailed"
             det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
             return det_result
 
@@ -1163,14 +1239,36 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             output_dir=output_dir,
         )
         det_result = _serialize_result(result)
-        # NOTE: AI executor for review has been disabled. sdd_review now returns
-        # the assembled multi-persona prompt as structured text for Hermes or human
-        # review. To execute review interactively with reasoning, use Hermes with
-        # the ucx-sdd-bridge skill.
+
+        timeout = int(arguments.get("timeout", 300) or 300)
+        generation_params = {
+            "temperature": arguments.get("temperature"),
+            "top_p": arguments.get("top_p"),
+            "top_k": arguments.get("top_k"),
+            "max_output_tokens": arguments.get("max_output_tokens"),
+        }
+        exec_result: ExecutorResult = await run_executor(
+            name=executor_name,
+            prompt=result.prompt_text,
+            working_dir=doc_dir,
+            timeout=timeout,
+            project_env=ctx.project_env if ctx and ctx.project_env else None,
+            system_prompt=getattr(result, "system_prompt", None),
+            project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+            generation_params=generation_params,
+        )
+
         det_result["review_mode"] = "prompt_only"
-        det_result["passed"] = True
+        det_result["executor"] = executor_name
+        det_result["exit_code"] = exec_result.exit_code
+        det_result["output"] = exec_result.stdout
+        det_result["stderr"] = exec_result.stderr if exec_result.stderr else None
+        det_result["passed"] = exec_result.exit_code == 0
         det_result["prompt_text"] = result.prompt_text
         det_result["system_prompt"] = getattr(result, "system_prompt", None)
+        if exec_result.exit_code != 0:
+            det_result["error"] = f"ExecutorFailed: review executor '{executor_name}' returned exit code {exec_result.exit_code}."
+            det_result["error_code"] = "ExecutorFailed"
         return det_result
 
     if name == "sdd_remediate":
@@ -1184,6 +1282,28 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 "passed": False,
                 "error": "ExecutorRequired: sdd_remediate requires an AI executor.",
                 "error_code": "ExecutorRequired",
+            }
+
+        try:
+            executor_cfg = get_executor(
+                executor_name,
+                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+            )
+        except KeyError as exc:
+            return {
+                "passed": False,
+                "error": str(exc),
+                "error_code": "UnknownExecutor",
+            }
+
+        if executor_cfg.executor_type != ExecutorType.API:
+            return {
+                "passed": False,
+                "error": (
+                    f"ExecutorTypeNotAllowed: sdd_remediate requires API executor, "
+                    f"got '{executor_name}' ({executor_cfg.executor_type.value})."
+                ),
+                "error_code": "ExecutorTypeNotAllowed",
             }
 
         output_dir = resolve_stage_output_dir(
@@ -1225,6 +1345,12 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                     working_dir = derived_candidate.parent
 
             timeout = int(arguments.get("timeout", 300) or 300)
+            generation_params = {
+                "temperature": arguments.get("temperature"),
+                "top_p": arguments.get("top_p"),
+                "top_k": arguments.get("top_k"),
+                "max_output_tokens": arguments.get("max_output_tokens"),
+            }
             exec_result: ExecutorResult = await run_executor(
                 name=executor_name,
                 prompt=fix_result.report_text,
@@ -1233,6 +1359,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 project_env=ctx.project_env if ctx and ctx.project_env else None,
                 system_prompt=None,
                 project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                generation_params=generation_params,
             )
             det_result["executor"] = executor_name
             det_result["exit_code"] = exec_result.exit_code

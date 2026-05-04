@@ -52,7 +52,7 @@
 ```yaml
 jobs:
   lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - run: |
           git clone "https://${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" . --depth 1 --branch ${{ github.head_ref || github.ref_name }}
@@ -76,7 +76,7 @@ jobs:
 ```yaml
 jobs:
   test-unit:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - run: |
           git clone "https://${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" . --depth 1 --branch ${{ github.head_ref || github.ref_name }}
@@ -103,7 +103,7 @@ jobs:
 ```yaml
 jobs:
   test-integration:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [lint, test-unit]
     services:
       firestore-emulator:
@@ -131,7 +131,7 @@ jobs:
 ```yaml
 jobs:
   security:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - run: |
           git clone "https://${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" . --depth 1 --branch ${{ github.head_ref || github.ref_name }}
@@ -157,7 +157,7 @@ jobs:
 ```yaml
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [test-unit, test-integration, security]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
@@ -298,5 +298,5 @@ jobs:
 
 - [01-testing-strategy.md](01-testing-strategy.md) — Test types and coverage targets
 - [06-security-testing.md](06-security-testing.md) — Security scan details
-- [GOVERNANCE_RULES.md §2a](../../governance/GOVERNANCE_RULES.md) — No marketplace actions policy
+- [GOVERNANCE_RULES.md §2a](../../governance/GOVERNANCE_RULES.md) — GitHub Actions baseline policy
 - [GITHUB_WORKFLOWS.md](../../governance/GITHUB_WORKFLOWS.md) — Existing workflow documentation

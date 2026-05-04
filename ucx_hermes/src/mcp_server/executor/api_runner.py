@@ -1,0 +1,206 @@
+"""API-based LLM execution via LiteLLM.
+
+Uses litellm.acompletion() as universal gateway supporting 100+ LLM providers
+including OpenAI, Anthropic, Google, and OpenRouter.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import contextlib
+import logging
+import os
+
+from .registry import ExecutorConfig
+from .cli_runner import ExecutorResult
+
+logger = logging.getLogger(__name__)
+
+_api_env_lock: asyncio.Lock | None = None
+
+
+def _get_env_lock() -> asyncio.Lock:
+    """Lazily create the env lock to avoid binding to the wrong event loop."""
+    global _api_env_lock
+    if _api_env_lock is None:
+        _api_env_lock = asyncio.Lock()
+    return _api_env_lock
+
+
+@contextlib.contextmanager
+def _inject_env(
+    config_env: dict[str, str] | None,
+    project_env: dict[str, str] | None,
+):
+    """Temporarily set config + project env vars in os.environ for LiteLLM.
+
+    Merge order: os.environ (base) < config.env < project_env.
+    Restores original values on exit. Respects BLOCKED_ENV_VARS.
+    """
+    merged = {**(config_env or {}), **(project_env or {})}
+    if not merged:
+        yield
+        return
+
+    from mcp_server.env_manager import BLOCKED_ENV_VARS
+    saved: dict[str, str | None] = {}
+    for key, val in merged.items():
+        if key in BLOCKED_ENV_VARS:
+            continue
+        saved[key] = os.environ.get(key)  # None if absent
+        os.environ[key] = val
+    try:
+        yield
+    finally:
+        for key, prev in saved.items():
+            if prev is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = prev
+
+
+def _resolve_overrides(
+    config: ExecutorConfig,
+    project_env: dict[str, str] | None,
+) -> tuple[str, str, int, str]:
+    """Return (model, api_base, timeout, api_key_env) with project overrides applied.
+
+    Precedence: UCX_EXECUTOR_* env vars > config fields.
+    """
+    env = project_env or {}
+    model = env.get("UCX_EXECUTOR_MODEL", "") or config.model
+    api_base = env.get("UCX_EXECUTOR_API_BASE", "") or config.api_base
+
+    # Validate api_key_env redirect against BLOCKED_ENV_VARS
+    raw_key_env = env.get("UCX_EXECUTOR_API_KEY_ENV", "")
+    if raw_key_env:
+        from mcp_server.env_manager import BLOCKED_ENV_VARS
+        if raw_key_env in BLOCKED_ENV_VARS:
+            logger.warning(
+                "UCX_EXECUTOR_API_KEY_ENV='%s' is a blocked system variable — ignoring",
+                raw_key_env,
+            )
+            api_key_env = config.api_key_env
+        else:
+            api_key_env = raw_key_env
+    else:
+        api_key_env = config.api_key_env
+
+    timeout_str = env.get("UCX_EXECUTOR_TIMEOUT", "")
+    try:
+        timeout = int(timeout_str) if timeout_str else config.timeout
+    except ValueError:
+        logger.warning("Invalid UCX_EXECUTOR_TIMEOUT='%s', using default %d", timeout_str, config.timeout)
+        timeout = config.timeout
+
+    return model, api_base, timeout, api_key_env
+
+
+async def run_api_executor(
+    config: ExecutorConfig,
+    prompt: str,
+    system_prompt: str | None = None,
+    timeout: int | None = None,
+    project_env: dict[str, str] | None = None,
+    generation_params: dict[str, object] | None = None,
+) -> ExecutorResult:
+    """Execute prompt via LLM API. Requires litellm package."""
+    try:
+        import litellm
+    except ImportError:
+        return ExecutorResult(
+            stdout="",
+            stderr=(
+                f"API executor '{config.name}' requires litellm. "
+                "Install with: pip install 'ucx_hermes[api]' or pip install litellm"
+            ),
+            exit_code=-7,
+            executor_name=config.name,
+        )
+
+    # Apply UCX_EXECUTOR_* overrides from project env
+    model, api_base, cfg_timeout, api_key_env = _resolve_overrides(config, project_env)
+
+    # Resolve API key: project .env > os.environ
+    api_key = None
+    if api_key_env:
+        if project_env:
+            api_key = project_env.get(api_key_env)
+        if not api_key:
+            api_key = os.environ.get(api_key_env)
+
+    effective_timeout = timeout if timeout is not None else cfg_timeout
+
+    messages: list[dict[str, str]] = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    kwargs: dict = {
+        "model": model,
+        "messages": messages,
+        "timeout": effective_timeout,
+    }
+
+    # Optional generation settings for LiteLLM-compatible providers.
+    if generation_params:
+        if generation_params.get("temperature") is not None:
+            kwargs["temperature"] = generation_params["temperature"]
+        if generation_params.get("top_p") is not None:
+            kwargs["top_p"] = generation_params["top_p"]
+        if generation_params.get("max_output_tokens") is not None:
+            kwargs["max_tokens"] = generation_params["max_output_tokens"]
+
+        # top_k is provider-specific; pass via extra_body when present.
+        if generation_params.get("top_k") is not None:
+            kwargs["extra_body"] = {"top_k": generation_params["top_k"]}
+    if api_key:
+        kwargs["api_key"] = api_key
+    if api_base:
+        kwargs["api_base"] = api_base
+
+    # Lock serializes env injection so concurrent API calls with different
+    # project envs don't interleave os.environ mutations. The lock covers
+    # the full acompletion call because LiteLLM may read env vars at any
+    # point during request setup. MCP servers typically process one tool
+    # call at a time, so this is not a practical bottleneck.
+    async with _get_env_lock():
+        with _inject_env(config.env, project_env):
+            try:
+                response = await litellm.acompletion(**kwargs)
+                content = response.choices[0].message.content or ""
+                return ExecutorResult(
+                    stdout=content,
+                    stderr="",
+                    exit_code=0,
+                    executor_name=config.name,
+                )
+            except litellm.AuthenticationError as exc:
+                key_hint = f" (check {api_key_env})" if api_key_env else ""
+                return ExecutorResult(
+                    stdout="",
+                    stderr=f"Authentication failed for '{config.name}'{key_hint}: {exc}",
+                    exit_code=-4,
+                    executor_name=config.name,
+                )
+            except litellm.RateLimitError as exc:
+                return ExecutorResult(
+                    stdout="",
+                    stderr=f"Rate limit for '{config.name}': {exc}. Retry after backoff.",
+                    exit_code=-5,
+                    executor_name=config.name,
+                )
+            except litellm.Timeout:
+                return ExecutorResult(
+                    stdout="",
+                    stderr=f"Executor '{config.name}' timed out after {effective_timeout}s",
+                    exit_code=-1,
+                    executor_name=config.name,
+                )
+            except litellm.APIError as exc:
+                return ExecutorResult(
+                    stdout="",
+                    stderr=f"API error for '{config.name}' (model={model}): {exc}",
+                    exit_code=-6,
+                    executor_name=config.name,
+                )

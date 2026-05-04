@@ -37,15 +37,15 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | Location | Role |
 |----------|------|
 | `ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml` | **Canonical source** — edit here |
-| `mcp_ucx/templates/PRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
+| `ucx_hermes/templates/PRD-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 After any change to the canonical source, copy it to the runtime location:
 
 ```bash
-cp ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml mcp_ucx/templates/PRD-TEMPLATE.yaml
+cp ucx_flow_v3/02_PRD/PRD-TEMPLATE.yaml ucx_hermes/templates/PRD-TEMPLATE.yaml
 ```
 
-## MCP Tools (mcp_ucx)
+## MCP Tools (ucx_hermes)
 
 All operations run through the `sdd-lifecycle` MCP server:
 

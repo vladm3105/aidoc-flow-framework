@@ -55,7 +55,7 @@ nano setup-wif.sh
 # Required variables:
 # GITHUB_ORG="your-org"
 # GITHUB_REPO="your-repo"
-# GITHUB_HOST="github.com"  # or your GHES host
+# GITHUB_HOST="github.com"  # set enterprise host only when needed
 
 # Run the script
 ./setup-wif.sh
@@ -194,6 +194,8 @@ GH_HOST={GITHUB_HOST} gh secret set AWS_ROLE_ARN --body "arn:aws:iam::{AWS_ACCOU
 
 Create or modify `.github/workflows/deploy-aws.yml`:
 
+> Note: This template follows the GitHub.com baseline (`governance/GOVERNANCE_RULES.md` §2a): `ubuntu-latest` and marketplace actions are allowed when pinned and reviewed.
+
 ```yaml
 name: Deploy to AWS
 
@@ -295,6 +297,8 @@ GH_HOST={GITHUB_HOST} gh secret set AZURE_CLIENT_ID --body "{AZURE_CLIENT_ID}"
 ### Azure Workflow Template
 
 Create or modify `.github/workflows/deploy-azure.yml`:
+
+> Note: This template follows the GitHub.com baseline (`governance/GOVERNANCE_RULES.md` §2a): `ubuntu-latest` and marketplace actions are allowed when pinned and reviewed.
 
 ```yaml
 name: Deploy to Azure

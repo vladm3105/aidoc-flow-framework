@@ -51,11 +51,41 @@ Legacy framework roots are deprecated and not part of active governance.
 ```
 Human creates REF/project context
     ↓
-AI generates v3 artifacts (BRD..TDD)
+Hermes generates v3 artifacts (BRD..TDD)
     ↓
-AI creates implementation issue(s)
+Hermes creates implementation issue(s)
     ↓
-AI creates IPLAN per issue before coding
+Hermes creates IPLAN per issue before coding
     ↓
-AI executes issue (ai:ready -> ai:in-progress -> ai:review-requested)
+Execution agent executes approved issue (ai:ready -> ai:in-progress -> ai:review-requested)
 ```
+
+## Operational Issue-Fix Pattern (Production)
+
+```
+Observability stack emits alerts/incidents
+    ↓
+Hermes triages and creates GitHub issue with severity, impact, repro context, traceability
+    ↓
+Policy gate approves issue for autonomous execution by moving workflow state to ai:ready
+    ↓
+Execution agent (Claude Code/Codex/OpenCode) fixes issue and submits PR
+    ↓
+Round 1 PR gates: sdd_validate -> sdd_review -> sdd_remediate -> post-remediation sdd_validate -> Hermes final blocker-gap check
+    ↓
+If Round 1 fails: execute Round 2 with same gate sequence
+    ↓
+If Round 2 fails: escalate to human review and block merge
+    ↓
+If gates pass: merge PR and close linked issue(s)
+    ↓
+Hermes reviews post-deployment evidence; if regressions are detected, open follow-up issue(s)
+```
+
+## Default Ownership Split
+
+1. Hermes monitors observability signals through integrated telemetry systems and triage inputs.
+2. Hermes opens and prioritizes GitHub issues with implementation traceability (`@spec`, `@tdd`, `@iplan`) and acceptance criteria.
+3. Only approved issues in `ai:ready` are eligible for autonomous execution.
+4. Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform fix implementation, PR submission, validation, and deployment workflows.
+5. Hermes performs round-based PR governance and merge-time escalation decisions.

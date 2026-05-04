@@ -13,7 +13,7 @@ This document defines the workflow for **on-demand AI agent PR reviews** — dis
 | Mode | Trigger | Agent | Review Type | Fix Loop | Merge Impact |
 |:-----|:--------|:------|:------------|:---------|:-------------|
 | Automated | `pull_request` event | {AI_TOOL_NAME} Code CLI (GH Actions) | `APPROVE` or `COMMENT` | None | Advisory only |
-| On-demand agent | Human command or `ai:ready` label | Claude / Gemini CLI / Copilot | `REQUEST_CHANGES` / `APPROVE` / `COMMENT` | Yes (up to 3 iterations) | Advisory (human review still required) |
+| On-demand agent | Human command or `ai:ready` label | Claude / Gemini CLI / Copilot | `REQUEST_CHANGES` / `APPROVE` / `COMMENT` | Yes (up to 3 iterations) | Advisory/policy-gated (human review on escalation or branch protection) |
 
 **When to use on-demand agent review**:
 - Deep review of complex PRs (architecture, security, multi-file changes)
@@ -235,7 +235,7 @@ GH_HOST={GITHUB_HOST} gh api \
 {
   "commit_id": "<HEAD_SHA>",
   "event": "REQUEST_CHANGES",
-  "body": "**AI Agent Review (Claude)**\n\n## Summary\n<1-3 sentence assessment>\n\n## Findings\n- **Critical**: <count> | **Medium**: <count> | **Low**: <count>\n\n## Verdict\nREQUEST_CHANGES — <reason>\n\n---\n_Review by AI agent. Human review still required per GOVERNANCE_RULES.md._",
+  "body": "**AI Agent Review (Claude)**\n\n## Summary\n<1-3 sentence assessment>\n\n## Findings\n- **Critical**: <count> | **Medium**: <count> | **Low**: <count>\n\n## Verdict\nREQUEST_CHANGES — <reason>\n\n---\n_Review by AI agent under round-based governance gates per GOVERNANCE_RULES.md._",
   "comments": [
     {
       "path": "src/cost_guard/main.py",
@@ -568,7 +568,7 @@ GH_HOST={GITHUB_HOST} gh api \
 {
   "commit_id": "<NEW_HEAD_SHA>",
   "event": "APPROVE",
-  "body": "**AI Agent Re-Review (Claude)**\n\nAll previously identified findings resolved:\n- [x] Critical: Division by zero guard added (main.py:42)\n- [x] Medium: Bare except replaced (alerts.py:15)\n\nCI status: All checks passing.\nNo new issues introduced by fix commits.\n\n**Verdict**: APPROVE\n\n---\n_Re-review by AI agent. Human review still required._",
+  "body": "**AI Agent Re-Review (Claude)**\n\nAll previously identified findings resolved:\n- [x] Critical: Division by zero guard added (main.py:42)\n- [x] Medium: Bare except replaced (alerts.py:15)\n\nCI status: All checks passing.\nNo new issues introduced by fix commits.\n\n**Verdict**: APPROVE\n\n---\n_Re-review by AI agent under round-based governance gates._",
   "comments": []
 }
 REVIEW_EOF
@@ -702,10 +702,10 @@ Check off each verified criterion (`- [ ]` to `- [x]`) in the issue body before 
 | Constraint | Detail | Reference |
 |:-----------|:-------|:----------|
 | Authentication | WIF only (no service account JSON keys) | ADR-002 |
-| GHES host | All `gh` commands use `GH_HOST={GITHUB_HOST}` | CLAUDE.md |
+| GitHub host | Use default host on GitHub.com; set `GH_HOST={GITHUB_HOST}` for enterprise variants | CLAUDE.md |
 | Communication | Teams/Email only (no Slack) | GOVERNANCE_RULES.md §1 |
 | Trust boundary | Agent has no access to SA keys, API tokens, production databases, billing credentials | ROLES_AND_TOOLS.md |
-| Review authority | AI agent reviews are **advisory**; human review is mandatory per branch protection | GOVERNANCE_RULES.md §3 |
+| Review authority | AI agent reviews are **advisory**; human review is required on Round 2 escalation or when branch protection requires human approvals | GOVERNANCE_RULES.md §3 |
 | Self-review | PR author cannot self-review; assign a different human reviewer | CONTRIBUTING.md |
 | Commit attribution | All fix commits include `Co-Authored-By: <Agent> <noreply@provider.com>` | README_AIAGENT.md §4 |
 

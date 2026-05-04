@@ -1,0 +1,350 @@
+# =============================================================================
+#  CTR-TEMPLATE.yaml — Unified Contract Specification Template
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Purpose: AI-consumable + human-reviewable CTR template
+#  Instance Format: Dual-file (.md narrative + .yaml OpenAPI contract)
+#  Rendering: AI generates dual-file instances from this YAML template
+#
+#  REPLACES: (archived to CTR_v1_archive/)
+#    CTR-MVP-TEMPLATE.md, CTR-MVP-TEMPLATE.yaml, CTR_MVP_SCHEMA.yaml,
+#    CTR_MVP_CREATION_RULES.md, CTR_MVP_VALIDATION_RULES.md,
+#    CTR_MVP_QUALITY_GATE_VALIDATION.md
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+#
+#  Downstream Ownership (NOT duplicated here):
+#    SPEC (Layer 9)  — implementation-ready specifications
+#    TSPEC (Layer 10) — test specifications
+#    TASKS (Layer 11) — implementation task breakdown
+#
+#  Validation:
+#    MCP tool: sdd_validate (ucx_hermes server)
+# =============================================================================
+
+id: CTR-NN
+title: "[Contract Specification Title]"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  document_type: "ctr-document"
+  layer: 8
+  lifecycle: mvp-prod-newmvp
+  total_sections: 11
+  last_updated: "2026-03-29"
+  validation:
+    tool: sdd_validate
+    server: ucx_hermes
+    _guidance: |
+      SPEC-Ready Score: >=85/100 required before SPEC generation.
+      10-point rubric: API spec, Pydantic models, error handling,
+      versioning, testing, endpoints, OpenAPI, type annotations,
+      error recovery, concrete examples.
+
+      CTR instances are DUAL-FILE: .md (narrative) + .yaml (OpenAPI).
+      Template is single YAML; AI generates both instance files from it.
+
+  c4_level:
+    _guidance: |
+      CTR is NOT a C4 level. It decomposes Component (SYS) into
+      formal interface contracts for Code (SPEC) implementation.
+
+      Component (SYS)  — system structure, interfaces, quality attributes
+        └─ REQ/CTR     — decompose Component→Code into atomic units  ← this layer
+      Code (SPEC)      — implementation-ready specifications
+
+  diagram_standard:
+    _guidance: "Sequence diagrams for contract interactions. No C4 level tags."
+
+  tags:
+    - ctr-document
+    - layer-8-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: "Inherited from upstream chain."
+    value: code
+
+  id_standard:
+    _guidance: |
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: CTR.01.05.b2d4
+      Hash: SHA256 of content, first 4 hex chars.
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+    placeholder: "xxxx"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _guidance: |
+    SPEC-Ready Score: >=85/100 for implementation readiness.
+    Contract Status: Draft | Active | Deprecated | Superseded
+    Dual-file: instances are CTR-NN_slug.md + CTR-NN_slug.yaml (OpenAPI 3.x)
+  version: "1.0.0"  # SemVer for contracts
+  contract_status: Draft  # Draft | Active | Deprecated | Superseded
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[API Engineer]"
+  owner: "[Team Name]"
+  req_reference: "@req: REQ.NN.04.xxxx"
+  sys_reference: "@sys: SYS.NN.06.xxxx"
+  spec_ready_score: "[Score]/100"
+
+  revision_history:
+    - version: "1.0.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial contract"
+
+# =============================================================================
+# Section 2: Context
+# =============================================================================
+
+context:
+  problem_statement: |
+    [What integration problem does this contract solve?]
+
+  driving_forces:
+    - "[Business/technical driver 1]"
+    - "[Business/technical driver 2]"
+
+  constraints:
+    - "[Constraint — e.g., backward compatibility, latency budget]"
+
+# =============================================================================
+# Section 3: Contract Definition
+# =============================================================================
+
+contract_definition:
+  _guidance: |
+    Define the contract overview, parties, and communication pattern.
+    CTR manages multi-consumer contracts with clear provider-consumer boundaries.
+
+  overview: |
+    [Concise description of request/response or message schema]
+
+  parties:
+    provider: "[Service/team that implements the contract]"
+    consumers:
+      - "[Consumer 1 — primary]"
+      - "[Consumer 2 — additional]"
+
+  communication:
+    type: Synchronous  # Synchronous | Asynchronous | Event-driven
+    protocol: "REST"   # REST | gRPC | GraphQL | WebSocket | Message Queue
+    format: "JSON"
+    transport: "[Service mesh / direct / message broker]"
+
+# =============================================================================
+# Section 4: Requirements Satisfied
+# =============================================================================
+
+requirements_satisfied:
+  _guidance: "Link to upstream REQ requirements this contract implements."
+
+  primary_requirements:
+    - "@req: REQ.NN.04.xxxx"
+
+  quality_attributes:
+    - "Performance: p99 < [NN]ms"
+    - "Availability: [NN]%"
+
+  thresholds:
+    - "@threshold: PRD.NN.perf.api.p95"
+
+# =============================================================================
+# Section 5: Interface Definition
+# =============================================================================
+
+interface_definition:
+  _guidance: |
+    OpenAPI 3.x structure for endpoints. Include request/response schemas,
+    error codes, retry policy, idempotency markers.
+
+  _antipatterns:
+    - "FAIL: missing error codes per endpoint"
+    - "FAIL: no retry policy specified"
+    - "FAIL: missing idempotency declaration"
+
+  endpoints:
+    - endpoint_id: "CTR.NN.05.xxxx"
+      path: "/api/v1/[resource]"
+      method: POST
+      idempotent: false
+      retry_safe: false
+      request:
+        content_type: "application/json"
+        schema: "[Pydantic BaseModel or OpenAPI schema reference]"
+      response:
+        status_code: 200
+        content_type: "application/json"
+        schema: "[Response schema]"
+      error_codes:
+        - code: 400
+          description: "Bad Request"
+          retry: false
+        - code: 429
+          description: "Rate Limited"
+          retry: true
+          strategy: "Exponential backoff, max 3"
+      rate_limit:
+        requests_per_second: 100
+        burst: 150
+
+# =============================================================================
+# Section 6: Error Handling
+# =============================================================================
+
+error_handling:
+  _guidance: |
+    Exhaustive error catalog with retry strategy per error code.
+    Include circuit breaker configuration and fallback behavior.
+
+  errors:
+    - error_code: "[ERROR_NAME]"
+      http_status: 400
+      description: "[When this occurs]"
+      retry: false
+      recovery: "[How to recover]"
+
+  circuit_breaker:
+    open_after: "5 consecutive failures within 60s"
+    half_open_cooldown: "60s"
+    close_after: "3 successful calls in half-open"
+    fallback: "[Conservative fallback behavior]"
+
+# =============================================================================
+# Section 7: Quality Attributes
+# =============================================================================
+
+quality_attributes:
+  performance:
+    max_latency_p99: "<100ms"
+    min_throughput: ">1000 req/s"
+    payload_limit: "<1MB"
+
+  security:
+    auth: "[mTLS | OAuth2 | API Key]"
+    encryption: "TLS 1.3"
+    access_control: "[RBAC permissions required]"
+    audit: "All requests logged"
+
+  observability:
+    success_rate_slo: ">99.9%"
+    latency_targets: "p50 <20ms, p95 <50ms, p99 <100ms"
+    alert_threshold: ">1% error rate for 5 min"
+
+# =============================================================================
+# Section 8: Versioning Strategy
+# =============================================================================
+
+versioning:
+  _guidance: |
+    SemVer: MAJOR.MINOR.PATCH
+    MAJOR: breaking changes (30-day migration period)
+    MINOR: backward-compatible additions
+    PATCH: bug fixes, documentation
+
+  policy: SemVer
+  compatibility:
+    provider: "Must accept requests from n-1 major version"
+    consumer: "Must ignore unknown fields (forward compatibility)"
+
+  deprecation:
+    day_0: "Announce deprecation, publish migration guide"
+    day_30: "Remove from documentation"
+    day_60: "Remove from service"
+
+# =============================================================================
+# Section 9: Examples
+# =============================================================================
+
+examples:
+  _guidance: "Concrete request/response examples for each endpoint."
+
+  success:
+    request: "[JSON request example]"
+    response: "[JSON success response]"
+
+  validation_failure:
+    request: "[Invalid request example]"
+    response: "[400 error response]"
+
+  error:
+    request: "[Request causing error]"
+    response: "[Error response with code]"
+
+# =============================================================================
+# Section 10: Verification
+# =============================================================================
+
+verification:
+  _guidance: "Contract testing approach. TSPEC owns detailed test specs."
+
+  contract_tests:
+    - "[Provider contract test — validates responses match schema]"
+    - "[Consumer contract test — validates requests match schema]"
+
+  bdd_scenario_refs:
+    - "@bdd: BDD.NN.03.xxxx"
+
+# =============================================================================
+# Section 11: Traceability
+# =============================================================================
+
+traceability:
+  tags:
+    - "@ctr: CTR-NN"
+
+  upstream:
+    req_references:
+      - "@req: REQ.NN.04.xxxx"
+    sys_references:
+      - "@sys: SYS.NN.06.xxxx"
+    adr_references:
+      - "@adr: ADR.NN.03.xxxx"
+
+  downstream_expected:
+    - type: SPEC
+      layer: 9
+      description: "Technical specifications implementing this contract"
+
+  cross_links:
+    depends:
+      - "@depends: CTR-NN"
+    discoverability:
+      - "@discoverability: CTR-NN (short rationale)"
+
+  health_score:
+    spec_ready: "[X]%"
+    target_score: ">=85/100"
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  terms:
+    - term: CTR
+      definition: "Contract Specification (dual-file: .md + .yaml OpenAPI)"
+    - term: SemVer
+      definition: "Semantic Versioning (MAJOR.MINOR.PATCH)"
+    - term: mTLS
+      definition: "Mutual TLS (service-to-service authentication)"
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# End of CTR-TEMPLATE.yaml
+# =============================================================================

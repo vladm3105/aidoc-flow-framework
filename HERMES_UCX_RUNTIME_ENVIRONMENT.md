@@ -149,6 +149,6 @@ Adopt **Hermes + UCX** as the default production baseline.
 ## 12. Paths
 
 - UCX framework root: `/opt/data/ucx_framework`
-- UCX lifecycle engine: `/opt/data/ucx_framework/mcp_ucx`
+- UCX lifecycle engine: `/opt/data/ucx_framework/ucx_hermes`
 - Knowledge subsystem: `/opt/data/ucx_framework/ucx_kb`
 - SDD flow assets: `/opt/data/ucx_framework/ucx_flow_v3`

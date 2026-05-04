@@ -10,7 +10,13 @@
 
 Automated AI code review runs on every pull request across all project repositories. A custom GitHub Actions workflow invokes {AI_TOOL_NAME} Code CLI in non-interactive mode on the self-hosted runner. Claude analyzes the PR diff and source files, then posts inline line-level comments in the "Files changed" tab — the same UX as human reviewers.
 
-AI review is **advisory**. It supplements but does not replace human review. At least one human reviewer is required per PR (enforced by branch protection).
+AI review is a PR gate signal that supplements deterministic UCX checks. Human review is conditionally required by escalation policy (Round 2 failure) and/or branch protection settings.
+
+Default governance sequence for execution PRs:
+
+1. Round 1: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap/inconsistency review.
+2. If Round 1 fails, run Round 2 with the same sequence.
+3. If Round 2 fails, escalate to human review and block merge until resolved.
 
 ---
 
@@ -23,7 +29,7 @@ Home repo: PR opened / synchronize / ready_for_review
 ai-review.yml (triggers directly)
   
    Verify {AI_TOOL_NAME} Code CLI on runner
-   Checkout PR branch (inline git clone, no marketplace actions)
+   Checkout PR branch
    Fetch PR diff + metadata via gh API
    Run {AI_TOOL_NAME} Code (-p mode, non-interactive)
        Read diff and source files for context
@@ -49,7 +55,7 @@ Caller workflow (~10 lines)
 |:---------|:------|
 | **Model** | Claude Sonnet (default), configurable per-repo (haiku, opus) |
 | **Auth** | `ANTHROPIC_API_KEY` secret (per-repo or org-level) |
-| **Runner** | `self-hosted` ({AI_TOOL_NAME} Code CLI pre-installed) |
+| **Runner** | `ubuntu-latest` by default, or approved `self-hosted` runner with {AI_TOOL_NAME} Code CLI available |
 | **Output** | Inline line-level comments + summary |
 | **Events** | `APPROVE`, `COMMENT`, or `REQUEST_CHANGES` (integrates with branch protection) |
 | **Context** | Reads source files beyond the diff for deeper understanding |
@@ -58,7 +64,7 @@ Caller workflow (~10 lines)
 | **PR Labels** | `ai:review-passed` (no critical/medium findings) or `ai:review-failed` (REQUEST_CHANGES) |
 | **Concurrency** | One review per PR number; new pushes cancel in-progress reviews |
 | **Cost cap** | `--max-budget-usd 1.00` per review (configurable) |
-| **Marketplace actions** | None required (GHES-compatible) |
+| **Marketplace actions** | Allowed when version-pinned and reviewed |
 
 ---
 
@@ -104,7 +110,7 @@ Caller workflow (~10 lines)
 
 | Secret | Source |
 |:-------|:-------|
-| `ANTHROPIC_API_KEY` | Anthropic API key (or org-level secret on GHES) |
+| `ANTHROPIC_API_KEY` | Anthropic API key (repo-level or org-level secret) |
 
 GCP secrets (`WIF_PROVIDER`, `WIF_SA_EMAIL`, `GCP_PROJECT_ID`) are no longer required for AI review. They remain in use by deploy and terraform workflows.
 
@@ -126,7 +132,7 @@ Claude skips non-code files and focuses only on substantive code changes:
 2. Reads PR metadata (title, body, changed file count)
 3. Optionally reads source files in the repo for additional context
 4. Builds a JSON review payload with inline comments and summary
-5. Posts the review via `gh api` (GHES REST API)
+5. Posts the review via `gh api` (GitHub REST API)
 
 ### 5-Phase Analysis Methodology
 
@@ -248,7 +254,7 @@ gh api graphql -f query='
 ' -f org="{YOUR_ORG}" -F number={PROJECT_NUMBER}
 ```
 
-**GHES Token Requirements**: For GitHub Enterprise Server, the `GITHUB_TOKEN` may require additional scopes for GraphQL project mutations. If board updates fail silently, create a PAT with `project` scope.
+**Enterprise variant note**: Some GitHub Enterprise Server deployments may require additional token scopes for GraphQL project mutations. If board updates fail silently, use a PAT with `project` scope.
 
 ### AI Agent Memory System
 

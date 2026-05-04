@@ -57,7 +57,7 @@ The home repo serves as:
        pr-merge-cleanup.yml # Set merged PR board status to Done
        phase-transition.yml # Bulk phase status transitions
        ai-review.yml        # Unified AI PR review
-       agent-dispatch.yml           # Dispatch issues to AI agents
+       agent-dispatch.yml           # Dispatch approved issues to execution agents
        deploy-dev.yml               # Phase-gated dev deployment
        check-all-phases-dev.yml     # Staging gate (all phases dev_deployed)
        deploy-dev-pr.yml.disabled   # DEPRECATED: Per-PR dev environments

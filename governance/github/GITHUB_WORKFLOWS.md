@@ -2,12 +2,24 @@
 
 Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} project.
 
-**Runner**: All workflows use `runs-on: self-hosted` (GHES does not provide hosted runners).
-**Marketplace Actions**: Zero — all workflows use inline shell commands per GOVERNANCE_RULES.md §2a (GitHub Connect unreliable on GHES v3.12.4).
+**Runner**: Default baseline uses `runs-on: ubuntu-latest` on GitHub-hosted runners.
+**Marketplace Actions**: Allowed when version-pinned and reviewed per GOVERNANCE_RULES.md §2a.
 
 ---
 
 ## Workflow Summary
+
+Operational routing model for these workflows:
+
+- Hermes handles observability triage, issue creation/prioritization, and lifecycle governance decisions.
+- Execution agents handle autonomous implementation/deployment only for issues in `ai:ready`.
+- Post-deployment validation and closure decisions route back to Hermes.
+
+PR governance model:
+
+- Round 1 (required): `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap check.
+- Round 2 (conditional): run only when Round 1 has blocking failures.
+- Escalation: if Round 2 fails, set escalation status `REQUIRED`, alert human reviewer, and block merge.
 
 | Workflow | File | Trigger | Purpose |
 |:---------|:-----|:--------|:--------|
@@ -18,7 +30,7 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 | [PR Merge Cleanup](#pr-merge-cleanup-workflow) | `pr-merge-cleanup.yml` | PR closed | Set PR board status to Done |
 | [Phase Transition](#phase-transition-workflow) | `phase-transition.yml` | Manual dispatch | Bulk phase status transitions |
 | [AI PR Review](#ai-pr-review-workflow) | `ai-review.yml` | PR opened/synced/ready + workflow_call | Unified AI code review ({AI_TOOL_NAME} Code CLI) |
-| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch issues to AI agents  |
+| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch approved issues to execution agents |
 | [Deploy to Dev](#deploy-to-dev-workflow) | `deploy-dev.yml` | Phase complete | Phase-gated dev deployment with smoke tests  |
 | [Check All Phases Dev](#check-all-phases-dev-workflow) | `check-all-phases-dev.yml` | After dev deploy | Check if all phases dev_deployed, trigger staging  |
 | ~~Deploy PR Environment~~ | `deploy-dev-pr.yml.disabled` | — | **DEPRECATED**  |
@@ -188,7 +200,7 @@ permissions:
 
 | Setting | Value |
 |:--------|:------|
-| Runner | `self-hosted` |
+| Runner | `ubuntu-latest` (default) |
 | Python | System Python 3 (venv) |
 | Tools | `ruff` |
 
@@ -202,7 +214,7 @@ permissions:
 
 | Setting | Value |
 |:--------|:------|
-| Runner | `self-hosted` |
+| Runner | `ubuntu-latest` (default) |
 | Python | System Python 3 (venv) |
 | Tools | `mypy`, `types-requests` |
 
@@ -216,7 +228,7 @@ permissions:
 
 | Setting | Value |
 |:--------|:------|
-| Runner | `self-hosted` |
+| Runner | `ubuntu-latest` (default) |
 | Python | 3.11, 3.12 (matrix) |
 | Tools | `pytest`, `pytest-cov`, `pytest-asyncio` |
 
@@ -230,7 +242,7 @@ permissions:
 
 | Setting | Value |
 |:--------|:------|
-| Runner | `self-hosted` |
+| Runner | `ubuntu-latest` (default) |
 | Python | System Python 3 (venv) |
 | Tools | `bandit`, `safety` |
 
@@ -474,7 +486,7 @@ permissions:
 
 **File**: `.github/workflows/ai-review.yml`
 
-Unified workflow that runs {AI_TOOL_NAME} Code CLI in non-interactive mode (`-p`) on the self-hosted runner. Triggers directly on PRs in the home repo and can also be called as a reusable workflow from component repos.
+Unified workflow that runs {AI_TOOL_NAME} Code CLI in non-interactive mode (`-p`) on GitHub-hosted or approved self-hosted runners. Triggers directly on PRs in the home repo and can also be called as a reusable workflow from component repos.
 
 ### Triggers
 
@@ -719,7 +731,7 @@ Full test suite runs against staging (not cumulative per-phase):
 pytest tests/acceptance --base-url=${STAGING_URL} -n auto --timeout=300
 ```
 
-Test failures create regression issues with label `ai:ready` for AI agent remediation.
+Test failures create regression issues with label `ai:ready` for execution-agent remediation.
 
 ### Required Secrets
 
@@ -946,7 +958,7 @@ The following workflows implement the AI-first phase-gated deployment model with
 | Setting | Value |
 |:--------|:------|
 | Trigger | Issue labeled `ai:ready` |
-| Purpose | Transition issue to `ai:in-progress`, notify AI agents |
+| Purpose | Transition issue to `ai:in-progress`, notify execution agents |
 
 **Steps**: Validate issue, change label, update board status, post to Teams.
 
@@ -1469,8 +1481,8 @@ With the safe pattern, the title is stored in an environment variable and proper
 | 3.3 | {DATE} | Added deployment workflows: deploy-dev.yml, deploy-staging.yml, deploy-prod.yml  |
 | 3.2 | {DATE} | Consolidated ai-review-reusable.yml into ai-review.yml — single unified workflow for both direct triggers and workflow_call |
 | 3.1 | {DATE} | Added `issues: write` permission and conclusion comment + PR label steps to AI PR Review  |
-| 3.0 | {DATE} | Remove 5 workflows (bulk-add, codeql, pr-labeler, stale, test-runner); rewrite CI and Release to zero marketplace actions; update AI review to {AI_TOOL_NAME} Code CLI; update secrets summary |
-| 2.3 | {DATE} | CI: add permissions block, fix skip-ci for PRs, remove failure suppression; AI review: add GH_HOST for GHES diff fetch, add caller permissions; fix phase-transition subshell bug; clean up unused pagination vars; fix stale schedule to EST; fix release changelog fallback; remove deprecated pr-labeler repo-token |
+| 3.0 | {DATE} | Remove 5 workflows (bulk-add, codeql, pr-labeler, stale, test-runner); rewrite CI and Release baseline; update AI review to {AI_TOOL_NAME} Code CLI; update secrets summary |
+| 2.3 | {DATE} | CI: add permissions block, fix skip-ci for PRs, remove failure suppression; AI review host-handling update for enterprise variants; add caller permissions; fix phase-transition subshell bug; clean up unused pagination vars; fix stale schedule to EST; fix release changelog fallback; remove deprecated pr-labeler repo-token |
 | 2.2 | {DATE} | Add AI PR Review and AI PR Review (Reusable) workflow sections, WIF secrets, review script config files, AI review troubleshooting |
 | 2.1 | {DATE} | Add issue close to Done + stale label cleanup, add PR merge cleanup workflow, document delete_branch_on_merge repo setting |
 | 2.0 | {DATE} | Fix auto-add default (Backlog to Todo), fix bulk-add options (Ready to Todo), add issue-label-sync and phase-transition workflows |

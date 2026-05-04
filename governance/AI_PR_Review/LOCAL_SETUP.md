@@ -45,12 +45,12 @@ npx @anthropic-ai/claude-code --version
 
 ---
 
-## 2. Configure GitHub Enterprise Host
+## 2. Configure GitHub Host
 
-All `gh` commands require the GHES host prefix. Add to your shell profile:
+For GitHub.com, no host prefix is required. For enterprise variants, set `GH_HOST` explicitly.
 
 ```bash
-# Add to ~/.bashrc, ~/.zshrc, or equivalent
+# Optional: set only when using GitHub Enterprise host
 export GH_HOST={GITHUB_HOST}
 ```
 
@@ -62,7 +62,7 @@ source ~/.bashrc  # or ~/.zshrc
 **Verification**:
 ```bash
 echo $GH_HOST
-# Expected: {GITHUB_HOST}
+# Expected: host value only when enterprise host is configured
 ```
 
 ---
@@ -74,15 +74,15 @@ The `gh` CLI must be authenticated to fetch PR diffs and post reviews.
 ### 3a. Check Existing Auth
 
 ```bash
-GH_HOST={GITHUB_HOST} gh auth status
+gh auth status
 ```
 
-If you see "Logged in to {GITHUB_HOST}", skip to Step 4.
+If you see a valid login target, skip to Step 4.
 
 ### 3b. Authenticate
 
 ```bash
-GH_HOST={GITHUB_HOST} gh auth login --hostname {GITHUB_HOST}
+gh auth login
 ```
 
 Follow the prompts:
@@ -93,10 +93,10 @@ Follow the prompts:
 ### 3c. Verify Authentication
 
 ```bash
-GH_HOST={GITHUB_HOST} gh auth status
-# Expected:  Logged in to {GITHUB_HOST} as <username>
+gh auth status
+# Expected: logged in as <username>
 
-GH_HOST={GITHUB_HOST} gh repo view {GITHUB_ORG}/{REPO_NAME} --json name
+gh repo view {GITHUB_ORG}/{REPO_NAME} --json name
 # Expected: {"name":"{REPO_NAME}"}
 ```
 

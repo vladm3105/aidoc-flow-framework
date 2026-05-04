@@ -138,7 +138,7 @@ def health_check() -> bool:
 def get_db_stats() -> dict | None:
     """Get RAG database statistics (document and chunk counts)."""
     try:
-        schema = get_config().get("database", {}).get("schema", "nexus")
+        schema = os.getenv("RAG_SCHEMA", "nexus")
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute(f"SELECT COUNT(*) FROM {schema}.rag_documents")

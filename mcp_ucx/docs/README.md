@@ -1,8 +1,20 @@
 # UCX — Unified Context eXcelerator
 
+> ⚠️ **DEPRECATED — FROZEN AT v1.22.0**
+>
+> This directory (`mcp_ucx/`) is **deprecated** as of 2026-05-02. All active development, runtime code, tests, documentation, templates, and skills have moved to **`ucx_hermes/`** (v2.0.0+).
+>
+> - **New work**: Use `ucx_hermes/`
+> - **Bug reports**: File against `ucx_hermes/`
+> - **MCP config**: Point to `ucx_hermes/src`
+> - **Migration guide**: See `ucx_hermes/docs/migration/MIGRATION_FROM_MCP_UCX.md`
+> - **Historical reference**: This file and the `mcp_ucx/` tree are frozen for audit purposes only.
+>
+> ---
+
 > **Aliases**: `ucx`, `mcp_ucx`, `sdd-lifecycle`
 >
-> The package directory is `mcp_ucx/` (historical name). The canonical name is **UCX** (Unified Context eXcelerator). References to `mcp_ucx`, `ucx`, or `sdd-lifecycle` all refer to this system. The legacy `UCX_v1` archive (`ucx_flow_v3/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
+> The package directory is `mcp_ucx/` (historical name). **The canonical active directory is now `ucx_hermes/`**. References to `mcp_ucx` in historical docs and templates should be treated as legacy. The legacy `UCX_v1` archive (`ucx_flow_v3/archived/UCX_v1_archive/`) is a historical predecessor — not the current UCX.
 >
 > UCX is an AI agent orchestration platform that creates and manages context for AI agents (Claude Code, Gemini CLI, GitHub Copilot, Codex, OpenRouter) per project. Skills are project-specific, not agent-specific — any agent calls UCX to get the right context for a specific project.
 

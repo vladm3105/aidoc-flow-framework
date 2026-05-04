@@ -55,6 +55,12 @@ Phase 5: Issue Population & Kickoff [PASS] COMPLETED (Phase 1)
 [ ] Create Phase 2+ sub-tasks (just-in-time)
 ```
 
+Operating model alignment for project setup:
+
+- Hermes operates as control plane for observability triage, issue prioritization, and governance closure decisions.
+- Execution agents (Claude Code, Codex, OpenCode, or equivalent) process approved `ai:ready` issues autonomously through fix -> PR -> deploy workflows.
+- Keep label lifecycle strictly `ai:ready` -> `ai:in-progress` -> `ai:review-requested`.
+
 ### Current Implementation Summary
 
 | Component | Documented | Actual | Status |
@@ -426,6 +432,16 @@ The PR template is optimized for the 4-stage QA workflow:
 
 ### 1.5 Configure Branch Protection
 
+Round-based governance checks should be configured as required status checks in addition to CI:
+
+- `ucx-validate-r1`
+- `ucx-review-remediate-r1`
+- `hermes-final-r1`
+- `ucx-validate-r2` (conditional/required when Round 1 fails)
+- `ucx-review-remediate-r2` (conditional/required when Round 1 fails)
+- `hermes-final-r2` (conditional/required when Round 1 fails)
+- `governance-escalation-status` (must not be `REQUIRED`)
+
 ```bash
 # Via GitHub API
 gh api repos/$GH_ORG/$GH_REPO/branches/main/protection -X PUT \
@@ -675,7 +691,7 @@ mutation($projectId: ID!, $repoId: ID!) {
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | AI Review | `ai-review.yml` | Reusable AI PR review (Gemini) |
-| Agent Dispatch | `agent-dispatch.yml` | AI agent dispatch for issue work |
+| Agent Dispatch | `agent-dispatch.yml` | Execution-agent dispatch for approved issue work |
 
 **Phase-Gated Deployment (7)**
 | Workflow | File | Purpose |
@@ -748,6 +764,8 @@ mkdir -p .github/ai-context
 ### 3.3 Create AI-Ready Validation Workflow
 
 Create `.github/workflows/ai-ready-validation.yml`:
+
+> Note: Example below follows the GitHub.com baseline (`GOVERNANCE_RULES.md` §2a). Use `ubuntu-latest` by default; use self-hosted only when required.
 
 ```yaml
 name: AI-Ready Validation
@@ -824,6 +842,8 @@ jobs:
 
 Create `.github/workflows/ai-label-status-sync.yml`:
 
+> Note: Example below follows the GitHub.com baseline (`GOVERNANCE_RULES.md` §2a). Use `ubuntu-latest` by default; use self-hosted only when required.
+
 ```yaml
 name: AI Label to Status Sync
 
@@ -893,6 +913,8 @@ jobs:
 
 Create `.github/workflows/ai-pr-review.yml`:
 
+> Note: Example below follows the GitHub.com baseline (`GOVERNANCE_RULES.md` §2a). Use `ubuntu-latest` by default; use self-hosted only when required.
+
 ```yaml
 name: AI PR Review
 
@@ -941,6 +963,8 @@ jobs:
 ### 3.6 Create Branch Cleanup Workflow
 
 Create `.github/workflows/ai-branch-cleanup.yml`:
+
+> Note: Example below follows the GitHub.com baseline (`GOVERNANCE_RULES.md` §2a). Use `ubuntu-latest` by default; use self-hosted only when required.
 
 ```yaml
 name: AI Branch Cleanup
@@ -1321,6 +1345,11 @@ ai:ready → ai:in-progress → ai:review-requested → (PR merge)
                ↓
           ai:blocked (if stuck)
 ```
+
+Control-plane/execution-plane gate:
+
+- Hermes triage and human/policy approval determine when an issue enters `ai:ready`.
+- Execution agents do not begin autonomous work before `ai:ready` is present.
 
 **4-Stage Iterative QA Loop:**
 ```

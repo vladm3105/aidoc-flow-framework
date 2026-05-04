@@ -10,6 +10,11 @@
 
 This document defines the roles, responsibilities, and tools used by **humans** and **AI assistants** in the project. Understanding these boundaries ensures efficient collaboration and clear accountability.
 
+Control-plane and execution-plane model:
+
+- Hermes is the human-in-loop control plane for issue triage, planning governance, and post-deployment validation decisions.
+- Claude Code, Codex, OpenCode, or equivalent agents are execution-plane workers for approved issue implementation and delivery.
+
 ---
 
 ## Quick Reference Matrix
@@ -37,7 +42,7 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 | Write application code | [PASS] | [PASS] |
 | Write Terraform | [PASS] | [PASS] |
 | Write tests | [PASS] | [PASS] |
-| Review code | [PASS] | [FAIL] (advisory only) |
+| Review code | [PASS] | [PASS] (advisory/policy-gated) |
 | Deploy to production | [PASS] | [FAIL] |
 | **Decision Making** |
 | Architecture decisions | [PASS] | [FAIL] (research only) |
@@ -191,9 +196,31 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 6. REQUEST REVIEW
     issue_write(labels=["ai:review-requested"])
 
-7. WAIT FOR HUMAN
-    Human reviews, approves/rejects
+7. WAIT FOR GOVERNANCE OUTCOME
+    Hermes runs Round 1/2 gates; escalate to human on Round 2 failure or branch-protection requirement
 ```
+
+### Hermes Orchestrator
+
+**Responsibilities**:
+- Consume observability alerts and incident signals
+- Create and prioritize GitHub issues with severity, repro context, and traceability
+- Keep issue lifecycle aligned with governance gates
+- Run round-based PR governance gates (`sdd_validate`, `sdd_review`, `sdd_remediate`, post-remediation `sdd_validate`, final blocker-gap check)
+- Decide merge-time escalation when Round 2 fails
+- Validate post-deployment evidence before issue closure
+
+**Tools**:
+| Tool | Access Level | Purpose |
+|:-----|:-------------|:--------|
+| Observability dashboards/APIs | Read | Alert and incident signal intake |
+| GitHub Issues/Projects | Write | Triage, prioritization, lifecycle routing |
+| UCX MCP (`sdd-lifecycle`) | Full | BRD->IPLAN orchestration and governance checks |
+
+**Handoff Contract**:
+- Hermes routes only approved issues to `ai:ready`.
+- Execution agents process `ai:ready` issues autonomously through implementation and PR submission.
+- Hermes controls round-based PR gating, escalation decisions, and post-deployment closure.
 
 ---
 
@@ -288,12 +315,12 @@ The AI workflow uses labels to signal state transitions between AI and humans:
 | `ai:ready` | Human | AI | Task well-specified, AI can start |
 | `ai:in-progress` | AI | — | AI actively working (tracking) |
 | `ai:blocked` | AI | Human | AI stuck, needs input/clarification |
-| `ai:review-requested` | AI | Human | AI done, PR ready for review |
+| `ai:review-requested` | AI | Hermes / Human | AI done, PR ready for round-based governance review |
 | `ai:human-required` | Human | Human | Not suitable for AI |
 
 **Workflow:**
 ```
-ai:ready → ai:in-progress → ai:review-requested → (merge PR)
+ai:ready → ai:in-progress → ai:review-requested → (Round 1 gates) → (Round 2 if needed) → merge
                ↓
           ai:blocked (if stuck)
 ```
@@ -329,42 +356,21 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 ### Typical Task Flow
 
 ```
+1. SPECIFICATION
+   Human/Hermes define task, acceptance criteria, and traceability
+   Issue is approved into ai:ready
 
-                      TASK LIFECYCLE                             
+2. IMPLEMENTATION
+   Execution agent (or human for ai:human-required) implements and opens PR
 
-                                                                 
-  1. SPECIFICATION (Human)                                       
-      Create issue with acceptance criteria                   
-      Add labels: type, priority, component                   
-      Add to milestone                                        
-      Set project fields (Size, etc.)  Project Board       
-      Add label: ai:ready (or ai:human-required)              
-                                                                
-                                                                
-  2. IMPLEMENTATION                                              
-         
-       IF ai:ready            IF ai:human-required           
-                        
-       AI claims issue        Human implements               
-       AI writes code         Human writes code              
-       AI creates PR          Human creates PR               
-       AI requests review     Human requests review          
-         
-                                                                
-                                                                
-  3. REVIEW (Human)                                              
-      Review PR diff                                          
-      Check acceptance criteria                               
-      Approve or request changes                              
-                                                                
-                                                                
-  4. MERGE & DEPLOY (Human)                                      
-      Merge PR                                                
-      CI/CD runs automatically                                
-      Human verifies deployment                               
-      Close issue                                             
-                                                                 
+3. ROUND-BASED PR GOVERNANCE
+   Round 1: sdd_validate -> sdd_review -> sdd_remediate -> post-remediation sdd_validate -> Hermes final blocker-gap check
+   If Round 1 fails: Round 2 with same sequence
+   If Round 2 fails: escalate to human and block merge
 
+4. MERGE & DEPLOY
+   Merge after gates pass (and human approval when required)
+   CI/CD runs, Hermes verifies post-deployment signals, linked issue closes
 ```
 
 ---
@@ -443,10 +449,10 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 
 | Action | Oversight Level |
 |:-------|:----------------|
-| AI writes code | Review before merge |
-| AI creates PR | Approval required |
+| AI writes code | Round-based governance gates before merge |
+| AI creates PR | Merge allowed only after gate pass (plus branch protection requirements) |
 | AI modifies config | Security review |
-| Any production change | Human executes |
+| Any production change | Human approves execution and validates outcome |
 
 ---
 
@@ -459,17 +465,17 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 | **Planning** | Owns | Assists with research |
 | **Specification** | Owns | Reads and follows |
 | **Implementation** | Complex/sensitive tasks | Routine/boilerplate tasks |
-| **Review** | Owns | Cannot review |
-| **Deployment** | Owns | Cannot deploy |
+| **Review** | Owns escalation and policy decisions | Performs advisory and policy-gated review checks |
+| **Deployment** | Approves and governs | Can execute approved CI/CD workflows |
 | **Monitoring** | Owns | Cannot access production |
 
 ### Key Principles
 
-1. **AI is a tool, not a decision-maker** - Humans approve all changes
+1. **AI executes within governance policy** - Hermes governs rounds/escalation; humans intervene on escalation or required approvals
 2. **Labels are the interface** - AI and humans communicate via issue labels
 3. **Project board is human-only** - AI works at repository level
 4. **Security is human-enforced** - AI has no access to secrets or production
-5. **Accountability is human** - Humans merge, deploy, and own outcomes
+5. **Accountability is human** - Humans approve and own production outcomes
 
 ---
 

@@ -1,7 +1,7 @@
 # AI PR Review — Onboarding New Repos
 
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
-**Prerequisite**: {AI_TOOL_NAME} Code CLI installed on the self-hosted runner
+**Prerequisite**: {AI_TOOL_NAME} Code CLI installed on the selected runner (GitHub-hosted or approved self-hosted)
 
 ---
 
@@ -9,7 +9,7 @@
 
 The AI PR review system uses a **reusable workflow** pattern. All review logic lives in the home repo (`{REPO_NAME}`). Component repos need only a ~10-line caller workflow and one GitHub secret (`ANTHROPIC_API_KEY`).
 
-The workflow runs {AI_TOOL_NAME} Code CLI on the self-hosted runner — no marketplace actions, no Python deps, no GCP auth required for AI review.
+The workflow runs {AI_TOOL_NAME} Code CLI on the selected runner — no Python dependencies or GCP auth required for AI review.
 
 ---
 

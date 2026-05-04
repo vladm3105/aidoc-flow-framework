@@ -36,6 +36,11 @@ Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 
 > **Reference**: See [plans/README.md](./plans/README.md) for IPLAN lifecycle and templates.
 
+Agent operating model for DoD:
+
+- Hermes is the control plane for triage, planning governance, and closure decisions.
+- Execution agents (Claude Code, Codex, OpenCode, or equivalent) implement approved `ai:ready` issues.
+
 ---
 
 ## Task Level
@@ -47,11 +52,17 @@ A task (Issue) is **Done** when:
 - [ ] Security scan passes (no HIGH/CRITICAL vulnerabilities)
 - [ ] PR is reviewed and approved by at least 1 reviewer
 - [ ] PR review verifies changes against linked issue acceptance criteria (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#linked-issue-verification-in-pr-review-mandatory))
+- [ ] Round-based PR governance passes:
+  - Round 1 completed (`sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap check)
+  - If Round 1 failed, Round 2 completed with same sequence
+  - If Round 2 failed, human escalation completed before merge
 - [ ] AI PR review workflow passes (or `skip-ai-review` label applied with justification)
 - [ ] CI pipeline passes (lint, test, build)
 - [ ] PR is merged to `main`
 - [ ] Related documentation is updated (if applicable)
 - [ ] Issue is closed via PR link (`Closes #123`)
+- [ ] Post-deployment signals for affected scope are validated by Hermes before final closure
+- [ ] Human approval is present when escalation occurred or branch protection requires reviewer approval
 
 ## UI/Frontend Task Level
 A UI task is **Done** when (in addition to Task Level criteria):
@@ -67,6 +78,7 @@ An AI-implemented task is **Done** when (in addition to Task Level criteria):
 - [ ] AI label workflow completed: `ai:ready` → `ai:in-progress` → `ai:review-requested` → (PR merge)
 - [ ] Project Board #{PROJECT_BOARD_NUMBER} status updated at each label transition (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#3-ai-workflow))
 - [ ] Issue acceptance criteria **verified** (not blind-checked) and marked (`- [x]`) before requesting review
+- [ ] Issue entered execution queue through approved `ai:ready` transition (no `ai:approved` label)
 
 **AI Agent Test/Code Review** (performed before PR):
 - [ ] All identified bugs fixed
@@ -89,7 +101,7 @@ An AI-implemented task is **Done** when (in addition to Task Level criteria):
 - [ ] Review history posted to linked issue after each review/re-review (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#issue-review-history-mandatory))
 
 **Human Validation**:
-- [ ] Human reviewer has validated AI-generated code
+- [ ] Human reviewer has validated AI-generated code when escalation is triggered or branch protection requires approval
 - [ ] No security vulnerabilities introduced (verified by human)
 
 **Commit & Cleanup**:

@@ -181,7 +181,7 @@ pytest tests/e2e/ -v -m e2e --timeout=60
 ```yaml
 jobs:
   e2e:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     environment: staging
     steps:
       - run: |

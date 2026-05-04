@@ -20,12 +20,13 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 - Create issues in component repos (all issues in home repo only)
 - Force-push to `main` or commit directly (all changes via PR)
 - Invent naming conventions — check §4 of GOVERNANCE_RULES.md
-- Use marketplace actions in GitHub Actions workflows (`actions/checkout`, `actions/setup-python`, etc.) — GitHub Connect is unreliable on GHES v3.12.4. Use inline shell commands instead (see GOVERNANCE_RULES.md §2a)
+- Use unreviewed workflow actions without version pinning — marketplace actions are allowed when pinned and reviewed (see GOVERNANCE_RULES.md §2a)
 
 ### Always Do
 - Prefix `gh` commands with `GH_HOST={GITHUB_HOST}`
 - Use EST ({TIMEZONE}) for all schedules and timestamps
 - Follow AI label lifecycle: `ai:ready` → `ai:in-progress` → `ai:review-requested` → PR merge
+- Treat Hermes as control plane and coding agents as execution plane for approved `ai:ready` issues
 - **When changing a label, also update the issue's Status on Project Board #{PROJECT_BOARD_NUMBER}** — labels and board status are separate systems (see GOVERNANCE_RULES.md §3 for option IDs and GraphQL mutation)
 - Include `Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>` in commits
 - **Assign at least one reviewer on every PR** from [CONTRIBUTING.md §Reviewer Roster](CONTRIBUTING.md#reviewer-roster) (`--reviewer <username>`)

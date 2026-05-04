@@ -35,13 +35,13 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | Location | Role |
 |----------|------|
 | `ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml` | **Canonical source** — edit here |
-| `mcp_ucx/templates/ADR-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
+| `ucx_hermes/templates/ADR-TEMPLATE.yaml` | **Runtime copy** — used by MCP tools |
 
 ```bash
-cp ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml mcp_ucx/templates/ADR-TEMPLATE.yaml
+cp ucx_flow_v3/05_ADR/ADR-TEMPLATE.yaml ucx_hermes/templates/ADR-TEMPLATE.yaml
 ```
 
-## MCP Tools (mcp_ucx)
+## MCP Tools (ucx_hermes)
 
 | Tool | Purpose |
 |------|---------|

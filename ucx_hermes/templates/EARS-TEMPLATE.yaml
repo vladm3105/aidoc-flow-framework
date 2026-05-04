@@ -1,0 +1,376 @@
+# =============================================================================
+#  EARS-TEMPLATE.yaml — EARS Requirements (SDD v3)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD
+#  Purpose: AI-consumable + human-reviewable EARS template
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by MCP tools
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Downstream: BDD (Layer 4)
+#  Upstream: BRD (Layer 1), PRD (Layer 2)
+#
+#  v3 changes from ucx_flow_v3:
+#    Removed downstream references to ADR, SYS, TSPEC, TASKS
+# =============================================================================
+
+id: EARS-NN
+title: "[Target Component/Feature]"
+
+# =============================================================================
+# Template Metadata (not a content section — template configuration only)
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  document_type: "ears-document"
+  layer: 3
+  lifecycle: mvp-prod-newmvp
+  total_sections: 5
+  last_updated: "2026-03-29"
+  validation:
+    tool: sdd_validate
+    server: ucx_hermes
+    _guidance: |
+      All validation runs through ucx_hermes MCP tools.
+      BDD-Ready Score: >=90/100 required before downstream BDD generation.
+      EARS parity check: requires trigger clause (WHEN|IF|WHILE) and
+      actor clause (THE SYSTEM SHALL) in document content.
+
+      BDD-Ready scoring criteria:
+        Requirements clarity (40%): EARS syntax compliance, atomicity, quantifiability
+        Testability (35%): BDD translation possible, observable verification, edge cases
+        Quality attribute completeness (15%): percentiles, security, reliability targets
+        Strategic alignment (10%): business traceability, implementation feasibility
+
+  c4_level:
+    _guidance: |
+      EARS is NOT a C4 level. It is a refinement step that formalizes
+      the transition from Context (BRD) to Container (PRD).
+
+      SDD v3.2 C4 map (8 layers):
+        Context (BRD)    — business environment, actors, boundaries
+        Container (PRD)  — product features, functional blocks
+        EARS              — formalize Context→Container transition     ← this layer
+        BDD               — executable acceptance scenarios
+        ADR               — architecture decisions
+        SPEC              — implementation-ready specifications
+        TDD               — test case definitions from SPEC contracts
+        IPLAN             — execution plan bridging TDD to Code
+        Code              — source code implementation
+
+      EARS translates business requirements (BRD) and product features (PRD)
+      into formal, testable, atomic logic statements using WHEN-THE-SHALL-WITHIN
+      syntax. Content must be precise and quantifiable — not narrative or vague.
+    value: none
+
+  diagram_standard:
+    _guidance: |
+      EARS uses state diagrams and sequence diagrams for requirement visualization.
+      Not C4 container/component diagrams — EARS operates at the requirement level.
+
+      Recommended diagram types:
+        - stateDiagram-v2: state transitions for state-driven requirements
+        - sequenceDiagram: interaction flows for event-driven requirements
+        - flowchart: decision logic for unwanted behavior / fallback paths
+
+  tags:
+    - ears-document
+    - layer-3-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Inherited from upstream PRD (which inherits from BRD).
+    value: code  # code | document | ux | risk | process
+
+  id_standard:
+    _guidance: |
+      All element IDs use content-derived hashes scoped to EARS content.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: EARS.01.c4d8
+
+      Hash algorithm (SHA256, 4-char hex):
+        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
+           - from EARS content, NOT upstream PRD/BRD content
+        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
+        3. Collision: extend hash from 4 to 8 chars if duplicate detected
+
+      Template placeholder: "xxxx" represents the hash suffix.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+    placeholder: "xxxx"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _guidance: |
+    BDD-Ready Score: >=90/100 required before BDD generation.
+    Source Document: link to upstream PRD using hash-based IDs.
+    BRD Reference: link to upstream BRD using hash-based IDs.
+  version: "1.0"
+  status: Draft  # Draft | In Review | Approved
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Requirements Engineer]"
+  priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
+  source_document: "@prd: PRD.NN.09.xxxx"
+  brd_reference: "@brd: BRD.NN.07.xxxx"
+  bdd_ready_score: "[Score]/100"
+
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial EARS draft"
+
+# =============================================================================
+# Section 2: Purpose and Context
+# =============================================================================
+
+purpose_and_context:
+  _guidance: |
+    Convert PRD features into formal EARS statements using WHEN-THE-SHALL-WITHIN
+    format for clarity and unambiguousness. Provide precise timing and performance
+    specifications for each requirement.
+
+    EARS position in SDD workflow:
+      BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
+
+    EARS role: Translation layer between product requirements (PRD) and
+    behavioral test specifications (BDD). Each EARS statement must be:
+      1. Testable — can be translated to BDD Given-When-Then
+      2. Measurable — contains quantifiable constraints
+      3. Traceable — links to upstream PRD/BRD and downstream BDD
+      4. Atomic — defines one testable concept per statement
+
+  purpose: |
+    [Purpose statement: Convert PRD features into formal EARS statements.]
+
+  scope: |
+    [Scope: boundaries of these requirements, which PRD features are mapped.]
+
+  audience: |
+    [Target audience: system architects, developers, QA engineers.]
+
+# =============================================================================
+# Section 3: Requirements
+# =============================================================================
+
+requirements:
+  _guidance: |
+    Four EARS syntax patterns. Each requirement MUST be atomic (one testable concept).
+
+    WHEN-THE-SHALL-WITHIN (Event-Driven):
+      WHEN [trigger condition],
+      THE [system component] SHALL [response action]
+      WITHIN [timing constraint].
+      Use for: user interactions, API requests, time-based triggers.
+
+    WHILE-THE-SHALL-WITHIN (State-Driven):
+      WHILE [state condition],
+      THE [system component] SHALL [continuous behavior]
+      WITHIN [operational context].
+      Use for: continuous behaviors, persistent conditions, mode-dependent features.
+
+    IF-THE-SHALL-WITHIN (Unwanted Behavior / Error Handling):
+      IF [error condition],
+      THE [system component] SHALL [recovery action]
+      WITHIN [timing constraint].
+      Use for: error scenarios, failure modes, edge cases, fallback paths.
+
+    THE-SHALL (Ubiquitous / System-Wide):
+      THE [system component] SHALL [universal behavior]
+      for [scope/context].
+      Use for: global invariants, logging, auditing, universal constraints.
+
+    Boundary Value Matrix pattern:
+      | Threshold | Operator | Value     | At Boundary | Above  | Below  |
+      | Max items | <=       | 100       | Accept      | Reject | Accept |
+      | Min length| >=       | 1         | Accept      | Accept | Reject |
+
+    State Transition pattern:
+      Document states, transitions, triggers, and error states.
+      All state machines MUST include error/recovery states.
+
+    Fallback Path pattern:
+      | Dependency | Failure Mode | Detection | Fallback | Timeout | Recovery |
+
+    EARS-Ready Checklist:
+      - All timing requirements have p50/p95/p99 values
+      - All boundary conditions have explicit operators
+      - State transitions include error states
+      - All external dependencies have fallback paths
+      - Requirements are testable (Given-When-Then derivable)
+
+  _antipatterns:
+    - "FAIL: vague timing ('real-time', 'immediately', 'fast') — use percentiles"
+    - "FAIL: missing trigger clause (WHEN|IF|WHILE) — every event/state requirement needs one"
+    - "FAIL: compound requirements (multiple AND clauses) — split into atomic statements"
+    - "FAIL: non-measurable constraints ('efficient', 'reliable') — quantify with metrics"
+    - "FAIL: old ID format (Event-XXX, State-XXX, UB-XXX) — use EARS.NN.03.xxxx"
+
+  event_driven:
+    - id: "EARS.NN.03.xxxx"
+      name: "[Requirement Name]"
+      statement: |
+        WHEN [trigger condition],
+        THE [system component] SHALL [response action]
+        WITHIN [timing constraint].
+      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+
+  state_driven:
+    - id: "EARS.NN.03.xxxx"
+      name: "[State Behavior]"
+      statement: |
+        WHILE [state condition],
+        THE [system component] SHALL [continuous behavior]
+        WITHIN [operational context].
+      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+
+  unwanted_behavior:
+    - id: "EARS.NN.03.xxxx"
+      name: "[Error Scenario]"
+      statement: |
+        IF [error condition],
+        THE [system component] SHALL [recovery action]
+        WITHIN [timing constraint].
+      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+
+  ubiquitous:
+    - id: "EARS.NN.03.xxxx"
+      name: "[System-Wide Requirement]"
+      statement: |
+        THE [system component] SHALL [universal behavior]
+        for [scope/context].
+      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+
+# =============================================================================
+# Section 4: Quality Attributes
+# =============================================================================
+
+quality_attributes:
+  _guidance: |
+    Quality attributes in EARS format with measurable targets.
+    All timing constraints MUST use percentile notation.
+
+    Timing Profile Matrix:
+      | Operation    | p50   | p95    | p99    | Unit | Trigger Event |
+      | API response | [X]   | [X]    | [X]    | ms   | User request  |
+      | Page load    | [X]   | [X]    | [X]    | s    | Navigation    |
+      | Data sync    | [X]   | [X]    | [X]    | s    | Background    |
+
+    Timing vocabulary replacements:
+      "real-time"   → p50 <100ms, p95 <300ms, p99 <1000ms
+      "immediately" → <500ms from trigger event
+      "quickly"     → <2 seconds response time
+      "fast"        → specify exact latency percentiles
+
+    Use @threshold: tags for values that may change:
+      @threshold: PRD.NN.perf.api.p95
+
+  performance:
+    - id: "EARS.NN.04.xxxx"
+      statement: "THE [component] SHALL complete [operation]"
+      metric: "Latency"
+      target: "p95 < [NN]ms"
+      priority: P1
+      measurement: "Load test"
+
+  security:
+    - id: "EARS.NN.04.xxxx"
+      statement: "THE [component] SHALL authenticate using [method]"
+      control: "[Authentication/Authorization/Encryption]"
+      compliance: "[Standard]"
+      priority: P1
+
+  reliability:
+    - id: "EARS.NN.04.xxxx"
+      statement: "THE [component] SHALL maintain availability"
+      metric: "Uptime"
+      target: "99.9%"
+      priority: P1
+
+# =============================================================================
+# Section 5: Traceability
+# =============================================================================
+
+traceability:
+  _guidance: |
+    Cumulative Tagging Hierarchy — Layer 3 requires both @brd and @prd tags.
+    Upstream: REQUIRED — all EARS must reference PRD and BRD elements.
+    Downstream: OPTIONAL — only add links to artifacts that exist.
+    Do NOT reference specific ADR/BDD numbers until they exist.
+
+    Tag format (pipe-separated):
+      @brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx | @threshold: PRD.NN.perf.key
+
+    Use @threshold: convention for timing/performance values (no PRD section numbers).
+
+  _antipatterns:
+    - "FAIL: ranges '@prd: PRD.01.1dbc - PRD.01.a6ce' — list separately"
+    - "FAIL: commas '@brd: X, @prd: Y' — use pipes ' | '"
+    - "FAIL: missing prefix 'BRD.02.f1de' — must be '@brd: BRD.02.f1de'"
+    - "FAIL: multiple @prd in Document Control — one only, extras in per-requirement tags"
+
+  tags:
+    - "@ears: EARS-NN"
+
+  upstream:
+    prd_references:
+      - "@prd: PRD.NN.09.xxxx"
+    brd_references:
+      - "@brd: BRD.NN.07.xxxx"
+
+  downstream_expected:
+    - type: BDD
+      layer: 4
+      description: "Given-When-Then test scenarios from EARS requirements"
+
+  cross_links:
+    depends:
+      - "@depends: EARS-NN"
+    discoverability:
+      - "@discoverability: EARS-NN (short rationale)"
+
+  threshold_references:
+    _guidance: "Use @threshold: convention. Do NOT reference PRD section numbers."
+    items:
+      - tag: "@threshold: PRD.NN.perf.category.key"
+        category: "Timing"
+        value: "[NN]ms"
+
+  health_score:
+    bdd_ready: "[X]%"
+    prd_coverage: "[X]%"
+    target_score: ">=90/100"
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  _guidance: "Flat list of project-specific terms. Keep concise."
+
+  terms:
+    - term: EARS
+      definition: "Easy Approach to Requirements Syntax"
+    - term: BDD
+      definition: "Behavior-Driven Development"
+    - term: BDD-Ready
+      definition: "Score measuring EARS maturity for BDD transition (>=90%)"
+    - term: "[Domain term]"
+      definition: "[Definition]"
+
+# =============================================================================
+# End of EARS-TEMPLATE.yaml
+# =============================================================================

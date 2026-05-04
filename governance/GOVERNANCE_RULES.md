@@ -2,7 +2,7 @@
 
 **Framework**: Specification-Driven Development (SDD v3.2)
 
-## Canonical Flow
+## 1. Canonical Flow
 
 All active governance workflows align to:
 
@@ -12,7 +12,86 @@ All active governance workflows align to:
 - Governance core: `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
 - CHG overlay: `ucx_flow_v3/CHG/`
 
-## Depth Model
+## 2. Security Posture
+
+- Use Workload Identity Federation or equivalent short-lived credentials.
+- Do not store service-account key files, plaintext secrets, or credential dumps in repository history.
+- Keep production control actions human-gated.
+
+## 2a. GitHub Actions Baseline
+
+- Default CI/CD baseline uses GitHub-hosted runners (`runs-on: ubuntu-latest`).
+- Marketplace actions are allowed when pinned to stable major versions and reviewed.
+- Self-hosted runners are optional for workloads requiring custom tooling, network access, or compliance isolation.
+
+## 3. AI Workflow
+
+### Labels
+
+`ai:ready -> ai:in-progress -> ai:review-requested`
+
+- Only `ai:ready` issues are eligible for autonomous execution agents.
+- Do not use `ai:approved` or `ai:rejected`; approval is represented by transition into `ai:ready` and PR review state.
+
+### Round-Based PR Governance (Mandatory)
+
+For every autonomous execution PR, run this gate sequence:
+
+1. `sdd_validate` (deterministic structure and naming rules)
+2. `sdd_review` (UCX persona content review)
+3. `sdd_remediate` (UCX persona remediation guidance/application)
+4. post-remediation `sdd_validate`
+5. Hermes final blocker-gap/inconsistency review (non-deep-content)
+
+If any blocking check fails, run a second round with the same sequence.
+
+If Round 2 fails, escalation status becomes `REQUIRED`, merge is blocked, and human review is mandatory.
+
+### Issue Processing Workflow (Mandatory)
+
+Before coding, agents must:
+
+1. Complete issue analysis
+2. Create IPLAN
+3. Refine IPLAN
+4. Transition issue to `ai:in-progress`
+
+### Acceptance Criteria Sync (Mandatory)
+
+- Verify each linked-issue acceptance criterion before requesting review.
+- Update issue checkboxes only after evidence-based verification.
+
+### Linked Issue Verification in PR Review (Mandatory)
+
+- PR review must validate implementation against linked issue acceptance criteria.
+
+### Issue PR Link (Mandatory)
+
+- Linked issue must contain direct PR reference (PR number and URL) for auditability.
+
+### Issue Review History (Mandatory)
+
+- Post review and re-review outcomes back to the linked issue.
+
+## 4. Naming Conventions
+
+- Branches: `feature/{slug}`, `bugfix/{slug}`, `hotfix/{slug}`, `ai/{issue}-{slug}`
+- Plans: `IPLAN-NNN_{slug}.md`
+- Issues: `[P{phase}-{task}] {title}` where applicable
+
+## 5. Agent Operating Model
+
+1. Hermes is the control-plane agent for planning, governance, and lifecycle progression from BRD through IPLAN.
+2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) implement approved issue scope, create PRs, and run delivery workflows.
+3. Hermes performs round-based PR governance, merge-time escalation decisions, and post-deployment validation using observability evidence.
+
+## 6. Document Maintenance
+
+- Keep governance docs aligned with active workflow behavior.
+- Update cross-references when section names or anchors change.
+- Mark deprecated patterns explicitly and provide replacement guidance.
+
+## 7. Depth Model
 
 | Depth | Required Artifacts |
 |---|---|
@@ -22,7 +101,7 @@ All active governance workflows align to:
 
 Legacy SYS/REQ/CTR/TSPEC/TASKS layers are deprecated for active governance.
 
-## Issue Source and Traceability
+## 8. Issue Source and Traceability
 
 Issues may originate from v3 artifacts. When issue label `source:sdd` is present:
 
@@ -30,17 +109,17 @@ Issues may originate from v3 artifacts. When issue label `source:sdd` is present
 2. Issue references upstream artifact IDs
 3. IPLAN references the issue and upstream IDs for execution traceability
 
-## AI Workflow Labels
+## 9. Production Issue-Fix Loop
 
-`ai:ready -> ai:in-progress -> ai:review-requested`
-
-## Mandatory Pre-Implementation Gate
-
-Before coding, AI agents must:
-1. Complete issue analysis
-2. Create IPLAN
-3. Refine IPLAN
-4. Transition issue to `ai:in-progress`
+1. Observability stack detects incident/regression signals.
+2. Hermes triages severity and impact, then opens/updates GitHub issue with traceability and acceptance criteria.
+3. Human/policy approval moves issue into executable queue (`ai:ready`).
+4. Execution agent performs fix -> PR.
+5. Hermes runs Round 1 PR governance gates (`sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> final blocker-gap check).
+6. If Round 1 fails, Hermes runs Round 2 with the same sequence.
+7. If Round 2 fails, Hermes escalates to human review and blocks merge.
+8. If gates pass, PR merges and linked issue closes.
+9. Hermes validates post-deployment evidence and opens follow-up issue(s) when required.
 
 ## Deprecated Compatibility
 

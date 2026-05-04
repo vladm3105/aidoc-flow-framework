@@ -77,7 +77,7 @@ gh api graphql -f query='query { viewer { login } }'
 **Recovery**:
 - Confirm token has `project` scope.
 - Verify project ID, field ID, and option IDs are current.
-- Re-run mutation with explicit `GH_HOST` if using GHES.
+- Re-run mutation with explicit `GH_HOST` when using an enterprise GitHub host.
 
 ---
 

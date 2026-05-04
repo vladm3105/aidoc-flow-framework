@@ -19,7 +19,7 @@ This guide covers:
 ## Prerequisites
 
 - Administrative access to cloud IAM and identity federation configuration
-- GitHub (or GHES) admin access for repository/org secrets
+- GitHub admin access for repository/org secrets (enterprise variants supported)
 - CLI tools installed (`gh`, cloud CLI)
 
 ---

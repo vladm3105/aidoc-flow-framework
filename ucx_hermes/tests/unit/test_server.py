@@ -513,7 +513,7 @@ class TestReviewReportPersistence:
             stdout="## Review Report\nREM-P0-001 finding",
             stderr="",
             exit_code=0,
-            executor_name="claude",
+            executor_name="api/gpt-4o",
         )
 
         # Patch the two dependencies: review build + executor
@@ -534,15 +534,17 @@ class TestReviewReportPersistence:
                     "doc_type": "brd",
                     "template": "UCR_PROMPT_BRD_PROJECT.md",
                     "document": str(doc_dir),
-                    "executor": "claude",
+                    "executor": "api/gpt-4o",
                     "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
                 })
             )
 
         payload = json.loads(result[0].text)
         assert payload.get("review_report_path") is None
-        assert payload.get("executor") is None
-        run_executor_mock.assert_not_awaited()
+        assert payload.get("executor") == "api/gpt-4o"
+        assert payload.get("passed") is True
+        assert "REM-P0-001" in str(payload.get("output", ""))
+        run_executor_mock.assert_awaited_once()
 
         # No .ucx.review.md created even when executor parameter is provided.
         review_files = list(doc_dir.glob("*.ucx.review.md"))
@@ -577,9 +579,23 @@ class TestReviewSagaSchema:
             passed=True,
         )
 
-        with patch(
-            "mcp_server.review.run_project_review_build_saga",
-            return_value=fake_saga,
+        fake_exec_result = ExecutorResult(
+            stdout="saga review output",
+            stderr="",
+            exit_code=0,
+            executor_name="api/gpt-4o",
+        )
+
+        with (
+            patch(
+                "mcp_server.review.run_project_review_build_saga",
+                return_value=fake_saga,
+            ),
+            patch(
+                "mcp_server.tool_registry.run_executor",
+                new_callable=AsyncMock,
+                return_value=fake_exec_result,
+            ),
         ):
             result = asyncio.get_event_loop().run_until_complete(
                 handle_tool("sdd_review", {
@@ -587,6 +603,7 @@ class TestReviewSagaSchema:
                     "doc_type": "brd",
                     "template": "UCR_PROMPT_BRD_PROJECT.md",
                     "review_mode": "saga_parallel",
+                    "executor": "api/gpt-4o",
                     "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
                 })
             )
@@ -630,16 +647,31 @@ class TestReviewSagaSchema:
             passed=True,
         )
 
-        with patch(
-            "mcp_server.review.run_project_review_build_saga",
-            return_value=fake_saga,
-        ) as saga_mock:
+        fake_exec_result = ExecutorResult(
+            stdout="saga review output",
+            stderr="",
+            exit_code=0,
+            executor_name="api/gpt-4o",
+        )
+
+        with (
+            patch(
+                "mcp_server.review.run_project_review_build_saga",
+                return_value=fake_saga,
+            ) as saga_mock,
+            patch(
+                "mcp_server.tool_registry.run_executor",
+                new_callable=AsyncMock,
+                return_value=fake_exec_result,
+            ),
+        ):
             _ = asyncio.get_event_loop().run_until_complete(
                 handle_tool("sdd_review", {
                     "project": str(tmp_path),
                     "doc_type": "brd",
                     "template": "UCR_PROMPT_BRD_PROJECT.md",
                     "review_mode": "saga_parallel",
+                    "executor": "api/gpt-4o",
                     "document": str(doc_dir),
                     "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
                 })
@@ -667,7 +699,25 @@ class TestRemediateExecutorRequired:
         assert payload.get("passed") is False
         assert payload.get("error_code") == "ExecutorRequired"
 
-    def test_review_report_not_saved_without_executor(self, tmp_path):
+    def test_sdd_remediate_rejects_cli_executor(self, tmp_path):
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01", encoding="utf-8")
+
+        result = asyncio.get_event_loop().run_until_complete(
+            handle_tool("sdd_remediate", {
+                "project": str(tmp_path),
+                "doc_type": "brd",
+                "layer": "01_BRD",
+                "document": str(doc_dir),
+                "executor": "claude",
+            })
+        )
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is False
+        assert payload.get("error_code") == "ExecutorTypeNotAllowed"
+
+    def test_sdd_review_requires_executor(self, tmp_path):
         from mcp_server.review.runner import ReviewRunResult
 
         doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
@@ -699,8 +749,93 @@ class TestRemediateExecutorRequired:
             )
 
         payload = json.loads(result[0].text)
-        assert payload.get("executor") is None
-        assert "review_report_path" not in payload
+        assert payload.get("passed") is False
+        assert payload.get("error_code") == "ExecutorRequired"
+
+    def test_sdd_review_rejects_cli_executor(self, tmp_path):
+        from mcp_server.review.runner import ReviewRunResult
+
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01")
+
+        fake_review_result = ReviewRunResult(
+            prompt_text="review prompt text",
+            sidecar_json="{}",
+            inspection={},
+            layer_asset_names=[],
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+        )
+
+        with patch(
+            "mcp_server.review.run_project_review_build",
+            return_value=fake_review_result,
+        ):
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "document": str(doc_dir),
+                    "executor": "claude",
+                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
+                })
+            )
+
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is False
+        assert payload.get("error_code") == "ExecutorTypeNotAllowed"
+
+    def test_review_report_not_saved_with_api_executor(self, tmp_path):
+        from mcp_server.review.runner import ReviewRunResult
+
+        doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
+        doc_dir.mkdir(parents=True)
+        (doc_dir / "BRD-01_platform.md").write_text("# BRD-01")
+
+        fake_review_result = ReviewRunResult(
+            prompt_text="review prompt text",
+            sidecar_json="{}",
+            inspection={},
+            layer_asset_names=[],
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+        )
+        fake_exec_result = ExecutorResult(
+            stdout="review output",
+            stderr="",
+            exit_code=0,
+            executor_name="api/gpt-4o",
+        )
+
+        with (
+            patch(
+                "mcp_server.review.run_project_review_build",
+                return_value=fake_review_result,
+            ),
+            patch(
+                "mcp_server.tool_registry.run_executor",
+                new_callable=AsyncMock,
+                return_value=fake_exec_result,
+            ),
+        ):
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "document": str(doc_dir),
+                    "executor": "api/gpt-4o",
+                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
+                })
+            )
+
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is True
+        assert payload.get("executor") == "api/gpt-4o"
         # No .ucx.review.md created
         review_files = list(doc_dir.glob("*.ucx.review.md"))
         assert len(review_files) == 0

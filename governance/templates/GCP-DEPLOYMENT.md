@@ -386,6 +386,8 @@ gcloud run services update ai-cost-monitoring-backend \
 
 ### GitHub Actions Example
 
+> Note: This snippet follows the GitHub.com baseline from `governance/GOVERNANCE_RULES.md` §2a. Marketplace actions and `ubuntu-latest` are allowed when pinned and reviewed.
+
 ```yaml
 name: Deploy to Cloud Run
 
@@ -397,11 +399,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+
       - uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}
       
       - name: Deploy Backend
         run: |
@@ -455,4 +458,3 @@ jobs:
 6.  Enable HTTPS with SSL certificate
 7.  Set up CI/CD pipeline
 8.  Load test and optimize
-
