@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Current Version | 0.20.3 |
-| Latest Release | 0.20.3 (strict repository-wide legacy naming cleanup) |
+| Current Version | 0.20.4 |
+| Latest Release | 0.20.4 (UCX Hermes saga branch LLM fan-out/fan-in rollout + SDD root documentation updates) |
 | Previous Minor | 0.19.0 (multi-persona mapping support) |
 | Next Major | 1.0.0 (full multi-MCP ecosystem with governance and knowledge base) |
 | Timezone | America/New_York |
@@ -13,9 +13,10 @@
 ## Version Timeline
 
 ```text
-v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v0.20.1 ──► v0.20.2 ──► v0.20.3 ──► v1.0.0
+v0.1.0 ──► v0.2.x ──► v0.3-v0.5 ──► v0.6.0 ──► v0.7.0 ──► v0.8-v0.19 ──► v0.20.0 ──► v0.20.1 ──► v0.20.2 ──► v0.20.3 ──► v0.20.4 ──► v1.0.0
   │           │             │            │           │            │              │           │             │
-  │           │             │            │           │            │              │           │             └─► Multi-MCP
+  │           │             │            │           │            │              │           │             │             └─► Multi-MCP
+  │           │             │            │           │            │              │           │             └─► UCX Hermes saga branch LLM fan-out/fan-in + root SDD docs alignment
   │           │             │            │           │            │              │           └─► Strict legacy naming cleanup (repo-wide)
   │           │             │            │           │            │              └─► SDD v3.2 (8-layer, C4 mapping)
   │           │             │            │           │            └─► REQ→SPEC→TSPEC→TASKS unification + UCX features
@@ -49,6 +50,11 @@ Planned scope:
 ---
 
 ## Completed Releases
+
+
+### v0.20.4 — UCX Hermes Saga Branch LLM Fan-Out/Fan-In + Root SDD Documentation Alignment (2026-05-04)
+
+Implemented branch-level saga LLM fan-out/fan-in runtime controls in `ucx_hermes`, including rollout phase behavior, deterministic reducer tie-break contracts, parser fallback, and debug-only redacted raw-output retention. Updated UCX runtime/spec documentation and root SDD documentation to reflect operational controls and defaults. See changelog/CHANGELOG_v0.20.4.md.
 
 
 ### v0.20.3 — Strict Legacy Naming Cleanup (2026-04-30)
