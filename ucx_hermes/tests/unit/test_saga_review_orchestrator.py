@@ -14,6 +14,7 @@ if str(SRC) not in sys.path:
 
 from mcp_server.prompts import SourceSection  # noqa: E402
 from mcp_server.review.saga_orchestrator import run_project_review_build_saga  # noqa: E402
+from mcp_server.executor.cli_runner import ExecutorResult  # noqa: E402
 
 
 def _create_project_ucx(root: Path) -> None:
@@ -158,3 +159,120 @@ def test_saga_source_stage_detection_and_resume_behavior(tmp_path: Path) -> None
             saga_resume=True,
         )
     assert "Cannot resume terminal saga run" in str(exc_info.value)
+
+
+def test_saga_branch_llm_enabled_collects_branch_telemetry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _create_project_ucx(tmp_path)
+    out = tmp_path / "tmp/evidence"
+
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        _ = kwargs
+        return ExecutorResult(
+            stdout='{"findings":[{"priority":"P1","category":"quality","message":"Use explicit retries","recommended_action":"Add retry policy","target_layer":"01_BRD"}]}',
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto", "usage": {"total_tokens": 123}},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect", "auditor"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
+        ],
+        layer="01_BRD",
+        output_dir=out,
+        executor_name="api/openrouter",
+        saga_branch_llm_enabled=True,
+    )
+
+    assert result.saga_status == "CLOSED"
+    assert result.branch_summary["branch_llm_enabled"] is True
+    assert len(result.branch_summary["branches"]) == 2
+    assert result.reducer_summary["branch_llm_enabled"] is True
+    assert result.reduced_findings is not None
+    assert len(result.reduced_findings) >= 1
+
+
+def test_saga_rollout_phase_c_enables_branch_llm_without_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _create_project_ucx(tmp_path)
+    out = tmp_path / "tmp/evidence-rollout"
+
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        _ = kwargs
+        return ExecutorResult(
+            stdout='{"findings":[{"priority":"P1","category":"quality","message":"Bound branch policy","recommended_action":"Keep policy","target_layer":"01_BRD"}]}',
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto", "usage": {"total_tokens": 55}},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[SourceSection(section_id="1.0", title="Architecture", content="system architecture")],
+        layer="01_BRD",
+        output_dir=out,
+        executor_name="api/openrouter",
+        project_env={"UCX_REVIEW_SAGA_BRANCH_LLM_PHASE": "C"},
+        saga_branch_llm_enabled=None,
+    )
+
+    assert result.saga_status == "CLOSED"
+    assert result.branch_summary["branch_llm_enabled"] is True
+    assert result.branch_summary["rollout_phase"] == "C"
+
+
+def test_saga_debug_raw_outputs_are_redacted(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _create_project_ucx(tmp_path)
+    out = tmp_path / "tmp/evidence-debug"
+
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        _ = kwargs
+        return ExecutorResult(
+            stdout='{"findings":[{"priority":"P1","category":"security","message":"Rotate key","recommended_action":"Replace key","target_layer":"01_BRD"}],"debug":"api_key=sk-abcdefghijklmnopqrstuv123456"}',
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto", "usage": {"total_tokens": 41}},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[SourceSection(section_id="1.0", title="Architecture", content="system architecture")],
+        layer="01_BRD",
+        output_dir=out,
+        executor_name="api/openrouter",
+        project_env={
+            "UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED": "true",
+            "UCX_REVIEW_DEBUG_RAW_OUTPUTS": "true",
+        },
+    )
+
+    raw_outputs = result.branch_summary.get("raw_outputs", [])
+    assert isinstance(raw_outputs, list)
+    assert len(raw_outputs) == 1
+    redacted = str(raw_outputs[0].get("raw_output_redacted", ""))
+    assert "sk-abcdefghijklmnopqrstuv123456" not in redacted
+    assert "[REDACTED]" in redacted

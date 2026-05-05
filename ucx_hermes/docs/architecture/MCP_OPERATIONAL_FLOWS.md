@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 2.1 |
+| Version | 2.2 |
 | Date | 2026-05-04 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
@@ -218,6 +218,9 @@ Each stage reads from the previous stage's output artifact. The source document 
 - Deterministic prompt assembly only; command does not persist an LLM-authored review report.
 - `review_mode=prompt_only` is default and implemented.
 - `review_mode=saga_parallel` is implemented with bounded branch scheduling, saga state journal, deterministic reducer summary, and escalation-aware status fields.
+- `saga_branch_llm_enabled` controls branch-level LLM fan-out in saga mode.
+- rollout phase environment control `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE` defaults behavior when explicit flag is absent (`A/B` off, `C` on).
+- raw branch outputs are persisted only when `UCX_REVIEW_DEBUG_RAW_OUTPUTS=true` and must be redacted.
 - In `--document` folder mode, the review pipeline collects `.md`, `.yaml`, and `.yml` files. YAML-first precedence applies when both `.yaml` and `.md` canonical sources exist. Legacy (`_LEGACY`) files are excluded. Appendix files are detected by name (`appendix`/`appendices`).
 
 ---
@@ -389,12 +392,13 @@ Review controls:
 - `--personas`, `--unified`, `--one-turn`, `--no-resume`, `--session-ttl`
 - `--clean-memory`, `--clean-reports`, `--keep-versions`
 - `--review-mode {prompt_only,saga_parallel}`
-- `--max-parallel-branches`, `--branch-timeout-seconds`, `--max-branch-retries`, `--retry-backoff-seconds`, `--saga-resume`
+- `--max-parallel-branches`, `--branch-timeout-seconds`, `--max-branch-retries`, `--retry-backoff-seconds`, `--saga-resume`, `--saga-branch-llm-enabled`
 
 Saga mode note:
 
 - `saga_parallel` persists branch/journal/reducer state and status for governance integration.
 - Scheduler controls drive bounded concurrency, per-branch timeout, and retry/backoff behavior.
+- branch telemetry includes executor/model/latency/token usage when available.
 
 ---
 

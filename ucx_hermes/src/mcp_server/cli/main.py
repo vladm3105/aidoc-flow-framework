@@ -73,6 +73,7 @@ def _build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--max-branch-retries", type=int, default=None, help="Max retry attempts per branch for saga_parallel mode")
     review_parser.add_argument("--retry-backoff-seconds", type=int, default=None, help="Retry backoff seconds for saga_parallel mode")
     review_parser.add_argument("--saga-resume", action="store_true", help="Resume existing saga_parallel review run")
+    review_parser.add_argument("--saga-branch-llm-enabled", action="store_true", help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode")
     review_parser.add_argument("--no-resume", action="store_true", help="Disable session resume")
     review_parser.add_argument("--session-ttl", type=int, default=0, help="Session TTL in seconds")
     review_parser.add_argument("--clean-memory", action="store_true", help="Clean review memory artifacts before execution")
@@ -108,6 +109,7 @@ def _build_parser() -> argparse.ArgumentParser:
     review_alias_parser.add_argument("--max-branch-retries", type=int, default=None, help="Max retry attempts per branch for saga_parallel mode")
     review_alias_parser.add_argument("--retry-backoff-seconds", type=int, default=None, help="Retry backoff seconds for saga_parallel mode")
     review_alias_parser.add_argument("--saga-resume", action="store_true", help="Resume existing saga_parallel review run")
+    review_alias_parser.add_argument("--saga-branch-llm-enabled", action="store_true", help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode")
     review_alias_parser.add_argument("--no-resume", action="store_true", help="Disable session resume")
     review_alias_parser.add_argument("--session-ttl", type=int, default=0, help="Session TTL in seconds")
     review_alias_parser.add_argument("--clean-memory", action="store_true", help="Clean review memory artifacts before execution")
@@ -351,6 +353,7 @@ def _write_review_controls_artifact(output_dir: Path, args: argparse.Namespace) 
         "max_branch_retries": args.max_branch_retries,
         "retry_backoff_seconds": args.retry_backoff_seconds,
         "saga_resume": bool(args.saga_resume),
+        "saga_branch_llm_enabled": bool(args.saga_branch_llm_enabled),
         "no_resume": bool(args.no_resume),
         "session_ttl": int(args.session_ttl),
         "clean_memory": bool(args.clean_memory),
@@ -666,7 +669,7 @@ def main(argv: list[str] | None = None) -> int:
                 doc_type=args.doc_type,
                 template_name=args.template,
                 sections=review_sections,
-                document_path=document_path,
+                document_path=review_document,
                 layer=args.layer,
                 output_dir=output_dir,
                 max_parallel_branches=args.max_parallel_branches,
@@ -674,6 +677,7 @@ def main(argv: list[str] | None = None) -> int:
                 max_branch_retries=int(args.max_branch_retries or 0),
                 retry_backoff_seconds=args.retry_backoff_seconds,
                 saga_resume=bool(args.saga_resume),
+                saga_branch_llm_enabled=bool(args.saga_branch_llm_enabled),
             )
         else:
             review_result = run_project_review_build(
@@ -704,7 +708,8 @@ def main(argv: list[str] | None = None) -> int:
             f"session_ttl={args.session_ttl}, clean_memory={args.clean_memory}, clean_reports={args.clean_reports}, "
             f"keep_versions={args.keep_versions}, max_parallel_branches={args.max_parallel_branches}, "
             f"branch_timeout_seconds={args.branch_timeout_seconds}, max_branch_retries={args.max_branch_retries}, "
-            f"retry_backoff_seconds={args.retry_backoff_seconds}, saga_resume={args.saga_resume}"
+            f"retry_backoff_seconds={args.retry_backoff_seconds}, saga_resume={args.saga_resume}, "
+            f"saga_branch_llm_enabled={args.saga_branch_llm_enabled}"
         )
         return 0
 

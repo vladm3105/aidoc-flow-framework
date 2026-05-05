@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 2.1 |
+| Version | 2.2 |
 | Date | 2026-05-04 |
 | Scope | Implemented command contracts in `ucx_hermes/src/mcp_server/cli/main.py` |
 
@@ -21,7 +21,7 @@
 | get-project | (none) | (none) | resolved default project from `SDD_DEFAULT_PROJECT` env var |
 | create-build | --project --doc-type --layer --template | --personas --sections-json --out | creation prompt artifacts (`creation_prompt.txt`, `creation_prompt_sidecar.json`, `creation_prompt_inspection.json`) |
 | create | --project --doc-type --layer --template --target | --personas --sections-json --overwrite --out | final document artifact + creation diagnostics |
-| review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --review-mode {prompt_only,saga_parallel} --max-parallel-branches --branch-timeout-seconds --max-branch-retries --retry-backoff-seconds --saga-resume --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts (`review_prompt.txt`, `review_prompt_sidecar.json`, `review_prompt_inspection.json`) and control summary. Document mode supports `.md`, `.yaml`, `.yml` files with YAML-first precedence. In `saga_parallel`, runtime emits saga journal/status summaries and applies bounded branch scheduling/retry controls. |
+| review-build | --project --doc-type --template and one of (--sections-json, --document) | --personas --layer --unified --one-turn --review-mode {prompt_only,saga_parallel} --max-parallel-branches --branch-timeout-seconds --max-branch-retries --retry-backoff-seconds --saga-resume --saga-branch-llm-enabled --no-resume --session-ttl --clean-memory --clean-reports --keep-versions --out | review prompt artifacts (`review_prompt.txt`, `review_prompt_sidecar.json`, `review_prompt_inspection.json`) and control summary. Document mode supports `.md`, `.yaml`, `.yml` files with YAML-first precedence. In `saga_parallel`, runtime emits saga journal/status summaries and applies bounded branch scheduling/retry controls. |
 | review | same as review-build | same as review-build | alias for review-build |
 | validate | --project --doc-type --layer --document | --tier1-only --strict --format {text,json} --out | validation report artifacts and status. Supports both .md and .yaml document formats. YAML documents receive cross-section validation and structure checks. |
 | validate-fix | --project --doc-type --layer --document | --validation-report --out | **DEPRECATED** — alias for `validate`. Use `validate` instead. When validation errors are found, `validate` produces the `_validated` derived copy and fix report automatically. |
@@ -154,7 +154,19 @@ Review mode controls:
 
 - `--review-mode prompt_only` is default and implemented.
 - `--review-mode saga_parallel` is implemented as saga journal/reducer scaffolding.
-- Saga control flags (`--max-parallel-branches`, `--branch-timeout-seconds`, `--max-branch-retries`, `--retry-backoff-seconds`, `--saga-resume`) are applied by runtime and recorded in `review_controls.json`.
+- Saga control flags (`--max-parallel-branches`, `--branch-timeout-seconds`, `--max-branch-retries`, `--retry-backoff-seconds`, `--saga-resume`, `--saga-branch-llm-enabled`) are applied by runtime and recorded in `review_controls.json`.
+
+Saga branch LLM rollout controls:
+
+- `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE`: `A`, `B`, or `C`.
+- `UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED`: explicit environment toggle for branch-level LLM fan-out.
+- `UCX_REVIEW_DEBUG_RAW_OUTPUTS`: enables redacted raw branch output persistence for debugging.
+
+Executor defaults:
+
+- `sdd_review` saga mode default executor: `api/openrouter`.
+- `sdd_remediate` default executor when omitted: `api/claude-sonnet`.
+- Default generation parameters: `temperature=0.2`, `top_p=0.9`, `top_k` unset, `max_output_tokens=4000`.
 
 JSON status payload fields:
 

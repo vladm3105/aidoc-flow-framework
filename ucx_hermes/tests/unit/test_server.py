@@ -6,6 +6,7 @@ import asyncio
 import json
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -680,24 +681,112 @@ class TestReviewSagaSchema:
         called_kwargs = saga_mock.call_args.kwargs
         assert str(called_kwargs.get("document_path")) == str(doc_dir)
 
+    def test_saga_review_returns_reduced_findings_without_second_executor_call(self, tmp_path):
+        from mcp_server.review.saga_orchestrator import SagaReviewResult
+
+        branch_summary = tmp_path / "BRD-00_validation-fixed_saga_branch_summary_v001.json"
+        reducer_summary = tmp_path / "BRD-00_validation-fixed_saga_reducer_summary_v001.json"
+        synthesis_summary = tmp_path / "BRD-00_validation-fixed_saga_synthesis_summary_v001.json"
+        journal = tmp_path / "BRD-00_validation-fixed_saga_journal_v001.json"
+        for p in (branch_summary, reducer_summary, synthesis_summary, journal):
+            p.write_text("{}", encoding="utf-8")
+
+        fake_saga = SagaReviewResult(
+            review_mode="saga_parallel",
+            review_run_id="run-003",
+            saga_status="CLOSED",
+            journal_path=journal,
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+            branch_summary={"total": 2, "completed": 2, "failed": 0},
+            branch_summary_path=branch_summary,
+            compensation_summary={"count": 0},
+            reducer_summary={"reduced_count": 1},
+            reducer_summary_path=reducer_summary,
+            synthesis_summary_path=synthesis_summary,
+            passed=True,
+            reduced_findings=[
+                {
+                    "finding_id": "P1-deadbeef00",
+                    "action_id": "ACT-deadbeef0000",
+                    "priority": "P1",
+                    "category": "quality",
+                    "personas": ["architect"],
+                    "message": "Use deterministic IDs",
+                    "target_layer": "spec",
+                    "recommended_action": "Keep reducer contract",
+                    "provenance": [{"branch_id": "b1", "persona": "architect"}],
+                    "content_hash": "deadbeef",
+                }
+            ],
+        )
+
+        with (
+            patch(
+                "mcp_server.review.run_project_review_build_saga",
+                return_value=fake_saga,
+            ),
+            patch(
+                "mcp_server.tool_registry.run_executor",
+                new_callable=AsyncMock,
+            ) as run_executor_mock,
+        ):
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_review", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "template": "UCR_PROMPT_BRD_PROJECT.md",
+                    "review_mode": "saga_parallel",
+                    "executor": "api/gpt-4o",
+                    "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
+                })
+            )
+
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is True
+        assert payload.get("exit_code") == 0
+        assert "reduced_findings" in json.loads(payload.get("output", "{}"))
+        run_executor_mock.assert_not_awaited()
+
 
 class TestRemediateExecutorRequired:
-    def test_sdd_remediate_requires_executor(self, tmp_path):
+    def test_sdd_remediate_uses_default_executor_when_missing(self, tmp_path):
         doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"
         doc_dir.mkdir(parents=True)
         (doc_dir / "BRD-01_platform.md").write_text("# BRD-01", encoding="utf-8")
 
-        result = asyncio.get_event_loop().run_until_complete(
-            handle_tool("sdd_remediate", {
-                "project": str(tmp_path),
-                "doc_type": "brd",
-                "layer": "01_BRD",
-                "document": str(doc_dir),
-            })
-        )
+        with (
+            patch("mcp_server.tool_registry.get_executor") as get_exec_mock,
+            patch("mcp_server.remediation.run_remediation_build") as rem_build_mock,
+            patch("mcp_server.remediation.run_remediate_fix_build") as rem_fix_mock,
+        ):
+            get_exec_mock.return_value = ExecutorConfig(
+                name="api/claude-sonnet",
+                executor_type=ExecutorType.API,
+                model="claude-sonnet-4-20250514",
+                api_key_env="ANTHROPIC_API_KEY",
+            )
+            rem_build_mock.return_value = SimpleNamespace(
+                report_json="{}",
+                report_path=tmp_path / "report.json",
+            )
+            rem_fix_mock.side_effect = ValueError("skip")
+
+            result = asyncio.get_event_loop().run_until_complete(
+                handle_tool("sdd_remediate", {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "layer": "01_BRD",
+                    "document": str(doc_dir),
+                })
+            )
+
         payload = json.loads(result[0].text)
-        assert payload.get("passed") is False
-        assert payload.get("error_code") == "ExecutorRequired"
+        assert payload.get("error_code") == "RemediationBuildError"
+        get_exec_mock.assert_called_once()
+        called_name = get_exec_mock.call_args.args[0]
+        assert called_name == "api/claude-sonnet"
 
     def test_sdd_remediate_rejects_cli_executor(self, tmp_path):
         doc_dir = tmp_path / "docs" / "01_BRD" / "BRD-01_platform"

@@ -4,7 +4,7 @@
 | --- | --- |
 | Canonical ID | SPEC-008 |
 | Status | Active |
-| Version | 2.2 |
+| Version | 2.3 |
 | Date | 2026-05-04 |
 | Scope | Canonical output schemas and schema versioning rules for MCP command results |
 
@@ -159,6 +159,7 @@ Optional request control fields:
 - `max_branch_retries`
 - `retry_backoff_seconds`
 - `saga_resume`
+- `saga_branch_llm_enabled`
 
 Required response fields when enabled:
 
@@ -171,6 +172,7 @@ Required response fields when enabled:
 - `reducer_summary`
 - `reducer_summary_path`
 - `synthesis_summary_path`
+- `reduced_findings`
 - `passed`
 
 Allowed `saga_status` values:
@@ -193,6 +195,9 @@ Constraints:
 - prompt artifacts (`prompt_path`, `sidecar_path`, `inspection_path`) remain valid outputs in this mode.
 - `branch_summary_path` must be present when saga orchestration reaches `CLOSED` or `ESCALATED`.
 - `reducer_summary_path` and `synthesis_summary_path` are required for `CLOSED` and may be `null` for `ESCALATED`.
+- `branch_summary` may include `branch_llm_enabled`, `rollout_phase`, `debug_raw_outputs`, `branches`, and `raw_outputs` fields.
+- `raw_outputs` is emitted only when debug raw output persistence is enabled.
+- each entry in `reduced_findings` must include `finding_id`, `action_id`, `priority`, `category`, `personas`, `message`, `target_layer`, `recommended_action`, `provenance`, and `content_hash`.
 
 Compatibility rule:
 

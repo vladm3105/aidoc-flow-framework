@@ -4,7 +4,7 @@
 | --- | --- |
 | Canonical ID | SPEC-007 |
 | Status | Active |
-| Version | 2.0 |
+| Version | 2.1 |
 | Date | 2026-05-04 |
 | Scope | Operational contracts for review modes, prompt artifacts, saga fan-out/fan-in extension, and remediation handoff prerequisites |
 
@@ -100,6 +100,12 @@ Rules:
 - source documents remain immutable
 - branch retries and compensation actions are journaled
 - fan-in reducer output is deterministic for identical input
+- branch-level LLM execution is controlled by feature flag `saga_branch_llm_enabled`
+- rollout phase control uses `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE` with allowed values `A`, `B`, `C`
+- if explicit branch flag is omitted, runtime resolves by phase: `A=off`, `B=off`, `C=on`
+- review branch executor default is `api/openrouter` when branch LLM mode is enabled
+- remediation executor default is `api/claude-sonnet` when executor argument is omitted
+- generation defaults for API executors are `temperature=0.2`, `top_p=0.9`, `top_k` unset, `max_output_tokens=4000`
 
 Minimum saga outputs when mode is active:
 
@@ -107,6 +113,12 @@ Minimum saga outputs when mode is active:
 - `review_run_id`
 - `saga_status`
 - branch summary and compensation summary payloads
+
+Optional branch diagnostics output contract:
+
+- branch telemetry list including `persona`, `branch_id`, `attempt`, `executor`, `model`, `latency_ms`, `token_usage`, `parse_status`
+- raw branch outputs are persisted only when `UCX_REVIEW_DEBUG_RAW_OUTPUTS=true`
+- persisted raw outputs must be redacted before write
 
 If runtime does not support saga mode, command must fail explicitly with a mode/feature error payload and must not silently downgrade.
 
@@ -145,6 +157,7 @@ Additional handoff requirements when `saga_parallel` was active:
 - saga status is terminal (`CLOSED` or `ESCALATED`)
 - reduced findings include required identity fields per SPEC-002
 - escalation state is explicit for merge-gate consumption
+- if raw branch outputs are present, they must be redacted and marked debug-only
 
 Failure modes:
 
@@ -167,6 +180,8 @@ Failure modes:
 | unsupported `review_mode` | mode validation stage | explicit unsupported mode error |
 | saga branch timeout | branch execution stage | retry/compensation path, then escalation on exhaustion |
 | reducer non-determinism detected | reducer verification stage | run failure with escalation |
+| branch executor unavailable/invalid | branch execution stage | branch failure with `ExecutorRequired` or `ExecutorTypeNotAllowed` then retry/escalation |
+| branch parser failure after retries | branch execution stage | fail with `BranchParseFailed` and escalate |
 
 ---
 
@@ -188,6 +203,7 @@ Required checks:
 2. Any review-mode contract change requires synchronized updates to SPEC-008 output schemas.
 3. Any saga artifact naming change requires synchronized updates to SPEC-004 naming and lineage contracts.
 4. Source-protected behavior is mandatory in all review/remediation paths.
+5. Raw branch output persistence is prohibited outside debug mode.
 
 ---
 

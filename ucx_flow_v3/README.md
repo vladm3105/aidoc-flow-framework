@@ -139,6 +139,18 @@ ucx_flow_v3/
 5. **Recommended agent split**: Hermes runs BRD→IPLAN lifecycle; Claude Code, Codex, or another code-generation agent implements source code from approved IPLANs
 6. **Issue-fix loop**: Hermes triages observability-driven issues; approved issues are fixed and deployed by execution agents; Hermes verifies post-deployment evidence and closes issues
 
+## UCX Hermes Review/Remediation Runtime Notes
+
+When this SDD chain is executed through UCX Hermes (`ucx_hermes`):
+
+- Review supports `prompt_only` and `saga_parallel` modes.
+- Saga mode can execute branch-level LLM fan-out/fan-in when `saga_branch_llm_enabled` is enabled.
+- Rollout defaults can be phase-driven via `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE` (`A/B` off, `C` on without explicit flag).
+- Debug raw branch output persistence is opt-in with `UCX_REVIEW_DEBUG_RAW_OUTPUTS=true`; persisted raw content is redacted.
+- Default review saga branch executor is `api/openrouter`.
+- Default remediation executor when omitted is `api/claude-sonnet`.
+- Default generation controls are `temperature=0.2`, `top_p=0.9`, `top_k` unset, `max_output_tokens=4000`.
+
 ## Layer Flow
 
 | Step | From | To | Readiness Gate |

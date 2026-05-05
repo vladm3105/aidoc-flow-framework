@@ -75,6 +75,51 @@ def test_main_review_build_generates_output_artifacts(tmp_path: Path) -> None:
     assert (out_dir / "review_controls.json").exists()
 
 
+def test_main_review_build_controls_capture_branch_llm_flag(tmp_path: Path) -> None:
+    main(["init", "--project", str(tmp_path)])
+
+    sections_file = tmp_path / "sections.json"
+    sections_file.write_text(
+        json.dumps(
+            [
+                {
+                    "section_id": "1.0",
+                    "title": "Architecture",
+                    "content": "system architecture and integration dependencies",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    out_dir = tmp_path / "tmp/evidence-controls"
+    exit_code = main(
+        [
+            "review-build",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--template",
+            "UCR_PROMPT_BRD_PROJECT.md",
+            "--sections-json",
+            str(sections_file),
+            "--review-mode",
+            "saga_parallel",
+            "--saga-branch-llm-enabled",
+            "--out",
+            str(out_dir),
+        ]
+    )
+
+    assert exit_code == 0
+    controls = json.loads((out_dir / "review_controls.json").read_text(encoding="utf-8"))
+    assert controls.get("review_mode") == "saga_parallel"
+    assert controls.get("saga_branch_llm_enabled") is True
+
+
 def test_main_review_build_with_layer_includes_layer_assets(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
     layer_root = tmp_path / "UCX/templates/layers/01_BRD"

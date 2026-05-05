@@ -17,6 +17,7 @@ class ExecutorResult:
     stderr: str
     exit_code: int
     executor_name: str
+    metadata: dict[str, object] | None = None
 
 
 async def run_cli_executor(

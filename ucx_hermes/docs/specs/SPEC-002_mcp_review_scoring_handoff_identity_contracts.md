@@ -4,7 +4,7 @@
 | --- | --- |
 | Canonical ID | SPEC-002 |
 | Status | Active |
-| Version | 1.6 |
+| Version | 1.7 |
 | Date | 2026-05-04 |
 | Source Basis | Canonical normative specification |
 | Scope | Review scoring, multi-persona output, context engineering, handoff contracts, hash identity contracts |
@@ -92,14 +92,16 @@ Required reducer finding fields:
 - message
 - target_layer
 - recommended_action
-- provenance.branch_id
-- provenance.persona
+- provenance (list of branch provenance entries)
 - content_hash
 
 Rules:
 
 - reducer outputs must remain machine-parseable and deterministic for identical inputs
 - reducer deduplication must preserve at least one provenance tuple per merged finding
+- reducer deduplication key is normalized content hash over `message`, `target_layer`, and `recommended_action`
+- priority precedence for overlaps is `P0 > P1 > P2 > P3`
+- tie-break after priority is lexical category, then deterministic `branch_id` order
 - reducer outputs are valid handoff inputs only when `finding_id` and `action_id` satisfy Section 9 formats
 
 ---

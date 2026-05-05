@@ -78,6 +78,19 @@ Default governance loop managed by Hermes from task intake through merge:
 
 Hermes supports a Saga orchestration pattern for multi-persona review fan-out/fan-in to reduce sequential review latency and limit context-window pressure from long persona chains. This pattern adds branch-level retries, compensation actions, deterministic reducer merge, and escalation rules while preserving source-protected document flow.
 
+Branch LLM fan-out controls:
+
+- `saga_branch_llm_enabled` enables branch-level API calls in `review_mode=saga_parallel`.
+- `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE` controls rollout defaults (`A` and `B` off, `C` on when explicit flag is absent).
+- `UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED` provides explicit environment override.
+- `UCX_REVIEW_DEBUG_RAW_OUTPUTS=true` enables debug-only redacted raw output retention.
+
+Executor defaults:
+
+- Review saga branch default executor: `api/openrouter`.
+- Remediation default executor: `api/claude-sonnet`.
+- Default generation controls: `temperature=0.2`, `top_p=0.9`, `top_k` unset, `max_output_tokens=4000`.
+
 Reference:
 
 - `architecture/MCP_SAGA_ORCHESTRATION_PATTERN.md`

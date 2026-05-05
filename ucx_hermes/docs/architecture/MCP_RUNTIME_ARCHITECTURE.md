@@ -106,6 +106,10 @@ Implemented behavior note:
 7. Prompt bundle is validated and inspection output generated.
 8. If output directory provided, review artifacts are written.
 9. In `saga_parallel`, runtime executes persona branches with bounded scheduling and retry/backoff controls, then emits deterministic saga status outputs (`review_run_id`, `saga_status`, branch/reducer summaries) in addition to prompt artifacts.
+10. Branch-level LLM fan-out is enabled by `saga_branch_llm_enabled` (CLI/tool flag) or rollout environment controls (`UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED`, `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE`).
+11. Branch outputs are parsed through strict JSON -> structured block extraction -> deterministic fallback finding emission.
+12. Branch telemetry captures executor, model, latency, and token usage where provider metadata is available.
+13. Raw branch output persistence is debug-only (`UCX_REVIEW_DEBUG_RAW_OUTPUTS=true`) and persisted text is redacted before artifact write.
 
 ### 4.4 validate flow
 

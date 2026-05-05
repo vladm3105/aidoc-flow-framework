@@ -4,7 +4,7 @@
 | --- | --- |
 | Canonical ID | SPEC-004 |
 | Status | Active |
-| Version | 2.2 |
+| Version | 2.3 |
 | Date | 2026-05-04 |
 | Source Basis | Canonical normative specification |
 | Scope | Report naming, report schema, derived artifact naming, lineage metadata, artifact discovery, pre-commit separation |
@@ -275,6 +275,8 @@ Saga lineage extension:
 - Saga review artifacts must include `review_run_id` and `saga_status` fields.
 - Saga branch and reducer artifacts must include `source_processing_stage` and `derived_from` references to the canonical review source.
 - `saga_status` values must be machine-parseable and consistent with SPEC-008 review schema status domain.
+- Branch summary payload may include rollout and debug metadata fields: `branch_llm_enabled`, `rollout_phase`, and `debug_raw_outputs`.
+- When raw branch outputs are persisted, they must appear as redacted content only.
 
 Saga response path lineage fields:
 

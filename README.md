@@ -43,6 +43,16 @@ Default closed-loop workflow:
 6. Approved issues are assigned to execution agents for autonomous fix -> PR -> validate -> deploy.
 7. Hermes verifies post-deployment evidence and closes issues when acceptance criteria and monitoring checks pass.
 
+Review/remediation runtime controls in UCX Hermes:
+
+- `sdd_review` supports `review_mode=prompt_only` and `review_mode=saga_parallel`.
+- In saga mode, `saga_branch_llm_enabled` enables branch-level fan-out/fan-in LLM execution.
+- Rollout defaults can be driven by `UCX_REVIEW_SAGA_BRANCH_LLM_PHASE` (`A/B` off, `C` on when explicit flag is absent).
+- Optional explicit environment override: `UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED`.
+- Debug-only branch raw output retention is controlled by `UCX_REVIEW_DEBUG_RAW_OUTPUTS=true` and persisted text is redacted before write.
+- Default review executor in saga branch mode is `api/openrouter`; default remediation executor is `api/claude-sonnet` when executor is omitted.
+- Default generation controls are `temperature=0.2`, `top_p=0.9`, `top_k` unset, `max_output_tokens=4000`.
+
 ---
 
 ## SDD Depth Variants
@@ -158,6 +168,12 @@ ucx_flow_v3/
 | `sdd_next_action` | Recommend next lifecycle stage (MD + YAML aware) |
 
 All 11 unified YAML templates available in `mcp_ucx/templates/`.
+
+Saga review execution behavior:
+
+- Branch reducer performs deterministic fan-in with overlap deduplication by normalized content hash.
+- Tie-break order for overlapping findings is `priority (P0>P1>P2>P3)`, then lexical category, then deterministic `branch_id` order.
+- Saga branch telemetry may include executor, model, latency, token usage, and parse status.
 
 Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/` via `sdd_init`.
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass
 from datetime import datetime
@@ -10,10 +11,13 @@ import re
 import time
 
 from mcp_server.prompts import ContractValidationError, SourceSection
+from mcp_server.executor.dispatcher import run_executor
+from mcp_server.executor.registry import ExecutorConfig, ExecutorType, get_executor
 from mcp_server.skills.project_ucx_loader import load_persona_mapping
 from mcp_server.skills.project_ucx_loader import load_project_persona_file
 
 from .runner import run_project_review_build
+from .persona_output_parser import parse_persona_output
 from .saga_journal import (
     append_compensation_event,
     create_saga_journal,
@@ -46,6 +50,7 @@ class SagaReviewResult:
     reducer_summary_path: Path | None
     synthesis_summary_path: Path | None
     passed: bool
+    reduced_findings: list[dict[str, object]] | None = None
 
 
 def _time_bucket() -> str:
@@ -110,6 +115,125 @@ def _write_versioned_json(*, output_dir: Path, stem_prefix: str, payload: dict[s
         except FileExistsError:
             continue
     raise RuntimeError(f"Unable to allocate versioned saga artifact for prefix={stem_prefix}")
+
+
+def _as_bool(value: object, *, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "on"}:
+        return True
+    if text in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+def _resolve_rollout_phase(project_env: dict[str, str] | None) -> str:
+    phase = str((project_env or {}).get("UCX_REVIEW_SAGA_BRANCH_LLM_PHASE", "A")).upper().strip()
+    if phase not in {"A", "B", "C"}:
+        return "A"
+    return phase
+
+
+def _resolve_branch_llm_enabled(
+    *,
+    explicit_flag: bool | None,
+    project_env: dict[str, str] | None,
+) -> bool:
+    if explicit_flag is not None:
+        return _as_bool(explicit_flag, default=False)
+
+    env = project_env or {}
+    if "UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED" in env:
+        return _as_bool(env.get("UCX_REVIEW_SAGA_BRANCH_LLM_ENABLED"), default=False)
+    if "saga_branch_llm_enabled" in env:
+        return _as_bool(env.get("saga_branch_llm_enabled"), default=False)
+
+    # Rollout phase fallback when explicit enablement is not set.
+    return _resolve_rollout_phase(project_env) == "C"
+
+
+_SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
+    re.compile(r"(sk-[A-Za-z0-9_-]{20,})"),
+    re.compile(r"(Bearer\s+[A-Za-z0-9._-]{20,})", re.IGNORECASE),
+    re.compile(r"((?:api[_-]?key|token|secret)\s*[:=]\s*[\"']?[A-Za-z0-9._-]{8,}[\"']?)", re.IGNORECASE),
+)
+
+
+def _redact_sensitive_text(value: str) -> str:
+    redacted = value
+    for pattern in _SECRET_PATTERNS:
+        redacted = pattern.sub("[REDACTED]", redacted)
+    return redacted
+
+
+def _resolve_review_branch_runtime(
+    *,
+    project_root: Path,
+    doc_type: str,
+    persona: str,
+    default_timeout: int,
+    explicit_executor: str | None,
+    explicit_generation_params: dict[str, object] | None,
+    explicit_timeout: int | None,
+) -> tuple[str, int, dict[str, object]]:
+    mapping = load_persona_mapping(project_root=project_root)
+    review_map = mapping.get("review", {}) if isinstance(mapping, dict) else {}
+    doc_map = review_map.get(doc_type, {}) if isinstance(review_map, dict) else {}
+
+    default_generation: dict[str, object] = {
+        "temperature": 0.2,
+        "top_p": 0.9,
+        "top_k": None,
+        "max_output_tokens": 4000,
+    }
+
+    mapping_executor = ""
+    mapping_timeout: int | None = None
+    mapping_generation: dict[str, object] = {}
+
+    if isinstance(doc_map, dict):
+        mapping_executor = str(doc_map.get("executor", "") or "")
+        timeout_raw = doc_map.get("timeout")
+        if timeout_raw is not None:
+            try:
+                mapping_timeout = int(timeout_raw)
+            except (TypeError, ValueError):
+                mapping_timeout = None
+
+        generation_cfg = doc_map.get("generation", {})
+        if isinstance(generation_cfg, dict):
+            mapping_generation = dict(generation_cfg)
+
+        overrides = doc_map.get("persona_overrides", {})
+        if isinstance(overrides, dict):
+            persona_override = overrides.get(persona, {})
+            if isinstance(persona_override, dict):
+                if persona_override.get("executor"):
+                    mapping_executor = str(persona_override.get("executor"))
+                po_timeout = persona_override.get("timeout")
+                if po_timeout is not None:
+                    try:
+                        mapping_timeout = int(po_timeout)
+                    except (TypeError, ValueError):
+                        pass
+                po_generation = persona_override.get("generation", {})
+                if isinstance(po_generation, dict):
+                    mapping_generation.update(po_generation)
+
+    executor_name = explicit_executor or mapping_executor or "api/openrouter"
+    timeout = explicit_timeout or mapping_timeout or default_timeout
+
+    generation = dict(default_generation)
+    generation.update(mapping_generation)
+    if explicit_generation_params:
+        for key, value in explicit_generation_params.items():
+            if key in generation and value is not None:
+                generation[key] = value
+
+    return executor_name, int(timeout), generation
 
 
 def _branch_prompt_findings(
@@ -230,6 +354,115 @@ def _branch_prompt_findings(
     return unique
 
 
+def _branch_llm_findings(
+    *,
+    project_root: Path,
+    persona: str,
+    doc_type: str,
+    template_name: str,
+    sections: list[SourceSection],
+    layer: str | None,
+    branch_id: str,
+    attempt: int,
+    executor_name: str,
+    timeout_seconds: int,
+    generation_params: dict[str, object],
+    project_env: dict[str, str] | None,
+    project_overrides: dict[str, ExecutorConfig] | None,
+) -> dict[str, object]:
+    try:
+        executor_cfg = get_executor(executor_name, project_overrides=project_overrides)
+    except KeyError as exc:
+        raise RuntimeError("ExecutorRequired") from exc
+    if executor_cfg.executor_type != ExecutorType.API:
+        raise RuntimeError("ExecutorTypeNotAllowed")
+
+    try:
+        branch_review = run_project_review_build(
+            project_root=project_root,
+            personas=[persona],
+            doc_type=doc_type,
+            template_name=template_name,
+            sections=sections,
+            layer=layer,
+            output_dir=None,
+        )
+    except ContractValidationError:
+        return {
+            "findings": [
+                {
+                    "priority": "P1",
+                    "category": "coverage",
+                    "message": "No relevant sections mapped for persona branch; fallback coverage finding emitted",
+                    "recommended_action": "Review persona mapping or broaden section coverage for this persona.",
+                    "target_layer": layer or "spec",
+                    "persona": persona,
+                    "branch_id": branch_id,
+                    "attempt": str(attempt),
+                    "parse_status": "deterministic_fallback",
+                }
+            ],
+            "parse_status": "deterministic_fallback",
+            "telemetry": {
+                "persona": persona,
+                "branch_id": branch_id,
+                "attempt": attempt,
+                "executor": executor_name,
+                "model": None,
+                "latency_ms": 0,
+                "token_usage": None,
+                "parse_status": "deterministic_fallback",
+            },
+        }
+
+    start = time.perf_counter()
+    exec_result = asyncio.run(
+        run_executor(
+            name=executor_name,
+            prompt=branch_review.prompt_text,
+            working_dir=project_root,
+            timeout=timeout_seconds,
+            project_env=project_env,
+            system_prompt=None,
+            project_overrides=project_overrides,
+            generation_params=generation_params,
+        )
+    )
+    latency_ms = int((time.perf_counter() - start) * 1000)
+
+    if exec_result.exit_code != 0:
+        raise RuntimeError(f"ExecutorFailed: {exec_result.stderr or exec_result.exit_code}")
+
+    parsed = parse_persona_output(
+        output_text=exec_result.stdout,
+        persona=persona,
+        branch_id=branch_id,
+        attempt=attempt,
+        default_layer=layer or "spec",
+    )
+
+    metadata = exec_result.metadata or {}
+    token_usage = metadata.get("usage") if isinstance(metadata, dict) else None
+    model_name = metadata.get("model") if isinstance(metadata, dict) else None
+    redacted_output = _redact_sensitive_text(exec_result.stdout)
+
+    return {
+        "findings": parsed.findings,
+        "parse_status": parsed.parse_status,
+        "raw_output_redacted": redacted_output,
+        "telemetry": {
+            "persona": persona,
+            "branch_id": branch_id,
+            "attempt": attempt,
+            "executor": exec_result.executor_name,
+            "model": model_name,
+            "latency_ms": latency_ms,
+            "token_usage": token_usage,
+            "parse_status": parsed.parse_status,
+        },
+    }
+
+
 def _safe_transition(*, journal_path: Path, target: str) -> None:
     current = load_saga_journal(journal_path=journal_path).status
     if current == target:
@@ -257,6 +490,11 @@ def run_project_review_build_saga(
     max_branch_retries: int = 0,
     retry_backoff_seconds: int | None = None,
     saga_resume: bool = False,
+    executor_name: str | None = None,
+    project_env: dict[str, str] | None = None,
+    project_overrides: dict[str, ExecutorConfig] | None = None,
+    generation_params: dict[str, object] | None = None,
+    saga_branch_llm_enabled: bool | None = None,
 ) -> SagaReviewResult:
     if output_dir is None:
         raise ValueError("output_dir is required for saga orchestration")
@@ -309,9 +547,21 @@ def run_project_review_build_saga(
     _safe_transition(journal_path=journal_path, target="BRANCH_RUNNING")
 
     findings: list[dict[str, object]] = []
+    branch_telemetry: list[dict[str, object]] = []
+    branch_raw_outputs: list[dict[str, object]] = []
     max_workers = max(1, min(len(personas), int(max_parallel_branches or len(personas))))
     timeout = int(branch_timeout_seconds) if branch_timeout_seconds else None
     backoff = max(0, int(retry_backoff_seconds or 0))
+
+    branch_llm_enabled = _resolve_branch_llm_enabled(
+        explicit_flag=saga_branch_llm_enabled,
+        project_env=project_env,
+    )
+    rollout_phase = _resolve_rollout_phase(project_env)
+    debug_raw_outputs = _as_bool((project_env or {}).get("UCX_REVIEW_DEBUG_RAW_OUTPUTS"), default=False)
+
+    if branch_llm_enabled and not executor_name:
+        executor_name = "api/openrouter"
 
     completed_personas: set[str] = set()
 
@@ -331,15 +581,42 @@ def run_project_review_build_saga(
                         attempt=attempts[persona],
                     ),
                 )
-                future = pool.submit(
-                    _branch_prompt_findings,
-                    project_root=project_root,
-                    persona=persona,
-                    doc_type=doc_type,
-                    template_name=template_name,
-                    sections=sections,
-                    layer=layer,
-                )
+                if branch_llm_enabled:
+                    branch_executor_name, branch_timeout, branch_generation = _resolve_review_branch_runtime(
+                        project_root=project_root,
+                        doc_type=doc_type,
+                        persona=persona,
+                        default_timeout=300,
+                        explicit_executor=executor_name,
+                        explicit_generation_params=generation_params,
+                        explicit_timeout=timeout,
+                    )
+                    future = pool.submit(
+                        _branch_llm_findings,
+                        project_root=project_root,
+                        persona=persona,
+                        doc_type=doc_type,
+                        template_name=template_name,
+                        sections=sections,
+                        layer=layer,
+                        branch_id=branch_id,
+                        attempt=attempts[persona],
+                        executor_name=branch_executor_name,
+                        timeout_seconds=branch_timeout,
+                        generation_params=branch_generation,
+                        project_env=project_env,
+                        project_overrides=project_overrides,
+                    )
+                else:
+                    future = pool.submit(
+                        _branch_prompt_findings,
+                        project_root=project_root,
+                        persona=persona,
+                        doc_type=doc_type,
+                        template_name=template_name,
+                        sections=sections,
+                        layer=layer,
+                    )
                 future_map[future] = (persona, branch_id)
 
             retries_scheduled = 0
@@ -355,14 +632,52 @@ def run_project_review_build_saga(
                             attempt=attempts[persona],
                         ),
                     )
-                    for finding in result:
-                        finding["branch_id"] = branch_id
-                        findings.append(finding)
+                    if branch_llm_enabled:
+                        assert isinstance(result, dict)
+                        branch_findings = result.get("findings", [])
+                        telemetry = result.get("telemetry", {})
+                        raw_output_redacted = result.get("raw_output_redacted")
+                        if isinstance(branch_findings, list):
+                            findings.extend([f for f in branch_findings if isinstance(f, dict)])
+                        if isinstance(telemetry, dict):
+                            branch_telemetry.append(telemetry)
+                        if debug_raw_outputs and isinstance(raw_output_redacted, str):
+                            branch_raw_outputs.append(
+                                {
+                                    "persona": persona,
+                                    "branch_id": branch_id,
+                                    "attempt": attempts[persona],
+                                    "raw_output_redacted": raw_output_redacted,
+                                }
+                            )
+                    else:
+                        assert isinstance(result, list)
+                        for finding in result:
+                            finding["branch_id"] = branch_id
+                            finding["attempt"] = str(attempts[persona])
+                            finding["parse_status"] = "deterministic_fallback"
+                            findings.append(finding)
+                        branch_telemetry.append(
+                            {
+                                "persona": persona,
+                                "branch_id": branch_id,
+                                "attempt": attempts[persona],
+                                "executor": None,
+                                "model": None,
+                                "latency_ms": 0,
+                                "token_usage": None,
+                                "parse_status": "deterministic_fallback",
+                            }
+                        )
                     completed_personas.add(persona)
                 except Exception as exc:
                     error_code = type(exc).__name__
                     if isinstance(exc, FuturesTimeoutError):
-                        error_code = "SagaBranchTimeoutError"
+                        error_code = "BranchTimeoutExceeded"
+                    elif "ExecutorFailed" in str(exc):
+                        error_code = "ExecutorFailed"
+                    elif "parse" in str(exc).lower():
+                        error_code = "BranchParseFailed"
 
                     set_branch_state(
                         journal_path=journal_path,
@@ -405,6 +720,11 @@ def run_project_review_build_saga(
                                 "total": len(personas),
                                 "completed": len(completed_personas),
                                 "failed": 1,
+                                "branch_llm_enabled": branch_llm_enabled,
+                                "rollout_phase": rollout_phase,
+                                "debug_raw_outputs": debug_raw_outputs,
+                                "branches": branch_telemetry,
+                                "raw_outputs": branch_raw_outputs,
                             },
                             branch_summary_path=_write_versioned_json(
                                 output_dir=output_dir,
@@ -415,6 +735,11 @@ def run_project_review_build_saga(
                                     "total": len(personas),
                                     "completed": len(completed_personas),
                                     "failed": 1,
+                                    "branch_llm_enabled": branch_llm_enabled,
+                                    "rollout_phase": rollout_phase,
+                                    "debug_raw_outputs": debug_raw_outputs,
+                                    "branches": branch_telemetry,
+                                    "raw_outputs": branch_raw_outputs,
                                 },
                             ),
                             compensation_summary={
@@ -426,6 +751,7 @@ def run_project_review_build_saga(
                             reducer_summary={"reduced_count": 0},
                             reducer_summary_path=None,
                             synthesis_summary_path=None,
+                            reduced_findings=None,
                             passed=False,
                         )
 
@@ -451,12 +777,23 @@ def run_project_review_build_saga(
     _safe_transition(journal_path=journal_path, target="CLOSED")
 
     branch_summary = {"total": len(personas), "completed": len(personas), "failed": 0}
-    reducer_summary = {"reduced_count": len(reduced)}
+    branch_summary["branch_llm_enabled"] = branch_llm_enabled
+    branch_summary["rollout_phase"] = rollout_phase
+    branch_summary["debug_raw_outputs"] = debug_raw_outputs
+    branch_summary["branches"] = branch_telemetry
+    branch_summary["raw_outputs"] = branch_raw_outputs
+    reducer_summary = {
+        "reduced_count": len(reduced),
+        "branch_llm_enabled": branch_llm_enabled,
+        "rollout_phase": rollout_phase,
+    }
     synthesis_summary = {
         "review_run_id": review_run_id,
         "saga_status": "CLOSED",
         "reduced_count": len(reduced),
         "persona_count": len(personas),
+        "branch_llm_enabled": branch_llm_enabled,
+        "rollout_phase": rollout_phase,
     }
 
     branch_summary_path = _write_versioned_json(
@@ -502,5 +839,20 @@ def run_project_review_build_saga(
         reducer_summary=reducer_summary,
         reducer_summary_path=reducer_summary_path,
         synthesis_summary_path=synthesis_summary_path,
+        reduced_findings=[
+            {
+                "finding_id": item.finding_id,
+                "action_id": item.action_id,
+                "priority": item.priority,
+                "category": item.category,
+                "personas": item.personas,
+                "message": item.message,
+                "target_layer": item.target_layer,
+                "recommended_action": item.recommended_action,
+                "provenance": item.provenance,
+                "content_hash": item.content_hash,
+            }
+            for item in reduced
+        ],
         passed=True,
     )

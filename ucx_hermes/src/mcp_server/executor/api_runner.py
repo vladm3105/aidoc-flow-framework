@@ -169,11 +169,27 @@ async def run_api_executor(
             try:
                 response = await litellm.acompletion(**kwargs)
                 content = response.choices[0].message.content or ""
+                usage_raw = getattr(response, "usage", None)
+                usage: dict[str, object] | None = None
+                if usage_raw is not None:
+                    if isinstance(usage_raw, dict):
+                        usage = usage_raw
+                    else:
+                        usage = {
+                            "prompt_tokens": getattr(usage_raw, "prompt_tokens", None),
+                            "completion_tokens": getattr(usage_raw, "completion_tokens", None),
+                            "total_tokens": getattr(usage_raw, "total_tokens", None),
+                        }
                 return ExecutorResult(
                     stdout=content,
                     stderr="",
                     exit_code=0,
                     executor_name=config.name,
+                    metadata={
+                        "model": model,
+                        "api_base": api_base,
+                        "usage": usage,
+                    },
                 )
             except litellm.AuthenticationError as exc:
                 key_hint = f" (check {api_key_env})" if api_key_env else ""

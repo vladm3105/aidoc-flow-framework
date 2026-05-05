@@ -433,6 +433,11 @@ TOOLS: list[Tool] = [
                     "description": "Resume an existing saga review run when review_mode=saga_parallel.",
                     "default": False,
                 },
+                "saga_branch_llm_enabled": {
+                    "type": "boolean",
+                    "description": "Enable branch-level LLM fan-out/fan-in execution in saga_parallel mode.",
+                    "default": False,
+                },
                 "executor": {"type": "string", "description": "Required API executor name for review execution (e.g. api/openrouter)."},
                 "temperature": {"type": "number", "description": "Optional generation temperature for API executor."},
                 "top_p": {"type": "number", "description": "Optional nucleus sampling parameter for API executor."},
@@ -1094,13 +1099,17 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.review import run_project_review_build, run_project_review_build_saga
         from mcp_server.core.stage_output import STAGE_REVIEW, resolve_stage_output_dir
         project_root = ctx.project_root
-        executor_name = arguments.get("executor")
-        if not executor_name:
-            return {
-                "passed": False,
-                "error": "ExecutorRequired: sdd_review requires an API executor.",
-                "error_code": "ExecutorRequired",
-            }
+        review_mode = arguments.get("review_mode", "prompt_only")
+        if review_mode == "saga_parallel":
+            executor_name = arguments.get("executor") or "api/openrouter"
+        else:
+            executor_name = arguments.get("executor")
+            if not executor_name:
+                return {
+                    "passed": False,
+                    "error": "ExecutorRequired: sdd_review requires an API executor.",
+                    "error_code": "ExecutorRequired",
+                }
 
         try:
             executor_cfg = get_executor(
@@ -1124,7 +1133,6 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 "error_code": "ExecutorTypeNotAllowed",
             }
 
-        review_mode = arguments.get("review_mode", "prompt_only")
         if review_mode != "prompt_only":
             if review_mode != "saga_parallel":
                 return {
@@ -1178,6 +1186,28 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                     else None
                 ),
                 saga_resume=bool(arguments.get("saga_resume", False)),
+                executor_name=executor_name,
+                project_env=ctx.project_env if ctx and ctx.project_env else None,
+                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                generation_params={
+                    "temperature": (
+                        arguments.get("temperature")
+                        if arguments.get("temperature") is not None
+                        else 0.2
+                    ),
+                    "top_p": (
+                        arguments.get("top_p")
+                        if arguments.get("top_p") is not None
+                        else 0.9
+                    ),
+                    "top_k": arguments.get("top_k"),
+                    "max_output_tokens": (
+                        arguments.get("max_output_tokens")
+                        if arguments.get("max_output_tokens") is not None
+                        else 4000
+                    ),
+                },
+                saga_branch_llm_enabled=arguments.get("saga_branch_llm_enabled"),
             )
             det_result = _serialize_result(saga_result)
             if not saga_result.passed:
@@ -1188,37 +1218,18 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
                 return det_result
 
-            prompt_text = ""
-            if saga_result.prompt_path is not None and saga_result.prompt_path.exists():
-                prompt_text = saga_result.prompt_path.read_text(encoding="utf-8")
-
-            timeout = int(arguments.get("timeout", 300) or 300)
-            generation_params = {
-                "temperature": arguments.get("temperature"),
-                "top_p": arguments.get("top_p"),
-                "top_k": arguments.get("top_k"),
-                "max_output_tokens": arguments.get("max_output_tokens"),
-            }
-            exec_result: ExecutorResult = await run_executor(
-                name=executor_name,
-                prompt=prompt_text,
-                working_dir=doc_dir,
-                timeout=timeout,
-                project_env=ctx.project_env if ctx and ctx.project_env else None,
-                system_prompt=None,
-                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
-                generation_params=generation_params,
-            )
-
             det_result["review_mode"] = "saga_parallel"
             det_result["executor"] = executor_name
-            det_result["exit_code"] = exec_result.exit_code
-            det_result["output"] = exec_result.stdout
-            det_result["stderr"] = exec_result.stderr if exec_result.stderr else None
-            det_result["passed"] = exec_result.exit_code == 0
-            if exec_result.exit_code != 0:
-                det_result["error"] = f"ExecutorFailed: review executor '{executor_name}' returned exit code {exec_result.exit_code}."
-                det_result["error_code"] = "ExecutorFailed"
+            det_result["exit_code"] = 0
+            det_result["output"] = json.dumps(
+                {
+                    "review_run_id": saga_result.review_run_id,
+                    "reduced_findings": saga_result.reduced_findings or [],
+                },
+                sort_keys=True,
+            )
+            det_result["stderr"] = None
+            det_result["passed"] = True
             det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
             return det_result
 
@@ -1242,10 +1253,22 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
         timeout = int(arguments.get("timeout", 300) or 300)
         generation_params = {
-            "temperature": arguments.get("temperature"),
-            "top_p": arguments.get("top_p"),
+            "temperature": (
+                arguments.get("temperature")
+                if arguments.get("temperature") is not None
+                else 0.2
+            ),
+            "top_p": (
+                arguments.get("top_p")
+                if arguments.get("top_p") is not None
+                else 0.9
+            ),
             "top_k": arguments.get("top_k"),
-            "max_output_tokens": arguments.get("max_output_tokens"),
+            "max_output_tokens": (
+                arguments.get("max_output_tokens")
+                if arguments.get("max_output_tokens") is not None
+                else 4000
+            ),
         }
         exec_result: ExecutorResult = await run_executor(
             name=executor_name,
@@ -1276,13 +1299,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.core.stage_output import STAGE_REMEDIATE, resolve_stage_output_dir
         project_root = ctx.project_root
         document_path = _path(arguments, "document")
-        executor_name = arguments.get("executor")
-        if not executor_name:
-            return {
-                "passed": False,
-                "error": "ExecutorRequired: sdd_remediate requires an AI executor.",
-                "error_code": "ExecutorRequired",
-            }
+        executor_name = arguments.get("executor") or "api/claude-sonnet"
 
         try:
             executor_cfg = get_executor(
@@ -1346,10 +1363,22 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
             timeout = int(arguments.get("timeout", 300) or 300)
             generation_params = {
-                "temperature": arguments.get("temperature"),
-                "top_p": arguments.get("top_p"),
+                "temperature": (
+                    arguments.get("temperature")
+                    if arguments.get("temperature") is not None
+                    else 0.2
+                ),
+                "top_p": (
+                    arguments.get("top_p")
+                    if arguments.get("top_p") is not None
+                    else 0.9
+                ),
                 "top_k": arguments.get("top_k"),
-                "max_output_tokens": arguments.get("max_output_tokens"),
+                "max_output_tokens": (
+                    arguments.get("max_output_tokens")
+                    if arguments.get("max_output_tokens") is not None
+                    else 4000
+                ),
             }
             exec_result: ExecutorResult = await run_executor(
                 name=executor_name,
