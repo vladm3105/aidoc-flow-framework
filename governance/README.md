@@ -73,6 +73,12 @@ Legacy framework roots are deprecated and not part of active governance.
 
 Document-layer lifecycle orchestration is MCP-only for UCX V3. CLI usage is reserved for approved IPLAN implementation execution tasks.
 
+Template validation policy:
+
+- Files under `governance/templates/` are project scaffold sources and may contain links that resolve only after scaffolding into a target repo.
+- For framework-repo quality gates, validate non-template governance docs directly.
+- For template link gates, run validation in the scaffolded target-project context.
+
 ## Issue Creation Pattern
 
 ```

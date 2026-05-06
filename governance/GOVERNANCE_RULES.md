@@ -135,6 +135,7 @@ Before coding, agents must:
 - Keep governance docs aligned with active workflow behavior.
 - Update cross-references when section names or anchors change.
 - Mark deprecated patterns explicitly and provide replacement guidance.
+- Validate links in context: framework docs in repo context, template docs in scaffolded project context.
 
 ## 7. Depth Model
 

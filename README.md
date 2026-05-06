@@ -246,6 +246,12 @@ python -m mcp_server.cli.main validate --project <path> --doc-type brd --layer 0
 python -m mcp_server.cli.main validate-links --target <path>
 ```
 
+Template-link validation policy:
+
+- `governance/templates/` contains scaffold files intended for downstream projects.
+- Do not treat direct `validate-links --target governance/templates/...` failures as blockers in this framework repo.
+- Validate template link integrity after scaffold in the target project, or validate only non-template docs in the framework repo.
+
 ---
 
 ## Cumulative Tagging
