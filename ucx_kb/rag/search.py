@@ -16,7 +16,7 @@ if _env_path.exists():
 from .embedding_client import get_embed_dimensions, get_embedding
 from .exceptions import RAGUnavailableError
 from .models import RAGStats, SearchResult
-from .schema import get_database_url
+from .schema import get_database_url, get_rag_schema
 
 log = logging.getLogger(__name__)
 
@@ -277,13 +277,14 @@ def _build_hybrid_query(
         filter_params.append(date_to)
 
     embed_dims = get_embed_dimensions()
+    schema = get_rag_schema()
     sql = f"""
     WITH vector_results AS (
         SELECT c.id, d.doc_id, d.file_path, c.doc_type, c.ticker, c.doc_date,
                c.section_label, c.content, c.content_tokens,
                ROW_NUMBER() OVER (ORDER BY c.embedding <=> %s::vector({embed_dims})) as v_rank
-        FROM nexus.rag_chunks c
-        JOIN nexus.rag_documents d ON c.doc_id = d.id
+        FROM {schema}.rag_chunks c
+        JOIN {schema}.rag_documents d ON c.doc_id = d.id
         WHERE 1=1 {filter_clause}
         LIMIT 50
     ),
@@ -291,8 +292,8 @@ def _build_hybrid_query(
         SELECT c.id, d.doc_id, d.file_path, c.doc_type, c.ticker, c.doc_date,
                c.section_label, c.content, c.content_tokens,
                ROW_NUMBER() OVER (ORDER BY ts_rank_cd(c.content_tsv, plainto_tsquery('english', %s)) DESC) as b_rank
-        FROM nexus.rag_chunks c
-        JOIN nexus.rag_documents d ON c.doc_id = d.id
+        FROM {schema}.rag_chunks c
+        JOIN {schema}.rag_documents d ON c.doc_id = d.id
         WHERE c.content_tsv @@ plainto_tsquery('english', %s)
         {filter_clause}
         LIMIT 50
@@ -380,41 +381,42 @@ def get_learnings_for_topic(topic: str, top_k: int = 5) -> list[SearchResult]:
 def get_rag_stats() -> RAGStats:
     """Get RAG system statistics."""
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 # Document count
-                cur.execute("SELECT COUNT(*) FROM nexus.rag_documents")
+                cur.execute(f"SELECT COUNT(*) FROM {schema}.rag_documents")
                 doc_count = cur.fetchone()[0]
 
                 # Chunk count
-                cur.execute("SELECT COUNT(*) FROM nexus.rag_chunks")
+                cur.execute(f"SELECT COUNT(*) FROM {schema}.rag_chunks")
                 chunk_count = cur.fetchone()[0]
 
                 # Doc types
-                cur.execute("""
+                cur.execute(f"""
                     SELECT doc_type, COUNT(*)
-                    FROM nexus.rag_documents
+                    FROM {schema}.rag_documents
                     GROUP BY doc_type
                 """)
                 doc_types = {row[0]: row[1] for row in cur.fetchall()}
 
                 # Unique tickers
-                cur.execute("""
+                cur.execute(f"""
                     SELECT DISTINCT ticker
-                    FROM nexus.rag_documents
+                    FROM {schema}.rag_documents
                     WHERE ticker IS NOT NULL
                     ORDER BY ticker
                 """)
                 tickers = [row[0] for row in cur.fetchall()]
 
                 # Last embed
-                cur.execute("SELECT MAX(updated_at) FROM nexus.rag_documents")
+                cur.execute(f"SELECT MAX(updated_at) FROM {schema}.rag_documents")
                 last_embed = cur.fetchone()[0]
 
                 # Get model info
-                cur.execute("""
+                cur.execute(f"""
                     SELECT embed_model, embed_version
-                    FROM nexus.rag_documents
+                    FROM {schema}.rag_documents
                     ORDER BY updated_at DESC
                     LIMIT 1
                 """)
@@ -442,9 +444,10 @@ def list_documents(
     limit: int = 50,
 ) -> list[dict]:
     """List embedded documents with optional filters."""
-    sql = """
+    schema = get_rag_schema()
+    sql = f"""
         SELECT doc_id, file_path, doc_type, ticker, doc_date, chunk_count, updated_at
-        FROM nexus.rag_documents
+        FROM {schema}.rag_documents
         WHERE 1=1
     """
     params = []
@@ -485,14 +488,15 @@ def list_documents(
 def get_document_chunks(doc_id: str) -> list[dict]:
     """Get all chunks for a document."""
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    """
+                    f"""
                     SELECT c.section_path, c.section_label, c.chunk_index,
                            c.content, c.content_tokens
-                    FROM nexus.rag_chunks c
-                    JOIN nexus.rag_documents d ON c.doc_id = d.id
+                    FROM {schema}.rag_chunks c
+                    JOIN {schema}.rag_documents d ON c.doc_id = d.id
                     WHERE d.doc_id = %s
                     ORDER BY c.section_path, c.chunk_index
                 """,
@@ -525,12 +529,13 @@ def _build_search_query(
 ) -> tuple[str, list]:
     """Build SQL query with appropriate filters."""
     embed_dims = get_embed_dimensions()
+    schema = get_rag_schema()
     sql = f"""
         SELECT d.doc_id, d.file_path, d.doc_type, c.ticker, c.doc_date,
                c.section_label, c.content, c.content_tokens,
                c.embedding <=> %s::vector({embed_dims}) AS distance
-        FROM nexus.rag_chunks c
-        JOIN nexus.rag_documents d ON c.doc_id = d.id
+        FROM {schema}.rag_chunks c
+        JOIN {schema}.rag_documents d ON c.doc_id = d.id
         WHERE 1=1
     """
     # Format embedding as PostgreSQL vector string (no spaces)

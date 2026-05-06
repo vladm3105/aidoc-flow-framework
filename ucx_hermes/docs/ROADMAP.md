@@ -131,12 +131,12 @@ Implemented scope to date:
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-03-28 |
-| Scope | MCP server exposing SDD lifecycle as 19 native tools with historical per-call executor selection |
+| Scope | MCP server exposing SDD lifecycle as 19 native tools with historical executor selection model |
 
 Delivered scope:
 
 - MCP server entry point (`mcp_ucx/src/mcp_server/server.py`) over stdio transport, server name `sdd-lifecycle`
-- Executor package (`mcp_ucx/src/mcp_server/executor/`): open registry with CLI and API type system, async subprocess runner, LiteLLM API stub, type-based dispatcher
+- Executor package (`mcp_ucx/src/mcp_server/executor/`): historical mixed CLI/API registry and dispatcher (legacy snapshot)
 - Tool registry (`mcp_ucx/src/mcp_server/tool_registry.py`): 20 tools (12 deterministic, 2 orchestration, 6 LLM-dependent) at v1.4.0 historical snapshot
 - Packaging: `mcp_ucx/pyproject.toml` with `mcp-ucx` console script
 - Registration: `.mcp.json` for Claude Code auto-discovery
@@ -370,11 +370,11 @@ References:
 | Status | Implemented |
 | Type | Minor |
 | Release Date | 2026-04-03 |
-| Scope | Simplify CLI executor prompt delivery; fix validation report naming to comply with PLAN-021 |
+| Scope | Legacy mcp_ucx CLI executor simplification; validation report naming compliance (PLAN-021) |
 
 Delivered scope:
 
-- CLI executor prompt delivery unified: all executors use positional arguments (removed stdin fallback, `prompt_mode` branching, temp file creation)
+- Legacy mcp_ucx CLI executor prompt delivery unified: all executors use positional arguments (removed stdin fallback, `prompt_mode` branching, temp file creation)
 - Removed `prompt_file` from `ExecutorResult`, `PROMPT_SIZE_THRESHOLD` constant, `tempfile` import
 - Fixed validation report naming: `{id}.ucx.validate_review.json/.txt` → `{id}.ucx.validate.json/.txt` per PLAN-021 stage code table
 - Updated `REPORT_PATTERN` regex, `_inspect_document_folder` detection, `consistency/runner.py` lookup

@@ -14,7 +14,7 @@ This directory (`ucx_hermes/`) is now the **sole active runtime** for the UCX MC
 
 | Issue in mcp_ucx | Fix in ucx_hermes |
 |-----------------|-------------------|
-| Stateless AI executor delegation silently rewrote documents without human approval | AI executor removed from all document-critical tools; returns structured reports/prompts only |
+| Stateless CLI executor delegation silently rewrote documents without human approval | Runtime enforces API-only LiteLLM executors for LLM stages and keeps deterministic stages non-LLM |
 | UCX skills and Hermes skills had overlapping names but different semantics | Bridge skill (`ucx-sdd-bridge`) codifies safe integration; no semantic drift |
 | No explicit separation between deterministic validation and interactive reasoning | Tool classification: deterministic checks vs prompt-assembly tools (human-gated) |
 | No guidance for Hermes-agent-specific safety boundaries | `HERMES_INTEGRATION.md` and bridge skill define safe workflow |
@@ -56,23 +56,25 @@ BRD (L1: Context/C4-L1)
 
 Use Hermes as control plane for the SDD lifecycle and a code-generation agent (Claude Code, Codex, or equivalent) as the coding executor:
 
-1. Hermes orchestrates BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN with UCX MCP tools.
-2. Claude Code, Codex, or another code-generation agent implements source code from approved IPLAN artifacts.
-3. Hermes runs validation/review/remediation gates before handoff to code and after implementation changes.
+1. Hermes completes a planning-first gate (source analysis -> layer roadmap -> planning index -> changelog plan -> gap review -> per-document IPLAN approval) before creating lifecycle artifacts.
+2. Hermes orchestrates BRD -> PRD -> EARS -> BDD -> ADR -> SPEC -> TDD -> IPLAN with UCX MCP tools.
+3. Claude Code, Codex, or another code-generation agent implements source code from approved IPLAN artifacts.
+4. Hermes runs validation/review/remediation gates before handoff to code and after implementation changes.
 
 ### Development and Issue-Fix Loop
 
 Default governance loop managed by Hermes from task intake through merge:
 
 1. A task is defined by a human or AI agent.
-2. Hermes creates and prioritizes a GitHub issue with acceptance criteria and traceability (`@spec`, `@tdd`, `@iplan`).
-3. Implementation work resolves the issue on a feature branch.
-4. A pull request is submitted.
-5. Round 1 gate runs in order: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap and inconsistency review.
-6. If Round 1 fails, Round 2 repeats the same gate sequence.
-7. If Round 2 fails, Hermes escalates to human review and merge remains blocked.
-8. If all merge gates pass, PR merges and linked issue is closed on merge.
-9. Human alert channels for escalation and merge-time notifications are implementation-defined (TBD).
+2. Hermes completes and records planning-first governance artifacts for the target scope.
+3. Hermes creates and prioritizes a GitHub issue with acceptance criteria and traceability (`@spec`, `@tdd`, `@iplan`).
+4. Implementation work resolves the issue on a feature branch according to approved plans.
+5. A pull request is submitted.
+6. Round 1 gate runs in order: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap and inconsistency review.
+7. If Round 1 fails, Round 2 repeats the same gate sequence.
+8. If Round 2 fails, Hermes escalates to human review and merge remains blocked.
+9. If all merge gates pass, PR merges and linked issue is closed on merge.
+10. Human alert channels for escalation and merge-time notifications are implementation-defined (TBD).
 
 ### Parallel Persona Review (Saga Pattern)
 
@@ -99,7 +101,7 @@ Execution ownership model (Hermes orchestrator vs execution agents):
 
 1. Hermes monitors observability signals through integrated telemetry systems and triage inputs.
 2. Hermes opens and prioritizes GitHub issues with implementation traceability (`@spec`, `@tdd`, `@iplan`) and acceptance criteria.
-3. Only approved issues (for example `ai:approved`) are eligible for autonomous execution.
+3. Only issues in `ai:ready` are eligible for autonomous execution.
 4. Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform fix implementation, PR submission, validation, and deployment workflows.
 5. Hermes reviews post-deployment evidence and closes issues when monitoring and acceptance gates pass.
 
@@ -176,6 +178,8 @@ Use this precedence for conflict resolution:
 ---
 
 ## 3. Skills and Project Isolation Model
+
+Hermes runtime skill index: `../skills/hermes/README.md`
 
 UCX Hermes uses a **project isolation model** for AI skills. Skills are project-specific, not agent-specific — each project receives customized personas, prompts, and templates at initialization. Any AI agent calls UCX to get the right context for that project. Framework assets are scaffold sources only — they are never loaded at runtime.
 
@@ -300,6 +304,53 @@ See [HERMES_INTEGRATION.md](HERMES_INTEGRATION.md) for:
 - Tool safety classification
 - Bridge skill installation
 - Troubleshooting
+
+## 8.1 First Project Checklist
+
+Use this checklist to make UCX ready for the first project runtime:
+
+1. Analyze provided source information and constraints.
+2. Create layer roadmap, planning index, and layer changelog plan artifacts.
+3. Review planning artifacts for gaps and resolve or defer with explicit rationale.
+4. Create and approve per-document IPLAN artifacts (human reviewer or independent LLM-as-judge session).
+5. Register MCP server `sdd-lifecycle` in Hermes config.
+6. Start Hermes session and enable `ucx-sdd-bridge`.
+7. Run `sdd_init` for the project root.
+8. Run `sdd_preflight` with `context=any`.
+9. Confirm persona mappings with `sdd_personas_show`.
+10. Confirm environment keys with `sdd_env_show`.
+
+Command examples:
+
+```text
+sdd_init project=/absolute/path/to/project
+sdd_preflight project=/absolute/path/to/project context=any
+sdd_personas_show project=/absolute/path/to/project
+sdd_env_show project=/absolute/path/to/project
+sdd_create_build project=/absolute/path/to/project doc_type=iplan layer=08_IPLAN template=IPLAN-TEMPLATE
+```
+
+Planning package artifacts (layer roadmap, planning index, changelog plan) are created and reviewed as governance documents before lifecycle-stage artifact creation starts.
+
+`sdd_init` update rules:
+
+- Default mode: creates missing project `UCX/` assets and skips existing files.
+- `update=true`: syncs stale framework-owned files.
+- `update=true update_mappings=true`: also resets `persona_mappings.yaml`.
+- `update_mappings=true` without `update=true` is invalid.
+
+Preflight pass criteria (`sdd_preflight context=any`):
+
+- **Go**: status `ready` (exit code 0).
+- **Conditional go**: status `degraded` (exit code 0) with documented risk acceptance and no missing required project assets.
+- **No-go**: status `blocked` (exit code 1).
+- **Operational error**: command runtime error (exit code 2), treat as no-go until corrected.
+
+Minimum checks before first lifecycle run:
+
+- `UCX/` scaffold exists for the target project.
+- `persona_mappings.yaml` exists and persona mapping health check does not report missing persona files.
+- Required executor environment keys are present for the configured provider path.
 
 ## 9. Plans and Reports
 

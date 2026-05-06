@@ -4,8 +4,8 @@
 | --- | --- |
 | Policy ID | DOC-LIFECYCLE-POLICY-001 |
 | Status | Active |
-| Version | 2.0 |
-| Date | 2026-05-03 |
+| Version | 2.1 |
+| Date | 2026-05-06 |
 | Scope | MCP documentation lifecycle, version changes, and update triggers |
 
 ---
@@ -18,7 +18,29 @@ Implementation complexity: 3/5.
 
 ---
 
-## 2. Lifecycle States
+## 2. Planning-First Governance Gate
+
+Mandatory pre-creation gate for every layer and every workstream type (documentation, testing, and coding):
+
+1. Analyze provided source information and constraints.
+2. Create a layer roadmap artifact.
+3. Create a layer planning index listing required planning documents.
+4. Define per-layer changelog scope and expected entries.
+5. Review roadmap and planning index for gaps and resolve gaps or record explicit deferrals.
+6. Create document-level implementation plans (IPLAN) for each target artifact before implementation work.
+7. Run plan review and gap-fix pass on each IPLAN.
+8. Record explicit plan approval.
+
+Mandatory constraints:
+
+- No lifecycle artifact creation starts before the planning gate is approved.
+- No testing or coding work starts before the corresponding approved IPLAN exists.
+- Plan approval authority is either a human reviewer or an independent LLM-as-judge session started from a fresh context.
+- Plan review must verify missing artifacts, dependency coverage, and traceability completeness.
+
+---
+
+## 3. Lifecycle States
 
 Allowed lifecycle states:
 - draft
@@ -33,7 +55,7 @@ State transition rules:
 
 ---
 
-## 3. Versioning Rules
+## 4. Versioning Rules
 
 Version increments:
 - patch: typo, formatting, non-normative clarifications with no contract impact
@@ -46,7 +68,7 @@ Required update behavior:
 
 ---
 
-## 4. Mandatory Review Triggers
+## 5. Mandatory Review Triggers
 
 A documentation review is required when changes affect:
 - ucx_hermes/src/mcp_server/cli/main.py (CLI surface contract)
@@ -58,28 +80,29 @@ A documentation review is required when changes affect:
 
 ---
 
-## 5. Pull Request Governance Lifecycle
+## 6. Pull Request Governance Lifecycle
 
 Mandatory PR governance sequence for issue-fix workflows:
 
-1. Define task (human or AI-originated).
-2. Create GitHub issue with acceptance criteria and traceability tags.
-3. Perform implementation work and submit pull request.
-4. Execute Round 1 gate sequence:
+1. Complete and approve the planning-first governance gate.
+2. Define task (human or AI-originated).
+3. Create GitHub issue with acceptance criteria and traceability tags.
+4. Perform implementation work according to approved plans and submit pull request.
+5. Execute Round 1 gate sequence:
    - `sdd_validate`
    - `sdd_review`
    - `sdd_remediate`
    - post-remediation `sdd_validate`
    - Hermes final blocker-gap/inconsistency review
-5. If Round 1 fails, execute Round 2 with the same sequence.
-6. If Round 2 fails, escalate to human review and block merge.
-7. On merge, close linked GitHub issue(s).
+6. If Round 1 fails, execute Round 2 with the same sequence.
+7. If Round 2 fails, escalate to human review and block merge.
+8. On merge, close linked GitHub issue(s).
 
 Alert channels for escalation and merge-time notifications are implementation-defined.
 
 ---
 
-## 6. Compatibility and Deprecation Constraints
+## 7. Compatibility and Deprecation Constraints
 
 Mandatory constraints:
 - Deprecated artifacts must remain readable during deprecation period when policy requires compatibility.
@@ -93,9 +116,12 @@ Failure modes:
 
 ---
 
-## 7. Evidence Requirements
+## 8. Evidence Requirements
 
 Required evidence for lifecycle compliance:
+- Planning package artifacts (roadmap, planning index, per-layer changelog plan).
+- Plan review artifact with resolved gaps and explicit deferrals.
+- Plan approval record (human reviewer or independent LLM-as-judge session).
 - Updated revision history entries
 - Reconciliation log update in DOC-RECONCILIATION-LOG-001
 - Coverage matrix update in DOC-COVERAGE-MATRIX-001
@@ -105,7 +131,7 @@ Required evidence for lifecycle compliance:
 
 ---
 
-## 8. Resource Requirements and Constraints
+## 9. Resource Requirements and Constraints
 
 - Contributors: docs-maintainer plus runtime-maintainer reviewer
 - Storage: negligible

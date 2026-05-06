@@ -31,6 +31,17 @@ Default agent split for v3.2 delivery:
 - Claude Code, Codex, or another code-generation agent implements source code from approved IPLAN artifacts.
 - UCX validation/review gates remain active before and after code implementation.
 
+Planning-first core principle (framework-wide):
+
+- No implementation starts without approved plans.
+- Required sequence: analyze inputs -> roadmap -> planning index -> changelog plan -> gap review/fix -> implementation plan (IPLAN) -> approval -> implementation.
+- Approval authority: human reviewer or independent LLM-as-judge session.
+
+Governance state flow for autonomous execution:
+
+- `ai:ready -> ai:in-progress -> ai:review-requested`
+- Only `ai:ready` issues are eligible for autonomous execution.
+
 ## Development and Issue-Fix Operating Model
 
 Default closed-loop workflow:
@@ -40,8 +51,29 @@ Default closed-loop workflow:
 3. Deployment executes through CI/CD after merge gates pass.
 4. Observability stack (metrics, logs, alerts) feeds incidents to Hermes triage.
 5. Hermes creates and prioritizes GitHub issues with traceability links and acceptance criteria.
-6. Approved issues are assigned to execution agents for autonomous fix -> PR -> validate -> deploy.
-7. Hermes verifies post-deployment evidence and closes issues when acceptance criteria and monitoring checks pass.
+6. Hermes completes planning-first artifacts and approval before execution starts.
+7. Issues in `ai:ready` are assigned to execution agents for autonomous implement -> PR -> validate -> deploy.
+8. Hermes verifies post-deployment evidence and closes issues when acceptance criteria and monitoring checks pass.
+
+## Hermes Skills (UCX V3)
+
+Hermes runtime skills are located in `ucx_hermes/skills/hermes/`.
+
+- `ucx-sdd-bridge`: UCX V3 lifecycle orchestration with MCP-only document-layer flow.
+- `ucx-github-governance`: issue/PR governance, labels, and round-based merge gates.
+- `ucx-github-deploy-governance`: CI/CD, QA, staging/prod readiness, and post-deploy loop.
+- `ucx-kb-context`: retrieval enrichment from KB before create/review/remediate.
+- `ucx-kb-maintenance`: governed KB update workflow after approved IPLAN evidence.
+
+See `ucx_hermes/skills/hermes/README.md` and `ucx_hermes/docs/HERMES_INTEGRATION.md`.
+
+## KB Policy Baseline
+
+UCX V3 policy requires KB representation for document artifacts and governed ingestion behavior.
+
+- Mandatory KB coverage rules: `ucx_hermes/skills/hermes/ucx-kb-maintenance/KB_GENERAL_RULES.md`
+- Canonical entry structure: `ucx_hermes/skills/hermes/ucx-kb-maintenance/KB_ENTRY_TEMPLATE.md`
+- KB augments decisions; UCX MCP lifecycle gates remain source of truth.
 
 Review/remediation runtime controls in UCX Hermes:
 

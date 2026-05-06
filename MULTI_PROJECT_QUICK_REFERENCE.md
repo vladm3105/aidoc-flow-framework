@@ -2,6 +2,10 @@
 
 **Quick commands for managing UCX Flow Framework across multiple projects**
 
+> **UCX V3 Runtime Note**: For active document-layer lifecycle work (BRD->IPLAN), use `ucx_hermes` MCP tools (`sdd-lifecycle`) with Hermes skills. Legacy `ucx` CLI commands shown here are compatibility/development references and are not the primary document-layer flow.
+
+> **Governance Label Flow**: `ai:ready -> ai:in-progress -> ai:review-requested`.
+
 ---
 
 ## SDD Depth Options
@@ -13,6 +17,14 @@
 | **SDD-Full** | Enterprise, regulated, multi-team | All 8 layers + CHG governance overlay |
 
 v2 (14-layer) variant preserved in `ucx_flow_v3/` for existing projects.
+
+## Hermes Skills (UCX V3)
+
+- `ucx-sdd-bridge`: lifecycle orchestration for `ucx_flow_v3` (MCP-only document layers)
+- `ucx-github-governance`: issue/PR governance and merge escalation
+- `ucx-github-deploy-governance`: CI/CD, QA, and post-deployment governance loop
+- `ucx-kb-context`: KB retrieval enrichment
+- `ucx-kb-maintenance`: governed KB write/update workflow
 
 ---
 

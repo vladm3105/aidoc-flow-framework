@@ -1,4 +1,4 @@
-"""Executor package — CLI and API agent dispatch for LLM-dependent tools."""
+"""Executor package — API agent dispatch for LLM-dependent tools."""
 
 from .registry import (
     ExecutorConfig,
@@ -10,7 +10,7 @@ from .registry import (
     remove_executor,
 )
 from .dispatcher import run_executor
-from .cli_runner import ExecutorResult
+from .contracts import ExecutorResult
 
 __all__ = [
     "ExecutorConfig",

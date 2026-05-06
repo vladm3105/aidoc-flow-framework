@@ -3,8 +3,8 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 2.0 |
-| Date | 2026-05-04 |
+| Version | 2.1 |
+| Date | 2026-05-06 |
 | Scope | Operational procedures and troubleshooting for implemented MCP command surface |
 
 ---
@@ -27,7 +27,25 @@ Implementation complexity: 3/5.
 
 ## 3. Standard Operating Procedures
 
-### 3.1 Initialize project assets
+### 3.1 Planning-first governance package
+
+Procedure:
+
+1. Analyze provided source artifacts, constraints, and upstream dependencies.
+2. Create layer roadmap artifact.
+3. Create planning index artifact listing required planning documents.
+4. Define per-layer changelog planning entries.
+5. Review planning artifacts for gaps.
+6. Resolve identified gaps or record explicit deferrals.
+7. Create per-document IPLAN artifacts.
+8. Run plan review for each IPLAN and record explicit approval.
+
+Success condition:
+
+- Planning-first artifacts are complete, reviewed, and approved.
+- No lifecycle create/test/code procedure starts before this condition is satisfied.
+
+### 3.2 Initialize project assets
 
 Procedure:
 
@@ -39,7 +57,7 @@ Success condition:
 
 - UCX structure exists and command returns successful exit.
 
-### 3.2 Create-build with sections payload
+### 3.3 Create-build with sections payload
 
 Procedure:
 
@@ -52,7 +70,7 @@ Success condition:
 
 - creation_prompt.txt, creation_prompt_sidecar.json, and creation_prompt_inspection.json are present.
 
-### 3.3 Create-build without sections payload
+### 3.4 Create-build without sections payload
 
 Procedure:
 
@@ -68,7 +86,7 @@ Constraint:
 
 - This mode does not provide direct markdown ingestion semantics.
 
-### 3.4 Review-build
+### 3.5 Review-build
 
 Procedure:
 
@@ -80,7 +98,7 @@ Success condition:
 
 - review_prompt.txt, review_prompt_sidecar.json, review_prompt_inspection.json, and review_controls.json exist and inspection is parseable JSON.
 
-### 3.5 Validate-build
+### 3.6 Validate-build
 
 Procedure:
 
@@ -95,13 +113,13 @@ Success condition:
 - Validation exit code is 0 and report summary indicates passed.
 - When errors are present, `_validated` derived copy and fix artifacts are produced alongside the validation report.
 
-### 3.6 Validate-fix (DEPRECATED)
+### 3.7 Validate-fix (DEPRECATED)
 
 > **Deprecated**: `sdd_validate_fix` is merged into `sdd_validate` as of v1.13.0. Use `sdd_validate` instead. When validation errors are found, `sdd_validate` now produces the derived `_validated` artifact and `{DOC_ID}.ucx.validate_fix.*` files automatically. See section 3.5.
 
 This section is retained for historical reference only. `sdd_validate_fix` still works as a deprecated alias routing to `sdd_validate`.
 
-### 3.7 Remediate and remediate --fix
+### 3.8 Remediate and remediate --fix
 
 Procedure:
 
@@ -115,7 +133,7 @@ Success condition:
 
 - Remediation planning and apply phases complete with deterministic artifacts.
 
-### 3.8 Consistency checks
+### 3.9 Consistency checks
 
 Procedure:
 
@@ -127,7 +145,7 @@ Success condition:
 
 - Report status is pass and command returns exit code 0.
 
-### 3.9 Preflight readiness
+### 3.10 Preflight readiness
 
 Procedure:
 
@@ -140,7 +158,7 @@ Success condition:
 
 - Report status is ready or degraded, and blocking errors are absent.
 
-### 3.10 Diagnostics commands
+### 3.11 Diagnostics commands
 
 Procedure:
 

@@ -173,8 +173,6 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Path to existing validation report. Skips re-validation, generates fix artifacts from this report.",
     )
-    validate_parser.add_argument("--executor", default=None, help="Executor name (reserved for future CLI executor support)")
-    validate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds (reserved)")
 
     remediate_parser = subparsers.add_parser(
         "remediate",
@@ -205,7 +203,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Deprecated compatibility flag. Remediation apply runs by default.",
     )
-    remediate_parser.add_argument("--executor", required=True, help="API executor name for remediation apply (e.g. api/gpt-4o)")
+    remediate_parser.add_argument("--executor", default="api/claude-sonnet", help="API executor name for remediation apply (default: api/claude-sonnet)")
     remediate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds")
 
     remediate_fix_parser = subparsers.add_parser(
@@ -599,6 +597,9 @@ def main(argv: list[str] | None = None) -> int:
         project_root = Path(args.project).expanduser().resolve()
         force_update = getattr(args, "update", False)
         force_update_mappings = getattr(args, "update_mappings", False)
+        if force_update_mappings and not force_update:
+            print("init failed: --update-mappings requires --update")
+            return 2
         init_result = scaffold_project_ucx(
             project_root=project_root,
             force_update=force_update,
@@ -844,10 +845,6 @@ def main(argv: list[str] | None = None) -> int:
 
         if remediation_report is not None and not args.fix:
             print("Warning: --remediation-report is used only with --fix; ignoring provided remediation report.")
-
-        if not args.executor:
-            print("remediate failed: --executor is required")
-            return 1
 
         if args.fix and remediation_report is not None:
             try:

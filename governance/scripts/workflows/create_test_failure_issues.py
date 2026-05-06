@@ -65,6 +65,16 @@ def main():
 **Phase**: {args.phase}
 **Test**: `{f['classname']}::{f['name']}`
 
+## Planning Package (Required Before `ai:ready`)
+
+| Field | Value |
+|:------|:------|
+| Planning Roadmap | Pending |
+| Planning Index | Pending |
+| Changelog Plan | Pending |
+| Approved IPLAN | Pending |
+| Plan Approval | Pending (Human or LLM-as-judge) |
+
 ### Error
 ```
 {f['message']}

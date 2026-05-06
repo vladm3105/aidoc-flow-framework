@@ -163,7 +163,7 @@ jobs:
           # Store issue URL for notifications
           echo "ISSUE_URL=${{ github.server_url }}/${{ github.repository }}/issues/${ISSUE_NUMBER}" >> "$GITHUB_ENV"
 
-      - name: "Step 5: Pre-flight — validate issue"
+      - name: "Step 5: Pre-flight — validate planning-first issue"
         if: steps.check-labels.outputs.skip != 'true'
         id: validate-issue
         env:
@@ -222,6 +222,74 @@ jobs:
             echo "SKIP_DISPATCH=true" >> "$GITHUB_ENV"
             exit 0
           fi
+
+          # Planning-first gate checks
+          python3 -c "
+          import json, re
+          body = json.load(open('/tmp/issue-context.json')).get('body', '')
+          has_roadmap = bool(re.search(r'planning\s+roadmap|roadmap\s*:', body, re.I))
+          has_index = bool(re.search(r'planning\s+index|plan(?:ning)?\s+index\s*:', body, re.I))
+          has_changelog_plan = bool(re.search(r'changelog\s+plan|change\s*log\s+plan', body, re.I))
+          iplan = re.search(r'\b(IPLAN-\d{1,4})\b', body, re.I)
+          approval_mode = ''
+          explicit = re.search(r'(?im)^(?:[-*]\s*)?(?:plan\s+approval|approval\s+authority|approved\s+by)\s*[:|-]\s*(.+)$', body)
+          if explicit:
+              candidate = explicit.group(1).strip()
+              if re.search(r'human', candidate, re.I):
+                  approval_mode = 'human'
+              elif re.search(r'llm[- ]?as[- ]?judge|llm[- ]?judge|ai[- ]?judge', candidate, re.I):
+                  approval_mode = 'llm-as-judge'
+          else:
+              if re.search(r'approved\s+by\s+human|human\s+approval', body, re.I):
+                  approval_mode = 'human'
+              elif re.search(r'approved\s+by\s+llm[- ]?as[- ]?judge|llm[- ]?as[- ]?judge\s+approval|ai[- ]?judge\s+approval', body, re.I):
+                  approval_mode = 'llm-as-judge'
+          out = {
+              'has_roadmap': has_roadmap,
+              'has_index': has_index,
+              'has_changelog_plan': has_changelog_plan,
+              'iplan_ref': (iplan.group(1).upper() if iplan else ''),
+              'approval_mode': approval_mode,
+          }
+          print(json.dumps(out))
+          " > /tmp/planning-gate.json
+
+          HAS_ROADMAP=$(python3 -c "import json; d=json.load(open('/tmp/planning-gate.json')); print('true' if d.get('has_roadmap') else 'false')")
+          HAS_INDEX=$(python3 -c "import json; d=json.load(open('/tmp/planning-gate.json')); print('true' if d.get('has_index') else 'false')")
+          HAS_CHANGELOG_PLAN=$(python3 -c "import json; d=json.load(open('/tmp/planning-gate.json')); print('true' if d.get('has_changelog_plan') else 'false')")
+          ISSUE_IPLAN_REF=$(python3 -c "import json; d=json.load(open('/tmp/planning-gate.json')); print(d.get('iplan_ref',''))")
+          PLAN_APPROVAL_MODE=$(python3 -c "import json; d=json.load(open('/tmp/planning-gate.json')); print(d.get('approval_mode',''))")
+
+          PLANNING_ERRORS=""
+
+          if [ "$HAS_ROADMAP" != "true" ]; then
+            PLANNING_ERRORS="${PLANNING_ERRORS}\n- Missing planning roadmap reference in issue body"
+          fi
+          if [ "$HAS_INDEX" != "true" ]; then
+            PLANNING_ERRORS="${PLANNING_ERRORS}\n- Missing planning index reference in issue body"
+          fi
+          if [ "$HAS_CHANGELOG_PLAN" != "true" ]; then
+            PLANNING_ERRORS="${PLANNING_ERRORS}\n- Missing changelog plan reference in issue body"
+          fi
+          if [ -z "$ISSUE_IPLAN_REF" ]; then
+            PLANNING_ERRORS="${PLANNING_ERRORS}\n- Missing IPLAN reference (expected pattern: IPLAN-###)"
+          fi
+          if [ -z "$PLAN_APPROVAL_MODE" ]; then
+            PLANNING_ERRORS="${PLANNING_ERRORS}\n- Missing plan approval mode (set 'Plan Approval: Human' or 'Plan Approval: LLM-as-judge')"
+          fi
+
+          ISSUE_IPLAN_PATH=""
+
+          if [ -n "$PLANNING_ERRORS" ]; then
+            gh issue comment "${ISSUE_NUMBER}" \
+              --body "**AI Dispatch skipped**: Planning-first gate failed.\n\nRequired for \\`ai:ready\\` execution:\n- planning roadmap reference\n- planning index reference\n- changelog plan reference\n- approved IPLAN reference\n- explicit approval mode (Human or LLM-as-judge)\n\nMissing/invalid items:${PLANNING_ERRORS}\n\nUpdate issue planning metadata and re-apply \\`ai:ready\\`."
+            gh issue edit "${ISSUE_NUMBER}" --remove-label "ai:ready" --add-label "status:planning" 2>/dev/null || true
+            echo "SKIP_DISPATCH=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          echo "ISSUE_IPLAN_REF=${ISSUE_IPLAN_REF}" >> "$GITHUB_ENV"
+          echo "PLAN_APPROVAL_MODE=${PLAN_APPROVAL_MODE}" >> "$GITHUB_ENV"
 
           echo "SKIP_DISPATCH=false" >> "$GITHUB_ENV"
 
@@ -522,43 +590,41 @@ jobs:
           git checkout -b "${BRANCH_NAME}"
           echo "Created branch: ${BRANCH_NAME}"
 
-      # ── Step 11b: Generate IPLAN (Item #2 from ai_governance_automation.md) ──
-      - name: "Step 11b: Generate IPLAN from issue"
+      # ── Step 11b: Verify approved IPLAN reference ──────────────────────
+      - name: "Step 11b: Verify approved IPLAN reference"
         if: steps.check-labels.outputs.skip != 'true' && env.SKIP_DISPATCH != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          ISSUE_IPLAN_REF: ${{ env.ISSUE_IPLAN_REF }}
+          ISSUE_IPLAN_PATH: ${{ env.ISSUE_IPLAN_PATH }}
         run: |
           cd "${GITHUB_WORKSPACE}"
 
-          # Check if IPLAN already exists for this issue
-          EXISTING_IPLAN=$(ls governance/plans/IPLAN-${ISSUE_NUMBER}_*.md 2>/dev/null | head -1 || echo "")
-
-          if [ -n "${EXISTING_IPLAN}" ]; then
-            echo "IPLAN already exists: ${EXISTING_IPLAN}"
-            echo "IPLAN_PATH=${EXISTING_IPLAN}" >> "$GITHUB_ENV"
-          else
-            echo "Generating IPLAN from issue #${ISSUE_NUMBER}"
-
-            # Generate IPLAN using the scaffolding script
-            if [ -f "governance/scripts/workflows/generate_iplan_from_issue.py" ]; then
-              python3 governance/scripts/workflows/generate_iplan_from_issue.py \
-                --issue-number "${ISSUE_NUMBER}" \
-                --repo "${GITHUB_REPOSITORY}" \
-                --output-dir "governance/plans"
-
-              IPLAN_PATH=$(ls governance/plans/IPLAN-${ISSUE_NUMBER}_*.md 2>/dev/null | head -1 || echo "")
-              if [ -n "${IPLAN_PATH}" ]; then
-                echo "Generated IPLAN: ${IPLAN_PATH}"
-                echo "IPLAN_PATH=${IPLAN_PATH}" >> "$GITHUB_ENV"
-
-                # Stage IPLAN for commit with implementation
-                git add "${IPLAN_PATH}"
-              fi
-            else
-              echo "::warning::IPLAN generation script not found. Skipping."
-            fi
+          if [ -z "${ISSUE_IPLAN_REF}" ]; then
+            gh issue comment "${ISSUE_NUMBER}" --body "**AI Implementation halted**: No approved IPLAN reference available after planning gate. Labeling for human intervention."
+            gh issue edit "${ISSUE_NUMBER}" --remove-label "ai:in-progress" --add-label "ai:blocked" --add-label "needs-human" 2>/dev/null || true
+            echo "SKIP_DISPATCH=true" >> "$GITHUB_ENV"
+            exit 0
           fi
+
+          LOCAL_IPLAN=$(ls governance/plans/${ISSUE_IPLAN_REF}_*.md 2>/dev/null | head -1 || echo "")
+          if [ -z "${LOCAL_IPLAN}" ]; then
+            gh issue comment "${ISSUE_NUMBER}" --body "**AI Implementation halted**: Referenced approved IPLAN (${ISSUE_IPLAN_REF}) was not found in repository checkout. Labeling for human intervention."
+            gh issue edit "${ISSUE_NUMBER}" --remove-label "ai:in-progress" --add-label "ai:blocked" --add-label "needs-human" 2>/dev/null || true
+            echo "SKIP_DISPATCH=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          if ! grep -qiE '(\*\*Status\*\*:\s*Approved|status:\s*approved)' "${LOCAL_IPLAN}"; then
+            gh issue comment "${ISSUE_NUMBER}" --body "**AI Implementation halted**: Referenced IPLAN (${ISSUE_IPLAN_REF}) exists but is not approved. Set plan status to Approved and re-dispatch."
+            gh issue edit "${ISSUE_NUMBER}" --remove-label "ai:in-progress" --add-label "status:planning" --add-label "ai:blocked" 2>/dev/null || true
+            echo "SKIP_DISPATCH=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          echo "Using approved IPLAN: ${LOCAL_IPLAN}"
+          echo "IPLAN_PATH=${LOCAL_IPLAN}" >> "$GITHUB_ENV"
 
       - name: "Step 12: Prepare implement instructions"
         if: steps.check-labels.outputs.skip != 'true' && env.SKIP_DISPATCH != 'true'

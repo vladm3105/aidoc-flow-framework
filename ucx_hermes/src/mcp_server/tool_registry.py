@@ -1,11 +1,4 @@
-"""MCP Tool definitions and handler dispatch for SDD lifecycle.
-
-26 tools total:
-  - 2 session management (set/get project)
-  - 18 deterministic (execute directly)
-  - 2 orchestration (pipeline + advisor)
-  - 4 prompt assembly / artifact tools (executor param retained for compatibility and ignored)
-"""
+"""MCP Tool definitions and handler dispatch for SDD lifecycle."""
 
 from __future__ import annotations
 
@@ -30,7 +23,7 @@ from mcp_server.executor import (
     register_executor,
     run_executor,
 )
-from mcp_server.executor.cli_runner import ExecutorResult
+from mcp_server.executor.contracts import ExecutorResult
 
 # ── Tool definitions ────────────────────────────────────────────────────────
 
@@ -85,8 +78,6 @@ TOOLS: list[Tool] = [
                 "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "json"},
                 "out": {"type": "string", "description": "Output directory for reports"},
                 "validation_report": {"type": "string", "description": "Path to existing validation report. Skips re-validation, generates fix artifacts from this report."},
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -257,7 +248,7 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_list_executors",
-        description="List all registered CLI and API executors with their type, status, and configuration. When project is provided, includes project-specific executor overrides.",
+        description="List all registered API executors with model, status, and configuration. When project is provided, includes project-specific executor overrides.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -271,18 +262,15 @@ TOOLS: list[Tool] = [
     ),
     Tool(
         name="sdd_register_executor",
-        description="Register a new CLI or API executor at runtime. Use executor_type='cli' for CLI agents, 'api' for LLM API providers.",
+        description="Register a new API executor at runtime.",
         inputSchema={
             "type": "object",
             "properties": {
-                "name": {"type": "string", "description": "Unique executor name (e.g. 'aider', 'api/mistral')"},
-                "executor_type": {"type": "string", "enum": ["cli", "api"], "description": "Executor type"},
-                "command": {"type": "string", "description": "CLI binary name or path (for cli type)"},
-                "args": {"type": "array", "items": {"type": "string"}, "description": "Base CLI arguments"},
-                "prompt_mode": {"type": "string", "enum": ["file", "positional"], "description": "How to deliver prompt to CLI"},
-                "model": {"type": "string", "description": "LiteLLM model string (for api type)"},
-                "api_base": {"type": "string", "description": "Custom API base URL (for api type)"},
-                "api_key_env": {"type": "string", "description": "Env var name for API key (for api type)"},
+                "name": {"type": "string", "description": "Unique executor name (e.g. 'api/mistral')"},
+                "executor_type": {"type": "string", "enum": ["api"], "description": "Executor type"},
+                "model": {"type": "string", "description": "LiteLLM model string"},
+                "api_base": {"type": "string", "description": "Custom API base URL"},
+                "api_key_env": {"type": "string", "description": "Env var name for API key"},
                 "timeout": {"type": "integer", "description": "Default timeout in seconds", "default": 300},
             },
             "required": ["name", "executor_type"],
@@ -737,6 +725,12 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     # ── Deterministic tools ──────────────────────────────────────────────
 
     if name == "sdd_init":
+        if bool(arguments.get("update_mappings", False)) and not bool(arguments.get("update", False)):
+            return {
+                "passed": False,
+                "error": "InvalidInitParams: update_mappings requires update=true.",
+                "error_code": "InvalidInitParams",
+            }
         from mcp_server.skills.scaffold import scaffold_project_ucx
         result = scaffold_project_ucx(
             project_root=ctx.project_root,
@@ -987,8 +981,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             {
                 "name": e.name,
                 "executor_type": e.executor_type.value,
-                "command": e.command if e.executor_type == ExecutorType.CLI else None,
-                "model": e.model if e.executor_type == ExecutorType.API else None,
+                "model": e.model,
                 "status": e.status,
                 "timeout": e.timeout,
                 "source": "global",
@@ -1004,8 +997,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 exec_list.append({
                     "name": e.name,
                     "executor_type": e.executor_type.value,
-                    "command": e.command if e.executor_type == ExecutorType.CLI else None,
-                    "model": e.model if e.executor_type == ExecutorType.API else None,
+                    "model": e.model,
                     "status": e.status,
                     "timeout": e.timeout,
                     "source": "project",
@@ -1021,9 +1013,6 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         config = ExecutorConfig(
             name=arguments["name"],
             executor_type=ExecutorType(arguments["executor_type"]),
-            command=arguments.get("command", ""),
-            args=arguments.get("args", []),
-            prompt_mode=arguments.get("prompt_mode", ""),
             model=arguments.get("model", ""),
             api_base=arguments.get("api_base", ""),
             api_key_env=arguments.get("api_key_env", ""),

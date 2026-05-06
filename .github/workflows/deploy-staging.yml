@@ -197,7 +197,7 @@ jobs:
           python3 governance/scripts/workflows/create_test_failure_issues.py \
             --junit-xml test-results.xml \
             --phase 8 \
-            --labels "regression,ai:ready"
+            --labels "regression,status:planning"
 
       - name: Cleanup credentials
         if: always()

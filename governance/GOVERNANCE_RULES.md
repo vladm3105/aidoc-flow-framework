@@ -26,6 +26,25 @@ All active governance workflows align to:
 
 ## 3. AI Workflow
 
+### Planning-First Governance Gate (Mandatory)
+
+No implementation work starts without approved planning artifacts.
+
+Required planning sequence:
+
+1. Analyze provided information, constraints, dependencies, and existing context.
+2. Create planning roadmap for the target scope.
+3. Create planning document index for required plan artifacts.
+4. Define changelog plan for the scope (what changes will be tracked and where).
+5. Review planning artifacts for gaps and resolve or explicitly defer gaps.
+6. Create and refine implementation plan (`IPLAN-NNN_{slug}.md`).
+7. Record explicit plan approval (human reviewer or independent LLM-as-judge session).
+
+Hard gate rules:
+
+- No document creation, testing, or coding begins before the planning gate is approved.
+- No issue is transitioned to `ai:in-progress` before planning approval exists.
+
 ### Labels
 
 `ai:ready -> ai:in-progress -> ai:review-requested`
@@ -51,10 +70,15 @@ If Round 2 fails, escalation status becomes `REQUIRED`, merge is blocked, and hu
 
 Before coding, agents must:
 
-1. Complete issue analysis
-2. Create IPLAN
-3. Refine IPLAN
-4. Transition issue to `ai:in-progress`
+1. Complete issue analysis.
+2. Create planning roadmap artifact for the issue scope.
+3. Create planning index for required plan artifacts.
+4. Define changelog plan for the issue scope.
+5. Review planning artifacts for gaps and resolve or defer with rationale.
+6. Create IPLAN.
+7. Refine IPLAN.
+8. Record explicit approval for the plan set.
+9. Transition issue to `ai:in-progress`.
 
 ### Acceptance Criteria Sync (Mandatory)
 
@@ -82,7 +106,7 @@ Before coding, agents must:
 ## 5. Agent Operating Model
 
 1. Hermes is the control-plane agent for planning, governance, and lifecycle progression from BRD through IPLAN.
-2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) implement approved issue scope, create PRs, and run delivery workflows.
+2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) implement scope for issues in `ai:ready`, create PRs, and run delivery workflows.
 3. Hermes performs round-based PR governance, merge-time escalation decisions, and post-deployment validation using observability evidence.
 
 ## 6. Document Maintenance
@@ -114,12 +138,13 @@ Issues may originate from v3 artifacts. When issue label `source:sdd` is present
 1. Observability stack detects incident/regression signals.
 2. Hermes triages severity and impact, then opens/updates GitHub issue with traceability and acceptance criteria.
 3. Human/policy approval moves issue into executable queue (`ai:ready`).
-4. Execution agent performs fix -> PR.
-5. Hermes runs Round 1 PR governance gates (`sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> final blocker-gap check).
-6. If Round 1 fails, Hermes runs Round 2 with the same sequence.
-7. If Round 2 fails, Hermes escalates to human review and blocks merge.
-8. If gates pass, PR merges and linked issue closes.
-9. Hermes validates post-deployment evidence and opens follow-up issue(s) when required.
+4. Hermes completes planning-first governance artifacts and approval for the issue scope.
+5. Execution agent performs fix -> PR according to approved plans.
+6. Hermes runs Round 1 PR governance gates (`sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> final blocker-gap check).
+7. If Round 1 fails, Hermes runs Round 2 with the same sequence.
+8. If Round 2 fails, Hermes escalates to human review and blocks merge.
+9. If gates pass, PR merges and linked issue closes.
+10. Hermes validates post-deployment evidence and opens follow-up issue(s) when required.
 
 ## Deprecated Compatibility
 

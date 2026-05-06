@@ -33,6 +33,18 @@ __STACK_TRACE__
 
 ---
 
+## Planning Package (Required for Re-dispatch)
+
+| Field | Value |
+|:------|:------|
+| Planning Roadmap | <!-- link/path/reference --> |
+| Planning Index | <!-- link/path/reference --> |
+| Changelog Plan | <!-- link/path/reference --> |
+| Approved IPLAN | <!-- IPLAN-### reference --> |
+| Plan Approval | <!-- Human or LLM-as-judge --> |
+
+---
+
 ## Acceptance Criteria
 
 - [ ] Fix the failing test

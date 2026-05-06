@@ -22,6 +22,14 @@ def test_main_init_command_scaffolds_project(tmp_path: Path) -> None:
     assert (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").exists()
 
 
+def test_main_init_update_mappings_requires_update(tmp_path: Path, capsys) -> None:
+    exit_code = main(["init", "--project", str(tmp_path), "--update-mappings"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 2
+    assert "requires --update" in captured.out
+
+
 def test_main_without_command_returns_usage_error() -> None:
     exit_code = main([])
     assert exit_code == 2

@@ -25,6 +25,19 @@ Canonical references:
 - `governance/SDD_DEPTH_GUIDE.md`
 - `governance/AI_ISSUE_LIFECYCLE.md`
 
+## Hermes Governance Skill Mapping
+
+Hermes governance operations are implemented in `ucx_hermes/skills/hermes/`:
+
+- `ucx-github-governance` -> issue/PR governance state transitions, acceptance-criteria sync, and round-based merge gates.
+- `ucx-github-deploy-governance` -> CI/CD, QA, staging/production readiness, and post-deployment reopen loop.
+- `ucx-sdd-bridge` -> UCX V3 lifecycle orchestration and MCP-gated document flow.
+
+KB support skills:
+
+- `ucx-kb-context` -> retrieval enrichment during lifecycle stages.
+- `ucx-kb-maintenance` -> governance-controlled KB writes after approved implementation evidence.
+
 ## Bridge Docs (v3)
 
 - `governance/TASKS_IPLAN_BRIDGE.md` (v3 artifact-to-IPLAN trace bridge)
@@ -46,6 +59,8 @@ Deprecated automation:
 Use `ucx_flow_v3/` for active templates and guidance.
 Legacy framework roots are deprecated and not part of active governance.
 
+Document-layer lifecycle orchestration is MCP-only for UCX V3. CLI usage is reserved for approved IPLAN implementation execution tasks.
+
 ## Issue Creation Pattern
 
 ```
@@ -55,9 +70,13 @@ Hermes generates v3 artifacts (BRD..TDD)
     ↓
 Hermes creates implementation issue(s)
     ↓
-Hermes creates IPLAN per issue before coding
+Hermes creates planning artifacts per issue (roadmap, planning index, changelog plan)
     ↓
-Execution agent executes approved issue (ai:ready -> ai:in-progress -> ai:review-requested)
+Hermes reviews and fixes planning gaps, then approves plan set
+    ↓
+Hermes creates IPLAN per issue and records approval before coding
+    ↓
+Execution agent executes issue in ai:ready (ai:ready -> ai:in-progress -> ai:review-requested)
 ```
 
 ## Operational Issue-Fix Pattern (Production)
@@ -68,6 +87,8 @@ Observability stack emits alerts/incidents
 Hermes triages and creates GitHub issue with severity, impact, repro context, traceability
     ↓
 Policy gate approves issue for autonomous execution by moving workflow state to ai:ready
+    ↓
+Hermes completes planning-first governance artifacts and explicit plan approval
     ↓
 Execution agent (Claude Code/Codex/OpenCode) fixes issue and submits PR
     ↓
@@ -86,6 +107,6 @@ Hermes reviews post-deployment evidence; if regressions are detected, open follo
 
 1. Hermes monitors observability signals through integrated telemetry systems and triage inputs.
 2. Hermes opens and prioritizes GitHub issues with implementation traceability (`@spec`, `@tdd`, `@iplan`) and acceptance criteria.
-3. Only approved issues in `ai:ready` are eligible for autonomous execution.
+3. Only issues in `ai:ready` are eligible for autonomous execution.
 4. Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform fix implementation, PR submission, validation, and deployment workflows.
 5. Hermes performs round-based PR governance and merge-time escalation decisions.

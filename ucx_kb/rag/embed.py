@@ -24,7 +24,7 @@ from .chunk import chunk_yaml_document
 from .embedding_client import get_embedding, get_embeddings_batch
 from .exceptions import EmbedError
 from .models import ChunkResult, EmbedResult
-from .schema import get_database_url
+from .schema import get_database_url, get_rag_schema
 
 log = logging.getLogger(__name__)
 
@@ -258,10 +258,11 @@ def delete_document(doc_id: str) -> bool:
         True if deleted, False if not found
     """
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "DELETE FROM nexus.rag_documents WHERE doc_id = %s RETURNING id", (doc_id,)
+                    f"DELETE FROM {schema}.rag_documents WHERE doc_id = %s RETURNING id", (doc_id,)
                 )
                 result = cur.fetchone()
             conn.commit()
@@ -284,15 +285,16 @@ def reembed_all(version: str | None = None) -> int:
     count = 0
 
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 if version:
                     cur.execute(
-                        "SELECT file_path FROM nexus.rag_documents WHERE embed_version = %s",
+                        f"SELECT file_path FROM {schema}.rag_documents WHERE embed_version = %s",
                         (version,),
                     )
                 else:
-                    cur.execute("SELECT file_path FROM nexus.rag_documents")
+                    cur.execute(f"SELECT file_path FROM {schema}.rag_documents")
 
                 rows = cur.fetchall()
 
@@ -319,10 +321,11 @@ def _compute_file_hash(file_path: str) -> str:
 def _get_document_by_id(doc_id: str) -> dict | None:
     """Get existing document by ID."""
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT file_hash, chunk_count FROM nexus.rag_documents WHERE doc_id = %s",
+                    f"SELECT file_hash, chunk_count FROM {schema}.rag_documents WHERE doc_id = %s",
                     (doc_id,),
                 )
                 row = cur.fetchone()
@@ -346,13 +349,14 @@ def _store_document(
 ) -> None:
     """Store document and chunks in PostgreSQL."""
     embed_model = _config.get("embedding", {}).get("ollama", {}).get("model", "nomic-embed-text")
+    schema = get_rag_schema()
 
     with psycopg.connect(get_database_url()) as conn:
         with conn.cursor() as cur:
             # Upsert document
             cur.execute(
-                """
-                INSERT INTO nexus.rag_documents
+                f"""
+                INSERT INTO {schema}.rag_documents
                     (doc_id, file_path, doc_type, ticker, doc_date, quarter,
                      chunk_count, embed_version, embed_model, file_hash)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -386,13 +390,13 @@ def _store_document(
             doc_pk = cur.fetchone()[0]
 
             # Delete existing chunks
-            cur.execute("DELETE FROM nexus.rag_chunks WHERE doc_id = %s", (doc_pk,))
+            cur.execute(f"DELETE FROM {schema}.rag_chunks WHERE doc_id = %s", (doc_pk,))
 
             # Insert new chunks
             for chunk, embedding in zip(chunks, embeddings):
                 cur.execute(
-                    """
-                    INSERT INTO nexus.rag_chunks
+                    f"""
+                    INSERT INTO {schema}.rag_chunks
                         (doc_id, section_path, section_label, chunk_index,
                          content, content_tokens, embedding, doc_type, ticker, doc_date)
                     VALUES (%s, %s, %s, %s, %s, %s, %s::vector, %s, %s, %s)

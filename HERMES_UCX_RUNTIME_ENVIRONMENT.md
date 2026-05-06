@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   components:
     - hermes-agent
-    - mcp_ucx
+    - ucx_hermes
     - ucx_kb
     - trace2skill
 ---
@@ -31,7 +31,7 @@ This document describes architecture boundaries, data flow, operational modes, c
 | Component | Runtime Role | Primary Interface | Responsibility Boundary |
 | --- | --- | --- | --- |
 | Hermes Agent | Agent runtime and orchestration shell | CLI/TUI, gateway, MCP client | Session management, model/tool routing, operator interaction |
-| UCX (`mcp_ucx`) | Deterministic SDD lifecycle engine | MCP server `sdd-lifecycle` | `sdd_*` tools, validation, review/remediation pipeline, stage artifacts |
+| UCX (`ucx_hermes`) | Deterministic SDD lifecycle engine | MCP server `sdd-lifecycle` | `sdd_*` tools, validation/review/remediation pipeline, stage artifacts |
 | ucx_kb (`ucx_kb`) | Knowledge retrieval subsystem | MCP server `ucx_kb.mcp.server` | RAG/graph retrieval via `kb_*` tools |
 | Trace2Skill | Offline skill-evolution pipeline | Python runners (`skill_evolver/*`) | Candidate skill generation and consolidation from traces |
 
@@ -117,6 +117,9 @@ Implementation complexity: **4/5** (multi-service runtime with deterministic and
 - Hermes skills must not bypass `sdd_validate`/`sdd_review`/`sdd_remediate` quality gates.
 - Trace2Skill outputs are treated as candidate artifacts until validated.
 - Runtime must support `ucx_flow_v3` document flow and naming/traceability policies.
+- Planning-first governance is mandatory across document, testing, and code workflows:
+  - analysis -> roadmap -> planning index -> changelog plan -> gap review -> IPLAN -> approval -> implementation.
+  - approval authority is human reviewer or independent LLM-as-judge session.
 
 ## 9. Failure Modes and Mitigations
 

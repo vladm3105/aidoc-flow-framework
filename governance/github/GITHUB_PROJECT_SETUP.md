@@ -58,7 +58,7 @@ Phase 5: Issue Population & Kickoff [PASS] COMPLETED (Phase 1)
 Operating model alignment for project setup:
 
 - Hermes operates as control plane for observability triage, issue prioritization, and governance closure decisions.
-- Execution agents (Claude Code, Codex, OpenCode, or equivalent) process approved `ai:ready` issues autonomously through fix -> PR -> deploy workflows.
+- Execution agents (Claude Code, Codex, OpenCode, or equivalent) process only planning-approved `ai:ready` issues autonomously through implement -> PR -> deploy workflows.
 - Keep label lifecycle strictly `ai:ready` -> `ai:in-progress` -> `ai:review-requested`.
 
 ### Current Implementation Summary
@@ -691,7 +691,7 @@ mutation($projectId: ID!, $repoId: ID!) {
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | AI Review | `ai-review.yml` | Reusable AI PR review (Gemini) |
-| Agent Dispatch | `agent-dispatch.yml` | Execution-agent dispatch for approved issue work |
+| Agent Dispatch | `agent-dispatch.yml` | Execution-agent dispatch for `ai:ready` issue work |
 
 **Phase-Gated Deployment (7)**
 | Workflow | File | Purpose |
@@ -804,6 +804,26 @@ jobs:
             ERRORS="$ERRORS\n- Missing 'Related Files' section"
           fi
 
+          if ! echo "$BODY" | grep -qi "planning roadmap"; then
+            ERRORS="$ERRORS\n- Missing planning roadmap reference"
+          fi
+
+          if ! echo "$BODY" | grep -qi "planning index"; then
+            ERRORS="$ERRORS\n- Missing planning index reference"
+          fi
+
+          if ! echo "$BODY" | grep -qi "changelog plan"; then
+            ERRORS="$ERRORS\n- Missing changelog plan reference"
+          fi
+
+          if ! echo "$BODY" | grep -qiE "IPLAN-[0-9]{3}"; then
+            ERRORS="$ERRORS\n- Missing IPLAN reference"
+          fi
+
+          if ! echo "$BODY" | grep -qiE "plan approval|approved"; then
+            ERRORS="$ERRORS\n- Missing explicit plan approval record"
+          fi
+
           if ! echo "$BODY" | grep -qiE "size:\s*(xs|s|m|l|xl)"; then
             ERRORS="$ERRORS\n- Missing 'Size' estimate"
           fi
@@ -825,7 +845,7 @@ jobs:
             gh issue comment ${{ github.event.issue.number }} \
               --body "## [WARN] AI-Ready Validation Failed
 
-              Missing required sections:
+              Missing required planning/issue sections:
               ${{ steps.validate.outputs.errors }}
 
               Please update and re-apply the label."
@@ -1184,6 +1204,11 @@ GH_HOST={GITHUB_HOST} gh issue list \
 - Title matches PROJECT_PLAN.md task name
 - Priority label matches plan priority (P0→P0-critical, P1→P1-high)
 - AI label matches plan (Y→ai:ready, N→ai:human-required)
+- Planning roadmap is referenced in issue body
+- Planning index is referenced in issue body
+- Changelog plan is referenced in issue body
+- IPLAN ID is referenced in issue body
+- Explicit plan approval is recorded before execution
 - Milestone assigned with correct due date
 - Issue body has: Summary, Acceptance Criteria, Dependencies, Blocks, Parent Epic
 - All issues added to Project Board #{PROJECT_BOARD_NUMBER}
@@ -1341,7 +1366,7 @@ gh projects field-list 31 --org {GITHUB_ORG}
 
 **Development Workflow:**
 ```
-ai:ready → ai:in-progress → ai:review-requested → (PR merge)
+ai:ready (planning package + approved IPLAN) → ai:in-progress → ai:review-requested → (PR merge)
                ↓
           ai:blocked (if stuck)
 ```
@@ -1349,6 +1374,7 @@ ai:ready → ai:in-progress → ai:review-requested → (PR merge)
 Control-plane/execution-plane gate:
 
 - Hermes triage and human/policy approval determine when an issue enters `ai:ready`.
+- `ai:ready` entry requires planning roadmap, planning index, changelog plan, and approved IPLAN.
 - Execution agents do not begin autonomous work before `ai:ready` is present.
 
 **4-Stage Iterative QA Loop:**
@@ -1422,6 +1448,7 @@ echo "Blocked: $(gh issue list --label 'ai:blocked' --json number | jq length)"
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 5.0 | {DATE} | Enforced planning-first governance in setup guidance: `ai:ready` now requires planning roadmap, planning index, changelog plan, and approved IPLAN. Updated AI-ready validation workflow example and compliance checks. |
 | 1.0 | {DATE} | Initial setup |
 | 2.0 | {DATE} | AI-first development edition |
 | 3.0 | {DATE} | Complete setup guide with step-by-step instructions |

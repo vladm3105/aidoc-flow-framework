@@ -13,7 +13,7 @@
 
 | Command | Required Arguments | Optional Arguments | Output |
 | --- | --- | --- | --- |
-| init | --project | --update --update-mappings | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/`. With `--update`: sync stale files (protects persona_mappings.yaml). With `--update-mappings`: also reset persona_mappings.yaml. |
+| init | --project | --update --update-mappings | project UCX scaffold (personas, templates, schemas, prompts) under `UCX/`. With `--update`: sync stale files (protects persona_mappings.yaml). With `--update-mappings`: also reset persona_mappings.yaml. `--update-mappings` requires `--update`. |
 | personas-show | --project | --phase --doc-type --format {text,json} | persona assignments table (phase → doctype → persona list) |
 | personas-set | --project --phase --doc-type --personas | none | update persona list for a phase+doctype, validate persona files exist |
 | personas-diff | --project | --format {text,json} | comparison of project persona mappings vs framework defaults |
@@ -221,6 +221,10 @@ mcp init --project /path/to/project --update
 # Also reset persona_mappings.yaml to framework defaults
 mcp init --project /path/to/project --update --update-mappings
 
+# Invalid: --update-mappings requires --update
+mcp init --project /path/to/project --update-mappings
+# Returns exit code 2 with: "init failed: --update-mappings requires --update"
+
 # Assemble LLM creation prompt for a BRD (personas resolved from persona_mappings.yaml)
 mcp create-build --project /path/to/project --doc-type brd \
   --layer 01_BRD --template UCC_PROMPT_BRD_PROJECT.md
@@ -264,12 +268,14 @@ mcp review --project /path/to/project --personas architect auditor chairperson -
 # Stage 4 — Remediation plan against _validated copy
 mcp remediate --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
+  --executor api/claude-sonnet \
   --review-report /path/to/external_review_report.md
 # → BRD-01.ucx.remediate.json/.txt
 
 # Stage 5 — Produce versioned remediated copy
 mcp remediate --fix --project /path/to/project --doc-type brd --layer 01_BRD \
   --document /path/to/docs/01_BRD/BRD-01_platform/ \
+  --executor api/claude-sonnet \
   --remediation-report /path/to/remediation_report.json
 # → BRD-01.ucx.remediate_fix.json/.txt + BRD-01_platform_remediate_v1.md
 ```

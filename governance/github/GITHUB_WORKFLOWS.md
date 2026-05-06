@@ -12,8 +12,13 @@ Complete reference for all GitHub Actions workflows in the {PROJECT_NAME} projec
 Operational routing model for these workflows:
 
 - Hermes handles observability triage, issue creation/prioritization, and lifecycle governance decisions.
-- Execution agents handle autonomous implementation/deployment only for issues in `ai:ready`.
+- Execution agents handle autonomous implementation/deployment only for planning-approved issues in `ai:ready`.
 - Post-deployment validation and closure decisions route back to Hermes.
+
+Planning-first gate for workflow routing:
+
+- Issues routed into `ai:ready` must include planning roadmap, planning index, changelog plan, and approved IPLAN references.
+- Dispatch workflows must reject or de-queue issues that fail planning-first checks.
 
 PR governance model:
 
@@ -30,7 +35,7 @@ PR governance model:
 | [PR Merge Cleanup](#pr-merge-cleanup-workflow) | `pr-merge-cleanup.yml` | PR closed | Set PR board status to Done |
 | [Phase Transition](#phase-transition-workflow) | `phase-transition.yml` | Manual dispatch | Bulk phase status transitions |
 | [AI PR Review](#ai-pr-review-workflow) | `ai-review.yml` | PR opened/synced/ready + workflow_call | Unified AI code review ({AI_TOOL_NAME} Code CLI) |
-| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch approved issues to execution agents |
+| [Agent Dispatch](#agent-dispatch-workflow) | `agent-dispatch.yml` | Issue labeled `ai:ready` | Dispatch planning-approved `ai:ready` issues to execution agents |
 | [Deploy to Dev](#deploy-to-dev-workflow) | `deploy-dev.yml` | Phase complete | Phase-gated dev deployment with smoke tests  |
 | [Check All Phases Dev](#check-all-phases-dev-workflow) | `check-all-phases-dev.yml` | After dev deploy | Check if all phases dev_deployed, trigger staging  |
 | ~~Deploy PR Environment~~ | `deploy-dev-pr.yml.disabled` | — | **DEPRECATED**  |
@@ -120,7 +125,7 @@ This diagram shows how workflows trigger each other and their dependencies:
                                                                               
          FAIL  create-bug-issue.yml                                      
                                                                               
-                            iteration < 3 → Create bug issue (ai:ready)     
+                            iteration < 3 → Create bug issue (ai:ready candidate)     
                                                                               
                             iteration ≥ 3 → Create escalation (needs-human) 
                                                                                
@@ -161,7 +166,7 @@ This diagram shows how workflows trigger each other and their dependencies:
 | `create-bug-issue.yml` | `execute-qa-testing.yml` | — |
 | `deploy-prod.yml` | Staging verified, 2 approvers | — |
 | `rollback-prod.yml` | Production deployed | — |
-| `agent-dispatch.yml` | Issue labeled `ai:ready` | — |
+| `agent-dispatch.yml` | Issue labeled `ai:ready` and planning-first checks pass | — |
 | `phase-transition.yml` | — | — |
 
 ### Critical Paths
@@ -731,7 +736,7 @@ Full test suite runs against staging (not cumulative per-phase):
 pytest tests/acceptance --base-url=${STAGING_URL} -n auto --timeout=300
 ```
 
-Test failures create regression issues with label `ai:ready` for execution-agent remediation.
+Test failures create regression issues with label `ai:ready` candidates; planning-first validation must pass before execution-agent dispatch.
 
 ### Required Secrets
 
@@ -958,9 +963,16 @@ The following workflows implement the AI-first phase-gated deployment model with
 | Setting | Value |
 |:--------|:------|
 | Trigger | Issue labeled `ai:ready` |
-| Purpose | Transition issue to `ai:in-progress`, notify execution agents |
+| Purpose | Validate planning-first readiness, then transition issue to `ai:in-progress` and notify execution agents |
 
-**Steps**: Validate issue, change label, update board status, post to Teams.
+**Steps**: Validate planning-first issue readiness, change label, update board status, post to Teams.
+
+Minimum planning-first checks before dispatch:
+
+- planning roadmap reference exists
+- planning index reference exists
+- changelog plan reference exists
+- approved IPLAN reference exists
 
 ---
 
@@ -1107,7 +1119,7 @@ DEV Deployment Complete
 
 **Iteration Limit**: Max 3 attempts. After 3 failures, creates `needs-human` escalation issue.
 
-**Created Issue**: `[P{phase}-Bug-{task}]` with labels `phase:N`, `ai:development`, `bug`, `iteration:N`, `ai:ready`.
+**Created Issue**: `[P{phase}-Bug-{task}]` with labels `phase:N`, `ai:development`, `bug`, `iteration:N`, `ai:ready` candidate (must pass planning-first validation before dispatch).
 
 ---
 
@@ -1466,6 +1478,7 @@ With the safe pattern, the title is stored in an environment variable and proper
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 6.2 | {DATE} | Aligned workflow documentation to planning-first governance: dispatch now requires planning package references and approved IPLAN before execution. Updated Agent Dispatch and bug-issue routing language to `ai:ready` candidate semantics until checks pass. |
 | 6.1 | {DATE} | **Security Hardening**: Fixed shell injection vulnerabilities across 7 workflows by moving inline `${{ }}` expressions to `env:` blocks. Added Security Patterns section with risk classification, safe/unsafe code examples, and troubleshooting table. Updated: auto-add-to-project.yml, issue-label-sync.yml, create-bug-issue.yml, create-deployment-issue.yml, pr-merge-cleanup.yml, agent-dispatch.yml, phase-transition.yml. |
 | 6.0 | {DATE} | Added governance automation workflows: pr-issue-link.yml, verify-acceptance.yml, staging-signoff.yml, sync-tasks.yml, validate-governance.yml, validate-config.yml. Added AI Agent Memory System integration. Updated agent-dispatch.yml with IPLAN-015 improvements (paginated GraphQL, conventional commits, anchored patterns). |
 | 5.0 | {DATE} | Phase-gated unified deployment model. Added `deploy-dev.yml` (phase-gated with smoke tests), `check-all-phases-dev.yml` (staging gate). Updated `deploy-staging.yml` to accept `image_tag` instead of `phase`. Deprecated `deploy-dev-pr.yml` and `cleanup-pr-env.yml` (per-PR deployments removed). Added `smoke_test.sh` and `update_staging_tracking.py` scripts. |

@@ -4,7 +4,7 @@ Exposes 26 tools over stdio transport:
   - 2 session management (set/get project)
   - 18 deterministic (validation, scoring, consistency, link validation, etc.)
   - 2 orchestration (pipeline, next-action advisor)
-  - 4 prompt assembly/artifact tools (executor parameter retained and ignored)
+  - 4 LLM-integrated tools using API executors via LiteLLM
 
 Launch: python -m mcp_server.server
 """

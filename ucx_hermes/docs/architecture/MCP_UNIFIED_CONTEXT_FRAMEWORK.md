@@ -26,7 +26,7 @@ Implementation complexity: 3/5.
 | --- | --- | --- |
 | Context Engine | Active | Per-project personas, prompts, templates, layer assets |
 | Deterministic QA | Active | Validators, scoring, consistency checks, link validation |
-| Executor Registry | Active | Pluggable AI agents: Claude, Gemini, Codex, OpenRouter via CLI and API executors |
+| Executor Registry | Active | API executor registry via LiteLLM-compatible providers (OpenAI, Anthropic, Google, OpenRouter) |
 | Workflows/Pipelines | Planned | Chained agent tasks for continuous development and automated bug fixing |
 
 ---
@@ -40,7 +40,7 @@ In scope:
 - schema-governed JSON/TXT artifact generation under `.ucx/<stage>`
 - operator runbook and policy controls under `mcp/docs`
 - per-project context assembly for any AI agent (agent-agnostic prompt delivery)
-- pluggable executor registry for CLI and API agents
+- pluggable API executor registry for LiteLLM-compatible providers
 
 Out of scope:
 
@@ -169,16 +169,11 @@ During review, document sections are categorized (functional, compliance, risk, 
 
 ### 4.4 Executor Integration
 
-UCX's executor registry remains available for environment and compatibility
-management. In `ucx_hermes` v2.0.0+, document-critical SDD tools do not spawn
-AI executors. Assembled prompts are consumed by Hermes or another approved
-agent workflow outside MCP dispatch:
+UCX's executor registry is API-only and used by runtime flows that require
+LLM calls through LiteLLM providers. CLI executors are not supported.
 
-- **CLI executors**: External tools registered for compatibility and non-document-critical workflows.
-- **API executors**: LLM providers registered for compatibility and non-document-critical workflows.
-
-For document-critical tools, passing `executor` is deprecated and ignored.
-These tools return deterministic reports, prompts, or fix instructions.
+For document-critical tools, executor usage is explicit per tool contract.
+Deterministic stages continue to return reports/prompts/fix instructions.
 
 Non-MCP agents access UCX via CLI parity: every MCP tool has a CLI equivalent (`python -m mcp_server.cli.main <command>`), so agents without MCP support can still use the context engine.
 

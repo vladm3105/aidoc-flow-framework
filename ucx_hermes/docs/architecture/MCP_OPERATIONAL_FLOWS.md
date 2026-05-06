@@ -3,14 +3,15 @@
 | Field | Value |
 | --- | --- |
 | Status | Active |
-| Version | 2.2 |
-| Date | 2026-05-04 |
+| Version | 2.3 |
+| Date | 2026-05-06 |
 | Scope | End-to-end command execution flows for implemented MCP CLI operations |
 
 ---
 
 ## 1. Flow Set
 
+- planning-first governance flow: analyze sources -> roadmap -> planning-index and changelog plan -> gap review and closure -> per-document IPLAN -> plan approval
 - project initialization flow: `init` -> `create-build`
 - document lifecycle flow (5 stages): `create` -> `validate` -> `review` -> `remediate` -> `remediate --fix`
 - pull-request governance flow (up to 2 rounds): `validate` -> `review` -> `remediate` -> post-remediation `validate` -> Hermes final blocker-gap check
@@ -20,7 +21,68 @@
 
 ---
 
-## 2. Project Initialization Flow
+## 2. Planning-First Governance Flow
+
+This flow runs before project initialization and before any document creation stage.
+
+### Stage 0A - Analyze Provided Information
+
+Required inputs:
+
+- user-provided source artifacts
+- project constraints and scope boundaries
+- upstream layer dependencies
+
+Required outputs:
+
+- documented assumptions
+- dependency inventory
+- candidate document inventory for the target layer
+
+### Stage 0B - Create Layer Roadmap Package
+
+Required roadmap package artifacts:
+
+| Artifact | Purpose |
+| --- | --- |
+| Layer roadmap | Define sequencing, dependencies, milestones, and entry criteria for the target layer |
+| Layer planning index | Enumerate required planning documents for the layer |
+| Layer changelog plan | Define how changes for this layer are tracked and released |
+
+### Stage 0C - Review Roadmap and Planning Index for Gaps
+
+Required checks:
+
+- missing planning artifacts
+- missing dependency coverage
+- missing traceability tags and references
+- missing acceptance criteria for planned outputs
+
+Resolution rules:
+
+- fix identified gaps before proceeding
+- if gap closure is deferred, record explicit rationale, owner, and follow-up trigger
+
+### Stage 0D - Create and Review Per-Document Implementation Plans
+
+Required for each planned target document:
+
+1. Create an implementation plan (IPLAN).
+2. Review the plan for structural and dependency gaps.
+3. Resolve or defer gaps with documented rationale.
+4. Record explicit plan approval.
+
+Approval rule:
+
+- Approval authority is a human reviewer or an independent LLM-as-judge session started from a fresh context.
+
+Hard gate:
+
+- No document creation, test implementation, or source-code implementation starts before plan approval.
+
+---
+
+## 3. Project Initialization Flow
 
 This flow runs once per project to create the project-specific UCX scaffold that all subsequent document lifecycle commands depend on.
 
@@ -51,7 +113,8 @@ This flow runs once per project to create the project-specific UCX scaffold that
 
 **Update mode** (`--update`):
 - Overwrites stale templates and prompts with latest framework versions.
-- `persona_mappings.yaml` is protected (project-owned after init). Use `--update-mappings` to explicitly reset it.
+- `persona_mappings.yaml` is protected (project-owned after init). Use `--update --update-mappings` to explicitly reset it.
+- `--update-mappings` without `--update` is invalid and fails command validation.
 - Content-identical files are skipped (no unnecessary writes).
 - Result reports `created_paths`, `skipped_paths`, `updated_paths`, `protected_paths`.
 
@@ -155,7 +218,7 @@ The `init` command must be run before any `create-build` or `create` command. It
 
 ---
 
-## 3. Document Lifecycle Flow
+## 4. Document Lifecycle Flow
 
 This flow applies uniformly to active SSD v3.2 layers (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN).
 
@@ -258,18 +321,18 @@ Each stage reads from the previous stage's output artifact. The source document 
 - `processing_stage: remediated` in derived copy metadata.
 - `derived_from: TYPE-NN_{slug}_validated.md` in derived copy metadata.
 
-**Remediation guidance (v2.0+)**:
+**Remediation guidance (UCX V3 / v2.0+)**:
 - Findings are grouped by priority phase: Phase 1 (P0 critical), Phase 2 (P1 high), Phase 3 (P2 enhancements).
-- `sdd_remediate` returns deterministic findings and fix instructions for agent- or human-applied edits.
-- `sdd_remediate` does not auto-run an executor for document rewriting in the canonical safe workflow.
+- `sdd_remediate` returns deterministic findings/fix artifacts and API executor apply-stage output.
+- Use API executor names for remediation apply stages; legacy CLI executor names are unsupported.
 
-**Post-fix quality checks (v2.0+)**:
+**Post-fix quality checks (UCX V3 / v2.0+)**:
 - Re-run `sdd_validate` after remediation to confirm deterministic compliance and prevent regression.
 - In governed PR pipelines, a Hermes final blocker-gap/inconsistency check runs after post-remediation validation.
 
 ---
 
-## 4. Artifact Lineage and Naming
+## 5. Artifact Lineage and Naming
 
 ### Canonical Artifact Set (per document folder)
 
@@ -318,9 +381,9 @@ When `--document` points to a folder, MCP applies the following resolution rules
 
 ---
 
-## 5. Diagnostics Flow
+## 6. Diagnostics Flow
 
-### 5.1 Readiness and lineage checks
+### 6.1 Readiness and lineage checks
 
 1. Execute `preflight` before create, review, or remediation stages when environment or provider readiness must be verified.
 2. Inspect `probe_status`, `probe_fallback_used`, and `probe_fallback_reason` when a probe payload is present.
@@ -332,7 +395,7 @@ Outputs:
 - preflight report: `preflight_report.json`, `preflight_report.txt`
 - consistency report: `consistency_report.json`, `consistency_report.txt`
 
-### 5.2 Prescreen, scan, and scoring
+### 6.2 Prescreen, scan, and scoring
 
 1. Execute `prescreen` to identify high-priority candidate files.
 2. Execute `scan` on JSON report files to extract finding-category counts.
@@ -346,27 +409,28 @@ Outputs:
 
 ---
 
-## 6. PR Governance Flow (Hermes Default)
+## 7. PR Governance Flow (Hermes Default)
 
 Hermes is the default AI agent orchestrating issue-to-merge governance.
 
-### 6.1 Lifecycle Sequence
+### 7.1 Lifecycle Sequence
 
 1. Define task (human or AI-originated).
-2. Create and prioritize GitHub issue with acceptance criteria and traceability tags.
-3. Perform implementation work on a feature branch.
-4. Submit pull request.
-5. Execute Round 1 gates:
+2. Complete and approve planning-first governance artifacts for the target scope.
+3. Create and prioritize GitHub issue with acceptance criteria and traceability tags.
+4. Perform implementation work on a feature branch.
+5. Submit pull request.
+6. Execute Round 1 gates:
    - `sdd_validate` (deterministic structure and ID/naming checks)
    - `sdd_review` (UCX persona content review)
    - `sdd_remediate` (UCX persona remediation findings and fixes)
    - post-remediation `sdd_validate`
    - Hermes final blocker-gap/inconsistency review (non-deep-content)
-6. If any blocking check fails in Round 1, execute Round 2 with the same sequence.
-7. If Round 2 also fails, escalate to human review and block merge.
-8. On successful merge, close linked GitHub issue(s).
+7. If any blocking check fails in Round 1, execute Round 2 with the same sequence.
+8. If Round 2 also fails, escalate to human review and block merge.
+9. On successful merge, close linked GitHub issue(s).
 
-### 6.2 Merge Gate Conditions
+### 7.2 Merge Gate Conditions
 
 Merge is allowed only when all conditions are true:
 
@@ -379,7 +443,7 @@ Alert channels for escalation and merge-time notifications are implementation-de
 
 ---
 
-## 7. Operational Controls
+## 8. Operational Controls
 
 Validation controls:
 
@@ -402,7 +466,7 @@ Saga mode note:
 
 ---
 
-## 8. Exit Behavior
+## 9. Exit Behavior
 
 | Command Group | Pass | Fail |
 | --- | --- | --- |
@@ -414,7 +478,7 @@ Saga mode note:
 
 ---
 
-## 9. Evidence Commands
+## 10. Evidence Commands
 
 - `pytest ucx_hermes/tests/unit/test_cli_main.py`
 - `pytest ucx_hermes/tests/unit/test_validation_runner.py`

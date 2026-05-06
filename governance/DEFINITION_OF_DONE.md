@@ -15,6 +15,13 @@ This document defines when a task, sprint, or phase is considered **complete**.
 
 Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 
+**Planning-First Governance Package**:
+- [ ] Planning roadmap is created for the target scope
+- [ ] Planning index lists required planning documents
+- [ ] Changelog plan is defined for the target scope
+- [ ] Planning package gap review is complete
+- [ ] Gaps are resolved or explicitly deferred with rationale and owner
+
 **Practical Implementation Review**:
 - [ ] Solution addresses the stated problem directly
 - [ ] Implementation approach is practical and feasible
@@ -33,6 +40,7 @@ Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 **Approval**:
 - [ ] Plan reviewed by at least one other person (or self-review for solo projects)
 - [ ] Plan status updated to "Approved" before implementation starts
+- [ ] Approval record exists for both planning package and IPLAN
 
 > **Reference**: See [plans/README.md](./plans/README.md) for IPLAN lifecycle and templates.
 

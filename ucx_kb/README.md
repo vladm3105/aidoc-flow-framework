@@ -22,6 +22,20 @@ See full setup instructions in `SETUP.md`.
 - Ingest files for semantic retrieval + graph context.
 - Use MCP `kb_*` tools for knowledge queries.
 
+## UCX V3 Governance Integration
+
+Use KB as a companion layer to UCX V3 lifecycle governance, not as gate authority.
+
+- Lifecycle source of truth remains UCX MCP stage outputs.
+- KB retrieval enriches create/review/remediate reasoning.
+- KB writes occur under governance policy after approved implementation evidence.
+
+Hermes skill references:
+
+- `ucx_hermes/skills/hermes/ucx-kb-context/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-kb-maintenance/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-kb-maintenance/KB_GENERAL_RULES.md`
+
 ## Modules
 
 - `rag/` — vector embedding and retrieval

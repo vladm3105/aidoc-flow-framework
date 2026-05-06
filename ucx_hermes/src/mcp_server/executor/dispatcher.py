@@ -1,11 +1,11 @@
-"""Routes executor calls by type (CLI or API)."""
+"""Routes executor calls to API executors."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from .registry import ExecutorConfig, ExecutorType, get_executor
-from .cli_runner import ExecutorResult, run_cli_executor
+from .contracts import ExecutorResult
 from .api_runner import run_api_executor
 from mcp_server.logging_config import log_executor_launch, log_executor_result
 
@@ -20,7 +20,7 @@ async def run_executor(
     project_overrides: dict[str, ExecutorConfig] | None = None,
     generation_params: dict[str, object] | None = None,
 ) -> ExecutorResult:
-    """Dispatch to CLI or API executor based on registry type."""
+    """Dispatch to API executor based on registry type."""
     config = get_executor(name, project_overrides=project_overrides)
 
     start = log_executor_launch(
@@ -30,15 +30,7 @@ async def run_executor(
         timeout=timeout,
     )
 
-    if config.executor_type == ExecutorType.CLI:
-        result = await run_cli_executor(
-            config=config,
-            prompt=prompt,
-            working_dir=working_dir,
-            timeout=timeout,
-            project_env=project_env,
-        )
-    elif config.executor_type == ExecutorType.API:
+    if config.executor_type == ExecutorType.API:
         result = await run_api_executor(
             config=config,
             prompt=prompt,
@@ -50,7 +42,7 @@ async def run_executor(
     else:
         result = ExecutorResult(
             stdout="",
-            stderr=f"Unknown executor type: {config.executor_type}",
+            stderr=f"Unsupported executor type: {config.executor_type}. API executors only.",
             exit_code=-3,
             executor_name=name,
         )

@@ -23,6 +23,15 @@ Knowledge operation modes:
 - **File-only mode**: use direct file reads/search; no DB/MCP runtime.
 - **Indexed mode**: start `ucx_kb` DB + MCP for RAG/Graph retrieval.
 
+Project KB MCP bootstrap (indexed mode only):
+
+1. Ensure project `.mcp.json` includes `project-knowledge-tt-{PROJECT_PREFIX}`.
+2. Initialize project `ucx_kb` runtime (DB services, environment, MCP process).
+3. Verify KB server with preflight calls:
+   - `kb_status`
+   - `kb_graph_status`
+4. If KB is unavailable, continue file-only workflows and UCX lifecycle gates in degraded KB mode.
+
 Do **NOT** invent process rules, naming conventions, or workflow patterns. If a rule is missing from governance docs, flag it to the human reviewer. Do not create ad-hoc rules.
 
 ---
@@ -45,7 +54,7 @@ Do **NOT** invent process rules, naming conventions, or workflow patterns. If a 
 
 - Hermes operates as control plane: triage, planning/governance, and post-deployment validation decisions.
 - Claude Code, Codex, OpenCode, or equivalent agents operate as execution plane: implementation, PR iteration, CI checks, and deployment execution.
-- Observability-driven incidents are triaged by Hermes into GitHub issues; approved issues are moved to `ai:ready` for autonomous execution.
+- Observability-driven incidents are triaged by Hermes into GitHub issues; eligible issues are moved to `ai:ready` for autonomous execution.
 
 ### Repository Architecture
 
@@ -118,14 +127,15 @@ When changing an issue's AI label, **always also update the issue's Status on Pr
 
 ### Issue Processing Workflow (Mandatory)
 
-When picking up a GitHub issue labeled `ai:ready`, follow this **4-phase workflow** before writing any implementation code:
+When picking up a GitHub issue labeled `ai:ready`, follow this **5-phase workflow** before writing any implementation code:
 
 | Phase | Action | Output |
 |:------|:-------|:-------|
 | **1. Issue Analysis** | Read issue body, acceptance criteria, linked issues, related docs, existing code | Full understanding of scope and constraints |
-| **2. Create Plan** | Create `governance/plans/IPLAN-NNN_{slug}.md` with steps, AC mapping, risks | Implementation plan file |
-| **3. Review & Refine** | Re-read plan, identify gaps, verify all ACs are mapped, improve | Refined plan (status: Approved) |
-| **4. Transition** | Execute Pre-Implementation Checklist below | Ready to code |
+| **2. Create Planning Package** | Create roadmap, planning index, and changelog plan for issue scope | Planning package artifacts |
+| **3. Review Planning Gaps** | Re-read planning package, identify missing artifacts/dependencies, resolve or defer with rationale | Gap-reviewed planning package |
+| **4. Create Plan** | Create `governance/plans/IPLAN-NNN_{slug}.md` with steps, AC mapping, risks | Implementation plan file |
+| **5. Review & Approve** | Re-read plan, identify gaps, verify all ACs are mapped, improve, and record explicit approval | Approved plan set |
 
 **Full details**: [GOVERNANCE_RULES.md §3 Issue Processing Workflow](governance/GOVERNANCE_RULES.md#issue-processing-workflow-mandatory)
 
@@ -140,6 +150,7 @@ When picking up a GitHub issue labeled `ai:ready`, follow this **4-phase workflo
 3. **Create branch**: `ai/{issue}-{slug}` from `main`
 
 **Never start implementation while the issue is still labeled `ai:ready`.** The transition to `ai:in-progress` + board "In Progress" is the gate for starting work.
+**Never start implementation before planning package and IPLAN approval are recorded.**
 
 ### Post-PR Checklist (Mandatory)
 
@@ -317,6 +328,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| 2.0 | {DATE} | Updated mandatory Issue Processing Workflow to planning-first 5-phase sequence: analyze -> planning package -> planning gap review -> IPLAN -> approval -> implement |
 | 1.9 | {DATE} | SDD v3.2 in `ucx_flow_v3/` is the active governance baseline |
 | 1.8 | {DATE} | Added mandatory Issue Processing Workflow (4-phase: analyze → plan → review/refine → implement) — AI agents must create IPLAN before coding |
 | 1.7 | {DATE} | Added on-demand AI review note to Post-PR Checklist — conclusion comment + PR label per AI_AGENT_REVIEW_WORKFLOW.md §7d-8 |

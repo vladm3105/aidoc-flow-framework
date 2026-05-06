@@ -3,12 +3,27 @@
 import logging
 import os
 from pathlib import Path
+import re
 
 import psycopg
 
 from .exceptions import RAGUnavailableError
 
 log = logging.getLogger(__name__)
+
+
+_SCHEMA_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def get_rag_schema() -> str:
+    """Get validated RAG schema name from environment."""
+    schema = os.getenv("RAG_SCHEMA", "nexus")
+    if not _SCHEMA_NAME_RE.match(schema):
+        raise RAGUnavailableError(
+            f"Invalid RAG_SCHEMA value: {schema!r}. "
+            "Schema names must match ^[A-Za-z_][A-Za-z0-9_]*$"
+        )
+    return schema
 
 
 def get_database_url() -> str:
@@ -61,12 +76,14 @@ def reset_schema(confirm: bool = False) -> None:
     if not confirm:
         raise ValueError("Must set confirm=True to reset schema")
 
+    schema = get_rag_schema()
+
     try:
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
-                cur.execute("DROP TABLE IF EXISTS nexus.rag_embed_log CASCADE")
-                cur.execute("DROP TABLE IF EXISTS nexus.rag_chunks CASCADE")
-                cur.execute("DROP TABLE IF EXISTS nexus.rag_documents CASCADE")
+                cur.execute(f"DROP TABLE IF EXISTS {schema}.rag_embed_log CASCADE")
+                cur.execute(f"DROP TABLE IF EXISTS {schema}.rag_chunks CASCADE")
+                cur.execute(f"DROP TABLE IF EXISTS {schema}.rag_documents CASCADE")
             conn.commit()
         log.warning("RAG tables dropped")
 
@@ -84,11 +101,13 @@ def verify_schema() -> dict:
         dict with verification results
     """
     results = {
+        "schema": get_rag_schema(),
         "pgvector_enabled": False,
         "schema_exists": False,
         "tables": [],
         "indexes": [],
     }
+    schema = results["schema"]
 
     try:
         with psycopg.connect(get_database_url()) as conn:
@@ -98,23 +117,23 @@ def verify_schema() -> dict:
                 results["pgvector_enabled"] = cur.fetchone() is not None
 
                 # Check schema exists
-                cur.execute("SELECT 1 FROM information_schema.schemata WHERE schema_name = 'nexus'")
+                cur.execute("SELECT 1 FROM information_schema.schemata WHERE schema_name = %s", (schema,))
                 results["schema_exists"] = cur.fetchone() is not None
 
                 # List tables
                 cur.execute("""
                     SELECT table_name
                     FROM information_schema.tables
-                    WHERE table_schema = 'nexus' AND table_name LIKE 'rag_%'
-                """)
+                    WHERE table_schema = %s AND table_name LIKE 'rag_%'
+                """, (schema,))
                 results["tables"] = [row[0] for row in cur.fetchall()]
 
                 # List indexes
                 cur.execute("""
                     SELECT indexname
                     FROM pg_indexes
-                    WHERE schemaname = 'nexus' AND indexname LIKE 'idx_rag_%'
-                """)
+                    WHERE schemaname = %s AND indexname LIKE 'idx_rag_%'
+                """, (schema,))
                 results["indexes"] = [row[0] for row in cur.fetchall()]
 
     except Exception as e:
@@ -138,7 +157,7 @@ def health_check() -> bool:
 def get_db_stats() -> dict | None:
     """Get RAG database statistics (document and chunk counts)."""
     try:
-        schema = os.getenv("RAG_SCHEMA", "nexus")
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute(f"SELECT COUNT(*) FROM {schema}.rag_documents")
@@ -164,11 +183,12 @@ def run_migrations() -> None:
         return
 
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 # Create migrations tracking table if not exists
                 cur.execute("""
-                    CREATE TABLE IF NOT EXISTS nexus.rag_migrations (
+                    CREATE TABLE IF NOT EXISTS """ + schema + """.rag_migrations (
                         id SERIAL PRIMARY KEY,
                         filename VARCHAR(255) NOT NULL UNIQUE,
                         applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -176,7 +196,7 @@ def run_migrations() -> None:
                 """)
 
                 # Get list of applied migrations
-                cur.execute("SELECT filename FROM nexus.rag_migrations")
+                cur.execute(f"SELECT filename FROM {schema}.rag_migrations")
                 applied = {row[0] for row in cur.fetchall()}
 
                 # Find and run pending migrations
@@ -192,7 +212,7 @@ def run_migrations() -> None:
 
                     cur.execute(migration_sql)
                     cur.execute(
-                        "INSERT INTO nexus.rag_migrations (filename) VALUES (%s)",
+                        f"INSERT INTO {schema}.rag_migrations (filename) VALUES (%s)",
                         (migration_file.name,),
                     )
                     log.info(f"Applied migration: {migration_file.name}")
@@ -205,14 +225,15 @@ def run_migrations() -> None:
 def has_hybrid_search() -> bool:
     """Check if hybrid search (full-text) is available."""
     try:
+        schema = get_rag_schema()
         with psycopg.connect(get_database_url()) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT 1 FROM information_schema.columns
-                    WHERE table_schema = 'nexus'
+                    WHERE table_schema = %s
                     AND table_name = 'rag_chunks'
                     AND column_name = 'content_tsv'
-                """)
+                """, (schema,))
                 return cur.fetchone() is not None
     except Exception:
         return False

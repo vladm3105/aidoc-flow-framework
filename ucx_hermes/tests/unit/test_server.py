@@ -20,7 +20,7 @@ from mcp_server.executor.registry import (
     register_executor,
     remove_executor,
 )
-from mcp_server.executor.cli_runner import ExecutorResult
+from mcp_server.executor.contracts import ExecutorResult
 
 
 # ── Tool registry tests ─────────────────────────────────────────────────────
@@ -74,7 +74,7 @@ class TestToolRegistry:
 
     def test_llm_tools_have_executor_param(self):
         llm_tools = ["sdd_create_build", "sdd_create", "sdd_review",
-                      "sdd_validate", "sdd_remediate"]
+                      "sdd_remediate"]
         for tool in TOOLS:
             if tool.name in llm_tools:
                 props = tool.inputSchema.get("properties", {})
@@ -86,8 +86,6 @@ class TestToolRegistry:
         assert "tier1_only" in props
         assert "strict" in props
         assert "format" in props
-        assert "executor" in props
-        assert "timeout" in props
         assert "validation_report" in props
 
     def test_sdd_create_has_target_param(self):
@@ -108,10 +106,10 @@ class TestExecutorRegistry:
     def test_builtin_executors_registered(self):
         executors = list_executors()
         names = {e.name for e in executors}
-        assert "claude" in names
-        assert "codex" in names
-        assert "gemini" in names
-        assert "opencode" in names
+        assert "api/gpt-4o" in names
+        assert "api/claude-sonnet" in names
+        assert "api/gemini-pro" in names
+        assert "api/openrouter" in names
 
     def test_builtin_api_stubs_registered(self):
         executors = list_executors()
@@ -121,10 +119,10 @@ class TestExecutorRegistry:
         assert "api/gemini-pro" in names
 
     def test_get_known_executor(self):
-        config = get_executor("claude")
-        assert config.name == "claude"
-        assert config.executor_type == ExecutorType.CLI
-        assert config.command == "claude"
+        config = get_executor("api/gpt-4o")
+        assert config.name == "api/gpt-4o"
+        assert config.executor_type == ExecutorType.API
+        assert config.model == "gpt-4o"
 
     def test_get_unknown_executor_raises(self):
         with pytest.raises(KeyError, match="Unknown executor"):
@@ -133,22 +131,20 @@ class TestExecutorRegistry:
     def test_register_custom_executor(self):
         config = ExecutorConfig(
             name="test-agent",
-            executor_type=ExecutorType.CLI,
-            command="test-agent",
-            args=["--run"],
-            prompt_mode="positional",
+            executor_type=ExecutorType.API,
+            model="openai/gpt-4o-mini",
         )
         register_executor(config)
         retrieved = get_executor("test-agent")
-        assert retrieved.command == "test-agent"
+        assert retrieved.model == "openai/gpt-4o-mini"
         # Cleanup
         remove_executor("test-agent")
 
     def test_remove_executor(self):
         config = ExecutorConfig(
             name="temp-agent",
-            executor_type=ExecutorType.CLI,
-            command="temp",
+            executor_type=ExecutorType.API,
+            model="openai/gpt-4o-mini",
         )
         register_executor(config)
         remove_executor("temp-agent")
@@ -171,21 +167,21 @@ class TestExecutorRegistry:
         assert config.model == "openrouter/auto"
         assert config.api_key_env == "OPENROUTER_API_KEY"
 
-    def test_copilot_experimental_status(self):
-        config = get_executor("copilot-cli")
-        assert config.status == "experimental"
+    def test_openrouter_executor_is_active(self):
+        config = get_executor("api/openrouter")
+        assert config.status == "active"
 
     def test_load_config_file_old_array_format(self, tmp_path):
         from mcp_server.executor.registry import load_config_file
         config_file = tmp_path / "executors.json"
         config_file.write_text(
-            json.dumps([{"name": "test-old", "executor_type": "cli", "command": "echo"}]),
+            json.dumps([{"name": "test-old", "executor_type": "api", "model": "openai/gpt-4o-mini"}]),
             encoding="utf-8",
         )
         count = load_config_file(config_file)
         assert count == 1
         cfg = get_executor("test-old")
-        assert cfg.command == "echo"
+        assert cfg.model == "openai/gpt-4o-mini"
         remove_executor("test-old")
 
     def test_load_config_file_new_object_format(self, tmp_path):
@@ -196,7 +192,7 @@ class TestExecutorRegistry:
         config_file.write_text(
             json.dumps({
                 "default_project": str(tmp_path),
-                "executors": [{"name": "test-new", "executor_type": "cli", "command": "echo"}],
+                "executors": [{"name": "test-new", "executor_type": "api", "model": "openai/gpt-4o-mini"}],
             }),
             encoding="utf-8",
         )
@@ -204,7 +200,7 @@ class TestExecutorRegistry:
         assert count == 1
         assert pc._config_default_project == tmp_path
         cfg = get_executor("test-new")
-        assert cfg.command == "echo"
+        assert cfg.model == "openai/gpt-4o-mini"
         remove_executor("test-new")
         pc._config_default_project = old_config
 
@@ -221,6 +217,19 @@ class TestExecutorRegistry:
         assert count == 0
         assert pc._config_default_project == tmp_path
         pc._config_default_project = old_config
+
+    def test_load_config_file_skips_legacy_cli_executor(self, tmp_path):
+        from mcp_server.executor.registry import load_config_file
+
+        config_file = tmp_path / "executors.json"
+        config_file.write_text(
+            json.dumps([{"name": "legacy-cli", "executor_type": "cli", "command": "claude"}]),
+            encoding="utf-8",
+        )
+        count = load_config_file(config_file)
+        assert count == 0
+        with pytest.raises(KeyError):
+            get_executor("legacy-cli")
 
 
 # ── Handler tests ────────────────────────────────────────────────────────────
@@ -242,16 +251,14 @@ class TestHandlers:
         payload = json.loads(result[0].text)
         assert "executors" in payload
         names = {e["name"] for e in payload["executors"]}
-        assert "claude" in names
+        assert "api/gpt-4o" in names
 
     def test_sdd_register_executor_via_handler(self):
         result = asyncio.get_event_loop().run_until_complete(
             handle_tool("sdd_register_executor", {
                 "name": "handler-test-agent",
-                "executor_type": "cli",
-                "command": "test",
-                "args": ["--go"],
-                "prompt_mode": "positional",
+                "executor_type": "api",
+                "model": "openai/gpt-4o-mini",
             })
         )
         payload = json.loads(result[0].text)
@@ -312,6 +319,20 @@ sections: []
         )
         payload = json.loads(result[0].text)
         assert "is_valid" in payload
+
+    def test_sdd_init_rejects_update_mappings_without_update(self, tmp_path):
+        result = asyncio.get_event_loop().run_until_complete(
+            handle_tool(
+                "sdd_init",
+                {
+                    "project": str(tmp_path),
+                    "update_mappings": True,
+                },
+            )
+        )
+        payload = json.loads(result[0].text)
+        assert payload.get("passed") is False
+        assert payload.get("error_code") == "InvalidInitParams"
 
 
 # ── Next action advisor tests ────────────────────────────────────────────────
@@ -804,7 +825,7 @@ class TestRemediateExecutorRequired:
         )
         payload = json.loads(result[0].text)
         assert payload.get("passed") is False
-        assert payload.get("error_code") == "ExecutorTypeNotAllowed"
+        assert payload.get("error_code") == "UnknownExecutor"
 
     def test_sdd_review_requires_executor(self, tmp_path):
         from mcp_server.review.runner import ReviewRunResult
@@ -875,7 +896,7 @@ class TestRemediateExecutorRequired:
 
         payload = json.loads(result[0].text)
         assert payload.get("passed") is False
-        assert payload.get("error_code") == "ExecutorTypeNotAllowed"
+        assert payload.get("error_code") == "UnknownExecutor"
 
     def test_review_report_not_saved_with_api_executor(self, tmp_path):
         from mcp_server.review.runner import ReviewRunResult

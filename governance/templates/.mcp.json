@@ -35,6 +35,15 @@
     "playwright-tt-{PROJECT_PREFIX}": {
       "command": "npx",
       "args": ["-y", "@playwright/mcp"]
+    },
+
+    "project-knowledge-tt-{PROJECT_PREFIX}": {
+      "command": "python",
+      "args": ["-m", "ucx_kb.mcp.server"],
+      "cwd": "{UCX_FRAMEWORK_PATH}",
+      "env": {
+        "PYTHONPATH": "{UCX_FRAMEWORK_PATH}"
+      }
     }
   }
 }

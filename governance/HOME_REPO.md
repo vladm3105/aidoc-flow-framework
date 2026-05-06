@@ -29,6 +29,12 @@ The home repo serves as:
 4. **Component Host** — All component source code lives under `components/`
 5. **CI/CD Orchestrator** — Project-level workflows and automation
 
+Planning-first core principle for home-repo operations:
+
+- No document, test, or code execution starts without approved planning artifacts.
+- Required planning artifacts: roadmap, planning index, changelog plan, approved IPLAN.
+- Approval authority can be human reviewer or independent LLM-as-judge session.
+
 > [!IMPORTANT]
 > This is a **monorepo**. All documentation, governance, and component source code live in this single repository.
 
@@ -57,7 +63,7 @@ The home repo serves as:
        pr-merge-cleanup.yml # Set merged PR board status to Done
        phase-transition.yml # Bulk phase status transitions
        ai-review.yml        # Unified AI PR review
-       agent-dispatch.yml           # Dispatch approved issues to execution agents
+       agent-dispatch.yml           # Dispatch ai:ready issues to execution agents
        deploy-dev.yml               # Phase-gated dev deployment
        check-all-phases-dev.yml     # Staging gate (all phases dev_deployed)
        deploy-dev-pr.yml.disabled   # DEPRECATED: Per-PR dev environments
@@ -228,6 +234,14 @@ GH_HOST={GITHUB_HOST} gh issue create \
   --label "component:mcp,P2-medium"
 ```
 
+Before setting `ai:ready`, include planning package references in the issue body:
+
+- planning roadmap
+- planning index
+- changelog plan
+- approved IPLAN
+- plan approval mode (`Human` or `LLM-as-judge`)
+
 ---
 
 ## GitHub Project Integration
@@ -266,7 +280,7 @@ The home repo has **63 labels** organized by category:
 | **Cloud** | `cloud:gcp`, `cloud:aws`, `cloud:azure` |
 | **Cost** | `cost:high-impact`, `cost:optimization` |
 | **Phase** | `phase:1`, `phase:2`, `phase:3` |
-| **AI Workflow (Issues)** | `ai:ready`, `ai:in-progress`, `ai:review-requested` |
+| **AI Workflow (Issues)** | `ai:ready` (planning-approved), `ai:in-progress`, `ai:review-requested` |
 | **AI Review (PRs)** | `ai:review-passed`, `ai:review-failed` |
 
 ---

@@ -8,6 +8,10 @@
 
 > **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
 
+> **UCX V3 Runtime Note**: For active document-layer lifecycle work (BRD->IPLAN), use `ucx_hermes` MCP tools (`sdd-lifecycle`) and Hermes skills in `ucx_hermes/skills/hermes/`. Legacy `UCX/` CLI + `PYTHONPATH` examples in this guide are preserved for backward compatibility and implementation-task workflows.
+
+> **Governance Label Flow**: `ai:ready -> ai:in-progress -> ai:review-requested`.
+
 ---
 
 ## SDD Depth Selection
@@ -21,6 +25,21 @@ This repository provides a **unified SDD framework** with scalable depth. v3 (8 
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team, 6+ months |
 
 The original v2 (14-layer) variant is preserved in `ucx_flow_v3/` for existing projects.
+
+## Hermes Skills (UCX V3)
+
+Runtime Hermes skills for governance and KB:
+
+- `ucx_hermes/skills/hermes/ucx-sdd-bridge/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-github-governance/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-github-deploy-governance/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-kb-context/SKILL.md`
+- `ucx_hermes/skills/hermes/ucx-kb-maintenance/SKILL.md`
+
+KB policy references:
+
+- `ucx_hermes/skills/hermes/ucx-kb-maintenance/KB_GENERAL_RULES.md`
+- `ucx_hermes/skills/hermes/ucx-kb-maintenance/KB_ENTRY_TEMPLATE.md`
 
 ### Key Directories
 

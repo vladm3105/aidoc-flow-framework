@@ -155,6 +155,25 @@ def infer_complexity(criterion: str) -> int:
     return 2  # Default medium
 
 
+def extract_plan_approval_mode(body: str) -> str:
+    """Extract plan approval mode from issue body.
+
+    Allowed values:
+      - Human
+      - LLM-as-judge
+    """
+    explicit = re.search(
+        r'(?im)^(?:[-*]\s*)?(?:plan\s+approval|approval\s+authority|approved\s+by)\s*[:|-]\s*(.+)$',
+        body,
+    )
+    candidate = explicit.group(1).strip() if explicit else body
+    if re.search(r'human', candidate, re.IGNORECASE):
+        return "Human"
+    if re.search(r'llm[- ]?as[- ]?judge|llm[- ]?judge|ai[- ]?judge', candidate, re.IGNORECASE):
+        return "LLM-as-judge"
+    return "Pending"
+
+
 def generate_iplan(
     issue_number: int,
     title: str,
@@ -169,6 +188,7 @@ def generate_iplan(
     criteria = extract_acceptance_criteria(body)
     references = extract_references(body)
     tasks = generate_tasks(criteria)
+    approval_mode = extract_plan_approval_mode(body)
     timestamp = datetime.now().strftime("%Y-%m-%d")
 
     # Build IPLAN content
@@ -185,6 +205,20 @@ def generate_iplan(
         f"| **Created** | {timestamp} |",
         f"| **Author** | @{author} |",
         f"| **AI Agent** | Pending assignment |",
+        f"| **Plan Approval Mode** | {approval_mode} |",
+        f"",
+        f"---",
+        f"",
+        f"## Planning Package",
+        f"",
+        f"| Field | Value |",
+        f"|-------|-------|",
+        f"| Planning Roadmap | Pending |",
+        f"| Planning Index | Pending |",
+        f"| Changelog Plan | Pending |",
+        f"| Plan Approval | {approval_mode} |",
+        f"",
+        f"Planning-first gate: this IPLAN must be reviewed and set to Approved before implementation begins.",
         f"",
         f"---",
         f"",

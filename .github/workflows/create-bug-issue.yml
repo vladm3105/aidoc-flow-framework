@@ -183,7 +183,7 @@ jobs:
             --label "ai:development" \
             --label "bug" \
             --label "iteration:${ITERATION}" \
-            --label "ai:ready" \
+            --label "status:planning" \
             --json number --jq '.number')
           echo "number=${BUG_ISSUE}" >> $GITHUB_OUTPUT
           echo "Created bug issue #${BUG_ISSUE}"

@@ -14,7 +14,7 @@ if str(SRC) not in sys.path:
 
 from mcp_server.prompts import SourceSection  # noqa: E402
 from mcp_server.review.saga_orchestrator import run_project_review_build_saga  # noqa: E402
-from mcp_server.executor.cli_runner import ExecutorResult  # noqa: E402
+from mcp_server.executor.contracts import ExecutorResult  # noqa: E402
 
 
 def _create_project_ucx(root: Path) -> None:

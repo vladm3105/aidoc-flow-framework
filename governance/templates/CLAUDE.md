@@ -38,7 +38,7 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 
 ### Issue Processing Workflow (Mandatory — execute when picking up any `ai:ready` issue)
 
-When processing a GitHub issue, follow this 4-phase workflow **before writing any implementation code**:
+When processing a GitHub issue, follow this 5-phase workflow **before writing any implementation code**:
 
 ```
 Phase 1: Issue Analysis
@@ -47,19 +47,31 @@ Phase 1: Issue Analysis
    Read related governance docs, ADRs, specs
    Review existing code that will be modified
 
-Phase 2: Create Implementation Plan
+Phase 2: Create Planning Package
+   Create planning roadmap for issue scope
+   Create planning index listing required plan artifacts
+   Define changelog plan for issue scope
+
+Phase 3: Review Planning Gaps
+   Re-read planning package as if seeing it for the first time
+   Identify gaps: missing artifacts, dependencies, unclear actions
+   Resolve gaps or defer with explicit rationale
+
+Phase 4: Create Implementation Plan
    Create: governance/plans/IPLAN-NNN_{slug}.md
    Document: scope, steps, acceptance criteria mapping
    Include: risks, edge cases, testing approach
 
-Phase 3: Review & Refine Plan
+Phase 5: Review & Refine Plan
    Re-read plan as if seeing it for the first time
    Identify gaps: missing steps, unclear actions
    Verify: every acceptance criterion has a mapped step
    Update plan with improvements
 
-Phase 4: Transition to Implementation
-   Execute Pre-Implementation Checklist below
+   Record explicit plan approval (human reviewer or independent LLM-as-judge session)
+
+Transition to Implementation
+   Execute Pre-Implementation Checklist below only after approval
 ```
 
 **Full details**: See [GOVERNANCE_RULES.md §3 Issue Processing Workflow](governance/GOVERNANCE_RULES.md#issue-processing-workflow-mandatory)
@@ -73,6 +85,7 @@ Do all of these steps in sequence, in the same turn, before any code changes:
 3. **Create branch**: `ai/{issue}-{slug}` from `main`
 
 **Never start implementation while the issue is still labeled `ai:ready`.** The transition to `ai:in-progress` + board "In Progress" is the gate for starting work.
+**Never transition to implementation before the planning package and IPLAN are approved.**
 
 ### Post-PR Checklist (Mandatory — execute immediately after `gh pr create`)
 
@@ -117,8 +130,15 @@ Do all of these steps in sequence, in the same turn, right after creating a PR:
 | `postgres` | PostgreSQL database |
 | `sqlite` | SQLite local database |
 | `playwright` | Browser automation |
+| `project-knowledge-tt-{PROJECT_PREFIX}` | UCX KB retrieval/graph tools (enabled when project initializes `ucx_kb`) |
 | `aws` | AWS access |
 | `teams` | Microsoft Teams |
+
+`project-knowledge-tt-{PROJECT_PREFIX}` usage contract:
+
+- Register by default from project template.
+- Activate indexed KB flows only after project-level `ucx_kb` initialization is complete.
+- If unavailable, continue file-only workflows and lifecycle gates.
 
 ## Project Context
 

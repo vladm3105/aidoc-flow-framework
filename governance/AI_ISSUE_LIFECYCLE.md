@@ -14,18 +14,20 @@
 
 ## Development Lifecycle
 
-1. Human/automation marks issue `ai:ready`
-2. AI performs analysis and creates IPLAN
-3. AI sets `ai:in-progress`, implements, opens PR
-4. Round 1 PR gates execute: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap check
-5. If Round 1 fails, Round 2 executes with same gates
-6. If Round 2 fails, Hermes escalates to human review and blocks merge
-7. If gates pass, PR merges and linked issue transitions to done
+1. Human/automation marks issue `ai:ready`.
+2. AI performs analysis and produces planning artifacts (roadmap, planning index, changelog plan).
+3. AI reviews planning artifacts for gaps and resolves or defers with explicit rationale.
+4. AI creates and refines IPLAN, then records explicit approval.
+5. AI sets `ai:in-progress`, implements according to approved plans, and opens PR.
+6. Round 1 PR gates execute: `sdd_validate` -> `sdd_review` -> `sdd_remediate` -> post-remediation `sdd_validate` -> Hermes final blocker-gap check.
+7. If Round 1 fails, Round 2 executes with same gates.
+8. If Round 2 fails, Hermes escalates to human review and blocks merge.
+9. If gates pass, PR merges and linked issue transitions to done.
 
 ## Control-Plane / Execution-Plane Split
 
 1. Hermes (control plane) owns triage, planning decisions, and lifecycle governance.
-2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) own implementation, PR submission, and deployment execution for approved issues.
+2. Execution agents (Claude Code, Codex, OpenCode, or equivalent) own implementation, PR submission, and deployment execution for issues in `ai:ready`.
 3. Hermes owns round-based PR governance, merge-time escalation decisions, post-deployment verification, and closure decisions.
 
 ## Deployment and QA Loop

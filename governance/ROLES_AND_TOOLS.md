@@ -13,7 +13,7 @@ This document defines the roles, responsibilities, and tools used by **humans** 
 Control-plane and execution-plane model:
 
 - Hermes is the human-in-loop control plane for issue triage, planning governance, and post-deployment validation decisions.
-- Claude Code, Codex, OpenCode, or equivalent agents are execution-plane workers for approved issue implementation and delivery.
+- Claude Code, Codex, OpenCode, or equivalent agents are execution-plane workers for implementation and delivery of issues in `ai:ready`.
 
 ---
 
@@ -218,7 +218,7 @@ Control-plane and execution-plane model:
 | UCX MCP (`sdd-lifecycle`) | Full | BRD->IPLAN orchestration and governance checks |
 
 **Handoff Contract**:
-- Hermes routes only approved issues to `ai:ready`.
+- Hermes routes eligible issues into `ai:ready` after governance conditions are satisfied.
 - Execution agents process `ai:ready` issues autonomously through implementation and PR submission.
 - Hermes controls round-based PR gating, escalation decisions, and post-deployment closure.
 

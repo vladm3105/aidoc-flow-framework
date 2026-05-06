@@ -15,20 +15,20 @@ This guide describes the workflow for developing GitHub Issues within the govern
 ## Workflow Overview
 
 ```
-Task Defined -> Issue Created -> Work -> PR -> Round 1 Gates -> Round 2 (if needed) -> Escalate or Merge -> Deploy Verify
-    │               │             │      │      │                    │                   │              │
-    ▼               ▼             ▼      ▼      ▼                    ▼                   ▼              ▼
-Hermes/        Hermes adds   Execution  CI   sdd_validate ->     Repeat same       Human review     Hermes reviews
-Human source   traceability   agent fix     sdd_review ->        sequence on        if Round 2      post-deploy
-                                + PR        sdd_remediate ->     Round 1 fail       fails           evidence
-                                            validate -> Hermes
-                                            final blocker-gap
+Task Defined -> Issue Created -> Planning Package -> Plan Review/Gap Fix -> Approved IPLAN -> Work -> PR -> Round 1 Gates -> Round 2 (if needed) -> Escalate or Merge -> Deploy Verify
+    │               │                │                    │                 │             │      │      │                    │                   │              │
+    ▼               ▼                ▼                    ▼                 ▼             ▼      ▼      ▼                    ▼                   ▼              ▼
+Hermes/        Hermes adds      Hermes creates       Hermes closes      Hermes records  Execution  CI   sdd_validate ->     Repeat same       Human review     Hermes reviews
+Human source   traceability      roadmap/index/      planning gaps      plan approval   agent fix     sdd_review ->        sequence on        if Round 2      post-deploy
+                                 changelog plan                          and IPLAN       + PR        sdd_remediate ->     Round 1 fail       fails           evidence
+                                                                                                    validate -> Hermes
+                                                                                                    final blocker-gap
 ```
 
 Execution scope for this guide:
 
 - Hermes manages issue triage, planning boundaries, and lifecycle governance gates.
-- Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform implementation and deployment steps for approved issues.
+- Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform implementation and deployment steps for issues in `ai:ready`.
 
 ---
 
@@ -49,7 +49,14 @@ When an issue is assigned (label: `ai:ready` or manual assignment):
    - [ ] Required dependencies are available
    - [ ] Acceptance criteria are clear and testable
 
-3. **Update status**:
+3. **Planning gate check**:
+   - [ ] Planning roadmap exists for issue scope
+   - [ ] Planning index exists for required plan artifacts
+   - [ ] Changelog plan exists for issue scope
+   - [ ] Planning gap review completed (resolved or deferred with rationale)
+   - [ ] IPLAN exists and is explicitly approved
+
+4. **Update status**:
    - Add label: `ai:in-progress`
    - Update project board status
 
@@ -72,6 +79,16 @@ Before starting work:
 
 Before writing code, validate the approach:
 
+### Planning-First Requirement
+
+Before implementation starts, complete this sequence:
+
+1. Create planning roadmap for issue scope.
+2. Create planning index listing required plan documents.
+3. Define changelog plan for issue scope.
+4. Run planning gap review and resolve or defer gaps with explicit rationale.
+5. Create and approve IPLAN.
+
 ### Practical Review Questions
 
 | Question | Purpose |
@@ -90,22 +107,17 @@ Before writing code, validate the approach:
 - [ ] Edge cases identified
 - [ ] Error handling approach defined
 
-### When to Create IPLAN
+### IPLAN Requirement
 
-Create an IPLAN document (`plans/IPLAN-NNN_{slug}.md`) when:
-
-| Trigger | Example |
-|:--------|:--------|
-| Multiple related issues | Issue affects 3+ files across components |
-| Technical investigation needed | Spike required before implementation |
-| Dependency changes | Implementation order needs adjustment |
-| Cross-phase coordination | Changes affect multiple phases |
+Create an IPLAN document (`plans/IPLAN-NNN_{slug}.md`) for every `ai:ready` issue before implementation.
 
 > **Reference**: See [plans/README.md](./plans/README.md) for IPLAN template.
 
 ---
 
 ## Step 3: Implement
+
+Gate condition: start this step only after planning artifacts and IPLAN are approved.
 
 ### Create Branch
 

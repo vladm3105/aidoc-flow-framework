@@ -12,7 +12,7 @@ import logging
 import os
 
 from .registry import ExecutorConfig
-from .cli_runner import ExecutorResult
+from .contracts import ExecutorResult
 
 logger = logging.getLogger(__name__)
 

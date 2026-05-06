@@ -1,4 +1,4 @@
-"""Open executor registry for CLI and API agents.
+"""Open executor registry for API agents.
 
 Ships with built-in executors. Accepts new ones at runtime via
 register_executor() or via executors.json config file at server startup.
@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
@@ -16,21 +16,16 @@ logger = logging.getLogger(__name__)
 
 
 class ExecutorType(str, Enum):
-    CLI = "cli"
     API = "api"
 
 
 @dataclass
 class ExecutorConfig:
-    """Configuration for a CLI or API executor."""
+    """Configuration for an API executor."""
 
     name: str
     executor_type: ExecutorType
-    # CLI fields
-    command: str = ""
-    args: list[str] = field(default_factory=list)
-    prompt_mode: str = ""  # deprecated — all executors now use positional
-    # API fields (stub for v0.1.0)
+    # API fields
     model: str = ""
     api_base: str = ""
     api_key_env: str = ""
@@ -39,35 +34,6 @@ class ExecutorConfig:
     timeout: int = 300
     env: dict[str, str] | None = None
 
-
-BUILTIN_CLI_EXECUTORS: dict[str, dict] = {
-    "claude": {
-        "command": "claude",
-        "args": [
-            "-p",
-            "--output-format", "json",
-            "--verbose",
-            "--dangerously-skip-permissions",
-        ],
-    },
-    "codex": {
-        "command": "codex",
-        "args": ["exec", "--full-auto"],
-    },
-    "gemini": {
-        "command": "gemini",
-        "args": [],
-    },
-    "opencode": {
-        "command": "opencode",
-        "args": ["run"],
-    },
-    "copilot-cli": {
-        "command": "gh",
-        "args": ["copilot"],
-        "status": "experimental",
-    },
-}
 
 BUILTIN_API_EXECUTORS: dict[str, dict] = {
     "api/gpt-4o": {
@@ -91,13 +57,31 @@ BUILTIN_API_EXECUTORS: dict[str, dict] = {
 _registry: dict[str, ExecutorConfig] = {}
 
 
+def _resolve_executor_type(raw_entry: dict, *, source_label: str) -> ExecutorType | None:
+    """Resolve executor type, skipping unsupported legacy entries safely."""
+    raw_value = str(raw_entry.get("executor_type", "api")).strip().lower()
+    if raw_value == "api":
+        return ExecutorType.API
+    if raw_value == "cli":
+        logger.warning(
+            "%s executor '%s' uses deprecated executor_type='cli' and was skipped (API-only runtime).",
+            source_label,
+            raw_entry.get("name", "<unknown>"),
+        )
+        return None
+    logger.warning(
+        "%s executor '%s' has unsupported executor_type='%s' and was skipped.",
+        source_label,
+        raw_entry.get("name", "<unknown>"),
+        raw_value,
+    )
+    return None
+
+
 def _build_config(name: str, raw: dict, executor_type: ExecutorType) -> ExecutorConfig:
     return ExecutorConfig(
         name=name,
         executor_type=executor_type,
-        command=raw.get("command", ""),
-        args=raw.get("args", []),
-        prompt_mode=raw.get("prompt_mode", ""),
         model=raw.get("model", ""),
         api_base=raw.get("api_base", ""),
         api_key_env=raw.get("api_key_env", ""),
@@ -108,8 +92,6 @@ def _build_config(name: str, raw: dict, executor_type: ExecutorType) -> Executor
 
 
 def _init_builtins() -> None:
-    for name, raw in BUILTIN_CLI_EXECUTORS.items():
-        _registry[name] = _build_config(name, raw, ExecutorType.CLI)
     for name, raw in BUILTIN_API_EXECUTORS.items():
         _registry[name] = _build_config(name, raw, ExecutorType.API)
 
@@ -151,7 +133,9 @@ def load_config_file(path: Path) -> int:
         if not isinstance(entry, dict) or "name" not in entry:
             continue
         name = entry["name"]
-        exec_type = ExecutorType(entry.get("executor_type", "cli"))
+        exec_type = _resolve_executor_type(entry, source_label="Global config")
+        if exec_type is None:
+            continue
         _registry[name] = _build_config(name, entry, exec_type)
         count += 1
         logger.info("Loaded executor from config: %s (%s)", name, exec_type.value)
@@ -195,7 +179,9 @@ def load_project_executor_config(project_root: Path) -> dict[str, ExecutorConfig
         if not isinstance(entry, dict) or "name" not in entry:
             continue
         ename = entry["name"]
-        exec_type = ExecutorType(entry.get("executor_type", "cli"))
+        exec_type = _resolve_executor_type(entry, source_label=f"Project config at {project_config}")
+        if exec_type is None:
+            continue
         result[ename] = _build_config(ename, entry, exec_type)
         logger.info("Loaded project executor override: %s (%s)", ename, exec_type.value)
     return result

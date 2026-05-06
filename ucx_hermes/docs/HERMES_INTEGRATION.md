@@ -2,10 +2,13 @@
 
 ## What Changed
 
-The UCX MCP server (`ucx_hermes`) has been patched to remove AI executor delegation
-from document-critical tools. Previously, `sdd_review`, `sdd_remediate`,
-`sdd_validate` (fix path), and `sdd_create_build` would spawn stateless CLI or
-API AI agents to rewrite documents. This caused:
+The UCX MCP server (`ucx_hermes`) now enforces an API-only executor model
+for LLM-enabled stages through LiteLLM. Deterministic stages do not invoke
+executors. Legacy CLI executor paths are unsupported.
+
+Previously, `sdd_review`, `sdd_remediate`, `sdd_validate` (fix path), and
+`sdd_create_build` could be routed through stateless executor workflows that
+caused:
 
 - **Context loss**: Each tool call spawned a fresh agent with no memory
 - **Unverified rewrites**: AI output was written to files without structural validation
@@ -17,16 +20,16 @@ API AI agents to rewrite documents. This caused:
 
 | Tool | Before | After |
 |------|--------|-------|
-| `sdd_validate` (fix path) | Spawned executor to auto-fix derived copy | Returns fix report text only; no AI rewrite |
-| `sdd_create_build` | Spawned executor to generate content from template | Returns creation prompt and template; no AI generation |
-| `sdd_review` | Spawned executor to perform multi-persona review | Returns assembled review prompt_text; Hermes/human performs review |
-| `sdd_remediate` | Spawned executor to apply fixes to derived copy | Returns deterministic findings and fix instructions; no AI rewrite |
+| `sdd_validate` (fix path) | Optional executor argument in legacy flows | Deterministic validation/fix artifacts; no executor path |
+| `sdd_create_build` | Optional executor argument in legacy flows | Deterministic prompt/template assembly |
+| `sdd_review` | Mixed CLI/API executor routing | API-only executor routing via LiteLLM |
+| `sdd_remediate` | Mixed CLI/API executor routing | API-only executor routing via LiteLLM + deterministic findings/fix artifacts |
 
 ### What still works
 
-- `sdd_validate` without `executor` — 100% deterministic structural validation
+- `sdd_validate` — 100% deterministic structural validation
 - `sdd_next_action` — folder inspection and stage recommendation
-- `sdd_run_lifecycle` — pipeline orchestration (safe if no executor stages)
+- `sdd_run_lifecycle` — pipeline orchestration with API executor usage for LLM stages
 - All scoring, scanning, consistency, link validation, preflight tools
 
 ## Architecture: Hermes + UCX
@@ -43,8 +46,8 @@ Hermes Agent (stateful, conversational, memory)
       v
 UCX MCP Server (deterministic, rule-based)
       |-- sdd_validate: regex + YAML schema + template matching
-      |-- sdd_review: prompt assembler (no executor)
-      |-- sdd_remediate: finding generator (no executor)
+      |-- sdd_review: prompt assembly + API executor stage
+      |-- sdd_remediate: deterministic findings + fix artifacts + API executor stage
       |-- sdd_create_build: prompt + template assembler (no executor)
       |
       v
@@ -88,20 +91,133 @@ hermes skills enable business-analyst
 # hermes skills enable sdd-cross-validation
 ```
 
+Skill version note:
+
+- Use `ucx-sdd-bridge` `v1.1.1+` for API-only executor guidance,
+  fan-out/fan-in (`saga_parallel`) review controls, and executor troubleshooting.
+- Optional KB skills:
+  - `ucx-kb-context` for retrieval enrichment during UCX V3 lifecycle stages
+  - `ucx-kb-maintenance` for post-IPLAN knowledge updates with governance controls
+  - `ucx-kb-maintenance/KB_GENERAL_RULES.md` for mandatory coverage and ingestion policy across all document artifacts
+  - `ucx-kb-maintenance/KB_ENTRY_TEMPLATE.md` for KB admission checklist and canonical entry structure
+- Governance skills:
+  - `ucx-github-governance` for issue/PR label flow and round-based merge governance
+  - `ucx-github-deploy-governance` for CI/CD, QA, staging/prod readiness, and post-deploy issue loops
+
+Skill activation matrix:
+
+| Scenario | Primary Skill | Optional Companion | Notes |
+|----------|---------------|--------------------|-------|
+| BRD->IPLAN lifecycle orchestration in `ucx_flow_v3` | `ucx-sdd-bridge` | `ucx-kb-context` | Keep document-layer flow MCP-only; do not use CLI lifecycle commands. |
+| Multi-persona review with fan-out/fan-in (`review_mode=saga_parallel`) | `ucx-sdd-bridge` | `ucx-kb-context` | Use KB retrieval before review for prior findings/constraints. |
+| Remediation planning and policy-gated apply | `ucx-sdd-bridge` | `ucx-kb-context` | Use API executor for `sdd_remediate`; use KB for accepted remediation patterns. |
+| Post-IPLAN implementation knowledge capture | `ucx-kb-maintenance` | `ucx-sdd-bridge` | Run after approved implementation evidence; KB updates do not advance lifecycle stages. |
+| KB unavailable or stale | `ucx-sdd-bridge` | none | Continue lifecycle gates; log reduced-confidence context and escalate high-impact assumptions. |
+
 ### 3. Project Setup
 
 For each project using UCX:
 
 ```bash
-# In project root
+# 1) Start Hermes session
 hermes chat
+
+# 2) Enable UCX bridge skill in the Hermes session
 /skill ucx-sdd-bridge
-Call sdd_init for this project
+
+# 3) Initialize project-scoped UCX assets (required once per project)
+sdd_init project=/absolute/path/to/project
+
+# 4) Verify runtime readiness for this project
+sdd_preflight project=/absolute/path/to/project context=any
+
+# 5) (Optional) inspect project persona mappings and environment keys
+sdd_personas_show project=/absolute/path/to/project
+sdd_env_show project=/absolute/path/to/project
 ```
+
+Initialization contract:
+
+- `sdd_init` is idempotent in default mode; existing project files are not overwritten.
+- Use `update=true` to sync stale framework-owned files.
+- Use `update=true` and `update_mappings=true` to reset `persona_mappings.yaml`.
+- `update_mappings=true` without `update=true` is invalid.
+
+Preflight pass criteria (`sdd_preflight context=any`):
+
+- **Go**: status `ready` (exit code 0).
+- **Conditional go**: status `degraded` (exit code 0) with documented risk acceptance and no missing required project assets.
+- **No-go**: status `blocked` (exit code 1).
+- **Operational error**: command runtime error (exit code 2), treat as no-go until corrected.
+
+Minimum checks before first lifecycle run:
+
+- `UCX/` scaffold exists for the target project.
+- `persona_mappings.yaml` exists and persona mapping health check does not report missing persona files.
+- Required executor environment keys are present for the configured provider path.
+
+### 4. KB Preflight and Degraded Mode
+
+Framework baseline:
+
+- Keep framework MCP config minimal (`sdd-lifecycle` only).
+- Register `project-knowledge` only in a real project runtime where `ucx_kb` is initialized.
+
+Project-level MCP registration snippet (add in project runtime config):
+
+```json
+{
+  "mcpServers": {
+    "project-knowledge": {
+      "command": "/opt/data/ucx_framework/.venv/bin/python",
+      "args": ["-m", "ucx_kb.mcp.server"],
+      "cwd": "/opt/data/ucx_framework"
+    }
+  }
+}
+```
+
+Before lifecycle calls that depend on KB context:
+
+1. Call `kb_status`.
+2. Call `kb_graph_status`.
+3. Determine KB mode:
+   - `ready`: both calls succeed.
+   - `degraded`: one call fails.
+   - `unavailable`: both calls fail.
+
+If mode is `degraded` or `unavailable`, continue UCX lifecycle gates and record reduced-confidence reasoning notes. Do not block stage progression due to KB availability.
+
+### 5. KB Smoke Test (Operator Runbook)
+
+Run from `/opt/data/ucx_framework` after DB services are up and `.env` is configured for `ucx_kb`:
+
+```bash
+python -m ucx_kb.mcp.server
+```
+
+In Hermes session, verify these calls succeed:
+
+- `kb_status` (RAG status payload)
+- `kb_graph_status` (graph status payload)
+- `kb_search` with a small query (result or empty result without error)
+
+Pass criteria:
+
+- No MCP server startup exception
+- No tool contract error for the three calls above
+- Hermes can continue `sdd_*` lifecycle calls regardless of KB result cardinality
 
 ## Standard Workflow
 
 Hermes is the default AI agent orchestrating this workflow from PR submission through merge-time escalation.
+
+UCX V3 boundary:
+
+- Use UCX MCP tools for `ucx_flow_v3` document-layer lifecycle work (BRD through IPLAN).
+- Do not use CLI lifecycle commands for document-layer stages.
+- CLI usage is reserved for approved IPLAN implementation execution tasks (tests, source code changes, and implementation documentation updates).
+- No lifecycle-stage document creation starts before planning-first artifacts are reviewed and approved.
 
 ### Parallel Persona Review Saga (Planned)
 
@@ -129,14 +245,14 @@ Issue-fix, PR governance, and deployment pattern:
 
 - Observability stack emits incidents, anomalies, and SLO/SLA alerts.
 - Hermes triages signal severity and creates GitHub issues with traceability references and acceptance criteria.
-- Execution agents process only approved issues, then execute fix -> PR -> round-based governance gates -> deploy.
+- Execution agents process only issues in `ai:ready`, then execute fix -> PR -> round-based governance gates -> deploy.
 - Hermes validates post-deployment outcomes and closes issues when evidence is complete.
 
 Detailed ownership split:
 
 1. Hermes monitors observability signals through integrated telemetry systems and triage inputs.
 2. Hermes opens and prioritizes GitHub issues with implementation traceability (`@spec`, `@tdd`, `@iplan`) and acceptance criteria.
-3. Only approved issues (for example `ai:approved`) are eligible for autonomous execution.
+3. Only `ai:ready` issues are eligible for autonomous execution.
 4. Execution agents (Claude Code, Codex, OpenCode, or equivalent) perform fix implementation, PR submission, validation, and deployment workflows.
 5. Hermes reviews post-deployment evidence and closes issues when monitoring and acceptance gates pass.
 
@@ -144,18 +260,32 @@ Detailed ownership split:
 
 ```
 1) Task defined (human or AI-originated)
-2) Hermes creates GitHub issue with acceptance criteria and traceability tags
-3) Work performed to resolve issue
-4) PR submitted
-5) Round 1: sdd_validate -> sdd_review -> sdd_remediate -> post-remediation sdd_validate -> Hermes final blocker-gap check
-6) If Round 1 fails: run Round 2 with same sequence
-7) If Round 2 fails: escalate to human review and block merge
-8) If gates pass: merge PR and close linked issue(s)
+2) Hermes creates planning-first artifacts (layer roadmap, planning index, changelog plan)
+3) Hermes reviews planning artifacts for gaps and records closure or explicit deferral
+4) Hermes creates per-document IPLAN artifacts and records approval (human reviewer or independent LLM-as-judge session)
+5) Hermes creates GitHub issue with acceptance criteria and traceability tags
+6) Work performed to resolve issue according to approved plans
+7) PR submitted
+8) Round 1: sdd_validate -> sdd_review -> sdd_remediate -> post-remediation sdd_validate -> Hermes final blocker-gap check
+9) If Round 1 fails: run Round 2 with same sequence
+10) If Round 2 fails: escalate to human review and block merge
+11) If gates pass: merge PR and close linked issue(s)
 ```
 
 Alert channels for human escalation are implementation-defined (TBD).
 
-### Phase 1: Initialization
+### Phase 1: Planning-First Governance
+
+```
+Operator/Agent: "Start BRD layer planning"
+Hermes: Analyzes provided sources, constraints, and dependencies
+Hermes: Produces layer roadmap, planning index, and changelog plan artifacts
+Hermes: Reviews planning artifacts for gaps and resolves or defers with explicit rationale
+Hermes: Produces per-document IPLAN artifacts and records plan approval
+Hermes: Blocks document creation until approval exists
+```
+
+### Phase 2: Initialization
 
 ```
 Hermes: sdd_init project=/opt/data/b-local/b-local-telegram-ui
@@ -163,7 +293,7 @@ UCX: Scaffolds UCX/ directory with templates, personas, layer aliases
 Hermes: Confirm and show persona mappings
 ```
 
-### Phase 2: Document Creation (Policy-Gated)
+### Phase 3: Document Creation (Policy-Gated)
 
 ```
 Operator/Agent: "Draft BRD for BEE-001"
@@ -174,7 +304,7 @@ Hermes: Writes to ucx_flow_v3/01_BRD/BEE-001.md
 Hermes: Applies configured gate policy for acceptance or escalation
 ```
 
-### Phase 3: Structural Validation (Deterministic Gate)
+### Phase 4: Structural Validation (Deterministic Gate)
 
 ```
 Hermes: sdd_validate doc_type=brd layer=01_BRD document=BEE-001.md
@@ -186,29 +316,28 @@ UCX: Returns structured report: errors, warnings, passes
 Hermes: Applies configured gate policy. If blocking errors persist, continue round handling or escalate.
 ```
 
-### Phase 4: Expert Review (Hermes + Skills)
+### Phase 5: Expert Review (Hermes + Skills)
 
 ```
 Operator/Agent: "Review for security and testability"
 Hermes: sdd_review doc_type=brd document=BEE-001.md
-UCX: Returns assembled multi-persona prompt (no executor run)
+UCX: Assembles review prompt and invokes configured API executor
 Hermes: Loads `auditor` + `qa_lead` persona guidance
 Hermes: Uses prompt as context, applies skill knowledge, examines document
 Hermes: Emits structured findings for policy evaluation and downstream remediation
 ```
 
-### Phase 5: Remediation (Policy-Gated)
+### Phase 6: Remediation (Policy-Gated)
 
 ```
 Operator/Agent: "Fix the 3 errors found"
-Hermes: sdd_remediate doc_type=brd layer=01_BRD document=BEE-001.md
-UCX: Returns deterministic findings with recommended actions
-Hermes: Presents each finding with context and recommended fix
-Hermes: Applies edits according to configured gate policy
+Hermes: sdd_remediate doc_type=brd layer=01_BRD document=BEE-001.md executor=api/claude-sonnet
+UCX: Generates deterministic findings and fix artifacts, then invokes API executor for apply stage
+Hermes: Reviews findings, applies gate policy, and verifies remediation quality signals
 Hermes: Re-runs sdd_validate to confirm
 ```
 
-### Phase 6: Stage Advancement
+### Phase 7: Stage Advancement
 
 ```
 Hermes: sdd_next_action document=ucx_flow_v3/01_BRD/BEE-001
@@ -216,7 +345,7 @@ UCX: Returns current_stage, next_action, next_tool
 Hermes: Selects next layer action according to lifecycle state (for example PRD)
 ```
 
-### Phase 7: Code Implementation Handoff (Code Generation Agent)
+### Phase 8: Code Implementation Handoff (Code Generation Agent)
 
 ```
 Operator/Agent: "IPLAN approved. Start implementation."
@@ -226,17 +355,17 @@ Coding Agent: Implements code, tests, and local verification from IPLAN
 Hermes: Collects implementation evidence and returns to UCX validation/review gates
 ```
 
-### Phase 8: Observability-Driven Issue Loop
+### Phase 9: Observability-Driven Issue Loop
 
 ```
 Observability Stack: Emits alert/event with service impact data
 Hermes: Triages alert and creates GitHub issue with severity, repro context, and traceability links
-Hermes: Applies approval gate (for example ai:approved)
+Hermes: Applies governance approval gate and transitions executable issues to `ai:ready`
 Execution Agent: Fixes issue, submits PR, runs CI checks, and deploys through pipeline
 Hermes: Verifies post-deploy monitoring and acceptance criteria, then closes issue
 ```
 
-### Phase 9: Merge-Time Escalation
+### Phase 10: Merge-Time Escalation
 
 ```
 Hermes: Evaluates final-round gate outputs at merge decision time
@@ -249,17 +378,17 @@ Merge: blocked until human review resolves escalation or subsequent round passes
 
 | Pattern | Risk | Safe Alternative |
 |---------|------|------------------|
-| `sdd_validate ... executor=claude` | Auto-rewrite without validation | `sdd_validate` without executor |
-| `sdd_review ... executor=claude` | Stateless review, context lost | `sdd_review` without executor, then Hermes reviews |
-| `sdd_remediate ... executor=claude fix=true` | Unverified document rewrite | `sdd_remediate` without executor, then apply policy-gated remediation |
-| `sdd_run_lifecycle stages=["validate","review","remediate"] executor=claude` | Pipeline runs unsafe stages | Stage-by-stage with deterministic and policy gates |
+| `sdd_validate ... executor=claude` | Unsupported parameter/path | `sdd_validate` |
+| `sdd_review ... executor=claude` | Unknown executor (CLI not supported) | Use API executor (`api/openrouter` or project API override) |
+| `sdd_remediate ... executor=claude fix=true` | Unknown executor (CLI not supported) | Use API executor (`api/claude-sonnet` or project API override) |
+| `sdd_run_lifecycle ... executor=claude` | Unknown executor in review/remediate stages | Use API executor names for LLM stages |
 | Auto-applying remediation without gate policy | May introduce unresolved blocker gaps | Apply round gates and escalate on Round 2 failure |
 
 ## Tool Reference: Safe vs Unsafe
 
 ### Safe (Deterministic)
 
-- `sdd_validate` (without executor)
+- `sdd_validate`
 - `sdd_validate_chg`
 - `sdd_consistency`
 - `sdd_validate_links`
@@ -277,12 +406,10 @@ Merge: blocked until human review resolves escalation or subsequent round passes
 - `sdd_list_executors`
 - `sdd_register_executor`
 
-### Unsafe (Disabled / Patched)
+### LLM Stages (API Executor Required)
 
-- `sdd_validate` (with executor parameter) — **patched to ignore**
-- `sdd_create_build` (with executor) — **patched to ignore**
-- `sdd_review` (with executor) — **patched to ignore**
-- `sdd_remediate` (with executor) — **patched to ignore**
+- `sdd_review` (requires API executor)
+- `sdd_remediate` (requires API executor)
 
 ## Hermes Memory State
 
@@ -301,11 +428,11 @@ Next action: review
 
 ## Troubleshooting
 
-### "executor" parameter ignored
+### Unknown executor error for `claude`/`codex`
 
-**Expected behavior.** The patched server deliberately ignores the `executor`
-parameter on `sdd_validate`, `sdd_review`, `sdd_remediate`, and `sdd_create_build`.
-You will receive prompt text or fix reports instead of AI-generated output.
+**Expected behavior.** The runtime does not support CLI executors.
+Use API executor names such as `api/openrouter`, `api/claude-sonnet`,
+or project API overrides from `UCX/executors.json`.
 
 ### Validation report shows errors I already fixed
 
@@ -321,24 +448,25 @@ This is correct. The prompt contains:
 - Persona instructions from `UCX/skills/personas/`
 - Layer assets and templates
 
-Hermes should use this as context for reasoning, not pass it to another AI.
+The response may include `prompt_text` for traceability and reproducibility. Treat it as audit context and preserve it in stage artifacts when required by policy.
 
 ### How do I actually apply remediation fixes?
 
-The patched `sdd_remediate` returns:
+`sdd_remediate` returns:
 - `findings[]` with `priority`, `message`, `recommended_action`
 - `fix_report_text` with step-by-step instructions
+- API executor output/exit status for the remediation apply stage
 
 Hermes presents findings and applies the configured gate policy. On Round 2
 blocking failure, Hermes escalates to human review; otherwise Hermes applies
 edits and re-runs `sdd_validate` to confirm.
 
-## Migration from Pre-Patched UCX
+## Migration from Pre-UCX V3 Runtime
 
-If you have an older UCX server:
+If you are migrating from a pre-UCX V3 runtime:
 
-1. Update to the patched version in `ucx_hermes/`
-2. Remove any `executor` parameters from your Hermes prompts or scripts
+1. Update to UCX V3 runtime in `ucx_hermes/`
+2. Replace any legacy CLI executor names with API executor names in scripts
 3. Install the `ucx-sdd-bridge` skill
 4. Test with `sdd_validate` on an existing document — should return structured
    JSON without spawning external processes
@@ -349,13 +477,14 @@ If you have an older UCX server:
 |-----------|-----------------|
 | UCX MCP Server | ucx_hermes v2.0.0+ |
 | Hermes Agent | Any with MCP support |
-| ucx-sdd-bridge skill | v1.0.0+ |
+| ucx-sdd-bridge skill | v1.1.1+ |
 | Python | 3.11+ |
 
 ## Files Modified
 
-- `src/mcp_server/tool_registry.py` — Removed `_maybe_run_executor()` calls from
-  `sdd_validate` fix path, `sdd_create_build`, `sdd_review`, `sdd_remediate`
+- `src/mcp_server/tool_registry.py` — Enforced API-only executor behavior for
+  LLM stages (`sdd_review`, `sdd_remediate`) and deterministic behavior for
+  non-LLM stages (`sdd_validate`, `sdd_create_build`)
 
 ## Files Added
 

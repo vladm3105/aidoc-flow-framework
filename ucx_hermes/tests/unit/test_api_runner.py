@@ -307,12 +307,12 @@ class TestProjectExecutorConfig:
 
     def test_project_override_takes_precedence(self):
         from mcp_server.executor.registry import get_executor, ExecutorConfig, ExecutorType
-        override = {"claude": ExecutorConfig(
-            name="claude", executor_type=ExecutorType.CLI,
-            command="custom-claude", timeout=999,
+        override = {"api/gpt-4o": ExecutorConfig(
+            name="api/gpt-4o", executor_type=ExecutorType.API,
+            model="openai/custom-model", timeout=999,
         )}
-        config = get_executor("claude", project_overrides=override)
-        assert config.command == "custom-claude"
+        config = get_executor("api/gpt-4o", project_overrides=override)
+        assert config.model == "openai/custom-model"
         assert config.timeout == 999
 
     def test_global_registry_unchanged_after_project_load(self, tmp_path):
@@ -322,7 +322,7 @@ class TestProjectExecutorConfig:
         ucx_dir.mkdir()
         (ucx_dir / "executors.json").write_text(json.dumps({
             "executors": [
-                {"name": "proj-only", "executor_type": "cli", "command": "test"}
+                {"name": "proj-only", "executor_type": "api", "model": "openai/gpt-4o-mini"}
             ]
         }))
         load_project_executor_config(tmp_path)
@@ -346,9 +346,25 @@ class TestProjectExecutorConfig:
             d = tmp_path / name / "UCX"
             d.mkdir(parents=True)
             (d / "executors.json").write_text(json.dumps({
-                "executors": [{"name": f"exec-{name}", "executor_type": "cli", "command": name}]
+                "executors": [{"name": f"exec-{name}", "executor_type": "api", "model": f"openai/{name}"}]
             }))
         a = load_project_executor_config(tmp_path / "proj_a")
         b = load_project_executor_config(tmp_path / "proj_b")
         assert "exec-proj_a" in a and "exec-proj_b" not in a
         assert "exec-proj_b" in b and "exec-proj_a" not in b
+
+    def test_project_config_skips_legacy_cli_executor(self, tmp_path):
+        import json
+        from mcp_server.executor.registry import load_project_executor_config
+
+        ucx_dir = tmp_path / "UCX"
+        ucx_dir.mkdir()
+        (ucx_dir / "executors.json").write_text(json.dumps({
+            "executors": [
+                {"name": "legacy-cli", "executor_type": "cli", "command": "claude"},
+                {"name": "api-ok", "executor_type": "api", "model": "openai/gpt-4o-mini"},
+            ]
+        }))
+        result = load_project_executor_config(tmp_path)
+        assert "legacy-cli" not in result
+        assert "api-ok" in result
