@@ -11,6 +11,7 @@ Thank you for contributing to AI Cost Monitoring! This document provides guideli
 - [Git Workflow](#git-workflow)
 - [Testing](#testing)
 - [Documentation](#documentation)
+- [Documentation Validation](#documentation-validation)
 - [Pull Request Process](#pull-request-process)
 
 ---
@@ -323,6 +324,19 @@ describe('calculateTotalCost', () => {
 | `docs/core/*.md` | Changing architecture/specs |
 | `docs/adr/*.md` | Making architectural decisions |
 | `*-DEPLOYMENT.md` | Changing deployment process |
+
+### Documentation Validation
+
+Run this before opening a PR when markdown files changed:
+
+```bash
+scripts/validate_changed_links.sh
+```
+
+Validation behavior:
+- Checks changed non-template markdown files with `sdd_validate_links`.
+- Skips `governance/templates/` files in framework-repo context.
+- Template links are validated after scaffold in target-project context.
 
 ### Adding ADRs
 
