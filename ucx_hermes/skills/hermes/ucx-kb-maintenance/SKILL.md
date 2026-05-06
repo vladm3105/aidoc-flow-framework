@@ -3,7 +3,7 @@ name: ucx-kb-maintenance
 description: |
   Governance-oriented KB maintenance workflow for post-IPLAN implementation
   evidence, ensuring KB updates do not alter UCX V3 lifecycle gate authority.
-version: 1.1.0
+version: 1.2.0
 category: spec-driven-development
 author: UCX Framework Team
 requires: []
@@ -28,7 +28,7 @@ KB maintenance follows mandatory coverage and gate rules from
 
 Only perform KB write/update actions after all conditions are true:
 
-1. IPLAN execution evidence exists (tests, code changes, implementation docs).
+1. Approved implementation execution evidence exists (from document-layer IPLAN and/or permanent development plan scope): tests, code changes, implementation docs.
 2. Relevant UCX lifecycle gates are complete for the change scope.
 3. Human/operator policy allows KB write-back for the project.
 

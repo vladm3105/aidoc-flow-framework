@@ -24,7 +24,7 @@ Use this template when adding or updating knowledge records after approved IPLAN
 
 ## Traceability
 
-- `iplan_id`:
+- `plan_id` (document-layer `IPLAN-*` or permanent development `PLAN-*`):
 - `artifact_ids`: []
 - `lifecycle_stages`: []
 - `issue_refs`: []

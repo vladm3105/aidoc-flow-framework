@@ -4,7 +4,7 @@ description: |
   Bridge Hermes conversational reasoning with UCX deterministic SDD tools.
   Enforces safe SDD workflow: UCX validates structurally, Hermes reviews
   interactively, human or LLM-as-judge approvers validate policy-gated outcomes.
-version: 1.2.0
+version: 1.3.0
 category: spec-driven-development
 author: UCX Framework Team
 requires: []
@@ -16,6 +16,7 @@ requires: []
 
 | Version | Date (EST) | Changes |
 |---------|------------|---------|
+| 1.3.0 | 2026-05-06 | Aligned to UCX plan taxonomy and required development flow: initialization (`sdd_init`/`sdd_preflight`), planning package review, gap fixing, plan approval, implementation start. |
 | 1.2.0 | 2026-05-06 | Added planning-first governance gate: roadmap, planning index, changelog planning, gap review, and per-document IPLAN approval before lifecycle creation. |
 | 1.1.2 | 2026-05-05 | Added UCX V3 KB integration guidance and cross-skill references for `ucx-kb-context` and `ucx-kb-maintenance`. |
 | 1.1.1 | 2026-05-05 | Added known-good executor policy snippet, executor troubleshooting table, and fan-out/fan-in (`saga_parallel`) operational guidance. |
@@ -34,7 +35,7 @@ support.
 
 Planning-first rule:
 
-- Before any layer document creation, Hermes completes planning-first artifacts (layer roadmap, planning index, changelog plan), runs a gap review pass, creates per-document IPLAN artifacts, and records approval.
+- Before any layer document creation, Hermes completes planning-first artifacts (layer roadmap, planning index, changelog plan), runs a gap review pass, fixes or explicitly defers gaps, creates required plan artifacts (document-layer IPLAN and/or permanent development plan), and records approval.
 - No document/test/code implementation starts without approved plans.
 
 Use API executors for LLM stages (`sdd_review`, `sdd_remediate`).
@@ -108,8 +109,9 @@ Call these freely. They are 100% rule-based, no AI delegation:
 Hermes: Analyze provided source information and constraints
 Hermes: Create layer roadmap + planning index + changelog plan
 Hermes: Review planning artifacts for dependency and traceability gaps
-Hermes: Resolve or defer gaps with explicit rationale
-Hermes: Create per-document IPLAN artifacts and record approval
+Hermes: Resolve gaps or record explicit deferrals with rationale
+Hermes: Create required plan artifacts (document-layer IPLAN and/or permanent development plan)
+Hermes: Review plan artifacts for acceptance-criteria mapping completeness
 Hermes: Block lifecycle creation until planning approval exists
 ```
 
@@ -119,6 +121,7 @@ Hermes: Block lifecycle creation until planning approval exists
 Hermes: Call sdd_init for project /opt/data/b-local/b-local-telegram-ui
 UCX: Creates UCX/ directory with templates, personas, schemas
 Hermes: Confirm scaffold created, show persona mappings
+Hermes: Run sdd_preflight and proceed only when readiness criteria are met
 ```
 
 ### Stage 2: Create Document (Policy-Gated)

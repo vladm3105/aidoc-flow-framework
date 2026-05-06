@@ -8,7 +8,7 @@ These rules apply to UCX V3 projects using `ucx_flow_v3` lifecycle artifacts.
 
 All document artifacts must be represented in the KB project.
 
-- Include canonical lifecycle artifacts across layers (BRD->TASKS).
+- Include canonical lifecycle artifacts across active v3.2 layers (BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN).
 - Include lifecycle stage outputs needed for traceability (validation, review, remediation artifacts).
 - Include implementation-linked documentation updates produced during approved IPLAN execution.
 

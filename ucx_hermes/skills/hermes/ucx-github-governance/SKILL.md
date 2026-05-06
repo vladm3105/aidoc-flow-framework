@@ -3,7 +3,7 @@ name: ucx-github-governance
 description: |
   Hermes governance skill for GitHub issue and PR lifecycle control aligned to
   governance/GOVERNANCE_RULES.md and UCX V3 round-based gate policy.
-version: 1.0.0
+version: 1.1.0
 category: governance
 author: UCX Framework Team
 requires: []
@@ -13,7 +13,7 @@ requires: []
 
 ## Purpose
 
-Manage issue->IPLAN->PR governance flow in GitHub while preserving UCX V3
+Manage issue->plan-set->PR governance flow in GitHub while preserving UCX V3
 control-plane/execution-plane separation.
 
 ## Canonical Label Flow
@@ -26,20 +26,22 @@ Rules:
 
 - Only `ai:ready` issues are eligible for autonomous execution.
 - Do not use `ai:approved` or `ai:rejected`.
-- Transition to `ai:in-progress` after issue analysis and IPLAN readiness.
+- Transition to `ai:in-progress` only after required plan artifacts are approved.
 - Use `ai:review-requested` when acceptance criteria verification is complete and PR is ready for review.
 
 ## Mandatory Issue Workflow
 
 Before coding:
 
-1. Complete planning-first governance artifacts (layer roadmap, planning index, changelog plan).
-2. Review planning artifacts for gaps and close or defer with explicit rationale.
-3. Complete issue analysis.
-4. Create IPLAN.
-5. Refine IPLAN.
-6. Record explicit plan approval (human reviewer or independent LLM-as-judge session).
-7. Transition issue to `ai:in-progress`.
+1. Initialize project context when required (`sdd_init`, then `sdd_preflight`).
+2. Complete issue analysis.
+3. Create planning-first artifacts (layer roadmap, planning index, changelog plan).
+4. Review planning artifacts for gaps.
+5. Fix gaps or record explicit deferrals with rationale.
+6. Create required plan artifact(s): document-layer IPLAN and/or permanent development plan (`PLAN-NNN_*`, preferred).
+7. Review plan artifact(s) for step clarity and acceptance-criteria mapping.
+8. Record explicit plan approval (human reviewer or independent LLM-as-judge session).
+9. Start implementation by transitioning issue to `ai:in-progress`.
 
 Before review request:
 

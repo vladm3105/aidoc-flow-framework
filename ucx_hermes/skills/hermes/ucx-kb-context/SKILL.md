@@ -35,6 +35,8 @@ Provide a retrieval-first pattern for Hermes when a KB server is available
 
 Before using KB context in a lifecycle round, run this preflight sequence:
 
+- Ensure project initialization has been completed (`sdd_init`) and readiness verified (`sdd_preflight`) for the target project context.
+
 - Assume `project-knowledge` server may be absent in framework-only environments.
 - Activate KB retrieval only when downstream project runtime registers `project-knowledge` and `ucx_kb` is initialized.
 

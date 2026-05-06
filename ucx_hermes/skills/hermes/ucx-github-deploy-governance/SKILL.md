@@ -61,6 +61,10 @@ If post-deployment monitoring shows incidents or regressions:
 - CLI usage allowed for approved IPLAN implementation execution tasks only.
 - Lifecycle source of truth remains UCX MCP stage outputs and governance policies.
 
+Initialization and plan-approval dependency:
+
+- Deployment/QA progression assumes issue work entered implementation only after required initialization (`sdd_init`/`sdd_preflight` when needed), planning review, gap fixing, and plan approval.
+
 ## Failure Handling
 
 If deployment governance checks fail:
