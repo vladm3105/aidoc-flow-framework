@@ -37,6 +37,16 @@ Planning-first core principle (framework-wide):
 - Required sequence: analyze inputs -> roadmap -> planning index -> changelog plan -> gap review/fix -> implementation plan (IPLAN) -> approval -> implementation.
 - Approval authority: human reviewer or independent LLM-as-judge session.
 
+Plan taxonomy (framework-wide):
+
+| Plan Type | Purpose | Location | Retention |
+|---|---|---|---|
+| Document-layer IPLAN | Layer-8 implementation bridge for SDD artifacts (BRD -> ... -> SPEC/TDD -> IPLAN -> Code) | Project SDD docs (`docs/IPLAN/`, `UCX/08_IPLAN/`, or equivalent lifecycle output) | Permanent |
+| Permanent development plan | Operational project development planning, cross-session execution, and project history tracking | `plans/` | Permanent |
+| Temporary plan | Bug fixes, document corrections, and minor one-off work with no long-term tracking value | `tmp/` | Disposable |
+
+Escalation rule: if temporary-plan scope expands (new capability, cross-cutting dependency, or multi-session coordination), promote it to a permanent plan in `plans/`.
+
 Governance state flow for autonomous execution:
 
 - `ai:ready -> ai:in-progress -> ai:review-requested`
@@ -136,10 +146,12 @@ The original 14-layer framework is preserved in `ucx_flow_v3/` for existing proj
 | `mcp_ucx/` | **DEPRECATED** — Historical UCX package directory. Frozen at v1.22.0. Use `ucx_hermes/` for all new work. See [mcp_ucx/docs/README.md](mcp_ucx/docs/README.md) for archive status. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
 | `ucx_kb/` | Knowledge base package (RAG + Graph) |
+| `plans/` | Permanent project development plans and planning history |
+| `tmp/` | Temporary plans and disposable working artifacts |
 | `changelog/` | Per-version changelogs |
 | `roadmap/` | Roadmap and release planning |
 
-Note: historical records in `changelog/`, `plans/`, and archived docs may contain legacy naming (for example `mcp-sdd` or `MCP SDD`) to preserve release and audit accuracy.
+Note: historical records in `changelog/`, `plans/`, `tmp/`, and archived docs may contain legacy naming (for example `mcp-sdd` or `MCP SDD`) to preserve release and audit accuracy.
 
 ### ucx_flow_v3/ (Current)
 

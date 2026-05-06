@@ -32,8 +32,14 @@ The home repo serves as:
 Planning-first core principle for home-repo operations:
 
 - No document, test, or code execution starts without approved planning artifacts.
-- Required planning artifacts: roadmap, planning index, changelog plan, approved IPLAN.
+- Required planning artifacts: roadmap, planning index, changelog plan, and approved plan set.
 - Approval authority can be human reviewer or independent LLM-as-judge session.
+
+Plan taxonomy for home-repo operations:
+
+- Document-layer IPLAN: SDD Layer-8 bridge from document flow to code execution.
+- Permanent development plan: project development planning and execution history under `plans/`.
+- Temporary plan: bug-fix and minor-correction planning under `tmp/` (disposable).
 
 > [!IMPORTANT]
 > This is a **monorepo**. All documentation, governance, and component source code live in this single repository.
@@ -101,9 +107,13 @@ Planning-first core principle for home-repo operations:
        ONBOARDING.md        # Add AI review to new component repos
        AI_AGENT_REVIEW_WORKFLOW.md  # On-demand AI agent review + fix-verify loop
        MANUAL_REVIEW_GUIDE.md  # Human guide: use {AI_TOOL_NAME} Code CLI to review PRs
-    plans/                   # Implementation plans (execution adjustments)
-       README.md            # Plan management guide and index
-       IPLAN-NNN_slug.md    # Individual plans (IPLAN-001, etc.)
+    plans/                   # Permanent development plans (execution history)
+        README.md            # Plan management guide and index
+        PLAN-NNN_slug.md     # Preferred naming for permanent plans
+        IPLAN-NNN_slug.md    # Legacy-compatible naming in existing repos
+
+    tmp/                     # Temporary work artifacts (disposable)
+       TMP-PLAN-YYYY-MM-DD_slug.md  # Temporary plans for bugfix/minor corrections
 
  docs/                        # Technical documentation
     adr/                     # 9 Architecture Decision Records
@@ -239,7 +249,7 @@ Before setting `ai:ready`, include planning package references in the issue body
 - planning roadmap
 - planning index
 - changelog plan
-- approved IPLAN
+- approved plan set (document-layer IPLAN and/or development plan as required)
 - plan approval mode (`Human` or `LLM-as-judge`)
 
 ---
@@ -315,7 +325,7 @@ The home repo has **63 labels** organized by category:
 ### Governance
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
 - [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) — Versioning and releases
-- [plans/README.md](./plans/README.md) — Implementation plans guide
+- [plans/README.md](./plans/README.md) — Permanent development plans guide
 
 ### GitHub Integration
 - [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation

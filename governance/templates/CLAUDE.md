@@ -6,7 +6,7 @@ Before starting any implementation or governance work, read these files in order
 1. `README_AIAGENT.md` — Universal AI agent rules (applies to all AI tools)
 2. `governance/GOVERNANCE_RULES.md` — Operational rules (naming, security, AI workflow)
 3. `governance/PROJECT_PLAN.md` §2 (Current State Analysis) — What's done, what's next
-4. `governance/plans/README.md` — Plan index (check for active IPLANs)
+4. `governance/plans/README.md` — Permanent development plan index and plan taxonomy
 
 Do NOT invent process rules, naming conventions, or workflow patterns. If uncertain, consult the governance docs above. If a rule is missing, flag it — do not create ad-hoc rules.
 
@@ -30,7 +30,8 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 - **When changing a label, also update the issue's Status on Project Board #{PROJECT_BOARD_NUMBER}** — labels and board status are separate systems (see GOVERNANCE_RULES.md §3 for option IDs and GraphQL mutation)
 - Include `Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>` in commits
 - **Assign at least one reviewer on every PR** from [CONTRIBUTING.md §Reviewer Roster](CONTRIBUTING.md#reviewer-roster) (`--reviewer <username>`)
-- Create plans as `governance/plans/IPLAN-NNN_{slug}.md` (check plans/README.md for next ID)
+- Create permanent development plans as `governance/plans/PLAN-NNN_{slug}.md` (preferred; check plans/README.md for next ID)
+- Use document-layer IPLAN (`IPLAN-NNN_{slug}.md`) only for SDD Layer-8 bridge artifacts
 - **After every PR review, cross-post review summary to the linked issue** for audit trail (see GOVERNANCE_RULES.md §3 Issue Review History)
 - **After on-demand AI PR review**: post conclusion comment and apply `ai:review-passed` or `ai:review-failed` label (see AI_AGENT_REVIEW_WORKFLOW.md §7d-8)
 - After completing a sprint or significant change: review ROADMAP.md, RELEASE_PROCESS.md, PROJECT_PLAN.md
@@ -58,7 +59,9 @@ Phase 3: Review Planning Gaps
    Resolve gaps or defer with explicit rationale
 
 Phase 4: Create Implementation Plan
-   Create: governance/plans/IPLAN-NNN_{slug}.md
+   Create required plan artifact(s):
+   - governance/plans/PLAN-NNN_{slug}.md (preferred permanent development plan)
+   - document-layer IPLAN (`IPLAN-NNN_{slug}.md`) when SDD Layer-8 artifact is required
    Document: scope, steps, acceptance criteria mapping
    Include: risks, edge cases, testing approach
 
@@ -106,7 +109,8 @@ Do all of these steps in sequence, in the same turn, right after creating a PR:
 - Branches: `feature/{name}`, `bugfix/{name}`, `hotfix/{name}`, `ai/{issue}-{name}`
 - Issues: `[P{phase}-{task_id}] {title}`
 - GCP resources: `{PROJECT_PREFIX}-{env}-{resource}`
-- Plans: `IPLAN-NNN_{slug}.md`
+- Permanent development plans: `PLAN-NNN_{slug}.md` (preferred)
+- Document-layer plans: `IPLAN-NNN_{slug}.md`
 - Issue dependencies: `Blocks #X`, `Depends on #Y`, `Closes #Z` in body text
 
 ## MCP Server Policy
@@ -153,7 +157,7 @@ Do all of these steps in sequence, in the same turn, right after creating a PR:
 | Directory | Purpose |
 |-----------|---------|
 | `governance/` | Project governance docs (setup, strategy, roadmap) |
-| `governance/plans/` | Implementation plans (IPLANs) |
+| `governance/plans/` | Permanent development plans (`PLAN-*`, legacy `IPLAN-*`) |
 | `docs/` | Technical documentation, ADRs, specs |
 | `components/` | Component code ({SERVICE_NAME}, mcp-servers, agents, frontend, infrastructure) |
 | `.mcp.json` | Development/governance MCP servers |

@@ -1,12 +1,20 @@
-# Implementation Plans (IPLAN)
+# Permanent Development Plans (PLAN)
 
 **Project**: {PROJECT_NAME} (`{PROJECT_PREFIX}`)
 
-Implementation plans are session-scoped execution documents that capture analysis, decisions, and concrete change lists applied during development. They sit between the static [PROJECT_PLAN.md](../PROJECT_PLAN.md) (what to build) and GitHub issues (tracking units).
+This directory stores permanent project development plans used to coordinate and track implementation work across sessions. These plans sit between the static [PROJECT_PLAN.md](../PROJECT_PLAN.md) (what to build) and GitHub issues (tracking units).
+
+These plans are not the same artifact as SDD document-layer IPLAN (Layer 8). Use the following taxonomy:
+
+| Plan Type | Purpose | Location | Retention |
+|---|---|---|---|
+| Document-layer IPLAN | SDD implementation bridge from TDD/SPEC to code | Project SDD lifecycle output (`docs/IPLAN/`, `UCX/08_IPLAN/`, or equivalent) | Permanent |
+| Permanent development plan | Operational project development planning and execution history | `plans/` (this directory) | Permanent |
+| Temporary plan | Bug fixes and minor corrections with no long-term tracking value | `tmp/` | Disposable |
 
 ---
 
-## When to Create a Plan
+## When to Create a Permanent Development Plan
 
 | Trigger | Example |
 |:--------|:--------|
@@ -17,14 +25,24 @@ Implementation plans are session-scoped execution documents that capture analysi
 | Cross-phase coordination | Changes that affect multiple phases |
 | Incident or blocker resolution | Document workaround and follow-up actions |
 
-Do **not** create a plan for:
+Do **not** create a permanent development plan for:
 - Single-issue fixes with no cross-cutting impact
 - Routine code reviews or PR feedback
 - Changes already captured in an ADR
 
+For those cases, use a temporary plan in `tmp/` when planning is still needed.
+
 ---
 
 ## Naming Convention
+
+Preferred naming:
+
+```
+PLAN-NNN_{descriptive_slug}.md
+```
+
+Compatibility naming (existing repositories may still use this pattern):
 
 ```
 IPLAN-NNN_{descriptive_slug}.md
@@ -32,21 +50,21 @@ IPLAN-NNN_{descriptive_slug}.md
 
 | Component | Rule | Example |
 |:----------|:-----|:--------|
-| Prefix | Always `IPLAN` | `IPLAN` |
+| Prefix | Preferred: `PLAN` (legacy: `IPLAN`) | `PLAN`, `IPLAN` |
 | Number | Sequential, zero-padded to 3 digits | `001`, `002`, `015` |
 | Slug | Lowercase, hyphens, describes the action | `phase1-issue-review` |
 | Extension | Always `.md` | `.md` |
 
-Full example: `IPLAN-003_mcp-server-dependency-reorder.md`
+Full example: `PLAN-003_mcp-server-dependency-reorder.md`
 
 ---
 
 ## Required Frontmatter
 
-Every plan starts with these fields:
+Every permanent development plan starts with these fields:
 
 ```markdown
-# IPLAN-NNN: Title
+# PLAN-NNN: Title
 
 **Phase**: N (or "Cross-phase")
 **Status**: Draft | Approved | In Progress | Complete | Superseded
@@ -63,8 +81,8 @@ Every plan starts with these fields:
 ```
 Draft → Approved → In Progress → Complete
                                          
-                → Superseded ←
-                     (by IPLAN-NNN)
+                 → Superseded ←
+                     (by PLAN-NNN)
 ```
 
 | Status | Meaning |
@@ -98,23 +116,20 @@ The checklist is the most important section. Each item must be independently act
 
 ## Plan Templates
 
-Use these templates as starting points for your implementation plans:
+Use this template as the starting point for permanent development plans:
 
-| Template | Purpose | Use When |
-|:---------|:--------|:---------|
-| [IPLAN-TEMPLATE.md](IPLAN-TEMPLATE.md) | Blank template | Creating any new IPLAN |
-| [IPLAN-001_phase-issue-review.md](IPLAN-001_phase-issue-review.md) | Pre-sprint issue audit | Starting a new phase/sprint |
-| [IPLAN-002_ai-pr-review-workflow.md](IPLAN-002_ai-pr-review-workflow.md) | AI review setup | Configuring AI code review |
-| [IPLAN-003_phase-gated-deployment.md](IPLAN-003_phase-gated-deployment.md) | Deployment pipeline | Setting up CI/CD environments |
+| Template | Purpose |
+|:---------|:--------|
+| [IPLAN-TEMPLATE.md](IPLAN-TEMPLATE.md) | Blank execution-plan template (supports both `PLAN-*` preferred naming and legacy compatibility) |
 
 ## Plan Index
 
-Track your project's IPLANs here. Copy the template row and update for each new plan.
+Track your project's permanent development plans here. Copy the template row and update for each new plan.
 
 | ID | Title | Phase | Status | Date |
 |:---|:------|:------|:-------|:-----|
-| IPLAN-001 | _{Your first plan}_ | 1 | Draft | {DATE} |
-| IPLAN-002 | _{Your second plan}_ | 1 | Draft | {DATE} |
+| PLAN-001 | _{Your first plan}_ | 1 | Draft | {DATE} |
+| PLAN-002 | _{Your second plan}_ | 1 | Draft | {DATE} |
 | ... | ... | ... | ... | ... |
 
 **Status Key**: Draft → Approved → In Progress → Complete (or Superseded)
@@ -128,16 +143,16 @@ ROADMAP.md          ← What to build (phases, timeline)
   
 PROJECT_PLAN.md     ← How to build it (tasks, specs, schedule)
   
-governance/plans/   ← Execution adjustments (this directory)
+governance/plans/   ← Permanent development planning history (this directory)
   
 GitHub Issues       ← Tracking units (updated per plan checklists)
 ```
 
-Plans do not replace or duplicate PROJECT_PLAN.md. They document **deviations and corrections** applied during execution. If a plan results in significant PROJECT_PLAN changes, update PROJECT_PLAN.md and reference the IPLAN that drove the change.
+Permanent development plans do not replace or duplicate PROJECT_PLAN.md. They document **deviations and corrections** applied during execution. If a plan results in significant PROJECT_PLAN changes, update PROJECT_PLAN.md and reference the plan that drove the change.
 
 ### Governance Document Sync Rule
 
-After completing an IPLAN (or after every sprint/significant change), review and update:
+After completing a permanent development plan (or after every sprint/significant change), review and update:
 - **[ROADMAP.md](../ROADMAP.md)** — Phase dates, statuses, dependencies
 - **[RELEASE_PROCESS.md](../RELEASE_PROCESS.md)** — Release workflow, tooling conventions
 - **[PROJECT_PLAN.md](../PROJECT_PLAN.md)** — Task statuses, schedule, gap analysis
@@ -158,7 +173,7 @@ This project uses an AI-first development approach. AI assistants lose context a
 | **Single source of truth** | Each rule lives in ONE canonical location. Cross-references use links, not copies. |
 | **Compact references** | GOVERNANCE_RULES.md Quick Reference provides "I need to → Read this" lookup |
 | **Session memory** | `~/.claude/projects/.../memory/MEMORY.md` persists key IDs and learnings across sessions |
-| **Plan audit trail** | IPLANs capture deviations so future sessions can understand why things changed |
+| **Plan audit trail** | Permanent plans capture deviations so future sessions can understand why things changed |
 
 When adding new rules, follow this hierarchy:
 1. Add the rule to its canonical doc (GOVERNANCE_RULES.md, BRANCHING_STRATEGY.md, etc.)
@@ -169,6 +184,7 @@ When adding new rules, follow this hierarchy:
 
 ## Retention
 
-- Keep all plans permanently in the repository (they form an audit trail)
+- Keep all permanent development plans in the repository (they form development history and audit context)
 - Mark completed plans as `Complete` but do not delete them
 - If a plan is no longer relevant, mark it `Superseded` and link to the replacement
+- Keep temporary plans out of this directory; store them under `tmp/`

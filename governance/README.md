@@ -13,6 +13,18 @@ Canonical references:
 - `ucx_flow_v3/DOC_GOVERNANCE_CORE.md`
 - `ucx_flow_v3/CHG/`
 
+## Plan Taxonomy (Authoritative)
+
+UCX governance uses three plan types with separate purposes and storage boundaries:
+
+| Plan Type | Purpose | Location | Retention |
+|---|---|---|---|
+| Document-layer IPLAN | Layer-8 bridge from SDD artifacts to implementation execution | Project SDD lifecycle output (`docs/IPLAN/`, `UCX/08_IPLAN/`, or equivalent) | Permanent |
+| Permanent development plan | Operational planning for project development, sequencing, and execution history | `plans/` (or `governance/plans/` in governance-template repos) | Permanent |
+| Temporary plan | Bug fixes, document corrections, and minor one-off work that does not require long-term tracking | `tmp/` | Disposable |
+
+Promotion rule: if a temporary plan grows into new functionality, cross-cutting dependency management, or multi-session execution, move it to a permanent development plan under `plans/`.
+
 ## Active vs Deprecated Policy
 
 - Active: all files under `governance/` unless explicitly marked `Deprecated`.

@@ -13,7 +13,7 @@ Before making any changes, read these files in order:
 1. **This file** (`README_AIAGENT.md`) — Universal rules (you are here)
 2. **[GOVERNANCE_RULES.md](governance/GOVERNANCE_RULES.md)** — Operational policies, naming conventions, security posture
 3. **[PROJECT_PLAN.md](governance/PROJECT_PLAN.md) Section 2** — Current state: what is done, what is next
-4. **[governance/plans/README.md](governance/plans/README.md)** — Active implementation plans (IPLAN index)
+4. **[governance/plans/README.md](governance/plans/README.md)** — Permanent development plan index and plan taxonomy
 
 When tasks involve retrieval, MCP, or knowledge indexing, also read:
 
@@ -134,7 +134,7 @@ When picking up a GitHub issue labeled `ai:ready`, follow this **5-phase workflo
 | **1. Issue Analysis** | Read issue body, acceptance criteria, linked issues, related docs, existing code | Full understanding of scope and constraints |
 | **2. Create Planning Package** | Create roadmap, planning index, and changelog plan for issue scope | Planning package artifacts |
 | **3. Review Planning Gaps** | Re-read planning package, identify missing artifacts/dependencies, resolve or defer with rationale | Gap-reviewed planning package |
-| **4. Create Plan** | Create `governance/plans/IPLAN-NNN_{slug}.md` with steps, AC mapping, risks | Implementation plan file |
+| **4. Create Plan** | Create required plan artifact(s): permanent development plan `governance/plans/PLAN-NNN_{slug}.md` (preferred) and document-layer IPLAN when required | Approved plan artifacts |
 | **5. Review & Approve** | Re-read plan, identify gaps, verify all ACs are mapped, improve, and record explicit approval | Approved plan set |
 
 **Full details**: [GOVERNANCE_RULES.md §3 Issue Processing Workflow](governance/GOVERNANCE_RULES.md#issue-processing-workflow-mandatory)
@@ -186,9 +186,26 @@ After completing a sprint or any significant/breaking change, review and update:
 | AI branches | `ai/{issue}-{name}` | `ai/24-costguarded-llm` |
 | Issues | `[P{phase}-{task_id}] {title}` | `[P1-1.0] Create repo` |
 | GCP resources | `{PROJECT_PREFIX}-{env}-{resource}` | `{GCP_PROJECT_DEV}-cloud-run` |
-| Implementation plans | `IPLAN-NNN_{slug}.md` | `IPLAN-001_phase1-issue-review.md` |
+| Document-layer IPLAN | `IPLAN-NNN_{slug}.md` | `IPLAN-001_component_implementation.md` |
+| Permanent development plans | `PLAN-NNN_{slug}.md` | `PLAN-001_phase1-issue-review.md` |
 | MCP servers | `{function}-tt-{PROJECT_PREFIX}` | `github-{PROJECT_PREFIX}-{PROJECT_PREFIX}` |
 | Sprints | `Sprint N.M` | `Sprint 2.1` |
+
+---
+
+## 5.1 Plan Types and Locations
+
+Use the correct plan type for each scope:
+
+| Plan Type | When to Use | Location | Naming |
+|:----------|:------------|:---------|:-------|
+| Document-layer IPLAN | SDD document flow execution bridge (BRD..SPEC/TDD -> IPLAN -> Code) | Project SDD output (`docs/IPLAN/`, `UCX/08_IPLAN/`, or equivalent) | `IPLAN-NNN_{slug}.md` |
+| Permanent development plan | Cross-session project development, implementation sequencing, or history tracking | `plans/` (or `governance/plans/` in governance-template repos) | `PLAN-NNN_{slug}.md` (preferred) |
+| Temporary plan | Bug fix, document correction, or one-off minor change with no long-term tracking value | `tmp/` | `TMP-PLAN-YYYY-MM-DD_{slug}.md` |
+
+Rules:
+- Do not place temporary plans in `plans/`.
+- If temporary scope expands to new functionality or cross-cutting dependencies, promote it to a permanent plan in `plans/`.
 
 ---
 
@@ -260,26 +277,15 @@ Document review and validation is handled by mcp_ucx tools:
 
 ---
 
-## 9. Implementation Plans (IPLAN)
+## 9. Plan Governance
 
-When making cross-cutting changes, dependency reorders, or sprint corrections, create an implementation plan:
+Use the three-plan taxonomy defined in [GOVERNANCE_RULES.md §2b](governance/GOVERNANCE_RULES.md#2b-plan-types-and-storage-mandatory):
 
-- **Location**: `governance/plans/IPLAN-NNN_{slug}.md`
-- **Index**: [governance/plans/README.md](governance/plans/README.md)
-- **Lifecycle**: Draft → Approved → In Progress → Complete → Superseded
-- **Current next ID**: Check the plan index for the latest number
+- **Document-layer IPLAN** (`IPLAN-NNN_{slug}.md`) for SDD Layer-8 bridge artifacts.
+- **Permanent development plan** (`PLAN-NNN_{slug}.md`, preferred) under `governance/plans/`.
+- **Temporary plan** (`TMP-PLAN-YYYY-MM-DD_{slug}.md`) under `tmp/`.
 
-Required frontmatter:
-```markdown
-# IPLAN-NNN: Title
-
-**Phase**: N (or "Cross-phase")
-**Status**: Draft | Approved | In Progress | Complete | Superseded
-**Created**: YYYY-MM-DD
-**Issues**: #X-#Y or list of affected issues
-**Epic**: #N (parent epic)
-**Applies Before**: When this plan must be executed by
-```
+When making cross-cutting development changes, dependency reorders, or sprint corrections, create a permanent development plan in `governance/plans/` and keep its lifecycle updated (Draft → Approved → In Progress → Complete/Superseded).
 
 ---
 
@@ -297,7 +303,7 @@ Required frontmatter:
 | See phase timeline | [ROADMAP.md](governance/ROADMAP.md) |
 | Find architecture decisions | [docs/adr/](docs/adr/) (8 ADRs) |
 | Read technical specs | [docs/core/](docs/core/) (8 specs) |
-| See execution corrections | [governance/plans/](governance/plans/) (IPLAN index) |
+| See execution corrections | [governance/plans/](governance/plans/) (permanent development plan index) |
 | Understand Phase 1 | [GCP-COST-GUARD.md](docs/GCP-COST-GUARD.md) |
 | Run UCX Knowledge Base | [ucx_kb/README.md](ucx_kb/README.md) |
 | Configure KB databases | [ucx_kb/docker-compose.db.yml](ucx_kb/docker-compose.db.yml) |

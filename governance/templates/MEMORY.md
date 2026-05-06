@@ -59,6 +59,6 @@
 
 ## Cross-References
 
-- **IPLAN**: `governance/plans/IPLAN-{ISSUE_NUMBER}_*.md`
+- **Permanent development plan**: `governance/plans/PLAN-{ISSUE_NUMBER}_*.md` (preferred; legacy `IPLAN-*` may exist)
 - **PR**: (created after implementation)
 - **Related Issues**:

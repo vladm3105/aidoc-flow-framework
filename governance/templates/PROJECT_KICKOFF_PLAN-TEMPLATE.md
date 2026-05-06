@@ -88,7 +88,8 @@ The **home repo** ([`{REPO_NAME}`](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME
 - [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with all phases, tasks, and sprint planning
 - [ROADMAP.md](./ROADMAP.md) — Phase timeline and dependencies
 - [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
-- [Implementation Plans](./plans/) — Execution adjustments and sprint corrections (IPLAN index)
+- [Development Plans](./plans/) — Permanent development planning history and execution adjustments
+- [Temporary Plans](./tmp/) — Disposable bug-fix and minor-correction plans
 
 ### Project Specification
 - [PROJECT_DEFINITION.md](../docs/PROJECT_DEFINITION.md) — Full project specification

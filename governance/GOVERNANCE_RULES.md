@@ -24,6 +24,23 @@ All active governance workflows align to:
 - Marketplace actions are allowed when pinned to stable major versions and reviewed.
 - Self-hosted runners are optional for workloads requiring custom tooling, network access, or compliance isolation.
 
+## 2b. Plan Types and Storage (Mandatory)
+
+Use three distinct plan types with explicit storage boundaries:
+
+| Plan Type | Scope | Location | Retention |
+|---|---|---|---|
+| Document-layer IPLAN | SDD Layer-8 implementation bridge from document flow to code execution | Project document lifecycle output (`docs/IPLAN/`, `UCX/08_IPLAN/`, or equivalent) | Permanent |
+| Permanent development plan | Project development and operations planning, including implementation sequencing for approved IPLAN scope | `plans/` (or `governance/plans/` in governance-template repos) | Permanent |
+| Temporary plan | Bug fixes, document corrections, and minor one-off work with no long-term tracking requirement | `tmp/` | Disposable |
+
+Operational rules:
+
+- Keep document-layer IPLAN, permanent development plans, and temporary plans separated by directory.
+- Do not store temporary plans in `plans/`.
+- Promote a temporary plan into `plans/` when scope expands to new functionality, cross-cutting dependencies, or multi-session execution.
+- Treat `plans/` as project history and audit context; do not delete permanent plans.
+
 ## 3. AI Workflow
 
 ### Planning-First Governance Gate (Mandatory)
@@ -37,7 +54,9 @@ Required planning sequence:
 3. Create planning document index for required plan artifacts.
 4. Define changelog plan for the scope (what changes will be tracked and where).
 5. Review planning artifacts for gaps and resolve or explicitly defer gaps.
-6. Create and refine implementation plan (`IPLAN-NNN_{slug}.md`).
+6. Create and refine required execution plan artifact(s):
+   - document-layer IPLAN (`IPLAN-NNN_{slug}.md`) for SDD layer delivery when applicable
+   - permanent development plan (`PLAN-NNN_{slug}.md`, preferred) under `plans/` or `governance/plans/`
 7. Record explicit plan approval (human reviewer or independent LLM-as-judge session).
 
 Hard gate rules:
@@ -75,8 +94,8 @@ Before coding, agents must:
 3. Create planning index for required plan artifacts.
 4. Define changelog plan for the issue scope.
 5. Review planning artifacts for gaps and resolve or defer with rationale.
-6. Create IPLAN.
-7. Refine IPLAN.
+6. Create required plan artifact(s) (document-layer IPLAN and/or permanent development plan).
+7. Refine plan artifact(s) and ensure acceptance criteria mapping.
 8. Record explicit approval for the plan set.
 9. Transition issue to `ai:in-progress`.
 
@@ -100,7 +119,9 @@ Before coding, agents must:
 ## 4. Naming Conventions
 
 - Branches: `feature/{slug}`, `bugfix/{slug}`, `hotfix/{slug}`, `ai/{issue}-{slug}`
-- Plans: `IPLAN-NNN_{slug}.md`
+- Document-layer plans: `IPLAN-NNN_{slug}.md`
+- Permanent development plans: `PLAN-NNN_{slug}.md` (preferred; legacy repository-specific patterns allowed)
+- Temporary plans: `tmp/TMP-PLAN-YYYY-MM-DD_{slug}.md`
 - Issues: `[P{phase}-{task}] {title}` where applicable
 
 ## 5. Agent Operating Model

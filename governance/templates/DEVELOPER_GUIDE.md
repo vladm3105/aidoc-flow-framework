@@ -104,7 +104,9 @@ This is a **monorepo**. All documentation, governance, and component source code
     GITHUB_WORKFLOWS.md           Workflow documentation
     GITHUB_PROJECT_SETUP.md      AI workflow setup
     GITHUB_TOOLS_SETUP.md         CLI and MCP configuration
-    plans/                        Implementation plans (IPLAN index)
+    plans/                        Permanent development plans (execution history)
+
+ tmp/                             Temporary artifacts and temporary plans (disposable)
 
  docs/
     adr/                          9 Architecture Decision Records
