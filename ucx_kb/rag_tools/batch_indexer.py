@@ -8,11 +8,17 @@ import argparse
 import json
 from pathlib import Path
 
+from ucx_kb.utils import is_real_document
+
 RAG_BATCH_SIZE = 100
 GRAPH_BATCH_SIZE = 40
 
 
-def scan_documents(source_dir: Path, extensions: list[str] | None = None) -> list[Path]:
+def scan_documents(
+    source_dir: Path,
+    extensions: list[str] | None = None,
+    include_archived: bool = False,
+) -> list[Path]:
     """Scan directory for documents to index.
 
     Args:
@@ -31,10 +37,12 @@ def scan_documents(source_dir: Path, extensions: list[str] | None = None) -> lis
 
     # Filter out templates and examples
     docs = [
-        d for d in docs
+        d
+        for d in docs
         if "TEMPLATE" not in d.name
         and "example" not in d.name.lower()
         and "backup_" not in str(d)
+        and is_real_document(str(d), include_archived=include_archived)
     ]
 
     return sorted(docs)
@@ -88,6 +96,11 @@ def main():
     parser.add_argument("--out", default="ucx_kb/tmp/jobs", help="Output directory for job files")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--dry-run", action="store_true", help="Scan only, do not write jobs")
+    parser.add_argument(
+        "--include-archived",
+        action="store_true",
+        help="Include archive/archived and _LEGACY paths in scan",
+    )
     args = parser.parse_args()
 
     source_dir = Path(args.source).resolve()
@@ -95,7 +108,7 @@ def main():
         print(f"Error: Source directory not found: {source_dir}")
         return 1
 
-    docs = scan_documents(source_dir)
+    docs = scan_documents(source_dir, include_archived=args.include_archived)
     print(f"\nFound {len(docs)} documents in {source_dir}")
 
     if args.dry_run:

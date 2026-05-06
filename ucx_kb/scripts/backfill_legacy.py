@@ -7,6 +7,8 @@ import argparse
 import json
 from pathlib import Path
 
+from ucx_kb.utils import is_real_document
+
 from ucx_kb.orchestrator import ingest_folder
 
 
@@ -24,7 +26,11 @@ def main() -> int:
         raise SystemExit(f"Source not found: {source}")
 
     if args.dry_run:
-        files = [str(p) for p in source.rglob(args.pattern) if p.is_file()]
+        files = [
+            str(p)
+            for p in source.rglob(args.pattern)
+            if p.is_file() and is_real_document(str(p), include_archived=True)
+        ]
         payload = {"source": str(source), "dry_run": True, "files": files, "count": len(files)}
     else:
         payload = ingest_folder(str(source), pattern=args.pattern, extractor=args.extractor)
