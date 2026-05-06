@@ -10,7 +10,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ## Why v3?
 
-SDD v3 (originally v2's 14-layer framework) required maintaining ~40 reference documents, 20+ templates, and a 14-deep traceability chain. v3.2 collapses this to 8 document layers plus code, reducing documentation surface area while maintaining full traceability with logical layer ordering.
+Earlier framework revisions used a deeper document chain and broader template surface area. v3.2 uses 8 document layers plus code, reducing documentation surface area while maintaining full traceability with logical layer ordering.
 
 ## C4 Architecture Model
 
@@ -165,14 +165,14 @@ When this SDD chain is executed through UCX Hermes (`ucx_hermes`):
 | 8 | TDD | IPLAN | IPLAN-Ready >=90 |
 | 9 | IPLAN | Code | EXEC-Ready >=90 |
 
-## v2 to v3 Migration
+## v3.2 Baseline
 
-See [CHG_MIGRATION_PLAN.md](plans/CHG_MIGRATION_PLAN.md) for detailed changes.
+See [CHG_MIGRATION_PLAN.md](plans/CHG_MIGRATION_PLAN.md) for detailed historical migration records.
 
-| v2 | v3 | Change |
+| Area | v3.2 Baseline | Notes |
 |----|-----|--------|
-| 14 layers | 8 layers | Cut SYS, REQ, CTR, TSPEC (42 files), TASKS, TESTS, VALIDATION |
-| 42 TSPEC files | 1 TDD template | Test case definitions embedded directly |
-| 5 SPEC subtypes | 1 SPEC template | CSPEC/DSPEC/UXSPEC/RISKSPEC/PROCSPEC unified |
-| 14 cumulative tags | 8 cumulative tags | SPEC(L6)→TDD(L7) for logical test-after-spec ordering |
-| TASKS | IPLAN | Lighter-weight execution bridge with session handoff |
+| Layer model | 8 document layers + code | BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
+| Test definition | Unified TDD layer | Test case definitions embedded in TDD template |
+| Specification model | Unified SPEC layer | Single component-contract template |
+| Traceability | 8 cumulative tags max | Progressive upstream inheritance through IPLAN |
+| Execution planning | IPLAN layer | Session handoff and implementation sequencing |

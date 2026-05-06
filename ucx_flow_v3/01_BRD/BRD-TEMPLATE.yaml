@@ -12,9 +12,6 @@
 #    _example      — sample values for reference
 #
 #  Downstream: PRD (Layer 2)
-#
-#  v3 changes from ucx_flow_v3:
-#    Removed references to SYS, REQ, CTR, TSPEC, TASKS layers
 # =============================================================================
 
 id: BRD-NN
@@ -33,10 +30,10 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     tool: sdd_validate
-    server: mcp_ucx
+    server: ucx_hermes
     _guidance: |
-      All validation runs through mcp_ucx MCP tools.
-      No standalone scripts — mcp_ucx is the execution layer.
+      All validation runs through ucx_hermes MCP tools.
+      No standalone scripts — ucx_hermes is the execution layer.
       Key tools: sdd_validate (structure), sdd_score_validate (quality gate),
         sdd_preflight (environment), sdd_consistency (cross-doc).
   c4_level:
@@ -148,7 +145,7 @@ metadata:
     placeholder: "xxxx"
 
   cross_section_rules:
-    description: "Machine-enforced by sdd_validate (mcp_ucx)"
+    description: "Machine-enforced by sdd_validate (ucx_hermes)"
     generic:
       - id: SDD-XS-001
         rule: "All element IDs in traceability must exist in source sections"

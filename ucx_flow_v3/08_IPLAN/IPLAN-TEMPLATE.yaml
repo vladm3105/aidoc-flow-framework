@@ -8,11 +8,7 @@
 #   Temporary IPLAN (tmp/): bugfixes, corrections — no SPEC upstream.
 #   Registry: IPLAN-00_index.yaml tracks all permanent plans.
 #
-# Differences from v2 TASKS (cut):
-#   TASKS had 475 lines, 16 sections, 10-layer upstream chain verification.
-#   IPLAN has ~100 lines, 6 sections, 2-layer upstream (SPEC + TDD).
-#   No pre/post-check gates, no business value narrative, no test results
-#   (those live in code inventory + changelog).
+# IPLAN is the Layer 8 execution bridge from SPEC/TDD to code.
 
 metadata:
   schema_version: "1.0"

@@ -47,14 +47,13 @@ Practical effect:
 - Element IDs must match the 4-segment hash format: `TYPE.NN.SS.xxxx`.
 - Document IDs must match the format: `TYPE-NN`.
 
-## What's Different from SDD v2
+## v3.2 Governance Baseline
 
-| v2 | v3.2 |
+| Governance Area | v3.2 Standard |
 |----|------|
-| 14-layer registry | 8-layer registry |
-| `development_status` frontmatter | `status` field (simplified) |
-| MD + YAML dual templates | YAML-only templates |
-| 14-depth traceability chain | 8-depth chain |
-| 5 SPEC subtypes + 6 TSPEC subtypes | Unified SPEC (L6) + TDD with test cases (L7) |
-| CHG gate system | Project-level concern |
-| SYS/REQ/CTR/TASKS | Cut — replaced by ADR/BDD-spec_trace/SPEC inline/IPLAN |
+| Layer registry | 8-layer registry |
+| Lifecycle status field | `status` |
+| Template format | YAML-only templates |
+| Traceability depth | 8-depth chain |
+| Specification and testing | Unified SPEC (L6) + TDD with embedded test cases (L7) |
+| Change governance | CHG project-level overlay |

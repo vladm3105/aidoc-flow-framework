@@ -11,22 +11,22 @@ Defines test cases that validate SPEC component contracts. Each TDD document map
 ## Design Decisions
 
 - **L7 position** — Logical: SPEC defines what to build, TDD defines how to test it, IPLAN orchestrates the build.
-- **Test case definitions embedded** — Section 4 of template provides concrete test inputs, expected outputs, and edge cases (fills the gap left by TSPEC removal).
-- **Single template, no subtypes** — replaces the 42-file TSPEC v1 archive (6 subtypes × ~7 files each)
+- **Test case definitions embedded** — Section 4 of template provides concrete test inputs, expected outputs, and edge cases.
+- **Single template, no subtypes** — unified TDD authoring contract.
 - **Test-first enforcement** — test files are generated BEFORE implementation files
 - **BDD as source of truth** — no new behavior descriptions; maps existing BDD scenarios (with spec_trace links) to test types
 - **One document per SPEC component** — same granularity as SPEC for minimal maintenance
 
-## What's Different from TDD v3.0 / TSPEC v1
+## v3.2 TDD Baseline
 
-| TDD v3.0 / TSPEC v1 | TDD v3.2 |
+| Area | TDD v3.2 |
 |---------------------|----------|
-| Position: L6 (before SPEC) | Position: L7 (after SPEC) |
-| 80-line template, no test cases | Template with Section 4: test case definitions |
-| Upstream: ADR + BDD only | Upstream: SPEC + ADR + BDD |
-| Downstream: SPEC | Downstream: IPLAN |
-| 6 subtypes (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST) | Single unified template |
-| 42 files total (TSPEC) | 1 template + 1 index + 1 README |
+| Position | L7 (after SPEC) |
+| Test case shape | Section 4 test case definitions |
+| Upstream | SPEC + ADR + BDD |
+| Downstream | IPLAN |
+| Template model | Single unified template |
+| Core assets | Template + index + README |
 
 ## Template
 

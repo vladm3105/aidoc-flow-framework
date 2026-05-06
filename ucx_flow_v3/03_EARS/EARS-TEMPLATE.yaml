@@ -13,9 +13,6 @@
 #
 #  Downstream: BDD (Layer 4)
 #  Upstream: BRD (Layer 1), PRD (Layer 2)
-#
-#  v3 changes from ucx_flow_v3:
-#    Removed downstream references to ADR, SYS, TSPEC, TASKS
 # =============================================================================
 
 id: EARS-NN
@@ -34,9 +31,9 @@ metadata:
   last_updated: "2026-03-29"
   validation:
     tool: sdd_validate
-    server: mcp_ucx
+    server: ucx_hermes
     _guidance: |
-      All validation runs through mcp_ucx MCP tools.
+      All validation runs through ucx_hermes MCP tools.
       BDD-Ready Score: >=90/100 required before downstream BDD generation.
       EARS parity check: requires trigger clause (WHEN|IF|WHILE) and
       actor clause (THE SYSTEM SHALL) in document content.

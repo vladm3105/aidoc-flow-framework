@@ -33,11 +33,11 @@ metadata:
     - version: "3.0"
       date: "2026-04-28"
       changes:
-        - "Collapsed from 14 layers to 7 (BRD→PRD→EARS→BDD→ADR→TDD→SPEC)"
-        - "Cut: SYS, REQ, CTR, TSPEC (42-file), TASKS, TESTS (doc), VALIDATION"
+        - "Established streamlined v3 baseline (BRD→PRD→EARS→BDD→ADR→TDD→SPEC)"
+        - "Reduced documentation surface area and simplified layer responsibilities"
         - "Added Layer 6 TDD (lightweight test-driven development guide)"
         - "SPEC promoted to Layer 7 (unified, single template, no subtypes)"
-        - "Maximum cumulative tags reduced from 14 to 6"
+        - "Maximum cumulative tags reduced to 6"
 
 layers:
   - number: 1

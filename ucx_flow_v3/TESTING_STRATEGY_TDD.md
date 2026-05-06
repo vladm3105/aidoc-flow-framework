@@ -45,7 +45,7 @@ The AI agent follows this order when generating code from the IPLAN document.
 
 ## Test Case Definitions
 
-Unlike the 42-file TSPEC v1 archive, SDD v3.2 embeds test case definitions directly in the TDD document (Section 4):
+SDD v3.2 embeds test case definitions directly in the TDD document (Section 4):
 - **Unit tests**: Inputs, expected outputs, edge cases — derived from SPEC interfaces and data models
 - **Integration tests**: Contract validation, state transitions, error paths — derived from SPEC behavior
 - **E2E tests**: Workflow steps, timeouts, cleanup — derived from BDD scenarios
@@ -67,6 +67,6 @@ TDD does NOT create new test scenarios. It maps **existing BDD scenarios** (with
 | Change | Rationale |
 |--------|-----------|
 | TDD moved to L7 | Logical: SPEC defines what to build first, then TDD defines tests against SPEC |
-| Section 4: Test Case Definitions added | Concrete test inputs, outputs, edge cases fill the gap left by TSPEC removal |
+| Section 4: Test Case Definitions added | Concrete test inputs, outputs, edge cases are explicit in TDD |
 | Upstream: SPEC (not just ADR) | Test cases derive directly from SPEC interfaces, data models, and behavior |
 | Downstream: IPLAN | TDD test-first order enforced by IPLAN execution |

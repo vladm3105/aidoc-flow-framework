@@ -36,7 +36,7 @@ TDD:   @brd @prd @ears @bdd @adr @spec @tdd
 IPLAN: @brd @prd @ears @bdd @adr @spec @tdd @iplan
 ```
 
-Maximum 8 cumulative tags at IPLAN layer (vs 14 in SDD v2).
+Maximum 8 cumulative tags at IPLAN layer.
 
 ## Readiness Score Flow
 
@@ -48,17 +48,16 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 → TDD → IPLAN-Ready (>=90) → IPLAN → EXEC-Ready (>=90) → Code
 ```
 
-## What Was Cut from SDD v2
+## v3.2 Layer Responsibilities
 
-| Cut | Replaced By |
-|-----|-------------|
-| SYS (L6) | ADR captures architecture; PRD captures scope |
-| REQ (L7) | EARS + BDD spec_trace provide requirement-to-spec links |
-| CTR (L8) | SPEC interface contracts handled inline |
-| TSPEC (L10) 42-file suite | TDD (L7) with embedded test case definitions |
-| TASKS (L11) | IPLAN (L8) execution bridge with session handoff |
-| 09_SPEC/ subtypes (5 types) | Unified SPEC template (L6) |
-| CHG/ gate system | Project-level concern |
+| Area | v3.2 Owner | Implementation Rule |
+|-----|-------------|---------------------|
+| Architecture decisions | ADR (L5) | Context-Decision-Consequences with downstream SPEC readiness |
+| Requirement formalization | EARS (L3) + BDD (L4) | Formal clauses + executable scenarios with `spec_trace` |
+| Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
+| Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
+| Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
+| Governance workflow | CHG overlay | Project-level control outside layer numbering |
 
 ## v3.2 Changes from v3.0
 
@@ -67,7 +66,7 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 | SPEC (L6) ↔ TDD (L7) swapped | Logical: specify first, then define tests against specification |
 | TDD template expanded | Test case definitions with inputs, outputs, edge cases |
 | BDD spec_trace added | Each scenario links to SPEC sections for req-to-SPEC traceability |
-| IPLAN (L8) | Execution bridge with session handoff (replaces TASKS) |
+| IPLAN (L8) | Execution bridge with session handoff |
 
 ## Development vs Deployment Separation
 

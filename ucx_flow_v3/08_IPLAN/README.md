@@ -30,17 +30,16 @@ Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per TDD co
 - **Code inventory for audit trail** — every file created/modified is recorded with session attribution and verification status.
 - **Temporary plans** for bugfixes only — no TDD upstream, disposable, live in `tmp/`.
 
-## What's Different from TASKS v2
+## IPLAN v3.2 Baseline
 
-| TASKS v2 (475 lines, 16 sections) | IPLAN v3.2 (~100 lines, 6 sections) |
+| Area | IPLAN v3.2 |
 |---|---|
-| Pre-check: 10-layer upstream chain verification | 3-layer upstream: TDD + SPEC + ADR |
-| Development Plan Tracking with pre/post gates | File manifest with status markers only |
-| Business value, scope, objective narratives | SPEC already covers these |
-| 4-phase breakdown pattern | File-by-file creation order (test-first) |
-| Unit Test Results section (populated after) | validation_results per session in handoff log |
-| Full glossary | Not needed — lean execution |
-| No temporary plan concept | `tmp/` for bugfix plans |
+| Upstream contract | TDD + SPEC + ADR |
+| Execution tracking | File manifest with status markers |
+| Scope ownership | Execution-only (business scope remains in upstream docs) |
+| Sequencing model | File-by-file test-first creation order |
+| Validation reporting | `validation_results` per session handoff entry |
+| Planning model | Permanent + temporary plan split |
 
 ## Session Handoff Protocol
 

@@ -27,17 +27,17 @@ Implementation-ready technical specification for a single software component. De
 - **Test contract references** — links to TDD layer (Layer 7) for test case definitions
 - **Unified v1.0 metadata model** — same structure as all other layers
 
-## What's Different from SPEC v2 (ucx_flow_v3)
+## v3.2 Specification Baseline
 
-| SPEC v2 (14-layer) | SPEC v3.2 (8-layer) |
+| Area | v3.2 SPEC Standard |
 |--------------------|-------------------|
-| schema_version 2.0, different metadata model | schema_version 1.0, unified model |
-| Massive nested traceability tree | Flat upstream tags |
-| 5 subtypes with separate templates | Single unified template |
-| Upstream: REQ + CTR + SYS + ADR | Upstream: ADR + BDD |
-| Downstream: TSPEC → TASKS → Code | Downstream: TDD → IPLAN → Code |
-| 30+ subsections | 8 clean sections |
-| Code-Ready score | TDD-Ready score |
+| Metadata model | `schema_version: 1.0` unified model |
+| Traceability | Flat upstream tags |
+| Template model | Single unified template |
+| Upstream | ADR + BDD |
+| Downstream | TDD → IPLAN → Code |
+| Document shape | 8 core sections |
+| Readiness gate | TDD-Ready score |
 
 ## Template
 
