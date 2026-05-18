@@ -23,6 +23,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   `docs/PROJECT.md` § CHG implementation model): CHG to be built as
   skills + CI/CD post-Phase 5.
 
+### Changed
+- **Legacy isolation:** all pre-migration content moved into `legacy/`
+  (frozen) — `ucx_flow_v3`, `ucx_hermes`, `mcp_ucx`, `ai_dev_ssd_flow_v2`,
+  `governance`, and supporting trees. Repo root now holds only the new
+  project (`framework/`, `platforms/`, `docs/`) plus infrastructure.
+- Legacy GitHub Actions workflows disabled (parked in
+  `legacy/github-workflows-disabled/`).
+- Root `README.md` rewritten for the multi-platform project.
+- `.mcp.json` Hermes server path repointed to `legacy/ucx_hermes/`.
+
 ### Notes
 - Forked from `ucx_framework` v0.20.4 (`main`).
 - The gated CHG change-management process is intentionally not applied during

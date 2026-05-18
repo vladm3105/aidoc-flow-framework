@@ -40,13 +40,15 @@ The *project-level* version below tracks migration milestones only.
 - Status: **in progress**.
 
 ### Phase 1 — Framework Spec Extraction  → `v0.2.0`
-- Consolidate engine-agnostic content into `framework/` (layers, registry,
-  governance, CHG overlay).
+- **Step 0 — Legacy isolation (done):** all pre-migration content moved into
+  `legacy/`; legacy GitHub Actions workflows disabled.
+- Consolidate engine-agnostic content from `legacy/` into `framework/` (layers,
+  registry, governance, CHG overlay).
 - Define the shared conformance test suite under `tests/conformance/`.
 - Tag `framework/VERSION` at its first independent release.
 
 ### Phase 2 — Platform A: Hermes Re-homing  → `v0.3.0`
-- Move `ucx_hermes/` + `mcp_ucx/` under `platforms/hermes/`.
+- Copy `legacy/ucx_hermes/` + `legacy/mcp_ucx/` into `platforms/hermes/`.
 - Point Hermes at `framework/`; declare `framework_spec_version`.
 - Hermes passes the conformance suite.
 

@@ -56,14 +56,21 @@ aidoc-flow-framework/
 
 ## Legacy → Target Mapping
 
-| Legacy (current `main`)                     | Target location                         |
-|----------------------------------------------|------------------------------------------|
-| `ucx_flow_v3/01_BRD … 08_IPLAN/`             | `framework/layers/`                      |
-| `ucx_flow_v3/LAYER_REGISTRY.yaml`            | `framework/registry/`                    |
-| `ucx_flow_v3/CHG/`, `governance/`            | `framework/governance/`                  |
-| `ucx_hermes/`, `mcp_ucx/`                    | `platforms/hermes/`                      |
-| `.claude/` skills (`doc-*`), agents, commands | `platforms/claude-code-plugin/`          |
-| `ai_dev_ssd_flow_v2/`                        | archived (superseded by `framework/`)    |
-| `roadmap/`, `changelog/` (legacy)            | archived; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
+The pre-migration project is now frozen under `legacy/` (see `legacy/README.md`).
 
-> Moves are executed in Phases 1–3, not during planning. This table records intent.
+| Legacy (under `legacy/`)                         | Target location                         |
+|--------------------------------------------------|------------------------------------------|
+| `legacy/ucx_flow_v3/01_BRD … 08_IPLAN/`          | `framework/layers/`                      |
+| `legacy/ucx_flow_v3/LAYER_REGISTRY.yaml`         | `framework/registry/`                    |
+| `legacy/ucx_flow_v3/CHG/`, `legacy/governance/`  | `framework/governance/`                  |
+| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `platforms/hermes/`                      |
+| `.claude/` skills (`doc-*`), agents, commands    | `platforms/claude-code-plugin/`          |
+| `legacy/ai_dev_ssd_flow_v2/`                     | dropped (superseded by `framework/`)     |
+| `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
+| `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |
+
+> Content is **copied** out of `legacy/` and adapted during Phases 1–3; the
+> legacy copy stays untouched. `legacy/` is removed at/after the Phase 5 cutover.
+> `.claude/` stays at repo root (active skills) and is ported into the plugin
+> in Phase 3.
+
