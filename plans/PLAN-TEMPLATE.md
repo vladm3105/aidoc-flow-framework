@@ -44,6 +44,12 @@
 > implemented (see `CLAUDE.md` § Development workflow). Each pass: re-read the
 > whole plan, list findings, fold fixes back into the sections above. Stop when
 > a pass finds nothing.
+>
+> Every pass also cross-checks the **Verification** section against the
+> transformation rules — each pattern precise, with no false positive (a rule's
+> intended output trips a check) and no false negative (a check misses
+> something a rule was meant to remove). Dry-run the verification commands
+> against the legacy source while planning, to calibrate them.
 
 ### Pass 1 — <YYYY-MM-DDThh:mm:ssZ>
 
