@@ -45,10 +45,13 @@ conformance suite (P1-T5); `framework/VERSION` (P1-T6).
   sdd_validate (ucx_hermes)"` → `"Machine-enforced cross-section rules"`.
 - **A4.** IPLAN template — neutralize `stateless MCP executor` phrasing →
   `stateless executor` / `AI agent session`.
-- **A5.** SPEC, TDD templates — copy verbatim (scan: no engine refs).
-- **A6.** Do **not** change: `schema_version`, `layer`, C4 `_guidance`,
-  content sections, ID formats, `last_updated` (the framework version stream
-  is tracked separately by `framework/VERSION`, P1-T6).
+- **A5.** SPEC, TDD templates — no engine refs; apply A2 + A7 only.
+- **A6.** Do **not** change: `schema_version`, `layer`, C4 `_guidance` layer
+  content, content sections, ID formats, `last_updated`.
+- **A7.** Neutralize legacy version strings (every template carries 1–3):
+  drop `# Version: 3.2` header lines; `SDD v3.2` / `SDD v3` → `SDD` (the
+  methodology name stays; the legacy version qualifier goes — the framework
+  version stream is `framework/VERSION`, P1-T6, per D-0006).
 
 ### B — Layer READMEs (`README.md`)
 
@@ -119,5 +122,22 @@ Self-review findings, folded into the plan above:
   deferred to P1-T4 framework-root assembly.
 - **G5.** Confirmed `last_updated` in templates is left untouched (A6) — the
   spec version stream is `framework/VERSION`, not per-template dates.
+
+### Second review pass (2026-05-18T18:30:00Z)
+
+Re-read the hardened plan as the workflow requires. Findings:
+
+- **G6 (real — fixed).** Every template embeds legacy version strings
+  (`# Version: 3.2`, `SDD v3.2`, `SDD v3`) — 16 occurrences across 8 files.
+  The plan was silent; leaving them contradicts D-0006 (framework versions
+  independently from `0.1.0`). → Added rule **A7**.
+- **G7 (checked — not an issue).** Verified the layer READMEs contain no
+  cross-doc markdown links to registry/governance files, and their only
+  `ucx_flow_v3/` path references sit entirely inside the engine sections that
+  B1 deletes. B3's link-rewriting is therefore mostly moot; B3 is kept only as
+  a post-edit safety grep.
+- **G8 (noted — out of scope).** `ID_NAMING_STANDARDS.md` has no entry for the
+  `*-00_index.TEMPLATE.*` naming. Flagged for P1-T4 (governance extraction);
+  not a P1-T2 change.
 
 No open blockers. Ready to implement on approval.
