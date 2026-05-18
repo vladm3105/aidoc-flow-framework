@@ -10,6 +10,19 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0007 — Plan review is a two-pass, recorded gate
+
+- **Date:** 2026-05-18T18:45:00Z
+- **Decision:** Every plan file carries a `## Review log` with **≥2**
+  ISO-stamped passes; a plan may not be presented, handed off, or implemented
+  until it does. New plans start from `plans/PLAN-TEMPLATE.md`. A non-blocking
+  `PreToolUse(git commit)` hook warns when a staged plan file falls short.
+- **Why:** The review/harden step was prose-only, so a skipped second pass was
+  invisible — it happened once on the P1-T2 plan. Making each pass a named,
+  checkable artifact turns a silent omission into a visible gap.
+- **Notes:** The hook enforces that a pass is *recorded*, not that it is
+  thoughtful — review quality stays a manual judgment step.
+
 ## D-0006 — First `framework/` spec version is `0.1.0`
 
 - **Date:** 2026-05-18T18:00:00Z

@@ -35,9 +35,16 @@ The platforms share the `framework/` spec and nothing else.
 
 Every change follows this flow:
 
-1. **Plan.** Write the plan into `plans/` before touching code.
-2. **Review the plan.** Re-read it for gaps, missing cases, and likely bugs.
-3. **Harden.** Fix every issue found, then review once more; fix again if needed.
+1. **Plan.** Write the plan into `plans/` before touching code — start from
+   `plans/PLAN-TEMPLATE.md`.
+2. **Review — pass 1.** Re-read the plan for gaps, missing cases, and likely
+   bugs. Record findings as a timestamped entry in the plan's `## Review log`.
+3. **Harden, then review again.** Fix every issue found, then do a *second*
+   review pass and record it as another `## Review log` entry (findings, or an
+   explicit "no new findings"). Repeat until a pass finds nothing. A plan is
+   **not ready** to present, hand off, or implement until its `## Review log`
+   shows **at least two** ISO-stamped passes — never present a plan or call
+   `ExitPlanMode` before then.
 4. **Implement.** Execute the plan. Update the plan file with progress and
    state/status as you go — stamp every update with an ISO 8601 timestamp
    (`YYYY-MM-DDThh:mm:ssZ`).

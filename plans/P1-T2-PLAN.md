@@ -108,7 +108,9 @@ conformance suite (P1-T5); `framework/VERSION` (P1-T6).
 | R4 | Over-stripping removes agnostic content | only the 4 identified engine-specific patterns are removed; everything else copied verbatim |
 | R5 | Index `.md` frontmatter goes stale | keep frontmatter; mark `document_type` as the index *template* |
 
-## Plan review & hardening (2026-05-18T18:15:00Z)
+## Review log
+
+### Pass 1 — 2026-05-18T18:15:00Z
 
 Self-review findings, folded into the plan above:
 
@@ -123,7 +125,7 @@ Self-review findings, folded into the plan above:
 - **G5.** Confirmed `last_updated` in templates is left untouched (A6) — the
   spec version stream is `framework/VERSION`, not per-template dates.
 
-### Second review pass (2026-05-18T18:30:00Z)
+### Pass 2 — 2026-05-18T18:30:00Z
 
 Re-read the hardened plan as the workflow requires. Findings:
 

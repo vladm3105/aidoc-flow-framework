@@ -34,6 +34,9 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `plans/P1-AUDIT-ucx_flow_v3.md` — Phase 1 audit (P1-T1) classifying the
   49-file legacy SDD v3.2 tree as engine-agnostic, mixed, instance, or drop,
   with the target `framework/` layout for the Phase 1 extraction steps.
+- Plan-review gate (D-0007): plans require a `## Review log` of ≥2 passes;
+  `plans/PLAN-TEMPLATE.md` added; non-blocking `PreToolUse(git commit)` hook
+  warns when a staged plan file falls short.
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`
