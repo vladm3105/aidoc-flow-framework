@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-18T20:15:00Z                       |
+| Last updated     | 2026-05-18T20:30:00Z                       |
 
 ---
 
@@ -28,7 +28,8 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P1-T2 — Extract the 8 SDD layers into `framework/layers/` (templates,
   READMEs, index templates — 24 files). → `plans/P1-T2-PLAN.md`
 - [x] P1-T3 — Extract `LAYER_REGISTRY.yaml` into `framework/registry/`. → `plans/P1-T3-PLAN.md`
-- [ ] P1-T4 — Extract governance + CHG overlay into `framework/governance/`.
+- [x] P1-T4 — Extract governance + CHG overlay into `framework/governance/`
+  (18 files). → `plans/P1-T4-PLAN.md`
 - [ ] P1-T5 — Define the shared conformance suite under `tests/conformance/`.
 - [ ] P1-T6 — Create `framework/VERSION`; tag first spec release.
 - [ ] P1-T7 — Framework root assembly: extract the 4 methodology docs

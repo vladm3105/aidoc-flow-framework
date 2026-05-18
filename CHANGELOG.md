@@ -46,6 +46,12 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   machine-readable layer model (layer order, traceability graph, C4 mapping,
   ID patterns), plus a `README.md`. Standalone version field and legacy
   changelog dropped; layer `folder` paths repointed under `layers/`.
+- `framework/governance/` (P1-T4) — 5 governance docs (`DOC_GOVERNANCE_CORE`,
+  `ID_NAMING_STANDARDS`, `TRACEABILITY`, `DIAGRAM_STANDARDS`,
+  `THRESHOLD_NAMING_RULES`) and the CHG overlay (`chg/` — README, template,
+  index template, 7 gates, 2 companion templates), 18 files. Engine-specific
+  skill references and `MCP` mentions neutralized; CHG extracted spec-only
+  (not enforced until post-Phase 5).
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`

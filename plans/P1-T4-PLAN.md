@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T4                                      |
 | Depends on | P1-T1 audit, D-0005, D-0006, P1-T2 (G8)    |
-| Status     | PLANNED — 2026-05-18T20:00:00Z             |
+| Status     | DONE — 2026-05-18T20:30:00Z                |
 | Feeds      | P1-T5 (conformance suite)                  |
 
 ## Objective
@@ -101,6 +101,23 @@ Patterns dry-run against the legacy source during planning (scan calibrated):
 | R2 | DIAGRAM_STANDARDS skill-neutralization over-strips the Mermaid standard | touch only skill-name/path refs; keep the rule body |
 | R3 | Bare `mermaid-gen`/`charts-flow` names slip past the `.claude/` grep | explicit name grep in Verify |
 | R4 | The 4 root methodology docs are stranded with no owning task | G3 — recommend a new tracked task P1-T7 |
+
+## Implementation (2026-05-18T20:30:00Z)
+
+18 files created under `framework/governance/`. All verification checks pass:
+YAML parses; no `hermes|ucx_|.claude/` tokens; no engine tool names; no `mcp`;
+no `mermaid-gen|charts-flow`; no `sdd v3|v3.x|framework_version`; 18 files; CHG
+`.md` frontmatter valid. Spot-checked: `THRESHOLD_NAMING_RULES.md` byte-identical
+to legacy; `DIAGRAM_STANDARDS.md` skill refs neutralized to "the platform's
+diagram-generation tooling" (Mermaid standard intact); G8 index-template naming
+row present in `ID_NAMING_STANDARDS.md`.
+
+Notable executor judgment calls (all sound, kept):
+- `framework/governance/README.md` first draft used "MCP server" as an example
+  engine and tripped the `\bmcp\b` check → reworded engine-neutrally.
+- `GATE-08_IPLAN.md` cross-link retargeted to `../../../layers/08_IPLAN/` for
+  the new layout.
+- `POST_MORTEM` / `CHG-TEMPLATE` glossary `v3.2:` prefixes dropped consistently.
 
 ## Review log
 

@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-18T19:40:00Z                       |
+| Last updated  | 2026-05-18T20:30:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — Framework Spec Extraction        |
-| Next task     | P1-T4 — extract governance docs + CHG overlay into `framework/governance/` |
+| Next task     | P1-T5 — define the shared conformance suite under `tests/conformance/` |
 
 ## Progress
 
@@ -21,6 +21,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   see `plans/P1-T2-PLAN.md`.
 - P1-T3 (registry extraction) — complete; `framework/registry/` holds
   `LAYER_REGISTRY.yaml` + `README.md`; see `plans/P1-T3-PLAN.md`.
+- P1-T4 (governance + CHG extraction) — complete; `framework/governance/`
+  holds 18 files; see `plans/P1-T4-PLAN.md`.
 
 ## Achievements
 
@@ -36,14 +38,15 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   (templates, READMEs, index templates — engine-neutral).
 - 2026-05-18 — Extracted `LAYER_REGISTRY.yaml` into `framework/registry/`
   as the authoritative machine-readable layer model.
+- 2026-05-18 — Extracted governance docs + CHG overlay into
+  `framework/governance/` (18 files, engine-neutral; CHG spec-only).
 
 ## Next steps
 
-1. P1-T4 — extract governance docs + CHG overlay into `framework/governance/`
-   (G8: add an index-template naming entry to `ID_NAMING_STANDARDS.md`).
-2. P1-T5 — define the shared conformance suite under `tests/conformance/`
+1. P1-T5 — define the shared conformance suite under `tests/conformance/`
    (P1-T3 G5: include the deferred deep registry semantic checks).
-3. P1-T6 — create `framework/VERSION` (`0.1.0`, per D-0006).
+2. P1-T6 — create `framework/VERSION` (`0.1.0`, per D-0006).
+3. P1-T7 — framework root assembly: 4 methodology docs + framework README.
 4. P0-T5 — tag the `v0.1.0` planning baseline.
 
 ## Open questions
@@ -58,3 +61,4 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-18T18:45:00Z — Added two-pass plan-review gate (D-0007).
 - 2026-05-18T19:05:00Z — Completed P1-T2 layer extraction.
 - 2026-05-18T19:40:00Z — Completed P1-T3 registry extraction.
+- 2026-05-18T20:30:00Z — Completed P1-T4 governance + CHG extraction.
