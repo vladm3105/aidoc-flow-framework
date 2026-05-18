@@ -31,12 +31,47 @@ The platforms share the `framework/` spec and nothing else.
 - **Never push to `main`.** Only the working branch above.
 - Legacy CI is disabled (parked in `legacy/github-workflows-disabled/`).
 
+## Development workflow
+
+Every change follows this flow:
+
+1. **Plan.** Write the plan into `plans/` before touching code.
+2. **Review the plan.** Re-read it for gaps, missing cases, and likely bugs.
+3. **Harden.** Fix every issue found, then review once more; fix again if needed.
+4. **Implement.** Execute the plan. Update the plan file with progress and
+   state/status as you go — stamp every update with an ISO 8601 timestamp
+   (`YYYY-MM-DDThh:mm:ssZ`).
+5. **Land.** On every commit/push, update `CHANGELOG.md` and `ROADMAP.md` as
+   needed, and tick `plans/MIGRATION_TODO.md`.
+
+Hooks may be added to automate the mechanical parts (timestamping, syncing the
+tracker / changelog / roadmap). Keep judgment-based steps (planning, review)
+manual.
+
+## Session handoff
+
+Sessions run in ephemeral containers — preserve continuity in the repo:
+
+- Maintain `plans/HANDOFF.md` — current progress, achievements, next steps,
+  open questions. Refresh it at meaningful milestones.
+- **Before any context compaction**, write/refresh the handoff record and
+  update `CHANGELOG.md` so no progress is lost.
+- Start each session by reading `plans/HANDOFF.md`.
+
+## Definition of done
+
+A task is done only when: code/docs changed, **committed and pushed**, plan
+status updated with an ISO timestamp, `CHANGELOG.md` / `ROADMAP.md` synced, and
+applicable validators/conformance checks pass. Only then tick `[x]` in
+`plans/MIGRATION_TODO.md`.
+
 ## Where things are
 
 - `ROADMAP.md` — stable phased plan (Phase 0 → cutover v1.0.0).
 - `plans/MIGRATION_TODO.md` — **live task tracker**; update it as work lands
   (check `[x]` only when committed + pushed).
 - `plans/README.md` — migration workspace conventions.
+- `plans/HANDOFF.md` — session continuity: progress, achievements, next steps.
 - `docs/PROJECT.md` — versioning, branching, conformance, change management.
 - `docs/REPO_STRUCTURE.md` — target layout + `legacy/` → target mapping.
 
